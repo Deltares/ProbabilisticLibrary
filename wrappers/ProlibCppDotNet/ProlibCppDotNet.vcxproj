@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <ProjectGuid>{065518FE-8729-4164-9C60-E47AA04CAA93}</ProjectGuid>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <Keyword>ManagedCProj</Keyword>
+    <RootNamespace>ProlibCppDotNet</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <EnableManagedPackageReferenceSupport>true</EnableManagedPackageReferenceSupport>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CLRSupport>true</CLRSupport>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CLRSupport>true</CLRSupport>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CLRSupport>true</CLRSupport>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CLRSupport>true</CLRSupport>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <OpenMPSupport>true</OpenMPSupport>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies />
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <OpenMPSupport>true</OpenMPSupport>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies />
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <OpenMPSupport>true</OpenMPSupport>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies />
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <OpenMPSupport>true</OpenMPSupport>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies />
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="ProlibCppDotNet.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="wrapper.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\combine\combineElements.cpp" />
+    <ClCompile Include="..\..\src\combine\Hohenbichler.cpp" />
+    <ClCompile Include="..\..\src\combine\upscaling.cpp" />
+    <ClCompile Include="..\..\src\correlation\gaussianCorrelation.cpp" />
+    <ClCompile Include="..\..\src\correlation\gaussianCorrelationRobust.cpp" />
+    <ClCompile Include="..\..\src\correlation\HRcorrelation.cpp" />
+    <ClCompile Include="..\..\src\correlation\identity.cpp" />
+    <ClCompile Include="..\..\src\correlation\trapeziumRule.cpp" />
+    <ClCompile Include="..\..\src\distributions\combine_x1x2_mtable.cpp" />
+    <ClCompile Include="..\..\src\distributions\distBeta.cpp" />
+    <ClCompile Include="..\..\src\distributions\distrib.cpp" />
+    <ClCompile Include="..\..\src\distributions\exponentialDist.cpp" />
+    <ClCompile Include="..\..\src\distributions\gumble.cpp" />
+    <ClCompile Include="..\..\src\distributions\logNormalDist.cpp" />
+    <ClCompile Include="..\..\src\distributions\mtable.cpp" />
+    <ClCompile Include="..\..\src\distributions\normalDist.cpp" />
+    <ClCompile Include="..\..\src\distributions\paretoDist.cpp" />
+    <ClCompile Include="..\..\src\distributions\parseDistribution.cpp" />
+    <ClCompile Include="..\..\src\distributions\rayleighDist.cpp" />
+    <ClCompile Include="..\..\src\distributions\triangleDist.cpp" />
+    <ClCompile Include="..\..\src\distributions\truncatedNormal.cpp" />
+    <ClCompile Include="..\..\src\distributions\weibull.cpp" />
+    <ClCompile Include="..\..\src\extern\asa063.cpp" />
+    <ClCompile Include="..\..\src\extern\asa109.cpp" />
+    <ClCompile Include="..\..\src\extern\asa239.cpp" />
+    <ClCompile Include="..\..\src\extern\asa241.cpp" />
+    <ClCompile Include="..\..\src\extern\dgammaDs.cpp" />
+    <ClCompile Include="..\..\src\probFuncs\conversions.cpp" />
+    <ClCompile Include="..\..\src\probFuncs\listDistribs.cpp" />
+    <ClCompile Include="..\..\src\probFuncs\probDraw.cpp" />
+    <ClCompile Include="..\..\src\probFuncs\probNumber.cpp" />
+    <ClCompile Include="..\..\src\probFuncs\stochSettings.cpp" />
+    <ClCompile Include="..\..\src\probMethods\adaptiveImpSampling.cpp" />
+    <ClCompile Include="..\..\src\probMethods\crudeMonteCarlo.cpp" />
+    <ClCompile Include="..\..\src\probMethods\crudeMonteCarloForm.cpp" />
+    <ClCompile Include="..\..\src\probMethods\directionalSampling.cpp" />
+    <ClCompile Include="..\..\src\probMethods\dsfi.cpp" />
+    <ClCompile Include="..\..\src\probMethods\dsRootFinder.cpp" />
+    <ClCompile Include="..\..\src\probMethods\dsRootFinderRobust.cpp" />
+    <ClCompile Include="..\..\src\probMethods\fdir.cpp" />
+    <ClCompile Include="..\..\src\probMethods\fillStartVector.cpp" />
+    <ClCompile Include="..\..\src\probMethods\form.cpp" />
+    <ClCompile Include="..\..\src\probMethods\formDsfi.cpp" />
+    <ClCompile Include="..\..\src\probMethods\formWithTrialLoops.cpp" />
+    <ClCompile Include="..\..\src\probMethods\form_init.cpp" />
+    <ClCompile Include="..\..\src\probMethods\importanceSampling.cpp" />
+    <ClCompile Include="..\..\src\probMethods\importanceSamplingForm.cpp" />
+    <ClCompile Include="..\..\src\probMethods\importanceSamplingSeq.cpp" />
+    <ClCompile Include="..\..\src\probMethods\lsf.cpp" />
+    <ClCompile Include="..\..\src\probMethods\lsfResult.cpp" />
+    <ClCompile Include="..\..\src\probMethods\numint.cpp" />
+    <ClCompile Include="..\..\src\probMethods\parseAndRunMethod.cpp" />
+    <ClCompile Include="..\..\src\probMethods\parseMethod.cpp" />
+    <ClCompile Include="..\..\src\probMethods\progress.cpp" />
+    <ClCompile Include="..\..\src\probMethods\ray_search.cpp" />
+    <ClCompile Include="..\..\src\probMethods\sphere_search.cpp" />
+    <ClCompile Include="..\..\src\probMethods\sphere_tasks.cpp" />
+    <ClCompile Include="..\..\src\probMethods\zmodel.cpp" />
+    <ClCompile Include="..\..\src\rnd\defaultRandomDouble.cpp" />
+    <ClCompile Include="..\..\src\rnd\george_marsaglia.cpp" />
+    <ClCompile Include="..\..\src\rnd\mersenne_twister.cpp" />
+    <ClCompile Include="..\..\src\rnd\randomForSampling.cpp" />
+    <ClCompile Include="..\..\src\rnd\rndDefs.cpp" />
+    <ClCompile Include="..\..\src\rootFinders\Anderson_Bjork.cpp" />
+    <ClCompile Include="..\..\src\rootFinders\bisection.cpp" />
+    <ClCompile Include="..\..\src\rootFinders\linear_loop.cpp" />
+    <ClCompile Include="..\..\src\rootFinders\regula_falsi.cpp" />
+    <ClCompile Include="..\..\src\rootFinders\root_finder.cpp" />
+    <ClCompile Include="..\..\src\utils\cholesky_decomp.cpp" />
+    <ClCompile Include="..\..\src\utils\matrix.cpp" />
+    <ClCompile Include="..\..\src\utils\probLibString.cpp" />
+    <ClCompile Include="..\..\src\utils\vector1D.cpp" />
+    <ClCompile Include="..\Deltares.Reliability.Wrapper\Deltares.Reliability.Wrapper.cpp" />
+    <ClCompile Include="AssemblyInfo.cpp" />
+    <ClCompile Include="ProlibCppDotNet.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="app.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="app.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\sources\Algorithms\Deltares.Mathematics\Deltares.Mathematics.csproj">
+      <Project>{1bbc78c4-9901-4771-a4ff-dd3cb5cd601f}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\sources\Algorithms\Deltares.Reliability\Deltares.Reliability.csproj">
+      <Project>{86a72f38-07af-4bef-ae72-1739181c17c0}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\sources\Algorithms\Deltares.Statistics\Deltares.Statistics.csproj">
+      <Project>{a9598e77-68a1-429b-b3cd-90ac9a28002d}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

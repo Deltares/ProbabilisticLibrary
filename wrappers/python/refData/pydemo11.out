@@ -1,0 +1,29 @@
+nr of stochast(s) is: 6
+   stochast 0: aa ; lognormal2: 120.000000 12.000000 0.000000 
+   stochast 1: bb ; lognormal2: 120.000000 12.000000 0.000000 
+   stochast 2: cc ; lognormal2: 120.000000 12.000000 0.000000 
+   stochast 3: dd ; lognormal2: 120.000000 12.000000 0.000000 
+   stochast 4: ee ; lognormal2: 50.000000 15.000000 0.000000 
+   stochast 5: ff ; lognormal2: 40.000000 12.000000 0.000000 
+settings:
+   methode        : ds
+   tol            : 0.05
+   min/max samples: 5000, 50000
+   seed           : gm, 1234, 1234
+   epsilonDu      : 0.001
+   progress each  : 1000 steps.
+no table/design
+nTimes, Pf = 1000, 0.0111795
+nTimes, Pf = 2000, 0.0123463
+nTimes, Pf = 3000, 0.011829
+nTimes, Pf = 4000, 0.0122274
+nTimes, Pf = 5000, 0.012843
+DS did converge. Needed 5776 step(s).
+beta =        2.237469; q = 0.0126278
+alpha and x values: 
+0       0.186086     114.172728 aa
+1       0.039111     118.285348 bb
+2       0.132950     115.642797 cc
+3       0.029296     118.565192 dd
+4      -0.909095      91.203243 ee
+5      -0.344754      48.914422 ff

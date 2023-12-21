@@ -1,0 +1,23 @@
+nr of stochast(s) is: 7
+   stochast 0: aa ; lognormal2: 120.000000 12.000000 0.000000 
+   stochast 1: bb ; lognormal2: 120.000000 12.000000 0.000000 
+   stochast 2: cc ; lognormal2: 120.000000 12.000000 0.000000 
+   stochast 3: dd ; lognormal2: 120.000000 12.000000 0.000000 
+   stochast 4: ee ; lognormal2: 50.000000 15.000000 0.000000 
+   stochast 5: ff ; lognormal2: 40.000000 12.000000 0.000000 
+   stochast 6: gg ; lognormal2: 40.000000 12.000000 0.000000 
+settings:
+   methode        : form
+   tol            : 0.001
+   startmethod    : zero
+no table/design
+FORM did converge. Needed 7 step(s).
+beta =        2.348189; q = 0.00943246
+alpha and x values: 
+0       0.077460     117.257540 aa
+1       0.151862     115.231722 bb
+2       0.151862     115.231722 cc
+3       0.077460     117.257540 dd
+4      -0.806576      83.507424 ee
+5      -0.539732      55.581309 ff
+6       0.000000      38.313051 gg
