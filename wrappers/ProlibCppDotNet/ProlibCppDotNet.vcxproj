@@ -219,13 +219,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\sources\Algorithms\Deltares.Mathematics\Deltares.Mathematics.csproj">
+    <ProjectReference Include="..\..\..\Algorithms\Deltares.Mathematics\Deltares.Mathematics.csproj">
       <Project>{1bbc78c4-9901-4771-a4ff-dd3cb5cd601f}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\sources\Algorithms\Deltares.Reliability\Deltares.Reliability.csproj">
+    <ProjectReference Include="..\..\..\Algorithms\Deltares.Reliability\Deltares.Reliability.csproj">
       <Project>{86a72f38-07af-4bef-ae72-1739181c17c0}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\sources\Algorithms\Deltares.Statistics\Deltares.Statistics.csproj">
+    <ProjectReference Include="..\..\..\Algorithms\Deltares.Statistics\Deltares.Statistics.csproj">
       <Project>{a9598e77-68a1-429b-b3cd-90ac9a28002d}</Project>
     </ProjectReference>
   </ItemGroup>
