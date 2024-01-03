@@ -2,36 +2,28 @@
 #include "StochastProperties.h"
 #include "Distribution.h"
 #include "DeterministicDistribution.h"
-#include "NormalDistribution.h"
 
-enum DistributionType { Deterministic, Normal };
+enum DistributionType { Deterministic, Normal, LogNormal, Uniform };
 
 class Stochast : StochastProperties
 {
 private:
 	DistributionType distributionType = DistributionType::Deterministic;
 
-	Distribution* distribution;
+	Distribution* distribution = new DeterministicDistribution();
 
 	bool inverted = false;
 
 	bool truncated = false;
 
-	void updateDistribution()
-	{
-		switch (this->distributionType) {
-		case DistributionType::Deterministic: this->distribution = new DeterministicDistribution(); break;
-		case DistributionType::Normal: this->distribution = new NormalDistribution(); break;
-		}
-	}
-
+	void updateDistribution();
 
 public:
 
 	Stochast(DistributionType distributionType, double* values)
 	{
 		setDistributionType(distributionType);
-		distribution->initialize(values);
+		distribution->initialize(this, values);
 	}
 
 	double getXFromU(double u)
@@ -70,6 +62,11 @@ public:
 	{
 		this->truncated = truncated;
 		updateDistribution();
+	}
+
+	bool isVarying()
+	{
+		return this->distribution->isVarying(this);
 	}
 
 	double getMean()

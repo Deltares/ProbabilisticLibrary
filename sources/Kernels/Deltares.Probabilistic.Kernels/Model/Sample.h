@@ -1,4 +1,8 @@
 #pragma once
+
+#include <cmath>
+#include <limits>
+
 class Sample
 {
 private:
@@ -6,8 +10,10 @@ private:
 public:
 	Sample() {};
 
-	Sample(int size) {
+	Sample(int size)
+	{
 		Values = new double[size];
+
 		for (int i = 0; i < size; i++) {
 			Values[i] = 0;
 		}
@@ -16,5 +22,11 @@ public:
 	double* Values;
 
 	int IterationIndex = -1;
+
+	double Weight = 1;
+
+	bool AllowProxy = true;
+
+	double Z = std::numeric_limits<double>::quiet_NaN();
 };
 

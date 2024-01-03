@@ -18,6 +18,17 @@
     <ClCompile Include="Statistics\StandardNormal.cpp">
       <Filter>Statistics</Filter>
     </ClCompile>
+    <ClCompile Include="Model\Sample.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Model\UConverter.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Model\ZModelRunner.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Statistics\Stochast.cpp" />
+    <ClCompile Include="Model\ZModel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -46,6 +57,16 @@
     <ClInclude Include="Statistics\StandardNormal.h">
       <Filter>Statistics</Filter>
     </ClInclude>
+    <ClInclude Include="Model\Sample.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\UConverter.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\ZModelRunner.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\ZModel.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">
