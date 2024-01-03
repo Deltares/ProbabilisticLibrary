@@ -145,6 +145,11 @@
     <ClInclude Include="Model\ZModel.h" />
     <ClInclude Include="Model\ZModelRunner.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="Reliability\CrudeMonteCarlo.h" />
+    <ClInclude Include="Reliability\CrudeMonteCarloSettings.h" />
+    <ClInclude Include="Reliability\DesignPoint.h" />
+    <ClInclude Include="Reliability\Reliability.h" />
+    <ClInclude Include="Reliability\ReliabilityMethod.h" />
     <ClInclude Include="Statistics\DeterministicDistribution.h" />
     <ClInclude Include="Statistics\Distribution.h" />
     <ClInclude Include="Statistics\LogNormalDistribution.h" />
@@ -166,6 +171,11 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Reliability\CrudeMonteCarlo.cpp" />
+    <ClCompile Include="Reliability\CrudeMonteCarloSettings.cpp" />
+    <ClCompile Include="Reliability\DesignPoint.cpp" />
+    <ClCompile Include="Reliability\Reliability.cpp" />
+    <ClCompile Include="Reliability\ReliabilityMethod.cpp" />
     <ClCompile Include="Statistics\DeterministicDistribution.cpp" />
     <ClCompile Include="Statistics\LogNormalDistribution.cpp" />
     <ClCompile Include="Statistics\NormalDistribution.cpp" />

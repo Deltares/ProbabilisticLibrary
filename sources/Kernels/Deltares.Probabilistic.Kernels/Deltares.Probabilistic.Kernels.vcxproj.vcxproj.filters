@@ -29,6 +29,11 @@
     </ClCompile>
     <ClCompile Include="Statistics\Stochast.cpp" />
     <ClCompile Include="Model\ZModel.cpp" />
+    <ClCompile Include="Reliability\CrudeMonteCarlo.cpp" />
+    <ClCompile Include="Reliability\CrudeMonteCarloSettings.cpp" />
+    <ClCompile Include="Reliability\DesignPoint.cpp" />
+    <ClCompile Include="Reliability\Reliability.cpp" />
+    <ClCompile Include="Reliability\ReliabilityMethod.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -67,6 +72,11 @@
       <Filter>Model</Filter>
     </ClInclude>
     <ClInclude Include="Model\ZModel.h" />
+    <ClInclude Include="Reliability\CrudeMonteCarlo.h" />
+    <ClInclude Include="Reliability\CrudeMonteCarloSettings.h" />
+    <ClInclude Include="Reliability\DesignPoint.h" />
+    <ClInclude Include="Reliability\Reliability.h" />
+    <ClInclude Include="Reliability\ReliabilityMethod.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">
