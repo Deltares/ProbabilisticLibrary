@@ -86,6 +86,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies />
+      <TargetMachine>MachineX64</TargetMachine>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
