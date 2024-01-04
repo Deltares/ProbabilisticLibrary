@@ -9,7 +9,7 @@ void UConverter::initializeForRun()
 
 	for (int i = 0; i < this->stochasts.size(); i++)
 	{
-		if (this->stochasts[i].isVarying()) 
+		if (this->stochasts[i]->isVarying()) 
 		{
 			this->varyingStochastIndex.push_back(this->varyingStochastIndex.size());
 			this->varyingStochasts.push_back(this->stochasts[i]);
@@ -20,6 +20,12 @@ void UConverter::initializeForRun()
 		}
 	}
 }
+
+int UConverter::getVaryingStochastCount()
+{
+	return this->varyingStochasts.size();
+}
+
 
 double* UConverter::getExpandedUValues(double* values)
 {
@@ -42,15 +48,15 @@ double* UConverter::getExpandedUValues(double* values)
 }
 
 
-double* UConverter::getXValues(Sample sample)
+double* UConverter::getXValues(Sample* sample)
 {
-	double* expandedUValues = getExpandedUValues(sample.Values);
+	double* expandedUValues = getExpandedUValues(sample->Values);
 
 	double* xValues = new double[this->stochasts.size()];
 
 	for (int i = 0; i < this->stochasts.size(); i++)
 	{
-		xValues[i] = this->stochasts[i].getXFromU(expandedUValues[i]);
+		xValues[i] = this->stochasts[i]->getXFromU(expandedUValues[i]);
 	}
 
 	delete[] expandedUValues;

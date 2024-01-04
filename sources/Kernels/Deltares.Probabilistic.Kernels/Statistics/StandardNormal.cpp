@@ -1,6 +1,9 @@
 #include <pch.h>
 #include "StandardNormal.h"
 #include <cmath>
+#include <limits>
+
+double StandardNormal::BetaMax = 40;
 
 void StandardNormal::normp(const double z, double& p, double& q, double& pdf)
 
@@ -141,4 +144,206 @@ double StandardNormal::getPFromU(double u)
 
     return p;
 }
+
+double StandardNormal::getQFromU(double u)
+{
+    double p = 0; double q = 0; double pdf = 0;
+
+    normp(u, p, q, pdf);
+
+    return q;
+}
+
+double StandardNormal::getUFromQ(const double q)
+{
+    if (isnan(q))
+    {
+        return std::numeric_limits<double>::quiet_NaN();
+    }
+    else if (q <= 0)
+    {
+        return BetaMax;
+    }
+    else if (q >= 1)
+    {
+        return -BetaMax;
+    }
+    else if (q == 0.5)
+    {
+        return 0;
+    }
+
+    double margin = 0.00000001;
+
+    if (abs(q - 0.5) < margin)
+    {
+        // The most simple situation is the case where the probability of exceeding
+        // is equal to 0.5. Then the reliability index (beta) is equal to zero
+        return 0;
+    }
+
+    // The standard normal distribution is symmetric around the value zero.
+    // So it is sufficient to consider the probability of exceeding between
+    // 0 and 0.5. Probabilities of exceeding above 0.5 are transformed to values
+    // between 0 and 0.5 by q = 1 - q
+    double qsr = q > 0.5 ? 1 - q : q;
+    qsr = max(qsr, 1.0E-300);
+
+    // Initial estimate for the reliability index (beta). Two approximations are used
+    // One approximation is used for values between 0 and 0.15. The other one is used
+    // for values between 0.15 and 0.5
+    double beta;
+    if (qsr < 0.15)
+    {
+        beta = sqrt(-2.0 * log(5 * qsr));
+    }
+    else
+    {
+        beta = 1.464795 - 2.929590 * qsr;
+    }
+
+    // The initial estimate for the reliability index gives a probability of exceeding
+    // Compare this value with the input value. This makes clear that the initial
+    // estimate has to be adjusted.
+    // There are two possibilities: The initial estimate is too low or it is too high
+    // Using linear interpolation the correct beta will be computed.
+    // For this linear interpolation the initial estimate is used as a lower bound or
+    // upper bound
+    const double increment = 0.1;
+    int branch = 1;
+    double beta1 = 0;
+    double beta2 = 0;
+    double q1 = 0;
+    double q2 = 0;
+
+    double prob = getQFromU(beta);
+    if (prob > qsr)
+    {
+        // The initial estimate is the lower bound for the linear interpolation
+        branch = 1;
+        beta1 = beta;
+        q1 = prob;
+        beta = beta + increment;
+    }
+    else
+    {
+        // The initial estimate is the upper bound for the linear interpolation
+        branch = 2;
+        beta2 = beta;
+        q2 = prob;
+        beta = beta - increment;
+    }
+
+    // If the initial estimate is the lower bound, compute the upper bound
+    // If the initial estimate is the upper bound, compute the lower bound
+    // In this procedure it is possible that the lower bound is adjusted despite
+    // the initial estimate is the lower bound. Even so it is possible that
+    // the upper bound is adjusted despite the initial estimate is the upper bound.
+    bool proceed = true;
+    while (proceed)
+    {
+        prob = getQFromU(beta);
+        if (prob > qsr)
+        {
+            // The lower bound for the linear interpolation is initialized or
+            // this lower bound is adjusted
+            beta1 = beta;
+            q1 = prob;
+            if (branch == 2)
+            {
+                proceed = false;
+            }
+            else
+            {
+                beta = beta + increment;
+            }
+        }
+        else
+        {
+            // The upper bound for the linear interpolation is initialized or
+            // this upper bound is adjusted
+            beta2 = beta;
+            q2 = prob;
+            if (branch == 1)
+            {
+                proceed = false;
+            }
+            else
+            {
+                beta = beta - increment;
+            }
+        }
+    }
+
+    const int kMax = 25; // maximum for iteration-loop
+
+    // The beta is adjusted using linear interpolation
+    for (int k = 1; k <= 2 * kMax; k++)
+    {
+        // The iteration process can stop if the probability of exceeding of the
+        // computed beta is close enough to the probability of exceeding from the input
+        if (prob == qsr)
+        {
+            if (q > 0.5)
+            {
+                beta = -beta;
+            }
+
+            return beta;
+        }
+
+        if (k > kMax)
+        {
+            // The beta is computed in an iteration process.
+            // If after several iteration steps the computed beta does not have a probability
+            // of exceeding that is "close enough" to the input probability of exceeding the margin is adjusted
+            margin = 10 * margin;
+            // margin should be less than 1.0E-8; // Maximum for the margin
+        }
+
+        // The iteration process can stop if the interpolation interval is marginal
+        double dq = q1 - q2;
+        if (dq < 0)
+        {
+            dq = -dq;
+        }
+
+        if (dq < margin)
+        {
+            if (q > 0.5)
+            {
+                beta = -beta;
+            }
+
+            return beta;
+        }
+
+        // Compute a new value for beta using linear interpolation
+        beta = beta1 + (q1 - qsr) / (q1 - q2) * (beta2 - beta1);
+        prob = getQFromU(beta);
+
+        // Adjust one of the interpolation bounds
+        if (prob > qsr)
+        {
+            beta1 = beta;
+            q1 = prob;
+        }
+        else
+        {
+            beta2 = beta;
+            q2 = prob;
+        }
+    }
+
+    // If the probability of exceeding of the input is more than 0.5,
+    // the computed reliability index (beta) is adjusted by beta = -beta
+    if (q > 0.5)
+    {
+        beta = -beta;
+    }
+
+    return beta;
+}
+
+
 

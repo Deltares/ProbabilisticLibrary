@@ -31,9 +31,19 @@
     <ClCompile Include="Model\ZModel.cpp" />
     <ClCompile Include="Reliability\CrudeMonteCarlo.cpp" />
     <ClCompile Include="Reliability\CrudeMonteCarloSettings.cpp" />
-    <ClCompile Include="Reliability\DesignPoint.cpp" />
+    <ClCompile Include="Model\DesignPoint.cpp" />
     <ClCompile Include="Reliability\Reliability.cpp" />
     <ClCompile Include="Reliability\ReliabilityMethod.cpp" />
+    <ClCompile Include="Model\RandomSettings.cpp" />
+    <ClCompile Include="Model\RunSettings.cpp" />
+    <ClCompile Include="Model\StochastPoint.cpp" />
+    <ClCompile Include="Model\StochastPointAlpha.cpp" />
+    <ClCompile Include="Model\ConvergenceReport.cpp" />
+    <ClCompile Include="Model\ReliabilityResult.cpp" />
+    <ClCompile Include="Reliability\DesignPointBuilder.cpp" />
+    <ClCompile Include="Math\NumericSupport.cpp" />
+    <ClCompile Include="Model\ReliabilityReport.cpp" />
+    <ClCompile Include="Model\RandomGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -74,9 +84,19 @@
     <ClInclude Include="Model\ZModel.h" />
     <ClInclude Include="Reliability\CrudeMonteCarlo.h" />
     <ClInclude Include="Reliability\CrudeMonteCarloSettings.h" />
-    <ClInclude Include="Reliability\DesignPoint.h" />
+    <ClInclude Include="Model\DesignPoint.h" />
     <ClInclude Include="Reliability\Reliability.h" />
     <ClInclude Include="Reliability\ReliabilityMethod.h" />
+    <ClInclude Include="Model\RandomSettings.h" />
+    <ClInclude Include="Model\RunSettings.h" />
+    <ClInclude Include="Model\StochastPoint.h" />
+    <ClInclude Include="Model\StochastPointAlpha.h" />
+    <ClInclude Include="Model\ConvergenceReport.h" />
+    <ClInclude Include="Model\ReliabilityResult.h" />
+    <ClInclude Include="Math\NumericSupport.h" />
+    <ClInclude Include="Reliability\DesignPointBuilder.h" />
+    <ClInclude Include="Model\ReliabilityReport.h" />
+    <ClInclude Include="Model\RandomGenerator.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

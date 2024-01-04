@@ -9,8 +9,8 @@
 class UConverter
 {
 private:
-	std::vector<Stochast> stochasts;
-	std::vector<Stochast> varyingStochasts;
+	std::vector<Stochast*> stochasts;
+	std::vector<Stochast*> varyingStochasts;
 	std::vector<int> varyingStochastIndex;
 
 	double* getExpandedUValues(double* values);
@@ -21,7 +21,7 @@ public:
 	{
 	}
 
-	UConverter(std::vector<Stochast> stochasts)
+	UConverter(std::vector<Stochast*> stochasts)
 	{
 		this->stochasts.clear();
 
@@ -33,6 +33,8 @@ public:
 
 	void initializeForRun();
 
-	double* getXValues(Sample sample);
+	double* getXValues(Sample* sample);
+
+	int getVaryingStochastCount();
 };
 

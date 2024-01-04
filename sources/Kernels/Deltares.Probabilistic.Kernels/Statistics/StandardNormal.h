@@ -6,5 +6,8 @@ private:
 
 public:
 	static double getPFromU(double u);
+	static double getQFromU(double u);
+	static double getUFromQ(double u);
+	static double BetaMax;
 };
 

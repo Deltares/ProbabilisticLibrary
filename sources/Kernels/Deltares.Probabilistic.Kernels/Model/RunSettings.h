@@ -1,0 +1,11 @@
+#pragma once
+class RunSettings
+{
+public:
+    int MaxParallelProcesses = 1;
+    int MaxChunkSize = 16;
+    bool SaveEvaluations = false;
+    bool SaveConvergence = false;
+    bool SaveMessages = false;
+};
+

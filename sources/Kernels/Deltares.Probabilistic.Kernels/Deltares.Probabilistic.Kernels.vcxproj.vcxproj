@@ -140,16 +140,26 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
+    <ClInclude Include="Math\NumericSupport.h" />
+    <ClInclude Include="Model\RandomSettings.h" />
+    <ClInclude Include="Model\RunSettings.h" />
     <ClInclude Include="Model\Sample.h" />
+    <ClInclude Include="Model\StochastPoint.h" />
+    <ClInclude Include="Model\StochastPointAlpha.h" />
     <ClInclude Include="Model\UConverter.h" />
     <ClInclude Include="Model\ZModel.h" />
     <ClInclude Include="Model\ZModelRunner.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="Model\ReliabilityReport.h" />
+    <ClInclude Include="Model\RandomGenerator.h" />
+    <ClInclude Include="Model\ConvergenceReport.h" />
     <ClInclude Include="Reliability\CrudeMonteCarlo.h" />
     <ClInclude Include="Reliability\CrudeMonteCarloSettings.h" />
-    <ClInclude Include="Reliability\DesignPoint.h" />
+    <ClInclude Include="Model\DesignPoint.h" />
+    <ClInclude Include="Reliability\DesignPointBuilder.h" />
     <ClInclude Include="Reliability\Reliability.h" />
     <ClInclude Include="Reliability\ReliabilityMethod.h" />
+    <ClInclude Include="Model\ReliabilityResult.h" />
     <ClInclude Include="Statistics\DeterministicDistribution.h" />
     <ClInclude Include="Statistics\Distribution.h" />
     <ClInclude Include="Statistics\LogNormalDistribution.h" />
@@ -161,7 +171,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="Math\NumericSupport.cpp" />
+    <ClCompile Include="Model\RandomSettings.cpp" />
+    <ClCompile Include="Model\RunSettings.cpp" />
     <ClCompile Include="Model\Sample.cpp" />
+    <ClCompile Include="Model\StochastPoint.cpp" />
+    <ClCompile Include="Model\StochastPointAlpha.cpp" />
     <ClCompile Include="Model\UConverter.cpp" />
     <ClCompile Include="Model\ZModel.cpp" />
     <ClCompile Include="Model\ZModelRunner.cpp" />
@@ -171,11 +186,16 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Model\ReliabilityReport.cpp" />
+    <ClCompile Include="Model\RandomGenerator.cpp" />
+    <ClCompile Include="Model\ConvergenceReport.cpp" />
     <ClCompile Include="Reliability\CrudeMonteCarlo.cpp" />
     <ClCompile Include="Reliability\CrudeMonteCarloSettings.cpp" />
-    <ClCompile Include="Reliability\DesignPoint.cpp" />
+    <ClCompile Include="Model\DesignPoint.cpp" />
+    <ClCompile Include="Reliability\DesignPointBuilder.cpp" />
     <ClCompile Include="Reliability\Reliability.cpp" />
     <ClCompile Include="Reliability\ReliabilityMethod.cpp" />
+    <ClCompile Include="Model\ReliabilityResult.cpp" />
     <ClCompile Include="Statistics\DeterministicDistribution.cpp" />
     <ClCompile Include="Statistics\LogNormalDistribution.cpp" />
     <ClCompile Include="Statistics\NormalDistribution.cpp" />

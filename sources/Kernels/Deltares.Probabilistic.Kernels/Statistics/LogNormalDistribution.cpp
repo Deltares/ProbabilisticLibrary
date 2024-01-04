@@ -11,17 +11,7 @@ void LogNormalDistribution::setMeanAndDeviation(StochastProperties* stochast, do
 
 void LogNormalDistribution::initialize(StochastProperties* stochast, double* values)
 {
-	int size = sizeof(values) / sizeof(double);
-
-	if (size > 2)
-	{
-		stochast->Shift = values[2];
-	}
-	else
-	{
-		stochast->Shift = 0;
-	}
-
+	stochast->Shift = values[2];
 	setMeanAndDeviation(stochast, values[0], values[1]);
 }
 
