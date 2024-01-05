@@ -18,4 +18,78 @@ void Stochast::updateDistribution()
 	}
 }
 
+Stochast::Stochast() {};
+
+Stochast::Stochast(DistributionType distributionType, double* values)
+{
+	setDistributionType(distributionType);
+	distribution->initialize(this, values);
+}
+
+double Stochast::getXFromU(double u)
+{
+	return this->distribution->getXFromU(this, u);
+}
+
+void Stochast::setDistributionType(DistributionType distributionType)
+{
+	this->distributionType = distributionType;
+	Stochast::updateDistribution();
+}
+
+DistributionType Stochast::getDistributionType()
+{
+	return this->distributionType;
+}
+
+bool Stochast::isInverted()
+{
+	return inverted;
+}
+
+void Stochast::setInverted(bool inverted)
+{
+	this->inverted = inverted;
+	updateDistribution();
+}
+
+bool Stochast::isTruncated()
+{
+	return truncated;
+}
+
+void Stochast::setTruncated(bool truncated)
+{
+	this->truncated = truncated;
+	updateDistribution();
+}
+
+bool Stochast::isVarying()
+{
+	return this->distribution->isVarying(this);
+}
+
+double Stochast::getMean()
+{
+	return distribution->getMean(this);
+}
+
+void Stochast::setMean(double mean)
+{
+	double deviation = distribution->getDeviation(this);
+	distribution->setMeanAndDeviation(this, mean, deviation);
+}
+
+double Stochast::getDeviation()
+{
+	return distribution->getDeviation(this);
+}
+
+void Stochast::setDeviation(double deviation)
+{
+	double mean = distribution->getMean(this);
+	distribution->setMeanAndDeviation(this, mean, deviation);
+}
+
+
 

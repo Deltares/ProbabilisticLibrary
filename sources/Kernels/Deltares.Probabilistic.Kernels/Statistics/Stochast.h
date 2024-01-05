@@ -5,7 +5,7 @@
 
 enum DistributionType { Deterministic, Normal, LogNormal, Uniform };
 
-class Stochast : StochastProperties
+class Stochast : public StochastProperties
 {
 private:
 	DistributionType distributionType = DistributionType::Deterministic;
@@ -20,75 +20,26 @@ private:
 
 public:
 
-	Stochast(DistributionType distributionType, double* values)
-	{
-		setDistributionType(distributionType);
-		distribution->initialize(this, values);
-	}
+	Stochast();
+	Stochast(DistributionType distributionType, double* values);
 
-	double getXFromU(double u)
-	{
-		return distribution->getXFromU(this, u);
-	}
+	double getXFromU(double u);
 
-	void setDistributionType(DistributionType distributionType)
-	{
-		this->distributionType = distributionType;
-		updateDistribution();
-	}
+	void setDistributionType(DistributionType distributionType);
+	DistributionType getDistributionType();
 
-	DistributionType getDistributionType()
-	{
-		return this->distributionType;
-	}
+	bool isInverted();
+	void setInverted(bool inverted);
 
-	bool isInverted()
-	{
-		return inverted;
-	}
+	bool isTruncated();
+	void setTruncated(bool truncated);
 
-	void setInverted(bool inverted)
-	{
-		this->inverted = inverted;
-		updateDistribution();
-	}
+	bool isVarying();
 
-	bool isTruncated()
-	{
-		return truncated;
-	}
+	double getMean();
+	void setMean(double mean);
 
-	void setTruncated(bool truncated)
-	{
-		this->truncated = truncated;
-		updateDistribution();
-	}
-
-	bool isVarying()
-	{
-		return this->distribution->isVarying(this);
-	}
-
-	double getMean()
-	{
-		return distribution->getMean(this);
-	}
-
-	void setMean(double mean)
-	{
-		double deviation = distribution->getDeviation(this);
-		distribution->setMeanAndDeviation(this, mean, deviation);
-	}
-
-	double getDeviation()
-	{
-		return distribution->getDeviation(this);
-	}
-
-	void setDeviation(double deviation)
-	{
-		double mean = distribution->getMean(this);
-		distribution->setMeanAndDeviation(this, mean, deviation);
-	}
+	double getDeviation();
+	void setDeviation(double deviation);
 };
 

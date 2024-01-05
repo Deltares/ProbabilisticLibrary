@@ -45,6 +45,10 @@
     <ClCompile Include="Model\ReliabilityReport.cpp" />
     <ClCompile Include="Model\RandomGenerator.cpp" />
     <ClCompile Include="Statistics\CorrelationMatrix.cpp" />
+    <ClCompile Include="Wrappers\StochastWrapper.cpp" />
+    <ClCompile Include="Wrappers\ReliabilityWrapper.cpp" />
+    <ClCompile Include="Wrappers\CrudeMonteCarloSettingsWrapper.cpp" />
+    <ClCompile Include="Wrappers\RunSettingsWrapper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -99,6 +103,10 @@
     <ClInclude Include="Model\ReliabilityReport.h" />
     <ClInclude Include="Model\RandomGenerator.h" />
     <ClInclude Include="Statistics\CorrelationMatrix.h" />
+    <ClInclude Include="Wrappers\StochastWrapper.h" />
+    <ClInclude Include="Wrappers\ReliabilityWrapper.h" />
+    <ClInclude Include="Wrappers\CrudeMonteCarloSettingsWrapper.h" />
+    <ClInclude Include="Wrappers\RunSettingsWrapper.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

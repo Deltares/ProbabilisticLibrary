@@ -24,6 +24,7 @@
     <ProjectGuid>{2b0a0389-b9b2-40f3-a674-b5b391b25a26}</ProjectGuid>
     <RootNamespace>DeltaresStatisticsKernels</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ManagedAssembly>true</ManagedAssembly>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -112,6 +113,11 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <CompileAsManaged>true</CompileAsManaged>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -139,6 +145,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Wrappers\CrudeMonteCarloSettingsWrapper.h" />
+    <ClInclude Include="Wrappers\ReliabilityWrapper.h" />
+    <ClInclude Include="Wrappers\RunSettingsWrapper.h" />
     <ClInclude Include="Statistics\CorrelationMatrix.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Math\NumericSupport.h" />
@@ -169,8 +178,12 @@
     <ClInclude Include="Statistics\Stochast.h" />
     <ClInclude Include="Statistics\StochastProperties.h" />
     <ClInclude Include="Statistics\UniformDistribution.h" />
+    <ClInclude Include="Wrappers\StochastWrapper.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Wrappers\CrudeMonteCarloSettingsWrapper.cpp" />
+    <ClCompile Include="Wrappers\ReliabilityWrapper.cpp" />
+    <ClCompile Include="Wrappers\RunSettingsWrapper.cpp" />
     <ClCompile Include="Statistics\CorrelationMatrix.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="Math\NumericSupport.cpp" />
@@ -204,6 +217,7 @@
     <ClCompile Include="Statistics\StandardNormal.cpp" />
     <ClCompile Include="Statistics\Stochast.cpp" />
     <ClCompile Include="Statistics\UniformDistribution.cpp" />
+    <ClCompile Include="Wrappers\StochastWrapper.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
