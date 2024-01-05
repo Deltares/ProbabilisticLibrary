@@ -1,5 +1,23 @@
 #pragma once
-class ReliabilityMethodWrapper
+#include "../Reliability/ReliabilityMethod.h"
+
+namespace Deltares
 {
-};
+	namespace Probabilistic
+	{
+		namespace Kernels
+		{
+			public ref class ReliabilityMethodWrapper
+			{
+			public:
+				ReliabilityMethodWrapper() {  }
+
+				virtual ReliabilityMethod* GetReliabilityMethod()
+				{
+					return nullptr;
+				};
+			};
+		}
+	}
+}
 
