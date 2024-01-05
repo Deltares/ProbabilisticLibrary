@@ -145,6 +145,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Wrappers\RandomSettingsWrapper.h" />
+    <ClInclude Include="Wrappers\CorrelationMatrixWrapper.h" />
+    <ClInclude Include="Wrappers\CrudeMonteCarloWrapper.h" />
+    <ClInclude Include="Wrappers\ReliabilityMethodWrapper.h" />
     <ClInclude Include="Wrappers\CrudeMonteCarloSettingsWrapper.h" />
     <ClInclude Include="Wrappers\ReliabilityWrapper.h" />
     <ClInclude Include="Wrappers\RunSettingsWrapper.h" />
@@ -181,6 +185,10 @@
     <ClInclude Include="Wrappers\StochastWrapper.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Wrappers\RandomSettingsWrapper.cpp" />
+    <ClCompile Include="Wrappers\CorrelationMatrixWrapper.cpp" />
+    <ClCompile Include="Wrappers\CrudeMonteCarloWrapper.cpp" />
+    <ClCompile Include="Wrappers\ReliabilityMethodWrapper.cpp" />
     <ClCompile Include="Wrappers\CrudeMonteCarloSettingsWrapper.cpp" />
     <ClCompile Include="Wrappers\ReliabilityWrapper.cpp" />
     <ClCompile Include="Wrappers\RunSettingsWrapper.cpp" />
