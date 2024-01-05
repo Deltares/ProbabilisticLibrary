@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Statistics\CorrelationMatrix.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Math\NumericSupport.h" />
     <ClInclude Include="Model\RandomSettings.h" />
@@ -170,6 +171,7 @@
     <ClInclude Include="Statistics\UniformDistribution.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Statistics\CorrelationMatrix.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="Math\NumericSupport.cpp" />
     <ClCompile Include="Model\RandomSettings.cpp" />

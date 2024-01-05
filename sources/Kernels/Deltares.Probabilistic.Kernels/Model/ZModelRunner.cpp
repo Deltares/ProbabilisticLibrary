@@ -4,14 +4,14 @@
 
 int ZModelRunner::getVaryingStochastCount()
 {
-	return this->uConverter.getVaryingStochastCount();
+	return this->uConverter->getVaryingStochastCount();
 }
 
 double ZModelRunner::getZValue(Sample* sample)
 {
-	double* xValues = this->uConverter.getXValues(sample);
+	double* xValues = this->uConverter->getXValues(sample);
 
-	sample->Z = this->zModel.getZValue(xValues);
+	sample->Z = this->zModel->getZValue(xValues);
 
 	delete[] xValues;
 
@@ -85,24 +85,34 @@ void ZModelRunner::reportResult(ReliabilityReport* report)
 	//}
 }
 
-DesignPoint* getRealization(double beta, double* alpha, ConvergenceReport* convergenceReport = nullptr, int scenarioIndex = -1, std::string identifier = "")
+DesignPoint* ZModelRunner::getRealization(double beta, double* alpha, ConvergenceReport* convergenceReport, int scenarioIndex, std::string identifier)
 {
-	//var stochastPoint = GetStochastPoint(beta, alpha);
+	int count = getVaryingStochastCount();
 
-	//DesignPoint* realization = new DesignPoint(stochastPoint)
-	//{
-	//	Identifier = identifier,
-	//	ScenarioIndex = scenarioIndex,
-	//	ConvergenceReport = convergenceReport ? ? new ConvergenceReport()
-	//};
+	StochastPoint* stochast_point = uConverter->GetStochastPoint(beta, alpha, count);
 
-	//realization->reliabilityResults.AddRange(ReliabilityResults);
+	DesignPoint* design_point = new DesignPoint();
+
+	design_point->Beta = stochast_point->Beta;
+
+	for (int i = 0; i < stochast_point->Alphas.size(); i++)
+	{
+		design_point->Alphas.push_back(stochast_point->Alphas[i]);
+	}
+
+	design_point->Identifier = identifier;
+	design_point->ScenarioIndex = scenarioIndex;
+	design_point->ConvergenceReport = convergenceReport;
+
+	for (int i = 0; i < this->reliabilityResults.size(); i++)
+	{
+		design_point->ReliabililityResults.push_back(this->reliabilityResults[i]);
+	}
+
 	//realization.Evaluations.AddRange(Evaluations);
 	//realization.Messages.AddRange(Messages);
 
-	DesignPoint* realization = new DesignPoint();
-
-	return realization;
+	return design_point;
 }
 
 

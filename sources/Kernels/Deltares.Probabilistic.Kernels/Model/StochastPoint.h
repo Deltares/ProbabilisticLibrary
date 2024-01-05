@@ -8,6 +8,6 @@ class StochastPoint
 {
 public:
 	double Beta;
-	std::vector<StochastPointAlpha> Alphas;
+	std::vector<StochastPointAlpha*> Alphas;
 };
 

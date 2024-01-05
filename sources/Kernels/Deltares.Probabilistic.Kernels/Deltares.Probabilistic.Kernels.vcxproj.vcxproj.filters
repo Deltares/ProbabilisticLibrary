@@ -44,6 +44,7 @@
     <ClCompile Include="Math\NumericSupport.cpp" />
     <ClCompile Include="Model\ReliabilityReport.cpp" />
     <ClCompile Include="Model\RandomGenerator.cpp" />
+    <ClCompile Include="Statistics\CorrelationMatrix.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -97,6 +98,7 @@
     <ClInclude Include="Reliability\DesignPointBuilder.h" />
     <ClInclude Include="Model\ReliabilityReport.h" />
     <ClInclude Include="Model\RandomGenerator.h" />
+    <ClInclude Include="Statistics\CorrelationMatrix.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

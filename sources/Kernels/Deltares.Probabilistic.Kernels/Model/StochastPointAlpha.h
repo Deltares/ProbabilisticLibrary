@@ -4,6 +4,7 @@
 
 class StochastPointAlpha
 {
+public:
     Stochast* Stochast = nullptr;
     double Alpha = 0;
     double AlphaCorrelated = 0;

@@ -68,7 +68,7 @@ DesignPoint* ReliabilityMethod::GetRealizationFromP(ZModelRunner* modelRunner, d
 
 		double* alfa = GetAlphas(u, u->getSize(), z0Fac);
 
-		return modelRunner->getRealization(beta, alfa, convergenceReport, u->ScenarioIndex, "");
+		return modelRunner->getRealization(beta, alfa, convergenceReport, u->ScenarioIndex);
 	}
 	else
 	{

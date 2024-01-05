@@ -1,6 +1,20 @@
 #include "pch.h"
 #include "UConverter.h"
 #include "../Statistics/Stochast.h"
+#include "../Statistics/CorrelationMatrix.h"
+
+UConverter::UConverter(std::vector<Stochast*> stochasts, CorrelationMatrix* correlationMatrix)
+{
+	this->stochasts.clear();
+
+	for (int i = 0; i < stochasts.size(); i++)
+	{
+		this->stochasts.push_back(stochasts[i]);
+	}
+
+	this->correlationMatrix = correlationMatrix;
+}
+
 
 void UConverter::initializeForRun()
 {
@@ -9,7 +23,7 @@ void UConverter::initializeForRun()
 
 	for (int i = 0; i < this->stochasts.size(); i++)
 	{
-		if (this->stochasts[i]->isVarying()) 
+		if (this->stochasts[i]->isVarying())
 		{
 			this->varyingStochastIndex.push_back(this->varyingStochastIndex.size());
 			this->varyingStochasts.push_back(this->stochasts[i]);
@@ -19,13 +33,14 @@ void UConverter::initializeForRun()
 			this->varyingStochastIndex.push_back(-1);
 		}
 	}
+
+	varyingCorrelationMatrix = new CorrelationMatrix();
 }
 
 int UConverter::getVaryingStochastCount()
 {
 	return this->varyingStochasts.size();
 }
-
 
 double* UConverter::getExpandedUValues(double* values)
 {
@@ -63,4 +78,57 @@ double* UConverter::getXValues(Sample* sample)
 
 	return xValues;
 }
+
+StochastPoint* UConverter::GetStochastPoint(double beta, double* alphas, int count)
+{
+	StochastPoint* realization = new StochastPoint();
+	realization->Beta = beta;
+
+	if (count > 0)
+	{
+		double* uValues = new double[count];
+		for (int i = 0; i < count; i++)
+		{
+			uValues[i] = -beta * alphas[i];
+		}
+
+		double* uCorrelated = varyingCorrelationMatrix->Cholesky(uValues, count);
+
+		double* alphaCorrelated = new double[count];
+		for (int i = 0; i < count; i++)
+		{
+			alphaCorrelated[i] = -uCorrelated[i] / beta;
+		}
+
+		if (this->varyingStochasts.size() < this->stochasts.size())
+		{
+			uValues = getExpandedUValues(uValues);
+			alphas = getExpandedUValues(alphas);
+			uCorrelated = getExpandedUValues(uCorrelated);
+			alphaCorrelated = getExpandedUValues(alphaCorrelated);
+		}
+
+		//HashSet<StochastPointAlpha> hasDerivedValues = new HashSet<StochastPointAlpha>();
+
+		for (int i = 0; i < this->stochasts.size(); i++)
+		{
+			StochastPointAlpha* alpha = new StochastPointAlpha();
+			alpha->Stochast = this->stochasts[i];
+			alpha->Alpha = alphas[i];
+			alpha->AlphaCorrelated = alphaCorrelated[i];
+			alpha->U = uValues[i];
+			alpha->X = stochasts[i]->getXFromU(uCorrelated[i]);
+
+			realization->Alphas.push_back(alpha);
+
+			//if (stochasts[i].GetStochast() is RealizedStochast)
+			//{
+			//	hasDerivedValues.Add(stochastRealization);
+			//}
+		}
+	}
+
+	return realization;
+}
+
 

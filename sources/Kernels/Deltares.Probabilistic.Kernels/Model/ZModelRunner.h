@@ -14,13 +14,13 @@
 class ZModelRunner
 {
 private:
-	ZModel zModel;
-	UConverter uConverter;
+	ZModel* zModel;
+	UConverter* uConverter;
 	RunSettings* RunSettings = new ::RunSettings();
 	std::vector<ReliabilityResult*> reliabilityResults;
 
 public:
-	ZModelRunner(ZModel zModel, UConverter uConverter)
+	ZModelRunner(ZModel* zModel, UConverter* uConverter)
 	{
 		this->zModel = zModel;
 		this->uConverter = uConverter;
