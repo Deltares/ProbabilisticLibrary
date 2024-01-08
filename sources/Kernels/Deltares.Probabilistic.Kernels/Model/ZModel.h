@@ -1,7 +1,7 @@
 #pragma once
 #include <limits>
 
-typedef double (*ZDelegate) (double*, int count);
+typedef double (__stdcall *ZDelegate) (double*, int count);
 
 double inline getDefaultZDelegate(double* values, int count)
 {
