@@ -9,6 +9,5 @@ namespace ASA {
         double r8_huge();
         double r8_normal_01_cdf_inverse(double p);
         double r8poly_value(int n, double a[], double x);
-        void timestamp();
     }
 }
