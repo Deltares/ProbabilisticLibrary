@@ -18,16 +18,16 @@ namespace Deltares
 				~RunSettingsWrapper() { this->!RunSettingsWrapper(); }
 				!RunSettingsWrapper() { delete m_settings; }
 
-				property double MaxChunkSize
+				property int MaxChunkSize
 				{
-					double get() { return m_settings->MaxChunkSize; }
-					void set(double value) { m_settings->MaxChunkSize = value; }
+					int get() { return m_settings->MaxChunkSize; }
+					void set(int value) { m_settings->MaxChunkSize = value; }
 				}
 
-				property double MaxParallelProcesses
+				property int MaxParallelProcesses
 				{
-					double get() { return m_settings->MaxParallelProcesses; }
-					void set(double value) { m_settings->MaxParallelProcesses = value; }
+					int get() { return m_settings->MaxParallelProcesses; }
+					void set(int value) { m_settings->MaxParallelProcesses = value; }
 				}
 
 				property bool SaveConvergence

@@ -24,7 +24,7 @@ public:
 		this->zDelegate = zDelegate;
 	}
 
-	double getZValue(double* values)
+	double invoke(double* values, int count)
 	{
 		return this->zDelegate(values);
 	}

@@ -53,6 +53,7 @@
     <ClCompile Include="Wrappers\CrudeMonteCarloWrapper.cpp" />
     <ClCompile Include="Wrappers\ReliabilityMethodWrapper.cpp" />
     <ClCompile Include="Wrappers\RandomSettingsWrapper.cpp" />
+    <ClCompile Include="Wrappers\FunctionWrapper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -115,6 +116,7 @@
     <ClInclude Include="Wrappers\CrudeMonteCarloWrapper.h" />
     <ClInclude Include="Wrappers\ReliabilityMethodWrapper.h" />
     <ClInclude Include="Wrappers\RandomSettingsWrapper.h" />
+    <ClInclude Include="Wrappers\FunctionWrapper.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

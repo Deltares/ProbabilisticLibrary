@@ -11,7 +11,7 @@ double ZModelRunner::getZValue(Sample* sample)
 {
 	double* xValues = this->uConverter->getXValues(sample);
 
-	sample->Z = this->zModel->getZValue(xValues);
+	sample->Z = this->zModel->invoke(xValues, sample->getSize());
 
 	delete[] xValues;
 
