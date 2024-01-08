@@ -14,12 +14,34 @@ namespace Deltares
 
 			public:
 				StochastWrapper() { m_stochast = new Stochast(); }
+				StochastWrapper(int distributionType, double* values)
+				{
+					m_stochast = new Stochast((DistributionType) distributionType, values);
+				}
 				~StochastWrapper() { this->!StochastWrapper(); }
 				!StochastWrapper() { delete m_stochast; }
 
 				Stochast* GetStochast()
 				{
 					return m_stochast;
+				}
+
+				property int Distribution
+				{
+					int get() { return m_stochast->getDistributionType(); }
+					void set(int value) { m_stochast->setDistributionType((DistributionType)value); }
+				}
+
+				property double Mean
+				{
+					double get() { return m_stochast->getMean(); }
+					void set(double value) { m_stochast->setMean(value); }
+				}
+
+				property double Deviation
+				{
+					double get() { return m_stochast->getDeviation(); }
+					void set(double value) { m_stochast->setDeviation(value); }
 				}
 
 				property double Location
