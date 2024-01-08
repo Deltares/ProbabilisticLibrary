@@ -118,6 +118,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <ExceptionHandling>Async</ExceptionHandling>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <AdditionalOptions>/Zc:twoPhase- %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -186,6 +187,7 @@
     <ClInclude Include="Wrappers\StochastWrapper.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\external\src\extern\asa241.cpp" />
     <ClCompile Include="Wrappers\FunctionWrapper.cpp" />
     <ClCompile Include="Wrappers\RandomSettingsWrapper.cpp" />
     <ClCompile Include="Wrappers\CorrelationMatrixWrapper.cpp" />
