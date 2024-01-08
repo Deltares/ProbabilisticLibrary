@@ -1,9 +1,9 @@
 #pragma once
 #include <limits>
 
-typedef double (*ZDelegate) (double*);
+typedef double (*ZDelegate) (double*, int count);
 
-double inline getDefaultZDelegate(double* values)
+double inline getDefaultZDelegate(double* values, int count)
 {
 	return std::numeric_limits<double>::quiet_NaN();
 }
@@ -26,7 +26,7 @@ public:
 
 	double invoke(double* values, int count)
 	{
-		return this->zDelegate(values);
+		return this->zDelegate(values, count);
 	}
 };
 
