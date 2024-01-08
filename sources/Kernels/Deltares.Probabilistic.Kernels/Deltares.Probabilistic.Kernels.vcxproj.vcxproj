@@ -146,6 +146,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Wrappers\ConvergenceReportWrapper.h" />
+    <ClInclude Include="Wrappers\ReliabilityResultWrapper.h" />
+    <ClInclude Include="Wrappers\DesignPointWrapper.h" />
+    <ClInclude Include="Wrappers\StochastPointAlphaWrapper.h" />
+    <ClInclude Include="Wrappers\StochastPointWrapper.h" />
     <ClInclude Include="Wrappers\FunctionWrapper.h" />
     <ClInclude Include="Wrappers\RandomSettingsWrapper.h" />
     <ClInclude Include="Wrappers\CorrelationMatrixWrapper.h" />
@@ -187,6 +192,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\external\src\extern\asa241.cpp" />
+    <ClCompile Include="Wrappers\ConvergenceReportWrapper.cpp" />
+    <ClCompile Include="Wrappers\ReliabilityResultWrapper.cpp" />
+    <ClCompile Include="Wrappers\DesignPointWrapper.cpp" />
+    <ClCompile Include="Wrappers\StochastPointAlphaWrapper.cpp" />
+    <ClCompile Include="Wrappers\StochastPointWrapper.cpp" />
     <ClCompile Include="Wrappers\FunctionWrapper.cpp" />
     <ClCompile Include="Wrappers\RandomSettingsWrapper.cpp" />
     <ClCompile Include="Wrappers\CorrelationMatrixWrapper.cpp" />
