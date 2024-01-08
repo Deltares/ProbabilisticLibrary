@@ -1,4 +1,3 @@
-#include <pch.h>
 #include "StandardNormal.h"
 #include <cmath>
 #include <limits>

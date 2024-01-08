@@ -1,4 +1,3 @@
-#include "pch.h"
 #include "UConverter.h"
 #include "../Statistics/Stochast.h"
 #include "../Statistics/CorrelationMatrix.h"

@@ -1,4 +1,3 @@
-#include "pch.h"
 #include "UniformDistribution.h"
 #include "StandardNormal.h"
 #include <cmath>
