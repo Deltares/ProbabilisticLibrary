@@ -1,4 +1,3 @@
-#include "pch.h"
 #include "NormalDistribution.h"
 #include "StochastProperties.h"
 

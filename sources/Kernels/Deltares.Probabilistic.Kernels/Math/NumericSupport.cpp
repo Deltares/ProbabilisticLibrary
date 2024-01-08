@@ -1,4 +1,3 @@
-#include "pch.h"
 #include "NumericSupport.h"
 
 #include <cmath>

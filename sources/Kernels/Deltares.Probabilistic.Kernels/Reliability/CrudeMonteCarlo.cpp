@@ -1,4 +1,3 @@
-#include "pch.h"
 #include "CrudeMonteCarlo.h"
 #include <iostream>
 #include <vector>
@@ -50,7 +49,7 @@ DesignPoint* CrudeMonteCarlo::GetReducedDesignPoint(ZModelRunner* modelRunner, d
 		{
 			samples.clear();
 			int chunkSize = Settings->RunSettings->MaxChunkSize;
-			int runs = min(chunkSize, Settings->MaximumSamples + 1 - sampleIndex);
+			int runs = std::min(chunkSize, Settings->MaximumSamples + 1 - sampleIndex);
 
 			if (initial)
 			{

@@ -1,4 +1,3 @@
-#include "pch.h"
 #include "DeterministicDistribution.h"
 #include "StochastProperties.h"
 

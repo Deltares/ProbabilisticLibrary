@@ -1,4 +1,3 @@
-#include "pch.h"
 #include "ReliabilityMethod.h"
 #include "../Statistics/StandardNormal.h"
 #include "../Model/DesignPoint.h"

@@ -1,4 +1,3 @@
-#include "pch.h"
 #include "CorrelationMatrix.h"
 
 double* CorrelationMatrix::Cholesky(double* uValues, int count)

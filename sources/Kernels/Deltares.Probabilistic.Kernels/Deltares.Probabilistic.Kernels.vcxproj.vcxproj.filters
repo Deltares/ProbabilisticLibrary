@@ -2,7 +2,6 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
-    <ClCompile Include="pch.cpp" />
     <ClCompile Include="Statistics\DeterministicDistribution.cpp">
       <Filter>Statistics</Filter>
     </ClCompile>
@@ -54,10 +53,12 @@
     <ClCompile Include="Wrappers\ReliabilityMethodWrapper.cpp" />
     <ClCompile Include="Wrappers\RandomSettingsWrapper.cpp" />
     <ClCompile Include="Wrappers\FunctionWrapper.cpp" />
+    <ClCompile Include="..\..\external\src\extern\asa241.cpp">
+      <Filter>extern</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
-    <ClInclude Include="pch.h" />
     <ClInclude Include="Statistics\DeterministicDistribution.h">
       <Filter>Statistics</Filter>
     </ClInclude>
@@ -124,6 +125,9 @@
     </Filter>
     <Filter Include="Model">
       <UniqueIdentifier>{3a585b12-521e-4cc6-a8fe-85b3ff52219a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="extern">
+      <UniqueIdentifier>{7cc05a32-9dfe-4ab0-ad99-c34ddfcc5484}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
