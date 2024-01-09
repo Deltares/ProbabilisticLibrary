@@ -8,11 +8,9 @@ int ZModelRunner::getVaryingStochastCount()
 
 double ZModelRunner::getZValue(Sample* sample)
 {
-	double* xValues = this->uConverter->getXValues(sample);
+	sample->XValues = this->uConverter->getXValues(sample);
 
-	sample->Z = this->zModel->invoke(xValues, sample->getSize());
-
-	delete[] xValues;
+	this->zModel->invoke(sample);
 
 	return sample->Z;
 
@@ -20,11 +18,18 @@ double ZModelRunner::getZValue(Sample* sample)
 
 double* ZModelRunner::getZValues(std::vector<Sample*> samples)
 {
+	for (int i = 0; i < samples.size(); i++)
+	{
+		samples[i]->XValues = this->uConverter->getXValues(samples[i]);
+	}
+
+	this->zModel->invoke(samples);
+
 	double* zValues = new double[samples.size()];
 
 	for (int i = 0; i < samples.size(); i++)
 	{
-		zValues[i] = getZValue(samples[i]);
+		zValues[i] = samples[i]->Z;
 	}
 
 	return zValues;

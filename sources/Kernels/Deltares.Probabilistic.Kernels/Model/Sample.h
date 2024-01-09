@@ -33,31 +33,24 @@ public:
 		}
 	}
 
+	~Sample()
+	{
+		delete[] Values;
+	}
+
 	double* Values;
+	double* XValues;
+
 	int IterationIndex = -1;
 	int ScenarioIndex = -1;
 	double Weight = 1;
 	bool AllowProxy = true;
 	double Z = std::numeric_limits<double>::quiet_NaN();
 
-	int getSize() const
-	{
-		return size;
-	}
+	int getSize();
 
-	double getBeta()
-	{
-		return NumericSupport::GetLength(Values, size);
-	}
+	double getBeta();
 
-	void setBeta(double beta)
-	{
-		double value = sqrt(beta * beta / size) * NumericSupport::GetSign(beta);
-
-		for (int i = 0; i < size; i++)
-		{
-			Values[i] = value;
-		}
-	}
+	void setBeta(double beta);
 };
 

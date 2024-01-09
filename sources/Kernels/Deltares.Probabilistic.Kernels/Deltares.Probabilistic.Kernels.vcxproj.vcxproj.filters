@@ -61,6 +61,7 @@
     <ClCompile Include="Wrappers\DesignPointWrapper.cpp" />
     <ClCompile Include="Wrappers\ConvergenceReportWrapper.cpp" />
     <ClCompile Include="Wrappers\ReliabilityResultWrapper.cpp" />
+    <ClCompile Include="Wrappers\SampleWrapper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -128,6 +129,7 @@
     <ClInclude Include="Wrappers\DesignPointWrapper.h" />
     <ClInclude Include="Wrappers\ConvergenceReportWrapper.h" />
     <ClInclude Include="Wrappers\ReliabilityResultWrapper.h" />
+    <ClInclude Include="Wrappers\SampleWrapper.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

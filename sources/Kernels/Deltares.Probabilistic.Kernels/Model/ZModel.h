@@ -1,9 +1,14 @@
 #pragma once
 #include <limits>
+#include <vector>
 
-typedef double (__stdcall *ZDelegate) (double*, int count);
+#include "Sample.h"
 
-double inline getDefaultZDelegate(double* values, int count)
+typedef double(__stdcall* ZDelegate) (Sample*);
+
+typedef double(__stdcall* ZMultipleDelegate) (Sample**, int count);
+
+double inline getDefaultZDelegate(Sample*)
 {
 	return std::numeric_limits<double>::quiet_NaN();
 }
@@ -12,6 +17,8 @@ class ZModel
 {
 private:
 	ZDelegate zDelegate;
+	ZMultipleDelegate zMultipleDelegate;
+	bool zMultipleDelegateAssigned = false;
 
 public:
 	ZModel()
@@ -24,9 +31,37 @@ public:
 		this->zDelegate = zDelegate;
 	}
 
-	double invoke(double* values, int count)
+	void setZMultipleDelegate(ZMultipleDelegate zMultipleDelegate)
 	{
-		return this->zDelegate(values, count);
+		this->zMultipleDelegate = zMultipleDelegate;
+		zMultipleDelegateAssigned = true;
+	}
+
+	void invoke(Sample* sample)
+	{
+		this->zDelegate(sample);
+	}
+
+	void invoke(std::vector<Sample*> samples)
+	{
+		if (!zMultipleDelegateAssigned) 
+		{
+			for (int i = 0; i < samples.size(); i++)
+			{
+				invoke(samples[i]);
+			}
+		}
+		else
+		{
+			Sample** sampleList = new Sample*[samples.size()];
+
+			for (int i = 0; i < samples.size(); i++)
+			{
+				sampleList[i] = samples[i];
+			}
+
+			this->zMultipleDelegate(sampleList, samples.size());
+		}
 	}
 };
 
