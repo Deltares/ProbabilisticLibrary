@@ -26,7 +26,7 @@ DesignPoint* CrudeMonteCarlo::GetReducedDesignPoint(ZModelRunner* modelRunner, d
 	double* zValues = new double[0]; // copy of z for all parallel threads as double
 	DesignPointBuilder* uMean = new DesignPointBuilder(nParameters, Settings->DesignPointMethod, modelRunner);
 
-	RandomGenerator* randomGenerator = new RandomGenerator();
+	RandomGenerator^ randomGenerator = gcnew RandomGenerator();
 	randomGenerator->Settings = this->Settings->RandomSettings;
 	randomGenerator->Initialize();
 
