@@ -25,6 +25,7 @@ namespace Deltares
 				ZModel* getZModel();
 				ZDelegate getZDelegate();
 				ZMultipleDelegate getZMultipleDelegate();
+				ZSampleDelegate^ zFunction = nullptr;
 
 				static void CalcZValues(System::Collections::Generic::IList<SampleWrapper^>^ samples);
 				static void CalcZValue(SampleWrapper^ sample);
@@ -32,14 +33,14 @@ namespace Deltares
 				static ModelRunnerWrapper^ instance;
 
 			public:
-				ModelRunnerWrapper(System::Collections::Generic::List<StochastWrapper^>^ stochasts, CorrelationMatrixWrapper^ correlationMatrix);
+				ModelRunnerWrapper(System::Collections::Generic::List<StochastWrapper^>^ stochasts, CorrelationMatrixWrapper^ correlationMatrix, ZSampleDelegate^ zFunction);
 				~ModelRunnerWrapper() { this->!ModelRunnerWrapper(); }
 				!ModelRunnerWrapper() { delete modelRunner; }
 
 				System::Collections::Generic::List<StochastWrapper^>^ Stochasts = gcnew System::Collections::Generic::List<StochastWrapper^>();
 
-				virtual void GetZValues(System::Collections::Generic::IList<SampleWrapper^>^ samples) {};
-				virtual void GetZValue(SampleWrapper^ sample) {};
+				virtual void GetZValues(System::Collections::Generic::IList<SampleWrapper^>^ samples);
+				virtual void GetZValue(SampleWrapper^ sample);
 
 				ZModelRunner* GetModelRunner()
 				{

@@ -7,9 +7,11 @@ namespace Deltares
 	{
 		namespace Kernels
 		{
-			ModelRunnerWrapper::ModelRunnerWrapper(System::Collections::Generic::List<StochastWrapper^>^ stochasts, CorrelationMatrixWrapper^ correlationMatrix)
+			ModelRunnerWrapper::ModelRunnerWrapper(System::Collections::Generic::List<StochastWrapper^>^ stochasts, CorrelationMatrixWrapper^ correlationMatrix, ZSampleDelegate^ zFunction)
 			{
 				ModelRunnerWrapper::instance = this;
+
+				this->zFunction = zFunction;
 
 				this->Stochasts->AddRange(stochasts);
 
@@ -75,6 +77,18 @@ namespace Deltares
 				instance->GetZValue(sample);
 			}
 
+			void ModelRunnerWrapper::GetZValues(System::Collections::Generic::IList<SampleWrapper^>^ samples)
+			{
+				for (int i = 0; i < samples->Count; i++)
+				{
+					GetZValue(samples[i]);
+				}
+			}
+
+			void ModelRunnerWrapper::GetZValue(SampleWrapper^ sample)
+			{
+				instance->zFunction->Invoke(sample);
+			}
 		}
 	}
 }
