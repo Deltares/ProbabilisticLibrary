@@ -68,6 +68,7 @@
     <ClCompile Include="Math\Randomizers\MersenneTwisterRandomValueGenerator.cpp" />
     <ClCompile Include="Math\Randomizers\RandomValueGenerator.cpp" />
     <ClCompile Include="Wrappers\RandomProvider.cpp" />
+    <ClCompile Include="Wrappers\ModelRunnerWrapper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -142,6 +143,7 @@
     <ClInclude Include="Math\Randomizers\MersenneTwisterRandomValueGenerator.h" />
     <ClInclude Include="Math\Randomizers\RandomValueGenerator.h" />
     <ClInclude Include="Wrappers\RandomProvider.h" />
+    <ClInclude Include="Wrappers\ModelRunnerWrapper.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

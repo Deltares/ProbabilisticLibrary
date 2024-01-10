@@ -1,4 +1,6 @@
 #pragma once
+#include "DesignPointWrapper.h"
+#include "ModelRunnerWrapper.h"
 #include "../Reliability/ReliabilityMethod.h"
 
 namespace Deltares
@@ -16,6 +18,8 @@ namespace Deltares
 				{
 					return nullptr;
 				};
+
+				DesignPointWrapper^ GetDesignPoint(ModelRunnerWrapper^ modelRunner);
 			};
 		}
 	}

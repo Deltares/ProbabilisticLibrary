@@ -154,6 +154,7 @@
     <ClInclude Include="Math\Randomizers\MersenneTwisterRandomValueGenerator.h" />
     <ClInclude Include="Math\Randomizers\ModifiedKnuthSubtractiveRandomValueGenerator.h" />
     <ClInclude Include="Math\Randomizers\RandomValueGenerator.h" />
+    <ClInclude Include="Wrappers\ModelRunnerWrapper.h" />
     <ClInclude Include="Wrappers\RandomProvider.h" />
     <ClInclude Include="Wrappers\SampleWrapper.h" />
     <ClInclude Include="Wrappers\ConvergenceReportWrapper.h" />
@@ -207,6 +208,7 @@
     <ClCompile Include="Math\Randomizers\MersenneTwisterRandomValueGenerator.cpp" />
     <ClCompile Include="Math\Randomizers\ModifiedKnuthSubtractiveRandomValueGenerator.cpp" />
     <ClCompile Include="Math\Randomizers\RandomValueGenerator.cpp" />
+    <ClCompile Include="Wrappers\ModelRunnerWrapper.cpp" />
     <ClCompile Include="Wrappers\RandomProvider.cpp" />
     <ClCompile Include="Wrappers\SampleWrapper.cpp" />
     <ClCompile Include="Wrappers\ConvergenceReportWrapper.cpp" />

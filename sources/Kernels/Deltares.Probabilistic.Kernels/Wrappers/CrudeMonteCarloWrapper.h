@@ -9,7 +9,7 @@ namespace Deltares
 	{
 		namespace Kernels
 		{
-			public ref class CrudeMonteCarloWrapper : ReliabilityMethodWrapper
+			public ref class CrudeMonteCarloWrapper : public ReliabilityMethodWrapper
 			{
 			private:
 				CrudeMonteCarlo* m_crude_monte_carlo;
