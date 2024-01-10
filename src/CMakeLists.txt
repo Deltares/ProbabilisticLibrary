@@ -181,6 +181,16 @@ set (probMethods_files
 set (ptkcpp_files
     ../../Kernels/Deltares.Probabilistic.Kernels/Math/NumericSupport.h
     ../../Kernels/Deltares.Probabilistic.Kernels/Math/NumericSupport.cpp
+    ../../Kernels/Deltares.Probabilistic.Kernels/Math/Random.cpp
+    ../../Kernels/Deltares.Probabilistic.Kernels/Math/Random.h
+    ../../Kernels/Deltares.Probabilistic.Kernels/Math/Randomizers/RandomValueGenerator.cpp
+    ../../Kernels/Deltares.Probabilistic.Kernels/Math/Randomizers/RandomValueGenerator.h
+    ../../Kernels/Deltares.Probabilistic.Kernels/Math/Randomizers/GeorgeMarsagliaRandomValueGenerator.h
+    ../../Kernels/Deltares.Probabilistic.Kernels/Math/Randomizers/MersenneTwisterRandomValueGenerator.cpp
+    ../../Kernels/Deltares.Probabilistic.Kernels/Math/Randomizers/MersenneTwisterRandomValueGenerator.h
+    ../../Kernels/Deltares.Probabilistic.Kernels/Math/Randomizers/ModifiedKnuthSubtractiveRandomValueGenerator.cpp
+    ../../Kernels/Deltares.Probabilistic.Kernels/Math/Randomizers/ModifiedKnuthSubtractiveRandomValueGenerator.h
+    ../../Kernels/Deltares.Probabilistic.Kernels/Math/Randomizers/GeorgeMarsagliaRandomValueGenerator.cpp
     ../../Kernels/Deltares.Probabilistic.Kernels/Model/ConvergenceReport.cpp
     ../../Kernels/Deltares.Probabilistic.Kernels/Model/ConvergenceReport.h
     ../../Kernels/Deltares.Probabilistic.Kernels/Model/DesignPoint.cpp
@@ -245,8 +255,10 @@ set (ptkcli_files
     ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/CrudeMonteCarloWrapper.h
     ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/DesignPointWrapper.cpp
     ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/DesignPointWrapper.h
-    ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/FunctionWrapper.cpp
-    ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/FunctionWrapper.h
+    ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/ModelRunnerWrapper.cpp
+    ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/ModelRunnerWrapper.h
+    ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/RandomProvider.cpp
+    ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/RandomProvider.h
     ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/RandomSettingsWrapper.cpp
     ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/RandomSettingsWrapper.h
     ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/ReliabilityMethodWrapper.cpp
