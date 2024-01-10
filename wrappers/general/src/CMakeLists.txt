@@ -28,7 +28,7 @@ else()
             randomgen.cpp
             fortranZfunc.h
             fortranZfunc.cpp
-            distributions.cpp
+            calcdistributionsinv.cpp
             convert.cpp
             combin.cpp
             correlation.cpp

@@ -49,8 +49,9 @@ else()
     if ("${CMAKE_GENERATOR_PLATFORM}" STREQUAL "Win32")
         message("Skipping python and fortran")
     else()
-        add_subdirectory(wrappers/python)
-
+        if (UNIX)
+            add_subdirectory(wrappers/python)
+        endif()
         add_subdirectory(wrappers/Fortran/src)
 
         add_subdirectory(wrappers/Fortran/test)

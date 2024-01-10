@@ -153,6 +153,90 @@ add_library(probLib
     combine/combineElements.cpp
     combine/upscaling.h
     combine/upscaling.cpp
+    ../../Kernels/Deltares.Probabilistic.Kernels/Math/NumericSupport.h
+    ../../Kernels/Deltares.Probabilistic.Kernels/Math/NumericSupport.cpp
+    ../../Kernels/Deltares.Probabilistic.Kernels/Model/ConvergenceReport.cpp
+    ../../Kernels/Deltares.Probabilistic.Kernels/Model/ConvergenceReport.h
+    ../../Kernels/Deltares.Probabilistic.Kernels/Model/DesignPoint.cpp
+    ../../Kernels/Deltares.Probabilistic.Kernels/Model/DesignPoint.h
+    ../../Kernels/Deltares.Probabilistic.Kernels/Model/RandomGenerator.cpp
+    ../../Kernels/Deltares.Probabilistic.Kernels/Model/RandomGenerator.h
+    ../../Kernels/Deltares.Probabilistic.Kernels/Model/RandomSettings.cpp
+    ../../Kernels/Deltares.Probabilistic.Kernels/Model/RandomSettings.h
+    ../../Kernels/Deltares.Probabilistic.Kernels/Model/ReliabilityReport.cpp
+    ../../Kernels/Deltares.Probabilistic.Kernels/Model/ReliabilityReport.h
+    ../../Kernels/Deltares.Probabilistic.Kernels/Model/ReliabilityResult.cpp
+    ../../Kernels/Deltares.Probabilistic.Kernels/Model/ReliabilityResult.h
+    ../../Kernels/Deltares.Probabilistic.Kernels/Model/RunSettings.cpp
+    ../../Kernels/Deltares.Probabilistic.Kernels/Model/RunSettings.h
+    ../../Kernels/Deltares.Probabilistic.Kernels/Model/Sample.cpp
+    ../../Kernels/Deltares.Probabilistic.Kernels/Model/Sample.h
+    ../../Kernels/Deltares.Probabilistic.Kernels/Model/StochastPoint.cpp
+    ../../Kernels/Deltares.Probabilistic.Kernels/Model/StochastPoint.h
+    ../../Kernels/Deltares.Probabilistic.Kernels/Model/StochastPointAlpha.cpp
+    ../../Kernels/Deltares.Probabilistic.Kernels/Model/StochastPointAlpha.h
+    ../../Kernels/Deltares.Probabilistic.Kernels/Model/UConverter.cpp
+    ../../Kernels/Deltares.Probabilistic.Kernels/Model/UConverter.h
+    ../../Kernels/Deltares.Probabilistic.Kernels/Model/ZModel.cpp
+    ../../Kernels/Deltares.Probabilistic.Kernels/Model/ZModel.h
+    ../../Kernels/Deltares.Probabilistic.Kernels/Model/ZModelRunner.cpp
+    ../../Kernels/Deltares.Probabilistic.Kernels/Model/ZModelRunner.h
+    ../../Kernels/Deltares.Probabilistic.Kernels/Reliability/CrudeMonteCarlo.cpp
+    ../../Kernels/Deltares.Probabilistic.Kernels/Reliability/CrudeMonteCarlo.h
+    ../../Kernels/Deltares.Probabilistic.Kernels/Reliability/CrudeMonteCarloSettings.cpp
+    ../../Kernels/Deltares.Probabilistic.Kernels/Reliability/CrudeMonteCarloSettings.h
+    ../../Kernels/Deltares.Probabilistic.Kernels/Reliability/DesignPointBuilder.cpp
+    ../../Kernels/Deltares.Probabilistic.Kernels/Reliability/DesignPointBuilder.h
+    ../../Kernels/Deltares.Probabilistic.Kernels/Reliability/Reliability.cpp
+    ../../Kernels/Deltares.Probabilistic.Kernels/Reliability/Reliability.h
+    ../../Kernels/Deltares.Probabilistic.Kernels/Reliability/ReliabilityMethod.cpp
+    ../../Kernels/Deltares.Probabilistic.Kernels/Reliability/ReliabilityMethod.h
+    ../../Kernels/Deltares.Probabilistic.Kernels/Statistics/CorrelationMatrix.cpp
+    ../../Kernels/Deltares.Probabilistic.Kernels/Statistics/CorrelationMatrix.h
+    ../../Kernels/Deltares.Probabilistic.Kernels/Statistics/DeterministicDistribution.cpp
+    ../../Kernels/Deltares.Probabilistic.Kernels/Statistics/DeterministicDistribution.h
+    ../../Kernels/Deltares.Probabilistic.Kernels/Statistics/Distribution.h
+    ../../Kernels/Deltares.Probabilistic.Kernels/Statistics/LogNormalDistribution.cpp
+    ../../Kernels/Deltares.Probabilistic.Kernels/Statistics/LogNormalDistribution.h
+    ../../Kernels/Deltares.Probabilistic.Kernels/Statistics/NormalDistribution.cpp
+    ../../Kernels/Deltares.Probabilistic.Kernels/Statistics/NormalDistribution.h
+    ../../Kernels/Deltares.Probabilistic.Kernels/Statistics/StandardNormal.cpp
+    ../../Kernels/Deltares.Probabilistic.Kernels/Statistics/StandardNormal.h
+    ../../Kernels/Deltares.Probabilistic.Kernels/Statistics/Stochast.cpp
+    ../../Kernels/Deltares.Probabilistic.Kernels/Statistics/Stochast.h
+    ../../Kernels/Deltares.Probabilistic.Kernels/Statistics/StochastProperties.h
+    ../../Kernels/Deltares.Probabilistic.Kernels/Statistics/UniformDistribution.cpp
+    ../../Kernels/Deltares.Probabilistic.Kernels/Statistics/UniformDistribution.h
+    ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/ConvergenceReportWrapper.cpp
+    ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/ConvergenceReportWrapper.h
+    ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/CorrelationMatrixWrapper.cpp
+    ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/CorrelationMatrixWrapper.h
+    ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/CrudeMonteCarloSettingsWrapper.cpp
+    ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/CrudeMonteCarloSettingsWrapper.h
+    ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/CrudeMonteCarloWrapper.cpp
+    ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/CrudeMonteCarloWrapper.h
+    ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/DesignPointWrapper.cpp
+    ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/DesignPointWrapper.h
+    ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/FunctionWrapper.cpp
+    ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/FunctionWrapper.h
+    ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/RandomSettingsWrapper.cpp
+    ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/RandomSettingsWrapper.h
+    ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/ReliabilityMethodWrapper.cpp
+    ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/ReliabilityMethodWrapper.h
+    ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/ReliabilityResultWrapper.cpp
+    ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/ReliabilityResultWrapper.h
+    ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/ReliabilityWrapper.cpp
+    ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/ReliabilityWrapper.h
+    ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/RunSettingsWrapper.cpp
+    ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/RunSettingsWrapper.h
+    ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/SampleWrapper.cpp
+    ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/SampleWrapper.h
+    ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/StochastPointAlphaWrapper.cpp
+    ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/StochastPointAlphaWrapper.h
+    ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/StochastPointWrapper.cpp
+    ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/StochastPointWrapper.h
+    ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/StochastWrapper.cpp
+    ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/StochastWrapper.h
 )
 
 set_target_properties(probLib
@@ -170,4 +254,5 @@ endif()
 
 if(WIN32)
   target_link_options(probLib PRIVATE "$<$<CONFIG:Debug>:/Debug>")
+  set_target_properties(probLib PROPERTIES COMMON_LANGUAGE_RUNTIME "")
 endif()
