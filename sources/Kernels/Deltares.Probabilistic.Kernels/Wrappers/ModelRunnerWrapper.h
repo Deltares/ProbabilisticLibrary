@@ -4,6 +4,7 @@
 #include "SampleWrapper.h"
 #include "../Model/ZModel.h"
 #include "../Model/ZModelRunner.h"
+#include "../Model/Sample.h"
 
 namespace Deltares
 {
@@ -29,6 +30,12 @@ namespace Deltares
 
 				static void CalcZValues(System::Collections::Generic::IList<SampleWrapper^>^ samples);
 				static void CalcZValue(SampleWrapper^ sample);
+
+				static ZSampleDelegate^ zSampleFunction;
+				static ZMultipleSampleDelegate^ zMultipleSampleFunction;
+
+				static void invokeSample(Sample* sample);
+				static void invokeMultipleSamples(Sample** samples, int count);
 
 				static ModelRunnerWrapper^ instance;
 

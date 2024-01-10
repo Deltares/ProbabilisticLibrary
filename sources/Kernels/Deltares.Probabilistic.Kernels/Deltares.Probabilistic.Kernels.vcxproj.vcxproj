@@ -162,7 +162,6 @@
     <ClInclude Include="Wrappers\DesignPointWrapper.h" />
     <ClInclude Include="Wrappers\StochastPointAlphaWrapper.h" />
     <ClInclude Include="Wrappers\StochastPointWrapper.h" />
-    <ClInclude Include="Wrappers\FunctionWrapper.h" />
     <ClInclude Include="Wrappers\RandomSettingsWrapper.h" />
     <ClInclude Include="Wrappers\CorrelationMatrixWrapper.h" />
     <ClInclude Include="Wrappers\CrudeMonteCarloWrapper.h" />
@@ -216,7 +215,6 @@
     <ClCompile Include="Wrappers\DesignPointWrapper.cpp" />
     <ClCompile Include="Wrappers\StochastPointAlphaWrapper.cpp" />
     <ClCompile Include="Wrappers\StochastPointWrapper.cpp" />
-    <ClCompile Include="Wrappers\FunctionWrapper.cpp" />
     <ClCompile Include="Wrappers\RandomSettingsWrapper.cpp" />
     <ClCompile Include="Wrappers\CorrelationMatrixWrapper.cpp" />
     <ClCompile Include="Wrappers\CrudeMonteCarloWrapper.cpp" />

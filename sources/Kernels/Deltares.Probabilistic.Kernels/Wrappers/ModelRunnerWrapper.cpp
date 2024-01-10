@@ -1,5 +1,4 @@
 #include "ModelRunnerWrapper.h"
-#include "FunctionWrapper.h"
 
 namespace Deltares
 {
@@ -33,9 +32,9 @@ namespace Deltares
 			ZDelegate ModelRunnerWrapper::getZDelegate()
 			{
 				ZSampleDelegate^ zSampleDelegate = gcnew ZSampleDelegate(this->CalcZValue);
-				FunctionWrapper::setMethod(zSampleDelegate);
+				ModelRunnerWrapper::zSampleFunction = zSampleDelegate;
 
-				ManagedSampleDelegate^ fp = gcnew ManagedSampleDelegate(FunctionWrapper::invokeSample);
+				ManagedSampleDelegate^ fp = gcnew ManagedSampleDelegate(ModelRunnerWrapper::invokeSample);
 				System::Runtime::InteropServices::GCHandle gch = System::Runtime::InteropServices::GCHandle::Alloc(fp);
 
 				System::IntPtr callbackPtr = System::Runtime::InteropServices::Marshal::GetFunctionPointerForDelegate(fp);
@@ -47,9 +46,9 @@ namespace Deltares
 			ZMultipleDelegate ModelRunnerWrapper::getZMultipleDelegate()
 			{
 				ZMultipleSampleDelegate^ zSampleDelegate = gcnew ZMultipleSampleDelegate(this->CalcZValues);
-				FunctionWrapper::setMethod(zSampleDelegate);
+				ModelRunnerWrapper::zMultipleSampleFunction = zSampleDelegate;
 
-				ManagedMultipleSampleDelegate^ fp = gcnew ManagedMultipleSampleDelegate(FunctionWrapper::invokeMultipleSamples);
+				ManagedMultipleSampleDelegate^ fp = gcnew ManagedMultipleSampleDelegate(ModelRunnerWrapper::invokeMultipleSamples);
 				System::Runtime::InteropServices::GCHandle gch = System::Runtime::InteropServices::GCHandle::Alloc(fp);
 
 				System::IntPtr callbackPtr = System::Runtime::InteropServices::Marshal::GetFunctionPointerForDelegate(fp);
@@ -65,6 +64,25 @@ namespace Deltares
 				zModel->setZMultipleDelegate(getZMultipleDelegate());
 
 				return zModel;
+			}
+
+			void ModelRunnerWrapper::invokeSample(Sample* sample)
+			{
+				SampleWrapper^ sampleWrapper = gcnew SampleWrapper(sample);
+
+				zSampleFunction->Invoke(sampleWrapper);
+			}
+
+			void ModelRunnerWrapper::invokeMultipleSamples(Sample** samples, int count)
+			{
+				System::Collections::Generic::List<SampleWrapper^>^ sampleWrappers = gcnew System::Collections::Generic::List<SampleWrapper^>();
+
+				for (int i = 0; i < count; i++)
+				{
+					sampleWrappers->Add(gcnew SampleWrapper(samples[i]));
+				}
+
+				zMultipleSampleFunction->Invoke(sampleWrappers);
 			}
 
 			void ModelRunnerWrapper::CalcZValues(System::Collections::Generic::IList<SampleWrapper^>^ samples)

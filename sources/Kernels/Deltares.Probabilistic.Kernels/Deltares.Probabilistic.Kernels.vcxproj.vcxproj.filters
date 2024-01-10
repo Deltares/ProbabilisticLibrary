@@ -52,7 +52,6 @@
     <ClCompile Include="Wrappers\CrudeMonteCarloWrapper.cpp" />
     <ClCompile Include="Wrappers\ReliabilityMethodWrapper.cpp" />
     <ClCompile Include="Wrappers\RandomSettingsWrapper.cpp" />
-    <ClCompile Include="Wrappers\FunctionWrapper.cpp" />
     <ClCompile Include="..\..\external\src\extern\asa241.cpp">
       <Filter>extern</Filter>
     </ClCompile>
@@ -130,7 +129,6 @@
     <ClInclude Include="Wrappers\CrudeMonteCarloWrapper.h" />
     <ClInclude Include="Wrappers\ReliabilityMethodWrapper.h" />
     <ClInclude Include="Wrappers\RandomSettingsWrapper.h" />
-    <ClInclude Include="Wrappers\FunctionWrapper.h" />
     <ClInclude Include="Wrappers\StochastPointAlphaWrapper.h" />
     <ClInclude Include="Wrappers\StochastPointWrapper.h" />
     <ClInclude Include="Wrappers\DesignPointWrapper.h" />
