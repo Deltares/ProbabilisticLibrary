@@ -1,5 +1,4 @@
-add_library(probLib
-  SHARED
+set (extern_files
     extern/asa063.hpp
     extern/asa063.cpp
     extern/asa109.hpp
@@ -10,6 +9,9 @@ add_library(probLib
     extern/asa241.cpp
     extern/dgammaDs.h
     extern/dgammaDs.cpp
+)
+
+set (rnd_files
     rnd/rndDefs.h
     rnd/rndDefs.cpp
     rnd/randomForSampling.h
@@ -20,7 +22,22 @@ add_library(probLib
     rnd/mersenne_twister.cpp
     rnd/george_marsaglia.h
     rnd/george_marsaglia.cpp
-    probFuncs/alphaBeta.h
+)
+
+set (utils_files
+    utils/basic_math.h
+    utils/vector1D.h
+    utils/vector1D.cpp
+    utils/matrix.h
+    utils/matrix.cpp
+    utils/cholesky_decomp.cpp
+    utils/probLibException.h
+    utils/probLibString.h
+    utils/probLibString.cpp
+    utils/xyPair.h
+)
+
+set (distributions_files
     distributions/distrib.h
     distributions/distrib.cpp
     distributions/normalDist.h
@@ -34,12 +51,6 @@ add_library(probLib
     distributions/combine_x1x2_mtable.cpp
     distributions/truncatedNormal.h
     distributions/truncatedNormal.cpp
-    probFuncs/conversions.h
-    probFuncs/conversions.cpp
-    probFuncs/stochSettings.h
-    probFuncs/stochSettings.cpp
-    probFuncs/listDistribs.h
-    probFuncs/listDistribs.cpp
     distributions/distrib.h
     distributions/gumble.h
     distributions/gumble.cpp
@@ -57,20 +68,23 @@ add_library(probLib
     distributions/exponentialDist.cpp
     distributions/parseDistribution.h
     distributions/parseDistribution.cpp
+)
+
+set (probFuncs_files
+    probFuncs/alphaBeta.h
+    probFuncs/conversions.h
+    probFuncs/conversions.cpp
+    probFuncs/stochSettings.h
+    probFuncs/stochSettings.cpp
+    probFuncs/listDistribs.h
+    probFuncs/listDistribs.cpp
     probFuncs/probDraw.h
     probFuncs/probDraw.cpp
     probFuncs/probNumber.h
     probFuncs/probNumber.cpp
-    utils/basic_math.h
-    utils/vector1D.h
-    utils/vector1D.cpp
-    utils/matrix.h
-    utils/matrix.cpp
-    utils/cholesky_decomp.cpp
-    utils/probLibException.h
-    utils/probLibString.h
-    utils/probLibString.cpp
-    utils/xyPair.h
+)
+
+set (rootFinders_files
     rootFinders/root_finder.h
     rootFinders/root_finder.cpp
     rootFinders/linear_loop.h
@@ -81,6 +95,9 @@ add_library(probLib
     rootFinders/regula_falsi.cpp
     rootFinders/Anderson_Bjork.h
     rootFinders/Anderson_Bjork.cpp
+)
+
+set (correlation_files
     correlation/correlation.h
     correlation/identity.h
     correlation/identity.cpp
@@ -92,6 +109,19 @@ add_library(probLib
     correlation/HRcorrelation.cpp
     correlation/trapeziumRule.h
     correlation/trapeziumRule.cpp
+)
+
+set (combine_files
+    combine/Hohenbichler.h
+    combine/Hohenbichler.cpp
+    combine/intEqualElements.h
+    combine/combineElements.h
+    combine/combineElements.cpp
+    combine/upscaling.h
+    combine/upscaling.cpp
+)
+
+set (probMethods_files
     probMethods/lsfResult.h
     probMethods/lsfResult.cpp
     probMethods/lsf.h
@@ -146,13 +176,9 @@ add_library(probLib
     probMethods/fillStartVector.cpp
     probMethods/progress.h
     probMethods/progress.cpp
-    combine/Hohenbichler.h
-    combine/Hohenbichler.cpp
-    combine/intEqualElements.h
-    combine/combineElements.h
-    combine/combineElements.cpp
-    combine/upscaling.h
-    combine/upscaling.cpp
+)
+
+set (ptkcpp_files
     ../../Kernels/Deltares.Probabilistic.Kernels/Math/NumericSupport.h
     ../../Kernels/Deltares.Probabilistic.Kernels/Math/NumericSupport.cpp
     ../../Kernels/Deltares.Probabilistic.Kernels/Model/ConvergenceReport.cpp
@@ -207,6 +233,8 @@ add_library(probLib
     ../../Kernels/Deltares.Probabilistic.Kernels/Statistics/StochastProperties.h
     ../../Kernels/Deltares.Probabilistic.Kernels/Statistics/UniformDistribution.cpp
     ../../Kernels/Deltares.Probabilistic.Kernels/Statistics/UniformDistribution.h
+)
+set (ptkcli_files
     ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/ConvergenceReportWrapper.cpp
     ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/ConvergenceReportWrapper.h
     ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/CorrelationMatrixWrapper.cpp
@@ -238,6 +266,36 @@ add_library(probLib
     ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/StochastWrapper.cpp
     ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/StochastWrapper.h
 )
+
+if (UNIX)
+    set (ptkcli_files )
+endif()
+
+add_library(probLib
+  SHARED
+    ${extern_files}
+    ${rnd_files}
+    ${utils_files}
+    ${distributions_files}
+    ${probFuncs_files}
+    ${probMethods_files}
+    ${rootFinders_files}
+    ${correlation_files}
+    ${combine_files}
+    ${ptkcpp_files}
+    ${ptkcli_files}
+)
+
+source_group("extern" FILES ${extern_files})
+source_group("rnd" FILES ${rnd_files})
+source_group("utils" FILES ${utils_files})
+source_group("distributions" FILES ${distributions_files})
+source_group("probFuncs" FILES ${probFuncs_files})
+source_group("probMethods" FILES ${probMethods_files})
+source_group("rootFinders" FILES ${rootFinders_files})
+source_group("correlation" FILES ${correlation_files})
+source_group("combine" FILES ${combine_files})
+source_group("ptk" FILES ${ptkcpp_files} ${ptkcli_files})
 
 set_target_properties(probLib
   PROPERTIES
