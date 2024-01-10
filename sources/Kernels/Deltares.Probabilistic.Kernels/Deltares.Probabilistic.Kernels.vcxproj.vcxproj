@@ -149,6 +149,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Math\Random.h" />
+    <ClInclude Include="Math\Randomizers\GeorgeMarsagliaRandomValueGenerator.h" />
+    <ClInclude Include="Math\Randomizers\MersenneTwisterRandomValueGenerator.h" />
+    <ClInclude Include="Math\Randomizers\ModifiedKnuthSubtractiveRandomValueGenerator.h" />
+    <ClInclude Include="Math\Randomizers\RandomValueGenerator.h" />
+    <ClInclude Include="Wrappers\RandomProvider.h" />
     <ClInclude Include="Wrappers\SampleWrapper.h" />
     <ClInclude Include="Wrappers\ConvergenceReportWrapper.h" />
     <ClInclude Include="Wrappers\ReliabilityResultWrapper.h" />
@@ -196,6 +202,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\external\src\extern\asa241.cpp" />
+    <ClCompile Include="Math\Random.cpp" />
+    <ClCompile Include="Math\Randomizers\GeorgeMarsagliaRandomValueGenerator.cpp" />
+    <ClCompile Include="Math\Randomizers\MersenneTwisterRandomValueGenerator.cpp" />
+    <ClCompile Include="Math\Randomizers\ModifiedKnuthSubtractiveRandomValueGenerator.cpp" />
+    <ClCompile Include="Math\Randomizers\RandomValueGenerator.cpp" />
+    <ClCompile Include="Wrappers\RandomProvider.cpp" />
     <ClCompile Include="Wrappers\SampleWrapper.cpp" />
     <ClCompile Include="Wrappers\ConvergenceReportWrapper.cpp" />
     <ClCompile Include="Wrappers\ReliabilityResultWrapper.cpp" />

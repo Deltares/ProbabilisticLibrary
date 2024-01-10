@@ -26,9 +26,9 @@ DesignPoint* CrudeMonteCarlo::GetReducedDesignPoint(ZModelRunner* modelRunner, d
 	double* zValues = new double[0]; // copy of z for all parallel threads as double
 	DesignPointBuilder* uMean = new DesignPointBuilder(nParameters, Settings->DesignPointMethod, modelRunner);
 
-	RandomGenerator^ randomGenerator = gcnew RandomGenerator();
+	RandomGenerator* randomGenerator = new RandomGenerator();
 	randomGenerator->Settings = this->Settings->RandomSettings;
-	randomGenerator->Initialize();
+	randomGenerator->initialize();
 
 	Sample* uMin = new Sample(nParameters);
 	double rmin = std::numeric_limits<double>::infinity();
@@ -59,7 +59,7 @@ DesignPoint* CrudeMonteCarlo::GetReducedDesignPoint(ZModelRunner* modelRunner, d
 
 			for (int i = 0; i < runs; i++)
 			{
-				samples.push_back(randomGenerator->GetRandomSample(nParameters));
+				samples.push_back(randomGenerator->getRandomSample(nParameters));
 			}
 
 			zValues = modelRunner->getZValues(samples);

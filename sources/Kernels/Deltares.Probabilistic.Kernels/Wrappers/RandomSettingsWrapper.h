@@ -1,5 +1,6 @@
 #pragma once
 #include "../Model/RandomSettings.h"
+#include "RandomProvider.h"
 
 namespace Deltares
 {
@@ -13,7 +14,11 @@ namespace Deltares
 				RandomSettings* m_settings;
 
 			public:
-				RandomSettingsWrapper() { m_settings = new RandomSettings(); }
+				RandomSettingsWrapper()
+				{
+					m_settings = new RandomSettings();
+					RandomProvider::initialize();
+				}
 				~RandomSettingsWrapper() { this->!RandomSettingsWrapper(); }
 				!RandomSettingsWrapper() { delete m_settings; }
 
@@ -21,6 +26,12 @@ namespace Deltares
 				{
 					int get() { return m_settings->Seed; }
 					void set(int value) { m_settings->Seed = value; }
+				}
+
+				property int SeedB
+				{
+					int get() { return m_settings->SeedB; }
+					void set(int value) { m_settings->SeedB = value; }
 				}
 
 				property bool IsRepeatableRandom

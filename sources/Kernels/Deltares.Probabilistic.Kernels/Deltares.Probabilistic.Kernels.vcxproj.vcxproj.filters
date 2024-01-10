@@ -62,6 +62,12 @@
     <ClCompile Include="Wrappers\ConvergenceReportWrapper.cpp" />
     <ClCompile Include="Wrappers\ReliabilityResultWrapper.cpp" />
     <ClCompile Include="Wrappers\SampleWrapper.cpp" />
+    <ClCompile Include="Math\Random.cpp" />
+    <ClCompile Include="Math\Randomizers\ModifiedKnuthSubtractiveRandomValueGenerator.cpp" />
+    <ClCompile Include="Math\Randomizers\GeorgeMarsagliaRandomValueGenerator.cpp" />
+    <ClCompile Include="Math\Randomizers\MersenneTwisterRandomValueGenerator.cpp" />
+    <ClCompile Include="Math\Randomizers\RandomValueGenerator.cpp" />
+    <ClCompile Include="Wrappers\RandomProvider.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -130,6 +136,12 @@
     <ClInclude Include="Wrappers\ConvergenceReportWrapper.h" />
     <ClInclude Include="Wrappers\ReliabilityResultWrapper.h" />
     <ClInclude Include="Wrappers\SampleWrapper.h" />
+    <ClInclude Include="Math\Random.h" />
+    <ClInclude Include="Math\Randomizers\ModifiedKnuthSubtractiveRandomValueGenerator.h" />
+    <ClInclude Include="Math\Randomizers\GeorgeMarsagliaRandomValueGenerator.h" />
+    <ClInclude Include="Math\Randomizers\MersenneTwisterRandomValueGenerator.h" />
+    <ClInclude Include="Math\Randomizers\RandomValueGenerator.h" />
+    <ClInclude Include="Wrappers\RandomProvider.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">
