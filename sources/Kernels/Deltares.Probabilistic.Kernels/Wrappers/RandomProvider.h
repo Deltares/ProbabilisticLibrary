@@ -1,6 +1,6 @@
 #pragma once
 
-public delegate void ManagedInitializeRandomDelegate(int seed);
+public delegate void ManagedInitializeRandomDelegate(bool repeatable, int seed);
 public delegate double ManagedNextRandomDelegate();
 
 ref class RandomProvider
@@ -12,9 +12,16 @@ private:
 	static void initializeNextDelegate();
 	static bool initialized = false;
 
-	static void initialize(int seed)
+	static void initialize(bool repeatable, int seed)
 	{
-		random = gcnew System::Random(seed);
+		if (repeatable) 
+		{
+			random = gcnew System::Random(seed);
+		}
+		else
+		{
+			random = gcnew System::Random();
+		}
 	}
 
 	static double next()

@@ -1,7 +1,7 @@
 #pragma once
 #include "RandomValueGenerator.h"
 
-typedef void(__stdcall* InitializeRandomDelegate) (int seed);
+typedef void(__stdcall* InitializeRandomDelegate) (bool repeatable, int seed);
 
 typedef double(__stdcall* NextRandomDelegate) ();
 
@@ -11,7 +11,7 @@ private:
 	inline static InitializeRandomDelegate initializeDelegate = nullptr;
 	inline static NextRandomDelegate nextDelegate = nullptr;
 public:
-	void initialize(int seed, int seedB) override;
+	void initialize(bool repeatable, int seed, int seedB) override;
 	double next() override;
 
 	static void setInitializeDelegate(InitializeRandomDelegate initializeDelegate)

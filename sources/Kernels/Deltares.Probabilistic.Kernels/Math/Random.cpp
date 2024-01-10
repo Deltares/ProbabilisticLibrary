@@ -13,7 +13,7 @@ namespace Deltares
 {
 	namespace Numeric
 	{
-		void Random::initialize(RandomValueGeneratorType generatorType, int seed, int seedB)
+		void Random::initialize(RandomValueGeneratorType generatorType, bool repeatable, int seed, int seedB)
 		{
 			switch (generatorType)
 			{
@@ -23,10 +23,11 @@ namespace Deltares
 			default: throw std::exception("Generator type not supported");
 			}
 
+			Random::repeatable = repeatable;
 			Random::seed = seed;
 			Random::seedB = seedB;
 
-			Random::randomValueGenerator->initialize(seed, seedB);
+			Random::randomValueGenerator->initialize(repeatable, seed, seedB);
 		}
 
 		double Random::next()
@@ -36,7 +37,7 @@ namespace Deltares
 
 		void Random::restart()
 		{
-			return Random::randomValueGenerator->initialize(Random::seed, Random::seedB);
+			return Random::randomValueGenerator->initialize(Random::repeatable, Random::seed, Random::seedB);
 		}
 	}
 }

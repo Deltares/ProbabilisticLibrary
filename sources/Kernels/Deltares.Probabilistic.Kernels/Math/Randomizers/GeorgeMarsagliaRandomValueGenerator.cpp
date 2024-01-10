@@ -33,7 +33,7 @@
 // each subsequence having a length of approximately 10^30.
 //
 
-void GeorgeMarsagliaRandomValueGenerator::initialize(const int ij, const int kl)
+void GeorgeMarsagliaRandomValueGenerator::initialize(bool repeatable, const int ij, const int kl)
 {
     //
     // Verify the two seeds

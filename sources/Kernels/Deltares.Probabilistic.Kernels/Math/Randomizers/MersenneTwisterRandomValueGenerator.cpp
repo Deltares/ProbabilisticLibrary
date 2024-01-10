@@ -1,12 +1,20 @@
 #include "MersenneTwisterRandomValueGenerator.h"
 
 #include <cstdlib>
+#include <ctime>
 
 #include "../NumericSupport.h"
 
-void MersenneTwisterRandomValueGenerator::initialize(int seed, int seedB)
+void MersenneTwisterRandomValueGenerator::initialize(bool repeatable, int seed, int seedB)
 {
-	srand(seed);
+	if (repeatable) 
+	{
+		srand(seed);
+	}
+	else
+	{
+		srand(time(nullptr));
+	}
 }
 
 double MersenneTwisterRandomValueGenerator::next()

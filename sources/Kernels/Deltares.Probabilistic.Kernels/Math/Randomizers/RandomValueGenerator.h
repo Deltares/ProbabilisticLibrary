@@ -3,7 +3,7 @@
 class RandomValueGenerator
 {
 public:
-	virtual void initialize(int seed, int seedB) {};
+	virtual void initialize(bool repeatable, int seed, int seedB) {};
 	virtual double next() { return 0; };
 };
 

@@ -1,8 +1,8 @@
 #include "ModifiedKnuthSubtractiveRandomValueGenerator.h"
 
-void ModifiedKnuthSubtractiveRandomValueGenerator::initialize(int seed, int seedB)
+void ModifiedKnuthSubtractiveRandomValueGenerator::initialize(bool repeatable, int seed, int seedB)
 {
-	ModifiedKnuthSubtractiveRandomValueGenerator::initializeDelegate(seed);
+	ModifiedKnuthSubtractiveRandomValueGenerator::initializeDelegate(repeatable, seed);
 }
 
 double ModifiedKnuthSubtractiveRandomValueGenerator::next()

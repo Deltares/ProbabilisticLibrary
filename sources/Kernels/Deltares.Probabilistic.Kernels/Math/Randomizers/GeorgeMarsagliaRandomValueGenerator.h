@@ -17,7 +17,7 @@ class GeorgeMarsagliaRandomValueGenerator : public RandomValueGenerator
 private:
     inline static gm_state state;
 public:
-	void initialize(int seed, int seedB) override;
+	void initialize(bool repeatable, int seed, int seedB) override;
 	double next() override;
 };
 
