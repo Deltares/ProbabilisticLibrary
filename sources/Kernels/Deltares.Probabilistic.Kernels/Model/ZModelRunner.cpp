@@ -93,7 +93,7 @@ namespace Deltares
 			    this->progressIndicator->doProgress(progressIndicator);
 				this->progressIndicator->doDetailedProgress(report->Step, report->Loop, report->Reliability, convergence);
 
-				auto text = std::format("{}/{}, Reliability = {:.3}, Convergence = {:.3}", report->Step, report->MaxSteps, report->Reliability, convergence);
+				auto text = std::format("{}/{}, Reliability = {:.3f}, Convergence = {:.3f}", report->Step, report->MaxSteps, report->Reliability, convergence);
 
 				this->progressIndicator->doTextualProgress(ProgressType::Detailed, text);
 			}
