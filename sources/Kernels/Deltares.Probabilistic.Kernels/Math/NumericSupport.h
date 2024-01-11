@@ -10,6 +10,7 @@ public:
 	static double* GetSphericalCoordinates(double* cartesianCoordinates, int count);
 	static double* GetCartesianCoordinates(double* sphericalCoordinates, int count);
 	static double Divide(int counter, int denominator);
+	static double round(double value, int decimals);
 };
 
 

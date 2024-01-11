@@ -154,6 +154,8 @@
     <ClInclude Include="Math\Randomizers\MersenneTwisterRandomValueGenerator.h" />
     <ClInclude Include="Math\Randomizers\ModifiedKnuthSubtractiveRandomValueGenerator.h" />
     <ClInclude Include="Math\Randomizers\RandomValueGenerator.h" />
+    <ClInclude Include="Model\ProgressIndicator.h" />
+    <ClInclude Include="Wrappers\ProgressIndicatorWrapper.h" />
     <ClInclude Include="Wrappers\ModelRunnerWrapper.h" />
     <ClInclude Include="Wrappers\RandomProvider.h" />
     <ClInclude Include="Wrappers\SampleWrapper.h" />
@@ -167,7 +169,6 @@
     <ClInclude Include="Wrappers\CrudeMonteCarloWrapper.h" />
     <ClInclude Include="Wrappers\ReliabilityMethodWrapper.h" />
     <ClInclude Include="Wrappers\CrudeMonteCarloSettingsWrapper.h" />
-    <ClInclude Include="Wrappers\ReliabilityWrapper.h" />
     <ClInclude Include="Wrappers\RunSettingsWrapper.h" />
     <ClInclude Include="Statistics\CorrelationMatrix.h" />
     <ClInclude Include="framework.h" />
@@ -187,7 +188,6 @@
     <ClInclude Include="Reliability\CrudeMonteCarloSettings.h" />
     <ClInclude Include="Model\DesignPoint.h" />
     <ClInclude Include="Reliability\DesignPointBuilder.h" />
-    <ClInclude Include="Reliability\Reliability.h" />
     <ClInclude Include="Reliability\ReliabilityMethod.h" />
     <ClInclude Include="Model\ReliabilityResult.h" />
     <ClInclude Include="Statistics\DeterministicDistribution.h" />
@@ -207,6 +207,8 @@
     <ClCompile Include="Math\Randomizers\MersenneTwisterRandomValueGenerator.cpp" />
     <ClCompile Include="Math\Randomizers\ModifiedKnuthSubtractiveRandomValueGenerator.cpp" />
     <ClCompile Include="Math\Randomizers\RandomValueGenerator.cpp" />
+    <ClCompile Include="Model\ProgressIndicator.cpp" />
+    <ClCompile Include="Wrappers\ProgressIndicatorWrapper.cpp" />
     <ClCompile Include="Wrappers\ModelRunnerWrapper.cpp" />
     <ClCompile Include="Wrappers\RandomProvider.cpp" />
     <ClCompile Include="Wrappers\SampleWrapper.cpp" />
@@ -220,7 +222,6 @@
     <ClCompile Include="Wrappers\CrudeMonteCarloWrapper.cpp" />
     <ClCompile Include="Wrappers\ReliabilityMethodWrapper.cpp" />
     <ClCompile Include="Wrappers\CrudeMonteCarloSettingsWrapper.cpp" />
-    <ClCompile Include="Wrappers\ReliabilityWrapper.cpp" />
     <ClCompile Include="Wrappers\RunSettingsWrapper.cpp" />
     <ClCompile Include="Statistics\CorrelationMatrix.cpp" />
     <ClCompile Include="dllmain.cpp" />
@@ -240,7 +241,6 @@
     <ClCompile Include="Reliability\CrudeMonteCarloSettings.cpp" />
     <ClCompile Include="Model\DesignPoint.cpp" />
     <ClCompile Include="Reliability\DesignPointBuilder.cpp" />
-    <ClCompile Include="Reliability\Reliability.cpp" />
     <ClCompile Include="Reliability\ReliabilityMethod.cpp" />
     <ClCompile Include="Model\ReliabilityResult.cpp" />
     <ClCompile Include="Statistics\DeterministicDistribution.cpp" />

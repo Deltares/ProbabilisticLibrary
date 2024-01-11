@@ -1,5 +1,6 @@
 #pragma once
 #include "CorrelationMatrixWrapper.h"
+#include "ProgressIndicatorWrapper.h"
 #include "StochastWrapper.h"
 #include "SampleWrapper.h"
 #include "../Model/ZModel.h"
@@ -12,17 +13,13 @@ namespace Deltares
 	{
 		namespace Kernels
 		{
-			public delegate void ManagedSampleDelegate(Sample* sample);
-			public delegate void ManagedMultipleSampleDelegate(Sample** samples, int count);
-
 			public delegate void ZSampleDelegate(SampleWrapper^);
 			public delegate void ZMultipleSampleDelegate(System::Collections::Generic::IList<SampleWrapper^>^);
-
 
 			public ref class ModelRunnerWrapper
 			{
 			private:
-				ZModelRunner* modelRunner;
+				Models::ZModelRunner* modelRunner;
 				ZModel* getZModel();
 				ZDelegate getZDelegate();
 				ZMultipleDelegate getZMultipleDelegate();
@@ -40,7 +37,7 @@ namespace Deltares
 				System::Collections::Generic::List<System::Runtime::InteropServices::GCHandle>^ handles = gcnew System::Collections::Generic::List<System::Runtime::InteropServices::GCHandle>();
 
 			public:
-				ModelRunnerWrapper(System::Collections::Generic::List<StochastWrapper^>^ stochasts, CorrelationMatrixWrapper^ correlationMatrix, ZSampleDelegate^ zFunction);
+				ModelRunnerWrapper(ZSampleDelegate^ zFunction, System::Collections::Generic::List<StochastWrapper^>^ stochasts, CorrelationMatrixWrapper^ correlationMatrix, ProgressIndicatorWrapper^ progressIndicator);
 				~ModelRunnerWrapper() { this->!ModelRunnerWrapper(); }
 				!ModelRunnerWrapper()
 				{
@@ -56,7 +53,7 @@ namespace Deltares
 				virtual void GetZValues(System::Collections::Generic::IList<SampleWrapper^>^ samples);
 				virtual void GetZValue(SampleWrapper^ sample);
 
-				ZModelRunner* GetModelRunner()
+				Models::ZModelRunner* GetModelRunner()
 				{
 					return modelRunner;
 				}

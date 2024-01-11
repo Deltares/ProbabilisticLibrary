@@ -31,7 +31,6 @@
     <ClCompile Include="Reliability\CrudeMonteCarlo.cpp" />
     <ClCompile Include="Reliability\CrudeMonteCarloSettings.cpp" />
     <ClCompile Include="Model\DesignPoint.cpp" />
-    <ClCompile Include="Reliability\Reliability.cpp" />
     <ClCompile Include="Reliability\ReliabilityMethod.cpp" />
     <ClCompile Include="Model\RandomSettings.cpp" />
     <ClCompile Include="Model\RunSettings.cpp" />
@@ -45,7 +44,6 @@
     <ClCompile Include="Model\RandomGenerator.cpp" />
     <ClCompile Include="Statistics\CorrelationMatrix.cpp" />
     <ClCompile Include="Wrappers\StochastWrapper.cpp" />
-    <ClCompile Include="Wrappers\ReliabilityWrapper.cpp" />
     <ClCompile Include="Wrappers\CrudeMonteCarloSettingsWrapper.cpp" />
     <ClCompile Include="Wrappers\RunSettingsWrapper.cpp" />
     <ClCompile Include="Wrappers\CorrelationMatrixWrapper.cpp" />
@@ -68,6 +66,8 @@
     <ClCompile Include="Math\Randomizers\RandomValueGenerator.cpp" />
     <ClCompile Include="Wrappers\RandomProvider.cpp" />
     <ClCompile Include="Wrappers\ModelRunnerWrapper.cpp" />
+    <ClCompile Include="Model\ProgressIndicator.cpp" />
+    <ClCompile Include="Wrappers\ProgressIndicatorWrapper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -108,7 +108,6 @@
     <ClInclude Include="Reliability\CrudeMonteCarlo.h" />
     <ClInclude Include="Reliability\CrudeMonteCarloSettings.h" />
     <ClInclude Include="Model\DesignPoint.h" />
-    <ClInclude Include="Reliability\Reliability.h" />
     <ClInclude Include="Reliability\ReliabilityMethod.h" />
     <ClInclude Include="Model\RandomSettings.h" />
     <ClInclude Include="Model\RunSettings.h" />
@@ -122,7 +121,6 @@
     <ClInclude Include="Model\RandomGenerator.h" />
     <ClInclude Include="Statistics\CorrelationMatrix.h" />
     <ClInclude Include="Wrappers\StochastWrapper.h" />
-    <ClInclude Include="Wrappers\ReliabilityWrapper.h" />
     <ClInclude Include="Wrappers\CrudeMonteCarloSettingsWrapper.h" />
     <ClInclude Include="Wrappers\RunSettingsWrapper.h" />
     <ClInclude Include="Wrappers\CorrelationMatrixWrapper.h" />
@@ -142,6 +140,8 @@
     <ClInclude Include="Math\Randomizers\RandomValueGenerator.h" />
     <ClInclude Include="Wrappers\RandomProvider.h" />
     <ClInclude Include="Wrappers\ModelRunnerWrapper.h" />
+    <ClInclude Include="Model\ProgressIndicator.h" />
+    <ClInclude Include="Wrappers\ProgressIndicatorWrapper.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

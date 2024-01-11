@@ -58,7 +58,7 @@ double* ReliabilityMethod::GetAlphas(Sample* sample, int nstochasts, double z0Fa
 	return alpha;
 }
 
-DesignPoint* ReliabilityMethod::GetRealizationFromP(ZModelRunner* modelRunner, double pf, Sample* u, double z0, ConvergenceReport* convergenceReport)
+DesignPoint* ReliabilityMethod::GetRealizationFromP(Deltares::Models::ZModelRunner* modelRunner, double pf, Sample* u, double z0, ConvergenceReport* convergenceReport)
 {
 	if (u != nullptr)
 	{

@@ -14,10 +14,10 @@ protected:
 
 	double* GetAlphas(Sample* sample, int nstochasts, double z0Fac);
 
-	DesignPoint* GetRealizationFromP(ZModelRunner* modelRunner, double pf, Sample* u, double z0, ConvergenceReport* convergenceReport = nullptr);
+	DesignPoint* GetRealizationFromP(Deltares::Models::ZModelRunner* modelRunner, double pf, Sample* u, double z0, ConvergenceReport* convergenceReport = nullptr);
 
 public:
-	virtual DesignPoint* getDesignPoint(ZModelRunner* modelRunner) { return nullptr; };
+	virtual DesignPoint* getDesignPoint(Deltares::Models::ZModelRunner* modelRunner) { return nullptr; };
 
 
 	bool isStopped();

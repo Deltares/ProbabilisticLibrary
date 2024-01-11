@@ -11,7 +11,7 @@
 #include "../Model/DesignPoint.h"
 #include "DesignPointBuilder.h"
 
-DesignPoint* CrudeMonteCarlo::getDesignPoint(ZModelRunner* modelRunner)
+DesignPoint* CrudeMonteCarlo::getDesignPoint(Deltares::Models::ZModelRunner* modelRunner)
 {
 	//RemainingReliability remainingReliability = RemainingReliability();
 	//PartialProbability remaining = remainingReliability.GetRemainingProbability(modelRunner);
@@ -20,7 +20,7 @@ DesignPoint* CrudeMonteCarlo::getDesignPoint(ZModelRunner* modelRunner)
 	return GetReducedDesignPoint(modelRunner, 0, 1);
 }
 
-DesignPoint* CrudeMonteCarlo::GetReducedDesignPoint(ZModelRunner* modelRunner, double qFail, double qRange)
+DesignPoint* CrudeMonteCarlo::GetReducedDesignPoint(Deltares::Models::ZModelRunner* modelRunner, double qFail, double qRange)
 {
 	int nParameters = modelRunner->getVaryingStochastCount();
 	double* zValues = new double[0]; // copy of z for all parallel threads as double
@@ -130,7 +130,7 @@ DesignPoint* CrudeMonteCarlo::GetReducedDesignPoint(ZModelRunner* modelRunner, d
 	return modelRunner->getRealization(beta, alpha, convergenceReport, uMin->ScenarioIndex);
 }
 
-bool CrudeMonteCarlo::CheckConvergence(ZModelRunner* modelRunner, double pf, int samples, int nmaal)
+bool CrudeMonteCarlo::CheckConvergence(Deltares::Models::ZModelRunner* modelRunner, double pf, int samples, int nmaal)
 {
 	ReliabilityReport* report = new ReliabilityReport();
 	report->Step = nmaal;

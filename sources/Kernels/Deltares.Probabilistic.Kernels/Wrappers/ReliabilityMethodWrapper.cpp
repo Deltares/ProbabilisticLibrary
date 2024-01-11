@@ -11,7 +11,7 @@ namespace Deltares
 			DesignPointWrapper^ ReliabilityMethodWrapper::GetDesignPoint(ModelRunnerWrapper^ modelRunner)
 			{
 				ReliabilityMethod* reliabilityMethodNative = this->GetReliabilityMethod();
-				ZModelRunner* modelRunnerNative = modelRunner->GetModelRunner();
+				Models::ZModelRunner* modelRunnerNative = modelRunner->GetModelRunner();
 
 				DesignPoint* designPoint = reliabilityMethodNative->getDesignPoint(modelRunnerNative);
 

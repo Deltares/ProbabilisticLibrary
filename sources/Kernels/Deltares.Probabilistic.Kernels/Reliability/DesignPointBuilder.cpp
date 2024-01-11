@@ -18,7 +18,7 @@
 //    }
 //};
 
-DesignPointBuilder::DesignPointBuilder(int count, DesignPointMethod method, ZModelRunner* model)
+DesignPointBuilder::DesignPointBuilder(int count, DesignPointMethod method, Deltares::Models::ZModelRunner* model)
 {
 	this->count = count;
 	this->method = method;

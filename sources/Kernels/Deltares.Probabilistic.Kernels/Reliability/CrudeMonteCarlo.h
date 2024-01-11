@@ -5,11 +5,11 @@
 class CrudeMonteCarlo : public ReliabilityMethod
 {
 private:
-	DesignPoint* GetReducedDesignPoint(ZModelRunner* modelRunner, double qFail, double qRange);
-	bool CheckConvergence(ZModelRunner* modelRunner, double pf, int samples, int nmaal);
+	DesignPoint* GetReducedDesignPoint(Deltares::Models::ZModelRunner* modelRunner, double qFail, double qRange);
+	bool CheckConvergence(Deltares::Models::ZModelRunner* modelRunner, double pf, int samples, int nmaal);
 	double GetConvergence(double pf, int samples);
 public:
 	CrudeMonteCarloSettings* Settings = new CrudeMonteCarloSettings();
-	DesignPoint* getDesignPoint(ZModelRunner* modelRunner) override;
+	DesignPoint* getDesignPoint(Deltares::Models::ZModelRunner* modelRunner) override;
 };
 

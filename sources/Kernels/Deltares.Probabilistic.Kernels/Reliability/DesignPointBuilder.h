@@ -23,14 +23,14 @@ private:
     Sample* sinSample = nullptr;
     Sample* cosSample = nullptr;
     bool sampleAdded = false;
-    ZModelRunner* model = nullptr;
+    Deltares::Models::ZModelRunner* model = nullptr;
     std::unordered_map<int, double> scenarioWeights;
 
     void RegisterScenario(Sample* sample, double weight = 1);
     int GetMaxScenario();
 
 public:
-    DesignPointBuilder(int count, DesignPointMethod method, ZModelRunner* model = nullptr);
+    DesignPointBuilder(int count, DesignPointMethod method, Deltares::Models::ZModelRunner* model = nullptr);
     void Initialize(double beta);
     void AddSample(Sample* sample, double weight = 1);
     Sample* GetSample();

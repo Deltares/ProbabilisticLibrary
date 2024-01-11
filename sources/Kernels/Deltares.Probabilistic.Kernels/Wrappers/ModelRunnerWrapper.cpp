@@ -1,12 +1,17 @@
 #include "ModelRunnerWrapper.h"
 
+#include "ProgressIndicatorWrapper.h"
+
 namespace Deltares
 {
 	namespace Probabilistic
 	{
 		namespace Kernels
 		{
-			ModelRunnerWrapper::ModelRunnerWrapper(System::Collections::Generic::List<StochastWrapper^>^ stochasts, CorrelationMatrixWrapper^ correlationMatrix, ZSampleDelegate^ zFunction)
+			public delegate void ManagedSampleDelegate(Sample* sample);
+			public delegate void ManagedMultipleSampleDelegate(Sample** samples, int count);
+
+			ModelRunnerWrapper::ModelRunnerWrapper(ZSampleDelegate^ zFunction, System::Collections::Generic::List<StochastWrapper^>^ stochasts, CorrelationMatrixWrapper^ correlationMatrix, ProgressIndicatorWrapper^ progressIndicator)
 			{
 				this->zFunction = zFunction;
 
@@ -24,13 +29,15 @@ namespace Deltares
 
 				ZModel* zModel = getZModel();
 
-				this->modelRunner = new ZModelRunner(zModel, uConverter);
+				Models::ProgressIndicator* progress = progressIndicator != nullptr ? progressIndicator->getProgressIndicator() : nullptr;
+
+				this->modelRunner = new Models::ZModelRunner(zModel, uConverter, progress);
 			}
 
 			ZDelegate ModelRunnerWrapper::getZDelegate()
 			{
 				ZSampleDelegate^ zSampleDelegate = gcnew ZSampleDelegate(this, &ModelRunnerWrapper::CalcZValue);
-				ModelRunnerWrapper::zSampleFunction = zSampleDelegate;
+				this->zSampleFunction = zSampleDelegate;
 
 				ManagedSampleDelegate^ fp = gcnew ManagedSampleDelegate(this, &ModelRunnerWrapper::invokeSample);
 				System::Runtime::InteropServices::GCHandle handle = System::Runtime::InteropServices::GCHandle::Alloc(fp);
@@ -45,7 +52,7 @@ namespace Deltares
 			ZMultipleDelegate ModelRunnerWrapper::getZMultipleDelegate()
 			{
 				ZMultipleSampleDelegate^ zSampleDelegate = gcnew ZMultipleSampleDelegate(this, &ModelRunnerWrapper::CalcZValues);
-				ModelRunnerWrapper::zMultipleSampleFunction = zSampleDelegate;
+				this->zMultipleSampleFunction = zSampleDelegate;
 
 				ManagedMultipleSampleDelegate^ fp = gcnew ManagedMultipleSampleDelegate(this, &ModelRunnerWrapper::invokeMultipleSamples);
 				System::Runtime::InteropServices::GCHandle handle = System::Runtime::InteropServices::GCHandle::Alloc(fp);
