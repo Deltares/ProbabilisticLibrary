@@ -68,6 +68,8 @@
     <ClCompile Include="Wrappers\ModelRunnerWrapper.cpp" />
     <ClCompile Include="Model\ProgressIndicator.cpp" />
     <ClCompile Include="Wrappers\ProgressIndicatorWrapper.cpp" />
+    <ClCompile Include="Model\Evaluation.cpp" />
+    <ClCompile Include="Wrappers\EvaluationWrapper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -142,6 +144,8 @@
     <ClInclude Include="Wrappers\ModelRunnerWrapper.h" />
     <ClInclude Include="Model\ProgressIndicator.h" />
     <ClInclude Include="Wrappers\ProgressIndicatorWrapper.h" />
+    <ClInclude Include="Model\Evaluation.h" />
+    <ClInclude Include="Wrappers\EvaluationWrapper.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

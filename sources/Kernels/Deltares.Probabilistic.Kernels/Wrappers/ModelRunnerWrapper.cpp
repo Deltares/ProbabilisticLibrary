@@ -8,8 +8,8 @@ namespace Deltares
 	{
 		namespace Kernels
 		{
-			public delegate void ManagedSampleDelegate(Sample* sample);
-			public delegate void ManagedMultipleSampleDelegate(Sample** samples, int count);
+			delegate void ManagedSampleDelegate(Sample* sample);
+			delegate void ManagedMultipleSampleDelegate(Sample** samples, int count);
 
 			ModelRunnerWrapper::ModelRunnerWrapper(ZSampleDelegate^ zFunction, System::Collections::Generic::List<StochastWrapper^>^ stochasts, CorrelationMatrixWrapper^ correlationMatrix, ProgressIndicatorWrapper^ progressIndicator)
 			{
@@ -36,9 +36,6 @@ namespace Deltares
 
 			ZDelegate ModelRunnerWrapper::getZDelegate()
 			{
-				ZSampleDelegate^ zSampleDelegate = gcnew ZSampleDelegate(this, &ModelRunnerWrapper::CalcZValue);
-				this->zSampleFunction = zSampleDelegate;
-
 				ManagedSampleDelegate^ fp = gcnew ManagedSampleDelegate(this, &ModelRunnerWrapper::invokeSample);
 				System::Runtime::InteropServices::GCHandle handle = System::Runtime::InteropServices::GCHandle::Alloc(fp);
 				handles->Add(handle);
@@ -51,9 +48,6 @@ namespace Deltares
 
 			ZMultipleDelegate ModelRunnerWrapper::getZMultipleDelegate()
 			{
-				ZMultipleSampleDelegate^ zSampleDelegate = gcnew ZMultipleSampleDelegate(this, &ModelRunnerWrapper::CalcZValues);
-				this->zMultipleSampleFunction = zSampleDelegate;
-
 				ManagedMultipleSampleDelegate^ fp = gcnew ManagedMultipleSampleDelegate(this, &ModelRunnerWrapper::invokeMultipleSamples);
 				System::Runtime::InteropServices::GCHandle handle = System::Runtime::InteropServices::GCHandle::Alloc(fp);
 				handles->Add(handle);
@@ -77,7 +71,7 @@ namespace Deltares
 			{
 				SampleWrapper^ sampleWrapper = gcnew SampleWrapper(sample);
 
-				zSampleFunction->Invoke(sampleWrapper);
+				this->CalcZValue(sampleWrapper);
 			}
 
 			void ModelRunnerWrapper::invokeMultipleSamples(Sample** samples, int count)
@@ -89,7 +83,7 @@ namespace Deltares
 					sampleWrappers->Add(gcnew SampleWrapper(samples[i]));
 				}
 
-				zMultipleSampleFunction->Invoke(sampleWrappers);
+				this->CalcZValues(sampleWrappers);
 			}
 
 			void ModelRunnerWrapper::CalcZValues(System::Collections::Generic::IList<SampleWrapper^>^ samples)

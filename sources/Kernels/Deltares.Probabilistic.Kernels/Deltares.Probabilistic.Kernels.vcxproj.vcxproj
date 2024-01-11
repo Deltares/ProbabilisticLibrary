@@ -149,6 +149,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Wrappers\EvaluationWrapper.h" />
+    <ClInclude Include="Model\Evaluation.h" />
     <ClInclude Include="Math\Random.h" />
     <ClInclude Include="Math\Randomizers\GeorgeMarsagliaRandomValueGenerator.h" />
     <ClInclude Include="Math\Randomizers\MersenneTwisterRandomValueGenerator.h" />
@@ -202,6 +204,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\external\src\extern\asa241.cpp" />
+    <ClCompile Include="Wrappers\EvaluationWrapper.cpp" />
+    <ClCompile Include="Model\Evaluation.cpp" />
     <ClCompile Include="Math\Random.cpp" />
     <ClCompile Include="Math\Randomizers\GeorgeMarsagliaRandomValueGenerator.cpp" />
     <ClCompile Include="Math\Randomizers\MersenneTwisterRandomValueGenerator.cpp" />

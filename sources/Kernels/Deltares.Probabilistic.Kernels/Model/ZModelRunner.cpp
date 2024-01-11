@@ -49,7 +49,7 @@ namespace Deltares
 
 		void ZModelRunner::reportResult(ReliabilityReport* report)
 		{
-			if (RunSettings->SaveConvergence)
+			if (Settings->SaveConvergence)
 			{
 				bool hasPreviousReport = this->reliabilityResults.size() > 0;
 

@@ -1,6 +1,7 @@
 #pragma once
 #include "CorrelationMatrixWrapper.h"
 #include "ProgressIndicatorWrapper.h"
+#include "RunSettingsWrapper.h"
 #include "StochastWrapper.h"
 #include "SampleWrapper.h"
 #include "../Model/ZModel.h"
@@ -14,7 +15,6 @@ namespace Deltares
 		namespace Kernels
 		{
 			public delegate void ZSampleDelegate(SampleWrapper^);
-			public delegate void ZMultipleSampleDelegate(System::Collections::Generic::IList<SampleWrapper^>^);
 
 			public ref class ModelRunnerWrapper
 			{
@@ -27,9 +27,6 @@ namespace Deltares
 
 				void CalcZValues(System::Collections::Generic::IList<SampleWrapper^>^ samples);
 				void CalcZValue(SampleWrapper^ sample);
-
-				ZSampleDelegate^ zSampleFunction;
-				ZMultipleSampleDelegate^ zMultipleSampleFunction;
 
 				void invokeSample(Sample* sample);
 				void invokeMultipleSamples(Sample** samples, int count);
@@ -53,8 +50,11 @@ namespace Deltares
 				virtual void GetZValues(System::Collections::Generic::IList<SampleWrapper^>^ samples);
 				virtual void GetZValue(SampleWrapper^ sample);
 
+				RunSettingsWrapper^ Settings = gcnew RunSettingsWrapper();
+
 				Models::ZModelRunner* GetModelRunner()
 				{
+					modelRunner->Settings = this->Settings->GetSettings();
 					return modelRunner;
 				}
 			};

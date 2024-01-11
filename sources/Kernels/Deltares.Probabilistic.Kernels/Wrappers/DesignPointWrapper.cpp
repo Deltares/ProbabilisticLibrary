@@ -6,12 +6,27 @@ void Deltares::Probabilistic::Kernels::DesignPointWrapper::SetDesignPoint(Design
 
 	SetStochastPoint(designPoint, stochasts);
 
-	this->ConvergenceReport = gcnew Deltares::Probabilistic::Kernels::ConvergenceReportWrapper(designPoint->ConvergenceReport);
+	this->ConvergenceReport = gcnew ConvergenceReportWrapper(designPoint->ConvergenceReport);
 
 	for (int i = 0; i < designPoint->ReliabililityResults.size(); i++)
 	{
-		Deltares::Probabilistic::Kernels::ReliabilityResultWrapper^ resultWrapper = gcnew Deltares::Probabilistic::Kernels::ReliabilityResultWrapper(designPoint->ReliabililityResults[i]);
+		ReliabilityResultWrapper^ resultWrapper = gcnew ReliabilityResultWrapper(designPoint->ReliabililityResults[i]);
 		this->ReliabilityResults->Add(resultWrapper);
 	}
+
+	for (int i = 0; i < designPoint->Evaluations.size(); i++)
+	{
+		EvaluationWrapper^ evaluationWrapper = gcnew EvaluationWrapper(designPoint->Evaluations[i]);
+		this->Evaluations->Add(evaluationWrapper);
+	}
+}
+
+std::string Deltares::Probabilistic::Kernels::DesignPointWrapper::MarshalString(System::String^ s)
+{
+	const char* chars =	(const char*)(System::Runtime::InteropServices::Marshal::StringToHGlobalAnsi(s)).ToPointer();
+	std::string os = chars;
+	System::Runtime::InteropServices::Marshal::FreeHGlobal(System::IntPtr((void*)chars));
+
+	return os;
 }
 
