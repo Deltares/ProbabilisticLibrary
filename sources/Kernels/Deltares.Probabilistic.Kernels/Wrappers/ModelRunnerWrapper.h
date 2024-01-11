@@ -28,21 +28,28 @@ namespace Deltares
 				ZMultipleDelegate getZMultipleDelegate();
 				ZSampleDelegate^ zFunction = nullptr;
 
-				static void CalcZValues(System::Collections::Generic::IList<SampleWrapper^>^ samples);
-				static void CalcZValue(SampleWrapper^ sample);
+				void CalcZValues(System::Collections::Generic::IList<SampleWrapper^>^ samples);
+				void CalcZValue(SampleWrapper^ sample);
 
-				static ZSampleDelegate^ zSampleFunction;
-				static ZMultipleSampleDelegate^ zMultipleSampleFunction;
+				ZSampleDelegate^ zSampleFunction;
+				ZMultipleSampleDelegate^ zMultipleSampleFunction;
 
-				static void invokeSample(Sample* sample);
-				static void invokeMultipleSamples(Sample** samples, int count);
+				void invokeSample(Sample* sample);
+				void invokeMultipleSamples(Sample** samples, int count);
 
-				static ModelRunnerWrapper^ instance;
+				System::Collections::Generic::List<System::Runtime::InteropServices::GCHandle>^ handles = gcnew System::Collections::Generic::List<System::Runtime::InteropServices::GCHandle>();
 
 			public:
 				ModelRunnerWrapper(System::Collections::Generic::List<StochastWrapper^>^ stochasts, CorrelationMatrixWrapper^ correlationMatrix, ZSampleDelegate^ zFunction);
 				~ModelRunnerWrapper() { this->!ModelRunnerWrapper(); }
-				!ModelRunnerWrapper() { delete modelRunner; }
+				!ModelRunnerWrapper()
+				{
+					for (int i = 0; i < handles->Count; i++)
+					{
+						handles[i].Free();
+					}
+					delete modelRunner;
+				}
 
 				System::Collections::Generic::List<StochastWrapper^>^ Stochasts = gcnew System::Collections::Generic::List<StochastWrapper^>();
 

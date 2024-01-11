@@ -8,8 +8,6 @@ namespace Deltares
 		{
 			ModelRunnerWrapper::ModelRunnerWrapper(System::Collections::Generic::List<StochastWrapper^>^ stochasts, CorrelationMatrixWrapper^ correlationMatrix, ZSampleDelegate^ zFunction)
 			{
-				ModelRunnerWrapper::instance = this;
-
 				this->zFunction = zFunction;
 
 				this->Stochasts->AddRange(stochasts);
@@ -31,11 +29,12 @@ namespace Deltares
 
 			ZDelegate ModelRunnerWrapper::getZDelegate()
 			{
-				ZSampleDelegate^ zSampleDelegate = gcnew ZSampleDelegate(this->CalcZValue);
+				ZSampleDelegate^ zSampleDelegate = gcnew ZSampleDelegate(this, &ModelRunnerWrapper::CalcZValue);
 				ModelRunnerWrapper::zSampleFunction = zSampleDelegate;
 
-				ManagedSampleDelegate^ fp = gcnew ManagedSampleDelegate(ModelRunnerWrapper::invokeSample);
-				System::Runtime::InteropServices::GCHandle gch = System::Runtime::InteropServices::GCHandle::Alloc(fp);
+				ManagedSampleDelegate^ fp = gcnew ManagedSampleDelegate(this, &ModelRunnerWrapper::invokeSample);
+				System::Runtime::InteropServices::GCHandle handle = System::Runtime::InteropServices::GCHandle::Alloc(fp);
+				handles->Add(handle);
 
 				System::IntPtr callbackPtr = System::Runtime::InteropServices::Marshal::GetFunctionPointerForDelegate(fp);
 				ZDelegate functionPointer = static_cast<ZDelegate>(callbackPtr.ToPointer());
@@ -45,11 +44,12 @@ namespace Deltares
 
 			ZMultipleDelegate ModelRunnerWrapper::getZMultipleDelegate()
 			{
-				ZMultipleSampleDelegate^ zSampleDelegate = gcnew ZMultipleSampleDelegate(this->CalcZValues);
+				ZMultipleSampleDelegate^ zSampleDelegate = gcnew ZMultipleSampleDelegate(this, &ModelRunnerWrapper::CalcZValues);
 				ModelRunnerWrapper::zMultipleSampleFunction = zSampleDelegate;
 
-				ManagedMultipleSampleDelegate^ fp = gcnew ManagedMultipleSampleDelegate(ModelRunnerWrapper::invokeMultipleSamples);
-				System::Runtime::InteropServices::GCHandle gch = System::Runtime::InteropServices::GCHandle::Alloc(fp);
+				ManagedMultipleSampleDelegate^ fp = gcnew ManagedMultipleSampleDelegate(this, &ModelRunnerWrapper::invokeMultipleSamples);
+				System::Runtime::InteropServices::GCHandle handle = System::Runtime::InteropServices::GCHandle::Alloc(fp);
+				handles->Add(handle);
 
 				System::IntPtr callbackPtr = System::Runtime::InteropServices::Marshal::GetFunctionPointerForDelegate(fp);
 				ZMultipleDelegate functionPointer = static_cast<ZMultipleDelegate>(callbackPtr.ToPointer());
@@ -87,12 +87,12 @@ namespace Deltares
 
 			void ModelRunnerWrapper::CalcZValues(System::Collections::Generic::IList<SampleWrapper^>^ samples)
 			{
-				instance->GetZValues(samples);
+				this->GetZValues(samples);
 			}
 
 			void ModelRunnerWrapper::CalcZValue(SampleWrapper^ sample)
 			{
-				instance->GetZValue(sample);
+				this->GetZValue(sample);
 			}
 
 			void ModelRunnerWrapper::GetZValues(System::Collections::Generic::IList<SampleWrapper^>^ samples)
@@ -105,7 +105,7 @@ namespace Deltares
 
 			void ModelRunnerWrapper::GetZValue(SampleWrapper^ sample)
 			{
-				instance->zFunction->Invoke(sample);
+				this->zFunction->Invoke(sample);
 			}
 		}
 	}
