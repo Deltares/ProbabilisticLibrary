@@ -2,6 +2,7 @@
 #include "DesignPoint.h"
 #include "../Math/NumericSupport.h"
 #include <stdarg.h>
+#include <format>
 
 namespace Deltares
 {
@@ -92,7 +93,7 @@ namespace Deltares
 			    this->progressIndicator->doProgress(progressIndicator);
 				this->progressIndicator->doDetailedProgress(report->Step, report->Loop, report->Reliability, convergence);
 
-				std::string text = std::to_string(report->Step) + "/" + std::to_string(report->MaxSteps) + ", Reliability = " + std::to_string(NumericSupport::round(report->Reliability, 3)) + ", Convergence = " + std::to_string(NumericSupport::round(convergence, 3));
+				auto text = std::format("{}/{}, Reliability = {:.3}, Convergence = {:.3}", report->Step, report->MaxSteps, report->Reliability, convergence);
 
 				this->progressIndicator->doTextualProgress(ProgressType::Detailed, text);
 			}
