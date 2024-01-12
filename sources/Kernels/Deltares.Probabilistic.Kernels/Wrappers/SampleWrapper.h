@@ -1,4 +1,5 @@
 #pragma once
+#include "NativeSupport.h"
 #include "../Model/Sample.h"
 
 
@@ -14,7 +15,6 @@ namespace Deltares
 				Sample* sample;
 				array<double>^ values = nullptr;
 				array<double>^ xValues = nullptr;
-				array<double>^ ConvertArray(double* values, int size);
 
 			public:
 				SampleWrapper(Sample* sample)
@@ -28,7 +28,7 @@ namespace Deltares
 					{
 						if (values == nullptr)
 						{
-							values = ConvertArray(sample->Values, sample->getSize());
+							values = NativeSupport::toManaged(sample->Values, sample->getSize());
 						}
 
 						return values;
@@ -41,7 +41,7 @@ namespace Deltares
 					{
 						if (xValues == nullptr)
 						{
-							xValues = ConvertArray(sample->XValues, sample->getSize());
+							xValues = NativeSupport::toManaged(sample->XValues, sample->getSize());
 						}
 
 						return xValues;

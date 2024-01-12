@@ -1,5 +1,6 @@
 #pragma once
 
+#include "NativeSupport.h"
 #include "../Model/Evaluation.h"
 
 namespace Deltares
@@ -13,7 +14,6 @@ namespace Deltares
 			private:
 				array<double>^ input = nullptr;
 				array<double>^ result = nullptr;
-				array<double>^ ConvertArray(double* values, int size);
 
 				Evaluation* evaluation;
 			public:
@@ -52,7 +52,7 @@ namespace Deltares
 					{
 						if (input == nullptr)
 						{
-							input = ConvertArray(evaluation->X, evaluation->SizeX);
+							input = NativeSupport::toManaged(evaluation->X, evaluation->SizeX);
 						}
 
 						return input;
@@ -65,7 +65,7 @@ namespace Deltares
 					{
 						if (result == nullptr)
 						{
-							result = ConvertArray(evaluation->R, evaluation->SizeR);
+							input = NativeSupport::toManaged(evaluation->X, evaluation->SizeX);
 						}
 
 						return result;

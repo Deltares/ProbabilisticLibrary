@@ -70,6 +70,7 @@
     <ClCompile Include="Wrappers\ProgressIndicatorWrapper.cpp" />
     <ClCompile Include="Model\Evaluation.cpp" />
     <ClCompile Include="Wrappers\EvaluationWrapper.cpp" />
+    <ClCompile Include="Wrappers\NativeSupport.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -146,6 +147,7 @@
     <ClInclude Include="Wrappers\ProgressIndicatorWrapper.h" />
     <ClInclude Include="Model\Evaluation.h" />
     <ClInclude Include="Wrappers\EvaluationWrapper.h" />
+    <ClInclude Include="Wrappers\NativeSupport.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

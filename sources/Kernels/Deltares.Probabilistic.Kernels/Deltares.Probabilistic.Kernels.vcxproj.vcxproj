@@ -149,6 +149,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Wrappers\NativeSupport.h" />
     <ClInclude Include="Wrappers\EvaluationWrapper.h" />
     <ClInclude Include="Model\Evaluation.h" />
     <ClInclude Include="Math\Random.h" />
@@ -204,6 +205,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\external\src\extern\asa241.cpp" />
+    <ClCompile Include="Wrappers\NativeSupport.cpp" />
     <ClCompile Include="Wrappers\EvaluationWrapper.cpp" />
     <ClCompile Include="Model\Evaluation.cpp" />
     <ClCompile Include="Math\Random.cpp" />
