@@ -19,6 +19,8 @@ namespace Deltares
 
 			this->zModel->invoke(sample);
 
+			registerEvaluation(sample);
+
 			return sample->Z;
 
 		}
@@ -36,10 +38,27 @@ namespace Deltares
 
 			for (int i = 0; i < samples.size(); i++)
 			{
+				registerEvaluation(samples[i]);
 				zValues[i] = samples[i]->Z;
 			}
 
 			return zValues;
+		}
+
+		void ZModelRunner::registerEvaluation(Sample* sample)
+		{
+			if (this->Settings->SaveEvaluations)
+			{
+				Evaluation* evaluation = new Evaluation();
+
+				evaluation->Z = sample->Z;
+				evaluation->Tag = sample->Tag;
+				evaluation->X = sample->XValues;
+				evaluation->SizeX = sample->getSize();
+				evaluation->Iteration = sample->IterationIndex;
+
+				this->evaluations.push_back(evaluation);
+			}
 		}
 
 		bool ZModelRunner::shouldExitPrematurely(double* zValues, double z0Fac, std::vector<Sample*> samples, double beta)
@@ -82,7 +101,7 @@ namespace Deltares
 
 			if (this->progressIndicator != nullptr)
 			{
-			    double progressIndicator = NumericSupport::Divide(report->Step, report->MaxSteps);
+				double progressIndicator = NumericSupport::Divide(report->Step, report->MaxSteps);
 
 				double convergence = report->ConvBeta;
 				if (isnan(convergence))
@@ -90,7 +109,7 @@ namespace Deltares
 					convergence = report->Variation;
 				}
 
-			    this->progressIndicator->doProgress(progressIndicator);
+				this->progressIndicator->doProgress(progressIndicator);
 				this->progressIndicator->doDetailedProgress(report->Step, report->Loop, report->Reliability, convergence);
 
 				auto text = std::format("{}/{}, Reliability = {:.3f}, Convergence = {:.3f}", report->Step, report->MaxSteps, report->Reliability, convergence);
@@ -123,7 +142,11 @@ namespace Deltares
 				design_point->ReliabililityResults.push_back(this->reliabilityResults[i]);
 			}
 
-			//realization.Evaluations.AddRange(Evaluations);
+			for (int i = 0; i < this->evaluations.size(); i++)
+			{
+				design_point->Evaluations.push_back(this->evaluations[i]);
+			}
+
 			//realization.Messages.AddRange(Messages);
 
 			return design_point;

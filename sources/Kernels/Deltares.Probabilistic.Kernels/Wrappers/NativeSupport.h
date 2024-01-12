@@ -15,6 +15,9 @@ namespace Deltares
 
 				static double* toNative(array<double>^ values);
 				static array<double>^ toManaged(double* values, int count);
+
+				static intptr_t toNativeObject(System::Object^ object);
+				static System::Object^ toManagedObject(intptr_t pointer);
 			};
 		}
 	}

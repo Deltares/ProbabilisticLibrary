@@ -22,7 +22,10 @@ namespace Deltares
 			ZModel* zModel;
 			UConverter* uConverter;
 			std::vector<ReliabilityResult*> reliabilityResults;
+			std::vector<Evaluation*> evaluations;
 			ProgressIndicator* progressIndicator = nullptr;
+
+			void registerEvaluation(Sample* sample);
 
 		public:
 			ZModelRunner(ZModel* zModel, UConverter* uConverter, ProgressIndicator* progressIndicator = nullptr)

@@ -15,6 +15,7 @@ namespace Deltares
 				Sample* sample;
 				array<double>^ values = nullptr;
 				array<double>^ xValues = nullptr;
+				System::Object^ tag = nullptr;
 
 			public:
 				SampleWrapper(Sample* sample)
@@ -62,6 +63,24 @@ namespace Deltares
 				{
 					double get() { return sample->Z; }
 					void set(double value) { sample->Z = value; }
+				}
+
+				property System::Object^ Tag
+				{
+					System::Object^ get()
+					{
+						if (tag == nullptr && sample->Tag != 0)
+						{
+							tag = NativeSupport::toManagedObject(sample->Tag);
+						}
+
+						return tag;
+					}
+					void set(System::Object^ value)
+					{
+						tag = value;
+						sample->Tag = NativeSupport::toNativeObject(value);
+					}
 				}
 			};
 		}

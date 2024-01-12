@@ -9,6 +9,7 @@ class Sample
 {
 private:
 	int size = 0;
+	long tag = 0;
 
 public:
 	Sample(int size)
@@ -52,5 +53,7 @@ public:
 	double getBeta();
 
 	void setBeta(double beta);
+
+	intptr_t Tag = 0;
 };
 

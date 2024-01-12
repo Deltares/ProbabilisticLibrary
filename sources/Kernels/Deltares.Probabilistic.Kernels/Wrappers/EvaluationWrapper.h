@@ -14,6 +14,7 @@ namespace Deltares
 			private:
 				array<double>^ input = nullptr;
 				array<double>^ result = nullptr;
+				System::Object^ tag = nullptr;
 
 				Evaluation* evaluation;
 			public:
@@ -69,6 +70,24 @@ namespace Deltares
 						}
 
 						return result;
+					}
+				}
+
+				property System::Object^ Tag
+				{
+					System::Object^ get()
+					{
+						if (tag == nullptr && evaluation->Tag != 0)
+						{
+							tag = NativeSupport::toManagedObject(evaluation->Tag);
+						}
+
+						return tag;
+					}
+					void set(System::Object^ value)
+					{
+						tag = value;
+						evaluation->Tag = NativeSupport::toNativeObject(value);
 					}
 				}
 
