@@ -7,7 +7,7 @@ target_sources(pb_wrapper_c
   PRIVATE
     stringHelper.h
     stringHelper.cpp
-    probCalcF2C.cpp
+    probCalcF2Cnew.cpp
     randomgen.cpp
     fortranZfunc.h
     fortranZfunc.cpp
@@ -18,25 +18,11 @@ target_sources(pb_wrapper_c
     special_funcs.cpp
   )
 
-if ( TARGET tools )
-else()
-    if(WIN32)
-        add_library(pb_wrapper_dll SHARED
-            stringHelper.h
-            stringHelper.cpp
-            probCalcF2C.cpp
-            randomgen.cpp
-            fortranZfunc.h
-            fortranZfunc.cpp
-            calcdistributionsinv.cpp
-            convert.cpp
-            combin.cpp
-            correlation.cpp
-            special_funcs.cpp
-        )
-        target_link_libraries(pb_wrapper_dll probLib)
-        target_link_options(pb_wrapper_dll PRIVATE "$<$<CONFIG:Debug>:/Debug>")
+  set_target_properties(pb_wrapper_c
+    PROPERTIES
+      CXX_STANDARD 17
+      POSITION_INDEPENDENT_CODE 1
+      #COMMON_LANGUAGE_RUNTIME ""
+  )
 
-    endif(WIN32)
-endif()
-
+target_link_libraries(pb_wrapper_c probLibPtkA)

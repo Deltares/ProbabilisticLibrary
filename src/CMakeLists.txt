@@ -307,7 +307,6 @@ source_group("probMethods" FILES ${probMethods_files})
 source_group("rootFinders" FILES ${rootFinders_files})
 source_group("correlation" FILES ${correlation_files})
 source_group("combine" FILES ${combine_files})
-source_group("ptk" FILES ${ptkcpp_files} ${ptkcli_files})
 
 set_target_properties(probLib
   PROPERTIES
@@ -327,16 +326,29 @@ if(WIN32)
 endif()
 
 if(WIN32)
-  add_library(probLibPtk
+  add_library(probLibPtkA
     SHARED
       ${ptkcpp_files}
-      ${ptkcli_files}
   )
-  target_link_options(probLibPtk PRIVATE "$<$<CONFIG:Debug>:/Debug>")
-  set_target_properties(probLibPtk
+  target_link_options(probLibPtkA PRIVATE "$<$<CONFIG:Debug>:/Debug>")
+  set_target_properties(probLibPtkA
     PROPERTIES
       CXX_STANDARD 20
       POSITION_INDEPENDENT_CODE 1
-      COMMON_LANGUAGE_RUNTIME "")
+      COMMON_LANGUAGE_RUNTIME ""
+    )
+
+  add_library(probLibPtkB
+    SHARED
+      ${ptkcli_files}
+  )
+  target_link_options(probLibPtkB PRIVATE "$<$<CONFIG:Debug>:/Debug>")
+  set_target_properties(probLibPtkB
+    PROPERTIES
+      CXX_STANDARD 20
+      POSITION_INDEPENDENT_CODE 1
+      COMMON_LANGUAGE_RUNTIME ""
+  )
+  target_link_libraries(probLibPtkB probLibPtkA)
 endif()
 
