@@ -195,10 +195,14 @@ set (ptkcpp_files
     ../../Kernels/Deltares.Probabilistic.Kernels/Model/ConvergenceReport.h
     ../../Kernels/Deltares.Probabilistic.Kernels/Model/DesignPoint.cpp
     ../../Kernels/Deltares.Probabilistic.Kernels/Model/DesignPoint.h
+    ../../Kernels/Deltares.Probabilistic.Kernels/Model/Evaluation.cpp
+    ../../Kernels/Deltares.Probabilistic.Kernels/Model/Evaluation.h
     ../../Kernels/Deltares.Probabilistic.Kernels/Model/RandomGenerator.cpp
     ../../Kernels/Deltares.Probabilistic.Kernels/Model/RandomGenerator.h
     ../../Kernels/Deltares.Probabilistic.Kernels/Model/RandomSettings.cpp
     ../../Kernels/Deltares.Probabilistic.Kernels/Model/RandomSettings.h
+    ../../Kernels/Deltares.Probabilistic.Kernels/Model/ProgressIndicator.cpp
+    ../../Kernels/Deltares.Probabilistic.Kernels/Model/ProgressIndicator.h
     ../../Kernels/Deltares.Probabilistic.Kernels/Model/ReliabilityReport.cpp
     ../../Kernels/Deltares.Probabilistic.Kernels/Model/ReliabilityReport.h
     ../../Kernels/Deltares.Probabilistic.Kernels/Model/ReliabilityResult.cpp
@@ -223,8 +227,6 @@ set (ptkcpp_files
     ../../Kernels/Deltares.Probabilistic.Kernels/Reliability/CrudeMonteCarloSettings.h
     ../../Kernels/Deltares.Probabilistic.Kernels/Reliability/DesignPointBuilder.cpp
     ../../Kernels/Deltares.Probabilistic.Kernels/Reliability/DesignPointBuilder.h
-    ../../Kernels/Deltares.Probabilistic.Kernels/Reliability/Reliability.cpp
-    ../../Kernels/Deltares.Probabilistic.Kernels/Reliability/Reliability.h
     ../../Kernels/Deltares.Probabilistic.Kernels/Reliability/ReliabilityMethod.cpp
     ../../Kernels/Deltares.Probabilistic.Kernels/Reliability/ReliabilityMethod.h
     ../../Kernels/Deltares.Probabilistic.Kernels/Statistics/CorrelationMatrix.cpp
@@ -243,6 +245,8 @@ set (ptkcpp_files
     ../../Kernels/Deltares.Probabilistic.Kernels/Statistics/StochastProperties.h
     ../../Kernels/Deltares.Probabilistic.Kernels/Statistics/UniformDistribution.cpp
     ../../Kernels/Deltares.Probabilistic.Kernels/Statistics/UniformDistribution.h
+    extern/asa241.hpp
+    extern/asa241.cpp
 )
 set (ptkcli_files
     ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/ConvergenceReportWrapper.cpp
@@ -255,6 +259,8 @@ set (ptkcli_files
     ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/CrudeMonteCarloWrapper.h
     ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/DesignPointWrapper.cpp
     ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/DesignPointWrapper.h
+    ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/EvaluationWrapper.cpp
+    ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/EvaluationWrapper.h
     ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/ModelRunnerWrapper.cpp
     ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/ModelRunnerWrapper.h
     ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/RandomProvider.cpp
@@ -265,10 +271,10 @@ set (ptkcli_files
     ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/ReliabilityMethodWrapper.h
     ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/ReliabilityResultWrapper.cpp
     ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/ReliabilityResultWrapper.h
-    ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/ReliabilityWrapper.cpp
-    ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/ReliabilityWrapper.h
     ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/RunSettingsWrapper.cpp
     ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/RunSettingsWrapper.h
+    ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/ProgressIndicatorWrapper.cpp
+    ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/ProgressIndicatorWrapper.h
     ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/SampleWrapper.cpp
     ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/SampleWrapper.h
     ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/StochastPointAlphaWrapper.cpp
@@ -278,10 +284,6 @@ set (ptkcli_files
     ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/StochastWrapper.cpp
     ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/StochastWrapper.h
 )
-
-if (UNIX)
-    set (ptkcli_files )
-endif()
 
 add_library(probLib
   SHARED
@@ -294,8 +296,6 @@ add_library(probLib
     ${rootFinders_files}
     ${correlation_files}
     ${combine_files}
-    ${ptkcpp_files}
-    ${ptkcli_files}
 )
 
 source_group("extern" FILES ${extern_files})
@@ -324,5 +324,19 @@ endif()
 
 if(WIN32)
   target_link_options(probLib PRIVATE "$<$<CONFIG:Debug>:/Debug>")
-  set_target_properties(probLib PROPERTIES COMMON_LANGUAGE_RUNTIME "")
 endif()
+
+if(WIN32)
+  add_library(probLibPtk
+    SHARED
+      ${ptkcpp_files}
+      ${ptkcli_files}
+  )
+  target_link_options(probLibPtk PRIVATE "$<$<CONFIG:Debug>:/Debug>")
+  set_target_properties(probLibPtk
+    PROPERTIES
+      CXX_STANDARD 20
+      POSITION_INDEPENDENT_CODE 1
+      COMMON_LANGUAGE_RUNTIME "")
+endif()
+
