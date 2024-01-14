@@ -1,6 +1,7 @@
 #include <string>
 #include <omp.h>
 #include <memory>
+#include <functional>
 #include "fortranZfunc.h"
 #include "stringHelper.h"
 #include "../../../src/probMethods/parseAndRunMethod.h"
@@ -66,10 +67,20 @@ progress* get_progress_ptr(const int interval, const bool(*pc)(int, double, doub
     }
 }
 
+std::function<double(double[], int[], tError*)> staticF;
+
 double FDelegate (Sample* s)
 {
-    auto x0 = s->Values[0];
-    return -1.0;
+    auto xx = new double[s->getSize()];
+    for (size_t i = 0; i < s->getSize(); i++)
+    {
+        xx[i] = s->Values[i];
+    }
+    auto i = new int[4];
+    tError e = tError();
+    double result = staticF(xx, i, &e);
+    delete[] xx;
+    return result;
 }
 
 extern "C"
@@ -86,6 +97,7 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
 
     std::unique_ptr<progress> pg (get_progress_ptr(method->progressInterval, pc));
 
+    staticF = fx;
     try
     {
         auto cntDeterminists = 0;
@@ -104,7 +116,20 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
         }
 
         auto mc = CrudeMonteCarlo();
-        mc.Settings->RandomSettings->RandomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::GeorgeMarsaglia;
+        switch (method->rnd)
+        {
+            case rndTypes::GeorgeMarsaglia:
+                mc.Settings->RandomSettings->RandomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::GeorgeMarsaglia;
+                break;
+            case rndTypes::MersenneTwister:
+                mc.Settings->RandomSettings->RandomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::MersenneTwister;
+                break;
+            default:
+                mc.Settings->RandomSettings->RandomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::ModifiedKnuthSubtractive;
+                break;
+        }
+        mc.Settings->RandomSettings->Seed = method->seed1;
+        mc.Settings->RandomSettings->SeedB = method->seed2;
         auto zModel = new ZModel();
         zModel->setZDelegate(FDelegate);
         auto corr2 = new CorrelationMatrix();
@@ -115,9 +140,17 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
         auto textualProgressDelegate = TextualProgressDelegate();
         auto progress = new ProgressIndicator(progressDelegate, detailedProgressDelegate, textualProgressDelegate);
         auto modelRunner = new ZModelRunner(zModel, uConverter, progress);
-        auto doit = mc.getDesignPoint(modelRunner);
+        auto newResult = mc.getDesignPoint(modelRunner);
         lsfResult result;
 
+        result.result.setBeta(newResult->Beta);
+        auto alpha = vector1D(newResult->Alphas.size());
+        for (size_t i = 0; i < alpha.size(); i++)
+        {
+            alpha(i) = newResult->Alphas[i]->Alpha;
+        }
+
+        result.result.setAlpha(alpha);
         ierr->errorCode = 0;
         r->beta = result.result.getBeta();
         for (size_t i = 0; i < result.result.size(); i++)
