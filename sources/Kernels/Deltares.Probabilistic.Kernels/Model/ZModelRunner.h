@@ -35,6 +35,7 @@ namespace Deltares
 				this->progressIndicator = progressIndicator;
 			}
 
+			void initializeForRun();
 			double getZValue(Sample* sample);
 			double* getZValues(std::vector<Sample*> samples);
 			int getVaryingStochastCount();

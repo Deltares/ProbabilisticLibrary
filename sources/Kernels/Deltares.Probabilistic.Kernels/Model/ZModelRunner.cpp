@@ -13,6 +13,12 @@ namespace Deltares
 			return this->uConverter->getVaryingStochastCount();
 		}
 
+		void ZModelRunner::initializeForRun()
+		{
+			this->uConverter->initializeForRun();
+			this->zModel->setMaxProcesses(this->Settings->MaxParallelProcesses);
+		}
+
 		double ZModelRunner::getZValue(Sample* sample)
 		{
 			sample->XValues = this->uConverter->getXValues(sample);

@@ -25,6 +25,9 @@ namespace Deltares
 				EvaluationWrapper(Evaluation* evaluation)
 				{
 					this->evaluation = evaluation;
+
+					// retrieve the managed object directly, so the garbage collector sees that it is referenced
+					this->tag = NativeSupport::toManagedObject(evaluation->Tag);
 				}
 				~EvaluationWrapper() { this->!EvaluationWrapper(); }
 				!EvaluationWrapper() { delete evaluation; }
@@ -66,7 +69,7 @@ namespace Deltares
 					{
 						if (result == nullptr)
 						{
-							input = NativeSupport::toManaged(evaluation->X, evaluation->SizeX);
+							result = NativeSupport::toManaged(evaluation->X, evaluation->SizeX);
 						}
 
 						return result;
@@ -87,7 +90,8 @@ namespace Deltares
 					void set(System::Object^ value)
 					{
 						tag = value;
-						evaluation->Tag = NativeSupport::toNativeObject(value);
+
+						// do not update the native counterpart
 					}
 				}
 

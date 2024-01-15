@@ -52,17 +52,17 @@ namespace Deltares
 				}
 				else 
 				{
+					// keep a reference to the managed object, so that ut is not cleared by the garbage collector
+					managedObjects->Add(object);
+
 					System::Runtime::InteropServices::GCHandle handle = System::Runtime::InteropServices::GCHandle::Alloc(object);
 					System::IntPtr parameter = (System::IntPtr)handle;
-
-					// call WinAPi and pass the parameter here
-					// then free the handle when not needed:
-					//handle.Free();
-
 					void* p = parameter.ToPointer();
-
 					intptr_t t = (intptr_t) p;
+
 					return t;
+
+					// do not free the handle, it is used to store the managed object
 				}
 			}
 
@@ -84,6 +84,10 @@ namespace Deltares
 				}
 			}
 
+			void NativeSupport::releaseManagedObjects()
+			{
+				managedObjects->Clear();
+			}
 		}
 	}
 }
