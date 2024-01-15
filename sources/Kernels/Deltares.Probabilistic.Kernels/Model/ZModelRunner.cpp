@@ -13,6 +13,11 @@ namespace Deltares
 			return this->uConverter->getVaryingStochastCount();
 		}
 
+		int ZModelRunner::getStochastCount()
+		{
+			return this->uConverter->getStochastCount();
+		}
+
 		void ZModelRunner::updateStochastSettings(Reliability::StochastListSettings* settings)
 		{
 			this->uConverter->updateStochastSettings(settings);
@@ -97,16 +102,18 @@ namespace Deltares
 				result->Contribution = report->Contribution;
 				result->Index = hasPreviousReport ? previousReport->Index + 1 : 0;
 
-				//if (report.ReportMatchesEvaluation)
-				//	if (previousReport != null)
-				//	{
-				//		var previousPreviousReport = ReliabilityResults.Count > 1
-				//			? ReliabilityResults[ReliabilityResults.Count - 2]
-				//			: null;
+				if (report->ReportMatchesEvaluation && previousReport != nullptr)
+				{
+					ReliabilityResult* previousPreviousReport = this->reliabilityResults.size() > 1
+						? this->reliabilityResults[this->reliabilityResults.size() - 2]
+						: nullptr;
 
-				//		if (!previousReport.IsMeaningful(previousPreviousReport, result))
-				//			ReliabilityResults.Remove(previousReport);
-				//	}
+					// remove the last result
+					if (!previousReport->IsMeaningful(previousPreviousReport, result))
+					{
+						this->reliabilityResults.pop_back();
+					}
+				}
 
 				this->reliabilityResults.push_back(result);
 			}

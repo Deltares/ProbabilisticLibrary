@@ -25,6 +25,7 @@ public:
 	UConverter(std::vector<Stochast*> stochasts, CorrelationMatrix* correlationMatrix);
 	void initializeForRun();
 	double* getXValues(Sample* sample);
+	int getStochastCount();
 	int getVaryingStochastCount();
 	StochastPoint* GetStochastPoint(double beta, double* alphas, int count);
 	void updateStochastSettings(Deltares::Reliability::StochastListSettings* settings);

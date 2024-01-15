@@ -41,7 +41,7 @@
     <ClCompile Include="Reliability\DesignPointBuilder.cpp" />
     <ClCompile Include="Math\NumericSupport.cpp" />
     <ClCompile Include="Model\ReliabilityReport.cpp" />
-    <ClCompile Include="Model\RandomGenerator.cpp" />
+    <ClCompile Include="Model\RandomSampleGenerator.cpp" />
     <ClCompile Include="Statistics\CorrelationMatrix.cpp" />
     <ClCompile Include="Wrappers\StochastWrapper.cpp" />
     <ClCompile Include="Wrappers\CrudeMonteCarloSettingsWrapper.cpp" />
@@ -124,7 +124,7 @@
     <ClInclude Include="Math\NumericSupport.h" />
     <ClInclude Include="Reliability\DesignPointBuilder.h" />
     <ClInclude Include="Model\ReliabilityReport.h" />
-    <ClInclude Include="Model\RandomGenerator.h" />
+    <ClInclude Include="Model\RandomSampleGenerator.h" />
     <ClInclude Include="Statistics\CorrelationMatrix.h" />
     <ClInclude Include="Wrappers\StochastWrapper.h" />
     <ClInclude Include="Wrappers\CrudeMonteCarloSettingsWrapper.h" />

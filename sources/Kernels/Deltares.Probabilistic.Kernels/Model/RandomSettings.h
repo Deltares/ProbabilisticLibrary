@@ -1,8 +1,9 @@
 #pragma once
 
 #include "../Math/Random.h"
+#include "../Reliability/StochastListSettings.h"
 
-class RandomSettings
+class RandomSettings : public Deltares::Reliability::StochastListSettings
 {
 public:
 

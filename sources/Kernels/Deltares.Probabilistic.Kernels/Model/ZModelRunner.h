@@ -40,6 +40,7 @@ namespace Deltares
 			void updateStochastSettings(Reliability::StochastListSettings* settings);
 			double getZValue(Sample* sample);
 			double* getZValues(std::vector<Sample*> samples);
+			int getStochastCount();
 			int getVaryingStochastCount();
 			bool shouldExitPrematurely(double* zValues, double z0Fac, std::vector<Sample*> samples, double beta);
 			void reportResult(ReliabilityReport* report);

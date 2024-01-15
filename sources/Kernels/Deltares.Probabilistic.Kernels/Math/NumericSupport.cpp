@@ -30,6 +30,19 @@ double NumericSupport::Divide(int counter, int denominator)
 	return static_cast<double>(counter) / static_cast<double>(denominator);
 }
 
+bool NumericSupport::areEqual(double x1, double x2, double tolerance)
+{
+	if (isnan(x1) && isnan(x2))
+	{
+		return true;
+	}
+	else
+	{
+		return abs(x1 - x2) < tolerance;
+	}
+}
+
+
 double NumericSupport::round(double value, int decimals)
 {
 	double multiplier = 1;

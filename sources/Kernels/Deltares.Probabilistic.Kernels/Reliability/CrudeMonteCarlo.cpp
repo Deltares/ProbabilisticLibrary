@@ -7,7 +7,7 @@
 #include "../Model/Sample.h"
 #include "../Model/ConvergenceReport.h"
 #include "../Model/ReliabilityReport.h"
-#include "../Model/RandomGenerator.h"
+#include "../Model/RandomSampleGenerator.h"
 #include "../Model/DesignPoint.h"
 #include "CrudeMonteCarloSettings.h"
 #include "DesignPointBuilder.h"
@@ -18,7 +18,7 @@ DesignPoint* CrudeMonteCarlo::getDesignPoint(Deltares::Models::ZModelRunner* mod
 
 	double qRange = 1;
 
-	for (int i = 0; i < this->Settings->VaryingStochastSettingsCount; i++)
+	for (int i = 0; i < this->Settings->VaryingStochastCount; i++)
 	{
 		if (!this->Settings->VaryingStochastSettings[i]->isMinMaxDefault())
 		{
@@ -40,9 +40,10 @@ DesignPoint* CrudeMonteCarlo::GetReducedDesignPoint(Deltares::Models::ZModelRunn
 	double* zValues = new double[0]; // copy of z for all parallel threads as double
 	DesignPointBuilder* uMean = new DesignPointBuilder(nParameters, Settings->DesignPointMethod, modelRunner);
 
-	RandomGenerator* randomGenerator = new RandomGenerator();
-	randomGenerator->Settings = this->Settings->RandomSettings;
-	randomGenerator->initialize();
+	RandomSampleGenerator* randomSampleGenerator = new RandomSampleGenerator();
+	randomSampleGenerator->Settings = this->Settings->RandomSettings;
+	randomSampleGenerator->Settings->useStochastSettingsFrom(this->Settings);
+	randomSampleGenerator->initialize();
 
 	Sample* uMin = new Sample(nParameters);
 	double rmin = std::numeric_limits<double>::infinity();
@@ -73,7 +74,7 @@ DesignPoint* CrudeMonteCarlo::GetReducedDesignPoint(Deltares::Models::ZModelRunn
 
 			for (int i = 0; i < runs; i++)
 			{
-				samples.push_back(randomGenerator->getRandomSample(nParameters));
+				samples.push_back(randomSampleGenerator->getRandomSample());
 			}
 
 			zValues = modelRunner->getZValues(samples);

@@ -11,6 +11,7 @@ public:
 	static double* GetCartesianCoordinates(double* sphericalCoordinates, int count);
 	static double Divide(int counter, int denominator);
 	static double round(double value, int decimals);
+	static bool areEqual(double x1, double x2, double tolerance);
 };
 
 

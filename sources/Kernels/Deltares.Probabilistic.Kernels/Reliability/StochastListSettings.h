@@ -9,10 +9,12 @@ namespace Deltares
 		{
 		public:
 			Deltares::Reliability::StochastSettings** StochastSettings;
-			int StochastSettingsCount = 0;
+			int StochastCount = 0;
 
 			Deltares::Reliability::StochastSettings** VaryingStochastSettings;
-			int VaryingStochastSettingsCount = 0;
+			int VaryingStochastCount = 0;
+
+			void useStochastSettingsFrom(StochastListSettings* other);
 		};
 	}
 }

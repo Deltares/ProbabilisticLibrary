@@ -38,6 +38,11 @@ void UConverter::initializeForRun()
 	varyingCorrelationMatrix = new CorrelationMatrix();
 }
 
+int UConverter::getStochastCount()
+{
+	return this->stochasts.size();
+}
+
 int UConverter::getVaryingStochastCount()
 {
 	return this->varyingStochasts.size();
@@ -45,19 +50,22 @@ int UConverter::getVaryingStochastCount()
 
 void UConverter::updateStochastSettings(Deltares::Reliability::StochastListSettings* settings)
 {
-	settings->VaryingStochastSettings = new Deltares::Reliability::StochastSettings * [this->varyingStochasts.size()];
+	settings->VaryingStochastCount = this->varyingStochasts.size();
+	settings->VaryingStochastSettings = new Deltares::Reliability::StochastSettings * [settings->VaryingStochastCount];
 
 	int j = 0;
 	for (int i = 0; i < stochasts.size(); i++)
 	{
 		if (stochasts[i]->isVarying())
 		{
-			settings->VaryingStochastSettings[j] = i < settings->StochastSettingsCount ? settings->StochastSettings[i] : new Deltares::Reliability::StochastSettings();
+			settings->VaryingStochastSettings[j] = i < settings->StochastCount ? settings->StochastSettings[i] : new Deltares::Reliability::StochastSettings();
 			settings->VaryingStochastSettings[j]->StochastIndex = i;
 
 			j++;
 		}
 	}
+
+	settings->StochastCount = this->stochasts.size();
 }
 
 

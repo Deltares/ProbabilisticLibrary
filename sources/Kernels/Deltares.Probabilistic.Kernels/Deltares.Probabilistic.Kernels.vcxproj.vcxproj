@@ -189,7 +189,7 @@
     <ClInclude Include="Model\ZModel.h" />
     <ClInclude Include="Model\ZModelRunner.h" />
     <ClInclude Include="Model\ReliabilityReport.h" />
-    <ClInclude Include="Model\RandomGenerator.h" />
+    <ClInclude Include="Model\RandomSampleGenerator.h" />
     <ClInclude Include="Model\ConvergenceReport.h" />
     <ClInclude Include="Reliability\CrudeMonteCarlo.h" />
     <ClInclude Include="Reliability\CrudeMonteCarloSettings.h" />
@@ -248,7 +248,7 @@
     <ClCompile Include="Model\ZModel.cpp" />
     <ClCompile Include="Model\ZModelRunner.cpp" />
     <ClCompile Include="Model\ReliabilityReport.cpp" />
-    <ClCompile Include="Model\RandomGenerator.cpp" />
+    <ClCompile Include="Model\RandomSampleGenerator.cpp" />
     <ClCompile Include="Model\ConvergenceReport.cpp" />
     <ClCompile Include="Reliability\CrudeMonteCarlo.cpp" />
     <ClCompile Include="Reliability\CrudeMonteCarloSettings.cpp" />

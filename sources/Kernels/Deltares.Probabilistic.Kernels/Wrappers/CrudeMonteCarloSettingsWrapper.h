@@ -53,7 +53,7 @@ namespace Deltares
 
 				Reliability::CrudeMonteCarloSettings* GetSettings()
 				{
-					m_settings->StochastSettingsCount = StochastSettings->Count;
+					m_settings->StochastCount = StochastSettings->Count;
 					m_settings->StochastSettings = new Deltares::Reliability::StochastSettings * [StochastSettings->Count];
 
 					for (int i = 0; i < StochastSettings->Count; i++)
