@@ -7,6 +7,8 @@ using namespace ASA::conversions;
 
 double StandardNormal::BetaMax = 40;
 
+double StandardNormal::UMax = 8;
+
 void StandardNormal::normp(const double z, double& p, double& q, double& pdf)
 
 //****************************************************************************80

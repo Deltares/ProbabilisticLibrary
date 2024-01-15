@@ -10,5 +10,6 @@ public:
 	static double getQFromU(double u);
 	static double getUFromQ(double u);
 	static double BetaMax;
+	static double UMax;
 };
 

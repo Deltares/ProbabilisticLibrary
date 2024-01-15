@@ -9,7 +9,7 @@ private:
 	bool CheckConvergence(Deltares::Models::ZModelRunner* modelRunner, double pf, int samples, int nmaal);
 	double GetConvergence(double pf, int samples);
 public:
-	CrudeMonteCarloSettings* Settings = new CrudeMonteCarloSettings();
+	Deltares::Reliability::CrudeMonteCarloSettings* Settings = new Deltares::Reliability::CrudeMonteCarloSettings();
 	DesignPoint* getDesignPoint(Deltares::Models::ZModelRunner* modelRunner) override;
 };
 

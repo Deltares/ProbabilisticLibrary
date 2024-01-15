@@ -9,15 +9,29 @@
 #include "../Model/ReliabilityReport.h"
 #include "../Model/RandomGenerator.h"
 #include "../Model/DesignPoint.h"
+#include "CrudeMonteCarloSettings.h"
 #include "DesignPointBuilder.h"
 
 DesignPoint* CrudeMonteCarlo::getDesignPoint(Deltares::Models::ZModelRunner* modelRunner)
 {
-	//RemainingReliability remainingReliability = RemainingReliability();
-	//PartialProbability remaining = remainingReliability.GetRemainingProbability(modelRunner);
-	//return GetReducedDesignPoint(modelRunner, remaining.FailureProbability, 1 - remaining.Probability);
+	modelRunner->updateStochastSettings(this->Settings);
 
-	return GetReducedDesignPoint(modelRunner, 0, 1);
+	double qRange = 1;
+
+	for (int i = 0; i < this->Settings->VaryingStochastSettingsCount; i++)
+	{
+		if (!this->Settings->VaryingStochastSettings[i]->isMinMaxDefault())
+		{
+			double probLow = StandardNormal::getPFromU(this->Settings->VaryingStochastSettings[i]->MinValue);
+			double probHigh = StandardNormal::getQFromU(this->Settings->VaryingStochastSettings[i]->MaxValue);
+
+			double prob = 1 - probLow - probHigh;
+
+			qRange *= prob;
+		}
+	}
+
+	return GetReducedDesignPoint(modelRunner, 1 - qRange, qRange);
 }
 
 DesignPoint* CrudeMonteCarlo::GetReducedDesignPoint(Deltares::Models::ZModelRunner* modelRunner, double qFail, double qRange)

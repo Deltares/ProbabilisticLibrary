@@ -150,6 +150,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Reliability\StochastSettings.h" />
+    <ClInclude Include="Reliability\StochastListSettings.h" />
+    <ClInclude Include="Wrappers\StochastSettingsWrapper.h" />
     <ClInclude Include="Wrappers\NativeSupport.h" />
     <ClInclude Include="Wrappers\EvaluationWrapper.h" />
     <ClInclude Include="Model\Evaluation.h" />
@@ -206,6 +209,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\external\src\extern\asa241.cpp" />
+    <ClCompile Include="Reliability\StochastSettings.cpp" />
+    <ClCompile Include="Reliability\StochastListSettings.cpp" />
+    <ClCompile Include="Wrappers\StochastSettingsWrapper.cpp" />
     <ClCompile Include="Wrappers\NativeSupport.cpp" />
     <ClCompile Include="Wrappers\EvaluationWrapper.cpp" />
     <ClCompile Include="Model\Evaluation.cpp" />

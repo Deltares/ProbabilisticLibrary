@@ -11,6 +11,7 @@
 #include "ZModel.h"
 #include "DesignPoint.h"
 #include "ProgressIndicator.h"
+#include "../Reliability/StochastListSettings.h"
 
 namespace Deltares
 {
@@ -36,6 +37,7 @@ namespace Deltares
 			}
 
 			void initializeForRun();
+			void updateStochastSettings(Reliability::StochastListSettings* settings);
 			double getZValue(Sample* sample);
 			double* getZValues(std::vector<Sample*> samples);
 			int getVaryingStochastCount();

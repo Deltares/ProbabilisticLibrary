@@ -6,7 +6,7 @@
 #include "StochastPoint.h"
 #include "../Statistics/Stochast.h"
 #include "../Statistics/CorrelationMatrix.h"
-
+#include "../Reliability/StochastListSettings.h"
 
 class UConverter
 {
@@ -27,5 +27,6 @@ public:
 	double* getXValues(Sample* sample);
 	int getVaryingStochastCount();
 	StochastPoint* GetStochastPoint(double beta, double* alphas, int count);
+	void updateStochastSettings(Deltares::Reliability::StochastListSettings* settings);
 };
 

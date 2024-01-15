@@ -13,6 +13,12 @@ namespace Deltares
 			return this->uConverter->getVaryingStochastCount();
 		}
 
+		void ZModelRunner::updateStochastSettings(Reliability::StochastListSettings* settings)
+		{
+			this->uConverter->updateStochastSettings(settings);
+		}
+
+
 		void ZModelRunner::initializeForRun()
 		{
 			this->uConverter->initializeForRun();

@@ -71,6 +71,9 @@
     <ClCompile Include="Model\Evaluation.cpp" />
     <ClCompile Include="Wrappers\EvaluationWrapper.cpp" />
     <ClCompile Include="Wrappers\NativeSupport.cpp" />
+    <ClCompile Include="Reliability\StochastSettings.cpp" />
+    <ClCompile Include="Wrappers\StochastSettingsWrapper.cpp" />
+    <ClCompile Include="Reliability\StochastListSettings.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -148,6 +151,9 @@
     <ClInclude Include="Model\Evaluation.h" />
     <ClInclude Include="Wrappers\EvaluationWrapper.h" />
     <ClInclude Include="Wrappers\NativeSupport.h" />
+    <ClInclude Include="Reliability\StochastSettings.h" />
+    <ClInclude Include="Wrappers\StochastSettingsWrapper.h" />
+    <ClInclude Include="Reliability\StochastListSettings.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

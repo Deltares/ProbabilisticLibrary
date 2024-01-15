@@ -19,9 +19,7 @@ protected:
 public:
 	virtual DesignPoint* getDesignPoint(Deltares::Models::ZModelRunner* modelRunner) { return nullptr; };
 
-
 	bool isStopped();
-
 	void Stop();
 };
 

@@ -2,7 +2,9 @@
 
 #include "RandomSettingsWrapper.h"
 #include "RunSettingsWrapper.h"
+#include "StochastSettingsWrapper.h"
 #include "../Reliability/CrudeMonteCarloSettings.h"
+#include "../Reliability/StochastSettings.h"
 
 namespace Deltares
 {
@@ -13,12 +15,12 @@ namespace Deltares
 			public ref class CrudeMonteCarloSettingsWrapper
 			{
 			private:
-				CrudeMonteCarloSettings* m_settings;
+				Reliability::CrudeMonteCarloSettings* m_settings;
 
 			public:
 				CrudeMonteCarloSettingsWrapper()
 				{
-					m_settings = new CrudeMonteCarloSettings();
+					m_settings = new Reliability::CrudeMonteCarloSettings();
 					m_settings->RunSettings = RunSettings->GetSettings();
 					m_settings->RandomSettings = RandomSettings->GetSettings();
 				}
@@ -47,8 +49,18 @@ namespace Deltares
 
 				RandomSettingsWrapper^ RandomSettings = gcnew RandomSettingsWrapper;
 
-				CrudeMonteCarloSettings* GetSettings()
+				System::Collections::Generic::List<StochastSettingsWrapper^>^ StochastSettings = gcnew System::Collections::Generic::List<StochastSettingsWrapper^>();
+
+				Reliability::CrudeMonteCarloSettings* GetSettings()
 				{
+					m_settings->StochastSettingsCount = StochastSettings->Count;
+					m_settings->StochastSettings = new Deltares::Reliability::StochastSettings * [StochastSettings->Count];
+
+					for (int i = 0; i < StochastSettings->Count; i++)
+					{
+						m_settings->StochastSettings[i] = StochastSettings[i]->getSettings();
+					}
+
 					return m_settings;
 				}
 			};
