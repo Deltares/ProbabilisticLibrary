@@ -136,6 +136,7 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
             }
             auto s = new Stochast(dist, params);
             stochast.push_back(s);
+            delete[] params;
         }
 
         auto mc = CrudeMonteCarlo();
@@ -165,7 +166,7 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
         auto textualProgressDelegate = TextualProgressDelegate();
         auto progress = new ProgressIndicator(progressDelegate, detailedProgressDelegate, textualProgressDelegate);
         auto modelRunner = new ZModelRunner(zModel, uConverter, progress);
-        auto newResult = mc.getDesignPoint(modelRunner);
+        std::unique_ptr<DesignPoint> newResult(mc.getDesignPoint(modelRunner));
 
         auto alpha = vector1D(newResult->Alphas.size());
         for (size_t i = 0; i < alpha.size(); i++)

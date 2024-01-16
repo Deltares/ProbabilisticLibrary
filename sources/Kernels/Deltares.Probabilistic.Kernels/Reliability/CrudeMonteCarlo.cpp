@@ -63,7 +63,12 @@ DesignPoint* CrudeMonteCarlo::getReducedDesignPoint(Deltares::Models::ZModelRunn
 
 		if (initial || zIndex >= samples.size())
 		{
+			for (size_t i = 0; i < samples.size(); i++)
+			{
+				delete(samples[i]);
+			}
 			samples.clear();
+
 			int chunkSize = Settings->RunSettings->MaxChunkSize;
 			int runs = std::min(chunkSize, Settings->MaximumSamples + 1 - sampleIndex);
 
@@ -84,6 +89,7 @@ DesignPoint* CrudeMonteCarlo::getReducedDesignPoint(Deltares::Models::ZModelRunn
 				samples.push_back(sample);
 			}
 
+			delete[] zValues;
 			zValues = modelRunner->getZValues(samples);
 
 			if (initial)
@@ -168,7 +174,7 @@ void CrudeMonteCarlo::applyLimits(Sample* sample)
 
 bool CrudeMonteCarlo::checkConvergence(Deltares::Models::ZModelRunner* modelRunner, double pf, int samples, int nmaal)
 {
-	ReliabilityReport* report = new ReliabilityReport();
+	std::unique_ptr<ReliabilityReport> report(new ReliabilityReport());
 	report->Step = nmaal;
 	report->MaxSteps = Settings->MaximumSamples;
 
@@ -177,13 +183,13 @@ bool CrudeMonteCarlo::checkConvergence(Deltares::Models::ZModelRunner* modelRunn
 		double convergence = getConvergence(pf, samples);
 		report->Reliability = StandardNormal::getUFromQ(pf);
 		report->Variation = convergence;
-		modelRunner->reportResult(report);
+		modelRunner->reportResult(report.get());
 		bool enoughSamples = nmaal >= Settings->MinimumSamples;
 		return enoughSamples && convergence < Settings->VariationCoefficient;
 	}
 	else
 	{
-		modelRunner->reportResult(report);
+		modelRunner->reportResult(report.get());
 		return false;
 	}
 }
