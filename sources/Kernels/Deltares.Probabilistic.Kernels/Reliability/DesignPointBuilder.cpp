@@ -32,7 +32,7 @@ DesignPointBuilder::DesignPointBuilder(int count, DesignPointMethod method, Delt
 
 void DesignPointBuilder::Initialize(double beta)
 {
-	double value = sqrt(beta / count);
+	double value = NumericSupport::GetSign(beta) * sqrt(abs(beta) / count);
 
 	for (int i = 0; i < count; i++)
 	{

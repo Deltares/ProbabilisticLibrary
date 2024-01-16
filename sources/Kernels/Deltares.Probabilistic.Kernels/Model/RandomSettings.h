@@ -1,9 +1,9 @@
 #pragma once
 
 #include "../Math/Random.h"
-#include "../Reliability/StochastListSettings.h"
+#include "../Reliability/StochastSettingsSet.h"
 
-class RandomSettings : public Deltares::Reliability::StochastListSettings
+class RandomSettings
 {
 public:
 
@@ -25,5 +25,7 @@ public:
     /// Additional seed for randomizer
     /// </summary>
     int SeedB = 0;
+
+    Deltares::Reliability::StochastSettingsSet* StochastSet = new Deltares::Reliability::StochastSettingsSet();
 };
 
