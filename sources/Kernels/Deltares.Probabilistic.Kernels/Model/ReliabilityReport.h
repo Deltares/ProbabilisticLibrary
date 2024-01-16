@@ -12,5 +12,6 @@ public:
     int Loop = 0;
     int MaxSteps = 0;
     double Contribution = std::numeric_limits<double>::quiet_NaN();
+    bool ReportMatchesEvaluation = true;
 };
 

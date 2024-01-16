@@ -11,6 +11,7 @@
 #include "ZModel.h"
 #include "DesignPoint.h"
 #include "ProgressIndicator.h"
+#include "../Reliability/StochastListSettings.h"
 
 namespace Deltares
 {
@@ -22,7 +23,10 @@ namespace Deltares
 			ZModel* zModel;
 			UConverter* uConverter;
 			std::vector<ReliabilityResult*> reliabilityResults;
+			std::vector<Evaluation*> evaluations;
 			ProgressIndicator* progressIndicator = nullptr;
+
+			void registerEvaluation(Sample* sample);
 
 		public:
 			ZModelRunner(ZModel* zModel, UConverter* uConverter, ProgressIndicator* progressIndicator = nullptr)
@@ -32,8 +36,11 @@ namespace Deltares
 				this->progressIndicator = progressIndicator;
 			}
 
+			void initializeForRun();
+			void updateStochastSettings(Reliability::StochastListSettings* settings);
 			double getZValue(Sample* sample);
 			double* getZValues(std::vector<Sample*> samples);
+			int getStochastCount();
 			int getVaryingStochastCount();
 			bool shouldExitPrematurely(double* zValues, double z0Fac, std::vector<Sample*> samples, double beta);
 			void reportResult(ReliabilityReport* report);

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "NativeSupport.h"
 #include "../Model/Evaluation.h"
 
 namespace Deltares
@@ -13,7 +14,7 @@ namespace Deltares
 			private:
 				array<double>^ input = nullptr;
 				array<double>^ result = nullptr;
-				array<double>^ ConvertArray(double* values, int size);
+				System::Object^ tag = nullptr;
 
 				Evaluation* evaluation;
 			public:
@@ -24,6 +25,9 @@ namespace Deltares
 				EvaluationWrapper(Evaluation* evaluation)
 				{
 					this->evaluation = evaluation;
+
+					// retrieve the managed object directly, so the garbage collector sees that it is referenced
+					this->tag = NativeSupport::toManagedObject(evaluation->Tag);
 				}
 				~EvaluationWrapper() { this->!EvaluationWrapper(); }
 				!EvaluationWrapper() { delete evaluation; }
@@ -52,7 +56,7 @@ namespace Deltares
 					{
 						if (input == nullptr)
 						{
-							input = ConvertArray(evaluation->X, evaluation->SizeX);
+							input = NativeSupport::toManaged(evaluation->X, evaluation->SizeX);
 						}
 
 						return input;
@@ -65,10 +69,29 @@ namespace Deltares
 					{
 						if (result == nullptr)
 						{
-							result = ConvertArray(evaluation->R, evaluation->SizeR);
+							result = NativeSupport::toManaged(evaluation->X, evaluation->SizeX);
 						}
 
 						return result;
+					}
+				}
+
+				property System::Object^ Tag
+				{
+					System::Object^ get()
+					{
+						if (tag == nullptr && evaluation->Tag != 0)
+						{
+							tag = NativeSupport::toManagedObject(evaluation->Tag);
+						}
+
+						return tag;
+					}
+					void set(System::Object^ value)
+					{
+						tag = value;
+
+						// do not update the native counterpart
 					}
 				}
 

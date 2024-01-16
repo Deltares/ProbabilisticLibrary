@@ -122,6 +122,7 @@
       <ExceptionHandling>Async</ExceptionHandling>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <AdditionalOptions>/Zc:twoPhase- %(AdditionalOptions)</AdditionalOptions>
+      <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -149,6 +150,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Reliability\StochastSettings.h" />
+    <ClInclude Include="Reliability\StochastListSettings.h" />
+    <ClInclude Include="Wrappers\StochastSettingsWrapper.h" />
+    <ClInclude Include="Wrappers\NativeSupport.h" />
     <ClInclude Include="Wrappers\EvaluationWrapper.h" />
     <ClInclude Include="Model\Evaluation.h" />
     <ClInclude Include="Math\Random.h" />
@@ -184,7 +189,7 @@
     <ClInclude Include="Model\ZModel.h" />
     <ClInclude Include="Model\ZModelRunner.h" />
     <ClInclude Include="Model\ReliabilityReport.h" />
-    <ClInclude Include="Model\RandomGenerator.h" />
+    <ClInclude Include="Model\RandomSampleGenerator.h" />
     <ClInclude Include="Model\ConvergenceReport.h" />
     <ClInclude Include="Reliability\CrudeMonteCarlo.h" />
     <ClInclude Include="Reliability\CrudeMonteCarloSettings.h" />
@@ -204,6 +209,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\external\src\extern\asa241.cpp" />
+    <ClCompile Include="Reliability\StochastSettings.cpp" />
+    <ClCompile Include="Reliability\StochastListSettings.cpp" />
+    <ClCompile Include="Wrappers\StochastSettingsWrapper.cpp" />
+    <ClCompile Include="Wrappers\NativeSupport.cpp" />
     <ClCompile Include="Wrappers\EvaluationWrapper.cpp" />
     <ClCompile Include="Model\Evaluation.cpp" />
     <ClCompile Include="Math\Random.cpp" />
@@ -239,7 +248,7 @@
     <ClCompile Include="Model\ZModel.cpp" />
     <ClCompile Include="Model\ZModelRunner.cpp" />
     <ClCompile Include="Model\ReliabilityReport.cpp" />
-    <ClCompile Include="Model\RandomGenerator.cpp" />
+    <ClCompile Include="Model\RandomSampleGenerator.cpp" />
     <ClCompile Include="Model\ConvergenceReport.cpp" />
     <ClCompile Include="Reliability\CrudeMonteCarlo.cpp" />
     <ClCompile Include="Reliability\CrudeMonteCarloSettings.cpp" />

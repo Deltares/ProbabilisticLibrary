@@ -20,9 +20,9 @@ namespace Deltares
 			{
 			private:
 				Models::ZModelRunner* modelRunner;
-				ZModel* getZModel();
-				ZDelegate getZDelegate();
-				ZMultipleDelegate getZMultipleDelegate();
+				Models::ZModel* getZModel();
+				Models::ZDelegate getZDelegate();
+				Models::ZMultipleDelegate getZMultipleDelegate();
 				ZSampleDelegate^ zFunction = nullptr;
 
 				void CalcZValues(System::Collections::Generic::IList<SampleWrapper^>^ samples);

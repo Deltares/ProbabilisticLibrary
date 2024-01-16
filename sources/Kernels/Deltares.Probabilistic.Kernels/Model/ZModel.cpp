@@ -1,10 +1,53 @@
 #include "ZModel.h"
 
-#include <limits>
-
-double invoke(double* values, int count)
+namespace Deltares
 {
-	return std::numeric_limits<double>::quiet_NaN();
+	namespace Models
+	{
+		void ZModel::setMaxProcesses(int maxProcesses)
+		{
+			this->maxProcesses = maxProcesses;
+			omp_set_num_threads(maxProcesses);
+		}
+
+		void ZModel::invoke(Sample* sample)
+		{
+			this->zDelegate(sample);
+		}
+
+		void ZModel::invoke(std::vector<Sample*> samples)
+		{
+			if (zMultipleDelegate == nullptr)
+			{
+				if (this->maxProcesses > 1)
+				{
+					#pragma omp parallel for
+					for (int i = 0; i < samples.size(); i++)
+					{
+						invoke(samples[i]);
+					}
+				}
+				else
+				{
+					for (int i = 0; i < samples.size(); i++)
+					{
+						invoke(samples[i]);
+					}
+				}
+			}
+			else
+			{
+				Sample** sampleList = new Sample * [samples.size()];
+
+				for (int i = 0; i < samples.size(); i++)
+				{
+					sampleList[i] = samples[i];
+				}
+
+				this->zMultipleDelegate(sampleList, samples.size());
+			}
+		}
+	}
 }
 
 

@@ -16,5 +16,8 @@ public:
     double Variation = std::numeric_limits<double>::quiet_NaN();
     double Difference = std::numeric_limits<double>::quiet_NaN();
     double Contribution = std::numeric_limits<double>::quiet_NaN();
+
+    bool IsMeaningful(ReliabilityResult* resultBefore, ReliabilityResult* resultAfter);
+
 };
 

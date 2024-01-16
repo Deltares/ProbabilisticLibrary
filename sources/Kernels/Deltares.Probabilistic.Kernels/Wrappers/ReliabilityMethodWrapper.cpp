@@ -13,9 +13,13 @@ namespace Deltares
 				ReliabilityMethod* reliabilityMethodNative = this->GetReliabilityMethod();
 				Models::ZModelRunner* modelRunnerNative = modelRunner->GetModelRunner();
 
+				modelRunnerNative->initializeForRun();
+
 				DesignPoint* designPoint = reliabilityMethodNative->getDesignPoint(modelRunnerNative);
 
 				DesignPointWrapper^ designPointWrapper = gcnew DesignPointWrapper(designPoint, modelRunner->Stochasts);
+
+				NativeSupport::releaseManagedObjects();
 
 				return designPointWrapper;
 			};

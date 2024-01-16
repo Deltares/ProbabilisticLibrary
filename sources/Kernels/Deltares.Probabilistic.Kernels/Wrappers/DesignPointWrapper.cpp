@@ -21,12 +21,3 @@ void Deltares::Probabilistic::Kernels::DesignPointWrapper::SetDesignPoint(Design
 	}
 }
 
-std::string Deltares::Probabilistic::Kernels::DesignPointWrapper::MarshalString(System::String^ s)
-{
-	const char* chars =	(const char*)(System::Runtime::InteropServices::Marshal::StringToHGlobalAnsi(s)).ToPointer();
-	std::string os = chars;
-	System::Runtime::InteropServices::Marshal::FreeHGlobal(System::IntPtr((void*)chars));
-
-	return os;
-}
-

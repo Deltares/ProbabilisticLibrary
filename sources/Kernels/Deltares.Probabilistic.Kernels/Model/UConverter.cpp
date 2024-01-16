@@ -1,6 +1,8 @@
 #include "UConverter.h"
 #include "../Statistics/Stochast.h"
 #include "../Statistics/CorrelationMatrix.h"
+#include "../Reliability/StochastSettings.h"
+#include "../Reliability/StochastListSettings.h"
 
 UConverter::UConverter(std::vector<Stochast*> stochasts, CorrelationMatrix* correlationMatrix)
 {
@@ -36,10 +38,36 @@ void UConverter::initializeForRun()
 	varyingCorrelationMatrix = new CorrelationMatrix();
 }
 
+int UConverter::getStochastCount()
+{
+	return this->stochasts.size();
+}
+
 int UConverter::getVaryingStochastCount()
 {
 	return this->varyingStochasts.size();
 }
+
+void UConverter::updateStochastSettings(Deltares::Reliability::StochastListSettings* settings)
+{
+	settings->VaryingStochastCount = this->varyingStochasts.size();
+	settings->VaryingStochastSettings = new Deltares::Reliability::StochastSettings * [settings->VaryingStochastCount];
+
+	int j = 0;
+	for (int i = 0; i < stochasts.size(); i++)
+	{
+		if (stochasts[i]->isVarying())
+		{
+			settings->VaryingStochastSettings[j] = i < settings->StochastCount ? settings->StochastSettings[i] : new Deltares::Reliability::StochastSettings();
+			settings->VaryingStochastSettings[j]->StochastIndex = i;
+
+			j++;
+		}
+	}
+
+	settings->StochastCount = this->stochasts.size();
+}
+
 
 double* UConverter::getExpandedUValues(double* values)
 {

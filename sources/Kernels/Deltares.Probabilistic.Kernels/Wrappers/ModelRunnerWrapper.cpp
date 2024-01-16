@@ -25,44 +25,44 @@ namespace Deltares
 				}
 
 				UConverter* uConverter = new UConverter(native_stochasts, correlationMatrix->GetCorrelationMatrix());
-				uConverter->initializeForRun();
 
-				ZModel* zModel = getZModel();
+				Models::ZModel* zModel = getZModel();
 
 				Models::ProgressIndicator* progress = progressIndicator != nullptr ? progressIndicator->getProgressIndicator() : nullptr;
 
 				this->modelRunner = new Models::ZModelRunner(zModel, uConverter, progress);
 			}
 
-			ZDelegate ModelRunnerWrapper::getZDelegate()
+			Models::ZDelegate ModelRunnerWrapper::getZDelegate()
 			{
 				ManagedSampleDelegate^ fp = gcnew ManagedSampleDelegate(this, &ModelRunnerWrapper::invokeSample);
 				System::Runtime::InteropServices::GCHandle handle = System::Runtime::InteropServices::GCHandle::Alloc(fp);
 				handles->Add(handle);
 
 				System::IntPtr callbackPtr = System::Runtime::InteropServices::Marshal::GetFunctionPointerForDelegate(fp);
-				ZDelegate functionPointer = static_cast<ZDelegate>(callbackPtr.ToPointer());
+				Models::ZDelegate functionPointer = static_cast<Models::ZDelegate>(callbackPtr.ToPointer());
 
 				return functionPointer;
 			}
 
-			ZMultipleDelegate ModelRunnerWrapper::getZMultipleDelegate()
+			Models::ZMultipleDelegate ModelRunnerWrapper::getZMultipleDelegate()
 			{
 				ManagedMultipleSampleDelegate^ fp = gcnew ManagedMultipleSampleDelegate(this, &ModelRunnerWrapper::invokeMultipleSamples);
 				System::Runtime::InteropServices::GCHandle handle = System::Runtime::InteropServices::GCHandle::Alloc(fp);
 				handles->Add(handle);
 
 				System::IntPtr callbackPtr = System::Runtime::InteropServices::Marshal::GetFunctionPointerForDelegate(fp);
-				ZMultipleDelegate functionPointer = static_cast<ZMultipleDelegate>(callbackPtr.ToPointer());
+				Models::ZMultipleDelegate functionPointer = static_cast<Models::ZMultipleDelegate>(callbackPtr.ToPointer());
 
 				return functionPointer;
 			}
 
-			ZModel* ModelRunnerWrapper::getZModel()
+			Models::ZModel* ModelRunnerWrapper::getZModel()
 			{
-				ZModel* zModel = new ZModel();
-				zModel->setZDelegate(getZDelegate());
-				zModel->setZMultipleDelegate(getZMultipleDelegate());
+				Models::ZDelegate zDelegate = getZDelegate();
+				Models::ZMultipleDelegate zMultipleDelegate = getZMultipleDelegate();
+
+				Models::ZModel* zModel = new Models::ZModel(zDelegate, zMultipleDelegate);
 
 				return zModel;
 			}
