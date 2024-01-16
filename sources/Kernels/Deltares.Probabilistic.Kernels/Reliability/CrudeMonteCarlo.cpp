@@ -11,19 +11,20 @@
 #include "../Model/DesignPoint.h"
 #include "CrudeMonteCarloSettings.h"
 #include "DesignPointBuilder.h"
+#include "StochastSettings.h"
 
 DesignPoint* CrudeMonteCarlo::getDesignPoint(Deltares::Models::ZModelRunner* modelRunner)
 {
-	modelRunner->updateStochastSettings(this->Settings);
+	modelRunner->updateStochastSettings(this->Settings->StochastSet);
 
 	double qRange = 1;
 
-	for (int i = 0; i < this->Settings->VaryingStochastCount; i++)
+	for (int i = 0; i < this->Settings->StochastSet->VaryingStochastCount; i++)
 	{
-		if (!this->Settings->VaryingStochastSettings[i]->isMinMaxDefault())
+		if (!this->Settings->StochastSet->VaryingStochastSettings[i]->isMinMaxDefault())
 		{
-			double probLow = StandardNormal::getPFromU(this->Settings->VaryingStochastSettings[i]->MinValue);
-			double probHigh = StandardNormal::getQFromU(this->Settings->VaryingStochastSettings[i]->MaxValue);
+			double probLow = StandardNormal::getPFromU(this->Settings->StochastSet->VaryingStochastSettings[i]->MinValue);
+			double probHigh = StandardNormal::getQFromU(this->Settings->StochastSet->VaryingStochastSettings[i]->MaxValue);
 
 			double prob = 1 - probLow - probHigh;
 
@@ -31,10 +32,10 @@ DesignPoint* CrudeMonteCarlo::getDesignPoint(Deltares::Models::ZModelRunner* mod
 		}
 	}
 
-	return GetReducedDesignPoint(modelRunner, 1 - qRange, qRange);
+	return getReducedDesignPoint(modelRunner, 1 - qRange, qRange);
 }
 
-DesignPoint* CrudeMonteCarlo::GetReducedDesignPoint(Deltares::Models::ZModelRunner* modelRunner, double qFail, double qRange)
+DesignPoint* CrudeMonteCarlo::getReducedDesignPoint(Deltares::Models::ZModelRunner* modelRunner, double qFail, double qRange)
 {
 	int nParameters = modelRunner->getVaryingStochastCount();
 	double* zValues = new double[0]; // copy of z for all parallel threads as double
@@ -42,7 +43,7 @@ DesignPoint* CrudeMonteCarlo::GetReducedDesignPoint(Deltares::Models::ZModelRunn
 
 	RandomSampleGenerator* randomSampleGenerator = new RandomSampleGenerator();
 	randomSampleGenerator->Settings = this->Settings->RandomSettings;
-	randomSampleGenerator->Settings->useStochastSettingsFrom(this->Settings);
+	randomSampleGenerator->Settings->StochastSet = this->Settings->StochastSet;
 	randomSampleGenerator->initialize();
 
 	Sample* uMin = new Sample(nParameters);
@@ -74,7 +75,13 @@ DesignPoint* CrudeMonteCarlo::GetReducedDesignPoint(Deltares::Models::ZModelRunn
 
 			for (int i = 0; i < runs; i++)
 			{
-				samples.push_back(randomSampleGenerator->getRandomSample());
+				Sample* sample = randomSampleGenerator->getRandomSample();
+				if (qRange < 1)
+				{
+					applyLimits(sample);
+				}
+
+				samples.push_back(sample);
 			}
 
 			zValues = modelRunner->getZValues(samples);
@@ -131,7 +138,7 @@ DesignPoint* CrudeMonteCarlo::GetReducedDesignPoint(Deltares::Models::ZModelRunn
 		}
 		pf = NumericSupport::Divide(nFailed, nSamples);
 		pf = qFail + qRange * pf;
-		if (CheckConvergence(modelRunner, pf, nSamples, sampleIndex))
+		if (checkConvergence(modelRunner, pf, nSamples, sampleIndex))
 		{
 			break;
 		}
@@ -141,11 +148,25 @@ DesignPoint* CrudeMonteCarlo::GetReducedDesignPoint(Deltares::Models::ZModelRunn
 	uMin = uMean->GetSample();
 
 	double* alpha = GetAlphas(uMin, nParameters, z0Fac);
-	convergenceReport->Convergence = GetConvergence(pf, nSamples);
+	convergenceReport->Convergence = getConvergence(pf, nSamples);
 	return modelRunner->getRealization(beta, alpha, convergenceReport, uMin->ScenarioIndex);
 }
 
-bool CrudeMonteCarlo::CheckConvergence(Deltares::Models::ZModelRunner* modelRunner, double pf, int samples, int nmaal)
+void CrudeMonteCarlo::applyLimits(Sample* sample)
+{
+	for (int i = 0; i < sample->getSize(); i++)
+	{
+		Deltares::Reliability::StochastSettings* settings = this->Settings->StochastSet->VaryingStochastSettings[i];
+		if (!settings->isMinMaxDefault())
+		{
+			double q = StandardNormal::getQFromU(sample->Values[i]);
+			q = settings->XMinValue + q * (settings->XMaxValue - settings->XMinValue);
+			sample->Values[i] = StandardNormal::getUFromQ(q);
+		}
+	}
+}
+
+bool CrudeMonteCarlo::checkConvergence(Deltares::Models::ZModelRunner* modelRunner, double pf, int samples, int nmaal)
 {
 	ReliabilityReport* report = new ReliabilityReport();
 	report->Step = nmaal;
@@ -153,7 +174,7 @@ bool CrudeMonteCarlo::CheckConvergence(Deltares::Models::ZModelRunner* modelRunn
 
 	if (pf > 0 && pf < 1)
 	{
-		double convergence = GetConvergence(pf, samples);
+		double convergence = getConvergence(pf, samples);
 		report->Reliability = StandardNormal::getUFromQ(pf);
 		report->Variation = convergence;
 		modelRunner->reportResult(report);
@@ -167,7 +188,7 @@ bool CrudeMonteCarlo::CheckConvergence(Deltares::Models::ZModelRunner* modelRunn
 	}
 }
 
-double CrudeMonteCarlo::GetConvergence(double pf, int samples)
+double CrudeMonteCarlo::getConvergence(double pf, int samples)
 {
 	if (pf > 0 && pf < 1)
 	{

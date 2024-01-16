@@ -1,5 +1,6 @@
 #pragma once
-#include <limits>
+
+#include <cmath>
 
 class Evaluation
 {
@@ -10,7 +11,7 @@ public:
 	double* R;
 	int SizeR;
 
-	double Z = std::numeric_limits<double>::quiet_NaN();
+	double Z = nan("");
 	double Weight = 1;
 	int Iteration = -1;
 

@@ -8,6 +8,12 @@ namespace Deltares
 		{
 			return this->MinValue <= -StandardNormal::UMax && this->MaxValue >= StandardNormal::UMax;
 		}
+
+		void StochastSettings::initializeForRun()
+		{
+			this->XMinValue = StandardNormal::getPFromU(this->MinValue);
+			this->XMaxValue = StandardNormal::getPFromU(this->MaxValue);
+		}
 	}
 }
 

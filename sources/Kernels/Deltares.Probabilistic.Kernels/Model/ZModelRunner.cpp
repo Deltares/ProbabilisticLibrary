@@ -6,6 +6,14 @@
 
 namespace Deltares
 {
+	namespace Reliability
+	{
+		class StochastSettingsSet;
+	}
+}
+
+namespace Deltares
+{
 	namespace Models
 	{
 		int ZModelRunner::getVaryingStochastCount()
@@ -18,7 +26,7 @@ namespace Deltares
 			return this->uConverter->getStochastCount();
 		}
 
-		void ZModelRunner::updateStochastSettings(Reliability::StochastListSettings* settings)
+		void ZModelRunner::updateStochastSettings(Reliability::StochastSettingsSet* settings)
 		{
 			this->uConverter->updateStochastSettings(settings);
 		}

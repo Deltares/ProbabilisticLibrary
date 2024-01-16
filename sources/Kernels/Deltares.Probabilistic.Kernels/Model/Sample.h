@@ -1,7 +1,6 @@
 #pragma once
 
 #include <cmath>
-#include <limits>
 
 #include "../Math/NumericSupport.h"
 
@@ -46,7 +45,7 @@ public:
 	int ScenarioIndex = -1;
 	double Weight = 1;
 	bool AllowProxy = true;
-	double Z = std::numeric_limits<double>::quiet_NaN();
+	double Z = nan("");
 
 	int getSize();
 

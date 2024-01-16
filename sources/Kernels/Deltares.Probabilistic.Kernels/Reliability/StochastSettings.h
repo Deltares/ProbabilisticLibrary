@@ -20,6 +20,11 @@ namespace Deltares
 			int StochastIndex = 0;
 
 			bool isMinMaxDefault();
+			void initializeForRun();
+
+			// Converted min and max values, is updated by initializeForRun
+			double XMinValue = 0;
+			double XMaxValue = 0;
 		};
 	}
 }

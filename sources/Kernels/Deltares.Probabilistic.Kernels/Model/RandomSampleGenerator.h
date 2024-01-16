@@ -1,20 +1,13 @@
 #pragma once
 #include "RandomSettings.h"
 #include "Sample.h"
-
-struct XSetting
-{
-	double xMin = 0;
-	double xMax = 1;
-	bool isDefault = true;
-};
+#include "../Reliability/StochastSettingsSet.h"
 
 class RandomSampleGenerator
 {
-private:
-	XSetting** xSettings = nullptr;
 public:
 	RandomSettings* Settings = new ::RandomSettings();
+	Deltares::Reliability::StochastSettingsSet* StochastSet = new Deltares::Reliability::StochastSettingsSet();
 
 	void initialize();
 	void restart();

@@ -3,14 +3,13 @@
 #include "../Model/RunSettings.h"
 #include "../Model/RandomSettings.h"
 #include "DesignPointBuilder.h"
-#include "StochastListSettings.h"
-#include "StochastSettings.h"
+#include "StochastSettingsSet.h"
 
 namespace Deltares
 {
     namespace Reliability
 	{
-        class CrudeMonteCarloSettings : public StochastListSettings
+        class CrudeMonteCarloSettings
         {
         public:
             int MinimumSamples = 1000;
@@ -19,6 +18,7 @@ namespace Deltares
             DesignPointMethod DesignPointMethod = DesignPointMethod::CenterOfGravity;
             RandomSettings* RandomSettings = new ::RandomSettings();
             RunSettings* RunSettings = new ::RunSettings();
+            StochastSettingsSet* StochastSet = new StochastSettingsSet();
         };
     }
 }
