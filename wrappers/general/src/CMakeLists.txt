@@ -7,6 +7,7 @@ target_sources(pb_wrapper_c
   PRIVATE
     stringHelper.h
     stringHelper.cpp
+    probCalcF2C.cpp
     probCalcF2Cnew.cpp
     randomgen.cpp
     fortranZfunc.h

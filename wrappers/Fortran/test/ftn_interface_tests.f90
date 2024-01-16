@@ -97,7 +97,7 @@ subroutine test_ds
     compIds(1) = 16
     ipoint     = [0, 1] ! zero based, as it goes to c++
 
-    call probCalcF2Cnew(method, distribs, 2, 2, correlations, 0,  zfunc, testProgressCancel, compIds, iPoint, x, r, ierr)
+    call probCalcF2C(method, distribs, 2, 2, correlations, 0,  zfunc, testProgressCancel, compIds, iPoint, x, r, ierr)
 
     call assert_equal(ierr%iCode, 0, "return code probCalcF2Cnew <> 0")
 
@@ -134,7 +134,7 @@ subroutine test_ds_errorhandling
     compIds(1) = 17
     ipoint     = [0, 1]
 
-    call probCalcF2Cnew(method, distribs, 2, 2, correlations, 0, zfunc, testProgressCancel, compIds, ipoint, x, r, ierr)
+    call probCalcF2C(method, distribs, 2, 2, correlations, 0, zfunc, testProgressCancel, compIds, ipoint, x, r, ierr)
 
     call assert_equal(ierr%iCode, -1, "return code probCalcF2Cnew <> 0")
 
@@ -165,7 +165,7 @@ subroutine test_form_errorhandling
     compIds(1) = 17
     ipoint     = [0, 1]
 
-    call probCalcF2Cnew(method, distribs, 2, 2, correlations, 0, zfunc, testProgressCancel, compIds, ipoint, x, r, ierr)
+    call probCalcF2C(method, distribs, 2, 2, correlations, 0, zfunc, testProgressCancel, compIds, ipoint, x, r, ierr)
 
     call assert_equal(ierr%iCode, 0, "diff in return code probCalcF2Cnew")
     call assert_equal(r%convergence, 1, "diff in convergence flag")
