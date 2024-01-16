@@ -80,6 +80,7 @@ double FDelegate (Sample* s)
     tError e = tError();
     double result = staticF(xx, i, &e);
     delete[] xx;
+    s->Z = result;
     return result;
 }
 
@@ -125,7 +126,7 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
                 mc.Settings->RandomSettings->RandomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::MersenneTwister;
                 break;
             default:
-                mc.Settings->RandomSettings->RandomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::ModifiedKnuthSubtractive;
+                throw probLibException("ModifiedKnuthSubtractive not implemented in C wrapper");
                 break;
         }
         mc.Settings->RandomSettings->Seed = method->seed1;
