@@ -1,3 +1,4 @@
+#include <vector>
 #include "RandomSampleGenerator.h"
 
 #include "../Statistics/StandardNormal.h"
@@ -17,10 +18,10 @@ void RandomSampleGenerator::restart()
 
 Sample* RandomSampleGenerator::getRandomSample()
 {
-	double* randomValues = new double[this->Settings->StochastSet->StochastCount];
+	auto randomValues = std::vector<double>();
 	for (int i = 0; i < this->Settings->StochastSet->StochastCount; i++)
 	{
-		randomValues[i] = Deltares::Numeric::Random::next();
+		randomValues.push_back(Deltares::Numeric::Random::next());
 	}
 
 	Sample* sample = new Sample(this->Settings->StochastSet->VaryingStochastCount);

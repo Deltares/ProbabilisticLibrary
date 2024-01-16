@@ -36,6 +36,7 @@ public:
 	~Sample()
 	{
 		delete[] Values;
+		delete[] XValues;
 	}
 
 	double* Values;

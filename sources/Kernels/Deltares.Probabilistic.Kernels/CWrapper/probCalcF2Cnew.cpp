@@ -136,6 +136,7 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
             }
             auto s = new Stochast(dist, params);
             stochast.push_back(s);
+            delete[] params;
         }
 
         auto mc = Deltares::Reliability::CrudeMonteCarlo();
@@ -165,7 +166,7 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
         auto textualProgressDelegate = TextualProgressDelegate();
         auto progress = new ProgressIndicator(progressDelegate, detailedProgressDelegate, textualProgressDelegate);
         auto modelRunner = new ZModelRunner(zModel, uConverter, progress);
-        auto newResult = mc.getDesignPoint(modelRunner);
+        std::unique_ptr<DesignPoint> newResult(mc.getDesignPoint(modelRunner));
 
         auto alpha = vector1D(newResult->Alphas.size());
         for (size_t i = 0; i < alpha.size(); i++)
@@ -203,7 +204,7 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
         {
             r->alpha2[i] = newResult->Alphas[i]->AlphaCorrelated;
         }
-        r->convergence = (newResult->ConvergenceReport->Convergence < method->tolB ? 1 : 0);
+        r->convergence = (newResult->ConvergenceReport->Convergence < method->tolB ? 0 : 1);
         r->stepsNeeded = -999;// result.stepsNeeded;
         r->samplesNeeded = (int)round(newResult->ConvergenceReport->FailedSamples / newResult->ConvergenceReport->FailFraction);
     }
