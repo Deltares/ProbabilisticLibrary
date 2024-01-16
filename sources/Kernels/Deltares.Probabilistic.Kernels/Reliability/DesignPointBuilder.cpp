@@ -5,163 +5,210 @@
 
 #include <vector>
 #include <cmath>
-#include <unordered_map>
-#include <limits>
+#include <map>
 #include <stdexcept>
 
-//class ModelRunner
-//{
-//public:
-//    int* GetQualitativeValues(Sample sample)
-//    {
-//        // implementation
-//    }
-//};
-
-DesignPointBuilder::DesignPointBuilder(int count, DesignPointMethod method, Deltares::Models::ZModelRunner* model)
+namespace Deltares
 {
-	this->count = count;
-	this->method = method;
-	this->model = model;
-
-	defaultSample = new Sample(count);
-	meanSample = new Sample(count);
-	sinSample = new Sample(count);
-	cosSample = new Sample(count);
-}
-
-void DesignPointBuilder::Initialize(double beta)
-{
-	double value = NumericSupport::GetSign(beta) * sqrt(abs(beta) / count);
-
-	for (int i = 0; i < count; i++)
+	namespace Reliability
 	{
-		defaultSample->Values[i] = value;
-	}
-}
-
-void DesignPointBuilder::AddSample(Sample* sample, double weight)
-{
-	sampleAdded = true;
-	// set scenario defining parameters to zero
-	RegisterScenario(sample, weight);
-	switch (method)
-	{
-	case DesignPointMethod::NearestToMean:
-	{
-		double rbeta = sample->getBeta();
-		if (rbeta < rmin)
+		class ModeFinder
 		{
-			rmin = rbeta;
-			meanSample = sample;
+		private:
+			std::map<double, double> values;
+			StochastSettings* settings = nullptr;
+
+		public:
+			ModeFinder(StochastSettings* settings)
+			{
+				this->settings = settings;
+			}
+
+			void add(double u, double weight)
+			{
+				u = settings->getRepresentativeU(u);
+
+				if (!values.contains(u))
+				{
+					values[u] = 0;
+				}
+
+				values[u] += weight;
+			}
+
+			double getMode()
+			{
+				double mode = 0;
+				double max = -1;
+
+				for (auto it = values.begin(); it != values.end(); ++it)
+				{
+					if (it->second > max)
+					{
+						mode = it->first;
+						max = it->second;
+					}
+				}
+
+				return mode;
+			}
+		};
+
+		DesignPointBuilder::DesignPointBuilder(int count, DesignPointMethod method, StochastSettingsSet* stochastSet)
+		{
+			this->count = count;
+			this->method = method;
+
+			defaultSample = new Sample(count);
+			meanSample = new Sample(count);
+			sinSample = new Sample(count);
+			cosSample = new Sample(count);
+
+			this->qualitativeCount = 0;
+			for (int i = 0; i < stochastSet->VaryingStochastCount; i++)
+			{
+				if (stochastSet->VaryingStochastSettings[i]->IsQualitative)
+				{
+					this->qualitativeCount++;
+				}
+			}
+
+			this->qualitativeIndices = new int[this->qualitativeCount];
+			this->modeFinders = new ModeFinder * [this->qualitativeCount];
+
+			int j = 0;
+			for (int i = 0; i < stochastSet->VaryingStochastCount; i++)
+			{
+				if (stochastSet->VaryingStochastSettings[i]->IsQualitative)
+				{
+					this->qualitativeIndices[j] = i;
+					this->modeFinders[j] = new ModeFinder(stochastSet->VaryingStochastSettings[i]);
+				}
+			}
 		}
-		break;
-	}
-	case DesignPointMethod::CenterOfGravity:
-	{
-		for (int i = 0; i < sample->getSize(); i++)
-		{
-			meanSample->Values[i] += weight * sample->Values[i];
-		}
-		sumWeights += weight;
-		break;
-	}
-	case DesignPointMethod::CenterOfAngles:
-	{
-		double* sphericalValues = NumericSupport::GetSphericalCoordinates(sample->Values, count);
-		meanSample->Values[0] += weight * sphericalValues[0];
-		for (int i = 1; i < count; i++)
-		{
-			sinSample->Values[i] += weight * std::sin(sphericalValues[i]);
-			cosSample->Values[i] += weight * std::cos(sphericalValues[i]);
-		}
-		sumWeights += weight;
-		break;
-	}
-	default:
-		throw std::runtime_error("Not supported");
-	}
-}
 
-Sample* DesignPointBuilder::GetSample()
-{
-	if (!sampleAdded)
-	{
-		return defaultSample;
-	}
-	else
-	{
-		switch (method)
+		void DesignPointBuilder::initialize(double beta)
 		{
-		case DesignPointMethod::NearestToMean:
-		{
-			meanSample->ScenarioIndex = GetMaxScenario();
-			return meanSample;
-		}
-		case DesignPointMethod::CenterOfGravity:
-		{
-			double* gravityValues = new double[count];
+			double value = NumericSupport::GetSign(beta) * sqrt(abs(beta) / count);
 
 			for (int i = 0; i < count; i++)
 			{
-				gravityValues[i] = meanSample->Values[i] / sumWeights;
+				defaultSample->Values[i] = value;
 			}
-
-			Sample* gravityPoint = new Sample(gravityValues, count);
-			gravityPoint->ScenarioIndex = GetMaxScenario();
-			return gravityPoint;
 		}
-		case DesignPointMethod::CenterOfAngles:
+
+		void DesignPointBuilder::addSample(Sample* sample)
 		{
-			double* angleValues = new double[count];
-			angleValues[0] = meanSample->Values[0] / sumWeights;
-			for (int i = 1; i < count; i++)
+			sampleAdded = true;
+
+			switch (method)
 			{
-				angleValues[i] = std::atan2(sinSample->Values[i] / sumWeights, cosSample->Values[i] / sumWeights);
+			case DesignPointMethod::NearestToMean:
+			{
+				double rbeta = sample->getBeta();
+				if (rbeta < rmin)
+				{
+					rmin = rbeta;
+					meanSample = sample;
+				}
+				break;
 			}
-			double* coordinates = NumericSupport::GetCartesianCoordinates(angleValues, count);
-			Sample* anglePoint = new Sample(coordinates, count);
-			anglePoint->ScenarioIndex = GetMaxScenario();
-			return anglePoint;
-		}
-		default:
-			throw std::runtime_error("Not supported");
-		}
-	}
-}
+			case DesignPointMethod::CenterOfGravity:
+			{
+				for (int j = 0; j < this->qualitativeCount; j++)
+				{
+					int qIndex = qualitativeIndices[j];
+					modeFinders[j]->add(sample->Values[qIndex], sample->Weight);
+				}
 
-void DesignPointBuilder::RegisterScenario(Sample* sample, double weight)
-{
-	//int* scenarios = model != nullptr ? model->GetQualitativeValues(sample) : new int[0];
-	//for (int i = 0; i < scenarios.Length; i++)
-	//{
-	//    if (scenarioWeights.find(scenarios[i]) == scenarioWeights.end())
-	//    {
-	//        scenarioWeights[scenarios[i]] = 0;
-	//    }
-	//    scenarioWeights[scenarios[i]] += weight;
-	//}
-}
+				for (int i = 0; i < sample->getSize(); i++)
+				{
+					meanSample->Values[i] += sample->Weight * sample->Values[i];
+				}
 
-int DesignPointBuilder::GetMaxScenario()
-{
-	int maxScenario = -1;
-	double maxScenarioWeight = -1;
-	if (scenarioWeights.size() > 0)
-	{
-		for (auto it = scenarioWeights.begin(); it != scenarioWeights.end(); ++it)
+				sumWeights += sample->Weight;
+				break;
+			}
+			case DesignPointMethod::CenterOfAngles:
+			{
+				for (int j = 0; j < this->qualitativeCount; j++)
+				{
+					int qIndex = qualitativeIndices[j];
+					modeFinders[j]->add(sample->Values[qIndex], sample->Weight);
+				}
+
+				double* sphericalValues = NumericSupport::GetSphericalCoordinates(sample->Values, count);
+				meanSample->Values[0] += sample->Weight * sphericalValues[0];
+				for (int i = 1; i < count; i++)
+				{
+					sinSample->Values[i] += sample->Weight * std::sin(sphericalValues[i]);
+					cosSample->Values[i] += sample->Weight * std::cos(sphericalValues[i]);
+				}
+				sumWeights += sample->Weight;
+				break;
+			}
+			default:
+				throw std::runtime_error("Not supported");
+			}
+		}
+
+		Sample* DesignPointBuilder::getSample()
 		{
-			if (it->second > maxScenarioWeight)
+			if (!sampleAdded)
 			{
-				maxScenario = it->first;
-				maxScenarioWeight = it->second;
+				return defaultSample;
+			}
+			else
+			{
+				switch (method)
+				{
+				case DesignPointMethod::NearestToMean:
+				{
+					return meanSample;
+				}
+				case DesignPointMethod::CenterOfGravity:
+				{
+					double* gravityValues = new double[count];
+
+					for (int i = 0; i < count; i++)
+					{
+						gravityValues[i] = meanSample->Values[i] / sumWeights;
+					}
+
+					Sample* gravityPoint = new Sample(gravityValues, count);
+
+					for (int j = 0; j < this->qualitativeCount; j++)
+					{
+						int qIndex = qualitativeIndices[j];
+						gravityPoint->Values[qIndex] = modeFinders[j]->getMode();
+					}
+
+					return gravityPoint;
+				}
+				case DesignPointMethod::CenterOfAngles:
+				{
+					double* angleValues = new double[count];
+					angleValues[0] = meanSample->Values[0] / sumWeights;
+					for (int i = 1; i < count; i++)
+					{
+						angleValues[i] = std::atan2(sinSample->Values[i] / sumWeights, cosSample->Values[i] / sumWeights);
+					}
+					double* coordinates = NumericSupport::GetCartesianCoordinates(angleValues, count);
+					Sample* anglePoint = new Sample(coordinates, count);
+
+					for (int j = 0; j < this->qualitativeCount; j++)
+					{
+						int qIndex = qualitativeIndices[j];
+						anglePoint->Values[qIndex] = modeFinders[j]->getMode();
+					}
+
+					return anglePoint;
+				}
+				default:
+					throw std::runtime_error("Not supported");
+				}
 			}
 		}
-		return maxScenario;
-	}
-	else
-	{
-		return -1;
 	}
 }
 

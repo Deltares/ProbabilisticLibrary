@@ -60,6 +60,8 @@ void UConverter::updateStochastSettings(Deltares::Reliability::StochastSettingsS
 		{
 			settings->VaryingStochastSettings[j] = i < settings->StochastCount ? settings->StochastSettings[i] : new Deltares::Reliability::StochastSettings();
 			settings->VaryingStochastSettings[j]->StochastIndex = i;
+			settings->VaryingStochastSettings[j]->IsQualitative = varyingStochasts[i]->isQualitative();
+			settings->VaryingStochastSettings[j]->setStochast(varyingStochasts[i]);
 
 			settings->VaryingStochastSettings[j]->initializeForRun();
 
@@ -94,7 +96,9 @@ double* UConverter::getExpandedUValues(double* values)
 
 double* UConverter::getXValues(Sample* sample)
 {
-	double* expandedUValues = getExpandedUValues(sample->Values);
+	double* uCorrelated = varyingCorrelationMatrix->Cholesky(sample->Values, sample->getSize());
+
+	double* expandedUValues = getExpandedUValues(uCorrelated);
 
 	double* xValues = new double[this->stochasts.size()];
 

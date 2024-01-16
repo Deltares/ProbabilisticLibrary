@@ -8,7 +8,8 @@ private:
 public:
 	static double getPFromU(double u);
 	static double getQFromU(double u);
-	static double getUFromQ(double u);
+	static double getUFromP(double p);
+	static double getUFromQ(double q);
 	static constexpr double BetaMax = 40;
 	static constexpr double UMax = 8;
 

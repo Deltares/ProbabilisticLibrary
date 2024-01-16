@@ -36,6 +36,9 @@ public:
 
 	bool isVarying();
 
+	bool isQualitative();
+	double getRepresentativeU(double u);
+
 	double getMean();
 	void setMean(double mean);
 

@@ -21,7 +21,6 @@ namespace Deltares
 				CrudeMonteCarloSettingsWrapper()
 				{
 					m_settings = new Reliability::CrudeMonteCarloSettings();
-					m_settings->RunSettings = RunSettings->GetSettings();
 					m_settings->RandomSettings = RandomSettings->GetSettings();
 				}
 				~CrudeMonteCarloSettingsWrapper() { this->!CrudeMonteCarloSettingsWrapper(); }
@@ -45,9 +44,7 @@ namespace Deltares
 					void set(double value) { m_settings->VariationCoefficient = value; }
 				}
 
-				RunSettingsWrapper^ RunSettings = gcnew RunSettingsWrapper;
-
-				RandomSettingsWrapper^ RandomSettings = gcnew RandomSettingsWrapper;
+				RandomSettingsWrapper^ RandomSettings = gcnew RandomSettingsWrapper();
 
 				System::Collections::Generic::List<StochastSettingsWrapper^>^ StochastSettings = gcnew System::Collections::Generic::List<StochastSettingsWrapper^>();
 
@@ -56,6 +53,7 @@ namespace Deltares
 					m_settings->StochastSet = new Deltares::Reliability::StochastSettingsSet();
 
 					m_settings->StochastSet->StochastCount = StochastSettings->Count;
+					m_settings->StochastSet->StochastSettings = new Deltares::Reliability::StochastSettings * [m_settings->StochastSet->StochastCount];
 					for (int i = 0; i < StochastSettings->Count; i++)
 					{
 						m_settings->StochastSet->StochastSettings[i] = StochastSettings[i]->getSettings();

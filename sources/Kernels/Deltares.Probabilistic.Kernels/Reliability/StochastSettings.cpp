@@ -14,6 +14,16 @@ namespace Deltares
 			this->XMinValue = StandardNormal::getPFromU(this->MinValue);
 			this->XMaxValue = StandardNormal::getPFromU(this->MaxValue);
 		}
+
+		void StochastSettings::setStochast(Stochast* stochast)
+		{
+			this->stochast = stochast;
+		}
+
+		double StochastSettings::getRepresentativeU(double u)
+		{
+			return this->stochast->getRepresentativeU(u);
+		}
 	}
 }
 

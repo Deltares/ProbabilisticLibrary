@@ -13,195 +13,234 @@
 #include "DesignPointBuilder.h"
 #include "StochastSettings.h"
 
-DesignPoint* CrudeMonteCarlo::getDesignPoint(Deltares::Models::ZModelRunner* modelRunner)
+namespace Deltares
 {
-	modelRunner->updateStochastSettings(this->Settings->StochastSet);
-
-	double qRange = 1;
-
-	for (int i = 0; i < this->Settings->StochastSet->VaryingStochastCount; i++)
+	namespace Reliability
 	{
-		if (!this->Settings->StochastSet->VaryingStochastSettings[i]->isMinMaxDefault())
+		DesignPoint* CrudeMonteCarlo::getDesignPoint(Deltares::Models::ZModelRunner* modelRunner)
 		{
-			double probLow = StandardNormal::getPFromU(this->Settings->StochastSet->VaryingStochastSettings[i]->MinValue);
-			double probHigh = StandardNormal::getQFromU(this->Settings->StochastSet->VaryingStochastSettings[i]->MaxValue);
+			modelRunner->updateStochastSettings(this->Settings->StochastSet);
 
-			double prob = 1 - probLow - probHigh;
+			double qRange = 1;
+			double zRemainder = 1;
 
-			qRange *= prob;
-		}
-	}
-
-	return getReducedDesignPoint(modelRunner, 1 - qRange, qRange);
-}
-
-DesignPoint* CrudeMonteCarlo::getReducedDesignPoint(Deltares::Models::ZModelRunner* modelRunner, double qFail, double qRange)
-{
-	int nParameters = modelRunner->getVaryingStochastCount();
-	double* zValues = new double[0]; // copy of z for all parallel threads as double
-	DesignPointBuilder* uMean = new DesignPointBuilder(nParameters, Settings->DesignPointMethod, modelRunner);
-
-	RandomSampleGenerator* randomSampleGenerator = new RandomSampleGenerator();
-	randomSampleGenerator->Settings = this->Settings->RandomSettings;
-	randomSampleGenerator->Settings->StochastSet = this->Settings->StochastSet;
-	randomSampleGenerator->initialize();
-
-	Sample* uMin = new Sample(nParameters);
-	double rmin = std::numeric_limits<double>::infinity();
-	double pf = 0.0;
-	bool initial = true;
-	double z0Fac = 0;
-	int nFailed = 0;
-	int nSamples = 0;
-	ConvergenceReport* convergenceReport = new ConvergenceReport();
-	std::vector<Sample*> samples;
-	int zIndex = 0;
-
-	for (int sampleIndex = 0; sampleIndex < Settings->MaximumSamples + 1 && !isStopped(); sampleIndex++)
-	{
-		zIndex++;
-
-		if (initial || zIndex >= samples.size())
-		{
-			samples.clear();
-			int chunkSize = Settings->RunSettings->MaxChunkSize;
-			int runs = std::min(chunkSize, Settings->MaximumSamples + 1 - sampleIndex);
-
-			if (initial)
+			for (int i = 0; i < this->Settings->StochastSet->VaryingStochastCount; i++)
 			{
-				samples.push_back(new Sample(nParameters));
-				runs = runs - 1;
-			}
+				Sample* remainderSample = new Sample(this->Settings->StochastSet->VaryingStochastCount);
 
-			for (int i = 0; i < runs; i++)
-			{
-				Sample* sample = randomSampleGenerator->getRandomSample();
-				if (qRange < 1)
+				if (!this->Settings->StochastSet->VaryingStochastSettings[i]->isMinMaxDefault())
 				{
-					applyLimits(sample);
+					double probLow = StandardNormal::getPFromU(this->Settings->StochastSet->VaryingStochastSettings[i]->MinValue);
+					double probHigh = StandardNormal::getQFromU(this->Settings->StochastSet->VaryingStochastSettings[i]->MaxValue);
+
+					double prob = 1 - probLow - probHigh;
+
+					qRange *= prob;
+
+					if (probLow > probHigh)
+					{
+						remainderSample->Values[i] = this->Settings->StochastSet->VaryingStochastSettings[i]->MinValue - 0.1;
+					}
+					else
+					{
+						remainderSample->Values[i] = this->Settings->StochastSet->VaryingStochastSettings[i]->MaxValue + 0.1;
+					}
 				}
 
-				samples.push_back(sample);
+				if (qRange < 1)
+				{
+					// perform one run to identify whether the remainder is failing
+					zRemainder = modelRunner->getZValue(remainderSample);
+				}
 			}
 
-			zValues = modelRunner->getZValues(samples);
+			return getReducedDesignPoint(modelRunner, zRemainder, qRange);
+		}
 
-			if (initial)
+		DesignPoint* CrudeMonteCarlo::getReducedDesignPoint(Deltares::Models::ZModelRunner* modelRunner, double zRemainder, double qRange)
+		{
+			int nParameters = modelRunner->getVaryingStochastCount();
+			double* zValues = new double[0]; // copy of z for all parallel threads as double
+			DesignPointBuilder* uMean = new DesignPointBuilder(nParameters, Settings->DesignPointMethod, this->Settings->StochastSet);
+
+			RandomSampleGenerator* randomSampleGenerator = new RandomSampleGenerator();
+			randomSampleGenerator->Settings = this->Settings->RandomSettings;
+			randomSampleGenerator->Settings->StochastSet = this->Settings->StochastSet;
+			randomSampleGenerator->initialize();
+
+			Sample* uMin = new Sample(nParameters);
+			double rmin = std::numeric_limits<double>::infinity();
+			double pf = 0.0;
+			bool initial = true;
+			double z0Fac = 0;
+			int nFailed = 0;
+			int nSamples = 0;
+			ConvergenceReport* convergenceReport = new ConvergenceReport();
+			std::vector<Sample*> samples;
+			int zIndex = 0;
+
+			double qFail = 0;
+
+			for (int sampleIndex = 0; sampleIndex < Settings->MaximumSamples + 1 && !isStopped(); sampleIndex++)
 			{
-				z0Fac = getZFactor(zValues[0]);
-				uMin->setBeta(z0Fac * StandardNormal::BetaMax);
-				uMean->Initialize(z0Fac * StandardNormal::BetaMax);
+				zIndex++;
+
+				if (initial || zIndex >= samples.size())
+				{
+					samples.clear();
+					int chunkSize = modelRunner->Settings->MaxChunkSize;
+					int runs = std::min(chunkSize, Settings->MaximumSamples + 1 - sampleIndex);
+
+					if (initial)
+					{
+						samples.push_back(new Sample(nParameters));
+						runs = runs - 1;
+					}
+
+					for (int i = 0; i < runs; i++)
+					{
+						Sample* sample = randomSampleGenerator->getRandomSample();
+						if (qRange < 1)
+						{
+							applyLimits(sample);
+						}
+
+						samples.push_back(sample);
+					}
+
+					zValues = modelRunner->getZValues(samples);
+
+					if (initial)
+					{
+						z0Fac = getZFactor(zValues[0]);
+						uMin->setBeta(z0Fac * StandardNormal::BetaMax);
+						uMean->initialize(z0Fac * StandardNormal::BetaMax);
+					}
+
+					if (modelRunner->shouldExitPrematurely(zValues, z0Fac, samples, rmin))
+					{
+						// return the result so far
+						return GetRealizationFromP(modelRunner, pf, uMin, z0Fac, convergenceReport);
+					}
+
+					zIndex = 0;
+				}
+
+				if (initial)
+				{
+					z0Fac = getZFactor(zValues[zIndex]);
+					double zRemainderFactor = getZFactor(zRemainder);
+
+					if (z0Fac != zRemainderFactor)
+					{
+						qFail = 1 - qRange;
+					}
+					else
+					{
+						qFail = 0;
+					}
+
+					initial = false;
+					continue;
+				}
+
+				double z = zValues[zIndex];
+				Sample* u = samples[zIndex];
+
+				if (isnan(z))
+				{
+					continue;
+				}
+
+				nSamples++;
+				if (z < 0)
+				{
+					nFailed = nFailed + 1;
+				}
+
+				convergenceReport->FailedSamples = nFailed;
+				convergenceReport->FailFraction = NumericSupport::Divide(nFailed, nSamples);
+
+				if (z * z0Fac < 0)
+				{
+					uMean->addSample(u);
+					double rbeta = u->getBeta();
+					if (rbeta < rmin)
+					{
+						rmin = rbeta;
+						uMin = u;
+					}
+				}
+				pf = NumericSupport::Divide(nFailed, nSamples);
+				pf = qFail + qRange * pf;
+				if (checkConvergence(modelRunner, pf, nSamples, sampleIndex))
+				{
+					break;
+				}
 			}
 
-			if (modelRunner->shouldExitPrematurely(zValues, z0Fac, samples, rmin))
+			double beta = StandardNormal::getUFromQ(pf);
+			uMin = uMean->getSample();
+
+			double* alpha = GetAlphas(uMin, nParameters, z0Fac);
+			convergenceReport->Convergence = getConvergence(pf, nSamples);
+			return modelRunner->getRealization(beta, alpha, convergenceReport, uMin->ScenarioIndex);
+		}
+
+		void CrudeMonteCarlo::applyLimits(Sample* sample)
+		{
+			for (int i = 0; i < sample->getSize(); i++)
 			{
-				// return the result so far
-				return GetRealizationFromP(modelRunner, pf, uMin, z0Fac, convergenceReport);
+				Deltares::Reliability::StochastSettings* settings = this->Settings->StochastSet->VaryingStochastSettings[i];
+				if (!settings->isMinMaxDefault())
+				{
+					double u = sample->Values[i];
+					double q = StandardNormal::getPFromU(u);
+					q = settings->XMinValue + q * (settings->XMaxValue - settings->XMinValue);
+					double uLimited = -StandardNormal::getUFromQ(q);
+					sample->Values[i] = uLimited;
+				}
 			}
-
-			zIndex = 0;
 		}
 
-		if (initial)
+		bool CrudeMonteCarlo::checkConvergence(Deltares::Models::ZModelRunner* modelRunner, double pf, int samples, int nmaal)
 		{
-			z0Fac = zValues[zIndex] > 0.0 ? 1 : -1;
-			initial = false;
-			continue;
-		}
+			ReliabilityReport* report = new ReliabilityReport();
+			report->Step = nmaal;
+			report->MaxSteps = Settings->MaximumSamples;
 
-		double z = zValues[zIndex];
-		Sample* u = samples[zIndex];
-
-		if (isnan(z))
-		{
-			continue;
-		}
-
-		nSamples++;
-		if (z < 0)
-		{
-			nFailed = nFailed + 1;
-		}
-
-		convergenceReport->FailedSamples = nFailed;
-		convergenceReport->FailFraction = NumericSupport::Divide(nFailed, nSamples);
-
-		if (z * z0Fac < 0)
-		{
-			uMean->AddSample(u);
-			double rbeta = u->getBeta();
-			if (rbeta < rmin)
+			if (pf > 0 && pf < 1)
 			{
-				rmin = rbeta;
-				uMin = u;
+				double convergence = getConvergence(pf, samples);
+				report->Reliability = StandardNormal::getUFromQ(pf);
+				report->Variation = convergence;
+				modelRunner->reportResult(report);
+				bool enoughSamples = nmaal >= Settings->MinimumSamples;
+				return enoughSamples && convergence < Settings->VariationCoefficient;
+			}
+			else
+			{
+				modelRunner->reportResult(report);
+				return false;
 			}
 		}
-		pf = NumericSupport::Divide(nFailed, nSamples);
-		pf = qFail + qRange * pf;
-		if (checkConvergence(modelRunner, pf, nSamples, sampleIndex))
+
+		double CrudeMonteCarlo::getConvergence(double pf, int samples)
 		{
-			break;
+			if (pf > 0 && pf < 1)
+			{
+				if (pf > 0.5)
+				{
+					pf = 1 - pf;
+				}
+				double varPf = sqrt((1 - pf) / (samples * pf));
+				return varPf;
+			}
+			else
+			{
+				return nan("");
+			}
 		}
-	}
-
-	double beta = StandardNormal::getUFromQ(pf);
-	uMin = uMean->GetSample();
-
-	double* alpha = GetAlphas(uMin, nParameters, z0Fac);
-	convergenceReport->Convergence = getConvergence(pf, nSamples);
-	return modelRunner->getRealization(beta, alpha, convergenceReport, uMin->ScenarioIndex);
-}
-
-void CrudeMonteCarlo::applyLimits(Sample* sample)
-{
-	for (int i = 0; i < sample->getSize(); i++)
-	{
-		Deltares::Reliability::StochastSettings* settings = this->Settings->StochastSet->VaryingStochastSettings[i];
-		if (!settings->isMinMaxDefault())
-		{
-			double q = StandardNormal::getQFromU(sample->Values[i]);
-			q = settings->XMinValue + q * (settings->XMaxValue - settings->XMinValue);
-			sample->Values[i] = StandardNormal::getUFromQ(q);
-		}
-	}
-}
-
-bool CrudeMonteCarlo::checkConvergence(Deltares::Models::ZModelRunner* modelRunner, double pf, int samples, int nmaal)
-{
-	ReliabilityReport* report = new ReliabilityReport();
-	report->Step = nmaal;
-	report->MaxSteps = Settings->MaximumSamples;
-
-	if (pf > 0 && pf < 1)
-	{
-		double convergence = getConvergence(pf, samples);
-		report->Reliability = StandardNormal::getUFromQ(pf);
-		report->Variation = convergence;
-		modelRunner->reportResult(report);
-		bool enoughSamples = nmaal >= Settings->MinimumSamples;
-		return enoughSamples && convergence < Settings->VariationCoefficient;
-	}
-	else
-	{
-		modelRunner->reportResult(report);
-		return false;
-	}
-}
-
-double CrudeMonteCarlo::getConvergence(double pf, int samples)
-{
-	if (pf > 0 && pf < 1)
-	{
-		if (pf > 0.5)
-		{
-			pf = 1 - pf;
-		}
-		double varPf = sqrt((1 - pf) / (samples * pf));
-		return varPf;
-	}
-	else
-	{
-		return nan("");
 	}
 }
 

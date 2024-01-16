@@ -68,6 +68,16 @@ bool Stochast::isVarying()
 	return this->distribution->isVarying(this);
 }
 
+bool Stochast::isQualitative()
+{
+	return this->distribution->isQualitative();
+}
+
+double Stochast::getRepresentativeU(double u)
+{
+	return this->distribution->getRepresentativeU(u);
+}
+
 double Stochast::getMean()
 {
 	return distribution->getMean(this);

@@ -1,5 +1,6 @@
 #pragma once
 #include "../Statistics/StandardNormal.h"
+#include "../Statistics/Stochast.h"
 
 namespace Deltares
 {
@@ -7,6 +8,8 @@ namespace Deltares
 	{
 		class StochastSettings
 		{
+		private:
+			Stochast* stochast = nullptr;
 		public:
 			double MinValue = -StandardNormal::UMax;
 			double MaxValue = StandardNormal::UMax;
@@ -25,6 +28,12 @@ namespace Deltares
 			// Converted min and max values, is updated by initializeForRun
 			double XMinValue = 0;
 			double XMaxValue = 0;
+
+			bool IsQualitative = false;
+
+			void setStochast(Stochast* stochast);
+
+			double getRepresentativeU(double u);
 		};
 	}
 }

@@ -14,7 +14,7 @@ namespace Deltares
 			public:
 				ReliabilityMethodWrapper() {  }
 
-				virtual ReliabilityMethod* GetReliabilityMethod()
+				virtual Reliability::ReliabilityMethod* GetReliabilityMethod()
 				{
 					return nullptr;
 				};

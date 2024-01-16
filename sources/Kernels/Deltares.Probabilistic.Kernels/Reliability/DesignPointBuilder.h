@@ -4,37 +4,44 @@
 #include "../Model/Sample.h"
 #include "../Model/ZModelRunner.h"
 
-enum DesignPointMethod
+namespace Deltares
 {
-    CenterOfGravity,
-    CenterOfAngles,
-    NearestToMean
-};
+    namespace Reliability
+    {
+	    class ModeFinder;
 
-class DesignPointBuilder
-{
-private:
-    int count = 0;
-    DesignPointMethod method = DesignPointMethod::NearestToMean;
-    double rmin = std::numeric_limits<double>::infinity();
-    double sumWeights = 0;
-    Sample* defaultSample = nullptr;
-    Sample* meanSample = nullptr;
-    Sample* sinSample = nullptr;
-    Sample* cosSample = nullptr;
-    bool sampleAdded = false;
-    Deltares::Models::ZModelRunner* model = nullptr;
-    std::unordered_map<int, double> scenarioWeights;
+	    enum DesignPointMethod
+        {
+            CenterOfGravity,
+            CenterOfAngles,
+            NearestToMean
+        };
 
-    void RegisterScenario(Sample* sample, double weight = 1);
-    int GetMaxScenario();
+        class DesignPointBuilder
+        {
+        private:
+            int count = 0;
+            DesignPointMethod method = DesignPointMethod::NearestToMean;
+            double rmin = std::numeric_limits<double>::infinity();
+            double sumWeights = 0;
+            Sample* defaultSample = nullptr;
+            Sample* meanSample = nullptr;
+            Sample* sinSample = nullptr;
+            Sample* cosSample = nullptr;
+            bool sampleAdded = false;
 
-public:
-    DesignPointBuilder(int count, DesignPointMethod method, Deltares::Models::ZModelRunner* model = nullptr);
-    void Initialize(double beta);
-    void AddSample(Sample* sample, double weight = 1);
-    Sample* GetSample();
-};
+            int* qualitativeIndices;
+            int qualitativeCount = 0;
+            ModeFinder** modeFinders;
+
+        public:
+            DesignPointBuilder(int count, DesignPointMethod method, StochastSettingsSet* stochastSet);
+            void initialize(double beta);
+            void addSample(Sample* sample);
+            Sample* getSample();
+        };
+    }
+}
 
 
 

@@ -138,7 +138,7 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
             stochast.push_back(s);
         }
 
-        auto mc = CrudeMonteCarlo();
+        auto mc = Deltares::Reliability::CrudeMonteCarlo();
         switch (method->rnd)
         {
             case rndTypes::GeorgeMarsaglia:
