@@ -208,9 +208,12 @@
     <ClInclude Include="Wrappers\StochastWrapper.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\external\src\extern\asa241.cpp" />
+    <ClCompile Include="CWrapper\probCalcF2Cnew.cpp" />
+    <ClCompile Include="Math\ASA\asa241.cpp" />
+    <ClCompile Include="Math\vector1D.cpp" />
     <ClCompile Include="Reliability\StochastSettings.cpp" />
     <ClCompile Include="Reliability\StochastSettingsSet.cpp" />
+    <ClCompile Include="Utils\probLibString.cpp" />
     <ClCompile Include="Wrappers\StochastSettingsWrapper.cpp" />
     <ClCompile Include="Wrappers\NativeSupport.cpp" />
     <ClCompile Include="Wrappers\EvaluationWrapper.cpp" />

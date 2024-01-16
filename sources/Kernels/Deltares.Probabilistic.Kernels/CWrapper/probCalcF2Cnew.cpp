@@ -2,12 +2,14 @@
 #include <omp.h>
 #include <memory>
 #include <functional>
-#include "stringHelper.h"
-#include "../../../src/probMethods/parseAndRunMethod.h"
-#include "../../../src/distributions/parseDistribution.h"
-#include "../../../src/utils/basic_math.h"
-#include "../../../src/probMethods/dsSettings.h"
-#include "../../../../Kernels/Deltares.Probabilistic.Kernels/Reliability/CrudeMonteCarlo.h"
+
+#include "../../../external/wrappers/general/src/stringHelper.h"
+#include "../../../external/src/probMethods/parseAndRunMethod.h"
+#include "../../../external/src/distributions/parseDistribution.h"
+#include "../../../external/src/utils/basic_math.h"
+#include "../../../external/src/probMethods/dsSettings.h"
+
+#include "../Reliability/CrudeMonteCarlo.h"
 
 using namespace Deltares::ProbLibCore;
 using namespace Deltares::Models;
@@ -34,6 +36,7 @@ struct tResult
 };
 
 // another helper for probcalcf2c
+/*
 progress* get_progress_ptr_new(const int interval, const bool(*pc)(int, double, double))
 {
     if (interval > 0)
@@ -45,6 +48,7 @@ progress* get_progress_ptr_new(const int interval, const bool(*pc)(int, double, 
         return new progress();
     }
 }
+*/
 
 std::function<double(double[], int[], tError*)> staticF;
 size_t allStoch;
@@ -71,6 +75,17 @@ double FDelegate (Sample* s)
     return result;
 }
 
+void fillErrorMessage(tError& error, const std::string s)
+{
+    size_t length = min(s.length(), ERRORMSGLENGTH);
+    for (size_t i = 0; i < length; i++)
+    {
+        error.errorMessage[i] = s[i];
+    }
+    size_t last = min(s.length(), ERRORMSGLENGTH - 1);
+    error.errorMessage[last] = char(0);
+}
+
 extern "C"
 void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n, const int vectorSize,
     corrStruct correlations[], const int nrCorrelations,
@@ -85,7 +100,7 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
     size_t numThreads = (size_t)method->numThreads;
     omp_set_num_threads(method->numThreads);
 
-    std::unique_ptr<progress> pg (get_progress_ptr_new(method->progressInterval, pc));
+    //std::unique_ptr<progress> pg (get_progress_ptr_new(method->progressInterval, pc));
 
     staticF = fx;
     try
@@ -190,7 +205,7 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
         }
         r->convergence = (newResult->ConvergenceReport->Convergence < method->tolB ? 1 : 0);
         r->stepsNeeded = -999;// result.stepsNeeded;
-        r->samplesNeeded = round(newResult->ConvergenceReport->FailedSamples / newResult->ConvergenceReport->FailFraction);
+        r->samplesNeeded = (int)round(newResult->ConvergenceReport->FailedSamples / newResult->ConvergenceReport->FailFraction);
     }
     catch (const std::exception& e)
     {

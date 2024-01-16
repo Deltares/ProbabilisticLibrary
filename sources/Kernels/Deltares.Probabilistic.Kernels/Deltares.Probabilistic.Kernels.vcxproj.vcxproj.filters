@@ -50,9 +50,6 @@
     <ClCompile Include="Wrappers\CrudeMonteCarloWrapper.cpp" />
     <ClCompile Include="Wrappers\ReliabilityMethodWrapper.cpp" />
     <ClCompile Include="Wrappers\RandomSettingsWrapper.cpp" />
-    <ClCompile Include="..\..\external\src\extern\asa241.cpp">
-      <Filter>extern</Filter>
-    </ClCompile>
     <ClCompile Include="Wrappers\StochastPointAlphaWrapper.cpp" />
     <ClCompile Include="Wrappers\StochastPointWrapper.cpp" />
     <ClCompile Include="Wrappers\DesignPointWrapper.cpp" />
@@ -74,6 +71,10 @@
     <ClCompile Include="Reliability\StochastSettings.cpp" />
     <ClCompile Include="Wrappers\StochastSettingsWrapper.cpp" />
     <ClCompile Include="Reliability\StochastSettingsSet.cpp" />
+    <ClCompile Include="Math\ASA\asa241.cpp" />
+    <ClCompile Include="CWrapper\probCalcF2Cnew.cpp" />
+    <ClCompile Include="Math\vector1D.cpp" />
+    <ClCompile Include="Utils\probLibString.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
