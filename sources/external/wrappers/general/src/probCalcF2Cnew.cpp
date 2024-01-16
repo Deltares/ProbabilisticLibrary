@@ -131,8 +131,7 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
         }
         mc.Settings->RandomSettings->Seed = method->seed1;
         mc.Settings->RandomSettings->SeedB = method->seed2;
-        auto zModel = new ZModel();
-        zModel->setZDelegate(FDelegate);
+        auto zModel = new ZModel(FDelegate);
         auto corr2 = new CorrelationMatrix();
         auto uConverter = new UConverter(stochast, corr2);
         uConverter->initializeForRun();
