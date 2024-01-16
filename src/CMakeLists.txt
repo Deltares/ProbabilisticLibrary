@@ -197,8 +197,8 @@ set (ptkcpp_files
     ../../Kernels/Deltares.Probabilistic.Kernels/Model/DesignPoint.h
     ../../Kernels/Deltares.Probabilistic.Kernels/Model/Evaluation.cpp
     ../../Kernels/Deltares.Probabilistic.Kernels/Model/Evaluation.h
-    ../../Kernels/Deltares.Probabilistic.Kernels/Model/RandomGenerator.cpp
-    ../../Kernels/Deltares.Probabilistic.Kernels/Model/RandomGenerator.h
+    ../../Kernels/Deltares.Probabilistic.Kernels/Model/RandomSampleGenerator.cpp
+    ../../Kernels/Deltares.Probabilistic.Kernels/Model/RandomSampleGenerator.h
     ../../Kernels/Deltares.Probabilistic.Kernels/Model/RandomSettings.cpp
     ../../Kernels/Deltares.Probabilistic.Kernels/Model/RandomSettings.h
     ../../Kernels/Deltares.Probabilistic.Kernels/Model/ProgressIndicator.cpp
@@ -229,6 +229,10 @@ set (ptkcpp_files
     ../../Kernels/Deltares.Probabilistic.Kernels/Reliability/DesignPointBuilder.h
     ../../Kernels/Deltares.Probabilistic.Kernels/Reliability/ReliabilityMethod.cpp
     ../../Kernels/Deltares.Probabilistic.Kernels/Reliability/ReliabilityMethod.h
+    ../../Kernels/Deltares.Probabilistic.Kernels/Reliability/StochastListSettings.cpp
+    ../../Kernels/Deltares.Probabilistic.Kernels/Reliability/StochastListSettings.h
+    ../../Kernels/Deltares.Probabilistic.Kernels/Reliability/StochastSettings.cpp
+    ../../Kernels/Deltares.Probabilistic.Kernels/Reliability/StochastSettings.h
     ../../Kernels/Deltares.Probabilistic.Kernels/Statistics/CorrelationMatrix.cpp
     ../../Kernels/Deltares.Probabilistic.Kernels/Statistics/CorrelationMatrix.h
     ../../Kernels/Deltares.Probabilistic.Kernels/Statistics/DeterministicDistribution.cpp
@@ -263,6 +267,8 @@ set (ptkcli_files
     ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/EvaluationWrapper.h
     ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/ModelRunnerWrapper.cpp
     ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/ModelRunnerWrapper.h
+    ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/NativeSupport.cpp
+    ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/NativeSupport.h
     ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/RandomProvider.cpp
     ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/RandomProvider.h
     ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/RandomSettingsWrapper.cpp
@@ -283,6 +289,8 @@ set (ptkcli_files
     ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/StochastPointWrapper.h
     ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/StochastWrapper.cpp
     ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/StochastWrapper.h
+    ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/StochastSettingsWrapper.cpp
+    ../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/StochastSettingsWrapper.h
 )
 
 add_library(probLib
