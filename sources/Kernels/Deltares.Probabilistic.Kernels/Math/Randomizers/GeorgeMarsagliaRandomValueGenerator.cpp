@@ -47,7 +47,7 @@ void GeorgeMarsagliaRandomValueGenerator::initialize(bool repeatable, const int 
         throw std::exception("Random seed parameter 2 outside of valid range (0 ... 30081)", kl);
     }
 
-    gm_state state = GeorgeMarsagliaRandomValueGenerator::state;
+    gm_state& state = GeorgeMarsagliaRandomValueGenerator::state;
     //
     // Initialize the parameters of the random number generator
     //
@@ -91,7 +91,7 @@ void GeorgeMarsagliaRandomValueGenerator::initialize(bool repeatable, const int 
 // This method returns a uniform random deviate between 0.0 and 1.0
 double GeorgeMarsagliaRandomValueGenerator::next()
 {
-    gm_state state = GeorgeMarsagliaRandomValueGenerator::state;
+    gm_state& state = GeorgeMarsagliaRandomValueGenerator::state;
     //
     // Generate a uniform random deviate between 0 and 1
     //
