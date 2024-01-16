@@ -1,5 +1,5 @@
 #pragma once
-#include <limits>
+#include <cmath>
 
 class ReliabilityResult
 {
@@ -7,15 +7,15 @@ public:
     int ProxyIteration = -1;
     int Run = 0;
     int Index = -1;
-    double Reliability = std::numeric_limits<double>::quiet_NaN();
-    double LowReliability = std::numeric_limits<double>::quiet_NaN();
-    double HighReliability = std::numeric_limits<double>::quiet_NaN();
-    double Samples = std::numeric_limits<double>::quiet_NaN();
-    double ConvBeta = std::numeric_limits<double>::quiet_NaN();
-    double ProxyConvergence = std::numeric_limits<double>::quiet_NaN();
-    double Variation = std::numeric_limits<double>::quiet_NaN();
-    double Difference = std::numeric_limits<double>::quiet_NaN();
-    double Contribution = std::numeric_limits<double>::quiet_NaN();
+    double Reliability = nan("");
+    double LowReliability = nan("");
+    double HighReliability = nan("");
+    double Samples = nan("");
+    double ConvBeta = nan("");
+    double ProxyConvergence = nan("");
+    double Variation = nan("");
+    double Difference = nan("");
+    double Contribution = nan("");
 
     bool IsMeaningful(ReliabilityResult* resultBefore, ReliabilityResult* resultAfter);
 

@@ -1,6 +1,5 @@
 #include "StandardNormal.h"
 #include <cmath>
-#include <limits>
 #include "../../../external/src/extern/asa241.hpp"
 
 using namespace ASA::conversions;
@@ -160,7 +159,7 @@ double StandardNormal::getUFromQ(const double q)
     double beta;
     if (isnan(q))
     {
-        return std::numeric_limits<double>::quiet_NaN();
+        return nan("");
     }
     else if (fabs(q) < margin)
     {
