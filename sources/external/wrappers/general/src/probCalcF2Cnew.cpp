@@ -37,7 +37,7 @@ struct tResult
 };
 
 // helper for probcalcf2c
-correlation* getCorrelation(corrStruct correlations[], const int nrCorrelations, const int n)
+correlation* getCorrelation_new(corrStruct correlations[], const int nrCorrelations, const int n)
 {
     if (nrCorrelations > 0)
     {
@@ -55,7 +55,7 @@ correlation* getCorrelation(corrStruct correlations[], const int nrCorrelations,
 }
 
 // another helper for probcalcf2c
-progress* get_progress_ptr(const int interval, const bool(*pc)(int, double, double))
+progress* get_progress_ptr_new(const int interval, const bool(*pc)(int, double, double))
 {
     if (interval > 0)
     {
@@ -68,18 +68,26 @@ progress* get_progress_ptr(const int interval, const bool(*pc)(int, double, doub
 }
 
 std::function<double(double[], int[], tError*)> staticF;
+size_t allStoch;
+int* iPointer;
+double* xRef;
 
 double FDelegate (Sample* s)
 {
-    auto xx = new double[s->getSize()];
+    auto xx = new double[allStoch];
+    for (size_t i = 0; i < allStoch; i++)
+    {
+        xx[i] = xRef[i];
+    }
     for (size_t i = 0; i < s->getSize(); i++)
     {
-        xx[i] = s->Values[i];
+        xx[iPointer[i]] = s->Values[i];
     }
     auto i = new int[4];
     tError e = tError();
     double result = staticF(xx, i, &e);
     delete[] xx;
+    delete[] i;
     s->Z = result;
     return result;
 }
@@ -92,11 +100,14 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
     int compIds[], int iPoint[], double x[], tResult* r, tError* ierr)
 {
     auto nStoch = (size_t)n;
+    allStoch = vectorSize;
+    iPointer = iPoint;
+    xRef = x;
     size_t numThreads = (size_t)method->numThreads;
     omp_set_num_threads(method->numThreads);
     auto zf = fortranZfunc(fx, nStoch, (size_t)vectorSize, compIds, iPoint, x, numThreads);
 
-    std::unique_ptr<progress> pg (get_progress_ptr(method->progressInterval, pc));
+    std::unique_ptr<progress> pg (get_progress_ptr_new(method->progressInterval, pc));
 
     staticF = fx;
     try
@@ -106,7 +117,25 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
         for (size_t i = 0; i < nStoch; i++)
         {
             std::string name = c[i].name;
-            auto dist = (DistributionType) c[i].distId;
+            auto distHR = (EnumDistributions)c[i].distId;
+            DistributionType dist;
+            switch (distHR)
+            {
+                case EnumDistributions::normal:
+                    dist = DistributionType::Normal;
+                    break;
+                case EnumDistributions::deterministic:
+                    dist = DistributionType::Deterministic;
+                    break;
+                case EnumDistributions::lognormal2:
+                    dist = DistributionType::LogNormal;
+                    break;
+                case EnumDistributions::uniform:
+                    dist = DistributionType::Uniform;
+                    break;
+                default:
+                    throw probLibException("Distribution not supported yet: ", c[i].distId);
+            }
             auto params = new double[4];
             for (size_t j = 0; j < 4; j++)
             {
@@ -131,6 +160,7 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
         }
         mc.Settings->RandomSettings->Seed = method->seed1;
         mc.Settings->RandomSettings->SeedB = method->seed2;
+        mc.Settings->VariationCoefficient = method->tolB;
         auto zModel = new ZModel(FDelegate);
         auto corr2 = new CorrelationMatrix();
         auto uConverter = new UConverter(stochast, corr2);
@@ -141,35 +171,32 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
         auto progress = new ProgressIndicator(progressDelegate, detailedProgressDelegate, textualProgressDelegate);
         auto modelRunner = new ZModelRunner(zModel, uConverter, progress);
         auto newResult = mc.getDesignPoint(modelRunner);
-        lsfResult result;
 
-        result.result.setBeta(newResult->Beta);
         auto alpha = vector1D(newResult->Alphas.size());
         for (size_t i = 0; i < alpha.size(); i++)
         {
             alpha(i) = newResult->Alphas[i]->Alpha;
         }
 
-        result.result.setAlpha(alpha);
         ierr->errorCode = 0;
-        r->beta = result.result.getBeta();
-        for (size_t i = 0; i < result.result.size(); i++)
+        r->beta = newResult->Beta;
+        for (size_t i = 0; i < alpha.size(); i++)
         {
-            r->alpha[i] = result.result.getAlphaI(i);
+            r->alpha[i] = alpha(i);
         }
 
-        if (result.x.size() <= maxActiveStochast)
+        if (alpha.size() <= maxActiveStochast)
         {
-            for (size_t i = 0; i < result.x.size(); i++)
+            for (size_t i = 0; i < alpha.size(); i++)
             {
-                r->x[i] = result.x(i);
+                r->x[i] = newResult->Alphas[i]->X;
             }
         }
-        if (result.x.size() == (size_t)vectorSize)
+        if (alpha.size() == (size_t)vectorSize)
         {
-            for (size_t i = 0; i < result.x.size(); i++)
+            for (size_t i = 0; i < alpha.size(); i++)
             {
-                x[i] = result.x(i);
+                x[i] = r->x[i];
             }
         }
 
@@ -177,13 +204,13 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
         {
             r->iPoint[i] = i + 1;
         }
-        for (size_t i = 0; i < result.alpha_u.size(); i++)
+        for (size_t i = 0; i < alpha.size(); i++)
         {
-            r->alpha2[i] = result.alpha_u(i);
+            r->alpha2[i] = newResult->Alphas[i]->AlphaCorrelated;
         }
-        r->convergence = (int)result.convergence;
-        r->stepsNeeded = result.stepsNeeded;
-        r->samplesNeeded = result.samplesNeeded;
+        r->convergence = (newResult->ConvergenceReport->Convergence < method->tolB ? 1 : 0);
+        r->stepsNeeded = -999;// result.stepsNeeded;
+        r->samplesNeeded = round(newResult->ConvergenceReport->FailedSamples / newResult->ConvergenceReport->FailFraction);
     }
     catch (const std::exception& e)
     {
