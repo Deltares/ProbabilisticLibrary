@@ -203,7 +203,7 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
         {
             r->alpha2[i] = newResult->Alphas[i]->AlphaCorrelated;
         }
-        r->convergence = (newResult->ConvergenceReport->Convergence < method->tolB ? 1 : 0);
+        r->convergence = (newResult->ConvergenceReport->Convergence < method->tolB ? 0 : 1);
         r->stepsNeeded = -999;// result.stepsNeeded;
         r->samplesNeeded = (int)round(newResult->ConvergenceReport->FailedSamples / newResult->ConvergenceReport->FailFraction);
     }
