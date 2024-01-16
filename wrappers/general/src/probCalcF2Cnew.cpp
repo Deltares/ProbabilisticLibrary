@@ -2,11 +2,8 @@
 #include <omp.h>
 #include <memory>
 #include <functional>
-#include "fortranZfunc.h"
 #include "stringHelper.h"
 #include "../../../src/probMethods/parseAndRunMethod.h"
-#include "../../../src/correlation/identity.h"
-#include "../../../src/correlation/gaussianCorrelationRobust.h"
 #include "../../../src/distributions/parseDistribution.h"
 #include "../../../src/utils/basic_math.h"
 #include "../../../src/probMethods/dsSettings.h"
@@ -36,24 +33,6 @@ struct tResult
     double alpha2[maxActiveStochast];
 };
 
-// helper for probcalcf2c
-correlation* getCorrelation_new(corrStruct correlations[], const int nrCorrelations, const int n)
-{
-    if (nrCorrelations > 0)
-    {
-        auto pairs = std::vector<corrStruct>();
-        for (size_t i = 0; i < (size_t)nrCorrelations; i++)
-        {
-            pairs.push_back(correlations[i]);
-        }
-        return new gaussianCorrelationRobust(n, pairs);
-    }
-    else
-    {
-        return new identity(n);
-    }
-}
-
 // another helper for probcalcf2c
 progress* get_progress_ptr_new(const int interval, const bool(*pc)(int, double, double))
 {
@@ -81,7 +60,7 @@ double FDelegate (Sample* s)
     }
     for (size_t i = 0; i < s->getSize(); i++)
     {
-        xx[iPointer[i]] = s->Values[i];
+        xx[iPointer[i]] = s->XValues[i];
     }
     auto i = new int[4];
     tError e = tError();
@@ -105,7 +84,6 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
     xRef = x;
     size_t numThreads = (size_t)method->numThreads;
     omp_set_num_threads(method->numThreads);
-    auto zf = fortranZfunc(fx, nStoch, (size_t)vectorSize, compIds, iPoint, x, numThreads);
 
     std::unique_ptr<progress> pg (get_progress_ptr_new(method->progressInterval, pc));
 
@@ -161,6 +139,8 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
         mc.Settings->RandomSettings->Seed = method->seed1;
         mc.Settings->RandomSettings->SeedB = method->seed2;
         mc.Settings->VariationCoefficient = method->tolB;
+        mc.Settings->MinimumSamples = method->minSamples;
+        mc.Settings->MaximumSamples = method->maxSamples;
         auto zModel = new ZModel(FDelegate);
         auto corr2 = new CorrelationMatrix();
         auto uConverter = new UConverter(stochast, corr2);
