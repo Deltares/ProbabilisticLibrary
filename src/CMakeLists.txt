@@ -180,11 +180,11 @@ set (probMethods_files
 
 file(GLOB ptkcpp_files
     "../../Kernels/Deltares.Probabilistic.Kernels/Math/*.cpp"
+    "../../Kernels/Deltares.Probabilistic.Kernels/Math/ASA/*.cpp"
     "../../Kernels/Deltares.Probabilistic.Kernels/Math/Randomizers/*.cpp"
     "../../Kernels/Deltares.Probabilistic.Kernels/Model/*.cpp"
     "../../Kernels/Deltares.Probabilistic.Kernels/Reliability/*.cpp"
     "../../Kernels/Deltares.Probabilistic.Kernels/Statistics/*.cpp"
-    extern/asa241.cpp
 )
 file(GLOB ptkcli_files "../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/*.cpp")
 

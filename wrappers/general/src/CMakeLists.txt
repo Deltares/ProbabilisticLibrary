@@ -8,7 +8,7 @@ target_sources(pb_wrapper_c
     stringHelper.h
     stringHelper.cpp
     probCalcF2C.cpp
-    probCalcF2Cnew.cpp
+    ../../../../Kernels/Deltares.Probabilistic.Kernels/CWrapper/probCalcF2Cnew.cpp
     randomgen.cpp
     fortranZfunc.h
     fortranZfunc.cpp
