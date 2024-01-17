@@ -50,6 +50,14 @@ double* NumericSupport::getCopy(double* values, int count)
 	return newValues;
 }
 
+void NumericSupport::swap(double& x, double& y)
+{
+	double swapped = x;
+	x = y;
+	y = swapped;
+}
+
+
 
 double NumericSupport::Divide(int counter, int denominator)
 {
@@ -95,7 +103,7 @@ double NumericSupport::round(double value, int decimals)
 /// </summary>
 /// <param name="value"></param>
 /// <returns></returns>
-DoubleType getDoubleType(double value)
+DoubleType NumericSupport::getDoubleType(double value)
 {
 	if (std::isnan(value))
 	{
@@ -115,7 +123,7 @@ DoubleType getDoubleType(double value)
 	}
 }
 
-double getSign(DoubleType doubleType)
+double NumericSupport::getSign(DoubleType doubleType)
 {
 	switch (doubleType)
 	{

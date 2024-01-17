@@ -19,6 +19,7 @@ public:
 	static double* getArray(double initialValue, int count);
 	static DoubleType getDoubleType(double value);
 	static double getSign(DoubleType value);
+	static void swap(double& x, double& y);
 };
 
 

@@ -41,3 +41,15 @@ Sample* Sample::normalize(double newBeta)
     return new Sample(un, this->size);
 }
 
+Sample* Sample::multiply(double factor)
+{
+    double* u = new double[this->size];
+    for (int i = 0; i < this->size; i++)
+    {
+        u[i] = factor * this->Values[i];
+    }
+
+    return new Sample(u, this->size);
+}
+
+

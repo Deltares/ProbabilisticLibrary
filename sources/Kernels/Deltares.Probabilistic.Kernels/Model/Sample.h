@@ -43,6 +43,7 @@ public:
 	void setBeta(double beta);
 	Sample* clone();
 	Sample* normalize(double beta = 1);
+	Sample* multiply(double factor);
 
 	intptr_t Tag = 0;
 };
