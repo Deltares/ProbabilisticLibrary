@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../Model/Sample.h"
 
 namespace Deltares
 {
@@ -16,6 +17,8 @@ namespace Deltares
 			double EpsilonUStepSize = 0.01;
 			int MaximumIterations = 50;
 			double EpsilonZStepSize = 0.01;
+
+			Sample* StartPoint = nullptr;
 
 			bool IsValid();
 		};

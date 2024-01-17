@@ -20,3 +20,24 @@ void Sample::setBeta(double beta)
 	}
 }
 
+Sample* Sample::clone()
+{
+	return new Sample(this->Values, this->getSize());
+}
+
+Sample* Sample::normalize(double newBeta)
+{
+    double actualBeta = NumericSupport::GetLength(this->Values, this->size); 
+    double* un = new double[this->size];
+
+    if (newBeta > 0)
+    {
+        for (int k = 0; k < this->size; k++)
+        {
+            un[k] = newBeta * this->Values[k] / actualBeta;
+        }
+    }
+
+    return new Sample(un, this->size);
+}
+
