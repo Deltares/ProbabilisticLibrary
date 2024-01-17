@@ -75,6 +75,9 @@
     <ClCompile Include="CWrapper\probCalcF2Cnew.cpp" />
     <ClCompile Include="Math\vector1D.cpp" />
     <ClCompile Include="Utils\probLibString.cpp" />
+    <ClCompile Include="Reliability\DirectionReliabilitySettings.cpp" />
+    <ClCompile Include="Math\cholesky_decomp.cpp" />
+    <ClCompile Include="Math\matrix.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -155,6 +158,9 @@
     <ClInclude Include="Reliability\StochastSettings.h" />
     <ClInclude Include="Wrappers\StochastSettingsWrapper.h" />
     <ClInclude Include="Reliability\StochastSettingsSet.h" />
+    <ClInclude Include="Reliability\DirectionReliabilitySettings.h" />
+    <ClInclude Include="Math\matrix.h" />
+    <ClInclude Include="Math\vector1D.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">
