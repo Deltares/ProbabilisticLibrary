@@ -108,6 +108,7 @@ double* UConverter::getXValues(Sample* sample)
 	}
 
 	delete[] expandedUValues;
+	delete[] uCorrelated;
 
 	return xValues;
 }

@@ -100,8 +100,6 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
     size_t numThreads = (size_t)method->numThreads;
     omp_set_num_threads(method->numThreads);
 
-    //std::unique_ptr<progress> pg (get_progress_ptr_new(method->progressInterval, pc));
-
     staticF = fx;
     try
     {
@@ -157,16 +155,16 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
         mc.Settings->VariationCoefficient = method->tolB;
         mc.Settings->MinimumSamples = method->minSamples;
         mc.Settings->MaximumSamples = method->maxSamples;
-        auto zModel = new ZModel(FDelegate);
-        auto corr2 = new CorrelationMatrix();
-        auto uConverter = new UConverter(stochast, corr2);
+        std::unique_ptr<ZModel> zModel(new ZModel(FDelegate));
+        std::unique_ptr<CorrelationMatrix> corr(new CorrelationMatrix());
+        std::unique_ptr<UConverter> uConverter(new UConverter(stochast, corr.get()));
         uConverter->initializeForRun();
         auto progressDelegate = ProgressDelegate();
         auto detailedProgressDelegate = DetailedProgressDelegate();
         auto textualProgressDelegate = TextualProgressDelegate();
-        auto progress = new ProgressIndicator(progressDelegate, detailedProgressDelegate, textualProgressDelegate);
-        auto modelRunner = new ZModelRunner(zModel, uConverter, progress);
-        std::unique_ptr<DesignPoint> newResult(mc.getDesignPoint(modelRunner));
+        std::unique_ptr<ProgressIndicator> progress (new ProgressIndicator(progressDelegate, detailedProgressDelegate, textualProgressDelegate));
+        std::unique_ptr<ZModelRunner> modelRunner(new ZModelRunner(zModel.get(), uConverter.get(), progress.get()));
+        std::unique_ptr<DesignPoint> newResult(mc.getDesignPoint(modelRunner.get()));
 
         auto alpha = vector1D(newResult->Alphas.size());
         for (size_t i = 0; i < alpha.size(); i++)
