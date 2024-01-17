@@ -3,11 +3,10 @@
 #include <memory>
 #include <functional>
 
-#include "../../../external/wrappers/general/src/stringHelper.h"
-#include "../../../external/src/probMethods/parseAndRunMethod.h"
-#include "../../../external/src/distributions/parseDistribution.h"
-#include "../../../external/src/utils/basic_math.h"
-#include "../../../external/src/probMethods/dsSettings.h"
+#include "basicSettings.h"
+#include "enumDistributions.h"
+#include "../Utils/probLibException.h"
+#include "../Math/vector1D.h"
 
 #include "../Reliability/CrudeMonteCarlo.h"
 
@@ -15,6 +14,13 @@ using namespace Deltares::ProbLibCore;
 using namespace Deltares::Models;
 
 const size_t lenSmallStr = 32;
+const size_t ERRORMSGLENGTH = 256;
+
+struct tError
+{
+    char errorMessage[ERRORMSGLENGTH];
+    int errorCode;
+};
 
 struct fdistribs
 {
@@ -77,12 +83,12 @@ double FDelegate (Sample* s)
 
 void fillErrorMessage(tError& error, const std::string s)
 {
-    size_t length = min(s.length(), ERRORMSGLENGTH);
+    size_t length = std::min(s.length(), ERRORMSGLENGTH);
     for (size_t i = 0; i < length; i++)
     {
         error.errorMessage[i] = s[i];
     }
-    size_t last = min(s.length(), ERRORMSGLENGTH - 1);
+    size_t last = std::min(s.length(), ERRORMSGLENGTH - 1);
     error.errorMessage[last] = char(0);
 }
 
