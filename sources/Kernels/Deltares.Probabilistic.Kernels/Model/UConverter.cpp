@@ -35,7 +35,15 @@ void UConverter::initializeForRun()
 		}
 	}
 
-	varyingCorrelationMatrix = new CorrelationMatrix();
+	if (stochasts.size() == varyingStochasts.size())
+	{
+		varyingCorrelationMatrix = correlationMatrix;
+	}
+	else
+	{
+		varyingCorrelationMatrix = new CorrelationMatrix();
+		throw Deltares::ProbLibCore::probLibException("to be implemented.");
+	}
 }
 
 int UConverter::getStochastCount()

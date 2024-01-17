@@ -17,6 +17,9 @@ namespace Deltares
 				~CorrelationMatrixWrapper() { this->!CorrelationMatrixWrapper(); }
 				!CorrelationMatrixWrapper() { delete m_correlation_matrix; }
 
+				void init(const int size) { m_correlation_matrix->init(size); }
+				void SetCorrelation(const int i, const int j, const double value) { m_correlation_matrix->SetCorrelation(i, j, value); }
+
 				CorrelationMatrix* GetCorrelationMatrix()
 				{
 					return m_correlation_matrix;

@@ -5,22 +5,35 @@ using namespace Deltares::ProbLibCore;
 double* CorrelationMatrix::Cholesky(double* uValues, int count)
 {
     size_t m1; size_t m2;
-    choleskyMatrix.get_dims(m1, m2);
-    if (m1 == 0) CholeskyDecomposition();
-
-    auto u = vector1D(count);
-    for (size_t i = 0; i < count; i++)
-    {
-        u(i) = uValues[i];
-    }
-
-    auto uNew = choleskyMatrix.matvec(u);
-
+    matrix.get_dims(m1, m2);
     double* correlatedValues = new double[count];
-
-    for (int i = 0; i < count; i++)
+    if (m1 == 0)
     {
-        correlatedValues[i] = uNew(i);
+        for (int i = 0; i < count; i++)
+        {
+            correlatedValues[i] = uValues[i];
+        }
+
+    }
+    else
+    {
+        size_t c1; size_t c2;
+        choleskyMatrix.get_dims(c1, c2);
+        if (c1 == 0) CholeskyDecomposition();
+
+        auto u = vector1D(count);
+        for (size_t i = 0; i < count; i++)
+        {
+            u(i) = uValues[i];
+        }
+
+        auto uNew = choleskyMatrix.matvec(u);
+
+        for (int i = 0; i < count; i++)
+        {
+            correlatedValues[i] = uNew(i);
+        }
+
     }
 
     return correlatedValues;
@@ -29,6 +42,10 @@ double* CorrelationMatrix::Cholesky(double* uValues, int count)
 void CorrelationMatrix::init(const int maxStochasts)
 {
     matrix = Matrix(maxStochasts, maxStochasts);
+    for (size_t i = 0; i < maxStochasts; i++)
+    {
+        matrix(i, i) = 1.0;
+    }
 }
 
 void CorrelationMatrix::SetCorrelation(const int i, const int j, const double value)
@@ -37,7 +54,7 @@ void CorrelationMatrix::SetCorrelation(const int i, const int j, const double va
     matrix.get_dims(m1, m2);
     if (std::max(i, j) >= m1)
     {
-        throw probLibException("dimension mismatch in addCorrelation");
+        throw probLibException("dimension mismatch in SetCorrelation");
     }
     matrix(i, j) = value;
     matrix(j, i) = value;
