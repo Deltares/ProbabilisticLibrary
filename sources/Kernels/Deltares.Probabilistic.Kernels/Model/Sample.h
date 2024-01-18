@@ -40,6 +40,7 @@ public:
 	}
 
 	double* Values;
+	int sizeX = 0;
 	double* XValues;
 
 	int IterationIndex = -1;
@@ -49,6 +50,7 @@ public:
 	double Z = nan("");
 
 	int getSize();
+	int getSizeX();
 
 	double getBeta();
 
