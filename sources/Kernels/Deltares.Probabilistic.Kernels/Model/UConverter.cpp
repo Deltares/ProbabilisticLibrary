@@ -24,7 +24,7 @@ void UConverter::initializeForRun()
 
 	for (int i = 0; i < this->stochasts.size(); i++)
 	{
-		if (this->stochasts[i]->isVarying())
+		if (this->stochasts[i]->isVarying() && ! checkFullyCorrelated(i))
 		{
 			this->varyingStochastIndex.push_back(this->varyingStochastIndex.size());
 			this->varyingStochasts.push_back(this->stochasts[i]);
@@ -42,8 +42,15 @@ void UConverter::initializeForRun()
 	else
 	{
 		varyingCorrelationMatrix = new CorrelationMatrix();
-		throw Deltares::ProbLibCore::probLibException("to be implemented.");
+		varyingCorrelationMatrix->init(varyingStochasts.size());
+		varyingCorrelationMatrix->filter(correlationMatrix, varyingStochastIndex);
 	}
+	varyingCorrelationMatrix->CholeskyDecomposition();
+}
+
+bool UConverter::checkFullyCorrelated(const int i)
+{
+	return correlationMatrix->checkFullyCorrelated(i);
 }
 
 int UConverter::getStochastCount()
@@ -64,12 +71,12 @@ void UConverter::updateStochastSettings(Deltares::Reliability::StochastSettingsS
 	int j = 0;
 	for (int i = 0; i < stochasts.size(); i++)
 	{
-		if (stochasts[i]->isVarying())
+		if (stochasts[i]->isVarying() && !checkFullyCorrelated(i))
 		{
 			settings->VaryingStochastSettings[j] = i < settings->StochastCount ? settings->StochastSettings[i] : new Deltares::Reliability::StochastSettings();
 			settings->VaryingStochastSettings[j]->StochastIndex = i;
-			settings->VaryingStochastSettings[j]->IsQualitative = varyingStochasts[i]->isQualitative();
-			settings->VaryingStochastSettings[j]->setStochast(varyingStochasts[i]);
+			settings->VaryingStochastSettings[j]->IsQualitative = varyingStochasts[j]->isQualitative();
+			settings->VaryingStochastSettings[j]->setStochast(varyingStochasts[j]);
 
 			settings->VaryingStochastSettings[j]->initializeForRun();
 
@@ -80,21 +87,30 @@ void UConverter::updateStochastSettings(Deltares::Reliability::StochastSettingsS
 	settings->StochastCount = this->stochasts.size();
 }
 
+void UConverter::updateDependedParameter(double* uValues, const int i)
+{
+	auto r = correlationMatrix->findDependent(i);
+	if (r.first >= 0)
+	{
+		uValues[i] = r.second * uValues[r.first];
+	}
+}
 
 double* UConverter::getExpandedUValues(double* values)
 {
 	double* uValues = new double[this->stochasts.size()];
-
+	int ii = 0;
 	for (int i = 0; i < this->stochasts.size(); i++)
 	{
 		const int varyingIndex = this->varyingStochastIndex[i];
 		if (varyingIndex >= 0)
 		{
-			uValues[i] = values[varyingIndex];
+			uValues[i] = values[ii];
+			ii++;
 		}
 		else
 		{
-			uValues[i] = 0;
+			updateDependedParameter(uValues, i);
 		}
 	}
 
@@ -117,6 +133,7 @@ double* UConverter::getXValues(Sample* sample)
 
 	delete[] expandedUValues;
 	delete[] uCorrelated;
+	sample->sizeX = stochasts.size();
 
 	return xValues;
 }

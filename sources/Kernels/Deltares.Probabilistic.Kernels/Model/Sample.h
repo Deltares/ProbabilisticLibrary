@@ -30,6 +30,7 @@ public:
 	}
 
 	double* Values = new double[0];
+	int sizeX = 0;
 	double* XValues = new double[0];
 
 	int IterationIndex = -1;
@@ -39,6 +40,8 @@ public:
 	double Z = nan("");
 
 	int getSize();
+	int getSizeX();
+
 	double getBeta();
 	void setBeta(double beta);
 	Sample* clone();

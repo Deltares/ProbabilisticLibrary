@@ -5,6 +5,11 @@ int Sample::getSize()
 	return size;
 }
 
+int Sample::getSizeX()
+{
+	return sizeX;
+}
+
 double Sample::getBeta()
 {
 	return NumericSupport::GetLength(Values, size);

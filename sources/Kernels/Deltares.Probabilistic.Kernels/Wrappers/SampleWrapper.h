@@ -42,7 +42,7 @@ namespace Deltares
 					{
 						if (xValues == nullptr)
 						{
-							xValues = NativeSupport::toManaged(sample->XValues, sample->getSize());
+							xValues = NativeSupport::toManaged(sample->XValues, sample->getSizeX());
 						}
 
 						return xValues;

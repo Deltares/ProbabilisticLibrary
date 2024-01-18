@@ -57,7 +57,10 @@ void CorrelationMatrix::SetCorrelation(const int i, const int j, const double va
         throw probLibException("dimension mismatch in SetCorrelation");
     }
     matrix(i, j) = value;
-    matrix(j, i) = value;
+    if (abs(value) < 1.0)
+    {
+        matrix(j, i) = value;
+    }
 }
 
 void CorrelationMatrix::CholeskyDecomposition()
@@ -65,3 +68,62 @@ void CorrelationMatrix::CholeskyDecomposition()
     choleskyMatrix = matrix.CholeskyDecomposition();
 }
 
+bool CorrelationMatrix::checkFullyCorrelated(const int j)
+{
+    size_t m1; size_t m2;
+    matrix.get_dims(m1, m2);
+    for (size_t i = 0; i < m1; i++)
+    {
+        if (i != j)
+        {
+            if (abs(matrix(i, j)) >= 1.0)
+            {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+void CorrelationMatrix::filter(const CorrelationMatrix* m, const std::vector<int> index)
+{
+    size_t m1; size_t m2;
+    m->matrix.get_dims(m1, m2);
+    for (size_t i = 0; i < m1; i++)
+    {
+        auto ii = findNewIndex(index, i);
+        for (size_t j = 0; j < m1; j++)
+        {
+            auto jj = findNewIndex(index, j);
+            if (index[i] >= 0 && index[j] >= 0)
+            {
+                matrix(ii, jj) = m->matrix(i, j);
+            }
+        }
+    }
+}
+
+int CorrelationMatrix::findNewIndex(const std::vector<int> index, const size_t i)
+{
+    int newIndex = 0;
+    for (size_t j = 0; j <= i; j++)
+    {
+        if (index[j] >= 0) newIndex++;
+    }
+    return newIndex-1;
+}
+
+std::pair<int, double> CorrelationMatrix::findDependent(const int j)
+{
+    size_t m1; size_t m2;
+    matrix.get_dims(m1, m2);
+    for (size_t i = 0; i < m2; i++)
+    {
+        if ( i != j && abs(matrix(i, j) >= 1.0))
+        {
+            return { (int)i, matrix(i,j) };
+        }
+    }
+    return { -1, -999.0 };
+}
