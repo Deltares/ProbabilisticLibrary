@@ -22,6 +22,7 @@ namespace Deltares
 		public:
 			Deltares::Reliability::DirectionReliabilitySettings* Settings = new Deltares::Reliability::DirectionReliabilitySettings();
 			DesignPoint* getDesignPoint(Deltares::Models::ZModelRunner* modelRunner) override;
+			double getBeta(Deltares::Models::ZModelRunner* modelRunner, Sample* directionSample, double z0);
 		};
 	}
 }

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "StochastSettingsSet.h"
 #include "../Model/Sample.h"
 
 namespace Deltares
@@ -18,7 +19,7 @@ namespace Deltares
 			int MaximumIterations = 50;
 			double EpsilonZStepSize = 0.01;
 
-			Sample* StartPoint = nullptr;
+			StochastSettingsSet* StochastSet = new StochastSettingsSet();
 
 			bool IsValid();
 		};

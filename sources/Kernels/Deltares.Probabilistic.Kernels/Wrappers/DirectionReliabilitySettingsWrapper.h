@@ -78,15 +78,7 @@ namespace Deltares
 
 				void SetStartPoint(DesignPointWrapper^ designPoint)
 				{
-					double* uValues = new double[designPoint->Alphas->Count];
-
-					for (int i = 0; i < designPoint->Alphas->Count; i++)
-					{
-						uValues[i] = designPoint->Alphas[i]->U;
-					}
-
-					Sample* sample = new Sample(uValues, designPoint->Alphas->Count);
-					m_settings->StartPoint = sample;
+					m_settings->StochastSet = new Reliability::StochastSettingsSet(designPoint->getDesignPoint());
 				}
 
 				Reliability::DirectionReliabilitySettings* GetSettings()

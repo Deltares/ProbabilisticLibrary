@@ -100,11 +100,24 @@ namespace Deltares
 
 		DesignPoint* DirectionReliability::getDesignPoint(Deltares::Models::ZModelRunner* modelRunner)
 		{
+			modelRunner->updateStochastSettings(this->Settings->StochastSet);
+
 			Sample* zeroSample = new Sample(modelRunner->getVaryingStochastCount());
 			double z = modelRunner->getZValue(zeroSample);
 			double z0 = this->getZFactor(z);
 
-			Sample* directionSample = this->Settings->StartPoint->clone();
+			Sample* directionSample = this->Settings->StochastSet->getSample();
+
+			double beta = getBeta(modelRunner, directionSample, z0);
+			double* alphas = GetAlphas(directionSample, directionSample->getSize(), z0);
+
+			DesignPoint* designPoint = modelRunner->getRealization(beta, alphas);
+
+			return designPoint;
+		}
+
+		double DirectionReliability::getBeta(Deltares::Models::ZModelRunner* modelRunner, Sample* directionSample, double z0)
+		{
 			Sample* normalizedSample = directionSample->normalize();
 
 			BetaValueTask* task = new BetaValueTask();
@@ -119,11 +132,7 @@ namespace Deltares
 			// direction beta is always positive, therefore correct
 			beta = beta * z0;
 
-			double* alphas = GetAlphas(directionSample, directionSample->getSize(), z0);
-
-			DesignPoint* designPoint = modelRunner->getRealization(beta, alphas);
-
-			return designPoint;
+			return beta;
 		}
 
 		double DirectionReliability::GetDirectionBeta(Models::ZModelRunner* modelRunner, BetaValueTask* directionTask)
