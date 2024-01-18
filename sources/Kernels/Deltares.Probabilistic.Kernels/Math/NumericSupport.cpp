@@ -1,6 +1,7 @@
 #include "NumericSupport.h"
 
 #include <cmath>
+#include <exception>
 
 const double pi = 3.141592653589793238795028841971;
 
@@ -25,6 +26,39 @@ double NumericSupport::GetLength(double* values, int count)
 	return sqrt(GetSquaredSum(values, count));
 }
 
+double* NumericSupport::getArray(double initialValue, int count)
+{
+	double* newValues = new double[count];
+
+	for (int i = 0; i < count; i++)
+	{
+		newValues[i] = initialValue;
+	}
+
+	return newValues;
+}
+
+double* NumericSupport::getCopy(double* values, int count)
+{
+	double* newValues = new double[count];
+
+	for (int i = 0; i < count; i++)
+	{
+		newValues[i] = values[i];
+	}
+
+	return newValues;
+}
+
+void NumericSupport::swap(double& x, double& y)
+{
+	double swapped = x;
+	x = y;
+	y = swapped;
+}
+
+
+
 double NumericSupport::Divide(int counter, int denominator)
 {
 	return static_cast<double>(counter) / static_cast<double>(denominator);
@@ -48,20 +82,63 @@ double NumericSupport::round(double value, int decimals)
 	double multiplier = 1;
 	switch (decimals)
 	{
-		case 0: multiplier = 1; break;
-		case 1: multiplier = 10; break;
-		case 2: multiplier = 100; break;
-		case 3: multiplier = 1000; break;
-		case 4: multiplier = 10000; break;
-		case 5: multiplier = 100000; break;
-		case 6: multiplier = 1000000; break;
-		case 7: multiplier = 10000000; break;
-		case 8: multiplier = 100000000; break;
-		case 9: multiplier = 1000000000; break;
-		default: std::pow(10.0, decimals);
+	case 0: multiplier = 1; break;
+	case 1: multiplier = 10; break;
+	case 2: multiplier = 100; break;
+	case 3: multiplier = 1000; break;
+	case 4: multiplier = 10000; break;
+	case 5: multiplier = 100000; break;
+	case 6: multiplier = 1000000; break;
+	case 7: multiplier = 10000000; break;
+	case 8: multiplier = 100000000; break;
+	case 9: multiplier = 1000000000; break;
+	default: std::pow(10.0, decimals);
 	}
 
 	return std::round(value * multiplier) / multiplier;
+}
+
+/// <summary>
+/// Retrieves qualitative information of a numeric value
+/// </summary>
+/// <param name="value"></param>
+/// <returns></returns>
+DoubleType NumericSupport::getDoubleType(double value)
+{
+	if (std::isnan(value))
+	{
+		return DoubleType::NaN;
+	}
+	else if (value > 0)
+	{
+		return DoubleType::Positive;
+	}
+	else if (value < 0)
+	{
+		return DoubleType::Negative;
+	}
+	else
+	{
+		return DoubleType::Zero;
+	}
+}
+
+double NumericSupport::getSign(DoubleType doubleType)
+{
+	switch (doubleType)
+	{
+	case DoubleType::Zero:
+		return 0;
+	case DoubleType::Negative:
+		return -1;
+	case DoubleType::Positive:
+		return 1;
+	case DoubleType::NaN:
+		return nan("");
+	default:
+		//C# TO C++ CONVERTER TASK: There is no C++ equivalent to 'ToString':
+		throw new std::exception("double type not supported");
+	}
 }
 
 

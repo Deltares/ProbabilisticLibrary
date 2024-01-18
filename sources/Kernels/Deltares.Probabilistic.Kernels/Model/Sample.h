@@ -14,23 +14,13 @@ public:
 	Sample(int size)
 	{
 		this->size = size;
-		Values = new double[size];
-
-		for (int i = 0; i < size; i++) 
-		{
-			Values[i] = 0;
-		}
+		this->Values = NumericSupport::getArray(0, size);  
 	}
 
 	Sample(double* values, int size)
 	{
 		this->size = size;
-		Values = new double[size];
-
-		for (int i = 0; i < size; i++) 
-		{
-			Values[i] = 0;
-		}
+		this->Values = NumericSupport::getCopy(values, size);
 	}
 
 	~Sample()
@@ -39,9 +29,9 @@ public:
 		delete[] XValues;
 	}
 
-	double* Values;
+	double* Values = new double[0];
 	int sizeX = 0;
-	double* XValues;
+	double* XValues = new double[0];
 
 	int IterationIndex = -1;
 	int ScenarioIndex = -1;
@@ -53,8 +43,10 @@ public:
 	int getSizeX();
 
 	double getBeta();
-
 	void setBeta(double beta);
+	Sample* clone();
+	Sample* normalize(double beta = 1);
+	Sample* multiply(double factor);
 
 	intptr_t Tag = 0;
 };

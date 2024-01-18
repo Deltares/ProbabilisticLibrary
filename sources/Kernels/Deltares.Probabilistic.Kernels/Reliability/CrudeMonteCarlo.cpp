@@ -85,16 +85,16 @@ namespace Deltares
 			{
 				zIndex++;
 
-		if (initial || zIndex >= samples.size())
-		{
-			for (size_t i = 0; i < samples.size(); i++)
-			{
-				delete(samples[i]);
-			}
-			samples.clear();
+				if (initial || zIndex >= samples.size())
+				{
+					for (size_t i = 0; i < samples.size(); i++)
+					{
+						delete(samples[i]);
+					}
+					samples.clear();
 
-			int chunkSize = modelRunner->Settings->MaxChunkSize;
-			int runs = std::min(chunkSize, Settings->MaximumSamples + 1 - sampleIndex);
+					int chunkSize = modelRunner->Settings->MaxChunkSize;
+					int runs = std::min(chunkSize, Settings->MaximumSamples + 1 - sampleIndex);
 
 					if (initial)
 					{
@@ -113,8 +113,8 @@ namespace Deltares
 						samples.push_back(sample);
 					}
 
-			delete[] zValues;
-			zValues = modelRunner->getZValues(samples);
+					delete[] zValues;
+					zValues = modelRunner->getZValues(samples);
 
 					if (initial)
 					{
@@ -200,36 +200,34 @@ namespace Deltares
 				Deltares::Reliability::StochastSettings* settings = this->Settings->StochastSet->VaryingStochastSettings[i];
 				if (!settings->isMinMaxDefault())
 				{
-					double u = sample->Values[i];
-					double q = StandardNormal::getPFromU(u);
+					double q = StandardNormal::getPFromU(sample->Values[i]);
 					q = settings->XMinValue + q * (settings->XMaxValue - settings->XMinValue);
-					double uLimited = -StandardNormal::getUFromQ(q);
-					sample->Values[i] = uLimited;
+					sample->Values[i] = StandardNormal::getUFromP(q);
 				}
 			}
 		}
 
-bool CrudeMonteCarlo::checkConvergence(Deltares::Models::ZModelRunner* modelRunner, double pf, int samples, int nmaal)
-{
-	std::unique_ptr<ReliabilityReport> report(new ReliabilityReport());
-	report->Step = nmaal;
-	report->MaxSteps = Settings->MaximumSamples;
+		bool CrudeMonteCarlo::checkConvergence(Deltares::Models::ZModelRunner* modelRunner, double pf, int samples, int nmaal)
+		{
+			std::unique_ptr<ReliabilityReport> report(new ReliabilityReport());
+			report->Step = nmaal;
+			report->MaxSteps = Settings->MaximumSamples;
 
-	if (pf > 0 && pf < 1)
-	{
-		double convergence = getConvergence(pf, samples);
-		report->Reliability = StandardNormal::getUFromQ(pf);
-		report->Variation = convergence;
-		modelRunner->reportResult(report.get());
-		bool enoughSamples = nmaal >= Settings->MinimumSamples;
-		return enoughSamples && convergence < Settings->VariationCoefficient;
-	}
-	else
-	{
-		modelRunner->reportResult(report.get());
-		return false;
-	}
-}
+			if (pf > 0 && pf < 1)
+			{
+				double convergence = getConvergence(pf, samples);
+				report->Reliability = StandardNormal::getUFromQ(pf);
+				report->Variation = convergence;
+				modelRunner->reportResult(report.get());
+				bool enoughSamples = nmaal >= Settings->MinimumSamples;
+				return enoughSamples && convergence < Settings->VariationCoefficient;
+			}
+			else
+			{
+				modelRunner->reportResult(report.get());
+				return false;
+			}
+		}
 
 		double CrudeMonteCarlo::getConvergence(double pf, int samples)
 		{

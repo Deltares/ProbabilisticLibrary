@@ -67,7 +67,7 @@ namespace Deltares
 			if (u != nullptr)
 			{
 				double beta = StandardNormal::getUFromQ(pf);
-				double z0Fac = z0 > 0.0 ? 1 : -1;
+				double z0Fac = getZFactor(z0);
 
 				double* alfa = GetAlphas(u, u->getSize(), z0Fac);
 

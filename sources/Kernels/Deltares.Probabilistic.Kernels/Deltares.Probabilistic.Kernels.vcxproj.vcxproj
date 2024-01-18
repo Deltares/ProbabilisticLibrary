@@ -150,11 +150,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Math\matrix.h" />
-    <ClInclude Include="Math\vector1D.h" />
+    <ClInclude Include="Wrappers\DirectionReliabilitySettingsWrapper.h" />
+    <ClInclude Include="Wrappers\DirectionReliabilityWrapper.h" />
+    <ClInclude Include="Math\RootFinders\LinearRootFinder.h" />
+    <ClInclude Include="Reliability\DirectionReliability.h" />
     <ClInclude Include="Reliability\DirectionReliabilitySettings.h" />
     <ClInclude Include="Reliability\StochastSettings.h" />
     <ClInclude Include="Reliability\StochastSettingsSet.h" />
+    <ClInclude Include="Math\RootFinders\RootFinder.h" />
     <ClInclude Include="Wrappers\StochastSettingsWrapper.h" />
     <ClInclude Include="Wrappers\NativeSupport.h" />
     <ClInclude Include="Wrappers\EvaluationWrapper.h" />
@@ -209,16 +212,22 @@
     <ClInclude Include="Statistics\StochastProperties.h" />
     <ClInclude Include="Statistics\UniformDistribution.h" />
     <ClInclude Include="Wrappers\StochastWrapper.h" />
+    <ClInclude Include="Math\basic_math.h" />
+    <ClInclude Include="Math\vector1D.h" />
+    <ClInclude Include="Math\matrix.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CWrapper\probCalcF2Cnew.cpp" />
-    <ClCompile Include="Math\cholesky_decomp.cpp" />
-    <ClCompile Include="Math\matrix.cpp" />
+    <ClCompile Include="Wrappers\DirectionReliabilitySettingsWrapper.cpp" />
+    <ClCompile Include="Wrappers\DirectionReliabilityWrapper.cpp" />
+    <ClCompile Include="Math\RootFinders\LinearRootFinder.cpp" />
+    <ClCompile Include="Reliability\DirectionReliability.cpp" />
     <ClCompile Include="Reliability\DirectionReliabilitySettings.cpp" />
     <ClCompile Include="Math\ASA\asa241.cpp" />
     <ClCompile Include="Math\vector1D.cpp" />
     <ClCompile Include="Reliability\StochastSettings.cpp" />
     <ClCompile Include="Reliability\StochastSettingsSet.cpp" />
+    <ClCompile Include="Math\RootFinders\RootFinder.cpp" />
     <ClCompile Include="Utils\probLibString.cpp" />
     <ClCompile Include="Wrappers\StochastSettingsWrapper.cpp" />
     <ClCompile Include="Wrappers\NativeSupport.cpp" />
@@ -272,6 +281,8 @@
     <ClCompile Include="Statistics\Stochast.cpp" />
     <ClCompile Include="Statistics\UniformDistribution.cpp" />
     <ClCompile Include="Wrappers\StochastWrapper.cpp" />
+    <ClCompile Include="Math\matrix.cpp" />
+    <ClCompile Include="Math\cholesky_decomp.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

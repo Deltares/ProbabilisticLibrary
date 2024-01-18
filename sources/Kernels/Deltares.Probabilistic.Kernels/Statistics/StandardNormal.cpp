@@ -199,5 +199,27 @@ double StandardNormal::getUFromQ(const double q)
     return beta;
 }
 
+/// <summary>
+/// Gets the return period from the probability of failure
+/// </summary>
+/// <param name="p"></param>
+/// <returns></returns>
+double StandardNormal::getRFromP(double p)
+{
+    return abs(-1 / log(1 - p));
+}
+
+/// <summary>
+/// Gets the probability of failure from the return period
+/// </summary>
+/// <param name="r">return period</param>
+/// <returns></returns>
+double StandardNormal::getPFromR(double r)
+{
+    return 1 - exp(-1 / abs(r));
+}
+
+
+
 
 
