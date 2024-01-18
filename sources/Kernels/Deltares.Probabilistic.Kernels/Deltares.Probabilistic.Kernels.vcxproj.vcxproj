@@ -151,7 +151,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Math\Constants.h" />
-    <ClInclude Include="Statistics\GumbelDistribution.h" />
+    <ClInclude Include="Statistics\Distributions\GumbelDistribution.h" />
     <ClInclude Include="Wrappers\DirectionReliabilitySettingsWrapper.h" />
     <ClInclude Include="Wrappers\DirectionReliabilityWrapper.h" />
     <ClInclude Include="Math\RootFinders\LinearRootFinder.h" />
@@ -205,14 +205,14 @@
     <ClInclude Include="Reliability\DesignPointBuilder.h" />
     <ClInclude Include="Reliability\ReliabilityMethod.h" />
     <ClInclude Include="Model\ReliabilityResult.h" />
-    <ClInclude Include="Statistics\DeterministicDistribution.h" />
-    <ClInclude Include="Statistics\Distribution.h" />
-    <ClInclude Include="Statistics\LogNormalDistribution.h" />
-    <ClInclude Include="Statistics\NormalDistribution.h" />
+    <ClInclude Include="Statistics\Distributions\DeterministicDistribution.h" />
+    <ClInclude Include="Statistics\Distributions\Distribution.h" />
+    <ClInclude Include="Statistics\Distributions\LogNormalDistribution.h" />
+    <ClInclude Include="Statistics\Distributions\NormalDistribution.h" />
     <ClInclude Include="Statistics\StandardNormal.h" />
     <ClInclude Include="Statistics\Stochast.h" />
     <ClInclude Include="Statistics\StochastProperties.h" />
-    <ClInclude Include="Statistics\UniformDistribution.h" />
+    <ClInclude Include="Statistics\Distributions\UniformDistribution.h" />
     <ClInclude Include="Wrappers\StochastWrapper.h" />
     <ClInclude Include="Math\basic_math.h" />
     <ClInclude Include="Math\vector1D.h" />
@@ -221,7 +221,7 @@
   <ItemGroup>
     <ClCompile Include="Math\Constants.cpp" />
     <ClCompile Include="CWrapper\probCalcF2Cnew.cpp" />
-    <ClCompile Include="Statistics\GumbelDistribution.cpp" />
+    <ClCompile Include="Statistics\Distributions\GumbelDistribution.cpp" />
     <ClCompile Include="Wrappers\DirectionReliabilitySettingsWrapper.cpp" />
     <ClCompile Include="Wrappers\DirectionReliabilityWrapper.cpp" />
     <ClCompile Include="Math\RootFinders\LinearRootFinder.cpp" />
@@ -278,12 +278,12 @@
     <ClCompile Include="Reliability\DesignPointBuilder.cpp" />
     <ClCompile Include="Reliability\ReliabilityMethod.cpp" />
     <ClCompile Include="Model\ReliabilityResult.cpp" />
-    <ClCompile Include="Statistics\DeterministicDistribution.cpp" />
-    <ClCompile Include="Statistics\LogNormalDistribution.cpp" />
-    <ClCompile Include="Statistics\NormalDistribution.cpp" />
+    <ClCompile Include="Statistics\Distributions\DeterministicDistribution.cpp" />
+    <ClCompile Include="Statistics\Distributions\LogNormalDistribution.cpp" />
+    <ClCompile Include="Statistics\Distributions\NormalDistribution.cpp" />
     <ClCompile Include="Statistics\StandardNormal.cpp" />
     <ClCompile Include="Statistics\Stochast.cpp" />
-    <ClCompile Include="Statistics\UniformDistribution.cpp" />
+    <ClCompile Include="Statistics\Distributions\UniformDistribution.cpp" />
     <ClCompile Include="Wrappers\StochastWrapper.cpp" />
     <ClCompile Include="Math\matrix.cpp" />
     <ClCompile Include="Math\cholesky_decomp.cpp" />

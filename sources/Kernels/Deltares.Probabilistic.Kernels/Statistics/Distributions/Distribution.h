@@ -1,5 +1,5 @@
 #pragma once
-#include "StochastProperties.h"
+#include "../StochastProperties.h"
 
 class Distribution
 {

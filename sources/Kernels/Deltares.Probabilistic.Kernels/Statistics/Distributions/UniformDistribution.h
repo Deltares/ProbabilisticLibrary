@@ -1,5 +1,6 @@
 #pragma once
 #include "Distribution.h"
+
 class UniformDistribution : public Distribution
 {
 	void initialize(StochastProperties* stochast, double* values) override;

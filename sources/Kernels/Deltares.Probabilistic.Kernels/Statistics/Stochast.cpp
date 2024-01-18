@@ -2,11 +2,11 @@
 
 #include <exception>
 
-#include "DeterministicDistribution.h"
-#include "GumbelDistribution.h"
-#include "NormalDistribution.h"
-#include "LogNormalDistribution.h"
-#include "UniformDistribution.h"
+#include "Distributions/DeterministicDistribution.h"
+#include "Distributions/GumbelDistribution.h"
+#include "Distributions/NormalDistribution.h"
+#include "Distributions/LogNormalDistribution.h"
+#include "Distributions/UniformDistribution.h"
 
 
 void Stochast::updateDistribution()

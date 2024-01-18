@@ -1,7 +1,7 @@
 #pragma once
 #include "StochastProperties.h"
-#include "Distribution.h"
-#include "DeterministicDistribution.h"
+#include "Distributions/DeterministicDistribution.h"
+#include "Distributions/Distribution.h"
 
 enum DistributionType { Deterministic, Normal, LogNormal, Uniform, Gumbel };
 

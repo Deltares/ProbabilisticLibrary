@@ -2,16 +2,16 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
-    <ClCompile Include="Statistics\DeterministicDistribution.cpp">
+    <ClCompile Include="Statistics\Distributions\DeterministicDistribution.cpp">
       <Filter>Statistics</Filter>
     </ClCompile>
-    <ClCompile Include="Statistics\NormalDistribution.cpp">
+    <ClCompile Include="Statistics\Distributions\NormalDistribution.cpp">
       <Filter>Statistics</Filter>
     </ClCompile>
-    <ClCompile Include="Statistics\LogNormalDistribution.cpp">
+    <ClCompile Include="Statistics\Distributions\LogNormalDistribution.cpp">
       <Filter>Statistics</Filter>
     </ClCompile>
-    <ClCompile Include="Statistics\UniformDistribution.cpp">
+    <ClCompile Include="Statistics\Distributions\UniformDistribution.cpp">
       <Filter>Statistics</Filter>
     </ClCompile>
     <ClCompile Include="Statistics\StandardNormal.cpp">
@@ -83,18 +83,18 @@
     <ClCompile Include="Math\RootFinders\LinearRootFinder.cpp" />
     <ClCompile Include="Reliability\DirectionReliability.cpp" />
     <ClCompile Include="Math\RootFinders\RootFinder.cpp" />
-    <ClCompile Include="Statistics\GumbelDistribution.cpp" />
+    <ClCompile Include="Statistics\Distributions\GumbelDistribution.cpp" />
     <ClCompile Include="Math\Constants.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
-    <ClInclude Include="Statistics\DeterministicDistribution.h">
+    <ClInclude Include="Statistics\Distributions\DeterministicDistribution.h">
       <Filter>Statistics</Filter>
     </ClInclude>
-    <ClInclude Include="Statistics\Distribution.h">
+    <ClInclude Include="Statistics\Distributions\Distribution.h">
       <Filter>Statistics</Filter>
     </ClInclude>
-    <ClInclude Include="Statistics\NormalDistribution.h">
+    <ClInclude Include="Statistics\Distributions\NormalDistribution.h">
       <Filter>Statistics</Filter>
     </ClInclude>
     <ClInclude Include="Statistics\Stochast.h">
@@ -103,10 +103,10 @@
     <ClInclude Include="Statistics\StochastProperties.h">
       <Filter>Statistics</Filter>
     </ClInclude>
-    <ClInclude Include="Statistics\LogNormalDistribution.h">
+    <ClInclude Include="Statistics\Distributions\LogNormalDistribution.h">
       <Filter>Statistics</Filter>
     </ClInclude>
-    <ClInclude Include="Statistics\UniformDistribution.h">
+    <ClInclude Include="Statistics\Distributions\UniformDistribution.h">
       <Filter>Statistics</Filter>
     </ClInclude>
     <ClInclude Include="Statistics\StandardNormal.h">
@@ -174,7 +174,7 @@
     <ClInclude Include="Reliability\DirectionReliability.h" />
     <ClInclude Include="Math\RootFinders\RootFinder.h" />
     <ClInclude Include="Math\basic_math.h" />
-    <ClInclude Include="Statistics\GumbelDistribution.h" />
+    <ClInclude Include="Statistics\Distributions\GumbelDistribution.h" />
     <ClInclude Include="Math\Constants.h" />
   </ItemGroup>
   <ItemGroup>

@@ -1,8 +1,8 @@
 #include "GumbelDistribution.h"
 
-#include "StandardNormal.h"
-#include "StochastProperties.h"
-#include "../Math/Constants.h"
+#include "../StandardNormal.h"
+#include "../StochastProperties.h"
+#include "../../Math/Constants.h"
 #include <cmath>
 
 void GumbelDistribution::setMeanAndDeviation(StochastProperties* stochast, double mean, double deviation)

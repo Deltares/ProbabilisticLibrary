@@ -1,5 +1,7 @@
 #include "UniformDistribution.h"
-#include "StandardNormal.h"
+#include "../StandardNormal.h"
+#include "../StochastProperties.h"
+
 #include <cmath>
 
 void UniformDistribution::setMeanAndDeviation(StochastProperties* stochast, double mean, double deviation)

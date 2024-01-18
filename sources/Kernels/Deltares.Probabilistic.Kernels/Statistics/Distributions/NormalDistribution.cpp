@@ -1,5 +1,5 @@
 #include "NormalDistribution.h"
-#include "StochastProperties.h"
+#include "../StochastProperties.h"
 
 void NormalDistribution::setMeanAndDeviation(StochastProperties* stochast, double mean, double deviation)
 {

@@ -1,4 +1,5 @@
 #include "LogNormalDistribution.h"
+#include "../StochastProperties.h"
 #include <cmath>
 
 void LogNormalDistribution::setMeanAndDeviation(StochastProperties* stochast, double mean, double deviation)

@@ -1,5 +1,6 @@
 #pragma once
 #include "Distribution.h"
+
 class DeterministicDistribution : public Distribution
 {
 public:

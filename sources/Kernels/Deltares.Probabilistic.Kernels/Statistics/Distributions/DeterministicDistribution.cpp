@@ -1,5 +1,5 @@
 #include "DeterministicDistribution.h"
-#include "StochastProperties.h"
+#include "../StochastProperties.h"
 
 bool DeterministicDistribution::isVarying(StochastProperties* stochast)
 {
