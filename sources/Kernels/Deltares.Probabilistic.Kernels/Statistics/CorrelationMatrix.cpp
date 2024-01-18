@@ -104,7 +104,7 @@ void CorrelationMatrix::filter(const CorrelationMatrix* m, const std::vector<int
     }
 }
 
-int CorrelationMatrix::findNewIndex(const std::vector<int> index, const int i)
+int CorrelationMatrix::findNewIndex(const std::vector<int> index, const size_t i)
 {
     int newIndex = 0;
     for (size_t j = 0; j <= i; j++)
@@ -122,7 +122,7 @@ std::pair<int, double> CorrelationMatrix::findDependent(const int j)
     {
         if ( i != j && abs(matrix(i, j) >= 1.0))
         {
-            return { i, matrix(i,j) };
+            return { (int)i, matrix(i,j) };
         }
     }
     return { -1, -999.0 };

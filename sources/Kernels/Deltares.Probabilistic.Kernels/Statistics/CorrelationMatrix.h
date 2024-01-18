@@ -15,6 +15,6 @@ public:
 private:
     Deltares::ProbLibCore::Matrix matrix = Deltares::ProbLibCore::Matrix(0,0);
     Deltares::ProbLibCore::Matrix choleskyMatrix = Deltares::ProbLibCore::Matrix(0, 0);
-    int findNewIndex(const std::vector<int> index, const int i);
+    int findNewIndex(const std::vector<int> index, const size_t i);
 };
 
