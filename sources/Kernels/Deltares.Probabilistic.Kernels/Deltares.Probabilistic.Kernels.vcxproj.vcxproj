@@ -150,6 +150,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Math\Constants.h" />
+    <ClInclude Include="Statistics\GumbelDistribution.h" />
     <ClInclude Include="Wrappers\DirectionReliabilitySettingsWrapper.h" />
     <ClInclude Include="Wrappers\DirectionReliabilityWrapper.h" />
     <ClInclude Include="Math\RootFinders\LinearRootFinder.h" />
@@ -217,7 +219,9 @@
     <ClInclude Include="Math\matrix.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Math\Constants.cpp" />
     <ClCompile Include="CWrapper\probCalcF2Cnew.cpp" />
+    <ClCompile Include="Statistics\GumbelDistribution.cpp" />
     <ClCompile Include="Wrappers\DirectionReliabilitySettingsWrapper.cpp" />
     <ClCompile Include="Wrappers\DirectionReliabilityWrapper.cpp" />
     <ClCompile Include="Math\RootFinders\LinearRootFinder.cpp" />

@@ -1,6 +1,9 @@
 #include "Stochast.h"
 
+#include <exception>
+
 #include "DeterministicDistribution.h"
+#include "GumbelDistribution.h"
 #include "NormalDistribution.h"
 #include "LogNormalDistribution.h"
 #include "UniformDistribution.h"
@@ -14,6 +17,9 @@ void Stochast::updateDistribution()
 		case Normal: this->distribution = new NormalDistribution(); break;
 		case LogNormal: this->distribution = new LogNormalDistribution(); break;
 		case Uniform: this->distribution = new UniformDistribution(); break;
+		case Gumbel: this->distribution = new GumbelDistribution(); break;
+	default:
+		throw std::exception("Distribution type not supported");
 	}
 }
 

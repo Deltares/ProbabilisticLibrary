@@ -3,7 +3,7 @@
 #include "Distribution.h"
 #include "DeterministicDistribution.h"
 
-enum DistributionType { Deterministic, Normal, LogNormal, Uniform };
+enum DistributionType { Deterministic, Normal, LogNormal, Uniform, Gumbel };
 
 class Stochast : public StochastProperties
 {

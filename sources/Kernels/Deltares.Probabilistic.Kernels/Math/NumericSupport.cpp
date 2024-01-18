@@ -3,7 +3,8 @@
 #include <cmath>
 #include <exception>
 
-const double pi = 3.141592653589793238795028841971;
+#include "Constants.h"
+
 
 double NumericSupport::GetSign(double value)
 {
@@ -170,7 +171,7 @@ double* NumericSupport::GetSphericalCoordinates(double* cartesianCoordinates, in
 
 		if (i == count - 1 && cartesianCoordinates[i] < 0)
 		{
-			coordinates[i] = 2 * pi - coordinates[i];
+			coordinates[i] = 2 * Deltares::Numeric::pi - coordinates[i];
 		}
 	}
 

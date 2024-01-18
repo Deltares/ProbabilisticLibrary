@@ -23,6 +23,13 @@ namespace Deltares
 		class DirectionSection
 		{
 		public:
+			DirectionSection(DoubleType type, double uLow, double uHigh)
+			{
+				this->Type = type;
+				this->ULow = uLow;
+				this->UHigh = uHigh;
+			}
+
 			DoubleType Type;
 			double ULow = 0.0;
 			double UHigh = 0.0;
@@ -51,7 +58,11 @@ namespace Deltares
 				u->AllowProxy = allowProxy;
 				u->ScenarioIndex = uDirection->ScenarioIndex;
 
-				return GetZValueCorrected(u, inverted);
+				double z = GetZValueCorrected(u, inverted);
+
+				delete u;
+
+				return z;
 			}
 
 			double GetZValueCorrected(Sample* u, bool invertZ)
@@ -106,12 +117,16 @@ namespace Deltares
 			double z = modelRunner->getZValue(zeroSample);
 			double z0 = this->getZFactor(z);
 
+			delete zeroSample;
+
 			Sample* directionSample = this->Settings->StochastSet->getSample();
 
 			double beta = getBeta(modelRunner, directionSample, z0);
 			double* alphas = GetAlphas(directionSample, directionSample->getSize(), z0);
 
 			DesignPoint* designPoint = modelRunner->getRealization(beta, alphas);
+
+			delete directionSample;
 
 			return designPoint;
 		}
@@ -127,7 +142,9 @@ namespace Deltares
 			task->UValues = normalizedSample;
 			task->Iteration = 0;
 
-			double beta = this->GetDirectionBeta(modelRunner, task);
+			double beta = this->getDirectionBeta(modelRunner, task);
+
+			delete task;
 
 			// direction beta is always positive, therefore correct
 			beta = beta * z0;
@@ -135,22 +152,29 @@ namespace Deltares
 			return beta;
 		}
 
-		double DirectionReliability::GetDirectionBeta(Models::ZModelRunner* modelRunner, BetaValueTask* directionTask)
+		double DirectionReliability::getDirectionBeta(Models::ZModelRunner* modelRunner, BetaValueTask* directionTask)
 		{
 			Sample* uDirection = directionTask->UValues->normalize();
 			uDirection->IterationIndex = directionTask->Iteration;
 			bool invertZ = directionTask->z0 < 0;
 
-			std::vector<DirectionSection*> sections = this->GetDirectionSections(modelRunner, directionTask->Settings, uDirection, invertZ);
+			std::vector<DirectionSection*> sections = this->getDirectionSections(modelRunner, directionTask->Settings, uDirection, invertZ);
 
-			double beta = GetBetaFromSections(sections);
+			double beta = getBetaFromSections(sections);
 
 			directionTask->UValues->AllowProxy = uDirection->AllowProxy;
+
+			for (int i = 0; i < sections.size(); i++)
+			{
+				delete sections[i];
+			}
+
+			delete uDirection;
 
 			return beta;
 		}
 
-		std::vector<DirectionSection*> DirectionReliability::GetDirectionSections(Models::ZModelRunner* modelRunner, DirectionReliabilitySettings* settings, Sample* uDirection, bool invertZ)
+		std::vector<DirectionSection*> DirectionReliability::getDirectionSections(Models::ZModelRunner* modelRunner, DirectionReliabilitySettings* settings, Sample* uDirection, bool invertZ)
 		{
 			std::vector<DirectionSection*> sections;
 
@@ -186,67 +210,31 @@ namespace Deltares
 					if (zHighType != zLowType)
 					{
 						double zChange = nan("");
-						double uChange = FindBetaBetweenBoundaries(modelRunner, settings, uDirection, invertZ, uLow, uHigh, zLow, zHigh, zChange);
+						double uChange = findBetaBetweenBoundaries(modelRunner, settings, uDirection, invertZ, uLow, uHigh, zLow, zHigh, zChange);
 
 						DoubleType zChangeType = NumericSupport::getDoubleType(zChange);
 
 						if (zLowType == DoubleType::NaN && zChangeType != zHighType)
 						{
-							DirectionSection* tempVar = new DirectionSection();
-							tempVar->Type = zLowType;
-							tempVar->ULow = uLow;
-							tempVar->UHigh = uChange;
-							sections.push_back(tempVar);
+							sections.push_back(new DirectionSection(zLowType, uLow, uChange));
 
-							double uSubChange = FindBetaBetweenBoundaries(modelRunner, settings, uDirection, invertZ, uChange, uHigh, zChange, zHigh, zChange);
+							double uSubChange = findBetaBetweenBoundaries(modelRunner, settings, uDirection, invertZ, uChange, uHigh, zChange, zHigh, zChange);
 
-							DirectionSection* tempVar2 = new DirectionSection();
-							tempVar2->Type = zChangeType;
-							tempVar2->ULow = uChange;
-							tempVar2->UHigh = uSubChange;
-							sections.push_back(tempVar2);
-
-							DirectionSection* tempVar3 = new DirectionSection();
-							tempVar3->Type = zHighType;
-							tempVar3->ULow = uSubChange;
-							tempVar3->UHigh = uHigh;
-							sections.push_back(tempVar3);
+							sections.push_back(new DirectionSection(zChangeType, uChange, uSubChange));
+							sections.push_back(new DirectionSection(zHighType, uSubChange, uHigh));
 						}
 						else if (zHighType == DoubleType::NaN && zChangeType != zLowType)
 						{
-							double uSubChange = FindBetaBetweenBoundaries(modelRunner, settings, uDirection, invertZ, uLow, uChange, zLow, zChange, zChange);
+							double uSubChange = findBetaBetweenBoundaries(modelRunner, settings, uDirection, invertZ, uLow, uChange, zLow, zChange, zChange);
 
-							DirectionSection* tempVar4 = new DirectionSection();
-							tempVar4->Type = zLowType;
-							tempVar4->ULow = uLow;
-							tempVar4->UHigh = uSubChange;
-							sections.push_back(tempVar4);
-
-							DirectionSection* tempVar5 = new DirectionSection();
-							tempVar5->Type = zChangeType;
-							tempVar5->ULow = uSubChange;
-							tempVar5->UHigh = uChange;
-							sections.push_back(tempVar5);
-
-							DirectionSection* tempVar6 = new DirectionSection();
-							tempVar6->Type = zHighType;
-							tempVar6->ULow = uChange;
-							tempVar6->UHigh = uHigh;
-							sections.push_back(tempVar6);
+							sections.push_back(new DirectionSection(zLowType, uLow, uSubChange));
+							sections.push_back(new DirectionSection(zChangeType, uSubChange, uChange));
+							sections.push_back(new DirectionSection(zHighType, uChange, uHigh));
 						}
 						else
 						{
-							DirectionSection* tempVar7 = new DirectionSection();
-							tempVar7->Type = zLowType;
-							tempVar7->ULow = uLow;
-							tempVar7->UHigh = uChange;
-							sections.push_back(tempVar7);
-
-							DirectionSection* tempVar8 = new DirectionSection();
-							tempVar8->Type = zHighType;
-							tempVar8->ULow = uChange;
-							tempVar8->UHigh = uHigh;
-							sections.push_back(tempVar8);
+							sections.push_back(new DirectionSection(zLowType, uLow, uChange));
+							sections.push_back(new DirectionSection(zHighType, uChange, uHigh));
 						}
 
 						if (monotone)
@@ -256,10 +244,7 @@ namespace Deltares
 					}
 					else
 					{
-						DirectionSection* tempVar9 = new DirectionSection();
-						tempVar9->Type = zHighType;
-						tempVar9->ULow = uLow;
-						tempVar9->UHigh = uHigh;
+						DirectionSection* tempVar9 = new DirectionSection(zHighType, uLow, uHigh);
 						sections.push_back(tempVar9);
 
 						if (monotone && zLowType != DoubleType::NaN && zHighType != DoubleType::NaN)
@@ -292,16 +277,14 @@ namespace Deltares
 				}
 			}
 
-			DirectionSection* tempVar10 = new DirectionSection();
-			tempVar10->Type = lastSectionType;
-			tempVar10->ULow = lastSection->UHigh;
-			tempVar10->UHigh = StandardNormal::BetaMax;
-			sections.push_back(tempVar10);
+			sections.push_back(new DirectionSection(lastSectionType, lastSection->UHigh, StandardNormal::BetaMax));
+
+			delete model;
 
 			return sections;
 		}
 
-		double DirectionReliability::FindBetaBetweenBoundaries(Models::ZModelRunner* modelRunner, DirectionReliabilitySettings* settings, Sample* uDirection, bool invertZ, double uLow, double uHigh, double zLow, double zHigh, double& z)
+		double DirectionReliability::findBetaBetweenBoundaries(Models::ZModelRunner* modelRunner, DirectionReliabilitySettings* settings, Sample* uDirection, bool invertZ, double uLow, double uHigh, double zLow, double zHigh, double& z)
 		{
 			ZGetter* model = new ZGetter(modelRunner);
 
@@ -357,6 +340,9 @@ namespace Deltares
 				{
 					double u = (uLow + uHigh) / 2;
 					z = model->GetZ(uDirection, u, invertZ);
+
+					delete model;
+
 					return u;
 				}
 			}
@@ -371,11 +357,15 @@ namespace Deltares
 				double uResult = linearSearchCalculation->CalculateValue(uLow, uHigh, 0, zTolerance, settings->MaximumIterations, [directionCalculation](double v) { return directionCalculation->GetZ(v); }, zLow, zHigh);
 
 				z = std::isnan(uResult) ? nan("") : directionCalculation->GetZ(uResult);
+
+				delete model;
+				delete linearSearchCalculation;
+
 				return uResult;
 			}
 		}
 
-		double DirectionReliability::GetBetaFromSections(std::vector<DirectionSection*> sections)
+		double DirectionReliability::getBetaFromSections(std::vector<DirectionSection*> sections)
 		{
 			// sum the probabilities
 			double failingProbability = 0;
