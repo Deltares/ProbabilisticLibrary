@@ -96,7 +96,7 @@ void UConverter::updateDependedParameter(double* uValues, const int i)
 	}
 }
 
-double* UConverter::getExpandedUValues(double* values)
+double* UConverter::getExpandedValues(double* values)
 {
 	double* uValues = new double[this->stochasts.size()];
 	int ii = 0;
@@ -117,12 +117,33 @@ double* UConverter::getExpandedUValues(double* values)
 	return uValues;
 }
 
+double* UConverter::getExpandedValues(double* values, double defaultValue)
+{
+	double* uValues = new double[this->stochasts.size()];
+	int ii = 0;
+	for (int i = 0; i < this->stochasts.size(); i++)
+	{
+		const int varyingIndex = this->varyingStochastIndex[i];
+		if (varyingIndex >= 0)
+		{
+			uValues[i] = values[ii];
+			ii++;
+		}
+		else
+		{
+			uValues[i] = 0;
+		}
+	}
+
+	return uValues;
+}
+
 
 double* UConverter::getXValues(Sample* sample)
 {
 	double* uCorrelated = varyingCorrelationMatrix->Cholesky(sample->Values, sample->getSize());
 
-	double* expandedUValues = getExpandedUValues(uCorrelated);
+	double* expandedUValues = getExpandedValues(uCorrelated);
 
 	double* xValues = new double[this->stochasts.size()];
 
@@ -161,10 +182,10 @@ StochastPoint* UConverter::GetStochastPoint(double beta, double* alphas, int cou
 
 		if (this->varyingStochasts.size() < this->stochasts.size())
 		{
-			uValues = getExpandedUValues(uValues);
-			alphas = getExpandedUValues(alphas);
-			uCorrelated = getExpandedUValues(uCorrelated);
-			alphaCorrelated = getExpandedUValues(alphaCorrelated);
+			uValues = getExpandedValues(uValues, 0);
+			alphas = getExpandedValues(alphas, 0);
+			uCorrelated = getExpandedValues(uCorrelated);
+			alphaCorrelated = getExpandedValues(alphaCorrelated);
 		}
 
 		//HashSet<StochastPointAlpha> hasDerivedValues = new HashSet<StochastPointAlpha>();

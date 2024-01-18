@@ -18,7 +18,9 @@ private:
 	CorrelationMatrix* correlationMatrix;
 	CorrelationMatrix* varyingCorrelationMatrix;
 
-	double* getExpandedUValues(double* values);
+	double* getExpandedValues(double* values);
+	double* getExpandedValues(double* values, double defaultValue);
+
 	bool checkFullyCorrelated(const int i);
 	void updateDependedParameter(double* uValues, const int i);
 
