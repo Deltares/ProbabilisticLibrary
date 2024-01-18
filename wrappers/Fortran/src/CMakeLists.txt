@@ -84,7 +84,7 @@ endif()
 target_link_libraries(ftnunit ${fctools})
 target_link_libraries(feedback feedbackDLL ${fctools})
 target_link_libraries(feedbackDLL ${fctools})
-target_link_libraries(pb_wrapper_f pb_wrapper_c ${fctools} ${fcgeneral} feedback feedbackDLL)
+target_link_libraries(pb_wrapper_f pb_wrapper_c probLibKernel ${fctools} ${fcgeneral} feedback feedbackDLL)
 target_link_libraries(pb_wrapper_c probLib)
 
 if ( TARGET tools )

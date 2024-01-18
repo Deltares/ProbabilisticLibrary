@@ -182,9 +182,11 @@ file(GLOB ptkcpp_files
     "../../Kernels/Deltares.Probabilistic.Kernels/Math/*.cpp"
     "../../Kernels/Deltares.Probabilistic.Kernels/Math/ASA/*.cpp"
     "../../Kernels/Deltares.Probabilistic.Kernels/Math/Randomizers/*.cpp"
+    "../../Kernels/Deltares.Probabilistic.Kernels/Math/RootFinders/*.cpp"
     "../../Kernels/Deltares.Probabilistic.Kernels/Model/*.cpp"
     "../../Kernels/Deltares.Probabilistic.Kernels/Reliability/*.cpp"
     "../../Kernels/Deltares.Probabilistic.Kernels/Statistics/*.cpp"
+    "../../Kernels/Deltares.Probabilistic.Kernels/CWrapper/*.cpp"
 )
 file(GLOB ptkcli_files "../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/*.cpp")
 
@@ -229,29 +231,17 @@ if(WIN32)
 endif()
 
 if(WIN32)
-  add_library(probLibPtkA
+  add_library(probLibKernel
     SHARED
       ${ptkcpp_files}
+      ${ptkcli_files}
   )
-  target_link_options(probLibPtkA PRIVATE "$<$<CONFIG:Debug>:/Debug>")
-  set_target_properties(probLibPtkA
+  target_link_options(probLibKernel PRIVATE "$<$<CONFIG:Debug>:/Debug>")
+  set_target_properties(probLibKernel
     PROPERTIES
       CXX_STANDARD 20
       POSITION_INDEPENDENT_CODE 1
       COMMON_LANGUAGE_RUNTIME ""
     )
-
-  add_library(probLibPtkB
-    SHARED
-      ${ptkcli_files}
-  )
-  target_link_options(probLibPtkB PRIVATE "$<$<CONFIG:Debug>:/Debug>")
-  set_target_properties(probLibPtkB
-    PROPERTIES
-      CXX_STANDARD 20
-      POSITION_INDEPENDENT_CODE 1
-      COMMON_LANGUAGE_RUNTIME ""
-  )
-  target_link_libraries(probLibPtkB probLibPtkA)
 endif()
 

@@ -8,7 +8,6 @@ target_sources(pb_wrapper_c
     stringHelper.h
     stringHelper.cpp
     probCalcF2C.cpp
-    ../../../../Kernels/Deltares.Probabilistic.Kernels/CWrapper/probCalcF2Cnew.cpp
     randomgen.cpp
     fortranZfunc.h
     fortranZfunc.cpp
@@ -26,4 +25,4 @@ target_sources(pb_wrapper_c
       #COMMON_LANGUAGE_RUNTIME ""
   )
 
-target_link_libraries(pb_wrapper_c probLibPtkA)
+target_link_libraries(pb_wrapper_c probLibKernel)
