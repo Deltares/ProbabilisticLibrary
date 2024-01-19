@@ -163,6 +163,14 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
         mc.Settings->MaximumSamples = method->maxSamples;
         std::unique_ptr<ZModel> zModel(new ZModel(FDelegate));
         std::unique_ptr<CorrelationMatrix> corr(new CorrelationMatrix());
+        if (nrCorrelations > 0)
+        {
+            corr->init(n);
+            for (size_t i = 0; i < nrCorrelations; i++)
+            {
+                corr->SetCorrelation(correlations[i].idx1, correlations[i].idx2, correlations[i].correlation);
+            }
+        }
         std::unique_ptr<UConverter> uConverter(new UConverter(stochast, corr.get()));
         uConverter->initializeForRun();
         auto progressDelegate = ProgressDelegate();
