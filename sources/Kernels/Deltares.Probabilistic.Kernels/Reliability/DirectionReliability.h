@@ -6,8 +6,20 @@ namespace Deltares
 {
 	namespace Reliability
 	{
+		class BetaValueTask
+		{
+		public:
+			Models::ZModelRunner* ModelRunner;
+			double BetaValue;
+			int Index = 0;
+			int Iteration = 0;
+			Sample* UValues;
+			DirectionReliabilitySettings* Settings;
+			double z0 = 0.0;
+			bool IsModelResult = false;
+		};
+
 		class DirectionSection;
-		class BetaValueTask;
 
 		class DirectionReliability : public Deltares::Reliability::ReliabilityMethod
 		{

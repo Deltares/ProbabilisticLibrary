@@ -1,7 +1,6 @@
 #pragma once
 #include <limits>
 #include <vector>
-#include <omp.h>
 
 #include "Sample.h"
 

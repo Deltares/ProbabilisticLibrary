@@ -91,6 +91,11 @@ namespace Deltares
 			return false;
 		}
 
+		bool ZModelRunner::shouldExitPrematurely(bool final)
+		{
+			return false;
+		}
+
 		void ZModelRunner::reportResult(ReliabilityReport* report)
 		{
 			if (Settings->SaveConvergence)

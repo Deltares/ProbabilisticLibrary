@@ -1,4 +1,6 @@
 #include "ZModel.h"
+#include <omp.h>
+
 
 namespace Deltares
 {
