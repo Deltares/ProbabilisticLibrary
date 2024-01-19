@@ -79,7 +79,7 @@ namespace Deltares {
             auto t = vector1D(nrStochasts);
 
             const double p = 0.5 * nrStochasts;
-            auto gmmd = dgammaDs(p);
+            //auto gmmd = dgammaDs(p);
             auto func = rs_func_wrapper(t, m, s, 0);
             rootFinder.init(z0);
             for (int nTimes = 1; nTimes <= settings.maxSamples; nTimes++)
@@ -91,6 +91,7 @@ namespace Deltares {
                 double r = pr.second;
                 if (r < maximumLengthU)
                 {
+                    auto gmmd = dgammaDs(p);
                     PfSamp = gmmd.Dgammq(p, 0.5 * pow(r, 2));
                 }
                 else
