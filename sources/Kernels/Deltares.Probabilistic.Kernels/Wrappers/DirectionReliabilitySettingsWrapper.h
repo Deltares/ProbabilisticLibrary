@@ -10,7 +10,7 @@ namespace Deltares
 	{
 		namespace Kernels
 		{
-			public enum ModelVaryingType
+			public enum class VaryingType
 			{
 				Monotone,
 				Varying
@@ -54,23 +54,23 @@ namespace Deltares
 					void set(int value) { m_settings->MaximumIterations = value; }
 				}
 
-				property Kernels::ModelVaryingType ModelVaryingType
+				property Kernels::VaryingType ModelVaryingType
 				{
-					Kernels::ModelVaryingType get()
+					Kernels::VaryingType get()
 					{
 						switch (m_settings->ModelVaryingType)
 						{
-						case Reliability::Monotone: return Kernels::ModelVaryingType::Monotone;
-						case Reliability::Varying: return Kernels::ModelVaryingType::Varying;
+						case Reliability::Monotone: return Kernels::VaryingType::Monotone;
+						case Reliability::Varying: return Kernels::VaryingType::Varying;
 						default: throw gcnew System::NotSupportedException("Model varying type");
 						}
 					}
-					void set(Kernels::ModelVaryingType value)
+					void set(Kernels::VaryingType value)
 					{
 						switch (value)
 						{
-						case Kernels::ModelVaryingType::Monotone: m_settings->ModelVaryingType = Reliability::Monotone; break;
-						case Kernels::ModelVaryingType::Varying: m_settings->ModelVaryingType = Reliability::Varying; break;
+						case Kernels::VaryingType::Monotone: m_settings->ModelVaryingType = Reliability::Monotone; break;
+						case Kernels::VaryingType::Varying: m_settings->ModelVaryingType = Reliability::Varying; break;
 						default: throw gcnew System::NotSupportedException("Model varying type");
 						}
 					}

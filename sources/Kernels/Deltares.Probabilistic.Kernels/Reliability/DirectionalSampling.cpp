@@ -1,7 +1,7 @@
 #include "DirectionalSampling.h"
 #include "DirectionReliability.h"
 #include "../Model/RandomSampleGenerator.h"
-#include "../Math/ASA/dgammaDs.h"
+#include "../Math/GammaFunction.h"
 #include <omp.h>
 
 namespace Deltares
@@ -39,6 +39,8 @@ namespace Deltares
 
 			delete zeroSample;
 
+			Numeric::GammaFunction* gammaFunction = new Numeric::GammaFunction(0.5 * nstochasts);
+
 			Sample* uMin = new Sample(nstochasts);
 			int chunkSize = modelRunner->Settings->MaxChunkSize;
 
@@ -63,29 +65,28 @@ namespace Deltares
 					if (modelRunner->shouldExitPrematurely(false))
 					{
 						// return the result so far
-						return GetRealizationFromP(modelRunner, pf, uMin, z0Fac, nullptr);
+						return getDesignPointFromSample(modelRunner, pf, uMin, z0Fac, nullptr);
 					}
 
 					parSamples = parSamples + 1;
 				}
 
-				double betaDirection = betaValues[nmaal % chunkSize];
-				if (betaDirection < 0 || std::isnan(betaDirection))
+				if (betaValues[nmaal % chunkSize] * z0 < 0 || std::isnan(betaValues[nmaal % chunkSize]))
 				{
 					continue;
 				}
 
 				Sample* u = samples[nmaal % chunkSize];
 
+				double betaDirection = abs(betaValues[nmaal % chunkSize]);
+
 				// get the sample at the limit state
 				Sample* uSurface = u->normalize(betaDirection);
 
 				// calculate failure probability
-				if (betaDirection >= 0 && betaDirection < StandardNormal::BetaMax * u->getSize())
+				if (betaDirection >= 0 && betaDirection < StandardNormal::BetaMax)
 				{
-					const double p = 0.5 * nstochasts;
-					auto gmmd = ProbLibCore::dgammaDs(p);
-					uSurface->Weight = gmmd.Dgammq(0.5 * nstochasts, 0.5 * betaDirection * betaDirection);
+					uSurface->Weight = gammaFunction->getGammaUpperRegularized(0.5 * nstochasts, 0.5 * betaDirection * betaDirection);
 
 					qtot += uSurface->Weight;
 
@@ -143,18 +144,17 @@ namespace Deltares
 				}
 			}
 
-			// beta bij kans bepalen
-			if (z0 < 0)
-			{
-				pf = 1 - pf;
-			}
-
 			Sample* uDesign = uMean->getSample();
 
 			//getRealization(beta, alpha, convergenceReport, uMin->ScenarioIndex);
 			convergenceReport->Convergence = getConvergence(pf, weights);
 
-			return GetRealizationFromP(modelRunner, pf, uDesign, z0Fac, convergenceReport);
+			if (z0 < 0)
+			{
+				pf = 1 - pf;
+			}
+
+			return getDesignPointFromSample(modelRunner, pf, uDesign, z0Fac, convergenceReport);
 		}
 
 		double DirectionalSampling::getConvergence(double pf, std::vector<double> weights)

@@ -16,9 +16,9 @@ namespace Deltares
 
 			static int getZFactor(double z);
 
-			double* GetAlphas(Sample* sample, int nstochasts, double z0Fac);
+			double* getAlphas(Sample* sample, int nstochasts, double z0Fac);
 
-			DesignPoint* GetRealizationFromP(Deltares::Models::ZModelRunner* modelRunner, double pf, Sample* u, double z0, ConvergenceReport* convergenceReport = nullptr);
+			DesignPoint* getDesignPointFromSample(Deltares::Models::ZModelRunner* modelRunner, double pf, Sample* u, double z0, ConvergenceReport* convergenceReport = nullptr);
 
 		public:
 			virtual DesignPoint* getDesignPoint(Deltares::Models::ZModelRunner* modelRunner) { return nullptr; };

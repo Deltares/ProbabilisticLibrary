@@ -126,7 +126,7 @@ namespace Deltares
 					if (modelRunner->shouldExitPrematurely(zValues, z0Fac, samples, rmin))
 					{
 						// return the result so far
-						return GetRealizationFromP(modelRunner, pf, uMin, z0Fac, convergenceReport);
+						return getDesignPointFromSample(modelRunner, pf, uMin, z0Fac, convergenceReport);
 					}
 
 					zIndex = 0;
@@ -188,9 +188,9 @@ namespace Deltares
 			double beta = StandardNormal::getUFromQ(pf);
 			uMin = uMean->getSample();
 
-			double* alpha = GetAlphas(uMin, nParameters, z0Fac);
+			double* alpha = getAlphas(uMin, nParameters, z0Fac);
 			convergenceReport->Convergence = getConvergence(pf, nSamples);
-			return modelRunner->getRealization(beta, alpha, convergenceReport, uMin->ScenarioIndex);
+			return modelRunner->getDesignPoint(beta, alpha, convergenceReport, uMin->ScenarioIndex);
 		}
 
 		void CrudeMonteCarlo::applyLimits(Sample* sample)

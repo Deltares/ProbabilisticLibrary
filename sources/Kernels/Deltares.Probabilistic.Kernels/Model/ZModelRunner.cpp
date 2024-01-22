@@ -150,7 +150,7 @@ namespace Deltares
 			}
 		}
 
-		DesignPoint* ZModelRunner::getRealization(double beta, double* alpha, ConvergenceReport* convergenceReport, int scenarioIndex, std::string identifier)
+		DesignPoint* ZModelRunner::getDesignPoint(double beta, double* alpha, ConvergenceReport* convergenceReport, int scenarioIndex, std::string identifier)
 		{
 			int count = getVaryingStochastCount();
 

@@ -167,6 +167,14 @@ double StandardNormal::getUFromQ(const double q)
     {
         return nan("");
     }
+    else if (q == 0)
+    {
+        return BetaMax;
+    }
+    else if (q == 1)
+    {
+        return - BetaMax;
+    }
     else if (fabs(q) < margin)
     {
         // q close to zero (machine precision), p close to 1, return positive beta value

@@ -1,4 +1,6 @@
 #pragma once
+#include "DirectionReliabilitySettingsWrapper.h"
+
 ref class DirectionalSamplingSettingsWrapper
 {
 };
@@ -25,6 +27,7 @@ namespace Deltares
 				{
 					m_settings = new Reliability::DirectionalSamplingSettings();
 					m_settings->RandomSettings = RandomSettings->GetSettings();
+					m_settings->DirectionSettings = DirectionalSettings->GetSettings();
 				}
 				~DirectionalSamplingSettingsWrapper() { this->!DirectionalSamplingSettingsWrapper(); }
 				!DirectionalSamplingSettingsWrapper() { delete m_settings; }
@@ -48,6 +51,8 @@ namespace Deltares
 				}
 
 				RandomSettingsWrapper^ RandomSettings = gcnew RandomSettingsWrapper();
+
+				DirectionReliabilitySettingsWrapper^ DirectionalSettings = gcnew DirectionReliabilitySettingsWrapper();
 
 				System::Collections::Generic::List<StochastSettingsWrapper^>^ StochastSettings = gcnew System::Collections::Generic::List<StochastSettingsWrapper^>();
 

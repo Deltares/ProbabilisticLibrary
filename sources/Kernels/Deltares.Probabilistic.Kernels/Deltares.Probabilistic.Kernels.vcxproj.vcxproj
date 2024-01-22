@@ -155,6 +155,7 @@
     <ClInclude Include="Math\ASA\asa239.hpp" />
     <ClInclude Include="Math\ASA\asa241.hpp" />
     <ClInclude Include="Math\ASA\dgammaDs.h" />
+    <ClInclude Include="Math\GammaFunction.h" />
     <ClInclude Include="Wrappers\DirectionalSamplingWrapper.h" />
     <ClInclude Include="Reliability\DirectionalSampling.h" />
     <ClInclude Include="Wrappers\DirectionalSamplingSettingsWrapper.h" />
@@ -232,6 +233,7 @@
     <ClCompile Include="Math\ASA\asa109.cpp" />
     <ClCompile Include="Math\ASA\asa239.cpp" />
     <ClCompile Include="Math\ASA\dgammaDs.cpp" />
+    <ClCompile Include="Math\GammaFunction.cpp" />
     <ClCompile Include="Wrappers\DirectionalSamplingWrapper.cpp" />
     <ClCompile Include="Reliability\DirectionalSampling.cpp" />
     <ClCompile Include="Wrappers\DirectionalSamplingSettingsWrapper.cpp" />

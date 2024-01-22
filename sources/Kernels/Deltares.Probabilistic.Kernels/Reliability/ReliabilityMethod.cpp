@@ -24,7 +24,7 @@ namespace Deltares
 			this->stopped = true;
 		}
 
-		double* ReliabilityMethod::GetAlphas(Sample* sample, int nstochasts, double z0Fac)
+		double* ReliabilityMethod::getAlphas(Sample* sample, int nstochasts, double z0Fac)
 		{
 			double* alpha = new double[nstochasts];
 
@@ -62,16 +62,16 @@ namespace Deltares
 			return alpha;
 		}
 
-		DesignPoint* ReliabilityMethod::GetRealizationFromP(Deltares::Models::ZModelRunner* modelRunner, double pf, Sample* u, double z0, ConvergenceReport* convergenceReport)
+		DesignPoint* ReliabilityMethod::getDesignPointFromSample(Deltares::Models::ZModelRunner* modelRunner, double pf, Sample* u, double z0, ConvergenceReport* convergenceReport)
 		{
 			if (u != nullptr)
 			{
-				double beta = StandardNormal::getUFromQ(pf);
 				double z0Fac = getZFactor(z0);
 
-				double* alfa = GetAlphas(u, u->getSize(), z0Fac);
+				double beta = StandardNormal::getUFromQ(pf);
+				double* alfa = getAlphas(u, u->getSize(), z0Fac);
 
-				return modelRunner->getRealization(beta, alfa, convergenceReport, u->ScenarioIndex);
+				return modelRunner->getDesignPoint(beta, alfa, convergenceReport, u->ScenarioIndex);
 			}
 			else
 			{

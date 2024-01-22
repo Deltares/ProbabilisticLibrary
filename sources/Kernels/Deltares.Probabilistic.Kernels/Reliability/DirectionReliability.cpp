@@ -109,9 +109,9 @@ namespace Deltares
 			Sample* directionSample = this->Settings->StochastSet->getSample();
 
 			double beta = getBeta(modelRunner, directionSample, z0);
-			double* alphas = GetAlphas(directionSample, directionSample->getSize(), z0);
+			double* alphas = getAlphas(directionSample, directionSample->getSize(), z0);
 
-			DesignPoint* designPoint = modelRunner->getRealization(beta, alphas);
+			DesignPoint* designPoint = modelRunner->getDesignPoint(beta, alphas);
 
 			delete directionSample;
 
@@ -128,13 +128,12 @@ namespace Deltares
 			task->Settings = this->Settings;
 			task->UValues = normalizedSample;
 			task->Iteration = 0;
+			task->z0 = z0;
 
 			double beta = this->getDirectionBeta(modelRunner, task);
+			beta = beta * z0;
 
 			delete task;
-
-			// direction beta is always positive, therefore correct
-			beta = beta * z0;
 
 			return beta;
 		}

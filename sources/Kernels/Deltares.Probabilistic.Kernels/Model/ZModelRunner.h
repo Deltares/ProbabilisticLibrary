@@ -45,7 +45,7 @@ namespace Deltares
 			bool shouldExitPrematurely(double* zValues, double z0Fac, std::vector<Sample*> samples, double beta);
 			bool shouldExitPrematurely(bool final);
 			void reportResult(ReliabilityReport* report);
-			DesignPoint* getRealization(double beta, double* alpha, ConvergenceReport* convergenceReport = nullptr, int scenarioIndex = -1, std::string identifier = "");
+			DesignPoint* getDesignPoint(double beta, double* alpha, ConvergenceReport* convergenceReport = nullptr, int scenarioIndex = -1, std::string identifier = "");
 
 			RunSettings* Settings = new ::RunSettings();
 		};
