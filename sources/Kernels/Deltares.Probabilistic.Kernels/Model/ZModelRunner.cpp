@@ -67,7 +67,6 @@ namespace Deltares
 			delete xSample;
 
 			return sample->Z;
-
 		}
 
 		double* ZModelRunner::getZValues(std::vector<Sample*> samples)

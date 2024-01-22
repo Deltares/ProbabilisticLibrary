@@ -5,6 +5,7 @@ class UniformDistribution : public Distribution
 {
 	void initialize(StochastProperties* stochast, double* values) override;
 	double getXFromU(StochastProperties* stochast, double u) override;
+	double getUFromX(StochastProperties* stochast, double x) override;
 	bool isVarying(StochastProperties* stochast) override;
 	double getMean(StochastProperties* stochast) override;
 	double getDeviation(StochastProperties* stochast) override;

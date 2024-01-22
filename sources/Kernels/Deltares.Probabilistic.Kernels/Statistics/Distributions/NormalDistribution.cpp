@@ -32,4 +32,11 @@ double NormalDistribution::getXFromU(StochastProperties* stochast, double u)
 	return stochast->Location + u * stochast->Scale;
 }
 
+double NormalDistribution::getUFromX(StochastProperties* stochast, double x)
+{
+	return (x - stochast->Location) / stochast->Scale;
+}
+
+
+
 

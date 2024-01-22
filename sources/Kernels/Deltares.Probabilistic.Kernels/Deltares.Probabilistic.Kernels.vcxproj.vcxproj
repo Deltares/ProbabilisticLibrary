@@ -151,11 +151,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Statistics\Distributions\InvertedDistribution.h" />
     <ClInclude Include="Math\ASA\asa063.hpp" />
     <ClInclude Include="Math\ASA\asa109.hpp" />
     <ClInclude Include="Math\ASA\asa239.hpp" />
     <ClInclude Include="Math\ASA\asa241.hpp" />
     <ClInclude Include="Math\GammaFunction.h" />
+    <ClInclude Include="Statistics\Distributions\TruncatedDistribution.h" />
     <ClInclude Include="Wrappers\DirectionalSamplingWrapper.h" />
     <ClInclude Include="Reliability\DirectionalSampling.h" />
     <ClInclude Include="Wrappers\DirectionalSamplingSettingsWrapper.h" />
@@ -229,10 +231,12 @@
     <ClInclude Include="Math\matrix.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Statistics\Distributions\InvertedDistribution.cpp" />
     <ClCompile Include="Math\ASA\asa063.cpp" />
     <ClCompile Include="Math\ASA\asa109.cpp" />
     <ClCompile Include="Math\ASA\asa239.cpp" />
     <ClCompile Include="Math\GammaFunction.cpp" />
+    <ClCompile Include="Statistics\Distributions\TruncatedDistribution.cpp" />
     <ClCompile Include="Wrappers\DirectionalSamplingWrapper.cpp" />
     <ClCompile Include="Reliability\DirectionalSampling.cpp" />
     <ClCompile Include="Wrappers\DirectionalSamplingSettingsWrapper.cpp" />

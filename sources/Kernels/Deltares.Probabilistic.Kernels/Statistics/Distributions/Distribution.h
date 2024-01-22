@@ -6,9 +6,11 @@ class Distribution
 public:
 	virtual void initialize(StochastProperties* stochast, double* values) {};
 	virtual double getXFromU(StochastProperties* stochast, double u) { return 0; };
+	virtual double getUFromX(StochastProperties* stochast, double x) { return 0; };
 	virtual bool isVarying(StochastProperties* stochast) { return false; };
 	virtual bool canTruncate() { return false; };
 	virtual bool canInvert() { return false; };
+	virtual bool isShiftUsed() { return false; };
 	virtual bool isQualitative() { return false; };
 	virtual double getRepresentativeU(double u) { return u; };
 	virtual double getMean(StochastProperties* stochast) { return 0; };

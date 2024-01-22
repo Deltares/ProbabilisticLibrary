@@ -14,7 +14,6 @@ namespace Deltares
 			private:
 				Sample* sample;
 				array<double>^ values = nullptr;
-				array<double>^ xValues = nullptr;
 				System::Object^ tag = nullptr;
 
 			public:

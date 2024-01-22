@@ -40,4 +40,24 @@ double UniformDistribution::getXFromU(StochastProperties* stochast, double u)
 	return stochast->Minimum + p * (stochast->Maximum - stochast->Minimum);
 }
 
+double UniformDistribution::getUFromX(StochastProperties* stochast, double x)
+{
+	if (x <= stochast->Minimum)
+	{
+		return -StandardNormal::UMax;
+	}
+	else if (x >= stochast->Maximum)
+	{
+		return StandardNormal::UMax;
+	}
+	else
+	{
+		double cdf = 1 - (stochast->Maximum - x) / (stochast->Maximum - stochast->Minimum);
+		return StandardNormal::getUFromP(cdf);
+	}
+}
+
+
+
+
 
