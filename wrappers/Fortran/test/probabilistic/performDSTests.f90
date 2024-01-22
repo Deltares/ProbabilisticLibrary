@@ -41,7 +41,7 @@ module performDSTests
     integer, parameter :: nStochasts = 2 !< Number of stochastic variables for tests in module
     integer, parameter :: nrMethods  = 9 !< Number of DS iteration methods
 
-    integer :: iCounter
+    integer :: iCounter, iCounter2
 
 contains
 
@@ -54,7 +54,7 @@ subroutine performAllDSTests
     call testWithLevel(testDesignOutputOptions, "Test the several design output options of DS", level)
     call testWithLevel(testZeqZero, "Test DS with z is zero for u is zero", level)
     call testWithLevel(testZnegative, "Test DS with z is negative for u is zero", level)
-    call testWithLevel(testCancel, "Test cancellation DS", level)
+    call testWithLevel(testCancel, "Test cancellation DS", 0)
     call testWithLevel(testErrorHandling, "Test error handling DS", level)
 end subroutine performAllDSTests
 
@@ -310,6 +310,14 @@ logical(kind=1) function cancel5steps(i, beta, con) bind(c)
     cancel5steps = (i >= 5)
 end function cancel5steps
 
+logical(kind=1) function cancel5stepsNew(i, str) bind(c)
+    integer, intent(in), value :: i
+    character(len=1), intent(in) :: str(*)
+
+    iCounter2 = iCounter2 + 1
+    cancel5stepsNew = (iCounter2 >= 5)
+end function cancel5stepsNew
+
 !> test cancellation of a DS run
 subroutine testCancel
     type(probabilisticDataStructure_data) :: probDb                         !< Probabilistic data module
@@ -323,12 +331,13 @@ subroutine testCancel
     integer                               :: expected
 
     call setupDStests(probDb, iPoint, x, 10000)
+    iCounter2 = 0
 
     call performDirectionalSampling ( probDb, zFuncNod, nStochasts, iPoint, x, alpha, beta, &
-        convergenceCriteriumReached, convergenceDataDS, cancel5steps )
+        convergenceCriteriumReached, convergenceDataDS, pcNew=cancel5stepsNew )
     expected = 5
     if (probDb%method%maxParallelThreads > 1) expected = 201
-    call assert_equal(convergenceDataDS%numbersamples, expected, "number of samples diff")
+    call assert_equal(iCounter2, expected, "number of samples diff")
 
 end subroutine testCancel
 
@@ -454,7 +463,7 @@ function zFuncError( u, designPointOutput, ierr ) result(z) bind(c)
 
 end function zFuncError
 
-subroutine performDirectionalSampling( probDb, fx, nStochasts, iPoint, x, alfa, beta, convCriterium, convergenceData, pc )
+subroutine performDirectionalSampling( probDb, fx, nStochasts, iPoint, x, alfa, beta, convCriterium, convergenceData, pc, pcNew )
     type(probabilisticDataStructure_data)      :: probDb           !< Probabilistic data module
     procedure(zfunc)                           :: fx               !< Function implementing the z-function of the failure mechanism
     real(kind=wp), intent(out)                 :: alfa(:)          !< Alpha values
@@ -465,12 +474,13 @@ subroutine performDirectionalSampling( probDb, fx, nStochasts, iPoint, x, alfa, 
     integer,       intent(in)                  :: nStochasts       !< number of active stochasts
     type(convDataSamplingMethods), intent(out) :: convergenceData  !< struct holding convergence data for sampling methods
     procedure(progressCancel), optional        :: pc               !< progress/cancel function
+    procedure(progressCancelNew), optional     :: pcNew            !< progress/cancel function
 
     type(storedConvergenceData)   :: allConvergenceData  !< struct holding all convergence data
     integer                       :: conv
 
     probDb%method%calcMethod = methodDirectionalSampling
-    call calculateLimitStateFunction( probDb, fx, alfa, beta, x, conv, convCriterium, allConvergenceData, pc=pc)
+    call calculateLimitStateFunction( probDb, fx, alfa, beta, x, conv, convCriterium, allConvergenceData, pc=pc, pcNew=pcNew)
     convergenceData = allConvergenceData%cnvg_data_ds
 end subroutine performDirectionalSampling
 

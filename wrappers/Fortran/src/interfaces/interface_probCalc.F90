@@ -251,11 +251,19 @@ module interface_probCalc
   end interface
 
   interface
+    function progressCancelNew(i, s) result(cancel) bind(c)
+      integer,          intent(in), value :: i
+      character(len=1), intent(in)        :: s(*)
+      logical(kind=1)                        :: cancel
+    end function progressCancelNew
+  end interface
+
+  interface
     subroutine probCalcF2Cnew(method, distribs, nstoch, vectorSize, correlations, nrCorrelations, fx, pc, &
         compIds, iPoint, x, rn, ierr) bind(C)
       use, intrinsic :: iso_c_binding, only: c_double
 #ifdef _MSC_VER
-      import tMethod, tDistrib, basicCorrelation, tError, tResult, zfunc, progressCancel
+      import tMethod, tDistrib, basicCorrelation, tError, tResult, zfunc, progressCancelNew
 #else
       import tMethod, tDistrib, basicCorrelation, tError, tResult
 #endif
@@ -268,7 +276,7 @@ module interface_probCalc
       integer,        intent(in)    :: compIds(*)
       integer,        intent(in)    :: iPoint(*)
       procedure(zfunc)              :: fx
-      procedure(progressCancel)     :: pc
+      procedure(progressCancelNew)  :: pc
       real(kind=c_double), intent(inout) :: x(*)
       type(tError),   intent(  out) :: ierr
       type(tResult),  intent(  out) :: rn
@@ -310,9 +318,18 @@ function basicProgressCancel(i, x, y) result(cancel) bind(c)
   cancel = .false.
 end function basicProgressCancel
 
+function textualProgress(progress, str) result(cancel) bind(c)
+    integer, intent(in), value :: progress
+    character(len=1), intent(in) :: str(*)
+    logical(kind=1)              :: cancel
+
+    continue
+    cancel = .false.
+end function textualProgress
+
 !>
 !! Subroutine for the calculation of a limit state function
-subroutine calculateLimitStateFunction( probDb, fx, alfaN, beta, x, conv, convCriterium, convergenceData, name, id, alfaN_u, pc )
+subroutine calculateLimitStateFunction( probDb, fx, alfaN, beta, x, conv, convCriterium, convergenceData, name, id, alfaN_u, pc, pcNew )
     use feedback
     type(probabilisticDataStructure_data), intent(in) :: probDb    !< Probabilistic data module
     procedure(zfunc)                           :: fx               !< Function implementing the z-function of the failure mechanism
@@ -326,6 +343,7 @@ subroutine calculateLimitStateFunction( probDb, fx, alfaN, beta, x, conv, convCr
     integer         , intent(in), optional     :: id               !< Id of mechanism (for use in error message)
     real(kind=wp), intent(out), optional       :: alfaN_u(:)       !< Uncorrelated Alpha values,
     procedure(progressCancel), optional        :: pc
+    procedure(progressCancelNew), optional        :: pcNew
 
     integer, allocatable        :: iPointMax(:), iPointCpp(:)    ! Temporary max length Pointer to active variables used in the limit state function
 
@@ -419,23 +437,23 @@ subroutine calculateLimitStateFunction( probDb, fx, alfaN, beta, x, conv, convCr
     if (method%iterationMethod <= 0 .or. method%iterationMethod > 9 .or. method%iterationMethod == 7) then
         call fatalError("Unknown method in subroutine IterationDS: ", method%iterationMethod)
     else if (nstoch > 0) then
-        if (present(pc)) then
-            method%progressInterval = 1
-            if (method%methodId == methodCrudeMonteCarlo .or. method%methodId == methodDirectionalSampling) then
+        method%progressInterval = 1
+        if (method%methodId == methodCrudeMonteCarlo .or. method%methodId == methodDirectionalSampling) then
+            if (present(pcNew)) then
                 call probCalcF2Cnew(method, distribs, nStochActive, nStoch, probDb%basic_correlation, &
-                    probDb%number_correlations, fx, pc, compIds, iPointCpp, x, rn, ierr)
+                    probDb%number_correlations, fx, pcNew, compIds, iPointCpp, x, rn, ierr)
             else
-                call probCalcF2C(method, distribs, nStochActive, nStoch, probDb%basic_correlation, &
-                    probDb%number_correlations, fx, pc, compIds, iPointCpp, x, rn, ierr)
+                call probCalcF2Cnew(method, distribs, nStochActive, nStoch, probDb%basic_correlation, &
+                    probDb%number_correlations, fx, textualProgress, compIds, iPointCpp, x, rn, ierr)
             end if
         else
-            if (method%methodId == methodCrudeMonteCarlo .or. method%methodId == methodDirectionalSampling) then
-                call probCalcF2Cnew(method, distribs, nStochActive, nStoch, probDb%basic_correlation, &
-                    probDb%number_correlations, fx, basicProgressCancel, compIds, iPointCpp, x, rn, ierr)
+            if (present(pc)) then
+                call probCalcF2C(method, distribs, nStochActive, nStoch, probDb%basic_correlation, &
+                    probDb%number_correlations, fx, pc, compIds, iPointCpp, x, rn, ierr)
             else
                 call probCalcF2C(method, distribs, nStochActive, nStoch, probDb%basic_correlation, &
                     probDb%number_correlations, fx, basicProgressCancel, compIds, iPointCpp, x, rn, ierr)
-            endif
+            end if
         end if
 
         if (ierr%iCode /= 0) then
