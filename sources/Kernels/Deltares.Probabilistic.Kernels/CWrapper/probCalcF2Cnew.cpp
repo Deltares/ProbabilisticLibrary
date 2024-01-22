@@ -43,20 +43,17 @@ struct tResult
     double alpha2[maxActiveStochast];
 };
 
-// another helper for probcalcf2c
-/*
-progress* get_progress_ptr_new(const int interval, const bool(*pc)(int, double, double))
+std::function <bool (ProgressType, std::string)> staticPg;
+
+ReliabilityMethod* rmStatic;
+void FPgDelegate(ProgressType pt, std::string s)
 {
-    if (interval > 0)
+    auto cancel = staticPg(pt, s);
+    if (cancel)
     {
-        return new externalProgressCancel(pc);
-    }
-    else
-    {
-        return new progress();
+        rmStatic->Stop();
     }
 }
-*/
 
 std::function<double(double[], int[], tError*)> staticF;
 size_t allStoch;
@@ -140,7 +137,7 @@ extern "C"
 void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n, const int vectorSize,
     corrStruct correlations[], const int nrCorrelations,
     const double(*fx)(double[], int[], tError*),
-    const bool(*pc)(int, double, double),
+    const bool(*pc)(ProgressType, std::string),
     int compIds[], int iPoint[], double x[], tResult* r, tError* ierr)
 {
     auto nStoch = (size_t)n;
@@ -151,6 +148,7 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
     omp_set_num_threads(method->numThreads);
 
     staticF = fx;
+    staticPg = pc;
     try
     {
         auto cntDeterminists = 0;
@@ -191,6 +189,7 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
         }
 
         std::unique_ptr<ReliabilityMethod> relMethod(selectMethod(*method));
+        rmStatic = relMethod.get();
         std::unique_ptr<ZModel> zModel(new ZModel(FDelegate));
         std::unique_ptr<CorrelationMatrix> corr(new CorrelationMatrix());
         if (nrCorrelations > 0)
@@ -205,7 +204,7 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
         uConverter->initializeForRun();
         auto progressDelegate = ProgressDelegate();
         auto detailedProgressDelegate = DetailedProgressDelegate();
-        auto textualProgressDelegate = TextualProgressDelegate();
+        auto textualProgressDelegate = TextualProgressDelegate(FPgDelegate);
         std::unique_ptr<ProgressIndicator> progress (new ProgressIndicator(progressDelegate, detailedProgressDelegate, textualProgressDelegate));
         std::unique_ptr<ZModelRunner> modelRunner(new ZModelRunner(zModel.get(), uConverter.get(), progress.get()));
         std::unique_ptr<DesignPoint> newResult( relMethod->getDesignPoint(modelRunner.get()));
