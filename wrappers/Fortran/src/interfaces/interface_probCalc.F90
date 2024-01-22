@@ -421,7 +421,7 @@ subroutine calculateLimitStateFunction( probDb, fx, alfaN, beta, x, conv, convCr
     else if (nstoch > 0) then
         if (present(pc)) then
             method%progressInterval = 1
-            if (method%methodId == methodCrudeMonteCarlo) then
+            if (method%methodId == methodCrudeMonteCarlo .or. method%methodId == methodDirectionalSampling) then
                 call probCalcF2Cnew(method, distribs, nStochActive, nStoch, probDb%basic_correlation, &
                     probDb%number_correlations, fx, pc, compIds, iPointCpp, x, rn, ierr)
             else
@@ -429,7 +429,7 @@ subroutine calculateLimitStateFunction( probDb, fx, alfaN, beta, x, conv, convCr
                     probDb%number_correlations, fx, pc, compIds, iPointCpp, x, rn, ierr)
             end if
         else
-            if (method%methodId == methodCrudeMonteCarlo) then
+            if (method%methodId == methodCrudeMonteCarlo .or. method%methodId == methodDirectionalSampling) then
                 call probCalcF2Cnew(method, distribs, nStochActive, nStoch, probDb%basic_correlation, &
                     probDb%number_correlations, fx, basicProgressCancel, compIds, iPointCpp, x, rn, ierr)
             else
