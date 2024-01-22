@@ -9,9 +9,11 @@
 #include "../Math/vector1D.h"
 
 #include "../Reliability/CrudeMonteCarlo.h"
+#include "../Reliability/DirectionalSampling.h"
 
 using namespace Deltares::ProbLibCore;
 using namespace Deltares::Models;
+using namespace Deltares::Reliability;
 
 const size_t lenSmallStr = 32;
 const size_t ERRORMSGLENGTH = 256;
@@ -92,6 +94,48 @@ void fillErrorMessage(tError& error, const std::string s)
     error.errorMessage[last] = char(0);
 }
 
+ReliabilityMethod* selectMethod(const basicSettings & bs)
+{
+    auto rnd = new RandomSettings();
+    switch (bs.rnd)
+    {
+    case rndTypes::GeorgeMarsaglia:
+        rnd->RandomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::GeorgeMarsaglia;
+        break;
+    case rndTypes::MersenneTwister:
+        rnd->RandomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::MersenneTwister;
+        break;
+    default:
+        throw probLibException("ModifiedKnuthSubtractive not implemented in C wrapper");
+        break;
+    }
+    rnd->Seed = bs.seed1;
+    rnd->SeedB = bs.seed2;
+
+    switch (bs.methodId)
+    {
+    case (ProbMethod::CM): {
+        auto cm = new CrudeMonteCarlo();
+        cm->Settings->RandomSettings = rnd;
+        cm->Settings->VariationCoefficient = bs.tolB;
+        cm->Settings->MinimumSamples = bs.minSamples;
+        cm->Settings->MaximumSamples = bs.maxSamples;
+        return cm; }
+        break;
+    case (ProbMethod::DS): {
+        auto ds = new DirectionalSampling();
+        ds->Settings->RandomSettings = rnd;
+        ds->Settings->VariationCoefficient = bs.tolB;
+        ds->Settings->MinimumSamples = bs.minSamples;
+        ds->Settings->MaximumSamples = bs.maxSamples;
+        return ds; }
+        break;
+    default:
+        throw probLibException("method not implemented yet:", (int)bs.methodId);
+        break;
+    }
+}
+
 extern "C"
 void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n, const int vectorSize,
     corrStruct correlations[], const int nrCorrelations,
@@ -130,6 +174,9 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
                 case EnumDistributions::uniform:
                     dist = DistributionType::Uniform;
                     break;
+                case EnumDistributions::gumbel2:
+                    dist = DistributionType::Gumbel;
+                    break;
                 default:
                     throw probLibException("Distribution not supported yet: ", c[i].distId);
             }
@@ -143,24 +190,7 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
             delete[] params;
         }
 
-        auto mc = Deltares::Reliability::CrudeMonteCarlo();
-        switch (method->rnd)
-        {
-            case rndTypes::GeorgeMarsaglia:
-                mc.Settings->RandomSettings->RandomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::GeorgeMarsaglia;
-                break;
-            case rndTypes::MersenneTwister:
-                mc.Settings->RandomSettings->RandomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::MersenneTwister;
-                break;
-            default:
-                throw probLibException("ModifiedKnuthSubtractive not implemented in C wrapper");
-                break;
-        }
-        mc.Settings->RandomSettings->Seed = method->seed1;
-        mc.Settings->RandomSettings->SeedB = method->seed2;
-        mc.Settings->VariationCoefficient = method->tolB;
-        mc.Settings->MinimumSamples = method->minSamples;
-        mc.Settings->MaximumSamples = method->maxSamples;
+        std::unique_ptr<ReliabilityMethod> relMethod(selectMethod(*method));
         std::unique_ptr<ZModel> zModel(new ZModel(FDelegate));
         std::unique_ptr<CorrelationMatrix> corr(new CorrelationMatrix());
         if (nrCorrelations > 0)
@@ -178,7 +208,7 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
         auto textualProgressDelegate = TextualProgressDelegate();
         std::unique_ptr<ProgressIndicator> progress (new ProgressIndicator(progressDelegate, detailedProgressDelegate, textualProgressDelegate));
         std::unique_ptr<ZModelRunner> modelRunner(new ZModelRunner(zModel.get(), uConverter.get(), progress.get()));
-        std::unique_ptr<DesignPoint> newResult(mc.getDesignPoint(modelRunner.get()));
+        std::unique_ptr<DesignPoint> newResult( relMethod->getDesignPoint(modelRunner.get()));
 
         auto alpha = vector1D(newResult->Alphas.size());
         for (size_t i = 0; i < alpha.size(); i++)

@@ -120,7 +120,7 @@ std::pair<int, double> CorrelationMatrix::findDependent(const int j)
     matrix.get_dims(m1, m2);
     for (size_t i = 0; i < m2; i++)
     {
-        if ( i != j && abs(matrix(i, j) >= 1.0))
+        if ( i != j && abs(matrix(i, j)) >= 1.0)
         {
             return { (int)i, matrix(i,j) };
         }
