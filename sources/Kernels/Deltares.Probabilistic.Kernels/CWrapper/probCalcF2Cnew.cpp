@@ -174,6 +174,9 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
                 case EnumDistributions::uniform:
                     dist = DistributionType::Uniform;
                     break;
+                case EnumDistributions::gumbel2:
+                    dist = DistributionType::Gumbel;
+                    break;
                 default:
                     throw probLibException("Distribution not supported yet: ", c[i].distId);
             }
