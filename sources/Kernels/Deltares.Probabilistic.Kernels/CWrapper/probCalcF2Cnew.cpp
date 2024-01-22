@@ -72,7 +72,7 @@ double FDelegate (Sample* s)
     }
     for (size_t i = 0; i < s->getSize(); i++)
     {
-        xx[iPointer[i]] = s->XValues[i];
+        xx[iPointer[i]] = s->Values[i];
     }
     auto i = new int[4];
     tError e = tError();

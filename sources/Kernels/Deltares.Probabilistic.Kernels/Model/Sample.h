@@ -26,12 +26,9 @@ public:
 	~Sample()
 	{
 		delete[] Values;
-		delete[] XValues;
 	}
 
 	double* Values = new double[0];
-	int sizeX = 0;
-	double* XValues = new double[0];
 
 	int IterationIndex = -1;
 	int ScenarioIndex = -1;

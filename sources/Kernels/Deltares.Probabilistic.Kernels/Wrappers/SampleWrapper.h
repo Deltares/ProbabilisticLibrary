@@ -36,19 +36,6 @@ namespace Deltares
 					}
 				}
 
-				property array<double>^ XValues
-				{
-					array<double>^ get()
-					{
-						if (xValues == nullptr)
-						{
-							xValues = NativeSupport::toManaged(sample->XValues, sample->getSizeX());
-						}
-
-						return xValues;
-					}
-				}
-
 				property double Weight
 				{
 					double get() { return sample->Weight; }

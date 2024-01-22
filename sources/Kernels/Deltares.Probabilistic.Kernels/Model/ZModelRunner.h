@@ -26,6 +26,7 @@ namespace Deltares
 			std::vector<Evaluation*> evaluations;
 			ProgressIndicator* progressIndicator = nullptr;
 
+			Sample* getXSample(Sample* sample);
 			void registerEvaluation(Sample* sample);
 
 		public:

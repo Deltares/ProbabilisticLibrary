@@ -154,7 +154,6 @@ double* UConverter::getXValues(Sample* sample)
 
 	delete[] expandedUValues;
 	delete[] uCorrelated;
-	sample->sizeX = stochasts.size();
 
 	return xValues;
 }

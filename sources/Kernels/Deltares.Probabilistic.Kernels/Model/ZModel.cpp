@@ -21,20 +21,10 @@ namespace Deltares
 		{
 			if (zMultipleDelegate == nullptr)
 			{
-				if (this->maxProcesses > 1)
+				#pragma omp parallel for
+				for (int i = 0; i < samples.size(); i++)
 				{
-					#pragma omp parallel for
-					for (int i = 0; i < samples.size(); i++)
-					{
-						invoke(samples[i]);
-					}
-				}
-				else
-				{
-					for (int i = 0; i < samples.size(); i++)
-					{
-						invoke(samples[i]);
-					}
+					invoke(samples[i]);
 				}
 			}
 			else

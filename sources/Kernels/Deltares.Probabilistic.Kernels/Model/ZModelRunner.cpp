@@ -38,13 +38,33 @@ namespace Deltares
 			this->zModel->setMaxProcesses(this->Settings->MaxParallelProcesses);
 		}
 
+		Sample* ZModelRunner::getXSample(Sample* sample)
+		{
+			double* xValues = this->uConverter->getXValues(sample);
+
+			// create a sample with values in x-space
+			Sample* xSample = new Sample(xValues, this->getStochastCount());
+
+			xSample->AllowProxy = sample->AllowProxy;
+			xSample->IterationIndex = sample->IterationIndex;
+			xSample->ScenarioIndex = sample->ScenarioIndex;
+			xSample->Weight = sample->Weight;
+
+			return xSample;
+		}
+
 		double ZModelRunner::getZValue(Sample* sample)
 		{
-			sample->XValues = this->uConverter->getXValues(sample);
+			Sample* xSample = getXSample(sample);
 
-			this->zModel->invoke(sample);
+			this->zModel->invoke(xSample);
 
-			registerEvaluation(sample);
+			registerEvaluation(xSample);
+
+			sample->Z = xSample->Z;
+			sample->Tag = xSample->Tag;
+
+			delete xSample;
 
 			return sample->Z;
 
@@ -52,19 +72,29 @@ namespace Deltares
 
 		double* ZModelRunner::getZValues(std::vector<Sample*> samples)
 		{
+			std::vector<Sample*> xSamples;
+
 			for (int i = 0; i < samples.size(); i++)
 			{
-				samples[i]->XValues = this->uConverter->getXValues(samples[i]);
+				xSamples.push_back(getXSample(samples[i]));
 			}
 
-			this->zModel->invoke(samples);
+			this->zModel->invoke(xSamples);
 
-			double* zValues = new double[samples.size()];
+			double* zValues = new double[xSamples.size()];
 
-			for (int i = 0; i < samples.size(); i++)
+			for (int i = 0; i < xSamples.size(); i++)
 			{
-				registerEvaluation(samples[i]);
-				zValues[i] = samples[i]->Z;
+				registerEvaluation(xSamples[i]);
+
+				samples[i]->Z = xSamples[i]->Z;
+				samples[i]->Tag = xSamples[i]->Tag;
+				zValues[i] = xSamples[i]->Z;
+			}
+
+			for (size_t i = 0; i < xSamples.size(); i++)
+			{
+				delete(xSamples[i]);
 			}
 
 			return zValues;
@@ -78,7 +108,7 @@ namespace Deltares
 
 				evaluation->Z = sample->Z;
 				evaluation->Tag = sample->Tag;
-				evaluation->X = sample->XValues;
+				evaluation->X = NumericSupport::getCopy(sample->Values, sample->getSize());
 				evaluation->SizeX = sample->getSize();
 				evaluation->Iteration = sample->IterationIndex;
 
