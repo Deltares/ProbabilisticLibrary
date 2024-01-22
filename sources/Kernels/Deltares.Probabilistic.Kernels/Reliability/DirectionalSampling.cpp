@@ -49,7 +49,7 @@ namespace Deltares
 			{
 				if (nmaal % chunkSize == 0)
 				{
-					samples.clear();
+					clearSamples(samples);
 
 					int runs = std::min(chunkSize, Settings->MaximumSamples - parSamples * chunkSize);
 
@@ -58,6 +58,8 @@ namespace Deltares
 					{
 						samples.push_back(randomSampleGenerator->getRandomSample());
 					}
+
+					delete[] betaValues;
 
 					betaValues = getDirectionBetas(modelRunner, samples, z0Fac, nmaal);
 
@@ -154,7 +156,12 @@ namespace Deltares
 				pf = 1 - pf;
 			}
 
-			return getDesignPointFromSample(modelRunner, pf, uDesign, z0Fac, convergenceReport);
+			DesignPoint* designPoint = getDesignPointFromSample(modelRunner, pf, uDesign, z0Fac, convergenceReport);
+
+			delete uDesign;
+			clearSamples(samples);
+
+			return designPoint;
 		}
 
 		double DirectionalSampling::getConvergence(double pf, std::vector<double> weights)
@@ -186,6 +193,8 @@ namespace Deltares
 				samples[i]->IterationIndex = step + i;
 				betaValues[i] = directionReliability->getBeta(modelRunner, samples[i], z0);
 			}
+
+			delete directionReliability;
 
 			return betaValues;
 		}

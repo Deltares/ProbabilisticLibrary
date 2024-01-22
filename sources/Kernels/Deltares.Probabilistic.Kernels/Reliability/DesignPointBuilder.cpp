@@ -109,7 +109,10 @@ namespace Deltares
 				if (rbeta < rmin)
 				{
 					rmin = rbeta;
-					meanSample = sample;
+
+					delete meanSample;
+
+					meanSample = sample->clone();
 				}
 				break;
 			}
@@ -156,7 +159,7 @@ namespace Deltares
 		{
 			if (!sampleAdded)
 			{
-				return defaultSample;
+				return defaultSample->clone();
 			}
 			else
 			{
@@ -164,7 +167,7 @@ namespace Deltares
 				{
 				case DesignPointMethod::NearestToMean:
 				{
-					return meanSample;
+					return meanSample->clone();
 				}
 				case DesignPointMethod::CenterOfGravity:
 				{

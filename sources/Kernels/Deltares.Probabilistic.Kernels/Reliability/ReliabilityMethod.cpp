@@ -24,6 +24,15 @@ namespace Deltares
 			this->stopped = true;
 		}
 
+		void ReliabilityMethod::clearSamples(std::vector<Sample*>& samples)
+		{
+			for (size_t i = 0; i < samples.size(); i++)
+			{
+				delete(samples[i]);
+			}
+			samples.clear();
+		}
+
 		double* ReliabilityMethod::getAlphas(Sample* sample, int nstochasts, double z0Fac)
 		{
 			double* alpha = new double[nstochasts];

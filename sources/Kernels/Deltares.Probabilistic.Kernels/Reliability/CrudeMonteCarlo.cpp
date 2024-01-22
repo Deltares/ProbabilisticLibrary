@@ -24,10 +24,10 @@ namespace Deltares
 			double qRange = 1;
 			double zRemainder = 1;
 
+			Sample* remainderSample = new Sample(this->Settings->StochastSet->VaryingStochastCount);
+
 			for (int i = 0; i < this->Settings->StochastSet->VaryingStochastCount; i++)
 			{
-				Sample* remainderSample = new Sample(this->Settings->StochastSet->VaryingStochastCount);
-
 				if (!this->Settings->StochastSet->VaryingStochastSettings[i]->isMinMaxDefault())
 				{
 					double probLow = StandardNormal::getPFromU(this->Settings->StochastSet->VaryingStochastSettings[i]->MinValue);
@@ -46,13 +46,16 @@ namespace Deltares
 						remainderSample->Values[i] = this->Settings->StochastSet->VaryingStochastSettings[i]->MaxValue + 0.1;
 					}
 				}
-
-				if (qRange < 1)
-				{
-					// perform one run to identify whether the remainder is failing
-					zRemainder = modelRunner->getZValue(remainderSample);
-				}
 			}
+
+			if (qRange < 1)
+			{
+				// perform one run to identify whether the remainder is failing
+				zRemainder = modelRunner->getZValue(remainderSample);
+			}
+
+			delete remainderSample;
+
 
 			return getReducedDesignPoint(modelRunner, zRemainder, qRange);
 		}
@@ -87,11 +90,7 @@ namespace Deltares
 
 				if (initial || zIndex >= samples.size())
 				{
-					for (size_t i = 0; i < samples.size(); i++)
-					{
-						delete(samples[i]);
-					}
-					samples.clear();
+					clearSamples(samples);
 
 					int chunkSize = modelRunner->Settings->MaxChunkSize;
 					int runs = std::min(chunkSize, Settings->MaximumSamples + 1 - sampleIndex);
@@ -190,7 +189,13 @@ namespace Deltares
 
 			double* alpha = getAlphas(uMin, nParameters, z0Fac);
 			convergenceReport->Convergence = getConvergence(pf, nSamples);
-			return modelRunner->getDesignPoint(beta, alpha, convergenceReport, uMin->ScenarioIndex);
+			DesignPoint* designPoint = modelRunner->getDesignPoint(beta, alpha, convergenceReport, uMin->ScenarioIndex);
+
+			delete uMin;
+			delete[] alpha;
+			clearSamples(samples);
+
+			return designPoint;
 		}
 
 		void CrudeMonteCarlo::applyLimits(Sample* sample)

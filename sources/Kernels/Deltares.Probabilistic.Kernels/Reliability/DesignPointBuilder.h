@@ -36,6 +36,13 @@ namespace Deltares
 
         public:
             DesignPointBuilder(int count, DesignPointMethod method, StochastSettingsSet* stochastSet);
+            ~DesignPointBuilder()
+            {
+                delete defaultSample;
+                delete meanSample;
+                delete sinSample;
+                delete cosSample;
+            }
             void initialize(double beta);
             void addSample(Sample* sample);
             Sample* getSample();
