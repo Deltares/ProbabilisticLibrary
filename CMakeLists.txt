@@ -57,8 +57,5 @@ else()
         add_subdirectory(wrappers/Fortran/test)
     endif()
 
-    if(WIN32)
-        add_subdirectory(wrappers/csharp)
-    endif()
 endif()
 
