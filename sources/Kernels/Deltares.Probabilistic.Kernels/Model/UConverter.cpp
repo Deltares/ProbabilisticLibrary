@@ -87,7 +87,7 @@ void UConverter::updateStochastSettings(Deltares::Reliability::StochastSettingsS
 	settings->StochastCount = this->stochasts.size();
 }
 
-void UConverter::updateDependedParameter(double* uValues, const int i)
+void UConverter::updateDependedParameter(std::vector<double> & uValues, const int i)
 {
 	auto r = correlationMatrix->findDependent(i);
 	if (r.first >= 0)
@@ -96,9 +96,9 @@ void UConverter::updateDependedParameter(double* uValues, const int i)
 	}
 }
 
-double* UConverter::getExpandedValues(double* values)
+std::vector<double> UConverter::getExpandedValues(const std::vector<double> & values)
 {
-	double* uValues = new double[this->stochasts.size()];
+	auto uValues = std::vector<double>(this->stochasts.size());
 	int ii = 0;
 	for (int i = 0; i < this->stochasts.size(); i++)
 	{
@@ -117,9 +117,9 @@ double* UConverter::getExpandedValues(double* values)
 	return uValues;
 }
 
-double* UConverter::getExpandedValues(double* values, double defaultValue)
+std::vector<double> UConverter::getExpandedValues(const std::vector<double> & values, double defaultValue)
 {
-	double* uValues = new double[this->stochasts.size()];
+	auto uValues = std::vector<double>(this->stochasts.size());
 	int ii = 0;
 	for (int i = 0; i < this->stochasts.size(); i++)
 	{
@@ -139,41 +139,38 @@ double* UConverter::getExpandedValues(double* values, double defaultValue)
 }
 
 
-double* UConverter::getXValues(Sample* sample)
+std::vector<double> UConverter::getXValues(Sample* sample)
 {
-	double* uCorrelated = varyingCorrelationMatrix->Cholesky(sample->Values, sample->getSize());
+	auto uCorrelated = varyingCorrelationMatrix->Cholesky(sample->Values);
 
-	double* expandedUValues = getExpandedValues(uCorrelated);
+	auto expandedUValues = getExpandedValues(uCorrelated);
 
-	double* xValues = new double[this->stochasts.size()];
+	auto xValues = std::vector<double>(this->stochasts.size());
 
 	for (int i = 0; i < this->stochasts.size(); i++)
 	{
 		xValues[i] = this->stochasts[i]->getXFromU(expandedUValues[i]);
 	}
 
-	delete[] expandedUValues;
-	delete[] uCorrelated;
-
 	return xValues;
 }
 
-StochastPoint* UConverter::GetStochastPoint(double beta, double* alphas, int count)
+StochastPoint* UConverter::GetStochastPoint(double beta, std::vector<double> & alphas, int count)
 {
 	StochastPoint* realization = new StochastPoint();
 	realization->Beta = beta;
 
 	if (count > 0)
 	{
-		double* uValues = new double[count];
+		auto uValues = std::vector<double>(count);
 		for (int i = 0; i < count; i++)
 		{
 			uValues[i] = -beta * alphas[i];
 		}
 
-		double* uCorrelated = varyingCorrelationMatrix->Cholesky(uValues, count);
+		auto uCorrelated = varyingCorrelationMatrix->Cholesky(uValues);
 
-		double* alphaCorrelated = new double[count];
+		auto alphaCorrelated = std::vector<double>(count);
 		for (int i = 0; i < count; i++)
 		{
 			alphaCorrelated[i] = -uCorrelated[i] / beta;

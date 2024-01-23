@@ -33,9 +33,9 @@ namespace Deltares
 			samples.clear();
 		}
 
-		double* ReliabilityMethod::getAlphas(Sample* sample, int nstochasts, double z0Fac)
+		std::vector<double> ReliabilityMethod::getAlphas(Sample* sample, int nstochasts, double z0Fac)
 		{
-			double* alpha = new double[nstochasts];
+			auto alpha = std::vector<double>(nstochasts);
 
 			if (sample == nullptr)
 			{
@@ -78,7 +78,7 @@ namespace Deltares
 				double z0Fac = getZFactor(z0);
 
 				double beta = StandardNormal::getUFromQ(pf);
-				double* alfa = getAlphas(u, u->getSize(), z0Fac);
+				auto alfa = getAlphas(u, u->getSize(), z0Fac);
 
 				return modelRunner->getDesignPoint(beta, alfa, convergenceReport, u->ScenarioIndex);
 			}

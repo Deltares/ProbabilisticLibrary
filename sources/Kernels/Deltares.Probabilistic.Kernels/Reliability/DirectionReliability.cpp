@@ -109,7 +109,7 @@ namespace Deltares
 			Sample* directionSample = this->Settings->StochastSet->getSample();
 
 			double beta = getBeta(modelRunner, directionSample, z0);
-			double* alphas = getAlphas(directionSample, directionSample->getSize(), z0);
+			auto alphas = getAlphas(directionSample, directionSample->getSize(), z0);
 
 			DesignPoint* designPoint = modelRunner->getDesignPoint(beta, alphas);
 

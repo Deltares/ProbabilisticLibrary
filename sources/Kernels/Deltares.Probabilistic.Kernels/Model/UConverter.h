@@ -18,20 +18,20 @@ private:
 	CorrelationMatrix* correlationMatrix;
 	CorrelationMatrix* varyingCorrelationMatrix;
 
-	double* getExpandedValues(double* values);
-	double* getExpandedValues(double* values, double defaultValue);
+	std::vector<double> getExpandedValues(const std::vector<double> & values);
+	std::vector<double> getExpandedValues(const std::vector<double> & values, double defaultValue);
 
 	bool checkFullyCorrelated(const int i);
-	void updateDependedParameter(double* uValues, const int i);
+	void updateDependedParameter(std::vector<double> & uValues, const int i);
 
 public:
 
 	UConverter(std::vector<Stochast*> stochasts, CorrelationMatrix* correlationMatrix);
 	void initializeForRun();
-	double* getXValues(Sample* sample);
+	std::vector<double> getXValues(Sample* sample);
 	int getStochastCount();
 	int getVaryingStochastCount();
-	StochastPoint* GetStochastPoint(double beta, double* alphas, int count);
+	StochastPoint* GetStochastPoint(double beta, std::vector<double> & alphas, int count);
 	void updateStochastSettings(Deltares::Reliability::StochastSettingsSet* settings);
 };
 

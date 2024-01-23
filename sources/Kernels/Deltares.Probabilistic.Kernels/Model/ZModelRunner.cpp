@@ -40,7 +40,7 @@ namespace Deltares
 
 		Sample* ZModelRunner::getXSample(Sample* sample)
 		{
-			double* xValues = this->uConverter->getXValues(sample);
+			auto xValues = this->uConverter->getXValues(sample);
 
 			// create a sample with values in x-space
 			Sample* xSample = new Sample(xValues, this->getStochastCount());
@@ -107,7 +107,7 @@ namespace Deltares
 
 				evaluation->Z = sample->Z;
 				evaluation->Tag = sample->Tag;
-				evaluation->X = NumericSupport::getCopy(sample->Values, sample->getSize());
+				evaluation->X = NumericSupport::getCopy(sample->Values);
 				evaluation->SizeX = sample->getSize();
 				evaluation->Iteration = sample->IterationIndex;
 
@@ -179,7 +179,7 @@ namespace Deltares
 			}
 		}
 
-		DesignPoint* ZModelRunner::getDesignPoint(double beta, double* alpha, ConvergenceReport* convergenceReport, int scenarioIndex, std::string identifier)
+		DesignPoint* ZModelRunner::getDesignPoint(double beta, std::vector<double> alpha, ConvergenceReport* convergenceReport, int scenarioIndex, std::string identifier)
 		{
 			int count = getVaryingStochastCount();
 

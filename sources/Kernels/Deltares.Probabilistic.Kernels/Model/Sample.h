@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cmath>
-
+#include <vector>
 #include "../Math/NumericSupport.h"
 
 class Sample
@@ -14,21 +14,32 @@ public:
 	Sample(int size)
 	{
 		this->size = size;
-		this->Values = NumericSupport::getArray(0, size);  
+		for (size_t i = 0; i < size; i++)
+		{
+			Values.push_back(0.0);
+		}
 	}
 
 	Sample(double* values, int size)
 	{
 		this->size = size;
-		this->Values = NumericSupport::getCopy(values, size);
+		for (size_t i = 0; i < size; i++)
+		{
+			this->Values.push_back(values[i]);
+		}
+	}
+
+	Sample(std::vector<double> & values, int size)
+	{
+		this->size = size;
+		this->Values = values;
 	}
 
 	~Sample()
 	{
-		delete[] Values;
 	}
 
-	double* Values = new double[0];
+	std::vector<double> Values;
 
 	int IterationIndex = -1;
 	int ScenarioIndex = -1;
