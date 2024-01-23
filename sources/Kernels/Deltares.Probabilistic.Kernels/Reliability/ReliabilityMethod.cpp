@@ -77,7 +77,7 @@ namespace Deltares
 			{
 				double z0Fac = getZFactor(z0);
 
-				double beta = StandardNormal::getUFromQ(pf);
+				double beta = Statistics::StandardNormal::getUFromQ(pf);
 				auto alfa = getAlphas(u, u->getSize(), z0Fac);
 
 				return modelRunner->getDesignPoint(beta, alfa, convergenceReport, u->ScenarioIndex);

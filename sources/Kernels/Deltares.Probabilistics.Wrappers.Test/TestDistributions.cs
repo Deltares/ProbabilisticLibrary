@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Deltares.Probabilistic.Kernels;
 using NUnit.Framework;
 
-namespace Deltares.Statistics.Test
+namespace Deltares.Probabilistics.Wrappers.Test
 {
     [TestFixture]
     public class TestDistributions

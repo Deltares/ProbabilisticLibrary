@@ -30,8 +30,8 @@ namespace Deltares
 			{
 				if (!this->Settings->StochastSet->VaryingStochastSettings[i]->isMinMaxDefault())
 				{
-					double probLow = StandardNormal::getPFromU(this->Settings->StochastSet->VaryingStochastSettings[i]->MinValue);
-					double probHigh = StandardNormal::getQFromU(this->Settings->StochastSet->VaryingStochastSettings[i]->MaxValue);
+					double probLow = Statistics::StandardNormal::getPFromU(this->Settings->StochastSet->VaryingStochastSettings[i]->MinValue);
+					double probHigh = Statistics::StandardNormal::getQFromU(this->Settings->StochastSet->VaryingStochastSettings[i]->MaxValue);
 
 					double prob = 1 - probLow - probHigh;
 
@@ -118,8 +118,8 @@ namespace Deltares
 					if (initial)
 					{
 						z0Fac = getZFactor(zValues[0]);
-						uMin->setBeta(z0Fac * StandardNormal::BetaMax);
-						uMean->initialize(z0Fac * StandardNormal::BetaMax);
+						uMin->setBeta(z0Fac * Statistics::StandardNormal::BetaMax);
+						uMean->initialize(z0Fac * Statistics::StandardNormal::BetaMax);
 					}
 
 					if (modelRunner->shouldExitPrematurely(zValues, z0Fac, samples, rmin))
@@ -184,7 +184,7 @@ namespace Deltares
 				}
 			}
 
-			double beta = StandardNormal::getUFromQ(pf);
+			double beta = Statistics::StandardNormal::getUFromQ(pf);
 			uMin = uMean->getSample();
 
 			auto alpha = getAlphas(uMin, nParameters, z0Fac);
@@ -204,9 +204,9 @@ namespace Deltares
 				Deltares::Reliability::StochastSettings* settings = this->Settings->StochastSet->VaryingStochastSettings[i];
 				if (!settings->isMinMaxDefault())
 				{
-					double q = StandardNormal::getPFromU(sample->Values[i]);
+					double q = Statistics::StandardNormal::getPFromU(sample->Values[i]);
 					q = settings->XMinValue + q * (settings->XMaxValue - settings->XMinValue);
-					sample->Values[i] = StandardNormal::getUFromP(q);
+					sample->Values[i] = Statistics::StandardNormal::getUFromP(q);
 				}
 			}
 		}
@@ -220,7 +220,7 @@ namespace Deltares
 			if (pf > 0 && pf < 1)
 			{
 				double convergence = getConvergence(pf, samples);
-				report->Reliability = StandardNormal::getUFromQ(pf);
+				report->Reliability = Statistics::StandardNormal::getUFromQ(pf);
 				report->Variation = convergence;
 				modelRunner->reportResult(report.get());
 				bool enoughSamples = nmaal >= Settings->MinimumSamples;

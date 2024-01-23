@@ -29,7 +29,7 @@ Sample* RandomSampleGenerator::getRandomSample()
 	for (int i = 0; i < this->Settings->StochastSet->VaryingStochastCount; i++)
 	{
 		double x = randomValues[this->Settings->StochastSet->VaryingStochastSettings[i]->StochastIndex];
-		sample->Values[i] = StandardNormal::getUFromQ(x);
+		sample->Values[i] = Deltares::Statistics::StandardNormal::getUFromQ(x);
 	}
 
 	return sample;

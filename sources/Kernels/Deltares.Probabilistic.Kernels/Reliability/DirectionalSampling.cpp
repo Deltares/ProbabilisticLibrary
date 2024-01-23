@@ -86,7 +86,7 @@ namespace Deltares
 				Sample* uSurface = u->normalize(betaDirection);
 
 				// calculate failure probability
-				if (betaDirection >= 0 && betaDirection < StandardNormal::BetaMax)
+				if (betaDirection >= 0 && betaDirection < Statistics::StandardNormal::BetaMax)
 				{
 					uSurface->Weight = gammaFunction->getGammaUpperRegularized(0.5 * nstochasts, 0.5 * betaDirection * betaDirection);
 
@@ -121,7 +121,7 @@ namespace Deltares
 
 					double convergence = getConvergence(pf, weights);
 
-					double beta = z0Fac * StandardNormal::getUFromQ(pf);
+					double beta = z0Fac * Statistics::StandardNormal::getUFromQ(pf);
 
 					ReliabilityReport* report = new ReliabilityReport();
 					report->ReportMatchesEvaluation = false;

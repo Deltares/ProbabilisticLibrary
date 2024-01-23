@@ -148,7 +148,7 @@ namespace Deltares
 
 				double GetXFromP(double p)
 				{
-					double u = StandardNormal::getUFromP(p);
+					double u = Statistics::StandardNormal::getUFromP(p);
 					return m_stochast->getXFromU(u);
 				}
 

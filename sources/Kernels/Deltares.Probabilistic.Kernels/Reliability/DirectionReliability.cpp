@@ -23,8 +23,8 @@ namespace Deltares
 
 			double getProbability()
 			{
-				double pHigh = StandardNormal::getQFromU(UHigh);
-				double pLow = StandardNormal::getQFromU(ULow);
+				double pHigh = Statistics::StandardNormal::getQFromU(UHigh);
+				double pLow = Statistics::StandardNormal::getQFromU(ULow);
 				return pLow - pHigh;
 			}
 		};
@@ -263,7 +263,7 @@ namespace Deltares
 				}
 			}
 
-			sections.push_back(new DirectionSection(lastSectionType, lastSection->UHigh, StandardNormal::BetaMax));
+			sections.push_back(new DirectionSection(lastSectionType, lastSection->UHigh, Statistics::StandardNormal::BetaMax));
 
 			delete model;
 
@@ -379,7 +379,7 @@ namespace Deltares
 			else
 			{
 				double probFailure = failingProbability / (failingProbability + nonFailingProbability);
-				return StandardNormal::getUFromQ(probFailure);
+				return Statistics::StandardNormal::getUFromQ(probFailure);
 			}
 		}
 
