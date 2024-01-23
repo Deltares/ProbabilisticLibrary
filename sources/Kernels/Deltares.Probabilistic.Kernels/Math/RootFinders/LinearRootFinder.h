@@ -24,8 +24,8 @@ class LinearRootFinder : public RootFinder
 	double CalculateValue(double xLow, double xHigh, double target, double tolerance, int maxIterations, RootFinderMethod function, double knownLowValue = double::NaN, double knownHighValue = double::NaN) override;
 
 private:
-	XValue* interpolate(XValue* low, XValue* high, double target, RootFinderMethod function);
-	XValue* bisection(XValue* low, XValue* high, RootFinderMethod function);
+	XValue interpolate(const XValue& low, const XValue& high, double target, RootFinderMethod function);
+	XValue bisection(const XValue& low, const XValue& high, RootFinderMethod function);
 };
 
 
