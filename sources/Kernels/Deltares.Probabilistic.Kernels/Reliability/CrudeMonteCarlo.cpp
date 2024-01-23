@@ -187,12 +187,11 @@ namespace Deltares
 			double beta = StandardNormal::getUFromQ(pf);
 			uMin = uMean->getSample();
 
-			double* alpha = getAlphas(uMin, nParameters, z0Fac);
+			auto alpha = getAlphas(uMin, nParameters, z0Fac);
 			convergenceReport->Convergence = getConvergence(pf, nSamples);
 			DesignPoint* designPoint = modelRunner->getDesignPoint(beta, alpha, convergenceReport, uMin->ScenarioIndex);
 
 			delete uMin;
-			delete[] alpha;
 			clearSamples(samples);
 
 			return designPoint;

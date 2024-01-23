@@ -2,11 +2,12 @@
 
 using namespace Deltares::ProbLibCore;
 
-double* CorrelationMatrix::Cholesky(double* uValues, int count)
+std::vector<double> CorrelationMatrix::Cholesky(const std::vector<double> & uValues)
 {
     size_t m1; size_t m2;
     matrix.get_dims(m1, m2);
-    double* correlatedValues = new double[count];
+    auto count = uValues.size();
+    auto correlatedValues = std::vector<double>(count);
     if (m1 == 0)
     {
         for (int i = 0; i < count; i++)
@@ -86,7 +87,7 @@ bool CorrelationMatrix::checkFullyCorrelated(const int j)
     return false;
 }
 
-void CorrelationMatrix::filter(const CorrelationMatrix* m, const std::vector<int> index)
+void CorrelationMatrix::filter(const CorrelationMatrix* m, const std::vector<int> & index)
 {
     size_t m1; size_t m2;
     m->matrix.get_dims(m1, m2);

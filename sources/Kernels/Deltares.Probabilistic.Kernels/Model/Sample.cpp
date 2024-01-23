@@ -7,7 +7,7 @@ int Sample::getSize()
 
 double Sample::getBeta()
 {
-	return NumericSupport::GetLength(Values, size);
+	return NumericSupport::GetLength(Values);
 }
 
 void Sample::setBeta(double beta)
@@ -27,7 +27,7 @@ Sample* Sample::clone()
 
 Sample* Sample::normalize(double newBeta)
 {
-    double actualBeta = NumericSupport::GetLength(this->Values, this->size); 
+    double actualBeta = NumericSupport::GetLength(this->Values);
     double* un = new double[this->size];
 
     if (newBeta > 0)

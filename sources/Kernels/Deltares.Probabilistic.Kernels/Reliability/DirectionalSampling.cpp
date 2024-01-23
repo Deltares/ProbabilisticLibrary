@@ -130,6 +130,7 @@ namespace Deltares
 					report->Variation = convergence;
 
 					modelRunner->reportResult(report);
+					delete report;
 
 					if (enoughSamples && convergence <= Settings->VariationCoefficient)
 					{
@@ -143,6 +144,7 @@ namespace Deltares
 					report->Variation = uSurface->Weight;
 
 					modelRunner->reportResult(report);
+					delete report;
 				}
 			}
 
@@ -164,7 +166,7 @@ namespace Deltares
 			return designPoint;
 		}
 
-		double DirectionalSampling::getConvergence(double pf, std::vector<double> weights)
+		double DirectionalSampling::getConvergence(double pf, const std::vector<double> & weights)
 		{
 			double covar = 0;
 			for (int k = 0; k < weights.size(); k++)

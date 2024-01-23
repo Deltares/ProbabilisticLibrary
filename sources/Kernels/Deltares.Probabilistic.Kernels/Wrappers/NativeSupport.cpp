@@ -44,6 +44,18 @@ namespace Deltares
 				return mValues;
 			}
 
+			array<double>^ NativeSupport::toManaged(const std::vector<double> & values)
+			{
+				array<double>^ mValues = gcnew array<double>(values.size());
+
+				for (int i = 0; i < values.size(); i++)
+				{
+					mValues[i] = values[i];
+				}
+
+				return mValues;
+			}
+
 			intptr_t NativeSupport::toNativeObject(System::Object^ object)
 			{
 				if (object == nullptr)

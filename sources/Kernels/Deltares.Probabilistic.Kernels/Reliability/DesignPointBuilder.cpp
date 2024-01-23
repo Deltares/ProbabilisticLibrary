@@ -140,7 +140,7 @@ namespace Deltares
 					modeFinders[j]->add(sample->Values[qIndex], sample->Weight);
 				}
 
-				double* sphericalValues = NumericSupport::GetSphericalCoordinates(sample->Values, count);
+				auto sphericalValues = NumericSupport::GetSphericalCoordinates(sample->Values);
 				meanSample->Values[0] += sample->Weight * sphericalValues[0];
 				for (int i = 1; i < count; i++)
 				{
@@ -190,13 +190,13 @@ namespace Deltares
 				}
 				case DesignPointMethod::CenterOfAngles:
 				{
-					double* angleValues = new double[count];
+					auto angleValues = std::vector<double>(count);
 					angleValues[0] = meanSample->Values[0] / sumWeights;
 					for (int i = 1; i < count; i++)
 					{
 						angleValues[i] = std::atan2(sinSample->Values[i] / sumWeights, cosSample->Values[i] / sumWeights);
 					}
-					double* coordinates = NumericSupport::GetCartesianCoordinates(angleValues, count);
+					auto coordinates = NumericSupport::GetCartesianCoordinates(angleValues);
 					Sample* anglePoint = new Sample(coordinates, count);
 
 					for (int j = 0; j < this->qualitativeCount; j++)

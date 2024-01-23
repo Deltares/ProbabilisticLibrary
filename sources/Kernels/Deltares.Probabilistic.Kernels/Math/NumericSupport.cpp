@@ -11,10 +11,10 @@ double NumericSupport::GetSign(double value)
 	return value > 0.0 ? 1 : -1;
 }
 
-double NumericSupport::GetSquaredSum(double* values, int count)
+double NumericSupport::GetSquaredSum(const std::vector<double> & values)
 {
 	double sum = 0;
-	for (int i = 0; i < count; i++)
+	for (int i = 0; i < values.size(); i++)
 	{
 		sum += values[i] * values[i];
 	}
@@ -22,9 +22,9 @@ double NumericSupport::GetSquaredSum(double* values, int count)
 	return sum;
 }
 
-double NumericSupport::GetLength(double* values, int count)
+double NumericSupport::GetLength(const std::vector<double> & values)
 {
-	return sqrt(GetSquaredSum(values, count));
+	return sqrt(GetSquaredSum(values));
 }
 
 double* NumericSupport::getArray(double initialValue, int count)
@@ -41,6 +41,19 @@ double* NumericSupport::getArray(double initialValue, int count)
 
 double* NumericSupport::getCopy(double* values, int count)
 {
+	double* newValues = new double[count];
+
+	for (int i = 0; i < count; i++)
+	{
+		newValues[i] = values[i];
+	}
+
+	return newValues;
+}
+
+double* NumericSupport::getCopy(const std::vector<double> & values)
+{
+	auto count = values.size();
 	double* newValues = new double[count];
 
 	for (int i = 0; i < count; i++)
@@ -93,7 +106,7 @@ double NumericSupport::round(double value, int decimals)
 	case 7: multiplier = 10000000; break;
 	case 8: multiplier = 100000000; break;
 	case 9: multiplier = 1000000000; break;
-	default: std::pow(10.0, decimals);
+	default: multiplier = std::pow(10.0, decimals);
 	}
 
 	return std::round(value * multiplier) / multiplier;
@@ -150,11 +163,12 @@ double NumericSupport::getSign(DoubleType doubleType)
 /// <param name="count"></param>
 /// <returns></returns>
 /// <see cref="https://en.wikipedia.org/wiki/N-sphere#Spherical_coordinates"/>
-double* NumericSupport::GetSphericalCoordinates(double* cartesianCoordinates, int count)
+std::vector<double> NumericSupport::GetSphericalCoordinates(const std::vector<double> & cartesianCoordinates)
 {
-	double* coordinates = new double[count];
+	auto count = cartesianCoordinates.size();
+	auto coordinates = std::vector<double>(count);
 
-	coordinates[0] = GetSquaredSum(cartesianCoordinates, count);
+	coordinates[0] = GetSquaredSum(cartesianCoordinates);
 
 	for (int i = 1; i < count; i++)
 	{
@@ -185,9 +199,10 @@ double* NumericSupport::GetSphericalCoordinates(double* cartesianCoordinates, in
 /// <param name="count"></param>
 /// <returns></returns>
 /// <see cref="https://en.wikipedia.org/wiki/N-sphere#Spherical_coordinates"/>
-double* NumericSupport::GetCartesianCoordinates(double* sphericalCoordinates, int count)
+std::vector<double> NumericSupport::GetCartesianCoordinates(const std::vector<double> & sphericalCoordinates)
 {
-	double* coordinates = new double[count];
+	auto count = sphericalCoordinates.size();
+	auto coordinates = std::vector<double>(count);
 
 	for (int i = 0; i < count; i++)
 	{
