@@ -172,6 +172,7 @@
     <ClInclude Include="Reliability\StochastSettings.h" />
     <ClInclude Include="Reliability\StochastSettingsSet.h" />
     <ClInclude Include="Math\RootFinders\RootFinder.h" />
+    <ClInclude Include="Wrappers\StandardNormalWrapper.h" />
     <ClInclude Include="Wrappers\StochastSettingsWrapper.h" />
     <ClInclude Include="Wrappers\NativeSupport.h" />
     <ClInclude Include="Wrappers\EvaluationWrapper.h" />
@@ -255,6 +256,7 @@
     <ClCompile Include="Reliability\StochastSettingsSet.cpp" />
     <ClCompile Include="Math\RootFinders\RootFinder.cpp" />
     <ClCompile Include="Utils\probLibString.cpp" />
+    <ClCompile Include="Wrappers\StandardNormalWrapper.cpp" />
     <ClCompile Include="Wrappers\StochastSettingsWrapper.cpp" />
     <ClCompile Include="Wrappers\NativeSupport.cpp" />
     <ClCompile Include="Wrappers\EvaluationWrapper.cpp" />

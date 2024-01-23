@@ -152,28 +152,28 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
     try
     {
         auto cntDeterminists = 0;
-        auto stochast = std::vector<Stochast*>();
+        auto stochast = std::vector<Deltares::Statistics::Stochast*>();
         for (size_t i = 0; i < nStoch; i++)
         {
             std::string name = c[i].name;
             auto distHR = (EnumDistributions)c[i].distId;
-            DistributionType dist;
+            Deltares::Statistics::DistributionType dist;
             switch (distHR)
             {
                 case EnumDistributions::normal:
-                    dist = DistributionType::Normal;
+                    dist = Deltares::Statistics::DistributionType::Normal;
                     break;
                 case EnumDistributions::deterministic:
-                    dist = DistributionType::Deterministic;
+                    dist = Deltares::Statistics::DistributionType::Deterministic;
                     break;
                 case EnumDistributions::lognormal2:
-                    dist = DistributionType::LogNormal;
+                    dist = Deltares::Statistics::DistributionType::LogNormal;
                     break;
                 case EnumDistributions::uniform:
-                    dist = DistributionType::Uniform;
+                    dist = Deltares::Statistics::DistributionType::Uniform;
                     break;
                 case EnumDistributions::gumbel2:
-                    dist = DistributionType::Gumbel;
+                    dist = Deltares::Statistics::DistributionType::Gumbel;
                     break;
                 default:
                     throw probLibException("Distribution not supported yet: ", c[i].distId);
@@ -183,7 +183,7 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
             {
                 params[j] = c[i].params[j];
             }
-            auto s = new Stochast(dist, params);
+            auto s = new Deltares::Statistics::Stochast(dist, params);
             stochast.push_back(s);
             delete[] params;
         }

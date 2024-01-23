@@ -15,6 +15,7 @@ namespace Deltares
 			}
 
 			double getXFromU(StochastProperties* stochast, double u) override;
+			double getUFromX(StochastProperties* stochast, double x) override;
 			bool isVarying(StochastProperties* stochast) override;
 			bool canTruncate() override { return this->innerDistribution->canTruncate(); };
 			bool canInvert() override { return true; };

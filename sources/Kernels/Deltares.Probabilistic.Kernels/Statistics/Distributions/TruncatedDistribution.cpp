@@ -77,18 +77,6 @@ namespace Deltares
 			}
 		}
 
-		double TruncatedDistribution::getXFromU(StochastProperties* stochast, double u)
-		{
-			if (stochast->Minimum == stochast->Maximum)
-			{
-				return stochast->Minimum;
-			}
-			else
-			{
-				return this->innerDistribution->getXFromU(stochast, GetUntruncatedU(u, stochast));
-			}
-		}
-
 		bool TruncatedDistribution::isVarying(StochastProperties* stochast)
 		{
 			return stochast->Minimum != stochast->Maximum && this->innerDistribution->isVarying(stochast);
@@ -107,6 +95,46 @@ namespace Deltares
 		void TruncatedDistribution::setMeanAndDeviation(StochastProperties* stochast, double mean, double deviation)
 		{
 			this->innerDistribution->setMeanAndDeviation(stochast, mean, deviation);
+		}
+
+		double TruncatedDistribution::getXFromU(StochastProperties* stochast, double u)
+		{
+			if (stochast->Minimum == stochast->Maximum)
+			{
+				return stochast->Minimum;
+			}
+			else
+			{
+				return this->innerDistribution->getXFromU(stochast, GetUntruncatedU(u, stochast));
+			}
+		}
+
+		double TruncatedDistribution::getUFromX(StochastProperties* stochast, double x)
+		{
+			if (stochast->Minimum == stochast->Maximum)
+			{
+				return 0;
+			}
+			else if (x <= stochast->Minimum)
+			{
+				return -StandardNormal::BetaMax;
+			}
+			else if (x >= stochast->Maximum)
+			{
+				return StandardNormal::BetaMax;
+			}
+			else
+			{
+				Truncated truncated = GetTruncatedValue(stochast);
+
+				double u = this->innerDistribution->getUFromX(stochast, x);
+				double q = StandardNormal::getQFromU(u);
+
+				double qTruncated = (q - truncated.UpperProbability) * truncated.Factor;
+
+				return StandardNormal::getUFromQ(qTruncated);
+			}
+
 		}
 	}
 }

@@ -11,8 +11,8 @@
 class UConverter
 {
 private:
-	std::vector<Stochast*> stochasts;
-	std::vector<Stochast*> varyingStochasts;
+	std::vector<Deltares::Statistics::Stochast*> stochasts;
+	std::vector<Deltares::Statistics::Stochast*> varyingStochasts;
 	std::vector<int> varyingStochastIndex;
 
 	CorrelationMatrix* correlationMatrix;
@@ -26,7 +26,7 @@ private:
 
 public:
 
-	UConverter(std::vector<Stochast*> stochasts, CorrelationMatrix* correlationMatrix);
+	UConverter(std::vector<Deltares::Statistics::Stochast*> stochasts, CorrelationMatrix* correlationMatrix);
 	void initializeForRun();
 	double* getXValues(Sample* sample);
 	int getStochastCount();

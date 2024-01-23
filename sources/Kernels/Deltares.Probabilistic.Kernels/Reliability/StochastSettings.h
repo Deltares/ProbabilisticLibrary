@@ -9,10 +9,10 @@ namespace Deltares
 		class StochastSettings
 		{
 		private:
-			Stochast* stochast = nullptr;
+			Statistics::Stochast* stochast = nullptr;
 		public:
-			double MinValue = -StandardNormal::UMax;
-			double MaxValue = StandardNormal::UMax;
+			double MinValue = -Statistics::StandardNormal::UMax;
+			double MaxValue = Statistics::StandardNormal::UMax;
 			double StartValue = 0;
 
 			double VarianceFactor = 1.5;
@@ -31,7 +31,7 @@ namespace Deltares
 
 			bool IsQualitative = false;
 
-			void setStochast(Stochast* stochast);
+			void setStochast(Statistics::Stochast* stochast);
 
 			double getRepresentativeU(double u);
 		};

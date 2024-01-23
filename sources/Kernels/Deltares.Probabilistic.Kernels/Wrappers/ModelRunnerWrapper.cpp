@@ -17,7 +17,7 @@ namespace Deltares
 
 				this->Stochasts->AddRange(stochasts);
 
-				std::vector<Stochast*> native_stochasts;
+				std::vector<Statistics::Stochast* > native_stochasts;
 
 				for (int i = 0; i < stochasts->Count; i++)
 				{

@@ -60,8 +60,21 @@ namespace Deltares
 		{
 			StochastProperties* invertedStochast = getInvertedStochast(stochast);
 
-			return this->getInvertedValue(stochast, this->innerDistribution->getXFromU(invertedStochast, -u));
+			double xInvert = this->innerDistribution->getXFromU(invertedStochast, -u);
+
+			return this->getInvertedValue(stochast, xInvert);
 		}
+
+		double InvertedDistribution::getUFromX(StochastProperties* stochast, double x)
+		{
+			StochastProperties* invertedStochast = getInvertedStochast(stochast);
+
+			double xInvert = this->getInvertedValue(stochast, x);
+
+			return - this->innerDistribution->getUFromX(invertedStochast, xInvert);
+
+		}
+
 	}
 }
 

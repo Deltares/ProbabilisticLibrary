@@ -95,6 +95,7 @@
     <ClCompile Include="Math\GammaFunction.cpp" />
     <ClCompile Include="Statistics\Distributions\InvertedDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\TruncatedDistribution.cpp" />
+    <ClCompile Include="Wrappers\StandardNormalWrapper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -197,6 +198,7 @@
     <ClInclude Include="Math\GammaFunction.h" />
     <ClInclude Include="Statistics\Distributions\InvertedDistribution.h" />
     <ClInclude Include="Statistics\Distributions\TruncatedDistribution.h" />
+    <ClInclude Include="Wrappers\StandardNormalWrapper.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

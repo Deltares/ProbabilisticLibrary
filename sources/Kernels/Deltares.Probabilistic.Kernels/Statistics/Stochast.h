@@ -3,46 +3,53 @@
 #include "Distributions/DeterministicDistribution.h"
 #include "Distributions/Distribution.h"
 
-enum DistributionType { Deterministic, Normal, LogNormal, Uniform, Gumbel };
-
-class Stochast : public StochastProperties
+namespace Deltares
 {
-private:
-	DistributionType distributionType = DistributionType::Deterministic;
+	namespace Statistics
+	{
+		enum DistributionType { Deterministic, Normal, LogNormal, Uniform, Gumbel };
 
-	Distribution* distribution = new DeterministicDistribution();
+		class Stochast : public StochastProperties
+		{
+		private:
+			DistributionType distributionType = DistributionType::Deterministic;
 
-	bool inverted = false;
+			Distribution* distribution = new DeterministicDistribution();
 
-	bool truncated = false;
+			bool inverted = false;
 
-	void updateDistribution();
+			bool truncated = false;
 
-public:
+			void updateDistribution();
 
-	Stochast();
-	Stochast(DistributionType distributionType, double* values);
+		public:
 
-	double getXFromU(double u);
+			Stochast();
+			Stochast(DistributionType distributionType, double* values);
 
-	void setDistributionType(DistributionType distributionType);
-	DistributionType getDistributionType();
+			double getXFromU(double u);
+			double getUFromX(double x);
 
-	bool isInverted();
-	void setInverted(bool inverted);
+			void setDistributionType(DistributionType distributionType);
+			DistributionType getDistributionType();
 
-	bool isTruncated();
-	void setTruncated(bool truncated);
+			bool isInverted();
+			void setInverted(bool inverted);
 
-	bool isVarying();
+			bool isTruncated();
+			void setTruncated(bool truncated);
 
-	bool isQualitative();
-	double getRepresentativeU(double u);
+			bool isVarying();
 
-	double getMean();
-	void setMean(double mean);
+			bool isQualitative();
+			double getRepresentativeU(double u);
 
-	double getDeviation();
-	void setDeviation(double deviation);
-};
+			double getMean();
+			void setMean(double mean);
+
+			double getDeviation();
+			void setDeviation(double deviation);
+		};
+	}
+}
 

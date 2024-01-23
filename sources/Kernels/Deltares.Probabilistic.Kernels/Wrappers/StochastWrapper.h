@@ -1,5 +1,6 @@
 #pragma once
 #include "../Statistics/Stochast.h"
+#include "../Statistics/StandardNormal.h"
 
 namespace Deltares
 {
@@ -7,29 +8,59 @@ namespace Deltares
 	{
 		namespace Kernels
 		{
+			public enum class WrapperDistributionType {Deterministic, Normal, LogNormal, Uniform, Gumbel};
+
+
 			public ref class StochastWrapper
 			{
 			private:
-				Stochast* m_stochast;
+				Statistics::Stochast* m_stochast;
+
+				Statistics::DistributionType getDistributionType(WrapperDistributionType distributionType)
+				{
+					switch (distributionType)
+					{
+					case WrapperDistributionType::Deterministic: return Statistics::DistributionType::Deterministic;
+					case WrapperDistributionType::Normal: return Statistics::DistributionType::Normal;
+					case WrapperDistributionType::LogNormal: return Statistics::DistributionType::LogNormal;
+					case WrapperDistributionType::Uniform: return Statistics::DistributionType::Uniform;
+					case WrapperDistributionType::Gumbel: return Statistics::DistributionType::Gumbel;
+					default: throw gcnew System::NotSupportedException(distributionType.ToString());
+					}
+				}
+
+				WrapperDistributionType getDistributionType(Statistics::DistributionType distributionType)
+				{
+					switch (distributionType)
+					{
+					case Statistics::DistributionType::Deterministic: return WrapperDistributionType::Deterministic;
+					case Statistics::DistributionType::Normal: return WrapperDistributionType::Normal;
+					case Statistics::DistributionType::LogNormal: return WrapperDistributionType::LogNormal;
+					case Statistics::DistributionType::Uniform: return WrapperDistributionType::Uniform;
+					case Statistics::DistributionType::Gumbel: return WrapperDistributionType::Gumbel;
+					default: throw gcnew System::NotSupportedException("distribution type");
+					}
+				}
 
 			public:
-				StochastWrapper() { m_stochast = new Stochast(); }
-				StochastWrapper(int distributionType, double* values)
+				StochastWrapper() { m_stochast = new Statistics::Stochast(); }
+				StochastWrapper(WrapperDistributionType distributionType, double* values)
 				{
-					m_stochast = new Stochast((DistributionType) distributionType, values);
+					const Statistics::DistributionType nativeDistributionType = getDistributionType(distributionType);
+					m_stochast = new Statistics::Stochast(nativeDistributionType, values);
 				}
 				~StochastWrapper() { this->!StochastWrapper(); }
 				!StochastWrapper() { delete m_stochast; }
 
-				Stochast* GetStochast()
+				Statistics::Stochast* GetStochast()
 				{
 					return m_stochast;
 				}
 
-				property int Distribution
+				property WrapperDistributionType DistributionType
 				{
-					int get() { return m_stochast->getDistributionType(); }
-					void set(int value) { m_stochast->setDistributionType((DistributionType)value); }
+					WrapperDistributionType get() { return getDistributionType(m_stochast->getDistributionType()); }
+					void set(WrapperDistributionType value) { m_stochast->setDistributionType(getDistributionType(value)); }
 				}
 
 				property double Mean
@@ -96,6 +127,34 @@ namespace Deltares
 				{
 					int get() { return m_stochast->Observations; }
 					void set(int value) { m_stochast->Observations = value; }
+				}
+
+				property bool Truncated
+				{
+					bool get() { return m_stochast->isTruncated(); }
+					void set(bool value) { m_stochast->setTruncated(value); }
+				}
+
+				property bool Inverted
+				{
+					bool get() { return m_stochast->isInverted(); }
+					void set(bool value) { m_stochast->setInverted(value); }
+				}
+
+				double GetXFromU(double u)
+				{
+					return m_stochast->getXFromU(u);
+				}
+
+				double GetXFromP(double p)
+				{
+					double u = StandardNormal::getUFromP(p);
+					return m_stochast->getXFromU(u);
+				}
+
+				double GetUFromX(double x)
+				{
+					return m_stochast->getUFromX(x);
 				}
 			};
 		}

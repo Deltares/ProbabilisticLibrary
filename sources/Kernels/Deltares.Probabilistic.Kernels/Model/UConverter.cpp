@@ -4,7 +4,7 @@
 #include "../Reliability/StochastSettings.h"
 #include "../Reliability/StochastSettingsSet.h"
 
-UConverter::UConverter(std::vector<Stochast*> stochasts, CorrelationMatrix* correlationMatrix)
+UConverter::UConverter(std::vector<Deltares::Statistics::Stochast*> stochasts, CorrelationMatrix* correlationMatrix)
 {
 	this->stochasts.clear();
 

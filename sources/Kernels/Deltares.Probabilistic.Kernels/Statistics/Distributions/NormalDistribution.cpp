@@ -1,40 +1,46 @@
 #include "NormalDistribution.h"
 #include "../StochastProperties.h"
 
-void NormalDistribution::setMeanAndDeviation(StochastProperties* stochast, double mean, double deviation)
+namespace Deltares
 {
-	stochast->Location = mean;
-	stochast->Scale = deviation;
-}
+	namespace Statistics
+	{
+		void NormalDistribution::setMeanAndDeviation(StochastProperties* stochast, double mean, double deviation)
+		{
+			stochast->Location = mean;
+			stochast->Scale = deviation;
+		}
 
-void NormalDistribution::initialize(StochastProperties* stochast, double* values)
-{
-	setMeanAndDeviation(stochast, values[0], values[1]);
-}
+		void NormalDistribution::initialize(StochastProperties* stochast, double* values)
+		{
+			setMeanAndDeviation(stochast, values[0], values[1]);
+		}
 
-bool NormalDistribution::isVarying(StochastProperties* stochast)
-{
-	return stochast->Scale > 0;
-}
+		bool NormalDistribution::isVarying(StochastProperties* stochast)
+		{
+			return stochast->Scale > 0;
+		}
 
-double NormalDistribution::getMean(StochastProperties* stochast)
-{
-	return stochast->Location;
-}
+		double NormalDistribution::getMean(StochastProperties* stochast)
+		{
+			return stochast->Location;
+		}
 
-double NormalDistribution::getDeviation(StochastProperties* stochast)
-{
-	return stochast->Scale;
-}
+		double NormalDistribution::getDeviation(StochastProperties* stochast)
+		{
+			return stochast->Scale;
+		}
 
-double NormalDistribution::getXFromU(StochastProperties* stochast, double u)
-{
-	return stochast->Location + u * stochast->Scale;
-}
+		double NormalDistribution::getXFromU(StochastProperties* stochast, double u)
+		{
+			return stochast->Location + u * stochast->Scale;
+		}
 
-double NormalDistribution::getUFromX(StochastProperties* stochast, double x)
-{
-	return (x - stochast->Location) / stochast->Scale;
+		double NormalDistribution::getUFromX(StochastProperties* stochast, double x)
+		{
+			return (x - stochast->Location) / stochast->Scale;
+		}
+	}
 }
 
 
