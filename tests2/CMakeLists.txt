@@ -9,12 +9,17 @@ add_library(reliabilityTest
         ${reliabilityTestFiles}
 )
 
-add_executable(testRunner
-    Program.cs
+add_executable(testRunnerMC
+    RunMonteCarloTests.cs
+)
+
+add_executable(testRunnerDS
+    RunDirectionalSamplingTests.cs
 )
 
 target_link_libraries(reliabilityTest probLibKernel )
-target_link_libraries(testRunner reliabilityTest probLibKernel)
+target_link_libraries(testRunnerMC reliabilityTest probLibKernel)
+target_link_libraries(testRunnerDS reliabilityTest probLibKernel)
 
 set(dotnet_nunit_version "45")
 set(nunit_framework "${CMAKE_CURRENT_SOURCE_DIR}/../packages/NUnit.3.13.3/lib/net${dotnet_nunit_version}/nunit.framework.dll")
@@ -25,7 +30,13 @@ set_target_properties(reliabilityTest PROPERTIES
 )
 
 add_test(
-  NAME new-dotnet-tests
-  COMMAND $<TARGET_FILE:testRunner>
+  NAME dotnet-mc-tests
+  COMMAND $<TARGET_FILE:testRunnerMC>
 )
+
+add_test(
+  NAME dotnet-ds-tests
+  COMMAND $<TARGET_FILE:testRunnerDS>
+)
+
 

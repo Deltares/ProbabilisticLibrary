@@ -1,7 +1,6 @@
 ﻿using Deltares.Probabilistics.Wrappers.Test;
 using System;
 
-// See https://aka.ms/new-console-template for more information
 try
 {
     //Stopwatch stopWatch = System.Diagnostics.Stopwatch.StartNew();
