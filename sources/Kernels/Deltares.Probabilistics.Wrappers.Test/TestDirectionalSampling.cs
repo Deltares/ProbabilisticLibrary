@@ -118,6 +118,20 @@ namespace Deltares.Probabilistics.Wrappers.Test
         }
 
         [Test]
+        public void TestSeries()
+        {
+            var project = ProjectBuilder.GetSeriesProject();
+
+            ModelRunnerWrapper modelRunner = new ModelRunnerWrapper(project.Function, project.Stochasts, project.CorrelationMatrix, null);
+
+            DirectionalSamplingWrapper directionalSampling = new DirectionalSamplingWrapper();
+
+            DesignPointWrapper designPoint = directionalSampling.GetDesignPoint(modelRunner);
+
+            Assert.AreEqual(2.89, designPoint.Beta, margin);
+        }
+
+        [Test]
         public void TestManyVars()
         {
             Project project = ProjectBuilder.GetManyVarsProject();

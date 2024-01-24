@@ -159,7 +159,7 @@
     <ClInclude Include="Math\ASA\asa109.hpp" />
     <ClInclude Include="Math\ASA\asa239.hpp" />
     <ClInclude Include="Math\ASA\asa241.hpp" />
-    <ClInclude Include="Math\GammaFunction.h" />
+    <ClInclude Include="Math\SpecialFunctions.h" />
     <ClInclude Include="Statistics\Distributions\TruncatedDistribution.h" />
     <ClInclude Include="Reliability\DirectionalSampling.h" />
     <ClInclude Include="Reliability\DirectionalSamplingSettings.h" />
@@ -216,7 +216,7 @@
     <ClCompile Include="Math\ASA\asa063.cpp" />
     <ClCompile Include="Math\ASA\asa109.cpp" />
     <ClCompile Include="Math\ASA\asa239.cpp" />
-    <ClCompile Include="Math\GammaFunction.cpp" />
+    <ClCompile Include="Math\SpecialFunctions.cpp" />
     <ClCompile Include="Statistics\Distributions\TruncatedDistribution.cpp" />
     <ClCompile Include="Reliability\DirectionalSampling.cpp" />
     <ClCompile Include="Reliability\DirectionalSamplingSettings.cpp" />
@@ -240,7 +240,6 @@
     <ClCompile Include="Math\Randomizers\RandomValueGenerator.cpp" />
     <ClCompile Include="Model\ProgressIndicator.cpp" />
     <ClCompile Include="Statistics\CorrelationMatrix.cpp" />
-    <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="Math\NumericSupport.cpp" />
     <ClCompile Include="Model\RandomSettings.cpp" />
     <ClCompile Include="Model\RunSettings.cpp" />

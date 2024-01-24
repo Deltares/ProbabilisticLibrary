@@ -1,4 +1,4 @@
-#include "GammaFunction.h"
+#include "SpecialFunctions.h"
 
 #include <math.h>
 #include "../utils/probLibException.h"
@@ -7,15 +7,9 @@ namespace Deltares
 {
     namespace Numeric
 	{
-    	GammaFunction::GammaFunction(const double a)
-        {
-            this->prepareLog = getLogGamma(a);
-            this->prepareA = a;
-        }
-
         // Function for the incomplete gamma function
         // See for background: Numerical recipes par. 6.2
-        double GammaFunction::getGammaUpperRegularized(const double a, const double x)
+        double SpecialFunctions::getGammaUpperRegularized(const double a, const double x)
         {
             // a  : input parameter a of incomplete gamma function
             // x  : input x-value of incomplete gamma function
@@ -44,22 +38,14 @@ namespace Deltares
         // Function for the incomplete gamma function
         // using a series representation
         // See for background: Numerical recipes par. 6.2
-        double GammaFunction::getGammaSeries(const double a, const double x)
+        double SpecialFunctions::getGammaSeries(const double a, const double x)
         {
             // Declarations
             const int    itmax = 100;
             const double eps = 3.e-7;
 
             // Gamma function of a
-            double gln;
-            if (a == prepareA)
-            {
-                gln = prepareLog;
-            }
-            else
-            {
-                gln = getLogGamma(a);
-            }
+            double gln = getLogGamma(a);
 
             // Iterations for incomplete gamma function
             if (x == 0.0)
@@ -98,22 +84,14 @@ namespace Deltares
         // Method for the computation of the incomplete gamma function
         // using continued fraction representation
         // See for background: Numerical recipes par. 6.2
-        double GammaFunction::getGammaContinuedFraction(const double a, const double x)
+        double SpecialFunctions::getGammaContinuedFraction(const double a, const double x)
         {
             const int    itMax = 100;
             const double eps = 3.e-7;
             const double fpMin = 1.e-30;
 
             // Gamma function of a
-            double gln;
-            if (a == prepareA)
-            {
-                gln = prepareLog;
-            }
-            else
-            {
-                gln = getLogGamma(a);
-            }
+            double gln = getLogGamma(a);
 
             // Iterations for incomplete gamma function
 
@@ -153,7 +131,7 @@ namespace Deltares
 
         // Logarithm of the Gamma function
         // For background: Numerical recipes par. 6.1
-        double GammaFunction::getLogGamma(const double x)
+        double SpecialFunctions::getLogGamma(const double x)
         {
             const double stp = 2.5066282746310005;
 

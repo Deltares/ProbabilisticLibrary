@@ -22,7 +22,7 @@ void Sample::setBeta(double beta)
 
 Sample* Sample::clone()
 {
-	return new Sample(this->Values, this->getSize());
+	return new Sample(this->Values);
 }
 
 Sample* Sample::normalize(double newBeta)

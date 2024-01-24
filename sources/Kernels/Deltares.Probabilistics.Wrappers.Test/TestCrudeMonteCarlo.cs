@@ -389,6 +389,21 @@ namespace Deltares.Probabilistics.Wrappers.Test
         }
 
         [Test]
+        public void TestSeries()
+        {
+            var project = ProjectBuilder.GetSeriesProject();
+
+            ModelRunnerWrapper modelRunner = new ModelRunnerWrapper(project.Function, project.Stochasts, project.CorrelationMatrix, null);
+
+            CrudeMonteCarloWrapper crudeMonteCarlo = new CrudeMonteCarloWrapper();
+            crudeMonteCarlo.Settings.MaximumSamples = 100000;
+
+            DesignPointWrapper designPoint = crudeMonteCarlo.GetDesignPoint(modelRunner);
+
+            Assert.AreEqual(2.84, designPoint.Beta, margin);
+        }
+
+        [Test]
         public void TestNoisyStochastSettings()
         {
             var project = ProjectBuilder.GetNoisyProject();

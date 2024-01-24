@@ -197,7 +197,7 @@ namespace Deltares
 						angleValues[i] = std::atan2(sinSample->Values[i] / sumWeights, cosSample->Values[i] / sumWeights);
 					}
 					auto coordinates = NumericSupport::GetCartesianCoordinates(angleValues);
-					Sample* anglePoint = new Sample(coordinates, count);
+					Sample* anglePoint = new Sample(coordinates);
 
 					for (int j = 0; j < this->qualitativeCount; j++)
 					{

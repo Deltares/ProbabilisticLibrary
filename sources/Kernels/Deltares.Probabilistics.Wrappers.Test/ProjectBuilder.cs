@@ -388,6 +388,17 @@ namespace Deltares.Probabilistics.Wrappers.Test
             return project;
         }
 
+        public static Project GetSeriesProject()
+        {
+            var project = new Project();
+
+            for (var i = 0; i < 2; i++) project.Stochasts.Add(GetNormalStochast());
+
+            project.ZFunction = Series;
+
+            return project;
+        }
+
         public static Project GetTwoBranchesProject()
         {
             var project = new Project();
@@ -680,6 +691,20 @@ namespace Deltares.Probabilistics.Wrappers.Test
             var b = x[1];
 
             return new ZFunctionOutput(3 - a * b);
+        }
+
+        private static ZFunctionOutput Series(double[] x)
+        {
+            double sqrt2 = Math.Sqrt(2);
+
+            double u1 = x[0];
+            double u2 = x[1];
+            double g1 = 0.1 * (u1 - u2) * (u1 - u2) - (u1 + u2) / sqrt2 + 3.0;
+            double g2 = 0.1 * (u1 - u2) * (u1 - u2) + (u1 + u2) / sqrt2 + 3.0;
+            double g3 = u1 - u2 + 3.5 * sqrt2;
+            double g4 = -u1 + u2 + 3.5 * sqrt2;
+
+            return new ZFunctionOutput(Math.Min(Math.Min(g1, g2), Math.Min(g3, g4)));
         }
 
         private static ZFunctionOutput TwoBranches(double[] x)

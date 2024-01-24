@@ -1,7 +1,7 @@
 #include "DirectionalSampling.h"
 #include "DirectionReliability.h"
 #include "../Model/RandomSampleGenerator.h"
-#include "../Math/GammaFunction.h"
+#include "../Math/SpecialFunctions.h"
 #include <omp.h>
 
 namespace Deltares
@@ -38,8 +38,6 @@ namespace Deltares
 			double z0Fac = this->getZFactor(z0);
 
 			delete zeroSample;
-
-			Numeric::GammaFunction* gammaFunction = new Numeric::GammaFunction(0.5 * nstochasts);
 
 			Sample* uMin = new Sample(nstochasts);
 			int chunkSize = modelRunner->Settings->MaxChunkSize;
@@ -88,7 +86,7 @@ namespace Deltares
 				// calculate failure probability
 				if (betaDirection >= 0 && betaDirection < Statistics::StandardNormal::BetaMax)
 				{
-					uSurface->Weight = gammaFunction->getGammaUpperRegularized(0.5 * nstochasts, 0.5 * betaDirection * betaDirection);
+					uSurface->Weight = Deltares::Numeric::SpecialFunctions::getGammaUpperRegularized(0.5 * nstochasts, 0.5 * betaDirection * betaDirection);
 
 					qtot += uSurface->Weight;
 

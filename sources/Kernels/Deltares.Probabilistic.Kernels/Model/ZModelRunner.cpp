@@ -6,14 +6,6 @@
 
 namespace Deltares
 {
-	namespace Reliability
-	{
-		class StochastSettingsSet;
-	}
-}
-
-namespace Deltares
-{
 	namespace Models
 	{
 		int ZModelRunner::getVaryingStochastCount()
@@ -43,7 +35,7 @@ namespace Deltares
 			auto xValues = this->uConverter->getXValues(sample);
 
 			// create a sample with values in x-space
-			Sample* xSample = new Sample(xValues, this->getStochastCount());
+			Sample* xSample = new Sample(xValues);
 
 			xSample->AllowProxy = sample->AllowProxy;
 			xSample->IterationIndex = sample->IterationIndex;

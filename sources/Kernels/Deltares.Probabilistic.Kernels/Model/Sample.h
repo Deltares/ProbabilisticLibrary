@@ -4,6 +4,7 @@
 #include <vector>
 #include "../Math/NumericSupport.h"
 
+
 class Sample
 {
 private:
@@ -27,11 +28,13 @@ public:
 		{
 			this->Values.push_back(values[i]);
 		}
+
+		delete[] values;
 	}
 
-	Sample(std::vector<double> & values, int size)
+	Sample(std::vector<double> & values)
 	{
-		this->size = size;
+		this->size = values.size();
 		this->Values = values;
 	}
 
