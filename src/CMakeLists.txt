@@ -189,7 +189,12 @@ file(GLOB ptkcpp_files
     "../../Kernels/Deltares.Probabilistic.Kernels/Statistics/Distributions/*.cpp"
     "../../Kernels/Deltares.Probabilistic.Kernels/CWrapper/*.cpp"
 )
-file(GLOB ptkcli_files "../../Kernels/Deltares.Probabilistic.Kernels/Wrappers/*.cpp")
+file(GLOB ptkcli_files
+    "../../Kernels/Deltares.Probabilistics.Wrappers/Model/*.cpp"
+    "../../Kernels/Deltares.Probabilistics.Wrappers/Reliability/*.cpp"
+    "../../Kernels/Deltares.Probabilistics.Wrappers/Statistics/*.cpp"
+    "../../Kernels/Deltares.Probabilistics.Wrappers/Utils/*.cpp"
+)
 
 add_library(probLib
   SHARED
