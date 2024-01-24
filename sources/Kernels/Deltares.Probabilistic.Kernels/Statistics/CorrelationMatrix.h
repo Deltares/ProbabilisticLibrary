@@ -2,7 +2,7 @@
 #include "../Math/matrix.h"
 #include <vector>
 
-class CorrelationMatrix
+public class CorrelationMatrix
 {
 public:
     void init(const int maxStochasts);
