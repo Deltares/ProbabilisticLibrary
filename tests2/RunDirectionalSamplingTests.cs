@@ -20,6 +20,7 @@ try
 catch (Exception ex)
 {
     Console.WriteLine(ex.ToString());
+    throw;
 }
 return 0;
 
