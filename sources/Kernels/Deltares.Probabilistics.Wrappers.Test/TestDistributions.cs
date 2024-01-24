@@ -53,6 +53,17 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
             stochast.Mean = 5;
             Assert.AreEqual(5 - 2 * eulerMascheroni, stochast.Shift, 0.01);
+
+            TestInvert(stochast, true);
+
+            stochast.Inverted = false;
+            stochast.Truncated = true;
+            stochast.Minimum = 2;
+            stochast.Maximum = 10;
+
+            TestMinMax(stochast);
+
+            TestInvert(stochast, true);
         }
 
         [Test]
@@ -81,6 +92,17 @@ namespace Deltares.Probabilistics.Wrappers.Test
             Assert.AreEqual(2, stochast.Deviation, 0.01);
 
             TestStochast(stochast);
+
+            TestInvert(stochast, true);
+
+            stochast.Inverted = false;
+            stochast.Truncated = true;
+            stochast.Minimum = 5;
+            stochast.Maximum = 15;
+
+            TestMinMax(stochast);
+
+            TestInvert(stochast, true);
         }
 
         [Test]
@@ -116,6 +138,8 @@ namespace Deltares.Probabilistics.Wrappers.Test
             Assert.AreEqual(3, stochast.GetXFromU(0), margin);
             Assert.AreEqual(6, stochast.GetXFromU(10000), margin);
             Assert.AreEqual(0, stochast.GetXFromU(-10000), margin);
+
+            TestMinMax(stochast);
 
             // Test with no boundaries
             stochast.Minimum = Double.NegativeInfinity;
@@ -160,6 +184,8 @@ namespace Deltares.Probabilistics.Wrappers.Test
             Assert.AreEqual(1.28155, stochast.GetUFromX(8.6), margin);
 
             TestStochast(stochast);
+
+            TestMinMax(stochast);
         }
 
         private void TestStochast(StochastWrapper stochast, double delta = 0.01)
@@ -173,60 +199,41 @@ namespace Deltares.Probabilistics.Wrappers.Test
             }
         }
 
-        private void TestInvert(StochastWrapper stochast, double delta = 0.01)
+        private void TestMinMax(StochastWrapper stochast)
         {
-            foreach (var uu in new[] { -7, -6, -5, -4, -3, -2, -1.5, -1, -0.5, -0.1, 0, 0.1, 0.5, 1, 1.5, 2, 3, 4, 5, 6, 7 })
+            Assert.AreEqual(-StandardNormalWrapper.UMax, stochast.GetUFromX(stochast.Minimum - 1), 0.01);
+            Assert.AreEqual(StandardNormalWrapper.UMax, stochast.GetUFromX(stochast.Maximum + 1), 0.01);
+        }
+
+        private void TestInvert(StochastWrapper stochast, bool useShift, double delta = 0.01)
+        {
+            double center = stochast.Shift;
+
+            // test mean inverted
+            stochast.Inverted = true;
+            double meanInverted = stochast.Mean;
+
+            stochast.Inverted = false;
+            double mean = stochast.Mean;
+
+            Assert.AreEqual(mean, 2 * center - meanInverted, delta);
+
+            foreach (var u in new[] { -7, -6, -5, -4, -3, -2, -1.5, -1, -0.5, -0.1, 0, 0.1, 0.5, 1, 1.5, 2, 3, 4, 5, 6, 7 })
             {
-                if (stochast.Inverted)
-                {
-                    stochast.Inverted = false;
-                    stochast.Mean = GetUninvertedMean(stochast);
-                }
-
-                double x = stochast.GetXFromU(uu);
-                double u = stochast.GetUFromX(x);
-
-                double mean = stochast.Mean;
                 stochast.Inverted = true;
-                stochast.Mean = GetInvertedMean(stochast);
+                double xInverted = stochast.GetXFromU(-u);
 
-                double xInverted = stochast.GetXFromU(-uu);
-                double uInverted = stochast.GetUFromX(xInverted);
+                stochast.Inverted = false;
+                double x = stochast.GetXFromU(u);
 
-                Assert.AreEqual(2 * stochast.Shift - x, xInverted, delta);
-                Assert.AreEqual(-u, uInverted, delta);
+                Assert.AreEqual(x, 2 * center - xInverted, delta);
+
+                double uu = stochast.GetUFromX(x);
+                Assert.AreEqual(u, uu, delta);
             }
 
             // reset for further tests
-            if (stochast.Inverted)
-            {
-                stochast.Inverted = false;
-                stochast.Mean = GetUninvertedMean(stochast);
-            }
-        }
-
-        private double GetInvertedMean(StochastWrapper stochast)
-        {
-            if (stochast.Shift < stochast.Mean)
-            {
-                return 2 * stochast.Shift - stochast.Mean;
-            }
-            else
-            {
-                return stochast.Mean;
-            }
-        }
-
-        private double GetUninvertedMean(StochastWrapper stochast)
-        {
-            if (stochast.Shift > stochast.Mean)
-            {
-                return 2 * stochast.Shift - stochast.Mean;
-            }
-            else
-            {
-                return stochast.Mean;
-            }
+            stochast.Inverted = false;
         }
     }
 }

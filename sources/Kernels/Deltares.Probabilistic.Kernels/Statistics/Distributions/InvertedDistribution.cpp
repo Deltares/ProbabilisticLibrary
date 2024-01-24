@@ -32,9 +32,9 @@ namespace Deltares
 
 		void InvertedDistribution::setMeanAndDeviation(StochastProperties* stochast, double mean, double deviation)
 		{
-			StochastProperties* invertedStochast = getInvertedStochast(stochast);
+			double invertedMean = this->getInvertedValue(stochast, mean);
 
-			setMeanAndDeviation(invertedStochast, this->getInvertedValue(stochast, mean), deviation);
+			this->innerDistribution->setMeanAndDeviation(stochast, invertedMean, deviation);
 		}
 
 		bool InvertedDistribution::isVarying(StochastProperties* stochast)
@@ -44,34 +44,26 @@ namespace Deltares
 
 		double InvertedDistribution::getMean(StochastProperties* stochast)
 		{
-			StochastProperties* invertedStochast = getInvertedStochast(stochast);
-
-			return this->getInvertedValue(stochast, this->innerDistribution->getMean(invertedStochast));
+			return this->getInvertedValue(stochast, this->innerDistribution->getMean(stochast));
 		}
 
 		double InvertedDistribution::getDeviation(StochastProperties* stochast)
 		{
-			StochastProperties* invertedStochast = getInvertedStochast(stochast);
-
-			return this->innerDistribution->getDeviation(invertedStochast);
+			return this->innerDistribution->getDeviation(stochast);
 		}
 
 		double InvertedDistribution::getXFromU(StochastProperties* stochast, double u)
 		{
-			StochastProperties* invertedStochast = getInvertedStochast(stochast);
-
-			double xInvert = this->innerDistribution->getXFromU(invertedStochast, -u);
+			double xInvert = this->innerDistribution->getXFromU(stochast, -u);
 
 			return this->getInvertedValue(stochast, xInvert);
 		}
 
 		double InvertedDistribution::getUFromX(StochastProperties* stochast, double x)
 		{
-			StochastProperties* invertedStochast = getInvertedStochast(stochast);
-
 			double xInvert = this->getInvertedValue(stochast, x);
 
-			return - this->innerDistribution->getUFromX(invertedStochast, xInvert);
+			return - this->innerDistribution->getUFromX(stochast, xInvert);
 
 		}
 

@@ -27,14 +27,14 @@ namespace Deltares
 				throw std::exception("Distribution type not supported");
 			}
 
-			if (inverted && distribution->canInvert())
-			{
-				this->distribution = new InvertedDistribution(this->distribution);
-			}
-
 			if (truncated && distribution->canTruncate())
 			{
 				this->distribution = new TruncatedDistribution(this->distribution);
+			}
+
+			if (inverted && distribution->canInvert())
+			{
+				this->distribution = new InvertedDistribution(this->distribution);
 			}
 		}
 

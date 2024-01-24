@@ -17,6 +17,16 @@ namespace Deltares
 				static double GetQFromU(double u) { return Statistics::StandardNormal::getQFromU(u); }
 				static double GetRFromP(double p) { return Statistics::StandardNormal::getRFromP(p); }
 				static double GetPFromR(double r) { return Statistics::StandardNormal::getPFromR(r); }
+
+				static property double UMax
+				{
+					double get() { return Statistics::StandardNormal::UMax; }
+				}
+
+				static property double BetaMax
+				{
+					double get() { return Statistics::StandardNormal::BetaMax; }
+				}
 			};
 		}
 	}

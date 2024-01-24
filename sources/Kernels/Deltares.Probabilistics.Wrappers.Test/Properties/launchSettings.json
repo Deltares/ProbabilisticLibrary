@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Deltares.Probabilistics.Wrappers.Test": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}

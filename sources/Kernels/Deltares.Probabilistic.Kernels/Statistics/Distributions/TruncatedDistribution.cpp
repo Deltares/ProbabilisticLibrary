@@ -117,11 +117,11 @@ namespace Deltares
 			}
 			else if (x <= stochast->Minimum)
 			{
-				return -StandardNormal::BetaMax;
+				return -StandardNormal::UMax;
 			}
 			else if (x >= stochast->Maximum)
 			{
-				return StandardNormal::BetaMax;
+				return StandardNormal::UMax;
 			}
 			else
 			{
