@@ -32,13 +32,13 @@ double LinearRootFinder::CalculateValue(double xLow, double xHigh, double target
 	//Console.WriteLine("f({0:G5}) = {1:G5}", maxStart, maxResult);
 
 	// Initialize linear search method
-	XValue* low = new XValue(xLow,  lowValue);
-	XValue* high = new XValue (xHigh,highValue);
+	auto low = XValue(xLow,  lowValue);
+	auto high = XValue (xHigh,highValue);
 
-	bool ascending = low->Value < high->Value;
-	bool descending = low->Value > high->Value;
+	bool ascending = low.Value < high.Value;
+	bool descending = low.Value > high.Value;
 
-	XValue* solution = interpolate(low, high, target, function);
+	auto solution = interpolate(low, high, target, function);
 
 	// Linear search method method
 	int iterations = 0;
@@ -46,37 +46,37 @@ double LinearRootFinder::CalculateValue(double xLow, double xHigh, double target
 	double previousSolution = std::numeric_limits<double>::max();
 	bool bisect = false;
 
-	while (std::abs(solution->Value - target) > tolerance && iterations < maxIterations)
+	while (std::abs(solution.Value - target) > tolerance && iterations < maxIterations)
 	{
-		if (solution->X < low->X)
+		if (solution.X < low.X)
 		{
 			high = low;
 			low = solution;
 		}
-		else if (solution->X > high->X)
+		else if (solution.X > high.X)
 		{
 			low = high;
 			high = solution;
 		}
-		else if (solution->Value < target && high->Value < target)
+		else if (solution.Value < target && high.Value < target)
 		{
 			high = solution;
 		}
-		else if (solution->Value > target && high->Value > target)
+		else if (solution.Value > target && high.Value > target)
 		{
 			high = solution;
 		}
-		else if (solution->Value < target && high->Value > target)
+		else if (solution.Value < target && high.Value > target)
 		{
 			low = solution;
 		}
-		else if (solution->Value > target && high->Value < target)
+		else if (solution.Value > target && high.Value < target)
 		{
 			low = solution;
 		}
 
-		ascending |= low->Value < high->Value;
-		descending |= low->Value > high->Value;
+		ascending |= low.Value < high.Value;
+		descending |= low.Value > high.Value;
 
 		if (ascending && descending)
 		{
@@ -85,10 +85,10 @@ double LinearRootFinder::CalculateValue(double xLow, double xHigh, double target
 
 		// if both the the solution window end the solution do not become significantly smaller, switch over to bisection
 
-		double window = high->X - low->X;
-		bisect |= std::abs((solution->Value - target) / (previousSolution - target)) > solutionLimit && window / previousWindow > 1 - windowLimit;
+		double window = high.X - low.X;
+		bisect |= std::abs((solution.Value - target) / (previousSolution - target)) > solutionLimit && window / previousWindow > 1 - windowLimit;
 
-		previousSolution = solution->Value;
+		previousSolution = solution.Value;
 
 		if (bisect)
 		{
@@ -99,9 +99,9 @@ double LinearRootFinder::CalculateValue(double xLow, double xHigh, double target
 			solution = interpolate(low, high, target, function);
 		}
 
-		if (low->X < solution->X && high->X > solution->X && std::abs(high->X - low->X) < tolerance)
+		if (low.X < solution.X && high.X > solution.X && std::abs(high.X - low.X) < tolerance)
 		{
-			target = solution->Value;
+			target = solution.Value;
 		}
 
 		previousWindow = window;
@@ -109,28 +109,28 @@ double LinearRootFinder::CalculateValue(double xLow, double xHigh, double target
 		iterations++;
 	}
 
-	if (abs(solution->Value - target) > tolerance)
+	if (abs(solution.Value - target) > tolerance)
 	{
 		return nan("");
 	}
 
-	return solution->X;
+	return solution.X;
 }
 
-XValue* LinearRootFinder::interpolate(XValue* low, XValue* high, double target, RootFinderMethod function)
+XValue LinearRootFinder::interpolate(const XValue& low, const XValue& high, double target, RootFinderMethod function)
 {
-	double x = low->X + ((low->Value - target) / (low->Value - high->Value)) * (high->X - low->X);
+	double x = low.X + ((low.Value - target) / (low.Value - high.Value)) * (high.X - low.X);
 	double xValue = function(x);
 
-	return new XValue(x, xValue);
+	return XValue(x, xValue);
 }
 
-XValue* LinearRootFinder::bisection(XValue* low, XValue* high, RootFinderMethod function)
+XValue LinearRootFinder::bisection(const XValue& low, const XValue& high, RootFinderMethod function)
 {
-	double x = (low->X + high->X) / 2;
+	double x = (low.X + high.X) / 2;
 	double xValue = function(x);
 
-	return new XValue(x, xValue);
+	return XValue(x, xValue);
 }
 
 

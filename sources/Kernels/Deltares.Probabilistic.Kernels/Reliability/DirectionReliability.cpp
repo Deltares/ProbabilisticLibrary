@@ -2,6 +2,7 @@
 #include "DirectionReliabilitySettings.h"
 #include "../Model/ZModelRunner.h"
 #include "../Math/RootFinders/LinearRootFinder.h"
+#include <memory>
 
 namespace Deltares
 {
@@ -134,6 +135,7 @@ namespace Deltares
 			beta = beta * z0;
 
 			delete task;
+			delete normalizedSample;
 
 			return beta;
 		}
@@ -172,7 +174,7 @@ namespace Deltares
 
 			bool found = false;
 			bool monotone = settings->ModelVaryingType == ModelVaryingType::Monotone;
-			ZGetter* model = new ZGetter(modelRunner);
+			std::unique_ptr<ZGetter> model (new ZGetter(modelRunner));
 
 			double prevzHigh = nan("");
 
@@ -265,14 +267,12 @@ namespace Deltares
 
 			sections.push_back(new DirectionSection(lastSectionType, lastSection->UHigh, Statistics::StandardNormal::BetaMax));
 
-			delete model;
-
 			return sections;
 		}
 
 		double DirectionReliability::findBetaBetweenBoundaries(Models::ZModelRunner* modelRunner, DirectionReliabilitySettings* settings, Sample* uDirection, bool invertZ, double uLow, double uHigh, double zLow, double zHigh, double& z)
 		{
-			ZGetter* model = new ZGetter(modelRunner);
+			std::unique_ptr<ZGetter> model (new ZGetter(modelRunner));
 
 			if (std::isnan(zLow) || std::isnan(zHigh))
 			{
@@ -326,8 +326,6 @@ namespace Deltares
 					double u = (uLow + uHigh) / 2;
 					z = model->GetZ(uDirection, u, invertZ);
 
-					delete model;
-
 					return u;
 				}
 			}
@@ -343,8 +341,8 @@ namespace Deltares
 
 				z = std::isnan(uResult) ? nan("") : directionCalculation->GetZ(uResult);
 
-				delete model;
 				delete linearSearchCalculation;
+				delete directionCalculation;
 
 				return uResult;
 			}
