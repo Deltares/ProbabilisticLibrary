@@ -59,3 +59,7 @@ else()
 
 endif()
 
+if(WIN32)
+    add_subdirectory(tests2)
+endif()
+
