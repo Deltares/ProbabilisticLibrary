@@ -247,7 +247,11 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
         }
         r->convergence = (newResult->ConvergenceReport->Convergence < method->tolB ? 0 : 1);
         r->stepsNeeded = -999;// result.stepsNeeded;
-        r->samplesNeeded = (int)round(newResult->ConvergenceReport->FailedSamples / newResult->ConvergenceReport->FailFraction);
+        r->samplesNeeded = newResult->ConvergenceReport->TotalDirections;
+        if (r->samplesNeeded < 0)
+        {
+            r->samplesNeeded = (int)round(newResult->ConvergenceReport->FailedSamples / newResult->ConvergenceReport->FailFraction);
+        }
     }
     catch (const std::exception& e)
     {

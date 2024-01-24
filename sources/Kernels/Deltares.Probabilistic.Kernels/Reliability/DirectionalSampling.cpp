@@ -112,6 +112,7 @@ namespace Deltares
 
 				// controleren of afbreekcriterium is bereikt
 				bool enoughSamples = nmaal >= Settings->MinimumSamples;
+				convergenceReport->TotalDirections = nmaal+1;
 
 				if (qtot > 0)
 				{
