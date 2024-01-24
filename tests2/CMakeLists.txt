@@ -17,9 +17,14 @@ add_executable(testRunnerDS
     RunDirectionalSamplingTests.cs
 )
 
+add_executable(testRunnerDistributions
+    RunDistributionsTests.cs
+)
+
 target_link_libraries(reliabilityTest probLibKernel )
 target_link_libraries(testRunnerMC reliabilityTest probLibKernel)
 target_link_libraries(testRunnerDS reliabilityTest probLibKernel)
+target_link_libraries(testRunnerDistributions reliabilityTest probLibKernel)
 
 set(dotnet_nunit_version "45")
 set(nunit_framework "${CMAKE_CURRENT_SOURCE_DIR}/../packages/NUnit.3.13.3/lib/net${dotnet_nunit_version}/nunit.framework.dll")
@@ -37,6 +42,11 @@ add_test(
 add_test(
   NAME dotnet-ds-tests
   COMMAND $<TARGET_FILE:testRunnerDS>
+)
+
+add_test(
+  NAME dotnet-distributions-tests
+  COMMAND $<TARGET_FILE:testRunnerDistributions>
 )
 
 
