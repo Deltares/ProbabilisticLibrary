@@ -1,5 +1,5 @@
 #pragma once
-#include "../Model/RunSettings.h"
+#include "../../Deltares.Probabilistic.Kernels/Model/RunSettings.h"
 
 namespace Deltares
 {

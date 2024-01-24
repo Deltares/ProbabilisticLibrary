@@ -1,7 +1,7 @@
 #pragma once
 #include "DesignPointWrapper.h"
-#include "ModelRunnerWrapper.h"
-#include "../Reliability/ReliabilityMethod.h"
+#include "../Model/ModelRunnerWrapper.h"
+#include "../../Deltares.Probabilistic.Kernels/Reliability/ReliabilityMethod.h"
 
 namespace Deltares
 {

@@ -80,7 +80,7 @@ double LinearRootFinder::CalculateValue(double xLow, double xHigh, double target
 
 		if (ascending && descending)
 		{
-			return double::NaN;
+			return nan("");
 		}
 
 		// if both the the solution window end the solution do not become significantly smaller, switch over to bisection
@@ -111,7 +111,7 @@ double LinearRootFinder::CalculateValue(double xLow, double xHigh, double target
 
 	if (abs(solution->Value - target) > tolerance)
 	{
-		return double::NaN;
+		return nan("");
 	}
 
 	return solution->X;

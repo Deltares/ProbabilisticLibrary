@@ -18,11 +18,11 @@ namespace Deltares
 		{
 			switch (this->distributionType)
 			{
-			case Deterministic: this->distribution = new DeterministicDistribution(); break;
-			case Normal: this->distribution = new NormalDistribution(); break;
-			case LogNormal: this->distribution = new LogNormalDistribution(); break;
-			case Uniform: this->distribution = new UniformDistribution(); break;
-			case Gumbel: this->distribution = new GumbelDistribution(); break;
+			case DistributionType::Deterministic: this->distribution = new DeterministicDistribution(); break;
+			case DistributionType::Normal: this->distribution = new NormalDistribution(); break;
+			case DistributionType::LogNormal: this->distribution = new LogNormalDistribution(); break;
+			case DistributionType::Uniform: this->distribution = new UniformDistribution(); break;
+			case DistributionType::Gumbel: this->distribution = new GumbelDistribution(); break;
 			default:
 				throw std::exception("Distribution type not supported");
 			}

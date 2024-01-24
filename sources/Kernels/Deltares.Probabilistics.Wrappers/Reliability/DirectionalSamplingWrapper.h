@@ -2,7 +2,7 @@
 
 #include "DirectionalSamplingSettingsWrapper.h"
 #include "ReliabilityMethodWrapper.h"
-#include "../Reliability/DirectionalSampling.h"
+#include "../../Deltares.Probabilistic.Kernels/Reliability/DirectionalSampling.h"
 
 namespace Deltares
 {

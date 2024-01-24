@@ -4,8 +4,6 @@
 #include "../Statistics/StandardNormal.h"
 #include "../Math/Random.h"
 
-using namespace System;
-
 void RandomSampleGenerator::initialize()
 {
 	Deltares::Numeric::Random::initialize(this->Settings->RandomGeneratorType, this->Settings->IsRepeatableRandom, this->Settings->Seed, this->Settings->SeedB);

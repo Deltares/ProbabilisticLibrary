@@ -1,10 +1,14 @@
 #pragma once
+#include "DirectionReliabilitySettingsWrapper.h"
 
-#include "RandomSettingsWrapper.h"
-#include "RunSettingsWrapper.h"
-#include "StochastSettingsWrapper.h"
-#include "../Reliability/CrudeMonteCarloSettings.h"
-#include "../Reliability/StochastSettings.h"
+ref class DirectionalSamplingSettingsWrapper
+{
+};
+
+#include "../Model/RandomSettingsWrapper.h"
+#include "../Statistics/StochastSettingsWrapper.h"
+#include "../../Deltares.Probabilistic.Kernels/Reliability/DirectionalSamplingSettings.h"
+#include "../../Deltares.Probabilistic.Kernels/Reliability/StochastSettings.h"
 
 namespace Deltares
 {
@@ -12,19 +16,20 @@ namespace Deltares
 	{
 		namespace Kernels
 		{
-			public ref class CrudeMonteCarloSettingsWrapper
+			public ref class DirectionalSamplingSettingsWrapper
 			{
 			private:
-				Reliability::CrudeMonteCarloSettings* m_settings;
+				Reliability::DirectionalSamplingSettings* m_settings;
 
 			public:
-				CrudeMonteCarloSettingsWrapper()
+				DirectionalSamplingSettingsWrapper()
 				{
-					m_settings = new Reliability::CrudeMonteCarloSettings();
+					m_settings = new Reliability::DirectionalSamplingSettings();
 					m_settings->RandomSettings = RandomSettings->GetSettings();
+					m_settings->DirectionSettings = DirectionalSettings->GetSettings();
 				}
-				~CrudeMonteCarloSettingsWrapper() { this->!CrudeMonteCarloSettingsWrapper(); }
-				!CrudeMonteCarloSettingsWrapper() { delete m_settings; }
+				~DirectionalSamplingSettingsWrapper() { this->!DirectionalSamplingSettingsWrapper(); }
+				!DirectionalSamplingSettingsWrapper() { delete m_settings; }
 
 				property int MinimumSamples
 				{
@@ -46,9 +51,11 @@ namespace Deltares
 
 				RandomSettingsWrapper^ RandomSettings = gcnew RandomSettingsWrapper();
 
+				DirectionReliabilitySettingsWrapper^ DirectionalSettings = gcnew DirectionReliabilitySettingsWrapper();
+
 				System::Collections::Generic::List<StochastSettingsWrapper^>^ StochastSettings = gcnew System::Collections::Generic::List<StochastSettingsWrapper^>();
 
-				Reliability::CrudeMonteCarloSettings* GetSettings()
+				Reliability::DirectionalSamplingSettings* GetSettings()
 				{
 					m_settings->StochastSet = new Deltares::Reliability::StochastSettingsSet();
 

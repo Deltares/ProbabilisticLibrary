@@ -7,9 +7,9 @@ class RootFinder
 {
 
 public:
-	virtual double CalculateValue(double xLow, double xHigh, double target, double tolerance, int maxIterations, RootFinderMethod function, double knownLowValue = double::NaN, double knownHighValue = double::NaN)
+	virtual double CalculateValue(double xLow, double xHigh, double target, double tolerance, int maxIterations, RootFinderMethod function, double knownLowValue = nan(""), double knownHighValue = nan(""))
 	{
-		return double::NaN;
+		return nan("");
 	}
 };
 

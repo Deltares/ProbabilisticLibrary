@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Deltares.Probabilistic.Kernels\Deltares.Probabilistic.Kernels.vcxproj.vcxproj" />
+    <ProjectReference Include="..\Deltares.Probabilistics.Wrappers\Deltares.Probabilistics.Wrappers.vcxproj" />
   </ItemGroup>
 
 </Project>

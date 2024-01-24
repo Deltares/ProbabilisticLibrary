@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Statistics/StandardNormal.h"
+#include "../../Deltares.Probabilistic.Kernels/Statistics/StandardNormal.h"
 
 namespace Deltares
 {

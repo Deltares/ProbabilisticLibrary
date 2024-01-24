@@ -1,7 +1,7 @@
 #pragma once
 
-#include "NativeSupport.h"
-#include "../Model/Evaluation.h"
+#include "../Utils/NativeSupport.h"
+#include "../../Deltares.Probabilistic.Kernels/Model/Evaluation.h"
 
 namespace Deltares
 {

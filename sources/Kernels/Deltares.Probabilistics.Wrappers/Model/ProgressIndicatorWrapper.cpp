@@ -1,5 +1,5 @@
 #include "ProgressIndicatorWrapper.h"
-#include "../Model/ProgressIndicator.h"
+#include "../../Deltares.Probabilistic.Kernels/Model/ProgressIndicator.h"
 
 namespace Deltares
 {

@@ -1,8 +1,6 @@
 #pragma once
 
-#include "RandomSettingsWrapper.h"
-#include "RunSettingsWrapper.h"
-#include "../Model/ConvergenceReport.h"
+#include "../../Deltares.Probabilistic.Kernels/Model/ConvergenceReport.h"
 
 namespace Deltares
 {

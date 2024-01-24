@@ -1,6 +1,6 @@
 #pragma once
-#include "NativeSupport.h"
-#include "../Model/Sample.h"
+#include "../Utils/NativeSupport.h"
+#include "../../Deltares.Probabilistic.Kernels/Model/Sample.h"
 
 
 namespace Deltares

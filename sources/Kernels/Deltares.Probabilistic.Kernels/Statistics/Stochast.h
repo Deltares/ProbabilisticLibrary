@@ -2,13 +2,12 @@
 #include "StochastProperties.h"
 #include "Distributions/DeterministicDistribution.h"
 #include "Distributions/Distribution.h"
+#include "DistributionType.h"
 
 namespace Deltares
 {
 	namespace Statistics
 	{
-		enum DistributionType { Deterministic, Normal, LogNormal, Uniform, Gumbel };
-
 		class Stochast : public StochastProperties
 		{
 		private:

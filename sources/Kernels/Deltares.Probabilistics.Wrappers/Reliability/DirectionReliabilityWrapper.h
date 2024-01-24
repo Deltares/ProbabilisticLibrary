@@ -1,7 +1,7 @@
 #pragma once
 #include "DirectionReliabilitySettingsWrapper.h"
 #include "ReliabilityMethodWrapper.h"
-#include "../Reliability/DirectionReliability.h"
+#include "../../Deltares.Probabilistic.Kernels/Reliability/DirectionReliability.h"
 
 ref class DirectionReliabilityWrapper
 {

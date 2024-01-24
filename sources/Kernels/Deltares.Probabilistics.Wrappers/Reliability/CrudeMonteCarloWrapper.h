@@ -1,7 +1,7 @@
 #pragma once
 #include "CrudeMonteCarloSettingsWrapper.h"
 #include "ReliabilityMethodWrapper.h"
-#include "../Reliability/CrudeMonteCarlo.h"
+#include "../../Deltares.Probabilistic.Kernels/Reliability/CrudeMonteCarlo.h"
 
 namespace Deltares
 {

@@ -1,6 +1,6 @@
 #include "RandomProvider.h"
 
-#include "../Math/Randomizers/ModifiedKnuthSubtractiveRandomValueGenerator.h"
+#include "../../Deltares.Probabilistic.Kernels/Math/Randomizers/ModifiedKnuthSubtractiveRandomValueGenerator.h"
 
 void RandomProvider::initializeInitializeDelegate()
 {

@@ -21,7 +21,7 @@ class LinearRootFinder : public RootFinder
 	/// <param name="knownLowValue">Optional already calculated result for minStart</param>
 	/// <param name="knownHighValue">Optional already calculated result for maxStart</param>
 	/// <returns>The value which would lead to the result value when invoked for the function</returns>
-	double CalculateValue(double xLow, double xHigh, double target, double tolerance, int maxIterations, RootFinderMethod function, double knownLowValue = double::NaN, double knownHighValue = double::NaN) override;
+	double CalculateValue(double xLow, double xHigh, double target, double tolerance, int maxIterations, RootFinderMethod function, double knownLowValue = nan(""), double knownHighValue = nan("")) override;
 
 private:
 	XValue* interpolate(XValue* low, XValue* high, double target, RootFinderMethod function);

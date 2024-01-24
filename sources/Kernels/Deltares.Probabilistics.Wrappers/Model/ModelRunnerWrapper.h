@@ -1,12 +1,12 @@
 #pragma once
-#include "CorrelationMatrixWrapper.h"
+#include "../Statistics/CorrelationMatrixWrapper.h"
 #include "ProgressIndicatorWrapper.h"
 #include "RunSettingsWrapper.h"
-#include "StochastWrapper.h"
+#include "../Statistics/StochastWrapper.h"
 #include "SampleWrapper.h"
-#include "../Model/ZModel.h"
-#include "../Model/ZModelRunner.h"
-#include "../Model/Sample.h"
+#include "../../Deltares.Probabilistic.Kernels/Model/ZModel.h"
+#include "../../Deltares.Probabilistic.Kernels/Model/ZModelRunner.h"
+#include "../../Deltares.Probabilistic.Kernels/Model/Sample.h"
 
 namespace Deltares
 {

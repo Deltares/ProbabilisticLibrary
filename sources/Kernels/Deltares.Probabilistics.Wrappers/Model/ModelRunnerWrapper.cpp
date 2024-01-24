@@ -1,6 +1,8 @@
 #include "ModelRunnerWrapper.h"
 
 #include "ProgressIndicatorWrapper.h"
+#include "../../Deltares.Probabilistic.Kernels/Model/Sample.h"
+#include "../../Deltares.Probabilistic.Kernels/Statistics/Stochast.h"
 
 namespace Deltares
 {

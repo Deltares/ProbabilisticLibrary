@@ -2,5 +2,55 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClInclude Include="framework.h" />
+    <ClInclude Include="Reliability\ConvergenceReportWrapper.h" />
+    <ClInclude Include="Statistics\CorrelationMatrixWrapper.h" />
+    <ClInclude Include="Reliability\CrudeMonteCarloSettingsWrapper.h" />
+    <ClInclude Include="Reliability\CrudeMonteCarloWrapper.h" />
+    <ClInclude Include="Reliability\DesignPointWrapper.h" />
+    <ClInclude Include="Reliability\DirectionalSamplingSettingsWrapper.h" />
+    <ClInclude Include="Reliability\DirectionalSamplingWrapper.h" />
+    <ClInclude Include="Reliability\DirectionReliabilitySettingsWrapper.h" />
+    <ClInclude Include="Reliability\DirectionReliabilityWrapper.h" />
+    <ClInclude Include="Statistics\EvaluationWrapper.h" />
+    <ClInclude Include="Model\ModelRunnerWrapper.h" />
+    <ClInclude Include="Utils\NativeSupport.h" />
+    <ClInclude Include="Model\ProgressIndicatorWrapper.h" />
+    <ClInclude Include="Model\RandomProvider.h" />
+    <ClInclude Include="Model\RandomSettingsWrapper.h" />
+    <ClInclude Include="Reliability\ReliabilityMethodWrapper.h" />
+    <ClInclude Include="Reliability\ReliabilityResultWrapper.h" />
+    <ClInclude Include="Model\RunSettingsWrapper.h" />
+    <ClInclude Include="Model\SampleWrapper.h" />
+    <ClInclude Include="Statistics\StandardNormalWrapper.h" />
+    <ClInclude Include="Statistics\StochastPointAlphaWrapper.h" />
+    <ClInclude Include="Statistics\StochastPointWrapper.h" />
+    <ClInclude Include="Statistics\StochastSettingsWrapper.h" />
+    <ClInclude Include="Statistics\StochastWrapper.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Reliability\ConvergenceReportWrapper.cpp" />
+    <ClCompile Include="Statistics\CorrelationMatrixWrapper.cpp" />
+    <ClCompile Include="Reliability\CrudeMonteCarloSettingsWrapper.cpp" />
+    <ClCompile Include="Reliability\CrudeMonteCarloWrapper.cpp" />
+    <ClCompile Include="Reliability\DesignPointWrapper.cpp" />
+    <ClCompile Include="Reliability\DirectionalSamplingSettingsWrapper.cpp" />
+    <ClCompile Include="Reliability\DirectionalSamplingWrapper.cpp" />
+    <ClCompile Include="Reliability\DirectionReliabilitySettingsWrapper.cpp" />
+    <ClCompile Include="Reliability\DirectionReliabilityWrapper.cpp" />
+    <ClCompile Include="Statistics\EvaluationWrapper.cpp" />
+    <ClCompile Include="Model\ModelRunnerWrapper.cpp" />
+    <ClCompile Include="Utils\NativeSupport.cpp" />
+    <ClCompile Include="Model\ProgressIndicatorWrapper.cpp" />
+    <ClCompile Include="Model\RandomProvider.cpp" />
+    <ClCompile Include="Model\RandomSettingsWrapper.cpp" />
+    <ClCompile Include="Reliability\ReliabilityMethodWrapper.cpp" />
+    <ClCompile Include="Reliability\ReliabilityResultWrapper.cpp" />
+    <ClCompile Include="Model\RunSettingsWrapper.cpp" />
+    <ClCompile Include="Model\SampleWrapper.cpp" />
+    <ClCompile Include="Statistics\StandardNormalWrapper.cpp" />
+    <ClCompile Include="Statistics\StochastPointAlphaWrapper.cpp" />
+    <ClCompile Include="Statistics\StochastPointWrapper.cpp" />
+    <ClCompile Include="Statistics\StochastSettingsWrapper.cpp" />
+    <ClCompile Include="Statistics\StochastWrapper.cpp" />
   </ItemGroup>
 </Project>

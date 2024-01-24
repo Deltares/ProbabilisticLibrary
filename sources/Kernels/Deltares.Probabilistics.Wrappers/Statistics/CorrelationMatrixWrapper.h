@@ -1,6 +1,6 @@
 #pragma once
 #include "StochastWrapper.h"
-#include "../Statistics/CorrelationMatrix.h"
+#include "../../Deltares.Probabilistic.Kernels/Statistics/CorrelationMatrix.h"
 
 namespace Deltares
 {

@@ -1,6 +1,6 @@
 #include "StandardNormal.h"
 #include <cmath>
-#include "../../../external/src/extern/asa241.hpp"
+#include "../Math/ASA/asa241.hpp"
 
 using namespace ASA::conversions;
 

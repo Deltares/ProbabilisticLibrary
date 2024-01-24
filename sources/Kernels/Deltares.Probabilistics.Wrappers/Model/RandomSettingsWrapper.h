@@ -1,5 +1,5 @@
 #pragma once
-#include "../Model/RandomSettings.h"
+#include "../../Deltares.Probabilistic.Kernels/Model/RandomSettings.h"
 #include "RandomProvider.h"
 
 namespace Deltares

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "StochastWrapper.h"
-#include "../Model/StochastPointAlpha.h"
+#include "../../Deltares.Probabilistic.Kernels/Model/StochastPointAlpha.h"
 
 namespace Deltares
 {
