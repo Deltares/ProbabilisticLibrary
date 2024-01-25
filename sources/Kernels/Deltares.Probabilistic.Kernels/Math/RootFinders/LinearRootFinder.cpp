@@ -21,15 +21,13 @@ double LinearRootFinder::CalculateValue(double xLow, double xHigh, double target
 
 	if (xLow > xHigh)
 	{
-		NumericSupport::swap(xLow, xHigh);
-		NumericSupport::swap(knownLowValue, knownHighValue);
+		std::swap(xLow, xHigh);
+		std::swap(knownLowValue, knownHighValue);
 	}
 
 	double lowValue = std::isnan(knownLowValue) ? function(xLow) : knownLowValue;
-	//Console.WriteLine("f({0:G5}) = {1:G5}", minStart, minResult);
 
 	double highValue = std::isnan(knownHighValue) ? function(xHigh) : knownHighValue;
-	//Console.WriteLine("f({0:G5}) = {1:G5}", maxStart, maxResult);
 
 	// Initialize linear search method
 	auto low = XValue(xLow,  lowValue);
@@ -83,7 +81,7 @@ double LinearRootFinder::CalculateValue(double xLow, double xHigh, double target
 			return nan("");
 		}
 
-		// if both the the solution window end the solution do not become significantly smaller, switch over to bisection
+		// if both the solution window end and the solution do not become significantly smaller, switch over to bisection
 
 		double window = high.X - low.X;
 		bisect |= std::abs((solution.Value - target) / (previousSolution - target)) > solutionLimit && window / previousWindow > 1 - windowLimit;

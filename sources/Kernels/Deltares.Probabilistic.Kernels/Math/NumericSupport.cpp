@@ -64,15 +64,6 @@ double* NumericSupport::getCopy(const std::vector<double> & values)
 	return newValues;
 }
 
-void NumericSupport::swap(double& x, double& y)
-{
-	double swapped = x;
-	x = y;
-	y = swapped;
-}
-
-
-
 double NumericSupport::Divide(int counter, int denominator)
 {
 	return static_cast<double>(counter) / static_cast<double>(denominator);
