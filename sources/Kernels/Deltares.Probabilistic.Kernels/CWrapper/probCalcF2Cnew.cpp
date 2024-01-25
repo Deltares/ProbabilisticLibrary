@@ -125,6 +125,8 @@ ReliabilityMethod* selectMethod(const basicSettings & bs)
         ds->Settings->VariationCoefficient = bs.tolB;
         ds->Settings->MinimumSamples = bs.minSamples;
         ds->Settings->MaximumSamples = bs.maxSamples;
+        ds->Settings->DirectionSettings->Dsdu = 3.0;
+        ds->Settings->DirectionSettings->EpsilonUStepSize = bs.tolC;
         return ds; }
         break;
     default:
