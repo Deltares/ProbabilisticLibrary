@@ -12,7 +12,7 @@ namespace Deltares
 		{
 			double LowerProbability = 0;
 			double UpperProbability = 1;
-			double Factor = 1;;
+			double Factor = 1;
 		};
 
 		Truncated TruncatedDistribution::GetTruncatedValue(StochastProperties* stochast)
