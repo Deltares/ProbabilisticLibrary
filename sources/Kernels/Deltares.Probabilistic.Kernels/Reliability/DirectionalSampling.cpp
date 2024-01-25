@@ -20,7 +20,7 @@ namespace Deltares
 
 			omp_set_num_threads(modelRunner->Settings->MaxParallelProcesses);
 
-			double* betaValues = new double[0];
+			std::vector<double> betaValues;
 			std::vector<double> weights;
 			std::vector<Sample*> samples;
 
@@ -56,8 +56,6 @@ namespace Deltares
 					{
 						samples.push_back(randomSampleGenerator->getRandomSample());
 					}
-
-					delete[] betaValues;
 
 					betaValues = getDirectionBetas(modelRunner, samples, z0Fac, nmaal);
 
@@ -109,9 +107,11 @@ namespace Deltares
 
 					uMin = uSurface;
 				}
+				delete uSurface;
 
 				// controleren of afbreekcriterium is bereikt
 				bool enoughSamples = nmaal >= Settings->MinimumSamples;
+				convergenceReport->TotalDirections = nmaal+1;
 
 				if (qtot > 0)
 				{
@@ -159,6 +159,7 @@ namespace Deltares
 			DesignPoint* designPoint = getDesignPointFromSample(modelRunner, pf, uDesign, z0Fac, convergenceReport);
 
 			delete uDesign;
+			delete randomSampleGenerator;
 			clearSamples(samples);
 
 			return designPoint;
@@ -180,14 +181,14 @@ namespace Deltares
 			return convergence;
 		}
 
-		double* DirectionalSampling::getDirectionBetas(Models::ZModelRunner* modelRunner, std::vector<Sample*> samples, double z0, int step)
+		std::vector<double> DirectionalSampling::getDirectionBetas(Models::ZModelRunner* modelRunner, std::vector<Sample*> samples, double z0, int step)
 		{
-			double* betaValues = new double[samples.size()];
+			auto betaValues = std::vector<double>(samples.size());
 
 			DirectionReliability* directionReliability = new DirectionReliability();
 			directionReliability->Settings = this->Settings->DirectionSettings;
 
-			#pragma omp parallel for
+			//#pragma omp parallel for
 			for (int i = 0; i < samples.size(); i++)
 			{
 				samples[i]->IterationIndex = step + i;

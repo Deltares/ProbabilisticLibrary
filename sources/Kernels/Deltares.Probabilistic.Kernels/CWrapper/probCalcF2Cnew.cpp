@@ -125,6 +125,17 @@ ReliabilityMethod* selectMethod(const basicSettings & bs)
         ds->Settings->VariationCoefficient = bs.tolB;
         ds->Settings->MinimumSamples = bs.minSamples;
         ds->Settings->MaximumSamples = bs.maxSamples;
+        switch (bs.iterationMethod)
+        {
+        case DSiterationMethods::DirSamplingIterMethodRobust:
+        case DSiterationMethods::DirSamplingIterMethodRobustBisection:
+            ds->Settings->DirectionSettings->Dsdu = 1.0;
+            break;
+        default:
+            ds->Settings->DirectionSettings->Dsdu = 3.0;
+            break;
+        }
+        ds->Settings->DirectionSettings->EpsilonUStepSize = bs.tolC;
         return ds; }
         break;
     default:
@@ -155,9 +166,10 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
         auto stochast = std::vector<Deltares::Statistics::Stochast*>();
         for (size_t i = 0; i < nStoch; i++)
         {
-            std::string name = c[i].name;
             auto distHR = (EnumDistributions)c[i].distId;
             Deltares::Statistics::DistributionType dist;
+            bool truncated = false;
+            double truncatedMin; double truncatedMax;
             switch (distHR)
             {
                 case EnumDistributions::normal:
@@ -175,6 +187,14 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
                 case EnumDistributions::gumbel2:
                     dist = Deltares::Statistics::DistributionType::Gumbel;
                     break;
+                case EnumDistributions::truncatedNormal:
+                    dist = Deltares::Statistics::DistributionType::Normal;
+                    truncated = true;
+                    truncatedMin = c[i].params[2];
+                    truncatedMax = c[i].params[3];
+                    break;
+                case EnumDistributions::uspace:
+                    dist = Deltares::Statistics::DistributionType::Normal;
                 default:
                     throw probLibException("Distribution not supported yet: ", c[i].distId);
             }
@@ -183,7 +203,17 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
             {
                 params[j] = c[i].params[j];
             }
+            if (distHR == EnumDistributions::uspace)
+            {
+                params[0] = 1.0; params[1] = 0.0;
+            }
             auto s = new Deltares::Statistics::Stochast(dist, params);
+            if (truncated)
+            {
+                s->setTruncated(true);
+                s->Minimum = truncatedMin;
+                s->Maximum = truncatedMax;
+            }
             stochast.push_back(s);
             delete[] params;
         }
@@ -247,7 +277,12 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
         }
         r->convergence = (newResult->ConvergenceReport->Convergence < method->tolB ? 0 : 1);
         r->stepsNeeded = -999;// result.stepsNeeded;
-        r->samplesNeeded = (int)round(newResult->ConvergenceReport->FailedSamples / newResult->ConvergenceReport->FailFraction);
+        r->samplesNeeded = newResult->ConvergenceReport->TotalDirections;
+        if (r->samplesNeeded < 0)
+        {
+            r->samplesNeeded = (int)round(newResult->ConvergenceReport->FailedSamples / newResult->ConvergenceReport->FailFraction);
+        }
+        delete newResult->ConvergenceReport;
     }
     catch (const std::exception& e)
     {
