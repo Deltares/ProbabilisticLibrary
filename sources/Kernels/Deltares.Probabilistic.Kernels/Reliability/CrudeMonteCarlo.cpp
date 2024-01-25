@@ -88,9 +88,13 @@ namespace Deltares
 			{
 				zIndex++;
 
-				if (initial || zIndex >= samples.size())
-				{
-					clearSamples(samples);
+		if (initial || zIndex >= samples.size())
+		{
+			for (size_t i = 0; i < samples.size(); i++)
+			{
+				delete(samples[i]);
+			}
+			samples.clear();
 
 					int chunkSize = modelRunner->Settings->MaxChunkSize;
 					int runs = std::min(chunkSize, Settings->MaximumSamples + 1 - sampleIndex);
@@ -125,7 +129,7 @@ namespace Deltares
 					if (modelRunner->shouldExitPrematurely(zValues, z0Fac, samples, rmin))
 					{
 						// return the result so far
-						return getDesignPointFromSample(modelRunner, pf, uMin, z0Fac, convergenceReport);
+						return this->getDesignPointFromSample(modelRunner, pf, uMin, z0Fac, convergenceReport);
 					}
 
 					zIndex = 0;

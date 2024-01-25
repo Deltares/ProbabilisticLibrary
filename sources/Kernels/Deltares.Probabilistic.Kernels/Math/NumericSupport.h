@@ -3,6 +3,7 @@
 
 enum DoubleType {Positive, Negative, Zero, NaN};
 
+
 class NumericSupport
 {
 private:
