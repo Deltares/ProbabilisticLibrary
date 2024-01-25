@@ -125,7 +125,16 @@ ReliabilityMethod* selectMethod(const basicSettings & bs)
         ds->Settings->VariationCoefficient = bs.tolB;
         ds->Settings->MinimumSamples = bs.minSamples;
         ds->Settings->MaximumSamples = bs.maxSamples;
-        ds->Settings->DirectionSettings->Dsdu = 3.0;
+        switch (bs.iterationMethod)
+        {
+        case DSiterationMethods::DirSamplingIterMethodRobust:
+        case DSiterationMethods::DirSamplingIterMethodRobustBisection:
+            ds->Settings->DirectionSettings->Dsdu = 1.0;
+            break;
+        default:
+            ds->Settings->DirectionSettings->Dsdu = 3.0;
+            break;
+        }
         ds->Settings->DirectionSettings->EpsilonUStepSize = bs.tolC;
         return ds; }
         break;
