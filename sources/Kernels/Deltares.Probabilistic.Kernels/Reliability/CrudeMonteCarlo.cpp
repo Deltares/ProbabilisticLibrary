@@ -178,7 +178,10 @@ namespace Deltares
 				}
 				pf = NumericSupport::Divide(nFailed, nSamples);
 				pf = qFail + qRange * pf;
-				if (checkConvergence(modelRunner, pf, nSamples, sampleIndex))
+
+				convergenceReport->IsConverged = checkConvergence(modelRunner, pf, nSamples, sampleIndex);
+
+				if (convergenceReport->IsConverged)
 				{
 					break;
 				}

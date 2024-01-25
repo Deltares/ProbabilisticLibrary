@@ -158,8 +158,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Reliability\GradientCalculatorSettingsWrapper.h" />
+    <ClInclude Include="Reliability\FORMSettingsWrapper.h" />
+    <ClInclude Include="Reliability\FORMWrapper.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Reliability\ConvergenceReportWrapper.h" />
+    <ClInclude Include="Reliability\StartPointCalculatorSettingsWrapper.h" />
     <ClInclude Include="Statistics\CorrelationMatrixWrapper.h" />
     <ClInclude Include="Reliability\CrudeMonteCarloSettingsWrapper.h" />
     <ClInclude Include="Reliability\CrudeMonteCarloWrapper.h" />
@@ -185,7 +189,11 @@
     <ClInclude Include="Statistics\StochastWrapper.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Reliability\GradientCalculatorSettingsWrapper.cpp" />
+    <ClCompile Include="Reliability\FORMSettingsWrapper.cpp" />
+    <ClCompile Include="Reliability\FORMWrapper.cpp" />
     <ClCompile Include="Reliability\ConvergenceReportWrapper.cpp" />
+    <ClCompile Include="Reliability\StartPointCalculatorSettingsWrapper.cpp" />
     <ClCompile Include="Statistics\CorrelationMatrixWrapper.cpp" />
     <ClCompile Include="Reliability\CrudeMonteCarloSettingsWrapper.cpp" />
     <ClCompile Include="Reliability\CrudeMonteCarloWrapper.cpp" />

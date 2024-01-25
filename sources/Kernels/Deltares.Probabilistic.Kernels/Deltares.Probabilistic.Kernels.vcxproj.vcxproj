@@ -153,6 +153,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Model\Message.h" />
+    <ClInclude Include="Model\GradientCalculator.h" />
+    <ClInclude Include="Model\GradientSettings.h" />
+    <ClInclude Include="Reliability\FORM.h" />
+    <ClInclude Include="Reliability\FORMSettings.h" />
+    <ClInclude Include="Reliability\StartPointCalculator.h" />
+    <ClInclude Include="Reliability\StartPointCalculatorSettings.h" />
     <ClInclude Include="Statistics\DistributionType.h" />
     <ClInclude Include="Statistics\Distributions\InvertedDistribution.h" />
     <ClInclude Include="Math\ASA\asa063.hpp" />
@@ -211,6 +218,12 @@
     <ClInclude Include="Math\matrix.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Model\Message.cpp" />
+    <ClCompile Include="Model\GradientCalculator.cpp" />
+    <ClCompile Include="Reliability\FORM.cpp" />
+    <ClCompile Include="Reliability\FORMSettings.cpp" />
+    <ClCompile Include="Reliability\StartPointCalculator.cpp" />
+    <ClCompile Include="Reliability\StartPointCalculatorSettings.cpp" />
     <ClCompile Include="Statistics\DistributionType.cpp" />
     <ClCompile Include="Statistics\Distributions\InvertedDistribution.cpp" />
     <ClCompile Include="Math\ASA\asa063.cpp" />

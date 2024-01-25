@@ -10,6 +10,7 @@
 #include "UConverter.h"
 #include "ZModel.h"
 #include "DesignPoint.h"
+#include "Message.h"
 #include "ProgressIndicator.h"
 #include "../Reliability/StochastSettingsSet.h"
 
@@ -24,6 +25,7 @@ namespace Deltares
 			UConverter* uConverter;
 			std::vector<ReliabilityResult*> reliabilityResults;
 			std::vector<Evaluation*> evaluations;
+			std::vector<Message*> messages;
 			ProgressIndicator* progressIndicator = nullptr;
 
 			Sample* getXSample(Sample* sample);
@@ -38,6 +40,7 @@ namespace Deltares
 			}
 
 			void initializeForRun();
+			void clear();
 			void updateStochastSettings(Reliability::StochastSettingsSet* settings);
 			double getZValue(Sample* sample);
 			double* getZValues(std::vector<Sample*> samples);
@@ -46,6 +49,7 @@ namespace Deltares
 			bool shouldExitPrematurely(double* zValues, double z0Fac, std::vector<Sample*> samples, double beta);
 			bool shouldExitPrematurely(bool final);
 			void reportResult(ReliabilityReport* report);
+			void reportMessage(MessageType type, std::string text);
 			DesignPoint* getDesignPoint(double beta, std::vector<double> alpha, ConvergenceReport* convergenceReport = nullptr, int scenarioIndex = -1, std::string identifier = "");
 
 			RunSettings* Settings = new ::RunSettings();

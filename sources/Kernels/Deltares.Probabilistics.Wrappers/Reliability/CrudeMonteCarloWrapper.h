@@ -1,4 +1,5 @@
 #pragma once
+
 #include "CrudeMonteCarloSettingsWrapper.h"
 #include "ReliabilityMethodWrapper.h"
 #include "../../Deltares.Probabilistic.Kernels/Reliability/CrudeMonteCarlo.h"

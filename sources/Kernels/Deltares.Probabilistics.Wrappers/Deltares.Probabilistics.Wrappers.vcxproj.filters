@@ -26,6 +26,10 @@
     <ClInclude Include="Statistics\StochastPointWrapper.h" />
     <ClInclude Include="Statistics\StochastSettingsWrapper.h" />
     <ClInclude Include="Statistics\StochastWrapper.h" />
+    <ClInclude Include="Reliability\FORMSettingsWrapper.h" />
+    <ClInclude Include="Reliability\FORMWrapper.h" />
+    <ClInclude Include="Reliability\StartPointCalculatorSettingsWrapper.h" />
+    <ClInclude Include="Reliability\GradientCalculatorSettingsWrapper.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Reliability\ConvergenceReportWrapper.cpp" />
@@ -52,5 +56,9 @@
     <ClCompile Include="Statistics\StochastPointWrapper.cpp" />
     <ClCompile Include="Statistics\StochastSettingsWrapper.cpp" />
     <ClCompile Include="Statistics\StochastWrapper.cpp" />
+    <ClCompile Include="Reliability\FORMSettingsWrapper.cpp" />
+    <ClCompile Include="Reliability\FORMWrapper.cpp" />
+    <ClCompile Include="Reliability\StartPointCalculatorSettingsWrapper.cpp" />
+    <ClCompile Include="Reliability\GradientCalculatorSettingsWrapper.cpp" />
   </ItemGroup>
 </Project>

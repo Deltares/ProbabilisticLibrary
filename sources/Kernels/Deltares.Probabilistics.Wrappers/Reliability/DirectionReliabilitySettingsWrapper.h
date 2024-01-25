@@ -1,7 +1,6 @@
 #pragma once
 
 #include "DesignPointWrapper.h"
-#include "../Model/SampleWrapper.h"
 #include "../../Deltares.Probabilistic.Kernels/Reliability/DirectionReliabilitySettings.h"
 
 namespace Deltares

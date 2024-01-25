@@ -3,10 +3,6 @@
 #include "ReliabilityMethodWrapper.h"
 #include "../../Deltares.Probabilistic.Kernels/Reliability/DirectionReliability.h"
 
-ref class DirectionReliabilityWrapper
-{
-};
-
 namespace Deltares
 {
 	namespace Probabilistic

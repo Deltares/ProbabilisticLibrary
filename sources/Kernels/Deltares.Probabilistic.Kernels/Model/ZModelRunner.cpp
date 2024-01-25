@@ -30,6 +30,13 @@ namespace Deltares
 			this->zModel->setMaxProcesses(this->Settings->MaxParallelProcesses);
 		}
 
+		void ZModelRunner::clear()
+		{
+			this->reliabilityResults.clear();
+			this->evaluations.clear();
+			this->messages.clear();
+		}
+
 		Sample* ZModelRunner::getXSample(Sample* sample)
 		{
 			auto xValues = this->uConverter->getXValues(sample);
@@ -171,38 +178,49 @@ namespace Deltares
 			}
 		}
 
+		void ZModelRunner::reportMessage(MessageType type, std::string text)
+		{
+			if (Settings->SaveMessages)
+			{
+				this->messages.push_back(new Message(type, text));
+			}
+		}
+
 		DesignPoint* ZModelRunner::getDesignPoint(double beta, std::vector<double> alpha, ConvergenceReport* convergenceReport, int scenarioIndex, std::string identifier)
 		{
 			int count = getVaryingStochastCount();
 
-			StochastPoint* stochast_point = uConverter->GetStochastPoint(beta, alpha, count);
+			StochastPoint* stochastPoint = uConverter->GetStochastPoint(beta, alpha, count);
 
-			DesignPoint* design_point = new DesignPoint();
+			DesignPoint* designPoint = new DesignPoint();
 
-			design_point->Beta = stochast_point->Beta;
+			designPoint->Beta = stochastPoint->Beta;
 
-			for (int i = 0; i < stochast_point->Alphas.size(); i++)
+			for (int i = 0; i < stochastPoint->Alphas.size(); i++)
 			{
-				design_point->Alphas.push_back(stochast_point->Alphas[i]);
+				designPoint->Alphas.push_back(stochastPoint->Alphas[i]);
 			}
 
-			design_point->Identifier = identifier;
-			design_point->ScenarioIndex = scenarioIndex;
-			design_point->ConvergenceReport = convergenceReport;
+			designPoint->Identifier = identifier;
+			designPoint->ScenarioIndex = scenarioIndex;
+			designPoint->ConvergenceReport = convergenceReport;
 
-			for (int i = 0; i < this->reliabilityResults.size(); i++)
+			for (size_t i = 0; i < this->reliabilityResults.size(); i++)
 			{
-				design_point->ReliabililityResults.push_back(this->reliabilityResults[i]);
+				designPoint->ReliabililityResults.push_back(this->reliabilityResults[i]);
 			}
 
-			for (int i = 0; i < this->evaluations.size(); i++)
+			for (size_t i = 0; i < this->evaluations.size(); i++)
 			{
-				design_point->Evaluations.push_back(this->evaluations[i]);
+				designPoint->Evaluations.push_back(this->evaluations[i]);
 			}
 
-			//realization.Messages.AddRange(Messages);
+			for (size_t i = 0; i < this->messages.size(); i++)
+			{
+				designPoint->Messages.push_back(this->messages[i]);
+			}
 
-			return design_point;
+			return designPoint;
 		}
 	}
 }
