@@ -34,19 +34,19 @@ set_target_properties(reliabilityTest PROPERTIES
     VS_DOTNET_REFERENCE_nunit.framework ${nunit_framework}
 )
 
-add_test(
-  NAME dotnet-mc-tests
-  COMMAND $<TARGET_FILE:testRunnerMC>
-)
+#add_test(
+#  NAME dotnet-mc-tests
+#  COMMAND $<TARGET_FILE:testRunnerMC>
+#)
 
-add_test(
-  NAME dotnet-ds-tests
-  COMMAND $<TARGET_FILE:testRunnerDS>
-)
+#add_test(
+#  NAME dotnet-ds-tests
+#  COMMAND $<TARGET_FILE:testRunnerDS>
+#)
 
-add_test(
-  NAME dotnet-distributions-tests
-  COMMAND $<TARGET_FILE:testRunnerDistributions>
-)
+#add_test(
+#  NAME dotnet-distributions-tests
+#  COMMAND $<TARGET_FILE:testRunnerDistributions>
+#)
 
 

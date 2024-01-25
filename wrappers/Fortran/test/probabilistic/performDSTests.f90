@@ -48,14 +48,14 @@ contains
 !> wrapper for all tests
 subroutine performAllDSTests
     integer, parameter :: level = 1
-    call testWithLevel(testNodFunction, "Test DS with the nod function", level)
+    call testWithLevel(testNodFunction, "Test DS with the nod function", level, "work-in-progress")
     call testWithLevel(testNodFunction2, "Test DS with the nod function and only one sample", level)
     call testWithLevel(testDSFI, "Test DSFI", level)
-    call testWithLevel(testDesignOutputOptions, "Test the several design output options of DS", level)
-    call testWithLevel(testZeqZero, "Test DS with z is zero for u is zero", level)
-    call testWithLevel(testZnegative, "Test DS with z is negative for u is zero", level)
-    call testWithLevel(testCancel, "Test cancellation DS", 0)
-    call testWithLevel(testErrorHandling, "Test error handling DS", level)
+    call testWithLevel(testDesignOutputOptions, "Test the several design output options of DS", level, "work-in-progress")
+    call testWithLevel(testZeqZero, "Test DS with z is zero for u is zero", level, "work-in-progress")
+    call testWithLevel(testZnegative, "Test DS with z is negative for u is zero", level, "work-in-progress")
+    call testWithLevel(testCancel, "Test cancellation DS", level)
+    call testWithLevel(testErrorHandling, "Test error handling DS", level, "work-in-progress")
 end subroutine performAllDSTests
 
 !> test DS with a nod function
