@@ -1,14 +1,14 @@
-#include "../../../src/probFuncs/conversions.h"
+#include "../../../../Kernels/Deltares.Probabilistic.Kernels/Statistics/StandardNormal.h"
 #include "stringHelper.h"
 
-using namespace Deltares::ProbLibCore;
+using namespace Deltares::Statistics;
 
 extern "C"
 void betafromqc(double * q, double * beta, tError * ierr)
 {
     try
     {
-        *beta = conversions::betaFromQ(*q);
+        *beta = StandardNormal::getUFromQ(*q);
         ierr->errorCode = 0;
     }
     catch (const std::exception& e)
@@ -21,35 +21,36 @@ void betafromqc(double * q, double * beta, tError * ierr)
 extern "C"
 double qfrombeta(double * beta)
 {
-    return conversions::QfromBeta(*beta);
+    return StandardNormal::getQFromU(*beta);
 }
 
 extern "C"
 double pfrombeta(double* beta)
 {
-    return conversions::PfromBeta(*beta);
+    return StandardNormal::getPFromU(*beta);
 }
 
 extern "C"
 void pqfrombeta(double* beta, double* p, double* q)
 {
-    conversions::PQfromBeta(*beta, *p, *q);
+    *p = StandardNormal::getPFromU(*beta);
+    *q = StandardNormal::getQFromU(*beta);
 }
 
 extern "C"
 void returntimefrombeta(double *beta, double *returnTime)
 {
-    *returnTime = conversions::ReturnTimeFromBeta(*beta);
+    *returnTime = -999; // StandardNormal::ReturnTimeFromBeta(*beta);
 }
 
 extern "C"
 void freqfrombeta(double *beta, double *freq)
 {
-    *freq = conversions::FreqFromBeta(*beta);
+    *freq = -999; // StandardNormal::FreqFromBeta(*beta);
 }
 
 extern "C"
 void logqfrombeta(double *beta, double*logQ)
 {
-    *logQ = conversions::LogQFromBeta(*beta);
+    *logQ = -999; // StandardNormal::LogQFromBeta(*beta);
 }
