@@ -171,14 +171,12 @@ namespace Deltares
 				}
 				case DesignPointMethod::CenterOfGravity:
 				{
-					double* gravityValues = new double[count];
+					Sample* gravityPoint = new Sample(count);
 
 					for (int i = 0; i < count; i++)
 					{
-						gravityValues[i] = meanSample->Values[i] / sumWeights;
+						gravityPoint->Values[i] = meanSample->Values[i] / sumWeights;
 					}
-
-					Sample* gravityPoint = new Sample(gravityValues, count);
 
 					for (int j = 0; j < this->qualitativeCount; j++)
 					{
@@ -196,6 +194,7 @@ namespace Deltares
 					{
 						angleValues[i] = std::atan2(sinSample->Values[i] / sumWeights, cosSample->Values[i] / sumWeights);
 					}
+
 					auto coordinates = NumericSupport::GetCartesianCoordinates(angleValues);
 					Sample* anglePoint = new Sample(coordinates);
 

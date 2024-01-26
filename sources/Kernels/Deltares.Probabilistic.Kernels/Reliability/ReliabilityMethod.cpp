@@ -90,19 +90,6 @@ namespace Deltares
 		DesignPoint* ReliabilityMethod::getDesignPointFromSample(Deltares::Models::ZModelRunner* modelRunner, double pf, Sample* u, double z0, ConvergenceReport* convergenceReport)
 		{
 			return getDesignPointFromSampleAndBeta(modelRunner, u, Statistics::StandardNormal::getUFromQ(pf), convergenceReport);
-			//if (u != nullptr)
-			//{
-			//	double z0Fac = getZFactor(z0);
-
-			//	double beta = Statistics::StandardNormal::getUFromQ(pf);
-			//	auto alphas = getAlphas(u, u->getSize(), z0Fac);
-
-			//	return modelRunner->getDesignPoint(beta, alphas, convergenceReport, u->ScenarioIndex);
-			//}
-			//else
-			//{
-			//	return nullptr;
-			//}
 		}
 
 		DesignPoint* ReliabilityMethod::getDesignPointFromSample(Sample* sample, Deltares::Models::ZModelRunner* modelRunner, double z0, ConvergenceReport* convergenceReport)
@@ -110,19 +97,7 @@ namespace Deltares
 			double beta = sample != nullptr ? sample->getBeta() : nan("");
 
 			return getDesignPointFromSampleAndBeta(modelRunner, sample, beta, convergenceReport);
-			//if (sample != nullptr)
-			//{
-			//	double z0Fac = getZFactor(z0);
-			//	auto alpha = getAlphas(sample, sample->getSize(), z0Fac);
-
-			//	return modelRunner->getDesignPoint(sample->getBeta(), alpha, convergenceReport, sample->ScenarioIndex);
-			//}
-			//else
-			//{
-			//	return nullptr;
-			//}
 		}
-
 	}
 }
 

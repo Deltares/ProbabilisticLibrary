@@ -21,15 +21,14 @@ namespace Deltares
 
 		Sample* StochastSettingsSet::getSample()
 		{
-			double* values = new double[this->VaryingStochastCount];
+			Sample* sample = new Sample(this->VaryingStochastCount);
 
 			for (int i = 0; i < this->VaryingStochastCount; i++)
 			{
-				values[i] = this->VaryingStochastSettings[i]->StartValue;
+				sample->Values[i] = this->VaryingStochastSettings[i]->StartValue;
 			}
 
-
-			return new Sample(values, this->VaryingStochastCount);
+			return sample;
 		}
 	}
 }

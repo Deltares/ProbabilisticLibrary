@@ -174,27 +174,7 @@ namespace Deltares
 					return this->getDesignPointFromSampleAndBeta(modelRunner, u, beta, convergenceReport);
 				}
 
-				//   compute alpha vector
-				double uSquared = NumericSupport::GetSquaredSum(u->Values);
-
-				double fromZeroDiff = uSquared > 0 ? std::abs(beta * beta - uSquared) / uSquared : 0;
-				double localDiff = std::abs(u->Z / zGradientLength);
-
-				double betaDiff = std::max(fromZeroDiff, localDiff);
-
-				convergenceReport->Convergence = betaDiff;
-
-				ReliabilityReport* report = new ReliabilityReport();
-				report->Step = iteration;
-				report->MaxSteps = this->Settings->MaximumIterations;
-				report->Reliability = beta;
-				report->ConvBeta = std::max(fromZeroDiff, localDiff);
-				report->ReportMatchesEvaluation = false;
-
-				modelRunner->reportResult(report);
-
-				//   check for convergence
-				convergenceReport->IsConverged = betaDiff <= this->Settings->EpsilonBeta;
+				convergenceReport->IsConverged = checkConvergence(modelRunner, u, convergenceReport, beta, zGradientLength);
 
 				// no convergence, next iteration
 				if (!convergenceReport->IsConverged)
@@ -248,6 +228,31 @@ namespace Deltares
 			}
 
 			return validResults;
+		}
+
+		bool FORM::checkConvergence(Models::ZModelRunner* modelRunner, Sample* u, ConvergenceReport* convergenceReport, double beta, double zGradientLength)
+		{
+			//   compute alpha vector
+			const double uSquared = NumericSupport::GetSquaredSum(u->Values);
+
+			const double fromZeroDiff = uSquared > 0 ? std::abs(beta * beta - uSquared) / uSquared : 0;
+			const double localDiff = std::abs(u->Z / zGradientLength);
+			const double betaDiff = std::max(fromZeroDiff, localDiff);
+
+			convergenceReport->Convergence = betaDiff;
+			convergenceReport->IsConverged = betaDiff <= this->Settings->EpsilonBeta;
+
+			ReliabilityReport* report = new ReliabilityReport();
+			report->Step = u->IterationIndex;
+			report->MaxSteps = this->Settings->MaximumIterations;
+			report->Reliability = beta;
+			report->ConvBeta = betaDiff;
+			report->ReportMatchesEvaluation = false;
+
+			modelRunner->reportResult(report);
+
+			//   check for convergence
+			return convergenceReport->IsConverged;
 		}
 	}
 }

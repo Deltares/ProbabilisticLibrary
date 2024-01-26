@@ -1,9 +1,7 @@
-﻿using System.Collections.Generic;
-using Deltares.Probabilistic.Kernels;
-using Deltares.Probabilistics.Wrappers.Test;
+﻿using Deltares.Probabilistic.Kernels;
 using NUnit.Framework;
 
-namespace Deltares.Reliability.Test
+namespace Deltares.Probabilistics.Wrappers.Test
 {
     [TestFixture]
     public class TestFORM
@@ -21,6 +19,8 @@ namespace Deltares.Reliability.Test
             DesignPointWrapper designPoint = form.GetDesignPoint(modelRunner);
 
             Assert.AreEqual(2.33, designPoint.Beta, margin);
+            Assert.IsTrue(designPoint.ConvergenceReport.IsConverged);
+
             Assert.AreEqual(0.01, designPoint.ProbabilityFailure, margin / 10);
             Assert.AreEqual(0.99, designPoint.ProbabilityNonFailure, margin / 10);
             Assert.AreEqual(99.7, designPoint.ReturnPeriod, margin * 10);
@@ -48,6 +48,14 @@ namespace Deltares.Reliability.Test
 
             Assert.AreEqual(6, designPoint.ReliabilityResults.Count);
             Assert.AreEqual(18, designPoint.Evaluations.Count);
+
+            for (int i = 0; i < designPoint.ReliabilityResults.Count; i++)
+            {
+                Assert.AreEqual(i, designPoint.ReliabilityResults[i].Index);
+                Assert.AreEqual(i, designPoint.Evaluations[3 * i].Iteration);
+                Assert.AreEqual(i, designPoint.Evaluations[3 * i + 1].Iteration);
+                Assert.AreEqual(i, designPoint.Evaluations[3 * i + 2].Iteration);
+            }
         }
 
         [Test]
@@ -167,6 +175,19 @@ namespace Deltares.Reliability.Test
         }
 
         [Test]
+        public void TestOblateSpheroid()
+        {
+            Project project = ProjectBuilder.GetOblateSpheroidProject();
+
+            ModelRunnerWrapper modelRunner = new ModelRunnerWrapper(project.Function, project.Stochasts, project.CorrelationMatrix, null);
+
+            FORMWrapper form = new FORMWrapper();
+            DesignPointWrapper designPoint = form.GetDesignPoint(modelRunner);
+
+            Assert.AreEqual(3.39, designPoint.Beta, margin);
+        }
+
+        [Test]
         public void TestQuadratic()
         {
             Project project = ProjectBuilder.GetQuadraticProject();
@@ -194,6 +215,46 @@ namespace Deltares.Reliability.Test
 
             Assert.AreEqual(2.09, designPoint.Beta, margin);
             Assert.AreEqual(2, designPoint.ContributingDesignPoints.Count);
+        }
+
+        [Test]
+        public void TestWaveRelaxationLoopsDoubleGradient()
+        {
+            Project project = ProjectBuilder.GetWaveProject();
+
+            ModelRunnerWrapper modelRunner = new ModelRunnerWrapper(project.Function, project.Stochasts, project.CorrelationMatrix, null);
+
+            FORMWrapper form = new FORMWrapper();
+            form.Settings.RelaxationFactor = 0.7;
+            form.Settings.RelaxationLoops = 5;
+            form.Settings.GradientCalculatorSettings.GradientType = GradientType.TwoDirections;
+
+            DesignPointWrapper designPoint = form.GetDesignPoint(modelRunner);
+
+            Assert.AreEqual(2.08, designPoint.Beta, margin);
+            Assert.AreEqual(1, designPoint.ContributingDesignPoints.Count);
+
+            Assert.IsTrue(designPoint.ConvergenceReport.IsConverged);
+        }
+
+        [Test]
+        public void TestNonLinear()
+        {
+            Project project = ProjectBuilder.GetNonLinearProject();
+
+            ModelRunnerWrapper modelRunner = new ModelRunnerWrapper(project.Function, project.Stochasts, project.CorrelationMatrix, null);
+
+            FORMWrapper form = new FORMWrapper();
+            form.Settings.RelaxationFactor = 0.75;
+            form.Settings.RelaxationLoops = 8;
+
+            DesignPointWrapper designPoint = form.GetDesignPoint(modelRunner);
+
+            Assert.AreEqual(3.01, designPoint.Beta, margin);
+            Assert.AreEqual(7, designPoint.ContributingDesignPoints.Count);
+            Assert.AreEqual("Relaxation loop 1", designPoint.ContributingDesignPoints[0].Identifier);
+
+            Assert.IsFalse(designPoint.ConvergenceReport.IsConverged);
         }
 
         [Test]

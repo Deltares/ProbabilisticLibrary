@@ -67,6 +67,12 @@ namespace Deltares
 					void set(double value) { m_report->FailWeight = value; }
 				}
 
+				property bool IsConverged
+				{
+					bool get() { return m_report->IsConverged; }
+					void set(bool value) { m_report->IsConverged = value; }
+				}
+
 				void SetSettings(ConvergenceReport* convergenceReport)
 				{
 					m_report = convergenceReport;

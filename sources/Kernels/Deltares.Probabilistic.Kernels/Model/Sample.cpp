@@ -22,34 +22,40 @@ void Sample::setBeta(double beta)
 
 Sample* Sample::clone()
 {
-	return new Sample(this->Values);
+	Sample* clonedSample = new Sample(this->Values);
+
+	clonedSample->AllowProxy = this->AllowProxy;
+	clonedSample->IterationIndex = this->IterationIndex;
+	clonedSample->ScenarioIndex = this->ScenarioIndex;
+	clonedSample->Weight = this->Weight;
+
+	return clonedSample;
 }
 
 Sample* Sample::normalize(double newBeta)
 {
-    double actualBeta = NumericSupport::GetLength(this->Values);
-    double* un = new double[this->size];
+	double actualBeta = NumericSupport::GetLength(this->Values);
 
-    if (newBeta > 0)
-    {
-        for (int k = 0; k < this->size; k++)
-        {
-            un[k] = newBeta * this->Values[k] / actualBeta;
-        }
-    }
+	Sample* normalizedSample = this->clone();
 
-    return new Sample(un, this->size);
+	for (int k = 0; k < this->size; k++)
+	{
+		normalizedSample->Values[k] = newBeta * this->Values[k] / actualBeta;
+	}
+
+	return normalizedSample;
 }
 
 Sample* Sample::multiply(double factor)
 {
-    double* u = new double[this->size];
-    for (int i = 0; i < this->size; i++)
-    {
-        u[i] = factor * this->Values[i];
-    }
+	Sample* multipliedSample = this->clone();
 
-    return new Sample(u, this->size);
+	for (int i = 0; i < this->size; i++)
+	{
+		multipliedSample->Values[i] = factor * this->Values[i];
+	}
+
+	return multipliedSample;
 }
 
 

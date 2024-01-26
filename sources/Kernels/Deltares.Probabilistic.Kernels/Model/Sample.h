@@ -21,17 +21,6 @@ public:
 		}
 	}
 
-	Sample(double* values, int size)
-	{
-		this->size = size;
-		for (size_t i = 0; i < size; i++)
-		{
-			this->Values.push_back(values[i]);
-		}
-
-		delete[] values;
-	}
-
 	Sample(std::vector<double> & values)
 	{
 		this->size = values.size();
@@ -51,7 +40,6 @@ public:
 	double Z = nan("");
 
 	int getSize();
-	int getSizeX();
 
 	double getBeta();
 	void setBeta(double beta);

@@ -2,13 +2,13 @@
 
 Sample* StochastPoint:: getSample()
 {
-	double* uValues = new double[Alphas.size()];
+	Sample* sample = new Sample(Alphas.size());
 
 	for (int i = 0; i < Alphas.size(); i++)
 	{
-		uValues[i] = this->Alphas[i]->U;
+		sample->Values[i] = this->Alphas[i]->U;
 	}
 
-	return new Sample(uValues, Alphas.size());
+	return sample;
 }
 
