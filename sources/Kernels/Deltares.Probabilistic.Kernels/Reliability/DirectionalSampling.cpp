@@ -100,7 +100,7 @@ namespace Deltares
 
 				pf = qtot / (double)validSamples;
 
-				// min waarde r en alfa vastleggen
+				// store minimum value of r and alpha
 				if (betaDirection < rmin)
 				{
 					rmin = betaDirection;
@@ -109,7 +109,7 @@ namespace Deltares
 					uMin = uSurface;
 				}
 
-				// controleren of afbreekcriterium is bereikt
+				// check on convergence criterium
 				bool enoughSamples = nmaal >= Settings->MinimumSamples;
 				convergenceReport->TotalDirections = nmaal+1;
 
@@ -118,7 +118,7 @@ namespace Deltares
 
 				if (qtot > 0)
 				{
-					// nauwkeurigheid bepalen
+					// determine accuracy
 
 					double convergence = getConvergence(pf, sumPfSamp, sumPfSamp2, (double)validSamples);
 
