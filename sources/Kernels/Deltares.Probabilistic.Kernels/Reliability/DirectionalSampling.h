@@ -11,7 +11,7 @@ namespace Deltares
 		class DirectionalSampling : public ReliabilityMethod
 		{
 		private:
-			double getConvergence(double pf, const std::vector<double> & weights);
+			double getConvergence(const double pf, const double sumPfSamp, const double sumPfSamp2, const double dTimes);
 			std::vector<double> getDirectionBetas(Models::ZModelRunner* modelRunner, std::vector<Sample*> samples, double z0, int step);
 		public:
 			Deltares::Reliability::DirectionalSamplingSettings* Settings = new Deltares::Reliability::DirectionalSamplingSettings();

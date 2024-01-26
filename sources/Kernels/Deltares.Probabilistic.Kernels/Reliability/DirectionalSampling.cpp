@@ -21,7 +21,6 @@ namespace Deltares
 			omp_set_num_threads(modelRunner->Settings->MaxParallelProcesses);
 
 			std::vector<double> betaValues;
-			std::vector<double> weights;
 			std::vector<Sample*> samples;
 
 			modelRunner->updateStochastSettings(this->Settings->StochastSet);
@@ -42,6 +41,8 @@ namespace Deltares
 			Sample* uMin = new Sample(nstochasts);
 			int chunkSize = modelRunner->Settings->MaxChunkSize;
 
+			double sumPfSamp = 0.0; double sumPfSamp2 = 0.0;
+			int validSamples = 0;
 			// loop for number of samples
 			for (int nmaal = 0; nmaal < Settings->MaximumSamples && !isStopped(); nmaal++)
 			{
@@ -95,9 +96,9 @@ namespace Deltares
 					uSurface->Weight = 0;
 				}
 
-				weights.push_back(uSurface->Weight);
+				validSamples++;
 
-				pf = qtot / weights.size();
+				pf = qtot / (double)validSamples;
 
 				// min waarde r en alfa vastleggen
 				if (betaDirection < rmin)
@@ -112,11 +113,14 @@ namespace Deltares
 				bool enoughSamples = nmaal >= Settings->MinimumSamples;
 				convergenceReport->TotalDirections = nmaal+1;
 
+				sumPfSamp += uSurface->Weight;
+				sumPfSamp2 += pow(uSurface->Weight, 2);
+
 				if (qtot > 0)
 				{
 					// nauwkeurigheid bepalen
 
-					double convergence = getConvergence(pf, weights);
+					double convergence = getConvergence(pf, sumPfSamp, sumPfSamp2, (double)validSamples);
 
 					double beta = z0Fac * Statistics::StandardNormal::getUFromQ(pf);
 
@@ -149,7 +153,7 @@ namespace Deltares
 			Sample* uDesign = uMean->getSample();
 
 			//getRealization(beta, alpha, convergenceReport, uMin->ScenarioIndex);
-			convergenceReport->Convergence = getConvergence(pf, weights);
+			convergenceReport->Convergence = getConvergence(pf, sumPfSamp, sumPfSamp2, (double)validSamples);
 
 			if (z0 < 0)
 			{
@@ -165,14 +169,10 @@ namespace Deltares
 			return designPoint;
 		}
 
-		double DirectionalSampling::getConvergence(double pf, const std::vector<double> & weights)
+		double DirectionalSampling::getConvergence(const double pf, const double sumPfSamp, const double sumPfSamp2, const double dTimes)
 		{
-			double covar = 0;
-			for (int k = 0; k < weights.size(); k++)
-			{
-				covar += (weights[k] - pf) * (weights[k] - pf);
-			}
-			covar = std::sqrt(covar / weights.size() / (weights.size() - 1));
+			double covar = sumPfSamp2 - 2.0 * pf * sumPfSamp + dTimes * pow(pf, 2);
+			covar = std::sqrt(covar / dTimes / (dTimes - 1.0));
 			double covarpf = covar / pf;
 			double covarnpf = covar / (1 - pf);
 
