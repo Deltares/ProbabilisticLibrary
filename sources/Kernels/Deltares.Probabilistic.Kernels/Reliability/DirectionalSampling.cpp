@@ -188,7 +188,7 @@ namespace Deltares
 			DirectionReliability* directionReliability = new DirectionReliability();
 			directionReliability->Settings = this->Settings->DirectionSettings;
 
-			//#pragma omp parallel for
+			#pragma omp parallel for
 			for (int i = 0; i < samples.size(); i++)
 			{
 				samples[i]->IterationIndex = step + i;
