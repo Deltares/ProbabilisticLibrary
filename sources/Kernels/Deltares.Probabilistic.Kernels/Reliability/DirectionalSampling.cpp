@@ -107,7 +107,6 @@ namespace Deltares
 
 					uMin = uSurface;
 				}
-				delete uSurface;
 
 				// controleren of afbreekcriterium is bereikt
 				bool enoughSamples = nmaal >= Settings->MinimumSamples;
@@ -144,6 +143,7 @@ namespace Deltares
 					modelRunner->reportResult(report);
 					delete report;
 				}
+				delete uSurface;
 			}
 
 			Sample* uDesign = uMean->getSample();
