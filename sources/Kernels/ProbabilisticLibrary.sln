@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Deltares.Probabilistics.Wra
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Deltares.Probabilistics.Wrappers", "Deltares.Probabilistics.Wrappers\Deltares.Probabilistics.Wrappers.vcxproj", "{F41D6C86-3E8B-480A-95F1-1F0B451ABDD2}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Deltares.Probabilistic.CWrapper", "Deltares.Probabilistic.Kernels\Deltares.Probabilistic.CWrapper.vcxproj", "{E82A904A-FE1C-4695-BE1F-0AFCE5861FB4}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Deltares.Probabilistic.CWrapper", "Deltares.Probabilistic.CWrapper\Deltares.Probabilistic.CWrapper.vcxproj", "{E82A904A-FE1C-4695-BE1F-0AFCE5861FB4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

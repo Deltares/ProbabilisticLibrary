@@ -153,9 +153,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="CWrapper\funcWrapper.cpp" />
-    <ClCompile Include="CWrapper\probCalcF2Cnew.cpp" />
-    <ClCompile Include="CWrapper\stringHelper.cpp" />
+    <ClCompile Include=".\funcWrapper.cpp" />
+    <ClCompile Include=".\probCalcF2C.cpp" />
+    <ClCompile Include=".\stringHelper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Deltares.Probabilistic.Kernels.vcxproj.vcxproj">

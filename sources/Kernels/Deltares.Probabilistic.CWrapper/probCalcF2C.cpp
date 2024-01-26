@@ -4,11 +4,11 @@
 
 #include "basicSettings.h"
 #include "enumDistributions.h"
-#include "../Utils/probLibException.h"
-#include "../Math/vector1D.h"
+#include "../Deltares.Probabilistic.Kernels/Utils/probLibException.h"
+#include "../Deltares.Probabilistic.Kernels/Math/vector1D.h"
 
-#include "../Reliability/CrudeMonteCarlo.h"
-#include "../Reliability/DirectionalSampling.h"
+#include "../Deltares.Probabilistic.Kernels/Reliability/CrudeMonteCarlo.h"
+#include "../Deltares.Probabilistic.Kernels/Reliability/DirectionalSampling.h"
 #include "funcWrapper.h"
 
 using namespace Deltares::ProbLibCore;

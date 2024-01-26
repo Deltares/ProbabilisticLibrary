@@ -1,7 +1,7 @@
 #pragma once
 #include <functional>
 
-#include "../Model/Sample.h"
+#include "../Deltares.Probabilistic.Kernels/Model/Sample.h"
 #include "stringHelper.h"
 
 class funcWrapper
