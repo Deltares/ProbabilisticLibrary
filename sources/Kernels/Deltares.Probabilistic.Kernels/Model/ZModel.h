@@ -1,6 +1,7 @@
 #pragma once
 #include <limits>
 #include <vector>
+#include <functional>
 
 #include "Sample.h"
 
@@ -9,6 +10,7 @@ namespace Deltares
 	namespace Models
 	{
 		typedef double(__stdcall* ZDelegate) (Sample*);
+		typedef std::function<double(Sample*)> ZLambda;
 
 		typedef double(__stdcall* ZMultipleDelegate) (Sample**, int count);
 
@@ -17,6 +19,7 @@ namespace Deltares
 		private:
 			ZDelegate zDelegate = nullptr;
 			ZMultipleDelegate zMultipleDelegate = nullptr;
+			ZLambda zLambda = nullptr;
 			int maxProcesses = 1;
 
 		public:
@@ -24,6 +27,11 @@ namespace Deltares
 			{
 				this->zDelegate = zDelegate;
 				this->zMultipleDelegate = zMultipleDelegate;
+			}
+
+			ZModel(ZLambda zLambda)
+			{
+				this->zLambda = zLambda;
 			}
 
 			void setMaxProcesses(int maxProcesses);

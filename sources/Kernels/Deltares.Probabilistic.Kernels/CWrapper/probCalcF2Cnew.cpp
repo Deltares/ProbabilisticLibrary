@@ -1,7 +1,6 @@
 #include <string>
 #include <omp.h>
 #include <memory>
-#include <functional>
 
 #include "basicSettings.h"
 #include "enumDistributions.h"
@@ -10,19 +9,13 @@
 
 #include "../Reliability/CrudeMonteCarlo.h"
 #include "../Reliability/DirectionalSampling.h"
+#include "funcWrapper.h"
 
 using namespace Deltares::ProbLibCore;
 using namespace Deltares::Models;
 using namespace Deltares::Reliability;
 
 const size_t lenSmallStr = 32;
-const size_t ERRORMSGLENGTH = 256;
-
-struct tError
-{
-    char errorMessage[ERRORMSGLENGTH];
-    int errorCode;
-};
 
 struct fdistribs
 {
@@ -55,41 +48,6 @@ void FPgDelegate(ProgressType pt, std::string s)
     }
 }
 
-std::function<double(double[], int[], tError*)> staticF;
-size_t allStoch;
-int* iPointer;
-double* xRef;
-
-double FDelegate (Sample* s)
-{
-    auto xx = new double[allStoch];
-    for (size_t i = 0; i < allStoch; i++)
-    {
-        xx[i] = xRef[i];
-    }
-    for (size_t i = 0; i < s->getSize(); i++)
-    {
-        xx[iPointer[i]] = s->Values[i];
-    }
-    auto i = new int[4];
-    tError e = tError();
-    double result = staticF(xx, i, &e);
-    delete[] xx;
-    delete[] i;
-    s->Z = result;
-    return result;
-}
-
-void fillErrorMessage(tError& error, const std::string s)
-{
-    size_t length = std::min(s.length(), ERRORMSGLENGTH);
-    for (size_t i = 0; i < length; i++)
-    {
-        error.errorMessage[i] = s[i];
-    }
-    size_t last = std::min(s.length(), ERRORMSGLENGTH - 1);
-    error.errorMessage[last] = char(0);
-}
 
 ReliabilityMethod* selectMethod(const basicSettings & bs)
 {
@@ -152,13 +110,14 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
     int compIds[], int iPoint[], double x[], tResult* r, tError* ierr)
 {
     auto nStoch = (size_t)n;
-    allStoch = vectorSize;
-    iPointer = iPoint;
-    xRef = x;
+    auto fw = funcWrapper();
+    fw.allStoch = vectorSize;
+    fw.iPointer = iPoint;
+    fw.xRef = x;
     size_t numThreads = (size_t)method->numThreads;
     omp_set_num_threads(method->numThreads);
 
-    staticF = fx;
+    fw.staticF = fx;
     staticPg = pc;
     try
     {
@@ -220,7 +179,7 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
 
         std::unique_ptr<ReliabilityMethod> relMethod(selectMethod(*method));
         rmStatic = relMethod.get();
-        std::unique_ptr<ZModel> zModel(new ZModel(FDelegate));
+        std::unique_ptr<ZModel> zModel(new ZModel([&fw](Sample* v) { return fw.FDelegate(v); }));
         std::unique_ptr<CorrelationMatrix> corr(new CorrelationMatrix());
         if (nrCorrelations > 0)
         {

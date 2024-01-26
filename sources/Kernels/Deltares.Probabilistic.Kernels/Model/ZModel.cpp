@@ -14,7 +14,14 @@ namespace Deltares
 
 		void ZModel::invoke(Sample* sample)
 		{
-			this->zDelegate(sample);
+			if (this->zLambda != nullptr)
+			{
+				this->zLambda(sample);
+			}
+			else
+			{
+				this->zDelegate(sample);
+			}
 		}
 
 		void ZModel::invoke(std::vector<Sample*> samples)
