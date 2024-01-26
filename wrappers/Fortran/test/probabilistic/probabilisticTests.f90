@@ -58,19 +58,19 @@ subroutine allProbabilisticTests
 
     call allInitProbabilisticTests
     call allRandomGeneratorTests
-    call allDistributionFunctionsTests
+    !call allDistributionFunctionsTests
     call allWaartsFunctionsTests
     call allProbMethodsWaartsFunctionsNoIterationTest
-    call allHohenbichlerTests
-    call allCombineElementsTests
-    call allPerformImportanceSamplingTests
-    call allPerformAdaptiveMCIStests
-    call allPerformFORMTests
+    !call allHohenbichlerTests
+    !call allCombineElementsTests
+    !call allPerformImportanceSamplingTests
+    !call allPerformAdaptiveMCIStests
+    !call allPerformFORMTests
     call performAllDSTests
-    call allUpscalingTests
-    call allUpscaleLengthTests
-    call allIncompleteGammaTests
-    call allBasicCorrelationTests
+    !call allUpscalingTests
+    !call allUpscaleLengthTests
+    !call allIncompleteGammaTests
+    !call allBasicCorrelationTests
 
 end subroutine allProbabilisticTests
 

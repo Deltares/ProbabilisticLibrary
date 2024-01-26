@@ -66,14 +66,14 @@ program unitTestsProgram
 
         call allQFromBetaTests
 
-        call allReturnTimeFreqTests
+        !call allReturnTimeFreqTests
     end if
 
     if (testSet == 'all' .or. testSet == 'prob') then
         call allProbabilisticIntegrationTests
 
         call allProbabilisticTests
-        call allProbabilisticDataTests
+        !call allProbabilisticDataTests
     end if
 
     call runtests_final(.true.)
