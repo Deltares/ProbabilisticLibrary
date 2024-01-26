@@ -7,7 +7,7 @@
 class funcWrapper
 {
 public:
-    std::function<double(double[], int[], tError*)> staticF;
+    std::function<double(double[], int[], tError*)> zfunc;
     size_t allStoch;
     int* iPointer;
     double* xRef;

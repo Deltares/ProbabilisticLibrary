@@ -13,7 +13,7 @@ double funcWrapper::FDelegate(Sample* s)
     }
     auto i = new int[4];
     tError e = tError();
-    double result = staticF(xx, i, &e);
+    double result = zfunc(xx, i, &e);
     delete[] xx;
     delete[] i;
     s->Z = result;

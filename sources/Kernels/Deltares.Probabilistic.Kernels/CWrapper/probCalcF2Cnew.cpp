@@ -117,7 +117,7 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
     size_t numThreads = (size_t)method->numThreads;
     omp_set_num_threads(method->numThreads);
 
-    fw.staticF = fx;
+    fw.zfunc = fx;
     staticPg = pc;
     try
     {
