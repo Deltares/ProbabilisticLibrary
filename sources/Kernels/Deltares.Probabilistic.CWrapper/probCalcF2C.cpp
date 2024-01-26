@@ -36,18 +36,21 @@ struct tResult
     double alpha2[maxActiveStochast];
 };
 
-std::function <bool (ProgressType, std::string)> staticPg;
-
-ReliabilityMethod* rmStatic;
-void FPgDelegate(ProgressType pt, std::string s)
+class progressWrapper
 {
-    auto cancel = staticPg(pt, s);
-    if (cancel)
-    {
-        rmStatic->Stop();
-    }
-}
+public:
+    std::function <bool(ProgressType, std::string)> staticPg;
 
+    ReliabilityMethod* rmStatic;
+    void FPgDelegate(ProgressType pt, std::string s)
+    {
+        auto cancel = staticPg(pt, s);
+        if (cancel)
+        {
+            rmStatic->Stop();
+        }
+    }
+};
 
 ReliabilityMethod* selectMethod(const basicSettings & bs)
 {
@@ -111,6 +114,7 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
 {
     auto nStoch = (size_t)n;
     auto fw = funcWrapper();
+    auto pw = progressWrapper();
     fw.allStoch = vectorSize;
     fw.iPointer = iPoint;
     fw.xRef = x;
@@ -118,7 +122,7 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
     omp_set_num_threads(method->numThreads);
 
     fw.zfunc = fx;
-    staticPg = pc;
+    pw.staticPg = pc;
     try
     {
         auto cntDeterminists = 0;
@@ -146,14 +150,15 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
                 case EnumDistributions::gumbel2:
                     dist = Deltares::Statistics::DistributionType::Gumbel;
                     break;
-                case EnumDistributions::truncatedNormal:
+                case EnumDistributions::truncatedNormal: {
                     dist = Deltares::Statistics::DistributionType::Normal;
                     truncated = true;
                     truncatedMin = c[i].params[2];
-                    truncatedMax = c[i].params[3];
+                    truncatedMax = c[i].params[3]; }
                     break;
                 case EnumDistributions::uspace:
                     dist = Deltares::Statistics::DistributionType::Normal;
+                    break;
                 default:
                     throw probLibException("Distribution not supported yet: ", c[i].distId);
             }
@@ -178,7 +183,7 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
         }
 
         std::unique_ptr<ReliabilityMethod> relMethod(selectMethod(*method));
-        rmStatic = relMethod.get();
+        pw.rmStatic = relMethod.get();
         std::unique_ptr<ZModel> zModel(new ZModel([&fw](Sample* v) { return fw.FDelegate(v); }));
         std::unique_ptr<CorrelationMatrix> corr(new CorrelationMatrix());
         if (nrCorrelations > 0)
@@ -193,8 +198,8 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
         uConverter->initializeForRun();
         auto progressDelegate = ProgressDelegate();
         auto detailedProgressDelegate = DetailedProgressDelegate();
-        auto textualProgressDelegate = TextualProgressDelegate(FPgDelegate);
-        std::unique_ptr<ProgressIndicator> progress (new ProgressIndicator(progressDelegate, detailedProgressDelegate, textualProgressDelegate));
+        auto textualProgress = TextualProgressLambda([&pw](ProgressType p, std::string s) {pw.FPgDelegate(p, s); });
+        std::unique_ptr<ProgressIndicator> progress (new ProgressIndicator(progressDelegate, detailedProgressDelegate, textualProgress));
         std::unique_ptr<ZModelRunner> modelRunner(new ZModelRunner(zModel.get(), uConverter.get(), progress.get()));
         std::unique_ptr<DesignPoint> newResult( relMethod->getDesignPoint(modelRunner.get()));
 
