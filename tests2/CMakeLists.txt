@@ -21,10 +21,10 @@ add_executable(testRunnerDistributions
     RunDistributionsTests.cs
 )
 
-target_link_libraries(reliabilityTest probLibKernel )
-target_link_libraries(testRunnerMC reliabilityTest probLibKernel)
-target_link_libraries(testRunnerDS reliabilityTest probLibKernel)
-target_link_libraries(testRunnerDistributions reliabilityTest probLibKernel)
+target_link_libraries(reliabilityTest Deltares.Probabilistics.Wrappers )
+target_link_libraries(testRunnerMC reliabilityTest )
+target_link_libraries(testRunnerDS reliabilityTest )
+target_link_libraries(testRunnerDistributions reliabilityTest )
 
 set(dotnet_nunit_version "45")
 set(nunit_framework "${CMAKE_CURRENT_SOURCE_DIR}/../packages/NUnit.3.13.3/lib/net${dotnet_nunit_version}/nunit.framework.dll")

@@ -63,14 +63,6 @@ subroutine fillDistribs(distribs)
     distribs(2)%params = (/1.0_dp, 2.0_dp, 0.0_dp, 0.0_dp/)
 end subroutine fillDistribs
 
-function testProgressCancel(i, x, y) result(cancel) bind(c)
-  use, intrinsic :: iso_c_binding, only: c_double
-  logical(kind=1)                        :: cancel
-  real(kind=c_double), intent(in), value :: x, y
-  integer,             intent(in), value :: i
-  cancel = .false.
-end function testProgressCancel
-
 subroutine test_ds
     use interface_probCalc
     type(tdistrib)              :: distribs(2)
@@ -97,7 +89,7 @@ subroutine test_ds
     compIds(1) = 16
     ipoint     = [0, 1] ! zero based, as it goes to c++
 
-    call probCalcF2C(method, distribs, 2, 2, correlations, 0,  zfunc, testProgressCancel, compIds, iPoint, x, r, ierr)
+    call probCalcF2Cnew(method, distribs, 2, 2, correlations, 0,  zfunc, textualProgress, compIds, iPoint, x, r, ierr)
 
     call assert_equal(ierr%iCode, 0, "return code probCalcF2Cnew <> 0")
 
@@ -134,7 +126,7 @@ subroutine test_ds_errorhandling
     compIds(1) = 17
     ipoint     = [0, 1]
 
-    call probCalcF2C(method, distribs, 2, 2, correlations, 0, zfunc, testProgressCancel, compIds, ipoint, x, r, ierr)
+    call probCalcF2Cnew(method, distribs, 2, 2, correlations, 0, zfunc, textualProgress, compIds, ipoint, x, r, ierr)
 
     call assert_equal(ierr%iCode, -1, "return code probCalcF2Cnew <> 0")
 
@@ -165,7 +157,7 @@ subroutine test_form_errorhandling
     compIds(1) = 17
     ipoint     = [0, 1]
 
-    call probCalcF2C(method, distribs, 2, 2, correlations, 0, zfunc, testProgressCancel, compIds, ipoint, x, r, ierr)
+    call probCalcF2Cnew(method, distribs, 2, 2, correlations, 0, zfunc, textualProgress, compIds, ipoint, x, r, ierr)
 
     call assert_equal(ierr%iCode, 0, "diff in return code probCalcF2Cnew")
     call assert_equal(r%convergence, 1, "diff in convergence flag")

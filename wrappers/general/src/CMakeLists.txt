@@ -5,17 +5,11 @@ FortranCInterface_VERIFY(CXX)
 add_library(pb_wrapper_c STATIC "")
 target_sources(pb_wrapper_c
   PRIVATE
-    stringHelper.h
-    stringHelper.cpp
-    probCalcF2C.cpp
     randomgen.cpp
-    fortranZfunc.h
-    fortranZfunc.cpp
     calcdistributionsinv.cpp
     convert.cpp
     combin.cpp
     correlation.cpp
-    special_funcs.cpp
   )
 
   set_target_properties(pb_wrapper_c
@@ -25,4 +19,4 @@ target_sources(pb_wrapper_c
       #COMMON_LANGUAGE_RUNTIME ""
   )
 
-target_link_libraries(pb_wrapper_c probLibKernel)
+target_link_libraries(pb_wrapper_c Deltares.Probabilistic.Kernel)

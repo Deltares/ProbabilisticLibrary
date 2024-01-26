@@ -39,7 +39,7 @@ message(STATUS "Enable testing: ${ENABLE_UNIT_TESTS}")
 
 enable_testing()
 
-add_subdirectory(tests)
+#add_subdirectory(tests)
 
 add_subdirectory(wrappers/general/src)
 

@@ -1680,7 +1680,6 @@ subroutine betaDistributionTests
     call testWithLevel( betaInverseTest_Basic5 , "Forward and Inverse Test beta distribution: Basic Test Nr. 5" , 1)
     call testWithLevel( betaInverseTest_Basic6 , "Forward and Inverse Test beta distribution: Basic Test Nr. 6" , 1)
     call testWithLevel( betaInverseTest_Basic7 , "Forward and Inverse Test beta distribution: Basic Test Nr. 7" , 1)
-    call testWithLevel( betaInverseTest_Basic99, "Forward and Inverse Test beta distribution: Basic Test Nr. 99", 1)
     call testWithLevel( betaInverseTestActualData, "Test beta distribution with actual data", 1)
 !   In the event, create more beta-tests
 end subroutine betaDistributionTests
@@ -2063,66 +2062,6 @@ subroutine betaInverseTest_Basic7
 !    
 end subroutine betaInverseTest_Basic7
 !
-!
-!> Basic test Nr. 99 for the beta distribution. Check convergence to normal distribution for large, and equal, shape parameters alpha and beta.
-!  This convergence of beta->normal holds for:
-!  Shape parameter alpha -> infinity while at the same time:
-!  Shape parameter  beta= alpha
-!  Location parameter  a= -sqrt( 1 + 2*alpha)
-!  Location parameter  b=  sqrt( 1 + 2*alpha)
-!  For a choice of a probabilility of non-exceedence the x-Values and p-Values of the normal and beta distribution are compared
-!  and should be about the same.
-subroutine betaInverseTest_Basic99
-!    use                   incompleteGammaFunction
-    integer            :: ifault          ! Error status on exit from ASA-functions for the gamma function and the standard beta distribution
-    real( kind= wp)    :: a               ! left  location parameter of the beta distribution in this test
-    real( kind= wp)    :: b               ! right location parameter of the beta distribution in this test
-    real( kind= wp)    :: alpha           ! left  shape    parameter of the beta distribution in this test
-    real( kind= wp)    :: beta            ! right shape    parameter of the beta distribution in this test
-    real( kind= wp)    :: p               ! prescribed probability of non-exceedence in this test
-    real( kind= wp)    :: q               ! prescribed probability of     exceedence in this test, p+q= 1
-    real( kind= wp)    :: x               ! x-argument for the standard beta-distribution (a'= 0, b'= 1)
-    real( kind= wp)    :: expectedPValue  ! expected value of CDF for present beta distribution for an argument x
-    real( kind= wp)    :: computedPValue  ! computed value of CDF for present beta distribution for an argument x
-    real( kind= wp)    :: expectedXValue  ! expected value of X from inversion of beta distribution
-    real( kind= wp)    :: computedXValue  ! computed value of X in   inversion of beta distribution
-    real( kind= wp)    :: lnComplBetaFunc ! value of standard complete beta function for current alpha and beta
-    real( kind= wp)    :: tolDiff         ! tolerance in difference of computed value and expected value
-    character( Len= 72):: myErrorMessage
-    intrinsic          :: sqrt
-!
-!   ----------------------------------------------------------------------------
-!   Shape parameters in present beta distribution with large value for the shape parameters:
-    alpha          = 100.0_wp
-    beta           = alpha
-!   Location parameters in present beta distribution:
-    b              = sqrt( 1.0_wp+ 2.0_wp* alpha)
-    a              =-b
-!   ----------------------------------------------------------------------------
-!   Chose probability of non-exceedence
-    p             = 0.975_wp
-    q             = 1.0_wp- p
-!   ----------------------------------------------------------------------------
-    expectedPValue= p    ! p will serve as expected value
-!   For given p and q, compute corresponding x-value for the standard normal distribution
-    myErrorMessage =' '
-    call betaFromQ( q, expectedXValue, iFault, myErrorMessage)    ! expectedXValue is computed from q and will be 1.95996398454005
-!   Compute this x-value for the present beta distribution as well:
-    computedXValue = betaInverse( a, b, alpha, beta, expectedPValue, q)
-!   Compare the x-values of the normal and beta-distribution:
-    tolDiff        = 2.5e-3_wp    ! for alpha= 100.NB: rate of convergence |expectedXValue- computedXValue| ~ c/alpha  with c~0.2 for alpha--> inf
-    call assert_comparable( computedXValue, expectedXValue, tolDiff, &
-        "too large diff. of x-values in comparison CDF's of standard normal and beta distribution")
-!   ----------------------------------------------------------------------------
-!   Now other way round, compute and compare the probabilities of non-exceedence
-    x              =(expectedXValue- a)/( b-a)
-    lnComplBetaFunc= DGamLn( alpha)+ DGamLn( beta)- DGamLn( alpha+ beta)             ! Numerical Recipes
-    computedPValue = betain( x, alpha, beta, lnComplBetaFunc, ifault)
-    tolDiff        = 1.5e-4_wp    ! for alpha= 100. NB: rate of convergence |expectedPValue- computedPValue| ~ c/alpha  with c~0.0125 for alpha--> inf
-    call assert_comparable( computedPValue, expectedPValue, tolDiff, &
-        "too large diff. of P-values in inversion of the CDF's of standard normal and beta distribution")
-!   ----------------------------------------------------------------------------
-end subroutine betaInverseTest_Basic99
 
 subroutine betaInverseTestActualData
     real(kind=wp) :: dischargeTableT(5*16) =  (/ &

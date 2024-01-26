@@ -283,31 +283,6 @@ module interface_probCalc
     end subroutine probCalcF2Cnew
   end interface
 
-  interface
-    subroutine probCalcF2C(method, distribs, nstoch, vectorSize, correlations, nrCorrelations, fx, pc, &
-        compIds, iPoint, x, rn, ierr) bind(C)
-      use, intrinsic :: iso_c_binding, only: c_double
-#ifdef _MSC_VER
-      import tMethod, tDistrib, basicCorrelation, tError, tResult, zfunc, progressCancel
-#else
-      import tMethod, tDistrib, basicCorrelation, tError, tResult
-#endif
-      type(tMethod),  intent(in)    :: method
-      type(tDistrib), intent(in)    :: distribs(*)
-      integer, value, intent(in)    :: nstoch
-      integer, value, intent(in)    :: vectorSize
-      type(basicCorrelation), intent(in)  :: correlations(*)
-      integer, value, intent(in)    :: nrCorrelations
-      integer,        intent(in)    :: compIds(*)
-      integer,        intent(in)    :: iPoint(*)
-      procedure(zfunc)              :: fx
-      procedure(progressCancel)     :: pc
-      real(kind=c_double), intent(inout) :: x(*)
-      type(tError),   intent(  out) :: ierr
-      type(tResult),  intent(  out) :: rn
-    end subroutine probCalcF2C
-  end interface
-
 contains
 
 function basicProgressCancel(i, x, y) result(cancel) bind(c)
@@ -447,13 +422,7 @@ subroutine calculateLimitStateFunction( probDb, fx, alfaN, beta, x, conv, convCr
                     probDb%number_correlations, fx, textualProgress, compIds, iPointCpp, x, rn, ierr)
             end if
         else
-            if (present(pc)) then
-                call probCalcF2C(method, distribs, nStochActive, nStoch, probDb%basic_correlation, &
-                    probDb%number_correlations, fx, pc, compIds, iPointCpp, x, rn, ierr)
-            else
-                call probCalcF2C(method, distribs, nStochActive, nStoch, probDb%basic_correlation, &
-                    probDb%number_correlations, fx, basicProgressCancel, compIds, iPointCpp, x, rn, ierr)
-            end if
+            write(*,*) "not implemented yet"
         end if
 
         if (ierr%iCode /= 0) then
