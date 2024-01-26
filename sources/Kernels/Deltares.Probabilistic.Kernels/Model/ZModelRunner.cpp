@@ -180,7 +180,7 @@ namespace Deltares
 
 		void ZModelRunner::reportMessage(MessageType type, std::string text)
 		{
-			if (Settings->SaveMessages)
+			if (Settings->SaveMessages && this->messages.size() < this->Settings->MaxMessages && type >= this->Settings->LowestMessageType)
 			{
 				this->messages.push_back(new Message(type, text));
 			}

@@ -5,7 +5,7 @@ namespace Deltares
 {
 	namespace Models
 	{
-		enum MessageType { Error, Warning, Info, Debug };
+		enum MessageType { Debug, Info, Warning, Error };
 
 		class Message
 		{

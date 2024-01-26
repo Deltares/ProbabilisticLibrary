@@ -207,6 +207,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
             project.Stochasts.Add(GetUniformStochast(-0.5, 0.5));
             project.Stochasts.Add(GetUniformStochast(-1));
 
+            project.CorrelationMatrix.Initialize(project.Stochasts);
             project.CorrelationMatrix.SetCorrelation(project.Stochasts[0], project.Stochasts[1], 1);
             project.CorrelationMatrix.SetCorrelation(project.Stochasts[1], project.Stochasts[2], 2);
 

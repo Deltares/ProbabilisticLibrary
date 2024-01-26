@@ -30,6 +30,7 @@
     <ClInclude Include="Reliability\FORMWrapper.h" />
     <ClInclude Include="Reliability\StartPointCalculatorSettingsWrapper.h" />
     <ClInclude Include="Reliability\GradientCalculatorSettingsWrapper.h" />
+    <ClInclude Include="Model\MessageWrapper.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Reliability\ConvergenceReportWrapper.cpp" />
@@ -60,5 +61,6 @@
     <ClCompile Include="Reliability\FORMWrapper.cpp" />
     <ClCompile Include="Reliability\StartPointCalculatorSettingsWrapper.cpp" />
     <ClCompile Include="Reliability\GradientCalculatorSettingsWrapper.cpp" />
+    <ClCompile Include="Model\MessageWrapper.cpp" />
   </ItemGroup>
 </Project>

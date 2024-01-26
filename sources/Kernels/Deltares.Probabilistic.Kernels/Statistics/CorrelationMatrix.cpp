@@ -105,6 +105,12 @@ void CorrelationMatrix::filter(const CorrelationMatrix* m, const std::vector<int
     }
 }
 
+void CorrelationMatrix::resolveConflictingCorrelations()
+{
+	// to be implemented
+}
+
+
 int CorrelationMatrix::findNewIndex(const std::vector<int> index, const size_t i)
 {
     int newIndex = 0;

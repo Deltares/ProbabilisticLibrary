@@ -1,4 +1,6 @@
 #pragma once
+#include "Message.h"
+
 class RunSettings
 {
 public:
@@ -7,5 +9,7 @@ public:
     bool SaveEvaluations = false;
     bool SaveConvergence = false;
     bool SaveMessages = false;
+    int MaxMessages = 1000;
+    Deltares::Models::MessageType LowestMessageType = Deltares::Models::MessageType::Warning;
 };
 

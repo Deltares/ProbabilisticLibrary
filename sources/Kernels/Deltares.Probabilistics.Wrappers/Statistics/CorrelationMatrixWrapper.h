@@ -42,6 +42,11 @@ namespace Deltares
 					m_correlation_matrix->SetCorrelation(index1, index2, value);
 				}
 
+				void ResolveConflictingCorrelations()
+				{
+					m_correlation_matrix->resolveConflictingCorrelations();
+				}
+
 				CorrelationMatrix* GetCorrelationMatrix()
 				{
 					return m_correlation_matrix;

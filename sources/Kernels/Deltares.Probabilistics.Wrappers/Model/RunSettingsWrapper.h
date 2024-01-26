@@ -1,5 +1,7 @@
 #pragma once
 #include "../../Deltares.Probabilistic.Kernels/Model/RunSettings.h"
+#include "../../Deltares.Probabilistic.Kernels/Model/Message.h"
+#include "MessageWrapper.h"
 
 namespace Deltares
 {
@@ -46,6 +48,39 @@ namespace Deltares
 					bool get() { return m_settings->SaveMessages; }
 					void set(bool value) { m_settings->SaveMessages = value; }
 				}
+
+				property int MaxMessages
+				{
+					int get() { return m_settings->MaxMessages; }
+					void set(int value) { m_settings->MaxMessages = value; }
+				}
+
+				property Kernels::MessageType LowestMessageType
+				{
+					Kernels::MessageType get()
+					{
+						switch (m_settings->LowestMessageType)
+						{
+						case Models::Debug: return Kernels::MessageType::Debug;
+						case Models::Info: return Kernels::MessageType::Info;
+						case Models::Warning: return Kernels::MessageType::Warning;
+						case Models::Error: return Kernels::MessageType::Error;
+						default: throw gcnew System::NotSupportedException("Message type");
+						}
+					}
+					void set(Kernels::MessageType value)
+					{
+						switch (value)
+						{
+						case Kernels::MessageType::Debug: m_settings->LowestMessageType = Models::MessageType::Debug; break;
+						case Kernels::MessageType::Info: m_settings->LowestMessageType = Models::MessageType::Info; break;
+						case Kernels::MessageType::Warning: m_settings->LowestMessageType = Models::MessageType::Warning; break;
+						case Kernels::MessageType::Error: m_settings->LowestMessageType = Models::MessageType::Error; break;
+						default: throw gcnew System::NotSupportedException("Message type");
+						}
+					}
+				}
+
 
 				RunSettings* GetSettings()
 				{

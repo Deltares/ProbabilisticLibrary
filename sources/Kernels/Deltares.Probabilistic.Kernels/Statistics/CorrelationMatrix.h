@@ -10,6 +10,7 @@ public:
     void SetCorrelation(const int i, const int j, const double value);
     void CholeskyDecomposition();
     bool checkFullyCorrelated(const int i);
+    void resolveConflictingCorrelations();
     void filter(const CorrelationMatrix* m, const std::vector<int> & index);
     std::pair<int, double> findDependent(const int i);
 private:
