@@ -20,14 +20,14 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
-    <ProjectGuid>{2b0a0389-b9b2-40f3-a674-b5b391b25a26}</ProjectGuid>
+    <ProjectGuid>{E82A904A-FE1C-4695-BE1F-0AFCE5861FB4}</ProjectGuid>
     <TargetFrameworkVersion>
     </TargetFrameworkVersion>
     <Keyword>ManagedCProj</Keyword>
-    <RootNamespace>DeltaresReliabilityWrapper</RootNamespace>
+    <RootNamespace>DeltaresReliabilityCWrapper</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <EnableManagedPackageReferenceSupport>true</EnableManagedPackageReferenceSupport>
-    <ProjectName>Deltares.Probabilistic.Kernels</ProjectName>
+    <ProjectName>Deltares.Probabilistic.CWrapper</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -153,131 +153,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Model\Message.h" />
-    <ClInclude Include="Model\GradientCalculator.h" />
-    <ClInclude Include="Model\GradientSettings.h" />
-    <ClInclude Include="Reliability\FORM.h" />
-    <ClInclude Include="Reliability\FORMSettings.h" />
-    <ClInclude Include="Reliability\StartPointCalculator.h" />
-    <ClInclude Include="Reliability\StartPointCalculatorSettings.h" />
-    <ClInclude Include="Statistics\DistributionType.h" />
-    <ClInclude Include="Statistics\Distributions\InvertedDistribution.h" />
-    <ClInclude Include="Math\ASA\asa063.hpp" />
-    <ClInclude Include="Math\ASA\asa109.hpp" />
-    <ClInclude Include="Math\ASA\asa239.hpp" />
-    <ClInclude Include="Math\ASA\asa241.hpp" />
-    <ClInclude Include="Math\SpecialFunctions.h" />
-    <ClInclude Include="Statistics\Distributions\TruncatedDistribution.h" />
-    <ClInclude Include="Reliability\DirectionalSampling.h" />
-    <ClInclude Include="Reliability\DirectionalSamplingSettings.h" />
-    <ClInclude Include="Math\Constants.h" />
-    <ClInclude Include="Statistics\Distributions\GumbelDistribution.h" />
-    <ClInclude Include="Math\RootFinders\LinearRootFinder.h" />
-    <ClInclude Include="Reliability\DirectionReliability.h" />
-    <ClInclude Include="Reliability\DirectionReliabilitySettings.h" />
-    <ClInclude Include="Reliability\StochastSettings.h" />
-    <ClInclude Include="Reliability\StochastSettingsSet.h" />
-    <ClInclude Include="Math\RootFinders\RootFinder.h" />
-    <ClInclude Include="Model\Evaluation.h" />
-    <ClInclude Include="Math\Random.h" />
-    <ClInclude Include="Math\Randomizers\GeorgeMarsagliaRandomValueGenerator.h" />
-    <ClInclude Include="Math\Randomizers\MersenneTwisterRandomValueGenerator.h" />
-    <ClInclude Include="Math\Randomizers\ModifiedKnuthSubtractiveRandomValueGenerator.h" />
-    <ClInclude Include="Math\Randomizers\RandomValueGenerator.h" />
-    <ClInclude Include="Model\ProgressIndicator.h" />
-    <ClInclude Include="Statistics\CorrelationMatrix.h" />
-    <ClInclude Include="framework.h" />
-    <ClInclude Include="Math\NumericSupport.h" />
-    <ClInclude Include="Model\RandomSettings.h" />
-    <ClInclude Include="Model\RunSettings.h" />
-    <ClInclude Include="Model\Sample.h" />
-    <ClInclude Include="Model\StochastPoint.h" />
-    <ClInclude Include="Model\StochastPointAlpha.h" />
-    <ClInclude Include="Model\UConverter.h" />
-    <ClInclude Include="Model\ZModel.h" />
-    <ClInclude Include="Model\ZModelRunner.h" />
-    <ClInclude Include="Model\ReliabilityReport.h" />
-    <ClInclude Include="Model\RandomSampleGenerator.h" />
-    <ClInclude Include="Model\ConvergenceReport.h" />
-    <ClInclude Include="Reliability\CrudeMonteCarlo.h" />
-    <ClInclude Include="Reliability\CrudeMonteCarloSettings.h" />
-    <ClInclude Include="Model\DesignPoint.h" />
-    <ClInclude Include="Reliability\DesignPointBuilder.h" />
-    <ClInclude Include="Reliability\ReliabilityMethod.h" />
-    <ClInclude Include="Model\ReliabilityResult.h" />
-    <ClInclude Include="Statistics\Distributions\DeterministicDistribution.h" />
-    <ClInclude Include="Statistics\Distributions\Distribution.h" />
-    <ClInclude Include="Statistics\Distributions\LogNormalDistribution.h" />
-    <ClInclude Include="Statistics\Distributions\NormalDistribution.h" />
-    <ClInclude Include="Statistics\StandardNormal.h" />
-    <ClInclude Include="Statistics\Stochast.h" />
-    <ClInclude Include="Statistics\StochastProperties.h" />
-    <ClInclude Include="Statistics\Distributions\UniformDistribution.h" />
-    <ClInclude Include="Math\basic_math.h" />
-    <ClInclude Include="Math\vector1D.h" />
-    <ClInclude Include="Math\matrix.h" />
+    <ClCompile Include="CWrapper\funcWrapper.cpp" />
+    <ClCompile Include="CWrapper\probCalcF2Cnew.cpp" />
+    <ClCompile Include="CWrapper\stringHelper.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Model\Message.cpp" />
-    <ClCompile Include="Model\GradientCalculator.cpp" />
-    <ClCompile Include="Reliability\FORM.cpp" />
-    <ClCompile Include="Reliability\FORMSettings.cpp" />
-    <ClCompile Include="Reliability\StartPointCalculator.cpp" />
-    <ClCompile Include="Reliability\StartPointCalculatorSettings.cpp" />
-    <ClCompile Include="Statistics\DistributionType.cpp" />
-    <ClCompile Include="Statistics\Distributions\InvertedDistribution.cpp" />
-    <ClCompile Include="Math\ASA\asa063.cpp" />
-    <ClCompile Include="Math\ASA\asa109.cpp" />
-    <ClCompile Include="Math\ASA\asa239.cpp" />
-    <ClCompile Include="Math\SpecialFunctions.cpp" />
-    <ClCompile Include="Statistics\Distributions\TruncatedDistribution.cpp" />
-    <ClCompile Include="Reliability\DirectionalSampling.cpp" />
-    <ClCompile Include="Reliability\DirectionalSamplingSettings.cpp" />
-    <ClCompile Include="Math\Constants.cpp" />
-    <ClCompile Include="Statistics\Distributions\GumbelDistribution.cpp" />
-    <ClCompile Include="Math\RootFinders\LinearRootFinder.cpp" />
-    <ClCompile Include="Reliability\DirectionReliability.cpp" />
-    <ClCompile Include="Reliability\DirectionReliabilitySettings.cpp" />
-    <ClCompile Include="Math\ASA\asa241.cpp" />
-    <ClCompile Include="Math\vector1D.cpp" />
-    <ClCompile Include="Reliability\StochastSettings.cpp" />
-    <ClCompile Include="Reliability\StochastSettingsSet.cpp" />
-    <ClCompile Include="Math\RootFinders\RootFinder.cpp" />
-    <ClCompile Include="Utils\probLibString.cpp" />
-    <ClCompile Include="Model\Evaluation.cpp" />
-    <ClCompile Include="Math\Random.cpp" />
-    <ClCompile Include="Math\Randomizers\GeorgeMarsagliaRandomValueGenerator.cpp" />
-    <ClCompile Include="Math\Randomizers\MersenneTwisterRandomValueGenerator.cpp" />
-    <ClCompile Include="Math\Randomizers\ModifiedKnuthSubtractiveRandomValueGenerator.cpp" />
-    <ClCompile Include="Math\Randomizers\RandomValueGenerator.cpp" />
-    <ClCompile Include="Model\ProgressIndicator.cpp" />
-    <ClCompile Include="Statistics\CorrelationMatrix.cpp" />
-    <ClCompile Include="Math\NumericSupport.cpp" />
-    <ClCompile Include="Model\RandomSettings.cpp" />
-    <ClCompile Include="Model\RunSettings.cpp" />
-    <ClCompile Include="Model\Sample.cpp" />
-    <ClCompile Include="Model\StochastPoint.cpp" />
-    <ClCompile Include="Model\StochastPointAlpha.cpp" />
-    <ClCompile Include="Model\UConverter.cpp" />
-    <ClCompile Include="Model\ZModel.cpp" />
-    <ClCompile Include="Model\ZModelRunner.cpp" />
-    <ClCompile Include="Model\ReliabilityReport.cpp" />
-    <ClCompile Include="Model\RandomSampleGenerator.cpp" />
-    <ClCompile Include="Model\ConvergenceReport.cpp" />
-    <ClCompile Include="Reliability\CrudeMonteCarlo.cpp" />
-    <ClCompile Include="Reliability\CrudeMonteCarloSettings.cpp" />
-    <ClCompile Include="Model\DesignPoint.cpp" />
-    <ClCompile Include="Reliability\DesignPointBuilder.cpp" />
-    <ClCompile Include="Reliability\ReliabilityMethod.cpp" />
-    <ClCompile Include="Model\ReliabilityResult.cpp" />
-    <ClCompile Include="Statistics\Distributions\DeterministicDistribution.cpp" />
-    <ClCompile Include="Statistics\Distributions\LogNormalDistribution.cpp" />
-    <ClCompile Include="Statistics\Distributions\NormalDistribution.cpp" />
-    <ClCompile Include="Statistics\StandardNormal.cpp" />
-    <ClCompile Include="Statistics\Stochast.cpp" />
-    <ClCompile Include="Statistics\Distributions\UniformDistribution.cpp" />
-    <ClCompile Include="Math\matrix.cpp" />
-    <ClCompile Include="Math\cholesky_decomp.cpp" />
+    <ProjectReference Include="Deltares.Probabilistic.Kernels.vcxproj.vcxproj">
+      <Project>{2b0a0389-b9b2-40f3-a674-b5b391b25a26}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
