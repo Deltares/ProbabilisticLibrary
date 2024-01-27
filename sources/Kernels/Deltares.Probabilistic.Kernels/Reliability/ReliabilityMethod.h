@@ -25,6 +25,7 @@ namespace Deltares
 
 		public:
 			virtual DesignPoint* getDesignPoint(Deltares::Models::ZModelRunner* modelRunner) { return nullptr; };
+			virtual ~ReliabilityMethod() { ; }
 
 			bool isStopped();
 			void Stop();

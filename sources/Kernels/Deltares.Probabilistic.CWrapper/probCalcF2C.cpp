@@ -178,7 +178,6 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
         {
             r->samplesNeeded = (int)round(newResult->ConvergenceReport->FailedSamples / newResult->ConvergenceReport->FailFraction);
         }
-        delete newResult->ConvergenceReport;
     }
     catch (const std::exception& e)
     {

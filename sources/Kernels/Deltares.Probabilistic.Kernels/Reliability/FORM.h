@@ -17,6 +17,10 @@ namespace Deltares
 		public:
 			FORMSettings* Settings = new FORMSettings();
 			DesignPoint* getDesignPoint(Deltares::Models::ZModelRunner* modelRunner) override;
+			~FORM()
+			{
+				delete Settings;
+			}
 		};
 	}
 }

@@ -16,6 +16,10 @@ namespace Deltares
 		public:
 			Deltares::Reliability::DirectionalSamplingSettings* Settings = new Deltares::Reliability::DirectionalSamplingSettings();
 			DesignPoint* getDesignPoint(Deltares::Models::ZModelRunner* modelRunner) override;
+			~DirectionalSampling()
+			{
+				delete Settings;
+			}
 		};
 	}
 }

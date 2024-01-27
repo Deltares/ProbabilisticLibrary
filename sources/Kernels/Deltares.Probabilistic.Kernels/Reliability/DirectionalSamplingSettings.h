@@ -19,6 +19,11 @@ namespace Deltares
             DirectionReliabilitySettings* DirectionSettings = new DirectionReliabilitySettings();
             RandomSettings* RandomSettings = new ::RandomSettings();
             StochastSettingsSet* StochastSet = new StochastSettingsSet();
+            ~DirectionalSamplingSettings()
+            {
+                delete RandomSettings;
+                delete StochastSet;
+            }
         };
     }
 }

@@ -19,6 +19,11 @@ namespace Deltares
             Models::GradientSettings* GradientSettings = new Models::GradientSettings();
             StartPointCalculatorSettings* StartPointSettings = new StartPointCalculatorSettings();
             StochastSettingsSet* StochastSet = new StochastSettingsSet();
+            ~FORMSettings()
+            {
+                delete GradientSettings;
+                delete StartPointSettings;
+            }
         };
     }
 }

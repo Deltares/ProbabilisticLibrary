@@ -17,6 +17,11 @@ namespace Deltares
             DesignPointMethod DesignPointMethod = DesignPointMethod::CenterOfGravity;
             RandomSettings* RandomSettings = new ::RandomSettings();
             StochastSettingsSet* StochastSet = new StochastSettingsSet();
+            ~CrudeMonteCarloSettings()
+            {
+                delete RandomSettings;
+                delete StochastSet;
+            }
         };
     }
 }
