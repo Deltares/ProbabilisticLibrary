@@ -156,6 +156,7 @@
     <ClCompile Include=".\funcWrapper.cpp" />
     <ClCompile Include=".\probCalcF2C.cpp" />
     <ClCompile Include=".\stringHelper.cpp" />
+    <ClCompile Include="progressWrapper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Deltares.Probabilistic.Kernels.vcxproj.vcxproj">

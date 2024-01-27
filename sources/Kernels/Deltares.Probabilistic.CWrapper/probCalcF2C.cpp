@@ -10,6 +10,7 @@
 #include "../Deltares.Probabilistic.Kernels/Reliability/CrudeMonteCarlo.h"
 #include "../Deltares.Probabilistic.Kernels/Reliability/DirectionalSampling.h"
 #include "funcWrapper.h"
+#include "progressWrapper.h"
 
 using namespace Deltares::ProbLibCore;
 using namespace Deltares::Models;
@@ -34,22 +35,6 @@ struct tResult
     int stepsNeeded;
     int samplesNeeded;
     double alpha2[maxActiveStochast];
-};
-
-class progressWrapper
-{
-public:
-    std::function <bool(ProgressType, std::string)> staticPg;
-
-    ReliabilityMethod* rmStatic;
-    void FPgDelegate(ProgressType pt, std::string s)
-    {
-        auto cancel = staticPg(pt, s);
-        if (cancel)
-        {
-            rmStatic->Stop();
-        }
-    }
 };
 
 ReliabilityMethod* selectMethod(const basicSettings & bs)
