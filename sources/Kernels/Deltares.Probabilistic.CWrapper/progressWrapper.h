@@ -7,9 +7,9 @@
 class progressWrapper
 {
 public:
-    std::function <bool(Deltares::Models::ProgressType, std::string)> staticPg;
+    std::function <bool(Deltares::Models::ProgressType, std::string)> externalProgressFunc;
 
-    Deltares::Reliability::ReliabilityMethod* rmStatic;
+    Deltares::Reliability::ReliabilityMethod* pntrToReliabilityMethod;
     void FPgDelegate(Deltares::Models::ProgressType pt, std::string s);
 };
 

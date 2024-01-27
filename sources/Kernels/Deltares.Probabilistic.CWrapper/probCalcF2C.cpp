@@ -107,7 +107,7 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
     omp_set_num_threads(method->numThreads);
 
     fw.zfunc = fx;
-    pw.staticPg = pc;
+    pw.externalProgressFunc = pc;
     try
     {
         auto cntDeterminists = 0;
@@ -168,7 +168,7 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
         }
 
         std::unique_ptr<ReliabilityMethod> relMethod(selectMethod(*method));
-        pw.rmStatic = relMethod.get();
+        pw.pntrToReliabilityMethod = relMethod.get();
         std::unique_ptr<ZModel> zModel(new ZModel([&fw](Sample* v) { return fw.FDelegate(v); }));
         std::unique_ptr<CorrelationMatrix> corr(new CorrelationMatrix());
         if (nrCorrelations > 0)
