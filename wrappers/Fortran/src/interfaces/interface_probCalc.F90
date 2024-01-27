@@ -304,7 +304,7 @@ end function textualProgress
 
 !>
 !! Subroutine for the calculation of a limit state function
-subroutine calculateLimitStateFunction( probDb, fx, alfaN, beta, x, conv, convCriterium, convergenceData, name, id, alfaN_u, pc, pcNew )
+subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, conv, convCriterium, convergenceData, name, id,alfaN_u,pc,pcNew)
     use feedback
     type(probabilisticDataStructure_data), intent(in) :: probDb    !< Probabilistic data module
     procedure(zfunc)                           :: fx               !< Function implementing the z-function of the failure mechanism

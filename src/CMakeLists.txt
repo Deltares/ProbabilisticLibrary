@@ -9,6 +9,7 @@ file(GLOB ptkcpp_files
     "../../Kernels/Deltares.Probabilistic.Kernels/Statistics/*.cpp"
     "../../Kernels/Deltares.Probabilistic.Kernels/Statistics/Distributions/*.cpp"
     "../../Kernels/Deltares.Probabilistic.CWrapper/*.cpp"
+    "../../Kernels/Deltares.Probabilistic.Kernels/Utils/*.cpp"
 )
 file(GLOB ptkcli_files
     "../../Kernels/Deltares.Probabilistics.Wrappers/Model/*.cpp"

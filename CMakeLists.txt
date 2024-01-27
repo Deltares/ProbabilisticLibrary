@@ -50,7 +50,7 @@ else()
         message("Skipping python and fortran")
     else()
         if (UNIX)
-            add_subdirectory(wrappers/python)
+            #add_subdirectory(wrappers/python)
         endif()
         add_subdirectory(wrappers/Fortran/src)
 
