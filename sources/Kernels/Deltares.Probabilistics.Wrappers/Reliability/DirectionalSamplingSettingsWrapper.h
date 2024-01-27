@@ -25,7 +25,7 @@ namespace Deltares
 				DirectionalSamplingSettingsWrapper()
 				{
 					m_settings = new Reliability::DirectionalSamplingSettings();
-					m_settings->RandomSettings = RandomSettings->GetSettings();
+					m_settings->randomSettings = RandomSettings->GetSettings();
 					m_settings->DirectionSettings = DirectionalSettings->GetSettings();
 				}
 				~DirectionalSamplingSettingsWrapper() { this->!DirectionalSamplingSettingsWrapper(); }

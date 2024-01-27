@@ -1,4 +1,7 @@
 #include "StartPointCalculator.h"
+#include "../Utils/probLibException.h"
+
+using namespace Deltares::ProbLibCore;
 
 namespace Deltares
 {
@@ -11,13 +14,13 @@ namespace Deltares
 			case StartMethodType::None:
 				return this->Settings->StochastSet->getSample();
 			case StartMethodType::RaySearch:
-				throw std::exception("Not implemented yet");
+				throw probLibException("Not implemented yet");
 			case StartMethodType::SensitivitySearch:
-				throw std::exception("Not implemented yet");
+				throw probLibException("Not implemented yet");
 			case StartMethodType::SphereSearch:
-				throw std::exception("Not implemented yet");
+				throw probLibException("Not implemented yet");
 			default:
-				throw std::exception("Not supported");
+				throw probLibException("Not supported");
 			}
 		}
 	}

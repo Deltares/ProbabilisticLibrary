@@ -1,7 +1,6 @@
 #include "Stochast.h"
 
-#include <exception>
-
+#include "../Utils/probLibException.h"
 #include "Distributions/DeterministicDistribution.h"
 #include "Distributions/GumbelDistribution.h"
 #include "Distributions/NormalDistribution.h"
@@ -24,7 +23,7 @@ namespace Deltares
 			case DistributionType::Uniform: this->distribution = new UniformDistribution(); break;
 			case DistributionType::Gumbel: this->distribution = new GumbelDistribution(); break;
 			default:
-				throw std::exception("Distribution type not supported");
+				throw Deltares::ProbLibCore::probLibException("Distribution type not supported");
 			}
 
 			if (truncated && distribution->canTruncate())

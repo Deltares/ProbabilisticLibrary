@@ -1,9 +1,13 @@
 #pragma once
 #include "RandomValueGenerator.h"
 
+#ifdef _WIN32
 typedef void(__stdcall* InitializeRandomDelegate) (bool repeatable, int seed);
-
 typedef double(__stdcall* NextRandomDelegate) ();
+#else
+typedef void(* InitializeRandomDelegate) (bool repeatable, int seed);
+typedef double(* NextRandomDelegate) ();
+#endif
 
 class ModifiedKnuthSubtractiveRandomValueGenerator : public RandomValueGenerator
 {

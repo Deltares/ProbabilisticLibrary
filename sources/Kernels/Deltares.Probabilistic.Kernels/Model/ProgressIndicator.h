@@ -8,9 +8,15 @@ namespace Deltares
 	{
 		enum ProgressType { Global, Detailed };
 
+#ifdef _WIN32
 		typedef void(__stdcall* ProgressDelegate) (double);
 		typedef void(__stdcall* DetailedProgressDelegate) (int, int, double, double);
 		typedef void(__stdcall* TextualProgressDelegate) (ProgressType, std::string);
+#else
+		typedef void(* ProgressDelegate) (double);
+		typedef void(* DetailedProgressDelegate) (int, int, double, double);
+		typedef void(* TextualProgressDelegate) (ProgressType, std::string);
+#endif
 		typedef std::function<void(ProgressType, std::string)> TextualProgressLambda;
 
 		class ProgressIndicator

@@ -15,7 +15,7 @@ namespace Deltares
 			double qtot = 0;
 			double rmin = 200; // initialise convergence indicator and loops
 			double uThreshold = std::numeric_limits<double>::infinity();
-			DesignPointBuilder* uMean = new DesignPointBuilder(nstochasts, this->Settings->DesignPointMethod, this->Settings->StochastSet);
+			DesignPointBuilder* uMean = new DesignPointBuilder(nstochasts, this->Settings->designPointMethod, this->Settings->StochastSet);
 			int parSamples = 0;
 
 			omp_set_num_threads(modelRunner->Settings->MaxParallelProcesses);
@@ -28,7 +28,7 @@ namespace Deltares
 			ConvergenceReport* convergenceReport = new ConvergenceReport();
 
 			RandomSampleGenerator* randomSampleGenerator = new RandomSampleGenerator();
-			randomSampleGenerator->Settings = this->Settings->RandomSettings;
+			randomSampleGenerator->Settings = this->Settings->randomSettings;
 			randomSampleGenerator->Settings->StochastSet = this->Settings->StochastSet;
 			randomSampleGenerator->initialize();
 

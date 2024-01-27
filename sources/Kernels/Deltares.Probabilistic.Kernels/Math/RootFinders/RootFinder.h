@@ -1,5 +1,6 @@
 #pragma once
 #include <functional>
+#include <cmath>
 
 typedef std::function<double(double)> RootFinderMethod;
 

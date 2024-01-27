@@ -36,14 +36,14 @@ namespace Deltares
 		{
 			double value = isMinimum ? stochast->Minimum : stochast->Maximum;
 
-			if (isnan(value) || isinf(value))
+			if (std::isnan(value) || std::isinf(value))
 			{
 				return 0;
 			}
 			else
 			{
 				double u = this->innerDistribution->getUFromX(stochast, value);
-				if (isnan(u))
+				if (std::isnan(u))
 				{
 					return 0;
 				}

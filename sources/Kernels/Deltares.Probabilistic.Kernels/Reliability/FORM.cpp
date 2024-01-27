@@ -3,7 +3,11 @@
 #include "StartPointCalculator.h"
 #include "../Model/DesignPoint.h"
 #include "../Model/GradientCalculator.h"
+#if __has_include(<format>)
 #include <format>
+#else
+#include "../Utils/probLibString.h"
+#endif
 
 
 namespace Deltares
@@ -42,7 +46,7 @@ namespace Deltares
 
 				designPoint = getDesignPoint(modelRunner, startPoint, relaxationFactor);
 
-				if (designPoint->ConvergenceReport->IsConverged)
+				if (designPoint->convergenceReport->IsConverged)
 				{
 					break;
 				}
@@ -54,8 +58,11 @@ namespace Deltares
 
 					if (modifiedRelaxationIndex < Settings->RelaxationLoops)
 					{
-
+#ifdef __cpp_lib_format
 						designPoint->Identifier = std::format("Relaxation loop {0:}", modifiedRelaxationIndex);
+#else
+						designPoint->Identifier = "Relaxation loop " + std::to_string(modifiedRelaxationIndex);
+#endif
 						previousDesignPoints.push_back(designPoint);
 					}
 				}
@@ -103,7 +110,12 @@ namespace Deltares
 				if (!areResultsValid(zGradient))
 				{
 					// return the result so far
+#ifdef __cpp_lib_format
 					modelRunner->reportMessage(Models::MessageType::Error, std::format("Model did not provide valid results, limit state value = {0:.5G}", u->Z));
+#else
+					auto pl = Deltares::ProbLibCore::probLibString();
+					modelRunner->reportMessage(Models::MessageType::Error, "Model did not provide valid results, limit state value = " + pl.double2str( u->Z));
+#endif
 
 					ReliabilityReport* reportInvalid = new ReliabilityReport();
 					reportInvalid->Step = iteration;
@@ -208,7 +220,7 @@ namespace Deltares
 		{
 			for (int k = 0; k < dzdu.size(); k++)
 			{
-				if (isnan(dzdu[k]))
+				if (std::isnan(dzdu[k]))
 				{
 					dzdu[k] = 0;
 				}
@@ -220,7 +232,7 @@ namespace Deltares
 			bool validResults = false;
 			for (int k = 0; k < dzdu.size(); k++)
 			{
-				if (!isnan(dzdu[k]))
+				if (!std::isnan(dzdu[k]))
 				{
 					validResults = true;
 					break;

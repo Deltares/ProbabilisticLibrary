@@ -8,7 +8,7 @@ void Deltares::Probabilistic::Kernels::DesignPointWrapper::SetDesignPoint(Design
 
 	SetStochastPoint(designPoint, stochasts);
 
-	this->ConvergenceReport = gcnew ConvergenceReportWrapper(designPoint->ConvergenceReport);
+	this->ConvergenceReport = gcnew ConvergenceReportWrapper(designPoint->convergenceReport);
 
 	for (int i = 0; i < designPoint->ReliabililityResults.size(); i++)
 	{

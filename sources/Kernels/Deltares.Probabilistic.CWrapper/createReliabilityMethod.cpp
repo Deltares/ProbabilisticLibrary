@@ -34,7 +34,7 @@ ReliabilityMethod* createReliabilityMethod::selectMethod(const basicSettings& bs
     {
     case (ProbMethod::CM): {
         auto cm = new CrudeMonteCarlo();
-        cm->Settings->RandomSettings = getRnd(bs);
+        cm->Settings->randomSettings = getRnd(bs);
         cm->Settings->VariationCoefficient = bs.tolB;
         cm->Settings->MinimumSamples = bs.minSamples;
         cm->Settings->MaximumSamples = bs.maxSamples;
@@ -42,7 +42,7 @@ ReliabilityMethod* createReliabilityMethod::selectMethod(const basicSettings& bs
         break;
     case (ProbMethod::DS): {
         auto ds = new DirectionalSampling();
-        ds->Settings->RandomSettings = getRnd(bs);
+        ds->Settings->randomSettings = getRnd(bs);
         ds->Settings->VariationCoefficient = bs.tolB;
         ds->Settings->MinimumSamples = bs.minSamples;
         ds->Settings->MaximumSamples = bs.maxSamples;

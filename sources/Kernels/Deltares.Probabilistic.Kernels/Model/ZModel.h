@@ -9,10 +9,15 @@ namespace Deltares
 {
 	namespace Models
 	{
+#ifdef _WIN32
 		typedef double(__stdcall* ZDelegate) (Sample*);
-		typedef std::function<double(Sample*)> ZLambda;
-
 		typedef double(__stdcall* ZMultipleDelegate) (Sample**, int count);
+#else
+		typedef double(* ZDelegate) (Sample*);
+		typedef double(* ZMultipleDelegate) (Sample**, int count);
+#endif // _WIN32
+
+		typedef std::function<double(Sample*)> ZLambda;
 
 		class ZModel
 		{

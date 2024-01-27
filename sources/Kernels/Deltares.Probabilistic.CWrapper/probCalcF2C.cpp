@@ -171,12 +171,12 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
         {
             r->alpha2[i] = newResult->Alphas[i]->AlphaCorrelated;
         }
-        r->convergence = (newResult->ConvergenceReport->Convergence < method->tolB ? 0 : 1);
+        r->convergence = (newResult->convergenceReport->Convergence < method->tolB ? 0 : 1);
         r->stepsNeeded = -999;// result.stepsNeeded;
-        r->samplesNeeded = newResult->ConvergenceReport->TotalDirections;
+        r->samplesNeeded = newResult->convergenceReport->TotalDirections;
         if (r->samplesNeeded < 0)
         {
-            r->samplesNeeded = (int)round(newResult->ConvergenceReport->FailedSamples / newResult->ConvergenceReport->FailFraction);
+            r->samplesNeeded = (int)round(newResult->convergenceReport->FailedSamples / newResult->convergenceReport->FailFraction);
         }
     }
     catch (const std::exception& e)

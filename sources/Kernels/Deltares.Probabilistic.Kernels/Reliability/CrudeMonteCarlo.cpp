@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <cmath>
+#include <memory>
 
 #include "../Statistics/StandardNormal.h"
 #include "../Model/Sample.h"
@@ -64,10 +65,10 @@ namespace Deltares
 		{
 			int nParameters = modelRunner->getVaryingStochastCount();
 			double* zValues = new double[0]; // copy of z for all parallel threads as double
-			DesignPointBuilder* uMean = new DesignPointBuilder(nParameters, Settings->DesignPointMethod, this->Settings->StochastSet);
+			DesignPointBuilder* uMean = new DesignPointBuilder(nParameters, Settings->designPointMethod, this->Settings->StochastSet);
 
 			RandomSampleGenerator* randomSampleGenerator = new RandomSampleGenerator();
-			randomSampleGenerator->Settings = this->Settings->RandomSettings;
+			randomSampleGenerator->Settings = this->Settings->randomSettings;
 			randomSampleGenerator->Settings->StochastSet = this->Settings->StochastSet;
 			randomSampleGenerator->initialize();
 
@@ -156,7 +157,7 @@ namespace Deltares
 				double z = zValues[zIndex];
 				Sample* u = samples[zIndex];
 
-				if (isnan(z))
+				if (std::isnan(z))
 				{
 					continue;
 				}
