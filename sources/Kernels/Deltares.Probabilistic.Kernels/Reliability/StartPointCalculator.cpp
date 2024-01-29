@@ -124,6 +124,12 @@ namespace Deltares
 		{
 			constexpr int nRadiusFactors = 20;
 
+			Sample* zeroSample = new Sample(modelRunner->getVaryingStochastCount());
+			double z0 = modelRunner->getZValue(zeroSample);
+			delete zeroSample;
+
+			double z0Fac = z0 < 0 ? -1 : 1;
+
 			Sample* startPoint = this->Settings->StochastSet->getSample();
 
 			correctDefaultValues(startPoint);
@@ -132,23 +138,32 @@ namespace Deltares
 
 			Sample* uSphere = startPoint->multiply(radiusFactor);
 
+			Sample* bestSample = nullptr;
+
 			for (int i = 0; i < nRadiusFactors; i++)
 			{
 				radiusFactor = NumericSupport::Divide(i + 1, nRadiusFactors);
 
 				double zMin = std::numeric_limits<double>::infinity();
 
-				Sample* sample = examineSurfaceForFailure(modelRunner, 0, radiusFactor, uSphere, zMin);
-				if (sample != nullptr)
+				Sample* sample = examineSurfaceForFailure(modelRunner, 0, radiusFactor, uSphere, z0Fac, zMin);
+
+				bestSample = getBestSample(bestSample, sample, z0Fac);
+
+				if (z0Fac * sample->Z < 0)
 				{
-					return sample;
+					Sample* refinedSample = refineSpherePoint(modelRunner, radiusFactor, sample);
+
+					delete sample;
+
+					return refinedSample;
 				}
 			}
 
-			return nullptr;
+			return bestSample;
 		}
 
-		Sample* StartPointCalculator::examineSurfaceForFailure(Models::ZModelRunner* modelRunner, int index, double radiusFactor, Sample* uRay, double& zMin)
+		Sample* StartPointCalculator::examineSurfaceForFailure(Models::ZModelRunner* modelRunner, int index, double radiusFactor, Sample* uRay, double z0Fac, double& zMin)
 		{
 			constexpr int maxSteps = 5;
 			constexpr double dangle = 2 * std::numbers::pi / (maxSteps - 1);
@@ -156,6 +171,8 @@ namespace Deltares
 			if (index < uRay->getSize())
 			{
 				int jMax = uRay->Values[index] == 0 ? 1 : maxSteps;
+
+				Sample* bestSample = nullptr;
 
 				for (int j = 0; j < jMax; j++)
 				{
@@ -172,48 +189,70 @@ namespace Deltares
 
 					u->correctSmallValues(1E-10);
 
-					Sample* sample = examineSurfaceForFailure(modelRunner, index + 1, radiusFactor, u, zMin);
-					if (sample != nullptr)
-					{
-						return sample;
-					}
+					Sample* sample = examineSurfaceForFailure(modelRunner, index + 1, radiusFactor, u, z0Fac, zMin);
+
+					delete u;
+
+					bestSample = getBestSample(bestSample, sample, z0Fac);
 				}
+
+				return bestSample;
+
 			}
 			else
 			{
 				Sample* u = uRay->multiply(radiusFactor);
 
-				// determine the u-vector for which the z-function is either minimal
-				// or where it becomes negative
-				// in the latter case, interpolate to get an optimal starting vector
-				double z = modelRunner->getZValue(u);
+				u->Z = modelRunner->getZValue(u);
 
-				if (std::abs(z) < zMin)
-				{
-					zMin = std::abs(z);
-
-					if (z < 0.0)
-					{
-						double coFactor = (radiusFactor - 0.05) / radiusFactor;
-
-						Sample* u2 = u->multiply(coFactor);
-
-						// factor related to number of steps above
-						double z2 = modelRunner->getZValue(u2);
-						z2 = std::min(z2, 0.0);
-
-						Sample* u3 = u2->multiply(1.0 + z2 / (z2 - z) / coFactor);
-
-						delete u2;
-
-						return u3;
-					}
-
-					return u;
-				}
+				return u;
 			}
+		}
 
-			return nullptr;
+		// Gets the best sample for a given radius factor
+
+		Sample* StartPointCalculator::getBestSample(Sample* bestSample, Sample* sample, double z0Fac)
+		{
+			if (bestSample == nullptr)
+			{
+				return sample;
+			}
+			else if (z0Fac * bestSample->Z > 0 && z0Fac * sample->Z < 0)
+			{
+				delete bestSample;
+				return sample;
+			}
+			else if (abs(sample->Z) < abs(bestSample->Z))
+			{
+				delete bestSample;
+				return sample;
+			}
+			else
+			{
+				return bestSample;
+			}
+		}
+
+		Sample* StartPointCalculator::refineSpherePoint(Models::ZModelRunner* modelRunner, double radiusFactor, Sample* u)
+		{
+			// determine the u-vector for which the z-function is either minimal
+			// or where it becomes negative
+			// in the latter case, interpolate to get an optimal starting vector
+
+			double z = u->Z;
+			double coFactor = (radiusFactor - 0.05) / radiusFactor;
+
+			Sample* u2 = u->multiply(coFactor);
+
+			// factor related to number of steps above
+			double z2 = modelRunner->getZValue(u2);
+			z2 = std::min(z2, 0.0);
+
+			Sample* u3 = u2->multiply(1.0 + z2 / (z2 - z) / coFactor);
+
+			delete u2;
+
+			return u3;
 		}
 	}
 }

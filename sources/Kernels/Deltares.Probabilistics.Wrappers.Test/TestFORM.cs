@@ -206,6 +206,9 @@ namespace Deltares.Probabilistics.Wrappers.Test
             DesignPointWrapper designPoint = form.GetDesignPoint(modelRunner);
 
             Assert.AreEqual(2.5, designPoint.Beta, margin);
+
+            Assert.AreEqual(1, designPoint.ContributingDesignPoints.Count, margin);
+            Assert.AreEqual(3.54, designPoint.ContributingDesignPoints[0].Beta, margin);
         }
 
         [Test]
