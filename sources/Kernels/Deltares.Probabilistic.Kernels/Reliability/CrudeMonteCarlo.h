@@ -18,7 +18,7 @@ namespace Deltares
 			DesignPoint* getDesignPoint(Deltares::Models::ZModelRunner* modelRunner) override;
 			~CrudeMonteCarlo()
 			{
-				delete Settings;
+				//delete Settings;
 			}
 		};
 	}
