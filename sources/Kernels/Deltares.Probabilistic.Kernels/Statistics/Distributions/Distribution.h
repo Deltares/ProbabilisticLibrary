@@ -16,10 +16,11 @@ namespace Deltares
 			virtual bool canInvert() { return false; };
 			virtual bool isShiftUsed() { return false; };
 			virtual bool isQualitative() { return false; };
-			virtual double getRepresentativeU(double u) { return u; };
+			virtual double getRepresentativeU(StochastProperties* stochast, double u) { return u; };
 			virtual double getMean(StochastProperties* stochast) { return 0; };
 			virtual double getDeviation(StochastProperties* stochast) { return 0; };
 			virtual void setMeanAndDeviation(StochastProperties* stochast, double mean, double deviation) {};
+			virtual void initializeForRun(StochastProperties* stochast) {};
 		};
 	}
 }

@@ -31,6 +31,9 @@
     <ClInclude Include="Reliability\StartPointCalculatorSettingsWrapper.h" />
     <ClInclude Include="Reliability\GradientCalculatorSettingsWrapper.h" />
     <ClInclude Include="Model\MessageWrapper.h" />
+    <ClInclude Include="Statistics\DiscreteValueWrapper.h" />
+    <ClInclude Include="Statistics\HistogramValueWrapper.h" />
+    <ClInclude Include="Statistics\FragilityValueWrapper.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Reliability\ConvergenceReportWrapper.cpp" />

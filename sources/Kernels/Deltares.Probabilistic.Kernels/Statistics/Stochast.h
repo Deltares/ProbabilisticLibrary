@@ -1,4 +1,7 @@
 #pragma once
+#include <vector>
+
+#include "DiscreteValue.h"
 #include "StochastProperties.h"
 #include "Distributions/DeterministicDistribution.h"
 #include "Distributions/Distribution.h"
@@ -12,11 +15,9 @@ namespace Deltares
 		{
 		private:
 			DistributionType distributionType = DistributionType::Deterministic;
-
 			Distribution* distribution = new DeterministicDistribution();
 
 			bool inverted = false;
-
 			bool truncated = false;
 
 			void updateDistribution();
@@ -48,6 +49,8 @@ namespace Deltares
 
 			double getDeviation();
 			void setDeviation(double deviation);
+
+			void initializeForRun();
 		};
 	}
 }

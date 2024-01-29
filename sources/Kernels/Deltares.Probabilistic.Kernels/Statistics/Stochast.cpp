@@ -3,6 +3,7 @@
 #include <exception>
 
 #include "Distributions/DeterministicDistribution.h"
+#include "Distributions/DiscreteDistribution.h"
 #include "Distributions/GumbelDistribution.h"
 #include "Distributions/NormalDistribution.h"
 #include "Distributions/LogNormalDistribution.h"
@@ -23,6 +24,7 @@ namespace Deltares
 			case DistributionType::LogNormal: this->distribution = new LogNormalDistribution(); break;
 			case DistributionType::Uniform: this->distribution = new UniformDistribution(); break;
 			case DistributionType::Gumbel: this->distribution = new GumbelDistribution(); break;
+			case DistributionType::Discrete: this->distribution = new DiscreteDistribution(); break;
 			default:
 				throw std::exception("Distribution type not supported");
 			}
@@ -101,7 +103,7 @@ namespace Deltares
 
 		double Stochast::getRepresentativeU(double u)
 		{
-			return this->distribution->getRepresentativeU(u);
+			return this->distribution->getRepresentativeU(this, u);
 		}
 
 		double Stochast::getMean()
@@ -124,6 +126,11 @@ namespace Deltares
 		{
 			double mean = distribution->getMean(this);
 			distribution->setMeanAndDeviation(this, mean, deviation);
+		}
+
+		void Stochast::initializeForRun()
+		{
+			distribution->initializeForRun(this);
 		}
 	}
 }

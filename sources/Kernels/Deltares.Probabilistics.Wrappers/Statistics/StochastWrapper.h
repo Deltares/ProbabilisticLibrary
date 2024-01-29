@@ -3,6 +3,9 @@
 #include "../../Deltares.Probabilistic.Kernels/Statistics/Stochast.h"
 #include "../../Deltares.Probabilistic.Kernels/Statistics/StandardNormal.h"
 #include "../Utils/NativeSupport.h"
+#include "DiscreteValueWrapper.h"
+#include "HistogramValueWrapper.h"
+#include "FragilityValueWrapper.h"
 
 namespace Deltares
 {
@@ -10,15 +13,21 @@ namespace Deltares
 	{
 		namespace Kernels
 		{
-			public enum class WrapperDistributionType {Deterministic, Normal, LogNormal, Uniform, Gumbel};
+			public enum class WrapperDistributionType {Deterministic, Normal, LogNormal, Uniform, Gumbel, Discrete};
 
 			public ref class StochastWrapper
 			{
 			private:
 				Statistics::Stochast* m_stochast;
 
+				System::Collections::Generic::List<DiscreteValueWrapper^>^ discreteValues = gcnew System::Collections::Generic::List<DiscreteValueWrapper^>();
+				System::Collections::Generic::List<HistogramValueWrapper^>^ histogramValues = gcnew System::Collections::Generic::List<HistogramValueWrapper^>();
+				System::Collections::Generic::List<FragilityValueWrapper^>^ fragilityValues = gcnew System::Collections::Generic::List<FragilityValueWrapper^>();
+
 				Statistics::DistributionType getNativeDistributionType(WrapperDistributionType distributionType);
 				WrapperDistributionType getManagedDistributionType(Statistics::DistributionType distributionType);
+
+				void updateStochast();
 
 			public:
 				StochastWrapper() { m_stochast = new Statistics::Stochast(); }
@@ -30,11 +39,6 @@ namespace Deltares
 				}
 				~StochastWrapper() { this->!StochastWrapper(); }
 				!StochastWrapper() { delete m_stochast; }
-
-				Statistics::Stochast* GetStochast()
-				{
-					return m_stochast;
-				}
 
 				property WrapperDistributionType DistributionType
 				{
@@ -120,6 +124,21 @@ namespace Deltares
 					void set(bool value) { m_stochast->setInverted(value); }
 				}
 
+				property System::Collections::Generic::List<DiscreteValueWrapper^>^ DiscreteValues
+				{
+					System::Collections::Generic::List<DiscreteValueWrapper^>^ get() { return discreteValues; }
+				}
+
+				property System::Collections::Generic::List<HistogramValueWrapper^>^ HistogramValues
+				{
+					System::Collections::Generic::List<HistogramValueWrapper^>^ get() { return histogramValues; }
+				}
+
+				property System::Collections::Generic::List<FragilityValueWrapper^>^ FragilityValues
+				{
+					System::Collections::Generic::List<FragilityValueWrapper^>^ get() { return fragilityValues; }
+				}
+
 				double GetXFromU(double u)
 				{
 					return m_stochast->getXFromU(u);
@@ -134,6 +153,18 @@ namespace Deltares
 				double GetUFromX(double x)
 				{
 					return m_stochast->getUFromX(x);
+				}
+
+				void InitializeForRun()
+				{
+					updateStochast();
+					m_stochast->initializeForRun();
+				}
+
+				Statistics::Stochast* GetStochast()
+				{
+					updateStochast();
+					return m_stochast;
 				}
 			};
 		}

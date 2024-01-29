@@ -153,6 +153,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Statistics\Distributions\DiscreteDistribution.h" />
+    <ClInclude Include="Statistics\HistogramValue.h" />
+    <ClInclude Include="Statistics\FragilityValue.h" />
+    <ClInclude Include="Statistics\DiscreteValue.h" />
     <ClInclude Include="Model\Message.h" />
     <ClInclude Include="Model\GradientCalculator.h" />
     <ClInclude Include="Model\GradientSettings.h" />
@@ -218,6 +222,10 @@
     <ClInclude Include="Math\matrix.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Statistics\Distributions\DiscreteDistribution.cpp" />
+    <ClCompile Include="Statistics\HistogramValue.cpp" />
+    <ClCompile Include="Statistics\FragilityValue.cpp" />
+    <ClCompile Include="Statistics\DiscreteValue.cpp" />
     <ClCompile Include="Model\Message.cpp" />
     <ClCompile Include="Model\GradientCalculator.cpp" />
     <ClCompile Include="Reliability\FORM.cpp" />

@@ -22,7 +22,12 @@ void UConverter::initializeForRun()
 	this->varyingStochasts.clear();
 	this->varyingStochastIndex.clear();
 
-	for (int i = 0; i < this->stochasts.size(); i++)
+	for (Deltares::Statistics::Stochast* stochast : this->stochasts)
+	{
+		stochast->initializeForRun();
+	}
+
+	for (size_t i = 0; i < this->stochasts.size(); i++)
 	{
 		if (this->stochasts[i]->isVarying() && ! checkFullyCorrelated(i))
 		{

@@ -78,6 +78,10 @@
     <ClCompile Include="Reliability\StartPointCalculator.cpp" />
     <ClCompile Include="Reliability\StartPointCalculatorSettings.cpp" />
     <ClCompile Include="Model\Message.cpp" />
+    <ClCompile Include="Statistics\DiscreteValue.cpp" />
+    <ClCompile Include="Statistics\HistogramValue.cpp" />
+    <ClCompile Include="Statistics\FragilityValue.cpp" />
+    <ClCompile Include="Statistics\Distributions\DiscreteDistribution.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -165,6 +169,10 @@
     <ClInclude Include="Reliability\StartPointCalculator.h" />
     <ClInclude Include="Reliability\StartPointCalculatorSettings.h" />
     <ClInclude Include="Model\Message.h" />
+    <ClInclude Include="Statistics\DiscreteValue.h" />
+    <ClInclude Include="Statistics\HistogramValue.h" />
+    <ClInclude Include="Statistics\FragilityValue.h" />
+    <ClInclude Include="Statistics\Distributions\DiscreteDistribution.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

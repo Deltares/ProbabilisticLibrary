@@ -160,6 +160,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Statistics\DiscreteValueWrapper.h" />
+    <ClInclude Include="Statistics\FragilityValueWrapper.h" />
+    <ClInclude Include="Statistics\HistogramValueWrapper.h" />
     <ClInclude Include="Model\MessageWrapper.h" />
     <ClInclude Include="Reliability\GradientCalculatorSettingsWrapper.h" />
     <ClInclude Include="Reliability\FORMSettingsWrapper.h" />

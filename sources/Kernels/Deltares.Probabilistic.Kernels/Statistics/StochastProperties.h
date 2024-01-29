@@ -1,8 +1,10 @@
 #pragma once
 
-#ifndef StochastProperties_H
-#define StochastProperties_H
-#endif
+#include "DiscreteValue.h"
+#include "HistogramValue.h"
+#include "FragilityValue.h"
+
+#include <vector>
 
 namespace Deltares
 {
@@ -22,6 +24,11 @@ namespace Deltares
             double Shape;
             double ShapeB;
             int Observations;
+
+            std::vector<DiscreteValue*> DiscreteValues;
+            std::vector<HistogramValue*> HistogramValues;
+            std::vector<FragilityValue*> FragilityValues;
         };
+
     }
 }

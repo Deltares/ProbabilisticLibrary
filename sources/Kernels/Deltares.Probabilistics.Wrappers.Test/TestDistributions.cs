@@ -188,6 +188,32 @@ namespace Deltares.Probabilistics.Wrappers.Test
             TestMinMax(stochast);
         }
 
+        [Test]
+        public void TestDiscrete()
+        {
+            var stochast = new StochastWrapper { DistributionType = WrapperDistributionType.Discrete };
+            stochast.DiscreteValues.Add(new DiscreteValueWrapper(1, 10));
+            stochast.DiscreteValues.Add(new DiscreteValueWrapper(2, 20));
+            stochast.DiscreteValues.Add(new DiscreteValueWrapper(3, 20));
+
+            stochast.InitializeForRun();
+
+            Assert.AreEqual(1, stochast.GetXFromU(StandardNormalWrapper.GetUFromP(0.1)), margin);
+            Assert.AreEqual(2, stochast.GetXFromU(0), margin);
+            Assert.AreEqual(3, stochast.GetXFromU(StandardNormalWrapper.GetUFromP(0.9)), margin);
+
+            //Assert.AreEqual(0.2, stochast.GetPDF(1), margin);
+            //Assert.AreEqual(0.4, stochast.GetPDF(2), margin);
+            //Assert.AreEqual(0.4, stochast.GetPDF(3), margin);
+            //Assert.AreEqual(0, stochast.GetPDF(1.5), margin);
+
+            Assert.AreEqual(StandardNormalWrapper.GetUFromP(0.1), stochast.GetUFromX(1), margin);
+            Assert.AreEqual(StandardNormalWrapper.GetUFromP(0.4), stochast.GetUFromX(2), margin);
+            Assert.AreEqual(StandardNormalWrapper.GetUFromP(0.6), stochast.GetUFromX(2.5), margin);
+            Assert.AreEqual(StandardNormalWrapper.GetUFromP(0.8), stochast.GetUFromX(3), margin);
+            Assert.AreEqual(StandardNormalWrapper.BetaMax, stochast.GetUFromX(4), margin);
+        }
+
         private void TestStochast(StochastWrapper stochast, double delta = 0.01)
         {
             foreach (var u in new[] { -7, -6, -5, -4, -3, -2, -1.5, -1, -0.5, -0.1, 0, 0.1, 0.5, 1, 1.5, 2, 3, 4, 5, 6, 7 })
