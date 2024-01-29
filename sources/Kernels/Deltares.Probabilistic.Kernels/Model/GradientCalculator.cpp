@@ -20,7 +20,7 @@ namespace Deltares
             // first sample is the sample itself
             samples.push_back(sample);
 
-            if (Settings->gradientType == OneDirection)
+            if (Settings->GradientType == OneDirection)
             {
                 double du = Settings->StepSize * 0.5;
                 for (int k = 0; k < nstochasts; k++)

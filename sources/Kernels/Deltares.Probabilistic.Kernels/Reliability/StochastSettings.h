@@ -19,6 +19,7 @@ namespace Deltares
 			bool IsVarianceAllowed = true;
 
 			int Intervals = 200;
+			bool IsInitializationAllowed = true;
 
 			int StochastIndex = 0;
 

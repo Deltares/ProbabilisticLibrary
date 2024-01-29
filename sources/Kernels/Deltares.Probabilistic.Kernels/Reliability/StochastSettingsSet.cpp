@@ -1,6 +1,8 @@
 #include "StochastSettingsSet.h"
 #include "StochastSettings.h"
 
+#include <memory>
+
 namespace Deltares
 {
 	namespace Reliability
@@ -8,14 +10,15 @@ namespace Deltares
 		void StochastSettingsSet::loadStochastPoint(StochastPoint* stochastPoint)
 		{
 			this->StochastCount = stochastPoint->Alphas.size();
-			this->StochastSettings = new Deltares::Reliability::StochastSettings * [this->StochastCount];
+			this->StochastSettings.clear();
+
 			for (int i = 0; i < this->StochastCount; i++)
 			{
 				Deltares::Reliability::StochastSettings* settings = new Deltares::Reliability::StochastSettings();
 				settings->StartValue = stochastPoint->Alphas[i]->U;
 				settings->setStochast(stochastPoint->Alphas[i]->Stochast);
 
-				this->StochastSettings[i] = settings;
+				this->StochastSettings.push_back(settings);
 			}
 		}
 

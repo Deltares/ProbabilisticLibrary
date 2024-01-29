@@ -15,8 +15,9 @@ namespace Deltares
 		public:
 			GradientSettings() {}
 
-			GradientType gradientType = OneDirection;
+			GradientType GradientType = OneDirection;
 			double StepSize = 0.3;
+			bool OnlyInitializationAllowed = false;
 		};
 	}
 }

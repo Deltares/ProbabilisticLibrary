@@ -37,7 +37,7 @@ namespace Deltares
 				{
 					Kernels::GradientType get()
 					{
-						switch (m_settings->gradientType)
+						switch (m_settings->GradientType)
 						{
 						case Deltares::Models::GradientType::OneDirection: return Kernels::GradientType::OneDirection;
 						case Deltares::Models::GradientType::TwoDirections: return Kernels::GradientType::TwoDirections;
@@ -48,8 +48,8 @@ namespace Deltares
 					{
 						switch (value)
 						{
-						case Kernels::GradientType::OneDirection: m_settings->gradientType = Models::GradientType::OneDirection; break;
-						case Kernels::GradientType::TwoDirections: m_settings->gradientType = Models::GradientType::TwoDirections; break;
+						case Kernels::GradientType::OneDirection: m_settings->GradientType = Models::GradientType::OneDirection; break;
+						case Kernels::GradientType::TwoDirections: m_settings->GradientType = Models::GradientType::TwoDirections; break;
 						default: throw gcnew System::NotSupportedException("gradient type");
 						}
 					}

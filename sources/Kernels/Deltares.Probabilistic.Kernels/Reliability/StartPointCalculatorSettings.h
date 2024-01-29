@@ -12,6 +12,7 @@ namespace Deltares
 		public:
 			StartMethodType StartMethod = StartMethodType::None;
 			double MaximumLengthStartPoint = 6;
+			double GradientStepSize = 4;
 			double RadiusSphereSearch = 10;
 
 			StochastSettingsSet* StochastSet = new StochastSettingsSet();

@@ -3,6 +3,8 @@
 #include "../Model/Sample.h"
 #include "../Model/StochastPoint.h"
 
+#include <memory>
+
 namespace Deltares
 {
 	namespace Reliability
@@ -18,10 +20,10 @@ namespace Deltares
 				loadStochastPoint(stochastPoint);
 			}
 
-			Deltares::Reliability::StochastSettings** StochastSettings;
+			std::vector<StochastSettings*> StochastSettings;
 			int StochastCount = 0;
 
-			Deltares::Reliability::StochastSettings** VaryingStochastSettings;
+			std::vector<Deltares::Reliability::StochastSettings*> VaryingStochastSettings;
 			int VaryingStochastCount = 0;
 
 			Sample* getSample();

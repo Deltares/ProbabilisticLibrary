@@ -162,6 +162,68 @@ namespace Deltares.Probabilistics.Wrappers.Test
         }
 
         [Test]
+        public void TestConvexRayStartPoint()
+        {
+            Project project = ProjectBuilder.GetConvexProject();
+
+            ModelRunnerWrapper modelRunner = new ModelRunnerWrapper(project.Function, project.Stochasts, project.CorrelationMatrix, null);
+
+            FORMWrapper form = new FORMWrapper();
+            form.Settings.StochastSettings.Add(new StochastSettingsWrapper { StartValue = 1 });
+            form.Settings.StochastSettings.Add(new StochastSettingsWrapper { StartValue = 1 });
+            form.Settings.StartPointCalculatorSettings.StartMethod = StartMethodType.RaySearch;
+
+            DesignPointWrapper designPoint = form.GetDesignPoint(modelRunner);
+
+            Assert.AreEqual(2.5, designPoint.Beta, margin);
+        }
+
+        [Test]
+        public void TestConvexRayStartPointNoInitialization()
+        {
+            Project project = ProjectBuilder.GetConvexProject();
+
+            ModelRunnerWrapper modelRunner = new ModelRunnerWrapper(project.Function, project.Stochasts, project.CorrelationMatrix, null);
+
+            FORMWrapper form = new FORMWrapper();
+            form.Settings.StartPointCalculatorSettings.StartMethod = StartMethodType.RaySearch;
+
+            DesignPointWrapper designPoint = form.GetDesignPoint(modelRunner);
+
+            Assert.AreEqual(2.5, designPoint.Beta, margin);
+        }
+
+        [Test]
+        public void TestConvexRaySphereStartPoint()
+        {
+            Project project = ProjectBuilder.GetConvexProject();
+
+            ModelRunnerWrapper modelRunner = new ModelRunnerWrapper(project.Function, project.Stochasts, project.CorrelationMatrix, null);
+
+            FORMWrapper form = new FORMWrapper();
+            form.Settings.StartPointCalculatorSettings.StartMethod = StartMethodType.SphereSearch;
+
+            DesignPointWrapper designPoint = form.GetDesignPoint(modelRunner);
+
+            Assert.AreEqual(2.5, designPoint.Beta, margin);
+        }
+
+        [Test]
+        public void TestConvexRaySensitivityStartPoint()
+        {
+            Project project = ProjectBuilder.GetConvexProject();
+
+            ModelRunnerWrapper modelRunner = new ModelRunnerWrapper(project.Function, project.Stochasts, project.CorrelationMatrix, null);
+
+            FORMWrapper form = new FORMWrapper();
+            form.Settings.StartPointCalculatorSettings.StartMethod = StartMethodType.SensitivitySearch;
+
+            DesignPointWrapper designPoint = form.GetDesignPoint(modelRunner);
+
+            Assert.AreEqual(2.5, designPoint.Beta, margin);
+        }
+
+        [Test]
         public void TestNoisy()
         {
             Project project = ProjectBuilder.GetNoisyProject();

@@ -12,7 +12,7 @@ namespace Deltares
         {
         public:
             GradientCalculator() {}
-            GradientSettings* Settings = nullptr;
+            GradientSettings* Settings = new GradientSettings();
             std::vector<double> getGradient(Models::ZModelRunner* modelRunner, Sample* sample);
         };
     }

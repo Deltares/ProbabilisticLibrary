@@ -58,4 +58,15 @@ Sample* Sample::multiply(double factor)
 	return multipliedSample;
 }
 
+void Sample::correctSmallValues(double tolerance)
+{
+	for (int k = 0; k < this->getSize(); k++)
+	{
+		if (std::abs(this->Values[k]) < tolerance)
+		{
+			this->Values[k] = 0;
+		}
+	}
+}
+
 

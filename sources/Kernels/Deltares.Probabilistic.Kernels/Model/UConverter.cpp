@@ -4,6 +4,8 @@
 #include "../Reliability/StochastSettings.h"
 #include "../Reliability/StochastSettingsSet.h"
 
+#include <memory>
+
 UConverter::UConverter(std::vector<Deltares::Statistics::Stochast*> stochasts, CorrelationMatrix* correlationMatrix)
 {
 	this->stochasts.clear();
@@ -71,19 +73,23 @@ int UConverter::getVaryingStochastCount()
 void UConverter::updateStochastSettings(Deltares::Reliability::StochastSettingsSet* settings)
 {
 	settings->VaryingStochastCount = this->varyingStochasts.size();
-	settings->VaryingStochastSettings = new Deltares::Reliability::StochastSettings * [settings->VaryingStochastCount];
+	settings->VaryingStochastSettings.clear();
 
 	int j = 0;
-	for (int i = 0; i < stochasts.size(); i++)
+	for (size_t i = 0; i < stochasts.size(); i++)
 	{
 		if (stochasts[i]->isVarying() && !checkFullyCorrelated(i))
 		{
-			settings->VaryingStochastSettings[j] = i < settings->StochastCount ? settings->StochastSettings[i] : new Deltares::Reliability::StochastSettings();
-			settings->VaryingStochastSettings[j]->StochastIndex = i;
-			settings->VaryingStochastSettings[j]->IsQualitative = varyingStochasts[j]->isQualitative();
-			settings->VaryingStochastSettings[j]->setStochast(varyingStochasts[j]);
+			Deltares::Reliability::StochastSettings* varyingStochastSettings = i < settings->StochastSettings.size() ? settings->StochastSettings[i] : new Deltares::Reliability::StochastSettings();
 
-			settings->VaryingStochastSettings[j]->initializeForRun();
+			varyingStochastSettings = i < settings->StochastSettings.size() ? settings->StochastSettings[i] : new Deltares::Reliability::StochastSettings();
+			varyingStochastSettings->StochastIndex = i;
+			varyingStochastSettings->IsQualitative = varyingStochasts[j]->isQualitative();
+			varyingStochastSettings->setStochast(varyingStochasts[j]);
+
+			varyingStochastSettings->initializeForRun();
+
+			settings->VaryingStochastSettings.push_back(varyingStochastSettings);
 
 			j++;
 		}

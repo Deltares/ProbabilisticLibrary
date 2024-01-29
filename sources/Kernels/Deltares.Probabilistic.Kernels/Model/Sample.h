@@ -47,6 +47,7 @@ public:
 	Sample* clone();
 	Sample* normalize(double beta = 1);
 	Sample* multiply(double factor);
+	void correctSmallValues(double tolerance = 1E-10);
 
 	intptr_t Tag = 0;
 };

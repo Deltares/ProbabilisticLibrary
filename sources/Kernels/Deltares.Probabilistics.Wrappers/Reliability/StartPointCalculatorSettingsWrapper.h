@@ -37,6 +37,12 @@ namespace Deltares
 					void set(double value) { m_settings->MaximumLengthStartPoint = value; }
 				}
 
+				property double GradientStepSize
+				{
+					double get() { return m_settings->GradientStepSize; }
+					void set(double value) { m_settings->GradientStepSize = value; }
+				}
+
 				property double RadiusSphereSearch
 				{
 					double get() { return m_settings->RadiusSphereSearch; }
@@ -77,10 +83,10 @@ namespace Deltares
 					m_settings->StochastSet = new Deltares::Reliability::StochastSettingsSet();
 
 					m_settings->StochastSet->StochastCount = StochastSettings->Count;
-					m_settings->StochastSet->StochastSettings = new Deltares::Reliability::StochastSettings * [m_settings->StochastSet->StochastCount];
+					m_settings->StochastSet->StochastSettings.clear();
 					for (int i = 0; i < StochastSettings->Count; i++)
 					{
-						m_settings->StochastSet->StochastSettings[i] = StochastSettings[i]->getSettings();
+						m_settings->StochastSet->StochastSettings.push_back(StochastSettings[i]->getSettings());
 					}
 
 					return m_settings;
