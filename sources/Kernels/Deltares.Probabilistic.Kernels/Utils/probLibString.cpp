@@ -34,7 +34,11 @@ namespace Deltares {
         std::string probLibString::double2str(const double x) const
         {
             char buffer[32];
+#ifdef _WIN32
             sprintf_s(buffer, "%15.6f", x);
+#else
+            snprintf(buffer, 32, "%15.6f", x);
+#endif // _WIN32
             std::string retval = buffer;
             return retval;
         }

@@ -167,7 +167,7 @@ namespace Deltares
         {
             const double margin = 1e-35;
             double beta;
-            if (isnan(q))
+            if (std::isnan(q))
             {
                 return nan("");
             }

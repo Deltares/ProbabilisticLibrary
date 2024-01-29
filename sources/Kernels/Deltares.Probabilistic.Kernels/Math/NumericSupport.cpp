@@ -4,7 +4,7 @@
 #include <exception>
 
 #include "Constants.h"
-
+#include "../Utils/probLibException.h"
 
 double NumericSupport::GetSign(double value)
 {
@@ -71,7 +71,7 @@ double NumericSupport::Divide(int counter, int denominator)
 
 bool NumericSupport::areEqual(double x1, double x2, double tolerance)
 {
-	if (isnan(x1) && isnan(x2))
+	if (std::isnan(x1) && std::isnan(x2))
 	{
 		return true;
 	}
@@ -142,7 +142,7 @@ double NumericSupport::getSign(DoubleType doubleType)
 		return nan("");
 	default:
 		//C# TO C++ CONVERTER TASK: There is no C++ equivalent to 'ToString':
-		throw new std::exception("double type not supported");
+		throw Deltares::ProbLibCore::probLibException("double type not supported");
 	}
 }
 

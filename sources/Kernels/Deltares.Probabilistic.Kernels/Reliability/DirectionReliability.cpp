@@ -173,7 +173,7 @@ namespace Deltares
 			}
 
 			bool found = false;
-			bool monotone = settings->ModelVaryingType == ModelVaryingType::Monotone;
+			bool monotone = settings->modelVaryingType == ModelVaryingType::Monotone;
 			std::unique_ptr<ZGetter> model (new ZGetter(modelRunner));
 
 			double prevzHigh = nan("");

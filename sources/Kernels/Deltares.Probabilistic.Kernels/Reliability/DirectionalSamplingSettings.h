@@ -15,10 +15,15 @@ namespace Deltares
             int MinimumSamples = 1000;
             int MaximumSamples = 10000;
             double VariationCoefficient = 0.05;
-            DesignPointMethod DesignPointMethod = DesignPointMethod::CenterOfGravity;
+            DesignPointMethod designPointMethod = DesignPointMethod::CenterOfGravity;
             DirectionReliabilitySettings* DirectionSettings = new DirectionReliabilitySettings();
-            RandomSettings* RandomSettings = new ::RandomSettings();
+            RandomSettings* randomSettings = new ::RandomSettings();
             StochastSettingsSet* StochastSet = new StochastSettingsSet();
+            ~DirectionalSamplingSettings()
+            {
+                delete randomSettings;
+                delete StochastSet;
+            }
         };
     }
 }

@@ -20,7 +20,7 @@ namespace Deltares
 				CrudeMonteCarloSettingsWrapper()
 				{
 					m_settings = new Reliability::CrudeMonteCarloSettings();
-					m_settings->RandomSettings = RandomSettings->GetSettings();
+					m_settings->randomSettings = RandomSettings->GetSettings();
 				}
 				~CrudeMonteCarloSettingsWrapper() { this->!CrudeMonteCarloSettingsWrapper(); }
 				!CrudeMonteCarloSettingsWrapper() { delete m_settings; }

@@ -1,5 +1,3 @@
-#pragma once
-
 #include "GradientCalculator.h"
 
 #include <vector>
@@ -22,7 +20,7 @@ namespace Deltares
             // first sample is the sample itself
             samples.push_back(sample);
 
-            if (Settings->GradientType == OneDirection)
+            if (Settings->gradientType == OneDirection)
             {
                 double du = Settings->StepSize * 0.5;
                 for (int k = 0; k < nstochasts; k++)

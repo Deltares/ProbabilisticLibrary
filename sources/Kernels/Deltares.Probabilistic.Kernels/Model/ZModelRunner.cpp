@@ -2,7 +2,12 @@
 #include "DesignPoint.h"
 #include "../Math/NumericSupport.h"
 #include <stdarg.h>
+#include <cmath>
+#if __has_include(<format>)
 #include <format>
+#else
+#include "../Utils/probLibString.h"
+#endif
 
 namespace Deltares
 {
@@ -164,7 +169,7 @@ namespace Deltares
 				double progressIndicator = NumericSupport::Divide(report->Step, report->MaxSteps);
 
 				double convergence = report->ConvBeta;
-				if (isnan(convergence))
+				if (std::isnan(convergence))
 				{
 					convergence = report->Variation;
 				}
@@ -172,7 +177,12 @@ namespace Deltares
 				this->progressIndicator->doProgress(progressIndicator);
 				this->progressIndicator->doDetailedProgress(report->Step, report->Loop, report->Reliability, convergence);
 
+#ifdef __cpp_lib_format
 				auto text = std::format("{}/{}, Reliability = {:.3f}, Convergence = {:.3f}", report->Step, report->MaxSteps, report->Reliability, convergence);
+#else
+				auto pl = Deltares::ProbLibCore::probLibString();
+				auto text = "Reliability = " + pl.double2str(report->Reliability);
+#endif
 
 				this->progressIndicator->doTextualProgress(ProgressType::Detailed, text);
 			}
@@ -203,7 +213,7 @@ namespace Deltares
 
 			designPoint->Identifier = identifier;
 			designPoint->ScenarioIndex = scenarioIndex;
-			designPoint->ConvergenceReport = convergenceReport;
+			designPoint->convergenceReport = convergenceReport;
 
 			for (size_t i = 0; i < this->reliabilityResults.size(); i++)
 			{

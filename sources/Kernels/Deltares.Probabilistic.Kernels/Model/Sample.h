@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <vector>
+#include <cstdint>
 #include "../Math/NumericSupport.h"
 
 

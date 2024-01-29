@@ -7,6 +7,7 @@
 #include "Randomizers/GeorgeMarsagliaRandomValueGenerator.h"
 #include "Randomizers/ModifiedKnuthSubtractiveRandomValueGenerator.h"
 #include "Randomizers/RandomValueGenerator.h"
+#include "../Utils/probLibException.h"
 
 
 namespace Deltares
@@ -20,7 +21,7 @@ namespace Deltares
 			case MersenneTwister: Random::randomValueGenerator = new MersenneTwisterRandomValueGenerator(); break;
 			case GeorgeMarsaglia: Random::randomValueGenerator = new GeorgeMarsagliaRandomValueGenerator(); break;
 			case ModifiedKnuthSubtractive: Random::randomValueGenerator = new ModifiedKnuthSubtractiveRandomValueGenerator(); break;
-			default: throw std::exception("Generator type not supported");
+			default: throw Deltares::ProbLibCore::probLibException("Generator type not supported");
 			}
 
 			Random::repeatable = repeatable;

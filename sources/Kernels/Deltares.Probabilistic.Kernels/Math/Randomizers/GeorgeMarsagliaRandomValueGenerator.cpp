@@ -1,9 +1,9 @@
 #include "GeorgeMarsagliaRandomValueGenerator.h"
 
-#include <exception>
 #include <cmath>
 
 #include "RandomValueGenerator.h"
+#include "../../Utils/probLibException.h"
 
 //> @file
 // This file contains the random number generator proposed by George Marsaglia in
@@ -40,11 +40,11 @@ void GeorgeMarsagliaRandomValueGenerator::initialize(bool repeatable, const int 
     //
     if (ij < 0 || ij > 31328)
     {
-        throw std::exception ("Random seed parameter 1 outside of valid range (0 ... 31328)", ij);
+        throw Deltares::ProbLibCore::probLibException ("Random seed parameter 1 outside of valid range (0 ... 31328)", ij);
     }
     if (kl < 0 || kl > 30081)
     {
-        throw std::exception("Random seed parameter 2 outside of valid range (0 ... 30081)", kl);
+        throw Deltares::ProbLibCore::probLibException("Random seed parameter 2 outside of valid range (0 ... 30081)", kl);
     }
 
     gm_state& state = GeorgeMarsagliaRandomValueGenerator::state;

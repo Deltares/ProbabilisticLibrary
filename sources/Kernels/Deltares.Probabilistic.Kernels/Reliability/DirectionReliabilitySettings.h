@@ -12,7 +12,7 @@ namespace Deltares
 		class DirectionReliabilitySettings
 		{
 		public:
-			ModelVaryingType ModelVaryingType = ModelVaryingType::Monotone;
+			ModelVaryingType modelVaryingType = ModelVaryingType::Monotone;
 			double MaximumLengthU = 20;
 			double Dsdu = 1;
 			double EpsilonUStepSize = 0.01;

@@ -57,7 +57,7 @@ namespace Deltares
 				{
 					Kernels::VaryingType get()
 					{
-						switch (m_settings->ModelVaryingType)
+						switch (m_settings->modelVaryingType)
 						{
 						case Reliability::Monotone: return Kernels::VaryingType::Monotone;
 						case Reliability::Varying: return Kernels::VaryingType::Varying;
@@ -68,8 +68,8 @@ namespace Deltares
 					{
 						switch (value)
 						{
-						case Kernels::VaryingType::Monotone: m_settings->ModelVaryingType = Reliability::Monotone; break;
-						case Kernels::VaryingType::Varying: m_settings->ModelVaryingType = Reliability::Varying; break;
+						case Kernels::VaryingType::Monotone: m_settings->modelVaryingType = Reliability::Monotone; break;
+						case Kernels::VaryingType::Varying: m_settings->modelVaryingType = Reliability::Varying; break;
 						default: throw gcnew System::NotSupportedException("Model varying type");
 						}
 					}

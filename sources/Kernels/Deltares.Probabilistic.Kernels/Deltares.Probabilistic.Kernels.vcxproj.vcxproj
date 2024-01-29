@@ -242,7 +242,6 @@
     <ClCompile Include="Reliability\DirectionalSampling.cpp" />
     <ClCompile Include="Reliability\DirectionalSamplingSettings.cpp" />
     <ClCompile Include="Math\Constants.cpp" />
-    <ClCompile Include="CWrapper\probCalcF2Cnew.cpp" />
     <ClCompile Include="Statistics\Distributions\GumbelDistribution.cpp" />
     <ClCompile Include="Math\RootFinders\LinearRootFinder.cpp" />
     <ClCompile Include="Reliability\DirectionReliability.cpp" />

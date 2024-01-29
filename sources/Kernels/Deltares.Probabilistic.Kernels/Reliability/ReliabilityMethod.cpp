@@ -11,7 +11,7 @@ namespace Deltares
 	{
 		int ReliabilityMethod::getZFactor(double z)
 		{
-			return isnan(z) || z > 0.0 ? 1 : -1;
+			return std::isnan(z) || z > 0.0 ? 1 : -1;
 		}
 
 		bool ReliabilityMethod::isStopped()

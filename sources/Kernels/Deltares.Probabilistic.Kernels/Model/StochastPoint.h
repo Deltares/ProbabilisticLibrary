@@ -12,5 +12,6 @@ public:
 	std::vector<StochastPointAlpha*> Alphas;
 
 	Sample* getSample();
+	virtual ~StochastPoint() { ; }
 };
 

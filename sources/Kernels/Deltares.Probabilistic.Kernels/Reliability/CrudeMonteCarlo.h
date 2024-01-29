@@ -16,6 +16,10 @@ namespace Deltares
 		public:
 			Deltares::Reliability::CrudeMonteCarloSettings* Settings = new Deltares::Reliability::CrudeMonteCarloSettings();
 			DesignPoint* getDesignPoint(Deltares::Models::ZModelRunner* modelRunner) override;
+			~CrudeMonteCarlo()
+			{
+				delete Settings;
+			}
 		};
 	}
 }
