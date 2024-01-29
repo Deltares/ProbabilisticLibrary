@@ -4,7 +4,7 @@
 #include "../Deltares.Probabilistic.Kernels/Model/ProgressIndicator.h"
 #include "../Deltares.Probabilistic.Kernels/Reliability/ReliabilityMethod.h"
 
-typedef std::function <bool(Deltares::Models::ProgressType, std::string)> progressFuncExt;
+typedef std::function <bool(Deltares::Models::ProgressType, const char*)> progressFuncExt;
 
 class progressWrapper
 {
