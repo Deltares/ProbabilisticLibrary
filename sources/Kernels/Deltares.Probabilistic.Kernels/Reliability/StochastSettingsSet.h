@@ -19,6 +19,11 @@ namespace Deltares
 			{
 				loadStochastPoint(stochastPoint);
 			}
+			~StochastSettingsSet()
+			{
+				int k = 1;
+			}
+
 
 			std::vector<StochastSettings*> StochastSettings;
 			int getStochastCount()
