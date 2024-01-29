@@ -19,14 +19,17 @@ namespace Deltares
 			{
 				loadStochastPoint(stochastPoint);
 			}
+			~StochastSettingsSet()
+			{
+				int k = 1;
+			}
+
 
 			std::vector<StochastSettings*> StochastSettings;
 			int getStochastCount()
 			{
 				return static_cast<int>(this->StochastSettings.size());
 			}
-
-			//int StochastCount = 0;
 
 			std::vector<Deltares::Reliability::StochastSettings*> VaryingStochastSettings;
 			int getVaryingStochastCount()
