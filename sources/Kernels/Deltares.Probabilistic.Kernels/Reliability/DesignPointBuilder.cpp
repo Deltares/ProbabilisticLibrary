@@ -65,7 +65,7 @@ namespace Deltares
 			cosSample = new Sample(count);
 
 			this->qualitativeCount = 0;
-			for (int i = 0; i < stochastSet->VaryingStochastCount; i++)
+			for (int i = 0; i < stochastSet->getVaryingStochastCount(); i++)
 			{
 				if (stochastSet->VaryingStochastSettings[i]->IsQualitative)
 				{
@@ -77,7 +77,7 @@ namespace Deltares
 			this->modeFinders = new ModeFinder * [this->qualitativeCount];
 
 			int j = 0;
-			for (int i = 0; i < stochastSet->VaryingStochastCount; i++)
+			for (int i = 0; i < stochastSet->getVaryingStochastCount(); i++)
 			{
 				if (stochastSet->VaryingStochastSettings[i]->IsQualitative)
 				{

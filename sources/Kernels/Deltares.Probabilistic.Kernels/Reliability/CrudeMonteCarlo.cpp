@@ -25,9 +25,9 @@ namespace Deltares
 			double qRange = 1;
 			double zRemainder = 1;
 
-			Sample* remainderSample = new Sample(this->Settings->StochastSet->VaryingStochastCount);
+			Sample* remainderSample = new Sample(this->Settings->StochastSet->getVaryingStochastCount());
 
-			for (int i = 0; i < this->Settings->StochastSet->VaryingStochastCount; i++)
+			for (int i = 0; i < this->Settings->StochastSet->getVaryingStochastCount(); i++)
 			{
 				if (!this->Settings->StochastSet->VaryingStochastSettings[i]->isMinMaxDefault())
 				{

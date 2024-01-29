@@ -9,10 +9,9 @@ namespace Deltares
 	{
 		void StochastSettingsSet::loadStochastPoint(StochastPoint* stochastPoint)
 		{
-			this->StochastCount = stochastPoint->Alphas.size();
 			this->StochastSettings.clear();
 
-			for (int i = 0; i < this->StochastCount; i++)
+			for (size_t i = 0; i < stochastPoint->Alphas.size(); i++)
 			{
 				Deltares::Reliability::StochastSettings* settings = new Deltares::Reliability::StochastSettings();
 				settings->StartValue = stochastPoint->Alphas[i]->U;
@@ -24,9 +23,9 @@ namespace Deltares
 
 		Sample* StochastSettingsSet::getSample()
 		{
-			Sample* sample = new Sample(this->VaryingStochastCount);
+			Sample* sample = new Sample(this->getVaryingStochastCount());
 
-			for (int i = 0; i < this->VaryingStochastCount; i++)
+			for (int i = 0; i < this->getVaryingStochastCount(); i++)
 			{
 				sample->Values[i] = this->VaryingStochastSettings[i]->StartValue;
 			}

@@ -17,14 +17,14 @@ void RandomSampleGenerator::restart()
 Sample* RandomSampleGenerator::getRandomSample()
 {
 	auto randomValues = std::vector<double>();
-	for (int i = 0; i < this->Settings->StochastSet->StochastCount; i++)
+	for (int i = 0; i < this->Settings->StochastSet->getStochastCount(); i++)
 	{
 		randomValues.push_back(Deltares::Numeric::Random::next());
 	}
 
-	Sample* sample = new Sample(this->Settings->StochastSet->VaryingStochastCount);
+	Sample* sample = new Sample(this->Settings->StochastSet->getVaryingStochastCount());
 
-	for (int i = 0; i < this->Settings->StochastSet->VaryingStochastCount; i++)
+	for (int i = 0; i < this->Settings->StochastSet->getVaryingStochastCount(); i++)
 	{
 		double x = randomValues[this->Settings->StochastSet->VaryingStochastSettings[i]->StochastIndex];
 		sample->Values[i] = Deltares::Statistics::StandardNormal::getUFromQ(x);

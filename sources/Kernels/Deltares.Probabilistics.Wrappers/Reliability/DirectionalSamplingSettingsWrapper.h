@@ -59,7 +59,6 @@ namespace Deltares
 				{
 					m_settings->StochastSet = new Deltares::Reliability::StochastSettingsSet();
 
-					m_settings->StochastSet->StochastCount = StochastSettings->Count;
 					m_settings->StochastSet->StochastSettings.clear();
 					for (int i = 0; i < StochastSettings->Count; i++)
 					{

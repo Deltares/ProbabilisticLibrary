@@ -72,7 +72,12 @@ int UConverter::getVaryingStochastCount()
 
 void UConverter::updateStochastSettings(Deltares::Reliability::StochastSettingsSet* settings)
 {
-	settings->VaryingStochastCount = this->varyingStochasts.size();
+	for (size_t i = settings->getStochastCount(); i < stochasts.size(); i++)
+	{
+		Deltares::Reliability::StochastSettings* stochastSettings = new Deltares::Reliability::StochastSettings();
+		settings->StochastSettings.push_back(stochastSettings);
+	}
+
 	settings->VaryingStochastSettings.clear();
 
 	int j = 0;
@@ -80,9 +85,8 @@ void UConverter::updateStochastSettings(Deltares::Reliability::StochastSettingsS
 	{
 		if (stochasts[i]->isVarying() && !checkFullyCorrelated(i))
 		{
-			Deltares::Reliability::StochastSettings* varyingStochastSettings = i < settings->StochastSettings.size() ? settings->StochastSettings[i] : new Deltares::Reliability::StochastSettings();
+			Deltares::Reliability::StochastSettings* varyingStochastSettings = settings->StochastSettings[i];
 
-			varyingStochastSettings = i < settings->StochastSettings.size() ? settings->StochastSettings[i] : new Deltares::Reliability::StochastSettings();
 			varyingStochastSettings->StochastIndex = i;
 			varyingStochastSettings->IsQualitative = varyingStochasts[j]->isQualitative();
 			varyingStochastSettings->setStochast(varyingStochasts[j]);
@@ -94,8 +98,6 @@ void UConverter::updateStochastSettings(Deltares::Reliability::StochastSettingsS
 			j++;
 		}
 	}
-
-	settings->StochastCount = this->stochasts.size();
 }
 
 void UConverter::updateDependedParameter(std::vector<double> & uValues, const int i)
