@@ -16,10 +16,6 @@ namespace Deltares
 			double RadiusSphereSearch = 10;
 
 			StochastSettingsSet* StochastSet = new StochastSettingsSet();
-			~StartPointCalculatorSettings()
-			{
-				delete StochastSet;
-			}
 		};
 	}
 }

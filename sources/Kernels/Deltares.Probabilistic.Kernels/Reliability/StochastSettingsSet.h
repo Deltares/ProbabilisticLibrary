@@ -26,8 +26,6 @@ namespace Deltares
 				return static_cast<int>(this->StochastSettings.size());
 			}
 
-			//int StochastCount = 0;
-
 			std::vector<Deltares::Reliability::StochastSettings*> VaryingStochastSettings;
 			int getVaryingStochastCount()
 			{
