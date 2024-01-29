@@ -21,8 +21,8 @@ namespace Deltares
             StochastSettingsSet* StochastSet = new StochastSettingsSet();
             ~FORMSettings()
             {
-                delete GradientSettings;
-                delete StartPointSettings;
+                //delete GradientSettings;
+                //delete StartPointSettings;
             }
         };
     }

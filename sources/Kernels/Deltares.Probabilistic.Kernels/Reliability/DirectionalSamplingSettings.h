@@ -21,8 +21,8 @@ namespace Deltares
             StochastSettingsSet* StochastSet = new StochastSettingsSet();
             ~DirectionalSamplingSettings()
             {
-                delete randomSettings;
-                delete StochastSet;
+                //delete randomSettings;
+                //delete StochastSet;
             }
         };
     }

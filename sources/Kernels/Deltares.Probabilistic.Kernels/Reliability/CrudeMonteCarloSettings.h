@@ -19,8 +19,8 @@ namespace Deltares
             StochastSettingsSet* StochastSet = new StochastSettingsSet();
             ~CrudeMonteCarloSettings()
             {
-                delete randomSettings;
-                delete StochastSet;
+                //delete randomSettings;
+                //delete StochastSet;
             }
         };
     }

@@ -40,22 +40,15 @@ extern "C"
 void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n, const int vectorSize,
     corrStruct correlations[], const int nrCorrelations,
     const double(*fx)(double[], int[], tError*),
-    const bool(*pc)(ProgressType, std::string),
+    const bool(*pc)(ProgressType, const char*),
     int compIds[], int iPoint[], double x[], tResult* r, tError* ierr)
 {
-    auto nStoch = (size_t)n;
-    auto fw = funcWrapper();
-    auto pw = progressWrapper();
-    fw.allStoch = vectorSize;
-    fw.iPointer = iPoint;
-    fw.xRef = x;
-    size_t numThreads = (size_t)method->numThreads;
-    omp_set_num_threads(method->numThreads);
-
-    fw.zfunc = fx;
-    pw.externalProgressFunc = pc;
     try
     {
+        auto nStoch = (size_t)n;
+        auto fw = funcWrapper(vectorSize, iPoint, x, fx);
+        omp_set_num_threads(method->numThreads);
+
         auto cntDeterminists = 0;
         auto stochast = std::vector<Deltares::Statistics::Stochast*>();
         for (size_t i = 0; i < nStoch; i++)
@@ -115,7 +108,6 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
 
         auto createRelM = createReliabilityMethod();
         std::unique_ptr<ReliabilityMethod> relMethod(createRelM.selectMethod(*method));
-        pw.pntrToReliabilityMethod = relMethod.get();
         std::unique_ptr<ZModel> zModel(new ZModel([&fw](Sample* v) { return fw.FDelegate(v); }));
         std::unique_ptr<CorrelationMatrix> corr(new CorrelationMatrix());
         if (nrCorrelations > 0)
@@ -128,6 +120,7 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
         }
         std::unique_ptr<UConverter> uConverter(new UConverter(stochast, corr.get()));
         uConverter->initializeForRun();
+        auto pw = progressWrapper(pc, relMethod.get());
         auto progressDelegate = ProgressDelegate();
         auto detailedProgressDelegate = DetailedProgressDelegate();
         auto textualProgress = TextualProgressLambda([&pw](ProgressType p, std::string s) {pw.FPgDelegate(p, s); });
@@ -177,6 +170,12 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
         if (r->samplesNeeded < 0)
         {
             r->samplesNeeded = (int)round(newResult->convergenceReport->FailedSamples / newResult->convergenceReport->FailFraction);
+        }
+
+        // clean up
+        for (size_t i = 0; i < stochast.size(); i++)
+        {
+            delete stochast[i];
         }
     }
     catch (const std::exception& e)
