@@ -110,7 +110,7 @@ void CorrelationMatrix::filter(const CorrelationMatrix* m, const std::vector<int
     {
         if (index[i] == -2)
         {
-            newIndexer[i].first = -2;  // not varying stochast
+            newIndexer[i].index = -2;  // not varying stochast
         }
         else if (index[i] == -1)
         {
@@ -119,14 +119,14 @@ void CorrelationMatrix::filter(const CorrelationMatrix* m, const std::vector<int
             for (;;)
             {
                 auto dependent = m->findDependent(ii);
-                dependent.second *= correlation;
-                if (index[dependent.first] >= 0)
+                dependent.correlation *= correlation;
+                if (index[dependent.index] >= 0)
                 {
                     newIndexer[i] = dependent;
                     break;
                 }
-                ii = dependent.first;
-                correlation = dependent.second;
+                ii = dependent.index;
+                correlation = dependent.correlation;
             }
         }
     }
@@ -149,7 +149,7 @@ int CorrelationMatrix::findNewIndex(const std::vector<int> index, const size_t i
     return newIndex-1;
 }
 
-std::pair<int, double> CorrelationMatrix::findDependent(const int j) const
+indexWithCorrelation CorrelationMatrix::findDependent(const int j) const
 {
     if (indexer.size() > 0)
     {

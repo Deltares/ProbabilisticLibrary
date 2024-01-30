@@ -2,7 +2,11 @@
 #include "../Math/matrix.h"
 #include <vector>
 
-typedef std::pair<int, double> indexWithCorrelation;
+struct indexWithCorrelation
+{
+    int index;
+    double correlation;
+};
 
 class CorrelationMatrix
 {

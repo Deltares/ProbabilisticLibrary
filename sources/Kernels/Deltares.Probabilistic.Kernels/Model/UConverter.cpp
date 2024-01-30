@@ -104,9 +104,9 @@ void UConverter::updateStochastSettings(Deltares::Reliability::StochastSettingsS
 void UConverter::updateDependedParameter(std::vector<double> & uValues, const int i)
 {
 	auto r = varyingCorrelationMatrix->findDependent(i);
-	if (r.first >= 0)
+	if (r.index >= 0)
 	{
-		uValues[i] = r.second * uValues[r.first];
+		uValues[i] = r.correlation * uValues[r.index];
 	}
 }
 
