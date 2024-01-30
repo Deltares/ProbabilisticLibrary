@@ -102,7 +102,7 @@ void UConverter::updateStochastSettings(Deltares::Reliability::StochastSettingsS
 
 void UConverter::updateDependedParameter(std::vector<double> & uValues, const int i)
 {
-	auto r = correlationMatrix->findDependent(i);
+	auto r = varyingCorrelationMatrix->findDependent(i);
 	if (r.first >= 0)
 	{
 		uValues[i] = r.second * uValues[r.first];
@@ -121,7 +121,12 @@ std::vector<double> UConverter::getExpandedValues(const std::vector<double> & va
 			uValues[i] = values[ii];
 			ii++;
 		}
-		else
+	}
+
+	for (int i = 0; i < this->stochasts.size(); i++)
+	{
+		const int varyingIndex = this->varyingStochastIndex[i];
+		if (varyingIndex < 0)
 		{
 			updateDependedParameter(uValues, i);
 		}

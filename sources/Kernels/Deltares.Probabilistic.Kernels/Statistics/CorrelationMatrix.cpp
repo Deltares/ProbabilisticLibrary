@@ -103,6 +103,29 @@ void CorrelationMatrix::filter(const CorrelationMatrix* m, const std::vector<int
             }
         }
     }
+
+    auto newIndexer = std::vector<indexWithCorrelation>(m1);
+    for (size_t i = 0; i < m1; i++)
+    {
+        if (index[i] < 0)
+        {
+            auto ii = i;
+            double correlation = 1.0;
+            for (;;)
+            {
+                auto dependent = m->findDependent(ii);
+                dependent.second *= correlation;
+                if (index[dependent.first] >= 0)
+                {
+                    newIndexer[i] = dependent;
+                    break;
+                }
+                ii = dependent.first;
+                correlation = dependent.second;
+            }
+        }
+    }
+    indexer = newIndexer;
 }
 
 void CorrelationMatrix::resolveConflictingCorrelations()
@@ -121,8 +144,13 @@ int CorrelationMatrix::findNewIndex(const std::vector<int> index, const size_t i
     return newIndex-1;
 }
 
-std::pair<int, double> CorrelationMatrix::findDependent(const int j)
+std::pair<int, double> CorrelationMatrix::findDependent(const int j) const
 {
+    if (indexer.size() > 0)
+    {
+        return indexer[j];
+    }
+
     size_t m1; size_t m2;
     matrix.get_dims(m1, m2);
     for (size_t i = 0; i < m2; i++)

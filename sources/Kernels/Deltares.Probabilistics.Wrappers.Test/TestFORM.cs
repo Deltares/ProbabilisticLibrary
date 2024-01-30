@@ -106,7 +106,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
         [Test]
         public void TestLinearMultiCorrelated()
         {
-            Project project = ProjectBuilder.GetLinearMultiCorrelatedProject();
+            Project project = ProjectBuilder.GetLinearMultiCorrelatedProject(false);
 
             //Assert.IsFalse(project.CorrelationMatrix.IsValid());
 
@@ -131,6 +131,37 @@ namespace Deltares.Probabilistics.Wrappers.Test
             Assert.AreEqual(designPoint.Alphas[0].AlphaCorrelated, designPoint.Alphas[1].AlphaCorrelated, margin);
             Assert.AreEqual(designPoint.Alphas[0].AlphaCorrelated, designPoint.Alphas[2].AlphaCorrelated, margin);
         }
+
+        [Test]
+        public void TestLinearMultiCorrelatedSwitchOrder()
+        {
+            Project project = ProjectBuilder.GetLinearMultiCorrelatedProject(true);
+
+            //Assert.IsFalse(project.CorrelationMatrix.IsValid());
+
+            project.CorrelationMatrix.ResolveConflictingCorrelations();
+
+            //Assert.IsTrue(project.CorrelationMatrix.IsValid());
+
+            ModelRunnerWrapper modelRunner = new ModelRunnerWrapper(project.Function, project.Stochasts, project.CorrelationMatrix, null);
+
+            FORMWrapper form = new FORMWrapper();
+            DesignPointWrapper designPoint = form.GetDesignPoint(modelRunner);
+
+            Assert.AreEqual(1.65, designPoint.Beta, margin);
+
+            Assert.AreEqual(0.45, designPoint.Alphas[0].X, margin);
+            Assert.AreEqual(0.45, designPoint.Alphas[1].X, margin);
+            Assert.AreEqual(0.90, designPoint.Alphas[2].X, margin);
+
+            Assert.AreEqual(0.0, designPoint.Alphas[0].Alpha, margin);
+            Assert.AreEqual(0.0, designPoint.Alphas[1].Alpha, margin);
+            Assert.AreEqual(-1.0, designPoint.Alphas[2].Alpha, margin);
+
+            Assert.AreEqual(designPoint.Alphas[0].AlphaCorrelated, designPoint.Alphas[1].AlphaCorrelated, margin);
+            Assert.AreEqual(designPoint.Alphas[0].AlphaCorrelated, designPoint.Alphas[2].AlphaCorrelated, margin);
+        }
+
 
         [Test]
         public void TestLoadStrength()

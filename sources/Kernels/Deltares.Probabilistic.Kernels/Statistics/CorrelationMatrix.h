@@ -2,6 +2,8 @@
 #include "../Math/matrix.h"
 #include <vector>
 
+typedef std::pair<int, double> indexWithCorrelation;
+
 class CorrelationMatrix
 {
 public:
@@ -12,10 +14,11 @@ public:
     bool checkFullyCorrelated(const int i);
     void resolveConflictingCorrelations();
     void filter(const CorrelationMatrix* m, const std::vector<int> & index);
-    std::pair<int, double> findDependent(const int i);
+    indexWithCorrelation findDependent(const int i) const;
 private:
     Deltares::ProbLibCore::Matrix matrix = Deltares::ProbLibCore::Matrix(0,0);
     Deltares::ProbLibCore::Matrix choleskyMatrix = Deltares::ProbLibCore::Matrix(0, 0);
     int findNewIndex(const std::vector<int> index, const size_t i);
+    std::vector<indexWithCorrelation> indexer;
 };
 
