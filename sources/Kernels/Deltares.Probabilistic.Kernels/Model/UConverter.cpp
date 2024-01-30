@@ -38,7 +38,8 @@ void UConverter::initializeForRun()
 		}
 		else
 		{
-			this->varyingStochastIndex.push_back(-1);
+			int type = (this->stochasts[i]->isVarying() ? -1 : -2);
+			this->varyingStochastIndex.push_back(type);
 		}
 	}
 

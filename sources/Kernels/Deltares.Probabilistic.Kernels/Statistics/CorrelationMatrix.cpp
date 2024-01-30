@@ -104,10 +104,15 @@ void CorrelationMatrix::filter(const CorrelationMatrix* m, const std::vector<int
         }
     }
 
-    auto newIndexer = std::vector<indexWithCorrelation>(m1);
-    for (size_t i = 0; i < m1; i++)
+    auto nrAllStochasts = index.size();
+    auto newIndexer = std::vector<indexWithCorrelation>(nrAllStochasts);
+    for (size_t i = 0; i < nrAllStochasts; i++)
     {
-        if (index[i] < 0)
+        if (index[i] == -2)
+        {
+            newIndexer[i].first = -2;  // not varying stochast
+        }
+        else if (index[i] == -1)
         {
             auto ii = i;
             double correlation = 1.0;
