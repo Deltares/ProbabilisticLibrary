@@ -57,7 +57,7 @@ void CorrelationMatrix::SetCorrelation(const int i, const int j, const double va
     {
         throw probLibException("dimension mismatch in SetCorrelation");
     }
-    matrix(i, j) = value;
+    matrix(i, j) = std::min(std::max(value, -1.0), 1.0);
     if (abs(value) < 1.0)
     {
         matrix(j, i) = value;

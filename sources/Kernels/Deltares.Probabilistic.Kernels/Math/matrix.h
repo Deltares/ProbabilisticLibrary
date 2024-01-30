@@ -1,5 +1,6 @@
 #pragma once
 #include <iosfwd>
+#include <vector>
 #include "vector1D.h"
 #include "../Utils/probLibException.h"
 
@@ -40,7 +41,7 @@ namespace Deltares {
             }
 
         private:
-            double* m_data;
+            std::vector<double> m_data;
             size_t m_rows;
             size_t m_columns;
         };
