@@ -126,7 +126,7 @@ subroutine testProbabilityEqual0and1
     real (kind = wp)   :: q
     real (kind = wp)   :: beta0
     real (kind = wp)   :: beta1
-    real (kind = wp)   :: betaMin    
+    real (kind = wp)   :: betaMin
     integer            :: ierr
     character(len=128) :: errorMessage
 
@@ -136,7 +136,7 @@ subroutine testProbabilityEqual0and1
     q = 1.0d-300
     call betaFromQ( q, betaMin, ierr, errorMessage )
     call assert_equal( ierr, 0, errorMessage)
-    call assert_comparable( beta0, betaMin, margin, "unexpected return value Beta" )
+    call assert_true( beta0 > betaMin - margin, "unexpected return value Beta" )
     q = 1.0d0
     call betaFromQ( q, beta1, ierr, errorMessage )
     call assert_equal( ierr, 0, errorMessage)

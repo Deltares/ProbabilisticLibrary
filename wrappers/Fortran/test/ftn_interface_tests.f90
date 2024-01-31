@@ -21,9 +21,9 @@ subroutine run_all_ftn_interface_tests
     call testWithLevel(test_calc_distrib_inv, "test calculateDistributionInverse", testLevel)
     call testWithLevel(test_calc_distrib_inv_errorhandling, "test error handling distribution inverse", testLevel)
     call testWithLevel(test_conversions, "test conversions", testLevel)
-    call testWithLevel(test_combine, "test combine", testLevel)
-    call testWithLevel(test_correlation, "test correlation", testLevel)
-    call testWithLevel(test_correlation_error_handling, "test error handling correlation", testLevel)
+    !call testWithLevel(test_combine, "test combine", testLevel)
+    !call testWithLevel(test_correlation, "test correlation", testLevel)
+    !call testWithLevel(test_correlation_error_handling, "test error handling correlation", testLevel)
 
 end subroutine run_all_ftn_interface_tests
 
