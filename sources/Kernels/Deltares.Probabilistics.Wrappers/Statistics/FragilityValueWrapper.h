@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../../Deltares.Probabilistic.Kernels/Statistics/FragilityValue.h"
-#include "../../Deltares.Probabilistic.Kernels/Utils/SharedPointerProvider.h"
+#include "../Utils/SharedPointerProvider.h"
 
 namespace Deltares
 {
@@ -13,7 +13,7 @@ namespace Deltares
 			{
 			private:
 				Statistics::FragilityValue* m_value;
-				Utils::SharedPointerProvider<Statistics::FragilityValue>* sharedPointer;
+				SharedPointerProvider<Statistics::FragilityValue>* sharedPointer = new SharedPointerProvider<Statistics::FragilityValue>();
 			public:
 				FragilityValueWrapper()
 				{

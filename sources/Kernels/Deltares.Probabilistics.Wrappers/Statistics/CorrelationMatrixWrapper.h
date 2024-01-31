@@ -1,6 +1,7 @@
 #pragma once
 #include "StochastWrapper.h"
 #include "../../Deltares.Probabilistic.Kernels/Statistics/CorrelationMatrix.h"
+#include "../Utils/SharedPointerProvider.h"
 
 namespace Deltares
 {
@@ -12,7 +13,7 @@ namespace Deltares
 			{
 			private:
 				CorrelationMatrix* m_correlation_matrix;
-				Utils::SharedPointerProvider<CorrelationMatrix>* sharedPointer = new Utils::SharedPointerProvider<CorrelationMatrix>();
+				SharedPointerProvider<CorrelationMatrix>* sharedPointer = new SharedPointerProvider<CorrelationMatrix>();
 				System::Collections::Generic::List<StochastWrapper^> stochasts = gcnew System::Collections::Generic::List<StochastWrapper^>();
 
 			public:

@@ -2,7 +2,7 @@
 
 #include "StochastWrapper.h"
 #include "../../Deltares.Probabilistic.Kernels/Model/StochastPointAlpha.h"
-#include "../../Deltares.Probabilistic.Kernels/Utils/SharedPointerProvider.h"
+#include "../Utils/SharedPointerProvider.h"
 
 namespace Deltares
 {
@@ -15,7 +15,7 @@ namespace Deltares
 			private:
 				StochastPointAlpha* m_alpha;
 				StochastWrapper^ parameter = gcnew StochastWrapper();
-				Utils::SharedPointerProvider<StochastPointAlpha>* sharedPointer = new Utils::SharedPointerProvider<StochastPointAlpha>();
+				SharedPointerProvider<StochastPointAlpha>* sharedPointer = new SharedPointerProvider<StochastPointAlpha>();
 
 			public:
 				StochastPointAlphaWrapper()

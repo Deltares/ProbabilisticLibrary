@@ -7,7 +7,7 @@
 #include "../../Deltares.Probabilistic.Kernels/Model/ZModel.h"
 #include "../../Deltares.Probabilistic.Kernels/Model/ZModelRunner.h"
 #include "../../Deltares.Probabilistic.Kernels/Model/Sample.h"
-#include "../../Deltares.Probabilistic.Kernels/Utils/SharedPointerProvider.h"
+#include "../Utils/SharedPointerProvider.h"
 
 namespace Deltares
 {
@@ -21,7 +21,7 @@ namespace Deltares
 			{
 			private:
 				Models::ZModelRunner* modelRunner;
-				Utils::SharedPointerProvider<Models::ZModelRunner>* sharedPointer = new Utils::SharedPointerProvider<Models::ZModelRunner>();
+				SharedPointerProvider<Models::ZModelRunner>* sharedPointer = new SharedPointerProvider<Models::ZModelRunner>();
 
 				std::shared_ptr<Models::ZModel> getZModel();
 				Models::ZDelegate getZDelegate();

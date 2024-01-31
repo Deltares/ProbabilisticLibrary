@@ -1,7 +1,7 @@
 #pragma once
 #include "../../Deltares.Probabilistic.Kernels/Model/RunSettings.h"
 #include "../../Deltares.Probabilistic.Kernels/Model/Message.h"
-#include "../../Deltares.Probabilistic.Kernels/Utils/SharedPointerProvider.h"
+#include "../Utils/SharedPointerProvider.h"
 #include "MessageWrapper.h"
 
 namespace Deltares
@@ -14,7 +14,7 @@ namespace Deltares
 			{
 			private:
 				RunSettings* m_settings;
-				Utils::SharedPointerProvider<RunSettings>* sharedPointer = new Utils::SharedPointerProvider<RunSettings>();
+				SharedPointerProvider<RunSettings>* sharedPointer = new SharedPointerProvider<RunSettings>();
 
 			public:
 				RunSettingsWrapper() { m_settings = new RunSettings(); }

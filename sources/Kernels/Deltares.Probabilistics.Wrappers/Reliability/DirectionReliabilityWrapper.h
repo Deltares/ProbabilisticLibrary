@@ -13,7 +13,7 @@ namespace Deltares
 			{
 			private:
 				Reliability::DirectionReliability* method;
-				Utils::SharedPointerProvider<Reliability::DirectionReliability>* sharedPointer = new Utils::SharedPointerProvider<Reliability::DirectionReliability>();
+				SharedPointerProvider<Reliability::DirectionReliability>* sharedPointer = new SharedPointerProvider<Reliability::DirectionReliability>();
 			public:
 				DirectionReliabilityWrapper()
 				{

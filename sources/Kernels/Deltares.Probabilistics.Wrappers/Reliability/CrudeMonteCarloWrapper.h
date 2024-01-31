@@ -14,7 +14,7 @@ namespace Deltares
 			{
 			private:
 				Reliability::CrudeMonteCarlo* m_crude_monte_carlo;
-				Utils::SharedPointerProvider<Reliability::CrudeMonteCarlo>* sharedPointer = new Utils::SharedPointerProvider<Reliability::CrudeMonteCarlo>();
+				SharedPointerProvider<Reliability::CrudeMonteCarlo>* sharedPointer = new SharedPointerProvider<Reliability::CrudeMonteCarlo>();
 			public:
 				CrudeMonteCarloWrapper()
 				{

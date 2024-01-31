@@ -2,7 +2,7 @@
 #include "../../Deltares.Probabilistic.Kernels/Statistics/DistributionType.h"
 #include "../../Deltares.Probabilistic.Kernels/Statistics/Stochast.h"
 #include "../../Deltares.Probabilistic.Kernels/Statistics/StandardNormal.h"
-#include "../../Deltares.Probabilistic.Kernels/Utils/SharedPointerProvider.h"
+#include "../Utils/SharedPointerProvider.h"
 #include "../Utils/NativeSupport.h"
 #include "DiscreteValueWrapper.h"
 #include "HistogramValueWrapper.h"
@@ -20,7 +20,7 @@ namespace Deltares
 			{
 			private:
 				Statistics::Stochast* m_stochast;
-				Utils::SharedPointerProvider<Statistics::Stochast>* sharedPointer = new Utils::SharedPointerProvider<Statistics::Stochast>();
+				SharedPointerProvider<Statistics::Stochast>* sharedPointer = new SharedPointerProvider<Statistics::Stochast>();
 
 				System::Collections::Generic::List<DiscreteValueWrapper^>^ discreteValues = gcnew System::Collections::Generic::List<DiscreteValueWrapper^>();
 				System::Collections::Generic::List<HistogramValueWrapper^>^ histogramValues = gcnew System::Collections::Generic::List<HistogramValueWrapper^>();

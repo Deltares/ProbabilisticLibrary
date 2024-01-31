@@ -1,6 +1,6 @@
 #pragma once
 #include "../../Deltares.Probabilistic.Kernels/Model/RandomSettings.h"
-#include "../../Deltares.Probabilistic.Kernels/Utils/SharedPointerProvider.h"
+#include "../Utils/SharedPointerProvider.h"
 #include "RandomProvider.h"
 
 namespace Deltares
@@ -13,7 +13,7 @@ namespace Deltares
 			{
 			private:
 				RandomSettings* m_settings;
-				Utils::SharedPointerProvider<RandomSettings>* sharedPointer = new Utils::SharedPointerProvider<RandomSettings>();
+				SharedPointerProvider<RandomSettings>* sharedPointer = new SharedPointerProvider<RandomSettings>();
 
 			public:
 				RandomSettingsWrapper()

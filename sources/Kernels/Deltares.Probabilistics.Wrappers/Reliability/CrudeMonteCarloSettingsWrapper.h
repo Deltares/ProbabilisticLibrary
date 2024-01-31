@@ -4,7 +4,7 @@
 #include "../Statistics/StochastSettingsWrapper.h"
 #include "../../Deltares.Probabilistic.Kernels/Reliability/CrudeMonteCarloSettings.h"
 #include "../../Deltares.Probabilistic.Kernels/Reliability/StochastSettings.h"
-#include "../../Deltares.Probabilistic.Kernels/Utils/SharedPointerProvider.h"
+#include "../Utils/SharedPointerProvider.h"
 
 namespace Deltares
 {
@@ -16,7 +16,7 @@ namespace Deltares
 			{
 			private:
 				Reliability::CrudeMonteCarloSettings* settings;
-				Utils::SharedPointerProvider<Reliability::CrudeMonteCarloSettings>* sharedPointer = new Utils::SharedPointerProvider<Reliability::CrudeMonteCarloSettings>();
+				SharedPointerProvider<Reliability::CrudeMonteCarloSettings>* sharedPointer = new SharedPointerProvider<Reliability::CrudeMonteCarloSettings>();
 			public:
 				CrudeMonteCarloSettingsWrapper()
 				{

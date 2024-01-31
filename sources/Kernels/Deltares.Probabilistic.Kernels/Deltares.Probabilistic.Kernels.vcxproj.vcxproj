@@ -153,7 +153,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Utils\SharedPointerProvider.h" />
     <ClInclude Include="Statistics\Distributions\DiscreteDistribution.h" />
     <ClInclude Include="Statistics\HistogramValue.h" />
     <ClInclude Include="Statistics\FragilityValue.h" />
@@ -225,7 +224,6 @@
     <ClInclude Include="Utils\probLibString.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Utils\SharedPointerProvider.cpp" />
     <ClCompile Include="Statistics\Distributions\DiscreteDistribution.cpp" />
     <ClCompile Include="Statistics\HistogramValue.cpp" />
     <ClCompile Include="Statistics\FragilityValue.cpp" />

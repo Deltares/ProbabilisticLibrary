@@ -3,7 +3,7 @@
 #include <memory>
 
 #include "../../Deltares.Probabilistic.Kernels/Model/GradientSettings.h"
-#include "../../Deltares.Probabilistic.Kernels/Utils/SharedPointerProvider.h"
+#include "../Utils/SharedPointerProvider.h"
 
 namespace Deltares
 {
@@ -21,12 +21,12 @@ namespace Deltares
 			{
 			private:
 				Models::GradientSettings* m_settings;
-				Utils::SharedPointerProvider<Models::GradientSettings>* sharedPointer;
+				SharedPointerProvider<Models::GradientSettings>* sharedPointer;
 			public:
 				GradientCalculatorSettingsWrapper()
 				{
 					m_settings = new Models::GradientSettings();
-					sharedPointer = new Utils::SharedPointerProvider<Models::GradientSettings>();
+					sharedPointer = new SharedPointerProvider<Models::GradientSettings>();
 				}
 				~GradientCalculatorSettingsWrapper() { this->!GradientCalculatorSettingsWrapper(); }
 				!GradientCalculatorSettingsWrapper() { delete sharedPointer; }

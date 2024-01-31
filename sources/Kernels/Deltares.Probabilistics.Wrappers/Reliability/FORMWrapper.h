@@ -14,7 +14,7 @@ namespace Deltares
 			{
 			private:
 				Reliability::FORM* form;
-				Utils::SharedPointerProvider<Reliability::FORM>* sharedPointer = new Utils::SharedPointerProvider<Reliability::FORM>();
+				SharedPointerProvider<Reliability::FORM>* sharedPointer = new SharedPointerProvider<Reliability::FORM>();
 			public:
 				FORMWrapper()
 				{

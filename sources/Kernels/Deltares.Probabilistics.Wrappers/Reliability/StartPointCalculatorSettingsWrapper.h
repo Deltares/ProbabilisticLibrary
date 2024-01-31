@@ -3,7 +3,7 @@
 #include "../Statistics/StochastSettingsWrapper.h"
 #include "../../Deltares.Probabilistic.Kernels/Reliability/StartPointCalculatorSettings.h"
 #include "../../Deltares.Probabilistic.Kernels/Reliability/StochastSettings.h"
-#include "../../Deltares.Probabilistic.Kernels/Utils/SharedPointerProvider.h"
+#include "../Utils/SharedPointerProvider.h"
 
 namespace Deltares
 {
@@ -23,7 +23,7 @@ namespace Deltares
 			{
 			private:
 				Reliability::StartPointCalculatorSettings* settings;
-				Utils::SharedPointerProvider<Reliability::StartPointCalculatorSettings>* sharedPointer = new Utils::SharedPointerProvider<Reliability::StartPointCalculatorSettings>();
+				SharedPointerProvider<Reliability::StartPointCalculatorSettings>* sharedPointer = new SharedPointerProvider<Reliability::StartPointCalculatorSettings>();
 
 			public:
 				StartPointCalculatorSettingsWrapper()

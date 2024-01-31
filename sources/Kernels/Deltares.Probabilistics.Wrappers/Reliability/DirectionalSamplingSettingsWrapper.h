@@ -20,7 +20,7 @@ namespace Deltares
 			{
 			private:
 				Reliability::DirectionalSamplingSettings* settings;
-				Utils::SharedPointerProvider<Reliability::DirectionalSamplingSettings>* sharedPointer = new Utils::SharedPointerProvider<Reliability::DirectionalSamplingSettings>();
+				SharedPointerProvider<Reliability::DirectionalSamplingSettings>* sharedPointer = new SharedPointerProvider<Reliability::DirectionalSamplingSettings>();
 			public:
 				DirectionalSamplingSettingsWrapper()
 				{

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../../Deltares.Probabilistic.Kernels/Statistics/HistogramValue.h"
-#include "../../Deltares.Probabilistic.Kernels/Utils/SharedPointerProvider.h"
+#include "../Utils/SharedPointerProvider.h"
 
 namespace Deltares
 {
@@ -13,12 +13,11 @@ namespace Deltares
 			{
 			private:
 				Statistics::HistogramValue* m_value;
-				Utils::SharedPointerProvider<Statistics::HistogramValue>* sharedPointer;
+				SharedPointerProvider<Statistics::HistogramValue>* sharedPointer = new SharedPointerProvider<Statistics::HistogramValue>();
 			public:
 				HistogramValueWrapper()
 				{
 					m_value = new Statistics::HistogramValue();
-					sharedPointer = new Utils::SharedPointerProvider<Statistics::HistogramValue>();
 				}
 				~HistogramValueWrapper() { this->!HistogramValueWrapper(); }
 				!HistogramValueWrapper() { delete sharedPointer; }

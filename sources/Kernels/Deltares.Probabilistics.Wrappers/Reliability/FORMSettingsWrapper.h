@@ -4,7 +4,7 @@
 #include "../Statistics/StochastSettingsWrapper.h"
 #include "../../Deltares.Probabilistic.Kernels/Reliability/FORMSettings.h"
 #include "../../Deltares.Probabilistic.Kernels/Reliability/StochastSettings.h"
-#include "../../Deltares.Probabilistic.Kernels/Utils/SharedPointerProvider.h"
+#include "../Utils/SharedPointerProvider.h"
 
 namespace Deltares
 {
@@ -16,7 +16,7 @@ namespace Deltares
 			{
 			private:
 				Reliability::FORMSettings* settings;
-				Utils::SharedPointerProvider<Reliability::FORMSettings>* sharedPointer = new Utils::SharedPointerProvider<Reliability::FORMSettings>();
+				SharedPointerProvider<Reliability::FORMSettings>* sharedPointer = new SharedPointerProvider<Reliability::FORMSettings>();
 			public:
 				FORMSettingsWrapper()
 				{

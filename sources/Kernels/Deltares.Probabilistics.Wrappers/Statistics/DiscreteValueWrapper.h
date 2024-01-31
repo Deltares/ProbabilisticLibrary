@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../../Deltares.Probabilistic.Kernels/Statistics/DiscreteValue.h"
-#include "../../Deltares.Probabilistic.Kernels/Utils/SharedPointerProvider.h"
+#include "../Utils/SharedPointerProvider.h"
 
 namespace Deltares
 {
@@ -13,7 +13,7 @@ namespace Deltares
 			{
 			private:
 				Statistics::DiscreteValue* m_value;
-				Utils::SharedPointerProvider<Statistics::DiscreteValue>* sharedPointer = new Utils::SharedPointerProvider<Statistics::DiscreteValue>();
+				SharedPointerProvider<Statistics::DiscreteValue>* sharedPointer = new SharedPointerProvider<Statistics::DiscreteValue>();
 
 			public:
 				DiscreteValueWrapper()

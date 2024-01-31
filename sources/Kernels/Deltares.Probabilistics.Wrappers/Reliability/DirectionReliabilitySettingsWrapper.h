@@ -20,7 +20,7 @@ namespace Deltares
 			{
 			private:
 				Reliability::DirectionReliabilitySettings* m_settings;
-				Utils::SharedPointerProvider<Reliability::DirectionReliabilitySettings>* sharedPointer = new Utils::SharedPointerProvider<Reliability::DirectionReliabilitySettings>();
+				SharedPointerProvider<Reliability::DirectionReliabilitySettings>* sharedPointer = new SharedPointerProvider<Reliability::DirectionReliabilitySettings>();
 			public:
 				DirectionReliabilitySettingsWrapper()
 				{
