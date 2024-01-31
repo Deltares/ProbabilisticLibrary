@@ -33,6 +33,27 @@ namespace Deltares.Probabilistics.Wrappers.Test
         }
 
         [Test]
+        public void TestLinearDoubleExecuted()
+        {
+            var project = ProjectBuilder.GetLinearProject();
+
+            ModelRunnerWrapper modelRunner = new ModelRunnerWrapper(project.Function, project.Stochasts, project.CorrelationMatrix, null);
+
+            FORMWrapper form = new FORMWrapper();
+            DesignPointWrapper designPoint = form.GetDesignPoint(modelRunner);
+
+            Assert.AreEqual(2.33, designPoint.Beta, margin);
+
+            DesignPointWrapper designPoint2 = form.GetDesignPoint(modelRunner);
+
+            Assert.AreEqual(2.33, designPoint2.Beta, margin);
+
+            Assert.AreNotSame(designPoint, designPoint2);
+            Assert.AreNotSame(designPoint.Alphas[0], designPoint2.Alphas[0]);
+            Assert.AreSame(designPoint.Alphas[0].Parameter, designPoint2.Alphas[0].Parameter);
+        }
+
+        [Test]
         public void TestLinearMessages()
         {
             Project project = ProjectBuilder.GetLinearProject();

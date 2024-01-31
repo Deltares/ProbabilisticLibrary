@@ -11,7 +11,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
     {
         private const double margin = 0.01;
 
-        [Test] // c++
+        [Test] 
         public void TestLinear()
         {
             var project = ProjectBuilder.GetLinearProject();
@@ -42,6 +42,27 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
             Assert.AreEqual(0.89, limitStatePoint.Alphas[0].X, margin);
             Assert.AreEqual(0.91, limitStatePoint.Alphas[1].X, margin);
+        }
+
+        [Test]
+        public void TestLinearDoubleExecuted()
+        {
+            var project = ProjectBuilder.GetLinearProject();
+
+            ModelRunnerWrapper modelRunner = new ModelRunnerWrapper(project.Function, project.Stochasts, project.CorrelationMatrix, null);
+
+            CrudeMonteCarloWrapper crudeMonteCarlo = new CrudeMonteCarloWrapper();
+            DesignPointWrapper designPoint = crudeMonteCarlo.GetDesignPoint(modelRunner);
+
+            Assert.AreEqual(2.54, designPoint.Beta, margin);
+
+            DesignPointWrapper designPoint2 = crudeMonteCarlo.GetDesignPoint(modelRunner);
+
+            Assert.AreEqual(2.54, designPoint2.Beta, margin);
+
+            Assert.AreNotSame(designPoint, designPoint2);
+            Assert.AreNotSame(designPoint.Alphas[0], designPoint2.Alphas[0]);
+            Assert.AreSame(designPoint.Alphas[0].Parameter, designPoint2.Alphas[0].Parameter);
         }
 
         [Test] // c++

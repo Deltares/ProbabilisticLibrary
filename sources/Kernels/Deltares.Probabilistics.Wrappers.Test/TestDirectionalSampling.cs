@@ -22,6 +22,27 @@ namespace Deltares.Probabilistics.Wrappers.Test
         }
 
         [Test]
+        public void TestLinearDoubleExecuted()
+        {
+            var project = ProjectBuilder.GetLinearProject();
+
+            ModelRunnerWrapper modelRunner = new ModelRunnerWrapper(project.Function, project.Stochasts, project.CorrelationMatrix, null);
+
+            DirectionalSamplingWrapper directionalSampling = new DirectionalSamplingWrapper();
+            DesignPointWrapper designPoint = directionalSampling.GetDesignPoint(modelRunner);
+
+            Assert.AreEqual(2.58, designPoint.Beta, margin);
+
+            DesignPointWrapper designPoint2 = directionalSampling.GetDesignPoint(modelRunner);
+
+            Assert.AreEqual(2.58, designPoint2.Beta, margin);
+
+            Assert.AreNotSame(designPoint, designPoint2);
+            Assert.AreNotSame(designPoint.Alphas[0], designPoint2.Alphas[0]);
+            Assert.AreSame(designPoint.Alphas[0].Parameter, designPoint2.Alphas[0].Parameter);
+        }
+
+        [Test]
         public void TestInverseLinear()
         {
             var project = ProjectBuilder.GetInverseLinearProject();
