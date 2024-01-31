@@ -34,7 +34,8 @@ ReliabilityMethod* createReliabilityMethod::selectMethod(const basicSettings& bs
     {
     case (ProbMethod::CM): {
         auto cm = new CrudeMonteCarlo();
-        cm->Settings->randomSettings = getRnd(bs);
+        std::shared_ptr<RandomSettings> r (getRnd(bs));
+        cm->Settings->randomSettings.swap(r);
         cm->Settings->VariationCoefficient = bs.tolB;
         cm->Settings->MinimumSamples = bs.minSamples;
         cm->Settings->MaximumSamples = bs.maxSamples;
@@ -42,7 +43,8 @@ ReliabilityMethod* createReliabilityMethod::selectMethod(const basicSettings& bs
         break;
     case (ProbMethod::DS): {
         auto ds = new DirectionalSampling();
-        ds->Settings->randomSettings = getRnd(bs);
+        std::shared_ptr<RandomSettings> r(getRnd(bs));
+        ds->Settings->RandomSettings.swap(r);
         ds->Settings->VariationCoefficient = bs.tolB;
         ds->Settings->MinimumSamples = bs.minSamples;
         ds->Settings->MaximumSamples = bs.maxSamples;
@@ -64,13 +66,13 @@ ReliabilityMethod* createReliabilityMethod::selectMethod(const basicSettings& bs
         switch (bs.startMethod)
         {
         case StartMethods::Zero:
-            form->Settings->StartPointSettings->StartMethod == StartMethodType::None;
+            form->Settings->StartPointSettings->StartMethod = StartMethodType::None;
             break;
         case StartMethods::RaySearch:
-            form->Settings->StartPointSettings->StartMethod == StartMethodType::RaySearch;
+            form->Settings->StartPointSettings->StartMethod = StartMethodType::RaySearch;
             break;
         case StartMethods::SphereSearch:
-            form->Settings->StartPointSettings->StartMethod == StartMethodType::SphereSearch;
+            form->Settings->StartPointSettings->StartMethod = StartMethodType::SphereSearch;
             break;
         default:
             std::cout << "not implemented: start method: " << (int)bs.startMethod << std::endl;

@@ -50,7 +50,7 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
         omp_set_num_threads(method->numThreads);
 
         auto cntDeterminists = 0;
-        auto stochast = std::vector<Deltares::Statistics::Stochast*>();
+        auto stochast = std::vector<std::shared_ptr<Deltares::Statistics::Stochast>>();
         for (size_t i = 0; i < nStoch; i++)
         {
             auto distHR = (EnumDistributions)c[i].distId;
@@ -95,7 +95,7 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
             {
                 params[0] = 1.0; params[1] = 0.0;
             }
-            auto s = new Deltares::Statistics::Stochast(dist, params);
+            std::shared_ptr<Deltares::Statistics::Stochast> s (new Deltares::Statistics::Stochast(dist, params));
             if (truncated)
             {
                 s->setTruncated(true);
@@ -107,9 +107,9 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
         }
 
         auto createRelM = createReliabilityMethod();
-        std::unique_ptr<ReliabilityMethod> relMethod(createRelM.selectMethod(*method));
-        std::unique_ptr<ZModel> zModel(new ZModel([&fw](Sample* v) { return fw.FDelegate(v); }));
-        std::unique_ptr<CorrelationMatrix> corr(new CorrelationMatrix());
+        std::shared_ptr<ReliabilityMethod> relMethod(createRelM.selectMethod(*method));
+        std::shared_ptr<ZModel> zModel(new ZModel([&fw](std::shared_ptr<Sample> v) { return fw.FDelegate(v); }));
+        std::shared_ptr<CorrelationMatrix> corr(new CorrelationMatrix());
         if (nrCorrelations > 0)
         {
             corr->init(n);
@@ -118,15 +118,15 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
                 corr->SetCorrelation(correlations[i].idx1, correlations[i].idx2, correlations[i].correlation);
             }
         }
-        std::unique_ptr<UConverter> uConverter(new UConverter(stochast, corr.get()));
+        std::shared_ptr<UConverter> uConverter(new UConverter(stochast, corr));
         uConverter->initializeForRun();
         auto pw = progressWrapper(pc, relMethod.get());
         auto progressDelegate = ProgressDelegate();
         auto detailedProgressDelegate = DetailedProgressDelegate();
         auto textualProgress = TextualProgressLambda([&pw](ProgressType p, std::string s) {pw.FPgDelegate(p, s); });
         std::unique_ptr<ProgressIndicator> progress (new ProgressIndicator(progressDelegate, detailedProgressDelegate, textualProgress));
-        std::unique_ptr<ZModelRunner> modelRunner(new ZModelRunner(zModel.get(), uConverter.get(), progress.get()));
-        std::unique_ptr<DesignPoint> newResult( relMethod->getDesignPoint(modelRunner.get()));
+        std::shared_ptr<ZModelRunner> modelRunner(new ZModelRunner(zModel, uConverter, progress.get()));
+        std::shared_ptr<DesignPoint> newResult ( relMethod->getDesignPoint(modelRunner));
 
         auto alpha = vector1D(newResult->Alphas.size());
         for (size_t i = 0; i < alpha.size(); i++)
@@ -170,12 +170,6 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
         if (r->samplesNeeded < 0)
         {
             r->samplesNeeded = (int)round(newResult->convergenceReport->FailedSamples / newResult->convergenceReport->FailFraction);
-        }
-
-        // clean up
-        for (size_t i = 0; i < stochast.size(); i++)
-        {
-            delete stochast[i];
         }
     }
     catch (const std::exception& e)

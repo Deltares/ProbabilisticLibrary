@@ -1,6 +1,6 @@
 #include "funcWrapper.h"
 
-double funcWrapper::FDelegate(Sample* s)
+double funcWrapper::FDelegate(std::shared_ptr<Sample> s)
 {
     auto xx = new double[allStoch];
     for (size_t i = 0; i < allStoch; i++)
