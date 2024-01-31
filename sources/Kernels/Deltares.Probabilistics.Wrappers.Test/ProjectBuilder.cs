@@ -458,6 +458,23 @@ namespace Deltares.Probabilistics.Wrappers.Test
             return project;
         }
 
+        public static Project GetDiscreteProject()
+        {
+            var project = new Project();
+
+            project.Stochasts.Add(GetUniformStochast());
+            project.Stochasts.Add(GetUniformStochast());
+
+            project.Stochasts.Add(new StochastWrapper { DistributionType = WrapperDistributionType.Discrete });
+
+            project.Stochasts[2].DiscreteValues.Add(new DiscreteValueWrapper(1, 0.3));
+            project.Stochasts[2].DiscreteValues.Add(new DiscreteValueWrapper(2, 0.5));
+            project.Stochasts[2].DiscreteValues.Add(new DiscreteValueWrapper(3, 0.2));
+
+            project.ZFunction = Discrete;
+
+            return project;
+        }
 
         private static StochastWrapper GetDeterministicStochast(double mean)
         {
@@ -749,6 +766,30 @@ namespace Deltares.Probabilistics.Wrappers.Test
             var h = xValues[3];
 
             return new ZFunctionOutput(m * l / c - h);
+        }
+
+        private static ZFunctionOutput Discrete(double[] xValues)
+        {
+            double a = xValues[0];
+            double b = xValues[1];
+            double scen = xValues[2];
+
+            double z;
+
+            if (scen == 1)
+            {
+                z = a + b;
+            }
+            else if (scen == 2)
+            {
+                z = 2.5 * a - 0.5 * b;
+            }
+            else
+            {
+                z = 2.2 - (a + b);
+            }
+
+            return new ZFunctionOutput(1.8 - z);
         }
 
         private static ZFunctionOutput NonVarying(double[] xValues)
