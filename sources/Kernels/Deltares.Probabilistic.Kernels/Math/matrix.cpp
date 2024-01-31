@@ -5,7 +5,7 @@ namespace Deltares {
     namespace ProbLibCore {
 
         Matrix::Matrix(size_t rows, size_t columns)
-            : m_data(new double[rows * columns]),
+            : m_data(std::vector<double>(rows * columns)),
             m_rows(rows),
             m_columns(columns)
         {
@@ -16,7 +16,7 @@ namespace Deltares {
         }
 
         Matrix::Matrix(const Matrix& m)
-            : m_data(new double[m.m_rows * m.m_columns]),
+            : m_data(std::vector<double>(m.m_rows* m.m_columns)),
             m_rows(m.m_rows),
             m_columns(m.m_columns)
         {
@@ -31,26 +31,23 @@ namespace Deltares {
             m_rows(m.m_rows),
             m_columns(m.m_columns)
         {
-            m.m_data = nullptr;
+            m.m_data = std::vector<double>(0);
             m.m_rows = 0;
             m.m_columns = 0;
         }
 
         Matrix::~Matrix()
         {
-            delete[] m_data;
         }
 
         Matrix& Matrix::operator=(const Matrix& m)
         {
             if (this != &m)
             {
-                delete[] m_data;
-
                 m_rows = m.m_rows;
                 m_columns = m.m_columns;
 
-                m_data = new double[m_rows * m_columns];
+                m_data = std::vector<double>(m_rows * m_columns);
 
                 for (size_t pos = 0; pos < m_rows * m_columns; pos++)
                 {

@@ -58,7 +58,7 @@ void CorrelationMatrix::SetCorrelation(const int i, const int j, const double va
     {
         throw probLibException("dimension mismatch in SetCorrelation");
     }
-    matrix(i, j) = value;
+    matrix(i, j) = std::min(std::max(value, -1.0), 1.0);
     if (abs(value) < 1.0)
     {
         matrix(j, i) = value;
@@ -104,6 +104,34 @@ void CorrelationMatrix::filter(const std::shared_ptr<CorrelationMatrix> m, const
             }
         }
     }
+
+    auto nrAllStochasts = index.size();
+    auto newIndexer = std::vector<indexWithCorrelation>(nrAllStochasts);
+    for (size_t i = 0; i < nrAllStochasts; i++)
+    {
+        if (index[i] == -2)
+        {
+            newIndexer[i].index = -2;  // not varying stochast
+        }
+        else if (index[i] == -1)
+        {
+            auto ii = i;
+            double correlation = 1.0;
+            for (;;)
+            {
+                auto dependent = m->findDependent(ii);
+                dependent.correlation *= correlation;
+                if (index[dependent.index] >= 0)
+                {
+                    newIndexer[i] = dependent;
+                    break;
+                }
+                ii = dependent.index;
+                correlation = dependent.correlation;
+            }
+        }
+    }
+    indexer = newIndexer;
 }
 
 void CorrelationMatrix::resolveConflictingCorrelations()
@@ -122,8 +150,13 @@ int CorrelationMatrix::findNewIndex(const std::vector<int> index, const size_t i
     return newIndex-1;
 }
 
-std::pair<int, double> CorrelationMatrix::findDependent(const int j)
+indexWithCorrelation CorrelationMatrix::findDependent(const int j)
 {
+    if (indexer.size() > 0)
+    {
+        return indexer[j];
+    }
+
     size_t m1; size_t m2;
     matrix.get_dims(m1, m2);
     for (size_t i = 0; i < m2; i++)

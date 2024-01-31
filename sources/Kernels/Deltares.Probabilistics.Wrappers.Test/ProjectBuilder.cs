@@ -199,7 +199,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
             return project;
         }
 
-        public static Project GetLinearMultiCorrelatedProject()
+        public static Project GetLinearMultiCorrelatedProject(bool switchCorrelations)
         {
             var project = new Project();
 
@@ -208,8 +208,16 @@ namespace Deltares.Probabilistics.Wrappers.Test
             project.Stochasts.Add(GetUniformStochast(-1));
 
             project.CorrelationMatrix.Initialize(project.Stochasts);
-            project.CorrelationMatrix.SetCorrelation(project.Stochasts[0], project.Stochasts[1], 1);
-            project.CorrelationMatrix.SetCorrelation(project.Stochasts[1], project.Stochasts[2], 2);
+            if (switchCorrelations)
+            {
+                project.CorrelationMatrix.SetCorrelation(project.Stochasts[1], project.Stochasts[0], 1);
+                project.CorrelationMatrix.SetCorrelation(project.Stochasts[2], project.Stochasts[1], 2);
+            }
+            else
+            {
+                project.CorrelationMatrix.SetCorrelation(project.Stochasts[0], project.Stochasts[1], 1);
+                project.CorrelationMatrix.SetCorrelation(project.Stochasts[1], project.Stochasts[2], 2);
+            }
 
             project.ZFunction = Linear;
 

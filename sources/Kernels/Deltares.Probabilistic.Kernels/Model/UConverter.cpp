@@ -38,7 +38,8 @@ void UConverter::initializeForRun()
 		}
 		else
 		{
-			this->varyingStochastIndex.push_back(-1);
+			int type = (this->stochasts[i]->isVarying() ? -1 : -2);
+			this->varyingStochastIndex.push_back(type);
 		}
 	}
 
@@ -102,10 +103,10 @@ void UConverter::updateStochastSettings(std::shared_ptr<Deltares::Reliability::S
 
 void UConverter::updateDependedParameter(std::vector<double> & uValues, const int i)
 {
-	auto r = correlationMatrix->findDependent(i);
-	if (r.first >= 0)
+	auto r = varyingCorrelationMatrix->findDependent(i);
+	if (r.index >= 0)
 	{
-		uValues[i] = r.second * uValues[r.first];
+		uValues[i] = r.correlation * uValues[r.index];
 	}
 }
 
@@ -121,7 +122,12 @@ std::vector<double> UConverter::getExpandedValues(const std::vector<double> & va
 			uValues[i] = values[ii];
 			ii++;
 		}
-		else
+	}
+
+	for (int i = 0; i < this->stochasts.size(); i++)
+	{
+		const int varyingIndex = this->varyingStochastIndex[i];
+		if (varyingIndex < 0)
 		{
 			updateDependedParameter(uValues, i);
 		}
