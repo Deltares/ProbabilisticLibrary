@@ -11,25 +11,6 @@ namespace Deltares
 			return 2 * center - value;
 		}
 
-		StochastProperties* InvertedDistribution::getInvertedStochast(StochastProperties* stochast)
-		{
-			StochastProperties* invertedStochast = new StochastProperties();
-
-			invertedStochast->Location = getInvertedValue(stochast, stochast->Location);
-			invertedStochast->Minimum = getInvertedValue(stochast, stochast->Minimum);
-			invertedStochast->Maximum = getInvertedValue(stochast, stochast->Maximum);
-			invertedStochast->Shift = getInvertedValue(stochast, stochast->Shift);
-			invertedStochast->ShiftB = stochast->ShiftB;
-			invertedStochast->Shape = stochast->Shape;
-			invertedStochast->ShapeB = stochast->ShapeB;
-			invertedStochast->Scale = stochast->Scale;
-			invertedStochast->Observations = stochast->Observations;
-
-			innerDistribution->setMeanAndDeviation(invertedStochast, getInvertedValue(stochast, innerDistribution->getMean(stochast)), innerDistribution->getDeviation(stochast));
-
-			return invertedStochast;
-		}
-
 		void InvertedDistribution::setMeanAndDeviation(StochastProperties* stochast, double mean, double deviation)
 		{
 			double invertedMean = this->getInvertedValue(stochast, mean);

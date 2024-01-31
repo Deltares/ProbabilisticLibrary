@@ -2,6 +2,7 @@
 #include "../../Deltares.Probabilistic.Kernels/Statistics/DistributionType.h"
 #include "../../Deltares.Probabilistic.Kernels/Statistics/Stochast.h"
 #include "../../Deltares.Probabilistic.Kernels/Statistics/StandardNormal.h"
+#include "../../Deltares.Probabilistic.Kernels/Utils/SharedPointerProvider.h"
 #include "../Utils/NativeSupport.h"
 #include "DiscreteValueWrapper.h"
 #include "HistogramValueWrapper.h"
@@ -19,6 +20,7 @@ namespace Deltares
 			{
 			private:
 				Statistics::Stochast* m_stochast;
+				Utils::SharedPointerProvider<Statistics::Stochast>* sharedPointer = new Utils::SharedPointerProvider<Statistics::Stochast>();
 
 				System::Collections::Generic::List<DiscreteValueWrapper^>^ discreteValues = gcnew System::Collections::Generic::List<DiscreteValueWrapper^>();
 				System::Collections::Generic::List<HistogramValueWrapper^>^ histogramValues = gcnew System::Collections::Generic::List<HistogramValueWrapper^>();
@@ -38,7 +40,7 @@ namespace Deltares
 					m_stochast = new Statistics::Stochast(nativeDistributionType, nValues);
 				}
 				~StochastWrapper() { this->!StochastWrapper(); }
-				!StochastWrapper() { delete m_stochast; }
+				!StochastWrapper() { delete sharedPointer; }
 
 				property WrapperDistributionType DistributionType
 				{
@@ -161,10 +163,10 @@ namespace Deltares
 					m_stochast->initializeForRun();
 				}
 
-				Statistics::Stochast* GetStochast()
+				std::shared_ptr<Statistics::Stochast> GetStochast()
 				{
 					updateStochast();
-					return m_stochast;
+					return sharedPointer->getSharedPointer(m_stochast);
 				}
 			};
 		}

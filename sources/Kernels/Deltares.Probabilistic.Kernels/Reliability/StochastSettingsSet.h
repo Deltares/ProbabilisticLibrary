@@ -12,27 +12,27 @@ namespace Deltares
 		class StochastSettingsSet
 		{
 		private:
-			void loadStochastPoint(StochastPoint* stochastPoint);
+			void loadStochastPoint(std::shared_ptr<StochastPoint> stochastPoint);
 		public:
 			StochastSettingsSet() {}
-			StochastSettingsSet(StochastPoint* stochastPoint)
+			StochastSettingsSet(std::shared_ptr<StochastPoint> stochastPoint)
 			{
 				loadStochastPoint(stochastPoint);
 			}
 
-			std::vector<StochastSettings*> StochastSettings;
+			std::vector<std::shared_ptr<StochastSettings>> StochastSettings;
 			int getStochastCount()
 			{
 				return static_cast<int>(this->StochastSettings.size());
 			}
 
-			std::vector<Deltares::Reliability::StochastSettings*> VaryingStochastSettings;
+			std::vector<std::shared_ptr<Deltares::Reliability::StochastSettings>> VaryingStochastSettings;
 			int getVaryingStochastCount()
 			{
 				return static_cast<int>(this->VaryingStochastSettings.size());
 			}
 
-			Sample* getSample();
+			std::shared_ptr<Sample> getSample();
 		};
 	}
 }

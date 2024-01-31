@@ -7,6 +7,7 @@
 #include "../../Deltares.Probabilistic.Kernels/Model/ZModel.h"
 #include "../../Deltares.Probabilistic.Kernels/Model/ZModelRunner.h"
 #include "../../Deltares.Probabilistic.Kernels/Model/Sample.h"
+#include "../../Deltares.Probabilistic.Kernels/Utils/SharedPointerProvider.h"
 
 namespace Deltares
 {
@@ -20,7 +21,9 @@ namespace Deltares
 			{
 			private:
 				Models::ZModelRunner* modelRunner;
-				Models::ZModel* getZModel();
+				Utils::SharedPointerProvider<Models::ZModelRunner>* sharedPointer = new Utils::SharedPointerProvider<Models::ZModelRunner>();
+
+				std::shared_ptr<Models::ZModel> getZModel();
 				Models::ZDelegate getZDelegate();
 				Models::ZMultipleDelegate getZMultipleDelegate();
 				ZSampleDelegate^ zFunction = nullptr;
@@ -28,8 +31,8 @@ namespace Deltares
 				void CalcZValues(System::Collections::Generic::IList<SampleWrapper^>^ samples);
 				void CalcZValue(SampleWrapper^ sample);
 
-				void invokeSample(Sample* sample);
-				void invokeMultipleSamples(Sample** samples, int count);
+				void invokeSample(std::shared_ptr<Sample> sample);
+				void invokeMultipleSamples(std::vector<std::shared_ptr<Sample>> samples);
 
 				System::Collections::Generic::List<System::Runtime::InteropServices::GCHandle>^ handles = gcnew System::Collections::Generic::List<System::Runtime::InteropServices::GCHandle>();
 
@@ -42,7 +45,7 @@ namespace Deltares
 					{
 						handles[i].Free();
 					}
-					delete modelRunner;
+					delete sharedPointer;
 				}
 
 				System::Collections::Generic::List<StochastWrapper^>^ Stochasts = gcnew System::Collections::Generic::List<StochastWrapper^>();
@@ -52,10 +55,12 @@ namespace Deltares
 
 				RunSettingsWrapper^ Settings = gcnew RunSettingsWrapper();
 
-				Models::ZModelRunner* GetModelRunner()
+				std::shared_ptr<Models::ZModelRunner> GetModelRunner()
 				{
-					modelRunner->Settings = this->Settings->GetSettings();
-					return modelRunner;
+					std::shared_ptr<Models::ZModelRunner> m_modelRunner = sharedPointer->getSharedPointer(modelRunner);
+
+					m_modelRunner->Settings = this->Settings->GetSettings();
+					return m_modelRunner;
 				}
 			};
 		}

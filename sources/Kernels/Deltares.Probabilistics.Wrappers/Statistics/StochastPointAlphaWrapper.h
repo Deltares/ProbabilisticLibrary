@@ -2,6 +2,7 @@
 
 #include "StochastWrapper.h"
 #include "../../Deltares.Probabilistic.Kernels/Model/StochastPointAlpha.h"
+#include "../../Deltares.Probabilistic.Kernels/Utils/SharedPointerProvider.h"
 
 namespace Deltares
 {
@@ -14,18 +15,21 @@ namespace Deltares
 			private:
 				StochastPointAlpha* m_alpha;
 				StochastWrapper^ parameter = gcnew StochastWrapper();
+				Utils::SharedPointerProvider<StochastPointAlpha>* sharedPointer = new Utils::SharedPointerProvider<StochastPointAlpha>();
 
 			public:
 				StochastPointAlphaWrapper()
 				{
 					m_alpha = new StochastPointAlpha();
+					sharedPointer->setSharedPointer(m_alpha);
 				}
-				StochastPointAlphaWrapper(StochastPointAlpha* alpha)
+				StochastPointAlphaWrapper(std::shared_ptr<StochastPointAlpha> alpha)
 				{
-					m_alpha = alpha;
+					m_alpha = alpha.get();
+					sharedPointer->setSharedPointer(alpha);
 				}
 				~StochastPointAlphaWrapper() { this->!StochastPointAlphaWrapper(); }
-				!StochastPointAlphaWrapper() { delete m_alpha; }
+				!StochastPointAlphaWrapper() { delete sharedPointer; }
 
 				property StochastWrapper^ Parameter
 				{
@@ -61,11 +65,6 @@ namespace Deltares
 				{
 					double get() { return m_alpha->InfluenceFactor; }
 					void set(double value) { m_alpha->InfluenceFactor = value; }
-				}
-
-				void SetAlpha(StochastPointAlpha* alpha)
-				{
-					m_alpha = alpha;
 				}
 			};
 		}

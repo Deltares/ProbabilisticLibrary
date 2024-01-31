@@ -3,6 +3,7 @@
 #include "../Statistics/StochastSettingsWrapper.h"
 #include "../../Deltares.Probabilistic.Kernels/Reliability/StartPointCalculatorSettings.h"
 #include "../../Deltares.Probabilistic.Kernels/Reliability/StochastSettings.h"
+#include "../../Deltares.Probabilistic.Kernels/Utils/SharedPointerProvider.h"
 
 namespace Deltares
 {
@@ -21,39 +22,40 @@ namespace Deltares
 			public ref class StartPointCalculatorSettingsWrapper
 			{
 			private:
-				Reliability::StartPointCalculatorSettings* m_settings;
+				Reliability::StartPointCalculatorSettings* settings;
+				Utils::SharedPointerProvider<Reliability::StartPointCalculatorSettings>* sharedPointer = new Utils::SharedPointerProvider<Reliability::StartPointCalculatorSettings>();
 
 			public:
 				StartPointCalculatorSettingsWrapper()
 				{
-					m_settings = new Reliability::StartPointCalculatorSettings();
+					settings = new Reliability::StartPointCalculatorSettings();
 				}
 				~StartPointCalculatorSettingsWrapper() { this->!StartPointCalculatorSettingsWrapper(); }
-				!StartPointCalculatorSettingsWrapper() { delete m_settings; }
+				!StartPointCalculatorSettingsWrapper() { delete sharedPointer; }
 
 				property double MaximumLengthStartPoint
 				{
-					double get() { return m_settings->MaximumLengthStartPoint; }
-					void set(double value) { m_settings->MaximumLengthStartPoint = value; }
+					double get() { return settings->MaximumLengthStartPoint; }
+					void set(double value) { settings->MaximumLengthStartPoint = value; }
 				}
 
 				property double GradientStepSize
 				{
-					double get() { return m_settings->GradientStepSize; }
-					void set(double value) { m_settings->GradientStepSize = value; }
+					double get() { return settings->GradientStepSize; }
+					void set(double value) { settings->GradientStepSize = value; }
 				}
 
 				property double RadiusSphereSearch
 				{
-					double get() { return m_settings->RadiusSphereSearch; }
-					void set(double value) { m_settings->RadiusSphereSearch = value; }
+					double get() { return settings->RadiusSphereSearch; }
+					void set(double value) { settings->RadiusSphereSearch = value; }
 				}
 
 				property Kernels::StartMethodType StartMethod
 				{
 					Kernels::StartMethodType get()
 					{
-						switch (m_settings->StartMethod)
+						switch (settings->StartMethod)
 						{
 						case Deltares::Reliability::StartMethodType::None: return Kernels::StartMethodType::None;
 						case Deltares::Reliability::StartMethodType::RaySearch: return Kernels::StartMethodType::RaySearch;
@@ -66,26 +68,25 @@ namespace Deltares
 					{
 						switch (value)
 						{
-						case Kernels::StartMethodType::None: m_settings->StartMethod = Reliability::None; break;
-						case Kernels::StartMethodType::RaySearch: m_settings->StartMethod = Reliability::RaySearch; break;
-						case Kernels::StartMethodType::SensitivitySearch: m_settings->StartMethod = Reliability::SensitivitySearch; break;
-						case Kernels::StartMethodType::SphereSearch: m_settings->StartMethod = Reliability::SphereSearch; break;
+						case Kernels::StartMethodType::None: settings->StartMethod = Reliability::None; break;
+						case Kernels::StartMethodType::RaySearch: settings->StartMethod = Reliability::RaySearch; break;
+						case Kernels::StartMethodType::SensitivitySearch: settings->StartMethod = Reliability::SensitivitySearch; break;
+						case Kernels::StartMethodType::SphereSearch: settings->StartMethod = Reliability::SphereSearch; break;
 						default: throw gcnew System::NotSupportedException("Start method");
 						}
 					}
 				}
 
-
 				System::Collections::Generic::List<StochastSettingsWrapper^>^ StochastSettings = gcnew System::Collections::Generic::List<StochastSettingsWrapper^>();
 
-				Reliability::StartPointCalculatorSettings* GetSettings()
+				std::shared_ptr<Reliability::StartPointCalculatorSettings> GetSettings()
 				{
-					m_settings->StochastSet = new Deltares::Reliability::StochastSettingsSet();
+					std::shared_ptr<Reliability::StartPointCalculatorSettings> m_settings = sharedPointer->getSharedPointer(settings);
 
 					m_settings->StochastSet->StochastSettings.clear();
 					for (int i = 0; i < StochastSettings->Count; i++)
 					{
-						m_settings->StochastSet->StochastSettings.push_back(StochastSettings[i]->getSettings());
+						m_settings->StochastSet->StochastSettings.push_back(StochastSettings[i]->GetSettings());
 					}
 
 					return m_settings;

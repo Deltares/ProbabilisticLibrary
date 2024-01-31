@@ -10,17 +10,13 @@ namespace Deltares
 		class FORM : public ReliabilityMethod
 		{
 		private:
-			DesignPoint* getDesignPoint(Models::ZModelRunner* modelRunner, Sample* startSample, double relaxationFactor);
+			std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ZModelRunner> modelRunner, std::shared_ptr<Sample> startSample, double relaxationFactor);
 			void repairResults(std::vector<double> dzdu);
 			bool areResultsValid(std::vector<double> dzdu);
-			bool checkConvergence(Models::ZModelRunner* modelRunner, Sample* u, ConvergenceReport* convergenceReport, double beta, double zGradientLength);
+			bool checkConvergence(std::shared_ptr<Models::ZModelRunner> modelRunner, std::shared_ptr<Sample> u, std::shared_ptr<ConvergenceReport> convergenceReport, double beta, double zGradientLength);
 		public:
-			FORMSettings* Settings = new FORMSettings();
-			DesignPoint* getDesignPoint(Deltares::Models::ZModelRunner* modelRunner) override;
-			~FORM()
-			{
-				//delete Settings;
-			}
+			std::shared_ptr<FORMSettings> Settings = std::make_shared<FORMSettings>();
+			std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ZModelRunner> modelRunner) override;
 		};
 	}
 }

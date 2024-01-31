@@ -24,10 +24,10 @@ namespace Deltares
             DesignPointMethod method = DesignPointMethod::NearestToMean;
             double rmin = std::numeric_limits<double>::infinity();
             double sumWeights = 0;
-            Sample* defaultSample = nullptr;
-            Sample* meanSample = nullptr;
-            Sample* sinSample = nullptr;
-            Sample* cosSample = nullptr;
+            std::shared_ptr<Sample> defaultSample = nullptr;
+            std::shared_ptr<Sample> meanSample = nullptr;
+            std::shared_ptr<Sample> sinSample = nullptr;
+            std::shared_ptr<Sample> cosSample = nullptr;
             bool sampleAdded = false;
 
             int* qualitativeIndices;
@@ -35,17 +35,10 @@ namespace Deltares
             ModeFinder** modeFinders;
 
         public:
-            DesignPointBuilder(int count, DesignPointMethod method, StochastSettingsSet* stochastSet);
-            ~DesignPointBuilder()
-            {
-                delete defaultSample;
-                delete meanSample;
-                delete sinSample;
-                delete cosSample;
-            }
+            DesignPointBuilder(int count, DesignPointMethod method, std::shared_ptr<StochastSettingsSet> stochastSet);
             void initialize(double beta);
-            void addSample(Sample* sample);
-            Sample* getSample();
+            void addSample(std::shared_ptr<Sample> sample);
+            std::shared_ptr<Sample> getSample();
         };
     }
 }

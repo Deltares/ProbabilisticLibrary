@@ -16,10 +16,10 @@ namespace Deltares
 		{
 		private:
 			std::map<double, double> values;
-			StochastSettings* settings = nullptr;
+			std::shared_ptr<StochastSettings> settings = nullptr;
 
 		public:
-			ModeFinder(StochastSettings* settings)
+			ModeFinder(std::shared_ptr<StochastSettings> settings)
 			{
 				this->settings = settings;
 			}
@@ -54,15 +54,15 @@ namespace Deltares
 			}
 		};
 
-		DesignPointBuilder::DesignPointBuilder(int count, DesignPointMethod method, StochastSettingsSet* stochastSet)
+		DesignPointBuilder::DesignPointBuilder(int count, DesignPointMethod method, std::shared_ptr<StochastSettingsSet> stochastSet)
 		{
 			this->count = count;
 			this->method = method;
 
-			defaultSample = new Sample(count);
-			meanSample = new Sample(count);
-			sinSample = new Sample(count);
-			cosSample = new Sample(count);
+			defaultSample = std::make_shared<Sample>(count);
+			meanSample = std::make_shared<Sample>(count);
+			sinSample = std::make_shared<Sample>(count);
+			cosSample = std::make_shared<Sample>(count);
 
 			this->qualitativeCount = 0;
 			for (int i = 0; i < stochastSet->getVaryingStochastCount(); i++)
@@ -97,7 +97,7 @@ namespace Deltares
 			}
 		}
 
-		void DesignPointBuilder::addSample(Sample* sample)
+		void DesignPointBuilder::addSample(std::shared_ptr<Sample> sample)
 		{
 			sampleAdded = true;
 
@@ -109,8 +109,6 @@ namespace Deltares
 				if (rbeta < rmin)
 				{
 					rmin = rbeta;
-
-					delete meanSample;
 
 					meanSample = sample->clone();
 				}
@@ -155,7 +153,7 @@ namespace Deltares
 			}
 		}
 
-		Sample* DesignPointBuilder::getSample()
+		std::shared_ptr<Sample> DesignPointBuilder::getSample()
 		{
 			if (!sampleAdded)
 			{
@@ -171,7 +169,7 @@ namespace Deltares
 				}
 				case DesignPointMethod::CenterOfGravity:
 				{
-					Sample* gravityPoint = new Sample(count);
+					std::shared_ptr<Sample> gravityPoint = std::make_shared<Sample>(count);
 
 					for (int i = 0; i < count; i++)
 					{
@@ -196,7 +194,7 @@ namespace Deltares
 					}
 
 					auto coordinates = NumericSupport::GetCartesianCoordinates(angleValues);
-					Sample* anglePoint = new Sample(coordinates);
+					std::shared_ptr<Sample> anglePoint = std::make_shared<Sample>(coordinates);
 
 					for (int j = 0; j < this->qualitativeCount; j++)
 					{

@@ -19,7 +19,7 @@ namespace Deltares
 			int MaximumIterations = 50;
 			double EpsilonZStepSize = 0.01;
 
-			StochastSettingsSet* StochastSet = new StochastSettingsSet();
+			std::shared_ptr<StochastSettingsSet> StochastSet = std::make_shared<StochastSettingsSet>();
 
 			bool IsValid();
 		};

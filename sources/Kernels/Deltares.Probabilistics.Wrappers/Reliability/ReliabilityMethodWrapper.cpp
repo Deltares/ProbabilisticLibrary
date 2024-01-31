@@ -10,12 +10,12 @@ namespace Deltares
 		{
 			DesignPointWrapper^ ReliabilityMethodWrapper::GetDesignPoint(ModelRunnerWrapper^ modelRunner)
 			{
-				Reliability::ReliabilityMethod* reliabilityMethodNative = this->GetReliabilityMethod();
-				Models::ZModelRunner* modelRunnerNative = modelRunner->GetModelRunner();
+				std::shared_ptr<Reliability::ReliabilityMethod> reliabilityMethodNative = this->GetReliabilityMethod();
+				std::shared_ptr<Models::ZModelRunner> modelRunnerNative = modelRunner->GetModelRunner();
 
 				modelRunnerNative->initializeForRun();
 
-				DesignPoint* designPoint = reliabilityMethodNative->getDesignPoint(modelRunnerNative);
+				std::shared_ptr<DesignPoint> designPoint = reliabilityMethodNative->getDesignPoint(modelRunnerNative);
 
 				DesignPointWrapper^ designPointWrapper = gcnew DesignPointWrapper(designPoint, modelRunner->Stochasts);
 

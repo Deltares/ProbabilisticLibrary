@@ -1,4 +1,5 @@
 #pragma once
+#include <memory>
 #include <vector>
 
 #include "DiscreteValue.h"
@@ -15,7 +16,7 @@ namespace Deltares
 		{
 		private:
 			DistributionType distributionType = DistributionType::Deterministic;
-			Distribution* distribution = new DeterministicDistribution();
+			std::shared_ptr<Distribution> distribution = std::make_shared<DeterministicDistribution>();
 
 			bool inverted = false;
 			bool truncated = false;

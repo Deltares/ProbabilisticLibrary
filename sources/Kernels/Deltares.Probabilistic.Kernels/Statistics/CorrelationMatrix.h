@@ -1,4 +1,6 @@
 #pragma once
+#include <memory>
+
 #include "../Math/matrix.h"
 #include <vector>
 
@@ -11,7 +13,7 @@ public:
     void CholeskyDecomposition();
     bool checkFullyCorrelated(const int i);
     void resolveConflictingCorrelations();
-    void filter(const CorrelationMatrix* m, const std::vector<int> & index);
+    void filter(const std::shared_ptr<CorrelationMatrix> m, const std::vector<int> & index);
     std::pair<int, double> findDependent(const int i);
 private:
     Deltares::ProbLibCore::Matrix matrix = Deltares::ProbLibCore::Matrix(0,0);

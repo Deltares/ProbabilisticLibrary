@@ -1,4 +1,6 @@
 #pragma once
+#include <memory>
+
 #include "Distribution.h"
 
 namespace Deltares
@@ -9,7 +11,7 @@ namespace Deltares
 		{
 		public:
 
-			InvertedDistribution(Distribution* innerDistribution)
+			InvertedDistribution(std::shared_ptr<Distribution> innerDistribution)
 			{
 				this->innerDistribution = innerDistribution;
 			}
@@ -23,8 +25,7 @@ namespace Deltares
 			double getDeviation(StochastProperties* stochast) override;
 			void setMeanAndDeviation(StochastProperties* stochast, double mean, double deviation) override;
 		private:
-			Distribution* innerDistribution = nullptr;
-			StochastProperties* getInvertedStochast(StochastProperties* stochast);
+			std::shared_ptr<Distribution> innerDistribution = nullptr;
 			double getInvertedValue(StochastProperties* stochast, double value);
 		};
 	}

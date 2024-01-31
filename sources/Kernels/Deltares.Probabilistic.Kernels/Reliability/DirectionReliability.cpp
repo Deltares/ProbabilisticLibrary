@@ -33,27 +33,23 @@ namespace Deltares
 		class ZGetter
 		{
 		private:
-			Models::ZModelRunner* modelRunner;
+			std::shared_ptr<Models::ZModelRunner> modelRunner;
 		public:
-			ZGetter(Models::ZModelRunner* modelRunner)
+			ZGetter(std::shared_ptr<Models::ZModelRunner> modelRunner)
 			{
 				this->modelRunner = modelRunner;
 			}
 
-			double GetZ(Sample* uDirection, double factor, bool inverted, bool allowProxy = true)
+			double GetZ(std::shared_ptr<Sample> uDirection, double factor, bool inverted, bool allowProxy = true)
 			{
-				Sample* u = uDirection->multiply(factor);
+				std::shared_ptr<Sample> u = uDirection->multiply(factor);
 				u->AllowProxy = allowProxy;
 				u->ScenarioIndex = uDirection->ScenarioIndex;
 
-				double z = GetZValueCorrected(u, inverted);
-
-				delete u;
-
-				return z;
+				return GetZValueCorrected(u, inverted);
 			}
 
-			double GetZValueCorrected(Sample* u, bool invertZ)
+			double GetZValueCorrected(std::shared_ptr<Sample> u, bool invertZ)
 			{
 				double z = modelRunner->getZValue(u);
 				if (invertZ)
@@ -67,13 +63,13 @@ namespace Deltares
 		class DirectionCalculation
 		{
 		private:
-			Models::ZModelRunner* modelRunner;
-			Sample* uDirection;
+			std::shared_ptr<Models::ZModelRunner> modelRunner;
+			std::shared_ptr<Sample> uDirection;
 			bool inverted;
 			ZGetter* model;
 
 		public:
-			DirectionCalculation(Models::ZModelRunner* modelRunner, Sample* uDirection, bool inverted)
+			DirectionCalculation(std::shared_ptr<Models::ZModelRunner> modelRunner, std::shared_ptr<Sample> uDirection, bool inverted)
 			{
 				this->modelRunner = modelRunner;
 				this->uDirection = uDirection;
@@ -97,31 +93,27 @@ namespace Deltares
 			}
 		};
 
-		DesignPoint* DirectionReliability::getDesignPoint(Deltares::Models::ZModelRunner* modelRunner)
+		std::shared_ptr<DesignPoint> DirectionReliability::getDesignPoint(std::shared_ptr<Models::ZModelRunner> modelRunner)
 		{
 			modelRunner->updateStochastSettings(this->Settings->StochastSet);
 
-			Sample* zeroSample = new Sample(modelRunner->getVaryingStochastCount());
+			std::shared_ptr<Sample> zeroSample = std::make_shared<Sample>(modelRunner->getVaryingStochastCount());
 			double z = modelRunner->getZValue(zeroSample);
 			double z0 = this->getZFactor(z);
 
-			delete zeroSample;
-
-			Sample* directionSample = this->Settings->StochastSet->getSample();
+			std::shared_ptr<Sample> directionSample = this->Settings->StochastSet->getSample();
 
 			double beta = getBeta(modelRunner, directionSample, z0);
 			auto alphas = getAlphas(directionSample, directionSample->getSize(), z0);
 
-			DesignPoint* designPoint = modelRunner->getDesignPoint(beta, alphas);
-
-			delete directionSample;
+			std::shared_ptr<DesignPoint> designPoint = modelRunner->getDesignPoint(beta, alphas);
 
 			return designPoint;
 		}
 
-		double DirectionReliability::getBeta(Deltares::Models::ZModelRunner* modelRunner, Sample* directionSample, double z0)
+		double DirectionReliability::getBeta(std::shared_ptr<Models::ZModelRunner> modelRunner, std::shared_ptr<Sample> directionSample, double z0)
 		{
-			Sample* normalizedSample = directionSample->normalize();
+			std::shared_ptr<Sample> normalizedSample = directionSample->normalize();
 
 			BetaValueTask* task = new BetaValueTask();
 			task->ModelRunner = modelRunner;
@@ -134,37 +126,27 @@ namespace Deltares
 			double beta = this->getDirectionBeta(modelRunner, task);
 			beta = beta * z0;
 
-			delete task;
-			delete normalizedSample;
-
 			return beta;
 		}
 
-		double DirectionReliability::getDirectionBeta(Models::ZModelRunner* modelRunner, BetaValueTask* directionTask)
+		double DirectionReliability::getDirectionBeta(std::shared_ptr<Models::ZModelRunner> modelRunner, BetaValueTask* directionTask)
 		{
-			Sample* uDirection = directionTask->UValues->normalize();
+			std::shared_ptr<Sample> uDirection = directionTask->UValues->normalize();
 			uDirection->IterationIndex = directionTask->Iteration;
 			bool invertZ = directionTask->z0 < 0;
 
-			std::vector<DirectionSection*> sections = this->getDirectionSections(modelRunner, directionTask->Settings, uDirection, invertZ);
+			std::vector<std::shared_ptr<DirectionSection>> sections = this->getDirectionSections(modelRunner, directionTask->Settings, uDirection, invertZ);
 
 			double beta = getBetaFromSections(sections);
 
 			directionTask->UValues->AllowProxy = uDirection->AllowProxy;
 
-			for (int i = 0; i < sections.size(); i++)
-			{
-				delete sections[i];
-			}
-
-			delete uDirection;
-
 			return beta;
 		}
 
-		std::vector<DirectionSection*> DirectionReliability::getDirectionSections(Models::ZModelRunner* modelRunner, DirectionReliabilitySettings* settings, Sample* uDirection, bool invertZ)
+		std::vector<std::shared_ptr<DirectionSection>> DirectionReliability::getDirectionSections(std::shared_ptr<Models::ZModelRunner> modelRunner, std::shared_ptr<DirectionReliabilitySettings> settings, std::shared_ptr<Sample> uDirection, bool invertZ)
 		{
-			std::vector<DirectionSection*> sections;
+			std::vector<std::shared_ptr<DirectionSection>> sections;
 
 			int sectionsCount = static_cast<int>(settings->MaximumLengthU / settings->Dsdu);
 			if (sectionsCount * settings->Dsdu < settings->MaximumLengthU)
@@ -204,25 +186,25 @@ namespace Deltares
 
 						if (zLowType == DoubleType::NaN && zChangeType != zHighType)
 						{
-							sections.push_back(new DirectionSection(zLowType, uLow, uChange));
+							sections.push_back(std::make_shared<DirectionSection>(zLowType, uLow, uChange));
 
 							double uSubChange = findBetaBetweenBoundaries(modelRunner, settings, uDirection, invertZ, uChange, uHigh, zChange, zHigh, zChange);
 
-							sections.push_back(new DirectionSection(zChangeType, uChange, uSubChange));
-							sections.push_back(new DirectionSection(zHighType, uSubChange, uHigh));
+							sections.push_back(std::make_shared<DirectionSection>(zChangeType, uChange, uSubChange));
+							sections.push_back(std::make_shared<DirectionSection>(zHighType, uSubChange, uHigh));
 						}
 						else if (zHighType == DoubleType::NaN && zChangeType != zLowType)
 						{
 							double uSubChange = findBetaBetweenBoundaries(modelRunner, settings, uDirection, invertZ, uLow, uChange, zLow, zChange, zChange);
 
-							sections.push_back(new DirectionSection(zLowType, uLow, uSubChange));
-							sections.push_back(new DirectionSection(zChangeType, uSubChange, uChange));
-							sections.push_back(new DirectionSection(zHighType, uChange, uHigh));
+							sections.push_back(std::make_shared<DirectionSection>(zLowType, uLow, uSubChange));
+							sections.push_back(std::make_shared<DirectionSection>(zChangeType, uSubChange, uChange));
+							sections.push_back(std::make_shared<DirectionSection>(zHighType, uChange, uHigh));
 						}
 						else
 						{
-							sections.push_back(new DirectionSection(zLowType, uLow, uChange));
-							sections.push_back(new DirectionSection(zHighType, uChange, uHigh));
+							sections.push_back(std::make_shared<DirectionSection>(zLowType, uLow, uChange));
+							sections.push_back(std::make_shared<DirectionSection>(zHighType, uChange, uHigh));
 						}
 
 						if (monotone)
@@ -232,7 +214,7 @@ namespace Deltares
 					}
 					else
 					{
-						DirectionSection* tempVar9 = new DirectionSection(zHighType, uLow, uHigh);
+						std::shared_ptr<DirectionSection> tempVar9 = std::make_shared<DirectionSection>(zHighType, uLow, uHigh);
 						sections.push_back(tempVar9);
 
 						if (monotone && zLowType != DoubleType::NaN && zHighType != DoubleType::NaN)
@@ -247,7 +229,7 @@ namespace Deltares
 			}
 
 			// add the remainder to the last 
-			DirectionSection* lastSection = sections.back();
+			std::shared_ptr<DirectionSection> lastSection = sections.back();
 
 			DoubleType lastSectionType = lastSection->Type;
 
@@ -265,12 +247,12 @@ namespace Deltares
 				}
 			}
 
-			sections.push_back(new DirectionSection(lastSectionType, lastSection->UHigh, Statistics::StandardNormal::BetaMax));
+			sections.push_back(std::make_shared<DirectionSection>(lastSectionType, lastSection->UHigh, Statistics::StandardNormal::BetaMax));
 
 			return sections;
 		}
 
-		double DirectionReliability::findBetaBetweenBoundaries(Models::ZModelRunner* modelRunner, DirectionReliabilitySettings* settings, Sample* uDirection, bool invertZ, double uLow, double uHigh, double zLow, double zHigh, double& z)
+		double DirectionReliability::findBetaBetweenBoundaries(std::shared_ptr<Models::ZModelRunner> modelRunner, std::shared_ptr<DirectionReliabilitySettings> settings, std::shared_ptr<Sample> uDirection, bool invertZ, double uLow, double uHigh, double zLow, double zHigh, double& z)
 		{
 			std::unique_ptr<ZGetter> model (new ZGetter(modelRunner));
 
@@ -348,7 +330,7 @@ namespace Deltares
 			}
 		}
 
-		double DirectionReliability::getBetaFromSections(std::vector<DirectionSection*> sections)
+		double DirectionReliability::getBetaFromSections(std::vector<std::shared_ptr<DirectionSection>> sections)
 		{
 			// sum the probabilities
 			double failingProbability = 0;
@@ -382,7 +364,7 @@ namespace Deltares
 		}
 
 
-		double DirectionReliability::GetZTolerance(DirectionReliabilitySettings* settings, double uLow, double uHigh, double zLow, double zHigh)
+		double DirectionReliability::GetZTolerance(std::shared_ptr<DirectionReliabilitySettings> settings, double uLow, double uHigh, double zLow, double zHigh)
 		{
 			double uDiff = std::abs((zHigh - zLow) / (uHigh - uLow)) * settings->EpsilonUStepSize;
 

@@ -1,8 +1,8 @@
 #include "StochastPoint.h"
 
-Sample* StochastPoint:: getSample()
+std::shared_ptr<Sample> StochastPoint:: getSample()
 {
-	Sample* sample = new Sample(Alphas.size());
+	std::shared_ptr<Sample> sample = std::make_shared<Sample>(Alphas.size());
 
 	for (int i = 0; i < Alphas.size(); i++)
 	{

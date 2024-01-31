@@ -8,7 +8,7 @@ namespace Deltares
 {
 	namespace Reliability
 	{
-		DesignPoint* Deltares::Reliability::DirectionalSampling::getDesignPoint(Deltares::Models::ZModelRunner* modelRunner)
+		std::shared_ptr<DesignPoint> Deltares::Reliability::DirectionalSampling::getDesignPoint(std::shared_ptr<Models::ZModelRunner> modelRunner)
 		{
 			int nstochasts = modelRunner->getVaryingStochastCount();
 			double pf = 0;
@@ -21,24 +21,22 @@ namespace Deltares
 			omp_set_num_threads(modelRunner->Settings->MaxParallelProcesses);
 
 			std::vector<double> betaValues;
-			std::vector<Sample*> samples;
+			std::vector<std::shared_ptr<Sample>> samples;
 
 			modelRunner->updateStochastSettings(this->Settings->StochastSet);
 
-			ConvergenceReport* convergenceReport = new ConvergenceReport();
+			std::shared_ptr<ConvergenceReport> convergenceReport = std::make_shared<ConvergenceReport>();
 
 			RandomSampleGenerator* randomSampleGenerator = new RandomSampleGenerator();
-			randomSampleGenerator->Settings = this->Settings->randomSettings;
+			randomSampleGenerator->Settings = this->Settings->RandomSettings;
 			randomSampleGenerator->Settings->StochastSet = this->Settings->StochastSet;
 			randomSampleGenerator->initialize();
 
-			Sample* zeroSample = new Sample(nstochasts);
+			std::shared_ptr<Sample> zeroSample = std::make_shared<Sample>(nstochasts);
 			double z0 = modelRunner->getZValue(zeroSample);
 			double z0Fac = this->getZFactor(z0);
 
-			delete zeroSample;
-
-			Sample* uMin = new Sample(nstochasts);
+			std::shared_ptr<Sample> uMin = std::make_shared<Sample>(nstochasts);
 			int chunkSize = modelRunner->Settings->MaxChunkSize;
 
 			double sumPfSamp = 0.0; double sumPfSamp2 = 0.0;
@@ -48,7 +46,7 @@ namespace Deltares
 			{
 				if (nmaal % chunkSize == 0)
 				{
-					clearSamples(samples);
+					samples.clear();
 
 					int runs = std::min(chunkSize, Settings->MaximumSamples - parSamples * chunkSize);
 
@@ -75,12 +73,12 @@ namespace Deltares
 					continue;
 				}
 
-				Sample* u = samples[nmaal % chunkSize];
+				std::shared_ptr<Sample> u = samples[nmaal % chunkSize];
 
 				double betaDirection = abs(betaValues[nmaal % chunkSize]);
 
 				// get the sample at the limit state
-				Sample* uSurface = u->normalize(betaDirection);
+				std::shared_ptr<Sample> uSurface = u->normalize(betaDirection);
 
 				// calculate failure probability
 				if (betaDirection >= 0 && betaDirection < Statistics::StandardNormal::BetaMax)
@@ -147,10 +145,9 @@ namespace Deltares
 					modelRunner->reportResult(report);
 					delete report;
 				}
-				delete uSurface;
 			}
 
-			Sample* uDesign = uMean->getSample();
+			std::shared_ptr<Sample> uDesign = uMean->getSample();
 
 			//getRealization(beta, alpha, convergenceReport, uMin->ScenarioIndex);
 			convergenceReport->Convergence = getConvergence(pf, sumPfSamp, sumPfSamp2, (double)validSamples);
@@ -160,11 +157,9 @@ namespace Deltares
 				pf = 1 - pf;
 			}
 
-			DesignPoint* designPoint = getDesignPointFromSample(modelRunner, pf, uDesign, z0Fac, convergenceReport);
+			std::shared_ptr<DesignPoint> designPoint = getDesignPointFromSample(modelRunner, pf, uDesign, z0Fac, convergenceReport);
 
-			delete uDesign;
-			delete randomSampleGenerator;
-			clearSamples(samples);
+			samples.clear();
 
 			return designPoint;
 		}
@@ -181,7 +176,7 @@ namespace Deltares
 			return convergence;
 		}
 
-		std::vector<double> DirectionalSampling::getDirectionBetas(Models::ZModelRunner* modelRunner, std::vector<Sample*> samples, double z0, int step)
+		std::vector<double> DirectionalSampling::getDirectionBetas(std::shared_ptr<Models::ZModelRunner> modelRunner, std::vector<std::shared_ptr<Sample>> samples, double z0, int step)
 		{
 			auto betaValues = std::vector<double>(samples.size());
 

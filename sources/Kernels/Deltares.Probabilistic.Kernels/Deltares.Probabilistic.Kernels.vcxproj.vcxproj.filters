@@ -81,6 +81,7 @@
     <ClCompile Include="Statistics\HistogramValue.cpp" />
     <ClCompile Include="Statistics\FragilityValue.cpp" />
     <ClCompile Include="Statistics\Distributions\DiscreteDistribution.cpp" />
+    <ClCompile Include="Utils\SharedPointerProvider.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -172,6 +173,9 @@
     <ClInclude Include="Statistics\HistogramValue.h" />
     <ClInclude Include="Statistics\FragilityValue.h" />
     <ClInclude Include="Statistics\Distributions\DiscreteDistribution.h" />
+    <ClInclude Include="Utils\probLibString.h" />
+    <ClInclude Include="Utils\probLibException.h" />
+    <ClInclude Include="Utils\SharedPointerProvider.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

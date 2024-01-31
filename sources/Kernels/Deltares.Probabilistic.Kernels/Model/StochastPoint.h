@@ -9,9 +9,10 @@ class StochastPoint
 {
 public:
 	double Beta;
-	std::vector<StochastPointAlpha*> Alphas;
+	std::vector<std::shared_ptr<StochastPointAlpha>> Alphas;
 
-	Sample* getSample();
+	std::shared_ptr<Sample> getSample();
+
 	virtual ~StochastPoint() { ; }
 };
 

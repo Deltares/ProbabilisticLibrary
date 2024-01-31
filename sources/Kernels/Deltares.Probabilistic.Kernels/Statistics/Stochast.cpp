@@ -18,24 +18,24 @@ namespace Deltares
 		{
 			switch (this->distributionType)
 			{
-			case DistributionType::Deterministic: this->distribution = new DeterministicDistribution(); break;
-			case DistributionType::Normal: this->distribution = new NormalDistribution(); break;
-			case DistributionType::LogNormal: this->distribution = new LogNormalDistribution(); break;
-			case DistributionType::Uniform: this->distribution = new UniformDistribution(); break;
-			case DistributionType::Gumbel: this->distribution = new GumbelDistribution(); break;
-			case DistributionType::Discrete: this->distribution = new DiscreteDistribution(); break;
+			case DistributionType::Deterministic: this->distribution = std::make_shared<DeterministicDistribution>(); break;
+			case DistributionType::Normal: this->distribution = std::make_shared<NormalDistribution>(); break;
+			case DistributionType::LogNormal: this->distribution = std::make_shared<LogNormalDistribution>(); break;
+			case DistributionType::Uniform: this->distribution = std::make_shared<UniformDistribution>(); break;
+			case DistributionType::Gumbel: this->distribution = std::make_shared<GumbelDistribution>(); break;
+			case DistributionType::Discrete: this->distribution = std::make_shared<DiscreteDistribution>(); break;
 			default:
 				throw Deltares::ProbLibCore::probLibException("Distribution type not supported");
 			}
 
 			if (truncated && distribution->canTruncate())
 			{
-				this->distribution = new TruncatedDistribution(this->distribution);
+				this->distribution = std::make_shared<TruncatedDistribution>(this->distribution);
 			}
 
 			if (inverted && distribution->canInvert())
 			{
-				this->distribution = new InvertedDistribution(this->distribution);
+				this->distribution = std::make_shared<InvertedDistribution>(this->distribution);
 			}
 		}
 

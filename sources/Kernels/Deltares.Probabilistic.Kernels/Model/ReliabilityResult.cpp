@@ -1,7 +1,7 @@
 #include "ReliabilityResult.h"
 #include "../Math/NumericSupport.h"
 
-bool ReliabilityResult::IsMeaningful(ReliabilityResult* resultBefore, ReliabilityResult* resultAfter)
+bool ReliabilityResult::IsMeaningful(std::shared_ptr<ReliabilityResult> resultBefore, std::shared_ptr<ReliabilityResult> resultAfter)
 {
     if (resultBefore == nullptr || resultAfter == nullptr)
     {

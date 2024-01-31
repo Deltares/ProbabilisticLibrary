@@ -19,34 +19,32 @@ namespace Deltares
 			public ref class DirectionalSamplingSettingsWrapper
 			{
 			private:
-				Reliability::DirectionalSamplingSettings* m_settings;
-
+				Reliability::DirectionalSamplingSettings* settings;
+				Utils::SharedPointerProvider<Reliability::DirectionalSamplingSettings>* sharedPointer = new Utils::SharedPointerProvider<Reliability::DirectionalSamplingSettings>();
 			public:
 				DirectionalSamplingSettingsWrapper()
 				{
-					m_settings = new Reliability::DirectionalSamplingSettings();
-					m_settings->randomSettings = RandomSettings->GetSettings();
-					m_settings->DirectionSettings = DirectionalSettings->GetSettings();
+					settings = new Reliability::DirectionalSamplingSettings();
 				}
 				~DirectionalSamplingSettingsWrapper() { this->!DirectionalSamplingSettingsWrapper(); }
-				!DirectionalSamplingSettingsWrapper() { delete m_settings; }
+				!DirectionalSamplingSettingsWrapper() { delete sharedPointer; }
 
 				property int MinimumSamples
 				{
-					int get() { return m_settings->MinimumSamples; }
-					void set(int value) { m_settings->MinimumSamples = value; }
+					int get() { return settings->MinimumSamples; }
+					void set(int value) { settings->MinimumSamples = value; }
 				}
 
 				property int MaximumSamples
 				{
-					int get() { return m_settings->MaximumSamples; }
-					void set(int value) { m_settings->MaximumSamples = value; }
+					int get() { return settings->MaximumSamples; }
+					void set(int value) { settings->MaximumSamples = value; }
 				}
 
 				property double VariationCoefficient
 				{
-					double get() { return m_settings->VariationCoefficient; }
-					void set(double value) { m_settings->VariationCoefficient = value; }
+					double get() { return settings->VariationCoefficient; }
+					void set(double value) { settings->VariationCoefficient = value; }
 				}
 
 				RandomSettingsWrapper^ RandomSettings = gcnew RandomSettingsWrapper();
@@ -55,14 +53,17 @@ namespace Deltares
 
 				System::Collections::Generic::List<StochastSettingsWrapper^>^ StochastSettings = gcnew System::Collections::Generic::List<StochastSettingsWrapper^>();
 
-				Reliability::DirectionalSamplingSettings* GetSettings()
+				std::shared_ptr<Reliability::DirectionalSamplingSettings> GetSettings()
 				{
-					m_settings->StochastSet = new Deltares::Reliability::StochastSettingsSet();
+					std::shared_ptr<Reliability::DirectionalSamplingSettings> m_settings = sharedPointer->getSharedPointer(settings);
+
+					m_settings->RandomSettings = RandomSettings->GetSettings();
+					m_settings->DirectionSettings = DirectionalSettings->GetSettings();
 
 					m_settings->StochastSet->StochastSettings.clear();
 					for (int i = 0; i < StochastSettings->Count; i++)
 					{
-						m_settings->StochastSet->StochastSettings.push_back(StochastSettings[i]->getSettings());
+						m_settings->StochastSet->StochastSettings.push_back(StochastSettings[i]->GetSettings());
 					}
 
 					return m_settings;

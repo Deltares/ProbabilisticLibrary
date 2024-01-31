@@ -20,14 +20,14 @@ namespace Deltares
 			{
 			private:
 				Reliability::DirectionReliabilitySettings* m_settings;
-
+				Utils::SharedPointerProvider<Reliability::DirectionReliabilitySettings>* sharedPointer = new Utils::SharedPointerProvider<Reliability::DirectionReliabilitySettings>();
 			public:
 				DirectionReliabilitySettingsWrapper()
 				{
 					m_settings = new Reliability::DirectionReliabilitySettings();
 				}
 				~DirectionReliabilitySettingsWrapper() { this->!DirectionReliabilitySettingsWrapper(); }
-				!DirectionReliabilitySettingsWrapper() { delete m_settings; }
+				!DirectionReliabilitySettingsWrapper() { delete sharedPointer; }
 
 				property double Dsdu
 				{
@@ -77,12 +77,12 @@ namespace Deltares
 
 				void SetStartPoint(DesignPointWrapper^ designPoint)
 				{
-					m_settings->StochastSet = new Reliability::StochastSettingsSet(designPoint->getDesignPoint());
+					m_settings->StochastSet = std::make_shared<Reliability::StochastSettingsSet>(designPoint->getDesignPoint());
 				}
 
-				Reliability::DirectionReliabilitySettings* GetSettings()
+				std::shared_ptr<Reliability::DirectionReliabilitySettings> GetSettings()
 				{
-					return m_settings;
+					return sharedPointer->getSharedPointer(m_settings);
 				}
 			};
 		}

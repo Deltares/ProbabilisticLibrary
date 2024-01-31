@@ -2,13 +2,18 @@
 #include "../Model/MessageWrapper.h"
 
 
-void Deltares::Probabilistic::Kernels::DesignPointWrapper::SetDesignPoint(DesignPoint* designPoint, System::Collections::Generic::List<Deltares::Probabilistic::Kernels::StochastWrapper^>^ stochasts)
+void Deltares::Probabilistic::Kernels::DesignPointWrapper::SetDesignPoint(std::shared_ptr<DesignPoint> designPoint, System::Collections::Generic::List<Deltares::Probabilistic::Kernels::StochastWrapper^>^ stochasts)
 {
-	this->m_designPoint = designPoint;
+	this->m_designPoint = designPoint.get();
+
+	this->sharedPointer->setSharedPointer(designPoint);
 
 	SetStochastPoint(designPoint, stochasts);
 
-	this->ConvergenceReport = gcnew ConvergenceReportWrapper(designPoint->convergenceReport);
+	if (designPoint->convergenceReport != nullptr) 
+	{
+		this->ConvergenceReport = gcnew ConvergenceReportWrapper(designPoint->convergenceReport);
+	}
 
 	for (int i = 0; i < designPoint->ReliabililityResults.size(); i++)
 	{

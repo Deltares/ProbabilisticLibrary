@@ -3,6 +3,8 @@
 #include <cmath>
 #include <vector>
 #include <cstdint>
+#include <memory>
+
 #include "../Math/NumericSupport.h"
 
 
@@ -44,9 +46,9 @@ public:
 
 	double getBeta();
 	void setBeta(double beta);
-	Sample* clone();
-	Sample* normalize(double beta = 1);
-	Sample* multiply(double factor);
+	std::shared_ptr<Sample> clone();
+	std::shared_ptr<Sample> normalize(double beta = 1);
+	std::shared_ptr<Sample> multiply(double factor);
 	void correctSmallValues(double tolerance = 1E-10);
 
 	intptr_t Tag = 0;

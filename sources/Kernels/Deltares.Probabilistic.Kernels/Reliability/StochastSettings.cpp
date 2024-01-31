@@ -15,7 +15,7 @@ namespace Deltares
 			this->XMaxValue = Statistics::StandardNormal::getPFromU(this->MaxValue);
 		}
 
-		void StochastSettings::setStochast(Statistics::Stochast* stochast)
+		void StochastSettings::setStochast(std::shared_ptr<Statistics::Stochast> stochast)
 		{
 			this->stochast = stochast;
 		}

@@ -1,5 +1,6 @@
 #pragma once
 #include <cmath>
+#include <memory>
 
 class ReliabilityResult
 {
@@ -17,7 +18,7 @@ public:
     double Difference = nan("");
     double Contribution = nan("");
 
-    bool IsMeaningful(ReliabilityResult* resultBefore, ReliabilityResult* resultAfter);
+    bool IsMeaningful(std::shared_ptr<ReliabilityResult> resultBefore, std::shared_ptr<ReliabilityResult> resultAfter);
 
 };
 

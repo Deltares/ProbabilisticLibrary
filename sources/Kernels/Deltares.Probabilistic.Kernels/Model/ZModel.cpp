@@ -12,7 +12,7 @@ namespace Deltares
 			omp_set_num_threads(maxProcesses);
 		}
 
-		void ZModel::invoke(Sample* sample)
+		void ZModel::invoke(std::shared_ptr<Sample> sample)
 		{
 			if (this->zLambda != nullptr)
 			{
@@ -24,7 +24,7 @@ namespace Deltares
 			}
 		}
 
-		void ZModel::invoke(std::vector<Sample*> samples)
+		void ZModel::invoke(std::vector<std::shared_ptr<Sample>> samples)
 		{
 			if (zMultipleDelegate == nullptr)
 			{
@@ -36,14 +36,7 @@ namespace Deltares
 			}
 			else
 			{
-				Sample** sampleList = new Sample * [samples.size()];
-
-				for (int i = 0; i < samples.size(); i++)
-				{
-					sampleList[i] = samples[i];
-				}
-
-				this->zMultipleDelegate(sampleList, samples.size());
+				this->zMultipleDelegate(samples);
 			}
 		}
 	}

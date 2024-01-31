@@ -13,19 +13,21 @@ namespace Deltares
 			{
 			private:
 				Reliability::DirectionReliability* method;
-
+				Utils::SharedPointerProvider<Reliability::DirectionReliability>* sharedPointer = new Utils::SharedPointerProvider<Reliability::DirectionReliability>();
 			public:
 				DirectionReliabilityWrapper()
 				{
 					method = new Reliability::DirectionReliability();
 				}
 				~DirectionReliabilityWrapper() { this->!DirectionReliabilityWrapper(); }
-				!DirectionReliabilityWrapper() { delete method; }
+				!DirectionReliabilityWrapper() { delete sharedPointer; }
 
-				Reliability::ReliabilityMethod* GetReliabilityMethod() override
+				std::shared_ptr<Reliability::ReliabilityMethod> GetReliabilityMethod() override
 				{
-					method->Settings = Settings->GetSettings();
-					return method;
+					std::shared_ptr<Reliability::DirectionReliability> m_method = sharedPointer->getSharedPointer(method);
+
+					m_method->Settings = Settings->GetSettings();
+					return m_method;
 				}
 
 				DirectionReliabilitySettingsWrapper^ Settings = gcnew DirectionReliabilitySettingsWrapper();

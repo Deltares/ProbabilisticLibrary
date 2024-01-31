@@ -1,4 +1,5 @@
 #include "CorrelationMatrix.h"
+#include <memory>
 
 using namespace Deltares::ProbLibCore;
 
@@ -87,7 +88,7 @@ bool CorrelationMatrix::checkFullyCorrelated(const int j)
     return false;
 }
 
-void CorrelationMatrix::filter(const CorrelationMatrix* m, const std::vector<int> & index)
+void CorrelationMatrix::filter(const std::shared_ptr<CorrelationMatrix> m, const std::vector<int> & index)
 {
     size_t m1; size_t m2;
     m->matrix.get_dims(m1, m2);

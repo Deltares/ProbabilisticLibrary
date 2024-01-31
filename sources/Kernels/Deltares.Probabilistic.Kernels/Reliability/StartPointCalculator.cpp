@@ -13,7 +13,7 @@ namespace Deltares
 {
 	namespace Reliability
 	{
-		Sample* StartPointCalculator::getStartPoint(Models::ZModelRunner* modelRunner)
+		std::shared_ptr<Sample> StartPointCalculator::getStartPoint(std::shared_ptr<Models::ZModelRunner> modelRunner)
 		{
 			switch (this->Settings->StartMethod)
 			{
@@ -30,7 +30,7 @@ namespace Deltares
 			}
 		}
 
-		void StartPointCalculator::correctDefaultValues(Sample* startPoint)
+		void StartPointCalculator::correctDefaultValues(std::shared_ptr<Sample> startPoint)
 		{
 			bool isDefaultStartValues = true;
 			for (int i = 0; i < startPoint->getSize(); i++)
@@ -50,20 +50,18 @@ namespace Deltares
 			}
 		}
 
-		Sample* StartPointCalculator::getRayStartPoint(Models::ZModelRunner* modelRunner)
+		std::shared_ptr<Sample> StartPointCalculator::getRayStartPoint(std::shared_ptr<Models::ZModelRunner> modelRunner)
 		{
-			Sample* startPoint = this->Settings->StochastSet->getSample();
+			std::shared_ptr<Sample> startPoint = this->Settings->StochastSet->getSample();
 
 			correctDefaultValues(startPoint);
 
-			Sample* rayStartPoint = getDirectionStartPoint(modelRunner, startPoint);
-
-			delete startPoint;
+			std::shared_ptr<Sample> rayStartPoint = getDirectionStartPoint(modelRunner, startPoint);
 
 			return rayStartPoint;
 		}
 
-		Sample* StartPointCalculator::getDirectionStartPoint(Models::ZModelRunner* modelRunner, Sample* startPoint)
+		std::shared_ptr<Sample> StartPointCalculator::getDirectionStartPoint(std::shared_ptr<Models::ZModelRunner> modelRunner, std::shared_ptr<Sample> startPoint)
 		{
 			int nStochasts = modelRunner->getVaryingStochastCount();
 
@@ -82,7 +80,7 @@ namespace Deltares
 
 			double beta = directionReliability->getBeta(modelRunner, startPoint, 1);
 
-			Sample* directionPoint = new Sample(startPoint->Values);
+			std::shared_ptr<Sample> directionPoint = std::make_shared<Sample>(startPoint->Values);
 
 			directionPoint->setBeta(beta);
 
@@ -98,10 +96,10 @@ namespace Deltares
 		}
 
 
-		Sample* StartPointCalculator::getSensitivityStartPoint(Models::ZModelRunner* modelRunner)
+		std::shared_ptr<Sample> StartPointCalculator::getSensitivityStartPoint(std::shared_ptr<Models::ZModelRunner> modelRunner)
 		{
 			int nStochasts = modelRunner->getVaryingStochastCount();
-			Sample* startPoint = new Sample(nStochasts);
+			std::shared_ptr<Sample> startPoint = std::make_shared<Sample>(nStochasts);
 
 			Models::GradientCalculator* gradientCalculator = new Models::GradientCalculator();
 			gradientCalculator->Settings->GradientType = Models::GradientType::TwoDirections;
@@ -109,36 +107,31 @@ namespace Deltares
 
 			std::vector<double> gradient = gradientCalculator->getGradient(modelRunner, startPoint);
 
-			Sample* gradientSample = new Sample(gradient);
+			std::shared_ptr<Sample> gradientSample = std::make_shared<Sample>(gradient);
 
-			Sample* sensitivityStartPoint = getDirectionStartPoint(modelRunner, gradientSample);
-
-			delete startPoint;
-			delete gradientSample;
-			delete gradientCalculator;
+			std::shared_ptr<Sample> sensitivityStartPoint = getDirectionStartPoint(modelRunner, gradientSample);
 
 			return sensitivityStartPoint;
 		}
 
-		Sample* StartPointCalculator::getSphereStartPoint(Models::ZModelRunner* modelRunner)
+		std::shared_ptr<Sample> StartPointCalculator::getSphereStartPoint(std::shared_ptr<Models::ZModelRunner> modelRunner)
 		{
 			constexpr int nRadiusFactors = 20;
 
-			Sample* zeroSample = new Sample(modelRunner->getVaryingStochastCount());
+			std::shared_ptr<Sample> zeroSample = std::make_shared<Sample>(modelRunner->getVaryingStochastCount());
 			double z0 = modelRunner->getZValue(zeroSample);
-			delete zeroSample;
 
 			double z0Fac = z0 < 0 ? -1 : 1;
 
-			Sample* startPoint = this->Settings->StochastSet->getSample();
+			std::shared_ptr<Sample> startPoint = this->Settings->StochastSet->getSample();
 
 			correctDefaultValues(startPoint);
 
 			double radiusFactor = this->Settings->RadiusSphereSearch / startPoint->getBeta();
 
-			Sample* uSphere = startPoint->multiply(radiusFactor);
+			std::shared_ptr<Sample> uSphere = startPoint->multiply(radiusFactor);
 
-			Sample* bestSample = nullptr;
+			std::shared_ptr<Sample> bestSample = nullptr;
 
 			for (int i = 0; i < nRadiusFactors; i++)
 			{
@@ -146,15 +139,13 @@ namespace Deltares
 
 				double zMin = std::numeric_limits<double>::infinity();
 
-				Sample* sample = examineSurfaceForFailure(modelRunner, 0, radiusFactor, uSphere, z0Fac, zMin);
+				std::shared_ptr<Sample> sample = examineSurfaceForFailure(modelRunner, 0, radiusFactor, uSphere, z0Fac, zMin);
 
 				bestSample = getBestSample(bestSample, sample, z0Fac);
 
 				if (z0Fac * sample->Z < 0)
 				{
-					Sample* refinedSample = refineSpherePoint(modelRunner, radiusFactor, sample);
-
-					delete sample;
+					std::shared_ptr<Sample> refinedSample = refineSpherePoint(modelRunner, radiusFactor, sample);
 
 					return refinedSample;
 				}
@@ -163,7 +154,7 @@ namespace Deltares
 			return bestSample;
 		}
 
-		Sample* StartPointCalculator::examineSurfaceForFailure(Models::ZModelRunner* modelRunner, int index, double radiusFactor, Sample* uRay, double z0Fac, double& zMin)
+		std::shared_ptr<Sample> StartPointCalculator::examineSurfaceForFailure(std::shared_ptr<Models::ZModelRunner> modelRunner, int index, double radiusFactor, std::shared_ptr<Sample> uRay, double z0Fac, double& zMin)
 		{
 			constexpr int maxSteps = 5;
 			constexpr double dangle = 2 * std::numbers::pi / (maxSteps - 1);
@@ -172,13 +163,13 @@ namespace Deltares
 			{
 				int jMax = uRay->Values[index] == 0 ? 1 : maxSteps;
 
-				Sample* bestSample = nullptr;
+				std::shared_ptr<Sample> bestSample = nullptr;
 
 				for (int j = 0; j < jMax; j++)
 				{
 					double angle = dangle * j;
 
-					Sample* u = uRay->clone();
+					std::shared_ptr<Sample> u = uRay->clone();
 
 					for (int k = 0; k < index; k++)
 					{
@@ -189,9 +180,7 @@ namespace Deltares
 
 					u->correctSmallValues(1E-10);
 
-					Sample* sample = examineSurfaceForFailure(modelRunner, index + 1, radiusFactor, u, z0Fac, zMin);
-
-					delete u;
+					std::shared_ptr<Sample> sample = examineSurfaceForFailure(modelRunner, index + 1, radiusFactor, u, z0Fac, zMin);
 
 					bestSample = getBestSample(bestSample, sample, z0Fac);
 				}
@@ -201,7 +190,7 @@ namespace Deltares
 			}
 			else
 			{
-				Sample* u = uRay->multiply(radiusFactor);
+				std::shared_ptr<Sample> u = uRay->multiply(radiusFactor);
 
 				u->Z = modelRunner->getZValue(u);
 
@@ -211,7 +200,7 @@ namespace Deltares
 
 		// Gets the best sample for a given radius factor
 
-		Sample* StartPointCalculator::getBestSample(Sample* bestSample, Sample* sample, double z0Fac)
+		std::shared_ptr<Sample> StartPointCalculator::getBestSample(std::shared_ptr<Sample> bestSample, std::shared_ptr<Sample> sample, double z0Fac)
 		{
 			if (bestSample == nullptr)
 			{
@@ -219,12 +208,10 @@ namespace Deltares
 			}
 			else if (z0Fac * bestSample->Z > 0 && z0Fac * sample->Z < 0)
 			{
-				delete bestSample;
 				return sample;
 			}
 			else if (abs(sample->Z) < abs(bestSample->Z))
 			{
-				delete bestSample;
 				return sample;
 			}
 			else
@@ -233,7 +220,7 @@ namespace Deltares
 			}
 		}
 
-		Sample* StartPointCalculator::refineSpherePoint(Models::ZModelRunner* modelRunner, double radiusFactor, Sample* u)
+		std::shared_ptr<Sample> StartPointCalculator::refineSpherePoint(std::shared_ptr<Models::ZModelRunner> modelRunner, double radiusFactor, std::shared_ptr<Sample> u)
 		{
 			// determine the u-vector for which the z-function is either minimal
 			// or where it becomes negative
@@ -242,15 +229,13 @@ namespace Deltares
 			double z = u->Z;
 			double coFactor = (radiusFactor - 0.05) / radiusFactor;
 
-			Sample* u2 = u->multiply(coFactor);
+			std::shared_ptr<Sample> u2 = u->multiply(coFactor);
 
 			// factor related to number of steps above
 			double z2 = modelRunner->getZValue(u2);
 			z2 = std::min(z2, 0.0);
 
-			Sample* u3 = u2->multiply(1.0 + z2 / (z2 - z) / coFactor);
-
-			delete u2;
+			std::shared_ptr<Sample> u3 = u2->multiply(1.0 + z2 / (z2 - z) / coFactor);
 
 			return u3;
 		}

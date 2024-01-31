@@ -18,14 +18,14 @@ namespace Deltares
 {
 	namespace Reliability
 	{
-		DesignPoint* CrudeMonteCarlo::getDesignPoint(Deltares::Models::ZModelRunner* modelRunner)
+		std::shared_ptr<DesignPoint> CrudeMonteCarlo::getDesignPoint(std::shared_ptr<Models::ZModelRunner> modelRunner)
 		{
 			modelRunner->updateStochastSettings(this->Settings->StochastSet);
 
 			double qRange = 1;
 			double zRemainder = 1;
 
-			Sample* remainderSample = new Sample(this->Settings->StochastSet->getVaryingStochastCount());
+			std::shared_ptr<Sample> remainderSample = std::make_shared<Sample>(this->Settings->StochastSet->getVaryingStochastCount());
 
 			for (int i = 0; i < this->Settings->StochastSet->getVaryingStochastCount(); i++)
 			{
@@ -55,13 +55,10 @@ namespace Deltares
 				zRemainder = modelRunner->getZValue(remainderSample);
 			}
 
-			delete remainderSample;
-
-
 			return getReducedDesignPoint(modelRunner, zRemainder, qRange);
 		}
 
-		DesignPoint* CrudeMonteCarlo::getReducedDesignPoint(Deltares::Models::ZModelRunner* modelRunner, double zRemainder, double qRange)
+		std::shared_ptr<DesignPoint> CrudeMonteCarlo::getReducedDesignPoint(std::shared_ptr<Models::ZModelRunner> modelRunner, double zRemainder, double qRange)
 		{
 			int nParameters = modelRunner->getVaryingStochastCount();
 			double* zValues = new double[0]; // copy of z for all parallel threads as double
@@ -72,15 +69,15 @@ namespace Deltares
 			randomSampleGenerator->Settings->StochastSet = this->Settings->StochastSet;
 			randomSampleGenerator->initialize();
 
-			Sample* uMin = new Sample(nParameters);
+			std::shared_ptr<Sample> uMin = std::make_shared<Sample>(nParameters);
 			double rmin = std::numeric_limits<double>::infinity();
 			double pf = 0.0;
 			bool initial = true;
 			double z0Fac = 0;
 			int nFailed = 0;
 			int nSamples = 0;
-			ConvergenceReport* convergenceReport = new ConvergenceReport();
-			std::vector<Sample*> samples;
+			std::shared_ptr<ConvergenceReport> convergenceReport = std::make_shared<ConvergenceReport>();
+			std::vector<std::shared_ptr<Sample>> samples;
 			int zIndex = 0;
 
 			double qFail = 0;
@@ -89,26 +86,22 @@ namespace Deltares
 			{
 				zIndex++;
 
-		if (initial || zIndex >= samples.size())
-		{
-			for (size_t i = 0; i < samples.size(); i++)
-			{
-				delete(samples[i]);
-			}
-			samples.clear();
+				if (initial || zIndex >= samples.size())
+				{
+					samples.clear();
 
 					int chunkSize = modelRunner->Settings->MaxChunkSize;
 					int runs = std::min(chunkSize, Settings->MaximumSamples + 1 - sampleIndex);
 
 					if (initial)
 					{
-						samples.push_back(new Sample(nParameters));
+						samples.push_back(std::make_shared<Sample>(nParameters));
 						runs = runs - 1;
 					}
 
 					for (int i = 0; i < runs; i++)
 					{
-						Sample* sample = randomSampleGenerator->getRandomSample();
+						std::shared_ptr<Sample> sample = randomSampleGenerator->getRandomSample();
 						if (qRange < 1)
 						{
 							applyLimits(sample);
@@ -155,7 +148,7 @@ namespace Deltares
 				}
 
 				double z = zValues[zIndex];
-				Sample* u = samples[zIndex];
+				std::shared_ptr<Sample> u = samples[zIndex];
 
 				if (std::isnan(z))
 				{
@@ -197,19 +190,18 @@ namespace Deltares
 
 			auto alpha = getAlphas(uMin, nParameters, z0Fac);
 			convergenceReport->Convergence = getConvergence(pf, nSamples);
-			DesignPoint* designPoint = modelRunner->getDesignPoint(beta, alpha, convergenceReport, uMin->ScenarioIndex);
+			std::shared_ptr<DesignPoint> designPoint = modelRunner->getDesignPoint(beta, alpha, convergenceReport, uMin->ScenarioIndex);
 
-			delete uMin;
-			clearSamples(samples);
+			samples.clear();
 
 			return designPoint;
 		}
 
-		void CrudeMonteCarlo::applyLimits(Sample* sample)
+		void CrudeMonteCarlo::applyLimits(std::shared_ptr<Sample> sample)
 		{
 			for (int i = 0; i < sample->getSize(); i++)
 			{
-				Deltares::Reliability::StochastSettings* settings = this->Settings->StochastSet->VaryingStochastSettings[i];
+				std::shared_ptr<StochastSettings> settings = this->Settings->StochastSet->VaryingStochastSettings[i];
 				if (!settings->isMinMaxDefault())
 				{
 					double q = Statistics::StandardNormal::getPFromU(sample->Values[i]);
@@ -219,7 +211,7 @@ namespace Deltares
 			}
 		}
 
-		bool CrudeMonteCarlo::checkConvergence(Deltares::Models::ZModelRunner* modelRunner, double pf, int samples, int nmaal)
+		bool CrudeMonteCarlo::checkConvergence(std::shared_ptr<Models::ZModelRunner> modelRunner, double pf, int samples, int nmaal)
 		{
 			std::unique_ptr<ReliabilityReport> report(new ReliabilityReport());
 			report->Step = nmaal;

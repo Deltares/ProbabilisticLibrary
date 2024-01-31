@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../Deltares.Probabilistic.Kernels/Statistics/HistogramValue.h"
+#include "../../Deltares.Probabilistic.Kernels/Utils/SharedPointerProvider.h"
 
 namespace Deltares
 {
@@ -12,14 +13,15 @@ namespace Deltares
 			{
 			private:
 				Statistics::HistogramValue* m_value;
-
+				Utils::SharedPointerProvider<Statistics::HistogramValue>* sharedPointer;
 			public:
 				HistogramValueWrapper()
 				{
 					m_value = new Statistics::HistogramValue();
+					sharedPointer = new Utils::SharedPointerProvider<Statistics::HistogramValue>();
 				}
 				~HistogramValueWrapper() { this->!HistogramValueWrapper(); }
-				!HistogramValueWrapper() { delete m_value; }
+				!HistogramValueWrapper() { delete sharedPointer; }
 
 				property double LowerBound
 				{
@@ -39,9 +41,9 @@ namespace Deltares
 					void set(double value) { m_value->Amount = value; }
 				}
 
-				Statistics::HistogramValue* GetValue()
+				std::shared_ptr<Statistics::HistogramValue> GetValue()
 				{
-					return m_value;
+					return sharedPointer->getSharedPointer(m_value);
 				}
 			};
 		}

@@ -11,12 +11,12 @@
 class UConverter
 {
 private:
-	std::vector<Deltares::Statistics::Stochast*> stochasts;
-	std::vector<Deltares::Statistics::Stochast*> varyingStochasts;
+	std::vector<std::shared_ptr<Deltares::Statistics::Stochast>> stochasts;
+	std::vector<std::shared_ptr<Deltares::Statistics::Stochast>> varyingStochasts;
 	std::vector<int> varyingStochastIndex;
 
-	CorrelationMatrix* correlationMatrix;
-	CorrelationMatrix* varyingCorrelationMatrix;
+	std::shared_ptr<CorrelationMatrix> correlationMatrix;
+	std::shared_ptr<CorrelationMatrix> varyingCorrelationMatrix;
 
 	std::vector<double> getExpandedValues(const std::vector<double> & values);
 	std::vector<double> getExpandedValues(const std::vector<double> & values, double defaultValue);
@@ -26,12 +26,12 @@ private:
 
 public:
 
-	UConverter(std::vector<Deltares::Statistics::Stochast*> stochasts, CorrelationMatrix* correlationMatrix);
+	UConverter(std::vector<std::shared_ptr<Deltares::Statistics::Stochast>> stochasts, std::shared_ptr<CorrelationMatrix> correlationMatrix);
 	void initializeForRun();
-	std::vector<double> getXValues(Sample* sample);
+	std::vector<double> getXValues(std::shared_ptr<Sample> sample);
 	int getStochastCount();
 	int getVaryingStochastCount();
 	StochastPoint* GetStochastPoint(double beta, std::vector<double> & alphas, int count);
-	void updateStochastSettings(Deltares::Reliability::StochastSettingsSet* settings);
+	void updateStochastSettings(std::shared_ptr<Deltares::Reliability::StochastSettingsSet> settings);
 };
 

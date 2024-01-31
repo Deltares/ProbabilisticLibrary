@@ -7,13 +7,13 @@ namespace Deltares
 {
 	namespace Reliability
 	{
-		void StochastSettingsSet::loadStochastPoint(StochastPoint* stochastPoint)
+		void StochastSettingsSet::loadStochastPoint(std::shared_ptr<StochastPoint> stochastPoint)
 		{
 			this->StochastSettings.clear();
 
 			for (size_t i = 0; i < stochastPoint->Alphas.size(); i++)
 			{
-				Deltares::Reliability::StochastSettings* settings = new Deltares::Reliability::StochastSettings();
+				std::shared_ptr<Deltares::Reliability::StochastSettings> settings = std::make_shared<Deltares::Reliability::StochastSettings>();
 				settings->StartValue = stochastPoint->Alphas[i]->U;
 				settings->setStochast(stochastPoint->Alphas[i]->Stochast);
 
@@ -21,9 +21,9 @@ namespace Deltares
 			}
 		}
 
-		Sample* StochastSettingsSet::getSample()
+		std::shared_ptr<Sample> StochastSettingsSet::getSample()
 		{
-			Sample* sample = new Sample(this->getVaryingStochastCount());
+			std::shared_ptr<Sample> sample = std::make_shared<Sample>(this->getVaryingStochastCount());
 
 			for (int i = 0; i < this->getVaryingStochastCount(); i++)
 			{

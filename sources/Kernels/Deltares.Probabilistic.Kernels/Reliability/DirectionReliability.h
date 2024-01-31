@@ -9,12 +9,12 @@ namespace Deltares
 		class BetaValueTask
 		{
 		public:
-			Models::ZModelRunner* ModelRunner;
+			std::shared_ptr<Models::ZModelRunner> ModelRunner;
 			double BetaValue;
 			int Index = 0;
 			int Iteration = 0;
-			Sample* UValues;
-			DirectionReliabilitySettings* Settings;
+			std::shared_ptr<Sample> UValues;
+			std::shared_ptr<DirectionReliabilitySettings> Settings;
 			double z0 = 0.0;
 			bool IsModelResult = false;
 		};
@@ -24,17 +24,17 @@ namespace Deltares
 		class DirectionReliability : public Deltares::Reliability::ReliabilityMethod
 		{
 		private:
-			double getDirectionBeta(Models::ZModelRunner* modelRunner, BetaValueTask* directionTask);
-			std::vector<DirectionSection*> getDirectionSections(Models::ZModelRunner* modelRunner, DirectionReliabilitySettings* settings, Sample* uDirection, bool invertZ);
-			double findBetaBetweenBoundaries(Models::ZModelRunner* modelRunner, DirectionReliabilitySettings* settings, Sample* uDirection, bool invertZ, double uLow, double uHigh, double zLow, double zHigh, double& z);
-			double getBetaFromSections(std::vector<DirectionSection*> sections);
+			double getDirectionBeta(std::shared_ptr<Models::ZModelRunner> modelRunner, BetaValueTask* directionTask);
+			std::vector<std::shared_ptr< DirectionSection>> getDirectionSections(std::shared_ptr<Models::ZModelRunner> modelRunner, std::shared_ptr<DirectionReliabilitySettings> settings, std::shared_ptr<Sample> uDirection, bool invertZ);
+			double findBetaBetweenBoundaries(std::shared_ptr<Models::ZModelRunner> modelRunner, std::shared_ptr<DirectionReliabilitySettings> settings, std::shared_ptr<Sample> uDirection, bool invertZ, double uLow, double uHigh, double zLow, double zHigh, double& z);
+			double getBetaFromSections(std::vector<std::shared_ptr<DirectionSection>> sections);
 		protected:
-			static double GetZTolerance(DirectionReliabilitySettings* settings, double uLow, double uHigh, double zLow, double zHigh);
+			static double GetZTolerance(std::shared_ptr<DirectionReliabilitySettings> settings, double uLow, double uHigh, double zLow, double zHigh);
 
 		public:
-			Deltares::Reliability::DirectionReliabilitySettings* Settings = new Deltares::Reliability::DirectionReliabilitySettings();
-			DesignPoint* getDesignPoint(Deltares::Models::ZModelRunner* modelRunner) override;
-			double getBeta(Deltares::Models::ZModelRunner* modelRunner, Sample* directionSample, double z0);
+			std::shared_ptr<DirectionReliabilitySettings> Settings = std::make_shared<DirectionReliabilitySettings>();
+			std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ZModelRunner> modelRunner) override;
+			double getBeta(std::shared_ptr<Deltares::Models::ZModelRunner> modelRunner, std::shared_ptr<Sample> directionSample, double z0);
 		};
 	}
 }

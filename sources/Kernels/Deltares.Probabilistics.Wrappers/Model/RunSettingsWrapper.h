@@ -1,6 +1,7 @@
 #pragma once
 #include "../../Deltares.Probabilistic.Kernels/Model/RunSettings.h"
 #include "../../Deltares.Probabilistic.Kernels/Model/Message.h"
+#include "../../Deltares.Probabilistic.Kernels/Utils/SharedPointerProvider.h"
 #include "MessageWrapper.h"
 
 namespace Deltares
@@ -13,11 +14,12 @@ namespace Deltares
 			{
 			private:
 				RunSettings* m_settings;
+				Utils::SharedPointerProvider<RunSettings>* sharedPointer = new Utils::SharedPointerProvider<RunSettings>();
 
 			public:
 				RunSettingsWrapper() { m_settings = new RunSettings(); }
 				~RunSettingsWrapper() { this->!RunSettingsWrapper(); }
-				!RunSettingsWrapper() { delete m_settings; }
+				!RunSettingsWrapper() { delete sharedPointer; }
 
 				property int MaxChunkSize
 				{
@@ -81,10 +83,9 @@ namespace Deltares
 					}
 				}
 
-
-				RunSettings* GetSettings()
+				std::shared_ptr<RunSettings> GetSettings()
 				{
-					return m_settings;
+					return sharedPointer->getSharedPointer(m_settings);
 				}
 			};
 		}

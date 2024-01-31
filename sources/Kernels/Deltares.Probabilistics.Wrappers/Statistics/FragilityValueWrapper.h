@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../Deltares.Probabilistic.Kernels/Statistics/FragilityValue.h"
+#include "../../Deltares.Probabilistic.Kernels/Utils/SharedPointerProvider.h"
 
 namespace Deltares
 {
@@ -12,15 +13,14 @@ namespace Deltares
 			{
 			private:
 				Statistics::FragilityValue* m_value;
-
+				Utils::SharedPointerProvider<Statistics::FragilityValue>* sharedPointer;
 			public:
 				FragilityValueWrapper()
 				{
 					m_value = new Statistics::FragilityValue();
 				}
 				~FragilityValueWrapper() { this->!FragilityValueWrapper(); }
-				!FragilityValueWrapper() { delete m_value; }
-
+				!FragilityValueWrapper() { delete sharedPointer; }
 				property double X
 				{
 					double get() { return m_value->X; }
@@ -33,9 +33,9 @@ namespace Deltares
 					void set(double value) { m_value->Reliability = value; }
 				}
 
-				Statistics::FragilityValue* GetValue()
+				std::shared_ptr<Statistics::FragilityValue> GetValue()
 				{
-					return m_value;
+					return sharedPointer->getSharedPointer(m_value);
 				}
 			};
 		}

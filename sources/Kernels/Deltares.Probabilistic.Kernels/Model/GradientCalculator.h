@@ -12,8 +12,8 @@ namespace Deltares
         {
         public:
             GradientCalculator() {}
-            GradientSettings* Settings = new GradientSettings();
-            std::vector<double> getGradient(Models::ZModelRunner* modelRunner, Sample* sample);
+            std::shared_ptr<GradientSettings> Settings = std::make_shared<GradientSettings>();
+            std::vector<double> getGradient(std::shared_ptr<Models::ZModelRunner> modelRunner, std::shared_ptr<Sample> sample);
         };
     }
 }

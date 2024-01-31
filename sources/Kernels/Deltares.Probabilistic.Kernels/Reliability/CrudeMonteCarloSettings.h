@@ -15,8 +15,8 @@ namespace Deltares
             int MaximumSamples = 10000;
             double VariationCoefficient = 0.05;
             DesignPointMethod designPointMethod = DesignPointMethod::CenterOfGravity;
-            RandomSettings* randomSettings = new ::RandomSettings();
-            StochastSettingsSet* StochastSet = new StochastSettingsSet();
+            std::shared_ptr<RandomSettings> randomSettings = std::make_shared<::RandomSettings>();
+            std::shared_ptr<StochastSettingsSet> StochastSet = std::make_shared<StochastSettingsSet>();
             ~CrudeMonteCarloSettings()
             {
                 //delete randomSettings;

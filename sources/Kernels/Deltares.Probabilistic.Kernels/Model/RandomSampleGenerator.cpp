@@ -14,7 +14,7 @@ void RandomSampleGenerator::restart()
 	Deltares::Numeric::Random::restart();
 }
 
-Sample* RandomSampleGenerator::getRandomSample()
+std::shared_ptr<Sample> RandomSampleGenerator::getRandomSample()
 {
 	auto randomValues = std::vector<double>();
 	for (int i = 0; i < this->Settings->StochastSet->getStochastCount(); i++)
@@ -22,7 +22,7 @@ Sample* RandomSampleGenerator::getRandomSample()
 		randomValues.push_back(Deltares::Numeric::Random::next());
 	}
 
-	Sample* sample = new Sample(this->Settings->StochastSet->getVaryingStochastCount());
+	std::shared_ptr<Sample> sample = std::make_shared<Sample>(this->Settings->StochastSet->getVaryingStochastCount());
 
 	for (int i = 0; i < this->Settings->StochastSet->getVaryingStochastCount(); i++)
 	{

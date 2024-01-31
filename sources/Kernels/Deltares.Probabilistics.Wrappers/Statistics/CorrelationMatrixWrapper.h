@@ -12,12 +12,13 @@ namespace Deltares
 			{
 			private:
 				CorrelationMatrix* m_correlation_matrix;
+				Utils::SharedPointerProvider<CorrelationMatrix>* sharedPointer = new Utils::SharedPointerProvider<CorrelationMatrix>();
 				System::Collections::Generic::List<StochastWrapper^> stochasts = gcnew System::Collections::Generic::List<StochastWrapper^>();
 
 			public:
 				CorrelationMatrixWrapper() { m_correlation_matrix = new CorrelationMatrix(); }
 				~CorrelationMatrixWrapper() { this->!CorrelationMatrixWrapper(); }
-				!CorrelationMatrixWrapper() { delete m_correlation_matrix; }
+				!CorrelationMatrixWrapper() { delete sharedPointer; }
 
 				void Initialize(const int size) { m_correlation_matrix->init(size); }
 				void Initialize(System::Collections::Generic::List<StochastWrapper^>^ stochasts)
@@ -47,9 +48,9 @@ namespace Deltares
 					m_correlation_matrix->resolveConflictingCorrelations();
 				}
 
-				CorrelationMatrix* GetCorrelationMatrix()
+				std::shared_ptr<CorrelationMatrix> GetCorrelationMatrix()
 				{
-					return m_correlation_matrix;
+					return sharedPointer->getSharedPointer(m_correlation_matrix);
 				}
 			};
 		}

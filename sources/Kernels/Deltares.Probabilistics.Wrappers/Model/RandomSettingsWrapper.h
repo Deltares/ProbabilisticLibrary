@@ -1,5 +1,6 @@
 #pragma once
 #include "../../Deltares.Probabilistic.Kernels/Model/RandomSettings.h"
+#include "../../Deltares.Probabilistic.Kernels/Utils/SharedPointerProvider.h"
 #include "RandomProvider.h"
 
 namespace Deltares
@@ -12,6 +13,7 @@ namespace Deltares
 			{
 			private:
 				RandomSettings* m_settings;
+				Utils::SharedPointerProvider<RandomSettings>* sharedPointer = new Utils::SharedPointerProvider<RandomSettings>();
 
 			public:
 				RandomSettingsWrapper()
@@ -20,7 +22,7 @@ namespace Deltares
 					RandomProvider::initialize();
 				}
 				~RandomSettingsWrapper() { this->!RandomSettingsWrapper(); }
-				!RandomSettingsWrapper() { delete m_settings; }
+				!RandomSettingsWrapper() { delete sharedPointer; }
 
 				property int Seed
 				{
@@ -40,9 +42,9 @@ namespace Deltares
 					void set(bool value) { m_settings->IsRepeatableRandom = value; }
 				}
 
-				RandomSettings* GetSettings()
+				std::shared_ptr<RandomSettings> GetSettings()
 				{
-					return m_settings;
+					return sharedPointer->getSharedPointer(m_settings);
 				}
 			};
 		}

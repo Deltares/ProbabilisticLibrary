@@ -21,18 +21,18 @@ namespace Deltares
 		class ZModelRunner
 		{
 		private:
-			ZModel* zModel;
-			UConverter* uConverter;
-			std::vector<ReliabilityResult*> reliabilityResults;
-			std::vector<Evaluation*> evaluations;
-			std::vector<Message*> messages;
+			std::shared_ptr<ZModel> zModel;
+			std::shared_ptr<UConverter> uConverter;
+			std::vector<std::shared_ptr<ReliabilityResult>> reliabilityResults;
+			std::vector<std::shared_ptr<Evaluation>> evaluations;
+			std::vector< std::shared_ptr<Message>> messages;
 			ProgressIndicator* progressIndicator = nullptr;
 
-			Sample* getXSample(Sample* sample);
-			void registerEvaluation(Sample* sample);
+			std::shared_ptr<Sample> getXSample(std::shared_ptr<Sample> sample);
+			void registerEvaluation(std::shared_ptr<Sample> sample);
 
 		public:
-			ZModelRunner(ZModel* zModel, UConverter* uConverter, ProgressIndicator* progressIndicator = nullptr)
+			ZModelRunner(std::shared_ptr<ZModel> zModel, std::shared_ptr<UConverter>uConverter, ProgressIndicator* progressIndicator = nullptr)
 			{
 				this->zModel = zModel;
 				this->uConverter = uConverter;
@@ -41,18 +41,18 @@ namespace Deltares
 
 			void initializeForRun();
 			void clear();
-			void updateStochastSettings(Reliability::StochastSettingsSet* settings);
-			double getZValue(Sample* sample);
-			double* getZValues(std::vector<Sample*> samples);
+			void updateStochastSettings(std::shared_ptr<Reliability::StochastSettingsSet> settings);
+			double getZValue(std::shared_ptr<Sample> sample);
+			double* getZValues(std::vector<std::shared_ptr<Sample>> samples);
 			int getStochastCount();
 			int getVaryingStochastCount();
-			bool shouldExitPrematurely(double* zValues, double z0Fac, std::vector<Sample*> samples, double beta);
+			bool shouldExitPrematurely(double* zValues, double z0Fac, std::vector<std::shared_ptr<Sample>> samples, double beta);
 			bool shouldExitPrematurely(bool final);
 			void reportResult(ReliabilityReport* report);
 			void reportMessage(MessageType type, std::string text);
-			DesignPoint* getDesignPoint(double beta, std::vector<double> alpha, ConvergenceReport* convergenceReport = nullptr, int scenarioIndex = -1, std::string identifier = "");
+			std::shared_ptr<DesignPoint> getDesignPoint(double beta, std::vector<double> alpha, std::shared_ptr<ConvergenceReport> convergenceReport = nullptr, int scenarioIndex = -1, std::string identifier = "");
 
-			RunSettings* Settings = new ::RunSettings();
+			std::shared_ptr<RunSettings> Settings = std::make_shared<RunSettings>();
 		};
 	}
 }

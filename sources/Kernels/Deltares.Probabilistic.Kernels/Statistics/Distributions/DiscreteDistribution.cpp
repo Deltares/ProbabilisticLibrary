@@ -80,21 +80,21 @@ namespace Deltares
 
 		void DiscreteDistribution::initializeForRun(StochastProperties* stochast)
 		{
-			std::sort(stochast->DiscreteValues.begin(), stochast->DiscreteValues.end(), [](DiscreteValue* val1, DiscreteValue* val2) {return val1->X < val2->X; });
+			std::sort(stochast->DiscreteValues.begin(), stochast->DiscreteValues.end(), [](std::shared_ptr<DiscreteValue> val1, std::shared_ptr<DiscreteValue> val2) {return val1->X < val2->X; });
 
 			double sum = 0;
-			for (DiscreteValue* discreteValue : stochast->DiscreteValues)
+			for (std::shared_ptr<DiscreteValue> discreteValue : stochast->DiscreteValues)
 			{
 				sum += discreteValue->Amount;
 			}
 
-			for (DiscreteValue* discreteValue : stochast->DiscreteValues)
+			for (std::shared_ptr<DiscreteValue> discreteValue : stochast->DiscreteValues)
 			{
 				discreteValue->NormalizedAmount = discreteValue->Amount / sum;
 			}
 
 			double cumulative = 0;
-			for (DiscreteValue* discreteValue : stochast->DiscreteValues)
+			for (std::shared_ptr<DiscreteValue> discreteValue : stochast->DiscreteValues)
 			{
 				cumulative += discreteValue->NormalizedAmount;
 				discreteValue->CumulativeNormalizedAmount = cumulative;
@@ -106,7 +106,7 @@ namespace Deltares
 			double sumX = 0;
 			double sumAmounts = 0;
 
-			for (DiscreteValue* val : stochast->DiscreteValues)
+			for (std::shared_ptr<DiscreteValue> val : stochast->DiscreteValues)
 			{
 				sumX += val->X * val->Amount;
 				sumAmounts += val->Amount;
@@ -126,7 +126,7 @@ namespace Deltares
 			double currentMean = getMean(stochast);
 			double diff = mean - currentMean;
 
-			for (DiscreteValue* val : stochast->DiscreteValues)
+			for (std::shared_ptr<DiscreteValue> val : stochast->DiscreteValues)
 			{
 				val->X += diff;
 			}

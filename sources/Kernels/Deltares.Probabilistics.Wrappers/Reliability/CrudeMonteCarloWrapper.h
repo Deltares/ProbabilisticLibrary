@@ -14,22 +14,24 @@ namespace Deltares
 			{
 			private:
 				Reliability::CrudeMonteCarlo* m_crude_monte_carlo;
-
+				Utils::SharedPointerProvider<Reliability::CrudeMonteCarlo>* sharedPointer = new Utils::SharedPointerProvider<Reliability::CrudeMonteCarlo>();
 			public:
 				CrudeMonteCarloWrapper()
 				{
 					m_crude_monte_carlo = new Reliability::CrudeMonteCarlo();
 				}
 				~CrudeMonteCarloWrapper() { this->!CrudeMonteCarloWrapper(); }
-				!CrudeMonteCarloWrapper() { delete m_crude_monte_carlo; }
-
-				Reliability::ReliabilityMethod* GetReliabilityMethod() override
-				{
-					m_crude_monte_carlo->Settings = Settings->GetSettings();
-					return m_crude_monte_carlo;
-				}
+				!CrudeMonteCarloWrapper() { delete sharedPointer; }
 
 				CrudeMonteCarloSettingsWrapper^ Settings = gcnew CrudeMonteCarloSettingsWrapper();
+
+				std::shared_ptr<Reliability::ReliabilityMethod> GetReliabilityMethod() override
+				{
+					std::shared_ptr<Reliability::CrudeMonteCarlo> monteCarlo = sharedPointer->getSharedPointer(m_crude_monte_carlo);
+
+					monteCarlo->Settings = Settings->GetSettings();
+					return monteCarlo;
+				}
 			};
 		}
 	}

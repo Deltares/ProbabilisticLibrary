@@ -5,7 +5,7 @@
 class StochastPointAlpha
 {
 public:
-	Deltares::Statistics::Stochast* Stochast = nullptr;
+	std::shared_ptr<Deltares::Statistics::Stochast> Stochast = nullptr;
     double Alpha = 0;
     double AlphaCorrelated = 0;
     double U = 0;

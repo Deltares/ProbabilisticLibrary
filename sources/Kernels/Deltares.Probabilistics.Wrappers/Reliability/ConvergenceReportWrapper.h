@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include "../../Deltares.Probabilistic.Kernels/Model/ConvergenceReport.h"
 
 namespace Deltares
@@ -10,73 +12,29 @@ namespace Deltares
 		{
 			public ref class ConvergenceReportWrapper
 			{
-			private:
-				ConvergenceReport* m_report;
-
 			public:
-				ConvergenceReportWrapper()
+				ConvergenceReportWrapper() {}
+				ConvergenceReportWrapper(std::shared_ptr<ConvergenceReport> report)
 				{
-					m_report = new ConvergenceReport();
-				}
-				ConvergenceReportWrapper(ConvergenceReport* convergenceReport)
-				{
-					m_report = convergenceReport;
-				}
-				~ConvergenceReportWrapper() { this->!ConvergenceReportWrapper(); }
-				!ConvergenceReportWrapper() { delete m_report; }
-
-				property double Convergence
-				{
-					double get() { return m_report->Convergence; }
-					void set(double value) { m_report->Convergence = value; }
+					this->Convergence = report->Convergence;
+					this->FailedSamples = report->FailedSamples;
+					this->FailFraction = report->FailFraction;
+					this->RelaxationFactor = report->RelaxationFactor;
+					this->VarianceFactor = report->VarianceFactor;
+					this->MaxWeight = report->MaxWeight;
+					this->FailWeight = report->FailWeight;
+					this->FailedSamples = report->FailedSamples;
+					this->IsConverged = report->IsConverged;
 				}
 
-				property int FailedSamples
-				{
-					int get() { return m_report->FailedSamples; }
-					void set(int value) { m_report->FailedSamples = value; }
-				}
-
-				property double FailFraction
-				{
-					double get() { return m_report->FailFraction; }
-					void set(double value) { m_report->FailFraction = value; }
-				}
-
-				property double RelaxationFactor
-				{
-					double get() { return m_report->RelaxationFactor; }
-					void set(double value) { m_report->RelaxationFactor = value; }
-				}
-
-				property double VarianceFactor
-				{
-					double get() { return m_report->VarianceFactor; }
-					void set(double value) { m_report->VarianceFactor = value; }
-				}
-
-				property double MaxWeight
-				{
-					double get() { return m_report->MaxWeight; }
-					void set(double value) { m_report->MaxWeight = value; }
-				}
-
-				property double FailWeight
-				{
-					double get() { return m_report->FailWeight; }
-					void set(double value) { m_report->FailWeight = value; }
-				}
-
-				property bool IsConverged
-				{
-					bool get() { return m_report->IsConverged; }
-					void set(bool value) { m_report->IsConverged = value; }
-				}
-
-				void SetSettings(ConvergenceReport* convergenceReport)
-				{
-					m_report = convergenceReport;
-				}
+				property double Convergence;
+				property int FailedSamples;
+				property double FailFraction;
+				property double RelaxationFactor;
+				property double VarianceFactor;
+				property double MaxWeight;
+				property double FailWeight;
+				property bool IsConverged;
 			};
 		}
 	}

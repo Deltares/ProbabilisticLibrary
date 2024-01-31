@@ -10,11 +10,11 @@ namespace Deltares
 {
     namespace Models
     {
-        std::vector<double> GradientCalculator::getGradient(Models::ZModelRunner* modelRunner, Sample* sample)
+        std::vector<double> GradientCalculator::getGradient(std::shared_ptr<Models::ZModelRunner> modelRunner, std::shared_ptr<Sample> sample)
         {
             int nstochasts = modelRunner->getVaryingStochastCount();
 
-            std::vector<Sample*> samples;
+            std::vector<std::shared_ptr<Sample>> samples;
             std::vector<double> gradient(nstochasts);
 
             // first sample is the sample itself
@@ -25,7 +25,7 @@ namespace Deltares
                 double du = Settings->StepSize * 0.5;
                 for (int k = 0; k < nstochasts; k++)
                 {
-                    Sample* uNew = sample->clone();
+                    std::shared_ptr<Sample> uNew = sample->clone();
                     uNew->Values[k] += du;
 
                     samples.push_back(uNew);
@@ -46,11 +46,11 @@ namespace Deltares
             {
                 for (int k = 0; k < nstochasts; k++)
                 {
-                    Sample* u1 = sample->clone();
+                    std::shared_ptr<Sample> u1 = sample->clone();
                     u1->Values[k] -= Settings->StepSize * 0.5;
                     samples.push_back(u1);
 
-                    Sample* u2 = sample->clone();
+                    std::shared_ptr<Sample> u2 = sample->clone();
                     u2->Values[k] += Settings->StepSize * 0.5;
                     samples.push_back(u2);
                 }
@@ -65,11 +65,6 @@ namespace Deltares
                 }
 
                 delete[] zValues;
-            }
-
-            for (size_t i = 1; i < samples.size(); i++)
-            {
-                delete samples[i];
             }
 
             return gradient;

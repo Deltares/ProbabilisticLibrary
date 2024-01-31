@@ -15,7 +15,7 @@ namespace Deltares
 			double GradientStepSize = 4;
 			double RadiusSphereSearch = 10;
 
-			StochastSettingsSet* StochastSet = new StochastSettingsSet();
+			std::shared_ptr<StochastSettingsSet> StochastSet = std::make_shared<StochastSettingsSet>();
 		};
 	}
 }

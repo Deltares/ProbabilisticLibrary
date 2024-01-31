@@ -6,7 +6,7 @@
 
 #include <memory>
 
-UConverter::UConverter(std::vector<Deltares::Statistics::Stochast*> stochasts, CorrelationMatrix* correlationMatrix)
+UConverter::UConverter(std::vector<std::shared_ptr<Deltares::Statistics::Stochast>> stochasts, std::shared_ptr<CorrelationMatrix> correlationMatrix)
 {
 	this->stochasts.clear();
 
@@ -24,7 +24,7 @@ void UConverter::initializeForRun()
 	this->varyingStochasts.clear();
 	this->varyingStochastIndex.clear();
 
-	for (Deltares::Statistics::Stochast* stochast : this->stochasts)
+	for (std::shared_ptr<Deltares::Statistics::Stochast> stochast : this->stochasts)
 	{
 		stochast->initializeForRun();
 	}
@@ -48,7 +48,7 @@ void UConverter::initializeForRun()
 	}
 	else
 	{
-		varyingCorrelationMatrix = new CorrelationMatrix();
+		varyingCorrelationMatrix = std::make_shared<CorrelationMatrix>();
 		varyingCorrelationMatrix->init(varyingStochasts.size());
 		varyingCorrelationMatrix->filter(correlationMatrix, varyingStochastIndex);
 	}
@@ -70,11 +70,11 @@ int UConverter::getVaryingStochastCount()
 	return this->varyingStochasts.size();
 }
 
-void UConverter::updateStochastSettings(Deltares::Reliability::StochastSettingsSet* settings)
+void UConverter::updateStochastSettings(std::shared_ptr<Deltares::Reliability::StochastSettingsSet> settings)
 {
 	for (size_t i = settings->getStochastCount(); i < stochasts.size(); i++)
 	{
-		Deltares::Reliability::StochastSettings* stochastSettings = new Deltares::Reliability::StochastSettings();
+		std::shared_ptr<Deltares::Reliability::StochastSettings> stochastSettings = std::make_shared<Deltares::Reliability::StochastSettings>();
 		settings->StochastSettings.push_back(stochastSettings);
 	}
 
@@ -85,7 +85,7 @@ void UConverter::updateStochastSettings(Deltares::Reliability::StochastSettingsS
 	{
 		if (stochasts[i]->isVarying() && !checkFullyCorrelated(i))
 		{
-			Deltares::Reliability::StochastSettings* varyingStochastSettings = settings->StochastSettings[i];
+			std::shared_ptr<Deltares::Reliability::StochastSettings> varyingStochastSettings = settings->StochastSettings[i];
 
 			varyingStochastSettings->StochastIndex = i;
 			varyingStochastSettings->IsQualitative = varyingStochasts[j]->isQualitative();
@@ -152,7 +152,7 @@ std::vector<double> UConverter::getExpandedValues(const std::vector<double> & va
 }
 
 
-std::vector<double> UConverter::getXValues(Sample* sample)
+std::vector<double> UConverter::getXValues(std::shared_ptr<Sample> sample)
 {
 	auto uCorrelated = varyingCorrelationMatrix->Cholesky(sample->Values);
 
@@ -201,7 +201,7 @@ StochastPoint* UConverter::GetStochastPoint(double beta, std::vector<double> & a
 
 		for (int i = 0; i < this->stochasts.size(); i++)
 		{
-			StochastPointAlpha* alpha = new StochastPointAlpha();
+			std::shared_ptr<StochastPointAlpha> alpha = std::make_shared<StochastPointAlpha>();
 			alpha->Stochast = this->stochasts[i];
 			alpha->Alpha = alphas[i];
 			alpha->AlphaCorrelated = alphaCorrelated[i];

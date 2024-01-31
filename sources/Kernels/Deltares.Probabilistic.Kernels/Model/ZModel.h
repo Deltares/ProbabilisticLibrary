@@ -10,14 +10,14 @@ namespace Deltares
 	namespace Models
 	{
 #ifdef _WIN32
-		typedef double(__stdcall* ZDelegate) (Sample*);
-		typedef double(__stdcall* ZMultipleDelegate) (Sample**, int count);
+		typedef double(__stdcall* ZDelegate) (std::shared_ptr<Sample>);
+		typedef double(__stdcall* ZMultipleDelegate) (std::vector<std::shared_ptr<Sample>>);
 #else
-		typedef double(* ZDelegate) (Sample*);
-		typedef double(* ZMultipleDelegate) (Sample**, int count);
+		typedef double(* ZDelegate) (std::shared_ptr<Sample>);
+		typedef double(* ZMultipleDelegate) (std::shared_ptr<Sample>*, int count);
 #endif // _WIN32
 
-		typedef std::function<double(Sample*)> ZLambda;
+		typedef std::function<double(std::shared_ptr<Sample>)> ZLambda;
 
 		class ZModel
 		{
@@ -41,9 +41,9 @@ namespace Deltares
 
 			void setMaxProcesses(int maxProcesses);
 
-			void invoke(Sample* sample);
+			void invoke(std::shared_ptr<Sample> sample);
 
-			void invoke(std::vector<Sample*> samples);
+			void invoke(std::vector<std::shared_ptr<Sample>> samples);
 		};
 	}
 }

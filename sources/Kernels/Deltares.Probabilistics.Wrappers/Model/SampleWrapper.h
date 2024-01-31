@@ -17,9 +17,9 @@ namespace Deltares
 				System::Object^ tag = nullptr;
 
 			public:
-				SampleWrapper(Sample* sample)
+				SampleWrapper(std::shared_ptr<Sample> sample)
 				{
-					this->sample = sample;
+					this->sample = sample.get();
 				}
 
 				property array<double>^ Values

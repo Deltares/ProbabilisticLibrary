@@ -24,16 +24,7 @@ namespace Deltares
 			this->stopped = true;
 		}
 
-		void ReliabilityMethod::clearSamples(std::vector<Sample*>& samples)
-		{
-			for (size_t i = 0; i < samples.size(); i++)
-			{
-				delete(samples[i]);
-			}
-			samples.clear();
-		}
-
-		std::vector<double> ReliabilityMethod::getAlphas(Sample* sample, int nstochasts, double z0Fac)
+		std::vector<double> ReliabilityMethod::getAlphas(std::shared_ptr<Sample> sample, int nstochasts, double z0Fac)
 		{
 			auto alpha = std::vector<double>(nstochasts);
 
@@ -71,7 +62,7 @@ namespace Deltares
 			return alpha;
 		}
 
-		DesignPoint* ReliabilityMethod::getDesignPointFromSampleAndBeta(Deltares::Models::ZModelRunner* modelRunner, Sample* u, double beta, ConvergenceReport* convergenceReport)
+		std::shared_ptr<DesignPoint> ReliabilityMethod::getDesignPointFromSampleAndBeta(std::shared_ptr<Models::ZModelRunner> modelRunner, std::shared_ptr<Sample> u, double beta, std::shared_ptr<ConvergenceReport> convergenceReport)
 		{
 			if (u != nullptr)
 			{
@@ -87,12 +78,12 @@ namespace Deltares
 			}
 		}
 
-		DesignPoint* ReliabilityMethod::getDesignPointFromSample(Deltares::Models::ZModelRunner* modelRunner, double pf, Sample* u, double z0, ConvergenceReport* convergenceReport)
+		std::shared_ptr<DesignPoint> ReliabilityMethod::getDesignPointFromSample(std::shared_ptr<Models::ZModelRunner> modelRunner, double pf, std::shared_ptr<Sample> u, double z0, std::shared_ptr<ConvergenceReport> convergenceReport)
 		{
 			return getDesignPointFromSampleAndBeta(modelRunner, u, Statistics::StandardNormal::getUFromQ(pf), convergenceReport);
 		}
 
-		DesignPoint* ReliabilityMethod::getDesignPointFromSample(Sample* sample, Deltares::Models::ZModelRunner* modelRunner, double z0, ConvergenceReport* convergenceReport)
+		std::shared_ptr<DesignPoint> ReliabilityMethod::getDesignPointFromSample(std::shared_ptr<Sample> sample, std::shared_ptr<Models::ZModelRunner> modelRunner, double z0, std::shared_ptr<ConvergenceReport> convergenceReport)
 		{
 			double beta = sample != nullptr ? sample->getBeta() : nan("");
 

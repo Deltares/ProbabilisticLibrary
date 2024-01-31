@@ -1,4 +1,6 @@
 #pragma once
+#include <memory>
+
 #include "Distribution.h"
 
 namespace Deltares
@@ -10,7 +12,7 @@ namespace Deltares
 		class TruncatedDistribution : public Distribution
 		{
 		public:
-			TruncatedDistribution(Distribution* innerDistribution)
+			TruncatedDistribution(std::shared_ptr<Distribution> innerDistribution)
 			{
 				this->innerDistribution = innerDistribution;
 			}
@@ -25,7 +27,7 @@ namespace Deltares
 			double getDeviation(StochastProperties* stochast) override;
 			void setMeanAndDeviation(StochastProperties* stochast, double mean, double deviation) override;
 		private:
-			Distribution* innerDistribution = nullptr;
+			std::shared_ptr<Distribution> innerDistribution = nullptr;
 
 			Truncated GetTruncatedValue(StochastProperties* stochast);
 			double GetProbability(StochastProperties* stochast, bool isMinimum);

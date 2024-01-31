@@ -26,6 +26,6 @@ public:
     /// </summary>
     int SeedB = 0;
 
-    Deltares::Reliability::StochastSettingsSet* StochastSet = new Deltares::Reliability::StochastSettingsSet();
+    std::shared_ptr<Deltares::Reliability::StochastSettingsSet> StochastSet = std::make_shared<Deltares::Reliability::StochastSettingsSet>();
 };
 

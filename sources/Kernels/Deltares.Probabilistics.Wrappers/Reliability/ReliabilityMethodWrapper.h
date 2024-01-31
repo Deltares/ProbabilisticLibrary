@@ -2,6 +2,7 @@
 #include "DesignPointWrapper.h"
 #include "../Model/ModelRunnerWrapper.h"
 #include "../../Deltares.Probabilistic.Kernels/Reliability/ReliabilityMethod.h"
+#include "../Model/MessageWrapper.h"
 
 namespace Deltares
 {
@@ -14,7 +15,7 @@ namespace Deltares
 			public:
 				ReliabilityMethodWrapper() {  }
 
-				virtual Reliability::ReliabilityMethod* GetReliabilityMethod()
+				virtual std::shared_ptr<Reliability::ReliabilityMethod> GetReliabilityMethod()
 				{
 					return nullptr;
 				};

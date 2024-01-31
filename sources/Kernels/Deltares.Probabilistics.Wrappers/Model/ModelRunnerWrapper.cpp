@@ -10,8 +10,8 @@ namespace Deltares
 	{
 		namespace Kernels
 		{
-			delegate void ManagedSampleDelegate(Sample* sample);
-			delegate void ManagedMultipleSampleDelegate(Sample** samples, int count);
+			delegate void ManagedSampleDelegate(std::shared_ptr<Sample> sample);
+			delegate void ManagedMultipleSampleDelegate(std::vector<std::shared_ptr<Sample>> samples);
 
 			ModelRunnerWrapper::ModelRunnerWrapper(ZSampleDelegate^ zFunction, System::Collections::Generic::List<StochastWrapper^>^ stochasts, CorrelationMatrixWrapper^ correlationMatrix, ProgressIndicatorWrapper^ progressIndicator)
 			{
@@ -19,16 +19,16 @@ namespace Deltares
 
 				this->Stochasts->AddRange(stochasts);
 
-				std::vector<Statistics::Stochast* > native_stochasts;
+				std::vector<std::shared_ptr<Statistics::Stochast> > native_stochasts;
 
 				for (int i = 0; i < stochasts->Count; i++)
 				{
 					native_stochasts.push_back(stochasts[i]->GetStochast());
 				}
 
-				UConverter* uConverter = new UConverter(native_stochasts, correlationMatrix->GetCorrelationMatrix());
+				std::shared_ptr<UConverter> uConverter = std::make_shared<UConverter>(native_stochasts, correlationMatrix->GetCorrelationMatrix());
 
-				Models::ZModel* zModel = getZModel();
+				std::shared_ptr<Models::ZModel> zModel = getZModel();
 
 				Models::ProgressIndicator* progress = progressIndicator != nullptr ? progressIndicator->getProgressIndicator() : nullptr;
 
@@ -59,28 +59,28 @@ namespace Deltares
 				return functionPointer;
 			}
 
-			Models::ZModel* ModelRunnerWrapper::getZModel()
+			std::shared_ptr<Models::ZModel> ModelRunnerWrapper::getZModel()
 			{
 				Models::ZDelegate zDelegate = getZDelegate();
 				Models::ZMultipleDelegate zMultipleDelegate = getZMultipleDelegate();
 
-				Models::ZModel* zModel = new Models::ZModel(zDelegate, zMultipleDelegate);
+				std::shared_ptr<Models::ZModel> zModel = std::make_shared<Models::ZModel>(zDelegate, zMultipleDelegate);
 
 				return zModel;
 			}
 
-			void ModelRunnerWrapper::invokeSample(Sample* sample)
+			void ModelRunnerWrapper::invokeSample(std::shared_ptr<Sample> sample)
 			{
 				SampleWrapper^ sampleWrapper = gcnew SampleWrapper(sample);
 
 				this->CalcZValue(sampleWrapper);
 			}
 
-			void ModelRunnerWrapper::invokeMultipleSamples(Sample** samples, int count)
+			void ModelRunnerWrapper::invokeMultipleSamples(std::vector<std::shared_ptr<Sample>> samples)
 			{
 				System::Collections::Generic::List<SampleWrapper^>^ sampleWrappers = gcnew System::Collections::Generic::List<SampleWrapper^>();
 
-				for (int i = 0; i < count; i++)
+				for (int i = 0; i < samples.size(); i++)
 				{
 					sampleWrappers->Add(gcnew SampleWrapper(samples[i]));
 				}

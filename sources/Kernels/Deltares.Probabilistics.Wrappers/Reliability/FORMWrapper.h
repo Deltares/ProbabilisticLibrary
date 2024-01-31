@@ -13,18 +13,20 @@ namespace Deltares
 			public ref class FORMWrapper : public ReliabilityMethodWrapper
 			{
 			private:
-				Reliability::FORM* m_form;
-
+				Reliability::FORM* form;
+				Utils::SharedPointerProvider<Reliability::FORM>* sharedPointer = new Utils::SharedPointerProvider<Reliability::FORM>();
 			public:
 				FORMWrapper()
 				{
-					m_form = new Reliability::FORM();
+					form = new Reliability::FORM();
 				}
 				~FORMWrapper() { this->!FORMWrapper(); }
-				!FORMWrapper() { delete m_form; }
+				!FORMWrapper() { delete sharedPointer; }
 
-				Reliability::ReliabilityMethod* GetReliabilityMethod() override
+				std::shared_ptr<Reliability::ReliabilityMethod> GetReliabilityMethod() override
 				{
+					std::shared_ptr<Reliability::FORM> m_form = sharedPointer->getSharedPointer(form);
+
 					m_form->Settings = Settings->GetSettings();
 					return m_form;
 				}

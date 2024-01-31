@@ -1,6 +1,9 @@
 #pragma once
 
+#include <memory>
+
 #include "../../Deltares.Probabilistic.Kernels/Model/GradientSettings.h"
+#include "../../Deltares.Probabilistic.Kernels/Utils/SharedPointerProvider.h"
 
 namespace Deltares
 {
@@ -18,14 +21,15 @@ namespace Deltares
 			{
 			private:
 				Models::GradientSettings* m_settings;
-
+				Utils::SharedPointerProvider<Models::GradientSettings>* sharedPointer;
 			public:
 				GradientCalculatorSettingsWrapper()
 				{
 					m_settings = new Models::GradientSettings();
+					sharedPointer = new Utils::SharedPointerProvider<Models::GradientSettings>();
 				}
 				~GradientCalculatorSettingsWrapper() { this->!GradientCalculatorSettingsWrapper(); }
-				!GradientCalculatorSettingsWrapper() { delete m_settings; }
+				!GradientCalculatorSettingsWrapper() { delete sharedPointer; }
 
 				property double StepSize
 				{
@@ -55,9 +59,9 @@ namespace Deltares
 					}
 				}
 
-				Models::GradientSettings* GetSettings()
+				std::shared_ptr<Models::GradientSettings> GetSettings()
 				{
-					return m_settings;
+					return sharedPointer->getSharedPointer(m_settings);
 				}
 			};
 		}

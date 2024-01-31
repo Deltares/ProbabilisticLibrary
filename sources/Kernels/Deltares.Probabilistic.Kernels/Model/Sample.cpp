@@ -20,9 +20,9 @@ void Sample::setBeta(double beta)
 	}
 }
 
-Sample* Sample::clone()
+std::shared_ptr<Sample> Sample::clone()
 {
-	Sample* clonedSample = new Sample(this->Values);
+	std::shared_ptr<Sample> clonedSample = std::make_shared<Sample>(this->Values);
 
 	clonedSample->AllowProxy = this->AllowProxy;
 	clonedSample->IterationIndex = this->IterationIndex;
@@ -32,11 +32,11 @@ Sample* Sample::clone()
 	return clonedSample;
 }
 
-Sample* Sample::normalize(double newBeta)
+std::shared_ptr<Sample> Sample::normalize(double newBeta)
 {
 	double actualBeta = NumericSupport::GetLength(this->Values);
 
-	Sample* normalizedSample = this->clone();
+	std::shared_ptr<Sample> normalizedSample = this->clone();
 
 	for (int k = 0; k < this->size; k++)
 	{
@@ -46,9 +46,9 @@ Sample* Sample::normalize(double newBeta)
 	return normalizedSample;
 }
 
-Sample* Sample::multiply(double factor)
+std::shared_ptr<Sample> Sample::multiply(double factor)
 {
-	Sample* multipliedSample = this->clone();
+	std::shared_ptr<Sample> multipliedSample = this->clone();
 
 	for (int i = 0; i < this->size; i++)
 	{

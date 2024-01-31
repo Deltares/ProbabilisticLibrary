@@ -1,4 +1,6 @@
 #pragma once
+#include <memory>
+
 #include "../Statistics/StandardNormal.h"
 #include "../Statistics/Stochast.h"
 
@@ -9,7 +11,7 @@ namespace Deltares
 		class StochastSettings
 		{
 		private:
-			Statistics::Stochast* stochast = nullptr;
+			std::shared_ptr<Statistics::Stochast> stochast = nullptr;
 		public:
 			double MinValue = -Statistics::StandardNormal::UMax;
 			double MaxValue = Statistics::StandardNormal::UMax;
@@ -32,7 +34,7 @@ namespace Deltares
 
 			bool IsQualitative = false;
 
-			void setStochast(Statistics::Stochast* stochast);
+			void setStochast(std::shared_ptr<Statistics::Stochast> stochast);
 
 			double getRepresentativeU(double u);
 		};

@@ -5,6 +5,7 @@
 #include "FragilityValue.h"
 
 #include <vector>
+#include <memory>
 
 namespace Deltares
 {
@@ -25,9 +26,9 @@ namespace Deltares
             double ShapeB;
             int Observations;
 
-            std::vector<DiscreteValue*> DiscreteValues;
-            std::vector<HistogramValue*> HistogramValues;
-            std::vector<FragilityValue*> FragilityValues;
+            std::vector<std::shared_ptr<DiscreteValue>> DiscreteValues;
+            std::vector<std::shared_ptr<HistogramValue>> HistogramValues;
+            std::vector<std::shared_ptr<FragilityValue>> FragilityValues;
         };
 
     }

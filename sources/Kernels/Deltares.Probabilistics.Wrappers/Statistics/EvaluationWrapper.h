@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include "../Utils/NativeSupport.h"
 #include "../../Deltares.Probabilistic.Kernels/Model/Evaluation.h"
 
@@ -11,94 +13,24 @@ namespace Deltares
 		{
 			public ref class EvaluationWrapper
 			{
-			private:
-				array<double>^ input = nullptr;
-				array<double>^ result = nullptr;
-				System::Object^ tag = nullptr;
-
-				Evaluation* evaluation;
 			public:
-				EvaluationWrapper()
+				EvaluationWrapper() {}
+				EvaluationWrapper(std::shared_ptr<Evaluation> evaluation)
 				{
-					evaluation = new Evaluation();
-				}
-				EvaluationWrapper(Evaluation* evaluation)
-				{
-					this->evaluation = evaluation;
-
-					// retrieve the managed object directly, so the garbage collector sees that it is referenced
-					this->tag = NativeSupport::toManagedObject(evaluation->Tag);
-				}
-				~EvaluationWrapper() { this->!EvaluationWrapper(); }
-				!EvaluationWrapper() { delete evaluation; }
-
-				property int Iteration
-				{
-					int get() { return evaluation->Iteration; }
-					void set(int value) { evaluation->Iteration = value; }
+					this->Z = evaluation->Z;
+					this->Iteration = evaluation->Iteration;
+					this->Weight = evaluation->Weight;
+					this->Input = NativeSupport::toManaged(evaluation->X, evaluation->SizeX);
+					this->Result = NativeSupport::toManaged(evaluation->X, evaluation->SizeX);
+					this->Tag = NativeSupport::toManagedObject(evaluation->Tag);
 				}
 
-				property double Z
-				{
-					double get() { return evaluation->Z; }
-					void set(double value) { evaluation->Z = value; }
-				}
-
-				property double Weight
-				{
-					double get() { return evaluation->Weight; }
-					void set(double value) { evaluation->Weight = value; }
-				}
-
-				property array<double>^ Input
-				{
-					array<double>^ get()
-					{
-						if (input == nullptr)
-						{
-							input = NativeSupport::toManaged(evaluation->X, evaluation->SizeX);
-						}
-
-						return input;
-					}
-				}
-
-				property array<double>^ Result
-				{
-					array<double>^ get()
-					{
-						if (result == nullptr)
-						{
-							result = NativeSupport::toManaged(evaluation->X, evaluation->SizeX);
-						}
-
-						return result;
-					}
-				}
-
-				property System::Object^ Tag
-				{
-					System::Object^ get()
-					{
-						if (tag == nullptr && evaluation->Tag != 0)
-						{
-							tag = NativeSupport::toManagedObject(evaluation->Tag);
-						}
-
-						return tag;
-					}
-					void set(System::Object^ value)
-					{
-						tag = value;
-
-						// do not update the native counterpart
-					}
-				}
-
-				Evaluation* GetEvaluation()
-				{
-					return evaluation;
-				}
+				property int Iteration;
+				property double Z;
+				property double Weight;
+				property array<double>^ Input;
+				property array<double>^ Result;
+				property System::Object^ Tag;
 			};
 		}
 	}

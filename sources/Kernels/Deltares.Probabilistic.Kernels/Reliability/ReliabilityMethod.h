@@ -16,15 +16,14 @@ namespace Deltares
 
 			static int getZFactor(double z);
 
-			std::vector<double> getAlphas(Sample* sample, int nstochasts, double z0Fac);
-			void clearSamples(std::vector<Sample*>& samples);
+			std::vector<double> getAlphas(std::shared_ptr<Sample> sample, int nstochasts, double z0Fac);
 
-			DesignPoint* getDesignPointFromSample(Sample* sample, Deltares::Models::ZModelRunner* modelRunner, double z0, ConvergenceReport* convergenceReport = nullptr);
-			DesignPoint* getDesignPointFromSample(Deltares::Models::ZModelRunner* modelRunner, double pf, Sample* u, double z0, ConvergenceReport* convergenceReport = nullptr);
-			DesignPoint* getDesignPointFromSampleAndBeta(Deltares::Models::ZModelRunner* modelRunner, Sample* u, double beta, ConvergenceReport* convergenceReport = nullptr);
+			std::shared_ptr<DesignPoint> getDesignPointFromSample(std::shared_ptr<Sample> sample, std::shared_ptr<Models::ZModelRunner> modelRunner, double z0, std::shared_ptr<ConvergenceReport> convergenceReport = nullptr);
+			std::shared_ptr<DesignPoint> getDesignPointFromSample(std::shared_ptr<Models::ZModelRunner> modelRunner, double pf, std::shared_ptr<Sample> u, double z0, std::shared_ptr<ConvergenceReport> convergenceReport = nullptr);
+			std::shared_ptr<DesignPoint> getDesignPointFromSampleAndBeta(std::shared_ptr<Models::ZModelRunner> modelRunner, std::shared_ptr<Sample> u, double beta, std::shared_ptr<ConvergenceReport> convergenceReport = nullptr);
 
 		public:
-			virtual DesignPoint* getDesignPoint(Deltares::Models::ZModelRunner* modelRunner) { return nullptr; };
+			virtual std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ZModelRunner> modelRunner) { return nullptr; };
 			virtual ~ReliabilityMethod() { ; }
 
 			bool isStopped();

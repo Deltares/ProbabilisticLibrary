@@ -23,7 +23,7 @@ namespace Deltares
 			return this->uConverter->getStochastCount();
 		}
 
-		void ZModelRunner::updateStochastSettings(Reliability::StochastSettingsSet* settings)
+		void ZModelRunner::updateStochastSettings(std::shared_ptr<Reliability::StochastSettingsSet> settings)
 		{
 			this->uConverter->updateStochastSettings(settings);
 		}
@@ -42,12 +42,12 @@ namespace Deltares
 			this->messages.clear();
 		}
 
-		Sample* ZModelRunner::getXSample(Sample* sample)
+		std::shared_ptr<Sample> ZModelRunner::getXSample(std::shared_ptr<Sample> sample)
 		{
 			auto xValues = this->uConverter->getXValues(sample);
 
 			// create a sample with values in x-space
-			Sample* xSample = new Sample(xValues);
+			std::shared_ptr<Sample> xSample = std::make_shared<Sample>(xValues);
 
 			xSample->AllowProxy = sample->AllowProxy;
 			xSample->IterationIndex = sample->IterationIndex;
@@ -57,9 +57,9 @@ namespace Deltares
 			return xSample;
 		}
 
-		double ZModelRunner::getZValue(Sample* sample)
+		double ZModelRunner::getZValue(std::shared_ptr<Sample> sample)
 		{
-			Sample* xSample = getXSample(sample);
+			std::shared_ptr<Sample> xSample = getXSample(sample);
 
 			this->zModel->invoke(xSample);
 
@@ -68,14 +68,12 @@ namespace Deltares
 			sample->Z = xSample->Z;
 			sample->Tag = xSample->Tag;
 
-			delete xSample;
-
 			return sample->Z;
 		}
 
-		double* ZModelRunner::getZValues(std::vector<Sample*> samples)
+		double* ZModelRunner::getZValues(std::vector<std::shared_ptr<Sample>> samples)
 		{
-			std::vector<Sample*> xSamples;
+			std::vector<std::shared_ptr<Sample>> xSamples;
 
 			for (int i = 0; i < samples.size(); i++)
 			{
@@ -95,19 +93,14 @@ namespace Deltares
 				zValues[i] = xSamples[i]->Z;
 			}
 
-			for (size_t i = 0; i < xSamples.size(); i++)
-			{
-				delete(xSamples[i]);
-			}
-
 			return zValues;
 		}
 
-		void ZModelRunner::registerEvaluation(Sample* sample)
+		void ZModelRunner::registerEvaluation(std::shared_ptr<Sample> sample)
 		{
 			if (this->Settings->SaveEvaluations)
 			{
-				Evaluation* evaluation = new Evaluation();
+				std::shared_ptr<Evaluation> evaluation = std::make_shared<Evaluation>();
 
 				evaluation->Z = sample->Z;
 				evaluation->Tag = sample->Tag;
@@ -119,7 +112,7 @@ namespace Deltares
 			}
 		}
 
-		bool ZModelRunner::shouldExitPrematurely(double* zValues, double z0Fac, std::vector<Sample*> samples, double beta)
+		bool ZModelRunner::shouldExitPrematurely(double* zValues, double z0Fac, std::vector<std::shared_ptr<Sample>> samples, double beta)
 		{
 			return false;
 		}
@@ -135,13 +128,13 @@ namespace Deltares
 			{
 				bool hasPreviousReport = this->reliabilityResults.size() > 0;
 
-				ReliabilityResult* previousReport = nullptr;
+				std::shared_ptr<ReliabilityResult> previousReport = nullptr;
 				if (hasPreviousReport)
 				{
 					previousReport = this->reliabilityResults.back();
 				}
 
-				ReliabilityResult* result = new ReliabilityResult();
+				std::shared_ptr<ReliabilityResult> result = std::make_shared<ReliabilityResult>();
 				result->Reliability = report->Reliability;
 				result->ConvBeta = report->ConvBeta;
 				result->Variation = report->Variation;
@@ -150,7 +143,7 @@ namespace Deltares
 
 				if (report->ReportMatchesEvaluation && previousReport != nullptr)
 				{
-					ReliabilityResult* previousPreviousReport = this->reliabilityResults.size() > 1
+					std::shared_ptr<ReliabilityResult> previousPreviousReport = this->reliabilityResults.size() > 1
 						? this->reliabilityResults[this->reliabilityResults.size() - 2]
 						: nullptr;
 
@@ -192,17 +185,17 @@ namespace Deltares
 		{
 			if (Settings->SaveMessages && this->messages.size() < this->Settings->MaxMessages && type >= this->Settings->LowestMessageType)
 			{
-				this->messages.push_back(new Message(type, text));
+				this->messages.push_back(std::make_shared<Message>(type, text));
 			}
 		}
 
-		DesignPoint* ZModelRunner::getDesignPoint(double beta, std::vector<double> alpha, ConvergenceReport* convergenceReport, int scenarioIndex, std::string identifier)
+		std::shared_ptr<DesignPoint> ZModelRunner::getDesignPoint(double beta, std::vector<double> alpha, std::shared_ptr<ConvergenceReport> convergenceReport, int scenarioIndex, std::string identifier)
 		{
 			int count = getVaryingStochastCount();
 
 			StochastPoint* stochastPoint = uConverter->GetStochastPoint(beta, alpha, count);
 
-			DesignPoint* designPoint = new DesignPoint();
+			std::shared_ptr<DesignPoint> designPoint =std::make_shared<DesignPoint>();
 
 			designPoint->Beta = stochastPoint->Beta;
 

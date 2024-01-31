@@ -14,27 +14,27 @@ namespace Deltares
 {
 	namespace Reliability
 	{
-		DesignPoint* FORM::getDesignPoint(Deltares::Models::ZModelRunner* modelRunner)
+		std::shared_ptr<DesignPoint> FORM::getDesignPoint(std::shared_ptr<Models::ZModelRunner> modelRunner)
 		{
 			modelRunner->updateStochastSettings(this->Settings->StochastSet);
 
-			std::vector<DesignPoint*> previousDesignPoints;
+			std::vector<std::shared_ptr<DesignPoint>> previousDesignPoints;
 
 			// initialize
 			StartPointCalculator* startPointCalculator = new StartPointCalculator();
 			startPointCalculator->Settings = this->Settings->StartPointSettings;
 			startPointCalculator->Settings->StochastSet = this->Settings->StochastSet;
 
-			Sample* startPoint = startPointCalculator->getStartPoint(modelRunner);
+			std::shared_ptr<Sample> startPoint = startPointCalculator->getStartPoint(modelRunner);
 
 			if (Settings->StartPointSettings->StartMethod != StartMethodType::None)
 			{
-				DesignPoint* startDesignPoint = this->getDesignPointFromSample(startPoint, modelRunner, 1);
+				std::shared_ptr<DesignPoint> startDesignPoint = this->getDesignPointFromSample(startPoint, modelRunner, 1);
 				startDesignPoint->Identifier = "Start point";
 				previousDesignPoints.push_back(startDesignPoint);
 			}
 
-			DesignPoint* designPoint = nullptr;
+			std::shared_ptr<DesignPoint> designPoint = nullptr;
 
 			double dzduLength = 0;
 			double relaxationFactor = this->Settings->RelaxationFactor;
@@ -68,7 +68,7 @@ namespace Deltares
 				}
 			}
 
-			for (DesignPoint* previousDesignPoint : previousDesignPoints)
+			for (std::shared_ptr<DesignPoint> previousDesignPoint : previousDesignPoints)
 			{
 				designPoint->ContributingDesignPoints.push_back(previousDesignPoint);
 			}
@@ -76,7 +76,7 @@ namespace Deltares
 			return designPoint;
 		}
 
-		DesignPoint* FORM::getDesignPoint(Models::ZModelRunner* modelRunner, Sample* startSample, double relaxationFactor)
+		std::shared_ptr<DesignPoint> FORM::getDesignPoint(std::shared_ptr<Models::ZModelRunner> modelRunner, std::shared_ptr<Sample> startSample, double relaxationFactor)
 		{
 			constexpr double minDzduLength = 1E-08;
 
@@ -85,14 +85,14 @@ namespace Deltares
 			std::vector<double> zGradient(nStochasts);
 
 			// initialization
-			ConvergenceReport* convergenceReport = new ConvergenceReport();
+			std::shared_ptr<ConvergenceReport> convergenceReport = std::make_shared<ConvergenceReport>();
 
 			if (this->Settings->RelaxationLoops > 1)
 			{
 				convergenceReport->RelaxationFactor = relaxationFactor;
 			}
 
-			Sample* u = startSample->clone();
+			std::shared_ptr<Sample> u = startSample->clone();
 
 			int iteration = 0;
 			double beta = nan("");
@@ -191,7 +191,7 @@ namespace Deltares
 				// no convergence, next iteration
 				if (!convergenceReport->IsConverged)
 				{
-					Sample* uNew = new Sample(nStochasts);
+					std::shared_ptr<Sample> uNew = std::make_shared<Sample>(nStochasts);
 
 					for (int k = 0; k < nStochasts; k++)
 					{
@@ -201,17 +201,13 @@ namespace Deltares
 						uNew->Values[k] = relaxationFactor * uNewValue + (1 - relaxationFactor) * u->Values[k];
 					}
 
-					delete u;
-
 					u = uNew;
 				}
 
 				iteration++;
 			}
 
-			DesignPoint* designPoint = this->getDesignPointFromSampleAndBeta(modelRunner, u, beta, convergenceReport);
-
-			delete u;
+			std::shared_ptr<DesignPoint> designPoint = this->getDesignPointFromSampleAndBeta(modelRunner, u, beta, convergenceReport);
 
 			return designPoint;
 		}
@@ -242,7 +238,7 @@ namespace Deltares
 			return validResults;
 		}
 
-		bool FORM::checkConvergence(Models::ZModelRunner* modelRunner, Sample* u, ConvergenceReport* convergenceReport, double beta, double zGradientLength)
+		bool FORM::checkConvergence(std::shared_ptr<Models::ZModelRunner> modelRunner, std::shared_ptr<Sample> u, std::shared_ptr<ConvergenceReport> convergenceReport, double beta, double zGradientLength)
 		{
 			//   compute alpha vector
 			const double uSquared = NumericSupport::GetSquaredSum(u->Values);

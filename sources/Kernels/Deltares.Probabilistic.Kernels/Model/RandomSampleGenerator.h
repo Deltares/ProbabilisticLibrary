@@ -6,10 +6,10 @@
 class RandomSampleGenerator
 {
 public:
-	RandomSettings* Settings = new ::RandomSettings();
-	Deltares::Reliability::StochastSettingsSet* StochastSet = new Deltares::Reliability::StochastSettingsSet();
+	std::shared_ptr<RandomSettings> Settings = std::make_shared<::RandomSettings>();
+	std::shared_ptr<Deltares::Reliability::StochastSettingsSet> StochastSet = std::make_shared<Deltares::Reliability::StochastSettingsSet>();
 
 	void initialize();
 	void restart();
-	Sample* getRandomSample();
+	std::shared_ptr<Sample> getRandomSample();
 };
