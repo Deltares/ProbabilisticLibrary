@@ -1,5 +1,4 @@
 #include <string>
-#include <omp.h>
 #include <memory>
 
 #include "basicSettings.h"
@@ -47,7 +46,6 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
     {
         auto nStoch = (size_t)n;
         auto fw = funcWrapper(vectorSize, iPoint, x, fx);
-        omp_set_num_threads(method->numThreads);
 
         auto cntDeterminists = 0;
         auto stochast = std::vector<std::shared_ptr<Deltares::Statistics::Stochast>>();
@@ -126,6 +124,7 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
         auto textualProgress = TextualProgressLambda([&pw](ProgressType p, std::string s) {pw.FPgDelegate(p, s); });
         std::unique_ptr<ProgressIndicator> progress (new ProgressIndicator(progressDelegate, detailedProgressDelegate, textualProgress));
         std::shared_ptr<ZModelRunner> modelRunner(new ZModelRunner(zModel, uConverter, progress.get()));
+        modelRunner->Settings->MaxParallelProcesses = method->numThreads;
         std::shared_ptr<DesignPoint> newResult ( relMethod->getDesignPoint(modelRunner));
 
         auto alpha = vector1D(newResult->Alphas.size());
@@ -164,7 +163,7 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
         {
             r->alpha2[i] = newResult->Alphas[i]->AlphaCorrelated;
         }
-        r->convergence = (newResult->convergenceReport->Convergence < method->tolB ? 0 : 1);
+        r->convergence = newResult->convergenceReport->IsConverged;
         r->stepsNeeded = -999;// result.stepsNeeded;
         r->samplesNeeded = newResult->convergenceReport->TotalDirections;
         if (r->samplesNeeded < 0)

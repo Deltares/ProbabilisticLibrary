@@ -2,7 +2,6 @@
 #include "../Deltares.Probabilistic.Kernels/Reliability/CrudeMonteCarlo.h"
 #include "../Deltares.Probabilistic.Kernels/Reliability/DirectionalSampling.h"
 #include "../Deltares.Probabilistic.Kernels/Reliability/FORM.h"
-#include <iostream>
 
 using namespace Deltares::ProbLibCore;
 using namespace Deltares::Reliability;
@@ -75,7 +74,7 @@ ReliabilityMethod* createReliabilityMethod::selectMethod(const basicSettings& bs
             form->Settings->StartPointSettings->StartMethod = StartMethodType::SphereSearch;
             break;
         default:
-            std::cout << "not implemented: start method: " << (int)bs.startMethod << std::endl;
+            throw probLibException ( "not implemented: start method: " , (int)bs.startMethod );
             break;
         }
         return form; }
