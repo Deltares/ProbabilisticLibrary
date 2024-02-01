@@ -2,6 +2,7 @@
 #include <vector>
 
 enum DoubleType {Positive, Negative, Zero, NaN};
+enum InterpolationType { Linear, Logarithmic, Harmonic };
 
 
 class NumericSupport
@@ -21,5 +22,7 @@ public:
     static double* getArray(double initialValue, int count);
     static DoubleType getDoubleType(double value);
     static double getSign(DoubleType value);
+    static double interpolate(double x, double minX, double minY, double maxX, double maxY, bool extrapolate = false, InterpolationType interpolationType = Linear);
+    static double interpolate(double x, std::vector<double>& xValues, std::vector<double>& yValues, bool extrapolate = false, InterpolationType interpolationType = Linear);
 };
 

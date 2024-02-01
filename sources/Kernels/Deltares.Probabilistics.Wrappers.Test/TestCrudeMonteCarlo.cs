@@ -467,7 +467,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
             Assert.AreEqual(0.16, designPoint.Alphas[0].X, margin);
             Assert.AreEqual(0.15, designPoint.Alphas[1].X, margin);
-            Assert.AreEqual(7, designPoint.Alphas[2].X, margin); // wrong, should be 7
+            Assert.AreEqual(7, designPoint.Alphas[2].X, margin); 
         }
 
         [Test]

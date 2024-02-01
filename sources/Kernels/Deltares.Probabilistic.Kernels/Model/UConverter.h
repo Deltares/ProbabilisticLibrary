@@ -12,10 +12,12 @@ class UConverter
 {
 private:
 	bool hasQualitiveStochasts = false;
+	bool hasRealizedStochasts = false;
 
 	std::vector<std::shared_ptr<Deltares::Statistics::Stochast>> stochasts;
 	std::vector<std::shared_ptr<Deltares::Statistics::Stochast>> varyingStochasts;
 	std::vector<int> varyingStochastIndex;
+	std::vector<int> realizedStochastIndex;
 
 	std::shared_ptr<CorrelationMatrix> correlationMatrix;
 	std::shared_ptr<CorrelationMatrix> varyingCorrelationMatrix;

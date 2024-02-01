@@ -1,10 +1,24 @@
 #include "UConverter.h"
+
+#include <map>
+
 #include "../Statistics/Stochast.h"
 #include "../Statistics/CorrelationMatrix.h"
 #include "../Reliability/StochastSettings.h"
 #include "../Reliability/StochastSettingsSet.h"
 
 #include <memory>
+#include <set>
+
+#include "../Statistics/RealizedStochast.h"
+
+namespace Deltares
+{
+	namespace Statistics
+	{
+		class RealizedStochast;
+	}
+}
 
 UConverter::UConverter(std::vector<std::shared_ptr<Deltares::Statistics::Stochast>> stochasts, std::shared_ptr<CorrelationMatrix> correlationMatrix)
 {
@@ -23,8 +37,10 @@ void UConverter::initializeForRun()
 {
 	this->varyingStochasts.clear();
 	this->varyingStochastIndex.clear();
+	this->realizedStochastIndex.clear();
 
 	this->hasQualitiveStochasts = false;
+	this->hasRealizedStochasts = false;
 
 	for (std::shared_ptr<Deltares::Statistics::Stochast> stochast : this->stochasts)
 	{
@@ -43,6 +59,21 @@ void UConverter::initializeForRun()
 		{
 			int type = (this->stochasts[i]->isVarying() ? -1 : -2);
 			this->varyingStochastIndex.push_back(type);
+		}
+
+		realizedStochastIndex.push_back(-1);
+
+		if (this->stochasts[i]->isRealizedStochast())
+		{
+			this->hasRealizedStochasts = true;
+			for (size_t j = 0; j < this->stochasts.size(); j++)
+			{
+				if (stochasts[j] == ((Deltares::Statistics::RealizedStochast*) this->stochasts[i].get())->Source)
+				{
+					realizedStochastIndex[i] = j;
+					break;
+				}
+			}
 		}
 	}
 
@@ -233,7 +264,8 @@ std::shared_ptr<StochastPoint> UConverter::GetStochastPoint(std::shared_ptr<Samp
 			alphaCorrelated = getExpandedValues(alphaCorrelated);
 		}
 
-		//HashSet<StochastPointAlpha> hasDerivedValues = new HashSet<StochastPointAlpha>();
+		std::set<int> assignedAlphas;
+		std::vector<int> unAssignedAlphas;
 
 		for (size_t i = 0; i < this->stochasts.size(); i++)
 		{
@@ -248,17 +280,63 @@ std::shared_ptr<StochastPoint> UConverter::GetStochastPoint(std::shared_ptr<Samp
 				int varyingIndex = this->varyingStochastIndex[i];
 				alpha->X = stochasts[i]->getXFromU(sample->Values[varyingIndex]);
 			}
-			else
+			else if (!this->hasRealizedStochasts)
 			{
 				alpha->X = stochasts[i]->getXFromU(uCorrelated[i]);
 			}
 
-			realization->Alphas.push_back(alpha);
+			// create administration for realized stochasts
+			if (this->hasRealizedStochasts)
+			{
+				if (!this->stochasts[i]->isRealizedStochast()) 
+				{
+					assignedAlphas.insert(i);
+				}
+				else
+				{
+					unAssignedAlphas.push_back(i);
+				}
+			}
 
-			//if (stochasts[i].GetStochast() is RealizedStochast)
-			//{
-			//	hasDerivedValues.Add(stochastRealization);
-			//}
+			realization->Alphas.push_back(alpha);
+		}
+
+		// correct for realized stochasts
+		if (this->hasRealizedStochasts)
+		{
+			bool ready = false;
+
+			while (!ready) 
+			{
+				ready = true;
+				bool modified = false;
+
+				for (int i = 0; i < unAssignedAlphas.size(); i++)
+				{
+					int alphaIndex = unAssignedAlphas[i];
+
+					if (!assignedAlphas.contains(alphaIndex)) 
+					{
+						int sourceIndex = realizedStochastIndex[alphaIndex];
+						if (assignedAlphas.contains(sourceIndex))
+						{
+							double xSource = realization->Alphas[sourceIndex]->X;
+							realization->Alphas[alphaIndex]->X = stochasts[i]->getXFromUAndSource(xSource, uCorrelated[alphaIndex]);
+							assignedAlphas.insert(alphaIndex);
+							modified = true;
+						}
+						else
+						{
+							ready = false;
+						}
+					}
+				}
+
+				if (!ready && !modified)
+				{
+					throw new std::exception("circular reference");
+				}
+			}
 		}
 	}
 

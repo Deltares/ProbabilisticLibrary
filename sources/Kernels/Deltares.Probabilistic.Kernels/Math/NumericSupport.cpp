@@ -141,7 +141,6 @@ double NumericSupport::getSign(DoubleType doubleType)
 	case DoubleType::NaN:
 		return nan("");
 	default:
-		//C# TO C++ CONVERTER TASK: There is no C++ equivalent to 'ToString':
 		throw Deltares::ProbLibCore::probLibException("double type not supported");
 	}
 }
@@ -195,7 +194,7 @@ std::vector<double> NumericSupport::GetCartesianCoordinates(const std::vector<do
 	auto count = sphericalCoordinates.size();
 	auto coordinates = std::vector<double>(count);
 
-	for (int i = 0; i < count; i++)
+	for (size_t i = 0; i < count; i++)
 	{
 		coordinates[i] = sphericalCoordinates[0];
 		for (int j = 0; j < i; j++)
@@ -211,6 +210,110 @@ std::vector<double> NumericSupport::GetCartesianCoordinates(const std::vector<do
 
 	return coordinates;
 }
+
+double NumericSupport::interpolate(double x, double minX, double minY, double maxX, double maxY, bool extrapolate, InterpolationType interpolationType)
+{
+	if (minX > maxX ^ interpolationType == InterpolationType::Harmonic)
+	{
+		double temp = minX;
+		minX = maxX;
+		maxX = temp;
+
+		temp = minY;
+		minY = maxY;
+		maxY = temp;
+	}
+
+	switch (interpolationType)
+	{
+	case InterpolationType::Linear:
+		break;
+	case InterpolationType::Logarithmic:
+		x = std::log(x);
+		minX = std::log(minX);
+		maxX = std::log(maxX);
+		break;
+	case InterpolationType::Harmonic:
+		x = 1 / x;
+		minX = 1 / minX;
+		maxX = 1 / maxX;
+		break;
+	default:
+		throw std::exception("interpolation type not supported");
+	}
+
+	if (x < minX && !extrapolate)
+	{
+		return minY;
+	}
+	else if (x > maxX && !extrapolate)
+	{
+		return maxY;
+	}
+	else
+	{
+		const double xFraction = (x - minX) / (maxX - minX);
+		return xFraction * maxY + (1 - xFraction) * minY;
+	}
+}
+
+double NumericSupport::interpolate(double x, std::vector<double>& xValues, std::vector<double>& yValues, bool extrapolate, InterpolationType interpolationType)
+{
+	if (xValues.size() != yValues.size())
+	{
+		throw std::exception("XValues and YValues not of the same length");
+	}
+
+	if (xValues.empty())
+	{
+		return nan("");
+	}
+	else if (xValues.size() == 1)
+	{
+		return yValues[0];
+	}
+	else
+	{
+		for (int i = 0; i < xValues.size() - 1; i++)
+		{
+			if (x >= xValues[i] && x <= xValues[i + 1])
+			{
+				return interpolate(x, xValues[i], yValues[i], xValues[i + 1], yValues[i + 1], extrapolate, interpolationType);
+			}
+			else if (x >= xValues[i + 1] && x <= xValues[i])
+			{
+				return interpolate(x, xValues[i],  yValues[i], xValues[i + 1],yValues[i + 1], extrapolate, interpolationType);
+			}
+		}
+
+		if (xValues[0] < xValues[xValues.size() - 1])
+		{
+			if (x < xValues[0])
+			{
+				return interpolate(x, xValues[0], yValues[0], xValues[1], yValues[1], extrapolate, interpolationType);
+			}
+			else if (x > xValues[xValues.size() - 1])
+			{
+				return interpolate(x, xValues[xValues.size() - 2], yValues[xValues.size() - 2], xValues[xValues.size() - 1], yValues[xValues.size() - 1], extrapolate, interpolationType);
+			}
+		}
+		else
+		{
+			if (x > xValues[0])
+			{
+				return interpolate(x, xValues[0], yValues[0], xValues[1], yValues[1], extrapolate, interpolationType);
+			}
+			else if (x < xValues[xValues.size() - 1])
+			{
+				return interpolate(x, xValues[xValues.size() - 2], yValues[xValues.size() - 2], xValues[xValues.size() - 1],  yValues[xValues.size() - 1], extrapolate, interpolationType);
+			}
+		}
+
+		return nan("");
+	}
+}
+
+
 
 
 

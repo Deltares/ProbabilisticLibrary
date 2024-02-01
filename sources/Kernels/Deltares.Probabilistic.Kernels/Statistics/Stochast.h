@@ -16,20 +16,25 @@ namespace Deltares
 		{
 		private:
 			DistributionType distributionType = DistributionType::Deterministic;
-			std::shared_ptr<Distribution> distribution = std::make_shared<DeterministicDistribution>();
 
 			bool inverted = false;
 			bool truncated = false;
 
 			void updateDistribution();
+		protected:
+			std::shared_ptr<Distribution> distribution = std::make_shared<DeterministicDistribution>();
 
 		public:
 
 			Stochast();
 			Stochast(DistributionType distributionType, double* values);
 
+			virtual bool isRealizedStochast() { return false; }
+
 			double getXFromU(double u);
 			double getUFromX(double x);
+
+			virtual double getXFromUAndSource(double source, double u) { return getXFromU(u);  }
 
 			void setDistributionType(DistributionType distributionType);
 			DistributionType getDistributionType();
@@ -51,7 +56,7 @@ namespace Deltares
 			double getDeviation();
 			void setDeviation(double deviation);
 
-			void initializeForRun();
+			virtual void initializeForRun();
 		};
 	}
 }

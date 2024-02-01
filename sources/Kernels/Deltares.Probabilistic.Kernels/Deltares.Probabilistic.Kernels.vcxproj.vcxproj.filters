@@ -82,6 +82,8 @@
     <ClCompile Include="Statistics\FragilityValue.cpp" />
     <ClCompile Include="Statistics\Distributions\DiscreteDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\QualitativeDistribution.cpp" />
+    <ClCompile Include="Statistics\RealizedStochast.cpp" />
+    <ClCompile Include="Statistics\RealizedStochastValue.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -176,6 +178,8 @@
     <ClInclude Include="Utils\probLibString.h" />
     <ClInclude Include="Utils\probLibException.h" />
     <ClInclude Include="Statistics\Distributions\QualitativeDistribution.h" />
+    <ClInclude Include="Statistics\RealizedStochast.h" />
+    <ClInclude Include="Statistics\RealizedStochastValue.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

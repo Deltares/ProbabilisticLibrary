@@ -153,6 +153,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Statistics\RealizedStochastValue.h" />
+    <ClInclude Include="Statistics\RealizedStochast.h" />
     <ClInclude Include="Statistics\Distributions\QualitativeDistribution.h" />
     <ClInclude Include="Statistics\Distributions\DiscreteDistribution.h" />
     <ClInclude Include="Statistics\HistogramValue.h" />
@@ -225,6 +227,8 @@
     <ClInclude Include="Utils\probLibString.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Statistics\RealizedStochastValue.cpp" />
+    <ClCompile Include="Statistics\RealizedStochast.cpp" />
     <ClCompile Include="Statistics\Distributions\QualitativeDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\DiscreteDistribution.cpp" />
     <ClCompile Include="Statistics\HistogramValue.cpp" />
