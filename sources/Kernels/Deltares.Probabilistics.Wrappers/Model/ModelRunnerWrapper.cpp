@@ -12,6 +12,8 @@ namespace Deltares
 		{
 			delegate void ManagedSampleDelegate(std::shared_ptr<Sample> sample);
 			delegate void ManagedMultipleSampleDelegate(std::vector<std::shared_ptr<Sample>> samples);
+			typedef double(__stdcall* ZDelegate) (std::shared_ptr<Sample>);
+			typedef double(__stdcall* ZMultipleDelegate) (std::vector<std::shared_ptr<Sample>>);
 
 			ModelRunnerWrapper::ModelRunnerWrapper(ZSampleDelegate^ zFunction, System::Collections::Generic::List<StochastWrapper^>^ stochasts, CorrelationMatrixWrapper^ correlationMatrix, ProgressIndicatorWrapper^ progressIndicator)
 			{
@@ -35,36 +37,38 @@ namespace Deltares
 				this->modelRunner = new Models::ZModelRunner(zModel, uConverter, progress);
 			}
 
-			Models::ZDelegate ModelRunnerWrapper::getZDelegate()
+			Models::ZLambda ModelRunnerWrapper::getZlambda()
 			{
 				ManagedSampleDelegate^ fp = gcnew ManagedSampleDelegate(this, &ModelRunnerWrapper::invokeSample);
 				System::Runtime::InteropServices::GCHandle handle = System::Runtime::InteropServices::GCHandle::Alloc(fp);
 				handles->Add(handle);
 
 				System::IntPtr callbackPtr = System::Runtime::InteropServices::Marshal::GetFunctionPointerForDelegate(fp);
-				Models::ZDelegate functionPointer = static_cast<Models::ZDelegate>(callbackPtr.ToPointer());
+				Models::ZLambda functionPointer = static_cast<ZDelegate>(callbackPtr.ToPointer());
 
 				return functionPointer;
 			}
 
-			Models::ZMultipleDelegate ModelRunnerWrapper::getZMultipleDelegate()
+
+			Models::ZMultipleLambda ModelRunnerWrapper::getZMultipleDelegate()
 			{
 				ManagedMultipleSampleDelegate^ fp = gcnew ManagedMultipleSampleDelegate(this, &ModelRunnerWrapper::invokeMultipleSamples);
 				System::Runtime::InteropServices::GCHandle handle = System::Runtime::InteropServices::GCHandle::Alloc(fp);
 				handles->Add(handle);
 
 				System::IntPtr callbackPtr = System::Runtime::InteropServices::Marshal::GetFunctionPointerForDelegate(fp);
-				Models::ZMultipleDelegate functionPointer = static_cast<Models::ZMultipleDelegate>(callbackPtr.ToPointer());
+				Models::ZMultipleLambda functionPointer = static_cast<ZMultipleDelegate>(callbackPtr.ToPointer());
 
 				return functionPointer;
 			}
 
 			std::shared_ptr<Models::ZModel> ModelRunnerWrapper::getZModel()
 			{
-				Models::ZDelegate zDelegate = getZDelegate();
-				Models::ZMultipleDelegate zMultipleDelegate = getZMultipleDelegate();
+				Models::ZLambda zLamba = getZlambda();
+				Models::ZMultipleLambda zMultipleLambda = getZMultipleDelegate();
 
-				std::shared_ptr<Models::ZModel> zModel = std::make_shared<Models::ZModel>(zDelegate, zMultipleDelegate);
+				//std::shared_ptr<Models::ZModel> zModel = std::make_shared<Models::ZModel>(zDelegate, zMultipleDelegate);
+				std::shared_ptr<Models::ZModel> zModel = std::make_shared<Models::ZModel>(zLamba);
 
 				return zModel;
 			}

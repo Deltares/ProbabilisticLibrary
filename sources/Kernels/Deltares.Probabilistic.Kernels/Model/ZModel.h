@@ -9,34 +9,21 @@ namespace Deltares
 {
 	namespace Models
 	{
-#ifdef _WIN32
-		typedef double(__stdcall* ZDelegate) (std::shared_ptr<Sample>);
-		typedef double(__stdcall* ZMultipleDelegate) (std::vector<std::shared_ptr<Sample>>);
-#else
-		typedef double(* ZDelegate) (std::shared_ptr<Sample>);
-		typedef double(* ZMultipleDelegate) (std::shared_ptr<Sample>*, int count);
-#endif // _WIN32
-
 		typedef std::function<double(std::shared_ptr<Sample>)> ZLambda;
+		typedef std::function<double(std::vector<std::shared_ptr<Sample>>)> ZMultipleLambda;
 
 		class ZModel
 		{
 		private:
-			ZDelegate zDelegate = nullptr;
-			ZMultipleDelegate zMultipleDelegate = nullptr;
 			ZLambda zLambda = nullptr;
+			ZMultipleLambda zMultipleLambda = nullptr;
 			int maxProcesses = 1;
 
 		public:
-			ZModel(ZDelegate zDelegate, ZMultipleDelegate zMultipleDelegate = nullptr)
-			{
-				this->zDelegate = zDelegate;
-				this->zMultipleDelegate = zMultipleDelegate;
-			}
-
-			ZModel(ZLambda zLambda)
+			ZModel(ZLambda zLambda, ZMultipleLambda zMultipleLambda = nullptr)
 			{
 				this->zLambda = zLambda;
+				this->zMultipleLambda = zMultipleLambda;
 			}
 
 			void setMaxProcesses(int maxProcesses);
