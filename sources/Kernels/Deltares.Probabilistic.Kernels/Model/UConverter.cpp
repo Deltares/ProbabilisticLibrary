@@ -223,6 +223,61 @@ std::shared_ptr<Sample> UConverter::getQualitativeExcludedSample(std::shared_ptr
 	return qualitativeExcludedSample->normalize(sample->getBeta());
 }
 
+void UConverter::assignRealizedStochasts(std::shared_ptr<StochastPoint> realization, std::vector<double>& uCorrelated)
+{
+	std::set<int> assignedAlphas;
+	std::vector<int> unAssignedAlphas;
+
+	// build up initial administration which stochasts have been assigned and which not
+	for (int i = 0; i < realization->Alphas.size(); i++)
+	{
+		if (!realization->Alphas[i]->Stochast->isRealizedStochast())
+		{
+			assignedAlphas.insert(i);
+		}
+		else
+		{
+			unAssignedAlphas.push_back(i);
+		}
+	}
+
+	bool ready = unAssignedAlphas.size() == 0;
+
+	// loop until all stochasts have been assigned
+	while (!ready) 
+	{
+		ready = true;
+		bool modified = false;
+
+		for (int i = 0; i < unAssignedAlphas.size(); i++)
+		{
+			int alphaIndex = unAssignedAlphas[i];
+
+			if (!assignedAlphas.contains(alphaIndex)) 
+			{
+				int sourceIndex = realizedStochastIndex[alphaIndex];
+				if (assignedAlphas.contains(sourceIndex))
+				{
+					double xSource = realization->Alphas[sourceIndex]->X;
+					realization->Alphas[alphaIndex]->X = stochasts[i]->getXFromUAndSource(xSource, uCorrelated[alphaIndex]);
+					assignedAlphas.insert(alphaIndex);
+					modified = true;
+				}
+				else
+				{
+					ready = false;
+				}
+			}
+		}
+
+		// when no progress and not everything has been assigned => error
+		if (!ready && !modified)
+		{
+			throw new std::exception("circular reference");
+		}
+	}
+}
+
 std::shared_ptr<StochastPoint> UConverter::GetStochastPoint(std::shared_ptr<Sample> sample, double beta)
 {
 	std::shared_ptr<StochastPoint> realization = std::make_shared<StochastPoint>();
@@ -264,9 +319,6 @@ std::shared_ptr<StochastPoint> UConverter::GetStochastPoint(std::shared_ptr<Samp
 			alphaCorrelated = getExpandedValues(alphaCorrelated);
 		}
 
-		std::set<int> assignedAlphas;
-		std::vector<int> unAssignedAlphas;
-
 		for (size_t i = 0; i < this->stochasts.size(); i++)
 		{
 			std::shared_ptr<StochastPointAlpha> alpha = std::make_shared<StochastPointAlpha>();
@@ -280,22 +332,9 @@ std::shared_ptr<StochastPoint> UConverter::GetStochastPoint(std::shared_ptr<Samp
 				int varyingIndex = this->varyingStochastIndex[i];
 				alpha->X = stochasts[i]->getXFromU(sample->Values[varyingIndex]);
 			}
-			else if (!this->hasRealizedStochasts)
+			else if (!this->hasRealizedStochasts || !stochasts[i]->isRealizedStochast())
 			{
 				alpha->X = stochasts[i]->getXFromU(uCorrelated[i]);
-			}
-
-			// create administration for realized stochasts
-			if (this->hasRealizedStochasts)
-			{
-				if (!this->stochasts[i]->isRealizedStochast()) 
-				{
-					assignedAlphas.insert(i);
-				}
-				else
-				{
-					unAssignedAlphas.push_back(i);
-				}
 			}
 
 			realization->Alphas.push_back(alpha);
@@ -304,39 +343,7 @@ std::shared_ptr<StochastPoint> UConverter::GetStochastPoint(std::shared_ptr<Samp
 		// correct for realized stochasts
 		if (this->hasRealizedStochasts)
 		{
-			bool ready = false;
-
-			while (!ready) 
-			{
-				ready = true;
-				bool modified = false;
-
-				for (int i = 0; i < unAssignedAlphas.size(); i++)
-				{
-					int alphaIndex = unAssignedAlphas[i];
-
-					if (!assignedAlphas.contains(alphaIndex)) 
-					{
-						int sourceIndex = realizedStochastIndex[alphaIndex];
-						if (assignedAlphas.contains(sourceIndex))
-						{
-							double xSource = realization->Alphas[sourceIndex]->X;
-							realization->Alphas[alphaIndex]->X = stochasts[i]->getXFromUAndSource(xSource, uCorrelated[alphaIndex]);
-							assignedAlphas.insert(alphaIndex);
-							modified = true;
-						}
-						else
-						{
-							ready = false;
-						}
-					}
-				}
-
-				if (!ready && !modified)
-				{
-					throw new std::exception("circular reference");
-				}
-			}
+			assignRealizedStochasts(realization, uCorrelated);
 		}
 	}
 
