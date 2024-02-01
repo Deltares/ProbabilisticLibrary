@@ -117,7 +117,7 @@ namespace Deltares
 					modelRunner->reportMessage(Models::MessageType::Error, "Model did not provide valid results, limit state value = " + pl.double2str( u->Z));
 #endif
 
-					ReliabilityReport* reportInvalid = new ReliabilityReport();
+					std::shared_ptr<ReliabilityReport> reportInvalid = std::make_shared<ReliabilityReport>();
 					reportInvalid->Step = iteration;
 					reportInvalid->MaxSteps = this->Settings->MaximumIterations;
 					reportInvalid->Reliability = nan("");
@@ -147,7 +147,7 @@ namespace Deltares
 				{
 					modelRunner->reportMessage(Models::MessageType::Error, "No variation in model results found at start point");
 
-					ReliabilityReport* reportTooSmall = new ReliabilityReport();
+					std::shared_ptr<ReliabilityReport> reportTooSmall = std::make_shared<ReliabilityReport>();
 
 					reportTooSmall->Step = iteration;
 					reportTooSmall->MaxSteps = this->Settings->MaximumIterations;
@@ -175,7 +175,8 @@ namespace Deltares
 				{
 					modelRunner->reportMessage(Models::MessageType::Error, "No convergence found");
 
-					ReliabilityReport* reportTooHigh = new ReliabilityReport();
+					std::shared_ptr<ReliabilityReport> reportTooHigh = std::make_shared<ReliabilityReport>();
+
 					reportTooHigh->Step = iteration;
 					reportTooHigh->MaxSteps = this->Settings->MaximumIterations;
 					reportTooHigh->Reliability = beta;
@@ -248,7 +249,7 @@ namespace Deltares
 			convergenceReport->Convergence = betaDiff;
 			convergenceReport->IsConverged = betaDiff <= this->Settings->EpsilonBeta;
 
-			ReliabilityReport* report = new ReliabilityReport();
+			std::shared_ptr<ReliabilityReport> report = std::make_shared<ReliabilityReport>();
 			report->Step = u->IterationIndex;
 			report->MaxSteps = this->Settings->MaximumIterations;
 			report->Reliability = beta;

@@ -121,7 +121,7 @@ namespace Deltares
 			return false;
 		}
 
-		void ZModelRunner::reportResult(ReliabilityReport* report)
+		void ZModelRunner::reportResult(std::shared_ptr<ReliabilityReport> report)
 		{
 			if (Settings->SaveConvergence)
 			{
@@ -158,7 +158,7 @@ namespace Deltares
 
 			if (this->progressIndicator != nullptr)
 			{
-				double progressIndicator = NumericSupport::Divide(report->Step, report->MaxSteps);
+				const double progressIndicator = NumericSupport::Divide(report->Step, report->MaxSteps);
 
 				double convergence = report->ConvBeta;
 				if (std::isnan(convergence))

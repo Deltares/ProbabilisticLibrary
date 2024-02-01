@@ -17,8 +17,8 @@ namespace Deltares
 			static int getZFactor(double z);
 
 		public:
-			virtual std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ZModelRunner> modelRunner) { return nullptr; };
-			virtual ~ReliabilityMethod() { ; }
+			virtual std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ZModelRunner> modelRunner) { return nullptr; }
+			virtual ~ReliabilityMethod() = default;
 
 			bool isStopped();
 			void Stop();

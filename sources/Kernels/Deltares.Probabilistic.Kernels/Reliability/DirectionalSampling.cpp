@@ -122,14 +122,13 @@ namespace Deltares
 
 					double beta = z0Fac * Statistics::StandardNormal::getUFromQ(pf);
 
-					ReliabilityReport* report = new ReliabilityReport();
+					std::shared_ptr<ReliabilityReport> report = std::make_shared<ReliabilityReport>();
 					report->ReportMatchesEvaluation = false;
 					report->Contribution = uSurface->Weight;
 					report->Reliability = beta;
 					report->Variation = convergence;
 
 					modelRunner->reportResult(report);
-					delete report;
 
 					if (enoughSamples && convergence <= Settings->VariationCoefficient)
 					{
@@ -138,19 +137,17 @@ namespace Deltares
 				}
 				else
 				{
-					ReliabilityReport* report = new ReliabilityReport();
+					std::shared_ptr<ReliabilityReport> report = std::make_shared<ReliabilityReport>();
 					report->ReportMatchesEvaluation = false;
 					report->Variation = uSurface->Weight;
 
 					modelRunner->reportResult(report);
-					delete report;
 				}
 			}
 
-			std::shared_ptr<Sample> uDesign = uMean->getSample();
-
-			//getRealization(beta, alpha, convergenceReport, uMin->ScenarioIndex);
 			convergenceReport->Convergence = getConvergence(pf, sumPfSamp, sumPfSamp2, (double)validSamples);
+
+			std::shared_ptr<Sample> uDesign = uMean->getSample();
 
 			if (z0 < 0)
 			{
@@ -178,7 +175,7 @@ namespace Deltares
 		{
 			auto betaValues = std::vector<double>(samples.size());
 
-			DirectionReliability* directionReliability = new DirectionReliability();
+			std::unique_ptr<DirectionReliability> directionReliability = std::make_unique<DirectionReliability>();
 			directionReliability->Settings = this->Settings->DirectionSettings;
 
 			#pragma omp parallel for
@@ -187,8 +184,6 @@ namespace Deltares
 				samples[i]->IterationIndex = step + i;
 				betaValues[i] = directionReliability->getBeta(modelRunner, samples[i], z0);
 			}
-
-			delete directionReliability;
 
 			return betaValues;
 		}

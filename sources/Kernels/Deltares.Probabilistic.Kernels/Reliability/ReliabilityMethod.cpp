@@ -1,7 +1,4 @@
 #include "ReliabilityMethod.h"
-#include "../Statistics/StandardNormal.h"
-#include "../Model/DesignPoint.h"
-#include "../Model/ConvergenceReport.h"
 
 #include <cmath>
 

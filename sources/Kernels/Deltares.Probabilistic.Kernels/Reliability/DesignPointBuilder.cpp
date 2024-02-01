@@ -64,27 +64,19 @@ namespace Deltares
 			sinSample = std::make_shared<Sample>(count);
 			cosSample = std::make_shared<Sample>(count);
 
-			this->qualitativeCount = 0;
+			this->qualitativeIndices.clear();
+			this->modeFinders.clear();
+
 			for (int i = 0; i < stochastSet->getVaryingStochastCount(); i++)
 			{
 				if (stochastSet->VaryingStochastSettings[i]->IsQualitative)
 				{
-					this->qualitativeCount++;
+					this->qualitativeIndices.push_back(i);
+					this->modeFinders.push_back(std::make_shared<ModeFinder>(stochastSet->VaryingStochastSettings[i]));
 				}
 			}
 
-			this->qualitativeIndices = new int[this->qualitativeCount];
-			this->modeFinders = new ModeFinder * [this->qualitativeCount];
-
-			int j = 0;
-			for (int i = 0; i < stochastSet->getVaryingStochastCount(); i++)
-			{
-				if (stochastSet->VaryingStochastSettings[i]->IsQualitative)
-				{
-					this->qualitativeIndices[j] = i;
-					this->modeFinders[j] = new ModeFinder(stochastSet->VaryingStochastSettings[i]);
-				}
-			}
+			this->qualitativeCount = this->qualitativeIndices.size();
 		}
 
 		void DesignPointBuilder::initialize(double beta)

@@ -213,7 +213,7 @@ namespace Deltares
 
 		bool CrudeMonteCarlo::checkConvergence(std::shared_ptr<Models::ZModelRunner> modelRunner, double pf, int samples, int nmaal)
 		{
-			std::unique_ptr<ReliabilityReport> report(new ReliabilityReport());
+			std::shared_ptr<ReliabilityReport> report(new ReliabilityReport());
 			report->Step = nmaal;
 			report->MaxSteps = Settings->MaximumSamples;
 
@@ -222,13 +222,13 @@ namespace Deltares
 				double convergence = getConvergence(pf, samples);
 				report->Reliability = Statistics::StandardNormal::getUFromQ(pf);
 				report->Variation = convergence;
-				modelRunner->reportResult(report.get());
+				modelRunner->reportResult(report);
 				bool enoughSamples = nmaal >= Settings->MinimumSamples;
 				return enoughSamples && convergence < Settings->VariationCoefficient;
 			}
 			else
 			{
-				modelRunner->reportResult(report.get());
+				modelRunner->reportResult(report);
 				return false;
 			}
 		}
