@@ -467,9 +467,9 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
             project.Stochasts.Add(new StochastWrapper { DistributionType = WrapperDistributionType.Discrete });
 
-            project.Stochasts[2].DiscreteValues.Add(new DiscreteValueWrapper(1, 0.3));
-            project.Stochasts[2].DiscreteValues.Add(new DiscreteValueWrapper(2, 0.5));
-            project.Stochasts[2].DiscreteValues.Add(new DiscreteValueWrapper(3, 0.2));
+            project.Stochasts[2].DiscreteValues.Add(new DiscreteValueWrapper(5, 0.35));
+            project.Stochasts[2].DiscreteValues.Add(new DiscreteValueWrapper(6, 0.2));
+            project.Stochasts[2].DiscreteValues.Add(new DiscreteValueWrapper(7, 0.45));
 
             project.ZFunction = Discrete;
 
