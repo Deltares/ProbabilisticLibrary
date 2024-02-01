@@ -476,6 +476,24 @@ namespace Deltares.Probabilistics.Wrappers.Test
             return project;
         }
 
+        public static Project GetQualitativeProject()
+        {
+            var project = new Project();
+
+            project.Stochasts.Add(GetUniformStochast());
+            project.Stochasts.Add(GetUniformStochast());
+
+            project.Stochasts.Add(new StochastWrapper { DistributionType = WrapperDistributionType.Qualitative });
+
+            project.Stochasts[2].DiscreteValues.Add(new DiscreteValueWrapper(5, 0.35));
+            project.Stochasts[2].DiscreteValues.Add(new DiscreteValueWrapper(6, 0.2));
+            project.Stochasts[2].DiscreteValues.Add(new DiscreteValueWrapper(7, 0.45));
+
+            project.ZFunction = Discrete;
+
+            return project;
+        }
+
         private static StochastWrapper GetDeterministicStochast(double mean)
         {
             return new StochastWrapper { DistributionType = WrapperDistributionType.Deterministic,  Mean = mean };

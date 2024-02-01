@@ -44,7 +44,6 @@ namespace Deltares
 			{
 				std::shared_ptr<Sample> u = uDirection->multiply(factor);
 				u->AllowProxy = allowProxy;
-				u->ScenarioIndex = uDirection->ScenarioIndex;
 
 				return GetZValueCorrected(u, inverted);
 			}
@@ -104,9 +103,9 @@ namespace Deltares
 			std::shared_ptr<Sample> directionSample = this->Settings->StochastSet->getSample();
 
 			double beta = getBeta(modelRunner, directionSample, z0);
-			auto alphas = getAlphas(directionSample, directionSample->getSize(), z0);
+//			auto alphas = getAlphas(directionSample, directionSample->getSize(), z0);
 
-			std::shared_ptr<DesignPoint> designPoint = modelRunner->getDesignPoint(beta, alphas);
+			std::shared_ptr<DesignPoint> designPoint = modelRunner->getDesignPoint(directionSample, beta);
 
 			return designPoint;
 		}

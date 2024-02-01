@@ -24,53 +24,14 @@ namespace Deltares
 			this->stopped = true;
 		}
 
-		std::vector<double> ReliabilityMethod::getAlphas(std::shared_ptr<Sample> sample, int nstochasts, double z0Fac)
-		{
-			auto alpha = std::vector<double>(nstochasts);
-
-			if (sample == nullptr)
-			{
-				// alpha values, if no failure was found
-				double defaultAlpha = -sqrt(1.0 / nstochasts);
-
-				for (int k = 0; k < nstochasts; k++)
-				{
-					alpha[k] = defaultAlpha;
-				}
-			}
-			else
-			{
-				double beta = sample->getBeta();
-
-				if (beta == 0)
-				{
-					const double defaultAlpha = -sqrt(1.0 / nstochasts);
-					for (int k = 0; k < nstochasts; k++)
-					{
-						alpha[k] = defaultAlpha;
-					}
-				}
-				else
-				{
-					for (int k = 0; k < sample->getSize(); k++)
-					{
-						alpha[k] = -sample->Values[k] / beta * z0Fac;
-					}
-				}
-			}
-
-			return alpha;
-		}
-
 		std::shared_ptr<DesignPoint> ReliabilityMethod::getDesignPointFromSampleAndBeta(std::shared_ptr<Models::ZModelRunner> modelRunner, std::shared_ptr<Sample> u, double beta, std::shared_ptr<ConvergenceReport> convergenceReport)
 		{
 			if (u != nullptr)
 			{
-				double z0Fac = getZFactor(beta);
+				//double z0Fac = getZFactor(beta);
+				//auto alphas = getAlphas(u, u->getSize(), z0Fac);
 
-				auto alphas = getAlphas(u, u->getSize(), z0Fac);
-
-				return modelRunner->getDesignPoint(beta, alphas, convergenceReport, u->ScenarioIndex);
+				return modelRunner->getDesignPoint(u, beta, convergenceReport);
 			}
 			else
 			{

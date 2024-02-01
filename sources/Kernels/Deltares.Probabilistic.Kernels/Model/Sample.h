@@ -37,7 +37,6 @@ public:
 	std::vector<double> Values;
 
 	int IterationIndex = -1;
-	int ScenarioIndex = -1;
 	double Weight = 1;
 	bool AllowProxy = true;
 	double Z = nan("");

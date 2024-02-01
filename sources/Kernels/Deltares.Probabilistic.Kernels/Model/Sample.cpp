@@ -26,7 +26,6 @@ std::shared_ptr<Sample> Sample::clone()
 
 	clonedSample->AllowProxy = this->AllowProxy;
 	clonedSample->IterationIndex = this->IterationIndex;
-	clonedSample->ScenarioIndex = this->ScenarioIndex;
 	clonedSample->Weight = this->Weight;
 
 	return clonedSample;
@@ -34,13 +33,26 @@ std::shared_ptr<Sample> Sample::clone()
 
 std::shared_ptr<Sample> Sample::normalize(double newBeta)
 {
-	double actualBeta = NumericSupport::GetLength(this->Values);
+	const double actualBeta = this->getBeta();
 
 	std::shared_ptr<Sample> normalizedSample = this->clone();
 
-	for (int k = 0; k < this->size; k++)
+	if (actualBeta == 0)
 	{
-		normalizedSample->Values[k] = newBeta * this->Values[k] / actualBeta;
+		const double defaultValue = newBeta * sqrt(1.0 / this->size);
+		for (int k = 0; k < this->size; k++)
+		{
+			normalizedSample->Values[k] = defaultValue;
+		}
+	}
+	else 
+	{
+		const double factor = newBeta / actualBeta;
+
+		for (int k = 0; k < this->size; k++)
+		{
+			normalizedSample->Values[k] = factor * this->Values[k];
+		}
 	}
 
 	return normalizedSample;

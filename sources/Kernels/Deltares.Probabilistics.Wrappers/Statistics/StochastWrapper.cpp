@@ -16,6 +16,7 @@ namespace Deltares
 				case WrapperDistributionType::Uniform: return Statistics::DistributionType::Uniform;
 				case WrapperDistributionType::Gumbel: return Statistics::DistributionType::Gumbel;
 				case WrapperDistributionType::Discrete: return Statistics::DistributionType::Discrete;
+				case WrapperDistributionType::Qualitative: return Statistics::DistributionType::Qualitative;
 				default: throw gcnew System::NotSupportedException(distributionType.ToString());
 				}
 			}

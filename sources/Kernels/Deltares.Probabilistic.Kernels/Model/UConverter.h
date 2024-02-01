@@ -11,6 +11,8 @@
 class UConverter
 {
 private:
+	bool hasQualitiveStochasts = false;
+
 	std::vector<std::shared_ptr<Deltares::Statistics::Stochast>> stochasts;
 	std::vector<std::shared_ptr<Deltares::Statistics::Stochast>> varyingStochasts;
 	std::vector<int> varyingStochastIndex;
@@ -23,6 +25,7 @@ private:
 
 	bool checkFullyCorrelated(const int i);
 	void updateDependedParameter(std::vector<double> & uValues, const int i);
+	std::shared_ptr<Sample> getQualitativeExcludedSample(std::shared_ptr<Sample> sample);
 
 public:
 
@@ -31,7 +34,7 @@ public:
 	std::vector<double> getXValues(std::shared_ptr<Sample> sample);
 	int getStochastCount();
 	int getVaryingStochastCount();
-	StochastPoint* GetStochastPoint(double beta, std::vector<double> & alphas, int count);
+	std::shared_ptr<StochastPoint> GetStochastPoint(std::shared_ptr<Sample> sample, double beta);
 	void updateStochastSettings(std::shared_ptr<Deltares::Reliability::StochastSettingsSet> settings);
 };
 

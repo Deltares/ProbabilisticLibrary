@@ -9,6 +9,7 @@
 #include "Distributions/InvertedDistribution.h"
 #include "Distributions/TruncatedDistribution.h"
 #include "Distributions/UniformDistribution.h"
+#include "Distributions/QualitativeDistribution.h"
 
 namespace Deltares
 {
@@ -24,6 +25,7 @@ namespace Deltares
 			case DistributionType::Uniform: this->distribution = std::make_shared<UniformDistribution>(); break;
 			case DistributionType::Gumbel: this->distribution = std::make_shared<GumbelDistribution>(); break;
 			case DistributionType::Discrete: this->distribution = std::make_shared<DiscreteDistribution>(); break;
+			case DistributionType::Qualitative: this->distribution = std::make_shared<QualitativeDistribution>(); break;
 			default:
 				throw Deltares::ProbLibCore::probLibException("Distribution type not supported");
 			}

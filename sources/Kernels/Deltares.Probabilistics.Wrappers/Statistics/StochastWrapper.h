@@ -14,7 +14,7 @@ namespace Deltares
 	{
 		namespace Kernels
 		{
-			public enum class WrapperDistributionType {Deterministic, Normal, LogNormal, Uniform, Gumbel, Discrete};
+			public enum class WrapperDistributionType {Deterministic, Normal, LogNormal, Uniform, Gumbel, Discrete, Qualitative};
 
 			public ref class StochastWrapper
 			{

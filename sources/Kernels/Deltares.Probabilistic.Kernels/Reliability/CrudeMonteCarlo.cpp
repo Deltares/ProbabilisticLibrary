@@ -188,9 +188,10 @@ namespace Deltares
 			double beta = Statistics::StandardNormal::getUFromQ(pf);
 			uMin = uMean->getSample();
 
-			auto alpha = getAlphas(uMin, nParameters, z0Fac);
 			convergenceReport->Convergence = getConvergence(pf, nSamples);
-			std::shared_ptr<DesignPoint> designPoint = modelRunner->getDesignPoint(beta, alpha, convergenceReport, uMin->ScenarioIndex);
+			//std::shared_ptr<DesignPoint> designPoint = modelRunner->getDesignPoint(beta, alpha, convergenceReport, uMin->ScenarioIndex);
+
+			std::shared_ptr<DesignPoint> designPoint = modelRunner->getDesignPoint(uMin, beta, convergenceReport);
 
 			samples.clear();
 

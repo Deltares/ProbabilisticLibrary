@@ -24,6 +24,8 @@ void UConverter::initializeForRun()
 	this->varyingStochasts.clear();
 	this->varyingStochastIndex.clear();
 
+	this->hasQualitiveStochasts = false;
+
 	for (std::shared_ptr<Deltares::Statistics::Stochast> stochast : this->stochasts)
 	{
 		stochast->initializeForRun();
@@ -35,6 +37,7 @@ void UConverter::initializeForRun()
 		{
 			this->varyingStochastIndex.push_back(this->varyingStochastIndex.size());
 			this->varyingStochasts.push_back(this->stochasts[i]);
+			this->hasQualitiveStochasts |= this->stochasts[i]->isQualitative();
 		}
 		else
 		{
@@ -174,17 +177,44 @@ std::vector<double> UConverter::getXValues(std::shared_ptr<Sample> sample)
 	return xValues;
 }
 
-StochastPoint* UConverter::GetStochastPoint(double beta, std::vector<double> & alphas, int count)
+std::shared_ptr<Sample> UConverter::getQualitativeExcludedSample(std::shared_ptr<Sample> sample)
 {
-	StochastPoint* realization = new StochastPoint();
+	std::shared_ptr<Sample> qualitativeExcludedSample = sample->clone();
+
+	for (int i = 0; i < sample->Values.size(); i++)
+	{
+		if (this->varyingStochasts[i]->isQualitative())
+		{
+			qualitativeExcludedSample->Values[i] = 0;
+		}
+	}
+
+	return qualitativeExcludedSample->normalize(sample->getBeta());
+}
+
+std::shared_ptr<StochastPoint> UConverter::GetStochastPoint(std::shared_ptr<Sample> sample, double beta)
+{
+	std::shared_ptr<StochastPoint> realization = std::make_shared<StochastPoint>();
 	realization->Beta = beta;
+
+	std::shared_ptr<Sample> betaSample = sample->normalize(abs(beta));
+
+	if (this->hasQualitiveStochasts) 
+	{
+		betaSample = getQualitativeExcludedSample(betaSample);
+	}
+
+	const int count = sample->getSize();
 
 	if (count > 0)
 	{
+		std::vector<double> alphas = std::vector<double>(count);
+
 		auto uValues = std::vector<double>(count);
 		for (int i = 0; i < count; i++)
 		{
-			uValues[i] = -beta * alphas[i];
+			uValues[i] = betaSample->Values[i]; // - beta * alphas[i];
+			alphas[i] = -uValues[i] / beta;
 		}
 
 		auto uCorrelated = varyingCorrelationMatrix->Cholesky(uValues);
@@ -205,14 +235,23 @@ StochastPoint* UConverter::GetStochastPoint(double beta, std::vector<double> & a
 
 		//HashSet<StochastPointAlpha> hasDerivedValues = new HashSet<StochastPointAlpha>();
 
-		for (int i = 0; i < this->stochasts.size(); i++)
+		for (size_t i = 0; i < this->stochasts.size(); i++)
 		{
 			std::shared_ptr<StochastPointAlpha> alpha = std::make_shared<StochastPointAlpha>();
 			alpha->Stochast = this->stochasts[i];
 			alpha->Alpha = alphas[i];
 			alpha->AlphaCorrelated = alphaCorrelated[i];
 			alpha->U = uValues[i];
-			alpha->X = stochasts[i]->getXFromU(uCorrelated[i]);
+
+			if (this->hasQualitiveStochasts && this->stochasts[i]->isQualitative())
+			{
+				int varyingIndex = this->varyingStochastIndex[i];
+				alpha->X = stochasts[i]->getXFromU(sample->Values[varyingIndex]);
+			}
+			else
+			{
+				alpha->X = stochasts[i]->getXFromU(uCorrelated[i]);
+			}
 
 			realization->Alphas.push_back(alpha);
 

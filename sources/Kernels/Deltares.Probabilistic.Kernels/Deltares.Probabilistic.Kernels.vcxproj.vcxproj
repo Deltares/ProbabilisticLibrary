@@ -153,6 +153,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Statistics\Distributions\QualitativeDistribution.h" />
     <ClInclude Include="Statistics\Distributions\DiscreteDistribution.h" />
     <ClInclude Include="Statistics\HistogramValue.h" />
     <ClInclude Include="Statistics\FragilityValue.h" />
@@ -224,6 +225,7 @@
     <ClInclude Include="Utils\probLibString.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Statistics\Distributions\QualitativeDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\DiscreteDistribution.cpp" />
     <ClCompile Include="Statistics\HistogramValue.cpp" />
     <ClCompile Include="Statistics\FragilityValue.cpp" />

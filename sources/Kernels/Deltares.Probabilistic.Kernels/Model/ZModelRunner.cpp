@@ -51,7 +51,6 @@ namespace Deltares
 
 			xSample->AllowProxy = sample->AllowProxy;
 			xSample->IterationIndex = sample->IterationIndex;
-			xSample->ScenarioIndex = sample->ScenarioIndex;
 			xSample->Weight = sample->Weight;
 
 			return xSample;
@@ -189,23 +188,20 @@ namespace Deltares
 			}
 		}
 
-		std::shared_ptr<DesignPoint> ZModelRunner::getDesignPoint(double beta, std::vector<double> alpha, std::shared_ptr<ConvergenceReport> convergenceReport, int scenarioIndex, std::string identifier)
+		std::shared_ptr<DesignPoint> ZModelRunner::getDesignPoint(std::shared_ptr<Sample> sample, double beta, std::shared_ptr<ConvergenceReport> convergenceReport, std::string identifier)
 		{
-			int count = getVaryingStochastCount();
+			std::shared_ptr<StochastPoint> stochastPoint = uConverter->GetStochastPoint(sample, beta);
 
-			StochastPoint* stochastPoint = uConverter->GetStochastPoint(beta, alpha, count);
-
-			std::shared_ptr<DesignPoint> designPoint =std::make_shared<DesignPoint>();
+			std::shared_ptr<DesignPoint> designPoint = std::make_shared<DesignPoint>();
 
 			designPoint->Beta = stochastPoint->Beta;
 
-			for (int i = 0; i < stochastPoint->Alphas.size(); i++)
+			for (size_t i = 0; i < stochastPoint->Alphas.size(); i++)
 			{
 				designPoint->Alphas.push_back(stochastPoint->Alphas[i]);
 			}
 
 			designPoint->Identifier = identifier;
-			designPoint->ScenarioIndex = scenarioIndex;
 			designPoint->convergenceReport = convergenceReport;
 
 			for (size_t i = 0; i < this->reliabilityResults.size(); i++)

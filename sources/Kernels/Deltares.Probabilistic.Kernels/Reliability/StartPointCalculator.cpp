@@ -82,7 +82,7 @@ namespace Deltares
 
 			std::shared_ptr<Sample> directionPoint = std::make_shared<Sample>(startPoint->Values);
 
-			directionPoint->setBeta(beta);
+			directionPoint->normalize(beta);
 
 			for (int i = 0; i < nStochasts; i++)
 			{

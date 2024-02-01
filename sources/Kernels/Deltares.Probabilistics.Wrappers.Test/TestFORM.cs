@@ -1,5 +1,6 @@
 ﻿using Deltares.Probabilistic.Kernels;
 using NUnit.Framework;
+using System.Linq;
 
 namespace Deltares.Probabilistics.Wrappers.Test
 {
@@ -51,6 +52,26 @@ namespace Deltares.Probabilistics.Wrappers.Test
             Assert.AreNotSame(designPoint, designPoint2);
             Assert.AreNotSame(designPoint.Alphas[0], designPoint2.Alphas[0]);
             Assert.AreSame(designPoint.Alphas[0].Parameter, designPoint2.Alphas[0].Parameter);
+        }
+
+        [Test]
+        public void TestInverseLinear()
+        {
+            var project = ProjectBuilder.GetInverseLinearProject();
+
+            ModelRunnerWrapper modelRunner = new ModelRunnerWrapper(project.Function, project.Stochasts, project.CorrelationMatrix, null);
+
+            FORMWrapper form = new FORMWrapper();
+            DesignPointWrapper designPoint = form.GetDesignPoint(modelRunner);
+
+            Assert.AreEqual(-2.33, designPoint.Beta, margin);
+            Assert.IsTrue(designPoint.ConvergenceReport.IsConverged);
+
+            Assert.AreEqual(0.7, designPoint.Alphas[0].Alpha, margin);
+            Assert.AreEqual(0.7, designPoint.Alphas[1].Alpha, margin);
+
+            Assert.AreEqual(0.9, designPoint.Alphas[0].X, margin);
+            Assert.AreEqual(0.9, designPoint.Alphas[1].X, margin);
         }
 
         [Test]

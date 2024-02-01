@@ -50,7 +50,8 @@ namespace Deltares
 			bool shouldExitPrematurely(bool final);
 			void reportResult(ReliabilityReport* report);
 			void reportMessage(MessageType type, std::string text);
-			std::shared_ptr<DesignPoint> getDesignPoint(double beta, std::vector<double> alpha, std::shared_ptr<ConvergenceReport> convergenceReport = nullptr, int scenarioIndex = -1, std::string identifier = "");
+
+			std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Sample> sample, double beta, std::shared_ptr<ConvergenceReport> convergenceReport = nullptr, std::string identifier = "");
 
 			std::shared_ptr<RunSettings> Settings = std::make_shared<RunSettings>();
 		};
