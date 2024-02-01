@@ -9,8 +9,8 @@ namespace Deltares
 {
 	namespace Models
 	{
-		typedef std::function<double(std::shared_ptr<Sample>)> ZLambda;
-		typedef std::function<double(std::vector<std::shared_ptr<Sample>>)> ZMultipleLambda;
+		typedef std::function<void(std::shared_ptr<Sample>)> ZLambda;
+		typedef std::function<void(std::vector<std::shared_ptr<Sample>>)> ZMultipleLambda;
 
 		class ZModel
 		{

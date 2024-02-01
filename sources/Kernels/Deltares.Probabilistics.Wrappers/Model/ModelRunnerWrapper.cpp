@@ -12,8 +12,8 @@ namespace Deltares
 		{
 			delegate void ManagedSampleDelegate(std::shared_ptr<Sample> sample);
 			delegate void ManagedMultipleSampleDelegate(std::vector<std::shared_ptr<Sample>> samples);
-			typedef double(__stdcall* ZDelegate) (std::shared_ptr<Sample>);
-			typedef double(__stdcall* ZMultipleDelegate) (std::vector<std::shared_ptr<Sample>>);
+			typedef void(__stdcall* ZDelegate) (std::shared_ptr<Sample>);
+			typedef void(__stdcall* ZMultipleDelegate) (std::vector<std::shared_ptr<Sample>>);
 
 			ModelRunnerWrapper::ModelRunnerWrapper(ZSampleDelegate^ zFunction, System::Collections::Generic::List<StochastWrapper^>^ stochasts, CorrelationMatrixWrapper^ correlationMatrix, ProgressIndicatorWrapper^ progressIndicator)
 			{
@@ -37,7 +37,7 @@ namespace Deltares
 				this->modelRunner = new Models::ZModelRunner(zModel, uConverter, progress);
 			}
 
-			Models::ZLambda ModelRunnerWrapper::getZlambda()
+			Models::ZLambda ModelRunnerWrapper::getZLambda()
 			{
 				ManagedSampleDelegate^ fp = gcnew ManagedSampleDelegate(this, &ModelRunnerWrapper::invokeSample);
 				System::Runtime::InteropServices::GCHandle handle = System::Runtime::InteropServices::GCHandle::Alloc(fp);
@@ -64,11 +64,10 @@ namespace Deltares
 
 			std::shared_ptr<Models::ZModel> ModelRunnerWrapper::getZModel()
 			{
-				Models::ZLambda zLamba = getZlambda();
+				Models::ZLambda zLambda = getZLambda();
 				Models::ZMultipleLambda zMultipleLambda = getZMultipleDelegate();
 
-				//std::shared_ptr<Models::ZModel> zModel = std::make_shared<Models::ZModel>(zDelegate, zMultipleDelegate);
-				std::shared_ptr<Models::ZModel> zModel = std::make_shared<Models::ZModel>(zLamba);
+				std::shared_ptr<Models::ZModel> zModel = std::make_shared<Models::ZModel>(zLambda, zMultipleLambda);
 
 				return zModel;
 			}
