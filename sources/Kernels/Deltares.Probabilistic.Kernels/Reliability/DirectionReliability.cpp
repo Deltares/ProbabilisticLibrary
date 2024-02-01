@@ -18,9 +18,20 @@ namespace Deltares
 				this->UHigh = uHigh;
 			}
 
+			DirectionSection(DoubleType type, double uLow, double uHigh, double zLow, double zHigh)
+			{
+				this->Type = type;
+				this->ULow = uLow;
+				this->UHigh = uHigh;
+				this->ZLow = zLow;
+				this->ZHigh = zHigh;
+			}
+
 			DoubleType Type;
 			double ULow = 0.0;
 			double UHigh = 0.0;
+			double ZLow = 0.0;
+			double ZHigh = 0.0;
 
 			double getProbability()
 			{
@@ -114,7 +125,7 @@ namespace Deltares
 		{
 			std::shared_ptr<Sample> normalizedSample = directionSample->normalize();
 
-			BetaValueTask* task = new BetaValueTask();
+			std::shared_ptr <BetaValueTask> task (new BetaValueTask());
 			task->ModelRunner = modelRunner;
 			task->Index = 0;
 			task->Settings = this->Settings;
@@ -128,7 +139,7 @@ namespace Deltares
 			return beta;
 		}
 
-		double DirectionReliability::getDirectionBeta(std::shared_ptr<Models::ZModelRunner> modelRunner, BetaValueTask* directionTask)
+		double DirectionReliability::getDirectionBeta(std::shared_ptr<Models::ZModelRunner> modelRunner, std::shared_ptr <BetaValueTask> directionTask)
 		{
 			std::shared_ptr<Sample> uDirection = directionTask->UValues->normalize();
 			uDirection->IterationIndex = directionTask->Iteration;
@@ -202,8 +213,8 @@ namespace Deltares
 						}
 						else
 						{
-							sections.push_back(std::make_shared<DirectionSection>(zLowType, uLow, uChange));
-							sections.push_back(std::make_shared<DirectionSection>(zHighType, uChange, uHigh));
+							sections.push_back(std::make_shared<DirectionSection>(zLowType, uLow, uChange, zLow, zChange));
+							sections.push_back(std::make_shared<DirectionSection>(zHighType, uChange, uHigh, zHigh, zChange));
 						}
 
 						if (monotone)
@@ -213,12 +224,12 @@ namespace Deltares
 					}
 					else
 					{
-						std::shared_ptr<DirectionSection> tempVar9 = std::make_shared<DirectionSection>(zHighType, uLow, uHigh);
+						std::shared_ptr<DirectionSection> tempVar9 = std::make_shared<DirectionSection>(zHighType, uLow, uHigh, zLow, zHigh);
 						sections.push_back(tempVar9);
 
 						if (monotone && zLowType != DoubleType::NaN && zHighType != DoubleType::NaN)
 						{
-							if (std::abs(zHigh) > std::abs(zLow))
+							if ( NumericSupport::compareDouble(std::abs(zHigh), std::abs(zLow)) == CmpResult::Greater )
 							{
 								found = true;
 							}
@@ -354,6 +365,20 @@ namespace Deltares
 			if (failingProbability == 0 && nonFailingProbability == 0.5)
 			{
 				return nan("");
+			}
+			else if (nonFailingProbability == 0.5 && this->Settings->FindMinimalValue)
+			{
+				double zmin = 1e99;
+				double rmin = 0.0;
+				for (int i = 0; i < sections.size(); i++)
+				{
+					if (sections[i]->ZHigh < zmin && sections[i]->ZHigh != 0.0)
+					{
+						rmin = sections[i]->UHigh;
+						zmin = sections[i]->ZHigh;
+					}
+				}
+				return rmin;
 			}
 			else
 			{

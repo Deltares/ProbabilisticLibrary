@@ -81,6 +81,21 @@ bool NumericSupport::areEqual(double x1, double x2, double tolerance)
 	}
 }
 
+CmpResult NumericSupport::compareDouble(const double x1, const double x2, const double tol)
+{
+	if (areEqual(x1, x2, tol))
+	{
+		return CmpResult::Equal;
+	}
+	else if (x1 > x2)
+	{
+		return CmpResult::Greater;
+	}
+	else
+	{
+		return CmpResult::Smaller;
+	}
+}
 
 double NumericSupport::round(double value, int decimals)
 {

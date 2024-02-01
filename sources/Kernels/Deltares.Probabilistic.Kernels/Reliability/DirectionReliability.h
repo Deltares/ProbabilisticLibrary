@@ -24,7 +24,7 @@ namespace Deltares
 		class DirectionReliability : public Deltares::Reliability::ReliabilityMethod
 		{
 		private:
-			double getDirectionBeta(std::shared_ptr<Models::ZModelRunner> modelRunner, BetaValueTask* directionTask);
+			double getDirectionBeta(std::shared_ptr<Models::ZModelRunner> modelRunner, std::shared_ptr <BetaValueTask> directionTask);
 			std::vector<std::shared_ptr< DirectionSection>> getDirectionSections(std::shared_ptr<Models::ZModelRunner> modelRunner, std::shared_ptr<DirectionReliabilitySettings> settings, std::shared_ptr<Sample> uDirection, bool invertZ);
 			double findBetaBetweenBoundaries(std::shared_ptr<Models::ZModelRunner> modelRunner, std::shared_ptr<DirectionReliabilitySettings> settings, std::shared_ptr<Sample> uDirection, bool invertZ, double uLow, double uHigh, double zLow, double zHigh, double& z);
 			double getBetaFromSections(std::vector<std::shared_ptr<DirectionSection>> sections);

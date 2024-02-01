@@ -19,6 +19,8 @@ namespace Deltares
 			{
 			case StartMethodType::None:
 				return this->Settings->StochastSet->getSample();
+			case StartMethodType::One:
+				return getOneStartPoint(modelRunner);
 			case StartMethodType::RaySearch:
 				return getRayStartPoint(modelRunner);
 			case StartMethodType::SensitivitySearch:
@@ -26,7 +28,7 @@ namespace Deltares
 			case StartMethodType::SphereSearch:
 				return getSphereStartPoint(modelRunner);
 			default:
-				throw probLibException("Not supported");
+				throw probLibException("Start method not supported: ", (int)this->Settings->StartMethod);
 			}
 		}
 
@@ -48,6 +50,15 @@ namespace Deltares
 					startPoint->Values[i] = 1;
 				}
 			}
+		}
+
+		std::shared_ptr<Sample> StartPointCalculator::getOneStartPoint(std::shared_ptr<Models::ZModelRunner> modelRunner)
+		{
+			std::shared_ptr<Sample> startPoint = this->Settings->StochastSet->getSample();
+
+			correctDefaultValues(startPoint);
+
+			return startPoint;
 		}
 
 		std::shared_ptr<Sample> StartPointCalculator::getRayStartPoint(std::shared_ptr<Models::ZModelRunner> modelRunner)
@@ -73,10 +84,12 @@ namespace Deltares
 				}
 			}
 
-			DirectionReliability* directionReliability = new DirectionReliability();
+			std::unique_ptr<DirectionReliability> directionReliability (new DirectionReliability());
 			directionReliability->Settings->StochastSet = this->Settings->StochastSet;
 			directionReliability->Settings->MaximumLengthU = this->Settings->MaximumLengthStartPoint;
 			directionReliability->Settings->StochastSet = this->Settings->StochastSet;
+			directionReliability->Settings->FindMinimalValue = true;
+			directionReliability->Settings->Dsdu = this->Settings->dsdu;
 
 			double beta = directionReliability->getBeta(modelRunner, startPoint, 1);
 
@@ -94,7 +107,6 @@ namespace Deltares
 
 			return directionPoint;
 		}
-
 
 		std::shared_ptr<Sample> StartPointCalculator::getSensitivityStartPoint(std::shared_ptr<Models::ZModelRunner> modelRunner)
 		{
