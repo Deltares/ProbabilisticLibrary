@@ -119,8 +119,8 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
         std::shared_ptr<UConverter> uConverter(new UConverter(stochast, corr));
         uConverter->initializeForRun();
         auto pw = progressWrapper(pc, relMethod.get());
-        auto progressDelegate = ProgressDelegate();
-        auto detailedProgressDelegate = DetailedProgressDelegate();
+        auto progressDelegate = ProgressLambda();
+        auto detailedProgressDelegate = DetailedProgressLambda();
         auto textualProgress = TextualProgressLambda([&pw](ProgressType p, std::string s) {pw.FPgDelegate(p, s); });
         std::unique_ptr<ProgressIndicator> progress (new ProgressIndicator(progressDelegate, detailedProgressDelegate, textualProgress));
         std::shared_ptr<ZModelRunner> modelRunner(new ZModelRunner(zModel, uConverter, progress.get()));
