@@ -1,5 +1,6 @@
 #pragma once
 
+#include <set>
 #include <vector>
 
 #include "Sample.h"
@@ -28,6 +29,7 @@ private:
 	bool checkFullyCorrelated(const int i);
 	void updateDependedParameter(std::vector<double> & uValues, const int i);
 	std::shared_ptr<Sample> getQualitativeExcludedSample(std::shared_ptr<Sample> sample);
+	void assignRealizedStochasts(std::shared_ptr<StochastPoint> realization, std::vector<double>& uCorrelated);
 
 public:
 
