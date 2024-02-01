@@ -67,8 +67,13 @@ ReliabilityMethod* createReliabilityMethod::selectMethod(const basicSettings& bs
         case StartMethods::Zero:
             form->Settings->StartPointSettings->StartMethod = StartMethodType::None;
             break;
+        case StartMethods::One:
+            form->Settings->StartPointSettings->StartMethod = StartMethodType::One;
+            break;
         case StartMethods::RaySearch:
             form->Settings->StartPointSettings->StartMethod = StartMethodType::RaySearch;
+            form->Settings->StartPointSettings->MaximumLengthStartPoint = 18.1;
+            form->Settings->StartPointSettings->dsdu = 0.3;
             break;
         case StartMethods::SphereSearch:
             form->Settings->StartPointSettings->StartMethod = StartMethodType::SphereSearch;

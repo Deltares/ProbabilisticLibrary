@@ -13,6 +13,7 @@ namespace Deltares
 			std::shared_ptr<StartPointCalculatorSettings> Settings = std::make_shared<StartPointCalculatorSettings>();
 			std::shared_ptr<Sample> getStartPoint(std::shared_ptr<Models::ZModelRunner> modelRunner);
 		private:
+			std::shared_ptr<Sample> getOneStartPoint(std::shared_ptr<Models::ZModelRunner> modelRunner);
 			std::shared_ptr<Sample> getRayStartPoint(std::shared_ptr<Models::ZModelRunner> modelRunner);
 			std::shared_ptr<Sample> getSensitivityStartPoint(std::shared_ptr<Models::ZModelRunner> modelRunner);
 			std::shared_ptr<Sample> getSphereStartPoint(std::shared_ptr<Models::ZModelRunner> modelRunner);

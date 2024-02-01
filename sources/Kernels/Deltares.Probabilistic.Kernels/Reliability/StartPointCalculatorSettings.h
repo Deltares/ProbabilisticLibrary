@@ -5,7 +5,7 @@ namespace Deltares
 {
 	namespace Reliability
 	{
-		enum StartMethodType { None, RaySearch, SensitivitySearch, SphereSearch };
+		enum StartMethodType { None, One, RaySearch, SensitivitySearch, SphereSearch };
 
 		class StartPointCalculatorSettings
 		{
@@ -14,6 +14,7 @@ namespace Deltares
 			double MaximumLengthStartPoint = 6;
 			double GradientStepSize = 4;
 			double RadiusSphereSearch = 10;
+			double dsdu = 1;
 
 			std::shared_ptr<StochastSettingsSet> StochastSet = std::make_shared<StochastSettingsSet>();
 		};
