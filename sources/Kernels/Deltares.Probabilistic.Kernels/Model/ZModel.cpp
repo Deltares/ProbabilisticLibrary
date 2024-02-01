@@ -14,19 +14,12 @@ namespace Deltares
 
 		void ZModel::invoke(std::shared_ptr<Sample> sample)
 		{
-			if (this->zLambda != nullptr)
-			{
-				this->zLambda(sample);
-			}
-			else
-			{
-				this->zDelegate(sample);
-			}
+			this->zLambda(sample);
 		}
 
 		void ZModel::invoke(std::vector<std::shared_ptr<Sample>> samples)
 		{
-			if (zMultipleDelegate == nullptr)
+			if (zMultipleLambda == nullptr)
 			{
 				#pragma omp parallel for
 				for (int i = 0; i < samples.size(); i++)
@@ -36,7 +29,7 @@ namespace Deltares
 			}
 			else
 			{
-				this->zMultipleDelegate(samples);
+				this->zMultipleLambda(samples);
 			}
 		}
 	}

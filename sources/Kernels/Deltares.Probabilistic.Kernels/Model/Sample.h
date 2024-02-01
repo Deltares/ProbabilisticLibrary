@@ -26,7 +26,7 @@ public:
 
 	Sample(std::vector<double> & values)
 	{
-		this->size = values.size();
+		this->size = (int)values.size();
 		this->Values = values;
 	}
 

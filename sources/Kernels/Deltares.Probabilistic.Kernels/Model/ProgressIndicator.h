@@ -12,49 +12,36 @@ namespace Deltares
 		typedef void(__stdcall* ProgressDelegate) (double);
 		typedef void(__stdcall* DetailedProgressDelegate) (int, int, double, double);
 		typedef void(__stdcall* TextualProgressDelegate) (ProgressType, std::string);
-#else
-		typedef void(* ProgressDelegate) (double);
-		typedef void(* DetailedProgressDelegate) (int, int, double, double);
-		typedef void(* TextualProgressDelegate) (ProgressType, std::string);
 #endif
+		typedef std::function<void(double)> ProgressLambda;
+		typedef std::function<void(int, int, double, double)> DetailedProgressLambda;
 		typedef std::function<void(ProgressType, std::string)> TextualProgressLambda;
 
 		class ProgressIndicator
 		{
 		private:
-			ProgressDelegate progressDelegate;
-			DetailedProgressDelegate detailedProgressDelegate;
-			TextualProgressDelegate textualProgressDelegate;
+			ProgressLambda progressLambda;
+			DetailedProgressLambda detailedProgressLambda;
 			TextualProgressLambda textualProgressLambda;
 
 		public:
-			ProgressIndicator(ProgressDelegate progressDelegate, DetailedProgressDelegate detailedProgressDelegate = nullptr, TextualProgressDelegate textualProgressDelegate = nullptr)
+			ProgressIndicator(ProgressLambda progressLambda, DetailedProgressLambda detailedProgressLambda = nullptr, TextualProgressLambda textualProgressLambda = nullptr)
 			{
-				this->progressDelegate = progressDelegate;
-				this->detailedProgressDelegate = detailedProgressDelegate;
-				this->textualProgressDelegate = textualProgressDelegate;
-				this->textualProgressLambda = nullptr;
-			}
-
-			ProgressIndicator(ProgressDelegate progressDelegate, DetailedProgressDelegate detailedProgressDelegate = nullptr, TextualProgressLambda textualProgressLambda = nullptr)
-			{
-				this->progressDelegate = progressDelegate;
-				this->detailedProgressDelegate = detailedProgressDelegate;
-				this->textualProgressDelegate = nullptr;
+				this->progressLambda = progressLambda;
+				this->detailedProgressLambda = detailedProgressLambda;
 				this->textualProgressLambda = textualProgressLambda;
 			}
 
 			void doProgress(double progress)
 			{
-				if (progressDelegate != nullptr) progressDelegate(progress);
+				if (progressLambda != nullptr) progressLambda(progress);
 			}
 			void doDetailedProgress(int step, int loop, double reliability, double convergence)
 			{
-				if (detailedProgressDelegate != nullptr) detailedProgressDelegate(step, loop, reliability, convergence);
+				if (detailedProgressLambda != nullptr) detailedProgressLambda(step, loop, reliability, convergence);
 			}
 			void doTextualProgress(ProgressType progressType, std::string text)
 			{
-				if (textualProgressDelegate != nullptr) textualProgressDelegate(progressType, text);
 				if (textualProgressLambda != nullptr) textualProgressLambda(progressType, text);
 			}
 		};

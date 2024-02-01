@@ -22,9 +22,9 @@ namespace Deltares
 				TextualProgressDelegate^ textualProgressDelegate;
 
 				Models::ProgressIndicator* progressIndicator;
-				Models::ProgressDelegate getProgressDelegate();
-				Models::DetailedProgressDelegate getDetailedProgressDelegate();
-				Models::TextualProgressDelegate getTextualProgressDelegate();
+				Models::ProgressLambda getProgressLambda();
+				Models::DetailedProgressLambda getDetailedProgressLambda();
+				Models::TextualProgressLambda getTextualProgressLambda();
 
 				void doProgress(double progress);
 				void doDetailedProgress(int step, int loop, double reliability, double convergence);

@@ -17,11 +17,11 @@ namespace Deltares
 				this->detailedProgressDelegate = detailedProgressDelegate;
 				this->textualProgressDelegate = textualProgressDelegate;
 
-				Deltares::Models::ProgressDelegate modelProgressDelegate = getProgressDelegate();
-				Deltares::Models::DetailedProgressDelegate modelDetailedProgressDelegate = getDetailedProgressDelegate();
-				Deltares::Models::TextualProgressDelegate modelTextualProgressDelegate = getTextualProgressDelegate();
+				Deltares::Models::ProgressLambda modelProgressLambda = getProgressLambda();
+				Deltares::Models::DetailedProgressLambda modelDetailedProgressLambda = getDetailedProgressLambda();
+				Deltares::Models::TextualProgressLambda modelTextualProgressLambda = getTextualProgressLambda();
 
-				this->progressIndicator = new Models::ProgressIndicator(modelProgressDelegate, modelDetailedProgressDelegate, modelTextualProgressDelegate);
+				this->progressIndicator = new Models::ProgressIndicator(modelProgressLambda, modelDetailedProgressLambda, modelTextualProgressLambda);
 			}
 
 			void ProgressIndicatorWrapper::doProgress(double progress)
@@ -58,38 +58,38 @@ namespace Deltares
 				}
 			}
 
-			Models::ProgressDelegate ProgressIndicatorWrapper::getProgressDelegate()
+			Models::ProgressLambda ProgressIndicatorWrapper::getProgressLambda()
 			{
 				ManagedProgressDelegate^ fp = gcnew ManagedProgressDelegate(this, &ProgressIndicatorWrapper::doProgress);
 				System::Runtime::InteropServices::GCHandle handle = System::Runtime::InteropServices::GCHandle::Alloc(fp);
 				handles->Add(handle);
 
 				System::IntPtr callbackPtr = System::Runtime::InteropServices::Marshal::GetFunctionPointerForDelegate(fp);
-				Models::ProgressDelegate functionPointer = static_cast<Models::ProgressDelegate>(callbackPtr.ToPointer());
+				Models::ProgressLambda functionPointer = static_cast<Models::ProgressDelegate>(callbackPtr.ToPointer());
 
 				return functionPointer;
 			}
 
-			Models::DetailedProgressDelegate ProgressIndicatorWrapper::getDetailedProgressDelegate()
+			Models::DetailedProgressLambda ProgressIndicatorWrapper::getDetailedProgressLambda()
 			{
 				ManagedDetailedProgressDelegate^ fp = gcnew ManagedDetailedProgressDelegate(this, &ProgressIndicatorWrapper::doDetailedProgress);
 				System::Runtime::InteropServices::GCHandle handle = System::Runtime::InteropServices::GCHandle::Alloc(fp);
 				handles->Add(handle);
 
 				System::IntPtr callbackPtr = System::Runtime::InteropServices::Marshal::GetFunctionPointerForDelegate(fp);
-				Models::DetailedProgressDelegate functionPointer = static_cast<Models::DetailedProgressDelegate>(callbackPtr.ToPointer());
+				Models::DetailedProgressLambda functionPointer = static_cast<Models::DetailedProgressDelegate>(callbackPtr.ToPointer());
 
 				return functionPointer;
 			}
 
-			Models::TextualProgressDelegate ProgressIndicatorWrapper::getTextualProgressDelegate()
+			Models::TextualProgressLambda ProgressIndicatorWrapper::getTextualProgressLambda()
 			{
 				ManagedTextualProgressDelegate^ fp = gcnew ManagedTextualProgressDelegate(this, &ProgressIndicatorWrapper::doTextualProgress);
 				System::Runtime::InteropServices::GCHandle handle = System::Runtime::InteropServices::GCHandle::Alloc(fp);
 				handles->Add(handle);
 
 				System::IntPtr callbackPtr = System::Runtime::InteropServices::Marshal::GetFunctionPointerForDelegate(fp);
-				Models::TextualProgressDelegate functionPointer = static_cast<Models::TextualProgressDelegate>(callbackPtr.ToPointer());
+				Models::TextualProgressLambda functionPointer = static_cast<Models::TextualProgressDelegate>(callbackPtr.ToPointer());
 
 				return functionPointer;
 			}

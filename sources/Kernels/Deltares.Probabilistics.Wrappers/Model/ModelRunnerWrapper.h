@@ -24,8 +24,8 @@ namespace Deltares
 				SharedPointerProvider<Models::ZModelRunner>* sharedPointer = new SharedPointerProvider<Models::ZModelRunner>();
 
 				std::shared_ptr<Models::ZModel> getZModel();
-				Models::ZDelegate getZDelegate();
-				Models::ZMultipleDelegate getZMultipleDelegate();
+				Models::ZLambda getZlambda();
+				Models::ZMultipleLambda getZMultipleDelegate();
 				ZSampleDelegate^ zFunction = nullptr;
 
 				void CalcZValues(System::Collections::Generic::IList<SampleWrapper^>^ samples);
