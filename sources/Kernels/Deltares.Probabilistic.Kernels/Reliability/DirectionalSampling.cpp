@@ -62,7 +62,7 @@ namespace Deltares
 					if (modelRunner->shouldExitPrematurely(false))
 					{
 						// return the result so far
-						return getDesignPointFromSample(modelRunner, pf, uMin, z0Fac, nullptr);
+						return modelRunner->getDesignPoint(uMin, Statistics::StandardNormal::getUFromQ(pf), convergenceReport);
 					}
 
 					parSamples = parSamples + 1;
@@ -157,11 +157,9 @@ namespace Deltares
 				pf = 1 - pf;
 			}
 
-			std::shared_ptr<DesignPoint> designPoint = getDesignPointFromSample(modelRunner, pf, uDesign, z0Fac, convergenceReport);
-
 			samples.clear();
 
-			return designPoint;
+			return modelRunner->getDesignPoint(uDesign, Statistics::StandardNormal::getUFromQ(pf), convergenceReport);
 		}
 
 		double DirectionalSampling::getConvergence(const double pf, const double sumPfSamp, const double sumPfSamp2, const double dTimes)

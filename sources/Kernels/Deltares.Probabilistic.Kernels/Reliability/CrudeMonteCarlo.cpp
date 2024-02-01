@@ -123,7 +123,7 @@ namespace Deltares
 					if (modelRunner->shouldExitPrematurely(zValues, z0Fac, samples, rmin))
 					{
 						// return the result so far
-						return this->getDesignPointFromSample(modelRunner, pf, uMin, z0Fac, convergenceReport);
+						return modelRunner->getDesignPoint(uMin, Statistics::StandardNormal::getUFromQ(pf), convergenceReport);
 					}
 
 					zIndex = 0;
@@ -189,7 +189,6 @@ namespace Deltares
 			uMin = uMean->getSample();
 
 			convergenceReport->Convergence = getConvergence(pf, nSamples);
-			//std::shared_ptr<DesignPoint> designPoint = modelRunner->getDesignPoint(beta, alpha, convergenceReport, uMin->ScenarioIndex);
 
 			std::shared_ptr<DesignPoint> designPoint = modelRunner->getDesignPoint(uMin, beta, convergenceReport);
 

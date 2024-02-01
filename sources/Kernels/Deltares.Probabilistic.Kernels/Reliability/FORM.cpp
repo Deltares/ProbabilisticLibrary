@@ -29,7 +29,7 @@ namespace Deltares
 
 			if (Settings->StartPointSettings->StartMethod != StartMethodType::None)
 			{
-				std::shared_ptr<DesignPoint> startDesignPoint = this->getDesignPointFromSample(startPoint, modelRunner, 1);
+				const std::shared_ptr<DesignPoint> startDesignPoint = modelRunner->getDesignPoint(startPoint, startPoint->getBeta());
 				startDesignPoint->Identifier = "Start point";
 				previousDesignPoints.push_back(startDesignPoint);
 			}
@@ -125,7 +125,7 @@ namespace Deltares
 
 					modelRunner->reportResult(reportInvalid);
 
-					return this->getDesignPointFromSampleAndBeta(modelRunner, u, nan(""), convergenceReport);
+					return modelRunner->getDesignPoint(u, nan(""), convergenceReport);
 				}
 
 				// repair for failed evaluations
@@ -158,7 +158,7 @@ namespace Deltares
 
 					double beta = this->getZFactor(u->Z) * Statistics::StandardNormal::BetaMax;
 
-					return this->getDesignPointFromSampleAndBeta(modelRunner, u, beta, convergenceReport);
+					return modelRunner->getDesignPoint(u, beta, convergenceReport);
 				}
 
 				//   compute beta
@@ -183,7 +183,7 @@ namespace Deltares
 
 					modelRunner->reportResult(reportTooHigh);
 
-					return this->getDesignPointFromSampleAndBeta(modelRunner, u, beta, convergenceReport);
+					return modelRunner->getDesignPoint(u, beta, convergenceReport);
 				}
 
 				convergenceReport->IsConverged = checkConvergence(modelRunner, u, convergenceReport, beta, zGradientLength);
@@ -207,9 +207,7 @@ namespace Deltares
 				iteration++;
 			}
 
-			std::shared_ptr<DesignPoint> designPoint = this->getDesignPointFromSampleAndBeta(modelRunner, u, beta, convergenceReport);
-
-			return designPoint;
+			return modelRunner->getDesignPoint(u, beta, convergenceReport);
 		}
 
 		void FORM::repairResults(std::vector<double> dzdu)
