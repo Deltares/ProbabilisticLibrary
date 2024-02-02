@@ -1,6 +1,6 @@
 #include <memory>
 #include "stringHelper.h"
-#include "../../../../Kernels/Deltares.Probabilistic.CWrapper/createDistribution.h"
+#include "../Deltares.Probabilistic.CWrapper/createDistribution.h"
 
 using namespace Deltares::ProbLibCore;
 
