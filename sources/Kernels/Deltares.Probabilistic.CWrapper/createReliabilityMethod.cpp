@@ -85,7 +85,7 @@ ReliabilityMethod* createReliabilityMethod::selectMethod(const basicSettings& bs
         return form; }
         break;
     default:
-        throw probLibException("method not implemented yet:", (int)bs.methodId);
+        throw probLibException("method not implemented yet: ", (int)bs.methodId);
         break;
     }
 }
