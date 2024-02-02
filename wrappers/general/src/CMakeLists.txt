@@ -3,12 +3,14 @@ include(FortranCInterface)
 FortranCInterface_VERIFY(CXX)
 
 add_library(pb_wrapper_c STATIC "")
+file(GLOB cwrapper_files
+    "../../../../Kernels/Deltares.Probabilistic.CWrapper/*.cpp"
+    "*.cpp"
+)
+
 target_sources(pb_wrapper_c
   PRIVATE
-    randomgen.cpp
-    convert.cpp
-    combin.cpp
-    correlation.cpp
+    ${cwrapper_files}
   )
 
   set_target_properties(pb_wrapper_c
