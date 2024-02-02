@@ -2,7 +2,7 @@
 #include <memory>
 
 #include "basicSettings.h"
-#include "enumDistributions.h"
+#include "createDistribution.h"
 #include "../Deltares.Probabilistic.Kernels/Utils/probLibException.h"
 #include "../Deltares.Probabilistic.Kernels/Math/vector1D.h"
 
@@ -36,7 +36,7 @@ struct tResult
 };
 
 extern "C"
-void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n, const int vectorSize,
+void probcalcf2cnew(const basicSettings* method, fdistribs* c, const int n, const int vectorSize,
     corrStruct correlations[], const int nrCorrelations,
     const double(*fx)(double[], int[], tError*),
     const bool(*pc)(ProgressType, const char*),
@@ -52,56 +52,8 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
         for (size_t i = 0; i < nStoch; i++)
         {
             auto distHR = (EnumDistributions)c[i].distId;
-            Deltares::Statistics::DistributionType dist;
-            bool truncated = false;
-            double truncatedMin; double truncatedMax;
-            switch (distHR)
-            {
-                case EnumDistributions::normal:
-                    dist = Deltares::Statistics::DistributionType::Normal;
-                    break;
-                case EnumDistributions::deterministic:
-                    dist = Deltares::Statistics::DistributionType::Deterministic;
-                    break;
-                case EnumDistributions::lognormal2:
-                    dist = Deltares::Statistics::DistributionType::LogNormal;
-                    break;
-                case EnumDistributions::uniform:
-                    dist = Deltares::Statistics::DistributionType::Uniform;
-                    break;
-                case EnumDistributions::gumbel2:
-                    dist = Deltares::Statistics::DistributionType::Gumbel;
-                    break;
-                case EnumDistributions::truncatedNormal: {
-                    dist = Deltares::Statistics::DistributionType::Normal;
-                    truncated = true;
-                    truncatedMin = c[i].params[2];
-                    truncatedMax = c[i].params[3]; }
-                    break;
-                case EnumDistributions::uspace:
-                    dist = Deltares::Statistics::DistributionType::Normal;
-                    break;
-                default:
-                    throw probLibException("Distribution not supported yet: ", c[i].distId);
-            }
-            auto params = new double[4];
-            for (size_t j = 0; j < 4; j++)
-            {
-                params[j] = c[i].params[j];
-            }
-            if (distHR == EnumDistributions::uspace)
-            {
-                params[0] = 1.0; params[1] = 0.0;
-            }
-            std::shared_ptr<Deltares::Statistics::Stochast> s (new Deltares::Statistics::Stochast(dist, params));
-            if (truncated)
-            {
-                s->setTruncated(true);
-                s->Minimum = truncatedMin;
-                s->Maximum = truncatedMax;
-            }
+            auto s = createDistribution::create(distHR, c[i].params);
             stochast.push_back(s);
-            delete[] params;
         }
 
         auto createRelM = createReliabilityMethod();
