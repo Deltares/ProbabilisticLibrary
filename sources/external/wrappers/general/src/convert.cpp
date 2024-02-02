@@ -40,17 +40,17 @@ void pqfrombeta(double* beta, double* p, double* q)
 extern "C"
 void returntimefrombeta(double *beta, double *returnTime)
 {
-    *returnTime = -999; // StandardNormal::ReturnTimeFromBeta(*beta);
+    *returnTime =StandardNormal::ReturnTimeFromBeta(*beta);
 }
 
 extern "C"
 void freqfrombeta(double *beta, double *freq)
 {
-    *freq = -999; // StandardNormal::FreqFromBeta(*beta);
+    *freq = StandardNormal::FreqFromBeta(*beta);
 }
 
 extern "C"
 void logqfrombeta(double *beta, double*logQ)
 {
-    *logQ = -999; // StandardNormal::LogQFromBeta(*beta);
+    *logQ = StandardNormal::LogQFromBeta(*beta);
 }

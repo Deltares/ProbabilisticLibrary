@@ -11,12 +11,15 @@ namespace Deltares
 			static constexpr double qMin = 1.0e-300;
 
 		public:
-			static double getPFromU(double u);
-			static double getQFromU(double u);
-			static double getUFromP(double p);
-			static double getUFromQ(double q);
-			static double getRFromP(double p);
-			static double getPFromR(double r);
+			static double getPFromU(const double u);
+			static double getQFromU(const double u);
+			static double getUFromP(const double p);
+			static double getUFromQ(const double q);
+			static double getRFromP(const double p);
+			static double getPFromR(const double r);
+			static double ReturnTimeFromBeta(const double beta);
+			static double FreqFromBeta(const double beta);
+			static double LogQFromBeta(const double beta);
 
 			static constexpr double BetaMax = 40;
 			static constexpr double UMax = 8;

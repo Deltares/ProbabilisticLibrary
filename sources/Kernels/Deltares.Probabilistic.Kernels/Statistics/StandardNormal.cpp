@@ -230,6 +230,35 @@ namespace Deltares
         {
             return 1 - exp(-1 / abs(r));
         }
+
+        double StandardNormal::ReturnTimeFromBeta(const double beta)
+        {
+            return 1.0 / FreqFromBeta(beta);
+        }
+
+        double StandardNormal::FreqFromBeta(const double beta)
+        {
+            const double uLimit = 5.6;
+            double p; double q;
+            if (beta > uLimit)
+            {
+                q = getQFromU(beta);
+                q = std::max(q, qMin);
+                return q;
+            }
+            else
+            {
+                p = getPFromU(beta);
+                p = std::max(p, qMin);
+                return -log(p);
+            }
+        }
+
+        double StandardNormal::LogQFromBeta(const double beta)
+        {
+            return -log(FreqFromBeta(beta));
+        }
+
     }
 }
 
