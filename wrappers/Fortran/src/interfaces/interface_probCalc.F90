@@ -413,18 +413,13 @@ subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, conv, convCri
         call fatalError("Unknown method in subroutine IterationDS: ", method%iterationMethod)
     else if (nstoch > 0) then
         method%progressInterval = 1
-        select case (method%methodId)
-        case(methodCrudeMonteCarlo, methodDirectionalSampling, methodFORM)
-            if (present(pcNew)) then
-                call probCalcF2Cnew(method, distribs, nStochActive, nStoch, probDb%basic_correlation, &
-                    probDb%number_correlations, fx, pcNew, compIds, iPointCpp, x, rn, ierr)
-            else
-                call probCalcF2Cnew(method, distribs, nStochActive, nStoch, probDb%basic_correlation, &
-                    probDb%number_correlations, fx, textualProgress, compIds, iPointCpp, x, rn, ierr)
-            end if
-        case default
-            write(*,*) "not implemented yet"
-        end select
+        if (present(pcNew)) then
+            call probCalcF2Cnew(method, distribs, nStochActive, nStoch, probDb%basic_correlation, &
+                probDb%number_correlations, fx, pcNew, compIds, iPointCpp, x, rn, ierr)
+        else
+            call probCalcF2Cnew(method, distribs, nStochActive, nStoch, probDb%basic_correlation, &
+                probDb%number_correlations, fx, textualProgress, compIds, iPointCpp, x, rn, ierr)
+        end if
 
         if (ierr%iCode /= 0) then
             call copystrback(msg, ierr%message)

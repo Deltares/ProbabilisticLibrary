@@ -336,7 +336,6 @@ subroutine testCancel
     call performDirectionalSampling ( probDb, zFuncNod, nStochasts, iPoint, x, alpha, beta, &
         convergenceCriteriumReached, convergenceDataDS, pcNew=cancel5stepsNew )
     expected = 5
-    if (probDb%method%maxParallelThreads > 1) expected = 201
     call assert_equal(iCounter2, expected, "number of samples diff")
 
 end subroutine testCancel
