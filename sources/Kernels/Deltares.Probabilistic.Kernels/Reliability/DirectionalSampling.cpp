@@ -146,6 +146,7 @@ namespace Deltares
 			}
 
 			convergenceReport->Convergence = getConvergence(pf, sumPfSamp, sumPfSamp2, (double)validSamples);
+			convergenceReport->IsConverged = (convergenceReport->Convergence <= Settings->VariationCoefficient);
 
 			std::shared_ptr<Sample> uDesign = uMean->getSample();
 

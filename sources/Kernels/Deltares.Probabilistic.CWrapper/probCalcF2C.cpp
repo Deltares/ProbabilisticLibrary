@@ -125,6 +125,7 @@ void probcalcf2cnew(const basicSettings* method, const fdistribs* c, const int n
         std::unique_ptr<ProgressIndicator> progress (new ProgressIndicator(progressDelegate, detailedProgressDelegate, textualProgress));
         zModel->setMaxProcesses(method->numThreads);
         std::shared_ptr<ZModelRunner> modelRunner(new ZModelRunner(zModel, uConverter, progress.get()));
+        modelRunner->Settings->MaxParallelProcesses = method->numThreads;
         std::shared_ptr<DesignPoint> newResult ( relMethod->getDesignPoint(modelRunner));
 
         auto alpha = vector1D(newResult->Alphas.size());
