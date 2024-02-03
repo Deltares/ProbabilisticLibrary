@@ -18,6 +18,17 @@ interface
     end subroutine calculateDistributionInverse_c
 end interface
 
+interface
+    subroutine calculateDistribution_c(x, u, distType, p4, ierr) bind(C)
+      use, intrinsic :: iso_c_binding, only: c_int, c_double
+      import tError
+      integer(c_int),      intent(in   ) :: distType
+      real(kind=c_double), intent(in   ) :: p4(*), x
+      real(kind=c_double), intent(  out) :: u
+      type(tError),        intent(  out) :: ierr
+    end subroutine calculateDistribution_c
+end interface
+
 interface calculateDistributionInverse
     module procedure calculateDistributionInverse1
     module procedure calculateDistributionInverse2
@@ -107,47 +118,20 @@ subroutine calculateDistribution( x, u, distType, distParameter1, distParameter2
     integer,          intent(out)   :: ierr               !< error code; 0=success
     character(len=*), intent(inout) :: errorMessage       !< error message; only set in case of error
 
-    ierr = 0
-!
-! Case distributions
-    select case (distType)
+    real(kind=wp) :: p4(4)
+    type(tError)  :: error
 
-        case (distributionUniform, distributionShiftedLognormal, distributionGumbelDistribution2, &
-              distributionWeibull, distributionRayleigh, distributionPareto, distributionTriangular, &
-              distributionLogLinearInterpolation, distributionConditionalWeibull)
-            ierr = -1
-            errorMessage = "Not yet implemented"
-        !
-        ! Normal distribution
-        case (distributionNormal)
-            u = (x - distParameter1) / distParameter2
-        !
-        !
-        ! Shifted lognormal distribution II
-        case (distributionShiftedLognormal2)
-            u = logNormalII( distParameter1, distParameter2, distParameter3, x, ierr, errorMessage )
-        !
-        ! Shifted exponential distribution
-        case (distributionShiftedExponential)
-            ierr = -1
-            errorMessage = "Shifted Exponential not yet implemented"
-        !
-        ! Gumbel distribution
-        case (distributionGumbelDistribution)
-            ierr = -1
-            errorMessage = "Gumbel Distribution not yet implemented"
-        !
-        !
-        ! truncated normal
-        case (distributionTruncatedNormal)
-            u = truncatedNormal(distParameter1, distParameter2, distParameter3, distParameter4, x, ierr, errorMessage)
-        !
-        ! Error call for other numbers of distribution functions
-        case default
-            ierr = -1
-            write(errorMessage,*) "Unknown distribution function - code:", distType
+    p4(1) = distParameter1
+    p4(2) = distParameter2
+    p4(3) = distParameter3
+    p4(4) = distParameter4
 
-    end select
+    call calculateDistribution_c(x, u, distType, p4, error)
+
+    ierr = error%iCode
+    if (ierr /= 0) then
+        call copystrback(errorMessage, error%message)
+    end if
 
 end subroutine calculateDistribution
 

@@ -20,6 +20,7 @@ subroutine run_all_ftn_interface_tests
     call testWithLevel(test_form_errorhandling, "test error handling FORM", testLevel, "work-in-progress")
     call testWithLevel(test_calc_distrib_inv, "test calculateDistributionInverse", testLevel)
     call testWithLevel(test_calc_distrib_inv_errorhandling, "test error handling distribution inverse", testLevel)
+    call testWithLevel(test_calc_distrib, "test calc distrib", testLevel)
     call testWithLevel(test_conversions, "test conversions", testLevel)
     !call testWithLevel(test_combine, "test combine", testLevel)
     !call testWithLevel(test_correlation, "test correlation", testLevel)
@@ -183,6 +184,26 @@ subroutine test_calc_distrib_inv
     endif
 
 end subroutine test_calc_distrib_inv
+
+subroutine test_calc_distrib
+    use interface_distributions
+
+    integer                     :: ierr
+    character(len=ErrMsgLength) :: errmsg
+    real(kind=dp)               :: u, x
+    real(kind=wp), parameter    :: mean = 3.0_wp
+    real(kind=wp), parameter    :: deviation = 1.0_wp
+    integer                     :: i
+    real(kind=wp), parameter    :: uValues (2) = [ 0.0_wp, 1.0_wp ]
+    real(kind=wp), parameter    :: xValues (2) = [ 3.0_wp, 4.0_wp ]
+
+    do i = 1, size(uValues)
+        call calculateDistribution(xValues(i), u, distributionNormal, mean, deviation, 0.0_wp, 0.0_wp, ierr, errmsg)
+        call assert_comparable(u, uValues(i), 1d-12, "diff in result normal distribution")
+        call assert_equal(ierr, 0, errmsg)
+    end do
+
+end subroutine test_calc_distrib
 
 subroutine test_calc_distrib_inv_errorhandling
     use interface_distributions
