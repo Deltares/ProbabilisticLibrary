@@ -156,7 +156,7 @@
     <ClCompile Include=".\funcWrapper.cpp" />
     <ClCompile Include=".\probCalcF2C.cpp" />
     <ClCompile Include=".\stringHelper.cpp" />
-    <ClCompile Include="calcdistributionsinv.cpp" />
+    <ClCompile Include="calcdistributions.cpp" />
     <ClCompile Include="convert.cpp" />
     <ClCompile Include="createDistribution.cpp" />
     <ClCompile Include="createReliabilityMethod.cpp" />
