@@ -7,6 +7,7 @@
 #include "DiscreteValueWrapper.h"
 #include "HistogramValueWrapper.h"
 #include "FragilityValueWrapper.h"
+#include "VariableStochastValueSetWrapper.h"
 
 namespace Deltares
 {
@@ -25,6 +26,9 @@ namespace Deltares
 				System::Collections::Generic::List<DiscreteValueWrapper^>^ discreteValues = gcnew System::Collections::Generic::List<DiscreteValueWrapper^>();
 				System::Collections::Generic::List<HistogramValueWrapper^>^ histogramValues = gcnew System::Collections::Generic::List<HistogramValueWrapper^>();
 				System::Collections::Generic::List<FragilityValueWrapper^>^ fragilityValues = gcnew System::Collections::Generic::List<FragilityValueWrapper^>();
+
+				StochastWrapper^ source = nullptr;
+				VariableStochastValueSetWrapper^ valueSet = gcnew VariableStochastValueSetWrapper();
 
 				Statistics::DistributionType getNativeDistributionType(WrapperDistributionType distributionType);
 				WrapperDistributionType getManagedDistributionType(Statistics::DistributionType distributionType);
@@ -46,6 +50,12 @@ namespace Deltares
 				{
 					WrapperDistributionType get() { return getManagedDistributionType(m_stochast->getDistributionType()); }
 					void set(WrapperDistributionType value) { m_stochast->setDistributionType(getNativeDistributionType(value)); }
+				}
+
+				property bool IsVariableStochast
+				{
+					bool get() { return m_stochast->IsVariableStochast; }
+					void set(bool value) { m_stochast->IsVariableStochast = value; }
 				}
 
 				property double Mean
@@ -146,6 +156,11 @@ namespace Deltares
 					return m_stochast->getXFromU(u);
 				}
 
+				double GetXFromUAndSource(double xSource, double u)
+				{
+					return m_stochast->getXFromUAndSource(xSource, u);
+				}
+
 				double GetXFromP(double p)
 				{
 					double u = Statistics::StandardNormal::getUFromP(p);
@@ -160,12 +175,36 @@ namespace Deltares
 				void InitializeForRun()
 				{
 					updateStochast();
+
 					m_stochast->initializeForRun();
+				}
+
+				property VariableStochastValueSetWrapper^ ValueSet
+				{
+					VariableStochastValueSetWrapper^ get() { return valueSet; }
+					void set (VariableStochastValueSetWrapper^ value) { this->valueSet = value; }
+				}
+
+				property StochastWrapper^ VariableSource
+				{
+					StochastWrapper^ get() { return this->source; }
+					void set(StochastWrapper^ value) { this->source = value; }
 				}
 
 				std::shared_ptr<Statistics::Stochast> GetStochast()
 				{
 					updateStochast();
+
+					if (this->IsVariableStochast) 
+					{
+						m_stochast->ValueSet = this->ValueSet->GetValue();
+
+						if (this->VariableSource != nullptr) 
+						{
+							m_stochast->VariableSource = this->VariableSource->GetStochast();
+						}
+					}
+
 					return sharedPointer->getSharedPointer(m_stochast);
 				}
 			};

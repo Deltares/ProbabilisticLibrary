@@ -10,13 +10,11 @@
 #include <memory>
 #include <set>
 
-#include "../Statistics/RealizedStochast.h"
-
 namespace Deltares
 {
 	namespace Statistics
 	{
-		class RealizedStochast;
+		class VariableStochast;
 	}
 }
 
@@ -37,10 +35,10 @@ void UConverter::initializeForRun()
 {
 	this->varyingStochasts.clear();
 	this->varyingStochastIndex.clear();
-	this->realizedStochastIndex.clear();
+	this->variableStochastIndex.clear();
 
 	this->hasQualitiveStochasts = false;
-	this->hasRealizedStochasts = false;
+	this->hasVariableStochasts = false;
 
 	for (std::shared_ptr<Deltares::Statistics::Stochast> stochast : this->stochasts)
 	{
@@ -61,16 +59,16 @@ void UConverter::initializeForRun()
 			this->varyingStochastIndex.push_back(type);
 		}
 
-		realizedStochastIndex.push_back(-1);
+		variableStochastIndex.push_back(-1);
 
-		if (this->stochasts[i]->isRealizedStochast())
+		if (this->stochasts[i]->IsVariableStochast)
 		{
-			this->hasRealizedStochasts = true;
+			this->hasVariableStochasts = true;
 			for (size_t j = 0; j < this->stochasts.size(); j++)
 			{
-				if (stochasts[j] == ((Deltares::Statistics::RealizedStochast*) this->stochasts[i].get())->Source)
+				if (stochasts[j] == this->stochasts[i]->VariableSource)
 				{
-					realizedStochastIndex[i] = j;
+					variableStochastIndex[i] = j;
 					break;
 				}
 			}
@@ -223,7 +221,7 @@ std::shared_ptr<Sample> UConverter::getQualitativeExcludedSample(std::shared_ptr
 	return qualitativeExcludedSample->normalize(sample->getBeta());
 }
 
-void UConverter::assignRealizedStochasts(std::shared_ptr<StochastPoint> realization, std::vector<double>& uCorrelated)
+void UConverter::assignVariableStochasts(std::shared_ptr<StochastPoint> realization, std::vector<double>& uCorrelated)
 {
 	std::set<int> assignedAlphas;
 	std::vector<int> unAssignedAlphas;
@@ -231,7 +229,7 @@ void UConverter::assignRealizedStochasts(std::shared_ptr<StochastPoint> realizat
 	// build up initial administration which stochasts have been assigned and which not
 	for (int i = 0; i < realization->Alphas.size(); i++)
 	{
-		if (!realization->Alphas[i]->Stochast->isRealizedStochast())
+		if (!realization->Alphas[i]->Stochast->IsVariableStochast)
 		{
 			assignedAlphas.insert(i);
 		}
@@ -255,7 +253,7 @@ void UConverter::assignRealizedStochasts(std::shared_ptr<StochastPoint> realizat
 
 			if (!assignedAlphas.contains(alphaIndex)) 
 			{
-				int sourceIndex = realizedStochastIndex[alphaIndex];
+				int sourceIndex = variableStochastIndex[alphaIndex];
 				if (assignedAlphas.contains(sourceIndex))
 				{
 					double xSource = realization->Alphas[sourceIndex]->X;
@@ -332,7 +330,7 @@ std::shared_ptr<StochastPoint> UConverter::GetStochastPoint(std::shared_ptr<Samp
 				int varyingIndex = this->varyingStochastIndex[i];
 				alpha->X = stochasts[i]->getXFromU(sample->Values[varyingIndex]);
 			}
-			else if (!this->hasRealizedStochasts || !stochasts[i]->isRealizedStochast())
+			else if (!this->hasVariableStochasts || !stochasts[i]->IsVariableStochast)
 			{
 				alpha->X = stochasts[i]->getXFromU(uCorrelated[i]);
 			}
@@ -341,9 +339,9 @@ std::shared_ptr<StochastPoint> UConverter::GetStochastPoint(std::shared_ptr<Samp
 		}
 
 		// correct for realized stochasts
-		if (this->hasRealizedStochasts)
+		if (this->hasVariableStochasts)
 		{
-			assignRealizedStochasts(realization, uCorrelated);
+			assignVariableStochasts(realization, uCorrelated);
 		}
 	}
 

@@ -194,6 +194,8 @@
     <ClInclude Include="Statistics\StochastSettingsWrapper.h" />
     <ClInclude Include="Statistics\StochastWrapper.h" />
     <ClInclude Include="Utils\SharedPointerProvider.h" />
+    <ClInclude Include="Statistics\VariableStochastValueSetWrapper.h" />
+    <ClInclude Include="Statistics\VariableStochastValueWrapper.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Model\MessageWrapper.cpp" />
@@ -226,6 +228,8 @@
     <ClCompile Include="Statistics\StochastSettingsWrapper.cpp" />
     <ClCompile Include="Statistics\StochastWrapper.cpp" />
     <ClCompile Include="Utils\SharedPointerProvider.cpp" />
+    <ClCompile Include="Statistics\VariableStochastValueSetWrapper.cpp" />
+    <ClCompile Include="Statistics\VariableStochastValueWrapper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Deltares.Probabilistic.Kernels\Deltares.Probabilistic.Kernels.vcxproj.vcxproj">

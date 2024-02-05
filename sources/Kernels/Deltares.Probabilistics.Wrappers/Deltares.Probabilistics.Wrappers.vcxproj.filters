@@ -35,6 +35,8 @@
     <ClInclude Include="Statistics\HistogramValueWrapper.h" />
     <ClInclude Include="Statistics\FragilityValueWrapper.h" />
     <ClInclude Include="Utils\SharedPointerProvider.h" />
+    <ClInclude Include="Statistics\VariableStochastValueSetWrapper.h" />
+    <ClInclude Include="Statistics\VariableStochastValueWrapper.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Reliability\ConvergenceReportWrapper.cpp" />
@@ -67,5 +69,7 @@
     <ClCompile Include="Reliability\GradientCalculatorSettingsWrapper.cpp" />
     <ClCompile Include="Model\MessageWrapper.cpp" />
     <ClCompile Include="Utils\SharedPointerProvider.cpp" />
+    <ClCompile Include="Statistics\VariableStochastValueSetWrapper.cpp" />
+    <ClCompile Include="Statistics\VariableStochastValueWrapper.cpp" />
   </ItemGroup>
 </Project>

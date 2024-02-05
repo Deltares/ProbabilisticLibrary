@@ -54,6 +54,15 @@ namespace Deltares
 				{
 					m_stochast->FragilityValues.push_back(fragilityValues[i]->GetValue());
 				}
+
+				m_stochast->ValueSet->StochastValues.clear();
+				if (this->IsVariableStochast)
+				{
+					for (size_t i = 0; i < this->ValueSet->StochastValues->Count; i++)
+					{
+						m_stochast->ValueSet->StochastValues.push_back(this->ValueSet->StochastValues[i]->GetValue());
+					}
+				}
 			}
 		}
 	}

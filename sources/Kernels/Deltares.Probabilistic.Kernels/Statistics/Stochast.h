@@ -7,6 +7,7 @@
 #include "Distributions/DeterministicDistribution.h"
 #include "Distributions/Distribution.h"
 #include "DistributionType.h"
+#include "VariableStochastValueSet.h"
 
 namespace Deltares
 {
@@ -29,12 +30,12 @@ namespace Deltares
 			Stochast();
 			Stochast(DistributionType distributionType, double* values);
 
-			virtual bool isRealizedStochast() { return false; }
+			bool IsVariableStochast = false;
 
 			double getXFromU(double u);
 			double getUFromX(double x);
 
-			virtual double getXFromUAndSource(double source, double u) { return getXFromU(u);  }
+			double getXFromUAndSource(double source, double u);
 
 			void setDistributionType(DistributionType distributionType);
 			DistributionType getDistributionType();
@@ -56,7 +57,11 @@ namespace Deltares
 			double getDeviation();
 			void setDeviation(double deviation);
 
-			virtual void initializeForRun();
+			void initializeForRun();
+
+			std::shared_ptr<Stochast> VariableSource = nullptr;
+
+			std::shared_ptr<VariableStochastValuesSet> ValueSet = std::make_shared<VariableStochastValuesSet>();
 		};
 	}
 }

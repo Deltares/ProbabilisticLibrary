@@ -214,6 +214,32 @@ namespace Deltares.Probabilistics.Wrappers.Test
             Assert.AreEqual(StandardNormalWrapper.BetaMax, stochast.GetUFromX(4), margin);
         }
 
+        [Test]
+        public void TestVariableStochast()
+        {
+            StochastWrapper realizedStochast = new StochastWrapper { DistributionType = WrapperDistributionType.Uniform, Minimum = 0, Maximum = 1 };
+            realizedStochast.IsVariableStochast = true;
+
+            realizedStochast.ValueSet.StochastValues.Add(new VariableStochastValueWrapper { X = 0, Minimum = 0, Maximum = 1 });
+            realizedStochast.ValueSet.StochastValues.Add(new VariableStochastValueWrapper { X = 2, Minimum = 11, Maximum = 12 });
+            realizedStochast.ValueSet.StochastValues.Add(new VariableStochastValueWrapper { X = 1, Minimum = 1, Maximum = 2 });
+
+            realizedStochast.InitializeForRun();
+
+            // exact value
+            Assert.AreEqual(0.5, realizedStochast.GetXFromUAndSource(0, 0), margin);
+            Assert.AreEqual(1.5, realizedStochast.GetXFromUAndSource(1, 0), margin);
+            Assert.AreEqual(11.5, realizedStochast.GetXFromUAndSource(2, 0), margin);
+
+            // interpolated
+            Assert.AreEqual(1, realizedStochast.GetXFromUAndSource(0.5, 0), margin);
+            Assert.AreEqual(6.5, realizedStochast.GetXFromUAndSource(1.5, 0), margin);
+
+            // extrapolated
+            Assert.AreEqual(0.5, realizedStochast.GetXFromUAndSource(-1, 0), margin);
+            Assert.AreEqual(11.5, realizedStochast.GetXFromUAndSource(3, 0), margin);
+        }
+
         private void TestStochast(StochastWrapper stochast, double delta = 0.01)
         {
             foreach (var u in new[] { -7, -6, -5, -4, -3, -2, -1.5, -1, -0.5, -0.1, 0, 0.1, 0.5, 1, 1.5, 2, 3, 4, 5, 6, 7 })

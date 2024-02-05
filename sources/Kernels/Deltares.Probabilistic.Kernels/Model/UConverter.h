@@ -13,12 +13,12 @@ class UConverter
 {
 private:
 	bool hasQualitiveStochasts = false;
-	bool hasRealizedStochasts = false;
+	bool hasVariableStochasts = false;
 
 	std::vector<std::shared_ptr<Deltares::Statistics::Stochast>> stochasts;
 	std::vector<std::shared_ptr<Deltares::Statistics::Stochast>> varyingStochasts;
 	std::vector<int> varyingStochastIndex;
-	std::vector<int> realizedStochastIndex;
+	std::vector<int> variableStochastIndex;
 
 	std::shared_ptr<CorrelationMatrix> correlationMatrix;
 	std::shared_ptr<CorrelationMatrix> varyingCorrelationMatrix;
@@ -29,7 +29,7 @@ private:
 	bool checkFullyCorrelated(const int i);
 	void updateDependedParameter(std::vector<double> & uValues, const int i);
 	std::shared_ptr<Sample> getQualitativeExcludedSample(std::shared_ptr<Sample> sample);
-	void assignRealizedStochasts(std::shared_ptr<StochastPoint> realization, std::vector<double>& uCorrelated);
+	void assignVariableStochasts(std::shared_ptr<StochastPoint> realization, std::vector<double>& uCorrelated);
 
 public:
 

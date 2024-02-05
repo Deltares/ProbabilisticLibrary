@@ -59,6 +59,13 @@ namespace Deltares
 			return this->distribution->getUFromX(this, x);
 		}
 
+		double Stochast::getXFromUAndSource(double xSource, double u)
+		{
+			std::shared_ptr<StochastProperties> properties = this->ValueSet->getInterpolatedStochast(xSource);
+
+			return this->distribution->getXFromU(properties.get(), u);
+		}
+
 		void Stochast::setDistributionType(DistributionType distributionType)
 		{
 			this->distributionType = distributionType;
@@ -132,6 +139,11 @@ namespace Deltares
 		void Stochast::initializeForRun()
 		{
 			distribution->initializeForRun(this);
+
+			if (this->IsVariableStochast)
+			{
+				this->ValueSet->initializeForRun();
+			}
 		}
 	}
 }

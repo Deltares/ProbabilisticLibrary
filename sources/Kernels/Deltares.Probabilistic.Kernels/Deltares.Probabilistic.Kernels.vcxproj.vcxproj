@@ -153,8 +153,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Statistics\RealizedStochastValue.h" />
-    <ClInclude Include="Statistics\RealizedStochast.h" />
+    <ClInclude Include="Statistics\VariableStochastValue.h" />
     <ClInclude Include="Statistics\Distributions\QualitativeDistribution.h" />
     <ClInclude Include="Statistics\Distributions\DiscreteDistribution.h" />
     <ClInclude Include="Statistics\HistogramValue.h" />
@@ -225,10 +224,9 @@
     <ClInclude Include="Math\matrix.h" />
     <ClInclude Include="Utils\probLibException.h" />
     <ClInclude Include="Utils\probLibString.h" />
+    <ClInclude Include="Statistics\VariableStochastValueSet.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Statistics\RealizedStochastValue.cpp" />
-    <ClCompile Include="Statistics\RealizedStochast.cpp" />
     <ClCompile Include="Statistics\Distributions\QualitativeDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\DiscreteDistribution.cpp" />
     <ClCompile Include="Statistics\HistogramValue.cpp" />
@@ -294,6 +292,7 @@
     <ClCompile Include="Statistics\Distributions\UniformDistribution.cpp" />
     <ClCompile Include="Math\matrix.cpp" />
     <ClCompile Include="Math\cholesky_decomp.cpp" />
+    <ClCompile Include="Statistics\VariableStochastValueSet.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

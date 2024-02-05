@@ -1,5 +1,4 @@
 #pragma once
-#include <vector>
 
 #include "StochastProperties.h"
 
@@ -7,11 +6,11 @@ namespace Deltares
 {
 	namespace Statistics
 	{
-		class RealizedStochastValue
+		class VariableStochastValue
 		{
 		public:
 			double X;
-			std::shared_ptr<StochastProperties> Stochast;
+			std::shared_ptr<StochastProperties> Stochast = std::make_shared<StochastProperties>();
 		};
 	}
 }
