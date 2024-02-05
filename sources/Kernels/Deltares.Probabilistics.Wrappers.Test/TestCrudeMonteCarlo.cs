@@ -471,6 +471,28 @@ namespace Deltares.Probabilistics.Wrappers.Test
         }
 
         [Test]
+        public void TestVariable()
+        {
+            var project = ProjectBuilder.GetVariableProject();
+
+            ModelRunnerWrapper modelRunner = new ModelRunnerWrapper(project.Function, project.Stochasts, project.CorrelationMatrix, null);
+
+            CrudeMonteCarloWrapper crudeMonteCarlo = new CrudeMonteCarloWrapper();
+
+            DesignPointWrapper designPoint = crudeMonteCarlo.GetDesignPoint(modelRunner);
+
+            Assert.AreEqual(1.71, designPoint.Beta, margin);
+
+            Assert.AreEqual(-0.04, designPoint.Alphas[0].Alpha, margin);
+            Assert.AreEqual(-0.68, designPoint.Alphas[1].Alpha, margin);
+            Assert.AreEqual(-0.73, designPoint.Alphas[2].Alpha, margin);
+
+            Assert.AreEqual(8.51, designPoint.Alphas[0].X, margin);
+            Assert.AreEqual(8.50, designPoint.Alphas[1].X, margin);
+            Assert.AreEqual(2.37, designPoint.Alphas[2].X, margin);
+        }
+
+        [Test]
         public void TestNoisyStochastSettings()
         {
             var project = ProjectBuilder.GetNoisyProject();

@@ -47,7 +47,7 @@ void UConverter::initializeForRun()
 
 	for (size_t i = 0; i < this->stochasts.size(); i++)
 	{
-		if (this->stochasts[i]->isVarying() && ! checkFullyCorrelated(i))
+		if (this->stochasts[i]->isVarying() && !checkFullyCorrelated(i))
 		{
 			this->varyingStochastIndex.push_back(this->varyingStochastIndex.size());
 			this->varyingStochasts.push_back(this->stochasts[i]);
@@ -73,6 +73,11 @@ void UConverter::initializeForRun()
 				}
 			}
 		}
+	}
+
+	if (this->hasVariableStochasts)
+	{
+		this->variableStochastList = assignVariableStochasts();
 	}
 
 	if (stochasts.size() == varyingStochasts.size())
@@ -133,7 +138,7 @@ void UConverter::updateStochastSettings(std::shared_ptr<Deltares::Reliability::S
 	}
 }
 
-void UConverter::updateDependedParameter(std::vector<double> & uValues, const int i)
+void UConverter::updateDependedParameter(std::vector<double>& uValues, const int i)
 {
 	auto r = varyingCorrelationMatrix->findDependent(i);
 	if (r.index >= 0)
@@ -142,7 +147,7 @@ void UConverter::updateDependedParameter(std::vector<double> & uValues, const in
 	}
 }
 
-std::vector<double> UConverter::getExpandedValues(const std::vector<double> & values)
+std::vector<double> UConverter::getExpandedValues(const std::vector<double>& values)
 {
 	auto uValues = std::vector<double>(this->stochasts.size());
 	int ii = 0;
@@ -168,7 +173,7 @@ std::vector<double> UConverter::getExpandedValues(const std::vector<double> & va
 	return uValues;
 }
 
-std::vector<double> UConverter::getExpandedValues(const std::vector<double> & values, double defaultValue)
+std::vector<double> UConverter::getExpandedValues(const std::vector<double>& values, double defaultValue)
 {
 	auto uValues = std::vector<double>(this->stochasts.size());
 	int ii = 0;
@@ -200,7 +205,22 @@ std::vector<double> UConverter::getXValues(std::shared_ptr<Sample> sample)
 
 	for (int i = 0; i < this->stochasts.size(); i++)
 	{
-		xValues[i] = this->stochasts[i]->getXFromU(expandedUValues[i]);
+		if (!this->hasVariableStochasts || !stochasts[i]->IsVariableStochast)
+		{
+			xValues[i] = this->stochasts[i]->getXFromU(expandedUValues[i]);
+		}
+	}
+
+	if (this->hasVariableStochasts)
+	{
+		for (int i = 0; i < variableStochastList.size(); i++)
+		{
+			int stochastIndex = variableStochastList[i];
+			int sourceIndex = variableStochastIndex[stochastIndex];
+
+			double xSource = xValues[sourceIndex];
+			xValues[stochastIndex] = stochasts[stochastIndex]->getXFromUAndSource(xSource, expandedUValues[stochastIndex]);
+		}
 	}
 
 	return xValues;
@@ -221,15 +241,20 @@ std::shared_ptr<Sample> UConverter::getQualitativeExcludedSample(std::shared_ptr
 	return qualitativeExcludedSample->normalize(sample->getBeta());
 }
 
-void UConverter::assignVariableStochasts(std::shared_ptr<StochastPoint> realization, std::vector<double>& uCorrelated)
+/**
+ * \brief Gets the indices of the variable stochasts in order of assignment
+ */
+std::vector<int> UConverter::assignVariableStochasts()
 {
+	std::vector<int> newVariableStochastList;
+
 	std::set<int> assignedAlphas;
 	std::vector<int> unAssignedAlphas;
 
 	// build up initial administration which stochasts have been assigned and which not
-	for (int i = 0; i < realization->Alphas.size(); i++)
+	for (int i = 0; i < this->stochasts.size(); i++)
 	{
-		if (!realization->Alphas[i]->Stochast->IsVariableStochast)
+		if (!this->stochasts[i]->IsVariableStochast)
 		{
 			assignedAlphas.insert(i);
 		}
@@ -239,10 +264,10 @@ void UConverter::assignVariableStochasts(std::shared_ptr<StochastPoint> realizat
 		}
 	}
 
-	bool ready = unAssignedAlphas.size() == 0;
+	bool ready = unAssignedAlphas.empty();
 
 	// loop until all stochasts have been assigned
-	while (!ready) 
+	while (!ready)
 	{
 		ready = true;
 		bool modified = false;
@@ -251,13 +276,13 @@ void UConverter::assignVariableStochasts(std::shared_ptr<StochastPoint> realizat
 		{
 			int alphaIndex = unAssignedAlphas[i];
 
-			if (!assignedAlphas.contains(alphaIndex)) 
+			if (!assignedAlphas.contains(alphaIndex))
 			{
 				int sourceIndex = variableStochastIndex[alphaIndex];
 				if (assignedAlphas.contains(sourceIndex))
 				{
-					double xSource = realization->Alphas[sourceIndex]->X;
-					realization->Alphas[alphaIndex]->X = stochasts[i]->getXFromUAndSource(xSource, uCorrelated[alphaIndex]);
+					newVariableStochastList.push_back(alphaIndex);
+
 					assignedAlphas.insert(alphaIndex);
 					modified = true;
 				}
@@ -274,6 +299,8 @@ void UConverter::assignVariableStochasts(std::shared_ptr<StochastPoint> realizat
 			throw new std::exception("circular reference");
 		}
 	}
+
+	return newVariableStochastList;
 }
 
 std::shared_ptr<StochastPoint> UConverter::GetStochastPoint(std::shared_ptr<Sample> sample, double beta)
@@ -283,7 +310,7 @@ std::shared_ptr<StochastPoint> UConverter::GetStochastPoint(std::shared_ptr<Samp
 
 	std::shared_ptr<Sample> betaSample = sample->normalize(abs(beta));
 
-	if (this->hasQualitiveStochasts) 
+	if (this->hasQualitiveStochasts)
 	{
 		betaSample = getQualitativeExcludedSample(betaSample);
 	}
@@ -338,10 +365,17 @@ std::shared_ptr<StochastPoint> UConverter::GetStochastPoint(std::shared_ptr<Samp
 			realization->Alphas.push_back(alpha);
 		}
 
-		// correct for realized stochasts
+		// assign variable stochasts
 		if (this->hasVariableStochasts)
 		{
-			assignVariableStochasts(realization, uCorrelated);
+			for (int i = 0; i < variableStochastList.size(); i++)
+			{
+				int stochastIndex = variableStochastList[i];
+				int sourceIndex = variableStochastIndex[stochastIndex];
+
+				double xSource = realization->Alphas[sourceIndex]->X;
+				realization->Alphas[stochastIndex]->X = stochasts[stochastIndex]->getXFromUAndSource(xSource, uCorrelated[stochastIndex]);
+			}
 		}
 	}
 

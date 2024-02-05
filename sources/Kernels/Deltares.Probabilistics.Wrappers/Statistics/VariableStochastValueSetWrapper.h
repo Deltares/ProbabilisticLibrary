@@ -35,10 +35,10 @@ namespace Deltares
 				{
 					m_value->StochastValues.clear();
 
-					//for (int i = 0; i < stochastValues->Count; i++)
-					//{
-					//	m_value->StochastValues.push_back(this->stochastValues[i]->GetValue());
-					//}
+					for (int i = 0; i < stochastValues->Count; i++)
+					{
+						m_value->StochastValues.push_back(this->stochastValues[i]->GetValue());
+					}
 
 					return sharedPointer->getSharedPointer(m_value);
 				}

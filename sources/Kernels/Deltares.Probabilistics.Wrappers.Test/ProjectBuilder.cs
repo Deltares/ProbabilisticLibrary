@@ -237,7 +237,6 @@ namespace Deltares.Probabilistics.Wrappers.Test
         }
 
 
-
         public static Project GetNonLinearProject()
         {
             var project = new Project();
@@ -494,6 +493,34 @@ namespace Deltares.Probabilistics.Wrappers.Test
             return project;
         }
 
+        public static Project GetVariableProject()
+        {
+            var project = new Project();
+
+            StochastWrapper c = GetNormalStochast(1.5, 0.1);
+            StochastWrapper a = GetNormalStochast(1.5, 0.5);
+            StochastWrapper b = GetNormalStochast(0.5, 1.5);
+
+            c.IsVariableStochast = true;
+            c.VariableSource = a;
+            c.ValueSet.StochastValues.Add(new VariableStochastValueWrapper { X = -100, Location = -100, Scale = 0.1 });
+            c.ValueSet.StochastValues.Add(new VariableStochastValueWrapper { X = 100, Location = 100, Scale = 0.1 });
+
+            a.IsVariableStochast = true;
+            a.VariableSource = b;
+            a.ValueSet.StochastValues.Add(new VariableStochastValueWrapper { X = 0, Location = 0, Scale = 0 });
+            a.ValueSet.StochastValues.Add(new VariableStochastValueWrapper { X = 1, Location = 3, Scale = 1 });
+            a.ValueSet.StochastValues.Add(new VariableStochastValueWrapper { X = 2, Location = 5, Scale = 3 });
+
+            project.Stochasts.Add(c);
+            project.Stochasts.Add(a);
+            project.Stochasts.Add(b);
+
+            project.ZFunction = Linear2;
+
+            return project;
+        }
+
         private static StochastWrapper GetDeterministicStochast(double mean)
         {
             return new StochastWrapper { DistributionType = WrapperDistributionType.Deterministic,  Mean = mean };
@@ -523,6 +550,12 @@ namespace Deltares.Probabilistics.Wrappers.Test
         private static ZFunctionOutput Linear(double[] x)
         {
             return new ZFunctionOutput(1.8 - x.Sum());
+        }
+
+        private static ZFunctionOutput Linear2(double[] x)
+        {
+            double sum = x[0] + x[2];
+            return new ZFunctionOutput(10 - sum);
         }
 
         private static ZFunctionOutput InverseLinear(double[] x)

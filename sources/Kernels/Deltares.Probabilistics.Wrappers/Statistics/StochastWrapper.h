@@ -36,12 +36,17 @@ namespace Deltares
 				void updateStochast();
 
 			public:
-				StochastWrapper() { m_stochast = new Statistics::Stochast(); }
+				StochastWrapper()
+				{
+					m_stochast = new Statistics::Stochast();
+					m_stochast->ValueSet = this->ValueSet->GetValue();
+				}
 				StochastWrapper(WrapperDistributionType distributionType, array<double>^ values)
 				{
 					const Statistics::DistributionType nativeDistributionType = getNativeDistributionType(distributionType);
 					double* nValues = NativeSupport::toNative(values);
 					m_stochast = new Statistics::Stochast(nativeDistributionType, nValues);
+					m_stochast->ValueSet = this->ValueSet->GetValue();
 				}
 				~StochastWrapper() { this->!StochastWrapper(); }
 				!StochastWrapper() { delete sharedPointer; }
