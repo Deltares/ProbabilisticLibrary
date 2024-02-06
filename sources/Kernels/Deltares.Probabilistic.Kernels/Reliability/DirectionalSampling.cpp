@@ -8,7 +8,7 @@ namespace Deltares
 {
 	namespace Reliability
 	{
-		std::shared_ptr<DesignPoint> Deltares::Reliability::DirectionalSampling::getDesignPoint(std::shared_ptr<Models::ZModelRunner> modelRunner)
+		std::shared_ptr<DesignPoint> DirectionalSampling::getDesignPoint(std::shared_ptr<ZModelRunner> modelRunner)
 		{
 			int nstochasts = modelRunner->getVaryingStochastCount();
 			double pf = 0;

@@ -3,29 +3,35 @@
 #include "../Math/Random.h"
 #include "../Reliability/StochastSettingsSet.h"
 
-class RandomSettings
+namespace Deltares
 {
-public:
+    namespace Models
+    {
+        class RandomSettings
+        {
+        public:
 
-    bool IsRepeatableRandom = true;
+            bool IsRepeatableRandom = true;
 
-    /// <summary>
-    /// Indicates whether random sequences is always the same for same <see cref="IHasStochast"/> names
-    /// </summary>
-    bool IsStochastRepeatableRandom = false;
+            /// <summary>
+            /// Indicates whether random sequences is always the same for same <see cref="IHasStochast"/> names
+            /// </summary>
+            bool IsStochastRepeatableRandom = false;
 
-    Deltares::Numeric::RandomValueGeneratorType RandomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::ModifiedKnuthSubtractive;
+            Deltares::Numeric::RandomValueGeneratorType RandomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::ModifiedKnuthSubtractive;
 
-    /// <summary>
-    /// Seed for randomizer
-    /// </summary>
-    int Seed = 0;
+            /// <summary>
+            /// Seed for randomizer
+            /// </summary>
+            int Seed = 0;
 
-	/// <summary>
-    /// Additional seed for randomizer
-    /// </summary>
-    int SeedB = 0;
+            /// <summary>
+            /// Additional seed for randomizer
+            /// </summary>
+            int SeedB = 0;
 
-    std::shared_ptr<Deltares::Reliability::StochastSettingsSet> StochastSet = std::make_shared<Deltares::Reliability::StochastSettingsSet>();
-};
+            std::shared_ptr<Deltares::Reliability::StochastSettingsSet> StochastSet = std::make_shared<Deltares::Reliability::StochastSettingsSet>();
+        };
+    }
+}
 

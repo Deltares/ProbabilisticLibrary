@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../Deltares.Probabilistic.Kernels/Model/ReliabilityResult.h"
+#include "../../Deltares.Probabilistic.Kernels/Reliability/ReliabilityResult.h"
 
 namespace Deltares
 {

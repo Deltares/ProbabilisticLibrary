@@ -9,6 +9,8 @@ namespace Deltares
 {
 	namespace Reliability
 	{
+		using namespace Deltares::Models;
+
 		class StochastSettingsSet
 		{
 		private:

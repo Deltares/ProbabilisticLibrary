@@ -3,7 +3,7 @@
 
 using namespace Deltares::ProbLibCore;
 
-void funcWrapper::FDelegate(std::shared_ptr<Sample> s)
+void funcWrapper::FDelegate(std::shared_ptr<Deltares::Models::Sample> s)
 {
     auto xx = new double[allStoch];
     for (size_t i = 0; i < allStoch; i++)

@@ -3,19 +3,25 @@
 #include <cmath>
 #include <cstdint>
 
-class Evaluation
+namespace Deltares
 {
-public:
-	double* X;
-	int SizeX;
+	namespace Models
+	{
+		class Evaluation
+		{
+		public:
+			double* X;
+			int SizeX;
 
-	double* R;
-	int SizeR;
+			double* R;
+			int SizeR;
 
-	double Z = nan("");
-	double Weight = 1;
-	int Iteration = -1;
+			double Z = nan("");
+			double Weight = 1;
+			int Iteration = -1;
 
-	intptr_t Tag = 0;
-};
+			intptr_t Tag = 0;
+		};
+	}
+}
 

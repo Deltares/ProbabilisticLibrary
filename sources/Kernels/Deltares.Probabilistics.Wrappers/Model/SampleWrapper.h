@@ -9,15 +9,17 @@ namespace Deltares
 	{
 		namespace Kernels
 		{
+			using namespace Deltares::Models;
+
 			public ref class SampleWrapper
 			{
 			private:
-				Sample* sample;
+				Models::Sample* sample;
 				array<double>^ values = nullptr;
 				System::Object^ tag = nullptr;
 
 			public:
-				SampleWrapper(std::shared_ptr<Sample> sample)
+				SampleWrapper(std::shared_ptr<Models::Sample> sample)
 				{
 					this->sample = sample.get();
 				}

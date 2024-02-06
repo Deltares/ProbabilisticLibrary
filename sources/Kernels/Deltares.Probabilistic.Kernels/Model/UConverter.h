@@ -9,38 +9,44 @@
 #include "../Statistics/CorrelationMatrix.h"
 #include "../Reliability/StochastSettingsSet.h"
 
-class UConverter
+namespace Deltares
 {
-private:
-	bool hasQualitiveStochasts = false;
-	bool hasVariableStochasts = false;
+	namespace Models
+	{
+		class UConverter
+		{
+		private:
+			bool hasQualitiveStochasts = false;
+			bool hasVariableStochasts = false;
 
-	std::vector<std::shared_ptr<Deltares::Statistics::Stochast>> stochasts;
-	std::vector<std::shared_ptr<Deltares::Statistics::Stochast>> varyingStochasts;
-	std::vector<int> varyingStochastIndex;
+			std::vector<std::shared_ptr<Deltares::Statistics::Stochast>> stochasts;
+			std::vector<std::shared_ptr<Deltares::Statistics::Stochast>> varyingStochasts;
+			std::vector<int> varyingStochastIndex;
 
-	std::vector<int> variableStochastIndex; // reference of the stochast index to the variable source index
-	std::vector<int> variableStochastList; // list of all stochast indices in order how they should be assigned
+			std::vector<int> variableStochastIndex; // reference of the stochast index to the variable source index
+			std::vector<int> variableStochastList; // list of all stochast indices in order how they should be assigned
 
-	std::shared_ptr<CorrelationMatrix> correlationMatrix;
-	std::shared_ptr<CorrelationMatrix> varyingCorrelationMatrix;
+			std::shared_ptr<CorrelationMatrix> correlationMatrix;
+			std::shared_ptr<CorrelationMatrix> varyingCorrelationMatrix;
 
-	std::vector<double> getExpandedValues(const std::vector<double> & values);
-	std::vector<double> getExpandedValues(const std::vector<double> & values, double defaultValue);
+			std::vector<double> getExpandedValues(const std::vector<double>& values);
+			std::vector<double> getExpandedValues(const std::vector<double>& values, double defaultValue);
 
-	bool checkFullyCorrelated(const int i);
-	void updateDependedParameter(std::vector<double> & uValues, const int i);
-	std::shared_ptr<Sample> getQualitativeExcludedSample(std::shared_ptr<Sample> sample);
-	std::vector<int> assignVariableStochasts();
+			bool checkFullyCorrelated(const int i);
+			void updateDependedParameter(std::vector<double>& uValues, const int i);
+			std::shared_ptr<Sample> getQualitativeExcludedSample(std::shared_ptr<Sample> sample);
+			std::vector<int> assignVariableStochasts();
 
-public:
+		public:
 
-	UConverter(std::vector<std::shared_ptr<Deltares::Statistics::Stochast>> stochasts, std::shared_ptr<CorrelationMatrix> correlationMatrix);
-	void initializeForRun();
-	std::vector<double> getXValues(std::shared_ptr<Sample> sample);
-	int getStochastCount();
-	int getVaryingStochastCount();
-	std::shared_ptr<StochastPoint> GetStochastPoint(std::shared_ptr<Sample> sample, double beta);
-	void updateStochastSettings(std::shared_ptr<Deltares::Reliability::StochastSettingsSet> settings);
-};
+			UConverter(std::vector<std::shared_ptr<Deltares::Statistics::Stochast>> stochasts, std::shared_ptr<CorrelationMatrix> correlationMatrix);
+			void initializeForRun();
+			std::vector<double> getXValues(std::shared_ptr<Sample> sample);
+			int getStochastCount();
+			int getVaryingStochastCount();
+			std::shared_ptr<StochastPoint> GetStochastPoint(std::shared_ptr<Sample> sample, double beta);
+			void updateStochastSettings(std::shared_ptr<Deltares::Reliability::StochastSettingsSet> settings);
+		};
+	}
+}
 

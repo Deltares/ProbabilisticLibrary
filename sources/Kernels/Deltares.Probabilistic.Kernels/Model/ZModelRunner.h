@@ -4,15 +4,15 @@
 #include "Sample.h"
 #include <vector>
 
-#include "ReliabilityReport.h"
-#include "ReliabilityResult.h"
+#include "../Reliability/ReliabilityReport.h"
+#include "../Reliability/ReliabilityResult.h"
+#include "../Reliability/DesignPoint.h"
+#include "../Reliability/StochastSettingsSet.h"
 #include "RunSettings.h"
 #include "UConverter.h"
 #include "ZModel.h"
-#include "DesignPoint.h"
 #include "Message.h"
 #include "ProgressIndicator.h"
-#include "../Reliability/StochastSettingsSet.h"
 
 namespace Deltares
 {
@@ -51,7 +51,7 @@ namespace Deltares
 			void reportResult(std::shared_ptr<ReliabilityReport> report);
 			void reportMessage(MessageType type, std::string text);
 
-			std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Sample> sample, double beta, std::shared_ptr<ConvergenceReport> convergenceReport = nullptr, std::string identifier = "");
+			std::shared_ptr<Reliability::DesignPoint> getDesignPoint(std::shared_ptr<Sample> sample, double beta, std::shared_ptr<Reliability::ConvergenceReport> convergenceReport = nullptr, std::string identifier = "");
 
 			std::shared_ptr<RunSettings> Settings = std::make_shared<RunSettings>();
 		};

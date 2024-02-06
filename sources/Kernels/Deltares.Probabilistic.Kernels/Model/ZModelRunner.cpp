@@ -1,7 +1,5 @@
 #include "ZModelRunner.h"
-#include "DesignPoint.h"
 #include "../Math/NumericSupport.h"
-#include <stdarg.h>
 #include <cmath>
 #if __has_include(<format>)
 #include <format>
@@ -188,11 +186,11 @@ namespace Deltares
 			}
 		}
 
-		std::shared_ptr<DesignPoint> ZModelRunner::getDesignPoint(std::shared_ptr<Sample> sample, double beta, std::shared_ptr<ConvergenceReport> convergenceReport, std::string identifier)
+		std::shared_ptr<Reliability::DesignPoint> ZModelRunner::getDesignPoint(std::shared_ptr<Sample> sample, double beta, std::shared_ptr<Reliability::ConvergenceReport> convergenceReport, std::string identifier)
 		{
 			std::shared_ptr<StochastPoint> stochastPoint = uConverter->GetStochastPoint(sample, beta);
 
-			std::shared_ptr<DesignPoint> designPoint = std::make_shared<DesignPoint>();
+			std::shared_ptr<Reliability::DesignPoint> designPoint = std::make_shared<Reliability::DesignPoint>();
 
 			designPoint->Beta = stochastPoint->Beta;
 

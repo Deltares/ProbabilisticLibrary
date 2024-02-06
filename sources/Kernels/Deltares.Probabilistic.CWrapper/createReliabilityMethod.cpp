@@ -4,9 +4,10 @@
 #include "../Deltares.Probabilistic.Kernels/Reliability/FORM.h"
 
 using namespace Deltares::ProbLibCore;
+using namespace Deltares::Models;
 using namespace Deltares::Reliability;
 
-RandomSettings* createReliabilityMethod::getRnd(const basicSettings& bs)
+Deltares::Models::RandomSettings* createReliabilityMethod::getRnd(const basicSettings& bs)
 {
     auto rnd = new RandomSettings();
     switch (bs.rnd)

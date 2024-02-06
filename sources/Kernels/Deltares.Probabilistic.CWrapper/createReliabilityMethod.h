@@ -10,6 +10,6 @@ public:
     Deltares::Reliability::ReliabilityMethod* selectMethod(const Deltares::ProbLibCore::basicSettings& bs);
 
 private:
-    RandomSettings* getRnd(const Deltares::ProbLibCore::basicSettings& bs);
+    Deltares::Models::RandomSettings* getRnd(const Deltares::ProbLibCore::basicSettings& bs);
 };
 

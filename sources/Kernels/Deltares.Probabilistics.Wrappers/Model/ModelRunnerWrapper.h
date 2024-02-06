@@ -15,6 +15,8 @@ namespace Deltares
 	{
 		namespace Kernels
 		{
+			using namespace Deltares::Reliability;
+
 			public delegate void ZSampleDelegate(SampleWrapper^);
 
 			public ref class ModelRunnerWrapper

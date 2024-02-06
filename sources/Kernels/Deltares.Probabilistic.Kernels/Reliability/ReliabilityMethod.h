@@ -1,7 +1,6 @@
 #pragma once
-#include "../Model/DesignPoint.h"
+#include "DesignPoint.h"
 #include "../Model/ZModelRunner.h"
-#include "../Model/ConvergenceReport.h"
 
 namespace Deltares
 {

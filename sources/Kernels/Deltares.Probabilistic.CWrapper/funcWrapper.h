@@ -11,7 +11,7 @@ class funcWrapper
 public:
     funcWrapper(const size_t nrStoch, int* ip, double* x, int* ids, zFuncExtern func) :
         allStoch(nrStoch), iPointer(ip), xRef(x), compIds(ids), zfunc(func) { ; }
-    void FDelegate(std::shared_ptr<Sample> s);
+    void FDelegate(std::shared_ptr<Deltares::Models::Sample> s);
 private:
     size_t allStoch;
     int* iPointer;

@@ -10,6 +10,8 @@ namespace Deltares
 	{
 		namespace Kernels
 		{
+			using namespace Deltares::Models;
+
 			public ref class StochastPointAlphaWrapper
 			{
 			private:

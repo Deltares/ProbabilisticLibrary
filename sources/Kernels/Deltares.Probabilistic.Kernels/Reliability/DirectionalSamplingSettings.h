@@ -17,7 +17,7 @@ namespace Deltares
             double VariationCoefficient = 0.05;
             DesignPointMethod designPointMethod = DesignPointMethod::CenterOfGravity;
             std::shared_ptr<DirectionReliabilitySettings> DirectionSettings = std::make_shared<DirectionReliabilitySettings>();
-            std::shared_ptr<RandomSettings> RandomSettings = std::make_shared<::RandomSettings>();
+            std::shared_ptr<Models::RandomSettings> RandomSettings = std::make_shared<Models::RandomSettings>();
             std::shared_ptr<StochastSettingsSet> StochastSet = std::make_shared<StochastSettingsSet>();
         };
     }

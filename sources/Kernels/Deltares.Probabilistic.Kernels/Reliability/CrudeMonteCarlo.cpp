@@ -6,13 +6,15 @@
 
 #include "../Statistics/StandardNormal.h"
 #include "../Model/Sample.h"
-#include "../Model/ConvergenceReport.h"
-#include "../Model/ReliabilityReport.h"
 #include "../Model/RandomSampleGenerator.h"
-#include "../Model/DesignPoint.h"
+#include "ConvergenceReport.h"
+#include "ReliabilityReport.h"
+#include "DesignPoint.h"
 #include "CrudeMonteCarloSettings.h"
 #include "DesignPointBuilder.h"
 #include "StochastSettings.h"
+
+using namespace Deltares::Models;
 
 namespace Deltares
 {

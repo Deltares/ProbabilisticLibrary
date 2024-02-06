@@ -1,7 +1,6 @@
 #pragma once
 
 #include "DirectionalSamplingSettings.h"
-#include "DirectionReliability.h"
 #include "ReliabilityMethod.h"
 
 namespace Deltares
@@ -16,10 +15,6 @@ namespace Deltares
 		public:
 			std::shared_ptr<DirectionalSamplingSettings> Settings = std::make_shared<DirectionalSamplingSettings>();
 			std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ZModelRunner> modelRunner) override;
-			~DirectionalSampling()
-			{
-				//delete Settings;
-			}
 		};
 	}
 }

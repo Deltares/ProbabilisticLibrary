@@ -1,8 +1,9 @@
 #include "FORM.h"
 
 #include "StartPointCalculator.h"
-#include "../Model/DesignPoint.h"
+#include "DesignPoint.h"
 #include "../Model/GradientCalculator.h"
+
 #if __has_include(<format>)
 #include <format>
 #else

@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include "../../Deltares.Probabilistic.Kernels/Model/ConvergenceReport.h"
+#include "../../Deltares.Probabilistic.Kernels/Reliability/ConvergenceReport.h"
 
 namespace Deltares
 {
@@ -14,7 +14,7 @@ namespace Deltares
 			{
 			public:
 				ConvergenceReportWrapper() {}
-				ConvergenceReportWrapper(std::shared_ptr<ConvergenceReport> report)
+				ConvergenceReportWrapper(std::shared_ptr<Reliability::ConvergenceReport> report)
 				{
 					this->Convergence = report->Convergence;
 					this->FailedSamples = report->FailedSamples;

@@ -10,6 +10,8 @@ namespace Deltares
 	{
 		namespace Kernels
 		{
+			using namespace Deltares::Models;
+
 			delegate void ManagedSampleDelegate(std::shared_ptr<Sample> sample);
 			delegate void ManagedMultipleSampleDelegate(std::vector<std::shared_ptr<Sample>> samples);
 			typedef void(__stdcall* ZDelegate) (std::shared_ptr<Sample>);
