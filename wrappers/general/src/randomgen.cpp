@@ -1,4 +1,4 @@
-#include "../../../../Kernels/Deltares.Probabilistic.Kernels/Math/Randomizers/GeorgeMarsagliaRandomValueGenerator.h"
+#include "../../../../Kernels/Deltares.Probabilistic/Math/Randomizers/GeorgeMarsagliaRandomValueGenerator.h"
 
 //using namespace Deltares::ProbLibCore;
 

@@ -1,7 +1,7 @@
 set(CMAKE_CSharp_FLAGS "/langversion:10")
 
 file (GLOB reliabilityTestFiles
-    "../../Kernels/Deltares.Probabilistics.Wrappers.Test/*.cs"
+    "../../Kernels/Deltares.Probabilistic.Wrapper.Test/*.cs"
 )
 
 add_library(reliabilityTest
