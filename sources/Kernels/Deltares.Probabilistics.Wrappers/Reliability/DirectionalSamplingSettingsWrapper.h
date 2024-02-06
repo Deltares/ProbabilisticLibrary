@@ -1,21 +1,19 @@
 #pragma once
 #include "DirectionReliabilitySettingsWrapper.h"
 
-ref class DirectionalSamplingSettingsWrapper
-{
-};
-
-#include "../Model/RandomSettingsWrapper.h"
-#include "../Statistics/StochastSettingsWrapper.h"
 #include "../../Deltares.Probabilistic.Kernels/Reliability/DirectionalSamplingSettings.h"
-#include "../../Deltares.Probabilistic.Kernels/Reliability/StochastSettings.h"
+#include "../Model/RandomSettingsWrapper.h"
+#include "../Reliability/StochastSettingsWrapper.h"
 
 namespace Deltares
 {
-	namespace Probabilistic
+	namespace Reliability
 	{
-		namespace Kernels
+		namespace Wrappers
 		{
+			using namespace Deltares::Utils::Wrappers;
+			using namespace Deltares::Models::Wrappers;
+
 			public ref class DirectionalSamplingSettingsWrapper
 			{
 			private:

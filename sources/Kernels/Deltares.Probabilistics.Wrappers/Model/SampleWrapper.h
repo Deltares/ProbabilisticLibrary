@@ -2,14 +2,14 @@
 #include "../Utils/NativeSupport.h"
 #include "../../Deltares.Probabilistic.Kernels/Model/Sample.h"
 
-
 namespace Deltares
 {
-	namespace Probabilistic
+	namespace Models
 	{
-		namespace Kernels
+		namespace Wrappers
 		{
 			using namespace Deltares::Models;
+			using namespace Deltares::Utils::Wrappers;
 
 			public ref class SampleWrapper
 			{

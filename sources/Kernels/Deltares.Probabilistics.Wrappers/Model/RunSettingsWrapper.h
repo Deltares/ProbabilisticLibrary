@@ -6,11 +6,12 @@
 
 namespace Deltares
 {
-	namespace Probabilistic
+	namespace Models
 	{
-		namespace Kernels
+		namespace Wrappers
 		{
 			using namespace Deltares::Models;
+			using namespace Deltares::Utils::Wrappers;
 
 			public ref class RunSettingsWrapper
 			{
@@ -59,27 +60,27 @@ namespace Deltares
 					void set(int value) { m_settings->MaxMessages = value; }
 				}
 
-				property Kernels::MessageType LowestMessageType
+				property Wrappers::MessageType LowestMessageType
 				{
-					Kernels::MessageType get()
+					Wrappers::MessageType get()
 					{
 						switch (m_settings->LowestMessageType)
 						{
-						case Models::Debug: return Kernels::MessageType::Debug;
-						case Models::Info: return Kernels::MessageType::Info;
-						case Models::Warning: return Kernels::MessageType::Warning;
-						case Models::Error: return Kernels::MessageType::Error;
+						case Models::Debug: return Wrappers::MessageType::Debug;
+						case Models::Info: return Wrappers::MessageType::Info;
+						case Models::Warning: return Wrappers::MessageType::Warning;
+						case Models::Error: return Wrappers::MessageType::Error;
 						default: throw gcnew System::NotSupportedException("Message type");
 						}
 					}
-					void set(Kernels::MessageType value)
+					void set(Wrappers::MessageType value)
 					{
 						switch (value)
 						{
-						case Kernels::MessageType::Debug: m_settings->LowestMessageType = Models::MessageType::Debug; break;
-						case Kernels::MessageType::Info: m_settings->LowestMessageType = Models::MessageType::Info; break;
-						case Kernels::MessageType::Warning: m_settings->LowestMessageType = Models::MessageType::Warning; break;
-						case Kernels::MessageType::Error: m_settings->LowestMessageType = Models::MessageType::Error; break;
+						case Wrappers::MessageType::Debug: m_settings->LowestMessageType = Models::MessageType::Debug; break;
+						case Wrappers::MessageType::Info: m_settings->LowestMessageType = Models::MessageType::Info; break;
+						case Wrappers::MessageType::Warning: m_settings->LowestMessageType = Models::MessageType::Warning; break;
+						case Wrappers::MessageType::Error: m_settings->LowestMessageType = Models::MessageType::Error; break;
 						default: throw gcnew System::NotSupportedException("Message type");
 						}
 					}

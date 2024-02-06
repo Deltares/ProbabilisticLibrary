@@ -7,9 +7,9 @@
 
 namespace Deltares
 {
-	namespace Probabilistic
+	namespace Models
 	{
-		namespace Kernels
+		namespace Wrappers
 		{
 			public enum class GradientType
 			{
@@ -21,12 +21,12 @@ namespace Deltares
 			{
 			private:
 				Models::GradientSettings* m_settings;
-				SharedPointerProvider<Models::GradientSettings>* sharedPointer;
+				Utils::Wrappers::SharedPointerProvider<Models::GradientSettings>* sharedPointer;
 			public:
 				GradientCalculatorSettingsWrapper()
 				{
 					m_settings = new Models::GradientSettings();
-					sharedPointer = new SharedPointerProvider<Models::GradientSettings>();
+					sharedPointer = new Utils::Wrappers::SharedPointerProvider<Models::GradientSettings>();
 				}
 				~GradientCalculatorSettingsWrapper() { this->!GradientCalculatorSettingsWrapper(); }
 				!GradientCalculatorSettingsWrapper() { delete sharedPointer; }
@@ -37,23 +37,23 @@ namespace Deltares
 					void set(double value) { m_settings->StepSize = value; }
 				}
 
-				property Kernels::GradientType GradientType
+				property Wrappers::GradientType GradientType
 				{
-					Kernels::GradientType get()
+					Wrappers::GradientType get()
 					{
 						switch (m_settings->GradientType)
 						{
-						case Deltares::Models::GradientType::OneDirection: return Kernels::GradientType::OneDirection;
-						case Deltares::Models::GradientType::TwoDirections: return Kernels::GradientType::TwoDirections;
+						case Deltares::Models::GradientType::OneDirection: return Wrappers::GradientType::OneDirection;
+						case Deltares::Models::GradientType::TwoDirections: return Wrappers::GradientType::TwoDirections;
 						default: throw gcnew System::NotSupportedException("gradient type");
 						}
 					}
-					void set(Kernels::GradientType value)
+					void set(Wrappers::GradientType value)
 					{
 						switch (value)
 						{
-						case Kernels::GradientType::OneDirection: m_settings->GradientType = Models::GradientType::OneDirection; break;
-						case Kernels::GradientType::TwoDirections: m_settings->GradientType = Models::GradientType::TwoDirections; break;
+						case Wrappers::GradientType::OneDirection: m_settings->GradientType = Models::GradientType::OneDirection; break;
+						case Wrappers::GradientType::TwoDirections: m_settings->GradientType = Models::GradientType::TwoDirections; break;
 						default: throw gcnew System::NotSupportedException("gradient type");
 						}
 					}

@@ -4,9 +4,9 @@
 
 namespace Deltares
 {
-	namespace Probabilistic
+	namespace Reliability
 	{
-		namespace Kernels
+		namespace Wrappers
 		{
 			public ref class ReliabilityResultWrapper
 			{

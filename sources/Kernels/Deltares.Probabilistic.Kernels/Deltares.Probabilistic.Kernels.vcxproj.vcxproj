@@ -201,7 +201,7 @@
     <ClInclude Include="Model\StochastPointAlpha.h" />
     <ClInclude Include="Model\UConverter.h" />
     <ClInclude Include="Model\ZModel.h" />
-    <ClInclude Include="Model\ZModelRunner.h" />
+    <ClInclude Include="Model\ModelRunner.h" />
     <ClInclude Include="Reliability\ReliabilityReport.h" />
     <ClInclude Include="Model\RandomSampleGenerator.h" />
     <ClInclude Include="Reliability\ConvergenceReport.h" />
@@ -274,7 +274,7 @@
     <ClCompile Include="Model\StochastPointAlpha.cpp" />
     <ClCompile Include="Model\UConverter.cpp" />
     <ClCompile Include="Model\ZModel.cpp" />
-    <ClCompile Include="Model\ZModelRunner.cpp" />
+    <ClCompile Include="Model\ModelRunner.cpp" />
     <ClCompile Include="Reliability\ReliabilityReport.cpp" />
     <ClCompile Include="Model\RandomSampleGenerator.cpp" />
     <ClCompile Include="Reliability\ConvergenceReport.cpp" />

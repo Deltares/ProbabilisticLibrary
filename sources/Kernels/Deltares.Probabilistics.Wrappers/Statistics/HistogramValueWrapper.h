@@ -5,10 +5,12 @@
 
 namespace Deltares
 {
-	namespace Probabilistic
+	namespace Statistics
 	{
-		namespace Kernels
+		namespace Wrappers
 		{
+			using namespace Deltares::Utils::Wrappers;
+
 			public ref class HistogramValueWrapper
 			{
 			private:

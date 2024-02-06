@@ -1,4 +1,5 @@
-﻿using Deltares.Probabilistic.Kernels;
+﻿using Deltares.Models.Wrappers;
+using Deltares.Reliability.Wrappers;
 using NUnit.Framework;
 
 namespace Deltares.Probabilistics.Wrappers.Test

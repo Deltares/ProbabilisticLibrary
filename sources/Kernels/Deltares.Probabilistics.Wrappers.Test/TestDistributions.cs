@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using Deltares.Probabilistic.Kernels;
+using Deltares.Statistics.Wrappers;
 using NUnit.Framework;
 
 namespace Deltares.Probabilistics.Wrappers.Test

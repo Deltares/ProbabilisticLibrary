@@ -4,13 +4,13 @@
 
 #include "GradientSettings.h"
 #include "Sample.h"
-#include "ZModelRunner.h"
+#include "ModelRunner.h"
 
 namespace Deltares
 {
     namespace Models
     {
-        std::vector<double> GradientCalculator::getGradient(std::shared_ptr<Models::ZModelRunner> modelRunner, std::shared_ptr<Sample> sample)
+        std::vector<double> GradientCalculator::getGradient(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<Sample> sample)
         {
             int nstochasts = modelRunner->getVaryingStochastCount();
 

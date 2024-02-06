@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Deltares.Probabilistic.Kernels;
+using Deltares.Statistics.Wrappers;
+using Deltares.Models.Wrappers;
 
 namespace Deltares.Probabilistics.Wrappers.Test
 {

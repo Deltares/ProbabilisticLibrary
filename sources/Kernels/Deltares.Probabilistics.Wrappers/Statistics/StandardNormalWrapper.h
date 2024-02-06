@@ -4,9 +4,9 @@
 
 namespace Deltares
 {
-	namespace Probabilistic
+	namespace Statistics
 	{
-		namespace Kernels
+		namespace Wrappers
 		{
 			public ref class StandardNormalWrapper
 			{

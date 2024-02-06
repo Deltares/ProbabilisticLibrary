@@ -164,7 +164,7 @@
     <ClInclude Include="Statistics\FragilityValueWrapper.h" />
     <ClInclude Include="Statistics\HistogramValueWrapper.h" />
     <ClInclude Include="Model\MessageWrapper.h" />
-    <ClInclude Include="Reliability\GradientCalculatorSettingsWrapper.h" />
+    <ClInclude Include="Model\GradientCalculatorSettingsWrapper.h" />
     <ClInclude Include="Reliability\FORMSettingsWrapper.h" />
     <ClInclude Include="Reliability\FORMWrapper.h" />
     <ClInclude Include="framework.h" />
@@ -178,7 +178,7 @@
     <ClInclude Include="Reliability\DirectionalSamplingWrapper.h" />
     <ClInclude Include="Reliability\DirectionReliabilitySettingsWrapper.h" />
     <ClInclude Include="Reliability\DirectionReliabilityWrapper.h" />
-    <ClInclude Include="Statistics\EvaluationWrapper.h" />
+    <ClInclude Include="Model\EvaluationWrapper.h" />
     <ClInclude Include="Model\ModelRunnerWrapper.h" />
     <ClInclude Include="Utils\NativeSupport.h" />
     <ClInclude Include="Model\ProgressIndicatorWrapper.h" />
@@ -189,9 +189,9 @@
     <ClInclude Include="Model\RunSettingsWrapper.h" />
     <ClInclude Include="Model\SampleWrapper.h" />
     <ClInclude Include="Statistics\StandardNormalWrapper.h" />
-    <ClInclude Include="Statistics\StochastPointAlphaWrapper.h" />
-    <ClInclude Include="Statistics\StochastPointWrapper.h" />
-    <ClInclude Include="Statistics\StochastSettingsWrapper.h" />
+    <ClInclude Include="Model\StochastPointAlphaWrapper.h" />
+    <ClInclude Include="Model\StochastPointWrapper.h" />
+    <ClInclude Include="Reliability\StochastSettingsWrapper.h" />
     <ClInclude Include="Statistics\StochastWrapper.h" />
     <ClInclude Include="Utils\SharedPointerProvider.h" />
     <ClInclude Include="Statistics\VariableStochastValueSetWrapper.h" />
@@ -199,7 +199,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Model\MessageWrapper.cpp" />
-    <ClCompile Include="Reliability\GradientCalculatorSettingsWrapper.cpp" />
+    <ClCompile Include="Model\GradientCalculatorSettingsWrapper.cpp" />
     <ClCompile Include="Reliability\FORMSettingsWrapper.cpp" />
     <ClCompile Include="Reliability\FORMWrapper.cpp" />
     <ClCompile Include="Reliability\ConvergenceReportWrapper.cpp" />
@@ -212,7 +212,7 @@
     <ClCompile Include="Reliability\DirectionalSamplingWrapper.cpp" />
     <ClCompile Include="Reliability\DirectionReliabilitySettingsWrapper.cpp" />
     <ClCompile Include="Reliability\DirectionReliabilityWrapper.cpp" />
-    <ClCompile Include="Statistics\EvaluationWrapper.cpp" />
+    <ClCompile Include="Model\EvaluationWrapper.cpp" />
     <ClCompile Include="Model\ModelRunnerWrapper.cpp" />
     <ClCompile Include="Utils\NativeSupport.cpp" />
     <ClCompile Include="Model\ProgressIndicatorWrapper.cpp" />
@@ -223,9 +223,9 @@
     <ClCompile Include="Model\RunSettingsWrapper.cpp" />
     <ClCompile Include="Model\SampleWrapper.cpp" />
     <ClCompile Include="Statistics\StandardNormalWrapper.cpp" />
-    <ClCompile Include="Statistics\StochastPointAlphaWrapper.cpp" />
-    <ClCompile Include="Statistics\StochastPointWrapper.cpp" />
-    <ClCompile Include="Statistics\StochastSettingsWrapper.cpp" />
+    <ClCompile Include="Model\StochastPointAlphaWrapper.cpp" />
+    <ClCompile Include="Model\StochastPointWrapper.cpp" />
+    <ClCompile Include="Reliability\StochastSettingsWrapper.cpp" />
     <ClCompile Include="Statistics\StochastWrapper.cpp" />
     <ClCompile Include="Utils\SharedPointerProvider.cpp" />
     <ClCompile Include="Statistics\VariableStochastValueSetWrapper.cpp" />

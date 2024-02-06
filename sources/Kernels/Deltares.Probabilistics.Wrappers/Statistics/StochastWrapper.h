@@ -11,10 +11,12 @@
 
 namespace Deltares
 {
-	namespace Probabilistic
+	namespace Statistics
 	{
-		namespace Kernels
+		namespace Wrappers
 		{
+			using namespace Deltares::Utils::Wrappers;
+
 			public enum class WrapperDistributionType {Deterministic, Normal, LogNormal, Uniform, Gumbel, Discrete, Qualitative};
 
 			public ref class StochastWrapper

@@ -4,14 +4,14 @@
 
 namespace Deltares
 {
-	namespace Probabilistic
+	namespace Reliability
 	{
-		namespace Kernels
+		namespace Wrappers
 		{
 			DesignPointWrapper^ ReliabilityMethodWrapper::GetDesignPoint(ModelRunnerWrapper^ modelRunner)
 			{
 				std::shared_ptr<Reliability::ReliabilityMethod> reliabilityMethodNative = this->GetReliabilityMethod();
-				std::shared_ptr<Models::ZModelRunner> modelRunnerNative = modelRunner->GetModelRunner();
+				std::shared_ptr<Models::ModelRunner> modelRunnerNative = modelRunner->GetModelRunner();
 
 				modelRunnerNative->initializeForRun();
 

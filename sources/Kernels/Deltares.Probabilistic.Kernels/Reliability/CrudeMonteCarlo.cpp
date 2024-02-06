@@ -20,7 +20,7 @@ namespace Deltares
 {
 	namespace Reliability
 	{
-		std::shared_ptr<DesignPoint> CrudeMonteCarlo::getDesignPoint(std::shared_ptr<Models::ZModelRunner> modelRunner)
+		std::shared_ptr<DesignPoint> CrudeMonteCarlo::getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner)
 		{
 			modelRunner->updateStochastSettings(this->Settings->StochastSet);
 
@@ -60,7 +60,7 @@ namespace Deltares
 			return getReducedDesignPoint(modelRunner, zRemainder, qRange);
 		}
 
-		std::shared_ptr<DesignPoint> CrudeMonteCarlo::getReducedDesignPoint(std::shared_ptr<Models::ZModelRunner> modelRunner, double zRemainder, double qRange)
+		std::shared_ptr<DesignPoint> CrudeMonteCarlo::getReducedDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner, double zRemainder, double qRange)
 		{
 			int nParameters = modelRunner->getVaryingStochastCount();
 			double* zValues = new double[0]; // copy of z for all parallel threads as double
@@ -213,7 +213,7 @@ namespace Deltares
 			}
 		}
 
-		bool CrudeMonteCarlo::checkConvergence(std::shared_ptr<Models::ZModelRunner> modelRunner, double pf, int samples, int nmaal)
+		bool CrudeMonteCarlo::checkConvergence(std::shared_ptr<Models::ModelRunner> modelRunner, double pf, int samples, int nmaal)
 		{
 			std::shared_ptr<ReliabilityReport> report(new ReliabilityReport());
 			report->Step = nmaal;

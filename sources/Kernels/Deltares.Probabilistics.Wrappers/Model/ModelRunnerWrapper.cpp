@@ -6,9 +6,9 @@
 
 namespace Deltares
 {
-	namespace Probabilistic
+	namespace Models
 	{
-		namespace Kernels
+		namespace Wrappers
 		{
 			using namespace Deltares::Models;
 
@@ -36,7 +36,7 @@ namespace Deltares
 
 				Models::ProgressIndicator* progress = progressIndicator != nullptr ? progressIndicator->getProgressIndicator() : nullptr;
 
-				this->modelRunner = new Models::ZModelRunner(zModel, uConverter, progress);
+				this->modelRunner = new Models::ModelRunner(zModel, uConverter, progress);
 			}
 
 			Models::ZLambda ModelRunnerWrapper::getZLambda()

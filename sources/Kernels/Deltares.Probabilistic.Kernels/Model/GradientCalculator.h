@@ -1,7 +1,7 @@
 #include <vector>
 
 #include "GradientSettings.h"
-#include "ZModelRunner.h"
+#include "ModelRunner.h"
 
 
 namespace Deltares
@@ -13,7 +13,7 @@ namespace Deltares
         public:
             GradientCalculator() {}
             std::shared_ptr<GradientSettings> Settings = std::make_shared<GradientSettings>();
-            std::vector<double> getGradient(std::shared_ptr<Models::ZModelRunner> modelRunner, std::shared_ptr<Sample> sample);
+            std::vector<double> getGradient(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<Sample> sample);
         };
     }
 }

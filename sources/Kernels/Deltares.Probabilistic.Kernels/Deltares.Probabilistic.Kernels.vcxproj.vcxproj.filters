@@ -22,7 +22,7 @@
     <ClCompile Include="Model\UConverter.cpp">
       <Filter>Model</Filter>
     </ClCompile>
-    <ClCompile Include="Model\ZModelRunner.cpp">
+    <ClCompile Include="Model\ModelRunner.cpp">
       <Filter>Model</Filter>
     </ClCompile>
     <ClCompile Include="Statistics\Stochast.cpp" />
@@ -116,7 +116,7 @@
     <ClInclude Include="Model\UConverter.h">
       <Filter>Model</Filter>
     </ClInclude>
-    <ClInclude Include="Model\ZModelRunner.h">
+    <ClInclude Include="Model\ModelRunner.h">
       <Filter>Model</Filter>
     </ClInclude>
     <ClInclude Include="Model\ZModel.h" />

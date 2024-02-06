@@ -5,10 +5,13 @@
 
 namespace Deltares
 {
-	namespace Probabilistic
+	namespace Reliability
 	{
-		namespace Kernels
+		namespace Wrappers
 		{
+			using namespace Deltares::Utils::Wrappers;
+			using namespace Deltares::Models::Wrappers;
+
 			public enum class VaryingType
 			{
 				Monotone,
@@ -53,23 +56,23 @@ namespace Deltares
 					void set(int value) { m_settings->MaximumIterations = value; }
 				}
 
-				property Kernels::VaryingType ModelVaryingType
+				property Wrappers::VaryingType ModelVaryingType
 				{
-					Kernels::VaryingType get()
+					Wrappers::VaryingType get()
 					{
 						switch (m_settings->modelVaryingType)
 						{
-						case Reliability::Monotone: return Kernels::VaryingType::Monotone;
-						case Reliability::Varying: return Kernels::VaryingType::Varying;
+						case Reliability::Monotone: return Wrappers::VaryingType::Monotone;
+						case Reliability::Varying: return Wrappers::VaryingType::Varying;
 						default: throw gcnew System::NotSupportedException("Model varying type");
 						}
 					}
-					void set(Kernels::VaryingType value)
+					void set(Wrappers::VaryingType value)
 					{
 						switch (value)
 						{
-						case Kernels::VaryingType::Monotone: m_settings->modelVaryingType = Reliability::Monotone; break;
-						case Kernels::VaryingType::Varying: m_settings->modelVaryingType = Reliability::Varying; break;
+						case Wrappers::VaryingType::Monotone: m_settings->modelVaryingType = Reliability::Monotone; break;
+						case Wrappers::VaryingType::Varying: m_settings->modelVaryingType = Reliability::Varying; break;
 						default: throw gcnew System::NotSupportedException("Model varying type");
 						}
 					}

@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
-using Deltares.Probabilistic.Kernels;
+using Deltares.Models.Wrappers;
+using Deltares.Reliability.Wrappers;
 
 namespace Deltares.Probabilistics.Wrappers.Test
 {
@@ -567,7 +567,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
                 Count++;
             }
 
-            public void DoTextualProgress(Deltares.Probabilistic.Kernels.ProgressTextType progressType, string text)
+            public void DoTextualProgress(ProgressTextType progressType, string text)
             {
                 LastText = text;
             }

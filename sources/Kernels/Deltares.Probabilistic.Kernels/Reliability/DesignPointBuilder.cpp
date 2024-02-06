@@ -1,6 +1,6 @@
 #include "../Model/Sample.h"
 #include "../Math/NumericSupport.h"
-#include "../Model/ZModelRunner.h"
+#include "../Model/ModelRunner.h"
 #include "DesignPointBuilder.h"
 
 #include <vector>

@@ -3,9 +3,9 @@
 
 namespace Deltares
 {
-	namespace Probabilistic
+	namespace Models
 	{
-		namespace Kernels
+		namespace Wrappers
 		{
 			public delegate void ManagedProgressDelegate(double progress);
 			public delegate void ManagedDetailedProgressDelegate(int step, int loop, double reliability, double convergence);

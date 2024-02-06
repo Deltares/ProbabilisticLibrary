@@ -1,6 +1,6 @@
-﻿using Deltares.Probabilistic.Kernels;
+﻿using Deltares.Models.Wrappers;
+using Deltares.Reliability.Wrappers;
 using NUnit.Framework;
-using System.Linq;
 
 namespace Deltares.Probabilistics.Wrappers.Test
 {

@@ -1,22 +1,23 @@
 #pragma once
 
-#include "StochastWrapper.h"
 #include "../../Deltares.Probabilistic.Kernels/Model/StochastPointAlpha.h"
+#include "../Statistics/StochastWrapper.h"
 #include "../Utils/SharedPointerProvider.h"
 
 namespace Deltares
 {
-	namespace Probabilistic
+	namespace Models
 	{
-		namespace Kernels
+		namespace Wrappers
 		{
+			using namespace Deltares::Utils::Wrappers;
 			using namespace Deltares::Models;
 
 			public ref class StochastPointAlphaWrapper
 			{
 			private:
 				StochastPointAlpha* m_alpha;
-				StochastWrapper^ parameter = gcnew StochastWrapper();
+				Statistics::Wrappers::StochastWrapper^ parameter = gcnew Statistics::Wrappers::StochastWrapper();
 				SharedPointerProvider<StochastPointAlpha>* sharedPointer = new SharedPointerProvider<StochastPointAlpha>();
 
 			public:
@@ -33,10 +34,10 @@ namespace Deltares
 				~StochastPointAlphaWrapper() { this->!StochastPointAlphaWrapper(); }
 				!StochastPointAlphaWrapper() { delete sharedPointer; }
 
-				property StochastWrapper^ Parameter
+				property Statistics::Wrappers::StochastWrapper^ Parameter
 				{
-					StochastWrapper^ get() { return parameter; }
-					void set(StochastWrapper^ value) { parameter = value; }
+					Statistics::Wrappers::StochastWrapper^ get() { return parameter; }
+					void set(Statistics::Wrappers::StochastWrapper^ value) { parameter = value; }
 				}
 
 				property double Alpha

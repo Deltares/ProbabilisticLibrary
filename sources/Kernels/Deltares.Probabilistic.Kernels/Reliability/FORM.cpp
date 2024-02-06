@@ -15,7 +15,7 @@ namespace Deltares
 {
 	namespace Reliability
 	{
-		std::shared_ptr<DesignPoint> FORM::getDesignPoint(std::shared_ptr<Models::ZModelRunner> modelRunner)
+		std::shared_ptr<DesignPoint> FORM::getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner)
 		{
 			modelRunner->updateStochastSettings(this->Settings->StochastSet);
 
@@ -77,7 +77,7 @@ namespace Deltares
 			return designPoint;
 		}
 
-		std::shared_ptr<DesignPoint> FORM::getDesignPoint(std::shared_ptr<Models::ZModelRunner> modelRunner, std::shared_ptr<Sample> startSample, double relaxationFactor)
+		std::shared_ptr<DesignPoint> FORM::getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<Sample> startSample, double relaxationFactor)
 		{
 			constexpr double minDzduLength = 1E-08;
 
@@ -238,7 +238,7 @@ namespace Deltares
 			return validResults;
 		}
 
-		bool FORM::checkConvergence(std::shared_ptr<Models::ZModelRunner> modelRunner, std::shared_ptr<Sample> u, std::shared_ptr<ConvergenceReport> convergenceReport, double beta, double zGradientLength)
+		bool FORM::checkConvergence(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<Sample> u, std::shared_ptr<ConvergenceReport> convergenceReport, double beta, double zGradientLength)
 		{
 			//   compute alpha vector
 			const double uSquared = NumericSupport::GetSquaredSum(u->Values);

@@ -19,7 +19,6 @@ namespace Deltares
 		{
 		public:
 			std::string Identifier = "";
-			int ScenarioIndex = -1;
 
 			std::vector<std::shared_ptr<DesignPoint>> ContributingDesignPoints;
 			std::vector<std::shared_ptr<ReliabilityResult>> ReliabililityResults;

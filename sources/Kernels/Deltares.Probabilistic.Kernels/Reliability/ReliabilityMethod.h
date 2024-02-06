@@ -1,6 +1,6 @@
 #pragma once
 #include "DesignPoint.h"
-#include "../Model/ZModelRunner.h"
+#include "../Model/ModelRunner.h"
 
 namespace Deltares
 {
@@ -16,7 +16,7 @@ namespace Deltares
 			static int getZFactor(double z);
 
 		public:
-			virtual std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ZModelRunner> modelRunner) { return nullptr; }
+			virtual std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) { return nullptr; }
 			virtual ~ReliabilityMethod() = default;
 
 			bool isStopped();

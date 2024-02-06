@@ -4,9 +4,9 @@
 
 namespace Deltares
 {
-	namespace Probabilistic
+	namespace Utils
 	{
-		namespace Kernels
+		namespace Wrappers
 		{
 			template <class T>
 

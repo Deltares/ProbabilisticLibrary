@@ -2,18 +2,18 @@
 
 namespace Deltares
 {
-	namespace Probabilistic
+	namespace Models
 	{
-		namespace Kernels
+		namespace Wrappers
 		{
-			Kernels::MessageType MessageWrapper::getMessageType(Deltares::Models::MessageType messageType)
+			Wrappers::MessageType MessageWrapper::getMessageType(Deltares::Models::MessageType messageType)
 			{
 				switch (messageType)
 				{
-				case Models::Debug: return Kernels::MessageType::Debug;
-				case Models::Info: return Kernels::MessageType::Info;
-				case Models::Warning: return Kernels::MessageType::Warning;
-				case Models::Error: return Kernels::MessageType::Error;
+				case Models::Debug: return Wrappers::MessageType::Debug;
+				case Models::Info: return Wrappers::MessageType::Info;
+				case Models::Warning: return Wrappers::MessageType::Warning;
+				case Models::Error: return Wrappers::MessageType::Error;
 				default: throw gcnew System::NotSupportedException("Message type");
 				}
 			}

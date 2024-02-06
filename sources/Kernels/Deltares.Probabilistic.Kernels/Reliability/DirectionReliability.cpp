@@ -1,6 +1,6 @@
 #include "DirectionReliability.h"
 #include "DirectionReliabilitySettings.h"
-#include "../Model/ZModelRunner.h"
+#include "../Model/ModelRunner.h"
 #include "../Math/RootFinders/LinearRootFinder.h"
 #include <memory>
 
@@ -44,9 +44,9 @@ namespace Deltares
 		class ZGetter
 		{
 		private:
-			std::shared_ptr<Models::ZModelRunner> modelRunner;
+			std::shared_ptr<Models::ModelRunner> modelRunner;
 		public:
-			ZGetter(std::shared_ptr<Models::ZModelRunner> modelRunner)
+			ZGetter(std::shared_ptr<Models::ModelRunner> modelRunner)
 			{
 				this->modelRunner = modelRunner;
 			}
@@ -73,13 +73,13 @@ namespace Deltares
 		class DirectionCalculation
 		{
 		private:
-			std::shared_ptr<Models::ZModelRunner> modelRunner;
+			std::shared_ptr<Models::ModelRunner> modelRunner;
 			std::shared_ptr<Sample> uDirection;
 			bool inverted;
 			ZGetter* model;
 
 		public:
-			DirectionCalculation(std::shared_ptr<Models::ZModelRunner> modelRunner, std::shared_ptr<Sample> uDirection, bool inverted)
+			DirectionCalculation(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<Sample> uDirection, bool inverted)
 			{
 				this->modelRunner = modelRunner;
 				this->uDirection = uDirection;
@@ -103,7 +103,7 @@ namespace Deltares
 			}
 		};
 
-		std::shared_ptr<DesignPoint> DirectionReliability::getDesignPoint(std::shared_ptr<Models::ZModelRunner> modelRunner)
+		std::shared_ptr<DesignPoint> DirectionReliability::getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner)
 		{
 			modelRunner->updateStochastSettings(this->Settings->StochastSet);
 
@@ -121,7 +121,7 @@ namespace Deltares
 			return designPoint;
 		}
 
-		double DirectionReliability::getBeta(std::shared_ptr<Models::ZModelRunner> modelRunner, std::shared_ptr<Sample> directionSample, double z0)
+		double DirectionReliability::getBeta(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<Sample> directionSample, double z0)
 		{
 			std::shared_ptr<Sample> normalizedSample = directionSample->normalize();
 
@@ -139,7 +139,7 @@ namespace Deltares
 			return beta;
 		}
 
-		double DirectionReliability::getDirectionBeta(std::shared_ptr<Models::ZModelRunner> modelRunner, std::shared_ptr <BetaValueTask> directionTask)
+		double DirectionReliability::getDirectionBeta(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr <BetaValueTask> directionTask)
 		{
 			std::shared_ptr<Sample> uDirection = directionTask->UValues->normalize();
 			uDirection->IterationIndex = directionTask->Iteration;
@@ -154,7 +154,7 @@ namespace Deltares
 			return beta;
 		}
 
-		std::vector<std::shared_ptr<DirectionSection>> DirectionReliability::getDirectionSections(std::shared_ptr<Models::ZModelRunner> modelRunner, std::shared_ptr<DirectionReliabilitySettings> settings, std::shared_ptr<Sample> uDirection, bool invertZ)
+		std::vector<std::shared_ptr<DirectionSection>> DirectionReliability::getDirectionSections(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<DirectionReliabilitySettings> settings, std::shared_ptr<Sample> uDirection, bool invertZ)
 		{
 			std::vector<std::shared_ptr<DirectionSection>> sections;
 
@@ -262,7 +262,7 @@ namespace Deltares
 			return sections;
 		}
 
-		double DirectionReliability::findBetaBetweenBoundaries(std::shared_ptr<Models::ZModelRunner> modelRunner, std::shared_ptr<DirectionReliabilitySettings> settings, std::shared_ptr<Sample> uDirection, bool invertZ, double uLow, double uHigh, double zLow, double zHigh, double& z)
+		double DirectionReliability::findBetaBetweenBoundaries(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<DirectionReliabilitySettings> settings, std::shared_ptr<Sample> uDirection, bool invertZ, double uLow, double uHigh, double zLow, double zHigh, double& z)
 		{
 			std::unique_ptr<ZGetter> model (new ZGetter(modelRunner));
 

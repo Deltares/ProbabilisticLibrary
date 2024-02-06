@@ -1,17 +1,19 @@
 #pragma once
-#include "StartPointCalculatorSettingsWrapper.h"
-#include "GradientCalculatorSettingsWrapper.h"
-#include "../Statistics/StochastSettingsWrapper.h"
 #include "../../Deltares.Probabilistic.Kernels/Reliability/FORMSettings.h"
 #include "../../Deltares.Probabilistic.Kernels/Reliability/StochastSettings.h"
+#include "../Model/GradientCalculatorSettingsWrapper.h"
 #include "../Utils/SharedPointerProvider.h"
+#include "StartPointCalculatorSettingsWrapper.h"
 
 namespace Deltares
 {
-	namespace Probabilistic
+	namespace Reliability
 	{
-		namespace Kernels
+		namespace Wrappers
 		{
+			using namespace Deltares::Utils::Wrappers;
+			using namespace Deltares::Models::Wrappers;
+
 			public ref class FORMSettingsWrapper
 			{
 			private:

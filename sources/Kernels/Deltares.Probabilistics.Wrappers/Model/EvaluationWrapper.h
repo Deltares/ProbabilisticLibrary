@@ -7,10 +7,11 @@
 
 namespace Deltares
 {
-	namespace Probabilistic
+	namespace Models
 	{
-		namespace Kernels
+		namespace Wrappers
 		{
+			using namespace Deltares::Utils::Wrappers;
 			using namespace Deltares::Models;
 
 			public ref class EvaluationWrapper

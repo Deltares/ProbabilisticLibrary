@@ -1,4 +1,4 @@
-#include "ZModelRunner.h"
+#include "ModelRunner.h"
 #include "../Math/NumericSupport.h"
 #include <cmath>
 #if __has_include(<format>)
@@ -11,36 +11,36 @@ namespace Deltares
 {
 	namespace Models
 	{
-		int ZModelRunner::getVaryingStochastCount()
+		int ModelRunner::getVaryingStochastCount()
 		{
 			return this->uConverter->getVaryingStochastCount();
 		}
 
-		int ZModelRunner::getStochastCount()
+		int ModelRunner::getStochastCount()
 		{
 			return this->uConverter->getStochastCount();
 		}
 
-		void ZModelRunner::updateStochastSettings(std::shared_ptr<Reliability::StochastSettingsSet> settings)
+		void ModelRunner::updateStochastSettings(std::shared_ptr<Reliability::StochastSettingsSet> settings)
 		{
 			this->uConverter->updateStochastSettings(settings);
 		}
 
 
-		void ZModelRunner::initializeForRun()
+		void ModelRunner::initializeForRun()
 		{
 			this->uConverter->initializeForRun();
 			this->zModel->setMaxProcesses(this->Settings->MaxParallelProcesses);
 		}
 
-		void ZModelRunner::clear()
+		void ModelRunner::clear()
 		{
 			this->reliabilityResults.clear();
 			this->evaluations.clear();
 			this->messages.clear();
 		}
 
-		std::shared_ptr<Sample> ZModelRunner::getXSample(std::shared_ptr<Sample> sample)
+		std::shared_ptr<Sample> ModelRunner::getXSample(std::shared_ptr<Sample> sample)
 		{
 			auto xValues = this->uConverter->getXValues(sample);
 
@@ -54,7 +54,7 @@ namespace Deltares
 			return xSample;
 		}
 
-		double ZModelRunner::getZValue(std::shared_ptr<Sample> sample)
+		double ModelRunner::getZValue(std::shared_ptr<Sample> sample)
 		{
 			std::shared_ptr<Sample> xSample = getXSample(sample);
 
@@ -68,7 +68,7 @@ namespace Deltares
 			return sample->Z;
 		}
 
-		double* ZModelRunner::getZValues(std::vector<std::shared_ptr<Sample>> samples)
+		double* ModelRunner::getZValues(std::vector<std::shared_ptr<Sample>> samples)
 		{
 			std::vector<std::shared_ptr<Sample>> xSamples;
 
@@ -93,7 +93,7 @@ namespace Deltares
 			return zValues;
 		}
 
-		void ZModelRunner::registerEvaluation(std::shared_ptr<Sample> sample)
+		void ModelRunner::registerEvaluation(std::shared_ptr<Sample> sample)
 		{
 			if (this->Settings->SaveEvaluations)
 			{
@@ -109,17 +109,17 @@ namespace Deltares
 			}
 		}
 
-		bool ZModelRunner::shouldExitPrematurely(double* zValues, double z0Fac, std::vector<std::shared_ptr<Sample>> samples, double beta)
+		bool ModelRunner::shouldExitPrematurely(double* zValues, double z0Fac, std::vector<std::shared_ptr<Sample>> samples, double beta)
 		{
 			return false;
 		}
 
-		bool ZModelRunner::shouldExitPrematurely(bool final)
+		bool ModelRunner::shouldExitPrematurely(bool final)
 		{
 			return false;
 		}
 
-		void ZModelRunner::reportResult(std::shared_ptr<ReliabilityReport> report)
+		void ModelRunner::reportResult(std::shared_ptr<ReliabilityReport> report)
 		{
 			if (Settings->SaveConvergence)
 			{
@@ -178,7 +178,7 @@ namespace Deltares
 			}
 		}
 
-		void ZModelRunner::reportMessage(MessageType type, std::string text)
+		void ModelRunner::reportMessage(MessageType type, std::string text)
 		{
 			if (Settings->SaveMessages && this->messages.size() < this->Settings->MaxMessages && type >= this->Settings->LowestMessageType)
 			{
@@ -186,7 +186,7 @@ namespace Deltares
 			}
 		}
 
-		std::shared_ptr<Reliability::DesignPoint> ZModelRunner::getDesignPoint(std::shared_ptr<Sample> sample, double beta, std::shared_ptr<Reliability::ConvergenceReport> convergenceReport, std::string identifier)
+		std::shared_ptr<Reliability::DesignPoint> ModelRunner::getDesignPoint(std::shared_ptr<Sample> sample, double beta, std::shared_ptr<Reliability::ConvergenceReport> convergenceReport, std::string identifier)
 		{
 			std::shared_ptr<StochastPoint> stochastPoint = uConverter->GetStochastPoint(sample, beta);
 

@@ -6,10 +6,13 @@
 
 namespace Deltares
 {
-	namespace Probabilistic
+	namespace Reliability
 	{
-		namespace Kernels
+		namespace Wrappers
 		{
+			using namespace Deltares::Utils::Wrappers;
+			using namespace Deltares::Models::Wrappers;
+
 			public ref class FORMWrapper : public ReliabilityMethodWrapper
 			{
 			private:

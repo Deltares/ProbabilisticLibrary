@@ -2,9 +2,9 @@
 
 namespace Deltares
 {
-	namespace Probabilistic
+	namespace Utils
 	{
-		namespace Kernels
+		namespace Wrappers
 		{
 			std::string NativeSupport::toNative(System::String^ text)
 			{

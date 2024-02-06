@@ -1,17 +1,19 @@
 #pragma once
 
-#include "../Model/RandomSettingsWrapper.h"
-#include "../Statistics/StochastSettingsWrapper.h"
 #include "../../Deltares.Probabilistic.Kernels/Reliability/CrudeMonteCarloSettings.h"
-#include "../../Deltares.Probabilistic.Kernels/Reliability/StochastSettings.h"
+#include "../Model/RandomSettingsWrapper.h"
+#include "../Reliability/StochastSettingsWrapper.h"
 #include "../Utils/SharedPointerProvider.h"
 
 namespace Deltares
 {
-	namespace Probabilistic
+	namespace Reliability
 	{
-		namespace Kernels
+		namespace Wrappers
 		{
+			using namespace Deltares::Utils::Wrappers;
+			using namespace Deltares::Models::Wrappers;
+
 			public ref class CrudeMonteCarloSettingsWrapper
 			{
 			private:

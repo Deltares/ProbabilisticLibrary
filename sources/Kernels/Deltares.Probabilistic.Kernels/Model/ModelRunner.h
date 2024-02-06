@@ -18,7 +18,7 @@ namespace Deltares
 {
 	namespace Models
 	{
-		class ZModelRunner
+		class ModelRunner
 		{
 		private:
 			std::shared_ptr<ZModel> zModel;
@@ -32,7 +32,7 @@ namespace Deltares
 			void registerEvaluation(std::shared_ptr<Sample> sample);
 
 		public:
-			ZModelRunner(std::shared_ptr<ZModel> zModel, std::shared_ptr<UConverter>uConverter, ProgressIndicator* progressIndicator = nullptr)
+			ModelRunner(std::shared_ptr<ZModel> zModel, std::shared_ptr<UConverter>uConverter, ProgressIndicator* progressIndicator = nullptr)
 			{
 				this->zModel = zModel;
 				this->uConverter = uConverter;

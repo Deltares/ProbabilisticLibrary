@@ -2,13 +2,12 @@
 #include "DesignPointWrapper.h"
 #include "../Model/ModelRunnerWrapper.h"
 #include "../../Deltares.Probabilistic.Kernels/Reliability/ReliabilityMethod.h"
-#include "../Model/MessageWrapper.h"
 
 namespace Deltares
 {
-	namespace Probabilistic
+	namespace Reliability
 	{
-		namespace Kernels
+		namespace Wrappers
 		{
 			public ref class ReliabilityMethodWrapper
 			{

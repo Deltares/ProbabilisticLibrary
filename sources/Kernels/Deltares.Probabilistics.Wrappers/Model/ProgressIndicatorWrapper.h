@@ -4,9 +4,9 @@
 
 namespace Deltares
 {
-	namespace Probabilistic
+	namespace Models
 	{
-		namespace Kernels
+		namespace Wrappers
 		{
 			public enum ProgressTextType {Global, Detailed};
 

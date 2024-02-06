@@ -1,16 +1,18 @@
 #pragma once
 
-#include "../Statistics/StochastSettingsWrapper.h"
 #include "../../Deltares.Probabilistic.Kernels/Reliability/StartPointCalculatorSettings.h"
 #include "../../Deltares.Probabilistic.Kernels/Reliability/StochastSettings.h"
+#include "../Reliability/StochastSettingsWrapper.h"
 #include "../Utils/SharedPointerProvider.h"
 
 namespace Deltares
 {
-	namespace Probabilistic
+	namespace Reliability
 	{
-		namespace Kernels
+		namespace Wrappers
 		{
+			using namespace Deltares::Utils::Wrappers;
+
 			public enum class StartMethodType
 			{
 				None,
@@ -51,27 +53,27 @@ namespace Deltares
 					void set(double value) { settings->RadiusSphereSearch = value; }
 				}
 
-				property Kernels::StartMethodType StartMethod
+				property Wrappers::StartMethodType StartMethod
 				{
-					Kernels::StartMethodType get()
+					Wrappers::StartMethodType get()
 					{
 						switch (settings->StartMethod)
 						{
-						case Deltares::Reliability::StartMethodType::None: return Kernels::StartMethodType::None;
-						case Deltares::Reliability::StartMethodType::RaySearch: return Kernels::StartMethodType::RaySearch;
-						case Deltares::Reliability::StartMethodType::SensitivitySearch: return Kernels::StartMethodType::SensitivitySearch;
-						case Deltares::Reliability::StartMethodType::SphereSearch: return Kernels::StartMethodType::SphereSearch;
+						case Deltares::Reliability::StartMethodType::None: return Wrappers::StartMethodType::None;
+						case Deltares::Reliability::StartMethodType::RaySearch: return Wrappers::StartMethodType::RaySearch;
+						case Deltares::Reliability::StartMethodType::SensitivitySearch: return Wrappers::StartMethodType::SensitivitySearch;
+						case Deltares::Reliability::StartMethodType::SphereSearch: return Wrappers::StartMethodType::SphereSearch;
 						default: throw gcnew System::NotSupportedException("start method");
 						}
 					}
-					void set(Kernels::StartMethodType value)
+					void set(Wrappers::StartMethodType value)
 					{
 						switch (value)
 						{
-						case Kernels::StartMethodType::None: settings->StartMethod = Reliability::None; break;
-						case Kernels::StartMethodType::RaySearch: settings->StartMethod = Reliability::RaySearch; break;
-						case Kernels::StartMethodType::SensitivitySearch: settings->StartMethod = Reliability::SensitivitySearch; break;
-						case Kernels::StartMethodType::SphereSearch: settings->StartMethod = Reliability::SphereSearch; break;
+						case Wrappers::StartMethodType::None: settings->StartMethod = Reliability::None; break;
+						case Wrappers::StartMethodType::RaySearch: settings->StartMethod = Reliability::RaySearch; break;
+						case Wrappers::StartMethodType::SensitivitySearch: settings->StartMethod = Reliability::SensitivitySearch; break;
+						case Wrappers::StartMethodType::SphereSearch: settings->StartMethod = Reliability::SphereSearch; break;
 						default: throw gcnew System::NotSupportedException("Start method");
 						}
 					}

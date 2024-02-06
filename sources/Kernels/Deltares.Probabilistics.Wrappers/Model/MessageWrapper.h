@@ -7,9 +7,9 @@
 
 namespace Deltares
 {
-	namespace Probabilistic
+	namespace Models
 	{
-		namespace Kernels
+		namespace Wrappers
 		{
 			public enum class MessageType
 			{
@@ -21,16 +21,16 @@ namespace Deltares
 
 			public ref class MessageWrapper
 			{
-				Kernels::MessageType getMessageType(Deltares::Models::MessageType messageType);
+				Wrappers::MessageType getMessageType(Deltares::Models::MessageType messageType);
 			public:
 				MessageWrapper() {}
 				MessageWrapper(std::shared_ptr<Models::Message> message)
 				{
 					this->Type = getMessageType(message->Type);
-					this->Text = NativeSupport::toManaged(message->Text);
+					this->Text = Utils::Wrappers::NativeSupport::toManaged(message->Text);
 				}
 
-				property Kernels::MessageType Type;
+				property Wrappers::MessageType Type;
 				property System::String^ Text;
 			};
 		}

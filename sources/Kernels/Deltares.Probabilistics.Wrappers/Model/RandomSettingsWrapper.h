@@ -5,11 +5,12 @@
 
 namespace Deltares
 {
-	namespace Probabilistic
+	namespace Models
 	{
-		namespace Kernels
+		namespace Wrappers
 		{
 			using namespace Deltares::Models;
+			using namespace Deltares::Utils::Wrappers;
 
 			public ref class RandomSettingsWrapper
 			{

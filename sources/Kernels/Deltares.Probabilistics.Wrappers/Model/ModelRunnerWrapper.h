@@ -1,29 +1,30 @@
 #pragma once
+#include "../../Deltares.Probabilistic.Kernels/Model/ZModel.h"
+#include "../../Deltares.Probabilistic.Kernels/Model/ModelRunner.h"
+#include "../../Deltares.Probabilistic.Kernels/Model/Sample.h"
 #include "../Statistics/CorrelationMatrixWrapper.h"
+#include "../Statistics/StochastWrapper.h"
+#include "../Utils/SharedPointerProvider.h"
 #include "ProgressIndicatorWrapper.h"
 #include "RunSettingsWrapper.h"
-#include "../Statistics/StochastWrapper.h"
 #include "SampleWrapper.h"
-#include "../../Deltares.Probabilistic.Kernels/Model/ZModel.h"
-#include "../../Deltares.Probabilistic.Kernels/Model/ZModelRunner.h"
-#include "../../Deltares.Probabilistic.Kernels/Model/Sample.h"
-#include "../Utils/SharedPointerProvider.h"
 
 namespace Deltares
 {
-	namespace Probabilistic
+	namespace Models
 	{
-		namespace Kernels
+		namespace Wrappers
 		{
 			using namespace Deltares::Reliability;
+			using namespace Deltares::Statistics::Wrappers;
 
 			public delegate void ZSampleDelegate(SampleWrapper^);
 
 			public ref class ModelRunnerWrapper
 			{
 			private:
-				Models::ZModelRunner* modelRunner;
-				SharedPointerProvider<Models::ZModelRunner>* sharedPointer = new SharedPointerProvider<Models::ZModelRunner>();
+				Models::ModelRunner* modelRunner;
+				SharedPointerProvider<Models::ModelRunner>* sharedPointer = new SharedPointerProvider<Models::ModelRunner>();
 
 				std::shared_ptr<Models::ZModel> getZModel();
 				Models::ZLambda getZLambda();
@@ -57,9 +58,9 @@ namespace Deltares
 
 				RunSettingsWrapper^ Settings = gcnew RunSettingsWrapper();
 
-				std::shared_ptr<Models::ZModelRunner> GetModelRunner()
+				std::shared_ptr<Models::ModelRunner> GetModelRunner()
 				{
-					std::shared_ptr<Models::ZModelRunner> m_modelRunner = sharedPointer->getSharedPointer(modelRunner);
+					std::shared_ptr<Models::ModelRunner> m_modelRunner = sharedPointer->getSharedPointer(modelRunner);
 
 					m_modelRunner->Settings = this->Settings->GetSettings();
 					return m_modelRunner;

@@ -6,17 +6,19 @@
 
 namespace Deltares
 {
-	namespace Probabilistic
+	namespace Statistics
 	{
-		namespace Kernels
+		namespace Wrappers
 		{
+			using namespace Deltares::Utils::Wrappers;
+
 			public ref class VariableStochastValueSetWrapper
 			{
 			private:
 				Statistics::VariableStochastValuesSet* m_value;
 				SharedPointerProvider<Statistics::VariableStochastValuesSet>* sharedPointer = new SharedPointerProvider<Statistics::VariableStochastValuesSet>();
 
-				System::Collections::Generic::List<Deltares::Probabilistic::Kernels::VariableStochastValueWrapper^>^ stochastValues = gcnew System::Collections::Generic::List<Deltares::Probabilistic::Kernels::VariableStochastValueWrapper^>();
+				System::Collections::Generic::List<VariableStochastValueWrapper^>^ stochastValues = gcnew System::Collections::Generic::List<VariableStochastValueWrapper^>();
 
 			public:
 				VariableStochastValueSetWrapper()
@@ -26,9 +28,9 @@ namespace Deltares
 				~VariableStochastValueSetWrapper() { this->!VariableStochastValueSetWrapper(); }
 				!VariableStochastValueSetWrapper() { delete sharedPointer; }
 
-				property System::Collections::Generic::List<Deltares::Probabilistic::Kernels::VariableStochastValueWrapper^>^ StochastValues
+				property System::Collections::Generic::List<VariableStochastValueWrapper^>^ StochastValues
 				{
-					System::Collections::Generic::List<Deltares::Probabilistic::Kernels::VariableStochastValueWrapper^>^ get() { return stochastValues; }
+					System::Collections::Generic::List<VariableStochastValueWrapper^>^ get() { return stochastValues; }
 				}
 
 				std::shared_ptr<Statistics::VariableStochastValuesSet> GetValue()

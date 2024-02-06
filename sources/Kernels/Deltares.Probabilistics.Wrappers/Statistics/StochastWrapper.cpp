@@ -2,9 +2,9 @@
 
 namespace Deltares
 {
-	namespace Probabilistic
+	namespace Statistics
 	{
-		namespace Kernels
+		namespace Wrappers
 		{
 			Statistics::DistributionType StochastWrapper::getNativeDistributionType(WrapperDistributionType distributionType)
 			{

@@ -8,7 +8,7 @@ namespace Deltares
 {
 	namespace Reliability
 	{
-		std::shared_ptr<DesignPoint> DirectionalSampling::getDesignPoint(std::shared_ptr<ZModelRunner> modelRunner)
+		std::shared_ptr<DesignPoint> DirectionalSampling::getDesignPoint(std::shared_ptr<ModelRunner> modelRunner)
 		{
 			int nstochasts = modelRunner->getVaryingStochastCount();
 			double pf = 0;
@@ -172,7 +172,7 @@ namespace Deltares
 			return convergence;
 		}
 
-		std::vector<double> DirectionalSampling::getDirectionBetas(std::shared_ptr<Models::ZModelRunner> modelRunner, std::vector<std::shared_ptr<Sample>> samples, double z0, int step)
+		std::vector<double> DirectionalSampling::getDirectionBetas(std::shared_ptr<Models::ModelRunner> modelRunner, std::vector<std::shared_ptr<Sample>> samples, double z0, int step)
 		{
 			auto betaValues = std::vector<double>(samples.size());
 
