@@ -1,4 +1,4 @@
-#include "../Deltares.Probabilistic.Kernels/Statistics/StandardNormal.h"
+#include "../Deltares.Probabilistic/Statistics/StandardNormal.h"
 #include "stringHelper.h"
 
 using namespace Deltares::Statistics;

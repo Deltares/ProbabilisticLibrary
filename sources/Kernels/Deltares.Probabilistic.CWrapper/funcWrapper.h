@@ -2,7 +2,7 @@
 #include <functional>
 #include <memory>
 
-#include "../Deltares.Probabilistic.Kernels/Model/Sample.h"
+#include "../Deltares.Probabilistic/Model/Sample.h"
 #include "stringHelper.h"
 
 typedef std::function<double(double[], int[], tError*)> zFuncExtern;

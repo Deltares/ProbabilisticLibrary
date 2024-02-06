@@ -3,8 +3,8 @@
 
 #include "basicSettings.h"
 #include "createDistribution.h"
-#include "../Deltares.Probabilistic.Kernels/Utils/probLibException.h"
-#include "../Deltares.Probabilistic.Kernels/Math/vector1D.h"
+#include "../Deltares.Probabilistic/Utils/probLibException.h"
+#include "../Deltares.Probabilistic/Math/vector1D.h"
 
 #include "funcWrapper.h"
 #include "progressWrapper.h"

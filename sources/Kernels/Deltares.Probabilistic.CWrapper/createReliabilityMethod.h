@@ -1,8 +1,8 @@
 #pragma once
 
 #include "basicSettings.h"
-#include "../Deltares.Probabilistic.Kernels/Reliability/ReliabilityMethod.h"
-#include "../Deltares.Probabilistic.Kernels/Model/RandomSettings.h"
+#include "../Deltares.Probabilistic/Reliability/ReliabilityMethod.h"
+#include "../Deltares.Probabilistic/Model/RandomSettings.h"
 
 class createReliabilityMethod
 {

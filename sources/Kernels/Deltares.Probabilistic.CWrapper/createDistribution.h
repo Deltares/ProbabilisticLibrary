@@ -3,7 +3,7 @@
 #include <memory>
 
 #include "enumDistributions.h"
-#include "../Deltares.Probabilistic.Kernels/Statistics/Stochast.h"
+#include "../Deltares.Probabilistic/Statistics/Stochast.h"
 
 class createDistribution
 {

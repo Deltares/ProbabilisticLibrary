@@ -20,39 +20,37 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
-    <ProjectGuid>{E82A904A-FE1C-4695-BE1F-0AFCE5861FB4}</ProjectGuid>
-    <TargetFrameworkVersion>
-    </TargetFrameworkVersion>
+    <ProjectGuid>{8142BF85-77C9-4340-A643-C837F0EC93AF}</ProjectGuid>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <Keyword>ManagedCProj</Keyword>
-    <RootNamespace>DeltaresReliabilityCWrapper</RootNamespace>
+    <RootNamespace>DeltaresProbabilisticWrapper</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <EnableManagedPackageReferenceSupport>true</EnableManagedPackageReferenceSupport>
-    <ProjectName>Deltares.Probabilistic.CWrapper</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
-    <CLRSupport>false</CLRSupport>
+    <CLRSupport>true</CLRSupport>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
-    <CLRSupport>false</CLRSupport>
+    <CLRSupport>true</CLRSupport>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
-    <CLRSupport>false</CLRSupport>
+    <CLRSupport>true</CLRSupport>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CLRSupport>true</CLRSupport>
@@ -80,7 +78,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;DELTARESSTATISTICSKERNELS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;DELTARESPROBABILISTICSWRAPPERS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -97,7 +95,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;DELTARESSTATISTICSKERNELS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;DELTARESPROBABILISTICSWRAPPERS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -114,23 +112,30 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;DELTARESSTATISTICSKERNELS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;DELTARESPROBABILISTICSWRAPPERS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <CompileAsManaged>false</CompileAsManaged>
+      <CompileAsManaged>true</CompileAsManaged>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <ExceptionHandling>Async</ExceptionHandling>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <AdditionalOptions>/Zc:twoPhase- %(AdditionalOptions)</AdditionalOptions>
       <OpenMPSupport>true</OpenMPSupport>
+      <AdditionalIncludeDirectories>$(SolutionDir)$(Platform)\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
+      <AdditionalDependencies>$(SolutionDir)$(Platform)\$(Configuration)\Deltares.Probabilistic.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>
+      </LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -138,7 +143,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;DELTARESSTATISTICSKERNELS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;DELTARESPROBABILISTICSWRAPPERS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -150,17 +155,81 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>$(SolutionDir)$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>$(SolutionDir)$(Platform)\$(Configuration)\Deltares.Probabilistic.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include=".\funcWrapper.cpp" />
-    <ClCompile Include=".\probCalcF2C.cpp" />
-    <ClCompile Include=".\stringHelper.cpp" />
-    <ClCompile Include="calcdistributions.cpp" />
-    <ClCompile Include="convert.cpp" />
-    <ClCompile Include="createDistribution.cpp" />
-    <ClCompile Include="createReliabilityMethod.cpp" />
-    <ClCompile Include="progressWrapper.cpp" />
+    <ClInclude Include="Statistics\DiscreteValueWrapper.h" />
+    <ClInclude Include="Statistics\FragilityValueWrapper.h" />
+    <ClInclude Include="Statistics\HistogramValueWrapper.h" />
+    <ClInclude Include="Model\MessageWrapper.h" />
+    <ClInclude Include="Model\GradientCalculatorSettingsWrapper.h" />
+    <ClInclude Include="Reliability\FORMSettingsWrapper.h" />
+    <ClInclude Include="Reliability\FORMWrapper.h" />
+    <ClInclude Include="framework.h" />
+    <ClInclude Include="Reliability\ConvergenceReportWrapper.h" />
+    <ClInclude Include="Reliability\StartPointCalculatorSettingsWrapper.h" />
+    <ClInclude Include="Statistics\CorrelationMatrixWrapper.h" />
+    <ClInclude Include="Reliability\CrudeMonteCarloSettingsWrapper.h" />
+    <ClInclude Include="Reliability\CrudeMonteCarloWrapper.h" />
+    <ClInclude Include="Reliability\DesignPointWrapper.h" />
+    <ClInclude Include="Reliability\DirectionalSamplingSettingsWrapper.h" />
+    <ClInclude Include="Reliability\DirectionalSamplingWrapper.h" />
+    <ClInclude Include="Reliability\DirectionReliabilitySettingsWrapper.h" />
+    <ClInclude Include="Reliability\DirectionReliabilityWrapper.h" />
+    <ClInclude Include="Model\EvaluationWrapper.h" />
+    <ClInclude Include="Model\ModelRunnerWrapper.h" />
+    <ClInclude Include="Utils\NativeSupport.h" />
+    <ClInclude Include="Model\ProgressIndicatorWrapper.h" />
+    <ClInclude Include="Model\RandomProvider.h" />
+    <ClInclude Include="Model\RandomSettingsWrapper.h" />
+    <ClInclude Include="Reliability\ReliabilityMethodWrapper.h" />
+    <ClInclude Include="Reliability\ReliabilityResultWrapper.h" />
+    <ClInclude Include="Model\RunSettingsWrapper.h" />
+    <ClInclude Include="Model\SampleWrapper.h" />
+    <ClInclude Include="Statistics\StandardNormalWrapper.h" />
+    <ClInclude Include="Model\StochastPointAlphaWrapper.h" />
+    <ClInclude Include="Model\StochastPointWrapper.h" />
+    <ClInclude Include="Reliability\StochastSettingsWrapper.h" />
+    <ClInclude Include="Statistics\StochastWrapper.h" />
+    <ClInclude Include="Utils\SharedPointerProvider.h" />
+    <ClInclude Include="Statistics\VariableStochastValueSetWrapper.h" />
+    <ClInclude Include="Statistics\VariableStochastValueWrapper.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Model\MessageWrapper.cpp" />
+    <ClCompile Include="Model\GradientCalculatorSettingsWrapper.cpp" />
+    <ClCompile Include="Reliability\FORMSettingsWrapper.cpp" />
+    <ClCompile Include="Reliability\FORMWrapper.cpp" />
+    <ClCompile Include="Reliability\ConvergenceReportWrapper.cpp" />
+    <ClCompile Include="Reliability\StartPointCalculatorSettingsWrapper.cpp" />
+    <ClCompile Include="Statistics\CorrelationMatrixWrapper.cpp" />
+    <ClCompile Include="Reliability\CrudeMonteCarloSettingsWrapper.cpp" />
+    <ClCompile Include="Reliability\CrudeMonteCarloWrapper.cpp" />
+    <ClCompile Include="Reliability\DesignPointWrapper.cpp" />
+    <ClCompile Include="Reliability\DirectionalSamplingSettingsWrapper.cpp" />
+    <ClCompile Include="Reliability\DirectionalSamplingWrapper.cpp" />
+    <ClCompile Include="Reliability\DirectionReliabilitySettingsWrapper.cpp" />
+    <ClCompile Include="Reliability\DirectionReliabilityWrapper.cpp" />
+    <ClCompile Include="Model\EvaluationWrapper.cpp" />
+    <ClCompile Include="Model\ModelRunnerWrapper.cpp" />
+    <ClCompile Include="Utils\NativeSupport.cpp" />
+    <ClCompile Include="Model\ProgressIndicatorWrapper.cpp" />
+    <ClCompile Include="Model\RandomProvider.cpp" />
+    <ClCompile Include="Model\RandomSettingsWrapper.cpp" />
+    <ClCompile Include="Reliability\ReliabilityMethodWrapper.cpp" />
+    <ClCompile Include="Reliability\ReliabilityResultWrapper.cpp" />
+    <ClCompile Include="Model\RunSettingsWrapper.cpp" />
+    <ClCompile Include="Model\SampleWrapper.cpp" />
+    <ClCompile Include="Statistics\StandardNormalWrapper.cpp" />
+    <ClCompile Include="Model\StochastPointAlphaWrapper.cpp" />
+    <ClCompile Include="Model\StochastPointWrapper.cpp" />
+    <ClCompile Include="Reliability\StochastSettingsWrapper.cpp" />
+    <ClCompile Include="Statistics\StochastWrapper.cpp" />
+    <ClCompile Include="Utils\SharedPointerProvider.cpp" />
+    <ClCompile Include="Statistics\VariableStochastValueSetWrapper.cpp" />
+    <ClCompile Include="Statistics\VariableStochastValueWrapper.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

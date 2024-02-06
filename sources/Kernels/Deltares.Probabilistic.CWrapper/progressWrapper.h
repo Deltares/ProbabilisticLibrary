@@ -1,8 +1,8 @@
 #pragma once
 #include <functional>
 
-#include "../Deltares.Probabilistic.Kernels/Model/ProgressIndicator.h"
-#include "../Deltares.Probabilistic.Kernels/Reliability/ReliabilityMethod.h"
+#include "../Deltares.Probabilistic/Model/ProgressIndicator.h"
+#include "../Deltares.Probabilistic/Reliability/ReliabilityMethod.h"
 
 typedef std::function <bool(Deltares::Models::ProgressType, const char*)> progressFuncExt;
 

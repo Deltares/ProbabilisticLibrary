@@ -1,5 +1,5 @@
 #include "createDistribution.h"
-#include "../Deltares.Probabilistic.Kernels/Utils/probLibException.h"
+#include "../Deltares.Probabilistic/Utils/probLibException.h"
 
 using namespace Deltares::ProbLibCore;
 using namespace Deltares::Statistics;

@@ -1,7 +1,7 @@
 #include "createReliabilityMethod.h"
-#include "../Deltares.Probabilistic.Kernels/Reliability/CrudeMonteCarlo.h"
-#include "../Deltares.Probabilistic.Kernels/Reliability/DirectionalSampling.h"
-#include "../Deltares.Probabilistic.Kernels/Reliability/FORM.h"
+#include "../Deltares.Probabilistic/Reliability/CrudeMonteCarlo.h"
+#include "../Deltares.Probabilistic/Reliability/DirectionalSampling.h"
+#include "../Deltares.Probabilistic/Reliability/FORM.h"
 
 using namespace Deltares::ProbLibCore;
 using namespace Deltares::Models;
