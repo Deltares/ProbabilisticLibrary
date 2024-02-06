@@ -10,20 +10,12 @@
 #include <memory>
 #include <set>
 
-namespace Deltares
-{
-	namespace Statistics
-	{
-		class VariableStochast;
-	}
-}
 
 namespace Deltares
 {
 	namespace Models
 	{
-
-		UConverter::UConverter(std::vector<std::shared_ptr<Deltares::Statistics::Stochast>> stochasts, std::shared_ptr<CorrelationMatrix> correlationMatrix)
+		UConverter::UConverter(std::vector<std::shared_ptr<Deltares::Statistics::Stochast>> stochasts, std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix)
 		{
 			this->stochasts.clear();
 
@@ -82,7 +74,7 @@ namespace Deltares
 
 			if (this->hasVariableStochasts)
 			{
-				this->variableStochastList = assignVariableStochasts();
+				this->variableStochastList = getVariableStochastIndex();
 			}
 
 			if (stochasts.size() == varyingStochasts.size())
@@ -91,7 +83,7 @@ namespace Deltares
 			}
 			else
 			{
-				varyingCorrelationMatrix = std::make_shared<CorrelationMatrix>();
+				varyingCorrelationMatrix = std::make_shared<Statistics::CorrelationMatrix>();
 				varyingCorrelationMatrix->init(varyingStochasts.size());
 				varyingCorrelationMatrix->filter(correlationMatrix, varyingStochastIndex);
 			}
@@ -243,13 +235,13 @@ namespace Deltares
 				}
 			}
 
-			return qualitativeExcludedSample->normalize(sample->getBeta());
+			return qualitativeExcludedSample->getSampleAtBeta(sample->getBeta());
 		}
 
 		/**
 		 * \brief Gets the indices of the variable stochasts in order of assignment
 		 */
-		std::vector<int> UConverter::assignVariableStochasts()
+		std::vector<int> UConverter::getVariableStochastIndex()
 		{
 			std::vector<int> newVariableStochastList;
 
@@ -313,7 +305,7 @@ namespace Deltares
 			std::shared_ptr<StochastPoint> realization = std::make_shared<StochastPoint>();
 			realization->Beta = beta;
 
-			std::shared_ptr<Sample> betaSample = sample->normalize(abs(beta));
+			std::shared_ptr<Sample> betaSample = sample->getSampleAtBeta(abs(beta));
 
 			if (this->hasQualitiveStochasts)
 			{

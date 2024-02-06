@@ -53,7 +53,7 @@ namespace Deltares
 
 			double GetZ(std::shared_ptr<Sample> uDirection, double factor, bool inverted, bool allowProxy = true)
 			{
-				std::shared_ptr<Sample> u = uDirection->multiply(factor);
+				std::shared_ptr<Sample> u = uDirection->getMultipliedSample(factor);
 				u->AllowProxy = allowProxy;
 
 				return GetZValueCorrected(u, inverted);
@@ -123,7 +123,7 @@ namespace Deltares
 
 		double DirectionReliability::getBeta(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<Sample> directionSample, double z0)
 		{
-			std::shared_ptr<Sample> normalizedSample = directionSample->normalize();
+			std::shared_ptr<Sample> normalizedSample = directionSample->getNormalizedSample();
 
 			std::shared_ptr <BetaValueTask> task (new BetaValueTask());
 			task->ModelRunner = modelRunner;
@@ -141,7 +141,7 @@ namespace Deltares
 
 		double DirectionReliability::getDirectionBeta(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr <BetaValueTask> directionTask)
 		{
-			std::shared_ptr<Sample> uDirection = directionTask->UValues->normalize();
+			std::shared_ptr<Sample> uDirection = directionTask->UValues->getNormalizedSample();
 			uDirection->IterationIndex = directionTask->Iteration;
 			bool invertZ = directionTask->z0 < 0;
 

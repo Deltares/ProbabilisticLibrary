@@ -48,10 +48,11 @@ namespace Deltares
 			int getSize();
 
 			double getBeta();
-			void setBeta(double beta);
+			void setInitialValues(double beta);
 			std::shared_ptr<Sample> clone();
-			std::shared_ptr<Sample> normalize(double beta = 1);
-			std::shared_ptr<Sample> multiply(double factor);
+			std::shared_ptr<Sample> getNormalizedSample() { return getSampleAtBeta(1); }
+			std::shared_ptr<Sample> getSampleAtBeta(double beta);
+			std::shared_ptr<Sample> getMultipliedSample(double factor);
 			void correctSmallValues(double tolerance = 1E-10);
 
 			intptr_t Tag = 0;

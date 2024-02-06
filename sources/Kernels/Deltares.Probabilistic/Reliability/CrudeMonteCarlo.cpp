@@ -118,7 +118,7 @@ namespace Deltares
 					if (initial)
 					{
 						z0Fac = getZFactor(zValues[0]);
-						uMin->setBeta(z0Fac * Statistics::StandardNormal::BetaMax);
+						uMin->setInitialValues(z0Fac * Statistics::StandardNormal::BetaMax);
 						uMean->initialize(z0Fac * Statistics::StandardNormal::BetaMax);
 					}
 

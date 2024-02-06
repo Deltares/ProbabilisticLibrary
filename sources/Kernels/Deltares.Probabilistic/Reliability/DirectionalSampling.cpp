@@ -78,7 +78,7 @@ namespace Deltares
 				double betaDirection = abs(betaValues[nmaal % chunkSize]);
 
 				// get the sample at the limit state
-				std::shared_ptr<Sample> uSurface = u->normalize(betaDirection);
+				std::shared_ptr<Sample> uSurface = u->getSampleAtBeta(betaDirection);
 
 				// calculate failure probability
 				if (betaDirection >= 0 && betaDirection < Statistics::StandardNormal::BetaMax)

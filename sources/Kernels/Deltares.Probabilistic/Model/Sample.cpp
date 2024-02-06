@@ -14,7 +14,7 @@ namespace Deltares
 			return NumericSupport::GetLength(Values);
 		}
 
-		void Sample::setBeta(double beta)
+		void Sample::setInitialValues(double beta)
 		{
 			double value = sqrt(beta * beta / size) * NumericSupport::GetSign(beta);
 
@@ -24,18 +24,7 @@ namespace Deltares
 			}
 		}
 
-		std::shared_ptr<Sample> Sample::clone()
-		{
-			std::shared_ptr<Sample> clonedSample = std::make_shared<Sample>(this->Values);
-
-			clonedSample->AllowProxy = this->AllowProxy;
-			clonedSample->IterationIndex = this->IterationIndex;
-			clonedSample->Weight = this->Weight;
-
-			return clonedSample;
-		}
-
-		std::shared_ptr<Sample> Sample::normalize(double newBeta)
+		std::shared_ptr<Sample> Sample::getSampleAtBeta(double newBeta)
 		{
 			const double actualBeta = this->getBeta();
 
@@ -62,7 +51,7 @@ namespace Deltares
 			return normalizedSample;
 		}
 
-		std::shared_ptr<Sample> Sample::multiply(double factor)
+		std::shared_ptr<Sample> Sample::getMultipliedSample(double factor)
 		{
 			std::shared_ptr<Sample> multipliedSample = this->clone();
 
@@ -83,6 +72,17 @@ namespace Deltares
 					this->Values[k] = 0;
 				}
 			}
+		}
+
+		std::shared_ptr<Sample> Sample::clone()
+		{
+			std::shared_ptr<Sample> clonedSample = std::make_shared<Sample>(this->Values);
+
+			clonedSample->AllowProxy = this->AllowProxy;
+			clonedSample->IterationIndex = this->IterationIndex;
+			clonedSample->Weight = this->Weight;
+
+			return clonedSample;
 		}
 	}
 }

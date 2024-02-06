@@ -26,8 +26,8 @@ namespace Deltares
 			std::vector<int> variableStochastIndex; // reference of the stochast index to the variable source index
 			std::vector<int> variableStochastList; // list of all stochast indices in order how they should be assigned
 
-			std::shared_ptr<CorrelationMatrix> correlationMatrix;
-			std::shared_ptr<CorrelationMatrix> varyingCorrelationMatrix;
+			std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix;
+			std::shared_ptr<Statistics::CorrelationMatrix> varyingCorrelationMatrix;
 
 			std::vector<double> getExpandedValues(const std::vector<double>& values);
 			std::vector<double> getExpandedValues(const std::vector<double>& values, double defaultValue);
@@ -35,11 +35,11 @@ namespace Deltares
 			bool checkFullyCorrelated(const int i);
 			void updateDependedParameter(std::vector<double>& uValues, const int i);
 			std::shared_ptr<Sample> getQualitativeExcludedSample(std::shared_ptr<Sample> sample);
-			std::vector<int> assignVariableStochasts();
+			std::vector<int> getVariableStochastIndex();
 
 		public:
 
-			UConverter(std::vector<std::shared_ptr<Deltares::Statistics::Stochast>> stochasts, std::shared_ptr<CorrelationMatrix> correlationMatrix);
+			UConverter(std::vector<std::shared_ptr<Deltares::Statistics::Stochast>> stochasts, std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix);
 			void initializeForRun();
 			std::vector<double> getXValues(std::shared_ptr<Sample> sample);
 			int getStochastCount();

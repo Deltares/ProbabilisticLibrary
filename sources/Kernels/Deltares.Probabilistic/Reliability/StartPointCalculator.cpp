@@ -95,7 +95,7 @@ namespace Deltares
 
 			std::shared_ptr<Sample> directionPoint = std::make_shared<Sample>(startPoint->Values);
 
-			directionPoint->normalize(beta);
+			directionPoint->getSampleAtBeta(beta);
 
 			for (int i = 0; i < nStochasts; i++)
 			{
@@ -141,7 +141,7 @@ namespace Deltares
 
 			double radiusFactor = this->Settings->RadiusSphereSearch / startPoint->getBeta();
 
-			std::shared_ptr<Sample> uSphere = startPoint->multiply(radiusFactor);
+			std::shared_ptr<Sample> uSphere = startPoint->getMultipliedSample(radiusFactor);
 
 			std::shared_ptr<Sample> bestSample = nullptr;
 
@@ -202,7 +202,7 @@ namespace Deltares
 			}
 			else
 			{
-				std::shared_ptr<Sample> u = uRay->multiply(radiusFactor);
+				std::shared_ptr<Sample> u = uRay->getMultipliedSample(radiusFactor);
 
 				u->Z = modelRunner->getZValue(u);
 
@@ -241,13 +241,13 @@ namespace Deltares
 			double z = u->Z;
 			double coFactor = (radiusFactor - 0.05) / radiusFactor;
 
-			std::shared_ptr<Sample> u2 = u->multiply(coFactor);
+			std::shared_ptr<Sample> u2 = u->getMultipliedSample(coFactor);
 
 			// factor related to number of steps above
 			double z2 = modelRunner->getZValue(u2);
 			z2 = std::min(z2, 0.0);
 
-			std::shared_ptr<Sample> u3 = u2->multiply(1.0 + z2 / (z2 - z) / coFactor);
+			std::shared_ptr<Sample> u3 = u2->getMultipliedSample(1.0 + z2 / (z2 - z) / coFactor);
 
 			return u3;
 		}
