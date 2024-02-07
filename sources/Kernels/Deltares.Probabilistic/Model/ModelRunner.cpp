@@ -119,19 +119,19 @@ namespace Deltares
 			return false;
 		}
 
-		void ModelRunner::reportResult(std::shared_ptr<ReliabilityReport> report)
+		void ModelRunner::reportResult(std::shared_ptr<Reliability::ReliabilityReport> report)
 		{
 			if (Settings->SaveConvergence)
 			{
 				bool hasPreviousReport = this->reliabilityResults.size() > 0;
 
-				std::shared_ptr<ReliabilityResult> previousReport = nullptr;
+				std::shared_ptr<Reliability::ReliabilityResult> previousReport = nullptr;
 				if (hasPreviousReport)
 				{
 					previousReport = this->reliabilityResults.back();
 				}
 
-				std::shared_ptr<ReliabilityResult> result = std::make_shared<ReliabilityResult>();
+				std::shared_ptr<Reliability::ReliabilityResult> result = std::make_shared<Reliability::ReliabilityResult>();
 				result->Reliability = report->Reliability;
 				result->ConvBeta = report->ConvBeta;
 				result->Variation = report->Variation;
@@ -140,7 +140,7 @@ namespace Deltares
 
 				if (report->ReportMatchesEvaluation && previousReport != nullptr)
 				{
-					std::shared_ptr<ReliabilityResult> previousPreviousReport = this->reliabilityResults.size() > 1
+					std::shared_ptr<Reliability::ReliabilityResult> previousPreviousReport = this->reliabilityResults.size() > 1
 						? this->reliabilityResults[this->reliabilityResults.size() - 2]
 						: nullptr;
 

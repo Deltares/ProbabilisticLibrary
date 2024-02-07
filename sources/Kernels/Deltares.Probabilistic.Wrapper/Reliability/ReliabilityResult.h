@@ -1,0 +1,48 @@
+#pragma once
+
+#include "../../Deltares.Probabilistic/Reliability/ReliabilityResult.h"
+
+namespace Deltares
+{
+	namespace Reliability
+	{
+		namespace Wrappers
+		{
+			public ref class ReliabilityResult
+			{
+			public:
+				ReliabilityResult() {}
+				ReliabilityResult(std::shared_ptr<Reliability::ReliabilityResult> result)
+				{
+					this->ProxyIteration = result->ProxyIteration;
+					this->Run = result->Run;
+					this->Index = result->Index;
+					this->Reliability = result->Reliability;
+					this->LowReliability = result->LowReliability;
+					this->HighReliability = result->HighReliability;
+					this->Samples = result->Samples;
+					this->ConvBeta = result->ConvBeta;
+					this->ProxyConvergence = result->ProxyConvergence;
+					this->Variation = result->Variation;
+					this->Difference = result->Difference;
+					this->Contribution = result->Contribution;
+				}
+
+				property int ProxyIteration;
+				property int Run;
+				property int Index;
+				property double Reliability;
+				property double LowReliability;
+				property double HighReliability;
+				property double Samples;
+				property double ConvBeta;
+				property double ProxyConvergence;
+				property double Variation;
+				property double Difference;
+				property double Contribution;
+			};
+		}
+	}
+}
+
+

@@ -9,8 +9,8 @@ namespace Deltares.Probabilistics.Wrappers.Test
 {
     public class Project
     {
-        public CorrelationMatrixWrapper CorrelationMatrix = new CorrelationMatrixWrapper();
-        public List<StochastWrapper> Stochasts = new List<StochastWrapper>();
+        public CorrelationMatrix CorrelationMatrix = new CorrelationMatrix();
+        public List<Stochast> Stochasts = new List<Stochast>();
         public ZDelegate ZFunction;
 
         public ZSampleDelegate Function
@@ -31,7 +31,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
                 this.m = m;
             }
 
-            public void Calculate(SampleWrapper sample)
+            public void Calculate(Sample sample)
             {
                 ZFunctionOutput output = m.Invoke(sample.Values);
                 sample.Z = output.Z;
@@ -465,11 +465,11 @@ namespace Deltares.Probabilistics.Wrappers.Test
             project.Stochasts.Add(GetUniformStochast());
             project.Stochasts.Add(GetUniformStochast());
 
-            project.Stochasts.Add(new StochastWrapper { DistributionType = WrapperDistributionType.Discrete });
+            project.Stochasts.Add(new Stochast { DistributionType = WrapperDistributionType.Discrete });
 
-            project.Stochasts[2].DiscreteValues.Add(new DiscreteValueWrapper(5, 0.35));
-            project.Stochasts[2].DiscreteValues.Add(new DiscreteValueWrapper(6, 0.2));
-            project.Stochasts[2].DiscreteValues.Add(new DiscreteValueWrapper(7, 0.45));
+            project.Stochasts[2].DiscreteValues.Add(new DiscreteValue(5, 0.35));
+            project.Stochasts[2].DiscreteValues.Add(new DiscreteValue(6, 0.2));
+            project.Stochasts[2].DiscreteValues.Add(new DiscreteValue(7, 0.45));
 
             project.ZFunction = Discrete;
 
@@ -483,11 +483,11 @@ namespace Deltares.Probabilistics.Wrappers.Test
             project.Stochasts.Add(GetUniformStochast());
             project.Stochasts.Add(GetUniformStochast());
 
-            project.Stochasts.Add(new StochastWrapper { DistributionType = WrapperDistributionType.Qualitative });
+            project.Stochasts.Add(new Stochast { DistributionType = WrapperDistributionType.Qualitative });
 
-            project.Stochasts[2].DiscreteValues.Add(new DiscreteValueWrapper(5, 0.35));
-            project.Stochasts[2].DiscreteValues.Add(new DiscreteValueWrapper(6, 0.2));
-            project.Stochasts[2].DiscreteValues.Add(new DiscreteValueWrapper(7, 0.45));
+            project.Stochasts[2].DiscreteValues.Add(new DiscreteValue(5, 0.35));
+            project.Stochasts[2].DiscreteValues.Add(new DiscreteValue(6, 0.2));
+            project.Stochasts[2].DiscreteValues.Add(new DiscreteValue(7, 0.45));
 
             project.ZFunction = Discrete;
 
@@ -498,20 +498,20 @@ namespace Deltares.Probabilistics.Wrappers.Test
         {
             var project = new Project();
 
-            StochastWrapper c = GetNormalStochast(1.5, 0.1);
-            StochastWrapper a = GetNormalStochast(1.5, 0.5);
-            StochastWrapper b = GetNormalStochast(0.5, 1.5);
+            Stochast c = GetNormalStochast(1.5, 0.1);
+            Stochast a = GetNormalStochast(1.5, 0.5);
+            Stochast b = GetNormalStochast(0.5, 1.5);
 
             c.IsVariableStochast = true;
             c.VariableSource = a;
-            c.ValueSet.StochastValues.Add(new VariableStochastValueWrapper { X = -100, Location = -100, Scale = 0.1 });
-            c.ValueSet.StochastValues.Add(new VariableStochastValueWrapper { X = 100, Location = 100, Scale = 0.1 });
+            c.ValueSet.StochastValues.Add(new VariableStochastValue { X = -100, Location = -100, Scale = 0.1 });
+            c.ValueSet.StochastValues.Add(new VariableStochastValue { X = 100, Location = 100, Scale = 0.1 });
 
             a.IsVariableStochast = true;
             a.VariableSource = b;
-            a.ValueSet.StochastValues.Add(new VariableStochastValueWrapper { X = 0, Location = 0, Scale = 0 });
-            a.ValueSet.StochastValues.Add(new VariableStochastValueWrapper { X = 1, Location = 3, Scale = 1 });
-            a.ValueSet.StochastValues.Add(new VariableStochastValueWrapper { X = 2, Location = 5, Scale = 3 });
+            a.ValueSet.StochastValues.Add(new VariableStochastValue { X = 0, Location = 0, Scale = 0 });
+            a.ValueSet.StochastValues.Add(new VariableStochastValue { X = 1, Location = 3, Scale = 1 });
+            a.ValueSet.StochastValues.Add(new VariableStochastValue { X = 2, Location = 5, Scale = 3 });
 
             project.Stochasts.Add(c);
             project.Stochasts.Add(a);
@@ -522,30 +522,30 @@ namespace Deltares.Probabilistics.Wrappers.Test
             return project;
         }
 
-        private static StochastWrapper GetDeterministicStochast(double mean)
+        private static Stochast GetDeterministicStochast(double mean)
         {
-            return new StochastWrapper { DistributionType = WrapperDistributionType.Deterministic,  Mean = mean };
+            return new Stochast { DistributionType = WrapperDistributionType.Deterministic,  Mean = mean };
         }
 
-        private static StochastWrapper GetNormalStochast(double mean = 0, double stdev = 1)
+        private static Stochast GetNormalStochast(double mean = 0, double stdev = 1)
         {
-            return new StochastWrapper { DistributionType = WrapperDistributionType.Normal, Mean = mean, Deviation = stdev };
+            return new Stochast { DistributionType = WrapperDistributionType.Normal, Mean = mean, Deviation = stdev };
         }
 
-        private static StochastWrapper GetUniformStochast(double min = 0, double max = 1)
+        private static Stochast GetUniformStochast(double min = 0, double max = 1)
         {
-            return new StochastWrapper { DistributionType = WrapperDistributionType.Uniform, Minimum = min, Maximum = max };
+            return new Stochast { DistributionType = WrapperDistributionType.Uniform, Minimum = min, Maximum = max };
         }
 
-        private static StochastWrapper GetLogNormalStochast(double mean = 0, double stdev = 1, double shift = 0)
+        private static Stochast GetLogNormalStochast(double mean = 0, double stdev = 1, double shift = 0)
         {
-            return new StochastWrapper
+            return new Stochast
             { DistributionType = WrapperDistributionType.LogNormal, Mean = mean, Deviation = stdev, Shift = shift };
         }
 
-        private static StochastWrapper GetGumbelStochast(double mean = 0, double stdev = 1)
+        private static Stochast GetGumbelStochast(double mean = 0, double stdev = 1)
         {
-            return new StochastWrapper { DistributionType = WrapperDistributionType.Gumbel, Mean = mean, Deviation = stdev };
+            return new Stochast { DistributionType = WrapperDistributionType.Gumbel, Mean = mean, Deviation = stdev };
         }
 
         private static ZFunctionOutput Linear(double[] x)

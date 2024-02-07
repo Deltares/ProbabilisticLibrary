@@ -23,7 +23,7 @@ namespace Deltares
 		private:
 			std::shared_ptr<ZModel> zModel;
 			std::shared_ptr<UConverter> uConverter;
-			std::vector<std::shared_ptr<ReliabilityResult>> reliabilityResults;
+			std::vector<std::shared_ptr<Reliability::ReliabilityResult>> reliabilityResults;
 			std::vector<std::shared_ptr<Evaluation>> evaluations;
 			std::vector< std::shared_ptr<Message>> messages;
 			ProgressIndicator* progressIndicator = nullptr;
@@ -48,7 +48,7 @@ namespace Deltares
 			int getVaryingStochastCount();
 			bool shouldExitPrematurely(double* zValues, double z0Fac, std::vector<std::shared_ptr<Sample>> samples, double beta);
 			bool shouldExitPrematurely(bool final);
-			void reportResult(std::shared_ptr<ReliabilityReport> report);
+			void reportResult(std::shared_ptr<Reliability::ReliabilityReport> report);
 			void reportMessage(MessageType type, std::string text);
 
 			std::shared_ptr<Reliability::DesignPoint> getDesignPoint(std::shared_ptr<Sample> sample, double beta, std::shared_ptr<Reliability::ConvergenceReport> convergenceReport = nullptr, std::string identifier = "");

@@ -14,10 +14,10 @@ namespace Deltares.Probabilistics.Wrappers.Test
         {
             Project project = ProjectBuilder.GetLinearProject();
 
-            ModelRunnerWrapper modelRunner = new ModelRunnerWrapper(project.Function, project.Stochasts, project.CorrelationMatrix, null);
+            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
 
-            FORMWrapper form = new FORMWrapper();
-            DesignPointWrapper designPoint = form.GetDesignPoint(modelRunner);
+            FORM form = new FORM();
+            DesignPoint designPoint = form.GetDesignPoint(modelRunner);
 
             Assert.AreEqual(2.33, designPoint.Beta, margin);
             Assert.IsTrue(designPoint.ConvergenceReport.IsConverged);
@@ -38,14 +38,14 @@ namespace Deltares.Probabilistics.Wrappers.Test
         {
             var project = ProjectBuilder.GetLinearProject();
 
-            ModelRunnerWrapper modelRunner = new ModelRunnerWrapper(project.Function, project.Stochasts, project.CorrelationMatrix, null);
+            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
 
-            FORMWrapper form = new FORMWrapper();
-            DesignPointWrapper designPoint = form.GetDesignPoint(modelRunner);
+            FORM form = new FORM();
+            DesignPoint designPoint = form.GetDesignPoint(modelRunner);
 
             Assert.AreEqual(2.33, designPoint.Beta, margin);
 
-            DesignPointWrapper designPoint2 = form.GetDesignPoint(modelRunner);
+            DesignPoint designPoint2 = form.GetDesignPoint(modelRunner);
 
             Assert.AreEqual(2.33, designPoint2.Beta, margin);
 
@@ -59,10 +59,10 @@ namespace Deltares.Probabilistics.Wrappers.Test
         {
             var project = ProjectBuilder.GetInverseLinearProject();
 
-            ModelRunnerWrapper modelRunner = new ModelRunnerWrapper(project.Function, project.Stochasts, project.CorrelationMatrix, null);
+            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
 
-            FORMWrapper form = new FORMWrapper();
-            DesignPointWrapper designPoint = form.GetDesignPoint(modelRunner);
+            FORM form = new FORM();
+            DesignPoint designPoint = form.GetDesignPoint(modelRunner);
 
             Assert.AreEqual(-2.33, designPoint.Beta, margin);
             Assert.IsTrue(designPoint.ConvergenceReport.IsConverged);
@@ -79,12 +79,12 @@ namespace Deltares.Probabilistics.Wrappers.Test
         {
             Project project = ProjectBuilder.GetLinearProject();
 
-            ModelRunnerWrapper modelRunner = new ModelRunnerWrapper(project.Function, project.Stochasts, project.CorrelationMatrix, null);
+            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
             modelRunner.Settings.SaveConvergence = true;
             modelRunner.Settings.SaveEvaluations = true;
 
-            FORMWrapper form = new FORMWrapper();
-            DesignPointWrapper designPoint = form.GetDesignPoint(modelRunner);
+            FORM form = new FORM();
+            DesignPoint designPoint = form.GetDesignPoint(modelRunner);
 
             Assert.AreEqual(2.33, designPoint.Beta, margin);
 
@@ -107,12 +107,12 @@ namespace Deltares.Probabilistics.Wrappers.Test
             Project project = ProjectBuilder.GetLinearProject();
 
             ProgressHolder progressHolder = new ProgressHolder();
-            ProgressIndicatorWrapper progressIndicator = new ProgressIndicatorWrapper(progressHolder.SetProgress, progressHolder.SetDetailedProgress, progressHolder.SetTextualProgress);
+            ProgressIndicator progressIndicator = new ProgressIndicator(progressHolder.SetProgress, progressHolder.SetDetailedProgress, progressHolder.SetTextualProgress);
 
-            ModelRunnerWrapper modelRunner = new ModelRunnerWrapper(project.Function, project.Stochasts, project.CorrelationMatrix, progressIndicator);
+            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, progressIndicator);
 
-            FORMWrapper form = new FORMWrapper();
-            DesignPointWrapper designPoint = form.GetDesignPoint(modelRunner);
+            FORM form = new FORM();
+            DesignPoint designPoint = form.GetDesignPoint(modelRunner);
 
             Assert.AreEqual(2.33, designPoint.Beta, margin);
 
@@ -130,10 +130,10 @@ namespace Deltares.Probabilistics.Wrappers.Test
         {
             Project project = ProjectBuilder.GetLinearFullyCorrelatedProject();
 
-            ModelRunnerWrapper modelRunner = new ModelRunnerWrapper(project.Function, project.Stochasts, project.CorrelationMatrix, null);
+            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
 
-            FORMWrapper form = new FORMWrapper();
-            DesignPointWrapper designPoint = form.GetDesignPoint(modelRunner);
+            FORM form = new FORM();
+            DesignPoint designPoint = form.GetDesignPoint(modelRunner);
 
             Assert.AreEqual(2.33, designPoint.Beta, margin);
 
@@ -156,10 +156,10 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
             //Assert.IsTrue(project.CorrelationMatrix.IsValid());
 
-            ModelRunnerWrapper modelRunner = new ModelRunnerWrapper(project.Function, project.Stochasts, project.CorrelationMatrix, null);
+            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
 
-            FORMWrapper form = new FORMWrapper();
-            DesignPointWrapper designPoint = form.GetDesignPoint(modelRunner);
+            FORM form = new FORM();
+            DesignPoint designPoint = form.GetDesignPoint(modelRunner);
 
             Assert.AreEqual(1.65, designPoint.Beta, margin);
 
@@ -185,10 +185,10 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
             //Assert.IsTrue(project.CorrelationMatrix.IsValid());
 
-            ModelRunnerWrapper modelRunner = new ModelRunnerWrapper(project.Function, project.Stochasts, project.CorrelationMatrix, null);
+            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
 
-            FORMWrapper form = new FORMWrapper();
-            DesignPointWrapper designPoint = form.GetDesignPoint(modelRunner);
+            FORM form = new FORM();
+            DesignPoint designPoint = form.GetDesignPoint(modelRunner);
 
             Assert.AreEqual(1.65, designPoint.Beta, margin);
 
@@ -210,10 +210,10 @@ namespace Deltares.Probabilistics.Wrappers.Test
         {
             Project project = ProjectBuilder.GetLoadStrengthProject();
 
-            ModelRunnerWrapper modelRunner = new ModelRunnerWrapper(project.Function, project.Stochasts, project.CorrelationMatrix, null);
+            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
 
-            FORMWrapper form = new FORMWrapper();
-            DesignPointWrapper designPoint = form.GetDesignPoint(modelRunner);
+            FORM form = new FORM();
+            DesignPoint designPoint = form.GetDesignPoint(modelRunner);
 
             Assert.AreEqual(1.41, designPoint.Beta, margin);
         }
@@ -223,13 +223,13 @@ namespace Deltares.Probabilistics.Wrappers.Test
         {
             Project project = ProjectBuilder.GetConvexProject();
 
-            ModelRunnerWrapper modelRunner = new ModelRunnerWrapper(project.Function, project.Stochasts, project.CorrelationMatrix, null);
+            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
 
-            FORMWrapper form = new FORMWrapper();
-            form.Settings.StochastSettings.Add(new StochastSettingsWrapper { StartValue = 1 });
-            form.Settings.StochastSettings.Add(new StochastSettingsWrapper { StartValue = 1 });
+            FORM form = new FORM();
+            form.Settings.StochastSettings.Add(new StochastSettings { StartValue = 1 });
+            form.Settings.StochastSettings.Add(new StochastSettings { StartValue = 1 });
 
-            DesignPointWrapper designPoint = form.GetDesignPoint(modelRunner);
+            DesignPoint designPoint = form.GetDesignPoint(modelRunner);
 
             Assert.AreEqual(2.5, designPoint.Beta, margin);
         }
@@ -239,14 +239,14 @@ namespace Deltares.Probabilistics.Wrappers.Test
         {
             Project project = ProjectBuilder.GetConvexProject();
 
-            ModelRunnerWrapper modelRunner = new ModelRunnerWrapper(project.Function, project.Stochasts, project.CorrelationMatrix, null);
+            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
 
-            FORMWrapper form = new FORMWrapper();
-            form.Settings.StochastSettings.Add(new StochastSettingsWrapper { StartValue = 1 });
-            form.Settings.StochastSettings.Add(new StochastSettingsWrapper { StartValue = 1 });
+            FORM form = new FORM();
+            form.Settings.StochastSettings.Add(new StochastSettings { StartValue = 1 });
+            form.Settings.StochastSettings.Add(new StochastSettings { StartValue = 1 });
             form.Settings.StartPointCalculatorSettings.StartMethod = StartMethodType.RaySearch;
 
-            DesignPointWrapper designPoint = form.GetDesignPoint(modelRunner);
+            DesignPoint designPoint = form.GetDesignPoint(modelRunner);
 
             Assert.AreEqual(2.5, designPoint.Beta, margin);
         }
@@ -256,12 +256,12 @@ namespace Deltares.Probabilistics.Wrappers.Test
         {
             Project project = ProjectBuilder.GetConvexProject();
 
-            ModelRunnerWrapper modelRunner = new ModelRunnerWrapper(project.Function, project.Stochasts, project.CorrelationMatrix, null);
+            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
 
-            FORMWrapper form = new FORMWrapper();
+            FORM form = new FORM();
             form.Settings.StartPointCalculatorSettings.StartMethod = StartMethodType.RaySearch;
 
-            DesignPointWrapper designPoint = form.GetDesignPoint(modelRunner);
+            DesignPoint designPoint = form.GetDesignPoint(modelRunner);
 
             Assert.AreEqual(2.5, designPoint.Beta, margin);
         }
@@ -271,12 +271,12 @@ namespace Deltares.Probabilistics.Wrappers.Test
         {
             Project project = ProjectBuilder.GetConvexProject();
 
-            ModelRunnerWrapper modelRunner = new ModelRunnerWrapper(project.Function, project.Stochasts, project.CorrelationMatrix, null);
+            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
 
-            FORMWrapper form = new FORMWrapper();
+            FORM form = new FORM();
             form.Settings.StartPointCalculatorSettings.StartMethod = StartMethodType.SphereSearch;
 
-            DesignPointWrapper designPoint = form.GetDesignPoint(modelRunner);
+            DesignPoint designPoint = form.GetDesignPoint(modelRunner);
 
             Assert.AreEqual(2.5, designPoint.Beta, margin);
 
@@ -289,12 +289,12 @@ namespace Deltares.Probabilistics.Wrappers.Test
         {
             Project project = ProjectBuilder.GetConvexProject();
 
-            ModelRunnerWrapper modelRunner = new ModelRunnerWrapper(project.Function, project.Stochasts, project.CorrelationMatrix, null);
+            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
 
-            FORMWrapper form = new FORMWrapper();
+            FORM form = new FORM();
             form.Settings.StartPointCalculatorSettings.StartMethod = StartMethodType.SensitivitySearch;
 
-            DesignPointWrapper designPoint = form.GetDesignPoint(modelRunner);
+            DesignPoint designPoint = form.GetDesignPoint(modelRunner);
 
             Assert.AreEqual(2.5, designPoint.Beta, margin);
         }
@@ -304,10 +304,10 @@ namespace Deltares.Probabilistics.Wrappers.Test
         {
             Project project = ProjectBuilder.GetNoisyProject();
 
-            ModelRunnerWrapper modelRunner = new ModelRunnerWrapper(project.Function, project.Stochasts, project.CorrelationMatrix, null);
+            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
 
-            FORMWrapper form = new FORMWrapper();
-            DesignPointWrapper designPoint = form.GetDesignPoint(modelRunner);
+            FORM form = new FORM();
+            DesignPoint designPoint = form.GetDesignPoint(modelRunner);
 
             Assert.AreEqual(2.59, designPoint.Beta, margin);
         }
@@ -317,10 +317,10 @@ namespace Deltares.Probabilistics.Wrappers.Test
         {
             Project project = ProjectBuilder.GetOblateSpheroidProject();
 
-            ModelRunnerWrapper modelRunner = new ModelRunnerWrapper(project.Function, project.Stochasts, project.CorrelationMatrix, null);
+            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
 
-            FORMWrapper form = new FORMWrapper();
-            DesignPointWrapper designPoint = form.GetDesignPoint(modelRunner);
+            FORM form = new FORM();
+            DesignPoint designPoint = form.GetDesignPoint(modelRunner);
 
             Assert.AreEqual(3.39, designPoint.Beta, margin);
         }
@@ -330,10 +330,10 @@ namespace Deltares.Probabilistics.Wrappers.Test
         {
             Project project = ProjectBuilder.GetQuadraticProject();
 
-            ModelRunnerWrapper modelRunner = new ModelRunnerWrapper(project.Function, project.Stochasts, project.CorrelationMatrix, null);
+            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
 
-            FORMWrapper form = new FORMWrapper();
-            DesignPointWrapper designPoint = form.GetDesignPoint(modelRunner);
+            FORM form = new FORM();
+            DesignPoint designPoint = form.GetDesignPoint(modelRunner);
 
             Assert.AreEqual(-4.5, designPoint.Beta, margin);
         }
@@ -343,13 +343,13 @@ namespace Deltares.Probabilistics.Wrappers.Test
         {
             Project project = ProjectBuilder.GetWaveProject();
 
-            ModelRunnerWrapper modelRunner = new ModelRunnerWrapper(project.Function, project.Stochasts, project.CorrelationMatrix, null);
+            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
 
-            FORMWrapper form = new FORMWrapper();
+            FORM form = new FORM();
             form.Settings.RelaxationFactor = 0.7;
             form.Settings.RelaxationLoops = 5;
 
-            DesignPointWrapper designPoint = form.GetDesignPoint(modelRunner);
+            DesignPoint designPoint = form.GetDesignPoint(modelRunner);
 
             Assert.AreEqual(2.09, designPoint.Beta, margin);
             Assert.AreEqual(2, designPoint.ContributingDesignPoints.Count);
@@ -360,14 +360,14 @@ namespace Deltares.Probabilistics.Wrappers.Test
         {
             Project project = ProjectBuilder.GetWaveProject();
 
-            ModelRunnerWrapper modelRunner = new ModelRunnerWrapper(project.Function, project.Stochasts, project.CorrelationMatrix, null);
+            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
 
-            FORMWrapper form = new FORMWrapper();
+            FORM form = new FORM();
             form.Settings.RelaxationFactor = 0.7;
             form.Settings.RelaxationLoops = 5;
             form.Settings.GradientCalculatorSettings.GradientType = GradientType.TwoDirections;
 
-            DesignPointWrapper designPoint = form.GetDesignPoint(modelRunner);
+            DesignPoint designPoint = form.GetDesignPoint(modelRunner);
 
             Assert.AreEqual(2.08, designPoint.Beta, margin);
             Assert.AreEqual(1, designPoint.ContributingDesignPoints.Count);
@@ -380,13 +380,13 @@ namespace Deltares.Probabilistics.Wrappers.Test
         {
             Project project = ProjectBuilder.GetNonLinearProject();
 
-            ModelRunnerWrapper modelRunner = new ModelRunnerWrapper(project.Function, project.Stochasts, project.CorrelationMatrix, null);
+            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
 
-            FORMWrapper form = new FORMWrapper();
+            FORM form = new FORM();
             form.Settings.RelaxationFactor = 0.75;
             form.Settings.RelaxationLoops = 8;
 
-            DesignPointWrapper designPoint = form.GetDesignPoint(modelRunner);
+            DesignPoint designPoint = form.GetDesignPoint(modelRunner);
 
             Assert.AreEqual(3.01, designPoint.Beta, margin);
             Assert.AreEqual(7, designPoint.ContributingDesignPoints.Count);
@@ -400,10 +400,10 @@ namespace Deltares.Probabilistics.Wrappers.Test
         {
             Project project = ProjectBuilder.GetBlighProject();
 
-            ModelRunnerWrapper modelRunner = new ModelRunnerWrapper(project.Function, project.Stochasts, project.CorrelationMatrix, null);
+            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
 
-            FORMWrapper form = new FORMWrapper();
-            DesignPointWrapper designPoint = form.GetDesignPoint(modelRunner);
+            FORM form = new FORM();
+            DesignPoint designPoint = form.GetDesignPoint(modelRunner);
 
             Assert.AreEqual(1.63, designPoint.Beta, margin);
         }
@@ -427,13 +427,13 @@ namespace Deltares.Probabilistics.Wrappers.Test
         {
             Project project = ProjectBuilder.GetNonVaryingProject();
 
-            ModelRunnerWrapper modelRunner = new ModelRunnerWrapper(project.Function, project.Stochasts, project.CorrelationMatrix, null);
+            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
             modelRunner.Settings.SaveMessages = true;
             modelRunner.Settings.MaxMessages = 1000;
             modelRunner.Settings.LowestMessageType = MessageType.Warning;
 
-            FORMWrapper form = new FORMWrapper();
-            DesignPointWrapper designPoint = form.GetDesignPoint(modelRunner);
+            FORM form = new FORM();
+            DesignPoint designPoint = form.GetDesignPoint(modelRunner);
 
             Assert.AreEqual(40, designPoint.Beta, margin);
             Assert.AreEqual(1, designPoint.Messages.Count);
