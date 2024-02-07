@@ -8,6 +8,8 @@ namespace Deltares
 {
 	namespace Reliability
 	{
+		using namespace Deltares::Numeric;
+
 		class DirectionSection
 		{
 		public:

@@ -101,7 +101,7 @@ namespace Deltares
 
 				evaluation->Z = sample->Z;
 				evaluation->Tag = sample->Tag;
-				evaluation->X = NumericSupport::getCopy(sample->Values);
+				evaluation->X = Numeric::NumericSupport::getCopy(sample->Values);
 				evaluation->SizeX = sample->getSize();
 				evaluation->Iteration = sample->IterationIndex;
 
@@ -156,7 +156,7 @@ namespace Deltares
 
 			if (this->progressIndicator != nullptr)
 			{
-				const double progressIndicator = NumericSupport::Divide(report->Step, report->MaxSteps);
+				const double progressIndicator = Numeric::NumericSupport::Divide(report->Step, report->MaxSteps);
 
 				double convergence = report->ConvBeta;
 				if (std::isnan(convergence))

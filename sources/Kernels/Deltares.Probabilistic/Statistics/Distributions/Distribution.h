@@ -21,6 +21,10 @@ namespace Deltares
 			virtual double getDeviation(StochastProperties* stochast) { return 0; }
 			virtual void setMeanAndDeviation(StochastProperties* stochast, double mean, double deviation) {}
 			virtual void initializeForRun(StochastProperties* stochast) {}
+			virtual double getPDF(StochastProperties* stochast, double x) { return 0; }
+			virtual double getCDF(StochastProperties* stochast, double x) { return 0; }
+			virtual void setXAtU(StochastProperties* stochast, double x, double u) { }
+			virtual void fit(StochastProperties* stochast, std::vector<double> values) { }
 		};
 	}
 }

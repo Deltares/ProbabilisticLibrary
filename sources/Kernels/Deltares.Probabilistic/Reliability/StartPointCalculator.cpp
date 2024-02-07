@@ -147,7 +147,7 @@ namespace Deltares
 
 			for (int i = 0; i < nRadiusFactors; i++)
 			{
-				radiusFactor = NumericSupport::Divide(i + 1, nRadiusFactors);
+				radiusFactor = Numeric::NumericSupport::Divide(i + 1, nRadiusFactors);
 
 				double zMin = std::numeric_limits<double>::infinity();
 

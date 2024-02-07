@@ -10,6 +10,8 @@ namespace Deltares
 {
 	namespace Statistics
 	{
+		using namespace Deltares::Numeric;
+
 		void VariableStochastValuesSet::initializeForRun()
 		{
 			xValues.clear();

@@ -81,7 +81,7 @@ namespace Deltares
 
 		void DesignPointBuilder::initialize(double beta)
 		{
-			double value = NumericSupport::GetSign(beta) * sqrt(abs(beta) / count);
+			double value = Numeric::NumericSupport::GetSign(beta) * sqrt(abs(beta) / count);
 
 			for (int i = 0; i < count; i++)
 			{
@@ -130,7 +130,7 @@ namespace Deltares
 					modeFinders[j]->add(sample->Values[qIndex], sample->Weight);
 				}
 
-				auto sphericalValues = NumericSupport::GetSphericalCoordinates(sample->Values);
+				auto sphericalValues = Numeric::NumericSupport::GetSphericalCoordinates(sample->Values);
 				meanSample->Values[0] += sample->Weight * sphericalValues[0];
 				for (int i = 1; i < count; i++)
 				{
@@ -185,7 +185,7 @@ namespace Deltares
 						angleValues[i] = std::atan2(sinSample->Values[i] / sumWeights, cosSample->Values[i] / sumWeights);
 					}
 
-					auto coordinates = NumericSupport::GetCartesianCoordinates(angleValues);
+					auto coordinates = Numeric::NumericSupport::GetCartesianCoordinates(angleValues);
 					std::shared_ptr<Sample> anglePoint = std::make_shared<Sample>(coordinates);
 
 					for (int j = 0; j < this->qualitativeCount; j++)

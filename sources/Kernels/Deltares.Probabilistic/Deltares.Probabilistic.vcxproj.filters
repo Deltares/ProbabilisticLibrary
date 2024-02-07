@@ -83,6 +83,7 @@
     <ClCompile Include="Statistics\Distributions\DiscreteDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\QualitativeDistribution.cpp" />
     <ClCompile Include="Statistics\VariableStochastValueSet.cpp" />
+    <ClCompile Include="Math\RootFinders\BisectionRootFinder.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -179,6 +180,7 @@
     <ClInclude Include="Statistics\Distributions\QualitativeDistribution.h" />
     <ClInclude Include="Statistics\VariableStochastValue.h" />
     <ClInclude Include="Statistics\VariableStochastValueSet.h" />
+    <ClInclude Include="Math\RootFinders\BisectionRootFinder.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

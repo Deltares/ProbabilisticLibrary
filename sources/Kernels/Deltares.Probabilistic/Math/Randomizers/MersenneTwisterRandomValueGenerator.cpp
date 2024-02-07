@@ -19,7 +19,7 @@ void MersenneTwisterRandomValueGenerator::initialize(bool repeatable, int seed, 
 
 double MersenneTwisterRandomValueGenerator::next()
 {
-	return NumericSupport::Divide(rand(), RAND_MAX);
+	return Deltares::Numeric::NumericSupport::Divide(rand(), RAND_MAX);
 };
 
 

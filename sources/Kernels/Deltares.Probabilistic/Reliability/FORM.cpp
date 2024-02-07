@@ -15,6 +15,8 @@ namespace Deltares
 {
 	namespace Reliability
 	{
+		using namespace Deltares::Numeric;
+
 		std::shared_ptr<DesignPoint> FORM::getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner)
 		{
 			modelRunner->updateStochastSettings(this->Settings->StochastSet);

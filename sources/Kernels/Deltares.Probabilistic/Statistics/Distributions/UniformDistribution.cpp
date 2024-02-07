@@ -60,6 +60,70 @@ namespace Deltares
 				return StandardNormal::getUFromP(cdf);
 			}
 		}
+
+		double UniformDistribution::getPDF(StochastProperties* stochast, double x)
+		{
+			if (stochast->Minimum == stochast->Maximum)
+			{
+				return x == stochast->Minimum ? 1 : 0;
+			}
+			else if (x >= stochast->Minimum && x <= stochast->Maximum)
+			{
+				return 1 / (stochast->Maximum - stochast->Minimum);
+			}
+			else
+			{
+				return 0;
+			}
+		}
+
+		double UniformDistribution::getCDF(StochastProperties* stochast, double x)
+		{
+			if (x <= stochast->Minimum)
+			{
+				return 0;
+			}
+			else if (x >= stochast->Maximum)
+			{
+				return 1;
+			}
+			else
+			{
+				return 1 - ((stochast->Maximum - x) / (stochast->Maximum - stochast->Minimum));
+			}
+		}
+
+		void UniformDistribution::setXAtU(StochastProperties* stochast, double x, double u)
+		{
+			double p = StandardNormal::getPFromU(u);
+
+			if (stochast->Minimum == stochast->Maximum)
+			{
+				stochast->Minimum = x;
+				stochast->Maximum = x;
+			}
+			else
+			{
+				double width = stochast->Maximum - stochast->Minimum;
+				double mean = x - (2 * p - 1) * width;
+
+				stochast->Minimum = mean - width / 2;
+				stochast->Maximum = mean + width / 2;
+			}
+		}
+
+		void UniformDistribution::fit(StochastProperties* stochast, std::vector<double> values)
+		{
+			double min = *std::min_element(values.begin(), values.end());
+			double max = *std::max_element(values.begin(), values.end());
+
+			double diff = max - min;
+			double add = diff / values.size();
+
+			stochast->Minimum = min - add;
+			stochast->Maximum = max + add;
+		}
+
 	}
 }
 

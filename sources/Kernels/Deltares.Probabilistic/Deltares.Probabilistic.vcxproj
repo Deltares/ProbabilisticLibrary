@@ -153,6 +153,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Math\RootFinders\BisectionRootFinder.h" />
     <ClInclude Include="Statistics\VariableStochastValue.h" />
     <ClInclude Include="Statistics\Distributions\QualitativeDistribution.h" />
     <ClInclude Include="Statistics\Distributions\DiscreteDistribution.h" />
@@ -227,6 +228,7 @@
     <ClInclude Include="Statistics\VariableStochastValueSet.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Math\RootFinders\BisectionRootFinder.cpp" />
     <ClCompile Include="Statistics\Distributions\QualitativeDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\DiscreteDistribution.cpp" />
     <ClCompile Include="Statistics\HistogramValue.cpp" />

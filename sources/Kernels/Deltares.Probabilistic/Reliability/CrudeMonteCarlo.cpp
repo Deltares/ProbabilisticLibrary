@@ -164,7 +164,7 @@ namespace Deltares
 				}
 
 				convergenceReport->FailedSamples = nFailed;
-				convergenceReport->FailFraction = NumericSupport::Divide(nFailed, nSamples);
+				convergenceReport->FailFraction = Numeric::NumericSupport::Divide(nFailed, nSamples);
 
 				if (z * z0Fac < 0)
 				{
@@ -176,7 +176,7 @@ namespace Deltares
 						uMin = u;
 					}
 				}
-				pf = NumericSupport::Divide(nFailed, nSamples);
+				pf = Numeric::NumericSupport::Divide(nFailed, nSamples);
 				pf = qFail + qRange * pf;
 
 				convergenceReport->IsConverged = checkConvergence(modelRunner, pf, nSamples, sampleIndex);

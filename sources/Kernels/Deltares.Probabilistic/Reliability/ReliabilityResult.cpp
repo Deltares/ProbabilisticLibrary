@@ -12,8 +12,8 @@ namespace Deltares
                 return true;
             }
 
-            return !NumericSupport::areEqual(Reliability, resultBefore->Reliability, 0.001) ||
-                !NumericSupport::areEqual(Reliability, resultAfter->Reliability, 0.001);
+            return !Numeric::NumericSupport::areEqual(Reliability, resultBefore->Reliability, 0.001) ||
+                !Numeric::NumericSupport::areEqual(Reliability, resultAfter->Reliability, 0.001);
         }
     }
 }

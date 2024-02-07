@@ -1,11 +1,52 @@
 #include "LogNormalDistribution.h"
 #include "../StochastProperties.h"
+#include "../StandardNormal.h"
+#include "../../Math/NumericSupport.h"
+#include "../../Math/RootFinders/BisectionRootFinder.h"
 #include <cmath>
+#include <numbers>
 
 namespace Deltares
 {
 	namespace Statistics
 	{
+		class LogNormalEstimator
+		{
+		public:
+			LogNormalEstimator(std::vector<double> values)
+			{
+				this->values = values;
+			}
+
+			double CalculateValue(double shift)
+			{
+				int n = values.size();
+				int n3 = n / 3;
+				double mid = GetPartialAverage(values, shift, n3 + 1, n - n3);
+				double low = GetPartialAverage(values, shift, 1, n3);
+				double upp = GetPartialAverage(values, shift, n - n3 + 1, n);
+
+				double result = (mid - low) - (upp - mid);
+				return result;
+			}
+
+		private:
+			std::vector<double> values;
+
+			double GetPartialAverage(std::vector<double>& sample, double gamma, int low, int high)
+			{
+				double sum = 0;
+				for (int i = low - 1; i < high; i++)
+				{
+					sum += std::log(sample[i] - gamma);
+				}
+
+				int n = high - low + 1;
+				return sum / n;
+			}
+		};
+
+
 		void LogNormalDistribution::setMeanAndDeviation(StochastProperties* stochast, double mean, double deviation)
 		{
 			double p = deviation / (mean - stochast->Shift);
@@ -53,6 +94,92 @@ namespace Deltares
 			{
 				return (log(x - stochast->Shift) - stochast->Location) / stochast->Scale;
 			}
+		}
+
+		double LogNormalDistribution::getPDF(StochastProperties* stochast, double x)
+		{
+			if (x <= stochast->Shift)
+			{
+				return 0;
+			}
+			else
+			{
+				double sigma = stochast->Scale;
+				double mu = stochast->Location;
+
+				double logFactor = 1 / ((x - stochast->Shift) * sigma * sqrt(2 * std::numbers::pi));
+				double logDistance = log(x - stochast->Shift) - mu;
+				double logDistancePower = -(logDistance * logDistance) / (2 * sigma * sigma);
+
+				return logFactor * exp(logDistancePower);
+			}
+		}
+
+		double LogNormalDistribution::getCDF(StochastProperties* stochast, double x)
+		{
+			if (x <= stochast->Shift)
+			{
+				return 0;
+			}
+			else
+			{
+				double u = this->getUFromX(stochast, x);
+
+				return StandardNormal::getPFromU(u);
+			}
+		}
+
+		void LogNormalDistribution::setXAtU(StochastProperties* stochast, double x, double u)
+		{
+			stochast->Location = x - u * stochast->Scale;
+		}
+
+		double fitShift(std::vector<double> x)
+		{
+			// see https://stats.stackexchange.com/questions/49495/robust-parameter-estimation-for-shifted-log-normal-distribution
+
+			double minX = *std::min_element(x.begin(), x.end());
+
+			double min = minX - Numeric::NumericSupport::getFraction(minX, 1);
+			double max = minX - Numeric::NumericSupport::getFraction(minX, 1E-6);
+
+			LogNormalEstimator* estimator = new LogNormalEstimator(x);
+			Numeric::BisectionRootFinder* bisection = new Numeric::BisectionRootFinder();
+
+			double shift = bisection->CalculateValue(min, max, 0, 0.001, [estimator](double v) {return estimator->CalculateValue(v); });
+
+			double shiftValue = estimator->CalculateValue(shift);
+			if (shiftValue != 0)
+			{
+				double negShiftValue = estimator->CalculateValue(-shift);
+				if (abs((shiftValue - negShiftValue) / shiftValue) < 1E-6)
+				{
+					shift = 0;
+				}
+			}
+
+			if (abs(shift) > 1E10)
+			{
+				shift = min;
+			}
+
+			return shift;
+		}
+
+		void LogNormalDistribution::fit(StochastProperties* stochast, std::vector<double> values)
+		{
+			stochast->Shift = fitShift(values);
+
+			std::vector<double> xLog = Numeric::NumericSupport::select(values, [stochast](double v) {return log(v - stochast->Shift); });
+
+			//std::vector<double> xLog(values.size());
+			//for (int i = 0; i < values.size(); i++)
+			//{
+			//	xLog[i] = log(values[i] - stochast->Shift);
+			//}
+
+			stochast->Location = Numeric::NumericSupport::getMean(xLog);
+			stochast->Scale = Numeric::NumericSupport::getStandardDeviation(stochast->Location, xLog);
 		}
 	}
 }

@@ -11,12 +11,12 @@ namespace Deltares
 
 		double Sample::getBeta()
 		{
-			return NumericSupport::GetLength(Values);
+			return Numeric::NumericSupport::GetLength(Values);
 		}
 
 		void Sample::setInitialValues(double beta)
 		{
-			double value = sqrt(beta * beta / size) * NumericSupport::GetSign(beta);
+			double value = sqrt(beta * beta / size) * Numeric::NumericSupport::GetSign(beta);
 
 			for (int i = 0; i < size; i++)
 			{
