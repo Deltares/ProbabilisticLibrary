@@ -28,14 +28,18 @@ namespace Deltares
 		public:
 
 			Stochast();
-			Stochast(DistributionType distributionType, double* values);
+			Stochast(DistributionType distributionType, std::vector<double> values);
 
 			bool IsVariableStochast = false;
 
+			double getPDF(double x);
+			double getCDF(double x);
+
 			double getXFromU(double u);
 			double getUFromX(double x);
-
 			double getXFromUAndSource(double source, double u);
+
+			void setXAtU(double x, double u, ConstantParameterType constantType);
 
 			void setDistributionType(DistributionType distributionType);
 			DistributionType getDistributionType();
@@ -58,6 +62,8 @@ namespace Deltares
 			void setDeviation(double deviation);
 
 			void initializeForRun();
+
+			void fit(std::vector<double> values);
 
 			std::shared_ptr<Stochast> VariableSource = nullptr;
 

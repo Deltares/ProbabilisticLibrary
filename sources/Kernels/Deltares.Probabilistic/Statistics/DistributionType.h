@@ -5,6 +5,7 @@ namespace Deltares
 	namespace Statistics
 	{
 		enum DistributionType { Deterministic, Normal, LogNormal, Uniform, Gumbel, Discrete, Qualitative };
-	}
+
+}
 }
 

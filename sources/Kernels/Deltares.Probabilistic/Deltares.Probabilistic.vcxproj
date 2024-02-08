@@ -229,6 +229,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Math\RootFinders\BisectionRootFinder.cpp" />
+    <ClCompile Include="Statistics\Distributions\Distribution.cpp" />
     <ClCompile Include="Statistics\Distributions\QualitativeDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\DiscreteDistribution.cpp" />
     <ClCompile Include="Statistics\HistogramValue.cpp" />

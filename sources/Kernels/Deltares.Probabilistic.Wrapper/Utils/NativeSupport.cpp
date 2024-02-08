@@ -20,9 +20,9 @@ namespace Deltares
 				return gcnew System::String(text.c_str());
 			}
 
-			double* NativeSupport::toNative(array<double>^ values)
+			std::vector<double> NativeSupport::toNative(array<double>^ values)
 			{
-				double* nValues = new double[values->Length];
+				std::vector<double> nValues(values->Length);
 
 				for (int i = 0; i < values->Length; i++)
 				{
@@ -32,7 +32,7 @@ namespace Deltares
 				return nValues;
 			}
 
-			array<double>^ NativeSupport::toManaged(double* values, int size)
+			array<double>^ NativeSupport::toManaged(std::vector<double>& values, int size)
 			{
 				array<double>^ mValues = gcnew array<double>(size);
 

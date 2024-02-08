@@ -15,7 +15,7 @@ namespace Deltares
 			stochast->Scale = deviation;
 		}
 
-		void NormalDistribution::initialize(StochastProperties* stochast, double* values)
+		void NormalDistribution::initialize(StochastProperties* stochast, std::vector<double> values)
 		{
 			setMeanAndDeviation(stochast, values[0], values[1]);
 		}
@@ -63,12 +63,12 @@ namespace Deltares
 			return StandardNormal::getPFromU(u);
 		}
 
-		void NormalDistribution::setXAtU(StochastProperties* stochast, double x, double u)
+		void NormalDistribution::setXAtU(StochastProperties* stochast, double x, double u, ConstantParameterType constantType)
 		{
 			stochast->Location = x - u * stochast->Scale;
 		}
 
-		void NormalDistribution::fit(StochastProperties* stochast, std::vector<double> values)
+		void NormalDistribution::fit(StochastProperties* stochast, std::vector<double>& values)
 		{
 			stochast->Location = Numeric::NumericSupport::getMean(values);
 			stochast->Scale = Numeric::NumericSupport::getStandardDeviation(stochast->Location, values);

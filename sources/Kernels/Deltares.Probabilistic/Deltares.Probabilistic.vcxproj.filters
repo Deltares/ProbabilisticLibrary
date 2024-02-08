@@ -84,6 +84,7 @@
     <ClCompile Include="Statistics\Distributions\QualitativeDistribution.cpp" />
     <ClCompile Include="Statistics\VariableStochastValueSet.cpp" />
     <ClCompile Include="Math\RootFinders\BisectionRootFinder.cpp" />
+    <ClCompile Include="Statistics\Distributions\Distribution.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />

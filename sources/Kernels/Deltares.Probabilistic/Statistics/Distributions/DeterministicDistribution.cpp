@@ -16,7 +16,7 @@ namespace Deltares
 			stochast->Location = mean;
 		}
 
-		void DeterministicDistribution::initialize(StochastProperties* stochast, double* values)
+		void DeterministicDistribution::initialize(StochastProperties* stochast, std::vector<double> values)
 		{
 			stochast->Location = values[0];
 		}
@@ -46,12 +46,12 @@ namespace Deltares
 			return x >= stochast->Location ? 1 : 0;
 		}
 
-		void DeterministicDistribution::setXAtU(StochastProperties* stochast, double x, double u)
+		void DeterministicDistribution::setXAtU(StochastProperties* stochast, double x, double u, ConstantParameterType constantType)
 		{
 			stochast->Location = x;
 		}
 
-		void DeterministicDistribution::fit(StochastProperties* stochast, std::vector<double> values)
+		void DeterministicDistribution::fit(StochastProperties* stochast, std::vector<double>& values)
 		{
 			stochast->Location = Numeric::NumericSupport::getMean(values);
 		}

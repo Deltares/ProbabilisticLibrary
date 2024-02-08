@@ -47,14 +47,7 @@ namespace Deltares
 		};
 
 
-		void LogNormalDistribution::setMeanAndDeviation(StochastProperties* stochast, double mean, double deviation)
-		{
-			double p = deviation / (mean - stochast->Shift);
-			stochast->Scale = sqrt(log(1 + p * p));
-			stochast->Location = log(mean - stochast->Shift) - 0.5 * stochast->Scale * stochast->Scale;
-		}
-
-		void LogNormalDistribution::initialize(StochastProperties* stochast, double* values)
+		void LogNormalDistribution::initialize(StochastProperties* stochast, std::vector<double> values)
 		{
 			stochast->Shift = values[2];
 			setMeanAndDeviation(stochast, values[0], values[1]);
@@ -67,7 +60,14 @@ namespace Deltares
 
 		double LogNormalDistribution::getMean(StochastProperties* stochast)
 		{
-			return exp(stochast->Location + 0.5 * stochast->Scale * stochast->Scale) + stochast->Shift;
+			if (isinf(stochast->Location))
+			{
+				return stochast->Shift;
+			}
+			else 
+			{
+				return exp(stochast->Location + 0.5 * stochast->Scale * stochast->Scale) + stochast->Shift;
+			}
 		}
 
 		double LogNormalDistribution::getDeviation(StochastProperties* stochast)
@@ -77,6 +77,21 @@ namespace Deltares
 			double mean = getMean(stochast);
 
 			return p * (mean - stochast->Shift);
+		}
+
+		void LogNormalDistribution::setMeanAndDeviation(StochastProperties* stochast, double mean, double deviation)
+		{
+			if (mean <= stochast->Shift)
+			{
+				stochast->Scale = 0;
+				stochast->Location = - std::numeric_limits<float>::infinity();
+			}
+			else
+			{
+				double p = deviation / (mean - stochast->Shift);
+				stochast->Scale = sqrt(log(1 + p * p));
+				stochast->Location = log(mean - stochast->Shift) - 0.5 * stochast->Scale * stochast->Scale;
+			}
 		}
 
 		double LogNormalDistribution::getXFromU(StochastProperties* stochast, double u)
@@ -129,12 +144,23 @@ namespace Deltares
 			}
 		}
 
-		void LogNormalDistribution::setXAtU(StochastProperties* stochast, double x, double u)
+		void LogNormalDistribution::setXAtU(StochastProperties* stochast, double x, double u, ConstantParameterType constantType)
 		{
-			stochast->Location = x - u * stochast->Scale;
+			if (stochast->Scale <= 0)
+			{
+				setMeanAndDeviation(stochast, x, 0);
+			}
+			else if (x <= stochast->Shift)
+			{
+				setMeanAndDeviation(stochast, x, 0);
+			}
+			else
+			{
+				return this->setXAtUByIteration(stochast, x, u, constantType);
+			}
 		}
 
-		double fitShift(std::vector<double> x)
+		double LogNormalDistribution::fitShift(std::vector<double> x)
 		{
 			// see https://stats.stackexchange.com/questions/49495/robust-parameter-estimation-for-shifted-log-normal-distribution
 
@@ -166,7 +192,7 @@ namespace Deltares
 			return shift;
 		}
 
-		void LogNormalDistribution::fit(StochastProperties* stochast, std::vector<double> values)
+		void LogNormalDistribution::fit(StochastProperties* stochast, std::vector<double>& values)
 		{
 			stochast->Shift = fitShift(values);
 

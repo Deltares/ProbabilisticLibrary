@@ -34,16 +34,21 @@ std::shared_ptr <Stochast> createDistribution::create(const EnumDistributions di
         break;
     case EnumDistributions::uspace: {
         dist = DistributionType::Normal;
-        auto params = new double[2] {1.0, 0.0};
+        std::vector<double> params {1.0, 0.0};
         std::shared_ptr<Stochast> s(new Stochast(dist, params));
-        delete[] params;
         return s; }
         break;
     default:
         throw probLibException("Unknown distribution function - code: ", (int)distHR);
     }
 
-    std::shared_ptr<Stochast> s(new Stochast(dist, p));
+    std::vector<double> pValues(4);
+    for (int i = 0; i < 4; i++)
+    {
+        pValues[i] = p[i];
+    }
+
+    std::shared_ptr<Stochast> s(new Stochast(dist, pValues));
 
     if (truncated)
     {

@@ -19,6 +19,8 @@ namespace Deltares
 
 			public enum class WrapperDistributionType {Deterministic, Normal, LogNormal, Uniform, Gumbel, Discrete, Qualitative};
 
+			public enum class WrapperConstantParameterType { Deviation, VariationCoefficient };
+
 			public ref class Stochast
 			{
 			private:
@@ -34,6 +36,7 @@ namespace Deltares
 
 				Statistics::DistributionType getNativeDistributionType(WrapperDistributionType distributionType);
 				WrapperDistributionType getManagedDistributionType(Statistics::DistributionType distributionType);
+				Statistics::ConstantParameterType getNativeConstantParameterType(WrapperConstantParameterType constantParameterType);
 
 				void updateStochast();
 
@@ -46,7 +49,7 @@ namespace Deltares
 				Stochast(WrapperDistributionType distributionType, array<double>^ values)
 				{
 					const Statistics::DistributionType nativeDistributionType = getNativeDistributionType(distributionType);
-					double* nValues = NativeSupport::toNative(values);
+					std::vector<double> nValues = NativeSupport::toNative(values);
 					m_stochast = new Statistics::Stochast(nativeDistributionType, nValues);
 					m_stochast->ValueSet = this->ValueSet->GetValue();
 				}
@@ -158,6 +161,16 @@ namespace Deltares
 					System::Collections::Generic::List<FragilityValue^>^ get() { return fragilityValues; }
 				}
 
+				double GetPDF(double x)
+				{
+					return m_stochast->getPDF(x);
+				}
+
+				double GetCDF(double x)
+				{
+					return m_stochast->getCDF(x);
+				}
+
 				double GetXFromU(double u)
 				{
 					return m_stochast->getXFromU(u);
@@ -179,11 +192,23 @@ namespace Deltares
 					return m_stochast->getUFromX(x);
 				}
 
+				void SetXAtU(double x, double u, WrapperConstantParameterType constantType)
+				{
+					m_stochast->setXAtU(x, u, this->getNativeConstantParameterType(constantType));
+				}
+
 				void InitializeForRun()
 				{
 					updateStochast();
 
 					m_stochast->initializeForRun();
+				}
+
+				void Fit(array<double>^ values)
+				{
+					std::vector<double> nativaValues = NativeSupport::toNative(values);
+
+					m_stochast->fit(nativaValues);
 				}
 
 				property VariableStochastValueSet^ ValueSet

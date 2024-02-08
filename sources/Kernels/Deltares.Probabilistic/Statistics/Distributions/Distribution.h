@@ -5,10 +5,12 @@ namespace Deltares
 {
 	namespace Statistics
 	{
+		enum ConstantParameterType { Deviation, VariationCoefficient };
+
 		class Distribution
 		{
 		public:
-			virtual void initialize(StochastProperties* stochast, double* values) {}
+			virtual void initialize(StochastProperties* stochast, std::vector<double> values) {}
 			virtual double getXFromU(StochastProperties* stochast, double u) { return 0; }
 			virtual double getUFromX(StochastProperties* stochast, double x) { return 0; }
 			virtual bool isVarying(StochastProperties* stochast) { return false; }
@@ -23,8 +25,10 @@ namespace Deltares
 			virtual void initializeForRun(StochastProperties* stochast) {}
 			virtual double getPDF(StochastProperties* stochast, double x) { return 0; }
 			virtual double getCDF(StochastProperties* stochast, double x) { return 0; }
-			virtual void setXAtU(StochastProperties* stochast, double x, double u) { }
-			virtual void fit(StochastProperties* stochast, std::vector<double> values) { }
+			virtual void setXAtU(StochastProperties* stochast, double x, double u, ConstantParameterType constantType) {}
+			virtual void fit(StochastProperties* stochast, std::vector<double>& values) { }
+		protected:
+			virtual void setXAtUByIteration(StochastProperties* stochast, double x, double u, ConstantParameterType constantType);
 		};
 	}
 }

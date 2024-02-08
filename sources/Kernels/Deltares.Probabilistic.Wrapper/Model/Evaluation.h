@@ -23,8 +23,8 @@ namespace Deltares
 					this->Z = evaluation->Z;
 					this->Iteration = evaluation->Iteration;
 					this->Weight = evaluation->Weight;
-					this->Input = NativeSupport::toManaged(evaluation->X, evaluation->SizeX);
-					this->Result = NativeSupport::toManaged(evaluation->X, evaluation->SizeX);
+					this->Input = NativeSupport::toManaged(evaluation->X);
+					this->Result = NativeSupport::toManaged(evaluation->X);
 					this->Tag = NativeSupport::toManagedObject(evaluation->Tag);
 				}
 

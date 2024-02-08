@@ -101,8 +101,7 @@ namespace Deltares
 
 				evaluation->Z = sample->Z;
 				evaluation->Tag = sample->Tag;
-				evaluation->X = Numeric::NumericSupport::getCopy(sample->Values);
-				evaluation->SizeX = sample->getSize();
+				evaluation->X = sample->Values;
 				evaluation->Iteration = sample->IterationIndex;
 
 				this->evaluations.push_back(evaluation);

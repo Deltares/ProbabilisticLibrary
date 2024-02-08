@@ -30,12 +30,16 @@ namespace Deltares
             static DoubleType getDoubleType(double value);
             static double getSign(DoubleType value);
             static double getFraction(double value, double fraction);
+            static bool isValidValue(double x);
+            static double getMinValidValue(std::function<double(double)> function);
+            static double getMaxValidValue(std::function<double(double)> function);
             static double interpolate(double x, double minX, double minY, double maxX, double maxY, bool extrapolate = false, InterpolationType interpolationType = Linear);
             static double interpolate(double x, std::vector<double>& xValues, std::vector<double>& yValues, bool extrapolate = false, InterpolationType interpolationType = Linear);
             static double getMean(std::vector<double>& values);
             static double getStandardDeviation(double mean, std::vector<double>& values);
             static double getStandardDeviation(std::vector<double>& values);
             static std::vector<double> select(std::vector<double>& values, std::function<double(double)> function);
+            static double sum(std::vector<double>& values, std::function<double(double)> function);
         };
     }
 }

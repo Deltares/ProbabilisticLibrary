@@ -6,6 +6,16 @@ namespace Deltares
 	{
 		namespace Wrappers
 		{
+			Statistics::ConstantParameterType Stochast::getNativeConstantParameterType(WrapperConstantParameterType constantParameterType)
+			{
+				switch (constantParameterType)
+				{
+				case WrapperConstantParameterType::Deviation: return Statistics::ConstantParameterType::Deviation;
+				case WrapperConstantParameterType::VariationCoefficient: return Statistics::ConstantParameterType::VariationCoefficient;
+				default: throw gcnew System::NotSupportedException(constantParameterType.ToString());
+				}
+			}
+
 			Statistics::DistributionType Stochast::getNativeDistributionType(WrapperDistributionType distributionType)
 			{
 				switch (distributionType)

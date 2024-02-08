@@ -43,10 +43,20 @@ namespace Deltares
 
 		Stochast::Stochast() {};
 
-		Stochast::Stochast(DistributionType distributionType, double* values)
+		Stochast::Stochast(DistributionType distributionType, std::vector<double> values)
 		{
 			setDistributionType(distributionType);
 			distribution->initialize(this, values);
+		}
+
+		double Stochast::getPDF(double x)
+		{
+			return this->distribution->getPDF(this, x);
+		}
+
+		double Stochast::getCDF(double x)
+		{
+			return this->distribution->getCDF(this, x);
 		}
 
 		double Stochast::getXFromU(double u)
@@ -64,6 +74,11 @@ namespace Deltares
 			std::shared_ptr<StochastProperties> properties = this->ValueSet->getInterpolatedStochast(xSource);
 
 			return this->distribution->getXFromU(properties.get(), u);
+		}
+
+		void Stochast::setXAtU(double x, double u, ConstantParameterType constantType)
+		{
+			this->distribution->setXAtU(this, x, u, constantType);
 		}
 
 		void Stochast::setDistributionType(DistributionType distributionType)
@@ -145,6 +160,12 @@ namespace Deltares
 				this->ValueSet->initializeForRun();
 			}
 		}
+
+		void Stochast::fit(std::vector<double> values)
+		{
+			distribution->fit(this, values);
+		}
+
 	}
 }
 

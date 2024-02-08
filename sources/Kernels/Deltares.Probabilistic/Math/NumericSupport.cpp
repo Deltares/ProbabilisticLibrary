@@ -404,6 +404,67 @@ namespace Deltares
 
 			return result;
 		}
+
+		double NumericSupport::sum(std::vector<double>& values, std::function<double(double)> function)
+		{
+			double sum = 0;
+
+			for (size_t i = 0; i < values.size(); i++)
+			{
+				sum += function(values[i]);
+			}
+
+			return sum;
+		}
+
+		/// <summary>
+		/// Indicates whether a numeric value is a valid value
+		/// </summary>
+		/// <param name="x"></param>
+		/// <returns></returns>
+		bool NumericSupport::isValidValue(double x)
+		{
+			return !isnan(x) && !isinf(x);
+		}
+
+		/// <summary>
+		/// Estimates the minimum value for which a function gives a valid result
+		/// </summary>
+		/// <param name="function"></param>
+		/// <returns></returns>
+		double NumericSupport::getMinValidValue(std::function<double(double)> function)
+		{
+			const double minValue = 1E-9;
+			const double maxValue = 1E9;
+
+			double minStart = minValue;
+			while (minStart < maxValue && !NumericSupport::isValidValue(function(minStart)))
+			{
+				minStart *= 10;
+			}
+
+			return minStart;
+		}
+
+		/// <summary>
+		/// Estimates the maximum value for which a function gives a valid result
+		/// </summary>
+		/// <param name="function"></param>
+		/// <returns></returns>
+		double NumericSupport::getMaxValidValue(std::function<double(double)> function)
+		{
+			const double minValue = 1E-9;
+			const double maxValue = 1E9;
+
+			double maxStart = maxValue;
+			while (maxStart > minValue && !NumericSupport::isValidValue(function(maxStart)))
+			{
+				maxStart /= 10;
+			}
+
+			return maxStart;
+		}
+
 	}
 }
 

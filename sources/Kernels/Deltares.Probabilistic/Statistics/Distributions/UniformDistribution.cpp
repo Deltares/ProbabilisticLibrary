@@ -15,7 +15,7 @@ namespace Deltares
 			stochast->Maximum = mean + diff;
 		}
 
-		void UniformDistribution::initialize(StochastProperties* stochast, double* values)
+		void UniformDistribution::initialize(StochastProperties* stochast, std::vector<double> values)
 		{
 			stochast->Minimum = values[0];
 			stochast->Maximum = values[1];
@@ -93,7 +93,7 @@ namespace Deltares
 			}
 		}
 
-		void UniformDistribution::setXAtU(StochastProperties* stochast, double x, double u)
+		void UniformDistribution::setXAtU(StochastProperties* stochast, double x, double u, ConstantParameterType constantType)
 		{
 			double p = StandardNormal::getPFromU(u);
 
@@ -112,7 +112,7 @@ namespace Deltares
 			}
 		}
 
-		void UniformDistribution::fit(StochastProperties* stochast, std::vector<double> values)
+		void UniformDistribution::fit(StochastProperties* stochast, std::vector<double>& values)
 		{
 			double min = *std::min_element(values.begin(), values.end());
 			double max = *std::max_element(values.begin(), values.end());

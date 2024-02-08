@@ -2,8 +2,10 @@
 
 #include "../StandardNormal.h"
 #include "../StochastProperties.h"
-#include "../../Math/Constants.h"
+#include "../../Math/NumericSupport.h"
+#include "../../Math/RootFinders/BisectionRootFinder.h"
 #include <cmath>
+#include <numbers>
 
 namespace Deltares
 {
@@ -11,11 +13,11 @@ namespace Deltares
 	{
 		void GumbelDistribution::setMeanAndDeviation(StochastProperties* stochast, double mean, double deviation)
 		{
-			stochast->Scale = sqrt(6) * deviation / Deltares::Numeric::pi;
-			stochast->Shift = mean - stochast->Scale * Deltares::Numeric::eulerMascheroni;
+			stochast->Scale = sqrt(6) * deviation / std::numbers::pi;
+			stochast->Shift = mean - stochast->Scale * std::numbers::egamma;
 		}
 
-		void GumbelDistribution::initialize(StochastProperties* stochast, double* values)
+		void GumbelDistribution::initialize(StochastProperties* stochast, std::vector<double> values)
 		{
 			setMeanAndDeviation(stochast, values[0], values[1]);
 		}
@@ -27,12 +29,12 @@ namespace Deltares
 
 		double GumbelDistribution::getMean(StochastProperties* stochast)
 		{
-			return stochast->Shift + stochast->Scale * Deltares::Numeric::eulerMascheroni;
+			return stochast->Shift + stochast->Scale * std::numbers::egamma;
 		}
 
 		double GumbelDistribution::getDeviation(StochastProperties* stochast)
 		{
-			return Deltares::Numeric::pi * stochast->Scale / sqrt(6);
+			return std::numbers::pi * stochast->Scale / sqrt(6);
 		}
 
 		double GumbelDistribution::getXFromU(StochastProperties* stochast, double u)
@@ -66,6 +68,65 @@ namespace Deltares
 
 				return StandardNormal::getUFromP(cdf);
 			}
+		}
+
+		double GumbelDistribution::getPDF(StochastProperties* stochast, double x)
+		{
+			if (stochast->Scale == 0)
+			{
+				return x == stochast->Shift ? 1 : 0;
+			}
+			else
+			{
+				x = (x - stochast->Shift) / stochast->Scale;
+
+				return (1 / stochast->Scale) * exp(-(x + exp(-x)));
+			}
+		}
+
+		double GumbelDistribution::getCDF(StochastProperties* stochast, double x)
+		{
+			if (stochast->Scale == 0)
+			{
+				return x < stochast->Shift ? 0 : 1;
+			}
+			else
+			{
+				x -= stochast->Shift;
+				return exp(-exp(-x / stochast->Scale));
+			}
+		}
+
+		void GumbelDistribution::setXAtU(StochastProperties* stochast, double x, double u, ConstantParameterType constantType)
+		{
+			double current = this->getXFromU(stochast, u);
+			double diff = x - current;
+
+			stochast->Shift += diff;
+		}
+
+		void GumbelDistribution::fit(StochastProperties* stochast, std::vector<double>& values)
+		{
+			// https://stats.stackexchange.com/questions/71197/usable-estimators-for-parameters-in-gumbel-distribution
+			double mean = Numeric::NumericSupport::getMean(values);
+
+			Numeric::BisectionRootFinder* bisection = new Numeric::BisectionRootFinder();
+
+			Numeric::RootFinderMethod method = [mean, &values](double x)
+			{
+				double counter = Numeric::NumericSupport::sum(values, [x](double p) {return p * exp(-p / x); });
+				double denominator = Numeric::NumericSupport::sum(values, [x](double p) {return exp(-p / x); });
+				return mean - x - counter / denominator;
+			};
+
+			double minStart = Numeric::NumericSupport::getMinValidValue(method);
+			double maxStart = Numeric::NumericSupport::getMaxValidValue(method);
+
+			stochast->Scale = bisection->CalculateValue(minStart, maxStart, 0, 0.001, method);
+
+			double sum = Numeric::NumericSupport::sum(values, [stochast](double p) {return exp(-p / stochast->Scale); });
+
+			stochast->Shift = -stochast->Scale * log(sum / values.size());
 		}
 	}
 }
