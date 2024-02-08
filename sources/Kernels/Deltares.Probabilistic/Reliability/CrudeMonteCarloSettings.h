@@ -7,9 +7,7 @@
 namespace Deltares
 {
     namespace Reliability
-	{
-        using namespace Deltares::Models;
-
+    {
         class CrudeMonteCarloSettings
         {
         public:
@@ -17,7 +15,7 @@ namespace Deltares
             int MaximumSamples = 10000;
             double VariationCoefficient = 0.05;
             DesignPointMethod designPointMethod = DesignPointMethod::CenterOfGravity;
-            std::shared_ptr<RandomSettings> randomSettings = std::make_shared<RandomSettings>();
+            std::shared_ptr<Deltares::Models::RandomSettings> randomSettings = std::make_shared<Deltares::Models::RandomSettings>();
             std::shared_ptr<StochastSettingsSet> StochastSet = std::make_shared<StochastSettingsSet>();
         };
     }
