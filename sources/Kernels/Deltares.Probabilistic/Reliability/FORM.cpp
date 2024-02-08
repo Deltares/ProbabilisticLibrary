@@ -39,7 +39,6 @@ namespace Deltares
 
 			std::shared_ptr<DesignPoint> designPoint = nullptr;
 
-			double dzduLength = 0;
 			double relaxationFactor = this->Settings->RelaxationFactor;
 
 			// perform iterations
@@ -47,7 +46,7 @@ namespace Deltares
 			{
 				modelRunner->clear();
 
-				designPoint = getDesignPoint(modelRunner, startPoint, relaxationFactor);
+				designPoint = getDesignPoint(modelRunner, startPoint->clone(), relaxationFactor);
 
 				if (designPoint->convergenceReport->IsConverged)
 				{
@@ -79,9 +78,21 @@ namespace Deltares
 			return designPoint;
 		}
 
-		std::shared_ptr<DesignPoint> FORM::getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<Sample> startSample, double relaxationFactor)
+		std::shared_ptr<ReliabilityReport> FORM::getReport(int iteration, double reliability)
 		{
-			constexpr double minDzduLength = 1E-08;
+			std::shared_ptr<ReliabilityReport> report = std::make_shared<ReliabilityReport>();
+			report->Step = iteration;
+			report->Reliability = reliability;
+
+			report->MaxSteps = this->Settings->MaximumIterations;
+			report->ReportMatchesEvaluation = false;
+
+			return report;
+		}
+
+		std::shared_ptr<DesignPoint> FORM::getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<Sample> sample, double relaxationFactor)
+		{
+			const double minDzduLength = 1E-08;
 
 			const int nStochasts = modelRunner->getVaryingStochastCount();
 
@@ -95,8 +106,6 @@ namespace Deltares
 				convergenceReport->RelaxationFactor = relaxationFactor;
 			}
 
-			std::shared_ptr<Sample> u = startSample->clone();
-
 			int iteration = 0;
 			double beta = nan("");
 
@@ -105,43 +114,36 @@ namespace Deltares
 
 			while (!convergenceReport->IsConverged && iteration < this->Settings->MaximumIterations && !this->isStopped())
 			{
-				u->IterationIndex = iteration;
-				zGradient = gradientCalculator->getGradient(modelRunner, u);
+				sample->IterationIndex = iteration;
+				zGradient = gradientCalculator->getGradient(modelRunner, sample);
 
 				// check whether there are valid results
 
-				if (!areResultsValid(zGradient))
+				if (!areAllResultsValid(zGradient))
 				{
 					// return the result so far
 #ifdef __cpp_lib_format
-					modelRunner->reportMessage(Models::MessageType::Error, std::format("Model did not provide valid results, limit state value = {0:.5G}", u->Z));
+					modelRunner->reportMessage(Models::MessageType::Error, std::format("Model did not provide valid results, limit state value = {0:.5G}", sample->Z));
 #else
 					auto pl = Deltares::ProbLibCore::probLibString();
 					modelRunner->reportMessage(Models::MessageType::Error, "Model did not provide valid results, limit state value = " + pl.double2str( u->Z));
 #endif
 
-					std::shared_ptr<ReliabilityReport> reportInvalid = std::make_shared<ReliabilityReport>();
-					reportInvalid->Step = iteration;
-					reportInvalid->MaxSteps = this->Settings->MaximumIterations;
-					reportInvalid->Reliability = nan("");
-					reportInvalid->ReportMatchesEvaluation = false;
+					std::shared_ptr<ReliabilityReport> reportInvalid = getReport(iteration, nan(""));
 
 					modelRunner->reportResult(reportInvalid);
 
-					return modelRunner->getDesignPoint(u, nan(""), convergenceReport);
+					return modelRunner->getDesignPoint(sample, nan(""), convergenceReport);
 				}
-
-				// repair for failed evaluations
-				repairResults(zGradient);
 
 				// Mean value Z at u = 0
 				double zSum = 0;
 				for (int i = 0; i < nStochasts; i++)
 				{
-					zSum += u->Values[i] * zGradient[i];
+					zSum += sample->Values[i] * zGradient[i];
 				}
 
-				const double z0 = u->Z - zSum;
+				const double z0 = sample->Z - zSum;
 
 				// Standard deviation Z 
 				double zGradientLength = NumericSupport::GetLength(zGradient);
@@ -150,18 +152,13 @@ namespace Deltares
 				{
 					modelRunner->reportMessage(Models::MessageType::Error, "No variation in model results found at start point");
 
-					std::shared_ptr<ReliabilityReport> reportTooSmall = std::make_shared<ReliabilityReport>();
-
-					reportTooSmall->Step = iteration;
-					reportTooSmall->MaxSteps = this->Settings->MaximumIterations;
-					reportTooSmall->Reliability = beta;
-					reportTooSmall->ReportMatchesEvaluation = false;
+					std::shared_ptr<ReliabilityReport> reportTooSmall = getReport(iteration, beta);
 
 					modelRunner->reportResult(reportTooSmall);
 
-					double beta = this->getZFactor(u->Z) * Statistics::StandardNormal::BetaMax;
+					double beta = this->getZFactor(sample->Z) * Statistics::StandardNormal::BetaMax;
 
-					return modelRunner->getDesignPoint(u, beta, convergenceReport);
+					return modelRunner->getDesignPoint(sample, beta, convergenceReport);
 				}
 
 				//   compute beta
@@ -178,19 +175,14 @@ namespace Deltares
 				{
 					modelRunner->reportMessage(Models::MessageType::Error, "No convergence found");
 
-					std::shared_ptr<ReliabilityReport> reportTooHigh = std::make_shared<ReliabilityReport>();
-
-					reportTooHigh->Step = iteration;
-					reportTooHigh->MaxSteps = this->Settings->MaximumIterations;
-					reportTooHigh->Reliability = beta;
-					reportTooHigh->ReportMatchesEvaluation = false;
+					std::shared_ptr<ReliabilityReport> reportTooHigh = getReport(iteration, beta);
 
 					modelRunner->reportResult(reportTooHigh);
 
-					return modelRunner->getDesignPoint(u, beta, convergenceReport);
+					return modelRunner->getDesignPoint(sample, beta, convergenceReport);
 				}
 
-				convergenceReport->IsConverged = checkConvergence(modelRunner, u, convergenceReport, beta, zGradientLength);
+				convergenceReport->IsConverged = isConverged(modelRunner, sample, convergenceReport, beta, zGradientLength);
 
 				// no convergence, next iteration
 				if (!convergenceReport->IsConverged)
@@ -202,62 +194,44 @@ namespace Deltares
 						double alpha = zGradient[k] / zGradientLength;
 						double uNewValue = -alpha * beta;
 
-						uNew->Values[k] = relaxationFactor * uNewValue + (1 - relaxationFactor) * u->Values[k];
+						uNew->Values[k] = relaxationFactor * uNewValue + (1 - relaxationFactor) * sample->Values[k];
 					}
 
-					u = uNew;
+					sample = uNew;
 				}
 
 				iteration++;
 			}
 
-			return modelRunner->getDesignPoint(u, beta, convergenceReport);
+			return modelRunner->getDesignPoint(sample, beta, convergenceReport);
 		}
 
-		void FORM::repairResults(std::vector<double> dzdu)
+		bool FORM::areAllResultsValid(std::vector<double> values)
 		{
-			for (int k = 0; k < dzdu.size(); k++)
+			for (int k = 0; k < values.size(); k++)
 			{
-				if (std::isnan(dzdu[k]))
+				if (std::isnan(values[k]))
 				{
-					dzdu[k] = 0;
-				}
-			}
-		}
-
-		bool FORM::areResultsValid(std::vector<double> dzdu)
-		{
-			bool validResults = false;
-			for (int k = 0; k < dzdu.size(); k++)
-			{
-				if (!std::isnan(dzdu[k]))
-				{
-					validResults = true;
-					break;
+					return false;
 				}
 			}
 
-			return validResults;
+			return true;
 		}
 
-		bool FORM::checkConvergence(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<Sample> u, std::shared_ptr<ConvergenceReport> convergenceReport, double beta, double zGradientLength)
+		bool FORM::isConverged(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<Sample> sample, std::shared_ptr<ConvergenceReport> convergenceReport, double beta, double zGradientLength)
 		{
-			//   compute alpha vector
-			const double uSquared = NumericSupport::GetSquaredSum(u->Values);
+			const double uSquared = NumericSupport::GetSquaredSum(sample->Values);
 
 			const double fromZeroDiff = uSquared > 0 ? std::abs(beta * beta - uSquared) / uSquared : 0;
-			const double localDiff = std::abs(u->Z / zGradientLength);
+			const double localDiff = std::abs(sample->Z / zGradientLength);
 			const double betaDiff = std::max(fromZeroDiff, localDiff);
 
 			convergenceReport->Convergence = betaDiff;
 			convergenceReport->IsConverged = betaDiff <= this->Settings->EpsilonBeta;
 
-			std::shared_ptr<ReliabilityReport> report = std::make_shared<ReliabilityReport>();
-			report->Step = u->IterationIndex;
-			report->MaxSteps = this->Settings->MaximumIterations;
-			report->Reliability = beta;
+			std::shared_ptr<ReliabilityReport> report = getReport(sample->IterationIndex, beta);
 			report->ConvBeta = betaDiff;
-			report->ReportMatchesEvaluation = false;
 
 			modelRunner->reportResult(report);
 
