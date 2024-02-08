@@ -16,12 +16,12 @@ namespace Deltares
 			{
 			private:
 				Models::RandomSettings* m_settings;
-				SharedPointerProvider<Models::RandomSettings>* sharedPointer = new SharedPointerProvider<Models::RandomSettings>();
+				SharedPointerProvider<Deltares::Models::RandomSettings>* sharedPointer = new SharedPointerProvider<Deltares::Models::RandomSettings>();
 
 			public:
 				RandomSettings()
 				{
-					m_settings = new Models::RandomSettings();
+					m_settings = new Deltares::Models::RandomSettings();
 					RandomProvider::initialize();
 				}
 				~RandomSettings() { this->!RandomSettings(); }
