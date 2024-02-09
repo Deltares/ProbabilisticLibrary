@@ -95,20 +95,27 @@ namespace Deltares
 
 		void UniformDistribution::setXAtU(StochastProperties* stochast, double x, double u, ConstantParameterType constantType)
 		{
-			double p = StandardNormal::getPFromU(u);
-
-			if (stochast->Minimum == stochast->Maximum)
+			if (constantType == Deviation) 
 			{
-				stochast->Minimum = x;
-				stochast->Maximum = x;
+				double p = StandardNormal::getPFromU(u);
+
+				if (stochast->Minimum == stochast->Maximum)
+				{
+					stochast->Minimum = x;
+					stochast->Maximum = x;
+				}
+				else
+				{
+					double currentValue = this->getXFromU(stochast, u);
+					double diff = x - currentValue;
+
+					stochast->Minimum += diff;
+					stochast->Maximum += diff;
+				}
 			}
 			else
 			{
-				double width = stochast->Maximum - stochast->Minimum;
-				double mean = x - (2 * p - 1) * width;
-
-				stochast->Minimum = mean - width / 2;
-				stochast->Maximum = mean + width / 2;
+				return setXAtUByIteration(stochast, x, u, constantType);
 			}
 		}
 

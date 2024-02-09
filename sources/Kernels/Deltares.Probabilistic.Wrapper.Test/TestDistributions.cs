@@ -144,17 +144,9 @@ namespace Deltares.Probabilistics.Wrappers.Test
             stochast.Deviation = 1;
             stochast.Mean = 10;
 
-            stochast.SetXAtU(2, 0.05, WrapperConstantParameterType.Deviation);
-            Assert.AreEqual(stochast.GetXFromU(0.05), 2, margin);
-
-            stochast.SetXAtU(2, 0.05, WrapperConstantParameterType.VariationCoefficient);
-            Assert.AreEqual(stochast.GetXFromU(0.05), 2, margin);
-
-            stochast.SetXAtU(1.0001, 0.05, WrapperConstantParameterType.Deviation);
-            Assert.AreEqual(stochast.GetXFromU(0.05), 1.0001, margin);
-
-            stochast.SetXAtU(1, 0.05, WrapperConstantParameterType.Deviation);
-            Assert.AreEqual(stochast.GetXFromU(0.05), 1, margin);
+            TestSetXAtU(stochast, 2, 0.05);
+            TestSetXAtU(stochast, 1.1, 0.05);
+            TestSetXAtU(stochast, 1, 0.05, true);
 
             stochast.SetXAtU(0.5, 0.05, WrapperConstantParameterType.Deviation);
             Assert.AreEqual(stochast.GetXFromU(0.05), 1, margin); // not below shift
@@ -198,6 +190,8 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
             TestMinMax(stochast);
 
+            TestSetXAtU(stochast, 5.5, 0.05);
+
             stochast.Fit(new[] { 2.5, 3.0, 3.5, 5.5, 6.5 });
             Assert.AreEqual(1.7, stochast.Minimum, margin);
             Assert.AreEqual(7.3, stochast.Maximum, margin);
@@ -230,13 +224,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
             stochast.Scale = 2;
             stochast.Shift = 3;
 
-            double x = stochast.GetXFromU(0.05);
-            stochast.Shift = 5;
-
-            stochast.SetXAtU(x, 0.05, WrapperConstantParameterType.Deviation);
-            Assert.AreEqual(2, stochast.Scale);
-            Assert.AreEqual(3, stochast.Shift);
-            Assert.AreEqual(x, stochast.GetXFromU(0.05));
+            TestSetXAtU(stochast, 3.5, 0.05);
 
             TestInvert(stochast, true);
 
@@ -326,6 +314,27 @@ namespace Deltares.Probabilistics.Wrappers.Test
         {
             Assert.AreEqual(-StandardNormal.UMax, stochast.GetUFromX(stochast.Minimum - 1), 0.01);
             Assert.AreEqual(StandardNormal.UMax, stochast.GetUFromX(stochast.Maximum + 1), 0.01);
+        }
+
+        private void TestSetXAtU(Stochast stochast, double x, double u, bool deviationZero = false)
+        {
+            const double delta = 0.025;
+
+            double deviation = deviationZero ? 0 : stochast.Deviation;
+
+            stochast.SetXAtU(x, u, WrapperConstantParameterType.Deviation);
+
+            Assert.AreEqual(x, stochast.GetXFromU(u), delta);
+            Assert.AreEqual(deviation, stochast.Deviation, delta);
+
+            double modifiedU = u < 0.5 ? 2 * u : 1 - 2 * (1 - u);
+
+            double vc = stochast.Deviation / stochast.Mean;
+
+            stochast.SetXAtU(x, modifiedU, WrapperConstantParameterType.VariationCoefficient);
+
+            Assert.AreEqual(x, stochast.GetXFromU(modifiedU), delta);
+            Assert.AreEqual(vc, stochast.Deviation / stochast.Mean, delta);
         }
 
         private void TestInvert(Stochast stochast, bool useShift, double delta = 0.01)

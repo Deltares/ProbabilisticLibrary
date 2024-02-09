@@ -1,5 +1,6 @@
 #include "InvertedDistribution.h"
 #include "../Stochast.h"
+#include "../../Math/NumericSupport.h"
 
 namespace Deltares
 {
@@ -48,6 +49,33 @@ namespace Deltares
 
 		}
 
+		double InvertedDistribution::getPDF(StochastProperties* stochast, double x)
+		{
+			double xInvert = this->getInvertedValue(stochast, x);
+
+			return this->innerDistribution->getPDF(stochast, xInvert);
+		}
+
+		double InvertedDistribution::getCDF(StochastProperties* stochast, double x)
+		{
+			double xInvert = this->getInvertedValue(stochast, x);
+
+			return 1 - this->innerDistribution->getCDF(stochast, xInvert);
+		}
+
+		void InvertedDistribution::setXAtU(StochastProperties* stochast, double x, double u, ConstantParameterType constantType)
+		{
+			double xInvert = this->getInvertedValue(stochast, x);
+
+			this->innerDistribution->setXAtU(stochast, xInvert, -u, constantType);
+		}
+
+		void InvertedDistribution::fit(StochastProperties* stochast, std::vector<double>& values)
+		{
+			std::vector<double> invertedValues = Numeric::NumericSupport::select(values, [this, stochast](double x) {return this->getInvertedValue(stochast, x); });
+
+			this->innerDistribution->fit(stochast, invertedValues);
+		}
 	}
 }
 

@@ -16,6 +16,7 @@ namespace Deltares
 			virtual bool isVarying(StochastProperties* stochast) { return false; }
 			virtual bool canTruncate() { return false; }
 			virtual bool canInvert() { return false; }
+			virtual bool canFit() { return false; }
 			virtual bool isShiftUsed() { return false; }
 			virtual bool isQualitative() { return false; }
 			virtual double getRepresentativeU(StochastProperties* stochast, double u) { return u; }

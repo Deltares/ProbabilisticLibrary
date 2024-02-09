@@ -110,7 +110,7 @@ namespace Deltares
 			// https://stats.stackexchange.com/questions/71197/usable-estimators-for-parameters-in-gumbel-distribution
 			double mean = Numeric::NumericSupport::getMean(values);
 
-			Numeric::BisectionRootFinder* bisection = new Numeric::BisectionRootFinder();
+			std::unique_ptr<Numeric::BisectionRootFinder> bisection = std::make_unique<Numeric::BisectionRootFinder>();
 
 			Numeric::RootFinderMethod method = [mean, &values](double x)
 			{

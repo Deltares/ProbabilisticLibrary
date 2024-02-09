@@ -10,43 +10,6 @@ namespace Deltares
 {
 	namespace Statistics
 	{
-		class LogNormalEstimator
-		{
-		public:
-			LogNormalEstimator(std::vector<double> values)
-			{
-				this->values = values;
-			}
-
-			double CalculateValue(double shift)
-			{
-				int n = values.size();
-				int n3 = n / 3;
-				double mid = GetPartialAverage(values, shift, n3 + 1, n - n3);
-				double low = GetPartialAverage(values, shift, 1, n3);
-				double upp = GetPartialAverage(values, shift, n - n3 + 1, n);
-
-				double result = (mid - low) - (upp - mid);
-				return result;
-			}
-
-		private:
-			std::vector<double> values;
-
-			double GetPartialAverage(std::vector<double>& sample, double gamma, int low, int high)
-			{
-				double sum = 0;
-				for (int i = low - 1; i < high; i++)
-				{
-					sum += std::log(sample[i] - gamma);
-				}
-
-				int n = high - low + 1;
-				return sum / n;
-			}
-		};
-
-
 		void LogNormalDistribution::initialize(StochastProperties* stochast, std::vector<double> values)
 		{
 			stochast->Shift = values[2];
@@ -160,24 +123,35 @@ namespace Deltares
 			}
 		}
 
-		double LogNormalDistribution::fitShift(std::vector<double> x)
+		double LogNormalDistribution::fitShift(std::vector<double> values)
 		{
 			// see https://stats.stackexchange.com/questions/49495/robust-parameter-estimation-for-shifted-log-normal-distribution
 
-			double minX = *std::min_element(x.begin(), x.end());
+			double minX = *std::min_element(values.begin(), values.end());
 
 			double min = minX - Numeric::NumericSupport::getFraction(minX, 1);
 			double max = minX - Numeric::NumericSupport::getFraction(minX, 1E-6);
 
-			LogNormalEstimator* estimator = new LogNormalEstimator(x);
-			Numeric::BisectionRootFinder* bisection = new Numeric::BisectionRootFinder();
+			std::unique_ptr<Numeric::BisectionRootFinder> bisection = std::make_unique<Numeric::BisectionRootFinder>();
 
-			double shift = bisection->CalculateValue(min, max, 0, 0.001, [estimator](double v) {return estimator->CalculateValue(v); });
+			Numeric::RootFinderMethod method = [this, &values](double shift)
+			{
+				int n = values.size();
+				int n3 = n / 3;
+				double mid = getPartialAverage(values, shift, n3 + 1, n - n3);
+				double low = getPartialAverage(values, shift, 1, n3);
+				double upp = getPartialAverage(values, shift, n - n3 + 1, n);
 
-			double shiftValue = estimator->CalculateValue(shift);
+				double result = (mid - low) - (upp - mid);
+				return result;
+			};
+
+			double shift = bisection->CalculateValue(min, max, 0, 0.001, method);
+
+			double shiftValue = method(shift);
 			if (shiftValue != 0)
 			{
-				double negShiftValue = estimator->CalculateValue(-shift);
+				double negShiftValue = method(-shift);
 				if (abs((shiftValue - negShiftValue) / shiftValue) < 1E-6)
 				{
 					shift = 0;
@@ -192,17 +166,24 @@ namespace Deltares
 			return shift;
 		}
 
+		double LogNormalDistribution::getPartialAverage(std::vector<double>& sample, double gamma, int low, int high)
+		{
+			double sum = 0;
+			for (int i = low - 1; i < high; i++)
+			{
+				sum += std::log(sample[i] - gamma);
+			}
+
+			int n = high - low + 1;
+			return sum / n;
+		}
+
+
 		void LogNormalDistribution::fit(StochastProperties* stochast, std::vector<double>& values)
 		{
 			stochast->Shift = fitShift(values);
 
 			std::vector<double> xLog = Numeric::NumericSupport::select(values, [stochast](double v) {return log(v - stochast->Shift); });
-
-			//std::vector<double> xLog(values.size());
-			//for (int i = 0; i < values.size(); i++)
-			//{
-			//	xLog[i] = log(values[i] - stochast->Shift);
-			//}
 
 			stochast->Location = Numeric::NumericSupport::getMean(xLog);
 			stochast->Scale = Numeric::NumericSupport::getStandardDeviation(stochast->Location, xLog);

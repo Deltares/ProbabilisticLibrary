@@ -16,7 +16,7 @@ namespace Deltares
 			double currentMean = this->getMean(stochast);
 			double currentDeviation = this->getDeviation(stochast);
 
-			Numeric::BisectionRootFinder* bisection = new Numeric::BisectionRootFinder();
+			std::unique_ptr<Numeric::BisectionRootFinder> bisection = std::make_unique<Numeric::BisectionRootFinder>();
 
 			if (constantType == Deviation)
 			{
