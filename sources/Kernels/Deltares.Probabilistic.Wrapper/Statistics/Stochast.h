@@ -15,17 +15,15 @@ namespace Deltares
 	{
 		namespace Wrappers
 		{
-			using namespace Deltares::Utils::Wrappers;
+			public enum class DistributionType { Deterministic, Normal, LogNormal, Uniform, Triangular, Trapezoidal, Exponential, Gamma, Beta, Frechet, Weibull, Gumbel, GeneralizedExtremeValue, StudentT, Rayleigh, Pareto, GeneralizedPareto, Table, CDFCurve, Discrete, Bernoulli, Poisson, Composite, X, Qualitative };
 
-			public enum class WrapperDistributionType {Deterministic, Normal, LogNormal, Uniform, Gumbel, Discrete, Qualitative};
-
-			public enum class WrapperConstantParameterType { Deviation, VariationCoefficient };
+			public enum class ConstantParameterType { Deviation, VariationCoefficient };
 
 			public ref class Stochast
 			{
 			private:
 				Statistics::Stochast* m_stochast;
-				SharedPointerProvider<Statistics::Stochast>* sharedPointer = new SharedPointerProvider<Statistics::Stochast>();
+				Utils::Wrappers::SharedPointerProvider<Statistics::Stochast>* sharedPointer = new Utils::Wrappers::SharedPointerProvider<Statistics::Stochast>();
 
 				System::Collections::Generic::List<DiscreteValue^>^ discreteValues = gcnew System::Collections::Generic::List<DiscreteValue^>();
 				System::Collections::Generic::List<HistogramValue^>^ histogramValues = gcnew System::Collections::Generic::List<HistogramValue^>();
@@ -34,9 +32,9 @@ namespace Deltares
 				Stochast^ source = nullptr;
 				VariableStochastValueSet^ valueSet = gcnew VariableStochastValueSet();
 
-				Statistics::DistributionType getNativeDistributionType(WrapperDistributionType distributionType);
-				WrapperDistributionType getManagedDistributionType(Statistics::DistributionType distributionType);
-				Statistics::ConstantParameterType getNativeConstantParameterType(WrapperConstantParameterType constantParameterType);
+				Statistics::DistributionType getNativeDistributionType(DistributionType distributionType);
+				DistributionType getManagedDistributionType(Statistics::DistributionType distributionType);
+				Statistics::ConstantParameterType getNativeConstantParameterType(ConstantParameterType constantParameterType);
 
 				void updateStochast();
 
@@ -46,7 +44,7 @@ namespace Deltares
 					m_stochast = new Statistics::Stochast();
 					m_stochast->ValueSet = this->ValueSet->GetValue();
 				}
-				Stochast(WrapperDistributionType distributionType, array<double>^ values)
+				Stochast(DistributionType distributionType, array<double>^ values)
 				{
 					const Statistics::DistributionType nativeDistributionType = getNativeDistributionType(distributionType);
 					std::vector<double> nValues = NativeSupport::toNative(values);
@@ -56,10 +54,10 @@ namespace Deltares
 				~Stochast() { this->!Stochast(); }
 				!Stochast() { delete sharedPointer; }
 
-				property WrapperDistributionType DistributionType
+				virtual property Wrappers::DistributionType DistributionType
 				{
-					WrapperDistributionType get() { return getManagedDistributionType(m_stochast->getDistributionType()); }
-					void set(WrapperDistributionType value) { m_stochast->setDistributionType(getNativeDistributionType(value)); }
+					Wrappers::DistributionType get() { return getManagedDistributionType(m_stochast->getDistributionType()); }
+					void set(Wrappers::DistributionType value) { m_stochast->setDistributionType(getNativeDistributionType(value)); }
 				}
 
 				property bool IsVariableStochast
@@ -192,7 +190,7 @@ namespace Deltares
 					return m_stochast->getUFromX(x);
 				}
 
-				void SetXAtU(double x, double u, WrapperConstantParameterType constantType)
+				void SetXAtU(double x, double u, ConstantParameterType constantType)
 				{
 					m_stochast->setXAtU(x, u, this->getNativeConstantParameterType(constantType));
 				}

@@ -6,41 +6,41 @@ namespace Deltares
 	{
 		namespace Wrappers
 		{
-			Statistics::ConstantParameterType Stochast::getNativeConstantParameterType(WrapperConstantParameterType constantParameterType)
+			Statistics::ConstantParameterType Stochast::getNativeConstantParameterType(Wrappers::ConstantParameterType constantParameterType)
 			{
 				switch (constantParameterType)
 				{
-				case WrapperConstantParameterType::Deviation: return Statistics::ConstantParameterType::Deviation;
-				case WrapperConstantParameterType::VariationCoefficient: return Statistics::ConstantParameterType::VariationCoefficient;
+				case Wrappers::ConstantParameterType::Deviation: return Statistics::ConstantParameterType::Deviation;
+				case Wrappers::ConstantParameterType::VariationCoefficient: return Statistics::ConstantParameterType::VariationCoefficient;
 				default: throw gcnew System::NotSupportedException(constantParameterType.ToString());
 				}
 			}
 
-			Statistics::DistributionType Stochast::getNativeDistributionType(WrapperDistributionType distributionType)
+			Statistics::DistributionType Stochast::getNativeDistributionType(Wrappers::DistributionType distributionType)
 			{
 				switch (distributionType)
 				{
-				case WrapperDistributionType::Deterministic: return Statistics::DistributionType::Deterministic;
-				case WrapperDistributionType::Normal: return Statistics::DistributionType::Normal;
-				case WrapperDistributionType::LogNormal: return Statistics::DistributionType::LogNormal;
-				case WrapperDistributionType::Uniform: return Statistics::DistributionType::Uniform;
-				case WrapperDistributionType::Gumbel: return Statistics::DistributionType::Gumbel;
-				case WrapperDistributionType::Discrete: return Statistics::DistributionType::Discrete;
-				case WrapperDistributionType::Qualitative: return Statistics::DistributionType::Qualitative;
+				case Wrappers::DistributionType::Deterministic: return Statistics::DistributionType::Deterministic;
+				case Wrappers::DistributionType::Normal: return Statistics::DistributionType::Normal;
+				case Wrappers::DistributionType::LogNormal: return Statistics::DistributionType::LogNormal;
+				case Wrappers::DistributionType::Uniform: return Statistics::DistributionType::Uniform;
+				case Wrappers::DistributionType::Gumbel: return Statistics::DistributionType::Gumbel;
+				case Wrappers::DistributionType::Discrete: return Statistics::DistributionType::Discrete;
+				case Wrappers::DistributionType::Qualitative: return Statistics::DistributionType::Qualitative;
 				default: throw gcnew System::NotSupportedException(distributionType.ToString());
 				}
 			}
 
-			WrapperDistributionType Stochast::getManagedDistributionType(Statistics::DistributionType distributionType)
+			DistributionType Stochast::getManagedDistributionType(Statistics::DistributionType distributionType)
 			{
 				switch (distributionType)
 				{
-				case Statistics::DistributionType::Deterministic: return WrapperDistributionType::Deterministic;
-				case Statistics::DistributionType::Normal: return WrapperDistributionType::Normal;
-				case Statistics::DistributionType::LogNormal: return WrapperDistributionType::LogNormal;
-				case Statistics::DistributionType::Uniform: return WrapperDistributionType::Uniform;
-				case Statistics::DistributionType::Gumbel: return WrapperDistributionType::Gumbel;
-				case Statistics::DistributionType::Discrete: return WrapperDistributionType::Discrete;
+				case Statistics::DistributionType::Deterministic: return Wrappers::DistributionType::Deterministic;
+				case Statistics::DistributionType::Normal: return Wrappers::DistributionType::Normal;
+				case Statistics::DistributionType::LogNormal: return Wrappers::DistributionType::LogNormal;
+				case Statistics::DistributionType::Uniform: return Wrappers::DistributionType::Uniform;
+				case Statistics::DistributionType::Gumbel: return Wrappers::DistributionType::Gumbel;
+				case Statistics::DistributionType::Discrete: return Wrappers::DistributionType::Discrete;
 				default: throw gcnew System::NotSupportedException("distribution type");
 				}
 			}

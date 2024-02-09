@@ -27,6 +27,16 @@ namespace Deltares
 				{
 					double get() { return Statistics::StandardNormal::BetaMax; }
 				}
+
+				static bool IsBetaMin(double beta)
+				{
+					return beta <= -BetaMax;
+				}
+
+				static bool IsBetaMax(double beta)
+				{
+					return beta >= BetaMax;
+				}
 			};
 		}
 	}

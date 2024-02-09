@@ -16,15 +16,15 @@ namespace Deltares
 
         public:
 
-            double Location;
-            double Scale;
-            double Minimum;
-            double Maximum;
-            double Shift;
-            double ShiftB;
-            double Shape;
-            double ShapeB;
-            int Observations;
+            double Location = 0;
+            double Scale = 1;
+            double Minimum = 0;
+            double Maximum = 0;
+            double Shift = 0;
+            double ShiftB = 0;
+            double Shape = 1;
+            double ShapeB = 1;
+            int Observations = 2;
 
             std::vector<std::shared_ptr<DiscreteValue>> DiscreteValues;
             std::vector<std::shared_ptr<HistogramValue>> HistogramValues;

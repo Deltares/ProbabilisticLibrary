@@ -465,7 +465,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
             project.Stochasts.Add(GetUniformStochast());
             project.Stochasts.Add(GetUniformStochast());
 
-            project.Stochasts.Add(new Stochast { DistributionType = WrapperDistributionType.Discrete });
+            project.Stochasts.Add(new Stochast { DistributionType = DistributionType.Discrete });
 
             project.Stochasts[2].DiscreteValues.Add(new DiscreteValue(5, 0.35));
             project.Stochasts[2].DiscreteValues.Add(new DiscreteValue(6, 0.2));
@@ -483,7 +483,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
             project.Stochasts.Add(GetUniformStochast());
             project.Stochasts.Add(GetUniformStochast());
 
-            project.Stochasts.Add(new Stochast { DistributionType = WrapperDistributionType.Qualitative });
+            project.Stochasts.Add(new Stochast { DistributionType = DistributionType.Qualitative });
 
             project.Stochasts[2].DiscreteValues.Add(new DiscreteValue(5, 0.35));
             project.Stochasts[2].DiscreteValues.Add(new DiscreteValue(6, 0.2));
@@ -524,28 +524,28 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
         private static Stochast GetDeterministicStochast(double mean)
         {
-            return new Stochast { DistributionType = WrapperDistributionType.Deterministic,  Mean = mean };
+            return new Stochast { DistributionType = DistributionType.Deterministic,  Mean = mean };
         }
 
         private static Stochast GetNormalStochast(double mean = 0, double stdev = 1)
         {
-            return new Stochast { DistributionType = WrapperDistributionType.Normal, Mean = mean, Deviation = stdev };
+            return new Stochast { DistributionType = DistributionType.Normal, Mean = mean, Deviation = stdev };
         }
 
         private static Stochast GetUniformStochast(double min = 0, double max = 1)
         {
-            return new Stochast { DistributionType = WrapperDistributionType.Uniform, Minimum = min, Maximum = max };
+            return new Stochast { DistributionType = DistributionType.Uniform, Minimum = min, Maximum = max };
         }
 
         private static Stochast GetLogNormalStochast(double mean = 0, double stdev = 1, double shift = 0)
         {
             return new Stochast
-            { DistributionType = WrapperDistributionType.LogNormal, Mean = mean, Deviation = stdev, Shift = shift };
+            { DistributionType = DistributionType.LogNormal, Mean = mean, Deviation = stdev, Shift = shift };
         }
 
         private static Stochast GetGumbelStochast(double mean = 0, double stdev = 1)
         {
-            return new Stochast { DistributionType = WrapperDistributionType.Gumbel, Mean = mean, Deviation = stdev };
+            return new Stochast { DistributionType = DistributionType.Gumbel, Mean = mean, Deviation = stdev };
         }
 
         private static ZFunctionOutput Linear(double[] x)

@@ -16,7 +16,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
         {
             var stochast = new Stochast
             {
-                DistributionType = WrapperDistributionType.Deterministic,
+                DistributionType = DistributionType.Deterministic,
                 Mean = 3,
                 Deviation = 1
             };
@@ -31,7 +31,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
         [Test]
         public void TestNormal()
         {
-            Stochast stochast = new Stochast { DistributionType = WrapperDistributionType.Normal, Mean = 3, Deviation = 1 };
+            Stochast stochast = new Stochast { DistributionType = DistributionType.Normal, Mean = 3, Deviation = 1 };
 
             Assert.AreEqual(3, stochast.GetXFromU(0));
             Assert.AreEqual(4, stochast.GetXFromU(1));
@@ -45,12 +45,12 @@ namespace Deltares.Probabilistics.Wrappers.Test
             // SetXAtU
             stochast.Mean = 0;
             stochast.Deviation = 1;
-            stochast.SetXAtU(2, 0.05, WrapperConstantParameterType.Deviation);
+            stochast.SetXAtU(2, 0.05, ConstantParameterType.Deviation);
             Assert.AreEqual(stochast.GetXFromU(0.05), 2, margin);
 
             stochast.Mean = 0;
             stochast.Deviation = 1;
-            stochast.SetXAtU(2, 0.05, WrapperConstantParameterType.VariationCoefficient);
+            stochast.SetXAtU(2, 0.05, ConstantParameterType.VariationCoefficient);
             Assert.AreEqual(stochast.GetXFromU(0.05), 2, margin);
 
             TestFit(stochast);
@@ -66,7 +66,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
         {
             Stochast stochast = new Stochast
             {
-                DistributionType = WrapperDistributionType.Normal,
+                DistributionType = DistributionType.Normal,
                 Truncated = true,
                 Mean = 3,
                 Deviation = 1,
@@ -115,7 +115,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
         [Test]
         public void TestLogNormal()
         {
-            Stochast stochast = new Stochast { DistributionType = WrapperDistributionType.LogNormal, Mean = 10, Deviation = 2 };
+            Stochast stochast = new Stochast { DistributionType = DistributionType.LogNormal, Mean = 10, Deviation = 2 };
 
             // 1.04 = 1 + (2/10)^2
             double expected = Math.Exp(Math.Log(10) - 0.5 * Math.Log(1.04));
@@ -148,7 +148,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
             TestSetXAtU(stochast, 1.1, 0.05);
             TestSetXAtU(stochast, 1, 0.05, true);
 
-            stochast.SetXAtU(0.5, 0.05, WrapperConstantParameterType.Deviation);
+            stochast.SetXAtU(0.5, 0.05, ConstantParameterType.Deviation);
             Assert.AreEqual(stochast.GetXFromU(0.05), 1, margin); // not below shift
 
             stochast.Shift = 1;
@@ -178,7 +178,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
         [Test]
         public void TestUniform()
         {
-            Stochast stochast = new Stochast { DistributionType = WrapperDistributionType.Uniform, Minimum = 5, Maximum = 9 };
+            Stochast stochast = new Stochast { DistributionType = DistributionType.Uniform, Minimum = 5, Maximum = 9 };
 
             Assert.AreEqual(7, stochast.GetXFromU(0), margin);
             Assert.AreEqual(5.4, stochast.GetXFromP(0.1), margin);
@@ -202,7 +202,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
         [Test]
         public void TestGumbel()
         {
-            Stochast stochast = new Stochast { DistributionType = WrapperDistributionType.Gumbel, Scale = 1, Shift = 0 };
+            Stochast stochast = new Stochast { DistributionType = DistributionType.Gumbel, Scale = 1, Shift = 0 };
 
             TestStochast(stochast);
 
@@ -250,7 +250,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
         [Test]
         public void TestDiscrete()
         {
-            var stochast = new Stochast { DistributionType = WrapperDistributionType.Discrete };
+            var stochast = new Stochast { DistributionType = DistributionType.Discrete };
             stochast.DiscreteValues.Add(new DiscreteValue(1, 10));
             stochast.DiscreteValues.Add(new DiscreteValue(2, 20));
             stochast.DiscreteValues.Add(new DiscreteValue(3, 20));
@@ -276,7 +276,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
         [Test]
         public void TestVariableStochast()
         {
-            Stochast realizedStochast = new Stochast { DistributionType = WrapperDistributionType.Uniform, Minimum = 0, Maximum = 1 };
+            Stochast realizedStochast = new Stochast { DistributionType = DistributionType.Uniform, Minimum = 0, Maximum = 1 };
             realizedStochast.IsVariableStochast = true;
 
             realizedStochast.ValueSet.StochastValues.Add(new VariableStochastValue { X = 0, Minimum = 0, Maximum = 1 });
@@ -322,7 +322,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
             double deviation = deviationZero ? 0 : stochast.Deviation;
 
-            stochast.SetXAtU(x, u, WrapperConstantParameterType.Deviation);
+            stochast.SetXAtU(x, u, ConstantParameterType.Deviation);
 
             Assert.AreEqual(x, stochast.GetXFromU(u), delta);
             Assert.AreEqual(deviation, stochast.Deviation, delta);
@@ -331,7 +331,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
             double vc = stochast.Deviation / stochast.Mean;
 
-            stochast.SetXAtU(x, modifiedU, WrapperConstantParameterType.VariationCoefficient);
+            stochast.SetXAtU(x, modifiedU, ConstantParameterType.VariationCoefficient);
 
             Assert.AreEqual(x, stochast.GetXFromU(modifiedU), delta);
             Assert.AreEqual(vc, stochast.Deviation / stochast.Mean, delta);
