@@ -46,7 +46,7 @@ namespace Deltares
 			{
 				modelRunner->clear();
 
-				designPoint = getDesignPoint(modelRunner, startPoint, relaxationFactor);
+				designPoint = getDesignPoint(modelRunner, startPoint->clone(), relaxationFactor);
 
 				if (designPoint->convergenceReport->IsConverged)
 				{
@@ -165,7 +165,12 @@ namespace Deltares
 				{
 					modelRunner->reportMessage(Models::MessageType::Error, "No convergence found");
 
-					std::shared_ptr<ReliabilityReport> reportTooHigh = getReport(iteration, beta);
+					std::shared_ptr<ReliabilityReport> reportTooHigh = std::make_shared<ReliabilityReport>();
+
+					reportTooHigh->Step = iteration;
+					reportTooHigh->MaxSteps = this->Settings->MaximumIterations;
+					reportTooHigh->Reliability = beta;
+					reportTooHigh->ReportMatchesEvaluation = false;
 
 					modelRunner->reportResult(reportTooHigh);
 
@@ -232,6 +237,7 @@ namespace Deltares
 		std::shared_ptr<ReliabilityReport> FORM::getReport(int iteration, double reliability)
 		{
 			std::shared_ptr<ReliabilityReport> report = std::make_shared<ReliabilityReport>();
+
 			report->Step = iteration;
 			report->Reliability = reliability;
 
