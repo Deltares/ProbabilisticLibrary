@@ -23,6 +23,8 @@ namespace Deltares
 			virtual double getMean(StochastProperties* stochast) { return 0; }
 			virtual double getDeviation(StochastProperties* stochast) { return 0; }
 			virtual void setMeanAndDeviation(StochastProperties* stochast, double mean, double deviation) {}
+			virtual void setShift(StochastProperties* stochast, double shift, bool inverted) { stochast->Shift = shift; }
+			virtual bool canSetMeanAndDeviation(StochastProperties* stochast, double mean, double deviation) { return true; }
 			virtual void initializeForRun(StochastProperties* stochast) {}
 			virtual double getPDF(StochastProperties* stochast, double x) { return 0; }
 			virtual double getCDF(StochastProperties* stochast, double x) { return 0; }

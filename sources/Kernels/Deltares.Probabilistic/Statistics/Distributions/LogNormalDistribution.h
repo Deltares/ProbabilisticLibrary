@@ -17,6 +17,8 @@ namespace Deltares
 			double getMean(StochastProperties* stochast) override;
 			double getDeviation(StochastProperties* stochast) override;
 			void setMeanAndDeviation(StochastProperties* stochast, double mean, double deviation) override;
+			void setShift(StochastProperties* stochast, double shift, bool inverted) override;
+			bool canSetMeanAndDeviation(StochastProperties* stochast, double mean, double deviation) override;
 			double getPDF(StochastProperties* stochast, double x) override;
 			double getCDF(StochastProperties* stochast, double x) override;
 			void setXAtU(StochastProperties* stochast, double x, double u, ConstantParameterType constantType) override;
@@ -25,6 +27,9 @@ namespace Deltares
 		private:
 			double fitShift(std::vector<double> values);
 			double getPartialAverage(std::vector<double>& sample, double gamma, int low, int high);
+
+			double requestedMean = nan("");
+			double requestedDeviation = nan("");
 
 		};
 	}

@@ -97,6 +97,11 @@ namespace Deltares
 			this->innerDistribution->setMeanAndDeviation(stochast, mean, deviation);
 		}
 
+		void TruncatedDistribution::setShift(StochastProperties* stochast, double shift, bool inverted)
+		{
+			this->innerDistribution->setShift(stochast, shift, inverted);
+		}
+
 		double TruncatedDistribution::getXFromU(StochastProperties* stochast, double u)
 		{
 			if (stochast->Minimum == stochast->Maximum)

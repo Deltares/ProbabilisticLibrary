@@ -151,6 +151,21 @@ namespace Deltares
 			distribution->setMeanAndDeviation(this, mean, deviation);
 		}
 
+		void Stochast::setShift(double shift)
+		{
+			distribution->setShift(this, shift, this->inverted);
+		}
+
+		void Stochast::setMeanAndDeviation(double mean, double deviation)
+		{
+			distribution->setMeanAndDeviation(this, mean, deviation);
+		}
+
+		bool Stochast::canSetMeanAndDeviation(double mean, double deviation)
+		{
+			return distribution->canSetMeanAndDeviation(this, mean, deviation);
+		}
+
 		void Stochast::initializeForRun()
 		{
 			distribution->initializeForRun(this);
