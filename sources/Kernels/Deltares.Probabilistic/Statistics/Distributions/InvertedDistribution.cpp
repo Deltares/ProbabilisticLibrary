@@ -19,6 +19,11 @@ namespace Deltares
 			this->innerDistribution->setMeanAndDeviation(stochast, invertedMean, deviation);
 		}
 
+		void InvertedDistribution::setShift(StochastProperties* stochast, double shift, bool inverted)
+		{
+			this->innerDistribution->setShift(stochast, shift, true);
+		}
+
 		bool InvertedDistribution::isVarying(StochastProperties* stochast)
 		{
 			return this->innerDistribution->isVarying(stochast);

@@ -61,6 +61,9 @@ namespace Deltares
 			double getDeviation();
 			void setDeviation(double deviation);
 
+			void setMeanAndDeviation(double mean, double deviation);
+			void setShift(double shift);
+
 			void initializeForRun();
 
 			void fit(std::vector<double> values);

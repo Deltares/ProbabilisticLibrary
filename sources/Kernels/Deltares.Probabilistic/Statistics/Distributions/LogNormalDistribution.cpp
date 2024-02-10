@@ -23,11 +23,15 @@ namespace Deltares
 
 		double LogNormalDistribution::getMean(StochastProperties* stochast)
 		{
-			if (isinf(stochast->Location))
+			if (isinf(stochast->Location) && !isnan(this->requestedMean))
+			{
+				return this->requestedMean;
+			}
+			else if (isinf(stochast->Location))
 			{
 				return stochast->Shift;
 			}
-			else 
+			else
 			{
 				return exp(stochast->Location + 0.5 * stochast->Scale * stochast->Scale) + stochast->Shift;
 			}
@@ -35,11 +39,18 @@ namespace Deltares
 
 		double LogNormalDistribution::getDeviation(StochastProperties* stochast)
 		{
-			double p = sqrt(exp(stochast->Scale * stochast->Scale) - 1);
+			if (isinf(stochast->Location) && !isnan(this->requestedDeviation))
+			{
+				return this->requestedDeviation;
+			}
+			else 
+			{
+				double p = sqrt(exp(stochast->Scale * stochast->Scale) - 1);
 
-			double mean = getMean(stochast);
+				double mean = getMean(stochast);
 
-			return p * (mean - stochast->Shift);
+				return p * (mean - stochast->Shift);
+			}
 		}
 
 		void LogNormalDistribution::setMeanAndDeviation(StochastProperties* stochast, double mean, double deviation)
@@ -47,14 +58,42 @@ namespace Deltares
 			if (mean <= stochast->Shift)
 			{
 				stochast->Scale = 0;
-				stochast->Location = - std::numeric_limits<float>::infinity();
+				stochast->Location = -std::numeric_limits<float>::infinity();
+
+				this->requestedMean = mean;
+				this->requestedDeviation = deviation;
 			}
 			else
 			{
 				double p = deviation / (mean - stochast->Shift);
 				stochast->Scale = sqrt(log(1 + p * p));
 				stochast->Location = log(mean - stochast->Shift) - 0.5 * stochast->Scale * stochast->Scale;
+
+				this->requestedMean = nan("");
+				this->requestedDeviation = nan("");
 			}
+		}
+
+		void LogNormalDistribution::setShift(StochastProperties* stochast, double shift, bool inverted)
+		{
+			bool useRequestedValues = isinf(stochast->Location) && !isnan(this->requestedMean);
+
+			double oldMean = useRequestedValues ? this->requestedMean : this->getMean(stochast);
+			double oldDeviation = useRequestedValues ? this->requestedDeviation : this->getDeviation(stochast);
+
+			if (inverted)
+			{
+				oldMean = 2 * stochast->Shift - oldMean;
+			}
+
+			stochast->Shift = shift;
+
+			if (inverted)
+			{
+				oldMean = 2 * stochast->Shift - oldMean;
+			}
+
+			this->setMeanAndDeviation(stochast, oldMean, oldDeviation);
 		}
 
 		double LogNormalDistribution::getXFromU(StochastProperties* stochast, double u)

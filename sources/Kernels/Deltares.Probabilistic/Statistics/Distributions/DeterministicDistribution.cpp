@@ -14,6 +14,7 @@ namespace Deltares
 		void DeterministicDistribution::setMeanAndDeviation(StochastProperties* stochast, double mean, double deviation)
 		{
 			stochast->Location = mean;
+			stochast->Scale = deviation;
 		}
 
 		void DeterministicDistribution::initialize(StochastProperties* stochast, std::vector<double> values)
@@ -43,7 +44,18 @@ namespace Deltares
 
 		double DeterministicDistribution::getCDF(StochastProperties* stochast, double x)
 		{
-			return x >= stochast->Location ? 1 : 0;
+			if (x < stochast->Location)
+			{
+				return 0;
+			}
+			else if (x > stochast->Location)
+			{
+				return 1;
+			}
+			else
+			{
+				return 0.5;
+			}
 		}
 
 		void DeterministicDistribution::setXAtU(StochastProperties* stochast, double x, double u, ConstantParameterType constantType)

@@ -25,6 +25,7 @@ namespace Deltares
 			double getMean(StochastProperties* stochast) override;
 			double getDeviation(StochastProperties* stochast) override;
 			void setMeanAndDeviation(StochastProperties* stochast, double mean, double deviation) override;
+			void setShift(StochastProperties* stochast, double shift, bool inverted) override;
 			double getPDF(StochastProperties* stochast, double x) override;
 			double getCDF(StochastProperties* stochast, double x) override;
 			void setXAtU(StochastProperties* stochast, double x, double u, ConstantParameterType constantType) override;

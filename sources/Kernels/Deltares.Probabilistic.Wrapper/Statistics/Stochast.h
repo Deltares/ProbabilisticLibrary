@@ -60,67 +60,89 @@ namespace Deltares
 					void set(Wrappers::DistributionType value) { m_stochast->setDistributionType(getNativeDistributionType(value)); }
 				}
 
-				property bool IsVariableStochast
+				/**
+				 * \brief Sets the distribution type while maintaining the mean and deviation
+				 * \param distributionType 
+				 */
+				void SetDistributionType(Wrappers::DistributionType distributionType)
+				{
+					double oldMean = m_stochast->getMean();
+					double oldDeviation = m_stochast->getDistributionType() == Deterministic ? m_stochast->Scale : m_stochast->getDeviation();
+
+					m_stochast->setDistributionType(getNativeDistributionType(distributionType));
+
+					if (oldMean != 0 || oldDeviation != 0) 
+					{
+						m_stochast->setMeanAndDeviation(oldMean, oldDeviation);
+					}
+				}
+
+				virtual property bool IsVariableStochast
 				{
 					bool get() { return m_stochast->IsVariableStochast; }
 					void set(bool value) { m_stochast->IsVariableStochast = value; }
 				}
 
-				property double Mean
+				virtual property double Mean
 				{
 					double get() { return m_stochast->getMean(); }
 					void set(double value) { m_stochast->setMean(value); }
 				}
 
-				property double Deviation
+				virtual property double Deviation
 				{
 					double get() { return m_stochast->getDeviation(); }
 					void set(double value) { m_stochast->setDeviation(value); }
 				}
 
-				property double Location
+				virtual property double Location
 				{
 					double get() { return m_stochast->Location; }
 					void set(double value) { m_stochast->Location = value; }
 				}
 
-				property double Scale
+				virtual property double Scale
 				{
 					double get() { return m_stochast->Scale; }
 					void set(double value) { m_stochast->Scale = value; }
 				}
 
-				property double Shift
+				virtual property double Shift
 				{
 					double get() { return m_stochast->Shift; }
 					void set(double value) { m_stochast->Shift = value; }
 				}
 
-				property double ShiftB
+				void SetShift(double shift)
+				{
+					m_stochast->setShift(shift);
+				}
+
+				virtual property double ShiftB
 				{
 					double get() { return m_stochast->ShiftB; }
 					void set(double value) { m_stochast->ShiftB = value; }
 				}
 
-				property double Shape
+				virtual property double Shape
 				{
 					double get() { return m_stochast->Shape; }
 					void set(double value) { m_stochast->Shape = value; }
 				}
 
-				property double ShapeB
+				virtual property double ShapeB
 				{
 					double get() { return m_stochast->ShapeB; }
 					void set(double value) { m_stochast->ShapeB = value; }
 				}
 
-				property double Minimum
+				virtual property double Minimum
 				{
 					double get() { return m_stochast->Minimum; }
 					void set(double value) { m_stochast->Minimum = value; }
 				}
 
-				property double Maximum
+				virtual property double Maximum
 				{
 					double get() { return m_stochast->Maximum; }
 					void set(double value) { m_stochast->Maximum = value; }
@@ -132,13 +154,13 @@ namespace Deltares
 					void set(int value) { m_stochast->Observations = value; }
 				}
 
-				property bool Truncated
+				virtual property bool Truncated
 				{
 					bool get() { return m_stochast->isTruncated(); }
 					void set(bool value) { m_stochast->setTruncated(value); }
 				}
 
-				property bool Inverted
+				virtual property bool Inverted
 				{
 					bool get() { return m_stochast->isInverted(); }
 					void set(bool value) { m_stochast->setInverted(value); }
@@ -159,50 +181,50 @@ namespace Deltares
 					System::Collections::Generic::List<FragilityValue^>^ get() { return fragilityValues; }
 				}
 
-				double GetPDF(double x)
+				virtual double GetPDF(double x)
 				{
 					return m_stochast->getPDF(x);
 				}
 
-				double GetCDF(double x)
+				virtual double GetCDF(double x)
 				{
 					return m_stochast->getCDF(x);
 				}
 
-				double GetXFromU(double u)
+				virtual double GetXFromU(double u)
 				{
 					return m_stochast->getXFromU(u);
 				}
 
-				double GetXFromUAndSource(double xSource, double u)
+				virtual double GetXFromUAndSource(double xSource, double u)
 				{
 					return m_stochast->getXFromUAndSource(xSource, u);
 				}
 
-				double GetXFromP(double p)
+				virtual double GetXFromP(double p)
 				{
 					double u = Statistics::StandardNormal::getUFromP(p);
 					return m_stochast->getXFromU(u);
 				}
 
-				double GetUFromX(double x)
+				virtual double GetUFromX(double x)
 				{
 					return m_stochast->getUFromX(x);
 				}
 
-				void SetXAtU(double x, double u, ConstantParameterType constantType)
+				virtual void SetXAtU(double x, double u, ConstantParameterType constantType)
 				{
 					m_stochast->setXAtU(x, u, this->getNativeConstantParameterType(constantType));
 				}
 
-				void InitializeForRun()
+				virtual void InitializeForRun()
 				{
 					updateStochast();
 
 					m_stochast->initializeForRun();
 				}
 
-				void Fit(array<double>^ values)
+				virtual void Fit(array<double>^ values)
 				{
 					std::vector<double> nativaValues = NativeSupport::toNative(values);
 

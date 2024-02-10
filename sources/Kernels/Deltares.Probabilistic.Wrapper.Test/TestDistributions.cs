@@ -117,6 +117,12 @@ namespace Deltares.Probabilistics.Wrappers.Test
         {
             Stochast stochast = new Stochast { DistributionType = DistributionType.LogNormal, Mean = 10, Deviation = 2 };
 
+            TestSettingValuesOrder(stochast);
+
+            TestSettingProperties(stochast);
+
+            stochast = new Stochast { DistributionType = DistributionType.LogNormal, Mean = 10, Deviation = 2 };
+
             // 1.04 = 1 + (2/10)^2
             double expected = Math.Exp(Math.Log(10) - 0.5 * Math.Log(1.04));
             Assert.AreEqual(expected, stochast.GetXFromU(0), margin);
@@ -203,6 +209,12 @@ namespace Deltares.Probabilistics.Wrappers.Test
         public void TestGumbel()
         {
             Stochast stochast = new Stochast { DistributionType = DistributionType.Gumbel, Scale = 1, Shift = 0 };
+
+            TestSettingValuesOrder(stochast);
+
+            TestSettingPropertiesGumbel(stochast);
+
+            stochast = new Stochast { DistributionType = DistributionType.Gumbel, Scale = 1, Shift = 0 };
 
             TestStochast(stochast);
 
@@ -309,6 +321,52 @@ namespace Deltares.Probabilistics.Wrappers.Test
                 Assert.AreEqual(u, uu, delta);
             }
         }
+
+        private static void TestSettingValuesOrder(Stochast stochast)
+        {
+            Stochast newStochast = new Stochast { DistributionType = stochast.DistributionType, Mean = stochast.Mean, Deviation = stochast.Deviation };
+            Assert.AreEqual(stochast.Mean, newStochast.Mean, margin);
+            Assert.AreEqual(stochast.Deviation, newStochast.Deviation, margin);
+
+            newStochast = new Stochast { Mean = stochast.Mean, Deviation = stochast.Deviation };
+            newStochast.SetDistributionType(stochast.DistributionType);
+            Assert.AreEqual(stochast.Mean, newStochast.Mean, margin);
+            Assert.AreEqual(stochast.Deviation, newStochast.Deviation, margin);
+        }
+
+        private static void TestSettingProperties(Stochast stochast)
+        {
+            stochast.Mean = 3;
+            stochast.Deviation = 1.5;
+
+            Assert.AreEqual(stochast.Mean, 3, margin);
+
+            stochast.Mean = -3;
+            stochast.SetShift(-5);
+
+            Assert.AreEqual(stochast.Mean, -3, margin);
+
+            stochast.Inverted = true;
+            stochast.Mean = -1;
+            stochast.SetShift(2);
+
+            Assert.AreEqual(stochast.Mean, -1, margin);
+        }
+
+        private static void TestSettingPropertiesGumbel(Stochast stochast)
+        {
+            stochast.Mean = 3;
+            stochast.Deviation = 1.5;
+
+            Assert.AreEqual(stochast.Mean, 3, margin);
+
+            stochast.Deviation = -1;
+            stochast.Mean = -3;
+            stochast.Deviation = 1;
+
+            Assert.AreEqual(stochast.Mean, -3, margin);
+        }
+
 
         private void TestMinMax(Stochast stochast)
         {
