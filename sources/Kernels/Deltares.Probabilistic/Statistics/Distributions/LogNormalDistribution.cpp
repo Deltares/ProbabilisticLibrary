@@ -29,6 +29,10 @@ namespace Deltares
 			}
 			else if (isinf(stochast->Location))
 			{
+				return this->requestedMean;
+			}
+			else if (isinf(stochast->Location))
+			{
 				return stochast->Shift;
 			}
 			else
