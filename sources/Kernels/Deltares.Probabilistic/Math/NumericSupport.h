@@ -23,6 +23,8 @@ namespace Deltares
             static double Divide(int counter, int denominator);
             static double round(double value, int decimals);
             static bool areEqual(double x1, double x2, double tolerance);
+            static bool isLess(double x1, double x2, double tolerance);
+            static bool isGreater(double x1, double x2, double tolerance);
             static CmpResult compareDouble(const double x1, const double x2, const double tol = 1e-14);
             static double* getCopy(double* values, int count);
             static double* getCopy(const std::vector<double>& values);

@@ -44,9 +44,11 @@ namespace Deltares
 			void setDistributionType(DistributionType distributionType);
 			DistributionType getDistributionType();
 
+			bool canInvert();
 			bool isInverted();
 			void setInverted(bool inverted);
 
+			bool canTruncate();
 			bool isTruncated();
 			void setTruncated(bool truncated);
 
@@ -66,6 +68,7 @@ namespace Deltares
 
 			void initializeForRun();
 
+			bool canFit();
 			void fit(std::vector<double> values);
 
 			std::shared_ptr<Stochast> VariableSource = nullptr;

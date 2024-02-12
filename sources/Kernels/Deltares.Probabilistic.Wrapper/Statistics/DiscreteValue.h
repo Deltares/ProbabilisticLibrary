@@ -43,6 +43,16 @@ namespace Deltares
 					void set(double value) { m_value->Amount = value; }
 				}
 
+				property double NormalizedAmount
+				{
+					double get() { return m_value->NormalizedAmount; }
+				}
+
+				property double CumulativeNormalizedAmount
+				{
+					double get() { return m_value->CumulativeNormalizedAmount; }
+				}
+
 				std::shared_ptr<Statistics::DiscreteValue> GetValue()
 				{
 					return sharedPointer->getSharedPointer(m_value);

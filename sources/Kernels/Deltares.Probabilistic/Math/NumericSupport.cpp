@@ -86,6 +86,16 @@ namespace Deltares
 			}
 		}
 
+		bool NumericSupport::isLess(double x1, double x2, double tolerance)
+		{
+			return x1 < x2 + tolerance;
+		}
+
+		bool NumericSupport::isGreater(double x1, double x2, double tolerance)
+		{
+			return x1 > x2 - tolerance;
+		}
+
 		CmpResult NumericSupport::compareDouble(const double x1, const double x2, const double tol)
 		{
 			if (areEqual(x1, x2, tol))

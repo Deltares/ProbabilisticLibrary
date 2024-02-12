@@ -4,6 +4,7 @@
 #include <cmath>
 
 #include "../StandardNormal.h"
+#include "../../Math/NumericSupport.h"
 
 
 namespace Deltares
@@ -48,7 +49,7 @@ namespace Deltares
 
 			double prev = 0;
 
-			for (int i = 0; i < stochast->DiscreteValues.size(); i++)
+			for (size_t i = 0; i < stochast->DiscreteValues.size(); i++)
 			{
 				double cum = stochast->DiscreteValues[i]->CumulativeNormalizedAmount;
 
@@ -129,6 +130,76 @@ namespace Deltares
 			for (std::shared_ptr<DiscreteValue> val : stochast->DiscreteValues)
 			{
 				val->X += diff;
+			}
+		}
+
+		double DiscreteDistribution::getPDF(StochastProperties* stochast, double x)
+		{
+			const double delta = 0.0000001;
+
+			if (stochast->DiscreteValues.empty())
+			{
+				return nan("");
+			}
+
+			for (int i = 0; i < stochast->DiscreteValues.size(); i++)
+			{
+				if (Numeric::NumericSupport::areEqual(stochast->DiscreteValues[i]->X, x, delta))
+				{
+					return stochast->DiscreteValues[i]->NormalizedAmount;
+				}
+			}
+
+			return 0;
+
+		}
+
+		double DiscreteDistribution::getCDF(StochastProperties* stochast, double x)
+		{
+			const double delta = 0.0000001;
+
+			if (stochast->DiscreteValues.empty())
+			{
+				return nan("");
+			}
+
+			double p = 0;
+
+			for (int i = 0; i < stochast->DiscreteValues.size(); i++)
+			{
+				if (Numeric::NumericSupport::areEqual(stochast->DiscreteValues[i]->X, x, delta))
+				{
+					double pLow = p;
+					double pHigh = p + stochast->DiscreteValues[i]->NormalizedAmount;
+					double pAverage = (pLow + pHigh) / 2;
+
+					return pAverage;
+				}
+				else if (Numeric::NumericSupport::isLess(stochast->DiscreteValues[i]->X, x, delta))
+				{
+					p += stochast->DiscreteValues[i]->NormalizedAmount;
+				}
+			}
+
+			return p;
+		}
+
+		void DiscreteDistribution::fit(StochastProperties* stochast, std::vector<double>& values)
+		{
+			stochast->DiscreteValues.clear();
+
+			std::sort(values.begin(), values.end());
+
+			for (int i = 0; i < values.size(); i++)
+			{
+				if (stochast->DiscreteValues.empty() || values[i] != values[i - 1])
+				{
+					stochast->DiscreteValues.push_back(std::make_shared<DiscreteValue>(values[i], 1));
+				}
+				else
+				{
+					stochast->DiscreteValues.back()->Amount += 1;
+				}
 			}
 		}
 	}

@@ -14,6 +14,9 @@ namespace Deltares
 			void setMeanAndDeviation(StochastProperties* stochast, double mean, double deviation) override;
 			void initializeForRun(StochastProperties* stochast) override;
 			double getRepresentativeU(StochastProperties* stochast, double u) override;
+			double getPDF(StochastProperties* stochast, double x) override;
+			double getCDF(StochastProperties* stochast, double x) override;
+			void fit(StochastProperties* stochast, std::vector<double>& values) override;
 		};
 	}
 }

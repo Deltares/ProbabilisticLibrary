@@ -273,16 +273,25 @@ namespace Deltares.Probabilistics.Wrappers.Test
             Assert.AreEqual(2, stochast.GetXFromU(0), margin);
             Assert.AreEqual(3, stochast.GetXFromU(StandardNormal.GetUFromP(0.9)), margin);
 
-            //Assert.AreEqual(0.2, stochast.GetPDF(1), margin);
-            //Assert.AreEqual(0.4, stochast.GetPDF(2), margin);
-            //Assert.AreEqual(0.4, stochast.GetPDF(3), margin);
-            //Assert.AreEqual(0, stochast.GetPDF(1.5), margin);
+            Assert.AreEqual(0.2, stochast.GetPDF(1), margin);
+            Assert.AreEqual(0.4, stochast.GetPDF(2), margin);
+            Assert.AreEqual(0.4, stochast.GetPDF(3), margin);
+            Assert.AreEqual(0, stochast.GetPDF(1.5), margin);
 
             Assert.AreEqual(StandardNormal.GetUFromP(0.1), stochast.GetUFromX(1), margin);
             Assert.AreEqual(StandardNormal.GetUFromP(0.4), stochast.GetUFromX(2), margin);
             Assert.AreEqual(StandardNormal.GetUFromP(0.6), stochast.GetUFromX(2.5), margin);
             Assert.AreEqual(StandardNormal.GetUFromP(0.8), stochast.GetUFromX(3), margin);
             Assert.AreEqual(StandardNormal.BetaMax, stochast.GetUFromX(4), margin);
+
+            Assert.AreEqual(0, stochast.GetCDF(0), margin);
+            Assert.AreEqual(0.1, stochast.GetCDF(1), margin);
+            Assert.AreEqual(0.4, stochast.GetCDF(2), margin);
+            Assert.AreEqual(0.6, stochast.GetCDF(2.5), margin);
+            Assert.AreEqual(0.8, stochast.GetCDF(3), margin);
+            Assert.AreEqual(1, stochast.GetCDF(4), margin);
+
+            Assert.IsTrue(stochast.IsVarying());
         }
 
         [Test]

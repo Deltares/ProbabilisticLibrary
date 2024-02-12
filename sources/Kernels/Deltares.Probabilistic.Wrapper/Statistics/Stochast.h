@@ -77,6 +77,11 @@ namespace Deltares
 					}
 				}
 
+				virtual bool IsVarying()
+				{
+					return m_stochast->isVarying();
+				}
+
 				virtual property bool IsVariableStochast
 				{
 					bool get() { return m_stochast->IsVariableStochast; }
@@ -154,10 +159,20 @@ namespace Deltares
 					void set(int value) { m_stochast->Observations = value; }
 				}
 
+				virtual bool CanTruncate()
+				{
+					return m_stochast->canTruncate();
+				}
+
 				virtual property bool Truncated
 				{
 					bool get() { return m_stochast->isTruncated(); }
 					void set(bool value) { m_stochast->setTruncated(value); }
+				}
+
+				virtual bool CanInvert()
+				{
+					return m_stochast->canInvert();
 				}
 
 				virtual property bool Inverted
@@ -166,19 +181,19 @@ namespace Deltares
 					void set(bool value) { m_stochast->setInverted(value); }
 				}
 
-				property System::Collections::Generic::List<DiscreteValue^>^ DiscreteValues
+				property System::Collections::Generic::IList<DiscreteValue^>^ DiscreteValues
 				{
-					System::Collections::Generic::List<DiscreteValue^>^ get() { return discreteValues; }
+					System::Collections::Generic::IList<DiscreteValue^>^ get() { return discreteValues; }
 				}
 
-				property System::Collections::Generic::List<HistogramValue^>^ HistogramValues
+				property System::Collections::Generic::IList<HistogramValue^>^ HistogramValues
 				{
-					System::Collections::Generic::List<HistogramValue^>^ get() { return histogramValues; }
+					System::Collections::Generic::IList<HistogramValue^>^ get() { return histogramValues; }
 				}
 
-				property System::Collections::Generic::List<FragilityValue^>^ FragilityValues
+				property System::Collections::Generic::IList<FragilityValue^>^ FragilityValues
 				{
-					System::Collections::Generic::List<FragilityValue^>^ get() { return fragilityValues; }
+					System::Collections::Generic::IList<FragilityValue^>^ get() { return fragilityValues; }
 				}
 
 				virtual double GetPDF(double x)
@@ -222,6 +237,11 @@ namespace Deltares
 					updateStochast();
 
 					m_stochast->initializeForRun();
+				}
+
+				virtual bool CanFit()
+				{
+					return m_stochast->canFit();
 				}
 
 				virtual void Fit(array<double>^ values)

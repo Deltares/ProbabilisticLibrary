@@ -92,6 +92,11 @@ namespace Deltares
 			return this->distributionType;
 		}
 
+		bool Stochast::canInvert()
+		{
+			return this->distribution->canInvert();
+		}
+
 		bool Stochast::isInverted()
 		{
 			return inverted;
@@ -101,6 +106,11 @@ namespace Deltares
 		{
 			this->inverted = inverted;
 			updateDistribution();
+		}
+
+		bool Stochast::canTruncate()
+		{
+			return this->distribution->canTruncate();
 		}
 
 		bool Stochast::isTruncated()
@@ -169,6 +179,11 @@ namespace Deltares
 			{
 				this->ValueSet->initializeForRun();
 			}
+		}
+
+		bool Stochast::canFit()
+		{
+			return distribution->canFit();
 		}
 
 		void Stochast::fit(std::vector<double> values)
