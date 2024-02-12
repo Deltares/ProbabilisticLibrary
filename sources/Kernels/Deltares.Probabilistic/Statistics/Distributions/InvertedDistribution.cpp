@@ -81,6 +81,11 @@ namespace Deltares
 
 			this->innerDistribution->fit(stochast, invertedValues);
 		}
+
+		bool InvertedDistribution::isValid(StochastProperties* stochast)
+		{
+			return this->innerDistribution->isValid(stochast);
+		}
 	}
 }
 

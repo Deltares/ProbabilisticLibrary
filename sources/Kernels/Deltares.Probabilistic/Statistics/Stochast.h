@@ -71,6 +71,8 @@ namespace Deltares
 			bool canFit();
 			void fit(std::vector<double> values);
 
+			bool isValid();
+
 			std::shared_ptr<Stochast> VariableSource = nullptr;
 
 			std::shared_ptr<VariableStochastValuesSet> ValueSet = std::make_shared<VariableStochastValuesSet>();

@@ -77,6 +77,11 @@ namespace Deltares
 					}
 				}
 
+				virtual bool IsValid()
+				{
+					return m_stochast->isValid();
+				}
+
 				virtual bool IsVarying()
 				{
 					return m_stochast->isVarying();

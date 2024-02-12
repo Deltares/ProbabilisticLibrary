@@ -22,6 +22,11 @@ namespace Deltares
 			setMeanAndDeviation(stochast, values[0], values[1]);
 		}
 
+		bool GumbelDistribution::isValid(StochastProperties* stochast)
+		{
+			return stochast->Scale >= 0;
+		}
+
 		bool GumbelDistribution::isVarying(StochastProperties* stochast)
 		{
 			return stochast->Scale > 0;

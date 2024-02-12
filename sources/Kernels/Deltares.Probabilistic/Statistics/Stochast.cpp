@@ -129,6 +129,11 @@ namespace Deltares
 			return this->distribution->isVarying(this);
 		}
 
+		bool Stochast::isValid()
+		{
+			return this->distribution->isValid(this);
+		}
+
 		bool Stochast::isQualitative()
 		{
 			return this->distribution->isQualitative();

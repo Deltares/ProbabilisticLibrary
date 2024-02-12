@@ -16,6 +16,11 @@ namespace Deltares
 			setMeanAndDeviation(stochast, values[0], values[1]);
 		}
 
+		bool LogNormalDistribution::isValid(StochastProperties* stochast)
+		{
+			return !isinf(stochast->Location) && stochast->Scale >= 0;
+		}
+
 		bool LogNormalDistribution::isVarying(StochastProperties* stochast)
 		{
 			return stochast->Scale > 0;

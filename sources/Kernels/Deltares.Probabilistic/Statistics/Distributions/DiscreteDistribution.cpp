@@ -11,6 +11,11 @@ namespace Deltares
 {
 	namespace Statistics
 	{
+		bool DiscreteDistribution::isValid(StochastProperties* stochast)
+		{
+			return !stochast->DiscreteValues.empty();
+		}
+
 		bool DiscreteDistribution::isVarying(StochastProperties* stochast)
 		{
 			return stochast->DiscreteValues.size() > 1;

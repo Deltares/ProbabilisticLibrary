@@ -23,6 +23,7 @@ namespace Deltares
 			void setXAtU(StochastProperties* stochast, double x, double u, ConstantParameterType constantType) override;
 			bool canFit() override { return true; }
 			void fit(StochastProperties* stochast, std::vector<double>& values) override;
+			bool isValid(StochastProperties* stochast) override;
 		private:
 			double fitShift(std::vector<double> values);
 			double getPartialAverage(std::vector<double>& sample, double gamma, int low, int high);

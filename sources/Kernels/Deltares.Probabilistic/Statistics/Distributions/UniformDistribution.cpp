@@ -21,6 +21,11 @@ namespace Deltares
 			stochast->Maximum = values[1];
 		}
 
+		bool UniformDistribution::isValid(StochastProperties* stochast)
+		{
+			return stochast->Minimum <= stochast->Maximum;
+		}
+
 		bool UniformDistribution::isVarying(StochastProperties* stochast)
 		{
 			return stochast->Maximum > stochast->Minimum;

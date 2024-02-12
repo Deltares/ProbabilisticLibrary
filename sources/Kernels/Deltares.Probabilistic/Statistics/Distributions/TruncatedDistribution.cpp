@@ -82,6 +82,11 @@ namespace Deltares
 			return stochast->Minimum != stochast->Maximum && this->innerDistribution->isVarying(stochast);
 		}
 
+		bool TruncatedDistribution::isValid(StochastProperties* stochast)
+		{
+			return stochast->Minimum <= stochast->Maximum && this->innerDistribution->isValid(stochast);
+		}
+
 		double TruncatedDistribution::getMean(StochastProperties* stochast)
 		{
 			return this->innerDistribution->getMean(stochast);

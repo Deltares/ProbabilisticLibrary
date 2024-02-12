@@ -30,6 +30,8 @@ namespace Deltares
 			double getCDF(StochastProperties* stochast, double x) override;
 			void setXAtU(StochastProperties* stochast, double x, double u, ConstantParameterType constantType) override;
 			void fit(StochastProperties* stochast, std::vector<double>& values) override;
+			bool isValid(StochastProperties* stochast) override;
+
 		private:
 			std::shared_ptr<Distribution> innerDistribution = nullptr;
 			double getInvertedValue(StochastProperties* stochast, double value);

@@ -8,6 +8,7 @@ namespace Deltares
 		class GumbelDistribution : public Distribution
 		{
 			void initialize(StochastProperties* stochast, std::vector<double> values) override;
+			bool isValid(StochastProperties* stochast) override;
 			double getXFromU(StochastProperties* stochast, double u) override;
 			double getUFromX(StochastProperties* stochast, double x) override;
 			bool isVarying(StochastProperties* stochast) override;

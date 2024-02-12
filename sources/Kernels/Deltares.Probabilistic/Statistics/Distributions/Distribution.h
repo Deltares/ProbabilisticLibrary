@@ -29,6 +29,7 @@ namespace Deltares
 			virtual double getCDF(StochastProperties* stochast, double x) { return 0; }
 			virtual void setXAtU(StochastProperties* stochast, double x, double u, ConstantParameterType constantType) {}
 			virtual void fit(StochastProperties* stochast, std::vector<double>& values) { }
+			virtual bool isValid(StochastProperties* stochast) { return true; }
 		protected:
 			virtual void setXAtUByIteration(StochastProperties* stochast, double x, double u, ConstantParameterType constantType);
 		};

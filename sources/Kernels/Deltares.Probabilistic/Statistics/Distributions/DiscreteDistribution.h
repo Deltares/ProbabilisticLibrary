@@ -17,6 +17,7 @@ namespace Deltares
 			double getPDF(StochastProperties* stochast, double x) override;
 			double getCDF(StochastProperties* stochast, double x) override;
 			void fit(StochastProperties* stochast, std::vector<double>& values) override;
+			bool isValid(StochastProperties* stochast) override;
 		};
 	}
 }
