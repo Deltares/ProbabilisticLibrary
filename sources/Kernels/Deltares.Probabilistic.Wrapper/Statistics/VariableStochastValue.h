@@ -30,6 +30,26 @@ namespace Deltares
 					void set(double value) { m_value->X = value; }
 				}
 
+				// TODO: Implement mean
+				property double Mean
+				{
+					double get() { return m_value->Stochast->Location; }
+					void set(double value) { m_value->Stochast->Location = value; }
+				}
+
+				// TODO: Implement deviation
+				property double Deviation
+				{
+					double get() { return m_value->Stochast->Scale; }
+					void set(double value) { m_value->Stochast->Scale = value; }
+				}
+
+				// TODO: Implement is varying
+				bool IsVarying()
+				{
+					return true;
+				}
+
 				property double Location
 				{
 					double get() { return m_value->Stochast->Location; }

@@ -30,8 +30,6 @@ namespace Deltares
 			Stochast();
 			Stochast(DistributionType distributionType, std::vector<double> values);
 
-			bool IsVariableStochast = false;
-
 			double getPDF(double x);
 			double getCDF(double x);
 
@@ -73,8 +71,8 @@ namespace Deltares
 
 			bool isValid();
 
+			bool IsVariableStochast = false;
 			std::shared_ptr<Stochast> VariableSource = nullptr;
-
 			std::shared_ptr<VariableStochastValuesSet> ValueSet = std::make_shared<VariableStochastValuesSet>();
 		};
 	}
