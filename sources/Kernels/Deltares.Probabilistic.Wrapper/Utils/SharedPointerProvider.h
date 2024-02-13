@@ -30,11 +30,13 @@ namespace Deltares
 				void setSharedPointer(std::shared_ptr<T> object)
 				{
 					sharedPointer = object;
+					initialized = true;
 				}
 
 				void setSharedPointer(T* object)
 				{
 					sharedPointer = std::make_shared<T>(*object);
+					initialized = true;
 				}
 			};
 		}
