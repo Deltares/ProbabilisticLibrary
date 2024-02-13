@@ -10,23 +10,23 @@ namespace Deltares
 {
 	namespace Statistics
 	{
-		void LogNormalDistribution::initialize(StochastProperties* stochast, std::vector<double> values)
+		void LogNormalDistribution::initialize(std::shared_ptr<StochastProperties> stochast, std::vector<double> values)
 		{
 			stochast->Shift = values[2];
 			setMeanAndDeviation(stochast, values[0], values[1]);
 		}
 
-		bool LogNormalDistribution::isValid(StochastProperties* stochast)
+		bool LogNormalDistribution::isValid(std::shared_ptr<StochastProperties> stochast)
 		{
 			return !isinf(stochast->Location) && stochast->Scale >= 0;
 		}
 
-		bool LogNormalDistribution::isVarying(StochastProperties* stochast)
+		bool LogNormalDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)
 		{
 			return stochast->Scale > 0;
 		}
 
-		double LogNormalDistribution::getMean(StochastProperties* stochast)
+		double LogNormalDistribution::getMean(std::shared_ptr<StochastProperties> stochast)
 		{
 			if (isinf(stochast->Location) && !isnan(this->requestedMean))
 			{
@@ -46,7 +46,7 @@ namespace Deltares
 			}
 		}
 
-		double LogNormalDistribution::getDeviation(StochastProperties* stochast)
+		double LogNormalDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
 		{
 			if (isinf(stochast->Location) && !isnan(this->requestedDeviation))
 			{
@@ -62,7 +62,7 @@ namespace Deltares
 			}
 		}
 
-		void LogNormalDistribution::setMeanAndDeviation(StochastProperties* stochast, double mean, double deviation)
+		void LogNormalDistribution::setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation)
 		{
 			if (mean <= stochast->Shift)
 			{
@@ -83,7 +83,7 @@ namespace Deltares
 			}
 		}
 
-		void LogNormalDistribution::setShift(StochastProperties* stochast, double shift, bool inverted)
+		void LogNormalDistribution::setShift(std::shared_ptr<StochastProperties> stochast, double shift, bool inverted)
 		{
 			bool useRequestedValues = isinf(stochast->Location) && !isnan(this->requestedMean);
 
@@ -105,12 +105,12 @@ namespace Deltares
 			this->setMeanAndDeviation(stochast, oldMean, oldDeviation);
 		}
 
-		double LogNormalDistribution::getXFromU(StochastProperties* stochast, double u)
+		double LogNormalDistribution::getXFromU(std::shared_ptr<StochastProperties> stochast, double u)
 		{
 			return exp(stochast->Location + u * stochast->Scale) + stochast->Shift;
 		}
 
-		double LogNormalDistribution::getUFromX(StochastProperties* stochast, double x)
+		double LogNormalDistribution::getUFromX(std::shared_ptr<StochastProperties> stochast, double x)
 		{
 			if (!this->isVarying(stochast))
 			{
@@ -122,7 +122,7 @@ namespace Deltares
 			}
 		}
 
-		double LogNormalDistribution::getPDF(StochastProperties* stochast, double x)
+		double LogNormalDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)
 		{
 			if (x <= stochast->Shift)
 			{
@@ -141,7 +141,7 @@ namespace Deltares
 			}
 		}
 
-		double LogNormalDistribution::getCDF(StochastProperties* stochast, double x)
+		double LogNormalDistribution::getCDF(std::shared_ptr<StochastProperties> stochast, double x)
 		{
 			if (x <= stochast->Shift)
 			{
@@ -155,7 +155,7 @@ namespace Deltares
 			}
 		}
 
-		void LogNormalDistribution::setXAtU(StochastProperties* stochast, double x, double u, ConstantParameterType constantType)
+		void LogNormalDistribution::setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
 		{
 			if (stochast->Scale <= 0)
 			{
@@ -227,7 +227,7 @@ namespace Deltares
 		}
 
 
-		void LogNormalDistribution::fit(StochastProperties* stochast, std::vector<double>& values)
+		void LogNormalDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values)
 		{
 			stochast->Shift = fitShift(values);
 

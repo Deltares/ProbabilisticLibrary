@@ -47,22 +47,24 @@ namespace Deltares
 
 			void Stochast::updateStochast()
 			{
-				m_stochast->DiscreteValues.clear();
+				std::shared_ptr<StochastProperties> properties = m_stochast->getProperties();
+
+				properties->DiscreteValues.clear();
 				for (size_t i = 0; i < this->discreteValues->Count; i++)
 				{
-					m_stochast->DiscreteValues.push_back(discreteValues[i]->GetValue());
+					properties->DiscreteValues.push_back(discreteValues[i]->GetValue());
 				}
 
-				m_stochast->HistogramValues.clear();
+				properties->HistogramValues.clear();
 				for (size_t i = 0; i < this->histogramValues->Count; i++)
 				{
-					m_stochast->HistogramValues.push_back(histogramValues[i]->GetValue());
+					properties->HistogramValues.push_back(histogramValues[i]->GetValue());
 				}
 
-				m_stochast->FragilityValues.clear();
+				properties->FragilityValues.clear();
 				for (size_t i = 0; i < this->fragilityValues->Count; i++)
 				{
-					m_stochast->FragilityValues.push_back(fragilityValues[i]->GetValue());
+					properties->FragilityValues.push_back(fragilityValues[i]->GetValue());
 				}
 
 				m_stochast->ValueSet->StochastValues.clear();

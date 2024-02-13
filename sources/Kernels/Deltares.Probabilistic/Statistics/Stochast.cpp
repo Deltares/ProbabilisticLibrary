@@ -15,6 +15,20 @@ namespace Deltares
 {
 	namespace Statistics
 	{
+		Stochast::Stochast() {};
+
+		Stochast::Stochast(DistributionType distributionType, std::vector<double> values)
+		{
+			setDistributionType(distributionType);
+			distribution->initialize(properties, values);
+		}
+
+		Stochast::Stochast(DistributionType distributionType, std::shared_ptr<StochastProperties> properties)
+		{
+			setDistributionType(distributionType);
+			this->properties = properties;
+		}
+
 		void Stochast::updateDistribution()
 		{
 			switch (this->distributionType)
@@ -39,46 +53,40 @@ namespace Deltares
 			{
 				this->distribution = std::make_shared<InvertedDistribution>(this->distribution);
 			}
-		}
 
-		Stochast::Stochast() {};
-
-		Stochast::Stochast(DistributionType distributionType, std::vector<double> values)
-		{
-			setDistributionType(distributionType);
-			distribution->initialize(this, values);
+			this->ValueSet->setDistribution(distribution);
 		}
 
 		double Stochast::getPDF(double x)
 		{
-			return this->distribution->getPDF(this, x);
+			return this->distribution->getPDF(properties, x);
 		}
 
 		double Stochast::getCDF(double x)
 		{
-			return this->distribution->getCDF(this, x);
+			return this->distribution->getCDF(properties, x);
 		}
 
 		double Stochast::getXFromU(double u)
 		{
-			return this->distribution->getXFromU(this, u);
+			return this->distribution->getXFromU(properties, u);
 		}
 
 		double Stochast::getUFromX(double x)
 		{
-			return this->distribution->getUFromX(this, x);
+			return this->distribution->getUFromX(properties, x);
 		}
 
 		double Stochast::getXFromUAndSource(double xSource, double u)
 		{
-			std::shared_ptr<StochastProperties> properties = this->ValueSet->getInterpolatedStochast(xSource);
+			std::shared_ptr<StochastProperties> valueSetProperties = this->ValueSet->getInterpolatedStochast(xSource);
 
-			return this->distribution->getXFromU(properties.get(), u);
+			return this->distribution->getXFromU(valueSetProperties, u);
 		}
 
 		void Stochast::setXAtU(double x, double u, ConstantParameterType constantType)
 		{
-			this->distribution->setXAtU(this, x, u, constantType);
+			this->distribution->setXAtU(properties, x, u, constantType);
 		}
 
 		void Stochast::setDistributionType(DistributionType distributionType)
@@ -126,12 +134,12 @@ namespace Deltares
 
 		bool Stochast::isVarying()
 		{
-			return this->distribution->isVarying(this);
+			return this->distribution->isVarying(properties);
 		}
 
 		bool Stochast::isValid()
 		{
-			return this->distribution->isValid(this);
+			return this->distribution->isValid(properties);
 		}
 
 		bool Stochast::isQualitative()
@@ -141,44 +149,44 @@ namespace Deltares
 
 		double Stochast::getRepresentativeU(double u)
 		{
-			return this->distribution->getRepresentativeU(this, u);
+			return this->distribution->getRepresentativeU(properties, u);
 		}
 
 		double Stochast::getMean()
 		{
-			return distribution->getMean(this);
+			return distribution->getMean(properties);
 		}
 
 		void Stochast::setMean(double mean)
 		{
-			double deviation = distribution->getDeviation(this);
-			distribution->setMeanAndDeviation(this, mean, deviation);
+			double deviation = distribution->getDeviation(properties);
+			distribution->setMeanAndDeviation(properties, mean, deviation);
 		}
 
 		double Stochast::getDeviation()
 		{
-			return distribution->getDeviation(this);
+			return distribution->getDeviation(properties);
 		}
 
 		void Stochast::setDeviation(double deviation)
 		{
-			double mean = distribution->getMean(this);
-			distribution->setMeanAndDeviation(this, mean, deviation);
+			double mean = distribution->getMean(properties);
+			distribution->setMeanAndDeviation(properties, mean, deviation);
 		}
 
 		void Stochast::setShift(double shift)
 		{
-			distribution->setShift(this, shift, false);
+			distribution->setShift(properties, shift, false);
 		}
 
 		void Stochast::setMeanAndDeviation(double mean, double deviation)
 		{
-			distribution->setMeanAndDeviation(this, mean, deviation);
+			distribution->setMeanAndDeviation(properties, mean, deviation);
 		}
 
 		void Stochast::initializeForRun()
 		{
-			distribution->initializeForRun(this);
+			distribution->initializeForRun(properties);
 
 			if (this->IsVariableStochast)
 			{
@@ -193,7 +201,7 @@ namespace Deltares
 
 		void Stochast::fit(std::vector<double> values)
 		{
-			distribution->fit(this, values);
+			distribution->fit(properties, values);
 		}
 
 	}

@@ -8,7 +8,7 @@ namespace Deltares
 {
 	namespace Statistics
 	{
-		void Distribution::setXAtUByIteration(StochastProperties* stochast, double x, double u, ConstantParameterType constantType)
+		void Distribution::setXAtUByIteration(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
 		{
 			const double delta = 0.00001;
 			double margin = std::ranges::min(delta, abs(x / 1000000));

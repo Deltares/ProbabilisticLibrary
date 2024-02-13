@@ -13,10 +13,11 @@ namespace Deltares
 {
 	namespace Statistics
 	{
-		class Stochast : public StochastProperties
+		class Stochast
 		{
 		private:
 			DistributionType distributionType = DistributionType::Deterministic;
+			std::shared_ptr<StochastProperties> properties = std::make_shared<StochastProperties>();
 
 			bool inverted = false;
 			bool truncated = false;
@@ -29,6 +30,9 @@ namespace Deltares
 
 			Stochast();
 			Stochast(DistributionType distributionType, std::vector<double> values);
+			Stochast(DistributionType distributionType, std::shared_ptr<StochastProperties> properties);
+
+			std::shared_ptr<StochastProperties> getProperties()	{ return properties; }
 
 			double getPDF(double x);
 			double getCDF(double x);

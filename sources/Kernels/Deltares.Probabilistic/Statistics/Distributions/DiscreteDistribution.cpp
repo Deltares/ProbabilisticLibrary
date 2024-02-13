@@ -11,17 +11,17 @@ namespace Deltares
 {
 	namespace Statistics
 	{
-		bool DiscreteDistribution::isValid(StochastProperties* stochast)
+		bool DiscreteDistribution::isValid(std::shared_ptr<StochastProperties> stochast)
 		{
 			return !stochast->DiscreteValues.empty();
 		}
 
-		bool DiscreteDistribution::isVarying(StochastProperties* stochast)
+		bool DiscreteDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)
 		{
 			return stochast->DiscreteValues.size() > 1;
 		}
 
-		double DiscreteDistribution::getXFromU(StochastProperties* stochast, double u)
+		double DiscreteDistribution::getXFromU(std::shared_ptr<StochastProperties> stochast, double u)
 		{
 			const double delta = 0.0000001;
 
@@ -43,7 +43,7 @@ namespace Deltares
 			return stochast->DiscreteValues.back()->X;
 		}
 
-		double DiscreteDistribution::getUFromX(StochastProperties* stochast, double x)
+		double DiscreteDistribution::getUFromX(std::shared_ptr<StochastProperties> stochast, double x)
 		{
 			const double delta = 0.0000001;
 
@@ -76,7 +76,7 @@ namespace Deltares
 			return StandardNormal::getUFromP(prev);
 		}
 
-		double DiscreteDistribution::getRepresentativeU(StochastProperties* stochast, double u)
+		double DiscreteDistribution::getRepresentativeU(std::shared_ptr<StochastProperties> stochast, double u)
 		{
 			double x = this->getXFromU(stochast, u);
 			double uRepresentative = this->getUFromX(stochast, x);
@@ -84,7 +84,7 @@ namespace Deltares
 			return uRepresentative;
 		}
 
-		void DiscreteDistribution::initializeForRun(StochastProperties* stochast)
+		void DiscreteDistribution::initializeForRun(std::shared_ptr<StochastProperties> stochast)
 		{
 			std::sort(stochast->DiscreteValues.begin(), stochast->DiscreteValues.end(), [](std::shared_ptr<DiscreteValue> val1, std::shared_ptr<DiscreteValue> val2) {return val1->X < val2->X; });
 
@@ -107,7 +107,7 @@ namespace Deltares
 			}
 		}
 
-		double DiscreteDistribution::getMean(StochastProperties* stochast)
+		double DiscreteDistribution::getMean(std::shared_ptr<StochastProperties> stochast)
 		{
 			double sumX = 0;
 			double sumAmounts = 0;
@@ -121,13 +121,13 @@ namespace Deltares
 			return sumX / sumAmounts;
 		}
 
-		double DiscreteDistribution::getDeviation(StochastProperties* stochast)
+		double DiscreteDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
 		{
 			// not supported
 			return 0;
 		}
 
-		void DiscreteDistribution::setMeanAndDeviation(StochastProperties* stochast, double mean, double deviation)
+		void DiscreteDistribution::setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation)
 		{
 			double currentMean = getMean(stochast);
 			double diff = mean - currentMean;
@@ -138,7 +138,7 @@ namespace Deltares
 			}
 		}
 
-		double DiscreteDistribution::getPDF(StochastProperties* stochast, double x)
+		double DiscreteDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)
 		{
 			const double delta = 0.0000001;
 
@@ -159,7 +159,7 @@ namespace Deltares
 
 		}
 
-		double DiscreteDistribution::getCDF(StochastProperties* stochast, double x)
+		double DiscreteDistribution::getCDF(std::shared_ptr<StochastProperties> stochast, double x)
 		{
 			const double delta = 0.0000001;
 
@@ -189,7 +189,7 @@ namespace Deltares
 			return p;
 		}
 
-		void DiscreteDistribution::fit(StochastProperties* stochast, std::vector<double>& values)
+		void DiscreteDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values)
 		{
 			stochast->DiscreteValues.clear();
 

@@ -60,6 +60,20 @@ namespace Deltares
 
 			return properties;
 		}
+
+		bool VariableStochastValuesSet::isVarying()
+		{
+			for (size_t i = 0; i < StochastValues.size(); i++)
+			{
+				if (this->distribution->isVarying(StochastValues[i]->Stochast))
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
 	};
 }
 

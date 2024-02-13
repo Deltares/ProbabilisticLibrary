@@ -33,6 +33,11 @@ namespace Deltares
 					System::Collections::Generic::List<VariableStochastValue^>^ get() { return stochastValues; }
 				}
 
+				bool IsVarying()
+				{
+					return m_value->isVarying();
+				}
+
 				std::shared_ptr<Statistics::VariableStochastValuesSet> GetValue()
 				{
 					m_value->StochastValues.clear();

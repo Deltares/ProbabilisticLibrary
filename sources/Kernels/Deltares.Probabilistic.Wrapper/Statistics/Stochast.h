@@ -67,7 +67,7 @@ namespace Deltares
 				void SetDistributionType(Wrappers::DistributionType distributionType)
 				{
 					double oldMean = m_stochast->getMean();
-					double oldDeviation = m_stochast->getDistributionType() == Deterministic ? m_stochast->Scale : m_stochast->getDeviation();
+					double oldDeviation = m_stochast->getDistributionType() == Deterministic ? m_stochast->getProperties()->Scale : m_stochast->getDeviation();
 
 					m_stochast->setDistributionType(getNativeDistributionType(distributionType));
 
@@ -107,20 +107,20 @@ namespace Deltares
 
 				virtual property double Location
 				{
-					double get() { return m_stochast->Location; }
-					void set(double value) { m_stochast->Location = value; }
+					double get() { return m_stochast->getProperties()->Location; }
+					void set(double value) { m_stochast->getProperties()->Location = value; }
 				}
 
 				virtual property double Scale
 				{
-					double get() { return m_stochast->Scale; }
-					void set(double value) { m_stochast->Scale = value; }
+					double get() { return m_stochast->getProperties()->Scale; }
+					void set(double value) { m_stochast->getProperties()->Scale = value; }
 				}
 
 				virtual property double Shift
 				{
-					double get() { return m_stochast->Shift; }
-					void set(double value) { m_stochast->Shift = value; }
+					double get() { return m_stochast->getProperties()->Shift; }
+					void set(double value) { m_stochast->getProperties()->Shift = value; }
 				}
 
 				void SetShift(double shift)
@@ -130,38 +130,38 @@ namespace Deltares
 
 				virtual property double ShiftB
 				{
-					double get() { return m_stochast->ShiftB; }
-					void set(double value) { m_stochast->ShiftB = value; }
+					double get() { return m_stochast->getProperties()->ShiftB; }
+					void set(double value) { m_stochast->getProperties()->ShiftB = value; }
 				}
 
 				virtual property double Shape
 				{
-					double get() { return m_stochast->Shape; }
-					void set(double value) { m_stochast->Shape = value; }
+					double get() { return m_stochast->getProperties()->Shape; }
+					void set(double value) { m_stochast->getProperties()->Shape = value; }
 				}
 
 				virtual property double ShapeB
 				{
-					double get() { return m_stochast->ShapeB; }
-					void set(double value) { m_stochast->ShapeB = value; }
+					double get() { return m_stochast->getProperties()->ShapeB; }
+					void set(double value) { m_stochast->getProperties()->ShapeB = value; }
 				}
 
 				virtual property double Minimum
 				{
-					double get() { return m_stochast->Minimum; }
-					void set(double value) { m_stochast->Minimum = value; }
+					double get() { return m_stochast->getProperties()->Minimum; }
+					void set(double value) { m_stochast->getProperties()->Minimum = value; }
 				}
 
 				virtual property double Maximum
 				{
-					double get() { return m_stochast->Maximum; }
-					void set(double value) { m_stochast->Maximum = value; }
+					double get() { return m_stochast->getProperties()->Maximum; }
+					void set(double value) { m_stochast->getProperties()->Maximum = value; }
 				}
 
 				property int Observations
 				{
-					int get() { return m_stochast->Observations; }
-					void set(int value) { m_stochast->Observations = value; }
+					int get() { return m_stochast->getProperties()->Observations; }
+					void set(int value) { m_stochast->getProperties()->Observations = value; }
 				}
 
 				virtual bool CanTruncate()

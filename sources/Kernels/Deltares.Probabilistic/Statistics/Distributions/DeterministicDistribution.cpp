@@ -6,43 +6,43 @@ namespace Deltares
 {
 	namespace Statistics
 	{
-		bool DeterministicDistribution::isVarying(StochastProperties* stochast)
+		bool DeterministicDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)
 		{
 			return false;
 		}
 
-		void DeterministicDistribution::setMeanAndDeviation(StochastProperties* stochast, double mean, double deviation)
+		void DeterministicDistribution::setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation)
 		{
 			stochast->Location = mean;
 			stochast->Scale = deviation;
 		}
 
-		void DeterministicDistribution::initialize(StochastProperties* stochast, std::vector<double> values)
+		void DeterministicDistribution::initialize(std::shared_ptr<StochastProperties> stochast, std::vector<double> values)
 		{
 			stochast->Location = values[0];
 		}
 
-		double DeterministicDistribution::getMean(StochastProperties* stochast)
+		double DeterministicDistribution::getMean(std::shared_ptr<StochastProperties> stochast)
 		{
 			return stochast->Location;
 		}
 
-		double DeterministicDistribution::getDeviation(StochastProperties* stochast)
+		double DeterministicDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
 		{
 			return 0;
 		}
 
-		double DeterministicDistribution::getXFromU(StochastProperties* stochast, double u)
+		double DeterministicDistribution::getXFromU(std::shared_ptr<StochastProperties> stochast, double u)
 		{
 			return stochast->Location;
 		}
 
-		double DeterministicDistribution::getPDF(StochastProperties* stochast, double x)
+		double DeterministicDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)
 		{
 			return x == stochast->Location ? 1 : 0;
 		}
 
-		double DeterministicDistribution::getCDF(StochastProperties* stochast, double x)
+		double DeterministicDistribution::getCDF(std::shared_ptr<StochastProperties> stochast, double x)
 		{
 			if (x < stochast->Location)
 			{
@@ -58,12 +58,12 @@ namespace Deltares
 			}
 		}
 
-		void DeterministicDistribution::setXAtU(StochastProperties* stochast, double x, double u, ConstantParameterType constantType)
+		void DeterministicDistribution::setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
 		{
 			stochast->Location = x;
 		}
 
-		void DeterministicDistribution::fit(StochastProperties* stochast, std::vector<double>& values)
+		void DeterministicDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values)
 		{
 			stochast->Location = Numeric::NumericSupport::getMean(values);
 		}

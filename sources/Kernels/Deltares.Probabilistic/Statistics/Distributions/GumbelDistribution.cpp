@@ -11,38 +11,38 @@ namespace Deltares
 {
 	namespace Statistics
 	{
-		void GumbelDistribution::setMeanAndDeviation(StochastProperties* stochast, double mean, double deviation)
+		void GumbelDistribution::setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation)
 		{
 			stochast->Scale = sqrt(6) * deviation / std::numbers::pi;
 			stochast->Shift = mean - stochast->Scale * std::numbers::egamma;
 		}
 
-		void GumbelDistribution::initialize(StochastProperties* stochast, std::vector<double> values)
+		void GumbelDistribution::initialize(std::shared_ptr<StochastProperties> stochast, std::vector<double> values)
 		{
 			setMeanAndDeviation(stochast, values[0], values[1]);
 		}
 
-		bool GumbelDistribution::isValid(StochastProperties* stochast)
+		bool GumbelDistribution::isValid(std::shared_ptr<StochastProperties> stochast)
 		{
 			return stochast->Scale >= 0;
 		}
 
-		bool GumbelDistribution::isVarying(StochastProperties* stochast)
+		bool GumbelDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)
 		{
 			return stochast->Scale > 0;
 		}
 
-		double GumbelDistribution::getMean(StochastProperties* stochast)
+		double GumbelDistribution::getMean(std::shared_ptr<StochastProperties> stochast)
 		{
 			return stochast->Shift + stochast->Scale * std::numbers::egamma;
 		}
 
-		double GumbelDistribution::getDeviation(StochastProperties* stochast)
+		double GumbelDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
 		{
 			return std::numbers::pi * stochast->Scale / sqrt(6);
 		}
 
-		double GumbelDistribution::getXFromU(StochastProperties* stochast, double u)
+		double GumbelDistribution::getXFromU(std::shared_ptr<StochastProperties> stochast, double u)
 		{
 			double p = StandardNormal::getPFromU(u);
 
@@ -60,7 +60,7 @@ namespace Deltares
 			}
 		}
 
-		double GumbelDistribution::getUFromX(StochastProperties* stochast, double x)
+		double GumbelDistribution::getUFromX(std::shared_ptr<StochastProperties> stochast, double x)
 		{
 			if (stochast->Scale == 0)
 			{
@@ -75,7 +75,7 @@ namespace Deltares
 			}
 		}
 
-		double GumbelDistribution::getPDF(StochastProperties* stochast, double x)
+		double GumbelDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)
 		{
 			if (stochast->Scale == 0)
 			{
@@ -89,7 +89,7 @@ namespace Deltares
 			}
 		}
 
-		double GumbelDistribution::getCDF(StochastProperties* stochast, double x)
+		double GumbelDistribution::getCDF(std::shared_ptr<StochastProperties> stochast, double x)
 		{
 			if (stochast->Scale == 0)
 			{
@@ -102,7 +102,7 @@ namespace Deltares
 			}
 		}
 
-		void GumbelDistribution::setXAtU(StochastProperties* stochast, double x, double u, ConstantParameterType constantType)
+		void GumbelDistribution::setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
 		{
 			double current = this->getXFromU(stochast, u);
 			double diff = x - current;
@@ -110,7 +110,7 @@ namespace Deltares
 			stochast->Shift += diff;
 		}
 
-		void GumbelDistribution::fit(StochastProperties* stochast, std::vector<double>& values)
+		void GumbelDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values)
 		{
 			// https://stats.stackexchange.com/questions/71197/usable-estimators-for-parameters-in-gumbel-distribution
 			double mean = Numeric::NumericSupport::getMean(values);
