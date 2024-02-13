@@ -11,7 +11,7 @@ namespace Deltares
 		{
 			using namespace Deltares::Utils::Wrappers;
 
-			public ref class VariableStochastValue
+			public ref class VariableStochastValue : System::IComparable<VariableStochastValue^>
 			{
 			private:
 				Statistics::VariableStochastValue* m_value;
@@ -47,13 +47,27 @@ namespace Deltares
 				property double Location
 				{
 					double get() { return m_value->Stochast->Location; }
-					void set(double value) { m_value->Stochast->Location = value; }
+					void set(double value)
+					{
+						// TODO: implement properly
+						if (m_value->Stochast->Scale == 0)
+						{
+							m_value->Stochast->Location = value;
+						}
+					}
 				}
 
 				property double Scale
 				{
 					double get() { return m_value->Stochast->Scale; }
-					void set(double value) { m_value->Stochast->Scale = value; }
+					void set(double value)
+					{
+						// TODO: implement properly
+						if (m_value->Stochast->Scale == 0)
+						{
+							m_value->Stochast->Scale = value;
+						}
+					}
 				}
 
 				property double Shift
@@ -101,6 +115,11 @@ namespace Deltares
 				std::shared_ptr<Statistics::VariableStochastValue> GetValue()
 				{
 					return sharedPointer->getSharedPointer(m_value);
+				}
+
+				virtual int CompareTo(VariableStochastValue^ other)
+				{
+					return this->X.CompareTo(other->X);
 				}
 			};
 		}

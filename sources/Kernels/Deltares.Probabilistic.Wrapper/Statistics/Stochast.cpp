@@ -16,35 +16,6 @@ namespace Deltares
 				}
 			}
 
-			Statistics::DistributionType Stochast::getNativeDistributionType(Wrappers::DistributionType distributionType)
-			{
-				switch (distributionType)
-				{
-				case Wrappers::DistributionType::Deterministic: return Statistics::DistributionType::Deterministic;
-				case Wrappers::DistributionType::Normal: return Statistics::DistributionType::Normal;
-				case Wrappers::DistributionType::LogNormal: return Statistics::DistributionType::LogNormal;
-				case Wrappers::DistributionType::Uniform: return Statistics::DistributionType::Uniform;
-				case Wrappers::DistributionType::Gumbel: return Statistics::DistributionType::Gumbel;
-				case Wrappers::DistributionType::Discrete: return Statistics::DistributionType::Discrete;
-				case Wrappers::DistributionType::Qualitative: return Statistics::DistributionType::Qualitative;
-				default: throw gcnew System::NotSupportedException(distributionType.ToString());
-				}
-			}
-
-			DistributionType Stochast::getManagedDistributionType(Statistics::DistributionType distributionType)
-			{
-				switch (distributionType)
-				{
-				case Statistics::DistributionType::Deterministic: return Wrappers::DistributionType::Deterministic;
-				case Statistics::DistributionType::Normal: return Wrappers::DistributionType::Normal;
-				case Statistics::DistributionType::LogNormal: return Wrappers::DistributionType::LogNormal;
-				case Statistics::DistributionType::Uniform: return Wrappers::DistributionType::Uniform;
-				case Statistics::DistributionType::Gumbel: return Wrappers::DistributionType::Gumbel;
-				case Statistics::DistributionType::Discrete: return Wrappers::DistributionType::Discrete;
-				default: throw gcnew System::NotSupportedException("distribution type");
-				}
-			}
-
 			void Stochast::updateStochast()
 			{
 				std::shared_ptr<StochastProperties> properties = m_stochast->getProperties();
@@ -67,6 +38,7 @@ namespace Deltares
 					properties->FragilityValues.push_back(fragilityValues[i]->GetValue());
 				}
 
+				m_stochast->ValueSet = this->ValueSet->GetValue();
 				m_stochast->ValueSet->StochastValues.clear();
 				if (this->IsVariableStochast)
 				{

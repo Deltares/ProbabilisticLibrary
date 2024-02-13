@@ -1,15 +1,7 @@
 #include "Stochast.h"
 
-#include "../Utils/probLibException.h"
-#include "Distributions/DeterministicDistribution.h"
-#include "Distributions/DiscreteDistribution.h"
-#include "Distributions/GumbelDistribution.h"
-#include "Distributions/NormalDistribution.h"
-#include "Distributions/LogNormalDistribution.h"
+#include "Distributions/DistributionLibrary.h"
 #include "Distributions/InvertedDistribution.h"
-#include "Distributions/TruncatedDistribution.h"
-#include "Distributions/UniformDistribution.h"
-#include "Distributions/QualitativeDistribution.h"
 
 namespace Deltares
 {
@@ -31,30 +23,7 @@ namespace Deltares
 
 		void Stochast::updateDistribution()
 		{
-			switch (this->distributionType)
-			{
-			case DistributionType::Deterministic: this->distribution = std::make_shared<DeterministicDistribution>(); break;
-			case DistributionType::Normal: this->distribution = std::make_shared<NormalDistribution>(); break;
-			case DistributionType::LogNormal: this->distribution = std::make_shared<LogNormalDistribution>(); break;
-			case DistributionType::Uniform: this->distribution = std::make_shared<UniformDistribution>(); break;
-			case DistributionType::Gumbel: this->distribution = std::make_shared<GumbelDistribution>(); break;
-			case DistributionType::Discrete: this->distribution = std::make_shared<DiscreteDistribution>(); break;
-			case DistributionType::Qualitative: this->distribution = std::make_shared<QualitativeDistribution>(); break;
-			default:
-				throw Deltares::ProbLibCore::probLibException("Distribution type not supported");
-			}
-
-			if (truncated && distribution->canTruncate())
-			{
-				this->distribution = std::make_shared<TruncatedDistribution>(this->distribution);
-			}
-
-			if (inverted && distribution->canInvert())
-			{
-				this->distribution = std::make_shared<InvertedDistribution>(this->distribution);
-			}
-
-			this->ValueSet->setDistribution(distribution);
+			this->distribution =  DistributionLibrary::getDistribution(this->distributionType, truncated, inverted);
 		}
 
 		double Stochast::getPDF(double x)

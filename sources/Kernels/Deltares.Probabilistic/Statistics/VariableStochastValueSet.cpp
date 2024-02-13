@@ -3,8 +3,10 @@
 #include <algorithm>
 
 #include "StochastProperties.h"
+#include "DistributionType.h"
 #include "VariableStochastValue.h"
 #include "../Math/NumericSupport.h"
+#include "Distributions/DistributionLibrary.h"
 
 namespace Deltares
 {
@@ -60,12 +62,14 @@ namespace Deltares
 
 			return properties;
 		}
-
-		bool VariableStochastValuesSet::isVarying()
+		
+		bool VariableStochastValuesSet::isVarying(DistributionType distributionType)
 		{
+			std::shared_ptr<Distribution> distribution = DistributionLibrary::getDistribution(distributionType, false, false);
+
 			for (size_t i = 0; i < StochastValues.size(); i++)
 			{
-				if (this->distribution->isVarying(StochastValues[i]->Stochast))
+				if (distribution->isVarying(StochastValues[i]->Stochast))
 				{
 					return true;
 				}

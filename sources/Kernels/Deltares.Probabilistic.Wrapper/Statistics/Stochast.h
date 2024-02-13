@@ -8,6 +8,7 @@
 #include "HistogramValue.h"
 #include "FragilityValue.h"
 #include "VariableStochastValueSet.h"
+#include "DistributionType.h"
 
 namespace Deltares
 {
@@ -15,8 +16,6 @@ namespace Deltares
 	{
 		namespace Wrappers
 		{
-			public enum class DistributionType { Deterministic, Normal, LogNormal, Uniform, Triangular, Trapezoidal, Exponential, Gamma, Beta, Frechet, Weibull, Gumbel, GeneralizedExtremeValue, StudentT, Rayleigh, Pareto, GeneralizedPareto, Table, CDFCurve, Discrete, Bernoulli, Poisson, Composite, X, Qualitative };
-
 			public enum class ConstantParameterType { Deviation, VariationCoefficient };
 
 			public ref class Stochast
@@ -32,8 +31,6 @@ namespace Deltares
 				Stochast^ source = nullptr;
 				VariableStochastValueSet^ valueSet = gcnew VariableStochastValueSet();
 
-				Statistics::DistributionType getNativeDistributionType(DistributionType distributionType);
-				DistributionType getManagedDistributionType(Statistics::DistributionType distributionType);
 				Statistics::ConstantParameterType getNativeConstantParameterType(ConstantParameterType constantParameterType);
 
 				void updateStochast();
@@ -46,7 +43,7 @@ namespace Deltares
 				}
 				Stochast(DistributionType distributionType, array<double>^ values)
 				{
-					const Statistics::DistributionType nativeDistributionType = getNativeDistributionType(distributionType);
+					const Statistics::DistributionType nativeDistributionType = DistributionTypeConverter::getNativeDistributionType(distributionType);
 					std::vector<double> nValues = NativeSupport::toNative(values);
 					m_stochast = new Statistics::Stochast(nativeDistributionType, nValues);
 					m_stochast->ValueSet = this->ValueSet->GetValue();
@@ -56,8 +53,8 @@ namespace Deltares
 
 				virtual property Wrappers::DistributionType DistributionType
 				{
-					Wrappers::DistributionType get() { return getManagedDistributionType(m_stochast->getDistributionType()); }
-					void set(Wrappers::DistributionType value) { m_stochast->setDistributionType(getNativeDistributionType(value)); }
+					Wrappers::DistributionType get() { return DistributionTypeConverter::getManagedDistributionType(m_stochast->getDistributionType()); }
+					void set(Wrappers::DistributionType value) { m_stochast->setDistributionType(DistributionTypeConverter::getNativeDistributionType(value)); }
 				}
 
 				/**
@@ -69,7 +66,7 @@ namespace Deltares
 					double oldMean = m_stochast->getMean();
 					double oldDeviation = m_stochast->getDistributionType() == Deterministic ? m_stochast->getProperties()->Scale : m_stochast->getDeviation();
 
-					m_stochast->setDistributionType(getNativeDistributionType(distributionType));
+					m_stochast->setDistributionType(DistributionTypeConverter::getNativeDistributionType(distributionType));
 
 					if (oldMean != 0 || oldDeviation != 0) 
 					{

@@ -160,6 +160,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Statistics\DistributionType.h" />
     <ClInclude Include="Statistics\DiscreteValue.h" />
     <ClInclude Include="Statistics\FragilityValue.h" />
     <ClInclude Include="Statistics\HistogramValue.h" />
@@ -198,6 +199,7 @@
     <ClInclude Include="Statistics\VariableStochastValue.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Statistics\DistributionType.cpp" />
     <ClCompile Include="Model\Message.cpp" />
     <ClCompile Include="Reliability\CrudeMonteCarlo.cpp" />
     <ClCompile Include="Reliability\DesignPoint.cpp" />

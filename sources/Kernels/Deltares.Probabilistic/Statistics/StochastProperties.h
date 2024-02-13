@@ -17,7 +17,7 @@ namespace Deltares
         public:
 
             double Location = 0;
-            double Scale = 1;
+            double Scale = 0;
             double Minimum = 0;
             double Maximum = 0;
             double Shift = 0;

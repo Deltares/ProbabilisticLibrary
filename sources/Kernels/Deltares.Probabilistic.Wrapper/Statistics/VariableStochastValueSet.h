@@ -1,4 +1,5 @@
 #pragma once
+#include "DistributionType.h"
 #include "VariableStochastValue.h"
 
 #include "../../Deltares.Probabilistic/Statistics/VariableStochastValueSet.h"
@@ -33,9 +34,9 @@ namespace Deltares
 					System::Collections::Generic::List<VariableStochastValue^>^ get() { return stochastValues; }
 				}
 
-				bool IsVarying()
+				bool IsVarying(Wrappers::DistributionType distributionType)
 				{
-					return m_value->isVarying();
+					return m_value->isVarying(DistributionTypeConverter::getNativeDistributionType(distributionType));
 				}
 
 				std::shared_ptr<Statistics::VariableStochastValuesSet> GetValue()
