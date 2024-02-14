@@ -6,11 +6,32 @@ namespace Deltares
 		class DiscreteValue
 		{
 		public:
-			double X;
-			double Amount;
+			Deltares::Statistics::DiscreteValue()
+			{
+				id = ++counter;
+			}
 
-			double NormalizedAmount; // for internal use
-			double CumulativeNormalizedAmount; // for internal use
+			Deltares::Statistics::DiscreteValue(double x, double amount)
+			{
+				this->X = x;
+				this->Amount = amount;
+
+				id = ++counter;
+			}
+
+			~DiscreteValue()
+			{
+				int k = 1;
+			}
+
+			static int inline counter = 0;
+			int id = 0;
+
+			double X = 0;
+			double Amount = 0;
+
+			double NormalizedAmount = 0; // for internal use
+			double CumulativeNormalizedAmount = 0; // for internal use
 		};
 	}
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <vector>
 
 namespace Deltares
 {
@@ -13,30 +14,45 @@ namespace Deltares
 			class SharedPointerProvider
 			{
 			private:
-				bool initialized = false;
-				std::shared_ptr<T> sharedPointer;
+				std::shared_ptr<T> sharedPointer = nullptr;
+
+				static std::vector<std::shared_ptr<T>> inline sharedPointers;
 			public:
 				std::shared_ptr<T> getSharedPointer(T* object)
 				{
-					if (!initialized)
+					if (sharedPointer == nullptr)
 					{
-						initialized = true;
 						sharedPointer = std::make_shared<T>(*object);
+						sharedPointers.push_back(sharedPointer);
 					}
 
+					return sharedPointer;
+				}
+
+				bool isInitialized()
+				{
+					return sharedPointer != nullptr;
+				}
+
+				std::shared_ptr<T> getSharedPointer()
+				{
 					return sharedPointer;
 				}
 
 				void setSharedPointer(std::shared_ptr<T> object)
 				{
 					sharedPointer = object;
-					initialized = true;
 				}
 
 				void setSharedPointer(T* object)
 				{
 					sharedPointer = std::make_shared<T>(*object);
-					initialized = true;
+					sharedPointers.push_back(sharedPointer);
+				}
+
+				~SharedPointerProvider()
+				{
+					int k = 1;
 				}
 			};
 		}

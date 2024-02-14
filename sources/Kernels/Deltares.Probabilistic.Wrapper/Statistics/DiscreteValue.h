@@ -14,6 +14,9 @@ namespace Deltares
 			public ref class DiscreteValue
 			{
 			private:
+				static int counter = 0;
+				int wrapper_id = 0;
+
 				Statistics::DiscreteValue* m_value;
 				SharedPointerProvider<Statistics::DiscreteValue>* sharedPointer = new SharedPointerProvider<Statistics::DiscreteValue>();
 
@@ -21,36 +24,48 @@ namespace Deltares
 				DiscreteValue()
 				{
 					m_value = new Statistics::DiscreteValue();
+
+					wrapper_id = ++counter;
+
+					sharedPointer->setSharedPointer(m_value);
 				}
 				DiscreteValue(double x, double amount)
 				{
 					m_value = new Statistics::DiscreteValue(x, amount);
 					m_value->X = x;
 					m_value->Amount = amount;
+
+					wrapper_id = ++counter;
+
+					sharedPointer->setSharedPointer(m_value);
 				}
 				~DiscreteValue() { this->!DiscreteValue(); }
-				!DiscreteValue() { delete sharedPointer; }
+				!DiscreteValue()
+				{
+					int k = 1;
+					delete sharedPointer;
+				}
 
 				property double X
 				{
-					double get() { return m_value->X; }
-					void set(double value) { m_value->X = value; }
+					double get() { return sharedPointer->getSharedPointer()->X; }
+					void set(double value) { sharedPointer->getSharedPointer()->X = value; }
 				}
 
 				property double Amount
 				{
-					double get() { return m_value->Amount; }
-					void set(double value) { m_value->Amount = value; }
+					double get() { return sharedPointer->getSharedPointer()->Amount; }
+					void set(double value) { sharedPointer->getSharedPointer()->Amount = value; }
 				}
 
 				property double NormalizedAmount
 				{
-					double get() { return m_value->NormalizedAmount; }
+					double get() { return sharedPointer->isInitialized() ? sharedPointer->getSharedPointer()->NormalizedAmount : nan(""); }
 				}
 
 				property double CumulativeNormalizedAmount
 				{
-					double get() { return m_value->CumulativeNormalizedAmount; }
+					double get() { return sharedPointer->isInitialized() ? sharedPointer->getSharedPointer()->CumulativeNormalizedAmount : nan(""); }
 				}
 
 				std::shared_ptr<Statistics::DiscreteValue> GetValue()
