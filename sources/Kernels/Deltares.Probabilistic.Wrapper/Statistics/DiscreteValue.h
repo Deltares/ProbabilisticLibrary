@@ -14,9 +14,6 @@ namespace Deltares
 			public ref class DiscreteValue
 			{
 			private:
-				static int counter = 0;
-				int wrapper_id = 0;
-
 				Statistics::DiscreteValue* m_value;
 				SharedPointerProvider<Statistics::DiscreteValue>* sharedPointer = new SharedPointerProvider<Statistics::DiscreteValue>();
 
@@ -24,8 +21,6 @@ namespace Deltares
 				DiscreteValue()
 				{
 					m_value = new Statistics::DiscreteValue();
-
-					wrapper_id = ++counter;
 
 					sharedPointer->setSharedPointer(m_value);
 				}
@@ -35,14 +30,11 @@ namespace Deltares
 					m_value->X = x;
 					m_value->Amount = amount;
 
-					wrapper_id = ++counter;
-
 					sharedPointer->setSharedPointer(m_value);
 				}
 				~DiscreteValue() { this->!DiscreteValue(); }
 				!DiscreteValue()
 				{
-					int k = 1;
 					delete sharedPointer;
 				}
 

@@ -61,16 +61,23 @@ namespace Deltares
 				 * \brief Sets the distribution type while maintaining the mean and deviation
 				 * \param distributionType 
 				 */
-				void SetDistributionType(Wrappers::DistributionType distributionType)
+				void SetDistributionType(Wrappers::DistributionType distributionType, bool keepMeanAndDeviation)
 				{
-					double oldMean = m_stochast->getMean();
-					double oldDeviation = m_stochast->getDistributionType() == Deterministic ? m_stochast->getProperties()->Scale : m_stochast->getDeviation();
-
-					m_stochast->setDistributionType(DistributionTypeConverter::getNativeDistributionType(distributionType));
-
-					if (oldMean != 0 || oldDeviation != 0) 
+					if (keepMeanAndDeviation) 
 					{
-						m_stochast->setMeanAndDeviation(oldMean, oldDeviation);
+						double oldMean = m_stochast->getMean();
+						double oldDeviation = m_stochast->getDistributionType() == Deterministic ? m_stochast->getProperties()->Scale : m_stochast->getDeviation();
+
+						m_stochast->setDistributionType(DistributionTypeConverter::getNativeDistributionType(distributionType));
+
+						if (oldMean != 0 || oldDeviation != 0)
+						{
+							m_stochast->setMeanAndDeviation(oldMean, oldDeviation);
+						}
+					}
+					else
+					{
+						m_stochast->setDistributionType(DistributionTypeConverter::getNativeDistributionType(distributionType));
 					}
 				}
 
