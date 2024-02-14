@@ -58,27 +58,12 @@ namespace Deltares
 				}
 
 				/**
-				 * \brief Sets the distribution type while maintaining the mean and deviation
-				 * \param distributionType 
+				 * \brief Sets the distribution type and maintains the mean and deviation for some distributions
+				 * \param distributionType
 				 */
-				void SetDistributionType(Wrappers::DistributionType distributionType, bool keepMeanAndDeviation)
+				void SetDistributionType(Wrappers::DistributionType distributionType)
 				{
-					if (keepMeanAndDeviation) 
-					{
-						double oldMean = m_stochast->getMean();
-						double oldDeviation = m_stochast->getDistributionType() == Deterministic ? m_stochast->getProperties()->Scale : m_stochast->getDeviation();
-
-						m_stochast->setDistributionType(DistributionTypeConverter::getNativeDistributionType(distributionType));
-
-						if (oldMean != 0 || oldDeviation != 0)
-						{
-							m_stochast->setMeanAndDeviation(oldMean, oldDeviation);
-						}
-					}
-					else
-					{
-						m_stochast->setDistributionType(DistributionTypeConverter::getNativeDistributionType(distributionType));
-					}
+					m_stochast->setDistributionType(DistributionTypeConverter::getNativeDistributionType(distributionType));
 				}
 
 				virtual bool IsValid()
@@ -263,7 +248,7 @@ namespace Deltares
 				property VariableStochastValueSet^ ValueSet
 				{
 					VariableStochastValueSet^ get() { return valueSet; }
-					void set (VariableStochastValueSet^ value) { this->valueSet = value; }
+					void set(VariableStochastValueSet^ value) { this->valueSet = value; }
 				}
 
 				property Stochast^ VariableSource
@@ -276,11 +261,11 @@ namespace Deltares
 				{
 					updateStochast();
 
-					if (this->IsVariableStochast) 
+					if (this->IsVariableStochast)
 					{
 						m_stochast->ValueSet = this->ValueSet->GetValue();
 
-						if (this->VariableSource != nullptr) 
+						if (this->VariableSource != nullptr)
 						{
 							m_stochast->VariableSource = this->VariableSource->GetStochast();
 						}

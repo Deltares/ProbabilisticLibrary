@@ -22,7 +22,6 @@ namespace Deltares
 			bool inverted = false;
 			bool truncated = false;
 
-			void updateDistribution();
 		protected:
 			std::shared_ptr<Distribution> distribution = std::make_shared<DeterministicDistribution>();
 

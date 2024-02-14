@@ -338,7 +338,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
             Assert.AreEqual(stochast.Deviation, newStochast.Deviation, margin);
 
             newStochast = new Stochast { Mean = stochast.Mean, Deviation = stochast.Deviation };
-            newStochast.SetDistributionType(stochast.DistributionType, true);
+            newStochast.SetDistributionType(stochast.DistributionType);
             Assert.AreEqual(stochast.Mean, newStochast.Mean, margin);
             Assert.AreEqual(stochast.Deviation, newStochast.Deviation, margin);
         }

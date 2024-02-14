@@ -21,11 +21,6 @@ namespace Deltares
 			this->properties = properties;
 		}
 
-		void Stochast::updateDistribution()
-		{
-			this->distribution =  DistributionLibrary::getDistribution(this->distributionType, truncated, inverted);
-		}
-
 		double Stochast::getPDF(double x)
 		{
 			return this->distribution->getPDF(properties, x);
@@ -60,8 +55,16 @@ namespace Deltares
 
 		void Stochast::setDistributionType(DistributionType distributionType)
 		{
+			double oldMean = this->getMean();
+			double oldDeviation = this->getDistributionType() == Deterministic ? this->getProperties()->Scale : this->getDeviation();
+
 			this->distributionType = distributionType;
-			Stochast::updateDistribution();
+			this->distribution = DistributionLibrary::getDistribution(this->distributionType, truncated, inverted);
+
+			if ((oldMean != 0 || oldDeviation != 0) && this->distribution->maintainMeanAndDeviation(this->properties))
+			{
+				this->setMeanAndDeviation(oldMean, oldDeviation);
+			}
 		}
 
 		DistributionType Stochast::getDistributionType()
@@ -82,7 +85,7 @@ namespace Deltares
 		void Stochast::setInverted(bool inverted)
 		{
 			this->inverted = inverted;
-			updateDistribution();
+			this->distribution = DistributionLibrary::getDistribution(this->distributionType, truncated, inverted);
 		}
 
 		bool Stochast::canTruncate()
@@ -98,7 +101,7 @@ namespace Deltares
 		void Stochast::setTruncated(bool truncated)
 		{
 			this->truncated = truncated;
-			updateDistribution();
+			this->distribution = DistributionLibrary::getDistribution(this->distributionType, truncated, inverted);
 		}
 
 		bool Stochast::isVarying()

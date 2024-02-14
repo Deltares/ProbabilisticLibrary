@@ -22,6 +22,7 @@ namespace Deltares
 			virtual double getRepresentativeU(std::shared_ptr<StochastProperties> stochast, double u) { return u; }
 			virtual double getMean(std::shared_ptr<StochastProperties> stochast) { return 0; }
 			virtual double getDeviation(std::shared_ptr<StochastProperties> stochast) { return 0; }
+			virtual bool maintainMeanAndDeviation(std::shared_ptr<StochastProperties> stochast) { return true; }
 			virtual void setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation) {}
 			virtual void setShift(std::shared_ptr<StochastProperties> stochast, double shift, bool inverted) { stochast->Shift = shift; }
 			virtual void initializeForRun(std::shared_ptr<StochastProperties> stochast) {}
