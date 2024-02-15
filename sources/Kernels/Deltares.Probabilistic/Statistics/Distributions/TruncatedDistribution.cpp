@@ -3,6 +3,7 @@
 #include <cmath>
 
 #include "../StandardNormal.h"
+#include "../../Math/NumericSupport.h"
 
 namespace Deltares
 {
@@ -115,7 +116,18 @@ namespace Deltares
 			}
 			else
 			{
-				return this->innerDistribution->getXFromU(stochast, getUntruncatedU(u, stochast));
+				double x = this->innerDistribution->getXFromU(stochast, getUntruncatedU(u, stochast));
+
+				if (!isinf(stochast->Maximum) && !isnan(stochast->Maximum) && x > stochast->Maximum)
+				{
+					x = stochast->Maximum;
+				}
+				else if (!isinf(stochast->Minimum) && !isnan(stochast->Minimum) && x < stochast->Minimum)
+				{
+					x = stochast->Minimum;
+				}
+
+				return x;
 			}
 		}
 
@@ -235,5 +247,37 @@ namespace Deltares
 			//}
 		}
 
+		std::vector<double> TruncatedDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)
+		{
+			std::vector<double> specialPoints;
+
+			const bool hasMinimum = !isnan(stochast->Minimum) && !isinf(stochast->Minimum);
+			const bool hasMaximum = !isnan(stochast->Maximum) && !isinf(stochast->Maximum);
+
+			if (hasMinimum)
+			{
+				specialPoints.push_back(stochast->Minimum + Numeric::NumericSupport::getFraction(stochast->Minimum, -0.1));
+				specialPoints.push_back(stochast->Minimum + Numeric::NumericSupport::getFraction(stochast->Minimum, -0.000001));
+				specialPoints.push_back(stochast->Minimum);
+			}
+
+			std::vector<double> innerPoints = this->innerDistribution->getSpecialPoints(stochast);
+
+			for (double x : innerPoints) 
+			{
+				if ((!hasMinimum || x > stochast->Minimum) && (!hasMaximum || x < stochast->Maximum)) 
+				{
+					specialPoints.push_back(x);
+				}
+			}
+
+			if (hasMaximum)
+			{
+				specialPoints.push_back(stochast->Maximum);
+				specialPoints.push_back(stochast->Maximum + Numeric::NumericSupport::getFraction(stochast->Maximum, 0.1));
+			}
+
+			return specialPoints;
+		}
 	}
 }

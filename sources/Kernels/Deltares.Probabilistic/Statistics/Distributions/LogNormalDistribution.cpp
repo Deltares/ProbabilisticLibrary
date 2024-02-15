@@ -236,6 +236,12 @@ namespace Deltares
 			stochast->Location = Numeric::NumericSupport::getMean(xLog);
 			stochast->Scale = Numeric::NumericSupport::getStandardDeviation(stochast->Location, xLog);
 		}
+
+		std::vector<double> LogNormalDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)
+		{
+			std::vector<double> specialPoints {stochast->Shift};
+			return specialPoints;
+		}
 	}
 }
 

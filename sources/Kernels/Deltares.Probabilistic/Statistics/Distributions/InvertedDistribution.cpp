@@ -86,6 +86,13 @@ namespace Deltares
 		{
 			return this->innerDistribution->isValid(stochast);
 		}
+
+		std::vector<double> InvertedDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)
+		{
+			std::vector<double> specialPoints = this->innerDistribution->getSpecialPoints(stochast);
+
+			return Numeric::NumericSupport::select(specialPoints, [this, stochast](double x) {return this->getInvertedValue(stochast, x); });
+		}
 	}
 }
 

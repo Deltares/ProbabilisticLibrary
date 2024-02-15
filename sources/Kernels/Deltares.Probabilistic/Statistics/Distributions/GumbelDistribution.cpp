@@ -133,6 +133,12 @@ namespace Deltares
 
 			stochast->Shift = -stochast->Scale * log(sum / values.size());
 		}
+
+		std::vector<double> GumbelDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)
+		{
+			std::vector<double> specialPoints{ stochast->Shift };
+			return specialPoints;
+		}
 	}
 }
 

@@ -240,9 +240,14 @@ namespace Deltares
 
 				virtual void Fit(array<double>^ values)
 				{
-					std::vector<double> nativaValues = NativeSupport::toNative(values);
+					std::vector<double> nativeValues = NativeSupport::toNative(values);
 
-					shared->object->fit(nativaValues);
+					shared->object->fit(nativeValues);
+				}
+
+				virtual array<double>^ GetSpecialXValues()
+				{
+					return NativeSupport::toManaged(shared->object->getSpecialXValues());
 				}
 
 				property VariableStochastValueSet^ ValueSet

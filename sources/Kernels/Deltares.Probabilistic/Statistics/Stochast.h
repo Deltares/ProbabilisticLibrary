@@ -71,6 +71,7 @@ namespace Deltares
 
 			bool canFit();
 			void fit(std::vector<double> values);
+			std::vector<double> getSpecialXValues();
 
 			bool isValid();
 

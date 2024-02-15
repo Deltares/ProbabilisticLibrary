@@ -141,20 +141,42 @@ namespace Deltares
 
         double StandardNormal::getPFromU(double u)
         {
-            double p = 0; double q = 0; double pdf = 0;
+            if (u <= -UMax)
+            {
+                return 0;
+            }
+            else if (u >= UMax)
+            {
+                return 1;
+            }
+            else 
+            {
+                double p = 0; double q = 0; double pdf = 0;
 
-            normp(u, p, q, pdf);
+                normp(u, p, q, pdf);
 
-            return p;
+                return p;
+            }
         }
 
         double StandardNormal::getQFromU(double u)
         {
-            double p = 0; double q = 0; double pdf = 0;
+            if (u <= -UMax)
+            {
+                return 1;
+            }
+            else if (u >= UMax)
+            {
+                return 0;
+            }
+            else
+            {
+                double p = 0; double q = 0; double pdf = 0;
 
-            normp(u, p, q, pdf);
+                normp(u, p, q, pdf);
 
-            return q;
+                return q;
+            }
         }
 
         double StandardNormal::getUFromP(const double p)

@@ -1,6 +1,7 @@
 #include "UniformDistribution.h"
 #include "../StandardNormal.h"
 #include "../StochastProperties.h"
+#include "../../Math/NumericSupport.h"
 
 #include <cmath>
 
@@ -136,6 +137,19 @@ namespace Deltares
 			stochast->Maximum = max + add;
 		}
 
+		std::vector<double> UniformDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)
+		{
+			std::vector<double> specialPoints;
+
+			specialPoints.push_back(stochast->Minimum + Numeric::NumericSupport::getFraction(stochast->Minimum, -0.1));
+			specialPoints.push_back(stochast->Minimum + Numeric::NumericSupport::getFraction(stochast->Minimum, -0.000001));
+			specialPoints.push_back(stochast->Minimum);
+			specialPoints.push_back(stochast->Maximum);
+			specialPoints.push_back(stochast->Minimum + Numeric::NumericSupport::getFraction(stochast->Maximum, 0.000001));
+			specialPoints.push_back(stochast->Minimum + Numeric::NumericSupport::getFraction(stochast->Maximum, 0.1));
+
+			return specialPoints;
+		}
 	}
 }
 

@@ -176,6 +176,11 @@ namespace Deltares
 			distribution->fit(properties, values);
 		}
 
+		std::vector<double> Stochast::getSpecialXValues()
+		{
+			return distribution->getSpecialPoints(properties);
+		}
+
 	}
 }
 
