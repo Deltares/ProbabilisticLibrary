@@ -53,8 +53,8 @@ std::shared_ptr <Stochast> createDistribution::create(const EnumDistributions di
     if (truncated)
     {
         s->setTruncated(true);
-        s->Minimum = truncatedMin;
-        s->Maximum = truncatedMax;
+        s->getProperties()->Minimum = truncatedMin;
+        s->getProperties()->Maximum = truncatedMax;
     }
 
     return s;
