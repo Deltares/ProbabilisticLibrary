@@ -175,6 +175,15 @@ namespace Deltares
 
 		double TruncatedDistribution::getCDF(std::shared_ptr<StochastProperties> stochast, double x)
 		{
+			if (x < stochast->Minimum)
+			{
+				return 0;
+			}
+			else if (x > stochast->Maximum)
+			{
+				return 1;
+			}
+
 			double u = this->getUFromX(stochast, x);
 
 			return StandardNormal::getPFromU(u);

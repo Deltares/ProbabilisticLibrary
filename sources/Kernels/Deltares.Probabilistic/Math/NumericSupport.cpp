@@ -293,6 +293,10 @@ namespace Deltares
 			{
 				return maxY;
 			}
+			else if (isinf(x))
+			{
+				return x;
+			}
 			else
 			{
 				const double xFraction = (x - minX) / (maxX - minX);
