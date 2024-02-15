@@ -247,6 +247,20 @@ namespace Deltares
 			//}
 		}
 
+		double TruncatedDistribution::getLogLikelihood(std::shared_ptr<StochastProperties> stochast, double x)
+		{
+			Truncated truncated = getTruncatedValue(stochast);
+
+			if (truncated.Factor == 0 || isinf(truncated.Factor) || isnan(truncated.Factor))
+			{
+				return nan("");
+			}
+			else
+			{
+				return log(truncated.Factor) + this->innerDistribution->getLogLikelihood(stochast, x);
+			}
+		}
+
 		std::vector<double> TruncatedDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)
 		{
 			std::vector<double> specialPoints;

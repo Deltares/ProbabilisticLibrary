@@ -68,6 +68,17 @@ namespace Deltares
 			stochast->Location = x - u * stochast->Scale;
 		}
 
+		double NormalDistribution::getLogLikelihood(std::shared_ptr<StochastProperties> stochast, double x)
+		{
+			double x0 = x - stochast->Location;
+			double sigma = stochast->Scale;
+
+			double normalFactor = 1 / (sigma * sqrt(2 * std::numbers::pi));
+			double distance = -x0 * x0 / (2 * sigma * sigma);
+
+			return log(normalFactor) + distance;
+		}
+
 		void NormalDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values)
 		{
 			stochast->Location = Numeric::NumericSupport::getMean(values);

@@ -23,6 +23,7 @@ namespace Deltares
 			void setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType) override;
 			bool canFit() override { return true; }
 			void fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values) override;
+			double getLogLikelihood(std::shared_ptr<StochastProperties> stochast, double x) override;
 			std::vector<double> getSpecialPoints(std::shared_ptr<StochastProperties> stochast) override;
 		};
 	}

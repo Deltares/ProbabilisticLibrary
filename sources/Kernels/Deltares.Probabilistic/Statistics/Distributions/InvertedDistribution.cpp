@@ -87,6 +87,13 @@ namespace Deltares
 			return this->innerDistribution->isValid(stochast);
 		}
 
+		double InvertedDistribution::getLogLikelihood(std::shared_ptr<StochastProperties> stochast, double x)
+		{
+			double xInvert = this->getInvertedValue(stochast, x);
+
+			return this->innerDistribution->getLogLikelihood(stochast, xInvert);
+		}
+
 		std::vector<double> InvertedDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)
 		{
 			std::vector<double> specialPoints = this->innerDistribution->getSpecialPoints(stochast);

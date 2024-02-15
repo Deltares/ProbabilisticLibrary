@@ -49,6 +49,11 @@ namespace Deltares
 				throw std::exception("Constant type not supported");
 			}
 		}
+
+		double Distribution::getLogLikelihood(std::shared_ptr<StochastProperties> stochast, double x)
+		{
+			return log(this->getPDF(stochast, x));
+		}
 	}
 }
 

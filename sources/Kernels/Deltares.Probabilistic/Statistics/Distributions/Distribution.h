@@ -31,6 +31,7 @@ namespace Deltares
 			virtual void setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType) {}
 			virtual void fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values) { }
 			virtual bool isValid(std::shared_ptr<StochastProperties> stochast) { return true; }
+			virtual double getLogLikelihood(std::shared_ptr<StochastProperties> stochast, double x);
 			virtual std::vector<double> getSpecialPoints(std::shared_ptr<StochastProperties> stochast) { return std::vector<double>(0); }
 		protected:
 			virtual void setXAtUByIteration(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType);
