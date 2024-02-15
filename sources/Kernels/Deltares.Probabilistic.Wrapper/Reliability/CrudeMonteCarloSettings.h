@@ -17,33 +17,31 @@ namespace Deltares
 			public ref class CrudeMonteCarloSettings
 			{
 			private:
-				Reliability::CrudeMonteCarloSettings* settings;
-				SharedPointerProvider<Reliability::CrudeMonteCarloSettings>* sharedPointer = new SharedPointerProvider<Reliability::CrudeMonteCarloSettings>();
+				SharedPointerProvider<Reliability::CrudeMonteCarloSettings>* shared = new SharedPointerProvider(new Reliability::CrudeMonteCarloSettings());
 			public:
 				CrudeMonteCarloSettings()
 				{
-					settings = new Reliability::CrudeMonteCarloSettings();
-					settings->randomSettings = RandomSettings->GetSettings();
+					shared->object->randomSettings = RandomSettings->GetSettings();
 				}
 				~CrudeMonteCarloSettings() { this->!CrudeMonteCarloSettings(); }
-				!CrudeMonteCarloSettings() { delete sharedPointer; }
+				!CrudeMonteCarloSettings() { delete shared; }
 
 				property int MinimumSamples
 				{
-					int get() { return settings->MinimumSamples; }
-					void set(int value) { settings->MinimumSamples = value; }
+					int get() { return shared->object->MinimumSamples; }
+					void set(int value) { shared->object->MinimumSamples = value; }
 				}
 
 				property int MaximumSamples
 				{
-					int get() { return settings->MaximumSamples; }
-					void set(int value) { settings->MaximumSamples = value; }
+					int get() { return shared->object->MaximumSamples; }
+					void set(int value) { shared->object->MaximumSamples = value; }
 				}
 
 				property double VariationCoefficient
 				{
-					double get() { return settings->VariationCoefficient; }
-					void set(double value) { settings->VariationCoefficient = value; }
+					double get() { return shared->object->VariationCoefficient; }
+					void set(double value) { shared->object->VariationCoefficient = value; }
 				}
 
 				Wrappers::RandomSettings^ RandomSettings = gcnew Wrappers::RandomSettings();
@@ -52,15 +50,13 @@ namespace Deltares
 
 				std::shared_ptr<Reliability::CrudeMonteCarloSettings> GetSettings()
 				{
-					std::shared_ptr<Reliability::CrudeMonteCarloSettings> m_settings = sharedPointer->getSharedPointer(settings);
-
-					m_settings->StochastSet->StochastSettings.clear();
+					shared->object->StochastSet->StochastSettings.clear();
 					for (int i = 0; i < StochastSettings->Count; i++)
 					{
-						m_settings->StochastSet->StochastSettings.push_back(StochastSettings[i]->GetSettings());
+						shared->object->StochastSet->StochastSettings.push_back(StochastSettings[i]->GetSettings());
 					}
 
-					return m_settings;
+					return shared->object;
 				}
 			};
 		}

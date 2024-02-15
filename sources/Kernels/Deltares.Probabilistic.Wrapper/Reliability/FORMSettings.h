@@ -17,38 +17,34 @@ namespace Deltares
 			public ref class FORMSettings
 			{
 			private:
-				Reliability::FORMSettings* settings;
-				SharedPointerProvider<Reliability::FORMSettings>* sharedPointer = new SharedPointerProvider<Reliability::FORMSettings>();
+				SharedPointerProvider<Reliability::FORMSettings>* shared = new SharedPointerProvider(new Reliability::FORMSettings());
 			public:
-				FORMSettings()
-				{
-					settings = new Reliability::FORMSettings();
-				}
+				FORMSettings() {}
 				~FORMSettings() { this->!FORMSettings(); }
-				!FORMSettings() { delete sharedPointer; }
+				!FORMSettings() { delete shared; }
 
 				property int MaximumIterations
 				{
-					int get() { return settings->MaximumIterations; }
-					void set(int value) { settings->MaximumIterations = value; }
+					int get() { return shared->object->MaximumIterations; }
+					void set(int value) { shared->object->MaximumIterations = value; }
 				}
 
 				property int RelaxationLoops
 				{
-					int get() { return settings->RelaxationLoops; }
-					void set(int value) { settings->RelaxationLoops = value; }
+					int get() { return shared->object->RelaxationLoops; }
+					void set(int value) { shared->object->RelaxationLoops = value; }
 				}
 
 				property double RelaxationFactor
 				{
-					double get() { return settings->RelaxationFactor; }
-					void set(double value) { settings->RelaxationFactor = value; }
+					double get() { return shared->object->RelaxationFactor; }
+					void set(double value) { shared->object->RelaxationFactor = value; }
 				}
 
 				property double EpsilonBeta
 				{
-					double get() { return settings->EpsilonBeta; }
-					void set(double value) { settings->EpsilonBeta = value; }
+					double get() { return shared->object->EpsilonBeta; }
+					void set(double value) { shared->object->EpsilonBeta = value; }
 				}
 
 				StartPointCalculatorSettings^ StartPointCalculatorSettings = gcnew Wrappers::StartPointCalculatorSettings();
@@ -59,20 +55,18 @@ namespace Deltares
 
 				std::shared_ptr<Reliability::FORMSettings> GetSettings()
 				{
-					std::shared_ptr<Reliability::FORMSettings> m_settings = sharedPointer->getSharedPointer(settings);
-
-					m_settings->StochastSet->StochastSettings.clear();
+					shared->object->StochastSet->StochastSettings.clear();
 					for (int i = 0; i < StochastSettings->Count; i++)
 					{
-						m_settings->StochastSet->StochastSettings.push_back(StochastSettings[i]->GetSettings());
+						shared->object->StochastSet->StochastSettings.push_back(StochastSettings[i]->GetSettings());
 					}
 
-					m_settings->StartPointSettings = StartPointCalculatorSettings->GetSettings();
-					m_settings->StartPointSettings->StochastSet = settings->StochastSet;
+					shared->object->StartPointSettings = StartPointCalculatorSettings->GetSettings();
+					shared->object->StartPointSettings->StochastSet = shared->object->StochastSet;
 
-					m_settings->GradientSettings = GradientCalculatorSettings->GetSettings();
+					shared->object->GradientSettings = GradientCalculatorSettings->GetSettings();
 
-					return m_settings;
+					return shared->object;
 				}
 			};
 		}

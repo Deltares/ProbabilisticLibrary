@@ -15,33 +15,32 @@ namespace Deltares
 			public ref class StochastPoint
 			{
 			private:
-				Models::StochastPoint* m_stochastPoint;
-				SharedPointerProvider<Models::StochastPoint>* sharedPointer = new SharedPointerProvider<Models::StochastPoint>();
+				SharedPointerProvider<Models::StochastPoint>* shared = nullptr;
 
 				System::Collections::Generic::List<StochastPointAlpha^>^ alphas = gcnew System::Collections::Generic::List<StochastPointAlpha^>();
 
 			protected:
 
-				void SetStochastPoint(std::shared_ptr<Models::StochastPoint> stochastPoint, System::Collections::Generic::List<Statistics::Wrappers::Stochast^>^ stochasts);
+				void setStochastPoint(std::shared_ptr<Models::StochastPoint> stochastPoint, System::Collections::Generic::List<Statistics::Wrappers::Stochast^>^ stochasts);
 
 			public:
 				StochastPoint()
 				{
-					m_stochastPoint = new Models::StochastPoint();
-					sharedPointer->setSharedPointer(m_stochastPoint);
+					shared = new SharedPointerProvider(new Models::StochastPoint());
 				}
+
 				StochastPoint(std::shared_ptr<Models::StochastPoint> stochastPoint)
 				{
-					m_stochastPoint = stochastPoint.get();
-					sharedPointer->setSharedPointer(stochastPoint);
+					shared = new SharedPointerProvider(stochastPoint);
 				}
+
 				~StochastPoint() { this->!StochastPoint(); }
-				!StochastPoint() { delete sharedPointer;	}
+				!StochastPoint() { delete shared;	}
 
 				property double Beta
 				{
-					double get() { return m_stochastPoint->Beta; }
-					void set(double value) { m_stochastPoint->Beta = value; }
+					double get() { return shared->object->Beta; }
+					void set(double value) { shared->object->Beta = value; }
 				}
 
 				property System::Collections::Generic::List<StochastPointAlpha^>^ Alphas

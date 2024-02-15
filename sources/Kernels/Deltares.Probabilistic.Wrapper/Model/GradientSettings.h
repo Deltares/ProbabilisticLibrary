@@ -20,28 +20,23 @@ namespace Deltares
 			public ref class GradientSettings
 			{
 			private:
-				Models::GradientSettings* m_settings;
-				Utils::Wrappers::SharedPointerProvider<Models::GradientSettings>* sharedPointer;
+				Utils::Wrappers::SharedPointerProvider<Models::GradientSettings>* shared = new Utils::Wrappers::SharedPointerProvider<Models::GradientSettings>(new Models::GradientSettings());
 			public:
-				GradientSettings()
-				{
-					m_settings = new Models::GradientSettings();
-					sharedPointer = new Utils::Wrappers::SharedPointerProvider<Models::GradientSettings>();
-				}
+				GradientSettings() {}
 				~GradientSettings() { this->!GradientSettings(); }
-				!GradientSettings() { delete sharedPointer; }
+				!GradientSettings() { delete shared; }
 
 				property double StepSize
 				{
-					double get() { return m_settings->StepSize; }
-					void set(double value) { m_settings->StepSize = value; }
+					double get() { return shared->object->StepSize; }
+					void set(double value) { shared->object->StepSize = value; }
 				}
 
 				property Wrappers::GradientType GradientType
 				{
 					Wrappers::GradientType get()
 					{
-						switch (m_settings->GradientType)
+						switch (shared->object->GradientType)
 						{
 						case Deltares::Models::GradientType::OneDirection: return Wrappers::GradientType::OneDirection;
 						case Deltares::Models::GradientType::TwoDirections: return Wrappers::GradientType::TwoDirections;
@@ -52,8 +47,8 @@ namespace Deltares
 					{
 						switch (value)
 						{
-						case Wrappers::GradientType::OneDirection: m_settings->GradientType = Models::GradientType::OneDirection; break;
-						case Wrappers::GradientType::TwoDirections: m_settings->GradientType = Models::GradientType::TwoDirections; break;
+						case Wrappers::GradientType::OneDirection: shared->object->GradientType = Models::GradientType::OneDirection; break;
+						case Wrappers::GradientType::TwoDirections: shared->object->GradientType = Models::GradientType::TwoDirections; break;
 						default: throw gcnew System::NotSupportedException("gradient type");
 						}
 					}
@@ -61,7 +56,7 @@ namespace Deltares
 
 				std::shared_ptr<Models::GradientSettings> GetSettings()
 				{
-					return sharedPointer->getSharedPointer(m_settings);
+					return shared->object;
 				}
 			};
 		}

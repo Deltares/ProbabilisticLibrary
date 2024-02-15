@@ -23,8 +23,7 @@ namespace Deltares
 			public ref class ModelRunner
 			{
 			private:
-				Models::ModelRunner* modelRunner;
-				SharedPointerProvider<Models::ModelRunner>* sharedPointer = new SharedPointerProvider<Models::ModelRunner>();
+				SharedPointerProvider<Models::ModelRunner>* shared = nullptr;
 
 				std::shared_ptr<Models::ZModel> getZModel();
 				Models::ZLambda getZLambda();
@@ -48,7 +47,7 @@ namespace Deltares
 					{
 						handles[i].Free();
 					}
-					delete sharedPointer;
+					delete shared;
 				}
 
 				System::Collections::Generic::List<Stochast^>^ Stochasts = gcnew System::Collections::Generic::List<Stochast^>();
@@ -60,10 +59,8 @@ namespace Deltares
 
 				std::shared_ptr<Models::ModelRunner> GetModelRunner()
 				{
-					std::shared_ptr<Models::ModelRunner> m_modelRunner = sharedPointer->getSharedPointer(modelRunner);
-
-					m_modelRunner->Settings = this->Settings->GetSettings();
-					return m_modelRunner;
+					shared->object->Settings = this->Settings->GetSettings();
+					return shared->object;
 				}
 			};
 		}

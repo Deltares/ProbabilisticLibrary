@@ -16,22 +16,16 @@ namespace Deltares
 			public ref class DirectionalSampling : public ReliabilityMethod
 			{
 			private:
-				Reliability::DirectionalSampling* directionalSampling;
-				SharedPointerProvider<Reliability::DirectionalSampling>* sharedPointer = new SharedPointerProvider<Reliability::DirectionalSampling>();
+				SharedPointerProvider<Reliability::DirectionalSampling>* shared = new SharedPointerProvider(new Reliability::DirectionalSampling());
 			public:
-				DirectionalSampling()
-				{
-					directionalSampling = new Reliability::DirectionalSampling();
-				}
+				DirectionalSampling() {}
 				~DirectionalSampling() { this->!DirectionalSampling(); }
-				!DirectionalSampling() { delete sharedPointer; }
+				!DirectionalSampling() { delete shared; }
 
 				std::shared_ptr<Reliability::ReliabilityMethod> GetReliabilityMethod() override
 				{
-					std::shared_ptr<Reliability::DirectionalSampling> m_directionalSampling = sharedPointer->getSharedPointer(directionalSampling);
-
-					m_directionalSampling->Settings = Settings->GetSettings();
-					return m_directionalSampling;
+					shared->object->Settings = Settings->GetSettings();
+					return shared->object;
 				}
 
 				DirectionalSamplingSettings^ Settings = gcnew DirectionalSamplingSettings();

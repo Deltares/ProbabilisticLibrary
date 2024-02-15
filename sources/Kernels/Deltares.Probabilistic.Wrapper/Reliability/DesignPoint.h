@@ -21,32 +21,32 @@ namespace Deltares
 			public ref class DesignPoint : public Wrappers::StochastPoint
 			{
 			private:
-				Reliability::DesignPoint* m_designPoint;
-				SharedPointerProvider<Reliability::DesignPoint>* sharedPointer = new SharedPointerProvider<Reliability::DesignPoint>();
+				SharedPointerProvider<Reliability::DesignPoint>* shared = new SharedPointerProvider<Reliability::DesignPoint>();
 				ConvergenceReport^ convergenceReport = gcnew Wrappers::ConvergenceReport();
 				System::Collections::Generic::List<Wrappers::ReliabilityResult^>^ reliabilityResults = gcnew System::Collections::Generic::List<ReliabilityResult^>();
 				System::Collections::Generic::List<Wrappers::Evaluation^>^ evaluations = gcnew System::Collections::Generic::List<Wrappers::Evaluation^>();
 				System::Collections::Generic::List<Wrappers::Message^>^ messages = gcnew System::Collections::Generic::List<Wrappers::Message^>();
 				System::Collections::Generic::List<Wrappers::DesignPoint^>^ contributingDesignPoints = gcnew System::Collections::Generic::List<Wrappers::DesignPoint^>();
 
-				void SetDesignPoint(std::shared_ptr<Reliability::DesignPoint> designPoint, System::Collections::Generic::List<Stochast^>^ stochasts);
+				void setDesignPoint(System::Collections::Generic::List<Stochast^>^ stochasts);
 			public:
 				DesignPoint()
 				{
-					std::shared_ptr<Reliability::DesignPoint> designPoint = std::make_shared<Reliability::DesignPoint>();
-					SetDesignPoint(designPoint, gcnew System::Collections::Generic::List<Stochast^>());
+					shared = new SharedPointerProvider(new Reliability::DesignPoint());
+					setDesignPoint(gcnew System::Collections::Generic::List<Stochast^>());
 				}
 				DesignPoint(std::shared_ptr<Reliability::DesignPoint> designPoint, System::Collections::Generic::List<Stochast^>^ stochasts)
 				{
-					SetDesignPoint(designPoint, stochasts);
+					shared = new SharedPointerProvider(designPoint);
+					setDesignPoint(stochasts);
 				}
 				~DesignPoint() { this->!DesignPoint(); }
-				!DesignPoint() { delete sharedPointer; }
+				!DesignPoint() { delete shared; }
 
 				property System::String^ Identifier
 				{
-					System::String^ get() { return NativeSupport::toManaged(m_designPoint->Identifier); }
-					void set (System::String^ value) { m_designPoint->Identifier = NativeSupport::toNative(value); }
+					System::String^ get() { return NativeSupport::toManaged(shared->object->Identifier); }
+					void set (System::String^ value) { shared->object->Identifier = NativeSupport::toNative(value); }
 				}
 
 				property double ProbabilityFailure
@@ -92,7 +92,7 @@ namespace Deltares
 
 				std::shared_ptr<Reliability::DesignPoint> getDesignPoint()
 				{
-					return sharedPointer->getSharedPointer(m_designPoint);
+					return shared->object;
 				}
 			};
 		}

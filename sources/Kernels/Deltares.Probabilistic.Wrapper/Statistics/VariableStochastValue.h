@@ -14,107 +14,103 @@ namespace Deltares
 			public ref class VariableStochastValue : System::IComparable<VariableStochastValue^>
 			{
 			private:
-				Statistics::VariableStochastValue* m_value;
-				SharedPointerProvider<Statistics::VariableStochastValue>* sharedPointer = new SharedPointerProvider<Statistics::VariableStochastValue>();
+				SharedPointerProvider<Statistics::VariableStochastValue>* shared = new SharedPointerProvider(new Statistics::VariableStochastValue());
 			public:
-				VariableStochastValue()
-				{
-					m_value = new Statistics::VariableStochastValue();
-				}
+				VariableStochastValue()	{}
 				~VariableStochastValue() { this->!VariableStochastValue(); }
-				!VariableStochastValue() { delete sharedPointer; }
+				!VariableStochastValue() { delete shared; }
 
 				property double X
 				{
-					double get() { return m_value->X; }
-					void set(double value) { m_value->X = value; }
+					double get() { return shared->object->X; }
+					void set(double value) { shared->object->X = value; }
 				}
 
 				// TODO: Implement mean
 				property double Mean
 				{
-					double get() { return m_value->Stochast->Location; }
-					void set(double value) { m_value->Stochast->Location = value; }
+					double get() { return shared->object->Stochast->Location; }
+					void set(double value) { shared->object->Stochast->Location = value; }
 				}
 
 				// TODO: Implement deviation
 				property double Deviation
 				{
-					double get() { return m_value->Stochast->Scale; }
-					void set(double value) { m_value->Stochast->Scale = value; }
+					double get() { return shared->object->Stochast->Scale; }
+					void set(double value) { shared->object->Stochast->Scale = value; }
 				}
 
 				property double Location
 				{
-					double get() { return m_value->Stochast->Location; }
+					double get() { return shared->object->Stochast->Location; }
 					void set(double value)
 					{
 						// TODO: implement properly
-						if (m_value->Stochast->Scale == 0)
+						if (shared->object->Stochast->Scale == 0)
 						{
-							m_value->Stochast->Location = value;
+							shared->object->Stochast->Location = value;
 						}
 					}
 				}
 
 				property double Scale
 				{
-					double get() { return m_value->Stochast->Scale; }
+					double get() { return shared->object->Stochast->Scale; }
 					void set(double value)
 					{
 						// TODO: implement properly
-						if (m_value->Stochast->Scale == 0)
+						if (shared->object->Stochast->Scale == 0)
 						{
-							m_value->Stochast->Scale = value;
+							shared->object->Stochast->Scale = value;
 						}
 					}
 				}
 
 				property double Shift
 				{
-					double get() { return m_value->Stochast->Shift; }
-					void set(double value) { m_value->Stochast->Shift = value; }
+					double get() { return shared->object->Stochast->Shift; }
+					void set(double value) { shared->object->Stochast->Shift = value; }
 				}
 
 				property double ShiftB
 				{
-					double get() { return m_value->Stochast->ShiftB; }
-					void set(double value) { m_value->Stochast->ShiftB = value; }
+					double get() { return shared->object->Stochast->ShiftB; }
+					void set(double value) { shared->object->Stochast->ShiftB = value; }
 				}
 
 				property double Shape
 				{
-					double get() { return m_value->Stochast->Shape; }
-					void set(double value) { m_value->Stochast->Shape = value; }
+					double get() { return shared->object->Stochast->Shape; }
+					void set(double value) { shared->object->Stochast->Shape = value; }
 				}
 
 				property double ShapeB
 				{
-					double get() { return m_value->Stochast->ShapeB; }
-					void set(double value) { m_value->Stochast->ShapeB = value; }
+					double get() { return shared->object->Stochast->ShapeB; }
+					void set(double value) { shared->object->Stochast->ShapeB = value; }
 				}
 
 				property double Minimum
 				{
-					double get() { return m_value->Stochast->Minimum; }
-					void set(double value) { m_value->Stochast->Minimum = value; }
+					double get() { return shared->object->Stochast->Minimum; }
+					void set(double value) { shared->object->Stochast->Minimum = value; }
 				}
 
 				property double Maximum
 				{
-					double get() { return m_value->Stochast->Maximum; }
-					void set(double value) { m_value->Stochast->Maximum = value; }
+					double get() { return shared->object->Stochast->Maximum; }
+					void set(double value) { shared->object->Stochast->Maximum = value; }
 				}
 
 				property int Observations
 				{
-					int get() { return m_value->Stochast->Observations; }
-					void set(int value) { m_value->Stochast->Observations = value; }
+					int get() { return shared->object->Stochast->Observations; }
+					void set(int value) { shared->object->Stochast->Observations = value; }
 				}
 
 				std::shared_ptr<Statistics::VariableStochastValue> GetValue()
 				{
-					return sharedPointer->getSharedPointer(m_value);
+					return shared->object;
 				}
 
 				virtual int CompareTo(VariableStochastValue^ other)

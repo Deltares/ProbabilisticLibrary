@@ -21,8 +21,7 @@ namespace Deltares
 			public ref class Stochast
 			{
 			private:
-				Statistics::Stochast* m_stochast;
-				Utils::Wrappers::SharedPointerProvider<Statistics::Stochast>* sharedPointer = new Utils::Wrappers::SharedPointerProvider<Statistics::Stochast>();
+				Utils::Wrappers::SharedPointerProvider<Statistics::Stochast>* shared = nullptr;
 
 				System::Collections::Generic::List<DiscreteValue^>^ discreteValues = gcnew System::Collections::Generic::List<DiscreteValue^>();
 				System::Collections::Generic::List<HistogramValue^>^ histogramValues = gcnew System::Collections::Generic::List<HistogramValue^>();
@@ -38,23 +37,24 @@ namespace Deltares
 			public:
 				Stochast()
 				{
-					m_stochast = new Statistics::Stochast();
-					m_stochast->ValueSet = this->ValueSet->GetValue();
+					shared = new Utils::Wrappers::SharedPointerProvider(new Statistics::Stochast());
+					shared->object->ValueSet = this->ValueSet->GetValue();
 				}
 				Stochast(DistributionType distributionType, array<double>^ values)
 				{
 					const Statistics::DistributionType nativeDistributionType = DistributionTypeConverter::getNativeDistributionType(distributionType);
 					std::vector<double> nValues = NativeSupport::toNative(values);
-					m_stochast = new Statistics::Stochast(nativeDistributionType, nValues);
-					m_stochast->ValueSet = this->ValueSet->GetValue();
+
+					shared = new Utils::Wrappers::SharedPointerProvider(new Statistics::Stochast(nativeDistributionType, nValues));
+					shared->object->ValueSet = this->ValueSet->GetValue();
 				}
 				~Stochast() { this->!Stochast(); }
-				!Stochast() { delete sharedPointer; }
+				!Stochast() { delete shared; }
 
 				virtual property Wrappers::DistributionType DistributionType
 				{
-					Wrappers::DistributionType get() { return DistributionTypeConverter::getManagedDistributionType(m_stochast->getDistributionType()); }
-					void set(Wrappers::DistributionType value) { m_stochast->setDistributionType(DistributionTypeConverter::getNativeDistributionType(value)); }
+					Wrappers::DistributionType get() { return DistributionTypeConverter::getManagedDistributionType(shared->object->getDistributionType()); }
+					void set(Wrappers::DistributionType value) { shared->object->setDistributionType(DistributionTypeConverter::getNativeDistributionType(value)); }
 				}
 
 				/**
@@ -63,116 +63,116 @@ namespace Deltares
 				 */
 				void SetDistributionType(Wrappers::DistributionType distributionType)
 				{
-					m_stochast->setDistributionType(DistributionTypeConverter::getNativeDistributionType(distributionType));
+					shared->object->setDistributionType(DistributionTypeConverter::getNativeDistributionType(distributionType));
 				}
 
 				virtual bool IsValid()
 				{
-					return m_stochast->isValid();
+					return shared->object->isValid();
 				}
 
 				virtual bool IsVarying()
 				{
-					return m_stochast->isVarying();
+					return shared->object->isVarying();
 				}
 
 				virtual property bool IsVariableStochast
 				{
-					bool get() { return m_stochast->IsVariableStochast; }
-					void set(bool value) { m_stochast->IsVariableStochast = value; }
+					bool get() { return shared->object->IsVariableStochast; }
+					void set(bool value) { shared->object->IsVariableStochast = value; }
 				}
 
 				virtual property double Mean
 				{
-					double get() { return m_stochast->getMean(); }
-					void set(double value) { m_stochast->setMean(value); }
+					double get() { return shared->object->getMean(); }
+					void set(double value) { shared->object->setMean(value); }
 				}
 
 				virtual property double Deviation
 				{
-					double get() { return m_stochast->getDeviation(); }
-					void set(double value) { m_stochast->setDeviation(value); }
+					double get() { return shared->object->getDeviation(); }
+					void set(double value) { shared->object->setDeviation(value); }
 				}
 
 				virtual property double Location
 				{
-					double get() { return m_stochast->getProperties()->Location; }
-					void set(double value) { m_stochast->getProperties()->Location = value; }
+					double get() { return shared->object->getProperties()->Location; }
+					void set(double value) { shared->object->getProperties()->Location = value; }
 				}
 
 				virtual property double Scale
 				{
-					double get() { return m_stochast->getProperties()->Scale; }
-					void set(double value) { m_stochast->getProperties()->Scale = value; }
+					double get() { return shared->object->getProperties()->Scale; }
+					void set(double value) { shared->object->getProperties()->Scale = value; }
 				}
 
 				virtual property double Shift
 				{
-					double get() { return m_stochast->getProperties()->Shift; }
-					void set(double value) { m_stochast->getProperties()->Shift = value; }
+					double get() { return shared->object->getProperties()->Shift; }
+					void set(double value) { shared->object->getProperties()->Shift = value; }
 				}
 
 				void SetShift(double shift)
 				{
-					m_stochast->setShift(shift);
+					shared->object->setShift(shift);
 				}
 
 				virtual property double ShiftB
 				{
-					double get() { return m_stochast->getProperties()->ShiftB; }
-					void set(double value) { m_stochast->getProperties()->ShiftB = value; }
+					double get() { return shared->object->getProperties()->ShiftB; }
+					void set(double value) { shared->object->getProperties()->ShiftB = value; }
 				}
 
 				virtual property double Shape
 				{
-					double get() { return m_stochast->getProperties()->Shape; }
-					void set(double value) { m_stochast->getProperties()->Shape = value; }
+					double get() { return shared->object->getProperties()->Shape; }
+					void set(double value) { shared->object->getProperties()->Shape = value; }
 				}
 
 				virtual property double ShapeB
 				{
-					double get() { return m_stochast->getProperties()->ShapeB; }
-					void set(double value) { m_stochast->getProperties()->ShapeB = value; }
+					double get() { return shared->object->getProperties()->ShapeB; }
+					void set(double value) { shared->object->getProperties()->ShapeB = value; }
 				}
 
 				virtual property double Minimum
 				{
-					double get() { return m_stochast->getProperties()->Minimum; }
-					void set(double value) { m_stochast->getProperties()->Minimum = value; }
+					double get() { return shared->object->getProperties()->Minimum; }
+					void set(double value) { shared->object->getProperties()->Minimum = value; }
 				}
 
 				virtual property double Maximum
 				{
-					double get() { return m_stochast->getProperties()->Maximum; }
-					void set(double value) { m_stochast->getProperties()->Maximum = value; }
+					double get() { return shared->object->getProperties()->Maximum; }
+					void set(double value) { shared->object->getProperties()->Maximum = value; }
 				}
 
 				property int Observations
 				{
-					int get() { return m_stochast->getProperties()->Observations; }
-					void set(int value) { m_stochast->getProperties()->Observations = value; }
+					int get() { return shared->object->getProperties()->Observations; }
+					void set(int value) { shared->object->getProperties()->Observations = value; }
 				}
 
 				virtual bool CanTruncate()
 				{
-					return m_stochast->canTruncate();
+					return shared->object->canTruncate();
 				}
 
 				virtual property bool Truncated
 				{
-					bool get() { return m_stochast->isTruncated(); }
-					void set(bool value) { m_stochast->setTruncated(value); }
+					bool get() { return shared->object->isTruncated(); }
+					void set(bool value) { shared->object->setTruncated(value); }
 				}
 
 				virtual bool CanInvert()
 				{
-					return m_stochast->canInvert();
+					return shared->object->canInvert();
 				}
 
 				virtual property bool Inverted
 				{
-					bool get() { return m_stochast->isInverted(); }
-					void set(bool value) { m_stochast->setInverted(value); }
+					bool get() { return shared->object->isInverted(); }
+					void set(bool value) { shared->object->setInverted(value); }
 				}
 
 				property System::Collections::Generic::IList<DiscreteValue^>^ DiscreteValues
@@ -192,57 +192,57 @@ namespace Deltares
 
 				virtual double GetPDF(double x)
 				{
-					return m_stochast->getPDF(x);
+					return shared->object->getPDF(x);
 				}
 
 				virtual double GetCDF(double x)
 				{
-					return m_stochast->getCDF(x);
+					return shared->object->getCDF(x);
 				}
 
 				virtual double GetXFromU(double u)
 				{
-					return m_stochast->getXFromU(u);
+					return shared->object->getXFromU(u);
 				}
 
 				virtual double GetXFromUAndSource(double xSource, double u)
 				{
-					return m_stochast->getXFromUAndSource(xSource, u);
+					return shared->object->getXFromUAndSource(xSource, u);
 				}
 
 				virtual double GetXFromP(double p)
 				{
 					double u = Statistics::StandardNormal::getUFromP(p);
-					return m_stochast->getXFromU(u);
+					return shared->object->getXFromU(u);
 				}
 
 				virtual double GetUFromX(double x)
 				{
-					return m_stochast->getUFromX(x);
+					return shared->object->getUFromX(x);
 				}
 
 				virtual void SetXAtU(double x, double u, ConstantParameterType constantType)
 				{
-					m_stochast->setXAtU(x, u, this->getNativeConstantParameterType(constantType));
+					shared->object->setXAtU(x, u, this->getNativeConstantParameterType(constantType));
 				}
 
 				virtual void InitializeForRun()
 				{
 					updateStochast();
 
-					m_stochast->initializeForRun();
+					shared->object->initializeForRun();
 				}
 
 				virtual bool CanFit()
 				{
-					return m_stochast->canFit();
+					return shared->object->canFit();
 				}
 
 				virtual void Fit(array<double>^ values)
 				{
 					std::vector<double> nativaValues = NativeSupport::toNative(values);
 
-					m_stochast->fit(nativaValues);
+					shared->object->fit(nativaValues);
 				}
 
 				property VariableStochastValueSet^ ValueSet
@@ -263,15 +263,15 @@ namespace Deltares
 
 					if (this->IsVariableStochast)
 					{
-						m_stochast->ValueSet = this->ValueSet->GetValue();
+						shared->object->ValueSet = this->ValueSet->GetValue();
 
 						if (this->VariableSource != nullptr)
 						{
-							m_stochast->VariableSource = this->VariableSource->GetStochast();
+							shared->object->VariableSource = this->VariableSource->GetStochast();
 						}
 					}
 
-					return sharedPointer->getSharedPointer(m_stochast);
+					return shared->object;
 				}
 			};
 		}

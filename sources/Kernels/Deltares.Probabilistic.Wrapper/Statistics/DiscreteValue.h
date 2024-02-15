@@ -14,55 +14,47 @@ namespace Deltares
 			public ref class DiscreteValue
 			{
 			private:
-				Statistics::DiscreteValue* m_value;
-				SharedPointerProvider<Statistics::DiscreteValue>* sharedPointer = new SharedPointerProvider<Statistics::DiscreteValue>();
+				SharedPointerProvider<Statistics::DiscreteValue>* shared = new SharedPointerProvider(new Statistics::DiscreteValue());
 
 			public:
 				DiscreteValue()
 				{
-					m_value = new Statistics::DiscreteValue();
-
-					sharedPointer->setSharedPointer(m_value);
 				}
+
 				DiscreteValue(double x, double amount)
 				{
-					m_value = new Statistics::DiscreteValue(x, amount);
-					m_value->X = x;
-					m_value->Amount = amount;
+					shared->object->X = x;
+					shared->object->Amount = amount;
+				}
 
-					sharedPointer->setSharedPointer(m_value);
-				}
 				~DiscreteValue() { this->!DiscreteValue(); }
-				!DiscreteValue()
-				{
-					delete sharedPointer;
-				}
+				!DiscreteValue() { delete shared; }
 
 				property double X
 				{
-					double get() { return sharedPointer->getSharedPointer()->X; }
-					void set(double value) { sharedPointer->getSharedPointer()->X = value; }
+					double get() { return shared->object->X; }
+					void set(double value) { shared->object->X = value; }
 				}
 
 				property double Amount
 				{
-					double get() { return sharedPointer->getSharedPointer()->Amount; }
-					void set(double value) { sharedPointer->getSharedPointer()->Amount = value; }
+					double get() { return shared->object->Amount; }
+					void set(double value) { shared->object->Amount = value; }
 				}
 
 				property double NormalizedAmount
 				{
-					double get() { return sharedPointer->isInitialized() ? sharedPointer->getSharedPointer()->NormalizedAmount : nan(""); }
+					double get() { return shared->object->NormalizedAmount; }
 				}
 
 				property double CumulativeNormalizedAmount
 				{
-					double get() { return sharedPointer->isInitialized() ? sharedPointer->getSharedPointer()->CumulativeNormalizedAmount : nan(""); }
+					double get() { return shared->object->CumulativeNormalizedAmount; }
 				}
 
 				std::shared_ptr<Statistics::DiscreteValue> GetValue()
 				{
-					return sharedPointer->getSharedPointer(m_value);
+					return shared->object;
 				}
 			};
 		}

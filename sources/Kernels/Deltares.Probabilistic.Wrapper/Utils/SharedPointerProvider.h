@@ -11,49 +11,29 @@ namespace Deltares
 		{
 			template <class T>
 
+			/// <summary>
+			/// Holds a smart pointer, which is not possible in a ref class
+			/// </summary>
 			class SharedPointerProvider
 			{
-			private:
-				std::shared_ptr<T> sharedPointer = nullptr;
-
-				static std::vector<std::shared_ptr<T>> inline sharedPointers;
 			public:
-				std::shared_ptr<T> getSharedPointer(T* object)
-				{
-					if (sharedPointer == nullptr)
-					{
-						sharedPointer = std::make_shared<T>(*object);
-						sharedPointers.push_back(sharedPointer);
-					}
 
-					return sharedPointer;
+				SharedPointerProvider() {}
+
+				SharedPointerProvider(T* object)
+				{
+					this->object = std::make_shared<T>(*object);
 				}
 
-				bool isInitialized()
+				SharedPointerProvider(std::shared_ptr<T> object)
 				{
-					return sharedPointer != nullptr;
+					this->object = object;
 				}
 
-				std::shared_ptr<T> getSharedPointer()
-				{
-					return sharedPointer;
-				}
-
-				void setSharedPointer(std::shared_ptr<T> object)
-				{
-					sharedPointer = object;
-				}
-
-				void setSharedPointer(T* object)
-				{
-					sharedPointer = std::make_shared<T>(*object);
-					sharedPointers.push_back(sharedPointer);
-				}
-
-				~SharedPointerProvider()
-				{
-					int k = 1;
-				}
+				/**
+				 * \brief Smart pointer, intended as read only object
+				 */
+				std::shared_ptr<T> object = nullptr;
 			};
 		}
 	}

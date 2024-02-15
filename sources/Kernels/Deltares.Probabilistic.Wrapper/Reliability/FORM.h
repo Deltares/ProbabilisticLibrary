@@ -16,22 +16,16 @@ namespace Deltares
 			public ref class FORM : public ReliabilityMethod
 			{
 			private:
-				Reliability::FORM* form;
-				SharedPointerProvider<Reliability::FORM>* sharedPointer = new SharedPointerProvider<Reliability::FORM>();
+				SharedPointerProvider<Reliability::FORM>* shared = new SharedPointerProvider(new Reliability::FORM());
 			public:
-				FORM()
-				{
-					form = new Reliability::FORM();
-				}
+				FORM() {}
 				~FORM() { this->!FORM(); }
-				!FORM() { delete sharedPointer; }
+				!FORM() { delete shared; }
 
 				std::shared_ptr<Reliability::ReliabilityMethod> GetReliabilityMethod() override
 				{
-					std::shared_ptr<Reliability::FORM> m_form = sharedPointer->getSharedPointer(form);
-
-					m_form->Settings = Settings->GetSettings();
-					return m_form;
+					shared->object->Settings = Settings->GetSettings();
+					return shared->object;
 				}
 
 				FORMSettings^ Settings = gcnew FORMSettings();

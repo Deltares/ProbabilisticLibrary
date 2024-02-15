@@ -36,7 +36,7 @@ namespace Deltares
 
 				Models::ProgressIndicator* progress = progressIndicator != nullptr ? progressIndicator->getProgressIndicator() : nullptr;
 
-				this->modelRunner = new Models::ModelRunner(zModel, uConverter, progress);
+				this->shared = new SharedPointerProvider(new Models::ModelRunner(zModel, uConverter, progress));
 			}
 
 			Models::ZLambda ModelRunner::getZLambda()

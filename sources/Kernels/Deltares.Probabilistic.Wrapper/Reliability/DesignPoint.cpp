@@ -8,40 +8,36 @@ namespace Deltares
 	{
 		namespace Wrappers
 		{
-			void DesignPoint::SetDesignPoint(std::shared_ptr<Reliability::DesignPoint> designPoint, System::Collections::Generic::List<Stochast^>^ stochasts)
+			void DesignPoint::setDesignPoint(System::Collections::Generic::List<Stochast^>^ stochasts)
 			{
-				this->m_designPoint = designPoint.get();
+				setStochastPoint(shared->object, stochasts);
 
-				this->sharedPointer->setSharedPointer(designPoint);
-
-				SetStochastPoint(designPoint, stochasts);
-
-				if (designPoint->convergenceReport != nullptr)
+				if (shared->object->convergenceReport != nullptr)
 				{
-					this->ConvergenceReport = gcnew Wrappers::ConvergenceReport(designPoint->convergenceReport);
+					this->ConvergenceReport = gcnew Wrappers::ConvergenceReport(shared->object->convergenceReport);
 				}
 
-				for (int i = 0; i < designPoint->ReliabililityResults.size(); i++)
+				for (int i = 0; i < shared->object->ReliabililityResults.size(); i++)
 				{
-					Wrappers::ReliabilityResult^ resultWrapper = gcnew Wrappers::ReliabilityResult(designPoint->ReliabililityResults[i]);
+					Wrappers::ReliabilityResult^ resultWrapper = gcnew Wrappers::ReliabilityResult(shared->object->ReliabililityResults[i]);
 					this->ReliabilityResults->Add(resultWrapper);
 				}
 
-				for (int i = 0; i < designPoint->Evaluations.size(); i++)
+				for (int i = 0; i < shared->object->Evaluations.size(); i++)
 				{
-					Wrappers::Evaluation^ evaluationWrapper = gcnew Wrappers::Evaluation(designPoint->Evaluations[i]);
+					Wrappers::Evaluation^ evaluationWrapper = gcnew Wrappers::Evaluation(shared->object->Evaluations[i]);
 					this->Evaluations->Add(evaluationWrapper);
 				}
 
-				for (int i = 0; i < designPoint->Messages.size(); i++)
+				for (int i = 0; i < shared->object->Messages.size(); i++)
 				{
-					Wrappers::Message^ messageWrapper = gcnew Wrappers::Message(designPoint->Messages[i]);
+					Wrappers::Message^ messageWrapper = gcnew Wrappers::Message(shared->object->Messages[i]);
 					this->Messages->Add(messageWrapper);
 				}
 
-				for (int i = 0; i < designPoint->ContributingDesignPoints.size(); i++)
+				for (int i = 0; i < shared->object->ContributingDesignPoints.size(); i++)
 				{
-					DesignPoint^ designPointWrapper = gcnew DesignPoint(designPoint->ContributingDesignPoints[i], stochasts);
+					DesignPoint^ designPointWrapper = gcnew DesignPoint(shared->object->ContributingDesignPoints[i], stochasts);
 					this->ContributingDesignPoints->Add(designPointWrapper);
 				}
 			}

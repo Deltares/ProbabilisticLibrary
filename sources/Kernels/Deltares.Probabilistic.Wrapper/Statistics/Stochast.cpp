@@ -18,7 +18,7 @@ namespace Deltares
 
 			void Stochast::updateStochast()
 			{
-				std::shared_ptr<StochastProperties> properties = m_stochast->getProperties();
+				std::shared_ptr<StochastProperties> properties = shared->object->getProperties();
 
 				properties->DiscreteValues.clear();
 				for (size_t i = 0; i < this->discreteValues->Count; i++)
@@ -38,13 +38,13 @@ namespace Deltares
 					properties->FragilityValues.push_back(fragilityValues[i]->GetValue());
 				}
 
-				m_stochast->ValueSet = this->ValueSet->GetValue();
-				m_stochast->ValueSet->StochastValues.clear();
+				shared->object->ValueSet = this->ValueSet->GetValue();
+				shared->object->ValueSet->StochastValues.clear();
 				if (this->IsVariableStochast)
 				{
 					for (size_t i = 0; i < this->ValueSet->StochastValues->Count; i++)
 					{
-						m_stochast->ValueSet->StochastValues.push_back(this->ValueSet->StochastValues[i]->GetValue());
+						shared->object->ValueSet->StochastValues.push_back(this->ValueSet->StochastValues[i]->GetValue());
 					}
 				}
 			}

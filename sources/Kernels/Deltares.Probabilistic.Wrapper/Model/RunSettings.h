@@ -16,55 +16,54 @@ namespace Deltares
 			public ref class RunSettings
 			{
 			private:
-				Models::RunSettings* m_settings;
-				SharedPointerProvider<Models::RunSettings>* sharedPointer = new SharedPointerProvider<Models::RunSettings>();
+				SharedPointerProvider<Models::RunSettings>* shared = new SharedPointerProvider(new Models::RunSettings());
 
 			public:
-				RunSettings() { m_settings = new Models::RunSettings(); }
+				RunSettings() { }
 				~RunSettings() { this->!RunSettings(); }
-				!RunSettings() { delete sharedPointer; }
+				!RunSettings() { delete shared; }
 
 				property int MaxChunkSize
 				{
-					int get() { return m_settings->MaxChunkSize; }
-					void set(int value) { m_settings->MaxChunkSize = value; }
+					int get() { return shared->object->MaxChunkSize; }
+					void set(int value) { shared->object->MaxChunkSize = value; }
 				}
 
 				property int MaxParallelProcesses
 				{
-					int get() { return m_settings->MaxParallelProcesses; }
-					void set(int value) { m_settings->MaxParallelProcesses = value; }
+					int get() { return shared->object->MaxParallelProcesses; }
+					void set(int value) { shared->object->MaxParallelProcesses = value; }
 				}
 
 				property bool SaveConvergence
 				{
-					bool get() { return m_settings->SaveConvergence; }
-					void set(bool value) { m_settings->SaveConvergence = value; }
+					bool get() { return shared->object->SaveConvergence; }
+					void set(bool value) { shared->object->SaveConvergence = value; }
 				}
 
 				property bool SaveEvaluations
 				{
-					bool get() { return m_settings->SaveEvaluations; }
-					void set(bool value) { m_settings->SaveEvaluations = value; }
+					bool get() { return shared->object->SaveEvaluations; }
+					void set(bool value) { shared->object->SaveEvaluations = value; }
 				}
 
 				property bool SaveMessages
 				{
-					bool get() { return m_settings->SaveMessages; }
-					void set(bool value) { m_settings->SaveMessages = value; }
+					bool get() { return shared->object->SaveMessages; }
+					void set(bool value) { shared->object->SaveMessages = value; }
 				}
 
 				property int MaxMessages
 				{
-					int get() { return m_settings->MaxMessages; }
-					void set(int value) { m_settings->MaxMessages = value; }
+					int get() { return shared->object->MaxMessages; }
+					void set(int value) { shared->object->MaxMessages = value; }
 				}
 
 				property Wrappers::MessageType LowestMessageType
 				{
 					Wrappers::MessageType get()
 					{
-						switch (m_settings->LowestMessageType)
+						switch (shared->object->LowestMessageType)
 						{
 						case Models::Debug: return Wrappers::MessageType::Debug;
 						case Models::Info: return Wrappers::MessageType::Info;
@@ -77,10 +76,10 @@ namespace Deltares
 					{
 						switch (value)
 						{
-						case Wrappers::MessageType::Debug: m_settings->LowestMessageType = Models::MessageType::Debug; break;
-						case Wrappers::MessageType::Info: m_settings->LowestMessageType = Models::MessageType::Info; break;
-						case Wrappers::MessageType::Warning: m_settings->LowestMessageType = Models::MessageType::Warning; break;
-						case Wrappers::MessageType::Error: m_settings->LowestMessageType = Models::MessageType::Error; break;
+						case Wrappers::MessageType::Debug: shared->object->LowestMessageType = Models::MessageType::Debug; break;
+						case Wrappers::MessageType::Info: shared->object->LowestMessageType = Models::MessageType::Info; break;
+						case Wrappers::MessageType::Warning: shared->object->LowestMessageType = Models::MessageType::Warning; break;
+						case Wrappers::MessageType::Error: shared->object->LowestMessageType = Models::MessageType::Error; break;
 						default: throw gcnew System::NotSupportedException("Message type");
 						}
 					}
@@ -88,7 +87,7 @@ namespace Deltares
 
 				std::shared_ptr<Models::RunSettings> GetSettings()
 				{
-					return sharedPointer->getSharedPointer(m_settings);
+					return shared->object;
 				}
 			};
 		}

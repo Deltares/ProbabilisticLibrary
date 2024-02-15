@@ -16,18 +16,14 @@ namespace Deltares
 			public ref class VariableStochastValueSet
 			{
 			private:
-				Statistics::VariableStochastValuesSet* m_value;
-				SharedPointerProvider<Statistics::VariableStochastValuesSet>* sharedPointer = new SharedPointerProvider<Statistics::VariableStochastValuesSet>();
+				SharedPointerProvider<Statistics::VariableStochastValuesSet>* shared = new SharedPointerProvider(new Statistics::VariableStochastValuesSet());
 
 				System::Collections::Generic::List<VariableStochastValue^>^ stochastValues = gcnew System::Collections::Generic::List<VariableStochastValue^>();
 
 			public:
-				VariableStochastValueSet()
-				{
-					m_value = new Statistics::VariableStochastValuesSet();
-				}
+				VariableStochastValueSet() {}
 				~VariableStochastValueSet() { this->!VariableStochastValueSet(); }
-				!VariableStochastValueSet() { delete sharedPointer; }
+				!VariableStochastValueSet() { delete shared; }
 
 				property System::Collections::Generic::List<VariableStochastValue^>^ StochastValues
 				{
@@ -36,19 +32,19 @@ namespace Deltares
 
 				bool IsVarying(Wrappers::DistributionType distributionType)
 				{
-					return m_value->isVarying(DistributionTypeConverter::getNativeDistributionType(distributionType));
+					return shared->object->isVarying(DistributionTypeConverter::getNativeDistributionType(distributionType));
 				}
 
 				std::shared_ptr<Statistics::VariableStochastValuesSet> GetValue()
 				{
-					m_value->StochastValues.clear();
+					shared->object->StochastValues.clear();
 
 					for (int i = 0; i < stochastValues->Count; i++)
 					{
-						m_value->StochastValues.push_back(this->stochastValues[i]->GetValue());
+						shared->object->StochastValues.push_back(this->stochastValues[i]->GetValue());
 					}
 
-					return sharedPointer->getSharedPointer(m_value);
+					return shared->object;
 				}
 			};
 		}

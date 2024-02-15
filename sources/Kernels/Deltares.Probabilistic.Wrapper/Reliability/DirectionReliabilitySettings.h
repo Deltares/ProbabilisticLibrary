@@ -22,45 +22,41 @@ namespace Deltares
 			public ref class DirectionReliabilitySettings
 			{
 			private:
-				Reliability::DirectionReliabilitySettings* m_settings;
-				SharedPointerProvider<Reliability::DirectionReliabilitySettings>* sharedPointer = new SharedPointerProvider<Reliability::DirectionReliabilitySettings>();
+				SharedPointerProvider<Reliability::DirectionReliabilitySettings>* shared = new SharedPointerProvider(new Reliability::DirectionReliabilitySettings());
 			public:
-				DirectionReliabilitySettings()
-				{
-					m_settings = new Reliability::DirectionReliabilitySettings();
-				}
+				DirectionReliabilitySettings() {}
 				~DirectionReliabilitySettings() { this->!DirectionReliabilitySettings(); }
-				!DirectionReliabilitySettings() { delete sharedPointer; }
+				!DirectionReliabilitySettings() { delete shared; }
 
 				property double Dsdu
 				{
-					double get() { return m_settings->Dsdu; }
-					void set(double value) { m_settings->Dsdu = value; }
+					double get() { return shared->object->Dsdu; }
+					void set(double value) { shared->object->Dsdu = value; }
 				}
 
 				property double EpsilonUStepSize
 				{
-					double get() { return m_settings->EpsilonUStepSize; }
-					void set(double value) { m_settings->EpsilonUStepSize = value; }
+					double get() { return shared->object->EpsilonUStepSize; }
+					void set(double value) { shared->object->EpsilonUStepSize = value; }
 				}
 
 				property double EpsilonZStepSize
 				{
-					double get() { return m_settings->EpsilonZStepSize; }
-					void set(double value) { m_settings->EpsilonZStepSize = value; }
+					double get() { return shared->object->EpsilonZStepSize; }
+					void set(double value) { shared->object->EpsilonZStepSize = value; }
 				}
 
 				property int MaximumIterations
 				{
-					int get() { return m_settings->MaximumIterations; }
-					void set(int value) { m_settings->MaximumIterations = value; }
+					int get() { return shared->object->MaximumIterations; }
+					void set(int value) { shared->object->MaximumIterations = value; }
 				}
 
 				property Wrappers::VaryingType ModelVaryingType
 				{
 					Wrappers::VaryingType get()
 					{
-						switch (m_settings->modelVaryingType)
+						switch (shared->object->modelVaryingType)
 						{
 						case Reliability::Monotone: return Wrappers::VaryingType::Monotone;
 						case Reliability::Varying: return Wrappers::VaryingType::Varying;
@@ -71,8 +67,8 @@ namespace Deltares
 					{
 						switch (value)
 						{
-						case Wrappers::VaryingType::Monotone: m_settings->modelVaryingType = Reliability::Monotone; break;
-						case Wrappers::VaryingType::Varying: m_settings->modelVaryingType = Reliability::Varying; break;
+						case Wrappers::VaryingType::Monotone: shared->object->modelVaryingType = Reliability::Monotone; break;
+						case Wrappers::VaryingType::Varying: shared->object->modelVaryingType = Reliability::Varying; break;
 						default: throw gcnew System::NotSupportedException("Model varying type");
 						}
 					}
@@ -80,12 +76,12 @@ namespace Deltares
 
 				void SetStartPoint(DesignPoint^ designPoint)
 				{
-					m_settings->StochastSet = std::make_shared<Reliability::StochastSettingsSet>(designPoint->getDesignPoint());
+					shared->object->StochastSet = std::make_shared<Reliability::StochastSettingsSet>(designPoint->getDesignPoint());
 				}
 
 				std::shared_ptr<Reliability::DirectionReliabilitySettings> GetSettings()
 				{
-					return sharedPointer->getSharedPointer(m_settings);
+					return shared->object;
 				}
 			};
 		}

@@ -24,40 +24,36 @@ namespace Deltares
 			public ref class StartPointCalculatorSettings
 			{
 			private:
-				Reliability::StartPointCalculatorSettings* settings;
-				SharedPointerProvider<Reliability::StartPointCalculatorSettings>* sharedPointer = new SharedPointerProvider<Reliability::StartPointCalculatorSettings>();
+				SharedPointerProvider<Reliability::StartPointCalculatorSettings>* shared = new SharedPointerProvider(new Reliability::StartPointCalculatorSettings());
 
 			public:
-				StartPointCalculatorSettings()
-				{
-					settings = new Reliability::StartPointCalculatorSettings();
-				}
+				StartPointCalculatorSettings() {}
 				~StartPointCalculatorSettings() { this->!StartPointCalculatorSettings(); }
-				!StartPointCalculatorSettings() { delete sharedPointer; }
+				!StartPointCalculatorSettings() { delete shared; }
 
 				property double MaximumLengthStartPoint
 				{
-					double get() { return settings->MaximumLengthStartPoint; }
-					void set(double value) { settings->MaximumLengthStartPoint = value; }
+					double get() { return shared->object->MaximumLengthStartPoint; }
+					void set(double value) { shared->object->MaximumLengthStartPoint = value; }
 				}
 
 				property double GradientStepSize
 				{
-					double get() { return settings->GradientStepSize; }
-					void set(double value) { settings->GradientStepSize = value; }
+					double get() { return shared->object->GradientStepSize; }
+					void set(double value) { shared->object->GradientStepSize = value; }
 				}
 
 				property double RadiusSphereSearch
 				{
-					double get() { return settings->RadiusSphereSearch; }
-					void set(double value) { settings->RadiusSphereSearch = value; }
+					double get() { return shared->object->RadiusSphereSearch; }
+					void set(double value) { shared->object->RadiusSphereSearch = value; }
 				}
 
 				property Wrappers::StartMethodType StartMethod
 				{
 					Wrappers::StartMethodType get()
 					{
-						switch (settings->StartMethod)
+						switch (shared->object->StartMethod)
 						{
 						case Deltares::Reliability::StartMethodType::None: return Wrappers::StartMethodType::None;
 						case Deltares::Reliability::StartMethodType::RaySearch: return Wrappers::StartMethodType::RaySearch;
@@ -70,10 +66,10 @@ namespace Deltares
 					{
 						switch (value)
 						{
-						case Wrappers::StartMethodType::None: settings->StartMethod = Reliability::None; break;
-						case Wrappers::StartMethodType::RaySearch: settings->StartMethod = Reliability::RaySearch; break;
-						case Wrappers::StartMethodType::SensitivitySearch: settings->StartMethod = Reliability::SensitivitySearch; break;
-						case Wrappers::StartMethodType::SphereSearch: settings->StartMethod = Reliability::SphereSearch; break;
+						case Wrappers::StartMethodType::None: shared->object->StartMethod = Reliability::None; break;
+						case Wrappers::StartMethodType::RaySearch: shared->object->StartMethod = Reliability::RaySearch; break;
+						case Wrappers::StartMethodType::SensitivitySearch: shared->object->StartMethod = Reliability::SensitivitySearch; break;
+						case Wrappers::StartMethodType::SphereSearch: shared->object->StartMethod = Reliability::SphereSearch; break;
 						default: throw gcnew System::NotSupportedException("Start method");
 						}
 					}
@@ -83,15 +79,13 @@ namespace Deltares
 
 				std::shared_ptr<Reliability::StartPointCalculatorSettings> GetSettings()
 				{
-					std::shared_ptr<Reliability::StartPointCalculatorSettings> m_settings = sharedPointer->getSharedPointer(settings);
-
-					m_settings->StochastSet->StochastSettings.clear();
+					shared->object->StochastSet->StochastSettings.clear();
 					for (int i = 0; i < StochastSettings->Count; i++)
 					{
-						m_settings->StochastSet->StochastSettings.push_back(StochastSettings[i]->GetSettings());
+						shared->object->StochastSet->StochastSettings.push_back(StochastSettings[i]->GetSettings());
 					}
 
-					return m_settings;
+					return shared->object;
 				}
 			};
 		}

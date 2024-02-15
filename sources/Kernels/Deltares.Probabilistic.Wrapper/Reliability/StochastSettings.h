@@ -15,59 +15,58 @@ namespace Deltares
 			public ref class StochastSettings
 			{
 			private:
-				Deltares::Reliability::StochastSettings* settings;
-				SharedPointerProvider<Deltares::Reliability::StochastSettings>* sharedPointer = new SharedPointerProvider<Deltares::Reliability::StochastSettings>();
+				SharedPointerProvider<Deltares::Reliability::StochastSettings>* shared = new SharedPointerProvider(new Deltares::Reliability::StochastSettings());
 
 			public:
-				StochastSettings() { settings = new Deltares::Reliability::StochastSettings(); }
+				StochastSettings() {}
 				~StochastSettings() { this->!StochastSettings(); }
-				!StochastSettings() { delete sharedPointer; }
+				!StochastSettings() { delete shared; }
 
 				property double UMin
 				{
-					double get() { return settings->MinValue; }
-					void set(double value) { settings->MinValue = value; }
+					double get() { return shared->object->MinValue; }
+					void set(double value) { shared->object->MinValue = value; }
 				}
 
 				property double UMax
 				{
-					double get() { return settings->MaxValue; }
-					void set(double value) { settings->MaxValue = value; }
+					double get() { return shared->object->MaxValue; }
+					void set(double value) { shared->object->MaxValue = value; }
 				}
 
 				property double StartValue
 				{
-					double get() { return settings->StartValue; }
-					void set(double value) { settings->StartValue = value; }
+					double get() { return shared->object->StartValue; }
+					void set(double value) { shared->object->StartValue = value; }
 				}
 
 				property double VarianceFactor
 				{
-					double get() { return settings->VarianceFactor; }
-					void set(double value) { settings->VarianceFactor = value; }
+					double get() { return shared->object->VarianceFactor; }
+					void set(double value) { shared->object->VarianceFactor = value; }
 				}
 
 				property bool IsVarianceAllowed
 				{
-					bool get() { return settings->IsVarianceAllowed; }
-					void set(bool value) { settings->IsVarianceAllowed = value; }
+					bool get() { return shared->object->IsVarianceAllowed; }
+					void set(bool value) { shared->object->IsVarianceAllowed = value; }
 				}
 
 				property int Intervals
 				{
-					int get() { return settings->Intervals; }
-					void set(int value) { settings->Intervals = value; }
+					int get() { return shared->object->Intervals; }
+					void set(int value) { shared->object->Intervals = value; }
 				}
 
 				property bool IsInitializationAllowed
 				{
-					bool get() { return settings->IsInitializationAllowed; }
-					void set(bool value) { settings->IsInitializationAllowed = value; }
+					bool get() { return shared->object->IsInitializationAllowed; }
+					void set(bool value) { shared->object->IsInitializationAllowed = value; }
 				}
 
 				std::shared_ptr<Reliability::StochastSettings> GetSettings()
 				{
-					return sharedPointer->getSharedPointer(settings);
+					return shared->object;
 				}
 			};
 		}

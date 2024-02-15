@@ -15,39 +15,37 @@ namespace Deltares
 			public ref class RandomSettings
 			{
 			private:
-				Models::RandomSettings* m_settings;
-				SharedPointerProvider<Deltares::Models::RandomSettings>* sharedPointer = new SharedPointerProvider<Deltares::Models::RandomSettings>();
+				SharedPointerProvider<Deltares::Models::RandomSettings>* shared = new SharedPointerProvider(new Deltares::Models::RandomSettings());
 
 			public:
 				RandomSettings()
 				{
-					m_settings = new Deltares::Models::RandomSettings();
 					RandomProvider::initialize();
 				}
 				~RandomSettings() { this->!RandomSettings(); }
-				!RandomSettings() { delete sharedPointer; }
+				!RandomSettings() { delete shared; }
 
 				property int Seed
 				{
-					int get() { return m_settings->Seed; }
-					void set(int value) { m_settings->Seed = value; }
+					int get() { return shared->object->Seed; }
+					void set(int value) { shared->object->Seed = value; }
 				}
 
 				property int SeedB
 				{
-					int get() { return m_settings->SeedB; }
-					void set(int value) { m_settings->SeedB = value; }
+					int get() { return shared->object->SeedB; }
+					void set(int value) { shared->object->SeedB = value; }
 				}
 
 				property bool IsRepeatableRandom
 				{
-					bool get() { return m_settings->IsRepeatableRandom; }
-					void set(bool value) { m_settings->IsRepeatableRandom = value; }
+					bool get() { return shared->object->IsRepeatableRandom; }
+					void set(bool value) { shared->object->IsRepeatableRandom = value; }
 				}
 
 				std::shared_ptr<Models::RandomSettings> GetSettings()
 				{
-					return sharedPointer->getSharedPointer(m_settings);
+					return shared->object;
 				}
 			};
 		}
