@@ -1,5 +1,6 @@
 #include "CorrelationMatrix.h"
 #include <memory>
+#include <algorithm>
 
 namespace Deltares
 {
@@ -72,7 +73,7 @@ namespace Deltares
             choleskyMatrix = matrix.CholeskyDecomposition();
         }
 
-        bool CorrelationMatrix::checkFullyCorrelated(const int j)
+        bool CorrelationMatrix::checkFullyCorrelated(const int j) const
         {
             size_t m1; size_t m2;
             matrix.get_dims(m1, m2);
@@ -152,7 +153,7 @@ namespace Deltares
             return newIndex - 1;
         }
 
-        indexWithCorrelation CorrelationMatrix::findDependent(const int j)
+        indexWithCorrelation CorrelationMatrix::findDependent(const int j) const
         {
             if (indexer.size() > 0)
             {
@@ -169,6 +170,107 @@ namespace Deltares
                 }
             }
             return { -1, -999.0 };
+        }
+
+        bool CorrelationMatrix::IsIdentity() const
+        {
+            size_t m1; size_t m2;
+            matrix.get_dims(m1, m2);
+            for (size_t i = 0; i < m1; i++)
+            {
+                for (size_t j = 0; j < m2; j++)
+                {
+                    if (i == j && matrix(i, j) != 1.0) return false;
+                    if (i != j && matrix(i, j) != 0.0) return false;
+                }
+            }
+            return true;
+        }
+
+        int CorrelationMatrix::CountCorrelations() const
+        {
+            size_t m1; size_t m2;
+            matrix.get_dims(m1, m2);
+            int count = 0;
+            for (size_t i = 0; i < m1; i++)
+            {
+                for (size_t j = i+1; j < m2; j++)
+                {
+                    if (matrix(i, j) != 0.0 || matrix(j, i) != 0.0) count++;
+                }
+            }
+            return count;
+        }
+
+        correlationCheckResult checkFullyCorrelatedB(const size_t i, const std::vector<correlationPair>& pairs)
+        {
+            auto indexes = std::vector<correlationPair>();
+            for (const auto & p : pairs)
+            {
+                if (p.index1 == i)
+                {
+                    indexes.push_back(p);
+                }
+                else if (p.index2 == i)
+                {
+                    indexes.push_back(p);
+                }
+            }
+            if (indexes.size() > 1)
+            {
+                auto ii =  std::vector<int>();
+                double product = 1.0;
+                for (size_t j = 0; j < 2; j++)
+                {
+                    if (indexes[j].index1 == i)
+                    {
+                        ii.push_back(indexes[j].index2);
+                    }
+                    else
+                    {
+                        ii.push_back(indexes[j].index1);
+                    }
+                    product *= indexes[j].correlation;
+                }
+                for (const auto& p : pairs)
+                {
+                    if (std::find(ii.begin(), ii.end(), p.index1) != ii.end() &&
+                        std::find(ii.begin(), ii.end(), p.index2) != ii.end())
+                    {
+                        return (abs(product - p.correlation) < 1e-6 ? correlationCheckResult::OK : correlationCheckResult::inconsistentCorrelation);
+                    }
+                }
+                return correlationCheckResult::missingCorrelation;
+            }
+            return correlationCheckResult::OK;
+        }
+
+        bool CorrelationMatrix::HasConflictingCorrelations() const
+        {
+            auto full = std::vector<correlationPair>();
+            size_t m1; size_t m2;
+            matrix.get_dims(m1, m2);
+            for (size_t i = 0; i < m1; i++)
+            {
+                for (size_t j = 0; j < m2; j++)
+                {
+                    if (i != j && std::abs(matrix(i, j)) == 1.0)
+                    {
+                        correlationPair pair;
+                        pair.index1 = i;
+                        pair.index2 = j;
+                        pair.correlation = matrix(i,j);
+                        full.push_back(pair);
+                    }
+                }
+            }
+            for (size_t i = 0; i < m1; i++)
+            {
+                auto r = checkFullyCorrelatedB(i, full);
+                if (r != correlationCheckResult::OK) return true;
+            }
+
+            return false;
         }
     }
 }

@@ -45,6 +45,31 @@ namespace Deltares
 					shared->object->SetCorrelation(index1, index2, value);
 				}
 
+				double GetCorrelation(const int i, const int j) { return shared->object->GetCorrelation(i, j); }
+
+				double GetCorrelation(Stochast^ stochast1, Stochast^ stochast2)
+				{
+					int index1 = stochasts.IndexOf(stochast1);
+					int index2 = stochasts.IndexOf(stochast2);
+
+					return shared->object->GetCorrelation(index1, index2);
+				}
+
+				bool IsIdentity()
+				{
+					return shared->object->IsIdentity();
+				}
+
+				int CountCorrelations()
+				{
+					return shared->object->CountCorrelations();
+				}
+
+				bool HasConflictingCorrelations()
+				{
+					return shared->object->HasConflictingCorrelations();
+				}
+
 				void ResolveConflictingCorrelations()
 				{
 					shared->object->resolveConflictingCorrelations();
