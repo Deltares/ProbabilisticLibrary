@@ -131,7 +131,7 @@ namespace Deltares
 
 		void Stochast::setMean(double mean)
 		{
-			double deviation = distribution->getDeviation(properties);
+			double deviation = this->getDistributionType() == Deterministic ? this->getProperties()->Scale : this->getDeviation();
 			distribution->setMeanAndDeviation(properties, mean, deviation);
 		}
 
