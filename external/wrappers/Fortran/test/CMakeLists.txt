@@ -83,6 +83,6 @@ add_test(
 add_test(
   NAME fortran-legacy-prob-tests
   COMMAND $<TARGET_FILE:FLunittestprogram> prob 3 2 /s
-  WORKING_DIRECTORY ../external/wrappers/Fortran/test/unitTests
+  WORKING_DIRECTORY ../../external/wrappers/Fortran/test/unitTests
 )
 
