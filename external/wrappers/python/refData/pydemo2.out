@@ -1,0 +1,22 @@
+nr of stochast(s) is: 6
+   stochast 0: aa ; lognormal2: 120.000000 12.000000 0.000000 
+   stochast 1: bb ; lognormal2: 120.000000 12.000000 0.000000 
+   stochast 2: cc ; lognormal2: 120.000000 12.000000 0.000000 
+   stochast 3: dd ; lognormal2: 120.000000 12.000000 0.000000 
+   stochast 4: ee ; lognormal2: 50.000000 15.000000 0.000000 
+   stochast 5: ff ; lognormal2: 40.000000 12.000000 0.000000 
+settings:
+   methode        : cm
+   tol            : 0.001
+   min/max samples: 100000, 100000
+   seed           : gm, 2345, 3456
+no table/design
+CM did NOT converge. Needed 100000 step(s).
+beta =        2.258733; q = 0.01195
+alpha and x values: 
+0       0.011604     119.060910 aa
+1       0.015070     118.958486 bb
+2       0.357257     109.268311 cc
+3       0.215633     113.179255 dd
+4      -0.799260      85.883960 ee
+5      -0.432077      52.537796 ff

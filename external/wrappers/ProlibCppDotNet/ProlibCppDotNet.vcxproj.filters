@@ -1,0 +1,295 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\utils">
+      <UniqueIdentifier>{cfb0b08b-529d-4acd-bc74-1367de02edd6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\rnd">
+      <UniqueIdentifier>{157f1639-2b5f-47fb-86f8-d321a58906bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\extern">
+      <UniqueIdentifier>{476f8a70-b0e8-4574-872b-179158699ebc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\probFuncs">
+      <UniqueIdentifier>{229bf891-82ca-4a7c-9b62-0f6884cd7eb8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\probMethobs">
+      <UniqueIdentifier>{ab55d0b8-b97f-4b93-8b9a-acba2f9b8b32}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\correlation">
+      <UniqueIdentifier>{e3da0eea-21c8-4a24-aa78-065b630deab5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\combine">
+      <UniqueIdentifier>{4d40e89a-9eb3-4816-b14c-509a7a8802fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\distributions">
+      <UniqueIdentifier>{ab9a1be4-503a-4aee-9470-18aaffc8dfad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\rootFinders">
+      <UniqueIdentifier>{1d4d46a1-fe78-4143-8b06-72c922ede085}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ProlibCppDotNet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="wrapper.cpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="AssemblyInfo.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\utils\cholesky_decomp.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\utils\matrix.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\utils\probLibString.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="ProlibCppDotNet.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\utils\vector1D.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\rnd\defaultRandomDouble.cpp">
+      <Filter>Source Files\rnd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\rnd\george_marsaglia.cpp">
+      <Filter>Source Files\rnd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\rnd\mersenne_twister.cpp">
+      <Filter>Source Files\rnd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\rnd\randomForSampling.cpp">
+      <Filter>Source Files\rnd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\rnd\rndDefs.cpp">
+      <Filter>Source Files\rnd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\extern\asa063.cpp">
+      <Filter>Source Files\extern</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\extern\asa109.cpp">
+      <Filter>Source Files\extern</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\extern\asa239.cpp">
+      <Filter>Source Files\extern</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\extern\asa241.cpp">
+      <Filter>Source Files\extern</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\extern\dgammaDs.cpp">
+      <Filter>Source Files\extern</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\probFuncs\conversions.cpp">
+      <Filter>Source Files\probFuncs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\probFuncs\listDistribs.cpp">
+      <Filter>Source Files\probFuncs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\probFuncs\probDraw.cpp">
+      <Filter>Source Files\probFuncs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\probFuncs\probNumber.cpp">
+      <Filter>Source Files\probFuncs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\probFuncs\stochSettings.cpp">
+      <Filter>Source Files\probFuncs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\probMethods\adaptiveImpSampling.cpp">
+      <Filter>Source Files\probMethobs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\probMethods\crudeMonteCarlo.cpp">
+      <Filter>Source Files\probMethobs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\probMethods\crudeMonteCarloForm.cpp">
+      <Filter>Source Files\probMethobs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\probMethods\directionalSampling.cpp">
+      <Filter>Source Files\probMethobs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\probMethods\dsfi.cpp">
+      <Filter>Source Files\probMethobs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\probMethods\dsRootFinder.cpp">
+      <Filter>Source Files\probMethobs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\probMethods\dsRootFinderRobust.cpp">
+      <Filter>Source Files\probMethobs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\probMethods\fdir.cpp">
+      <Filter>Source Files\probMethobs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\probMethods\fillStartVector.cpp">
+      <Filter>Source Files\probMethobs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\probMethods\form.cpp">
+      <Filter>Source Files\probMethobs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\probMethods\form_init.cpp">
+      <Filter>Source Files\probMethobs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\probMethods\formDsfi.cpp">
+      <Filter>Source Files\probMethobs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\probMethods\formWithTrialLoops.cpp">
+      <Filter>Source Files\probMethobs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\probMethods\importanceSampling.cpp">
+      <Filter>Source Files\probMethobs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\probMethods\importanceSamplingForm.cpp">
+      <Filter>Source Files\probMethobs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\probMethods\importanceSamplingSeq.cpp">
+      <Filter>Source Files\probMethobs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\probMethods\lsf.cpp">
+      <Filter>Source Files\probMethobs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\probMethods\lsfResult.cpp">
+      <Filter>Source Files\probMethobs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\probMethods\numint.cpp">
+      <Filter>Source Files\probMethobs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\probMethods\parseAndRunMethod.cpp">
+      <Filter>Source Files\probMethobs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\probMethods\parseMethod.cpp">
+      <Filter>Source Files\probMethobs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\probMethods\progress.cpp">
+      <Filter>Source Files\probMethobs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\probMethods\ray_search.cpp">
+      <Filter>Source Files\probMethobs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\probMethods\sphere_search.cpp">
+      <Filter>Source Files\probMethobs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\probMethods\sphere_tasks.cpp">
+      <Filter>Source Files\probMethobs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\probMethods\zmodel.cpp">
+      <Filter>Source Files\probMethobs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\correlation\gaussianCorrelation.cpp">
+      <Filter>Source Files\correlation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\correlation\gaussianCorrelationRobust.cpp">
+      <Filter>Source Files\correlation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\correlation\HRcorrelation.cpp">
+      <Filter>Source Files\correlation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\correlation\identity.cpp">
+      <Filter>Source Files\correlation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\correlation\trapeziumRule.cpp">
+      <Filter>Source Files\correlation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\combine\combineElements.cpp">
+      <Filter>Source Files\combine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\combine\Hohenbichler.cpp">
+      <Filter>Source Files\combine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\combine\upscaling.cpp">
+      <Filter>Source Files\combine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\distributions\combine_x1x2_mtable.cpp">
+      <Filter>Source Files\distributions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\distributions\distBeta.cpp">
+      <Filter>Source Files\distributions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\distributions\exponentialDist.cpp">
+      <Filter>Source Files\distributions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\distributions\gumble.cpp">
+      <Filter>Source Files\distributions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\distributions\logNormalDist.cpp">
+      <Filter>Source Files\distributions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\distributions\mtable.cpp">
+      <Filter>Source Files\distributions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\distributions\normalDist.cpp">
+      <Filter>Source Files\distributions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\distributions\paretoDist.cpp">
+      <Filter>Source Files\distributions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\distributions\parseDistribution.cpp">
+      <Filter>Source Files\distributions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\distributions\rayleighDist.cpp">
+      <Filter>Source Files\distributions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\distributions\triangleDist.cpp">
+      <Filter>Source Files\distributions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\distributions\truncatedNormal.cpp">
+      <Filter>Source Files\distributions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\distributions\weibull.cpp">
+      <Filter>Source Files\distributions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\rootFinders\Anderson_Bjork.cpp">
+      <Filter>Source Files\rootFinders</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\rootFinders\bisection.cpp">
+      <Filter>Source Files\rootFinders</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\rootFinders\linear_loop.cpp">
+      <Filter>Source Files\rootFinders</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\rootFinders\regula_falsi.cpp">
+      <Filter>Source Files\rootFinders</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\rootFinders\root_finder.cpp">
+      <Filter>Source Files\rootFinders</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\distributions\distrib.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Deltares.Reliability.Wrapper\Deltares.Reliability.Wrapper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="app.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="app.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+</Project>
