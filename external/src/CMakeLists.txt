@@ -1,20 +1,20 @@
 
 file(GLOB ptkcpp_files
-    "../../Kernels/Deltares.Probabilistic/Math/*.cpp"
-    "../../Kernels/Deltares.Probabilistic/Math/ASA/*.cpp"
-    "../../Kernels/Deltares.Probabilistic/Math/Randomizers/*.cpp"
-    "../../Kernels/Deltares.Probabilistic/Math/RootFinders/*.cpp"
-    "../../Kernels/Deltares.Probabilistic/Model/*.cpp"
-    "../../Kernels/Deltares.Probabilistic/Reliability/*.cpp"
-    "../../Kernels/Deltares.Probabilistic/Statistics/*.cpp"
-    "../../Kernels/Deltares.Probabilistic/Statistics/Distributions/*.cpp"
-    "../../Kernels/Deltares.Probabilistic/Utils/*.cpp"
+    "../../sources/Deltares.Probabilistic/Math/*.cpp"
+    "../../sources/Deltares.Probabilistic/Math/ASA/*.cpp"
+    "../../sources/Deltares.Probabilistic/Math/Randomizers/*.cpp"
+    "../../sources/Deltares.Probabilistic/Math/RootFinders/*.cpp"
+    "../../sources/Deltares.Probabilistic/Model/*.cpp"
+    "../../sources/Deltares.Probabilistic/Reliability/*.cpp"
+    "../../sources/Deltares.Probabilistic/Statistics/*.cpp"
+    "../../sources/Deltares.Probabilistic/Statistics/Distributions/*.cpp"
+    "../../sources/Deltares.Probabilistic/Utils/*.cpp"
 )
 file(GLOB ptkcli_files
-    "../../Kernels/Deltares.Probabilistic.Wrapper/Model/*.cpp"
-    "../../Kernels/Deltares.Probabilistic.Wrapper/Reliability/*.cpp"
-    "../../Kernels/Deltares.Probabilistic.Wrapper/Statistics/*.cpp"
-    "../../Kernels/Deltares.Probabilistic.Wrapper/Utils/*.cpp"
+    "../../sources/Deltares.Probabilistic.Wrapper/Model/*.cpp"
+    "../../sources/Deltares.Probabilistic.Wrapper/Reliability/*.cpp"
+    "../../sources/Deltares.Probabilistic.Wrapper/Statistics/*.cpp"
+    "../../sources/Deltares.Probabilistic.Wrapper/Utils/*.cpp"
 )
 
 add_library(Deltares.Probabilistic.Kernel

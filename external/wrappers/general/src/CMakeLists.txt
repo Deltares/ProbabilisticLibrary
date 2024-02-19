@@ -4,7 +4,7 @@ FortranCInterface_VERIFY(CXX)
 
 add_library(pb_wrapper_c STATIC "")
 file(GLOB cwrapper_files
-    "../../../../Kernels/Deltares.Probabilistic.CWrapper/*.cpp"
+    "../../../../sources/Deltares.Probabilistic.CWrapper/*.cpp"
     "*.cpp"
 )
 
