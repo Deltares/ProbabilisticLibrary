@@ -74,9 +74,9 @@ void probcalcf2cnew(const basicSettings* method, fdistribs* c, const int n, cons
         auto progressDelegate = ProgressLambda();
         auto detailedProgressDelegate = DetailedProgressLambda();
         auto textualProgress = TextualProgressLambda([&pw](ProgressType p, std::string s) {pw.FPgDelegate(p, s); });
-        std::unique_ptr<ProgressIndicator> progress (new ProgressIndicator(progressDelegate, detailedProgressDelegate, textualProgress));
+        std::shared_ptr<ProgressIndicator> progress (new ProgressIndicator(progressDelegate, detailedProgressDelegate, textualProgress));
         zModel->setMaxProcesses(method->numThreads);
-        std::shared_ptr<ModelRunner> modelRunner(new ModelRunner(zModel, uConverter, progress.get()));
+        std::shared_ptr<ModelRunner> modelRunner(new ModelRunner(zModel, uConverter, progress));
         modelRunner->Settings->MaxParallelProcesses = method->numThreads;
         std::shared_ptr<DesignPoint> newResult ( relMethod->getDesignPoint(modelRunner));
 

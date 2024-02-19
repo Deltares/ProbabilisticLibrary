@@ -34,7 +34,7 @@ namespace Deltares
 
 				std::shared_ptr<Models::ZModel> zModel = getZModel();
 
-				Models::ProgressIndicator* progress = progressIndicator != nullptr ? progressIndicator->getProgressIndicator() : nullptr;
+				std::shared_ptr<Models::ProgressIndicator> progress = progressIndicator != nullptr ? progressIndicator->GetProgressIndicator() : nullptr;
 
 				this->shared = new SharedPointerProvider(new Models::ModelRunner(zModel, uConverter, progress));
 			}

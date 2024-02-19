@@ -21,10 +21,10 @@ namespace Deltares
 				Deltares::Models::DetailedProgressLambda modelDetailedProgressLambda = getDetailedProgressLambda();
 				Deltares::Models::TextualProgressLambda modelTextualProgressLambda = getTextualProgressLambda();
 
-				this->progressIndicator = new Models::ProgressIndicator(modelProgressLambda, modelDetailedProgressLambda, modelTextualProgressLambda);
+				this->shared = new Utils::Wrappers::SharedPointerProvider<Deltares::Models::ProgressIndicator>(new Models::ProgressIndicator(modelProgressLambda, modelDetailedProgressLambda, modelTextualProgressLambda));
 			}
 
-			void ProgressIndicator::doProgress(double progress)
+			void ProgressIndicator::DoProgress(double progress)
 			{
 				if (this->progressDelegate != nullptr) 
 				{
@@ -32,7 +32,7 @@ namespace Deltares
 				}
 			}
 
-			void ProgressIndicator::doDetailedProgress(int step, int loop, double reliability, double convergence)
+			void ProgressIndicator::DoDetailedProgress(int step, int loop, double reliability, double convergence)
 			{
 				if (this->detailedProgressDelegate != nullptr)
 				{
@@ -40,27 +40,35 @@ namespace Deltares
 				}
 			}
 
-			ProgressTextType ProgressIndicator::getProgressType(Models::ProgressType progressType)
-			{
-				switch (progressType)
-				{
-					case Models::ProgressType::Detailed: return ProgressTextType::Detailed;
-					case Models::ProgressType::Global: return ProgressTextType::Global;
-					default: throw gcnew System::Exception("Progress type not supported");
-				}
-			}
-
-			void ProgressIndicator::doTextualProgress(Models::ProgressType progressType, std::string text)
+			void ProgressIndicator::DoTextualProgress(Models::ProgressType progressType, std::string text)
 			{
 				if (this->textualProgressDelegate != nullptr)
 				{
-					this->textualProgressDelegate->Invoke(getProgressType(progressType), gcnew System::String(text.c_str()));
+					this->textualProgressDelegate->Invoke(GetProgressType(progressType), gcnew System::String(text.c_str()));
+				}
+			}
+
+			void ProgressIndicator::DoTextualProgress(Wrappers::ProgressType progressType, std::string text)
+			{
+				if (this->textualProgressDelegate != nullptr)
+				{
+					this->textualProgressDelegate->Invoke(progressType, gcnew System::String(text.c_str()));
+				}
+			}
+
+			ProgressType ProgressIndicator::GetProgressType(Models::ProgressType progressType)
+			{
+				switch (progressType)
+				{
+				case Models::ProgressType::Detailed: return Wrappers::ProgressType::Detailed;
+				case Models::ProgressType::Global: return Wrappers::ProgressType::Global;
+				default: throw gcnew System::Exception("Progress type not supported");
 				}
 			}
 
 			Models::ProgressLambda ProgressIndicator::getProgressLambda()
 			{
-				ManagedProgressDelegate^ fp = gcnew ManagedProgressDelegate(this, &ProgressIndicator::doProgress);
+				ManagedProgressDelegate^ fp = gcnew ManagedProgressDelegate(this, &ProgressIndicator::DoProgress);
 				System::Runtime::InteropServices::GCHandle handle = System::Runtime::InteropServices::GCHandle::Alloc(fp);
 				handles->Add(handle);
 
@@ -72,7 +80,7 @@ namespace Deltares
 
 			Models::DetailedProgressLambda ProgressIndicator::getDetailedProgressLambda()
 			{
-				ManagedDetailedProgressDelegate^ fp = gcnew ManagedDetailedProgressDelegate(this, &ProgressIndicator::doDetailedProgress);
+				ManagedDetailedProgressDelegate^ fp = gcnew ManagedDetailedProgressDelegate(this, &ProgressIndicator::DoDetailedProgress);
 				System::Runtime::InteropServices::GCHandle handle = System::Runtime::InteropServices::GCHandle::Alloc(fp);
 				handles->Add(handle);
 
@@ -84,7 +92,7 @@ namespace Deltares
 
 			Models::TextualProgressLambda ProgressIndicator::getTextualProgressLambda()
 			{
-				ManagedTextualProgressDelegate^ fp = gcnew ManagedTextualProgressDelegate(this, &ProgressIndicator::doTextualProgress);
+				ManagedTextualProgressDelegate^ fp = gcnew ManagedTextualProgressDelegate(this, &ProgressIndicator::DoTextualProgress);
 				System::Runtime::InteropServices::GCHandle handle = System::Runtime::InteropServices::GCHandle::Alloc(fp);
 				handles->Add(handle);
 

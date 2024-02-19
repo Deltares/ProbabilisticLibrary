@@ -26,13 +26,13 @@ namespace Deltares
 			std::vector<std::shared_ptr<Reliability::ReliabilityResult>> reliabilityResults;
 			std::vector<std::shared_ptr<Evaluation>> evaluations;
 			std::vector< std::shared_ptr<Message>> messages;
-			ProgressIndicator* progressIndicator = nullptr;
+			std::shared_ptr<ProgressIndicator> progressIndicator = nullptr;
 
 			std::shared_ptr<Sample> getXSample(std::shared_ptr<Sample> sample);
 			void registerEvaluation(std::shared_ptr<Sample> sample);
 
 		public:
-			ModelRunner(std::shared_ptr<ZModel> zModel, std::shared_ptr<UConverter>uConverter, ProgressIndicator* progressIndicator = nullptr)
+			ModelRunner(std::shared_ptr<ZModel> zModel, std::shared_ptr<UConverter>uConverter, std::shared_ptr<ProgressIndicator> progressIndicator = nullptr)
 			{
 				this->zModel = zModel;
 				this->uConverter = uConverter;

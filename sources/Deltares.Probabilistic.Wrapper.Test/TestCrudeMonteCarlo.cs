@@ -567,7 +567,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
                 Count++;
             }
 
-            public void DoTextualProgress(ProgressTextType progressType, string text)
+            public void DoTextualProgress(ProgressType progressType, string text)
             {
                 LastText = text;
             }

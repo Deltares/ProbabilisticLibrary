@@ -49,7 +49,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
         public double Progress { get; private set; }
 
-        public ProgressTextType Type { get; private set; }
+        public ProgressType Type { get; private set; }
         public string Text { get; private set; } = string.Empty;
 
         public int Invocations { get; private set; }
@@ -63,7 +63,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
             }
         }
 
-        public void SetTextualProgress(ProgressTextType type, string text)
+        public void SetTextualProgress(ProgressType type, string text)
         {
             Type = type;
             Text = text;

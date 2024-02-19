@@ -1,6 +1,8 @@
 #pragma once
 
 #include "../../Deltares.Probabilistic/Model/ProgressIndicator.h"
+#include "../Utils/SharedPointerProvider.h"
+#include "../Utils/NativeSupport.h"
 
 namespace Deltares
 {
@@ -8,31 +10,14 @@ namespace Deltares
 	{
 		namespace Wrappers
 		{
-			public enum ProgressTextType {Global, Detailed};
+			public enum ProgressType {Global, Detailed};
 
 			public delegate void ProgressDelegate(double);
 			public delegate void DetailedProgressDelegate(int, int, double, double);
-			public delegate void TextualProgressDelegate(ProgressTextType, System::String^ text);
+			public delegate void TextualProgressDelegate(ProgressType, System::String^ text);
 
 			public ref class ProgressIndicator
 			{
-			private:
-				ProgressDelegate^ progressDelegate;
-				DetailedProgressDelegate^ detailedProgressDelegate;
-				TextualProgressDelegate^ textualProgressDelegate;
-
-				Models::ProgressIndicator* progressIndicator;
-				Models::ProgressLambda getProgressLambda();
-				Models::DetailedProgressLambda getDetailedProgressLambda();
-				Models::TextualProgressLambda getTextualProgressLambda();
-
-				void doProgress(double progress);
-				void doDetailedProgress(int step, int loop, double reliability, double convergence);
-				void doTextualProgress(Models::ProgressType progressType, std::string text);
-
-				ProgressTextType getProgressType(Models::ProgressType progressType);
-
-				System::Collections::Generic::List<System::Runtime::InteropServices::GCHandle>^ handles = gcnew System::Collections::Generic::List<System::Runtime::InteropServices::GCHandle>();
 
 			public:
 				ProgressIndicator(ProgressDelegate^ progressDelegate, DetailedProgressDelegate^ detailedProgressDelegate, TextualProgressDelegate^ textualProgressDelegate);
@@ -43,13 +28,53 @@ namespace Deltares
 					{
 						handles[i].Free();
 					}
-					delete progressIndicator;
+					delete shared;
 				}
 
-				Models::ProgressIndicator* getProgressIndicator()
+				void DoProgress(double progress);
+				void DoDetailedProgress(int step, int loop, double reliability, double convergence);
+				void DoTextualProgress(Models::ProgressType progressType, std::string text);
+				void DoTextualProgress(Wrappers::ProgressType progressType, std::string text);
+
+				void Reset()
 				{
-					return progressIndicator;
+					shared->object->reset();
 				}
+
+				void Complete()
+				{
+					shared->object->complete();
+				}
+
+				void Initialize(double factor, double offset)
+				{
+					shared->object->initialize(factor, offset);
+				}
+
+				void SetTask(System::String^ task)
+				{
+					shared->object->setTask(Utils::Wrappers::NativeSupport::toNative(task));
+				}
+
+				std::shared_ptr<Models::ProgressIndicator> GetProgressIndicator()
+				{
+					return shared->object;
+				}
+
+			private:
+				ProgressDelegate^ progressDelegate;
+				DetailedProgressDelegate^ detailedProgressDelegate;
+				TextualProgressDelegate^ textualProgressDelegate;
+
+				Utils::Wrappers::SharedPointerProvider<Deltares::Models::ProgressIndicator>* shared = nullptr;
+
+				Models::ProgressLambda getProgressLambda();
+				Models::DetailedProgressLambda getDetailedProgressLambda();
+				Models::TextualProgressLambda getTextualProgressLambda();
+
+				ProgressType GetProgressType(Models::ProgressType progressType);
+
+				System::Collections::Generic::List<System::Runtime::InteropServices::GCHandle>^ handles = gcnew System::Collections::Generic::List<System::Runtime::InteropServices::GCHandle>();
 			};
 		}
 	}
