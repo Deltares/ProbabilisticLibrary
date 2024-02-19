@@ -10,11 +10,11 @@ namespace Deltares
 	{
 		namespace Wrappers
 		{
-			public enum ProgressTextType {Global, Detailed};
+			public enum ProgressType {Global, Detailed};
 
 			public delegate void ProgressDelegate(double);
 			public delegate void DetailedProgressDelegate(int, int, double, double);
-			public delegate void TextualProgressDelegate(ProgressTextType, System::String^ text);
+			public delegate void TextualProgressDelegate(ProgressType, System::String^ text);
 
 			public ref class ProgressIndicator
 			{
@@ -34,6 +34,7 @@ namespace Deltares
 				void DoProgress(double progress);
 				void DoDetailedProgress(int step, int loop, double reliability, double convergence);
 				void DoTextualProgress(Models::ProgressType progressType, std::string text);
+				void DoTextualProgress(Wrappers::ProgressType progressType, std::string text);
 
 				void Reset()
 				{
@@ -71,7 +72,7 @@ namespace Deltares
 				Models::DetailedProgressLambda getDetailedProgressLambda();
 				Models::TextualProgressLambda getTextualProgressLambda();
 
-				ProgressTextType GetProgressType(Models::ProgressType progressType);
+				ProgressType GetProgressType(Models::ProgressType progressType);
 
 				System::Collections::Generic::List<System::Runtime::InteropServices::GCHandle>^ handles = gcnew System::Collections::Generic::List<System::Runtime::InteropServices::GCHandle>();
 			};

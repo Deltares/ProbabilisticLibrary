@@ -48,12 +48,20 @@ namespace Deltares
 				}
 			}
 
-			ProgressTextType ProgressIndicator::GetProgressType(Models::ProgressType progressType)
+			void ProgressIndicator::DoTextualProgress(Wrappers::ProgressType progressType, std::string text)
+			{
+				if (this->textualProgressDelegate != nullptr)
+				{
+					this->textualProgressDelegate->Invoke(progressType, gcnew System::String(text.c_str()));
+				}
+			}
+
+			ProgressType ProgressIndicator::GetProgressType(Models::ProgressType progressType)
 			{
 				switch (progressType)
 				{
-				case Models::ProgressType::Detailed: return ProgressTextType::Detailed;
-				case Models::ProgressType::Global: return ProgressTextType::Global;
+				case Models::ProgressType::Detailed: return Wrappers::ProgressType::Detailed;
+				case Models::ProgressType::Global: return Wrappers::ProgressType::Global;
 				default: throw gcnew System::Exception("Progress type not supported");
 				}
 			}
