@@ -5,7 +5,6 @@ FortranCInterface_VERIFY(CXX)
 add_library(pb_wrapper_c STATIC "")
 file(GLOB cwrapper_files
     "*.cpp"
-    "../../external/wrappers/general/src/*.cpp"
 )
 
 target_sources(pb_wrapper_c

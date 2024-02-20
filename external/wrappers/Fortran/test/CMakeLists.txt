@@ -15,7 +15,7 @@ endif (UNIX)
 target_link_libraries(unitTestTools ftnunit feedback ${fctools})
 
 target_link_libraries(ftn_unit_test_prog pb_wrapper_c pb_wrapper_f Deltares.Probabilistic.Kernel
-  ${fctools} ftnunit feedback feedbackDLL unitTestTools)
+  ${fctools} ftnunit feedback feedbackDLL unitTestTools pb_wrapper_c_old)
 
 add_library(FLtestProbabilistic
   STATIC
@@ -67,12 +67,12 @@ target_link_libraries(FLunittestprogram
  FLtestProbabilisticConversions
  FLtestProbabilisticData
  FLtestProbabilistic
- pb_wrapper_c pb_wrapper_f Deltares.Probabilistic.Kernel ${fctools} feedbackDLL ftnunit)
+ pb_wrapper_c pb_wrapper_f Deltares.Probabilistic.Kernel ${fctools} feedbackDLL ftnunit pb_wrapper_c_old)
 
 add_test(
   NAME fortran-interface-tests
   COMMAND $<TARGET_FILE:ftn_unit_test_prog> /s
-  WORKING_DIRECTORY ../..
+  WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
 )
 
 add_test(
