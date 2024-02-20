@@ -34,6 +34,6 @@ endif (UNIX)
 
 enable_testing()
 
-add_subdirectory(sources/Deltares.Probabilistic.CWrapper)
+add_subdirectory(sources)
 
 add_subdirectory(external)

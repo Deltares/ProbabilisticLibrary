@@ -1,4 +1,3 @@
-add_subdirectory(src)
 add_subdirectory(wrappers/general/src)
 
 if ( TARGET tools)
