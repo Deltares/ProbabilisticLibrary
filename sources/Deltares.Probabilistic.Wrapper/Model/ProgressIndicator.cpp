@@ -48,11 +48,11 @@ namespace Deltares
 				}
 			}
 
-			void ProgressIndicator::DoTextualProgress(Wrappers::ProgressType progressType, std::string text)
+			void ProgressIndicator::DoTextualProgress(Wrappers::ProgressType progressType, System::String^ text)
 			{
 				if (this->textualProgressDelegate != nullptr)
 				{
-					this->textualProgressDelegate->Invoke(progressType, gcnew System::String(text.c_str()));
+					this->textualProgressDelegate->Invoke(progressType, text);
 				}
 			}
 

@@ -55,8 +55,6 @@ namespace Deltares
 			void complete();
 			void increaseOffset();
 			void setTask(std::string task);
-
-			ProgressIndicator* getSubIndicator(std::string subTask);
 		};
 	}
 }

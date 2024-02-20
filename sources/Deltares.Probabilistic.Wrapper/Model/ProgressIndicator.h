@@ -10,11 +10,11 @@ namespace Deltares
 	{
 		namespace Wrappers
 		{
-			public enum ProgressType {Global, Detailed};
+			public enum class ProgressType {Global, Detailed};
 
 			public delegate void ProgressDelegate(double);
 			public delegate void DetailedProgressDelegate(int, int, double, double);
-			public delegate void TextualProgressDelegate(ProgressType, System::String^ text);
+			public delegate void TextualProgressDelegate(Wrappers::ProgressType, System::String^ text);
 
 			public ref class ProgressIndicator
 			{
@@ -33,8 +33,7 @@ namespace Deltares
 
 				void DoProgress(double progress);
 				void DoDetailedProgress(int step, int loop, double reliability, double convergence);
-				void DoTextualProgress(Models::ProgressType progressType, std::string text);
-				void DoTextualProgress(Wrappers::ProgressType progressType, std::string text);
+				void DoTextualProgress(Wrappers::ProgressType progressType, System::String^ text);
 
 				void Reset()
 				{
@@ -56,6 +55,11 @@ namespace Deltares
 					shared->object->setTask(Utils::Wrappers::NativeSupport::toNative(task));
 				}
 
+				void IncreaseOffset()
+				{
+					shared->object->increaseOffset();
+				}
+
 				std::shared_ptr<Models::ProgressIndicator> GetProgressIndicator()
 				{
 					return shared->object;
@@ -71,6 +75,8 @@ namespace Deltares
 				Models::ProgressLambda getProgressLambda();
 				Models::DetailedProgressLambda getDetailedProgressLambda();
 				Models::TextualProgressLambda getTextualProgressLambda();
+
+				void DoTextualProgress(Models::ProgressType progressType, std::string text);
 
 				ProgressType GetProgressType(Models::ProgressType progressType);
 

@@ -35,10 +35,5 @@ namespace Deltares
         {
             this->task = task;
         }
-
-        ProgressIndicator* ProgressIndicator::getSubIndicator(std::string subTask)
-        {
-            return new ProgressIndicator(this->progressLambda, this->detailedProgressLambda, this->textualProgressLambda, task + subTask);
-        }
     }
 }
