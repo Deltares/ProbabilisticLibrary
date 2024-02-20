@@ -65,7 +65,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
             Assert.AreSame(designPoint.Alphas[0].Parameter, designPoint2.Alphas[0].Parameter);
         }
 
-        [Test] // c++
+        [Test] 
         public void TestInverseLinear()
         {
             var project = ProjectBuilder.GetInverseLinearProject();
@@ -95,7 +95,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
             Assert.AreEqual(0.91, limitStatePoint.Alphas[1].X, margin);
         }
 
-        [Test] // c++
+        [Test] 
         public void TestLinearParallel()
         {
             var project = ProjectBuilder.GetLinearProject();
@@ -113,7 +113,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
             Assert.AreEqual(0, designPoint.Evaluations.Count);
         }
 
-        [Test] // c++
+        [Test] 
         public void TestLinearMessages()
         {
             var project = ProjectBuilder.GetLinearProject();
@@ -132,7 +132,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
             Assert.AreEqual(10001, designPoint.Evaluations.Count);
         }
 
-        [Test] // c++
+        [Test] 
         public void TestLinearProgress()
         {
             var project = ProjectBuilder.GetLinearProject();
@@ -152,7 +152,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
             Assert.AreEqual("10000/10000, Reliability = 2.536, Convergence = 0.133", progressHolder.Text);
         }
 
-        [Test] // c++
+        [Test] 
         public void TestLinearLimited()
         {
             var project = ProjectBuilder.GetLinearProject();
@@ -172,7 +172,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
             Assert.AreEqual(2.54, designPoint.Beta, margin);
         }
 
-        [Test] // c++
+        [Test] 
         public void TestLinearManySamples()
         {
             var project = ProjectBuilder.GetLinearProject();
@@ -204,7 +204,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
             Assert.AreEqual(0, zLimitState.Z, margin);
         }
 
-        [Test] // c++
+        [Test] 
         public void TestLinearFullyCorrelated()
         {
             var project = ProjectBuilder.GetLinearFullyCorrelatedProject();
@@ -304,7 +304,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
             Assert.AreEqual(2.17, designPoint.Beta, margin);
         }
 
-        [Test] // c++
+        [Test] 
         public void TestNonLinear()
         {
             var project = ProjectBuilder.GetNonLinearProject();
@@ -325,7 +325,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
             Assert.AreEqual(0, z.Z, margin);
         }
 
-        [Test] // c++
+        [Test] 
         public void TestBligh()
         {
             var project = ProjectBuilder.GetBlighProject();
@@ -339,7 +339,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
             Assert.AreEqual(project.Stochasts.Count, designPoint.Alphas.Count, margin);
         }
 
-        [Test] // c++
+        [Test] 
         public void TestLoadStrength()
         {
             var project = ProjectBuilder.GetLoadStrengthProject();
@@ -354,7 +354,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
             Assert.AreEqual(1.38, designPoint.Beta, margin);
         }
 
-        [Test] // c++
+        [Test] 
         public void TestLoadStrengthSurvived()
         {
             var project = ProjectBuilder.GetLoadStrengthSurvivedProject();
@@ -369,7 +369,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
             Assert.AreEqual(1.87, designPoint.Beta, margin);
         }
 
-        [Test] // c++
+        [Test] 
         public void TestConvex()
         {
             var project = ProjectBuilder.GetConvexProject();
@@ -395,7 +395,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
             Assert.AreEqual(3.16, designPoint.Beta, margin);
         }
 
-        [Test] // c++
+        [Test] 
         public void TestNoisy()
         {
             var project = ProjectBuilder.GetNoisyProject();
