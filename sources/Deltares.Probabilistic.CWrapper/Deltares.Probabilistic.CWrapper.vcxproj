@@ -161,6 +161,7 @@
     <ClCompile Include="createDistribution.cpp" />
     <ClCompile Include="createReliabilityMethod.cpp" />
     <ClCompile Include="progressWrapper.cpp" />
+    <ClCompile Include="randomgen.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

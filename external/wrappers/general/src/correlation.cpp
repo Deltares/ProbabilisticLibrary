@@ -1,5 +1,5 @@
 #include <iostream>
-#include "stringHelper.h"
+#include "../../../../sources/Deltares.Probabilistic.CWrapper/stringHelper.h"
 #include "../../../src/correlation/HRcorrelation.h"
 #include "../../../src/correlation/gaussianCorrelationRobust.h"
 

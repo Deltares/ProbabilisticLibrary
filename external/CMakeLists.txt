@@ -1,10 +1,5 @@
 add_subdirectory(src)
 
-
-#add_subdirectory(tests)
-
-add_subdirectory(wrappers/general/src)
-
 if ( TARGET tools)
     add_subdirectory(wrappers/Fortran/src)
 else()
