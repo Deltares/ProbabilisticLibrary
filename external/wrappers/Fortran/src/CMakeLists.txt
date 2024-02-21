@@ -84,8 +84,10 @@ endif()
 target_link_libraries(ftnunit ${fctools})
 target_link_libraries(feedback feedbackDLL ${fctools})
 target_link_libraries(feedbackDLL ${fctools})
-target_link_libraries(pb_wrapper_f pb_wrapper_c Deltares.Probabilistic.Kernel ${fctools} ${fcgeneral} feedback feedbackDLL)
-target_link_libraries(pb_wrapper_c Deltares.Probabilistic.Kernel)
+target_link_libraries(pb_wrapper_f
+  Deltares.Probabilistic.CWrapper Deltares.Probabilistic.Kernel
+  ${fctools} ${fcgeneral} feedback feedbackDLL)
+target_link_libraries(Deltares.Probabilistic.CWrapper Deltares.Probabilistic.Kernel)
 
 if ( TARGET tools )
   set(CMAKE_Fortran_FLAGS "/libs:dll /threads /nologo /Qauto /traceback /fp:source")
