@@ -52,8 +52,8 @@ namespace Deltares
 
 				System::Collections::Generic::List<Stochast^>^ Stochasts = gcnew System::Collections::Generic::List<Stochast^>();
 
-				virtual void GetZValues(System::Collections::Generic::IList<Sample^>^ samples);
-				virtual void GetZValue(Sample^ sample);
+				virtual void CalcSamples(System::Collections::Generic::IList<Sample^>^ samples);
+				virtual void CalcSample(Sample^ sample);
 
 				RunSettings^ Settings = gcnew RunSettings();
 

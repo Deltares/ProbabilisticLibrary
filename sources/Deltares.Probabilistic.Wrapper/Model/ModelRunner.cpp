@@ -95,23 +95,23 @@ namespace Deltares
 
 			void ModelRunner::CalcZValues(System::Collections::Generic::IList<Sample^>^ samples)
 			{
-				this->GetZValues(samples);
+				this->CalcSamples(samples);
 			}
 
 			void ModelRunner::CalcZValue(Sample^ sample)
 			{
-				this->GetZValue(sample);
+				this->CalcSample(sample);
 			}
 
-			void ModelRunner::GetZValues(System::Collections::Generic::IList<Sample^>^ samples)
+			void ModelRunner::CalcSamples(System::Collections::Generic::IList<Sample^>^ samples)
 			{
 				for (int i = 0; i < samples->Count; i++)
 				{
-					GetZValue(samples[i]);
+					CalcSample(samples[i]);
 				}
 			}
 
-			void ModelRunner::GetZValue(Sample^ sample)
+			void ModelRunner::CalcSample(Sample^ sample)
 			{
 				this->zFunction->Invoke(sample);
 			}
