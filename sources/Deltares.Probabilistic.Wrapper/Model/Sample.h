@@ -14,14 +14,24 @@ namespace Deltares
 			public ref class Sample
 			{
 			private:
-				Models::Sample* sample;
 				array<double>^ values = nullptr;
 				System::Object^ tag = nullptr;
+				SharedPointerProvider<Models::Sample>* shared = nullptr;
 
 			public:
 				Sample(std::shared_ptr<Models::Sample> sample)
 				{
-					this->sample = sample.get();
+					shared = new SharedPointerProvider(sample);
+				}
+
+				Sample(array<double>^ values)
+				{
+					std::vector<double> nativeValues = NativeSupport::toNative(values);
+
+					Models::Sample* sample = new Models::Sample(nativeValues);
+
+					shared = new SharedPointerProvider(sample);
+					this->values = values;
 				}
 
 				property array<double>^ Values
@@ -30,7 +40,7 @@ namespace Deltares
 					{
 						if (values == nullptr)
 						{
-							values = NativeSupport::toManaged(sample->Values);
+							values = NativeSupport::toManaged(shared->object->Values);
 						}
 
 						return values;
@@ -39,27 +49,52 @@ namespace Deltares
 
 				property double Weight
 				{
-					double get() { return sample->Weight; }
+					double get() { return shared->object->Weight; }
+					void set(double value) { shared->object->Weight = value; }
 				}
 
 				property int Iteration
 				{
-					int get() { return sample->IterationIndex; }
+					int get() { return shared->object->IterationIndex; }
+					void set(int value) { shared->object->IterationIndex = value; }
+				}
+
+				property bool AllowProxy
+				{
+					bool get() { return shared->object->AllowProxy; }
+					void set(bool value) { shared->object->AllowProxy = value; }
 				}
 
 				property double Z
 				{
-					double get() { return sample->Z; }
-					void set(double value) { sample->Z = value; }
+					double get() { return shared->object->Z; }
+					void set(double value) { shared->object->Z = value; }
+				}
+
+				property double Beta
+				{
+					double get()
+					{
+						if (values != nullptr)
+						{
+							// synchronize values
+							for (int i = 0; i < values->Length; i++)
+							{
+								shared->object->Values[i] = values[i];
+							}
+						}
+
+						return shared->object->getBeta();
+					}
 				}
 
 				property System::Object^ Tag
 				{
 					System::Object^ get()
 					{
-						if (tag == nullptr && sample->Tag != 0)
+						if (tag == nullptr && shared->object->Tag != 0)
 						{
-							tag = NativeSupport::toManagedObject(sample->Tag);
+							tag = NativeSupport::toManagedObject(shared->object->Tag);
 						}
 
 						return tag;
@@ -67,7 +102,7 @@ namespace Deltares
 					void set(System::Object^ value)
 					{
 						tag = value;
-						sample->Tag = NativeSupport::toNativeObject(value);
+						shared->object->Tag = NativeSupport::toNativeObject(value);
 					}
 				}
 			};

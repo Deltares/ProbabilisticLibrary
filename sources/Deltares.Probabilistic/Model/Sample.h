@@ -28,7 +28,7 @@ namespace Deltares
 				}
 			}
 
-			Sample(std::vector<double>& values)
+			Sample(std::vector<double> values)
 			{
 				this->size = (int)values.size();
 				this->Values = values;
