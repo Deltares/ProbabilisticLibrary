@@ -2,12 +2,7 @@
 cmake_minimum_required(VERSION 3.9 FATAL_ERROR)
 
 # project name and language
-if(WIN32)
-    #set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "" FORCE)
-    project(probLibProto LANGUAGES CSharp Fortran CXX)
-else()
-    project(probLibProto LANGUAGES Fortran CXX)
-endif(WIN32)
+project(probabilisticLibrary LANGUAGES Fortran CXX)
 
 if ( TARGET tools)
 else()
@@ -33,5 +28,7 @@ if (UNIX)
 endif (UNIX)
 
 enable_testing()
+
+add_subdirectory(sources)
 
 add_subdirectory(external)
