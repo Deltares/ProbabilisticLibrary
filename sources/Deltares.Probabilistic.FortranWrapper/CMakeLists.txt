@@ -1,6 +1,5 @@
-add_library(pb_wrapper_f STATIC "")
-target_sources(pb_wrapper_f
-  PRIVATE
+add_library(Deltares.Probabilistic.FortranWrapper
+  STATIC
     interfaces/interface_gen.f90
     interfaces/interface_distributions.f90
     interfaces/interface_randomgen.f90
@@ -14,7 +13,7 @@ target_sources(pb_wrapper_f
   )
 
 if (UNIX)
-  target_compile_options(pb_wrapper_f PUBLIC -cpp)
+  target_compile_options(Deltares.Probabilistic.FortranWrapper PUBLIC -cpp)
 endif (UNIX)
 
 if ( TARGET ftnunit )
@@ -84,7 +83,7 @@ endif()
 target_link_libraries(ftnunit ${fctools})
 target_link_libraries(feedback feedbackDLL ${fctools})
 target_link_libraries(feedbackDLL ${fctools})
-target_link_libraries(pb_wrapper_f
+target_link_libraries(Deltares.Probabilistic.FortranWrapper
   Deltares.Probabilistic.CWrapper Deltares.Probabilistic.Kernel
   ${fctools} ${fcgeneral} feedback feedbackDLL)
 target_link_libraries(Deltares.Probabilistic.CWrapper Deltares.Probabilistic.Kernel)

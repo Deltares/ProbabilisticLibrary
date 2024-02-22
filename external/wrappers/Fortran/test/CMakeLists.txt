@@ -14,7 +14,8 @@ endif (UNIX)
 
 target_link_libraries(unitTestTools ftnunit feedback ${fctools})
 
-target_link_libraries(ftn_unit_test_prog Deltares.Probabilistic.CWrapper pb_wrapper_f Deltares.Probabilistic.Kernel
+target_link_libraries(ftn_unit_test_prog
+  Deltares.Probabilistic.CWrapper Deltares.Probabilistic.FortranWrapper Deltares.Probabilistic.Kernel
   ${fctools} ftnunit feedback feedbackDLL unitTestTools pb_wrapper_c_old)
 
 add_library(FLtestProbabilistic
@@ -40,14 +41,15 @@ add_library(FLtestProbabilistic
     probabilistic/toolkitTestFunctions.f90
     probabilistic/performAdaptiveMCISTests.f90
 )
-target_link_libraries(FLtestProbabilistic ${fctools} pb_wrapper_f ftnunit)
+target_link_libraries(FLtestProbabilistic ${fctools} Deltares.Probabilistic.FortranWrapper ftnunit)
 
 add_library(FLtestProbabilisticData
   STATIC
     probabilisticData/probabilisticDataTests.f90
     probabilisticData/correlationModelsTests.f90
 )
-target_link_libraries(FLtestProbabilisticData ${fctools} pb_wrapper_f Deltares.Probabilistic.CWrapper ftnunit)
+target_link_libraries(FLtestProbabilisticData
+  ${fctools} Deltares.Probabilistic.FortranWrapper Deltares.Probabilistic.CWrapper ftnunit)
 
 add_library(FLtestProbabilisticConversions
   STATIC
@@ -56,7 +58,8 @@ add_library(FLtestProbabilisticConversions
     probabilisticConversions/steinbrecherSeries.f90
     probabilisticConversions/Fmin.f90
 )
-target_link_libraries(FLtestProbabilisticConversions ${fctools} pb_wrapper_f Deltares.Probabilistic.CWrapper ftnunit)
+target_link_libraries(FLtestProbabilisticConversions
+  ${fctools} Deltares.Probabilistic.FortranWrapper Deltares.Probabilistic.CWrapper ftnunit)
 
 add_executable(FLunittestprogram
     unitTests/initTestSubs.f90
@@ -67,7 +70,8 @@ target_link_libraries(FLunittestprogram
  FLtestProbabilisticConversions
  FLtestProbabilisticData
  FLtestProbabilistic
- Deltares.Probabilistic.CWrapper pb_wrapper_f Deltares.Probabilistic.Kernel ${fctools} feedbackDLL ftnunit pb_wrapper_c_old)
+ Deltares.Probabilistic.CWrapper Deltares.Probabilistic.FortranWrapper
+ Deltares.Probabilistic.Kernel ${fctools} feedbackDLL ftnunit pb_wrapper_c_old)
 
 add_test(
   NAME fortran-interface-tests
