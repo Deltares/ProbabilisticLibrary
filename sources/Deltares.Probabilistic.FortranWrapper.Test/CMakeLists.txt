@@ -1,6 +1,6 @@
 add_library(unitTestTools
   STATIC
-    ../../../tests/utils/TestTools.f90
+    utils/TestTools.f90
 )
 
 add_executable(ftn_unit_test_prog
