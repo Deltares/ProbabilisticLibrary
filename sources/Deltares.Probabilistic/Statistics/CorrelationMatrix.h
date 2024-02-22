@@ -48,6 +48,8 @@ namespace Deltares
             Deltares::ProbLibCore::Matrix choleskyMatrix = Deltares::ProbLibCore::Matrix(0, 0);
             int findNewIndex(const std::vector<int> index, const size_t i);
             std::vector<indexWithCorrelation> indexer;
+            std::vector<correlationPair> fullCorrelatedCorrelations;
+            correlationCheckResult checkFullyCorrelatedOneStochast(const size_t i) const;
         };
     }
 }

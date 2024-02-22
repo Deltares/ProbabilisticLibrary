@@ -66,6 +66,12 @@ namespace Deltares
             {
                 matrix(j, i) = value;
             }
+            else
+            {
+                auto p = correlationPair({ i, j, value });
+                // TODO check on already added
+                fullCorrelatedCorrelations.push_back(p);
+            }
         }
 
         void CorrelationMatrix::CholeskyDecomposition()
@@ -75,19 +81,10 @@ namespace Deltares
 
         bool CorrelationMatrix::checkFullyCorrelated(const int j) const
         {
-            size_t m1; size_t m2;
-            matrix.get_dims(m1, m2);
-            for (size_t i = 0; i < m1; i++)
+            for (const auto& p : fullCorrelatedCorrelations)
             {
-                if (i != j)
-                {
-                    if (abs(matrix(i, j)) >= 1.0)
-                    {
-                        return true;
-                    }
-                }
+                if (p.index1 == j or p.index2 == j) return true;
             }
-
             return false;
         }
 
@@ -202,10 +199,10 @@ namespace Deltares
             return count;
         }
 
-        correlationCheckResult checkFullyCorrelatedB(const size_t i, const std::vector<correlationPair>& pairs)
+        correlationCheckResult CorrelationMatrix::checkFullyCorrelatedOneStochast(const size_t i) const
         {
             auto indexes = std::vector<correlationPair>();
-            for (const auto & p : pairs)
+            for (const auto & p : fullCorrelatedCorrelations)
             {
                 if (p.index1 == i)
                 {
@@ -232,7 +229,7 @@ namespace Deltares
                     }
                     product *= indexes[j].correlation;
                 }
-                for (const auto& p : pairs)
+                for (const auto& p : fullCorrelatedCorrelations)
                 {
                     if (std::find(ii.begin(), ii.end(), p.index1) != ii.end() &&
                         std::find(ii.begin(), ii.end(), p.index2) != ii.end())
@@ -247,29 +244,16 @@ namespace Deltares
 
         bool CorrelationMatrix::HasConflictingCorrelations() const
         {
-            auto full = std::vector<correlationPair>();
-            size_t m1; size_t m2;
-            matrix.get_dims(m1, m2);
-            for (size_t i = 0; i < m1; i++)
+            if (fullCorrelatedCorrelations.size() > 0)
             {
-                for (size_t j = 0; j < m2; j++)
+                size_t m1; size_t m2;
+                matrix.get_dims(m1, m2);
+                for (size_t i = 0; i < m1; i++)
                 {
-                    if (i != j && std::abs(matrix(i, j)) == 1.0)
-                    {
-                        correlationPair pair;
-                        pair.index1 = i;
-                        pair.index2 = j;
-                        pair.correlation = matrix(i,j);
-                        full.push_back(pair);
-                    }
+                    auto r = checkFullyCorrelatedOneStochast(i);
+                    if (r != correlationCheckResult::OK) return true;
                 }
             }
-            for (size_t i = 0; i < m1; i++)
-            {
-                auto r = checkFullyCorrelatedB(i, full);
-                if (r != correlationCheckResult::OK) return true;
-            }
-
             return false;
         }
     }
