@@ -106,7 +106,8 @@ namespace Deltares
 
 		bool Stochast::isVarying()
 		{
-			return this->distribution->isVarying(properties);
+			// TODO: remove varying when all distributions have been converted
+			return this->varying || this->distribution->isVarying(properties);
 		}
 
 		bool Stochast::isValid()

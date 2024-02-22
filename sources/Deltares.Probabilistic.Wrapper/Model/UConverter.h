@@ -39,6 +39,11 @@ namespace Deltares
 					this->shared = new SharedPointerProvider(uConverter);
 				}
 
+				virtual property int VaryingStochastCount
+				{
+					int get() { return shared->object->getVaryingStochastCount(); }
+				}
+
 				std::shared_ptr<Models::UConverter> GetConverter()
 				{
 					return shared->object;

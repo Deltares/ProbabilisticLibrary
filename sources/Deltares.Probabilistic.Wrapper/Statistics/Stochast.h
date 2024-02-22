@@ -71,6 +71,12 @@ namespace Deltares
 					return shared->object->isValid();
 				}
 
+				// TODO: remove this temporary solution when all distributions have been converted
+				void SetVarying(bool varying)
+				{
+					shared->object->SetVarying(varying);
+				}
+
 				virtual bool IsVarying()
 				{
 					return shared->object->isVarying();
