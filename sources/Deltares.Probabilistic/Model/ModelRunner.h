@@ -43,10 +43,10 @@ namespace Deltares
 			void clear();
 			void updateStochastSettings(std::shared_ptr<Reliability::StochastSettingsSet> settings);
 			double getZValue(std::shared_ptr<Sample> sample);
-			double* getZValues(std::vector<std::shared_ptr<Sample>> samples);
+			std::vector<double> getZValues(std::vector<std::shared_ptr<Sample>> samples);
 			int getStochastCount();
 			int getVaryingStochastCount();
-			bool shouldExitPrematurely(double* zValues, double z0Fac, std::vector<std::shared_ptr<Sample>> samples, double beta);
+			bool shouldExitPrematurely(std::vector<double> zValues, double z0Fac, std::vector<std::shared_ptr<Sample>> samples, double beta);
 			bool shouldExitPrematurely(bool final);
 			void reportResult(std::shared_ptr<Reliability::ReliabilityReport> report);
 			void reportMessage(MessageType type, std::string text);

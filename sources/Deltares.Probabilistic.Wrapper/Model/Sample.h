@@ -115,6 +115,11 @@ namespace Deltares
 					}
 				}
 
+				std::shared_ptr<Models::Sample> GetSample()
+				{
+					return shared->object;
+				}
+
 				// TODO: next methods and properties should be removed after after c++ conversion
 
 				Sample(SpaceType spaceType, int count) : Sample(spaceType, -1, count)
@@ -190,12 +195,6 @@ namespace Deltares
 					UpdateValues();
 
 					array<double>^ values = NativeSupport::toManaged(shared->object->clone()->Values);
-
-					//array<double>^ clonedValues = gcnew array<double>(this->Values->Length);
-					//for (int i = 0; i < clonedValues->Length; i++)
-					//{
-					//	clonedValues[i] = this->Values[i];
-					//}
 
 					return gcnew Sample(this->SpaceType, this->Iteration, values);
 				}

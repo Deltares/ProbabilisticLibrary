@@ -55,6 +55,35 @@ namespace Deltares
 				virtual void CalcSamples(System::Collections::Generic::IList<Sample^>^ samples);
 				virtual void CalcSample(Sample^ sample);
 
+				/**
+				 * \brief Calculates a z-value for a reliability method in .net
+				 * \param sample 
+				 * \return 
+				 */
+				virtual double GetZValue(Sample^ sample)
+				{
+					return shared->object->getZValue(sample->GetSample());
+				}
+
+				/**
+				 * \brief Calculates multiple z-values for a reliability method in .net
+				 * \param samples 
+				 * \return 
+				 */
+				virtual array<double>^ GetZValues(System::Collections::Generic::List<Sample^>^ samples)
+				{
+					std::vector<std::shared_ptr<Models::Sample>> nativeSamples(samples->Count);
+
+					for (int i = 0; i < samples->Count; i++)
+					{
+						nativeSamples[i] = samples[i]->GetSample();
+					}
+
+					std::vector<double> zValues = shared->object->getZValues(nativeSamples);
+
+					return NativeSupport::toManaged(zValues);
+				}
+
 				RunSettings^ Settings = gcnew RunSettings();
 
 				std::shared_ptr<Models::ModelRunner> GetModelRunner()

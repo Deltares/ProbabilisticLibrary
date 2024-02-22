@@ -75,8 +75,12 @@ namespace Deltares
 					shared->object->resolveConflictingCorrelations();
 				}
 
+				virtual void UpdateFullMatrix() {}
+
 				std::shared_ptr<Statistics::CorrelationMatrix> GetCorrelationMatrix()
 				{
+					UpdateFullMatrix();
+
 					return shared->object;
 				}
 			};

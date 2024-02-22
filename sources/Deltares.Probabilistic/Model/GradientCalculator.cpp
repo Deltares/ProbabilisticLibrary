@@ -31,7 +31,7 @@ namespace Deltares
                     samples.push_back(uNew);
                 }
 
-                double* zValues = modelRunner->getZValues(samples);
+                std::vector<double> zValues = modelRunner->getZValues(samples);
 
                 double z = zValues[0];
                 for (int k = 0; k < nstochasts; k++)
@@ -39,8 +39,6 @@ namespace Deltares
                     double zp = zValues[k + 1];
                     gradient[k] = (zp - z) / du;
                 }
-
-                delete[] zValues;
             }
             else
             {
@@ -55,7 +53,7 @@ namespace Deltares
                     samples.push_back(u2);
                 }
 
-                double* zValues = modelRunner->getZValues(samples);
+                std::vector<double> zValues = modelRunner->getZValues(samples);
 
                 for (int k = 0; k < nstochasts; k++)
                 {
@@ -63,8 +61,6 @@ namespace Deltares
                     double zp = zValues[2 * k + 2];
                     gradient[k] = (zp - zm) / Settings->StepSize;
                 }
-
-                delete[] zValues;
             }
 
             return gradient;

@@ -68,7 +68,7 @@ namespace Deltares
 			return sample->Z;
 		}
 
-		double* ModelRunner::getZValues(std::vector<std::shared_ptr<Sample>> samples)
+		std::vector<double> ModelRunner::getZValues(std::vector<std::shared_ptr<Sample>> samples)
 		{
 			std::vector<std::shared_ptr<Sample>> xSamples;
 
@@ -79,7 +79,7 @@ namespace Deltares
 
 			this->zModel->invoke(xSamples);
 
-			double* zValues = new double[xSamples.size()];
+			std::vector<double> zValues(xSamples.size());
 
 			for (int i = 0; i < xSamples.size(); i++)
 			{
@@ -108,7 +108,7 @@ namespace Deltares
 			}
 		}
 
-		bool ModelRunner::shouldExitPrematurely(double* zValues, double z0Fac, std::vector<std::shared_ptr<Sample>> samples, double beta)
+		bool ModelRunner::shouldExitPrematurely(std::vector<double> zValues, double z0Fac, std::vector<std::shared_ptr<Sample>> samples, double beta)
 		{
 			return false;
 		}
