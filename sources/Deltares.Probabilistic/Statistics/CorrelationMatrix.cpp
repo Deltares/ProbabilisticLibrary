@@ -10,11 +10,9 @@ namespace Deltares
 
         std::vector<double> CorrelationMatrix::Cholesky(const std::vector<double>& uValues)
         {
-            size_t m1; size_t m2;
-            matrix.get_dims(m1, m2);
             auto count = uValues.size();
             auto correlatedValues = std::vector<double>(count);
-            if (m1 == 0)
+            if (dim == 0)
             {
                 for (int i = 0; i < count; i++)
                 {
@@ -46,6 +44,7 @@ namespace Deltares
 
         void CorrelationMatrix::init(const int maxStochasts)
         {
+            dim = maxStochasts;
             matrix = Matrix(maxStochasts, maxStochasts);
             for (size_t i = 0; i < maxStochasts; i++)
             {
@@ -55,9 +54,7 @@ namespace Deltares
 
         void CorrelationMatrix::SetCorrelation(const int i, const int j, const double value)
         {
-            size_t m1; size_t m2;
-            matrix.get_dims(m1, m2);
-            if (std::max(i, j) >= m1)
+            if (std::max(i, j) >= dim)
             {
                 throw probLibException("dimension mismatch in SetCorrelation");
             }
@@ -90,12 +87,10 @@ namespace Deltares
 
         void CorrelationMatrix::filter(const std::shared_ptr<CorrelationMatrix> m, const std::vector<int>& index)
         {
-            size_t m1; size_t m2;
-            m->matrix.get_dims(m1, m2);
-            for (size_t i = 0; i < m1; i++)
+            for (size_t i = 0; i < dim; i++)
             {
                 auto ii = findNewIndex(index, i);
-                for (size_t j = 0; j < m1; j++)
+                for (size_t j = 0; j < dim; j++)
                 {
                     auto jj = findNewIndex(index, j);
                     if (index[i] >= 0 && index[j] >= 0)
@@ -157,9 +152,7 @@ namespace Deltares
                 return indexer[j];
             }
 
-            size_t m1; size_t m2;
-            matrix.get_dims(m1, m2);
-            for (size_t i = 0; i < m2; i++)
+            for (size_t i = 0; i < dim; i++)
             {
                 if (i != j && abs(matrix(i, j)) >= 1.0)
                 {
@@ -171,11 +164,9 @@ namespace Deltares
 
         bool CorrelationMatrix::IsIdentity() const
         {
-            size_t m1; size_t m2;
-            matrix.get_dims(m1, m2);
-            for (size_t i = 0; i < m1; i++)
+            for (size_t i = 0; i < dim; i++)
             {
-                for (size_t j = 0; j < m2; j++)
+                for (size_t j = 0; j < dim; j++)
                 {
                     if (i == j && matrix(i, j) != 1.0) return false;
                     if (i != j && matrix(i, j) != 0.0) return false;
@@ -186,12 +177,10 @@ namespace Deltares
 
         int CorrelationMatrix::CountCorrelations() const
         {
-            size_t m1; size_t m2;
-            matrix.get_dims(m1, m2);
             int count = 0;
-            for (size_t i = 0; i < m1; i++)
+            for (size_t i = 0; i < dim; i++)
             {
-                for (size_t j = i+1; j < m2; j++)
+                for (size_t j = i+1; j < dim; j++)
                 {
                     if (matrix(i, j) != 0.0 || matrix(j, i) != 0.0) count++;
                 }
@@ -246,9 +235,7 @@ namespace Deltares
         {
             if (fullCorrelatedCorrelations.size() > 0)
             {
-                size_t m1; size_t m2;
-                matrix.get_dims(m1, m2);
-                for (size_t i = 0; i < m1; i++)
+                for (size_t i = 0; i < dim; i++)
                 {
                     auto r = checkFullyCorrelatedOneStochast(i);
                     if (r != correlationCheckResult::OK) return true;

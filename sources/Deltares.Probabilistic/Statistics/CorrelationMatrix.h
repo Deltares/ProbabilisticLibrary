@@ -50,6 +50,7 @@ namespace Deltares
             std::vector<indexWithCorrelation> indexer;
             std::vector<correlationPair> fullCorrelatedCorrelations;
             correlationCheckResult checkFullyCorrelatedOneStochast(const size_t i) const;
+            size_t dim = 0;
         };
     }
 }
