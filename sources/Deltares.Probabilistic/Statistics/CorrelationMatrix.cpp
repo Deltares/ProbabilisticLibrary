@@ -1,6 +1,7 @@
 #include "CorrelationMatrix.h"
 #include <memory>
 #include <algorithm>
+#include <iostream>
 
 namespace Deltares
 {
@@ -132,6 +133,12 @@ namespace Deltares
         void CorrelationMatrix::resolveConflictingCorrelations()
         {
             // to be implemented
+            std::cout << fullCorrelatedCorrelations.size() << std::endl;
+            for (size_t i = 0; i < dim; i++)
+            {
+                auto r = checkFullyCorrelatedOneStochast(i);
+                std::cout << i << "," << (int)r << std::endl;
+            }
         }
 
 

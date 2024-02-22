@@ -89,7 +89,6 @@ namespace Deltares.Statistics.Test
 
             Assert.IsTrue(matrix.HasConflictingCorrelations());
 
-            /*
             matrix.ResolveConflictingCorrelations();
 
             Assert.IsFalse(matrix.HasConflictingCorrelations());
@@ -97,6 +96,7 @@ namespace Deltares.Statistics.Test
 
             matrix.SetCorrelation(d, e, -1);
 
+            /*
             Assert.IsFalse(matrix.HasConflictingCorrelations());
             
             matrix.SetCorrelation(e, a,-1);
