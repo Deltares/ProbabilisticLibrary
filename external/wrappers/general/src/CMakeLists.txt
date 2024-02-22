@@ -1,22 +1,17 @@
-enable_language(C)
-include(FortranCInterface)
-FortranCInterface_VERIFY(CXX)
-
-add_library(pb_wrapper_c STATIC "")
-file(GLOB cwrapper_files
-    "../../../../sources/Deltares.Probabilistic.CWrapper/*.cpp"
+add_library(pb_wrapper_c_old STATIC "")
+file(GLOB cwrapper_files_old
     "*.cpp"
 )
 
-target_sources(pb_wrapper_c
+target_sources(pb_wrapper_c_old
   PRIVATE
-    ${cwrapper_files}
+    ${cwrapper_files_old}
   )
 
-  set_target_properties(pb_wrapper_c
+  set_target_properties(pb_wrapper_c_old
     PROPERTIES
       CXX_STANDARD 17
       POSITION_INDEPENDENT_CODE 1
   )
 
-target_link_libraries(pb_wrapper_c Deltares.Probabilistic.Kernel)
+target_link_libraries(pb_wrapper_c_old Deltares.Probabilistic.Kernel)

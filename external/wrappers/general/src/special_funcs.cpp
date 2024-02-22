@@ -1,5 +1,5 @@
 #include <limits>
-#include "stringHelper.h"
+#include "../../../../sources/Deltares.Probabilistic.CWrapper/stringHelper.h"
 #include "../../../src/extern/asa063.hpp"
 #include "../../../src/extern/dgammaDs.h"
 

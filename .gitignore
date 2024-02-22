@@ -79,3 +79,9 @@ ApplicationPayload.wxs
 
 # Automatically generated
 .idea/
+
+# test output
+ftnunit.html
+ftnunit.lst
+ftnunit.run
+last_error.txt
