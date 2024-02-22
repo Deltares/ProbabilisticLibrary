@@ -16,19 +16,6 @@ if (UNIX)
   target_compile_options(Deltares.Probabilistic.FortranWrapper PUBLIC -cpp)
 endif (UNIX)
 
-if ( TARGET ftnunit )
-else ()
-  add_library(ftnunit
-    STATIC
-      ftnunit/ftnunit.f90
-      ftnunit/ftnunit_hooks_teamcity.f90
-  )
-
-  if (UNIX)
-    target_compile_options(ftnunit PUBLIC -cpp)
-  endif (UNIX)
-endif()
-
 if ( TARGET tools )
   set(fctools tools)
 else ()
@@ -80,7 +67,6 @@ else ()
   target_compile_definitions(feedbackDLL PRIVATE "maxParallelThreads=96")
 endif()
 
-target_link_libraries(ftnunit ${fctools})
 target_link_libraries(feedback feedbackDLL ${fctools})
 target_link_libraries(feedbackDLL ${fctools})
 target_link_libraries(Deltares.Probabilistic.FortranWrapper

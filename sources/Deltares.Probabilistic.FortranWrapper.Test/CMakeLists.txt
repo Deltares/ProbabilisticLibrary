@@ -3,6 +3,20 @@ add_library(unitTestTools
     utils/TestTools.f90
 )
 
+if ( TARGET ftnunit )
+else ()
+  add_library(ftnunit
+    STATIC
+      ftnunit/ftnunit.f90
+      ftnunit/ftnunit_hooks_teamcity.f90
+  )
+
+  if (UNIX)
+    target_compile_options(ftnunit PUBLIC -cpp)
+  endif (UNIX)
+  target_link_libraries(ftnunit ${fctools})
+endif()
+
 add_executable(ftn_unit_test_prog
     ftn_interface_tests.f90
     ftn_unit_tests.f90
