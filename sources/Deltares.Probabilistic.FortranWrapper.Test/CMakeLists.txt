@@ -1,3 +1,6 @@
+get_property(fctools GLOBAL PROPERTY fc_tools)
+get_property(generalLib GLOBAL PROPERTY general_lib)
+
 add_library(unitTestTools
   STATIC
     utils/TestTools.f90

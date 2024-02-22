@@ -28,6 +28,7 @@ else ()
     tools/equalReals.f90
 )
 endif()
+set_property(GLOBAL PROPERTY fc_tools ${fctools})
 
 if ( TARGET generalLib )
   set(fcgeneral generalLib)
@@ -38,9 +39,10 @@ else()
       general/realloc_check.f90
       general/vectorUtilities.f90
       general/fileUtilities.f90
-)
-target_link_libraries(fortranCommonGeneral feedback)
+  )
+  target_link_libraries(fortranCommonGeneral feedback)
 endif()
+set_property(GLOBAL PROPERTY general_lib ${generalLib})
 
 if ( TARGET feedback )
 else ()
