@@ -67,6 +67,9 @@ subroutine allProbMethodsWaartsFunctionsNoIterationTest
     call testWithLevel(testDeterministicParameterHasNoInfluence, "DeterministicParameterHasNoInfluenceTest", 3)
     call testWithLevel(testErrorHandlingCalculateLimitStateFunction, "Test error handling", 1)
 
+    call feedbackClose()
+    call ftnunit_remove_file("waartsfunctions.txt")
+
 end subroutine allProbMethodsWaartsFunctionsNoIterationTest
 
 !> Call all the tests for calculateLimitStateFunction
@@ -77,6 +80,9 @@ subroutine allProbMethodsWaartsFunctionsIterationTest
 
     numberIterations = maxNumberIterations
     call allProbMethodsWaartsFunctionsTests(3) ! parameter is minimum testlevel
+
+    call feedbackClose()
+    call ftnunit_remove_file("waartsfunctions.txt")
 
 end subroutine allProbMethodsWaartsFunctionsIterationTest
 

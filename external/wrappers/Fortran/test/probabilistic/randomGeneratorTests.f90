@@ -84,10 +84,11 @@ subroutine testGenerateRandomValues
         write( fileId, '(F8.5)') randomValue
     enddo
 
-    call assert_comparable( randomValue, 0.7785768508911d0 , margin, "unexpected return value randomValue" )
-
     close( fileId )
 
+    call assert_comparable( randomValue, 0.7785768508911d0 , margin, "unexpected return value randomValue" )
+
+    call ftnunit_remove_file('trekking.txt')
 end subroutine testGenerateRandomValues
 
 end module randomGeneratorTests

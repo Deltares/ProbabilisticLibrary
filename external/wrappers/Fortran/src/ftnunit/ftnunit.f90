@@ -62,8 +62,9 @@ module ftnunit
     
     public :: test, testwithlevel, runtests, runtests_init, runtests_final, setRunTestLevel, setTestTitle, &
               assert, assert_true, assert_false, assert_equal, assert_comparable, assert_inbetween, &
-              assert_files_comparable, assert_files_comparable_with_exceptions, ftnunit_write_html_comment
-    
+              assert_files_comparable, assert_files_comparable_with_exceptions, ftnunit_write_html_comment, &
+              ftnunit_remove_file
+
     integer, parameter :: mode_all     = 0  ! Run all tests
     integer, parameter :: mode_single  = 1  ! Run a single test
     integer, parameter :: mode_list    = 2  ! Only list the tests
