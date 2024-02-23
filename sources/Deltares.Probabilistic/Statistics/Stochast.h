@@ -22,8 +22,6 @@ namespace Deltares
 			bool inverted = false;
 			bool truncated = false;
 
-			bool varying = false;
-
 		protected:
 			std::shared_ptr<Distribution> distribution = std::make_shared<DeterministicDistribution>();
 
@@ -46,6 +44,8 @@ namespace Deltares
 
 			void setDistributionType(DistributionType distributionType);
 			DistributionType getDistributionType();
+
+			void setExternalDistribution(UXLambda externalFunction);
 
 			bool canInvert();
 			bool isInverted();
@@ -80,12 +80,6 @@ namespace Deltares
 			bool IsVariableStochast = false;
 			std::shared_ptr<Stochast> VariableSource = nullptr;
 			std::shared_ptr<VariableStochastValuesSet> ValueSet = std::make_shared<VariableStochastValuesSet>();
-
-			// TODO: remove this temporary solution when all distributions have been converted
-			void SetVarying(bool varying)
-			{
-				this->varying = varying;
-			}
 		};
 	}
 }

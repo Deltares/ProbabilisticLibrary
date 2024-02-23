@@ -17,6 +17,7 @@ namespace Deltares
 		namespace Wrappers
 		{
 			public enum class ConstantParameterType { Deviation, VariationCoefficient };
+			public delegate double ManagedUXDelegate(double u);
 
 			public ref class Stochast
 			{
@@ -66,15 +67,15 @@ namespace Deltares
 					shared->object->setDistributionType(DistributionTypeConverter::getNativeDistributionType(distributionType));
 				}
 
+				/**
+				 * \brief Sets a call back function, which calculates the transformation from u to x
+				 * \param uxDelegate 
+				 */
+				void SetExternalDistribution(ManagedUXDelegate^ uxDelegate);
+
 				virtual bool IsValid()
 				{
 					return shared->object->isValid();
-				}
-
-				// TODO: remove this temporary solution when all distributions have been converted
-				void SetVarying(bool varying)
-				{
-					shared->object->SetVarying(varying);
 				}
 
 				virtual bool IsVarying()
