@@ -166,37 +166,25 @@ namespace Deltares
 				Sample^ GetSampleAtBeta(double beta)
 				{
 					UpdateValues();
-
-					array<double>^ values = NativeSupport::toManaged(shared->object->getSampleAtBeta(beta)->Values);
-
-					return gcnew Sample(this->SpaceType, this->Iteration, values);
+					return gcnew Sample(shared->object->getSampleAtBeta(beta));
 				}
 
 				Sample^ GetNormalizedSample()
 				{
 					UpdateValues();
-
-					array<double>^ values = NativeSupport::toManaged(shared->object->getNormalizedSample()->Values);
-
-					return gcnew Sample(this->SpaceType, this->Iteration, values);
+					return gcnew Sample(shared->object->getNormalizedSample());
 				}
 
 				Sample^ GetMultipliedSample(double factor)
 				{
 					UpdateValues();
-
-					array<double>^ values = NativeSupport::toManaged(shared->object->getMultipliedSample(factor)->Values);
-
-					return gcnew Sample(this->SpaceType, this->Iteration, values);
+					return gcnew Sample(shared->object->getMultipliedSample(factor));
 				}
 
 				Sample^ Clone()
 				{
 					UpdateValues();
-
-					array<double>^ values = NativeSupport::toManaged(shared->object->clone()->Values);
-
-					return gcnew Sample(this->SpaceType, this->Iteration, values);
+					return gcnew Sample(shared->object->clone());
 				}
 
 				/// <summary>
