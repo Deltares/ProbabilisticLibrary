@@ -1,7 +1,6 @@
 #include "CorrelationMatrix.h"
 #include <memory>
 #include <algorithm>
-#include <iostream>
 
 namespace Deltares
 {
@@ -133,14 +132,95 @@ namespace Deltares
         void CorrelationMatrix::resolveConflictingCorrelations()
         {
             // to be implemented
-            std::cout << fullCorrelatedCorrelations.size() << std::endl;
             for (size_t i = 0; i < dim; i++)
             {
                 auto r = checkFullyCorrelatedOneStochast(i);
-                std::cout << i << "," << (int)r << std::endl;
+                if (r == correlationCheckResult::inconsistentCorrelation)
+                {
+                    fixInconsistent(i);
+                }
+                else if (r == correlationCheckResult::missingCorrelation)
+                {
+                    fixMissing(i);
+                }
             }
         }
 
+        void CorrelationMatrix::fixMissing(size_t i)
+        {
+            auto indexes = std::vector<correlationPair>();
+            for (const auto& p : fullCorrelatedCorrelations)
+            {
+                if (p.index1 == i)
+                {
+                    indexes.push_back(p);
+                }
+                else if (p.index2 == i)
+                {
+                    indexes.push_back(p);
+                }
+            }
+
+            auto ii = std::vector<int>();
+            double product = 1.0;
+            for (size_t j = 0; j < 2; j++)
+            {
+                if (indexes[j].index1 == i)
+                {
+                    ii.push_back(indexes[j].index2);
+                }
+                else
+                {
+                    ii.push_back(indexes[j].index1);
+                }
+                product *= indexes[j].correlation;
+            }
+            auto newCorrelation = correlationPair(ii[0], ii[1], product);
+            fullCorrelatedCorrelations.push_back(newCorrelation);
+            matrix(ii[0], ii[1]) = product;
+        }
+
+        void CorrelationMatrix::fixInconsistent(size_t i)
+        {
+            auto indexes = std::vector<correlationPair>();
+            for (const auto& p : fullCorrelatedCorrelations)
+            {
+                if (p.index1 == i)
+                {
+                    indexes.push_back(p);
+                }
+                else if (p.index2 == i)
+                {
+                    indexes.push_back(p);
+                }
+            }
+
+            auto ii = std::vector<int>();
+            double product = 1.0;
+            for (size_t j = 0; j < 2; j++)
+            {
+                if (indexes[j].index1 == i)
+                {
+                    ii.push_back(indexes[j].index2);
+                }
+                else
+                {
+                    ii.push_back(indexes[j].index1);
+                }
+                product *= indexes[j].correlation;
+            }
+            for (auto& p : fullCorrelatedCorrelations)
+            {
+                if (std::find(ii.begin(), ii.end(), p.index1) != ii.end() &&
+                    std::find(ii.begin(), ii.end(), p.index2) != ii.end())
+                {
+                    p.correlation *= -1.0;
+                    matrix(p.index1, p.index2) = p.correlation;
+                    break;
+                }
+            }
+
+        }
 
         int CorrelationMatrix::findNewIndex(const std::vector<int> index, const size_t i)
         {
@@ -213,7 +293,7 @@ namespace Deltares
             {
                 auto ii =  std::vector<int>();
                 double product = 1.0;
-                for (size_t j = 0; j < 2; j++)
+                for (size_t j = 0; j < indexes.size(); j++)
                 {
                     if (indexes[j].index1 == i)
                     {
