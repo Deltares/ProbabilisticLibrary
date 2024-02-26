@@ -29,11 +29,6 @@ namespace Deltares
 			/// </summary>
 			public enum class SpaceType { U, X };
 
-			/// <summary>
-			/// Indicates whether a <see cref="Sample"/> should be logged
-			/// </summary>
-			public enum class LogSampleType { Never, OnlyModel, Always };
-
 			using namespace Deltares::Models;
 			using namespace Deltares::Utils::Wrappers;
 
@@ -140,19 +135,10 @@ namespace Deltares
 					this->Iteration = iteration;
 				}
 
-				Sample(SpaceType spaceType, int iteration, array<double>^ values, LogSampleType logSampleType) : Sample(values)
-				{
-					this->SpaceType = spaceType;
-					this->Iteration = iteration;
-					this->LogSampleType = logSampleType;
-				}
-
 				/// <summary>
 				/// The space type in which the <see cref="Values"/> are defined
 				/// </summary>
 				SpaceType SpaceType = SpaceType::U;
-
-				LogSampleType LogSampleType = LogSampleType::Always;
 
 				double Factor = 0;
 
@@ -185,16 +171,6 @@ namespace Deltares
 				{
 					UpdateValues();
 					return gcnew Sample(shared->object->clone());
-				}
-
-				/// <summary>
-				/// Tells whether this sample should be saved
-				/// </summary>
-				/// <param name="reused"></param>
-				/// <returns></returns>
-				bool ShouldSave(bool reused)
-				{
-					return this->LogSampleType == LogSampleType::Always || (this->LogSampleType == LogSampleType::OnlyModel && !reused);
 				}
 
 				int ScenarioIndex = -1;
