@@ -274,7 +274,7 @@ namespace Deltares
             }
         }
 
-        bool CorrelationMatrix::IsWithinStochasts(correlationPair value) const
+        bool CorrelationMatrix::IsWithinStochasts(const correlationPair & value) const
         {
             bool found1 = false;
             bool found2 = false;
@@ -286,7 +286,7 @@ namespace Deltares
             return found1 && found2;
         }
 
-        bool CorrelationMatrix::IsCheckedWithinStochasts(bool checkWithinStochasts, correlationPair value) const
+        bool CorrelationMatrix::IsCheckedWithinStochasts(const bool checkWithinStochasts, const correlationPair & value) const
         {
             if (!checkWithinStochasts)
             {

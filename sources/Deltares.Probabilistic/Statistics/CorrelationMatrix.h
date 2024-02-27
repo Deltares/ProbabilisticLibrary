@@ -55,8 +55,8 @@ namespace Deltares
             int findNewIndex(const std::vector<int> index, const size_t i);
             std::vector<indexWithCorrelation> indexer;
             std::vector<correlationPair> inputCorrelations;
-            bool IsCheckedWithinStochasts(bool checkWithinStochasts, correlationPair value) const;
-            bool IsWithinStochasts(correlationPair value) const;
+            bool IsCheckedWithinStochasts(const bool checkWithinStochasts, const correlationPair & value) const;
+            bool IsWithinStochasts(const correlationPair & value) const;
             std::vector<int> GetLinkingCorrelationStochasts(correlationPair correlation, correlationPair otherCorrelation) const;
             size_t dim = 0;
         };
