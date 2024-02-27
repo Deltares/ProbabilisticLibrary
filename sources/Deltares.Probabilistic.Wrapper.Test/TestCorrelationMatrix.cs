@@ -103,12 +103,10 @@ namespace Deltares.Statistics.Test
 
             matrix.ResolveConflictingCorrelations();
 
-            /*
             Assert.IsFalse(matrix.HasConflictingCorrelations());
 
             Assert.AreEqual(-1, matrix.GetCorrelation(c, e));
             Assert.AreEqual(1, matrix.GetCorrelation(c, d));
-             */
         }
     }
 }

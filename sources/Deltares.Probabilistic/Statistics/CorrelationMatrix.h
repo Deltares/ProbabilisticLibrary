@@ -44,9 +44,9 @@ namespace Deltares
             bool IsIdentity() const;
             int CountCorrelations() const;
             bool HasConflictingCorrelations(bool onlyWithinStochasts = false) const;
+            void resolveConflictingCorrelations(bool onlyWithinStochasts = false);
             void CholeskyDecomposition();
             bool checkFullyCorrelated(const int i) const;
-            void resolveConflictingCorrelations();
             void filter(const std::shared_ptr<CorrelationMatrix> m, const std::vector<int>& index);
             indexWithCorrelation findDependent(const int i) const;
         private:

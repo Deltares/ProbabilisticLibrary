@@ -1,6 +1,7 @@
 #include "CorrelationMatrix.h"
 #include <memory>
 #include <algorithm>
+#include <iostream>
 
 namespace Deltares
 {
@@ -58,6 +59,8 @@ namespace Deltares
             {
                 throw probLibException("dimension mismatch in SetCorrelation");
             }
+
+
             matrix(i, j) = std::min(std::max(value, -1.0), 1.0);
             bool fully;
             if (abs(value) < 1.0)
@@ -69,8 +72,15 @@ namespace Deltares
             {
                 fully = true;
             }
+            for (auto& c : inputCorrelations)
+            {
+                if (c.index1 == i && c.index2 == j || c.index1 == j && c.index2 == i)
+                {
+                    c.correlation = value;
+                    return;
+                }
+            }
             auto p = correlationPair({ i, j, value, true });
-            // TODO check on already added
             inputCorrelations.push_back(p);
         }
 
@@ -90,6 +100,8 @@ namespace Deltares
 
         void CorrelationMatrix::filter(const std::shared_ptr<CorrelationMatrix> m, const std::vector<int>& index)
         {
+            if (m->dim == 0) { return ; }
+
             for (size_t i = 0; i < dim; i++)
             {
                 auto ii = findNewIndex(index, i);
@@ -131,11 +143,6 @@ namespace Deltares
             }
             indexer = newIndexer;
             m->inputCorrelations = inputCorrelations;
-        }
-
-        void CorrelationMatrix::resolveConflictingCorrelations()
-        {
-            // to be implemented
         }
 
         int CorrelationMatrix::findNewIndex(const std::vector<int> index, const size_t i)
@@ -227,6 +234,46 @@ namespace Deltares
             return false;
         }
 
+        /// <summary>
+        /// Sets correlations to fully correlated if they should be so due to other correlations
+        /// </summary>
+        void CorrelationMatrix::resolveConflictingCorrelations(bool onlyWithinStochasts)
+        {
+            bool modified = true;
+
+            while (modified)
+            {
+                modified = false;
+
+                for (int i = 0; i < inputCorrelations.size(); i++)
+                {
+                    auto correlation = inputCorrelations[i];
+
+                    if (correlation.isFullyCorrelated && IsCheckedWithinStochasts(onlyWithinStochasts, correlation))
+                    {
+                        for (int j = i + 1; j < inputCorrelations.size(); j++)
+                        {
+                            auto otherCorrelation = inputCorrelations[j];
+
+                            if (otherCorrelation.isFullyCorrelated && IsCheckedWithinStochasts(onlyWithinStochasts, otherCorrelation) && correlation.AreLinked(otherCorrelation))
+                            {
+                                auto nonConnectingStochasts = GetLinkingCorrelationStochasts(correlation, otherCorrelation);
+
+                                double correlationValue = GetCorrelation(nonConnectingStochasts[0], nonConnectingStochasts[1]);
+                                double expectedCorrelation = correlation.correlation * otherCorrelation.correlation;
+
+                                if (correlationValue != expectedCorrelation)
+                                {
+                                    SetCorrelation(nonConnectingStochasts[0], nonConnectingStochasts[1], expectedCorrelation);
+                                    modified = true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         bool CorrelationMatrix::IsWithinStochasts(correlationPair value) const
         {
             bool found1 = false;
@@ -276,6 +323,11 @@ namespace Deltares
                 {
                     nonConnectingStochasts.push_back(stochast);
                 }
+            }
+
+            if (nonConnectingStochasts.size() < 2)
+            {
+                std::cout << "check" << std::endl;
             }
 
             return nonConnectingStochasts;
