@@ -14,11 +14,17 @@ namespace Deltares
             double correlation;
         };
 
-        struct correlationPair
+        class correlationPair
         {
+        public:
             int index1;
             int index2;
             double correlation;
+            bool isFullyCorrelated;
+            bool AreLinked(correlationPair other)
+            {
+                return index1 == other.index1 || index1 == other.index2 || index2 == other.index1 || index2 == other.index2;
+            }
         };
 
         enum class correlationCheckResult
@@ -37,7 +43,7 @@ namespace Deltares
             double GetCorrelation(const int i, const int j) const { return matrix(i, j); }
             bool IsIdentity() const;
             int CountCorrelations() const;
-            bool HasConflictingCorrelations() const;
+            bool HasConflictingCorrelations(bool onlyWithinStochasts = false) const;
             void CholeskyDecomposition();
             bool checkFullyCorrelated(const int i) const;
             void resolveConflictingCorrelations();
@@ -48,10 +54,10 @@ namespace Deltares
             Deltares::ProbLibCore::Matrix choleskyMatrix = Deltares::ProbLibCore::Matrix(0, 0);
             int findNewIndex(const std::vector<int> index, const size_t i);
             std::vector<indexWithCorrelation> indexer;
-            std::vector<correlationPair> fullCorrelatedCorrelations;
-            correlationCheckResult checkFullyCorrelatedOneStochast(const size_t i) const;
-            void fixInconsistent(size_t i);
-            void fixMissing(size_t i);
+            std::vector<correlationPair> inputCorrelations;
+            bool IsCheckedWithinStochasts(bool checkWithinStochasts, correlationPair value) const;
+            bool IsWithinStochasts(correlationPair value) const;
+            std::vector<int> GetLinkingCorrelationStochasts(correlationPair correlation, correlationPair otherCorrelation) const;
             size_t dim = 0;
         };
     }
