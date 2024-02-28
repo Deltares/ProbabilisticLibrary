@@ -100,40 +100,27 @@ namespace Deltares
 
         void CorrelationMatrix::filter(const std::shared_ptr<CorrelationMatrix> m, const std::vector<int>& index)
         {
-            if (m->dim == 0) { return ; }
-
-            for (size_t i = 0; i < dim; i++)
+            auto iPoint = std::vector<int>();
+            indexer = std::vector<indexWithCorrelation>(index.size());
+            for (int i = 0; i < index.size(); i++)
             {
-                auto ii = findNewIndex(index, i);
-                for (size_t j = 0; j < dim; j++)
+                if (index[i] >= 0)
                 {
-                    auto jj = findNewIndex(index, j);
-                    if (index[i] >= 0 && index[j] >= 0)
-                    {
-                        matrix(ii, jj) = m->matrix(i, j);
-                    }
+                    iPoint.push_back(i);
                 }
-            }
-
-            auto nrAllStochasts = index.size();
-            auto newIndexer = std::vector<indexWithCorrelation>(nrAllStochasts);
-            for (size_t i = 0; i < nrAllStochasts; i++)
-            {
-                if (index[i] == -2)
-                {
-                    newIndexer[i].index = -2;  // not varying stochast
-                }
-                else if (index[i] == -1)
+                else
                 {
                     auto ii = i;
                     double correlation = 1.0;
-                    for (;;)
+                    for (int j = 0; j < index.size(); j++)
                     {
                         auto dependent = m->findDependent(ii);
+                        if (dependent.index < 0) break;
                         dependent.correlation *= correlation;
-                        if (index[dependent.index] >= 0)
+                        auto next = m->findDependent(dependent.index);
+                        if (next.index < 0)
                         {
-                            newIndexer[i] = dependent;
+                            indexer[i] = dependent;
                             break;
                         }
                         ii = dependent.index;
@@ -141,8 +128,21 @@ namespace Deltares
                     }
                 }
             }
-            indexer = newIndexer;
-            m->inputCorrelations = inputCorrelations;
+
+            if (m->dim == 0) { return ; }
+
+            for (int i = 0; i < iPoint.size(); i++)
+            {
+                for (int j = 0; j < i; j++)
+                {
+                    auto stochast1 = index[iPoint[i]];
+                    auto stochast2 = index[iPoint[j]];
+
+                    double correlationValue = GetCorrelation(stochast1, stochast2);
+
+                    SetCorrelation(i, j, correlationValue);
+                }
+            }
         }
 
         int CorrelationMatrix::findNewIndex(const std::vector<int> index, const size_t i)
