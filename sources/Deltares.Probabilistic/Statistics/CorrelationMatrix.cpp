@@ -53,15 +53,15 @@ namespace Deltares
             }
         }
 
-        void CorrelationMatrix::SetCorrelation(const int i, const int j, const double value)
+        void CorrelationMatrix::SetCorrelation(const int i, const int j, double value)
         {
             if (std::max(i, j) >= dim)
             {
                 throw probLibException("dimension mismatch in SetCorrelation");
             }
 
-
-            matrix(i, j) = std::min(std::max(value, -1.0), 1.0);
+            value = std::min(std::max(value, -1.0), 1.0);
+            matrix(i, j) = value;
             bool fully;
             if (abs(value) < 1.0)
             {

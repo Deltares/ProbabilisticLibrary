@@ -39,7 +39,7 @@ namespace Deltares
         public:
             void init(const int maxStochasts);
             std::vector<double> Cholesky(const std::vector<double>& uValues);
-            void SetCorrelation(const int i, const int j, const double value);
+            void SetCorrelation(const int i, const int j, double value);
             double GetCorrelation(const int i, const int j) const { return matrix(i, j); }
             bool IsIdentity() const;
             int CountCorrelations() const;
