@@ -55,6 +55,11 @@ namespace Deltares
 				virtual void CalcSamples(System::Collections::Generic::IList<Sample^>^ samples);
 				virtual void CalcSample(Sample^ sample);
 
+				virtual property int VaryingStochastCount
+				{
+					int get() { return shared->object->getVaryingStochastCount(); }
+				}
+
 				/**
 				 * \brief Calculates a z-value for a reliability method in .net
 				 * \param sample 
