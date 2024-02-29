@@ -21,6 +21,11 @@ namespace Deltares
 			return this->uConverter->getStochastCount();
 		}
 
+		bool ModelRunner::isVaryingStochast(int index)
+		{
+			return this->uConverter->isVaryingStochast(index);
+		}
+
 		void ModelRunner::updateStochastSettings(std::shared_ptr<Reliability::StochastSettingsSet> settings)
 		{
 			this->uConverter->updateStochastSettings(settings);

@@ -92,6 +92,11 @@ namespace Deltares
 			varyingCorrelationMatrix->CholeskyDecomposition();
 		}
 
+		bool UConverter::isVaryingStochast(int index)
+		{
+			return this->varyingStochastIndex[index] >= 0;
+		}
+
 		std::vector<double> UConverter::getVaryingValues(std::vector<double> values)
 		{
 			std::vector<double> varyingValues;

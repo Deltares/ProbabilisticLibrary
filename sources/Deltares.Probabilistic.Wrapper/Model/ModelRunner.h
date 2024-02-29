@@ -8,6 +8,7 @@
 #include "ProgressIndicator.h"
 #include "RunSettings.h"
 #include "Sample.h"
+#include "UConverter.h"
 
 namespace Deltares
 {
@@ -58,6 +59,11 @@ namespace Deltares
 				virtual property int VaryingStochastCount
 				{
 					int get() { return shared->object->getVaryingStochastCount(); }
+				}
+
+				bool IsVaryingStochast(int index)
+				{
+					return shared->object->isVaryingStochast(index);
 				}
 
 				/**

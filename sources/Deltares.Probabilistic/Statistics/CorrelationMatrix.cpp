@@ -97,10 +97,12 @@ namespace Deltares
 
 		void CorrelationMatrix::filter(const std::shared_ptr<CorrelationMatrix> m, const std::vector<int>& index)
 		{
-			for (size_t i = 0; i < dim; i++)
+			auto nrAllStochasts = index.size();
+
+			for (size_t i = 0; i < nrAllStochasts; i++)
 			{
 				auto ii = findNewIndex(index, i);
-				for (size_t j = 0; j < dim; j++)
+				for (size_t j = 0; j < nrAllStochasts; j++)
 				{
 					auto jj = findNewIndex(index, j);
 					if (index[i] >= 0 && index[j] >= 0)
@@ -110,7 +112,6 @@ namespace Deltares
 				}
 			}
 
-			auto nrAllStochasts = index.size();
 			auto newIndexer = std::vector<indexWithCorrelation>(nrAllStochasts);
 			for (size_t i = 0; i < nrAllStochasts; i++)
 			{
