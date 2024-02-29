@@ -12,6 +12,11 @@ namespace Deltares
 {
 	namespace Models
 	{
+		/// <summary>
+		/// Indicates the meaning of <see cref="Sample.Values"/> in a <see cref="Sample"/>
+		/// </summary>
+		enum SpaceType { U, X };
+
 		class Sample
 		{
 		private:
@@ -39,6 +44,11 @@ namespace Deltares
 			}
 
 			std::vector<double> Values;
+
+			/**
+			 * \brief Defines the parameter space in which Values are defined
+			 */
+			SpaceType SpaceType = SpaceType::U;
 
 			int IterationIndex = -1;
 			double Weight = 1;

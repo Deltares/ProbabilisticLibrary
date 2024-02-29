@@ -86,6 +86,14 @@ namespace Deltares
 
 				RunSettings^ Settings = gcnew RunSettings();
 
+				virtual void InitializeForRun()
+				{
+					shared->object->initializeForRun();
+				}
+
+				Sample^ GetXSample(Sample^ sample);
+				Sample^ GetOnlyVaryingSample(Sample^ sample);
+
 				std::shared_ptr<Models::ModelRunner> GetModelRunner()
 				{
 					shared->object->Settings = this->Settings->GetSettings();

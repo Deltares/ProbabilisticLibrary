@@ -17,9 +17,11 @@ namespace Deltares
 	{
 		UConverter::UConverter(std::vector<std::shared_ptr<Deltares::Statistics::Stochast>> stochasts, std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix)
 		{
+			id = ++UConverter::counter;
+
 			this->stochasts.clear();
 
-			for (int i = 0; i < stochasts.size(); i++)
+			for (size_t i = 0; i < stochasts.size(); i++)
 			{
 				this->stochasts.push_back(stochasts[i]);
 			}
@@ -46,7 +48,7 @@ namespace Deltares
 			{
 				if (this->stochasts[i]->isVarying() && !checkFullyCorrelated(i))
 				{
-					this->varyingStochastIndex.push_back(this->varyingStochastIndex.size());
+					this->varyingStochastIndex.push_back(i);
 					this->varyingStochasts.push_back(this->stochasts[i]);
 					this->hasQualitiveStochasts |= this->stochasts[i]->isQualitative();
 				}
@@ -89,6 +91,22 @@ namespace Deltares
 			}
 			varyingCorrelationMatrix->CholeskyDecomposition();
 		}
+
+		std::vector<double> UConverter::getVaryingValues(std::vector<double> values)
+		{
+			std::vector<double> varyingValues;
+
+			for (size_t i = 0; i < this->stochasts.size(); i++)
+			{
+				if (varyingStochastIndex[i] >= 0)
+				{
+					varyingValues.push_back(values[i]);
+				}
+			}
+
+			return varyingValues;
+		}
+
 
 		bool UConverter::checkFullyCorrelated(const int i)
 		{
@@ -191,16 +209,31 @@ namespace Deltares
 			return uValues;
 		}
 
+		std::vector<double> UConverter::getUValues(std::shared_ptr<Sample> sample)
+		{
+			return varyingCorrelationMatrix->Cholesky(sample->Values);
+		}
 
 		std::vector<double> UConverter::getXValues(std::shared_ptr<Sample> sample)
 		{
-			auto uCorrelated = varyingCorrelationMatrix->Cholesky(sample->Values);
+			std::vector<double> unexpandedUValues = sample->Values;
+
+			if (sample->Values.size() > varyingStochasts.size())
+			{
+				unexpandedUValues.clear();
+				for (size_t i = 0; i < varyingStochasts.size(); i++)
+				{
+					unexpandedUValues.push_back(sample->Values[i]);
+				}
+			}
+
+			auto uCorrelated = varyingCorrelationMatrix->Cholesky(unexpandedUValues);
 
 			auto expandedUValues = getExpandedValues(uCorrelated);
 
 			auto xValues = std::vector<double>(this->stochasts.size());
 
-			for (int i = 0; i < this->stochasts.size(); i++)
+			for (size_t i = 0; i < this->stochasts.size(); i++)
 			{
 				if (!this->hasVariableStochasts || !stochasts[i]->IsVariableStochast)
 				{

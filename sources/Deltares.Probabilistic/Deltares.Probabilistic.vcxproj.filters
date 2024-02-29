@@ -188,6 +188,7 @@
     <ClInclude Include="Statistics\Distributions\DistributionLibrary.h" />
     <ClInclude Include="Statistics\Distributions\HistogramDistribution.h" />
     <ClInclude Include="Statistics\Distributions\ExternalDistribution.h" />
+    <ClInclude Include="Model\ModelSample.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

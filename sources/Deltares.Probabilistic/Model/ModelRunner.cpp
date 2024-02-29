@@ -42,11 +42,12 @@ namespace Deltares
 
 		std::shared_ptr<Sample> ModelRunner::getXSample(std::shared_ptr<Sample> sample)
 		{
-			auto xValues = this->uConverter->getXValues(sample);
+			std::vector<double> xValues = this->uConverter->getXValues(sample);;
 
 			// create a sample with values in x-space
 			std::shared_ptr<Sample> xSample = std::make_shared<Sample>(xValues);
 
+			xSample->SpaceType = SpaceType::X;
 			xSample->AllowProxy = sample->AllowProxy;
 			xSample->IterationIndex = sample->IterationIndex;
 			xSample->Weight = sample->Weight;
@@ -218,6 +219,14 @@ namespace Deltares
 
 			return designPoint;
 		}
+
+		std::shared_ptr<Models::Sample> ModelRunner::getOnlyVaryingSample(std::shared_ptr<Sample> sample)
+		{
+			std::vector<double> varyingValues = this->uConverter->getVaryingValues(sample->Values);
+
+			return std::make_shared<Sample>(varyingValues);
+		}
+
 	}
 }
 

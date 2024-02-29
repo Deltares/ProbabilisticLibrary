@@ -160,6 +160,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Model\ModelSample.h" />
     <ClInclude Include="Statistics\DistributionType.h" />
     <ClInclude Include="Statistics\DiscreteValue.h" />
     <ClInclude Include="Statistics\FragilityValue.h" />

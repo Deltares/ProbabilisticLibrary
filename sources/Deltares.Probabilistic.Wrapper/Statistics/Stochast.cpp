@@ -56,6 +56,8 @@ namespace Deltares
 				System::IntPtr callbackPtr = System::Runtime::InteropServices::Marshal::GetFunctionPointerForDelegate(uxDelegate);
 				UXLambda functionPointer = static_cast<UXDelegate>(callbackPtr.ToPointer());
 
+				handles->Add(uxDelegate);
+
 				shared->object->setExternalDistribution(functionPointer);
 			}
 		}

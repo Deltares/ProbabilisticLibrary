@@ -196,9 +196,9 @@ namespace Deltares.Probabilistics.Wrappers.Test
             Assert.AreEqual(0.45, designPoint.Alphas[1].X, margin);
             Assert.AreEqual(0.90, designPoint.Alphas[2].X, margin);
 
-            Assert.AreEqual(0.0, designPoint.Alphas[0].Alpha, margin);
+            Assert.AreEqual(-1.0, designPoint.Alphas[0].Alpha, margin);
             Assert.AreEqual(0.0, designPoint.Alphas[1].Alpha, margin);
-            Assert.AreEqual(-1.0, designPoint.Alphas[2].Alpha, margin);
+            Assert.AreEqual(0.0, designPoint.Alphas[2].Alpha, margin);
 
             Assert.AreEqual(designPoint.Alphas[0].AlphaCorrelated, designPoint.Alphas[1].AlphaCorrelated, margin);
             Assert.AreEqual(designPoint.Alphas[0].AlphaCorrelated, designPoint.Alphas[2].AlphaCorrelated, margin);
