@@ -115,6 +115,21 @@ namespace Deltares
 			{
 				this->zFunction->Invoke(sample);
 			}
+
+			Sample^ ModelRunner::GetXSample(Sample^ sample)
+			{
+				std::shared_ptr<Models::Sample> xSample = shared->object->getXSample(sample->GetSample());
+
+				return gcnew Sample(xSample);
+			}
+
+			Sample^ ModelRunner::GetOnlyVaryingSample(Sample^ sample)
+			{
+				std::shared_ptr<Models::Sample> onlyVaryingSample = shared->object->getOnlyVaryingSample(sample->GetSample());
+
+				return gcnew Sample(onlyVaryingSample);
+			}
+
 		}
 	}
 }

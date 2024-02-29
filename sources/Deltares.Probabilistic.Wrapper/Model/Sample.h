@@ -38,6 +38,7 @@ namespace Deltares
 				array<double>^ values = nullptr;
 				System::Object^ tag = nullptr;
 				SharedPointerProvider<Models::Sample>* shared = nullptr;
+				bool dirty = false;
 
 			public:
 				Sample(std::shared_ptr<Models::Sample> sample)
@@ -63,6 +64,8 @@ namespace Deltares
 						{
 							values = NativeSupport::toManaged(shared->object->Values);
 						}
+
+						dirty = true;
 
 						return values;
 					}
@@ -112,6 +115,11 @@ namespace Deltares
 
 				std::shared_ptr<Models::Sample> GetSample()
 				{
+					if (dirty)
+					{
+						this->UpdateValues();
+					}
+
 					return shared->object;
 				}
 
@@ -141,13 +149,6 @@ namespace Deltares
 				SpaceType SpaceType = SpaceType::U;
 
 				double Factor = 0;
-
-				SampleX^ X = nullptr;
-
-				bool IsNew()
-				{
-					return this->X == nullptr;
-				}
 
 				Sample^ GetSampleAtBeta(double beta)
 				{
@@ -185,6 +186,8 @@ namespace Deltares
 							shared->object->Values[i] = values[i];
 						}
 					}
+
+					dirty = false;
 				}
 
 				// TODO: remove after c++ conversion

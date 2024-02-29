@@ -153,6 +153,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Model\ModelSample.h" />
     <ClInclude Include="Statistics\Distributions\DistributionLibrary.h" />
     <ClInclude Include="Math\RootFinders\BisectionRootFinder.h" />
     <ClInclude Include="Statistics\Distributions\HistogramDistribution.h" />

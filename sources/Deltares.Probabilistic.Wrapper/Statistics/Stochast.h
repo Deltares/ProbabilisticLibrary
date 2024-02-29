@@ -35,6 +35,7 @@ namespace Deltares
 
 				void updateStochast();
 
+				System::Collections::Generic::List<ManagedUXDelegate^>^ handles = gcnew System::Collections::Generic::List<ManagedUXDelegate^>();
 			public:
 				Stochast()
 				{

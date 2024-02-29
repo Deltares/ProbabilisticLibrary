@@ -87,6 +87,8 @@ namespace Deltares.Probabilistics.Wrappers.Test
             project.Stochasts.Add(GetUniformStochast(-1));
             project.Stochasts.Add(GetUniformStochast(-1));
 
+            project.CorrelationMatrix.Initialize(project.Stochasts);
+
             project.ZFunction = Linear;
 
             return project;
@@ -98,6 +100,8 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
             project.Stochasts.Add(GetUniformStochast(-1));
             project.Stochasts.Add(GetUniformStochast(-1));
+
+            project.CorrelationMatrix.Initialize(project.Stochasts);
 
             project.ZFunction = InverseLinear;
 
@@ -111,6 +115,8 @@ namespace Deltares.Probabilistics.Wrappers.Test
             project.Stochasts.Add(GetUniformStochast(-1));
             project.Stochasts.Add(GetUniformStochast(-1));
 
+            project.CorrelationMatrix.Initialize(project.Stochasts);
+
             project.ZFunction = LinearAbsolute;
 
             return project;
@@ -122,6 +128,8 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
             project.Stochasts.Add(GetUniformStochast(-1));
             project.Stochasts.Add(GetUniformStochast(-1));
+
+            project.CorrelationMatrix.Initialize(project.Stochasts);
 
             project.ZFunction = LinearSmall;
 
@@ -135,6 +143,8 @@ namespace Deltares.Probabilistics.Wrappers.Test
             project.Stochasts.Add(GetUniformStochast(-1));
             project.Stochasts.Add(GetUniformStochast(-1));
 
+            project.CorrelationMatrix.Initialize(project.Stochasts);
+
             project.ZFunction = LinearSmallSlow;
 
             return project;
@@ -146,6 +156,8 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
             project.Stochasts.Add(GetUniformStochast(-1));
             project.Stochasts.Add(GetUniformStochast(-1));
+
+            project.CorrelationMatrix.Initialize(project.Stochasts);
 
             project.ZFunction = LinearAbsoluteSmall;
 
@@ -193,6 +205,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
             project.Stochasts.Add(GetUniformStochast(-1, 1));
 
             project.CorrelationMatrix.Initialize(project.Stochasts);
+
             project.CorrelationMatrix.SetCorrelation(project.Stochasts[0], project.Stochasts[1], -1);
 
             project.ZFunction = Linear;
@@ -232,11 +245,12 @@ namespace Deltares.Probabilistics.Wrappers.Test
             project.Stochasts.Add(GetUniformStochast(-1, 1));
             project.Stochasts.Add(GetUniformStochast(-1, 1));
 
+            project.CorrelationMatrix.Initialize(project.Stochasts);
+
             project.ZFunction = DoubleLinear;
 
             return project;
         }
-
 
         public static Project GetNonLinearProject()
         {
@@ -244,6 +258,8 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
             project.Stochasts.Add(GetNormalStochast());
             project.Stochasts.Add(GetNormalStochast());
+
+            project.CorrelationMatrix.Initialize(project.Stochasts);
 
             project.ZFunction = NonLinear;
 
@@ -257,6 +273,8 @@ namespace Deltares.Probabilistics.Wrappers.Test
             project.Stochasts.Add(GetNormalStochast());
             project.Stochasts.Add(GetNormalStochast());
 
+            project.CorrelationMatrix.Initialize(project.Stochasts);
+
             project.ZFunction = Block;
 
             return project;
@@ -269,6 +287,8 @@ namespace Deltares.Probabilistics.Wrappers.Test
             project.Stochasts.Add(GetNormalStochast());
             project.Stochasts.Add(GetNormalStochast());
 
+            project.CorrelationMatrix.Initialize(project.Stochasts);
+
             project.ZFunction = SemiBlock;
 
             return project;
@@ -280,6 +300,8 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
             project.Stochasts.Add(GetNormalStochast(5));
             project.Stochasts.Add(GetNormalStochast(7));
+
+            project.CorrelationMatrix.Initialize(project.Stochasts);
 
             project.ZFunction = LoadStrength;
 
@@ -294,6 +316,8 @@ namespace Deltares.Probabilistics.Wrappers.Test
             project.Stochasts.Add(GetNormalStochast(7));
             project.Stochasts.Add(GetDeterministicStochast(6));
 
+            project.CorrelationMatrix.Initialize(project.Stochasts);
+
             project.ZFunction = LoadStrengthSurvived;
 
             return project;
@@ -307,6 +331,8 @@ namespace Deltares.Probabilistics.Wrappers.Test
             project.Stochasts.Add(GetNormalStochast());
             project.Stochasts.Add(GetNormalStochast());
 
+            project.CorrelationMatrix.Initialize(project.Stochasts);
+
             project.ZFunction = Convex;
 
             return project;
@@ -319,6 +345,8 @@ namespace Deltares.Probabilistics.Wrappers.Test
             project.Stochasts.Add(GetNormalStochast(15, 2.5));
             project.Stochasts.Add(GetNormalStochast(5, 0.5));
 
+            project.CorrelationMatrix.Initialize(project.Stochasts);
+
             project.ZFunction = Discontinuous;
 
             return project;
@@ -329,6 +357,8 @@ namespace Deltares.Probabilistics.Wrappers.Test
             var project = new Project();
 
             for (var i = 0; i < 13; i++) project.Stochasts.Add(GetUniformStochast());
+
+            project.CorrelationMatrix.Initialize(project.Stochasts);
 
             project.ZFunction = ManyVars;
 
@@ -346,6 +376,8 @@ namespace Deltares.Probabilistics.Wrappers.Test
             project.Stochasts.Add(GetLogNormalStochast(50, 12));
             project.Stochasts.Add(GetLogNormalStochast(40, 12));
 
+            project.CorrelationMatrix.Initialize(project.Stochasts);
+
             project.ZFunction = Noisy;
 
             return project;
@@ -359,6 +391,8 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
             for (var i = 0; i < 10; i++) project.Stochasts.Add(GetNormalStochast());
 
+            project.CorrelationMatrix.Initialize(project.Stochasts);
+
             project.ZFunction = OblateSpheroid;
 
             return project;
@@ -369,6 +403,8 @@ namespace Deltares.Probabilistics.Wrappers.Test
             var project = new Project();
 
             for (var i = 0; i < 5; i++) project.Stochasts.Add(GetNormalStochast());
+
+            project.CorrelationMatrix.Initialize(project.Stochasts);
 
             project.ZFunction = Parallel;
 
@@ -381,6 +417,8 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
             for (var i = 0; i < 3; i++) project.Stochasts.Add(GetNormalStochast(1, 0.1));
 
+            project.CorrelationMatrix.Initialize(project.Stochasts);
+
             project.ZFunction = Quadratic;
 
             return project;
@@ -392,6 +430,8 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
             for (var i = 0; i < 2; i++) project.Stochasts.Add(GetNormalStochast());
 
+            project.CorrelationMatrix.Initialize(project.Stochasts);
+
             project.ZFunction = Saddle;
 
             return project;
@@ -402,6 +442,8 @@ namespace Deltares.Probabilistics.Wrappers.Test
             var project = new Project();
 
             for (var i = 0; i < 2; i++) project.Stochasts.Add(GetNormalStochast());
+
+            project.CorrelationMatrix.Initialize(project.Stochasts);
 
             project.ZFunction = Series;
 
@@ -416,6 +458,8 @@ namespace Deltares.Probabilistics.Wrappers.Test
             project.Stochasts.Add(GetNormalStochast());
             project.Stochasts.Add(GetNormalStochast(4));
 
+            project.CorrelationMatrix.Initialize(project.Stochasts);
+
             project.ZFunction = TwoBranches;
 
             return project;
@@ -426,6 +470,8 @@ namespace Deltares.Probabilistics.Wrappers.Test
             var project = new Project();
 
             project.Stochasts.Add(GetNormalStochast(-20, 10));
+
+            project.CorrelationMatrix.Initialize(project.Stochasts);
 
             project.ZFunction = Wave;
 
@@ -441,6 +487,8 @@ namespace Deltares.Probabilistics.Wrappers.Test
             project.Stochasts.Add(GetDeterministicStochast(18));
             project.Stochasts.Add(GetGumbelStochast(0.76423, 0.52072));
 
+            project.CorrelationMatrix.Initialize(project.Stochasts);
+
             project.ZFunction = Bligh;
 
             return project;
@@ -452,6 +500,8 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
             project.Stochasts.Add(GetNormalStochast());
             project.Stochasts.Add(GetNormalStochast());
+
+            project.CorrelationMatrix.Initialize(project.Stochasts);
 
             project.ZFunction = NonVarying;
 
@@ -471,6 +521,8 @@ namespace Deltares.Probabilistics.Wrappers.Test
             project.Stochasts[2].DiscreteValues.Add(new DiscreteValue(6, 0.2));
             project.Stochasts[2].DiscreteValues.Add(new DiscreteValue(7, 0.45));
 
+            project.CorrelationMatrix.Initialize(project.Stochasts);
+
             project.ZFunction = Discrete;
 
             return project;
@@ -488,6 +540,8 @@ namespace Deltares.Probabilistics.Wrappers.Test
             project.Stochasts[2].DiscreteValues.Add(new DiscreteValue(5, 0.35));
             project.Stochasts[2].DiscreteValues.Add(new DiscreteValue(6, 0.2));
             project.Stochasts[2].DiscreteValues.Add(new DiscreteValue(7, 0.45));
+
+            project.CorrelationMatrix.Initialize(project.Stochasts);
 
             project.ZFunction = Discrete;
 
@@ -516,6 +570,8 @@ namespace Deltares.Probabilistics.Wrappers.Test
             project.Stochasts.Add(c);
             project.Stochasts.Add(a);
             project.Stochasts.Add(b);
+
+            project.CorrelationMatrix.Initialize(project.Stochasts);
 
             project.ZFunction = Linear2;
 

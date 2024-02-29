@@ -33,10 +33,9 @@ namespace Deltares
 					}
 
 					std::shared_ptr<Models::UConverter> uConverter = std::make_shared<Models::UConverter>(nativeStochasts, correlationMatrix->GetCorrelationMatrix());
-
-					uConverter->initializeForRun();
-
 					this->shared = new SharedPointerProvider(uConverter);
+
+					this->shared->object->initializeForRun();
 				}
 
 				virtual property int VaryingStochastCount

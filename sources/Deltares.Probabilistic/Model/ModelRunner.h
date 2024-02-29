@@ -28,7 +28,6 @@ namespace Deltares
 			std::vector< std::shared_ptr<Message>> messages;
 			std::shared_ptr<ProgressIndicator> progressIndicator = nullptr;
 
-			std::shared_ptr<Sample> getXSample(std::shared_ptr<Sample> sample);
 			void registerEvaluation(std::shared_ptr<Sample> sample);
 
 		public:
@@ -52,8 +51,9 @@ namespace Deltares
 			void reportMessage(MessageType type, std::string text);
 
 			std::shared_ptr<Reliability::DesignPoint> getDesignPoint(std::shared_ptr<Sample> sample, double beta, std::shared_ptr<Reliability::ConvergenceReport> convergenceReport = nullptr, std::string identifier = "");
-
 			std::shared_ptr<RunSettings> Settings = std::make_shared<RunSettings>();
+			std::shared_ptr<Models::Sample> getXSample(std::shared_ptr<Sample> sample);
+			std::shared_ptr<Models::Sample> getOnlyVaryingSample(std::shared_ptr<Sample> sample);
 		};
 	}
 }
