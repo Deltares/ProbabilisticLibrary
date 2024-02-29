@@ -216,50 +216,6 @@ namespace Deltares
 			return count;
 		}
 
-		correlationCheckResult checkFullyCorrelatedB(const size_t i, const std::vector<correlationPair>& pairs)
-		{
-			auto indexes = std::vector<correlationPair>();
-			for (const auto& p : pairs)
-			{
-				if (p.index1 == i)
-				{
-					indexes.push_back(p);
-				}
-				else if (p.index2 == i)
-				{
-					indexes.push_back(p);
-				}
-			}
-			if (indexes.size() > 1)
-			{
-				auto ii = std::vector<int>();
-				double product = 1.0;
-				for (size_t j = 0; j < 2; j++)
-				{
-					if (indexes[j].index1 == i)
-					{
-						ii.push_back(indexes[j].index2);
-					}
-					else
-					{
-						ii.push_back(indexes[j].index1);
-					}
-					product *= indexes[j].correlation;
-				}
-				for (const auto& p : pairs)
-				{
-					if (std::find(ii.begin(), ii.end(), p.index1) != ii.end() &&
-						std::find(ii.begin(), ii.end(), p.index2) != ii.end())
-					{
-						return (abs(product - p.correlation) < 1e-6 ? correlationCheckResult::OK : correlationCheckResult::inconsistentCorrelation);
-					}
-				}
-				return correlationCheckResult::missingCorrelation;
-			}
-			return correlationCheckResult::OK;
-		}
-
-
 		/// <summary>
 		/// Checks whether there are correlations which should be fully correlated due to other correlations
 		/// </summary>
