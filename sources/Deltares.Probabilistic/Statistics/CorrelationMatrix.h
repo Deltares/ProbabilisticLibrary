@@ -36,8 +36,8 @@ namespace Deltares
             double GetCorrelation(const int i, const int j) const { return matrix(i, j); }
             bool IsIdentity() const;
             int CountCorrelations() const;
-            bool HasConflictingCorrelations(bool onlyWithinStochasts = false) const;
-            void resolveConflictingCorrelations(bool onlyWithinStochasts = false);
+            bool HasConflictingCorrelations() const;
+            void resolveConflictingCorrelations();
             void CholeskyDecomposition();
             bool checkFullyCorrelated(const int i) const;
             void filter(const std::shared_ptr<CorrelationMatrix> m, const std::vector<int>& index);
@@ -48,8 +48,6 @@ namespace Deltares
             int findNewIndex(const std::vector<int> index, const size_t i);
             std::vector<indexWithCorrelation> indexer;
             std::vector<correlationPair> inputCorrelations;
-            bool IsCheckedWithinStochasts(const bool checkWithinStochasts, const correlationPair & value) const;
-            bool IsWithinStochasts(const correlationPair & value) const;
             std::vector<int> GetLinkingCorrelationStochasts(correlationPair correlation, correlationPair otherCorrelation) const;
             size_t dim = 0;
         };

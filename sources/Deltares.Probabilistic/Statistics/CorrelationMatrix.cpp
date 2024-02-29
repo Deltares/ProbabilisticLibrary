@@ -61,25 +61,18 @@ namespace Deltares
 
 			value = std::min(std::max(value, -1.0), 1.0);
 			matrix(i, j) = value;
-			bool fully;
-			if (abs(value) < 1.0)
-			{
-				matrix(j, i) = value;
-				fully = false;
-			}
-			else
-			{
-				fully = true;
-			}
+			matrix(j, i) = value;
+			bool fully = (std::abs(value) == 1.0);
 			for (auto& c : inputCorrelations)
 			{
 				if (c.index1 == i && c.index2 == j || c.index1 == j && c.index2 == i)
 				{
 					c.correlation = value;
+					c.isFullyCorrelated = fully;
 					return;
 				}
 			}
-			auto p = correlationPair({ i, j, value, true });
+			auto p = correlationPair({ i, j, value, fully });
 			inputCorrelations.push_back(p);
 		}
 
@@ -104,12 +97,10 @@ namespace Deltares
 
 		void CorrelationMatrix::filter(const std::shared_ptr<CorrelationMatrix> m, const std::vector<int>& index)
 		{
-			size_t m1; size_t m2;
-			m->matrix.get_dims(m1, m2);
-			for (size_t i = 0; i < m1; i++)
+			for (size_t i = 0; i < dim; i++)
 			{
 				auto ii = findNewIndex(index, i);
-				for (size_t j = 0; j < m1; j++)
+				for (size_t j = 0; j < dim; j++)
 				{
 					auto jj = findNewIndex(index, j);
 					if (index[i] >= 0 && index[j] >= 0)
@@ -205,34 +196,26 @@ namespace Deltares
 
 		int CorrelationMatrix::CountCorrelations() const
 		{
-			int count = 0;
-			for (size_t i = 0; i < dim; i++)
-			{
-				for (size_t j = i + 1; j < dim; j++)
-				{
-					if (matrix(i, j) != 0.0 || matrix(j, i) != 0.0) count++;
-				}
-			}
-			return count;
+			return inputCorrelations.size();
 		}
 
 		/// <summary>
 		/// Checks whether there are correlations which should be fully correlated due to other correlations
 		/// </summary>
-		/// <returns></returns>
-		bool CorrelationMatrix::HasConflictingCorrelations(bool onlyWithinStochasts) const
+		/// <returns> true if it has conflicting correlations </returns>
+		bool CorrelationMatrix::HasConflictingCorrelations() const
 		{
 			for (int i = 0; i < inputCorrelations.size(); i++)
 			{
 				auto correlation = inputCorrelations[i];
 
-				if (correlation.isFullyCorrelated && IsCheckedWithinStochasts(onlyWithinStochasts, correlation))
+				if (correlation.isFullyCorrelated)
 				{
 					for (int j = i + 1; j < inputCorrelations.size(); j++)
 					{
 						auto otherCorrelation = inputCorrelations[j];
 
-						if (otherCorrelation.isFullyCorrelated && IsCheckedWithinStochasts(onlyWithinStochasts, otherCorrelation) && correlation.AreLinked(otherCorrelation))
+						if (otherCorrelation.isFullyCorrelated && correlation.AreLinked(otherCorrelation))
 						{
 							// find the stochasts which are not the linking values
 							auto nonConnectingStochasts = GetLinkingCorrelationStochasts(correlation, otherCorrelation);
@@ -255,7 +238,7 @@ namespace Deltares
 		/// <summary>
 		/// Sets correlations to fully correlated if they should be so due to other correlations
 		/// </summary>
-		void CorrelationMatrix::resolveConflictingCorrelations(bool onlyWithinStochasts)
+		void CorrelationMatrix::resolveConflictingCorrelations()
 		{
 			bool modified = true;
 
@@ -267,13 +250,13 @@ namespace Deltares
 				{
 					auto correlation = inputCorrelations[i];
 
-					if (correlation.isFullyCorrelated && IsCheckedWithinStochasts(onlyWithinStochasts, correlation))
+					if (correlation.isFullyCorrelated)
 					{
 						for (int j = i + 1; j < inputCorrelations.size(); j++)
 						{
 							auto otherCorrelation = inputCorrelations[j];
 
-							if (otherCorrelation.isFullyCorrelated && IsCheckedWithinStochasts(onlyWithinStochasts, otherCorrelation) && correlation.AreLinked(otherCorrelation))
+							if (otherCorrelation.isFullyCorrelated && correlation.AreLinked(otherCorrelation))
 							{
 								auto nonConnectingStochasts = GetLinkingCorrelationStochasts(correlation, otherCorrelation);
 
@@ -289,30 +272,6 @@ namespace Deltares
 						}
 					}
 				}
-			}
-		}
-
-		bool CorrelationMatrix::IsWithinStochasts(const correlationPair & value) const
-		{
-			bool found1 = false;
-			bool found2 = false;
-			for (const auto & s : inputCorrelations)
-			{
-				if (s.index1 == value.index1 || s.index2 == value.index1) found1 = true;
-				if (s.index1 == value.index2 || s.index2 == value.index2) found2 = true;
-			}
-			return found1 && found2;
-		}
-
-		bool CorrelationMatrix::IsCheckedWithinStochasts(const bool checkWithinStochasts, const correlationPair & value) const
-		{
-			if (!checkWithinStochasts)
-			{
-				return true;
-			}
-			else
-			{
-				return IsWithinStochasts(value);
 			}
 		}
 
