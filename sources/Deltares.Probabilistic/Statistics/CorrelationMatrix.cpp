@@ -10,11 +10,9 @@ namespace Deltares
 
 		std::vector<double> CorrelationMatrix::Cholesky(const std::vector<double>& uValues)
 		{
-			size_t m1; size_t m2;
-			matrix.get_dims(m1, m2);
 			auto count = uValues.size();
 			auto correlatedValues = std::vector<double>(count);
-			if (m1 == 0)
+			if (dim == 0)
 			{
 				for (int i = 0; i < count; i++)
 				{
@@ -46,6 +44,7 @@ namespace Deltares
 
 		void CorrelationMatrix::init(const int maxStochasts)
 		{
+			dim = maxStochasts;
 			matrix = Matrix(maxStochasts, maxStochasts);
 			for (size_t i = 0; i < maxStochasts; i++)
 			{
@@ -53,19 +52,28 @@ namespace Deltares
 			}
 		}
 
-		void CorrelationMatrix::SetCorrelation(const int i, const int j, const double value)
+		void CorrelationMatrix::SetCorrelation(const int i, const int j, double value)
 		{
-			size_t m1; size_t m2;
-			matrix.get_dims(m1, m2);
-			if (std::max(i, j) >= m1)
+			if (std::max(i, j) >= dim)
 			{
 				throw probLibException("dimension mismatch in SetCorrelation");
 			}
-			matrix(i, j) = std::min(std::max(value, -1.0), 1.0);
-			if (abs(value) < 1.0)
+
+			value = std::min(std::max(value, -1.0), 1.0);
+			matrix(i, j) = value;
+			matrix(j, i) = value;
+			bool fully = (std::abs(value) == 1.0);
+			for (auto& c : inputCorrelations)
 			{
-				matrix(j, i) = value;
+				if (c.index1 == i && c.index2 == j || c.index1 == j && c.index2 == i)
+				{
+					c.correlation = value;
+					c.isFullyCorrelated = fully;
+					return;
+				}
 			}
+			auto p = correlationPair({ i, j, value, fully });
+			inputCorrelations.push_back(p);
 		}
 
 		void CorrelationMatrix::CholeskyDecomposition()
@@ -75,8 +83,7 @@ namespace Deltares
 
 		bool CorrelationMatrix::checkFullyCorrelated(const int j) const
 		{
-			size_t m1; size_t m2;
-			matrix.get_dims(m1, m2);
+			if (dim == 0) return false;
 			for (size_t i = 0; i < j; i++)
 			{
 				if (abs(matrix(i, j)) >= 1.0 || abs(matrix(j, i)) >= 1.0)
@@ -90,12 +97,10 @@ namespace Deltares
 
 		void CorrelationMatrix::filter(const std::shared_ptr<CorrelationMatrix> m, const std::vector<int>& index)
 		{
-			size_t m1; size_t m2;
-			m->matrix.get_dims(m1, m2);
-			for (size_t i = 0; i < m1; i++)
+			for (size_t i = 0; i < dim; i++)
 			{
 				auto ii = findNewIndex(index, i);
-				for (size_t j = 0; j < m1; j++)
+				for (size_t j = 0; j < dim; j++)
 				{
 					auto jj = findNewIndex(index, j);
 					if (index[i] >= 0 && index[j] >= 0)
@@ -134,12 +139,6 @@ namespace Deltares
 			indexer = newIndexer;
 		}
 
-		void CorrelationMatrix::resolveConflictingCorrelations()
-		{
-			// to be implemented
-		}
-
-
 		int CorrelationMatrix::findNewIndex(const std::vector<int> index, const size_t i)
 		{
 			if (index[i] == -1)
@@ -165,8 +164,6 @@ namespace Deltares
 				return indexer[j];
 			}
 
-			size_t m1; size_t m2;
-			matrix.get_dims(m1, m2);
 			for (size_t i = 0; i < j; i++)
 			{
 				double correlation = matrix(i, j);
@@ -186,11 +183,9 @@ namespace Deltares
 
 		bool CorrelationMatrix::IsIdentity() const
 		{
-			size_t m1; size_t m2;
-			matrix.get_dims(m1, m2);
-			for (size_t i = 0; i < m1; i++)
+			for (size_t i = 0; i < dim; i++)
 			{
-				for (size_t j = 0; j < m2; j++)
+				for (size_t j = 0; j < dim; j++)
 				{
 					if (i == j && matrix(i, j) != 1.0) return false;
 					if (i != j && matrix(i, j) != 0.0) return false;
@@ -201,88 +196,115 @@ namespace Deltares
 
 		int CorrelationMatrix::CountCorrelations() const
 		{
-			size_t m1; size_t m2;
-			matrix.get_dims(m1, m2);
-			int count = 0;
-			for (size_t i = 0; i < m1; i++)
-			{
-				for (size_t j = i + 1; j < m2; j++)
-				{
-					if (matrix(i, j) != 0.0 || matrix(j, i) != 0.0) count++;
-				}
-			}
-			return count;
+			return inputCorrelations.size();
 		}
 
-		correlationCheckResult checkFullyCorrelatedB(const size_t i, const std::vector<correlationPair>& pairs)
-		{
-			auto indexes = std::vector<correlationPair>();
-			for (const auto& p : pairs)
-			{
-				if (p.index1 == i)
-				{
-					indexes.push_back(p);
-				}
-				else if (p.index2 == i)
-				{
-					indexes.push_back(p);
-				}
-			}
-			if (indexes.size() > 1)
-			{
-				auto ii = std::vector<int>();
-				double product = 1.0;
-				for (size_t j = 0; j < 2; j++)
-				{
-					if (indexes[j].index1 == i)
-					{
-						ii.push_back(indexes[j].index2);
-					}
-					else
-					{
-						ii.push_back(indexes[j].index1);
-					}
-					product *= indexes[j].correlation;
-				}
-				for (const auto& p : pairs)
-				{
-					if (std::find(ii.begin(), ii.end(), p.index1) != ii.end() &&
-						std::find(ii.begin(), ii.end(), p.index2) != ii.end())
-					{
-						return (abs(product - p.correlation) < 1e-6 ? correlationCheckResult::OK : correlationCheckResult::inconsistentCorrelation);
-					}
-				}
-				return correlationCheckResult::missingCorrelation;
-			}
-			return correlationCheckResult::OK;
-		}
-
+		/// <summary>
+		/// Checks whether there are correlations which should be fully correlated due to other correlations
+		/// </summary>
+		/// <returns> true if it has conflicting correlations </returns>
 		bool CorrelationMatrix::HasConflictingCorrelations() const
 		{
-			auto full = std::vector<correlationPair>();
-			size_t m1; size_t m2;
-			matrix.get_dims(m1, m2);
-			for (size_t i = 0; i < m1; i++)
+			for (int i = 0; i < inputCorrelations.size(); i++)
 			{
-				for (size_t j = 0; j < m2; j++)
+				auto correlation = inputCorrelations[i];
+
+				if (correlation.isFullyCorrelated)
 				{
-					if (i != j && std::abs(matrix(i, j)) == 1.0)
+					for (int j = i + 1; j < inputCorrelations.size(); j++)
 					{
-						correlationPair pair;
-						pair.index1 = i;
-						pair.index2 = j;
-						pair.correlation = matrix(i, j);
-						full.push_back(pair);
+						auto otherCorrelation = inputCorrelations[j];
+
+						if (otherCorrelation.isFullyCorrelated && correlation.AreLinked(otherCorrelation))
+						{
+							// find the stochasts which are not the linking values
+							auto nonConnectingStochasts = GetLinkingCorrelationStochasts(correlation, otherCorrelation);
+
+							double correlationValue = GetCorrelation(nonConnectingStochasts[0], nonConnectingStochasts[1]);
+							double expectedCorrelation = correlation.correlation * otherCorrelation.correlation;
+
+							if (correlationValue != expectedCorrelation)
+							{
+								return true;
+							}
+						}
 					}
 				}
-			}
-			for (size_t i = 0; i < m1; i++)
-			{
-				auto r = checkFullyCorrelatedB(i, full);
-				if (r != correlationCheckResult::OK) return true;
 			}
 
 			return false;
 		}
+
+		/// <summary>
+		/// Sets correlations to fully correlated if they should be so due to other correlations
+		/// </summary>
+		void CorrelationMatrix::resolveConflictingCorrelations()
+		{
+			bool modified = true;
+
+			while (modified)
+			{
+				modified = false;
+
+				for (int i = 0; i < inputCorrelations.size(); i++)
+				{
+					auto correlation = inputCorrelations[i];
+
+					if (correlation.isFullyCorrelated)
+					{
+						for (int j = i + 1; j < inputCorrelations.size(); j++)
+						{
+							auto otherCorrelation = inputCorrelations[j];
+
+							if (otherCorrelation.isFullyCorrelated && correlation.AreLinked(otherCorrelation))
+							{
+								auto nonConnectingStochasts = GetLinkingCorrelationStochasts(correlation, otherCorrelation);
+
+								double correlationValue = GetCorrelation(nonConnectingStochasts[0], nonConnectingStochasts[1]);
+								double expectedCorrelation = correlation.correlation * otherCorrelation.correlation;
+
+								if (correlationValue != expectedCorrelation)
+								{
+									SetCorrelation(nonConnectingStochasts[0], nonConnectingStochasts[1], expectedCorrelation);
+									modified = true;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets the <see cref="IHasStochast"/>s which are not part of both <see cref="StochastCorrelationValue"/>s
+		/// </summary>
+		/// <param name="correlation"></param>
+		/// <param name="otherCorrelation"></param>
+		/// <returns></returns>
+		std::vector<int> CorrelationMatrix::GetLinkingCorrelationStochasts(correlationPair correlation, correlationPair otherCorrelation) const
+		{
+			auto nonConnectingStochasts = std::vector<int>();
+			for(auto & stochast :
+				{
+					correlation.index1,
+					correlation.index2,
+					otherCorrelation.index1,
+					otherCorrelation.index2
+				})
+			{
+				if (correlation.index1 != stochast && correlation.index2 != stochast)
+				{
+					nonConnectingStochasts.push_back(stochast);
+				}
+				else if (otherCorrelation.index1 != stochast && otherCorrelation.index2 != stochast)
+				{
+					nonConnectingStochasts.push_back(stochast);
+				}
+			}
+
+			return nonConnectingStochasts;
+		}
+
 	}
 }
+

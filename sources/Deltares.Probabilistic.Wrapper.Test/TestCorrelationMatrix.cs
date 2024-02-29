@@ -85,11 +85,9 @@ namespace Deltares.Statistics.Test
 
             matrix.SetCorrelation(a, b, 1);
             matrix.SetCorrelation(b, c, 1);
-            matrix.SetCorrelation(a, c, -1);
 
             Assert.IsTrue(matrix.HasConflictingCorrelations());
 
-            /*
             matrix.ResolveConflictingCorrelations();
 
             Assert.IsFalse(matrix.HasConflictingCorrelations());
@@ -109,7 +107,6 @@ namespace Deltares.Statistics.Test
 
             Assert.AreEqual(-1, matrix.GetCorrelation(c, e));
             Assert.AreEqual(1, matrix.GetCorrelation(c, d));
-            */
         }
     }
 }
