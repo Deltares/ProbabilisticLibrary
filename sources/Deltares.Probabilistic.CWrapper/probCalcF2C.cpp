@@ -35,6 +35,50 @@ struct tResult
     double alpha2[maxActiveStochast];
 };
 
+void updateX(const vector1D & alpha, const DPoptions option, tResult & r, const std::shared_ptr<DesignPoint> & newResult,
+    const size_t vectorSize, double x[], funcWrapper fw)
+{
+    if (alpha.size() <= maxActiveStochast)
+    {
+        switch (option) {
+        case DPoptions::None:
+        {
+            for (size_t i = 0; i < maxActiveStochast; i++)
+            {
+                r.x[i] = 0.0;
+            }
+        }
+        break;
+        case DPoptions::RMinZFunc:
+        case DPoptions::RMinZFuncCompatible:
+        {
+            for (size_t i = 0; i < alpha.size(); i++)
+            {
+                r.x[i] = newResult->Alphas[i]->X;
+            }
+            fw.updateXinDesignPoint(r.x);
+        }
+        break;
+        default:
+        {
+            for (size_t i = 0; i < alpha.size(); i++)
+            {
+                r.x[i] = newResult->Alphas[i]->X;
+            }
+        }
+        }
+    }
+
+    if (alpha.size() == vectorSize)
+    {
+        for (size_t i = 0; i < alpha.size(); i++)
+        {
+            x[i] = r.x[i];
+        }
+    }
+
+}
+
 extern "C"
 void probcalcf2cnew(const basicSettings* method, fdistribs* c, const int n, const int vectorSize,
     corrStruct correlations[], const int nrCorrelations,
@@ -93,20 +137,7 @@ void probcalcf2cnew(const basicSettings* method, fdistribs* c, const int n, cons
             r->alpha[i] = alpha(i);
         }
 
-        if (alpha.size() <= maxActiveStochast)
-        {
-            for (size_t i = 0; i < alpha.size(); i++)
-            {
-                r->x[i] = newResult->Alphas[i]->X;
-            }
-        }
-        if (alpha.size() == (size_t)vectorSize)
-        {
-            for (size_t i = 0; i < alpha.size(); i++)
-            {
-                x[i] = r->x[i];
-            }
-        }
+        updateX(alpha, method->designPointOptions, *r, newResult, vectorSize, x, fw);
 
         for (int i = 0; i < n; i++)
         {

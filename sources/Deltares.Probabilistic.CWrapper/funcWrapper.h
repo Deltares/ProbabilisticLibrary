@@ -6,12 +6,14 @@
 #include "stringHelper.h"
 
 typedef std::function<double(double[], int[], tError*)> zFuncExtern;
+const int sizeIntArray = 4;
 class funcWrapper
 {
 public:
     funcWrapper(const size_t nrStoch, int* ip, double* x, int* ids, zFuncExtern func) :
         allStoch(nrStoch), iPointer(ip), xRef(x), compIds(ids), zfunc(func) { ; }
     void FDelegate(std::shared_ptr<Deltares::Models::Sample> s);
+    void updateXinDesignPoint(double x[]);
 private:
     size_t allStoch;
     int* iPointer;

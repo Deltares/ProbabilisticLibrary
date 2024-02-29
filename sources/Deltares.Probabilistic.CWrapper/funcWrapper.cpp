@@ -14,12 +14,20 @@ void funcWrapper::FDelegate(std::shared_ptr<Deltares::Models::Sample> s)
     {
         xx[iPointer[i]] = s->Values[i];
     }
-    auto i = new int[4];
+    int i[sizeIntArray];
     i[0] = compIds[0];
     tError e = tError();
     double result = zfunc(xx, i, &e);
     delete[] xx;
-    delete[] i;
     if (e.errorCode != 0) throw probLibException(e.errorMessage);
     s->Z = result;
 }
+
+void funcWrapper::updateXinDesignPoint(double x[])
+{
+    int i[sizeIntArray];
+    i[0] = 0;            // set design output on
+    tError e = tError();
+    double z = zfunc(x, i, &e);
+}
+
