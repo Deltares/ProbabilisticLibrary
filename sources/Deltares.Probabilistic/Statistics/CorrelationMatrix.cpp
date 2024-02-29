@@ -90,8 +90,7 @@ namespace Deltares
 
 		bool CorrelationMatrix::checkFullyCorrelated(const int j) const
 		{
-			size_t m1; size_t m2;
-			matrix.get_dims(m1, m2);
+			if (dim == 0) return false;
 			for (size_t i = 0; i < j; i++)
 			{
 				if (abs(matrix(i, j)) >= 1.0 || abs(matrix(j, i)) >= 1.0)
