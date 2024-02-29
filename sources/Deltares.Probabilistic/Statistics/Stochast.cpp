@@ -2,6 +2,7 @@
 
 #include "Distributions/DistributionLibrary.h"
 #include "Distributions/InvertedDistribution.h"
+#include "Distributions/ExternalDistribution.h"
 
 namespace Deltares
 {
@@ -67,6 +68,16 @@ namespace Deltares
 			}
 		}
 
+		void Stochast::setExternalDistribution(UXLambda externalFunction)
+		{
+			this->distributionType = DistributionType::External;
+
+			std::shared_ptr<ExternalDistribution> externalDistribution = std::make_shared<ExternalDistribution>();
+			externalDistribution->setExternalFunction(externalFunction);
+
+			this->distribution = externalDistribution;
+		}
+
 		DistributionType Stochast::getDistributionType()
 		{
 			return this->distributionType;
@@ -85,7 +96,11 @@ namespace Deltares
 		void Stochast::setInverted(bool inverted)
 		{
 			this->inverted = inverted;
-			this->distribution = DistributionLibrary::getDistribution(this->distributionType, truncated, inverted);
+
+			if (this->distributionType != DistributionType::External) 
+			{
+				this->distribution = DistributionLibrary::getDistribution(this->distributionType, truncated, inverted);
+			}
 		}
 
 		bool Stochast::canTruncate()
@@ -101,12 +116,23 @@ namespace Deltares
 		void Stochast::setTruncated(bool truncated)
 		{
 			this->truncated = truncated;
-			this->distribution = DistributionLibrary::getDistribution(this->distributionType, truncated, inverted);
+
+			if (this->distributionType != DistributionType::External)
+			{
+				this->distribution = DistributionLibrary::getDistribution(this->distributionType, truncated, inverted);
+			}
 		}
 
 		bool Stochast::isVarying()
 		{
-			return this->distribution->isVarying(properties);
+			if (this->IsVariableStochast)
+			{
+				return this->ValueSet->isVarying(this->distributionType);
+			}
+			else 
+			{
+				return this->distribution->isVarying(properties);
+			}
 		}
 
 		bool Stochast::isValid()

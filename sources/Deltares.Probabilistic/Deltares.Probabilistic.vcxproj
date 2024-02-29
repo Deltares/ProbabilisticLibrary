@@ -155,6 +155,8 @@
   <ItemGroup>
     <ClInclude Include="Statistics\Distributions\DistributionLibrary.h" />
     <ClInclude Include="Math\RootFinders\BisectionRootFinder.h" />
+    <ClInclude Include="Statistics\Distributions\HistogramDistribution.h" />
+    <ClInclude Include="Statistics\Distributions\ExternalDistribution.h" />
     <ClInclude Include="Statistics\VariableStochastValue.h" />
     <ClInclude Include="Statistics\Distributions\QualitativeDistribution.h" />
     <ClInclude Include="Statistics\Distributions\DiscreteDistribution.h" />
@@ -262,6 +264,8 @@
     <ClCompile Include="Reliability\StochastSettings.cpp" />
     <ClCompile Include="Reliability\StochastSettingsSet.cpp" />
     <ClCompile Include="Math\RootFinders\RootFinder.cpp" />
+    <ClCompile Include="Statistics\Distributions\HistogramDistribution.cpp" />
+    <ClCompile Include="Statistics\Distributions\ExternalDistribution.cpp" />
     <ClCompile Include="Utils\probLibString.cpp" />
     <ClCompile Include="Model\Evaluation.cpp" />
     <ClCompile Include="Math\Random.cpp" />

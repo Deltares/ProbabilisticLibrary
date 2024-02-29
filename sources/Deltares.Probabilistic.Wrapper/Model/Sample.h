@@ -29,11 +29,6 @@ namespace Deltares
 			/// </summary>
 			public enum class SpaceType { U, X };
 
-			/// <summary>
-			/// Indicates whether a <see cref="Sample"/> should be logged
-			/// </summary>
-			public enum class LogSampleType { Never, OnlyModel, Always };
-
 			using namespace Deltares::Models;
 			using namespace Deltares::Utils::Wrappers;
 
@@ -140,19 +135,10 @@ namespace Deltares
 					this->Iteration = iteration;
 				}
 
-				Sample(SpaceType spaceType, int iteration, array<double>^ values, LogSampleType logSampleType) : Sample(values)
-				{
-					this->SpaceType = spaceType;
-					this->Iteration = iteration;
-					this->LogSampleType = logSampleType;
-				}
-
 				/// <summary>
 				/// The space type in which the <see cref="Values"/> are defined
 				/// </summary>
 				SpaceType SpaceType = SpaceType::U;
-
-				LogSampleType LogSampleType = LogSampleType::Always;
 
 				double Factor = 0;
 
@@ -166,47 +152,25 @@ namespace Deltares
 				Sample^ GetSampleAtBeta(double beta)
 				{
 					UpdateValues();
-
-					array<double>^ values = NativeSupport::toManaged(shared->object->getSampleAtBeta(beta)->Values);
-
-					return gcnew Sample(this->SpaceType, this->Iteration, values);
+					return gcnew Sample(shared->object->getSampleAtBeta(beta));
 				}
 
 				Sample^ GetNormalizedSample()
 				{
 					UpdateValues();
-
-					array<double>^ values = NativeSupport::toManaged(shared->object->getNormalizedSample()->Values);
-
-					return gcnew Sample(this->SpaceType, this->Iteration, values);
+					return gcnew Sample(shared->object->getNormalizedSample());
 				}
 
 				Sample^ GetMultipliedSample(double factor)
 				{
 					UpdateValues();
-
-					array<double>^ values = NativeSupport::toManaged(shared->object->getMultipliedSample(factor)->Values);
-
-					return gcnew Sample(this->SpaceType, this->Iteration, values);
+					return gcnew Sample(shared->object->getMultipliedSample(factor));
 				}
 
 				Sample^ Clone()
 				{
 					UpdateValues();
-
-					array<double>^ values = NativeSupport::toManaged(shared->object->clone()->Values);
-
-					return gcnew Sample(this->SpaceType, this->Iteration, values);
-				}
-
-				/// <summary>
-				/// Tells whether this sample should be saved
-				/// </summary>
-				/// <param name="reused"></param>
-				/// <returns></returns>
-				bool ShouldSave(bool reused)
-				{
-					return this->LogSampleType == LogSampleType::Always || (this->LogSampleType == LogSampleType::OnlyModel && !reused);
+					return gcnew Sample(shared->object->clone());
 				}
 
 				int ScenarioIndex = -1;

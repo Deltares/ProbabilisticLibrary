@@ -45,6 +45,8 @@ namespace Deltares
 			void setDistributionType(DistributionType distributionType);
 			DistributionType getDistributionType();
 
+			void setExternalDistribution(UXLambda externalFunction);
+
 			bool canInvert();
 			bool isInverted();
 			void setInverted(bool inverted);

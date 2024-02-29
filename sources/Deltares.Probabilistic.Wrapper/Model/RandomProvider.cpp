@@ -16,7 +16,7 @@ namespace Deltares
 				System::IntPtr callbackPtr = System::Runtime::InteropServices::Marshal::GetFunctionPointerForDelegate(fp);
 				InitializeRandomDelegate functionPointer = static_cast<InitializeRandomDelegate>(callbackPtr.ToPointer());
 
-				ModifiedKnuthSubtractiveRandomValueGenerator::setInitializeDelegate(functionPointer);
+				Numeric::ModifiedKnuthSubtractiveRandomValueGenerator::setInitializeDelegate(functionPointer);
 			}
 
 			void RandomProvider::initializeNextDelegate()
@@ -27,7 +27,7 @@ namespace Deltares
 				System::IntPtr callbackPtr = System::Runtime::InteropServices::Marshal::GetFunctionPointerForDelegate(fp);
 				NextRandomDelegate functionPointer = static_cast<NextRandomDelegate>(callbackPtr.ToPointer());
 
-				ModifiedKnuthSubtractiveRandomValueGenerator::setNextDelegate(functionPointer);
+				Numeric::ModifiedKnuthSubtractiveRandomValueGenerator::setNextDelegate(functionPointer);
 			}
 
 			void RandomProvider::initialize()

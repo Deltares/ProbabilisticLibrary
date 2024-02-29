@@ -4,12 +4,12 @@
 
 // note: only one instance of the generator
 // that suffices for testing the properties.
-static GeorgeMarsagliaRandomValueGenerator* gm;
+static Deltares::Numeric::GeorgeMarsagliaRandomValueGenerator* gm;
 
 extern "C"
 void initrandomgenerator(const int ij, const int kl)
 {
-    gm = new GeorgeMarsagliaRandomValueGenerator();
+    gm = new Deltares::Numeric::GeorgeMarsagliaRandomValueGenerator();
     gm->initialize(true, ij, kl);
 }
 

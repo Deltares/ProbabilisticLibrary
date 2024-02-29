@@ -1,4 +1,6 @@
 #pragma once
+#include <functional>
+
 #include "../StochastProperties.h"
 
 namespace Deltares
@@ -6,6 +8,7 @@ namespace Deltares
 	namespace Statistics
 	{
 		enum ConstantParameterType { Deviation, VariationCoefficient };
+		typedef std::function<double(double) > UXLambda;
 
 		class Distribution
 		{

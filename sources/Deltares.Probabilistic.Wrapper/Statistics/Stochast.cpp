@@ -6,6 +6,8 @@ namespace Deltares
 	{
 		namespace Wrappers
 		{
+			typedef double(__stdcall* UXDelegate) (double);
+
 			Statistics::ConstantParameterType Stochast::getNativeConstantParameterType(Wrappers::ConstantParameterType constantParameterType)
 			{
 				switch (constantParameterType)
@@ -47,6 +49,14 @@ namespace Deltares
 						shared->object->ValueSet->StochastValues.push_back(this->ValueSet->StochastValues[i]->GetValue());
 					}
 				}
+			}
+
+			void Stochast::SetExternalDistribution(ManagedUXDelegate^ uxDelegate)
+			{
+				System::IntPtr callbackPtr = System::Runtime::InteropServices::Marshal::GetFunctionPointerForDelegate(uxDelegate);
+				UXLambda functionPointer = static_cast<UXDelegate>(callbackPtr.ToPointer());
+
+				shared->object->setExternalDistribution(functionPointer);
 			}
 		}
 	}

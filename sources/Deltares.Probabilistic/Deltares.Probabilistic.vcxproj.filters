@@ -86,6 +86,8 @@
     <ClCompile Include="Math\RootFinders\BisectionRootFinder.cpp" />
     <ClCompile Include="Statistics\Distributions\Distribution.cpp" />
     <ClCompile Include="Statistics\Distributions\DistributionLibrary.cpp" />
+    <ClCompile Include="Statistics\Distributions\HistogramDistribution.cpp" />
+    <ClCompile Include="Statistics\Distributions\ExternalDistribution.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -184,6 +186,8 @@
     <ClInclude Include="Statistics\VariableStochastValueSet.h" />
     <ClInclude Include="Math\RootFinders\BisectionRootFinder.h" />
     <ClInclude Include="Statistics\Distributions\DistributionLibrary.h" />
+    <ClInclude Include="Statistics\Distributions\HistogramDistribution.h" />
+    <ClInclude Include="Statistics\Distributions\ExternalDistribution.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">
