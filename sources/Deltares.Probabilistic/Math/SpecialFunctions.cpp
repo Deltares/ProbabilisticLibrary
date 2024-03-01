@@ -20,7 +20,7 @@ namespace Deltares
             }
             else if (a <= 0.0)
             {
-                throw ProbLibCore::probLibException("Error in Dgammq: a <= 0 violated; a = ");
+                throw ProbLibCore::probLibException("Error in Dgammq: a <= 0 violated; a = ", a);
             }
             else
             {
