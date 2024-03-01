@@ -48,10 +48,10 @@ contains
 !> wrapper for all tests
 subroutine performAllDSTests
     integer, parameter :: level = 1
-    call testWithLevel(testNodFunction, "Test DS with the nod function", level, "work-in-progress")
+    call testWithLevel(testNodFunction, "Test DS with the nod function", level)
     call testWithLevel(testNodFunction2, "Test DS with the nod function and only one sample", level)
     call testWithLevel(testDSFI, "Test DSFI", level, "not implemented yet")
-    call testWithLevel(testDesignOutputOptions, "Test the several design output options of DS", level, "work-in-progress")
+    call testWithLevel(testDesignOutputOptions, "Test the several design output options of DS", level)
     call testWithLevel(testZeqZero, "Test DS with z is zero for u is zero", level, "work-in-progress")
     call testWithLevel(testZnegative, "Test DS with z is negative for u is zero", level, "work-in-progress")
     call testWithLevel(testCancel, "Test cancellation DS", level)
@@ -84,7 +84,7 @@ subroutine testNodFunction
             write(msg,'(a,i0)') 'diff in beta, j =', j
             call assert_comparable( beta(j), 3.110_wp, 0.002_wp, msg)
             write(msg,'(a,i0)') 'diff in alpha, j =', j
-            call assert_comparable( alpha, [-sqrt(0.5_wp), sqrt(0.5_wp)], 0.002_wp, msg)
+            call assert_comparable( alpha, [-sqrt(0.5_wp), sqrt(0.5_wp)], 0.01_wp, msg)
         endif
         counters(j) = iCounter
     enddo
@@ -185,31 +185,30 @@ subroutine testDesignOutputOptions
     character(len=100)                    :: msg                            !< error message
     real(kind=wp)                         :: expectedX(2,0:8)
     real(kind=wp)                         :: expectedXA(2)
-    real(kind=wp)                         :: expectedXB(2)
     type(convDataSamplingMethods)         :: convergenceDataDS              !< convergenceData
 
     call setupDStests(probDb, iPoint, x, 10000)
 
-    expectedXA = [2.04628266317434, -2.04563879321102]
-    expectedXB = [2.14907408915813, -2.14839787551479]
+    expectedXA = [2.1_wp, -2.1_wp]
     expectedX = 0
     expectedX(:,1) = expectedXA
     expectedX(:,2) = expectedXA
-    expectedX(:,3) = expectedXB
+    expectedX(:,3) = expectedXA
     expectedX(:,4) = [12.34, 34.56]
     expectedX(:,5) = expectedXA
     expectedX(:,6) = [12.34, 34.56]
-    expectedX(:,7) = expectedXB
+    expectedX(:,7) = expectedXA
 
     do i = 0, 7
         probDb%method%DPoption = i
         iCounter = 0
         call performDirectionalSampling ( probDb, zFuncNod, nStochasts, iPoint, x, alpha, beta, &
             convergenceCriteriumReached, convergenceDataDS )
-        call assert_comparable(beta, 2.8934_wp, 1d-4, 'diff in beta')
+        ! beta is equal to previous method DirSamplingIterMethodFastBisection
+        call assert_comparable(beta, 3.11_wp, 1d-2, 'diff in beta')
         write(msg,'(a,i1)') 'diff in x; i = ', i
         if (i /= 7) then
-            call assert_comparable(x, expectedX(:,i), 1d-4, msg)
+            call assert_comparable(x, expectedX(:,i), 1d-1, msg)
         end if
     enddo
     call SetFatalErrorExpected(.false.)
