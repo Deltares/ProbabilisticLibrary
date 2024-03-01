@@ -39,7 +39,7 @@ namespace Deltares
             bool HasConflictingCorrelations() const;
             void resolveConflictingCorrelations();
             void CholeskyDecomposition();
-            bool checkFullyCorrelated(const int i) const;
+            bool isFullyCorrelated(const int i, std::vector<int> varyingIndices) const;
             void filter(const std::shared_ptr<CorrelationMatrix> m, const std::vector<int>& index);
             indexWithCorrelation findDependent(const int i) const;
         private:

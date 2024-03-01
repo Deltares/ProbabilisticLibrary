@@ -46,7 +46,7 @@ namespace Deltares
 
 			for (size_t i = 0; i < this->stochasts.size(); i++)
 			{
-				if (this->stochasts[i]->isVarying() && !checkFullyCorrelated(i))
+				if (this->stochasts[i]->isVarying() && !isFullyCorrelated(i, this->varyingStochastIndex))
 				{
 					this->varyingStochastIndex.push_back(i);
 					this->varyingStochasts.push_back(this->stochasts[i]);
@@ -113,9 +113,9 @@ namespace Deltares
 		}
 
 
-		bool UConverter::checkFullyCorrelated(const int i)
+		bool UConverter::isFullyCorrelated(const int index, std::vector<int> varyingIndices)
 		{
-			return correlationMatrix->checkFullyCorrelated(i);
+			return correlationMatrix->isFullyCorrelated(index, varyingIndices);
 		}
 
 		int UConverter::getStochastCount()
@@ -141,7 +141,7 @@ namespace Deltares
 			int j = 0;
 			for (size_t i = 0; i < stochasts.size(); i++)
 			{
-				if (stochasts[i]->isVarying() && !checkFullyCorrelated(i))
+				if (stochasts[i]->isVarying() && !isFullyCorrelated(i, this->varyingStochastIndex))
 				{
 					std::shared_ptr<Deltares::Reliability::StochastSettings> varyingStochastSettings = settings->StochastSettings[i];
 
@@ -158,7 +158,7 @@ namespace Deltares
 			}
 		}
 
-		void UConverter::updateDependedParameter(std::vector<double>& uValues, const int i)
+		void UConverter::updateDependentParameter(std::vector<double>& uValues, const int i)
 		{
 			auto r = varyingCorrelationMatrix->findDependent(i);
 			if (r.index >= 0)
@@ -186,7 +186,7 @@ namespace Deltares
 				const int varyingIndex = this->varyingStochastIndex[i];
 				if (varyingIndex < 0)
 				{
-					updateDependedParameter(uValues, i);
+					updateDependentParameter(uValues, i);
 				}
 			}
 

@@ -81,14 +81,18 @@ namespace Deltares
 			choleskyMatrix = matrix.CholeskyDecomposition();
 		}
 
-		bool CorrelationMatrix::checkFullyCorrelated(const int j) const
+		bool CorrelationMatrix::isFullyCorrelated(const int index, std::vector<int> varyingIndices) const
 		{
 			if (dim == 0) return false;
-			for (size_t i = 0; i < j; i++)
+
+			for (int varyingIndex : varyingIndices)
 			{
-				if (abs(matrix(i, j)) >= 1.0 || abs(matrix(j, i)) >= 1.0)
+				if (varyingIndex >= 0 && varyingIndex < index) 
 				{
-					return true;
+					if (abs(matrix(varyingIndex, index)) >= 1.0 || abs(matrix(index, varyingIndex)) >= 1.0)
+					{
+						return true;
+					}
 				}
 			}
 
@@ -107,7 +111,7 @@ namespace Deltares
 					auto jj = findNewIndex(index, j);
 					if (index[i] >= 0 && index[j] >= 0)
 					{
-						matrix(ii, jj) = m->matrix(i, j);
+						SetCorrelation(ii, jj, m->matrix(i, j));
 					}
 				}
 			}
