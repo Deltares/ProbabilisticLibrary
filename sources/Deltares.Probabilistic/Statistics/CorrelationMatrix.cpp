@@ -130,6 +130,7 @@ namespace Deltares
 					for (;;)
 					{
 						auto dependent = m->findDependent(ii);
+						if (dependent.index < 0) break;
 						dependent.correlation *= correlation;
 						if (index[dependent.index] >= 0)
 						{
