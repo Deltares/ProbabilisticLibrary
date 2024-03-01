@@ -1,3 +1,4 @@
+#include <tuple>
 #include "FORM.h"
 
 #include "StartPointCalculator.h"
@@ -102,8 +103,21 @@ namespace Deltares
 			const std::shared_ptr <Models::GradientCalculator> gradientCalculator = std::make_shared<Models::GradientCalculator>();
 			gradientCalculator->Settings = this->Settings->GradientSettings;
 
+			auto allBetas = std::vector<double>();
+			auto lastSamples = std::vector<std::shared_ptr<Sample>>();
+
 			while (!convergenceReport->IsConverged && iteration < this->Settings->MaximumIterations && !this->isStopped())
 			{
+				if (iteration < histU)
+				{
+					lastSamples.push_back(sample);
+				}
+				else
+				{
+					int j = (iteration - 1) % histU;
+					lastSamples[j] = sample;
+				}
+
 				sample->IterationIndex = iteration;
 				zGradient = gradientCalculator->getGradient(modelRunner, sample);
 
@@ -160,6 +174,7 @@ namespace Deltares
 				{
 					beta = z0 / zGradientLength;
 				}
+				allBetas.push_back(beta);
 
 				if (std::abs(beta) >= Statistics::StandardNormal::BetaMax)
 				{
@@ -198,6 +213,10 @@ namespace Deltares
 				iteration++;
 			}
 
+			if (!convergenceReport->IsConverged)
+			{
+				std::tie(beta, sample) = estimateBetaNonConv(allBetas, lastSamples);
+			}
 			return modelRunner->getDesignPoint(sample, beta, convergenceReport);
 		}
 
@@ -246,6 +265,45 @@ namespace Deltares
 
 			return report;
 		}
+
+		std::pair<double, std::shared_ptr<Sample>> FORM::estimateBetaNonConv(const std::vector<double>& allBetas, const std::vector<std::shared_ptr<Sample>>& last10u)
+		{
+			const size_t nStochasts = last10u[0].get()->getSize();
+			const size_t nIter = last10u.size();
+			double rNIter = 1.0 / (double)nIter;
+			double sumUk = 0.0;
+			auto uk = std::vector<double>(nStochasts);
+			for (size_t k = 0; k < nStochasts; k++)
+			{
+				uk[k] = 0.0;
+				for (size_t iter = 0; iter < nIter; iter++)
+				{
+					uk[k] += last10u[iter].get()->Values[k];
+				}
+				uk[k] *= rNIter;
+				sumUk += pow(uk[k], 2);
+			}
+
+			double meanBeta = 0.0;
+			size_t maxIterations = allBetas.size();
+			for (size_t iter = 0; iter < nIter; iter++)
+			{
+				meanBeta += allBetas[iter + maxIterations - nIter];
+			}
+			meanBeta *= rNIter;
+
+			double signBeta = (meanBeta > 0.0 ? 1.0 : -1.0);
+			double beta = signBeta * sqrt(sumUk);
+
+			auto alpha = std::make_shared<Sample>(nStochasts);
+
+			for (size_t k = 0; k < nStochasts; k++)
+			{
+				alpha.get()->Values[k] = uk[k];
+			}
+			return { beta, alpha };
+		}
+
 	}
 }
 

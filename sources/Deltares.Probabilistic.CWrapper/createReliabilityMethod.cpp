@@ -63,6 +63,7 @@ ReliabilityMethod* createReliabilityMethod::selectMethod(const basicSettings& bs
         break;
     case (ProbMethod::FORM): {
         auto form = new FORM();
+        form->Settings->MaximumIterations = bs.numExtraInt;
         switch (bs.startMethod)
         {
         case StartMethods::Zero:
