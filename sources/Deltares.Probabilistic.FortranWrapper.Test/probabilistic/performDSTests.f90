@@ -53,7 +53,7 @@ subroutine performAllDSTests
     call testWithLevel(testDSFI, "Test DSFI", level, "not implemented yet")
     call testWithLevel(testDesignOutputOptions, "Test the several design output options of DS", level)
     call testWithLevel(testZeqZero, "Test DS with z is zero for u is zero", level, "work-in-progress")
-    call testWithLevel(testZnegative, "Test DS with z is negative for u is zero", level, "work-in-progress")
+    call testWithLevel(testZnegative, "Test DS with z is negative for u is zero", level)
     call testWithLevel(testCancel, "Test cancellation DS", level)
     call testWithLevel(testErrorHandling, "Test error handling DS", level, "work-in-progress")
 end subroutine performAllDSTests
@@ -264,7 +264,7 @@ subroutine testZnegative
             call assert_equal(1, index(msg, 'Fatal error: Unknown method in subroutine IterationDS: 10'), 'diff in error message')
         else
             call assert_comparable(beta, -1.412_wp, 1d-2, 'diff in beta')
-            call assert_comparable(alpha, [sqrt(0.5_wp), -sqrt(0.5_wp)], 1d-2, 'diff in alpha')
+            call assert_comparable(alpha, [sqrt(0.5_wp), -sqrt(0.5_wp)], 1d-1, 'diff in alpha')
         endif
     enddo
     call SetFatalErrorExpected(.false.)

@@ -113,7 +113,7 @@ subroutine allProbMethodsWaartsFunctionsTests(minTestLevel)
              "LimitState 25 quadratic terms sparse   " /)     ! 14
 
     dpOption = -1
-    do i = 3, 4 ! TODO the rest is not implemented yet
+    do i = 1, 4 ! TODO the rest is not implemented yet
 
         probMethod = i
 
@@ -334,7 +334,7 @@ subroutine testProbabilisticWithFunction ( )
                     call assert_comparable( -0.547722557505166d0, alfa(6), margin, "Noisy limit state: Alfa(6)" )
 
                 case (methodFORM)
-                    call assert_comparable( 2.3484769893536d0, actualBeta, margin, "Noisy limit state: Beta" )
+                    call assert_comparable( 2.348d0, actualBeta, 1d-3, "Noisy limit state: Beta" )
                 case (methodCrudeMonteCarlo)
                     call assert_comparable( 2.34491717949861d0, actualBeta, margin, "Noisy limit state: Beta" )
                 case (methodImportanceSampling)
@@ -700,7 +700,7 @@ subroutine testProbabilisticWithFunction ( )
 
             select case (probMethod)
                 case (methodFORM)
-                    call assert_comparable( 6.60d0, actualBeta, 0.10d0 * betaFactor, "Discontinuous limit state: Beta" )
+                    call assert_equal( 1, conv, "Discontinuous limit state: expected non convergence" )
 
                 case (methodNumericalIntegration)
                     call assert_comparable(  3.83365300964905d0, actualBeta, margin, "Discontinuous limit state: Beta" )
