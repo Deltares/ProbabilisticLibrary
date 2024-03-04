@@ -18,6 +18,11 @@ namespace Deltares
 			GradientType GradientType = OneDirection;
 			double StepSize = 0.3;
 			bool OnlyInitializationAllowed = false;
+
+			bool isValid()
+			{
+				return StepSize >= 0.01;
+			}
 		};
 	}
 }

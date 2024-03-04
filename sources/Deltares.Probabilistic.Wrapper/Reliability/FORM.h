@@ -29,6 +29,10 @@ namespace Deltares
 				}
 
 				FORMSettings^ Settings = gcnew FORMSettings();
+
+				System::Object^ GetSettings() {	return Settings; }
+
+				bool IsValid() { return Settings->IsValid(); }
 			};
 		}
 	}

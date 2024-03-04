@@ -85,10 +85,20 @@ namespace Deltares
 					}
 				}
 
+				bool IsValid()
+				{
+					return shared->object->isValid();
+				}
+
 				std::shared_ptr<Models::RunSettings> GetSettings()
 				{
 					return shared->object;
 				}
+			};
+
+			public interface class IHasRunSettings
+			{
+				property Deltares::Models::Wrappers::RunSettings^ RunSettings;
 			};
 		}
 	}

@@ -1,7 +1,7 @@
 #pragma once
 #include "../../Deltares.Probabilistic/Reliability/FORMSettings.h"
-#include "../../Deltares.Probabilistic/Reliability/StochastSettings.h"
 #include "../Model/GradientSettings.h"
+#include "../Model/RunSettings.h"
 #include "../Utils/SharedPointerProvider.h"
 #include "StartPointCalculatorSettings.h"
 
@@ -14,10 +14,13 @@ namespace Deltares
 			using namespace Deltares::Utils::Wrappers;
 			using namespace Deltares::Models::Wrappers;
 
-			public ref class FORMSettings
+			public ref class FORMSettings : IHasRunSettings
 			{
 			private:
 				SharedPointerProvider<Reliability::FORMSettings>* shared = new SharedPointerProvider(new Reliability::FORMSettings());
+
+				Wrappers::RunSettings^ runSettings = gcnew Wrappers::RunSettings();
+
 			public:
 				FORMSettings() {}
 				~FORMSettings() { this->!FORMSettings(); }
@@ -47,8 +50,18 @@ namespace Deltares
 					void set(double value) { shared->object->EpsilonBeta = value; }
 				}
 
-				StartPointCalculatorSettings^ StartPointCalculatorSettings = gcnew Wrappers::StartPointCalculatorSettings();
+				bool IsValid()
+				{
+					return shared->object->isValid();
+				}
 
+				virtual property Wrappers::RunSettings^ RunSettings
+				{
+					Wrappers::RunSettings^ get() { return runSettings; }
+					void set (Wrappers::RunSettings^ value) { runSettings = value; }
+				}
+
+				StartPointCalculatorSettings^ StartPointCalculatorSettings = gcnew Wrappers::StartPointCalculatorSettings();
 				Wrappers::GradientSettings^ GradientCalculatorSettings = gcnew Wrappers::GradientSettings();
 
 				System::Collections::Generic::List<Wrappers::StochastSettings^>^ StochastSettings = gcnew System::Collections::Generic::List<Wrappers::StochastSettings^>();
@@ -65,6 +78,7 @@ namespace Deltares
 					shared->object->StartPointSettings->StochastSet = shared->object->StochastSet;
 
 					shared->object->GradientSettings = GradientCalculatorSettings->GetSettings();
+					shared->object->RunSettings = RunSettings->GetSettings();
 
 					return shared->object;
 				}
