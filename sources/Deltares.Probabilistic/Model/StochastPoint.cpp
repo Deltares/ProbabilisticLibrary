@@ -8,12 +8,29 @@ namespace Deltares
 		{
 			std::shared_ptr<Sample> sample = std::make_shared<Sample>(Alphas.size());
 
-			for (int i = 0; i < Alphas.size(); i++)
+			for (size_t i = 0; i < Alphas.size(); i++)
 			{
 				sample->Values[i] = this->Alphas[i]->U;
 			}
 
 			return sample;
+		}
+
+		void StochastPoint::updateInfluenceFactors()
+		{
+			double sum = 0;
+			for (size_t i = 0; i < Alphas.size(); i++)
+			{
+				sum += this->Alphas[i]->Alpha * this->Alphas[i]->Alpha;
+			}
+
+			if (sum > 0)
+			{
+				for (size_t j = 0; j < this->Alphas.size(); j++)
+				{
+					Alphas[j]->InfluenceFactor = Alphas[j]->Alpha * Alphas[j]->Alpha / sum;
+				}
+			}
 		}
 	}
 }

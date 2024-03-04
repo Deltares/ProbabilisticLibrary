@@ -29,9 +29,9 @@ namespace Deltares
 					shared = new SharedPointerProvider(new Models::StochastPoint());
 				}
 
-				StochastPoint(std::shared_ptr<Models::StochastPoint> stochastPoint)
+				StochastPoint(std::shared_ptr<Models::StochastPoint> stochastPoint, System::Collections::Generic::List<Statistics::Wrappers::Stochast^>^ stochasts)
 				{
-					shared = new SharedPointerProvider(stochastPoint);
+					setStochastPoint(stochastPoint, stochasts);
 				}
 
 				~StochastPoint() { this->!StochastPoint(); }

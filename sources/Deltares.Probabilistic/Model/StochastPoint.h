@@ -16,6 +16,7 @@ namespace Deltares
 			std::vector<std::shared_ptr<StochastPointAlpha>> Alphas;
 
 			std::shared_ptr<Sample> getSample();
+			void updateInfluenceFactors();
 
 			virtual ~StochastPoint() { ; }
 		};
