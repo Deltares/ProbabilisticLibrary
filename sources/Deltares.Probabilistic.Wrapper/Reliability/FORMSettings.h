@@ -47,6 +47,12 @@ namespace Deltares
 					void set(double value) { shared->object->EpsilonBeta = value; }
 				}
 
+				property bool FilterAtNonConvergence
+				{
+					bool get() { return shared->object->FilterAtNonConvergence; }
+					void set(bool value) { shared->object->FilterAtNonConvergence = value; }
+				}
+
 				StartPointCalculatorSettings^ StartPointCalculatorSettings = gcnew Wrappers::StartPointCalculatorSettings();
 
 				Wrappers::GradientSettings^ GradientCalculatorSettings = gcnew Wrappers::GradientSettings();
