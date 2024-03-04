@@ -12,7 +12,6 @@ namespace Deltares
 		namespace Wrappers
 		{
 			using namespace Deltares::Utils::Wrappers;
-			using namespace Deltares::Models;
 
 			public ref class Evaluation
 			{
