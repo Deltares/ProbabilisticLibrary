@@ -352,6 +352,8 @@ namespace Deltares
 
 			const int count = sample->getSize();
 
+			double defaultAlpha = - 1 / sqrt(count);
+
 			if (count > 0)
 			{
 				std::vector<double> alphas = std::vector<double>(count);
@@ -359,8 +361,16 @@ namespace Deltares
 				auto uValues = std::vector<double>(count);
 				for (int i = 0; i < count; i++)
 				{
-					uValues[i] = betaSample->Values[i]; // - beta * alphas[i];
-					alphas[i] = -uValues[i] / beta;
+					if (beta == 0)
+					{
+						uValues[i] = 0;
+						alphas[i] = - sample->Values[i];
+					}
+					else
+					{
+						uValues[i] = betaSample->Values[i]; // - beta * alphas[i];
+						alphas[i] = -uValues[i] / beta;
+					}
 				}
 
 				auto uCorrelated = varyingCorrelationMatrix->Cholesky(uValues);
@@ -368,7 +378,14 @@ namespace Deltares
 				auto alphaCorrelated = std::vector<double>(count);
 				for (int i = 0; i < count; i++)
 				{
-					alphaCorrelated[i] = -uCorrelated[i] / beta;
+					if (beta == 0)
+					{
+						alphaCorrelated[i] = defaultAlpha;
+					}
+					else
+					{
+						alphaCorrelated[i] = -uCorrelated[i] / beta;
+					}
 				}
 
 				if (this->varyingStochasts.size() < this->stochasts.size())
