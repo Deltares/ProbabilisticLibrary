@@ -108,14 +108,17 @@ namespace Deltares
 
 			while (!convergenceReport->IsConverged && iteration < this->Settings->MaximumIterations && !this->isStopped())
 			{
-				if (iteration < histU)
+				if (Settings->FilterAtNonConvergence)
 				{
-					lastSamples.push_back(sample);
-				}
-				else
-				{
-					int j = (iteration - 1) % histU;
-					lastSamples[j] = sample;
+					if (iteration < histU)
+					{
+						lastSamples.push_back(sample);
+					}
+					else
+					{
+						int j = (iteration - 1) % histU;
+						lastSamples[j] = sample;
+					}
 				}
 
 				sample->IterationIndex = iteration;
@@ -174,7 +177,11 @@ namespace Deltares
 				{
 					beta = z0 / zGradientLength;
 				}
-				allBetas.push_back(beta);
+
+				if (Settings->FilterAtNonConvergence)
+				{
+					allBetas.push_back(beta);
+				}
 
 				if (std::abs(beta) >= Statistics::StandardNormal::BetaMax)
 				{
@@ -213,7 +220,7 @@ namespace Deltares
 				iteration++;
 			}
 
-			if (!convergenceReport->IsConverged)
+			if (Settings->FilterAtNonConvergence && !convergenceReport->IsConverged)
 			{
 				std::tie(beta, sample) = estimateBetaNonConv(allBetas, lastSamples);
 			}

@@ -65,6 +65,7 @@ ReliabilityMethod* createReliabilityMethod::selectMethod(const basicSettings& bs
         auto form = new FORM();
         form->Settings->MaximumIterations = bs.numExtraInt;
         form->Settings->GradientSettings->GradientType = GradientType::TwoDirections;
+        form->Settings->FilterAtNonConvergence = true;
         switch (bs.startMethod)
         {
         case StartMethods::Zero:
