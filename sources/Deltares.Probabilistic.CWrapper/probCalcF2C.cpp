@@ -80,7 +80,7 @@ void updateX(const vector1D & alpha, const DPoptions option, tResult & r, const 
 }
 
 extern "C"
-void probcalcf2cnew(const basicSettings* method, fdistribs* c, const int n, const int vectorSize,
+void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, const int vectorSize,
     corrStruct correlations[], const int nrCorrelations,
     const double(*fx)(double[], int[], tError*),
     const bool(*pc)(ProgressType, const char*),

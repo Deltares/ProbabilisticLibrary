@@ -90,9 +90,9 @@ subroutine test_ds
     compIds(1) = 16
     ipoint     = [0, 1] ! zero based, as it goes to c++
 
-    call probCalcF2Cnew(method, distribs, 2, 2, correlations, 0,  zfunc, textualProgress, compIds, iPoint, x, r, ierr)
+    call probCalcF2C(method, distribs, 2, 2, correlations, 0,  zfunc, textualProgress, compIds, iPoint, x, r, ierr)
 
-    call assert_equal(ierr%iCode, 0, "return code probCalcF2Cnew <> 0")
+    call assert_equal(ierr%iCode, 0, "return code probCalcF2C <> 0")
 
     if (ierr%iCode == 0) then
         call assert_comparable(r%beta, -0.22178518912_wp, margin, "diff in beta")
@@ -127,9 +127,9 @@ subroutine test_ds_errorhandling
     compIds(1) = 17
     ipoint     = [0, 1]
 
-    call probCalcF2Cnew(method, distribs, 2, 2, correlations, 0, zfunc, textualProgress, compIds, ipoint, x, r, ierr)
+    call probCalcF2C(method, distribs, 2, 2, correlations, 0, zfunc, textualProgress, compIds, ipoint, x, r, ierr)
 
-    call assert_equal(ierr%iCode, -1, "return code probCalcF2Cnew <> 0")
+    call assert_equal(ierr%iCode, -1, "return code probCalcF2C <> 0")
 
     call copystrback(errmsg, ierr%message)
     call assert_equal(errmsg, "just testing", "diff in error message")
@@ -158,9 +158,9 @@ subroutine test_form_errorhandling
     compIds(1) = 17
     ipoint     = [0, 1]
 
-    call probCalcF2Cnew(method, distribs, 2, 2, correlations, 0, zfunc, textualProgress, compIds, ipoint, x, r, ierr)
+    call probCalcF2C(method, distribs, 2, 2, correlations, 0, zfunc, textualProgress, compIds, ipoint, x, r, ierr)
 
-    call assert_equal(ierr%iCode, 0, "diff in return code probCalcF2Cnew")
+    call assert_equal(ierr%iCode, 0, "diff in return code probCalcF2C")
     call assert_equal(r%convergence, 1, "diff in convergence flag")
     call assert_comparable(r%beta, 40.0_wp, margin, "diff in beta")
 
