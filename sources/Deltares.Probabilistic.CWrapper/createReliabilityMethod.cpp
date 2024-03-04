@@ -28,7 +28,7 @@ Deltares::Models::RandomSettings* createReliabilityMethod::getRnd(const basicSet
     return rnd;
 }
 
-ReliabilityMethod* createReliabilityMethod::selectMethod(const basicSettings& bs)
+ReliabilityMethod* createReliabilityMethod::selectMethod(const basicSettings& bs, const size_t nStoch)
 {
     switch (bs.methodId)
     {
@@ -64,6 +64,7 @@ ReliabilityMethod* createReliabilityMethod::selectMethod(const basicSettings& bs
     case (ProbMethod::FORM): {
         auto form = new FORM();
         form->Settings->MaximumIterations = bs.numExtraInt;
+        form->Settings->GradientSettings->GradientType = GradientType::TwoDirections;
         switch (bs.startMethod)
         {
         case StartMethods::Zero:
@@ -76,9 +77,19 @@ ReliabilityMethod* createReliabilityMethod::selectMethod(const basicSettings& bs
             form->Settings->StartPointSettings->StartMethod = StartMethodType::RaySearch;
             form->Settings->StartPointSettings->MaximumLengthStartPoint = 18.1;
             form->Settings->StartPointSettings->dsdu = 0.3;
+            form->Settings->StartPointSettings->startVector = std::vector<double>(nStoch);
+            for (size_t i = 0; i < nStoch; i++)
+            {
+                form->Settings->StartPointSettings->startVector[i] = bs.startVector[i];
+            }
             break;
         case StartMethods::SphereSearch:
             form->Settings->StartPointSettings->StartMethod = StartMethodType::SphereSearch;
+            form->Settings->StartPointSettings->startVector = std::vector<double>(nStoch);
+            for (size_t i = 0; i < nStoch; i++)
+            {
+                form->Settings->StartPointSettings->startVector[i] = bs.startVector[i];
+            }
             break;
         default:
             throw probLibException ( "not implemented: start method: " , (int)bs.startMethod );

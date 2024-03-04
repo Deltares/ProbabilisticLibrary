@@ -65,7 +65,17 @@ namespace Deltares
 		{
 			std::shared_ptr<Sample> startPoint = this->Settings->StochastSet->getSample();
 
-			correctDefaultValues(startPoint);
+			if (this->Settings->startVector.size() > 0)
+			{
+				for (size_t i = 0; i < startPoint.get()->getSize(); i++)
+				{
+					startPoint->Values[i] = this->Settings->startVector[i];
+				}
+			}
+			else
+			{
+				correctDefaultValues(startPoint);
+			}
 
 			std::shared_ptr<Sample> rayStartPoint = getDirectionStartPoint(modelRunner, startPoint);
 
@@ -95,7 +105,7 @@ namespace Deltares
 
 			std::shared_ptr<Sample> directionPoint = std::make_shared<Sample>(startPoint->Values);
 
-			directionPoint->getSampleAtBeta(beta);
+			directionPoint = directionPoint->getSampleAtBeta(beta);
 
 			for (int i = 0; i < nStochasts; i++)
 			{

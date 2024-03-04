@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 #include "StochastSettingsSet.h"
 
 namespace Deltares
@@ -17,6 +18,7 @@ namespace Deltares
 			double dsdu = 1;
 
 			std::shared_ptr<StochastSettingsSet> StochastSet = std::make_shared<StochastSettingsSet>();
+			std::vector<double> startVector;
 		};
 	}
 }
