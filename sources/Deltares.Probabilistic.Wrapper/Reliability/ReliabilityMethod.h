@@ -11,9 +11,6 @@ namespace Deltares
 		{
 			public ref class ReliabilityMethod
 			{
-			protected:
-				SharedPointerProvider<Reliability::ReliabilityMethod>* shared = nullptr;
-
 			public:
 				ReliabilityMethod() {  }
 
@@ -24,25 +21,10 @@ namespace Deltares
 
 				DesignPoint^ GetDesignPoint(Wrappers::ModelRunner^ modelRunner);
 
-				void Stop()
-				{
-					if (shared != nullptr) 
-					{
-						shared->object->Stop();
-					}
-				}
-
-				bool IsStopped()
-				{
-					if (shared != nullptr) 
-					{
-						return shared->object->isStopped();
-					}
-					else
-					{
-						return false;
-					}
-				}
+				virtual System::Object^ GetSettings() { return nullptr; }
+				virtual bool IsValid() { return false; }
+				virtual void Stop()	{ }
+				virtual bool IsStopped() { return false; }
 			};
 		}
 	}

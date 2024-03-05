@@ -130,7 +130,7 @@ namespace Deltares
 
 		void UConverter::updateStochastSettings(std::shared_ptr<Deltares::Reliability::StochastSettingsSet> settings)
 		{
-			for (size_t i = settings->getStochastCount(); i < stochasts.size(); i++)
+			for (size_t i = settings->getVaryingStochastCount(); i < varyingStochasts.size(); i++)
 			{
 				std::shared_ptr<Deltares::Reliability::StochastSettings> stochastSettings = std::make_shared<Deltares::Reliability::StochastSettings>();
 				settings->StochastSettings.push_back(stochastSettings);
@@ -143,7 +143,7 @@ namespace Deltares
 			{
 				if (stochasts[i]->isVarying() && !isFullyCorrelated(i, this->varyingStochastIndex))
 				{
-					std::shared_ptr<Deltares::Reliability::StochastSettings> varyingStochastSettings = settings->StochastSettings[i];
+					std::shared_ptr<Deltares::Reliability::StochastSettings> varyingStochastSettings = settings->StochastSettings[j];
 
 					varyingStochastSettings->StochastIndex = i;
 					varyingStochastSettings->IsQualitative = varyingStochasts[j]->isQualitative();

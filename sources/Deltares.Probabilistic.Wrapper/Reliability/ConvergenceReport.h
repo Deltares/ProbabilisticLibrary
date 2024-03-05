@@ -3,6 +3,7 @@
 #include <memory>
 
 #include "../../Deltares.Probabilistic/Reliability/ConvergenceReport.h"
+#include "../Model/Sample.h"
 
 namespace Deltares
 {
@@ -35,6 +36,8 @@ namespace Deltares
 				property double MaxWeight;
 				property double FailWeight;
 				property bool IsConverged;
+
+				Deltares::Models::Wrappers::Sample^ NearestStochastPoint = nullptr;
 			};
 		}
 	}

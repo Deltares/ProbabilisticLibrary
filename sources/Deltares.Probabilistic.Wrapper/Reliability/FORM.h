@@ -30,9 +30,13 @@ namespace Deltares
 
 				FORMSettings^ Settings = gcnew FORMSettings();
 
-				System::Object^ GetSettings() {	return Settings; }
+				System::Object^ GetSettings() override { return Settings; }
 
-				bool IsValid() { return Settings->IsValid(); }
+				bool IsValid() override { return Settings->IsValid(); }
+
+				void Stop()	override { shared->object->Stop(); }
+
+				bool IsStopped() override { return shared->object->isStopped(); }
 			};
 		}
 	}

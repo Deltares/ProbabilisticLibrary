@@ -95,7 +95,7 @@ namespace Deltares
 
 			std::shared_ptr<Sample> directionPoint = std::make_shared<Sample>(startPoint->Values);
 
-			directionPoint->getSampleAtBeta(beta);
+			directionPoint = directionPoint->getSampleAtBeta(beta);
 
 			for (int i = 0; i < nStochasts; i++)
 			{

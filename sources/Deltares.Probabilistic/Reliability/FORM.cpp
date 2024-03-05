@@ -98,6 +98,7 @@ namespace Deltares
 			double beta = nan("");
 
 			std::shared_ptr<Sample> sample = startPoint->clone();
+			std::shared_ptr<Sample> resultSample = startPoint->clone();
 
 			const std::shared_ptr <Models::GradientCalculator> gradientCalculator = std::make_shared<Models::GradientCalculator>();
 			gradientCalculator->Settings = this->Settings->GradientSettings;
@@ -182,23 +183,29 @@ namespace Deltares
 				// no convergence, next iteration
 				if (!convergenceReport->IsConverged)
 				{
-					std::shared_ptr<Sample> uNew = std::make_shared<Sample>(nStochasts);
+					const std::shared_ptr<Sample> newSample = std::make_shared<Sample>(nStochasts);
 
 					for (int k = 0; k < nStochasts; k++)
 					{
 						double alpha = zGradient[k] / zGradientLength;
 						double uNewValue = -alpha * beta;
 
-						uNew->Values[k] = relaxationFactor * uNewValue + (1 - relaxationFactor) * sample->Values[k];
+						newSample->Values[k] = relaxationFactor * uNewValue + (1 - relaxationFactor) * sample->Values[k];
 					}
 
-					sample = uNew;
+					sample = newSample;
 				}
+
+				//   compute alpha vector
+				std::vector<double> alphas = NumericSupport::select(zGradient, [zGradientLength](double p) { return p / zGradientLength; });
+				std::vector<double> uValues = NumericSupport::select(zGradient, [beta, zGradientLength](double p) { return - beta *  p / zGradientLength; });
+
+				resultSample = std::make_shared<Sample>(uValues);
 
 				iteration++;
 			}
 
-			return modelRunner->getDesignPoint(sample, beta, convergenceReport);
+			return modelRunner->getDesignPoint(resultSample, beta, convergenceReport);
 		}
 
 		bool FORM::areAllResultsValid(std::vector<double> values)

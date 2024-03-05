@@ -95,7 +95,7 @@ namespace Deltares
 					return NativeSupport::toManaged(zValues);
 				}
 
-				RunSettings^ Settings = gcnew RunSettings();
+				RunSettings^ Settings = gcnew Deltares::Models::Wrappers::RunSettings();
 
 				virtual void InitializeForRun()
 				{
