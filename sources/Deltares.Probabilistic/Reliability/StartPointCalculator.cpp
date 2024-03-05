@@ -27,6 +27,8 @@ namespace Deltares
 				return getSensitivityStartPoint(modelRunner);
 			case StartMethodType::SphereSearch:
 				return getSphereStartPoint(modelRunner);
+			case StartMethodType::GivenVector:
+				return getGivenVectorStartPoint(modelRunner);
 			default:
 				throw probLibException("Start method not supported: ", (int)this->Settings->StartMethod);
 			}
@@ -58,6 +60,13 @@ namespace Deltares
 
 			correctDefaultValues(startPoint);
 
+			return startPoint;
+		}
+
+		std::shared_ptr<Sample> StartPointCalculator::getGivenVectorStartPoint(std::shared_ptr<Models::ModelRunner> modelRunner)
+		{
+			std::shared_ptr<Sample> startPoint = this->Settings->StochastSet->getSample();
+			startPoint->Values = this->Settings->startVector;
 			return startPoint;
 		}
 

@@ -65,7 +65,7 @@ ReliabilityMethod* createReliabilityMethod::selectMethod(const basicSettings& bs
         auto form = new FORM();
         form->Settings->MaximumIterations = bs.numExtraInt;
         form->Settings->GradientSettings->GradientType = GradientType::TwoDirections;
-        form->Settings->FilterAtNonConvergence = true;
+        form->Settings->FilterAtNonConvergence = (bs.numExtraInt > 0);
         switch (bs.startMethod)
         {
         case StartMethods::Zero:
@@ -75,22 +75,20 @@ ReliabilityMethod* createReliabilityMethod::selectMethod(const basicSettings& bs
             form->Settings->StartPointSettings->StartMethod = StartMethodType::One;
             break;
         case StartMethods::RaySearch:
+        case StartMethods::RaySearchVector:
+        case StartMethods::RaySearchVectorScaled:
             form->Settings->StartPointSettings->StartMethod = StartMethodType::RaySearch;
             form->Settings->StartPointSettings->MaximumLengthStartPoint = 18.1;
             form->Settings->StartPointSettings->dsdu = 0.3;
-            form->Settings->StartPointSettings->startVector = std::vector<double>(nStoch);
-            for (size_t i = 0; i < nStoch; i++)
-            {
-                form->Settings->StartPointSettings->startVector[i] = bs.startVector[i];
-            }
+            form->Settings->StartPointSettings->startVector = copyStartVector(bs.startVector, nStoch);
             break;
         case StartMethods::SphereSearch:
             form->Settings->StartPointSettings->StartMethod = StartMethodType::SphereSearch;
-            form->Settings->StartPointSettings->startVector = std::vector<double>(nStoch);
-            for (size_t i = 0; i < nStoch; i++)
-            {
-                form->Settings->StartPointSettings->startVector[i] = bs.startVector[i];
-            }
+            form->Settings->StartPointSettings->startVector = copyStartVector(bs.startVector, nStoch);
+            break;
+        case StartMethods::GivenVector:
+            form->Settings->StartPointSettings->StartMethod = StartMethodType::GivenVector;
+            form->Settings->StartPointSettings->startVector = copyStartVector(bs.startVector, nStoch);
             break;
         default:
             throw probLibException ( "not implemented: start method: " , (int)bs.startMethod );
@@ -104,4 +102,13 @@ ReliabilityMethod* createReliabilityMethod::selectMethod(const basicSettings& bs
     }
 }
 
+std::vector<double> createReliabilityMethod::copyStartVector(const double startValues[], const size_t nStoch)
+{
+    auto startVector = std::vector<double>(nStoch);
+    for (size_t i = 0; i < nStoch; i++)
+    {
+        startVector[i] = startValues[i];
+    }
+    return startVector;
+}
 
