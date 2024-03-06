@@ -46,7 +46,7 @@ namespace Deltares
 
 			for (size_t i = 0; i < this->stochasts.size(); i++)
 			{
-				if (this->stochasts[i]->isVarying() && !checkFullyCorrelated(i))
+				if (this->stochasts[i]->isVarying() && !isFullyCorrelated(i, this->varyingStochastIndex))
 				{
 					this->varyingStochastIndex.push_back(i);
 					this->varyingStochasts.push_back(this->stochasts[i]);
@@ -92,6 +92,11 @@ namespace Deltares
 			varyingCorrelationMatrix->CholeskyDecomposition();
 		}
 
+		bool UConverter::isVaryingStochast(int index)
+		{
+			return this->varyingStochastIndex[index] >= 0;
+		}
+
 		std::vector<double> UConverter::getVaryingValues(std::vector<double> values)
 		{
 			std::vector<double> varyingValues;
@@ -108,9 +113,9 @@ namespace Deltares
 		}
 
 
-		bool UConverter::checkFullyCorrelated(const int i)
+		bool UConverter::isFullyCorrelated(const int index, std::vector<int> varyingIndices)
 		{
-			return correlationMatrix->checkFullyCorrelated(i);
+			return correlationMatrix->isFullyCorrelated(index, varyingIndices);
 		}
 
 		int UConverter::getStochastCount()
@@ -125,7 +130,7 @@ namespace Deltares
 
 		void UConverter::updateStochastSettings(std::shared_ptr<Deltares::Reliability::StochastSettingsSet> settings)
 		{
-			for (size_t i = settings->getStochastCount(); i < stochasts.size(); i++)
+			for (size_t i = settings->StochastSettings.size(); i < stochasts.size(); i++)
 			{
 				std::shared_ptr<Deltares::Reliability::StochastSettings> stochastSettings = std::make_shared<Deltares::Reliability::StochastSettings>();
 				settings->StochastSettings.push_back(stochastSettings);
@@ -136,9 +141,9 @@ namespace Deltares
 			int j = 0;
 			for (size_t i = 0; i < stochasts.size(); i++)
 			{
-				if (stochasts[i]->isVarying() && !checkFullyCorrelated(i))
+				if (stochasts[i]->isVarying() && !isFullyCorrelated(i, this->varyingStochastIndex))
 				{
-					std::shared_ptr<Deltares::Reliability::StochastSettings> varyingStochastSettings = settings->StochastSettings[i];
+					std::shared_ptr<Deltares::Reliability::StochastSettings> varyingStochastSettings = settings->StochastSettings[j];
 
 					varyingStochastSettings->StochastIndex = i;
 					varyingStochastSettings->IsQualitative = varyingStochasts[j]->isQualitative();
@@ -153,7 +158,7 @@ namespace Deltares
 			}
 		}
 
-		void UConverter::updateDependedParameter(std::vector<double>& uValues, const int i)
+		void UConverter::updateDependentParameter(std::vector<double>& uValues, const int i)
 		{
 			auto r = varyingCorrelationMatrix->findDependent(i);
 			if (r.index >= 0)
@@ -181,7 +186,7 @@ namespace Deltares
 				const int varyingIndex = this->varyingStochastIndex[i];
 				if (varyingIndex < 0)
 				{
-					updateDependedParameter(uValues, i);
+					updateDependentParameter(uValues, i);
 				}
 			}
 
@@ -347,6 +352,8 @@ namespace Deltares
 
 			const int count = sample->getSize();
 
+			double defaultAlpha = - 1 / sqrt(count);
+
 			if (count > 0)
 			{
 				std::vector<double> alphas = std::vector<double>(count);
@@ -354,8 +361,16 @@ namespace Deltares
 				auto uValues = std::vector<double>(count);
 				for (int i = 0; i < count; i++)
 				{
-					uValues[i] = betaSample->Values[i]; // - beta * alphas[i];
-					alphas[i] = -uValues[i] / beta;
+					if (beta == 0)
+					{
+						uValues[i] = 0;
+						alphas[i] = - sample->Values[i];
+					}
+					else
+					{
+						uValues[i] = betaSample->Values[i]; // - beta * alphas[i];
+						alphas[i] = -uValues[i] / beta;
+					}
 				}
 
 				auto uCorrelated = varyingCorrelationMatrix->Cholesky(uValues);
@@ -363,7 +378,14 @@ namespace Deltares
 				auto alphaCorrelated = std::vector<double>(count);
 				for (int i = 0; i < count; i++)
 				{
-					alphaCorrelated[i] = -uCorrelated[i] / beta;
+					if (beta == 0)
+					{
+						alphaCorrelated[i] = defaultAlpha;
+					}
+					else
+					{
+						alphaCorrelated[i] = -uCorrelated[i] / beta;
+					}
 				}
 
 				if (this->varyingStochasts.size() < this->stochasts.size())

@@ -21,6 +21,11 @@ namespace Deltares
 			return this->uConverter->getStochastCount();
 		}
 
+		bool ModelRunner::isVaryingStochast(int index)
+		{
+			return this->uConverter->isVaryingStochast(index);
+		}
+
 		void ModelRunner::updateStochastSettings(std::shared_ptr<Reliability::StochastSettingsSet> settings)
 		{
 			this->uConverter->updateStochastSettings(settings);
@@ -42,7 +47,7 @@ namespace Deltares
 
 		std::shared_ptr<Sample> ModelRunner::getXSample(std::shared_ptr<Sample> sample)
 		{
-			std::vector<double> xValues = this->uConverter->getXValues(sample);;
+			std::vector<double> xValues = this->uConverter->getXValues(sample);
 
 			// create a sample with values in x-space
 			std::shared_ptr<Sample> xSample = std::make_shared<Sample>(xValues);

@@ -24,6 +24,8 @@ namespace Deltares
 			std::shared_ptr<Sample> examineSurfaceForFailure(std::shared_ptr<Models::ModelRunner> modelRunner, int index, double radiusFactor, std::shared_ptr<Sample> uRay, double z0Fac, double& zMin);
 			std::shared_ptr<Sample> getBestSample(std::shared_ptr<Sample> bestSample, std::shared_ptr<Sample> sample, double z0Fac);
 			std::shared_ptr<Sample> refineSpherePoint(std::shared_ptr<Models::ModelRunner> modelRunner, double radiusFactor, std::shared_ptr<Sample> u);
+			std::vector<double> getGradient(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<Sample> sample);
+
 		};
 	}
 }

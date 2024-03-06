@@ -81,14 +81,18 @@ namespace Deltares
 			choleskyMatrix = matrix.CholeskyDecomposition();
 		}
 
-		bool CorrelationMatrix::checkFullyCorrelated(const int j) const
+		bool CorrelationMatrix::isFullyCorrelated(const int index, std::vector<int> varyingIndices) const
 		{
 			if (dim == 0) return false;
-			for (size_t i = 0; i < j; i++)
+
+			for (int varyingIndex : varyingIndices)
 			{
-				if (abs(matrix(i, j)) >= 1.0 || abs(matrix(j, i)) >= 1.0)
+				if (varyingIndex >= 0 && varyingIndex < index) 
 				{
-					return true;
+					if (abs(matrix(varyingIndex, index)) >= 1.0 || abs(matrix(index, varyingIndex)) >= 1.0)
+					{
+						return true;
+					}
 				}
 			}
 
@@ -97,20 +101,21 @@ namespace Deltares
 
 		void CorrelationMatrix::filter(const std::shared_ptr<CorrelationMatrix> m, const std::vector<int>& index)
 		{
-			for (size_t i = 0; i < dim; i++)
+			auto nrAllStochasts = index.size();
+
+			for (size_t i = 0; i < nrAllStochasts; i++)
 			{
 				auto ii = findNewIndex(index, i);
-				for (size_t j = 0; j < dim; j++)
+				for (size_t j = 0; j < nrAllStochasts; j++)
 				{
 					auto jj = findNewIndex(index, j);
 					if (index[i] >= 0 && index[j] >= 0)
 					{
-						matrix(ii, jj) = m->matrix(i, j);
+						SetCorrelation(ii, jj, m->matrix(i, j));
 					}
 				}
 			}
 
-			auto nrAllStochasts = index.size();
 			auto newIndexer = std::vector<indexWithCorrelation>(nrAllStochasts);
 			for (size_t i = 0; i < nrAllStochasts; i++)
 			{
@@ -125,6 +130,7 @@ namespace Deltares
 					for (;;)
 					{
 						auto dependent = m->findDependent(ii);
+						if (dependent.index < 0) break;
 						dependent.correlation *= correlation;
 						if (index[dependent.index] >= 0)
 						{

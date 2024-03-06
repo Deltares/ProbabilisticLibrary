@@ -51,7 +51,7 @@ namespace Deltares
 			SpaceType SpaceType = SpaceType::U;
 
 			int IterationIndex = -1;
-			double Weight = 1;
+			double Weight = nan("");
 			bool AllowProxy = true;
 			double Z = nan("");
 

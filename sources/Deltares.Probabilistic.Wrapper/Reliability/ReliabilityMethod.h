@@ -20,6 +20,11 @@ namespace Deltares
 				};
 
 				DesignPoint^ GetDesignPoint(Wrappers::ModelRunner^ modelRunner);
+
+				virtual System::Object^ GetSettings() { return nullptr; }
+				virtual bool IsValid() { return false; }
+				virtual void Stop()	{ }
+				virtual bool IsStopped() { return false; }
 			};
 		}
 	}

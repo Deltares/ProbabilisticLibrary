@@ -30,7 +30,7 @@ namespace Deltares
 					native_stochasts.push_back(stochasts[i]->GetStochast());
 				}
 
-				std::shared_ptr<UConverter> uConverter = std::make_shared<UConverter>(native_stochasts, correlationMatrix->GetCorrelationMatrix());
+				std::shared_ptr<Models::UConverter> uConverter = std::make_shared<Models::UConverter>(native_stochasts, correlationMatrix->GetCorrelationMatrix());
 
 				std::shared_ptr<Models::ZModel> zModel = getZModel();
 

@@ -8,6 +8,7 @@
 #include "ProgressIndicator.h"
 #include "RunSettings.h"
 #include "Sample.h"
+#include "UConverter.h"
 
 namespace Deltares
 {
@@ -60,6 +61,11 @@ namespace Deltares
 					int get() { return shared->object->getVaryingStochastCount(); }
 				}
 
+				bool IsVaryingStochast(int index)
+				{
+					return shared->object->isVaryingStochast(index);
+				}
+
 				/**
 				 * \brief Calculates a z-value for a reliability method in .net
 				 * \param sample 
@@ -89,7 +95,7 @@ namespace Deltares
 					return NativeSupport::toManaged(zValues);
 				}
 
-				RunSettings^ Settings = gcnew RunSettings();
+				RunSettings^ Settings = gcnew Deltares::Models::Wrappers::RunSettings();
 
 				virtual void InitializeForRun()
 				{

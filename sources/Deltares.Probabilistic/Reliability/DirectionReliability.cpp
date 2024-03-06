@@ -47,16 +47,29 @@ namespace Deltares
 		{
 		private:
 			std::shared_ptr<Models::ModelRunner> modelRunner;
+			std::shared_ptr<DirectionReliabilitySettings> settings;
 		public:
-			ZGetter(std::shared_ptr<Models::ModelRunner> modelRunner)
+			ZGetter(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<DirectionReliabilitySettings> settings = nullptr)
 			{
 				this->modelRunner = modelRunner;
+				this->settings = settings;
 			}
 
 			double GetZ(std::shared_ptr<Sample> uDirection, double factor, bool inverted, bool allowProxy = true)
 			{
 				std::shared_ptr<Sample> u = uDirection->getMultipliedSample(factor);
 				u->AllowProxy = allowProxy;
+
+				if (settings != nullptr && settings->UseInitialValues)
+				{
+					for (size_t i = 0; i < u->Values.size(); i++)
+					{
+						if (!settings->StochastSet->VaryingStochastSettings[i]->IsInitializationAllowed)
+						{
+							u->Values[i] = settings->StochastSet->VaryingStochastSettings[i]->StartValue;
+						}
+					}
+				}
 
 				return GetZValueCorrected(u, inverted);
 			}
@@ -168,11 +181,11 @@ namespace Deltares
 
 			bool found = false;
 			bool monotone = settings->modelVaryingType == ModelVaryingType::Monotone;
-			std::unique_ptr<ZGetter> model (new ZGetter(modelRunner));
+			std::unique_ptr<ZGetter> model (new ZGetter(modelRunner, settings));
 
 			double prevzHigh = nan("");
 
-			for (int k = 0; k < sectionsCount && !this->isStopped(); k++)
+			for (int k = 0; k <= sectionsCount && !this->isStopped(); k++)
 			{
 				if (!found)
 				{
@@ -266,7 +279,7 @@ namespace Deltares
 
 		double DirectionReliability::findBetaBetweenBoundaries(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<DirectionReliabilitySettings> settings, std::shared_ptr<Sample> uDirection, bool invertZ, double uLow, double uHigh, double zLow, double zHigh, double& z)
 		{
-			std::unique_ptr<ZGetter> model (new ZGetter(modelRunner));
+			std::unique_ptr<ZGetter> model (new ZGetter(modelRunner, settings));
 
 			if (std::isnan(zLow) || std::isnan(zHigh))
 			{

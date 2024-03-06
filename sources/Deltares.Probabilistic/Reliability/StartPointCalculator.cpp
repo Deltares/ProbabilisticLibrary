@@ -103,18 +103,20 @@ namespace Deltares
 				}
 			}
 
-			std::unique_ptr<DirectionReliability> directionReliability (new DirectionReliability());
+			std::unique_ptr<DirectionReliability> directionReliability(new DirectionReliability());
 			directionReliability->Settings->StochastSet = this->Settings->StochastSet;
 			directionReliability->Settings->MaximumLengthU = this->Settings->MaximumLengthStartPoint;
 			directionReliability->Settings->StochastSet = this->Settings->StochastSet;
 			directionReliability->Settings->FindMinimalValue = true;
+			directionReliability->Settings->UseInitialValues = true;
+			directionReliability->Settings->modelVaryingType = Varying;
 			directionReliability->Settings->Dsdu = this->Settings->dsdu;
 
 			double beta = directionReliability->getBeta(modelRunner, startPoint, 1);
 
 			std::shared_ptr<Sample> directionPoint = std::make_shared<Sample>(startPoint->Values);
 
-			directionPoint = directionPoint->getSampleAtBeta(beta);
+			directionPoint = directionPoint->getSampleAtBeta(std::min(beta, this->Settings->MaximumLengthStartPoint));
 
 			for (int i = 0; i < nStochasts; i++)
 			{
@@ -132,17 +134,63 @@ namespace Deltares
 			int nStochasts = modelRunner->getVaryingStochastCount();
 			std::shared_ptr<Sample> startPoint = std::make_shared<Sample>(nStochasts);
 
-			Models::GradientCalculator* gradientCalculator = new Models::GradientCalculator();
-			gradientCalculator->Settings->GradientType = Models::GradientType::TwoDirections;
-			gradientCalculator->Settings->StepSize = this->Settings->GradientStepSize;
-
-			std::vector<double> gradient = gradientCalculator->getGradient(modelRunner, startPoint);
+			std::vector<double> gradient = this->getGradient(modelRunner, startPoint);
 
 			std::shared_ptr<Sample> gradientSample = std::make_shared<Sample>(gradient);
 
 			std::shared_ptr<Sample> sensitivityStartPoint = getDirectionStartPoint(modelRunner, gradientSample);
 
 			return sensitivityStartPoint;
+		}
+
+		std::vector<double> StartPointCalculator::getGradient(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<Sample> sample)
+		{
+			int nstochasts = modelRunner->getVaryingStochastCount();
+
+			std::vector<std::shared_ptr<Sample>> samples;
+			std::vector<double> gradient(nstochasts);
+
+			double stepSize = 2;
+
+			// first sample is the sample itself
+			samples.push_back(sample);
+
+			for (int k = 0; k < nstochasts; k++)
+			{
+				std::shared_ptr<Sample> u1 = sample->clone();
+				u1->Values[k] -= stepSize;
+				samples.push_back(u1);
+
+				std::shared_ptr<Sample> u2 = sample->clone();
+				u2->Values[k] += stepSize;
+				samples.push_back(u2);
+			}
+
+			std::vector<double> zValues = modelRunner->getZValues(samples);
+
+			double z0Fac = Numeric::NumericSupport::GetSign(zValues[0]);
+			double z0 = zValues[0] * z0Fac;
+
+			for (int k = 0; k < nstochasts; k++)
+			{
+				const double zLow = zValues[2 * k + 1] * z0Fac;
+				const double zHigh = zValues[2 * k + 2] * z0Fac;
+
+				if (zLow < z0)
+				{
+					gradient[k] = 1.0 / Numeric::NumericSupport::interpolate(0, z0, 0, zLow, -stepSize, true);
+				}
+				else if (zHigh < z0)
+				{
+					gradient[k] = 1.0 / Numeric::NumericSupport::interpolate(0, z0, 0, zHigh, stepSize, true);
+				}
+				else
+				{
+					gradient[k] = 0;
+				}
+			}
+
+			return gradient;
 		}
 
 		std::shared_ptr<Sample> StartPointCalculator::getSphereStartPoint(std::shared_ptr<Models::ModelRunner> modelRunner)

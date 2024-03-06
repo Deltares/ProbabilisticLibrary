@@ -75,6 +75,11 @@ namespace Deltares
 					}
 				}
 
+				bool IsValid()
+				{
+					return shared->object->isValid();
+				}
+
 				System::Collections::Generic::List<Wrappers::StochastSettings^>^ StochastSettings = gcnew System::Collections::Generic::List<Wrappers::StochastSettings^>();
 
 				std::shared_ptr<Reliability::StartPointCalculatorSettings> GetSettings()

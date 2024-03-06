@@ -18,7 +18,10 @@ namespace Deltares
 			DesignPointBuilder* uMean = new DesignPointBuilder(nstochasts, this->Settings->designPointMethod, this->Settings->StochastSet);
 			int parSamples = 0;
 
-			omp_set_num_threads(modelRunner->Settings->MaxParallelProcesses);
+			if (modelRunner->Settings->MaxParallelProcesses > 0) 
+			{
+				omp_set_num_threads(modelRunner->Settings->MaxParallelProcesses);
+			}
 
 			std::vector<double> betaValues;
 			std::vector<std::shared_ptr<Sample>> samples;

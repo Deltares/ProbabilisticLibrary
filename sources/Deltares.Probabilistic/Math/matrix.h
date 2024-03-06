@@ -36,7 +36,7 @@ namespace Deltares {
         private:
             size_t pos(size_t row, size_t column) const
             {
-                //if (row >= m_rows || column >= m_columns) throw probLibException("array bound error");
+                if (row >= m_rows || column >= m_columns) throw probLibException("array bound error");
                 return row * m_columns + column;
             }
 

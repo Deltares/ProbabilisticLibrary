@@ -9,7 +9,11 @@ namespace Deltares
 		void ZModel::setMaxProcesses(int maxProcesses)
 		{
 			this->maxProcesses = maxProcesses;
-			omp_set_num_threads(maxProcesses);
+
+			if (maxProcesses > 0)
+			{
+				omp_set_num_threads(maxProcesses);
+			}
 		}
 
 		void ZModel::invoke(std::shared_ptr<Sample> sample)
