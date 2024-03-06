@@ -16,6 +16,7 @@ namespace Deltares
             double VarianceFactor = nan("");
             double MaxWeight = nan("");
             double FailWeight = nan("");
+            double ZMargin = 0;
             int TotalDirections = -1;
         };
     }

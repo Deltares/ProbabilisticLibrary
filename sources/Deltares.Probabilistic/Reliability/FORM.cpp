@@ -179,6 +179,7 @@ namespace Deltares
 				}
 
 				convergenceReport->IsConverged = isConverged(modelRunner, sample, convergenceReport, beta, zGradientLength);
+				convergenceReport->ZMargin = zGradientLength * this->Settings->EpsilonBeta;
 
 				// no convergence, next iteration
 				if (!convergenceReport->IsConverged)
