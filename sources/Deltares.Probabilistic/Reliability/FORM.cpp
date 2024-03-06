@@ -228,7 +228,7 @@ namespace Deltares
 
 			if (isLastRelaxation && Settings->FilterAtNonConvergence && !convergenceReport->IsConverged)
 			{
-				std::tie(beta, sample) = estimateBetaNonConv(lastBetas, lastSamples);
+				std::tie(beta, resultSample) = estimateBetaNonConv(lastBetas, lastSamples);
 			}
 			return modelRunner->getDesignPoint(resultSample, beta, convergenceReport);
 		}
