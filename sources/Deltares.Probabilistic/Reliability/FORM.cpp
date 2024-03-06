@@ -219,7 +219,7 @@ namespace Deltares
 				}
 
 				// compute design values
-				std::vector<double> uValues = NumericSupport::select(zGradient, [beta, zGradientLength](double p) { return - beta *  p / zGradientLength; });
+				std::vector<double> uValues = NumericSupport::select(zGradient, [beta, zGradientLength](double p) { return - p / zGradientLength; });
 
 				resultSample = std::make_shared<Sample>(uValues);
 
