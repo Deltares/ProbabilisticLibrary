@@ -108,36 +108,40 @@ namespace Deltares
 			}
 			case DesignPointMethod::CenterOfGravity:
 			{
+				const double weight = isnan(sample->Weight) ? 1 : sample->Weight;
+
 				for (int j = 0; j < this->qualitativeCount; j++)
 				{
 					int qIndex = qualitativeIndices[j];
-					modeFinders[j]->add(sample->Values[qIndex], sample->Weight);
+					modeFinders[j]->add(sample->Values[qIndex], weight);
 				}
 
 				for (int i = 0; i < sample->getSize(); i++)
 				{
-					meanSample->Values[i] += sample->Weight * sample->Values[i];
+					meanSample->Values[i] += weight * sample->Values[i];
 				}
 
-				sumWeights += sample->Weight;
+				sumWeights += weight;
 				break;
 			}
 			case DesignPointMethod::CenterOfAngles:
 			{
+				const double weight = isnan(sample->Weight) ? 1 : sample->Weight;
+
 				for (int j = 0; j < this->qualitativeCount; j++)
 				{
 					int qIndex = qualitativeIndices[j];
-					modeFinders[j]->add(sample->Values[qIndex], sample->Weight);
+					modeFinders[j]->add(sample->Values[qIndex], weight);
 				}
 
 				auto sphericalValues = Numeric::NumericSupport::GetSphericalCoordinates(sample->Values);
-				meanSample->Values[0] += sample->Weight * sphericalValues[0];
+				meanSample->Values[0] += weight * sphericalValues[0];
 				for (int i = 1; i < count; i++)
 				{
-					sinSample->Values[i] += sample->Weight * std::sin(sphericalValues[i]);
-					cosSample->Values[i] += sample->Weight * std::cos(sphericalValues[i]);
+					sinSample->Values[i] += weight * std::sin(sphericalValues[i]);
+					cosSample->Values[i] += weight * std::cos(sphericalValues[i]);
 				}
-				sumWeights += sample->Weight;
+				sumWeights += weight;
 				break;
 			}
 			default:

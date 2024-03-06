@@ -89,13 +89,14 @@ namespace Deltares
 			directionReliability->Settings->MaximumLengthU = this->Settings->MaximumLengthStartPoint;
 			directionReliability->Settings->StochastSet = this->Settings->StochastSet;
 			directionReliability->Settings->FindMinimalValue = true;
+			directionReliability->Settings->UseInitialValues = true;
 			directionReliability->Settings->Dsdu = this->Settings->dsdu;
 
 			double beta = directionReliability->getBeta(modelRunner, startPoint, 1);
 
 			std::shared_ptr<Sample> directionPoint = std::make_shared<Sample>(startPoint->Values);
 
-			directionPoint = directionPoint->getSampleAtBeta(beta);
+			directionPoint = directionPoint->getSampleAtBeta(std::min(beta, this->Settings->MaximumLengthStartPoint));
 
 			for (int i = 0; i < nStochasts; i++)
 			{

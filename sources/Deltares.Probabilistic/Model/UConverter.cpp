@@ -130,7 +130,7 @@ namespace Deltares
 
 		void UConverter::updateStochastSettings(std::shared_ptr<Deltares::Reliability::StochastSettingsSet> settings)
 		{
-			for (size_t i = settings->getVaryingStochastCount(); i < varyingStochasts.size(); i++)
+			for (size_t i = settings->StochastSettings.size(); i < stochasts.size(); i++)
 			{
 				std::shared_ptr<Deltares::Reliability::StochastSettings> stochastSettings = std::make_shared<Deltares::Reliability::StochastSettings>();
 				settings->StochastSettings.push_back(stochastSettings);

@@ -24,11 +24,11 @@ namespace Deltares
 			std::vector<std::shared_ptr<DesignPoint>> previousDesignPoints;
 
 			// initialize
-			StartPointCalculator* startPointCalculator = new StartPointCalculator();
+			const std::shared_ptr <StartPointCalculator> startPointCalculator = std::make_shared<StartPointCalculator>();
 			startPointCalculator->Settings = this->Settings->StartPointSettings;
 			startPointCalculator->Settings->StochastSet = this->Settings->StochastSet;
 
-			std::shared_ptr<Sample> startPoint = startPointCalculator->getStartPoint(modelRunner);
+			const std::shared_ptr<Sample> startPoint = startPointCalculator->getStartPoint(modelRunner);
 
 			if (Settings->StartPointSettings->StartMethod != StartMethodType::None)
 			{
@@ -80,14 +80,14 @@ namespace Deltares
 
 		std::shared_ptr<DesignPoint> FORM::getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<Sample> startPoint, double relaxationFactor)
 		{
-			const double minDzduLength = 1E-08;
+			constexpr double minGradientLength = 1E-08;
 
 			const int nStochasts = modelRunner->getVaryingStochastCount();
 
 			std::vector<double> zGradient(nStochasts);
 
 			// initialization
-			std::shared_ptr<ConvergenceReport> convergenceReport = std::make_shared<ConvergenceReport>();
+			const std::shared_ptr<ConvergenceReport> convergenceReport = std::make_shared<ConvergenceReport>();
 
 			if (this->Settings->RelaxationLoops > 1)
 			{
@@ -139,23 +139,23 @@ namespace Deltares
 				// Standard deviation Z 
 				double zGradientLength = NumericSupport::GetLength(zGradient);
 
-				if (zGradientLength < minDzduLength && iteration == 0)
+				if (zGradientLength < minGradientLength && iteration == 0)
 				{
 					modelRunner->reportMessage(Models::MessageType::Error, "No variation in model results found at start point");
 
-					std::shared_ptr<ReliabilityReport> reportTooSmall = getReport(iteration, beta);
+					const std::shared_ptr<ReliabilityReport> reportTooSmall = getReport(iteration, beta);
 
 					modelRunner->reportResult(reportTooSmall);
 
-					double beta = this->getZFactor(sample->Z) * Statistics::StandardNormal::BetaMax;
+					const double betaNoVariation = ReliabilityMethod::getZFactor(sample->Z) * Statistics::StandardNormal::BetaMax;
 
-					return modelRunner->getDesignPoint(sample, beta, convergenceReport);
+					return modelRunner->getDesignPoint(sample, betaNoVariation, convergenceReport);
 				}
 
 				//   compute beta
 				if (zGradientLength == 0)
 				{
-					beta = this->getZFactor(z0) * Statistics::StandardNormal::BetaMax;
+					beta = ReliabilityMethod::getZFactor(z0) * Statistics::StandardNormal::BetaMax;
 				}
 				else
 				{
@@ -166,7 +166,7 @@ namespace Deltares
 				{
 					modelRunner->reportMessage(Models::MessageType::Error, "No convergence found");
 
-					std::shared_ptr<ReliabilityReport> reportTooHigh = std::make_shared<ReliabilityReport>();
+					const std::shared_ptr<ReliabilityReport> reportTooHigh = std::make_shared<ReliabilityReport>();
 
 					reportTooHigh->Step = iteration;
 					reportTooHigh->MaxSteps = this->Settings->MaximumIterations;
@@ -187,8 +187,8 @@ namespace Deltares
 
 					for (int k = 0; k < nStochasts; k++)
 					{
-						double alpha = zGradient[k] / zGradientLength;
-						double uNewValue = -alpha * beta;
+						const double alpha = zGradient[k] / zGradientLength;
+						const double uNewValue = -alpha * beta;
 
 						newSample->Values[k] = relaxationFactor * uNewValue + (1 - relaxationFactor) * sample->Values[k];
 					}
@@ -196,8 +196,7 @@ namespace Deltares
 					sample = newSample;
 				}
 
-				//   compute alpha vector
-				std::vector<double> alphas = NumericSupport::select(zGradient, [zGradientLength](double p) { return p / zGradientLength; });
+				// compute design values
 				std::vector<double> uValues = NumericSupport::select(zGradient, [beta, zGradientLength](double p) { return - beta *  p / zGradientLength; });
 
 				resultSample = std::make_shared<Sample>(uValues);
