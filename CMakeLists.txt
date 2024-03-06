@@ -2,7 +2,14 @@
 cmake_minimum_required(VERSION 3.9 FATAL_ERROR)
 
 # project name and language
-project(probabilisticLibrary LANGUAGES Fortran CXX)
+project(probabilisticLibrary LANGUAGES CXX)
+
+option(ENABLE_Fortran "Enable Fortran" ON)
+if(ENABLE_Fortran)
+  enable_language(Fortran)
+else()
+  message(STATUS "No Fortran support")
+endif()
 
 if ( TARGET tools)
 else()

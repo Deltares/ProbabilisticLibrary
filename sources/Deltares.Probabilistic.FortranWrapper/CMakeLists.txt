@@ -1,3 +1,7 @@
+enable_language(C)
+include(FortranCInterface)
+FortranCInterface_VERIFY(CXX)
+
 add_library(Deltares.Probabilistic.FortranWrapper
   STATIC
     interfaces/interface_gen.f90
