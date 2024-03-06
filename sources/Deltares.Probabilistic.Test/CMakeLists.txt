@@ -36,6 +36,8 @@ endif()
 
 add_executable(Deltares.Probabilistic.Test
     unittests.cpp
+    projectBuilder.h
+    projectBuilder.cpp
     Reliability/testStartPointCalculator.h
     Reliability/testStartPointCalculator.cpp
 )
