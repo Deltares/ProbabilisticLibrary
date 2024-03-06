@@ -55,13 +55,10 @@ namespace Deltares
 
 				std::vector<double> zValues = modelRunner->getZValues(samples);
 
-				double z0Fac = Numeric::NumericSupport::GetSign(zValues[0]);
-				double z0 = zValues[0] * z0Fac;
-
 				for (int k = 0; k < nstochasts; k++)
 				{
-					const double zLow = zValues[2 * k + 1] * z0Fac;
-					const double zHigh = zValues[2 * k + 2] * z0Fac;
+					const double zLow = zValues[2 * k + 1];
+					const double zHigh = zValues[2 * k + 2];
 
 					gradient[k] = (zHigh - zLow) / Settings->StepSize;
 				}

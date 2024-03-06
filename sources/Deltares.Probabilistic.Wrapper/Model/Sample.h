@@ -8,22 +8,6 @@ namespace Deltares
 	{
 		namespace Wrappers
 		{
-			public ref class SampleX
-			{
-			public:
-				SampleX(array<double>^ x, array<double>^ xInput, array<double>^ xFull)
-				{
-					this->X = x;
-					this->XInput = xInput;
-					this->XFull = xFull;
-				}
-
-				array<double>^ X;
-				array<double>^ XInput;
-				array<double>^ XFull;
-			};
-
-
 			/// <summary>
 			/// Indicates the meaning of <see cref="Sample.Values"/> in a <see cref="Sample"/>
 			/// </summary>
@@ -44,6 +28,12 @@ namespace Deltares
 				Sample(std::shared_ptr<Models::Sample> sample)
 				{
 					shared = new SharedPointerProvider(sample);
+
+					switch (sample->SpaceType)
+					{
+					case Models::SpaceType::U: this->SpaceType = Wrappers::SpaceType::U; break;
+					case Models::SpaceType::X: this->SpaceType = Wrappers::SpaceType::X; break;
+					}
 				}
 
 				Sample(array<double>^ values)
