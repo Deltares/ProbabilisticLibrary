@@ -14,6 +14,7 @@ namespace Deltares
             {
             public:
                 std::shared_ptr<Deltares::Models::ModelRunner> BuildProject();
+                bool logZtoScreen = false;
             private:
                 void zfunc(std::shared_ptr<Deltares::Models::Sample> sample);
             };

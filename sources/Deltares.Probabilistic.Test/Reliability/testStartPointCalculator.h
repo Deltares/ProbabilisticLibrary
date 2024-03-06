@@ -12,6 +12,9 @@ namespace Deltares
                 void allStartPointTests();
             private:
                 void testMethodOne();
+                void testMethodRaySearch();
+                void testMethodSphereSearch();
+                const double margin = 1e-9;
             };
         }
     }

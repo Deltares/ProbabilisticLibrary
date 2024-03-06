@@ -264,11 +264,30 @@ namespace Deltares
 
 			// factor related to number of steps above
 			double z2 = modelRunner->getZValue(u2);
-			z2 = std::min(z2, 0.0);
 
-			std::shared_ptr<Sample> u3 = u2->getMultipliedSample(1.0 + z2 / (z2 - z) / coFactor);
+			// assume fz(uFactor) = A + B * uFactor
+			// z = A + B * 1.0
+			// z2 = A + B * coFactor
+			// z-z2 = B(1-coFactor) => B = (z-z2)/(1-coFactor)
+			// A = z - B
+			// fz = 0 => A + B * uFactor = 0
+			// => uFactor = -A / B
+			// if B near 0 => z near z2 => refinement does not improve the result, so return u
+			double B = (z - z2) / (1.0 - coFactor);
+			double A = z - B;
 
-			return u3;
+			if (std::abs(B) > 1e-25)
+			{
+				double uFactor = -A / B;
+
+				std::shared_ptr<Sample> u3 = u->getMultipliedSample(uFactor);
+				return u3;
+			}
+			else
+			{
+				return u;
+			}
+
 		}
 	}
 }

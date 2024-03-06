@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include "projectBuilder.h"
+#include <iostream>
 
 using namespace Deltares::Reliability;
 using namespace Deltares::Statistics;
@@ -29,7 +30,11 @@ namespace Deltares
 
             void projectBuilder::zfunc(std::shared_ptr<Deltares::Models::Sample> sample)
             {
-                sample->Z = sample->Values[1] - sample->Values[0];
+                sample->Z = 3.0 + sample->Values[1] - 1.25 * sample->Values[0];
+                if (logZtoScreen)
+                {
+                    std::cout << "u, z = " << sample->Values[0] << " , " << sample->Values[1] << " , " << sample->Z << std::endl;
+                }
             }
         }
     }

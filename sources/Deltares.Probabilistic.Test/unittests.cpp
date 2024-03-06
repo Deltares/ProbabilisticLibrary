@@ -12,7 +12,7 @@ namespace Deltares
             int main(int argc, char** argv)
             {
                 ::testing::InitGoogleTest(&argc, argv);
-                //::testing::GTEST_FLAG(filter) = "unittst.trapeziumRuleTests";
+                //::testing::GTEST_FLAG(filter) = "unittst.testStartPointCalculator";
                 return RUN_ALL_TESTS();
             }
 
