@@ -31,6 +31,8 @@ if (UNIX)
     set(CMAKE_Fortran_FLAGS_RELEASE "${CMAKE_Fortran_FLAGS_RELEASE} -fopenmp")
 endif (UNIX)
 
+option(ENABLE_UNIT_TESTS "Enable unit tests" ON)
+
 enable_testing()
 
 add_subdirectory(sources)

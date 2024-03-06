@@ -65,7 +65,7 @@ subroutine allProbabilisticTests
     !call allCombineElementsTests
     !call allPerformImportanceSamplingTests
     !call allPerformAdaptiveMCIStests
-    !call allPerformFORMTests
+    call allPerformFORMTests
     call performAllDSTests
     !call allUpscalingTests
     !call allUpscaleLengthTests

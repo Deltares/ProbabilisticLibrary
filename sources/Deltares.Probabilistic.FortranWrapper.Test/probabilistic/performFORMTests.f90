@@ -47,9 +47,9 @@ subroutine allPerformFORMTests
 !   Entry to all tests originally defined in previous version of FORM-tests within subroutine allInitializeFORMTests()
     call testWithLevel( testRespectLengths,     &
         "Test FORM: check that differing array lengths are correctly handled (module performFORMTests.f90)", 1)
-    call testWithLevel( testSimpleMethods,      "Test FORM: simple initialization methods (module performFORMTests.f90)", 1)
-    call testWithLevel( testRaySearchMethod,    "Test FORM: the ray search method (module performFORMTests.f90)", 1)
-    call testWithLevel( testSphereSearchMethod, "Test FORM: the sphere search method (module performFORMTests.f90)", 1)
+    call testWithLevel( testSimpleMethods,      "Test FORM: simple initialization methods (module performFORMTests.f90)", 1, "work-in-progress")
+    call testWithLevel( testRaySearchMethod,    "Test FORM: the ray search method (module performFORMTests.f90)", 1, "work-in-progress")
+    call testWithLevel( testSphereSearchMethod, "Test FORM: the sphere search method (module performFORMTests.f90)", 1, "work-in-progress")
    !call testWithLevel( testParameterCheck,     "Test FORM: the parameter check", 1)
    !call testWithLevel( testHelpersNonConv1,    "Test FORM functions used in case of non convergence (1)", 1)
 
@@ -74,6 +74,8 @@ subroutine testRespectLengths
     u                        = -999.0d0
 
     probDb%method%maxParallelThreads = 4
+    probDb%method%calcMethod = 1
+    probDb%method%FORM%maxIterations = 0  ! stop after finding the start vector
     do i = 1,9
         if (i == fORMStartRaySearchNewDeprecated) cycle
         probDb%method%FORM%startMethod = i
@@ -116,6 +118,7 @@ subroutine testSimpleMethods
     ! Method 1
     !
     probDb%method%FORM%startMethod = fORMStartZero
+    probDb%method%calcMethod = 1
     call initializeFORM( probDb, zfuncSimple, u, nStochasts, x, iPoint, maxBetaExpected )
 
     call assert_comparable( u, (/ 0.0d0, 0.0d0, 0.0d0 /), margin, "Expected three zeroes" )
@@ -342,7 +345,6 @@ subroutine initializeForm( probDb, fx, u, nStochasts, x, iPoint, beta)
     real(kind=wp) :: alfa(maxval(iPoint))
     logical :: convCriterium
 
-    probDb%method%calcMethod = 1234
     do i = 1, nStochasts
         call setStochasticDistrib (probDb, iPoint(i), distributionNormal, 0.0d0, 1.0D0, 0.0d0, 0.0d0)
     end do

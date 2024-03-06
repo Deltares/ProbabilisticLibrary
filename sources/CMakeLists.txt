@@ -9,3 +9,5 @@ endif(WIN32)
 add_subdirectory(Deltares.Probabilistic.FortranWrapper)
 
 add_subdirectory(Deltares.Probabilistic.FortranWrapper.Test)
+
+add_subdirectory(Deltares.Probabilistic.Test)
