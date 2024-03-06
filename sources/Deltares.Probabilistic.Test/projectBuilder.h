@@ -14,9 +14,11 @@ namespace Deltares
             {
             public:
                 std::shared_ptr<Deltares::Models::ModelRunner> BuildProject();
+                std::shared_ptr<Deltares::Models::ModelRunner> BuildProjectWithDeterminist();
                 bool logZtoScreen = false;
             private:
-                void zfunc(std::shared_ptr<Deltares::Models::Sample> sample);
+                void zfunc(std::shared_ptr<Deltares::Models::Sample> sample) const;
+                void zfuncWithDeterminist(std::shared_ptr<Deltares::Models::Sample> sample) const;
             };
         }
     }

@@ -14,6 +14,7 @@ namespace Deltares
                 void testMethodOne();
                 void testMethodRaySearch();
                 void testMethodSphereSearch();
+                void testMethodSphereSearchWithDeterminist();
                 const double margin = 1e-9;
             };
         }

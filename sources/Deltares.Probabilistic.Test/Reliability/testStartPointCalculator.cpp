@@ -18,6 +18,7 @@ namespace Deltares
                 testMethodOne();
                 testMethodRaySearch();
                 testMethodSphereSearch();
+                testMethodSphereSearchWithDeterminist();
             }
 
             void testStartPointCalculator::testMethodOne()
@@ -59,12 +60,25 @@ namespace Deltares
 
                 modelRunner->updateStochastSettings(calculator.Settings->StochastSet);
                 calculator.Settings->StartMethod = StartMethodType::SphereSearch;
-                calculator.Settings->MaximumLengthStartPoint = 20.0;
-                calculator.Settings->dsdu = 3.0;
 
                 auto r = calculator.getStartPoint(modelRunner);
 
                 ASSERT_EQ(r->Values.size(), 2);
+                EXPECT_NEAR(r->Values[0], 2.4, margin);
+                EXPECT_NEAR(r->Values[1], 0.0, margin);
+            }
+
+            void testStartPointCalculator::testMethodSphereSearchWithDeterminist()
+            {
+                auto modelRunner = projectBuilder().BuildProjectWithDeterminist();
+                auto calculator = StartPointCalculator();
+
+                modelRunner->updateStochastSettings(calculator.Settings->StochastSet);
+                calculator.Settings->StartMethod = StartMethodType::SphereSearch;
+
+                auto r = calculator.getStartPoint(modelRunner);
+
+                ASSERT_EQ(r->Values.size(), 3);
                 EXPECT_NEAR(r->Values[0], 2.4, margin);
                 EXPECT_NEAR(r->Values[1], 0.0, margin);
             }
