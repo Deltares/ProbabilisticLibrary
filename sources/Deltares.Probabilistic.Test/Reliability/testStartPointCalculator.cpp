@@ -78,9 +78,9 @@ namespace Deltares
 
                 auto r = calculator.getStartPoint(modelRunner);
 
-                ASSERT_EQ(r->Values.size(), 3);
-                EXPECT_NEAR(r->Values[0], 2.4, margin);
-                EXPECT_NEAR(r->Values[1], 0.0, margin);
+                ASSERT_EQ(r->Values.size(), 2);
+                EXPECT_NEAR(r->Values[1], 2.4, margin);
+                EXPECT_NEAR(r->Values[0], 0.0, margin);
             }
 
         }

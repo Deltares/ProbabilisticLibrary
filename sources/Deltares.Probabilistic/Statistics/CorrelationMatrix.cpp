@@ -101,6 +101,7 @@ namespace Deltares
 
 		void CorrelationMatrix::filter(const std::shared_ptr<CorrelationMatrix> m, const std::vector<int>& index)
 		{
+			if (m->dim == 0) return;
 			auto nrAllStochasts = index.size();
 
 			for (size_t i = 0; i < nrAllStochasts; i++)
