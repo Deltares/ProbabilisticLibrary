@@ -29,7 +29,7 @@ module performDSTests
     use ftnunit
     use feedback
     use interface_probcalc
-    use performFORMTests
+    use interface_probcalcdata
     use interface_distributions
 
     implicit none
@@ -338,6 +338,25 @@ subroutine testCancel
     call assert_equal(iCounter2, expected, "number of samples diff")
 
 end subroutine testCancel
+
+subroutine init_probdb_x(probDb, x, iPoint, nStochasts)
+type(probabilisticDataStructure_data), intent(out) :: probDb
+real(kind=wp), pointer                             :: x(:)
+integer, intent(in)                                :: nStochasts
+integer, intent(in)                                :: iPoint(nStochasts)
+
+integer :: maxIpoint, i
+
+maxIpoint = maxval(iPoint)
+
+call initProbabilisticCalculation ( probDb, maxIpoint, .false., .false. )
+
+allocate(probDb%method%FORM%startValue(10))
+probDb%method%FORM%startValue    = (/ ( real(i,wp) ,i=1,10 ) /)
+
+allocate(x(maxIpoint))
+
+end subroutine init_probdb_x
 
 !> setup helper function
 subroutine setupDStests(probDb, iPoint, x, maxSamples)
