@@ -124,8 +124,6 @@ namespace Deltares
 
 					modelRunner->reportResult(reportInvalid);
 
-					convergenceReport->LastValidBeta = beta;
-
 					return modelRunner->getDesignPoint(sample, nan(""), convergenceReport);
 				}
 
@@ -147,8 +145,6 @@ namespace Deltares
 
 					const std::shared_ptr<ReliabilityReport> reportTooSmall = getReport(iteration, beta);
 					modelRunner->reportResult(reportTooSmall);
-
-					convergenceReport->LastValidBeta = beta;
 
 					const double betaNoVariation = ReliabilityMethod::getZFactor(sample->Z) * Statistics::StandardNormal::BetaMax;
 					return modelRunner->getDesignPoint(sample, betaNoVariation, convergenceReport);
@@ -176,8 +172,6 @@ namespace Deltares
 					reportTooHigh->ReportMatchesEvaluation = false;
 
 					modelRunner->reportResult(reportTooHigh);
-
-					convergenceReport->LastValidBeta = sample->getBeta();
 
 					return modelRunner->getDesignPoint(sample, beta, convergenceReport);
 				}

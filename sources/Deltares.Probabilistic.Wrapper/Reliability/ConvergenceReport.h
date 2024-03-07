@@ -25,7 +25,6 @@ namespace Deltares
 					this->MaxWeight = report->MaxWeight;
 					this->FailWeight = report->FailWeight;
 					this->FailedSamples = report->FailedSamples;
-					this->LastValidBeta = report->LastValidBeta;
 					this->ZMargin = report->ZMargin;
 					this->IsConverged = report->IsConverged;
 				}
@@ -37,7 +36,6 @@ namespace Deltares
 				property double VarianceFactor;
 				property double MaxWeight;
 				property double FailWeight;
-				property double LastValidBeta;
 				property double ZMargin;
 				property bool IsConverged;
 

@@ -17,7 +17,6 @@ namespace Deltares
             double MaxWeight = nan("");
             double FailWeight = nan("");
             double ZMargin = 0;
-            double LastValidBeta = nan("");
             int TotalDirections = -1;
         };
     }
