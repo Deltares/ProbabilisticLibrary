@@ -45,22 +45,7 @@ ReliabilityMethod* createReliabilityMethod::selectMethod(const basicSettings& bs
         break;
     case (ProbMethod::DS): {
         auto ds = new DirectionalSampling();
-        std::shared_ptr<RandomSettings> r(getRnd(bs));
-        ds->Settings->RandomSettings.swap(r);
-        ds->Settings->VariationCoefficient = bs.tolB;
-        ds->Settings->MinimumSamples = bs.minSamples;
-        ds->Settings->MaximumSamples = bs.maxSamples;
-        switch (bs.iterationMethod)
-        {
-        case DSiterationMethods::DirSamplingIterMethodRobust:
-        case DSiterationMethods::DirSamplingIterMethodRobustBisection:
-            ds->Settings->DirectionSettings->Dsdu = 1.0;
-            break;
-        default:
-            ds->Settings->DirectionSettings->Dsdu = 3.0;
-            break;
-        }
-        ds->Settings->DirectionSettings->EpsilonUStepSize = bs.tolC;
+        fillDsSettings(ds->Settings, bs);
         return ds; }
         break;
     case (ProbMethod::FORM): {
@@ -70,22 +55,14 @@ ReliabilityMethod* createReliabilityMethod::selectMethod(const basicSettings& bs
         break;
     case (ProbMethod::FDIR): {
         auto fdir = new FDIR();
-        std::shared_ptr<RandomSettings> r(getRnd(bs));
-        fdir->DsSettings->RandomSettings.swap(r);
-        fdir->DsSettings->VariationCoefficient = bs.tolB;
-        fdir->DsSettings->MinimumSamples = bs.minSamples;
-        fdir->DsSettings->MaximumSamples = bs.maxSamples;
+        fillDsSettings(fdir->DsSettings, bs);
         fillFormSettings(fdir->formSettings, bs, nStoch);
         return fdir; }
         break;
     case (ProbMethod::DSFIHR):
     case (ProbMethod::DSFI): {
         auto dsfi = new DSFI();
-        std::shared_ptr<RandomSettings> r(getRnd(bs));
-        dsfi->DsSettings->RandomSettings.swap(r);
-        dsfi->DsSettings->VariationCoefficient = bs.tolB;
-        dsfi->DsSettings->MinimumSamples = bs.minSamples;
-        dsfi->DsSettings->MaximumSamples = bs.maxSamples;
+        fillDsSettings(dsfi->DsSettings, bs);
         fillFormSettings(dsfi->formSettings, bs, nStoch);
         return dsfi; }
         break;
@@ -138,5 +115,25 @@ std::vector<double> createReliabilityMethod::copyStartVector(const double startV
         startVector[i] = startValues[i];
     }
     return startVector;
+}
+
+void createReliabilityMethod::fillDsSettings(std::shared_ptr<DirectionalSamplingSettings>& DsSettings, const basicSettings& bs)
+{
+    std::shared_ptr<RandomSettings> r(getRnd(bs));
+    DsSettings->RandomSettings.swap(r);
+    DsSettings->VariationCoefficient = bs.tolB;
+    DsSettings->MinimumSamples = bs.minSamples;
+    DsSettings->MaximumSamples = bs.maxSamples;
+    switch (bs.iterationMethod)
+    {
+    case DSiterationMethods::DirSamplingIterMethodRobust:
+    case DSiterationMethods::DirSamplingIterMethodRobustBisection:
+        DsSettings->DirectionSettings->Dsdu = 1.0;
+        break;
+    default:
+        DsSettings->DirectionSettings->Dsdu = 3.0;
+        break;
+    }
+    DsSettings->DirectionSettings->EpsilonUStepSize = bs.tolC;
 }
 
