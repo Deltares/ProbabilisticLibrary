@@ -3,6 +3,7 @@
 #include "../Deltares.Probabilistic/Reliability/DirectionalSampling.h"
 #include "../Deltares.Probabilistic/Reliability/FORM.h"
 #include "../Deltares.Probabilistic/Reliability/FDIR.h"
+#include "../Deltares.Probabilistic/Reliability/DSFI.h"
 
 using namespace Deltares::ProbLibCore;
 using namespace Deltares::Models;
@@ -76,6 +77,17 @@ ReliabilityMethod* createReliabilityMethod::selectMethod(const basicSettings& bs
         fdir->DsSettings->MaximumSamples = bs.maxSamples;
         fillFormSettings(fdir->formSettings, bs, nStoch);
         return fdir; }
+        break;
+    case (ProbMethod::DSFIHR):
+    case (ProbMethod::DSFI): {
+        auto dsfi = new DSFI();
+        std::shared_ptr<RandomSettings> r(getRnd(bs));
+        dsfi->DsSettings->RandomSettings.swap(r);
+        dsfi->DsSettings->VariationCoefficient = bs.tolB;
+        dsfi->DsSettings->MinimumSamples = bs.minSamples;
+        dsfi->DsSettings->MaximumSamples = bs.maxSamples;
+        fillFormSettings(dsfi->formSettings, bs, nStoch);
+        return dsfi; }
         break;
     default:
         throw probLibException("method not implemented yet: ", (int)bs.methodId);

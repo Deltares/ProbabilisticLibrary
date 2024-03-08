@@ -95,7 +95,7 @@ subroutine allProbMethodsWaartsFunctionsTests(minTestLevel)
     character(len=255)            :: testName
 
     integer                       :: level
-    integer, parameter            :: availableMethods(*) = [11, 1, 3, 4] ! TODO the rest is not implemented yet
+    integer, parameter            :: availableMethods(*) = [12, 11, 1, 3, 4] ! TODO the rest is not implemented yet
 
     character(len=60), dimension(14) :: functionName = &
         (/   "LinearResistanceSolicitation           ", &     ! 1
@@ -774,7 +774,7 @@ subroutine testProbabilisticWithFunction ( )
                         call assert_comparable( -0.873293157655122d0, alfa(2), margin, "Two branches: Alfa(2)" )
                         call assert_comparable( -0.204846543153671d0, alfa(3), margin, "Two branches: Alfa(3)" )
 
-                    case (methodDirectionalSampling, methodFORMandDirSampling)
+                    case (methodDirectionalSampling, methodFORMandDirSampling, methodDirSamplingWithFORMiterations)
                         call assert_comparable( 5.03d0, actualBeta, 0.10d0 * betaFactor, "Two branches: Beta" )
 
                     case (methodCrudeMonteCarlo)
@@ -916,7 +916,7 @@ subroutine testProbabilisticWithFunction ( )
             call iterateMechanism (probDb, convergenceData, zParallelSystem, probMethod, alfa, actualBeta, x, conv)
 
             select case (probMethod)
-                case (methodFORM, methodFORMandDirSampling)
+                case (methodFORM, methodFORMandDirSampling, methodDirSamplingWithFORMiterations)
                     ! Waarts shows an error entry for FORM in this case, we do get a value
                     call assert_equal ( 1, abs(conv), "Parallel system: convergence flag" )
 
