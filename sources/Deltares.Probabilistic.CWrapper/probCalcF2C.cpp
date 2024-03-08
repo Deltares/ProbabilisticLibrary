@@ -16,6 +16,9 @@ using namespace Deltares::Reliability;
 
 const size_t lenSmallStr = 32;
 
+const int convergenceTRUE = 0;
+const int convergenceFALSE = 1;
+
 struct fdistribs
 {
     char name[lenSmallStr];
@@ -147,8 +150,8 @@ void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, const i
         {
             r->alpha2[i] = newResult->Alphas[i]->AlphaCorrelated;
         }
-        r->convergence = newResult->convergenceReport->IsConverged ? 0: 1;
-        r->stepsNeeded = -999;// result.stepsNeeded;
+        r->convergence = newResult->convergenceReport->IsConverged ? convergenceTRUE : convergenceFALSE;
+        r->stepsNeeded = newResult->convergenceReport->TotalIterations;
         r->samplesNeeded = newResult->convergenceReport->TotalDirections;
         if (r->samplesNeeded < 0)
         {

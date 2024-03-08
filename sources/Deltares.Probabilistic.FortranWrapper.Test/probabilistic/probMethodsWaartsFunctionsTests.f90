@@ -95,6 +95,7 @@ subroutine allProbMethodsWaartsFunctionsTests(minTestLevel)
     character(len=255)            :: testName
 
     integer                       :: level
+    integer, parameter            :: availableMethods(*) = [11, 1, 3, 4] ! TODO the rest is not implemented yet
 
     character(len=60), dimension(14) :: functionName = &
         (/   "LinearResistanceSolicitation           ", &     ! 1
@@ -113,11 +114,11 @@ subroutine allProbMethodsWaartsFunctionsTests(minTestLevel)
              "LimitState 25 quadratic terms sparse   " /)     ! 14
 
     dpOption = -1
-    do i = 1, 4 ! TODO the rest is not implemented yet
+    do i = 1, size(availableMethods)
 
-        probMethod = i
+        probMethod = availableMethods(i)
 
-        if (methodDS > 1 .and. i /= methodDirectionalSampling) cycle
+        if (methodDS > 1 .and. probMethod /= methodDirectionalSampling) cycle
 
         select case (probMethod)
             case (methodFORM)
@@ -192,7 +193,7 @@ subroutine allProbMethodsWaartsFunctionsTests(minTestLevel)
 
     end do
 
-    if (numberIterations == 1 .and. .false.) then  ! TODO
+    if (numberIterations == 1 .and. any(availableMethods == methodNumericalIntegration)) then
         probMethod         = methodNumericalIntegration
         waartsFunction     = 1
         waartsFunctionName = functionName(1)
@@ -699,7 +700,7 @@ subroutine testProbabilisticWithFunction ( )
             ! Our FORM routine fails (crashes), Waarts reports an error
 
             select case (probMethod)
-                case (methodFORM)
+                case (methodFORM, methodFORMandDirSampling)
                     call assert_equal( 1, conv, "Discontinuous limit state: expected non convergence" )
 
                 case (methodNumericalIntegration)
@@ -773,7 +774,7 @@ subroutine testProbabilisticWithFunction ( )
                         call assert_comparable( -0.873293157655122d0, alfa(2), margin, "Two branches: Alfa(2)" )
                         call assert_comparable( -0.204846543153671d0, alfa(3), margin, "Two branches: Alfa(3)" )
 
-                    case (methodDirectionalSampling)
+                    case (methodDirectionalSampling, methodFORMandDirSampling)
                         call assert_comparable( 5.03d0, actualBeta, 0.10d0 * betaFactor, "Two branches: Beta" )
 
                     case (methodCrudeMonteCarlo)
@@ -915,7 +916,7 @@ subroutine testProbabilisticWithFunction ( )
             call iterateMechanism (probDb, convergenceData, zParallelSystem, probMethod, alfa, actualBeta, x, conv)
 
             select case (probMethod)
-                case (methodFORM)
+                case (methodFORM, methodFORMandDirSampling)
                     ! Waarts shows an error entry for FORM in this case, we do get a value
                     call assert_equal ( 1, abs(conv), "Parallel system: convergence flag" )
 

@@ -2,6 +2,7 @@
 #include "../Deltares.Probabilistic/Reliability/CrudeMonteCarlo.h"
 #include "../Deltares.Probabilistic/Reliability/DirectionalSampling.h"
 #include "../Deltares.Probabilistic/Reliability/FORM.h"
+#include "../Deltares.Probabilistic/Reliability/FDIR.h"
 
 using namespace Deltares::ProbLibCore;
 using namespace Deltares::Models;
@@ -63,41 +64,56 @@ ReliabilityMethod* createReliabilityMethod::selectMethod(const basicSettings& bs
         break;
     case (ProbMethod::FORM): {
         auto form = new FORM();
-        form->Settings->MaximumIterations = bs.numExtraInt;
-        form->Settings->GradientSettings->GradientType = GradientType::TwoDirections;
-        form->Settings->FilterAtNonConvergence = true;
-        switch (bs.startMethod)
-        {
-        case StartMethods::Zero:
-            form->Settings->StartPointSettings->StartMethod = StartMethodType::None;
-            break;
-        case StartMethods::One:
-            form->Settings->StartPointSettings->StartMethod = StartMethodType::One;
-            break;
-        case StartMethods::RaySearch:
-        case StartMethods::RaySearchVector:
-        case StartMethods::RaySearchVectorScaled:
-            form->Settings->StartPointSettings->StartMethod = StartMethodType::RaySearch;
-            form->Settings->StartPointSettings->MaximumLengthStartPoint = 18.1;
-            form->Settings->StartPointSettings->dsdu = 0.3;
-            form->Settings->StartPointSettings->startVector = copyStartVector(bs.startVector, nStoch);
-            break;
-        case StartMethods::SphereSearch:
-            form->Settings->StartPointSettings->StartMethod = StartMethodType::SphereSearch;
-            form->Settings->StartPointSettings->startVector = copyStartVector(bs.startVector, nStoch);
-            break;
-        case StartMethods::GivenVector:
-            form->Settings->StartPointSettings->StartMethod = StartMethodType::GivenVector;
-            form->Settings->StartPointSettings->startVector = copyStartVector(bs.startVector, nStoch);
-            break;
-        default:
-            throw probLibException ( "not implemented: start method: " , (int)bs.startMethod );
-            break;
-        }
+        fillFormSettings(form->Settings, bs, nStoch);
         return form; }
+        break;
+    case (ProbMethod::FDIR): {
+        auto fdir = new FDIR();
+        std::shared_ptr<RandomSettings> r(getRnd(bs));
+        fdir->DsSettings->RandomSettings.swap(r);
+        fdir->DsSettings->VariationCoefficient = bs.tolB;
+        fdir->DsSettings->MinimumSamples = bs.minSamples;
+        fdir->DsSettings->MaximumSamples = bs.maxSamples;
+        fillFormSettings(fdir->formSettings, bs, nStoch);
+        return fdir; }
         break;
     default:
         throw probLibException("method not implemented yet: ", (int)bs.methodId);
+        break;
+    }
+}
+
+void createReliabilityMethod::fillFormSettings(std::shared_ptr<FORMSettings>& Settings, const basicSettings& bs, const size_t nStoch)
+{
+    Settings->MaximumIterations = bs.numExtraInt;
+    Settings->GradientSettings->GradientType = GradientType::TwoDirections;
+    Settings->FilterAtNonConvergence = true;
+    switch (bs.startMethod)
+    {
+    case StartMethods::Zero:
+        Settings->StartPointSettings->StartMethod = StartMethodType::None;
+        break;
+    case StartMethods::One:
+        Settings->StartPointSettings->StartMethod = StartMethodType::One;
+        break;
+    case StartMethods::RaySearch:
+    case StartMethods::RaySearchVector:
+    case StartMethods::RaySearchVectorScaled:
+        Settings->StartPointSettings->StartMethod = StartMethodType::RaySearch;
+        Settings->StartPointSettings->MaximumLengthStartPoint = 18.1;
+        Settings->StartPointSettings->dsdu = 0.3;
+        Settings->StartPointSettings->startVector = copyStartVector(bs.startVector, nStoch);
+        break;
+    case StartMethods::SphereSearch:
+        Settings->StartPointSettings->StartMethod = StartMethodType::SphereSearch;
+        Settings->StartPointSettings->startVector = copyStartVector(bs.startVector, nStoch);
+        break;
+    case StartMethods::GivenVector:
+        Settings->StartPointSettings->StartMethod = StartMethodType::GivenVector;
+        Settings->StartPointSettings->startVector = copyStartVector(bs.startVector, nStoch);
+        break;
+    default:
+        throw probLibException("not implemented: start method: ", (int)bs.startMethod);
         break;
     }
 }

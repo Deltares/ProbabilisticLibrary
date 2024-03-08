@@ -445,7 +445,7 @@ subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, conv, convCri
             else
                 conv = rn%convergence
             end if
-            convCriterium = (rn%convergence == 0)
+            convCriterium = (rn%convergence == convergenceTRUE)
             convergenceData%cnvg_data_ds%numberSamples = rn%samplesNeeded
             convergenceData%cnvg_data_form%numberiterations = rn%stepsNeeded
         end if
