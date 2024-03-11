@@ -10,8 +10,6 @@ namespace Deltares
 	{
 		class StochastSettings
 		{
-		private:
-			std::shared_ptr<Statistics::Stochast> stochast = nullptr;
 		public:
 			double MinValue = -Statistics::StandardNormal::UMax;
 			double MaxValue = Statistics::StandardNormal::UMax;
@@ -34,9 +32,11 @@ namespace Deltares
 
 			bool IsQualitative = false;
 
-			void setStochast(std::shared_ptr<Statistics::Stochast> stochast);
+			std::shared_ptr<Statistics::Stochast> stochast = nullptr;
 
 			double getRepresentativeU(double u);
+
+			std::shared_ptr<StochastSettings> clone();
 		};
 	}
 }

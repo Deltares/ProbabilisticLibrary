@@ -27,7 +27,7 @@ namespace Deltares
 			std::vector<std::shared_ptr<Evaluation>> evaluations;
 			std::vector< std::shared_ptr<Message>> messages;
 			std::shared_ptr<ProgressIndicator> progressIndicator = nullptr;
-
+			
 			void registerEvaluation(std::shared_ptr<Sample> sample);
 
 		public:
@@ -45,8 +45,8 @@ namespace Deltares
 			std::vector<double> getZValues(std::vector<std::shared_ptr<Sample>> samples);
 			int getStochastCount();
 			int getVaryingStochastCount();
-			bool shouldExitPrematurely(std::vector<double> zValues, double z0Fac, std::vector<std::shared_ptr<Sample>> samples, double beta);
-			bool shouldExitPrematurely(bool final);
+			bool shouldExitPrematurely(std::vector<std::shared_ptr<Sample>> samples);
+			//bool shouldExitPrematurely(bool final);
 			void reportResult(std::shared_ptr<Reliability::ReliabilityReport> report);
 			void reportMessage(MessageType type, std::string text);
 			bool isVaryingStochast(int index);

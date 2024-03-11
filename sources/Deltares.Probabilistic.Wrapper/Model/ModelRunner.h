@@ -8,7 +8,6 @@
 #include "ProgressIndicator.h"
 #include "RunSettings.h"
 #include "Sample.h"
-#include "UConverter.h"
 
 namespace Deltares
 {

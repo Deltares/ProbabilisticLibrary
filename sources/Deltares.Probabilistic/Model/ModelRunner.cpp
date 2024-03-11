@@ -56,6 +56,7 @@ namespace Deltares
 			xSample->AllowProxy = sample->AllowProxy;
 			xSample->IterationIndex = sample->IterationIndex;
 			xSample->Weight = sample->Weight;
+			xSample->UBeta = sample->getBeta();
 
 			return xSample;
 		}
@@ -92,6 +93,7 @@ namespace Deltares
 				registerEvaluation(xSamples[i]);
 
 				samples[i]->Z = xSamples[i]->Z;
+				samples[i]->IsRestartRequired = xSamples[i]->IsRestartRequired;
 				samples[i]->Tag = xSamples[i]->Tag;
 				zValues[i] = xSamples[i]->Z;
 			}
@@ -114,13 +116,16 @@ namespace Deltares
 			}
 		}
 
-		bool ModelRunner::shouldExitPrematurely(std::vector<double> zValues, double z0Fac, std::vector<std::shared_ptr<Sample>> samples, double beta)
+		bool ModelRunner::shouldExitPrematurely(std::vector<std::shared_ptr<Sample>> samples)
 		{
-			return false;
-		}
+			for (std::shared_ptr<Sample> sample : samples)
+			{
+				if (sample->IsRestartRequired)
+				{
+					return true;
+				}
+			}
 
-		bool ModelRunner::shouldExitPrematurely(bool final)
-		{
 			return false;
 		}
 

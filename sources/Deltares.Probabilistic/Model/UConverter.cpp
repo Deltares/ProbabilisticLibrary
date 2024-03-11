@@ -130,24 +130,36 @@ namespace Deltares
 
 		void UConverter::updateStochastSettings(std::shared_ptr<Deltares::Reliability::StochastSettingsSet> settings)
 		{
-			for (size_t i = settings->StochastSettings.size(); i < stochasts.size(); i++)
+			std::map<std::shared_ptr<Statistics::Stochast>, std::shared_ptr<Deltares::Reliability::StochastSettings>> stochastSettingsMap;
+
+			for (size_t i = 0; i < settings->StochastSettings.size(); i++)
 			{
-				std::shared_ptr<Deltares::Reliability::StochastSettings> stochastSettings = std::make_shared<Deltares::Reliability::StochastSettings>();
-				settings->StochastSettings.push_back(stochastSettings);
+				stochastSettingsMap[settings->StochastSettings[i]->stochast] = settings->StochastSettings[i];
 			}
 
+			settings->StochastSettings.clear();
 			settings->VaryingStochastSettings.clear();
+			int j = 0; // varying stochast counter
 
-			int j = 0;
 			for (size_t i = 0; i < stochasts.size(); i++)
 			{
+				if (stochastSettingsMap.contains(stochasts[i]))
+				{
+					settings->StochastSettings.push_back(stochastSettingsMap[stochasts[i]]->clone());
+				}
+				else
+				{
+					std::shared_ptr<Deltares::Reliability::StochastSettings> newStochastSettings = std::make_shared<Deltares::Reliability::StochastSettings>();
+					settings->StochastSettings.push_back(newStochastSettings);
+				}
+
 				if (stochasts[i]->isVarying() && !isFullyCorrelated(i, this->varyingStochastIndex))
 				{
-					std::shared_ptr<Deltares::Reliability::StochastSettings> varyingStochastSettings = settings->StochastSettings[j];
+					std::shared_ptr<Deltares::Reliability::StochastSettings> varyingStochastSettings = settings->StochastSettings.back();
 
 					varyingStochastSettings->StochastIndex = i;
 					varyingStochastSettings->IsQualitative = varyingStochasts[j]->isQualitative();
-					varyingStochastSettings->setStochast(varyingStochasts[j]);
+					varyingStochastSettings->stochast = varyingStochasts[j];
 
 					varyingStochastSettings->initializeForRun();
 
@@ -352,7 +364,7 @@ namespace Deltares
 
 			const int count = sample->getSize();
 
-			double defaultAlpha = - 1 / sqrt(count);
+			double defaultAlpha = -1 / sqrt(count);
 
 			if (count > 0)
 			{
@@ -364,7 +376,7 @@ namespace Deltares
 					if (beta == 0)
 					{
 						uValues[i] = 0;
-						alphas[i] = - sample->Values[i];
+						alphas[i] = -sample->Values[i];
 					}
 					else
 					{

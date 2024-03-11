@@ -62,7 +62,7 @@ namespace Deltares
 					betaValues = getDirectionBetas(modelRunner, samples, z0Fac, nmaal);
 
 					// check whether restart is needed
-					if (modelRunner->shouldExitPrematurely(false))
+					if (modelRunner->shouldExitPrematurely(samples))
 					{
 						// return the result so far
 						return modelRunner->getDesignPoint(uMin, Statistics::StandardNormal::getUFromQ(pf), convergenceReport);

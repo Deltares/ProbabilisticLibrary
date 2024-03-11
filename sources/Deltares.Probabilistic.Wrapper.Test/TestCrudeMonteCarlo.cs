@@ -164,7 +164,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
             for (int i = 0; i < project.Stochasts.Count; i++)
             {
-                crudeMonteCarlo.Settings.StochastSettings.Add(new StochastSettings {UMin = 1});
+                crudeMonteCarlo.Settings.StochastSettings.Add(new StochastSettings {UMin = 1, Stochast = project.Stochasts[i] });
             }
 
             DesignPoint designPoint = crudeMonteCarlo.GetDesignPoint(modelRunner);
@@ -503,7 +503,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
             for (int i = 0; i < project.Stochasts.Count; i++)
             {
-                crudeMonteCarlo.Settings.StochastSettings.Add(new StochastSettings());
+                crudeMonteCarlo.Settings.StochastSettings.Add(new StochastSettings {Stochast = project.Stochasts[i] });
             }
 
             DesignPoint designPoint = crudeMonteCarlo.GetDesignPoint(modelRunner);

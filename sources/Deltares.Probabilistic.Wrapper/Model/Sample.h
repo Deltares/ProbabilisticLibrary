@@ -79,10 +79,21 @@ namespace Deltares
 					void set(bool value) { shared->object->AllowProxy = value; }
 				}
 
+				property bool IsRestartRequired
+				{
+					bool get() { return shared->object->IsRestartRequired; }
+					void set(bool value) { shared->object->IsRestartRequired = value; }
+				}
+
 				property double Z
 				{
 					double get() { return shared->object->Z; }
 					void set(double value) { shared->object->Z = value; }
+				}
+
+				property double UBeta
+				{
+					double get() { return shared->object->UBeta; }
 				}
 
 				property System::Object^ Tag

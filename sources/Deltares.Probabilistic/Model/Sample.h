@@ -53,7 +53,9 @@ namespace Deltares
 			int IterationIndex = -1;
 			double Weight = nan("");
 			bool AllowProxy = true;
+			bool IsRestartRequired = false;
 			double Z = nan("");
+			double UBeta = 0;
 
 			int getSize();
 
