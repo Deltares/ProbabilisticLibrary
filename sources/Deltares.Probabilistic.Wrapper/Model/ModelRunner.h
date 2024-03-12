@@ -66,6 +66,14 @@ namespace Deltares
 				}
 
 				/**
+				 * \brief Clears all evaluations and messages
+				 */
+				virtual void Clear()
+				{
+					shared->object->clear();
+				}
+
+				/**
 				 * \brief Calculates a z-value for a reliability method in .net
 				 * \param sample 
 				 * \return 
