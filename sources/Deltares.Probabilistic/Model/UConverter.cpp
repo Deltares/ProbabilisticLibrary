@@ -445,6 +445,31 @@ namespace Deltares
 
 			return realization;
 		}
+
+		std::shared_ptr<StochastPoint> UConverter::GetStochastPoint(double beta, std::vector<double> alphas)
+		{
+			std::vector<double> uValues(alphas.size());
+
+			for (int i = 0; i < alphas.size(); i++)
+			{
+				if (beta != 0)
+				{
+					uValues[i] = -beta * alphas[i];
+				}
+				else
+				{
+					uValues[i] = -alphas[i];
+				}
+			}
+
+			std::shared_ptr<Models::Sample> sample = std::make_shared<Models::Sample>(uValues);
+
+			std::shared_ptr<StochastPoint> stochastPoint = GetStochastPoint(sample, beta);
+
+			stochastPoint->updateInfluenceFactors();
+
+			return stochastPoint;
+		}
 	}
 }
 
