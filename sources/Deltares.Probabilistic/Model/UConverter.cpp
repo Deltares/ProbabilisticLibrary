@@ -231,7 +231,7 @@ namespace Deltares
 			return varyingCorrelationMatrix->Cholesky(sample->Values);
 		}
 
-		std::vector<double> UConverter::getXValues(std::shared_ptr<Sample> sample)
+		std::vector<double> UConverter::getExpandedUValues(std::shared_ptr<Sample> sample)
 		{
 			std::vector<double> unexpandedUValues = sample->Values;
 
@@ -244,9 +244,16 @@ namespace Deltares
 				}
 			}
 
-			auto uCorrelated = varyingCorrelationMatrix->Cholesky(unexpandedUValues);
+			std::vector<double> uCorrelated = varyingCorrelationMatrix->Cholesky(unexpandedUValues);
 
-			auto expandedUValues = getExpandedValues(uCorrelated);
+			std::vector<double> expandedUValues = getExpandedValues(uCorrelated);
+
+			return expandedUValues;
+		}
+
+		std::vector<double> UConverter::getXValues(std::shared_ptr<Sample> sample)
+		{
+			std::vector<double> expandedUValues = getExpandedUValues(sample);
 
 			auto xValues = std::vector<double>(this->stochasts.size());
 

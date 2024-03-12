@@ -1,6 +1,8 @@
 #include "ModelRunner.h"
 #include "../Math/NumericSupport.h"
 #include <cmath>
+
+#include "ModelSample.h"
 #if __has_include(<format>)
 #include <format>
 #else
@@ -45,43 +47,42 @@ namespace Deltares
 			this->messages.clear();
 		}
 
-		std::shared_ptr<Sample> ModelRunner::getXSample(std::shared_ptr<Sample> sample)
+		std::shared_ptr<ModelSample> ModelRunner::getModelSample(std::shared_ptr<Sample> sample)
 		{
 			std::vector<double> xValues = this->uConverter->getXValues(sample);
 
 			// create a sample with values in x-space
-			std::shared_ptr<Sample> xSample = std::make_shared<Sample>(xValues);
+			std::shared_ptr<ModelSample> xSample = std::make_shared<ModelSample>(xValues);
 
-			xSample->SpaceType = SpaceType::X;
 			xSample->AllowProxy = sample->AllowProxy;
 			xSample->IterationIndex = sample->IterationIndex;
 			xSample->Weight = sample->Weight;
-			xSample->UBeta = sample->getBeta();
+			xSample->IsRestartRequired = sample->IsRestartRequired;
+			xSample->Beta = sample->getBeta();
 
 			return xSample;
 		}
 
 		double ModelRunner::getZValue(std::shared_ptr<Sample> sample)
 		{
-			std::shared_ptr<Sample> xSample = getXSample(sample);
+			std::shared_ptr<ModelSample> xSample = getModelSample(sample);
 
 			this->zModel->invoke(xSample);
 
 			registerEvaluation(xSample);
 
 			sample->Z = xSample->Z;
-			sample->Tag = xSample->Tag;
 
 			return sample->Z;
 		}
 
 		std::vector<double> ModelRunner::getZValues(std::vector<std::shared_ptr<Sample>> samples)
 		{
-			std::vector<std::shared_ptr<Sample>> xSamples;
+			std::vector<std::shared_ptr<ModelSample>> xSamples;
 
 			for (int i = 0; i < samples.size(); i++)
 			{
-				xSamples.push_back(getXSample(samples[i]));
+				xSamples.push_back(getModelSample(samples[i]));
 			}
 
 			this->zModel->invoke(xSamples);
@@ -93,24 +94,24 @@ namespace Deltares
 				registerEvaluation(xSamples[i]);
 
 				samples[i]->Z = xSamples[i]->Z;
+				samples[i]->AllowProxy = xSamples[i]->AllowProxy;
 				samples[i]->IsRestartRequired = xSamples[i]->IsRestartRequired;
-				samples[i]->Tag = xSamples[i]->Tag;
 				zValues[i] = xSamples[i]->Z;
 			}
 
 			return zValues;
 		}
 
-		void ModelRunner::registerEvaluation(std::shared_ptr<Sample> sample)
+		void ModelRunner::registerEvaluation(std::shared_ptr<ModelSample> sample)
 		{
 			if (this->Settings->SaveEvaluations)
 			{
 				std::shared_ptr<Evaluation> evaluation = std::make_shared<Evaluation>();
 
 				evaluation->Z = sample->Z;
-				evaluation->Tag = sample->Tag;
 				evaluation->X = sample->Values;
 				evaluation->Iteration = sample->IterationIndex;
+				evaluation->Tag = sample->Tag;
 
 				this->evaluations.push_back(evaluation);
 			}
@@ -230,13 +231,10 @@ namespace Deltares
 			return designPoint;
 		}
 
-		std::shared_ptr<Models::Sample> ModelRunner::getOnlyVaryingSample(std::shared_ptr<Sample> sample)
+		std::vector<double> ModelRunner::getOnlyVaryingValues(std::vector<double> values)
 		{
-			std::vector<double> varyingValues = this->uConverter->getVaryingValues(sample->Values);
-
-			return std::make_shared<Sample>(varyingValues);
+			return this->uConverter->getVaryingValues(values);
 		}
-
 	}
 }
 

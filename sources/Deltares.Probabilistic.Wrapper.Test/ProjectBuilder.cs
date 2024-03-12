@@ -31,7 +31,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
                 this.m = m;
             }
 
-            public void Calculate(Sample sample)
+            public void Calculate(ModelSample sample)
             {
                 ZFunctionOutput output = m.Invoke(sample.Values);
                 sample.Z = output.Z;

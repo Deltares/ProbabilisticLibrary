@@ -46,6 +46,7 @@ namespace Deltares
 			UConverter(std::vector<std::shared_ptr<Deltares::Statistics::Stochast>> stochasts, std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix);
 			void initializeForRun();
 			std::vector<double> getUValues(std::shared_ptr<Sample> sample);
+			std::vector<double> getExpandedUValues(std::shared_ptr<Sample> sample);
 			std::vector<double> getXValues(std::shared_ptr<Sample> sample);
 			int getStochastCount();
 			int getVaryingStochastCount();

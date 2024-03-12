@@ -91,29 +91,6 @@ namespace Deltares
 					void set(double value) { shared->object->Z = value; }
 				}
 
-				property double UBeta
-				{
-					double get() { return shared->object->UBeta; }
-				}
-
-				property System::Object^ Tag
-				{
-					System::Object^ get()
-					{
-						if (tag == nullptr && shared->object->Tag != 0)
-						{
-							tag = NativeSupport::toManagedObject(shared->object->Tag);
-						}
-
-						return tag;
-					}
-					void set(System::Object^ value)
-					{
-						tag = value;
-						shared->object->Tag = NativeSupport::toNativeObject(value);
-					}
-				}
-
 				std::shared_ptr<Models::Sample> GetSample()
 				{
 					if (dirty)

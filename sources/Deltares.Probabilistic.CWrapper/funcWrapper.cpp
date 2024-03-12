@@ -1,16 +1,24 @@
 #include "funcWrapper.h"
 #include "../Deltares.Probabilistic/Utils/probLibException.h"
 
+namespace Deltares
+{
+	namespace Models
+	{
+		class ModelSample;
+	}
+}
+
 using namespace Deltares::ProbLibCore;
 
-void funcWrapper::FDelegate(std::shared_ptr<Deltares::Models::Sample> s)
+void funcWrapper::FDelegate(std::shared_ptr<Deltares::Models::ModelSample> s)
 {
     auto xx = new double[allStoch];
     for (size_t i = 0; i < allStoch; i++)
     {
         xx[i] = xRef[i];
     }
-    for (size_t i = 0; i < s->getSize(); i++)
+    for (size_t i = 0; i < s->Values.size(); i++)
     {
         xx[iPointer[i]] = s->Values[i];
     }

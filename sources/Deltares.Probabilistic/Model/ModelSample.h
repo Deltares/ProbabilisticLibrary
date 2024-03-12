@@ -18,18 +18,18 @@ namespace Deltares
 			long tag = 0;
 
 		public:
-			ModelSample(std::vector<double> values, std::vector<double> uValues)
+			ModelSample(std::vector<double> values)
 			{
 				this->Values = values;
-				this->UValues = uValues;
 			}
 
 			std::vector<double> Values;
-			std::vector<double> UValues;
 
 			int IterationIndex = -1;
 			double Weight = 1;
 			bool AllowProxy = true;
+			bool IsRestartRequired = false;
+			double Beta = 0;
 			double Z = nan("");
 
 			intptr_t Tag = 0;
