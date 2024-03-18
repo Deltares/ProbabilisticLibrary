@@ -21,7 +21,6 @@ namespace Deltares
 		{
 		private:
 			int size = 0;
-			long tag = 0;
 
 		public:
 			Sample(int size)
@@ -53,6 +52,7 @@ namespace Deltares
 			int IterationIndex = -1;
 			double Weight = nan("");
 			bool AllowProxy = true;
+			bool IsRestartRequired = false;
 			double Z = nan("");
 
 			int getSize();
@@ -64,8 +64,6 @@ namespace Deltares
 			std::shared_ptr<Sample> getSampleAtBeta(double beta);
 			std::shared_ptr<Sample> getMultipliedSample(double factor);
 			void correctSmallValues(double tolerance = 1E-10);
-
-			intptr_t Tag = 0;
 		};
 	}
 }

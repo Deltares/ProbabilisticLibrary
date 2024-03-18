@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 
+#include "../Statistics/Stochast.h"
 #include "../../Deltares.Probabilistic/Reliability/StochastSettings.h"
 #include "../Utils/SharedPointerProvider.h"
 
@@ -64,8 +65,11 @@ namespace Deltares
 					void set(bool value) { shared->object->IsInitializationAllowed = value; }
 				}
 
+				Statistics::Wrappers::Stochast^ Stochast = nullptr;
+
 				std::shared_ptr<Reliability::StochastSettings> GetSettings()
 				{
+					shared->object->stochast = this->Stochast != nullptr ? this->Stochast->GetStochast() : nullptr;
 					return shared->object;
 				}
 			};

@@ -193,7 +193,6 @@ namespace Deltares
 		/// Converts cartesian coordinates to spherical coordinates
 		/// </summary>
 		/// <param name="cartesianCoordinates"></param>
-		/// <param name="count"></param>
 		/// <returns></returns>
 		/// <see cref="https://en.wikipedia.org/wiki/N-sphere#Spherical_coordinates"/>
 		std::vector<double> NumericSupport::GetSphericalCoordinates(const std::vector<double>& cartesianCoordinates)
@@ -256,15 +255,10 @@ namespace Deltares
 
 		double NumericSupport::interpolate(double x, double minX, double minY, double maxX, double maxY, bool extrapolate, InterpolationType interpolationType)
 		{
-			if (minX > maxX ^ interpolationType == InterpolationType::Harmonic)
+			if ((minX > maxX && interpolationType != InterpolationType::Harmonic) || (minX < maxX && interpolationType == InterpolationType::Harmonic))
 			{
-				double temp = minX;
-				minX = maxX;
-				maxX = temp;
-
-				temp = minY;
-				minY = maxY;
-				maxY = temp;
+				std::swap(minX, maxX);
+				std::swap(minY, maxY);
 			}
 
 			switch (interpolationType)
@@ -282,7 +276,7 @@ namespace Deltares
 				maxX = 1 / maxX;
 				break;
 			default:
-				throw std::exception("interpolation type not supported");
+				throw ProbLibCore::probLibException("interpolation type not supported");
 			}
 
 			if (x < minX && !extrapolate)

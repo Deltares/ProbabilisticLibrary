@@ -14,7 +14,7 @@ namespace Deltares
         {
             std::shared_ptr<ModelRunner> projectBuilder::BuildProject()
             {
-                std::shared_ptr<ZModel> z(new ZModel(ZModel([this](std::shared_ptr<Sample> v) { return zfunc(v); })));
+                std::shared_ptr<ZModel> z(new ZModel(ZModel([this](std::shared_ptr<ModelSample> v) { return zfunc(v); })));
                 auto stochast = std::vector<std::shared_ptr<Stochast>>();
                 auto dist = DistributionType::Normal;
                 std::vector<double> params{ 0.0, 1.0 };
@@ -30,7 +30,7 @@ namespace Deltares
 
             std::shared_ptr<ModelRunner> projectBuilder::BuildProjectWithDeterminist()
             {
-                std::shared_ptr<ZModel> z(new ZModel(ZModel([this](std::shared_ptr<Sample> v) { return zfuncWithDeterminist(v); })));
+                std::shared_ptr<ZModel> z(new ZModel(ZModel([this](std::shared_ptr<ModelSample> v) { return zfuncWithDeterminist(v); })));
                 auto stochast = std::vector<std::shared_ptr<Stochast>>();
                 auto dist = DistributionType::Normal;
                 std::vector<double> params{ 0.0, 1.0 };
@@ -46,7 +46,7 @@ namespace Deltares
                 return m;
             }
 
-            void projectBuilder::zfunc(std::shared_ptr<Deltares::Models::Sample> sample) const
+            void projectBuilder::zfunc(std::shared_ptr<Deltares::Models::ModelSample> sample) const
             {
                 sample->Z = 3.0 + sample->Values[1] - 1.25 * sample->Values[0];
                 if (logZtoScreen)
@@ -55,7 +55,7 @@ namespace Deltares
                 }
             }
 
-            void projectBuilder::zfuncWithDeterminist(std::shared_ptr<Deltares::Models::Sample> sample) const
+            void projectBuilder::zfuncWithDeterminist(std::shared_ptr<Deltares::Models::ModelSample> sample) const
             {
                 sample->Z = 3.0 + sample->Values[0] - 1.25 * sample->Values[2];
                 if (logZtoScreen)

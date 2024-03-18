@@ -102,7 +102,7 @@ void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, const i
 
         auto createRelM = createReliabilityMethod();
         std::shared_ptr<ReliabilityMethod> relMethod(createRelM.selectMethod(*method, nStoch));
-        std::shared_ptr<ZModel> zModel(new ZModel([&fw](std::shared_ptr<Sample> v) { return fw.FDelegate(v); }));
+        std::shared_ptr<ZModel> zModel(new ZModel([&fw](std::shared_ptr<ModelSample> v) { return fw.FDelegate(v); }));
         std::shared_ptr<Deltares::Statistics::CorrelationMatrix> corr(new Deltares::Statistics::CorrelationMatrix());
         if (nrCorrelations > 0)
         {

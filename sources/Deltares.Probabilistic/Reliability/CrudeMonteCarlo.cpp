@@ -121,7 +121,7 @@ namespace Deltares
 						uMean->initialize(z0Fac * Statistics::StandardNormal::BetaMax);
 					}
 
-					if (modelRunner->shouldExitPrematurely(zValues, z0Fac, samples, rmin))
+					if (modelRunner->shouldExitPrematurely(samples))
 					{
 						// return the result so far
 						return modelRunner->getDesignPoint(uMin, Statistics::StandardNormal::getUFromQ(pf), convergenceReport);

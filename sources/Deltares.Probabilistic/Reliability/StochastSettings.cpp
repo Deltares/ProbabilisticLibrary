@@ -15,15 +15,32 @@ namespace Deltares
 			this->XMaxValue = Statistics::StandardNormal::getPFromU(this->MaxValue);
 		}
 
-		void StochastSettings::setStochast(std::shared_ptr<Statistics::Stochast> stochast)
-		{
-			this->stochast = stochast;
-		}
-
 		double StochastSettings::getRepresentativeU(double u)
 		{
 			return this->stochast->getRepresentativeU(u);
 		}
+
+		std::shared_ptr<StochastSettings> StochastSettings::clone()
+		{
+			std::shared_ptr<StochastSettings> clone = std::make_shared<StochastSettings>();
+
+			clone->IsInitializationAllowed = this->IsInitializationAllowed;
+			clone->IsQualitative = this->IsQualitative;
+			clone->IsVarianceAllowed = this->IsVarianceAllowed;
+			clone->Intervals = this->Intervals;
+			clone->MaxValue = this->MaxValue;
+			clone->MinValue = this->MinValue;
+			clone->XMaxValue = this->XMaxValue;
+			clone->XMinValue = this->XMinValue;
+			clone->StartValue = this->StartValue;
+			clone->VarianceFactor = this->VarianceFactor;
+			clone->StochastIndex = this->StochastIndex;
+			clone->stochast = this->stochast;
+
+			return clone;
+
+		}
+
 	}
 }
 

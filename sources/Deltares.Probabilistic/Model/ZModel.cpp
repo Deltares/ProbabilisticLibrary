@@ -1,6 +1,8 @@
 #include "ZModel.h"
 #include <omp.h>
 
+#include "ModelSample.h"
+
 
 namespace Deltares
 {
@@ -16,12 +18,12 @@ namespace Deltares
 			}
 		}
 
-		void ZModel::invoke(std::shared_ptr<Sample> sample)
+		void ZModel::invoke(std::shared_ptr<ModelSample> sample)
 		{
 			this->zLambda(sample);
 		}
 
-		void ZModel::invoke(std::vector<std::shared_ptr<Sample>> samples)
+		void ZModel::invoke(std::vector<std::shared_ptr<ModelSample>> samples)
 		{
 			if (zMultipleLambda == nullptr)
 			{

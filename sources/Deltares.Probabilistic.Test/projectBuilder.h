@@ -17,8 +17,8 @@ namespace Deltares
                 std::shared_ptr<Deltares::Models::ModelRunner> BuildProjectWithDeterminist();
                 bool logZtoScreen = false;
             private:
-                void zfunc(std::shared_ptr<Deltares::Models::Sample> sample) const;
-                void zfuncWithDeterminist(std::shared_ptr<Deltares::Models::Sample> sample) const;
+                void zfunc(std::shared_ptr<Deltares::Models::ModelSample> sample) const;
+                void zfuncWithDeterminist(std::shared_ptr<Deltares::Models::ModelSample> sample) const;
             };
         }
     }

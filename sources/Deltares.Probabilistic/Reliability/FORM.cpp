@@ -150,11 +150,9 @@ namespace Deltares
 					modelRunner->reportMessage(Models::MessageType::Error, "No variation in model results found at start point");
 
 					const std::shared_ptr<ReliabilityReport> reportTooSmall = getReport(iteration, beta);
-
 					modelRunner->reportResult(reportTooSmall);
 
 					const double betaNoVariation = ReliabilityMethod::getZFactor(sample->Z) * Statistics::StandardNormal::BetaMax;
-
 					return modelRunner->getDesignPoint(sample, betaNoVariation, convergenceReport);
 				}
 
@@ -218,8 +216,10 @@ namespace Deltares
 					sample = newSample;
 				}
 
+				double betaFac = getZFactor(beta);
+
 				// compute design values
-				std::vector<double> uValues = NumericSupport::select(zGradient, [beta, zGradientLength](double p) { return - p / zGradientLength; });
+				std::vector<double> uValues = NumericSupport::select(zGradient, [betaFac, zGradientLength](double p) { return - p * betaFac / zGradientLength; });
 
 				resultSample = std::make_shared<Sample>(uValues);
 

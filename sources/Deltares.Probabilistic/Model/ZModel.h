@@ -3,14 +3,14 @@
 #include <vector>
 #include <functional>
 
-#include "Sample.h"
+#include "ModelSample.h"
 
 namespace Deltares
 {
 	namespace Models
 	{
-		typedef std::function<void(std::shared_ptr<Sample>)> ZLambda;
-		typedef std::function<void(std::vector<std::shared_ptr<Sample>>)> ZMultipleLambda;
+		typedef std::function<void(std::shared_ptr<ModelSample>)> ZLambda;
+		typedef std::function<void(std::vector<std::shared_ptr<ModelSample>>)> ZMultipleLambda;
 
 		class ZModel
 		{
@@ -28,9 +28,9 @@ namespace Deltares
 
 			void setMaxProcesses(int maxProcesses);
 
-			void invoke(std::shared_ptr<Sample> sample);
+			void invoke(std::shared_ptr<ModelSample> sample);
 
-			void invoke(std::vector<std::shared_ptr<Sample>> samples);
+			void invoke(std::vector<std::shared_ptr<ModelSample>> samples);
 		};
 	}
 }

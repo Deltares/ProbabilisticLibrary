@@ -12,6 +12,7 @@
 #include "UConverter.h"
 #include "ZModel.h"
 #include "Message.h"
+#include "ModelSample.h"
 #include "ProgressIndicator.h"
 
 namespace Deltares
@@ -27,8 +28,8 @@ namespace Deltares
 			std::vector<std::shared_ptr<Evaluation>> evaluations;
 			std::vector< std::shared_ptr<Message>> messages;
 			std::shared_ptr<ProgressIndicator> progressIndicator = nullptr;
-
-			void registerEvaluation(std::shared_ptr<Sample> sample);
+			
+			void registerEvaluation(std::shared_ptr<ModelSample> sample);
 
 		public:
 			ModelRunner(std::shared_ptr<ZModel> zModel, std::shared_ptr<UConverter>uConverter, std::shared_ptr<ProgressIndicator> progressIndicator = nullptr)
@@ -45,15 +46,15 @@ namespace Deltares
 			std::vector<double> getZValues(std::vector<std::shared_ptr<Sample>> samples);
 			int getStochastCount();
 			int getVaryingStochastCount();
-			bool shouldExitPrematurely(std::vector<double> zValues, double z0Fac, std::vector<std::shared_ptr<Sample>> samples, double beta);
-			bool shouldExitPrematurely(bool final);
+			bool shouldExitPrematurely(std::vector<std::shared_ptr<Sample>> samples);
+			//bool shouldExitPrematurely(bool final);
 			void reportResult(std::shared_ptr<Reliability::ReliabilityReport> report);
 			void reportMessage(MessageType type, std::string text);
 			bool isVaryingStochast(int index);
 			std::shared_ptr<Reliability::DesignPoint> getDesignPoint(std::shared_ptr<Sample> sample, double beta, std::shared_ptr<Reliability::ConvergenceReport> convergenceReport = nullptr, std::string identifier = "");
 			std::shared_ptr<RunSettings> Settings = std::make_shared<RunSettings>();
-			std::shared_ptr<Models::Sample> getXSample(std::shared_ptr<Sample> sample);
-			std::shared_ptr<Models::Sample> getOnlyVaryingSample(std::shared_ptr<Sample> sample);
+			std::shared_ptr<Models::ModelSample> getModelSample(std::shared_ptr<Sample> sample);
+			std::vector<double> getOnlyVaryingValues(std::vector<double> values);
 		};
 	}
 }

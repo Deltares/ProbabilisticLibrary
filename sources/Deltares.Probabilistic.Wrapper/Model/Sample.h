@@ -79,28 +79,16 @@ namespace Deltares
 					void set(bool value) { shared->object->AllowProxy = value; }
 				}
 
+				property bool IsRestartRequired
+				{
+					bool get() { return shared->object->IsRestartRequired; }
+					void set(bool value) { shared->object->IsRestartRequired = value; }
+				}
+
 				property double Z
 				{
 					double get() { return shared->object->Z; }
 					void set(double value) { shared->object->Z = value; }
-				}
-
-				property System::Object^ Tag
-				{
-					System::Object^ get()
-					{
-						if (tag == nullptr && shared->object->Tag != 0)
-						{
-							tag = NativeSupport::toManagedObject(shared->object->Tag);
-						}
-
-						return tag;
-					}
-					void set(System::Object^ value)
-					{
-						tag = value;
-						shared->object->Tag = NativeSupport::toNativeObject(value);
-					}
 				}
 
 				std::shared_ptr<Models::Sample> GetSample()

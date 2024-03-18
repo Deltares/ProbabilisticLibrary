@@ -15,7 +15,7 @@ namespace Deltares
 			{
 				std::shared_ptr<Deltares::Reliability::StochastSettings> settings = std::make_shared<Deltares::Reliability::StochastSettings>();
 				settings->StartValue = stochastPoint->Alphas[i]->U;
-				settings->setStochast(stochastPoint->Alphas[i]->Stochast);
+				settings->stochast = stochastPoint->Alphas[i]->Stochast;
 
 				this->StochastSettings.push_back(settings);
 			}

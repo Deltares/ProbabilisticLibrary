@@ -2,13 +2,14 @@
 #include "../../Deltares.Probabilistic/Model/ZModel.h"
 #include "../../Deltares.Probabilistic/Model/ModelRunner.h"
 #include "../../Deltares.Probabilistic/Model/Sample.h"
+#include "../../Deltares.Probabilistic/Model/ModelSample.h"
 #include "../Statistics/CorrelationMatrix.h"
 #include "../Statistics/Stochast.h"
 #include "../Utils/SharedPointerProvider.h"
 #include "ProgressIndicator.h"
 #include "RunSettings.h"
+#include "ModelSample.h"
 #include "Sample.h"
-#include "UConverter.h"
 
 namespace Deltares
 {
@@ -19,7 +20,7 @@ namespace Deltares
 			using namespace Deltares::Reliability;
 			using namespace Deltares::Statistics::Wrappers;
 
-			public delegate void ZSampleDelegate(Sample^);
+			public delegate void ZSampleDelegate(ModelSample^);
 
 			public ref class ModelRunner
 			{
@@ -27,15 +28,15 @@ namespace Deltares
 				SharedPointerProvider<Models::ModelRunner>* shared = nullptr;
 
 				std::shared_ptr<Models::ZModel> getZModel();
-				Models::ZLambda getZLambda();
-				Models::ZMultipleLambda getZMultipleDelegate();
+				ZLambda getZLambda();
+				ZMultipleLambda getZMultipleDelegate();
 				ZSampleDelegate^ zFunction = nullptr;
 
-				void CalcZValues(System::Collections::Generic::IList<Sample^>^ samples);
-				void CalcZValue(Sample^ sample);
+				void CalcZValues(System::Collections::Generic::IList<ModelSample^>^ samples);
+				void CalcZValue(ModelSample^ sample);
 
-				void invokeSample(std::shared_ptr<Models::Sample> sample);
-				void invokeMultipleSamples(std::vector<std::shared_ptr<Models::Sample>> samples);
+				void invokeSample(std::shared_ptr<Models::ModelSample> sample);
+				void invokeMultipleSamples(std::vector<std::shared_ptr<Models::ModelSample>> samples);
 
 				System::Collections::Generic::List<System::Runtime::InteropServices::GCHandle>^ handles = gcnew System::Collections::Generic::List<System::Runtime::InteropServices::GCHandle>();
 
@@ -53,8 +54,8 @@ namespace Deltares
 
 				System::Collections::Generic::List<Stochast^>^ Stochasts = gcnew System::Collections::Generic::List<Stochast^>();
 
-				virtual void CalcSamples(System::Collections::Generic::IList<Sample^>^ samples);
-				virtual void CalcSample(Sample^ sample);
+				virtual void CalcSamples(System::Collections::Generic::IList<ModelSample^>^ samples);
+				virtual void CalcSample(ModelSample^ sample);
 
 				virtual property int VaryingStochastCount
 				{
@@ -64,6 +65,14 @@ namespace Deltares
 				bool IsVaryingStochast(int index)
 				{
 					return shared->object->isVaryingStochast(index);
+				}
+
+				/**
+				 * \brief Clears all evaluations and messages
+				 */
+				virtual void Clear()
+				{
+					shared->object->clear();
 				}
 
 				/**
@@ -95,15 +104,16 @@ namespace Deltares
 					return NativeSupport::toManaged(zValues);
 				}
 
-				RunSettings^ Settings = gcnew Deltares::Models::Wrappers::RunSettings();
+				RunSettings^ Settings = gcnew RunSettings();
 
 				virtual void InitializeForRun()
 				{
 					shared->object->initializeForRun();
 				}
 
-				Sample^ GetXSample(Sample^ sample);
-				Sample^ GetOnlyVaryingSample(Sample^ sample);
+				ModelSample^ GetModelSample(Sample^ sample);
+
+				array<double>^ GetOnlyVaryingValues(array<double>^ values);
 
 				std::shared_ptr<Models::ModelRunner> GetModelRunner()
 				{

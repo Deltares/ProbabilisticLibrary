@@ -226,8 +226,8 @@ namespace Deltares.Probabilistics.Wrappers.Test
             ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
 
             FORM form = new FORM();
-            form.Settings.StochastSettings.Add(new StochastSettings { StartValue = 1 });
-            form.Settings.StochastSettings.Add(new StochastSettings { StartValue = 1 });
+            form.Settings.StochastSettings.Add(new StochastSettings { StartValue = 1, Stochast = project.Stochasts[0] });
+            form.Settings.StochastSettings.Add(new StochastSettings { StartValue = 1, Stochast = project.Stochasts[1] });
 
             DesignPoint designPoint = form.GetDesignPoint(modelRunner);
 
@@ -242,8 +242,8 @@ namespace Deltares.Probabilistics.Wrappers.Test
             ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
 
             FORM form = new FORM();
-            form.Settings.StochastSettings.Add(new StochastSettings { StartValue = 1 });
-            form.Settings.StochastSettings.Add(new StochastSettings { StartValue = 1 });
+            form.Settings.StochastSettings.Add(new StochastSettings { StartValue = 1, Stochast = project.Stochasts[0] });
+            form.Settings.StochastSettings.Add(new StochastSettings { StartValue = 1, Stochast = project.Stochasts[1] });
             form.Settings.StartPointCalculatorSettings.StartMethod = StartMethodType.RaySearch;
 
             DesignPoint designPoint = form.GetDesignPoint(modelRunner);
