@@ -385,14 +385,24 @@ namespace Deltares.Probabilistics.Wrappers.Test
             FORM form = new FORM();
             form.Settings.RelaxationFactor = 0.75;
             form.Settings.RelaxationLoops = 8;
+            form.Settings.FilterAtNonConvergence = false;
 
-            DesignPoint designPoint = form.GetDesignPoint(modelRunner);
+            DesignPoint designPoint1 = form.GetDesignPoint(modelRunner);
 
-            Assert.AreEqual(3.01, designPoint.Beta, margin);
-            Assert.AreEqual(7, designPoint.ContributingDesignPoints.Count);
-            Assert.AreEqual("Relaxation loop 1", designPoint.ContributingDesignPoints[0].Identifier);
+            Assert.AreEqual(3.01, designPoint1.Beta, margin);
+            Assert.AreEqual(7, designPoint1.ContributingDesignPoints.Count);
+            Assert.AreEqual("Relaxation loop 1", designPoint1.ContributingDesignPoints[0].Identifier);
 
-            Assert.IsFalse(designPoint.ConvergenceReport.IsConverged);
+            Assert.IsFalse(designPoint1.ConvergenceReport.IsConverged);
+            form.Settings.FilterAtNonConvergence = true;
+
+            DesignPoint designPoint2 = form.GetDesignPoint(modelRunner);
+
+            Assert.AreEqual(0.674, designPoint2.Beta, margin);
+            Assert.AreEqual(7, designPoint2.ContributingDesignPoints.Count);
+            Assert.AreEqual("Relaxation loop 1", designPoint2.ContributingDesignPoints[0].Identifier);
+
+            Assert.IsFalse(designPoint2.ConvergenceReport.IsConverged);
         }
 
         [Test]

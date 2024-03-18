@@ -2,7 +2,14 @@
 cmake_minimum_required(VERSION 3.9 FATAL_ERROR)
 
 # project name and language
-project(probabilisticLibrary LANGUAGES Fortran CXX)
+project(probabilisticLibrary LANGUAGES CXX)
+
+option(ENABLE_Fortran "Enable Fortran" ON)
+if(ENABLE_Fortran)
+  enable_language(Fortran)
+else()
+  message(STATUS "No Fortran support")
+endif()
 
 if ( TARGET tools)
 else()
@@ -30,6 +37,8 @@ if (UNIX)
     set(CMAKE_Fortran_FLAGS_DEBUG "${CMAKE_Fortran_FLAGS_DEBUG} -fcheck=bounds -fopenmp")
     set(CMAKE_Fortran_FLAGS_RELEASE "${CMAKE_Fortran_FLAGS_RELEASE} -fopenmp")
 endif (UNIX)
+
+option(ENABLE_UNIT_TESTS "Enable unit tests" ON)
 
 enable_testing()
 

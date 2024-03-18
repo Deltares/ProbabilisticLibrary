@@ -35,7 +35,6 @@ module probabilisticTests
     use performAdaptiveMCIStests
     use HohenbichlerTests
     use combineElementsTests
-    use performFORMTests
     use performDSTests
     use upscalingTests
     use upscaleLengthTests
@@ -65,7 +64,6 @@ subroutine allProbabilisticTests
     !call allCombineElementsTests
     !call allPerformImportanceSamplingTests
     !call allPerformAdaptiveMCIStests
-    !call allPerformFORMTests
     call performAllDSTests
     !call allUpscalingTests
     !call allUpscaleLengthTests

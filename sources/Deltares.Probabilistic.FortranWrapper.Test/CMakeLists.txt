@@ -46,7 +46,6 @@ add_library(FLtestProbabilistic
     probabilistic/combineElementsTests.f90
     probabilistic/sampleZfunc.f90
     probabilistic/performDSTests.f90
-    probabilistic/performFORMTests.f90
     probabilistic/performImportanceSamplingTests.f90
     probabilistic/upscaleLengthTests.f90
     probabilistic/upscalingTests.f90

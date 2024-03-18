@@ -27,6 +27,8 @@ namespace Deltares
 				return getSensitivityStartPoint(modelRunner);
 			case StartMethodType::SphereSearch:
 				return getSphereStartPoint(modelRunner);
+			case StartMethodType::GivenVector:
+				return getGivenVectorStartPoint(modelRunner);
 			default:
 				throw probLibException("Start method not supported: ", (int)this->Settings->StartMethod);
 			}
@@ -61,11 +63,28 @@ namespace Deltares
 			return startPoint;
 		}
 
+		std::shared_ptr<Sample> StartPointCalculator::getGivenVectorStartPoint(std::shared_ptr<Models::ModelRunner> modelRunner)
+		{
+			std::shared_ptr<Sample> startPoint = this->Settings->StochastSet->getSample();
+			startPoint->Values = this->Settings->startVector;
+			return startPoint;
+		}
+
 		std::shared_ptr<Sample> StartPointCalculator::getRayStartPoint(std::shared_ptr<Models::ModelRunner> modelRunner)
 		{
 			std::shared_ptr<Sample> startPoint = this->Settings->StochastSet->getSample();
 
-			correctDefaultValues(startPoint);
+			if (this->Settings->startVector.size() > 0)
+			{
+				for (size_t i = 0; i < startPoint.get()->getSize(); i++)
+				{
+					startPoint->Values[i] = this->Settings->startVector[i];
+				}
+			}
+			else
+			{
+				correctDefaultValues(startPoint);
+			}
 
 			std::shared_ptr<Sample> rayStartPoint = getDirectionStartPoint(modelRunner, startPoint);
 
@@ -293,11 +312,30 @@ namespace Deltares
 
 			// factor related to number of steps above
 			double z2 = modelRunner->getZValue(u2);
-			z2 = std::min(z2, 0.0);
 
-			std::shared_ptr<Sample> u3 = u2->getMultipliedSample(1.0 + z2 / (z2 - z) / coFactor);
+			// assume fz(uFactor) = A + B * uFactor
+			// z = A + B * 1.0
+			// z2 = A + B * coFactor
+			// z-z2 = B(1-coFactor) => B = (z-z2)/(1-coFactor)
+			// A = z - B
+			// fz = 0 => A + B * uFactor = 0
+			// => uFactor = -A / B
+			// if B near 0 => z near z2 => refinement does not improve the result, so return u
+			double B = (z - z2) / (1.0 - coFactor);
+			double A = z - B;
 
-			return u3;
+			if (std::abs(B) > 1e-25)
+			{
+				double uFactor = -A / B;
+
+				std::shared_ptr<Sample> u3 = u->getMultipliedSample(uFactor);
+				return u3;
+			}
+			else
+			{
+				return u;
+			}
+
 		}
 	}
 }

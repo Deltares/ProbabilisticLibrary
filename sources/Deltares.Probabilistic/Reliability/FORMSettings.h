@@ -16,6 +16,7 @@ namespace Deltares
             int RelaxationLoops = 1;
             int MaximumIterations = 50;
             double EpsilonBeta = 0.01;
+            bool FilterAtNonConvergence = false;
 
             std::shared_ptr<Models::RunSettings> RunSettings = std::make_shared<Models::RunSettings>();
             std::shared_ptr<Models::GradientSettings> GradientSettings = std::make_shared<Models::GradientSettings>();

@@ -1,11 +1,12 @@
 #pragma once
+#include <vector>
 #include "StochastSettingsSet.h"
 
 namespace Deltares
 {
 	namespace Reliability
 	{
-		enum StartMethodType { None, One, RaySearch, SensitivitySearch, SphereSearch };
+		enum StartMethodType { None, One, RaySearch, SensitivitySearch, SphereSearch, GivenVector };
 
 		class StartPointCalculatorSettings
 		{
@@ -25,6 +26,7 @@ namespace Deltares
 			}
 
 			std::shared_ptr<StochastSettingsSet> StochastSet = std::make_shared<StochastSettingsSet>();
+			std::vector<double> startVector;
 		};
 	}
 }

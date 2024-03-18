@@ -25,7 +25,6 @@ module basicCorrelationTests
     use ftnunit
     use precision
     use interface_probcalc
-    use performFORMTests
 
     implicit none
 

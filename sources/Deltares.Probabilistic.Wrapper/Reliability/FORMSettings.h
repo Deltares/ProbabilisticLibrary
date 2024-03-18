@@ -55,6 +55,13 @@ namespace Deltares
 					return shared->object->isValid();
 				}
 
+				property bool FilterAtNonConvergence
+				{
+					bool get() { return shared->object->FilterAtNonConvergence; }
+					void set(bool value) { shared->object->FilterAtNonConvergence = value; }
+				}
+
+
 				virtual property Wrappers::RunSettings^ RunSettings
 				{
 					Wrappers::RunSettings^ get() { return runSettings; }

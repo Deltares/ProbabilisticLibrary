@@ -6,6 +6,9 @@ if(WIN32)
   add_subdirectory(Deltares.Probabilistic.Wrapper)
 endif(WIN32)
 
-add_subdirectory(Deltares.Probabilistic.FortranWrapper)
+add_subdirectory(Deltares.Probabilistic.Test)
 
-add_subdirectory(Deltares.Probabilistic.FortranWrapper.Test)
+if(ENABLE_Fortran)
+    add_subdirectory(Deltares.Probabilistic.FortranWrapper)
+    add_subdirectory(Deltares.Probabilistic.FortranWrapper.Test)
+endif()

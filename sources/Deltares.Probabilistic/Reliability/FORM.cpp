@@ -1,3 +1,4 @@
+#include <tuple>
 #include "FORM.h"
 
 #include "StartPointCalculator.h"
@@ -46,7 +47,7 @@ namespace Deltares
 			{
 				modelRunner->clear();
 
-				designPoint = getDesignPoint(modelRunner, startPoint->clone(), relaxationFactor);
+				designPoint = getDesignPoint(modelRunner, startPoint->clone(), relaxationFactor, relaxationIndex);
 
 				if (designPoint->convergenceReport->IsConverged)
 				{
@@ -78,7 +79,8 @@ namespace Deltares
 			return designPoint;
 		}
 
-		std::shared_ptr<DesignPoint> FORM::getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<Sample> startPoint, double relaxationFactor)
+		std::shared_ptr<DesignPoint> FORM::getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<Sample> startPoint,
+			const double relaxationFactor, const int relaxationIndex)
 		{
 			constexpr double minGradientLength = 1E-08;
 
@@ -89,6 +91,7 @@ namespace Deltares
 			// initialization
 			const std::shared_ptr<ConvergenceReport> convergenceReport = std::make_shared<ConvergenceReport>();
 
+			bool isLastRelaxation = (relaxationIndex + 1 == Settings->RelaxationLoops);
 			if (this->Settings->RelaxationLoops > 1)
 			{
 				convergenceReport->RelaxationFactor = relaxationFactor;
@@ -102,6 +105,9 @@ namespace Deltares
 
 			const std::shared_ptr <Models::GradientCalculator> gradientCalculator = std::make_shared<Models::GradientCalculator>();
 			gradientCalculator->Settings = this->Settings->GradientSettings;
+
+			auto lastBetas = std::vector<double>();
+			auto lastSamples = std::vector<std::shared_ptr<Sample>>();
 
 			while (!convergenceReport->IsConverged && iteration < this->Settings->MaximumIterations && !this->isStopped())
 			{
@@ -160,6 +166,21 @@ namespace Deltares
 					beta = z0 / zGradientLength;
 				}
 
+				if (isLastRelaxation && Settings->FilterAtNonConvergence)
+				{
+					if (iteration < histU)
+					{
+						lastSamples.push_back(sample);
+						lastBetas.push_back(beta);
+					}
+					else
+					{
+						int j = iteration % histU;
+						lastSamples[j] = sample;
+						lastBetas[j] = beta;
+					}
+				}
+
 				if (std::abs(beta) >= Statistics::StandardNormal::BetaMax)
 				{
 					modelRunner->reportMessage(Models::MessageType::Error, "No convergence found");
@@ -205,6 +226,10 @@ namespace Deltares
 				iteration++;
 			}
 
+			if (isLastRelaxation && Settings->FilterAtNonConvergence && !convergenceReport->IsConverged)
+			{
+				std::tie(beta, resultSample) = estimateBetaNonConv(lastBetas, lastSamples);
+			}
 			return modelRunner->getDesignPoint(resultSample, beta, convergenceReport);
 		}
 
@@ -253,6 +278,45 @@ namespace Deltares
 
 			return report;
 		}
+
+		std::pair<double, std::shared_ptr<Sample>> FORM::estimateBetaNonConv(const std::vector<double>& lastBetas, const std::vector<std::shared_ptr<Sample>>& last10u)
+		{
+			const size_t nStochasts = last10u[0].get()->getSize();
+			const size_t nIter = last10u.size();
+			double rNIter = 1.0 / (double)nIter;
+			double sumUk = 0.0;
+			auto uk = std::vector<double>(nStochasts);
+			for (size_t k = 0; k < nStochasts; k++)
+			{
+				uk[k] = 0.0;
+				for (size_t iter = 0; iter < nIter; iter++)
+				{
+					uk[k] += last10u[iter].get()->Values[k];
+				}
+				uk[k] *= rNIter;
+				sumUk += pow(uk[k], 2);
+			}
+
+			double meanBeta = 0.0;
+			size_t maxIterations = lastBetas.size();
+			for (size_t iter = 0; iter < nIter; iter++)
+			{
+				meanBeta += lastBetas[iter];
+			}
+			meanBeta *= rNIter;
+
+			double signBeta = (meanBeta > 0.0 ? 1.0 : -1.0);
+			double beta = signBeta * sqrt(sumUk);
+
+			auto alpha = std::make_shared<Sample>(nStochasts);
+
+			for (size_t k = 0; k < nStochasts; k++)
+			{
+				alpha.get()->Values[k] = uk[k];
+			}
+			return { beta, alpha };
+		}
+
 	}
 }
 

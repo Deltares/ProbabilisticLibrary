@@ -34,7 +34,7 @@ std::shared_ptr <Stochast> createDistribution::create(const EnumDistributions di
         break;
     case EnumDistributions::uspace: {
         dist = DistributionType::Normal;
-        std::vector<double> params {1.0, 0.0};
+        std::vector<double> params {0.0, 1.0};
         std::shared_ptr<Stochast> s(new Stochast(dist, params));
         return s; }
         break;

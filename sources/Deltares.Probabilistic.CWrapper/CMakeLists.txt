@@ -1,7 +1,3 @@
-enable_language(C)
-include(FortranCInterface)
-FortranCInterface_VERIFY(CXX)
-
 file(GLOB cwrapper_files
     "*.cpp"
 )
