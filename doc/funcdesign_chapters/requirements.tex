@@ -1,0 +1,213 @@
+\chapter{Requirements}\label{chap_requirements}
+This chapter presents the functional and non-functional requirements for the \probLib. Functional requirements describe specific behaviors: what should the software actually be able to do? Non-functional requirements specify criteria that can be used to judge the operation of a system, rather than specific behaviors.
+
+The functional requirements emerge from \cite{TechRef} and \cite{Vrieling_2017}. Furthermore, the (non-)functional requirements for the \probLib are supplemented with requirements from the functional design of \hr, these are marked with \cite{FuncDesign}. %The latter are marked with [\hrreq].
+
+Before the functional and non-functional requirements are presented in \Sref{Functional_requirements} and \Sref{Non_functional_requirements}, a brief introduction to 'systems' and 'components' is given in \Sref{Section_2.2.1}. Both terms occur frequently in the requirements.
+
+\section{Systems and components}\label{Section_2.2.1}
+The probabilities of failure of the components are combined to derive the probability of failure of the whole system. This is being referred to as system analysis. System analysis generally deals with parallel systems, series systems or combinations of both. A parallel system refers to a system in which failure only occurs if all components fail. A series system refers to a system where failure occurs if at least one of the components fails. This concept is schematically depicted in \Fref{fig:2.1}.
+
+\begin{figure}[H]\centering
+\includegraphics*[width=5.96in, height=1.31in, keepaspectratio=false]{probabilisticLib_funcdesign_chapters/figsystemreliability/image9}
+\caption{Schematic view of a parallel system, series system and a combination of both. Components $1$, 2 and 3 can be viewed as bridges. The systems fails if a passenger can not walk from left to right over the bridges.}\label{fig:2.1}
+\end{figure}
+
+In mathematical descriptions of system analysis, the symbols for 'AND', $~\cap~$, and 'OR', $~\cup~$ are used as follows:
+\begin{itemize}
+\item Parallel system:
+\begin{equation}
+P[\textrm{failure}] = P[\textrm{failure component 1} \cap \textrm{failure component 2}]
+\end{equation}
+\item Series system:
+\begin{equation}
+P[\textrm{failure}] = P[\textrm{failure component 1} \cup \textrm{failure component 2}]
+\end{equation}
+\end{itemize}
+in which $P$ stands for probability. 
+
+\Note{flood risk analysis generally deals with series systems. A system of flood defences protects an area and failure (flooding) occurs if one or more components (flood defences) fails. Nevertheless, parallel (sub)systems can occur as well. For instance the failure mechanism `piping and heave' only occurs if the two submechanisms `piping' and `heave' both occur. }
+
+\section{Functional requirements}\label{Functional_requirements}
+The functional requirements for the \probLib are listed as follows:
+
+%\textbf{\hypertarget{GR12}{GR12}} & The \probLib must work with all well defined limit state functions. A well defined limit state function results in a real value or provides a clear error message when the result is not a number (NaN). In the latter case, the \probLib must also show this error message.\\
+%and stop the computations (a fatal error).\\
+
+\begin{longtable}{p{1.3cm} p{12.55cm}}
+\textbf{\hypertarget{FR1}{FR1}}  & The \probLib must be able to derive the probability of failure of a single component. In the reliability theory, the failure mechanism of a component is defined in terms of a limit state function $Z$, in which the strength of the component $R$ and the imposed load $S$ are compared. Typically: $Z=R-S$. The failure occurs when the load exceeds the strength and hence when $Z<0$. The probability of failure of a single component equals $P(Z<0)$.\\
+
+\textbf{\hypertarget{FR2}{FR2}} &  The \probLib must support a selection of probability distribution functions that can be used to describe the load and strength variables contained in a limit state function. Furthermore, because the reliability computations take place in a standard normal space, the \probLib must support calculations of the \textit{inverse} probability distribution functions. The following probability distribution functions are must-haves:
+\begin{itemize}
+\item [a] deterministic distribution,
+\item [b] uniform distribution,
+\item [c] normal distribution,
+\item [d] shifted log-normal distribution with mean and standard deviation of the actual variable,
+\item [e] Rayleigh-N distribution,
+\item [f] truncated normal distribution,
+\item [g] Gumbel extreme-value type I distribution,
+\item [h] Gumbel extreme-value type I distribution with mean and standard deviation of the actual variable,
+\item [i] Weibull distribution,
+\item [j] Pareto distribution,
+\item [k] four-parameter Beta distribution.
+\end{itemize}
+The following probability distribution functions are nice-to-have:
+\begin{itemize}
+\item [l] shifted log-normal distribution,
+\item [m] shifted exponential distribution,
+\item [n] Rayleigh distribution,
+\item [o] triangular distribution,
+\item [p] conditional Weibull distribution,
+\item [r] modified Gumbel distribution,
+\item [s] truncated modified Gumbel distribution.
+\end{itemize}\\
+
+\textbf{\hypertarget{FR3}{FR3}} & The \probLib must support correlations between stochastic variables contained in one component. The following bi-variate correlation models must be available in the \probLib:
+\begin{itemize}
+\item [a] complete correlation (i.e. fully correlated variables),
+\item [b] PCR correlation model,
+\item [c] Volker correlation model,
+\item [d] HES correlation model,
+\item [e] Gaussian correlation model.
+\end{itemize}
+Besides these models, the \probLib must include the Gaussian copula model for $\geq 2$ variables.\\
+
+\textbf{\hypertarget{FR4}{FR4}}  & The \probLib must offer a variety of calculation techniques that approximate $P(Z<0)$: 
+\begin{itemize}
+\item [a] method FORM (First Order Reliability Method),
+\item [b] method CRMC (Crude Monte Carlo),
+\item [c] method DIRS (Directional Sampling),
+\item [d] method NINT (Numerical Integration),
+\item [e] method IMPS (Importance Sampling).
+\end{itemize}\\
+
+\textbf{\hypertarget{FR5}{FR5}} & The \probLib must support the following hybrid calculation techniques: 
+\begin{itemize}
+\item [a] method FDIR: FORM to compute the failure probability and DIRS in case of no convergence of FORM,
+\item [b] method DSFI: DIRS to compute the failure probability and FORM to compute the design point,
+\item [c] method CMFI: CRMC to compute the failure probability and FORM to compute the design point,
+\item [d] method ISFI: IMPS to compute the failure probability and FORM to compute the design point,
+\item [e] method FDSFI: FORM to compute the failure probability and DSFI in case of no convergence of FORM,
+\item [f] method DSFIU: DIRS to compute the failure probability and FORM to compute the design point, FORM starts with an $u$-vector corresponding with the highest contribution to $\beta$ in DIRS and with $Z=0$,
+\item [g] method FDSFIU: FORM to compute the failure probability and DSFIU in case of no convergence of FORM,
+\item [h] method AMCIS (Adaptive Importance Sampling): first loops to improve the start point and then IMPS with the last found start point.
+\end{itemize}\\
+
+\textbf{\hypertarget{FR6}{FR6}} & For calculation techniques FORM and Directional Sampling, the \probLib must provide information on convergence such that the user can judge on the reliability of the results. \\
+
+\textbf{\hypertarget{FR7}{FR7}} & The \probLib must support the following methods for initialization of the $u$-vector in case of FORM calculation technique:
+\begin{itemize}
+\item [a] all values are equal to zero,
+\item [b] all values are equal to one,
+\item [c] user defined,
+\item [d] method: ray search,
+\item [e] method: sphere search.
+\end{itemize}\\
+
+\textbf{\hypertarget{FR8}{FR8}}  & The \probLib must support the standard reliability outputs: 
+\begin{itemize}
+\item [a] Reliability index ($\beta$), which is a measure for reliability of a component/system.
+\item [b] Set of influence coefficients for stochastic variables ($\alpha$-values).  An $\alpha$-value of a stochastic variable constitutes a measure of the sensitivity of the reliability index $\beta$ to changes in the mean value of the variable in the standard normal space.
+\item [c] Design point ($x$-values), which gives values of the stochastic variables with the highest probability of occurrence on the $Z=0$ line.
+\end{itemize}\\
+
+\textbf{\hypertarget{FR9}{FR9}} & The \probLib must support the following conversions:
+\begin{itemize}
+\item [a] reliability index to the probability of failure and non-failure,
+\item [b] reliability index to the return period,
+\item [c] reliability index to the frequency,
+\item [d] reliability index to the (negative) logarithm of the non-failure probability,
+\item [e] probability of failure to the reliability index.
+\end{itemize}\\
+
+\textbf{\hypertarget{FR10}{FR10}} & All computations of the \probLib must be performed in double precision.\\
+
+\textbf{\hypertarget{FR11}{FR11}} & The \probLib must calculate the probability of failure of a system consisting of two components. Here two system-types must be considered:
+\begin{itemize}
+\item \textit{A series system}: the system fails when at least one of the two components fails. The probability of failure is then defined as follows:
+\begin{equation}
+P(Z_1<0 \mbox{ OR } Z_2<0)
+\end{equation}
+\item \textit{A parallel system}: the system fails when both components fail. The probability of failure is then defined as follows:
+\begin{equation}
+P(Z_1<0 \mbox{ AND } Z_2<0)
+\end{equation}
+\end{itemize}
+where $Z_i$ is the limit stat function of component $i$ ($i=1,2$). The \probLib must be able to deal with stochastic variables from different components being mutually correlated.
+
+\Note{The above requirement is actually the basis for calculation of the failure probability of a system consisting of more than two components e.g. $P([Z_1<0 \mbox{ AND } Z_2<0] \mbox{ OR } Z_3<0)$. For instance, it is needed to perform a fault tree analysis\footnote{A failure mechanism can be so complex that a fault tree is needed to describe the failure. In the fault tree, different sub-mechanisms are contained (each sub-mechanism is described by its own limit state function) and interconnected with AND- or OR-ports.  For example, the dike failure mechanism ''piping'' only occurs if the tree sub-mechanisms ''uplift'', ''heave'' and ''internal erosion'' occur (i.e. AND-port).}.}\\
+
+\textbf{\hypertarget{FR12}{FR12}} & The \probLib must support the following statistical upscaling techniques:
+\begin{itemize}
+ \item [a] numerical integration of identical elements that are correlated in space,
+ \item [b] numerical integration of identical elements that are correlated in time.
+\end{itemize}\\
+
+\textbf{\hypertarget{FR13}{FR13}} & The \probLib must derive the probability of failure of a system consisting of $n>2$ components. Here two system-types must be considered:
+\begin{itemize}
+\item \textit{A series system}: the system fails when at least one of the components fails. The probability of failure is then defined as follows:
+\begin{equation}
+P(Z_1<0 \mbox{ OR } Z_2<0 ...  \mbox{ OR } Z_n<0)
+\end{equation}
+\item \textit{A parallel system}: the system fails when all components fail. The probability of failure is then defined as follows:
+\begin{equation}
+P(Z_1<0 \mbox{ AND } Z_2<0 ...  \mbox{ AND } Z_n<0)
+\end{equation}
+\end{itemize}
+where $Z_i$ is the limit state function of component $i$ ($i=1,...,n$). The \probLib must be able to deal with stochastic variables of different components being mutually correlated.
+
+A nice-to-have functionality of the \probLib is the derivation of the probability of failure of a system consisting of $n>2$ components that are interconnected with AND- or OR-ports in a random order. \\
+
+\textbf{\hypertarget{FR14}{FR14}} & To facilitate combination of different scenarios, the \probLib must be able to derive the following failure probability:
+\begin{equation}
+P(Z<0)=\sum_{i=1}^{n}P(Z<0 | S_i)\cdot P(S_i)
+\end{equation}
+where $Z$ is the limit state function and $S_i$ ($i=1,...,n$) is a scenario with probability $P(S_i)$ such that $\sum_{i=1}^{n}P(S_i)=1$.\\ 
+
+\textbf{\hypertarget{FR15}{FR15}} & Computations with the \probLib must not result in errors without error messages:
+\begin{itemize}
+\item [a] The error messages should clearly indicate what went wrong and what can be done about it (at the very least a suggestion). \cite{FuncDesign}
+\item [b] The software architecture should not impede potential future support of multi-language log messaging. That means that such a requirement does not impose the necessity to redesign the software architecture. \cite{FuncDesign}
+\end{itemize}\\
+
+\textbf{\hypertarget{FR16}{FR16}} & The elapsed time of computations with the \probLib should be reduced as far as possible:
+\begin{itemize}
+\item [a] Parallel computing must be possible. Parallel computing means that we can take advantage of the multiple processors in current PC’s to increase the speed of the
+computations. \cite{FuncDesign}
+\item [b] The \probLib should be thread safe\footnote{See: \url{https://en.wikipedia.org/wiki/Thread_safety}}.
+\end{itemize}\\
+\end{longtable}
+
+\newpage
+\section{Non-functional requirements}\label{Non_functional_requirements}
+The non-functional requirements are listed as follows:
+
+\begin{longtable}{p{1.3cm} p{12.55cm}}
+\textbf{\hypertarget{NFR1}{NFR1}} & The \probLib must be tested using the V-model. In particular, the unit and integration tests apply to the \probLib. The purpose of the unit tests is to check the correct operation of each part. The integration tests have as objective to check that the combination of the various parts functions correctly. \cite{FuncDesign}\\
+
+\textbf{\hypertarget{NFR2}{NFR2}} & At least 80\% of the code must be covered by the unit tests. \cite{FuncDesign}\\
+
+\textbf{\hypertarget{NFR3}{NFR3}} & The applicability, robustness and performance of the \probLib under representative and complex practical circumstances must be proven. \cite{FuncDesign}\\
+
+\textbf{\hypertarget{NFR4}{NFR4}} & The \probLib should be supplemented with necessary documentation. These are: functional design, technical design, test plan, test rapport and tutorials. These documents must be written in English.\\
+
+\textbf{\hypertarget{NFR5}{NFR5}} & The following guidelines and standards for coding must be used:
+\begin{itemize}
+\item C\#: Microsoft guidelines (see \cite{CodeStandardsC}),
+\item Fortran: Deltares Guidelines (see \cite{CodeStandardsFortran}). 
+\end{itemize}
+\cite{FuncDesign}\\
+
+\textbf{\hypertarget{NFR6}{NFR6}} & A number of external products must be used to facilitate the implementation, building and testing of the \probLib. Notably, this includes the use of \textit{Subversion} as the tool for version control and \textit{TeamCity} as a tool supporting Continuous Integration (build and test). \cite{FuncDesign}\\
+
+\textbf{\hypertarget{NFR7}{NFR7}} & Modularity, allowing for the reusing, replacement or addition of different components with low effort (easy maintenance). \cite{FuncDesign}\\
+
+\textbf{\hypertarget{NFR8}{NFR8}} & Efficient internal data structures and data-access, in order to minimize IO. \cite{FuncDesign}\\
+
+\textbf{\hypertarget{NFR9}{NFR9}} & High degree of error checking and intelligent error handling: both on input level and on computational level. \cite{FuncDesign}\\
+
+\textbf{\hypertarget{NFR10}{NFR10}} & The \probLib must be testable, which means that every algorithm of the library must perform a single clearly defined task and has clear input and output. \cite{FuncDesign}\\
+
+\textbf{\hypertarget{NFR11}{NFR11}} & The software must run in Microsoft Windows - 64 bit (version 10) environment.\\
+
+\end{longtable}
