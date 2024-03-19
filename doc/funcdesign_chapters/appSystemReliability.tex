@@ -32,7 +32,7 @@ Z=R-S=h_{levee} -h_{river}\label{eq:2-3}
 \end{equation}
 
 \begin{figure}[H]\centering
-\includegraphics*[width=5.05in, height=2.74in, keepaspectratio=false]{probabilisticLib_funcdesign_chapters/figsystemreliability/image10}
+\includegraphics*[width=5.05in, height=2.74in, keepaspectratio=false]{funcdesign_chapters/figsystemreliability/image10}
 \caption{Illustration of a river levee exposed to the threat of overflow.}\label{fig:2.2}
 \end{figure}
 
@@ -68,7 +68,7 @@ P\left(U_{i} \le u_{i} \right)=P\left(X\le x_{i} \right)  \label{eq:2-6}
 The concept of this transformation is schematically depicted in \Fref{fig:2.3}. 
 
 \begin{figure}[H]\centering
-\includegraphics[width=0.6\columnwidth]{probabilisticLib_funcdesign_chapters/figsystemreliability/image11}
+\includegraphics[width=0.6\columnwidth]{funcdesign_chapters/figsystemreliability/image11}
 \caption{Schematic view of the transformation between standard normal variable $u_i$ and real world variable $X$ by means of equal probability of (non-)exceedance.}\label{fig:2.3}
 \end{figure}
 
@@ -99,7 +99,7 @@ where $G$ is a deterministic function, $F_2$ a probability distribution function
 \end{equation}
 
 \begin{figure}[H]\centering
-\includegraphics*[width=3.56in, height=2.83in, keepaspectratio=false]{probabilisticLib_funcdesign_chapters/figsystemreliability/image12}
+\includegraphics*[width=3.56in, height=2.83in, keepaspectratio=false]{funcdesign_chapters/figsystemreliability/image12}
 \caption{Schematic view of correlated variables $x_1$ and $x_2$}\label{fig:2.4}
 \end{figure}
 
@@ -121,7 +121,7 @@ where $\Phi$ is the standard normal distribution function. Based on this equatio
 \end{equation}
 
 \begin{figure}[H]\centering
-\includegraphics*[width=5.29in, height=3.94in, keepaspectratio=false]{probabilisticLib_funcdesign_chapters/figsystemreliability/image13}
+\includegraphics*[width=5.29in, height=3.94in, keepaspectratio=false]{funcdesign_chapters/figsystemreliability/image13}
 \caption{Example of normally distributed $S$, $R$ and $Z$ functions with $\mu_R=2$, $\mu_S=6$, $\sigma_R=1$, $\sigma_S=1$, $\mu_Z= 4$ and $\sigma_Z=\surd2$.}\label{fig:2.5}
 \end{figure}
 
@@ -136,7 +136,7 @@ Or inversely:
 \end{equation}
 
 \begin{figure}[H]\centering
-\includegraphics*[width=4.35in, height=3.27in, keepaspectratio=false]{probabilisticLib_funcdesign_chapters/figsystemreliability/image14}
+\includegraphics*[width=4.35in, height=3.27in, keepaspectratio=false]{funcdesign_chapters/figsystemreliability/image14}
 \caption{Schematic view of the relation between the reliability index $\beta$ and the probability of failure, $P[Z<0]$. Z is normally distributed with mean $\beta$ and standard deviation 1}\label{fig:2.6}
 \end{figure}
 
@@ -178,12 +178,12 @@ A_{i} =\frac{\partial {Z}}{\partial u_{{\rm i}} } \left(u_{d} \right)\quad ;i=1.
 This linearisation process is depicted in \Fref{fig:2.7} and \Fref{fig:2.8}.
 
 \begin{figure}[H]\centering
-\includegraphics*[width=5.42in, height=4.06in, keepaspectratio=false]{probabilisticLib_funcdesign_chapters/figsystemreliability/image15}
+\includegraphics*[width=5.42in, height=4.06in, keepaspectratio=false]{funcdesign_chapters/figsystemreliability/image15}
 \caption{Example of function $Z(U_1, U_2)$}\label{fig:2.7}
 \end{figure}
 
 \begin{figure}[H]\centering
-\includegraphics*[width=5.25in, height=3.94in, keepaspectratio=false]{probabilisticLib_funcdesign_chapters/figsystemreliability/image16}
+\includegraphics*[width=5.25in, height=3.94in, keepaspectratio=false]{funcdesign_chapters/figsystemreliability/image16}
 \caption{Linearisation of the $Z$-function (dark red plane) of the $Z$-function of \Fref{fig:2.7} in a selected location (white dot). }\label{fig:2.8}
 \end{figure}
 
@@ -285,7 +285,7 @@ $m_k$ & = & Upper bound of $k$ such that $x_{0,k}$+ $m_k$$\Delta$$x_k$ is the up
 In equation \eqref{eq:2-30}, for each variable $X_k$ an equidistant grid with step size $\Delta$$x_k$ is used, but non-equidistant grids can also be used in numerical integration. \Fref{fig:2.9} presents a schematic view of the method, for an example of two random variables $X_1$ and $X_2$. A 2-dimensional grid is defined and the $Z$-function is evaluated at the centre of the grid cells. Red grid points indicate failure $(Z<0)$, green grid points indicate no failure ($Z\geq0$). The total probability of failure (see equation \eqref{eq:2-30}) is estimated as follows: multiply the probability density of the grid cells in the failure domain (red dots) with the size of the grid cells ($\Delta$$x_1$ $\times$ $\Delta$$x_2$) and take the sum of these probabilities.
 
 \begin{figure}[H]\centering
-\includegraphics*[width=4.75in, height=3.56in, keepaspectratio=false]{probabilisticLib_funcdesign_chapters/figsystemreliability/image17}
+\includegraphics*[width=4.75in, height=3.56in, keepaspectratio=false]{funcdesign_chapters/figsystemreliability/image17}
 \caption{Schematic view of the method of numerical integration for an example of two random variables. A 2-dimensional grid is defined and the $Z$-function is evaluated at the centre of the grid cells. Red grid points indicate failure $(Z<0)$, green grid point indicate no failure ($Z\geq0$).}\label{fig:2.9}
 \end{figure}
 
@@ -317,7 +317,7 @@ Crude Monte Carlo sampling refers to the repeated sampling of the variables from
 where $I$ is the indicator function, which is equal to unity when $Z<0$, equal to zero when $Z\geq0$. \Fref{fig:2.10} shows a schematic view of the procedure for an example with two random variables $X_1$ and $X_2$. Each dot represents a sampled pair ($x_1$, $x_2$). Red grid points indicate failure $(Z<0)$, green grid point indicate no failure ($Z\geq0$). The estimated probability of failure is equal to the number of the red dots divided by the total number of dots.
 
 \begin{figure}[H]\centering
-\includegraphics*[width=4.07in, height=3.05in, keepaspectratio=false]{probabilisticLib_funcdesign_chapters/figsystemreliability/image18}
+\includegraphics*[width=4.07in, height=3.05in, keepaspectratio=false]{funcdesign_chapters/figsystemreliability/image18}
 \caption{Schematic view of Monte Carlo sampling for an example with two random variables. Each dot represents a sampled pair ($x_1$, $x_2$). Red dots indicate failure $(Z<0)$, green dots indicate no failure ($Z\geq0$).}\label{fig:2.10}
 \end{figure}
 
@@ -328,7 +328,7 @@ P_{k} =\Phi \left(k\right)-\Phi \left(-k\right)\quad ;k>0. \label{eq:2-33}
 where $\Phi$ represents the standard normal distribution function, and $k$ represents a sort of reliability index that the error is within the accepted range. The relation between $k$ and $P_k$ is schematically depicted in \Fref{fig:2.11}.
 
 \begin{figure}[H]\centering
-\includegraphics*[width=4.02in, height=3.02in, keepaspectratio=false]{probabilisticLib_funcdesign_chapters/figsystemreliability/image19}
+\includegraphics*[width=4.02in, height=3.02in, keepaspectratio=false]{funcdesign_chapters/figsystemreliability/image19}
 \caption{Relation between $k$ and $P_k$ according to equation \eqref{eq:2-34}. Function $\phi$ is the standard normal density function}\label{fig:2.11}
 \end{figure}
 
@@ -369,7 +369,7 @@ Importance sampling is a method to increase the efficiency of the crude Monte Ca
 There are a number of ways in which importance sampling can be applied; two of these are described in this section. The first increases the variance of the density function, resulting in a higher likelihood that failure events are sampled. The second essentially shifts the density function towards the failure domain so that, again, the likelihood of a failure sample increases. These two methods are illustrated in \Fref{fig:2.12}; the left-hand side illustrates the concept of a shifting of the density function, and the right-hand side illustrates the concept of increased variance. 
 
 \begin{figure}[H]\centering
-\includegraphics*[width=2.30in, height=3.07in, keepaspectratio=false]{probabilisticLib_funcdesign_chapters/figsystemreliability/image20} \includegraphics*[width=3.06in, height=3.01in, keepaspectratio=false]{probabilisticLib_funcdesign_chapters/figsystemreliability/image21} 
+\includegraphics*[width=2.30in, height=3.07in, keepaspectratio=false]{funcdesign_chapters/figsystemreliability/image20} \includegraphics*[width=3.06in, height=3.01in, keepaspectratio=false]{funcdesign_chapters/figsystemreliability/image21} 
 \caption{Concept of importance sampling; left shows the concept of density shifting, right shows the concept of increased variance. The limit state function (LSF) is illustrated. Note that the LSF's are linear in this figure, but this is by no means a requirement for the applicability of importance sampling.}\label{fig:2.12}
 \end{figure}
 
@@ -417,7 +417,7 @@ Adaptive Importance Sampling is an improvement of the Importance Sampling method
 The algorithm of the Adaptive Importance Sampling is presented in \Fref{AdaptiveImportanceSampling}.
 
 \begin{figure}[H]\centering
-\includegraphics[width=\textwidth]{probabilisticLib_funcdesign_chapters/figsystemreliability/AdaptiveImportanceSampling.png}
+\includegraphics[width=\textwidth]{funcdesign_chapters/figsystemreliability/AdaptiveImportanceSampling.png}
 \caption{The algorithm of Adaptive Importance Sampling.}\label{AdaptiveImportanceSampling}
 \end{figure}
 
@@ -455,7 +455,7 @@ P_{i} = 1-\chi _{n}^{2} \left(\lambda _{i}^{2} \right)
 
 
 \begin{figure}[H]\centering
-\includegraphics[scale=1]{probabilisticLib_funcdesign_chapters/figsystemreliability/directionalSampling_basicConcept}
+\includegraphics[scale=1]{funcdesign_chapters/figsystemreliability/directionalSampling_basicConcept}
 \caption{Schematic view of the directional sampling method in the standard normal space. The distances $\lambda_i$ to the limit state ($Z=0$)  are shown for unit-length directional vectors $\theta_i$ for three directional samples ($i = 1,2,3$). }\label{fig:2.13}
 \end{figure}
 
@@ -473,7 +473,7 @@ There are two search procedures in the \probLib to find $\lambda_i$, the distanc
 
 \begin{figure}[H]
 \centering 
-\includegraphics[scale=1]{probabilisticLib_funcdesign_chapters/figsystemreliability/directionalSampling_currentMethodZ}
+\includegraphics[scale=1]{funcdesign_chapters/figsystemreliability/directionalSampling_currentMethodZ}
 %\includegraphics[scale = 1]{figs/u1prime_distribution_revised}
   	\caption{Method 1 to determine $\lambda_i$, the distance to the limit state $Z=0$ for the $i^{th}$ sampled direction.}
   	\label{fig:DS_Z}
@@ -492,7 +492,7 @@ $\lambda^k_i > \lambda_{max}$ (default is $\lambda_{max}=20$), at which point $\
 
 \begin{figure}[H]
 \centering 
-\includegraphics[scale=1]{probabilisticLib_funcdesign_chapters/figsystemreliability/directionalSampling_newMethodOnly.pdf}
+\includegraphics[scale=1]{funcdesign_chapters/figsystemreliability/directionalSampling_newMethodOnly.pdf}
 %\includegraphics[scale = 1]{figs/u1prime_distribution_revised}
   	\caption{Method 2 (gradient-based) to determine $\lambda_i$, the distance to the limit state $Z=0$ for the $i^{th}$ sampled direction.}
   	\label{fig:DS_Z_new}
@@ -506,7 +506,7 @@ The term first-order refers to the linearisation of the limit state function, as
 The FORM procedure is generally executed in the standard normal space ($U$-variables). The standard normally distributed variables have by definition a mean value of zero and a standard deviation of $1$, and are mutually independent. The advantage of working in the standard normal space is that in this space the design point has a clear interpretation. Namely, in the standard normal space, the design point is the location along the limit state $(Z~=~0)$ which is closest to the origin (see \Fref{fig:2.15} for an illustration). This can be easily explained by the fact that for standard normally distributed variables the density is highest for $u=0$ and decreases with increasing value of \textbar $u$\textbar . So in the u space the density decreases with increasing distance from the origin. Therefore, the design point is the point along the limit state that is closest to the origin.
 
 \begin{figure}[H]\centering
-\includegraphics*[width=4.59in, height=3.26in, keepaspectratio=false]{probabilisticLib_funcdesign_chapters/figsystemreliability/image24}
+\includegraphics*[width=4.59in, height=3.26in, keepaspectratio=false]{funcdesign_chapters/figsystemreliability/image24}
 \caption{Illustration of the design point in the $U$-space}\label{fig:2.15}
 \end{figure}
 
@@ -515,7 +515,7 @@ The distance from the origin to the design point is equal to the reliability ind
 The reason why FORM in general provides good estimates of the failure probability is the fact that the linearisation is done in the design point, which means in the vicinity of the design point the linear $Z$-function is a good approximation of the real $Z$-function. The design point is the location on the limit state with the highest probability density. This means the failure events with the highest probability of occurrence will generally be in the vicinity of the design point. So, the linearised $Z$-function is generally a good approximation for the areas that matter the most in terms of probability of failure.
 
 \begin{figure}[H]\centering
-\includegraphics*[width=3.88in, height=2.78in, keepaspectratio=false]{probabilisticLib_funcdesign_chapters/figsystemreliability/image25}
+\includegraphics*[width=3.88in, height=2.78in, keepaspectratio=false]{funcdesign_chapters/figsystemreliability/image25}
 \caption{Illustration of the FORM approximation}\label{fig:2.16}
 \end{figure}
 
@@ -657,37 +657,37 @@ Criterion \eqref{eq:2-57} guarantees that the $Z$-function is sufficiently close
 \end{itemize} It has been shown that the above correction leads to more stable results.}
 
 \begin{figure}[H]\centering
-\includegraphics[width=0.8\columnwidth]{probabilisticLib_funcdesign_chapters/figsystemreliability/image26}
+\includegraphics[width=0.8\columnwidth]{funcdesign_chapters/figsystemreliability/image26}
 \caption{Contour lines of the example $Z$-function and the starting location (red dot) of the FORM procedure}\label{fig:2.17}
 \end{figure}
 
 \begin{figure}[H]\centering
-\includegraphics[width=0.8\columnwidth]{probabilisticLib_funcdesign_chapters/figsystemreliability/image27}
+\includegraphics[width=0.8\columnwidth]{funcdesign_chapters/figsystemreliability/image27}
 \caption{Sampling the $Z$-function in all directions to estimate the derivative of $Z$ to all $u$-variables.}\label{fig:2.18}
 \end{figure}
 
 \begin{figure}[H]\centering
-\includegraphics[width=0.8\columnwidth]{probabilisticLib_funcdesign_chapters/figsystemreliability/image28}
+\includegraphics[width=0.8\columnwidth]{funcdesign_chapters/figsystemreliability/image28}
 \caption{Contour lines of the linearised $Z$-function}\label{fig:2.19}
 \end{figure}
 
 \begin{figure}[H]\centering
-\includegraphics[width=0.8\columnwidth]{probabilisticLib_funcdesign_chapters/figsystemreliability/image29}
+\includegraphics[width=0.8\columnwidth]{funcdesign_chapters/figsystemreliability/image29}
 \caption{Contour lines of the normalised linearised $Z$-function}\label{fig:2.20}
 \end{figure}
 
 \begin{figure}[H]\centering
-\includegraphics[width=0.8\columnwidth]{probabilisticLib_funcdesign_chapters/figsystemreliability/image30}
+\includegraphics[width=0.8\columnwidth]{funcdesign_chapters/figsystemreliability/image30}
 \caption{Estimated location of the design point based on the normalised linearised $Z$-function }\label{fig:2.21}
 \end{figure}
 
 \begin{figure}[H]\centering
-\includegraphics[width=0.8\columnwidth]{probabilisticLib_funcdesign_chapters/figsystemreliability/image31}
+\includegraphics[width=0.8\columnwidth]{funcdesign_chapters/figsystemreliability/image31}
 \caption{Proces of relaxation. The red dot is the location of the current iteration step, the yellow dot is the estimated location of the design point based on the normalised linearised $Z$-function. The green dot shows the selected location of the next iteration, which is somewhere on the line between the red dot and the yellow dot.}\label{fig:2.22}
 \end{figure}
 
 \begin{figure}[H]\centering
-\includegraphics[width=0.8\columnwidth]{probabilisticLib_funcdesign_chapters/figsystemreliability/image32}
+\includegraphics[width=0.8\columnwidth]{funcdesign_chapters/figsystemreliability/image32}
 \caption{Resulting steps in the iteration procedure.}\label{fig:2.23}
 \end{figure}
 
@@ -717,7 +717,7 @@ where $u_{ij}$ is the $i^{th}$ failure sample of the $j^{th}$ random variable. T
 From the estimated centre of gravity this location a line is drawn towards the origin in the $U$-space (see \Fref{fig:2.24}). The location where this line crosses the limit state  $(Z~=~0)$, is the estimated location of the design point. This guarantees that the first characteristic of the design point, i.e. that it is located on the limit state $Z=0$, is taken care of. The second characteristic, that it is the location on the limit state with the highest density is not guaranteed. However, the use of the centre of gravity makes that the estimated location of the design point is likely to be close to the real design point. The likelihood increases with increasing number of samples.
 
 \begin{figure}[H]\centering
-\includegraphics*[width=3.27in, height=2.62in, keepaspectratio=false]{probabilisticLib_funcdesign_chapters/figsystemreliability/image33}
+\includegraphics*[width=3.27in, height=2.62in, keepaspectratio=false]{funcdesign_chapters/figsystemreliability/image33}
 \caption{Schematic view of the method centre of gravity.}\label{fig:2.24}
 \end{figure}
 
@@ -794,7 +794,7 @@ P(F)=P\left(Z_{1} <0 \cap  Z_{2} <0\right)  \label{eq:2-67}
 A parallel system and the schematization of the associated failure probability $P(Z_1<0~\cap~Z_2<0)$ is schematically depicted in \Fref{fig:2.25} below. 
 
 \begin{figure}[H]\centering
-\includegraphics*[width=4.08in, height=3.44in, keepaspectratio=false]{probabilisticLib_funcdesign_chapters/figsystemreliability/image34}
+\includegraphics*[width=4.08in, height=3.44in, keepaspectratio=false]{funcdesign_chapters/figsystemreliability/image34}
 \caption{ Failure domain for a parallel system of two components -- the shaded area indicates the combinations of $Z$-values thatwill lead to failure of the system.}\label{fig:2.25}
 \end{figure}
 
@@ -920,7 +920,7 @@ Z_{2} =\beta _{2} -\rho U_{1} -U_{2}^{*} \sqrt{1-\rho ^{2} } \label{ZEqnNum22931
 This expression represents a line in the $Z_2=0$ plane. The hatched area in \Fref{fig:2.26} indicates the area in the $U$-space that contributes to the failure probability 
 
 \begin{figure}[H]\centering
-\includegraphics*[width=4.86in, height=3.66in, keepaspectratio=false]{probabilisticLib_funcdesign_chapters/figsystemreliability/image35}
+\includegraphics*[width=4.86in, height=3.66in, keepaspectratio=false]{funcdesign_chapters/figsystemreliability/image35}
 \caption{ The $Z_1 = 0$ and $Z_2=0$ contours in the $U$-space; hatched area indicates the area that contributes to the failure probability.}\label{fig:2.26}
 \end{figure}
 
@@ -1051,7 +1051,7 @@ $Z_2$ & $-1$ & $-2$ & $6$ & $-0.45$ & $-0.89$ & $2.68$ \\ \hline
 \end{longtable}
 
 \begin{figure}[H]\centering
-\includegraphics*[width=4.70in, height=3.53in, keepaspectratio=false]{probabilisticLib_funcdesign_chapters/figsystemreliability/image36}
+\includegraphics*[width=4.70in, height=3.53in, keepaspectratio=false]{funcdesign_chapters/figsystemreliability/image36}
 \caption{Replacement of ''$Z_1<0$ $U$ $Z_2$ $<$ 0'' with ''$Z^e$ $<$ 0''. Failure domains of the three $Z$-functions are on the upper right side of the respective lines.}\label{fig:2.27}
 \end{figure}
 
@@ -1223,7 +1223,7 @@ $Z_3$ & $-1$ & $0$ & $2.5$ \\ \hline
 \end{longtable}
 
 \begin{figure}[H]\centering
-\includegraphics*[width=4.41in, height=3.31in, keepaspectratio=false]{probabilisticLib_funcdesign_chapters/figsystemreliability/image37}
+\includegraphics*[width=4.41in, height=3.31in, keepaspectratio=false]{funcdesign_chapters/figsystemreliability/image37}
 \caption{Functions $Z_1$, $Z_2$ and $Z_3$ of the current example}\label{fig:2.28}
 \end{figure}
 
@@ -1247,19 +1247,19 @@ If we combine $Z_1$ and $Z_3$ first with the Hohenbichler method, the exact same
 \Fref{fig:2.30} shows the equivalent function, $Z^e$ of $Z_1$$~\cup~$$Z_2$. Clearly, this function is a compromise between $Z_1<0$$~\cup~$$Z_2$$<0$ and it is clear why this introduces some errors after combining with function $Z_3$$<$0 (for instance because $Z_3$ now defines part of the failure domain, whereas in the original problem statement it was redundant). 
 
 \begin{figure}[H]\centering
-\includegraphics*[width=4.63in, height=3.47in, keepaspectratio=false]{probabilisticLib_funcdesign_chapters/figsystemreliability/image38}
+\includegraphics*[width=4.63in, height=3.47in, keepaspectratio=false]{funcdesign_chapters/figsystemreliability/image38}
 \caption{Function $Z_2$ and the equivalent $Z$-function of $Z_1$$~\cup~$$Z_3$.}\label{fig:2.29}
 \end{figure}
 
 \begin{figure}[H]\centering
-\includegraphics*[width=4.15in, height=3.11in, keepaspectratio=false]{probabilisticLib_funcdesign_chapters/figsystemreliability/image39}
+\includegraphics*[width=4.15in, height=3.11in, keepaspectratio=false]{funcdesign_chapters/figsystemreliability/image39}
 \caption{Functions $Z_1$=0, $Z_2$ =0 and the equivalent $Z$-function of $Z_1<0$$~\cup~$$Z_2$$<$0.}\label{fig:2.30}
 \end{figure}
 
 \Fref{fig:2.31} helps illustrate the concept of combining components with the largest mutual correlation, with an example. Shown are four components with reliability functions $Z_1$, $Z_2$, $Z_3$, and $Z_4$. Let functions $Z_1$ and $Z_2$ be the most strongly correlated. These two components are then first combined and replaced by the equivalent reliability function $Z_2^e$. For the three remaining components, the correlations between them are again computed. Consider the case where $Z_3$ and $Z_4$ are now the most correlated; the following step will be the combination of $Z_3$ and $Z_4$, resulting in the equivalent reliability function $Z_4^e$. The final step is the combination of $Z_2^e$ and $Z_4^e$. 
 
 \begin{figure}[H]\centering
-\includegraphics*[width=3.41in, height=1.83in, keepaspectratio=false]{probabilisticLib_funcdesign_chapters/figsystemreliability/image40}
+\includegraphics*[width=3.41in, height=1.83in, keepaspectratio=false]{funcdesign_chapters/figsystemreliability/image40}
 \caption{Example of combining failure probabilities over four components}\label{fig:2.31}
 \end{figure}
 
@@ -1540,7 +1540,7 @@ In this section, aspects of upscaling in time and space are addressed.
 The techniques described in the previous sections all deal with system analysis of a discrete number of components which may represent dike sections, wind directions, etc. In some applications, however, $Z$ is a function of space and time, which means in principle the number of components is infinite. This is schematically depicted in \Fref{fig:2.32}. In the left panel, $Z$ is a time-dependent function and failure potentially can occur at any time. On the right, $Z$ is a function of space, and failure can occur at any location.
 
 \begin{figure}[H]\centering
-\includegraphics*[width=5.93in, height=1.58in, keepaspectratio=false]{probabilisticLib_funcdesign_chapters/figsystemreliability/image41}
+\includegraphics*[width=5.93in, height=1.58in, keepaspectratio=false]{funcdesign_chapters/figsystemreliability/image41}
 \caption{Stochastic variation of the $Z$-function in time (left) and space (right)}\label{fig:2.32}
 \end{figure}
 
@@ -1589,7 +1589,7 @@ P\left[\begin{array}{c} {\min } \\ {t\in \left(0,T\right]} \end{array} \left\{Z(
 Note that this probability of failure is described by an exponential distribution function. The exponential distribution is by definition the distribution which describes failure probabilities for processes with a constant failure rate (see e.g. \cite{GrimmettStirzaker1983}). \Fref{fig:2.33} shows an example of an exponential distribution function. In this figure the failure rate, $\nu$, is taken equal to $1$, which makes this a standard exponential distribution function. 
 
 \begin{figure}[H]\centering
-\includegraphics*[width=4.45in, height=3.34in, keepaspectratio=false]{probabilisticLib_funcdesign_chapters/figsystemreliability/image42}
+\includegraphics*[width=4.45in, height=3.34in, keepaspectratio=false]{funcdesign_chapters/figsystemreliability/image42}
 \caption{Standard exponential distribution function:  $F(T) = 1-exp(-T)$.}\label{fig:2.33}
 \end{figure}
 
@@ -1647,7 +1647,7 @@ where $P_{f,segment}$ refers to the failure probability of the longitudinal segm
 where $\rho$ is the correlation between two locations within the segment ($\rho \geqslant 0$), $\Delta_y$ is the distance between these two locations, $\rho_x$ is the residual correlation length of variable $X$ and $d_x$ is the spatial correlation length of variable $X$. Parameter $d_x$ determines how quickly the correlation of variable $X$ decreases over distance and $\rho_x$ is the minimum correlation of variable $X$ between two locations of the same (homogeneous) segment. The parameters $d_x$ and $\rho_x$ need to be determined for each variable $X$, based on a combination of measurements and expert judgement.
 
 \begin{figure}[H]\centering
-\includegraphics*[width=4.09in, height=3.06in, keepaspectratio=false]{probabilisticLib_funcdesign_chapters/figsystemreliability/image52}
+\includegraphics*[width=4.09in, height=3.06in, keepaspectratio=false]{funcdesign_chapters/figsystemreliability/image52}
 \caption{Autocorrelation function, correlation within a dike section; in this picture, the correlation $\rho$ is visualized against $\Delta x$, made non-dimensional by the correlation distance $d_x$.}\label{fig:2.40}
 \end{figure}
 

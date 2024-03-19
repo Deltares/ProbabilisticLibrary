@@ -6,7 +6,7 @@ In \Aref{Section_3.3} the procedure for applying statistical distribution functi
 The general approach for modeling correlation between two random variables $X_1$ and $X_2$ is to first generate correlated samples $u_{1,cor}$ and $u_{2,cor}$ from standard normally distributed variables $U_{1,cor}$ and $U_{2,cor}$.\footnote{ Note that $u_1$ and $u_2$ are strictly speaking only ''realizations'' if a Monte Carlo procedure is applied, see \Aref{Section_2.3}. For methods like FORM and numerical integration, $u_1$ and $u_2$ are strategically selected values, not samples from a simulation of a distribution function. However, this fundamental difference in interpretation of $u_1$ and $u_2$ has no influence on the applied methods as described in the current section.} The correlated samples, or realizations, are subsequently translated into realizations $x_1$ and $x_2$ of ''real world'' variables $X_1$ and $X_2$ through application of the procedure of \Aref{Section_3.3} (i.e. through application of the inverse CDF's of variables $X_1$ and $X_2$). The procedure is depicted in the figure below. The horizontal part of this figure is the exact same procedure as depicted in \Fref{fig:Figure_3.3} and explained in \Aref{Section_3.3}. The correlation model can therefore be considered as a pre-processing of the procedure in which the distribution functions are applied.
 
 \begin{figure}[H]\centering
-\includegraphics[width=1.0\columnwidth]{probabilisticLib_funcdesign_chapters/figloadmodels/image59.png}
+\includegraphics[width=1.0\columnwidth]{funcdesign_chapters/figloadmodels/image59.png}
 \caption{Procedure for determining a load variable associated with randomly selected standard normally distributed variables for the case of correlated variables.}\label{fig:Figure_3.8}
 \end{figure}
 
@@ -25,7 +25,7 @@ w=G\left(v,u_{2} \right)\label{ZEqnNum327839}
 The $G$ in this equation is a function that determines the correlation between $v$ and $w$. Subsequently, $v$ and $w$ are transformed back into samples $u_{1,cor}$ and $u_{2,cor}$ of standard normally distributed variables $U_{1,cor}$ and $U_{2,cor}$ by using the inverse CDFs or probabilities of (non-)exceedance. This leads to a $u_{1,cor}$ that identical to $u_1$, but $u_{2,cor}$ will be different from $u_2$ because of the use of the correlation function $G$. 
 
 \begin{figure}[H]\centering
-\includegraphics[width=1.0\columnwidth]{probabilisticLib_funcdesign_chapters/figloadmodels/image60.png}
+\includegraphics[width=1.0\columnwidth]{funcdesign_chapters/figloadmodels/image60.png}
 \caption{Procedure for samples $u_{1,cor}$ and $u_{2,cor}$ of correlated standard uniform random variables $U_{1,cor}$ and $U_{2,cor}$.}\label{fig:Figure_3.9}
 \end{figure}
 
@@ -84,7 +84,7 @@ For a constant variance of $w$ for all $v$, $\sigma (v)$ is simply set constant.
 \Note{when $\Lambda _{\sigma(v)}$ is normally distributed with constant standard deviation $\sigma(v)=\sigma>0$, then equation \eqref{ZEqnNum481579} simplifies to $w=v+\delta+\sigma u_{2}$. This special case of the HES model is called the Constant Spread (CS) correlation model.}
 
 \begin{figure}[H]\centering
-\includegraphics[width=0.8\columnwidth]{probabilisticLib_funcdesign_chapters/figloadmodels/image61.png}
+\includegraphics[width=0.8\columnwidth]{funcdesign_chapters/figloadmodels/image61.png}
 \caption{Schematic illustrating the relationship between $w$, $v$, and $u_2$ in the NL model.}\label{fig:Figure_3.10}
 \end{figure}
 
@@ -138,7 +138,7 @@ Since equation \eqref{ZEqnNum122862} is much easier to solve than equations \eqr
 \Note{this assumption can become less sound when smaller values of the load variables are relevant for failure as well. For instance at a location near the sea in a tidal river system, failure (flooding) most likely occurs during an event with extremely high sea water levels in combination with ''average'' river discharges. If the river discharge is estimated from the PCR model, errors may be introduced in estimating the probability of occurrence of such an event. However an analysis of the consequences has shown the practical effects on calculated water levels are marginal.
 
 \begin{figure}[H]\centering
-\includegraphics*[width=4.16in, height=3.27in, keepaspectratio=false]{probabilisticLib_funcdesign_chapters/figloadmodels/image62.png}
+\includegraphics*[width=4.16in, height=3.27in, keepaspectratio=false]{funcdesign_chapters/figloadmodels/image62.png}
 \caption{Probability density function of variable $W$ in the PCR-model, compared with the density function of a standard exponential distribution function.}\label{fig:Figure_3.11}
 \end{figure}
 
@@ -181,7 +181,7 @@ u_{2,cor}=u_1\rho+u_2\sqrt{1-\rho^2}
 The following figure pictures the uncorrelated and correlated samples for $\rho=0.5$.
 
 \begin{figure}[H]\centering
-\includegraphics*[width=4.16in, height=3.27in, keepaspectratio=false]{probabilisticLib_funcdesign_chapters/figsystemreliability/fig_gaussian_model.png}
+\includegraphics*[width=4.16in, height=3.27in, keepaspectratio=false]{funcdesign_chapters/figsystemreliability/fig_gaussian_model.png}
 \caption{Uncorrelated (left) and correlated (right) samples according to the Gaussian correlation model assuming $\rho=0.5$.}
 \end{figure}
 

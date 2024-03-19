@@ -22,9 +22,9 @@ F\left(x\right)=\int _{-\infty }^{x}f\left(\tau \right)d \tau \Leftrightarrow f\
 The PDF provides the probability density for any given value of $x$. The probability density is the probability per unit value. For the normal distribution function, the pdf is the ''famous'' bell-shaped curve. As an example, \Fref{fig:Figure_3.2} shows the CDF, inverse CDF and PDF of the standard normal distribution function. 
 
 \begin{figure}[H]\centering
-\includegraphics[width=0.55\columnwidth]{probabilisticLib_funcdesign_chapters/figloadmodels/image51.png}
-\includegraphics[width=0.55\columnwidth]{probabilisticLib_funcdesign_chapters/figloadmodels/image52.png}
-\includegraphics[width=0.55\columnwidth]{probabilisticLib_funcdesign_chapters/figloadmodels/image53.png}
+\includegraphics[width=0.55\columnwidth]{funcdesign_chapters/figloadmodels/image51.png}
+\includegraphics[width=0.55\columnwidth]{funcdesign_chapters/figloadmodels/image52.png}
+\includegraphics[width=0.55\columnwidth]{funcdesign_chapters/figloadmodels/image53.png}
 \caption{PDF (top), CDF (middle) and inverse CDF (bottom) of the standard normal distribution function.}\label{fig:Figure_3.2}
 \end{figure}
 
@@ -40,7 +40,7 @@ Property 1 can be easily proven: if $x_1<x_2$, then $P[X\leq x_1] \leq P[X\leq x
 Since $F(x)$ is non-decreasing, the inverse CDF, $F^{-1}(p)$, is also a non-decreasing function. In probabilistic computations, mainly the inverse CDF, $F^{-1}(x)$, of a variable $X$ is applied, as schematically depicted in \Fref{fig:Figure_3.3}. The library of distribution functions therefore mostly consists of inverse CDF's. The procedure of \Fref{fig:Figure_3.3} is explained below.
 
 \begin{figure}[H]\centering
-\includegraphics*[width=3.95in, height=2.59in, keepaspectratio=false]{probabilisticLib_funcdesign_chapters/figloadmodels/image54.png}
+\includegraphics*[width=3.95in, height=2.59in, keepaspectratio=false]{funcdesign_chapters/figloadmodels/image54.png}
 \caption{Procedure for determining a load variable associated with a randomly selected standard normally distributed variable ($u$-value), for the case of uncorrelated variables.}\label{fig:Figure_3.3}
 \end{figure}
 
@@ -83,7 +83,7 @@ P\left[\Phi \left(u\right)\le p^*\right]=p^* \label{3.7)}
 So the probability that $\Phi(u)$ does not exceed a given value $p^*$ ($0\leq p^* \leq 1$) is equal to $p^*$. This shows that $\Phi(u)$ is a realization from a standard uniform distribution function, as described by equation \eqref{ZEqnNum892201} and depicted in \Fref{fig:Figure_3.4}.
 
 \begin{figure}[H]\centering
-\includegraphics*[width=4.28in, height=3.21in, keepaspectratio=false]{probabilisticLib_funcdesign_chapters/figloadmodels/image55.png}
+\includegraphics*[width=4.28in, height=3.21in, keepaspectratio=false]{funcdesign_chapters/figloadmodels/image55.png}
 \caption{Standard uniform distribution function (CDF).}\label{fig:Figure_3.4}
 \end{figure}
 
@@ -146,12 +146,12 @@ The inverse, $F^{-1}$, gives the value of $x$ associated for a given value of th
 The distribution parameters a and $B$ indicate the range over which the probability density function is non-zero, with a indicating the starting point and $B$ indicating the ending point. \Fref{fig:A.1} and \Fref{fig:A.2} show the uniform probability density and cumulative probability distribution, respectively, as a function of a and b. 
 
 \begin{figure}[H]\centering
-\includegraphics*[width=3.04in, height=2.33in, keepaspectratio=false]{probabilisticLib_funcdesign_chapters/figappdistributionfunctions/image30}
+\includegraphics*[width=3.04in, height=2.33in, keepaspectratio=false]{funcdesign_chapters/figappdistributionfunctions/image30}
 \caption{Uniform probability density function, with parameters $a$ and $B$ indicated}\label{fig:A.1}
 \end{figure}
 
 \begin{figure}[H]\centering
-\includegraphics*[width=2.85in, height=2.34in, keepaspectratio=false]{probabilisticLib_funcdesign_chapters/figappdistributionfunctions/image31}
+\includegraphics*[width=2.85in, height=2.34in, keepaspectratio=false]{funcdesign_chapters/figappdistributionfunctions/image31}
 \caption{Uniform cumulative distribution function, with parameters $a$ and $B$ indicated}\label{fig:A.2}
 \end{figure}
 
@@ -188,12 +188,12 @@ therefore, these functions need to be approximated numerically. The method imple
 \Fref{fig:A.3} shows the probability density of the normal distribution, with the parameters $\mu $ and $\sigma $ indicated. \Fref{fig:A.4} shows the variation in the density function for different choices of $\mu $ and $\sigma $.
 
 \begin{figure}[H]\centering
-\includegraphics*[width=2.76in, height=2.33in, keepaspectratio=false]{probabilisticLib_funcdesign_chapters/figappdistributionfunctions/image32}
+\includegraphics*[width=2.76in, height=2.33in, keepaspectratio=false]{funcdesign_chapters/figappdistributionfunctions/image32}
 \caption{Normal probability density function, with parameters $\mu $ and $\sigma $ indicated}\label{fig:A.3}
 \end{figure}
 
 \begin{figure}[H]\centering
-\includegraphics*[width=4.10in, height=3.22in, keepaspectratio=false]{probabilisticLib_funcdesign_chapters/figappdistributionfunctions/image33}
+\includegraphics*[width=4.10in, height=3.22in, keepaspectratio=false]{funcdesign_chapters/figappdistributionfunctions/image33}
 \caption{Illustration of the effect of parameters $\mu $ and $\sigma $}\label{fig:A.4}
 \end{figure}
 
@@ -217,7 +217,7 @@ where $\Phi$ is the standard normal distribution function described in \Aref{sec
 The parameters of the lognormal distribution, $\mu $ and $\sigma $, are the mean and standard deviation of the associated normally distributed variable. That is, if $x$ is lognormally distributed, and $Y$ = log($x$) is normally distributed, the lognormal parameters $\mu $ and $\sigma $ are the mean and standard deviation of y. The parameter $\varepsilon $ is the shift parameter and serves to horizontally translate the distribution. \Fref{fig:A.5} shows the effect of different choices of the parameters.
 
 \begin{figure}[H]\centering
-\includegraphics*[width=4.10in, height=3.22in, keepaspectratio=false]{probabilisticLib_funcdesign_chapters/figappdistributionfunctions/image34}
+\includegraphics*[width=4.10in, height=3.22in, keepaspectratio=false]{funcdesign_chapters/figappdistributionfunctions/image34}
 \caption{Illustration of the effect of parameters $\mu $, $\sigma $, and $\varepsilon $ on the lognormal density function}\label{fig:A.5}
 \end{figure}
 
@@ -247,7 +247,7 @@ F^{-1} \left(p;\lambda ,\varepsilon \right)=\varepsilon -\frac{\ln \left(1-p\rig
 The parameter of the exponential distribution, $\lambda $, is referred to as a rate parameter, and determines how quickly the density function goes to zero. The parameter $\varepsilon $ is the shift parameter and serves to horizontally translate the density. \Fref{fig:A.5} shows the effect of different choices of the parameters.
 
 \begin{figure}[H]\centering
-\includegraphics*[width=4.17in, height=3.27in, keepaspectratio=false]{probabilisticLib_funcdesign_chapters/figappdistributionfunctions/image35}
+\includegraphics*[width=4.17in, height=3.27in, keepaspectratio=false]{funcdesign_chapters/figappdistributionfunctions/image35}
 \caption{Illustration of the effect of parameters $\lambda $ and $\varepsilon $ on the exponential density function}\label{fig:A.6}
 \end{figure}
 
@@ -293,7 +293,7 @@ The \probLib supports two types of input: either the set of parameters, or the m
 The two parameters that should be input into the \probLib are therefore the rate parameter and the location parameter. \Fref{fig:A.7} shows the effect of different choices of the parameters.
 
 \begin{figure}[H]\centering
-\includegraphics*[width=4.17in, height=3.27in, keepaspectratio=false]{probabilisticLib_funcdesign_chapters/figappdistributionfunctions/image36}
+\includegraphics*[width=4.17in, height=3.27in, keepaspectratio=false]{funcdesign_chapters/figappdistributionfunctions/image36}
 \caption{Effect of the scale and location parameters, $\alpha $ and $\xi $, on the Gumbel density function}\label{fig:A.7}
 \end{figure}
 
@@ -413,12 +413,12 @@ The parameters of the modified Gumbel are the coefficients of $K_r$: $a$, $b$, a
 The modified Gumbel is not a probability distribution; equation \eqref{ZEqnNum838972} does not necessarily span the range from $0$ to $1$, and the area under the density does not sum to $1$. Rather it is a function that approximates the distribution of the wind speed. The parameters of the function (a, b, and c) were chosen to ensure this agreement. However, the agreement is only valid for particular ranges of the wind speed. \Fref{fig:A.9} and \Fref{fig:A.10} show the modified Gumbel for the wind station Deelen, shown over two diferent ranges of wind speeds. The former shows the functions over the range $0$ to $40$ m/s, and the probability density and distribution function appear to be reasonable approximations. The latter shows that for negative wind speeds, rather than the density and the non-exceedance probability being zero, they display peculiar behavior. This illustrates that these functions are not distributions/density functions, and should therefore be used with care, such that only wind speeds in the valid range are considered.
 
 \begin{figure}[H]\centering
-\includegraphics*[width=3.07in, height=2.40in, keepaspectratio=false]{probabilisticLib_funcdesign_chapters/figappdistributionfunctions/image38}
+\includegraphics*[width=3.07in, height=2.40in, keepaspectratio=false]{funcdesign_chapters/figappdistributionfunctions/image38}
 \caption{ Modified Gumbel for wind station Deelen, shown over the range of wind speeds $0$ to 40 m/s}\label{fig:A.9}
 \end{figure}
 
 \begin{figure}[H]\centering
-\includegraphics*[width=3.12in, height=2.40in, keepaspectratio=false]{probabilisticLib_funcdesign_chapters/figappdistributionfunctions/image39}
+\includegraphics*[width=3.12in, height=2.40in, keepaspectratio=false]{funcdesign_chapters/figappdistributionfunctions/image39}
 \caption{ Modified Gumbel for wind station Deelen, shown over the range of wind speeds -40 to 40 m/s}\label{fig:A.10}
 \end{figure}
 
@@ -447,7 +447,7 @@ Note that this solution is pragmatic in the sense that only one half of the quad
 In \Fref{fig:A.10} it was shown that for non-exceedance probabilities less than about 0.35, there is no solution to the inverse. It is for these cases that the square-root term in formula \eqref{ZEqnNum802912} is negative, and the second term $-b/2a$ is used as an approximate solution. This is evident in the first two subplots of \Fref{fig:A.11}, where the parabola does not cross the $x = 0$ line. 
 
 \begin{figure}[H]\centering
-\includegraphics*[width=3.90in, height=3.04in, keepaspectratio=false]{probabilisticLib_funcdesign_chapters/figappdistributionfunctions/image40}
+\includegraphics*[width=3.90in, height=3.04in, keepaspectratio=false]{funcdesign_chapters/figappdistributionfunctions/image40}
 \caption{Quadratic equation \eqref{ZEqnNum294065} for wind station Deelen, shown for six different non-exceedance probabilities (indicated in figure). The red vertical line indicates the solution to the inverse by equation \eqref{ZEqnNum802912}}\label{fig:A.11}
 \end{figure}
 
@@ -471,7 +471,7 @@ x_{d} =-\ln \left[-\ln \left(1-d\right)\right]\label{4.108)}
 \end{align}
 
 \begin{figure}[H]\centering
-\includegraphics*[width=3.11in, height=2.48in, keepaspectratio=false]{probabilisticLib_funcdesign_chapters/figappdistributionfunctions/image41}
+\includegraphics*[width=3.11in, height=2.48in, keepaspectratio=false]{funcdesign_chapters/figappdistributionfunctions/image41}
 \caption{ Illustration of the effect of including the truncation factor $d>0$ in equation \eqref{ZEqnNum480192}, here shown for $d = 0.02$}\label{fig:A.12}
 \end{figure}
 
@@ -552,7 +552,7 @@ f_4\left(x; a, b, \alpha ,\beta\right)
 The class of Beta distributions includes a wide variety of shapes and other well-known distributions as special cases (see \Fref{fig:4parbetadist}).
 
 \begin{figure}[H]\centering
-\includegraphics*[width=3.90in, height=3.04in, keepaspectratio=false]{probabilisticLib_funcdesign_chapters/figappdistributionfunctions/fig_4parbetadist.png}
+\includegraphics*[width=3.90in, height=3.04in, keepaspectratio=false]{funcdesign_chapters/figappdistributionfunctions/fig_4parbetadist.png}
 \caption{Probability density function of the four-parameter Beta distribution for $a = 2$ and $b = 5$.}\label{fig:4parbetadist}
 \end{figure}
 
@@ -589,6 +589,6 @@ where $\alpha$, a value bounded between $0$ and $1$, represents the position of 
 \Fref{fig:A.8} illustrates the concept of log-linear interpolation between two support points $(\log(p_1),x_1)$ and $(\log(p_2),x_2)$. 
 
 \begin{figure}[H]\centering
-\includegraphics*[width=4.06in, height=3.15in, keepaspectratio=false]{probabilisticLib_funcdesign_chapters/figappdistributionfunctions/image37}
+\includegraphics*[width=4.06in, height=3.15in, keepaspectratio=false]{funcdesign_chapters/figappdistributionfunctions/image37}
 \caption{Concept of linear interpolation between support points. The black solid circles represent the support points, and the red diamond shows the interpolated value $(\log(p), x)$}\label{fig:A.8}
 \end{figure}
