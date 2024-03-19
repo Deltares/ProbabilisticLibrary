@@ -1,7 +1,6 @@
 #include "NumericSupport.h"
 
 #include <cmath>
-#include <exception>
 #include <functional>
 
 #include "Constants.h"
@@ -271,9 +270,9 @@ namespace Deltares
 				maxX = std::log(maxX);
 				break;
 			case InterpolationType::Harmonic:
-				x = 1 / x;
-				minX = 1 / minX;
-				maxX = 1 / maxX;
+				x = 1.0 / x;
+				minX = 1.0 / minX;
+				maxX = 1.0 / maxX;
 				break;
 			default:
 				throw ProbLibCore::probLibException("interpolation type not supported");
@@ -294,15 +293,15 @@ namespace Deltares
 			else
 			{
 				const double xFraction = (x - minX) / (maxX - minX);
-				return xFraction * maxY + (1 - xFraction) * minY;
+				return xFraction * maxY + (1.0 - xFraction) * minY;
 			}
 		}
 
-		double NumericSupport::interpolate(double x, std::vector<double>& xValues, std::vector<double>& yValues, bool extrapolate, InterpolationType interpolationType)
+		double NumericSupport::interpolate(double x, const std::vector<double>& xValues, const std::vector<double>& yValues, bool extrapolate, InterpolationType interpolationType)
 		{
 			if (xValues.size() != yValues.size())
 			{
-				throw std::exception("XValues and YValues not of the same length");
+				throw ProbLibCore::probLibException("XValues and YValues not of the same length");
 			}
 
 			if (xValues.empty())

@@ -40,6 +40,8 @@ add_executable(Deltares.Probabilistic.Test
     projectBuilder.cpp
     Reliability/testStartPointCalculator.h
     Reliability/testStartPointCalculator.cpp
+    Math/testNumericSupport.h
+    Math/testNumericSupport.cpp
 )
 
 set_target_properties(Deltares.Probabilistic.Test

@@ -36,7 +36,7 @@ namespace Deltares
             static double getMinValidValue(std::function<double(double)> function);
             static double getMaxValidValue(std::function<double(double)> function);
             static double interpolate(double x, double minX, double minY, double maxX, double maxY, bool extrapolate = false, InterpolationType interpolationType = Linear);
-            static double interpolate(double x, std::vector<double>& xValues, std::vector<double>& yValues, bool extrapolate = false, InterpolationType interpolationType = Linear);
+            static double interpolate(double x, const std::vector<double>& xValues, const std::vector<double>& yValues, bool extrapolate = false, InterpolationType interpolationType = Linear);
             static double getMean(std::vector<double>& values);
             static double getStandardDeviation(double mean, std::vector<double>& values);
             static double getStandardDeviation(std::vector<double>& values);

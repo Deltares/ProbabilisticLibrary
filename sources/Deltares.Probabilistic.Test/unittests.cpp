@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include "Reliability/testStartPointCalculator.h"
+#include "Math/testNumericSupport.h"
 
 using namespace Deltares::Probabilistic;
 
@@ -12,8 +13,13 @@ namespace Deltares
             int main(int argc, char** argv)
             {
                 ::testing::InitGoogleTest(&argc, argv);
-                //::testing::GTEST_FLAG(filter) = "unittst.testStartPointCalculator";
                 return RUN_ALL_TESTS();
+            }
+
+            TEST(unittst, testNumericSupport)
+            {
+                auto tstNumSupport = testNumericSupport();
+                tstNumSupport.allNumericSupportTests();
             }
 
             TEST(unittst, testStartPointCalculator)
