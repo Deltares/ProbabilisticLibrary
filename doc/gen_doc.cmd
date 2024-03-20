@@ -9,3 +9,5 @@ pdflatex -quiet scientific_background
 bibtex -quiet scientific_background
 pdflatex -quiet scientific_background
 pdflatex -quiet scientific_background
+
+zip -m ..\docs.zip *.pdf
