@@ -2,6 +2,7 @@
 #include "Reliability/testStartPointCalculator.h"
 #include "Math/testNumericSupport.h"
 #include "Combin/hohenbichler_tests.h"
+#include "Combin/intEqualElements_tests.h"
 
 using namespace Deltares::Probabilistic;
 
@@ -15,6 +16,12 @@ namespace Deltares
             {
                 ::testing::InitGoogleTest(&argc, argv);
                 return RUN_ALL_TESTS();
+            }
+
+            TEST(unittst, intEqualElements_tests)
+            {
+                auto h = intEqualElements_tests();
+                h.allIntegrateEqualElementsTests();
             }
 
             TEST(unittst, hohenbichler_tests)

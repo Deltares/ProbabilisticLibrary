@@ -44,6 +44,8 @@ add_executable(Deltares.Probabilistic.Test
     Math/testNumericSupport.cpp
     Combin/hohenbichler_tests.h
     Combin/hohenbichler_tests.cpp
+    Combin/intEqualElements_tests.h
+    Combin/intEqualElements_tests.cpp
     Utils/testutils.h
     Utils/testutils.cpp
 )
