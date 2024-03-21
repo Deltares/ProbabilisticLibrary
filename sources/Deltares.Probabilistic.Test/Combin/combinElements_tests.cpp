@@ -1,12 +1,12 @@
 #include "gtest/gtest.h"
 #include <math.h>
-#include "../../src/utils/basic_math.h"
 #include "combinElements_tests.h"
-#include "../../src/probFuncs/conversions.h"
+#include "../../Deltares.Probabilistic/Statistics/StandardNormal.h"
 
-using namespace Deltares::ProbLibCore;
+using namespace Deltares::Reliability;
+using namespace Deltares::Statistics;
 
-namespace Deltares{ namespace ProbLibTests {
+namespace Deltares{ namespace Probabilistic { namespace Test {
 
 void combinElementsTests::runAll()
 {
@@ -78,7 +78,8 @@ void combinElementsTests::testCombineTwoElementsNoCorrelation1()
 //  Compute analytically the beta that is expected for the OR-port combination of the present two elements:
     double p1 = elm1.getP();
     double p2 = elm2.getP();
-    auto ref = alphaBeta(1.0 - p1 * p2, 'q', {0.246342425266045, 0.969182251096718}); // pre-computed
+    auto beta = StandardNormal::getUFromQ(1.0 - p1 * p2);
+    auto ref = alphaBeta(beta, {0.246342425266045, 0.969182251096718}); // pre-computed
 
     auto elm3 = cmb.combineTwoElementsPartialCorrelation(elm1, elm2, rhoP, combineAndOr::combOr);
 
@@ -102,7 +103,8 @@ void combinElementsTests::testCombineTwoElementsNoCorrelation2()
 //  Compute analytically the beta that is expected for the OR-port combination of the present two elements:
     double p1 = elm1.getP();
     double p2 = elm2.getP();
-    auto ref = alphaBeta(1.0 - p1 * p2, 'q', {0.246342425266045, 0.969182251096718}); // Is somewhere pre-computed
+    auto beta = StandardNormal::getUFromQ(1.0 - p1 * p2);
+    auto ref = alphaBeta(beta, {0.246342425266045, 0.969182251096718}); // Is somewhere pre-computed
 
     auto elm3 = cmb.combineTwoElementsPartialCorrelation(elm1, elm2, rhoP, combineAndOr::combOr);
 
@@ -128,7 +130,8 @@ void combinElementsTests::testCombineTwoElementsNoCorrelation3()
 //  Compute analytically the beta that is expected for the OR-port combination of the present two elements:
     double p1 = elm1.getP();
     double p2 = elm2.getP();
-    auto ref = alphaBeta(1.0 - p1 * p2, 'q', {0.969182251096718, 0.246342425266045}); // pre-computed
+    auto beta = StandardNormal::getUFromQ(1.0 - p1 * p2);
+    auto ref = alphaBeta(beta, {0.969182251096718, 0.246342425266045}); // pre-computed
 //   NB. The expectedAlphaC(1) and expectedAlphaC(2) must now be in reversed order compared to
 //       the preceding tests testCombineTwoElementsNoCorrelation1 and testCombineTwoElementsNoCorrelation2
 
@@ -153,7 +156,8 @@ void combinElementsTests::testCombineTwoElementsNoCorrelation4()
 //  Compute analytically the beta that is expected for the AND-port combination of the present two elements:
     double q1 = elm1.getQ();
     double q2 = elm2.getQ();
-    auto ref = alphaBeta(q1 * q2, 'q', {0.651828661927589, 0.758366267373285}); // Is somewhere pre-computed
+    auto beta = StandardNormal::getUFromQ(q1 * q2);
+    auto ref = alphaBeta(beta, {0.651828661927589, 0.758366267373285}); // Is somewhere pre-computed
 
     auto elm3 = cmb.combineTwoElementsPartialCorrelation(elm1, elm2, rhoP, combineAndOr::combAnd);
 
@@ -176,7 +180,8 @@ void combinElementsTests::testCombineTwoElementsNoCorrelation5()
 //  Compute analytically the beta that is expected for the AND-port combination of the present two elements:
     double q1 = elm1.getQ();
     double q2 = elm2.getQ();
-    auto ref = alphaBeta(q1 * q2, 'q', {0.970353143592546, 0.241688910290521}); // Is somewhere pre-computed
+    auto beta = StandardNormal::getUFromQ(q1 * q2);
+    auto ref = alphaBeta(beta, {0.970353143592546, 0.241688910290521}); // Is somewhere pre-computed
 
     auto elm3 = cmb.combineTwoElementsPartialCorrelation(elm1, elm2, rhoP, combineAndOr::combAnd);
 
@@ -199,7 +204,8 @@ void combinElementsTests::testCombineTwoElementsNoCorrelation6()
 //  Compute analytically the beta that is expected for the AND-port combination of the present two elements:
     double q1 = elm1.getQ();
     double q2 = elm2.getQ();
-    auto ref = alphaBeta(q1 * q2, 'q', {sqrt(0.5), sqrt(0.5)});
+    auto beta = StandardNormal::getUFromQ(q1 * q2);
+    auto ref = alphaBeta(beta, {sqrt(0.5), sqrt(0.5)});
     // The alpha()-components of the combination must be equal because of equal beta1 and beta2
 
     auto elm3 = cmb.combineTwoElementsPartialCorrelation(elm1, elm2, rhoP, combineAndOr::combAnd);
@@ -290,7 +296,8 @@ void combinElementsTests::testcombineTwoElementsPartialCorrelation4()
     double p1 = elm1.getP();
     double p2 = elm2.getP();
 
-    auto ref = alphaBeta(1.0 - p1 * p2, 'q', {0.149904324474973, 0.988700507486318}); // pre-computed
+    auto beta = StandardNormal::getUFromQ(1.0 - p1 * p2);
+    auto ref = alphaBeta(beta, {0.149904324474973, 0.988700507486318}); // pre-computed
 
     auto elm3 = cmb.combineTwoElementsPartialCorrelation(elm1, elm2, rhoP, combineAndOr::combOr);
 
@@ -340,8 +347,8 @@ void combinElementsTests::testcombineTwoElementsPartialCorrelation6()
     double p1 = elm1.getP();
     double p2 = elm2.getP();
 
-    auto ref = alphaBeta(1.0 - p1 * p2, 'q',
-    {-0.689062334733955, -0.158849035402622, 0.157472623165194, 0.689320285321795}); // pre-computed
+    auto beta = StandardNormal::getUFromQ(1.0 - p1 * p2);
+    auto ref = alphaBeta(beta, {-0.689062334733955, -0.158849035402622, 0.157472623165194, 0.689320285321795}); // pre-computed
 
     auto elm3 = cmb.combineTwoElementsPartialCorrelation(elm1, elm2, rhoP, combineAndOr::combOr);
 
@@ -891,7 +898,7 @@ void combinElementsTests::testcombineMultipleElementsSpatialCorrelated4()
         auto q = std::vector<vector1D>();
         for (size_t j = 0; j < nElements; j++)
         {
-            double deltaX = min( j-k, k-j ) * sectionLength;
+            double deltaX = std::min( j-k, k-j ) * sectionLength;
             auto r = vector1D(nStochast);
             for (size_t i = 0; i < nStochast; i++)
             {
@@ -951,7 +958,8 @@ void combinElementsTests::testcombineTwoElementsNegativeCorrelation1()
     double q2 = elm2.getQ();
 
 //  Probability of failure is then, corresponding beta:
-    auto ref = alphaBeta(q1 + q2, 'q', elm2.getAlpha());
+    auto beta = StandardNormal::getUFromQ(q1 + q2);
+    auto ref = alphaBeta(beta, elm2.getAlpha());
 
     auto elm3 = cmb.combineTwoElementsPartialCorrelation(elm1, elm2, rhoP, combineAndOr::combOr);
 
@@ -973,7 +981,7 @@ void combinElementsTests::testcombineTwoElementsNegativeCorrelation2()
 
 //  For the present alpha and beta it can be analytically shown that no failure can occur
 //  Theoretically the expected beta of the combination is then +infinity. Practically:
-    auto ref = alphaBeta(37.0470962993612, {sqrt(0.5), sqrt(0.5)});
+    auto ref = alphaBeta(40.0, {sqrt(0.5), sqrt(0.5)});
 
     auto elm3 = cmb.combineTwoElementsPartialCorrelation(elm1, elm2, rhoP, combineAndOr::combAnd);
 
@@ -1058,7 +1066,7 @@ void combinElementsTests::testcombineThreeElementsPartialCorrelation3()
     double p1 = elm1.getP();
     double p2 = elm2.getP();
     double p3 = elm3.getP();
-    double betaC = conversions::betaFromQ(1.0 - p1 * p2 * p3);
+    double betaC = StandardNormal::getUFromQ(1.0 - p1 * p2 * p3);
 //
     auto ref = alphaBeta(betaC, {0.730696091970909, 0.572806816016527, 0.371450632929127}); // pre-computed
 
@@ -1323,4 +1331,4 @@ void combinElementsTests::testcombineTwoElementsPartialCorrelation99a()
 
     utils.checkAlphaBeta(C.ab, ref, 1e-9);
     EXPECT_EQ(C.n, 0);
-}}}
+}}}}

@@ -48,6 +48,8 @@ add_executable(Deltares.Probabilistic.Test
     Combin/intEqualElements_tests.cpp
     Combin/upscale_tests.h
     Combin/upscale_tests.cpp
+    Combin/combinElements_tests.h
+    Combin/combinElements_tests.cpp
     Utils/testutils.h
     Utils/testutils.cpp
 )
