@@ -119,7 +119,7 @@ namespace Deltares {
                 //
                 // Compute via Hohenbichler with FORM and outcrossing
                 //
-                double Pf = elm;
+                double Pf = StandardNormal::getQFromU(elm);
                 auto pf2cf1 = hhb.PerformHohenbichler(elm, Pf, rhoT);    // pf2cf1 : pair(Probability, success flag)
                 if (pf2cf1.second != 0) failures++;
                 double PfT = Pf + (nrTimes - 1.0) * (Pf - pf2cf1.first * Pf);
