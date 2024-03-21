@@ -42,8 +42,6 @@ namespace Deltares
                 void testcombineMultipleElementsProb3();
                 void testcombineMultipleElementsProb4();
                 void testcombineMultipleElementsProb5();
-                void testgetMultipleElementsHighestBeta();
-                void testgetMultipleElementsLowestBeta();
                 void testcombineMultipleElementsSpatialCorrelated1();
                 void testcombineMultipleElementsSpatialCorrelated2();
                 void testcombineMultipleElementsSpatialCorrelated3();

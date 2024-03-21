@@ -38,8 +38,6 @@ void combinElementsTests::runAll()
     testcombineMultipleElementsProb3();
     testcombineMultipleElementsProb4();
     testcombineMultipleElementsProb5();
-    testgetMultipleElementsHighestBeta();
-    testgetMultipleElementsLowestBeta();
     testcombineMultipleElementsSpatialCorrelated1();
     testcombineMultipleElementsSpatialCorrelated2();
     testcombineMultipleElementsSpatialCorrelated3();
@@ -743,50 +741,6 @@ void combinElementsTests::testcombineMultipleElementsProb5()
 
     utils.checkAlphaBeta(ab.ab, ref, 1e-4);
     EXPECT_EQ(ab.n, 0);
-}
-
-// > test getMultipleElementsHighestBeta
-void combinElementsTests::testgetMultipleElementsHighestBeta()
-{
-    const int nElements = 10;
-
-    auto Elements = elements(nElements);
-    auto alpha = vector1D({1.0, 0.0, 0.0});
-    for (size_t i = 0; i < nElements; i++)
-    {
-        Elements[i] = {3.0 + 0.1 * (double)(i), alpha};
-    }
-
-    Elements[nElements-1].setAlpha(vector1D({0.547722557505166, 0.547722557505166, 0.632455532033676}));
-
-    // the last element has the highest beta
-    auto Expected = Elements[nElements-1];
-
-    auto result = cmb.getMultipleElementsHighestBeta(Elements);
-
-    utils.checkAlphaBeta(result.ab, Expected, 1e-12);
-}
-
-// > test getMultipleElementsLowestBeta
-void combinElementsTests::testgetMultipleElementsLowestBeta()
-{
-    const int nElements = 10;
-
-    auto Elements = elements(nElements);
-    auto alpha = vector1D({1.0, 0.0, 0.0});
-    for (size_t i = 0; i < nElements; i++)
-    {
-        Elements[i] = {3.0 + 0.1 * (double)(i), alpha};
-    }
-
-    Elements[0].setAlpha(vector1D({0.547722557505166, 0.547722557505166, 0.632455532033676}));
-
-    // the last element has the lowest beta
-    auto Expected = Elements[0];
-
-    auto result = cmb.getMultipleElementsLowestBeta(Elements);
-
-    utils.checkAlphaBeta(result.ab, Expected, 1e-12);
 }
 
 // Test of combine multiple elements spatial correlated

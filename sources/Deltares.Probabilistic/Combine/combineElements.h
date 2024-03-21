@@ -38,10 +38,6 @@ namespace Deltares {
             cmbResult combineMultipleElementsProb(elements& Elements,
                 const std::vector<double>& percentages, const combineAndOr combAndOr);
 
-            cmbResult getMultipleElementsHighestBeta(elements& Elements);
-
-            cmbResult getMultipleElementsLowestBeta(elements& Elements);
-
             cmbResult combineMultipleElementsSpatialCorrelated(const elements& Element,
                 const std::vector<std::vector<vector1D>>& rho, const combineAndOr combAndOr);
 

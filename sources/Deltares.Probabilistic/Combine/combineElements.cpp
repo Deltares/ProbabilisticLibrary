@@ -616,54 +616,5 @@ namespace Deltares {
             return combineMultipleElements(adjustedElement, rhoP, combAndOr);
         }
 
-        //>
-        //! This method takes the highest reliability index (beta) and alpha values of a set of elements
-        cmbResult combineElements::getMultipleElementsHighestBeta(elements& Elements)
-        {
-            // betaElement(:)    : Reliability index per element
-            // alphaElement(:,:) : Alpha vector per element
-            // beta              : Reliability index after combining over elements
-            // alpha(:)          : Alpha vector after combining over elements
-
-            // Find the index of the highest beta
-            size_t bestIndex = 0;
-            double maxval = -DBL_MAX;
-            for (size_t i = 0; i < Elements.size(); i++)
-            {
-                if (Elements[i].getBeta() > maxval)
-                {
-                    maxval = Elements[i].getBeta();
-                    bestIndex = i;
-                }
-            }
-
-            // Copy the results
-            return { Elements[bestIndex], 0 };
-        }
-
-        //>
-        //! This method takes the lowest reliability index (beta) and alpha values of a set of elements
-        cmbResult combineElements::getMultipleElementsLowestBeta(elements& Elements)
-        {
-            // betaElement(:)    : Reliability index per element
-            // alphaElement(:,:) : Alpha vector per element
-            // beta              : Reliability index after combining over elements
-            // alpha(:)          : Alpha vector after combining over elements
-
-            // Find the index of the lowest beta
-            size_t bestIndex = 0;
-            double minval = DBL_MAX;
-            for (size_t i = 0; i < Elements.size(); i++)
-            {
-                if (Elements[i].getBeta() < minval)
-                {
-                    minval = Elements[i].getBeta();
-                    bestIndex = i;
-                }
-            }
-
-            // Copy the results
-            return { Elements[bestIndex], 0 };
-        }
     }
 }
