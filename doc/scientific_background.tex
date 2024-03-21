@@ -31,8 +31,8 @@ minimum height=1em, minimum width=1em, node distance=6em]
 \hypersetup
 {
 	pdfauthor   = {Deltares},
-	pdftitle    = {Probabilistic Toolkit Manual},
-	pdfkeywords = {Probabilistic Toolkit},
+	pdftitle    = {Probabilistic Library Manual},
+	pdfkeywords = {Probabilistic Library},
 	pdfcreator  = {LaTeX hyperref},
 	pdfproducer = {ps2pdf}
 }
@@ -97,7 +97,7 @@ The user should take a number of steps to perform a probabilistic analysis. Thes
 	\begin{enumerate}
 		\item  Run the model and compare results
 		\item  Investigate the sensitivity of the model
-		\item  Get input variables by calibation
+		\item  Get input variables by calibration
 		\item  Determine the output uncertainty
 		\item  Determine the failure probability
 	\end{enumerate}
@@ -180,7 +180,7 @@ See \autoref{ug:Calibration} for more information.
 
 \section{Reliability}
 
-Reliabiity analysis determines the reliability, or probability of failure, of a physical construction. This gives the user insight of the probabilty that an unwanted phenomenon will happen, possibly within a given period of time. 
+Reliability analysis determines the reliability, or probability of failure, of a physical construction. This gives the user insight of the probabilty that an unwanted phenomenon will happen, possibly within a given period of time. 
 
 For example, the probability that a dike will fail can be calculated. This is used in assessment of dikes and using this probability, a decision will be made to strengthen it. An accurate calculation of the probability of failure is important, since it can save money by not strengthening it more than necessary.
 
@@ -332,7 +332,7 @@ reliability_index = project.design_point.reliability_index
 print('reliability index = ' + str(reliability_index))
 \end{lstlisting}
 
-or, when an output uncertainty calcualtion is made:
+or, when an output uncertainty calculation is made:
 
 \begin{lstlisting}[language=Python, basicstyle=\ttfamily, frame=single]
 import os
@@ -370,13 +370,13 @@ The ToolKit class is only needed when Python is in control of the whole process.
 
 \begin{longtable*}{p{20mm}p{\textwidth-24pt-20mm}}  
 	Constructor & \\
-	Functionality & Establishes a connection with the Probablistic Toolkit; \\  
+	Functionality & Establishes a connection with the Probabilistic Toolkit; \\  
 	Arguments & None; \\  
 \end{longtable*}
 
 \begin{longtable*}{p{20mm}p{\textwidth-24pt-20mm}}  
 	Finalizer & \\
-	Functionality & Disconnects from the Probablistic Toolkit; \\  
+	Functionality & Disconnects from the Probabilistic Toolkit; \\  
 \end{longtable*}
 
 \begin{longtable*}{p{20mm}p{\textwidth-24pt-20mm}}  
@@ -406,7 +406,7 @@ The Project class contains all input data and results of a project. It contains 
 
 \begin{longtable*}{p{20mm}p{\textwidth-24pt-20mm}}  
 	Constructor & \\
-	Functionality & Creates a project referencing the current project in the Probabilistic Toolkit. Only call the constructor if python is called in the preproocessor or postprocessor, otherwise use the load method in the class ToolKit; \\  
+	Functionality & Creates a project referencing the current project in the Probabilistic Toolkit. Only call the constructor if python is called in the preprocessor or postprocessor, otherwise use the load method in the class ToolKit; \\  
 	Arguments & None; \\  
 \end{longtable*}
 
@@ -414,7 +414,7 @@ The Project class contains all input data and results of a project. It contains 
 	Method &  \textbf{validate}\\
 	Functionality & Validates the project; \\  
 	Arguments & Nothing; \\  
-	Returns & List of strings containng error validation messages; \\  
+	Returns & List of strings containing error validation messages; \\  
 \end{longtable*}
 
 \begin{longtable*}{p{20mm}p{\textwidth-24pt-20mm}}  
@@ -634,7 +634,7 @@ The Stochast class contains all properties of a variable.
 	Arguments & Variable name; \\  
 	& Lower boundary of the bin; \\
 	& Upper boundary of the bin; \\
-	& Numer of occurences in the bin; \\
+	& Number of occurences in the bin; \\
 	Returns & Nothing; \\  
 \end{longtable*}
 
@@ -709,7 +709,7 @@ The StochastSettings class contains computational settings of a variable
 
 \subsection{Class UncertaintyStochast}
 
-The DesignPoint class contains the result of a reliabliity calculation
+The DesignPoint class contains the result of a reliability calculation
 
 \begin{longtable*}{p{20mm}p{\textwidth-24pt-20mm}}  
 	Property & \textbf{name} \\
@@ -727,11 +727,11 @@ The DesignPoint class contains the result of a reliabliity calculation
 
 \subsection{Class DesignPoint}
 
-The DesignPoint class contains the result of a reliabliity calculation
+The DesignPoint class contains the result of a reliability calculation
 
 \begin{longtable*}{p{20mm}p{\textwidth-24pt-20mm}}  
 	Property & \textbf{identifier} \\
-	Functionality & Gets the numeric identifier of the design point, for example the varing parameters in a table scenario; \\  
+	Functionality & Gets the numeric identifier of the design point, for example the varying parameters in a table scenario; \\  
 	Type & array of floats; \\  
 \end{longtable*}
 
@@ -864,7 +864,7 @@ Therefore the distribution needs one or more of the following parameters (depend
 	\item Scale $s$: An indication how much randomly chosen values differ from the location. For some distributions the scale $s$ is equal to the deviation $\sigma$.
 	\item Shape $k$: Describes the shape of the distribution.
 	\item Shift $c$: The distribution is shifted a certain amount. Not present in all distributions;
-	\item Minimum and Maximum $a$ and $b$: Minimum and maximum possible values of ramndomly chosen values. Not present in all distributions;
+	\item Minimum and Maximum $a$ and $b$: Minimum and maximum possible values of randomly chosen values. Not present in all distributions;
 \end{itemize}
 
 \section{Distribution types}
@@ -989,7 +989,7 @@ The properties of the triangular distribution are defined by a minimum $a$, a ma
 
 \subsection{Trapezoidal distribution}
 
-The properties of the trapezoidal distribution are defined by a minimum $a$, a maximum $b$, lower shift $c$ and upper shift $d$. The mode of the distribution is equal between $c$ and $d$. It is required that $a < c < d < b$. The effective length $L$ is the mean of the difference between the maximum and minimum and the difference between the upper shiift and lower shift.
+The properties of the trapezoidal distribution are defined by a minimum $a$, a maximum $b$, lower shift $c$ and upper shift $d$. The mode of the distribution is equal between $c$ and $d$. It is required that $a < c < d < b$. The effective length $L$ is the mean of the difference between the maximum and minimum and the difference between the upper shift and lower shift.
 
 \begin{tabular}{p{20mm}p{\textwidth-24pt-20mm}}  
 	
@@ -1309,7 +1309,7 @@ The Bernoulli distribution is a special case of a discrete distribution. It cons
 \subsection{CDF curve distribution}
 \label{sec:CDFCurveDistribution}
 
-The CDF curve distribution consists of a number of reliabity indices for which the physical value is defined. The CDF curve is very much like a fragility curve, only the CDF curve requires that it is strictly monotone ascending or descending.
+The CDF curve distribution consists of a number of reliability indices for which the physical value is defined. The CDF curve is very much like a fragility curve, only the CDF curve requires that it is strictly monotone ascending or descending.
 
 \subsection{Histogram distribution}
 \label{sec:HistogramDistribution}
@@ -1331,8 +1331,8 @@ Fit & $ \displaystyle{a = \left\{\begin{array}{ll} N \left(x_{\text{min}}\right)
 	\end{array}	
 	\right.}$  \\
 where \\
-$N\left(x_{\text{min}}\right)$ & = the number of appeances of value $x_{\text{min}} $ \\
-$N\left(x_{\text{max}}\right)$ & = the number of appeances of value $x_{\text{max}} $ \\
+$N\left(x_{\text{min}}\right)$ & = the number of appearances of value $x_{\text{min}} $ \\
+$N\left(x_{\text{max}}\right)$ & = the number of appearances of value $x_{\text{max}} $ \\
 $\delta$ & $= \frac{x_{\text{max}} - x_{\text{min}}}{N} $
 
 \end{tabular}
@@ -1354,7 +1354,7 @@ The properties of the inverted distribution are
 
 \subsection{Truncated distribution}
 
-The inverted distribution is a distribution on top of another base distribution and is truncated below a minimum vale $a$ and maximum value $b$. The mean and standard deviation displayed are the properties of the base distribution, although not being the correct mean and standard deviation. The properties of the trunacted distribution are 
+The inverted distribution is a distribution on top of another base distribution and is truncated below a minimum vale $a$ and maximum value $b$. The mean and standard deviation displayed are the properties of the base distribution, although not being the correct mean and standard deviation. The properties of the truncated distribution are 
 
 \begin{tabular}{p{20mm}p{\textwidth-24pt-20mm}}  
 	
@@ -1403,7 +1403,7 @@ The goodness of fit is also applied to observation sets in the tab "Source". Thi
 \section{Prior distribution}
 \label{sec:PriorDistribution}
 
-A prior distribution is used to update another distribution, resulting in a posterior distribution. The prior distribution should be a general distribution of a parameter, such as a world wide distribution or a long term distribution. This distribution can be updated with local data or data which are only applicable in a certain situation. The resulting updated distribution is applicable in that situation. The advantage is that even with a limited number of measuremens a meaningful distribution can be derived.
+A prior distribution is used to update another distribution, resulting in a posterior distribution. The prior distribution should be a general distribution of a parameter, such as a world wide distribution or a long term distribution. This distribution can be updated with local data or data which are only applicable in a certain situation. The resulting updated distribution is applicable in that situation. The advantage is that even with a limited number of measurements a meaningful distribution can be derived.
 
 Fitting from a posterior distribution is only possible for normal distributions. The updated posterior distribution is calculated as follows [\cite{Lynch2007}]:
 
@@ -1510,7 +1510,7 @@ decomposition of the correlation matrix $\left[\rho\right] = LL^\top$.
 
 In single value variation variables are varied one by one and set to a high and low value. The non varied variables are set their median (u = 0).
 
-The major drawback of ths method is that combined effects of input variables are not taken into account.
+The major drawback of this method is that combined effects of input variables are not taken into account.
 
 \section{Sobol indices}
 \label{sec:SobolIndices}
@@ -1556,7 +1556,7 @@ where
 	$j$ & is the variable index; \\
 	$A_i$ & is the $i^{th}$ sample in sample set $A$; \\
 	$z\left(A_i\right)$ & is the model result of the $i^{th}$ sample in sample set $A$; \\
-	$N$ & is the number of samples in a Monte Carlo simlulation; \\  
+	$N$ & is the number of samples in a Monte Carlo simulation; \\  
 	$v$ & is the variance of the model results of the combined set $A$ and $B$; 
 \end{longtable*}
 
@@ -1586,7 +1586,7 @@ Importance sampling is useful when the user is interested in the tail of the dis
 
 FORM (First Order Reliability Method) is like FORM in reliability analysis (see \autoref{sec:FORM}). Starting from the origin in u-apce, steps of fixed length are taken along the steepest gradient. For each step a realization is performed and its result is added to a CDF curve (see \autoref{sec:CDFCurveDistribution}).
 
-Each subsequent step in the resulting CDF curve is calclalted as follows:
+Each subsequent step in the resulting CDF curve is calculated as follows:
 
 \begin{align}
 \label{eq:FORMCDF}
@@ -1653,11 +1653,11 @@ The following calibration algorithms are used to minimize the cost function
 
 \subsection{Grid} \label{sec:GridSearch}
 
-A grid search has a number of dimensions, called N. Each dimension contains a number of numeric items. All item combinations, also called points, are evaluated with the cost function. In essence, the grid search does no more that sequentially evaluating all these points and return the point with the minumum cost value.
+A grid search has a number of dimensions, called N. Each dimension contains a number of numeric items. All item combinations, also called points, are evaluated with the cost function. In essence, the grid search does no more that sequentially evaluating all these points and return the point with the minimum cost value.
 
 Each dimension has a number of items which should be evaluated. The items are defined as a range with a minimum and maximum value and the number of steps into which the range should be subdivided.
 
-Possibly one item cannot be evaluated, because the realizaation can not be calculated. It will be ignored in the optimization process.
+Possibly one item cannot be evaluated, because the realization can not be calculated. It will be ignored in the optimization process.
 
 \subsubsection{Move grid if minimum is on edge} \label{sec:MoveGrid}
 
@@ -2032,7 +2032,7 @@ The user can set the maximum variation coefficient $\varepsilon_{\text{max}}$. T
 
 When the underlying model does not succeed for a certain realization, its results will be ignored. The user should decide whether the number of non succeeded realizations is acceptable.
 
-The minimum and maximum value for which the integration will run, are defined in the u-space. The monte carlo analysis will detect by a minimum number of samples whether the left over area fails or does not fail. 
+The minimum and maximum value for which the integration will run, are defined in the u-space. The Monte Carlo analysis will detect by a minimum number of samples whether the left over area fails or does not fail. 
 
 \begin{figure}[H]
 	\label{fig:MonteCarlo}
@@ -2049,7 +2049,7 @@ The minimum and maximum value for which the integration will run, are defined in
 
 Importance sampling is a variation on Crude Monte Carlo (see \autoref{sec:CrudeMonteCarlo}). The difference is that realization are selected in a smarter way, preferably in the area near the limit state.
 
-Usually Monte Carlo realizations are drawn propertional to their probability density $\varphi\left(u_i\right)$, since in the Probabilistic Toolkit uses the standard normal space. With importance sampling each realization $u$ is translated to $u_{\text{imp}}$. The Probabilisitic Toolkit supports the following translation for each variable separately:
+Usually Monte Carlo realizations are drawn proportional to their probability density $\varphi\left(u_i\right)$, since in the Probabilistic Toolkit uses the standard normal space. With importance sampling each realization $u$ is translated to $u_{\text{imp}}$. The Probabilisitic Toolkit supports the following translation for each variable separately:
 
 \begin{align} 
 \label{eq:ImportanceSamplingVariance}
@@ -2080,7 +2080,7 @@ W_{\text{realization}} = \prod_{\text{variables}} w_{\text{var}}
 where
 
 \begin{longtable}{p{16mm}p{\textwidth-24pt-16mm}}  
-	$\varphi$ & is the standard normal probability denisity function, see \autoref{eq:StandardNormalPDF}; \\  
+	$\varphi$ & is the standard normal probability density function, see \autoref{eq:StandardNormalPDF}; \\  
 	$w_{\text{var}}$ & is the weight factor per variable per realization; \\
 	$W_{\text{realization}}$ & is the weight factor of the realization; \\
 \end{longtable}
@@ -2158,7 +2158,7 @@ The mean realization (see {\autoref{eq:ImportanceSamplingVariance}) is essential
 
 Importance sampling is sensitive to the user given start point. If not chosen well, importance sampling might not give satisfactory results. If the start point is difficult to specify, loops can be used. After each loop, the start point is improved.
 
-Mutiple start points can be used. THterefore the number of clusters should be set to the desired number of clusters. By using the K-Means algorithm, mutiple start points are detected from the samples which lead to failure in the previous loop.
+Multiple start points can be used. Therefore the number of clusters should be set to the desired number of clusters. By using the K-Means algorithm, multiple start points are detected from the samples which lead to failure in the previous loop.
 
 This algorithm is displayed in {\autoref{fig:ImportanceSamplingLoops}}
 
@@ -2214,7 +2214,7 @@ The following is performed in each step.
 	Importance sampling & The importance sampling algorithm (see \autoref{sec:ImportanceSamplingAlgorithm}). The number of samples in each importance sampling can be set to a maximum. When the auto break option is used, the algorithm decides when to break a loop and continue with the next loop (see \autoref{sec:AutoBreakLoops}). \\
 	Converged? & Checks whether convergence is (see \autoref{eq:ISFractionFailed})  \\
 	Final round? & Checks whether the last allowed round is reached, in order to prevent endless loops  \\
-	Recalculate & Recalculates the last round with a possibly higer number of realizations. \\
+	Recalculate & Recalculates the last round with a possibly higher number of realizations. \\
 	Enough failures? & Checks whether enough failures are found. Depending on this value, the kind of modification of importance sampling settings is determined. \\
 	Increase variance & Increases the variance (see \autoref{sec:ImportanceSamplingAlgorithm}) for the next loop. \\
 	Use design point & Uses the design point found in the last loop as start point in the next loop. In case no design point was found, the realization closest to the limit state is used. \\
@@ -2231,7 +2231,7 @@ The following features are available to reduce calculation time.
 \paragraph{Auto break loops}
 \label{sec:AutoBreakLoops}
 
-The number of realizations in the loops in adapative importance sampling can be determined automatically. This algorithm is based on the convergce criterion $\varepsilon_\text{weight}$, which specifies the maximum relative weight of all failing samples. Usually this value is 0.1.
+The number of realizations in the loops in adaptive importance sampling can be determined automatically. This algorithm is based on the convergence criterion $\varepsilon_\text{weight}$, which specifies the maximum relative weight of all failing samples. Usually this value is 0.1.
 
 The loop is broken when the required number of runs with the current start point ($n_\text{additional}$) is more than the expected number of runs with an improved start point ($n_\text{expected}$):
 
@@ -2301,13 +2301,13 @@ where
 	$R_{\text{[0, 1]}}$ & is a random value between 0 and 1; \\  
 	$R_{\text{[-1, 1]}}$ & is a random value between -1 and 1; \\  
 	$r_{\text{var}}$ & is the ratio of probability density between $u_{\text{var, prop}}$ and $u_{\text{var, prev}}$; \\  
-	$\varphi$ & is the probability denisity function of a standard normal distribution (see \autoref{eq:StandardNormalPDF}); \\  
+	$\varphi$ & is the probability density function of a standard normal distribution (see \autoref{eq:StandardNormalPDF}); \\  
 	$\Delta \sigma$ & is the user given max deviation from the previous $u$-value. In case the option 'Adaptive Conditional' is used, this value is derived automatically and updated during the process [\cite{PAPAIOANNOU201589}].
 \end{longtable}
 
 The proposed sample $u_{\text{prop}}$ is used if the corresponding z-value is less than the $z_{\text{k}}$, which is the highest z-value in the subset used to generate new realizations, otherwise the original sample is used.
 
-The probability of failure  is calculated as follows:
+The probability of failure is calculated as follows:
 
 \begin{align} 
 \label{eq:SubsetSimulation}
@@ -2319,7 +2319,7 @@ where
 \begin{longtable}{p{16mm}p{\textwidth-24pt-16mm}}  
 	$i$ & is the iteration index, the first being 0; \\
 	$k$ & is the fraction taken from the realizations (recommended value 0.1); \\  
-	$p_{\text{i, MC}}$ & is the probability of failure calcualted with Crude Monte Carlo using the realizations of the $i^{\text{th}}$ iteration.
+	$p_{\text{i, MC}}$ & is the probability of failure calculated with Crude Monte Carlo using the realizations of the $i^{\text{th}}$ iteration.
 \end{longtable}
 
 \subsection{Directional sampling}
@@ -2327,7 +2327,7 @@ where
 
 \subsubsection{Algorithm}
 
-Directional sampling is a kind of Monte Carlo simulation where realizations are directions instead of realizations. A direction is a direction in the parameter space. Along this direction the point of failure is searched and its corresponding distance $\beta$ to the origin is determined. The remaining probablity of failure beyond this point is calculated and added to the total probability of failure as follows:
+Directional sampling is a kind of Monte Carlo simulation where realizations are directions instead of realizations. A direction is a direction in the parameter space. Along this direction the point of failure is searched and its corresponding distance $\beta$ to the origin is determined. The remaining probability of failure beyond this point is calculated and added to the total probability of failure as follows:
 
 \begin{align} 
 \label{eq:DirectionalSampling}
@@ -2344,7 +2344,7 @@ w_{\text{dir}} = \Gamma \left(\frac{N_{\text{variables}}}{2} , \frac{{\beta_{\te
 where
 
 \begin{longtable}{p{16mm}p{\textwidth-24pt-16mm}}  
-	$w_{\text{dir}}$ & is the weight of a direction or the failure probaility in this direction; \\
+	$w_{\text{dir}}$ & is the weight of a direction or the failure probability in this direction; \\
 	$\beta_{\text{dir}}$ & is the distance along a direction where the first point of failure is found; \\
 	$\Gamma$ & is the upper incomplete regularized gamma function.
 \end{longtable}
@@ -2383,9 +2383,9 @@ The minimum and maximum number of iterations refer to an internal procedure to d
 
 The Latin hypercube algorithm is a kind of Monte Carlo sampling method. 
 
-Latin hypecube uses a fixed number of realizations $N$. The algorithm divides the u-space in $N$ equal sections, starting from $u_\text{min}$ and ending at $u_\text{max}$. The algorithm ensures that each section is represented in the number of realizations. In this way it is ensured that extreme values are used. Note that the weights of realizations differ from each other.
+Latin hypercube uses a fixed number of realizations $N$. The algorithm divides the u-space in $N$ equal sections, starting from $u_\text{min}$ and ending at $u_\text{max}$. The algorithm ensures that each section is represented in the number of realizations. In this way it is ensured that extreme values are used. Note that the weights of realizations differ from each other.
 
-If $u_\text{min}$ and ending at $u_\text{max}$ differ from -8 and 8 (beyond these values no calculation is possible due to numerical reasons), the remainder is regarded as one cell and is used in the failure analyasis.
+If $u_\text{min}$ and ending at $u_\text{max}$ differ from -8 and 8 (beyond these values no calculation is possible due to numerical reasons), the remainder is regarded as one cell and is used in the failure analysis.
 
 Latin hypercube uses the same definition for convergence as Crude Monte Carlo (see \autoref{sec:MCConvergence}). It is only calculated for informative reasons, because a fixed number of realizations is used.
 
@@ -2397,7 +2397,7 @@ The Cobyla algorithm searches for the point in the u space with the highest prob
 
 The Cobyla algorithm is an implementation of Powell's nonlinear derivative-free constrained optimization that uses a linear approximation approach. The algorithm is a sequential trust-region algorithm that employs linear approximations to the objective and constraint functions, where the approximations are formed by linear interpolation at n + 1 points in the space of the variables and tries to maintain a regular-shaped simplex over iterations.
 
-The Cobyla algorithm only gives a rough estimation of the reliablity and design point. It should only be used as a first method in a reliabilty study. 
+The Cobyla algorithm only gives a rough estimation of the reliability and design point. It should only be used as a first method in a reliability study. 
 
 \subsection{FORM}
 \label{sec:FORM}
@@ -2476,7 +2476,7 @@ where
 	$f_\text{relax}$ & is the given relaxation factor. The relaxation factor prevents the algorithm from too big steps, which may cause divergence; \\  	
 \end{longtable}
 
-and finally leads to the reliabilty index $\beta$ as
+and finally leads to the reliability index $\beta$ as
 
 \begin{align}
 \label{eq:FORMBeta}
@@ -2580,15 +2580,15 @@ The executable or Python script will be started with the following arguments.
 	$\{$max$\}$ & Maximum number of steps (optional) \\ 
 \end{tabular}
 
-To communicae with the Probabilistic Toolkit, two files are provided: modelrunner.cs or modelrunner.py, which can be found in the subdirectory External in the Probabilistic Toolkit install directory. The external failure method communicates with the following commands with the Probabilistic Toolkit.
+To communicate with the Probabilistic Toolkit, two files are provided: modelrunner.cs or modelrunner.py, which can be found in the subdirectory External in the Probabilistic Toolkit install directory. The external failure method communicates with the following commands with the Probabilistic Toolkit.
 
 \begin{tabular}{p{1.2in}p{1.2in}p{3.5in}} 
 	GetZValue & float[] u & Gets the z-value for a given u-vector in the standard normal space (mandatory) \\ 
 	Report & float beta, float conv, int step, int maxSteps & Report intermediate progress (optional) \\ 
-	SetDesignPoint & float beta, float[] alpha & Reports the deisgn point. After this call, the Probabilistic Toolkit regards the failure calcualtion as completed (mandatory) \\ 
+	SetDesignPoint & float beta, float[] alpha & Reports the deisgn point. After this call, the Probabilistic Toolkit regards the failure calculation as completed (mandatory) \\ 
 \end{tabular}
 
-An example of a basic monte carlo method, with arguments "$\{$n$\}$ $\{$max$\}$", is given below
+An example of a basic Monte Carlo method, with arguments "$\{$n$\}$ $\{$max$\}$", is given below
 
 \begin{lstlisting}[language=python, basicstyle=\ttfamily, frame=single]
 import sys
@@ -2633,7 +2633,7 @@ To debug an external method, act as follows.
 \section{Contribution per variable}
 \label{sec:Contribution per variable}
 
-For all numerical integration based (Numerical Integration and Numerical Bisection) and Monte Carlo based (Crude Monte Carlo, Importance Sampling, Directional Sampling and Subset Simulation) reliabilty techniques, the contribution per variable is calcualted after the calculation of the reliability index. 
+For all numerical integration based (Numerical Integration and Numerical Bisection) and Monte Carlo based (Crude Monte Carlo, Importance Sampling, Directional Sampling and Subset Simulation) reliabilty techniques, the contribution per variable is calculated after the calculation of the reliability index. 
 
 The following methods can be applied:
 
@@ -2664,7 +2664,7 @@ In this method all realizations are defined with spherical coordinates instead o
 \subsection{Nearest to mean}
 \label{sec:NearestToMean}
 
-This method takes from all realizations, which were regarded as failiing accoring to the failure definition, the realization with the highest probability density.
+This method takes from all realizations, which were regarded as failing according to the failure definition, the realization with the highest probability density.
 
 Although this is the fastest method, this method is not recommended for Monte Carlo techniques. Its results suffer from the randomness in Monte Carlo methods. Unimportant variables may get a significant alpha value for the same reason.
 
@@ -2674,12 +2674,12 @@ Although this is the fastest method, this method is not recommended for Monte Ca
 
 Design points can be combined. This is most of the times desired when multiple failure definitions are applied.
 
-Design point can be combined during the probabilitsic analysis already (see \autoref{sec:CombiningDesignPointsIntegrated}) or afterwards. When combining afterwards, the design points are simulated by equivalent planes. A number of methods exist how to derive the combined design point from the equivalent planes (see \autoref{sec:EquivalentPlanes}).
+Design point can be combined during the probabilistic analysis already (see \autoref{sec:CombiningDesignPointsIntegrated}) or afterwards. When combining afterwards, the design points are simulated by equivalent planes. A number of methods exist how to derive the combined design point from the equivalent planes (see \autoref{sec:EquivalentPlanes}).
 
 \subsection{Integrated}
 \label{sec:CombiningDesignPointsIntegrated}
 
-When combining integrated, the failure definitions are merged to one failure definition. This combined failure definition is used in one of the reliabililty techniques (see \autoref{sec:ReliabilityTechniques}).
+When combining integrated, the failure definitions are merged to one failure definition. This combined failure definition is used in one of the reliability techniques (see \autoref{sec:ReliabilityTechniques}).
 
 When using FORM with integrated, results are not reliable. Therefore the Probabilistic Toolkit prevents this combination.
 
@@ -2779,7 +2779,7 @@ The kernel of the Hohenbichler algorithm is combination of two models $M_{\text{
 
 The result of this combination is a design point. This design point is represented as an equivalent plane again when it should be combined with a third design point. This will be repeated until all design points have been combined. 
 
-First the two most contributing design points are combined, then the remainig design with the highest probability if failure is added, and so on. In this way the error made by representing intermadiate design points is as low as possible.
+First the two most contributing design points are combined, then the remaining design with the highest probability if failure is added, and so on. In this way the error made by representing intermediate design points is as low as possible.
 
 \section{Upscaling}
 \label{sec:Upscaling}
@@ -2794,13 +2794,13 @@ P_{\text{f, nf}} = P_{\text{nf}} \cdot \left(\frac{P_{\text{2, nf}}}{P_{\text{nf
 \chapter{Response surfaces}
 \label{sec:ResponseSurface}
 
-A response surface predicts a response value of a model. The advantage of using response sufaces is that it needs less calculation time than a model.
+A response surface predicts a response value of a model. The advantage of using response surfaces is that it needs less calculation time than a model.
 
 A response surface is trained with a number of of model realizations. Based on these model realizations, all values can be predicted with more or less accuracy. 
 
 It is useful to update the response surface during the calculation. During the calculation it is known which realization to use for recalculation, because of the distance to the limit state.
 
-Response surfaces are defined in x-space or u-space. The advantage of x-space is that reponse surfaces do not need new model runs when variable distributions change.
+Response surfaces are defined in x-space or u-space. The advantage of x-space is that response surfaces do not need new model runs when variable distributions change.
 
 \section{Initialize response surface}
 \label{sec:ProxyInitialization}
@@ -2838,7 +2838,7 @@ where
 
 With least squares regression, the response surface coefficients are calculated from the model results. When there are more response surface coefficients than model runs, the cross terms ($d$) and quadratic coefficients ($c$) are omitted. When later more model runs become available (see \autoref{sec:UpdateProxy}), these coefficients are added.
 
-\subsubsection{Update poylnome response surface}
+\subsubsection{Update polynome response surface}
 \label{sec:UpdateProxy}
 
 During the calculation, samples are selected from which the real model result is requested. This depends on the nature of the probabilistic technique. When such a sample is calculated, its response values are used to update the response surface coefficients.
@@ -2860,7 +2860,7 @@ n = f_{\text{overdetermination}} \cdot n_{\text{required}}
 where 
 
 \begin{longtable*}{p{20mm}p{\textwidth-24pt-20mm}}  
-	$f_{\text{overdetermination}}$ & is the user supplied overdetermination factor ($\geq 1$). This value should not be too high, because then all realizations far from the interesting are are used and disturb proper predictions. The value should not be too low, because some noise could disturb proper predictions. Recommended value is 1.1; \\
+	$f_{\text{overdetermination}}$ & is the user supplied overdetermination factor ($\geq 1$). This value should not be too high, because then all realizations far from the interesting are used and disturb proper predictions. The value should not be too low, because some noise could disturb proper predictions. Recommended value is 1.1; \\
 	$n_{\text{required}}$ & is the number of coefficients (including quadratic and cross terms); 
 \end{longtable*}
 
@@ -2871,7 +2871,7 @@ The user can limit the number of response surface updates.
 
 This section applies to Crude Monte Carlo and Importance Sampling.
 
-After each calculation of a sample using the response surface, it is evaluated whether it should be recalculated with the model. This will be done if the limit state value indicates failure and the sample represents a reliablity index, which is not very unlikely, when compared with the design point found so far. The latter condition is true if
+After each calculation of a sample using the response surface, it is evaluated whether it should be recalculated with the model. This will be done if the limit state value indicates failure and the sample represents a reliability index, which is not very unlikely, when compared with the design point found so far. The latter condition is true if
 
 \begin{align}
 \label{eq:ProxyMCCondition}
@@ -2902,7 +2902,7 @@ Response surface updates in directional sampling are similar to response surface
 \beta_{\text{direction}} \leq \beta_{\text{design}} + \Delta \beta
 \end{align}
 
-If this is true, the direction is recalculated with the model. Then the calculation is stopped and the response surface is updated. Then the calcualtion is started again. Next calculations, which will use exactly the same samples, will reuse prior directions which were recalculated with the model.
+If this is true, the direction is recalculated with the model. Then the calculation is stopped and the response surface is updated. Then the calculation is started again. Next calculations, which will use exactly the same samples, will reuse prior directions which were recalculated with the model.
 
 \paragraph{Updates in FORM}
 
@@ -2912,7 +2912,7 @@ When the design point is found using the response surface, the design point is c
 
 \subsection{Linear grid}
 
-The response surface is defined as a number of points on a grid. When a value is requested, a linear interpolation takes place between the nearest points on the grid. The grid is not necesarily equally spaced.
+The response surface is defined as a number of points on a grid. When a value is requested, a linear interpolation takes place between the nearest points on the grid. The grid is not necessarily equally spaced.
 
 When a value is requested beyond the grid, the point closest to the grid is used.
 
@@ -2930,15 +2930,15 @@ Gaussian Process Regression is used as a model to simulate the original model re
 	\caption{Gaussian Process Regression}
 \end{figure}
 
-When a value is requested at a point which coincides with one of the training runs, the uncertainty will be zero. A value in between will have a non zero uncertainty. The value will be an interpolation between the trained points, taking into account the distance to these points. The distance is not the Euclidian distance, but calculated with the kernel function. The option Matern 5/2 will give the smoothest result and is recommended. 
+When a value is requested at a point which coincides with one of the training runs, the uncertainty will be zero. A value in between will have a non zero uncertainty. The value will be an interpolation between the trained points, taking into account the distance to these points. The distance is not the Euclidean distance, but calculated with the kernel function. The option Matern 5/2 will give the smoothest result and is recommended. 
 
 It is recommended to build up the Gaussian Process Regression model in u-space. Empirically found, this provides the best result.
 
 \subsubsection{Update Gaussian Process Regression}
 
-The uncertainty is used to select the next realization, which will be added to the trained model runs. The realization which produced the largest uncertainty will be used. There are a few options about the uncertainty. THe preferred option is to use the "Wrong qualification", which is the probability that a wrong qualification (failing or not failing) is predicted.
+The uncertainty is used to select the next realization, which will be added to the trained model runs. The realization which produced the largest uncertainty will be used. There are a few options about the uncertainty. The preferred option is to use the "Wrong qualification", which is the probability that a wrong qualification (failing or not failing) is predicted.
 
-\chapter{References}
+\part{References}
 
 \bibliography{references}
 
