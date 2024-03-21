@@ -8,8 +8,7 @@ namespace Deltares {
         {
         public:
             HohenbichlerZ(const double betaV, const double pfU, const double r);
-            double zfunc(std::vector<double>& x) const;
-            void FDelegate(std::shared_ptr<Deltares::Models::ModelSample> s);
+            void zfunc(std::shared_ptr<Deltares::Models::ModelSample> s) const;
         private:
             const double beta2;
             const double pf1;

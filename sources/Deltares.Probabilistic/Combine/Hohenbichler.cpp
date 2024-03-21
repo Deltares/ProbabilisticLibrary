@@ -91,11 +91,11 @@ namespace Deltares {
             std::shared_ptr<Deltares::Statistics::CorrelationMatrix> corr(new Deltares::Statistics::CorrelationMatrix());
             std::shared_ptr<UConverter> uConverter(new UConverter(stochast, corr));
             uConverter->initializeForRun();
-            std::shared_ptr<ZModel> zModel(new ZModel([&w](std::shared_ptr<ModelSample> v) { return w.FDelegate(v); }));
+            std::shared_ptr<ZModel> zModel(new ZModel([&w](std::shared_ptr<ModelSample> v) { return w.zfunc(v); }));
             std::shared_ptr<ModelRunner> modelRunner(new ModelRunner(zModel, uConverter));
             std::shared_ptr<FORM> relMethod(new FORM);
             relMethod->Settings->RelaxationFactor = 0.4;
-            relMethod->Settings->RelaxationLoops = 3;
+            relMethod->Settings->RelaxationLoops = maxTrialLoops;
             relMethod->Settings->EpsilonBeta = 0.01;
             relMethod->Settings->GradientSettings->StepSize = 0.1;
             relMethod->Settings->GradientSettings->GradientType = GradientType::TwoDirections;
