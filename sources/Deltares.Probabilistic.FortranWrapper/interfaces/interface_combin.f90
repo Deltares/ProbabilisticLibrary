@@ -148,17 +148,6 @@ interface
 end interface
 
 interface
-    subroutine getMultipleElementsHigestBeta_c( betaElement, alphaElement, beta, alpha, nrElms, nrStoch ) bind(c)
-        use, intrinsic :: iso_c_binding, only: c_double
-        real(kind=c_double),  intent(in)    :: betaElement(*)       !< Reliability index per element
-        real(kind=c_double),  intent(in)    :: alphaElement(*)      !< Alpha vector per element
-        real(kind=c_double),  intent(out)   :: beta                 !< Reliability index after combining over elements
-        real(kind=c_double),  intent(out)   :: alpha(*)             !< Alpha vector after combining over elements
-        integer, value,       intent(in)    :: nrElms, nrStoch
-    end subroutine getMultipleElementsHigestBeta_c
-end interface
-
-interface
     integer function combineMultipleElementsSpatialCorrelated_c( betaElement, alphaElement, rho, beta, alpha, &
             combAndOrIn, nrElms, nrStoch ) bind(c)
         use, intrinsic :: iso_c_binding, only: c_double
@@ -320,22 +309,6 @@ subroutine combineMultipleElements( betaElement, alphaElement, rho, beta, alpha,
     call warnHohenbichler(n)
 
 end subroutine combineMultipleElements
-
-!> This subroutine takes the best reliability index (beta) and alpha values of a set of elements
-subroutine getMultipleElementsHigestBeta( betaElement, alphaElement, beta, alpha )
-    real(kind=c_double),  intent(in)    :: betaElement(:)       !< Reliability index per element
-    real(kind=c_double),  intent(in)    :: alphaElement(:,:)    !< Alpha vector per element
-    real(kind=c_double),  intent(out)   :: beta                 !< Reliability index after combining over elements
-    real(kind=c_double),  intent(out)   :: alpha(:)             !< Alpha vector after combining over elements
-
-    integer :: nrElms, nrStoch
-
-    nrElms =  size(betaElement)
-    nrStoch = size(alpha)
-
-    call getMultipleElementsHigestBeta_c(betaElement, alphaElement, beta, alpha, nrElms, nrStoch)
-
-end subroutine getMultipleElementsHigestBeta
 
 !> This subroutine combines multiple elements with spatial correlation
 subroutine combineMultipleElementsSpatialCorrelated( betaElement, alphaElement, rho, beta, alpha, combAndOrIn )

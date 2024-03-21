@@ -60,13 +60,13 @@ subroutine allProbabilisticTests
     !call allDistributionFunctionsTests
     call allWaartsFunctionsTests
     call allProbMethodsWaartsFunctionsNoIterationTest
-    !call allHohenbichlerTests
-    !call allCombineElementsTests
+    call allHohenbichlerTests
+    call allCombineElementsTests
     !call allPerformImportanceSamplingTests
     !call allPerformAdaptiveMCIStests
     call performAllDSTests
-    !call allUpscalingTests
-    !call allUpscaleLengthTests
+    call allUpscalingTests
+    call allUpscaleLengthTests
     !call allIncompleteGammaTests
     !call allBasicCorrelationTests
 

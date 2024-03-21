@@ -166,9 +166,6 @@ subroutine allCombineElementsTests
    call testWithLevel( testcombineMultipleElementsProb5, &
        "combineMultipleElementsProb: Test 5 combination of ten different elements", level)
 
-   call testWithLevel( testgetMultipleElementsHigestBeta, &
-       "getMultipleElementsHigestBeta: get element with the highest beta", level)
-
    call testWithLevel( testFromRealCasesA, "test from RealCases A", level)
    call testWithLevel( testFromRealCasesB, "test from RealCases B", level)
    call testWithLevel( testFromRealCasesC, "test from RealCases C", level)
@@ -2603,45 +2600,6 @@ subroutine testcombineMultipleElementsProb5
     call assert_comparable(alpha, alphaExpected, margin, "difference in alpha")
 
 end subroutine testcombineMultipleElementsProb5
-
-! > test getMultipleElementsHigestBeta
-subroutine testgetMultipleElementsHigestBeta
-    integer, parameter          :: nStochasts = 3
-    integer, parameter          :: nElements = 10
-    real(kind=wp)               :: betaElement(nElements)               !< Reliability index per element
-    real(kind=wp)               :: alphaElement(nElements,nStochasts)   !< Alpha vector per element
-    real(kind=wp)               :: percentages(nElements)               !< Array of percentages
-    real(kind=wp)               :: beta                                 !< Reliability index after combining over elements
-    real(kind=wp)               :: alpha(nStochasts)                    !< Alpha vector after combining over elements
-    real(kind=wp)               :: betaExpected                         !< Expected reliability index after combining over elements
-    real(kind=wp)               :: alphaExpected(nStochasts)            !< Expected alpha vector after combining over elements
-    real(kind=wp), parameter    :: margin = 1d-6
-    integer                     :: i
-
-    do i = 1, nElements
-        betaElement(i)    = 3.0_wp + (i-1)*0.1_wp
-        alphaElement(i,1) = 1.0_wp
-        alphaElement(i,2) = 0.0_wp
-        alphaElement(i,3) = 0.0_wp
-        percentages(i)    = 10.0_wp
-    enddo
-
-    alphaElement(10,1) = 0.547722557505166_wp
-    alphaElement(10,2) = 0.547722557505166_wp
-    alphaElement(10,3) = 0.632455532033676_wp
-
-    ! the last element has the higest beta
-    betaExpected     = betaElement(10)
-    alphaExpected(1) = alphaElement(10,1)
-    alphaExpected(2) = alphaElement(10,2)
-    alphaExpected(3) = alphaElement(10,3)
-
-    call getMultipleElementsHigestBeta( betaElement, alphaElement, beta, alpha )
-
-    call assert_comparable(beta, betaExpected, margin, "difference in beta")
-    call assert_comparable(alpha, alphaExpected, margin, "difference in alpha")
-
-end subroutine testgetMultipleElementsHigestBeta
 
 subroutine testFromRealCasesA
     real(kind=wp)      :: beta1, beta2, betaC
