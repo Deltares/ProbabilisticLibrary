@@ -7,8 +7,6 @@
 #include <numbers>
 #include <limits>
 
-using namespace Deltares::ProbLibCore;
-
 namespace Deltares
 {
 	namespace Reliability

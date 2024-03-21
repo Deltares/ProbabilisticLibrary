@@ -3,6 +3,8 @@
 #include <math.h>
 #include "../utils/probLibException.h"
 
+using namespace Deltares::Reliability;
+
 namespace Deltares
 {
     namespace Numeric
@@ -16,11 +18,11 @@ namespace Deltares
 
             if (x < 0.0)
             {
-                throw ProbLibCore::probLibException("Error in Dgammq: x < 0 violated");
+                throw probLibException("Error in Dgammq: x < 0 violated");
             }
             else if (a <= 0.0)
             {
-                throw ProbLibCore::probLibException("Error in Dgammq: a <= 0 violated; a = ", a);
+                throw probLibException("Error in Dgammq: a <= 0 violated; a = ", a);
             }
             else
             {
@@ -76,7 +78,7 @@ namespace Deltares
                 }
                 else
                 {
-                    throw ProbLibCore::probLibException("Error in DGser: no convergence");
+                    throw probLibException("Error in DGser: no convergence");
                 }
             }
         }
@@ -125,7 +127,7 @@ namespace Deltares
             }
             else
             {
-                throw ProbLibCore::probLibException("Error in DGcf: no convergence");
+                throw probLibException("Error in DGcf: no convergence");
             }
         }
 

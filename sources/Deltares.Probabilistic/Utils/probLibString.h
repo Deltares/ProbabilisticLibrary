@@ -2,7 +2,7 @@
 #include <string>
 
 namespace Deltares {
-    namespace ProbLibCore {
+    namespace Reliability {
 
         class probLibString
         {

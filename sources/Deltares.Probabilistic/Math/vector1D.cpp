@@ -1,12 +1,11 @@
 #include <math.h>
 #include <cmath>
 #include "vector1D.h"
-#include "basic_math.h"
 #include <iostream>
 #include <fstream>
 
 namespace Deltares {
-    namespace ProbLibCore {
+    namespace Reliability {
 
         vector1D::vector1D() : m_data(NULL), m_rows(0) {}
 
@@ -223,7 +222,7 @@ namespace Deltares {
             double m = m_data[0];
             for (size_t k = 1; k < m_rows; k++)
             {
-                m = min(m, m_data[k]);
+                m = std::min(m, m_data[k]);
             }
             return m;
         }
@@ -236,7 +235,7 @@ namespace Deltares {
 
             for (size_t k = 1; k < m_rows; k++)
             {
-                m = max(m, m_data[k]);
+                m = std::max(m, m_data[k]);
             }
             return m;
         }

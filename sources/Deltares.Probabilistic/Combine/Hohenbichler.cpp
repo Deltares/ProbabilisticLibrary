@@ -1,13 +1,11 @@
 #include <math.h>
-#include "../utils/basic_math.h"
-#include "../probFuncs/conversions.h"
-#include "../probFuncs/listDistribs.h"
-#include "../distributions/normalDist.h"
-#include "../probMethods/progress.h"
 #include "Hohenbichler.h"
+#include "../Statistics/StandardNormal.h"
+
+using namespace Deltares::Statistics;
 
 namespace Deltares {
-    namespace ProbLibCore {
+    namespace Reliability {
 
         //> @file
         // This file contains a class with the computation method of Hohenbichler
@@ -41,22 +39,7 @@ namespace Deltares {
         // is needed for the computation of the alpha's (i.e. direction of the design point).
         // So the output of the subroutine Hohenbichler is \f$ P\left( {Z_2  < 0|Z_1  < 0} \right)\ \f$
 
-        Hohenbichler::Hohenbichler(const progress& pg) : p(pg)
-        {
-            auto FormFlags = FormSettings();
-            FormFlags.relaxationFactor = 0.4;
-            FormFlags.du = 0.1;
-            FormFlags.epsilonBeta = 0.01;
-            FormFlags.epsilonZvalue = 0.01;
-            Form = new formWithTrialLoops(FormFlags, p);
-        }
-
-        Hohenbichler::~Hohenbichler()
-        {
-            delete Form;
-        }
-
-        std::pair<double, ConvergenceStatus> Hohenbichler::PerformHohenbichler(const double betaV, const double pfU, const double rhoInput)
+        std::pair<double, int> Hohenbichler::PerformHohenbichler(const double betaV, const double pfU, const double rhoInput)
         {
             //
             //   INPUT/OUTPUT VARIABLES
@@ -77,47 +60,37 @@ namespace Deltares {
             double rho = rhoInput;
             if (fabs(rho) < 1.0e-8)
             {
-                return { conversions::QfromBeta(betaV), ConvergenceStatus::success };
+                return { StandardNormal::getQFromU(betaV), 0 };
             }
             //
             //   Limit the correlation coefficient away from 1. and -1.
             //   For rho > rhoLimit no calculation is performed, because the result is always equal 1.0.
             //   Values of rho less than -1.0 are not valid and set equal to -1.0.
             //
-            rho = max(min(rho, rhoLimitHohenbichler), -1.0);
+            rho = std::max(std::min(rho, rhoLimitHohenbichler), -1.0);
 
             //
             //   Initialise the probabilistic data module
             //
             auto w = HohenbichlerZ(betaV, pfU, rho);
 
-            if (params.size() == 0)
-            {
-                auto u1 = new uSpace();
-                auto u2 = new uSpace();
-                params.addDistrib(u1);
-                params.addDistrib(u2);
-            }
-            auto s = stochSettings(id, params);
-            auto calcResult = Form->calc(w, s);
-
             //
             //   Compute the failure probability
             //
-            double pfVpfU = calcResult.result.getQ();
+            double pfVpfU = -999.0; // calcResult.result.getQ();
 
             if (rhoInput > rhoLimitHohenbichler)
             {
                 pfVpfU += (rhoInput - rhoLimitHohenbichler) / (1.0 - rhoLimitHohenbichler) * (1.0 - pfVpfU);
             }
-            return { pfVpfU, calcResult.convergence };
+            return { pfVpfU, 0 };
         }
 
         HohenbichlerZ::HohenbichlerZ(const double betaV, const double pfU, const double r) :
             beta2(betaV), pf1(pfU), rho(r), squaredRoot(sqrt(1.0 - r * r)) {}
 
         //> ZHohenbichler: Z-function for Hohenbichler with input parameters x and output parameter z
-        double HohenbichlerZ::zfunc(const probDraw& drw) const
+        double HohenbichlerZ::zfunc(std::vector<double> & x) const
         {
             //
             // u     : u-value (standard normal distributed)
@@ -126,10 +99,10 @@ namespace Deltares {
             // pf1   : Probability of failure for stochastic variable 1 (smallest probability of failure)
             // rho   : Correlation coefficient between Z_1 and Z_2
             //
-            const double u = drw.getx(0);
-            const double w = drw.getx(1);
-            double phiU = conversions::PfromBeta(u);
-            double uAccent = conversions::betaFromQ(pf1 * phiU);
+            const double u = x[0];
+            const double w = x[1];
+            double phiU = StandardNormal::getPFromU(u);
+            double uAccent = StandardNormal::getUFromQ(pf1 * phiU);
             return beta2 - rho * uAccent - squaredRoot * w;
         }
     }

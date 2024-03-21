@@ -1,7 +1,7 @@
 #pragma once
 
 namespace Deltares {
-    namespace ProbLibCore {
+    namespace Reliability {
 
         enum class EnumDistributions
         {

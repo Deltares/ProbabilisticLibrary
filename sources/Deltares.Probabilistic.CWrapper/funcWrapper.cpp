@@ -9,7 +9,7 @@ namespace Deltares
 	}
 }
 
-using namespace Deltares::ProbLibCore;
+using namespace Deltares::Reliability;
 
 void funcWrapper::FDelegate(std::shared_ptr<Deltares::Models::ModelSample> s)
 {

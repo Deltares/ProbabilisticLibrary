@@ -21,7 +21,7 @@ namespace Deltares
 			case MersenneTwister: Random::randomValueGenerator = new MersenneTwisterRandomValueGenerator(); break;
 			case GeorgeMarsaglia: Random::randomValueGenerator = new GeorgeMarsagliaRandomValueGenerator(); break;
 			case ModifiedKnuthSubtractive: Random::randomValueGenerator = new ModifiedKnuthSubtractiveRandomValueGenerator(); break;
-			default: throw Deltares::ProbLibCore::probLibException("Generator type not supported");
+			default: throw Deltares::Reliability::probLibException("Generator type not supported");
 			}
 
 			Random::repeatable = repeatable;

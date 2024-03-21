@@ -1,4 +1,5 @@
 file(GLOB ptkcpp_files
+    "Combine/*.cpp"
     "Math/*.cpp"
     "Math/ASA/*.cpp"
     "Math/Randomizers/*.cpp"

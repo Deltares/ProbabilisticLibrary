@@ -4,7 +4,7 @@
 #include "../Utils/probLibException.h"
 
 namespace Deltares {
-    namespace ProbLibCore {
+    namespace Reliability {
 
         class vector1D
         {

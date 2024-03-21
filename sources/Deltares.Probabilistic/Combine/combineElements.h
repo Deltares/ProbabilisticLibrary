@@ -1,10 +1,10 @@
 #pragma once
 #include <vector>
-#include "../utils/vector1D.h"
-#include "../probFuncs/alphaBeta.h"
+#include "../Math/vector1D.h"
+#include "alphaBeta.h"
 
 namespace Deltares {
-    namespace ProbLibCore {
+    namespace Reliability {
 
         enum class combineAndOr
         {
