@@ -56,6 +56,7 @@ namespace Deltares
 				else
 				{
 					relaxationFactor /= 2;
+					Settings->MaximumIterations *= 2;
 
 					int modifiedRelaxationIndex = relaxationIndex + 1;
 

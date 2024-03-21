@@ -1,6 +1,10 @@
 #include <math.h>
 #include "Hohenbichler.h"
 #include "../Statistics/StandardNormal.h"
+#include "../Reliability/DesignPoint.h"
+#include "../Model/ModelRunner.h"
+#include "../Reliability/ReliabilityMethod.h"
+#include "../Reliability/FORM.h"
 
 using namespace Deltares::Statistics;
 
@@ -74,16 +78,39 @@ namespace Deltares {
             //
             auto w = HohenbichlerZ(betaV, pfU, rho);
 
+            auto stochast = std::vector<std::shared_ptr<Deltares::Statistics::Stochast>>();
+            const size_t nStoch = 2;
+            for (size_t i = 0; i < nStoch; i++)
+            {
+                auto dist = DistributionType::Normal;
+                std::vector<double> params{ 0.0, 1.0 };
+                std::shared_ptr<Stochast> s(new Stochast(dist, params));
+                stochast.push_back(s);
+            }
+            std::shared_ptr<Deltares::Statistics::CorrelationMatrix> corr(new Deltares::Statistics::CorrelationMatrix());
+            std::shared_ptr<UConverter> uConverter(new UConverter(stochast, corr));
+            uConverter->initializeForRun();
+            std::shared_ptr<ZModel> zModel(new ZModel([&w](std::shared_ptr<ModelSample> v) { return w.FDelegate(v); }));
+            std::shared_ptr<ModelRunner> modelRunner(new ModelRunner(zModel, uConverter));
+            std::shared_ptr<FORM> relMethod(new FORM);
+            relMethod->Settings->RelaxationFactor = 0.4;
+            relMethod->Settings->RelaxationLoops = 3;
+            relMethod->Settings->EpsilonBeta = 0.01;
+            relMethod->Settings->GradientSettings->StepSize = 0.1;
+            relMethod->Settings->GradientSettings->GradientType = GradientType::TwoDirections;
+            std::shared_ptr<DesignPoint> newResult(relMethod->getDesignPoint(modelRunner));
+            auto converged = (newResult->convergenceReport->IsConverged ? 0 : 1);
+
             //
             //   Compute the failure probability
             //
-            double pfVpfU = -999.0; // calcResult.result.getQ();
+            double pfVpfU = StandardNormal::getQFromU(newResult->Beta);
 
             if (rhoInput > rhoLimitHohenbichler)
             {
                 pfVpfU += (rhoInput - rhoLimitHohenbichler) / (1.0 - rhoLimitHohenbichler) * (1.0 - pfVpfU);
             }
-            return { pfVpfU, 0 };
+            return { pfVpfU, converged };
         }
 
         HohenbichlerZ::HohenbichlerZ(const double betaV, const double pfU, const double r) :
@@ -105,5 +132,15 @@ namespace Deltares {
             double uAccent = StandardNormal::getUFromQ(pf1 * phiU);
             return beta2 - rho * uAccent - squaredRoot * w;
         }
+
+        void HohenbichlerZ::FDelegate(std::shared_ptr<Deltares::Models::ModelSample> s)
+        {
+            auto x = std::vector<double>(2);
+            x[0] = s->Values[0];
+            x[1] = s->Values[1];
+            auto z = zfunc(x);
+            s->Z = z;
+        }
+
     }
 }

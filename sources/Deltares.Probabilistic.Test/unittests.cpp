@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include "Reliability/testStartPointCalculator.h"
 #include "Math/testNumericSupport.h"
+#include "Combin/hohenbichler_tests.h"
 
 using namespace Deltares::Probabilistic;
 
@@ -14,6 +15,12 @@ namespace Deltares
             {
                 ::testing::InitGoogleTest(&argc, argv);
                 return RUN_ALL_TESTS();
+            }
+
+            TEST(unittst, hohenbichler_tests)
+            {
+                auto h = HohenbichlerTest();
+                h.allHohenbichlerTests();
             }
 
             TEST(unittst, testNumericSupport)
