@@ -47,6 +47,11 @@ namespace Deltares
 			{
 				modelRunner->clear();
 
+				if (relaxationIndex < Settings->MaximumIterationsList.size())
+				{
+					Settings->MaximumIterations = Settings->MaximumIterationsList[relaxationIndex];
+				}
+
 				designPoint = getDesignPoint(modelRunner, startPoint->clone(), relaxationFactor, relaxationIndex);
 
 				if (designPoint->convergenceReport->IsConverged)
@@ -56,7 +61,6 @@ namespace Deltares
 				else
 				{
 					relaxationFactor /= 2;
-					Settings->MaximumIterations *= 2;
 
 					int modifiedRelaxationIndex = relaxationIndex + 1;
 
