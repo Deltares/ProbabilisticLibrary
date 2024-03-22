@@ -75,6 +75,7 @@ subroutine test_ds
     character(len=ErrMsgLength) :: errmsg
     type(basicCorrelation)      :: correlations(0)
     real(kind=wp)               :: x(2)
+    logical                     :: convergence
 
     call fillDistribs(distribs)
 
@@ -98,7 +99,8 @@ subroutine test_ds
         call assert_comparable(r%beta, -0.22178518912_wp, margin, "diff in beta")
         call assert_comparable(r%alpha(1:2), [-0.89448_wp, -0.44710_wp], 1d-2, "diff in alpha")
         call assert_comparable(r%x(1:2), [0.59998_wp, 0.80005_wp], 1d-2, "diff in x")
-        call assert_equal(r%convergence, 1, "diff in convergence flag")
+        convergence = r%convergence
+        call assert_false(convergence, "diff in convergence flag")
     else
         call copystrback(errmsg, ierr%message)
         call assert(errmsg)
@@ -146,6 +148,7 @@ subroutine test_form_errorhandling
     character(len=ErrMsgLength) :: errmsg
     type(basicCorrelation)      :: correlations(0)
     real(kind=wp)               :: x(2)
+    logical                     :: convergence
 
     call fillDistribs(distribs)
 
@@ -161,7 +164,8 @@ subroutine test_form_errorhandling
     call probCalcF2C(method, distribs, 2, 2, correlations, 0, zfunc, textualProgress, compIds, ipoint, x, r, ierr)
 
     call assert_equal(ierr%iCode, 0, "diff in return code probCalcF2C")
-    call assert_equal(r%convergence, 1, "diff in convergence flag")
+    convergence = r%convergence
+    call assert_false(convergence, "diff in convergence flag")
     call assert_comparable(r%beta, 40.0_wp, margin, "diff in beta")
 
 end subroutine test_form_errorhandling

@@ -1,5 +1,5 @@
 module interface_probCalc
-  use, intrinsic :: iso_c_binding, only: c_double
+  use, intrinsic :: iso_c_binding, only: c_double, c_bool
   use interface_gen
   use interface_distributions
   use interface_correlation
@@ -71,14 +71,14 @@ module interface_probCalc
   end type tMethod
 
   type, public, bind(c) :: tResult
-    integer             :: convergence
-    real(kind=c_double) :: beta
-    real(kind=c_double) :: alpha(maxActiveStochast)
-    real(kind=c_double) :: x(maxActiveStochast)
-    integer             :: iPoint(maxActiveStochast)
-    integer             :: stepsNeeded
-    integer             :: samplesNeeded
-    real(kind=c_double) :: alpha2(maxActiveStochast)
+    real(kind=c_double)  :: beta
+    real(kind=c_double)  :: alpha(maxActiveStochast)
+    real(kind=c_double)  :: x(maxActiveStochast)
+    integer              :: iPoint(maxActiveStochast)
+    integer              :: stepsNeeded
+    integer              :: samplesNeeded
+    real(kind=c_double)  :: alpha2(maxActiveStochast)
+    logical(kind=c_bool) :: convergence
   end type tResult
 
   integer, parameter :: designPointNone                               =  0
@@ -102,9 +102,6 @@ module interface_probCalc
   integer, parameter :: fORMStartSphereSearchKW                       =  10
 
   integer, parameter :: DirSamplingIterMethodRobust                   =  1
-
-  integer, parameter :: convergenceTRUE                               =  0
-  integer, parameter :: convergenceFALSE                              =  1
 
   integer, parameter :: designPointOutputTRUE                         =  0
   integer, parameter :: designPointOutputFALSE                        =  1
@@ -311,7 +308,7 @@ subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, conv, convCri
     real(kind=wp), intent(out)                 :: alfaN(:)         !< Alpha values
     real(kind=wp), intent(out)                 :: beta             !< Reliability index
     real(kind=wp), intent(inout)               :: x(:)             !< X values of design point
-    integer,       intent(out)                 :: conv             !< Convergence indicator
+    logical,       intent(out)                 :: conv             !< Convergence indicator
     logical,       intent(out)                 :: convCriterium    !< Convergence criterium indicator
     type(storedConvergenceData), intent(inout) :: convergenceData  !< struct holding all convergence data
     character(len=*), intent(in), optional     :: name             !< Name of mechanism (for use in error message)
@@ -441,11 +438,11 @@ subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, conv, convCri
             endif
             if (method%methodId == methodFORMandDirSampling .and. rn%samplesNeeded > 0) then
                 ! to get logging in output.txt right; as we have samples, Form did not succeed (no convergence or beta out of range)
-                conv = convergenceFALSE
+                conv = .false.
             else
                 conv = rn%convergence
             end if
-            convCriterium = (rn%convergence == convergenceTRUE)
+            convCriterium = rn%convergence
             convergenceData%cnvg_data_ds%numberSamples = rn%samplesNeeded
             convergenceData%cnvg_data_form%numberiterations = rn%stepsNeeded
         end if

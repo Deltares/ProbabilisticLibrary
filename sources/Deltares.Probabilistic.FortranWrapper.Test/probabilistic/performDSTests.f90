@@ -138,7 +138,7 @@ subroutine testDSFI
     real(kind=wp)                         :: alpha1(nStochasts)             !< Alpha values (short vector) first computation
     real(kind=wp)                         :: alpha2(nStochasts)             !< Alpha values (short vector) 2nd computation
     real(kind=wp)                         :: beta(2)                        !< Reliability index all cases
-    integer                               :: conv1                          !< Convergence criterium indicator (FORM)
+    logical                               :: conv1                          !< Convergence criterium indicator (FORM)
     logical                               :: conv2                          !< Convergence criterium indicator (DS)
     type(storedConvergenceData)           :: convergenceData1               !< convergenceData first computation
     type(storedConvergenceData)           :: convergenceData2               !< convergenceData 2nd computation
@@ -153,12 +153,12 @@ subroutine testDSFI
     probDb%method%DS%seedPRNG = 1
 
     call calculateLimitStateFunction(probDb, zFuncNod, alpha1, beta(1), x1, conv1, conv2, convergenceData1)
-    call assert_equal(conv1, convergenceTRUE, 'conv1 - meth. 12')
+    call assert_true(conv1, 'conv1 - meth. 12')
     call assert_true(conv2, 'conv2 - meth. 12')
 
     probDb%method%calcMethod = methodDirSamplingWithFORMiterationsStartU
     call calculateLimitStateFunction(probDb, zFuncNod, alpha2, beta(2), x2, conv1, conv2, convergenceData2)
-    call assert_equal(conv1, convergenceTRUE, 'conv1 - meth. 16')
+    call assert_true(conv1, 'conv1 - meth. 16')
     call assert_true(conv2, 'conv2 - meth. 16')
 
     call assert_equal(convergenceData1%cnvg_data_form%numberIterations, 10, '# FORM iterations u = -alpha * beta')
@@ -494,7 +494,7 @@ subroutine performDirectionalSampling( probDb, fx, nStochasts, iPoint, x, alfa, 
     procedure(progressCancelNew), optional     :: pcNew            !< progress/cancel function
 
     type(storedConvergenceData)   :: allConvergenceData  !< struct holding all convergence data
-    integer                       :: conv
+    logical                       :: conv
 
     probDb%method%calcMethod = methodDirectionalSampling
     call calculateLimitStateFunction( probDb, fx, alfa, beta, x, conv, convCriterium, allConvergenceData, pc=pc, pcNew=pcNew)
