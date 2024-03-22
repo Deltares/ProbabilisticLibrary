@@ -1,0 +1,19 @@
+default_excludes: true
+component_depth: 2
+exclude:
+  - "external"
+languages:
+  - name: "C++"
+  - name: "Fortran"
+  - name: "Csharp"
+dependencychecker:
+  enabled: true
+  blocklist: []
+  transitive: false
+  exclude:
+    - ".*/*[.]Test/.*"
+    - ".*/*[.]TestUtil/.*"
+thirdpartyfindings:
+  enabled: true
+architecture:
+  enabled: true
