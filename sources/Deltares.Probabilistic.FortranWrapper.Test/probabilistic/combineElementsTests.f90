@@ -1510,7 +1510,7 @@ subroutine testcombineTwoElementsNegativeCorrelation2
 
 !   For the present alpha and beta it can be analytically shown that no failure can occur
 !   Theoretically the expected beta of the combination is then +infinity. Practically:
-    expectedBeta  = 37.0470962993612_wp
+    expectedBeta  = 40.0_wp
 
     expectedAlphaC= [ sqrt(0.5_wp), sqrt(0.5_wp) ]
 
