@@ -3,9 +3,9 @@ component_depth: 2
 exclude:
   - "external"
 languages:
-  - name: "C++"
-  - name: "Fortran"
-  - name: "Csharp"
+  - name: "cpp"
+  - name: "fortran"
+  - name: "csharp"
 dependencychecker:
   enabled: true
   blocklist: []
