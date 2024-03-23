@@ -10,9 +10,12 @@ components:
   - name: "Fortran-wrapper"
   - include:
     - "sources/Deltares.Probabilistic.FortranWrapper/.*[.][fF]90"
-  - name: "C#-wrapper"
+  - name: "CLI-wrapper"
   - include:
-    - "sources/Deltares.Probabilistic.Wrapper/.*[.]cs"
+    - "sources/Deltares.Probabilistic.Wrapper/.*[.]h"
+    - "sources/Deltares.Probabilistic.Wrapper/.*[.]cpp"
+exclude:
+  - "external/.*"
 languages:
   - name: "cpp"
     test:
