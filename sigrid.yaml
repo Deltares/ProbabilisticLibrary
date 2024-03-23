@@ -15,7 +15,10 @@ components:
     - "sources/Deltares.Probabilistic.Wrapper/.*[.]h"
     - "sources/Deltares.Probabilistic.Wrapper/.*[.]cpp"
 exclude:
-  - "external/.*"
+  - "external/src/.*"
+  - "external/testDoc/.*"
+  - "external/tests/.*"
+  - "external/wrappers/.*"
 languages:
   - name: "cpp"
     test:
