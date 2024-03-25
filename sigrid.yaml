@@ -2,29 +2,29 @@ default_excludes: true
 components:
   - name: "kernel"
     include:
-      - "sources/Deltares.Probabilistic/.*[.]cpp"
+      - ".*sources/Deltares.Probabilistic/.*[.]cpp"
   - name: "C-wrapper"
     include:
-      - "sources/Deltares.Probabilistic.CWrapper/.*[.]cpp"
+      - ".*sources/Deltares.Probabilistic.CWrapper/.*[.]cpp"
   - name: "Fortran-wrapper"
     include:
-      - "sources/Deltares.Probabilistic.FortranWrapper/.*[.][fF]90"
+      - ".*sources/Deltares.Probabilistic.FortranWrapper/.*[.][fF]90"
   - name: "CLI-wrapper"
     include:
-      - "sources/Deltares.Probabilistic.Wrapper/.*[.]cpp"
+      - ".*sources/Deltares.Probabilistic.Wrapper/.*[.]cpp"
 languages:
   - name: "cpp"
     test:
        include:
-         - "sources/Deltares.Probabilistic.Test/.*[.].cpp"
+         - ".*sources/Deltares.Probabilistic.Test/.*[.].cpp"
   - name: "fortran"
     test:
        include:
-         - "sources/Deltares.Probabilistic.FortranWrapper.Test/.*[.][fF]90"
+         - ".*sources/Deltares.Probabilistic.FortranWrapper.Test/.*[.][fF]90"
   - name: "csharp"
     test:
        include:
-         - "sources/Deltares.Probabilistic.Wrapper.Test/.*[.]cs"
+         - ".*sources/Deltares.Probabilistic.Wrapper.Test/.*[.]cs"
 dependencychecker:
   enabled: true
   blocklist: []
