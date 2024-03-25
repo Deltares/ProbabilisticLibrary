@@ -2,7 +2,6 @@ default_excludes: true
 components:
   - name: "kernel"
     include:
-      - "sources/Deltares.Probabilistic/.*[.]h"
       - "sources/Deltares.Probabilistic/.*[.]cpp"
   - name: "C-wrapper"
     include:
@@ -12,18 +11,11 @@ components:
       - "sources/Deltares.Probabilistic.FortranWrapper/.*[.][fF]90"
   - name: "CLI-wrapper"
     include:
-      - "sources/Deltares.Probabilistic.Wrapper/.*[.]h"
       - "sources/Deltares.Probabilistic.Wrapper/.*[.]cpp"
-exclude:
-  - "external/src/.*"
-  - "external/testDoc/.*"
-  - "external/tests/.*"
-  - "external/wrappers/.*"
 languages:
   - name: "cpp"
     test:
        include:
-         - "sources/Deltares.Probabilistic.Test/.*[.].h"
          - "sources/Deltares.Probabilistic.Test/.*[.].cpp"
   - name: "fortran"
     test:
