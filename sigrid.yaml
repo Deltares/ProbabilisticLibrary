@@ -5,6 +5,11 @@ component_base_dirs:
   - "sources/Deltares.Probabilistic.FortranWrapper"
   - "sources/Deltares.Probabilistic.Wrapper"
   - ""
+exclude:
+  - ".*/ASA/.*"
+  - ".*/feedback/.*"
+  - ".*/feedback_dll/.*"
+  - ".*/general/.*f90"
 languages:
   - name: "cpp"
     production:
