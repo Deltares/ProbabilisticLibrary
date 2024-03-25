@@ -7,14 +7,17 @@ component_base_dirs:
   - ""
 languages:
   - name: "cpp"
+    production:
     test:
        include:
          - ".*sources/Deltares.Probabilistic.Test/.*[.].cpp"
   - name: "fortran"
+    production:
     test:
        include:
          - ".*sources/Deltares.Probabilistic.FortranWrapper.Test/.*[.][fF]90"
   - name: "csharp"
+    production:
     test:
        include:
          - ".*sources/Deltares.Probabilistic.Wrapper.Test/.*[.]cs"
