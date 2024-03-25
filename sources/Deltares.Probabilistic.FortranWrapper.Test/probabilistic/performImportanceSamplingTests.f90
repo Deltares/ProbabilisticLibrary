@@ -154,7 +154,7 @@ subroutine performImportanceSampling( probDb, fx, nStochasts, iPoint, x, alfa, b
     integer,       intent(in)                  :: nStochasts       !< number of active stochasts
 
     type(storedConvergenceData) :: convergenceData  !< struct holding all convergence data
-    integer :: conv
+    logical :: conv
 
     call calculateLimitStateFunction( probDb, fx, alfa, beta, x, conv, convCriterium, convergenceData)
 end subroutine performImportanceSampling

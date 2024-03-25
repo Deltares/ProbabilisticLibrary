@@ -18,6 +18,7 @@ namespace Deltares
             double FailWeight = nan("");
             double ZMargin = 0;
             int TotalDirections = -1;
+            int TotalIterations = -1;
         };
     }
 }

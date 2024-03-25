@@ -448,7 +448,7 @@ subroutine performAdpMCIS( probDb, fx, nStochasts, iPoint, x, alfa, beta, convCr
     integer,       intent(in)                  :: nStochasts       !< number of active stochasts
 
     type(storedConvergenceData) :: convergenceData  !< struct holding all convergence data
-    integer :: conv
+    logical :: conv
 
     probDb%method%calcMethod = methodAdaptiveImportanceSampling
     probDb%method%FORM%startMethod = probDb%method%AdaptiveIS%startMethod

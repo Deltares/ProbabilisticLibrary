@@ -158,7 +158,7 @@ subroutine testFormWithCorrelation
     real(kind=wp), pointer                 :: x(:)
     type(storedConvergenceData)            :: convergenceData  !< struct holding all convergence data
     type(probabilisticDataStructure_data)  :: probDb
-    integer                                :: conv
+    logical                                :: conv
     logical                                :: convCriterium
 
     call init_probdb_x(probDb, x, iPoint, nStochasts)

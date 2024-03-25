@@ -25,7 +25,6 @@ struct fdistribs
 
 struct tResult
 {
-    int convergence;
     double beta;
     double alpha[maxActiveStochast];
     double x[maxActiveStochast];
@@ -33,6 +32,7 @@ struct tResult
     int stepsNeeded;
     int samplesNeeded;
     double alpha2[maxActiveStochast];
+    bool convergence;
 };
 
 void updateX(const vector1D & alpha, const DPoptions option, tResult & r, const std::shared_ptr<DesignPoint> & newResult,
@@ -147,8 +147,8 @@ void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, const i
         {
             r->alpha2[i] = newResult->Alphas[i]->AlphaCorrelated;
         }
-        r->convergence = newResult->convergenceReport->IsConverged ? 0: 1;
-        r->stepsNeeded = -999;// result.stepsNeeded;
+        r->convergence = newResult->convergenceReport->IsConverged;
+        r->stepsNeeded = newResult->convergenceReport->TotalIterations;
         r->samplesNeeded = newResult->convergenceReport->TotalDirections;
         if (r->samplesNeeded < 0)
         {
