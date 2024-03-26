@@ -2,15 +2,10 @@
 #include <vector>
 #include "../Math/vector1D.h"
 #include "alphaBeta.h"
+#include "combiner.h"
 
 namespace Deltares {
     namespace Reliability {
-
-        enum class combineAndOr
-        {
-            combAnd,
-            combOr,
-        };
 
         typedef std::vector<alphaBeta> elements;
 
