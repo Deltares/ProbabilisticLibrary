@@ -15,8 +15,8 @@ namespace Deltares
         public:
             double RelaxationFactor = 0.75;
             int RelaxationLoops = 1;
-            std::vector<int> MaximumIterationsList;
             int MaximumIterations = 50;
+            int MaxIterationsGrowthFactor = 1;
             double EpsilonBeta = 0.01;
             bool FilterAtNonConvergence = false;
 

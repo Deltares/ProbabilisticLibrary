@@ -99,7 +99,7 @@ namespace Deltares {
             relMethod->Settings->EpsilonBeta = 0.01;
             relMethod->Settings->GradientSettings->StepSize = 0.1;
             relMethod->Settings->GradientSettings->GradientType = GradientType::TwoDirections;
-            relMethod->Settings->MaximumIterationsList = { 50, 100, 200 };
+            relMethod->Settings->MaxIterationsGrowthFactor  = 2;
             std::shared_ptr<DesignPoint> newResult(relMethod->getDesignPoint(modelRunner));
             auto converged = (newResult->convergenceReport->IsConverged ? 0 : 1);
 
