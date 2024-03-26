@@ -88,6 +88,24 @@
     <ClCompile Include="Statistics\Distributions\DistributionLibrary.cpp" />
     <ClCompile Include="Statistics\Distributions\HistogramDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\ExternalDistribution.cpp" />
+    <ClCompile Include="Combine\combineElements.cpp">
+      <Filter>Combine</Filter>
+    </ClCompile>
+    <ClCompile Include="Combine\combiner.cpp">
+      <Filter>Combine</Filter>
+    </ClCompile>
+    <ClCompile Include="Combine\Hohenbichler.cpp">
+      <Filter>Combine</Filter>
+    </ClCompile>
+    <ClCompile Include="Combine\HohenbichlerCombiner.cpp">
+      <Filter>Combine</Filter>
+    </ClCompile>
+    <ClCompile Include="Combine\HohenbichlerZ.cpp">
+      <Filter>Combine</Filter>
+    </ClCompile>
+    <ClCompile Include="Combine\upscaling.cpp">
+      <Filter>Combine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -189,6 +207,30 @@
     <ClInclude Include="Statistics\Distributions\HistogramDistribution.h" />
     <ClInclude Include="Statistics\Distributions\ExternalDistribution.h" />
     <ClInclude Include="Model\ModelSample.h" />
+    <ClInclude Include="Combine\alphaBeta.h">
+      <Filter>Combine</Filter>
+    </ClInclude>
+    <ClInclude Include="Combine\combineElements.h">
+      <Filter>Combine</Filter>
+    </ClInclude>
+    <ClInclude Include="Combine\combiner.h">
+      <Filter>Combine</Filter>
+    </ClInclude>
+    <ClInclude Include="Combine\Hohenbichler.h">
+      <Filter>Combine</Filter>
+    </ClInclude>
+    <ClInclude Include="Combine\HohenbichlerCombiner.h">
+      <Filter>Combine</Filter>
+    </ClInclude>
+    <ClInclude Include="Combine\HohenbichlerZ.h">
+      <Filter>Combine</Filter>
+    </ClInclude>
+    <ClInclude Include="Combine\intEqualElements.h">
+      <Filter>Combine</Filter>
+    </ClInclude>
+    <ClInclude Include="Combine\upscaling.h">
+      <Filter>Combine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">
@@ -199,6 +241,9 @@
     </Filter>
     <Filter Include="extern">
       <UniqueIdentifier>{7cc05a32-9dfe-4ab0-ad99-c34ddfcc5484}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Combine">
+      <UniqueIdentifier>{a3e0f7dc-9186-4b26-bf15-3e0f227ca8ca}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
