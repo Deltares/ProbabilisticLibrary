@@ -1,3 +1,4 @@
+#include <cmath>
 #include "NormalDistribution.h"
 #include "../StochastProperties.h"
 #include "../StandardNormal.h"

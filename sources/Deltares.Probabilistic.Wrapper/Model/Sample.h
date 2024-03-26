@@ -29,7 +29,7 @@ namespace Deltares
 				{
 					shared = new SharedPointerProvider(sample);
 
-					switch (sample->SpaceType)
+					switch (sample->spaceType)
 					{
 					case Models::SpaceType::U: this->SpaceType = Wrappers::SpaceType::U; break;
 					case Models::SpaceType::X: this->SpaceType = Wrappers::SpaceType::X; break;

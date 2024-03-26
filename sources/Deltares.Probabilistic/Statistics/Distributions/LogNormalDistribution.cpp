@@ -18,7 +18,7 @@ namespace Deltares
 
 		bool LogNormalDistribution::isValid(std::shared_ptr<StochastProperties> stochast)
 		{
-			return !isinf(stochast->Location) && stochast->Scale >= 0;
+			return !std::isinf(stochast->Location) && stochast->Scale >= 0;
 		}
 
 		bool LogNormalDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)
@@ -28,15 +28,15 @@ namespace Deltares
 
 		double LogNormalDistribution::getMean(std::shared_ptr<StochastProperties> stochast)
 		{
-			if (isinf(stochast->Location) && !isnan(this->requestedMean))
+			if (std::isinf(stochast->Location) && !std::isnan(this->requestedMean))
 			{
 				return this->requestedMean;
 			}
-			else if (isinf(stochast->Location))
+			else if (std::isinf(stochast->Location))
 			{
 				return this->requestedMean;
 			}
-			else if (isinf(stochast->Location))
+			else if (std::isinf(stochast->Location))
 			{
 				return stochast->Shift;
 			}
@@ -48,7 +48,7 @@ namespace Deltares
 
 		double LogNormalDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
 		{
-			if (isinf(stochast->Location) && !isnan(this->requestedDeviation))
+			if (std::isinf(stochast->Location) && !std::isnan(this->requestedDeviation))
 			{
 				return this->requestedDeviation;
 			}
@@ -85,7 +85,7 @@ namespace Deltares
 
 		void LogNormalDistribution::setShift(std::shared_ptr<StochastProperties> stochast, double shift, bool inverted)
 		{
-			bool useRequestedValues = isinf(stochast->Location) && !isnan(this->requestedMean);
+			bool useRequestedValues = std::isinf(stochast->Location) && !std::isnan(this->requestedMean);
 
 			double oldMean = useRequestedValues ? this->requestedMean : this->getMean(stochast);
 			double oldDeviation = useRequestedValues ? this->requestedDeviation : this->getDeviation(stochast);

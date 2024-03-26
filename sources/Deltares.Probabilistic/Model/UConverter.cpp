@@ -6,10 +6,10 @@
 #include "../Statistics/CorrelationMatrix.h"
 #include "../Reliability/StochastSettings.h"
 #include "../Reliability/StochastSettingsSet.h"
+#include "../Utils/probLibException.h"
 
 #include <memory>
 #include <set>
-
 
 namespace Deltares
 {
@@ -132,12 +132,12 @@ namespace Deltares
 		{
 			std::map<std::shared_ptr<Statistics::Stochast>, std::shared_ptr<Deltares::Reliability::StochastSettings>> stochastSettingsMap;
 
-			for (size_t i = 0; i < settings->StochastSettings.size(); i++)
+			for (size_t i = 0; i < settings->stochastSettings.size(); i++)
 			{
-				stochastSettingsMap[settings->StochastSettings[i]->stochast] = settings->StochastSettings[i];
+				stochastSettingsMap[settings->stochastSettings[i]->stochast] = settings->stochastSettings[i];
 			}
 
-			settings->StochastSettings.clear();
+			settings->stochastSettings.clear();
 			settings->VaryingStochastSettings.clear();
 			int j = 0; // varying stochast counter
 
@@ -145,17 +145,17 @@ namespace Deltares
 			{
 				if (stochastSettingsMap.contains(stochasts[i]))
 				{
-					settings->StochastSettings.push_back(stochastSettingsMap[stochasts[i]]->clone());
+					settings->stochastSettings.push_back(stochastSettingsMap[stochasts[i]]->clone());
 				}
 				else
 				{
 					std::shared_ptr<Deltares::Reliability::StochastSettings> newStochastSettings = std::make_shared<Deltares::Reliability::StochastSettings>();
-					settings->StochastSettings.push_back(newStochastSettings);
+					settings->stochastSettings.push_back(newStochastSettings);
 				}
 
 				if (stochasts[i]->isVarying() && !isFullyCorrelated(i, this->varyingStochastIndex))
 				{
-					std::shared_ptr<Deltares::Reliability::StochastSettings> varyingStochastSettings = settings->StochastSettings.back();
+					std::shared_ptr<Deltares::Reliability::StochastSettings> varyingStochastSettings = settings->stochastSettings.back();
 
 					varyingStochastSettings->StochastIndex = i;
 					varyingStochastSettings->IsQualitative = varyingStochasts[j]->isQualitative();
@@ -350,7 +350,7 @@ namespace Deltares
 				// when no progress and not everything has been assigned => error
 				if (!ready && !modified)
 				{
-					throw new std::exception("circular reference");
+					throw Deltares::ProbLibCore::probLibException("circular reference");
 				}
 			}
 

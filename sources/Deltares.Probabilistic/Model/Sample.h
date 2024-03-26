@@ -47,7 +47,7 @@ namespace Deltares
 			/**
 			 * \brief Defines the parameter space in which Values are defined
 			 */
-			SpaceType SpaceType = SpaceType::U;
+			SpaceType spaceType = SpaceType::U;
 
 			int IterationIndex = -1;
 			double Weight = nan("");

@@ -1,3 +1,4 @@
+#include <cmath>
 #include "ExternalDistribution.h"
 
 namespace Deltares
@@ -12,7 +13,7 @@ namespace Deltares
 			}
 			else
 			{
-				return nan("");
+				return std::nan("");
 			}
 		}
 	}

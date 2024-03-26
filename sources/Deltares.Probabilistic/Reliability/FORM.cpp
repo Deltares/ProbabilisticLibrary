@@ -123,7 +123,7 @@ namespace Deltares
 					modelRunner->reportMessage(Models::MessageType::Error, std::format("Model did not provide valid results, limit state value = {0:.5G}", sample->Z));
 #else
 					auto pl = Deltares::ProbLibCore::probLibString();
-					modelRunner->reportMessage(Models::MessageType::Error, "Model did not provide valid results, limit state value = " + pl.double2str( u->Z));
+					modelRunner->reportMessage(Models::MessageType::Error, "Model did not provide valid results, limit state value = " + pl.double2str( sample->Z));
 #endif
 
 					std::shared_ptr<ReliabilityReport> reportInvalid = getReport(iteration, nan(""));

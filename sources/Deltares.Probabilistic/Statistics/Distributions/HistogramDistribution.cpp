@@ -1,7 +1,7 @@
 #include "HistogramDistribution.h"
 
 #include <algorithm>
-
+#include <cmath>
 #include "../StochastProperties.h"
 #include "../StandardNormal.h"
 #include "../../Math/NumericSupport.h"
@@ -166,7 +166,7 @@ namespace Deltares
 				}
 			}
 
-			if (!isinf(max))
+			if (!std::isinf(max))
 			{
 				return max;
 			}

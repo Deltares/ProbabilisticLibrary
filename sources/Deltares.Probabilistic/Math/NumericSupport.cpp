@@ -286,7 +286,7 @@ namespace Deltares
 			{
 				return maxY;
 			}
-			else if (isinf(x))
+			else if (std::isinf(x))
 			{
 				return x;
 			}
@@ -431,7 +431,7 @@ namespace Deltares
 		/// <returns></returns>
 		bool NumericSupport::isValidValue(double x)
 		{
-			return !isnan(x) && !isinf(x);
+			return !std::isnan(x) && !std::isinf(x);
 		}
 
 		/// <summary>

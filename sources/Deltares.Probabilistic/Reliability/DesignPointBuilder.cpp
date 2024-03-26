@@ -108,7 +108,7 @@ namespace Deltares
 			}
 			case DesignPointMethod::CenterOfGravity:
 			{
-				const double weight = isnan(sample->Weight) ? 1 : sample->Weight;
+				const double weight = std::isnan(sample->Weight) ? 1 : sample->Weight;
 
 				for (int j = 0; j < this->qualitativeCount; j++)
 				{
@@ -126,7 +126,7 @@ namespace Deltares
 			}
 			case DesignPointMethod::CenterOfAngles:
 			{
-				const double weight = isnan(sample->Weight) ? 1 : sample->Weight;
+				const double weight = std::isnan(sample->Weight) ? 1 : sample->Weight;
 
 				for (int j = 0; j < this->qualitativeCount; j++)
 				{

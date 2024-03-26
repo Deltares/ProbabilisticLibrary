@@ -5,6 +5,9 @@
 #include "GradientSettings.h"
 #include "Sample.h"
 #include "ModelRunner.h"
+#include "../Utils/probLibException.h"
+
+using namespace Deltares::ProbLibCore;
 
 namespace Deltares
 {
@@ -20,7 +23,7 @@ namespace Deltares
 			// first sample is the sample itself
 			samples.push_back(sample);
 
-			if (Settings->GradientType == OneDirection)
+			if (Settings->gradientType == OneDirection)
 			{
 				double du = Settings->StepSize * 0.5;
 				for (int k = 0; k < nstochasts; k++)
@@ -40,7 +43,7 @@ namespace Deltares
 					gradient[k] = (zp - z) / du;
 				}
 			}
-			else if (Settings->GradientType == TwoDirections)
+			else if (Settings->gradientType == TwoDirections)
 			{
 				for (int k = 0; k < nstochasts; k++)
 				{
@@ -65,7 +68,7 @@ namespace Deltares
 			}
 			else
 			{
-				throw std::exception("gradient type");
+				throw probLibException("gradient type");
 			}
 
 			return gradient;

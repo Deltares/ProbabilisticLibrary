@@ -9,7 +9,7 @@ namespace Deltares
 	{
 		void StochastSettingsSet::loadStochastPoint(std::shared_ptr<StochastPoint> stochastPoint)
 		{
-			this->StochastSettings.clear();
+			this->stochastSettings.clear();
 
 			for (size_t i = 0; i < stochastPoint->Alphas.size(); i++)
 			{
@@ -17,7 +17,7 @@ namespace Deltares
 				settings->StartValue = stochastPoint->Alphas[i]->U;
 				settings->stochast = stochastPoint->Alphas[i]->Stochast;
 
-				this->StochastSettings.push_back(settings);
+				this->stochastSettings.push_back(settings);
 			}
 		}
 

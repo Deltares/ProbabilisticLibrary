@@ -75,7 +75,7 @@ ReliabilityMethod* createReliabilityMethod::selectMethod(const basicSettings& bs
 void createReliabilityMethod::fillFormSettings(std::shared_ptr<FORMSettings>& Settings, const basicSettings& bs, const size_t nStoch)
 {
     Settings->MaximumIterations = bs.numExtraInt;
-    Settings->GradientSettings->GradientType = GradientType::TwoDirections;
+    Settings->GradientSettings->gradientType = GradientType::TwoDirections;
     Settings->FilterAtNonConvergence = true;
     switch (bs.startMethod)
     {
