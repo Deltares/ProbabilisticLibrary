@@ -5,6 +5,7 @@
 #include "Combin/intEqualElements_tests.h"
 #include "Combin/upscale_tests.h"
 #include "Combin/combinElements_tests.h"
+#include "Combin/hohenbichlerCombiner_tests.h"
 
 using namespace Deltares::Probabilistic;
 
@@ -18,6 +19,12 @@ namespace Deltares
             {
                 ::testing::InitGoogleTest(&argc, argv);
                 return RUN_ALL_TESTS();
+            }
+
+            TEST(unittst, testHohenbichlerCombinerElements)
+            {
+                auto h = HohenbichlerCombinerTest();
+                h.allHohenbichlerCombinerTests();
             }
 
             TEST(unittst, testCombinElements)

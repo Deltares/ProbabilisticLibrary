@@ -50,6 +50,8 @@ add_executable(Deltares.Probabilistic.Test
     Combin/upscale_tests.cpp
     Combin/combinElements_tests.h
     Combin/combinElements_tests.cpp
+    Combin/hohenbichlerCombiner_tests.h
+    Combin/hohenbichlerCombiner_tests.cpp
     Utils/testutils.h
     Utils/testutils.cpp
 )
