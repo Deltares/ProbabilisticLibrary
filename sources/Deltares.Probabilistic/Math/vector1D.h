@@ -1,5 +1,6 @@
 #pragma once
 #include <iosfwd>
+#include <vector>
 #include <initializer_list>
 #include "../Utils/probLibException.h"
 
@@ -14,7 +15,6 @@ namespace Deltares {
             vector1D(const vector1D& m);
             vector1D(const std::initializer_list<double>& m);
             vector1D(vector1D&& m) noexcept;
-            ~vector1D();
 
             vector1D& operator=(const vector1D& m);
             vector1D& operator=(vector1D&& m) noexcept;
@@ -29,12 +29,12 @@ namespace Deltares {
 
             double& operator()(size_t row)
             {
-                //if (row >= m_rows) throw probLibException("array bound error.");
+                if (row >= m_rows) throw probLibException("array bound error.");
                 return m_data[row];
             }
             const double& operator()(size_t row) const
             {
-                //if (row >= m_rows) throw probLibException("array bound error.");
+                if (row >= m_rows) throw probLibException("array bound error.");
                 return m_data[row];
             }
 
@@ -50,7 +50,7 @@ namespace Deltares {
             static vector1D readDumpFile(std::fstream& o);
 
         private:
-            double* m_data;
+            std::vector<double> m_data;
             size_t m_rows;
         };
     }

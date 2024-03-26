@@ -9,9 +9,7 @@ namespace Deltares {
 
         vector1D::vector1D() : m_data(NULL), m_rows(0) {}
 
-        vector1D::vector1D(size_t rows)
-            : m_data(new double[rows]),
-            m_rows(rows)
+        vector1D::vector1D(size_t rows) : m_data(rows), m_rows(rows)
         {
             for (size_t pos = 0; pos < m_rows; pos++)
             {
@@ -19,8 +17,7 @@ namespace Deltares {
             }
         }
 
-        vector1D::vector1D(const vector1D& m)
-            : m_data(new double[m.m_rows]), m_rows(m.m_rows)
+        vector1D::vector1D(const vector1D& m) : m_data(m.m_rows), m_rows(m.m_rows)
         {
             for (size_t pos = 0; pos < m_rows; pos++)
             {
@@ -28,7 +25,7 @@ namespace Deltares {
             }
         }
 
-        vector1D::vector1D(const std::initializer_list<double>& m) : m_data(new double[m.size()]), m_rows(m.size())
+        vector1D::vector1D(const std::initializer_list<double>& m) : m_data(m.size()), m_rows(m.size())
         {
             size_t pos = 0;
             for (auto x : m)
@@ -38,28 +35,19 @@ namespace Deltares {
             }
         }
 
-        vector1D::vector1D(vector1D&& m) noexcept
-            : m_data(m.m_data),
-            m_rows(m.m_rows)
+        vector1D::vector1D(vector1D&& m) noexcept : m_data(m.m_data), m_rows(m.m_rows)
         {
-            m.m_data = nullptr;
+            m.m_data = std::vector<double>(0);
             m.m_rows = 0;
-        }
-
-        vector1D::~vector1D()
-        {
-            delete[] m_data;
         }
 
         vector1D& vector1D::operator=(const vector1D& m)
         {
             if (this != &m)
             {
-                delete[] m_data;
-
                 m_rows = m.m_rows;
 
-                m_data = new double[m_rows];
+                m_data = std::vector<double>(m_rows);
 
                 for (size_t pos = 0; pos < m_rows; pos++)
                 {
