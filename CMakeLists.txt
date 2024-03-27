@@ -34,7 +34,7 @@ if(WIN32)
 endif(WIN32)
 
 if (UNIX)
-    if (CODECOV))
+    if (CODECOV)
         include(Dart)
         set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -fprofile-arcs -ftest-coverage")
     else()
