@@ -210,7 +210,7 @@ namespace Deltares
 
 			double p = 0;
 
-			for (int i = 0; i < stochast->HistogramValues.size(); i++)
+			for (size_t i = 0; i < stochast->HistogramValues.size(); i++)
 			{
 				if (stochast->HistogramValues[i]->LowerBound < x)
 				{

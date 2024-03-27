@@ -14,7 +14,6 @@ namespace Deltares
 			double pf = 0;
 			double qtot = 0;
 			double rmin = 200; // initialise convergence indicator and loops
-			double uThreshold = std::numeric_limits<double>::infinity();
 			DesignPointBuilder* uMean = new DesignPointBuilder(nstochasts, this->Settings->designPointMethod, this->Settings->StochastSet);
 			int parSamples = 0;
 
@@ -105,8 +104,6 @@ namespace Deltares
 				if (betaDirection < rmin)
 				{
 					rmin = betaDirection;
-					uThreshold = rmin;
-
 					uMin = uSurface;
 				}
 
@@ -183,7 +180,7 @@ namespace Deltares
 			directionReliability->Settings = this->Settings->DirectionSettings;
 
 			#pragma omp parallel for
-			for (int i = 0; i < samples.size(); i++)
+			for (int i = 0; i < (int)samples.size(); i++)
 			{
 				samples[i]->IterationIndex = step + i;
 				betaValues[i] = directionReliability->getBeta(modelRunner, samples[i], z0);

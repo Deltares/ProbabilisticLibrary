@@ -26,7 +26,7 @@ namespace Deltares
 			Sample(int size)
 			{
 				this->size = size;
-				for (size_t i = 0; i < size; i++)
+				for (int i = 0; i < size; i++)
 				{
 					Values.push_back(0.0);
 				}

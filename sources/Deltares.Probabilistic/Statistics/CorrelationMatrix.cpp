@@ -14,7 +14,7 @@ namespace Deltares
 			auto correlatedValues = std::vector<double>(count);
 			if (dim == 0)
 			{
-				for (int i = 0; i < count; i++)
+				for (size_t i = 0; i < count; i++)
 				{
 					correlatedValues[i] = uValues[i];
 				}
@@ -33,7 +33,7 @@ namespace Deltares
 
 				auto uNew = choleskyMatrix.matvec(u);
 
-				for (int i = 0; i < count; i++)
+				for (size_t i = 0; i < count; i++)
 				{
 					correlatedValues[i] = uNew(i);
 				}
@@ -46,7 +46,7 @@ namespace Deltares
 		{
 			dim = maxStochasts;
 			matrix = Matrix(maxStochasts, maxStochasts);
-			for (size_t i = 0; i < maxStochasts; i++)
+			for (int i = 0; i < maxStochasts; i++)
 			{
 				matrix(i, i) = 1.0;
 			}
@@ -54,7 +54,7 @@ namespace Deltares
 
 		void CorrelationMatrix::SetCorrelation(const int i, const int j, double value)
 		{
-			if (std::max(i, j) >= dim)
+			if (std::max(i, j) >= (int)dim)
 			{
 				throw probLibException("dimension mismatch in SetCorrelation");
 			}
@@ -65,7 +65,7 @@ namespace Deltares
 			bool fully = (std::abs(value) == 1.0);
 			for (auto& c : inputCorrelations)
 			{
-				if (c.index1 == i && c.index2 == j || c.index1 == j && c.index2 == i)
+				if ((c.index1 == i && c.index2 == j) || (c.index1 == j && c.index2 == i))
 				{
 					c.correlation = value;
 					c.isFullyCorrelated = fully;
@@ -171,7 +171,7 @@ namespace Deltares
 				return indexer[j];
 			}
 
-			for (size_t i = 0; i < j; i++)
+			for (int i = 0; i < j; i++)
 			{
 				double correlation = matrix(i, j);
 				if (abs(correlation) < 1.0)
@@ -212,13 +212,13 @@ namespace Deltares
 		/// <returns> true if it has conflicting correlations </returns>
 		bool CorrelationMatrix::HasConflictingCorrelations() const
 		{
-			for (int i = 0; i < inputCorrelations.size(); i++)
+			for (size_t i = 0; i < inputCorrelations.size(); i++)
 			{
 				auto correlation = inputCorrelations[i];
 
 				if (correlation.isFullyCorrelated)
 				{
-					for (int j = i + 1; j < inputCorrelations.size(); j++)
+					for (size_t j = i + 1; j < inputCorrelations.size(); j++)
 					{
 						auto otherCorrelation = inputCorrelations[j];
 
@@ -253,13 +253,13 @@ namespace Deltares
 			{
 				modified = false;
 
-				for (int i = 0; i < inputCorrelations.size(); i++)
+				for (size_t i = 0; i < inputCorrelations.size(); i++)
 				{
 					auto correlation = inputCorrelations[i];
 
 					if (correlation.isFullyCorrelated)
 					{
-						for (int j = i + 1; j < inputCorrelations.size(); j++)
+						for (size_t j = i + 1; j < inputCorrelations.size(); j++)
 						{
 							auto otherCorrelation = inputCorrelations[j];
 

@@ -32,7 +32,7 @@ namespace Deltares
 
 			const double p = StandardNormal::getPFromU(u);
 
-			for (int i = 0; i < stochast->DiscreteValues.size(); i++)
+			for (size_t i = 0; i < stochast->DiscreteValues.size(); i++)
 			{
 				if (stochast->DiscreteValues[i]->CumulativeNormalizedAmount >= p - delta)
 				{
@@ -45,8 +45,6 @@ namespace Deltares
 
 		double DiscreteDistribution::getUFromX(std::shared_ptr<StochastProperties> stochast, double x)
 		{
-			const double delta = 0.0000001;
-
 			if (stochast->DiscreteValues.size() == 0)
 			{
 				return nan("");
@@ -147,7 +145,7 @@ namespace Deltares
 				return nan("");
 			}
 
-			for (int i = 0; i < stochast->DiscreteValues.size(); i++)
+			for (size_t i = 0; i < stochast->DiscreteValues.size(); i++)
 			{
 				if (Numeric::NumericSupport::areEqual(stochast->DiscreteValues[i]->X, x, delta))
 				{
@@ -170,7 +168,7 @@ namespace Deltares
 
 			double p = 0;
 
-			for (int i = 0; i < stochast->DiscreteValues.size(); i++)
+			for (size_t i = 0; i < stochast->DiscreteValues.size(); i++)
 			{
 				if (Numeric::NumericSupport::areEqual(stochast->DiscreteValues[i]->X, x, delta))
 				{
@@ -195,7 +193,7 @@ namespace Deltares
 
 			std::sort(values.begin(), values.end());
 
-			for (int i = 0; i < values.size(); i++)
+			for (size_t i = 0; i < values.size(); i++)
 			{
 				if (stochast->DiscreteValues.empty() || values[i] != values[i - 1])
 				{

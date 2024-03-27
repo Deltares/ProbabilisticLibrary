@@ -21,7 +21,6 @@ namespace Deltares
 
 			~DiscreteValue()
 			{
-				int k = 1;
 			}
 
 			static int inline counter = 0;

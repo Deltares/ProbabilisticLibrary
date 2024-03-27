@@ -91,7 +91,6 @@ void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, const i
         auto nStoch = (size_t)n;
         auto fw = funcWrapper(vectorSize, iPoint, x, compIds, fx);
 
-        auto cntDeterminists = 0;
         auto stochast = std::vector<std::shared_ptr<Deltares::Statistics::Stochast>>();
         for (size_t i = 0; i < nStoch; i++)
         {
@@ -107,7 +106,7 @@ void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, const i
         if (nrCorrelations > 0)
         {
             corr->init(n);
-            for (size_t i = 0; i < nrCorrelations; i++)
+            for (int i = 0; i < nrCorrelations; i++)
             {
                 corr->SetCorrelation(correlations[i].idx1, correlations[i].idx2, correlations[i].correlation);
             }

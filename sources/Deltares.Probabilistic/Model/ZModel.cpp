@@ -28,7 +28,7 @@ namespace Deltares
 			if (zMultipleLambda == nullptr)
 			{
 				#pragma omp parallel for
-				for (int i = 0; i < samples.size(); i++)
+				for (int i = 0; i < (int)samples.size(); i++)
 				{
 					invoke(samples[i]);
 				}

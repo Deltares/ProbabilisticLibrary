@@ -236,7 +236,7 @@ namespace Deltares
 
 		bool FORM::areAllResultsValid(std::vector<double> values)
 		{
-			for (int k = 0; k < values.size(); k++)
+			for (size_t k = 0; k < values.size(); k++)
 			{
 				if (std::isnan(values[k]))
 				{
@@ -299,7 +299,6 @@ namespace Deltares
 			}
 
 			double meanBeta = 0.0;
-			size_t maxIterations = lastBetas.size();
 			for (size_t iter = 0; iter < nIter; iter++)
 			{
 				meanBeta += lastBetas[iter];

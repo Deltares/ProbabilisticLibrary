@@ -183,7 +183,7 @@ namespace Deltares
 		{
 			auto uValues = std::vector<double>(this->stochasts.size());
 			int ii = 0;
-			for (int i = 0; i < this->stochasts.size(); i++)
+			for (size_t i = 0; i < this->stochasts.size(); i++)
 			{
 				const int varyingIndex = this->varyingStochastIndex[i];
 				if (varyingIndex >= 0)
@@ -193,7 +193,7 @@ namespace Deltares
 				}
 			}
 
-			for (int i = 0; i < this->stochasts.size(); i++)
+			for (size_t i = 0; i < this->stochasts.size(); i++)
 			{
 				const int varyingIndex = this->varyingStochastIndex[i];
 				if (varyingIndex < 0)
@@ -209,7 +209,7 @@ namespace Deltares
 		{
 			auto uValues = std::vector<double>(this->stochasts.size());
 			int ii = 0;
-			for (int i = 0; i < this->stochasts.size(); i++)
+			for (size_t i = 0; i < this->stochasts.size(); i++)
 			{
 				const int varyingIndex = this->varyingStochastIndex[i];
 				if (varyingIndex >= 0)
@@ -267,7 +267,7 @@ namespace Deltares
 
 			if (this->hasVariableStochasts)
 			{
-				for (int i = 0; i < variableStochastList.size(); i++)
+				for (size_t i = 0; i < variableStochastList.size(); i++)
 				{
 					int stochastIndex = variableStochastList[i];
 					int sourceIndex = variableStochastIndex[stochastIndex];
@@ -284,7 +284,7 @@ namespace Deltares
 		{
 			std::shared_ptr<Sample> qualitativeExcludedSample = sample->clone();
 
-			for (int i = 0; i < sample->Values.size(); i++)
+			for (size_t i = 0; i < sample->Values.size(); i++)
 			{
 				if (this->varyingStochasts[i]->isQualitative())
 				{
@@ -306,7 +306,7 @@ namespace Deltares
 			std::vector<int> unAssignedAlphas;
 
 			// build up initial administration which stochasts have been assigned and which not
-			for (int i = 0; i < this->stochasts.size(); i++)
+			for (size_t i = 0; i < this->stochasts.size(); i++)
 			{
 				if (!this->stochasts[i]->IsVariableStochast)
 				{
@@ -326,7 +326,7 @@ namespace Deltares
 				ready = true;
 				bool modified = false;
 
-				for (int i = 0; i < unAssignedAlphas.size(); i++)
+				for (size_t i = 0; i < unAssignedAlphas.size(); i++)
 				{
 					int alphaIndex = unAssignedAlphas[i];
 
@@ -439,7 +439,7 @@ namespace Deltares
 				// assign variable stochasts
 				if (this->hasVariableStochasts)
 				{
-					for (int i = 0; i < variableStochastList.size(); i++)
+					for (size_t i = 0; i < variableStochastList.size(); i++)
 					{
 						int stochastIndex = variableStochastList[i];
 						int sourceIndex = variableStochastIndex[stochastIndex];
@@ -457,7 +457,7 @@ namespace Deltares
 		{
 			std::vector<double> uValues(alphas.size());
 
-			for (int i = 0; i < alphas.size(); i++)
+			for (size_t i = 0; i < alphas.size(); i++)
 			{
 				if (beta != 0)
 				{
