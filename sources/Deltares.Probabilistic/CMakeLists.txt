@@ -11,7 +11,7 @@ file(GLOB ptkcpp_files
 )
 
 add_library(Deltares.Probabilistic.Kernel
-    SHARED
+    STATIC
     ${ptkcpp_files}
 )
 if (WIN32)
