@@ -3,7 +3,7 @@
 # include <iomanip>
 # include <cmath>
 # include <ctime>
-# include "../../utils/probLibException.h"
+# include "../../Utils/probLibException.h"
 # include "asa239.hpp"
 
 using namespace std;
