@@ -77,7 +77,7 @@ namespace Deltares
 
 				std::shared_ptr<Sample> u = samples[nmaal % chunkSize];
 
-				double betaDirection = abs(betaValues[nmaal % chunkSize]);
+				double betaDirection = std::abs(betaValues[nmaal % chunkSize]);
 
 				// get the sample at the limit state
 				std::shared_ptr<Sample> uSurface = u->getSampleAtBeta(betaDirection);

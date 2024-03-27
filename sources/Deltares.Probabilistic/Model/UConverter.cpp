@@ -362,7 +362,7 @@ namespace Deltares
 			std::shared_ptr<StochastPoint> realization = std::make_shared<StochastPoint>();
 			realization->Beta = beta;
 
-			std::shared_ptr<Sample> betaSample = sample->getSampleAtBeta(abs(beta));
+			std::shared_ptr<Sample> betaSample = sample->getSampleAtBeta(std::abs(beta));
 
 			if (this->hasQualitiveStochasts)
 			{
