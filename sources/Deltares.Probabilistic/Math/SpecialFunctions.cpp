@@ -1,7 +1,7 @@
 #include "SpecialFunctions.h"
 
 #include <math.h>
-#include "../utils/probLibException.h"
+#include "../Utils/probLibException.h"
 
 namespace Deltares
 {
