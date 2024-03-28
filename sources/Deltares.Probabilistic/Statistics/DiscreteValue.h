@@ -6,12 +6,12 @@ namespace Deltares
 		class DiscreteValue
 		{
 		public:
-			Deltares::Statistics::DiscreteValue()
+			DiscreteValue()
 			{
 				id = ++counter;
 			}
 
-			Deltares::Statistics::DiscreteValue(double x, double amount)
+			DiscreteValue(double x, double amount)
 			{
 				this->X = x;
 				this->Amount = amount;
@@ -21,7 +21,6 @@ namespace Deltares
 
 			~DiscreteValue()
 			{
-				int k = 1;
 			}
 
 			static int inline counter = 0;

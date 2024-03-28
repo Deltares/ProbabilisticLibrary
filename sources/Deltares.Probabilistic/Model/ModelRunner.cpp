@@ -80,7 +80,7 @@ namespace Deltares
 		{
 			std::vector<std::shared_ptr<ModelSample>> xSamples;
 
-			for (int i = 0; i < samples.size(); i++)
+			for (size_t i = 0; i < samples.size(); i++)
 			{
 				xSamples.push_back(getModelSample(samples[i]));
 			}
@@ -89,7 +89,7 @@ namespace Deltares
 
 			std::vector<double> zValues(xSamples.size());
 
-			for (int i = 0; i < xSamples.size(); i++)
+			for (size_t i = 0; i < xSamples.size(); i++)
 			{
 				registerEvaluation(xSamples[i]);
 
@@ -191,7 +191,7 @@ namespace Deltares
 
 		void ModelRunner::reportMessage(MessageType type, std::string text)
 		{
-			if (Settings->SaveMessages && this->messages.size() < this->Settings->MaxMessages && type >= this->Settings->LowestMessageType)
+			if (Settings->SaveMessages && this->messages.size() < (size_t)this->Settings->MaxMessages && type >= this->Settings->LowestMessageType)
 			{
 				this->messages.push_back(std::make_shared<Message>(type, text));
 			}

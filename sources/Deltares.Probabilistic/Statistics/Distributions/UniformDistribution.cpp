@@ -103,8 +103,6 @@ namespace Deltares
 		{
 			if (constantType == Deviation) 
 			{
-				double p = StandardNormal::getPFromU(u);
-
 				if (stochast->Minimum == stochast->Maximum)
 				{
 					stochast->Minimum = x;

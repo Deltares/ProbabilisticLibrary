@@ -1,4 +1,5 @@
 #pragma once
+#include <cmath>
 #include "Distribution.h"
 namespace Deltares
 {
@@ -29,8 +30,8 @@ namespace Deltares
 			double fitShift(std::vector<double> values);
 			double getPartialAverage(std::vector<double>& sample, double gamma, int low, int high);
 
-			double requestedMean = nan("");
-			double requestedDeviation = nan("");
+			double requestedMean = std::nan("");
+			double requestedDeviation = std::nan("");
 
 		};
 	}

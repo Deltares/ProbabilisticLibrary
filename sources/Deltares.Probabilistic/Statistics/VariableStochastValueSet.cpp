@@ -1,7 +1,7 @@
 #include "VariableStochastValueSet.h"
 
 #include <algorithm>
-
+#include <cmath>
 #include "StochastProperties.h"
 #include "DistributionType.h"
 #include "VariableStochastValue.h"

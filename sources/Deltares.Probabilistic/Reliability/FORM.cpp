@@ -124,7 +124,7 @@ namespace Deltares
 					modelRunner->reportMessage(Models::MessageType::Error, std::format("Model did not provide valid results, limit state value = {0:.5G}", sample->Z));
 #else
 					auto pl = Deltares::ProbLibCore::probLibString();
-					modelRunner->reportMessage(Models::MessageType::Error, "Model did not provide valid results, limit state value = " + pl.double2str( u->Z));
+					modelRunner->reportMessage(Models::MessageType::Error, "Model did not provide valid results, limit state value = " + pl.double2str( sample->Z));
 #endif
 
 					std::shared_ptr<ReliabilityReport> reportInvalid = getReport(iteration, nan(""));
@@ -200,6 +200,7 @@ namespace Deltares
 
 				convergenceReport->IsConverged = isConverged(modelRunner, sample, convergenceReport, beta, zGradientLength);
 				convergenceReport->ZMargin = zGradientLength * this->Settings->EpsilonBeta;
+				convergenceReport->TotalIterations = iteration + 1;
 
 				// no convergence, next iteration
 				if (!convergenceReport->IsConverged)
@@ -236,7 +237,7 @@ namespace Deltares
 
 		bool FORM::areAllResultsValid(std::vector<double> values)
 		{
-			for (int k = 0; k < values.size(); k++)
+			for (size_t k = 0; k < values.size(); k++)
 			{
 				if (std::isnan(values[k]))
 				{
@@ -299,7 +300,6 @@ namespace Deltares
 			}
 
 			double meanBeta = 0.0;
-			size_t maxIterations = lastBetas.size();
 			for (size_t iter = 0; iter < nIter; iter++)
 			{
 				meanBeta += lastBetas[iter];

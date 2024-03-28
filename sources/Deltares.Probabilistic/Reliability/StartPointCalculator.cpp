@@ -74,7 +74,7 @@ namespace Deltares
 
 			if (this->Settings->startVector.size() > 0)
 			{
-				for (size_t i = 0; i < startPoint.get()->getSize(); i++)
+				for (int i = 0; i < startPoint.get()->getSize(); i++)
 				{
 					startPoint->Values[i] = this->Settings->startVector[i];
 				}

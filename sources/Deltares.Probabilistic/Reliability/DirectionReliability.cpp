@@ -197,8 +197,6 @@ namespace Deltares
 
 					prevzHigh = zHigh;
 
-					double zTolerance = GetZTolerance(settings, uLow, uHigh, zLow, zHigh);
-
 					DoubleType zHighType = NumericSupport::getDoubleType(zHigh);
 					DoubleType zLowType = NumericSupport::getDoubleType(zLow);
 
@@ -342,13 +340,12 @@ namespace Deltares
 
 				double zTolerance = GetZTolerance(settings, uLow, uHigh, zLow, zHigh);
 
-				LinearRootFinder* linearSearchCalculation = new LinearRootFinder();
+				std::unique_ptr<LinearRootFinder> linearSearchCalculation = std::make_unique<LinearRootFinder>();
 
 				double uResult = linearSearchCalculation->CalculateValue(uLow, uHigh, 0, zTolerance, settings->MaximumIterations, [directionCalculation](double v) { return directionCalculation->GetZ(v); }, zLow, zHigh);
 
 				z = std::isnan(uResult) ? nan("") : directionCalculation->GetZ(uResult);
 
-				delete linearSearchCalculation;
 				delete directionCalculation;
 
 				return uResult;
@@ -385,7 +382,7 @@ namespace Deltares
 			{
 				double zmin = 1e99;
 				double rmin = 0.0;
-				for (int i = 0; i < sections.size(); i++)
+				for (size_t i = 0; i < sections.size(); i++)
 				{
 					if (sections[i]->ZHigh < zmin && sections[i]->ZHigh != 0.0)
 					{

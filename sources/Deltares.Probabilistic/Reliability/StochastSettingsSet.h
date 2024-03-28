@@ -22,10 +22,10 @@ namespace Deltares
 				loadStochastPoint(stochastPoint);
 			}
 
-			std::vector<std::shared_ptr<StochastSettings>> StochastSettings;
+			std::vector<std::shared_ptr<StochastSettings>> stochastSettings;
 			int getStochastCount()
 			{
-				return static_cast<int>(this->StochastSettings.size());
+				return static_cast<int>(this->stochastSettings.size());
 			}
 
 			std::vector<std::shared_ptr<Deltares::Reliability::StochastSettings>> VaryingStochastSettings;

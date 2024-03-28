@@ -11,6 +11,7 @@ void calculatedistributioninverse_c(double *u, double *y, EnumDistributions *typ
     {
         auto s = createDistribution::create(*type, p);
         *y = s->getXFromU(*u);
+        ierr->errorCode = 0;
     }
     catch (const std::exception& e)
     {
@@ -27,6 +28,7 @@ void calculatedistribution_c(double* x, double* u, EnumDistributions * type, dou
     {
         auto s = createDistribution::create(*type, p);
         *u = s->getUFromX(*x);
+        ierr->errorCode = 0;
     }
     catch (const std::exception& e)
     {

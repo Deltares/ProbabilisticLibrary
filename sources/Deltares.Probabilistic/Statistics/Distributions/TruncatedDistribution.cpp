@@ -118,11 +118,11 @@ namespace Deltares
 			{
 				double x = this->innerDistribution->getXFromU(stochast, getUntruncatedU(u, stochast));
 
-				if (!isinf(stochast->Maximum) && !isnan(stochast->Maximum) && x > stochast->Maximum)
+				if (!std::isinf(stochast->Maximum) && !std::isnan(stochast->Maximum) && x > stochast->Maximum)
 				{
 					x = stochast->Maximum;
 				}
-				else if (!isinf(stochast->Minimum) && !isnan(stochast->Minimum) && x < stochast->Minimum)
+				else if (!std::isinf(stochast->Minimum) && !std::isnan(stochast->Minimum) && x < stochast->Minimum)
 				{
 					x = stochast->Minimum;
 				}
@@ -260,7 +260,7 @@ namespace Deltares
 		{
 			Truncated truncated = getTruncatedValue(stochast);
 
-			if (truncated.Factor == 0 || isinf(truncated.Factor) || isnan(truncated.Factor))
+			if (truncated.Factor == 0 || std::isinf(truncated.Factor) || std::isnan(truncated.Factor))
 			{
 				return nan("");
 			}
@@ -274,8 +274,8 @@ namespace Deltares
 		{
 			std::vector<double> specialPoints;
 
-			const bool hasMinimum = !isnan(stochast->Minimum) && !isinf(stochast->Minimum);
-			const bool hasMaximum = !isnan(stochast->Maximum) && !isinf(stochast->Maximum);
+			const bool hasMinimum = !std::isnan(stochast->Minimum) && !std::isinf(stochast->Minimum);
+			const bool hasMaximum = !std::isnan(stochast->Maximum) && !std::isinf(stochast->Maximum);
 
 			if (hasMinimum)
 			{

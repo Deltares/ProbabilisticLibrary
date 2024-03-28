@@ -1,0 +1,21 @@
+\section{Background}
+The primary flood defences in the Netherlands are periodically assessed against the statutory safety standards, which are expressed in terms of maximum allowable flooding probabilities. The methods and (software) tools used in the assessment are prescribed by law and are part of the \textit{Wettelijk en BeoordelingsInstrumentarium} (WBI). The \textit{Beoordelings- en Ontwerp Instrumentarium} (BOI) derives guidelines, methods and tools for the safety assessment and design of flood defences.
+
+As part of the BOI program, Deltares has developed a set of software tools consisting of:
+\begin{itemize}
+\item Riskeer: a user interface to facilitate the assessment process.
+\item D-Soil model for the schematisation of the subsoil.
+\item \hr: the probabilistic core of Riskeer.
+\item Software library with failure mechanisms.
+\item Software library with algorithms for system reliability analyses (i.e. the \probLib).
+\item Basic modules around a number of failure mechanisms.
+\end{itemize}
+
+\hr is the probabilistic core of Riskeer and it is used to compute the failure probability of a flood defence system composed of a number of dike segments, dune segments and hydraulic structures. For that purpose, \hr makes use of the \probLib that provides a set of algorithms for system reliability analysis. The general goal of system reliability analysis is the derivation of the probability of failure of a system consisting of multiple components.
+
+Until 2019, the \probLib was part of \hr. In order to enable system reliability analysis for other software applications, the \probLib has been separated from \hr. The various software components and the relations between them are presented in \Fref{fig_BOI}.
+
+\begin{figure}[H]\centering
+\includegraphics*[width=6in, height=6in, keepaspectratio=true]{common/figcommon/componentssoftware}
+\caption{Software components within BOI and relations between them.}\label{fig_BOI}
+\end{figure}

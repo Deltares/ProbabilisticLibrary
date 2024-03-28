@@ -12,10 +12,12 @@ file(GLOB ptkcpp_files
 )
 
 add_library(Deltares.Probabilistic.Kernel
-  STATIC
+    STATIC
     ${ptkcpp_files}
 )
-target_link_options(Deltares.Probabilistic.Kernel PRIVATE "$<$<CONFIG:Debug>:/Debug>")
+if (WIN32)
+    target_link_options(Deltares.Probabilistic.Kernel PRIVATE "$<$<CONFIG:Debug>:/Debug>")
+endif()
 set_target_properties(Deltares.Probabilistic.Kernel
   PROPERTIES
     CXX_STANDARD 20

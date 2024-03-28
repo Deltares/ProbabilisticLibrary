@@ -52,10 +52,10 @@ namespace Deltares
 					shared->object->RandomSettings = RandomSettings->GetSettings();
 					shared->object->DirectionSettings = DirectionalSettings->GetSettings();
 
-					shared->object->StochastSet->StochastSettings.clear();
+					shared->object->StochastSet->stochastSettings.clear();
 					for (int i = 0; i < StochastSettings->Count; i++)
 					{
-						shared->object->StochastSet->StochastSettings.push_back(StochastSettings[i]->GetSettings());
+						shared->object->StochastSet->stochastSettings.push_back(StochastSettings[i]->GetSettings());
 					}
 
 					return shared->object;

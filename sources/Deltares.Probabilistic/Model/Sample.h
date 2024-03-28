@@ -26,7 +26,7 @@ namespace Deltares
 			Sample(int size)
 			{
 				this->size = size;
-				for (size_t i = 0; i < size; i++)
+				for (int i = 0; i < size; i++)
 				{
 					Values.push_back(0.0);
 				}
@@ -47,7 +47,7 @@ namespace Deltares
 			/**
 			 * \brief Defines the parameter space in which Values are defined
 			 */
-			SpaceType SpaceType = SpaceType::U;
+			SpaceType spaceType = SpaceType::U;
 
 			int IterationIndex = -1;
 			double Weight = nan("");

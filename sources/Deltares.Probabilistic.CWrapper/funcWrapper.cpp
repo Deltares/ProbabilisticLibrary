@@ -36,6 +36,6 @@ void funcWrapper::updateXinDesignPoint(double x[])
     int i[sizeIntArray];
     i[0] = 0;            // set design output on
     tError e = tError();
-    double z = zfunc(x, i, &e);
+    zfunc(x, i, &e);
 }
 

@@ -95,6 +95,7 @@ subroutine allProbMethodsWaartsFunctionsTests(minTestLevel)
     character(len=255)            :: testName
 
     integer                       :: level
+    integer, parameter            :: availableMethods(*) = [12, 11, 1, 3, 4] ! TODO the rest is not implemented yet
 
     character(len=60), dimension(14) :: functionName = &
         (/   "LinearResistanceSolicitation           ", &     ! 1
@@ -113,11 +114,11 @@ subroutine allProbMethodsWaartsFunctionsTests(minTestLevel)
              "LimitState 25 quadratic terms sparse   " /)     ! 14
 
     dpOption = -1
-    do i = 1, 4 ! TODO the rest is not implemented yet
+    do i = 1, size(availableMethods)
 
-        probMethod = i
+        probMethod = availableMethods(i)
 
-        if (methodDS > 1 .and. i /= methodDirectionalSampling) cycle
+        if (methodDS > 1 .and. probMethod /= methodDirectionalSampling) cycle
 
         select case (probMethod)
             case (methodFORM)
@@ -192,7 +193,7 @@ subroutine allProbMethodsWaartsFunctionsTests(minTestLevel)
 
     end do
 
-    if (numberIterations == 1 .and. .false.) then  ! TODO
+    if (numberIterations == 1 .and. any(availableMethods == methodNumericalIntegration)) then
         probMethod         = methodNumericalIntegration
         waartsFunction     = 1
         waartsFunctionName = functionName(1)
@@ -223,7 +224,7 @@ subroutine testProbabilisticWithFunction ( )
     type(probabilisticDataStructure_data) :: probDb
     type(storedConvergenceData)           :: convergenceData
     integer                     :: i = 0
-    integer                     :: conv = 0
+    logical                     :: conv
     real (kind = wp), pointer   :: alfa(:)
     real (kind = wp), pointer   :: x(:)
     real (kind = wp)            :: actualBeta = 0.0d0
@@ -341,7 +342,7 @@ subroutine testProbabilisticWithFunction ( )
                     call assert_comparable( 2.26553522d0, actualBeta, 1d-8, "Noisy limit state: Beta" )
                     call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 12520, "no samples")
                 case default
-                    call assert_equal( conv, convergenceTRUE, "No convergence" )
+                    call assert_true( conv, "No convergence" )
             end select
 
             call finalizeProbabilisticCalculation(probDb)
@@ -400,7 +401,7 @@ subroutine testProbabilisticWithFunction ( )
                         "Resistance solicitation with 1 quadratic terme: Beta" )
                     call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 30858, "no samples")
                 case default
-                    call assert_equal( conv, convergenceTRUE, "No convergence" )
+                    call assert_true( conv, "No convergence" )
             end select
 
             call finalizeProbabilisticCalculation(probDb)
@@ -454,7 +455,7 @@ subroutine testProbabilisticWithFunction ( )
                     call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 100000, "no samples")
 
                 case default
-                    call assert_equal( conv, convergenceTRUE, "No convergence" )
+                    call assert_true( conv, "No convergence" )
 
             end select
 
@@ -519,7 +520,7 @@ subroutine testProbabilisticWithFunction ( )
                     end if
                     call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 100000, "no samples")
                 case default
-                    call assert_equal( conv, convergenceTRUE, "No convergence" )
+                    call assert_true( conv, "No convergence" )
             end select
 
             call finalizeProbabilisticCalculation(probDb)
@@ -564,7 +565,7 @@ subroutine testProbabilisticWithFunction ( )
                     call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 9433, "no samples")
 
                 case default
-                    call assert_equal( conv, convergenceTRUE, "No convergence" )
+                    call assert_true( conv, "No convergence" )
             end select
 
             call finalizeProbabilisticCalculation(probDb)
@@ -619,7 +620,7 @@ subroutine testProbabilisticWithFunction ( )
                     call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 1000, "no samples")
 
                 case default
-                    call assert_equal( conv, convergenceTRUE, "No convergence" )
+                    call assert_true( conv, "No convergence" )
             end select
 
             call finalizeProbabilisticCalculation(probDb)
@@ -668,7 +669,7 @@ subroutine testProbabilisticWithFunction ( )
                     call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 4627, "no samples")
 
                 case default
-                    call assert_equal( conv, convergenceTRUE, "No convergence" )
+                    call assert_true( conv, "No convergence" )
             end select
 
             call finalizeProbabilisticCalculation(probDb)
@@ -699,8 +700,8 @@ subroutine testProbabilisticWithFunction ( )
             ! Our FORM routine fails (crashes), Waarts reports an error
 
             select case (probMethod)
-                case (methodFORM)
-                    call assert_equal( 1, conv, "Discontinuous limit state: expected non convergence" )
+                case (methodFORM, methodFORMandDirSampling)
+                    call assert_false( conv, "Discontinuous limit state: expected non convergence" )
 
                 case (methodNumericalIntegration)
                     call assert_comparable(  3.83365300964905d0, actualBeta, margin, "Discontinuous limit state: Beta" )
@@ -719,7 +720,7 @@ subroutine testProbabilisticWithFunction ( )
                     call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 66875, "no samples")
 
                 case default
-                    call assert_equal( conv, convergenceTRUE, "No convergence" )
+                    call assert_true( conv, "No convergence" )
             end select
 
             call finalizeProbabilisticCalculation(probDb)
@@ -773,7 +774,7 @@ subroutine testProbabilisticWithFunction ( )
                         call assert_comparable( -0.873293157655122d0, alfa(2), margin, "Two branches: Alfa(2)" )
                         call assert_comparable( -0.204846543153671d0, alfa(3), margin, "Two branches: Alfa(3)" )
 
-                    case (methodDirectionalSampling)
+                    case (methodDirectionalSampling, methodFORMandDirSampling, methodDirSamplingWithFORMiterations)
                         call assert_comparable( 5.03d0, actualBeta, 0.10d0 * betaFactor, "Two branches: Beta" )
 
                     case (methodCrudeMonteCarlo)
@@ -785,7 +786,7 @@ subroutine testProbabilisticWithFunction ( )
                         call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 100000, "no samples")
 
                     case default
-                        call assert_equal( conv, convergenceTRUE, "No convergence" )
+                        call assert_true( conv, "No convergence" )
                     end select
             end if
 
@@ -839,7 +840,7 @@ subroutine testProbabilisticWithFunction ( )
                     call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 1000, "no samples")
 
                 case default
-                    call assert_equal( conv, convergenceTRUE, "No convergence" )
+                    call assert_true( conv, "No convergence" )
             end select
 
             call finalizeProbabilisticCalculation(probDb)
@@ -886,7 +887,7 @@ subroutine testProbabilisticWithFunction ( )
                     call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 7526, "no samples")
 
                 case default
-                    call assert_equal( conv, convergenceTRUE, "No convergence" )
+                    call assert_true( conv, "No convergence" )
             end select
 
             call finalizeProbabilisticCalculation(probDb)
@@ -915,9 +916,9 @@ subroutine testProbabilisticWithFunction ( )
             call iterateMechanism (probDb, convergenceData, zParallelSystem, probMethod, alfa, actualBeta, x, conv)
 
             select case (probMethod)
-                case (methodFORM)
+                case (methodFORM, methodFORMandDirSampling, methodDirSamplingWithFORMiterations)
                     ! Waarts shows an error entry for FORM in this case, we do get a value
-                    call assert_equal ( 1, abs(conv), "Parallel system: convergence flag" )
+                    call assert_false ( conv, "Parallel system: convergence flag" )
 
                 case (methodNumericalIntegration)
                     call assert_comparable( 3.56514503038931d0, actualBeta, margin, "Parallel system: Beta" )
@@ -935,7 +936,7 @@ subroutine testProbabilisticWithFunction ( )
                     call assert_comparable( 3.4656359245d0, actualBeta, 1d-8, trim(waartsFunctionName) // ": Beta" )
                     call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 100000, "no samples")
                 case default
-                    call assert_equal( conv, convergenceTRUE, "No convergence" )
+                    call assert_true( conv, "No convergence" )
             end select
 
             call finalizeProbabilisticCalculation(probDb)
@@ -993,7 +994,7 @@ subroutine iterateMechanism (probDb, convergenceData, z_func, probMethod, alfa, 
     real(kind=wp), intent(out)   :: alfa(:)
     real(kind=wp), intent(out)   :: combinedBeta
     real(kind=wp), intent(out)   :: x(:)
-    integer,       intent(out)   :: conv
+    logical,       intent(out)   :: conv
 
     integer                      :: i
     real(kind=wp)                :: beta
@@ -1015,7 +1016,7 @@ subroutine testDeterministicParameterHasNoInfluence
 
     type(probabilisticDataStructure_data)  :: probDb
     type(storedConvergenceData)            :: convergenceData
-    integer                     :: conv = 0
+    logical                     :: conv
     real (kind = wp), pointer   :: alfa(:)
     real (kind = wp), pointer   :: x(:)
     real (kind = wp)            :: beta = 0.0d0
@@ -1062,13 +1063,13 @@ subroutine testErrorHandlingCalculateLimitStateFunction
     type(storedConvergenceData)            :: convergenceData
     character(len=255)                     :: message
 
-    integer                     :: conv = 0, ipos
+    integer                     :: ipos
     real (kind = wp), pointer   :: alfa(:)
     real (kind = wp), pointer   :: x(:)
     real (kind = wp)            :: beta = 0.0d0
     real (kind = wp)            :: beta2= 0.0d0
 
-    logical                     :: convCriterium
+    logical                     :: convCriterium, conv
 
    ! Initialization of mechanism with no stochastic parameters
    call initializeCalculation (probDb, 0, alfa, x)

@@ -18,7 +18,7 @@ namespace Deltares
 		double NumericSupport::GetSquaredSum(const std::vector<double>& values)
 		{
 			double sum = 0;
-			for (int i = 0; i < values.size(); i++)
+			for (size_t i = 0; i < values.size(); i++)
 			{
 				sum += values[i] * values[i];
 			}
@@ -60,7 +60,7 @@ namespace Deltares
 			auto count = values.size();
 			double* newValues = new double[count];
 
-			for (int i = 0; i < count; i++)
+			for (size_t i = 0; i < count; i++)
 			{
 				newValues[i] = values[i];
 			}
@@ -201,12 +201,12 @@ namespace Deltares
 
 			coordinates[0] = GetSquaredSum(cartesianCoordinates);
 
-			for (int i = 1; i < count; i++)
+			for (size_t i = 1; i < count; i++)
 			{
 				if (cartesianCoordinates[i - 1] != 0)
 				{
 					double sum = 0;
-					for (int j = i - 1; j < count; j++)
+					for (size_t j = i - 1; j < count; j++)
 					{
 						sum += cartesianCoordinates[j] * cartesianCoordinates[j];
 					}
@@ -238,7 +238,7 @@ namespace Deltares
 			for (size_t i = 0; i < count; i++)
 			{
 				coordinates[i] = sphericalCoordinates[0];
-				for (int j = 0; j < i; j++)
+				for (size_t j = 0; j < i; j++)
 				{
 					coordinates[i] *= sin(sphericalCoordinates[j + 1]);
 				}
@@ -286,7 +286,7 @@ namespace Deltares
 			{
 				return maxY;
 			}
-			else if (isinf(x))
+			else if (std::isinf(x))
 			{
 				return x;
 			}
@@ -314,7 +314,7 @@ namespace Deltares
 			}
 			else
 			{
-				for (int i = 0; i < xValues.size() - 1; i++)
+				for (size_t i = 0; i < xValues.size() - 1; i++)
 				{
 					if (x >= xValues[i] && x <= xValues[i + 1])
 					{
@@ -431,7 +431,7 @@ namespace Deltares
 		/// <returns></returns>
 		bool NumericSupport::isValidValue(double x)
 		{
-			return !isnan(x) && !isinf(x);
+			return !std::isnan(x) && !std::isinf(x);
 		}
 
 		/// <summary>

@@ -6,10 +6,10 @@
 #include "../Statistics/CorrelationMatrix.h"
 #include "../Reliability/StochastSettings.h"
 #include "../Reliability/StochastSettingsSet.h"
+#include "../Utils/probLibException.h"
 
 #include <memory>
 #include <set>
-
 
 namespace Deltares
 {
@@ -132,12 +132,12 @@ namespace Deltares
 		{
 			std::map<std::shared_ptr<Statistics::Stochast>, std::shared_ptr<Deltares::Reliability::StochastSettings>> stochastSettingsMap;
 
-			for (size_t i = 0; i < settings->StochastSettings.size(); i++)
+			for (size_t i = 0; i < settings->stochastSettings.size(); i++)
 			{
-				stochastSettingsMap[settings->StochastSettings[i]->stochast] = settings->StochastSettings[i];
+				stochastSettingsMap[settings->stochastSettings[i]->stochast] = settings->stochastSettings[i];
 			}
 
-			settings->StochastSettings.clear();
+			settings->stochastSettings.clear();
 			settings->VaryingStochastSettings.clear();
 			int j = 0; // varying stochast counter
 
@@ -145,17 +145,17 @@ namespace Deltares
 			{
 				if (stochastSettingsMap.contains(stochasts[i]))
 				{
-					settings->StochastSettings.push_back(stochastSettingsMap[stochasts[i]]->clone());
+					settings->stochastSettings.push_back(stochastSettingsMap[stochasts[i]]->clone());
 				}
 				else
 				{
 					std::shared_ptr<Deltares::Reliability::StochastSettings> newStochastSettings = std::make_shared<Deltares::Reliability::StochastSettings>();
-					settings->StochastSettings.push_back(newStochastSettings);
+					settings->stochastSettings.push_back(newStochastSettings);
 				}
 
 				if (stochasts[i]->isVarying() && !isFullyCorrelated(i, this->varyingStochastIndex))
 				{
-					std::shared_ptr<Deltares::Reliability::StochastSettings> varyingStochastSettings = settings->StochastSettings.back();
+					std::shared_ptr<Deltares::Reliability::StochastSettings> varyingStochastSettings = settings->stochastSettings.back();
 
 					varyingStochastSettings->StochastIndex = i;
 					varyingStochastSettings->IsQualitative = varyingStochasts[j]->isQualitative();
@@ -183,7 +183,7 @@ namespace Deltares
 		{
 			auto uValues = std::vector<double>(this->stochasts.size());
 			int ii = 0;
-			for (int i = 0; i < this->stochasts.size(); i++)
+			for (size_t i = 0; i < this->stochasts.size(); i++)
 			{
 				const int varyingIndex = this->varyingStochastIndex[i];
 				if (varyingIndex >= 0)
@@ -193,7 +193,7 @@ namespace Deltares
 				}
 			}
 
-			for (int i = 0; i < this->stochasts.size(); i++)
+			for (size_t i = 0; i < this->stochasts.size(); i++)
 			{
 				const int varyingIndex = this->varyingStochastIndex[i];
 				if (varyingIndex < 0)
@@ -209,7 +209,7 @@ namespace Deltares
 		{
 			auto uValues = std::vector<double>(this->stochasts.size());
 			int ii = 0;
-			for (int i = 0; i < this->stochasts.size(); i++)
+			for (size_t i = 0; i < this->stochasts.size(); i++)
 			{
 				const int varyingIndex = this->varyingStochastIndex[i];
 				if (varyingIndex >= 0)
@@ -267,7 +267,7 @@ namespace Deltares
 
 			if (this->hasVariableStochasts)
 			{
-				for (int i = 0; i < variableStochastList.size(); i++)
+				for (size_t i = 0; i < variableStochastList.size(); i++)
 				{
 					int stochastIndex = variableStochastList[i];
 					int sourceIndex = variableStochastIndex[stochastIndex];
@@ -284,7 +284,7 @@ namespace Deltares
 		{
 			std::shared_ptr<Sample> qualitativeExcludedSample = sample->clone();
 
-			for (int i = 0; i < sample->Values.size(); i++)
+			for (size_t i = 0; i < sample->Values.size(); i++)
 			{
 				if (this->varyingStochasts[i]->isQualitative())
 				{
@@ -306,7 +306,7 @@ namespace Deltares
 			std::vector<int> unAssignedAlphas;
 
 			// build up initial administration which stochasts have been assigned and which not
-			for (int i = 0; i < this->stochasts.size(); i++)
+			for (size_t i = 0; i < this->stochasts.size(); i++)
 			{
 				if (!this->stochasts[i]->IsVariableStochast)
 				{
@@ -326,7 +326,7 @@ namespace Deltares
 				ready = true;
 				bool modified = false;
 
-				for (int i = 0; i < unAssignedAlphas.size(); i++)
+				for (size_t i = 0; i < unAssignedAlphas.size(); i++)
 				{
 					int alphaIndex = unAssignedAlphas[i];
 
@@ -350,7 +350,7 @@ namespace Deltares
 				// when no progress and not everything has been assigned => error
 				if (!ready && !modified)
 				{
-					throw new std::exception("circular reference");
+					throw Deltares::ProbLibCore::probLibException("circular reference");
 				}
 			}
 
@@ -362,7 +362,7 @@ namespace Deltares
 			std::shared_ptr<StochastPoint> realization = std::make_shared<StochastPoint>();
 			realization->Beta = beta;
 
-			std::shared_ptr<Sample> betaSample = sample->getSampleAtBeta(abs(beta));
+			std::shared_ptr<Sample> betaSample = sample->getSampleAtBeta(std::abs(beta));
 
 			if (this->hasQualitiveStochasts)
 			{
@@ -439,7 +439,7 @@ namespace Deltares
 				// assign variable stochasts
 				if (this->hasVariableStochasts)
 				{
-					for (int i = 0; i < variableStochastList.size(); i++)
+					for (size_t i = 0; i < variableStochastList.size(); i++)
 					{
 						int stochastIndex = variableStochastList[i];
 						int sourceIndex = variableStochastIndex[stochastIndex];
@@ -457,7 +457,7 @@ namespace Deltares
 		{
 			std::vector<double> uValues(alphas.size());
 
-			for (int i = 0; i < alphas.size(); i++)
+			for (size_t i = 0; i < alphas.size(); i++)
 			{
 				if (beta != 0)
 				{

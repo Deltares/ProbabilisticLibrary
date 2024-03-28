@@ -80,7 +80,7 @@ namespace Deltares
 			int nSamples = 0;
 			std::shared_ptr<ConvergenceReport> convergenceReport = std::make_shared<ConvergenceReport>();
 			std::vector<std::shared_ptr<Sample>> samples;
-			int zIndex = 0;
+			size_t zIndex = 0;
 
 			double qFail = 0;
 

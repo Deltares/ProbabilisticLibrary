@@ -36,7 +36,7 @@ namespace Deltares
 				{
 					Wrappers::GradientType get()
 					{
-						switch (shared->object->GradientType)
+						switch (shared->object->gradientType)
 						{
 						case Deltares::Models::GradientType::OneDirection: return Wrappers::GradientType::OneDirection;
 						case Deltares::Models::GradientType::TwoDirections: return Wrappers::GradientType::TwoDirections;
@@ -47,8 +47,8 @@ namespace Deltares
 					{
 						switch (value)
 						{
-						case Wrappers::GradientType::OneDirection: shared->object->GradientType = Models::GradientType::OneDirection; break;
-						case Wrappers::GradientType::TwoDirections: shared->object->GradientType = Models::GradientType::TwoDirections; break;
+						case Wrappers::GradientType::OneDirection: shared->object->gradientType = Models::GradientType::OneDirection; break;
+						case Wrappers::GradientType::TwoDirections: shared->object->gradientType = Models::GradientType::TwoDirections; break;
 						default: throw gcnew System::NotSupportedException("gradient type");
 						}
 					}

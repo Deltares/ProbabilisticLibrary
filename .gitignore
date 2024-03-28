@@ -73,6 +73,11 @@ ApplicationPayload.wxs
 *.nls
 *.gz
 *.toc
+*.maf
+*.mtc*
+doc/*.log
+doc/funcdesign.pdf
+doc/scientific_background.pdf
 
 # Windows shortcuts
 *.lnk
