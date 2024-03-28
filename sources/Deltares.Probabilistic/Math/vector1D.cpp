@@ -7,7 +7,7 @@
 namespace Deltares {
     namespace Reliability {
 
-        vector1D::vector1D() : m_data(NULL), m_rows(0) {}
+        vector1D::vector1D() : m_data(0), m_rows(0) {}
 
         vector1D::vector1D(size_t rows) : m_data(rows), m_rows(rows)
         {

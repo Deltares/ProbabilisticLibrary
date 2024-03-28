@@ -181,7 +181,7 @@ namespace Deltares
 #ifdef __cpp_lib_format
 				auto text = std::format("{}/{}, Reliability = {:.3f}, Convergence = {:.3f}", report->Step, report->MaxSteps, report->Reliability, convergence);
 #else
-				auto pl = Deltares::ProbLibCore::probLibString();
+				auto pl = Deltares::Reliability::probLibString();
 				auto text = "Reliability = " + pl.double2str(report->Reliability);
 #endif
 
