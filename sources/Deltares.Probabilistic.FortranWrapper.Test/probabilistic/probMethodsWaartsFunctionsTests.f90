@@ -28,6 +28,7 @@ module probMethodsWaartsFunctionsTests
 
     use precision
     use ftnunit
+    use fileUtilities
     use feedback
     use feedback_parameters
     use interface_probCalc
@@ -68,7 +69,7 @@ subroutine allProbMethodsWaartsFunctionsNoIterationTest
     call testWithLevel(testErrorHandlingCalculateLimitStateFunction, "Test error handling", 1)
 
     call feedbackClose()
-    call ftnunit_remove_file("waartsfunctions.txt")
+    call removeFile("waartsfunctions.txt")
 
 end subroutine allProbMethodsWaartsFunctionsNoIterationTest
 
@@ -82,7 +83,7 @@ subroutine allProbMethodsWaartsFunctionsIterationTest
     call allProbMethodsWaartsFunctionsTests(3) ! parameter is minimum testlevel
 
     call feedbackClose()
-    call ftnunit_remove_file("waartsfunctions.txt")
+    call removeFile("waartsfunctions.txt")
 
 end subroutine allProbMethodsWaartsFunctionsIterationTest
 
