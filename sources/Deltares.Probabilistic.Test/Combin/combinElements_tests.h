@@ -1,5 +1,5 @@
 #pragma once
-#include "../utils/testutils.h"
+#include "../Utils/testutils.h"
 #include "../../Deltares.Probabilistic/Combine/combineElements.h"
 #include "../../Deltares.Probabilistic/Combine/upscaling.h"
 

@@ -1,7 +1,7 @@
 #pragma once
 #include "../../Deltares.Probabilistic/Combine/upscaling.h"
 #include "../../Deltares.Probabilistic/Combine/combineElements.h"
-#include "../utils/testutils.h"
+#include "../Utils/testutils.h"
 
 namespace Deltares
 {
