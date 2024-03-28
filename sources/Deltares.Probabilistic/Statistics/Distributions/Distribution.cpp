@@ -47,7 +47,7 @@ namespace Deltares
 			}
 			else
 			{
-				throw Deltares::ProbLibCore::probLibException("Constant type not supported");
+				throw Deltares::Reliability::probLibException("Constant type not supported");
 			}
 		}
 
