@@ -4,7 +4,7 @@
 #include <vector>
 #include "combineElements.h"
 #include "Hohenbichler.h"
-#include "../utils/probLibException.h"
+#include "../Utils/probLibException.h"
 #include "../Statistics/StandardNormal.h"
 #include "../Math/basic_math.h"
 
