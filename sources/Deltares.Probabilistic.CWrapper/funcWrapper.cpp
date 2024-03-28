@@ -31,11 +31,25 @@ void funcWrapper::FDelegate(std::shared_ptr<Deltares::Models::ModelSample> s)
     s->Z = result;
 }
 
-void funcWrapper::updateXinDesignPoint(double x[])
+void funcWrapper::updateXinDesignPoint(double x[], const size_t lenX)
 {
+    auto xx = new double[allStoch];
+    for (size_t i = 0; i < allStoch; i++)
+    {
+        xx[i] = xRef[i];
+    }
+    for (size_t i = 0; i < lenX; i++)
+    {
+        xx[iPointer[i]] = x[i];
+    }
     int i[sizeIntArray];
     i[0] = 0;            // set design output on
     tError e = tError();
     zfunc(x, i, &e);
+    for (size_t i = 0; i < lenX; i++)
+    {
+        x[i] = xx[iPointer[i]];
+    }
+    delete[] xx;
 }
 
