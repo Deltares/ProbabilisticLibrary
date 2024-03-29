@@ -3,6 +3,7 @@
 #include "DirectionReliability.h"
 #include "../Utils/probLibException.h"
 #include "../Model/GradientCalculator.h"
+#include "SphereTasks.h"
 
 #include <numbers>
 #include <limits>
@@ -216,71 +217,46 @@ namespace Deltares
 				}
 			}
 
+			auto st = sphereTasks();
+			auto uSphereValues = vector1D(uSphere->Values.size());
+			for (size_t i = 0; i < uSphere->Values.size(); i++)
+			{
+				uSphereValues(i) = uSphere->Values[i];
+			}
+			auto tasks = st.examineSurfaceForTasks(uSphereValues);
+
 			std::shared_ptr<Sample> bestSample = nullptr;
 
 			for (int i = 0; i < nRadiusFactors; i++)
 			{
 				radiusFactor = Numeric::NumericSupport::Divide(i + 1, nRadiusFactors);
 
-				double zMin = std::numeric_limits<double>::infinity();
-
-				std::shared_ptr<Sample> sample = examineSurfaceForFailure(modelRunner, 0, radiusFactor, uSphere, z0Fac, zMin);
-
-				bestSample = getBestSample(bestSample, sample, z0Fac);
-
-				if (z0Fac * sample->Z < 0)
+				std::vector<std::shared_ptr<Sample>> samples;
+				for (const auto& task : tasks)
 				{
-					std::shared_ptr<Sample> refinedSample = refineSpherePoint(modelRunner, radiusFactor, sample);
+					std::shared_ptr<Sample> uRay = this->Settings->StochastSet->getSample();
+					for (int k = 0; k < uSphere->Values.size(); k++)
+					{
+						uRay->Values[k] = task(k);
+					}
+					std::shared_ptr<Sample> u = uRay->getMultipliedSample(radiusFactor);
+					samples.push_back(u);
+				}
+				modelRunner->getZValues(samples);
+				for (const auto& sample : samples)
+				{
+					bestSample = getBestSample(bestSample, sample, z0Fac);
+				}
+
+				if (z0Fac * bestSample->Z < 0.0)
+				{
+					std::shared_ptr<Sample> refinedSample = refineSpherePoint(modelRunner, radiusFactor, bestSample);
 
 					return refinedSample;
 				}
 			}
 
 			return bestSample;
-		}
-
-		std::shared_ptr<Sample> StartPointCalculator::examineSurfaceForFailure(std::shared_ptr<Models::ModelRunner> modelRunner, int index, double radiusFactor, std::shared_ptr<Sample> uRay, double z0Fac, double& zMin)
-		{
-			constexpr int maxSteps = 5;
-			constexpr double dangle = 2 * std::numbers::pi / (maxSteps - 1);
-
-			if (index < uRay->getSize())
-			{
-				int jMax = uRay->Values[index] == 0 ? 1 : maxSteps;
-
-				std::shared_ptr<Sample> bestSample = nullptr;
-
-				for (int j = 0; j < jMax; j++)
-				{
-					double angle = dangle * j;
-
-					std::shared_ptr<Sample> u = uRay->clone();
-
-					for (int k = 0; k < index; k++)
-					{
-						u->Values[k] = uRay->Values[k] * std::sin(angle);
-					}
-
-					u->Values[index] = uRay->Values[index] * std::cos(angle);
-
-					u->correctSmallValues(1E-10);
-
-					std::shared_ptr<Sample> sample = examineSurfaceForFailure(modelRunner, index + 1, radiusFactor, u, z0Fac, zMin);
-
-					bestSample = getBestSample(bestSample, sample, z0Fac);
-				}
-
-				return bestSample;
-
-			}
-			else
-			{
-				std::shared_ptr<Sample> u = uRay->getMultipliedSample(radiusFactor);
-
-				u->Z = modelRunner->getZValue(u);
-
-				return u;
-			}
 		}
 
 		// Gets the best sample for a given radius factor

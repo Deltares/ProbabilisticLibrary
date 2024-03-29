@@ -1,9 +1,8 @@
-#include "sphere_tasks.h"
-#include "../utils/basic_math.h"
+#include "SphereTasks.h"
 #include <cmath>
 
 namespace Deltares {
-    namespace ProbLibCore {
+    namespace Reliability {
 
         std::vector<vector1D> sphereTasks::examineSurfaceForTasks(const vector1D& uRay)
         {

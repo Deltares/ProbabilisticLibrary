@@ -1,9 +1,9 @@
 #pragma once
 #include <vector>
-#include "../utils/vector1D.h"
+#include "../Math/vector1D.h"
 
 namespace Deltares {
-    namespace ProbLibCore {
+    namespace Reliability {
 
         class sphereTasks
         {
