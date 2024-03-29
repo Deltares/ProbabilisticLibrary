@@ -45,7 +45,7 @@ void funcWrapper::updateXinDesignPoint(double x[], const size_t lenX)
     int i[sizeIntArray];
     i[0] = 0;            // set design output on
     tError e = tError();
-    zfunc(x, i, &e);
+    zfunc(xx, i, &e);
     for (size_t i = 0; i < lenX; i++)
     {
         x[i] = xx[iPointer[i]];
