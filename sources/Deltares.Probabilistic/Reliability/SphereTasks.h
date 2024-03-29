@@ -12,7 +12,7 @@ namespace Deltares {
             sphereTasks(const size_t mxSteps) : maxSteps(mxSteps) {};
             std::vector<vector1D> examineSurfaceForTasks(const vector1D& uRay);
         private:
-            void examineSurfaceForTasks(const size_t idx, const vector1D& uRay);
+            void examineSurfaceForTasks(const size_t idx, const vector1D& uRay, const std::vector<int> uRayIpoint);
             std::vector<vector1D> uTasks;
             const size_t maxSteps;
         };
