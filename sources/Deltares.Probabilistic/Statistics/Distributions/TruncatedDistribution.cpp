@@ -1,7 +1,7 @@
 #include "TruncatedDistribution.h"
 
 #include <cmath>
-
+#include <algorithm>
 #include "../StandardNormal.h"
 #include "../../Math/NumericSupport.h"
 
