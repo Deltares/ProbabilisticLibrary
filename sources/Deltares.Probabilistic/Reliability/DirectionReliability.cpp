@@ -157,7 +157,7 @@ namespace Deltares
 		double DirectionReliability::getDirectionBeta(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr <BetaValueTask> directionTask)
 		{
 			std::shared_ptr<Sample> uDirection = directionTask->UValues->getNormalizedSample();
-			uDirection->IterationIndex = directionTask->Iteration;
+			//uDirection->IterationIndex = directionTask->Iteration;
 			bool invertZ = directionTask->z0 < 0;
 
 			std::vector<std::shared_ptr<DirectionSection>> sections = this->getDirectionSections(modelRunner, directionTask->Settings, uDirection, invertZ);

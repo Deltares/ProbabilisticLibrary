@@ -101,7 +101,8 @@ void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, const i
 
         auto createRelM = createReliabilityMethod();
         std::shared_ptr<ReliabilityMethod> relMethod(createRelM.selectMethod(*method, nStoch));
-        std::shared_ptr<ZModel> zModel(new ZModel([&fw](std::shared_ptr<ModelSample> v) { return fw.FDelegate(v); }));
+        std::shared_ptr<ZModel> zModel(new ZModel([&fw](std::shared_ptr<ModelSample> v) { return fw.FDelegate(v); },
+                                                  [&fw](std::vector<std::shared_ptr<ModelSample>> v) { return fw.FDelegateParallel(v); }));
         std::shared_ptr<Deltares::Statistics::CorrelationMatrix> corr(new Deltares::Statistics::CorrelationMatrix());
         if (nrCorrelations > 0)
         {
@@ -112,15 +113,15 @@ void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, const i
             }
         }
         std::shared_ptr<UConverter> uConverter(new UConverter(stochast, corr));
-        uConverter->initializeForRun();
         auto pw = progressWrapper(pc, relMethod.get());
         auto progressDelegate = ProgressLambda();
         auto detailedProgressDelegate = DetailedProgressLambda();
         auto textualProgress = TextualProgressLambda([&pw](ProgressType p, std::string s) {pw.FPgDelegate(p, s); });
         std::shared_ptr<ProgressIndicator> progress (new ProgressIndicator(progressDelegate, detailedProgressDelegate, textualProgress));
-        zModel->setMaxProcesses(method->numThreads);
         std::shared_ptr<ModelRunner> modelRunner(new ModelRunner(zModel, uConverter, progress));
         modelRunner->Settings->MaxParallelProcesses = method->numThreads;
+        modelRunner->Settings->MaxChunkSize = method->numThreads; // needed for overtopping
+        modelRunner->initializeForRun();
         std::shared_ptr<DesignPoint> newResult ( relMethod->getDesignPoint(modelRunner));
 
         auto alpha = vector1D(newResult->Alphas.size());
