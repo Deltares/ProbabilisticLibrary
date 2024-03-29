@@ -208,6 +208,14 @@ namespace Deltares
 
 			std::shared_ptr<Sample> uSphere = startPoint->getMultipliedSample(radiusFactor);
 
+			if (this->Settings->startVector.size() > 0)
+			{
+				for (size_t i = 0; i < this->Settings->startVector.size(); i++)
+				{
+					uSphere->Values[i] = this->Settings->startVector[i];
+				}
+			}
+
 			std::shared_ptr<Sample> bestSample = nullptr;
 
 			for (int i = 0; i < nRadiusFactors; i++)
