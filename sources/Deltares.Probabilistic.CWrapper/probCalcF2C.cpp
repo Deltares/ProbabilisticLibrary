@@ -56,7 +56,7 @@ void updateX(const vector1D & alpha, const DPoptions option, tResult & r, const 
             {
                 r.x[i] = newResult->Alphas[i]->X;
             }
-            fw.updateXinDesignPoint(r.x);
+            fw.updateXinDesignPoint(r.x, x);
         }
         break;
         default:
@@ -76,7 +76,6 @@ void updateX(const vector1D & alpha, const DPoptions option, tResult & r, const 
             x[i] = r.x[i];
         }
     }
-
 }
 
 extern "C"
