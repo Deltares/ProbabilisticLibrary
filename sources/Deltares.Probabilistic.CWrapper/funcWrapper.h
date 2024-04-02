@@ -32,7 +32,7 @@ public:
     void updateXinDesignPoint(double x[]);
 private:
     void copyXvector(double x[], const std::shared_ptr<Deltares::Models::ModelSample> s) const;
-    void copyXvector(double x[], const double s[], const size_t lenX) const;
+    void copyXvector(double x[], const double s[]) const;
     const size_t allStoch;
     const std::vector<int> & iPointer;
     const std::vector<double> & xRef;
