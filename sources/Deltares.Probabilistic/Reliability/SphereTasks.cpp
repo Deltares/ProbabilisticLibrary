@@ -1,5 +1,6 @@
 #include "SphereTasks.h"
 #include <cmath>
+#include "../Math/basic_math.h"
 
 namespace Deltares {
     namespace Reliability {

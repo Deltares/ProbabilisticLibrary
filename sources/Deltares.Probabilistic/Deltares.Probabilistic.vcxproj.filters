@@ -106,6 +106,7 @@
     <ClCompile Include="Combine\upscaling.cpp">
       <Filter>Combine</Filter>
     </ClCompile>
+    <ClCompile Include="Reliability\SphereTasks.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -231,6 +232,7 @@
     <ClInclude Include="Combine\upscaling.h">
       <Filter>Combine</Filter>
     </ClInclude>
+    <ClInclude Include="Reliability\SphereTasks.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

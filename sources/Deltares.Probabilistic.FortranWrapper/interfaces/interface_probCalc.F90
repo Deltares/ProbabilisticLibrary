@@ -227,7 +227,7 @@ module interface_probCalc
       type(storedConvergenceDataFORM) :: cnvg_data_form
     end type storedConvergenceData
 
-    type, public :: computationSetting
+    type, public, bind(c) :: computationSetting
         integer :: designPointSetting
         integer :: computationId
         integer :: threadId

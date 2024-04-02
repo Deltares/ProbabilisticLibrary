@@ -28,20 +28,20 @@ subroutine run_all_ftn_interface_tests
 
 end subroutine run_all_ftn_interface_tests
 
-function zfunc(x, compIds, e) result(z) bind(c)
-    use interface_probCalc, only : tError, ErrMsgLength
+function zfunc(x, compSettings, e) result(z) bind(c)
+    use interface_probCalc, only : tError, ErrMsgLength, computationSetting
     real(kind=dp), intent(in   ) :: x(*)
-    integer,       intent(in   ) :: compIds(*)
+    type(computationSetting), intent(in   ) :: compSettings
     type(tError),  intent(inout) :: e
     real(kind=dp)                :: z
     character(len=ErrMsgLength)  :: message
 
-    if (compIds(1) == 16) then
+    if (compSettings%computationId == 16) then
         z = 1.0_dp - x(1) - 0.5_dp * x(2)
     else
         z = 0.9_dp - x(1) - 0.45_dp * x(2)
     end if
-    if (compIds(1) > 16) then
+    if (compSettings%computationId > 16) then
         e%icode = -1
         message = "just testing"
         call copystr(message, e%message)
