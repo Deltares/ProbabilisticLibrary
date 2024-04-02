@@ -400,12 +400,12 @@ subroutine setupDStests(probDb, iPoint, x, maxSamples)
 end subroutine setupDStests
 
 !> emulate a z function as found for for Structure 2017 Z21
-function zFuncNod( u, designPointOutput, ierr ) result(z) bind(c)
+function zFuncNod( u, compSetting, ierr ) result(z) bind(c)
 
-    real(kind=wp), intent(inout) :: u(*)
-    real(kind=wp)                :: z
-    integer,       intent(in)    :: designPointOutput(*)    !< Switch for extra design point output
-    type(tError),  intent(inout) :: ierr
+    real(kind=wp),            intent(inout) :: u(*)
+    type(computationSetting), intent(in   ) :: compSetting
+    type(tError),             intent(inout) :: ierr
+    real(kind=wp)                           :: z
 
     real(kind=wp) :: r, line1, line2
 
@@ -418,7 +418,7 @@ function zFuncNod( u, designPointOutput, ierr ) result(z) bind(c)
 
     z = min(line1, line2)
 
-    if (designPointOutput(1) == designPointOutputTRUE) then
+    if (compSetting%designPointSetting == designPointOutputTRUE) then
         u(1) = 12.34  ! test that x can be updated in design point
         u(2) = 34.56
     end if
@@ -427,15 +427,15 @@ function zFuncNod( u, designPointOutput, ierr ) result(z) bind(c)
 
 end function zFuncNod
 
-function zFuncZero( u, designPointOutput, ierr ) result(z) bind(c)
+function zFuncZero( u, compSetting, ierr ) result(z) bind(c)
 
-    real(kind=wp), intent(inout) :: u(*)
-    real(kind=wp)                :: z
-    integer,       intent(in)    :: designPointOutput(*)    !< Switch for extra design point output
-    type(tError),  intent(inout) :: ierr
+    real(kind=wp),            intent(inout) :: u(*)
+    type(computationSetting), intent(in   ) :: compSetting
+    type(tError),             intent(inout) :: ierr
+    real(kind=wp)                           :: z
 
     ierr%iCode = 0
-    if (designPointOutput(1) == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
+    if (compSetting%designPointSetting == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
 
     z = 0.0_wp * u(1)
 
@@ -443,15 +443,15 @@ function zFuncZero( u, designPointOutput, ierr ) result(z) bind(c)
 
 end function zFuncZero
 
-function zFuncNegative( u, designPointOutput, ierr ) result(z) bind(c)
+function zFuncNegative( u, compSetting, ierr ) result(z) bind(c)
 
-    real(kind=wp), intent(inout) :: u(*)
-    real(kind=wp)                :: z
-    integer,       intent(in)    :: designPointOutput(*)    !< Switch for extra design point output
-    type(tError),  intent(inout) :: ierr
+    real(kind=wp),            intent(inout) :: u(*)
+    type(computationSetting), intent(in   ) :: compSetting
+    type(tError),             intent(inout) :: ierr
+    real(kind=wp)                           :: z
 
     ierr%iCode = 0
-    if (designPointOutput(1) == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
+    if (compSetting%designPointSetting == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
 
     z = u(1) -u(2) - 2.0_wp
 
@@ -459,14 +459,14 @@ function zFuncNegative( u, designPointOutput, ierr ) result(z) bind(c)
 
 end function zFuncNegative
 
-function zFuncError( u, designPointOutput, ierr ) result(z) bind(c)
+function zFuncError( u, compSetting, ierr ) result(z) bind(c)
     use f2c_tools
-    real(kind=wp), intent(inout) :: u(*)
-    real(kind=wp)                :: z
-    integer,       intent(in)    :: designPointOutput(*)    !< Switch for extra design point output
-    type(tError),  intent(inout) :: ierr
+    real(kind=wp),            intent(inout) :: u(*)
+    type(computationSetting), intent(in   ) :: compSetting
+    type(tError),             intent(inout) :: ierr
+    real(kind=wp)                           :: z
 
-    if (designPointOutput(1) == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
+    if (compSetting%designPointSetting == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
 
     z = u(1) -u(2) - 2.0_wp
 

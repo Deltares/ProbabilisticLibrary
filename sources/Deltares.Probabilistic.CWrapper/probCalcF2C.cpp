@@ -82,7 +82,7 @@ void updateX(const vector1D & alpha, const DPoptions option, tResult & r, const 
 extern "C"
 void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, const int vectorSize,
     corrStruct correlations[], const int nrCorrelations,
-    const double(*fx)(double[], int[], tError*),
+    const double(*fx)(double[], computationSettings*, tError*),
     const bool(*pc)(ProgressType, const char*),
     int compIds[], int iPoint[], double x[], tResult* r, tError* ierr)
 {

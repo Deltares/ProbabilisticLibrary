@@ -31,12 +31,12 @@ module toolkitTestFunctions
 
 contains
 
-function linearIsShiftZ( x, designPointOutput, ierr ) result(z) bind(c)
+function linearIsShiftZ( x, compSetting, ierr ) result(z) bind(c)
 
-    real(kind=wp), intent(inout)    :: x(*)
-    real(kind=wp)                   :: z
-    integer,        intent(in)      :: designPointOutput(*)    !< Switch for extra design point output
-    type(tError),  intent(inout)    :: ierr
+    real(kind=wp),            intent(inout) :: x(*)
+    type(computationSetting), intent(in   ) :: compSetting
+    type(tError),             intent(inout) :: ierr
+    real(kind=wp)                           :: z
 
     ierr%icode = 0
 
@@ -44,12 +44,12 @@ function linearIsShiftZ( x, designPointOutput, ierr ) result(z) bind(c)
 
 end function linearIsShiftZ
 
-function nonlinearIsZ( x, designPointOutput, ierr ) result(z) bind(c)
+function nonlinearIsZ( x, compSetting, ierr ) result(z) bind(c)
 
-    real(kind=wp), intent(inout)    :: x(*)
-    real(kind=wp)                   :: z
-    integer,        intent(in)      :: designPointOutput(*)    !< Switch for extra design point output
-    type(tError),  intent(inout)    :: ierr
+    real(kind=wp),            intent(inout) :: x(*)
+    type(computationSetting), intent(in   ) :: compSetting
+    type(tError),             intent(inout) :: ierr
+    real(kind=wp)                           :: z
 
     ierr%icode = 0
 
@@ -57,12 +57,12 @@ function nonlinearIsZ( x, designPointOutput, ierr ) result(z) bind(c)
 
 end function nonlinearIsZ
 
-function manyIsZ( x, designPointOutput, ierr ) result(z) bind(c)
+function manyIsZ( x, compSetting, ierr ) result(z) bind(c)
 
-    real(kind=wp), intent(inout)    :: x(*)
-    real(kind=wp)                   :: z
-    integer,        intent(in)      :: designPointOutput(*)    !< Switch for extra design point output
-    type(tError),  intent(inout)    :: ierr
+    real(kind=wp),            intent(inout) :: x(*)
+    type(computationSetting), intent(in   ) :: compSetting
+    type(tError),             intent(inout) :: ierr
+    real(kind=wp)                           :: z
 
     ierr%icode = 0
 
@@ -72,12 +72,12 @@ function manyIsZ( x, designPointOutput, ierr ) result(z) bind(c)
 
 end function manyIsZ
 
-function blighZ( x, designPointOutput, ierr ) result(z) bind(c)
+function blighZ( x, compSetting, ierr ) result(z) bind(c)
 
-    real(kind=wp), intent(inout)    :: x(*)
-    real(kind=wp)                   :: z
-    integer,        intent(in)      :: designPointOutput(*)    !< Switch for extra design point output
-    type(tError),  intent(inout)    :: ierr
+    real(kind=wp),            intent(inout) :: x(*)
+    type(computationSetting), intent(in   ) :: compSetting
+    type(tError),             intent(inout) :: ierr
+    real(kind=wp)                           :: z
 
     ierr%icode = 0
 

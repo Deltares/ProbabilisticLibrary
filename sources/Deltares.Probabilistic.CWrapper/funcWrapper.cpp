@@ -8,16 +8,16 @@ void funcWrapper::FDelegate(std::shared_ptr<Deltares::Models::ModelSample> s)
 {
     auto xx = new double[allStoch];
     copyXvector(xx, s);
-    int intArr[sizeIntArray];
-    intArr[0] = designPointOutputFALSE;
-    intArr[1] = compIds[0]; // reserved for e.g. wind direction
-    intArr[2] = 0;
+    computationSettings compSetting;
+    compSetting.dpOut = designPointOptions::dpOutFALSE;
+    compSetting.computationId = compIds[0]; // reserved for e.g. wind direction
+    compSetting.threadId = 0;
     if (s->IterationIndex >= 0)
     {
-        intArr[2] = s->IterationIndex % omp_get_max_threads();  // OpenMP threadId
+        compSetting.threadId = s->IterationIndex % omp_get_max_threads();  // OpenMP threadId
     }
     tError e = tError();
-    double result = zfunc(xx, intArr, &e);
+    double result = zfunc(xx, &compSetting, &e);
     delete[] xx;
     if (e.errorCode != 0) throw probLibException(e.errorMessage);
     s->Z = result;
@@ -31,12 +31,12 @@ void funcWrapper::FDelegateParallel(std::vector<std::shared_ptr<Deltares::Models
     {
         double*x = &buffer[allStoch * omp_get_thread_num()];
         copyXvector(x, samples[i]);
-        int intArr[sizeIntArray];
-        intArr[0] = designPointOutputFALSE;
-        intArr[1] = compIds[0]; // reserved for e.g. wind direction
-        intArr[2] = omp_get_thread_num();
+        computationSettings compSetting;
+        compSetting.dpOut = designPointOptions::dpOutFALSE;
+        compSetting.computationId = compIds[0]; // reserved for e.g. wind direction
+        compSetting.threadId = omp_get_thread_num();
         tError e = tError();
-        double result = zfunc(x, intArr, &e);
+        double result = zfunc(x, &compSetting, &e);
         samples[i]->Z = result;
     }
     delete[] buffer;
@@ -46,12 +46,12 @@ void funcWrapper::updateXinDesignPoint(double x[], const size_t lenX)
 {
     auto xx = new double[allStoch];
     copyXvector(xx, x, lenX);
-    int intArr[sizeIntArray];
-    intArr[0] = designPointOutputTRUE;
-    intArr[1] = compIds[0]; // reserved for e.g. wind direction
-    intArr[2] = 0;          // OpenMP threadId
+    computationSettings compSetting;
+    compSetting.dpOut = designPointOptions::dpOutTRUE;
+    compSetting.computationId = compIds[0]; // reserved for e.g. wind direction
+    compSetting.threadId = 0;
     tError e = tError();
-    zfunc(xx, intArr, &e);
+    zfunc(xx, &compSetting, &e);
     for (size_t i = 0; i < lenX; i++)
     {
         x[i] = xx[iPointer[i]];

@@ -6,12 +6,21 @@
 #include "../Deltares.Probabilistic/Model/ModelSample.h"
 #include "stringHelper.h"
 
-typedef std::function<double(double[], int[], tError*)> zFuncExtern;
-const int sizeIntArray = 4;
+enum class designPointOptions
+{
+    dpOutTRUE = 0,
+    dpOutFALSE = 1,
+    dpOutPrintAll = 3,
+};
 
-const int designPointOutputTRUE = 0;
-const int designPointOutputFALSE = 1;
-const int designPointOutputPrintAll = 3;
+struct computationSettings
+{
+    designPointOptions dpOut;
+    int computationId;
+    int threadId;
+};
+
+typedef std::function<double(double[], computationSettings*, tError*)> zFuncExtern;
 
 class funcWrapper
 {

@@ -225,16 +225,22 @@ module interface_probCalc
     type, public :: storedConvergenceData
       type(convDataSamplingMethods)   :: cnvg_data_ds
       type(storedConvergenceDataFORM) :: cnvg_data_form
-  end type storedConvergenceData
+    end type storedConvergenceData
+
+    type, public :: computationSetting
+        integer :: designPointSetting
+        integer :: computationId
+        integer :: threadId
+    end type computationSetting
 
   interface
-    function zfunc(x, compIds, e) result(z) bind(c)
+    function zfunc(x, compSetting, e) result(z) bind(c)
       use, intrinsic :: iso_c_binding, only: c_double
-      import tError
+      import tError, computationSetting
       real(kind=c_double) :: z
-      real(kind=c_double), intent(inout) :: x(*)
-      integer,             intent(in)    :: compIds(*)
-      type(tError),        intent(inout) :: e
+      real(kind=c_double),      intent(inout) :: x(*)
+      type(computationSetting), intent(in)    :: compSetting
+      type(tError),             intent(inout) :: e
     end function zfunc
   end interface
 
