@@ -10,11 +10,11 @@ void funcWrapper::FDelegate(std::shared_ptr<Deltares::Models::ModelSample> s)
     copyXvector(xx, s);
     computationSettings compSetting;
     compSetting.dpOut = designPointOptions::dpOutFALSE;
-    compSetting.computationId = compIds[0]; // reserved for e.g. wind direction
+    compSetting.computationId = compId;
     compSetting.threadId = 0;
     if (s->IterationIndex >= 0)
     {
-        compSetting.threadId = s->IterationIndex % omp_get_max_threads();  // OpenMP threadId
+        compSetting.threadId = s->IterationIndex % omp_get_max_threads();
     }
     tError e = tError();
     double result = zfunc(xx, &compSetting, &e);
@@ -33,7 +33,7 @@ void funcWrapper::FDelegateParallel(std::vector<std::shared_ptr<Deltares::Models
         copyXvector(x, samples[i]);
         computationSettings compSetting;
         compSetting.dpOut = designPointOptions::dpOutFALSE;
-        compSetting.computationId = compIds[0]; // reserved for e.g. wind direction
+        compSetting.computationId = compId;
         compSetting.threadId = omp_get_thread_num();
         tError e = tError();
         double result = zfunc(x, &compSetting, &e);
@@ -42,17 +42,17 @@ void funcWrapper::FDelegateParallel(std::vector<std::shared_ptr<Deltares::Models
     delete[] buffer;
 }
 
-void funcWrapper::updateXinDesignPoint(double x[], const size_t lenX)
+void funcWrapper::updateXinDesignPoint(double x[])
 {
     auto xx = new double[allStoch];
-    copyXvector(xx, x, lenX);
+    copyXvector(xx, x, iPointer.size());
     computationSettings compSetting;
     compSetting.dpOut = designPointOptions::dpOutTRUE;
-    compSetting.computationId = compIds[0]; // reserved for e.g. wind direction
+    compSetting.computationId = compId;
     compSetting.threadId = 0;
     tError e = tError();
     zfunc(xx, &compSetting, &e);
-    for (size_t i = 0; i < lenX; i++)
+    for (size_t i = 0; i < iPointer.size(); i++)
     {
         x[i] = xx[iPointer[i]];
     }
