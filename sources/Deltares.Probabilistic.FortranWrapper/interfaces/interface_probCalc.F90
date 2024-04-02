@@ -243,20 +243,11 @@ module interface_probCalc
   end interface
 
   interface
-    function progressCancel(i, x, y) result(cancel) bind(c)
-      use, intrinsic :: iso_c_binding, only: c_double
-      logical(kind=1)                        :: cancel
-      real(kind=c_double), intent(in), value :: x, y
-      integer,             intent(in), value :: i
-    end function progressCancel
-  end interface
-
-  interface
-    function progressCancelNew(i, s) result(cancel) bind(c)
+    function progressCancel(i, s) result(cancel) bind(c)
       integer,          intent(in), value :: i
       character(len=1), intent(in)        :: s(*)
       logical(kind=1)                        :: cancel
-    end function progressCancelNew
+    end function progressCancel
   end interface
 
   interface
@@ -264,7 +255,7 @@ module interface_probCalc
         compIds, iPoint, x, rn, ierr) bind(C)
       use, intrinsic :: iso_c_binding, only: c_double
 #ifdef _MSC_VER
-      import tMethod, tDistrib, basicCorrelation, tError, tResult, zfunc, progressCancelNew
+      import tMethod, tDistrib, basicCorrelation, tError, tResult, zfunc, progressCancel
 #else
       import tMethod, tDistrib, basicCorrelation, tError, tResult
 #endif
@@ -277,7 +268,7 @@ module interface_probCalc
       integer,        intent(in)    :: compIds(*)
       integer,        intent(in)    :: iPoint(*)
       procedure(zfunc)              :: fx
-      procedure(progressCancelNew)  :: pc
+      procedure(progressCancel)     :: pc
       real(kind=c_double), intent(inout) :: x(*)
       type(tError),   intent(  out) :: ierr
       type(tResult),  intent(  out) :: rn
@@ -285,14 +276,6 @@ module interface_probCalc
   end interface
 
 contains
-
-function basicProgressCancel(i, x, y) result(cancel) bind(c)
-  use, intrinsic :: iso_c_binding, only: c_double
-  logical(kind=1)                        :: cancel
-  real(kind=c_double), intent(in), value :: x, y
-  integer,             intent(in), value :: i
-  cancel = .false.
-end function basicProgressCancel
 
 function textualProgress(progress, str) result(cancel) bind(c)
     integer, intent(in), value :: progress
@@ -305,7 +288,7 @@ end function textualProgress
 
 !>
 !! Subroutine for the calculation of a limit state function
-subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, conv, convCriterium, convergenceData, name, id,alfaN_u,pc,pcNew)
+subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, conv, convCriterium, convergenceData, name, id, pc)
     use feedback
     type(probabilisticDataStructure_data), intent(in) :: probDb    !< Probabilistic data module
     procedure(zfunc)                           :: fx               !< Function implementing the z-function of the failure mechanism
@@ -317,16 +300,14 @@ subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, conv, convCri
     type(storedConvergenceData), intent(inout) :: convergenceData  !< struct holding all convergence data
     character(len=*), intent(in), optional     :: name             !< Name of mechanism (for use in error message)
     integer         , intent(in), optional     :: id               !< Id of mechanism (for use in error message)
-    real(kind=wp), intent(out), optional       :: alfaN_u(:)       !< Uncorrelated Alpha values,
-    procedure(progressCancel), optional        :: pc
-    procedure(progressCancelNew), optional        :: pcNew
+    procedure(progressCancel),    optional     :: pc               !< progress function
 
     integer, allocatable        :: iPointMax(:), iPointCpp(:)    ! Temporary max length Pointer to active variables used in the limit state function
 
     type(tMethod)               :: method
     type(tDistrib)              :: distribs(probDb%stoVar%maxStochasts)
     integer                     :: i, nStochActive, k, nstoch
-    integer                     :: compIds(16) = designPointOutputFALSE
+    integer                     :: compIds(1) = designPointOutputFALSE
     type(tError)                :: ierr
     type(tResult)               :: rn
     character(len=ErrMsgLength) :: msg
@@ -414,9 +395,9 @@ subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, conv, convCri
         call fatalError("Unknown method in subroutine IterationDS: ", method%iterationMethod)
     else if (nstoch > 0) then
         method%progressInterval = 1
-        if (present(pcNew)) then
+        if (present(pc)) then
             call probCalcF2C(method, distribs, nStochActive, nStoch, probDb%basic_correlation, &
-                probDb%number_correlations, fx, pcNew, compIds, iPointCpp, x, rn, ierr)
+                probDb%number_correlations, fx, pc, compIds, iPointCpp, x, rn, ierr)
         else
             call probCalcF2C(method, distribs, nStochActive, nStoch, probDb%basic_correlation, &
                 probDb%number_correlations, fx, textualProgress, compIds, iPointCpp, x, rn, ierr)

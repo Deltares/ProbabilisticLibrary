@@ -333,7 +333,7 @@ subroutine testCancel
     iCounter2 = 0
 
     call performDirectionalSampling ( probDb, zFuncNod, nStochasts, iPoint, x, alpha, beta, &
-        convergenceCriteriumReached, convergenceDataDS, pcNew=cancel5stepsNew )
+        convergenceCriteriumReached, convergenceDataDS, pc=cancel5stepsNew )
     expected = 5
     call assert_equal(iCounter2, expected, "number of samples diff")
 
@@ -480,7 +480,7 @@ function zFuncError( u, compSetting, ierr ) result(z) bind(c)
 
 end function zFuncError
 
-subroutine performDirectionalSampling( probDb, fx, nStochasts, iPoint, x, alfa, beta, convCriterium, convergenceData, pc, pcNew )
+subroutine performDirectionalSampling( probDb, fx, nStochasts, iPoint, x, alfa, beta, convCriterium, convergenceData, pc )
     type(probabilisticDataStructure_data)      :: probDb           !< Probabilistic data module
     procedure(zfunc)                           :: fx               !< Function implementing the z-function of the failure mechanism
     real(kind=wp), intent(out)                 :: alfa(:)          !< Alpha values
@@ -491,13 +491,12 @@ subroutine performDirectionalSampling( probDb, fx, nStochasts, iPoint, x, alfa, 
     integer,       intent(in)                  :: nStochasts       !< number of active stochasts
     type(convDataSamplingMethods), intent(out) :: convergenceData  !< struct holding convergence data for sampling methods
     procedure(progressCancel), optional        :: pc               !< progress/cancel function
-    procedure(progressCancelNew), optional     :: pcNew            !< progress/cancel function
 
     type(storedConvergenceData)   :: allConvergenceData  !< struct holding all convergence data
     logical                       :: conv
 
     probDb%method%calcMethod = methodDirectionalSampling
-    call calculateLimitStateFunction( probDb, fx, alfa, beta, x, conv, convCriterium, allConvergenceData, pc=pc, pcNew=pcNew)
+    call calculateLimitStateFunction( probDb, fx, alfa, beta, x, conv, convCriterium, allConvergenceData, pc=pc)
     convergenceData = allConvergenceData%cnvg_data_ds
 end subroutine performDirectionalSampling
 
