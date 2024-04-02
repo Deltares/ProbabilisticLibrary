@@ -49,6 +49,12 @@ namespace Deltares
 					void set(double value) { shared->object->RadiusSphereSearch = value; }
 				}
 
+				property bool AllQuadrants
+				{
+					bool get() { return shared->object->allQuadrants; }
+					void set(bool value) { shared->object->allQuadrants = value; }
+				}
+
 				property Wrappers::StartMethodType StartMethod
 				{
 					Wrappers::StartMethodType get()

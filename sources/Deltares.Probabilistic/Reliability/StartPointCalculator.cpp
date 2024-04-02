@@ -195,6 +195,7 @@ namespace Deltares
 		std::shared_ptr<Sample> StartPointCalculator::getSphereStartPoint(std::shared_ptr<Models::ModelRunner> modelRunner)
 		{
 			constexpr int nRadiusFactors = 20;
+			constexpr int maxSteps = 5;
 
 			std::shared_ptr<Sample> zeroSample = std::make_shared<Sample>(modelRunner->getVaryingStochastCount());
 			double z0 = modelRunner->getZValue(zeroSample);
@@ -217,7 +218,7 @@ namespace Deltares
 				}
 			}
 
-			auto st = sphereTasks();
+			auto st = sphereTasks(maxSteps, Settings->allQuadrants);
 			auto uSphereValues = vector1D(uSphere->Values.size());
 			for (size_t i = 0; i < uSphere->Values.size(); i++)
 			{

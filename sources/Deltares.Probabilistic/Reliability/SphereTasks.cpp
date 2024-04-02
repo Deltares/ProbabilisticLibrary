@@ -1,6 +1,5 @@
 #include "SphereTasks.h"
 #include <cmath>
-#include "../Math/basic_math.h"
 
 namespace Deltares {
     namespace Reliability {
@@ -33,7 +32,7 @@ namespace Deltares {
                 size_t jMax = (uRay(uRayIpoint[idx]) == 0.0 ? 1 : maxSteps);
                 auto u = vector1D(nrStochasts);
 
-                double dangle = M_PI / 2.0 / (double)(maxSteps - 1);
+                double dangle = maxAngle / (double)(maxSteps - 1);
                 for (size_t j = 1; j <= jMax; j++)
                 {
                     double angle = dangle * double(j - 1);

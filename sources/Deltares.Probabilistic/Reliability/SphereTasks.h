@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include "../Math/vector1D.h"
+#include "../Math/basic_math.h"
 
 namespace Deltares {
     namespace Reliability {
@@ -8,13 +9,14 @@ namespace Deltares {
         class sphereTasks
         {
         public:
-            sphereTasks() : maxSteps(5) {};
-            sphereTasks(const size_t mxSteps) : maxSteps(mxSteps) {};
+            sphereTasks() : maxSteps(5), maxAngle(M_PI / 2.0) {};
+            sphereTasks(const size_t mxSteps, const bool allQuadrants) : maxSteps(mxSteps), maxAngle(allQuadrants ? 2.0 * M_PI : M_PI / 2.0) {};
             std::vector<vector1D> examineSurfaceForTasks(const vector1D& uRay);
         private:
             void examineSurfaceForTasks(const size_t idx, const vector1D& uRay, const std::vector<int> uRayIpoint);
             std::vector<vector1D> uTasks;
             const size_t maxSteps;
+            const double maxAngle;
         };
     }
 }
