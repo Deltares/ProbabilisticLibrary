@@ -36,16 +36,12 @@ void funcWrapper::FDelegateParallel(std::vector<std::shared_ptr<Deltares::Models
     delete[] buffer;
 }
 
-void funcWrapper::updateXinDesignPoint(double x[], double xx[])
+void funcWrapper::updateXinDesignPoint(const std::vector<double> & x, double xx[])
 {
     copyXvector(xx, x);
     computationSettings compSetting{ designPointOptions::dpOutTRUE, compId, 0 };
     tError e = tError();
     zfunc(xx, &compSetting, &e);
-    for (size_t i = 0; i < iPointer.size(); i++)
-    {
-        x[i] = xx[iPointer[i]];
-    }
 }
 
 void funcWrapper::copyXvector(double x[], const std::shared_ptr<Deltares::Models::ModelSample> s) const
@@ -60,7 +56,7 @@ void funcWrapper::copyXvector(double x[], const std::shared_ptr<Deltares::Models
     }
 }
 
-void funcWrapper::copyXvector(double x[], const double s[]) const
+void funcWrapper::copyXvector(double x[], const std::vector<double> & s) const
 {
     for (size_t i = 0; i < allStoch; i++)
     {

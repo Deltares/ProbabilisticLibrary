@@ -73,11 +73,9 @@ module interface_probCalc
   type, public, bind(c) :: tResult
     real(kind=c_double)  :: beta
     real(kind=c_double)  :: alpha(maxActiveStochast)
-    real(kind=c_double)  :: x(maxActiveStochast)
     integer              :: iPoint(maxActiveStochast)
     integer              :: stepsNeeded
     integer              :: samplesNeeded
-    real(kind=c_double)  :: alpha2(maxActiveStochast)
     logical(kind=c_bool) :: convergence
   end type tResult
 
@@ -434,14 +432,6 @@ subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, conv, convCri
             do k = 1, nStochActive
                 alfaN(iPointMax(k)) = rn%alpha(k)
             end do
-            if (method%methodId == methodFORMstart) then
-                x(1:nStochActive) = rn%x(1:nStochActive)
-            else if (method%designPointOption == designPointRMinZFunc .or. &
-                     method%designPointOption == designPointRMinZFuncCompatible) then
-                continue
-            else
-                x(iPointMax(1:nStochActive)) = rn%x(1:nStochActive)
-            endif
             if (method%methodId == methodFORMandDirSampling .and. rn%samplesNeeded > 0) then
                 ! to get logging in output.txt right; as we have samples, Form did not succeed (no convergence or beta out of range)
                 conv = .false.

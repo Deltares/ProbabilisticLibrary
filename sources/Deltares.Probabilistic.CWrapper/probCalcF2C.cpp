@@ -27,11 +27,9 @@ struct tResult
 {
     double beta;
     double alpha[maxActiveStochast];
-    double x[maxActiveStochast];
     int iPoint[maxActiveStochast];
     int stepsNeeded;
     int samplesNeeded;
-    double alpha2[maxActiveStochast];
     bool convergence;
 };
 
@@ -43,37 +41,30 @@ void updateX(const vector1D & alpha, const DPoptions option, tResult & r, const 
         switch (option) {
         case DPoptions::None:
         {
-            for (size_t i = 0; i < maxActiveStochast; i++)
+            for (size_t i = 0; i < vectorSize; i++)
             {
-                r.x[i] = 0.0;
+                x[i] = 0.0;
             }
         }
         break;
         case DPoptions::RMinZFunc:
         case DPoptions::RMinZFuncCompatible:
         {
+            auto xSparse = std::vector<double>();
             for (size_t i = 0; i < alpha.size(); i++)
             {
-                r.x[i] = newResult->Alphas[i]->X;
+                xSparse.push_back(newResult->Alphas[i]->X);
             }
-            fw.updateXinDesignPoint(r.x, x);
+            fw.updateXinDesignPoint(xSparse, x);
         }
         break;
         default:
         {
             for (size_t i = 0; i < alpha.size(); i++)
             {
-                r.x[i] = newResult->Alphas[i]->X;
+                x[i] = newResult->Alphas[i]->X;
             }
         }
-        }
-    }
-
-    if (alpha.size() == vectorSize)
-    {
-        for (size_t i = 0; i < alpha.size(); i++)
-        {
-            x[i] = r.x[i];
         }
     }
 }
@@ -151,10 +142,6 @@ void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, const i
         for (int i = 0; i < n; i++)
         {
             r->iPoint[i] = i + 1;
-        }
-        for (size_t i = 0; i < alpha.size(); i++)
-        {
-            r->alpha2[i] = newResult->Alphas[i]->AlphaCorrelated;
         }
         r->convergence = newResult->convergenceReport->IsConverged;
         r->stepsNeeded = newResult->convergenceReport->TotalIterations;

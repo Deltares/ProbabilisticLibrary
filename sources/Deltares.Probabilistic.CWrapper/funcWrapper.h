@@ -29,10 +29,10 @@ public:
         allStoch(x.size()), iPointer(ip), xRef(x), compId(id), zfunc(func) { ; }
     void FDelegate(std::shared_ptr<Deltares::Models::ModelSample> s);
     void FDelegateParallel(std::vector<std::shared_ptr<Deltares::Models::ModelSample>> s);
-    void updateXinDesignPoint(double x[], double xx[]);
+    void updateXinDesignPoint(const std::vector<double> & x, double xx[]);
 private:
     void copyXvector(double x[], const std::shared_ptr<Deltares::Models::ModelSample> s) const;
-    void copyXvector(double x[], const double s[]) const;
+    void copyXvector(double x[], const std::vector<double> & s) const;
     const size_t allStoch;
     const std::vector<int> & iPointer;
     const std::vector<double> & xRef;
