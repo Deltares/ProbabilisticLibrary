@@ -85,7 +85,7 @@ subroutine importanceSamplingTest1
     probDb%method%calcMethod = methodImportanceSampling
 
     ! Perform computation to determine alpha and beta
-    call performImportanceSampling( probDb, simpleZ, nStochasts, iPoint, x, alfa, beta, convCriterium )
+    call performImportanceSampling( probDb, simpleZ, x, alfa, beta, convCriterium )
     write(*,*) 'Beta computed', beta
     write(*,*) 'Beta known', betaKnown
     write(*,*) 'Alpha: ', alfa
@@ -133,7 +133,7 @@ subroutine importanceSamplingTest2
         variance = 1.0_wp + 0.25_wp * real(k, wp)
         probDb%method%is%variancefactor = variance
         probDb%method%calcMethod = methodImportanceSampling
-        call performImportanceSampling( probDb, simpleZ, nStochasts, iPoint, x, alfa, beta, convCriterium )
+        call performImportanceSampling( probDb, simpleZ, x, alfa, beta, convCriterium )
         call assert_comparable(beta, betaKnown, margin, "The computed beta deviates from the analytically computed value")
         write(*,'(a,f4.2,2(x,f10.8))') 'variance, betas = ', variance, beta
     end do
@@ -143,15 +143,13 @@ subroutine importanceSamplingTest2
 end subroutine importanceSamplingTest2
 
 
-subroutine performImportanceSampling( probDb, fx, nStochasts, iPoint, x, alfa, beta, convCriterium )
+subroutine performImportanceSampling( probDb, fx, x, alfa, beta, convCriterium )
     type(probabilisticDataStructure_data)      :: probDb           !< Probabilistic data module
     procedure(zfunc)                           :: fx               !< Function implementing the z-function of the failure mechanism
     real(kind=wp), intent(out)                 :: alfa(:)          !< Alpha values
     real(kind=wp), intent(out)                 :: beta             !< Reliability index
     real(kind=wp), intent(inout)               :: x(:)             !< X values of design point
     logical,       intent(out)                 :: convCriterium    !< Convergence criterium indicator
-    integer,       intent(in)                  :: iPoint(*)        !< Pointer to stochastic variables
-    integer,       intent(in)                  :: nStochasts       !< number of active stochasts
 
     type(storedConvergenceData) :: convergenceData  !< struct holding all convergence data
     logical :: conv

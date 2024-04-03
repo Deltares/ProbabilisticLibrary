@@ -78,8 +78,7 @@ subroutine testNodFunction
         probDb%method%DS%iterationMethod = j
         probDb%method%DS%epsilonDu = merge(1d-3, 1d-5, j<=3)
         iCounter = 0
-        call performDirectionalSampling ( probDb, zFuncNod, nStochasts, iPoint, x, alpha, beta(j), &
-            convergenceCriteriumReached, convergenceDataDS )
+        call performDirectionalSampling ( probDb, zFuncNod, x, alpha, beta(j), convergenceCriteriumReached, convergenceDataDS )
         if (j > 1) then
             write(msg,'(a,i0)') 'diff in beta, j =', j
             call assert_comparable( beta(j), 3.110_wp, 0.002_wp, msg)
@@ -118,8 +117,7 @@ subroutine testNodFunction2
             if (j == 7) cycle ! 7 not implemented
             probDb%method%DS%iterationMethod = j
             iCounter = 0
-            call performDirectionalSampling ( probDb, zFuncNod, nStochasts, iPoint, x, alpha, beta(j,i), &
-                convergenceCriteriumReached, convergenceDataDS )
+            call performDirectionalSampling ( probDb, zFuncNod, x, alpha, beta(j,i), convergenceCriteriumReached, convergenceDataDS )
             if (j > 3) then
                 call assert_comparable(beta(j,i), betaExpected(i), 2d-3, 'diff in beta')
             endif
@@ -202,8 +200,7 @@ subroutine testDesignOutputOptions
     do i = 0, 7
         probDb%method%DPoption = i
         iCounter = 0
-        call performDirectionalSampling ( probDb, zFuncNod, nStochasts, iPoint, x, alpha, beta, &
-            convergenceCriteriumReached, convergenceDataDS )
+        call performDirectionalSampling ( probDb, zFuncNod, x, alpha, beta, convergenceCriteriumReached, convergenceDataDS )
         ! beta is equal to previous method DirSamplingIterMethodFastBisection
         call assert_comparable(beta, 3.11_wp, 1d-2, 'diff in beta')
         write(msg,'(a,i1)') 'diff in x; i = ', i
@@ -229,8 +226,7 @@ subroutine testZeqZero
     call setupDStests(probDb, iPoint, x)
 
     iCounter = 0
-    call performDirectionalSampling ( probDb, zFuncZero, nStochasts, iPoint, x, alpha, beta, &
-        convergenceCriteriumReached, convergenceDataDS )
+    call performDirectionalSampling ( probDb, zFuncZero, x, alpha, beta, convergenceCriteriumReached, convergenceDataDS )
     call assert_comparable(beta, 0.0_wp, 1d-12, 'diff in beta')
     call assert_comparable(alpha, [sqrt(0.5_wp), sqrt(0.5_wp)], 1d-12, 'diff in alpha')
     call assert_equal(iCounter, 1, 'expect only one function evaluation')
@@ -257,8 +253,7 @@ subroutine testZnegative
         probDb%method%DS%epsilonDu = merge(1d-3, 1d-5, i<=3)
         iCounter = 0
         if (i > NrMethods) call SetFatalErrorExpected(.true.)
-        call performDirectionalSampling ( probDb, zFuncNegative, nStochasts, iPoint, x, alpha, beta, &
-            convergenceCriteriumReached, convergenceDataDS )
+        call performDirectionalSampling ( probDb, zFuncNegative, x, alpha, beta, convergenceCriteriumReached, convergenceDataDS )
         if (i > NrMethods) then
             call GetFatalErrorMessage(msg)
             call assert_equal(1, index(msg, 'Fatal error: Unknown method in subroutine IterationDS: 10'), 'diff in error message')
@@ -292,8 +287,7 @@ subroutine testErrorHandling
 
     do i = -5, -1
         iCounter = i
-        call performDirectionalSampling ( probDb, zFuncError, nStochasts, iPoint, x, alpha, beta, &
-            convergenceCriteriumReached, convergenceDataDS )
+        call performDirectionalSampling ( probDb, zFuncError, x, alpha, beta, convergenceCriteriumReached, convergenceDataDS )
         call GetFatalErrorMessage(msg)
         call assert_equal(1, index(msg, 'Fatal error: iCounter == 0'), 'diff in error message')
     enddo
@@ -302,20 +296,14 @@ subroutine testErrorHandling
 
 end subroutine testErrorHandling
 
-logical(kind=1) function cancel5steps(i, beta, con) bind(c)
-    integer, intent(in), value :: i
-    real(kind=wp), intent(in), value :: beta, con
-
-    cancel5steps = (i >= 5)
-end function cancel5steps
-
-logical(kind=1) function cancel5stepsNew(i, str) bind(c)
+logical(kind=1) function cancel5steps(i, str) bind(c)
     integer, intent(in), value :: i
     character(len=1), intent(in) :: str(*)
 
     iCounter2 = iCounter2 + 1
-    cancel5stepsNew = (iCounter2 >= 5)
-end function cancel5stepsNew
+    cancel5steps = (iCounter2 >= 5)
+    if (i > 99) write(*,*) str(1)
+end function cancel5steps
 
 !> test cancellation of a DS run
 subroutine testCancel
@@ -326,14 +314,12 @@ subroutine testCancel
     real(kind=wp)                         :: beta                           !< Reliability index
     logical                               :: convergenceCriteriumReached    !< Convergence criterium indicator
     type(convDataSamplingMethods)         :: convergenceDataDS              !< convergenceData
-    integer                               :: i
     integer                               :: expected
 
     call setupDStests(probDb, iPoint, x, 10000)
     iCounter2 = 0
 
-    call performDirectionalSampling ( probDb, zFuncNod, nStochasts, iPoint, x, alpha, beta, &
-        convergenceCriteriumReached, convergenceDataDS, pc=cancel5stepsNew )
+    call performDirectionalSampling ( probDb, zFuncNod, x, alpha, beta, convergenceCriteriumReached, convergenceDataDS, pc=cancel5steps )
     expected = 5
     call assert_equal(iCounter2, expected, "number of samples diff")
 
@@ -480,15 +466,13 @@ function zFuncError( u, compSetting, ierr ) result(z) bind(c)
 
 end function zFuncError
 
-subroutine performDirectionalSampling( probDb, fx, nStochasts, iPoint, x, alfa, beta, convCriterium, convergenceData, pc )
+subroutine performDirectionalSampling( probDb, fx, x, alfa, beta, convCriterium, convergenceData, pc )
     type(probabilisticDataStructure_data)      :: probDb           !< Probabilistic data module
     procedure(zfunc)                           :: fx               !< Function implementing the z-function of the failure mechanism
     real(kind=wp), intent(out)                 :: alfa(:)          !< Alpha values
     real(kind=wp), intent(out)                 :: beta             !< Reliability index
     real(kind=wp), intent(inout)               :: x(:)             !< X values of design point
     logical,       intent(out)                 :: convCriterium    !< Convergence criterium indicator
-    integer,       intent(in)                  :: iPoint(*)        !< Pointer to stochastic variables
-    integer,       intent(in)                  :: nStochasts       !< number of active stochasts
     type(convDataSamplingMethods), intent(out) :: convergenceData  !< struct holding convergence data for sampling methods
     procedure(progressCancel), optional        :: pc               !< progress/cancel function
 

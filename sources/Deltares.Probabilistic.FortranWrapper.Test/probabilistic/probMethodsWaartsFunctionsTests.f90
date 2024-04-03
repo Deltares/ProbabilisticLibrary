@@ -1123,6 +1123,7 @@ function zLinearResistanceSolicitation( x,  compSetting, ierr ) result(z) bind(c
     real(kind=wp)                           :: z
 
     ierr%icode = 0
+    if (compSetting%designPointSetting == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
 
     z = linearResistanceSolicitation( x(1), x(2) )
 
@@ -1139,6 +1140,7 @@ function zLinearResistanceSolicitationFixed( x, compSetting, ierr ) result(z) bi
     real(kind=wp)                           :: z
 
     ierr%icode = 0
+    if (compSetting%designPointSetting == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
 
     z = linearResistanceSolicitation( 5.0d0, x(1) )
 
@@ -1156,6 +1158,7 @@ function zNoisyLimitState( x, compSetting, ierr ) result(z) bind(c)
     real(kind=wp)                           :: z
 
     ierr%icode = 0
+    if (compSetting%designPointSetting == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
 
     z = noisyLimitState( x )
 
@@ -1173,6 +1176,7 @@ function zResistanceSolicitation1QuadraticTerm( x, compSetting, ierr ) result(z)
     real(kind=wp)                           :: z
 
     ierr%icode = 0
+    if (compSetting%designPointSetting == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
 
     z = resistanceSolicitation1QuadraticTerm( x ( 1 ), x ( 2)  )
 
@@ -1190,6 +1194,7 @@ function zLimitState10QuadraticTerms( x, compSetting, ierr ) result(z) bind(c)
     real(kind=wp)                           :: z
 
     ierr%icode = 0
+    if (compSetting%designPointSetting == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
 
     z = limitState10QuadraticTerms( x ( 1 ), x ( 2 : 11)  )
 
@@ -1207,6 +1212,7 @@ function zLimitState25QuadraticTerms( x, compSetting, ierr ) result(z) bind(c)
     real(kind=wp)                           :: z
 
     ierr%icode = 0
+    if (compSetting%designPointSetting == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
 
     z = limitState25QuadraticTerms( x ( 1 ), x ( 2 : 26)  )
 
@@ -1223,6 +1229,7 @@ function zLimitState25QuadraticTermsSparse( x, compSetting, ierr ) result(z) bin
     real(kind=wp)                           :: z
 
     ierr%icode = 0
+    if (compSetting%designPointSetting == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
 
     z = limitState25QuadraticTerms( x ( 30 ), x ( 3 : 27)  )
 
@@ -1240,6 +1247,7 @@ function zConvexFailureDomain( x, compSetting, ierr ) result(z) bind(c)
     real(kind=wp)                           :: z
 
     ierr%icode = 0
+    if (compSetting%designPointSetting == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
 
     z = convexFailureDomain( x ( 1 ), x ( 2 )  )
 
@@ -1257,6 +1265,7 @@ function zOblateSpheroid( x, compSetting, ierr ) result(z) bind(c)
     real(kind=wp)                           :: z
 
     ierr%icode = 0
+    if (compSetting%designPointSetting == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
 
     z = oblateSpheroid( x ( 1 ), x ( 2 : 11 )  )
 
@@ -1274,6 +1283,7 @@ function zSaddleSurface( x, compSetting, ierr ) result(z) bind(c)
     real(kind=wp)                           :: z
 
     ierr%icode = 0
+    if (compSetting%designPointSetting == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
 
     z = saddleSurface( x ( 1 ), x ( 2 )  )
 
@@ -1291,6 +1301,7 @@ function zDiscontinuousLimitState( x, compSetting, ierr ) result(z) bind(c)
     real(kind=wp)                           :: z
 
     ierr%icode = 0
+    if (compSetting%designPointSetting == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
 
     z = discontinuousLimitStateFunction( x ( 1 ), x ( 2 )  )
 
@@ -1308,6 +1319,7 @@ function zTwoBranches( x, compSetting, ierr ) result(z) bind(c)
     real(kind=wp)                           :: z
 
     ierr%icode = 0
+    if (compSetting%designPointSetting == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
 
     z = twoBranches( x ( 1 ), x ( 2 ), x ( 3 ) )
 
@@ -1325,6 +1337,7 @@ function zConcaveFailureDomain( x, compSetting, ierr ) result(z) bind(c)
     real(kind=wp)                           :: z
 
     ierr%icode = 0
+    if (compSetting%designPointSetting == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
 
     z = concaveFailureDomain( x ( 1 ), x ( 2 ) )
 
@@ -1342,6 +1355,7 @@ function zSeriesSystem( x, compSetting, ierr ) result(z) bind(c)
     real(kind=wp)                           :: z
 
     ierr%icode = 0
+    if (compSetting%designPointSetting == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
 
     z = seriesSystem( x ( 1 ), x ( 2 ) )
 
@@ -1359,6 +1373,7 @@ function zParallelSystem( x, compSetting, ierr ) result(z) bind(c)
     real(kind=wp)                           :: z
 
     ierr%icode = 0
+    if (compSetting%designPointSetting == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
 
     z = parallelSystem( x( 1), x( 2), x( 3), x( 4), x( 5) )
 

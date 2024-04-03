@@ -92,7 +92,7 @@ subroutine AdapMCIStest1
     probDb%method%AdaptiveIS%seedPRNG = 1
 
     ! Perform computation to determine alpha and beta
-    call performAdpMCIS( probDb, simpleZ, nStochasts, iPoint, x, alfa, beta, conv )
+    call performAdpMCIS( probDb, simpleZ, x, alfa, beta, conv )
 
     call assert_comparable(beta, betaKnown, margin, "The computed beta deviates from the analytically computed value")
     call finalizeProbabilisticCalculation(probDb)
@@ -124,7 +124,6 @@ subroutine AdaptiveImportanceSamplingTestLinear
     integer                       :: i
     integer                       :: nStochasts
     logical                       :: conv
-    type(convDataSamplingMethods) :: convergenceData
 
     nStochasts = 2
     allocate( alpha(nStochasts), x(nStochasts), iPoint(nStochasts) )
@@ -148,7 +147,7 @@ subroutine AdaptiveImportanceSamplingTestLinear
     call setParametersProbabilisticAdpMCIS( probDb, 1, 1000, 2000, 10000, 5, 0.01_wp, 0.01_wp, 0.1_wp, 0, 1.0_wp, 2.0_wp )
 
     ! Perform computation to determine alpha and beta
-    call performAdpMCIS( probDb, linearIsShiftZ, nStochasts, iPoint, x, alpha, beta, conv )
+    call performAdpMCIS( probDb, linearIsShiftZ, x, alpha, beta, conv )
 
     call assert_comparable(beta, betaKnown, margin, "The computed beta deviates from the analytically computed value")
     call finalizeProbabilisticCalculation(probDb)
@@ -203,7 +202,7 @@ subroutine AdaptiveImportanceSamplingTestNonLinear
     call setParametersProbabilisticAdpMCIS( probDb, 1, 1000, 2000, 5000, 5, 0.01_wp, 0.01_wp, 0.25_wp, 0, 1.0_wp, 1.5_wp )
     
     ! Perform computation to determine alpha and beta
-    call performAdpMCIS( probDb, nonlinearIsZ, nStochasts, iPoint, x, alpha, beta, conv )
+    call performAdpMCIS( probDb, nonlinearIsZ, x, alpha, beta, conv )
 
     call assert_comparable(beta, betaKnown, margin, "The computed beta deviates from the analytically computed value")
     call finalizeProbabilisticCalculation(probDb)
@@ -257,7 +256,7 @@ subroutine AdaptiveImportanceSamplingTestMany
     call setParametersProbabilisticAdpMCIS( probDb, 1, 1000, 2000, 5000, 5, 0.01_wp, 0.01_wp, 0.25_wp, 0, 1.0_wp, 1.0_wp )
 
     ! Perform computation to determine alpha and beta
-    call performAdpMCIS( probDb, manyIsZ, nStochasts, iPoint, x, alpha, beta, conv )
+    call performAdpMCIS( probDb, manyIsZ, x, alpha, beta, conv )
 
     call assert_comparable(beta, betaKnown, margin, "The computed beta deviates from the analytically computed value")
     call finalizeProbabilisticCalculation(probDb)
@@ -316,7 +315,7 @@ subroutine AdaptiveImportanceSamplingTestBligh
     probDb%method%AdaptiveIS%varianceFactor = [1.0_wp, 2.0_wp, 1.0_wp, 2.0_wp]
 
     ! Perform computation to determine alpha and beta
-    call performAdpMCIS( probDb, blighZ, nStochasts, iPoint, x, alpha, beta, conv )
+    call performAdpMCIS( probDb, blighZ, x, alpha, beta, conv )
 
     call assert_comparable(beta, betaKnown, margin, "The computed beta deviates from the analytically computed value")
     call finalizeProbabilisticCalculation(probDb)
@@ -371,7 +370,7 @@ subroutine AdaptiveImportanceSamplingTestBligh2
     call setParametersProbabilisticAdpMCIS( probDb, 1, 1000, 2000, 10000, 5, 0.01_wp, 0.01_wp, 0.5_wp, 0, 1.0_wp, 1.5_wp )
 
     ! Perform computation to determine alpha and beta
-    call performAdpMCIS( probDb, blighZ, nStochasts, iPoint, x, alpha, beta, conv )
+    call performAdpMCIS( probDb, blighZ, x, alpha, beta, conv )
 
     call assert_comparable(beta, betaKnown, margin, "The computed beta deviates from the analytically computed value")
     call finalizeProbabilisticCalculation(probDb)
@@ -426,26 +425,24 @@ subroutine AdaptiveImportanceSamplingTestBligh3
     call setParametersProbabilisticAdpMCIS( probDb, 1, 1000, 2000, 10000, 5, 0.01_wp, 0.01_wp, 0.001_wp, 0, 1.0_wp, 1.5_wp )
 
     ! Perform computation to determine alpha and beta
-    call performAdpMCIS( probDb, blighZ, nStochasts, iPoint, x, alpha, beta, conv )
+    call performAdpMCIS( probDb, blighZ, x, alpha, beta, conv )
     call assert_comparable(beta, betaKnown, margin, "The computed beta deviates from the analytically computed value")
 
     probDb%method%adaptiveIS%globalModelOption = 1
-    call performAdpMCIS( probDb, blighZ, nStochasts, iPoint, x, alpha, beta, conv )
+    call performAdpMCIS( probDb, blighZ, x, alpha, beta, conv )
     call assert_comparable(beta, 5.4752446_wp, margin, "The computed beta deviates from the analytically computed value")
 
     call finalizeProbabilisticCalculation(probDb)
 
 end subroutine AdaptiveImportanceSamplingTestBligh3
 
-subroutine performAdpMCIS( probDb, fx, nStochasts, iPoint, x, alfa, beta, convCriterium )
+subroutine performAdpMCIS( probDb, fx, x, alfa, beta, convCriterium )
     type(probabilisticDataStructure_data)      :: probDb           !< Probabilistic data module
     procedure(zfunc)                           :: fx               !< Function implementing the z-function of the failure mechanism
     real(kind=wp), intent(out)                 :: alfa(:)          !< Alpha values
     real(kind=wp), intent(out)                 :: beta             !< Reliability index
     real(kind=wp), intent(inout)               :: x(:)             !< X values of design point
     logical,       intent(out)                 :: convCriterium    !< Convergence criterium indicator
-    integer,       intent(in)                  :: iPoint(*)        !< Pointer to stochastic variables
-    integer,       intent(in)                  :: nStochasts       !< number of active stochasts
 
     type(storedConvergenceData) :: convergenceData  !< struct holding all convergence data
     logical :: conv
