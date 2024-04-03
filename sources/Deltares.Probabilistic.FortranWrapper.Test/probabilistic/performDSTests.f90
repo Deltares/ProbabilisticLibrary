@@ -117,7 +117,7 @@ subroutine testNodFunction2
             if (j == 7) cycle ! 7 not implemented
             probDb%method%DS%iterationMethod = j
             iCounter = 0
-            call performDirectionalSampling ( probDb, zFuncNod, x, alpha, beta(j,i), convergenceCriteriumReached, convergenceDataDS )
+            call performDirectionalSampling(probDb, zFuncNod, x, alpha, beta(j,i), convergenceCriteriumReached, convergenceDataDS)
             if (j > 3) then
                 call assert_comparable(beta(j,i), betaExpected(i), 2d-3, 'diff in beta')
             endif
@@ -319,7 +319,7 @@ subroutine testCancel
     call setupDStests(probDb, iPoint, x, 10000)
     iCounter2 = 0
 
-    call performDirectionalSampling ( probDb, zFuncNod, x, alpha, beta, convergenceCriteriumReached, convergenceDataDS, pc=cancel5steps )
+    call performDirectionalSampling(probDb, zFuncNod, x, alpha, beta, convergenceCriteriumReached, convergenceDataDS, cancel5steps)
     expected = 5
     call assert_equal(iCounter2, expected, "number of samples diff")
 
