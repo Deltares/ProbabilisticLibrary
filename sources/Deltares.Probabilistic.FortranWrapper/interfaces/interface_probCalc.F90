@@ -282,13 +282,12 @@ function textualProgress(progress, str) result(cancel) bind(c)
     character(len=1), intent(in) :: str(*)
     logical(kind=1)              :: cancel
 
-    continue
     cancel = .false.
 end function textualProgress
 
 !>
 !! Subroutine for the calculation of a limit state function
-subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, conv, convCriterium, convergenceData, name, id, pc)
+subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, conv, convCriterium, convergenceData, pc)
     use feedback
     type(probabilisticDataStructure_data), intent(in) :: probDb    !< Probabilistic data module
     procedure(zfunc)                           :: fx               !< Function implementing the z-function of the failure mechanism
@@ -298,8 +297,6 @@ subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, conv, convCri
     logical,       intent(out)                 :: conv             !< Convergence indicator
     logical,       intent(out)                 :: convCriterium    !< Convergence criterium indicator
     type(storedConvergenceData), intent(inout) :: convergenceData  !< struct holding all convergence data
-    character(len=*), intent(in), optional     :: name             !< Name of mechanism (for use in error message)
-    integer         , intent(in), optional     :: id               !< Id of mechanism (for use in error message)
     procedure(progressCancel),    optional     :: pc               !< progress function
 
     integer, allocatable        :: iPointMax(:), iPointCpp(:)    ! Temporary max length Pointer to active variables used in the limit state function

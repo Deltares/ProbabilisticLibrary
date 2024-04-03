@@ -1103,7 +1103,7 @@ subroutine testErrorHandlingCalculateLimitStateFunction
    call SetFatalErrorExpected(.true.)
    probDb%method%calcMethod = 99
    call calculateLimitStateFunction( probDb, zLinearResistanceSolicitationFixed, alfa, beta2, x, conv, convCriterium, &
-       convergenceData, "Name123" )
+       convergenceData )
    call SetFatalErrorExpected(.false.)
    call GetFatalErrorMessage(message)
    ipos = index(message, "99")
