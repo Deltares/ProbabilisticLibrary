@@ -22,9 +22,7 @@ subroutine run_all_ftn_interface_tests
     call testWithLevel(test_calc_distrib_inv_errorhandling, "test error handling distribution inverse", testLevel)
     call testWithLevel(test_calc_distrib, "test calc distrib", testLevel)
     call testWithLevel(test_conversions, "test conversions", testLevel)
-    !call testWithLevel(test_combine, "test combine", testLevel)
-    !call testWithLevel(test_correlation, "test correlation", testLevel)
-    !call testWithLevel(test_correlation_error_handling, "test error handling correlation", testLevel)
+    call testWithLevel(test_combine, "test combine", testLevel)
 
 end subroutine run_all_ftn_interface_tests
 
@@ -271,58 +269,5 @@ subroutine test_combine
     call assert_comparable(alpha, [sqrt(0.5_dp), sqrt(0.5_dp)], margin, "alpha in beta")
 
 end subroutine test_combine
-
-subroutine test_correlation
-    use interface_correlation
-    type(correlationModelParameters) :: correlationParameters
-    logical :: typeUCorrelation
-    real(kind=wp) :: u1, u2
-
-    correlationParameters%correlationId = correlationVolker
-    correlationParameters%correlationParameter1 = 0.873d0      !A
-    correlationParameters%correlationParameter2 = 0.236d0      !B
-    correlationParameters%correlationParameter3 = 0.356d0      !rho
-    correlationParameters%correlationParameter4 = 0.67d0       !M
-    correlationParameters%correlationParameter5 = 0.0010d0     !aK
-    correlationParameters%correlationParameter6 = 0.2347d0     !bK
-    correlationParameters%correlationParameter7 = -0.5771d0    !cK
-    correlationParameters%correlationParameter8 = 0.02d0       !d
-
-    !
-    ! Conditional Weibull water level statistics - Hoek van Holland parameters
-    !
-    correlationParameters%distribution   = distributionConditionalWeibull
-    correlationParameters%distParameter1 = 0.0157d0 !scale
-    correlationParameters%distParameter2 = 0.57d0   !shape
-    correlationParameters%distParameter3 = 1.97d0   !thresh
-    correlationParameters%distParameter4 = 7.237d0  !lambda
-
-    u1 = 1.0_wp
-    u2 = 1.2_wp
-    typeUCorrelation = .false.
-    call calculateCorrelation(u1, u2, correlationParameters, typeUCorrelation)
-    call assert_comparable(u2, 19.2414951_wp, 1d-8, "diff in Volker calculation")
-
-end subroutine test_correlation
-
-subroutine test_correlation_error_handling
-    use interface_correlation
-    use feedback
-    type(correlationModelParameters) :: correlationParameters
-    real(kind=wp) :: u1, u2
-    character(len=64) :: msg
-    character(len=*), parameter :: msg_expected = 'Fatal error: Unknown correlation model - ID.'
-
-    correlationParameters%correlationId = 12345
-
-    u1 = 1.0_wp
-    u2 = 1.2_wp
-    call SetFatalErrorExpected(.true.)
-    call calculateCorrelation(u1, u2, correlationParameters)
-    call GetFatalErrorMessage(msg)
-    call assert_equal(msg, msg_expected, "difference in error message")
-    call SetFatalErrorExpected(.false.)
-
-end subroutine test_correlation_error_handling
 
 end module ftn_interface_tests
