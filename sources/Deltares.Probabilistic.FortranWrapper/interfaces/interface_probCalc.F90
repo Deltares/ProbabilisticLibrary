@@ -33,6 +33,8 @@ module interface_probCalc
   integer, parameter :: GeorgeMarsaglia = 1
   integer, parameter :: MersenneTwister = 2
 
+  logical :: userAborted = .false.
+
   type, public, bind(c) :: tdistrib
     character(len=1)    :: name(sizeSmallStr)
     integer             :: distributionId
@@ -277,12 +279,16 @@ module interface_probCalc
 
 contains
 
+subroutine stopSampling()
+    userAborted = .true.
+end subroutine stopSampling
+
 function textualProgress(progress, str) result(cancel) bind(c)
     integer, intent(in), value :: progress
     character(len=1), intent(in) :: str(*)
     logical(kind=1)              :: cancel
 
-    cancel = .false.
+    cancel = userAborted
 end function textualProgress
 
 !>

@@ -68,6 +68,11 @@ namespace Deltares
 					}
 
 					parSamples = parSamples + 1;
+
+					if (isStopped())
+					{
+						break;
+					}
 				}
 
 				if (betaValues[nmaal % chunkSize] * z0 < 0 || std::isnan(betaValues[nmaal % chunkSize]))
