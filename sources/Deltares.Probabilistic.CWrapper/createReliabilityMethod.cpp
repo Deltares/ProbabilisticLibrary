@@ -77,6 +77,7 @@ void createReliabilityMethod::fillFormSettings(std::shared_ptr<FORMSettings>& Se
     Settings->MaximumIterations = bs.numExtraInt;
     Settings->GradientSettings->gradientType = GradientType::TwoDirections;
     Settings->FilterAtNonConvergence = true;
+    Settings->RelaxationFactor = bs.relaxationFactor;
     switch (bs.startMethod)
     {
     case StartMethods::Zero:
