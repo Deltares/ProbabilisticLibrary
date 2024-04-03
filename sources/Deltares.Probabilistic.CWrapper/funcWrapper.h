@@ -8,8 +8,8 @@
 
 enum class designPointOptions
 {
-    dpOutTRUE = 0,
-    dpOutFALSE = 1,
+    dpOutFALSE = 0,
+    dpOutTRUE = 1,
     dpOutPrintAll = 3,
 };
 

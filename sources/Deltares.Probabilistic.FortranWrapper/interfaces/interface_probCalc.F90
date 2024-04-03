@@ -101,8 +101,8 @@ module interface_probCalc
 
   integer, parameter :: DirSamplingIterMethodRobust                   =  1
 
-  integer, parameter :: designPointOutputTRUE                         =  0
-  integer, parameter :: designPointOutputFALSE                        =  1
+  integer, parameter :: designPointOutputFALSE                        =  0
+  integer, parameter :: designPointOutputTRUE                         =  1
   integer, parameter :: designPointOutputPrintAll                     =  3
 
   type, public :: tpFORM
