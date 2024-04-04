@@ -23,7 +23,7 @@ namespace Deltares
                 std::vector<std::string> readWholeFile(const std::string& file) const;
                 bool compareLine(const std::string& ref, const std::string& nw) const;
                 std::vector<std::string> mySplit(const std::string& str) const;
-                bool lookAnumber(std::string s) const;
+                bool looksLikeAnumber(const std::string& s) const;
                 const double margin = 1e-5;
             };
         }
