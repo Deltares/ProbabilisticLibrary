@@ -2,7 +2,6 @@ module interface_probCalc
   use, intrinsic :: iso_c_binding, only: c_double, c_bool
   use interface_gen
   use interface_distributions
-  use interface_correlation
   use precision
   use m_realloc_check
   use f2c_tools
@@ -34,6 +33,12 @@ module interface_probCalc
   integer, parameter :: MersenneTwister = 2
 
   logical :: userAborted = .false.
+
+  type, public, bind(c) :: basicCorrelation
+    integer       :: first                !< Index of the first stochastic variable
+    integer       :: second               !< Index of the second stochastic variable
+    real(kind=wp) :: correlation          !< Correlation coefficient
+  end type basicCorrelation
 
   type, public, bind(c) :: tdistrib
     character(len=1)    :: name(sizeSmallStr)
