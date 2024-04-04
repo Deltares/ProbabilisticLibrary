@@ -155,6 +155,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Statistics\Distributions\WeibullDistribution.h" />
     <ClInclude Include="Combine\alphaBeta.h" />
     <ClInclude Include="Combine\combineElements.h" />
     <ClInclude Include="Combine\combiner.h" />
@@ -242,6 +243,7 @@
     <ClInclude Include="Statistics\VariableStochastValueSet.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Statistics\Distributions\WeibullDistribution.cpp" />
     <ClCompile Include="Combine\combineElements.cpp" />
     <ClCompile Include="Combine\combiner.cpp" />
     <ClCompile Include="Combine\Hohenbichler.cpp" />

@@ -227,7 +227,6 @@ namespace Deltares
 		/// Converts spherical coordinates to cartesian coordinates
 		/// </summary>
 		/// <param name="sphericalCoordinates"></param>
-		/// <param name="count"></param>
 		/// <returns></returns>
 		/// <see cref="https://en.wikipedia.org/wiki/N-sphere#Spherical_coordinates"/>
 		std::vector<double> NumericSupport::GetCartesianCoordinates(const std::vector<double>& sphericalCoordinates)
@@ -250,6 +249,48 @@ namespace Deltares
 			}
 
 			return coordinates;
+		}
+
+		double NumericSupport::getMinimum(std::vector<double>& values)
+		{
+			if (values.empty())
+			{
+				return nan("");
+			}
+			else
+			{
+				double min = values[0];
+				for (double x : values)
+				{
+					if (x < min)
+					{
+						min = x;
+					}
+				}
+
+				return min;
+			}
+		}
+
+		double NumericSupport::getMaximum(std::vector<double>& values)
+		{
+			if (values.empty())
+			{
+				return nan("");
+			}
+			else
+			{
+				double max = values[0];
+				for (double x : values)
+				{
+					if (x > max)
+					{
+						max = x;
+					}
+				}
+
+				return max;
+			}
 		}
 
 		double NumericSupport::interpolate(double x, double minX, double minY, double maxX, double maxY, bool extrapolate, InterpolationType interpolationType)
