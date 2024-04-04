@@ -260,6 +260,21 @@ namespace Deltares.Probabilistics.Wrappers.Test
         }
 
         [Test]
+        public void TestWeibull()
+        {
+            var stochast = new Stochast { DistributionType = DistributionType.Weibull, Scale = 1, Shape = 1 };
+
+            TestStochast(stochast);
+
+            stochast.Scale = 2;
+            stochast.Shape = 3;
+            stochast.Shift = 0.5;
+
+            TestInvert(stochast, true);
+            TestFit(stochast, 0.4);
+        }
+
+        [Test]
         public void TestDiscrete()
         {
             var stochast = new Stochast { DistributionType = DistributionType.Discrete };

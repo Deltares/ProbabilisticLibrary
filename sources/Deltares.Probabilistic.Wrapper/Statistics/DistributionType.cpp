@@ -15,6 +15,7 @@ namespace Deltares
 				case Wrappers::DistributionType::LogNormal: return Statistics::DistributionType::LogNormal;
 				case Wrappers::DistributionType::Uniform: return Statistics::DistributionType::Uniform;
 				case Wrappers::DistributionType::Gumbel: return Statistics::DistributionType::Gumbel;
+				case Wrappers::DistributionType::Weibull: return Statistics::DistributionType::Weibull;
 				case Wrappers::DistributionType::Discrete: return Statistics::DistributionType::Discrete;
 				case Wrappers::DistributionType::Qualitative: return Statistics::DistributionType::Qualitative;
 				default: throw gcnew System::NotSupportedException(distributionType.ToString());
@@ -30,6 +31,7 @@ namespace Deltares
 				case Statistics::DistributionType::LogNormal: return Wrappers::DistributionType::LogNormal;
 				case Statistics::DistributionType::Uniform: return Wrappers::DistributionType::Uniform;
 				case Statistics::DistributionType::Gumbel: return Wrappers::DistributionType::Gumbel;
+				case Statistics::DistributionType::Weibull: return Wrappers::DistributionType::Weibull;
 				case Statistics::DistributionType::Discrete: return Wrappers::DistributionType::Discrete;
 				default: throw gcnew System::NotSupportedException("distribution type");
 				}

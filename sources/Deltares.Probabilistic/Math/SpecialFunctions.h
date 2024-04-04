@@ -8,7 +8,8 @@ namespace Deltares
 		class SpecialFunctions
 		{
 		public:
-			static double getGammaUpperRegularized(const double a, const double b);
+			static double getGamma(const double x);
+			static double getGammaUpperRegularized(const double a, const double x);
 		private:
 			static double getGammaSeries(const double a, const double x);
 			static double getGammaContinuedFraction(const double a, const double x);
