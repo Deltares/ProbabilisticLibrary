@@ -350,7 +350,7 @@ namespace Deltares
 				// when no progress and not everything has been assigned => error
 				if (!ready && !modified)
 				{
-					throw Deltares::ProbLibCore::probLibException("circular reference");
+					throw Deltares::Reliability::probLibException("circular reference");
 				}
 			}
 

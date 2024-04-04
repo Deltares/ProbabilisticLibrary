@@ -4,6 +4,7 @@
 #include "StochastSettingsSet.h"
 #include "../Model/GradientSettings.h"
 #include "../Model/RunSettings.h"
+#include <vector>
 
 namespace Deltares
 {
@@ -15,6 +16,7 @@ namespace Deltares
             double RelaxationFactor = 0.75;
             int RelaxationLoops = 1;
             int MaximumIterations = 50;
+            int MaxIterationsGrowthFactor = 1;
             double EpsilonBeta = 0.01;
             bool FilterAtNonConvergence = false;
 

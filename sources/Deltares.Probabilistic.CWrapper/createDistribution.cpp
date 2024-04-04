@@ -1,7 +1,7 @@
 #include "createDistribution.h"
 #include "../Deltares.Probabilistic/Utils/probLibException.h"
 
-using namespace Deltares::ProbLibCore;
+using namespace Deltares::Reliability;
 using namespace Deltares::Statistics;
 
 std::shared_ptr <Stochast> createDistribution::create(const EnumDistributions distHR, double p[4])

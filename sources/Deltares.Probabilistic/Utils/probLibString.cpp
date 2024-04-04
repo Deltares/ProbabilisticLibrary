@@ -4,7 +4,7 @@
 #include <cctype>
 
 namespace Deltares {
-    namespace ProbLibCore {
+    namespace Reliability {
 
 #ifdef _MSC_VER
         //not #if defined(_WIN32) || defined(_WIN64) because we have strncasecmp in mingw

@@ -5,7 +5,7 @@
 #include "probLibString.h"
 
 namespace Deltares {
-    namespace ProbLibCore {
+    namespace Reliability {
 
         class probLibException : public std::exception
         {

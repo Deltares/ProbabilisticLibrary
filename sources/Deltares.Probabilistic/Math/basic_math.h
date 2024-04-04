@@ -1,7 +1,7 @@
 #pragma once
 
 namespace Deltares {
-    namespace ProbLibCore {
+    namespace Reliability {
         // T in max can be int, float and (long) double
         template <typename T>
         inline T max(const T a, const T b)

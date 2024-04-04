@@ -2,7 +2,7 @@
 #include "stringHelper.h"
 #include "../Deltares.Probabilistic.CWrapper/createDistribution.h"
 
-using namespace Deltares::ProbLibCore;
+using namespace Deltares::Reliability;
 
 extern "C"
 void calculatedistributioninverse_c(double *u, double *y, EnumDistributions *type, double p[], tError *ierr)

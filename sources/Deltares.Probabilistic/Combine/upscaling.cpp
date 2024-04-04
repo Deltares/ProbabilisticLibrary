@@ -1,13 +1,17 @@
+#ifndef _USE_MATH_DEFINES
+#define _USE_MATH_DEFINES
+#endif
 #include <math.h>
 #include <float.h>
 #include "upscaling.h"
-#include "../probFuncs/conversions.h"
 #include "Hohenbichler.h"
 #include "intEqualElements.h"
-#include "../utils/basic_math.h"
+#include "../Statistics/StandardNormal.h"
+
+using namespace Deltares::Statistics;
 
 namespace Deltares {
-    namespace ProbLibCore {
+    namespace Reliability {
 
         //
         // Method for combining failure probabilities over equal elements, with exceptions for correlations close to zero
@@ -44,12 +48,12 @@ namespace Deltares {
             // Determine the correlation between two time elements
             //
             double rhoT = element.sumOfInners(element, inRhoT);
-            rhoT = max(min(rhoT, rhoMax), rhoMin);
+            rhoT = std::max(std::min(rhoT, rhoMax), rhoMin);
 
             //
             // Compute failure probability and beta of the combined n elements
             //
-            auto betaT = upscaleBeta(element.getU(), rhoT, nrTimes, failures);
+            auto betaT = upscaleBeta(element.getBeta(), rhoT, nrTimes, failures);
 
             //
             // Get equivalent alpha and beta values for the combined element in 6 steps
@@ -60,7 +64,7 @@ namespace Deltares {
             //
             // Step 1/6: Perturbed initial beta value, use u = epsi
             //
-            auto bk = probNumber(element.getBeta() - sqrt(rhoT) * epsi);
+            auto bk = element.getBeta() - sqrt(rhoT) * epsi;
 
             //
             // Step 2/6: Compute the beta of the combined element, based on perturbed initial beta
@@ -70,7 +74,7 @@ namespace Deltares {
             //
             // Step 3/6: Compute the correlated part of alpha (dependant on the sign of the pertubation)
             //
-            double alphaC = min(1.0, max(-1.0, (betaT.getu() - betaTK.getu()) / epsi));
+            double alphaC = std::min(1.0, std::max(-1.0, (betaT - betaTK) / epsi));
             if (alphaC != 1.0) // TODO: compare real with tol 1e-12 or so
             {
                 //
@@ -96,12 +100,12 @@ namespace Deltares {
             //
             // Write results over original input
             //
-            element.assignU(betaT);
+            element.setBeta(betaT);
             return failures;
         }
 
         // helper routine for upscaleInTime
-        probNumber upscaling::upscaleBeta(probNumber elm, const double rhoT, const double nrTimes, int& failures)
+        double upscaling::upscaleBeta(double elm, const double rhoT, const double nrTimes, int& failures)
         {
             if (rhoT > rhoLowLim)
             {
@@ -110,20 +114,20 @@ namespace Deltares {
                 //
                 auto eqElm = intEqualElements();
                 double betaT;
-                betaT = eqElm.integrateEqualElements(elm.getu(), rhoT, nrTimes);
-                return probNumber(betaT);
+                betaT = eqElm.integrateEqualElements(elm, rhoT, nrTimes);
+                return betaT;
             }
             else
             {
                 //
                 // Compute via Hohenbichler with FORM and outcrossing
                 //
-                double Pf = elm.getq();
-                auto pf2cf1 = hhb.PerformHohenbichler(elm.getu(), Pf, rhoT);    // pf2cf1 : pair(Probability, success flag)
-                if (pf2cf1.second != ConvergenceStatus::success) failures++;
+                double Pf = StandardNormal::getQFromU(elm);
+                auto pf2cf1 = hhb.PerformHohenbichler(elm, Pf, rhoT);    // pf2cf1 : pair(Probability, success flag)
+                if (pf2cf1.second != 0) failures++;
                 double PfT = Pf + (nrTimes - 1.0) * (Pf - pf2cf1.first * Pf);
-                PfT = min(1.0, PfT);
-                return probNumber(PfT, 'q');
+                PfT = std::min(1.0, PfT);
+                return StandardNormal::getUFromQ(PfT);
             }
         }
 
@@ -176,7 +180,7 @@ namespace Deltares {
             // Calculate delta L and breach L
             //
             double deltaL = dz / crossSectionElement.getBeta() * sqrt(M_PI) / sqrt(1.0 - rhoZ);
-            deltaL = max(deltaL, 0.01);
+            deltaL = std::max(deltaL, 0.01);
 
             if (breachL < 0) breachL = deltaL;
 
@@ -188,9 +192,9 @@ namespace Deltares {
                 element.setAlpha(vector1D(nrVar));
                 //
                 // Calculate beta for section from the beta of the cross section
-                deltaL = min(deltaL, sectionLength);
+                deltaL = std::min(deltaL, sectionLength);
                 auto betaSection = ComputeBetaSection(crossSectionElement.getBeta(), sectionLength, breachL, rhoZ, dz, deltaL);
-                if (betaSection.second != ConvergenceStatus::success) failures++;
+                if (betaSection.second != 0) failures++;
                 element.setBeta(betaSection.first);
                 //
                 // Calculate alpha section
@@ -199,11 +203,11 @@ namespace Deltares {
                 double betaK = crossSectionElement.getBeta() - sqrt(rhoZ) * deltaBeta;
                 // Calculate beta for section from the beta of the cross section
                 auto betaKX = ComputeBetaSection(betaK, sectionLength, breachL, rhoZ, dz, deltaL);
-                if (betaKX.second != ConvergenceStatus::success) failures++;
+                if (betaKX.second != 0) failures++;
 
                 double alphaC = (element.getBeta() - betaKX.first) / deltaBeta;
-                alphaC = min(alphaC, 1.0);
-                alphaC = max(alphaC, -1.0);
+                alphaC = std::min(alphaC, 1.0);
+                alphaC = std::max(alphaC, -1.0);
                 //
                 // Uncorrelated part
                 //
@@ -211,8 +215,8 @@ namespace Deltares {
                 //
                 // Calculate resulting alpha
                 //
-                rhoZ = min(rhoZ, rhoLimit);
-                rhoZ = max(rhoZ, 0.00001);
+                rhoZ = std::min(rhoZ, rhoLimit);
+                rhoZ = std::max(rhoZ, 0.00001);
                 for (size_t i = 0; i < nrVar; i++)
                 {
                     if (crossSectionElement.getAlphaI(i) == 0.0)
@@ -247,7 +251,7 @@ namespace Deltares {
         //
         // Method used in upscaling for computing the beta of a section from the beta of a cross section.
         //
-        std::pair<double, ConvergenceStatus> upscaling::ComputeBetaSection(const double betaCrossSection, const double sectionLength,
+        std::pair<double, int> upscaling::ComputeBetaSection(const double betaCrossSection, const double sectionLength,
             const double breachL, const double rhoZ, const double dz, const double deltaL)
         {
             // betaCrossSection : Reliability index of the cross section
@@ -272,13 +276,13 @@ namespace Deltares {
             // termI(nGridPoints) : i-th term to add
 
         //   Compute failure probability cross section from beta
-            double pf = conversions::QfromBeta(betaCrossSection);
+            double pf = StandardNormal::getQFromU(betaCrossSection);
             double pfX;
-            ConvergenceStatus conv;
+            int conv = 0;
             if (rhoZ > 0.001)
             {
                 double vDelta = (vUpper - vLower) / double(nGridPoints - 1);
-                double p = conversions::PfromBeta(betaCrossSection);
+                double p = StandardNormal::getPFromU(betaCrossSection);
                 if (sectionLength <= breachL)
                 {
                     pfX = pf;
@@ -290,7 +294,7 @@ namespace Deltares {
                     {
                         double v = vLower + vDelta * double(i - 1);
                         double x = (betaCrossSection - sqrt(rhoZ) * v) / sqrt(1.0 - rhoZ); // x = beta*
-                        double nf = max((sectionLength - breachL), 0.0) / (sqrt(2.0) * M_PI) / dz * exp(-x * x / 2.0);
+                        double nf = std::max((sectionLength - breachL), 0.0) / (sqrt(2.0) * M_PI) / dz * exp(-x * x / 2.0);
                         termI[i] = (1.0 - p * exp(-nf)) * exp(-v * v / 2.0) / sqrt(2.0 * M_PI) * vDelta;
                     }
                     //
@@ -305,20 +309,19 @@ namespace Deltares {
                     pfX += termI[nGridPoints / 2 + 1];
                     delete[] termI;
                 }
-                pfX = max(pfX, pf);
-                conv = ConvergenceStatus::success;
+                pfX = std::max(pfX, pf);
+                conv = 0;
             }
             else
             {
-                auto p = progress();
-                auto hhb = Hohenbichler(p);
+                auto hhb = Hohenbichler();
                 auto pfVV = hhb.PerformHohenbichler(betaCrossSection, pf, rhoZ);
                 conv = pfVV.second;
-                pfX = pf + max((sectionLength - breachL), 0.0) / deltaL * (pf - pfVV.first * pf);
-                pfX = min(pfX, 1.0);
+                pfX = pf + std::max((sectionLength - breachL), 0.0) / deltaL * (pf - pfVV.first * pf);
+                pfX = std::min(pfX, 1.0);
             }
 
-            double betaSection = conversions::betaFromQ(pfX);
+            double betaSection = StandardNormal::getUFromQ(pfX);
             return { betaSection, conv };
         }
 

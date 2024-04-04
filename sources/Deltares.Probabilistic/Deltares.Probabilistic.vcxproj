@@ -84,6 +84,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -101,6 +102,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -154,6 +156,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Statistics\Distributions\WeibullDistribution.h" />
+    <ClInclude Include="Combine\alphaBeta.h" />
+    <ClInclude Include="Combine\combineElements.h" />
+    <ClInclude Include="Combine\combiner.h" />
+    <ClInclude Include="Combine\Hohenbichler.h" />
+    <ClInclude Include="Combine\HohenbichlerCombiner.h" />
+    <ClInclude Include="Combine\HohenbichlerZ.h" />
+    <ClInclude Include="Combine\intEqualElements.h" />
+    <ClInclude Include="Combine\upscaling.h" />
     <ClInclude Include="Model\ModelSample.h" />
     <ClInclude Include="Statistics\Distributions\DistributionLibrary.h" />
     <ClInclude Include="Math\RootFinders\BisectionRootFinder.h" />
@@ -234,6 +244,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Statistics\Distributions\WeibullDistribution.cpp" />
+    <ClCompile Include="Combine\combineElements.cpp" />
+    <ClCompile Include="Combine\combiner.cpp" />
+    <ClCompile Include="Combine\Hohenbichler.cpp" />
+    <ClCompile Include="Combine\HohenbichlerCombiner.cpp" />
+    <ClCompile Include="Combine\HohenbichlerZ.cpp" />
+    <ClCompile Include="Combine\upscaling.cpp" />
     <ClCompile Include="Statistics\Distributions\DistributionLibrary.cpp" />
     <ClCompile Include="Math\RootFinders\BisectionRootFinder.cpp" />
     <ClCompile Include="Statistics\Distributions\Distribution.cpp" />

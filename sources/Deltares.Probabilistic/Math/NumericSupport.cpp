@@ -170,7 +170,7 @@ namespace Deltares
 			case DoubleType::NaN:
 				return nan("");
 			default:
-				throw Deltares::ProbLibCore::probLibException("double type not supported");
+				throw Deltares::Reliability::probLibException("double type not supported");
 			}
 		}
 
@@ -316,7 +316,7 @@ namespace Deltares
 				maxX = 1.0 / maxX;
 				break;
 			default:
-				throw ProbLibCore::probLibException("interpolation type not supported");
+				throw Deltares::Reliability::probLibException("interpolation type not supported");
 			}
 
 			if (x < minX && !extrapolate)
@@ -342,7 +342,7 @@ namespace Deltares
 		{
 			if (xValues.size() != yValues.size())
 			{
-				throw ProbLibCore::probLibException("XValues and YValues not of the same length");
+				throw Deltares::Reliability::probLibException("XValues and YValues not of the same length");
 			}
 
 			if (xValues.empty())
