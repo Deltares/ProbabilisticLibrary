@@ -13,6 +13,13 @@ namespace Deltares
     {
         namespace Test
         {
+            std::string testutils::refFileWithPath(const std::string& sourceFile, const std::string& relativePath)
+            {
+                auto found = sourceFile.find_last_of("/\\");
+                auto base = sourceFile.substr(0, found+1);
+                return base + relativePath;
+            }
+
             bool testutils::comparefiles(const std::string& refFile, const std::string& newFile) const
             {
                 auto sref = readWholeFile(refFile);
@@ -66,6 +73,7 @@ namespace Deltares
                         double numn = stof(n[i]);
                         double tol = margin * fabs(numr);
                         EXPECT_NEAR(numr, numn, tol);
+                        if (std::abs(numr - numn) > tol) return false;
                     }
                     else
                     {

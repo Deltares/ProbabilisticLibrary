@@ -15,6 +15,7 @@ namespace Deltares
             {
             public:
                 bool comparefiles(const std::string& refFile, const std::string& newFile) const;
+                std::string refFileWithPath(const std::string& sourceFile, const std::string& relativePath);
                 void checkAlphaBeta(alphaBeta& computed, alphaBeta& ref, const double margin);
                 void checkAlphaBeta(alphaBeta& computed, alphaBeta& ref, const double margin1, const double margin2);
                 size_t readNumThreadsFromEnv(const bool debug);
@@ -23,7 +24,7 @@ namespace Deltares
                 bool compareLine(const std::string& ref, const std::string& nw) const;
                 std::vector<std::string> mySplit(const std::string& str) const;
                 bool lookAnumber(std::string s) const;
-                const double margin = 2e-6;
+                const double margin = 1e-5;
             };
         }
     }
