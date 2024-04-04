@@ -65,7 +65,7 @@ namespace Deltares
 					}
 				}
 
-				bool IsIdentity()
+				virtual bool IsIdentity()
 				{
 					return shared->object->IsIdentity();
 				}
