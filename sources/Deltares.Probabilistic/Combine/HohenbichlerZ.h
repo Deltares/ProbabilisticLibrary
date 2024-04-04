@@ -13,7 +13,7 @@ namespace Deltares {
             const double beta2;
             const double pf1;
             const double rho;
-            const double squaredRoot;
+            const double sqrt_one_minus_rho2;
         };
     }
 }
