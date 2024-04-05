@@ -2,7 +2,6 @@
 #include <memory>
 #include <vector>
 
-#include "DiscreteValue.h"
 #include "StochastProperties.h"
 #include "Distributions/DeterministicDistribution.h"
 #include "Distributions/Distribution.h"

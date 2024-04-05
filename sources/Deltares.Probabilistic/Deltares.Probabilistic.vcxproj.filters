@@ -89,6 +89,7 @@
     <ClCompile Include="Statistics\Distributions\HistogramDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\ExternalDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\WeibullDistribution.cpp" />
+    <ClCompile Include="Statistics\Distributions\RayleighDistribution.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -191,6 +192,7 @@
     <ClInclude Include="Statistics\Distributions\ExternalDistribution.h" />
     <ClInclude Include="Model\ModelSample.h" />
     <ClInclude Include="Statistics\Distributions\WeibullDistribution.h" />
+    <ClInclude Include="Statistics\Distributions\RayleighDistribution.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

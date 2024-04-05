@@ -104,6 +104,8 @@ namespace Deltares
 
 		void WeibullDistribution::setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation)
 		{
+			mean = mean - stochast->Shift;
+
 			// the quotient deviation / mean is only dependent from the shape parameter, so this will be determined first
 			double u = deviation / mean;
 

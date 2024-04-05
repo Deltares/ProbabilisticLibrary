@@ -6,6 +6,7 @@
 #include "LogNormalDistribution.h"
 #include "NormalDistribution.h"
 #include "QualitativeDistribution.h"
+#include "RayleighDistribution.h"
 #include "TruncatedDistribution.h"
 #include "UniformDistribution.h"
 #include "WeibullDistribution.h"
@@ -28,6 +29,7 @@ namespace Deltares
 			case DistributionType::Uniform: distribution = std::make_shared<UniformDistribution>(); break;
 			case DistributionType::Gumbel: distribution = std::make_shared<GumbelDistribution>(); break;
 			case DistributionType::Weibull: distribution = std::make_shared<WeibullDistribution>(); break;
+			case DistributionType::Rayleigh: distribution = std::make_shared<RayleighDistribution>(); break;
 			case DistributionType::Discrete: distribution = std::make_shared<DiscreteDistribution>(); break;
 			case DistributionType::Qualitative: distribution = std::make_shared<QualitativeDistribution>(); break;
 			default:
