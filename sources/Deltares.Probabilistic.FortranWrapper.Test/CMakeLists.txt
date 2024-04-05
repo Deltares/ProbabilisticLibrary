@@ -59,14 +59,6 @@ add_library(FLtestProbabilistic
 )
 target_link_libraries(FLtestProbabilistic ${fctools} Deltares.Probabilistic.FortranWrapper ftnunit)
 
-add_library(FLtestProbabilisticData
-  STATIC
-    probabilisticData/probabilisticDataTests.f90
-    probabilisticData/correlationModelsTests.f90
-)
-target_link_libraries(FLtestProbabilisticData
-  ${fctools} Deltares.Probabilistic.FortranWrapper Deltares.Probabilistic.CWrapper ftnunit)
-
 add_library(FLtestProbabilisticConversions
   STATIC
     probabilisticConversions/betaFromPQmin.f90
@@ -84,7 +76,6 @@ add_executable(FLunittestprogram
 
 target_link_libraries(FLunittestprogram
  FLtestProbabilisticConversions
- FLtestProbabilisticData
  FLtestProbabilistic
  Deltares.Probabilistic.CWrapper Deltares.Probabilistic.FortranWrapper
  Deltares.Probabilistic.Kernel ${fctools} feedbackDLL ftnunit pb_wrapper_c_old)
