@@ -42,6 +42,18 @@ add_executable(Deltares.Probabilistic.Test
     Reliability/testStartPointCalculator.cpp
     Math/testNumericSupport.h
     Math/testNumericSupport.cpp
+    Combin/hohenbichler_tests.h
+    Combin/hohenbichler_tests.cpp
+    Combin/intEqualElements_tests.h
+    Combin/intEqualElements_tests.cpp
+    Combin/upscale_tests.h
+    Combin/upscale_tests.cpp
+    Combin/combinElements_tests.h
+    Combin/combinElements_tests.cpp
+    Combin/hohenbichlerCombiner_tests.h
+    Combin/hohenbichlerCombiner_tests.cpp
+    Utils/testutils.h
+    Utils/testutils.cpp
 )
 
 set_target_properties(Deltares.Probabilistic.Test
@@ -60,4 +72,5 @@ endif()
 add_test(
   NAME Deltares-Probabilistic-unit-tests
   COMMAND $<TARGET_FILE:Deltares.Probabilistic.Test>
+  WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
 )

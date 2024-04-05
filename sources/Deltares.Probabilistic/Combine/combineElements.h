@@ -1,16 +1,11 @@
 #pragma once
 #include <vector>
-#include "../utils/vector1D.h"
-#include "../probFuncs/alphaBeta.h"
+#include "../Math/vector1D.h"
+#include "alphaBeta.h"
+#include "combiner.h"
 
 namespace Deltares {
-    namespace ProbLibCore {
-
-        enum class combineAndOr
-        {
-            combAnd,
-            combOr,
-        };
+    namespace Reliability {
 
         typedef std::vector<alphaBeta> elements;
 
@@ -37,10 +32,6 @@ namespace Deltares {
 
             cmbResult combineMultipleElementsProb(elements& Elements,
                 const std::vector<double>& percentages, const combineAndOr combAndOr);
-
-            cmbResult getMultipleElementsHighestBeta(elements& Elements);
-
-            cmbResult getMultipleElementsLowestBeta(elements& Elements);
 
             cmbResult combineMultipleElementsSpatialCorrelated(const elements& Element,
                 const std::vector<std::vector<vector1D>>& rho, const combineAndOr combAndOr);

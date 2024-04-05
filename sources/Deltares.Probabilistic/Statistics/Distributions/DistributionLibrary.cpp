@@ -33,7 +33,7 @@ namespace Deltares
 			case DistributionType::Discrete: distribution = std::make_shared<DiscreteDistribution>(); break;
 			case DistributionType::Qualitative: distribution = std::make_shared<QualitativeDistribution>(); break;
 			default:
-				throw Deltares::ProbLibCore::probLibException("Distribution type not supported");
+				throw Deltares::Reliability::probLibException("Distribution type not supported");
 			}
 
 			if (truncated && distribution->canTruncate())

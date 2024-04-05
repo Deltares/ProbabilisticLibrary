@@ -3,7 +3,7 @@
 #include "../Utils/probLibException.h"
 
 namespace Deltares {
-    namespace ProbLibCore {
+    namespace Reliability {
 
         // Cholesky decomposition
         Matrix Matrix::CholeskyDecomposition() const

@@ -2,7 +2,7 @@
 #include <iostream>
 
 namespace Deltares {
-    namespace ProbLibCore {
+    namespace Reliability {
 
         Matrix::Matrix(size_t rows, size_t columns)
             : m_data(std::vector<double>(rows * columns)),

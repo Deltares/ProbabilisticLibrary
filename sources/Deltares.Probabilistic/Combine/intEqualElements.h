@@ -1,10 +1,9 @@
 #pragma once
 #include <math.h>
-#include "../probFuncs/conversions.h"
-#include "../utils/basic_math.h"
+#include "../Statistics/StandardNormal.h"
 
 namespace Deltares {
-    namespace ProbLibCore {
+    namespace Reliability {
 
         class intEqualElements
         {
@@ -57,7 +56,7 @@ namespace Deltares {
                 {
                     double v = LB + vDelta * double(i);
                     double betaStar = (beta - sqrt(rhoT) * v) / sqrt(1.0 - rhoT);
-                    double p = conversions::PfromBeta(betaStar);
+                    double p = Deltares::Statistics::StandardNormal::getPFromU(betaStar);
                     double vDensity = exp(-v * v / 2.0) / sqrt(2.0 * M_PI);
                     PfT += (1.0 - pow(p, nrElements)) * vDensity * vDelta;
                 }
@@ -65,33 +64,13 @@ namespace Deltares {
                 //
                 // Get beta based on failure probability
                 //
-                double betaT = conversions::betaFromQ(PfT);
+                double betaT = Deltares::Statistics::StandardNormal::getUFromQ(PfT);
                 //
                 // Correct for omitting boundaries (resulting value betaT cannot be higher than beta)
-                betaT = min(betaT, beta);
+                betaT = std::min(betaT, beta);
                 return betaT;
             }
         };
     }
 };
 
-#ifdef __cplusplus_cli
-namespace Deltares {
-    namespace ProbLib {
-        public ref class intElements
-        {
-        public:
-            static double integrateEqualElements(const double beta, const double rhoT, const double nrElements)
-            {
-                auto i = Deltares::ProbLibCore::intEqualElements();
-                return i.integrateEqualElements(beta, rhoT, nrElements);
-            }
-            static double integrateEqualElements(const double beta, const double rhoT, const int nrElements)
-            {
-                auto i = Deltares::ProbLibCore::intEqualElements();
-                return i.integrateEqualElements(beta, rhoT, nrElements);
-            }
-        };
-    }
-}
-#endif

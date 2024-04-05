@@ -7,7 +7,7 @@
 #include "ModelRunner.h"
 #include "../Utils/probLibException.h"
 
-using namespace Deltares::ProbLibCore;
+using namespace Deltares::Reliability;
 
 namespace Deltares
 {

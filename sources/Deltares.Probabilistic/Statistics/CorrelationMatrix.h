@@ -43,8 +43,8 @@ namespace Deltares
             void filter(const std::shared_ptr<CorrelationMatrix> m, const std::vector<int>& index);
             indexWithCorrelation findDependent(const int i) const;
         private:
-            Deltares::ProbLibCore::Matrix matrix = Deltares::ProbLibCore::Matrix(0, 0);
-            Deltares::ProbLibCore::Matrix choleskyMatrix = Deltares::ProbLibCore::Matrix(0, 0);
+            Deltares::Reliability::Matrix matrix = Deltares::Reliability::Matrix(0, 0);
+            Deltares::Reliability::Matrix choleskyMatrix = Deltares::Reliability::Matrix(0, 0);
             int findNewIndex(const std::vector<int> index, const size_t i);
             std::vector<indexWithCorrelation> indexer;
             std::vector<correlationPair> inputCorrelations;

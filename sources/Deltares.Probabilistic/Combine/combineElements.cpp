@@ -4,12 +4,14 @@
 #include <vector>
 #include "combineElements.h"
 #include "Hohenbichler.h"
-#include "../probFuncs/conversions.h"
-#include "../utils/basic_math.h"
-#include "../utils/probLibException.h"
+#include "../Utils/probLibException.h"
+#include "../Statistics/StandardNormal.h"
+#include "../Math/basic_math.h"
+
+using namespace Deltares::Statistics;
 
 namespace Deltares {
-    namespace ProbLibCore {
+    namespace Reliability {
 
         //> Method for combining two elements with partial correlation
         cmbResult combineElements::combineTwoElementsPartialCorrelation(alphaBeta& element1,
@@ -68,10 +70,10 @@ namespace Deltares {
             //
             //   Computation of P( Z_2 < 0 | Z_1 < 0)
             //
-            auto p = progress();
-            auto hh = Hohenbichler(p);
+            //auto p = progress();
+            auto hh = Hohenbichler();
             auto pf2pf1 = hh.PerformHohenbichler(pb.second, pb.first, rho);
-            if (pf2pf1.second != ConvergenceStatus::success) failureHohenbichler++;
+            if (pf2pf1.second != 0) failureHohenbichler++;
             //
             //   Computation of combined failure probability (AND/OR)
             //
@@ -80,7 +82,7 @@ namespace Deltares {
             //
             //   Compute reliability index
             //
-            element3.setBeta(conversions::betaFromQ(pfCombined));
+            element3.setBeta(StandardNormal::getUFromQ(pfCombined));
 
             //
             //   Part 2:
@@ -100,23 +102,23 @@ namespace Deltares {
                     //
                     //          Correlated part
                     double beta1Delta = element1.getBeta() - element1.getAlphaI(k) * epsilon;
-                    pf1 = conversions::QfromBeta(beta1Delta);
+                    pf1 = StandardNormal::getQFromU(beta1Delta);
                     //
                     double beta2Delta = element2.getBeta() - element2.getAlphaI(k) * epsilon * rhoP(k);
-                    pf2 = conversions::QfromBeta(beta2Delta);
+                    pf2 = StandardNormal::getQFromU(beta2Delta);
                     //
                     pb = setLargestBeta(beta1Delta, beta2Delta, pf1, pf2);
                     //
                     //           Computation of P( Z_2 < - alpha1(k) * epsilon | Z_1 < -alpha2(k) * epsilon * rhoP(k) )
                     //
                     pf2pf1 = hh.PerformHohenbichler(pb.second, pb.first, rho);
-                    if (pf2pf1.second != ConvergenceStatus::success) failureHohenbichler++;
+                    if (pf2pf1.second != 0) failureHohenbichler++;
                     //
         //           Computation of combined failure probability (AND/OR)
         //
                     double pfxk = combinedFailure(combAndOr, pf1, pf2, pb.first, pf2pf1.first);
                     //
-                    double betaxk = conversions::betaFromQ(pfxk);
+                    double betaxk = StandardNormal::getUFromQ(pfxk);
                     alphaX1(k) = (element3.getBeta() - betaxk) / epsilon;
                     //
                     //           Uncorrelated part
@@ -124,22 +126,22 @@ namespace Deltares {
                     {
                         //
                         beta1Delta = element1.getBeta();
-                        pf1 = conversions::QfromBeta(beta1Delta);
+                        pf1 = StandardNormal::getQFromU(beta1Delta);
                         //
                         beta2Delta = element2.getBeta() - element2.getAlphaI(k) * epsilon * sqrt(1.0 - pow(rhoP(k), 2));
-                        pf2 = conversions::QfromBeta(beta2Delta);
+                        pf2 = StandardNormal::getQFromU(beta2Delta);
                         //
                         pb = setLargestBeta(beta1Delta, beta2Delta, pf1, pf2);
                         //
                         //               Computation of P( Z_2 < 0 | Z_1 < -alpha2(k) * epsilon * sqrt( 1 - rhoP(k))^2) )
                         pf2pf1 = hh.PerformHohenbichler(pb.second, pb.first, rho);
-                        if (pf2pf1.second != ConvergenceStatus::success) failureHohenbichler++;
+                        if (pf2pf1.second != 0) failureHohenbichler++;
                         //
                         //               Computation of combined failure probability (AND/OR)
                         //
                         pfxk = combinedFailure(combAndOr, pf1, pf2, pb.first, pf2pf1.first);
 
-                        betaxk = conversions::betaFromQ(pfxk);
+                        betaxk = StandardNormal::getUFromQ(pfxk);
                         alphaX2(k) = (element3.getBeta() - betaxk) / epsilon;
                     }
                     else
@@ -165,7 +167,7 @@ namespace Deltares {
                         alphaFactor = 1.0 - rhoP(k) * fabs((element1.getAlphaI(k) / element2.getAlphaI(k)));
                     }
 
-                    double alphaMultiplier = 1.0 + max(0.0, 0.1710 + 0.03160 * min(element1.getBeta(), element2.getBeta()))
+                    double alphaMultiplier = 1.0 + std::max(0.0, 0.1710 + 0.03160 * std::min(element1.getBeta(), element2.getBeta()))
                         * exp(-pow((element1.getBeta() - element2.getBeta()) / 0.40, 2)) * alphaFactor;
 
                     alphaX1(k) *= alphaMultiplier;
@@ -608,60 +610,11 @@ namespace Deltares {
             {
                 double adjustedProbability = Elements[i].getQ();
                 adjustedProbability *= percentages[i] / 100.0;
-                adjustedElement[i] = alphaBeta(conversions::betaFromQ(adjustedProbability), Elements[i].getAlpha());
+                adjustedElement[i] = alphaBeta(StandardNormal::getUFromQ(adjustedProbability), Elements[i].getAlpha());
             }
 
             return combineMultipleElements(adjustedElement, rhoP, combAndOr);
         }
 
-        //>
-        //! This method takes the highest reliability index (beta) and alpha values of a set of elements
-        cmbResult combineElements::getMultipleElementsHighestBeta(elements& Elements)
-        {
-            // betaElement(:)    : Reliability index per element
-            // alphaElement(:,:) : Alpha vector per element
-            // beta              : Reliability index after combining over elements
-            // alpha(:)          : Alpha vector after combining over elements
-
-            // Find the index of the highest beta
-            size_t bestIndex = 0;
-            double maxval = -DBL_MAX;
-            for (size_t i = 0; i < Elements.size(); i++)
-            {
-                if (Elements[i].getBeta() > maxval)
-                {
-                    maxval = Elements[i].getBeta();
-                    bestIndex = i;
-                }
-            }
-
-            // Copy the results
-            return { Elements[bestIndex], 0 };
-        }
-
-        //>
-        //! This method takes the lowest reliability index (beta) and alpha values of a set of elements
-        cmbResult combineElements::getMultipleElementsLowestBeta(elements& Elements)
-        {
-            // betaElement(:)    : Reliability index per element
-            // alphaElement(:,:) : Alpha vector per element
-            // beta              : Reliability index after combining over elements
-            // alpha(:)          : Alpha vector after combining over elements
-
-            // Find the index of the lowest beta
-            size_t bestIndex = 0;
-            double minval = DBL_MAX;
-            for (size_t i = 0; i < Elements.size(); i++)
-            {
-                if (Elements[i].getBeta() < minval)
-                {
-                    minval = Elements[i].getBeta();
-                    bestIndex = i;
-                }
-            }
-
-            // Copy the results
-            return { Elements[bestIndex], 0 };
-        }
     }
 }

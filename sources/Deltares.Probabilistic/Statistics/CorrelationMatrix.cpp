@@ -6,7 +6,7 @@ namespace Deltares
 {
 	namespace Statistics
 	{
-		using namespace Deltares::ProbLibCore;
+		using namespace Deltares::Reliability;
 
 		std::vector<double> CorrelationMatrix::Cholesky(const std::vector<double>& uValues)
 		{
