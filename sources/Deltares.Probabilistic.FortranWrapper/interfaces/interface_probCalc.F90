@@ -329,11 +329,12 @@ subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, conv, convCri
     select case (method%methodId)
     case(methodDirectionalSampling, methodFORMandDirSampling, methodFORMandDirSamplingWithFORMiterations, &
          methodDirSamplingWithFORMiterationsStartU, methodDirSamplingWithFORMiterations)
-        method%tolB       = probDb%method%DS%varcoefffailure
-        method%minSamples = probDb%method%DS%minimumsamples
-        method%maxSamples = probDb%method%DS%maximumsamples
-        method%seed1      = probDb%method%DS%seedPRNG
-        method%seed2      = probDb%method%DS%seedPRNG
+        method%tolB          = probDb%method%DS%varcoefffailure
+        method%minSamples    = probDb%method%DS%minimumsamples
+        method%maxSamples    = probDb%method%DS%maximumsamples
+        method%seed1         = probDb%method%DS%seedPRNG
+        method%seed2         = probDb%method%DS%seedPRNG
+        method%numExtraReal1 = -2.0_wp ! FDthreshold
     case(methodCrudeMonteCarlo, methodCrudeMonteCarloWithFORMiterations)
         method%tolB       = probDb%method%CMC%varcoefffailure
         method%minSamples = probDb%method%CMC%minimumsamples

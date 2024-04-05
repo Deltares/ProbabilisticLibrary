@@ -54,7 +54,7 @@ ReliabilityMethod* createReliabilityMethod::selectMethod(const basicSettings& bs
         return form; }
         break;
     case (ProbMethod::FDIR): {
-        auto fdir = new FDIR();
+        auto fdir = new FDIR(bs.numExtraReal1);
         fillDsSettings(fdir->DsSettings, bs);
         fillFormSettings(fdir->formSettings, bs, nStoch);
         return fdir; }
