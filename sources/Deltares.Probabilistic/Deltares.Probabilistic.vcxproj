@@ -155,6 +155,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Statistics\Distributions\WeibullDistribution.h" />
     <ClInclude Include="Combine\alphaBeta.h" />
     <ClInclude Include="Combine\combineElements.h" />
     <ClInclude Include="Combine\combiner.h" />
@@ -241,8 +242,10 @@
     <ClInclude Include="Utils\probLibException.h" />
     <ClInclude Include="Utils\probLibString.h" />
     <ClInclude Include="Statistics\VariableStochastValueSet.h" />
+    <ClInclude Include="Statistics\Distributions\RayleighDistribution.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Statistics\Distributions\WeibullDistribution.cpp" />
     <ClCompile Include="Combine\combineElements.cpp" />
     <ClCompile Include="Combine\combiner.cpp" />
     <ClCompile Include="Combine\Hohenbichler.cpp" />
@@ -321,6 +324,7 @@
     <ClCompile Include="Math\matrix.cpp" />
     <ClCompile Include="Math\cholesky_decomp.cpp" />
     <ClCompile Include="Statistics\VariableStochastValueSet.cpp" />
+    <ClCompile Include="Statistics\Distributions\RayleighDistribution.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

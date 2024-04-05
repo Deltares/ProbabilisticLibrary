@@ -38,6 +38,7 @@ namespace Deltares
 			virtual std::vector<double> getSpecialPoints(std::shared_ptr<StochastProperties> stochast) { return std::vector<double>(0); }
 		protected:
 			virtual void setXAtUByIteration(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType);
+			virtual double getFittedMinimum(std::vector<double>& x);
 		};
 	}
 }

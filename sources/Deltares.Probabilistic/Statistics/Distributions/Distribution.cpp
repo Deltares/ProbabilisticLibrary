@@ -55,6 +55,17 @@ namespace Deltares
 		{
 			return log(this->getPDF(stochast, x));
 		}
+
+		double Distribution::getFittedMinimum(std::vector<double>& x)
+		{
+			double min = Numeric::NumericSupport::getMinimum(x);
+			double max = Numeric::NumericSupport::getMaximum(x);
+
+			double diff = max - min;
+			double add = diff / x.size();
+
+			return min - add;
+		}
 	}
 }
 

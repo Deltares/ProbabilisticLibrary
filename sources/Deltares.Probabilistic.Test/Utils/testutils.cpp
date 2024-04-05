@@ -13,6 +13,13 @@ namespace Deltares
     {
         namespace Test
         {
+            std::string testutils::refFileWithPath(const std::string& sourceFile, const std::string& relativePath)
+            {
+                auto found = sourceFile.find_last_of("/\\");
+                auto base = sourceFile.substr(0, found+1);
+                return base + relativePath;
+            }
+
             bool testutils::comparefiles(const std::string& refFile, const std::string& newFile) const
             {
                 auto sref = readWholeFile(refFile);
@@ -44,32 +51,42 @@ namespace Deltares
                 return values;
             }
 
-            bool testutils::lookAnumber(std::string s) const
+            // returns true if the provided string looks like a string
+            // only checks the first character.
+            // used to avoid exceptions later on
+            bool testutils::looksLikeAnumber(const std::string& s) const
             {
                 if (std::isdigit(s.at(0))) return true;
                 if (s.at(0) == '-') return true;
+                if (s.at(0) == '+') return true;
+                if (s.at(0) == '.') return true;
                 return false;
             }
 
+            // returns true if both strings are equal by a word by word comparison
+            // if that word is a number, allow small differences
             bool testutils::compareLine(const std::string& ref, const std::string& nw) const
             {
                 if (ref == nw) return true;
-                if (ref.at(0) == '*' && nw.at(0) == '*') return true;
                 auto r = mySplit(ref);
                 auto n = mySplit(nw);
                 if (r.size() != n.size()) return false;
                 for (size_t i = 0; i < r.size(); i++)
                 {
-                    if (lookAnumber(r[i]) && lookAnumber(n[i]))
+                    if (r[i] != n[i])
                     {
-                        double numr = stof(r[i]);
-                        double numn = stof(n[i]);
-                        double tol = margin * fabs(numr);
-                        EXPECT_NEAR(numr, numn, tol);
-                    }
-                    else
-                    {
-                        return false;
+                        if (looksLikeAnumber(r[i]) && looksLikeAnumber(n[i]))
+                        {
+                            double numr = stof(r[i]);
+                            double numn = stof(n[i]);
+                            double tol = margin * std::abs(numr);
+                            EXPECT_NEAR(numr, numn, tol);
+                            if (std::abs(numr - numn) > tol) return false;
+                        }
+                        else
+                        {
+                            return false;
+                        }
                     }
                 }
 

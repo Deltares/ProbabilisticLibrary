@@ -42,7 +42,10 @@ namespace Deltares
 					int index1 = stochasts.IndexOf(stochast1);
 					int index2 = stochasts.IndexOf(stochast2);
 
-					shared->object->SetCorrelation(index1, index2, value);
+					if (index1 >= 0 && index2 >= 0)
+					{
+						shared->object->SetCorrelation(index1, index2, value);
+					}
 				}
 
 				double GetCorrelation(const int i, const int j) { return shared->object->GetCorrelation(i, j); }
@@ -52,10 +55,17 @@ namespace Deltares
 					int index1 = stochasts.IndexOf(stochast1);
 					int index2 = stochasts.IndexOf(stochast2);
 
-					return shared->object->GetCorrelation(index1, index2);
+					if (index1 >= 0 && index2 >= 0) 
+					{
+						return shared->object->GetCorrelation(index1, index2);
+					}
+					else
+					{
+						return 0;
+					}
 				}
 
-				bool IsIdentity()
+				virtual bool IsIdentity()
 				{
 					return shared->object->IsIdentity();
 				}

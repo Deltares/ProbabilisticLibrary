@@ -1,4 +1,5 @@
 #include <fstream>
+#include <filesystem>
 #include <stdio.h>
 #include "gtest/gtest.h"
 #include "hohenbichler_tests.h"
@@ -17,6 +18,7 @@ namespace Deltares
         {
             void HohenbichlerTest::allHohenbichlerTests()
             {
+                RhoLimit();
                 NoCorrelation();
                 AlmostFullCorrelation();
                 FullCorrelation();
@@ -146,23 +148,21 @@ namespace Deltares
                 EXPECT_EQ(result.second, 1);
             }
 
-            // Test for verifying effects of the setting of the parameter rhoLimitHohenbichler in subroutine Hohenbichler( betaV, pfU, rhoInput, pfVpfU )  \n
-            // NOTE: Formally this is not a unit test is strict sense since no computational results are compared to expected results \n
+            // Test for verifying effects of the setting of the parameter rhoLimitHohenbichler in method Hohenbichler( betaV, pfU, rhoInput, pfVpfU )  \n
             // \n
             // In this test the output parameter pfVpfU of Hohenbichler() is computed for variations of its three input parameters {betaV, pfU, rhoInput} \n
             // rhoInput is varied on a dense partition of [0,1] \n
             // The betaV variations consist of the following four values {-3, 0, 3, 6, 9} \n
             // Similarly three variations are applied for pfU \n
-            // For all rhoInput * betaV * pfU combinations subroutine Hohenbichler( ) is called to obtain the corresponding pfVpfU \n
+            // For all rhoInput * betaV * pfU combinations method Hohenbichler( ) is called to obtain the corresponding pfVpfU \n
             // The results are stored in a plain ascii file ..\test\unitTests\Test_RhoLimit.tek \n
             // On the basis of this file plots can be made of pfVpfU as function of rhoInput (for fixed betaV and pfU) \n
             // In particular (possibly undesired) effects of the restriction rho = max( min( rhoInput, rhoLimitHohenbichler ) can be verified. \n
-            // At this moment rhoLimitHohenbichler=0.99 as set in subroutine Hohenbichler() \n
+            // At this moment rhoLimitHohenbichler=0.99 as set in method Hohenbichler() \n
             void  HohenbichlerTest::RhoLimit()
             {
                 const int npfUvar = 3;               // total number of variations of the failure probability pfU
-                const int lWork = 2 + 2 * npfUvar; // dimension of locally used work space array work()
-                std::vector<double> work(lWork + 1);  // locally defined and used array for work space within the computations
+                const int nrColumns = 2 + 2 * npfUvar;
 
                 //   Range and increment for the rhoInput variations
                 const double rhoInput_Min = 0.0;
@@ -183,35 +183,35 @@ namespace Deltares
                 const int nBeta = int(1.5 + (betaMax - betaMin) / dBeta);
 
                 //  Initialisation of the pfU factors
-                std::vector<double> pfUfactor = { 1.0, 1.0e-3, 1.0e-5 };
+                const std::vector<double> pfUfactor = { 1.0, 1.0e-3, 1.0e-5 };
 
                 //  Open a data file for saving the result of the (beta, pfU, rhoInput)-variations:
-                auto lunOut = std::ofstream("Test_RhoLimit.tek", std::ios::out);
+                const char filename[] = "Test_RhoLimit.tek";
+                auto fileStream = std::ofstream(filename, std::ios::out);
                 //  Visualisation of the results (pfVpfU as function of rhoInput) must be done with some plotting program
 
                 //  Generate header/legends in the output file for the applied variations:
-                lunOut << "* Listing/Legends for the " << nBeta << " data blocks in present file:" << std::endl;
-                lunOut << "*" << std::endl;
+                fileStream << "* Listing/Legends for the " << nBeta << " data blocks in present file:" << std::endl;
+                fileStream << "*" << std::endl;
 
-                for (int iBeta = 1; iBeta <= nBeta; iBeta++)
+                for (int iBeta = 0; iBeta < nBeta; iBeta++)
                 {
-                    const double betaV = betaMin + dBeta * double(iBeta - 1);
-                    double p; double pfU;
-                    p = StandardNormal::getPFromU(betaV);
-                    pfU = StandardNormal::getQFromU(betaV);
-                    lunOut <<
+                    const double betaV = betaMin + dBeta * double(iBeta);
+                    const double p = StandardNormal::getPFromU(betaV);
+                    const double pfU = StandardNormal::getQFromU(betaV);
+                    fileStream <<
                         "* ---------------------------------------------" << std::endl <<
-                        "* Block of (beta, pfU, rhoInput) variations Nr. " << iBeta << "/" << nBeta << std::endl <<
+                        "* Block of (beta, pfU, rhoInput) variations Nr. " << (iBeta+1) << "/" << nBeta << std::endl <<
                         "* ---------------------------------------------" << std::endl <<
                         "* Beta             = " << betaV << std::endl <<
-                        "* ==> p(Beta)      = " << p << std::endl <<
-                        "* ==> pfU(Beta)    = " << pfU << std::endl << "*" << std::endl;
-                    for (int ipfUvar = 1; ipfUvar <= npfUvar; ipfUvar++)
+                        "* ==> p(Beta)      = " << p     << std::endl <<
+                        "* ==> pfU(Beta)    = " << pfU   << std::endl << "*" << std::endl;
+                    for (int ipfUvar = 0; ipfUvar < npfUvar; ipfUvar++)
                     {
-                        const double pfUvar = pfU * pfUfactor[ipfUvar - 1];
-                        lunOut << "* Variation pfU(" << ipfUvar << ") = " << pfUvar << std::endl;
+                        const double pfUvar = pfU * pfUfactor[ipfUvar];
+                        fileStream << "* Variation pfU(" << (ipfUvar+1) << ") = " << pfUvar << std::endl;
                     }
-                    lunOut << "*" << std::endl <<
+                    fileStream << "*" << std::endl <<
                         "* rhoInput_Min     = " << rhoInput_Min << std::endl <<
                         "* rhoInput_Max     = " << rhoInput_Max << std::endl <<
                         "* rhoInput_Delta   = " << rhoInput_Delta << std::endl <<
@@ -221,63 +221,53 @@ namespace Deltares
                 // Entry to the computation and saving results for plotting pfVpfU as function of rhoInput,
                 // for given variations of beta, and pfU:
                 auto h = Hohenbichler();
-                for (int iBeta = 1; iBeta <= nBeta; iBeta++)
+                for (int iBeta = 0; iBeta < nBeta; iBeta++)
                 {
-                    const double betaV = betaMin + dBeta * double(iBeta - 1);
-                    double p; double pfU;
-                    p = StandardNormal::getPFromU(betaV);
-                    pfU = StandardNormal::getQFromU(betaV);
-                    work[1] = betaV;
-                    lunOut <<
+                    const double betaV = betaMin + dBeta * double(iBeta);
+                    const double p = StandardNormal::getPFromU(betaV);
+                    const double pfU = StandardNormal::getQFromU(betaV);
+                    fileStream <<
                         "* ---------------------------------------" << std::endl <<
-                        "* Entry to (pfU, rhoInput) variations Nr. " << iBeta << "/" << nBeta << std::endl <<
+                        "* Entry to (pfU, rhoInput) variations Nr. " << (iBeta+1) << "/" << nBeta << std::endl <<
                         "* ---------------------------------------" << std::endl <<
                         "* Beta             = " << betaV << std::endl <<
-                        "* ==> p(Beta)      = " << p << std::endl <<
-                        "* ==> pfU(Beta)    = " << pfU << std::endl << "*" << std::endl;
-                    for (int ipfUvar = 1; ipfUvar <= npfUvar; ipfUvar++)
+                        "* ==> p(Beta)      = " << p     << std::endl <<
+                        "* ==> pfU(Beta)    = " << pfU   << std::endl << "*" << std::endl;
+                    for (int ipfUvar = 0; ipfUvar < npfUvar; ipfUvar++)
                     {
-                        const double pfUvar = pfU * pfUfactor[ipfUvar - 1];
-                        lunOut << "* Variation pfU(" << ipfUvar << ") = " << pfUvar << std::endl;
+                        const double pfUvar = pfU * pfUfactor[ipfUvar];
+                        fileStream << "* Variation pfU(" << (ipfUvar+1) << ") = " << pfUvar << std::endl;
                     }
-                    lunOut << "*" << std::endl <<
+                    fileStream << "*" << std::endl <<
                         "* rhoInput_Min     = " << rhoInput_Min << std::endl <<
                         "* rhoInput_Max     = " << rhoInput_Max << std::endl <<
                         "* rhoInput_Delta   = " << rhoInput_Delta << std::endl <<
                         "* nRhoInput        = " << nRhoInput << std::endl << "*" << std::endl;
-                    lunOut << "*  1       2          3               4               5             6               7             8" << std::endl;
-                    lunOut << "*Beta   rhoInput    pfU(1)        pfVpfU(1)         pfU(2)      pfVpfU(2)         pfU(3)      pfVpfU(3)" << std::endl;
-                    lunOut << "BL" << iBeta << std::endl << nRhoInput << " " << lWork << std::endl;
-                    for (int iRhoInput = 1; iRhoInput <= nRhoInput; iRhoInput++)
+                    fileStream << "*  1       2          3               4               5             6               7             8" << std::endl;
+                    fileStream << "*Beta   rhoInput    pfU(1)        pfVpfU(1)         pfU(2)      pfVpfU(2)         pfU(3)      pfVpfU(3)" << std::endl;
+                    fileStream << "BL" << (iBeta+1) << std::endl << nRhoInput << " " << nrColumns << std::endl;
+                    for (int iRhoInput = 0; iRhoInput < nRhoInput; iRhoInput++)
                     {
-                        const double rhoInput = rhoInput_Min + rhoInput_Delta * double(iRhoInput - 1);
-                        work[2] = rhoInput;
-                        int iWork = 2;
-                        for (int ipfUvar = 1; ipfUvar <= npfUvar; ipfUvar++)
+                        const double rhoInput = rhoInput_Min + rhoInput_Delta * double(iRhoInput);
+                        fileStream << betaV << " " << rhoInput << " ";
+                        for (int ipfUvar = 0; ipfUvar < npfUvar; ipfUvar++)
                         {
-                            const double pfUvar = pfU * pfUfactor[ipfUvar - 1];
+                            const double pfUvar = pfU * pfUfactor[ipfUvar];
                             const double pfVpfU = h.PerformHohenbichler(betaV, pfUvar, rhoInput).first;
-
-                            iWork = iWork + 1;
-                            work[iWork] = pfUvar;
-                            iWork = iWork + 1;
-                            work[iWork] = pfVpfU;
+                            fileStream << pfUvar << " " << pfVpfU << " ";
                         }
-                        for (int iWork = 1; iWork <= lWork; iWork++)
-                        {
-                            lunOut << work[iWork] << " ";
-                        }
-                        lunOut << std::endl;
+                        fileStream << std::endl;
                     }
-                    lunOut << "*" << std::endl;
+                    fileStream << "*" << std::endl;
                 }
 
-                lunOut.close();
+                fileStream.close();
 
                 auto tester = testutils();
-                auto result = tester.comparefiles("tests/Test_RhoLimit.tek.ref", "refData/Test_RhoLimit.tek");
+                auto refFile = tester.refFileWithPath(__FILE__, "../RefData/Test_RhoLimit.tek.ref");
+                auto result = tester.comparefiles(refFile, filename);
                 ASSERT_TRUE(result);
-                remove("Test_RhoLimit.tek");
+                remove(filename);
             }
 
         }

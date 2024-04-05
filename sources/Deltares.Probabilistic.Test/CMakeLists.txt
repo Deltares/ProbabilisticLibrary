@@ -72,4 +72,5 @@ endif()
 add_test(
   NAME Deltares-Probabilistic-unit-tests
   COMMAND $<TARGET_FILE:Deltares.Probabilistic.Test>
+  WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
 )

@@ -260,6 +260,39 @@ namespace Deltares.Probabilistics.Wrappers.Test
         }
 
         [Test]
+        public void TestWeibull()
+        {
+            var stochast = new Stochast { DistributionType = DistributionType.Weibull, Scale = 1, Shape = 1 };
+
+            TestStochast(stochast);
+
+            stochast.Scale = 2;
+            stochast.Shape = 3;
+            stochast.Shift = 0.5;
+
+            TestInvert(stochast, true);
+            TestFit(stochast, 0.4);
+        }
+
+        [Test]
+        public void TestRayleigh()
+        {
+            var stochast = new Stochast { DistributionType = DistributionType.Rayleigh, Scale = 1 };
+
+            TestStochast(stochast);
+
+            stochast.Scale = 1.1;
+
+            TestInvert(stochast, true);
+
+            TestFit(stochast);
+
+            stochast.Shift = 2;
+            stochast.Scale = 2;
+            TestFit(stochast);
+        }
+
+        [Test]
         public void TestDiscrete()
         {
             var stochast = new Stochast { DistributionType = DistributionType.Discrete };
@@ -408,11 +441,15 @@ namespace Deltares.Probabilistics.Wrappers.Test
         {
             double center = stochast.Shift;
 
+            Assert.AreEqual(false, stochast.Inverted);
+
             // test mean inverted
             stochast.Inverted = true;
+            InvertMinMax(stochast, useShift);
             double meanInverted = stochast.Mean;
 
             stochast.Inverted = false;
+            InvertMinMax(stochast, useShift);
             double mean = stochast.Mean;
 
             Assert.AreEqual(mean, 2 * center - meanInverted, delta);
@@ -420,9 +457,11 @@ namespace Deltares.Probabilistics.Wrappers.Test
             foreach (var u in new[] { -7, -6, -5, -4, -3, -2, -1.5, -1, -0.5, -0.1, 0, 0.1, 0.5, 1, 1.5, 2, 3, 4, 5, 6, 7 })
             {
                 stochast.Inverted = true;
+                InvertMinMax(stochast, useShift);
                 double xInverted = stochast.GetXFromU(-u);
 
                 stochast.Inverted = false;
+                InvertMinMax(stochast, useShift);
                 double x = stochast.GetXFromU(u);
 
                 Assert.AreEqual(x, 2 * center - xInverted, delta);
@@ -432,7 +471,25 @@ namespace Deltares.Probabilistics.Wrappers.Test
             }
 
             // reset for further tests
-            stochast.Inverted = false;
+
+            if (stochast.Inverted)
+            {
+                stochast.Inverted = false;
+                InvertMinMax(stochast, useShift);
+            }
+
+            Assert.AreEqual(false, stochast.Inverted);
+        }
+
+        private void InvertMinMax(Stochast stochast, bool useShift)
+        {
+            double center = useShift ? stochast.Shift : 0;
+
+            double minimum = stochast.Minimum;
+            double maximum = stochast.Maximum;
+
+            stochast.Minimum = 2 * center - maximum;
+            stochast.Maximum = 2 * center - minimum;
         }
 
         private void TestFit(Stochast stochast, double fitMargin = defaultFitMargin, int number = 1000)
