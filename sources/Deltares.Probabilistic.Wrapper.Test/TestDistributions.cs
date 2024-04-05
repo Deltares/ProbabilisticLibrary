@@ -293,6 +293,24 @@ namespace Deltares.Probabilistics.Wrappers.Test
         }
 
         [Test]
+        public void TestRayleighN()
+        {
+            var stochast = new Stochast { DistributionType = DistributionType.RayleighN, Scale = 1, Shape = 2 };
+
+            TestStochast(stochast);
+
+            stochast.Scale = 1.1;
+
+            TestInvert(stochast, true);
+
+            //TestFit(stochast);
+
+            //stochast.Shift = 2;
+            //stochast.Scale = 2;
+            //TestFit(stochast);
+        }
+
+        [Test]
         public void TestDiscrete()
         {
             var stochast = new Stochast { DistributionType = DistributionType.Discrete };

@@ -155,6 +155,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Statistics\Distributions\RayleighNDistribution.h" />
     <ClInclude Include="Statistics\Distributions\WeibullDistribution.h" />
     <ClInclude Include="Combine\alphaBeta.h" />
     <ClInclude Include="Combine\combineElements.h" />
@@ -244,6 +245,7 @@
     <ClInclude Include="Statistics\Distributions\RayleighDistribution.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Statistics\Distributions\RayleighNDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\WeibullDistribution.cpp" />
     <ClCompile Include="Combine\combineElements.cpp" />
     <ClCompile Include="Combine\combiner.cpp" />
