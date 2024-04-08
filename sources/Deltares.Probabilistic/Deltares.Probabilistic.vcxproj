@@ -155,6 +155,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Optimization\GridSearch.h" />
+    <ClInclude Include="Optimization\SearchParameterSettings.h" />
+    <ClInclude Include="Optimization\SearchParameterSettingsSet.h" />
+    <ClInclude Include="Statistics\Distributions\DistributionFitter.h" />
     <ClInclude Include="Statistics\Distributions\RayleighNDistribution.h" />
     <ClInclude Include="Statistics\Distributions\WeibullDistribution.h" />
     <ClInclude Include="Combine\alphaBeta.h" />
@@ -243,8 +247,13 @@
     <ClInclude Include="Utils\probLibString.h" />
     <ClInclude Include="Statistics\VariableStochastValueSet.h" />
     <ClInclude Include="Statistics\Distributions\RayleighDistribution.h" />
+    <ClInclude Include="Statistics\Distributions\FrechetDistribution.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Optimization\GridSearch.cpp" />
+    <ClCompile Include="Optimization\SearchParameterSettings.cpp" />
+    <ClCompile Include="Optimization\SearchParameterSettingsSet.cpp" />
+    <ClCompile Include="Statistics\Distributions\DistributionFitter.cpp" />
     <ClCompile Include="Statistics\Distributions\RayleighNDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\WeibullDistribution.cpp" />
     <ClCompile Include="Combine\combineElements.cpp" />
@@ -325,6 +334,7 @@
     <ClCompile Include="Math\cholesky_decomp.cpp" />
     <ClCompile Include="Statistics\VariableStochastValueSet.cpp" />
     <ClCompile Include="Statistics\Distributions\RayleighDistribution.cpp" />
+    <ClCompile Include="Statistics\Distributions\FrechetDistribution.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

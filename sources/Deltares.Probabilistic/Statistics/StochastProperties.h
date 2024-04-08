@@ -3,33 +3,52 @@
 #include "DiscreteValue.h"
 #include "HistogramValue.h"
 #include "FragilityValue.h"
+#include "../Utils/probLibException.h"
 
 #include <vector>
 #include <memory>
 
 namespace Deltares
 {
-    namespace Statistics
-    {
-        class StochastProperties
-        {
+	namespace Statistics
+	{
+		enum DistributionPropertyType { Location, Scale, Minimum, Maximum, Shift, ShiftB, Shape, ShapeB, Observations };
 
-        public:
+		class StochastProperties
+		{
 
-            double Location = 0;
-            double Scale = 0;
-            double Minimum = 0;
-            double Maximum = 0;
-            double Shift = 0;
-            double ShiftB = 0;
-            double Shape = 1;
-            double ShapeB = 1;
-            int Observations = 2;
+		public:
 
-            std::vector<std::shared_ptr<DiscreteValue>> DiscreteValues;
-            std::vector<std::shared_ptr<HistogramValue>> HistogramValues;
-            std::vector<std::shared_ptr<FragilityValue>> FragilityValues;
-        };
+			double Location = 0;
+			double Scale = 0;
+			double Minimum = 0;
+			double Maximum = 0;
+			double Shift = 0;
+			double ShiftB = 0;
+			double Shape = 1;
+			double ShapeB = 1;
+			int Observations = 2;
 
-    }
+			std::vector<std::shared_ptr<DiscreteValue>> DiscreteValues;
+			std::vector<std::shared_ptr<HistogramValue>> HistogramValues;
+			std::vector<std::shared_ptr<FragilityValue>> FragilityValues;
+
+			void applyValue(DistributionPropertyType property, double value)
+			{
+				switch (property)
+				{
+					case DistributionPropertyType::Location: this->Location = value; break;
+					case DistributionPropertyType::Scale: this->Scale = value; break;
+					case DistributionPropertyType::Minimum:	this->Minimum = value; break;
+					case DistributionPropertyType::Maximum:	this->Maximum = value; break;
+					case DistributionPropertyType::Shift: this->Shift = value; break;
+					case DistributionPropertyType::ShiftB: this->ShiftB = value; break;
+					case DistributionPropertyType::Shape: this->Shape = value; break;
+					case DistributionPropertyType::ShapeB: this->ShapeB = value; break;
+					case DistributionPropertyType::Observations: this->Observations = value; break;
+					default: throw Reliability::probLibException("Property not supported");
+				}
+			}
+		};
+	}
 }

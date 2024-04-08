@@ -16,6 +16,7 @@ namespace Deltares
 				case Wrappers::DistributionType::Uniform: return Statistics::DistributionType::Uniform;
 				case Wrappers::DistributionType::Gumbel: return Statistics::DistributionType::Gumbel;
 				case Wrappers::DistributionType::Weibull: return Statistics::DistributionType::Weibull;
+				case Wrappers::DistributionType::Frechet: return Statistics::DistributionType::Frechet;
 				case Wrappers::DistributionType::Rayleigh: return Statistics::DistributionType::Rayleigh;
 				case Wrappers::DistributionType::RayleighN: return Statistics::DistributionType::RayleighN;
 				case Wrappers::DistributionType::Discrete: return Statistics::DistributionType::Discrete;
@@ -34,6 +35,7 @@ namespace Deltares
 				case Statistics::DistributionType::Uniform: return Wrappers::DistributionType::Uniform;
 				case Statistics::DistributionType::Gumbel: return Wrappers::DistributionType::Gumbel;
 				case Statistics::DistributionType::Weibull: return Wrappers::DistributionType::Weibull;
+				case Statistics::DistributionType::Frechet: return Wrappers::DistributionType::Frechet;
 				case Statistics::DistributionType::Rayleigh: return Wrappers::DistributionType::Rayleigh;
 				case Statistics::DistributionType::RayleighN: return Wrappers::DistributionType::RayleighN;
 				case Statistics::DistributionType::Discrete: return Wrappers::DistributionType::Discrete;

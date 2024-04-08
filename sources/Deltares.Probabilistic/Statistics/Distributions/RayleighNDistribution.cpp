@@ -3,6 +3,8 @@
 #include "../StandardNormal.h"
 #include "../StochastProperties.h"
 #include "../../Math/NumericSupport.h"
+#include "../../Math/SpecialFunctions.h"
+#include "../../Math/RootFinders/BisectionRootFinder.h"
 #include <cmath>
 #include <numbers>
 
@@ -130,6 +132,24 @@ namespace Deltares
 		{
 			stochast->Scale = deviation / std::sqrt((4 - std::numbers::pi) / 2);
 			stochast->Shift = mean - stochast->Scale * std::sqrt(std::numbers::pi / 2);
+
+			if (stochast->Shape != 1.0) 
+			{
+				std::unique_ptr<Numeric::BisectionRootFinder> bisection = std::make_unique<Numeric::BisectionRootFinder>();
+
+				Distribution* distribution = this;
+
+				Numeric::RootFinderMethod method = [stochast, distribution](double s)
+				{
+					stochast->Scale = s;
+					return distribution->getMean(stochast);
+				};
+
+				double minStart = 0.5 * stochast->Scale;
+				double maxStart = 1.5 * stochast->Scale;
+
+				stochast->Scale = bisection->CalculateValue(minStart, maxStart, mean, 0.00001, method);
+			}
 		}
 
 		void RayleighNDistribution::setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
