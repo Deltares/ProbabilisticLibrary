@@ -56,7 +56,8 @@ namespace Deltares
 				gridCounter++;
 				gridIntervalCounter++;
 
-				std::shared_ptr<Models::ModelSample> sample = std::make_shared<Models::ModelSample>(combination);
+				const std::shared_ptr<Models::ModelSample> sample = std::make_shared<Models::ModelSample>(combination);
+
 				model->invoke(sample);
 
 				counter++;
@@ -69,7 +70,6 @@ namespace Deltares
 
 			return minSample;
 		}
-
 
 		bool GridSearch::isSampleOnEdge(std::shared_ptr<SearchParameterSettingsSet> searchArea, std::vector<double>& sample)
 		{
@@ -89,24 +89,38 @@ namespace Deltares
 
 		void GridSearch::moveSampleToCenter(std::shared_ptr<SearchParameterSettingsSet> searchArea, std::vector<double>& sample)
 		{
+			bool moved = false;
+
 			for (int i = 0; i < searchArea->Dimensions.size(); i++)
 			{
 				std::shared_ptr<SearchParameterSettings> dimension = searchArea->Dimensions[i];
 
-				if (dimension->Move && dimension->NumberOfValues > 2)
+				if (!moved && dimension->Move && dimension->NumberOfValues > 2)
 				{
-					double shift = dimension->Interval;
+					double shift = dimension->getInterval();
 
 					if (Numeric::NumericSupport::areEqual(dimension->MinValue, sample[i], tolerance))
 					{
 						dimension->MinValue -= shift;
 						dimension->MaxValue -= shift;
+						dimension->UseValues = UseValuesType::MinValue;
+						moved = true;
 					}
 					else if (Numeric::NumericSupport::areEqual(dimension->MaxValue, sample[i], tolerance))
 					{
 						dimension->MinValue += shift;
 						dimension->MaxValue += shift;
+						dimension->UseValues = UseValuesType::MaxValue;
+						moved = true;
 					}
+					else
+					{
+						dimension->UseValues = UseValuesType::AllValues;
+					}
+				}
+				else
+				{
+					dimension->UseValues = UseValuesType::AllValues;
 				}
 			}
 		}
@@ -132,7 +146,7 @@ namespace Deltares
 				std::shared_ptr<SearchParameterSettings> dimension = searchArea->Dimensions[i];
 				if (refinements < dimension->NumberOfRefinements)
 				{
-					double newInterval = dimension->Interval / 2;
+					double newInterval = dimension->getInterval() / 2;
 					dimension->MinValue = input[i] - newInterval;
 					dimension->MaxValue = input[i] + newInterval;
 					dimension->NumberOfValues = 3;
@@ -143,6 +157,8 @@ namespace Deltares
 					dimension->MaxValue = input[i];
 					dimension->NumberOfValues = 1;
 				}
+
+				dimension->UseValues = UseValuesType::AllValues;
 			}
 		}
 	}

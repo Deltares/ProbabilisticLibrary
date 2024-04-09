@@ -56,7 +56,7 @@ namespace Deltares
 
 			if (distribution->isValid(stochast))
 			{
-				sample->Z = this->getSumLogLikelihood();
+				sample->Z = - this->getSumLogLikelihood();
 			}
 			else
 			{

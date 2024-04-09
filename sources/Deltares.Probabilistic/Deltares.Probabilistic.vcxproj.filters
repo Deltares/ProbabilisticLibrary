@@ -114,6 +114,8 @@
     <ClCompile Include="Optimization\GridSearch.cpp" />
     <ClCompile Include="Optimization\SearchParameterSettings.cpp" />
     <ClCompile Include="Optimization\SearchParameterSettingsSet.cpp" />
+    <ClCompile Include="Reliability\DSFI.cpp" />
+    <ClCompile Include="Reliability\FDIR.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -247,6 +249,8 @@
     <ClInclude Include="Optimization\GridSearch.h" />
     <ClInclude Include="Optimization\SearchParameterSettings.h" />
     <ClInclude Include="Optimization\SearchParameterSettingsSet.h" />
+    <ClInclude Include="Reliability\DSFI.h" />
+    <ClInclude Include="Reliability\FDIR.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

@@ -417,14 +417,16 @@ namespace Deltares
 				}
 			}
 
+			std::vector<std::vector<double>> reversedCombinations;
+
 			for (auto list : combinations)
 			{
 				std::reverse(list.begin(), list.end());
+				reversedCombinations.push_back(list);
 			}
 
-			return combinations;
+			return reversedCombinations;
 		}
-
 
 		double NumericSupport::getMean(std::vector<double>& values)
 		{

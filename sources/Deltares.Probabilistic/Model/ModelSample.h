@@ -33,6 +33,24 @@ namespace Deltares
 			double Z = nan("");
 
 			intptr_t Tag = 0;
+
+			bool hasSameValues(std::shared_ptr<ModelSample> other)
+			{
+				if (this->Values.size() != other->Values.size())
+				{
+					return false;
+				}
+
+				for (int i = 0; i < this->Values.size(); i++)
+				{
+					if (this->Values[i] != other->Values[i])
+					{
+						return false;
+					}
+				}
+
+				return true;
+			}
 		};
 	}
 }

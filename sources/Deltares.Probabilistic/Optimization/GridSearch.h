@@ -1,5 +1,6 @@
 #pragma once
 
+#include <map>
 #include <vector>
 #include <memory>
 
@@ -72,7 +73,6 @@ namespace Deltares
 			/// <param name="refinements"></param>
 			/// <param name="input"></param>
 			void refineGrid(std::shared_ptr<SearchParameterSettingsSet> searchArea, int refinements, std::vector<double>& input);
-
 		};
 	}
 }

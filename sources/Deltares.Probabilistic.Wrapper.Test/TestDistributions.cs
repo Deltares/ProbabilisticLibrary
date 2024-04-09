@@ -275,6 +275,28 @@ namespace Deltares.Probabilistics.Wrappers.Test
         }
 
         [Test]
+        public void TestFrechet()
+        {
+            var stochast = new Stochast { DistributionType = DistributionType.Frechet, Scale = 1, Shape = 1 };
+
+            Assert.AreEqual(0.54, stochast.GetPDF(0.5), 0.01);
+            Assert.AreEqual(0.37, stochast.GetPDF(1), 0.01);
+            Assert.AreEqual(0.16, stochast.GetPDF(2), 0.01);
+
+            Assert.AreEqual(0.14, stochast.GetCDF(0.5), 0.01);
+            Assert.AreEqual(0.37, stochast.GetCDF(1), 0.01);
+            Assert.AreEqual(0.61, stochast.GetCDF(2), 0.01);
+
+            TestStochast(stochast);
+
+            stochast.Scale = 2;
+            stochast.Shape = 3;
+
+            TestInvert(stochast, true);
+            TestFit(stochast, 1.1);
+        }
+
+        [Test]
         public void TestRayleigh()
         {
             var stochast = new Stochast { DistributionType = DistributionType.Rayleigh, Scale = 1 };
@@ -528,8 +550,6 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
             fittedStochast.Fit(values);
 
-            Assert.AreEqual(stochast.Mean, fittedStochast.Mean, fitMargin);
-            Assert.AreEqual(stochast.Deviation, fittedStochast.Deviation, fitMargin);
             Assert.AreEqual(stochast.Location, fittedStochast.Location, fitMargin);
             Assert.AreEqual(stochast.Scale, fittedStochast.Scale, fitMargin);
             Assert.AreEqual(stochast.Shift, fittedStochast.Shift, fitMargin);

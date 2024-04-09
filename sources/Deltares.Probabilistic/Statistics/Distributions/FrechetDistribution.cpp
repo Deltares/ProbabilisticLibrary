@@ -145,7 +145,7 @@ namespace Deltares
 
 			double shift = getFittedMinimum(values);
 
-			std::vector<double> values0 = Numeric::NumericSupport::select(values, [stochast](double p) { return p - stochast->Shift; });
+			std::vector<double> values0 = Numeric::NumericSupport::select(values, [shift](double p) { return p - shift; });
 
 			std::unique_ptr<Numeric::BisectionRootFinder> bisection = std::make_unique<Numeric::BisectionRootFinder>();
 
