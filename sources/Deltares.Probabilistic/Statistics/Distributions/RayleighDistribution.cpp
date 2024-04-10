@@ -39,7 +39,7 @@ namespace Deltares
 		{
 			double q = StandardNormal::getQFromU(u);
 
-			if (q == 0)
+			if (q == 1)
 			{
 				return stochast->Shift;
 			}

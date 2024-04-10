@@ -8,6 +8,7 @@ file(GLOB ptkcpp_files
     "Reliability/*.cpp"
     "Statistics/*.cpp"
     "Statistics/Distributions/*.cpp"
+    "Optimization/*.cpp"
     "Utils/*.cpp"
 )
 

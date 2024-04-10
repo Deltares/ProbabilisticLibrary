@@ -8,7 +8,7 @@ namespace Deltares
 	{
 		namespace Wrappers
 		{
-			public enum class DistributionType { Deterministic, Normal, LogNormal, Uniform, Triangular, Trapezoidal, Exponential, Gamma, Beta, Frechet, Weibull, Gumbel, GeneralizedExtremeValue, StudentT, Rayleigh, Pareto, GeneralizedPareto, Table, CDFCurve, Discrete, Bernoulli, Poisson, Composite, X, Qualitative };
+			public enum class DistributionType { Deterministic, Normal, LogNormal, Uniform, Triangular, Trapezoidal, Exponential, Gamma, Beta, Frechet, Weibull, Gumbel, GeneralizedExtremeValue, StudentT, Rayleigh, RayleighN, Pareto, GeneralizedPareto, Table, CDFCurve, Discrete, Bernoulli, Poisson, Composite, X, Qualitative };
 
 			public ref class DistributionTypeConverter
 			{

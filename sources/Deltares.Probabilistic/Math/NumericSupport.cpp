@@ -394,6 +394,40 @@ namespace Deltares
 			}
 		}
 
+		std::vector<std::vector<double>> NumericSupport::getFullFactorialCombination(std::vector<std::vector<double>>& sourceLists)
+		{
+			std::vector<std::vector<double>> combinations = { std::vector<double>() };
+
+			for (int i = sourceLists.size() - 1; i >= 0; i--)
+			{
+				std::vector<std::vector<double>> previousLists;
+				previousLists.insert(previousLists.end(), combinations.begin(), combinations.end());
+				combinations.clear();
+
+				for (auto value : sourceLists[i])
+				{
+					for (auto previousList : previousLists)
+					{
+						std::vector<double> newList;
+						newList.insert(newList.end(), previousList.begin(), previousList.end());
+						newList.push_back(value);
+
+						combinations.push_back(newList);
+					}
+				}
+			}
+
+			std::vector<std::vector<double>> reversedCombinations;
+
+			for (auto list : combinations)
+			{
+				std::reverse(list.begin(), list.end());
+				reversedCombinations.push_back(list);
+			}
+
+			return reversedCombinations;
+		}
+
 		double NumericSupport::getMean(std::vector<double>& values)
 		{
 			if (values.empty())
