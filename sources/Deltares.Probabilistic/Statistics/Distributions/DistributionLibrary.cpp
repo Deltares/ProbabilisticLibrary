@@ -2,6 +2,7 @@
 
 #include "DeterministicDistribution.h"
 #include "FrechetDistribution.h"
+#include "GeneralizedExtremeValueDistribution.h"
 #include "GumbelDistribution.h"
 #include "InvertedDistribution.h"
 #include "LogNormalDistribution.h"
@@ -32,6 +33,7 @@ namespace Deltares
 			case DistributionType::Gumbel: distribution = std::make_shared<GumbelDistribution>(); break;
 			case DistributionType::Weibull: distribution = std::make_shared<WeibullDistribution>(); break;
 			case DistributionType::Frechet: distribution = std::make_shared<FrechetDistribution>(); break;
+			case DistributionType::GeneralizedExtremeValue: distribution = std::make_shared<GeneralizedExtremeValueDistribution>(); break;
 			case DistributionType::Rayleigh: distribution = std::make_shared<RayleighDistribution>(); break;
 			case DistributionType::RayleighN: distribution = std::make_shared<RayleighNDistribution>(); break;
 			case DistributionType::Discrete: distribution = std::make_shared<DiscreteDistribution>(); break;

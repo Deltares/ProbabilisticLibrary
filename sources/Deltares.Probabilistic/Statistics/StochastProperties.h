@@ -49,6 +49,23 @@ namespace Deltares
 					default: throw Reliability::probLibException("Property not supported");
 				}
 			}
+
+			std::shared_ptr<StochastProperties> clone()
+			{
+				std::shared_ptr<StochastProperties> clone = std::make_shared<StochastProperties>();
+
+				clone->Location = this->Location;
+				clone->Scale = this->Scale;
+				clone->Minimum = this->Minimum;
+				clone->Maximum = this->Maximum;
+				clone->Shift = this->Shift;
+				clone->ShiftB = this->ShiftB;
+				clone->Shape = this->Shape;
+				clone->ShapeB = this->ShapeB;
+				clone->Observations = this->Observations;
+
+				return clone;
+			}
 		};
 	}
 }

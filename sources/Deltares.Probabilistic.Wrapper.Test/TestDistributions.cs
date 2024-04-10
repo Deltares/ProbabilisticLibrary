@@ -297,6 +297,41 @@ namespace Deltares.Probabilistics.Wrappers.Test
         }
 
         [Test]
+        public void TestGeneralizedExtremeValue()
+        {
+            var stochast = new Stochast { DistributionType = DistributionType.GeneralizedExtremeValue, Scale = 1, Shape = 1 };
+
+            TestStochast(stochast);
+
+            // gumbel
+
+            stochast.Scale = 2;
+            stochast.Shape = 0;
+            stochast.Shift = 3;
+
+            TestInvert(stochast, true);
+            TestFit(stochast, 1);
+
+            // frechet
+
+            stochast.Scale = 2;
+            stochast.Shape = 0.2;
+            stochast.Shift = 0;
+
+            TestInvert(stochast, true);
+            TestFit(stochast, 5);
+
+            // weibull
+
+            stochast.Scale = 2;
+            stochast.Shape = -0.5;
+            stochast.Shift = 0;
+
+            TestInvert(stochast, true);
+            TestFit(stochast, 1);
+        }
+
+        [Test]
         public void TestRayleigh()
         {
             var stochast = new Stochast { DistributionType = DistributionType.Rayleigh, Scale = 1 };

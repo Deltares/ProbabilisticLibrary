@@ -116,6 +116,8 @@
     <ClCompile Include="Optimization\SearchParameterSettingsSet.cpp" />
     <ClCompile Include="Reliability\DSFI.cpp" />
     <ClCompile Include="Reliability\FDIR.cpp" />
+    <ClCompile Include="Statistics\Distributions\GeneralizedExtremeValueDistribution.cpp" />
+    <ClCompile Include="Statistics\Distributions\KSCalculator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -251,6 +253,8 @@
     <ClInclude Include="Optimization\SearchParameterSettingsSet.h" />
     <ClInclude Include="Reliability\DSFI.h" />
     <ClInclude Include="Reliability\FDIR.h" />
+    <ClInclude Include="Statistics\Distributions\GeneralizedExtremeValueDistribution.h" />
+    <ClInclude Include="Statistics\Distributions\KSCalculator.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">
