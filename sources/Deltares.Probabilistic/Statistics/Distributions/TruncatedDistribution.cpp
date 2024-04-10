@@ -2,6 +2,7 @@
 
 #include <cmath>
 
+#include "DistributionFitter.h"
 #include "../StandardNormal.h"
 #include "../../Math/NumericSupport.h"
 
@@ -209,51 +210,66 @@ namespace Deltares
 			stochast->Minimum = min - add;
 			stochast->Maximum = max + add;
 
-			// find properties which are fitted
-			//DistributionPropertyType[] properties = GetFittedProperties();
+			std::vector<DistributionPropertyType> properties = getParameters();
+			std::shared_ptr<DistributionFitter> distributionFitter = std::make_shared<DistributionFitter>();
 
-			//if (AreEqual(properties, new[] { DistributionPropertyType.Mean, DistributionPropertyType.Deviation }))
-			//{
-			//	double[] parameters = DistributionFitter.FitByLogLikelihood(
-			//		x,
-			//		this,
-			//		stochast,
-			//		new[] { stochast.Mean - 3 * stochast.Deviation, 0.1 * stochast.Deviation },
-			//		new[] { stochast.Mean + 3 * stochast.Deviation, 1.9 * stochast.Deviation },
-			//		new[] { stochast.Mean, stochast.Deviation },
-			//		properties);
+			if (areEqual(properties, {DistributionPropertyType::Location, DistributionPropertyType::Scale}))
+			{
+				std::vector<double> minValues = { stochast->Location - 3 * stochast->Scale, 0.1 * stochast->Scale };
+				std::vector<double> maxValues = { stochast->Location + 3 * stochast->Scale, 1.9 * stochast->Scale };
+				std::vector<double> initValues = { stochast->Location, stochast->Scale };
 
-			//	stochast.Mean = parameters[0];
-			//	stochast.Deviation = Math.Max(0, parameters[1]);
-			//}
-			//else if (AreEqual(properties, new[] { DistributionPropertyType.Shift, DistributionPropertyType.Scale }))
-			//{
-			//	double[] parameters = DistributionFitter.FitByLogLikelihood(
-			//		x,
-			//		this,
-			//		stochast,
-			//		new[] { stochast.Shift - 3 * stochast.Scale, 0.1 * stochast.Scale },
-			//		new[] { stochast.Shift + 3 * stochast.Scale, 1.9 * stochast.Scale },
-			//		new[] { stochast.Shift, stochast.Scale },
-			//		properties);
+				std::vector<double> parameters = distributionFitter->fitByLogLikelihood(values, this, stochast, minValues, maxValues, initValues, properties);
 
-			//	stochast.Shift = parameters[0];
-			//	stochast.Scale = Math.Max(0, parameters[1]);
-			//}
-			//else if (AreEqual(properties, new[] { DistributionPropertyType.Shape, DistributionPropertyType.Scale }))
-			//{
-			//	double[] parameters = DistributionFitter.FitByLogLikelihood(
-			//		x,
-			//		this,
-			//		stochast,
-			//		new[] { 0.1 * stochast.Shape, 0.1 * stochast.Scale },
-			//		new[] { 1.9 * stochast.Shape, 1.9 * stochast.Scale },
-			//		new[] { stochast.Shift, stochast.Scale },
-			//		properties);
+				stochast->Location = parameters[0];
+				stochast->Scale = std::max(0.0, parameters[1]);
+			}
+			else if (areEqual(properties, {DistributionPropertyType::Shift, DistributionPropertyType::Scale}))
+			{
+				std::vector<double> minValues = { stochast->Shift - 3 * stochast->Scale, 0.1 * stochast->Scale };
+				std::vector<double> maxValues = { stochast->Shift + 3 * stochast->Scale, 1.9 * stochast->Scale };
+				std::vector<double> initValues = { stochast->Shift, stochast->Scale };
 
-			//	stochast.Shape = parameters[0];
-			//	stochast.Scale = Math.Max(0, parameters[1]);
-			//}
+				std::vector<double> parameters = distributionFitter->fitByLogLikelihood(values, this, stochast, minValues, maxValues, initValues, properties);
+
+				stochast->Shift = parameters[0];
+				stochast->Scale = std::max(0.0, parameters[1]);
+			}
+			else if (areEqual(properties, {DistributionPropertyType::Shape, DistributionPropertyType::Scale}))
+			{
+				std::vector<double> minValues = { 0.1 * stochast->Shape, 0.1 * stochast->Scale };
+				std::vector<double> maxValues = { 1.9 * stochast->Shape, 1.9 * stochast->Scale };
+				std::vector<double> initValues = { stochast->Shift, stochast->Scale };
+
+				std::vector<double> parameters = distributionFitter->fitByLogLikelihood(values, this, stochast, minValues, maxValues, initValues, properties);
+
+				stochast->Shape = parameters[0];
+				stochast->Scale = std::max(0.0, parameters[1]);
+			}
+		}
+
+		bool TruncatedDistribution::areEqual(std::vector<DistributionPropertyType> array1, std::vector<DistributionPropertyType> array2)
+		{
+			if (array1.size() != array2.size())
+			{
+				return false;
+			}
+
+			for (int i = 0; i < array1.size(); i++)
+			{
+				if (array1[i] != array2[i])
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+
+		std::vector<DistributionPropertyType> TruncatedDistribution::getParameters()
+		{
+			return innerDistribution->getParameters();
 		}
 
 		double TruncatedDistribution::getLogLikelihood(std::shared_ptr<StochastProperties> stochast, double x)

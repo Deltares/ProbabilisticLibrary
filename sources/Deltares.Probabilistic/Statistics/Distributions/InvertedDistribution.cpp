@@ -140,6 +140,11 @@ namespace Deltares
 
 			return Numeric::NumericSupport::select(specialPoints, [this, stochast](double x) {return this->getInvertedValue(stochast, x); });
 		}
+
+		std::vector<DistributionPropertyType> InvertedDistribution::getParameters()
+		{
+			return innerDistribution->getParameters();
+		}
 	}
 }
 

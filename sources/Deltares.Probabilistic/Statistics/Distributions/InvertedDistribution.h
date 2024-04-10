@@ -33,6 +33,7 @@ namespace Deltares
 			bool isValid(std::shared_ptr<StochastProperties> stochast) override;
 			double getLogLikelihood(std::shared_ptr<StochastProperties> stochast, double x) override;
 			std::vector<double> getSpecialPoints(std::shared_ptr<StochastProperties> stochast) override;
+			std::vector<DistributionPropertyType> getParameters() override;
 		private:
 			std::shared_ptr<Distribution> innerDistribution = nullptr;
 			double getInvertedValue(std::shared_ptr<StochastProperties> stochast, double value);

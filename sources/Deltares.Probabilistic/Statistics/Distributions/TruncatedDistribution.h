@@ -35,13 +35,14 @@ namespace Deltares
 			bool isValid(std::shared_ptr<StochastProperties> stochast) override;
 			double getLogLikelihood(std::shared_ptr<StochastProperties> stochast, double x) override;
 			std::vector<double> getSpecialPoints(std::shared_ptr<StochastProperties> stochast) override;
-
+			std::vector<DistributionPropertyType> getParameters() override;
 		private:
 			std::shared_ptr<Distribution> innerDistribution = nullptr;
 
 			Truncated getTruncatedValue(std::shared_ptr<StochastProperties> stochast);
 			double getProbability(std::shared_ptr<StochastProperties> stochast, bool isMinimum);
 			double getUntruncatedU(double u, std::shared_ptr<StochastProperties> stochast);
+			bool areEqual(std::vector<DistributionPropertyType> array1, std::vector<DistributionPropertyType> array2);
 		};
 	}
 }
