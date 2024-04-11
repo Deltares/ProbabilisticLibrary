@@ -4,6 +4,7 @@
 #include "HistogramValue.h"
 #include "FragilityValue.h"
 #include "../Utils/probLibException.h"
+#include "DistributionPropertyType.h"
 
 #include <vector>
 #include <memory>
@@ -12,8 +13,6 @@ namespace Deltares
 {
 	namespace Statistics
 	{
-		enum DistributionPropertyType { Location, Scale, Minimum, Maximum, Shift, ShiftB, Shape, ShapeB, Observations };
-
 		class StochastProperties
 		{
 

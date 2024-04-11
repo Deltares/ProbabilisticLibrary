@@ -42,7 +42,6 @@ namespace Deltares
 			Truncated getTruncatedValue(std::shared_ptr<StochastProperties> stochast);
 			double getProbability(std::shared_ptr<StochastProperties> stochast, bool isMinimum);
 			double getUntruncatedU(double u, std::shared_ptr<StochastProperties> stochast);
-			bool areEqual(std::vector<DistributionPropertyType> array1, std::vector<DistributionPropertyType> array2);
 		};
 	}
 }

@@ -360,11 +360,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
             TestInvert(stochast, true);
 
-            //TestFit(stochast);
-
-            //stochast.Shift = 2;
-            //stochast.Scale = 2;
-            //TestFit(stochast);
+            TestFit(stochast);
         }
 
         [Test]

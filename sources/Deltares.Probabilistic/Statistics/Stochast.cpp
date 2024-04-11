@@ -68,6 +68,19 @@ namespace Deltares
 			}
 		}
 
+		bool Stochast::hasParameter(DistributionPropertyType distributionPropertyType)
+		{
+			for (DistributionPropertyType availableDistributionPropertyType : this->distribution->getParameters())
+			{
+				if (availableDistributionPropertyType == distributionPropertyType)
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
 		void Stochast::setExternalDistribution(UXLambda externalFunction)
 		{
 			this->distributionType = DistributionType::External;

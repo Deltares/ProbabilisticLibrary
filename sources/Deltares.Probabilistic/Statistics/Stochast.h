@@ -76,6 +76,8 @@ namespace Deltares
 
 			bool isValid();
 
+			bool hasParameter(DistributionPropertyType distributionPropertyType);
+
 			bool IsVariableStochast = false;
 			std::shared_ptr<Stochast> VariableSource = nullptr;
 			std::shared_ptr<VariableStochastValuesSet> ValueSet = std::make_shared<VariableStochastValuesSet>();

@@ -1,4 +1,6 @@
 #include "DistributionType.h"
+#include "../../Deltares.Probabilistic/Statistics/DistributionType.h"
+#include "../../Deltares.Probabilistic/Statistics/DistributionPropertyType.h"
 
 namespace Deltares
 {
@@ -43,6 +45,23 @@ namespace Deltares
 				case Statistics::DistributionType::Discrete: return Wrappers::DistributionType::Discrete;
 				case Statistics::DistributionType::Qualitative: return Wrappers::DistributionType::Qualitative;
 				default: throw gcnew System::NotSupportedException("distribution type");
+				}
+			}
+
+			Statistics::DistributionPropertyType DistributionTypeConverter::getNativeDistributionPropertyType(Wrappers::DistributionPropertyType distributionPropertyType)
+			{
+				switch (distributionPropertyType)
+				{
+				case Wrappers::DistributionPropertyType::Location: return Statistics::DistributionPropertyType::Location;
+				case Wrappers::DistributionPropertyType::Scale: return Statistics::DistributionPropertyType::Scale;
+				case Wrappers::DistributionPropertyType::Minimum: return Statistics::DistributionPropertyType::Minimum;
+				case Wrappers::DistributionPropertyType::Maximum: return Statistics::DistributionPropertyType::Maximum;
+				case Wrappers::DistributionPropertyType::Shift: return Statistics::DistributionPropertyType::Shift;
+				case Wrappers::DistributionPropertyType::ShiftB: return Statistics::DistributionPropertyType::ShiftB;
+				case Wrappers::DistributionPropertyType::Shape: return Statistics::DistributionPropertyType::Shape;
+				case Wrappers::DistributionPropertyType::ShapeB: return Statistics::DistributionPropertyType::ShapeB;
+				case Wrappers::DistributionPropertyType::Observations: return Statistics::DistributionPropertyType::Observations;
+				default: throw gcnew System::NotSupportedException(distributionPropertyType.ToString());
 				}
 			}
 		}

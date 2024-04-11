@@ -3,6 +3,7 @@
 #include <cmath>
 
 #include "DistributionFitter.h"
+#include "../DistributionPropertyType.h"
 #include "../StandardNormal.h"
 #include "../../Math/NumericSupport.h"
 
@@ -211,65 +212,76 @@ namespace Deltares
 			stochast->Maximum = max + add;
 
 			std::vector<DistributionPropertyType> properties = getParameters();
-			std::shared_ptr<DistributionFitter> distributionFitter = std::make_shared<DistributionFitter>();
 
-			if (areEqual(properties, {DistributionPropertyType::Location, DistributionPropertyType::Scale}))
+			std::vector<double> minValues;
+			std::vector<double> maxValues;
+			std::vector<double> initValues;
+			std::vector<DistributionPropertyType> fitProperties;
+
+			for (DistributionPropertyType property : properties)
 			{
-				std::vector<double> minValues = { stochast->Location - 3 * stochast->Scale, 0.1 * stochast->Scale };
-				std::vector<double> maxValues = { stochast->Location + 3 * stochast->Scale, 1.9 * stochast->Scale };
-				std::vector<double> initValues = { stochast->Location, stochast->Scale };
-
-				std::vector<double> parameters = distributionFitter->fitByLogLikelihood(values, this, stochast, minValues, maxValues, initValues, properties);
-
-				stochast->Location = parameters[0];
-				stochast->Scale = std::max(0.0, parameters[1]);
-			}
-			else if (areEqual(properties, {DistributionPropertyType::Shift, DistributionPropertyType::Scale}))
-			{
-				std::vector<double> minValues = { stochast->Shift - 3 * stochast->Scale, 0.1 * stochast->Scale };
-				std::vector<double> maxValues = { stochast->Shift + 3 * stochast->Scale, 1.9 * stochast->Scale };
-				std::vector<double> initValues = { stochast->Shift, stochast->Scale };
-
-				std::vector<double> parameters = distributionFitter->fitByLogLikelihood(values, this, stochast, minValues, maxValues, initValues, properties);
-
-				stochast->Shift = parameters[0];
-				stochast->Scale = std::max(0.0, parameters[1]);
-			}
-			else if (areEqual(properties, {DistributionPropertyType::Shape, DistributionPropertyType::Scale}))
-			{
-				std::vector<double> minValues = { 0.1 * stochast->Shape, 0.1 * stochast->Scale };
-				std::vector<double> maxValues = { 1.9 * stochast->Shape, 1.9 * stochast->Scale };
-				std::vector<double> initValues = { stochast->Shift, stochast->Scale };
-
-				std::vector<double> parameters = distributionFitter->fitByLogLikelihood(values, this, stochast, minValues, maxValues, initValues, properties);
-
-				stochast->Shape = parameters[0];
-				stochast->Scale = std::max(0.0, parameters[1]);
-			}
-		}
-
-		bool TruncatedDistribution::areEqual(std::vector<DistributionPropertyType> array1, std::vector<DistributionPropertyType> array2)
-		{
-			if (array1.size() != array2.size())
-			{
-				return false;
-			}
-
-			for (int i = 0; i < array1.size(); i++)
-			{
-				if (array1[i] != array2[i])
+				switch (property)
 				{
-					return false;
+				case DistributionPropertyType::Location:
+				{
+					minValues.push_back(stochast->Location - 3 * stochast->Scale);
+					maxValues.push_back(stochast->Location + 3 * stochast->Scale);
+					initValues.push_back(stochast->Location);
+					fitProperties.push_back(property);
+					break;
+				}
+				case DistributionPropertyType::Scale:
+				{
+					minValues.push_back(0.1 * stochast->Scale);
+					maxValues.push_back(1.9 * stochast->Scale);
+					initValues.push_back(stochast->Scale);
+					fitProperties.push_back(property);
+					break;
+				}
+				case DistributionPropertyType::Shift:
+				{
+					minValues.push_back(stochast->Shift - 3 * stochast->Scale);
+					maxValues.push_back(stochast->Shift + 3 * stochast->Scale);
+					initValues.push_back(stochast->Shift);
+					fitProperties.push_back(property);
+					break;
+				}
+				case DistributionPropertyType::Shape:
+				{
+					minValues.push_back(0.1 * stochast->Shape);
+					maxValues.push_back(1.9 * stochast->Shape);
+					initValues.push_back(stochast->Shape);
+					fitProperties.push_back(property);
+					break;
+				}
 				}
 			}
 
-			return true;
-		}
+			std::shared_ptr<DistributionFitter> distributionFitter = std::make_shared<DistributionFitter>();
 
+			std::vector<double> parameters = distributionFitter->fitByLogLikelihood(values, this, stochast, minValues, maxValues, initValues, fitProperties);
+
+			for (size_t i = 0; i < fitProperties.size(); i++)
+			{
+				double value = parameters[i];
+
+				const bool allowNegative = fitProperties[i] != DistributionPropertyType::Scale;
+				if (!allowNegative)
+				{
+					value = std::max(0.0, value);
+				}
+
+				stochast->applyValue(fitProperties[i], value);
+			}
+		}
 
 		std::vector<DistributionPropertyType> TruncatedDistribution::getParameters()
 		{
-			return innerDistribution->getParameters();
+			std::vector<DistributionPropertyType> parameters = innerDistribution->getParameters();
+			parameters.push_back(DistributionPropertyType::Minimum);
+			parameters.push_back(DistributionPropertyType::Maximum);
+
+			return parameters;
 		}
 
 		double TruncatedDistribution::getLogLikelihood(std::shared_ptr<StochastProperties> stochast, double x)
@@ -302,9 +314,9 @@ namespace Deltares
 
 			std::vector<double> innerPoints = this->innerDistribution->getSpecialPoints(stochast);
 
-			for (double x : innerPoints) 
+			for (double x : innerPoints)
 			{
-				if ((!hasMinimum || x > stochast->Minimum) && (!hasMaximum || x < stochast->Maximum)) 
+				if ((!hasMinimum || x > stochast->Minimum) && (!hasMaximum || x < stochast->Maximum))
 				{
 					specialPoints.push_back(x);
 				}
@@ -313,6 +325,7 @@ namespace Deltares
 			if (hasMaximum)
 			{
 				specialPoints.push_back(stochast->Maximum);
+				specialPoints.push_back(stochast->Maximum + Numeric::NumericSupport::getFraction(stochast->Maximum, 0.000001));
 				specialPoints.push_back(stochast->Maximum + Numeric::NumericSupport::getFraction(stochast->Maximum, 0.1));
 			}
 

@@ -155,6 +155,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Statistics\DistributionPropertyType.h" />
     <ClInclude Include="Statistics\Distributions\KSCalculator.h" />
     <ClInclude Include="Optimization\GridSearch.h" />
     <ClInclude Include="Optimization\SearchParameterSettings.h" />
@@ -254,6 +255,7 @@
     <ClInclude Include="Statistics\Distributions\GeneralizedExtremeValueDistribution.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Statistics\DistributionPropertyType.cpp" />
     <ClCompile Include="Statistics\Distributions\KSCalculator.cpp" />
     <ClCompile Include="Optimization\GridSearch.cpp" />
     <ClCompile Include="Optimization\SearchParameterSettings.cpp" />

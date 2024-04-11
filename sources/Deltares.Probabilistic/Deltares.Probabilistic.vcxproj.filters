@@ -118,6 +118,7 @@
     <ClCompile Include="Reliability\FDIR.cpp" />
     <ClCompile Include="Statistics\Distributions\GeneralizedExtremeValueDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\KSCalculator.cpp" />
+    <ClCompile Include="Statistics\DistributionPropertyType.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -255,6 +256,7 @@
     <ClInclude Include="Reliability\FDIR.h" />
     <ClInclude Include="Statistics\Distributions\GeneralizedExtremeValueDistribution.h" />
     <ClInclude Include="Statistics\Distributions\KSCalculator.h" />
+    <ClInclude Include="Statistics\DistributionPropertyType.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">
