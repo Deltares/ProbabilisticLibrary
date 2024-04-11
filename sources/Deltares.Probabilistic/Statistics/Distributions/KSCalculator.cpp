@@ -1,5 +1,5 @@
 #include "KSCalculator.h"
-
+#include <cmath>
 #include <algorithm>
 #include <memory>
 #include <vector>
@@ -14,7 +14,7 @@ namespace Deltares
 		{
 			if (xValues.empty())
 			{
-				return NAN;
+				return std::nan("");
 			}
 			else
 			{

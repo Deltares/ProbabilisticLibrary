@@ -1,3 +1,4 @@
+#include <cmath>
 #include "GeneralizedExtremeValueDistribution.h"
 
 #include "KSCalculator.h"
