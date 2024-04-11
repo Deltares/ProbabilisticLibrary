@@ -319,7 +319,11 @@ namespace Deltares
 				throw Deltares::Reliability::probLibException("interpolation type not supported");
 			}
 
-			if (x < minX && !extrapolate)
+			if (minY == maxY)
+			{
+				return minY;
+			}
+			else if (x < minX && !extrapolate)
 			{
 				return minY;
 			}
@@ -327,14 +331,10 @@ namespace Deltares
 			{
 				return maxY;
 			}
-			else if (std::isinf(x))
-			{
-				return x;
-			}
 			else
 			{
 				const double xFraction = (x - minX) / (maxX - minX);
-				return xFraction * maxY + (1.0 - xFraction) * minY;
+				return minY + (maxY - minY) * xFraction;
 			}
 		}
 
