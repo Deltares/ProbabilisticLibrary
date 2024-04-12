@@ -95,7 +95,7 @@ void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, const i
         for (size_t i = 0; i < nStoch; i++)
         {
             auto distHR = (EnumDistributions)c[i].distId;
-            auto s = createDistribution::create(distHR, c[i].params);
+            auto s = createDistribution::createValid(distHR, c[i].params);
             stochast.push_back(s);
         }
 
