@@ -1,4 +1,4 @@
-#include "FDIR.h"
+#include "FORMThenDirectionalSampling.h"
 #include "FORM.h"
 #include "DirectionalSampling.h"
 
@@ -6,7 +6,7 @@ namespace Deltares
 {
     namespace Reliability
     {
-        std::shared_ptr<DesignPoint> FDIR::getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner)
+        std::shared_ptr<DesignPoint> FORMThenDirectionalSampling::getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner)
         {
             auto form = FORM();
             form.Settings = formSettings;

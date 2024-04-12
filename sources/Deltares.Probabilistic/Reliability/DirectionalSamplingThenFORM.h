@@ -8,17 +8,13 @@ namespace Deltares
 {
     namespace Reliability
     {
-        // class for FDIR: FORM, but in case of non convergence fall back on Directional Sampling
-        class FDIR : public ReliabilityMethod
+        // class for DirectionalSamplingThenFORM: Directional Sampling and FORM to improve alpha values (design point)
+        class DirectionalSamplingThenFORM : public ReliabilityMethod
         {
         public:
-            FDIR() {}
-            FDIR(const double threshold) : thresholdBeta(threshold) {}
             std::shared_ptr<FORMSettings> formSettings = std::make_shared<FORMSettings>();
             std::shared_ptr<DirectionalSamplingSettings> DsSettings = std::make_shared<DirectionalSamplingSettings>();
             std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
-        private:
-            const double thresholdBeta = -999.0; // minimal beta value to accept as result from FORM
         };
     }
 }
