@@ -173,8 +173,10 @@ end subroutine uniformTestProbHalf
 !!
 subroutine exponentialDistributionTests
 
-  call testWithLevel( exponentialTestProbZero,   "InverseExponential: Test for non-exceedance probability equal to zero", 1, "Not implemented yet")
-  call testWithLevel( expInverseMatlabTest,      "InverseExponential: Compare Hydra-Ring output and Matlab output for u = -8:8", 1, "Not implemented yet")
+  call testWithLevel( exponentialTestProbZero, &
+      "InverseExponential: Test for non-exceedance probability equal to zero", 1, "Not implemented yet")
+  call testWithLevel( expInverseMatlabTest, &
+      "InverseExponential: Compare Hydra-Ring output and Matlab output for u = -8:8", 1, "Not implemented yet")
 
 end subroutine exponentialDistributionTests
 
