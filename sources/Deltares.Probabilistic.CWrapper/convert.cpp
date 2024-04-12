@@ -33,8 +33,7 @@ double pfrombeta(double* beta)
 extern "C"
 void pqfrombeta(double* beta, double* p, double* q)
 {
-    *p = StandardNormal::getPFromU(*beta);
-    *q = StandardNormal::getQFromU(*beta);
+    StandardNormal::getPQfromU(*beta, *p, *q);
 }
 
 extern "C"
