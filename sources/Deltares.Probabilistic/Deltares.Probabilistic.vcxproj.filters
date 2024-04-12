@@ -119,6 +119,9 @@
     <ClCompile Include="Statistics\Distributions\GeneralizedExtremeValueDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\KSCalculator.cpp" />
     <ClCompile Include="Statistics\DistributionPropertyType.cpp" />
+    <ClCompile Include="Reliability\ImportanceSampling.cpp" />
+    <ClCompile Include="Reliability\ImportanceSamplingSettings.cpp" />
+    <ClCompile Include="Reliability\ImportanceSamplingCluster.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -257,6 +260,9 @@
     <ClInclude Include="Statistics\Distributions\GeneralizedExtremeValueDistribution.h" />
     <ClInclude Include="Statistics\Distributions\KSCalculator.h" />
     <ClInclude Include="Statistics\DistributionPropertyType.h" />
+    <ClInclude Include="Reliability\ImportanceSampling.h" />
+    <ClInclude Include="Reliability\ImportanceSamplingSettings.h" />
+    <ClInclude Include="Reliability\ImportanceSamplingCluster.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

@@ -18,6 +18,8 @@ namespace Deltares
             static double GetSign(double value);
             static double GetSquaredSum(const std::vector<double>& values);
             static double GetLength(const std::vector<double>& values);
+            static double getDistance(const std::vector<double>& values1, const std::vector<double>& values2);
+            static double getDistance2(const std::vector<double>& values1, const std::vector<double>& values2);
             static std::vector<double> GetSphericalCoordinates(const std::vector<double>& cartesianCoordinates);
             static std::vector<double> GetCartesianCoordinates(const std::vector<double>& sphericalCoordinates);
             static double Divide(int counter, int denominator);

@@ -64,9 +64,9 @@ namespace Deltares
 		{
 			int nParameters = modelRunner->getVaryingStochastCount();
 			std::vector<double> zValues; // copy of z for all parallel threads as double
-			DesignPointBuilder* uMean = new DesignPointBuilder(nParameters, Settings->designPointMethod, this->Settings->StochastSet);
+			std::shared_ptr<DesignPointBuilder> uMean = std::make_shared<DesignPointBuilder>(nParameters, Settings->designPointMethod, this->Settings->StochastSet);
 
-			RandomSampleGenerator* randomSampleGenerator = new RandomSampleGenerator();
+			std::shared_ptr<RandomSampleGenerator> randomSampleGenerator = std::make_shared<RandomSampleGenerator>();
 			randomSampleGenerator->Settings = this->Settings->randomSettings;
 			randomSampleGenerator->Settings->StochastSet = this->Settings->StochastSet;
 			randomSampleGenerator->initialize();

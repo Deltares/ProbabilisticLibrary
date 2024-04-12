@@ -31,6 +31,23 @@ namespace Deltares
 			return sqrt(GetSquaredSum(values));
 		}
 
+		double NumericSupport::getDistance(const std::vector<double>& values1, const std::vector<double>& values2)
+		{
+			return sqrt(getDistance2(values1, values2));
+		}
+
+		double NumericSupport::getDistance2(const std::vector<double>& values1, const std::vector<double>& values2)
+		{
+			std::vector<double> diff = std::vector<double>(values1.size());
+
+			for (size_t i = 0; i < diff.size(); i++)
+			{
+				diff[i] = values1[i] - values2[i];
+			}
+
+			return GetSquaredSum(diff);
+		}
+
 		double* NumericSupport::getArray(double initialValue, int count)
 		{
 			double* newValues = new double[count];
