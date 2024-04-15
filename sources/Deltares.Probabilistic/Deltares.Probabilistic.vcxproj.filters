@@ -114,8 +114,9 @@
     <ClCompile Include="Optimization\GridSearch.cpp" />
     <ClCompile Include="Optimization\SearchParameterSettings.cpp" />
     <ClCompile Include="Optimization\SearchParameterSettingsSet.cpp" />
-    <ClCompile Include="Reliability\DSFI.cpp" />
-    <ClCompile Include="Reliability\FDIR.cpp" />
+    <ClCompile Include="Reliability\DirectionalSamplingThenFORM.cpp" />
+    <ClCompile Include="Reliability\FORMThenDirectionalSampling.cpp" />
+    <ClCompile Include="Reliability\SphereTasks.cpp" />
     <ClCompile Include="Statistics\Distributions\GeneralizedExtremeValueDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\KSCalculator.cpp" />
     <ClCompile Include="Statistics\DistributionPropertyType.cpp" />
@@ -255,8 +256,9 @@
     <ClInclude Include="Optimization\GridSearch.h" />
     <ClInclude Include="Optimization\SearchParameterSettings.h" />
     <ClInclude Include="Optimization\SearchParameterSettingsSet.h" />
-    <ClInclude Include="Reliability\DSFI.h" />
-    <ClInclude Include="Reliability\FDIR.h" />
+    <ClInclude Include="Reliability\DirectionalSamplingThenFORM.h" />
+    <ClInclude Include="Reliability\FORMThenDirectionalSampling.h" />
+    <ClInclude Include="Reliability\SphereTasks.h" />
     <ClInclude Include="Statistics\Distributions\GeneralizedExtremeValueDistribution.h" />
     <ClInclude Include="Statistics\Distributions\KSCalculator.h" />
     <ClInclude Include="Statistics\DistributionPropertyType.h" />

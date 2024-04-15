@@ -2,8 +2,8 @@
 #include "../Deltares.Probabilistic/Reliability/CrudeMonteCarlo.h"
 #include "../Deltares.Probabilistic/Reliability/DirectionalSampling.h"
 #include "../Deltares.Probabilistic/Reliability/FORM.h"
-#include "../Deltares.Probabilistic/Reliability/FDIR.h"
-#include "../Deltares.Probabilistic/Reliability/DSFI.h"
+#include "../Deltares.Probabilistic/Reliability/FORMThenDirectionalSampling.h"
+#include "../Deltares.Probabilistic/Reliability/DirectionalSamplingThenFORM.h"
 
 using namespace Deltares::ProbLibCore;
 using namespace Deltares::Models;
@@ -54,14 +54,14 @@ ReliabilityMethod* createReliabilityMethod::selectMethod(const basicSettings& bs
         return form; }
         break;
     case (ProbMethod::FDIR): {
-        auto fdir = new FDIR();
+        auto fdir = new FORMThenDirectionalSampling(bs.numExtraReal1);
         fillDsSettings(fdir->DsSettings, bs);
         fillFormSettings(fdir->formSettings, bs, nStoch);
         return fdir; }
         break;
     case (ProbMethod::DSFIHR):
     case (ProbMethod::DSFI): {
-        auto dsfi = new DSFI();
+        auto dsfi = new DirectionalSamplingThenFORM();
         fillDsSettings(dsfi->DsSettings, bs);
         fillFormSettings(dsfi->formSettings, bs, nStoch);
         return dsfi; }
@@ -77,6 +77,7 @@ void createReliabilityMethod::fillFormSettings(std::shared_ptr<FORMSettings>& Se
     Settings->MaximumIterations = bs.numExtraInt;
     Settings->GradientSettings->gradientType = GradientType::TwoDirections;
     Settings->FilterAtNonConvergence = true;
+    Settings->RelaxationFactor = bs.relaxationFactor;
     switch (bs.startMethod)
     {
     case StartMethods::Zero:

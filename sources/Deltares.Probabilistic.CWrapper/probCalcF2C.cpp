@@ -27,11 +27,9 @@ struct tResult
 {
     double beta;
     double alpha[maxActiveStochast];
-    double x[maxActiveStochast];
     int iPoint[maxActiveStochast];
     int stepsNeeded;
     int samplesNeeded;
-    double alpha2[maxActiveStochast];
     bool convergence;
 };
 
@@ -43,65 +41,68 @@ void updateX(const vector1D & alpha, const DPoptions option, tResult & r, const 
         switch (option) {
         case DPoptions::None:
         {
-            for (size_t i = 0; i < maxActiveStochast; i++)
+            for (size_t i = 0; i < vectorSize; i++)
             {
-                r.x[i] = 0.0;
+                x[i] = 0.0;
             }
         }
         break;
         case DPoptions::RMinZFunc:
         case DPoptions::RMinZFuncCompatible:
         {
+            auto xSparse = std::vector<double>();
             for (size_t i = 0; i < alpha.size(); i++)
             {
-                r.x[i] = newResult->Alphas[i]->X;
+                xSparse.push_back(newResult->Alphas[i]->X);
             }
-            fw.updateXinDesignPoint(r.x);
+            fw.updateXinDesignPoint(xSparse, x);
         }
         break;
         default:
         {
             for (size_t i = 0; i < alpha.size(); i++)
             {
-                r.x[i] = newResult->Alphas[i]->X;
+                x[i] = newResult->Alphas[i]->X;
             }
         }
         }
     }
-
-    if (alpha.size() == vectorSize)
-    {
-        for (size_t i = 0; i < alpha.size(); i++)
-        {
-            x[i] = r.x[i];
-        }
-    }
-
 }
 
 extern "C"
 void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, const int vectorSize,
     corrStruct correlations[], const int nrCorrelations,
-    const double(*fx)(double[], int[], tError*),
+    const double(*fx)(double[], computationSettings*, tError*),
     const bool(*pc)(ProgressType, const char*),
-    int compIds[], int iPoint[], double x[], tResult* r, tError* ierr)
+    const int compIds[], const int iPointArr[], double x[], tResult* r, tError* ierr)
 {
     try
     {
         auto nStoch = (size_t)n;
-        auto fw = funcWrapper(vectorSize, iPoint, x, compIds, fx);
+        auto iPoint = std::vector<int>();
+        for (size_t i = 0; i < nStoch; i++)
+        {
+            iPoint.push_back(iPointArr[i]);
+        }
+        auto xInitial = std::vector<double>();
+        for (size_t i = 0; i < vectorSize; i++)
+        {
+            xInitial.push_back(x[i]);
+        }
+        auto fw = funcWrapper(iPoint, xInitial, compIds[0], fx);
 
         auto stochast = std::vector<std::shared_ptr<Deltares::Statistics::Stochast>>();
         for (size_t i = 0; i < nStoch; i++)
         {
             auto distHR = (EnumDistributions)c[i].distId;
-            auto s = createDistribution::create(distHR, c[i].params);
+            auto s = createDistribution::createValid(distHR, c[i].params);
             stochast.push_back(s);
         }
 
         auto createRelM = createReliabilityMethod();
         std::shared_ptr<ReliabilityMethod> relMethod(createRelM.selectMethod(*method, nStoch));
-        std::shared_ptr<ZModel> zModel(new ZModel([&fw](std::shared_ptr<ModelSample> v) { return fw.FDelegate(v); }));
+        std::shared_ptr<ZModel> zModel(new ZModel([&fw](std::shared_ptr<ModelSample> v) { return fw.FDelegate(v); },
+                                                  [&fw](std::vector<std::shared_ptr<ModelSample>> v) { return fw.FDelegateParallel(v); }));
         std::shared_ptr<Deltares::Statistics::CorrelationMatrix> corr(new Deltares::Statistics::CorrelationMatrix());
         if (nrCorrelations > 0)
         {
@@ -112,15 +113,15 @@ void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, const i
             }
         }
         std::shared_ptr<UConverter> uConverter(new UConverter(stochast, corr));
-        uConverter->initializeForRun();
         auto pw = progressWrapper(pc, relMethod.get());
         auto progressDelegate = ProgressLambda();
         auto detailedProgressDelegate = DetailedProgressLambda();
         auto textualProgress = TextualProgressLambda([&pw](ProgressType p, std::string s) {pw.FPgDelegate(p, s); });
         std::shared_ptr<ProgressIndicator> progress (new ProgressIndicator(progressDelegate, detailedProgressDelegate, textualProgress));
-        zModel->setMaxProcesses(method->numThreads);
         std::shared_ptr<ModelRunner> modelRunner(new ModelRunner(zModel, uConverter, progress));
         modelRunner->Settings->MaxParallelProcesses = method->numThreads;
+        modelRunner->Settings->MaxChunkSize = method->numThreads; // needed for overtopping
+        modelRunner->initializeForRun();
         std::shared_ptr<DesignPoint> newResult ( relMethod->getDesignPoint(modelRunner));
 
         auto alpha = vector1D(newResult->Alphas.size());
@@ -141,10 +142,6 @@ void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, const i
         for (int i = 0; i < n; i++)
         {
             r->iPoint[i] = i + 1;
-        }
-        for (size_t i = 0; i < alpha.size(); i++)
-        {
-            r->alpha2[i] = newResult->Alphas[i]->AlphaCorrelated;
         }
         r->convergence = newResult->convergenceReport->IsConverged;
         r->stepsNeeded = newResult->convergenceReport->TotalIterations;

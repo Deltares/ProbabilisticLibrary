@@ -286,7 +286,7 @@ contains
     call warnHohenbichler(n)
 end subroutine combineTwoElementsPartialCorrelation
 
-subroutine combineMultipleElements( betaElement, alphaElement, rho, beta, alpha, combAndOrIn) bind(c)
+subroutine combineMultipleElements( betaElement, alphaElement, rho, beta, alpha, combAndOrIn)
     real(kind=c_double),  intent(in)  :: betaElement(:)
     real(kind=c_double),  intent(in)  :: alphaElement(:,:)
     real(kind=c_double),  intent(in)  :: rho(:)

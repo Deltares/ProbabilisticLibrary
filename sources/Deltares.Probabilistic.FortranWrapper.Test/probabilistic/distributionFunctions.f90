@@ -140,24 +140,24 @@ function modifiedGumbelInverse(uin, a, b, c, p, q)
     call calculateDistributionInverse(u, modifiedGumbelInverse, distributionModifiedGumbel, p3, ierr)
 end function modifiedGumbelInverse
 
-function rayleighNInverse(sigma, N, q)
-    real(kind = wp), intent(in) :: sigma, N, q
+function rayleighNInverse(sigma, N, distParameter3, q)
+    real(kind = wp), intent(in) :: sigma, N, distParameter3, q
     real(kind = wp) :: rayleighNInverse
-    real(kind = wp) :: p2(2), u
+    real(kind = wp) :: p3(3), u
     type(tError)    :: ierr
-    p2 = [sigma, N]
+    p3 = [sigma, N, distParameter3]
     call betaFromQ(q, u)
-    call calculateDistributionInverse(u, rayleighNInverse, distributionRayleighN, p2, ierr)
+    call calculateDistributionInverse(u, rayleighNInverse, distributionRayleighN, p3, ierr)
 end function rayleighNInverse
 
-function rayleighInverse( distParameter1, distParameter2, q )
-    real(kind = wp), intent(in) :: distParameter1, distParameter2, q
+function rayleighInverse( distParameter1, distParameter2, distParameter3, q )
+    real(kind = wp), intent(in) :: distParameter1, distParameter2, distParameter3, q
     real(kind = wp) :: rayleighInverse
-    real(kind = wp) :: p2(2), u
+    real(kind = wp) :: p3(3), u
     type(tError)    :: ierr
-    p2 = [distParameter1, distParameter2]
+    p3 = [distParameter1, distParameter2, distParameter3]
     call betaFromQ(q, u)
-    call calculateDistributionInverse(u, rayleighInverse, distributionRayleigh, p2, ierr)
+    call calculateDistributionInverse(u, rayleighInverse, distributionRayleigh, p3, ierr)
 end function rayleighInverse
 
 function betaInverse( distParameter1, distParameter2, distParameter3, distParameter4, p, q)

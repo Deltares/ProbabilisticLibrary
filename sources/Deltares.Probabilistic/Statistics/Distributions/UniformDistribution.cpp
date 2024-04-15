@@ -4,6 +4,7 @@
 #include "../../Math/NumericSupport.h"
 
 #include <cmath>
+#include <algorithm>
 
 namespace Deltares
 {

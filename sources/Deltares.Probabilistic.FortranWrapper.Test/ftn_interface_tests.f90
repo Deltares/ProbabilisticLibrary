@@ -22,26 +22,24 @@ subroutine run_all_ftn_interface_tests
     call testWithLevel(test_calc_distrib_inv_errorhandling, "test error handling distribution inverse", testLevel)
     call testWithLevel(test_calc_distrib, "test calc distrib", testLevel)
     call testWithLevel(test_conversions, "test conversions", testLevel)
-    !call testWithLevel(test_combine, "test combine", testLevel)
-    !call testWithLevel(test_correlation, "test correlation", testLevel)
-    !call testWithLevel(test_correlation_error_handling, "test error handling correlation", testLevel)
+    call testWithLevel(test_combine, "test combine", testLevel)
 
 end subroutine run_all_ftn_interface_tests
 
-function zfunc(x, compIds, e) result(z) bind(c)
-    use interface_probCalc, only : tError, ErrMsgLength
+function zfunc(x, compSettings, e) result(z) bind(c)
+    use interface_probCalc, only : tError, ErrMsgLength, computationSetting
     real(kind=dp), intent(in   ) :: x(*)
-    integer,       intent(in   ) :: compIds(*)
+    type(computationSetting), intent(in   ) :: compSettings
     type(tError),  intent(inout) :: e
     real(kind=dp)                :: z
     character(len=ErrMsgLength)  :: message
 
-    if (compIds(1) == 16) then
+    if (compSettings%computationId == 16) then
         z = 1.0_dp - x(1) - 0.5_dp * x(2)
     else
         z = 0.9_dp - x(1) - 0.45_dp * x(2)
     end if
-    if (compIds(1) > 16) then
+    if (compSettings%computationId > 16) then
         e%icode = -1
         message = "just testing"
         call copystr(message, e%message)
@@ -98,7 +96,7 @@ subroutine test_ds
     if (ierr%iCode == 0) then
         call assert_comparable(r%beta, -0.22178518912_wp, margin, "diff in beta")
         call assert_comparable(r%alpha(1:2), [-0.89448_wp, -0.44710_wp], 1d-2, "diff in alpha")
-        call assert_comparable(r%x(1:2), [0.59998_wp, 0.80005_wp], 1d-2, "diff in x")
+        call assert_comparable(x(1:2), [0.59998_wp, 0.80005_wp], 1d-2, "diff in x")
         convergence = r%convergence
         call assert_false(convergence, "diff in convergence flag")
     else
@@ -271,58 +269,5 @@ subroutine test_combine
     call assert_comparable(alpha, [sqrt(0.5_dp), sqrt(0.5_dp)], margin, "alpha in beta")
 
 end subroutine test_combine
-
-subroutine test_correlation
-    use interface_correlation
-    type(correlationModelParameters) :: correlationParameters
-    logical :: typeUCorrelation
-    real(kind=wp) :: u1, u2
-
-    correlationParameters%correlationId = correlationVolker
-    correlationParameters%correlationParameter1 = 0.873d0      !A
-    correlationParameters%correlationParameter2 = 0.236d0      !B
-    correlationParameters%correlationParameter3 = 0.356d0      !rho
-    correlationParameters%correlationParameter4 = 0.67d0       !M
-    correlationParameters%correlationParameter5 = 0.0010d0     !aK
-    correlationParameters%correlationParameter6 = 0.2347d0     !bK
-    correlationParameters%correlationParameter7 = -0.5771d0    !cK
-    correlationParameters%correlationParameter8 = 0.02d0       !d
-
-    !
-    ! Conditional Weibull water level statistics - Hoek van Holland parameters
-    !
-    correlationParameters%distribution   = distributionConditionalWeibull
-    correlationParameters%distParameter1 = 0.0157d0 !scale
-    correlationParameters%distParameter2 = 0.57d0   !shape
-    correlationParameters%distParameter3 = 1.97d0   !thresh
-    correlationParameters%distParameter4 = 7.237d0  !lambda
-
-    u1 = 1.0_wp
-    u2 = 1.2_wp
-    typeUCorrelation = .false.
-    call calculateCorrelation(u1, u2, correlationParameters, typeUCorrelation)
-    call assert_comparable(u2, 19.2414951_wp, 1d-8, "diff in Volker calculation")
-
-end subroutine test_correlation
-
-subroutine test_correlation_error_handling
-    use interface_correlation
-    use feedback
-    type(correlationModelParameters) :: correlationParameters
-    real(kind=wp) :: u1, u2
-    character(len=64) :: msg
-    character(len=*), parameter :: msg_expected = 'Fatal error: Unknown correlation model - ID.'
-
-    correlationParameters%correlationId = 12345
-
-    u1 = 1.0_wp
-    u2 = 1.2_wp
-    call SetFatalErrorExpected(.true.)
-    call calculateCorrelation(u1, u2, correlationParameters)
-    call GetFatalErrorMessage(msg)
-    call assert_equal(msg, msg_expected, "difference in error message")
-    call SetFatalErrorExpected(.false.)
-
-end subroutine test_correlation_error_handling
 
 end module ftn_interface_tests

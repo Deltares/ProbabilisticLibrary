@@ -182,14 +182,14 @@ subroutine testFormWithCorrelation
 
 end subroutine testFormWithCorrelation
 
-function zFuncSimpleA( u, designPointOutput, ierr ) result(z) bind(c)
-    real(kind=wp), intent(inout) :: u(*)
-    real(kind=wp)                :: z
-    integer,       intent(in)    :: designPointOutput(*)    !< Switch for extra design point output
-    type(tError),  intent(inout) :: ierr
+function zFuncSimpleA( u, compSetting, ierr ) result(z) bind(c)
+    real(kind=wp),            intent(inout) :: u(*)
+    real(kind=wp)                           :: z
+    type(computationSetting), intent(in   ) :: compSetting  !< struct with computation settings
+    type(tError),             intent(inout) :: ierr
 
     ierr%iCode = 0
-    if (designPointOutput(1) == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
+    if (compSetting%designPointSetting == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
 
     z = 0.5 - sum(u(1:3)**2)
 

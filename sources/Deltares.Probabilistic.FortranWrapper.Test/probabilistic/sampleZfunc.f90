@@ -38,15 +38,15 @@ module sampleFunctions
 contains
 
 !> Simple z function: valueB - u1 - u2, where u1 and u2 are standard normally distributed, and where beta = 4
-function simpleZ( x, designPointOutput, ierr ) result(z) bind(c)
+function simpleZ( x, compSetting, ierr ) result(z) bind(c)
 
-    real(kind=wp), intent(inout) :: x(*)
-    real(kind=wp)                :: z
-    integer,       intent(in)    :: designPointOutput(*)    !< Switch for extra design point output
-    type(tError),  intent(inout) :: ierr
+    real(kind=wp),            intent(inout) :: x(*)
+    type(computationSetting), intent(in   ) :: compSetting
+    type(tError),             intent(inout) :: ierr
+    real(kind=wp)                           :: z
 
     ierr%iCode = 0
-    if (designPointOutput(1) == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
+    if (compSetting%designPointSetting == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
 
     z = simpleSystem ( x(1),  x(2), x(3))
 

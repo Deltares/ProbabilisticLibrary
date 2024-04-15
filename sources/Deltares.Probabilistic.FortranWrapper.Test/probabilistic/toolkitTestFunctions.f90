@@ -20,7 +20,7 @@
 ! All rights reserved.
 !
 
-!> Module holding the three Z functions for testing the extended and the adaptive importance sampling procedures.
+!> Module holding the four Z functions for testing the extended and the adaptive importance sampling procedures.
 !! They were defined firstly via the probabilistic toolkit, hence the name.
 
 module toolkitTestFunctions
@@ -31,40 +31,43 @@ module toolkitTestFunctions
 
 contains
 
-function linearIsShiftZ( x, designPointOutput, ierr ) result(z) bind(c)
+function linearIsShiftZ( x, compSetting, ierr ) result(z) bind(c)
 
-    real(kind=wp), intent(inout)    :: x(*)
-    real(kind=wp)                   :: z
-    integer,        intent(in)      :: designPointOutput(*)    !< Switch for extra design point output
-    type(tError),  intent(inout)    :: ierr
+    real(kind=wp),            intent(inout) :: x(*)
+    type(computationSetting), intent(in   ) :: compSetting
+    type(tError),             intent(inout) :: ierr
+    real(kind=wp)                           :: z
 
     ierr%icode = 0
+    if (compSetting%designPointSetting == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
 
     z = 1.98_wp - (x(1) + x(2))
 
 end function linearIsShiftZ
 
-function nonlinearIsZ( x, designPointOutput, ierr ) result(z) bind(c)
+function nonlinearIsZ( x, compSetting, ierr ) result(z) bind(c)
 
-    real(kind=wp), intent(inout)    :: x(*)
-    real(kind=wp)                   :: z
-    integer,        intent(in)      :: designPointOutput(*)    !< Switch for extra design point output
-    type(tError),  intent(inout)    :: ierr
+    real(kind=wp),            intent(inout) :: x(*)
+    type(computationSetting), intent(in   ) :: compSetting
+    type(tError),             intent(inout) :: ierr
+    real(kind=wp)                           :: z
 
     ierr%icode = 0
+    if (compSetting%designPointSetting == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
 
     z = 3.0_wp - x(2) + (4.0_wp * x(1))**4
 
 end function nonlinearIsZ
 
-function manyIsZ( x, designPointOutput, ierr ) result(z) bind(c)
+function manyIsZ( x, compSetting, ierr ) result(z) bind(c)
 
-    real(kind=wp), intent(inout)    :: x(*)
-    real(kind=wp)                   :: z
-    integer,        intent(in)      :: designPointOutput(*)    !< Switch for extra design point output
-    type(tError),  intent(inout)    :: ierr
+    real(kind=wp),            intent(inout) :: x(*)
+    type(computationSetting), intent(in   ) :: compSetting
+    type(tError),             intent(inout) :: ierr
+    real(kind=wp)                           :: z
 
     ierr%icode = 0
+    if (compSetting%designPointSetting == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
 
     z = 6.0_wp - (x(1) + 2.0_wp * x(2) - 3.0_wp * x(3) + 1.5_wp * x(4)**2 - 3.5_wp * x(5)**3 + &
                   1.3_wp * sqrt(x(6)) - sqrt(x(7)+1.0_wp) + 3.2_wp * x(8) - x(9)**2 + &
@@ -72,14 +75,15 @@ function manyIsZ( x, designPointOutput, ierr ) result(z) bind(c)
 
 end function manyIsZ
 
-function blighZ( x, designPointOutput, ierr ) result(z) bind(c)
+function blighZ( x, compSetting, ierr ) result(z) bind(c)
 
-    real(kind=wp), intent(inout)    :: x(*)
-    real(kind=wp)                   :: z
-    integer,        intent(in)      :: designPointOutput(*)    !< Switch for extra design point output
-    type(tError),  intent(inout)    :: ierr
+    real(kind=wp),            intent(inout) :: x(*)
+    type(computationSetting), intent(in   ) :: compSetting
+    type(tError),             intent(inout) :: ierr
+    real(kind=wp)                           :: z
 
     ierr%icode = 0
+    if (compSetting%designPointSetting == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
 
     z = x(1) * x(2) / x (3) - x(4)
 

@@ -16,6 +16,7 @@ namespace Deltares
 			double GradientStepSize = 4;
 			double RadiusSphereSearch = 10;
 			double dsdu = 1;
+			bool allQuadrants = false;
 
 			bool isValid()
 			{

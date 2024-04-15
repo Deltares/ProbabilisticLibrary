@@ -28,6 +28,7 @@ module randomGeneratorTests
 
     use precision
     use ftnunit
+    use fileUtilities
     use interface_randomgen
 
     implicit none
@@ -88,7 +89,7 @@ subroutine testGenerateRandomValues
 
     call assert_comparable( randomValue, 0.7785768508911d0 , margin, "unexpected return value randomValue" )
 
-    call ftnunit_remove_file('trekking.txt')
+    call removeFile('trekking.txt')
 end subroutine testGenerateRandomValues
 
 end module randomGeneratorTests
