@@ -5,6 +5,7 @@
 #include "../../Math/RootFinders/BisectionRootFinder.h"
 #include <cmath>
 #include <numbers>
+#include <algorithm>
 
 namespace Deltares
 {

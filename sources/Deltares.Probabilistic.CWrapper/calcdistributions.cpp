@@ -9,7 +9,7 @@ void calculatedistributioninverse_c(double *u, double *y, EnumDistributions *typ
 {
     try
     {
-        auto s = createDistribution::create(*type, p);
+        auto s = createDistribution::createValid(*type, p);
         *y = s->getXFromU(*u);
         ierr->errorCode = 0;
     }
@@ -26,7 +26,7 @@ void calculatedistribution_c(double* x, double* u, EnumDistributions * type, dou
 {
     try
     {
-        auto s = createDistribution::create(*type, p);
+        auto s = createDistribution::createValid(*type, p);
         *u = s->getUFromX(*x);
         ierr->errorCode = 0;
     }

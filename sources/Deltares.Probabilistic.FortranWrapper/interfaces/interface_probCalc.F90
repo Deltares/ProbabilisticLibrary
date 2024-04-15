@@ -2,7 +2,6 @@ module interface_probCalc
   use, intrinsic :: iso_c_binding, only: c_double, c_bool
   use interface_gen
   use interface_distributions
-  use interface_correlation
   use precision
   use m_realloc_check
   use f2c_tools
@@ -32,6 +31,14 @@ module interface_probCalc
 
   integer, parameter :: GeorgeMarsaglia = 1
   integer, parameter :: MersenneTwister = 2
+
+  logical :: userAborted = .false.
+
+  type, public, bind(c) :: basicCorrelation
+    integer       :: first                !< Index of the first stochastic variable
+    integer       :: second               !< Index of the second stochastic variable
+    real(kind=wp) :: correlation          !< Correlation coefficient
+  end type basicCorrelation
 
   type, public, bind(c) :: tdistrib
     character(len=1)    :: name(sizeSmallStr)
@@ -73,11 +80,9 @@ module interface_probCalc
   type, public, bind(c) :: tResult
     real(kind=c_double)  :: beta
     real(kind=c_double)  :: alpha(maxActiveStochast)
-    real(kind=c_double)  :: x(maxActiveStochast)
     integer              :: iPoint(maxActiveStochast)
     integer              :: stepsNeeded
     integer              :: samplesNeeded
-    real(kind=c_double)  :: alpha2(maxActiveStochast)
     logical(kind=c_bool) :: convergence
   end type tResult
 
@@ -103,8 +108,8 @@ module interface_probCalc
 
   integer, parameter :: DirSamplingIterMethodRobust                   =  1
 
-  integer, parameter :: designPointOutputTRUE                         =  0
-  integer, parameter :: designPointOutputFALSE                        =  1
+  integer, parameter :: designPointOutputFALSE                        =  0
+  integer, parameter :: designPointOutputTRUE                         =  1
   integer, parameter :: designPointOutputPrintAll                     =  3
 
   type, public :: tpFORM
@@ -225,34 +230,31 @@ module interface_probCalc
     type, public :: storedConvergenceData
       type(convDataSamplingMethods)   :: cnvg_data_ds
       type(storedConvergenceDataFORM) :: cnvg_data_form
-  end type storedConvergenceData
+    end type storedConvergenceData
+
+    type, public, bind(c) :: computationSetting
+        integer :: designPointSetting
+        integer :: computationId
+        integer :: threadId
+    end type computationSetting
 
   interface
-    function zfunc(x, compIds, e) result(z) bind(c)
+    function zfunc(x, compSetting, e) result(z) bind(c)
       use, intrinsic :: iso_c_binding, only: c_double
-      import tError
+      import tError, computationSetting
       real(kind=c_double) :: z
-      real(kind=c_double), intent(inout) :: x(*)
-      integer,             intent(in)    :: compIds(*)
-      type(tError),        intent(inout) :: e
+      real(kind=c_double),      intent(inout) :: x(*)
+      type(computationSetting), intent(in)    :: compSetting
+      type(tError),             intent(inout) :: e
     end function zfunc
   end interface
 
   interface
-    function progressCancel(i, x, y) result(cancel) bind(c)
-      use, intrinsic :: iso_c_binding, only: c_double
-      logical(kind=1)                        :: cancel
-      real(kind=c_double), intent(in), value :: x, y
-      integer,             intent(in), value :: i
-    end function progressCancel
-  end interface
-
-  interface
-    function progressCancelNew(i, s) result(cancel) bind(c)
+    function progressCancel(i, s) result(cancel) bind(c)
       integer,          intent(in), value :: i
       character(len=1), intent(in)        :: s(*)
       logical(kind=1)                        :: cancel
-    end function progressCancelNew
+    end function progressCancel
   end interface
 
   interface
@@ -260,7 +262,7 @@ module interface_probCalc
         compIds, iPoint, x, rn, ierr) bind(C)
       use, intrinsic :: iso_c_binding, only: c_double
 #ifdef _MSC_VER
-      import tMethod, tDistrib, basicCorrelation, tError, tResult, zfunc, progressCancelNew
+      import tMethod, tDistrib, basicCorrelation, tError, tResult, zfunc, progressCancel
 #else
       import tMethod, tDistrib, basicCorrelation, tError, tResult
 #endif
@@ -273,7 +275,7 @@ module interface_probCalc
       integer,        intent(in)    :: compIds(*)
       integer,        intent(in)    :: iPoint(*)
       procedure(zfunc)              :: fx
-      procedure(progressCancelNew)  :: pc
+      procedure(progressCancel)     :: pc
       real(kind=c_double), intent(inout) :: x(*)
       type(tError),   intent(  out) :: ierr
       type(tResult),  intent(  out) :: rn
@@ -282,26 +284,21 @@ module interface_probCalc
 
 contains
 
-function basicProgressCancel(i, x, y) result(cancel) bind(c)
-  use, intrinsic :: iso_c_binding, only: c_double
-  logical(kind=1)                        :: cancel
-  real(kind=c_double), intent(in), value :: x, y
-  integer,             intent(in), value :: i
-  cancel = .false.
-end function basicProgressCancel
+subroutine stopSampling()
+    userAborted = .true.
+end subroutine stopSampling
 
 function textualProgress(progress, str) result(cancel) bind(c)
     integer, intent(in), value :: progress
     character(len=1), intent(in) :: str(*)
     logical(kind=1)              :: cancel
 
-    continue
-    cancel = .false.
+    cancel = userAborted
 end function textualProgress
 
 !>
 !! Subroutine for the calculation of a limit state function
-subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, conv, convCriterium, convergenceData, name, id,alfaN_u,pc,pcNew)
+subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, conv, convCriterium, convergenceData, pc)
     use feedback
     type(probabilisticDataStructure_data), intent(in) :: probDb    !< Probabilistic data module
     procedure(zfunc)                           :: fx               !< Function implementing the z-function of the failure mechanism
@@ -311,18 +308,14 @@ subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, conv, convCri
     logical,       intent(out)                 :: conv             !< Convergence indicator
     logical,       intent(out)                 :: convCriterium    !< Convergence criterium indicator
     type(storedConvergenceData), intent(inout) :: convergenceData  !< struct holding all convergence data
-    character(len=*), intent(in), optional     :: name             !< Name of mechanism (for use in error message)
-    integer         , intent(in), optional     :: id               !< Id of mechanism (for use in error message)
-    real(kind=wp), intent(out), optional       :: alfaN_u(:)       !< Uncorrelated Alpha values,
-    procedure(progressCancel), optional        :: pc
-    procedure(progressCancelNew), optional        :: pcNew
+    procedure(progressCancel),    optional     :: pc               !< progress function
 
     integer, allocatable        :: iPointMax(:), iPointCpp(:)    ! Temporary max length Pointer to active variables used in the limit state function
 
     type(tMethod)               :: method
     type(tDistrib)              :: distribs(probDb%stoVar%maxStochasts)
     integer                     :: i, nStochActive, k, nstoch
-    integer                     :: compIds(16) = designPointOutputFALSE
+    integer                     :: compIds(1) = designPointOutputFALSE
     type(tError)                :: ierr
     type(tResult)               :: rn
     character(len=ErrMsgLength) :: msg
@@ -336,11 +329,12 @@ subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, conv, convCri
     select case (method%methodId)
     case(methodDirectionalSampling, methodFORMandDirSampling, methodFORMandDirSamplingWithFORMiterations, &
          methodDirSamplingWithFORMiterationsStartU, methodDirSamplingWithFORMiterations)
-        method%tolB       = probDb%method%DS%varcoefffailure
-        method%minSamples = probDb%method%DS%minimumsamples
-        method%maxSamples = probDb%method%DS%maximumsamples
-        method%seed1      = probDb%method%DS%seedPRNG
-        method%seed2      = probDb%method%DS%seedPRNG
+        method%tolB          = probDb%method%DS%varcoefffailure
+        method%minSamples    = probDb%method%DS%minimumsamples
+        method%maxSamples    = probDb%method%DS%maximumsamples
+        method%seed1         = probDb%method%DS%seedPRNG
+        method%seed2         = probDb%method%DS%seedPRNG
+        method%numExtraReal1 = -2.0_wp ! FDthreshold
     case(methodCrudeMonteCarlo, methodCrudeMonteCarloWithFORMiterations)
         method%tolB       = probDb%method%CMC%varcoefffailure
         method%minSamples = probDb%method%CMC%minimumsamples
@@ -410,9 +404,9 @@ subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, conv, convCri
         call fatalError("Unknown method in subroutine IterationDS: ", method%iterationMethod)
     else if (nstoch > 0) then
         method%progressInterval = 1
-        if (present(pcNew)) then
+        if (present(pc)) then
             call probCalcF2C(method, distribs, nStochActive, nStoch, probDb%basic_correlation, &
-                probDb%number_correlations, fx, pcNew, compIds, iPointCpp, x, rn, ierr)
+                probDb%number_correlations, fx, pc, compIds, iPointCpp, x, rn, ierr)
         else
             call probCalcF2C(method, distribs, nStochActive, nStoch, probDb%basic_correlation, &
                 probDb%number_correlations, fx, textualProgress, compIds, iPointCpp, x, rn, ierr)
@@ -428,14 +422,6 @@ subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, conv, convCri
             do k = 1, nStochActive
                 alfaN(iPointMax(k)) = rn%alpha(k)
             end do
-            if (method%methodId == methodFORMstart) then
-                x(1:nStochActive) = rn%x(1:nStochActive)
-            else if (method%designPointOption == designPointRMinZFunc .or. &
-                     method%designPointOption == designPointRMinZFuncCompatible) then
-                continue
-            else
-                x(iPointMax(1:nStochActive)) = rn%x(1:nStochActive)
-            endif
             if (method%methodId == methodFORMandDirSampling .and. rn%samplesNeeded > 0) then
                 ! to get logging in output.txt right; as we have samples, Form did not succeed (no convergence or beta out of range)
                 conv = .false.

@@ -4,6 +4,7 @@
 
 #include "DistributionFitter.h"
 #include "../DistributionPropertyType.h"
+#include <algorithm>
 #include "../StandardNormal.h"
 #include "../../Math/NumericSupport.h"
 

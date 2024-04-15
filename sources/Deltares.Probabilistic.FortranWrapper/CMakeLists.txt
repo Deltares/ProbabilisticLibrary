@@ -11,7 +11,6 @@ add_library(Deltares.Probabilistic.FortranWrapper
     interfaces/interface_probCalcData.f90
     interfaces/interface_convert.f90
     interfaces/interface_combin.f90
-    interfaces/interface_correlation.f90
     interfaces/interface_special_funcs.f90
     interfaces/f2c_tools.f90
   )

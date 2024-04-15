@@ -39,7 +39,8 @@ namespace Deltares
 
 		double RayleighNDistribution::getXFromU(std::shared_ptr<StochastProperties> stochast, double u)
 		{
-			double p = StandardNormal::getPFromU(u);
+			double p; double q;
+			StandardNormal::getPQfromU(u, p, q);
 
 			if (stochast->Scale == 0 || stochast->Shape == 0)
 			{
@@ -48,6 +49,11 @@ namespace Deltares
 			else if (p == 0)
 			{
 				return stochast->Shift;
+			}
+			else if (q <= 1e-6)
+			{
+				double qn = std::max(q / stochast->Shape, 1e-300);
+				return std::sqrt(-2 * stochast->Scale * stochast->Scale * std::log(qn)) + stochast->Shift;
 			}
 			else
 			{

@@ -1,4 +1,4 @@
-#include "DSFI.h"
+#include "DirectionalSamplingThenFORM.h"
 #include "FORM.h"
 #include "DirectionalSampling.h"
 
@@ -6,7 +6,7 @@ namespace Deltares
 {
     namespace Reliability
     {
-        std::shared_ptr<DesignPoint> DSFI::getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner)
+        std::shared_ptr<DesignPoint> DirectionalSamplingThenFORM::getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner)
         {
             auto ds = DirectionalSampling();
             ds.Settings = DsSettings;

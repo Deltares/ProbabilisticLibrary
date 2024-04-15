@@ -8,7 +8,8 @@ namespace Deltares
 {
     namespace Reliability
     {
-        class FDIR : public ReliabilityMethod
+        // class for DirectionalSamplingThenFORM: Directional Sampling and FORM to improve alpha values (design point)
+        class DirectionalSamplingThenFORM : public ReliabilityMethod
         {
         public:
             std::shared_ptr<FORMSettings> formSettings = std::make_shared<FORMSettings>();

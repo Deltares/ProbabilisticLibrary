@@ -28,6 +28,7 @@ module probMethodsWaartsFunctionsTests
 
     use precision
     use ftnunit
+    use fileUtilities
     use feedback
     use feedback_parameters
     use interface_probCalc
@@ -68,7 +69,7 @@ subroutine allProbMethodsWaartsFunctionsNoIterationTest
     call testWithLevel(testErrorHandlingCalculateLimitStateFunction, "Test error handling", 1)
 
     call feedbackClose()
-    call ftnunit_remove_file("waartsfunctions.txt")
+    call removeFile("waartsfunctions.txt")
 
 end subroutine allProbMethodsWaartsFunctionsNoIterationTest
 
@@ -82,7 +83,7 @@ subroutine allProbMethodsWaartsFunctionsIterationTest
     call allProbMethodsWaartsFunctionsTests(3) ! parameter is minimum testlevel
 
     call feedbackClose()
-    call ftnunit_remove_file("waartsfunctions.txt")
+    call removeFile("waartsfunctions.txt")
 
 end subroutine allProbMethodsWaartsFunctionsIterationTest
 
@@ -383,8 +384,8 @@ subroutine testProbabilisticWithFunction ( )
                     block
                         type(tError) :: ierr
                         real(kind=wp) :: z
-                        integer       :: idata(1)
-                        idata(1) = -999
+                        type(computationSetting) :: idata
+                        idata%designPointSetting = -999
                         z = zResistanceSolicitation1QuadraticTerm(x, idata, ierr)
                         call assert_true(abs(z) < 5d-2, "small z")
                     end block
@@ -1102,7 +1103,7 @@ subroutine testErrorHandlingCalculateLimitStateFunction
    call SetFatalErrorExpected(.true.)
    probDb%method%calcMethod = 99
    call calculateLimitStateFunction( probDb, zLinearResistanceSolicitationFixed, alfa, beta2, x, conv, convCriterium, &
-       convergenceData, "Name123" )
+       convergenceData )
    call SetFatalErrorExpected(.false.)
    call GetFatalErrorMessage(message)
    ipos = index(message, "99")
@@ -1114,14 +1115,15 @@ end subroutine testErrorHandlingCalculateLimitStateFunction
 
 
 !> Linear resistance solicitation function with generic interface
-function zLinearResistanceSolicitation( x,  designPointOutput, ierr ) result(z) bind(c)
+function zLinearResistanceSolicitation( x,  compSetting, ierr ) result(z) bind(c)
 
-    real(kind=wp), intent(inout)  :: x(*)
-    real(kind=wp)                 :: z
-    integer,        intent(in)    :: designPointOutput(*)    !< Switch for extra design point output
-    type(tError),  intent(inout)  :: ierr
+    real(kind=wp),            intent(inout) :: x(*)
+    type(computationSetting), intent(in   ) :: compSetting
+    type(tError),             intent(inout) :: ierr
+    real(kind=wp)                           :: z
 
     ierr%icode = 0
+    if (compSetting%designPointSetting == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
 
     z = linearResistanceSolicitation( x(1), x(2) )
 
@@ -1130,14 +1132,15 @@ function zLinearResistanceSolicitation( x,  designPointOutput, ierr ) result(z) 
 end function zLinearResistanceSolicitation
 
 !> Linear resistance solicitation function with generic interface
-function zLinearResistanceSolicitationFixed( x, designPointOutput, ierr ) result(z) bind(c)
+function zLinearResistanceSolicitationFixed( x, compSetting, ierr ) result(z) bind(c)
 
-    real(kind=wp), intent(inout)    :: x(*)
-    real(kind=wp)                   :: z
-    integer,        intent(in)      :: designPointOutput(*)    !< Switch for extra design point output
-    type(tError),  intent(inout)    :: ierr
+    real(kind=wp),            intent(inout) :: x(*)
+    type(computationSetting), intent(in   ) :: compSetting
+    type(tError),             intent(inout) :: ierr
+    real(kind=wp)                           :: z
 
     ierr%icode = 0
+    if (compSetting%designPointSetting == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
 
     z = linearResistanceSolicitation( 5.0d0, x(1) )
 
@@ -1147,14 +1150,15 @@ end function zLinearResistanceSolicitationFixed
 
 
 !> Noisy limit state function with generic interface
-function zNoisyLimitState( x, designPointOutput, ierr ) result(z) bind(c)
+function zNoisyLimitState( x, compSetting, ierr ) result(z) bind(c)
 
-    real(kind=wp), intent(inout)    :: x(*)
-    real(kind=wp)                   :: z
-    integer,        intent(in)      :: designPointOutput(*)    !< Switch for extra design point output
-    type(tError),  intent(inout)    :: ierr
+    real(kind=wp),            intent(inout) :: x(*)
+    type(computationSetting), intent(in   ) :: compSetting
+    type(tError),             intent(inout) :: ierr
+    real(kind=wp)                           :: z
 
     ierr%icode = 0
+    if (compSetting%designPointSetting == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
 
     z = noisyLimitState( x )
 
@@ -1164,14 +1168,15 @@ end function zNoisyLimitState
 
 
 !> Resistance solicitation with one quadratic term with generic interface
-function zResistanceSolicitation1QuadraticTerm( x,  designPointOutput, ierr ) result(z) bind(c)
+function zResistanceSolicitation1QuadraticTerm( x, compSetting, ierr ) result(z) bind(c)
 
-    real(kind=wp), intent(inout) :: x(*)
-    real(kind=wp)                :: z
-    integer,       intent(in)    :: designPointOutput(*)    !< Switch for extra design point output
-    type(tError),  intent(inout) :: ierr
+    real(kind=wp),            intent(inout) :: x(*)
+    type(computationSetting), intent(in   ) :: compSetting
+    type(tError),             intent(inout) :: ierr
+    real(kind=wp)                           :: z
 
     ierr%icode = 0
+    if (compSetting%designPointSetting == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
 
     z = resistanceSolicitation1QuadraticTerm( x ( 1 ), x ( 2)  )
 
@@ -1181,14 +1186,15 @@ end function zResistanceSolicitation1QuadraticTerm
 
 
 !> Limit state function with ten quadratic terms with generic interface
-function zLimitState10QuadraticTerms( x, designPointOutput, ierr ) result(z) bind(c)
+function zLimitState10QuadraticTerms( x, compSetting, ierr ) result(z) bind(c)
 
-    real(kind=wp), intent(inout) :: x(*)
-    real(kind=wp)                :: z
-    integer,       intent(in)    :: designPointOutput(*)    !< Switch for extra design point output
-    type(tError),  intent(inout) :: ierr
+    real(kind=wp),            intent(inout) :: x(*)
+    type(computationSetting), intent(in   ) :: compSetting
+    type(tError),             intent(inout) :: ierr
+    real(kind=wp)                           :: z
 
     ierr%icode = 0
+    if (compSetting%designPointSetting == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
 
     z = limitState10QuadraticTerms( x ( 1 ), x ( 2 : 11)  )
 
@@ -1198,14 +1204,15 @@ end function zLimitState10QuadraticTerms
 
 
 !> Limit state function with 25 quadratic terms with generic interface
-function zLimitState25QuadraticTerms( x, designPointOutput, ierr ) result(z) bind(c)
+function zLimitState25QuadraticTerms( x, compSetting, ierr ) result(z) bind(c)
 
-    real(kind=wp), intent(inout) :: x(*)
-    real(kind=wp)                :: z
-    integer,       intent(in)    :: designPointOutput(*)    !< Switch for extra design point output
-    type(tError),  intent(inout) :: ierr
+    real(kind=wp),            intent(inout) :: x(*)
+    type(computationSetting), intent(in   ) :: compSetting
+    type(tError),             intent(inout) :: ierr
+    real(kind=wp)                           :: z
 
     ierr%icode = 0
+    if (compSetting%designPointSetting == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
 
     z = limitState25QuadraticTerms( x ( 1 ), x ( 2 : 26)  )
 
@@ -1214,14 +1221,15 @@ function zLimitState25QuadraticTerms( x, designPointOutput, ierr ) result(z) bin
 end function zLimitState25QuadraticTerms
 
 !> Limit state function with 25 quadratic terms sparse with generic interface
-function zLimitState25QuadraticTermsSparse( x, designPointOutput, ierr ) result(z) bind(c)
+function zLimitState25QuadraticTermsSparse( x, compSetting, ierr ) result(z) bind(c)
 
-    real(kind=wp), intent(inout) :: x(*)
-    real(kind=wp)                :: z
-    integer,       intent(in)    :: designPointOutput(*)    !< Switch for extra design point output
-    type(tError),  intent(inout) :: ierr
+    real(kind=wp),            intent(inout) :: x(*)
+    type(computationSetting), intent(in   ) :: compSetting
+    type(tError),             intent(inout) :: ierr
+    real(kind=wp)                           :: z
 
     ierr%icode = 0
+    if (compSetting%designPointSetting == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
 
     z = limitState25QuadraticTerms( x ( 30 ), x ( 3 : 27)  )
 
@@ -1231,14 +1239,15 @@ end function zLimitState25QuadraticTermsSparse
 
 
 !> Convex failure domain with generic interface
-function zConvexFailureDomain( x,  designPointOutput, ierr ) result(z) bind(c)
+function zConvexFailureDomain( x, compSetting, ierr ) result(z) bind(c)
 
-    real(kind=wp), intent(inout) :: x(*)
-    real(kind=wp)                :: z
-    integer,       intent(in)    :: designPointOutput(*)    !< Switch for extra design point output
-    type(tError),  intent(inout) :: ierr
+    real(kind=wp),            intent(inout) :: x(*)
+    type(computationSetting), intent(in   ) :: compSetting
+    type(tError),             intent(inout) :: ierr
+    real(kind=wp)                           :: z
 
     ierr%icode = 0
+    if (compSetting%designPointSetting == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
 
     z = convexFailureDomain( x ( 1 ), x ( 2 )  )
 
@@ -1248,14 +1257,15 @@ end function zConvexFailureDomain
 
 
 !> Oblate spheroid with generic interface
-function zOblateSpheroid( x, designPointOutput, ierr ) result(z) bind(c)
+function zOblateSpheroid( x, compSetting, ierr ) result(z) bind(c)
 
-    real(kind=wp), intent(inout) :: x(*)
-    real(kind=wp)                :: z
-    integer,       intent(in)    :: designPointOutput(*)    !< Switch for extra design point output
-    type(tError),  intent(inout) :: ierr
+    real(kind=wp),            intent(inout) :: x(*)
+    type(computationSetting), intent(in   ) :: compSetting
+    type(tError),             intent(inout) :: ierr
+    real(kind=wp)                           :: z
 
     ierr%icode = 0
+    if (compSetting%designPointSetting == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
 
     z = oblateSpheroid( x ( 1 ), x ( 2 : 11 )  )
 
@@ -1265,14 +1275,15 @@ end function zOblateSpheroid
 
 
 !> Saddle surface with generic interface
-function zSaddleSurface( x, designPointOutput, ierr ) result(z) bind(c)
+function zSaddleSurface( x, compSetting, ierr ) result(z) bind(c)
 
-    real(kind=wp), intent(inout) :: x(*)
-    real(kind=wp)                :: z
-    integer,       intent(in)    :: designPointOutput(*)    !< Switch for extra design point output
-    type(tError),  intent(inout) :: ierr
+    real(kind=wp),            intent(inout) :: x(*)
+    type(computationSetting), intent(in   ) :: compSetting
+    type(tError),             intent(inout) :: ierr
+    real(kind=wp)                           :: z
 
     ierr%icode = 0
+    if (compSetting%designPointSetting == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
 
     z = saddleSurface( x ( 1 ), x ( 2 )  )
 
@@ -1282,14 +1293,15 @@ end function zSaddleSurface
 
 
 !> Discontinuous limit state with generic interface
-function zDiscontinuousLimitState( x, designPointOutput, ierr ) result(z) bind(c)
+function zDiscontinuousLimitState( x, compSetting, ierr ) result(z) bind(c)
 
-    real(kind=wp), intent(inout) :: x(*)
-    real(kind=wp)                :: z
-    integer,       intent(in)    :: designPointOutput(*)    !< Switch for extra design point output
-    type(tError),  intent(inout) :: ierr
+    real(kind=wp),            intent(inout) :: x(*)
+    type(computationSetting), intent(in   ) :: compSetting
+    type(tError),             intent(inout) :: ierr
+    real(kind=wp)                           :: z
 
     ierr%icode = 0
+    if (compSetting%designPointSetting == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
 
     z = discontinuousLimitStateFunction( x ( 1 ), x ( 2 )  )
 
@@ -1299,14 +1311,15 @@ end function zDiscontinuousLimitState
 
 
 !> Two branches with generic interface
-function zTwoBranches( x, designPointOutput, ierr ) result(z) bind(c)
+function zTwoBranches( x, compSetting, ierr ) result(z) bind(c)
 
-    real(kind=wp), intent(inout) :: x(*)
-    real(kind=wp)                :: z
-    integer,       intent(in)    :: designPointOutput(*)    !< Switch for extra design point output
-    type(tError),  intent(inout) :: ierr
+    real(kind=wp),            intent(inout) :: x(*)
+    type(computationSetting), intent(in   ) :: compSetting
+    type(tError),             intent(inout) :: ierr
+    real(kind=wp)                           :: z
 
     ierr%icode = 0
+    if (compSetting%designPointSetting == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
 
     z = twoBranches( x ( 1 ), x ( 2 ), x ( 3 ) )
 
@@ -1316,14 +1329,15 @@ end function zTwoBranches
 
 
 !> Concave failure domain with generic interface
-function zConcaveFailureDomain( x, designPointOutput, ierr ) result(z) bind(c)
+function zConcaveFailureDomain( x, compSetting, ierr ) result(z) bind(c)
 
-    real(kind=wp), intent(inout) :: x(*)
-    real(kind=wp)                :: z
-    integer,       intent(in)    :: designPointOutput(*)    !< Switch for extra design point output
-    type(tError),  intent(inout) :: ierr
+    real(kind=wp),            intent(inout) :: x(*)
+    type(computationSetting), intent(in   ) :: compSetting
+    type(tError),             intent(inout) :: ierr
+    real(kind=wp)                           :: z
 
     ierr%icode = 0
+    if (compSetting%designPointSetting == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
 
     z = concaveFailureDomain( x ( 1 ), x ( 2 ) )
 
@@ -1333,14 +1347,15 @@ end function zConcaveFailureDomain
 
 
 !> Series system with generic interface
-function zSeriesSystem( x, designPointOutput, ierr ) result(z) bind(c)
+function zSeriesSystem( x, compSetting, ierr ) result(z) bind(c)
 
-    real(kind=wp), intent(inout) :: x(*)
-    real(kind=wp)                :: z
-    integer,       intent(in)    :: designPointOutput(*)    !< Switch for extra design point output
-    type(tError),  intent(inout) :: ierr
+    real(kind=wp),            intent(inout) :: x(*)
+    type(computationSetting), intent(in   ) :: compSetting
+    type(tError),             intent(inout) :: ierr
+    real(kind=wp)                           :: z
 
     ierr%icode = 0
+    if (compSetting%designPointSetting == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
 
     z = seriesSystem( x ( 1 ), x ( 2 ) )
 
@@ -1350,14 +1365,15 @@ end function zSeriesSystem
 
 
 !> Parallel system with generic interface
-function zParallelSystem( x, designPointOutput, ierr ) result(z) bind(c)
+function zParallelSystem( x, compSetting, ierr ) result(z) bind(c)
 
-    real(kind=wp), intent(inout) :: x(*)
-    real(kind=wp)                :: z
-    integer,       intent(in)    :: designPointOutput(*)    !< Switch for extra design point output
-    type(tError),  intent(inout) :: ierr
+    real(kind=wp),            intent(inout) :: x(*)
+    type(computationSetting), intent(in   ) :: compSetting
+    type(tError),             intent(inout) :: ierr
+    real(kind=wp)                           :: z
 
     ierr%icode = 0
+    if (compSetting%designPointSetting == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
 
     z = parallelSystem( x( 1), x( 2), x( 3), x( 4), x( 5) )
 

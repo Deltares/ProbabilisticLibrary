@@ -29,7 +29,6 @@ program unitTestsProgram
     use ftnunit
     use initTestSubs
     use conversionFunctionsTests
-    use probabilisticDataTests
     use probabilisticTests
     use probMethodsWaartsFunctionsTests
     use interface_probCalcData
@@ -73,7 +72,6 @@ program unitTestsProgram
         call allProbabilisticIntegrationTests
 
         call allProbabilisticTests
-        !call allProbabilisticDataTests
     end if
 
     call runtests_final(.true.)

@@ -275,6 +275,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
             FORM form = new FORM();
             form.Settings.StartPointCalculatorSettings.StartMethod = StartMethodType.SphereSearch;
+            form.Settings.StartPointCalculatorSettings.AllQuadrants = true;
 
             DesignPoint designPoint = form.GetDesignPoint(modelRunner);
 

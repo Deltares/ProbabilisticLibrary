@@ -57,7 +57,7 @@ subroutine allProbabilisticTests
 
     call allInitProbabilisticTests
     call allRandomGeneratorTests
-    !call allDistributionFunctionsTests
+    call allDistributionFunctionsTests
     call allWaartsFunctionsTests
     call allProbMethodsWaartsFunctionsNoIterationTest
     call allHohenbichlerTests
