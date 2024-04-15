@@ -4,6 +4,7 @@
 #include "HistogramValue.h"
 #include "FragilityValue.h"
 #include "../Utils/probLibException.h"
+#include "DistributionPropertyType.h"
 
 #include <vector>
 #include <memory>
@@ -12,8 +13,6 @@ namespace Deltares
 {
 	namespace Statistics
 	{
-		enum DistributionPropertyType { Location, Scale, Minimum, Maximum, Shift, ShiftB, Shape, ShapeB, Observations };
-
 		class StochastProperties
 		{
 
@@ -48,6 +47,23 @@ namespace Deltares
 					case DistributionPropertyType::Observations: this->Observations = value; break;
 					default: throw Reliability::probLibException("Property not supported");
 				}
+			}
+
+			std::shared_ptr<StochastProperties> clone()
+			{
+				std::shared_ptr<StochastProperties> clone = std::make_shared<StochastProperties>();
+
+				clone->Location = this->Location;
+				clone->Scale = this->Scale;
+				clone->Minimum = this->Minimum;
+				clone->Maximum = this->Maximum;
+				clone->Shift = this->Shift;
+				clone->ShiftB = this->ShiftB;
+				clone->Shape = this->Shape;
+				clone->ShapeB = this->ShapeB;
+				clone->Observations = this->Observations;
+
+				return clone;
 			}
 		};
 	}

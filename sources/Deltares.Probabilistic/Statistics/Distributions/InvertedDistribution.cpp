@@ -111,6 +111,18 @@ namespace Deltares
 
 		void InvertedDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values)
 		{
+			// fit the shift first
+			// do not use inverted value, because it depends on stochast->Shift, which is not known yet (because it has to be fitted)
+			if (this->innerDistribution->isShiftUsed())
+			{
+				std::vector<double> zeroInvertedValues = Numeric::NumericSupport::select(values, [](double x) {return -x; });
+
+				const std::shared_ptr<StochastProperties> invertedStochast = getInvertedStochast(stochast);
+				this->innerDistribution->fit(invertedStochast, zeroInvertedValues);
+
+				stochast->Shift = -stochast->Shift;
+			}
+
 			std::vector<double> invertedValues = Numeric::NumericSupport::select(values, [this, stochast](double x) {return this->getInvertedValue(stochast, x); });
 
 			const std::shared_ptr<StochastProperties> invertedStochast = getInvertedStochast(stochast);
@@ -139,6 +151,11 @@ namespace Deltares
 			std::vector<double> specialPoints = this->innerDistribution->getSpecialPoints(invertedStochast);
 
 			return Numeric::NumericSupport::select(specialPoints, [this, stochast](double x) {return this->getInvertedValue(stochast, x); });
+		}
+
+		std::vector<DistributionPropertyType> InvertedDistribution::getParameters()
+		{
+			return innerDistribution->getParameters();
 		}
 	}
 }

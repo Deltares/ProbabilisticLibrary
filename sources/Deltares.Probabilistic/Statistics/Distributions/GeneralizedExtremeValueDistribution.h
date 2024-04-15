@@ -1,12 +1,19 @@
 #pragma once
 #include "Distribution.h"
+#include "../DistributionType.h"
+
+#include "FrechetDistribution.h"
+#include "GumbelDistribution.h"
+#include "InvertedDistribution.h"
+#include "WeibullDistribution.h"
 
 namespace Deltares
 {
 	namespace Statistics
 	{
-		class FrechetDistribution : public Distribution
+		class GeneralizedExtremeValueDistribution : public Distribution
 		{
+		public:
 			void initialize(std::shared_ptr<StochastProperties> stochast, std::vector<double> values) override;
 			bool isValid(std::shared_ptr<StochastProperties> stochast) override;
 			double getXFromU(std::shared_ptr<StochastProperties> stochast, double u) override;
@@ -25,6 +32,15 @@ namespace Deltares
 			void fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values) override;
 			std::vector<double> getSpecialPoints(std::shared_ptr<StochastProperties> stochast) override;
 			std::vector<DistributionPropertyType> getParameters() override { return { Shift, Scale, Shape }; }
+		private:
+			const std::shared_ptr<Distribution> gumbelDistribution = std::make_shared<GumbelDistribution>();
+			const std::shared_ptr<Distribution> frechetDistribution = std::make_shared<FrechetDistribution>();
+			const std::shared_ptr<Distribution> weibullDistribution = std::make_shared<InvertedDistribution>(std::make_shared<WeibullDistribution>());
+
+			DistributionType getExtremeDistributionType(std::shared_ptr<StochastProperties> stochast);
+			std::shared_ptr<Distribution> getDistribution(std::shared_ptr<StochastProperties> stochast);
+			std::shared_ptr<StochastProperties> getStochast(std::shared_ptr<StochastProperties> stochast);
+			void assign(std::shared_ptr<StochastProperties> source, std::shared_ptr<StochastProperties> target);
 		};
 	}
 }

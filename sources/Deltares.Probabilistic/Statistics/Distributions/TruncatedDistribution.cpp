@@ -1,6 +1,9 @@
 #include "TruncatedDistribution.h"
 
 #include <cmath>
+
+#include "DistributionFitter.h"
+#include "../DistributionPropertyType.h"
 #include <algorithm>
 #include "../StandardNormal.h"
 #include "../../Math/NumericSupport.h"
@@ -209,51 +212,77 @@ namespace Deltares
 			stochast->Minimum = min - add;
 			stochast->Maximum = max + add;
 
-			// find properties which are fitted
-			//DistributionPropertyType[] properties = GetFittedProperties();
+			std::vector<DistributionPropertyType> properties = getParameters();
 
-			//if (AreEqual(properties, new[] { DistributionPropertyType.Mean, DistributionPropertyType.Deviation }))
-			//{
-			//	double[] parameters = DistributionFitter.FitByLogLikelihood(
-			//		x,
-			//		this,
-			//		stochast,
-			//		new[] { stochast.Mean - 3 * stochast.Deviation, 0.1 * stochast.Deviation },
-			//		new[] { stochast.Mean + 3 * stochast.Deviation, 1.9 * stochast.Deviation },
-			//		new[] { stochast.Mean, stochast.Deviation },
-			//		properties);
+			std::vector<double> minValues;
+			std::vector<double> maxValues;
+			std::vector<double> initValues;
+			std::vector<DistributionPropertyType> fitProperties;
 
-			//	stochast.Mean = parameters[0];
-			//	stochast.Deviation = Math.Max(0, parameters[1]);
-			//}
-			//else if (AreEqual(properties, new[] { DistributionPropertyType.Shift, DistributionPropertyType.Scale }))
-			//{
-			//	double[] parameters = DistributionFitter.FitByLogLikelihood(
-			//		x,
-			//		this,
-			//		stochast,
-			//		new[] { stochast.Shift - 3 * stochast.Scale, 0.1 * stochast.Scale },
-			//		new[] { stochast.Shift + 3 * stochast.Scale, 1.9 * stochast.Scale },
-			//		new[] { stochast.Shift, stochast.Scale },
-			//		properties);
+			for (DistributionPropertyType property : properties)
+			{
+				switch (property)
+				{
+				case DistributionPropertyType::Location:
+				{
+					minValues.push_back(stochast->Location - 3 * stochast->Scale);
+					maxValues.push_back(stochast->Location + 3 * stochast->Scale);
+					initValues.push_back(stochast->Location);
+					fitProperties.push_back(property);
+					break;
+				}
+				case DistributionPropertyType::Scale:
+				{
+					minValues.push_back(0.1 * stochast->Scale);
+					maxValues.push_back(1.9 * stochast->Scale);
+					initValues.push_back(stochast->Scale);
+					fitProperties.push_back(property);
+					break;
+				}
+				case DistributionPropertyType::Shift:
+				{
+					minValues.push_back(stochast->Shift - 3 * stochast->Scale);
+					maxValues.push_back(stochast->Shift + 3 * stochast->Scale);
+					initValues.push_back(stochast->Shift);
+					fitProperties.push_back(property);
+					break;
+				}
+				case DistributionPropertyType::Shape:
+				{
+					minValues.push_back(0.1 * stochast->Shape);
+					maxValues.push_back(1.9 * stochast->Shape);
+					initValues.push_back(stochast->Shape);
+					fitProperties.push_back(property);
+					break;
+				}
+				}
+			}
 
-			//	stochast.Shift = parameters[0];
-			//	stochast.Scale = Math.Max(0, parameters[1]);
-			//}
-			//else if (AreEqual(properties, new[] { DistributionPropertyType.Shape, DistributionPropertyType.Scale }))
-			//{
-			//	double[] parameters = DistributionFitter.FitByLogLikelihood(
-			//		x,
-			//		this,
-			//		stochast,
-			//		new[] { 0.1 * stochast.Shape, 0.1 * stochast.Scale },
-			//		new[] { 1.9 * stochast.Shape, 1.9 * stochast.Scale },
-			//		new[] { stochast.Shift, stochast.Scale },
-			//		properties);
+			std::shared_ptr<DistributionFitter> distributionFitter = std::make_shared<DistributionFitter>();
 
-			//	stochast.Shape = parameters[0];
-			//	stochast.Scale = Math.Max(0, parameters[1]);
-			//}
+			std::vector<double> parameters = distributionFitter->fitByLogLikelihood(values, this, stochast, minValues, maxValues, initValues, fitProperties);
+
+			for (size_t i = 0; i < fitProperties.size(); i++)
+			{
+				double value = parameters[i];
+
+				const bool allowNegative = fitProperties[i] != DistributionPropertyType::Scale;
+				if (!allowNegative)
+				{
+					value = std::max(0.0, value);
+				}
+
+				stochast->applyValue(fitProperties[i], value);
+			}
+		}
+
+		std::vector<DistributionPropertyType> TruncatedDistribution::getParameters()
+		{
+			std::vector<DistributionPropertyType> parameters = innerDistribution->getParameters();
+			parameters.push_back(DistributionPropertyType::Minimum);
+			parameters.push_back(DistributionPropertyType::Maximum);
+
+			return parameters;
 		}
 
 		double TruncatedDistribution::getLogLikelihood(std::shared_ptr<StochastProperties> stochast, double x)
@@ -286,9 +315,9 @@ namespace Deltares
 
 			std::vector<double> innerPoints = this->innerDistribution->getSpecialPoints(stochast);
 
-			for (double x : innerPoints) 
+			for (double x : innerPoints)
 			{
-				if ((!hasMinimum || x > stochast->Minimum) && (!hasMaximum || x < stochast->Maximum)) 
+				if ((!hasMinimum || x > stochast->Minimum) && (!hasMaximum || x < stochast->Maximum))
 				{
 					specialPoints.push_back(x);
 				}
@@ -297,6 +326,7 @@ namespace Deltares
 			if (hasMaximum)
 			{
 				specialPoints.push_back(stochast->Maximum);
+				specialPoints.push_back(stochast->Maximum + Numeric::NumericSupport::getFraction(stochast->Maximum, 0.000001));
 				specialPoints.push_back(stochast->Maximum + Numeric::NumericSupport::getFraction(stochast->Maximum, 0.1));
 			}
 

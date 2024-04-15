@@ -14,6 +14,16 @@ namespace Deltares
 			return Numeric::NumericSupport::GetLength(Values);
 		}
 
+		double Sample::getDistance(std::shared_ptr<Sample> other)
+		{
+			return Numeric::NumericSupport::getDistance(this->Values, other->Values);
+		}
+
+		double Sample::getDistance2(std::shared_ptr<Sample> other)
+		{
+			return Numeric::NumericSupport::getDistance2(this->Values, other->Values);
+		}
+
 		void Sample::setInitialValues(double beta)
 		{
 			double value = sqrt(beta * beta / size) * Numeric::NumericSupport::GetSign(beta);

@@ -108,7 +108,7 @@ namespace Deltares
 		void RayleighDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values)
 		{
 			double xMin = Numeric::NumericSupport::getMinimum(values);
-			double xMax = Numeric::NumericSupport::getMinimum(values);
+			double xMax = Numeric::NumericSupport::getMaximum(values);
 
 			stochast->Shift = xMin - (xMax - xMin) / values.size();
 

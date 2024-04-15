@@ -58,6 +58,8 @@ namespace Deltares
 			int getSize();
 
 			double getBeta();
+			double getDistance(std::shared_ptr<Sample> other);
+			double getDistance2(std::shared_ptr<Sample> other);
 			void setInitialValues(double beta);
 			std::shared_ptr<Sample> clone();
 			std::shared_ptr<Sample> getNormalizedSample() { return getSampleAtBeta(1); }

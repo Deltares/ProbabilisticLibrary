@@ -198,6 +198,11 @@ namespace Deltares
 					System::Collections::Generic::IList<FragilityValue^>^ get() { return fragilityValues; }
 				}
 
+				virtual bool HasParameter(DistributionPropertyType property)
+				{
+					return shared->object->hasParameter(DistributionTypeConverter::getNativeDistributionPropertyType(property));
+				}
+
 				virtual double GetPDF(double x)
 				{
 					return shared->object->getPDF(x);

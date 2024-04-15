@@ -26,6 +26,7 @@ namespace Deltares
 			void fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values) override;
 			bool isValid(std::shared_ptr<StochastProperties> stochast) override;
 			std::vector<double> getSpecialPoints(std::shared_ptr<StochastProperties> stochast) override;
+			std::vector<DistributionPropertyType> getParameters() override { return { Location, Scale, Shift }; }
 		private:
 			double fitShift(std::vector<double> values);
 			double getPartialAverage(std::vector<double>& sample, double gamma, int low, int high);
