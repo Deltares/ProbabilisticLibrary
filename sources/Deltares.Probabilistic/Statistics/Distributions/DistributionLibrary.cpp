@@ -1,5 +1,6 @@
 #include "DistributionLibrary.h"
 
+#include "ConditionalWeibullDistribution.h"
 #include "DeterministicDistribution.h"
 #include "FrechetDistribution.h"
 #include "GeneralizedExtremeValueDistribution.h"
@@ -32,6 +33,7 @@ namespace Deltares
 			case DistributionType::Uniform: distribution = std::make_shared<UniformDistribution>(); break;
 			case DistributionType::Gumbel: distribution = std::make_shared<GumbelDistribution>(); break;
 			case DistributionType::Weibull: distribution = std::make_shared<WeibullDistribution>(); break;
+			case DistributionType::ConditionalWeibull: distribution = std::make_shared<ConditionalWeibullDistribution>(); break;
 			case DistributionType::Frechet: distribution = std::make_shared<FrechetDistribution>(); break;
 			case DistributionType::GeneralizedExtremeValue: distribution = std::make_shared<GeneralizedExtremeValueDistribution>(); break;
 			case DistributionType::Rayleigh: distribution = std::make_shared<RayleighDistribution>(); break;

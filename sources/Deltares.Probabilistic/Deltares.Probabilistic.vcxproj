@@ -256,6 +256,7 @@
     <ClInclude Include="Statistics\Distributions\RayleighDistribution.h" />
     <ClInclude Include="Statistics\Distributions\FrechetDistribution.h" />
     <ClInclude Include="Statistics\Distributions\GeneralizedExtremeValueDistribution.h" />
+    <ClInclude Include="Statistics\Distributions\ConditionalWeibullDistribution.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Reliability\ImportanceSamplingCluster.cpp" />
@@ -351,6 +352,7 @@
     <ClCompile Include="Statistics\Distributions\RayleighDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\FrechetDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\GeneralizedExtremeValueDistribution.cpp" />
+    <ClCompile Include="Statistics\Distributions\ConditionalWeibullDistribution.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

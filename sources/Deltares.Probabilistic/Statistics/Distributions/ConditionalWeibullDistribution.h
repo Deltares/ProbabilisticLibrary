@@ -5,9 +5,8 @@ namespace Deltares
 {
 	namespace Statistics
 	{
-		class RayleighNDistribution : public Distribution
+		class ConditionalWeibullDistribution : public Distribution
 		{
-		public:
 			void initialize(std::shared_ptr<StochastProperties> stochast, std::vector<double> values) override;
 			bool isValid(std::shared_ptr<StochastProperties> stochast) override;
 			double getXFromU(std::shared_ptr<StochastProperties> stochast, double u) override;

@@ -2,6 +2,7 @@
 #include "../../Math/NumericSupport.h"
 #include "../../Math/RootFinders/BisectionRootFinder.h"
 #include "../../Utils/probLibException.h"
+#include "../StandardNormal.h"
 
 #include <numbers>
 
@@ -65,6 +66,36 @@ namespace Deltares
 			double add = diff / x.size();
 
 			return min - add;
+		}
+
+		double Distribution::getMeanByIteration(std::shared_ptr<StochastProperties> stochast)
+		{
+			std::vector<double> values = getValuesForIteration(stochast);
+			return Numeric::NumericSupport::getMean(values);
+		}
+
+		double Distribution::getDeviationByIteration(std::shared_ptr<StochastProperties> stochast)
+		{
+			std::vector<double> values = getValuesForIteration(stochast);
+			return Numeric::NumericSupport::getStandardDeviation(values);
+		}
+
+		std::vector<double> Distribution::getValuesForIteration(std::shared_ptr<StochastProperties> stochast)
+		{
+			const int steps = 1000;
+
+			std::vector<double> values(steps);
+
+			for (int i = 0; i < steps; i++)
+			{
+				double p = (i + 0.5) / steps;
+				double u = StandardNormal::getUFromP(p);
+				double x = this->getXFromU(stochast, u);
+
+				values[i] = x;
+			}
+
+			return values;
 		}
 	}
 }
