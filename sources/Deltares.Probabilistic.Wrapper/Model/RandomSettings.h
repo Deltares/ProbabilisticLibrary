@@ -17,6 +17,10 @@ namespace Deltares
 			private:
 				SharedPointerProvider<Deltares::Models::RandomSettings>* shared = new SharedPointerProvider(new Deltares::Models::RandomSettings());
 
+				bool hasLimitedRandomValues = false;
+				bool isStochastRepeatableRandom = false;
+				bool skipUnvaryingParameters = true;
+
 			public:
 				RandomSettings()
 				{
@@ -43,10 +47,46 @@ namespace Deltares
 					void set(bool value) { shared->object->IsRepeatableRandom = value; }
 				}
 
+				// TODO: next properties to be removed when RandomValueGenerator is not used any more
+
+				/// <summary>
+				/// Indicates whether random values a limited to a certain range
+				/// </summary>
+				property bool HasLimitedRandomValues
+				{
+					bool get() { return hasLimitedRandomValues; }
+					void set(bool value) { hasLimitedRandomValues = value; }
+				}
+
+				/// <summary>
+				/// Indicates whether random sequences is always the same for same <see cref="IHasStochast"/> names
+				/// </summary>
+				property bool IsStochastRepeatableRandom
+				{
+					bool get() { return isStochastRepeatableRandom; }
+					void set(bool value) { isStochastRepeatableRandom = value; }
+				}
+
+				/// <summary>
+				/// Indicates whether the randomizer should draw dummy random values for unvarying parameters,
+				/// so that changing distributions from varying to unvarying wil not affect the random values of varying parameters
+				/// </summary>
+				property bool SkipUnvaryingParameters
+				{
+					bool get() { return skipUnvaryingParameters; }
+					void set(bool value) { skipUnvaryingParameters = value; }
+				}
+
+
 				std::shared_ptr<Models::RandomSettings> GetSettings()
 				{
 					return shared->object;
 				}
+			};
+
+			public interface class IHasRandomSettings
+			{
+				property Wrappers::RandomSettings^ RandomSettings;
 			};
 		}
 	}

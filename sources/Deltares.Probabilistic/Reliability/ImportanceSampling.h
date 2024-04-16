@@ -17,10 +17,13 @@ namespace Deltares
 
 			bool checkConvergence(std::shared_ptr<Models::ModelRunner> modelRunner, double pf, double minWeight, int samples, int nmaal);
 			double getConvergence(double pf, double minWeight, int samples);
-			double getDimensionality(std::shared_ptr<StochastSettingsSet> stochastSettings);
+			double getDimensionality(std::vector<double> factors);
 			double getStandardNormalPDF2(double u2);
+			double getSampleWeight(std::shared_ptr<Sample> sample, std::vector<std::shared_ptr<ImportanceSamplingCluster>> clusters, double dimensionality, std::vector<double> factors);
 			double getWeight(std::shared_ptr<Sample> modifiedSample, std::shared_ptr<Sample> sample, double dimensionality);
 			double getPDF(std::shared_ptr<Sample> sample);
+			std::vector<double> getFactors(std::shared_ptr<StochastSettingsSet> stochastSettings);
+			std::shared_ptr<Sample> getOriginalSample(std::shared_ptr<Sample> sample, std::shared_ptr<Sample> center, std::vector<double> factors);
 
 			bool prematureExit(std::shared_ptr<ImportanceSamplingSettings> settings, int samples, int runs);
 			double getCorrectionForOverlappingClusters(std::shared_ptr<Sample> sample, std::shared_ptr<ImportanceSamplingCluster> clusterResult, std::vector<std::shared_ptr<ImportanceSamplingCluster>> clusterResults);
