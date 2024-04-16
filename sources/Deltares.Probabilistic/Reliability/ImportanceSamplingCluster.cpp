@@ -5,27 +5,12 @@ namespace Deltares
 {
 	namespace Reliability
 	{
-		double ImportanceSamplingCluster::getBeta() const
-		{
-			return Statistics::StandardNormal::getUFromQ(ProbFailure);
-		}
-
-		double ImportanceSamplingCluster::getFailFraction() const
-		{
-			return Numeric::NumericSupport::Divide(FailCount, TotalCount);
-		}
-
-		void ImportanceSamplingCluster::initialize(int nStochasts, double z0Fac, bool z0Ignore)
+		void ImportanceSamplingCluster::initialize(int nStochasts, double z0Fac, bool z0Ignore, DesignPointMethod method, std::shared_ptr<StochastSettingsSet> stochastSet)
 		{
 			this->z0Fac = z0Fac;
 			this->z0Ignore = z0Ignore;
 
-			MinSample = std::make_shared<Models::Sample>(nStochasts);
-			MinSample = MinSample->getSampleAtBeta(z0Fac * Statistics::StandardNormal::BetaMax);
-
-			ZSample = std::make_shared<Models::Sample>(nStochasts);
-			ZSample = ZSample->getSampleAtBeta(z0Fac * Statistics::StandardNormal::BetaMax);
-			ZSample->Z = z0Fac * std::numeric_limits<double>::max();
+			DesignPointBuilder = std::make_shared<Reliability::DesignPointBuilder>(nStochasts, method, stochastSet);
 
 			DesignPointBuilder->initialize(z0Fac * Statistics::StandardNormal::BetaMax);
 		}
@@ -40,27 +25,11 @@ namespace Deltares
 				FailCount++;
 				FailWeight += sample->Weight;
 				MaxFailWeight = std::max(MaxFailWeight, sample->Weight);
-				if (sample->getBeta() < MinBeta)
-				{
-					MinBeta = sample->getBeta();
-					MinSample = sample;
-				}
-
 				DesignPointBuilder->addSample(sample);
-			}
-
-			if (ZSample == nullptr || sample->Z < ZSample->Z)
-			{
-				ZSample = sample;
 			}
 
 			// calculate the probability per cluster
 			this->ProbFailure = getProbabilityOfFailure(!z0Ignore);
-		}
-
-		bool ImportanceSamplingCluster::HasValidCount()
-		{
-			return FailCount > 0 && TotalCount - FailCount > 0;
 		}
 
 		double ImportanceSamplingCluster::getProbabilityOfFailure(bool useCount)

@@ -160,6 +160,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Reliability\DesignPointMethodSettings.h" />
+    <ClInclude Include="Reliability\ImportanceSamplingSettings.h" />
+    <ClInclude Include="Reliability\ImportanceSampling.h" />
     <ClInclude Include="Model\ModelSample.h" />
     <ClInclude Include="Statistics\DistributionType.h" />
     <ClInclude Include="Statistics\DiscreteValue.h" />
@@ -201,6 +204,7 @@
     <ClInclude Include="Statistics\VariableStochastValue.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Reliability\ImportanceSampling.cpp" />
     <ClCompile Include="Statistics\DistributionType.cpp" />
     <ClCompile Include="Model\Message.cpp" />
     <ClCompile Include="Reliability\CrudeMonteCarlo.cpp" />
