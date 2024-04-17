@@ -1,6 +1,8 @@
 #pragma once
 #include <cmath>
 
+#include "../Model/Sample.h"
+
 namespace Deltares
 {
     namespace Reliability
@@ -19,6 +21,8 @@ namespace Deltares
             double ZMargin = 0;
             int TotalDirections = -1;
             int TotalIterations = -1;
+
+            std::shared_ptr<Models::Sample> NearestSample = nullptr;
         };
     }
 }
