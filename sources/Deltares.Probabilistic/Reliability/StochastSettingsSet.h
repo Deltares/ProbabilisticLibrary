@@ -35,6 +35,7 @@ namespace Deltares
 			}
 
 			std::shared_ptr<Sample> getSample();
+			void setStartPoint(std::shared_ptr<Sample> stochastPoint);
 		};
 	}
 }

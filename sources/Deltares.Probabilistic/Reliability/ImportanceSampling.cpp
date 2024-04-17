@@ -235,6 +235,7 @@ namespace Deltares
 
 			double designPointWeight = this->getSampleWeight(minSample, clusterResults, dimensionality, factors);
 			convergenceReport->Convergence = getConvergence(combinedCluster->ProbFailure, designPointWeight, combinedCluster->TotalCount);
+			convergenceReport->NearestSample = combinedCluster->NearestSample;
 
 #ifdef __cpp_lib_format
 			std::string identifier = std::format("Variance loop {0:}", Settings->Counter);

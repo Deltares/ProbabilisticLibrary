@@ -47,9 +47,9 @@ namespace Deltares
 			int getStochastCount();
 			int getVaryingStochastCount();
 			bool shouldExitPrematurely(std::vector<std::shared_ptr<Sample>> samples);
-			//bool shouldExitPrematurely(bool final);
 			void reportResult(std::shared_ptr<Reliability::ReliabilityReport> report);
 			void reportMessage(MessageType type, std::string text);
+			void doTextualProgress(ProgressType type, std::string text);
 			bool isVaryingStochast(int index);
 			std::shared_ptr<Reliability::DesignPoint> getDesignPoint(std::shared_ptr<Sample> sample, double beta, std::shared_ptr<Reliability::ConvergenceReport> convergenceReport = nullptr, std::string identifier = "");
 			std::shared_ptr<RunSettings> Settings = std::make_shared<RunSettings>();
