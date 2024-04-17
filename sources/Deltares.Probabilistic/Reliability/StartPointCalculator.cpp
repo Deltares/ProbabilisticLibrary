@@ -280,6 +280,13 @@ namespace Deltares
 			}
 			else if (std::abs(sample->Z) > std::abs(bestSample->Z) && z0Fac * bestSample->Z < 0 && z0Fac * sample->Z < 0)
 			{
+				// already found change of sign; larger z gives smaller |u| in refine
+				bestSample = sample;
+				return true;
+			}
+			else if (std::abs(sample->Z) < std::abs(bestSample->Z) && z0Fac * bestSample->Z > 0 && z0Fac * sample->Z > 0)
+			{
+				// change of sign not yet found; smaller z is closer to z=0
 				bestSample = sample;
 				return true;
 			}
