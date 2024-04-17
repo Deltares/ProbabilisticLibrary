@@ -21,10 +21,9 @@ namespace Deltares
 
 			std::shared_ptr<Sample> getDirectionStartPoint(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<Sample> startPoint);
 			void correctDefaultValues(std::shared_ptr<Sample> startPoint);
-			std::shared_ptr<Sample> getBestSample(std::shared_ptr<Sample> bestSample, std::shared_ptr<Sample> sample, double z0Fac);
-			std::shared_ptr<Sample> refineSpherePoint(std::shared_ptr<Models::ModelRunner> modelRunner, double radiusFactor, std::shared_ptr<Sample> u);
+			bool getBestSample(std::shared_ptr<Sample> & bestSample, const std::shared_ptr<Sample> sample, const double z0Fac);
+			std::shared_ptr<Sample> refineSpherePoint(const double radiusFactor, const std::shared_ptr<Sample> u, const std::shared_ptr<Sample> previous);
 			std::vector<double> getGradient(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<Sample> sample);
-
 		};
 	}
 }

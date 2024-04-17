@@ -227,6 +227,7 @@ namespace Deltares
 			auto tasks = st.examineSurfaceForTasks(uSphereValues);
 
 			std::shared_ptr<Sample> bestSample = nullptr;
+			std::vector<std::shared_ptr<Sample>> previousSamples;
 
 			for (int i = 0; i < nRadiusFactors; i++)
 			{
@@ -244,45 +245,52 @@ namespace Deltares
 					samples.push_back(u);
 				}
 				modelRunner->getZValues(samples);
-				for (const auto& sample : samples)
+				size_t bestDirection = maxSteps;
+				for (size_t i = 0; i < maxSteps; i++)
 				{
-					bestSample = getBestSample(bestSample, sample, z0Fac);
+					if (getBestSample(bestSample, samples[i], z0Fac)) bestDirection = i;
 				}
 
 				if (z0Fac * bestSample->Z < 0.0)
 				{
-					std::shared_ptr<Sample> refinedSample = refineSpherePoint(modelRunner, radiusFactor, bestSample);
+					auto previous = (bestDirection < previousSamples.size() ? previousSamples[i] : zeroSample);
+					std::shared_ptr<Sample> refinedSample = refineSpherePoint(radiusFactor, bestSample, previous);
 
 					return refinedSample;
 				}
+				previousSamples = samples;
 			}
 
 			return bestSample;
 		}
 
 		// Gets the best sample for a given radius factor
-
-		std::shared_ptr<Sample> StartPointCalculator::getBestSample(std::shared_ptr<Sample> bestSample, std::shared_ptr<Sample> sample, double z0Fac)
+		// Best sample defined as direction where z has the first change of sign
+		bool StartPointCalculator::getBestSample(std::shared_ptr<Sample> & bestSample, const std::shared_ptr<Sample> sample, const double z0Fac)
 		{
 			if (bestSample == nullptr)
 			{
-				return sample;
+				bestSample = sample;
+				return true;
 			}
 			else if (z0Fac * bestSample->Z > 0 && z0Fac * sample->Z < 0)
 			{
-				return sample;
+				bestSample = sample;
+				return true;
 			}
-			else if (abs(sample->Z) < abs(bestSample->Z))
+			else if (std::abs(sample->Z) > std::abs(bestSample->Z) && z0Fac * bestSample->Z < 0 && z0Fac * sample->Z < 0)
 			{
-				return sample;
+				bestSample = sample;
+				return true;
 			}
 			else
 			{
-				return bestSample;
+				return false;
 			}
 		}
 
-		std::shared_ptr<Sample> StartPointCalculator::refineSpherePoint(std::shared_ptr<Models::ModelRunner> modelRunner, double radiusFactor, std::shared_ptr<Sample> u)
+		std::shared_ptr<Sample> StartPointCalculator::refineSpherePoint(const double radiusFactor, const std::shared_ptr<Sample> u,
+			const std::shared_ptr<Sample> previous)
 		{
 			// determine the u-vector for which the z-function is either minimal
 			// or where it becomes negative
@@ -294,7 +302,7 @@ namespace Deltares
 			std::shared_ptr<Sample> u2 = u->getMultipliedSample(coFactor);
 
 			// factor related to number of steps above
-			double z2 = modelRunner->getZValue(u2);
+			double z2 = previous->Z;
 
 			// assume fz(uFactor) = A + B * uFactor
 			// z = A + B * 1.0
