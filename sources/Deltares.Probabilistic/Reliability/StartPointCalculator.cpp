@@ -246,14 +246,14 @@ namespace Deltares
 				}
 				modelRunner->getZValues(samples);
 				size_t bestDirection = maxSteps;
-				for (size_t i = 0; i < maxSteps; i++)
+				for (size_t j = 0; j < maxSteps; j++)
 				{
-					if (getBestSample(bestSample, samples[i], z0Fac)) bestDirection = i;
+					if (getBestSample(bestSample, samples[j], z0Fac)) bestDirection = j;
 				}
 
 				if (z0Fac * bestSample->Z < 0.0)
 				{
-					auto previous = (bestDirection < previousSamples.size() ? previousSamples[i] : zeroSample);
+					auto previous = (bestDirection < previousSamples.size() ? previousSamples[bestDirection] : zeroSample);
 					std::shared_ptr<Sample> refinedSample = refineSpherePoint(radiusFactor, bestSample, previous);
 
 					return refinedSample;
