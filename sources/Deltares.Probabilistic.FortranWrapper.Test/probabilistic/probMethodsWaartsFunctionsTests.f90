@@ -1221,17 +1221,21 @@ function zLimitState25QuadraticTerms( x, compSetting, ierr ) result(z) bind(c)
 end function zLimitState25QuadraticTerms
 
 !> Limit state function with 25 quadratic terms sparse with generic interface
-function zLimitState25QuadraticTermsSparse( x, compSetting, ierr ) result(z) bind(c)
+function zLimitState25QuadraticTermsSparse( xDense, compSetting, ierr ) result(z) bind(c)
 
-    real(kind=wp),            intent(inout) :: x(*)
+    real(kind=wp),            intent(inout) :: xDense(*)
     type(computationSetting), intent(in   ) :: compSetting
     type(tError),             intent(inout) :: ierr
     real(kind=wp)                           :: z
+    real(kind=wp)                           :: xFull(30)
 
     ierr%icode = 0
     if (compSetting%designPointSetting == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
 
-    z = limitState25QuadraticTerms( x ( 30 ), x ( 3 : 27)  )
+    xFull = 0.0_wp
+    call copyDense2Full(xDense, xFull)
+
+    z = limitState25QuadraticTerms( xFull ( 30 ), xFull ( 3 : 27)  )
 
     invocationCount = invocationCount + 1
 
