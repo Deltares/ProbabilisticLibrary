@@ -248,7 +248,7 @@ namespace Deltares
 				size_t bestDirection = maxSteps;
 				for (size_t j = 0; j < maxSteps; j++)
 				{
-					if (getBestSample(bestSample, samples[j], z0Fac)) bestDirection = j;
+					if (setBestSample(bestSample, samples[j], z0Fac)) bestDirection = j;
 				}
 
 				if (z0Fac * bestSample->Z < 0.0)
@@ -264,27 +264,28 @@ namespace Deltares
 			return bestSample;
 		}
 
-		// Gets the best sample for a given radius factor
+		// Sets the best sample for a given radius factor
 		// Best sample defined as direction where z has the first change of sign
-		bool StartPointCalculator::getBestSample(std::shared_ptr<Sample> & bestSample, const std::shared_ptr<Sample> sample, const double z0Fac)
+		// returns true if best sample is replaced by sample
+		bool StartPointCalculator::setBestSample(std::shared_ptr<Sample> & bestSample, const std::shared_ptr<Sample> sample, const double z0Fac)
 		{
 			if (bestSample == nullptr)
 			{
 				bestSample = sample;
 				return true;
 			}
-			else if (z0Fac * bestSample->Z > 0 && z0Fac * sample->Z < 0)
+			else if (z0Fac * bestSample->Z > 0.0 && z0Fac * sample->Z <= 0.0)
 			{
 				bestSample = sample;
 				return true;
 			}
-			else if (std::abs(sample->Z) > std::abs(bestSample->Z) && z0Fac * bestSample->Z < 0 && z0Fac * sample->Z < 0)
+			else if (std::abs(sample->Z) > std::abs(bestSample->Z) && z0Fac * bestSample->Z <= 0.0 && z0Fac * sample->Z < 0.0)
 			{
 				// already found change of sign; larger z gives smaller |u| in refine
 				bestSample = sample;
 				return true;
 			}
-			else if (std::abs(sample->Z) < std::abs(bestSample->Z) && z0Fac * bestSample->Z > 0 && z0Fac * sample->Z > 0)
+			else if (std::abs(sample->Z) < std::abs(bestSample->Z) && z0Fac * bestSample->Z > 0.0 && z0Fac * sample->Z > 0.0)
 			{
 				// change of sign not yet found; smaller z is closer to z=0
 				bestSample = sample;
