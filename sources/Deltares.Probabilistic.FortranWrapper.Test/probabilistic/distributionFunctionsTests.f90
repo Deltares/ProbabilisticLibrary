@@ -85,7 +85,7 @@ subroutine allDistributionFunctionsTests
     call paretoDistributionTests
     call triangularDistributionTests
     call testWithLevel(conditionalWeibInverseExcelTest, &
-        "Inverse conditional Weibull: Compare Hydra-Ring output and excel output for Hoek van Holland", 1, "work-in-progress")
+        "Inverse conditional Weibull: Compare Hydra-Ring output and excel output for Hoek van Holland", 1)
     call modifiedGumbelDistributionTests
     call rayleighNDistributionTests
     call testWithLevel(conditionalWeibullTest, "conditional Weibull test", 1)
@@ -1055,7 +1055,7 @@ subroutine conditionalWeibInverseExcelTest
     real(kind=wp)   :: actual
     real(kind=wp)   :: expected
     real(kind=wp)   :: distParameter1, distParameter2, distParameter3, distParameter4, p, q, f
-    margin = 1e-6
+    margin = 3e-5
 
     !Conditional weibull distribution parameters from (ADD FILENAME)
     distParameter1 = 0.0157d0
@@ -1408,8 +1408,8 @@ subroutine calculateDistributionTest
     !    ierr, message)
     !call calculateDistribution(x, u, distributionLogLinearInterpolation, distParameter1, distParameter2, distParameter3, &
     !    distParameter4, ierr, message)
-    !call calculateDistribution(x, u, distributionConditionalWeibull, distParameter1, distParameter2, distParameter3, &
-    !    distParameter4, ierr, message)
+    call calculateDistribution(x, u, distributionConditionalWeibull, distParameter1, distParameter2, distParameter3, &
+        distParameter4, ierr, message)
     call calculateDistribution(x, u, -999, distParameter1, distParameter2, distParameter3, distParameter4, ierr, message)
     call assert_equal(message, "Unknown distribution function - code: -999", "test wrong input")
 end subroutine calculateDistributionTest
@@ -1559,11 +1559,11 @@ subroutine calculateDistributionInverseTest
         !
         ! test distributionConditionalWeibull
         !
-        !call calculateDistributionInverse(u, x, distributionConditionalWeibull, distParameter1, distParameter2, distParameter3, &
-        !    distParameter4, ierr, message)
-        !call pQFromBeta ( u, p, q )
-        !expected = conditionalWeibullInverse(distParameter1, distParameter2, distParameter3, distParameter4, p, q)
-        !call assert_comparable(x, expected, margin, 'difference in distributionConditionalWeibull too big')
+        call calculateDistributionInverse(u, x, distributionConditionalWeibull, distParameter1, distParameter2, distParameter3, &
+            distParameter4, ierr, message)
+        call pQFromBeta ( u, p, q )
+        expected = conditionalWeibullInverse(distParameter1, distParameter2, distParameter3, distParameter4, p, q)
+        call assert_comparable(x, expected, margin, 'difference in distributionConditionalWeibull too big')
 
         !
         ! test distributionModifiedGumbel

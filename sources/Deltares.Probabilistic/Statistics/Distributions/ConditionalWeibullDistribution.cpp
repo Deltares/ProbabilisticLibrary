@@ -42,20 +42,30 @@ namespace Deltares
 
 		double ConditionalWeibullDistribution::getXFromU(std::shared_ptr<StochastProperties> stochast, double u)
 		{
-			double q = StandardNormal::getQFromU(u);
+			const double qMin = 1.0e-300;
+			double p; double q;
+			StandardNormal::getPQfromU(u, p, q);
 
-			if (q == 1)
+			if (q == 1.0)
 			{
 				return stochast->Shift;
 			}
-			else 
+			double f; // Exceedance frequency
+			if (q <= 3.34e-8)
 			{
-				const double log = std::log(q);
-				const double xlog = std::pow(stochast->Shift / stochast->Scale, stochast->Shape) - log;
-				const double xScale = pow(xlog, 1 / stochast->Shape);
-
-				return xScale * stochast->Scale;
+				f = std::max(q, qMin);
 			}
+			else
+			{
+				double pd = std::max(p, qMin);
+				f = -log(pd);
+			}
+
+			const double log = std::log(f / stochast->ShapeB);
+			const double xlog = std::pow(stochast->Shift / stochast->Scale, stochast->Shape) - log;
+			const double xScale = pow(xlog, 1.0 / stochast->Shape);
+
+			return xScale * stochast->Scale;
 		}
 
 		double ConditionalWeibullDistribution::getUFromX(std::shared_ptr<StochastProperties> stochast, double x)

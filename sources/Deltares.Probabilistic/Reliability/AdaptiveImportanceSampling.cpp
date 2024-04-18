@@ -4,8 +4,6 @@
 
 #if __has_include(<format>)
 #include <format>
-#else
-#include "../Utils/probLibString.h"
 #endif
 
 #include <memory>
@@ -121,8 +119,7 @@ namespace Deltares
 #ifdef __cpp_lib_format
 					auto text = std::format("Calculating variance loop #{0:}.", loopCounter);
 #else
-					auto pl = Deltares::Reliability::probLibString();
-					auto text = "Variance loop = " + pl.int2str(loopCounter);
+					auto text = "Variance loop = " + std::to_string(loopCounter);
 #endif
 					modelRunner->doTextualProgress(ProgressType::Global, text);
 					designPoint = importanceSampling->getDesignPoint(modelRunner);
