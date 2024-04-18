@@ -134,12 +134,20 @@ namespace Deltares
 
 				if (!fullExecuted)
 				{
+					const std::shared_ptr<ImportanceSamplingSettings> importanceSamplingSettings = importanceSampling->Settings;
+
+					this->importanceSampling = std::make_shared<ImportanceSampling>();
+					this->importanceSampling->Settings = importanceSamplingSettings;
+
+					this->setCallbacks(this->importanceSampling);
+
 					this->setFactor(importanceSampling->Settings->StochastSet, Settings->VarianceFactor);
 
 					importanceSampling->Settings->MaximumSamples = Settings->MaximumSamples;
 					importanceSampling->Settings->Counter = loopCounter;
 
 					designPoint = importanceSampling->getDesignPoint(modelRunner);
+					designPoint->convergenceReport->VarianceFactor = Settings->VarianceFactor;
 				}
 
 				for (size_t i = 0; i < previousDesignPoints.size(); i++)
