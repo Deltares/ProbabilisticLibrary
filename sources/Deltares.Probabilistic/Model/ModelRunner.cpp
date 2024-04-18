@@ -197,6 +197,15 @@ namespace Deltares
 			}
 		}
 
+		void ModelRunner::doTextualProgress(ProgressType type, std::string text)
+		{
+			if (this->progressIndicator != nullptr) 
+			{
+				this->progressIndicator->doTextualProgress(type, text);
+			}
+		}
+
+
 		std::shared_ptr<Reliability::DesignPoint> ModelRunner::getDesignPoint(std::shared_ptr<Sample> sample, double beta, std::shared_ptr<Reliability::ConvergenceReport> convergenceReport, std::string identifier)
 		{
 			std::shared_ptr<StochastPoint> stochastPoint = uConverter->GetStochastPoint(sample, beta);

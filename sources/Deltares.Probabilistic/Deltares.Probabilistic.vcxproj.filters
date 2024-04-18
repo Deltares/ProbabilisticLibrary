@@ -123,6 +123,9 @@
     <ClCompile Include="Reliability\ImportanceSampling.cpp" />
     <ClCompile Include="Reliability\ImportanceSamplingSettings.cpp" />
     <ClCompile Include="Reliability\ImportanceSamplingCluster.cpp" />
+    <ClCompile Include="Statistics\Distributions\ConditionalWeibullDistribution.cpp" />
+    <ClCompile Include="Reliability\AdaptiveImportanceSamplingSettings.cpp" />
+    <ClCompile Include="Reliability\AdaptiveImportanceSampling.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -265,6 +268,9 @@
     <ClInclude Include="Reliability\ImportanceSampling.h" />
     <ClInclude Include="Reliability\ImportanceSamplingSettings.h" />
     <ClInclude Include="Reliability\ImportanceSamplingCluster.h" />
+    <ClInclude Include="Statistics\Distributions\ConditionalWeibullDistribution.h" />
+    <ClInclude Include="Reliability\AdaptiveImportanceSamplingSettings.h" />
+    <ClInclude Include="Reliability\AdaptiveImportanceSampling.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

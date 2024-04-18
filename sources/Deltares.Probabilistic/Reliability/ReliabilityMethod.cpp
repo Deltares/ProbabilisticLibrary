@@ -16,9 +16,14 @@ namespace Deltares
 			return this->stopped;
 		}
 
-		void ReliabilityMethod::Stop()
+		void ReliabilityMethod::setStopped()
 		{
 			this->stopped = true;
+		}
+
+		void ReliabilityMethod::Stop()
+		{
+			setStopped();
 		}
 	}
 }

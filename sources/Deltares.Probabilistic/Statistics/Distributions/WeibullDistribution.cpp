@@ -154,17 +154,17 @@ namespace Deltares
 		{
 			stochast->Shift = this->getFittedMinimum(values);
 
-			values = Numeric::NumericSupport::select(values, [stochast](double p) { return p - stochast->Shift; });
+			std::vector<double> shiftedValues = Numeric::NumericSupport::select(values, [stochast](double p) { return p - stochast->Shift; });
 
 			std::unique_ptr<Numeric::BisectionRootFinder> bisection = std::make_unique<Numeric::BisectionRootFinder>();
 
-			Numeric::RootFinderMethod method = [&values](double x)
+			Numeric::RootFinderMethod method = [&shiftedValues](double x)
 			{
-				double sumLog = Numeric::NumericSupport::sum(values, [](double p) { return log(p); });
-				double sumPow = Numeric::NumericSupport::sum(values, [x](double p) { return pow(p, x); });
-				double sumLogPow = Numeric::NumericSupport::sum(values, [x](double p) { return pow(p, x) * log(p); });
+				double sumLog = Numeric::NumericSupport::sum(shiftedValues, [](double p) { return log(p); });
+				double sumPow = Numeric::NumericSupport::sum(shiftedValues, [x](double p) { return pow(p, x); });
+				double sumLogPow = Numeric::NumericSupport::sum(shiftedValues, [x](double p) { return pow(p, x) * log(p); });
 
-				return 1 / x + sumLog / values.size() - sumLogPow / sumPow;
+				return 1 / x + sumLog / shiftedValues.size() - sumLogPow / sumPow;
 			};
 
 			double minStart = Numeric::NumericSupport::getMinValidValue(method);
@@ -172,9 +172,9 @@ namespace Deltares
 
 			stochast->Shape = bisection->CalculateValue(minStart, maxStart, 0, 0.001, method);
 
-			double sum = Numeric::NumericSupport::sum(values, [stochast](double p) {return std::pow(p, stochast->Shape); });
+			double sum = Numeric::NumericSupport::sum(shiftedValues, [stochast](double p) {return std::pow(p, stochast->Shape); });
 
-			stochast->Scale = std::pow(sum / values.size(), 1 / stochast->Shape);
+			stochast->Scale = std::pow(sum / shiftedValues.size(), 1 / stochast->Shape);
 		}
 
 		std::vector<double> WeibullDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)

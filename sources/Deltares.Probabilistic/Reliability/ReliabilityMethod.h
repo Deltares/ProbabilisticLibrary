@@ -14,6 +14,7 @@ namespace Deltares
 		protected:
 
 			static int getZFactor(double z);
+			virtual void setStopped();
 
 		public:
 			virtual std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) { return nullptr; }

@@ -275,6 +275,21 @@ namespace Deltares.Probabilistics.Wrappers.Test
         }
 
         [Test]
+        public void TestConditionalWeibull()
+        {
+            var stochast = new Stochast { DistributionType = DistributionType.ConditionalWeibull, Scale = 1, Shape = 1, Shift = 1 };
+
+            TestStochast(stochast);
+
+            stochast.Scale = 2;
+            stochast.Shape = 3;
+            stochast.Shift = 0.5;
+
+            TestInvert(stochast, true);
+            TestFit(stochast, 0.4);
+        }
+
+        [Test]
         public void TestFrechet()
         {
             var stochast = new Stochast { DistributionType = DistributionType.Frechet, Scale = 1, Shape = 1 };

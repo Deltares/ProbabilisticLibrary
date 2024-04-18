@@ -3,7 +3,6 @@
 #include "../StandardNormal.h"
 #include "../StochastProperties.h"
 #include "../../Math/NumericSupport.h"
-#include "../../Math/SpecialFunctions.h"
 #include "../../Math/RootFinders/BisectionRootFinder.h"
 #include "DistributionFitter.h"
 #include <cmath>
@@ -28,34 +27,14 @@ namespace Deltares
 			return stochast->Scale > 0 && stochast->Shape > 0;
 		}
 
-		std::vector<double> RayleighNDistribution::getValues(std::shared_ptr<StochastProperties> stochast)
-		{
-			const int steps = 1000;
-
-			std::vector<double> values(steps);
-
-			for (int i = 0; i < steps; i++)
-			{
-				double p = (i + 0.5) / steps;
-				double u = StandardNormal::getUFromP(p);
-				double x = this->getXFromU(stochast, u);
-
-				values[i] = x;
-			}
-
-			return values;
-		}
-
 		double RayleighNDistribution::getMean(std::shared_ptr<StochastProperties> stochast)
 		{
-			std::vector<double> values = getValues(stochast);
-			return Numeric::NumericSupport::getMean(values);
+			return this->getMeanByIteration(stochast);
 		}
 
 		double RayleighNDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
 		{
-			std::vector<double> values = getValues(stochast);
-			return Numeric::NumericSupport::getStandardDeviation(values);
+			return this->getDeviationByIteration(stochast);
 		}
 
 		double RayleighNDistribution::getXFromU(std::shared_ptr<StochastProperties> stochast, double u)

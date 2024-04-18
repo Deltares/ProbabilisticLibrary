@@ -73,6 +73,11 @@ namespace Deltares
 					return shared->object;
 				}
 			};
+
+			public interface class IHasStochastSetting
+			{
+				StochastSettings^ GetStochastSetting(Statistics::Wrappers::Stochast^ stochast);
+			};
 		}
 	}
 }

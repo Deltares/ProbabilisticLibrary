@@ -40,6 +40,10 @@ namespace Deltares
 		protected:
 			virtual void setXAtUByIteration(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType);
 			virtual double getFittedMinimum(std::vector<double>& x);
+			virtual double getMeanByIteration(std::shared_ptr<StochastProperties> stochast);
+			virtual double getDeviationByIteration(std::shared_ptr<StochastProperties> stochast);
+		private:
+			std::vector<double> getValuesForIteration(std::shared_ptr<StochastProperties> stochast);
 		};
 	}
 }

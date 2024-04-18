@@ -32,6 +32,14 @@ namespace Deltares
 
 			return sample;
 		}
+
+		void StochastSettingsSet::setStartPoint(std::shared_ptr<Sample> sample)
+		{
+			for (int i = 0; i < this->getVaryingStochastCount(); i++)
+			{
+				this->VaryingStochastSettings[i]->StartValue = sample->Values[i];
+			}
+		}
 	}
 }
 

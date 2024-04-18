@@ -6,11 +6,6 @@ namespace Deltares
 {
 	namespace Statistics
 	{
-		namespace Wrappers
-		{
-			enum class DistributionType;
-		}
-
 		class DistributionLibrary
 		{
 		public:
