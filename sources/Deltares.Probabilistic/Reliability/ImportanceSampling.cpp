@@ -27,6 +27,11 @@ namespace Deltares
 {
 	namespace Reliability
 	{
+		void ImportanceSampling::setSampleLambda(RegisterSampleLambda sampleFunction)
+		{
+			this->sampleFunction = sampleFunction;
+		}
+
 		std::shared_ptr<DesignPoint> ImportanceSampling::getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner)
 		{
 			modelRunner->updateStochastSettings(this->Settings->StochastSet);
@@ -56,14 +61,11 @@ namespace Deltares
 
 			std::shared_ptr<ImportanceSamplingCluster> combinedCluster = std::make_shared<ImportanceSamplingCluster>();
 
-			// list of all samples, used to generate new clusters (not implemented yet)
-			std::vector<std::shared_ptr<Sample>> clusterSamples;
-
 			std::vector<double> factors = this->getFactors(Settings->StochastSet);
 
 			double dimensionality = getDimensionality(factors);
 
-			std::shared_ptr<ConvergenceReport> convergenceReport = getConvergenceReport(Settings);
+			std::shared_ptr<ConvergenceReport> convergenceReport = std::make_shared<ConvergenceReport>();
 
 			auto zIndex = 0;
 
@@ -195,9 +197,9 @@ namespace Deltares
 				sampleCluster->addSample(sample);
 
 				// register minimum value of r and corresponding alpha
-				if (sample->Z < 0)
+				if (this->sampleFunction != nullptr && sample->Z < 0)
 				{
-					clusterSamples.push_back(sample);
+					this->sampleFunction(sample);
 				}
 
 				convergenceReport->FailedSamples = combinedCluster->FailCount;
@@ -205,7 +207,7 @@ namespace Deltares
 
 				// check if convergence is reached (or stop criterion)
 				bool enoughSamples = sampleIndex >= Settings->MinimumSamples;
-				double probFailure = combinedCluster->ProbFailure;
+				double probFailure = getProbabilityOfFailure(clusterResults);
 
 				// if there is at least one failure and at least one non-failure observed
 				if (probFailure > 0)
@@ -229,12 +231,13 @@ namespace Deltares
 
 			// build up design point
 
-			double beta = Statistics::StandardNormal::getUFromQ(combinedCluster->ProbFailure);
+			double probFailure = getProbabilityOfFailure(clusterResults);
+			double beta = Statistics::StandardNormal::getUFromQ(probFailure);
 
 			std::shared_ptr<Sample> minSample = combinedCluster->DesignPointBuilder->getSample();
 
 			double designPointWeight = this->getSampleWeight(minSample, clusterResults, dimensionality, factors);
-			convergenceReport->Convergence = getConvergence(combinedCluster->ProbFailure, designPointWeight, combinedCluster->TotalCount);
+			convergenceReport->Convergence = getConvergence(probFailure, designPointWeight, combinedCluster->TotalCount);
 			convergenceReport->NearestSample = combinedCluster->NearestSample;
 
 #ifdef __cpp_lib_format
@@ -258,7 +261,7 @@ namespace Deltares
 					std::shared_ptr<Sample> clusterSample = clusterResults[i]->DesignPointBuilder->getSample();
 					std::shared_ptr<DesignPoint> clusterDesignPoint = modelRunner->getDesignPoint(clusterSample, clusterBeta, convergenceReport, clusterIdentifier);
 
-					designPoint->ContributingDesignPoints.push_back(designPoint);
+					designPoint->ContributingDesignPoints.push_back(clusterDesignPoint);
 				}
 			}
 
@@ -373,18 +376,6 @@ namespace Deltares
 			}
 		}
 
-		std::shared_ptr<ConvergenceReport> ImportanceSampling::getConvergenceReport(std::shared_ptr<ImportanceSamplingSettings> settings)
-		{
-			auto convergenceReport = std::make_shared<ConvergenceReport>();
-			if (settings->MaxVarianceLoops > 1)
-			{
-				convergenceReport->VarianceFactor = settings->VarianceFactor;
-			}
-
-			return convergenceReport;
-		}
-
-
 		bool ImportanceSampling::prematureExit(std::shared_ptr<ImportanceSamplingSettings> settings, int samples, int runs)
 		{
 			return samples == 0 && runs > settings->MaximumSamplesNoResult;
@@ -484,7 +475,7 @@ namespace Deltares
 		{
 			std::vector<std::shared_ptr<ImportanceSamplingCluster>> clusters;
 
-			if (this->Settings->Clustering && this->Settings->Clusters.size() > 0)
+			if (this->Settings->Clusters.size() > 0)
 			{
 				for (size_t i = 0; i < this->Settings->Clusters.size(); i++)
 				{
@@ -506,6 +497,20 @@ namespace Deltares
 
 			return clusters;
 		}
+
+		double ImportanceSampling::getProbabilityOfFailure(const std::vector<std::shared_ptr<ImportanceSamplingCluster>>& clusters)
+		{
+			double sumProbabilities = 0;
+
+			for (std::shared_ptr<ImportanceSamplingCluster> cluster : clusters)
+			{
+				sumProbabilities += cluster->ProbFailure;
+			}
+
+			return sumProbabilities;
+			
+		}
+
 	}
 }
 

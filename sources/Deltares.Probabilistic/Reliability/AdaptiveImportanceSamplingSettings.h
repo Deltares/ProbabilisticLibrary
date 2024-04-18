@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Model/RunSettings.h"
+#include "../Optimization/ClusterSettings.h"
 #include "StartPointCalculatorSettings.h"
 #include "StochastSettingsSet.h"
 
@@ -23,9 +24,11 @@ namespace Deltares
 			int MinVarianceLoops = 1;
 			double EpsWeightSample = 0.1;
 			double FractionFailed = 0.1;
+			bool Clustering = false;
 			double MaxBeta = Statistics::StandardNormal::BetaMax;
 
 			std::shared_ptr<Models::RunSettings> RunSettings = std::make_shared<Models::RunSettings>();
+			std::shared_ptr<Optimization::ClusterSettings> ClusterSettings = std::make_shared<Optimization::ClusterSettings>();
 			std::shared_ptr<StartPointCalculatorSettings> StartPointSettings = std::make_shared<StartPointCalculatorSettings>();
 			std::shared_ptr<StochastSettingsSet> StochastSet = std::make_shared<StochastSettingsSet>();
 

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ClusterSettings.h"
 #include "../../Deltares.Probabilistic/Reliability/AdaptiveImportanceSamplingSettings.h"
 #include "../Model/RunSettings.h"
 #include "../Reliability/StochastSettings.h"
@@ -76,6 +77,12 @@ namespace Deltares
 					void set(int value) { shared->object->MaxVarianceLoops = value; }
 				}
 
+				property bool Clustering
+				{
+					bool get() { return shared->object->Clustering; }
+					void set(bool value) { shared->object->Clustering = value; }
+				}
+
 				property bool AutoMaximumSamplesNoResult
 				{
 					bool get() { return shared->object->AutoMaximumSamplesNoResult; }
@@ -120,6 +127,8 @@ namespace Deltares
 
 				StartPointCalculatorSettings^ StartPointSettings = gcnew Wrappers::StartPointCalculatorSettings();
 
+				ClusterSettings^ ClusterSettings = gcnew Wrappers::ClusterSettings();
+
 				System::Collections::Generic::List<Wrappers::StochastSettings^>^ StochastSettings = gcnew System::Collections::Generic::List<Wrappers::StochastSettings^>();
 
 				virtual Deltares::Reliability::Wrappers::StochastSettings^ GetStochastSetting(Statistics::Wrappers::Stochast^ stochast)
@@ -150,6 +159,7 @@ namespace Deltares
 
 					shared->object->StartPointSettings = StartPointSettings->GetSettings();
 					shared->object->RunSettings = RunSettings->GetSettings();
+					shared->object->ClusterSettings = ClusterSettings->GetSettings();
 
 					return shared->object;
 				}

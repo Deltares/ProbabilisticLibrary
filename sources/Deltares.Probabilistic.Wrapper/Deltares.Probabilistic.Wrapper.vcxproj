@@ -160,6 +160,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Reliability\ClusterSettings.h" />
     <ClInclude Include="Reliability\AdaptiveImportanceSampling.h" />
     <ClInclude Include="Reliability\AdaptiveImportanceSamplingSettings.h" />
     <ClInclude Include="Reliability\DesignPointMethodSettings.h" />
@@ -206,6 +207,7 @@
     <ClInclude Include="Statistics\VariableStochastValue.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Reliability\ClusterSettings.cpp" />
     <ClCompile Include="Reliability\AdaptiveImportanceSampling.cpp" />
     <ClCompile Include="Reliability\AdaptiveImportanceSamplingSettings.cpp" />
     <ClCompile Include="Reliability\ImportanceSampling.cpp" />

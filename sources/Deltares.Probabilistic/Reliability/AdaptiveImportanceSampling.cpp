@@ -12,6 +12,7 @@
 
 #include "../Model/Sample.h"
 #include "../Model/RandomSampleGenerator.h"
+#include "../Optimization/KMeansClustering.h"
 #include "ConvergenceReport.h"
 #include "DesignPoint.h"
 #include "AdaptiveImportanceSamplingSettings.h"
@@ -54,7 +55,6 @@ namespace Deltares
 
 			importanceSampling->Settings->AutoMaximumSamplesNoResult = Settings->AutoMaximumSamplesNoResult;
 			importanceSampling->Settings->EpsWeightSample = Settings->EpsWeightSample;
-			importanceSampling->Settings->MaxVarianceLoops = Settings->MaxVarianceLoops;
 
 			modelRunner->doTextualProgress(ProgressType::Global, "Calculating design point.");
 
@@ -70,9 +70,12 @@ namespace Deltares
 				int loopCounter = 1;
 
 				importanceSampling->Settings->Counter = loopCounter;
-				importanceSampling->Settings->Clustering = false;
+
+				this->setCallbacks(this->importanceSampling);
 
 				std::shared_ptr<DesignPoint> designPoint = importanceSampling->getDesignPoint(modelRunner);
+
+				designPoint->convergenceReport->VarianceFactor = Settings->VarianceFactor;
 
 				bool fullExecuted = importanceSampling->Settings->MaximumSamples == Settings->MaximumSamples;
 
@@ -85,24 +88,22 @@ namespace Deltares
 					this->importanceSampling = std::make_shared<ImportanceSampling>();
 					this->importanceSampling->Settings = importanceSamplingSettings;
 
-					LoopMeasureType loopMeasureType = LoopMeasureType::CopyDesignPoint;
-					if (loopCounter < importanceSampling->Settings->MaxVarianceLoops && designPoint->convergenceReport->FailedSamples < Settings->MinimumFailedSamples)
-					{
-						loopMeasureType = LoopMeasureType::IncreaseVariance;
-					}
+					this->setCallbacks(this->importanceSampling);
 
-					switch (loopMeasureType)
+					if (this->Settings->Clustering)
 					{
-						case LoopMeasureType::IncreaseVariance:
-							this->addFactor(importanceSampling->Settings->StochastSet, Settings->LoopVarianceIncrement);
-							break;
-						case LoopMeasureType::CopyDesignPoint:
+						this->importanceSampling->Settings->Clusters.clear();
+
+						for (std::shared_ptr<Sample> center : this->getClusterCenters(this->clusterSamples))
 						{
-							std::shared_ptr<Sample> newStartPoint = this->getStartPoint(modelRunner, designPoint);
-							importanceSampling->Settings->StochastSet->setStartPoint(newStartPoint);
-							this->setFactor(importanceSampling->Settings->StochastSet, Settings->VarianceFactor);
-							break;
+							this->importanceSampling->Settings->Clusters.push_back(center);
 						}
+
+						this->clusterSamples.clear();
+					}
+					else
+					{
+						this->updateStartPoint(designPoint, modelRunner, loopCounter);
 					}
 
 					if (loopCounter == Settings->MaxVarianceLoops)
@@ -113,6 +114,7 @@ namespace Deltares
 					previousDesignPoints.push_back(designPoint);
 
 					modelRunner->clear();
+					clusterSamples.clear();
 
 					importanceSampling->Settings->Counter = loopCounter;
 
@@ -124,6 +126,8 @@ namespace Deltares
 #endif
 					modelRunner->doTextualProgress(ProgressType::Global, text);
 					designPoint = importanceSampling->getDesignPoint(modelRunner);
+
+					designPoint->convergenceReport->VarianceFactor = Settings->VarianceFactor;
 
 					fullExecuted = importanceSampling->Settings->MaximumSamples == Settings->MaximumSamples;
 				}
@@ -150,7 +154,6 @@ namespace Deltares
 				modelRunner->clear();
 
 				importanceSampling->Settings->Counter = 0;
-				importanceSampling->Settings->Clustering = false;
 
 				std::shared_ptr<DesignPoint> designPoint = importanceSampling->getDesignPoint(modelRunner);
 
@@ -222,6 +225,29 @@ namespace Deltares
 			}
 		}
 
+		void AdaptiveImportanceSampling::updateStartPoint(std::shared_ptr<DesignPoint> designPoint, std::shared_ptr<Models::ModelRunner> modelRunner, int loopCounter)
+		{
+			LoopMeasureType loopMeasureType = LoopMeasureType::CopyDesignPoint;
+			if (loopCounter < Settings->MaxVarianceLoops && designPoint->convergenceReport->FailedSamples < Settings->MinimumFailedSamples)
+			{
+				loopMeasureType = LoopMeasureType::IncreaseVariance;
+			}
+
+			switch (loopMeasureType)
+			{
+			case LoopMeasureType::IncreaseVariance:
+				this->addFactor(importanceSampling->Settings->StochastSet, Settings->LoopVarianceIncrement);
+				break;
+			case LoopMeasureType::CopyDesignPoint:
+			{
+				std::shared_ptr<Sample> newStartPoint = this->getStartPoint(modelRunner, designPoint);
+				importanceSampling->Settings->StochastSet->setStartPoint(newStartPoint);
+				this->setFactor(importanceSampling->Settings->StochastSet, Settings->VarianceFactor);
+				break;
+			}
+			}
+		}
+
 		std::shared_ptr<Sample> AdaptiveImportanceSampling::getStartPoint(std::shared_ptr<ModelRunner> modelRunner, std::shared_ptr<DesignPoint> designPoint)
 		{
 			if (!this->nextLoopsAllowed(Settings, designPoint->Beta) && this->lastStartPoint != nullptr)
@@ -246,6 +272,30 @@ namespace Deltares
 				this->lastStartPoint = newSample;
 
 				return newSample;
+			}
+		}
+
+		std::vector<std::shared_ptr<Sample>> AdaptiveImportanceSampling::getClusterCenters(std::vector<std::shared_ptr<Sample>>& samples)
+		{
+			if (samples.empty())
+			{
+				return std::vector< std::shared_ptr<Sample>>();
+			}
+			else
+			{
+				// Get Multiple Design Points using K-Means
+				std::shared_ptr<Optimization::KMeansClustering> clusterMethod = std::make_shared<Optimization::KMeansClustering>();
+				clusterMethod->Settings = this->Settings->ClusterSettings;
+
+				return clusterMethod->getClusterCenters(samples);
+			}
+		}
+
+		void AdaptiveImportanceSampling::setCallbacks(std::shared_ptr<ImportanceSampling> importanceSampling)
+		{
+			if (this->Settings->Clustering)
+			{
+				importanceSampling->setSampleLambda([this](std::shared_ptr<Sample> sample) {this->clusterSamples.push_back(sample); });
 			}
 		}
 	}
