@@ -35,8 +35,10 @@ namespace Deltares
             static double getSign(DoubleType value);
             static double getFraction(double value, double fraction);
             static bool isValidValue(double x);
-            static double getMinimum(std::vector<double>& values);
-            static double getMaximum(std::vector<double>& values);
+            static double getMinimum(const std::vector<double>& values);
+            static double getMaximum(const std::vector<double>& values);
+            static size_t getLocationMinimum(const std::vector<double>& values);
+            static size_t getLocationMaximum(const std::vector<double>& values);
             static double getMinValidValue(std::function<double(double)> function);
             static double getMaxValidValue(std::function<double(double)> function);
             static double interpolate(double x, double minX, double minY, double maxX, double maxY, bool extrapolate = false, InterpolationType interpolationType = Linear);

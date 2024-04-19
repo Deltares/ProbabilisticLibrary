@@ -3,6 +3,7 @@
 #include "DirectionReliability.h"
 #include "../Utils/probLibException.h"
 #include "../Model/GradientCalculator.h"
+#include "../Math/NumericSupport.h"
 #include "SphereTasks.h"
 
 #include <numbers>
@@ -244,56 +245,36 @@ namespace Deltares
 					std::shared_ptr<Sample> u = uRay->getMultipliedSample(radiusFactor);
 					samples.push_back(u);
 				}
-				modelRunner->getZValues(samples);
-				size_t bestDirection = maxSteps;
-				for (size_t j = 0; j < maxSteps; j++)
+				auto zValues = modelRunner->getZValues(samples);
+				for (auto & z : zValues) {z *= z0Fac;}
+				auto indexMinimal = Numeric::NumericSupport::getLocationMinimum(zValues);
+				if (zValues[indexMinimal] < 0.0)
 				{
-					if (setBestSample(bestSample, samples[j], z0Fac)) bestDirection = j;
+					auto previous = (i > 0 ? previousSamples[indexMinimal] : zeroSample);
+					bestSample = refineSpherePoint(radiusFactor, samples[indexMinimal], previous);
+					break;
 				}
 
-				if (z0Fac * bestSample->Z < 0.0)
-				{
-					auto previous = (bestDirection < previousSamples.size() ? previousSamples[bestDirection] : zeroSample);
-					std::shared_ptr<Sample> refinedSample = refineSpherePoint(radiusFactor, bestSample, previous);
-
-					return refinedSample;
-				}
 				previousSamples = samples;
+
+				for (auto& z : zValues) { z = std::abs(z); }
+				auto indexAbsMinimal = Numeric::NumericSupport::getLocationMinimum(zValues);
+				setBestSample(bestSample, samples[indexAbsMinimal]);
 			}
 
 			return bestSample;
 		}
 
-		// Sets the best sample for a given radius factor
-		// Best sample defined as direction where z has the first change of sign
-		// returns true if best sample is replaced by sample
-		bool StartPointCalculator::setBestSample(std::shared_ptr<Sample> & bestSample, const std::shared_ptr<Sample> sample, const double z0Fac)
+		// Sets the best sample based on closest to Z == 0
+		void StartPointCalculator::setBestSample(std::shared_ptr<Sample> & bestSample, const std::shared_ptr<Sample> sample)
 		{
 			if (bestSample == nullptr)
 			{
 				bestSample = sample;
-				return true;
 			}
-			else if (z0Fac * bestSample->Z > 0.0 && z0Fac * sample->Z <= 0.0)
+			else if (std::abs(bestSample->Z) > std::abs(sample->Z))
 			{
 				bestSample = sample;
-				return true;
-			}
-			else if (std::abs(sample->Z) > std::abs(bestSample->Z) && z0Fac * bestSample->Z <= 0.0 && z0Fac * sample->Z < 0.0)
-			{
-				// already found change of sign; larger z gives smaller |u| in refine
-				bestSample = sample;
-				return true;
-			}
-			else if (std::abs(sample->Z) < std::abs(bestSample->Z) && z0Fac * bestSample->Z > 0.0 && z0Fac * sample->Z > 0.0)
-			{
-				// change of sign not yet found; smaller z is closer to z=0
-				bestSample = sample;
-				return true;
-			}
-			else
-			{
-				return false;
 			}
 		}
 

@@ -268,28 +268,28 @@ namespace Deltares
 			return coordinates;
 		}
 
-		double NumericSupport::getMinimum(std::vector<double>& values)
+		size_t NumericSupport::getLocationMinimum(const std::vector<double>& values)
 		{
 			if (values.empty())
 			{
-				return nan("");
+				throw Deltares::Reliability::probLibException("empty vector not allowed in getLocationMinimum");
 			}
 			else
 			{
-				double min = values[0];
-				for (double x : values)
+				size_t locmin = 0;
+				for (size_t i = 1; i < values.size(); i++)
 				{
-					if (x < min)
+					if (values[i] < values[locmin])
 					{
-						min = x;
+						locmin = i;
 					}
 				}
 
-				return min;
+				return locmin;
 			}
 		}
 
-		double NumericSupport::getMaximum(std::vector<double>& values)
+		double NumericSupport::getMinimum(const std::vector<double>& values)
 		{
 			if (values.empty())
 			{
@@ -297,16 +297,42 @@ namespace Deltares
 			}
 			else
 			{
-				double max = values[0];
-				for (double x : values)
+				auto loc = getLocationMinimum(values);
+				return values[loc];
+			}
+		}
+
+		size_t NumericSupport::getLocationMaximum(const std::vector<double>& values)
+		{
+			if (values.empty())
+			{
+				throw Deltares::Reliability::probLibException("empty vector not allowed in getLocationMaximum");
+			}
+			else
+			{
+				size_t locmax = 0;
+				for (size_t i = 1; i < values.size(); i++)
 				{
-					if (x > max)
+					if (values[i] > values[locmax])
 					{
-						max = x;
+						locmax = i;
 					}
 				}
 
-				return max;
+				return locmax;
+			}
+		}
+
+		double NumericSupport::getMaximum(const std::vector<double>& values)
+		{
+			if (values.empty())
+			{
+				return nan("");
+			}
+			else
+			{
+				auto loc = getLocationMaximum(values);
+				return values[loc];
 			}
 		}
 
