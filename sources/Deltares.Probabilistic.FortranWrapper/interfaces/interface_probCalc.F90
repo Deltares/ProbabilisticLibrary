@@ -7,7 +7,6 @@ module interface_probCalc
   use f2c_tools
   implicit none
 
-  integer, parameter :: sizeSmallStr = 32
   integer, parameter :: maxActiveStochast = 32
 
   integer, parameter :: stochastNotActive                             = -1
@@ -45,7 +44,6 @@ module interface_probCalc
   end type basicCorrelation
 
   type, public, bind(c) :: tdistrib
-    character(len=1)    :: name(sizeSmallStr)
     integer             :: distributionId
     real(kind=c_double) :: params(4)
   end type tdistrib
@@ -408,7 +406,6 @@ subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, conv, convCri
             x(i) = probDb%stovar%distparameterx(i,1)
         else if (probDb%stovar%activex(i) == stochastActive) then
             nStochActive = nStochActive + 1
-            call copystr("var1", distribs(i)%name)
             distribs(nStochActive)%distributionId = probDb%stovar%disttypex(i)
             distribs(nStochActive)%params = probDb%stovar%distparameterx(i,:)
             iPoint(nStochActive) = i

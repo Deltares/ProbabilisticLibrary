@@ -53,11 +53,9 @@ subroutine fillDistribs(distribs)
     use interface_distributions
     type(tdistrib)              :: distribs(:)
 
-    call copystr("var1", distribs(1)%name)
     distribs(1)%distributionId = distributionNormal
     distribs(1)%params = (/1.0_dp, 2.0_dp, 0.0_dp, 0.0_dp/)
 
-    call copystr("var2", distribs(2)%name)
     distribs(2)%distributionId = distributionNormal
     distribs(2)%params = (/1.0_dp, 2.0_dp, 0.0_dp, 0.0_dp/)
 end subroutine fillDistribs

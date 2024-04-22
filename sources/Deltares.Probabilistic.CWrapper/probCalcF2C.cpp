@@ -14,11 +14,8 @@ using namespace Deltares::ProbLibCore;
 using namespace Deltares::Models;
 using namespace Deltares::Reliability;
 
-const size_t lenSmallStr = 32;
-
 struct fdistribs
 {
-    char name[lenSmallStr];
     int distId;
     double params[4];
 };
