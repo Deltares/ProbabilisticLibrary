@@ -88,7 +88,7 @@ subroutine test_ds
 
     compIds(1) = 16
 
-    call probCalcF2C(method, distribs, 2, 2, correlations, 0,  zfunc, textualProgress, compIds, x, r, ierr)
+    call probCalcF2C(method, distribs, 2, correlations, 0,  zfunc, textualProgress, compIds, x, r, ierr)
 
     call assert_equal(ierr%iCode, 0, "return code probCalcF2C <> 0")
 
@@ -125,7 +125,7 @@ subroutine test_ds_errorhandling
 
     compIds(1) = 17
 
-    call probCalcF2C(method, distribs, 2, 2, correlations, 0, zfunc, textualProgress, compIds, x, r, ierr)
+    call probCalcF2C(method, distribs, 2, correlations, 0, zfunc, textualProgress, compIds, x, r, ierr)
 
     call assert_equal(ierr%iCode, -1, "return code probCalcF2C <> 0")
 
@@ -156,7 +156,7 @@ subroutine test_form_errorhandling
 
     compIds(1) = 17
 
-    call probCalcF2C(method, distribs, 2, 2, correlations, 0, zfunc, textualProgress, compIds, x, r, ierr)
+    call probCalcF2C(method, distribs, 2, correlations, 0, zfunc, textualProgress, compIds, x, r, ierr)
 
     call assert_equal(ierr%iCode, 0, "diff in return code probCalcF2C")
     convergence = r%convergence

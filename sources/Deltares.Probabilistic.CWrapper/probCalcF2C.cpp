@@ -34,14 +34,14 @@ struct tResult
 };
 
 void updateX(const vector1D & alpha, const DPoptions option, tResult & r, const std::shared_ptr<DesignPoint> & newResult,
-    const size_t vectorSize, double x[], funcWrapper fw)
+    double x[], funcWrapper fw)
 {
     if (alpha.size() <= maxActiveStochast)
     {
         switch (option) {
         case DPoptions::None:
         {
-            for (size_t i = 0; i < vectorSize; i++)
+            for (size_t i = 0; i < alpha.size(); i++)
             {
                 x[i] = 0.0;
             }
@@ -74,8 +74,7 @@ void updateX(const vector1D & alpha, const DPoptions option, tResult & r, const 
 }
 
 extern "C"
-void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, const int vectorSize,
-    corrStruct correlations[], const int nrCorrelations,
+void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, corrStruct correlations[], const int nrCorrelations,
     const double(*fx)(double[], computationSettings*, tError*),
     const bool(*pc)(ProgressType, const char*),
     const int compIds[], double x[], tResult* r, tError* ierr)
@@ -131,7 +130,7 @@ void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, const i
             r->alpha[i] = alpha(i);
         }
 
-        updateX(alpha, method->designPointOptions, *r, newResult, vectorSize, x, fw);
+        updateX(alpha, method->designPointOptions, *r, newResult, x, fw);
 
         for (int i = 0; i < n; i++)
         {

@@ -262,7 +262,7 @@ module interface_probCalc
   end interface
 
   interface
-    subroutine probCalcF2C(method, distribs, nstoch, vectorSize, correlations, nrCorrelations, fx, pc, &
+    subroutine probCalcF2C(method, distribs, nstoch, correlations, nrCorrelations, fx, pc, &
         compIds, x, rn, ierr) bind(C)
       use, intrinsic :: iso_c_binding, only: c_double
 #ifdef _MSC_VER
@@ -273,7 +273,6 @@ module interface_probCalc
       type(tMethod),  intent(in)    :: method
       type(tDistrib), intent(in)    :: distribs(*)
       integer, value, intent(in)    :: nstoch
-      integer, value, intent(in)    :: vectorSize
       type(basicCorrelation), intent(in)  :: correlations(*)
       integer, value, intent(in)    :: nrCorrelations
       integer,        intent(in)    :: compIds(*)
@@ -430,10 +429,10 @@ subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, conv, convCri
     else if (nstoch > 0) then
         method%progressInterval = 1
         if (present(pc)) then
-            call probCalcF2C(method, distribs, nStochActive, nStoch, probDb%basic_correlation, &
+            call probCalcF2C(method, distribs, nStochActive, probDb%basic_correlation, &
                 probDb%number_correlations, fx, pc, compIds, xDense, rn, ierr)
         else
-            call probCalcF2C(method, distribs, nStochActive, nStoch, probDb%basic_correlation, &
+            call probCalcF2C(method, distribs, nStochActive, probDb%basic_correlation, &
                 probDb%number_correlations, fx, textualProgress, compIds, xDense, rn, ierr)
         end if
 
