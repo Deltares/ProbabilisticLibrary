@@ -19,6 +19,7 @@ namespace Deltares
 			public:
 				std::shared_ptr<Models::Sample> Center = nullptr;
 				std::vector<std::shared_ptr<Models::Sample>> Samples;
+				std::vector<std::shared_ptr<Models::Sample>> PreviousSamples;
 
 				double getSumSquared();
 				void updateMean();
@@ -29,8 +30,8 @@ namespace Deltares
 			std::vector<std::shared_ptr<Cluster>> InitializeClusters(std::vector<std::shared_ptr<Models::Sample>>& samples, std::shared_ptr<ClusterSettings> options, int randomSeed);
 			std::vector<std::shared_ptr<Cluster>> InitPlusPlus(int numberClusters, std::vector<std::shared_ptr<Models::Sample>>& samples, int randomSeed, bool sampleHasWeighting);
 			int ProporSelect(std::vector<double>& values);
-			bool UpdateClustering(std::vector<std::shared_ptr<Cluster>>& clusters);
-			std::shared_ptr<Cluster> GetNearestCluster(std::shared_ptr<Models::Sample> sample, std::vector<std::shared_ptr<Cluster>>& clusters);
+			bool updateClustering(std::vector<std::shared_ptr<Cluster>>& clusters);
+			std::shared_ptr<Cluster> getNearestCluster(std::shared_ptr<Models::Sample> sample, std::vector<std::shared_ptr<Cluster>>& clusters);
 			double SilhouetteCoefficient(std::vector<std::shared_ptr<Cluster>>& clusters);
 			double IntraClusterDistance(std::shared_ptr<Cluster> cluster, std::shared_ptr<Models::Sample> sample);
 			double InterClusterDistance(std::shared_ptr<Cluster> cluster, std::shared_ptr<Models::Sample> sample, std::vector<std::shared_ptr<Cluster>>& clusters);

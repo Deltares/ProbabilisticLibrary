@@ -1,5 +1,7 @@
 #include "KMeansClustering.h"
 
+#include <map>
+
 #include "../Utils/probLibException.h"
 #include "../Math/Random.h"
 
@@ -131,6 +133,9 @@ namespace Deltares
 			std::vector<std::shared_ptr<Cluster>> clusters;
 			sumSquared = std::numeric_limits<double>::max(); // smaller is better
 
+			int unchangedClusters = 0;
+			constexpr int maxUnchangedClusters = 10;
+
 			for (int trial = 0; trial < options->Trials; trial++)
 			{
 				std::vector<std::shared_ptr<Cluster>> newClusters = DoClustering(samples, options, trial); // find a clustering and update bests
@@ -143,8 +148,18 @@ namespace Deltares
 
 				if (clusters.empty() || newSumSquared < sumSquared) // new best clustering found
 				{
+					unchangedClusters = 0;
 					clusters = newClusters;
 					sumSquared = newSumSquared;
+				}
+				else
+				{
+					unchangedClusters++;
+				}
+
+				if (unchangedClusters >= maxUnchangedClusters)
+				{
+					break;
 				}
 			}
 
@@ -160,7 +175,7 @@ namespace Deltares
 
 			while (modified && iteration++ < options->MaxIterations)
 			{
-				modified = UpdateClustering(newClusters);
+				modified = updateClustering(newClusters);
 			}
 
 			return newClusters;
@@ -173,7 +188,6 @@ namespace Deltares
 			case ClusterInitializationMethod::PlusPlus:
 				return InitPlusPlus(options->NumberClusters, samples, randomSeed, options->SampleHasWeighting);
 			default:
-				//C# TO C++ CONVERTER TASK: There is no C++ equivalent to 'ToString':
 				throw Reliability::probLibException("Cluster initialization method");
 			}
 		}
@@ -185,9 +199,11 @@ namespace Deltares
 			// select one data item index at random as 1st mean
 			Numeric::Random::initialize(Numeric::ModifiedKnuthSubtractive, true, randomSeed, 0);
 
-			double dummy= Numeric::Random::next();  //  random->Next(0, samples.size()); // [0, N)
+			double dummy = Numeric::Random::next();  //  random->Next(0, samples.size()); // [0, N)
 
 			std::shared_ptr<Cluster> firstCluster = std::make_shared<Cluster>();
+
+			firstCluster->Samples.reserve(samples.size());
 			for (std::shared_ptr<Models::Sample> sample : samples)
 			{
 				firstCluster->Samples.push_back(sample);
@@ -204,7 +220,7 @@ namespace Deltares
 
 				for (std::shared_ptr<Models::Sample> sample : samples)
 				{
-					std::shared_ptr<Cluster> nearestCluster = GetNearestCluster(sample, clusters);
+					std::shared_ptr<Cluster> nearestCluster = getNearestCluster(sample, clusters);
 
 					double distance2 = nearestCluster->Center->getDistance2(sample);
 
@@ -221,10 +237,11 @@ namespace Deltares
 				int newMeanIndex = ProporSelect(squaredDistances);
 
 				std::shared_ptr<Cluster> nextCluster = std::make_shared<Cluster>(samples[newMeanIndex]->clone());
+
 				clusters.push_back(nextCluster);
 			}
 
-			UpdateClustering(clusters);
+			updateClustering(clusters);
 
 			return clusters;
 		}
@@ -253,43 +270,41 @@ namespace Deltares
 			return n - 1; // last index
 		}
 
-		bool KMeansClustering::UpdateClustering(std::vector<std::shared_ptr<Cluster>>& clusters)
+		bool KMeansClustering::updateClustering(std::vector<std::shared_ptr<Cluster>>& clusters)
 		{
 			// proposed clustering would have an empty cluster: return false - no change to clustering
 			// proposed clustering would be no change: return false, no change to clustering
 			// proposed clustering is different and has no empty clusters: return true, clustering is changed
 
-			// get all samples and remember the current clustering
-			std::vector<std::shared_ptr<Models::Sample>> samples;
-			std::unordered_map<std::shared_ptr<Models::Sample>, std::shared_ptr<Cluster>> previousClustering;
-
-			for (auto cluster : clusters)
-			{
-				samples.insert(samples.end(), cluster->Samples.begin(), cluster->Samples.end());
-				for (std::shared_ptr<Models::Sample> sample : cluster->Samples)
-				{
-					previousClustering[sample] = cluster;
-				}
-			}
-
 			// clear the current clustering
-			for (auto cluster : clusters)
+			for (const std::shared_ptr<Cluster>& cluster : clusters)
 			{
+				cluster->PreviousSamples.clear();
+
+				cluster->PreviousSamples.reserve(cluster->Samples.size());
+				for (const std::shared_ptr<Models::Sample>& sample : cluster->Samples)
+				{
+					cluster->PreviousSamples.push_back(sample);
+				}
+
 				cluster->Samples.clear();
 			}
 
 			bool modified = false; // is there a change to the existing clustering?
 
-			for (auto sample : samples)
+			for (const std::shared_ptr<Cluster>& cluster : clusters)
 			{
-				std::shared_ptr<Cluster> nearestCluster = GetNearestCluster(sample, clusters);
-				nearestCluster->Samples.push_back(sample);
+				for (const std::shared_ptr<Models::Sample>& sample : cluster->PreviousSamples)
+				{
+					std::shared_ptr<Cluster> nearestCluster = getNearestCluster(sample, clusters);
+					nearestCluster->Samples.push_back(sample);
 
-				modified |= previousClustering[sample] != nearestCluster;
+					modified |= nearestCluster != cluster;
+				}
 			}
 
 			// no change to clustering because would have an empty cluster
-			for (std::shared_ptr<Cluster> cluster : clusters)
+			for (const std::shared_ptr<Cluster>& cluster : clusters)
 			{
 				if (cluster->Samples.empty())
 				{
@@ -299,7 +314,7 @@ namespace Deltares
 
 			if (modified)
 			{
-				for (std::shared_ptr<Cluster> cluster : clusters)
+				for (const std::shared_ptr<Cluster>& cluster : clusters)
 				{
 					cluster->updateMean();
 				}
@@ -308,7 +323,7 @@ namespace Deltares
 			return modified;
 		}
 
-		std::shared_ptr<KMeansClustering::Cluster> KMeansClustering::GetNearestCluster(std::shared_ptr<Models::Sample> sample, std::vector<std::shared_ptr<Cluster>>& clusters)
+		std::shared_ptr<KMeansClustering::Cluster> KMeansClustering::getNearestCluster(std::shared_ptr<Models::Sample> sample, std::vector<std::shared_ptr<Cluster>>& clusters)
 		{
 			std::shared_ptr<Cluster> nearestCluster = nullptr;
 			double minDistance = std::numeric_limits<double>::max();
