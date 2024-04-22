@@ -25,6 +25,7 @@ namespace Deltares
 
 			void addFactor(std::shared_ptr<StochastSettingsSet> stochastSet, double addValue);
 			void setFactor(std::shared_ptr<StochastSettingsSet> stochastSet, double setValue);
+			void updateClusters(int loopCounter);
 			void updateStartPoint(std::shared_ptr<DesignPoint> designPoint, std::shared_ptr<Models::ModelRunner> modelRunner, int loopCounter);
 			std::shared_ptr<Sample> getStartPoint(std::shared_ptr<ModelRunner> modelRunner, std::shared_ptr<DesignPoint> designPoint);
 			std::vector<std::shared_ptr<Sample>> getClusterCenters(std::vector<std::shared_ptr<Sample>>& samples);

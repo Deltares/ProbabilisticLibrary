@@ -38,14 +38,15 @@ namespace Deltares
 
 		double NumericSupport::getDistance2(const std::vector<double>& values1, const std::vector<double>& values2)
 		{
-			std::vector<double> diff = std::vector<double>(values1.size());
+			double sum = 0;
 
-			for (size_t i = 0; i < diff.size(); i++)
+			for (size_t i = 0; i < values1.size(); i++)
 			{
-				diff[i] = values1[i] - values2[i];
+				const double diff = values1[i] - values2[i];
+				sum += diff * diff;
 			}
 
-			return GetSquaredSum(diff);
+			return sum;
 		}
 
 		double* NumericSupport::getArray(double initialValue, int count)

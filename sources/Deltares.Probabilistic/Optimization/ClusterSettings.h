@@ -45,6 +45,11 @@ namespace Deltares
 			/// </summary>
 			double MinImprovement = 0.1;
 
+			/**
+			 * \brief The maximum number of samples used to generate clusters
+			 */
+			int MaxSamples = 500;
+
 			bool isValid()
 			{
 				return true;
