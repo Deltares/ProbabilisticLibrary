@@ -36,6 +36,7 @@ module interface_probCalc
 
   integer, allocatable :: iPoint(:) ! Pointer to active variables used in the limit state function
   integer :: nStochActive
+  real(kind=wp), allocatable :: xHR(:)
 
   type, public, bind(c) :: basicCorrelation
     integer       :: first                !< Index of the first stochastic variable
@@ -304,6 +305,7 @@ subroutine copyDense2Full(xDense, xFull)
 
     integer :: i
 
+    xFull = xHR
     do i = 1, nStochActive
         xFull(iPoint(i)) = xDense(i)
     end do
@@ -341,8 +343,10 @@ subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, conv, convCri
     type(tError)                :: ierr
     type(tResult)               :: rn
     character(len=ErrMsgLength) :: msg
+    real(kind=wp), allocatable  :: xDense(:)
 
-    call realloc_check (iPoint, probDb%stoVar%maxStochasts, "ipointMax" )
+    call realloc_check (iPoint, probDb%stoVar%maxStochasts, "ipoint" )
+    call realloc_check (xHR, probDb%stoVar%maxStochasts, "xHR" )
 
     method%methodId   = probDb%method%calcMethod
     method%tolA       = probDb%method%FORM%epsilonBeta
@@ -401,7 +405,9 @@ subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, conv, convCri
     nstoch = probDb%stoVar%maxStochasts
     nStochActive = 0
     do i = 1, nstoch
-        if (probDb%stovar%disttypex(i) == distributionDeterministic .or. probDb%stovar%activex(i) == stochastActive) then
+        if (probDb%stovar%disttypex(i) == distributionDeterministic) then
+            x(i) = probDb%stovar%distparameterx(i,1)
+        else if (probDb%stovar%activex(i) == stochastActive) then
             nStochActive = nStochActive + 1
             call copystr("var1", distribs(i)%name)
             distribs(nStochActive)%distributionId = probDb%stovar%disttypex(i)
@@ -410,9 +416,12 @@ subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, conv, convCri
         end if
     end do
 
+    xHR = x
+
     method%designPointOption = probDb%method%dpOption
     method%numThreads        = probDb%method%maxParallelThreads
     method%rnd = GeorgeMarsaglia
+    allocate(xDense(nStochActive))
 
     call convertStartMethod(probDb, method, iPoint(1:nStochActive))
 
@@ -422,10 +431,10 @@ subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, conv, convCri
         method%progressInterval = 1
         if (present(pc)) then
             call probCalcF2C(method, distribs, nStochActive, nStoch, probDb%basic_correlation, &
-                probDb%number_correlations, fx, pc, compIds, x, rn, ierr)
+                probDb%number_correlations, fx, pc, compIds, xDense, rn, ierr)
         else
             call probCalcF2C(method, distribs, nStochActive, nStoch, probDb%basic_correlation, &
-                probDb%number_correlations, fx, textualProgress, compIds, x, rn, ierr)
+                probDb%number_correlations, fx, textualProgress, compIds, xDense, rn, ierr)
         end if
 
         if (ierr%iCode /= 0) then
@@ -433,6 +442,7 @@ subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, conv, convCri
             call fatalError(msg)
             x = 0.0_wp
         else
+            call copyDense2Full(xDense, x)
             beta = rn%beta
             alfaN = 0.0_wp
             do k = 1, nStochActive

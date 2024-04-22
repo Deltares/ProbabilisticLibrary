@@ -83,11 +83,6 @@ void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, const i
     try
     {
         auto nStoch = (size_t)n;
-        auto xInitial = std::vector<double>();
-        for (size_t i = 0; i < vectorSize; i++)
-        {
-            xInitial.push_back(x[i]);
-        }
         auto fw = funcWrapper(compIds[0], fx);
 
         auto stochast = std::vector<std::shared_ptr<Deltares::Statistics::Stochast>>();
@@ -119,7 +114,7 @@ void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, const i
         std::shared_ptr<ProgressIndicator> progress (new ProgressIndicator(progressDelegate, detailedProgressDelegate, textualProgress));
         std::shared_ptr<ModelRunner> modelRunner(new ModelRunner(zModel, uConverter, progress));
         modelRunner->Settings->MaxParallelProcesses = method->numThreads;
-        modelRunner->Settings->MaxChunkSize = method->numThreads; // needed for overtopping
+        modelRunner->Settings->MaxChunkSize = method->chunkSize;
         modelRunner->initializeForRun();
         std::shared_ptr<DesignPoint> newResult ( relMethod->getDesignPoint(modelRunner));
 
