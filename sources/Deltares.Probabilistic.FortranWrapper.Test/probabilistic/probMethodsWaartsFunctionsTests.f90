@@ -1115,16 +1115,19 @@ end subroutine testErrorHandlingCalculateLimitStateFunction
 
 
 !> Linear resistance solicitation function with generic interface
-function zLinearResistanceSolicitation( x,  compSetting, ierr ) result(z) bind(c)
+function zLinearResistanceSolicitation( xDense,  compSetting, ierr ) result(z) bind(c)
 
-    real(kind=wp),            intent(inout) :: x(*)
+    real(kind=wp),            intent(inout) :: xDense(*)
     type(computationSetting), intent(in   ) :: compSetting
     type(tError),             intent(inout) :: ierr
     real(kind=wp)                           :: z
 
+    real(kind=wp) :: x(2)
+
     ierr%icode = 0
     if (compSetting%designPointSetting == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
 
+    call copyDense2Full(xDense, x)
     z = linearResistanceSolicitation( x(1), x(2) )
 
     invocationCount = invocationCount + 1
@@ -1261,16 +1264,19 @@ end function zConvexFailureDomain
 
 
 !> Oblate spheroid with generic interface
-function zOblateSpheroid( x, compSetting, ierr ) result(z) bind(c)
+function zOblateSpheroid( xDense, compSetting, ierr ) result(z) bind(c)
 
-    real(kind=wp),            intent(inout) :: x(*)
+    real(kind=wp),            intent(inout) :: xDense(*)
     type(computationSetting), intent(in   ) :: compSetting
     type(tError),             intent(inout) :: ierr
     real(kind=wp)                           :: z
+    
+    real(kind=wp) :: x(11)
 
     ierr%icode = 0
     if (compSetting%designPointSetting == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
 
+    call copyDense2full(xDense, x)
     z = oblateSpheroid( x ( 1 ), x ( 2 : 11 )  )
 
     invocationCount = invocationCount + 1
