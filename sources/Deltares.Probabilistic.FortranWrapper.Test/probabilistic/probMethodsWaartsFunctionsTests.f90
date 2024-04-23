@@ -1270,12 +1270,13 @@ function zOblateSpheroid( xDense, compSetting, ierr ) result(z) bind(c)
     type(computationSetting), intent(in   ) :: compSetting
     type(tError),             intent(inout) :: ierr
     real(kind=wp)                           :: z
-    
-    real(kind=wp) :: x(11)
+
+    real(kind=wp), allocatable :: x(:)
 
     ierr%icode = 0
     if (compSetting%designPointSetting == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
 
+    allocate(x(11))
     call copyDense2full(xDense, x)
     z = oblateSpheroid( x ( 1 ), x ( 2 : 11 )  )
 
