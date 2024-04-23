@@ -28,7 +28,7 @@ namespace Deltares
 		std::shared_ptr<DesignPoint> AdaptiveImportanceSampling::getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner)
 		{
 			this->importanceSampling = std::make_shared<ImportanceSampling>();
-			importanceSampling->Settings = this->InternalSettings->clone();
+			importanceSampling->Settings = this->Settings->ImportanceSamplingSettings->clone();
 
 			modelRunner->updateStochastSettings(importanceSampling->Settings->StochastSet);
 
@@ -59,13 +59,13 @@ namespace Deltares
 
 				if (Settings->AutoMaximumSamplesNoResult)
 				{
-					importanceSampling->Settings->MaximumSamples = InternalSettings->MaximumSamples;
-					importanceSampling->Settings->MaximumSamplesNoResult = InternalSettings->MaximumSamples;
+					importanceSampling->Settings->MaximumSamples = Settings->ImportanceSamplingSettings->MaximumSamples;
+					importanceSampling->Settings->MaximumSamplesNoResult = Settings->ImportanceSamplingSettings->MaximumSamples;
 				}
 				else
 				{
-					importanceSampling->Settings->MaximumSamples = InternalSettings->MaximumSamplesNoResult;
-					importanceSampling->Settings->MaximumSamplesNoResult = InternalSettings->MaximumSamplesNoResult;
+					importanceSampling->Settings->MaximumSamples = Settings->ImportanceSamplingSettings->MaximumSamplesNoResult;
+					importanceSampling->Settings->MaximumSamplesNoResult = Settings->ImportanceSamplingSettings->MaximumSamplesNoResult;
 				}
 
 				int loopCounter = 1;
@@ -76,7 +76,7 @@ namespace Deltares
 
 				designPoint->convergenceReport->VarianceFactor = Settings->VarianceFactor;
 
-				bool fullExecuted = importanceSampling->Settings->MaximumSamples == this->InternalSettings->MaximumSamples;
+				bool fullExecuted = importanceSampling->Settings->MaximumSamples == this->Settings->ImportanceSamplingSettings->MaximumSamples;
 
 				while (!isStopped() && isNextLoopAllowed(Settings, loopCounter, designPoint->convergenceReport, designPoint))
 				{
@@ -100,8 +100,8 @@ namespace Deltares
 
 					if (loopCounter == Settings->MaxVarianceLoops)
 					{
-						importanceSampling->Settings->MaximumSamples = InternalSettings->MaximumSamples;
-						importanceSampling->Settings->MaximumSamplesNoResult = InternalSettings->MaximumSamplesNoResult;
+						importanceSampling->Settings->MaximumSamples = Settings->ImportanceSamplingSettings->MaximumSamples;
+						importanceSampling->Settings->MaximumSamplesNoResult = Settings->ImportanceSamplingSettings->MaximumSamplesNoResult;
 					}
 
 #ifdef __cpp_lib_format
@@ -126,7 +126,7 @@ namespace Deltares
 
 					designPoint->convergenceReport->VarianceFactor = Settings->VarianceFactor;
 
-					fullExecuted = importanceSampling->Settings->MaximumSamples == InternalSettings->MaximumSamples;
+					fullExecuted = importanceSampling->Settings->MaximumSamples == Settings->ImportanceSamplingSettings->MaximumSamples;
 				}
 
 				if (!fullExecuted)
@@ -140,7 +140,7 @@ namespace Deltares
 
 					this->setFactor(importanceSampling->Settings->StochastSet, Settings->VarianceFactor);
 
-					importanceSampling->Settings->MaximumSamples = InternalSettings->MaximumSamples;
+					importanceSampling->Settings->MaximumSamples = Settings->ImportanceSamplingSettings->MaximumSamples;
 
 					designPoint = importanceSampling->getDesignPoint(modelRunner);
 					designPoint->convergenceReport->VarianceFactor = Settings->VarianceFactor;

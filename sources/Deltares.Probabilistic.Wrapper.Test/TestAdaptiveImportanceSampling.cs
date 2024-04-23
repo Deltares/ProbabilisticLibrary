@@ -31,9 +31,10 @@ namespace Deltares.Probabilistics.Wrappers.Test
             ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
 
             AdaptiveImportanceSampling importanceSampling = new AdaptiveImportanceSampling();
-            importanceSampling.InternalSettings.MaximumSamples = 10000;
             importanceSampling.Settings.MaxVarianceLoops = 5;
             importanceSampling.Settings.MinVarianceLoops = 2;
+
+            importanceSampling.Settings.ImportanceSamplingSettings.MaximumSamples = 10000;
 
             DesignPoint designPoint = importanceSampling.GetDesignPoint(modelRunner);
 
@@ -47,12 +48,11 @@ namespace Deltares.Probabilistics.Wrappers.Test
             ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
 
             AdaptiveImportanceSampling importanceSampling = new AdaptiveImportanceSampling();
-            importanceSampling.InternalSettings.MaximumSamples = 100;
-            importanceSampling.InternalSettings.MinimumSamples = 100;
             importanceSampling.Settings.MaxVarianceLoops = 5;
             importanceSampling.Settings.MinVarianceLoops = 2;
-            importanceSampling.InternalSettings.MaximumSamplesNoResult = 100;
-            importanceSampling.InternalSettings.MaximumSamples = 200;
+            importanceSampling.Settings.ImportanceSamplingSettings.MaximumSamplesNoResult = 100;
+            importanceSampling.Settings.ImportanceSamplingSettings.MinimumSamples = 100;
+            importanceSampling.Settings.ImportanceSamplingSettings.MaximumSamples = 200;
 
             DesignPoint designPoint = importanceSampling.GetDesignPoint(modelRunner);
 
@@ -66,14 +66,13 @@ namespace Deltares.Probabilistics.Wrappers.Test
             ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
 
             AdaptiveImportanceSampling importanceSampling = new AdaptiveImportanceSampling();
-            importanceSampling.InternalSettings.MaximumSamples = 100;
-            importanceSampling.InternalSettings.MinimumSamples = 100;
-            importanceSampling.InternalSettings.RunSettings.MaxParallelProcesses = 4;
             importanceSampling.Settings.RunSettings.MaxParallelProcesses = 4;
             importanceSampling.Settings.MaxVarianceLoops = 5;
             importanceSampling.Settings.MinVarianceLoops = 2;
-            importanceSampling.InternalSettings.MaximumSamplesNoResult = 100;
-            importanceSampling.InternalSettings.MaximumSamples = 200;
+            importanceSampling.Settings.ImportanceSamplingSettings.MinimumSamples = 100;
+            importanceSampling.Settings.ImportanceSamplingSettings.RunSettings.MaxParallelProcesses = 4;
+            importanceSampling.Settings.ImportanceSamplingSettings.MaximumSamplesNoResult = 100;
+            importanceSampling.Settings.ImportanceSamplingSettings.MaximumSamples = 200;
 
             DesignPoint designPoint = importanceSampling.GetDesignPoint(modelRunner);
 
@@ -87,16 +86,16 @@ namespace Deltares.Probabilistics.Wrappers.Test
             ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
 
             AdaptiveImportanceSampling importanceSampling = new AdaptiveImportanceSampling();
-            importanceSampling.InternalSettings.MaximumSamples = 5000;
-            importanceSampling.InternalSettings.MinimumSamples = 1000;
 
-            importanceSampling.InternalSettings.MaximumSamples = 5000;
             importanceSampling.Settings.MaxVarianceLoops = 5;
             importanceSampling.Settings.MinVarianceLoops = 2;
             importanceSampling.Settings.Clustering = true;
 
             importanceSampling.Settings.ClusterSettings.MaxClusters = 5;
             importanceSampling.Settings.ClusterSettings.OptimizeNumberClusters = false;
+
+            importanceSampling.Settings.ImportanceSamplingSettings.MinimumSamples = 1000;
+            importanceSampling.Settings.ImportanceSamplingSettings.MaximumSamples = 5000;
 
             DesignPoint designPoint = importanceSampling.GetDesignPoint(modelRunner);
 
