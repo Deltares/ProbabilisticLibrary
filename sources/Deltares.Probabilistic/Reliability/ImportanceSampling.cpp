@@ -145,7 +145,7 @@ namespace Deltares
 #ifdef __cpp_lib_format
 						std::string identifier = std::format("Variance loop {0:}", Settings->Counter);
 #else
-						std::string identifier = "variance loop";
+						std::string identifier = "Variance loop " + std::to_string(Settings->Counter);
 #endif
 						return modelRunner->getDesignPoint(combinedCluster->DesignPointBuilder->getSample(), Statistics::StandardNormal::getUFromQ(combinedCluster->ProbFailure), convergenceReport, identifier);
 					}
@@ -246,7 +246,7 @@ namespace Deltares
 #ifdef __cpp_lib_format
 			std::string identifier = std::format("Variance loop {0:}", Settings->Counter);
 #else
-			std::string identifier = "variance loop";
+			std::string identifier = "variance loop " + std::to_string(Settings->Counter);
 #endif
 			std::shared_ptr<DesignPoint> designPoint = modelRunner->getDesignPoint(minSample, beta, convergenceReport, identifier);
 
@@ -257,7 +257,7 @@ namespace Deltares
 #ifdef __cpp_lib_format
 					std::string clusterIdentifier = std::format("Cluster {0:}", i + 1);
 #else
-					std::string clusterIdentifier = "Cluster";
+					std::string clusterIdentifier = "Cluster " + std::to_string(i+1);
 #endif
 
 					double clusterBeta = Statistics::StandardNormal::getUFromQ(clusterResults[i]->ProbFailure);
@@ -351,6 +351,10 @@ namespace Deltares
 
 				modelRunner->reportResult(report);
 				bool enoughSamples = nmaal >= Settings->MinimumSamples;
+				if (enoughSamples) 
+				{
+					std::cout << nmaal << " , " << convergence << std::endl;
+				}
 				return enoughSamples && convergence < Settings->VariationCoefficient;
 			}
 			else
