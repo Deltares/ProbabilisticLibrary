@@ -33,7 +33,7 @@ namespace Deltares
 			/// </summary>
 			bool OptimizeNumberOfClusters = false;
 
-			ClusterInitializationMethod ClusterInitializationMethod = ClusterInitializationMethod::PlusPlus;
+			ClusterInitializationMethod clusterInitializationMethod = ClusterInitializationMethod::PlusPlus;
 
 			/// <summary>
 			/// Max number of clusters when <see cref="optimizeNumberOfClusters"/> is true

@@ -26,7 +26,7 @@ namespace Deltares
 				{
 					Wrappers::ClusterInitializationMethod get()
 					{
-						switch (shared->object->ClusterInitializationMethod)
+						switch (shared->object->clusterInitializationMethod)
 						{
 						case Optimization::ClusterInitializationMethod::PlusPlus: return Wrappers::ClusterInitializationMethod::PlusPlus;
 						default: throw gcnew System::NotSupportedException("Cluster initialization method");
@@ -36,7 +36,7 @@ namespace Deltares
 					{
 						switch (value)
 						{
-						case Wrappers::ClusterInitializationMethod::PlusPlus: shared->object->ClusterInitializationMethod = Optimization::ClusterInitializationMethod::PlusPlus; break;
+						case Wrappers::ClusterInitializationMethod::PlusPlus: shared->object->clusterInitializationMethod = Optimization::ClusterInitializationMethod::PlusPlus; break;
 						default: throw gcnew System::NotSupportedException("Cluster initialization method");
 						}
 					}
