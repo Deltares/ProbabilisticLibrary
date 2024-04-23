@@ -68,7 +68,7 @@ namespace Deltares
 					std::shared_ptr<ClusterSettings> fixedClusterOptions = std::make_shared<ClusterSettings>();
 
 					fixedClusterOptions->NumberClusters = k;
-					fixedClusterOptions->ClusterInitializationMethod = this->Settings->ClusterInitializationMethod;
+					fixedClusterOptions->clusterInitializationMethod = this->Settings->clusterInitializationMethod;
 					fixedClusterOptions->MaxIterations = this->Settings->MaxIterations;
 					fixedClusterOptions->Trials = this->Settings->MaxIterations;
 					fixedClusterOptions->SampleHasWeighting = true;
@@ -99,7 +99,7 @@ namespace Deltares
 					std::shared_ptr<ClusterSettings> fixedClusterOptions = std::make_shared<ClusterSettings>();
 
 					fixedClusterOptions->NumberClusters = 1;
-					fixedClusterOptions->ClusterInitializationMethod = this->Settings->ClusterInitializationMethod;
+					fixedClusterOptions->clusterInitializationMethod = this->Settings->clusterInitializationMethod;
 					fixedClusterOptions->MaxIterations = this->Settings->MaxIterations;
 					fixedClusterOptions->Trials = this->Settings->MaxIterations;
 					fixedClusterOptions->SampleHasWeighting = true;
@@ -117,7 +117,7 @@ namespace Deltares
 				std::shared_ptr<ClusterSettings> fixedClusterOptions = std::make_shared<ClusterSettings>();
 
 				fixedClusterOptions->NumberClusters = this->Settings->MaxClusters;
-				fixedClusterOptions->ClusterInitializationMethod = this->Settings->ClusterInitializationMethod;
+				fixedClusterOptions->clusterInitializationMethod = this->Settings->clusterInitializationMethod;
 				fixedClusterOptions->MaxIterations = this->Settings->MaxIterations;
 				fixedClusterOptions->SampleHasWeighting = true;
 
@@ -183,7 +183,7 @@ namespace Deltares
 
 		std::vector<std::shared_ptr<KMeansClustering::Cluster>> KMeansClustering::InitializeClusters(std::vector<std::shared_ptr<Models::Sample>>& samples, std::shared_ptr<ClusterSettings> options, int randomSeed)
 		{
-			switch (options->ClusterInitializationMethod)
+			switch (options->clusterInitializationMethod)
 			{
 			case ClusterInitializationMethod::PlusPlus:
 				return InitPlusPlus(options->NumberClusters, samples, randomSeed, options->SampleHasWeighting);
