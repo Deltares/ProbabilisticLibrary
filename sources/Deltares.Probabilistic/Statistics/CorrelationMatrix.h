@@ -32,6 +32,7 @@ namespace Deltares
         public:
             void init(const int maxStochasts);
             std::vector<double> Cholesky(const std::vector<double>& uValues);
+            std::vector<double> InverseCholesky(const std::vector<double>& uValues);
             void SetCorrelation(const int i, const int j, double value);
             double GetCorrelation(const int i, const int j) const { return matrix(i, j); }
             bool IsIdentity() const;
@@ -39,12 +40,14 @@ namespace Deltares
             bool HasConflictingCorrelations() const;
             void resolveConflictingCorrelations();
             void CholeskyDecomposition();
+            void InverseCholeskyDecomposition();
             bool isFullyCorrelated(const int i, std::vector<int> varyingIndices) const;
             void filter(const std::shared_ptr<CorrelationMatrix> m, const std::vector<int>& index);
             indexWithCorrelation findDependent(const int i) const;
         private:
-            Deltares::Reliability::Matrix matrix = Deltares::Reliability::Matrix(0, 0);
-            Deltares::Reliability::Matrix choleskyMatrix = Deltares::Reliability::Matrix(0, 0);
+            Deltares::Numeric::Matrix matrix = Deltares::Numeric::Matrix(0, 0);
+            Deltares::Numeric::Matrix choleskyMatrix = Deltares::Numeric::Matrix(0, 0);
+            Deltares::Numeric::Matrix inverseCholeskyMatrix = Deltares::Numeric::Matrix(0, 0);
             int findNewIndex(const std::vector<int> index, const size_t i);
             std::vector<indexWithCorrelation> indexer;
             std::vector<correlationPair> inputCorrelations;

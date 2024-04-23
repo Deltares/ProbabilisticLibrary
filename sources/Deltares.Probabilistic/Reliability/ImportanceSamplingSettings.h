@@ -93,6 +93,8 @@ namespace Deltares
 				clone->RunSettings = this->RunSettings;
 				clone->randomSettings = this->randomSettings;
 
+				clone->StochastSet->AreStartValuesCorrelated = this->StochastSet->AreStartValuesCorrelated;
+
 				for (size_t i = 0; i < this->StochastSet->getStochastCount(); i++)
 				{
 					clone->StochastSet->stochastSettings.push_back(this->StochastSet->stochastSettings[i]->clone());

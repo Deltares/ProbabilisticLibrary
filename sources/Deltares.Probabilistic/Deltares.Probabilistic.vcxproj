@@ -155,6 +155,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Math\MatrixSupport.h" />
     <ClInclude Include="Optimization\KMeansClustering.h" />
     <ClInclude Include="Optimization\ClusterSettings.h" />
     <ClInclude Include="Reliability\AdaptiveImportanceSampling.h" />
@@ -264,6 +265,7 @@
     <ClInclude Include="Statistics\Distributions\ConditionalWeibullDistribution.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Math\MatrixSupport.cpp" />
     <ClCompile Include="Optimization\KMeansClustering.cpp" />
     <ClCompile Include="Optimization\ClusterSettings.cpp" />
     <ClCompile Include="Reliability\AdaptiveImportanceSampling.cpp" />

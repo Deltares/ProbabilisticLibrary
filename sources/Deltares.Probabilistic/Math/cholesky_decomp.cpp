@@ -2,9 +2,10 @@
 #include "matrix.h"
 #include "../Utils/probLibException.h"
 
-namespace Deltares {
-    namespace Reliability {
-
+namespace Deltares
+{
+    namespace Numeric
+	{
         // Cholesky decomposition
         Matrix Matrix::CholeskyDecomposition() const
         {

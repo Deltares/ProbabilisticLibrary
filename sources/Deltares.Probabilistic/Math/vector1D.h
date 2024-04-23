@@ -4,8 +4,11 @@
 #include <initializer_list>
 #include "../Utils/probLibException.h"
 
-namespace Deltares {
-    namespace Reliability {
+namespace Deltares
+{
+    namespace Numeric
+	{
+        using Deltares::Reliability::probLibException;
 
         class vector1D
         {
