@@ -1,9 +1,8 @@
 ﻿using Deltares.Models.Wrappers;
-using Deltares.Probabilistics.Wrappers.Test;
 using Deltares.Reliability.Wrappers;
 using NUnit.Framework;
 
-namespace Deltares.Reliability.Test
+namespace Deltares.Probabilistics.Wrappers.Test
 {
     [TestFixture]
     public class TestAdaptiveImportanceSampling
@@ -32,7 +31,7 @@ namespace Deltares.Reliability.Test
             ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
 
             AdaptiveImportanceSampling importanceSampling = new AdaptiveImportanceSampling();
-            importanceSampling.InternalSettings.MaximumSamples = 1000;
+            importanceSampling.InternalSettings.MaximumSamples = 10000;
             importanceSampling.Settings.MaxVarianceLoops = 5;
             importanceSampling.Settings.MinVarianceLoops = 2;
 
@@ -52,8 +51,8 @@ namespace Deltares.Reliability.Test
             importanceSampling.InternalSettings.MinimumSamples = 100;
             importanceSampling.Settings.MaxVarianceLoops = 5;
             importanceSampling.Settings.MinVarianceLoops = 2;
-            importanceSampling.Settings.MaximumSamplesNoResult = 100;
-            importanceSampling.Settings.MaximumSamples = 200;
+            importanceSampling.InternalSettings.MaximumSamplesNoResult = 100;
+            importanceSampling.InternalSettings.MaximumSamples = 200;
 
             DesignPoint designPoint = importanceSampling.GetDesignPoint(modelRunner);
 
@@ -73,8 +72,8 @@ namespace Deltares.Reliability.Test
             importanceSampling.Settings.RunSettings.MaxParallelProcesses = 4;
             importanceSampling.Settings.MaxVarianceLoops = 5;
             importanceSampling.Settings.MinVarianceLoops = 2;
-            importanceSampling.Settings.MaximumSamplesNoResult = 100;
-            importanceSampling.Settings.MaximumSamples = 200;
+            importanceSampling.InternalSettings.MaximumSamplesNoResult = 100;
+            importanceSampling.InternalSettings.MaximumSamples = 200;
 
             DesignPoint designPoint = importanceSampling.GetDesignPoint(modelRunner);
 
@@ -90,9 +89,8 @@ namespace Deltares.Reliability.Test
             AdaptiveImportanceSampling importanceSampling = new AdaptiveImportanceSampling();
             importanceSampling.InternalSettings.MaximumSamples = 5000;
             importanceSampling.InternalSettings.MinimumSamples = 1000;
-            importanceSampling.InternalSettings.MaxClusters = 5;
 
-            importanceSampling.Settings.MaximumSamples = 5000;
+            importanceSampling.InternalSettings.MaximumSamples = 5000;
             importanceSampling.Settings.MaxVarianceLoops = 5;
             importanceSampling.Settings.MinVarianceLoops = 2;
             importanceSampling.Settings.Clustering = true;

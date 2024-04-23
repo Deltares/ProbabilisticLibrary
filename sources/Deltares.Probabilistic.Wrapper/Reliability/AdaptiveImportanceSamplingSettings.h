@@ -35,18 +35,6 @@ namespace Deltares
 				~AdaptiveImportanceSamplingSettings() { this->!AdaptiveImportanceSamplingSettings(); }
 				!AdaptiveImportanceSamplingSettings() { delete shared; }
 
-				property int MaximumSamples
-				{
-					int get() { return shared->object->MaximumSamples; }
-					void set(int value) { shared->object->MaximumSamples = value; }
-				}
-
-				property int MaximumSamplesNoResult
-				{
-					int get() { return shared->object->MaximumSamplesNoResult; }
-					void set(int value) { shared->object->MaximumSamplesNoResult = value; }
-				}
-
 				property double VarianceFactor
 				{
 					double get() { return shared->object->VarianceFactor; }
