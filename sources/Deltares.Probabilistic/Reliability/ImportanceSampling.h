@@ -8,6 +8,7 @@ namespace Deltares
 	namespace Reliability
 	{
 		typedef std::function<void(std::shared_ptr<Sample>)> RegisterSampleLambda;
+		typedef std::function<bool(std::shared_ptr<ImportanceSamplingCluster>)> BreakLoopLambda;
 
 		class ImportanceSampling : public ReliabilityMethod
 		{
@@ -15,8 +16,10 @@ namespace Deltares
 			std::shared_ptr<ImportanceSamplingSettings> Settings = std::make_shared<ImportanceSamplingSettings>();
 			std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
 			void setSampleLambda(RegisterSampleLambda sampleFunction);
+			void setBreakLoopLambda(BreakLoopLambda breakFunction);
 		private:
 			RegisterSampleLambda sampleFunction = nullptr;
+			BreakLoopLambda breakFunction = nullptr;
 			std::vector<std::shared_ptr<ImportanceSamplingCluster>> getClusters();
 			bool checkConvergence(std::shared_ptr<Models::ModelRunner> modelRunner, double pf, double minWeight, int samples, int nmaal);
 			double getConvergence(double pf, double minWeight, int samples);

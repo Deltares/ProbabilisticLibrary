@@ -12,16 +12,17 @@ namespace Deltares
 		class AdaptiveImportanceSamplingSettings
 		{
 		public:
+			int MinVarianceLoops = 1;
 			int MaxVarianceLoops = 5;
+
 			bool AutoMaximumSamplesNoResult = false;
-			int MaximumSamplesNoResult = 10000;
-			int MaximumSamples = 10000;
 			int MinimumFailedSamples = 0;
+
 			double LoopVarianceIncrement = 0.5;
 			bool StartPointOnLimitState = false;
 			double RestartStepSize = 0;
 			double VarianceFactor= 1.5;
-			int MinVarianceLoops = 1;
+			double MaxClusters = 1;
 			double EpsWeightSample = 0.1;
 			double FractionFailed = 0.1;
 			bool Clustering = false;
@@ -38,8 +39,11 @@ namespace Deltares
 					MaxVarianceLoops >= MinVarianceLoops &&
 					RestartStepSize >= 0 &&
 					FractionFailed >= 0 && FractionFailed <= 0.5 &&
+					EpsWeightSample >= 0.0001 && EpsWeightSample <= 1 &&
+					MaxClusters >= 1 &&
 					StartPointSettings->isValid() &&
-					RunSettings->isValid();
+					RunSettings->isValid() && 
+					ClusterSettings->isValid();
 			}
 		};
 	}

@@ -27,9 +27,14 @@ namespace Deltares
 {
 	namespace Reliability
 	{
-		void ImportanceSampling::setSampleLambda(RegisterSampleLambda sampleFunction)
+		void ImportanceSampling::setSampleLambda(RegisterSampleLambda newSampleFunction)
 		{
-			this->sampleFunction = sampleFunction;
+			this->sampleFunction = newSampleFunction;
+		}
+
+		void ImportanceSampling::setBreakLoopLambda(BreakLoopLambda newBreakFunction)
+		{
+			this->breakFunction = newBreakFunction;
 		}
 
 		std::shared_ptr<DesignPoint> ImportanceSampling::getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner)
@@ -142,12 +147,7 @@ namespace Deltares
 					if (modelRunner->shouldExitPrematurely(samples))
 					{
 						// return the result so far
-#ifdef __cpp_lib_format
-						std::string identifier = std::format("Variance loop {0:}", Settings->Counter);
-#else
-						std::string identifier = "variance loop";
-#endif
-						return modelRunner->getDesignPoint(combinedCluster->DesignPointBuilder->getSample(), Statistics::StandardNormal::getUFromQ(combinedCluster->ProbFailure), convergenceReport, identifier);
+						return modelRunner->getDesignPoint(combinedCluster->DesignPointBuilder->getSample(), Statistics::StandardNormal::getUFromQ(combinedCluster->ProbFailure), convergenceReport);
 					}
 
 					zIndex = 0;
@@ -243,12 +243,7 @@ namespace Deltares
 			convergenceReport->Convergence = getConvergence(probFailure, designPointWeight, combinedCluster->TotalCount);
 			convergenceReport->NearestSample = combinedCluster->NearestSample;
 
-#ifdef __cpp_lib_format
-			std::string identifier = std::format("Variance loop {0:}", Settings->Counter);
-#else
-			std::string identifier = "variance loop";
-#endif
-			std::shared_ptr<DesignPoint> designPoint = modelRunner->getDesignPoint(minSample, beta, convergenceReport, identifier);
+			std::shared_ptr<DesignPoint> designPoint = modelRunner->getDesignPoint(minSample, beta, convergenceReport);
 
 			if (clusterResults.size() > 1)
 			{
@@ -427,7 +422,6 @@ namespace Deltares
 			std::shared_ptr<ReliabilityReport> report = std::make_shared<ReliabilityReport>();
 			report->Index = sampleIndex;
 			report->MaxSteps = this->Settings->MaximumSamples;
-			report->Loop = this->Settings->Counter;
 
 			modelRunner->reportResult(report);
 		}
@@ -440,7 +434,7 @@ namespace Deltares
 				reported = true;
 			}
 
-			if (!settings->AutoMaximumSamplesNoResult && sampleIndex > settings->MaximumSamplesNoResult)
+			if (sampleIndex > settings->MaximumSamplesNoResult)
 			{
 				// assume no failure can be calculated
 				report(modelRunner, sampleIndex);
@@ -457,17 +451,9 @@ namespace Deltares
 				return true;
 			}
 
-			//TODO: Implement with adaptive importance sampling
-
-			if (settings->AutoMaximumSamplesNoResult && enoughSamples && settings->MaxVarianceLoops > 1 && settings->Counter < settings->MaxVarianceLoops)
+			if (enoughSamples && breakFunction != nullptr && breakFunction(results))
 			{
-				double nAdditionEstimate = results->TotalCount * ((results->MaxFailWeight / results->FailWeight / settings->EpsWeightSample) - 1.0);
-				double nRequiredIdealEstimate = 2 * (Statistics::StandardNormal::getUFromQ(results->ProbFailure) + 1) / settings->EpsWeightSample;
-
-				if (nAdditionEstimate > nRequiredIdealEstimate)
-				{
-					return true;
-				}
+				return true;
 			}
 
 			return false;
