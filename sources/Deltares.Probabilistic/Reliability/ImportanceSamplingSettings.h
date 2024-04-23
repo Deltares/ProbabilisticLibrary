@@ -18,13 +18,6 @@ namespace Deltares
 			double VariationCoefficient = 0.05;
 			double VarianceFactor = 1;
 
-			// to be moved to adaptive importance sampling settings
-			//int MaxVarianceLoops = 5;
-			//bool AutoMaximumSamplesNoResult = false;
-			//int MaxClusters = 1;
-			//double EpsWeightSample = 0.1;
-			//bool OptimizeNumberClusters = false;
-
 			DesignPointMethod designPointMethod = DesignPointMethod::CenterOfGravity;
 			std::shared_ptr<Deltares::Models::RandomSettings> randomSettings = std::make_shared<Deltares::Models::RandomSettings>();
 			std::shared_ptr<Models::RunSettings> RunSettings = std::make_shared<Models::RunSettings>();

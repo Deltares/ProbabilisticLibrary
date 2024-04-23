@@ -21,16 +21,13 @@ namespace Deltares
 
 				AdaptiveImportanceSamplingSettings^ Settings = gcnew AdaptiveImportanceSamplingSettings();
 
-				ImportanceSamplingSettings^ InternalSettings = gcnew ImportanceSamplingSettings();
-
 				System::Object^ GetSettings() override { return Settings; }
 
-				bool IsValid() override { return InternalSettings->IsValid(); }
+				bool IsValid() override { return Settings->IsValid(); }
 
 				std::shared_ptr<Reliability::ReliabilityMethod> GetReliabilityMethod() override
 				{
 					shared->object->Settings = Settings->GetSettings();
-					shared->object->InternalSettings = InternalSettings->GetSettings();
 					return shared->object;
 				}
 			};

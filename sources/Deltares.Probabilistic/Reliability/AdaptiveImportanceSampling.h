@@ -14,7 +14,6 @@ namespace Deltares
 		{
 		public:
 			std::shared_ptr<AdaptiveImportanceSamplingSettings> Settings = std::make_shared<AdaptiveImportanceSamplingSettings>();
-			std::shared_ptr<ImportanceSamplingSettings> InternalSettings = std::make_shared<ImportanceSamplingSettings>();
 			std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
 		protected:
 			void setStopped() override;
