@@ -15,6 +15,7 @@ namespace Deltares
                 void testLinearInterpolate();
                 void testLogLinearInterpolate();
                 void testHarmonicInterpolate();
+                void testMinMaxFunctions();
                 const double margin = 1e-9;
             };
         }
