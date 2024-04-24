@@ -13,6 +13,7 @@
 using namespace Deltares::ProbLibCore;
 using namespace Deltares::Models;
 using namespace Deltares::Reliability;
+using namespace Deltares::Numeric;
 
 const size_t lenSmallStr = 32;
 
