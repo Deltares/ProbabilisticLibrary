@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ImportanceSamplingSettings.h"
-#include "../Model/RunSettings.h"
 #include "../Optimization/ClusterSettings.h"
 #include "StartPointCalculatorSettings.h"
 #include "StochastSettingsSet.h"
