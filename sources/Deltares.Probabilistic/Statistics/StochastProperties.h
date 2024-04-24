@@ -13,25 +13,79 @@ namespace Deltares
 {
 	namespace Statistics
 	{
+		/**
+		 * \brief Defines the stochastic parameters of a stochastic variable
+		 * \remark Mean and standard deviation are not stochastic parameters, but are derived based on these stochastic parameters and a distribution type
+		 */
 		class StochastProperties
 		{
 
 		public:
-
+			/**
+			 * \brief Location, for normal distribution equal to the mean
+			 */
 			double Location = 0;
+
+			/**
+			 * \brief Scale, for normal distribution equal to the standard deviation
+			 */
 			double Scale = 0;
+
+			/**
+			 * \brief Minimum allowed value
+			 */
 			double Minimum = 0;
+
+			/**
+			 * \brief Maximum allowed value
+			 */
 			double Maximum = 0;
+
+			/**
+			 * \brief Value by which the stochast is shifted
+			 */
 			double Shift = 0;
+
+			/**
+			 * \brief Secondary value by which the stochast is shifted
+			 */
 			double ShiftB = 0;
+
+			/**
+			 * \brief Shape, defines the shape of the distribution
+			 */
 			double Shape = 1;
+
+			/**
+			 * \brief Secondary shape, defines the shape of the distribution
+			 */
 			double ShapeB = 1;
+
+			/**
+			 * \brief Number of observations 
+			 */
 			int Observations = 2;
 
+			/**
+			 * \brief Collection of discrete values
+			 */
 			std::vector<std::shared_ptr<DiscreteValue>> DiscreteValues;
+
+			/**
+			 * \brief Collection of bins in a histogram distribution
+			 */
 			std::vector<std::shared_ptr<HistogramValue>> HistogramValues;
+
+			/**
+			 * \brief Collection of CDF values
+			 */
 			std::vector<std::shared_ptr<FragilityValue>> FragilityValues;
 
+			/**
+			 * \brief General method to apply a value to one of the stochastic parameters
+			 * \param property Stochastic parameter type
+			 * \param value Value to be applied
+			 */
 			void applyValue(DistributionPropertyType property, double value)
 			{
 				switch (property)
@@ -49,6 +103,11 @@ namespace Deltares
 				}
 			}
 
+			/**
+			 * \brief Makes a copy of the stochastic properties
+			 * \remark Discrete values, histogram values and CDF values are omitted
+			 * \return Copy
+			 */
 			std::shared_ptr<StochastProperties> clone()
 			{
 				std::shared_ptr<StochastProperties> clone = std::make_shared<StochastProperties>();
