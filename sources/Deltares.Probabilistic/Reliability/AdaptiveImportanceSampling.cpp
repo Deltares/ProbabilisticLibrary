@@ -77,8 +77,9 @@ namespace Deltares
 				designPoint->convergenceReport->VarianceFactor = Settings->VarianceFactor;
 
 				bool fullExecuted = importanceSampling->Settings->MaximumSamples == this->Settings->ImportanceSamplingSettings->MaximumSamples;
+				bool hasChanged = true;
 
-				while (!isStopped() && isNextLoopAllowed(Settings, loopCounter, designPoint->convergenceReport, designPoint))
+				while (!isStopped() && hasChanged && isNextLoopAllowed(Settings, loopCounter, designPoint->convergenceReport, designPoint))
 				{
 					loopCounter++;
 
@@ -91,42 +92,45 @@ namespace Deltares
 
 					if (this->Settings->Clustering)
 					{
-						this->updateClusters(loopCounter);
+						hasChanged = this->updateClusters(loopCounter);
 					}
 					else
 					{
-						this->updateStartPoint(designPoint, modelRunner, loopCounter);
+						hasChanged = this->updateStartPoint(designPoint, modelRunner, loopCounter);
 					}
 
-					if (loopCounter == Settings->MaxVarianceLoops)
+					if (hasChanged)
 					{
-						importanceSampling->Settings->MaximumSamples = Settings->ImportanceSamplingSettings->MaximumSamples;
-						importanceSampling->Settings->MaximumSamplesNoResult = Settings->ImportanceSamplingSettings->MaximumSamplesNoResult;
+						if (loopCounter == Settings->MaxVarianceLoops)
+						{
+							importanceSampling->Settings->MaximumSamples = Settings->ImportanceSamplingSettings->MaximumSamples;
+							importanceSampling->Settings->MaximumSamplesNoResult = Settings->ImportanceSamplingSettings->MaximumSamplesNoResult;
+						}
+
+#ifdef __cpp_lib_format
+						std::string identifier = std::format("Variance loop {0:}", loopCounter - 1);
+#else
+						std::string identifier = "variance loop";
+#endif
+						designPoint->Identifier = identifier;
+
+						previousDesignPoints.push_back(designPoint);
+
+						modelRunner->clear();
+						clusterSamples.clear();
+
+#ifdef __cpp_lib_format
+						auto text = std::format("Calculating variance loop #{0:}.", loopCounter);
+#else
+						auto text = "Variance loop = " + std::to_string(loopCounter);
+#endif
+						modelRunner->doTextualProgress(ProgressType::Global, text);
+						designPoint = importanceSampling->getDesignPoint(modelRunner);
+
+						designPoint->convergenceReport->VarianceFactor = Settings->VarianceFactor;
+
+						fullExecuted = importanceSampling->Settings->MaximumSamples == Settings->ImportanceSamplingSettings->MaximumSamples;
 					}
-
-#ifdef __cpp_lib_format
-					std::string identifier = std::format("Variance loop {0:}", loopCounter - 1);
-#else
-					std::string identifier = "variance loop";
-#endif
-					designPoint->Identifier = identifier;
-
-					previousDesignPoints.push_back(designPoint);
-
-					modelRunner->clear();
-					clusterSamples.clear();
-
-#ifdef __cpp_lib_format
-					auto text = std::format("Calculating variance loop #{0:}.", loopCounter);
-#else
-					auto text = "Variance loop = " + std::to_string(loopCounter);
-#endif
-					modelRunner->doTextualProgress(ProgressType::Global, text);
-					designPoint = importanceSampling->getDesignPoint(modelRunner);
-
-					designPoint->convergenceReport->VarianceFactor = Settings->VarianceFactor;
-
-					fullExecuted = importanceSampling->Settings->MaximumSamples == Settings->ImportanceSamplingSettings->MaximumSamples;
 				}
 
 				if (!fullExecuted)
@@ -227,31 +231,53 @@ namespace Deltares
 			}
 		}
 
-		void AdaptiveImportanceSampling::updateClusters(int loopCounter)
+		bool AdaptiveImportanceSampling::updateClusters(int loopCounter)
 		{
-			if (loopCounter < Settings->MaxVarianceLoops && this->clusterSamples.size() < Settings->MinimumFailedSamples)
+			if (loopCounter < Settings->MaxVarianceLoops && this->clusterSamples.size() < Settings->MinimumFailedSamples && Settings->LoopVarianceIncrement > 0)
 			{
 				this->addFactor(importanceSampling->Settings->StochastSet, Settings->LoopVarianceIncrement);
+				return true;
 			}
 			else
 			{
-				this->importanceSampling->Settings->Clusters.clear();
+				// get new cluster centers
+				std::vector<std::shared_ptr<Sample>> newClusterCenters = this->getClusterCenters(this->clusterSamples);
 
-				for (std::shared_ptr<Sample> center : this->getClusterCenters(this->clusterSamples))
+				// check whether there is a change
+				bool hasChanged = newClusterCenters.size() != this->importanceSampling->Settings->Clusters.size();
+				if (!hasChanged)
 				{
-					this->importanceSampling->Settings->Clusters.push_back(center);
+					for (size_t i = 0; i < newClusterCenters.size(); i++)
+					{
+						hasChanged |= !newClusterCenters[i]->areValuesEqual(this->importanceSampling->Settings->Clusters[i]);
+					}
 				}
 
-				this->setFactor(importanceSampling->Settings->StochastSet, Settings->VarianceFactor);
-			}
+				// use new clusters if they have been modified
 
-			this->clusterSamples.clear();
+				if (hasChanged)
+				{
+					this->importanceSampling->Settings->Clusters.clear();
+
+					for (std::shared_ptr<Sample> center : this->getClusterCenters(this->clusterSamples))
+					{
+						this->importanceSampling->Settings->Clusters.push_back(center);
+					}
+
+					this->setFactor(importanceSampling->Settings->StochastSet, Settings->VarianceFactor);
+				}
+
+				return hasChanged;
+			}
 		}
 
-		void AdaptiveImportanceSampling::updateStartPoint(std::shared_ptr<DesignPoint> designPoint, std::shared_ptr<Models::ModelRunner> modelRunner, int loopCounter)
+		bool AdaptiveImportanceSampling::updateStartPoint(std::shared_ptr<DesignPoint> designPoint, std::shared_ptr<Models::ModelRunner> modelRunner, int loopCounter)
 		{
 			LoopMeasureType loopMeasureType = LoopMeasureType::CopyDesignPoint;
-			if (loopCounter < Settings->MaxVarianceLoops && designPoint->convergenceReport->FailedSamples < Settings->MinimumFailedSamples)
+
+			if (loopCounter < Settings->MaxVarianceLoops &&
+				Settings->LoopVarianceIncrement > 0 &&
+				designPoint->convergenceReport->FailedSamples < Settings->MinimumFailedSamples)
 			{
 				loopMeasureType = LoopMeasureType::IncreaseVariance;
 			}
@@ -260,14 +286,26 @@ namespace Deltares
 			{
 			case LoopMeasureType::IncreaseVariance:
 				this->addFactor(importanceSampling->Settings->StochastSet, Settings->LoopVarianceIncrement);
-				break;
+				return true;
 			case LoopMeasureType::CopyDesignPoint:
 			{
 				std::shared_ptr<Sample> newStartPoint = this->getStartPoint(modelRunner, designPoint);
-				importanceSampling->Settings->StochastSet->setStartPoint(newStartPoint);
-				this->setFactor(importanceSampling->Settings->StochastSet, Settings->VarianceFactor);
-				break;
+
+				if (this->lastStartPoint != nullptr && !this->lastStartPoint->areValuesEqual(newStartPoint))
+				{
+					this->lastStartPoint = newStartPoint;
+					importanceSampling->Settings->StochastSet->setStartPoint(newStartPoint);
+					this->setFactor(importanceSampling->Settings->StochastSet, Settings->VarianceFactor);
+
+					return true;
+				}
+				else
+				{
+					return false;
+				}
 			}
+			default:
+				throw probLibException("Loop measure type");
 			}
 		}
 
@@ -292,8 +330,16 @@ namespace Deltares
 
 					newSample = directionDesignPoint->getSample();
 				}
-
-				this->lastStartPoint = newSample;
+				else if (Settings->RestartStepSize > 0 && this->lastStartPoint != nullptr)
+				{
+					// avoid a new start point very close to the old start point
+					for (size_t i = 0; i < newSample->Values.size(); i++)
+					{
+						const double diff = newSample->Values[i] - this->lastStartPoint->Values[i];
+						const double steps = std::round(diff / Settings->RestartStepSize);
+						newSample->Values[i] = this->lastStartPoint->Values[i] + steps * Settings->RestartStepSize;
+					}
+				}
 
 				return newSample;
 			}

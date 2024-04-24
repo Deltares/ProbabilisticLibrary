@@ -84,6 +84,24 @@ namespace Deltares
 			}
 		}
 
+		bool Sample::areValuesEqual(std::shared_ptr<Sample> other)
+		{
+			if (this->Values.size() != other->Values.size())
+			{
+				return false;
+			}
+
+			for (size_t i = 0; i < this->Values.size(); i++)
+			{
+				if (this->Values[i] != other->Values[i])
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
+
 		std::shared_ptr<Sample> Sample::clone()
 		{
 			std::shared_ptr<Sample> clonedSample = std::make_shared<Sample>(this->Values);

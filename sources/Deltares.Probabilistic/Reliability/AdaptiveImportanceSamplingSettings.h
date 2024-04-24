@@ -10,6 +10,9 @@ namespace Deltares
 {
 	namespace Reliability
 	{
+		/**
+		 * \brief Settings for adaptive importance sampling algorithm
+		 */
 		class AdaptiveImportanceSamplingSettings
 		{
 		public:

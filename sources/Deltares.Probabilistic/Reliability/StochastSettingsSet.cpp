@@ -21,7 +21,7 @@ namespace Deltares
 			}
 		}
 
-		std::shared_ptr<Sample> StochastSettingsSet::getSample()
+		std::shared_ptr<Sample> StochastSettingsSet::getStartPoint()
 		{
 			std::shared_ptr<Sample> sample = std::make_shared<Sample>(this->getVaryingStochastCount());
 

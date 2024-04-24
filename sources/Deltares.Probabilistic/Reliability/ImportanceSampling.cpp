@@ -65,7 +65,7 @@ namespace Deltares
 			std::vector<std::shared_ptr<ImportanceSamplingCluster>> clusters;
 
 			std::shared_ptr<ImportanceSamplingCluster> combinedCluster = std::make_shared<ImportanceSamplingCluster>();
-			combinedCluster->Center = this->Settings->StochastSet->getSample();
+			combinedCluster->Center = this->Settings->StochastSet->getStartPoint();
 
 			std::vector<double> factors = this->getFactors(Settings->StochastSet);
 
@@ -477,7 +477,7 @@ namespace Deltares
 			else
 			{
 				std::shared_ptr<ImportanceSamplingCluster> cluster = std::make_shared<ImportanceSamplingCluster>();
-				cluster->Center = this->Settings->StochastSet->getSample();
+				cluster->Center = this->Settings->StochastSet->getStartPoint();
 				cluster->DesignPointBuilder = std::make_shared<DesignPointBuilder>(this->Settings->StochastSet->getVaryingStochastCount(), this->Settings->designPointMethod, this->Settings->StochastSet);
 
 				clusters.push_back(cluster);

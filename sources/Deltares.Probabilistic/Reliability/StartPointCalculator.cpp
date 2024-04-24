@@ -17,7 +17,7 @@ namespace Deltares
 			switch (this->Settings->StartMethod)
 			{
 			case StartMethodType::None:
-				return this->Settings->StochastSet->getSample();
+				return this->Settings->StochastSet->getStartPoint();
 			case StartMethodType::One:
 				return getOneStartPoint(modelRunner);
 			case StartMethodType::RaySearch:
@@ -55,7 +55,7 @@ namespace Deltares
 
 		std::shared_ptr<Sample> StartPointCalculator::getOneStartPoint(std::shared_ptr<Models::ModelRunner> modelRunner)
 		{
-			std::shared_ptr<Sample> startPoint = this->Settings->StochastSet->getSample();
+			std::shared_ptr<Sample> startPoint = this->Settings->StochastSet->getStartPoint();
 
 			correctDefaultValues(startPoint);
 
@@ -64,14 +64,14 @@ namespace Deltares
 
 		std::shared_ptr<Sample> StartPointCalculator::getGivenVectorStartPoint(std::shared_ptr<Models::ModelRunner> modelRunner)
 		{
-			std::shared_ptr<Sample> startPoint = this->Settings->StochastSet->getSample();
+			std::shared_ptr<Sample> startPoint = this->Settings->StochastSet->getStartPoint();
 			startPoint->Values = this->Settings->startVector;
 			return startPoint;
 		}
 
 		std::shared_ptr<Sample> StartPointCalculator::getRayStartPoint(std::shared_ptr<Models::ModelRunner> modelRunner)
 		{
-			std::shared_ptr<Sample> startPoint = this->Settings->StochastSet->getSample();
+			std::shared_ptr<Sample> startPoint = this->Settings->StochastSet->getStartPoint();
 
 			if (this->Settings->startVector.size() > 0)
 			{
@@ -202,7 +202,7 @@ namespace Deltares
 
 			double z0Fac = z0 < 0 ? -1 : 1;
 
-			std::shared_ptr<Sample> startPoint = this->Settings->StochastSet->getSample();
+			std::shared_ptr<Sample> startPoint = this->Settings->StochastSet->getStartPoint();
 
 			correctDefaultValues(startPoint);
 
@@ -235,7 +235,7 @@ namespace Deltares
 				std::vector<std::shared_ptr<Sample>> samples;
 				for (const auto& task : tasks)
 				{
-					std::shared_ptr<Sample> uRay = this->Settings->StochastSet->getSample();
+					std::shared_ptr<Sample> uRay = this->Settings->StochastSet->getStartPoint();
 					for (int k = 0; k < uSphere->Values.size(); k++)
 					{
 						uRay->Values[k] = task(k);

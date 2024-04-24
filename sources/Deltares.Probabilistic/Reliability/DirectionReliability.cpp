@@ -126,7 +126,7 @@ namespace Deltares
 			double z = modelRunner->getZValue(zeroSample);
 			double z0 = this->getZFactor(z);
 
-			std::shared_ptr<Sample> directionSample = this->Settings->StochastSet->getSample();
+			std::shared_ptr<Sample> directionSample = this->Settings->StochastSet->getStartPoint();
 
 			double beta = getBeta(modelRunner, directionSample, z0);
 //			auto alphas = getAlphas(directionSample, directionSample->getSize(), z0);
