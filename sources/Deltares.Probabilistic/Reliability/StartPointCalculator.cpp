@@ -251,7 +251,7 @@ namespace Deltares
 				if (zValues[indexMinimal] < 0.0)
 				{
 					auto previous = (i > 0 ? previousSamples[indexMinimal] : zeroSample);
-					bestSample = refineSpherePoint(radiusFactor, samples[indexMinimal], previous);
+					bestSample = refineSpherePoint(samples[indexMinimal], previous);
 					break;
 				}
 
@@ -278,44 +278,14 @@ namespace Deltares
 			}
 		}
 
-		std::shared_ptr<Sample> StartPointCalculator::refineSpherePoint(const double radiusFactor, const std::shared_ptr<Sample> u,
-			const std::shared_ptr<Sample> previous)
+		std::shared_ptr<Sample> StartPointCalculator::refineSpherePoint( const std::shared_ptr<Sample> u, const std::shared_ptr<Sample> previous)
 		{
-			// determine the u-vector for which the z-function is either minimal
-			// or where it becomes negative
-			// in the latter case, interpolate to get an optimal starting vector
+			// determine the u-vector for which the z-function is 0.0, assuming linear behaviour between the samples u and previous.
 
-			double z = u->Z;
-			double coFactor = (radiusFactor - 0.05) / radiusFactor;
+			auto betaZeqZero = Numeric::NumericSupport::interpolate(0.0, previous->Z, previous->getBeta(), u->Z, u->getBeta());
 
-			std::shared_ptr<Sample> u2 = u->getMultipliedSample(coFactor);
-
-			// factor related to number of steps above
-			double z2 = previous->Z;
-
-			// assume fz(uFactor) = A + B * uFactor
-			// z = A + B * 1.0
-			// z2 = A + B * coFactor
-			// z-z2 = B(1-coFactor) => B = (z-z2)/(1-coFactor)
-			// A = z - B
-			// fz = 0 => A + B * uFactor = 0
-			// => uFactor = -A / B
-			// if B near 0 => z near z2 => refinement does not improve the result, so return u
-			double B = (z - z2) / (1.0 - coFactor);
-			double A = z - B;
-
-			if (std::abs(B) > 1e-25)
-			{
-				double uFactor = -A / B;
-
-				std::shared_ptr<Sample> u3 = u->getMultipliedSample(uFactor);
-				return u3;
-			}
-			else
-			{
-				return u;
-			}
-
+			std::shared_ptr<Sample> u3 = u->getSampleAtBeta(betaZeqZero);
+			return u3;
 		}
 	}
 }
