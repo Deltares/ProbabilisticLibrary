@@ -34,7 +34,7 @@ namespace Deltares
 
 			std::shared_ptr<Optimization::ClusterSettings> ClusterSettings = std::make_shared<Optimization::ClusterSettings>();
 			std::shared_ptr<StartPointCalculatorSettings> StartPointSettings = std::make_shared<StartPointCalculatorSettings>();
-			std::shared_ptr<ImportanceSamplingSettings> ImportanceSamplingSettings = std::make_shared<Deltares::Reliability::ImportanceSamplingSettings>();
+			std::shared_ptr<ImportanceSamplingSettings> importanceSamplingSettings = std::make_shared<Deltares::Reliability::ImportanceSamplingSettings>();
 
 			bool isValid()
 			{
@@ -46,7 +46,7 @@ namespace Deltares
 					MaxClusters >= 1 &&
 					StartPointSettings->isValid() &&
 					ClusterSettings->isValid() &&
-					ImportanceSamplingSettings->isValid();
+					importanceSamplingSettings->isValid();
 			}
 		};
 	}

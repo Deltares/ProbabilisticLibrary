@@ -26,7 +26,7 @@ namespace Deltares
 				{
 					shared = new SharedPointerProvider(new Reliability::AdaptiveImportanceSamplingSettings());
 					shared->object->StartPointSettings = StartPointSettings->GetSettings();
-					shared->object->ImportanceSamplingSettings = ImportanceSamplingSettings->GetSettings();
+					shared->object->importanceSamplingSettings = ImportanceSamplingSettings->GetSettings();
 				}
 				AdaptiveImportanceSamplingSettings(std::shared_ptr<Reliability::AdaptiveImportanceSamplingSettings> settings)
 				{
@@ -141,7 +141,7 @@ namespace Deltares
 				{
 					shared->object->StartPointSettings = StartPointSettings->GetSettings();
 					shared->object->ClusterSettings = ClusterSettings->GetSettings();
-					shared->object->ImportanceSamplingSettings = ImportanceSamplingSettings->GetSettings();
+					shared->object->importanceSamplingSettings = ImportanceSamplingSettings->GetSettings();
 
 					return shared->object;
 				}
