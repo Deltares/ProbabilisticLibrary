@@ -243,6 +243,7 @@ namespace Deltares
 						uRay->Values[k] = task(k);
 					}
 					std::shared_ptr<Sample> u = uRay->getMultipliedSample(radiusFactor);
+					u->IterationIndex = i;
 					samples.push_back(u);
 				}
 				auto zValues = modelRunner->getZValues(samples);
