@@ -38,6 +38,11 @@ namespace Deltares
 		{
 			this->uConverter->initializeForRun();
 			this->zModel->setMaxProcesses(this->Settings->MaxParallelProcesses);
+
+			if (this->locker == nullptr)
+			{
+				this->locker = new Utils::Locker();
+			}
 		}
 
 		void ModelRunner::clear()
@@ -113,7 +118,16 @@ namespace Deltares
 				evaluation->Iteration = sample->IterationIndex;
 				evaluation->Tag = sample->Tag;
 
-				this->evaluations.push_back(evaluation);
+				if (this->Settings->MaxParallelProcesses > 1) 
+				{
+					locker->lock();
+					this->evaluations.push_back(evaluation);
+					locker->unlock();
+				}
+				else
+				{
+					this->evaluations.push_back(evaluation);
+				}
 			}
 		}
 

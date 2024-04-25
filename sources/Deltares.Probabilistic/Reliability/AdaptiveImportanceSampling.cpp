@@ -36,13 +36,13 @@ namespace Deltares
 
 			// initialize
 			const std::shared_ptr<StartPointCalculator> startPointCalculator = std::make_shared<StartPointCalculator>();
-			startPointCalculator->Settings = this->Settings->StartPointSettings;
+			startPointCalculator->Settings = this->Settings->startPointSettings;
 			startPointCalculator->Settings->StochastSet = importanceSampling->Settings->StochastSet;
 
 			const std::shared_ptr<Sample> startPoint = startPointCalculator->getStartPoint(modelRunner);
 			this->lastStartPoint = startPoint;
 
-			if (Settings->StartPointSettings->StartMethod != StartMethodType::None)
+			if (Settings->startPointSettings->StartMethod != StartMethodType::None)
 			{
 				const std::shared_ptr<DesignPoint> startDesignPoint = modelRunner->getDesignPoint(startPoint, startPoint->getBeta());
 				startDesignPoint->Identifier = "Start point";
@@ -355,7 +355,7 @@ namespace Deltares
 			{
 				// Get Multiple Design Points using K-Means
 				std::shared_ptr<Optimization::KMeansClustering> clusterMethod = std::make_shared<Optimization::KMeansClustering>();
-				clusterMethod->Settings = this->Settings->ClusterSettings;
+				clusterMethod->Settings = this->Settings->clusterSettings;
 
 				return clusterMethod->getClusterCenters(samples);
 			}
@@ -367,7 +367,7 @@ namespace Deltares
 			{
 				importanceSampling->setSampleLambda([this](std::shared_ptr<Sample> sample)
 				{
-					if (this->clusterSamples.size() < this->Settings->ClusterSettings->MaxSamples)
+					if (this->clusterSamples.size() < this->Settings->clusterSettings->MaxSamples)
 					{
 						this->clusterSamples.push_back(sample);
 					}
