@@ -9,65 +9,82 @@ namespace Deltares
 {
 	namespace Reliability
 	{
+		/**
+		 * \brief Settings for importance sampling
+		 */
 		class ImportanceSamplingSettings
 		{
 		public:
+			/**
+			 * \brief The minimum number of samples to be examined
+			 */
 			int MinimumSamples = 1000;
-			int MaximumSamples = 10000;
-			int MaximumSamplesNoResult = 10000;
-			double VariationCoefficient = 0.05;
-			double VarianceFactor = 1;
 
+			/**
+			 * \brief The maximum number of samples to be examined
+			 */
+			int MaximumSamples = 10000;
+
+			/**
+			 * \brief Maximum number of samples when all samples have the same qualitative result (Z < 0 or Z > 0)
+			 */
+			int MaximumSamplesNoResult = 10000;
+
+			/**
+			 * \brief The importance sampling algorithm stops when the calculated variation coefficient is less than this value
+			 */
+			double VariationCoefficient = 0.05;
+
+			/**
+			 * \brief Method type how the design point (alpha values) is calculated
+			 */
 			DesignPointMethod designPointMethod = DesignPointMethod::CenterOfGravity;
+
+			/**
+			 * \brief Settings for generating random values
+			 */
 			std::shared_ptr<Deltares::Models::RandomSettings> randomSettings = std::make_shared<Deltares::Models::RandomSettings>();
+
+			/**
+			 * \brief Settings for performing model runs
+			 */
 			std::shared_ptr<Models::RunSettings> runSettings = std::make_shared<Models::RunSettings>();
+
+			/**
+			 * \brief Settings per stochastic variable, contains (among others) the center value and multiplication factor used to shift samples in the importance sampling algorithm
+			 */
 			std::shared_ptr<StochastSettingsSet> StochastSet = std::make_shared<StochastSettingsSet>();
 
-			bool Clustering = false;
+			/**
+			 * \brief List of center points, if empty the center point is derived from the StochastSet
+			 */
 			std::vector<std::shared_ptr<Sample>> Clusters;
 
-			bool isValid()
+			/**
+			 * \brief Indicates whether these settings have valid values
+			 * \return Indication
+			 */
+			bool isValid() const
 			{
 				return MinimumSamples >= 1 &&
 					MaximumSamples >= MinimumSamples &&
-					VarianceFactor >= 0.01 &&
 					this->isStochastSetValid() &&
-
 					runSettings->isValid();
 			}
 
-			bool isStochastSetValid()
-			{
-				for (size_t i = 0; i < this->StochastSet->getVaryingStochastCount(); i++)
-				{
-					std::shared_ptr<StochastSettings> stochastSettings = this->StochastSet->VaryingStochastSettings[i];
-					bool valid =
-						stochastSettings->VarianceFactor >= 0.1 &&
-						stochastSettings->StartValue >= -Statistics::StandardNormal::UMax &&
-						stochastSettings->StartValue <= Statistics::StandardNormal::UMax;
-
-						if (!valid)
-						{
-							return false;
-						}
-				}
-
-				return true;
-			}
-
-			std::shared_ptr<ImportanceSamplingSettings> clone()
+			/**
+			 * \brief Makes a copy of these settings (deep copy of stochast settings)
+			 * \return Copy
+			 */
+			std::shared_ptr<ImportanceSamplingSettings> clone() const
 			{
 				std::shared_ptr<ImportanceSamplingSettings> clone = std::make_shared<ImportanceSamplingSettings>();
 
 				clone->MaximumSamples = this->MaximumSamples;
 				clone->MaximumSamplesNoResult = this->MaximumSamplesNoResult;
 				clone->MinimumSamples = this->MinimumSamples;
-				clone->VarianceFactor = this->VarianceFactor;
 				clone->VariationCoefficient = this->VariationCoefficient;
 				clone->designPointMethod = this->designPointMethod;
-
-				// move to adaptive importance sampling settings
-				clone->Clustering = this->Clustering;
 
 				clone->runSettings = this->runSettings;
 				clone->randomSettings = this->randomSettings;
@@ -80,6 +97,29 @@ namespace Deltares
 				}
 
 				return clone;
+			}
+		private:
+			/**
+			 * \brief Indicates whether all stochast settings have valid values
+			 * \return True if all valid, false otherwise
+			 */
+			bool isStochastSetValid() const
+			{
+				for (size_t i = 0; i < this->StochastSet->getVaryingStochastCount(); i++)
+				{
+					const std::shared_ptr<StochastSettings> stochastSettings = this->StochastSet->VaryingStochastSettings[i];
+					const bool valid =
+						stochastSettings->VarianceFactor >= 0.1 &&
+						stochastSettings->StartValue >= -Statistics::StandardNormal::UMax &&
+						stochastSettings->StartValue <= Statistics::StandardNormal::UMax;
+
+					if (!valid)
+					{
+						return false;
+					}
+				}
+
+				return true;
 			}
 		};
 	}

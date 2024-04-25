@@ -88,18 +88,6 @@ namespace Deltares
 					}
 				}
 
-				property bool Clustering
-				{
-					bool get() { return shared->object->Clustering; }
-					void set(bool value) { shared->object->Clustering = value; }
-				}
-
-				property double VarianceFactor
-				{
-					double get() { return shared->object->VarianceFactor; }
-					void set(double value) { shared->object->VarianceFactor = value; }
-				}
-
 				virtual property Wrappers::RandomSettings^ RandomSettings
 				{
 					Wrappers::RandomSettings^ get() { return randomSettings; }

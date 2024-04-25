@@ -44,13 +44,13 @@ namespace Deltares
 			double sumPfSamp = 0.0; double sumPfSamp2 = 0.0;
 			int validSamples = 0;
 			// loop for number of samples
-			for (int nmaal = 0; nmaal < Settings->MaximumSamples && !isStopped(); nmaal++)
+			for (int nmaal = 0; nmaal < Settings->MaximumDirections && !isStopped(); nmaal++)
 			{
 				if (nmaal % chunkSize == 0)
 				{
 					samples.clear();
 
-					int runs = std::min(chunkSize, Settings->MaximumSamples - parSamples * chunkSize);
+					int runs = std::min(chunkSize, Settings->MaximumDirections - parSamples * chunkSize);
 
 					// run max par samples times zrfunc in parallel
 					for (int i = 0; i < runs; i++)
@@ -108,7 +108,7 @@ namespace Deltares
 				}
 
 				// check on convergence criterium
-				bool enoughSamples = nmaal >= Settings->MinimumSamples;
+				bool enoughSamples = nmaal >= Settings->MinimumDirections;
 				convergenceReport->TotalDirections = nmaal+1;
 
 				sumPfSamp += uSurface->Weight;

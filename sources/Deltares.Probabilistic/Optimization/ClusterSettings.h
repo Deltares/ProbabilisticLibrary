@@ -46,7 +46,7 @@ namespace Deltares
 			ClusterInitializationMethod clusterInitializationMethod = ClusterInitializationMethod::PlusPlus;
 
 			/**
-			 * \brief Max number of clusters when <see cref="optimizeNumberOfClusters"/> is true
+			 * \brief Maximum number of clusters when OptimizeNumberOfClusters is true or number of clusters to be generated when OptimizeNumberOfClusters is false
 			 */
 			int MaxClusters = 100;
 
@@ -66,7 +66,7 @@ namespace Deltares
 			 */
 			bool isValid()
 			{
-				return true;
+				return MaxClusters >= 1;
 			}
 		};
 	}

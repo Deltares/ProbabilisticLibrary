@@ -57,7 +57,7 @@ namespace Deltares
 			{
 				modelRunner->clear();
 
-				if (Settings->AutoMaximumSamplesNoResult)
+				if (Settings->AutoMaximumSamples)
 				{
 					importanceSampling->Settings->MaximumSamples = Settings->importanceSamplingSettings->MaximumSamples;
 					importanceSampling->Settings->MaximumSamplesNoResult = Settings->importanceSamplingSettings->MaximumSamples;
@@ -190,7 +190,7 @@ namespace Deltares
 
 		bool AdaptiveImportanceSampling::isConverged(std::shared_ptr<AdaptiveImportanceSamplingSettings> settings, std::shared_ptr<ConvergenceReport> convergenceReport)
 		{
-			if (settings->AutoMaximumSamplesNoResult)
+			if (settings->AutoMaximumSamples)
 			{
 				return convergenceReport->MaxWeight / convergenceReport->FailWeight < settings->EpsWeightSample;
 			}
@@ -330,14 +330,14 @@ namespace Deltares
 
 					newSample = directionDesignPoint->getSample();
 				}
-				else if (Settings->RestartStepSize > 0 && this->lastStartPoint != nullptr)
+				else if (Settings->StartValueStepSize > 0 && this->lastStartPoint != nullptr)
 				{
 					// avoid a new start point very close to the old start point
 					for (size_t i = 0; i < newSample->Values.size(); i++)
 					{
 						const double diff = newSample->Values[i] - this->lastStartPoint->Values[i];
-						const double steps = std::round(diff / Settings->RestartStepSize);
-						newSample->Values[i] = this->lastStartPoint->Values[i] + steps * Settings->RestartStepSize;
+						const double steps = std::round(diff / Settings->StartValueStepSize);
+						newSample->Values[i] = this->lastStartPoint->Values[i] + steps * Settings->StartValueStepSize;
 					}
 				}
 
@@ -377,7 +377,7 @@ namespace Deltares
 			{
 				importanceSampling->setBreakLoopLambda([this, loopCounter](std::shared_ptr<ImportanceSamplingCluster> results)
 				{
-					if (this->Settings->AutoMaximumSamplesNoResult && this->Settings->MaxVarianceLoops > 1 && loopCounter < this->Settings->MaxVarianceLoops)
+					if (this->Settings->AutoMaximumSamples && this->Settings->MaxVarianceLoops > 1 && loopCounter < this->Settings->MaxVarianceLoops)
 					{
 						double nAdditionEstimate = results->TotalCount * ((results->MaxFailWeight / results->FailWeight / this->Settings->EpsWeightSample) - 1.0);
 						double nRequiredIdealEstimate = 2 * (Statistics::StandardNormal::getUFromQ(results->ProbFailure) + 1) / this->Settings->EpsWeightSample;

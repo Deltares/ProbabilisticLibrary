@@ -15,35 +15,90 @@ namespace Deltares
 		class AdaptiveImportanceSamplingSettings
 		{
 		public:
+			/**
+			 * \brief Minimum loops of importance sampling to perform
+			 */
 			int MinVarianceLoops = 1;
+
+			/**
+			 * \brief Maximum number of importance sampling to perform
+			 */
 			int MaxVarianceLoops = 5;
 
-			bool AutoMaximumSamplesNoResult = false;
+			/**
+			 * \brief Indicates whether adaptive sampling is based on (true) clustering or (false) moving the center point based on the last importance sampling design point
+			 */
+			bool Clustering = false;
+
+			/**
+			 * \brief The minimum number of samples which should have failed (Z < 0) to allow the center point of the next importance sampling call to be based on the design point of the last importance sampling call. If not achieved, the next importance sampling call will have an increased variance factor
+			 */
 			int MinimumFailedSamples = 0;
 
+			/**
+			 * \brief The initial variance factor to be applied to all stochasts
+			 */
 			double VarianceFactor = 1.5;
+
+			/**
+			 * \brief Increment in variance factor of all stochasts when moving the design point is not allowed (see MinimumFailedSamples)
+			 */
 			double LoopVarianceIncrement = 0.5;
+
+			/**
+			 * \brief Indicates whether a moved center should be adjusted so that it is positioned on the limit state
+			 */
 			bool StartPointOnLimitState = false;
-			double RestartStepSize = 0;
+
+			/**
+			 * \brief When the center point is moved, it will be a multiple of this value. This is used to avoid tiny modifications. If this value is 0, the new center point is equal to the design point of the previous importance sampling call.
+			 * \remark When the center point is not moved, there will be no new importance sampling call
+			 */
+			double StartValueStepSize = 0;
+
+			/**
+			 * \brief Indicates whether the number of samples to be performed in a non final importance sampling call is determined automatically
+			 */
+			bool AutoMaximumSamples = false;
+
+			/**
+			 * \brief When the relative weight (compared to the sum of weights of all other failing samples) of sample is less than this value, the importance sampling call is terminated and a new center point is determined. Only applicable if AutoMaximumSamplesNoResult is true.
+			 */
 			double EpsWeightSample = 0.1;
+
+			/**
+			 * \brief The calls to importance sampling will be stopped until the fraction of failed samples (Z < 0) is between this value and 1 - this value
+			 */
 			double FractionFailed = 0.1;
 
-			double MaxClusters = 1;
-			bool Clustering = false;
+			/**
+			 * \brief When the design point has a reliability index exceeding this value, the variance loops are stopped
+			 */
 			double MaxBeta = Statistics::StandardNormal::BetaMax;
 
+			/**
+			 * \brief Settings for the clustering algorithm
+			 */
 			std::shared_ptr<Optimization::ClusterSettings> clusterSettings = std::make_shared<Optimization::ClusterSettings>();
+
+			/**
+			 * \brief Settings how to derive the first center
+			 */
 			std::shared_ptr<StartPointCalculatorSettings> startPointSettings = std::make_shared<StartPointCalculatorSettings>();
+
+			/**
+			 * \brief Settings of the underlying importance sampling algorithm
+			 * \remark These settings will not be changed by adaptive importance sampling. A copy is made to apply modifications.
+			 */
 			std::shared_ptr<ImportanceSamplingSettings> importanceSamplingSettings = std::make_shared<Deltares::Reliability::ImportanceSamplingSettings>();
 
 			bool isValid()
 			{
 				return MinVarianceLoops >= 1 &&
 					MaxVarianceLoops >= MinVarianceLoops &&
-					RestartStepSize >= 0 &&
+					StartValueStepSize >= 0 &&
 					FractionFailed >= 0 && FractionFailed <= 0.5 &&
 					EpsWeightSample >= 0.0001 && EpsWeightSample <= 1 &&
-					MaxClusters >= 1 &&
 					startPointSettings->isValid() &&
 					clusterSettings->isValid() &&
 					importanceSamplingSettings->isValid();

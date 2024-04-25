@@ -31,14 +31,14 @@ namespace Deltares
 
 				property int MinimumSamples
 				{
-					int get() { return shared->object->MinimumSamples; }
-					void set(int value) { shared->object->MinimumSamples = value; }
+					int get() { return shared->object->MinimumDirections; }
+					void set(int value) { shared->object->MinimumDirections = value; }
 				}
 
 				property int MaximumSamples
 				{
-					int get() { return shared->object->MaximumSamples; }
-					void set(int value) { shared->object->MaximumSamples = value; }
+					int get() { return shared->object->MaximumDirections; }
+					void set(int value) { shared->object->MaximumDirections = value; }
 				}
 
 				property double VariationCoefficient

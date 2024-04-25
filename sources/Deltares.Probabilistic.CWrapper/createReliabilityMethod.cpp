@@ -121,10 +121,10 @@ std::vector<double> createReliabilityMethod::copyStartVector(const double startV
 void createReliabilityMethod::fillDsSettings(std::shared_ptr<DirectionalSamplingSettings>& DsSettings, const basicSettings& bs)
 {
     std::shared_ptr<RandomSettings> r(getRnd(bs));
-    DsSettings->RandomSettings.swap(r);
+    DsSettings->randomSettings.swap(r);
     DsSettings->VariationCoefficient = bs.tolB;
-    DsSettings->MinimumSamples = bs.minSamples;
-    DsSettings->MaximumSamples = bs.maxSamples;
+    DsSettings->MinimumDirections = bs.minSamples;
+    DsSettings->MaximumDirections = bs.maxSamples;
     switch (bs.iterationMethod)
     {
     case DSiterationMethods::DirSamplingIterMethodRobust:
