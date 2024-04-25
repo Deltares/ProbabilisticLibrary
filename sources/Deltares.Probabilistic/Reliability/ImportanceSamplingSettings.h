@@ -20,7 +20,7 @@ namespace Deltares
 
 			DesignPointMethod designPointMethod = DesignPointMethod::CenterOfGravity;
 			std::shared_ptr<Deltares::Models::RandomSettings> randomSettings = std::make_shared<Deltares::Models::RandomSettings>();
-			std::shared_ptr<Models::RunSettings> RunSettings = std::make_shared<Models::RunSettings>();
+			std::shared_ptr<Models::RunSettings> runSettings = std::make_shared<Models::RunSettings>();
 			std::shared_ptr<StochastSettingsSet> StochastSet = std::make_shared<StochastSettingsSet>();
 
 			bool Clustering = false;
@@ -33,7 +33,7 @@ namespace Deltares
 					VarianceFactor >= 0.01 &&
 					this->isStochastSetValid() &&
 
-					RunSettings->isValid();
+					runSettings->isValid();
 			}
 
 			bool isStochastSetValid()
@@ -69,7 +69,7 @@ namespace Deltares
 				// move to adaptive importance sampling settings
 				clone->Clustering = this->Clustering;
 
-				clone->RunSettings = this->RunSettings;
+				clone->runSettings = this->runSettings;
 				clone->randomSettings = this->randomSettings;
 
 				clone->StochastSet->AreStartValuesCorrelated = this->StochastSet->AreStartValuesCorrelated;

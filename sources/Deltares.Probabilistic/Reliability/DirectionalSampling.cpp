@@ -14,7 +14,7 @@ namespace Deltares
 			double pf = 0;
 			double qtot = 0;
 			double rmin = 200; // initialise convergence indicator and loops
-			DesignPointBuilder* uMean = new DesignPointBuilder(nstochasts, this->Settings->designPointMethod, this->Settings->StochastSet);
+			std::shared_ptr<DesignPointBuilder> uMean = std::make_shared<DesignPointBuilder> (nstochasts, this->Settings->designPointMethod, this->Settings->StochastSet);
 			int parSamples = 0;
 
 			if (modelRunner->Settings->MaxParallelProcesses > 0) 
@@ -29,8 +29,8 @@ namespace Deltares
 
 			std::shared_ptr<ConvergenceReport> convergenceReport = std::make_shared<ConvergenceReport>();
 
-			RandomSampleGenerator* randomSampleGenerator = new RandomSampleGenerator();
-			randomSampleGenerator->Settings = this->Settings->RandomSettings;
+			std::shared_ptr<RandomSampleGenerator> randomSampleGenerator = std::make_shared<RandomSampleGenerator>();
+			randomSampleGenerator->Settings = this->Settings->randomSettings;
 			randomSampleGenerator->Settings->StochastSet = this->Settings->StochastSet;
 			randomSampleGenerator->initialize();
 

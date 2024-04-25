@@ -129,6 +129,7 @@
     <ClCompile Include="Optimization\ClusterSettings.cpp" />
     <ClCompile Include="Optimization\KMeansClustering.cpp" />
     <ClCompile Include="Math\MatrixSupport.cpp" />
+    <ClCompile Include="Utils\Locker.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -277,6 +278,7 @@
     <ClInclude Include="Optimization\ClusterSettings.h" />
     <ClInclude Include="Optimization\KMeansClustering.h" />
     <ClInclude Include="Math\MatrixSupport.h" />
+    <ClInclude Include="Utils\Locker.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

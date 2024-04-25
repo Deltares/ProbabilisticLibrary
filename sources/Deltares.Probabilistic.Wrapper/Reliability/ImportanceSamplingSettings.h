@@ -141,7 +141,7 @@ namespace Deltares
 					}
 
 					shared->object->randomSettings = RandomSettings->GetSettings();
-					shared->object->RunSettings = RunSettings->GetSettings();
+					shared->object->runSettings = RunSettings->GetSettings();
 
 					return shared->object;
 				}

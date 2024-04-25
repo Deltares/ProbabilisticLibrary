@@ -8,6 +8,7 @@
 #include "../Reliability/ReliabilityResult.h"
 #include "../Reliability/DesignPoint.h"
 #include "../Reliability/StochastSettingsSet.h"
+#include "../Utils/Locker.h"
 #include "RunSettings.h"
 #include "UConverter.h"
 #include "ZModel.h"
@@ -21,22 +22,17 @@ namespace Deltares
 	{
 		class ModelRunner
 		{
-		private:
-			std::shared_ptr<ZModel> zModel;
-			std::shared_ptr<UConverter> uConverter;
-			std::vector<std::shared_ptr<Reliability::ReliabilityResult>> reliabilityResults;
-			std::vector<std::shared_ptr<Evaluation>> evaluations;
-			std::vector< std::shared_ptr<Message>> messages;
-			std::shared_ptr<ProgressIndicator> progressIndicator = nullptr;
-			
-			void registerEvaluation(std::shared_ptr<ModelSample> sample);
-
 		public:
 			ModelRunner(std::shared_ptr<ZModel> zModel, std::shared_ptr<UConverter>uConverter, std::shared_ptr<ProgressIndicator> progressIndicator = nullptr)
 			{
 				this->zModel = zModel;
 				this->uConverter = uConverter;
 				this->progressIndicator = progressIndicator;
+			}
+
+			~ModelRunner()
+			{
+				delete this->locker;
 			}
 
 			void initializeForRun();
@@ -55,6 +51,17 @@ namespace Deltares
 			std::shared_ptr<RunSettings> Settings = std::make_shared<RunSettings>();
 			std::shared_ptr<Models::ModelSample> getModelSample(std::shared_ptr<Sample> sample);
 			std::vector<double> getOnlyVaryingValues(std::vector<double> values);
+		private:
+			std::shared_ptr<ZModel> zModel;
+			std::shared_ptr<UConverter> uConverter;
+			std::vector<std::shared_ptr<Reliability::ReliabilityResult>> reliabilityResults;
+			std::vector<std::shared_ptr<Evaluation>> evaluations;
+			std::vector< std::shared_ptr<Message>> messages;
+			std::shared_ptr<ProgressIndicator> progressIndicator = nullptr;
+
+			void registerEvaluation(std::shared_ptr<ModelSample> sample);
+
+			Utils::Locker* locker = nullptr;
 		};
 	}
 }
