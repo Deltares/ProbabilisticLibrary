@@ -3,6 +3,7 @@
 #include "../Model/RandomSettings.h"
 #include "../Model/RunSettings.h"
 #include "DesignPointBuilder.h"
+#include "StartPointCalculatorSettings.h"
 #include "StochastSettingsSet.h"
 
 namespace Deltares
@@ -46,6 +47,11 @@ namespace Deltares
 			std::shared_ptr<Deltares::Models::RandomSettings> randomSettings = std::make_shared<Deltares::Models::RandomSettings>();
 
 			/**
+			 * \brief Settings how to derive the first center
+			 */
+			std::shared_ptr<StartPointCalculatorSettings> startPointSettings = std::make_shared<StartPointCalculatorSettings>();
+
+			/**
 			 * \brief Settings for performing model runs
 			 */
 			std::shared_ptr<Models::RunSettings> runSettings = std::make_shared<Models::RunSettings>();
@@ -87,7 +93,8 @@ namespace Deltares
 				clone->designPointMethod = this->designPointMethod;
 
 				clone->runSettings = this->runSettings;
-				clone->randomSettings = this->randomSettings;
+				clone->randomSettings = this->randomSettings->clone();
+				clone->startPointSettings = this->startPointSettings->clone();
 
 				clone->StochastSet->AreStartValuesCorrelated = this->StochastSet->AreStartValuesCorrelated;
 
@@ -95,6 +102,9 @@ namespace Deltares
 				{
 					clone->StochastSet->stochastSettings.push_back(this->StochastSet->stochastSettings[i]->clone());
 				}
+
+				clone->startPointSettings->StochastSet = clone->StochastSet;
+				clone->randomSettings->StochastSet = clone->StochastSet;
 
 				return clone;
 			}

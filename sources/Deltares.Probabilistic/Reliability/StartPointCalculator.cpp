@@ -97,7 +97,8 @@ namespace Deltares
 
 			for (int i = 0; i < nStochasts; i++)
 			{
-				if (!this->Settings->StochastSet->VaryingStochastSettings[i]->IsInitializationAllowed)
+				if (!this->Settings->StochastSet->VaryingStochastSettings[i]->IsInitializationAllowed || 
+					this->Settings->StochastSet->VaryingStochastSettings[i]->IsQualitative)
 				{
 					startPoint->Values[i] = 0;
 				}

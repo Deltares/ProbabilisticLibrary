@@ -7,30 +7,56 @@ namespace Deltares
 {
     namespace Models
     {
-        class RandomSettings
+	    /**
+	     * \brief Settings for generating random values
+	     */
+	    class RandomSettings
         {
         public:
+	        /**
+	         * \brief Indicates whether each time the same random values are generated
+	         */
+	        bool IsRepeatableRandom = true;
 
-            bool IsRepeatableRandom = true;
-
-            /// <summary>
-            /// Indicates whether random sequences is always the same for same <see cref="IHasStochast"/> names
-            /// </summary>
+            /**
+             * \brief Indicates whether random sequences is always the same for same <see cref="IHasStochast"/> names
+             */
             bool IsStochastRepeatableRandom = false;
 
-            Deltares::Numeric::RandomValueGeneratorType RandomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::ModifiedKnuthSubtractive;
+	        /**
+	         * \brief Type of random generator algorithm
+	         */
+	        Deltares::Numeric::RandomValueGeneratorType RandomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::ModifiedKnuthSubtractive;
 
-            /// <summary>
-            /// Seed for randomizer
-            /// </summary>
+            /**
+             * \brief Seed for random generator
+             */
             int Seed = 0;
 
-            /// <summary>
-            /// Additional seed for randomizer
-            /// </summary>
+            /**
+             * \brief Additional seed for random generator
+             */
             int SeedB = 0;
 
             std::shared_ptr<Deltares::Reliability::StochastSettingsSet> StochastSet = std::make_shared<Deltares::Reliability::StochastSettingsSet>();
+
+	        /**
+	         * \brief Gets a copy of these settings
+	         * \return Copy
+	         */
+	        std::shared_ptr<RandomSettings> clone()
+            {
+                std::shared_ptr<RandomSettings> copy = std::make_shared<RandomSettings>();
+
+                copy->IsRepeatableRandom = this->IsRepeatableRandom;
+                copy->IsStochastRepeatableRandom = this->IsStochastRepeatableRandom;
+                copy->RandomGeneratorType = this->RandomGeneratorType;
+                copy->Seed = this->Seed;
+                copy->SeedB = this->SeedB;
+                copy->StochastSet = this->StochastSet;
+
+                return copy;
+            }
         };
     }
 }

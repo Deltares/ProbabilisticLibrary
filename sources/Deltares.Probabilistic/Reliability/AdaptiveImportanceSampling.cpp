@@ -29,6 +29,7 @@ namespace Deltares
 		{
 			this->importanceSampling = std::make_shared<ImportanceSampling>();
 			importanceSampling->Settings = this->Settings->importanceSamplingSettings->clone();
+			importanceSampling->Settings->startPointSettings->StartMethod = StartMethodType::None;
 
 			modelRunner->updateStochastSettings(importanceSampling->Settings->StochastSet);
 

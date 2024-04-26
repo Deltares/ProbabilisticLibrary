@@ -3,6 +3,7 @@
 #include "../../Deltares.Probabilistic/Reliability/ImportanceSamplingSettings.h"
 #include "../Model/RandomSettings.h"
 #include "../Model/RunSettings.h"
+#include "../Reliability/StartPointCalculatorSettings.h"
 #include "../Reliability/StochastSettings.h"
 #include "../Utils/SharedPointerProvider.h"
 #include "DesignPointMethodSettings.h"
@@ -22,11 +23,13 @@ namespace Deltares
 				SharedPointerProvider<Reliability::ImportanceSamplingSettings>* shared = nullptr;
 				Wrappers::RunSettings^ runSettings = gcnew Wrappers::RunSettings();
 				Wrappers::RandomSettings^ randomSettings = gcnew Wrappers::RandomSettings();
+				Wrappers::StartPointCalculatorSettings^ startPointSettings = gcnew Wrappers::StartPointCalculatorSettings();
 			public:
 				ImportanceSamplingSettings()
 				{
 					shared = new SharedPointerProvider(new Reliability::ImportanceSamplingSettings());
 					shared->object->randomSettings = RandomSettings->GetSettings();
+					shared->object->startPointSettings = StartPointSettings->GetSettings();
 				}
 				ImportanceSamplingSettings(std::shared_ptr<Reliability::ImportanceSamplingSettings> settings)
 				{
@@ -88,6 +91,12 @@ namespace Deltares
 					}
 				}
 
+				virtual property Wrappers::StartPointCalculatorSettings^ StartPointSettings
+				{
+					Wrappers::StartPointCalculatorSettings^ get() { return startPointSettings; }
+					void set(Wrappers::StartPointCalculatorSettings^ value) { startPointSettings = value; }
+				}
+
 				virtual property Wrappers::RandomSettings^ RandomSettings
 				{
 					Wrappers::RandomSettings^ get() { return randomSettings; }
@@ -128,6 +137,7 @@ namespace Deltares
 						shared->object->StochastSet->stochastSettings.push_back(StochastSettings[i]->GetSettings());
 					}
 
+					shared->object->startPointSettings = StartPointSettings->GetSettings();
 					shared->object->randomSettings = RandomSettings->GetSettings();
 					shared->object->runSettings = RunSettings->GetSettings();
 

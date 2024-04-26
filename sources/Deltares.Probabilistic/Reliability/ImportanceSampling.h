@@ -20,7 +20,7 @@ namespace Deltares
 		private:
 			RegisterSampleLambda sampleFunction = nullptr;
 			BreakLoopLambda breakFunction = nullptr;
-			std::vector<std::shared_ptr<ImportanceSamplingCluster>> getClusters();
+			std::vector<std::shared_ptr<ImportanceSamplingCluster>> getClusters(std::shared_ptr<ModelRunner> modelRunner, std::shared_ptr<DesignPoint>& startDesignPoint);
 			bool checkConvergence(std::shared_ptr<Models::ModelRunner> modelRunner, double pf, double minWeight, int samples, int nmaal);
 			double getConvergence(double pf, double minWeight, int samples);
 			double getDimensionality(std::vector<double> factors);
