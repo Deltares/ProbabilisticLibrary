@@ -157,16 +157,24 @@ namespace Deltares
 		double DirectionReliability::getDirectionBeta(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr <BetaValueTask> directionTask)
 		{
 			std::shared_ptr<Sample> uDirection = directionTask->UValues->getNormalizedSample();
-			//uDirection->IterationIndex = directionTask->Iteration;
-			bool invertZ = directionTask->z0 < 0;
+			uDirection->IterationIndex = directionTask->Iteration;
 
-			std::vector<std::shared_ptr<DirectionSection>> sections = this->getDirectionSections(modelRunner, directionTask->Settings, uDirection, invertZ);
+			if (modelRunner->canCalculateBeta())
+			{
+				return modelRunner->getBeta(directionTask->UValues);
+			}
+			else 
+			{
+				bool invertZ = directionTask->z0 < 0;
 
-			double beta = getBetaFromSections(sections);
+				std::vector<std::shared_ptr<DirectionSection>> sections = this->getDirectionSections(modelRunner, directionTask->Settings, uDirection, invertZ);
 
-			directionTask->UValues->AllowProxy = uDirection->AllowProxy;
+				double beta = getBetaFromSections(sections);
 
-			return beta;
+				directionTask->UValues->AllowProxy = uDirection->AllowProxy;
+
+				return beta;
+			}
 		}
 
 		std::vector<std::shared_ptr<DirectionSection>> DirectionReliability::getDirectionSections(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<DirectionReliabilitySettings> settings, std::shared_ptr<Sample> uDirection, bool invertZ)

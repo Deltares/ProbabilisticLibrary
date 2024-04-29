@@ -17,11 +17,6 @@ namespace Deltares
 			std::shared_ptr<DesignPointBuilder> uMean = std::make_shared<DesignPointBuilder> (nstochasts, this->Settings->designPointMethod, this->Settings->StochastSet);
 			int parSamples = 0;
 
-			if (modelRunner->Settings->MaxParallelProcesses > 0) 
-			{
-				omp_set_num_threads(modelRunner->Settings->MaxParallelProcesses);
-			}
-
 			std::vector<double> betaValues;
 			std::vector<std::shared_ptr<Sample>> samples;
 
@@ -43,7 +38,13 @@ namespace Deltares
 
 			double sumPfSamp = 0.0; double sumPfSamp2 = 0.0;
 			int validSamples = 0;
-			// loop for number of samples
+
+			if (modelRunner->Settings->MaxParallelProcesses > 0)
+			{
+				omp_set_num_threads(modelRunner->Settings->MaxParallelProcesses);
+			}
+
+			// loop for all directions
 			for (int nmaal = 0; nmaal < Settings->MaximumDirections && !isStopped(); nmaal++)
 			{
 				if (nmaal % chunkSize == 0)
@@ -180,7 +181,7 @@ namespace Deltares
 			directionReliability->Settings = this->Settings->DirectionSettings;
 
 			#pragma omp parallel for
-			for (int i = 0; i < (int)samples.size(); i++)
+			for (int i = 0; i < (int) samples.size(); i++)
 			{
 				samples[i]->IterationIndex = step + i;
 				betaValues[i] = directionReliability->getBeta(modelRunner, samples[i], z0);

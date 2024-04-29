@@ -38,6 +38,12 @@ namespace Deltares
              */
             int SeedB = 0;
 
+	        /**
+	         * \brief Indicates whether a dummy random value is generated for non varying variables (true) or not (false)
+	         * \remark Skipping unvarying parameters is useful when changing a variable from varying to non varying. Then the same random values are generated for other (varying) variables.
+	         */
+	        bool SkipUnvaryingParameters = true;
+
             std::shared_ptr<Deltares::Reliability::StochastSettingsSet> StochastSet = std::make_shared<Deltares::Reliability::StochastSettingsSet>();
 
 	        /**
