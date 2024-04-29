@@ -58,9 +58,6 @@ void createDistribution::create(std::shared_ptr <Stochast> & s, const EnumDistri
     case EnumDistributions::conditionalWeibull:
         setShapeScaleShift = true;
         dist = DistributionType::ConditionalWeibull;
-        truncated = true;
-        truncatedMax = p[3];
-        truncatedMin = std::numeric_limits<float>::min();
         break;
     case EnumDistributions::rayleigh:
         setShapeScaleShift = true;
