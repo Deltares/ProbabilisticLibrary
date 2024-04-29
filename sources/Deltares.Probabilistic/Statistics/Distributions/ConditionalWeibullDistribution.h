@@ -5,6 +5,11 @@ namespace Deltares
 {
 	namespace Statistics
 	{
+		/// <summary>
+		/// Conditional Weibull Distribution described in terms of exceedance
+		/// frequencies rather than probabilities.
+		/// No all methods are implemented.
+		/// </summary>
 		class ConditionalWeibullDistribution : public Distribution
 		{
 			void initialize(std::shared_ptr<StochastProperties> stochast, std::vector<double> values) override;
