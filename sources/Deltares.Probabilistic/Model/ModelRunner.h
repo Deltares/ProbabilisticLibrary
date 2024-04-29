@@ -54,6 +54,9 @@ namespace Deltares
 			std::shared_ptr<Models::ModelSample> getModelSample(std::shared_ptr<Sample> sample);
 			std::vector<double> getOnlyVaryingValues(std::vector<double> values);
 			void setDirectionModel(ZBetaLambda zBetaLambda) const;
+			bool isProxyAllowed(double u, double uThreshold);
+
+			void removeNewTasks(int iterationIndex) {}
 
 		private:
 			std::shared_ptr<ZModel> zModel;
