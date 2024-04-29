@@ -1,4 +1,5 @@
 #pragma once
+#include "ProxySettings.h"
 #include "../../Deltares.Probabilistic/Model/RunSettings.h"
 #include "../../Deltares.Probabilistic/Model/Message.h"
 #include "../Utils/SharedPointerProvider.h"
@@ -85,6 +86,8 @@ namespace Deltares
 					}
 				}
 
+				Wrappers::ProxySettings^ ProxySettings = gcnew Wrappers::ProxySettings();
+
 				bool IsValid()
 				{
 					return shared->object->isValid();
@@ -92,6 +95,7 @@ namespace Deltares
 
 				std::shared_ptr<Models::RunSettings> GetSettings()
 				{
+					shared->object->ProxySettings = this->ProxySettings->GetSettings();
 					return shared->object;
 				}
 			};

@@ -2,6 +2,7 @@
 #include "DirectionReliabilitySettings.h"
 #include "../Model/ModelRunner.h"
 #include "../Math/RootFinders/LinearRootFinder.h"
+#include "../Math/RootFinders/BisectionRootFinder.h"
 #include <memory>
 
 namespace Deltares
@@ -129,7 +130,6 @@ namespace Deltares
 			std::shared_ptr<Sample> directionSample = this->Settings->StochastSet->getStartPoint();
 
 			double beta = getBeta(modelRunner, directionSample, z0);
-//			auto alphas = getAlphas(directionSample, directionSample->getSize(), z0);
 
 			std::shared_ptr<DesignPoint> designPoint = modelRunner->getDesignPoint(directionSample, beta);
 
@@ -140,7 +140,7 @@ namespace Deltares
 		{
 			std::shared_ptr<Sample> normalizedSample = directionSample->getNormalizedSample();
 
-			std::shared_ptr <BetaValueTask> task (new BetaValueTask());
+			std::shared_ptr <BetaValueTask> task(new BetaValueTask());
 			task->ModelRunner = modelRunner;
 			task->Index = 0;
 			task->Settings = this->Settings;
@@ -163,7 +163,7 @@ namespace Deltares
 			{
 				return modelRunner->getBeta(directionTask->UValues);
 			}
-			else 
+			else
 			{
 				bool invertZ = directionTask->z0 < 0;
 
@@ -189,7 +189,7 @@ namespace Deltares
 
 			bool found = false;
 			bool monotone = settings->modelVaryingType == ModelVaryingType::Monotone;
-			std::unique_ptr<ZGetter> model (new ZGetter(modelRunner, settings));
+			std::unique_ptr<ZGetter> model(new ZGetter(modelRunner, settings));
 
 			double prevzHigh = nan("");
 
@@ -250,7 +250,7 @@ namespace Deltares
 
 						if (monotone && zLowType != DoubleType::NaN && zHighType != DoubleType::NaN)
 						{
-							if ( NumericSupport::compareDouble(std::abs(zHigh), std::abs(zLow)) == CmpResult::Greater )
+							if (NumericSupport::compareDouble(std::abs(zHigh), std::abs(zLow)) == CmpResult::Greater)
 							{
 								found = true;
 							}
@@ -285,7 +285,12 @@ namespace Deltares
 
 		double DirectionReliability::findBetaBetweenBoundaries(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<DirectionReliabilitySettings> settings, std::shared_ptr<Sample> uDirection, bool invertZ, double uLow, double uHigh, double zLow, double zHigh, double& z)
 		{
-			std::unique_ptr<ZGetter> model (new ZGetter(modelRunner, settings));
+			return findBetaBetweenBoundariesAllowNaN(modelRunner, settings, uDirection, invertZ, uLow, uHigh, zLow, zHigh, z);
+		}
+
+		double DirectionReliability::findBetaBetweenBoundariesAllowNaN(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<DirectionReliabilitySettings> settings, std::shared_ptr<Sample> uDirection, bool invertZ, double uLow, double uHigh, double zLow, double zHigh, double& z)
+		{
+			std::unique_ptr<ZGetter> model(new ZGetter(modelRunner, settings));
 
 			if (std::isnan(zLow) || std::isnan(zHigh))
 			{
@@ -344,17 +349,15 @@ namespace Deltares
 			}
 			else
 			{
-				DirectionCalculation* directionCalculation = new DirectionCalculation(modelRunner, uDirection, invertZ);
+				std::shared_ptr<DirectionCalculation> directionCalculation = std::make_shared<DirectionCalculation>(modelRunner, uDirection, invertZ);
 
 				double zTolerance = GetZTolerance(settings, uLow, uHigh, zLow, zHigh);
 
-				std::unique_ptr<LinearRootFinder> linearSearchCalculation = std::make_unique<LinearRootFinder>();
+				std::shared_ptr<LinearRootFinder> linearSearchCalculation = std::make_shared<LinearRootFinder>();
 
 				double uResult = linearSearchCalculation->CalculateValue(uLow, uHigh, 0, zTolerance, settings->MaximumIterations, [directionCalculation](double v) { return directionCalculation->GetZ(v); }, zLow, zHigh);
 
 				z = std::isnan(uResult) ? nan("") : directionCalculation->GetZ(uResult);
-
-				delete directionCalculation;
 
 				return uResult;
 			}
@@ -421,6 +424,78 @@ namespace Deltares
 				return settings->EpsilonZStepSize;
 			}
 		}
+
+		double DirectionReliabilityForDirectionalSampling::findBetaBetweenBoundaries(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<DirectionReliabilitySettings> settings, std::shared_ptr<Sample> uDirection, bool invertZ, double uLow, double uHigh, double zLow, double zHigh, double& z)
+		{
+			if (std::isnan(zLow) || std::isnan(zHigh))
+			{
+				return this->findBetaBetweenBoundariesAllowNaN(modelRunner, settings, uDirection, invertZ, uLow, uHigh, zLow, zHigh, z);
+			}
+			else
+			{
+				std::shared_ptr<DirectionCalculation> directionCalculation = std::make_shared<DirectionCalculation>(modelRunner, uDirection, invertZ);
+
+				const std::shared_ptr<LinearRootFinder> linearSearchCalculation = std::make_shared<LinearRootFinder>();
+
+				const double zTolerance = DirectionReliability::GetZTolerance(settings, uLow, uHigh, zLow, zHigh);
+
+				double uResult = linearSearchCalculation->CalculateValue(uLow, uHigh, 0, zTolerance, settings->MaximumIterations, [directionCalculation](double v) { return directionCalculation->GetZ(v); }, zLow, zHigh);
+
+				z = std::isnan(uResult) ? nan("") : directionCalculation->GetZ(uResult);
+
+				if (modelRunner->Settings->ProxySettings->IsProxyModel)
+				{
+					if (std::isnan(uResult))
+					{
+						std::shared_ptr<BisectionRootFinder> bisectionCalculation = std::make_shared<BisectionRootFinder>();
+						uResult = bisectionCalculation->CalculateValue(uLow, uHigh, 0, zTolerance, [directionCalculation](double v) { return directionCalculation->GetZ(v); });
+					}
+
+					if (modelRunner->Settings->ProxySettings->ShouldUpdateFinalSteps && !modelRunner->isProxyAllowed(uResult, this->Threshold))
+					{
+						uDirection->AllowProxy = false;
+
+						double z0 = directionCalculation->GetZ(0);
+						double zResult = directionCalculation->GetZ(uResult);
+
+						if (std::isnan(zResult))
+						{
+							z = zResult;
+							modelRunner->removeNewTasks(uDirection->IterationIndex);
+							return settings->MaximumLengthU;
+						}
+						else if (NumericSupport::GetSign(z0) == NumericSupport::GetSign(zResult) && std::abs(zResult) >= std::abs(z0))
+						{
+							z = zResult;
+							modelRunner->removeNewTasks(uDirection->IterationIndex);
+							return settings->MaximumLengthU;
+						}
+						else
+						{
+							double uNew = NumericSupport::interpolate(0, z0, 0, zResult, uResult, true);
+							if (modelRunner->isProxyAllowed(uNew, this->Threshold))
+							{
+								z = zResult;
+								return std::min(uNew, settings->MaximumLengthU);
+							}
+						}
+
+						uResult = linearSearchCalculation->CalculateValue(0, uResult, 0, zTolerance, settings->MaximumIterations, [directionCalculation](double v) { return directionCalculation->GetZNoProxy(v); }, z0, zResult);
+						if (std::isnan(uResult))
+						{
+							z = zResult;
+							uResult = settings->MaximumLengthU;
+						}
+						else
+						{
+							z = directionCalculation->GetZ(uResult);
+						}
+					}
+				}
+
+				return uResult;
+			}
+		};
 	}
 }
 

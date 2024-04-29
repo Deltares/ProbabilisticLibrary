@@ -1,5 +1,8 @@
 #pragma once
+#include <memory>
+
 #include "Message.h"
+#include "ProxySettings.h"
 
 namespace Deltares
 {
@@ -16,9 +19,15 @@ namespace Deltares
 			int MaxMessages = 1000;
 			MessageType LowestMessageType = MessageType::Warning;
 
+			/**
+			 * \brief Settings for performing proxy (surrogate) model runs
+			 */
+			std::shared_ptr<Models::ProxySettings> ProxySettings = std::make_shared<Models::ProxySettings>();
+
 			bool isValid()
 			{
-				return MaxParallelProcesses >= 1;
+				return MaxParallelProcesses >= 1 &&
+					ProxySettings->isValid();
 			}
 		};
 	}

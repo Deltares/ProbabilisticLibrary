@@ -59,7 +59,7 @@ namespace Deltares
 						samples.push_back(randomSampleGenerator->getRandomSample());
 					}
 
-					betaValues = getDirectionBetas(modelRunner, samples, z0Fac, nmaal);
+					betaValues = getDirectionBetas(modelRunner, samples, z0Fac, nmaal, rmin);
 
 					// check whether restart is needed
 					if (modelRunner->shouldExitPrematurely(samples))
@@ -173,12 +173,13 @@ namespace Deltares
 			return convergence;
 		}
 
-		std::vector<double> DirectionalSampling::getDirectionBetas(std::shared_ptr<Models::ModelRunner> modelRunner, std::vector<std::shared_ptr<Sample>> samples, double z0, int step)
+		std::vector<double> DirectionalSampling::getDirectionBetas(std::shared_ptr<Models::ModelRunner> modelRunner, std::vector<std::shared_ptr<Sample>> samples, double z0, int step, double threshold)
 		{
 			auto betaValues = std::vector<double>(samples.size());
 
-			std::unique_ptr<DirectionReliability> directionReliability = std::make_unique<DirectionReliability>();
+			std::unique_ptr<DirectionReliabilityForDirectionalSampling> directionReliability = std::make_unique<DirectionReliabilityForDirectionalSampling>();
 			directionReliability->Settings = this->Settings->DirectionSettings;
+			directionReliability->Threshold = threshold;
 
 			#pragma omp parallel for
 			for (int i = 0; i < (int) samples.size(); i++)
