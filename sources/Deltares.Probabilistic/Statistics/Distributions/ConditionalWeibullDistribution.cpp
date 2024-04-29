@@ -63,6 +63,7 @@ namespace Deltares
 
 			const double log = std::log(f / stochast->ShapeB);
 			const double xlog = std::pow(stochast->Shift / stochast->Scale, stochast->Shape) - log;
+			if (xlog <= 0.0) return 0.0;
 			const double xScale = pow(xlog, 1.0 / stochast->Shape);
 
 			return xScale * stochast->Scale;
