@@ -40,6 +40,8 @@ namespace Deltares
 			void updateStochastSettings(std::shared_ptr<Reliability::StochastSettingsSet> settings);
 			double getZValue(std::shared_ptr<Sample> sample);
 			std::vector<double> getZValues(std::vector<std::shared_ptr<Sample>> samples);
+			double getBeta(std::shared_ptr<Sample> sample);
+			bool canCalculateBeta() const;
 			int getStochastCount();
 			int getVaryingStochastCount();
 			bool shouldExitPrematurely(std::vector<std::shared_ptr<Sample>> samples);
@@ -51,6 +53,8 @@ namespace Deltares
 			std::shared_ptr<RunSettings> Settings = std::make_shared<RunSettings>();
 			std::shared_ptr<Models::ModelSample> getModelSample(std::shared_ptr<Sample> sample);
 			std::vector<double> getOnlyVaryingValues(std::vector<double> values);
+			void setDirectionModel(ZBetaLambda zBetaLambda) const;
+
 		private:
 			std::shared_ptr<ZModel> zModel;
 			std::shared_ptr<UConverter> uConverter;

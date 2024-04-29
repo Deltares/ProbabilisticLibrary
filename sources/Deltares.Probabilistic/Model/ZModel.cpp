@@ -38,6 +38,11 @@ namespace Deltares
 				this->zMultipleLambda(samples);
 			}
 		}
+
+		double ZModel::getBeta(std::shared_ptr<ModelSample> sample, double beta)
+		{
+			return this->zBetaLambda(sample, beta);
+		}
 	}
 }
 
