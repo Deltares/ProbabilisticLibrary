@@ -22,6 +22,8 @@ namespace Deltares
 			using namespace Deltares::Statistics::Wrappers;
 
 			public delegate void ZSampleDelegate(ModelSample^);
+			public delegate bool ShouldExitDelegate(bool finalCall);
+			public delegate void RemoveTaskDelegate(int iterationIndex);
 
 			public ref class ModelRunner
 			{
@@ -62,6 +64,10 @@ namespace Deltares
 
 				virtual void CalcSamples(System::Collections::Generic::IList<ModelSample^>^ samples);
 				virtual void CalcSample(ModelSample^ sample);
+
+				void SetShouldExitDelegate(ShouldExitDelegate^ shouldExitDelegate);
+
+				void SetRemoveTaskDelegate(RemoveTaskDelegate^ removeTaskDelegate);
 
 				virtual property int VaryingStochastCount
 				{

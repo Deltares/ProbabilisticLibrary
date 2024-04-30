@@ -136,25 +136,6 @@ namespace Deltares
 		}
 
 		/**
-		 * \brief Indicates whether it is allowed to run using a proxy (surrogate) model
-		 * \param u Current u value
-		 * \param uThreshold Threshold value
-		 * \return Indication
-		 */
-		bool ModelRunner::isProxyAllowed(double u, double uThreshold)
-		{
-			if (this->Settings->ProxySettings->IsProxyModel) 
-			{
-				return isnan(u) || u > uThreshold + this->Settings->ProxySettings->ThresholdOffset;
-			}
-			else
-			{
-				return false;
-			}
-		}
-
-
-		/**
 		 * \brief Gets the beta (distance to limit state) in a given direction
 		 * \param sample Sample indicating the direction
 		 * \return Beta
@@ -209,7 +190,24 @@ namespace Deltares
 				}
 			}
 
+			if (shouldExitFunction != nullptr)
+			{
+				return shouldExitFunction(false);
+			}
+
 			return false;
+		}
+
+		/**
+		 * \brief Removes a task for further processing
+		 * \param iterationIndex Iteration index of the task
+		 */
+		void ModelRunner::removeTask(int iterationIndex)
+		{
+			if (this->removeTaskFunction != nullptr)
+			{
+				this->removeTaskFunction(iterationIndex);
+			}
 		}
 
 		/**

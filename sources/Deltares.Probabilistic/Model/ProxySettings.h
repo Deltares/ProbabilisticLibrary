@@ -7,6 +7,7 @@ namespace Deltares
 		{
 		public:
 			bool IsProxyModel = false;
+			bool IsUpdatableProxyModel = false;
 			bool ShouldUpdateFinalSteps = false;
 			double ThresholdOffset = 0;
 
