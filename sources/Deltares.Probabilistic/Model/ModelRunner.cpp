@@ -145,7 +145,7 @@ namespace Deltares
 		{
 			if (this->Settings->ProxySettings->IsProxyModel) 
 			{
-				return isnan(u) || u > uThreshold + this->Settings->ProxySettings->ThresholdOffset;
+				return std::isnan(u) || u > uThreshold + this->Settings->ProxySettings->ThresholdOffset;
 			}
 			else
 			{
