@@ -296,6 +296,7 @@ function textualProgress(progress, str) result(cancel) bind(c)
     cancel = userAborted
 end function textualProgress
 
+!> copy x-vector from problib to Hydra-Ring
 subroutine copyDense2Full(xDense, xFull)
     real(kind=wp), intent(in) :: xDense(*)
     real(kind=wp), intent(inout) :: xFull(:)
@@ -308,6 +309,7 @@ subroutine copyDense2Full(xDense, xFull)
     end do
 end subroutine copyDense2Full
 
+!> copy x-vector from Hydra-Ring to problib
 subroutine copyFull2Dense(xFull, xDense)
     real(kind=wp), intent(in   ) :: xFull(:)
     real(kind=wp), intent(inout) :: xDense(*)
