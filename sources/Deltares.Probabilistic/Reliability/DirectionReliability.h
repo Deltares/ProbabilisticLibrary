@@ -43,6 +43,8 @@ namespace Deltares
 			double Threshold = 0;
 		protected:
 			double findBetaBetweenBoundaries(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<DirectionReliabilitySettings> settings, std::shared_ptr<Sample> uDirection, bool invertZ, double uLow, double uHigh, double zLow, double zHigh, double& z) override;
+		private:
+			bool isProxyAllowed(std::shared_ptr<ModelRunner> modelRunner, double u, double threshold);
 		};
 	}
 }

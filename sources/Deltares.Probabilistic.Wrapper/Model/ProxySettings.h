@@ -25,6 +25,12 @@ namespace Deltares
 					void set(bool value) { shared->object->IsProxyModel = value; }
 				}
 
+				property bool IsUpdatableProxyModel
+				{
+					bool get() { return shared->object->IsUpdatableProxyModel; }
+					void set(bool value) { shared->object->IsUpdatableProxyModel = value; }
+				}
+
 				property bool ShouldUpdateFinalSteps
 				{
 					bool get() { return shared->object->ShouldUpdateFinalSteps; }
