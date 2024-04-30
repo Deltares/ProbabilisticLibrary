@@ -13,6 +13,7 @@ namespace Deltares
                 void allDistributionsTests();
             private:
                 void testConditionalWeibull();
+                void testConditionalWeibullNonIntegerShape();
                 const double margin = 1e-9;
             };
         }

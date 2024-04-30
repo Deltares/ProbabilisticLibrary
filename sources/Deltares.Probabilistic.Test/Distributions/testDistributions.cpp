@@ -12,6 +12,7 @@ namespace Deltares
             void testDistributions::allDistributionsTests()
             {
                 testConditionalWeibull();
+                testConditionalWeibullNonIntegerShape();
             }
 
             void testDistributions::testConditionalWeibull()
@@ -50,6 +51,20 @@ namespace Deltares
 
             }
 
+            void testDistributions::testConditionalWeibullNonIntegerShape()
+            {
+                std::shared_ptr< StochastProperties> params = std::make_shared< StochastProperties>();
+                params->Scale = 1.0;
+                params->Shape = 1.001;
+                params->Shift = 1.0;
+                auto distCondWeibull = Stochast(DistributionType::ConditionalWeibull, params);
+
+                for (int i = -8; i < -2; i++)
+                {
+                    auto x = distCondWeibull.getXFromU(i);
+                    EXPECT_NEAR(x, 0.0, margin);
+                }
+            }
         }
     }
 }

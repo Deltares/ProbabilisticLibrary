@@ -4,6 +4,7 @@
 #include "../StochastProperties.h"
 #include <cmath>
 #include <numbers>
+#include <cerrno>
 
 #include "DistributionFitter.h"
 #include "WeibullDistribution.h"
@@ -60,8 +61,12 @@ namespace Deltares
 
 			const double logF = std::log(f / stochast->ShapeB);
 			const double xlog = std::pow(stochast->Shift / stochast->Scale, stochast->Shape) - logF;
-			if (xlog <= 0.0) return 0.0;
+			errno = 0;
 			const double xScale = pow(xlog, 1.0 / stochast->Shape);
+			if (errno == EDOM)
+			{
+				return 0.0;
+			}
 
 			return xScale * stochast->Scale;
 		}
