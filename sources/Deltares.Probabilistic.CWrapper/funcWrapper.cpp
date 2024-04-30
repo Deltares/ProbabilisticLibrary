@@ -7,10 +7,7 @@ using namespace Deltares::Reliability;
 void funcWrapper::FDelegate(std::shared_ptr<Deltares::Models::ModelSample> s)
 {
     computationSettings compSetting{ designPointOptions::dpOutFALSE, compId, 0 };
-    if (s->IterationIndex >= 0)
-    {
-        compSetting.threadId = s->IterationIndex % omp_get_max_threads();
-    }
+    compSetting.threadId = s->threadId;
     tError e = tError();
     double result = zfunc(s->Values.data(), &compSetting, &e);
     if (e.errorCode != 0) throw probLibException(e.errorMessage);

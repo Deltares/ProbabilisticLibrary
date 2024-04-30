@@ -61,6 +61,7 @@ namespace Deltares
 
 			xSample->AllowProxy = sample->AllowProxy;
 			xSample->IterationIndex = sample->IterationIndex;
+			xSample->threadId = sample->threadId;
 			xSample->Weight = sample->Weight;
 			xSample->IsRestartRequired = sample->IsRestartRequired;
 			xSample->Beta = sample->getBeta();

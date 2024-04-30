@@ -185,6 +185,7 @@ namespace Deltares
 			for (int i = 0; i < (int)samples.size(); i++)
 			{
 				samples[i]->IterationIndex = step + i;
+				samples[i]->threadId = omp_get_thread_num();
 				betaValues[i] = directionReliability->getBeta(modelRunner, samples[i], z0);
 			}
 
