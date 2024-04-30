@@ -89,7 +89,9 @@ namespace Deltares
 				varyingCorrelationMatrix->init(varyingStochasts.size());
 				varyingCorrelationMatrix->filter(correlationMatrix, varyingStochastIndex);
 			}
+
 			varyingCorrelationMatrix->CholeskyDecomposition();
+			varyingCorrelationMatrix->InverseCholeskyDecomposition();
 		}
 
 		bool UConverter::isVaryingStochast(int index)
@@ -141,6 +143,8 @@ namespace Deltares
 			settings->VaryingStochastSettings.clear();
 			int j = 0; // varying stochast counter
 
+			std::vector<double> startValues;
+
 			for (size_t i = 0; i < stochasts.size(); i++)
 			{
 				if (stochastSettingsMap.contains(stochasts[i]))
@@ -165,7 +169,26 @@ namespace Deltares
 
 					settings->VaryingStochastSettings.push_back(varyingStochastSettings);
 
+					startValues.push_back(varyingStochastSettings->StartValue);
+
 					j++;
+				}
+			}
+
+			if (settings->AreStartValuesCorrelated) {
+
+				const std::vector<double> uncorrelatedStartValues = varyingCorrelationMatrix->InverseCholesky(startValues);
+
+				for (size_t i = 0; i < settings->VaryingStochastSettings.size(); i++)
+				{
+					settings->VaryingStochastSettings[i]->UncorrelatedStartValue = uncorrelatedStartValues[i];
+				}
+			}
+			else
+			{
+				for (size_t i = 0; i < settings->VaryingStochastSettings.size(); i++)
+				{
+					settings->VaryingStochastSettings[i]->UncorrelatedStartValue = settings->VaryingStochastSettings[i]->StartValue;
 				}
 			}
 		}

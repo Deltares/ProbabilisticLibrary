@@ -14,6 +14,7 @@ namespace Deltares
 			double MinValue = -Statistics::StandardNormal::UMax;
 			double MaxValue = Statistics::StandardNormal::UMax;
 			double StartValue = 0;
+			double UncorrelatedStartValue = 0;
 
 			double VarianceFactor = 1.5;
 			bool IsVarianceAllowed = true;

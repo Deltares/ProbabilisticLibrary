@@ -3,6 +3,7 @@
 #include "DirectionReliability.h"
 #include "../Utils/probLibException.h"
 #include "../Model/GradientCalculator.h"
+#include "../Math/NumericSupport.h"
 #include "SphereTasks.h"
 
 #include <numbers>
@@ -17,7 +18,7 @@ namespace Deltares
 			switch (this->Settings->StartMethod)
 			{
 			case StartMethodType::None:
-				return this->Settings->StochastSet->getSample();
+				return this->Settings->StochastSet->getStartPoint();
 			case StartMethodType::One:
 				return getOneStartPoint(modelRunner);
 			case StartMethodType::RaySearch:
@@ -55,7 +56,7 @@ namespace Deltares
 
 		std::shared_ptr<Sample> StartPointCalculator::getOneStartPoint(std::shared_ptr<Models::ModelRunner> modelRunner)
 		{
-			std::shared_ptr<Sample> startPoint = this->Settings->StochastSet->getSample();
+			std::shared_ptr<Sample> startPoint = this->Settings->StochastSet->getStartPoint();
 
 			correctDefaultValues(startPoint);
 
@@ -64,14 +65,14 @@ namespace Deltares
 
 		std::shared_ptr<Sample> StartPointCalculator::getGivenVectorStartPoint(std::shared_ptr<Models::ModelRunner> modelRunner)
 		{
-			std::shared_ptr<Sample> startPoint = this->Settings->StochastSet->getSample();
+			std::shared_ptr<Sample> startPoint = this->Settings->StochastSet->getStartPoint();
 			startPoint->Values = this->Settings->startVector;
 			return startPoint;
 		}
 
 		std::shared_ptr<Sample> StartPointCalculator::getRayStartPoint(std::shared_ptr<Models::ModelRunner> modelRunner)
 		{
-			std::shared_ptr<Sample> startPoint = this->Settings->StochastSet->getSample();
+			std::shared_ptr<Sample> startPoint = this->Settings->StochastSet->getStartPoint();
 
 			if (this->Settings->startVector.size() > 0)
 			{
@@ -96,7 +97,8 @@ namespace Deltares
 
 			for (int i = 0; i < nStochasts; i++)
 			{
-				if (!this->Settings->StochastSet->VaryingStochastSettings[i]->IsInitializationAllowed)
+				if (!this->Settings->StochastSet->VaryingStochastSettings[i]->IsInitializationAllowed || 
+					this->Settings->StochastSet->VaryingStochastSettings[i]->IsQualitative)
 				{
 					startPoint->Values[i] = 0;
 				}
@@ -202,7 +204,7 @@ namespace Deltares
 
 			double z0Fac = z0 < 0 ? -1 : 1;
 
-			std::shared_ptr<Sample> startPoint = this->Settings->StochastSet->getSample();
+			std::shared_ptr<Sample> startPoint = this->Settings->StochastSet->getStartPoint();
 
 			correctDefaultValues(startPoint);
 
@@ -219,7 +221,7 @@ namespace Deltares
 			}
 
 			auto st = sphereTasks(maxSteps, Settings->allQuadrants);
-			auto uSphereValues = vector1D(uSphere->Values.size());
+			auto uSphereValues = Numeric::vector1D(uSphere->Values.size());
 			for (size_t i = 0; i < uSphere->Values.size(); i++)
 			{
 				uSphereValues(i) = uSphere->Values[i];
@@ -227,6 +229,7 @@ namespace Deltares
 			auto tasks = st.examineSurfaceForTasks(uSphereValues);
 
 			std::shared_ptr<Sample> bestSample = nullptr;
+			std::vector<std::shared_ptr<Sample>> previousSamples;
 
 			for (int i = 0; i < nRadiusFactors; i++)
 			{
@@ -235,90 +238,56 @@ namespace Deltares
 				std::vector<std::shared_ptr<Sample>> samples;
 				for (const auto& task : tasks)
 				{
-					std::shared_ptr<Sample> uRay = this->Settings->StochastSet->getSample();
+					std::shared_ptr<Sample> uRay = this->Settings->StochastSet->getStartPoint();
 					for (int k = 0; k < uSphere->Values.size(); k++)
 					{
 						uRay->Values[k] = task(k);
 					}
 					std::shared_ptr<Sample> u = uRay->getMultipliedSample(radiusFactor);
+					u->IterationIndex = i;
 					samples.push_back(u);
 				}
-				modelRunner->getZValues(samples);
-				for (const auto& sample : samples)
+				auto zValues = modelRunner->getZValues(samples);
+				for (auto & z : zValues) {z *= z0Fac;}
+				auto indexMinimal = Numeric::NumericSupport::getLocationMinimum(zValues);
+				if (zValues[indexMinimal] < 0.0)
 				{
-					bestSample = getBestSample(bestSample, sample, z0Fac);
+					auto previous = (i > 0 ? previousSamples[indexMinimal] : zeroSample);
+					bestSample = refineSpherePoint(samples[indexMinimal], previous);
+					break;
 				}
 
-				if (z0Fac * bestSample->Z < 0.0)
-				{
-					std::shared_ptr<Sample> refinedSample = refineSpherePoint(modelRunner, radiusFactor, bestSample);
+				previousSamples = samples;
 
-					return refinedSample;
-				}
+				for (auto& z : zValues) { z = std::abs(z); }
+				auto indexAbsMinimal = Numeric::NumericSupport::getLocationMinimum(zValues);
+				setBestSample(bestSample, samples[indexAbsMinimal]);
 			}
 
 			return bestSample;
 		}
 
-		// Gets the best sample for a given radius factor
-
-		std::shared_ptr<Sample> StartPointCalculator::getBestSample(std::shared_ptr<Sample> bestSample, std::shared_ptr<Sample> sample, double z0Fac)
+		// Sets the best sample based on closest to Z == 0
+		void StartPointCalculator::setBestSample(std::shared_ptr<Sample> & bestSample, const std::shared_ptr<Sample> sample)
 		{
 			if (bestSample == nullptr)
 			{
-				return sample;
+				bestSample = sample;
 			}
-			else if (z0Fac * bestSample->Z > 0 && z0Fac * sample->Z < 0)
+			else if (std::abs(bestSample->Z) > std::abs(sample->Z))
 			{
-				return sample;
-			}
-			else if (abs(sample->Z) < abs(bestSample->Z))
-			{
-				return sample;
-			}
-			else
-			{
-				return bestSample;
+				bestSample = sample;
 			}
 		}
 
-		std::shared_ptr<Sample> StartPointCalculator::refineSpherePoint(std::shared_ptr<Models::ModelRunner> modelRunner, double radiusFactor, std::shared_ptr<Sample> u)
+		std::shared_ptr<Sample> StartPointCalculator::refineSpherePoint( const std::shared_ptr<Sample> u, const std::shared_ptr<Sample> previous)
 		{
-			// determine the u-vector for which the z-function is either minimal
-			// or where it becomes negative
-			// in the latter case, interpolate to get an optimal starting vector
+			// determine the u-vector for which the z-function is 0.0, assuming linear behaviour between the samples u and previous.
 
-			double z = u->Z;
-			double coFactor = (radiusFactor - 0.05) / radiusFactor;
+			auto betaZeqZero = Numeric::NumericSupport::interpolate(0.0, previous->Z, previous->getBeta(), u->Z, u->getBeta());
 
-			std::shared_ptr<Sample> u2 = u->getMultipliedSample(coFactor);
-
-			// factor related to number of steps above
-			double z2 = modelRunner->getZValue(u2);
-
-			// assume fz(uFactor) = A + B * uFactor
-			// z = A + B * 1.0
-			// z2 = A + B * coFactor
-			// z-z2 = B(1-coFactor) => B = (z-z2)/(1-coFactor)
-			// A = z - B
-			// fz = 0 => A + B * uFactor = 0
-			// => uFactor = -A / B
-			// if B near 0 => z near z2 => refinement does not improve the result, so return u
-			double B = (z - z2) / (1.0 - coFactor);
-			double A = z - B;
-
-			if (std::abs(B) > 1e-25)
-			{
-				double uFactor = -A / B;
-
-				std::shared_ptr<Sample> u3 = u->getMultipliedSample(uFactor);
-				return u3;
-			}
-			else
-			{
-				return u;
-			}
-
+			std::shared_ptr<Sample> u3 = u->getSampleAtBeta(betaZeqZero);
+			return u3;
 		}
 	}
 }

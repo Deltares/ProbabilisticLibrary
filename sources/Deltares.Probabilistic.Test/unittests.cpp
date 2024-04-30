@@ -6,6 +6,7 @@
 #include "Combin/upscale_tests.h"
 #include "Combin/combinElements_tests.h"
 #include "Combin/hohenbichlerCombiner_tests.h"
+#include "Distributions/testDistributions.h"
 
 using namespace Deltares::Probabilistic;
 
@@ -63,6 +64,11 @@ namespace Deltares
                 tstStartPoint.allStartPointTests();
             }
 
+            TEST(unittst, testDistributions)
+            {
+                auto tstDist = testDistributions();
+                tstDist.allDistributionsTests();
+            }
         }
     }
 }

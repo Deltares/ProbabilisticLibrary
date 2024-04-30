@@ -14,13 +14,8 @@ namespace Deltares
 			double pf = 0;
 			double qtot = 0;
 			double rmin = 200; // initialise convergence indicator and loops
-			DesignPointBuilder* uMean = new DesignPointBuilder(nstochasts, this->Settings->designPointMethod, this->Settings->StochastSet);
+			std::shared_ptr<DesignPointBuilder> uMean = std::make_shared<DesignPointBuilder> (nstochasts, this->Settings->designPointMethod, this->Settings->StochastSet);
 			int parSamples = 0;
-
-			if (modelRunner->Settings->MaxParallelProcesses > 0) 
-			{
-				omp_set_num_threads(modelRunner->Settings->MaxParallelProcesses);
-			}
 
 			std::vector<double> betaValues;
 			std::vector<std::shared_ptr<Sample>> samples;
@@ -29,8 +24,8 @@ namespace Deltares
 
 			std::shared_ptr<ConvergenceReport> convergenceReport = std::make_shared<ConvergenceReport>();
 
-			RandomSampleGenerator* randomSampleGenerator = new RandomSampleGenerator();
-			randomSampleGenerator->Settings = this->Settings->RandomSettings;
+			std::shared_ptr<RandomSampleGenerator> randomSampleGenerator = std::make_shared<RandomSampleGenerator>();
+			randomSampleGenerator->Settings = this->Settings->randomSettings;
 			randomSampleGenerator->Settings->StochastSet = this->Settings->StochastSet;
 			randomSampleGenerator->initialize();
 
@@ -43,14 +38,20 @@ namespace Deltares
 
 			double sumPfSamp = 0.0; double sumPfSamp2 = 0.0;
 			int validSamples = 0;
-			// loop for number of samples
-			for (int nmaal = 0; nmaal < Settings->MaximumSamples && !isStopped(); nmaal++)
+
+			if (modelRunner->Settings->MaxParallelProcesses > 0)
+			{
+				omp_set_num_threads(modelRunner->Settings->MaxParallelProcesses);
+			}
+
+			// loop for all directions
+			for (int nmaal = 0; nmaal < Settings->MaximumDirections && !isStopped(); nmaal++)
 			{
 				if (nmaal % chunkSize == 0)
 				{
 					samples.clear();
 
-					int runs = std::min(chunkSize, Settings->MaximumSamples - parSamples * chunkSize);
+					int runs = std::min(chunkSize, Settings->MaximumDirections - parSamples * chunkSize);
 
 					// run max par samples times zrfunc in parallel
 					for (int i = 0; i < runs; i++)
@@ -58,7 +59,7 @@ namespace Deltares
 						samples.push_back(randomSampleGenerator->getRandomSample());
 					}
 
-					betaValues = getDirectionBetas(modelRunner, samples, z0Fac, nmaal);
+					betaValues = getDirectionBetas(modelRunner, samples, z0Fac, nmaal, rmin);
 
 					// check whether restart is needed
 					if (modelRunner->shouldExitPrematurely(samples))
@@ -108,7 +109,7 @@ namespace Deltares
 				}
 
 				// check on convergence criterium
-				bool enoughSamples = nmaal >= Settings->MinimumSamples;
+				bool enoughSamples = nmaal >= Settings->MinimumDirections;
 				convergenceReport->TotalDirections = nmaal+1;
 
 				sumPfSamp += uSurface->Weight;
@@ -172,12 +173,13 @@ namespace Deltares
 			return convergence;
 		}
 
-		std::vector<double> DirectionalSampling::getDirectionBetas(std::shared_ptr<Models::ModelRunner> modelRunner, std::vector<std::shared_ptr<Sample>> samples, double z0, int step)
+		std::vector<double> DirectionalSampling::getDirectionBetas(std::shared_ptr<Models::ModelRunner> modelRunner, std::vector<std::shared_ptr<Sample>> samples, double z0, int step, double threshold)
 		{
 			auto betaValues = std::vector<double>(samples.size());
 
-			std::unique_ptr<DirectionReliability> directionReliability = std::make_unique<DirectionReliability>();
+			std::unique_ptr<DirectionReliabilityForDirectionalSampling> directionReliability = std::make_unique<DirectionReliabilityForDirectionalSampling>();
 			directionReliability->Settings = this->Settings->DirectionSettings;
+			directionReliability->Threshold = threshold;
 
 			#pragma omp parallel for schedule(static,1)
 			for (int i = 0; i < (int)samples.size(); i++)

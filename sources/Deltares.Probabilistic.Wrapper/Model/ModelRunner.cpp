@@ -16,8 +16,10 @@ namespace Deltares
 
 			delegate void ManagedSampleDelegate(std::shared_ptr<Models::ModelSample> sample);
 			delegate void ManagedMultipleSampleDelegate(std::vector<std::shared_ptr<Models::ModelSample>> samples);
+			delegate double ManagedBetaDelegate(std::shared_ptr<Models::ModelSample> sample, double beta);
 			typedef void(__stdcall* ZDelegate) (std::shared_ptr<Models::ModelSample>);
 			typedef void(__stdcall* ZMultipleDelegate) (std::vector<std::shared_ptr<Models::ModelSample>>);
+			typedef double(__stdcall* ZBetaDelegate) (std::shared_ptr<Models::ModelSample>, double beta);
 
 			ModelRunner::ModelRunner(ZSampleDelegate^ zFunction, System::Collections::Generic::List<Stochast^>^ stochasts, CorrelationMatrix^ correlationMatrix, ProgressIndicator^ progressIndicator)
 			{
@@ -66,6 +68,18 @@ namespace Deltares
 				return functionPointer;
 			}
 
+			Models::ZBetaLambda ModelRunner::getZBetaLambda()
+			{
+				ManagedBetaDelegate^ fp = gcnew ManagedBetaDelegate(this, &ModelRunner::invokeBetaSample);
+				System::Runtime::InteropServices::GCHandle handle = System::Runtime::InteropServices::GCHandle::Alloc(fp);
+				handles->Add(handle);
+
+				System::IntPtr callbackPtr = System::Runtime::InteropServices::Marshal::GetFunctionPointerForDelegate(fp);
+				Models::ZBetaLambda functionPointer = static_cast<ZBetaDelegate>(callbackPtr.ToPointer());
+
+				return functionPointer;
+			}
+
 			std::shared_ptr<ZModel> ModelRunner::getZModel()
 			{
 				ZLambda zLambda = getZLambda();
@@ -74,6 +88,17 @@ namespace Deltares
 				std::shared_ptr<ZModel> zModel = std::make_shared<ZModel>(zLambda, zMultipleLambda);
 
 				return zModel;
+			}
+
+			void ModelRunner::SetDirectionModel(ICanCalculateBeta^ directionModel)
+			{
+				if (directionModel->CanCalculateDirection())
+				{
+					this->directionModel = directionModel;
+
+					const ZBetaLambda zBetaLambda = getZBetaLambda();
+					this->shared->object->setDirectionModel(zBetaLambda);
+				}
 			}
 
 			void ModelRunner::invokeSample(std::shared_ptr<Models::ModelSample> sample)
@@ -93,6 +118,13 @@ namespace Deltares
 				}
 
 				this->CalcZValues(sampleWrappers);
+			}
+
+			double ModelRunner::invokeBetaSample(std::shared_ptr<Models::ModelSample> sample, double beta)
+			{
+				ModelSample^ sampleWrapper = gcnew ModelSample(sample);
+
+				return this->directionModel->GetBeta(sampleWrapper, beta);
 			}
 
 			void ModelRunner::CalcZValues(System::Collections::Generic::IList<ModelSample^>^ samples)

@@ -1,4 +1,5 @@
 #pragma once
+#include "ICanCalculateBeta.h"
 #include "../../Deltares.Probabilistic/Model/ZModel.h"
 #include "../../Deltares.Probabilistic/Model/ModelRunner.h"
 #include "../../Deltares.Probabilistic/Model/Sample.h"
@@ -30,6 +31,8 @@ namespace Deltares
 				std::shared_ptr<Models::ZModel> getZModel();
 				ZLambda getZLambda();
 				ZMultipleLambda getZMultipleDelegate();
+				ZBetaLambda getZBetaLambda();
+
 				ZSampleDelegate^ zFunction = nullptr;
 
 				void CalcZValues(System::Collections::Generic::IList<ModelSample^>^ samples);
@@ -37,6 +40,9 @@ namespace Deltares
 
 				void invokeSample(std::shared_ptr<Models::ModelSample> sample);
 				void invokeMultipleSamples(std::vector<std::shared_ptr<Models::ModelSample>> samples);
+				double invokeBetaSample(std::shared_ptr<Models::ModelSample> sample, double beta);
+
+				ICanCalculateBeta^ directionModel = nullptr;
 
 				System::Collections::Generic::List<System::Runtime::InteropServices::GCHandle>^ handles = gcnew System::Collections::Generic::List<System::Runtime::InteropServices::GCHandle>();
 
@@ -77,8 +83,8 @@ namespace Deltares
 
 				/**
 				 * \brief Calculates a z-value for a reliability method in .net
-				 * \param sample 
-				 * \return 
+				 * \param sample
+				 * \return
 				 */
 				virtual double GetZValue(Sample^ sample)
 				{
@@ -87,8 +93,8 @@ namespace Deltares
 
 				/**
 				 * \brief Calculates multiple z-values for a reliability method in .net
-				 * \param samples 
-				 * \return 
+				 * \param samples
+				 * \return
 				 */
 				virtual array<double>^ GetZValues(System::Collections::Generic::List<Sample^>^ samples)
 				{
@@ -120,7 +126,11 @@ namespace Deltares
 					shared->object->Settings = this->Settings->GetSettings();
 					return shared->object;
 				}
+
+			protected:
+				virtual void SetDirectionModel(ICanCalculateBeta^ directionModel);
 			};
+
 		}
 	}
 }

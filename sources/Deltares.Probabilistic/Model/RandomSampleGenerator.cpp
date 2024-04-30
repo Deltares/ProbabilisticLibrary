@@ -20,8 +20,10 @@ namespace Deltares
 
 		std::shared_ptr<Sample> RandomSampleGenerator::getRandomSample()
 		{
-			auto randomValues = std::vector<double>();
-			for (int i = 0; i < this->Settings->StochastSet->getStochastCount(); i++)
+			std::vector<double> randomValues;
+
+			const int size = this->Settings->SkipUnvaryingParameters ? this->Settings->StochastSet->getStochastCount() : this->Settings->StochastSet->getVaryingStochastCount();
+			for (int i = 0; i < size; i++)
 			{
 				randomValues.push_back(Deltares::Numeric::Random::next());
 			}
@@ -30,7 +32,8 @@ namespace Deltares
 
 			for (int i = 0; i < this->Settings->StochastSet->getVaryingStochastCount(); i++)
 			{
-				double x = randomValues[this->Settings->StochastSet->VaryingStochastSettings[i]->StochastIndex];
+				const int variableIndex = this->Settings->SkipUnvaryingParameters ? this->Settings->StochastSet->VaryingStochastSettings[i]->StochastIndex : i;
+				const double x = randomValues[variableIndex];
 				sample->Values[i] = Deltares::Statistics::StandardNormal::getUFromQ(x);
 			}
 

@@ -8,6 +8,7 @@
 #include "../Reliability/ReliabilityResult.h"
 #include "../Reliability/DesignPoint.h"
 #include "../Reliability/StochastSettingsSet.h"
+#include "../Utils/Locker.h"
 #include "RunSettings.h"
 #include "UConverter.h"
 #include "ZModel.h"
@@ -21,16 +22,6 @@ namespace Deltares
 	{
 		class ModelRunner
 		{
-		private:
-			std::shared_ptr<ZModel> zModel;
-			std::shared_ptr<UConverter> uConverter;
-			std::vector<std::shared_ptr<Reliability::ReliabilityResult>> reliabilityResults;
-			std::vector<std::shared_ptr<Evaluation>> evaluations;
-			std::vector< std::shared_ptr<Message>> messages;
-			std::shared_ptr<ProgressIndicator> progressIndicator = nullptr;
-			
-			void registerEvaluation(std::shared_ptr<ModelSample> sample);
-
 		public:
 			ModelRunner(std::shared_ptr<ZModel> zModel, std::shared_ptr<UConverter>uConverter, std::shared_ptr<ProgressIndicator> progressIndicator = nullptr)
 			{
@@ -39,11 +30,18 @@ namespace Deltares
 				this->progressIndicator = progressIndicator;
 			}
 
+			~ModelRunner()
+			{
+				delete this->locker;
+			}
+
 			void initializeForRun();
 			void clear();
 			void updateStochastSettings(std::shared_ptr<Reliability::StochastSettingsSet> settings);
 			double getZValue(std::shared_ptr<Sample> sample);
 			std::vector<double> getZValues(std::vector<std::shared_ptr<Sample>> samples);
+			double getBeta(std::shared_ptr<Sample> sample);
+			bool canCalculateBeta() const;
 			int getStochastCount();
 			int getVaryingStochastCount();
 			bool shouldExitPrematurely(std::vector<std::shared_ptr<Sample>> samples);
@@ -55,6 +53,22 @@ namespace Deltares
 			std::shared_ptr<RunSettings> Settings = std::make_shared<RunSettings>();
 			std::shared_ptr<Models::ModelSample> getModelSample(std::shared_ptr<Sample> sample);
 			std::vector<double> getOnlyVaryingValues(std::vector<double> values);
+			void setDirectionModel(ZBetaLambda zBetaLambda) const;
+			bool isProxyAllowed(double u, double uThreshold);
+
+			void removeNewTasks(int iterationIndex) {}
+
+		private:
+			std::shared_ptr<ZModel> zModel;
+			std::shared_ptr<UConverter> uConverter;
+			std::vector<std::shared_ptr<Reliability::ReliabilityResult>> reliabilityResults;
+			std::vector<std::shared_ptr<Evaluation>> evaluations;
+			std::vector< std::shared_ptr<Message>> messages;
+			std::shared_ptr<ProgressIndicator> progressIndicator = nullptr;
+
+			void registerEvaluation(std::shared_ptr<ModelSample> sample);
+
+			Utils::Locker* locker = nullptr;
 		};
 	}
 }

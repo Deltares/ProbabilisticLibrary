@@ -34,8 +34,10 @@ namespace Deltares
 				return static_cast<int>(this->VaryingStochastSettings.size());
 			}
 
-			std::shared_ptr<Sample> getSample();
-			void setStartPoint(std::shared_ptr<Sample> stochastPoint);
+			std::shared_ptr<Sample> getStartPoint();
+			void setStartPoint(std::shared_ptr<Sample> startPoint);
+
+			bool AreStartValuesCorrelated = true;
 		};
 	}
 }

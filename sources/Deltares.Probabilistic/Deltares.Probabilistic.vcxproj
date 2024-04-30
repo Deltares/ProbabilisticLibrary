@@ -155,6 +155,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Model\ProxySettings.h" />
+    <ClInclude Include="Utils\Locker.h" />
+    <ClInclude Include="Math\MatrixSupport.h" />
+    <ClInclude Include="Optimization\KMeansClustering.h" />
+    <ClInclude Include="Optimization\ClusterSettings.h" />
     <ClInclude Include="Reliability\AdaptiveImportanceSampling.h" />
     <ClInclude Include="Reliability\AdaptiveImportanceSamplingSettings.h" />
     <ClInclude Include="Reliability\ImportanceSamplingCluster.h" />
@@ -262,6 +267,11 @@
     <ClInclude Include="Statistics\Distributions\ConditionalWeibullDistribution.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Model\ProxySettings.cpp" />
+    <ClCompile Include="Utils\Locker.cpp" />
+    <ClCompile Include="Math\MatrixSupport.cpp" />
+    <ClCompile Include="Optimization\KMeansClustering.cpp" />
+    <ClCompile Include="Optimization\ClusterSettings.cpp" />
     <ClCompile Include="Reliability\AdaptiveImportanceSampling.cpp" />
     <ClCompile Include="Reliability\AdaptiveImportanceSamplingSettings.cpp" />
     <ClCompile Include="Reliability\ImportanceSamplingCluster.cpp" />

@@ -66,6 +66,7 @@ namespace Deltares
 			std::shared_ptr<Sample> getSampleAtBeta(double beta);
 			std::shared_ptr<Sample> getMultipliedSample(double factor);
 			void correctSmallValues(double tolerance = 1E-10);
+			bool areValuesEqual(std::shared_ptr<Sample> other);
 		};
 	}
 }
