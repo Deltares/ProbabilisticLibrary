@@ -96,12 +96,17 @@ namespace Deltares
 
 		double ConditionalWeibullDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)
 		{
-			throw Deltares::Reliability::probLibException("not implemented");
+			const double dx = 1e-4;
+			double p2 = getCDF(stochast, x + dx);
+			double p1 = getCDF(stochast, x - dx);
+			double pdf = (p2 - p1) / (2.0 * dx);
+			return pdf;
 		}
 
 		double ConditionalWeibullDistribution::getCDF(std::shared_ptr<StochastProperties> stochast, double x)
 		{
-			throw Deltares::Reliability::probLibException("not implemented");
+			double u = getUFromX(stochast, x);
+			return StandardNormal::getPFromU(u);
 		}
 
 		void ConditionalWeibullDistribution::setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation)
