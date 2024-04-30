@@ -20,6 +20,9 @@ namespace Deltares
 {
 	namespace Models
 	{
+		typedef std::function<bool(bool finalCall)> ShouldExitLambda;
+		typedef std::function<void(int iterationIndex)> RemoveTaskLambda;
+
 		class ModelRunner
 		{
 		public:
@@ -35,6 +38,8 @@ namespace Deltares
 				delete this->locker;
 			}
 
+			std::shared_ptr<RunSettings> Settings = std::make_shared<RunSettings>();
+
 			void initializeForRun();
 			void clear();
 			void updateStochastSettings(std::shared_ptr<Reliability::StochastSettingsSet> settings);
@@ -45,18 +50,18 @@ namespace Deltares
 			int getStochastCount();
 			int getVaryingStochastCount();
 			bool shouldExitPrematurely(std::vector<std::shared_ptr<Sample>> samples);
+			void removeTask(int iterationIndex);
 			void reportResult(std::shared_ptr<Reliability::ReliabilityReport> report);
 			void reportMessage(MessageType type, std::string text);
 			void doTextualProgress(ProgressType type, std::string text);
 			bool isVaryingStochast(int index);
 			std::shared_ptr<Reliability::DesignPoint> getDesignPoint(std::shared_ptr<Sample> sample, double beta, std::shared_ptr<Reliability::ConvergenceReport> convergenceReport = nullptr, std::string identifier = "");
-			std::shared_ptr<RunSettings> Settings = std::make_shared<RunSettings>();
 			std::shared_ptr<Models::ModelSample> getModelSample(std::shared_ptr<Sample> sample);
 			std::vector<double> getOnlyVaryingValues(std::vector<double> values);
-			void setDirectionModel(ZBetaLambda zBetaLambda) const;
-			bool isProxyAllowed(double u, double uThreshold);
 
-			void removeNewTasks(int iterationIndex) {}
+			void setDirectionModel(ZBetaLambda zBetaLambda) const;
+			void setShouldExitFunction(ShouldExitLambda shouldExitFunction) { this->shouldExitFunction = shouldExitFunction; }
+			void setRemoveTaskFunction(RemoveTaskLambda removeTaskFunction) { this->removeTaskFunction = removeTaskFunction; }
 
 		private:
 			std::shared_ptr<ZModel> zModel;
@@ -67,6 +72,9 @@ namespace Deltares
 			std::shared_ptr<ProgressIndicator> progressIndicator = nullptr;
 
 			void registerEvaluation(std::shared_ptr<ModelSample> sample);
+
+			ShouldExitLambda shouldExitFunction = nullptr;
+			RemoveTaskLambda removeTaskFunction = nullptr;
 
 			Utils::Locker* locker = nullptr;
 		};

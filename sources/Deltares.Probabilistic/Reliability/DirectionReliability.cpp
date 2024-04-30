@@ -151,13 +151,14 @@ namespace Deltares
 			double beta = this->getDirectionBeta(modelRunner, task);
 			beta = beta * z0;
 
+			directionSample->AllowProxy = task->UValues->AllowProxy;
+
 			return beta;
 		}
 
 		double DirectionReliability::getDirectionBeta(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr <BetaValueTask> directionTask)
 		{
 			std::shared_ptr<Sample> uDirection = directionTask->UValues->getNormalizedSample();
-			uDirection->IterationIndex = directionTask->Iteration;
 
 			if (modelRunner->canCalculateBeta())
 			{
@@ -451,29 +452,29 @@ namespace Deltares
 						uResult = bisectionCalculation->CalculateValue(uLow, uHigh, 0, zTolerance, [directionCalculation](double v) { return directionCalculation->GetZ(v); });
 					}
 
-					if (modelRunner->Settings->ProxySettings->ShouldUpdateFinalSteps && !modelRunner->isProxyAllowed(uResult, this->Threshold))
+					if (modelRunner->Settings->ProxySettings->ShouldUpdateFinalSteps && !isProxyAllowed(modelRunner, uResult, this->Threshold))
 					{
 						uDirection->AllowProxy = false;
 
-						double z0 = directionCalculation->GetZ(0);
-						double zResult = directionCalculation->GetZ(uResult);
+						double z0 = directionCalculation->GetZProxy(0, false);
+						double zResult = directionCalculation->GetZProxy(uResult, false);
 
 						if (std::isnan(zResult))
 						{
 							z = zResult;
-							modelRunner->removeNewTasks(uDirection->IterationIndex);
+							modelRunner->removeTask(uDirection->IterationIndex);
 							return settings->MaximumLengthU;
 						}
 						else if (NumericSupport::GetSign(z0) == NumericSupport::GetSign(zResult) && std::abs(zResult) >= std::abs(z0))
 						{
 							z = zResult;
-							modelRunner->removeNewTasks(uDirection->IterationIndex);
+							modelRunner->removeTask(uDirection->IterationIndex);
 							return settings->MaximumLengthU;
 						}
 						else
 						{
 							double uNew = NumericSupport::interpolate(0, z0, 0, zResult, uResult, true);
-							if (modelRunner->isProxyAllowed(uNew, this->Threshold))
+							if (isProxyAllowed(modelRunner, uNew, this->Threshold))
 							{
 								z = zResult;
 								return std::min(uNew, settings->MaximumLengthU);
@@ -488,7 +489,7 @@ namespace Deltares
 						}
 						else
 						{
-							z = directionCalculation->GetZ(uResult);
+							z = directionCalculation->GetZProxy(uResult, false);
 						}
 					}
 				}
@@ -496,6 +497,11 @@ namespace Deltares
 				return uResult;
 			}
 		};
+
+		bool DirectionReliabilityForDirectionalSampling::isProxyAllowed(std::shared_ptr<ModelRunner> modelRunner, double u, double threshold)
+		{
+			return std::isnan(u) || u > threshold + modelRunner->Settings->ProxySettings->ThresholdOffset;
+		}
 	}
 }
 
