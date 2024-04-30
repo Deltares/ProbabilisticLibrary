@@ -14,6 +14,7 @@ namespace Deltares
             private:
                 void testConditionalWeibull();
                 void testConditionalWeibullNonIntegerShape();
+                void testConditionalWeibullMeanDeviation();
                 const double margin = 1e-9;
             };
         }

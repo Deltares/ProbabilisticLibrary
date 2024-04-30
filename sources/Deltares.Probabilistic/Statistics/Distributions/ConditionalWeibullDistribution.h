@@ -30,6 +30,8 @@ namespace Deltares
 			void fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values) override;
 			std::vector<double> getSpecialPoints(std::shared_ptr<StochastProperties> stochast) override;
 			std::vector<DistributionPropertyType> getParameters() override { return { Shift, Scale, Shape }; }
+		private:
+			const double tresholdF = 3.34e-8;
 		};
 	}
 }

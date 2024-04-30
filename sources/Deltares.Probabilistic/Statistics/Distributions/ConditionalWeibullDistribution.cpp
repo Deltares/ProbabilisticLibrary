@@ -3,7 +3,6 @@
 #include "../StandardNormal.h"
 #include "../StochastProperties.h"
 #include <cmath>
-#include <numbers>
 #include <cerrno>
 
 #include "DistributionFitter.h"
@@ -20,22 +19,22 @@ namespace Deltares
 
 		bool ConditionalWeibullDistribution::isValid(std::shared_ptr<StochastProperties> stochast)
 		{
-			return stochast->Scale >= 0 && stochast->Shape >= 0;
+			return stochast->Scale > 0 && stochast->Shape > 0 && stochast->ShapeB > 0;
 		}
 
 		bool ConditionalWeibullDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)
 		{
-			return stochast->Scale > 0;
+			return isValid(stochast);
 		}
 
 		double ConditionalWeibullDistribution::getMean(std::shared_ptr<StochastProperties> stochast)
 		{
-			return this->getMeanByIteration(stochast);
+			return getMeanByIteration(stochast);
 		}
 
 		double ConditionalWeibullDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
 		{
-			return this->getDeviationByIteration(stochast);
+			return getDeviationByIteration(stochast);
 		}
 
 		double ConditionalWeibullDistribution::getXFromU(std::shared_ptr<StochastProperties> stochast, double u)
@@ -49,7 +48,7 @@ namespace Deltares
 				return stochast->Shift;
 			}
 			double f; // Exceedance frequency
-			if (q <= 3.34e-8)
+			if (q <= tresholdF)
 			{
 				f = std::max(q, qMin);
 			}
@@ -63,7 +62,7 @@ namespace Deltares
 			const double xlog = std::pow(stochast->Shift / stochast->Scale, stochast->Shape) - logF;
 			errno = 0;
 			const double xScale = pow(xlog, 1.0 / stochast->Shape);
-			if (errno == EDOM)
+			if (errno != 0)
 			{
 				return 0.0;
 			}
@@ -73,7 +72,26 @@ namespace Deltares
 
 		double ConditionalWeibullDistribution::getUFromX(std::shared_ptr<StochastProperties> stochast, double x)
 		{
-			throw Deltares::Reliability::probLibException("not implemented");
+			x /= stochast->Scale;
+			errno = 0;
+			double xlog = pow(x, stochast->Shape);
+			if (errno != 0)
+			{
+				return -StandardNormal::BetaMax;
+			}
+			double logF = std::pow(stochast->Shift / stochast->Scale, stochast->Shape) - xlog;
+			double f = stochast->ShapeB * exp(logF);
+			double u;
+			if (f < tresholdF)
+			{
+				u = StandardNormal::getUFromQ(f);
+			}
+			else
+			{
+				double pd = exp(-f);
+				u = StandardNormal::getUFromP(pd);
+			}
+			return u;
 		}
 
 		double ConditionalWeibullDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)

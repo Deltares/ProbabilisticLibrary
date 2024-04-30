@@ -13,6 +13,7 @@ namespace Deltares
             {
                 testConditionalWeibull();
                 testConditionalWeibullNonIntegerShape();
+                testConditionalWeibullMeanDeviation();
             }
 
             void testDistributions::testConditionalWeibull()
@@ -45,8 +46,11 @@ namespace Deltares
 
                 for (int i = -8; i < 8; i++)
                 {
-                    auto x = distCondWeibull.getXFromU(i);
+                    auto u = (double)i;
+                    auto x = distCondWeibull.getXFromU(u);
                     EXPECT_NEAR(x, expectedValues[i+8], margin);
+                    auto uCalculated = distCondWeibull.getUFromX(x);
+                    EXPECT_NEAR(u, uCalculated, 5.0*margin);
                 }
 
             }
@@ -64,6 +68,20 @@ namespace Deltares
                     auto x = distCondWeibull.getXFromU(i);
                     EXPECT_NEAR(x, 0.0, margin);
                 }
+            }
+
+            void testDistributions::testConditionalWeibullMeanDeviation()
+            {
+                std::shared_ptr< StochastProperties> params = std::make_shared< StochastProperties>();
+                params->Scale = 1.0;
+                params->Shape = 1.0;
+                params->Shift = 1.0;
+                auto distCondWeibull = Stochast(DistributionType::ConditionalWeibull, params);
+
+                auto mean = distCondWeibull.getMean();
+                EXPECT_NEAR(mean, 1.5769074058004957, margin);
+                auto deviation = distCondWeibull.getDeviation();
+                EXPECT_NEAR(deviation, 1.2808040716532743, margin);
             }
         }
     }
