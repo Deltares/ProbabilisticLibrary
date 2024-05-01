@@ -1230,11 +1230,12 @@ function zLimitState25QuadraticTermsSparse( xDense, compSetting, ierr ) result(z
     type(computationSetting), intent(in   ) :: compSetting
     type(tError),             intent(inout) :: ierr
     real(kind=wp)                           :: z
-    real(kind=wp)                           :: xFull(30)
+    real(kind=wp), allocatable              :: xFull(:)
 
     ierr%icode = 0
     if (compSetting%designPointSetting == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
 
+    allocate(xFull(30))
     xFull = 0.0_wp
     call copyDense2Full(xDense, xFull)
 
