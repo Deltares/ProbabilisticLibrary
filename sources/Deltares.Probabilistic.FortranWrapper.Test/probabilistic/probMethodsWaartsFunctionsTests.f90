@@ -507,6 +507,7 @@ subroutine testProbabilisticWithFunction ( )
                 call initSparseWaartsTestsFunctions(probDb%stovar%maxStochasts, probDb%method%maxParallelThreads)
                 call iterateMechanism( probDb, convergenceData, zLimitState25QuadraticTermsSparse, &
                         probMethod, alfa, actualBeta, x, conv)
+                call updateCounter(invocationCount)
                 call cleanUpWaartsTestsFunctions
             endif
 
@@ -601,6 +602,7 @@ subroutine testProbabilisticWithFunction ( )
             ! Perform computation numberIterations times
             call initSparseWaartsTestsFunctions(probDb%stovar%maxStochasts, probDb%method%maxParallelThreads)
             call iterateMechanism (probDb, convergenceData, zOblateSpheroid, probMethod, alfa, actualBeta, x, conv)
+            call updateCounter(invocationCount)
             call cleanUpWaartsTestsFunctions
 
             select case (probMethod)
