@@ -1,5 +1,4 @@
 #include "ImportanceSampling.h"
-#include <iostream>
 #include <vector>
 #include <cmath>
 #if __has_include(<format>)
@@ -359,10 +358,6 @@ namespace Deltares
 
 				modelRunner->reportResult(report);
 				bool enoughSamples = nmaal >= Settings->MinimumSamples;
-				if (enoughSamples) 
-				{
-					std::cout << nmaal << " , " << convergence << std::endl;
-				}
 				return enoughSamples && convergence < Settings->VariationCoefficient;
 			}
 			else
