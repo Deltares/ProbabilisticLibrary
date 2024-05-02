@@ -74,7 +74,12 @@ ReliabilityMethod* createReliabilityMethod::selectMethod(const basicSettings& bs
         impSampling->Settings->VariationCoefficient = bs.tolB;
         impSampling->Settings->MinimumSamples = bs.minSamples;
         impSampling->Settings->MaximumSamples = bs.maxSamples;
-        impSampling->Settings->VarianceFactor = bs.varianceFactor;
+        for (size_t i = 0; i < nStoch; i++)
+        {
+            auto s = std::make_shared<StochastSettings>();
+            s->VarianceFactor = bs.varianceFactor;
+            impSampling->Settings->StochastSet->stochastSettings.push_back(s);
+        }
         return impSampling; }
         break;
     default:
