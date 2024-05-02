@@ -252,6 +252,21 @@ namespace Deltares.Probabilistics.Wrappers.Test
             return project;
         }
 
+        public static Project GetEdgeProject()
+        {
+            var project = new Project();
+
+            project.Stochasts.Add(GetUniformStochast(0, 1));
+            project.Stochasts.Add(GetUniformStochast(0, 1));
+            project.Stochasts.Add(GetUniformStochast(0, 1));
+
+            project.CorrelationMatrix.Initialize(project.Stochasts);
+
+            project.ZFunction = Edge;
+
+            return project;
+        }
+
         public static Project GetNonLinearProject()
         {
             var project = new Project();
@@ -662,6 +677,20 @@ namespace Deltares.Probabilistics.Wrappers.Test
             double y2 = sum - 1.8;
 
             return new ZFunctionOutput(Math.Max(y1, y2));
+        }
+
+        private static ZFunctionOutput Edge(double[] x)
+        {
+            double max = 0;
+
+            foreach (double xx in x)
+            {
+                max = Math.Max(max, xx);
+            }
+
+            double z = 0.9999 - max;
+
+            return new ZFunctionOutput(z);
         }
 
         private static ZFunctionOutput Block(double[] x)

@@ -52,6 +52,12 @@ namespace Deltares
 					void set(int value) { shared->object->MaximumIterations = value; }
 				}
 
+				property double MaximumLengthU
+				{
+					double get() { return shared->object->MaximumLengthU; }
+					void set(double value) { shared->object->MaximumLengthU = value; }
+				}
+
 				property Wrappers::VaryingType ModelVaryingType
 				{
 					Wrappers::VaryingType get()

@@ -14,13 +14,8 @@ namespace Deltares
 			double pf = 0;
 			double qtot = 0;
 			double rmin = 200; // initialise convergence indicator and loops
-			DesignPointBuilder* uMean = new DesignPointBuilder(nstochasts, this->Settings->designPointMethod, this->Settings->StochastSet);
+			std::shared_ptr<DesignPointBuilder> uMean = std::make_shared<DesignPointBuilder> (nstochasts, this->Settings->designPointMethod, this->Settings->StochastSet);
 			int parSamples = 0;
-
-			if (modelRunner->Settings->MaxParallelProcesses > 0) 
-			{
-				omp_set_num_threads(modelRunner->Settings->MaxParallelProcesses);
-			}
 
 			std::vector<double> betaValues;
 			std::vector<std::shared_ptr<Sample>> samples;
@@ -29,8 +24,8 @@ namespace Deltares
 
 			std::shared_ptr<ConvergenceReport> convergenceReport = std::make_shared<ConvergenceReport>();
 
-			RandomSampleGenerator* randomSampleGenerator = new RandomSampleGenerator();
-			randomSampleGenerator->Settings = this->Settings->RandomSettings;
+			std::shared_ptr<RandomSampleGenerator> randomSampleGenerator = std::make_shared<RandomSampleGenerator>();
+			randomSampleGenerator->Settings = this->Settings->randomSettings;
 			randomSampleGenerator->Settings->StochastSet = this->Settings->StochastSet;
 			randomSampleGenerator->initialize();
 
@@ -43,28 +38,36 @@ namespace Deltares
 
 			double sumPfSamp = 0.0; double sumPfSamp2 = 0.0;
 			int validSamples = 0;
-			// loop for number of samples
-			for (int nmaal = 0; nmaal < Settings->MaximumSamples && !isStopped(); nmaal++)
+
+			if (modelRunner->Settings->MaxParallelProcesses > 0)
+			{
+				omp_set_num_threads(modelRunner->Settings->MaxParallelProcesses);
+			}
+
+			// loop for all directions
+			for (int nmaal = 0; nmaal < Settings->MaximumDirections && !isStopped(); nmaal++)
 			{
 				if (nmaal % chunkSize == 0)
 				{
 					samples.clear();
 
-					int runs = std::min(chunkSize, Settings->MaximumSamples - parSamples * chunkSize);
+					int runs = std::min(chunkSize, Settings->MaximumDirections - parSamples * chunkSize);
 
 					// run max par samples times zrfunc in parallel
 					for (int i = 0; i < runs; i++)
 					{
-						samples.push_back(randomSampleGenerator->getRandomSample());
+						std::shared_ptr<Sample> sample = randomSampleGenerator->getRandomSample();
+						sample->IterationIndex = nmaal + i;
+						samples.push_back(sample);
 					}
 
-					betaValues = getDirectionBetas(modelRunner, samples, z0Fac, nmaal);
+					betaValues = getDirectionBetas(modelRunner, samples, z0Fac, rmin);
 
 					// check whether restart is needed
 					if (modelRunner->shouldExitPrematurely(samples))
 					{
 						// return the result so far
-						return modelRunner->getDesignPoint(uMin, Statistics::StandardNormal::getUFromQ(pf), convergenceReport);
+						return modelRunner->getDesignPoint(uMean->getSample(), Statistics::StandardNormal::getUFromQ(pf), convergenceReport);
 					}
 
 					parSamples = parSamples + 1;
@@ -83,11 +86,16 @@ namespace Deltares
 				std::shared_ptr<Sample> uSurface = u->getSampleAtBeta(betaDirection);
 
 				// calculate failure probability
-				if (betaDirection >= 0 && betaDirection < Statistics::StandardNormal::BetaMax)
+				if (betaDirection >= 0 && betaDirection < Statistics::StandardNormal::BetaMax * nstochasts)
 				{
 					uSurface->Weight = Deltares::Numeric::SpecialFunctions::getGammaUpperRegularized(0.5 * nstochasts, 0.5 * betaDirection * betaDirection);
 
 					qtot += uSurface->Weight;
+
+					if (uSurface->Weight > 0)
+					{
+						int k = 1;
+					}
 
 					uMean->addSample(uSurface);
 				}
@@ -108,7 +116,7 @@ namespace Deltares
 				}
 
 				// check on convergence criterium
-				bool enoughSamples = nmaal >= Settings->MinimumSamples;
+				bool enoughSamples = nmaal >= Settings->MinimumDirections;
 				convergenceReport->TotalDirections = nmaal+1;
 
 				sumPfSamp += uSurface->Weight;
@@ -172,18 +180,38 @@ namespace Deltares
 			return convergence;
 		}
 
-		std::vector<double> DirectionalSampling::getDirectionBetas(std::shared_ptr<Models::ModelRunner> modelRunner, std::vector<std::shared_ptr<Sample>> samples, double z0, int step)
+		std::vector<double> DirectionalSampling::getDirectionBetas(std::shared_ptr<Models::ModelRunner> modelRunner, std::vector<std::shared_ptr<Sample>> samples, double z0, double threshold)
 		{
 			auto betaValues = std::vector<double>(samples.size());
 
-			std::unique_ptr<DirectionReliability> directionReliability = std::make_unique<DirectionReliability>();
+			std::unique_ptr<DirectionReliabilityForDirectionalSampling> directionReliability = std::make_unique<DirectionReliabilityForDirectionalSampling>();
 			directionReliability->Settings = this->Settings->DirectionSettings;
+			directionReliability->Threshold = threshold;
 
 			#pragma omp parallel for
-			for (int i = 0; i < (int)samples.size(); i++)
+			for (int i = 0; i < samples.size(); i++)
 			{
-				samples[i]->IterationIndex = step + i;
-				betaValues[i] = directionReliability->getBeta(modelRunner, samples[i], z0);
+				// retain previous results from model if running in a proxy model environment
+				if (modelRunner->Settings->ProxySettings->IsProxyModel && previousResults.contains(samples[i]->IterationIndex))
+				{
+					betaValues[i] = previousResults[samples[i]->IterationIndex];
+				}
+				else 
+				{
+					betaValues[i] = directionReliability->getBeta(modelRunner, samples[i], z0);
+				}
+			}
+
+			// keep results from non proxy runs when proxies are used for a next run
+			if (modelRunner->Settings->ProxySettings->IsProxyModel)
+			{
+				for (size_t i = 0; i < samples.size(); i++)
+				{
+					if (!samples[i]->AllowProxy)
+					{
+						this->previousResults.insert({ samples[i]->IterationIndex, betaValues[i] });
+					}
+				}
 			}
 
 			return betaValues;

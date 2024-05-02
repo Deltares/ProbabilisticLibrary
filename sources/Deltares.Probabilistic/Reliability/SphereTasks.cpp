@@ -1,10 +1,11 @@
 #include "SphereTasks.h"
 #include <cmath>
 
-namespace Deltares {
-    namespace Reliability {
-
-        std::vector<vector1D> sphereTasks::examineSurfaceForTasks(const vector1D& uRay)
+namespace Deltares
+{
+    namespace Reliability
+	{
+        std::vector<Numeric::vector1D> sphereTasks::examineSurfaceForTasks(const Numeric::vector1D& uRay)
         {
             uTasks.clear();
             auto uRayIpoint = std::vector<int>();
@@ -20,7 +21,7 @@ namespace Deltares {
         }
 
         // Method for the search of all possible u
-        void sphereTasks::examineSurfaceForTasks(const size_t idx, const vector1D& uRay, const std::vector<int> uRayIpoint)
+        void sphereTasks::examineSurfaceForTasks(const size_t idx, const Numeric::vector1D& uRay, const std::vector<int> uRayIpoint)
         {
             // idx     : index in u array
             // uRay    : direction in which u search takes places
@@ -30,7 +31,7 @@ namespace Deltares {
             if (idx + 1 < nrActiveStochasts)
             {
                 size_t jMax = (uRay(uRayIpoint[idx]) == 0.0 ? 1 : maxSteps);
-                auto u = vector1D(nrStochasts);
+                auto u = Numeric::vector1D(nrStochasts);
 
                 double dangle = maxAngle / (double)(maxSteps - 1);
                 for (size_t j = 1; j <= jMax; j++)

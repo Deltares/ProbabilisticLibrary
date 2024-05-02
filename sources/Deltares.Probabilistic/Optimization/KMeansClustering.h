@@ -7,13 +7,29 @@ namespace Deltares
 {
 	namespace Optimization
 	{
+		/**
+		 * \brief K-Means Clustering algorithm
+		 * \remark Code based on https://visualstudiomagazine.com/articles/2020/05/06/data-clustering-k-means.aspx
+		 */
 		class KMeansClustering
 		{
 
 		public:
+			/**
+			 * \brief Settings for k-Means clustering algorithm
+			 */
 			std::shared_ptr<ClusterSettings> Settings = std::make_shared<ClusterSettings>();
+
+			/**
+			 * \brief Generates clusters
+			 * \param samples Samples for which the clustering is generated
+			 * \return Centers of the clusters
+			 */
 			std::vector<std::shared_ptr<Models::Sample>> getClusterCenters(std::vector<std::shared_ptr<Models::Sample>> samples);
 		private:
+			/**
+			 * \brief Internal class for cluster administration
+			 */
 			class Cluster
 			{
 			public:

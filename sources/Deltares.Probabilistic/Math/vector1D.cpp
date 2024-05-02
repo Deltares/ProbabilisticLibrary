@@ -4,9 +4,10 @@
 #include <iostream>
 #include <fstream>
 
-namespace Deltares {
-    namespace Reliability {
-
+namespace Deltares
+{
+    namespace Numeric
+	{
         vector1D::vector1D() : m_data(0), m_rows(0) {}
 
         vector1D::vector1D(size_t rows) : m_data(rows), m_rows(rows)
@@ -69,7 +70,7 @@ namespace Deltares {
         {
             if (m_rows != m.m_rows)
             {
-                throw probLibException("number of rows differ");
+                throw Reliability::probLibException("number of rows differ");
             }
 
             vector1D result(m_rows);
@@ -123,7 +124,7 @@ namespace Deltares {
         {
             if (m_rows != m.m_rows)
             {
-                throw probLibException("number of rows differ");
+                throw Reliability::probLibException("number of rows differ");
             }
             for (size_t row = 0; row < m_rows; row++)
             {
@@ -150,7 +151,7 @@ namespace Deltares {
         {
             if (m_rows != m.m_rows)
             {
-                throw probLibException("number of rows differ");
+                throw Reliability::probLibException("number of rows differ");
             }
             auto sum = 0.0;
             for (size_t k = 0; k < m_rows; k++)
@@ -164,7 +165,7 @@ namespace Deltares {
         {
             if (m_rows != m.m_rows || m_rows != n.m_rows)
             {
-                throw probLibException("number of rows differ");
+                throw Reliability::probLibException("number of rows differ");
             }
             auto sum = 0.0;
             for (size_t k = 0; k < m_rows; k++)

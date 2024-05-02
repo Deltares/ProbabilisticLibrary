@@ -14,6 +14,7 @@ namespace Deltares
                 testLinearInterpolate();
                 testLogLinearInterpolate();
                 testHarmonicInterpolate();
+                testMinMaxFunctions();
             }
 
             void testNumericSupport::testLinearInterpolate()
@@ -58,6 +59,30 @@ namespace Deltares
                 EXPECT_NEAR(result, 4.0, margin);
             }
 
+            void testNumericSupport::testMinMaxFunctions()
+            {
+                auto numbers = std::vector<double> { -2.0, 2.0, -3.0, 3.0, 1.0, -1.0, 0.0 };
+
+                auto maxval = NumericSupport::getMaximum(numbers);
+                EXPECT_EQ(maxval, 3.0);
+
+                auto minval = NumericSupport::getMinimum(numbers);
+                EXPECT_EQ(minval, -3.0);
+
+                auto locmin = NumericSupport::getLocationMinimum(numbers);
+                EXPECT_EQ(locmin, 2);
+
+                auto locmax = NumericSupport::getLocationMaximum(numbers);
+                EXPECT_EQ(locmax, 3);
+
+                for (auto& x : numbers) { x = std::abs(x); }
+                minval = NumericSupport::getMinimum(numbers);
+                EXPECT_EQ(minval, 0.0);
+
+                locmax = NumericSupport::getLocationMinimum(numbers);
+                EXPECT_EQ(locmax, 6);
+
+            }
         }
     }
 }

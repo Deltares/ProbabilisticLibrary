@@ -2,8 +2,11 @@
 #include "../Math/vector1D.h"
 #include "../Statistics/StandardNormal.h"
 
-namespace Deltares {
-    namespace Reliability {
+namespace Deltares
+{
+    namespace Reliability
+	{
+        using Deltares::Numeric::vector1D;
 
         class alphaBeta
         {

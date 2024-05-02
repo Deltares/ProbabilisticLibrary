@@ -29,6 +29,8 @@ namespace Deltares
 				}
 
 				DirectionalSamplingSettings^ Settings = gcnew DirectionalSamplingSettings();
+
+				bool IsValid() override { return Settings->IsValid(); }
 			};
 		}
 	}

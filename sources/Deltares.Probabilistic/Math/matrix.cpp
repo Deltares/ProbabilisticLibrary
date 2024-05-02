@@ -1,11 +1,14 @@
 #include "matrix.h"
 #include <iostream>
 
-namespace Deltares {
-    namespace Reliability {
+#include "MatrixSupport.h"
 
+namespace Deltares
+{
+    namespace Numeric
+	{
         Matrix::Matrix(size_t rows, size_t columns)
-            : m_data(std::vector<double>(rows * columns)),
+            : m_data(std::vector<double>(rows* columns)),
             m_rows(rows),
             m_columns(columns)
         {
@@ -70,7 +73,7 @@ namespace Deltares {
         {
             if (m_rows != m.m_rows || m_columns != m.m_columns)
             {
-                throw probLibException("#rows <> #colums in matrix addition");
+                throw Reliability::probLibException("#rows <> #colums in matrix addition");
             }
 
             Matrix result(m_rows, m_columns);
@@ -128,7 +131,7 @@ namespace Deltares {
 
         Matrix Matrix::matmul(const Matrix& m2) const
         {
-            if (m_columns != m2.m_rows) throw probLibException("dimension mismatch in matmul");
+            if (m_columns != m2.m_rows) throw Reliability::probLibException("dimension mismatch in matmul");
 
             auto result = Matrix(m_rows, m2.m_columns);
             for (size_t row = 0; row < m_rows; row++)
@@ -146,14 +149,27 @@ namespace Deltares {
             return result;
         }
 
+        Matrix* Matrix::clone() const
+        {
+            Matrix* result = new Matrix(m_rows, m_columns);
+            for (size_t row = 0; row < m_rows; row++)
+            {
+                for (size_t col = 0; col < m_columns; col++)
+                {
+                    result->setValue(row, col,  m_data[pos(row, col)]);
+                }
+            }
+            return result;
+        }
+
         vector1D Matrix::matvec(const vector1D& v) const
         {
             if (m_columns != v.size())
             {
-                throw probLibException("dimension mismatch in matvec");
+                throw Reliability::probLibException("dimension mismatch in matvec");
             }
 
-            auto result = vector1D(m_rows);
+            auto result = Numeric::vector1D(m_rows);
             for (size_t row = 0; row < m_rows; row++)
             {
                 double sum = 0.0;
@@ -164,6 +180,11 @@ namespace Deltares {
                 result(row) = sum;
             }
             return result;
+        }
+
+        Matrix* Matrix::Inverse()
+        {
+            return MatrixSupport::Inverse(this);
         }
     }
 }

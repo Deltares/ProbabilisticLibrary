@@ -2,11 +2,14 @@
 #include <memory>
 #include <algorithm>
 
+#include "../Math/MatrixSupport.h"
+
 namespace Deltares
 {
 	namespace Statistics
 	{
 		using namespace Deltares::Reliability;
+		using namespace Deltares::Numeric;
 
 		std::vector<double> CorrelationMatrix::Cholesky(const std::vector<double>& uValues)
 		{
@@ -40,6 +43,41 @@ namespace Deltares
 			}
 
 			return correlatedValues;
+		}
+
+		std::vector<double> CorrelationMatrix::InverseCholesky(const std::vector<double>& uValues)
+		{
+			auto count = uValues.size();
+			auto inverseValues = std::vector<double>(count);
+
+			if (dim == 0)
+			{
+				for (size_t i = 0; i < count; i++)
+				{
+					inverseValues[i] = uValues[i];
+				}
+			}
+			else
+			{
+				size_t c1; size_t c2;
+				inverseCholeskyMatrix.get_dims(c1, c2);
+				if (c1 == 0) InverseCholeskyDecomposition();
+
+				auto u = vector1D(count);
+				for (size_t i = 0; i < count; i++)
+				{
+					u(i) = uValues[i];
+				}
+
+				auto uNew = inverseCholeskyMatrix.matvec(u);
+
+				for (size_t i = 0; i < count; i++)
+				{
+					inverseValues[i] = uNew(i);
+				}
+			}
+
+			return inverseValues;
 		}
 
 		void CorrelationMatrix::init(const int maxStochasts)
@@ -79,6 +117,11 @@ namespace Deltares
 		void CorrelationMatrix::CholeskyDecomposition()
 		{
 			choleskyMatrix = matrix.CholeskyDecomposition();
+		}
+
+		void CorrelationMatrix::InverseCholeskyDecomposition()
+		{
+			inverseCholeskyMatrix = *MatrixSupport::Inverse(&choleskyMatrix);
 		}
 
 		bool CorrelationMatrix::isFullyCorrelated(const int index, std::vector<int> varyingIndices) const

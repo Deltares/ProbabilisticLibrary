@@ -33,6 +33,7 @@ namespace Deltares
 			clone->XMaxValue = this->XMaxValue;
 			clone->XMinValue = this->XMinValue;
 			clone->StartValue = this->StartValue;
+			clone->UncorrelatedStartValue = this->UncorrelatedStartValue;
 			clone->VarianceFactor = this->VarianceFactor;
 			clone->StochastIndex = this->StochastIndex;
 			clone->stochast = this->stochast;

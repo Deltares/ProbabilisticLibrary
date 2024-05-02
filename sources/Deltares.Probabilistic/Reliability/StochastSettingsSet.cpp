@@ -21,23 +21,26 @@ namespace Deltares
 			}
 		}
 
-		std::shared_ptr<Sample> StochastSettingsSet::getSample()
+		std::shared_ptr<Sample> StochastSettingsSet::getStartPoint()
 		{
 			std::shared_ptr<Sample> sample = std::make_shared<Sample>(this->getVaryingStochastCount());
 
 			for (int i = 0; i < this->getVaryingStochastCount(); i++)
 			{
-				sample->Values[i] = this->VaryingStochastSettings[i]->StartValue;
+				sample->Values[i] = this->VaryingStochastSettings[i]->UncorrelatedStartValue;
 			}
 
 			return sample;
 		}
 
-		void StochastSettingsSet::setStartPoint(std::shared_ptr<Sample> sample)
+		void StochastSettingsSet::setStartPoint(const std::shared_ptr<Sample> startPoint)
 		{
 			for (int i = 0; i < this->getVaryingStochastCount(); i++)
 			{
-				this->VaryingStochastSettings[i]->StartValue = sample->Values[i];
+				this->VaryingStochastSettings[i]->StartValue = startPoint->Values[i];
+				this->VaryingStochastSettings[i]->UncorrelatedStartValue = startPoint->Values[i];
+
+				this->AreStartValuesCorrelated = false;
 			}
 		}
 	}

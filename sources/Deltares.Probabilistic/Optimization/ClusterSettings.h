@@ -3,46 +3,56 @@ namespace Deltares
 {
 	namespace Optimization
 	{
-		enum ClusterInitializationMethod { PlusPlus	}; // Forgy, Random are other, not implemented yet, initialization methods
+		/**
+		 * \brief Types of initialization of a cluster
+		 * \remark Forgy, Random are other initialization methods, but not implemented yet
+		 */
+		enum ClusterInitializationMethod { PlusPlus	};
 
+		/**
+		 * \brief Settings for clustering algorithm
+		 */
 		class ClusterSettings
 		{
 		public:
-			/// <summary>
-			/// Sample Weighting should be accounted for in clustering
-			/// </summary>
+			/**
+			 * \brief Sample Weighting should be accounted for in clustering
+			 */
 			bool SampleHasWeighting = false;
 
-			/// <summary>
-			/// Requested number of clusters
-			/// </summary>
+			/**
+			 * \brief Requested number of clusters
+			 */
 			int NumberClusters = 1;
 
-			/// <summary>
-			/// Maximum iterations within the clustering algorithm
-			/// </summary>
+			/**
+			 * \brief Maximum iterations within the clustering algorithm
+			 */
 			int MaxIterations = 100;
 
-			/// <summary>
-			/// Number of trials. Each trial leads to another initial clustering set
-			/// </summary>
+			/**
+			 * \brief Number of trials. Each trial leads to another initial clustering set
+			 */
 			int Trials = 10;
 
-			/// <summary>
-			/// Indicates whether number of clusters is fixed (false) or determined by the <see cref="IClusterMethod"/> algorithm
-			/// </summary>
+			/**
+			 * \brief Indicates whether number of clusters is fixed (false) or determined by the <see cref="IClusterMethod"/> algorithm
+			 */
 			bool OptimizeNumberOfClusters = false;
 
+			/**
+			 * \brief Initialization method
+			 */
 			ClusterInitializationMethod clusterInitializationMethod = ClusterInitializationMethod::PlusPlus;
 
-			/// <summary>
-			/// Max number of clusters when <see cref="optimizeNumberOfClusters"/> is true
-			/// </summary>
+			/**
+			 * \brief Maximum number of clusters when OptimizeNumberOfClusters is true or number of clusters to be generated when OptimizeNumberOfClusters is false
+			 */
 			int MaxClusters = 100;
 
-			/// <summary>
-			/// Minimum required relative improvement to continue increasing the number of clusters when <see cref="optimizeNumberOfClusters"/> is true
-			/// </summary>
+			/**
+			 * \brief Minimum required relative improvement to continue increasing the number of clusters when <see cref="optimizeNumberOfClusters"/> is true
+			 */
 			double MinImprovement = 0.1;
 
 			/**
@@ -50,9 +60,13 @@ namespace Deltares
 			 */
 			int MaxSamples = 500;
 
+			/**
+			 * \brief Indicates whether these settings are valid
+			 * \return Indication
+			 */
 			bool isValid()
 			{
-				return true;
+				return MaxClusters >= 1;
 			}
 		};
 	}

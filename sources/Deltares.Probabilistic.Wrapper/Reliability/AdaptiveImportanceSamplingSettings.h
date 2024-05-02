@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ClusterSettings.h"
+#include "ImportanceSamplingSettings.h"
 #include "../../Deltares.Probabilistic/Reliability/AdaptiveImportanceSamplingSettings.h"
 #include "../Model/RunSettings.h"
 #include "../Reliability/StochastSettings.h"
@@ -20,13 +21,12 @@ namespace Deltares
 			{
 			private:
 				SharedPointerProvider<Reliability::AdaptiveImportanceSamplingSettings>* shared = nullptr;
-				Wrappers::RunSettings^ runSettings = gcnew Wrappers::RunSettings();
 			public:
 				AdaptiveImportanceSamplingSettings()
 				{
 					shared = new SharedPointerProvider(new Reliability::AdaptiveImportanceSamplingSettings());
-					shared->object->StartPointSettings = StartPointSettings->GetSettings();
-					shared->object->RunSettings = RunSettings->GetSettings();
+					shared->object->startPointSettings = StartPointSettings->GetSettings();
+					shared->object->importanceSamplingSettings = ImportanceSamplingSettings->GetSettings();
 				}
 				AdaptiveImportanceSamplingSettings(std::shared_ptr<Reliability::AdaptiveImportanceSamplingSettings> settings)
 				{
@@ -34,36 +34,6 @@ namespace Deltares
 				}
 				~AdaptiveImportanceSamplingSettings() { this->!AdaptiveImportanceSamplingSettings(); }
 				!AdaptiveImportanceSamplingSettings() { delete shared; }
-
-				property int MaximumSamples
-				{
-					int get() { return shared->object->MaximumSamples; }
-					void set(int value) { shared->object->MaximumSamples = value; }
-				}
-
-				property int MaximumSamplesNoResult
-				{
-					int get() { return shared->object->MaximumSamplesNoResult; }
-					void set(int value) { shared->object->MaximumSamplesNoResult = value; }
-				}
-
-				property double VarianceFactor
-				{
-					double get() { return shared->object->VarianceFactor; }
-					void set(double value) { shared->object->VarianceFactor = value; }
-				}
-
-				property double FractionFailed
-				{
-					double get() { return shared->object->FractionFailed; }
-					void set(double value) { shared->object->FractionFailed = value; }
-				}
-
-				property int MinimumFailedSamples
-				{
-					int get() { return shared->object->MinimumFailedSamples; }
-					void set(int value) { shared->object->MinimumFailedSamples = value; }
-				}
 
 				property int MinVarianceLoops
 				{
@@ -77,22 +47,22 @@ namespace Deltares
 					void set(int value) { shared->object->MaxVarianceLoops = value; }
 				}
 
-				property bool Clustering
+				property int MinimumFailedSamples
 				{
-					bool get() { return shared->object->Clustering; }
-					void set(bool value) { shared->object->Clustering = value; }
+					int get() { return shared->object->MinimumFailedSamples; }
+					void set(int value) { shared->object->MinimumFailedSamples = value; }
 				}
 
-				property bool AutoMaximumSamplesNoResult
+				property bool AutoMaximumSamples
 				{
-					bool get() { return shared->object->AutoMaximumSamplesNoResult; }
-					void set(bool value) { shared->object->AutoMaximumSamplesNoResult = value; }
+					bool get() { return shared->object->AutoMaximumSamples; }
+					void set(bool value) { shared->object->AutoMaximumSamples = value; }
 				}
 
-				property double EpsWeightSample
+				property double VarianceFactor
 				{
-					double get() { return shared->object->EpsWeightSample; }
-					void set(double value) { shared->object->EpsWeightSample = value; }
+					double get() { return shared->object->VarianceFactor; }
+					void set(double value) { shared->object->VarianceFactor = value; }
 				}
 
 				property double LoopVarianceIncrement
@@ -101,16 +71,34 @@ namespace Deltares
 					void set(double value) { shared->object->LoopVarianceIncrement = value; }
 				}
 
+				property double FractionFailed
+				{
+					double get() { return shared->object->FractionFailed; }
+					void set(double value) { shared->object->FractionFailed = value; }
+				}
+
+				property bool Clustering
+				{
+					bool get() { return shared->object->Clustering; }
+					void set(bool value) { shared->object->Clustering = value; }
+				}
+
+				property double EpsWeightSample
+				{
+					double get() { return shared->object->EpsWeightSample; }
+					void set(double value) { shared->object->EpsWeightSample = value; }
+				}
+
 				property double MaxBeta
 				{
 					double get() { return shared->object->MaxBeta; }
 					void set(double value) { shared->object->MaxBeta = value; }
 				}
 
-				property double RestartStepSize
+				property double StartValueStepSize
 				{
-					double get() { return shared->object->RestartStepSize; }
-					void set(double value) { shared->object->RestartStepSize = value; }
+					double get() { return shared->object->StartValueStepSize; }
+					void set(double value) { shared->object->StartValueStepSize = value; }
 				}
 
 				property bool StartPointOnLimitState
@@ -121,23 +109,23 @@ namespace Deltares
 
 				virtual property Wrappers::RunSettings^ RunSettings
 				{
-					Wrappers::RunSettings^ get() { return runSettings; }
-					void set(Wrappers::RunSettings^ value) { runSettings = value; }
+					Wrappers::RunSettings^ get() { return ImportanceSamplingSettings->RunSettings; }
+					void set(Wrappers::RunSettings^ value) { ImportanceSamplingSettings->RunSettings = value; }
 				}
 
 				StartPointCalculatorSettings^ StartPointSettings = gcnew Wrappers::StartPointCalculatorSettings();
 
 				ClusterSettings^ ClusterSettings = gcnew Wrappers::ClusterSettings();
 
-				System::Collections::Generic::List<Wrappers::StochastSettings^>^ StochastSettings = gcnew System::Collections::Generic::List<Wrappers::StochastSettings^>();
+				ImportanceSamplingSettings^ ImportanceSamplingSettings = gcnew Wrappers::ImportanceSamplingSettings();
 
 				virtual Deltares::Reliability::Wrappers::StochastSettings^ GetStochastSetting(Statistics::Wrappers::Stochast^ stochast)
 				{
-					for (int i = 0; i < StochastSettings->Count; i++)
+					for (int i = 0; i < ImportanceSamplingSettings->StochastSettings->Count; i++)
 					{
-						if (StochastSettings[i]->Stochast == stochast)
+						if (ImportanceSamplingSettings->StochastSettings[i]->Stochast == stochast)
 						{
-							return StochastSettings[i];
+							return ImportanceSamplingSettings->StochastSettings[i];
 						}
 					}
 
@@ -151,15 +139,9 @@ namespace Deltares
 
 				std::shared_ptr<Reliability::AdaptiveImportanceSamplingSettings> GetSettings()
 				{
-					shared->object->StochastSet->stochastSettings.clear();
-					for (int i = 0; i < StochastSettings->Count; i++)
-					{
-						shared->object->StochastSet->stochastSettings.push_back(StochastSettings[i]->GetSettings());
-					}
-
-					shared->object->StartPointSettings = StartPointSettings->GetSettings();
-					shared->object->RunSettings = RunSettings->GetSettings();
-					shared->object->ClusterSettings = ClusterSettings->GetSettings();
+					shared->object->startPointSettings = StartPointSettings->GetSettings();
+					shared->object->clusterSettings = ClusterSettings->GetSettings();
+					shared->object->importanceSamplingSettings = ImportanceSamplingSettings->GetSettings();
 
 					return shared->object;
 				}
