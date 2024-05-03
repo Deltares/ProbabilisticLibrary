@@ -61,6 +61,7 @@ namespace Deltares
 
 			xSample->AllowProxy = sample->AllowProxy;
 			xSample->IterationIndex = sample->IterationIndex;
+			xSample->threadId = sample->threadId;
 			xSample->Weight = sample->Weight;
 			xSample->IsRestartRequired = sample->IsRestartRequired;
 			xSample->Beta = sample->getBeta();
@@ -134,6 +135,25 @@ namespace Deltares
 		{
 			return this->zModel->canCalculateBeta();
 		}
+
+		/**
+		 * \brief Indicates whether it is allowed to run using a proxy (surrogate) model
+		 * \param u Current u value
+		 * \param uThreshold Threshold value
+		 * \return Indication
+		 */
+		bool ModelRunner::isProxyAllowed(double u, double uThreshold)
+		{
+			if (this->Settings->ProxySettings->IsProxyModel) 
+			{
+				return std::isnan(u) || u > uThreshold + this->Settings->ProxySettings->ThresholdOffset;
+			}
+			else
+			{
+				return false;
+			}
+		}
+
 
 		/**
 		 * \brief Gets the beta (distance to limit state) in a given direction

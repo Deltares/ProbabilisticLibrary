@@ -26,6 +26,7 @@ namespace Deltares
 			std::vector<double> Values;
 
 			int IterationIndex = -1;
+			int threadId = 0;
 			double Weight = 1;
 			bool AllowProxy = true;
 			bool IsRestartRequired = false;

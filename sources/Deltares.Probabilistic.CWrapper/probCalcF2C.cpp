@@ -15,11 +15,8 @@ using namespace Deltares::Models;
 using namespace Deltares::Reliability;
 using namespace Deltares::Numeric;
 
-const size_t lenSmallStr = 32;
-
 struct fdistribs
 {
-    char name[lenSmallStr];
     int distId;
     double params[4];
 };
@@ -35,14 +32,14 @@ struct tResult
 };
 
 void updateX(const vector1D & alpha, const DPoptions option, tResult & r, const std::shared_ptr<DesignPoint> & newResult,
-    const size_t vectorSize, double x[], funcWrapper fw)
+    double x[], funcWrapper fw)
 {
     if (alpha.size() <= maxActiveStochast)
     {
         switch (option) {
         case DPoptions::None:
         {
-            for (size_t i = 0; i < vectorSize; i++)
+            for (size_t i = 0; i < alpha.size(); i++)
             {
                 x[i] = 0.0;
             }
@@ -56,7 +53,11 @@ void updateX(const vector1D & alpha, const DPoptions option, tResult & r, const 
             {
                 xSparse.push_back(newResult->Alphas[i]->X);
             }
-            fw.updateXinDesignPoint(xSparse, x);
+            fw.updateXinDesignPoint(xSparse);
+            for (size_t i = 0; i < alpha.size(); i++)
+            {
+                x[i] = xSparse[i];
+            }
         }
         break;
         default:
@@ -71,26 +72,15 @@ void updateX(const vector1D & alpha, const DPoptions option, tResult & r, const 
 }
 
 extern "C"
-void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, const int vectorSize,
-    corrStruct correlations[], const int nrCorrelations,
+void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, corrStruct correlations[], const int nrCorrelations,
     const double(*fx)(double[], computationSettings*, tError*),
     const bool(*pc)(ProgressType, const char*),
-    const int compIds[], const int iPointArr[], double x[], tResult* r, tError* ierr)
+    const int compIds[], double x[], tResult* r, tError* ierr)
 {
     try
     {
         auto nStoch = (size_t)n;
-        auto iPoint = std::vector<int>();
-        for (size_t i = 0; i < nStoch; i++)
-        {
-            iPoint.push_back(iPointArr[i]);
-        }
-        auto xInitial = std::vector<double>();
-        for (size_t i = 0; i < vectorSize; i++)
-        {
-            xInitial.push_back(x[i]);
-        }
-        auto fw = funcWrapper(iPoint, xInitial, compIds[0], fx);
+        auto fw = funcWrapper(compIds[0], fx);
 
         auto stochast = std::vector<std::shared_ptr<Deltares::Statistics::Stochast>>();
         for (size_t i = 0; i < nStoch; i++)
@@ -121,7 +111,7 @@ void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, const i
         std::shared_ptr<ProgressIndicator> progress (new ProgressIndicator(progressDelegate, detailedProgressDelegate, textualProgress));
         std::shared_ptr<ModelRunner> modelRunner(new ModelRunner(zModel, uConverter, progress));
         modelRunner->Settings->MaxParallelProcesses = method->numThreads;
-        modelRunner->Settings->MaxChunkSize = method->numThreads; // needed for overtopping
+        modelRunner->Settings->MaxChunkSize = method->chunkSize;
         modelRunner->initializeForRun();
         std::shared_ptr<DesignPoint> newResult ( relMethod->getDesignPoint(modelRunner));
 
@@ -138,7 +128,7 @@ void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, const i
             r->alpha[i] = alpha(i);
         }
 
-        updateX(alpha, method->designPointOptions, *r, newResult, vectorSize, x, fw);
+        updateX(alpha, method->designPointOptions, *r, newResult, x, fw);
 
         for (int i = 0; i < n; i++)
         {
