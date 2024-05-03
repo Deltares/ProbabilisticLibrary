@@ -137,25 +137,6 @@ namespace Deltares
 		}
 
 		/**
-		 * \brief Indicates whether it is allowed to run using a proxy (surrogate) model
-		 * \param u Current u value
-		 * \param uThreshold Threshold value
-		 * \return Indication
-		 */
-		bool ModelRunner::isProxyAllowed(double u, double uThreshold)
-		{
-			if (this->Settings->ProxySettings->IsProxyModel) 
-			{
-				return std::isnan(u) || u > uThreshold + this->Settings->ProxySettings->ThresholdOffset;
-			}
-			else
-			{
-				return false;
-			}
-		}
-
-
-		/**
 		 * \brief Gets the beta (distance to limit state) in a given direction
 		 * \param sample Sample indicating the direction
 		 * \return Beta
