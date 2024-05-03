@@ -4,6 +4,7 @@
 #include "../Deltares.Probabilistic/Reliability/FORM.h"
 #include "../Deltares.Probabilistic/Reliability/FORMThenDirectionalSampling.h"
 #include "../Deltares.Probabilistic/Reliability/DirectionalSamplingThenFORM.h"
+#include "../Deltares.Probabilistic/Reliability/ImportanceSampling.h"
 
 using namespace Deltares::ProbLibCore;
 using namespace Deltares::Models;
@@ -65,6 +66,21 @@ ReliabilityMethod* createReliabilityMethod::selectMethod(const basicSettings& bs
         fillDsSettings(dsfi->DsSettings, bs);
         fillFormSettings(dsfi->formSettings, bs, nStoch);
         return dsfi; }
+        break;
+    case (ProbMethod::IM): {
+        auto impSampling = new ImportanceSampling();
+        std::shared_ptr<RandomSettings> r(getRnd(bs));
+        impSampling->Settings->randomSettings.swap(r);
+        impSampling->Settings->VariationCoefficient = bs.tolB;
+        impSampling->Settings->MinimumSamples = bs.minSamples;
+        impSampling->Settings->MaximumSamples = bs.maxSamples;
+        for (size_t i = 0; i < nStoch; i++)
+        {
+            auto s = std::make_shared<StochastSettings>();
+            s->VarianceFactor = bs.varianceFactor;
+            impSampling->Settings->StochastSet->stochastSettings.push_back(s);
+        }
+        return impSampling; }
         break;
     default:
         throw probLibException("method not implemented yet: ", (int)bs.methodId);
