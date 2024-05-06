@@ -32,7 +32,7 @@ struct tResult
     bool convergence;
 };
 
-void updateX(const vector1D & alpha, const DPoptions option, tResult & r, const std::shared_ptr<DesignPoint> & newResult,
+void updateX(const std::vector<std::shared_ptr<StochastPointAlpha>> & alpha, const DPoptions option, tResult & r, const std::shared_ptr<DesignPoint> & newResult,
     double x[], funcWrapper fw)
 {
     if (alpha.size() <= maxActiveStochast)
@@ -114,22 +114,16 @@ void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, corrStr
         modelRunner->Settings->MaxParallelProcesses = method->numThreads;
         modelRunner->Settings->MaxChunkSize = method->chunkSize;
         modelRunner->initializeForRun();
-        std::shared_ptr<DesignPoint> newResult ( relMethod->getDesignPoint(modelRunner));
-
-        auto alpha = vector1D(newResult->Alphas.size());
-        for (size_t i = 0; i < alpha.size(); i++)
-        {
-            alpha(i) = newResult->Alphas[i]->Alpha;
-        }
+        auto newResult = relMethod->getDesignPoint(modelRunner);
 
         ierr->errorCode = 0;
         r->beta = newResult->Beta;
-        for (size_t i = 0; i < alpha.size(); i++)
+        for (size_t i = 0; i < nStoch; i++)
         {
-            r->alpha[i] = alpha(i);
+            r->alpha[i] = newResult->Alphas[i]->Alpha;
         }
 
-        updateX(alpha, method->designPointOptions, *r, newResult, x, fw);
+        updateX(newResult->Alphas, method->designPointOptions, *r, newResult, x, fw);
 
         for (int i = 0; i < n; i++)
         {
