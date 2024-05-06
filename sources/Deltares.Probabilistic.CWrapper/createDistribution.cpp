@@ -96,5 +96,6 @@ std::shared_ptr <Stochast> createDistribution::create(const EnumDistributions di
         stochast->getProperties()->Maximum = truncatedMax;
     }
 
+    return stochast;
 }
 
