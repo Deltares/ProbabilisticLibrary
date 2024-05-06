@@ -46,6 +46,8 @@ namespace Deltares
 
 			if (q == 1)
 			{
+				// handle special case for exceeding probability of 1
+				// note that q can be exactly 1 due to numerical limitations in getQFromU
 				return stochast->Shift;
 			}
 			else 

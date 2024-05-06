@@ -13,9 +13,9 @@ namespace Deltares
 			if (sample != nullptr)
 			{
 				int gridMoves = 0;
-				while (gridMoves < MaxGridMoves && isSampleOnEdge(searchArea, sample->Values))
+				while (gridMoves < MaxGridMoves && isSampleOnEdge(searchArea, sample))
 				{
-					moveSampleToCenter(searchArea, sample->Values);
+					moveSampleToCenter(searchArea, sample);
 					sample = findGridExtreme(searchArea, model, sample, 1 + gridMoves);
 					gridMoves++;
 
@@ -26,7 +26,7 @@ namespace Deltares
 				int refinements = 0;
 				while (canRefine(searchArea, refinements))
 				{
-					refineGrid(searchArea, refinements, sample->Values);
+					refineGrid(searchArea, refinements, sample);
 					sample = findGridExtreme(searchArea, model, sample, 1 + gridMoves + refinements);
 					refinements++;
 
@@ -47,6 +47,11 @@ namespace Deltares
 			}
 
 			std::vector<std::vector<double>> combinations = Numeric::NumericSupport::getFullFactorialCombination(inputValues);
+
+			if (combinations.empty())
+			{
+				throw Reliability::probLibException("No dimensions or empty dimensions are not allowed");
+			}
 
 			int gridCounter = 0;
 			int gridIntervalCounter = 0;
@@ -71,13 +76,15 @@ namespace Deltares
 			return minSample;
 		}
 
-		bool GridSearch::isSampleOnEdge(std::shared_ptr<SearchParameterSettingsSet> searchArea, std::vector<double>& sample)
+		bool GridSearch::isSampleOnEdge(std::shared_ptr<SearchParameterSettingsSet> searchArea, std::shared_ptr<Models::ModelSample> sample)
 		{
 			for (int i = 0; i < searchArea->Dimensions.size(); i++)
 			{
 				if (searchArea->Dimensions[i]->Move && searchArea->Dimensions[i]->NumberOfValues > 2)
 				{
-					if (Numeric::NumericSupport::areEqual(searchArea->Dimensions[i]->MinValue, sample[i], tolerance) || Numeric::NumericSupport::areEqual(searchArea->Dimensions[i]->MaxValue, sample[i], tolerance))
+					const double tolerance = getTolerance(searchArea->Dimensions[i]);
+
+					if (Numeric::NumericSupport::areEqual(searchArea->Dimensions[i]->MinValue, sample->Values[i], tolerance) || Numeric::NumericSupport::areEqual(searchArea->Dimensions[i]->MaxValue, sample->Values[i], tolerance))
 					{
 						return true;
 					}
@@ -87,7 +94,7 @@ namespace Deltares
 			return false;
 		}
 
-		void GridSearch::moveSampleToCenter(std::shared_ptr<SearchParameterSettingsSet> searchArea, std::vector<double>& sample)
+		void GridSearch::moveSampleToCenter(std::shared_ptr<SearchParameterSettingsSet> searchArea, std::shared_ptr<Models::ModelSample> sample)
 		{
 			bool moved = false;
 
@@ -99,14 +106,16 @@ namespace Deltares
 				{
 					double shift = dimension->getInterval();
 
-					if (Numeric::NumericSupport::areEqual(dimension->MinValue, sample[i], tolerance))
+					const double tolerance = getTolerance(searchArea->Dimensions[i]);
+
+					if (Numeric::NumericSupport::areEqual(dimension->MinValue, sample->Values[i], tolerance))
 					{
 						dimension->MinValue -= shift;
 						dimension->MaxValue -= shift;
 						dimension->UseValues = UseValuesType::MinValue;
 						moved = true;
 					}
-					else if (Numeric::NumericSupport::areEqual(dimension->MaxValue, sample[i], tolerance))
+					else if (Numeric::NumericSupport::areEqual(dimension->MaxValue, sample->Values[i], tolerance))
 					{
 						dimension->MinValue += shift;
 						dimension->MaxValue += shift;
@@ -138,27 +147,41 @@ namespace Deltares
 			return false;
 		}
 
-
-		void GridSearch::refineGrid(std::shared_ptr<SearchParameterSettingsSet> searchArea, int refinements, std::vector<double>& input)
+		void GridSearch::refineGrid(std::shared_ptr<SearchParameterSettingsSet> searchArea, int refinements, std::shared_ptr<Models::ModelSample> sample)
 		{
 			for (size_t i = 0; i < searchArea->Dimensions.size(); i++)
 			{
 				std::shared_ptr<SearchParameterSettings> dimension = searchArea->Dimensions[i];
 				if (refinements < dimension->NumberOfRefinements)
 				{
-					double newInterval = dimension->getInterval() / 2;
-					dimension->MinValue = input[i] - newInterval;
-					dimension->MaxValue = input[i] + newInterval;
+					// when refinement is allowed, create values for the new grid higher, lower and equal the original sample
+					// the values higher and lower are exactly between the sample and its neighbors in the previous grid
+					double newInterval = dimension->getInterval() / 2; 
+					dimension->MinValue = sample->Values[i] - newInterval;
+					dimension->MaxValue = sample->Values[i] + newInterval;
 					dimension->NumberOfValues = 3;
 				}
 				else
 				{
-					dimension->MinValue = input[i];
-					dimension->MaxValue = input[i];
+					// when refinement is not allowed, repeat the value from the original value
+					dimension->MinValue = sample->Values[i];
+					dimension->MaxValue = sample->Values[i];
 					dimension->NumberOfValues = 1;
 				}
 
 				dimension->UseValues = UseValuesType::AllValues;
+			}
+		}
+
+		double GridSearch::getTolerance(std::shared_ptr<SearchParameterSettings> dimension)
+		{
+			if (dimension->NumberOfValues > 0) 
+			{
+				return std::abs((dimension->MaxValue - dimension->MinValue)) / (10 * dimension->NumberOfValues);
+			}
+			else 
+			{
+				return 0;
 			}
 		}
 	}

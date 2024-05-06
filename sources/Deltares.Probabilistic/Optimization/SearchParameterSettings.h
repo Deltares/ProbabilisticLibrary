@@ -8,21 +8,60 @@ namespace Deltares
 {
 	namespace Optimization
 	{
+		/**
+		 * \brief Indicates which values have to be used from the search parameter settings
+		 */
 		enum UseValuesType {AllValues, MinValue, MaxValue};
 
+		/**
+		 * \brief Settings for a parameter in the grid search algorithm
+		 */
 		class SearchParameterSettings
 		{
 		public:
+			/**
+			 * \brief Minimum value which can be assigned to the parameter
+			 */
 			double MinValue = 0;
+
+			/**
+			 * \brief Maximum value which can be assigned to the parameter
+			 */
 			double MaxValue = 0;
+
+			/**
+			 * \brief Number of different values which can be assigned to the parameter
+			 */
 			int NumberOfValues = 1;
+
+			/**
+			 * \brief Start value for the parameter
+			 * \remark Not used in the grid search algorithm, but in future algorithms
+			 */
 			double StartValue = nan("");
+
+			/**
+			 * \brief Indicates whether the grid can be repositioned for this parameter
+			 * \remark Only useful when UseValues is AllValues
+			 */
 			bool Move = false;
+
+			/**
+			 * \brief The number of refinements to be performed
+			 */
 			int NumberOfRefinements = 0;
 
+			/**
+			 * \brief Indicates which values have to be used in the grid search algorithm
+			 */
 			UseValuesType UseValues = UseValuesType::AllValues;
 
-			std::vector<double> getValues()
+			/**
+			 * \brief Gets the values to be queried in the grid search algorithm 
+			 * \return Values
+			 * \remark Based on MinValue, MaxValue, UseValueType and NumberOfValues
+			 */
+			std::vector<double> getValues() const
 			{
 				std::vector<double> values(this->UseValues == UseValuesType::AllValues ? this->NumberOfValues : 1);
 
@@ -51,7 +90,11 @@ namespace Deltares
 				return values;
 			}
 
-			double getInterval()
+			/**
+			 * \brief Gets the interval between values
+			 * \return Interval
+			 */
+			double getInterval() const
 			{
 				if (NumberOfValues > 1)
 				{
