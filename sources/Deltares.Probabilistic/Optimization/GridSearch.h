@@ -4,7 +4,6 @@
 #include <vector>
 #include <memory>
 
-#include "SearchParameterSettings.h"
 #include "SearchParameterSettingsSet.h"
 #include "../Model/ModelSample.h"
 #include "../Model/ModelRunner.h"
@@ -17,62 +16,72 @@ namespace Deltares
 		{
 		private:
 
-			static constexpr double tolerance = 1E-6;
+			//static constexpr double tolerance = 1E-6;
 
 			int counter = 0;
 			int reusedCounter = 0;
 
 		public:
+			/**
+			 * \brief Maximum number of grid moves to be performed
+			 */
 			int MaxGridMoves = 50;
 
-			/// <summary>
-			/// Finds the extreme 
-			/// </summary>
-			/// <param name="searchArea">The area where the searching takes place</param>
-			/// <param name="model">Method which produces the model result</param>
+			/**
+			 * \brief Finds the parameter combination which results in the minimum value
+			 * \param searchArea Definition of parameter space and settings which will be searched
+			 * \param model Model to invoke, the minimum z-value will be used
+			 * \return Sample containing values which lead to he minimum value
+			 */
 			std::shared_ptr<Models::ModelSample> getOptimizedSample(std::shared_ptr<SearchParameterSettingsSet> searchArea, std::shared_ptr<Models::ZModel> model);
 
 		private:
-			/// <summary>
-			/// Finds the extreme 
-			/// </summary>
-			/// <param name="searchArea"></param>
-			/// <param name="model"></param>
-			/// <param name="minSample">The minimum sample found so far</param>
-			/// <param name="iteration"></param>
-			/// <returns>Sample with extreme model value</returns>
+			/**
+			 * \brief Finds the parameter combination which results in the minimum value
+			 * \param searchArea Definition of parameter space and settings which will be searched
+			 * \param model Model to invoke, the minimum z-value will be used
+			 * \param minSample The minimum sample found from previous iterations (nullptr if initial)
+			 * \return Sample containing values which lead to he minimum value (if no sample leading to a lower value is found, minSample will be returned)
+			 */
 			std::shared_ptr<Models::ModelSample> findGridExtreme(std::shared_ptr<SearchParameterSettingsSet> searchArea, std::shared_ptr<Models::ZModel> model, std::shared_ptr<Models::ModelSample> minSample, int iteration);
 
-			/// <summary>
-			/// Indicates whether a sample is located on the edge of the search area
-			/// </summary>
-			/// <param name="searchArea"></param>
-			/// <param name="sample"></param>
-			/// <returns></returns>
-			bool isSampleOnEdge(std::shared_ptr<SearchParameterSettingsSet> searchArea, std::vector<double>& sample);
+			/**
+			 * \brief Indicates whether a sample is located on the edge of the search area
+			 * \param searchArea Definition of parameter space and settings which will be searched
+			 * \param sample Sample
+			 * \return Indication
+			 */
+			bool isSampleOnEdge(std::shared_ptr<SearchParameterSettingsSet> searchArea, std::shared_ptr<Models::ModelSample> sample);
 
-			/// <summary>
-			/// Moves the center of the search area to the sample location
-			/// </summary>
-			/// <param name="searchArea"></param>
-			/// <param name="sample"></param>
-			void moveSampleToCenter(std::shared_ptr<SearchParameterSettingsSet> searchArea, std::vector<double>& sample);
+			/**
+			 * \brief Moves the search area n such a way that the sample is not on the edge any more
+			 * \param searchArea Definition of parameter space and settings which will be searched
+			 * \param sample Sample on edge
+			 */
+			void moveSampleToCenter(std::shared_ptr<SearchParameterSettingsSet> searchArea, std::shared_ptr<Models::ModelSample> sample);
 
-			/// <summary>
-			/// Indicates whether refinement is possible
-			/// </summary>
-			/// <param name="searchArea"></param>
-			/// <param name="refinements"></param>
-			/// <returns></returns>
+			/**
+			 * \brief Indicates whether refinement is possible
+			 * \param searchArea Definition of parameter space and settings which will be searched
+			 * \param refinements Number of refinements performed so far
+			 * \return Indication
+			 */
 			bool canRefine(std::shared_ptr<SearchParameterSettingsSet> searchArea, int refinements);
 
-			/// <summary>
-			/// Refines the grid around the currently found minimum
-			/// </summary>
-			/// <param name="searchArea"></param>
-			/// <param name="refinements"></param>
-			/// <param name="input"></param>
-			void refineGrid(std::shared_ptr<SearchParameterSettingsSet> searchArea, int refinements, std::vector<double>& input);
+			/**
+			 * \brief Refines the grid around the currently found minimum sample
+			 * \param searchArea Definition of parameter space and settings which will be searched
+			 * \param refinements Number of refinements performed so far
+			 * \param sample Minimum sample
+			 */
+			void refineGrid(std::shared_ptr<SearchParameterSettingsSet> searchArea, int refinements, std::shared_ptr<Models::ModelSample> sample);
+
+			/**
+			 * \brief Gets the tolerance for a parameter when determining whether a value is on the edge of a grid 
+			 * \param dimension Settings of the parameter
+			 * \return Tolerance
+			 */
+			double getTolerance(std::shared_ptr<SearchParameterSettings> dimension);
 		};
 	}
 }
