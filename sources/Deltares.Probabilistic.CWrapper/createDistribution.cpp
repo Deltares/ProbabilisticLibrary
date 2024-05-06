@@ -13,8 +13,7 @@ std::shared_ptr <Stochast> createDistribution::createValid(const EnumDistributio
         pValues[i] = p[i];
     }
 
-    std::shared_ptr <Stochast> s = std::make_shared<Stochast>();
-    create(s, distHR, pValues);
+    auto s = create(distHR, pValues);
     if (!s->isValid())
     {
         throw probLibException("parameters are not valid for distribution.");
@@ -22,7 +21,7 @@ std::shared_ptr <Stochast> createDistribution::createValid(const EnumDistributio
     return s;
 }
 
-void createDistribution::create(std::shared_ptr <Stochast> & s, const EnumDistributions distHR, std::vector<double> p)
+std::shared_ptr <Stochast> createDistribution::create(const EnumDistributions distHR, std::vector<double> p)
 {
     DistributionType dist;
     bool truncated = false;
@@ -75,6 +74,7 @@ void createDistribution::create(std::shared_ptr <Stochast> & s, const EnumDistri
         throw probLibException("Unknown distribution function - code: ", (int)distHR);
     }
 
+    std::shared_ptr<Stochast> stochast;
     if (setShapeScaleShift)
     {
         std::shared_ptr< StochastProperties> properties = std::make_shared< StochastProperties>();
@@ -82,20 +82,18 @@ void createDistribution::create(std::shared_ptr <Stochast> & s, const EnumDistri
         properties->Shape = p[1];
         properties->Shift = p[2];
         properties->ShapeB = p[3];
-        std::shared_ptr<Stochast> s2(new Stochast(dist, properties));
-        s.swap(s2);
+        stochast = std::make_shared<Stochast>(dist, properties);
     }
     else
     {
-        std::shared_ptr<Stochast> s2(new Stochast(dist, p));
-        s.swap(s2);
+        stochast = std::make_shared<Stochast>(dist, p);
     }
 
     if (truncated)
     {
-        s->setTruncated(true);
-        s->getProperties()->Minimum = truncatedMin;
-        s->getProperties()->Maximum = truncatedMax;
+        stochast->setTruncated(true);
+        stochast->getProperties()->Minimum = truncatedMin;
+        stochast->getProperties()->Maximum = truncatedMax;
     }
 
 }
