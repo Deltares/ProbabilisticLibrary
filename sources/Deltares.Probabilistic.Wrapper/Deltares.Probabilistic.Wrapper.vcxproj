@@ -162,6 +162,7 @@
   <ItemGroup>
     <ClInclude Include="Model\ICanCalculateBeta.h" />
     <ClInclude Include="Model\ProxySettings.h" />
+    <ClInclude Include="Reliability\NumericalIntegration.h" />
     <ClInclude Include="Reliability\ClusterSettings.h" />
     <ClInclude Include="Reliability\AdaptiveImportanceSampling.h" />
     <ClInclude Include="Reliability\AdaptiveImportanceSamplingSettings.h" />
@@ -169,6 +170,7 @@
     <ClInclude Include="Reliability\ImportanceSamplingSettings.h" />
     <ClInclude Include="Reliability\ImportanceSampling.h" />
     <ClInclude Include="Model\ModelSample.h" />
+    <ClInclude Include="Reliability\NumericalIntegrationSettings.h" />
     <ClInclude Include="Statistics\DistributionType.h" />
     <ClInclude Include="Statistics\DiscreteValue.h" />
     <ClInclude Include="Statistics\FragilityValue.h" />
@@ -211,10 +213,12 @@
   <ItemGroup>
     <ClCompile Include="Model\ICanCalculateBeta.cpp" />
     <ClCompile Include="Model\ProxySettings.cpp" />
+    <ClCompile Include="Reliability\NumericalIntegration.cpp" />
     <ClCompile Include="Reliability\ClusterSettings.cpp" />
     <ClCompile Include="Reliability\AdaptiveImportanceSampling.cpp" />
     <ClCompile Include="Reliability\AdaptiveImportanceSamplingSettings.cpp" />
     <ClCompile Include="Reliability\ImportanceSampling.cpp" />
+    <ClCompile Include="Reliability\NumericalIntegrationSettings.cpp" />
     <ClCompile Include="Statistics\DistributionType.cpp" />
     <ClCompile Include="Model\Message.cpp" />
     <ClCompile Include="Reliability\CrudeMonteCarlo.cpp" />
