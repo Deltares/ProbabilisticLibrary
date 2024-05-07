@@ -18,7 +18,6 @@ namespace Deltares
                 std::string refFileWithPath(const std::string& sourceFile, const std::string& relativePath);
                 void checkAlphaBeta(alphaBeta& computed, alphaBeta& ref, const double margin);
                 void checkAlphaBeta(alphaBeta& computed, alphaBeta& ref, const double margin1, const double margin2);
-                size_t readNumThreadsFromEnv(const bool debug);
             private:
                 std::vector<std::string> readWholeFile(const std::string& file) const;
                 bool compareLine(const std::string& ref, const std::string& nw) const;

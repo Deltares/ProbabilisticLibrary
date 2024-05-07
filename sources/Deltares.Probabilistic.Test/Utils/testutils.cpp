@@ -1,3 +1,6 @@
+#include "pch.h"
+
+#include "testutils.h"
 #include "testutils.h"
 #include "gtest/gtest.h"
 #include <math.h>
@@ -127,21 +130,6 @@ namespace Deltares
                     EXPECT_NEAR(computed.getAlphaI(iStochast), ref.getAlphaI(iStochast), m2);
                 }
             }
-
-            size_t testutils::readNumThreadsFromEnv(const bool debug)
-            {
-                auto env = getenv("OMP_NUM_THREADS");
-                size_t numcores = 1;
-                if (env != NULL)
-                {
-                    std::stringstream envStream(env);
-                    envStream >> numcores;
-                }
-
-                if (debug) std::cout << "using " << numcores << " threads" << std::endl;
-                return numcores;
-            }
-
         }
     }
 }
