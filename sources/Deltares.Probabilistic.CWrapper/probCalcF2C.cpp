@@ -82,16 +82,16 @@ void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, corrStr
         auto nStoch = (size_t)n;
         auto fw = funcWrapper(compIds[0], fx);
 
-        auto stochast = std::vector<std::shared_ptr<Deltares::Statistics::Stochast>>();
+        auto stochasts = std::vector<std::shared_ptr<Deltares::Statistics::Stochast>>();
         for (size_t i = 0; i < nStoch; i++)
         {
             auto distHR = (EnumDistributions)c[i].distId;
             auto s = createDistribution::createValid(distHR, c[i].params);
-            stochast.push_back(s);
+            stochasts.push_back(s);
         }
 
         auto createRelM = createReliabilityMethod();
-        std::shared_ptr<ReliabilityMethod> relMethod(createRelM.selectMethod(*method, nStoch));
+        std::shared_ptr<ReliabilityMethod> relMethod(createRelM.selectMethod(*method, nStoch, stochasts));
         std::shared_ptr<ZModel> zModel(new ZModel([&fw](std::shared_ptr<ModelSample> v) { return fw.FDelegate(v); },
                                                   [&fw](std::vector<std::shared_ptr<ModelSample>> v) { return fw.FDelegateParallel(v); }));
         std::shared_ptr<Deltares::Statistics::CorrelationMatrix> corr(new Deltares::Statistics::CorrelationMatrix());
@@ -103,7 +103,7 @@ void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, corrStr
                 corr->SetCorrelation(correlations[i].idx1, correlations[i].idx2, correlations[i].correlation);
             }
         }
-        std::shared_ptr<UConverter> uConverter(new UConverter(stochast, corr));
+        std::shared_ptr<UConverter> uConverter(new UConverter(stochasts, corr));
         auto pw = progressWrapper(pc, relMethod.get());
         auto progressDelegate = ProgressLambda();
         auto detailedProgressDelegate = DetailedProgressLambda();
