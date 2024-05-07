@@ -1,15 +1,20 @@
 #pragma once
 
-#include "../Model/RandomSettings.h"
-#include "../Model/RunSettings.h"
 #include "DesignPointBuilder.h"
 #include "StochastSettingsSet.h"
+#include "../Model/RandomSettings.h"
+#include "../Model/RunSettings.h"
 
 namespace Deltares
 {
     namespace Reliability
     {
-        class CrudeMonteCarloSettings
+        enum SampleMethodType { MarkovChain, AdaptiveConditional };
+
+        /**
+         * \brief Settings for the subset simulation algorithm
+         */
+        class SubsetSimulationSettings
         {
         public:
             /**
@@ -31,6 +36,21 @@ namespace Deltares
              * \brief Method type how the design point (alpha values) is calculated
              */
             DesignPointMethod designPointMethod = DesignPointMethod::CenterOfGravity;
+
+            /**
+             * \brief Defines the way new samples are generated
+             */
+            SampleMethodType SampleMethod = SampleMethodType::MarkovChain;
+
+            /**
+             * \brief Standard deviation in the Markov chain
+             */
+            double MarkovChainDeviation = 1;
+
+            /**
+             * \brief Fraction of the samples which will be used in the next iteration
+             */
+            double SubsetFraction = 0.1;
 
             /**
              * \brief Settings for generating random values

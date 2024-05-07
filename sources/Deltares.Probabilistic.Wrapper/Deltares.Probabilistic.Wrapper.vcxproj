@@ -193,6 +193,7 @@
     <ClInclude Include="Model\Evaluation.h" />
     <ClInclude Include="Model\ModelRunner.h" />
     <ClInclude Include="Model\UConverter.h" />
+    <ClInclude Include="Reliability\SubsetSimulationSettings.h" />
     <ClInclude Include="Utils\NativeSupport.h" />
     <ClInclude Include="Model\ProgressIndicator.h" />
     <ClInclude Include="Model\RandomProvider.h" />
@@ -229,6 +230,7 @@
     <ClCompile Include="Reliability\FORM.cpp" />
     <ClCompile Include="Statistics\StandardNormal.cpp" />
     <ClCompile Include="Model\UConverter.cpp" />
+    <ClCompile Include="Reliability\SubsetSimulationSettings.cpp" />
     <ClCompile Include="Utils\NativeSupport.cpp" />
     <ClCompile Include="Model\ProgressIndicator.cpp" />
     <ClCompile Include="Model\RandomProvider.cpp" />
