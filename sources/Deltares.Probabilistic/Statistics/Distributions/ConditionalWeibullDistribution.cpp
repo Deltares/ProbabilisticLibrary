@@ -87,6 +87,7 @@ namespace Deltares
 
 		double ConditionalWeibullDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)
 		{
+            // see: https://issuetracker.deltares.nl/secure/attachment/169141/ddx_cdf.pdf
 			double C = -stochast->ShapeB * std::exp(std::pow(stochast->Shift / stochast->Scale, stochast->Shape));
 			double S = stochast->Shape / stochast->Scale;
 			double expMinsx = std::exp(-S * x);

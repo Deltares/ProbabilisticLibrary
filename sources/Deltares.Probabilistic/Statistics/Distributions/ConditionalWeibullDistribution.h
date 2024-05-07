@@ -8,7 +8,7 @@ namespace Deltares
 		/// <summary>
 		/// Conditional Weibull Distribution described in terms of exceedance
 		/// frequencies rather than probabilities.
-		/// No all methods are implemented.
+		/// Not all methods are implemented.
 		/// </summary>
 		class ConditionalWeibullDistribution : public Distribution
 		{
