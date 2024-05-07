@@ -3,7 +3,6 @@
 #include "../StandardNormal.h"
 #include "../StochastProperties.h"
 #include <cmath>
-#include <cerrno>
 
 #include "DistributionFitter.h"
 #include "WeibullDistribution.h"
@@ -60,12 +59,8 @@ namespace Deltares
 
 			const double logF = std::log(f / stochast->ShapeB);
 			const double xlog = std::pow(stochast->Shift / stochast->Scale, stochast->Shape) - logF;
-			errno = 0;
+			if (xlog <= 0.0) return 0.0;
 			const double xScale = pow(xlog, 1.0 / stochast->Shape);
-			if (errno != 0)
-			{
-				return 0.0;
-			}
 
 			return xScale * stochast->Scale;
 		}
@@ -73,12 +68,8 @@ namespace Deltares
 		double ConditionalWeibullDistribution::getUFromX(std::shared_ptr<StochastProperties> stochast, double x)
 		{
 			x /= stochast->Scale;
-			errno = 0;
+			if (x <= 0.0) return -StandardNormal::BetaMax;
 			double xlog = pow(x, stochast->Shape);
-			if (errno != 0)
-			{
-				return -StandardNormal::BetaMax;
-			}
 			double logF = std::pow(stochast->Shift / stochast->Scale, stochast->Shape) - xlog;
 			double f = stochast->ShapeB * exp(logF);
 			double u;
@@ -96,10 +87,10 @@ namespace Deltares
 
 		double ConditionalWeibullDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)
 		{
-			const double dx = 1e-4;
-			double p2 = getCDF(stochast, x + dx);
-			double p1 = getCDF(stochast, x - dx);
-			double pdf = (p2 - p1) / (2.0 * dx);
+			double C = -stochast->ShapeB * std::exp(std::pow(stochast->Shift / stochast->Scale, stochast->Shape));
+			double S = stochast->Shape / stochast->Scale;
+			double expMinsx = std::exp(-S * x);
+			double pdf = -S * C * std::exp(C * expMinsx) * expMinsx;
 			return pdf;
 		}
 
