@@ -1,3 +1,4 @@
+#include "pch.h"
 #include <gtest/gtest.h>
 #include "testStartPointCalculator.h"
 #include "../../Deltares.Probabilistic/Reliability/StartPointCalculator.h"

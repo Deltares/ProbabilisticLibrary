@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "testDistributions.h"
 #include "../../Deltares.Probabilistic/Statistics/Stochast.h"
 

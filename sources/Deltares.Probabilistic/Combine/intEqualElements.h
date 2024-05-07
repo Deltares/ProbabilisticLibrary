@@ -1,5 +1,6 @@
 #pragma once
 #include <math.h>
+#include <numbers>
 #include "../Statistics/StandardNormal.h"
 
 namespace Deltares {
@@ -57,7 +58,7 @@ namespace Deltares {
                     double v = LB + vDelta * double(i);
                     double betaStar = (beta - sqrt(rhoT) * v) / sqrt(1.0 - rhoT);
                     double p = Deltares::Statistics::StandardNormal::getPFromU(betaStar);
-                    double vDensity = exp(-v * v / 2.0) / sqrt(2.0 * M_PI);
+                    double vDensity = exp(-v * v / 2.0) / sqrt(2.0 * std::numbers::pi);
                     PfT += (1.0 - pow(p, nrElements)) * vDensity * vDelta;
                 }
 

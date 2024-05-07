@@ -1,3 +1,4 @@
+#include "pch.h"
 #include <gtest/gtest.h>
 #include "Reliability/testStartPointCalculator.h"
 #include "Math/testNumericSupport.h"
