@@ -181,7 +181,7 @@ namespace Deltares
 			directionReliability->Settings = this->Settings->DirectionSettings;
 			directionReliability->Threshold = threshold;
 
-			#pragma omp parallel for schedule(static,1)
+			#pragma omp parallel for
 			for (int i = 0; i < (int)samples.size(); i++)
 			{
 				samples[i]->IterationIndex = step + i;
