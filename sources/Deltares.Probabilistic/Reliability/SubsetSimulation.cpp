@@ -23,12 +23,11 @@ namespace Deltares
 
         std::shared_ptr<DesignPoint> SubsetSimulation::getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner)
         {
-            int nstochasts = modelRunner->getVaryingStochastCount();
+            int nStochasts = modelRunner->getVaryingStochastCount();
 
             modelRunner->updateStochastSettings(this->Settings->StochastSet);
 
-            std::shared_ptr<DesignPointBuilder> uMean = std::make_shared<DesignPointBuilder>(nstochasts, Settings->designPointMethod, Settings->StochastSet);
-            std::shared_ptr<Sample> uMin = std::make_shared<Sample>(nstochasts);
+            std::shared_ptr<DesignPointBuilder> uMean = std::make_shared<DesignPointBuilder>(nStochasts, Settings->designPointMethod, Settings->StochastSet);
 
             std::shared_ptr<RandomSampleGenerator> randomSampleGenerator = std::make_shared<RandomSampleGenerator>();
             randomSampleGenerator->Settings = this->Settings->randomSettings;
@@ -60,15 +59,14 @@ namespace Deltares
                 bool converged = false;
                 int ntot = 0;
 
-                rejectedSamples = 0;
-                acceptedSamples = 0;
+                this->rejectedSamples = 0;
+                this->acceptedSamples = 0;
 
                 convergenceReport = std::make_shared<ConvergenceReport>();
 
                 iteration++;
 
                 std::vector<std::shared_ptr<Sample>> samples;
-                double rmin = std::numeric_limits<double>::max();
 
                 std::vector<std::shared_ptr<Sample>> performedSamples;
 
@@ -77,11 +75,11 @@ namespace Deltares
 
                 if (selectedSamples.empty())
                 {
-                    newSamples = getInitialSamples(modelRunner, randomSampleGenerator, nstochasts, initial);
+                    newSamples = getInitialSamples(modelRunner, randomSampleGenerator, nStochasts, initial);
                 }
                 else if (Settings->SampleMethod == SampleMethodType::MarkovChain)
                 {
-                    newSamples = getMarkovChainSamples(modelRunner, nstochasts, selectedSamples, z0Fac);
+                    newSamples = getMarkovChainSamples(modelRunner, nStochasts, selectedSamples, z0Fac);
                 }
                 else if (Settings->SampleMethod == SampleMethodType::AdaptiveConditional)
                 {
@@ -94,7 +92,7 @@ namespace Deltares
 
                 int skip = 0;
 
-                for (int nmaal = 0; nmaal < newSamples.size() && !converged && !isStopped(); nmaal++)
+                for (int sampleIndex = 0; sampleIndex < newSamples.size() && !converged && !isStopped(); sampleIndex++)
                 {
                     zIndex++;
 
@@ -104,7 +102,7 @@ namespace Deltares
 
                         samples.clear();
                         int chunkSize = modelRunner->Settings->MaxChunkSize;
-                        int runs = std::min(chunkSize, (int)newSamples.size() - nmaal);
+                        int runs = std::min(chunkSize, (int)newSamples.size() - sampleIndex);
 
                         for (int i = skip; i < skip + runs; i++)
                         {
@@ -150,9 +148,10 @@ namespace Deltares
                         continue;
                     }
 
-                    double z = zValues[zIndex];
-                    std::shared_ptr<Sample> u = samples[zIndex];
-                    performedSamples.push_back(u);
+                    double z = zValues[zIndex] * z0Fac;
+
+                    std::shared_ptr<Sample> sample = samples[zIndex];
+                    performedSamples.push_back(samples[zIndex]);
 
                     // ignore a failed evaluation
                     if (std::isnan(z))
@@ -175,20 +174,15 @@ namespace Deltares
                     // register minimum value of r and alpha
                     if (z * z0Fac < 0)
                     {
-                        uMean->addSample(u);
-
-                        auto rbeta = u->getBeta();
-                        if (rbeta < rmin)
-                        {
-                            rmin = rbeta;
-                            uMin = u;
-                        }
+                        uMean->addSample(sample);
                     }
 
                     // uncorrected prob of failure for convergence
                     pf = NumericSupport::Divide(ntot, samplesCount);
 
-                    std::shared_ptr<ReliabilityReport> report = std::make_shared<ReliabilityReport>(nmaal, Settings->MaximumSamples);
+                    std::shared_ptr<ReliabilityReport> report = std::make_shared<ReliabilityReport>();
+                    report->Step = sampleIndex;
+                    report->MaxSteps = Settings->MaximumSamples;
 
                     if (pf > 0 && pf < 1.0)
                     {
@@ -196,7 +190,7 @@ namespace Deltares
 
                         pf *= ssFactor;
 
-                        report->Reliability = Statistics::StandardNormal::getUFromQ(pf);
+                        report->Reliability = z0Fac * Statistics::StandardNormal::getUFromQ(pf);
                         report->Variation = convergence;
 
                         modelRunner->reportResult(report);
@@ -204,7 +198,7 @@ namespace Deltares
                         // check if convergence is reached (or stop criterion)
                         convergenceReport->Convergence = convergence;
 
-                        converged = isConverged(this->Settings, nmaal, convergence);
+                        converged = isConverged(this->Settings, sampleIndex, convergence);
 
                         convergenceReport->IsConverged = converged;
                     }
@@ -253,7 +247,7 @@ namespace Deltares
             }
 
             std::shared_ptr<Sample> sample = uMean->getSample();
-            std::shared_ptr<DesignPoint> designPoint = modelRunner->getDesignPoint(sample, Statistics::StandardNormal::getUFromQ(pf), convergenceReport);
+            std::shared_ptr<DesignPoint> designPoint = modelRunner->getDesignPoint(sample, z0Fac * Statistics::StandardNormal::getUFromQ(pf), convergenceReport);
 
             for (size_t i = 0; i < contributingDesignPoints.size(); i++)
             {
@@ -363,17 +357,17 @@ namespace Deltares
 
             int nMaximumSamples = Settings->MaximumSamples;
 
-            int Na = static_cast<int>(std::ceil(100.0 * nSelectedSamples / nMaximumSamples)); // number of chains after which the proposal is adapted
+            int nChains = static_cast<int>(std::ceil(100.0 * nSelectedSamples / nMaximumSamples)); // number of chains after which the proposal is adapted
 
             //int max_it = 10;       // estimated number of iterations
             double oldLambda = 0.60;
 
 
             // initialization
-            std::vector<int> acc(Settings->MaximumSamples); // store acceptance
-            std::vector<double> lam(static_cast<int>(std::floor(static_cast<float>(nSelectedSamples) / Na)) + 1); // scaling parameter \in (0,1)
-            std::vector<double> mu_acc(static_cast<int>(std::floor(static_cast<float>(nSelectedSamples) / static_cast<float>(Na))) + 1);
-            std::vector<double> hat_a(static_cast<int>(std::floor(static_cast<float>(nSelectedSamples) / static_cast<float>(Na))) + 1); // average acceptance rate of the chains
+            std::vector<int> acceptance(Settings->MaximumSamples); // store acceptance
+            std::vector<double> lam(static_cast<int>(std::floor(static_cast<float>(nSelectedSamples) / nChains)) + 1); // scaling parameter \in (0,1)
+            std::vector<double> mu_acc(static_cast<int>(std::floor(static_cast<float>(nSelectedSamples) / static_cast<float>(nChains))) + 1);
+            std::vector<double> hat_a(static_cast<int>(std::floor(static_cast<float>(nSelectedSamples) / static_cast<float>(nChains))) + 1); // average acceptance rate of the chains
 
             //  number of samples per chain
             std::vector<int> nChain(nSelectedSamples);
@@ -391,7 +385,7 @@ namespace Deltares
 
             for (int k = 0; k < nMaximumSamples; k++)
             {
-                acc[k] = 0;
+                acceptance[k] = 0;
             }
 
             for (int j = 0; j < mu_acc.size(); j++)
@@ -496,14 +490,14 @@ namespace Deltares
                     //  accept or reject sample 
                     if (sample->Z <= b)
                     {
-                        acc[idx + t] = 1; //  note the acceptance
+                        acceptance[idx + t] = 1; //  note the acceptance
                     }
                     else
                     {
                         sample = previousSample->clone();
                         sample->Z = previousSample->Z;
 
-                        acc[idx + t] = 0; // note the rejection
+                        acceptance[idx + t] = 0; // note the rejection
                     }
 
                     newSamples.push_back(sample);
@@ -517,20 +511,20 @@ namespace Deltares
                 double mean = 0;
                 for (int j = idx + 1; j < idx + nChain[k - 1]; j++)
                 {
-                    mean += acc[j];
+                    mean += acceptance[j];
                 }
 
                 mean /= nChain[k - 1];
 
                 mu_acc[i] += std::min(1.0, mean);
 
-                if (k % Na == 0)
+                if (k % nChains == 0)
                 {
                     if (nChain[k - 1] > 1)
                     {
                         // c. evaluate average acceptance rate
 
-                        hat_a[i] = mu_acc[i] / static_cast<double>(Na); // Ref. 1 Eq. 25
+                        hat_a[i] = mu_acc[i] / static_cast<double>(nChains); // Ref. 1 Eq. 25
 
                         // d. compute new scaling parameter
                         double zeta = 1.0 / std::sqrt(static_cast<double>(i + 1)); //  ensures that the variation of lambda(i) vanishes
@@ -566,29 +560,26 @@ namespace Deltares
                     num++;
                 }
 
-                accrate = mean / num;
+                acceptanceRate = mean / num;
             }
             else // no adaptation
             {
-                accrate = 0;
+                acceptanceRate = 0;
 
                 if (nMaximumSamples % nSelectedSamples != 0)
                 {
                     int num = 1;
                     for (int j = 0; j < nMaximumSamples % nSelectedSamples; j++)
                     {
-                        accrate += acc[j];
+                        acceptanceRate += acceptance[j];
                         num++;
                     }
-                    accrate /= num; // only for the few generated samples
+                    acceptanceRate /= num; // only for the few generated samples
                 }
             }
 
             return newSamples;
         }
-
-
-
 
         double SubsetSimulation::getConvergence(double pf, int samples)
         {
@@ -607,10 +598,10 @@ namespace Deltares
             }
         }
 
-        bool SubsetSimulation::isConverged(std::shared_ptr<SubsetSimulationSettings> settings, int nmaal, double convergence)
+        bool SubsetSimulation::isConverged(std::shared_ptr<SubsetSimulationSettings> settings, int sampleIndex, double convergence)
         {
             double requiredConvergence = settings->SampleMethod == SampleMethodType::AdaptiveConditional ? 0 : settings->VariationCoefficient;
-            return nmaal >= settings->MinimumSamples && convergence < requiredConvergence;
+            return sampleIndex >= settings->MinimumSamples && convergence < requiredConvergence;
         }
 
         double SubsetSimulation::getStandardNormalPDF(double u)
