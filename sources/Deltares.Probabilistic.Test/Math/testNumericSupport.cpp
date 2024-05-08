@@ -1,6 +1,4 @@
-#ifndef NOPCH
 #include "pch.h"
-#endif // !NOPCH
 #include "testNumericSupport.h"
 #include "../../Deltares.Probabilistic/Math/NumericSupport.h"
 

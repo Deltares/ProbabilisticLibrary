@@ -9,7 +9,7 @@ add_library(Deltares.Probabilistic.CWrapper
 
 set_target_properties(Deltares.Probabilistic.CWrapper
   PROPERTIES
-    CXX_STANDARD 20
+    CXX_STANDARD 17
     POSITION_INDEPENDENT_CODE 1
 )
 

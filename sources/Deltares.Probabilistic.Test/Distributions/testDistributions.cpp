@@ -1,6 +1,4 @@
-#ifndef NOPCH
 #include "pch.h"
-#endif // !NOPCH
 #include "testDistributions.h"
 #include "../../Deltares.Probabilistic/Statistics/Stochast.h"
 

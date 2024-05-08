@@ -1,6 +1,4 @@
-#ifndef NOPCH
 #include "pch.h"
-#endif // !NOPCH
 #include <gtest/gtest.h>
 #include "Reliability/testStartPointCalculator.h"
 #include "Math/testNumericSupport.h"

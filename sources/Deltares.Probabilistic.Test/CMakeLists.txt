@@ -60,12 +60,10 @@ add_executable(Deltares.Probabilistic.Test
 
 set_target_properties(Deltares.Probabilistic.Test
   PROPERTIES
-    CXX_STANDARD 20
+    CXX_STANDARD 17
     CXX_EXTENSIONS OFF
     CXX_STANDARD_REQUIRED ON
 )
-
-target_compile_definitions(Deltares.Probabilistic.Test PUBLIC NOPCH)
 
 target_link_libraries(Deltares.Probabilistic.Test Deltares.Probabilistic.Kernel gtest_main)
 
