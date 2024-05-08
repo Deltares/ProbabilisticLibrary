@@ -8,6 +8,9 @@ namespace Deltares
 {
     namespace Reliability
     {
+        /**
+         * \brief Subset simulation algorithm
+         */
         class SubsetSimulation : public ReliabilityMethod
         {
         public:
@@ -20,14 +23,14 @@ namespace Deltares
             std::vector<std::shared_ptr<Sample>> getAdaptiveConditionalSamples(std::shared_ptr<ModelRunner> modelRunner, int nSamples, std::vector<std::shared_ptr<Sample>>& selectedSamples);
 
             double getConvergence(double pf, int samples);
-            bool isConverged(std::shared_ptr<SubsetSimulationSettings> settings, int nmaal, double convergence);
+            bool isConverged(std::shared_ptr<SubsetSimulationSettings> settings, int sampleIndex, double convergence);
 
             double getStandardNormalPDF(double u);
 
             int rejectedSamples = 0;
             int acceptedSamples = 0;
             double new_lambda = 0.0;
-            double accrate = 0.0;
+            double acceptanceRate = 0.0;
         };
     }
 }
