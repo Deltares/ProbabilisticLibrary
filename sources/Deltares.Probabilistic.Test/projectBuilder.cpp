@@ -1,4 +1,6 @@
+#ifndef NOPCH
 #include "pch.h"
+#endif // !NOPCH
 #include <gtest/gtest.h>
 #include "projectBuilder.h"
 #include <iostream>

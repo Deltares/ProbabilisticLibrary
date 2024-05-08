@@ -1,5 +1,6 @@
+#ifndef NOPCH
 #include "pch.h"
-
+#endif // !NOPCH
 #include "testutils.h"
 #include "testutils.h"
 #include "gtest/gtest.h"

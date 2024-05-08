@@ -1,4 +1,6 @@
+#ifndef NOPCH
 #include "pch.h"
+#endif // !NOPCH
 #include <gtest/gtest.h>
 #include <math.h>
 #include "intEqualElements_tests.h"

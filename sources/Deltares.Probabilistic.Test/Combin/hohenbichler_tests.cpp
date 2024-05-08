@@ -1,4 +1,6 @@
+#ifndef NOPCH
 #include "pch.h"
+#endif // !NOPCH
 #include <fstream>
 #include <filesystem>
 #include <stdio.h>

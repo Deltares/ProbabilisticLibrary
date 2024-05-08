@@ -1,4 +1,6 @@
+#ifndef NOPCH
 #include "pch.h"
+#endif // !NOPCH
 #include <math.h>
 #include <gtest/gtest.h>
 #include "upscale_tests.h"
