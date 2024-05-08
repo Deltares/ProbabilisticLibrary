@@ -172,7 +172,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
             Assert.AreEqual(2.54, designPoint.Beta, margin);
         }
 
-        [Test] 
+        [Test]
         public void TestLinearManySamples()
         {
             var project = ProjectBuilder.GetLinearProject();
