@@ -38,12 +38,15 @@ Deltares::Reliability::ReliabilityMethod* createReliabilityMethod::selectMethod(
 	{
 	case (ProbMethod::NI): {
 		auto ni = new NumericalIntegration();
+        ni->Settings->designPointMethod = DesignPointMethod::NearestToMean;
 		for (size_t i = 0; i < nStoch; i++)
 		{
 			auto s = std::make_shared<StochastSettings>();
 			s->stochast = stochasts[i];
 			s->Intervals = bs.numExtraInt;
-			ni->Settings->StochastSet->stochastSettings.push_back(s);
+            s->MinValue = bs.numExtraReal1;
+            s->MaxValue = bs.numExtraReal2;
+            ni->Settings->StochastSet->stochastSettings.push_back(s);
 		}
 		return ni; }
 						 break;

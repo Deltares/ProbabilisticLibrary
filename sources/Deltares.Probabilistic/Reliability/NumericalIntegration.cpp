@@ -50,7 +50,7 @@ namespace Deltares
 			}
 			else if (nStochasts > 4)
 			{
-				modelRunner->reportMessage(Models::MessageType::Error, "Numerical integration with more than 4 stochastic parameters. Large computation time is possible.");
+				modelRunner->reportMessage(Models::MessageType::Warning, "Numerical integration with more than 4 stochastic parameters. Large computation time is possible.");
 			}
 
 			// Initialize parameters for the recursive part of the numerical integration computation.

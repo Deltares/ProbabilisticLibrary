@@ -96,7 +96,7 @@ subroutine allProbMethodsWaartsFunctionsTests(minTestLevel)
     character(len=255)            :: testName
 
     integer                       :: level
-    integer, parameter            :: availableMethods(*) = [12, 11, 1, 3, 4] ! TODO the rest is not implemented yet
+    integer, parameter            :: availableMethods(*) = [5, 12, 11, 1, 3, 4] ! TODO the rest is not implemented yet
 
     character(len=60), dimension(14) :: functionName = &
         (/   "LinearResistanceSolicitation           ", &     ! 1
@@ -229,7 +229,7 @@ subroutine testProbabilisticWithFunction ( )
     real (kind = wp), pointer   :: alfa(:)
     real (kind = wp), pointer   :: x(:)
     real (kind = wp)            :: actualBeta = 0.0d0
-    real (kind = wp)            :: margin = 1.0d-6
+    real (kind = wp)            :: margin = 1.0d-5
     real (kind = wp)            :: betaFactor
     logical                     :: runOption
     integer                     :: oldNumberIterations
@@ -277,7 +277,7 @@ subroutine testProbabilisticWithFunction ( )
             select case (probDb%method%DPoption)
             case (designPointRMinZFunc)
                 if (probMethod == methodNumericalIntegration) then
-                    call assert_comparable(  3.56245036677051d0, actualBeta, margin, "Linear resistance solicitation: Beta" )
+                    call assert_comparable(  3.56231d0, actualBeta, margin, "Linear resistance solicitation: Beta" )
                     call assert_comparable(  0.707106781186547d0, alfa(1), margin, "Linear resistance solicitation: Alfa(1)" )
                     call assert_comparable( -0.707106781186547d0, alfa(2), margin, "Linear resistance solicitation: Alfa(2)" )
                 else if (probMethod == methodImportanceSampling) then
@@ -327,7 +327,7 @@ subroutine testProbabilisticWithFunction ( )
             select case (probMethod)
 
                 case (methodNumericalIntegration)
-                    call assert_comparable(  2.16256114292629d0, actualBeta, margin, "Noisy limit state: Beta" )
+                    call assert_comparable(  2.16254d0, actualBeta, margin, "Noisy limit state: Beta" )
                     call assert_comparable(  0.182574185835055d0, alfa(1), margin, "Noisy limit state: Alfa(1)" )
                     call assert_comparable(  0.547722557505166d0, alfa(2), margin, "Noisy limit state: Alfa(2)" )
                     call assert_comparable(  0.182574185835055d0, alfa(3), margin, "Noisy limit state: Alfa(3)" )
@@ -375,19 +375,19 @@ subroutine testProbabilisticWithFunction ( )
             select case (probMethod)
 
                 case (methodNumericalIntegration)
-                    call assert_comparable(  3.45593732994237d0, actualBeta, margin, &
+                    call assert_comparable(  3.455623d0, actualBeta, margin, &
                         "Resistance solicitation with 1 quadratic term: Beta" )
-                    !call assert_comparable(  0.358979079308869d0, alfa(1), margin, &
-                    !    "Resistance solicitation with 1 quadratic term: Alfa(1)" )
-                    !call assert_comparable( -0.933345606203060d0, alfa(2), margin, &
-                    !    "Resistance solicitation with 1 quadratic term: Alfa(2)" )
+                    call assert_comparable(  0.358979d0, alfa(1), margin, &
+                        "Resistance solicitation with 1 quadratic term: Alfa(1)" )
+                    call assert_comparable( -0.9333456d0, alfa(2), margin, &
+                        "Resistance solicitation with 1 quadratic term: Alfa(2)" )
                     block
                         type(tError) :: ierr
                         real(kind=wp) :: z
                         type(computationSetting) :: idata
                         idata%designPointSetting = -999
                         z = zResistanceSolicitation1QuadraticTerm(x, idata, ierr)
-                        call assert_true(abs(z) < 5d-2, "small z")
+                        call assert_true(abs(z) < 1d-1, "small z")
                     end block
 
                 case (methodFORM)

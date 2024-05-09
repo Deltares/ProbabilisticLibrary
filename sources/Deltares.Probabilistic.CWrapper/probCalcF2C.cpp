@@ -1,5 +1,6 @@
 #include <string>
 #include <memory>
+#include <iostream>
 
 #include "basicSettings.h"
 #include "createDistribution.h"
@@ -122,6 +123,7 @@ void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, const i
         std::shared_ptr<ModelRunner> modelRunner(new ModelRunner(zModel, uConverter, progress));
         modelRunner->Settings->MaxParallelProcesses = method->numThreads;
         modelRunner->Settings->MaxChunkSize = method->numThreads; // needed for overtopping
+        modelRunner->Settings->SaveMessages = true;
         modelRunner->initializeForRun();
         std::shared_ptr<DesignPoint> newResult ( relMethod->getDesignPoint(modelRunner));
 
@@ -132,6 +134,20 @@ void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, const i
         }
 
         ierr->errorCode = 0;
+        for(const auto& message : newResult->Messages)
+        {
+            if (message->Type == Error)
+            {
+                ierr->errorCode = 1;
+                fillErrorMessage(*ierr, message->Text);
+            }
+            else
+            {
+                // TODO: connect to feedback
+                std::cout << message->Text << std::endl;
+            }
+        }
+
         r->beta = newResult->Beta;
         for (size_t i = 0; i < alpha.size(); i++)
         {
