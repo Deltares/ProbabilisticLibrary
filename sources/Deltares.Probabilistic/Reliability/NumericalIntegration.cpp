@@ -3,13 +3,6 @@
 #include "DesignPointBuilder.h"
 #include "../Statistics/StandardNormal.h"
 
-#if __has_include(<format>)
-#include <format>
-#else
-#include "../Utils/probLibString.h"
-#endif
-
-
 namespace Deltares
 {
 	namespace Reliability
@@ -103,25 +96,24 @@ namespace Deltares
 			}
 			uValues.push_back(Statistics::StandardNormal::UMax);
 
-			if (stochastIndex < nStochasts - 1)
-			{
-				// Initialize first probabilities
-				double p = Statistics::StandardNormal::getPFromU(uValues[0]); // probability of non exceeding
-				double q = Statistics::StandardNormal::getQFromU(uValues[0]); // probability of exceeding
+            // Initialize first probabilities
+            Statistics::PQ* pq = Statistics::StandardNormal::getPQFromU(uValues[0]);
 
+		    if (stochastIndex < nStochasts - 1)
+			{
 				double probFailure = 0;
 
 				for (int j = 0; j < uValues.size() - 1; j++)
 				{
 					parentSample->Values[stochastIndex] = (uValues[j] + uValues[j + 1]) / 2;
-					double prevP = p; // probability of non-exceeding
-					double prevQ = q; // probability of exceeding
 
-					p = Statistics::StandardNormal::getPFromU(uValues[j + 1]);
-					q = Statistics::StandardNormal::getQFromU(uValues[j + 1]);
+                    const Statistics::PQ* pqPrev = pq;
+                    pq = Statistics::StandardNormal::getPQFromU(uValues[j + 1]);
 
 					// depending on the value of u(i) use the probabilities of exceeding or the probabilities of non-exceeding
-					const double contribution = parentSample->Values[stochastIndex] < 0 ? p - prevP : prevQ - q;
+					const double contribution = parentSample->Values[stochastIndex] < 0 ? pq->p - pqPrev->p : pqPrev->q - pq->q;
+
+                    delete pqPrev;
 
 					probFailure += getStochastProbability(modelRunner, stochastIndex + 1, parentSample, designPointBuilder, density * contribution, z0Fac, totalDensity);
 
@@ -155,25 +147,21 @@ namespace Deltares
 				// compute the z-value(s)
 				const std::vector<double> zValues = modelRunner->getZValues(samples); // z-value (failure if z < 0)
 
-				// Initialize first probabilities
-				double p = Statistics::StandardNormal::getPFromU(uValues[0]);
-				double q = Statistics::StandardNormal::getQFromU(uValues[0]);
-
 				double probFailure = 0;
 
-				for (int j = 0; j < uValues.size() - 1; j++)
+				for (int j = 0; j < samples.size(); j++)
 				{
 					const std::shared_ptr<Sample> sample = samples[j];
 
 					if (!std::isnan(zValues[j]))
 					{
-						double prevP = p; // probability of non-exceeding
-						double prevQ = q; // probability of non-exceeding
-						p = Statistics::StandardNormal::getPFromU(uValues[j + 1]);
-						q = Statistics::StandardNormal::getQFromU(uValues[j + 1]);
+                        Statistics::PQ* pqPrev = pq;
+                        pq = Statistics::StandardNormal::getPQFromU(uValues[j + 1]);
 
 						// depending on the value of u(i) use the probabilities of exceeding or the probabilities of non-exceeding
-						const double contribution = sample->Values[stochastIndex] < 0 ? p - prevP : prevQ - q;
+						const double contribution = sample->Values[stochastIndex] < 0 ? pq->p - pqPrev->p : pqPrev->q - pq->q;
+
+                        delete pqPrev;
 
 						sample->Weight = density * contribution;
 						totalDensity += sample->Weight;
@@ -192,6 +180,8 @@ namespace Deltares
 						}
 					}
 				}
+
+                delete pq;
 
 				return probFailure;
 			}
