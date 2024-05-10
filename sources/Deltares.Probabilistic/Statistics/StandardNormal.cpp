@@ -148,13 +148,22 @@ namespace Deltares
 			return p;
 		}
 
-		void StandardNormal::getPQfromU(const double u, double& p, double& q)
-		{
-			double pdf;
-			normp(u, p, q, pdf);
-		}
+        void StandardNormal::getPQfromU(const double u, double& p, double& q)
+        {
+            double pdf;
+            normp(u, p, q, pdf);
+        }
 
-		double StandardNormal::getQFromU(double u)
+        PQ* StandardNormal::getPQFromU(const double u)
+        {
+            double pdf;
+            PQ* pq = new PQ();
+            normp(u, pq->p, pq->q, pdf);
+
+            return pq;
+        }
+
+        double StandardNormal::getQFromU(double u)
 		{
 			double p = 0; double q = 0; double pdf = 0;
 
@@ -162,6 +171,11 @@ namespace Deltares
 
 			return q;
 		}
+
+        double StandardNormal::getUFromPQ(const PQ* pq)
+        {
+            return getUFromQ(pq->q);
+        }
 
 		double StandardNormal::getUFromP(const double p)
 		{
