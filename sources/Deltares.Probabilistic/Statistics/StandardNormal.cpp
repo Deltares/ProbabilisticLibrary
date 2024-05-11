@@ -154,11 +154,11 @@ namespace Deltares
             normp(u, p, q, pdf);
         }
 
-        PQ* StandardNormal::getPQFromU(const double u)
+        PQ StandardNormal::getPQFromU(const double u)
         {
             double pdf;
-            PQ* pq = new PQ();
-            normp(u, pq->p, pq->q, pdf);
+            PQ pq = PQ();
+            normp(u, pq.p, pq.q, pdf);
 
             return pq;
         }

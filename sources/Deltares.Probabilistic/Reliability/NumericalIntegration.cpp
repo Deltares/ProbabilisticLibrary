@@ -97,7 +97,7 @@ namespace Deltares
 			uValues.push_back(Statistics::StandardNormal::UMax);
 
             // Initialize first probabilities
-            Statistics::PQ* pq = Statistics::StandardNormal::getPQFromU(uValues[0]);
+            Statistics::PQ pq = Statistics::StandardNormal::getPQFromU(uValues[0]);
 
 		    if (stochastIndex < nStochasts - 1)
 			{
@@ -107,13 +107,11 @@ namespace Deltares
 				{
 					parentSample->Values[stochastIndex] = (uValues[j] + uValues[j + 1]) / 2;
 
-                    const Statistics::PQ* pqPrev = pq;
+                    const Statistics::PQ pqPrev = pq;
                     pq = Statistics::StandardNormal::getPQFromU(uValues[j + 1]);
 
 					// depending on the value of u(i) use the probabilities of exceeding or the probabilities of non-exceeding
-					const double contribution = parentSample->Values[stochastIndex] < 0 ? pq->p - pqPrev->p : pqPrev->q - pq->q;
-
-                    delete pqPrev;
+					const double contribution = parentSample->Values[stochastIndex] < 0 ? pq.p - pqPrev.p : pqPrev.q - pq.q;
 
 					probFailure += getStochastProbability(modelRunner, stochastIndex + 1, parentSample, designPointBuilder, density * contribution, z0Fac, totalDensity);
 
@@ -123,7 +121,7 @@ namespace Deltares
 
 						std::shared_ptr<ReliabilityReport> report = std::make_shared<ReliabilityReport>();
 						report->Step = j;
-						report->MaxSteps = uValues.size();
+						report->MaxSteps = (int)uValues.size();
 						report->Reliability = beta;
 
 						modelRunner->reportResult(report);
@@ -155,13 +153,11 @@ namespace Deltares
 
 					if (!std::isnan(zValues[j]))
 					{
-                        Statistics::PQ* pqPrev = pq;
+                        Statistics::PQ pqPrev = pq;
                         pq = Statistics::StandardNormal::getPQFromU(uValues[j + 1]);
 
 						// depending on the value of u(i) use the probabilities of exceeding or the probabilities of non-exceeding
-						const double contribution = sample->Values[stochastIndex] < 0 ? pq->p - pqPrev->p : pqPrev->q - pq->q;
-
-                        delete pqPrev;
+						const double contribution = sample->Values[stochastIndex] < 0 ? pq.p - pqPrev.p : pqPrev.q - pq.q;
 
 						sample->Weight = density * contribution;
 						totalDensity += sample->Weight;
@@ -180,8 +176,6 @@ namespace Deltares
 						}
 					}
 				}
-
-                delete pq;
 
 				return probFailure;
 			}
