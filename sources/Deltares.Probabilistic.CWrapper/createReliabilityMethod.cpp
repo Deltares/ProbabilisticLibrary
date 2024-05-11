@@ -38,7 +38,7 @@ Deltares::Reliability::ReliabilityMethod* createReliabilityMethod::selectMethod(
 	{
 	case (ProbMethod::NI): {
 		auto ni = new NumericalIntegration();
-        ni->Settings->designPointMethod = DesignPointMethod::NearestToMean;
+        ni->Settings.designPointMethod = DesignPointMethod::NearestToMean;
 		for (size_t i = 0; i < nStoch; i++)
 		{
 			auto s = std::make_shared<StochastSettings>();
@@ -46,10 +46,10 @@ Deltares::Reliability::ReliabilityMethod* createReliabilityMethod::selectMethod(
 			s->Intervals = bs.numExtraInt;
             s->MinValue = bs.numExtraReal1;
             s->MaxValue = bs.numExtraReal2;
-            ni->Settings->StochastSet->stochastSettings.push_back(s);
+            ni->Settings.StochastSet->stochastSettings.push_back(s);
 		}
 		return ni; }
-						 break;
+		break;
 	case (ProbMethod::CM): {
 		auto cm = new CrudeMonteCarlo();
 		std::shared_ptr<RandomSettings> r(getRnd(bs));
@@ -58,30 +58,30 @@ Deltares::Reliability::ReliabilityMethod* createReliabilityMethod::selectMethod(
 		cm->Settings->MinimumSamples = bs.minSamples;
 		cm->Settings->MaximumSamples = bs.maxSamples;
 		return cm; }
-						 break;
+		break;
 	case (ProbMethod::DS): {
 		auto ds = new DirectionalSampling();
 		fillDsSettings(ds->Settings, bs);
 		return ds; }
-						 break;
+		break;
 	case (ProbMethod::FORM): {
 		auto form = new FORM();
 		fillFormSettings(form->Settings, bs, nStoch);
 		return form; }
-						   break;
+		break;
 	case (ProbMethod::FDIR): {
 		auto fdir = new FORMThenDirectionalSampling(bs.numExtraReal1);
 		fillDsSettings(fdir->DsSettings, bs);
 		fillFormSettings(fdir->formSettings, bs, nStoch);
 		return fdir; }
-						   break;
+		break;
 	case (ProbMethod::DSFIHR):
 	case (ProbMethod::DSFI): {
 		auto dsfi = new DirectionalSamplingThenFORM();
 		fillDsSettings(dsfi->DsSettings, bs);
 		fillFormSettings(dsfi->formSettings, bs, nStoch);
 		return dsfi; }
-						   break;
+		break;
 	case (ProbMethod::IM): {
 		auto impSampling = new ImportanceSampling();
 		std::shared_ptr<RandomSettings> r(getRnd(bs));
@@ -97,7 +97,7 @@ Deltares::Reliability::ReliabilityMethod* createReliabilityMethod::selectMethod(
 			impSampling->Settings->StochastSet->stochastSettings.push_back(s);
 		}
 		return impSampling; }
-						 break;
+		break;
 	default:
 		throw probLibException("method not implemented yet: ", (int)bs.methodId);
 		break;

@@ -11,7 +11,7 @@ namespace Deltares
 
 		std::shared_ptr<DesignPoint> NumericalIntegration::getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner)
 		{
-			modelRunner->updateStochastSettings(this->Settings->StochastSet);
+			modelRunner->updateStochastSettings(Settings.StochastSet);
 
 			int nStochasts = modelRunner->getVaryingStochastCount();
 
@@ -50,7 +50,7 @@ namespace Deltares
 			constexpr double density = 1.0; // joint probability density
 			constexpr int stochastIndex = 0; // number of the stochastic parameter
 
-			std::shared_ptr<DesignPointBuilder> designPointBuilder = std::make_shared<DesignPointBuilder>(nStochasts, Settings->designPointMethod, Settings->StochastSet);
+			std::shared_ptr<DesignPointBuilder> designPointBuilder = std::make_shared<DesignPointBuilder>(nStochasts, Settings.designPointMethod, Settings.StochastSet);
 			double totalDensity = 0;
 
 			// Call to the recursive part of the numerical integration computation
@@ -75,12 +75,12 @@ namespace Deltares
 		double NumericalIntegration::getStochastProbability(std::shared_ptr<ModelRunner> modelRunner, int stochastIndex, std::shared_ptr<Sample> parentSample, std::shared_ptr<DesignPointBuilder> designPointBuilder, double density, double z0Fac, double& totalDensity)
 		{
 			const double uDelta = 0.01;
-			const int nStochasts = this->Settings->StochastSet->getVaryingStochastCount();
+			const int nStochasts = Settings.StochastSet->getVaryingStochastCount();
 
 			// Initialize parameters for stochastic parameter u.
-			const int nrIntervals = this->Settings->StochastSet->VaryingStochastSettings[stochastIndex]->Intervals; // number of intervals in u-space as integer
-			const double uMin = this->Settings->StochastSet->VaryingStochastSettings[stochastIndex]->MinValue; // lower bound for u
-			const double uMax = this->Settings->StochastSet->VaryingStochastSettings[stochastIndex]->MaxValue; // upper bound for u
+			const int nrIntervals = Settings.StochastSet->VaryingStochastSettings[stochastIndex]->Intervals; // number of intervals in u-space as integer
+			const double uMin = Settings.StochastSet->VaryingStochastSettings[stochastIndex]->MinValue; // lower bound for u
+			const double uMax = Settings.StochastSet->VaryingStochastSettings[stochastIndex]->MaxValue; // upper bound for u
 			const double rangeU = uMax - uMin;
 
 			// Build up list of u values to be computed
