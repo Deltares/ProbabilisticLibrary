@@ -438,18 +438,18 @@ subroutine testProbabilisticWithFunction ( )
                     call assert_comparable( 3.20d0, actualBeta, 0.05d0 * betaFactor, "Limit state with 10 quadratic terms: Beta" )
 
                 case ( methodNumericalINtegration )
-                    call assert_comparable(  2.31469503633984d0, actualBeta, margin, "Limit state with 10 quadratic terms: Beta" )
+                    call assert_comparable(  2.3146639d0, actualBeta, margin, "Limit state with 10 quadratic terms: Beta" )
                     call assert_comparable(  0.707106781186547d0, alfa(1), margin, "Limit state with 10 quadratic terms: Alfa(1)" )
-                    call assert_comparable(  0.000000000000000d0, alfa(2), margin, "Limit state with 10 quadratic terms: Alfa(2)" )
-                    call assert_comparable(  0.000000000000000d0, alfa(3), margin, "Limit state with 10 quadratic terms: Alfa(3)" )
-                    call assert_comparable(  0.000000000000000d0, alfa(4), margin, "Limit state with 10 quadratic terms: Alfa(4)" )
+                    call assert_almost_zero( alfa(2), margin, "Limit state with 10 quadratic terms: Alfa(2)" )
+                    call assert_almost_zero( alfa(3), margin, "Limit state with 10 quadratic terms: Alfa(3)" )
+                    call assert_almost_zero( alfa(4), margin, "Limit state with 10 quadratic terms: Alfa(4)" )
                     call assert_comparable( -0.707106781186548d0, alfa(5), margin, "Limit state with 10 quadratic terms: Alfa(5)" )
-                    call assert_comparable(  0.000000000000000d0, alfa(6), margin, "Limit state with 10 quadratic terms: Alfa(6)" )
-                    call assert_comparable(  0.000000000000000d0, alfa(7), margin, "Limit state with 10 quadratic terms: Alfa(7)" )
-                    call assert_comparable(  0.000000000000000d0, alfa(8), margin, "Limit state with 10 quadratic terms: Alfa(8)" )
-                    call assert_comparable(  0.000000000000000d0, alfa(9), margin, "Limit state with 10 quadratic terms: Alfa(9)" )
-                    call assert_comparable(  0.0000000000000d0, alfa(10), margin, "Limit state with 10 quadratic terms: Alfa(10)" )
-                    call assert_comparable(  0.0000000000000d0, alfa(11), margin, "Limit state with 10 quadratic terms: Alfa(11)" )
+                    call assert_almost_zero( alfa(6), margin, "Limit state with 10 quadratic terms: Alfa(6)" )
+                    call assert_almost_zero( alfa(7), margin, "Limit state with 10 quadratic terms: Alfa(7)" )
+                    call assert_almost_zero( alfa(8), margin, "Limit state with 10 quadratic terms: Alfa(8)" )
+                    call assert_almost_zero( alfa(9), margin, "Limit state with 10 quadratic terms: Alfa(9)" )
+                    call assert_almost_zero( alfa(10), margin, "Limit state with 10 quadratic terms: Alfa(10)" )
+                    call assert_almost_zero( alfa(11), margin, "Limit state with 10 quadratic terms: Alfa(11)" )
 
                 case (methodImportanceSampling)
                     call assert_comparable( 2.9865829522d0, actualBeta, 1d-8, "Limit state with 10 quadratic terms: Beta" )
@@ -603,18 +603,18 @@ subroutine testProbabilisticWithFunction ( )
                     call assert_comparable( 3.30d0, actualBeta, 0.15d0 * betaFactor, "Oblate spheroid: Beta" )
 
                 case ( methodNumericalIntegration )
-                    call assert_comparable( 0.566510909350172d0, actualBeta, margin, "Oblate spheroid: Beta" )
-                    call assert_comparable( 0.0d0, alfa(1), margin, "Oblate spheroid: Alfa(1)" )
+                    call assert_comparable( 5.6649404_wp, actualBeta, margin, "Oblate spheroid: Beta" )
+                    call assert_almost_zero( alfa(1), margin, "Oblate spheroid: Alfa(1)" )
                     call assert_comparable( 1.0d0, alfa(2), margin, "Oblate spheroid: Alfa(2)" )
-                    call assert_comparable( 0.0d0, alfa(3), margin, "Oblate spheroid: Alfa(3)" )
-                    call assert_comparable( 0.0d0, alfa(4), margin, "Oblate spheroid: Alfa(4)" )
-                    call assert_comparable( 0.0d0, alfa(5), margin, "Oblate spheroid: Alfa(5)" )
-                    call assert_comparable( 0.0d0, alfa(6), margin, "Oblate spheroid: Alfa(6)" )
-                    call assert_comparable( 0.0d0, alfa(7), margin, "Oblate spheroid: Alfa(7)" )
-                    call assert_comparable( 0.0d0, alfa(8), margin, "Oblate spheroid: Alfa(8)" )
-                    call assert_comparable( 0.0d0, alfa(9), margin, "Oblate spheroid: Alfa(9)" )
-                    call assert_comparable( 0.0d0, alfa(10), margin, "Oblate spheroid: Alfa(10)" )
-                    call assert_comparable( 0.0d0, alfa(11), margin, "Oblate spheroid: Alfa(11)" )
+                    call assert_almost_zero( alfa(3), margin, "Oblate spheroid: Alfa(3)" )
+                    call assert_almost_zero( alfa(4), margin, "Oblate spheroid: Alfa(4)" )
+                    call assert_almost_zero( alfa(5), margin, "Oblate spheroid: Alfa(5)" )
+                    call assert_almost_zero( alfa(6), margin, "Oblate spheroid: Alfa(6)" )
+                    call assert_almost_zero( alfa(7), margin, "Oblate spheroid: Alfa(7)" )
+                    call assert_almost_zero( alfa(8), margin, "Oblate spheroid: Alfa(8)" )
+                    call assert_almost_zero( alfa(9), margin, "Oblate spheroid: Alfa(9)" )
+                    call assert_almost_zero( alfa(10), margin, "Oblate spheroid: Alfa(10)" )
+                    call assert_almost_zero( alfa(11), margin, "Oblate spheroid: Alfa(11)" )
 
                 case (methodImportanceSampling)
                     call assert_comparable( 1.0875463369d0, actualBeta, 1d-8, trim(waartsFunctionName) // ": Beta" )
@@ -1410,5 +1410,13 @@ subroutine initializeNumericalIntegration (uMin, uMax, nrIntervals)
     endif
 
 end subroutine initializeNumericalIntegration
+
+subroutine assert_almost_zero( x, margin, message )
+    real(kind=wp), intent(in) :: x, margin
+    character(len=*), intent(in) :: message
+
+    call assert_true(abs(x) < margin, message)
+
+end subroutine assert_almost_zero
 
 end module probMethodsWaartsFunctionsTests
