@@ -16,13 +16,13 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var project = ProjectBuilder.GetLinearProject();
 
-            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
-
             SubsetSimulation subsetSimulation = new SubsetSimulation();
             subsetSimulation.Settings.MarkovChainDeviation = 0.5;
             subsetSimulation.Settings.VariationCoefficientFailure = 0;
 
-            DesignPoint designPoint = subsetSimulation.GetDesignPoint(modelRunner);
+            project.ReliabilityMethod = subsetSimulation;
+
+            DesignPoint designPoint = project.GetDesignPoint();
 
             Assert.AreEqual(2.52, designPoint.Beta, margin);
             Assert.AreEqual(0.005, designPoint.ProbabilityFailure, margin / 10);
@@ -40,14 +40,14 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var project = ProjectBuilder.GetLinearProject();
 
-            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
-
             SubsetSimulation subsetSimulation = new SubsetSimulation();
             subsetSimulation.Settings.MarkovChainDeviation = 0.5;
             subsetSimulation.Settings.VariationCoefficientFailure = 0;
             subsetSimulation.Settings.SampleMethod = SampleMethod.AdaptiveConditional;
 
-            DesignPoint designPoint = subsetSimulation.GetDesignPoint(modelRunner);
+            project.ReliabilityMethod = subsetSimulation;
+
+            DesignPoint designPoint = project.GetDesignPoint();
 
             Assert.AreEqual(2.59, designPoint.Beta, margin);
             Assert.AreEqual(0.005, designPoint.ProbabilityFailure, margin / 10);
@@ -65,13 +65,13 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var project = ProjectBuilder.GetInverseLinearProject();
 
-            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
-
             SubsetSimulation subsetSimulation = new SubsetSimulation();
             subsetSimulation.Settings.MarkovChainDeviation = 0.5;
             subsetSimulation.Settings.VariationCoefficientFailure = 0;
 
-            DesignPoint designPoint = subsetSimulation.GetDesignPoint(modelRunner);
+            project.ReliabilityMethod = subsetSimulation;
+
+            DesignPoint designPoint = project.GetDesignPoint();
 
             Assert.AreEqual(-2.50, designPoint.Beta, margin);
 
@@ -85,9 +85,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestLinearSmallMarkovChain()
         {
-            Project project = ProjectBuilder.GetLinearSmallProject();
-
-            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
+            var project = ProjectBuilder.GetLinearSmallProject();
 
             SubsetSimulation subsetSimulation = new SubsetSimulation();
             subsetSimulation.Settings.MinimumSamples = 500;
@@ -96,7 +94,9 @@ namespace Deltares.Probabilistic.Wrapper.Test
             subsetSimulation.Settings.MarkovChainDeviation = 0.5;
             subsetSimulation.Settings.SampleMethod = SampleMethod.MarkovChain;
 
-            DesignPoint designPoint = subsetSimulation.GetDesignPoint(modelRunner);
+            project.ReliabilityMethod = subsetSimulation;
+
+            DesignPoint designPoint = project.GetDesignPoint();
 
             Assert.AreEqual(3.91, designPoint.Beta, margin);
         }
@@ -104,16 +104,16 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestLinearSmallAdaptiveConditional()
         {
-            Project project = ProjectBuilder.GetLinearSmallProject();
-
-            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
+            var project = ProjectBuilder.GetLinearSmallProject();
 
             SubsetSimulation subsetSimulation = new SubsetSimulation();
             subsetSimulation.Settings.MinimumSamples = 500;
             subsetSimulation.Settings.MaximumSamples = 5000;
             subsetSimulation.Settings.SampleMethod = SampleMethod.AdaptiveConditional;
 
-            DesignPoint designPoint = subsetSimulation.GetDesignPoint(modelRunner);
+            project.ReliabilityMethod = subsetSimulation;
+
+            DesignPoint designPoint = project.GetDesignPoint();
 
             Assert.AreEqual(3.90, designPoint.Beta, margin);
 
@@ -122,14 +122,15 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestManyVars()
         {
-            Project project = ProjectBuilder.GetManyVarsProject();
+            var project = ProjectBuilder.GetManyVarsProject();
 
-            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
             SubsetSimulation subsetSimulation = new SubsetSimulation();
             subsetSimulation.Settings.SampleMethod = SampleMethod.AdaptiveConditional;
             subsetSimulation.Settings.MarkovChainDeviation = 0.5;
 
-            DesignPoint designPoint = subsetSimulation.GetDesignPoint(modelRunner);
+            project.ReliabilityMethod = subsetSimulation;
+
+            DesignPoint designPoint = project.GetDesignPoint();
 
             Assert.AreEqual(3.13, designPoint.Beta, margin);
         }
@@ -137,12 +138,11 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestNonLinear()
         {
-            Project project = ProjectBuilder.GetNonLinearProject();
+            var project = ProjectBuilder.GetNonLinearProject();
 
-            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
-            SubsetSimulation subsetSimulation = new SubsetSimulation();
+            project.ReliabilityMethod = new SubsetSimulation();
 
-            DesignPoint designPoint = subsetSimulation.GetDesignPoint(modelRunner);
+            DesignPoint designPoint = project.GetDesignPoint();
 
             Assert.AreEqual(3.47, designPoint.Beta, margin);
         }

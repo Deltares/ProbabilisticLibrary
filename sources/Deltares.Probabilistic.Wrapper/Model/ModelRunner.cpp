@@ -21,7 +21,7 @@ namespace Deltares
 			typedef void(__stdcall* ZMultipleDelegate) (std::vector<std::shared_ptr<Models::ModelSample>>);
 			typedef double(__stdcall* ZBetaDelegate) (std::shared_ptr<Models::ModelSample>, double beta);
 			typedef bool(__stdcall* ShouldExitNativeDelegate) (bool finalCall);
-			typedef void(__stdcall* RemoveTaskNativeDelegate) (int itertaionIndex);
+			typedef void(__stdcall* RemoveTaskNativeDelegate) (int iterationIndex);
 
 			ModelRunner::ModelRunner(ZSampleDelegate^ zFunction, System::Collections::Generic::List<Stochast^>^ stochasts, CorrelationMatrix^ correlationMatrix, ProgressIndicator^ progressIndicator)
 			{
@@ -106,7 +106,6 @@ namespace Deltares
 			void ModelRunner::invokeSample(std::shared_ptr<Models::ModelSample> sample)
 			{
 				ModelSample^ sampleWrapper = gcnew ModelSample(sample);
-
 				this->CalcZValue(sampleWrapper);
 			}
 

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Deltares.Statistics.Wrappers;
@@ -7,39 +6,6 @@ using Deltares.Models.Wrappers;
 
 namespace Deltares.Probabilistics.Wrappers.Test
 {
-    public class Project
-    {
-        public CorrelationMatrix CorrelationMatrix = new CorrelationMatrix();
-        public List<Stochast> Stochasts = new List<Stochast>();
-        public ZDelegate ZFunction;
-
-        public ZSampleDelegate Function
-        {
-            get
-            {
-                ZSimpleFunction function = new ZSimpleFunction(this.ZFunction);
-                return function.Calculate;
-            }
-        }
-
-        private class ZSimpleFunction
-        {
-            private ZDelegate m;
-
-            public ZSimpleFunction(ZDelegate m)
-            {
-                this.m = m;
-            }
-
-            public void Calculate(ModelSample sample)
-            {
-                ZFunctionOutput output = m.Invoke(sample.Values);
-                sample.Z = output.Z;
-                sample.Tag = output;
-            }
-        }
-    }
-
     public class ProgressHolder
     {
         public int Step { get; private set; }
@@ -78,8 +44,30 @@ namespace Deltares.Probabilistics.Wrappers.Test
         }
     }
 
+    public class ZSampleOutput
+    {
+        private readonly ZDelegate function;
+
+        public ZSampleOutput(ZDelegate function)
+        {
+            this.function = function;
+        }
+
+        public void CalculateSample(ModelSample sample)
+        {
+            ZFunctionOutput output = function.Invoke(sample.Values);
+            sample.Z = output.Z;
+            sample.Tag = output;
+        }
+    }
+
     public static class ProjectBuilder
     {
+        public static ZSampleDelegate SampleDelegate(ZDelegate xDelegate)
+        {
+            return new ZSampleOutput(xDelegate).CalculateSample;
+        }
+
         public static Project GetLinearProject()
         {
             var project = new Project();
@@ -89,7 +77,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
             project.CorrelationMatrix.Initialize(project.Stochasts);
 
-            project.ZFunction = Linear;
+            project.ZFunction = SampleDelegate(Linear);
 
             return project;
         }
@@ -103,7 +91,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
             project.CorrelationMatrix.Initialize(project.Stochasts);
 
-            project.ZFunction = InverseLinear;
+            project.ZFunction = SampleDelegate(InverseLinear);
 
             return project;
         }
@@ -117,7 +105,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
             project.CorrelationMatrix.Initialize(project.Stochasts);
 
-            project.ZFunction = LinearAbsolute;
+            project.ZFunction = SampleDelegate(LinearAbsolute);
 
             return project;
         }
@@ -131,7 +119,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
             project.CorrelationMatrix.Initialize(project.Stochasts);
 
-            project.ZFunction = LinearSmall;
+            project.ZFunction = SampleDelegate(LinearSmall);
 
             return project;
         }
@@ -145,7 +133,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
             project.CorrelationMatrix.Initialize(project.Stochasts);
 
-            project.ZFunction = LinearSmallSlow;
+            project.ZFunction = SampleDelegate(LinearSmallSlow);
 
             return project;
         }
@@ -159,7 +147,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
             project.CorrelationMatrix.Initialize(project.Stochasts);
 
-            project.ZFunction = LinearAbsoluteSmall;
+            project.ZFunction = SampleDelegate(LinearAbsoluteSmall);
 
             return project;
         }
@@ -175,7 +163,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
             project.CorrelationMatrix.Initialize(project.Stochasts);
             project.CorrelationMatrix.SetCorrelation(project.Stochasts[0], project.Stochasts[1], 1);
 
-            project.ZFunction = Linear;
+            project.ZFunction = SampleDelegate(Linear);
 
             return project;
         }
@@ -191,7 +179,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
             project.CorrelationMatrix.Initialize(project.Stochasts);
             project.CorrelationMatrix.SetCorrelation(project.Stochasts[0], project.Stochasts[1], 0.5);
 
-            project.ZFunction = Linear;
+            project.ZFunction = SampleDelegate(Linear);
 
             return project;
         }
@@ -208,7 +196,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
             project.CorrelationMatrix.SetCorrelation(project.Stochasts[0], project.Stochasts[1], -1);
 
-            project.ZFunction = Linear;
+            project.ZFunction = SampleDelegate(Linear);
 
             return project;
         }
@@ -233,7 +221,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
                 project.CorrelationMatrix.SetCorrelation(project.Stochasts[1], project.Stochasts[2], 2);
             }
 
-            project.ZFunction = Linear;
+            project.ZFunction = SampleDelegate(Linear);
 
             return project;
         }
@@ -247,7 +235,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
             project.CorrelationMatrix.Initialize(project.Stochasts);
 
-            project.ZFunction = DoubleLinear;
+            project.ZFunction = SampleDelegate(DoubleLinear);
 
             return project;
         }
@@ -262,7 +250,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
             project.CorrelationMatrix.Initialize(project.Stochasts);
 
-            project.ZFunction = Edge;
+            project.ZFunction = SampleDelegate(Edge);
 
             return project;
         }
@@ -276,7 +264,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
             project.CorrelationMatrix.Initialize(project.Stochasts);
 
-            project.ZFunction = NonLinear;
+            project.ZFunction = SampleDelegate(NonLinear);
 
             return project;
         }
@@ -290,7 +278,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
             project.CorrelationMatrix.Initialize(project.Stochasts);
 
-            project.ZFunction = Block;
+            project.ZFunction = SampleDelegate(Block);
 
             return project;
         }
@@ -304,7 +292,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
             project.CorrelationMatrix.Initialize(project.Stochasts);
 
-            project.ZFunction = SemiBlock;
+            project.ZFunction = SampleDelegate(SemiBlock);
 
             return project;
         }
@@ -318,7 +306,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
             project.CorrelationMatrix.Initialize(project.Stochasts);
 
-            project.ZFunction = LoadStrength;
+            project.ZFunction = SampleDelegate(LoadStrength);
 
             return project;
         }
@@ -333,7 +321,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
             project.CorrelationMatrix.Initialize(project.Stochasts);
 
-            project.ZFunction = LoadStrengthSurvived;
+            project.ZFunction = SampleDelegate(LoadStrengthSurvived);
 
             return project;
         }
@@ -348,7 +336,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
             project.CorrelationMatrix.Initialize(project.Stochasts);
 
-            project.ZFunction = Convex;
+            project.ZFunction = SampleDelegate(Convex);
 
             return project;
         }
@@ -362,7 +350,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
             project.CorrelationMatrix.Initialize(project.Stochasts);
 
-            project.ZFunction = Discontinuous;
+            project.ZFunction = SampleDelegate(Discontinuous);
 
             return project;
         }
@@ -375,7 +363,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
             project.CorrelationMatrix.Initialize(project.Stochasts);
 
-            project.ZFunction = ManyVars;
+            project.ZFunction = SampleDelegate(ManyVars);
 
             return project;
         }
@@ -393,7 +381,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
             project.CorrelationMatrix.Initialize(project.Stochasts);
 
-            project.ZFunction = Noisy;
+            project.ZFunction = SampleDelegate(Noisy);
 
             return project;
         }
@@ -408,7 +396,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
             project.CorrelationMatrix.Initialize(project.Stochasts);
 
-            project.ZFunction = OblateSpheroid;
+            project.ZFunction = SampleDelegate(OblateSpheroid);
 
             return project;
         }
@@ -421,7 +409,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
             project.CorrelationMatrix.Initialize(project.Stochasts);
 
-            project.ZFunction = Parallel;
+            project.ZFunction = SampleDelegate(Parallel);
 
             return project;
         }
@@ -434,7 +422,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
             project.CorrelationMatrix.Initialize(project.Stochasts);
 
-            project.ZFunction = Quadratic;
+            project.ZFunction = SampleDelegate(Quadratic);
 
             return project;
         }
@@ -447,7 +435,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
             project.CorrelationMatrix.Initialize(project.Stochasts);
 
-            project.ZFunction = Saddle;
+            project.ZFunction = SampleDelegate(Saddle);
 
             return project;
         }
@@ -460,7 +448,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
             project.CorrelationMatrix.Initialize(project.Stochasts);
 
-            project.ZFunction = Series;
+            project.ZFunction = SampleDelegate(Series);
 
             return project;
         }
@@ -475,7 +463,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
             project.CorrelationMatrix.Initialize(project.Stochasts);
 
-            project.ZFunction = TwoBranches;
+            project.ZFunction = SampleDelegate(TwoBranches);
 
             return project;
         }
@@ -488,7 +476,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
             project.CorrelationMatrix.Initialize(project.Stochasts);
 
-            project.ZFunction = Wave;
+            project.ZFunction = SampleDelegate(Wave);
 
             return project;
         }
@@ -504,7 +492,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
             project.CorrelationMatrix.Initialize(project.Stochasts);
 
-            project.ZFunction = Bligh;
+            project.ZFunction = SampleDelegate(Bligh);
 
             return project;
         }
@@ -518,7 +506,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
             project.CorrelationMatrix.Initialize(project.Stochasts);
 
-            project.ZFunction = NonVarying;
+            project.ZFunction = SampleDelegate(NonVarying);
 
             return project;
         }
@@ -538,7 +526,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
             project.CorrelationMatrix.Initialize(project.Stochasts);
 
-            project.ZFunction = Discrete;
+            project.ZFunction = SampleDelegate(Discrete);
 
             return project;
         }
@@ -558,7 +546,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
             project.CorrelationMatrix.Initialize(project.Stochasts);
 
-            project.ZFunction = Discrete;
+            project.ZFunction = SampleDelegate(Discrete);
 
             return project;
         }
@@ -588,14 +576,14 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
             project.CorrelationMatrix.Initialize(project.Stochasts);
 
-            project.ZFunction = Linear2;
+            project.ZFunction = SampleDelegate(Linear2);
 
             return project;
         }
 
         private static Stochast GetDeterministicStochast(double mean)
         {
-            return new Stochast { DistributionType = DistributionType.Deterministic,  Mean = mean };
+            return new Stochast { DistributionType = DistributionType.Deterministic, Mean = mean };
         }
 
         private static Stochast GetNormalStochast(double mean = 0, double stdev = 1)
