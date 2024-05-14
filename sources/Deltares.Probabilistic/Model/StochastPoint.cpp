@@ -1,22 +1,35 @@
 #include "StochastPoint.h"
 
+#include "ModelSample.h"
+
 namespace Deltares
 {
 	namespace Models
 	{
-		std::shared_ptr<Sample> StochastPoint::getSample()
-		{
-			std::shared_ptr<Sample> sample = std::make_shared<Sample>(Alphas.size());
+        std::shared_ptr<Sample> StochastPoint::getSample()
+        {
+            std::shared_ptr<Sample> sample = std::make_shared<Sample>(Alphas.size());
 
-			for (size_t i = 0; i < Alphas.size(); i++)
-			{
-				sample->Values[i] = this->Alphas[i]->U;
-			}
+            for (size_t i = 0; i < Alphas.size(); i++)
+            {
+                sample->Values[i] = this->Alphas[i]->U;
+            }
 
-			return sample;
-		}
+            return sample;
+        }
 
-		void StochastPoint::updateInfluenceFactors()
+        std::shared_ptr<ModelSample> StochastPoint::getModelSample()
+        {
+            std::vector<double> values(Alphas.size());
+            for (size_t i = 0; i < Alphas.size(); i++)
+            {
+                values[i] = this->Alphas[i]->X;
+            }
+
+            return std::make_shared<ModelSample>(values);
+        }
+
+        void StochastPoint::updateInfluenceFactors()
 		{
 			double sum = 0;
 			for (size_t i = 0; i < Alphas.size(); i++)
