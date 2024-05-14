@@ -19,15 +19,11 @@ namespace Deltares
 			int MaxMessages = 1000;
 			MessageType LowestMessageType = MessageType::Warning;
 
-			/**
-			 * \brief Settings for performing proxy (surrogate) model runs
-			 */
-			std::shared_ptr<Models::ProxySettings> ProxySettings = std::make_shared<Models::ProxySettings>();
+			std::shared_ptr<ProxySettings> proxySettings = std::make_shared<Models::ProxySettings>();
 
 			bool isValid()
 			{
-				return MaxParallelProcesses >= 1 &&
-					ProxySettings->isValid();
+				return MaxParallelProcesses >= 1;
 			}
 		};
 	}

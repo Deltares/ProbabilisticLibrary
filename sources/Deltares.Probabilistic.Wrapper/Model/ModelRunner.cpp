@@ -20,6 +20,8 @@ namespace Deltares
 			typedef void(__stdcall* ZDelegate) (std::shared_ptr<Models::ModelSample>);
 			typedef void(__stdcall* ZMultipleDelegate) (std::vector<std::shared_ptr<Models::ModelSample>>);
 			typedef double(__stdcall* ZBetaDelegate) (std::shared_ptr<Models::ModelSample>, double beta);
+			typedef bool(__stdcall* ShouldExitNativeDelegate) (bool finalCall);
+			typedef void(__stdcall* RemoveTaskNativeDelegate) (int itertaionIndex);
 
 			ModelRunner::ModelRunner(ZSampleDelegate^ zFunction, System::Collections::Generic::List<Stochast^>^ stochasts, CorrelationMatrix^ correlationMatrix, ProgressIndicator^ progressIndicator)
 			{
@@ -125,6 +127,28 @@ namespace Deltares
 				ModelSample^ sampleWrapper = gcnew ModelSample(sample);
 
 				return this->directionModel->GetBeta(sampleWrapper, beta);
+			}
+
+			void ModelRunner::SetShouldExitDelegate(ShouldExitDelegate^ shouldExitDelegate)
+			{
+				System::Runtime::InteropServices::GCHandle handle = System::Runtime::InteropServices::GCHandle::Alloc(shouldExitDelegate);
+				handles->Add(handle);
+
+				System::IntPtr callbackPtr = System::Runtime::InteropServices::Marshal::GetFunctionPointerForDelegate(shouldExitDelegate);
+				Models::ShouldExitLambda functionPointer = static_cast<ShouldExitNativeDelegate>(callbackPtr.ToPointer());
+
+				shared->object->setShouldExitFunction(functionPointer);
+			}
+
+			void ModelRunner::SetRemoveTaskDelegate(RemoveTaskDelegate^ removeTaskDelegate)
+			{
+				System::Runtime::InteropServices::GCHandle handle = System::Runtime::InteropServices::GCHandle::Alloc(removeTaskDelegate);
+				handles->Add(handle);
+
+				System::IntPtr callbackPtr = System::Runtime::InteropServices::Marshal::GetFunctionPointerForDelegate(removeTaskDelegate);
+				Models::RemoveTaskLambda functionPointer = static_cast<RemoveTaskNativeDelegate>(callbackPtr.ToPointer());
+
+				shared->object->setRemoveTaskFunction(functionPointer);
 			}
 
 			void ModelRunner::CalcZValues(System::Collections::Generic::IList<ModelSample^>^ samples)

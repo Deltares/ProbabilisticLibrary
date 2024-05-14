@@ -56,16 +56,18 @@ namespace Deltares
 					// run max par samples times zrfunc in parallel
 					for (int i = 0; i < runs; i++)
 					{
-						samples.push_back(randomSampleGenerator->getRandomSample());
+						std::shared_ptr<Sample> sample = randomSampleGenerator->getRandomSample();
+						sample->IterationIndex = nmaal + i;
+						samples.push_back(sample);
 					}
 
-					betaValues = getDirectionBetas(modelRunner, samples, z0Fac, nmaal, rmin);
+					betaValues = getDirectionBetas(modelRunner, samples, z0Fac, rmin);
 
 					// check whether restart is needed
 					if (modelRunner->shouldExitPrematurely(samples))
 					{
 						// return the result so far
-						return modelRunner->getDesignPoint(uMin, Statistics::StandardNormal::getUFromQ(pf), convergenceReport);
+						return modelRunner->getDesignPoint(uMean->getSample(), Statistics::StandardNormal::getUFromQ(pf), convergenceReport);
 					}
 
 					parSamples = parSamples + 1;
@@ -84,11 +86,16 @@ namespace Deltares
 				std::shared_ptr<Sample> uSurface = u->getSampleAtBeta(betaDirection);
 
 				// calculate failure probability
-				if (betaDirection >= 0 && betaDirection < Statistics::StandardNormal::BetaMax)
+				if (betaDirection >= 0 && betaDirection < Statistics::StandardNormal::BetaMax * nstochasts)
 				{
 					uSurface->Weight = Deltares::Numeric::SpecialFunctions::getGammaUpperRegularized(0.5 * nstochasts, 0.5 * betaDirection * betaDirection);
 
 					qtot += uSurface->Weight;
+
+					if (uSurface->Weight > 0)
+					{
+						int k = 1;
+					}
 
 					uMean->addSample(uSurface);
 				}
@@ -173,7 +180,7 @@ namespace Deltares
 			return convergence;
 		}
 
-		std::vector<double> DirectionalSampling::getDirectionBetas(std::shared_ptr<Models::ModelRunner> modelRunner, std::vector<std::shared_ptr<Sample>> samples, double z0, int step, double threshold)
+		std::vector<double> DirectionalSampling::getDirectionBetas(std::shared_ptr<Models::ModelRunner> modelRunner, std::vector<std::shared_ptr<Sample>> samples, double z0, double threshold)
 		{
 			auto betaValues = std::vector<double>(samples.size());
 
@@ -184,8 +191,27 @@ namespace Deltares
 			#pragma omp parallel for
 			for (int i = 0; i < (int)samples.size(); i++)
 			{
-				samples[i]->IterationIndex = step + i;
-				betaValues[i] = directionReliability->getBeta(modelRunner, samples[i], z0);
+				// retain previous results from model if running in a proxy model environment
+				if (modelRunner->Settings->proxySettings->IsProxyModel && previousResults.contains(samples[i]->IterationIndex))
+				{
+					betaValues[i] = previousResults[samples[i]->IterationIndex];
+				}
+				else 
+				{
+					betaValues[i] = directionReliability->getBeta(modelRunner, samples[i], z0);
+				}
+			}
+
+			// keep results from non proxy runs when proxies are used for a next run
+			if (modelRunner->Settings->proxySettings->IsProxyModel)
+			{
+				for (size_t i = 0; i < samples.size(); i++)
+				{
+					if (!samples[i]->AllowProxy)
+					{
+						this->previousResults.insert({ samples[i]->IterationIndex, betaValues[i] });
+					}
+				}
 			}
 
 			return betaValues;
