@@ -273,7 +273,10 @@ subroutine testProbabilisticWithFunction ( )
             probDb%method%CMC%seedPRNG = 1
 
             ! Perform computation numberIterations times
+            call initSparseWaartsTestsFunctions(probDb%stovar%maxStochasts, probDb%method%maxParallelThreads)
             call iterateMechanism ( probDb, convergenceData, zLinearResistanceSolicitation, probMethod, alfa, actualBeta, x, conv)
+            call updateCounter(invocationCount)
+            call cleanUpWaartsTestsFunctions
 
             select case (probDb%method%DPoption)
             case (designPointRMinZFunc)
@@ -1043,7 +1046,9 @@ subroutine testDeterministicParameterHasNoInfluence
 
    ! Perform computation numberIterations times
    probDb%method%calcMethod = methodFORM
+   call initSparseWaartsTestsFunctions(probDb%stovar%maxStochasts, probDb%method%maxParallelThreads)
    call calculateLimitStateFunction( probDb, zLinearResistanceSolicitation, alfa, beta, x, conv, convCriterium, convergenceData )
+   call cleanUpWaartsTestsFunctions
 
    call finalizeProbabilisticCalculation(probDb)
 
@@ -1091,7 +1096,10 @@ subroutine testErrorHandlingCalculateLimitStateFunction
    ! Perform computation numberIterations times
    call SetFatalErrorExpected(.true.)
    probDb%method%calcMethod = methodFORM
+   call initSparseWaartsTestsFunctions(probDb%stovar%maxStochasts, probDb%method%maxParallelThreads)
    call calculateLimitStateFunction( probDb, zLinearResistanceSolicitation, alfa, beta, x, conv, convCriterium, convergenceData )
+   call cleanUpWaartsTestsFunctions
+
    call SetFatalErrorExpected(.false.)
    call GetFatalErrorMessage(message)
    call assert_equal(message, 'Fatal error: No stochastic parameters found', '1st message from calculateLimitStateFunction')
@@ -1119,27 +1127,6 @@ subroutine testErrorHandlingCalculateLimitStateFunction
    call finalizeProbabilisticCalculation(probDb)
 
 end subroutine testErrorHandlingCalculateLimitStateFunction
-
-
-!> Linear resistance solicitation function with generic interface
-function zLinearResistanceSolicitation( xDense,  compSetting, ierr ) result(z) bind(c)
-
-    real(kind=wp),            intent(inout) :: xDense(*)
-    type(computationSetting), intent(in   ) :: compSetting
-    type(tError),             intent(inout) :: ierr
-    real(kind=wp)                           :: z
-
-    real(kind=wp) :: x(2)
-
-    ierr%icode = 0
-    if (compSetting%designPointSetting == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
-
-    call copyDense2Full(xDense, x)
-    z = linearResistanceSolicitation( x(1), x(2) )
-
-    invocationCount = invocationCount + 1
-
-end function zLinearResistanceSolicitation
 
 !> Linear resistance solicitation function with generic interface
 function zLinearResistanceSolicitationFixed( x, compSetting, ierr ) result(z) bind(c)
