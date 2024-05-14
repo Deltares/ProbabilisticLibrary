@@ -108,6 +108,7 @@ namespace Deltares
 
 			clonedSample->AllowProxy = this->AllowProxy;
 			clonedSample->IterationIndex = this->IterationIndex;
+			clonedSample->threadId = this->threadId;
 			clonedSample->Weight = this->Weight;
 
 			return clonedSample;

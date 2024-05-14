@@ -1,5 +1,4 @@
 #include "testDistributions.h"
-#include "../../Deltares.Probabilistic/Statistics/Stochast.h"
 
 using namespace Deltares::Statistics;
 
@@ -12,6 +11,9 @@ namespace Deltares
             void testDistributions::allDistributionsTests()
             {
                 testConditionalWeibull();
+                testConditionalWeibullNonIntegerShape();
+                testConditionalWeibullMeanDeviation();
+                testConditionalWeibullCdfPdf();
             }
 
             void testDistributions::testConditionalWeibull()
@@ -24,14 +26,6 @@ namespace Deltares
 
                 std::vector<double> expectedValues = 
                 {
-                    -2.55573190691464,
-                    -2.30997013021024,
-                    -2.03190840230637,
-                    -1.71237406597375,
-                    -1.33796203278021,
-                    -0.888239603990872,
-                    -0.330566071316019,
-                    0.389679340615967,
                     1.36651292058166,
                     2.75588794089519,
                     4.77169994533666,
@@ -42,14 +36,85 @@ namespace Deltares
                     28.3843074961794
                 };
 
-                for (int i = -8; i < 8; i++)
+                for (int i = 0; i < expectedValues.size(); i++)
                 {
-                    auto x = distCondWeibull.getXFromU(i);
-                    EXPECT_NEAR(x, expectedValues[i+8], margin);
+                    auto u = (double)i;
+                    auto x = distCondWeibull.getXFromU(u);
+                    EXPECT_NEAR(x, expectedValues[i], margin);
+                    auto uCalculated = distCondWeibull.getUFromX(x);
+                    EXPECT_NEAR(u, uCalculated, 5.0*margin);
                 }
 
             }
 
+            void testDistributions::testConditionalWeibullNonIntegerShape()
+            {
+                std::shared_ptr< StochastProperties> params = std::make_shared< StochastProperties>();
+                params->Scale = 1.0;
+                params->Shape = 1.001;
+                params->Shift = 1.0;
+                auto distCondWeibull = Stochast(DistributionType::ConditionalWeibull, params);
+
+                for (int i = -8; i < -2; i++)
+                {
+                    auto x = distCondWeibull.getXFromU(i);
+                    EXPECT_NEAR(x, 0.0, margin);
+                }
+            }
+
+            void testDistributions::testConditionalWeibullMeanDeviation()
+            {
+                std::shared_ptr< StochastProperties> params = std::make_shared< StochastProperties>();
+                params->Scale = 1.0;
+                params->Shape = 1.0;
+                params->Shift = 1.0;
+                auto distCondWeibull = Stochast(DistributionType::ConditionalWeibull, params);
+
+                auto mean = distCondWeibull.getMean();
+                EXPECT_NEAR(mean, 1.5956017719, margin);
+                auto deviation = distCondWeibull.getDeviation();
+                EXPECT_NEAR(deviation, 1.2539175933, margin);
+            }
+
+            double testDistributions::getPdfNumerical(Stochast & s, const double x)
+            {
+                const double dx = 1e-4;
+                double p2 = s.getCDF(x + dx);
+                double p1 = s.getCDF(x - dx);
+                double pdf = (p2 - p1) / (2.0 * dx);
+                return pdf;
+            }
+
+            void testDistributions::testConditionalWeibullCdfPdf()
+            {
+                std::shared_ptr< StochastProperties> params = std::make_shared< StochastProperties>();
+                params->Scale = 1.0;
+                params->Shape = 1.0;
+                params->Shift = 1.0;
+                auto distCondWeibull = Stochast(DistributionType::ConditionalWeibull, params);
+
+                std::vector<double> expectedValues = {
+                    0.981851,
+                    0.999877,
+                    0.999999,
+                    1 };
+
+                int ii = 0;
+                for (int i = 1; i < 5; i++)
+                {
+                    double x = (double)(i * 5);
+                    double cdf = distCondWeibull.getCDF(x);
+                    EXPECT_NEAR(cdf, expectedValues[ii++], 1e-4);
+                }
+
+                for (int i = 1; i < 10; i++)
+                {
+                    double x = (double)i;
+                    double pdf = distCondWeibull.getPDF(x);
+                    double expectedPdf = getPdfNumerical(distCondWeibull, x);
+                    EXPECT_NEAR(pdf, expectedPdf, 1e-4);
+                }
+            }
         }
     }
 }

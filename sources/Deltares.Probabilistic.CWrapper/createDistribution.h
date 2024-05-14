@@ -10,6 +10,6 @@ class createDistribution
 public:
     static std::shared_ptr <Deltares::Statistics::Stochast> createValid(const Deltares::Reliability::EnumDistributions distHR, double p[4]);
 private:
-    static void create(std::shared_ptr <Deltares::Statistics::Stochast> &s, const Deltares::Reliability::EnumDistributions d, std::vector<double> p);
+    static std::shared_ptr <Deltares::Statistics::Stochast> create(const Deltares::Reliability::EnumDistributions d, std::vector<double> p);
 };
 

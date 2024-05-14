@@ -9,6 +9,11 @@ module interface_randomgen
     end subroutine initRandomGenerator
   end interface
 
+  interface
+    subroutine cleanupRandomGenerator () bind(c)
+    end subroutine cleanupRandomGenerator
+  end interface
+
   !! This subroutine returns a uniform random deviate between 0.0 and 1.0
   interface
     subroutine getRandomValue (randomValue) bind(c)

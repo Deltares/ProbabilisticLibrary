@@ -9,9 +9,9 @@ using namespace Deltares::ProbLibCore;
 using namespace Deltares::Models;
 using namespace Deltares::Reliability;
 
-Deltares::Models::RandomSettings* createReliabilityMethod::getRnd(const basicSettings& bs)
+std::shared_ptr<RandomSettings> createReliabilityMethod::getRnd(const basicSettings& bs)
 {
-    auto rnd = new RandomSettings();
+    auto rnd = std::make_shared<RandomSettings>();
     switch (bs.rnd)
     {
     case rndTypes::GeorgeMarsaglia:
@@ -30,13 +30,13 @@ Deltares::Models::RandomSettings* createReliabilityMethod::getRnd(const basicSet
     return rnd;
 }
 
-ReliabilityMethod* createReliabilityMethod::selectMethod(const basicSettings& bs, const size_t nStoch)
+std::shared_ptr<ReliabilityMethod> createReliabilityMethod::selectMethod(const basicSettings& bs, const size_t nStoch)
 {
     switch (bs.methodId)
     {
     case (ProbMethod::CM): {
-        auto cm = new CrudeMonteCarlo();
-        std::shared_ptr<RandomSettings> r (getRnd(bs));
+        auto cm = std::make_shared<CrudeMonteCarlo>();
+        auto r = getRnd(bs);
         cm->Settings->randomSettings.swap(r);
         cm->Settings->VariationCoefficient = bs.tolB;
         cm->Settings->MinimumSamples = bs.minSamples;
@@ -44,24 +44,24 @@ ReliabilityMethod* createReliabilityMethod::selectMethod(const basicSettings& bs
         return cm; }
         break;
     case (ProbMethod::DS): {
-        auto ds = new DirectionalSampling();
+        auto ds = std::make_shared<DirectionalSampling>();
         fillDsSettings(ds->Settings, bs);
         return ds; }
         break;
     case (ProbMethod::FORM): {
-        auto form = new FORM();
+        auto form = std::make_shared<FORM>();
         fillFormSettings(form->Settings, bs, nStoch);
         return form; }
         break;
     case (ProbMethod::FDIR): {
-        auto fdir = new FORMThenDirectionalSampling(bs.numExtraReal1);
+        auto fdir = std::make_shared<FORMThenDirectionalSampling>(bs.numExtraReal1);
         fillDsSettings(fdir->DsSettings, bs);
         fillFormSettings(fdir->formSettings, bs, nStoch);
         return fdir; }
         break;
     case (ProbMethod::DSFIHR):
     case (ProbMethod::DSFI): {
-        auto dsfi = new DirectionalSamplingThenFORM();
+        auto dsfi = std::make_shared<DirectionalSamplingThenFORM>();
         fillDsSettings(dsfi->DsSettings, bs);
         fillFormSettings(dsfi->formSettings, bs, nStoch);
         return dsfi; }
