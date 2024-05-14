@@ -1,11 +1,13 @@
 #include "ConditionalWeibullDistribution.h"
 
-#include "../StandardNormal.h"
-#include "../StochastProperties.h"
 #include <cmath>
 
+#include "../StandardNormal.h"
+#include "../StochastProperties.h"
+#include "../../Math/NumericSupport.h"
+#include "../../Math/RootFinders/BisectionRootFinder.h"
 #include "DistributionFitter.h"
-#include "WeibullDistribution.h"
+
 
 namespace Deltares
 {
@@ -13,7 +15,7 @@ namespace Deltares
 	{
 		void ConditionalWeibullDistribution::initialize(std::shared_ptr<StochastProperties> stochast, std::vector<double> values)
 		{
-			throw Deltares::Reliability::probLibException("not implemented");
+            // not supported
 		}
 
 		bool ConditionalWeibullDistribution::isValid(std::shared_ptr<StochastProperties> stochast)
@@ -39,21 +41,23 @@ namespace Deltares
 		double ConditionalWeibullDistribution::getXFromU(std::shared_ptr<StochastProperties> stochast, double u)
 		{
 			const double qMin = 1.0e-300;
-			double p; double q;
-			StandardNormal::getPQfromU(u, p, q);
 
-			if (q == 1.0)
+		    PQ pq = StandardNormal::getPQFromU(u);
+
+			if (pq.q == 1.0)
 			{
 				return stochast->Shift;
 			}
-			double f; // Exceedance frequency
-			if (q <= tresholdF)
+
+			double f; // Exceeding frequency
+
+			if (pq.q <= tresholdF)
 			{
-				f = std::max(q, qMin);
+				f = std::max(pq.q, qMin);
 			}
 			else
 			{
-				double pd = std::max(p, qMin);
+				double pd = std::max(pq.p, qMin);
 				f = -log(pd);
 			}
 
@@ -103,23 +107,52 @@ namespace Deltares
 
 		void ConditionalWeibullDistribution::setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation)
 		{
-			throw Deltares::Reliability::probLibException("not implemented");
-		}
+            if (stochast->Shape != 1.0 || stochast->ShapeB != 1.0)
+            {
+                std::unique_ptr<Numeric::BisectionRootFinder> bisection = std::make_unique<Numeric::BisectionRootFinder>();
+
+                Distribution* distribution = this;
+
+                Numeric::RootFinderMethod method = [stochast, distribution](double s)
+                {
+                    stochast->Scale = s;
+                    return distribution->getMean(stochast);
+                };
+
+                double minStart = 0.5 * stochast->Scale;
+                double maxStart = 1.5 * stochast->Scale;
+
+                stochast->Scale = bisection->CalculateValue(minStart, maxStart, mean, 0.00001, method);
+            }
+        }
 
 		void ConditionalWeibullDistribution::setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
 		{
-			throw Deltares::Reliability::probLibException("not implemented");
-		}
+            setXAtUByIteration(stochast, x, u, constantType);
+        }
 
 		void ConditionalWeibullDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values)
 		{
-			throw Deltares::Reliability::probLibException("not implemented");
-		}
+            stochast->Shift = this->getFittedMinimum(values);
+
+		    std::shared_ptr<DistributionFitter> fitter = std::make_shared<DistributionFitter>();
+
+            std::vector<double> minValues = { 0.5, 0.5, 0.5 };
+            std::vector<double> maxValues = { 1.5, 1.5, 1.5 };
+            std::vector<double> initValues = { 1.0, 1.0, 1.0 };
+            std::vector<DistributionPropertyType> properties = { Scale, Shape, ShapeB };
+            std::vector<double> parameters = fitter->fitByLogLikelihood(values, this, stochast, minValues, maxValues, initValues, properties);
+
+            stochast->Scale = std::max(0.0, parameters[0]);
+            stochast->Shape = std::max(0.0, parameters[1]);
+            stochast->ShapeB = std::max(0.0, parameters[2]);
+        }
 
 		std::vector<double> ConditionalWeibullDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)
 		{
-			throw Deltares::Reliability::probLibException("not implemented");
-		}
+            std::vector<double> specialPoints{ stochast->Shift };
+            return specialPoints;
+        }
 	}
 }
 
