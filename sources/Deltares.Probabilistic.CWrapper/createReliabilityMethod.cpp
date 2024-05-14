@@ -32,12 +32,12 @@ std::shared_ptr<RandomSettings> createReliabilityMethod::getRnd(const basicSetti
 	return rnd;
 }
 
-std::shared_ptr<ReliabilityMethod> createReliabilityMethod::selectMethod(const basicSettings& bs, const size_t nStoch)
+std::shared_ptr<ReliabilityMethod> createReliabilityMethod::selectMethod(const basicSettings& bs, const size_t nStoch, std::vector<std::shared_ptr<Deltares::Statistics::Stochast>>& stochasts)
 {
     switch (bs.methodId)
     {
 	case (ProbMethod::NI): {
-		auto ni = new NumericalIntegration();
+		auto ni = std::make_shared<NumericalIntegration>();
 		for (size_t i = 0; i < nStoch; i++)
 		{
 			auto s = std::make_shared<StochastSettings>();
@@ -80,7 +80,7 @@ std::shared_ptr<ReliabilityMethod> createReliabilityMethod::selectMethod(const b
         return dsfi; }
         break;
 	case (ProbMethod::IM): {
-		auto impSampling = new ImportanceSampling();
+		auto impSampling = std::make_shared<ImportanceSampling>();
 		std::shared_ptr<RandomSettings> r(getRnd(bs));
 		impSampling->Settings->randomSettings.swap(r);
 		impSampling->Settings->VariationCoefficient = bs.tolB;

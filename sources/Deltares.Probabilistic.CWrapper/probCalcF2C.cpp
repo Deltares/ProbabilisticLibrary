@@ -92,7 +92,7 @@ void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, corrStr
         }
 
         auto createRelM = createReliabilityMethod();
-        auto relMethod = createRelM.selectMethod(*method, nStoch);
+        auto relMethod = createRelM.selectMethod(*method, nStoch, stochasts);
         auto zModel = std::make_shared<ZModel>([&fw](std::shared_ptr<ModelSample> v) { return fw.FDelegate(v); },
                                                [&fw](std::vector<std::shared_ptr<ModelSample>> v) { return fw.FDelegateParallel(v); });
         auto corr = std::make_shared<CorrelationMatrix>();
@@ -104,7 +104,7 @@ void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, corrStr
                 corr->SetCorrelation(correlations[i].idx1, correlations[i].idx2, correlations[i].correlation);
             }
         }
-        auto uConverter = std::make_shared<UConverter>(stochast, corr);
+        auto uConverter = std::make_shared<UConverter>(stochasts, corr);
         auto pw = progressWrapper(pc, relMethod.get());
         auto progressDelegate = ProgressLambda();
         auto detailedProgressDelegate = DetailedProgressLambda();
