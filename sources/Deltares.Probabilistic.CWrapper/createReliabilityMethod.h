@@ -9,9 +9,10 @@
 class createReliabilityMethod
 {
 public:
-    Deltares::Reliability::ReliabilityMethod* selectMethod(const Deltares::ProbLibCore::basicSettings& bs, const size_t nStoch, std::vector<std::shared_ptr<Deltares::Statistics::Stochast>>& stochasts);
+    std::shared_ptr<Deltares::Reliability::ReliabilityMethod> selectMethod(const Deltares::ProbLibCore::basicSettings& bs, const size_t nStoch);
+
 private:
-    Deltares::Models::RandomSettings* getRnd(const Deltares::ProbLibCore::basicSettings& bs);
+    std::shared_ptr<Deltares::Models::RandomSettings> getRnd(const Deltares::ProbLibCore::basicSettings& bs);
     std::vector<double> copyStartVector(const double startVector[], const size_t nStoch);
     void fillFormSettings(std::shared_ptr<Deltares::Reliability::FORMSettings>& Settings, const Deltares::ProbLibCore::basicSettings& bs, const size_t nStoch);
     void fillDsSettings(std::shared_ptr<Deltares::Reliability::DirectionalSamplingSettings>& Settings, const Deltares::ProbLibCore::basicSettings& bs);
