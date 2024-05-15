@@ -172,7 +172,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
             Assert.AreEqual(2.54, designPoint.Beta, margin);
         }
 
-        [Test] 
+        [Test]
         public void TestLinearManySamples()
         {
             var project = ProjectBuilder.GetLinearProject();
@@ -185,9 +185,9 @@ namespace Deltares.Probabilistics.Wrappers.Test
             CrudeMonteCarlo monteCarlo = new CrudeMonteCarlo();
             monteCarlo.Settings.MinimumSamples = 100000;
             monteCarlo.Settings.MaximumSamples = monteCarlo.Settings.MinimumSamples;
+            monteCarlo.Settings.RandomSettings.RandomGeneratorType = RandomGeneratorType.MersenneTwister;
 
             DesignPoint designPoint = monteCarlo.GetDesignPoint(modelRunner);
-            //var designPoint = Reliability.GetDesignPoint(monteCarlo, project.ZFunction, project.Stochasts);
 
             Assert.AreEqual(2.57, designPoint.Beta, margin);
 
