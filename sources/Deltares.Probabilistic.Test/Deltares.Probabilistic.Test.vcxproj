@@ -107,19 +107,26 @@
     <ClInclude Include="Combin\hohenbichler_tests.h" />
     <ClInclude Include="Combin\intEqualElements_tests.h" />
     <ClInclude Include="Combin\upscale_tests.h" />
+    <ClInclude Include="Combin\combinElements_tests.cpp" />
+    <ClInclude Include="Combin\hohenbichlerCombiner_tests.cpp" />
+    <ClInclude Include="Combin\hohenbichler_tests.cpp" />
+    <ClInclude Include="Combin\intEqualElements_tests.cpp" />
+    <ClInclude Include="Combin\upscale_tests.cpp" />
     <ClInclude Include="Distributions\testDistributions.h" />
+    <ClInclude Include="Distributions\testDistributions_body.cpp" />
     <ClInclude Include="Math\testNumericSupport.h" />
+    <ClInclude Include="Math\testNumericSupport_body.cpp" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="projectBuilder.h" />
+    <ClInclude Include="projectBuilder_body.cpp" />
     <ClInclude Include="Reliability\testStartPointCalculator.h" />
+    <ClInclude Include="Reliability\testStartPointCalculator_body.cpp" />
     <ClInclude Include="Utils\testutils.h" />
+    <ClInclude Include="Utils\testutils_body.cpp" />
+    <ClInclude Include="unittests_body.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Combin\combinElements_tests.cpp" />
-    <ClCompile Include="Combin\hohenbichlerCombiner_tests.cpp" />
-    <ClCompile Include="Combin\hohenbichler_tests.cpp" />
-    <ClCompile Include="Combin\intEqualElements_tests.cpp" />
-    <ClCompile Include="Combin\upscale_tests.cpp" />
+    <ClCompile Include="Combin\all_combin_tests.cpp" />
     <ClCompile Include="Distributions\testDistributions.cpp" />
     <ClCompile Include="Math\testNumericSupport.cpp" />
     <ClCompile Include="pch.cpp">

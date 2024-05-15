@@ -1,4 +1,3 @@
-#include "pch.h"
 #include "gtest/gtest.h"
 #include <math.h>
 #include "combinElements_tests.h"
