@@ -15,12 +15,10 @@ using namespace Deltares::ProbLibCore;
 using namespace Deltares::Models;
 using namespace Deltares::Reliability;
 using namespace Deltares::Numeric;
-
-const size_t lenSmallStr = 32;
+using namespace Deltares::Statistics;
 
 struct fdistribs
 {
-    char name[lenSmallStr];
     int distId;
     double params[4];
 };
@@ -35,15 +33,15 @@ struct tResult
     bool convergence;
 };
 
-void updateX(const vector1D & alpha, const DPoptions option, tResult & r, const std::shared_ptr<DesignPoint> & newResult,
-    const size_t vectorSize, double x[], funcWrapper fw)
+void updateX(const std::vector<std::shared_ptr<StochastPointAlpha>> & alpha, const DPoptions option, tResult & r, const std::shared_ptr<DesignPoint> & newResult,
+    double x[], funcWrapper fw)
 {
     if (alpha.size() <= maxActiveStochast)
     {
         switch (option) {
         case DPoptions::None:
         {
-            for (size_t i = 0; i < vectorSize; i++)
+            for (size_t i = 0; i < alpha.size(); i++)
             {
                 x[i] = 0.0;
             }
@@ -57,7 +55,11 @@ void updateX(const vector1D & alpha, const DPoptions option, tResult & r, const 
             {
                 xSparse.push_back(newResult->Alphas[i]->X);
             }
-            fw.updateXinDesignPoint(xSparse, x);
+            fw.updateXinDesignPoint(xSparse);
+            for (size_t i = 0; i < alpha.size(); i++)
+            {
+                x[i] = xSparse[i];
+            }
         }
         break;
         default:
@@ -72,26 +74,15 @@ void updateX(const vector1D & alpha, const DPoptions option, tResult & r, const 
 }
 
 extern "C"
-void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, const int vectorSize,
-    corrStruct correlations[], const int nrCorrelations,
+void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, corrStruct correlations[], const int nrCorrelations,
     const double(*fx)(double[], computationSettings*, tError*),
     const bool(*pc)(ProgressType, const char*),
-    const int compIds[], const int iPointArr[], double x[], tResult* r, tError* ierr)
+    const int compIds[], double x[], tResult* r, tError* ierr)
 {
     try
     {
         auto nStoch = (size_t)n;
-        auto iPoint = std::vector<int>();
-        for (size_t i = 0; i < nStoch; i++)
-        {
-            iPoint.push_back(iPointArr[i]);
-        }
-        auto xInitial = std::vector<double>();
-        for (size_t i = 0; i < vectorSize; i++)
-        {
-            xInitial.push_back(x[i]);
-        }
-        auto fw = funcWrapper(iPoint, xInitial, compIds[0], fx);
+        auto fw = funcWrapper(compIds[0], fx);
 
         auto stochasts = std::vector<std::shared_ptr<Deltares::Statistics::Stochast>>();
         for (size_t i = 0; i < nStoch; i++)
@@ -102,10 +93,10 @@ void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, const i
         }
 
         auto createRelM = createReliabilityMethod();
-        std::shared_ptr<ReliabilityMethod> relMethod(createRelM.selectMethod(*method, nStoch, stochasts));
-        std::shared_ptr<ZModel> zModel(new ZModel([&fw](std::shared_ptr<ModelSample> v) { return fw.FDelegate(v); },
-                                                  [&fw](std::vector<std::shared_ptr<ModelSample>> v) { return fw.FDelegateParallel(v); }));
-        std::shared_ptr<Deltares::Statistics::CorrelationMatrix> corr(new Deltares::Statistics::CorrelationMatrix());
+        auto relMethod = createRelM.selectMethod(*method, nStoch);
+        auto zModel = std::make_shared<ZModel>([&fw](std::shared_ptr<ModelSample> v) { return fw.FDelegate(v); },
+                                               [&fw](std::vector<std::shared_ptr<ModelSample>> v) { return fw.FDelegateParallel(v); });
+        auto corr = std::make_shared<CorrelationMatrix>();
         if (nrCorrelations > 0)
         {
             corr->init(n);
@@ -119,19 +110,14 @@ void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, const i
         auto progressDelegate = ProgressLambda();
         auto detailedProgressDelegate = DetailedProgressLambda();
         auto textualProgress = TextualProgressLambda([&pw](ProgressType p, std::string s) {pw.FPgDelegate(p, s); });
-        std::shared_ptr<ProgressIndicator> progress (new ProgressIndicator(progressDelegate, detailedProgressDelegate, textualProgress));
-        std::shared_ptr<ModelRunner> modelRunner(new ModelRunner(zModel, uConverter, progress));
+        auto progress = std::make_shared<ProgressIndicator>(progressDelegate, detailedProgressDelegate, textualProgress);
+        auto modelRunner = std::make_shared<ModelRunner>(zModel, uConverter, progress);
         modelRunner->Settings->MaxParallelProcesses = method->numThreads;
+        modelRunner->Settings->MaxChunkSize = method->chunkSize;
         modelRunner->Settings->MaxChunkSize = method->numThreads; // needed for overtopping
         modelRunner->Settings->SaveMessages = true;
         modelRunner->initializeForRun();
-        std::shared_ptr<DesignPoint> newResult ( relMethod->getDesignPoint(modelRunner));
-
-        auto alpha = vector1D(newResult->Alphas.size());
-        for (size_t i = 0; i < alpha.size(); i++)
-        {
-            alpha(i) = newResult->Alphas[i]->Alpha;
-        }
+        auto newResult = relMethod->getDesignPoint(modelRunner);
 
         ierr->errorCode = 0;
         for(const auto& message : newResult->Messages)
@@ -149,12 +135,12 @@ void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, const i
         }
 
         r->beta = newResult->Beta;
-        for (size_t i = 0; i < alpha.size(); i++)
+        for (size_t i = 0; i < nStoch; i++)
         {
-            r->alpha[i] = alpha(i);
+            r->alpha[i] = newResult->Alphas[i]->Alpha;
         }
 
-        updateX(alpha, method->designPointOptions, *r, newResult, vectorSize, x, fw);
+        updateX(newResult->Alphas, method->designPointOptions, *r, newResult, x, fw);
 
         for (int i = 0; i < n; i++)
         {

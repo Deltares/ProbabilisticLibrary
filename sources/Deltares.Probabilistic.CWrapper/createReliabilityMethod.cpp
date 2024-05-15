@@ -11,23 +11,23 @@ using namespace Deltares::ProbLibCore;
 using namespace Deltares::Models;
 using namespace Deltares::Reliability;
 
-Deltares::Models::RandomSettings* createReliabilityMethod::getRnd(const basicSettings& bs)
+std::shared_ptr<RandomSettings> createReliabilityMethod::getRnd(const basicSettings& bs)
 {
-	auto rnd = new RandomSettings();
-	switch (bs.rnd)
-	{
-	case rndTypes::GeorgeMarsaglia:
-		rnd->RandomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::GeorgeMarsaglia;
-		break;
-	case rndTypes::MersenneTwister:
-		rnd->RandomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::MersenneTwister;
-		break;
-	default:
-		throw probLibException("ModifiedKnuthSubtractive not implemented in C wrapper");
-		break;
-	}
-	rnd->Seed = bs.seed1;
-	rnd->SeedB = bs.seed2;
+    auto rnd = std::make_shared<RandomSettings>();
+    switch (bs.rnd)
+    {
+    case rndTypes::GeorgeMarsaglia:
+        rnd->RandomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::GeorgeMarsaglia;
+        break;
+    case rndTypes::MersenneTwister:
+        rnd->RandomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::MersenneTwister;
+        break;
+    default:
+        throw probLibException("ModifiedKnuthSubtractive not implemented in C wrapper");
+        break;
+    }
+    rnd->Seed = bs.seed1;
+    rnd->SeedB = bs.seed2;
 
 	return rnd;
 }

@@ -25,17 +25,11 @@ typedef std::function<double(double[], computationSettings*, tError*)> zFuncExte
 class funcWrapper
 {
 public:
-    funcWrapper(const std::vector<int> & ip, const std::vector<double> & x, const int id, zFuncExtern func) :
-        allStoch(x.size()), iPointer(ip), xRef(x), compId(id), zfunc(func) { ; }
+    funcWrapper(const int id, zFuncExtern func) : compId(id), zfunc(func) { ; }
     void FDelegate(std::shared_ptr<Deltares::Models::ModelSample> s);
     void FDelegateParallel(std::vector<std::shared_ptr<Deltares::Models::ModelSample>> s);
-    void updateXinDesignPoint(const std::vector<double> & x, double xx[]);
+    void updateXinDesignPoint(std::vector<double> & x);
 private:
-    void copyXvector(double x[], const std::shared_ptr<Deltares::Models::ModelSample> s) const;
-    void copyXvector(double x[], const std::vector<double> & s) const;
-    const size_t allStoch;
-    const std::vector<int> & iPointer;
-    const std::vector<double> & xRef;
     const int compId;
     zFuncExtern zfunc;
 }

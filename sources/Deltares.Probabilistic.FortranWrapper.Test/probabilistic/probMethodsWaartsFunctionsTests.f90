@@ -35,6 +35,7 @@ module probMethodsWaartsFunctionsTests
     use interface_probCalcData
     use interface_distributions
     use waartsFunctions
+    use sparseWaartsTestFunctions
 
     implicit none
 
@@ -272,7 +273,10 @@ subroutine testProbabilisticWithFunction ( )
             probDb%method%CMC%seedPRNG = 1
 
             ! Perform computation numberIterations times
+            call initSparseWaartsTestsFunctions(probDb%stovar%maxStochasts, probDb%method%maxParallelThreads)
             call iterateMechanism ( probDb, convergenceData, zLinearResistanceSolicitation, probMethod, alfa, actualBeta, x, conv)
+            call updateCounter(invocationCount)
+            call cleanUpWaartsTestsFunctions
 
             select case (probDb%method%DPoption)
             case (designPointRMinZFunc)
@@ -503,8 +507,11 @@ subroutine testProbabilisticWithFunction ( )
             if (waartsFunction == 5) then
                 call iterateMechanism( probDb, convergenceData, zLimitState25QuadraticTerms, probMethod, alfa, actualBeta, x, conv)
             else
+                call initSparseWaartsTestsFunctions(probDb%stovar%maxStochasts, probDb%method%maxParallelThreads)
                 call iterateMechanism( probDb, convergenceData, zLimitState25QuadraticTermsSparse, &
                         probMethod, alfa, actualBeta, x, conv)
+                call updateCounter(invocationCount)
+                call cleanUpWaartsTestsFunctions
             endif
 
             select case (probMethod)
@@ -596,7 +603,10 @@ subroutine testProbabilisticWithFunction ( )
             probDb%method%FORM%startMethod = fORMStartOne
 
             ! Perform computation numberIterations times
+            call initSparseWaartsTestsFunctions(probDb%stovar%maxStochasts, probDb%method%maxParallelThreads)
             call iterateMechanism (probDb, convergenceData, zOblateSpheroid, probMethod, alfa, actualBeta, x, conv)
+            call updateCounter(invocationCount)
+            call cleanUpWaartsTestsFunctions
 
             select case (probMethod)
                 case ( methodFORM )
@@ -1036,7 +1046,9 @@ subroutine testDeterministicParameterHasNoInfluence
 
    ! Perform computation numberIterations times
    probDb%method%calcMethod = methodFORM
+   call initSparseWaartsTestsFunctions(probDb%stovar%maxStochasts, probDb%method%maxParallelThreads)
    call calculateLimitStateFunction( probDb, zLinearResistanceSolicitation, alfa, beta, x, conv, convCriterium, convergenceData )
+   call cleanUpWaartsTestsFunctions
 
    call finalizeProbabilisticCalculation(probDb)
 
@@ -1084,7 +1096,10 @@ subroutine testErrorHandlingCalculateLimitStateFunction
    ! Perform computation numberIterations times
    call SetFatalErrorExpected(.true.)
    probDb%method%calcMethod = methodFORM
+   call initSparseWaartsTestsFunctions(probDb%stovar%maxStochasts, probDb%method%maxParallelThreads)
    call calculateLimitStateFunction( probDb, zLinearResistanceSolicitation, alfa, beta, x, conv, convCriterium, convergenceData )
+   call cleanUpWaartsTestsFunctions
+
    call SetFatalErrorExpected(.false.)
    call GetFatalErrorMessage(message)
    call assert_equal(message, 'Fatal error: No stochastic parameters found', '1st message from calculateLimitStateFunction')
@@ -1112,24 +1127,6 @@ subroutine testErrorHandlingCalculateLimitStateFunction
    call finalizeProbabilisticCalculation(probDb)
 
 end subroutine testErrorHandlingCalculateLimitStateFunction
-
-
-!> Linear resistance solicitation function with generic interface
-function zLinearResistanceSolicitation( x,  compSetting, ierr ) result(z) bind(c)
-
-    real(kind=wp),            intent(inout) :: x(*)
-    type(computationSetting), intent(in   ) :: compSetting
-    type(tError),             intent(inout) :: ierr
-    real(kind=wp)                           :: z
-
-    ierr%icode = 0
-    if (compSetting%designPointSetting == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
-
-    z = linearResistanceSolicitation( x(1), x(2) )
-
-    invocationCount = invocationCount + 1
-
-end function zLinearResistanceSolicitation
 
 !> Linear resistance solicitation function with generic interface
 function zLinearResistanceSolicitationFixed( x, compSetting, ierr ) result(z) bind(c)
@@ -1220,24 +1217,6 @@ function zLimitState25QuadraticTerms( x, compSetting, ierr ) result(z) bind(c)
 
 end function zLimitState25QuadraticTerms
 
-!> Limit state function with 25 quadratic terms sparse with generic interface
-function zLimitState25QuadraticTermsSparse( x, compSetting, ierr ) result(z) bind(c)
-
-    real(kind=wp),            intent(inout) :: x(*)
-    type(computationSetting), intent(in   ) :: compSetting
-    type(tError),             intent(inout) :: ierr
-    real(kind=wp)                           :: z
-
-    ierr%icode = 0
-    if (compSetting%designPointSetting == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
-
-    z = limitState25QuadraticTerms( x ( 30 ), x ( 3 : 27)  )
-
-    invocationCount = invocationCount + 1
-
-end function zLimitState25QuadraticTermsSparse
-
-
 !> Convex failure domain with generic interface
 function zConvexFailureDomain( x, compSetting, ierr ) result(z) bind(c)
 
@@ -1254,25 +1233,6 @@ function zConvexFailureDomain( x, compSetting, ierr ) result(z) bind(c)
     invocationCount = invocationCount + 1
 
 end function zConvexFailureDomain
-
-
-!> Oblate spheroid with generic interface
-function zOblateSpheroid( x, compSetting, ierr ) result(z) bind(c)
-
-    real(kind=wp),            intent(inout) :: x(*)
-    type(computationSetting), intent(in   ) :: compSetting
-    type(tError),             intent(inout) :: ierr
-    real(kind=wp)                           :: z
-
-    ierr%icode = 0
-    if (compSetting%designPointSetting == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
-
-    z = oblateSpheroid( x ( 1 ), x ( 2 : 11 )  )
-
-    invocationCount = invocationCount + 1
-
-end function zOblateSpheroid
-
 
 !> Saddle surface with generic interface
 function zSaddleSurface( x, compSetting, ierr ) result(z) bind(c)

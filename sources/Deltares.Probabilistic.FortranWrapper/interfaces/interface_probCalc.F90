@@ -7,7 +7,6 @@ module interface_probCalc
   use f2c_tools
   implicit none
 
-  integer, parameter :: sizeSmallStr = 32
   integer, parameter :: maxActiveStochast = 32
 
   integer, parameter :: stochastNotActive                             = -1
@@ -34,6 +33,10 @@ module interface_probCalc
 
   logical :: userAborted = .false.
 
+  integer, allocatable :: iPoint(:) ! Pointer to active variables used in the limit state function
+  integer :: nStochActive
+  real(kind=wp), allocatable :: xHR(:)
+
   type, public, bind(c) :: basicCorrelation
     integer       :: first                !< Index of the first stochastic variable
     integer       :: second               !< Index of the second stochastic variable
@@ -41,7 +44,6 @@ module interface_probCalc
   end type basicCorrelation
 
   type, public, bind(c) :: tdistrib
-    character(len=1)    :: name(sizeSmallStr)
     integer             :: distributionId
     real(kind=c_double) :: params(4)
   end type tdistrib
@@ -258,8 +260,8 @@ module interface_probCalc
   end interface
 
   interface
-    subroutine probCalcF2C(method, distribs, nstoch, vectorSize, correlations, nrCorrelations, fx, pc, &
-        compIds, iPoint, x, rn, ierr) bind(C)
+    subroutine probCalcF2C(method, distribs, nstoch, correlations, nrCorrelations, fx, pc, &
+        compIds, x, rn, ierr) bind(C)
       use, intrinsic :: iso_c_binding, only: c_double
 #ifdef _MSC_VER
       import tMethod, tDistrib, basicCorrelation, tError, tResult, zfunc, progressCancel
@@ -269,11 +271,9 @@ module interface_probCalc
       type(tMethod),  intent(in)    :: method
       type(tDistrib), intent(in)    :: distribs(*)
       integer, value, intent(in)    :: nstoch
-      integer, value, intent(in)    :: vectorSize
       type(basicCorrelation), intent(in)  :: correlations(*)
       integer, value, intent(in)    :: nrCorrelations
       integer,        intent(in)    :: compIds(*)
-      integer,        intent(in)    :: iPoint(*)
       procedure(zfunc)              :: fx
       procedure(progressCancel)     :: pc
       real(kind=c_double), intent(inout) :: x(*)
@@ -296,6 +296,31 @@ function textualProgress(progress, str) result(cancel) bind(c)
     cancel = userAborted
 end function textualProgress
 
+!> copy x-vector from problib to Hydra-Ring
+subroutine copyDense2Full(xDense, xFull)
+    real(kind=wp), intent(in) :: xDense(*)
+    real(kind=wp), intent(inout) :: xFull(:)
+
+    integer :: i
+
+    xFull = xHR
+    do i = 1, nStochActive
+        xFull(iPoint(i)) = xDense(i)
+    end do
+end subroutine copyDense2Full
+
+!> copy x-vector from Hydra-Ring to problib
+subroutine copyFull2Dense(xFull, xDense)
+    real(kind=wp), intent(in   ) :: xFull(:)
+    real(kind=wp), intent(inout) :: xDense(*)
+
+    integer :: i
+
+    do i = 1, nStochActive
+        xDense(i) = xFull(iPoint(i))
+    end do
+end subroutine copyFull2Dense
+
 !>
 !! Subroutine for the calculation of a limit state function
 subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, conv, convCriterium, convergenceData, pc)
@@ -310,17 +335,17 @@ subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, conv, convCri
     type(storedConvergenceData), intent(inout) :: convergenceData  !< struct holding all convergence data
     procedure(progressCancel),    optional     :: pc               !< progress function
 
-    integer, allocatable        :: iPointMax(:), iPointCpp(:)    ! Temporary max length Pointer to active variables used in the limit state function
-
     type(tMethod)               :: method
     type(tDistrib)              :: distribs(probDb%stoVar%maxStochasts)
-    integer                     :: i, nStochActive, k, nstoch
+    integer                     :: i, k, nstoch
     integer                     :: compIds(1) = designPointOutputFALSE
     type(tError)                :: ierr
     type(tResult)               :: rn
     character(len=ErrMsgLength) :: msg
+    real(kind=wp), allocatable  :: xDense(:)
 
-    call realloc_check (iPointMax, probDb%stoVar%maxStochasts, "ipointMax" )
+    call realloc_check (iPoint, probDb%stoVar%maxStochasts, "ipoint" )
+    call realloc_check (xHR, probDb%stoVar%maxStochasts, "xHR" )
 
     method%methodId   = probDb%method%calcMethod
     method%tolA       = probDb%method%FORM%epsilonBeta
@@ -383,33 +408,31 @@ subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, conv, convCri
             x(i) = probDb%stovar%distparameterx(i,1)
         else if (probDb%stovar%activex(i) == stochastActive) then
             nStochActive = nStochActive + 1
-            call copystr("var1", distribs(i)%name)
             distribs(nStochActive)%distributionId = probDb%stovar%disttypex(i)
             distribs(nStochActive)%params = probDb%stovar%distparameterx(i,:)
-            iPointMax(nStochActive) = i
+            iPoint(nStochActive) = i
         end if
     end do
+
+    xHR = x
 
     method%designPointOption = probDb%method%dpOption
     method%numThreads        = probDb%method%maxParallelThreads
     method%rnd = GeorgeMarsaglia
+    allocate(xDense(nStochActive))
 
-    call convertStartMethod(probDb, method, iPointMax(1:nStochActive))
-    allocate(iPointCpp(nStochActive))
-    do i = 1, nStochActive
-        iPointCpp(i) = iPointMax(i) - 1  ! Fortran->C
-    end do
+    call convertStartMethod(probDb, method, iPoint(1:nStochActive))
 
     if (method%iterationMethod <= 0 .or. method%iterationMethod > 9 .or. method%iterationMethod == 7) then
         call fatalError("Unknown method in subroutine IterationDS: ", method%iterationMethod)
     else if (nstoch > 0) then
         method%progressInterval = 1
         if (present(pc)) then
-            call probCalcF2C(method, distribs, nStochActive, nStoch, probDb%basic_correlation, &
-                probDb%number_correlations, fx, pc, compIds, iPointCpp, x, rn, ierr)
+            call probCalcF2C(method, distribs, nStochActive, probDb%basic_correlation, &
+                probDb%number_correlations, fx, pc, compIds, xDense, rn, ierr)
         else
-            call probCalcF2C(method, distribs, nStochActive, nStoch, probDb%basic_correlation, &
-                probDb%number_correlations, fx, textualProgress, compIds, iPointCpp, x, rn, ierr)
+            call probCalcF2C(method, distribs, nStochActive, probDb%basic_correlation, &
+                probDb%number_correlations, fx, textualProgress, compIds, xDense, rn, ierr)
         end if
 
         if (ierr%iCode /= 0) then
@@ -417,10 +440,11 @@ subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, conv, convCri
             call fatalError(msg)
             x = 0.0_wp
         else
+            call copyDense2Full(xDense, x)
             beta = rn%beta
             alfaN = 0.0_wp
             do k = 1, nStochActive
-                alfaN(iPointMax(k)) = rn%alpha(k)
+                alfaN(iPoint(k)) = rn%alpha(k)
             end do
             if (method%methodId == methodFORMandDirSampling .and. rn%samplesNeeded > 0) then
                 ! to get logging in output.txt right; as we have samples, Form did not succeed (no convergence or beta out of range)

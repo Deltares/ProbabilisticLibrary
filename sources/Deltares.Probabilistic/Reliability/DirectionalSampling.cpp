@@ -189,7 +189,7 @@ namespace Deltares
 			directionReliability->Threshold = threshold;
 
 			#pragma omp parallel for
-			for (int i = 0; i < samples.size(); i++)
+			for (int i = 0; i < (int)samples.size(); i++)
 			{
 				// retain previous results from model if running in a proxy model environment
 				if (modelRunner->Settings->proxySettings->IsProxyModel && previousResults.contains(samples[i]->IterationIndex))
