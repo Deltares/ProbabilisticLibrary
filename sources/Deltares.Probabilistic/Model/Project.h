@@ -2,7 +2,7 @@
 #include <vector>
 
 #include "../Statistics/Stochast.h"
-#include "../Statistics/Correlationmatrix.h"
+#include "../Statistics/CorrelationMatrix.h"
 #include "../Reliability/ReliabilityMethod.h"
 
 namespace Deltares
