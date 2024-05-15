@@ -93,7 +93,7 @@ void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, corrStr
         }
 
         auto createRelM = createReliabilityMethod();
-        auto relMethod = createRelM.selectMethod(*method, nStoch);
+        auto relMethod = createRelM.selectMethod(*method, nStoch, stochasts);
         auto zModel = std::make_shared<ZModel>([&fw](std::shared_ptr<ModelSample> v) { return fw.FDelegate(v); },
                                                [&fw](std::vector<std::shared_ptr<ModelSample>> v) { return fw.FDelegateParallel(v); });
         auto corr = std::make_shared<CorrelationMatrix>();
@@ -105,7 +105,7 @@ void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, corrStr
                 corr->SetCorrelation(correlations[i].idx1, correlations[i].idx2, correlations[i].correlation);
             }
         }
-        std::shared_ptr<UConverter> uConverter(new UConverter(stochasts, corr));
+        auto uConverter = std::make_shared<UConverter>(stochasts, corr);
         auto pw = progressWrapper(pc, relMethod.get());
         auto progressDelegate = ProgressLambda();
         auto detailedProgressDelegate = DetailedProgressLambda();
@@ -114,7 +114,6 @@ void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, corrStr
         auto modelRunner = std::make_shared<ModelRunner>(zModel, uConverter, progress);
         modelRunner->Settings->MaxParallelProcesses = method->numThreads;
         modelRunner->Settings->MaxChunkSize = method->chunkSize;
-        modelRunner->Settings->MaxChunkSize = method->numThreads; // needed for overtopping
         modelRunner->Settings->SaveMessages = true;
         modelRunner->initializeForRun();
         auto newResult = relMethod->getDesignPoint(modelRunner);

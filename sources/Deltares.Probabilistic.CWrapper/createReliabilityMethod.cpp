@@ -10,6 +10,7 @@
 using namespace Deltares::ProbLibCore;
 using namespace Deltares::Models;
 using namespace Deltares::Reliability;
+using namespace Deltares::Statistics;
 
 std::shared_ptr<RandomSettings> createReliabilityMethod::getRnd(const basicSettings& bs)
 {
@@ -31,13 +32,13 @@ std::shared_ptr<RandomSettings> createReliabilityMethod::getRnd(const basicSetti
 
 	return rnd;
 }
-
-Deltares::Reliability::ReliabilityMethod* createReliabilityMethod::selectMethod(const Deltares::ProbLibCore::basicSettings& bs, const size_t nStoch, std::vector<std::shared_ptr<Deltares::Statistics::Stochast>>& stochasts)
+ 
+std::shared_ptr<ReliabilityMethod> createReliabilityMethod::selectMethod(const basicSettings& bs, const size_t nStoch, std::vector<std::shared_ptr<Stochast>>& stochasts)
 {
 	switch (bs.methodId)
 	{
 	case (ProbMethod::NI): {
-		auto ni = new NumericalIntegration();
+		auto ni = std::make_shared<NumericalIntegration>();
         ni->Settings.designPointMethod = DesignPointMethod::NearestToMean;
 		for (size_t i = 0; i < nStoch; i++)
 		{
@@ -51,7 +52,7 @@ Deltares::Reliability::ReliabilityMethod* createReliabilityMethod::selectMethod(
 		return ni; }
 		break;
 	case (ProbMethod::CM): {
-		auto cm = new CrudeMonteCarlo();
+		auto cm = std::make_shared<CrudeMonteCarlo>();
 		std::shared_ptr<RandomSettings> r(getRnd(bs));
 		cm->Settings->randomSettings.swap(r);
 		cm->Settings->VariationCoefficient = bs.tolB;
@@ -60,30 +61,30 @@ Deltares::Reliability::ReliabilityMethod* createReliabilityMethod::selectMethod(
 		return cm; }
 		break;
 	case (ProbMethod::DS): {
-		auto ds = new DirectionalSampling();
+		auto ds = std::make_shared<DirectionalSampling>();
 		fillDsSettings(ds->Settings, bs);
 		return ds; }
 		break;
 	case (ProbMethod::FORM): {
-		auto form = new FORM();
+		auto form = std::make_shared<FORM>();
 		fillFormSettings(form->Settings, bs, nStoch);
 		return form; }
 		break;
 	case (ProbMethod::FDIR): {
-		auto fdir = new FORMThenDirectionalSampling(bs.numExtraReal1);
+		auto fdir = std::make_shared<FORMThenDirectionalSampling>(bs.numExtraReal1);
 		fillDsSettings(fdir->DsSettings, bs);
 		fillFormSettings(fdir->formSettings, bs, nStoch);
 		return fdir; }
 		break;
 	case (ProbMethod::DSFIHR):
 	case (ProbMethod::DSFI): {
-		auto dsfi = new DirectionalSamplingThenFORM();
+		auto dsfi = std::make_shared<DirectionalSamplingThenFORM>();
 		fillDsSettings(dsfi->DsSettings, bs);
 		fillFormSettings(dsfi->formSettings, bs, nStoch);
 		return dsfi; }
 		break;
 	case (ProbMethod::IM): {
-		auto impSampling = new ImportanceSampling();
+		auto impSampling = std::make_shared<ImportanceSampling>();
 		std::shared_ptr<RandomSettings> r(getRnd(bs));
 		impSampling->Settings->randomSettings.swap(r);
 		impSampling->Settings->VariationCoefficient = bs.tolB;
