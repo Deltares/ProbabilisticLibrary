@@ -1,4 +1,3 @@
-#include "pch.h"
 #include <math.h>
 #include <gtest/gtest.h>
 #include "upscale_tests.h"

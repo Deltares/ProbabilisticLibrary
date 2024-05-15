@@ -1,4 +1,3 @@
-#include "pch.h"
 #include <gtest/gtest.h>
 #include <math.h>
 #include "intEqualElements_tests.h"
