@@ -12,11 +12,11 @@ namespace Deltares
 
             bool Project::IsValid()
             {
-                shared->object->variables.clear();
+                shared->object->stochasts.clear();
 
                 for (size_t i = 0; i < this->Stochasts->Count; i++)
                 {
-                    shared->object->variables.push_back(this->Stochasts[i]->GetStochast());
+                    shared->object->stochasts.push_back(this->Stochasts[i]->GetStochast());
                 }
 
                 shared->object->correlationMatrix = this->CorrelationMatrix->GetCorrelationMatrix();
@@ -27,11 +27,11 @@ namespace Deltares
 
             Reliability::Wrappers::DesignPoint^ Project::GetDesignPoint()
             {
-                shared->object->variables.clear();
+                shared->object->stochasts.clear();
 
                 for (size_t i = 0; i < this->Stochasts->Count; i++)
                 {
-                    shared->object->variables.push_back(this->Stochasts[i]->GetStochast());
+                    shared->object->stochasts.push_back(this->Stochasts[i]->GetStochast());
                 }
 
                 shared->object->correlationMatrix = this->CorrelationMatrix->GetCorrelationMatrix();
