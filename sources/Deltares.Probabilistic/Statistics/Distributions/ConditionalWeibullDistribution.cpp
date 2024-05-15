@@ -69,14 +69,22 @@ namespace Deltares
 			return xScale * stochast->Scale;
 		}
 
+        double ConditionalWeibullDistribution::getExponent(std::shared_ptr<StochastProperties> stochast, double x)
+        {
+            x /= stochast->Scale;
+            if (x <= 0.0) return -StandardNormal::BetaMax;
+            double xlog = pow(x, stochast->Shape);
+            double logF = std::pow(stochast->Shift / stochast->Scale, stochast->Shape) - xlog;
+            double f = stochast->ShapeB * exp(logF);
+
+            return f;
+        }
+
 		double ConditionalWeibullDistribution::getUFromX(std::shared_ptr<StochastProperties> stochast, double x)
 		{
-			x /= stochast->Scale;
-			if (x <= 0.0) return -StandardNormal::BetaMax;
-			double xlog = pow(x, stochast->Shape);
-			double logF = std::pow(stochast->Shift / stochast->Scale, stochast->Shape) - xlog;
-			double f = stochast->ShapeB * exp(logF);
-			double u;
+            double f = getExponent(stochast, x);
+
+		    double u;
 			if (f < tresholdF)
 			{
 				u = StandardNormal::getUFromQ(f);
@@ -96,7 +104,10 @@ namespace Deltares
 			double S = stochast->Shape / stochast->Scale;
 			double expMinsx = std::exp(-S * x);
 			double pdf = -S * C * std::exp(C * expMinsx) * expMinsx;
-			return pdf;
+
+            double pdf2 = this->getCDF(stochast, x) * getExponent(stochast, x) * stochast->Shape * pow(x / stochast->Scale, stochast->Shape - 1) / stochast->Scale;
+
+			return pdf2;
 		}
 
 		double ConditionalWeibullDistribution::getCDF(std::shared_ptr<StochastProperties> stochast, double x)
@@ -133,19 +144,22 @@ namespace Deltares
 
 		void ConditionalWeibullDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values)
 		{
-            stochast->Shift = this->getFittedMinimum(values);
+            double minValue = Numeric::NumericSupport::getMinimum(values);
+            double meanValue = Numeric::NumericSupport::getMean(values);
+            double estimatedMaxValue = minValue + 2 * (meanValue - minValue);
 
 		    std::shared_ptr<DistributionFitter> fitter = std::make_shared<DistributionFitter>();
 
-            std::vector<double> minValues = { 0.5, 0.5, 0.5 };
-            std::vector<double> maxValues = { 1.5, 1.5, 1.5 };
-            std::vector<double> initValues = { 1.0, 1.0, 1.0 };
-            std::vector<DistributionPropertyType> properties = { Scale, Shape, ShapeB };
+            std::vector<double> minValues = { minValue, 0.5, 0.5, 0.5 };
+            std::vector<double> maxValues = { estimatedMaxValue, 1.5, 1.5, 1.5 };
+            std::vector<double> initValues = { meanValue, 1.0, 1.0, 1.0 };
+            std::vector<DistributionPropertyType> properties = { Shift, Scale, Shape, ShapeB };
             std::vector<double> parameters = fitter->fitByLogLikelihood(values, this, stochast, minValues, maxValues, initValues, properties);
 
-            stochast->Scale = std::max(0.0, parameters[0]);
-            stochast->Shape = std::max(0.0, parameters[1]);
-            stochast->ShapeB = std::max(0.0, parameters[2]);
+            stochast->Shift = std::max(minValue, parameters[0]);
+            stochast->Scale = std::max(0.0, parameters[1]);
+            stochast->Shape = std::max(0.0, parameters[2]);
+            stochast->ShapeB = std::max(0.0, parameters[3]);
         }
 
 		std::vector<double> ConditionalWeibullDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)
