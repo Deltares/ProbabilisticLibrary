@@ -452,7 +452,11 @@ subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, conv, convCri
         convergenceData%cnvg_data_form%numberiterations = rn%stepsNeeded
         if (ierr%iCode /= 0) then
             call copystrback(msg, ierr%message)
-            call warningMessage(msg)
+            if (ierr%iCode > 0) then
+                call warningMessage(msg)
+            else
+                call fatalError(msg)
+            end if
         end if
     else
         call fatalError("No stochastic parameters found")
