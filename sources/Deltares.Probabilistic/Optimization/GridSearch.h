@@ -14,13 +14,6 @@ namespace Deltares
 	{
 		class GridSearch
 		{
-		private:
-
-			//static constexpr double tolerance = 1E-6;
-
-			int counter = 0;
-			int reusedCounter = 0;
-
 		public:
 			/**
 			 * \brief Maximum number of grid moves to be performed
@@ -82,6 +75,12 @@ namespace Deltares
 			 * \return Tolerance
 			 */
 			double getTolerance(std::shared_ptr<SearchParameterSettings> dimension);
+
+        private:
+
+            int counter = 0;
+            int reusedCounter = 0;
+
 		};
 	}
 }
