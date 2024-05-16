@@ -1010,7 +1010,7 @@ subroutine iterateMechanism (probDb, convergenceData, z_func, probMethod, alfa, 
     real(kind=wp)                :: beta
     logical                      :: convCriterium
 
-    combinedBeta = 0
+    combinedBeta = 0.0_wp
 
     probDb%method%calcMethod = probMethod
     do i = 1, numberIterations

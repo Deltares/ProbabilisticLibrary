@@ -435,26 +435,24 @@ subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, conv, convCri
                 probDb%number_correlations, fx, textualProgress, compIds, xDense, rn, ierr)
         end if
 
+        call copyDense2Full(xDense, x)
+        beta = rn%beta
+        alfaN = 0.0_wp
+        do k = 1, nStochActive
+            alfaN(iPoint(k)) = rn%alpha(k)
+        end do
+        if (method%methodId == methodFORMandDirSampling .and. rn%samplesNeeded > 0) then
+            ! to get logging in output.txt right; as we have samples, Form did not succeed (no convergence or beta out of range)
+            conv = .false.
+        else
+            conv = rn%convergence
+        end if
+        convCriterium = rn%convergence
+        convergenceData%cnvg_data_ds%numberSamples = rn%samplesNeeded
+        convergenceData%cnvg_data_form%numberiterations = rn%stepsNeeded
         if (ierr%iCode /= 0) then
             call copystrback(msg, ierr%message)
-            call fatalError(msg)
-            x = 0.0_wp
-        else
-            call copyDense2Full(xDense, x)
-            beta = rn%beta
-            alfaN = 0.0_wp
-            do k = 1, nStochActive
-                alfaN(iPoint(k)) = rn%alpha(k)
-            end do
-            if (method%methodId == methodFORMandDirSampling .and. rn%samplesNeeded > 0) then
-                ! to get logging in output.txt right; as we have samples, Form did not succeed (no convergence or beta out of range)
-                conv = .false.
-            else
-                conv = rn%convergence
-            end if
-            convCriterium = rn%convergence
-            convergenceData%cnvg_data_ds%numberSamples = rn%samplesNeeded
-            convergenceData%cnvg_data_form%numberiterations = rn%stepsNeeded
+            call warningMessage(msg)
         end if
     else
         call fatalError("No stochastic parameters found")

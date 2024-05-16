@@ -73,6 +73,19 @@ void updateX(const std::vector<std::shared_ptr<StochastPointAlpha>> & alpha, con
     }
 }
 
+void copyConvergence(tResult& r, const ConvergenceReport& convergenceReport, const ProbMethod methodId)
+{
+    if (methodId == ProbMethod::NI) return;
+
+    r.convergence = convergenceReport.IsConverged;
+    r.stepsNeeded = convergenceReport.TotalIterations;
+    r.samplesNeeded = convergenceReport.TotalDirections;
+    if (r.samplesNeeded < 0 && convergenceReport.FailFraction > 0.0)
+    {
+        r.samplesNeeded = (int)round(convergenceReport.FailedSamples / convergenceReport.FailFraction);
+    }
+}
+
 extern "C"
 void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, corrStruct correlations[], const int nrCorrelations,
     const double(*fx)(double[], computationSettings*, tError*),
@@ -145,13 +158,7 @@ void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, corrStr
         {
             r->iPoint[i] = i + 1;
         }
-        r->convergence = newResult->convergenceReport->IsConverged;
-        r->stepsNeeded = newResult->convergenceReport->TotalIterations;
-        r->samplesNeeded = newResult->convergenceReport->TotalDirections;
-        if (r->samplesNeeded < 0)
-        {
-            r->samplesNeeded = (int)round(newResult->convergenceReport->FailedSamples / newResult->convergenceReport->FailFraction);
-        }
+        copyConvergence(*r, *newResult->convergenceReport.get(), method->methodId);
     }
     catch (const std::exception& e)
     {
