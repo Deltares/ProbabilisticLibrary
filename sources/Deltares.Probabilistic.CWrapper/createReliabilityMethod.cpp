@@ -10,6 +10,7 @@
 using namespace Deltares::ProbLibCore;
 using namespace Deltares::Models;
 using namespace Deltares::Reliability;
+using namespace Deltares::Statistics;
 
 std::shared_ptr<RandomSettings> createReliabilityMethod::getRnd(const basicSettings& bs)
 {
@@ -31,54 +32,57 @@ std::shared_ptr<RandomSettings> createReliabilityMethod::getRnd(const basicSetti
 
 	return rnd;
 }
-
-std::shared_ptr<ReliabilityMethod> createReliabilityMethod::selectMethod(const basicSettings& bs, const size_t nStoch, std::vector<std::shared_ptr<Deltares::Statistics::Stochast>>& stochasts)
+ 
+std::shared_ptr<ReliabilityMethod> createReliabilityMethod::selectMethod(const basicSettings& bs, const size_t nStoch, std::vector<std::shared_ptr<Stochast>>& stochasts)
 {
-    switch (bs.methodId)
-    {
+	switch (bs.methodId)
+	{
 	case (ProbMethod::NI): {
 		auto ni = std::make_shared<NumericalIntegration>();
+        ni->Settings.designPointMethod = DesignPointMethod::NearestToMean;
 		for (size_t i = 0; i < nStoch; i++)
 		{
 			auto s = std::make_shared<StochastSettings>();
 			s->stochast = stochasts[i];
 			s->Intervals = bs.numExtraInt;
-			ni->Settings->StochastSet->stochastSettings.push_back(s);
+            s->MinValue = bs.numExtraReal1;
+            s->MaxValue = bs.numExtraReal2;
+            ni->Settings.StochastSet->stochastSettings.push_back(s);
 		}
 		return ni; }
 		break;
-    case (ProbMethod::CM): {
-        auto cm = std::make_shared<CrudeMonteCarlo>();
-        auto r = getRnd(bs);
-        cm->Settings->randomSettings.swap(r);
-        cm->Settings->VariationCoefficient = bs.tolB;
-        cm->Settings->MinimumSamples = bs.minSamples;
-        cm->Settings->MaximumSamples = bs.maxSamples;
-        return cm; }
-        break;
-    case (ProbMethod::DS): {
-        auto ds = std::make_shared<DirectionalSampling>();
-        fillDsSettings(ds->Settings, bs);
-        return ds; }
-        break;
-    case (ProbMethod::FORM): {
-        auto form = std::make_shared<FORM>();
-        fillFormSettings(form->Settings, bs, nStoch);
-        return form; }
-        break;
-    case (ProbMethod::FDIR): {
-        auto fdir = std::make_shared<FORMThenDirectionalSampling>(bs.numExtraReal1);
-        fillDsSettings(fdir->DsSettings, bs);
-        fillFormSettings(fdir->formSettings, bs, nStoch);
-        return fdir; }
-        break;
-    case (ProbMethod::DSFIHR):
-    case (ProbMethod::DSFI): {
-        auto dsfi = std::make_shared<DirectionalSamplingThenFORM>();
-        fillDsSettings(dsfi->DsSettings, bs);
-        fillFormSettings(dsfi->formSettings, bs, nStoch);
-        return dsfi; }
-        break;
+	case (ProbMethod::CM): {
+		auto cm = std::make_shared<CrudeMonteCarlo>();
+		std::shared_ptr<RandomSettings> r(getRnd(bs));
+		cm->Settings->randomSettings.swap(r);
+		cm->Settings->VariationCoefficient = bs.tolB;
+		cm->Settings->MinimumSamples = bs.minSamples;
+		cm->Settings->MaximumSamples = bs.maxSamples;
+		return cm; }
+		break;
+	case (ProbMethod::DS): {
+		auto ds = std::make_shared<DirectionalSampling>();
+		fillDsSettings(ds->Settings, bs);
+		return ds; }
+		break;
+	case (ProbMethod::FORM): {
+		auto form = std::make_shared<FORM>();
+		fillFormSettings(form->Settings, bs, nStoch);
+		return form; }
+		break;
+	case (ProbMethod::FDIR): {
+		auto fdir = std::make_shared<FORMThenDirectionalSampling>(bs.numExtraReal1);
+		fillDsSettings(fdir->DsSettings, bs);
+		fillFormSettings(fdir->formSettings, bs, nStoch);
+		return fdir; }
+		break;
+	case (ProbMethod::DSFIHR):
+	case (ProbMethod::DSFI): {
+		auto dsfi = std::make_shared<DirectionalSamplingThenFORM>();
+		fillDsSettings(dsfi->DsSettings, bs);
+		fillFormSettings(dsfi->formSettings, bs, nStoch);
+		return dsfi; }
+		break;
 	case (ProbMethod::IM): {
 		auto impSampling = std::make_shared<ImportanceSampling>();
 		std::shared_ptr<RandomSettings> r(getRnd(bs));
@@ -95,10 +99,10 @@ std::shared_ptr<ReliabilityMethod> createReliabilityMethod::selectMethod(const b
 		}
 		return impSampling; }
 		break;
-    default:
-        throw probLibException("method not implemented yet: ", (int)bs.methodId);
-        break;
-    }
+	default:
+		throw probLibException("method not implemented yet: ", (int)bs.methodId);
+		break;
+	}
 }
 
 void createReliabilityMethod::fillFormSettings(std::shared_ptr<FORMSettings>& Settings, const basicSettings& bs, const size_t nStoch)

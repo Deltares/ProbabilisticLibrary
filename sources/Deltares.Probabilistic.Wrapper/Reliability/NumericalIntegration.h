@@ -24,7 +24,7 @@ namespace Deltares
 
 				std::shared_ptr<Reliability::ReliabilityMethod> GetReliabilityMethod() override
 				{
-					shared->object->Settings = Settings->GetSettings();
+					shared->object->Settings = *Settings->GetSettings();
 					return shared->object;
 				}
 
