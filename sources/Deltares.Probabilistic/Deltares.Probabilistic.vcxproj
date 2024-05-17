@@ -155,6 +155,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Combine\CombinedDesignPointModel.h" />
+    <ClInclude Include="Combine\ImportanceSamplingCombiner.h" />
+    <ClInclude Include="Combine\DesignPointModel.h" />
+    <ClInclude Include="Combine\DesignPointCombiner.h" />
     <ClInclude Include="Model\ProxySettings.h" />
     <ClInclude Include="Model\Project.h" />
     <ClInclude Include="Reliability\NumericalIntegration.h" />
@@ -182,7 +186,7 @@
     <ClInclude Include="Statistics\Distributions\WeibullDistribution.h" />
     <ClInclude Include="Combine\alphaBeta.h" />
     <ClInclude Include="Combine\combineElements.h" />
-    <ClInclude Include="Combine\combiner.h" />
+    <ClInclude Include="Combine\Combiner.h" />
     <ClInclude Include="Combine\Hohenbichler.h" />
     <ClInclude Include="Combine\HohenbichlerCombiner.h" />
     <ClInclude Include="Combine\HohenbichlerZ.h" />
@@ -272,6 +276,10 @@
     <ClInclude Include="Statistics\Distributions\ConditionalWeibullDistribution.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Combine\CombinedDesignPointModel.cpp" />
+    <ClCompile Include="Combine\ImportanceSamplingCombiner.cpp" />
+    <ClCompile Include="Combine\DesignPointModel.cpp" />
+    <ClCompile Include="Combine\DesignPointCombiner.cpp" />
     <ClCompile Include="Model\ProxySettings.cpp" />
     <ClCompile Include="Model\Project.cpp" />
     <ClCompile Include="Reliability\NumericalIntegration.cpp" />
@@ -298,7 +306,7 @@
     <ClCompile Include="Statistics\Distributions\RayleighNDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\WeibullDistribution.cpp" />
     <ClCompile Include="Combine\combineElements.cpp" />
-    <ClCompile Include="Combine\combiner.cpp" />
+    <ClCompile Include="Combine\Combiner.cpp" />
     <ClCompile Include="Combine\Hohenbichler.cpp" />
     <ClCompile Include="Combine\HohenbichlerCombiner.cpp" />
     <ClCompile Include="Combine\HohenbichlerZ.cpp" />

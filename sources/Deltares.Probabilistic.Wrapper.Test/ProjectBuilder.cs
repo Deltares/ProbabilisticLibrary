@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Deltares.Statistics.Wrappers;
 using Deltares.Models.Wrappers;
+using Deltares.Reliability.Wrappers;
 
 namespace Deltares.Probabilistics.Wrappers.Test
 {
@@ -920,6 +921,26 @@ namespace Deltares.Probabilistics.Wrappers.Test
         private static ZFunctionOutput NonVarying(double[] xValues)
         {
             return new ZFunctionOutput(1);
+        }
+
+        public static DesignPoint GetSimpleDesignPoint(double beta, int count)
+        {
+            DesignPoint designPoint = new DesignPoint();
+            designPoint.Beta = beta;
+
+            for (int i = 0; i < count; i++)
+            {
+                StochastPointAlpha alpha = new StochastPointAlpha();
+                alpha.Parameter = GetUniformStochast();
+                alpha.Alpha = -Math.Sqrt(1.0 / count);
+                alpha.AlphaCorrelated = alpha.Alpha;
+                alpha.U = - beta * alpha.Alpha;
+                alpha.X = alpha.Parameter.GetXFromU(alpha.U);
+
+                designPoint.Alphas.Add(alpha);
+            }
+
+            return designPoint;
         }
     }
 }

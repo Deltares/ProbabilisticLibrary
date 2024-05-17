@@ -22,7 +22,7 @@ namespace Deltares
 
 			protected:
 
-				void setStochastPoint(std::shared_ptr<Models::StochastPoint> stochastPoint, System::Collections::Generic::List<Statistics::Wrappers::Stochast^>^ stochasts);
+				void setStochastPoint(std::shared_ptr<Models::StochastPoint> stochastPoint, System::Collections::Generic::IList<Statistics::Wrappers::Stochast^>^ stochasts);
 
 			public:
 				StochastPoint()

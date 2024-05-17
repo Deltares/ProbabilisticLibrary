@@ -92,7 +92,7 @@
     <ClCompile Include="Combine\combineElements.cpp">
       <Filter>Combine</Filter>
     </ClCompile>
-    <ClCompile Include="Combine\combiner.cpp">
+    <ClCompile Include="Combine\Combiner.cpp">
       <Filter>Combine</Filter>
     </ClCompile>
     <ClCompile Include="Combine\Hohenbichler.cpp">
@@ -136,6 +136,10 @@
     <ClCompile Include="Reliability\SubsetSimulationSettings.cpp" />
     <ClCompile Include="Reliability\SubsetSimulation.cpp" />
     <ClCompile Include="Model\Project.cpp" />
+    <ClCompile Include="Combine\ImportanceSamplingCombiner.cpp" />
+    <ClCompile Include="Combine\DesignPointModel.cpp" />
+    <ClCompile Include="Combine\CombinedDesignPointModel.cpp" />
+    <ClCompile Include="Combine\DesignPointCombiner.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -244,7 +248,7 @@
     <ClInclude Include="Combine\combineElements.h">
       <Filter>Combine</Filter>
     </ClInclude>
-    <ClInclude Include="Combine\combiner.h">
+    <ClInclude Include="Combine\Combiner.h">
       <Filter>Combine</Filter>
     </ClInclude>
     <ClInclude Include="Combine\Hohenbichler.h">
@@ -291,6 +295,10 @@
     <ClInclude Include="Reliability\SubsetSimulationSettings.h" />
     <ClInclude Include="Reliability\SubsetSimulation.h" />
     <ClInclude Include="Model\Project.h" />
+    <ClInclude Include="Combine\ImportanceSamplingCombiner.h" />
+    <ClInclude Include="Combine\DesignPointModel.h" />
+    <ClInclude Include="Combine\CombinedDesignPointModel.h" />
+    <ClInclude Include="Combine\DesignPointCombiner.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

@@ -4,6 +4,7 @@
 #include "../Model/Evaluation.h"
 #include "../Model/StochastPointAlpha.h"
 #include "../Model/StochastPoint.h"
+#include "../Statistics/Stochast.h"
 #include "../Model/Message.h"
 #include "ConvergenceReport.h"
 #include "ReliabilityResult.h"
@@ -28,19 +29,30 @@ namespace Deltares
 				System::Collections::Generic::List<Wrappers::Message^>^ messages = gcnew System::Collections::Generic::List<Wrappers::Message^>();
 				System::Collections::Generic::List<Wrappers::DesignPoint^>^ contributingDesignPoints = gcnew System::Collections::Generic::List<Wrappers::DesignPoint^>();
 
-				void setDesignPoint(System::Collections::Generic::List<Stochast^>^ stochasts);
-			public:
+                void setDesignPointInfo();
+                void setDesignPoint(System::Collections::Generic::IList<Statistics::Wrappers::Stochast^>^ stochasts);
+                void setDesignPoints(System::Collections::Generic::IList<Reliability::Wrappers::DesignPoint^>^ contributingDesignPoints);
+
+                bool HasMatchingAlphaValues();
+            public:
 				DesignPoint()
 				{
 					shared = new SharedPointerProvider(new Reliability::DesignPoint());
-					setDesignPoint(gcnew System::Collections::Generic::List<Stochast^>());
+					setDesignPoint(gcnew System::Collections::Generic::List<Statistics::Wrappers::Stochast^>());
 				}
-				DesignPoint(std::shared_ptr<Reliability::DesignPoint> designPoint, System::Collections::Generic::List<Stochast^>^ stochasts)
-				{
-					shared = new SharedPointerProvider(designPoint);
-					setDesignPoint(stochasts);
-				}
-				~DesignPoint() { this->!DesignPoint(); }
+
+                DesignPoint(std::shared_ptr<Reliability::DesignPoint> designPoint, System::Collections::Generic::IList<Statistics::Wrappers::Stochast^>^ stochasts)
+                {
+                    shared = new SharedPointerProvider(designPoint);
+                    setDesignPoint(stochasts);
+                }
+
+                DesignPoint(std::shared_ptr<Reliability::DesignPoint> designPoint, System::Collections::Generic::IList<Reliability::Wrappers::DesignPoint^>^ designPoints)
+                {
+                    shared = new SharedPointerProvider(designPoint);
+                    setDesignPoints(designPoints);
+                }
+                ~DesignPoint() { this->!DesignPoint(); }
 				!DesignPoint() { delete shared; }
 
 				property System::String^ Identifier
@@ -92,6 +104,16 @@ namespace Deltares
 
 				std::shared_ptr<Reliability::DesignPoint> getDesignPoint()
 				{
+                    if (!HasMatchingAlphaValues())
+                    {
+                        shared->object->Alphas.clear();
+
+                        for (int i = 0; i < this->Alphas->Count; i++)
+                        {
+                            shared->object->Alphas.push_back(this->Alphas[i]->GetNativeAlpha());
+                        }
+                    }
+
 					return shared->object;
 				}
 			};

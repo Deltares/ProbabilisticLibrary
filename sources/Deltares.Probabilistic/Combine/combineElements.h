@@ -2,7 +2,7 @@
 #include <vector>
 #include "../Math/vector1D.h"
 #include "alphaBeta.h"
-#include "combiner.h"
+#include "Combiner.h"
 
 namespace Deltares {
     namespace Reliability {
