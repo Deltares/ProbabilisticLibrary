@@ -23,46 +23,40 @@ namespace Deltares
 				!CorrelationMatrix() { delete shared; }
 
 				void Initialize(const int size) { shared->object->init(size); }
+
 				void Initialize(System::Collections::Generic::List<Stochast^>^ stochasts)
 				{
 					this->stochasts.Clear();
 
+                    std::vector<std::shared_ptr<Deltares::Statistics::Stochast>> nativeStochasts;
+
 					for (int i = 0; i < stochasts->Count; i++)
 					{
 						this->stochasts.Add(stochasts[i]);
+                        nativeStochasts.push_back(stochasts[i]->GetStochast());
 					}
 
-					shared->object->init(stochasts->Count);
+					shared->object->init(nativeStochasts);
 				}
 
-				void SetCorrelation(const int i, const int j, const double value) { shared->object->SetCorrelation(i, j, value); }
-
+				void SetCorrelation(const int i, const int j, const double value)
+				{
+				    shared->object->SetCorrelation(i, j, value);
+				}
+                
 				void SetCorrelation(Stochast^ stochast1, Stochast^ stochast2, const double value)
 				{
-					int index1 = stochasts.IndexOf(stochast1);
-					int index2 = stochasts.IndexOf(stochast2);
-
-					if (index1 >= 0 && index2 >= 0)
-					{
-						shared->object->SetCorrelation(index1, index2, value);
-					}
+                    shared->object->SetCorrelation(stochast1->GetStochast(), stochast2->GetStochast(), value);
 				}
 
-				double GetCorrelation(const int i, const int j) { return shared->object->GetCorrelation(i, j); }
+				double GetCorrelation(const int i, const int j)
+				{
+				    return shared->object->GetCorrelation(i, j);
+				}
 
 				double GetCorrelation(Stochast^ stochast1, Stochast^ stochast2)
 				{
-					int index1 = stochasts.IndexOf(stochast1);
-					int index2 = stochasts.IndexOf(stochast2);
-
-					if (index1 >= 0 && index2 >= 0) 
-					{
-						return shared->object->GetCorrelation(index1, index2);
-					}
-					else
-					{
-						return 0;
-					}
+                    return shared->object->GetCorrelation(stochast1->GetStochast(), stochast2->GetStochast());
 				}
 
 				virtual bool IsIdentity()

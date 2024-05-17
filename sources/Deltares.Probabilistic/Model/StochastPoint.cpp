@@ -18,6 +18,26 @@ namespace Deltares
             return sample;
         }
 
+        std::shared_ptr<Sample> StochastPoint::getSampleForStochasts(std::vector<std::shared_ptr<Statistics::Stochast>> stochasts)
+        {
+            std::shared_ptr<Sample> sample = std::make_shared<Sample>(stochasts.size());
+
+            for (size_t i = 0; i < stochasts.size(); i++)
+            {
+                sample->Values[i] = 0;
+
+                for (size_t j = 0; j < this->Alphas.size(); j++)
+                {
+                    if (this->Alphas[j]->Stochast == stochasts[i])
+                    {
+                        sample->Values[i] = this->Alphas[j]->U;
+                    }
+                }
+            }
+
+            return sample;
+        }
+
         std::shared_ptr<ModelSample> StochastPoint::getModelSample()
         {
             std::vector<double> values(Alphas.size());
@@ -27,6 +47,19 @@ namespace Deltares
             }
 
             return std::make_shared<ModelSample>(values);
+        }
+
+        std::shared_ptr<StochastPointAlpha> StochastPoint::getAlpha(std::shared_ptr<Statistics::Stochast> stochast)
+        {
+            for (std::shared_ptr<StochastPointAlpha> alpha : this->Alphas)
+            {
+                if (alpha->Stochast == stochast)
+                {
+                    return alpha;
+                }
+            }
+
+            return nullptr;
         }
 
         void StochastPoint::updateInfluenceFactors()

@@ -67,14 +67,17 @@ namespace Deltares
 			this->qualitativeIndices.clear();
 			this->modeFinders.clear();
 
-			for (int i = 0; i < stochastSet->getVaryingStochastCount(); i++)
-			{
-				if (stochastSet->VaryingStochastSettings[i]->IsQualitative)
-				{
-					this->qualitativeIndices.push_back(i);
-					this->modeFinders.push_back(std::make_shared<ModeFinder>(stochastSet->VaryingStochastSettings[i]));
-				}
-			}
+            if (stochastSet != nullptr)
+            {
+                for (int i = 0; i < stochastSet->getVaryingStochastCount(); i++)
+                {
+                    if (stochastSet->VaryingStochastSettings[i]->IsQualitative)
+                    {
+                        this->qualitativeIndices.push_back(i);
+                        this->modeFinders.push_back(std::make_shared<ModeFinder>(stochastSet->VaryingStochastSettings[i]));
+                    }
+                }
+            }
 
 			this->qualitativeCount = this->qualitativeIndices.size();
 		}

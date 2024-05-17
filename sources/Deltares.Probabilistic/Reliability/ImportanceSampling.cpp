@@ -116,6 +116,7 @@ namespace Deltares
 						std::shared_ptr<ImportanceSamplingCluster> cluster = clusterResults[clusterIndex];
 
 						const std::shared_ptr<Sample> sample = sampleCreator->getRandomSample();
+
 						std::shared_ptr<Sample> modifiedSample = sample->clone();
 
 						for (int k = 0; k < nStochasts; k++)
