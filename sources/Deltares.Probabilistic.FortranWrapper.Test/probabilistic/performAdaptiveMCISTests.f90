@@ -27,7 +27,7 @@ module performAdaptiveMCIStests
     use interface_probCalc
     use interface_probCalcData
     use interface_distributions
-    use sampleFunctions
+    use sparseWaartsTestFunctions
     use toolkitTestFunctions
 
     implicit none
@@ -92,7 +92,9 @@ subroutine AdapMCIStest1
     probDb%method%AdaptiveIS%seedPRNG = 1
 
     ! Perform computation to determine alpha and beta
+    call initSparseWaartsTestsFunctions(probDb%stovar%maxStochasts, probDb%method%maxParallelThreads)
     call performAdpMCIS( probDb, simpleZ, x, alfa, beta, conv )
+    call cleanUpWaartsTestsFunctions
 
     call assert_comparable(beta, betaKnown, margin, "The computed beta deviates from the analytically computed value")
     call finalizeProbabilisticCalculation(probDb)

@@ -27,7 +27,7 @@ module performImportanceSamplingTests
     use interface_probcalc
     use interface_probcalcdata
     use interface_distributions
-    use sampleFunctions
+    use sparseWaartsTestFunctions
 
     implicit none
 
@@ -85,7 +85,9 @@ subroutine importanceSamplingTest1
     probDb%method%calcMethod = methodImportanceSampling
 
     ! Perform computation to determine alpha and beta
+    call initSparseWaartsTestsFunctions(probDb%stovar%maxStochasts, probDb%method%maxParallelThreads)
     call performImportanceSampling( probDb, simpleZ, x, alfa, beta, convCriterium )
+    call cleanUpWaartsTestsFunctions
     write(*,*) 'Beta computed', beta
     write(*,*) 'Beta known', betaKnown
     write(*,*) 'Alpha: ', alfa
@@ -133,7 +135,9 @@ subroutine importanceSamplingTest2
         variance = 1.0_wp + 0.25_wp * real(k, wp)
         probDb%method%is%variancefactor = variance
         probDb%method%calcMethod = methodImportanceSampling
+        call initSparseWaartsTestsFunctions(probDb%stovar%maxStochasts, probDb%method%maxParallelThreads)
         call performImportanceSampling( probDb, simpleZ, x, alfa, beta, convCriterium )
+        call cleanUpWaartsTestsFunctions
         call assert_comparable(beta, betaKnown, margin, "The computed beta deviates from the analytically computed value")
         write(*,'(a,f4.2,2(x,f10.8))') 'variance, betas = ', variance, beta
     end do
