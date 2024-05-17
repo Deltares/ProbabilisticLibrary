@@ -156,6 +156,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Model\ProxySettings.h" />
+    <ClInclude Include="Reliability\NumericalIntegration.h" />
+    <ClInclude Include="Reliability\NumericalIntegrationSettings.h" />
     <ClInclude Include="Utils\Locker.h" />
     <ClInclude Include="Math\MatrixSupport.h" />
     <ClInclude Include="Optimization\KMeansClustering.h" />
@@ -268,6 +270,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Model\ProxySettings.cpp" />
+    <ClCompile Include="Reliability\NumericalIntegration.cpp" />
+    <ClCompile Include="Reliability\NumericalIntegrationSettings.cpp" />
     <ClCompile Include="Utils\Locker.cpp" />
     <ClCompile Include="Math\MatrixSupport.cpp" />
     <ClCompile Include="Optimization\KMeansClustering.cpp" />

@@ -9,7 +9,8 @@
 class createReliabilityMethod
 {
 public:
-    std::shared_ptr<Deltares::Reliability::ReliabilityMethod> selectMethod(const Deltares::ProbLibCore::basicSettings& bs, const size_t nStoch);
+    std::shared_ptr<Deltares::Reliability::ReliabilityMethod> selectMethod(const Deltares::ProbLibCore::basicSettings& bs, const size_t nStoch,
+        std::vector<std::shared_ptr<Deltares::Statistics::Stochast>>& stochasts);
 
 private:
     std::shared_ptr<Deltares::Models::RandomSettings> getRnd(const Deltares::ProbLibCore::basicSettings& bs);

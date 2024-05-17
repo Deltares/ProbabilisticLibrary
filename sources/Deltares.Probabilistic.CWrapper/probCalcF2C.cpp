@@ -1,5 +1,6 @@
 #include <string>
 #include <memory>
+#include <iostream>
 
 #include "basicSettings.h"
 #include "createDistribution.h"
@@ -72,6 +73,19 @@ void updateX(const std::vector<std::shared_ptr<StochastPointAlpha>> & alpha, con
     }
 }
 
+void copyConvergence(tResult& r, const ConvergenceReport& convergenceReport, const ProbMethod methodId)
+{
+    if (methodId == ProbMethod::NI) return;
+
+    r.convergence = convergenceReport.IsConverged;
+    r.stepsNeeded = convergenceReport.TotalIterations;
+    r.samplesNeeded = convergenceReport.TotalDirections;
+    if (r.samplesNeeded < 0 && convergenceReport.FailFraction > 0.0)
+    {
+        r.samplesNeeded = (int)round(convergenceReport.FailedSamples / convergenceReport.FailFraction);
+    }
+}
+
 extern "C"
 void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, corrStruct correlations[], const int nrCorrelations,
     const double(*fx)(double[], computationSettings*, tError*),
@@ -83,16 +97,16 @@ void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, corrStr
         auto nStoch = (size_t)n;
         auto fw = funcWrapper(compIds[0], fx);
 
-        auto stochast = std::vector<std::shared_ptr<Deltares::Statistics::Stochast>>();
+        auto stochasts = std::vector<std::shared_ptr<Deltares::Statistics::Stochast>>();
         for (size_t i = 0; i < nStoch; i++)
         {
             auto distHR = (EnumDistributions)c[i].distId;
             auto s = createDistribution::createValid(distHR, c[i].params);
-            stochast.push_back(s);
+            stochasts.push_back(s);
         }
 
         auto createRelM = createReliabilityMethod();
-        auto relMethod = createRelM.selectMethod(*method, nStoch);
+        auto relMethod = createRelM.selectMethod(*method, nStoch, stochasts);
         auto zModel = std::make_shared<ZModel>([&fw](std::shared_ptr<ModelSample> v) { return fw.FDelegate(v); },
                                                [&fw](std::vector<std::shared_ptr<ModelSample>> v) { return fw.FDelegateParallel(v); });
         auto corr = std::make_shared<CorrelationMatrix>();
@@ -104,7 +118,7 @@ void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, corrStr
                 corr->SetCorrelation(correlations[i].idx1, correlations[i].idx2, correlations[i].correlation);
             }
         }
-        auto uConverter = std::make_shared<UConverter>(stochast, corr);
+        auto uConverter = std::make_shared<UConverter>(stochasts, corr);
         auto pw = progressWrapper(pc, relMethod.get());
         auto progressDelegate = ProgressLambda();
         auto detailedProgressDelegate = DetailedProgressLambda();
@@ -113,10 +127,25 @@ void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, corrStr
         auto modelRunner = std::make_shared<ModelRunner>(zModel, uConverter, progress);
         modelRunner->Settings->MaxParallelProcesses = method->numThreads;
         modelRunner->Settings->MaxChunkSize = method->chunkSize;
+        modelRunner->Settings->SaveMessages = true;
         modelRunner->initializeForRun();
         auto newResult = relMethod->getDesignPoint(modelRunner);
 
         ierr->errorCode = 0;
+        for(const auto& message : newResult->Messages)
+        {
+            if (message->Type == Error)
+            {
+                ierr->errorCode = 1;
+                fillErrorMessage(*ierr, message->Text);
+            }
+            else
+            {
+                // TODO: connect to feedback
+                std::cout << message->Text << std::endl;
+            }
+        }
+
         r->beta = newResult->Beta;
         for (size_t i = 0; i < nStoch; i++)
         {
@@ -129,13 +158,7 @@ void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, corrStr
         {
             r->iPoint[i] = i + 1;
         }
-        r->convergence = newResult->convergenceReport->IsConverged;
-        r->stepsNeeded = newResult->convergenceReport->TotalIterations;
-        r->samplesNeeded = newResult->convergenceReport->TotalDirections;
-        if (r->samplesNeeded < 0)
-        {
-            r->samplesNeeded = (int)round(newResult->convergenceReport->FailedSamples / newResult->convergenceReport->FailFraction);
-        }
+        copyConvergence(*r, *newResult->convergenceReport.get(), method->methodId);
     }
     catch (const std::exception& e)
     {
