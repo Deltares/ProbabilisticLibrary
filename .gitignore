@@ -91,3 +91,4 @@ ftnunit.lst
 ftnunit.run
 last_error.txt
 test*.txt
+.vscode/settings.json
