@@ -14,6 +14,7 @@ namespace Deltares
                 testConditionalWeibullNonIntegerShape();
                 testConditionalWeibullMeanDeviation();
                 testConditionalWeibullCdfPdf();
+                testConditionalWeibullCdfPdf2();
             }
 
             void testDistributions::testConditionalWeibull()
@@ -87,7 +88,7 @@ namespace Deltares
 
             void testDistributions::testConditionalWeibullCdfPdf()
             {
-                std::shared_ptr< StochastProperties> params = std::make_shared< StochastProperties>();
+                auto params = std::make_shared<StochastProperties>();
                 params->Scale = 1.0;
                 params->Shape = 1.0;
                 params->Shift = 1.0;
@@ -115,6 +116,24 @@ namespace Deltares
                     EXPECT_NEAR(pdf, expectedPdf, 1e-4);
                 }
             }
+
+            void testDistributions::testConditionalWeibullCdfPdf2()
+            {
+                auto params = std::make_shared<StochastProperties>();
+                params->Scale = 2.0;
+                params->Shape = 2.0;
+                params->Shift = 2.0;
+                auto distCondWeibull = Stochast(DistributionType::ConditionalWeibull, params);
+
+                for (int i = 1; i < 10; i++)
+                {
+                    double x = (double)i;
+                    double pdf = distCondWeibull.getPDF(x);
+                    double expectedPdf = getPdfNumerical(distCondWeibull, x);
+                    EXPECT_NEAR(pdf, expectedPdf, 1e-4);
+                }
+            }
+
         }
     }
 }
