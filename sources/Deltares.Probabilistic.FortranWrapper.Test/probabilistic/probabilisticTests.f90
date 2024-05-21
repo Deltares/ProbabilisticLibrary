@@ -62,7 +62,7 @@ subroutine allProbabilisticTests
     call allProbMethodsWaartsFunctionsNoIterationTest
     call allHohenbichlerTests
     call allCombineElementsTests
-    !call allPerformImportanceSamplingTests
+    call allPerformImportanceSamplingTests
     !call allPerformAdaptiveMCIStests
     call performAllDSTests
     call allUpscalingTests
