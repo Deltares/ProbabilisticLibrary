@@ -63,6 +63,8 @@ subroutine testFirstRandomValue
 
     call assert_comparable( randomValue, 0.755450129508972d0 , margin, "unexpected return value randomValue" )
 
+    call cleanupRandomGenerator()
+
 end subroutine testFirstRandomValue
 
 subroutine testGenerateRandomValues
@@ -86,6 +88,8 @@ subroutine testGenerateRandomValues
     enddo
 
     close( fileId )
+
+    call cleanupRandomGenerator()
 
     call assert_comparable( randomValue, 0.7785768508911d0 , margin, "unexpected return value randomValue" )
 

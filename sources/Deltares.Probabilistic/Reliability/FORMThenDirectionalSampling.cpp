@@ -21,6 +21,7 @@ namespace Deltares
                 }
             }
 
+            modelRunner->clear();
             auto ds = DirectionalSampling();
             ds.Settings = DsSettings;
             auto dsDesignPoint = ds.getDesignPoint(modelRunner);

@@ -1,7 +1,5 @@
 #include "../Deltares.Probabilistic/Math/Randomizers/GeorgeMarsagliaRandomValueGenerator.h"
 
-//using namespace Deltares::ProbLibCore;
-
 // note: only one instance of the generator
 // that suffices for testing the properties.
 static Deltares::Numeric::GeorgeMarsagliaRandomValueGenerator* gm;
@@ -19,3 +17,8 @@ void getrandomvalue(double* randomValue)
     *randomValue = gm->next();
 }
 
+extern "C"
+void cleanuprandomgenerator()
+{
+    delete gm;
+}

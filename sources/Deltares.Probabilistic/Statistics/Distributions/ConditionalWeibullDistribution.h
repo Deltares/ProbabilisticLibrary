@@ -8,7 +8,7 @@ namespace Deltares
 		/// <summary>
 		/// Conditional Weibull Distribution described in terms of exceedance
 		/// frequencies rather than probabilities.
-		/// No all methods are implemented.
+		/// Not all methods are implemented.
 		/// </summary>
 		class ConditionalWeibullDistribution : public Distribution
 		{
@@ -30,6 +30,9 @@ namespace Deltares
 			void fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values) override;
 			std::vector<double> getSpecialPoints(std::shared_ptr<StochastProperties> stochast) override;
 			std::vector<DistributionPropertyType> getParameters() override { return { Shift, Scale, Shape }; }
+		private:
+            double getExponent(std::shared_ptr<StochastProperties> stochast, double x);
+			const double tresholdF = 3.34e-8;
 		};
 	}
 }
