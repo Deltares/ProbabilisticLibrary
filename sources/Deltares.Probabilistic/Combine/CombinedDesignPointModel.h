@@ -1,6 +1,6 @@
 #pragma once
 
-#include "combiner.h"
+#include "Combiner.h"
 #include "DesignPointModel.h"
 #include "../Reliability/DesignPoint.h"
 

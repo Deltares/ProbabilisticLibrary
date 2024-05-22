@@ -12,7 +12,7 @@
 #include "../Statistics/Stochast.h"
 #include "../Statistics/CorrelationMatrix.h"
 #include "../Statistics/StandardNormal.h"
-#include "Combiner.h"
+#include "combiner.h"
 #include "CombinedDesignPointModel.h"
 
 namespace Deltares
