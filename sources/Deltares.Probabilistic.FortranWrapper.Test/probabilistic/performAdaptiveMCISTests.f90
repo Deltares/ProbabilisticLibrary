@@ -29,6 +29,7 @@ module performAdaptiveMCIStests
     use interface_distributions
     use sparseWaartsTestFunctions
     use toolkitTestFunctions
+    use sparseWaartsTestFunctions
 
     implicit none
 
@@ -126,6 +127,7 @@ subroutine AdaptiveImportanceSamplingTestLinear
     integer                       :: i
     integer                       :: nStochasts
     logical                       :: conv
+    type(tpAdaptiveIS)            :: AdaptiveIS
 
     nStochasts = 2
     allocate( alpha(nStochasts), x(nStochasts), iPoint(nStochasts) )
@@ -146,7 +148,19 @@ subroutine AdaptiveImportanceSamplingTestLinear
     ! - 1000, 2000 and 10000 samples (min, max, final)
     ! - coefficient for failure 0.01 (choose the same for non-failure)
     ! - scale factor for variance 2.0
-    call setParametersProbabilisticAdpMCIS( probDb, 1, 1000, 2000, 10000, 5, 0.01_wp, 0.01_wp, 0.1_wp, 0, 1.0_wp, 2.0_wp )
+    AdaptiveIS%seedPRNG           = 1
+    AdaptiveIS%minimumSamples     = 1000
+    AdaptiveIS%maximumSamples     = 2000
+    AdaptiveIS%maxSamplesDef      = 10000
+    AdaptiveIS%Nadp               = 5
+    AdaptiveIS%varCoeffFailure    = 0.01_wp
+    AdaptiveIS%varCoeffNoFailure  = 0.01_wp
+    AdaptiveIS%epsFailed          = 0.1_wp
+    AdaptiveIS%minFailed          = 0
+    AdaptiveIS%increaseVariance   = 1.0_wp
+    AdaptiveIS%varianceFactor     = [ (2.0_wp, i = 1,nStochasts) ]
+
+    call setParametersProbabilisticAdpMCIS( probDb, AdaptiveIS)
 
     ! Perform computation to determine alpha and beta
     call performAdpMCIS( probDb, linearIsShiftZ, x, alpha, beta, conv )
@@ -182,6 +196,8 @@ subroutine AdaptiveImportanceSamplingTestNonLinear
     integer                       :: nStochasts
     logical                       :: conv
 
+    type(tpAdaptiveIS)            :: AdaptiveIS
+
     nStochasts = 2
     allocate( alpha(nStochasts), x(nStochasts), iPoint(nStochasts) )
     iPoint = [ (i, i = 1,nStochasts) ]
@@ -201,7 +217,18 @@ subroutine AdaptiveImportanceSamplingTestNonLinear
     ! - 1000, 2000 and 5000 samples (min, max, final)
     ! - coefficient for failure 0.01 (choose the same for non-failure)
     ! - scale factor for variance 1.5
-    call setParametersProbabilisticAdpMCIS( probDb, 1, 1000, 2000, 5000, 5, 0.01_wp, 0.01_wp, 0.25_wp, 0, 1.0_wp, 1.5_wp )
+    AdaptiveIS%seedPRNG           = 1
+    AdaptiveIS%minimumSamples     = 1000
+    AdaptiveIS%maximumSamples     = 2000
+    AdaptiveIS%maxSamplesDef      = 5000
+    AdaptiveIS%Nadp               = 5
+    AdaptiveIS%varCoeffFailure    = 0.01_wp
+    AdaptiveIS%varCoeffNoFailure  = 0.01_wp
+    AdaptiveIS%epsFailed          = 0.25_wp
+    AdaptiveIS%minFailed          = 0
+    AdaptiveIS%increaseVariance   = 1.0_wp
+    AdaptiveIS%varianceFactor     = [ (1.5_wp, i = 1,nStochasts) ]
+    call setParametersProbabilisticAdpMCIS( probDb, AdaptiveIS )
     
     ! Perform computation to determine alpha and beta
     call performAdpMCIS( probDb, nonlinearIsZ, x, alpha, beta, conv )
@@ -236,6 +263,7 @@ subroutine AdaptiveImportanceSamplingTestMany
     integer                       :: i
     integer, parameter            :: nStochasts = 13
     logical                       :: conv
+    type(tpAdaptiveIS)            :: AdaptiveIS
 
     allocate( alpha(nStochasts), x(nStochasts), iPoint(nStochasts) )
     iPoint = [ (i, i = 1,nStochasts) ]
@@ -255,7 +283,18 @@ subroutine AdaptiveImportanceSamplingTestMany
     ! - 1000, 2000 and 5000 samples (min, max, final)
     ! - coefficient for failure 0.01 (choose the same for non-failure)
     ! - scale factor for variance 1.0
-    call setParametersProbabilisticAdpMCIS( probDb, 1, 1000, 2000, 5000, 5, 0.01_wp, 0.01_wp, 0.25_wp, 0, 1.0_wp, 1.0_wp )
+    AdaptiveIS%seedPRNG           = 1
+    AdaptiveIS%minimumSamples     = 1000
+    AdaptiveIS%maximumSamples     = 2000
+    AdaptiveIS%maxSamplesDef      = 5000
+    AdaptiveIS%Nadp               = 5
+    AdaptiveIS%varCoeffFailure    = 0.01_wp
+    AdaptiveIS%varCoeffNoFailure  = 0.01_wp
+    AdaptiveIS%epsFailed          = 0.25_wp
+    AdaptiveIS%minFailed          = 0
+    AdaptiveIS%increaseVariance   = 1.0_wp
+    AdaptiveIS%varianceFactor     = [ (1.0_wp, i = 1,nStochasts) ]
+    call setParametersProbabilisticAdpMCIS( probDb, adaptiveIS)
 
     ! Perform computation to determine alpha and beta
     call performAdpMCIS( probDb, manyIsZ, x, alpha, beta, conv )
@@ -290,6 +329,7 @@ subroutine AdaptiveImportanceSamplingTestBligh
 
     integer, parameter            :: nStochasts = 4
     logical                       :: conv
+    type(tpAdaptiveIS)            :: AdaptiveIS
 
     allocate( alpha(nStochasts), x(nStochasts), iPoint(nStochasts) )
     iPoint = [ (i, i = 1,nStochasts) ]
@@ -311,13 +351,26 @@ subroutine AdaptiveImportanceSamplingTestBligh
     ! - coefficient for failure 0.01 (choose the same for non-failure)
     ! - different values of scale factor for variance
     ! - different values of shift
-    call setParametersProbabilisticAdpMCIS( probDb, 1, 1000, 2000, 10000, 5, 0.01_wp, 0.01_wp, 0.5_wp, 0, 1.0_wp, 1.5_wp )
+    AdaptiveIS%seedPRNG           = 1
+    AdaptiveIS%minimumSamples     = 1000
+    AdaptiveIS%maximumSamples     = 2000
+    AdaptiveIS%maxSamplesDef      = 10000
+    AdaptiveIS%Nadp               = 5
+    AdaptiveIS%varCoeffFailure    = 0.01_wp
+    AdaptiveIS%varCoeffNoFailure  = 0.01_wp
+    AdaptiveIS%epsFailed          = 0.5_wp
+    AdaptiveIS%minFailed          = 0
+    AdaptiveIS%increaseVariance   = 1.0_wp
+    AdaptiveIS%varianceFactor     = [ (1.5_wp, i = 1,nStochasts) ]
+    call setParametersProbabilisticAdpMCIS( probDb, adaptiveIS)
 
     probDb%method%AdaptiveIS%startValue = [-0.97798_wp, -5.0_wp, 0.0_wp, 0.021763_wp]
     probDb%method%AdaptiveIS%varianceFactor = [1.0_wp, 2.0_wp, 1.0_wp, 2.0_wp]
 
     ! Perform computation to determine alpha and beta
+    call initSparseWaartsTestsFunctions(probDb%stovar%maxStochasts, probDb%method%maxParallelThreads)
     call performAdpMCIS( probDb, blighZ, x, alpha, beta, conv )
+    call cleanUpWaartsTestsFunctions
 
     call assert_comparable(beta, betaKnown, margin, "The computed beta deviates from the analytically computed value")
     call finalizeProbabilisticCalculation(probDb)
@@ -349,6 +402,7 @@ subroutine AdaptiveImportanceSamplingTestBligh2
 
     integer, parameter            :: nStochasts = 4
     logical                       :: conv
+    type(tpAdaptiveIS)            :: AdaptiveIS
 
     allocate( alpha(nStochasts), x(nStochasts), iPoint(nStochasts) )
     iPoint = [ (i, i = 1,nStochasts) ]
@@ -369,10 +423,23 @@ subroutine AdaptiveImportanceSamplingTestBligh2
     ! - 1000, 2000 and 10000 samples (min, max, final)
     ! - coefficient for failure 0.01 (choose the same for non-failure)
     ! - scale factor for variance 1.5
-    call setParametersProbabilisticAdpMCIS( probDb, 1, 1000, 2000, 10000, 5, 0.01_wp, 0.01_wp, 0.5_wp, 0, 1.0_wp, 1.5_wp )
+    AdaptiveIS%seedPRNG           = 1
+    AdaptiveIS%minimumSamples     = 1000
+    AdaptiveIS%maximumSamples     = 2000
+    AdaptiveIS%maxSamplesDef      = 10000
+    AdaptiveIS%Nadp               = 5
+    AdaptiveIS%varCoeffFailure    = 0.01_wp
+    AdaptiveIS%varCoeffNoFailure  = 0.01_wp
+    AdaptiveIS%epsFailed          = 0.5_wp
+    AdaptiveIS%minFailed          = 0
+    AdaptiveIS%increaseVariance   = 1.0_wp
+    AdaptiveIS%varianceFactor     = [ (1.5_wp, i = 1,nStochasts) ]
+    call setParametersProbabilisticAdpMCIS( probDb, adaptiveIS )
 
     ! Perform computation to determine alpha and beta
+    call initSparseWaartsTestsFunctions(probDb%stovar%maxStochasts, probDb%method%maxParallelThreads)
     call performAdpMCIS( probDb, blighZ, x, alpha, beta, conv )
+    call cleanUpWaartsTestsFunctions
 
     call assert_comparable(beta, betaKnown, margin, "The computed beta deviates from the analytically computed value")
     call finalizeProbabilisticCalculation(probDb)
@@ -404,6 +471,7 @@ subroutine AdaptiveImportanceSamplingTestBligh3
 
     integer, parameter            :: nStochasts = 4
     logical                       :: conv
+    type(tpAdaptiveIS)            :: AdaptiveIS
 
     allocate( alpha(nStochasts), x(nStochasts), iPoint(nStochasts) )
     iPoint = [ (i, i = 1,nStochasts) ]
@@ -424,15 +492,25 @@ subroutine AdaptiveImportanceSamplingTestBligh3
     ! - 1000, 2000 and 10000 samples (min, max, final)
     ! - coefficient for failure 0.01 (choose the same for non-failure)
     ! - scale factor for variance 1.5
-    call setParametersProbabilisticAdpMCIS( probDb, 1, 1000, 2000, 10000, 5, 0.01_wp, 0.01_wp, 0.001_wp, 0, 1.0_wp, 1.5_wp )
+    AdaptiveIS%seedPRNG           = 1
+    AdaptiveIS%minimumSamples     = 1000
+    AdaptiveIS%maximumSamples     = 2000
+    AdaptiveIS%maxSamplesDef      = 10000
+    AdaptiveIS%Nadp               = 5
+    AdaptiveIS%varCoeffFailure    = 0.01_wp
+    AdaptiveIS%varCoeffNoFailure  = 0.01_wp
+    AdaptiveIS%epsFailed          = 0.001_wp
+    AdaptiveIS%minFailed          = 0
+    AdaptiveIS%increaseVariance   = 1.0_wp
+    AdaptiveIS%varianceFactor     = [ (1.5_wp, i = 1,nStochasts) ]
+    call setParametersProbabilisticAdpMCIS( probDb, adaptiveIS )
 
     ! Perform computation to determine alpha and beta
+    call initSparseWaartsTestsFunctions(probDb%stovar%maxStochasts, probDb%method%maxParallelThreads)
     call performAdpMCIS( probDb, blighZ, x, alpha, beta, conv )
-    call assert_comparable(beta, betaKnown, margin, "The computed beta deviates from the analytically computed value")
+    call cleanUpWaartsTestsFunctions
 
-    probDb%method%adaptiveIS%globalModelOption = 1
-    call performAdpMCIS( probDb, blighZ, x, alpha, beta, conv )
-    call assert_comparable(beta, 5.4752446_wp, margin, "The computed beta deviates from the analytically computed value")
+    call assert_comparable(beta, betaKnown, margin, "The computed beta deviates from the analytically computed value")
 
     call finalizeProbabilisticCalculation(probDb)
 

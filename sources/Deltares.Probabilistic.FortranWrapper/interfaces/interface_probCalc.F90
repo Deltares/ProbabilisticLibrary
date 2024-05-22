@@ -180,7 +180,6 @@ module interface_probCalc
       integer                     :: maxSamplesDef        !< Maximum numbers samples in Recalculate
       integer                     :: minFailed            !< check whether variance must be increased
       real(kind=wp)               :: increaseVariance     !< additional value when updating variance
-      integer                     :: globalModelOption = 0 !< global model option (works identical to Fortran or not)
   end type tpAdaptiveIS
 
   type, public :: tpMeth
@@ -385,7 +384,6 @@ subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, conv, convCri
         method%seed2           = probDb%method%adaptiveIS%seedPRNG
         method%trialLoops      = probDb%method%adaptiveIS%nAdp
         method%numExtraInt     = probDb%method%adaptiveIS%maxSamplesDef
-        method%numExtraInt2    = probDb%method%adaptiveIS%globalModelOption
         method%numExtraReal1   = probDb%method%adaptiveIS%epsFailed
         method%numExtraReal2   = probDb%method%adaptiveIS%increaseVariance
         method%iterationMethod = probDb%method%adaptiveIS%minFailed

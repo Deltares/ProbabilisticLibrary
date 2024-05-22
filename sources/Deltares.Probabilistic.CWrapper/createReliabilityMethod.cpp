@@ -6,6 +6,7 @@
 #include "../Deltares.Probabilistic/Reliability/FORMThenDirectionalSampling.h"
 #include "../Deltares.Probabilistic/Reliability/DirectionalSamplingThenFORM.h"
 #include "../Deltares.Probabilistic/Reliability/ImportanceSampling.h"
+#include "../Deltares.Probabilistic/Reliability/AdaptiveImportanceSampling.h"
 
 using namespace Deltares::ProbLibCore;
 using namespace Deltares::Models;
@@ -99,7 +100,28 @@ std::shared_ptr<ReliabilityMethod> createReliabilityMethod::selectMethod(const b
 		}
 		return impSampling; }
 		break;
-	default:
+    case (ProbMethod::AdaptiveIM): {
+        auto AdaptImpSampling = std::make_shared<AdaptiveImportanceSampling>();
+        auto r = getRnd(bs);
+        AdaptImpSampling->Settings->importanceSamplingSettings->randomSettings.swap(r);
+        AdaptImpSampling->Settings->importanceSamplingSettings->VariationCoefficient = bs.tolB;
+        AdaptImpSampling->Settings->importanceSamplingSettings->MinimumSamples = bs.minSamples;
+        AdaptImpSampling->Settings->importanceSamplingSettings->MaximumSamples = bs.maxSamples;
+        AdaptImpSampling->Settings->importanceSamplingSettings->MaximumSamplesNoResult = bs.maxSamples;
+        AdaptImpSampling->Settings->MaxVarianceLoops = bs.trialLoops;
+        AdaptImpSampling->Settings->LoopVarianceIncrement = bs.numExtraReal2;
+        AdaptImpSampling->Settings->AutoMaximumSamples = true; // TODO
+        AdaptImpSampling->Settings->importanceSamplingSettings->designPointMethod = DesignPointMethod::NearestToMean;  // TODO
+        for (size_t i = 0; i < nStoch; i++)
+        {
+            auto s = std::make_shared<StochastSettings>();
+            s->stochast = stochasts[i];
+            s->VarianceFactor = bs.varianceFactor;
+            AdaptImpSampling->Settings->importanceSamplingSettings->StochastSet->stochastSettings.push_back(s);
+        }
+        return AdaptImpSampling; }
+        break;
+    default:
 		throw probLibException("method not implemented yet: ", (int)bs.methodId);
 		break;
 	}

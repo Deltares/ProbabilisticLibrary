@@ -97,7 +97,7 @@ subroutine allProbMethodsWaartsFunctionsTests(minTestLevel)
     character(len=255)            :: testName
 
     integer                       :: level
-    integer, parameter            :: availableMethods(*) = [5, 6, 12, 11, 1, 3, 4] ! TODO the rest is not implemented yet
+    integer, parameter            :: availableMethods(*) = [7, 5, 6, 12, 11, 1, 3, 4] ! TODO the rest is not implemented yet
 
     character(len=60), dimension(14) :: functionName = &
         (/   "LinearResistanceSolicitation           ", &     ! 1
@@ -133,6 +133,8 @@ subroutine allProbMethodsWaartsFunctionsTests(minTestLevel)
                 probMethodName = "NumericalIntegration"
             case (methodImportanceSampling)
                 probMethodName = "ImportanceSampling"
+            case (methodAdaptiveImportanceSampling)
+                probMethodName = "AdaptiveImportanceSampling"
             case (methodFORMandDirSampling)
                 probMethodName = "FORMandDirSampling"
             case (methodDirSamplingWithFORMiterations)

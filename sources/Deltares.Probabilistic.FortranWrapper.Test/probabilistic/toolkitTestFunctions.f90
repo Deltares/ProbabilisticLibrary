@@ -75,18 +75,4 @@ function manyIsZ( x, compSetting, ierr ) result(z) bind(c)
 
 end function manyIsZ
 
-function blighZ( x, compSetting, ierr ) result(z) bind(c)
-
-    real(kind=wp),            intent(inout) :: x(*)
-    type(computationSetting), intent(in   ) :: compSetting
-    type(tError),             intent(inout) :: ierr
-    real(kind=wp)                           :: z
-
-    ierr%icode = 0
-    if (compSetting%designPointSetting == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
-
-    z = x(1) * x(2) / x (3) - x(4)
-
-end function blighZ
-
 end module toolkitTestFunctions

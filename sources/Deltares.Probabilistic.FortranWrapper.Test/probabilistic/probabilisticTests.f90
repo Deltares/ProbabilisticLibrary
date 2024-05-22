@@ -63,7 +63,7 @@ subroutine allProbabilisticTests
     call allHohenbichlerTests
     call allCombineElementsTests
     call allPerformImportanceSamplingTests
-    !call allPerformAdaptiveMCIStests
+    call allPerformAdaptiveMCIStests
     call performAllDSTests
     call allUpscalingTests
     call allUpscaleLengthTests
