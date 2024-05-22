@@ -21,7 +21,7 @@ __Correlation models:__ Gaussian correlation model.
 
 ## Scientific background
 
-The scientific background of the library can be found here: [DOCUMENTATION](doc\scientific_background.tex).
+The scientific background of the library can be found here: [DOCUMENTATION](doc/scientific_background.tex).
 
 ## License
 
