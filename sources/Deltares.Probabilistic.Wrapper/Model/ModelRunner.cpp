@@ -29,18 +29,18 @@ namespace Deltares
 
 				this->Stochasts->AddRange(stochasts);
 
-				std::vector<std::shared_ptr<Statistics::Stochast> > native_stochasts;
+				std::vector<std::shared_ptr<Statistics::Stochast> > nativeStochasts;
 
 				for (int i = 0; i < stochasts->Count; i++)
 				{
-					native_stochasts.push_back(stochasts[i]->GetStochast());
+					nativeStochasts.push_back(stochasts[i]->GetStochast());
 				}
 
-				std::shared_ptr<Models::UConverter> uConverter = std::make_shared<Models::UConverter>(native_stochasts, correlationMatrix->GetCorrelationMatrix());
+                const std::shared_ptr<Models::UConverter> uConverter = std::make_shared<Models::UConverter>(nativeStochasts, correlationMatrix->GetCorrelationMatrix());
 
-				std::shared_ptr<Models::ZModel> zModel = getZModel();
+                const std::shared_ptr<Models::ZModel> zModel = getZModel();
 
-				std::shared_ptr<Models::ProgressIndicator> progress = progressIndicator != nullptr ? progressIndicator->GetProgressIndicator() : nullptr;
+                const std::shared_ptr<Models::ProgressIndicator> progress = progressIndicator != nullptr ? progressIndicator->GetProgressIndicator() : nullptr;
 
 				this->shared = new SharedPointerProvider(new Models::ModelRunner(zModel, uConverter, progress));
 			}

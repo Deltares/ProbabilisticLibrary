@@ -49,13 +49,21 @@ namespace Deltares
                 for (std::shared_ptr<DesignPoint> designPoint : designPoints)
                 {
                     invert(designPoint);
+                    invertedDesignPoint->ContributingDesignPoints.push_back(designPoint);
                 }
 
                 return invertedDesignPoint;
             }
             else
             {
-                return combineDesignPointsAdjusted(combineMethodType, correlationMatrix, progress, designPoints);
+                std::shared_ptr<DesignPoint> designPoint =  combineDesignPointsAdjusted(combineMethodType, correlationMatrix, progress, designPoints);
+
+                for (size_t i = 0; i < designPoints.size(); i++)
+                {
+                    designPoint->ContributingDesignPoints.push_back(designPoints[i]);
+                }
+
+                return designPoint;
             }
         }
 
@@ -180,6 +188,8 @@ namespace Deltares
                     alpha->Stochast = stochasts[i];
                     alpha->Alpha = alphaValue;
                     alpha->AlphaCorrelated = alphaValue;
+                    alpha->U = - combinedRealization->Beta * alphaValue;
+                    alpha->X = stochasts[i]->getXFromU(alpha->U);
                     combinedRealization->Alphas.push_back(alpha);
                 }
 
@@ -200,16 +210,25 @@ namespace Deltares
         {
             std::vector<std::shared_ptr<Stochast>> uniqueStochasts;
 
-            std::unordered_set< std::shared_ptr<Statistics::Stochast>> stochasts;
+            std::unordered_set<std::shared_ptr<Statistics::Stochast>> addedStochasts;
 
-            for (std::shared_ptr<DesignPoint> designPoint : designPoints)
+            // when multiple identical stochasts are present in one design point, they should all be added to the unique design points
+
+            for (const std::shared_ptr<DesignPoint> designPoint : designPoints)
             {
                 for (std::shared_ptr<StochastPointAlpha> alpha : designPoint->Alphas)
                 {
-                    if (!stochasts.contains(alpha->Stochast))
+                    if (!addedStochasts.contains(alpha->Stochast))
                     {
                         uniqueStochasts.push_back(alpha->Stochast);
-                        stochasts.insert(alpha->Stochast);
+                    }
+                }
+
+                for (std::shared_ptr<StochastPointAlpha> alpha : designPoint->Alphas)
+                {
+                    if (!addedStochasts.contains(alpha->Stochast))
+                    {
+                        addedStochasts.insert(alpha->Stochast);
                     }
                 }
             }
@@ -234,6 +253,8 @@ namespace Deltares
             {
                 model->addDesignPointModel(designPoint);
             }
+
+            model->updateStochasts();
 
             return model;
         }

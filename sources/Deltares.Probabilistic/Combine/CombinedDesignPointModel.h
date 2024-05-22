@@ -18,6 +18,7 @@ namespace Deltares
 
             void addStochasts(std::vector<std::shared_ptr<Statistics::Stochast>> stochasts);
             void addDesignPointModel(std::shared_ptr<DesignPoint> designPoint, bool invert = false, bool negate = false);
+            void updateStochasts();
             double getStartValue(std::shared_ptr<Statistics::Stochast> parameter);
 
             void calculate(std::shared_ptr<ModelSample> sample);

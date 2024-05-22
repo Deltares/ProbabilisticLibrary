@@ -1,4 +1,7 @@
 #include "DesignPointModel.h"
+
+#include <unordered_set>
+
 #include "../Math/NumericSupport.h"
 
 namespace Deltares
@@ -55,21 +58,31 @@ namespace Deltares
         {
             alphas.clear();
 
+            // assigned stochasts. take into account that parameters are not unique
+
+            std::unordered_set<std::shared_ptr<Models::StochastPointAlpha>> usedAlphas;
+
             for (size_t i = 0; i < parameters.size(); i++)
             {
                 double alphaValue = 0;
 
                 for (size_t j = 0; j < this->designPoint->Alphas.size(); j++)
                 {
-                    if (this->designPoint->Alphas[j]->Stochast == parameters[i])
+                    if (this->designPoint->Alphas[j]->Stochast == parameters[i] && !usedAlphas.contains(this->designPoint->Alphas[j]))
                     {
                         alphaValue = this->designPoint->Alphas[j]->Alpha;
+                        usedAlphas.insert(this->designPoint->Alphas[j]);
                         break;
                     }
                 }
 
                 alphas.push_back(alphaValue);
             }
+        }
+
+        bool DesignPointModel::isVarying(int index)
+        {
+            return this->alphas[index] != 0.0;
         }
     }
 }

@@ -17,18 +17,8 @@ namespace Deltares
                 this->stochasts.push_back(stochasts[i]);
 
                 std::shared_ptr<Stochast> normalizedStochast = std::make_shared<Stochast>();
-
-                if (stochasts[i]->isVarying())
-                {
-                    normalizedStochast->setDistributionType(DistributionType::Normal);
-                    normalizedStochast->getProperties()->Location = 0;
-                    normalizedStochast->getProperties()->Scale = 1;
-                }
-                else
-                {
-                    normalizedStochast->setDistributionType(DistributionType::Deterministic);
-                    normalizedStochast->getProperties()->Location = 0;
-                }
+                normalizedStochast->setDistributionType(DistributionType::Deterministic);
+                normalizedStochast->getProperties()->Location = 0;
 
                 this->standardNormalStochasts.push_back(normalizedStochast);
             }
@@ -46,6 +36,30 @@ namespace Deltares
             designPointModel->setParameters(this->stochasts);
         }
 
+        void CombinedDesignPointModel::updateStochasts()
+        {
+            for (size_t i = 0; i < this->standardNormalStochasts.size(); i++)
+            {
+                bool isVarying = false;
+
+                for (size_t j = 0; j < this->designPointModels.size(); j++)
+                {
+                    if (this->designPointModels[j]->isVarying(i))
+                    {
+                        isVarying = true;
+                        break;
+                    }
+                }
+
+                if (isVarying)
+                {
+                    this->standardNormalStochasts[i]->setDistributionType(DistributionType::Normal);
+                    this->standardNormalStochasts[i]->getProperties()->Location = 0;
+                    this->standardNormalStochasts[i]->getProperties()->Scale = 1;
+                }
+            }
+        }
+
         void CombinedDesignPointModel::calculate(std::shared_ptr<ModelSample> sample)
         {
             double result = this->combineType == combineAndOr::combOr ? std::numeric_limits<double>::max() : - std::numeric_limits<double>::max();
@@ -53,7 +67,15 @@ namespace Deltares
             for (std::shared_ptr<DesignPointModel> designPointModel : designPointModels)
             {
                 designPointModel->calculate(sample);
-                result = this->combineType == combineAndOr::combOr ? std::min(result, sample->Z) : std::max(result, sample->Z);
+                if (isnan(sample->Z))
+                {
+                    result = nan("");
+                    break;
+                }
+                else
+                {
+                    result = this->combineType == combineAndOr::combOr ? std::min(result, sample->Z) : std::max(result, sample->Z);
+                }
             }
 
             sample->Z = result;

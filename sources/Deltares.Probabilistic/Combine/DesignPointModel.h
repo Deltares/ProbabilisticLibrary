@@ -18,6 +18,7 @@ namespace Deltares
             double getDirectionBeta(std::shared_ptr<ModelSample> sample);
 
             void setParameters(std::vector<std::shared_ptr<Statistics::Stochast>>& parameters);
+            bool isVarying(int index);
         private:
             std::vector<double> alphas;
         };
