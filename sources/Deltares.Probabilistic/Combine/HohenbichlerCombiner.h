@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include <memory>
-#include "Combiner.h"
+#include "combiner.h"
 #include "alphaBeta.h"
 
 namespace Deltares

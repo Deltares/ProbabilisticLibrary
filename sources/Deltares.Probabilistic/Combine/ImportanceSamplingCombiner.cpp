@@ -1,7 +1,11 @@
 ﻿#include "ImportanceSamplingCombiner.h"
 
 #include <algorithm>
+#if __has_include(<format>)
 #include <format>
+#else
+#include "../Utils/probLibString.h"
+#endif
 #include <unordered_set>
 
 #include "../Reliability/DesignPoint.h"
@@ -12,7 +16,7 @@
 #include "../Statistics/Stochast.h"
 #include "../Statistics/CorrelationMatrix.h"
 #include "../Statistics/StandardNormal.h"
-#include "Combiner.h"
+#include "combiner.h"
 #include "CombinedDesignPointModel.h"
 
 namespace Deltares
@@ -130,7 +134,13 @@ namespace Deltares
                 if (progress != nullptr)
                 {
                     progress->doProgress(0);
+#ifdef __cpp_lib_format
                     progress->doTextualProgress(ProgressType::Detailed, std::format("Combining design points {0:}/{1:}, Reliability index = {2:.2F}", 0, designPoints.size(), reliabilityIndex));
+#else
+                    auto pl = Deltares::Reliability::probLibString();
+                    progress->doTextualProgress(ProgressType::Detailed, "Combining design points 0/" + std::to_string(designPoints.size()) +
+                        ", Reliability index = " + pl.double2str(reliabilityIndex));
+#endif
                 }
 
                 std::vector<std::shared_ptr<DesignPoint>> previousRealizations;
@@ -165,7 +175,13 @@ namespace Deltares
                     if (progress != nullptr)
                     {
                         progress->doProgress(Numeric::NumericSupport::Divide(i, designPoints.size()));
+#ifdef __cpp_lib_format
                         progress->doTextualProgress(ProgressType::Detailed, std::format("{0:}/{1:}, Reliability index = {2:.2F}, Δ Reliability index = {3:.3F}", i, designPoints.size(), reliabilityIndex, diffReliability));
+#else
+                        auto pl = Deltares::Reliability::probLibString();
+                        progress->doTextualProgress(ProgressType::Detailed, std::to_string(i) + "/" + std::to_string(designPoints.size()) + ", Reliability index = " +
+                            pl.double2str(reliabilityIndex) + " Δ Reliability index = " + pl.double2str(diffReliability));
+#endif
                     }
 
                     if (diffReliability < deltaReliabilityIndex)
@@ -420,7 +436,13 @@ namespace Deltares
                     if (progress != nullptr)
                     {
                         progress->doProgress(Numeric::NumericSupport::Divide(iterations, maxIterations));
+#ifdef __cpp_lib_format
                         progress->doTextualProgress(ProgressType::Detailed, std::format("{0:}/{1:}, Reliability index = {2:.2F}", iterations, maxIterations, designPoint->Beta));
+#else
+                        auto pl = Deltares::Reliability::probLibString();
+                        progress->doTextualProgress(ProgressType::Detailed, std::to_string(iterations) + "/" +
+                            std::to_string(maxIterations) + ", Reliability index = " + pl.double2str(designPoint->Beta));
+#endif
                     }
 
                     if (designPoint->convergenceReport->FailFraction < requiredFailures)
