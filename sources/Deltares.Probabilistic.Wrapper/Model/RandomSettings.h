@@ -12,6 +12,8 @@ namespace Deltares
 			using namespace Deltares::Models;
 			using namespace Deltares::Utils::Wrappers;
 
+            public enum class RandomGeneratorType { MersenneTwister, GeorgeMarsaglia, ModifiedKnuthSubtractive };
+
 			public ref class RandomSettings
 			{
 			private:
@@ -19,7 +21,6 @@ namespace Deltares
 
 				bool hasLimitedRandomValues = false;
 				bool isStochastRepeatableRandom = false;
-				bool skipUnvaryingParameters = true;
 
 			public:
 				RandomSettings()
@@ -47,7 +48,41 @@ namespace Deltares
 					void set(bool value) { shared->object->IsRepeatableRandom = value; }
 				}
 
-				// TODO: next properties to be removed when RandomValueGenerator is not used any more
+				/// <summary>
+				/// Indicates whether the randomizer should draw dummy random values for unvarying parameters,
+				/// so that changing distributions from varying to unvarying wil not affect the random values of varying parameters
+				/// </summary>
+				property bool SkipUnvaryingParameters
+				{
+					bool get() { return shared->object->SkipUnvaryingParameters; }
+					void set(bool value) { shared->object->SkipUnvaryingParameters = value; }
+				}
+
+                property Wrappers::RandomGeneratorType RandomGeneratorType
+                {
+                    Wrappers::RandomGeneratorType get()
+                    {
+                        switch (shared->object->RandomGeneratorType)
+                        {
+                        case Numeric::RandomValueGeneratorType::MersenneTwister: return Models::Wrappers::RandomGeneratorType::MersenneTwister;
+                        case Numeric::RandomValueGeneratorType::GeorgeMarsaglia: return Models::Wrappers::RandomGeneratorType::GeorgeMarsaglia;
+                        case Numeric::RandomValueGeneratorType::ModifiedKnuthSubtractive: return Models::Wrappers::RandomGeneratorType::ModifiedKnuthSubtractive;
+                        default: throw gcnew System::NotSupportedException("Random generator type");
+                        }
+                    }
+                    void set(Wrappers::RandomGeneratorType value)
+                    {
+                        switch (value)
+                        {
+                        case  Wrappers::RandomGeneratorType::MersenneTwister: shared->object->RandomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::MersenneTwister; break;
+                        case  Wrappers::RandomGeneratorType::GeorgeMarsaglia: shared->object->RandomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::GeorgeMarsaglia; break;
+                        case  Wrappers::RandomGeneratorType::ModifiedKnuthSubtractive: shared->object->RandomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::ModifiedKnuthSubtractive; break;
+                        default: throw gcnew System::NotSupportedException("Design point method");
+                        }
+                    }
+                }
+
+				// TODO: PROBL-42 remove this property when RandomValueGenerator is not used any more
 
 				/// <summary>
 				/// Indicates whether random values a limited to a certain range
@@ -58,23 +93,14 @@ namespace Deltares
 					void set(bool value) { hasLimitedRandomValues = value; }
 				}
 
-				/// <summary>
+                // TODO: PROBL-42 remove this property when RandomValueGenerator is not used any more
+                /// <summary>
 				/// Indicates whether random sequences is always the same for same <see cref="IHasStochast"/> names
 				/// </summary>
 				property bool IsStochastRepeatableRandom
 				{
 					bool get() { return isStochastRepeatableRandom; }
 					void set(bool value) { isStochastRepeatableRandom = value; }
-				}
-
-				/// <summary>
-				/// Indicates whether the randomizer should draw dummy random values for unvarying parameters,
-				/// so that changing distributions from varying to unvarying wil not affect the random values of varying parameters
-				/// </summary>
-				property bool SkipUnvaryingParameters
-				{
-					bool get() { return skipUnvaryingParameters; }
-					void set(bool value) { skipUnvaryingParameters = value; }
 				}
 
 

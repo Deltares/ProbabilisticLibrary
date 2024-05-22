@@ -53,11 +53,9 @@ subroutine fillDistribs(distribs)
     use interface_distributions
     type(tdistrib)              :: distribs(:)
 
-    call copystr("var1", distribs(1)%name)
     distribs(1)%distributionId = distributionNormal
     distribs(1)%params = (/1.0_dp, 2.0_dp, 0.0_dp, 0.0_dp/)
 
-    call copystr("var2", distribs(2)%name)
     distribs(2)%distributionId = distributionNormal
     distribs(2)%params = (/1.0_dp, 2.0_dp, 0.0_dp, 0.0_dp/)
 end subroutine fillDistribs
@@ -69,7 +67,7 @@ subroutine test_ds
     type(tMethod)               :: method
     type(tResult)               :: r
     integer                     :: i
-    integer                     :: compIds(20), ipoint(2)
+    integer                     :: compIds(20)
     character(len=ErrMsgLength) :: errmsg
     type(basicCorrelation)      :: correlations(0)
     real(kind=wp)               :: x(2)
@@ -87,9 +85,8 @@ subroutine test_ds
     method%numExtraInt = 50
 
     compIds(1) = 16
-    ipoint     = [0, 1] ! zero based, as it goes to c++
 
-    call probCalcF2C(method, distribs, 2, 2, correlations, 0,  zfunc, textualProgress, compIds, iPoint, x, r, ierr)
+    call probCalcF2C(method, distribs, 2, correlations, 0,  zfunc, textualProgress, compIds, x, r, ierr)
 
     call assert_equal(ierr%iCode, 0, "return code probCalcF2C <> 0")
 
@@ -112,7 +109,7 @@ subroutine test_ds_errorhandling
     type(tError)                :: ierr
     type(tMethod)               :: method
     type(tResult)               :: r
-    integer                     :: compIds(20), ipoint(2)
+    integer                     :: compIds(20)
     character(len=ErrMsgLength) :: errmsg
     type(basicCorrelation)      :: correlations(0)
     real(kind=wp)               :: x(2)
@@ -125,9 +122,8 @@ subroutine test_ds_errorhandling
     method%numExtraInt = 50
 
     compIds(1) = 17
-    ipoint     = [0, 1]
 
-    call probCalcF2C(method, distribs, 2, 2, correlations, 0, zfunc, textualProgress, compIds, ipoint, x, r, ierr)
+    call probCalcF2C(method, distribs, 2, correlations, 0, zfunc, textualProgress, compIds, x, r, ierr)
 
     call assert_equal(ierr%iCode, -1, "return code probCalcF2C <> 0")
 
@@ -142,7 +138,7 @@ subroutine test_form_errorhandling
     type(tError)                :: ierr
     type(tMethod)               :: method
     type(tResult)               :: r
-    integer                     :: compIds(20), ipoint(2)
+    integer                     :: compIds(20)
     character(len=ErrMsgLength) :: errmsg
     type(basicCorrelation)      :: correlations(0)
     real(kind=wp)               :: x(2)
@@ -157,9 +153,8 @@ subroutine test_form_errorhandling
     method%numExtraInt = 50
 
     compIds(1) = 17
-    ipoint     = [0, 1]
 
-    call probCalcF2C(method, distribs, 2, 2, correlations, 0, zfunc, textualProgress, compIds, ipoint, x, r, ierr)
+    call probCalcF2C(method, distribs, 2, correlations, 0, zfunc, textualProgress, compIds, x, r, ierr)
 
     call assert_equal(ierr%iCode, 0, "diff in return code probCalcF2C")
     convergence = r%convergence

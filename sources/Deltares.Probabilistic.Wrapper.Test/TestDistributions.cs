@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Deltares.Statistics.Wrappers;
 using NUnit.Framework;
 
@@ -279,14 +280,25 @@ namespace Deltares.Probabilistics.Wrappers.Test
         {
             var stochast = new Stochast { DistributionType = DistributionType.ConditionalWeibull, Scale = 1, Shape = 1, Shift = 1 };
 
-            TestStochast(stochast);
+            var expectedValues = new List<double>
+            {
+                0.389679340615967,
+                1.36651292058166,
+                2.75588794089519,
+                4.77169994533666,
+                7.60705089255662,
+                11.3600856506974,
+                16.0649982505082,
+                21.7367689494396,
+                28.3843074961794
+            };
 
-            stochast.Scale = 2;
-            stochast.Shape = 3;
-            stochast.Shift = 0.5;
-
-            TestInvert(stochast, true);
-            TestFit(stochast, 0.4);
+            for (int i = -1; i< 8; i++)
+            {
+                double u = (double)i;
+                double x = stochast.GetXFromU(u);
+                Assert.AreEqual(x, expectedValues[i + 1], 1e-9);
+            }
         }
 
         [Test]

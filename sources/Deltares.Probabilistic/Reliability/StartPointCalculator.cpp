@@ -97,7 +97,8 @@ namespace Deltares
 
 			for (int i = 0; i < nStochasts; i++)
 			{
-				if (!this->Settings->StochastSet->VaryingStochastSettings[i]->IsInitializationAllowed)
+				if (!this->Settings->StochastSet->VaryingStochastSettings[i]->IsInitializationAllowed || 
+					this->Settings->StochastSet->VaryingStochastSettings[i]->IsQualitative)
 				{
 					startPoint->Values[i] = 0;
 				}
@@ -243,6 +244,7 @@ namespace Deltares
 						uRay->Values[k] = task(k);
 					}
 					std::shared_ptr<Sample> u = uRay->getMultipliedSample(radiusFactor);
+					u->IterationIndex = i;
 					samples.push_back(u);
 				}
 				auto zValues = modelRunner->getZValues(samples);

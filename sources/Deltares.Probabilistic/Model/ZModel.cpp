@@ -20,7 +20,8 @@ namespace Deltares
 
 		void ZModel::invoke(std::shared_ptr<ModelSample> sample)
 		{
-			this->zLambda(sample);
+            sample->threadId = omp_get_thread_num();
+            this->zLambda(sample);
 		}
 
 		void ZModel::invoke(std::vector<std::shared_ptr<ModelSample>> samples)
@@ -30,13 +31,18 @@ namespace Deltares
 				#pragma omp parallel for
 				for (int i = 0; i < (int)samples.size(); i++)
 				{
-					invoke(samples[i]);
+                    invoke(samples[i]);
 				}
 			}
 			else
 			{
 				this->zMultipleLambda(samples);
 			}
+		}
+
+		double ZModel::getBeta(std::shared_ptr<ModelSample> sample, double beta)
+		{
+			return this->zBetaLambda(sample, beta);
 		}
 	}
 }

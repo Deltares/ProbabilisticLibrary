@@ -61,6 +61,7 @@ namespace Deltares
 
 			xSample->AllowProxy = sample->AllowProxy;
 			xSample->IterationIndex = sample->IterationIndex;
+			xSample->threadId = sample->threadId;
 			xSample->Weight = sample->Weight;
 			xSample->IsRestartRequired = sample->IsRestartRequired;
 			xSample->Beta = sample->getBeta();
@@ -68,6 +69,11 @@ namespace Deltares
 			return xSample;
 		}
 
+		/**
+		 * \brief Calculates a sample
+		 * \param sample Sample to be calculated
+		 * \return Z-value of the sample
+		 */
 		double ModelRunner::getZValue(std::shared_ptr<Sample> sample)
 		{
 			std::shared_ptr<ModelSample> xSample = getModelSample(sample);
@@ -81,6 +87,11 @@ namespace Deltares
 			return sample->Z;
 		}
 
+		/**
+		 * \brief Calculates a number of samples
+		 * \param samples Samples to be calculated
+		 * \return Z-values of the samples
+		 */
 		std::vector<double> ModelRunner::getZValues(std::vector<std::shared_ptr<Sample>> samples)
 		{
 			std::vector<std::shared_ptr<ModelSample>> xSamples;
@@ -107,6 +118,40 @@ namespace Deltares
 			return zValues;
 		}
 
+		/**
+		 * \brief Sets a callback which calculates the beat in a certain direction
+		 * \param zBetaLambda Callback 
+		 */
+		void ModelRunner::setDirectionModel(ZBetaLambda zBetaLambda) const
+		{
+			this->zModel->setBetaLambda(zBetaLambda);
+		}
+
+		/**
+		 * \brief Indicates whether this model runner can calculate the beta (distance to limit state) in a given direction
+		 * \return Indication
+		 */
+		bool ModelRunner::canCalculateBeta() const
+		{
+			return this->zModel->canCalculateBeta();
+		}
+
+		/**
+		 * \brief Gets the beta (distance to limit state) in a given direction
+		 * \param sample Sample indicating the direction
+		 * \return Beta
+		 */
+		double ModelRunner::getBeta(std::shared_ptr<Sample> sample)
+		{
+			std::shared_ptr<ModelSample> xSample = getModelSample(sample);
+
+			return this->zModel->getBeta(xSample, sample->getBeta());
+		}
+
+		/**
+		 * \brief Registers an evaluation for a calculated sample
+		 * \param sample Calculated sample
+		 */
 		void ModelRunner::registerEvaluation(std::shared_ptr<ModelSample> sample)
 		{
 			if (this->Settings->SaveEvaluations)
@@ -131,6 +176,11 @@ namespace Deltares
 			}
 		}
 
+		/**
+		 * \brief Indicates whether the reliability algorithm should be stopped
+		 * \param samples Already calculated samples
+		 * \return Indication
+		 */
 		bool ModelRunner::shouldExitPrematurely(std::vector<std::shared_ptr<Sample>> samples)
 		{
 			for (std::shared_ptr<Sample> sample : samples)
@@ -141,9 +191,31 @@ namespace Deltares
 				}
 			}
 
+			if (shouldExitFunction != nullptr)
+			{
+				return shouldExitFunction(false);
+			}
+
 			return false;
 		}
 
+		/**
+		 * \brief Removes a task for further processing
+		 * \param iterationIndex Iteration index of the task
+		 */
+		void ModelRunner::removeTask(int iterationIndex)
+		{
+			if (this->removeTaskFunction != nullptr)
+			{
+				this->removeTaskFunction(iterationIndex);
+			}
+		}
+
+		/**
+		 * \brief Registers intermediate results and provides progress information of a reliability calculation
+		 * \param report Intermediate results
+		 * \remark The intermediate results will be part of the design point of the reliability calculation
+		 */
 		void ModelRunner::reportResult(std::shared_ptr<Reliability::ReliabilityReport> report)
 		{
 			if (Settings->SaveConvergence)
@@ -219,7 +291,14 @@ namespace Deltares
 			}
 		}
 
-
+		/**
+		 * \brief Gets the design point of a reliability calculation
+		 * \param sample Sample on which the design point is based
+		 * \param beta Reliability index
+		 * \param convergenceReport Convergence information, will be appended to design point
+		 * \param identifier Identifying text
+		 * \return Design point
+		 */
 		std::shared_ptr<Reliability::DesignPoint> ModelRunner::getDesignPoint(std::shared_ptr<Sample> sample, double beta, std::shared_ptr<Reliability::ConvergenceReport> convergenceReport, std::string identifier)
 		{
 			std::shared_ptr<StochastPoint> stochastPoint = uConverter->GetStochastPoint(sample, beta);

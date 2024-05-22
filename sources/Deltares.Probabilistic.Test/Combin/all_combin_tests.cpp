@@ -1,0 +1,6 @@
+#include "pch.h"
+#include "combinElements_tests.cpp"
+#include "hohenbichler_tests.cpp"
+#include "hohenbichlerCombiner_tests.cpp"
+#include "intEqualElements_tests.cpp"
+#include "upscale_tests.cpp"

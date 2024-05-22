@@ -53,10 +53,10 @@ namespace Deltares
 					void set(int value) { shared->object->MinimumFailedSamples = value; }
 				}
 
-				property bool AutoMaximumSamplesNoResult
+				property bool AutoMaximumSamples
 				{
-					bool get() { return shared->object->AutoMaximumSamplesNoResult; }
-					void set(bool value) { shared->object->AutoMaximumSamplesNoResult = value; }
+					bool get() { return shared->object->AutoMaximumSamples; }
+					void set(bool value) { shared->object->AutoMaximumSamples = value; }
 				}
 
 				property double VarianceFactor
@@ -95,10 +95,10 @@ namespace Deltares
 					void set(double value) { shared->object->MaxBeta = value; }
 				}
 
-				property double RestartStepSize
+				property double StartValueStepSize
 				{
-					double get() { return shared->object->RestartStepSize; }
-					void set(double value) { shared->object->RestartStepSize = value; }
+					double get() { return shared->object->StartValueStepSize; }
+					void set(double value) { shared->object->StartValueStepSize = value; }
 				}
 
 				property bool StartPointOnLimitState

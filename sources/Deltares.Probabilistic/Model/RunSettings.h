@@ -1,5 +1,8 @@
 #pragma once
+#include <memory>
+
 #include "Message.h"
+#include "ProxySettings.h"
 
 namespace Deltares
 {
@@ -15,6 +18,8 @@ namespace Deltares
 			bool SaveMessages = false;
 			int MaxMessages = 1000;
 			MessageType LowestMessageType = MessageType::Warning;
+
+			std::shared_ptr<ProxySettings> proxySettings = std::make_shared<Models::ProxySettings>();
 
 			bool isValid()
 			{

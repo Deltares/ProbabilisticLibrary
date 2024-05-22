@@ -44,7 +44,6 @@ add_library(FLtestProbabilistic
     probabilistic/distributionFunctionsTests.f90
     probabilistic/randomGeneratorTests.f90
     probabilistic/combineElementsTests.f90
-    probabilistic/sampleZfunc.f90
     probabilistic/performDSTests.f90
     probabilistic/performImportanceSamplingTests.f90
     probabilistic/upscaleLengthTests.f90
@@ -56,6 +55,7 @@ add_library(FLtestProbabilistic
     probabilistic/probMethodsWaartsFunctionsTests.f90
     probabilistic/toolkitTestFunctions.f90
     probabilistic/performAdaptiveMCISTests.f90
+    probabilistic/sparseWaartsTestFunctions.f90
 )
 target_link_libraries(FLtestProbabilistic ${fctools} Deltares.Probabilistic.FortranWrapper ftnunit)
 

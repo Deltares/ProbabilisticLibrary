@@ -7,7 +7,7 @@
 namespace Deltares
 {
     namespace Numeric
-	{
+    {
         using Deltares::Reliability::probLibException;
 
         class vector1D

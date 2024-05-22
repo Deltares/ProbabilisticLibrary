@@ -35,13 +35,13 @@ if (ENABLE_UNIT_TESTS)
 endif()
 
 add_executable(Deltares.Probabilistic.Test
-    unittests.cpp
+    unittests_body.cpp
     projectBuilder.h
-    projectBuilder.cpp
+    projectBuilder_body.cpp
     Reliability/testStartPointCalculator.h
-    Reliability/testStartPointCalculator.cpp
+    Reliability/testStartPointCalculator_body.cpp
     Math/testNumericSupport.h
-    Math/testNumericSupport.cpp
+    Math/testNumericSupport_body.cpp
     Combin/hohenbichler_tests.h
     Combin/hohenbichler_tests.cpp
     Combin/intEqualElements_tests.h
@@ -52,13 +52,15 @@ add_executable(Deltares.Probabilistic.Test
     Combin/combinElements_tests.cpp
     Combin/hohenbichlerCombiner_tests.h
     Combin/hohenbichlerCombiner_tests.cpp
+    Distributions/testDistributions.h
+    Distributions/testDistributions_body.cpp
     Utils/testutils.h
-    Utils/testutils.cpp
+    Utils/testutils_body.cpp
 )
 
 set_target_properties(Deltares.Probabilistic.Test
   PROPERTIES
-    CXX_STANDARD 17
+    CXX_STANDARD 20
     CXX_EXTENSIONS OFF
     CXX_STANDARD_REQUIRED ON
 )
