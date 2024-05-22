@@ -67,7 +67,7 @@ namespace Deltares
             for (std::shared_ptr<DesignPointModel> designPointModel : designPointModels)
             {
                 designPointModel->calculate(sample);
-                if (isnan(sample->Z))
+                if (std::isnan(sample->Z))
                 {
                     result = nan("");
                     break;
