@@ -99,7 +99,6 @@ namespace Deltares
 					StartValueStepSize >= 0 &&
 					FractionFailed >= 0 && FractionFailed <= 0.5 &&
 					EpsWeightSample >= 0.0001 && EpsWeightSample <= 1 &&
-					MaxClusters >= 1 &&
 					startPointSettings->isValid() &&
 					clusterSettings->isValid() &&
 					importanceSamplingSettings->isValid();
