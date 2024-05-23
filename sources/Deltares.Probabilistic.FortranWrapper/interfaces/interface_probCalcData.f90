@@ -99,14 +99,12 @@ subroutine initProbabilisticCalculation( probDb, maxStochasts, databaseFlag, exp
     probDb%method%AdaptiveIS%minimumSamples         = 1000
     probDb%method%AdaptiveIS%maximumSamples         = 100000
     probDb%method%AdaptiveIS%varCoeffFailure        = 0.10D0
-    probDb%method%AdaptiveIS%varCoeffNoFailure      = 0.10D0
     probDb%method%AdaptiveIS%varianceFactor         = [ (1.5D0, i = 1,maxStochasts) ]
     probDb%method%AdaptiveIS%translation            = [ (0.0D0, i = 1,maxStochasts) ]
     probDb%method%AdaptiveIS%startMethod            = fORMStartZero
     probDb%method%AdaptiveIS%Nadp                   = 5
     probDb%method%AdaptiveIS%startValue             = [ (0.0D0, i = 1,maxStochasts) ]
     probDb%method%AdaptiveIS%epsFailed              = 0.10D0
-    probDb%method%AdaptiveIS%maxSamplesDef          = 110000
     probDb%method%AdaptiveIS%minFailed              = 0
     probDb%method%AdaptiveIS%increaseVariance       = 0.5
     !
@@ -422,10 +420,8 @@ subroutine setParametersProbabilisticAdpMCIS(probDb, adaptiveIS)
     probDb%method%AdaptiveIS%seedPRNG           = AdaptiveIS%seedPRNG
     probDb%method%AdaptiveIS%minimumSamples     = AdaptiveIS%minimumSamples
     probDb%method%AdaptiveIS%maximumSamples     = AdaptiveIS%maximumSamples
-    probDb%method%AdaptiveIS%maxSamplesDef      = AdaptiveIS%maxSamplesDef
     probDb%method%AdaptiveIS%Nadp               = AdaptiveIS%Nadp
     probDb%method%AdaptiveIS%varCoeffFailure    = AdaptiveIS%varCoeffFailure
-    probDb%method%AdaptiveIS%varCoeffNoFailure  = AdaptiveIS%varCoeffNoFailure
     probDb%method%AdaptiveIS%epsFailed          = AdaptiveIS%epsFailed
     probDb%method%AdaptiveIS%minFailed          = AdaptiveIS%minFailed
     probDb%method%AdaptiveIS%increaseVariance   = AdaptiveIS%increaseVariance

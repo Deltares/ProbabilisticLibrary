@@ -110,8 +110,9 @@ std::shared_ptr<ReliabilityMethod> createReliabilityMethod::selectMethod(const b
         AdaptImpSampling->Settings->importanceSamplingSettings->MaximumSamplesNoResult = bs.maxSamples;
         AdaptImpSampling->Settings->MaxVarianceLoops = bs.trialLoops;
         AdaptImpSampling->Settings->LoopVarianceIncrement = bs.numExtraReal2;
-        AdaptImpSampling->Settings->AutoMaximumSamples = true; // TODO
-        AdaptImpSampling->Settings->importanceSamplingSettings->designPointMethod = DesignPointMethod::NearestToMean;  // TODO
+        AdaptImpSampling->Settings->AutoMaximumSamples = bs.numExtraInt != 0;
+        AdaptImpSampling->Settings->MinimumFailedSamples = bs.numExtraInt2;
+        AdaptImpSampling->Settings->importanceSamplingSettings->designPointMethod = convertDp(bs.designPointOptions);
         for (size_t i = 0; i < nStoch; i++)
         {
             auto s = std::make_shared<StochastSettings>();
@@ -122,9 +123,22 @@ std::shared_ptr<ReliabilityMethod> createReliabilityMethod::selectMethod(const b
         return AdaptImpSampling; }
         break;
     default:
-		throw probLibException("method not implemented yet: ", (int)bs.methodId);
-		break;
-	}
+        throw probLibException("method not implemented yet: ", (int)bs.methodId);
+        break;
+    }
+}
+
+DesignPointMethod createReliabilityMethod::convertDp(const DPoptions dp)
+{
+    switch (dp)
+    {
+    case DPoptions::CenterOfGravity:
+        return DesignPointMethod::CenterOfGravity;
+    case DPoptions::CenterOfAngles:
+        return DesignPointMethod::CenterOfAngles;
+    default:
+        return DesignPointMethod::NearestToMean;
+    }
 }
 
 void createReliabilityMethod::fillFormSettings(std::shared_ptr<FORMSettings>& Settings, const basicSettings& bs, const size_t nStoch)

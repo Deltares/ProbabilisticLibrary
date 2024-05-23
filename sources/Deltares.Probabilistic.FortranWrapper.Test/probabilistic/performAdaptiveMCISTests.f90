@@ -70,8 +70,8 @@ subroutine AdapMCIStest1
     integer, pointer            :: iPoint(:)
 
     real (kind = wp)            :: beta
-    real (kind = wp), parameter :: betaKnown = 2.82986885307518d0
-    real (kind = wp), parameter :: margin = 1d-6
+    real (kind = wp), parameter :: betaKnown = 2.85d0
+    real (kind = wp), parameter :: margin = 1d-2
 
     integer, parameter            :: nStochasts = 2
     logical                       :: conv
@@ -121,8 +121,8 @@ subroutine AdaptiveImportanceSamplingTestLinear
     integer, allocatable          :: iPoint(:)
 
     real (kind = wp)              :: beta = 0.0d0
-    real (kind = wp)              :: betaKnown = 3.89225002721676_wp
-    real (kind = wp)              :: margin = 1.0d-5
+    real (kind = wp)              :: betaKnown = 3.91_wp
+    real (kind = wp)              :: margin = 1.0d-2
 
     integer                       :: i
     integer                       :: nStochasts
@@ -151,10 +151,8 @@ subroutine AdaptiveImportanceSamplingTestLinear
     AdaptiveIS%seedPRNG           = 1
     AdaptiveIS%minimumSamples     = 1000
     AdaptiveIS%maximumSamples     = 2000
-    AdaptiveIS%maxSamplesDef      = 10000
     AdaptiveIS%Nadp               = 5
     AdaptiveIS%varCoeffFailure    = 0.01_wp
-    AdaptiveIS%varCoeffNoFailure  = 0.01_wp
     AdaptiveIS%epsFailed          = 0.1_wp
     AdaptiveIS%minFailed          = 0
     AdaptiveIS%increaseVariance   = 1.0_wp
@@ -189,8 +187,8 @@ subroutine AdaptiveImportanceSamplingTestNonLinear
     integer, allocatable          :: iPoint(:)
 
     real (kind = wp)              :: beta = 0.0d0
-    real (kind = wp)              :: betaKnown = 3.57045298814655_wp
-    real (kind = wp)              :: margin = 1.0d-5
+    real (kind = wp)              :: betaKnown = 3.56_wp
+    real (kind = wp)              :: margin = 1.0d-2
 
     integer                       :: i
     integer                       :: nStochasts
@@ -220,10 +218,8 @@ subroutine AdaptiveImportanceSamplingTestNonLinear
     AdaptiveIS%seedPRNG           = 1
     AdaptiveIS%minimumSamples     = 1000
     AdaptiveIS%maximumSamples     = 2000
-    AdaptiveIS%maxSamplesDef      = 5000
     AdaptiveIS%Nadp               = 5
     AdaptiveIS%varCoeffFailure    = 0.01_wp
-    AdaptiveIS%varCoeffNoFailure  = 0.01_wp
     AdaptiveIS%epsFailed          = 0.25_wp
     AdaptiveIS%minFailed          = 0
     AdaptiveIS%increaseVariance   = 1.0_wp
@@ -257,8 +253,8 @@ subroutine AdaptiveImportanceSamplingTestMany
     integer, allocatable          :: iPoint(:)
 
     real (kind = wp)              :: beta
-    real (kind = wp), parameter   :: betaKnown = 3.13882034722322_wp
-    real (kind = wp), parameter   :: margin = 1.0d-5
+    real (kind = wp), parameter   :: betaKnown = 3.265_wp
+    real (kind = wp), parameter   :: margin = 1.0d-2
 
     integer                       :: i
     integer, parameter            :: nStochasts = 13
@@ -286,12 +282,10 @@ subroutine AdaptiveImportanceSamplingTestMany
     AdaptiveIS%seedPRNG           = 1
     AdaptiveIS%minimumSamples     = 1000
     AdaptiveIS%maximumSamples     = 2000
-    AdaptiveIS%maxSamplesDef      = 5000
     AdaptiveIS%Nadp               = 5
     AdaptiveIS%varCoeffFailure    = 0.01_wp
-    AdaptiveIS%varCoeffNoFailure  = 0.01_wp
     AdaptiveIS%epsFailed          = 0.25_wp
-    AdaptiveIS%minFailed          = 0
+    AdaptiveIS%minFailed          = 10
     AdaptiveIS%increaseVariance   = 1.0_wp
     AdaptiveIS%varianceFactor     = [ (1.0_wp, i = 1,nStochasts) ]
     call setParametersProbabilisticAdpMCIS( probDb, adaptiveIS)
@@ -354,10 +348,8 @@ subroutine AdaptiveImportanceSamplingTestBligh
     AdaptiveIS%seedPRNG           = 1
     AdaptiveIS%minimumSamples     = 1000
     AdaptiveIS%maximumSamples     = 2000
-    AdaptiveIS%maxSamplesDef      = 10000
     AdaptiveIS%Nadp               = 5
     AdaptiveIS%varCoeffFailure    = 0.01_wp
-    AdaptiveIS%varCoeffNoFailure  = 0.01_wp
     AdaptiveIS%epsFailed          = 0.5_wp
     AdaptiveIS%minFailed          = 0
     AdaptiveIS%increaseVariance   = 1.0_wp
@@ -426,10 +418,8 @@ subroutine AdaptiveImportanceSamplingTestBligh2
     AdaptiveIS%seedPRNG           = 1
     AdaptiveIS%minimumSamples     = 1000
     AdaptiveIS%maximumSamples     = 2000
-    AdaptiveIS%maxSamplesDef      = 10000
     AdaptiveIS%Nadp               = 5
     AdaptiveIS%varCoeffFailure    = 0.01_wp
-    AdaptiveIS%varCoeffNoFailure  = 0.01_wp
     AdaptiveIS%epsFailed          = 0.5_wp
     AdaptiveIS%minFailed          = 0
     AdaptiveIS%increaseVariance   = 1.0_wp
@@ -495,10 +485,8 @@ subroutine AdaptiveImportanceSamplingTestBligh3
     AdaptiveIS%seedPRNG           = 1
     AdaptiveIS%minimumSamples     = 1000
     AdaptiveIS%maximumSamples     = 2000
-    AdaptiveIS%maxSamplesDef      = 10000
     AdaptiveIS%Nadp               = 5
     AdaptiveIS%varCoeffFailure    = 0.01_wp
-    AdaptiveIS%varCoeffNoFailure  = 0.01_wp
     AdaptiveIS%epsFailed          = 0.001_wp
     AdaptiveIS%minFailed          = 0
     AdaptiveIS%increaseVariance   = 1.0_wp

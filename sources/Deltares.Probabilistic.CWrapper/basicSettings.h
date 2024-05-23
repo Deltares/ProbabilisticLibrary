@@ -49,7 +49,9 @@ namespace Deltares {
             RMinZFunc,
             XCorrelatedFromUCompatible,
             RMinZFuncCompatible,
-            MultiplyInvCholesky
+            MultiplyInvCholesky,
+            CenterOfGravity,
+            CenterOfAngles,
         };
 
         enum class DSiterationMethods {
