@@ -37,10 +37,10 @@ namespace Deltares
              * \param progress Progress indicator (optional)
              * \return Combined design point
              */
-            std::shared_ptr<DesignPoint> combineDesignPoints(combineAndOr combineMethodType, std::vector<std::shared_ptr<DesignPoint>>& designPoints, std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix = nullptr, std::shared_ptr<ProgressIndicator> progress = nullptr)
+            std::shared_ptr<DesignPoint> combineDesignPoints(combineAndOr combineMethodType, std::vector<std::shared_ptr<DesignPoint>>& designPoints, std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix = nullptr, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix = nullptr, std::shared_ptr<ProgressIndicator> progress = nullptr)
             {
                 const std::shared_ptr<Combiner> combiner = getCombiner();
-                return combiner->combineDesignPoints(combineMethodType, designPoints, correlationMatrix, progress);
+                return combiner->combineDesignPoints(combineMethodType, designPoints, correlationMatrix, selfCorrelationMatrix, progress);
             }
 
         private:

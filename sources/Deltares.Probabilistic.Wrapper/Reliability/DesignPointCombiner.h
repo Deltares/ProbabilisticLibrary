@@ -8,6 +8,7 @@
 #include "../Model/RandomProvider.h"
 #include "../Statistics/Stochast.h"
 #include "../Statistics/CorrelationMatrix.h"
+#include "../Statistics/SelfCorrelationMatrix.h"
 #include "DesignPoint.h"
 
 namespace Deltares
@@ -75,7 +76,7 @@ namespace Deltares
                     }
                 }
 
-                DesignPoint^ Combine(CombinationType combination, System::Collections::Generic::IList<Reliability::Wrappers::DesignPoint^>^ designPoints, Deltares::Statistics::Wrappers::CorrelationMatrix^ correlationMatrix, Wrappers::ProgressIndicator^ progressIndicator)
+                DesignPoint^ Combine(CombinationType combination, System::Collections::Generic::IList<Reliability::Wrappers::DesignPoint^>^ designPoints, Deltares::Statistics::Wrappers::CorrelationMatrix^ correlationMatrix, Deltares::Statistics::Wrappers::SelfCorrelationMatrix^ selfCorrelationMatrix, Wrappers::ProgressIndicator^ progressIndicator)
                 {
                     RandomProvider::initialize();
 
@@ -89,10 +90,11 @@ namespace Deltares
                     }
 
                     const std::shared_ptr<Statistics::CorrelationMatrix> nativeCorrelationMatrix = correlationMatrix != nullptr ? correlationMatrix->GetCorrelationMatrix() : nullptr;
+                    const std::shared_ptr<Statistics::SelfCorrelationMatrix> nativeSelfCorrelationMatrix = selfCorrelationMatrix != nullptr ? selfCorrelationMatrix->GetNativeSelfCorrelationMatrix() : nullptr;
                     const std::shared_ptr<Models::ProgressIndicator> nativeProgressIndicator = progressIndicator != nullptr ? progressIndicator->GetProgressIndicator() : nullptr;
                     const combineAndOr combineAndOr = GetCombinationType(combination);
 
-                    std::shared_ptr<Reliability::DesignPoint> nativeDesignPoint = shared->object->combineDesignPoints(combineAndOr, nativeDesignPoints, nativeCorrelationMatrix, nativeProgressIndicator);
+                    std::shared_ptr<Reliability::DesignPoint> nativeDesignPoint = shared->object->combineDesignPoints(combineAndOr, nativeDesignPoints, nativeCorrelationMatrix, nativeSelfCorrelationMatrix, nativeProgressIndicator);
 
                     Wrappers::DesignPoint^ designPoint = gcnew Wrappers::DesignPoint(nativeDesignPoint, designPoints);
 
@@ -101,12 +103,12 @@ namespace Deltares
 
                 DesignPoint^ Combine(CombinationType combination, System::Collections::Generic::IList<Reliability::Wrappers::DesignPoint^>^ designPoints, Deltares::Statistics::Wrappers::CorrelationMatrix^ correlationMatrix)
                 {
-                    return Combine(combination, designPoints, correlationMatrix, nullptr);
+                    return Combine(combination, designPoints, correlationMatrix, nullptr, nullptr);
                 }
 
                 DesignPoint^ Combine(CombinationType combination, System::Collections::Generic::IList<Reliability::Wrappers::DesignPoint^>^ designPoints)
                 {
-                    return Combine(combination, designPoints, nullptr, nullptr);
+                    return Combine(combination, designPoints, nullptr, nullptr, nullptr);
                 }
             };
         }

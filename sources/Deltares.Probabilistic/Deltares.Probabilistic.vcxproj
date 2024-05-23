@@ -165,6 +165,7 @@
     <ClInclude Include="Reliability\NumericalIntegrationSettings.h" />
     <ClInclude Include="Reliability\SubsetSimulationSettings.h" />
     <ClInclude Include="Reliability\SubsetSimulation.h" />
+    <ClInclude Include="Statistics\SelfCorrelationMatrix.h" />
     <ClInclude Include="Utils\Locker.h" />
     <ClInclude Include="Math\MatrixSupport.h" />
     <ClInclude Include="Optimization\KMeansClustering.h" />
@@ -286,6 +287,7 @@
     <ClCompile Include="Reliability\NumericalIntegrationSettings.cpp" />
     <ClCompile Include="Reliability\SubsetSimulationSettings.cpp" />
     <ClCompile Include="Reliability\SubsetSimulation.cpp" />
+    <ClCompile Include="Statistics\SelfCorrelationMatrix.cpp" />
     <ClCompile Include="Utils\Locker.cpp" />
     <ClCompile Include="Math\MatrixSupport.cpp" />
     <ClCompile Include="Optimization\KMeansClustering.cpp" />

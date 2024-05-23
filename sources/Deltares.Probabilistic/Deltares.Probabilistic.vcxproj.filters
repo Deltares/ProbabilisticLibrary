@@ -140,6 +140,7 @@
     <ClCompile Include="Combine\DesignPointModel.cpp" />
     <ClCompile Include="Combine\CombinedDesignPointModel.cpp" />
     <ClCompile Include="Combine\DesignPointCombiner.cpp" />
+    <ClCompile Include="Statistics\SelfCorrelationMatrix.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -299,6 +300,7 @@
     <ClInclude Include="Combine\DesignPointModel.h" />
     <ClInclude Include="Combine\CombinedDesignPointModel.h" />
     <ClInclude Include="Combine\DesignPointCombiner.h" />
+    <ClInclude Include="Statistics\SelfCorrelationMatrix.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

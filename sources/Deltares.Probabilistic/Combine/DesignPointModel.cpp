@@ -1,5 +1,6 @@
 #include "DesignPointModel.h"
 
+#include <map>
 #include <unordered_set>
 
 #include "../Math/NumericSupport.h"
@@ -31,15 +32,15 @@ namespace Deltares
                 result += sample->Values[i] * alphas[i];
             }
 
-            if (this->inverted && this->negated)
+            if (this->ignored && this->inverted)
             {
                 result = result > 0 ? nan("") : -result;
             }
-            else if (this->negated)
+            else if (this->inverted)
             {
                 result = -result;
             }
-            else if (this->inverted)
+            else if (this->ignored)
             {
                 result = result > 0 ? nan("") : result;
             }
@@ -51,28 +52,33 @@ namespace Deltares
         {
             this->calculate(sample);
 
-            return Numeric::NumericSupport::interpolate(0, this->designPoint->Beta, 0,  sample->Z, 1, true);
+            return Numeric::NumericSupport::interpolate(0, this->designPoint->Beta, 0, sample->Z, 1, true);
         }
 
-        void DesignPointModel::setParameters(std::vector<std::shared_ptr<Statistics::Stochast>>& parameters)
+        void DesignPointModel::setParameters(std::vector<std::shared_ptr<Statistics::Stochast>>& normalizedStochasts, std::map<std::shared_ptr<Statistics::Stochast>, std::shared_ptr<Statistics::Stochast>> stochastsMap, std::map<std::shared_ptr<Statistics::Stochast>, std::shared_ptr<Reliability::DesignPoint>> designPointsMap)
         {
             alphas.clear();
 
-            // assigned stochasts. take into account that parameters are not unique
-
+            // take into account that stochasts in alphas are not unique
             std::unordered_set<std::shared_ptr<Models::StochastPointAlpha>> usedAlphas;
 
-            for (size_t i = 0; i < parameters.size(); i++)
+            for (size_t i = 0; i < normalizedStochasts.size(); i++)
             {
                 double alphaValue = 0;
 
-                for (size_t j = 0; j < this->designPoint->Alphas.size(); j++)
+                std::shared_ptr<Statistics::Stochast> stochast = stochastsMap[normalizedStochasts[i]];
+                const bool applicable = !designPointsMap.contains(normalizedStochasts[i]) || designPointsMap[normalizedStochasts[i]] == this->designPoint;
+
+                if (applicable)
                 {
-                    if (this->designPoint->Alphas[j]->Stochast == parameters[i] && !usedAlphas.contains(this->designPoint->Alphas[j]))
+                    for (size_t j = 0; j < this->designPoint->Alphas.size(); j++)
                     {
-                        alphaValue = this->designPoint->Alphas[j]->Alpha;
-                        usedAlphas.insert(this->designPoint->Alphas[j]);
-                        break;
+                        if (this->designPoint->Alphas[j]->Stochast == stochast && !usedAlphas.contains(this->designPoint->Alphas[j]))
+                        {
+                            alphaValue = this->designPoint->Alphas[j]->Alpha;
+                            usedAlphas.insert(this->designPoint->Alphas[j]);
+                            break;
+                        }
                     }
                 }
 
@@ -80,9 +86,17 @@ namespace Deltares
             }
         }
 
-        bool DesignPointModel::isVarying(int index)
+        bool DesignPointModel::isVarying(std::shared_ptr<Statistics::Stochast> stochast)
         {
-            return this->alphas[index] != 0.0;
+            for (size_t j = 0; j < this->designPoint->Alphas.size(); j++)
+            {
+                if (this->designPoint->Alphas[j]->Stochast == stochast && this->designPoint->Alphas[j]->Alpha != 0.0)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }
