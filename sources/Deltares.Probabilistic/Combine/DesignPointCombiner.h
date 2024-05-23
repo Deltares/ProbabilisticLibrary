@@ -2,7 +2,7 @@
 
 #include "../Utils/probLibException.h"
 #include "../Reliability/DesignPoint.h"
-#include "Combiner.h"
+#include "combiner.h"
 #include "HohenbichlerCombiner.h"
 #include "ImportanceSamplingCombiner.h"
 

@@ -3,7 +3,7 @@
 #include <memory>
 
 #include "CombinedDesignPointModel.h"
-#include "Combiner.h"
+#include "combiner.h"
 #include "../Statistics/CorrelationMatrix.h"
 #include "../Reliability/DesignPoint.h"
 #include "../Reliability/ImportanceSamplingSettings.h"
