@@ -5,6 +5,7 @@
 #include "../Deltares.Probabilistic/Model/RandomSettings.h"
 #include "../Deltares.Probabilistic/Reliability/FORMSettings.h"
 #include "../Deltares.Probabilistic/Reliability/DirectionalSamplingSettings.h"
+#include "../Deltares.Probabilistic/Reliability/ImportanceSamplingSettings.h"
 
 class createReliabilityMethod
 {
@@ -18,5 +19,7 @@ private:
     void fillFormSettings(std::shared_ptr<Deltares::Reliability::FORMSettings>& Settings, const Deltares::ProbLibCore::basicSettings& bs, const size_t nStoch);
     void fillDsSettings(std::shared_ptr<Deltares::Reliability::DirectionalSamplingSettings>& Settings, const Deltares::ProbLibCore::basicSettings& bs);
     Deltares::Reliability::DesignPointMethod convertDp(const Deltares::ProbLibCore::DPoptions dp);
+    void fillImportanceSamplingSettings(std::shared_ptr<Deltares::Reliability::ImportanceSamplingSettings> settings, const Deltares::ProbLibCore::basicSettings& bs,
+        std::vector<std::shared_ptr<Deltares::Statistics::Stochast>>& stochasts);
 };
 
