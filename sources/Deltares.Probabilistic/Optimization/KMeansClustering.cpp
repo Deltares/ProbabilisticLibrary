@@ -197,7 +197,7 @@ namespace Deltares
 			std::vector<std::shared_ptr<Cluster>> clusters;
 
 			// select one data item index at random as 1st mean
-			Numeric::Random::initialize(Numeric::ModifiedKnuthSubtractive, true, randomSeed, 0);
+			Numeric::Random::initialize(Settings->generatorType, true, randomSeed, 0);
 
             // TODO: PROBL-42 remove this line 
 			double dummy = Numeric::Random::next();  //  random->Next(0, samples.size()); // [0, N)
