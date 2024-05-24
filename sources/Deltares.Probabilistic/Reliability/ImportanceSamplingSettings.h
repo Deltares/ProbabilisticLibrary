@@ -75,6 +75,7 @@ namespace Deltares
 				return MinimumSamples >= 1 &&
 					MaximumSamples >= MinimumSamples &&
 					this->isStochastSetValid() &&
+
 					runSettings->isValid();
 			}
 

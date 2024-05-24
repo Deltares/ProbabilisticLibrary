@@ -96,7 +96,7 @@ end function limitState10QuadraticTerms
 function limitState25QuadraticTerms( r, s )
 
     real (kind=wp), intent(in)                  :: r                           !< input parameter r
-    real (kind=wp), dimension(25), intent(in)   :: s                           !< input parameter array(10) s
+    real (kind=wp), dimension(25), intent(in)   :: s                           !< input parameter array(25) s
     real (kind=wp)                              :: limitState25QuadraticTerms  !< output parameter
     real (kind=wp)                              :: summation
     integer                                     :: i
