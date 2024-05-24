@@ -437,7 +437,7 @@ namespace Deltares
                         progress->doTextualProgress(ProgressType::Detailed, std::format("{0:}/{1:}, Reliability index = {2:.2F}", iteration, maxIterations, designPoint->Beta));
 #else
                         auto pl = Deltares::Reliability::probLibString();
-                        progress->doTextualProgress(ProgressType::Detailed, std::to_string(iterations) + "/" +
+                        progress->doTextualProgress(ProgressType::Detailed, std::to_string(iteration) + "/" +
                             std::to_string(maxIterations) + ", Reliability index = " + pl.double2str(designPoint->Beta));
 #endif
                     }
