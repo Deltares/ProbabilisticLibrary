@@ -96,6 +96,8 @@ module interface_probCalc
   integer, parameter :: designPointXCorrelatedFromUCompatible         =  5
   integer, parameter :: designPointRMinZFuncCompatible                =  6
   integer, parameter :: designPointMultiplyInvCholesky                =  7
+  integer, parameter :: designPointCenterOfGravity                    =  8
+  integer, parameter :: designPointCenterOfAngles                     =  9
 
   integer, parameter :: fORMStartZero                                 =  1
   integer, parameter :: fORMStartOne                                  =  2
@@ -166,21 +168,19 @@ module interface_probCalc
   end type tpIS
 
   type, public :: tpAdaptiveIS
-      integer                     :: seedPRNG             !< Start value random generator
-      integer                     :: minimumSamples       !< Minimum number samples (>1)
-      integer                     :: maximumSamples       !< Maximum number samples
-      real(kind=wp)               :: varCoeffFailure      !< Required variation coefficient Failure
-      real(kind=wp)               :: varCoeffNoFailure    !< Required variation coefficient Non failure
-      integer                     :: Nadp                 !< Maximum number of loops
-      integer                     :: startMethod          !< Method for startvector
-      real(kind=wp), allocatable  :: varianceFactor(:)    !< Multiplicative factor to increase the standard deviation of the standard normal distribution in the u-space
-      real(kind=wp), allocatable  :: translation(:)       !< Translatory term for the u vector
-      real(kind=wp), allocatable  :: startValue(:)        !< Start values u for Adaptive MCIS computation
-      real(kind=wp)               :: epsFailed            !< epsilon failed (test on convergence)
-      integer                     :: maxSamplesDef        !< Maximum numbers samples in Recalculate
-      integer                     :: minFailed            !< check whether variance must be increased
-      real(kind=wp)               :: increaseVariance     !< additional value when updating variance
-      integer                     :: globalModelOption = 0 !< global model option (works identical to Fortran or not)
+      integer                     :: seedPRNG                    !< Start value random generator
+      integer                     :: minimumSamples              !< Minimum number samples (>1)
+      integer                     :: maximumSamples              !< Maximum number samples
+      real(kind=wp)               :: varCoeffFailure             !< Required variation coefficient
+      integer                     :: Nadp                        !< Maximum number of loops
+      integer                     :: startMethod                 !< Method for startvector
+      real(kind=wp), allocatable  :: varianceFactor(:)           !< Multiplicative factor to increase the standard deviation of the standard normal distribution in the u-space
+      real(kind=wp), allocatable  :: translation(:)              !< Translatory term for the u vector
+      real(kind=wp), allocatable  :: startValue(:)               !< Start values u for Adaptive MCIS computation
+      real(kind=wp)               :: epsFailed                   !< epsilon failed (test on convergence)
+      integer                     :: minFailed                   !< check whether variance must be increased
+      real(kind=wp)               :: increaseVariance            !< additional value when updating variance
+      logical                     :: AutoMaximumSamples = .true. !< flag for maximum number of samples in final step
   end type tpAdaptiveIS
 
   type, public :: tpMeth
@@ -384,11 +384,10 @@ subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, conv, convCri
         method%seed1           = probDb%method%adaptiveIS%seedPRNG
         method%seed2           = probDb%method%adaptiveIS%seedPRNG
         method%trialLoops      = probDb%method%adaptiveIS%nAdp
-        method%numExtraInt     = probDb%method%adaptiveIS%maxSamplesDef
-        method%numExtraInt2    = probDb%method%adaptiveIS%globalModelOption
+        method%numExtraInt     = merge(1, 0, probDb%method%adaptiveIS%AutoMaximumSamples)
         method%numExtraReal1   = probDb%method%adaptiveIS%epsFailed
         method%numExtraReal2   = probDb%method%adaptiveIS%increaseVariance
-        method%iterationMethod = probDb%method%adaptiveIS%minFailed
+        method%numExtraInt2    = probDb%method%adaptiveIS%minFailed
     case (methodNumericalIntegration)
         method%numExtraInt     = probDb%method%NI%numberIntervals
         method%numExtraReal1   = probDb%method%NI%minimumUvalue

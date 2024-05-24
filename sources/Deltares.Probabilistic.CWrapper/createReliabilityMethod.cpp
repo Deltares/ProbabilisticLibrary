@@ -6,6 +6,7 @@
 #include "../Deltares.Probabilistic/Reliability/FORMThenDirectionalSampling.h"
 #include "../Deltares.Probabilistic/Reliability/DirectionalSamplingThenFORM.h"
 #include "../Deltares.Probabilistic/Reliability/ImportanceSampling.h"
+#include "../Deltares.Probabilistic/Reliability/AdaptiveImportanceSampling.h"
 
 using namespace Deltares::ProbLibCore;
 using namespace Deltares::Models;
@@ -83,26 +84,37 @@ std::shared_ptr<ReliabilityMethod> createReliabilityMethod::selectMethod(const b
 		fillFormSettings(dsfi->formSettings, bs, nStoch);
 		return dsfi; }
 		break;
-	case (ProbMethod::IM): {
-		auto impSampling = std::make_shared<ImportanceSampling>();
-		std::shared_ptr<RandomSettings> r(getRnd(bs));
-		impSampling->Settings->randomSettings.swap(r);
-		impSampling->Settings->VariationCoefficient = bs.tolB;
-		impSampling->Settings->MinimumSamples = bs.minSamples;
-		impSampling->Settings->MaximumSamples = bs.maxSamples;
-		for (size_t i = 0; i < nStoch; i++)
-		{
-			auto s = std::make_shared<StochastSettings>();
-			s->stochast = stochasts[i];
-			s->VarianceFactor = bs.varianceFactor;
-			impSampling->Settings->StochastSet->stochastSettings.push_back(s);
-		}
-		return impSampling; }
-		break;
-	default:
-		throw probLibException("method not implemented yet: ", (int)bs.methodId);
-		break;
-	}
+    case (ProbMethod::IM): {
+        auto impSampling = std::make_shared<ImportanceSampling>();
+        fillImportanceSamplingSettings(impSampling->Settings, bs, stochasts);
+        return impSampling; }
+        break;
+    case (ProbMethod::AdaptiveIM): {
+        auto AdaptImpSampling = std::make_shared<AdaptiveImportanceSampling>();
+        fillImportanceSamplingSettings(AdaptImpSampling->Settings->importanceSamplingSettings, bs, stochasts);
+        AdaptImpSampling->Settings->MaxVarianceLoops = bs.trialLoops;
+        AdaptImpSampling->Settings->LoopVarianceIncrement = bs.numExtraReal2;
+        AdaptImpSampling->Settings->AutoMaximumSamples = bs.numExtraInt != 0;
+        AdaptImpSampling->Settings->MinimumFailedSamples = bs.numExtraInt2;
+        return AdaptImpSampling; }
+        break;
+    default:
+        throw probLibException("method not implemented yet: ", (int)bs.methodId);
+        break;
+    }
+}
+
+DesignPointMethod createReliabilityMethod::convertDp(const DPoptions dp)
+{
+    switch (dp)
+    {
+    case DPoptions::CenterOfGravity:
+        return DesignPointMethod::CenterOfGravity;
+    case DPoptions::CenterOfAngles:
+        return DesignPointMethod::CenterOfAngles;
+    default:
+        return DesignPointMethod::NearestToMean;
+    }
 }
 
 void createReliabilityMethod::fillFormSettings(std::shared_ptr<FORMSettings>& Settings, const basicSettings& bs, const size_t nStoch)
@@ -171,3 +183,24 @@ void createReliabilityMethod::fillDsSettings(std::shared_ptr<DirectionalSampling
 	DsSettings->DirectionSettings->EpsilonUStepSize = bs.tolC;
 }
 
+void createReliabilityMethod::fillImportanceSamplingSettings(std::shared_ptr<ImportanceSamplingSettings> settings, const basicSettings& bs,
+    std::vector<std::shared_ptr<Stochast>>& stochasts)
+{
+    auto r = getRnd(bs);
+    settings->randomSettings.swap(r);
+    settings->VariationCoefficient = bs.tolB;
+    settings->MinimumSamples = bs.minSamples;
+    settings->MaximumSamples = bs.maxSamples;
+    if (bs.methodId == ProbMethod::AdaptiveIM)
+    {
+        settings->MaximumSamplesNoResult = bs.maxSamples;
+        settings->designPointMethod = convertDp(bs.designPointOptions);
+    }
+    for (size_t i = 0; i < stochasts.size(); i++)
+    {
+        auto s = std::make_shared<StochastSettings>();
+        s->stochast = stochasts[i];
+        s->VarianceFactor = bs.varianceFactor;
+        settings->StochastSet->stochastSettings.push_back(s);
+    }
+}

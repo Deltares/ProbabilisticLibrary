@@ -1,8 +1,8 @@
-! Copyright (C) Stichting Deltares 2023. All rights reserved.
+! Copyright (C) Stichting Deltares 2024. All rights reserved.
 !
-! This file is part of the Hydra Ring Application.
+! This file is part of the Probabilistic Library.
 !
-! The Hydra Ring Application is free software: you can redistribute it and/or modify
+! The Probabilistic Library is free software: you can redistribute it and/or modify
 ! it under the terms of the GNU Affero General Public License as published by
 ! the Free Software Foundation, either version 3 of the License, or
 ! (at your option) any later version.
@@ -97,7 +97,7 @@ subroutine allProbMethodsWaartsFunctionsTests(minTestLevel)
     character(len=255)            :: testName
 
     integer                       :: level
-    integer, parameter            :: availableMethods(*) = [5, 6, 12, 11, 1, 3, 4] ! TODO the rest is not implemented yet
+    integer, parameter            :: availableMethods(*) = [7, 5, 6, 12, 11, 1, 3, 4] ! TODO the rest is not implemented yet
 
     character(len=60), dimension(14) :: functionName = &
         (/   "LinearResistanceSolicitation           ", &     ! 1
@@ -133,6 +133,8 @@ subroutine allProbMethodsWaartsFunctionsTests(minTestLevel)
                 probMethodName = "NumericalIntegration"
             case (methodImportanceSampling)
                 probMethodName = "ImportanceSampling"
+            case (methodAdaptiveImportanceSampling)
+                probMethodName = "AdaptiveImportanceSampling"
             case (methodFORMandDirSampling)
                 probMethodName = "FORMandDirSampling"
             case (methodDirSamplingWithFORMiterations)
@@ -499,11 +501,13 @@ subroutine testProbabilisticWithFunction ( )
                 probDb%method%DS%varCoeffNoFailure = 0.01d0
                 probDb%method%DS%maximumSamples    = 75000
             endif
+            probDb%method%AdaptiveIS%minFailed = 10
 
             ! Perform computation numberIterations times
             if (waartsFunction == 5) then
                 call iterateMechanism( probDb, convergenceData, zLimitState25QuadraticTerms, probMethod, alfa, actualBeta, x, conv)
             else
+                x = 0.0_wp
                 call initSparseWaartsTestsFunctions(probDb%stovar%maxStochasts, probDb%method%maxParallelThreads)
                 call iterateMechanism( probDb, convergenceData, zLimitState25QuadraticTermsSparse, &
                         probMethod, alfa, actualBeta, x, conv)
@@ -524,6 +528,12 @@ subroutine testProbabilisticWithFunction ( )
                         call assert_comparable( 2.643205260d0, actualBeta, 0.05d0, trim(waartsFunctionName) // ": Beta" )
                     end if
                     call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 100000, "no samples")
+                case (methodAdaptiveImportanceSampling)
+                    if (waartsFunction == 5) then
+                        call assert_comparable( 2.66d0, actualBeta, 1d-2, trim(waartsFunctionName) // ": Beta" )
+                    else
+                        call assert_comparable( 2.31d0, actualBeta, 1d-2, trim(waartsFunctionName) // ": Beta" )
+                    end if
                 case default
                     call assert_true( conv, "No convergence" )
             end select

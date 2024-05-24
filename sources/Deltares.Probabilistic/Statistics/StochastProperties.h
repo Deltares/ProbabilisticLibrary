@@ -98,7 +98,7 @@ namespace Deltares
 					case DistributionPropertyType::ShiftB: this->ShiftB = value; break;
 					case DistributionPropertyType::Shape: this->Shape = value; break;
 					case DistributionPropertyType::ShapeB: this->ShapeB = value; break;
-					case DistributionPropertyType::Observations: this->Observations = value; break;
+					case DistributionPropertyType::Observations: this->Observations = (int)value; break;
 					default: throw Reliability::probLibException("Property not supported");
 				}
 			}

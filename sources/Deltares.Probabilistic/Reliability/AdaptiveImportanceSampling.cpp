@@ -111,7 +111,7 @@ namespace Deltares
 #ifdef __cpp_lib_format
 						std::string identifier = std::format("Variance loop {0:}", loopCounter - 1);
 #else
-						std::string identifier = "variance loop";
+						std::string identifier = "Variance loop" + std::to_string(loopCounter - 1);
 #endif
 						designPoint->Identifier = identifier;
 
@@ -123,7 +123,7 @@ namespace Deltares
 #ifdef __cpp_lib_format
 						auto text = std::format("Calculating variance loop #{0:}.", loopCounter);
 #else
-						auto text = "Variance loop = " + std::to_string(loopCounter);
+						auto text = "Calculating variance loop " + std::to_string(loopCounter) + ".";
 #endif
 						modelRunner->doTextualProgress(ProgressType::Global, text);
 						designPoint = importanceSampling->getDesignPoint(modelRunner);

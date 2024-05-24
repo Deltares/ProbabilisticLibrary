@@ -20,11 +20,6 @@ public :: initProbabilisticCalculation, &
         module procedure setParametersProbabilisticISdetail
     end interface
 
-    interface setParametersProbabilisticAdpMCIS
-        module procedure setParametersProbabilisticAdpMCISsimple
-        module procedure setParametersProbabilisticAdpMCISdetail
-    end interface
-
     public :: setParametersProbabilisticForm, &
               setParametersProbabilisticNI, &
               setParametersProbabilisticCMC, &
@@ -104,14 +99,12 @@ subroutine initProbabilisticCalculation( probDb, maxStochasts, databaseFlag, exp
     probDb%method%AdaptiveIS%minimumSamples         = 1000
     probDb%method%AdaptiveIS%maximumSamples         = 100000
     probDb%method%AdaptiveIS%varCoeffFailure        = 0.10D0
-    probDb%method%AdaptiveIS%varCoeffNoFailure      = 0.10D0
     probDb%method%AdaptiveIS%varianceFactor         = [ (1.5D0, i = 1,maxStochasts) ]
     probDb%method%AdaptiveIS%translation            = [ (0.0D0, i = 1,maxStochasts) ]
     probDb%method%AdaptiveIS%startMethod            = fORMStartZero
-    probDb%method%AdaptiveIS%Nadp                   = 1
+    probDb%method%AdaptiveIS%Nadp                   = 5
     probDb%method%AdaptiveIS%startValue             = [ (0.0D0, i = 1,maxStochasts) ]
     probDb%method%AdaptiveIS%epsFailed              = 0.10D0
-    probDb%method%AdaptiveIS%maxSamplesDef          = 110000
     probDb%method%AdaptiveIS%minFailed              = 0
     probDb%method%AdaptiveIS%increaseVariance       = 0.5
     !
@@ -416,74 +409,25 @@ end subroutine setParametersProbabilisticISdetail
 !>
 !! Subroutine for assignment of numeric control data Adaptive Importance Sampling
 !!   @ingroup Probabilistic
-subroutine setParametersProbabilisticAdpMCISSimple(probDb, ISseedPRNG, ISminimumSamples, &
-               ISmaximumSamples, ISmaxSamplesDef, ISmaxLoop, ISvarCoeffFailure, ISvarCoeffNoFailure, &
-               ISepsFailed, ISminFailed, ISincreaseVariance, ISVarianceFactor)
+subroutine setParametersProbabilisticAdpMCIS(probDb, adaptiveIS)
 
-    type(probabilisticDataStructure_data)   :: probDb                !< Probabilistic data module
-    integer, intent(in)                     :: ISseedPRNG           !< Start value random generator
-    integer, intent(in)                     :: ISminimumSamples     !< Minimum number samples (>1)
-    integer, intent(in)                     :: ISmaximumSamples     !< Maximum number samples
-    integer, intent(in)                     :: ISmaxSamplesDef      !< Maximum number samples for Recalculate
-    integer, intent(in)                     :: ISmaxLoop            !< Maximum number of iterations in outer loop
-    real(kind=wp), intent(in)               :: ISvarCoeffFailure    !< Required variation coefficient Failure
-    real(kind=wp), intent(in)               :: ISvarCoeffNoFailure  !< Required variation coefficient Non Failure
-    real(kind=wp), intent(in)               :: ISepsFailed          !< Required fraction to fail
-    integer,       intent(in)               :: ISminFailed          !< Minimum fraction to fail, otherwise increase variance
-    real(kind=wp), intent(in)               :: ISincreaseVariance   !< Amount to increase variance with
-    real(kind=wp), intent(in)               :: ISvarianceFactor     !< Multiplicative factor to increase the standard deviation
-                                                                    !< one value only
+    type(probabilisticDataStructure_data), intent(inout) :: probDb                !< Probabilistic data module
+    type(tpAdaptiveIS)                   , intent(in   ) :: adaptiveIS
 
     !
     ! Put data in structure
     !
-    probDb%method%AdaptiveIS%seedPRNG           = ISseedPRNG
-    probDb%method%AdaptiveIS%minimumSamples     = ISminimumSamples
-    probDb%method%AdaptiveIS%maximumSamples     = ISmaximumSamples
-    probDb%method%AdaptiveIS%maxSamplesDef      = ISmaxSamplesDef
-    probDb%method%AdaptiveIS%Nadp               = ISmaxLoop
-    probDb%method%AdaptiveIS%varCoeffFailure    = ISvarCoeffFailure
-    probDb%method%AdaptiveIS%varCoeffNoFailure  = ISvarCoeffNoFailure
-    probDb%method%AdaptiveIS%epsFailed          = ISepsFailed
-    probDb%method%AdaptiveIS%minFailed          = ISminFailed
-    probDb%method%AdaptiveIS%increaseVariance   = ISincreaseVariance
-    probDb%method%AdaptiveIS%varianceFactor     = ISvarianceFactor
+    probDb%method%AdaptiveIS%seedPRNG           = AdaptiveIS%seedPRNG
+    probDb%method%AdaptiveIS%minimumSamples     = AdaptiveIS%minimumSamples
+    probDb%method%AdaptiveIS%maximumSamples     = AdaptiveIS%maximumSamples
+    probDb%method%AdaptiveIS%Nadp               = AdaptiveIS%Nadp
+    probDb%method%AdaptiveIS%varCoeffFailure    = AdaptiveIS%varCoeffFailure
+    probDb%method%AdaptiveIS%epsFailed          = AdaptiveIS%epsFailed
+    probDb%method%AdaptiveIS%minFailed          = AdaptiveIS%minFailed
+    probDb%method%AdaptiveIS%increaseVariance   = AdaptiveIS%increaseVariance
+    probDb%method%AdaptiveIS%varianceFactor     = AdaptiveIS%varianceFactor
 
-end subroutine setParametersProbabilisticAdpMCISSimple
-
-subroutine setParametersProbabilisticAdpMCISDetail(probDb, ISseedPRNG, ISminimumSamples, &
-               ISmaximumSamples, ISmaxSamplesDef, ISmaxLoop, ISvarCoeffFailure, ISvarCoeffNoFailure, &
-               ISepsFailed, ISminFailed, ISincreaseVariance, ISVarianceFactor)
-
-    type(probabilisticDataStructure_data)   :: probDb                !< Probabilistic data module
-    integer, intent(in)                     :: ISseedPRNG           !< Start value random generator
-    integer, intent(in)                     :: ISminimumSamples     !< Minimum number samples (>1)
-    integer, intent(in)                     :: ISmaximumSamples     !< Maximum number samples
-    integer, intent(in)                     :: ISmaxSamplesDef      !< Maximum number samples for Recalculate
-    integer, intent(in)                     :: ISmaxLoop            !< Maximum number of iterations in outer loop
-    real(kind=wp), intent(in)               :: ISvarCoeffFailure    !< Required variation coefficient Failure
-    real(kind=wp), intent(in)               :: ISvarCoeffNoFailure  !< Required variation coefficient Non Failure
-    real(kind=wp), intent(in)               :: ISepsFailed          !< Required fraction to fail
-    real(kind=wp), intent(in)               :: ISminFailed          !< Minimum fraction to fail, otherwise increase variance
-    real(kind=wp), intent(in)               :: ISincreaseVariance   !< Amount to increase variance with
-    real(kind=wp), intent(in)               :: ISvarianceFactor(:)  !< Multiplicative factor to increase the standard deviation
-
-    !
-    ! Put data in structure
-    !
-    !probDb%method%AdaptiveIS%seedPRNG           = ISseedPRNG
-    !probDb%method%AdaptiveIS%minimumSamples     = ISminimumSamples
-    !probDb%method%AdaptiveIS%maximumSamples     = ISmaximumSamples
-    !probDb%method%AdaptiveIS%maxSamplesDef      = ISmaxSamplesDef
-    !probDb%method%AdaptiveIS%Nadp               = ISmaxLoop
-    !probDb%method%AdaptiveIS%varCoeffFailure    = ISvarCoeffFailure
-    !probDb%method%AdaptiveIS%varCoeffNoFailure  = ISvarCoeffNoFailure
-    !probDb%method%AdaptiveIS%epsFailed          = ISepsFailed
-    !probDb%method%AdaptiveIS%minFailed          = ISminFailed
-    !probDb%method%AdaptiveIS%increaseVariance   = ISincreaseVariance
-    !probDb%method%AdaptiveIS%varianceFactor     = ISvarianceFactor
-
-end subroutine setParametersProbabilisticAdpMCISDetail
+end subroutine setParametersProbabilisticAdpMCIS
 
 !>
 !! Subroutine for assignment of numeric control data (small subset)

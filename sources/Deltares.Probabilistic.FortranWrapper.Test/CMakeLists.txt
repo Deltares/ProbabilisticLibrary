@@ -91,9 +91,18 @@ add_test(
   COMMAND $<TARGET_FILE:FLunittestprogram> conv 1 /s
 )
 
+set(LEVEL 3)
+if (UNIX)
+  get_property(CODECOV GLOBAL PROPERTY WITH_CODECOV)
+  if (CODECOV)
+    set(LEVEL 1)
+  endif(CODECOV)
+endif(UNIX)
+message(STATUS "Level tests = ${LEVEL}")
+
 add_test(
   NAME fortran-legacy-prob-tests
-  COMMAND $<TARGET_FILE:FLunittestprogram> prob 3 2 /s
+  COMMAND $<TARGET_FILE:FLunittestprogram> prob ${LEVEL} 2 /s
   WORKING_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/unitTests"
 )
 
