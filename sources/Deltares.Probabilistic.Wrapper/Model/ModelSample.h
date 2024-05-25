@@ -40,7 +40,24 @@ namespace Deltares
 					this->values = NativeSupport::toManaged(shared->object->Values);
 				}
 
-				property array<double>^ Values
+                void SetNativeModelSample(const std::shared_ptr<Models::ModelSample> nativeModelSample)
+                {
+                    shared = new SharedPointerProvider(nativeModelSample);
+
+                    if (this->values->Length == shared->object->Values.size())
+                    {
+                        for (int i = 0; i < this->values->Length; i++)
+                        {
+                            this->values[i] = shared->object->Values[i];
+                        }
+                    }
+                    else
+                    {
+                        this->values = NativeSupport::toManaged(shared->object->Values);
+                    }
+                }
+
+                property array<double>^ Values
 				{
 					array<double>^ get() { return values; }
 				}
@@ -104,7 +121,7 @@ namespace Deltares
 					return true;
 				}
 
-				property System::Object^ Tag
+                property System::Object^ Tag
 				{
 					System::Object^ get()
 					{

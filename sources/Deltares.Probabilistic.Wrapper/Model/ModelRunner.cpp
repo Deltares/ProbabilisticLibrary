@@ -109,16 +109,39 @@ namespace Deltares
 				this->CalcZValue(sampleWrapper);
 			}
 
-			void ModelRunner::invokeMultipleSamples(std::vector<std::shared_ptr<Models::ModelSample>> samples)
+            /**
+             * \brief Callback method for calculating samples in .net invoked by a native algorithm
+             * \param samples 
+             */
+            void ModelRunner::invokeMultipleSamples(std::vector<std::shared_ptr<Models::ModelSample>> samples)
 			{
 				System::Collections::Generic::List<ModelSample^>^ sampleWrappers = gcnew System::Collections::Generic::List<Wrappers::ModelSample^>();
 
 				for (int i = 0; i < samples.size(); i++)
 				{
-					sampleWrappers->Add(gcnew ModelSample(samples[i]));
+					sampleWrappers->Add(this->GetModelSample(samples[i]));
 				}
 
 				this->CalcZValues(sampleWrappers);
+
+                this->Reset();
+			}
+
+            ModelSample^ ModelRunner::GetModelSample(std::shared_ptr<Models::ModelSample> sample)
+			{
+			    if (reusableModelSampleIndex < reusableSamples->Count)
+			    {
+                    ModelSample^ modelSample = reusableSamples[reusableModelSampleIndex++];
+                    modelSample->SetNativeModelSample(sample);
+                    return modelSample;
+			    }
+                else
+                {
+                    reusableModelSampleIndex++;
+                    ModelSample^ modelSample = gcnew ModelSample(sample);
+                    reusableSamples->Add(modelSample);
+                    return modelSample;
+                }
 			}
 
 			double ModelRunner::invokeBetaSample(std::shared_ptr<Models::ModelSample> sample, double beta)

@@ -31,6 +31,12 @@ namespace Deltares
 		void ModelRunner::updateStochastSettings(std::shared_ptr<Reliability::StochastSettingsSet> settings)
 		{
 			this->uConverter->updateStochastSettings(settings);
+            this->sampleProvider = std::make_shared<SampleProvider>(settings, false);
+		}
+
+        void ModelRunner::setSampleProvider(std::shared_ptr<SampleProvider> sampleProvider)
+		{
+            this->sampleProvider = sampleProvider;
 		}
 
 
@@ -43,6 +49,11 @@ namespace Deltares
 			{
 				this->locker = new Utils::Locker();
 			}
+
+            if (sampleProvider == nullptr)
+            {
+                sampleProvider = std::make_shared<SampleProvider>(this->uConverter->getVaryingStochastCount(), this->uConverter->getStochastCount(), false);
+            }
 		}
 
 		void ModelRunner::clear()
@@ -57,7 +68,7 @@ namespace Deltares
 			std::vector<double> xValues = this->uConverter->getXValues(sample);
 
 			// create a sample with values in x-space
-			std::shared_ptr<ModelSample> xSample = std::make_shared<ModelSample>(xValues);
+			std::shared_ptr<ModelSample> xSample = sampleProvider->getModelSample(xValues);
 
 			xSample->AllowProxy = sample->AllowProxy;
 			xSample->IterationIndex = sample->IterationIndex;

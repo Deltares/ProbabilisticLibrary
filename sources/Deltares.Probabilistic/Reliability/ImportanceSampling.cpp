@@ -41,17 +41,20 @@ namespace Deltares
 		{
 			modelRunner->updateStochastSettings(this->Settings->StochastSet);
 
-			int nStochasts = modelRunner->getVaryingStochastCount();
-
-			double z0Fac = 0; //< +1 or -1
-			auto z0Ignore = false;
+            std::shared_ptr<SampleProvider> sampleProvider = std::make_shared<SampleProvider>(this->Settings->StochastSet, true);
+            modelRunner->setSampleProvider(sampleProvider);
 
 			std::shared_ptr<RandomSampleGenerator> sampleCreator = std::make_shared<RandomSampleGenerator>();
 			sampleCreator->Settings = this->Settings->randomSettings;
 			sampleCreator->Settings->StochastSet = this->Settings->StochastSet;
+            sampleCreator->sampleProvider = sampleProvider;
 			sampleCreator->initialize();
 
-			bool initial = true;
+            int nStochasts = modelRunner->getVaryingStochastCount();
+
+            double z0Fac = 0; //< +1 or -1
+            auto z0Ignore = false;
+            bool initial = true;
 			bool reported = false;
 
 			std::vector<std::shared_ptr<Sample>> samples; // copy of u for all parallel threads as double
@@ -95,9 +98,11 @@ namespace Deltares
 
 					int runs = std::min(chunkSize, Settings->MaximumSamples + 1 - sampleIndex);
 
+                    sampleProvider->reset();
+
 					if (initial)
 					{
-						auto initialSample = std::make_shared<Sample>(nStochasts);
+						auto initialSample = sampleProvider->getSample();
 						samples.push_back(initialSample);
 						clusters.push_back(nullptr);
 						runs = runs - 1;
