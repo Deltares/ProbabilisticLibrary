@@ -2,11 +2,7 @@
 
 #include <cmath>
 #include <vector>
-#include <cstdint>
 #include <memory>
-
-#include "../Math/NumericSupport.h"
-
 
 namespace Deltares
 {
@@ -42,6 +38,24 @@ namespace Deltares
 			{
 			}
 
+            /**
+             * \brief Resets all contents of the sample to its default values
+             */
+            void clear()
+			{
+			    for (size_t i = 0; i < Values.size(); i++)
+			    {
+                    Values[i] = 0;
+			    }
+
+                IterationIndex = -1;
+                threadId = 0;
+                Weight = std::nan("");
+                AllowProxy = true;
+                IsRestartRequired = false;
+                Z = std::nan("");
+			}
+
 			std::vector<double> Values;
 
 			/**
@@ -51,7 +65,7 @@ namespace Deltares
 
 			int IterationIndex = -1;
 			int threadId = 0;
-			double Weight = nan("");
+			double Weight = std::nan("");
 			bool AllowProxy = true;
 			bool IsRestartRequired = false;
 			double Z = nan("");

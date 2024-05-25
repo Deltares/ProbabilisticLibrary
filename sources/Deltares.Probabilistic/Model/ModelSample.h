@@ -23,6 +23,22 @@ namespace Deltares
 				this->Values = values;
 			}
 
+            /**
+             * \brief Resets all contents of the sample to its default values
+             * \remark Values are not cleared, since they are provided in the constructor
+             */
+            void clear()
+            {
+                IterationIndex = -1;
+                threadId = 0;
+                Weight = std::nan("");
+                AllowProxy = true;
+                IsRestartRequired = false;
+                Z = std::nan("");
+                Beta = 0;
+                Tag = 0;
+            }
+
 			std::vector<double> Values;
 
 			int IterationIndex = -1;

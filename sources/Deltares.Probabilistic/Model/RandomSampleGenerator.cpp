@@ -1,6 +1,7 @@
 #include <vector>
 #include "RandomSampleGenerator.h"
 
+#include "SampleProvider.h"
 #include "../Statistics/StandardNormal.h"
 #include "../Math/Random.h"
 
@@ -11,11 +12,21 @@ namespace Deltares
 		void RandomSampleGenerator::initialize()
 		{
 			Deltares::Numeric::Random::initialize(this->Settings->RandomGeneratorType, this->Settings->IsRepeatableRandom, this->Settings->Seed, this->Settings->SeedB);
+
+            if (sampleProvider == nullptr)
+            {
+                sampleProvider = std::make_shared<SampleProvider>(this->Settings->StochastSet, false);
+            }
 		}
 
 		void RandomSampleGenerator::restart()
 		{
 			Deltares::Numeric::Random::restart();
+
+		    if (sampleProvider != nullptr)
+            {
+                sampleProvider->reset();
+            }
 		}
 
 		std::shared_ptr<Sample> RandomSampleGenerator::getRandomSample()
@@ -28,7 +39,7 @@ namespace Deltares
 				randomValues.push_back(Deltares::Numeric::Random::next());
 			}
 
-			std::shared_ptr<Sample> sample = std::make_shared<Sample>(this->Settings->StochastSet->getVaryingStochastCount());
+			std::shared_ptr<Sample> sample = sampleProvider->getSample();
 
 			for (int i = 0; i < this->Settings->StochastSet->getVaryingStochastCount(); i++)
 			{

@@ -22,12 +22,15 @@ namespace Deltares
 	{
 		std::shared_ptr<DesignPoint> CrudeMonteCarlo::getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner)
 		{
-			modelRunner->updateStochastSettings(this->Settings->StochastSet);
+            modelRunner->updateStochastSettings(this->Settings->StochastSet);
+
+		    std::shared_ptr<SampleProvider> sampleProvider = std::make_shared<SampleProvider>(this->Settings->StochastSet, true);
+            modelRunner->setSampleProvider(sampleProvider);
 
 			double qRange = 1;
 			double zRemainder = 1;
 
-			std::shared_ptr<Sample> remainderSample = std::make_shared<Sample>(this->Settings->StochastSet->getVaryingStochastCount());
+			std::shared_ptr<Sample> remainderSample = sampleProvider->getSample();
 
 			for (int i = 0; i < this->Settings->StochastSet->getVaryingStochastCount(); i++)
 			{
@@ -57,19 +60,22 @@ namespace Deltares
 				zRemainder = modelRunner->getZValue(remainderSample);
 			}
 
-			return getReducedDesignPoint(modelRunner, zRemainder, qRange);
+            sampleProvider->reset();
+
+			return getReducedDesignPoint(modelRunner, sampleProvider, zRemainder, qRange);
 		}
 
-		std::shared_ptr<DesignPoint> CrudeMonteCarlo::getReducedDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner, double zRemainder, double qRange)
+		std::shared_ptr<DesignPoint> CrudeMonteCarlo::getReducedDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<SampleProvider> sampleProvider, double zRemainder, double qRange)
 		{
-			int nParameters = modelRunner->getVaryingStochastCount();
-			std::vector<double> zValues; // copy of z for all parallel threads as double
-			std::shared_ptr<DesignPointBuilder> uMean = std::make_shared<DesignPointBuilder>(nParameters, Settings->designPointMethod, this->Settings->StochastSet);
-
 			std::shared_ptr<RandomSampleGenerator> randomSampleGenerator = std::make_shared<RandomSampleGenerator>();
 			randomSampleGenerator->Settings = this->Settings->randomSettings;
 			randomSampleGenerator->Settings->StochastSet = this->Settings->StochastSet;
+            randomSampleGenerator->sampleProvider = sampleProvider;
 			randomSampleGenerator->initialize();
+
+            int nParameters = modelRunner->getVaryingStochastCount();
+            std::vector<double> zValues; // copy of z for all parallel threads as double
+            std::shared_ptr<DesignPointBuilder> uMean = std::make_shared<DesignPointBuilder>(nParameters, Settings->designPointMethod, this->Settings->StochastSet);
 
 			std::shared_ptr<Sample> uMin = std::make_shared<Sample>(nParameters);
 			double rmin = std::numeric_limits<double>::infinity();
@@ -95,9 +101,11 @@ namespace Deltares
 					int chunkSize = modelRunner->Settings->MaxChunkSize;
 					int runs = std::min(chunkSize, Settings->MaximumSamples + 1 - sampleIndex);
 
+                    sampleProvider->reset();
+
 					if (initial)
 					{
-						samples.push_back(std::make_shared<Sample>(nParameters));
+						samples.push_back(sampleProvider->getSample());
 						runs = runs - 1;
 					}
 

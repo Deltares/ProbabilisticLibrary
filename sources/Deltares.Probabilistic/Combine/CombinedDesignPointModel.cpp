@@ -38,7 +38,7 @@ namespace Deltares
             {
                 if (this->isVarying(stochasts[i]))
                 {
-                    if (selfCorrelationMatrix->isSelfCorrelated(stochasts[i]))
+                    if (selfCorrelationMatrix != nullptr && selfCorrelationMatrix->isSelfCorrelated(stochasts[i]))
                     {
                         for (size_t j = 0; j < designPointModels.size(); j++)
                         {
@@ -101,21 +101,24 @@ namespace Deltares
             // initialize the correlation matrix
             correlationMatrix->init(this->standardNormalStochasts);
 
-            for (size_t i = 0; i < standardNormalStochasts.size(); i++)
+            if (selfCorrelationMatrix != nullptr)
             {
-                for (size_t j = 0; j < i; j++)
+                for (size_t i = 0; i < standardNormalStochasts.size(); i++)
                 {
-                    if (stochastsMap[standardNormalStochasts[i]] == stochastsMap[standardNormalStochasts[j]])
+                    for (size_t j = 0; j < i; j++)
                     {
-                        const std::shared_ptr<Stochast> stochast = stochastsMap[standardNormalStochasts[i]];
-                        const std::shared_ptr<DesignPoint> designPoint1 = designPointsMap[standardNormalStochasts[i]];
-                        const std::shared_ptr<DesignPoint> designPoint2 = designPointsMap[standardNormalStochasts[j]];
-
-                        // ensure the correlation value is applied to stochasts from different design points
-                        if (designPoint1 != nullptr && designPoint2 != nullptr && designPoint1 != designPoint2)
+                        if (stochastsMap[standardNormalStochasts[i]] == stochastsMap[standardNormalStochasts[j]])
                         {
-                            const double correlationValue = selfCorrelationMatrix->getSelfCorrelation(stochast, designPoint1, designPoint2);
-                            correlationMatrix->SetCorrelation(standardNormalStochasts[i], standardNormalStochasts[j], correlationValue);
+                            const std::shared_ptr<Stochast> stochast = stochastsMap[standardNormalStochasts[i]];
+                            const std::shared_ptr<DesignPoint> designPoint1 = designPointsMap[standardNormalStochasts[i]];
+                            const std::shared_ptr<DesignPoint> designPoint2 = designPointsMap[standardNormalStochasts[j]];
+
+                            // ensure the correlation value is applied to stochasts from different design points
+                            if (designPoint1 != nullptr && designPoint2 != nullptr && designPoint1 != designPoint2)
+                            {
+                                const double correlationValue = selfCorrelationMatrix->getSelfCorrelation(stochast, designPoint1, designPoint2);
+                                correlationMatrix->SetCorrelation(standardNormalStochasts[i], standardNormalStochasts[j], correlationValue);
+                            }
                         }
                     }
                 }
