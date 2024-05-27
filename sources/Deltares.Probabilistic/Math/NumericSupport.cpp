@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <functional>
+#include <memory>
 
 #include "Constants.h"
 #include "../Utils/probLibException.h"

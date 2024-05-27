@@ -135,20 +135,6 @@ namespace Deltares
 
             protected:
                 virtual void SetDirectionModel(ICanCalculateBeta^ directionModel);
-
-            private:
-                /**
-                 * \brief List of reusable samples
-                 */
-                System::Collections::Generic::List<ModelSample^>^ reusableSamples = gcnew System::Collections::Generic::List<ModelSample^>();
-                int reusableModelSampleIndex = 0;
-
-                ModelSample^ GetModelSample(std::shared_ptr<Models::ModelSample> sample);
-
-                void Reset()
-                {
-                    reusableModelSampleIndex = 0;
-                }
             };
         }
     }

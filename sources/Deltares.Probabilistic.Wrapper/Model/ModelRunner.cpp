@@ -119,31 +119,10 @@ namespace Deltares
 
 				for (int i = 0; i < samples.size(); i++)
 				{
-					sampleWrappers->Add(this->GetModelSample(samples[i]));
+					sampleWrappers->Add(gcnew ModelSample(samples[i]));
 				}
 
 				this->CalcZValues(sampleWrappers);
-
-                this->Reset();
-			}
-
-            ModelSample^ ModelRunner::GetModelSample(std::shared_ptr<Models::ModelSample> sample)
-			{
-                return gcnew ModelSample(sample);
-
-			    if (reusableModelSampleIndex < reusableSamples->Count)
-			    {
-                    ModelSample^ modelSample = reusableSamples[reusableModelSampleIndex++];
-                    modelSample->SetNativeModelSample(sample);
-                    return modelSample;
-			    }
-                else
-                {
-                    reusableModelSampleIndex++;
-                    ModelSample^ modelSample = gcnew ModelSample(sample);
-                    reusableSamples->Add(modelSample);
-                    return modelSample;
-                }
 			}
 
 			double ModelRunner::invokeBetaSample(std::shared_ptr<Models::ModelSample> sample, double beta)

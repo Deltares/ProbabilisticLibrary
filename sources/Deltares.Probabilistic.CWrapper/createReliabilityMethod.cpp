@@ -25,7 +25,7 @@ std::shared_ptr<RandomSettings> createReliabilityMethod::getRnd(const basicSetti
         rnd->RandomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::MersenneTwister;
         break;
     default:
-        throw probLibException("ModifiedKnuthSubtractive not implemented in C wrapper");
+        throw probLibException("Random generator type is not implemented in C wrapper");
         break;
     }
     rnd->Seed = bs.seed1;
@@ -34,7 +34,9 @@ std::shared_ptr<RandomSettings> createReliabilityMethod::getRnd(const basicSetti
 	return rnd;
 }
  
-std::shared_ptr<ReliabilityMethod> createReliabilityMethod::selectMethod(const basicSettings& bs, const size_t nStoch, std::vector<std::shared_ptr<Stochast>>& stochasts)
+std::shared_ptr<ReliabilityMethod> createReliabilityMethod::selectMethod(const basicSettings& bs,
+                                                                         const size_t nStoch,
+                                                                         std::vector<std::shared_ptr<Stochast>>& stochasts)
 {
 	switch (bs.methodId)
 	{
@@ -183,8 +185,9 @@ void createReliabilityMethod::fillDsSettings(std::shared_ptr<DirectionalSampling
 	DsSettings->DirectionSettings->EpsilonUStepSize = bs.tolC;
 }
 
-void createReliabilityMethod::fillImportanceSamplingSettings(std::shared_ptr<ImportanceSamplingSettings> settings, const basicSettings& bs,
-    std::vector<std::shared_ptr<Stochast>>& stochasts)
+void createReliabilityMethod::fillImportanceSamplingSettings(std::shared_ptr<ImportanceSamplingSettings> settings,
+                                                             const basicSettings& bs,
+                                                             std::vector<std::shared_ptr<Stochast>>& stochasts)
 {
     auto r = getRnd(bs);
     settings->randomSettings.swap(r);
