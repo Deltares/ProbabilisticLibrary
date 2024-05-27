@@ -122,6 +122,8 @@
     <ClInclude Include="Distributions\testDistributions_body.cpp" />
     <ClInclude Include="Math\testNumericSupport.h" />
     <ClInclude Include="Math\testNumericSupport_body.cpp" />
+    <ClInclude Include="Math\testKMean.h" />
+    <ClInclude Include="Math\testKMean_body.cpp" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="projectBuilder.h" />
     <ClInclude Include="projectBuilder_body.cpp" />
@@ -135,6 +137,7 @@
     <ClCompile Include="Combin\all_combin_tests.cpp" />
     <ClCompile Include="Distributions\testDistributions.cpp" />
     <ClCompile Include="Math\testNumericSupport.cpp" />
+    <ClCompile Include="Math\testKMean.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

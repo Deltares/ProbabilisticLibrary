@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include "Reliability/testStartPointCalculator.h"
 #include "Math/testNumericSupport.h"
+#include "Math/testKMean.h"
 #include "Combin/hohenbichler_tests.h"
 #include "Combin/intEqualElements_tests.h"
 #include "Combin/upscale_tests.h"
@@ -56,6 +57,12 @@ namespace Deltares
             {
                 auto tstNumSupport = testNumericSupport();
                 tstNumSupport.allNumericSupportTests();
+            }
+
+            TEST(unittst, testKMeanClustering)
+            {
+                auto h = testKMean();
+                h.allKMeanTests();
             }
 
             TEST(unittst, testStartPointCalculator)

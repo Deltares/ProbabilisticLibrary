@@ -1,4 +1,7 @@
 #pragma once
+
+#include "../Math/Random.h"
+
 namespace Deltares
 {
 	namespace Optimization
@@ -7,7 +10,7 @@ namespace Deltares
 		 * \brief Types of initialization of a cluster
 		 * \remark Forgy, Random are other initialization methods, but not implemented yet
 		 */
-		enum ClusterInitializationMethod { PlusPlus	};
+        enum class ClusterInitializationMethod { PlusPlus};
 
 		/**
 		 * \brief Settings for clustering algorithm
@@ -68,6 +71,11 @@ namespace Deltares
 			{
 				return MaxClusters >= 1;
 			}
+
+            /**
+             * \brief The type of random number generator to be used.
+             */
+            Numeric::RandomValueGeneratorType generatorType = Numeric::RandomValueGeneratorType::ModifiedKnuthSubtractive;
 		};
 	}
 }

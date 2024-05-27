@@ -42,6 +42,8 @@ add_executable(Deltares.Probabilistic.Test
     Reliability/testStartPointCalculator_body.cpp
     Math/testNumericSupport.h
     Math/testNumericSupport_body.cpp
+    Math/testKMean.h
+    Math/testKMean_body.cpp
     Combin/hohenbichler_tests.h
     Combin/hohenbichler_tests.cpp
     Combin/intEqualElements_tests.h
