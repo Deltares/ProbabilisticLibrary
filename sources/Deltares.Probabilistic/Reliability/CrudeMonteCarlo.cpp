@@ -24,7 +24,7 @@ namespace Deltares
 		{
             modelRunner->updateStochastSettings(this->Settings->StochastSet);
 
-		    std::shared_ptr<SampleProvider> sampleProvider = std::make_shared<SampleProvider>(this->Settings->StochastSet, true);
+		    std::shared_ptr<SampleProvider> sampleProvider = std::make_shared<SampleProvider>(this->Settings->StochastSet, false);
             modelRunner->setSampleProvider(sampleProvider);
 
 			double qRange = 1;
@@ -67,7 +67,7 @@ namespace Deltares
 
 		std::shared_ptr<DesignPoint> CrudeMonteCarlo::getReducedDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<SampleProvider> sampleProvider, double zRemainder, double qRange)
 		{
-			std::shared_ptr<RandomSampleGenerator> randomSampleGenerator = std::make_shared<RandomSampleGenerator>();
+            const std::shared_ptr<RandomSampleGenerator> randomSampleGenerator = std::make_shared<RandomSampleGenerator>();
 			randomSampleGenerator->Settings = this->Settings->randomSettings;
 			randomSampleGenerator->Settings->StochastSet = this->Settings->StochastSet;
             randomSampleGenerator->sampleProvider = sampleProvider;
@@ -75,7 +75,7 @@ namespace Deltares
 
             int nParameters = modelRunner->getVaryingStochastCount();
             std::vector<double> zValues; // copy of z for all parallel threads as double
-            std::shared_ptr<DesignPointBuilder> uMean = std::make_shared<DesignPointBuilder>(nParameters, Settings->designPointMethod, this->Settings->StochastSet);
+            const std::shared_ptr<DesignPointBuilder> designPointBuilder = std::make_shared<DesignPointBuilder>(nParameters, Settings->designPointMethod, this->Settings->StochastSet);
 
 			std::shared_ptr<Sample> uMin = std::make_shared<Sample>(nParameters);
 			double rmin = std::numeric_limits<double>::infinity();
@@ -84,7 +84,7 @@ namespace Deltares
 			double z0Fac = 0;
 			int nFailed = 0;
 			int nSamples = 0;
-			std::shared_ptr<ConvergenceReport> convergenceReport = std::make_shared<ConvergenceReport>();
+            const std::shared_ptr<ConvergenceReport> convergenceReport = std::make_shared<ConvergenceReport>();
 			std::vector<std::shared_ptr<Sample>> samples;
 			size_t zIndex = 0;
 
@@ -126,7 +126,7 @@ namespace Deltares
 					{
 						z0Fac = getZFactor(zValues[0]);
 						uMin->setInitialValues(z0Fac * Statistics::StandardNormal::BetaMax);
-						uMean->initialize(z0Fac * Statistics::StandardNormal::BetaMax);
+						designPointBuilder->initialize(z0Fac * Statistics::StandardNormal::BetaMax);
 					}
 
 					if (modelRunner->shouldExitPrematurely(samples))
@@ -175,7 +175,7 @@ namespace Deltares
 
 				if (z * z0Fac < 0)
 				{
-					uMean->addSample(u);
+					designPointBuilder->addSample(u);
 					double rbeta = u->getBeta();
 					if (rbeta < rmin)
 					{
@@ -195,7 +195,7 @@ namespace Deltares
 			}
 
 			double beta = Statistics::StandardNormal::getUFromQ(pf);
-			uMin = uMean->getSample();
+			uMin = designPointBuilder->getSample();
 
 			convergenceReport->Convergence = getConvergence(pf, nSamples);
 

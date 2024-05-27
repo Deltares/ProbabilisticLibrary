@@ -41,7 +41,7 @@ namespace Deltares
 		{
 			modelRunner->updateStochastSettings(this->Settings->StochastSet);
 
-            std::shared_ptr<SampleProvider> sampleProvider = std::make_shared<SampleProvider>(this->Settings->StochastSet, true);
+            std::shared_ptr<SampleProvider> sampleProvider = std::make_shared<SampleProvider>(this->Settings->StochastSet, false);
             modelRunner->setSampleProvider(sampleProvider);
 
 			std::shared_ptr<RandomSampleGenerator> sampleCreator = std::make_shared<RandomSampleGenerator>();
@@ -52,7 +52,7 @@ namespace Deltares
 
             int nStochasts = modelRunner->getVaryingStochastCount();
 
-            double z0Fac = 0; //< +1 or -1
+            double z0Fac = 0;
             auto z0Ignore = false;
             bool initial = true;
 			bool reported = false;

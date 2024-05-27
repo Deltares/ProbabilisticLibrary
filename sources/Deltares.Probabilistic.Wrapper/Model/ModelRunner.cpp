@@ -129,6 +129,8 @@ namespace Deltares
 
             ModelSample^ ModelRunner::GetModelSample(std::shared_ptr<Models::ModelSample> sample)
 			{
+                return gcnew ModelSample(sample);
+
 			    if (reusableModelSampleIndex < reusableSamples->Count)
 			    {
                     ModelSample^ modelSample = reusableSamples[reusableModelSampleIndex++];
