@@ -9,11 +9,6 @@ namespace Deltares
 {
 	namespace Models
 	{
-		/// <summary>
-		/// Indicates the meaning of <see cref="Sample.Values"/> in a <see cref="Sample"/>
-		/// </summary>
-		enum SpaceType { U, X };
-
         /**
          * \brief Combination of values defined in u-space in a reliability algorithm
          */
@@ -62,11 +57,6 @@ namespace Deltares
 
 			std::vector<double> Values;
 
-			/**
-			 * \brief Defines the parameter space in which Values are defined
-			 */
-			SpaceType spaceType = SpaceType::U;
-
 			int IterationIndex = -1;
 			int threadId = 0;
 			double Weight = std::nan("");
@@ -104,8 +94,6 @@ namespace Deltares
 
                 return result;
             }
-
-
 		};
 	}
 }

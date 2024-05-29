@@ -2,7 +2,6 @@
 
 #include <cmath>
 #include <cstdint>
-#include <vector>
 
 namespace Deltares
 {
@@ -11,9 +10,6 @@ namespace Deltares
 		class Evaluation
 		{
 		public:
-			std::vector<double> X;
-			std::vector<double> R;
-
 			double Z = nan("");
 			double Weight = 1;
 			int Iteration = -1;

@@ -170,7 +170,6 @@ namespace Deltares
 				std::shared_ptr<Evaluation> evaluation = std::make_shared<Evaluation>();
 
 				evaluation->Z = sample->Z;
-				evaluation->X = sample->Values;
 				evaluation->Iteration = sample->IterationIndex;
 				evaluation->Tag = sample->Tag;
 
