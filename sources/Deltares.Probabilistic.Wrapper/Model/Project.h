@@ -20,6 +20,10 @@ namespace Deltares
                 ZLambda getZLambda();
                 void invokeSample(std::shared_ptr<Models::ModelSample> sample);
             public:
+                Project() { }
+                ~Project() { this->!Project(); }
+                !Project() { delete shared; }
+
                 System::Collections::Generic::List<Statistics::Wrappers::Stochast^>^ Stochasts = gcnew System::Collections::Generic::List<Statistics::Wrappers::Stochast^>();
                 Statistics::Wrappers::CorrelationMatrix^ CorrelationMatrix = gcnew Statistics::Wrappers::CorrelationMatrix();
 

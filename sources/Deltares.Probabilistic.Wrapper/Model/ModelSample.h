@@ -27,18 +27,18 @@ namespace Deltares
 				ModelSample(std::shared_ptr<Models::ModelSample> sample)
 				{
 					shared = new SharedPointerProvider(sample);
-
 					this->values = NativeSupport::toManaged(sample->Values);
 				}
 
 				ModelSample(array<double>^ values)
 				{
 					std::vector<double> nativeValues = NativeSupport::toNative(values);
-
 					shared = new SharedPointerProvider(new Models::ModelSample(nativeValues));
-
 					this->values = NativeSupport::toManaged(shared->object->Values);
 				}
+
+                ~ModelSample() { this->!ModelSample(); }
+                !ModelSample() { delete shared; }
 
                 void SetNativeModelSample(const std::shared_ptr<Models::ModelSample> nativeModelSample)
                 {
