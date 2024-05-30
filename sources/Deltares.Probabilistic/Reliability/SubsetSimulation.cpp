@@ -5,6 +5,7 @@
 
 #include "DesignPoint.h"
 #include "DesignPointBuilder.h"
+#include "../Math/NumericSupport.h"
 #include "../Statistics/StandardNormal.h"
 #include "../Model/RandomSampleGenerator.h"
 

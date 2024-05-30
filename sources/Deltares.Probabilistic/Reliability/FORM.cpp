@@ -4,6 +4,7 @@
 #include "StartPointCalculator.h"
 #include "DesignPoint.h"
 #include "../Model/GradientCalculator.h"
+#include "../Math/NumericSupport.h"
 
 #if __has_include(<format>)
 #include <format>

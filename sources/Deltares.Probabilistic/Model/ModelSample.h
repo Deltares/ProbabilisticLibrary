@@ -5,7 +5,7 @@
 #include <cstdint>
 #include <memory>
 
-#include "../Math/NumericSupport.h"
+#include "../Utils/TagSupport.h"
 
 
 namespace Deltares
@@ -23,6 +23,11 @@ namespace Deltares
 
             ~ModelSample()
             {
+                if (isOwnerOfTag)
+                {
+                    Deltares::Utils::TagSupport::releaseTag(Tag);
+                }
+
                 ModelSampleCount--;
             }
 

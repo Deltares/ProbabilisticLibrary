@@ -42,11 +42,6 @@ namespace Deltares
                 ~ModelSample() { this->!ModelSample(); }
                 !ModelSample()
 				{
-                    if (shared->object->isOwnerOfTag)
-                    {
-                        NativeSupport::releaseManagedObject(this->Tag);
-                    }
-
                     delete shared;
 				    ModelSampleCount--;
 				}

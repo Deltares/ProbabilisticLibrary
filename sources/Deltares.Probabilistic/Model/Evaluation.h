@@ -3,6 +3,8 @@
 #include <cmath>
 #include <cstdint>
 
+#include "../Utils/TagSupport.h"
+
 namespace Deltares
 {
 	namespace Models
@@ -10,6 +12,15 @@ namespace Deltares
 		class Evaluation
 		{
 		public:
+            Evaluation() = default;
+            ~Evaluation()
+            {
+                if (isOwnerOfTag)
+                {
+                    Utils::TagSupport::releaseTag(Tag);
+                }
+            }
+
 			double Z = nan("");
 			double Weight = 1;
 			int Iteration = -1;

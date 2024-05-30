@@ -1,6 +1,7 @@
 #include "CombinedDesignPointModel.h"
 #include "../Statistics/StandardNormal.h"
 #include "../Statistics/Stochast.h"
+#include "../Math/NumericSupport.h"
 
 #include <cmath>
 
