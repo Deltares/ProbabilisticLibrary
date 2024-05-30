@@ -23,13 +23,16 @@ namespace Deltares
                     this->Iteration = evaluation->Iteration;
                     this->Weight = evaluation->Weight;
                     this->Tag = NativeSupport::toManagedObject(evaluation->Tag);
+
+                    if (evaluation->isOwnerOfTag)
+                    {
+                        evaluation->isOwnerOfTag = false;
+                        NativeSupport::releaseManagedObject(this->Tag);
+                    }
                 }
 
                 ~Evaluation() { this->!Evaluation(); }
-                !Evaluation()
-                {
-                    NativeSupport::releaseManagedObject(this->Tag);
-                }
+                !Evaluation() { }
 
                 property int Iteration;
                 property double Z;

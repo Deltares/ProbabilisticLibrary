@@ -1,5 +1,6 @@
 #include "ImportanceSamplingCluster.h"
 #include "../Statistics/StandardNormal.h"
+#include "../Math/NumericSupport.h"
 
 namespace Deltares
 {

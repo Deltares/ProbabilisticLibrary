@@ -8,6 +8,7 @@
 #endif
 #include <unordered_set>
 
+#include "../Math/NumericSupport.h"
 #include "../Reliability/DesignPoint.h"
 #include "../Reliability/DesignPointBuilder.h"
 #include "../Reliability/ImportanceSampling.h"

@@ -9,6 +9,7 @@
 #include <memory>
 #include <numbers>
 
+#include "../Math/NumericSupport.h"
 #include "../Statistics/StandardNormal.h"
 #include "../Model/Sample.h"
 #include "../Model/RandomSampleGenerator.h"

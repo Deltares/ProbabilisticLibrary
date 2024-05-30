@@ -2,6 +2,8 @@
 #include <string>
 #include <vector>
 
+#include "../../Deltares.Probabilistic/Utils/TagSupport.h"
+
 namespace Deltares
 {
 	namespace Utils
@@ -25,6 +27,11 @@ namespace Deltares
                 static void releaseManagedObjects();
                 static void releaseManagedObject(System::Object^ object);
                 static int getManagedObjectsCount();
+			private:
+                static bool initialized = false;
+                static void initialize();
+                static void releaseTag(intptr_t tag);
+                static Deltares::Utils::ReleaseTagLambda getReleaseTagLambda();
 			};
 		}
 	}

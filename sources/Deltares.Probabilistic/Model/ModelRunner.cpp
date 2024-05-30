@@ -173,7 +173,10 @@ namespace Deltares
 				evaluation->Z = sample->Z;
 				evaluation->Iteration = sample->IterationIndex;
 				evaluation->Tag = sample->Tag;
+
+                // transfer the ownership of the tag
                 evaluation->isOwnerOfTag = true;
+                sample->isOwnerOfTag = false;
 
 				if (this->Settings->MaxParallelProcesses > 1) 
 				{
@@ -186,7 +189,6 @@ namespace Deltares
 					this->evaluations.push_back(evaluation);
 				}
 
-                sample->isOwnerOfTag = false;
 			}
 		}
 

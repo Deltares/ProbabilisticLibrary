@@ -1,4 +1,5 @@
 #include "GridSearch.h"
+#include "../Math/NumericSupport.h"
 
 namespace Deltares
 {

@@ -142,6 +142,7 @@
     <ClCompile Include="Combine\DesignPointCombiner.cpp" />
     <ClCompile Include="Statistics\SelfCorrelationMatrix.cpp" />
     <ClCompile Include="Model\SampleProvider.cpp" />
+    <ClCompile Include="Utils\TagSupport.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -303,6 +304,7 @@
     <ClInclude Include="Combine\DesignPointCombiner.h" />
     <ClInclude Include="Statistics\SelfCorrelationMatrix.h" />
     <ClInclude Include="Model\SampleProvider.h" />
+    <ClInclude Include="Utils\TagSupport.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">
