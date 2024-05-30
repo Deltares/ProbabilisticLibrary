@@ -14,14 +14,17 @@ namespace Deltares
 	{
 		class ModelSample
 		{
-		private:
-			long tag = 0;
-
 		public:
 			ModelSample(std::vector<double> values)
 			{
 				this->Values = values;
+                ModelSampleCount++;
 			}
+
+            ~ModelSample()
+            {
+                ModelSampleCount--;
+            }
 
             /**
              * \brief Resets all contents of the sample to its default values
@@ -49,6 +52,7 @@ namespace Deltares
 			double Beta = 0;
 			double Z = nan("");
 
+            bool isOwnerOfTag = true;
 			intptr_t Tag = 0;
 
 			bool hasSameValues(std::shared_ptr<ModelSample> other)
@@ -68,6 +72,8 @@ namespace Deltares
 
 				return true;
 			}
+
+            inline static int ModelSampleCount = 0;
 		};
 	}
 }

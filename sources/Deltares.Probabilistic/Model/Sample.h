@@ -25,17 +25,21 @@ namespace Deltares
 				{
 					Values.push_back(0.0);
 				}
+
+                SampleCount++;
 			}
 
 			Sample(std::vector<double> values)
 			{
 				this->size = (int)values.size();
 				this->Values = values;
-			}
+                SampleCount++;
+            }
 
 			~Sample()
 			{
-			}
+                SampleCount--;
+            }
 
             /**
              * \brief Resets all contents of the sample to its default values
@@ -94,6 +98,8 @@ namespace Deltares
 
                 return result;
             }
+
+            inline static int SampleCount = 0;
 		};
 	}
 }

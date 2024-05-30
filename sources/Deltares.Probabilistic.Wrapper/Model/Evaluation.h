@@ -7,31 +7,37 @@
 
 namespace Deltares
 {
-	namespace Models
-	{
-		namespace Wrappers
-		{
-			using namespace Deltares::Utils::Wrappers;
+    namespace Models
+    {
+        namespace Wrappers
+        {
+            using namespace Deltares::Utils::Wrappers;
 
-			public ref class Evaluation
-			{
-			public:
-				Evaluation() {}
-				Evaluation(std::shared_ptr<Models::Evaluation> evaluation)
-				{
-					this->Z = evaluation->Z;
-					this->Iteration = evaluation->Iteration;
-					this->Weight = evaluation->Weight;
-					this->Tag = NativeSupport::toManagedObject(evaluation->Tag);
-				}
+            public ref class Evaluation
+            {
+            public:
+                Evaluation() {}
+                Evaluation(std::shared_ptr<Models::Evaluation> evaluation)
+                {
+                    this->Z = evaluation->Z;
+                    this->Iteration = evaluation->Iteration;
+                    this->Weight = evaluation->Weight;
+                    this->Tag = NativeSupport::toManagedObject(evaluation->Tag);
+                }
 
-				property int Iteration;
-				property double Z;
-				property double Weight;
-				property System::Object^ Tag;
-			};
-		}
-	}
+                ~Evaluation() { this->!Evaluation(); }
+                !Evaluation()
+                {
+                    NativeSupport::releaseManagedObject(this->Tag);
+                }
+
+                property int Iteration;
+                property double Z;
+                property double Weight;
+                property System::Object^ Tag;
+            };
+        }
+    }
 }
 
 

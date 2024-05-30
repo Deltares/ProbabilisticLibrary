@@ -22,7 +22,9 @@ namespace Deltares
 				static intptr_t toNativeObject(System::Object^ object);
 				static System::Object^ toManagedObject(intptr_t pointer);
 
-				static void releaseManagedObjects();
+                static void releaseManagedObjects();
+                static void releaseManagedObject(System::Object^ object);
+                static int getManagedObjectsCount();
 			};
 		}
 	}
