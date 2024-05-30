@@ -28,17 +28,28 @@ namespace Deltares
 				{
 					shared = new SharedPointerProvider(sample);
 					this->values = NativeSupport::toManaged(sample->Values);
-				}
+                    ModelSampleCount++;
+                }
 
 				ModelSample(array<double>^ values)
 				{
 					std::vector<double> nativeValues = NativeSupport::toNative(values);
 					shared = new SharedPointerProvider(new Models::ModelSample(nativeValues));
 					this->values = NativeSupport::toManaged(shared->object->Values);
+                    ModelSampleCount++;
 				}
 
                 ~ModelSample() { this->!ModelSample(); }
-                !ModelSample() { delete shared; }
+                !ModelSample()
+				{
+                    if (shared->object->isOwnerOfTag)
+                    {
+                        NativeSupport::releaseManagedObject(this->Tag);
+                    }
+
+                    delete shared;
+				    ModelSampleCount--;
+				}
 
                 void SetNativeModelSample(const std::shared_ptr<Models::ModelSample> nativeModelSample)
                 {
@@ -143,7 +154,18 @@ namespace Deltares
 				{
 					return shared->object;
 				}
-			};
+
+                static int ModelSampleCount = 0;
+                static property int NativeModelSampleCount
+                {
+                    int get() { return Models::ModelSample::ModelSampleCount; }
+                }
+
+                static property int UnreleasedManagedObjectsCount
+                {
+                    int get() { return NativeSupport::getManagedObjectsCount(); }
+                }
+            };
 		}
 	}
 }

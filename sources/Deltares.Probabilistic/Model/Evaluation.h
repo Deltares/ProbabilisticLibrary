@@ -14,6 +14,7 @@ namespace Deltares
 			double Weight = 1;
 			int Iteration = -1;
 
+            bool isOwnerOfTag = true;
 			intptr_t Tag = 0;
 		};
 	}

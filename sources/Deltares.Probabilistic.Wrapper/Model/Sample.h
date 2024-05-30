@@ -23,6 +23,8 @@ namespace Deltares
                 {
                     this->shared = new SharedPointerProvider(sample);
                     this->SpaceType = Wrappers::SpaceType::U;
+
+                    SampleCount++;
                 }
 
                 Sample(array<double>^ values)
@@ -33,10 +35,16 @@ namespace Deltares
 
                     shared = new SharedPointerProvider(sample);
                     this->values = values;
+
+                    SampleCount++;
                 }
 
                 ~Sample() { this->!Sample(); }
-                !Sample() { delete shared; }
+                !Sample()
+                {
+                    delete shared;
+                    SampleCount--;
+                }
 
                 property array<double>^ Values
                 {
@@ -214,6 +222,14 @@ namespace Deltares
 
                     return true;
                 }
+
+                static int SampleCount = 0;
+                static property int NativeSampleCount
+                {
+                    int get() { return Models::Sample::SampleCount; }
+                }
+
+
             private:
                 array<double>^ values = nullptr;
                 System::Object^ tag = nullptr;

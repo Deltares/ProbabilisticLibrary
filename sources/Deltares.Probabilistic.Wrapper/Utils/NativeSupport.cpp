@@ -100,6 +100,19 @@ namespace Deltares
 			{
 				managedObjects->Clear();
 			}
+
+            void NativeSupport::releaseManagedObject(System::Object^ object)
+			{
+                if (object != nullptr)
+                {
+                    managedObjects->Remove(object);
+                }
+			}
+
+            int NativeSupport::getManagedObjectsCount()
+			{
+			    return managedObjects->Count;
+			}
 		}
 	}
 }

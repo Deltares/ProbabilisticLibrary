@@ -3,6 +3,7 @@
 #include <cmath>
 
 #include "ModelSample.h"
+
 #if __has_include(<format>)
 #include <format>
 #else
@@ -172,6 +173,7 @@ namespace Deltares
 				evaluation->Z = sample->Z;
 				evaluation->Iteration = sample->IterationIndex;
 				evaluation->Tag = sample->Tag;
+                evaluation->isOwnerOfTag = true;
 
 				if (this->Settings->MaxParallelProcesses > 1) 
 				{
@@ -183,6 +185,8 @@ namespace Deltares
 				{
 					this->evaluations.push_back(evaluation);
 				}
+
+                sample->isOwnerOfTag = false;
 			}
 		}
 
