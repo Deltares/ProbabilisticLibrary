@@ -23,11 +23,6 @@ namespace Deltares
 
             ~ModelSample()
             {
-                if (isOwnerOfTag)
-                {
-                    Deltares::Utils::TagSupport::releaseTag(Tag);
-                }
-
                 ModelSampleCount--;
             }
 
@@ -57,7 +52,6 @@ namespace Deltares
 			double Beta = 0;
 			double Z = nan("");
 
-            bool isOwnerOfTag = true;
 			intptr_t Tag = 0;
 
 			bool hasSameValues(std::shared_ptr<ModelSample> other)

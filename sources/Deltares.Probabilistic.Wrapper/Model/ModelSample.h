@@ -127,6 +127,9 @@ namespace Deltares
 					return true;
 				}
 
+                /// <summary>
+                /// Additional object to be stored with the tag. IMPORTANT: Hold a reference to the tag !!!
+                /// </summary>
                 property System::Object^ Tag
 				{
 					System::Object^ get()
@@ -154,11 +157,6 @@ namespace Deltares
                 static property int NativeModelSampleCount
                 {
                     int get() { return Models::ModelSample::ModelSampleCount; }
-                }
-
-                static property int UnreleasedManagedObjectsCount
-                {
-                    int get() { return NativeSupport::getManagedObjectsCount(); }
                 }
             };
 		}

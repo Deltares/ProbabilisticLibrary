@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading;
 using NUnit.Framework;
 using Deltares.Models.Wrappers;
 using Deltares.Reliability.Wrappers;
@@ -121,6 +122,10 @@ namespace Deltares.Probabilistics.Wrappers.Test
             project.ReliabilityMethod = new CrudeMonteCarlo();
 
             DesignPoint designPoint = project.GetDesignPoint();
+
+            // call garbage collector, subsequent tests test whether tag is not freed 
+            GC.Collect();
+            Thread.Sleep(10);
 
             Assert.AreEqual(2.54, designPoint.Beta, margin);
 
@@ -516,6 +521,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
             // call garbage collector, subsequent tests test whether tag is not freed 
             GC.Collect();
+            Thread.Sleep(10);
 
             Assert.AreEqual(2.51, designPoint.Beta, margin);
 
@@ -523,6 +529,10 @@ namespace Deltares.Probabilistics.Wrappers.Test
             Assert.AreEqual(10001, designPoint.Evaluations.Count);
 
             Assert.IsTrue(designPoint.Evaluations[0].Tag is ZFunctionOutput);
+
+            WeakReference wr = new WeakReference(designPoint.Evaluations[0].Tag);
+            GC.Collect();
+            Assert.IsTrue(wr.IsAlive);
         }
 
         private class ProgressIndication

@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Deltares.Statistics.Wrappers;
 using Deltares.Models.Wrappers;
 using Deltares.Reliability.Wrappers;
+using NUnit.Framework;
 
 namespace Deltares.Probabilistics.Wrappers.Test
 {
@@ -48,6 +50,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
     public class ZSampleOutput
     {
         private readonly ZDelegate function;
+        private List<ZFunctionOutput> outputs = new List<ZFunctionOutput>();
 
         public ZSampleOutput(ZDelegate function)
         {
@@ -59,6 +62,8 @@ namespace Deltares.Probabilistics.Wrappers.Test
             ZFunctionOutput output = function.Invoke(sample.Values);
             sample.Z = output.Z;
             sample.Tag = output;
+
+            outputs.Add(output);
         }
     }
 
