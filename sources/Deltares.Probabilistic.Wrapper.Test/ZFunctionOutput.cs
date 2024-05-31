@@ -1,3 +1,5 @@
+using NUnit.Framework;
+
 namespace Deltares.Probabilistics.Wrappers.Test
 {
     public delegate ZFunctionOutput ZDelegate(double[] x);

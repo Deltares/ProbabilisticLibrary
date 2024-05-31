@@ -20,8 +20,6 @@ namespace Deltares
 
 				Wrappers::DesignPoint^ designPoint = gcnew Wrappers::DesignPoint(nativeDesignPoint, modelRunner->Stochasts);
 
-				NativeSupport::releaseManagedObjects();
-
 				return designPoint;
 			};
 		}

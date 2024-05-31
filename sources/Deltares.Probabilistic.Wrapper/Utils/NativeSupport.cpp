@@ -7,9 +7,6 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            delegate void ManagedReleaseTagDelegate(intptr_t tag);
-            typedef void(__stdcall* ReleaseTagDelegate) (intptr_t tag);
-
             std::string NativeSupport::toNative(System::String^ text)
             {
                 const char* chars = (const char*)(System::Runtime::InteropServices::Marshal::StringToHGlobalAnsi(text)).ToPointer();
@@ -68,23 +65,15 @@ namespace Deltares
                 }
                 else
                 {
-                    if (!initialized)
-                    {
-                        initialized = true;
-                        initialize();
-                    }
-
-                    // keep a reference to the managed object, so that ut is not cleared by the garbage collector
-                    managedObjects->Add(object);
-
                     System::Runtime::InteropServices::GCHandle handle = System::Runtime::InteropServices::GCHandle::Alloc(object);
-                    System::IntPtr parameter = (System::IntPtr)handle;
+                    System::IntPtr parameter = static_cast<System::IntPtr>(handle);
+                    // do not free the handle, it is used to store the managed object
+
                     void* p = parameter.ToPointer();
                     intptr_t t = (intptr_t)p;
 
                     return t;
 
-                    // do not free the handle, it is used to store the managed object
                 }
             }
 
@@ -104,47 +93,6 @@ namespace Deltares
                     System::Object^ object = handle.Target;
                     return object;
                 }
-            }
-
-            void NativeSupport::releaseTag(intptr_t tag)
-            {
-                System::Object^ object = toManagedObject(tag);
-                releaseManagedObject(object);
-            }
-
-            void NativeSupport::initialize()
-            {
-                const ReleaseTagLambda zBetaLambda = getReleaseTagLambda();
-                TagSupport::setReleaseTagLambda(zBetaLambda);
-            }
-
-            Deltares::Utils::ReleaseTagLambda NativeSupport::getReleaseTagLambda()
-            {
-                ManagedReleaseTagDelegate^ fp = gcnew ManagedReleaseTagDelegate(&NativeSupport::releaseTag);
-                System::Runtime::InteropServices::GCHandle handle = System::Runtime::InteropServices::GCHandle::Alloc(fp);
-
-                System::IntPtr callbackPtr = System::Runtime::InteropServices::Marshal::GetFunctionPointerForDelegate(fp);
-                Deltares::Utils::ReleaseTagLambda functionPointer = static_cast<ReleaseTagDelegate> (callbackPtr.ToPointer());
-
-                return functionPointer;
-            }
-
-            void NativeSupport::releaseManagedObjects()
-            {
-                //managedObjects->Clear();
-            }
-
-            void NativeSupport::releaseManagedObject(System::Object^ object)
-            {
-                if (object != nullptr)
-                {
-                    managedObjects->Remove(object);
-                }
-            }
-
-            int NativeSupport::getManagedObjectsCount()
-            {
-                return managedObjects->Count;
             }
         }
     }
