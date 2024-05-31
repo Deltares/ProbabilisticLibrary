@@ -33,9 +33,15 @@ module interface_probCalc
 
   logical :: userAborted = .false.
 
-  integer, allocatable :: iPoint(:) ! Pointer to active variables used in the limit state function
-  integer :: nStochActive
-  real(kind=wp), allocatable :: xHR(:)
+  private :: cpDense2Full
+
+  type, public :: tCpData
+    integer,      allocatable  :: iPoint(:)    ! Pointer to active variables used in the limit state function
+    integer                    :: nStochActive
+    real(kind=wp), allocatable :: xHR(:)
+  end type tCpData
+
+  type(tCpData) :: staticCpData
 
   type, public, bind(c) :: basicCorrelation
     integer       :: first                !< Index of the first stochastic variable
@@ -297,15 +303,29 @@ function textualProgress(progress, str) result(cancel) bind(c)
 end function textualProgress
 
 !> copy x-vector from problib to Hydra-Ring
+subroutine cpDense2Full(xDense, xFull, cpData)
+    real(kind=wp), intent(in) :: xDense(*)
+    real(kind=wp), intent(inout) :: xFull(:)
+    type(tCpData) :: cpData
+
+    integer :: i
+
+    xFull = Cpdata%xHR
+    do i = 1, Cpdata%nStochActive
+        xFull(Cpdata%iPoint(i)) = xDense(i)
+    end do
+end subroutine cpDense2Full
+
+!> copy x-vector from problib to Hydra-Ring
 subroutine copyDense2Full(xDense, xFull)
     real(kind=wp), intent(in) :: xDense(*)
     real(kind=wp), intent(inout) :: xFull(:)
 
     integer :: i
 
-    xFull = xHR
-    do i = 1, nStochActive
-        xFull(iPoint(i)) = xDense(i)
+    xFull = staticCpdata%xHR
+    do i = 1, staticCpdata%nStochActive
+        xFull(staticCpdata%iPoint(i)) = xDense(i)
     end do
 end subroutine copyDense2Full
 
@@ -316,14 +336,14 @@ subroutine copyFull2Dense(xFull, xDense)
 
     integer :: i
 
-    do i = 1, nStochActive
-        xDense(i) = xFull(iPoint(i))
+    do i = 1, staticCpdata%nStochActive
+        xDense(i) = xFull(staticCpdata%iPoint(i))
     end do
 end subroutine copyFull2Dense
 
 !>
 !! Subroutine for the calculation of a limit state function
-subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, conv, convCriterium, convergenceData, pc)
+subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, conv, convCriterium, convergenceData, pc, CpData)
     use feedback
     type(probabilisticDataStructure_data), intent(in) :: probDb    !< Probabilistic data module
     procedure(zfunc)                           :: fx               !< Function implementing the z-function of the failure mechanism
@@ -334,18 +354,24 @@ subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, conv, convCri
     logical,       intent(out)                 :: convCriterium    !< Convergence criterium indicator
     type(storedConvergenceData), intent(inout) :: convergenceData  !< struct holding all convergence data
     procedure(progressCancel),    optional     :: pc               !< progress function
+    type(tCpData),                optional     :: CpData
 
     type(tMethod)               :: method
     type(tDistrib)              :: distribs(probDb%stoVar%maxStochasts)
-    integer                     :: i, k, nstoch
+    integer                     :: i, k, nstoch, nStochActive
     integer                     :: compIds(1) = designPointOutputFALSE
     type(tError)                :: ierr
     type(tResult)               :: rn
     character(len=ErrMsgLength) :: msg
     real(kind=wp), allocatable  :: xDense(:)
 
-    call realloc_check (iPoint, probDb%stoVar%maxStochasts, "ipoint" )
-    call realloc_check (xHR, probDb%stoVar%maxStochasts, "xHR" )
+    if (present(CpData)) then
+        call realloc_check (CpData%iPoint, probDb%stoVar%maxStochasts, "ipoint" )
+        call realloc_check (CpData%xHR, probDb%stoVar%maxStochasts, "xHR" )
+    else
+        call realloc_check (staticCpData%iPoint, probDb%stoVar%maxStochasts, "ipoint" )
+        call realloc_check (staticCpData%xHR, probDb%stoVar%maxStochasts, "xHR" )
+    end if
 
     method%methodId   = probDb%method%calcMethod
     method%tolA       = probDb%method%FORM%epsilonBeta
@@ -409,18 +435,32 @@ subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, conv, convCri
             nStochActive = nStochActive + 1
             distribs(nStochActive)%distributionId = probDb%stovar%disttypex(i)
             distribs(nStochActive)%params = probDb%stovar%distparameterx(i,:)
-            iPoint(nStochActive) = i
+            if (present(CpData)) then
+                CpData%iPoint(nStochActive) = i
+            else
+                staticCpData%iPoint(nStochActive) = i
+            end if
         end if
     end do
 
-    xHR = x
+    if (present(CpData)) then
+        CpData%xHR = x
+        CpData%nStochActive = nStochActive
+    else
+        staticCpData%xHR = x
+        staticCpData%nStochActive = nStochActive
+    end if
 
     method%designPointOption = probDb%method%dpOption
     method%numThreads        = probDb%method%maxParallelThreads
     method%rnd = GeorgeMarsaglia
     allocate(xDense(nStochActive))
 
-    call convertStartMethod(probDb, method, iPoint(1:nStochActive))
+    if (present(CpData)) then
+        call convertStartMethod(probDb, method, CpData%iPoint(1:nStochActive))
+    else
+        call convertStartMethod(probDb, method, StaticCpData%iPoint(1:nStochActive))
+    end if
 
     if (method%iterationMethod <= 0 .or. method%iterationMethod > 9 .or. method%iterationMethod == 7) then
         call fatalError("Unknown method in subroutine IterationDS: ", method%iterationMethod)
@@ -434,11 +474,19 @@ subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, conv, convCri
                 probDb%number_correlations, fx, textualProgress, compIds, xDense, rn, ierr)
         end if
 
-        call copyDense2Full(xDense, x)
+        if (present(CpData)) then
+            call cpDense2Full(xDense, x, CpData)
+        else
+            call copyDense2Full(xDense, x)
+        end if
         beta = rn%beta
         alfaN = 0.0_wp
         do k = 1, nStochActive
-            alfaN(iPoint(k)) = rn%alpha(k)
+            if (present(CpData)) then
+                alfaN(CpData%iPoint(k)) = rn%alpha(k)
+            else
+                alfaN(staticCpData%iPoint(k)) = rn%alpha(k)
+            end if
         end do
         if (method%methodId == methodFORMandDirSampling .and. rn%samplesNeeded > 0) then
             ! to get logging in output.txt right; as we have samples, Form did not succeed (no convergence or beta out of range)

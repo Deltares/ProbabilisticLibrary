@@ -1,6 +1,7 @@
 module sparseWaartsTestFunctions
     use precision
     use interface_ProbCalc
+    use class_ProbCalc
     use waartsFunctions
 
     implicit none
@@ -8,9 +9,11 @@ module sparseWaartsTestFunctions
     private
     public :: initSparseWaartsTestsFunctions, cleanUpWaartsTestsFunctions, &
                 updateCounter, &
+                probCalc, &
                 zLimitState25QuadraticTermsSparse, zOblateSpheroid, &
                 zLinearResistanceSolicitation, simpleZ, blighZ
 
+    type(tProcCalc)                    :: probCalc
     integer,       allocatable, target :: counter(:)
     real(kind=wp), allocatable, target :: xFull(:,:)
 
@@ -49,7 +52,7 @@ function zLimitState25QuadraticTermsSparse( xDense, compSetting, ierr ) result(z
 
     x => xFull(:, compSetting%threadId+1)
     invocationCount => counter(compSetting%threadId+1)
-    call copyDense2Full(xDense, x)
+    call probCalc%copyDense2Full(xDense, x)
 
     z = limitState25QuadraticTerms( x ( 30 ), x ( 3 : 27) )
 
@@ -74,7 +77,7 @@ function zOblateSpheroid( xDense, compSetting, ierr ) result(z) bind(c)
     x => xFull(:, compSetting%threadId+1)
     invocationCount => counter(compSetting%threadId+1)
 
-    call copyDense2full(xDense, x)
+    call probCalc%copyDense2full(xDense, x)
     z = oblateSpheroid( x ( 1 ), x ( 2 : 11 )  )
 
     invocationCount = invocationCount + 1
@@ -98,7 +101,7 @@ function zLinearResistanceSolicitation( xDense,  compSetting, ierr ) result(z) b
     x => xFull(:, compSetting%threadId+1)
     invocationCount => counter(compSetting%threadId+1)
 
-    call copyDense2Full(xDense, x)
+    call probCalc%copyDense2Full(xDense, x)
     z = linearResistanceSolicitation( x(1), x(2) )
 
     invocationCount = invocationCount + 1
@@ -122,7 +125,7 @@ function simpleZ( xDense, compSetting, ierr ) result(z) bind(c)
     x => xFull(:, compSetting%threadId+1)
     invocationCount => counter(compSetting%threadId+1)
 
-    call copyDense2Full(xDense, x)
+    call probCalc%copyDense2Full(xDense, x)
     z = simpleSystem ( x(1),  x(2), x(3))
 
 end function simpleZ
@@ -154,7 +157,7 @@ function blighZ( xDense, compSetting, ierr ) result(z) bind(c)
     x => xFull(:, compSetting%threadId+1)
     invocationCount => counter(compSetting%threadId+1)
 
-    call copyDense2Full(xDense, x)
+    call probCalc%copyDense2Full(xDense, x)
     z = x(1) * x(2) / x (3) - x(4)
 
 end function blighZ
