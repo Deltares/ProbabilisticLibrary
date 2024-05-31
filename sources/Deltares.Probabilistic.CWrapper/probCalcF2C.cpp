@@ -47,21 +47,6 @@ void updateX(const std::vector<std::shared_ptr<StochastPointAlpha>> & alpha, con
             }
         }
         break;
-        case DPoptions::RMinZFunc:
-        case DPoptions::RMinZFuncCompatible:
-        {
-            auto xSparse = std::vector<double>();
-            for (size_t i = 0; i < alpha.size(); i++)
-            {
-                xSparse.push_back(newResult->Alphas[i]->X);
-            }
-            fw.updateXinDesignPoint(xSparse);
-            for (size_t i = 0; i < alpha.size(); i++)
-            {
-                x[i] = xSparse[i];
-            }
-        }
-        break;
         default:
         {
             for (size_t i = 0; i < alpha.size(); i++)
@@ -109,6 +94,18 @@ void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, corrStr
         auto relMethod = createRelM.selectMethod(*method, nStoch, stochasts);
         auto zModel = std::make_shared<ZModel>([&fw](std::shared_ptr<ModelSample> v) { return fw.FDelegate(v); },
                                                [&fw](std::vector<std::shared_ptr<ModelSample>> v) { return fw.FDelegateParallel(v); });
+
+        switch (method->designPointOptions)
+        {
+        case DPoptions::RMinZFunc:
+        case DPoptions::RMinZFuncCompatible:
+            zModel->callInDesignPoint = designPointOptions::dpOutTRUE;
+            break;
+        default:
+            zModel->callInDesignPoint = designPointOptions::dpOutFALSE;
+            break;
+        }
+
         auto corr = std::make_shared<CorrelationMatrix>();
         if (nrCorrelations > 0)
         {

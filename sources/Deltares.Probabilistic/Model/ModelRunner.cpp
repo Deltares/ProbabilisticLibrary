@@ -87,6 +87,25 @@ namespace Deltares
 			return sample->Z;
 		}
 
+        /**
+         * \brief Calculates a sample for getting the x-values right
+         * \param sample Sample to be calculated
+         * \return Z-value of the sample
+         */
+        void ModelRunner::getZValue(std::shared_ptr<Sample> sample, designPointOptions loggingOption)
+        {
+            std::shared_ptr<ModelSample> xSample = getModelSample(sample);
+            xSample->loggingOption = loggingOption;
+
+            this->zModel->invoke(xSample);
+
+            registerEvaluation(xSample);
+
+            sample->Z = xSample->Z;
+            sample->Values = xSample->Values;
+        }
+
+
 		/**
 		 * \brief Calculates a number of samples
 		 * \param samples Samples to be calculated
@@ -314,6 +333,15 @@ namespace Deltares
 
 			designPoint->Identifier = identifier;
 			designPoint->convergenceReport = convergenceReport;
+
+            if (zModel->callInDesignPoint != designPointOptions::dpOutFALSE)
+            {
+                this->getZValue(sample, designPointOptions::dpOutTRUE);
+                for (size_t i = 0; i < sample->Values.size(); i++)
+                {
+                    designPoint->Alphas[i]->X = sample->Values[i];
+                }
+            }
 
 			for (size_t i = 0; i < this->reliabilityResults.size(); i++)
 			{

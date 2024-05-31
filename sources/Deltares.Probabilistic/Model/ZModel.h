@@ -45,7 +45,9 @@ namespace Deltares
 			{
 				return this->zBetaLambda != nullptr;
 			}
-		};
+
+            designPointOptions callInDesignPoint = designPointOptions::dpOutFALSE;
+        };
 	}
 }
 

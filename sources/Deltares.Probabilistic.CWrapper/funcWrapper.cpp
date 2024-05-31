@@ -3,11 +3,12 @@
 #include <omp.h>
 
 using namespace Deltares::Reliability;
+using namespace Deltares::Models;
 
 void funcWrapper::FDelegate(std::shared_ptr<Deltares::Models::ModelSample> s)
 {
-    computationSettings compSetting{ designPointOptions::dpOutFALSE, compId, 0 };
-    compSetting.threadId = s->threadId;
+    auto dp = (designPointOptions)s->loggingOption;
+    computationSettings compSetting{ dp, compId, s->threadId };
     tError e = tError();
     double result = zfunc(s->Values.data(), &compSetting, &e);
     if (e.errorCode != 0) throw probLibException(e.errorMessage);
@@ -25,12 +26,4 @@ void funcWrapper::FDelegateParallel(std::vector<std::shared_ptr<Deltares::Models
         samples[i]->Z = result;
     }
 }
-
-void funcWrapper::updateXinDesignPoint(std::vector<double> & x)
-{
-    computationSettings compSetting{ designPointOptions::dpOutTRUE, compId, 0 };
-    tError e = tError();
-    zfunc(x.data(), &compSetting, &e);
-}
-
 

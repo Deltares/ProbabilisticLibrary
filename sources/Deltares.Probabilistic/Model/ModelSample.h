@@ -12,7 +12,14 @@ namespace Deltares
 {
 	namespace Models
 	{
-		class ModelSample
+        enum class designPointOptions
+        {
+            dpOutFALSE = 0,
+            dpOutTRUE = 1,
+            dpOutPrintAll = 3,
+        };
+
+        class ModelSample
 		{
 		private:
 			long tag = 0;
@@ -27,6 +34,7 @@ namespace Deltares
 
 			int IterationIndex = -1;
 			int threadId = 0;
+            designPointOptions loggingOption = designPointOptions::dpOutFALSE;
 			double Weight = 1;
 			bool AllowProxy = true;
 			bool IsRestartRequired = false;

@@ -44,7 +44,8 @@ namespace Deltares
 			void clear();
 			void updateStochastSettings(std::shared_ptr<Reliability::StochastSettingsSet> settings);
 			double getZValue(std::shared_ptr<Sample> sample);
-			std::vector<double> getZValues(std::vector<std::shared_ptr<Sample>> samples);
+            void getZValue(std::shared_ptr<Sample> sample, designPointOptions loggingOption);
+            std::vector<double> getZValues(std::vector<std::shared_ptr<Sample>> samples);
 			double getBeta(std::shared_ptr<Sample> sample);
 			bool canCalculateBeta() const;
 			int getStochastCount();
