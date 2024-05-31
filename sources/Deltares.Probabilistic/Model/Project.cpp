@@ -4,7 +4,7 @@ namespace Deltares
 {
     namespace Models
     {
-        std::shared_ptr<DesignPoint> Project::getDesignPoint()
+        std::shared_ptr<Reliability::DesignPoint> Project::getDesignPoint()
         {
             std::shared_ptr<UConverter> uConverter = std::make_shared<UConverter>(this->stochasts, this->correlationMatrix);
             const std::shared_ptr<ModelRunner> modelRunner = std::make_shared<ModelRunner>(this->model, uConverter, this->progressIndicator);

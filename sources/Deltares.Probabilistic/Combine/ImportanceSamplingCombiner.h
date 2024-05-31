@@ -76,7 +76,7 @@ namespace Deltares
              * \param progress Progress indicator (optional)
              * \return Probability
              */
-            std::shared_ptr<DesignPoint> getSeriesProbability(std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix, std::shared_ptr<DesignPoint> currentDesignPoint, std::vector<std::shared_ptr<DesignPoint>>& previousDesignPoints, std::shared_ptr<DesignPoint> startPoint, std::vector<std::shared_ptr<Stochast>>& stochasts, std::shared_ptr<ProgressIndicator> progress);
+            std::shared_ptr<DesignPoint> getSeriesProbability(std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix, std::shared_ptr<DesignPoint> currentDesignPoint, std::vector<std::shared_ptr<DesignPoint>>& previousDesignPoints, std::shared_ptr<DesignPoint> startPoint, std::vector<std::shared_ptr<Statistics::Stochast>>& stochasts, std::shared_ptr<ProgressIndicator> progress);
 
             /**
              * \brief Calculates the design point when combination type is parallel
@@ -87,7 +87,7 @@ namespace Deltares
              * \param progress Progress indicator (optional)
              * \return Design point
              */
-            std::shared_ptr<DesignPoint> getParallelProbability(std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix, std::vector<std::shared_ptr<DesignPoint>>& previousDesignPoints, std::vector<std::shared_ptr<Stochast>>& stochasts, std::shared_ptr<ProgressIndicator> progress);
+            std::shared_ptr<DesignPoint> getParallelProbability(std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix, std::vector<std::shared_ptr<DesignPoint>>& previousDesignPoints, std::vector<std::shared_ptr<Statistics::Stochast>>& stochasts, std::shared_ptr<ProgressIndicator> progress);
 
             /**
              * \brief Fills the settings for series algorithm
@@ -113,7 +113,7 @@ namespace Deltares
              * \param selfCorrelationMatrix Administration of correlations between different design points
              * \return Linearized model
              */
-            std::shared_ptr<CombinedDesignPointModel> getModel(combineAndOr combineMethodType, std::shared_ptr<DesignPoint> currentDesignPoint, std::vector<std::shared_ptr<DesignPoint>>& previousDesignPoints, std::vector<std::shared_ptr<Stochast>>& stochasts, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix);
+            std::shared_ptr<CombinedDesignPointModel> getModel(combineAndOr combineMethodType, std::shared_ptr<DesignPoint> currentDesignPoint, std::vector<std::shared_ptr<DesignPoint>>& previousDesignPoints, std::vector<std::shared_ptr<Statistics::Stochast>>& stochasts, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix);
 
             /**
              * \brief Gets a project containing the linearized model
@@ -122,7 +122,7 @@ namespace Deltares
              * \param selfCorrelationMatrix Self correlation administration
              * \return Project
              */
-            std::shared_ptr<Project> getProject(std::shared_ptr<CombinedDesignPointModel> model, std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix, std::shared_ptr<SelfCorrelationMatrix> selfCorrelationMatrix);
+            std::shared_ptr<Project> getProject(std::shared_ptr<CombinedDesignPointModel> model, std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix);
         };
     }
 }

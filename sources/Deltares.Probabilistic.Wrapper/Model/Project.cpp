@@ -54,7 +54,7 @@ namespace Deltares
             {
                 ManagedSampleDelegate^ fp = gcnew ManagedSampleDelegate(this, &Project::invokeSample);
                 System::Runtime::InteropServices::GCHandle handle = System::Runtime::InteropServices::GCHandle::Alloc(fp);
-                //handles->Add(handle);
+                handles->Add(handle);
 
                 System::IntPtr callbackPtr = System::Runtime::InteropServices::Marshal::GetFunctionPointerForDelegate(fp);
                 ZLambda functionPointer = static_cast<ZDelegate>(callbackPtr.ToPointer());

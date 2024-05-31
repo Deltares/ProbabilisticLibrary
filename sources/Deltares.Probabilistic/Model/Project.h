@@ -9,9 +9,6 @@ namespace Deltares
 {
     namespace Models
     {
-        using namespace Deltares::Statistics;
-        using namespace Deltares::Reliability;
-
         /**
          * \brief Combines a model, stochastic variables and calculation settings, can perform a calculation and holds results
          */
@@ -21,17 +18,17 @@ namespace Deltares
             /**
              * \brief Collection of all stochastic variables
              */
-            std::vector<std::shared_ptr<Stochast>> stochasts;
+            std::vector<std::shared_ptr<Statistics::Stochast>> stochasts;
 
             /**
              * \brief Defines correlations between stochastic variables
              */
-            std::shared_ptr<CorrelationMatrix> correlationMatrix = std::make_shared<CorrelationMatrix>();
+            std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix = std::make_shared<Statistics::CorrelationMatrix>();
 
             /**
              * \brief Method which performs a reliability calculation
              */
-            std::shared_ptr<ReliabilityMethod> reliabilityMethod = nullptr;
+            std::shared_ptr<Reliability::ReliabilityMethod> reliabilityMethod = nullptr;
 
             /**
              * \brief Deterministic model which calculates a z-value based on input values
@@ -52,7 +49,7 @@ namespace Deltares
             /**
              * \brief Results of the reliability calculation
              */
-            std::shared_ptr<DesignPoint> designPoint = nullptr;
+            std::shared_ptr<Reliability::DesignPoint> designPoint = nullptr;
 
             /**
              * \brief Indicates whether the input is valid
@@ -64,7 +61,7 @@ namespace Deltares
              * \brief Performs the reliability calculation
              * \return Design point
              */
-            std::shared_ptr<DesignPoint> getDesignPoint();
+            std::shared_ptr<Reliability::DesignPoint> getDesignPoint();
         };
     }
 }
