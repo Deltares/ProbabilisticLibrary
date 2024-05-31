@@ -92,7 +92,7 @@ namespace Deltares
          * \param sample Sample to be calculated
          * \return Z-value of the sample
          */
-        void ModelRunner::getZValue(std::shared_ptr<Sample> sample, designPointOptions loggingOption)
+        std::vector<double> ModelRunner::getXValues(std::shared_ptr<Sample> sample, designPointOptions loggingOption)
         {
             std::shared_ptr<ModelSample> xSample = getModelSample(sample);
             xSample->loggingOption = loggingOption;
@@ -101,8 +101,7 @@ namespace Deltares
 
             registerEvaluation(xSample);
 
-            sample->Z = xSample->Z;
-            sample->Values = xSample->Values;
+            return xSample->Values;
         }
 
 
@@ -336,10 +335,10 @@ namespace Deltares
 
             if (zModel->callInDesignPoint != designPointOptions::dpOutFALSE)
             {
-                this->getZValue(sample, designPointOptions::dpOutTRUE);
+                auto xValues = getXValues(sample, zModel->callInDesignPoint);
                 for (size_t i = 0; i < sample->Values.size(); i++)
                 {
-                    designPoint->Alphas[i]->X = sample->Values[i];
+                    designPoint->Alphas[i]->X = xValues[i];
                 }
             }
 

@@ -44,7 +44,6 @@ namespace Deltares
 			void clear();
 			void updateStochastSettings(std::shared_ptr<Reliability::StochastSettingsSet> settings);
 			double getZValue(std::shared_ptr<Sample> sample);
-            void getZValue(std::shared_ptr<Sample> sample, designPointOptions loggingOption);
             std::vector<double> getZValues(std::vector<std::shared_ptr<Sample>> samples);
 			double getBeta(std::shared_ptr<Sample> sample);
 			bool canCalculateBeta() const;
@@ -65,7 +64,8 @@ namespace Deltares
 			void setRemoveTaskFunction(RemoveTaskLambda removeTaskFunction) { this->removeTaskFunction = removeTaskFunction; }
 
 		private:
-			std::shared_ptr<ZModel> zModel;
+            std::vector<double> getXValues(std::shared_ptr<Sample> sample, designPointOptions loggingOption);
+            std::shared_ptr<ZModel> zModel;
 			std::shared_ptr<UConverter> uConverter;
 			std::vector<std::shared_ptr<Reliability::ReliabilityResult>> reliabilityResults;
 			std::vector<std::shared_ptr<Evaluation>> evaluations;
