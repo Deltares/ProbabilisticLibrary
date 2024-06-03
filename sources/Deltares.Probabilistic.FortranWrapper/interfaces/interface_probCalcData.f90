@@ -358,7 +358,6 @@ subroutine setParametersProbabilisticISsimple(probDb, ISseedPRNG, ISminimumSampl
     real(kind=wp), intent(in)               :: ISvarCoeffNoFailure  !< Required variation coefficient Non Failure
     real(kind=wp), intent(in)               :: ISvarianceFactor      !< Multiplicative factor to increase the standard deviation
 
-    integer                                 :: i
     !
     ! Put data in structure
     !

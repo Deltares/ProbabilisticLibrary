@@ -79,7 +79,6 @@ module interface_probCalc
   type, public, bind(c) :: tResult
     real(kind=c_double)  :: beta
     real(kind=c_double)  :: alpha(maxActiveStochast)
-    integer              :: iPoint(maxActiveStochast)
     integer              :: stepsNeeded
     integer              :: samplesNeeded
     logical(kind=c_bool) :: convergence
@@ -306,7 +305,7 @@ subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, conv, convCri
     logical,       intent(out)                 :: conv             !< Convergence indicator
     logical,       intent(out)                 :: convCriterium    !< Convergence criterium indicator
     type(storedConvergenceData), intent(inout) :: convergenceData  !< struct holding all convergence data
-    type(tCpData), intent(inout)               :: CpData
+    type(tCpData), intent(inout)               :: CpData           !< class for copying the x-vector
     procedure(progressCancel),    optional     :: pc               !< progress function
 
     type(tMethod)               :: method

@@ -27,7 +27,6 @@ struct tResult
 {
     double beta;
     double alpha[maxActiveStochast];
-    int iPoint[maxActiveStochast];
     int stepsNeeded;
     int samplesNeeded;
     bool convergence;
@@ -151,10 +150,6 @@ void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, corrStr
 
         updateX(newResult->Alphas, method->designPointOptions, *r, newResult, x, fw);
 
-        for (int i = 0; i < n; i++)
-        {
-            r->iPoint[i] = i + 1;
-        }
         copyConvergence(*r, *newResult->convergenceReport.get(), method->methodId);
     }
     catch (const std::exception& e)
