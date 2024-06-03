@@ -8,7 +8,7 @@ using namespace Deltares::Models;
 void funcWrapper::FDelegate(std::shared_ptr<Deltares::Models::ModelSample> s)
 {
     auto dp = (designPointOptions)s->loggingOption;
-    computationSettings compSetting{ dp, compId, s->threadId };
+    computationSettings compSetting{ dp, compId, s->threadId, s->relMethodCounter };
     tError e = tError();
     double result = zfunc(s->Values.data(), &compSetting, &e);
     if (e.errorCode != 0) throw probLibException(e.errorMessage);
@@ -20,7 +20,7 @@ void funcWrapper::FDelegateParallel(std::vector<std::shared_ptr<Deltares::Models
     #pragma omp parallel for
     for (int i = 0; i < (int)samples.size(); i++)
     {
-        computationSettings compSetting{ designPointOptions::dpOutFALSE, compId, omp_get_thread_num() };
+        computationSettings compSetting{ designPointOptions::dpOutFALSE, compId, omp_get_thread_num(), 1 };
         tError e = tError();
         double result = zfunc(samples[i]->Values.data(), &compSetting, &e);
         samples[i]->Z = result;

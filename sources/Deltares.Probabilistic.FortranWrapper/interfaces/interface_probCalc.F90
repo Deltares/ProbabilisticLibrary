@@ -235,6 +235,7 @@ module interface_probCalc
         integer :: designPointSetting
         integer :: computationId
         integer :: threadId
+        integer :: relMethodCounter
     end type computationSetting
 
   interface

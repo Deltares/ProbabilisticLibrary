@@ -47,6 +47,7 @@ namespace Deltares
 			}
 
             designPointOptions callInDesignPoint = designPointOptions::dpOutFALSE;
+            int RelMethodCounter = 0;
         };
 	}
 }

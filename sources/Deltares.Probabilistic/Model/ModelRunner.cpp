@@ -92,10 +92,11 @@ namespace Deltares
          * \param sample Sample to be calculated
          * \return Z-value of the sample
          */
-        std::vector<double> ModelRunner::getXValues(std::shared_ptr<Sample> sample, designPointOptions loggingOption)
+        std::vector<double> ModelRunner::getXValues(std::shared_ptr<Sample> sample)
         {
             std::shared_ptr<ModelSample> xSample = getModelSample(sample);
-            xSample->loggingOption = loggingOption;
+            xSample->loggingOption = zModel->callInDesignPoint;
+            xSample->relMethodCounter = zModel->RelMethodCounter;
 
             this->zModel->invoke(xSample);
 
@@ -333,9 +334,9 @@ namespace Deltares
 			designPoint->Identifier = identifier;
 			designPoint->convergenceReport = convergenceReport;
 
-            if (zModel->callInDesignPoint != designPointOptions::dpOutFALSE)
+            if (convergenceReport != nullptr && zModel->callInDesignPoint != designPointOptions::dpOutFALSE)
             {
-                auto xValues = getXValues(sample, zModel->callInDesignPoint);
+                auto xValues = getXValues(sample);
                 for (size_t i = 0; i < sample->Values.size(); i++)
                 {
                     designPoint->Alphas[i]->X = xValues[i];
