@@ -27,6 +27,7 @@ module performAdaptiveMCIStests
     use interface_probCalc
     use interface_probCalcData
     use interface_distributions
+    use class_probcalc
     use sparseWaartsTestFunctions
     use toolkitTestFunctions
     use sparseWaartsTestFunctions
@@ -513,13 +514,14 @@ subroutine performAdpMCIS( probDb, fx, x, alfa, beta, convCriterium )
     logical,       intent(out)                 :: convCriterium    !< Convergence criterium indicator
 
     type(storedConvergenceData) :: convergenceData  !< struct holding all convergence data
-    logical :: conv
+    logical                     :: conv
+    type(tProbCalc)             :: probCalc         !< class prob. calculation
 
     probDb%method%calcMethod = methodAdaptiveImportanceSampling
     probDb%method%FORM%startMethod = probDb%method%AdaptiveIS%startMethod
 
     probDb%method%FORM%startValue = probDb%method%AdaptiveIS%startValue
-    call calculateLimitStateFunction( probDb, fx, alfa, beta, x, conv, convCriterium, convergenceData)
+    call probCalc%run( probDb, fx, alfa, beta, x, conv, convCriterium, convergenceData)
 end subroutine performAdpMCIS
 
 end module performAdaptiveMCIStests

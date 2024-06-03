@@ -4,19 +4,18 @@ use interface_probCalc
 implicit none
 
 private
-public :: tProcCalc
+public :: tProbCalc
 
-type tProcCalc
+type tProbCalc
     type(TCpData) :: cpData
 contains
     procedure :: run => wrapperProbCalc
-    procedure :: copyDense2Full => cpDense2Full
-end type tProcCalc
+end type tProbCalc
 
 contains
 
 subroutine wrapperProbCalc(this, probDb, fx, alfaN, beta, x, conv, convCriterium, convergenceData, pc)
-    class(tProcCalc), intent(inout)                   :: this
+    class(tProbCalc), intent(inout)                   :: this
     type(probabilisticDataStructure_data), intent(in) :: probDb           !< Probabilistic data module
     procedure(zfunc)                                  :: fx               !< Function implementing the z-function of the failure mechanism
     real(kind=wp), intent(out)                        :: alfaN(:)         !< Alpha values
@@ -27,36 +26,8 @@ subroutine wrapperProbCalc(this, probDb, fx, alfaN, beta, x, conv, convCriterium
     type(storedConvergenceData), intent(inout)        :: convergenceData  !< struct holding all convergence data
     procedure(progressCancel),    optional            :: pc               !< progress function
 
-    call calculateLimitStateFunction(probDb, fx, alfaN, beta, x, conv, convCriterium, convergenceData, pc, this%cpData)
+    call calculateLimitStateFunction(probDb, fx, alfaN, beta, x, conv, convCriterium, convergenceData, this%cpData, pc)
 
 end subroutine wrapperProbCalc
-
-!> copy x-vector from Hydra-Ring to problib
-subroutine cpFull2Dense(this, xFull, xDense)
-    class(tProcCalc), intent(inout) :: this
-    real(kind=wp),    intent(in   ) :: xFull(:)
-    real(kind=wp),    intent(inout) :: xDense(*)
-
-    integer :: i
-
-    do i = 1, this%cpData%nStochActive
-        xDense(i) = xFull(this%cpData%iPoint(i))
-    end do
-end subroutine cpFull2Dense
-
-!> copy x-vector from problib to Hydra-Ring
-subroutine cpDense2Full(this, xDense, xFull)
-    class(tProcCalc), intent(inout) :: this
-    real(kind=wp),    intent(in)    :: xDense(*)
-    real(kind=wp),    intent(inout) :: xFull(:)
-
-    integer :: i
-
-    xFull = this%cpData%xHR
-    do i = 1, this%cpData%nStochActive
-        xFull(this%cpData%iPoint(i)) = xDense(i)
-    end do
-end subroutine cpDense2Full
-
 
 end module class_probCalc

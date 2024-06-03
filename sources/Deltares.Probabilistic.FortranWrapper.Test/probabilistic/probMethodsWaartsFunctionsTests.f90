@@ -1090,6 +1090,7 @@ subroutine testErrorHandlingCalculateLimitStateFunction
     real (kind = wp)            :: beta2= 0.0d0
 
     logical                     :: convCriterium, conv
+    type(tProbCalc)             :: probCalc            !< class prob. calculation
 
    ! Initialization of mechanism with no stochastic parameters
    call initializeCalculation (probDb, 0, alfa, x)
@@ -1124,8 +1125,7 @@ subroutine testErrorHandlingCalculateLimitStateFunction
    ! Perform computation numberIterations times
    call SetFatalErrorExpected(.true.)
    probDb%method%calcMethod = 99
-   call calculateLimitStateFunction( probDb, zLinearResistanceSolicitationFixed, alfa, beta2, x, conv, convCriterium, &
-       convergenceData )
+   call probCalc%run( probDb, zLinearResistanceSolicitationFixed, alfa, beta2, x, conv, convCriterium, convergenceData )
    call SetFatalErrorExpected(.false.)
    call GetFatalErrorMessage(message)
    ipos = index(message, "99")

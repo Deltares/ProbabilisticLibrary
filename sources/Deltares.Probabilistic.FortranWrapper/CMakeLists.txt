@@ -14,6 +14,7 @@ add_library(Deltares.Probabilistic.FortranWrapper
     interfaces/interface_special_funcs.f90
     interfaces/f2c_tools.f90
     interfaces/class_probCalc.f90
+    interfaces/mTpXData.f90
   )
 
 if (UNIX)
