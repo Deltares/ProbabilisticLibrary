@@ -128,6 +128,8 @@ function simpleZ( xDense, compSetting, ierr ) result(z) bind(c)
     call probCalc%cpData%copyDense2Full(xDense, x)
     z = simpleSystem ( x(1),  x(2), x(3))
 
+    invocationCount = invocationCount + 1
+
 end function simpleZ
 
 function simpleSystem( x1, x2, valueB )
@@ -159,6 +161,8 @@ function blighZ( xDense, compSetting, ierr ) result(z) bind(c)
 
     call probCalc%cpData%copyDense2Full(xDense, x)
     z = x(1) * x(2) / x (3) - x(4)
+
+    invocationCount = invocationCount + 1
 
 end function blighZ
 

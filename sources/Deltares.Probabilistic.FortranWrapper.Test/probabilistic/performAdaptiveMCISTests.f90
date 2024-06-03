@@ -515,7 +515,6 @@ subroutine performAdpMCIS( probDb, fx, x, alfa, beta, convCriterium )
 
     type(storedConvergenceData) :: convergenceData  !< struct holding all convergence data
     logical                     :: conv
-    type(tProbCalc)             :: probCalc         !< class prob. calculation
 
     probDb%method%calcMethod = methodAdaptiveImportanceSampling
     probDb%method%FORM%startMethod = probDb%method%AdaptiveIS%startMethod
