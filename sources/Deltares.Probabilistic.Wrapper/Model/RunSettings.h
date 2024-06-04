@@ -95,7 +95,7 @@ namespace Deltares
 
 				std::shared_ptr<Models::RunSettings> GetSettings()
 				{
-					shared->object->proxySettings = this->ProxySettings->GetSettings();
+					shared->object->ProxySettings = this->ProxySettings->GetSettings();
 					return shared->object;
 				}
 			};

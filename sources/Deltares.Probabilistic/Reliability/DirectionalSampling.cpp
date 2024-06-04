@@ -192,7 +192,7 @@ namespace Deltares
 			for (int i = 0; i < samples.size(); i++)
 			{
 				// retain previous results from model if running in a proxy model environment
-				if (modelRunner->Settings->proxySettings->IsProxyModel && previousResults.contains(samples[i]->IterationIndex))
+				if (modelRunner->Settings->ProxySettings->IsProxyModel && previousResults.contains(samples[i]->IterationIndex))
 				{
 					betaValues[i] = previousResults[samples[i]->IterationIndex];
 				}
@@ -203,7 +203,7 @@ namespace Deltares
 			}
 
 			// keep results from non proxy runs when proxies are used for a next run
-			if (modelRunner->Settings->proxySettings->IsProxyModel)
+			if (modelRunner->Settings->ProxySettings->IsProxyModel)
 			{
 				for (size_t i = 0; i < samples.size(); i++)
 				{

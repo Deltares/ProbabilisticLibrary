@@ -444,7 +444,7 @@ namespace Deltares
 
 				z = std::isnan(uResult) ? nan("") : directionCalculation->GetZ(uResult);
 
-				if (modelRunner->Settings->proxySettings->IsProxyModel)
+				if (modelRunner->Settings->ProxySettings->IsProxyModel)
 				{
 					if (std::isnan(uResult))
 					{
@@ -452,7 +452,7 @@ namespace Deltares
 						uResult = bisectionCalculation->CalculateValue(uLow, uHigh, 0, zTolerance, [directionCalculation](double v) { return directionCalculation->GetZ(v); });
 					}
 
-					if (modelRunner->Settings->proxySettings->ShouldUpdateFinalSteps && !isProxyAllowed(modelRunner, uResult, this->Threshold))
+					if (modelRunner->Settings->ProxySettings->ShouldUpdateFinalSteps && !isProxyAllowed(modelRunner, uResult, this->Threshold))
 					{
 						uDirection->AllowProxy = false;
 
@@ -500,7 +500,7 @@ namespace Deltares
 
 		bool DirectionReliabilityForDirectionalSampling::isProxyAllowed(std::shared_ptr<ModelRunner> modelRunner, double u, double threshold)
 		{
-			return std::isnan(u) || u > threshold + modelRunner->Settings->proxySettings->ThresholdOffset;
+			return std::isnan(u) || u > threshold + modelRunner->Settings->ProxySettings->ThresholdOffset;
 		}
 	}
 }
