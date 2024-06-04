@@ -92,7 +92,7 @@
     <ClCompile Include="Combine\combineElements.cpp">
       <Filter>Combine</Filter>
     </ClCompile>
-    <ClCompile Include="Combine\Combiner.cpp">
+    <ClCompile Include="Combine\combiner.cpp">
       <Filter>Combine</Filter>
     </ClCompile>
     <ClCompile Include="Combine\Hohenbichler.cpp">
@@ -143,6 +143,8 @@
     <ClCompile Include="Statistics\SelfCorrelationMatrix.cpp" />
     <ClCompile Include="Model\SampleProvider.cpp" />
     <ClCompile Include="Utils\TagSupport.cpp" />
+    <ClCompile Include="Combine\DirectionalSamplingCombiner.cpp" />
+    <ClCompile Include="Combine\CombineType.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -251,7 +253,7 @@
     <ClInclude Include="Combine\combineElements.h">
       <Filter>Combine</Filter>
     </ClInclude>
-    <ClInclude Include="Combine\Combiner.h">
+    <ClInclude Include="Combine\combiner.h">
       <Filter>Combine</Filter>
     </ClInclude>
     <ClInclude Include="Combine\Hohenbichler.h">
@@ -305,6 +307,8 @@
     <ClInclude Include="Statistics\SelfCorrelationMatrix.h" />
     <ClInclude Include="Model\SampleProvider.h" />
     <ClInclude Include="Utils\TagSupport.h" />
+    <ClInclude Include="Combine\DirectionalSamplingCombiner.h" />
+    <ClInclude Include="Combine\CombineType.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

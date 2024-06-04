@@ -8,7 +8,6 @@
 #include "../Reliability/DesignPoint.h"
 #include "../Reliability/ImportanceSamplingSettings.h"
 #include "../Model/ProgressIndicator.h"
-#include "../Model/Project.h"
 
 namespace Deltares
 {
@@ -46,13 +45,6 @@ namespace Deltares
              * \param designPoint Design point to be inverted
              */
             void invert(std::shared_ptr<DesignPoint> designPoint);
-
-            /**
-             * \brief Gets all stochasts in a number of design points in the design point without doubling
-             * \param designPoints design points
-             * \return All stochasts without doubling
-             */
-            std::vector<std::shared_ptr<Statistics::Stochast>> getUniqueStochasts(std::vector<std::shared_ptr<DesignPoint>>& designPoints);
 
             /**
              * \brief Combines design points with possibly inverted design points
@@ -104,25 +96,6 @@ namespace Deltares
              */
             void fillSettingsParallel(std::shared_ptr<CombinedDesignPointModel> model, std::shared_ptr<ImportanceSamplingSettings> settings, double factor);
 
-            /**
-             * \brief Gets the linearized model representing the design points to be combined
-             * \param combineMethodType Combination type
-             * \param currentDesignPoint Current design point
-             * \param previousDesignPoints Previous design points 
-             * \param stochasts All stochasts
-             * \param selfCorrelationMatrix Administration of correlations between different design points
-             * \return Linearized model
-             */
-            std::shared_ptr<CombinedDesignPointModel> getModel(combineAndOr combineMethodType, std::shared_ptr<DesignPoint> currentDesignPoint, std::vector<std::shared_ptr<DesignPoint>>& previousDesignPoints, std::vector<std::shared_ptr<Statistics::Stochast>>& stochasts, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix);
-
-            /**
-             * \brief Gets a project containing the linearized model
-             * \param model Linearized model
-             * \param correlationMatrix Correlation matrix
-             * \param selfCorrelationMatrix Self correlation administration
-             * \return Project
-             */
-            std::shared_ptr<Project> getProject(std::shared_ptr<CombinedDesignPointModel> model, std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix);
         };
     }
 }

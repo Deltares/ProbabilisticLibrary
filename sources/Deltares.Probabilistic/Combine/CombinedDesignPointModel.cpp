@@ -7,6 +7,15 @@
 
 namespace Deltares
 {
+    namespace Statistics
+    {
+        class SelfCorrelationMatrix;
+        class CorrelationMatrix;
+    }
+}
+
+namespace Deltares
+{
     namespace Reliability
     {
         using namespace Deltares::Statistics;
