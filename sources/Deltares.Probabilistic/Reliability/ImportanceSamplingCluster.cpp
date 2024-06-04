@@ -28,7 +28,13 @@ namespace Deltares
 				DesignPointBuilder->addSample(sample);
 			}
 
+			if (this->NearestSample == nullptr || abs(sample->Z) < abs(this->NearestSample->Z))
+			{
+				this->NearestSample = sample;
+			}
+
 			// calculate the probability per cluster
+			this->FailFraction = Numeric::NumericSupport::Divide(FailCount, TotalCount);
 			this->ProbFailure = getProbabilityOfFailure(!z0Ignore);
 		}
 
