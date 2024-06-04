@@ -1,8 +1,10 @@
 #pragma once
 
-#include "combiner.h"
+#include "CombineType.h"
 #include "DesignPointModel.h"
 #include "../Reliability/DesignPoint.h"
+#include "../Statistics/CorrelationMatrix.h"
+#include "../Statistics/SelfCorrelationMatrix.h"
 
 namespace Deltares
 {
