@@ -3,6 +3,7 @@
 #include "../Model/RandomSettings.h"
 #include "../Model/RunSettings.h"
 #include "DesignPointBuilder.h"
+#include "StartPointCalculatorSettings.h"
 #include "StochastSettingsSet.h"
 
 namespace Deltares
@@ -12,16 +13,49 @@ namespace Deltares
 		class ImportanceSamplingSettings
 		{
 		public:
-			int MinimumSamples = 1000;
-			int MaximumSamples = 10000;
-			int MaximumSamplesNoResult = 10000;
-			double VariationCoefficient = 0.05;
-			double VarianceFactor = 1;
+            /**
+             * \brief The minimum number of samples to be examined
+             */
+            int MinimumSamples = 1000;
 
-			DesignPointMethod designPointMethod = DesignPointMethod::CenterOfGravity;
-			std::shared_ptr<Deltares::Models::RandomSettings> randomSettings = std::make_shared<Deltares::Models::RandomSettings>();
-			std::shared_ptr<Models::RunSettings> runSettings = std::make_shared<Models::RunSettings>();
+            /**
+             * \brief The maximum number of samples to be examined
+             */
+            int MaximumSamples = 10000;
+
+            /**
+             * \brief Maximum number of samples when all samples have the same qualitative result (Z < 0 or Z > 0)
+             */
+            int MaximumSamplesNoResult = 10000;
+
+            /**
+             * \brief The importance sampling algorithm stops when the calculated variation coefficient is less than this value
+             */
+            double VariationCoefficient = 0.05;
+
+		    double VarianceFactor = 1;
+
+            /**
+             * \brief Method type how the design point (alpha values) is calculated
+             */
+            DesignPointMethod designPointMethod = DesignPointMethod::CenterOfGravity;
+
+            /**
+             * \brief Settings how to derive the first center
+             */
+            std::shared_ptr<StartPointCalculatorSettings> startPointSettings = std::make_shared<StartPointCalculatorSettings>();
+
+            /**
+             * \brief Settings for performing model runs
+             */
+            std::shared_ptr<Models::RunSettings> runSettings = std::make_shared<Models::RunSettings>();
+
+            /**
+             * \brief Settings per stochastic variable, contains (among others) the center value and multiplication factor used to shift samples in the importance sampling algorithm
+             */
 			std::shared_ptr<StochastSettingsSet> StochastSet = std::make_shared<StochastSettingsSet>();
+
+            std::shared_ptr<Deltares::Models::RandomSettings> randomSettings = std::make_shared<Deltares::Models::RandomSettings>();
 
 			bool Clustering = false;
 			std::vector<std::shared_ptr<Sample>> Clusters;
@@ -55,7 +89,11 @@ namespace Deltares
 				return true;
 			}
 
-			std::shared_ptr<ImportanceSamplingSettings> clone()
+            /**
+             * \brief Makes a copy of these settings (deep copy of stochast settings)
+             * \return Copy
+             */
+            std::shared_ptr<ImportanceSamplingSettings> clone()
 			{
 				std::shared_ptr<ImportanceSamplingSettings> clone = std::make_shared<ImportanceSamplingSettings>();
 
@@ -69,8 +107,11 @@ namespace Deltares
 				// move to adaptive importance sampling settings
 				clone->Clustering = this->Clustering;
 
-				clone->runSettings = this->runSettings;
+                clone->StochastSet->AreStartValuesCorrelated = this->StochastSet->AreStartValuesCorrelated;
+
+			    clone->runSettings = this->runSettings;
 				clone->randomSettings = this->randomSettings;
+                clone->startPointSettings = this->startPointSettings->clone();
 
 				for (size_t i = 0; i < this->StochastSet->getStochastCount(); i++)
 				{
