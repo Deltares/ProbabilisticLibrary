@@ -155,13 +155,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Model\ProxySettings.h" />
-    <ClInclude Include="Utils\Locker.h" />
-    <ClInclude Include="Math\MatrixSupport.h" />
-    <ClInclude Include="Optimization\KMeansClustering.h" />
-    <ClInclude Include="Optimization\ClusterSettings.h" />
-    <ClInclude Include="Reliability\AdaptiveImportanceSampling.h" />
-    <ClInclude Include="Reliability\AdaptiveImportanceSamplingSettings.h" />
     <ClInclude Include="Reliability\ImportanceSamplingCluster.h" />
     <ClInclude Include="Reliability\ImportanceSamplingSettings.h" />
     <ClInclude Include="Reliability\ImportanceSampling.h" />
@@ -170,8 +163,8 @@
     <ClInclude Include="Optimization\GridSearch.h" />
     <ClInclude Include="Optimization\SearchParameterSettings.h" />
     <ClInclude Include="Optimization\SearchParameterSettingsSet.h" />
-    <ClInclude Include="Reliability\DirectionalSamplingThenFORM.h" />
-    <ClInclude Include="Reliability\FORMThenDirectionalSampling.h" />
+    <ClInclude Include="Reliability\DSFI.h" />
+    <ClInclude Include="Reliability\FDIR.h" />
     <ClInclude Include="Statistics\Distributions\DistributionFitter.h" />
     <ClInclude Include="Statistics\Distributions\RayleighNDistribution.h" />
     <ClInclude Include="Statistics\Distributions\WeibullDistribution.h" />
@@ -184,7 +177,6 @@
     <ClInclude Include="Combine\intEqualElements.h" />
     <ClInclude Include="Combine\upscaling.h" />
     <ClInclude Include="Model\ModelSample.h" />
-    <ClInclude Include="Reliability\SphereTasks.h" />
     <ClInclude Include="Statistics\Distributions\DistributionLibrary.h" />
     <ClInclude Include="Math\RootFinders\BisectionRootFinder.h" />
     <ClInclude Include="Statistics\Distributions\HistogramDistribution.h" />
@@ -264,16 +256,8 @@
     <ClInclude Include="Statistics\Distributions\RayleighDistribution.h" />
     <ClInclude Include="Statistics\Distributions\FrechetDistribution.h" />
     <ClInclude Include="Statistics\Distributions\GeneralizedExtremeValueDistribution.h" />
-    <ClInclude Include="Statistics\Distributions\ConditionalWeibullDistribution.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Model\ProxySettings.cpp" />
-    <ClCompile Include="Utils\Locker.cpp" />
-    <ClCompile Include="Math\MatrixSupport.cpp" />
-    <ClCompile Include="Optimization\KMeansClustering.cpp" />
-    <ClCompile Include="Optimization\ClusterSettings.cpp" />
-    <ClCompile Include="Reliability\AdaptiveImportanceSampling.cpp" />
-    <ClCompile Include="Reliability\AdaptiveImportanceSamplingSettings.cpp" />
     <ClCompile Include="Reliability\ImportanceSamplingCluster.cpp" />
     <ClCompile Include="Reliability\ImportanceSamplingSettings.cpp" />
     <ClCompile Include="Reliability\ImportanceSampling.cpp" />
@@ -282,8 +266,8 @@
     <ClCompile Include="Optimization\GridSearch.cpp" />
     <ClCompile Include="Optimization\SearchParameterSettings.cpp" />
     <ClCompile Include="Optimization\SearchParameterSettingsSet.cpp" />
-    <ClCompile Include="Reliability\DirectionalSamplingThenFORM.cpp" />
-    <ClCompile Include="Reliability\FORMThenDirectionalSampling.cpp" />
+    <ClCompile Include="Reliability\DSFI.cpp" />
+    <ClCompile Include="Reliability\FDIR.cpp" />
     <ClCompile Include="Statistics\Distributions\DistributionFitter.cpp" />
     <ClCompile Include="Statistics\Distributions\RayleighNDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\WeibullDistribution.cpp" />
@@ -293,7 +277,6 @@
     <ClCompile Include="Combine\HohenbichlerCombiner.cpp" />
     <ClCompile Include="Combine\HohenbichlerZ.cpp" />
     <ClCompile Include="Combine\upscaling.cpp" />
-    <ClCompile Include="Reliability\SphereTasks.cpp" />
     <ClCompile Include="Statistics\Distributions\DistributionLibrary.cpp" />
     <ClCompile Include="Math\RootFinders\BisectionRootFinder.cpp" />
     <ClCompile Include="Statistics\Distributions\Distribution.cpp" />
@@ -368,7 +351,6 @@
     <ClCompile Include="Statistics\Distributions\RayleighDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\FrechetDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\GeneralizedExtremeValueDistribution.cpp" />
-    <ClCompile Include="Statistics\Distributions\ConditionalWeibullDistribution.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

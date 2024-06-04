@@ -3,7 +3,6 @@
 #include "../../Deltares.Probabilistic/Reliability/ImportanceSamplingSettings.h"
 #include "../Model/RandomSettings.h"
 #include "../Model/RunSettings.h"
-#include "../Reliability/StartPointCalculatorSettings.h"
 #include "../Reliability/StochastSettings.h"
 #include "../Utils/SharedPointerProvider.h"
 #include "DesignPointMethodSettings.h"
@@ -23,13 +22,11 @@ namespace Deltares
 				SharedPointerProvider<Reliability::ImportanceSamplingSettings>* shared = nullptr;
 				Wrappers::RunSettings^ runSettings = gcnew Wrappers::RunSettings();
 				Wrappers::RandomSettings^ randomSettings = gcnew Wrappers::RandomSettings();
-				Wrappers::StartPointCalculatorSettings^ startPointSettings = gcnew Wrappers::StartPointCalculatorSettings();
 			public:
 				ImportanceSamplingSettings()
 				{
 					shared = new SharedPointerProvider(new Reliability::ImportanceSamplingSettings());
 					shared->object->randomSettings = RandomSettings->GetSettings();
-					shared->object->startPointSettings = StartPointSettings->GetSettings();
 				}
 				ImportanceSamplingSettings(std::shared_ptr<Reliability::ImportanceSamplingSettings> settings)
 				{
@@ -91,10 +88,52 @@ namespace Deltares
 					}
 				}
 
-				virtual property Wrappers::StartPointCalculatorSettings^ StartPointSettings
+				property int Counter
 				{
-					Wrappers::StartPointCalculatorSettings^ get() { return startPointSettings; }
-					void set(Wrappers::StartPointCalculatorSettings^ value) { startPointSettings = value; }
+					int get() { return shared->object->Counter; }
+					void set(int value) { shared->object->Counter = value; }
+				}
+
+				property bool Clustering
+				{
+					bool get() { return shared->object->Clustering; }
+					void set(bool value) { shared->object->Clustering = value; }
+				}
+
+				property int MaxVarianceLoops
+				{
+					int get() { return shared->object->MaxVarianceLoops; }
+					void set(int value) { shared->object->MaxVarianceLoops = value; }
+				}
+
+				property int MaxClusters
+				{
+					int get() { return shared->object->MaxClusters; }
+					void set(int value) { shared->object->MaxClusters = value; }
+				}
+
+				property bool AutoMaximumSamplesNoResult
+				{
+					bool get() { return shared->object->AutoMaximumSamplesNoResult; }
+					void set(bool value) { shared->object->AutoMaximumSamplesNoResult = value; }
+				}
+
+				property double EpsWeightSample
+				{
+					double get() { return shared->object->EpsWeightSample; }
+					void set(double value) { shared->object->EpsWeightSample = value; }
+				}
+
+				property double VarianceFactor
+				{
+					double get() { return shared->object->VarianceFactor; }
+					void set(double value) { shared->object->VarianceFactor = value; }
+				}
+
+				property bool OptimizeNumberClusters
+				{
+					bool get() { return shared->object->OptimizeNumberClusters; }
+					void set(bool value) { shared->object->OptimizeNumberClusters = value; }
 				}
 
 				virtual property Wrappers::RandomSettings^ RandomSettings
@@ -137,9 +176,8 @@ namespace Deltares
 						shared->object->StochastSet->stochastSettings.push_back(StochastSettings[i]->GetSettings());
 					}
 
-					shared->object->startPointSettings = StartPointSettings->GetSettings();
 					shared->object->randomSettings = RandomSettings->GetSettings();
-					shared->object->runSettings = RunSettings->GetSettings();
+					shared->object->RunSettings = RunSettings->GetSettings();
 
 					return shared->object;
 				}

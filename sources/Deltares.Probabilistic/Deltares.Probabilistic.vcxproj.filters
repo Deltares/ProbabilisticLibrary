@@ -114,23 +114,14 @@
     <ClCompile Include="Optimization\GridSearch.cpp" />
     <ClCompile Include="Optimization\SearchParameterSettings.cpp" />
     <ClCompile Include="Optimization\SearchParameterSettingsSet.cpp" />
-    <ClCompile Include="Reliability\DirectionalSamplingThenFORM.cpp" />
-    <ClCompile Include="Reliability\FORMThenDirectionalSampling.cpp" />
-    <ClCompile Include="Reliability\SphereTasks.cpp" />
+    <ClCompile Include="Reliability\DSFI.cpp" />
+    <ClCompile Include="Reliability\FDIR.cpp" />
     <ClCompile Include="Statistics\Distributions\GeneralizedExtremeValueDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\KSCalculator.cpp" />
     <ClCompile Include="Statistics\DistributionPropertyType.cpp" />
     <ClCompile Include="Reliability\ImportanceSampling.cpp" />
     <ClCompile Include="Reliability\ImportanceSamplingSettings.cpp" />
     <ClCompile Include="Reliability\ImportanceSamplingCluster.cpp" />
-    <ClCompile Include="Statistics\Distributions\ConditionalWeibullDistribution.cpp" />
-    <ClCompile Include="Reliability\AdaptiveImportanceSamplingSettings.cpp" />
-    <ClCompile Include="Reliability\AdaptiveImportanceSampling.cpp" />
-    <ClCompile Include="Optimization\ClusterSettings.cpp" />
-    <ClCompile Include="Optimization\KMeansClustering.cpp" />
-    <ClCompile Include="Math\MatrixSupport.cpp" />
-    <ClCompile Include="Utils\Locker.cpp" />
-    <ClCompile Include="Model\ProxySettings.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -264,23 +255,14 @@
     <ClInclude Include="Optimization\GridSearch.h" />
     <ClInclude Include="Optimization\SearchParameterSettings.h" />
     <ClInclude Include="Optimization\SearchParameterSettingsSet.h" />
-    <ClInclude Include="Reliability\DirectionalSamplingThenFORM.h" />
-    <ClInclude Include="Reliability\FORMThenDirectionalSampling.h" />
-    <ClInclude Include="Reliability\SphereTasks.h" />
+    <ClInclude Include="Reliability\DSFI.h" />
+    <ClInclude Include="Reliability\FDIR.h" />
     <ClInclude Include="Statistics\Distributions\GeneralizedExtremeValueDistribution.h" />
     <ClInclude Include="Statistics\Distributions\KSCalculator.h" />
     <ClInclude Include="Statistics\DistributionPropertyType.h" />
     <ClInclude Include="Reliability\ImportanceSampling.h" />
     <ClInclude Include="Reliability\ImportanceSamplingSettings.h" />
     <ClInclude Include="Reliability\ImportanceSamplingCluster.h" />
-    <ClInclude Include="Statistics\Distributions\ConditionalWeibullDistribution.h" />
-    <ClInclude Include="Reliability\AdaptiveImportanceSamplingSettings.h" />
-    <ClInclude Include="Reliability\AdaptiveImportanceSampling.h" />
-    <ClInclude Include="Optimization\ClusterSettings.h" />
-    <ClInclude Include="Optimization\KMeansClustering.h" />
-    <ClInclude Include="Math\MatrixSupport.h" />
-    <ClInclude Include="Utils\Locker.h" />
-    <ClInclude Include="Model\ProxySettings.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

@@ -38,15 +38,14 @@ namespace Deltares
 
 		double NumericSupport::getDistance2(const std::vector<double>& values1, const std::vector<double>& values2)
 		{
-			double sum = 0;
+			std::vector<double> diff = std::vector<double>(values1.size());
 
-			for (size_t i = 0; i < values1.size(); i++)
+			for (size_t i = 0; i < diff.size(); i++)
 			{
-				const double diff = values1[i] - values2[i];
-				sum += diff * diff;
+				diff[i] = values1[i] - values2[i];
 			}
 
-			return sum;
+			return GetSquaredSum(diff);
 		}
 
 		double* NumericSupport::getArray(double initialValue, int count)
@@ -269,28 +268,7 @@ namespace Deltares
 			return coordinates;
 		}
 
-		size_t NumericSupport::getLocationMinimum(const std::vector<double>& values)
-		{
-			if (values.empty())
-			{
-				throw Deltares::Reliability::probLibException("empty vector not allowed in getLocationMinimum");
-			}
-			else
-			{
-				size_t locmin = 0;
-				for (size_t i = 1; i < values.size(); i++)
-				{
-					if (values[i] < values[locmin])
-					{
-						locmin = i;
-					}
-				}
-
-				return locmin;
-			}
-		}
-
-		double NumericSupport::getMinimum(const std::vector<double>& values)
+		double NumericSupport::getMinimum(std::vector<double>& values)
 		{
 			if (values.empty())
 			{
@@ -298,33 +276,20 @@ namespace Deltares
 			}
 			else
 			{
-				auto loc = getLocationMinimum(values);
-				return values[loc];
-			}
-		}
-
-		size_t NumericSupport::getLocationMaximum(const std::vector<double>& values)
-		{
-			if (values.empty())
-			{
-				throw Deltares::Reliability::probLibException("empty vector not allowed in getLocationMaximum");
-			}
-			else
-			{
-				size_t locmax = 0;
-				for (size_t i = 1; i < values.size(); i++)
+				double min = values[0];
+				for (double x : values)
 				{
-					if (values[i] > values[locmax])
+					if (x < min)
 					{
-						locmax = i;
+						min = x;
 					}
 				}
 
-				return locmax;
+				return min;
 			}
 		}
 
-		double NumericSupport::getMaximum(const std::vector<double>& values)
+		double NumericSupport::getMaximum(std::vector<double>& values)
 		{
 			if (values.empty())
 			{
@@ -332,8 +297,16 @@ namespace Deltares
 			}
 			else
 			{
-				auto loc = getLocationMaximum(values);
-				return values[loc];
+				double max = values[0];
+				for (double x : values)
+				{
+					if (x > max)
+					{
+						max = x;
+					}
+				}
+
+				return max;
 			}
 		}
 

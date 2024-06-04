@@ -19,6 +19,7 @@ namespace Deltares
 
 				bool hasLimitedRandomValues = false;
 				bool isStochastRepeatableRandom = false;
+				bool skipUnvaryingParameters = true;
 
 			public:
 				RandomSettings()
@@ -46,16 +47,6 @@ namespace Deltares
 					void set(bool value) { shared->object->IsRepeatableRandom = value; }
 				}
 
-				/// <summary>
-				/// Indicates whether the randomizer should draw dummy random values for unvarying parameters,
-				/// so that changing distributions from varying to unvarying wil not affect the random values of varying parameters
-				/// </summary>
-				property bool SkipUnvaryingParameters
-				{
-					bool get() { return shared->object->SkipUnvaryingParameters; }
-					void set(bool value) { shared->object->SkipUnvaryingParameters = value; }
-				}
-
 				// TODO: next properties to be removed when RandomValueGenerator is not used any more
 
 				/// <summary>
@@ -74,6 +65,16 @@ namespace Deltares
 				{
 					bool get() { return isStochastRepeatableRandom; }
 					void set(bool value) { isStochastRepeatableRandom = value; }
+				}
+
+				/// <summary>
+				/// Indicates whether the randomizer should draw dummy random values for unvarying parameters,
+				/// so that changing distributions from varying to unvarying wil not affect the random values of varying parameters
+				/// </summary>
+				property bool SkipUnvaryingParameters
+				{
+					bool get() { return skipUnvaryingParameters; }
+					void set(bool value) { skipUnvaryingParameters = value; }
 				}
 
 
