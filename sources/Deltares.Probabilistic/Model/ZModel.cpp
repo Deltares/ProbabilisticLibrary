@@ -30,7 +30,8 @@ namespace Deltares
 				#pragma omp parallel for
 				for (int i = 0; i < (int)samples.size(); i++)
 				{
-					invoke(samples[i]);
+                    samples[i]->threadId = omp_get_thread_num();
+                    invoke(samples[i]);
 				}
 			}
 			else

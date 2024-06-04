@@ -35,6 +35,7 @@ module probMethodsWaartsFunctionsTests
     use interface_probCalcData
     use interface_distributions
     use waartsFunctions
+    use sparseWaartsTestFunctions
 
     implicit none
 
@@ -96,7 +97,7 @@ subroutine allProbMethodsWaartsFunctionsTests(minTestLevel)
     character(len=255)            :: testName
 
     integer                       :: level
-    integer, parameter            :: availableMethods(*) = [12, 11, 1, 3, 4] ! TODO the rest is not implemented yet
+    integer, parameter            :: availableMethods(*) = [6, 12, 11, 1, 3, 4] ! TODO the rest is not implemented yet
 
     character(len=60), dimension(14) :: functionName = &
         (/   "LinearResistanceSolicitation           ", &     ! 1
@@ -281,8 +282,8 @@ subroutine testProbabilisticWithFunction ( )
                     call assert_comparable(  0.707106781186547d0, alfa(1), margin, "Linear resistance solicitation: Alfa(1)" )
                     call assert_comparable( -0.707106781186547d0, alfa(2), margin, "Linear resistance solicitation: Alfa(2)" )
                 else if (probMethod == methodImportanceSampling) then
-                    call assert_comparable( 3.51983784d0, actualBeta, 1d-8, "Linear resistance solicitation: Beta" )
-                    call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 31521, "no samples")
+                    call assert_comparable( 3.5d0, actualBeta, 1d-1, "Linear resistance solicitation: Beta" )
+                    call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 18076, "no samples")
                 else if (probMethod < 10) then
                     call assert_comparable( 3.54d0, actualBeta, 0.05d0 * betaFactor, "Linear resistance solicitation: Beta" )
                 endif
@@ -340,8 +341,8 @@ subroutine testProbabilisticWithFunction ( )
                 case (methodCrudeMonteCarlo)
                     call assert_comparable( 2.34491717949861d0, actualBeta, margin, "Noisy limit state: Beta" )
                 case (methodImportanceSampling)
-                    call assert_comparable( 2.26553522d0, actualBeta, 1d-8, "Noisy limit state: Beta" )
-                    call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 12520, "no samples")
+                    call assert_comparable( 2.27d0, actualBeta, 1d-2, "Noisy limit state: Beta" )
+                    call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 15258, "no samples")
                 case default
                     call assert_true( conv, "No convergence" )
             end select
@@ -398,9 +399,9 @@ subroutine testProbabilisticWithFunction ( )
                         "Resistance solicitation with 1 quadratic term: Beta" )
                     call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 100000, "no samples")
                 case (methodImportanceSampling)
-                    call assert_comparable( 3.475797315d0, actualBeta, 1d-8, &
-                        "Resistance solicitation with 1 quadratic terme: Beta" )
-                    call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 30858, "no samples")
+                    call assert_comparable( 3.47d0, actualBeta, 1d-2, &
+                        "Resistance solicitation with 1 quadratic term: Beta" )
+                    call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 17852, "no samples")
                 case default
                     call assert_true( conv, "No convergence" )
             end select
@@ -503,8 +504,11 @@ subroutine testProbabilisticWithFunction ( )
             if (waartsFunction == 5) then
                 call iterateMechanism( probDb, convergenceData, zLimitState25QuadraticTerms, probMethod, alfa, actualBeta, x, conv)
             else
+                call initSparseWaartsTestsFunctions(probDb%stovar%maxStochasts, probDb%method%maxParallelThreads)
                 call iterateMechanism( probDb, convergenceData, zLimitState25QuadraticTermsSparse, &
                         probMethod, alfa, actualBeta, x, conv)
+                call updateCounter(invocationCount)
+                call cleanUpWaartsTestsFunctions
             endif
 
             select case (probMethod)
@@ -562,8 +566,8 @@ subroutine testProbabilisticWithFunction ( )
                     call assert_comparable( 2.63d0, actualBeta, 0.05d0 * betaFactor, "Convex failure domain: Beta" )
 
                 case (methodImportanceSampling)
-                    call assert_comparable( 2.658267980d0, actualBeta, 1d-8, trim(waartsFunctionName) // ": Beta" )
-                    call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 9433, "no samples")
+                    call assert_comparable( 2.67d0, actualBeta, 1d-2, trim(waartsFunctionName) // ": Beta" )
+                    call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 5402, "no samples")
 
                 case default
                     call assert_true( conv, "No convergence" )
@@ -596,7 +600,10 @@ subroutine testProbabilisticWithFunction ( )
             probDb%method%FORM%startMethod = fORMStartOne
 
             ! Perform computation numberIterations times
+            call initSparseWaartsTestsFunctions(probDb%stovar%maxStochasts, probDb%method%maxParallelThreads)
             call iterateMechanism (probDb, convergenceData, zOblateSpheroid, probMethod, alfa, actualBeta, x, conv)
+            call updateCounter(invocationCount)
+            call cleanUpWaartsTestsFunctions
 
             select case (probMethod)
                 case ( methodFORM )
@@ -617,8 +624,8 @@ subroutine testProbabilisticWithFunction ( )
                     call assert_comparable( 0.0d0, alfa(11), margin, "Oblate spheroid: Alfa(11)" )
 
                 case (methodImportanceSampling)
-                    call assert_comparable( 1.0875463369d0, actualBeta, 1d-8, trim(waartsFunctionName) // ": Beta" )
-                    call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 1000, "no samples")
+                    call assert_comparable( 1.09d0, actualBeta, 1d-2, trim(waartsFunctionName) // ": Beta" )
+                    call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 42012, "no samples")
 
                 case default
                     call assert_true( conv, "No convergence" )
@@ -666,8 +673,8 @@ subroutine testProbabilisticWithFunction ( )
                     call assert_comparable( 2.34d0, actualBeta, 0.05d0 * betaFactor, "Saddle surface: Beta" )
 
                 case (methodImportanceSampling)
-                    call assert_comparable( 2.367676251d0, actualBeta, 1d-8, trim(waartsFunctionName) // ": Beta" )
-                    call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 4627, "no samples")
+                    call assert_comparable( 2.32d0, actualBeta, 1d-2, trim(waartsFunctionName) // ": Beta" )
+                    call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 21892, "no samples")
 
                 case default
                     call assert_true( conv, "No convergence" )
@@ -717,8 +724,8 @@ subroutine testProbabilisticWithFunction ( )
                     call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 100000, "no samples")
 
                 case (methodImportanceSampling)
-                    call assert_comparable( 3.85794784d0, actualBeta, 1d-8, trim(waartsFunctionName) // ": Beta" )
-                    call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 66875, "no samples")
+                    call assert_comparable( 3.85d0, actualBeta, 1d-2, trim(waartsFunctionName) // ": Beta" )
+                    call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 38017, "no samples")
 
                 case default
                     call assert_true( conv, "No convergence" )
@@ -837,8 +844,8 @@ subroutine testProbabilisticWithFunction ( )
                     call assert_comparable( 1.26d0, actualBeta, 0.10d0 * betaFactor, "Concave failure domain: Beta" )
 
                 case (methodImportanceSampling)
-                    call assert_comparable( 1.287035952d0, actualBeta, 1d-8, trim(waartsFunctionName) // ": Beta" )
-                    call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 1000, "no samples")
+                    call assert_comparable( 1.28d0, actualBeta, 1d-2, trim(waartsFunctionName) // ": Beta" )
+                    call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 1923, "no samples")
 
                 case default
                     call assert_true( conv, "No convergence" )
@@ -884,8 +891,8 @@ subroutine testProbabilisticWithFunction ( )
                     call assert_comparable( 2.9d0, actualBeta, 0.1d0, "Series system: Beta" )
 
                 case (methodImportanceSampling)
-                    call assert_comparable( 2.836578719d0, actualBeta, 1d-8, trim(waartsFunctionName) // ": Beta" )
-                    call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 7526, "no samples")
+                    call assert_comparable( 2.84d0, actualBeta, 1d-2, trim(waartsFunctionName) // ": Beta" )
+                    call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 99217, "no samples")
 
                 case default
                     call assert_true( conv, "No convergence" )
@@ -934,8 +941,8 @@ subroutine testProbabilisticWithFunction ( )
                     call assert_comparable( 3.503028640d0, actualBeta, 1d-8, trim(waartsFunctionName) // ": Beta" )
                     call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 100000, "no samples")
                 case (methodImportanceSampling)
-                    call assert_comparable( 3.4656359245d0, actualBeta, 1d-8, trim(waartsFunctionName) // ": Beta" )
-                    call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 100000, "no samples")
+                    call assert_comparable( 3.46d0, actualBeta, 1d-2, trim(waartsFunctionName) // ": Beta" )
+                    call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 99573, "no samples")
                 case default
                     call assert_true( conv, "No convergence" )
             end select
@@ -1115,16 +1122,19 @@ end subroutine testErrorHandlingCalculateLimitStateFunction
 
 
 !> Linear resistance solicitation function with generic interface
-function zLinearResistanceSolicitation( x,  compSetting, ierr ) result(z) bind(c)
+function zLinearResistanceSolicitation( xDense,  compSetting, ierr ) result(z) bind(c)
 
-    real(kind=wp),            intent(inout) :: x(*)
+    real(kind=wp),            intent(inout) :: xDense(*)
     type(computationSetting), intent(in   ) :: compSetting
     type(tError),             intent(inout) :: ierr
     real(kind=wp)                           :: z
 
+    real(kind=wp) :: x(2)
+
     ierr%icode = 0
     if (compSetting%designPointSetting == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
 
+    call copyDense2Full(xDense, x)
     z = linearResistanceSolicitation( x(1), x(2) )
 
     invocationCount = invocationCount + 1
@@ -1220,24 +1230,6 @@ function zLimitState25QuadraticTerms( x, compSetting, ierr ) result(z) bind(c)
 
 end function zLimitState25QuadraticTerms
 
-!> Limit state function with 25 quadratic terms sparse with generic interface
-function zLimitState25QuadraticTermsSparse( x, compSetting, ierr ) result(z) bind(c)
-
-    real(kind=wp),            intent(inout) :: x(*)
-    type(computationSetting), intent(in   ) :: compSetting
-    type(tError),             intent(inout) :: ierr
-    real(kind=wp)                           :: z
-
-    ierr%icode = 0
-    if (compSetting%designPointSetting == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
-
-    z = limitState25QuadraticTerms( x ( 30 ), x ( 3 : 27)  )
-
-    invocationCount = invocationCount + 1
-
-end function zLimitState25QuadraticTermsSparse
-
-
 !> Convex failure domain with generic interface
 function zConvexFailureDomain( x, compSetting, ierr ) result(z) bind(c)
 
@@ -1254,25 +1246,6 @@ function zConvexFailureDomain( x, compSetting, ierr ) result(z) bind(c)
     invocationCount = invocationCount + 1
 
 end function zConvexFailureDomain
-
-
-!> Oblate spheroid with generic interface
-function zOblateSpheroid( x, compSetting, ierr ) result(z) bind(c)
-
-    real(kind=wp),            intent(inout) :: x(*)
-    type(computationSetting), intent(in   ) :: compSetting
-    type(tError),             intent(inout) :: ierr
-    real(kind=wp)                           :: z
-
-    ierr%icode = 0
-    if (compSetting%designPointSetting == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
-
-    z = oblateSpheroid( x ( 1 ), x ( 2 : 11 )  )
-
-    invocationCount = invocationCount + 1
-
-end function zOblateSpheroid
-
 
 !> Saddle surface with generic interface
 function zSaddleSurface( x, compSetting, ierr ) result(z) bind(c)

@@ -15,10 +15,9 @@ namespace Deltares.Probabilistics.Wrappers.Test
         public void TestLinear()
         {
             var project = ProjectBuilder.GetLinearProject();
-            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
 
-            AdaptiveImportanceSampling importanceSampling = new AdaptiveImportanceSampling();
-            DesignPoint designPoint = importanceSampling.GetDesignPoint(modelRunner);
+            project.ReliabilityMethod = new AdaptiveImportanceSampling();
+            DesignPoint designPoint = project.GetDesignPoint();
 
             Assert.AreEqual(2.56, designPoint.Beta, margin);
 
@@ -30,15 +29,14 @@ namespace Deltares.Probabilistics.Wrappers.Test
         public void TestLinearSmall()
         {
             var project = ProjectBuilder.GetLinearSmallProject();
-            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
 
             AdaptiveImportanceSampling importanceSampling = new AdaptiveImportanceSampling();
             importanceSampling.Settings.MaxVarianceLoops = 5;
             importanceSampling.Settings.MinVarianceLoops = 2;
-
             importanceSampling.Settings.ImportanceSamplingSettings.MaximumSamples = 10000;
+            project.ReliabilityMethod = importanceSampling;
 
-            DesignPoint designPoint = importanceSampling.GetDesignPoint(modelRunner);
+            DesignPoint designPoint = project.GetDesignPoint();
 
             Assert.AreEqual(3.88, designPoint.Beta, margin);
         }
@@ -47,7 +45,6 @@ namespace Deltares.Probabilistics.Wrappers.Test
         public void TestLinearSmallSlow()
         {
             Project project = ProjectBuilder.GetLinearSmallSlowProject();
-            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
 
             AdaptiveImportanceSampling importanceSampling = new AdaptiveImportanceSampling();
             importanceSampling.Settings.MaxVarianceLoops = 5;
@@ -55,8 +52,9 @@ namespace Deltares.Probabilistics.Wrappers.Test
             importanceSampling.Settings.ImportanceSamplingSettings.MaximumSamplesNoResult = 100;
             importanceSampling.Settings.ImportanceSamplingSettings.MinimumSamples = 100;
             importanceSampling.Settings.ImportanceSamplingSettings.MaximumSamples = 200;
+            project.ReliabilityMethod = importanceSampling;
 
-            DesignPoint designPoint = importanceSampling.GetDesignPoint(modelRunner);
+            DesignPoint designPoint = project.GetDesignPoint();
 
             Assert.AreEqual(3.96, designPoint.Beta, margin);
         }
@@ -65,7 +63,6 @@ namespace Deltares.Probabilistics.Wrappers.Test
         public void TestLinearSmallSlowParallel()
         {
             Project project = ProjectBuilder.GetLinearSmallSlowProject();
-            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
 
             AdaptiveImportanceSampling importanceSampling = new AdaptiveImportanceSampling();
             importanceSampling.Settings.RunSettings.MaxParallelProcesses = 4;
@@ -76,7 +73,9 @@ namespace Deltares.Probabilistics.Wrappers.Test
             importanceSampling.Settings.ImportanceSamplingSettings.MaximumSamplesNoResult = 100;
             importanceSampling.Settings.ImportanceSamplingSettings.MaximumSamples = 200;
 
-            DesignPoint designPoint = importanceSampling.GetDesignPoint(modelRunner);
+            project.ReliabilityMethod = importanceSampling;
+
+            DesignPoint designPoint = project.GetDesignPoint();
 
             Assert.AreEqual(3.96, designPoint.Beta, margin);
         }
@@ -85,7 +84,6 @@ namespace Deltares.Probabilistics.Wrappers.Test
         public void TestLinearClusters()
         {
             Project project = ProjectBuilder.GetLinearAbsoluteSmallProject();
-            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
 
             AdaptiveImportanceSampling importanceSampling = new AdaptiveImportanceSampling();
 
@@ -99,7 +97,9 @@ namespace Deltares.Probabilistics.Wrappers.Test
             importanceSampling.Settings.ImportanceSamplingSettings.MinimumSamples = 1000;
             importanceSampling.Settings.ImportanceSamplingSettings.MaximumSamples = 5000;
 
-            DesignPoint designPoint = importanceSampling.GetDesignPoint(modelRunner);
+            project.ReliabilityMethod = importanceSampling;
+
+            DesignPoint designPoint = project.GetDesignPoint();
 
             Assert.AreEqual(3.66, designPoint.Beta, margin);
         }
@@ -108,7 +108,6 @@ namespace Deltares.Probabilistics.Wrappers.Test
         public void TestEdgeClusters()
         {
             Project project = ProjectBuilder.GetEdgeProject();
-            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
 
             AdaptiveImportanceSampling importanceSampling = new AdaptiveImportanceSampling();
 
@@ -122,7 +121,9 @@ namespace Deltares.Probabilistics.Wrappers.Test
             importanceSampling.Settings.ImportanceSamplingSettings.MinimumSamples = 1000;
             importanceSampling.Settings.ImportanceSamplingSettings.MaximumSamples = 5000;
 
-            DesignPoint designPoint = importanceSampling.GetDesignPoint(modelRunner);
+            project.ReliabilityMethod = importanceSampling;
+
+            DesignPoint designPoint = project.GetDesignPoint();
 
             double pSingle = 0.0001;
             double betaExpected = StandardNormal.GetUFromQ(3 * pSingle - 3 * pSingle * pSingle);

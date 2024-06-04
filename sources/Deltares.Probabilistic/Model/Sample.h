@@ -50,6 +50,7 @@ namespace Deltares
 			SpaceType spaceType = SpaceType::U;
 
 			int IterationIndex = -1;
+			int threadId = 0;
 			double Weight = nan("");
 			bool AllowProxy = true;
 			bool IsRestartRequired = false;

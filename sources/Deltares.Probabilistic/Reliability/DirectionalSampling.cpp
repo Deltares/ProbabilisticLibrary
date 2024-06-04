@@ -189,8 +189,9 @@ namespace Deltares
 			directionReliability->Threshold = threshold;
 
 			#pragma omp parallel for
-			for (int i = 0; i < samples.size(); i++)
+			for (int i = 0; i < (int)samples.size(); i++)
 			{
+				samples[i]->threadId = omp_get_thread_num();
 				// retain previous results from model if running in a proxy model environment
 				if (modelRunner->Settings->ProxySettings->IsProxyModel && previousResults.contains(samples[i]->IterationIndex))
 				{

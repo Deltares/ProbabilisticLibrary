@@ -1,12 +1,13 @@
 #include "ConditionalWeibullDistribution.h"
 
+#include <cmath>
+
 #include "../StandardNormal.h"
 #include "../StochastProperties.h"
-#include <cmath>
-#include <numbers>
-
+#include "../../Math/NumericSupport.h"
+#include "../../Math/RootFinders/BisectionRootFinder.h"
 #include "DistributionFitter.h"
-#include "WeibullDistribution.h"
+
 
 namespace Deltares
 {
@@ -14,52 +15,55 @@ namespace Deltares
 	{
 		void ConditionalWeibullDistribution::initialize(std::shared_ptr<StochastProperties> stochast, std::vector<double> values)
 		{
-			throw Deltares::Reliability::probLibException("not implemented");
+            // not supported
 		}
 
 		bool ConditionalWeibullDistribution::isValid(std::shared_ptr<StochastProperties> stochast)
 		{
-			return stochast->Scale >= 0 && stochast->Shape >= 0;
+			return stochast->Scale > 0 && stochast->Shape > 0 && stochast->ShapeB > 0;
 		}
 
 		bool ConditionalWeibullDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)
 		{
-			return stochast->Scale > 0;
+			return isValid(stochast);
 		}
 
 		double ConditionalWeibullDistribution::getMean(std::shared_ptr<StochastProperties> stochast)
 		{
-			return this->getMeanByIteration(stochast);
+			return getMeanByIteration(stochast);
 		}
 
 		double ConditionalWeibullDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
 		{
-			return this->getDeviationByIteration(stochast);
+			return getDeviationByIteration(stochast);
 		}
 
 		double ConditionalWeibullDistribution::getXFromU(std::shared_ptr<StochastProperties> stochast, double u)
 		{
 			const double qMin = 1.0e-300;
-			double p; double q;
-			StandardNormal::getPQfromU(u, p, q);
 
-			if (q == 1.0)
+		    PQ pq = StandardNormal::getPQFromU(u);
+
+			if (pq.q == 1.0)
 			{
 				return stochast->Shift;
 			}
-			double f; // Exceedance frequency
-			if (q <= 3.34e-8)
+
+			double f; // Exceeding frequency
+
+			if (pq.q <= tresholdF)
 			{
-				f = std::max(q, qMin);
+				f = std::max(pq.q, qMin);
 			}
 			else
 			{
-				double pd = std::max(p, qMin);
+				double pd = std::max(pq.p, qMin);
 				f = -log(pd);
 			}
 
 			const double logF = std::log(f / stochast->ShapeB);
 			const double xlog = std::pow(stochast->Shift / stochast->Scale, stochast->Shape) - logF;
+			if (xlog <= 0.0) return 0.0;
 			const double xScale = pow(xlog, 1.0 / stochast->Shape);
 
 			return xScale * stochast->Scale;
@@ -67,38 +71,88 @@ namespace Deltares
 
 		double ConditionalWeibullDistribution::getUFromX(std::shared_ptr<StochastProperties> stochast, double x)
 		{
-			throw Deltares::Reliability::probLibException("not implemented");
+			x /= stochast->Scale;
+			if (x <= 0.0) return -StandardNormal::BetaMax;
+			double xlog = pow(x, stochast->Shape);
+			double logF = std::pow(stochast->Shift / stochast->Scale, stochast->Shape) - xlog;
+			double f = stochast->ShapeB * exp(logF);
+			double u;
+			if (f < tresholdF)
+			{
+				u = StandardNormal::getUFromQ(f);
+			}
+			else
+			{
+				double pd = exp(-f);
+				u = StandardNormal::getUFromP(pd);
+			}
+			return u;
 		}
 
 		double ConditionalWeibullDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)
 		{
-			throw Deltares::Reliability::probLibException("not implemented");
+            // see: https://issuetracker.deltares.nl/secure/attachment/169141/ddx_cdf.pdf
+			double C = -stochast->ShapeB * std::exp(std::pow(stochast->Shift / stochast->Scale, stochast->Shape));
+			double S = stochast->Shape / stochast->Scale;
+			double expMinsx = std::exp(-S * x);
+			double pdf = -S * C * std::exp(C * expMinsx) * expMinsx;
+			return pdf;
 		}
 
 		double ConditionalWeibullDistribution::getCDF(std::shared_ptr<StochastProperties> stochast, double x)
 		{
-			throw Deltares::Reliability::probLibException("not implemented");
+			double u = getUFromX(stochast, x);
+			return StandardNormal::getPFromU(u);
 		}
 
 		void ConditionalWeibullDistribution::setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation)
 		{
-			throw Deltares::Reliability::probLibException("not implemented");
-		}
+            if (stochast->Shape != 1.0 || stochast->ShapeB != 1.0)
+            {
+                std::unique_ptr<Numeric::BisectionRootFinder> bisection = std::make_unique<Numeric::BisectionRootFinder>();
+
+                Distribution* distribution = this;
+
+                Numeric::RootFinderMethod method = [stochast, distribution](double s)
+                {
+                    stochast->Scale = s;
+                    return distribution->getMean(stochast);
+                };
+
+                double minStart = 0.5 * stochast->Scale;
+                double maxStart = 1.5 * stochast->Scale;
+
+                stochast->Scale = bisection->CalculateValue(minStart, maxStart, mean, 0.00001, method);
+            }
+        }
 
 		void ConditionalWeibullDistribution::setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
 		{
-			throw Deltares::Reliability::probLibException("not implemented");
-		}
+            setXAtUByIteration(stochast, x, u, constantType);
+        }
 
 		void ConditionalWeibullDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values)
 		{
-			throw Deltares::Reliability::probLibException("not implemented");
-		}
+            stochast->Shift = this->getFittedMinimum(values);
+
+		    std::shared_ptr<DistributionFitter> fitter = std::make_shared<DistributionFitter>();
+
+            std::vector<double> minValues = { 0.5, 0.5, 0.5 };
+            std::vector<double> maxValues = { 1.5, 1.5, 1.5 };
+            std::vector<double> initValues = { 1.0, 1.0, 1.0 };
+            std::vector<DistributionPropertyType> properties = { Scale, Shape, ShapeB };
+            std::vector<double> parameters = fitter->fitByLogLikelihood(values, this, stochast, minValues, maxValues, initValues, properties);
+
+            stochast->Scale = std::max(0.0, parameters[0]);
+            stochast->Shape = std::max(0.0, parameters[1]);
+            stochast->ShapeB = std::max(0.0, parameters[2]);
+        }
 
 		std::vector<double> ConditionalWeibullDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)
 		{
-			throw Deltares::Reliability::probLibException("not implemented");
-		}
+            std::vector<double> specialPoints{ stochast->Shift };
+            return specialPoints;
+        }
 	}
 }
 

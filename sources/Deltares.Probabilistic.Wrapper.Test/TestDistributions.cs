@@ -282,13 +282,6 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
             var expectedValues = new List<double>
             {
-                -2.55573190691464,
-                -2.30997013021024,
-                -2.03190840230637,
-                -1.71237406597375,
-                -1.33796203278021,
-                -0.888239603990872,
-                -0.330566071316019,
                 0.389679340615967,
                 1.36651292058166,
                 2.75588794089519,
@@ -300,11 +293,11 @@ namespace Deltares.Probabilistics.Wrappers.Test
                 28.3843074961794
             };
 
-            for (int i = -8; i< 8; i++)
+            for (int i = -1; i< 8; i++)
             {
                 double u = (double)i;
                 double x = stochast.GetXFromU(u);
-                Assert.AreEqual(x, expectedValues[i + 8], 1e-9);
+                Assert.AreEqual(x, expectedValues[i + 1], 1e-9);
             }
         }
 

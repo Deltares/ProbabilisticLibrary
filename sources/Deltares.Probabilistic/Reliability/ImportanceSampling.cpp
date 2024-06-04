@@ -1,5 +1,4 @@
 #include "ImportanceSampling.h"
-#include <iostream>
 #include <vector>
 #include <cmath>
 #if __has_include(<format>)
@@ -252,7 +251,7 @@ namespace Deltares
 #ifdef __cpp_lib_format
 					std::string clusterIdentifier = std::format("Cluster {0:}", i + 1);
 #else
-					std::string clusterIdentifier = "Cluster";
+					std::string clusterIdentifier = "Cluster " + std::to_string(i+1);
 #endif
 
 					double clusterBeta = Statistics::StandardNormal::getUFromQ(clusterResults[i]->ProbFailure);
