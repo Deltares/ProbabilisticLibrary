@@ -14,8 +14,10 @@ namespace Deltares.Probabilistics.Wrappers.Test
         {
             var project = ProjectBuilder.GetLinearProject();
 
-            project.ReliabilityMethod = new NumericalIntegration();
-            DesignPoint designPoint = project.GetDesignPoint();
+            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
+
+            Deltares.Reliability.Wrappers.NumericalIntegration numericalIntegration = new NumericalIntegration();
+            DesignPoint designPoint = numericalIntegration.GetDesignPoint(modelRunner);
 
             Assert.AreEqual(2.57, designPoint.Beta, margin);
             Assert.AreEqual(0.005, designPoint.ProbabilityFailure, margin / 10);
@@ -34,8 +36,10 @@ namespace Deltares.Probabilistics.Wrappers.Test
         {
             var project = ProjectBuilder.GetInverseLinearProject();
 
-            project.ReliabilityMethod = new NumericalIntegration();
-            DesignPoint designPoint = project.GetDesignPoint();
+            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
+
+            NumericalIntegration numericalIntegration = new NumericalIntegration();
+            DesignPoint designPoint = numericalIntegration.GetDesignPoint(modelRunner);
 
             Assert.AreEqual(-2.57, designPoint.Beta, margin);
 
@@ -51,11 +55,12 @@ namespace Deltares.Probabilistics.Wrappers.Test
         {
             var project = ProjectBuilder.GetLinearProject();
 
-            project.Settings.MaxParallelProcesses = 4;
+            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
+            modelRunner.Settings.MaxParallelProcesses = 4;
 
-            project.ReliabilityMethod = new NumericalIntegration();
+            NumericalIntegration numericalIntegration = new NumericalIntegration();
 
-            DesignPoint designPoint = project.GetDesignPoint();
+            DesignPoint designPoint = numericalIntegration.GetDesignPoint(modelRunner);
 
             Assert.AreEqual(2.57, designPoint.Beta, margin);
 
@@ -68,16 +73,16 @@ namespace Deltares.Probabilistics.Wrappers.Test
         {
             var project = ProjectBuilder.GetLinearProject();
 
-            var numericalIntegration = new NumericalIntegration();
+            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
+
+            NumericalIntegration numericalIntegration = new NumericalIntegration();
 
             for (int i = 0; i < project.Stochasts.Count; i++)
             {
                 numericalIntegration.Settings.StochastSettings.Add(new StochastSettings { UMin = 1, Stochast = project.Stochasts[i] });
             }
 
-            project.ReliabilityMethod = numericalIntegration;
-
-            DesignPoint designPoint = project.GetDesignPoint();
+            DesignPoint designPoint = numericalIntegration.GetDesignPoint(modelRunner);
 
             Assert.AreEqual(2.57, designPoint.Beta, margin);
         }
@@ -87,8 +92,10 @@ namespace Deltares.Probabilistics.Wrappers.Test
         {
             var project = ProjectBuilder.GetLoadStrengthProject();
 
-            project.ReliabilityMethod = new NumericalIntegration();
-            DesignPoint designPoint = project.GetDesignPoint();
+            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
+
+            NumericalIntegration numericalIntegration = new NumericalIntegration();
+            DesignPoint designPoint = numericalIntegration.GetDesignPoint(modelRunner);
 
             Assert.AreEqual(1.43, designPoint.Beta, margin);
         }
@@ -98,8 +105,10 @@ namespace Deltares.Probabilistics.Wrappers.Test
         {
             var project = ProjectBuilder.GetLoadStrengthSurvivedProject();
 
-            project.ReliabilityMethod = new NumericalIntegration();
-            DesignPoint designPoint = project.GetDesignPoint();
+            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
+
+            NumericalIntegration numericalIntegration = new NumericalIntegration();
+            DesignPoint designPoint = numericalIntegration.GetDesignPoint(modelRunner);
 
             Assert.AreEqual(1.66, designPoint.Beta, margin);
         }

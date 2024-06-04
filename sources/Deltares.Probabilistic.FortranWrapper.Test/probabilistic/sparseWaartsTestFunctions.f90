@@ -8,7 +8,8 @@ module sparseWaartsTestFunctions
     private
     public :: initSparseWaartsTestsFunctions, cleanUpWaartsTestsFunctions, &
                 updateCounter, &
-                zLimitState25QuadraticTermsSparse, zOblateSpheroid
+                zLimitState25QuadraticTermsSparse, zOblateSpheroid, &
+                zLinearResistanceSolicitation, simpleZ, blighZ
 
     integer,       allocatable, target :: counter(:)
     real(kind=wp), allocatable, target :: xFull(:,:)
@@ -80,6 +81,83 @@ function zOblateSpheroid( xDense, compSetting, ierr ) result(z) bind(c)
 
 end function zOblateSpheroid
 
+!> Linear resistance solicitation function with generic interface
+function zLinearResistanceSolicitation( xDense,  compSetting, ierr ) result(z) bind(c)
+
+    real(kind=wp),            intent(inout) :: xDense(*)
+    type(computationSetting), intent(in   ) :: compSetting
+    type(tError),             intent(inout) :: ierr
+    real(kind=wp)                           :: z
+
+    real(kind=wp), pointer                  :: x(:)
+    integer      , pointer                  :: invocationCount
+
+    ierr%icode = 0
+    if (compSetting%designPointSetting == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
+
+    x => xFull(:, compSetting%threadId+1)
+    invocationCount => counter(compSetting%threadId+1)
+
+    call copyDense2Full(xDense, x)
+    z = linearResistanceSolicitation( x(1), x(2) )
+
+    invocationCount = invocationCount + 1
+
+end function zLinearResistanceSolicitation
+
+!> Simple z function: valueB - u1 - u2, where u1 and u2 are standard normally distributed, and where beta = 4
+function simpleZ( xDense, compSetting, ierr ) result(z) bind(c)
+
+    real(kind=wp),            intent(inout) :: xDense(*)
+    type(computationSetting), intent(in   ) :: compSetting
+    type(tError),             intent(inout) :: ierr
+    real(kind=wp)                           :: z
+
+    real(kind=wp), pointer                  :: x(:)
+    integer      , pointer                  :: invocationCount
+
+    ierr%iCode = 0
+    if (compSetting%designPointSetting == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
+
+    x => xFull(:, compSetting%threadId+1)
+    invocationCount => counter(compSetting%threadId+1)
+
+    call copyDense2Full(xDense, x)
+    z = simpleSystem ( x(1),  x(2), x(3))
+
+end function simpleZ
+
+function simpleSystem( x1, x2, valueB )
+
+    real (kind=wp), intent(in)   :: x1               !< input parameter x1
+    real (kind=wp), intent(in)   :: x2               !< input parameter x2
+    real (kind=wp), intent(in)   :: valueB           !< input parameter valueB
+    real (kind=wp)               :: simpleSystem     !< output parameter
+
+    simpleSystem = valueB - x1 - x2
+
+end function simpleSystem
+
+function blighZ( xDense, compSetting, ierr ) result(z) bind(c)
+
+    real(kind=wp),            intent(inout) :: xDense(*)
+    type(computationSetting), intent(in   ) :: compSetting
+    type(tError),             intent(inout) :: ierr
+    real(kind=wp)                           :: z
+
+    real(kind=wp), pointer                  :: x(:)
+    integer      , pointer                  :: invocationCount
+
+    ierr%icode = 0
+    if (compSetting%designPointSetting == designPointOutputTRUE) ierr%Message = ' '  ! avoid not used warning
+
+    x => xFull(:, compSetting%threadId+1)
+    invocationCount => counter(compSetting%threadId+1)
+
+    call copyDense2Full(xDense, x)
+    z = x(1) * x(2) / x (3) - x(4)
+
+end function blighZ
 
 end module sparseWaartsTestFunctions
 

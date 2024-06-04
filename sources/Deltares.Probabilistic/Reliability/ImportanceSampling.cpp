@@ -265,28 +265,22 @@ namespace Deltares
 			return designPoint;
 		}
 
-		double ImportanceSampling::getWeight(std::shared_ptr<Sample> modifiedSample, std::shared_ptr<Sample> sample, double dimensionality)
-		{
-			double pdf = getPDF(modifiedSample);
-			double pdfOriginal = getPDF(sample);
-
-			return dimensionality * pdf / pdfOriginal;
-		}
-
-		double ImportanceSampling::getPDF(std::shared_ptr<Sample> sample)
-		{
-			double sum = Numeric::NumericSupport::GetSquaredSum(sample->Values);
-
-			return getStandardNormalPDF2(sum);
-		}
-
-		double ImportanceSampling::getStandardNormalPDF2(double u2)
-		{
-			const double normalFactor = 1 / std::sqrt(2 * std::numbers::pi);
-			const double distance = -u2 / 2;
-
-			return normalFactor * std::exp(distance);
-		}
+        /// <summary>
+        /// return the weight for the sample.
+        /// This is given by: dimensionality * pdf / pdfOriginal, with pdf = normalFactor * std::exp(-SquaredSum/2).
+        /// Rewritten to avoid a possible division by zero.
+        /// </summary>
+        /// <param name="modifiedSample"> the scaled sample </param>
+        /// <param name="sample"> the original sample </param>
+        /// <param name="dimensionality"> constant dependent on the number of stochasts </param>
+        /// <returns> the weight </returns>
+        double ImportanceSampling::getWeight(std::shared_ptr<Sample> modifiedSample, std::shared_ptr<Sample> sample, double dimensionality)
+        {
+            double sumSquared = Numeric::NumericSupport::GetSquaredSum(modifiedSample->Values);
+            double sumSquaredOrg = Numeric::NumericSupport::GetSquaredSum(sample->Values);
+            double ratioPdf = std::exp( 0.5 * (sumSquaredOrg - sumSquared) );
+            return dimensionality * ratioPdf;
+        }
 
 		double ImportanceSampling::getDimensionality(std::vector<double> factors)
 		{
