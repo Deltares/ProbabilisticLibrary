@@ -3,6 +3,7 @@
 #include "../Utils/probLibException.h"
 #include "../Reliability/DesignPoint.h"
 #include "combiner.h"
+#include "DirectionalSamplingCombiner.h"
 #include "HohenbichlerCombiner.h"
 #include "ImportanceSamplingCombiner.h"
 
@@ -50,7 +51,7 @@ namespace Deltares
                 {
                 case CombinerType::ImportanceSampling: return std::make_shared<ImportanceSamplingCombiner>();
                 case CombinerType::Hohenbichler: return std::make_shared<HohenbichlerCombiner>();
-                case CombinerType::DirectionalSampling: throw probLibException("Directional sampling combiner not implemented yet");
+                case CombinerType::DirectionalSampling: return std::make_shared<DirectionalSamplingCombiner>();
                 default: throw probLibException("Combiner type");
                 }
             }

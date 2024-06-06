@@ -20,7 +20,7 @@ namespace Deltares
             std::vector<std::shared_ptr<Stochast>> stochasts = getUniqueStochasts(designPoints);
 
             // create the model from design points
-            const std::shared_ptr<CombinedDesignPointModel> model = getModel(combineAndOr::combAnd, nullptr, designPoints, stochasts, selfCorrelationMatrix);
+            const std::shared_ptr<CombinedDesignPointModel> model = getModel(combineMethodType, nullptr, designPoints, stochasts, selfCorrelationMatrix);
 
             const std::shared_ptr<Project> project = getProject(model, correlationMatrix, selfCorrelationMatrix);
 

@@ -199,6 +199,19 @@ namespace Deltares
             }
         }
 
+        bool CombinedDesignPointModel::canCalculateBetaDirection()
+        {
+            for (std::shared_ptr<DesignPointModel> designPointModel : this->designPointModels)
+            {
+                if (designPointModel->designPoint->Beta <= 0)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         double CombinedDesignPointModel::getBetaDirection(std::shared_ptr<ModelSample> sample)
         {
             if (this->combineType == combineAndOr::combOr)
