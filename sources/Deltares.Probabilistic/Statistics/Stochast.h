@@ -32,7 +32,12 @@ namespace Deltares
 			/**
 			 * \brief Default constructor
 			 */
-			Stochast();
+            Stochast();
+
+            ~Stochast()
+            {
+                StochastCount--;
+            }
 
 			/**
 			 * \brief Constructor with distribution type and initial values
@@ -267,6 +272,8 @@ namespace Deltares
 			 * \brief In case of a variable stochast, the interpolation table to convert from x-value of the other stochast to the stochastic parameters of this stochast
 			 */
 			std::shared_ptr<VariableStochastValuesSet> ValueSet = std::make_shared<VariableStochastValuesSet>();
+
+            inline static int StochastCount = 0;
 		};
 	}
 }
