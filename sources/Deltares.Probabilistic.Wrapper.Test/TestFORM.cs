@@ -2,7 +2,7 @@
 using Deltares.Reliability.Wrappers;
 using NUnit.Framework;
 
-namespace Deltares.Probabilistics.Wrappers.Test
+namespace Deltares.Probabilistic.Wrapper.Test
 {
     [TestFixture]
     public class TestFORM

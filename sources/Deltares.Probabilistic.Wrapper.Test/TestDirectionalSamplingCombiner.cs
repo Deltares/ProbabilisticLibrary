@@ -1,14 +1,16 @@
 ﻿using System.Collections.Generic;
 using Deltares.Reliability.Wrappers;
+using Deltares.Models.Wrappers;
 using NUnit.Framework;
+using System.Linq;
 using Deltares.Statistics.Wrappers;
 
 namespace Deltares.Probabilistic.Wrapper.Test
 {
     [TestFixture]
-    public class TestImportanceSamplingCombiner
+    public class TestDirectionalSamplingCombiner
     {
-        private const double margin = 0.01;
+        private const double margin = 0.05;
 
         [Test]
         public void TestIndependentSeries()
@@ -20,7 +22,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             List<DesignPoint> designPoints = new List<DesignPoint> { dp1, dp2 };
 
-            DesignPointCombiner combiner = new DesignPointCombiner { CombinerType = CombinerType.ImportanceSampling };
+            DesignPointCombiner combiner = new DesignPointCombiner { CombinerType = CombinerType.DirectionalSampling };
 
             DesignPoint combined = combiner.Combine(CombinationType.OneFails, designPoints);
 
@@ -38,7 +40,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             List<DesignPoint> designPoints = new List<DesignPoint> { dp1, dp2, dp3 };
 
-            DesignPointCombiner combiner = new DesignPointCombiner { CombinerType = CombinerType.ImportanceSampling };
+            DesignPointCombiner combiner = new DesignPointCombiner { CombinerType = CombinerType.DirectionalSampling };
 
             DesignPoint combined = combiner.Combine(CombinationType.OneFails, designPoints);
 
@@ -55,7 +57,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             List<DesignPoint> designPoints = new List<DesignPoint> { dp1, dp2 };
 
-            DesignPointCombiner combiner = new DesignPointCombiner { CombinerType = CombinerType.ImportanceSampling };
+            DesignPointCombiner combiner = new DesignPointCombiner { CombinerType = CombinerType.DirectionalSampling };
 
             DesignPoint combined = combiner.Combine(CombinationType.AllFail, designPoints);
 
@@ -73,7 +75,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             List<DesignPoint> designPoints = new List<DesignPoint> { dp1, dp2, dp3 };
 
-            DesignPointCombiner combiner = new DesignPointCombiner { CombinerType = CombinerType.ImportanceSampling };
+            DesignPointCombiner combiner = new DesignPointCombiner { CombinerType = CombinerType.DirectionalSampling };
 
             DesignPoint combined = combiner.Combine(CombinationType.AllFail, designPoints);
 

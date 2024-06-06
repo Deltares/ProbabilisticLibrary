@@ -19,8 +19,6 @@ namespace Deltares
         class ImportanceSamplingCombiner : public Combiner
         {
         public:
-            std::shared_ptr<DesignPoint> CombineDesignPoints(const std::vector<std::shared_ptr<DesignPoint>>& designPoints, const std::vector<double>& rho, const combineAndOr cmbType) override;
-
             /**
              * \brief Combines a number of design points
              * \param combineMethodType Series (or-combination) or Parallel (and-combination) combination type

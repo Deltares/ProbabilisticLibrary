@@ -27,11 +27,6 @@ namespace Deltares
         using namespace Deltares::Statistics;
         using namespace Deltares::Reliability;
 
-        std::shared_ptr<DesignPoint> ImportanceSamplingCombiner::CombineDesignPoints(const std::vector<std::shared_ptr<DesignPoint>>& designPoints, const std::vector<double>& rho, const combineAndOr cmbType)
-        {
-            return nullptr;
-        }
-
         std::shared_ptr<DesignPoint> ImportanceSamplingCombiner::combineDesignPoints(combineAndOr combineMethodType, std::vector<std::shared_ptr<DesignPoint>>& designPoints, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix, std::shared_ptr<ProgressIndicator> progress)
         {
             constexpr double invertProbability = 0.1;

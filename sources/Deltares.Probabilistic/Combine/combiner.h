@@ -19,8 +19,6 @@ namespace Deltares
         class Combiner
         {
         public:
-            virtual std::shared_ptr<DesignPoint> CombineDesignPoints(const std::vector<std::shared_ptr<DesignPoint>>& designPoints, const std::vector<double>& rho, const combineAndOr cmbType) = 0;
-
             /**
              * \brief Combines a number of design points
              * \param combineMethodType Series (or-combination) or Parallel (and-combination) combination type
