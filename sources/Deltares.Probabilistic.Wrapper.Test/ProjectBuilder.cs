@@ -5,9 +5,8 @@ using System.Threading.Tasks;
 using Deltares.Statistics.Wrappers;
 using Deltares.Models.Wrappers;
 using Deltares.Reliability.Wrappers;
-using NUnit.Framework;
 
-namespace Deltares.Probabilistics.Wrappers.Test
+namespace Deltares.Probabilistic.Wrapper.Test
 {
     public class ProgressHolder
     {

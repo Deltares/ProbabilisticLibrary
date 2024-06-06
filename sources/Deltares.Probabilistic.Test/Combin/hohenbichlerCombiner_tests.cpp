@@ -25,6 +25,12 @@ namespace Deltares
                 const int nElements = 20; // Number of elements
                 const size_t nStochasts = 4;
 
+                std::vector< std::shared_ptr<Stochast>> stochasts;
+                for (size_t i = 0; i < nStochasts; i++)
+                {
+                    stochasts.push_back(std::make_shared<Stochast>());
+                }
+
                 auto CrossSection = alphaBeta(5.0, { 0.6, sqrt(0.5 - 0.36), 0.6, sqrt(0.5 - 0.36) });
                 auto rhoXK = vector1D({ 0.5, 0.5, 0.2, 0.2 });
                 auto dXK = vector1D({ 500.0, 300.0, 500.0, 300.0 });
@@ -45,18 +51,22 @@ namespace Deltares
                     {
                         auto alpha = std::make_shared<StochastPointAlpha>();
                         alpha->Alpha = section.first.getAlphaI(j);
+                        alpha->Stochast = stochasts[j];
                         dp->Alphas.push_back(alpha);
                     }
                     Elements.push_back(dp);
                 }
 
                 auto hh = HohenbichlerCombiner();
-                auto rho = std::vector<double>(nStochasts);
+
+
+                auto rho = std::make_shared<SelfCorrelationMatrix>();
                 for (size_t i = 0; i < nStochasts; i++)
                 {
-                    rho[i] = rhoXK(i);
+                    rho->setSelfCorrelation(Elements[0]->Alphas[i]->Stochast, rhoXK(i));
                 }
-                auto cmbDp = hh.CombineDesignPoints(Elements, rho, combineAndOr::combOr);
+
+                auto cmbDp = hh.combineDesignPoints(combineAndOr::combOr, Elements, rho);
 
                 EXPECT_NEAR(cmbDp->Beta, ref.getBeta(), margin);
                 for (size_t i = 0; i < nStochasts; i++)

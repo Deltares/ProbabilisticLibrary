@@ -1,5 +1,4 @@
 #pragma once
-#include "ICanCalculateBeta.h"
 #include "../../Deltares.Probabilistic/Model/ZModel.h"
 #include "../../Deltares.Probabilistic/Model/ModelRunner.h"
 #include "../../Deltares.Probabilistic/Model/Sample.h"
@@ -33,7 +32,6 @@ namespace Deltares
                 std::shared_ptr<Models::ZModel> getZModel();
                 ZLambda getZLambda();
                 ZMultipleLambda getZMultipleDelegate();
-                ZBetaLambda getZBetaLambda();
 
                 ZSampleDelegate^ zFunction = nullptr;
 
@@ -42,9 +40,6 @@ namespace Deltares
 
                 void invokeSample(std::shared_ptr<Models::ModelSample> sample);
                 void invokeMultipleSamples(std::vector<std::shared_ptr<Models::ModelSample>> samples);
-                double invokeBetaSample(std::shared_ptr<Models::ModelSample> sample, double beta);
-
-                ICanCalculateBeta^ directionModel = nullptr;
 
                 System::Collections::Generic::List<System::Runtime::InteropServices::GCHandle>^ handles = gcnew System::Collections::Generic::List<System::Runtime::InteropServices::GCHandle>();
 
@@ -132,9 +127,6 @@ namespace Deltares
                     shared->object->Settings = this->Settings->GetSettings();
                     return shared->object;
                 }
-
-            protected:
-                virtual void SetDirectionModel(ICanCalculateBeta^ directionModel);
             };
         }
     }

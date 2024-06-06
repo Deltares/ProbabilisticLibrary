@@ -10,11 +10,6 @@ namespace Deltares
         using namespace Deltares::Statistics;
         using namespace Deltares::Reliability;
 
-        std::shared_ptr<DesignPoint> DirectionalSamplingCombiner::CombineDesignPoints(const std::vector<std::shared_ptr<DesignPoint>>& designPoints, const std::vector<double>& rho, const combineAndOr cmbType)
-        {
-            return nullptr;
-        }
-
         std::shared_ptr<DesignPoint> DirectionalSamplingCombiner::combineDesignPoints(combineAndOr combineMethodType, std::vector<std::shared_ptr<DesignPoint>>& designPoints, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix, std::shared_ptr<ProgressIndicator> progress)
         {
             std::vector<std::shared_ptr<Stochast>> stochasts = getUniqueStochasts(designPoints);

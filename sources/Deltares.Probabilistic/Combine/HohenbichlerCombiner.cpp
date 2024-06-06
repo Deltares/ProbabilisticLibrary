@@ -5,8 +5,26 @@ namespace Deltares
 {
     namespace Reliability
     {
-        std::shared_ptr<DesignPoint> HohenbichlerCombiner::CombineDesignPoints(const std::vector<std::shared_ptr<DesignPoint>>& designPoints,
-            const std::vector<double>& r, const combineAndOr cmbType)
+        std::shared_ptr<DesignPoint> HohenbichlerCombiner::combineDesignPoints(combineAndOr combineMethodType, std::vector<std::shared_ptr<DesignPoint>>& designPoints, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix, std::shared_ptr<ProgressIndicator> progress)
+        {
+            std::vector<double> rho;
+
+            for (size_t i = 0; i < designPoints[0]->Alphas.size(); i++)
+            {
+                if (selfCorrelationMatrix != nullptr)
+                {
+                    rho.push_back(selfCorrelationMatrix->getSelfCorrelation(designPoints[0]->Alphas[i]->Stochast));
+                }
+                else
+                {
+                    rho.push_back(1.0);
+                }
+            }
+
+            return this->CombineDesignPoints(designPoints, rho, combineMethodType);
+        }
+
+        std::shared_ptr<DesignPoint> HohenbichlerCombiner::CombineDesignPoints(const std::vector<std::shared_ptr<DesignPoint>>& designPoints, const std::vector<double>& r, const combineAndOr cmbType)
         {
             auto nStoch = designPoints[0]->Alphas.size();
             elements elm;
