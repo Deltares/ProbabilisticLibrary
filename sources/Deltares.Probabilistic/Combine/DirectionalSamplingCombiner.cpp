@@ -15,14 +15,14 @@ namespace Deltares
             return nullptr;
         }
 
-        std::shared_ptr<DesignPoint> DirectionalSamplingCombiner::combineDesignPoints(combineAndOr combineMethodType, std::vector<std::shared_ptr<DesignPoint>>& designPoints, std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix, std::shared_ptr<ProgressIndicator> progress)
+        std::shared_ptr<DesignPoint> DirectionalSamplingCombiner::combineDesignPoints(combineAndOr combineMethodType, std::vector<std::shared_ptr<DesignPoint>>& designPoints, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix, std::shared_ptr<ProgressIndicator> progress)
         {
             std::vector<std::shared_ptr<Stochast>> stochasts = getUniqueStochasts(designPoints);
 
             // create the model from design points
             const std::shared_ptr<CombinedDesignPointModel> model = getModel(combineMethodType, nullptr, designPoints, stochasts, selfCorrelationMatrix);
 
-            const std::shared_ptr<Project> project = getProject(model, correlationMatrix, selfCorrelationMatrix);
+            const std::shared_ptr<Project> project = getProject(model, selfCorrelationMatrix);
 
             const std::shared_ptr<DirectionalSampling> directionalSampling = std::make_shared<DirectionalSampling>();
             fillSettings(model, directionalSampling->Settings);

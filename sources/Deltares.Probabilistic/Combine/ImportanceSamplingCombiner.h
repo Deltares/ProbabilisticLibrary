@@ -25,12 +25,11 @@ namespace Deltares
              * \brief Combines a number of design points
              * \param combineMethodType Series (or-combination) or Parallel (and-combination) combination type
              * \param designPoints Design points to be combined
-             * \param correlationMatrix Correlation matrix (to be removed?)
              * \param selfCorrelationMatrix Administration of correlations between different design points
              * \param progress Progress indicator (optional)
              * \return Design point resembling the combined reliability and alpha values
              */
-            std::shared_ptr<DesignPoint> combineDesignPoints(combineAndOr combineMethodType, std::vector<std::shared_ptr<DesignPoint>>& designPoints, std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix = nullptr, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix = nullptr, std::shared_ptr<ProgressIndicator> progress = nullptr) override;
+            std::shared_ptr<DesignPoint> combineDesignPoints(combineAndOr combineMethodType, std::vector<std::shared_ptr<DesignPoint>>& designPoints, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix = nullptr, std::shared_ptr<ProgressIndicator> progress = nullptr) override;
         private:
             /**
              * \brief Approximates the probability by assuming design points are independent
@@ -50,16 +49,14 @@ namespace Deltares
              * \brief Combines design points with possibly inverted design points
              * \param combineMethodType Series (or-combination) or Parallel (and-combination) combination type
              * \param designPoints Design points to be combined
-             * \param correlationMatrix Correlation matrix (to be removed?)
              * \param selfCorrelationMatrix Administration of correlations between different design points
              * \param progress Progress indicator (optional)
              * \return Design point resembling the combined reliability and alpha values
              */
-            std::shared_ptr<DesignPoint> combineDesignPointsAdjusted(combineAndOr combineMethodType, std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix, std::shared_ptr<ProgressIndicator> progress, std::vector<std::shared_ptr<DesignPoint>>& designPoints);
+            std::shared_ptr<DesignPoint> combineDesignPointsAdjusted(combineAndOr combineMethodType, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix, std::shared_ptr<ProgressIndicator> progress, std::vector<std::shared_ptr<DesignPoint>>& designPoints);
 
             /**
              * \brief Calculates the probability that a sample does not fail for previous design points when it fails to the current design point
-             * \param correlationMatrix Correlation matrix (to be removed?)
              * \param selfCorrelationMatrix Administration of correlations between different design points
              * \param currentDesignPoint Current design point
              * \param previousDesignPoints Previous design point
@@ -68,18 +65,17 @@ namespace Deltares
              * \param progress Progress indicator (optional)
              * \return Probability
              */
-            std::shared_ptr<DesignPoint> getSeriesProbability(std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix, std::shared_ptr<DesignPoint> currentDesignPoint, std::vector<std::shared_ptr<DesignPoint>>& previousDesignPoints, std::shared_ptr<DesignPoint> startPoint, std::vector<std::shared_ptr<Statistics::Stochast>>& stochasts, std::shared_ptr<ProgressIndicator> progress);
+            std::shared_ptr<DesignPoint> getSeriesProbability(std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix, std::shared_ptr<DesignPoint> currentDesignPoint, std::vector<std::shared_ptr<DesignPoint>>& previousDesignPoints, std::shared_ptr<DesignPoint> startPoint, std::vector<std::shared_ptr<Statistics::Stochast>>& stochasts, std::shared_ptr<ProgressIndicator> progress);
 
             /**
              * \brief Calculates the design point when combination type is parallel
-             * \param correlationMatrix Correlation matrix (to be removed?)
              * \param selfCorrelationMatrix Administration of correlations between different design points
              * \param previousDesignPoints Previous design point
              * \param stochasts All stochasts
              * \param progress Progress indicator (optional)
              * \return Design point
              */
-            std::shared_ptr<DesignPoint> getParallelProbability(std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix, std::vector<std::shared_ptr<DesignPoint>>& previousDesignPoints, std::vector<std::shared_ptr<Statistics::Stochast>>& stochasts, std::shared_ptr<ProgressIndicator> progress);
+            std::shared_ptr<DesignPoint> getParallelProbability(std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix, std::vector<std::shared_ptr<DesignPoint>>& previousDesignPoints, std::vector<std::shared_ptr<Statistics::Stochast>>& stochasts, std::shared_ptr<ProgressIndicator> progress);
 
             /**
              * \brief Fills the settings for series algorithm
