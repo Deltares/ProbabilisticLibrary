@@ -34,14 +34,14 @@ namespace Deltares
              * \brief Combines a number of design points
              * \param combineMethodType Identifies series (or) or parallel (and) combination
              * \param designPoints Design points to be combined
-             * \param correlationMatrix Correlation matrix (optional)
+             * \param selfCorrelationMatrix Defines auto correlations (optional)
              * \param progress Progress indicator (optional)
              * \return Combined design point
              */
-            std::shared_ptr<DesignPoint> combineDesignPoints(combineAndOr combineMethodType, std::vector<std::shared_ptr<DesignPoint>>& designPoints, std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix = nullptr, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix = nullptr, std::shared_ptr<ProgressIndicator> progress = nullptr)
+            std::shared_ptr<DesignPoint> combineDesignPoints(combineAndOr combineMethodType, std::vector<std::shared_ptr<DesignPoint>>& designPoints, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix = nullptr, std::shared_ptr<ProgressIndicator> progress = nullptr)
             {
                 const std::shared_ptr<Combiner> combiner = getCombiner();
-                return combiner->combineDesignPoints(combineMethodType, designPoints, correlationMatrix, selfCorrelationMatrix, progress);
+                return combiner->combineDesignPoints(combineMethodType, designPoints, selfCorrelationMatrix, progress);
             }
 
         private:

@@ -25,12 +25,11 @@ namespace Deltares
              * \brief Combines a number of design points
              * \param combineMethodType Series (or-combination) or Parallel (and-combination) combination type
              * \param designPoints Design points to be combined
-             * \param correlationMatrix Correlation matrix (to be removed?)
              * \param selfCorrelationMatrix Administration of correlations between different design points
              * \param progress Progress indicator (optional)
              * \return Design point resembling the combined reliability and alpha values
              */
-            virtual std::shared_ptr<DesignPoint> combineDesignPoints(combineAndOr combineMethodType, std::vector<std::shared_ptr<DesignPoint>>& designPoints, std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix, std::shared_ptr<ProgressIndicator> progress) = 0;
+            virtual std::shared_ptr<DesignPoint> combineDesignPoints(combineAndOr combineMethodType, std::vector<std::shared_ptr<DesignPoint>>& designPoints, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix, std::shared_ptr<ProgressIndicator> progress) = 0;
         protected:
             /**
              * \brief Gets all stochasts in a number of design points in the design point without doubling
@@ -57,7 +56,7 @@ namespace Deltares
              * \param selfCorrelationMatrix Self correlation administration
              * \return Project
              */
-            std::shared_ptr<Project> getProject(std::shared_ptr<Reliability::CombinedDesignPointModel> model, std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix);
+            std::shared_ptr<Project> getProject(std::shared_ptr<Reliability::CombinedDesignPointModel> model, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix);
 
         };
     };

@@ -60,7 +60,7 @@ namespace Deltares
         }
 
 
-        std::shared_ptr<Project> Combiner::getProject(std::shared_ptr<Reliability::CombinedDesignPointModel> model, std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix)
+        std::shared_ptr<Project> Combiner::getProject(std::shared_ptr<Reliability::CombinedDesignPointModel> model, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix)
         {
             // create project
             std::shared_ptr<Project> project = std::make_shared<Project>();
@@ -78,18 +78,6 @@ namespace Deltares
             }
 
             project->correlationMatrix = model->getCorrelationMatrix(selfCorrelationMatrix);
-
-            if (correlationMatrix != nullptr)
-            {
-                for (size_t i = 0; i < project->stochasts.size(); i++)
-                {
-                    for (size_t j = i + 1; j < project->stochasts.size(); j++)
-                    {
-                        const double correlationValue = correlationMatrix->GetCorrelation(model->stochasts[i], model->stochasts[j]);
-                        project->correlationMatrix->SetCorrelation(model->standardNormalStochasts[i], model->standardNormalStochasts[j], correlationValue);
-                    }
-                }
-            }
 
             ZLambda zFunction = [model](std::shared_ptr<ModelSample> sample)
             {
