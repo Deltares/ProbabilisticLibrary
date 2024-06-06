@@ -83,7 +83,7 @@ namespace Deltares
             {
                 for (size_t i = 0; i < project->stochasts.size(); i++)
                 {
-                    for (size_t j = i + 1; i < project->stochasts.size(); j++)
+                    for (size_t j = i + 1; j < project->stochasts.size(); j++)
                     {
                         const double correlationValue = correlationMatrix->GetCorrelation(model->stochasts[i], model->stochasts[j]);
                         project->correlationMatrix->SetCorrelation(model->standardNormalStochasts[i], model->standardNormalStochasts[j], correlationValue);
@@ -98,12 +98,15 @@ namespace Deltares
 
             std::shared_ptr<ZModel> zModel = std::make_shared<ZModel>(zFunction);
 
-            ZBetaLambda zBetaFunction = [model](std::shared_ptr<ModelSample> sample, double beta)
+            if (model->canCalculateBetaDirection())
             {
-                return model->getBetaDirection(sample);
-            };
+                ZBetaLambda zBetaFunction = [model](std::shared_ptr<ModelSample> sample, double beta)
+                {
+                    return model->getBetaDirection(sample);
+                };
 
-            zModel->setBetaLambda(zBetaFunction);
+                zModel->setBetaLambda(zBetaFunction);
+            }
 
             project->model = zModel;
 

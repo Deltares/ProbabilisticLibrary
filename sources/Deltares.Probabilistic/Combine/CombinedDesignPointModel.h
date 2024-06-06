@@ -70,6 +70,12 @@ namespace Deltares
             void calculate(std::shared_ptr<ModelSample> sample);
 
             /**
+             * \brief Indicates whether the beta value in a direction can be calculated
+             * \return Indication
+             */
+            bool canCalculateBetaDirection();
+
+            /**
              * \brief Gets the length of of sample in the direction of a given sample where the calculation result is zero
              * \param sample Sample indicating direction
              * \return Length
