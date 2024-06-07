@@ -22,13 +22,13 @@ namespace Deltares
                     this->Z = evaluation->Z;
                     this->Iteration = evaluation->Iteration;
                     this->Weight = evaluation->Weight;
-                    this->Tag = NativeSupport::toManagedObject(evaluation->Tag);
+                    this->Tag = evaluation->Tag;
                 }
 
                 property int Iteration;
                 property double Z;
                 property double Weight;
-                property System::Object^ Tag;
+                property int Tag;
             };
         }
     }

@@ -56,44 +56,6 @@ namespace Deltares
 
                 return mValues;
             }
-
-            intptr_t NativeSupport::toNativeObject(System::Object^ object)
-            {
-                if (object == nullptr)
-                {
-                    return 0;
-                }
-                else
-                {
-                    System::Runtime::InteropServices::GCHandle handle = System::Runtime::InteropServices::GCHandle::Alloc(object);
-                    System::IntPtr parameter = static_cast<System::IntPtr>(handle);
-                    // do not free the handle, it is used to store the managed object
-
-                    void* p = parameter.ToPointer();
-                    intptr_t t = (intptr_t)p;
-
-                    return t;
-
-                }
-            }
-
-            System::Object^ NativeSupport::toManagedObject(intptr_t pointer)
-            {
-                if (pointer == 0)
-                {
-                    return nullptr;
-                }
-                else
-                {
-                    void* address = (void*)pointer;
-
-                    System::IntPtr^ parameter = gcnew System::IntPtr(address);
-                    System::Runtime::InteropServices::GCHandle handle = safe_cast<System::Runtime::InteropServices::GCHandle>(*parameter);
-
-                    System::Object^ object = handle.Target;
-                    return object;
-                }
-            }
         }
     }
 }

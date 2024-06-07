@@ -15,8 +15,7 @@ namespace Deltares
 			double Z = nan("");
 			double Weight = 1;
 			int Iteration = -1;
-
-			intptr_t Tag = 0;
+			int Tag = 0;
 		};
 	}
 }

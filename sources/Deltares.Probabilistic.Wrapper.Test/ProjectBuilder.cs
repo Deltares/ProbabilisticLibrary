@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using Deltares.Statistics.Wrappers;
 using Deltares.Models.Wrappers;
 using Deltares.Reliability.Wrappers;
-using NUnit.Framework;
+using Deltares.Utils.Wrappers;
 
-namespace Deltares.Probabilistics.Wrappers.Test
+namespace Deltares.Probabilistic.Wrapper.Test
 {
     public class ProgressHolder
     {
@@ -50,7 +50,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
     public class ZSampleOutput
     {
         private readonly ZDelegate function;
-        private List<ZFunctionOutput> outputs = new List<ZFunctionOutput>();
+        private readonly TagRepository tagRepository = new TagRepository();
 
         public ZSampleOutput(ZDelegate function)
         {
@@ -61,9 +61,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
         {
             ZFunctionOutput output = function.Invoke(sample.Values);
             sample.Z = output.Z;
-            sample.Tag = output;
-
-            outputs.Add(output);
+            sample.Tag = tagRepository.RegisterTag(output);
         }
     }
 
