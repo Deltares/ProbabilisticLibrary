@@ -351,10 +351,6 @@ subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, conv, convCri
         method%tolB            = probDb%method%adaptiveIS%varcoefffailure
         method%minSamples      = probDb%method%adaptiveIS%minimumsamples
         method%maxSamples      = probDb%method%adaptiveIS%maximumsamples
-        do i = 1, size(probDb%method%adaptiveIS%varianceFactor)
-            method%offsets(i)         = probDb%method%adaptiveIS%translation(i)
-            method%varianceFactors(i) = probDb%method%adaptiveIS%varianceFactor(i)
-        end do
         method%seed1           = probDb%method%adaptiveIS%seedPRNG
         method%seed2           = probDb%method%adaptiveIS%seedPRNG
         method%trialLoops      = probDb%method%adaptiveIS%nAdp
@@ -386,6 +382,13 @@ subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, conv, convCri
             iPoint(nStochActive) = i
         end if
     end do
+
+    if (method%methodId == methodAdaptiveImportanceSampling) then
+        do i = 1, nStochActive
+            method%offsets(i)         = probDb%method%adaptiveIS%translation(iPoint(i))
+            method%varianceFactors(i) = probDb%method%adaptiveIS%varianceFactor(iPoint(i))
+        end do
+    end if
 
     CpData%xHR = x
     CpData%nStochActive = nStochActive
