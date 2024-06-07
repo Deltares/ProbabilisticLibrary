@@ -197,6 +197,7 @@
     <ClInclude Include="Model\UConverter.h" />
     <ClInclude Include="Reliability\SubsetSimulationSettings.h" />
     <ClInclude Include="Reliability\SubsetSimulation.h" />
+    <ClInclude Include="Utils\TagRepository.h" />
     <ClInclude Include="Utils\NativeSupport.h" />
     <ClInclude Include="Model\ProgressIndicator.h" />
     <ClInclude Include="Model\RandomProvider.h" />
@@ -237,6 +238,7 @@
     <ClCompile Include="Model\UConverter.cpp" />
     <ClCompile Include="Reliability\SubsetSimulationSettings.cpp" />
     <ClCompile Include="Reliability\SubsetSimulation.cpp" />
+    <ClCompile Include="Utils\TagRepository.cpp" />
     <ClCompile Include="Utils\NativeSupport.cpp" />
     <ClCompile Include="Model\ProgressIndicator.cpp" />
     <ClCompile Include="Model\RandomProvider.cpp" />

@@ -25,12 +25,18 @@ namespace Deltares
                 ~Project() { this->!Project(); }
                 !Project()
                 {
+                    this->release();
+                    delete shared;
+                }
+
+                void release()
+                {
                     for (int i = 0; i < handles->Count; i++)
                     {
                         handles[i].Free();
                     }
 
-                    delete shared;
+                    handles->Clear();
                 }
 
                 System::Collections::Generic::List<Statistics::Wrappers::Stochast^>^ Stochasts = gcnew System::Collections::Generic::List<Statistics::Wrappers::Stochast^>();

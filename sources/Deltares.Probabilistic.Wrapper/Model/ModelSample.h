@@ -20,7 +20,6 @@ namespace Deltares
 			{
 			private:
 				array<double>^ values = nullptr;
-				System::Object^ tag = nullptr;
 				SharedPointerProvider<Models::ModelSample>* shared = nullptr;
 
 			public:
@@ -28,7 +27,6 @@ namespace Deltares
 				{
 					shared = new SharedPointerProvider(sample);
 					this->values = NativeSupport::toManaged(sample->Values);
-                    ModelSampleCount++;
                 }
 
 				ModelSample(array<double>^ values)
@@ -36,14 +34,12 @@ namespace Deltares
 					std::vector<double> nativeValues = NativeSupport::toNative(values);
 					shared = new SharedPointerProvider(new Models::ModelSample(nativeValues));
 					this->values = NativeSupport::toManaged(shared->object->Values);
-                    ModelSampleCount++;
 				}
 
                 ~ModelSample() { this->!ModelSample(); }
                 !ModelSample()
 				{
                     delete shared;
-				    ModelSampleCount--;
 				}
 
                 void SetNativeModelSample(const std::shared_ptr<Models::ModelSample> nativeModelSample)
@@ -128,23 +124,17 @@ namespace Deltares
 				}
 
                 /// <summary>
-                /// Additional object to be stored with the tag. IMPORTANT: Hold a reference to the tag !!!
+                /// Reference to an object to be attached to the sample
                 /// </summary>
-                property System::Object^ Tag
+                property int Tag
 				{
-					System::Object^ get()
+					int get()
 					{
-						if (tag == nullptr && shared->object->Tag != 0)
-						{
-							tag = NativeSupport::toManagedObject(shared->object->Tag);
-						}
-
-						return tag;
+						return shared->object->Tag;
 					}
-					void set(System::Object^ value)
+					void set(int value)
 					{
-						tag = value;
-						shared->object->Tag = NativeSupport::toNativeObject(value);
+                        shared->object->Tag = value;
 					}
 				}
 
@@ -152,12 +142,6 @@ namespace Deltares
 				{
 					return shared->object;
 				}
-
-                static int ModelSampleCount = 0;
-                static property int NativeModelSampleCount
-                {
-                    int get() { return Models::ModelSample::ModelSampleCount; }
-                }
             };
 		}
 	}

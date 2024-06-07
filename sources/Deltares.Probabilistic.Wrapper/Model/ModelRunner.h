@@ -6,6 +6,7 @@
 #include "../Statistics/CorrelationMatrix.h"
 #include "../Statistics/Stochast.h"
 #include "../Utils/SharedPointerProvider.h"
+#include "../Utils/TagRepository.h"
 #include "ProgressIndicator.h"
 #include "RunSettings.h"
 #include "ModelSample.h"
@@ -41,6 +42,8 @@ namespace Deltares
                 void invokeSample(std::shared_ptr<Models::ModelSample> sample);
                 void invokeMultipleSamples(std::vector<std::shared_ptr<Models::ModelSample>> samples);
 
+                Deltares::Utils::Wrappers::TagRepository^ tagRepository = gcnew TagRepository();
+
                 System::Collections::Generic::List<System::Runtime::InteropServices::GCHandle>^ handles = gcnew System::Collections::Generic::List<System::Runtime::InteropServices::GCHandle>();
 
             public:
@@ -48,11 +51,21 @@ namespace Deltares
                 ~ModelRunner() { this->!ModelRunner(); }
                 !ModelRunner()
                 {
+                    Release();
+                    delete shared;
+                }
+
+                /**
+                 * \brief Releases the allocated handles
+                 */
+                void Release()
+                {
                     for (int i = 0; i < handles->Count; i++)
                     {
                         handles[i].Free();
                     }
-                    delete shared;
+
+                    handles->Clear();
                 }
 
                 System::Collections::Generic::List<Stochast^>^ Stochasts = gcnew System::Collections::Generic::List<Stochast^>();
@@ -121,6 +134,16 @@ namespace Deltares
                 ModelSample^ GetModelSample(Sample^ sample);
 
                 array<double>^ GetOnlyVaryingValues(array<double>^ values);
+
+                int SetTag(System::Object^ object)
+                {
+                    return tagRepository->RegisterTag(object);
+                }
+
+                System::Object^ GetTag(int tag)
+                {
+                    return tagRepository->RetrieveTag(tag);
+                }
 
                 std::shared_ptr<Models::ModelRunner> GetModelRunner()
                 {

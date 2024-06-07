@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Deltares.Statistics.Wrappers;
 using Deltares.Models.Wrappers;
 using Deltares.Reliability.Wrappers;
+using Deltares.Utils.Wrappers;
 
 namespace Deltares.Probabilistic.Wrapper.Test
 {
@@ -49,7 +50,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
     public class ZSampleOutput
     {
         private readonly ZDelegate function;
-        private List<ZFunctionOutput> outputs = new List<ZFunctionOutput>();
+        private readonly TagRepository tagRepository = new TagRepository();
 
         public ZSampleOutput(ZDelegate function)
         {
@@ -60,9 +61,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             ZFunctionOutput output = function.Invoke(sample.Values);
             sample.Z = output.Z;
-            sample.Tag = output;
-
-            outputs.Add(output);
+            sample.Tag = tagRepository.RegisterTag(output);
         }
     }
 

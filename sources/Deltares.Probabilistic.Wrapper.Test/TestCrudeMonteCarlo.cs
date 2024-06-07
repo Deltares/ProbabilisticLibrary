@@ -527,8 +527,6 @@ namespace Deltares.Probabilistic.Wrapper.Test
             Assert.AreEqual(1157, designPoint.ReliabilityResults.Count);
             Assert.AreEqual(10001, designPoint.Evaluations.Count);
 
-            Assert.IsTrue(designPoint.Evaluations[0].Tag is ZFunctionOutput);
-
             WeakReference wr = new WeakReference(designPoint.Evaluations[0].Tag);
             GC.Collect();
             Assert.IsTrue(wr.IsAlive);
