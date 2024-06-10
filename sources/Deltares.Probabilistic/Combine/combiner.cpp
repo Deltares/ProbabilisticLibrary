@@ -68,6 +68,7 @@ namespace Deltares
             // set run settings with minimal overhead
             project->runSettings->SaveMessages = false;
             project->runSettings->SaveEvaluations = false;
+            project->runSettings->SaveConvergence = true;
             project->runSettings->MaxParallelProcesses = 1;
             project->runSettings->MaxChunkSize = 1000;
 
