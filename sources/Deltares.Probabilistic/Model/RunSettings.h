@@ -19,12 +19,22 @@ namespace Deltares
 			int MaxMessages = 1000;
 			MessageType LowestMessageType = MessageType::Warning;
 
-			std::shared_ptr<ProxySettings> ProxySettings = nullptr;
+			std::shared_ptr<ProxySettings> proxySettings = nullptr;
 
 			bool isValid()
 			{
 				return MaxParallelProcesses >= 1;
 			}
+
+            bool IsProxyModel()
+            {
+                bool isProxyModel = false;
+                if (proxySettings.get() != nullptr)
+                {
+                    isProxyModel = proxySettings->IsProxyModel;
+                }
+                return isProxyModel;
+            }
 		};
 	}
 }
