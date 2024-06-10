@@ -138,7 +138,10 @@ namespace Deltares
 					}
 				}
 
-				std::shared_ptr<Models::ModelSample> GetModelSample()
+                /// <summary>
+                /// Gets the native underlying object
+                /// </summary>
+                std::shared_ptr<Models::ModelSample> GetModelSample()
 				{
 					return shared->object;
 				}

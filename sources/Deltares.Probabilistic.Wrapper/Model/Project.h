@@ -25,7 +25,6 @@ namespace Deltares
                 ~Project() { this->!Project(); }
                 !Project()
                 {
-                    this->release();
                     delete shared;
                 }
 
@@ -43,6 +42,8 @@ namespace Deltares
                 Statistics::Wrappers::CorrelationMatrix^ CorrelationMatrix = gcnew Statistics::Wrappers::CorrelationMatrix();
 
                 ZSampleDelegate^ ZFunction = nullptr;
+
+                TagRepository^ TagRepository = nullptr;
 
                 Reliability::Wrappers::ReliabilityMethod^ ReliabilityMethod = nullptr;
 

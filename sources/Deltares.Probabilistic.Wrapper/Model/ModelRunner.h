@@ -12,6 +12,7 @@
 #include "RunSettings.h"
 #include "ModelSample.h"
 #include "Sample.h"
+#include "Evaluation.h"
 
 namespace Deltares
 {
@@ -52,16 +53,20 @@ namespace Deltares
                 System::Collections::Generic::List<System::Runtime::InteropServices::GCHandle>^ handles = gcnew System::Collections::Generic::List<System::Runtime::InteropServices::GCHandle>();
 
             public:
+                /**
+                 * \brief Constructor
+                 * \remark Call Release() when done to prevent a memory leak
+                 */
                 ModelRunner(ZSampleDelegate^ zFunction, System::Collections::Generic::List<Stochast^>^ stochasts, CorrelationMatrix^ correlationMatrix, ProgressIndicator^ progressIndicator);
                 ~ModelRunner() { this->!ModelRunner(); }
                 !ModelRunner()
                 {
-                    Release();
                     delete shared;
                 }
 
                 /**
                  * \brief Releases the allocated handles
+                 * \remark This method cannot be called in the destructor, because the handles to be freed prevent this object from being garbage collected
                  */
                 void Release()
                 {
@@ -145,9 +150,9 @@ namespace Deltares
                     return tagRepository->RegisterTag(object);
                 }
 
-                System::Object^ GetTag(int tag)
+                void AssignTag(Wrappers::Evaluation^ evaluation)
                 {
-                    return tagRepository->RetrieveTag(tag);
+                    evaluation->AssignTag(this->tagRepository);
                 }
 
                 std::shared_ptr<Models::ModelRunner> GetModelRunner()

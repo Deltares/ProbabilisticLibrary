@@ -528,9 +528,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
             Assert.AreEqual(1157, designPoint.ReliabilityResults.Count);
             Assert.AreEqual(10001, designPoint.Evaluations.Count);
 
-            WeakReference wr = new WeakReference(designPoint.Evaluations[0].Tag);
-            GC.Collect();
-            Assert.IsTrue(wr.IsAlive);
+            Assert.IsTrue(designPoint.Evaluations[0].Tag is ZFunctionOutput);
         }
 
         private class ProgressIndication

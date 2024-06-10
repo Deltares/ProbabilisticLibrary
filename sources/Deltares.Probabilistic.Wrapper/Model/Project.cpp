@@ -49,6 +49,8 @@ namespace Deltares
 
                 this->DesignPoint = gcnew Reliability::Wrappers::DesignPoint(designPoint, this->Stochasts);
 
+                this->DesignPoint->AssignTags(this->TagRepository);
+
                 return this->DesignPoint;
             }
 
