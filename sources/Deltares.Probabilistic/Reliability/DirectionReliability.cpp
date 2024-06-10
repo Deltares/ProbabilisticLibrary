@@ -444,7 +444,7 @@ namespace Deltares
 
 				z = std::isnan(uResult) ? nan("") : directionCalculation->GetZ(uResult);
 
-				if (modelRunner->Settings->proxySettings->IsProxyModel)
+				if (modelRunner->Settings->IsProxyModel())
 				{
 					if (std::isnan(uResult))
 					{

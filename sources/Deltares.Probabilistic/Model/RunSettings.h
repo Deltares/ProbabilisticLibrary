@@ -25,6 +25,16 @@ namespace Deltares
 			{
 				return MaxParallelProcesses >= 1;
 			}
+
+            bool IsProxyModel()
+            {
+                bool isProxyModel = false;
+                if (proxySettings.get() != nullptr)
+                {
+                    isProxyModel = proxySettings->IsProxyModel;
+                }
+                return isProxyModel;
+            }
 		};
 	}
 }
