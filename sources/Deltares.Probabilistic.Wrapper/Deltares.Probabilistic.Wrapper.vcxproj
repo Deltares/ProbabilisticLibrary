@@ -161,6 +161,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Model\ICanCalculateBeta.h" />
+    <ClInclude Include="Model\Project.h" />
     <ClInclude Include="Model\ProxySettings.h" />
     <ClInclude Include="Reliability\NumericalIntegration.h" />
     <ClInclude Include="Reliability\ClusterSettings.h" />
@@ -214,6 +215,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Model\ICanCalculateBeta.cpp" />
+    <ClCompile Include="Model\Project.cpp" />
     <ClCompile Include="Model\ProxySettings.cpp" />
     <ClCompile Include="Reliability\NumericalIntegration.cpp" />
     <ClCompile Include="Reliability\ClusterSettings.cpp" />

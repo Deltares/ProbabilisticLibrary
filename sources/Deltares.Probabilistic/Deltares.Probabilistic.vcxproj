@@ -155,6 +155,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Model\Project.h" />
     <ClInclude Include="Model\ProxySettings.h" />
     <ClInclude Include="Reliability\NumericalIntegration.h" />
     <ClInclude Include="Reliability\NumericalIntegrationSettings.h" />
@@ -271,6 +272,7 @@
     <ClInclude Include="Statistics\Distributions\ConditionalWeibullDistribution.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Model\Project.cpp" />
     <ClCompile Include="Model\ProxySettings.cpp" />
     <ClCompile Include="Reliability\NumericalIntegration.cpp" />
     <ClCompile Include="Reliability\NumericalIntegrationSettings.cpp" />
