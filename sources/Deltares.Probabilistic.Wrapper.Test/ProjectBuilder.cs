@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Tracing;
 using System.Linq;
 using System.Threading.Tasks;
 using Deltares.Statistics.Wrappers;
@@ -63,6 +64,11 @@ namespace Deltares.Probabilistic.Wrapper.Test
             sample.Z = output.Z;
             sample.Tag = tagRepository.RegisterTag(output);
         }
+
+        public TagRepository GeTagRepository()
+        {
+            return tagRepository;
+        }
     }
 
     public static class ProjectBuilder
@@ -70,6 +76,11 @@ namespace Deltares.Probabilistic.Wrapper.Test
         public static ZSampleDelegate SampleDelegate(ZDelegate xDelegate)
         {
             return new ZSampleOutput(xDelegate).CalculateSample;
+        }
+
+        public static ZSampleOutput GetSampleOutput(ZDelegate xDelegate)
+        {
+            return new ZSampleOutput(xDelegate);
         }
 
         public static Project GetLinearProject()
@@ -81,7 +92,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             project.CorrelationMatrix.Initialize(project.Stochasts);
 
-            project.ZFunction = SampleDelegate(Linear);
+            ZSampleOutput zSampleOutput = GetSampleOutput(Linear);
+
+            project.ZFunction = zSampleOutput.CalculateSample;
+            project.TagRepository = zSampleOutput.GeTagRepository();
 
             return project;
         }
@@ -385,7 +399,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             project.CorrelationMatrix.Initialize(project.Stochasts);
 
-            project.ZFunction = SampleDelegate(Noisy);
+            ZSampleOutput zSampleOutput = GetSampleOutput(Noisy);
+
+            project.ZFunction = zSampleOutput.CalculateSample;
+            project.TagRepository = zSampleOutput.GeTagRepository();
 
             return project;
         }

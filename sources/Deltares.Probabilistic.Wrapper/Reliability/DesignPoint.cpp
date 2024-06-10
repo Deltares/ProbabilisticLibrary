@@ -1,7 +1,6 @@
 #include "DesignPoint.h"
 #include "../Model/Message.h"
 
-
 namespace Deltares
 {
 	namespace Reliability
@@ -95,6 +94,18 @@ namespace Deltares
                 return true;
             }
 
+            void DesignPoint::AssignTags(TagRepository^ tagRepository)
+            {
+                for (int i = 0; i < this->Evaluations->Count; i++)
+                {
+                    this->Evaluations[i]->AssignTag(tagRepository);
+                }
+
+                for (int i = 0; i < this->ContributingDesignPoints->Count; i++)
+                {
+                    this->ContributingDesignPoints[i]->AssignTags(tagRepository);
+                }
+            }
 		}
 	}
 }

@@ -4,6 +4,7 @@
 
 #include "../Utils/NativeSupport.h"
 #include "../../Deltares.Probabilistic/Model/Evaluation.h"
+#include "../Utils/TagRepository.h"
 
 namespace Deltares
 {
@@ -22,13 +23,25 @@ namespace Deltares
                     this->Z = evaluation->Z;
                     this->Iteration = evaluation->Iteration;
                     this->Weight = evaluation->Weight;
-                    this->Tag = evaluation->Tag;
+                    this->tagIndex = evaluation->Tag;
                 }
 
                 property int Iteration;
                 property double Z;
                 property double Weight;
-                property int Tag;
+
+                System::Object^ Tag = nullptr;
+
+                void AssignTag(TagRepository^ tagRepository)
+                {
+                    if (tagRepository != nullptr)
+                    {
+                        this->Tag = tagRepository->RetrieveTag(this->tagIndex);
+                    }
+                }
+
+            private:
+                int tagIndex = 0;
             };
         }
     }

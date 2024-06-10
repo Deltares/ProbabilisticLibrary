@@ -8,6 +8,7 @@
 #include "../Model/Message.h"
 #include "ConvergenceReport.h"
 #include "ReliabilityResult.h"
+#include "../Utils/TagRepository.h"
 
 namespace Deltares
 {
@@ -101,6 +102,8 @@ namespace Deltares
 				{
 					System::Collections::Generic::List<DesignPoint^>^ get() { return contributingDesignPoints; }
 				}
+
+                void AssignTags(TagRepository^ tagRepository);
 
 				std::shared_ptr<Reliability::DesignPoint> getDesignPoint()
 				{

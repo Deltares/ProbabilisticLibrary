@@ -84,6 +84,8 @@ namespace Deltares.Probabilistic.Wrapper.Test
             Assert.AreEqual(6, designPoint.ReliabilityResults.Count);
             Assert.AreEqual(18, designPoint.Evaluations.Count);
 
+            Assert.IsTrue(designPoint.Evaluations[0].Tag is ZFunctionOutput);
+
             for (int i = 0; i < designPoint.ReliabilityResults.Count; i++)
             {
                 Assert.AreEqual(i, designPoint.ReliabilityResults[i].Index);
