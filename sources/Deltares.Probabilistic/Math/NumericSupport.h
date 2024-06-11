@@ -43,6 +43,13 @@ namespace Deltares
             static double getMaxValidValue(std::function<double(double)> function);
             static double interpolate(double x, double minX, double minY, double maxX, double maxY, bool extrapolate = false, InterpolationType interpolationType = Linear);
             static double interpolate(double x, const std::vector<double>& xValues, const std::vector<double>& yValues, bool extrapolate = false, InterpolationType interpolationType = Linear);
+
+            /**
+             * \brief Gets the full factorial combination of a number of lists
+             * \param sourceLists Lists to be combined
+             * \return Full factorial combination
+             * \remark {1,2,3} + {10, 11} becomes {1,10}, {1,11}, {2,10}, {2,11}, {3,10}, {3, 11}
+             */
             static std::vector<std::vector<double>> getFullFactorialCombination(std::vector<std::vector<double>>& sourceLists);
             static double getMean(std::vector<double>& values);
             static double getStandardDeviation(double mean, std::vector<double>& values);

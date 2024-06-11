@@ -15,10 +15,9 @@ namespace Deltares.Probabilistics.Wrappers.Test
         public void TestLinear()
         {
             var project = ProjectBuilder.GetLinearProject();
-            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
 
-            ImportanceSampling importanceSampling = new ImportanceSampling();
-            DesignPoint designPoint = importanceSampling.GetDesignPoint(modelRunner);
+            project.ReliabilityMethod = new ImportanceSampling();
+            DesignPoint designPoint = project.GetDesignPoint();
 
             Assert.AreEqual(2.54, designPoint.Beta, margin);
 
@@ -38,10 +37,8 @@ namespace Deltares.Probabilistics.Wrappers.Test
         {
             var project = ProjectBuilder.GetInverseLinearProject();
 
-            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
-
-            ImportanceSampling importanceSampling = new ImportanceSampling();
-            DesignPoint designPoint = importanceSampling.GetDesignPoint(modelRunner);
+            project.ReliabilityMethod = new ImportanceSampling();
+            DesignPoint designPoint = project.GetDesignPoint();
 
             Assert.AreEqual(-2.54, designPoint.Beta, margin);
 
@@ -53,29 +50,28 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
             DirectionReliability direction = new DirectionReliability();
             direction.Settings.SetStartPoint(designPoint);
+            project.ReliabilityMethod = direction;
 
-            DesignPoint limitStatePoint = direction.GetDesignPoint(modelRunner);
+            DesignPoint limitStatePoint = project.GetDesignPoint();
 
-            var z = project.ZFunction.Invoke(limitStatePoint.Alphas.Select(p => p.X).ToArray());
-            Assert.AreEqual(0, z.Z, margin);
+            ModelSample sample = limitStatePoint.GetModelSample();
+            project.ZFunction.Invoke(sample);
+            Assert.AreEqual(0, sample.Z, margin);
 
             Assert.AreEqual(0.90, limitStatePoint.Alphas[0].X, margin);
             Assert.AreEqual(0.90, limitStatePoint.Alphas[1].X, margin);
         }
 
-
-
         [Test]
         public void TestLinearMessages()
         {
             Project project = ProjectBuilder.GetLinearProject();
-            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
 
-            ImportanceSampling importanceSampling = new ImportanceSampling();
-            modelRunner.Settings.SaveEvaluations = true;
-            modelRunner.Settings.SaveConvergence = true;
+            project.ReliabilityMethod = new ImportanceSampling();
+            project.Settings.SaveEvaluations = true;
+            project.Settings.SaveConvergence = true;
 
-            DesignPoint designPoint = importanceSampling.GetDesignPoint(modelRunner);
+            DesignPoint designPoint = project.GetDesignPoint();
 
             Assert.AreEqual(2.54, designPoint.Beta, margin);
 
@@ -89,9 +85,8 @@ namespace Deltares.Probabilistics.Wrappers.Test
         public void TestLinearSmall()
         {
             Project project = ProjectBuilder.GetLinearSmallProject();
-            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
 
-            ImportanceSampling importanceSampling = new ImportanceSampling();
+            var importanceSampling = new ImportanceSampling();
             importanceSampling.Settings.MaximumSamples = 10000;
             importanceSampling.Settings.MinimumSamples = 5000;
 
@@ -100,7 +95,9 @@ namespace Deltares.Probabilistics.Wrappers.Test
                 importanceSampling.Settings.StochastSettings.Add(new StochastSettings { StartValue = 0, VarianceFactor = 2, Stochast = project.Stochasts[i] });
             }
 
-            DesignPoint designPoint = importanceSampling.GetDesignPoint(modelRunner);
+            project.ReliabilityMethod = importanceSampling;
+
+            DesignPoint designPoint = project.GetDesignPoint();
 
             Assert.AreEqual(3.89, designPoint.Beta, margin);
         }
@@ -109,10 +106,9 @@ namespace Deltares.Probabilistics.Wrappers.Test
         public void TestLinearCorrelated()
         {
             Project project = ProjectBuilder.GetLinearFullyCorrelatedProject();
-            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
 
-            ImportanceSampling importanceSampling = new ImportanceSampling();
-            DesignPoint designPoint = importanceSampling.GetDesignPoint(modelRunner);
+            project.ReliabilityMethod = new ImportanceSampling();
+            DesignPoint designPoint = project.GetDesignPoint();
 
             Assert.AreEqual(2.54, designPoint.Beta, margin);
         }
@@ -121,10 +117,9 @@ namespace Deltares.Probabilistics.Wrappers.Test
         public void TestBligh()
         {
             Project project = ProjectBuilder.GetBlighProject();
-            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
 
-            ImportanceSampling importanceSampling = new ImportanceSampling();
-            DesignPoint designPoint = importanceSampling.GetDesignPoint(modelRunner);
+            project.ReliabilityMethod = new ImportanceSampling();
+            DesignPoint designPoint = project.GetDesignPoint();
 
             Assert.AreEqual(1.67, designPoint.Beta, margin);
         }
@@ -133,10 +128,9 @@ namespace Deltares.Probabilistics.Wrappers.Test
         public void TestLoadStrength()
         {
             Project project = ProjectBuilder.GetLoadStrengthProject();
-            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
 
-            ImportanceSampling importanceSampling = new ImportanceSampling();
-            DesignPoint designPoint = importanceSampling.GetDesignPoint(modelRunner);
+            project.ReliabilityMethod = new ImportanceSampling();
+            DesignPoint designPoint = project.GetDesignPoint();
 
             Assert.AreEqual(1.42, designPoint.Beta, margin);
         }
@@ -145,10 +139,9 @@ namespace Deltares.Probabilistics.Wrappers.Test
         public void TestLoadStrengthSurvived()
         {
             Project project = ProjectBuilder.GetLoadStrengthSurvivedProject();
-            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
 
-            ImportanceSampling importanceSampling = new ImportanceSampling();
-            DesignPoint designPoint = importanceSampling.GetDesignPoint(modelRunner);
+            project.ReliabilityMethod = new ImportanceSampling();
+            DesignPoint designPoint = project.GetDesignPoint();
 
             Assert.AreEqual(1.79, designPoint.Beta, margin);
         }
@@ -157,10 +150,9 @@ namespace Deltares.Probabilistics.Wrappers.Test
         public void TestConvex()
         {
             Project project = ProjectBuilder.GetConvexProject();
-            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
 
-            ImportanceSampling importanceSampling = new ImportanceSampling();
-            DesignPoint designPoint = importanceSampling.GetDesignPoint(modelRunner);
+            project.ReliabilityMethod = new ImportanceSampling();
+            DesignPoint designPoint = project.GetDesignPoint();
 
             Assert.AreEqual(2.62, designPoint.Beta, margin);
         }
@@ -169,10 +161,9 @@ namespace Deltares.Probabilistics.Wrappers.Test
         public void TestNoisy()
         {
             Project project = ProjectBuilder.GetNoisyProject();
-            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
 
-            ImportanceSampling importanceSampling = new ImportanceSampling();
-            DesignPoint designPoint = importanceSampling.GetDesignPoint(modelRunner);
+            project.ReliabilityMethod = new ImportanceSampling();
+            DesignPoint designPoint = project.GetDesignPoint();
 
             Assert.AreEqual(2.49, designPoint.Beta, margin);
         }

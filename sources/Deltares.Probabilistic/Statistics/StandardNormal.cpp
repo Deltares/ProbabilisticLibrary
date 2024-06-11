@@ -182,7 +182,6 @@ namespace Deltares
 			return -getUFromQ(p);
 		}
 
-
 		double StandardNormal::getUFromQ(const double q)
 		{
 			const double margin = 1e-35;

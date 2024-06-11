@@ -14,10 +14,8 @@ namespace Deltares.Probabilistics.Wrappers.Test
         {
             Project project = ProjectBuilder.GetLinearProject();
 
-            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
-
-            DirectionalSampling directionalSampling = new DirectionalSampling();
-            DesignPoint designPoint = directionalSampling.GetDesignPoint(modelRunner);
+            project.ReliabilityMethod = new DirectionalSampling();
+            DesignPoint designPoint = project.GetDesignPoint();
 
             Assert.AreEqual(2.58, designPoint.Beta, margin);
         }
@@ -27,14 +25,12 @@ namespace Deltares.Probabilistics.Wrappers.Test
         {
             var project = ProjectBuilder.GetLinearProject();
 
-            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
-
-            DirectionalSampling directionalSampling = new DirectionalSampling();
-            DesignPoint designPoint = directionalSampling.GetDesignPoint(modelRunner);
+            project.ReliabilityMethod = new DirectionalSampling();
+            DesignPoint designPoint = project.GetDesignPoint();
 
             Assert.AreEqual(2.58, designPoint.Beta, margin);
 
-            DesignPoint designPoint2 = directionalSampling.GetDesignPoint(modelRunner);
+            DesignPoint designPoint2 = project.GetDesignPoint();
 
             Assert.AreEqual(2.58, designPoint2.Beta, margin);
 
@@ -48,10 +44,8 @@ namespace Deltares.Probabilistics.Wrappers.Test
         {
             var project = ProjectBuilder.GetInverseLinearProject();
 
-            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
-
-            DirectionalSampling directionalSampling = new DirectionalSampling();
-            DesignPoint designPoint = directionalSampling.GetDesignPoint(modelRunner);
+            project.ReliabilityMethod = new DirectionalSampling();
+            DesignPoint designPoint = project.GetDesignPoint();
 
             Assert.AreEqual(-2.58, designPoint.Beta, margin);
         }
@@ -61,12 +55,11 @@ namespace Deltares.Probabilistics.Wrappers.Test
         {
             Project project = ProjectBuilder.GetLinearProject();
 
-            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
-            modelRunner.Settings.MaxParallelProcesses = 4;
+            project.Settings.MaxParallelProcesses = 4;
 
-            DirectionalSampling directionalSampling = new DirectionalSampling();
+            project.ReliabilityMethod = new DirectionalSampling();
 
-            DesignPoint designPoint = directionalSampling.GetDesignPoint(modelRunner);
+            DesignPoint designPoint = project.GetDesignPoint();
 
             Assert.AreEqual(2.58, designPoint.Beta, margin);
         }
@@ -76,13 +69,14 @@ namespace Deltares.Probabilistics.Wrappers.Test
         {
             Project project = ProjectBuilder.GetDoubleLinearProject();
 
-            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
             DirectionalSampling directionalSampling = new DirectionalSampling();
             directionalSampling.Settings.MaximumSamples = 2000;
             directionalSampling.Settings.MinimumSamples = 2000;
             directionalSampling.Settings.DirectionalSettings.ModelVaryingType = VaryingType.Varying;
 
-            DesignPoint designPoint = directionalSampling.GetDesignPoint(modelRunner);
+            project.ReliabilityMethod = directionalSampling;
+
+            DesignPoint designPoint = project.GetDesignPoint();
 
             Assert.AreEqual(2.20, designPoint.Beta, margin);
         }
@@ -92,10 +86,9 @@ namespace Deltares.Probabilistics.Wrappers.Test
         {
             Project project = ProjectBuilder.GetNonLinearProject();
 
-            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
-            DirectionalSampling directionalSampling = new DirectionalSampling();
+            project.ReliabilityMethod = new DirectionalSampling();
 
-            DesignPoint designPoint = directionalSampling.GetDesignPoint(modelRunner);
+            DesignPoint designPoint = project.GetDesignPoint();
 
             Assert.AreEqual(3.57, designPoint.Beta, margin);
         }
@@ -105,10 +98,9 @@ namespace Deltares.Probabilistics.Wrappers.Test
         {
             Project project = ProjectBuilder.GetBlockProject();
 
-            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
-            DirectionalSampling directionalSampling = new DirectionalSampling();
+            project.ReliabilityMethod = new DirectionalSampling();
 
-            DesignPoint designPoint = directionalSampling.GetDesignPoint(modelRunner);
+            DesignPoint designPoint = project.GetDesignPoint();
 
             Assert.AreEqual(3.57, designPoint.Beta, margin);
         }
@@ -118,10 +110,9 @@ namespace Deltares.Probabilistics.Wrappers.Test
         {
             Project project = ProjectBuilder.GetSemiBlockProject();
 
-            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
-            DirectionalSampling directionalSampling = new DirectionalSampling();
+            project.ReliabilityMethod = new DirectionalSampling();
 
-            DesignPoint designPoint = directionalSampling.GetDesignPoint(modelRunner);
+            DesignPoint designPoint = project.GetDesignPoint();
 
             Assert.AreEqual(3.57, designPoint.Beta, margin);
         }
@@ -131,10 +122,9 @@ namespace Deltares.Probabilistics.Wrappers.Test
         {
             Project project = ProjectBuilder.GetNoisyProject();
 
-            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
-            DirectionalSampling directionalSampling = new DirectionalSampling();
+            project.ReliabilityMethod = new DirectionalSampling();
 
-            DesignPoint designPoint = directionalSampling.GetDesignPoint(modelRunner);
+            DesignPoint designPoint = project.GetDesignPoint();
 
             Assert.AreEqual(2.50, designPoint.Beta, margin);
         }
@@ -144,11 +134,9 @@ namespace Deltares.Probabilistics.Wrappers.Test
         {
             var project = ProjectBuilder.GetSeriesProject();
 
-            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
+            project.ReliabilityMethod = new DirectionalSampling();
 
-            DirectionalSampling directionalSampling = new DirectionalSampling();
-
-            DesignPoint designPoint = directionalSampling.GetDesignPoint(modelRunner);
+            DesignPoint designPoint = project.GetDesignPoint();
 
             Assert.AreEqual(2.89, designPoint.Beta, margin);
         }
@@ -158,10 +146,9 @@ namespace Deltares.Probabilistics.Wrappers.Test
         {
             Project project = ProjectBuilder.GetManyVarsProject();
 
-            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
-            DirectionalSampling directionalSampling = new DirectionalSampling();
+            project.ReliabilityMethod = new DirectionalSampling();
 
-            DesignPoint designPoint = directionalSampling.GetDesignPoint(modelRunner);
+            DesignPoint designPoint = project.GetDesignPoint();
 
             Assert.AreEqual(3.13, designPoint.Beta, margin);
         }
@@ -171,10 +158,9 @@ namespace Deltares.Probabilistics.Wrappers.Test
         {
             Project project = ProjectBuilder.GetSaddleProject();
 
-            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
-            DirectionalSampling directionalSampling = new DirectionalSampling();
+            project.ReliabilityMethod = new DirectionalSampling();
 
-            DesignPoint designPoint = directionalSampling.GetDesignPoint(modelRunner);
+            DesignPoint designPoint = project.GetDesignPoint();
 
             Assert.AreEqual(2.34, designPoint.Beta, margin);
         }
@@ -184,10 +170,9 @@ namespace Deltares.Probabilistics.Wrappers.Test
         {
             Project project = ProjectBuilder.GetTwoBranchesProject();
 
-            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
-            DirectionalSampling directionalSampling = new DirectionalSampling();
+            project.ReliabilityMethod = new DirectionalSampling();
 
-            DesignPoint designPoint = directionalSampling.GetDesignPoint(modelRunner);
+            DesignPoint designPoint = project.GetDesignPoint();
 
             Assert.AreEqual(5.01, designPoint.Beta, margin);
         }
@@ -197,11 +182,9 @@ namespace Deltares.Probabilistics.Wrappers.Test
         {
             var project = ProjectBuilder.GetBlighProject();
 
-            ModelRunner modelRunner = new ModelRunner(project.Function, project.Stochasts, project.CorrelationMatrix, null);
+            project.ReliabilityMethod = new DirectionalSampling();
 
-            DirectionalSampling directionalSampling = new DirectionalSampling();
-
-            DesignPoint designPoint = directionalSampling.GetDesignPoint(modelRunner);
+            DesignPoint designPoint = project.GetDesignPoint();
 
             Assert.AreEqual(1.66, designPoint.Beta, margin);
             Assert.AreEqual(project.Stochasts.Count, designPoint.Alphas.Count, margin);

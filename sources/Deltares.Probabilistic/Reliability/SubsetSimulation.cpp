@@ -1,0 +1,618 @@
+#include "SubsetSimulation.h"
+
+#include <algorithm>
+#include <numbers>
+
+#include "DesignPoint.h"
+#include "DesignPointBuilder.h"
+#include "../Statistics/StandardNormal.h"
+#include "../Model/RandomSampleGenerator.h"
+
+#if __has_include(<format>)
+#include <format>
+#else
+#include "../Utils/probLibString.h"
+#endif
+
+
+namespace Deltares
+{
+    namespace Reliability
+    {
+        using namespace Deltares::Numeric;
+
+        std::shared_ptr<DesignPoint> SubsetSimulation::getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner)
+        {
+            int nStochasts = modelRunner->getVaryingStochastCount();
+
+            modelRunner->updateStochastSettings(this->Settings->StochastSet);
+
+            std::shared_ptr<DesignPointBuilder> uMean = std::make_shared<DesignPointBuilder>(nStochasts, Settings->designPointMethod, Settings->StochastSet);
+
+            std::shared_ptr<RandomSampleGenerator> randomSampleGenerator = std::make_shared<RandomSampleGenerator>();
+            randomSampleGenerator->Settings = this->Settings->randomSettings;
+            randomSampleGenerator->Settings->StochastSet = this->Settings->StochastSet;
+            randomSampleGenerator->initialize();
+
+            // initialize convergence indicator and loops
+            double ssFactor = 1;
+            double pf = 0;
+
+            bool initial = true;
+            bool ready = false;
+            double z0Fac = 0;
+            int iteration = 0;
+
+            std::shared_ptr<ConvergenceReport> convergenceReport = nullptr;
+
+            std::vector<std::shared_ptr<Sample>> selectedSamples;
+            std::vector<std::shared_ptr<DesignPoint>> contributingDesignPoints;
+
+            while (!ready && !isStopped())
+            {
+                modelRunner->clear();
+
+                std::vector<double> zValues(0); // copy of z for all parallel threads as double
+
+                int samplesCount = 0;
+                int zIndex = 0;
+                bool converged = false;
+                int ntot = 0;
+
+                this->rejectedSamples = 0;
+                this->acceptedSamples = 0;
+
+                convergenceReport = std::make_shared<ConvergenceReport>();
+
+                iteration++;
+
+                std::vector<std::shared_ptr<Sample>> samples;
+
+                std::vector<std::shared_ptr<Sample>> performedSamples;
+
+                // create samples
+                std::vector<std::shared_ptr<Sample>> newSamples;
+
+                if (selectedSamples.empty())
+                {
+                    newSamples = getInitialSamples(modelRunner, randomSampleGenerator, nStochasts, initial);
+                }
+                else if (Settings->SampleMethod == SampleMethodType::MarkovChain)
+                {
+                    newSamples = getMarkovChainSamples(modelRunner, nStochasts, selectedSamples, z0Fac);
+                }
+                else if (Settings->SampleMethod == SampleMethodType::AdaptiveConditional)
+                {
+                    newSamples = getAdaptiveConditionalSamples(modelRunner, Settings->MaximumSamples, selectedSamples);
+                }
+                else
+                {
+                    throw probLibException("Sample method type");
+                }
+
+                int skip = 0;
+
+                for (int sampleIndex = 0; sampleIndex < newSamples.size() && !converged && !isStopped(); sampleIndex++)
+                {
+                    zIndex++;
+
+                    if (initial || zIndex >= zValues.size())
+                    {
+                        // select the new samples
+
+                        samples.clear();
+                        int chunkSize = modelRunner->Settings->MaxChunkSize;
+                        int runs = std::min(chunkSize, (int)newSamples.size() - sampleIndex);
+
+                        for (int i = skip; i < skip + runs; i++)
+                        {
+                            samples.push_back(newSamples[i]);
+                        }
+
+                        skip += runs;
+
+                        // retrieve sample results
+
+                        if (selectedSamples.empty())
+                        {
+                            zValues = modelRunner->getZValues(samples);
+                        }
+                        else
+                        {
+                            zValues = std::vector<double>(samples.size());
+                            for (int i = 0; i < samples.size(); i++)
+                            {
+                                zValues[i] = samples[i]->Z;
+                            }
+                        }
+
+                        if (initial)
+                        {
+                            z0Fac = this->getZFactor(zValues[0]);
+                        }
+
+                        if (modelRunner->shouldExitPrematurely(samples))
+                        {
+                            // return the result so far
+                            return modelRunner->getDesignPoint(uMean->getSample(), Statistics::StandardNormal::getUFromQ(pf), convergenceReport);
+                        }
+
+                        zIndex = 0;
+                    }
+
+                    // determine multiplication factor for z (z<0), if u = 0
+                    if (initial)
+                    {
+                        z0Fac = this->getZFactor(zValues[zIndex]);
+                        initial = false;
+                        continue;
+                    }
+
+                    double z = zValues[zIndex] * z0Fac;
+
+                    std::shared_ptr<Sample> sample = samples[zIndex];
+                    performedSamples.push_back(samples[zIndex]);
+
+                    // ignore a failed evaluation
+                    if (std::isnan(z))
+                    {
+                        continue;
+                    }
+
+                    // increase the number of succeeded samples
+                    samplesCount++;
+
+                    // determine total probability of failure
+                    if (z < 0)
+                    {
+                        ntot = ntot + 1;
+                    }
+
+                    convergenceReport->FailedSamples = ntot;
+                    convergenceReport->FailFraction = NumericSupport::Divide(ntot, samplesCount);
+
+                    // register minimum value of r and alpha
+                    if (z * z0Fac < 0)
+                    {
+                        uMean->addSample(sample);
+                    }
+
+                    // uncorrected prob of failure for convergence
+                    pf = NumericSupport::Divide(ntot, samplesCount);
+
+                    std::shared_ptr<ReliabilityReport> report = std::make_shared<ReliabilityReport>();
+                    report->Step = sampleIndex;
+                    report->MaxSteps = Settings->MaximumSamples;
+
+                    if (pf > 0 && pf < 1.0)
+                    {
+                        double convergence = getConvergence(pf, samplesCount);
+
+                        pf *= ssFactor;
+
+                        report->Reliability = z0Fac * Statistics::StandardNormal::getUFromQ(pf);
+                        report->Variation = convergence;
+
+                        modelRunner->reportResult(report);
+
+                        // check if convergence is reached (or stop criterion)
+                        convergenceReport->Convergence = convergence;
+
+                        converged = isConverged(this->Settings, sampleIndex, convergence);
+
+                        convergenceReport->IsConverged = converged;
+                    }
+                    else
+                    {
+                        modelRunner->reportResult(report);
+                    }
+                }
+
+                // determine probability and beta if variation is large
+                pf = ssFactor * NumericSupport::Divide(ntot, samplesCount);
+
+                if (!selectedSamples.empty())
+                {
+#ifdef __cpp_lib_format
+                    const double ratio = 100 * NumericSupport::Divide(rejectedSamples, acceptedSamples + rejectedSamples);
+                    std::string message = std::format("Rejected {0:} values, accepted {1:} values ({2:} % rejected) in iteration {3:}", rejectedSamples, acceptedSamples, ratio, iteration);
+                    modelRunner->reportMessage(MessageType::Debug, message);
+#endif
+                }
+
+                // select samples for the next round
+                std::sort(performedSamples.begin(), performedSamples.end(), [z0Fac](std::shared_ptr<Sample> val1, std::shared_ptr<Sample> val2) {return val1->Z * z0Fac < val2->Z * z0Fac; });
+
+                selectedSamples.clear();
+                for (int i = 0; i < Settings->SubsetFraction * performedSamples.size(); i++)
+                {
+                    selectedSamples.push_back(performedSamples[i]);
+                }
+
+                ssFactor *= Settings->SubsetFraction;
+
+                ready = ssFactor < 1E-20 || selectedSamples.back()->Z * z0Fac < 0;
+
+                if (!ready)
+                {
+                    std::shared_ptr<Sample> sample = uMean->getSample();
+                    std::shared_ptr<DesignPoint> designPoint = modelRunner->getDesignPoint(sample, Statistics::StandardNormal::getUFromQ(pf), convergenceReport);
+#ifdef __cpp_lib_format
+                    std::string identifier = std::format("Subset iteration {0:}", iteration);
+                    designPoint->Identifier = identifier;
+#endif
+
+                    contributingDesignPoints.push_back(designPoint);
+                }
+            }
+
+            std::shared_ptr<Sample> sample = uMean->getSample();
+            std::shared_ptr<DesignPoint> designPoint = modelRunner->getDesignPoint(sample, z0Fac * Statistics::StandardNormal::getUFromQ(pf), convergenceReport);
+
+            for (size_t i = 0; i < contributingDesignPoints.size(); i++)
+            {
+                designPoint->ContributingDesignPoints.push_back(contributingDesignPoints[i]);
+            }
+
+            return designPoint;
+        }
+
+        std::vector<std::shared_ptr<Sample>> SubsetSimulation::getInitialSamples(std::shared_ptr<ModelRunner> modelRunner, std::shared_ptr<RandomSampleGenerator> randomSampleGenerator, int nstochasts, bool initial)
+        {
+            std::vector<std::shared_ptr<Sample>> samples;
+
+            if (initial)
+            {
+                samples.push_back(std::make_shared<Sample>(nstochasts));
+            }
+
+            for (int i = 0; i < Settings->MaximumSamples; i++)
+            {
+                // initial run, take random samples
+                std::shared_ptr<Sample> sample = randomSampleGenerator->getRandomSample();
+                sample->IterationIndex = -1;
+
+                samples.push_back(sample);
+            }
+
+            return samples;
+        }
+
+        std::vector<std::shared_ptr<Sample>> SubsetSimulation::getMarkovChainSamples(std::shared_ptr<ModelRunner> modelRunner, int nstochasts, std::vector<std::shared_ptr<Sample>>& selectedSamples, double z0Fac)
+        {
+            std::vector<std::shared_ptr<Sample>> samples;
+
+            double maxZ = selectedSamples.back()->Z;
+
+            for (int i = 0; i < this->Settings->MaximumSamples; i++)
+            {
+                samples.push_back(getMarkovChainSample(selectedSamples[i % selectedSamples.size()], modelRunner, maxZ, z0Fac));
+            }
+
+            return samples;
+        }
+
+        std::shared_ptr<Sample> SubsetSimulation::getMarkovChainSample(std::shared_ptr<Sample> oldSample, std::shared_ptr<ModelRunner> modelRunner, double maxZ, double z0Fac)
+        {
+            constexpr int maxTries = 10;
+
+            int tries = 0;
+
+            while (tries++ < maxTries)
+            {
+                bool allRejected = true;
+
+                std::vector<double> newValues(oldSample->Values.size());
+
+                for (int i = 0; i < oldSample->Values.size(); i++)
+                {
+                    const double random = Random::next();
+
+                    const double newValue = oldSample->Values[i] + (2 * random - 1) * Settings->MarkovChainDeviation;
+
+                    const double oldDensity = getStandardNormalPDF(oldSample->Values[i]);
+                    const double newDensity = getStandardNormalPDF(newValue);
+
+                    const double acceptanceRatio = std::min(1.0, newDensity / oldDensity);
+
+                    if (acceptanceRatio > Random::next())
+                    {
+                        acceptedSamples++;
+                        newValues[i] = newValue;
+                        allRejected = false;
+                    }
+                    else
+                    {
+                        rejectedSamples++;
+                        newValues[i] = oldSample->Values[i];
+                    }
+                }
+
+                std::shared_ptr<Sample> sample = std::make_shared<Sample>(newValues);
+
+                if (!allRejected)
+                {
+                    double z = modelRunner->getZValue(sample);
+
+                    if (z * z0Fac <= maxZ)
+                    {
+                        return sample;
+                    }
+                }
+            }
+
+            // calculate again, so that evaluation is logged
+            double oldZ = modelRunner->getZValue(oldSample);
+
+            return oldSample;
+        }
+
+        std::vector<std::shared_ptr<Sample>> SubsetSimulation::getAdaptiveConditionalSamples(std::shared_ptr<ModelRunner> modelRunner, int nSamples, std::vector<std::shared_ptr<Sample>>& selectedSamples)
+        {
+            double b = selectedSamples.back()->Z;
+
+            //private Sample GetMarkovChainSaf b =mpleA(Sample oldSample, ModelRunner modelRunner, double deviation, int iteration, double b)
+            int nStochasts = modelRunner->getVaryingStochastCount(); //number of parameters
+            int nSelectedSamples = selectedSamples.size(); // number of seeds
+
+            int nMaximumSamples = Settings->MaximumSamples;
+
+            int nChains = static_cast<int>(std::ceil(100.0 * nSelectedSamples / nMaximumSamples)); // number of chains after which the proposal is adapted
+
+            //int max_it = 10;       // estimated number of iterations
+            double oldLambda = 0.60;
+
+
+            // initialization
+            std::vector<int> acceptance(Settings->MaximumSamples); // store acceptance
+            std::vector<double> lam(static_cast<int>(std::floor(static_cast<float>(nSelectedSamples) / nChains)) + 1); // scaling parameter \in (0,1)
+            std::vector<double> mu_acc(static_cast<int>(std::floor(static_cast<float>(nSelectedSamples) / static_cast<float>(nChains))) + 1);
+            std::vector<double> hat_a(static_cast<int>(std::floor(static_cast<float>(nSelectedSamples) / static_cast<float>(nChains))) + 1); // average acceptance rate of the chains
+
+            //  number of samples per chain
+            std::vector<int> nChain(nSelectedSamples);
+            for (int j = 0; j < nSelectedSamples; j++)
+            {
+                nChain[j] = static_cast<int>(std::floor(static_cast<float>(nMaximumSamples) / static_cast<float>(nSelectedSamples)));
+            }
+            for (int j = 0; j < nMaximumSamples % nSelectedSamples; j++)
+            {
+                nChain[j]++;
+            }
+
+            // The arrays begin with initial value 0
+            std::vector<std::shared_ptr<Sample>> newSamples;
+
+            for (int k = 0; k < nMaximumSamples; k++)
+            {
+                acceptance[k] = 0;
+            }
+
+            for (int j = 0; j < mu_acc.size(); j++)
+            {
+                mu_acc[j] = 0.0;
+                hat_a[j] = 0.0;
+                lam[j] = 0.0;
+            }
+
+            // 1. compute the standard deviation
+
+            std::vector<double> sigma_0(nStochasts);
+            for (int j = 0; j < nStochasts; j++)
+            {
+                sigma_0[j] = 0.0;
+            }
+
+            wchar_t opc = L'a';
+
+            if (opc == L'a') // 1a. sigma = ones(n,1)
+            {
+                for (int j = 0; j < nStochasts; j++)
+                {
+                    sigma_0[j] = 1.0;
+                }
+            }
+            else if (opc == L'b') // 1b. sigma = sigma_hat (sample standard deviations)
+            {
+                std::vector<double> mu_hat(nStochasts); // sample mean
+                std::vector<double> var_hat(nStochasts); // sample std
+
+
+                for (int j = 0; j < nStochasts; j++) // find mean and std of samples
+                {
+                    mu_hat[j] = 0.0;
+                    for (int k = 0; k < nSelectedSamples; k++)
+                    {
+                        mu_hat[j] += selectedSamples[k]->Values[j];
+                    } // mean
+                    mu_hat[j] /= static_cast<double>(nSelectedSamples);
+
+                    var_hat[j] = 0.0;
+                    for (int k = 0; k < nSelectedSamples; k++)
+                    {
+                        var_hat[j] += std::pow(selectedSamples[k]->Values[j] - mu_hat[j], 2);
+                    } // std
+                    var_hat[j] /= static_cast<double>(nSelectedSamples - 1);
+
+                    sigma_0[j] = std::sqrt(var_hat[j]);
+                }
+            }
+
+            // 2. iteration
+            double star_a = 0.44; //  optimal acceptance rate
+            lam[0] = oldLambda; //  initial scaling parameter \in (0,1)
+            std::vector<double> sigma(nStochasts);
+            std::vector<double> rho(nStochasts);
+
+            //a.compute correlation parameter
+
+            int i = 0; // index for adaptation of lambda
+            for (int j = 0; j < nStochasts; j++)
+            {
+                sigma[j] = std::min(1.0, lam[i] * sigma_0[j]); //  Ref. 1 Eq. 23
+                rho[j] = std::sqrt(1 - sigma[j] * sigma[j]); //  Ref. 1 Eq. 24
+            }
+
+            mu_acc[i] = 0;
+
+            // b. apply conditional sampling
+
+            for (int k = 1; k < nSelectedSamples + 1; k++)
+            {
+                int idx = 0;
+                for (int j = 0; j < k - 1; j++)
+                {
+                    idx += nChain[j];
+                } // beginning of each chain index
+
+                std::shared_ptr<Sample> newSample = selectedSamples[k - 1]->clone();
+                newSample->Z = selectedSamples[k - 1]->Z;
+
+                newSamples.push_back(newSample);
+
+                std::shared_ptr<Sample> previousSample = newSample;
+
+                for (int t = 1; t < nChain[k - 1]; t++)
+                {
+                    std::vector<double> values(nStochasts);
+
+                    for (int j = 0; j < nStochasts; j++)
+                    {
+                        double random = Random::next();
+                        double u = Statistics::StandardNormal::getUFromQ(random);
+                        values[j] = previousSample->Values[j] * rho[j] + sigma[j] * u;
+                    }
+
+                    std::shared_ptr<Sample> sample = std::make_shared<Sample>(values);
+
+                    sample->Z = modelRunner->getZValue(sample);
+
+                    //  accept or reject sample 
+                    if (sample->Z <= b)
+                    {
+                        acceptance[idx + t] = 1; //  note the acceptance
+                    }
+                    else
+                    {
+                        sample = previousSample->clone();
+                        sample->Z = previousSample->Z;
+
+                        acceptance[idx + t] = 0; // note the rejection
+                    }
+
+                    newSamples.push_back(sample);
+
+                    previousSample = sample;
+                } // end of for-t loop
+
+                // average of the accepted samples for each seed 'mu_acc'
+                // here the warning "Mean of empty slice" is not an issue        
+
+                double mean = 0;
+                for (int j = idx + 1; j < idx + nChain[k - 1]; j++)
+                {
+                    mean += acceptance[j];
+                }
+
+                mean /= nChain[k - 1];
+
+                mu_acc[i] += std::min(1.0, mean);
+
+                if (k % nChains == 0)
+                {
+                    if (nChain[k - 1] > 1)
+                    {
+                        // c. evaluate average acceptance rate
+
+                        hat_a[i] = mu_acc[i] / static_cast<double>(nChains); // Ref. 1 Eq. 25
+
+                        // d. compute new scaling parameter
+                        double zeta = 1.0 / std::sqrt(static_cast<double>(i + 1)); //  ensures that the variation of lambda(i) vanishes
+                        lam[i + 1] = std::exp(std::log(lam[i]) + zeta * (hat_a[i] - star_a)); //  Ref. 1 Eq. 26
+
+                        // update parameters
+                        for (int j = 0; j < nStochasts; j++)
+                        {
+                            sigma[j] = std::min(1.0, lam[i + 1] * sigma_0[j]); //  Ref. 1 Eq. 23
+                            rho[j] = std::sqrt(1 - sigma[j] * sigma[j]); //  Ref. 1 Eq. 24
+                        }
+
+                        // update counter
+                        i++;
+
+                    } // end if
+
+                } // end if ( k % Na == 0 )
+
+            } // end of for-k loop
+
+            this->new_lambda = lam[i]; // next level lambda
+
+            // compute mean acceptance rate of all chains
+
+            if (i != 0)
+            {
+                double mean = 0;
+                int num = 1;
+                for (int j = 0; j < i - 1; j++)
+                {
+                    mean += hat_a[j];
+                    num++;
+                }
+
+                acceptanceRate = mean / num;
+            }
+            else // no adaptation
+            {
+                acceptanceRate = 0;
+
+                if (nMaximumSamples % nSelectedSamples != 0)
+                {
+                    int num = 1;
+                    for (int j = 0; j < nMaximumSamples % nSelectedSamples; j++)
+                    {
+                        acceptanceRate += acceptance[j];
+                        num++;
+                    }
+                    acceptanceRate /= num; // only for the few generated samples
+                }
+            }
+
+            return newSamples;
+        }
+
+        double SubsetSimulation::getConvergence(double pf, int samples)
+        {
+            if (pf > 0 && pf < 1)
+            {
+                if (pf > 0.5)
+                {
+                    pf = 1 - pf;
+                }
+                double varPf = sqrt((1 - pf) / (samples * pf));
+                return varPf;
+            }
+            else
+            {
+                return nan("");
+            }
+        }
+
+        bool SubsetSimulation::isConverged(std::shared_ptr<SubsetSimulationSettings> settings, int sampleIndex, double convergence)
+        {
+            double requiredConvergence = settings->SampleMethod == SampleMethodType::AdaptiveConditional ? 0 : settings->VariationCoefficient;
+            return sampleIndex >= settings->MinimumSamples && convergence < requiredConvergence;
+        }
+
+        double SubsetSimulation::getStandardNormalPDF(double u)
+        {
+            double normalFactor = 1 / std::sqrt(2 * std::numbers::pi);
+
+            double distance = -u * u / 2;
+
+            return normalFactor * std::exp(distance);
+        }
+
+    }
+}
+

@@ -1,11 +1,10 @@
 #pragma once
 
-#include "../../Deltares.Probabilistic/Reliability/ImportanceSamplingSettings.h"
-#include "../Model/RandomSettings.h"
-#include "../Model/RunSettings.h"
-#include "../Reliability/StochastSettings.h"
-#include "../Utils/SharedPointerProvider.h"
 #include "DesignPointMethodSettings.h"
+#include "../../Deltares.Probabilistic/Reliability/SubsetSimulationSettings.h"
+#include "../Model/RunSettings.h"
+#include "../Model/RandomSettings.h"
+#include "../Utils/SharedPointerProvider.h"
 #include "StartPointCalculatorSettings.h"
 
 namespace Deltares
@@ -17,30 +16,20 @@ namespace Deltares
             using namespace Deltares::Utils::Wrappers;
             using namespace Deltares::Models::Wrappers;
 
-            public ref class ImportanceSamplingSettings : IHasRunSettings, IHasRandomSettings, IHasStochastSetting
+            public enum class SampleMethod { MarkovChain, AdaptiveConditional };
+
+            public ref class SubsetSimulationSettings : IHasRunSettings, IHasStochastSetting, IHasRandomSettings
             {
             private:
-                SharedPointerProvider<Reliability::ImportanceSamplingSettings>* shared = nullptr;
+                SharedPointerProvider<Reliability::SubsetSimulationSettings>* shared = new SharedPointerProvider(new Reliability::SubsetSimulationSettings());
+
                 Wrappers::RunSettings^ runSettings = gcnew Wrappers::RunSettings();
                 Wrappers::RandomSettings^ randomSettings = gcnew Wrappers::RandomSettings();
-                Wrappers::StartPointCalculatorSettings^ startPointSettings = gcnew Wrappers::StartPointCalculatorSettings();
-            public:
-                ImportanceSamplingSettings()
-                {
-                    shared = new SharedPointerProvider(new Reliability::ImportanceSamplingSettings());
-                    shared->object->randomSettings = RandomSettings->GetSettings();
-                }
-                ImportanceSamplingSettings(std::shared_ptr<Reliability::ImportanceSamplingSettings> settings)
-                {
-                    shared = new SharedPointerProvider(settings);
-                }
-                ~ImportanceSamplingSettings() { this->!ImportanceSamplingSettings(); }
-                !ImportanceSamplingSettings() { delete shared; }
 
-                ImportanceSamplingSettings^ Clone()
-                {
-                    return gcnew ImportanceSamplingSettings(shared->object->clone());
-                }
+            public:
+                SubsetSimulationSettings() {}
+                ~SubsetSimulationSettings() { this->!SubsetSimulationSettings(); }
+                !SubsetSimulationSettings() { delete shared; }
 
                 property int MinimumSamples
                 {
@@ -54,16 +43,22 @@ namespace Deltares
                     void set(int value) { shared->object->MaximumSamples = value; }
                 }
 
-                property int MaximumSamplesNoResult
-                {
-                    int get() { return shared->object->MaximumSamplesNoResult; }
-                    void set(int value) { shared->object->MaximumSamplesNoResult = value; }
-                }
-
-                property double VariationCoefficient
+                property double VariationCoefficientFailure
                 {
                     double get() { return shared->object->VariationCoefficient; }
                     void set(double value) { shared->object->VariationCoefficient = value; }
+                }
+
+                property double MarkovChainDeviation
+                {
+                    double get() { return shared->object->MarkovChainDeviation; }
+                    void set(double value) { shared->object->MarkovChainDeviation = value; }
+                }
+
+                property double SubsetFraction
+                {
+                    double get() { return shared->object->SubsetFraction; }
+                    void set(double value) { shared->object->SubsetFraction = value; }
                 }
 
                 property Wrappers::DesignPointMethod DesignPointMethod
@@ -90,16 +85,26 @@ namespace Deltares
                     }
                 }
 
-                virtual property Wrappers::StartPointCalculatorSettings^ StartPointSettings
+                property Wrappers::SampleMethod SampleMethod
                 {
-                    Wrappers::StartPointCalculatorSettings^ get() { return startPointSettings; }
-                    void set(Wrappers::StartPointCalculatorSettings^ value) { startPointSettings = value; }
-                }
-
-                property double VarianceFactor
-                {
-                    double get() { return shared->object->VarianceFactor; }
-                    void set(double value) { shared->object->VarianceFactor = value; }
+                    Wrappers::SampleMethod get()
+                    {
+                        switch (shared->object->SampleMethod)
+                        {
+                        case Reliability::SampleMethodType::MarkovChain: return Wrappers::SampleMethod::MarkovChain;
+                        case Reliability::SampleMethodType::AdaptiveConditional: return Wrappers::SampleMethod::AdaptiveConditional;
+                        default: throw gcnew System::NotSupportedException("Sample method");
+                        }
+                    }
+                    void set(Wrappers::SampleMethod value)
+                    {
+                        switch (value)
+                        {
+                        case Wrappers::SampleMethod::MarkovChain: shared->object->SampleMethod = Reliability::SampleMethodType::MarkovChain; break;
+                        case Wrappers::SampleMethod::AdaptiveConditional:shared->object->SampleMethod = Reliability::SampleMethodType::AdaptiveConditional; break;
+                        default: throw gcnew System::NotSupportedException("Sample method");
+                        }
+                    }
                 }
 
                 virtual property Wrappers::RandomSettings^ RandomSettings
@@ -129,12 +134,7 @@ namespace Deltares
                     return nullptr;
                 }
 
-                bool IsValid()
-                {
-                    return shared->object->isValid();
-                }
-
-                std::shared_ptr<Reliability::ImportanceSamplingSettings> GetSettings()
+                std::shared_ptr<Reliability::SubsetSimulationSettings> GetSettings()
                 {
                     shared->object->StochastSet->stochastSettings.clear();
                     for (int i = 0; i < StochastSettings->Count; i++)
@@ -142,15 +142,20 @@ namespace Deltares
                         shared->object->StochastSet->stochastSettings.push_back(StochastSettings[i]->GetSettings());
                     }
 
-                    shared->object->startPointSettings = StartPointSettings->GetSettings();
+                    shared->object->RunSettings = RunSettings->GetSettings();
                     shared->object->randomSettings = RandomSettings->GetSettings();
-                    shared->object->runSettings = RunSettings->GetSettings();
 
                     return shared->object;
+                }
+
+                bool IsValid()
+                {
+                    return shared->object->isValid();
                 }
             };
         }
     }
 }
+
 
 

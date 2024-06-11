@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ModelSample.h"
 #include "StochastPointAlpha.h"
 #include "../../Deltares.Probabilistic/Model/StochastPoint.h"
 #include "../Utils/SharedPointerProvider.h"
@@ -46,6 +47,11 @@ namespace Deltares
 				property System::Collections::Generic::List<StochastPointAlpha^>^ Alphas
 				{
 					System::Collections::Generic::List<StochastPointAlpha^>^ get() { return alphas; }
+				}
+
+                ModelSample^ GetModelSample()
+				{
+                    return gcnew ModelSample(shared->object->getModelSample());
 				}
 			};
 		}
