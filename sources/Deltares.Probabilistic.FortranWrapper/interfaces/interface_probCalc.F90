@@ -443,68 +443,66 @@ subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, conv, convCri
 
 end subroutine calculateLimitStateFunction
 
+subroutine copyStartVector(probDb, method, iPoint, methodVectorMandatory)
+    use feedback
+    type(probabilisticDataStructure_data), intent(in)    :: probDb
+    type(tMethod),                         intent(inout) :: method
+    integer,                               intent(in)    :: iPoint(:)
+    character(len=*),            optional, intent(in)    :: methodVectorMandatory
+
+    integer :: nstoch, i
+
+    nstoch = size(iPoint)
+
+    if (allocated(probDb%method%FORM%startValue)) then
+        do i = 1, nstoch
+            method%startVector(i) = probDb%method%FORM%startValue(iPoint(i))
+        end do
+    else if (allocated(probDb%method%AdaptiveIS%startValue)) then
+        do i = 1, nstoch
+            method%startVector(i) = probDb%method%AdaptiveIS%startValue(iPoint(i))
+        end do
+    else if (present(methodVectorMandatory)) then
+        call fatalError("start value must be given for " // methodVectorMandatory)
+    else
+        method%startVector(1:nstoch) = 1.0_wp
+    end if
+end subroutine copyStartVector
+
 subroutine convertStartMethod(probDb, method, iPoint)
     use feedback
     type(probabilisticDataStructure_data), intent(in)    :: probDb
     type(tMethod),                         intent(inout) :: method
     integer,                               intent(in)    :: iPoint(:)
 
-    integer :: nstoch, i
+    integer :: nstoch, i, startMethod
 
     nstoch = size(iPoint)
 
-    select case (probDb%method%FORM%startMethod)
+    startMethod = probDb%method%FORM%startMethod
+    if (method%methodId == methodAdaptiveImportanceSampling) startMethod = probDb%method%adaptiveIS%startMethod
+    select case (startMethod)
     case (fORMStartOne)
-        method%startmethod = probDb%method%FORM%startMethod
+        method%startmethod = startMethod
     case (fORMStartRaySearch, fORMStartRaySearchWind)
         method%startmethod = fORMStartRaySearch
-        if (allocated(probDb%method%FORM%startValue)) then
-            do i = 1, nstoch
-                method%startVector(i) = probDb%method%FORM%startValue(iPoint(i))
-            end do
-        else
-            method%startVector(1:nstoch) = 1.0_wp
-        end if
+        call copyStartVector(probDb, method, iPoint)
     case (fORMStartSphereSearch)
-        method%startmethod = probDb%method%FORM%startMethod
-        if (allocated(probDb%method%FORM%startValue)) then
-            do i = 1, nstoch
-                method%startVector(i) = probDb%method%FORM%startValue(iPoint(i))
-            end do
-        else
-            method%startVector(1:nstoch) = 1.0_wp
-        end if
+        method%startmethod = startMethod
+        call copyStartVector(probDb, method, iPoint)
     case (fORMStartGivenVector)
-        method%startmethod = probDb%method%FORM%startMethod
-        if (allocated(probDb%method%FORM%startValue)) then
-            do i = 1, nstoch
-                method%startVector(i) = probDb%method%FORM%startValue(iPoint(i))
-            end do
-        else
-            call fatalError("start value must be given for fORMStartGivenVector")
-        end if
+        method%startmethod = startMethod
+        call copyStartVector(probDb, method, iPoint, "fORMStartGivenVector")
     case (fORMStartRaySearchVector)
-        method%startmethod = probDb%method%FORM%startMethod
-        if (allocated(probDb%method%FORM%startValue)) then
-            do i = 1, nstoch
-                method%startVector(i) = probDb%method%FORM%startValue(iPoint(i))
-            end do
-        else
-            call fatalError("start value must be given for fORMStartRaySearchVector")
-        end if
+        method%startmethod = startMethod
+        call copyStartVector(probDb, method, iPoint, "fORMStartRaySearchVector")
     case (fORMStartRaySearchVectorScaled)
-        method%startmethod = probDb%method%FORM%startMethod
-        if (allocated(probDb%method%FORM%startValue)) then
-            do i = 1, nstoch
-                method%startVector(i) = probDb%method%FORM%startValue(iPoint(i))
-            end do
-        else
-            call fatalError("start value must be given for fORMStartRaySearchVectorScaled")
-        end if
+        method%startmethod = startMethod
+        call copyStartVector(probDb, method, iPoint, "fORMStartRaySearchVectorScaled")
     case (fORMStartZero)
-        method%startmethod = probDb%method%FORM%startMethod
+        method%startmethod = startMethod
     case default
-        call fatalError("start method not implemented: ", probDb%method%FORM%startMethod)
+        call fatalError("start method not implemented: ", startMethod)
     end select
 end subroutine convertStartMethod
 
