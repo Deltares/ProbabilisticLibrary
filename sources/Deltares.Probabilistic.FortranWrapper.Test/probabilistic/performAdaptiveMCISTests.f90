@@ -188,8 +188,8 @@ subroutine AdaptiveImportanceSamplingTestNonLinear
     integer, allocatable          :: iPoint(:)
 
     real (kind = wp)              :: beta = 0.0d0
-    real (kind = wp)              :: betaKnown = 3.56_wp
-    real (kind = wp)              :: margin = 1.0d-2
+    real (kind = wp)              :: betaReference = 3.5241_wp
+    real (kind = wp)              :: margin = 1.0d-4
 
     integer                       :: i
     integer                       :: nStochasts
@@ -226,11 +226,11 @@ subroutine AdaptiveImportanceSamplingTestNonLinear
     AdaptiveIS%increaseVariance   = 1.0_wp
     AdaptiveIS%varianceFactor     = [ (1.5_wp, i = 1,nStochasts) ]
     call setParametersProbabilisticAdpMCIS( probDb, AdaptiveIS )
-    
+
     ! Perform computation to determine alpha and beta
     call performAdpMCIS( probDb, nonlinearIsZ, x, alpha, beta, conv )
 
-    call assert_comparable(beta, betaKnown, margin, "The computed beta deviates from the analytically computed value")
+    call assert_comparable(beta, betaReference, margin, "The computed beta deviates from the analytically computed value")
     call finalizeProbabilisticCalculation(probDb)
 
 end subroutine AdaptiveImportanceSamplingTestNonLinear
@@ -390,8 +390,8 @@ subroutine AdaptiveImportanceSamplingTestBligh2
     integer                       :: i
 
     real (kind = wp)              :: beta
-    real (kind = wp), parameter   :: betaKnown = 5.56717408883033_wp
-    real (kind = wp), parameter   :: margin = 1.0d-2 ! TODO 1.0d-5
+    real (kind = wp), parameter   :: betaReference = 5.493762_wp
+    real (kind = wp), parameter   :: margin = 1.0d-5
 
     integer, parameter            :: nStochasts = 4
     logical                       :: conv
@@ -432,7 +432,7 @@ subroutine AdaptiveImportanceSamplingTestBligh2
     call performAdpMCIS( probDb, blighZ, x, alpha, beta, conv )
     call cleanUpWaartsTestsFunctions
 
-    call assert_comparable(beta, betaKnown, margin, "The computed beta deviates from the analytically computed value")
+    call assert_comparable(beta, betaReference, margin, "The computed beta deviates from the analytically computed value")
     call finalizeProbabilisticCalculation(probDb)
 
 end subroutine AdaptiveImportanceSamplingTestBligh2
@@ -457,8 +457,8 @@ subroutine AdaptiveImportanceSamplingTestBligh3
     integer                       :: i
 
     real (kind = wp)              :: beta
-    real (kind = wp), parameter   :: betaKnown = 5.57610823702707_wp
-    real (kind = wp), parameter   :: margin = 1.0d-2 ! TODO 1.0d-5
+    real (kind = wp), parameter   :: betaReference = 5.493762_wp
+    real (kind = wp), parameter   :: margin = 1.0d-5
 
     integer, parameter            :: nStochasts = 4
     logical                       :: conv
@@ -480,7 +480,7 @@ subroutine AdaptiveImportanceSamplingTestBligh3
     probDb%method%AdaptiveIS%startmethod = fORMStartOne
 
     ! Set details:
-    ! - 1000, 2000 and 10000 samples (min, max, final)
+    ! - 1000 and 2000 samples (min, max)
     ! - coefficient for failure 0.01 (choose the same for non-failure)
     ! - scale factor for variance 1.5
     AdaptiveIS%seedPRNG           = 1
@@ -499,7 +499,7 @@ subroutine AdaptiveImportanceSamplingTestBligh3
     call performAdpMCIS( probDb, blighZ, x, alpha, beta, conv )
     call cleanUpWaartsTestsFunctions
 
-    call assert_comparable(beta, betaKnown, margin, "The computed beta deviates from the analytically computed value")
+    call assert_comparable(beta, betaReference, margin, "The computed beta deviates from the analytically computed value")
 
     call finalizeProbabilisticCalculation(probDb)
 
