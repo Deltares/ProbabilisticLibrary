@@ -1,7 +1,7 @@
 #include <fstream>
 #include <stdio.h>
 #include "gtest/gtest.h"
-#include "hohenbichlerCombiner_tests.h"
+#include "combiner_tests.h"
 #include "../../Deltares.Probabilistic/Combine/HohenbichlerCombiner.h"
 #include "../../Deltares.Probabilistic/Combine/DirectionalSamplingCombiner.h"
 #include "../../Deltares.Probabilistic/Combine/ImportanceSamplingCombiner.h"
@@ -16,14 +16,14 @@ namespace Deltares
     {
         namespace Test
         {
-            void HohenbichlerCombinerTest::allHohenbichlerCombinerTests()
+            void CombinerTest::allCombinerTests()
             {
-                test1();
-                test2();
-                test3();
+                HohenbichlerCombinerTest();
+                DirectionalSamplingCombinerTest();
+                ImportanceSamplingCombinerTest();
             }
 
-            void HohenbichlerCombinerTest::test1()
+            void CombinerTest::HohenbichlerCombinerTest()
             {
                 auto hh = std::make_unique<HohenbichlerCombiner>();
                 auto ref = alphaBeta(4.38787743765301, // pre-computed
@@ -31,7 +31,7 @@ namespace Deltares
                 tester(hh.get(), ref);
             }
 
-            void HohenbichlerCombinerTest::test2()
+            void CombinerTest::DirectionalSamplingCombinerTest()
             {
                 auto dsCombiner = std::make_unique<DirectionalSamplingCombiner>();
                 dsCombiner->randomGeneratorType = Numeric::MersenneTwister;
@@ -40,7 +40,7 @@ namespace Deltares
                 tester(dsCombiner.get(), ref);
             }
 
-            void HohenbichlerCombinerTest::test3()
+            void CombinerTest::ImportanceSamplingCombinerTest()
             {
                 auto importance_sampling_combiner = std::make_unique<ImportanceSamplingCombiner>();
                 importance_sampling_combiner->randomGeneratorType = Numeric::MersenneTwister;
@@ -49,7 +49,7 @@ namespace Deltares
             }
 
             // test based on testcombineMultipleElementsSpatialCorrelated1
-            void HohenbichlerCombinerTest::tester(Combiner* comb, const alphaBeta& ref)
+            void CombinerTest::tester(Combiner* comb, const alphaBeta& ref)
             {
                 const int nElements = 20; // Number of elements
                 const size_t nStochasts = 4;

@@ -8,14 +8,14 @@ namespace Deltares
     {
         namespace Test
         {
-            class HohenbichlerCombinerTest
+            class CombinerTest
             {
             public:
-                void allHohenbichlerCombinerTests();
+                void allCombinerTests();
             private:
-                void test1();
-                void test2();
-                void test3();
+                void HohenbichlerCombinerTest();
+                void DirectionalSamplingCombinerTest();
+                void ImportanceSamplingCombinerTest();
                 void tester(Reliability::Combiner* comb, const Reliability::alphaBeta& ref);
                 const double margin = 1.0e-7;
             };
