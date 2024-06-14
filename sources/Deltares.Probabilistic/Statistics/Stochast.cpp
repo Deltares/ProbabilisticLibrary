@@ -1,5 +1,6 @@
 #include "Stochast.h"
 
+#include "StandardNormal.h"
 #include "Distributions/DistributionLibrary.h"
 #include "Distributions/InvertedDistribution.h"
 #include "Distributions/ExternalDistribution.h"
@@ -32,6 +33,12 @@ namespace Deltares
         double Stochast::getCDF(double x)
         {
             return this->distribution->getCDF(properties, x);
+        }
+
+        double Stochast::getQuantile(double quantile)
+        {
+            double u = StandardNormal::getUFromP(quantile);
+            return this->distribution->getXFromU(properties, u);
         }
 
         double Stochast::getXFromU(double u)
