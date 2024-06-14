@@ -12,12 +12,12 @@ namespace Deltares
             {
             public:
                 void allCombinerTests();
-            private:
                 void HohenbichlerCombinerTest();
                 void DirectionalSamplingCombinerTest();
                 void ImportanceSamplingCombinerTest();
+            private:
                 void tester(Reliability::Combiner* comb, const Reliability::alphaBeta& ref);
-                const double margin = 1.0e-7;
+                double margin = 1.0e-7;
             };
         }
     }
