@@ -9,11 +9,11 @@ namespace Deltares
         {
             std::vector<double> rho;
 
-            for (size_t i = 0; i < designPoints[0]->Alphas.size(); i++)
+            for (const auto& Alpha : designPoints[0]->Alphas)
             {
                 if (selfCorrelationMatrix != nullptr)
                 {
-                    rho.push_back(selfCorrelationMatrix->getSelfCorrelation(designPoints[0]->Alphas[i]->Stochast));
+                    rho.push_back(selfCorrelationMatrix->getSelfCorrelation(Alpha->Stochast));
                 }
                 else
                 {
@@ -28,9 +28,9 @@ namespace Deltares
         {
             auto nStoch = designPoints[0]->Alphas.size();
             elements elm;
-            for (size_t i = 0; i < designPoints.size(); i++)
+            for (const auto& designPoint : designPoints)
             {
-                auto dp = copyAlphaBeta(designPoints[i]);
+                auto dp = copyAlphaBeta(designPoint);
                 elm.push_back(dp);
             }
 
