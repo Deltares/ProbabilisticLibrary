@@ -1,5 +1,5 @@
 #pragma once
-#include "../../Deltares.Probabilistic/Combine/Combiner.h"
+#include "../../Deltares.Probabilistic/Combine/combiner.h"
 #include "../../Deltares.Probabilistic/Combine/alphaBeta.h"
 
 namespace Deltares
