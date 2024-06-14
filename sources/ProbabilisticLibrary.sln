@@ -19,6 +19,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Deltares.Probabilistic.Wrap
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Deltares.Probabilistic.Test", "Deltares.Probabilistic.Test\Deltares.Probabilistic.Test.vcxproj", "{E1AB245A-8279-4746-9E79-B24B0FB3EA29}"
 EndProject
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Deltares.Probabilistic.PWrapper", "Deltares.Probabilistic.PWrapper\Deltares.Probabilistic.PWrapper.pyproj", "{B3F45238-E095-435E-A838-8CB5552A7F0B}"
+EndProject
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Deltares.Probabilistic.PWrapper.Test", "Deltares.Probabilistic.PWrapper.Test\Deltares.Probabilistic.PWrapper.Test.pyproj", "{CAFB0EDA-EF78-46A8-8227-ADEE778907F8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -221,6 +225,42 @@ Global
 		{E1AB245A-8279-4746-9E79-B24B0FB3EA29}.Setup|x64.Build.0 = Debug|x64
 		{E1AB245A-8279-4746-9E79-B24B0FB3EA29}.Setup|x86.ActiveCfg = Debug|Win32
 		{E1AB245A-8279-4746-9E79-B24B0FB3EA29}.Setup|x86.Build.0 = Debug|Win32
+		{B3F45238-E095-435E-A838-8CB5552A7F0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3F45238-E095-435E-A838-8CB5552A7F0B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{B3F45238-E095-435E-A838-8CB5552A7F0B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B3F45238-E095-435E-A838-8CB5552A7F0B}.DebugAlgorithms|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3F45238-E095-435E-A838-8CB5552A7F0B}.DebugAlgorithms|x64.ActiveCfg = Debug|Any CPU
+		{B3F45238-E095-435E-A838-8CB5552A7F0B}.DebugAlgorithms|x86.ActiveCfg = Debug|Any CPU
+		{B3F45238-E095-435E-A838-8CB5552A7F0B}.DebugStandard|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3F45238-E095-435E-A838-8CB5552A7F0B}.DebugStandard|x64.ActiveCfg = Debug|Any CPU
+		{B3F45238-E095-435E-A838-8CB5552A7F0B}.DebugStandard|x86.ActiveCfg = Debug|Any CPU
+		{B3F45238-E095-435E-A838-8CB5552A7F0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3F45238-E095-435E-A838-8CB5552A7F0B}.Release|x64.ActiveCfg = Release|Any CPU
+		{B3F45238-E095-435E-A838-8CB5552A7F0B}.Release|x86.ActiveCfg = Release|Any CPU
+		{B3F45238-E095-435E-A838-8CB5552A7F0B}.ReleaseAlgorithms|Any CPU.ActiveCfg = Release|Any CPU
+		{B3F45238-E095-435E-A838-8CB5552A7F0B}.ReleaseAlgorithms|x64.ActiveCfg = Release|Any CPU
+		{B3F45238-E095-435E-A838-8CB5552A7F0B}.ReleaseAlgorithms|x86.ActiveCfg = Release|Any CPU
+		{B3F45238-E095-435E-A838-8CB5552A7F0B}.Setup|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3F45238-E095-435E-A838-8CB5552A7F0B}.Setup|x64.ActiveCfg = Debug|Any CPU
+		{B3F45238-E095-435E-A838-8CB5552A7F0B}.Setup|x86.ActiveCfg = Debug|Any CPU
+		{CAFB0EDA-EF78-46A8-8227-ADEE778907F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CAFB0EDA-EF78-46A8-8227-ADEE778907F8}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{CAFB0EDA-EF78-46A8-8227-ADEE778907F8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CAFB0EDA-EF78-46A8-8227-ADEE778907F8}.DebugAlgorithms|Any CPU.ActiveCfg = Debug|Any CPU
+		{CAFB0EDA-EF78-46A8-8227-ADEE778907F8}.DebugAlgorithms|x64.ActiveCfg = Debug|Any CPU
+		{CAFB0EDA-EF78-46A8-8227-ADEE778907F8}.DebugAlgorithms|x86.ActiveCfg = Debug|Any CPU
+		{CAFB0EDA-EF78-46A8-8227-ADEE778907F8}.DebugStandard|Any CPU.ActiveCfg = Debug|Any CPU
+		{CAFB0EDA-EF78-46A8-8227-ADEE778907F8}.DebugStandard|x64.ActiveCfg = Debug|Any CPU
+		{CAFB0EDA-EF78-46A8-8227-ADEE778907F8}.DebugStandard|x86.ActiveCfg = Debug|Any CPU
+		{CAFB0EDA-EF78-46A8-8227-ADEE778907F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CAFB0EDA-EF78-46A8-8227-ADEE778907F8}.Release|x64.ActiveCfg = Release|Any CPU
+		{CAFB0EDA-EF78-46A8-8227-ADEE778907F8}.Release|x86.ActiveCfg = Release|Any CPU
+		{CAFB0EDA-EF78-46A8-8227-ADEE778907F8}.ReleaseAlgorithms|Any CPU.ActiveCfg = Release|Any CPU
+		{CAFB0EDA-EF78-46A8-8227-ADEE778907F8}.ReleaseAlgorithms|x64.ActiveCfg = Release|Any CPU
+		{CAFB0EDA-EF78-46A8-8227-ADEE778907F8}.ReleaseAlgorithms|x86.ActiveCfg = Release|Any CPU
+		{CAFB0EDA-EF78-46A8-8227-ADEE778907F8}.Setup|Any CPU.ActiveCfg = Debug|Any CPU
+		{CAFB0EDA-EF78-46A8-8227-ADEE778907F8}.Setup|x64.ActiveCfg = Debug|Any CPU
+		{CAFB0EDA-EF78-46A8-8227-ADEE778907F8}.Setup|x86.ActiveCfg = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

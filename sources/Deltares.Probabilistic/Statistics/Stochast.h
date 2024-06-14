@@ -74,7 +74,14 @@ namespace Deltares
 			 */
 			double getCDF(double x);
 
-			/**
+            /**
+             * \brief Gets the x-value corresponding to a quantile (non-exceeding probability)
+             * \param quantile Given quantile
+             * \return x-value
+             */
+            double getQuantile(double quantile);
+
+		    /**
 			 * \brief Gets the x-value corresponding to a given u-value
 			 * \param u Given u-value
 			 * \return x-value
