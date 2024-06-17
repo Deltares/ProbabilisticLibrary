@@ -37,17 +37,17 @@ namespace Deltares
                 margin = 0.1;
                 auto dsCombiner = std::make_unique<DirectionalSamplingCombiner>();
                 dsCombiner->randomGeneratorType = Numeric::MersenneTwister;
-                auto ref = alphaBeta(2.9873932909104584, // pre-computed
-                    { 0.57465001696833640, 0.39885538364093981, 0.59196640545171397, 0.40033425503634662 }); // pre-computed
+                auto ref = alphaBeta(3.0139519, // pre-computed
+                    { 0.56572, 0.41313, 0.58968, 0.40193 }); // pre-computed
                 tester(dsCombiner.get(), ref);
             }
 
             void CombinerTest::ImportanceSamplingCombinerTest()
             {
-                margin = 0.1;
+                margin = 0.01;
                 auto importance_sampling_combiner = std::make_unique<ImportanceSamplingCombiner>();
                 importance_sampling_combiner->randomGeneratorType = Numeric::MersenneTwister;
-                auto ref = alphaBeta(3.0, { 0.0, 0.0, 0.0, 0.0}); // pre-computed
+                auto ref = alphaBeta(3.0, { 0.6, 0.374, 0.6, 0.374}); // pre-computed
                 tester(importance_sampling_combiner.get(), ref);
             }
 
@@ -60,14 +60,17 @@ namespace Deltares
                 std::vector< std::shared_ptr<Stochast>> stochasts;
                 for (size_t i = 0; i < nStochasts; i++)
                 {
-                    stochasts.push_back(std::make_shared<Stochast>());
+                    auto s = std::make_shared<Stochast>();
+                    s->setDistributionType(Normal);
+                    s->setMean(0.0);
+                    s->setDeviation(1.0);
+                    stochasts.push_back(s);
                 }
 
                 auto CrossSection = alphaBeta(3.0, { 0.6, sqrt(0.5 - 0.36), 0.6, sqrt(0.5 - 0.36) });
                 auto rhoXK = vector1D({ 0.5, 0.5, 0.2, 0.2 });
                 auto dXK = vector1D({ 500.0, 300.0, 500.0, 300.0 });
                 double sectionLength = 100.0;
-
 
                 auto up = upscaling();
                 auto section = up.upscaleLength(CrossSection, rhoXK, dXK, sectionLength, -999.0);
@@ -82,6 +85,7 @@ namespace Deltares
                         auto alpha = std::make_shared<StochastPointAlpha>();
                         alpha->Alpha = section.first.getAlphaI(j);
                         alpha->Stochast = stochasts[j];
+                        alpha->U = -dp->Beta * alpha->Alpha;
                         dp->Alphas.push_back(alpha);
                     }
                     Elements.push_back(dp);
