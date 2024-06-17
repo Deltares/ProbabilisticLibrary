@@ -46,7 +46,7 @@ namespace Deltares
              * \brief Inverts the design point, so the probability of failure will be the probability of non-failure of the non-inverted design point
              * \param designPoint Design point to be inverted
              */
-            void invert(std::shared_ptr<DesignPoint> designPoint);
+            void invert(std::shared_ptr<DesignPoint>& designPoint);
 
             /**
              * \brief Combines design points with possibly inverted design points
