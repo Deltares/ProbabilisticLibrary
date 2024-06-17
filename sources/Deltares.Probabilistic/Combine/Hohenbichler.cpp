@@ -4,7 +4,6 @@
 #include "../Statistics/StandardNormal.h"
 #include "../Reliability/DesignPoint.h"
 #include "../Model/ModelRunner.h"
-#include "../Reliability/ReliabilityMethod.h"
 #include "../Reliability/FORM.h"
 
 using namespace Deltares::Statistics;
@@ -79,7 +78,7 @@ namespace Deltares {
             //
             auto w = HohenbichlerZ(betaV, pfU, rho);
 
-            auto stochast = std::vector<std::shared_ptr<Deltares::Statistics::Stochast>>();
+            auto stochast = std::vector<std::shared_ptr<Stochast>>();
             const size_t nStoch = 2;
             for (size_t i = 0; i < nStoch; i++)
             {
@@ -88,7 +87,7 @@ namespace Deltares {
                 std::shared_ptr<Stochast> s(new Stochast(dist, params));
                 stochast.push_back(s);
             }
-            std::shared_ptr<Deltares::Statistics::CorrelationMatrix> corr(new Deltares::Statistics::CorrelationMatrix());
+            std::shared_ptr<CorrelationMatrix> corr(new CorrelationMatrix());
             std::shared_ptr<UConverter> uConverter(new UConverter(stochast, corr));
             uConverter->initializeForRun();
             std::shared_ptr<ZModel> zModel(new ZModel([&w](std::shared_ptr<ModelSample> v) { return w.zfunc(v); }));
