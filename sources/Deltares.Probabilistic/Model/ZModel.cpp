@@ -24,6 +24,13 @@ namespace Deltares
             this->zLambda(sample);
 		}
 
+        void ZModel::invoke(std::shared_ptr<ModelSample> sample, const designPointOptions dpOption)
+        {
+            sample->threadId = omp_get_thread_num();
+            this->zLambdaDp(sample, dpOption);
+        }
+
+
 		void ZModel::invoke(std::vector<std::shared_ptr<ModelSample>> samples)
 		{
 			if (zMultipleLambda == nullptr)

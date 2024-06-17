@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "../Deltares.Probabilistic/Model/ModelSample.h"
+#include "../Deltares.Probabilistic/Model/RunSettings.h"
 #include "stringHelper.h"
 
 struct computationSettings
@@ -21,6 +22,7 @@ class funcWrapper
 public:
     funcWrapper(const int id, zFuncExtern func) : compId(id), zfunc(func) { ; }
     void FDelegate(std::shared_ptr<Deltares::Models::ModelSample> s);
+    void FDelegateDp(std::shared_ptr<Deltares::Models::ModelSample> s, const Deltares::Models::designPointOptions dp);
     void FDelegateParallel(std::vector<std::shared_ptr<Deltares::Models::ModelSample>> s);
 private:
     const int compId;

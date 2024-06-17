@@ -8,7 +8,14 @@ namespace Deltares
 {
 	namespace Models
 	{
-		class RunSettings
+        enum class designPointOptions
+        {
+            dpOutFALSE = 0,
+            dpOutTRUE = 1,
+            dpOutPrintAll = 3,
+        };
+
+        class RunSettings
 		{
 		public:
 			int MaxParallelProcesses = 1;
@@ -20,6 +27,9 @@ namespace Deltares
 			MessageType LowestMessageType = MessageType::Warning;
 
 			std::shared_ptr<ProxySettings> proxySettings = nullptr;
+
+            designPointOptions RunModelAtDesignPoint = designPointOptions::dpOutFALSE;
+            int RelMethodCounter = 0;
 
 			bool isValid()
 			{

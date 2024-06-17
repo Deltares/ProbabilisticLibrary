@@ -7,13 +7,23 @@ using namespace Deltares::Models;
 
 void funcWrapper::FDelegate(std::shared_ptr<Deltares::Models::ModelSample> s)
 {
-    auto dp = (designPointOptions)s->loggingOption;
+    auto dp = designPointOptions::dpOutFALSE;
     computationSettings compSetting{ dp, compId, s->threadId, s->relMethodCounter };
     tError e = tError();
     double result = zfunc(s->Values.data(), &compSetting, &e);
     if (e.errorCode != 0) throw probLibException(e.errorMessage);
     s->Z = result;
 }
+
+void funcWrapper::FDelegateDp(std::shared_ptr<Deltares::Models::ModelSample> s, const designPointOptions dp)
+{
+    computationSettings compSetting{ dp, compId, s->threadId, s->relMethodCounter };
+    tError e = tError();
+    double result = zfunc(s->Values.data(), &compSetting, &e);
+    if (e.errorCode != 0) throw probLibException(e.errorMessage);
+    s->Z = result;
+}
+
 
 void funcWrapper::FDelegateParallel(std::vector<std::shared_ptr<Deltares::Models::ModelSample>> samples)
 {

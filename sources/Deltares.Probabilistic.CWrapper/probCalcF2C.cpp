@@ -92,18 +92,9 @@ void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, corrStr
         auto createRelM = createReliabilityMethod();
         auto relMethod = createRelM.selectMethod(*method, nStoch, stochasts);
         auto zModel = std::make_shared<ZModel>([&fw](std::shared_ptr<ModelSample> v) { return fw.FDelegate(v); },
-                                               [&fw](std::vector<std::shared_ptr<ModelSample>> v) { return fw.FDelegateParallel(v); });
-
-        switch (method->designPointOptions)
-        {
-        case DPoptions::RMinZFunc:
-        case DPoptions::RMinZFuncCompatible:
-            zModel->callInDesignPoint = designPointOptions::dpOutTRUE;
-            break;
-        default:
-            zModel->callInDesignPoint = designPointOptions::dpOutFALSE;
-            break;
-        }
+                                               [&fw](std::vector<std::shared_ptr<ModelSample>> v) { return fw.FDelegateParallel(v); },
+                                               [&fw](std::shared_ptr<ModelSample> v, const designPointOptions dp) { return fw.FDelegateDp(v, dp); }
+        );
 
         auto corr = std::make_shared<CorrelationMatrix>();
         if (nrCorrelations > 0)
@@ -124,6 +115,18 @@ void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, corrStr
         modelRunner->Settings->MaxParallelProcesses = method->numThreads;
         modelRunner->Settings->MaxChunkSize = method->chunkSize;
         modelRunner->Settings->SaveMessages = true;
+
+        switch (method->designPointOptions)
+        {
+        case DPoptions::RMinZFunc:
+        case DPoptions::RMinZFuncCompatible:
+            modelRunner->Settings->RunModelAtDesignPoint = designPointOptions::dpOutTRUE;
+            break;
+        default:
+            modelRunner->Settings->RunModelAtDesignPoint = designPointOptions::dpOutFALSE;
+            break;
+        }
+
         modelRunner->initializeForRun();
         auto newResult = relMethod->getDesignPoint(modelRunner);
 
