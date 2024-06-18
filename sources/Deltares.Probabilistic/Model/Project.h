@@ -4,6 +4,7 @@
 #include "../Statistics/Stochast.h"
 #include "../Statistics/CorrelationMatrix.h"
 #include "../Reliability/ReliabilityMethod.h"
+#include "../Reliability/Settings.h"
 
 namespace Deltares
 {
@@ -36,6 +37,11 @@ namespace Deltares
             std::shared_ptr<ZModel> model = nullptr;
 
             /**
+             * \brief Deterministic model which calculates a z-value based on input values
+             */
+            std::shared_ptr<Reliability::Settings> settings = std::make_shared<Reliability::Settings>();
+
+            /**
              * \brief Settings for performing a calculation
              * \remark Settings of the reliability calculation are held in the settings of the reliability method
              */
@@ -62,6 +68,11 @@ namespace Deltares
              * \return Design point
              */
             std::shared_ptr<Reliability::DesignPoint> getDesignPoint();
+
+            /**
+             * \brief Run by using the global settings
+             */
+            void run();
         };
     }
 }

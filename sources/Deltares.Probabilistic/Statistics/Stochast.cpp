@@ -9,20 +9,18 @@ namespace Deltares
 {
     namespace Statistics
     {
-        Stochast::Stochast() { StochastCount++; };
+        Stochast::Stochast() { };
 
         Stochast::Stochast(DistributionType distributionType, std::vector<double> values)
         {
             setDistributionType(distributionType);
             distribution->initialize(properties, values);
-            StochastCount++;
         }
 
         Stochast::Stochast(DistributionType distributionType, std::shared_ptr<StochastProperties> properties)
         {
             setDistributionType(distributionType);
             this->properties = properties;
-            StochastCount++;
         }
 
         double Stochast::getPDF(double x)
@@ -228,6 +226,46 @@ namespace Deltares
         {
             return distribution->getSpecialPoints(properties);
         }
+
+        Statistics::DistributionType Stochast::getDistributionType(std::string distributionType)
+        {
+            if (distributionType == "deterministic") return Statistics::DistributionType::Deterministic;
+            else if (distributionType == "normal") return Statistics::DistributionType::Normal;
+            else if (distributionType == "log_normal") return Statistics::DistributionType::LogNormal;
+            else if (distributionType == "uniform") return Statistics::DistributionType::Uniform;
+            else if (distributionType == "gumbel") return Statistics::DistributionType::Gumbel;
+            else if (distributionType == "weibull") return Statistics::DistributionType::Weibull;
+            else if (distributionType == "conditional_weibull") return Statistics::DistributionType::ConditionalWeibull;
+            else if (distributionType == "frechet") return Statistics::DistributionType::Frechet;
+            else if (distributionType == "generalized_extreme_value") return Statistics::DistributionType::GeneralizedExtremeValue;
+            else if (distributionType == "rayleigh") return Statistics::DistributionType::Rayleigh;
+            else if (distributionType == "rayleigh_n") return Statistics::DistributionType::RayleighN;
+            else if (distributionType == "discrete") return Statistics::DistributionType::Discrete;
+            else if (distributionType == "qualitative") return Statistics::DistributionType::Qualitative;
+            else throw Reliability::probLibException("distribution type");
+        }
+
+        std::string Stochast::getDistributionTypeString(Statistics::DistributionType distributionType)
+        {
+            switch (distributionType)
+            {
+            case Statistics::DistributionType::Deterministic: return "deterministic";
+            case Statistics::DistributionType::Normal: return "normal";
+            case Statistics::DistributionType::LogNormal: return "log_normal";
+            case Statistics::DistributionType::Uniform: return "uniform";
+            case Statistics::DistributionType::Gumbel: return "gumbel";
+            case Statistics::DistributionType::Weibull: return "weibull";
+            case Statistics::DistributionType::ConditionalWeibull: return "conditional_weibull";
+            case Statistics::DistributionType::Frechet: return "frechet";
+            case Statistics::DistributionType::GeneralizedExtremeValue: return "generalized_extreme_value";
+            case Statistics::DistributionType::Rayleigh: return "rayleigh";
+            case Statistics::DistributionType::RayleighN: return "rayleigh_n";
+            case Statistics::DistributionType::Discrete: return "discrete";
+            case Statistics::DistributionType::Qualitative: return "qualitative";
+            default: throw Reliability::probLibException("distribution type");
+            }
+        }
+
 
     }
 }

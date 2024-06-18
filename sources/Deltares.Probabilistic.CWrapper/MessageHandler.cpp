@@ -79,3 +79,9 @@ extern "C" __declspec(dllexport) void SetArgValue(int id, char* property, double
     std::string propertyStr(property);
     projectServer->SetArgValue(id, propertyStr, argument, value);
 }
+
+extern "C" __declspec(dllexport) void Execute(int id, char* method)
+{
+    std::string methodStr(method);
+    projectServer->Execute(id, methodStr);
+}

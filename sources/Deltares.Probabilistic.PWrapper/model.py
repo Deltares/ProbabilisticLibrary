@@ -26,14 +26,10 @@ class Project:
 			print('error: ' + message, flush = True)
 			raise
 
-		self._reliability_method = None
 		self._variables = []
 		self._settings = None
+		self._design_point = None
   
-	def run(self):
-		toolkit.Run()
-		self._design_points = None
-
 	@property
 	def variables(self):
 		if self._variables is None:
@@ -43,8 +39,23 @@ class Project:
 	@property   
 	def settings(self):
 		if self._settings is None:
-			self._settings = interface.Create('settings')
+			self._settings = Settings()
 		return self._settings
+
+	def run(self):
+		_design_point = None
+		interface.SetArrayValue(self._id, 'variables', [variable._id for variable in self.variables])
+		interface.SetIntValue(self._id, 'settings', self.settings._id)
+		interface.Execute(self._id, 'run')
+
+	@property   
+	def design_point(self):
+		if self._design_point is None:
+			designPointId = interface.GetIntValue(self._id, 'design_point')
+			if designPointId > 0:
+				self._design_point = DesignPoint(designPointId)
+		return self._design_point
+
 
 class Stochast:
 
@@ -114,8 +125,8 @@ class Stochast:
 		
 	@distribution.setter
 	def distribution(self, value):
-		self._distribution = value
 		self._clear_values();
+		self._distribution = value
 		interface.SetStringValue(self._id, 'distribution', value)
 
 	@property   
@@ -701,7 +712,7 @@ class Settings:
 	@property   
 	def variation_coefficient(self):
 		if self._variation_coefficient is None:
-			self._variation_coefficient = interface.GetValue(self._id, 'variation_coefficient', value)
+			self._variation_coefficient = interface.GetValue(self._id, 'variation_coefficient')
 		return self._variation_coefficient
 		
 	@variation_coefficient.setter
@@ -748,4 +759,72 @@ class StochastSettings:
 	def start_value(self, value):
 		self._start_value = value
 		toolkit.SetStartValue(self._name, value)
+
+class DesignPoint:
+
+	def __init__(self, id):
+		self._id = id
+		self._clear_values()
+
+	def _clear_values(self):
+		self._reliability_index = None
+		self._probability_failure = None
+		self._convergence = None
+		self._realizations = None
+		
+	@property   
+	def reliability_index(self):
+		if self._reliability_index is None:
+			self._reliability_index = interface.GetValue(self._id, 'reliability_index')
+		return self._reliability_index
+		
+	@property   
+	def probability_failure(self):
+		if self._probability_failure is None:
+			self._probability_failure = interface.GetValue(self._id, 'probability_index')
+		return self._probability_failure
+		
+	@property   
+	def convergence(self):
+		if self._convergence is None:
+			self._convergence = interface.GetValue(self._id, 'convergence')
+		return self._convergence
+		
+	def get_alpha(self, stochast):
+		if type(stochast) is Stochast:
+			stochast = stochast.fullname
+		return Alpha(stochast, self._index)
+		
+	@property   
+	def realizations(self):
+		if self._realizations is None:
+			count = toolkit.GetRealizations(self._index)
+			self._realizations = []
+			for i in range(count):
+				self._realizations.append(Realization(i, self._index))
+		return self._realizations
+		
+class Alpha:
+
+	def __init__(self, name, design_point_index):
+		self._name = name
+		self._design_point_index = design_point_index
+		self._clear_values()
+
+	def _clear_values(self):
+		self._alpha_value = None
+		self._physical_value = None
+		
+	@property   
+	def alpha_value(self):
+		if self._alpha_value is None:
+			self._alpha_value = toolkit.GetAlpha(self._name, self._design_point_index)
+		return self._alpha_value
+		
+	@property   
+	def physical_value(self):
+		if self._physical_value is None:
+			self._physical_value = toolkit.GetAlphaPhysical(self._name, self._design_point_index)
+		return self._physical_value
+
 

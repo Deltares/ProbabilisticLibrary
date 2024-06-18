@@ -34,11 +34,6 @@ namespace Deltares
 			 */
             Stochast();
 
-            ~Stochast()
-            {
-                StochastCount--;
-            }
-
 			/**
 			 * \brief Constructor with distribution type and initial values
 			 * \remark The method initialize of the distribution is used to populate the stochastic parameters
@@ -280,7 +275,8 @@ namespace Deltares
 			 */
 			std::shared_ptr<VariableStochastValuesSet> ValueSet = std::make_shared<VariableStochastValuesSet>();
 
-            inline static int StochastCount = 0;
+            static Statistics::DistributionType getDistributionType(std::string distributionType);
+            static std::string getDistributionTypeString(Statistics::DistributionType distributionType);
 		};
 	}
 }

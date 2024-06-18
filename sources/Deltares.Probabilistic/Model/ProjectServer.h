@@ -25,19 +25,24 @@ namespace Deltares
             void SetArrayValue(int id, std::string property_, int* values, int size);
             double GetArgValue(int id, std::string property_, double argument);
             void SetArgValue(int id, std::string property_, double argument, double value);
+            void Execute(int id, std::string method_);
         private:
-            enum ObjectType {Stochast, DiscreteValue, HistogramValue, FragilityValue, Settings};
+            enum ObjectType {Project, Stochast, DiscreteValue, HistogramValue, FragilityValue, Settings, DesignPoint};
 
             int counter = 0;
             std::map<int, Deltares::Models::ProjectServer::ObjectType> types;
-            std::map<int, std::shared_ptr<Statistics::Stochast>> stochasts;
+
+            std::unordered_map<int, std::shared_ptr<Statistics::Stochast>> stochasts;
+            std::unordered_map<int, std::shared_ptr<Models::Project>> projects;
             std::unordered_map<int, std::shared_ptr<Statistics::DiscreteValue>> discreteValues;
             std::unordered_map<int, std::shared_ptr<Statistics::HistogramValue>> histogramValues;
             std::unordered_map<int, std::shared_ptr<Statistics::FragilityValue>> fragilityValues;
             std::unordered_map<int, std::shared_ptr<Reliability::Settings>> settingsValues;
+            std::unordered_map<int, std::shared_ptr<Reliability::DesignPoint>> designPoints;
 
-            static Statistics::DistributionType getDistributionType(std::string distributionType);
-            static std::string getDistributionTypeString(Statistics::DistributionType distributionType);
+            std::unordered_map<std::shared_ptr<Reliability::DesignPoint>, int> designPointIds;
+
+            int GetDesignPointId(std::shared_ptr<Reliability::DesignPoint> designPoint);
         };
     }
 }
