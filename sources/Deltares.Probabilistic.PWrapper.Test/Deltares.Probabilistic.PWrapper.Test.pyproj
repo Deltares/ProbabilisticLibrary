@@ -5,8 +5,7 @@
     <ProjectGuid>cafb0eda-ef78-46a8-8227-adee778907f8</ProjectGuid>
     <ProjectHome>.</ProjectHome>
     <StartupFile>test_model.py</StartupFile>
-    <SearchPath>
-    </SearchPath>
+    <SearchPath>..\Deltares.Probabilistic.PWrapper</SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
     <Name>Deltares.Probabilistic.PWrapper.Test</Name>

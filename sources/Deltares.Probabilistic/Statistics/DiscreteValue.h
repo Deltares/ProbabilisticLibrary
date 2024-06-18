@@ -6,25 +6,17 @@ namespace Deltares
 		class DiscreteValue
 		{
 		public:
-			DiscreteValue()
-			{
-				id = ++counter;
-			}
+			DiscreteValue()	{ }
 
 			DiscreteValue(double x, double amount)
 			{
 				this->X = x;
 				this->Amount = amount;
-
-				id = ++counter;
 			}
 
 			~DiscreteValue()
 			{
 			}
-
-			static int inline counter = 0;
-			int id = 0;
 
 			double X = 0;
 			double Amount = 0;
