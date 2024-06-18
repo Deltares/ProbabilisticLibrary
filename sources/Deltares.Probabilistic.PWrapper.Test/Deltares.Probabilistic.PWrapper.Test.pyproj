@@ -5,7 +5,8 @@
     <ProjectGuid>cafb0eda-ef78-46a8-8227-adee778907f8</ProjectGuid>
     <ProjectHome>.</ProjectHome>
     <StartupFile>test_model.py</StartupFile>
-    <SearchPath>..\Deltares.Probabilistic.PWrapper</SearchPath>
+    <SearchPath>
+    </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
     <Name>Deltares.Probabilistic.PWrapper.Test</Name>
@@ -26,6 +27,7 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="project_builder.py" />
     <Compile Include="test_model.py">
       <SubType>Code</SubType>
     </Compile>

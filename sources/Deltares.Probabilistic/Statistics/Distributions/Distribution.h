@@ -199,6 +199,7 @@ namespace Deltares
 			 * \return List of parameters
 			 */
 			virtual std::vector<DistributionPropertyType> getParameters() {	return {}; }
+
 		protected:
 			virtual void setXAtUByIteration(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType);
 			virtual double getFittedMinimum(std::vector<double>& x);

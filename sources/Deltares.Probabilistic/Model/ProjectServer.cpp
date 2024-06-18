@@ -15,7 +15,12 @@ namespace Deltares
         {
             counter++;
 
-            if (object_type == "stochast")
+            if (object_type == "project")
+            {
+                projects[counter] = std::make_shared<Deltares::Models::Project>();
+                types[counter] = ObjectType::Project;
+            }
+            else if (object_type == "stochast")
             {
                 stochasts[counter] = std::make_shared<Deltares::Statistics::Stochast>();
                 types[counter] = ObjectType::Stochast;
@@ -48,6 +53,7 @@ namespace Deltares
         {
             switch (types[id])
             {
+            case ObjectType::Project: projects.erase(id); break;
             case ObjectType::Stochast: stochasts.erase(id); break;
             case ObjectType::DiscreteValue: discreteValues.erase(id); break;
             case ObjectType::HistogramValue: histogramValues.erase(id); break;
@@ -171,7 +177,13 @@ namespace Deltares
         {
             ObjectType objectType = types[id];
 
-            if (objectType == ObjectType::Stochast)
+            if (objectType == ObjectType::Project)
+            {
+                std::shared_ptr<Models::Project> project = projects[id];
+
+                if (property_ == "design_point") return GetDesignPointId(project->designPoint);
+            }
+            else if (objectType == ObjectType::Stochast)
             {
                 std::shared_ptr<Statistics::Stochast> stochast = stochasts[id];
 
@@ -191,8 +203,6 @@ namespace Deltares
                 else if (property_ == "relaxation_loops") return settings->RelaxationLoops;
             }
 
-
-
             return 0;
         }
 
@@ -200,7 +210,13 @@ namespace Deltares
         {
             ObjectType objectType = types[id];
 
-            if (objectType == ObjectType::Stochast)
+            if (objectType == ObjectType::Project)
+            {
+                std::shared_ptr<Models::Project> project = projects[id];
+
+                if (property_ == "settings") project->settings = settingsValues[value];
+            }
+            else if (objectType == ObjectType::Stochast)
             {
                 std::shared_ptr<Statistics::Stochast> stochast = stochasts[id];
 
@@ -258,7 +274,7 @@ namespace Deltares
             {
                 std::shared_ptr<Statistics::Stochast> stochast = stochasts[id];
 
-                if (property_ == "distribution") return getDistributionTypeString(stochast->getDistributionType());
+                if (property_ == "distribution") return Stochast::getDistributionTypeString(stochast->getDistributionType());
                 else return "";
             }
             else if (objectType == ObjectType::Settings)
@@ -281,7 +297,7 @@ namespace Deltares
             {
                 std::shared_ptr<Statistics::Stochast> stochast = stochasts[id];
 
-                if (property_ == "distribution") stochast->setDistributionType(getDistributionType(value));
+                if (property_ == "distribution") stochast->setDistributionType(Stochast::getDistributionType(value));
             }
             else if (objectType == ObjectType::Settings)
             {
@@ -297,7 +313,20 @@ namespace Deltares
         {
             ObjectType objectType = types[id];
 
-            if (objectType == ObjectType::Stochast)
+            if (objectType == ObjectType::Project)
+            {
+                std::shared_ptr<Models::Project> project = projects[id];
+
+                if (property_ == "variables")
+                {
+                    project->stochasts.clear();
+                    for (int i = 0; i < size; i++)
+                    {
+                        project->stochasts.push_back(stochasts[values[i]]);
+                    }
+                }
+            }
+            else if (objectType == ObjectType::Stochast)
             {
                 std::shared_ptr<Statistics::Stochast> stochast = stochasts[id];
 
@@ -354,46 +383,39 @@ namespace Deltares
             {
                 std::shared_ptr<Statistics::Stochast> stochast = stochasts[id];
 
-                if (property_ == "x_at_u") return stochast->setXAtU(value, argument, ConstantParameterType::VariationCoefficient);
+                if (property_ == "x_at_u") stochast->setXAtU(value, argument, ConstantParameterType::VariationCoefficient);
             }
         }
 
-        Statistics::DistributionType ProjectServer::getDistributionType(std::string distributionType)
+        void ProjectServer::Execute(int id, std::string method_)
         {
-            if (distributionType == "deterministic") return Statistics::DistributionType::Deterministic;
-            else if (distributionType == "Normal") return Statistics::DistributionType::Normal;
-            else if (distributionType == "LogNormal") return Statistics::DistributionType::LogNormal;
-            else if (distributionType == "Uniform") return Statistics::DistributionType::Uniform;
-            else if (distributionType == "Gumbel") return Statistics::DistributionType::Gumbel;
-            else if (distributionType == "Weibull") return Statistics::DistributionType::Weibull;
-            else if (distributionType == "ConditionalWeibull") return Statistics::DistributionType::ConditionalWeibull;
-            else if (distributionType == "Frechet") return Statistics::DistributionType::Frechet;
-            else if (distributionType == "GeneralizedExtremeValue") return Statistics::DistributionType::GeneralizedExtremeValue;
-            else if (distributionType == "Rayleigh") return Statistics::DistributionType::Rayleigh;
-            else if (distributionType == "RayleighN") return Statistics::DistributionType::RayleighN;
-            else if (distributionType == "Discrete") return Statistics::DistributionType::Discrete;
-            else if (distributionType == "Qualitative") return Statistics::DistributionType::Qualitative;
-            else throw probLibException("distribution type");
+            ObjectType objectType = types[id];
+
+            if (objectType == ObjectType::Project)
+            {
+                std::shared_ptr<Models::Project> project = projects[id];
+
+                if (method_ == "run") project->run();
+            }
         }
 
-        std::string ProjectServer::getDistributionTypeString(Statistics::DistributionType distributionType)
+        int ProjectServer::GetDesignPointId(std::shared_ptr<Reliability::DesignPoint> designPoint)
         {
-            switch (distributionType)
+            if (designPoint == nullptr)
             {
-            case Statistics::DistributionType::Deterministic: return "Deterministic";
-            case Statistics::DistributionType::Normal: return "Normal";
-            case Statistics::DistributionType::LogNormal: return "LogNormal";
-            case Statistics::DistributionType::Uniform: return "Uniform";
-            case Statistics::DistributionType::Gumbel: return "Gumbel";
-            case Statistics::DistributionType::Weibull: return "Weibull";
-            case Statistics::DistributionType::ConditionalWeibull: return "ConditionalWeibull";
-            case Statistics::DistributionType::Frechet: return "Frechet";
-            case Statistics::DistributionType::GeneralizedExtremeValue: return "GeneralizedExtremeValue";
-            case Statistics::DistributionType::Rayleigh: return "Rayleigh";
-            case Statistics::DistributionType::RayleighN: return "RayleighN";
-            case Statistics::DistributionType::Discrete: return "Discrete";
-            case Statistics::DistributionType::Qualitative: return "Qualitative";
-            default: throw probLibException("distribution type");
+                return 0;
+            }
+            else
+            {
+                if (!designPointIds.contains(designPoint))
+                {
+                    counter++;
+                    designPoints[counter] = designPoint;
+                    types[counter] = ObjectType::DesignPoint;
+                    designPointIds[designPoint] = counter;
+                }
+
+                return designPointIds[designPoint];
             }
         }
     }

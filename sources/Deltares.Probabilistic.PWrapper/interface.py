@@ -65,8 +65,8 @@ def SetStringValue(id_, property_, value_):
 	lib.SetStringValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), bytes(value_, 'utf-8'))
 
 def SetArrayValue(id_, property_, values_):
-	cvalues = (ctypes.c_int * values_.count)(*values_)
-	lib.SetArrayValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.POINTER(ctypes.c_int)(cvalues), ctypes.c_int(values_.count))
+	cvalues = (ctypes.c_int * len(values_))(*values_)
+	lib.SetArrayValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.POINTER(ctypes.c_int)(cvalues), ctypes.c_uint(len(values_)))
 
 def GetArgValue(id_, property_, arg_):
 	lib.GetArgValue.restype = ctypes.c_double
@@ -74,3 +74,6 @@ def GetArgValue(id_, property_, arg_):
 
 def SetArgValue(id_, property_, arg_, value_):
 	lib.SetArgValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.c_double(arg_), ctypes.c_double(value_))
+
+def Execute(id_, method_):
+	lib.Execute(ctypes.c_int(id_), bytes(method_, 'utf-8'))

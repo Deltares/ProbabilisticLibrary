@@ -41,9 +41,8 @@ namespace Deltares
 				{
 					shared = new Utils::Wrappers::SharedPointerProvider(new Statistics::Stochast());
 					shared->object->ValueSet = this->ValueSet->GetValue();
-
-                    StochastCount++;
 				}
+
 				Stochast(DistributionType distributionType, array<double>^ values)
 				{
 					const Statistics::DistributionType nativeDistributionType = DistributionTypeConverter::getNativeDistributionType(distributionType);
@@ -51,15 +50,10 @@ namespace Deltares
 
 					shared = new Utils::Wrappers::SharedPointerProvider(new Statistics::Stochast(nativeDistributionType, nValues));
 					shared->object->ValueSet = this->ValueSet->GetValue();
-
-                    StochastCount++;
                 }
+
 				~Stochast() { this->!Stochast(); }
-				!Stochast()
-				{
-                    StochastCount--;
-				    delete shared;
-				}
+                !Stochast() { delete shared; }
 
 				virtual property Wrappers::DistributionType DistributionType
 				{
@@ -299,12 +293,6 @@ namespace Deltares
 
 					return shared->object;
 				}
-
-                static int StochastCount = 0;
-                static property int NativeStochastCount
-                {
-                    int get() { return Statistics::Stochast::StochastCount; }
-                }
 			};
 		}
 	}

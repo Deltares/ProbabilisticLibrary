@@ -4,6 +4,14 @@ namespace Deltares
 {
     namespace Models
     {
+        void Project::run()
+        {
+            this->reliabilityMethod = this->settings->GetReliabilityMethod();
+            this->runSettings = this->settings->RunSettings;
+
+            this->designPoint = this->getDesignPoint();
+        }
+
         std::shared_ptr<Reliability::DesignPoint> Project::getDesignPoint()
         {
             std::shared_ptr<UConverter> uConverter = std::make_shared<UConverter>(this->stochasts, this->correlationMatrix);

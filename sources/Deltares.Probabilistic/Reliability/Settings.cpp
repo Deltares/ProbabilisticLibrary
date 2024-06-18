@@ -50,6 +50,10 @@ namespace Deltares
         {
             std::shared_ptr<NumericalIntegration> numericalIntegration = std::make_shared<NumericalIntegration>();
 
+            numericalIntegration->Settings.designPointMethod = this->DesignPointMethod;
+            numericalIntegration->Settings.runSettings = this->RunSettings;
+            numericalIntegration->Settings.StochastSet = this->StochastSet;
+
             return numericalIntegration;
         }
 
@@ -57,16 +61,13 @@ namespace Deltares
         {
             std::shared_ptr<CrudeMonteCarlo> crudeMonteCarlo = std::make_shared<CrudeMonteCarlo>();
 
-            //crudeMonteCarlo->Settings->EpsilonBeta = this->EpsilonBeta;
-            //crudeMonteCarlo->Settings->FilterAtNonConvergence = this->FilterAtNonConvergence;
-            //crudeMonteCarlo->Settings->MaxIterationsGrowthFactor = this->MaxIterationsGrowthFactor;
-            //crudeMonteCarlo->Settings->MaximumIterations = this->MaximumIterations;
-            //crudeMonteCarlo->Settings->RelaxationFactor = this->RelaxationFactor;
-            //crudeMonteCarlo->Settings->RelaxationLoops = this->RelaxationLoops;
-            //crudeMonteCarlo->Settings->GradientSettings = this->GradientSettings;
-            //crudeMonteCarlo->Settings->RunSettings = this->RunSettings;
-            //crudeMonteCarlo->Settings->StartPointSettings = this->StartPointSettings;
-            //crudeMonteCarlo->Settings->StochastSet = this->StochastSet;
+            crudeMonteCarlo->Settings->MinimumSamples = this->MinimumSamples;
+            crudeMonteCarlo->Settings->MaximumSamples = this->MaximumSamples;
+            crudeMonteCarlo->Settings->designPointMethod = this->DesignPointMethod;
+            crudeMonteCarlo->Settings->VariationCoefficient = this->VariationCoefficient;
+            crudeMonteCarlo->Settings->RunSettings = this->RunSettings;
+            crudeMonteCarlo->Settings->randomSettings = this->RandomSettings;
+            crudeMonteCarlo->Settings->StochastSet = this->StochastSet;
 
             return crudeMonteCarlo;
         }
@@ -75,12 +76,32 @@ namespace Deltares
         {
             std::shared_ptr<ImportanceSampling> importanceSampling = std::make_shared<ImportanceSampling>();
 
+            importanceSampling->Settings->MinimumSamples = this->MinimumSamples;
+            importanceSampling->Settings->MaximumSamples = this->MaximumSamples;
+            importanceSampling->Settings->designPointMethod = this->DesignPointMethod;
+            importanceSampling->Settings->VariationCoefficient = this->VariationCoefficient;
+            importanceSampling->Settings->runSettings = this->RunSettings;
+            importanceSampling->Settings->randomSettings = this->RandomSettings;
+            importanceSampling->Settings->StochastSet = this->StochastSet;
+
             return importanceSampling;
         }
 
         const std::shared_ptr<Reliability::ReliabilityMethod> Settings::GetAdaptiveImportanceSamplingMethod()
         {
             std::shared_ptr<AdaptiveImportanceSampling> adaptiveImportanceSampling = std::make_shared<AdaptiveImportanceSampling>();
+
+            adaptiveImportanceSampling->Settings->importanceSamplingSettings->MinimumSamples = this->MinimumSamples;
+            adaptiveImportanceSampling->Settings->importanceSamplingSettings->MaximumSamples = this->MaximumSamples;
+            adaptiveImportanceSampling->Settings->importanceSamplingSettings->designPointMethod = this->DesignPointMethod;
+            adaptiveImportanceSampling->Settings->importanceSamplingSettings->VariationCoefficient = this->VariationCoefficient;
+            adaptiveImportanceSampling->Settings->importanceSamplingSettings->runSettings = this->RunSettings;
+            adaptiveImportanceSampling->Settings->importanceSamplingSettings->randomSettings = this->RandomSettings;
+            adaptiveImportanceSampling->Settings->importanceSamplingSettings->StochastSet = this->StochastSet;
+
+            adaptiveImportanceSampling->Settings->MinVarianceLoops = this->MinimumVarianceLoops;
+            adaptiveImportanceSampling->Settings->MaxVarianceLoops = this->MaximumVarianceLoops;
+            adaptiveImportanceSampling->Settings->FractionFailed = this->FractionFailed;
 
             return adaptiveImportanceSampling;
         }
@@ -89,12 +110,28 @@ namespace Deltares
         {
             std::shared_ptr<DirectionalSampling> directionalSampling = std::make_shared<DirectionalSampling>();
 
+            directionalSampling->Settings->MinimumDirections = this->MinimumDirections;
+            directionalSampling->Settings->MaximumDirections = this->MaximumDirections;
+            directionalSampling->Settings->designPointMethod = this->DesignPointMethod;
+            directionalSampling->Settings->VariationCoefficient = this->VariationCoefficient;
+            directionalSampling->Settings->runSettings = this->RunSettings;
+            directionalSampling->Settings->randomSettings = this->RandomSettings;
+            directionalSampling->Settings->StochastSet = this->StochastSet;
+
             return directionalSampling;
         }
 
         const std::shared_ptr<Reliability::ReliabilityMethod> Settings::GetSubsetSimulationMethod()
         {
             std::shared_ptr<SubsetSimulation> subsetSimulation = std::make_shared<SubsetSimulation>();
+
+            subsetSimulation->Settings->MinimumSamples = this->MinimumSamples;
+            subsetSimulation->Settings->MaximumSamples = this->MaximumSamples;
+            subsetSimulation->Settings->designPointMethod = this->DesignPointMethod;
+            subsetSimulation->Settings->VariationCoefficient = this->VariationCoefficient;
+            subsetSimulation->Settings->RunSettings = this->RunSettings;
+            subsetSimulation->Settings->randomSettings = this->RandomSettings;
+            subsetSimulation->Settings->StochastSet = this->StochastSet;
 
             return subsetSimulation;
         }
