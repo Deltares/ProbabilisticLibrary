@@ -37,6 +37,8 @@ namespace Deltares
             static double getUFromPQ(const PQ* pq);
             static double getRFromP(const double p);
 			static double getPFromR(const double r);
+            static double getRFromU(double u);
+            static double getUFromR(double r);
             static void getPQfromU(const double u, double& p, double& q);
             static PQ getPQFromU(const double u);
             static double ReturnTimeFromBeta(const double beta);

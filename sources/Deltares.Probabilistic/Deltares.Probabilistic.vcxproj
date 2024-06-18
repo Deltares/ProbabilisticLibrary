@@ -169,6 +169,7 @@
     <ClInclude Include="Reliability\NumericalIntegrationSettings.h" />
     <ClInclude Include="Reliability\SubsetSimulationSettings.h" />
     <ClInclude Include="Reliability\SubsetSimulation.h" />
+    <ClInclude Include="Reliability\Settings.h" />
     <ClInclude Include="Statistics\SelfCorrelationMatrix.h" />
     <ClInclude Include="Utils\TagSupport.h" />
     <ClInclude Include="Utils\Locker.h" />
@@ -296,6 +297,7 @@
     <ClCompile Include="Reliability\NumericalIntegrationSettings.cpp" />
     <ClCompile Include="Reliability\SubsetSimulationSettings.cpp" />
     <ClCompile Include="Reliability\SubsetSimulation.cpp" />
+    <ClCompile Include="Reliability\Settings.cpp" />
     <ClCompile Include="Statistics\SelfCorrelationMatrix.cpp" />
     <ClCompile Include="Utils\TagSupport.cpp" />
     <ClCompile Include="Utils\Locker.cpp" />

@@ -38,6 +38,9 @@ namespace Deltares
             void initialize(double beta);
             void addSample(std::shared_ptr<Sample> sample);
             std::shared_ptr<Sample> getSample();
+
+            static std::string getDesignPointMethodString(DesignPointMethod method);
+            static DesignPointMethod getDesignPointMethod(std::string method);
         };
     }
 }

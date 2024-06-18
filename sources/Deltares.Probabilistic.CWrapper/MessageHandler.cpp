@@ -2,51 +2,80 @@
 
 #include <string>
 
-extern "C" __declspec(dllexport) const void* Create(char* type)
+std::shared_ptr<Deltares::Models::ProjectServer> projectServer = std::make_shared< Deltares::Models::ProjectServer>();
+
+extern "C" __declspec(dllexport) int Create(char* type)
 {
     std::string typeStr = type;
-    return Deltares::Models::ProjectServer::Create(typeStr);
+    int id = projectServer->Create(typeStr);
+    return id;
 }
 
-extern "C" __declspec(dllexport) double GetValue(void* id, char* property)
+extern "C" __declspec(dllexport) double GetValue(int id, char* property)
 {
     std::string propertyStr(property);
-    return Deltares::Models::ProjectServer::GetValue(id, propertyStr);
+    return projectServer->GetValue(id, propertyStr);
 }
 
-extern "C" __declspec(dllexport) void SetValue(void* id, char* property, double value)
+extern "C" __declspec(dllexport) void SetValue(int id, char* property, double value)
 {
     std::string propertyStr(property);
-    Deltares::Models::ProjectServer::SetValue(id, propertyStr, value);
+    projectServer->SetValue(id, propertyStr, value);
 }
 
-extern "C" __declspec(dllexport) const char* GetStringValue(void* id, char* property)
+extern "C" __declspec(dllexport) int GetIntValue(int id, char* property)
 {
     std::string propertyStr(property);
-    return Deltares::Models::ProjectServer::GetStringValue(id, propertyStr).c_str();
+    return projectServer->GetIntValue(id, propertyStr);
 }
 
-extern "C"  __declspec(dllexport) void SetStringValue(void* id, char* property, char* value)
+extern "C" __declspec(dllexport) void SetIntValue(int id, char* property, int value)
+{
+    std::string propertyStr(property);
+    projectServer->SetIntValue(id, propertyStr, value);
+}
+
+extern "C" __declspec(dllexport) bool GetBoolValue(int id, char* property)
+{
+    std::string propertyStr(property);
+    return projectServer->GetBoolValue(id, propertyStr);
+}
+
+extern "C" __declspec(dllexport) void SetBoolValue(int id, char* property, bool value)
+{
+    std::string propertyStr(property);
+    projectServer->SetBoolValue(id, propertyStr, value);
+}
+
+extern "C" __declspec(dllexport) const char* GetStringValue(int id, char* property)
+{
+    std::string propertyStr(property);
+    std::string result = projectServer->GetStringValue(id, propertyStr);
+    const char* resultC = result.c_str();
+    return resultC;
+}
+
+extern "C"  __declspec(dllexport) void SetStringValue(int id, char* property, char* value)
 {
     std::string propertyStr(property);
     std::string valueStr(value);
-    Deltares::Models::ProjectServer::SetStringValue(id, propertyStr, valueStr);
+    projectServer->SetStringValue(id, propertyStr, valueStr);
 }
 
-extern "C"  __declspec(dllexport) double GetArgValue(void* id, char* property, double argument)
+extern "C" __declspec(dllexport) void SetArrayValue(int id, char* property, int* values, int size)
 {
     std::string propertyStr(property);
-    return Deltares::Models::ProjectServer::GetArgValue(id, propertyStr, argument);
+    projectServer->SetArrayValue(id, propertyStr, values, size);
 }
 
-extern "C" __declspec(dllexport) void SetArgValue(void* id, char* property, double argument, double value)
+extern "C"  __declspec(dllexport) double GetArgValue(int id, char* property, double argument)
 {
     std::string propertyStr(property);
-    Deltares::Models::ProjectServer::SetArgValue(id, propertyStr, argument, value);
+    return projectServer->GetArgValue(id, propertyStr, argument);
 }
 
-
-
-
-
-
+extern "C" __declspec(dllexport) void SetArgValue(int id, char* property, double argument, double value)
+{
+    std::string propertyStr(property);
+    projectServer->SetArgValue(id, propertyStr, argument, value);
+}

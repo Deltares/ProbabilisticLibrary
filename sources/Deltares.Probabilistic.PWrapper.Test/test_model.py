@@ -1,10 +1,13 @@
 import unittest
+import sys
+
 from model import Stochast
 
 class Test_model(unittest.TestCase):
     def test_u_to_x(self):
         try:
             stochast = Stochast()
+            idx = stochast._id
             stochast.distribution = "Normal"
             stochast.mean = 5
             stochast.deviation = 1;
