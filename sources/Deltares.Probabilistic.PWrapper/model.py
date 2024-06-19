@@ -2,6 +2,7 @@ import sys
 import os
 import time
 import inspect
+from ctypes import *
 
 import interface
 
@@ -18,9 +19,13 @@ class EventList(list):
 
 class Project:
 
+	_model = None
+
 	def __init__(self):
 		try:
 			self._id = interface.Create('project')
+			self._callback = interface.CALLBACK(self._performCallBack)
+			interface.SetCallBack(self._id, 'model', self._callback)
 		except:
 			message = sys.exc_info()[0]
 			print('error: ' + message, flush = True)
@@ -29,6 +34,8 @@ class Project:
 		self._variables = []
 		self._settings = None
 		self._design_point = None
+		
+		_model = None
   
 	@property
 	def variables(self):
@@ -41,6 +48,19 @@ class Project:
 		if self._settings is None:
 			self._settings = Settings()
 		return self._settings
+
+	@property   
+	def model(self):
+		return Project._model
+		
+	@model.setter
+	def model(self, value):
+		Project._model = value
+
+	@interface.CALLBACK
+	def _performCallBack(values, size):
+		values_list = values[:size]
+		return Project._model(values_list);
 
 	def run(self):
 		_design_point = None
@@ -59,9 +79,12 @@ class Project:
 
 class Stochast:
 
-	def __init__(self):
+	def __init__(self, id = None):
 		try:
-			self._id = interface.Create('stochast')
+			if id is None:
+				self._id = interface.Create('stochast')
+			else:
+				self._id = id
 		except:
 			message = sys.exc_info()[0]
 			print('error: ' + message, flush = True)
@@ -70,7 +93,7 @@ class Stochast:
 		self._clear_values()
 
 	def __del__(self):
-		interface.Destroy(self._id)
+	    interface.Destroy(self._id)
 
 	@property   
 	def name(self):
@@ -770,6 +793,8 @@ class DesignPoint:
 		self._reliability_index = None
 		self._probability_failure = None
 		self._convergence = None
+		self._alphas = None
+		self._contributing_design_points = None
 		self._realizations = None
 		
 	@property   
@@ -790,41 +815,55 @@ class DesignPoint:
 			self._convergence = interface.GetValue(self._id, 'convergence')
 		return self._convergence
 		
-	def get_alpha(self, stochast):
-		if type(stochast) is Stochast:
-			stochast = stochast.fullname
-		return Alpha(stochast, self._index)
-		
 	@property   
-	def realizations(self):
-		if self._realizations is None:
-			count = toolkit.GetRealizations(self._index)
-			self._realizations = []
-			for i in range(count):
-				self._realizations.append(Realization(i, self._index))
-		return self._realizations
+	def alphas(self):
+		if self._alphas is None:
+			self._alphas = []
+			alpha_ids = interface.GetArrayValue(self._id, 'alphas')
+			for alpha_id in alpha_ids:
+				self._alphas.append(Alpha(alpha_id))
+				
+		return self._alphas
+	
+	@property   
+	def contributing_design_points(self):
+		if self._contributing_design_points is None:
+			self._contributing_design_points = []
+			design_point_ids = interface.GetArrayValue(self._id, 'contributing_design_points')
+			for design_point_id in design_point_ids:
+				self._contributing_design_points.append(DesignPoint(design_point_id))
+				
+		return self._contributing_design_points
+	
 		
 class Alpha:
 
-	def __init__(self, name, design_point_index):
-		self._name = name
-		self._design_point_index = design_point_index
+	def __init__(self, id):
+		self._id = id
 		self._clear_values()
 
 	def _clear_values(self):
-		self._alpha_value = None
-		self._physical_value = None
+		self._alpha = None
+		self._x = None
+		self._variable = None
 		
 	@property   
-	def alpha_value(self):
-		if self._alpha_value is None:
-			self._alpha_value = toolkit.GetAlpha(self._name, self._design_point_index)
-		return self._alpha_value
+	def variable(self):
+		if self._variable is None:
+			variable_id = interface.GetIntValue(self._id, 'variable')
+			self._variable = Stochast(variable_id);
+		return self._variable
 		
 	@property   
-	def physical_value(self):
-		if self._physical_value is None:
-			self._physical_value = toolkit.GetAlphaPhysical(self._name, self._design_point_index)
-		return self._physical_value
+	def alpha(self):
+		if self._alpha is None:
+			self._alpha = interface.GetValue(self._id, 'alpha')
+		return self._alpha
+		
+	@property   
+	def x(self):
+		if self._x is None:
+			self._x = interface.GetValue(self._id, 'x')
+		return self._x
 
 

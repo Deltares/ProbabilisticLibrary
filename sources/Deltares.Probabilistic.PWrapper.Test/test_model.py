@@ -23,8 +23,8 @@ class Test_model(unittest.TestCase):
             print('error: ' + message, flush = True)
             raise
 
-        self.assertAlmostEqual(5.0, m, 0.001)
-        self.assertAlmostEqual(6.0, x, 0.001)
+        self.assertAlmostEqual(5.0, m, 3)
+        self.assertAlmostEqual(6.0, x, 3)
 
     def test_form_linear(self):
         try:
@@ -37,12 +37,14 @@ class Test_model(unittest.TestCase):
             dp = project.design_point;
 
             beta = dp.reliability_index;
+            alphas = dp.alphas;
         except:
             message = sys.exc_info()[0]
             print('error: ' + message, flush = True)
             raise
 
-        self.assertAlmostEqual(2.33, beta, 0.01)
+        self.assertAlmostEqual(2.33, beta, 2)
+        self.assertEqual(2, len(alphas))
 
 if __name__ == '__main__':
     unittest.main()

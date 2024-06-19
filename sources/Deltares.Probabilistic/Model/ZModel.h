@@ -5,30 +5,45 @@
 
 #include "ModelSample.h"
 
+inline double Test() { return 2.4; }
+
 namespace Deltares
 {
 	namespace Models
 	{
-		typedef std::function<void(std::shared_ptr<ModelSample>)> ZLambda;
-		typedef std::function<void(std::vector<std::shared_ptr<ModelSample>>)> ZMultipleLambda;
-		typedef std::function<double(std::shared_ptr<ModelSample>, double beta)> ZBetaLambda;
+        typedef std::function<void(std::shared_ptr<ModelSample>)> ZLambda;
+        typedef std::function<void(std::vector<std::shared_ptr<ModelSample>>)> ZMultipleLambda;
+        typedef std::function<double(std::shared_ptr<ModelSample>, double beta)> ZBetaLambda;
+
+        typedef double (*ZValuesCallBack)(double* data, int size);
 
 		class ZModel
 		{
 		private:
-			ZLambda zLambda = nullptr;
-			ZMultipleLambda zMultipleLambda = nullptr;
-			ZBetaLambda zBetaLambda = nullptr;
+            ZLambda zLambda = nullptr;
+            ZMultipleLambda zMultipleLambda = nullptr;
+            //ZValuesCallBack zValuesLambda = nullptr;
+            ZBetaLambda zBetaLambda = nullptr;
 			int maxProcesses = 1;
 
 		public:
-			ZModel(ZLambda zLambda, ZMultipleLambda zMultipleLambda = nullptr)
-			{
-				this->zLambda = zLambda;
-				this->zMultipleLambda = zMultipleLambda;
-			}
+            ZModel(ZLambda zLambda, ZMultipleLambda zMultipleLambda = nullptr)
+            {
+                this->zLambda = zLambda;
+                this->zMultipleLambda = zMultipleLambda;
+            }
 
-			void setBetaLambda(ZBetaLambda zBetaLambda)
+            ZModel(ZValuesCallBack zValuesLambda)
+            {
+                ZLambda calcValuesLambda = [zValuesLambda](std::shared_ptr<ModelSample> sample)
+                {
+                    sample->Z = (*zValuesLambda)(sample->Values.data(), (int)sample->Values.size());
+                };
+
+                this->zLambda = calcValuesLambda;
+            }
+
+            void setBetaLambda(ZBetaLambda zBetaLambda)
 			{
 				this->zBetaLambda = zBetaLambda;
 			}

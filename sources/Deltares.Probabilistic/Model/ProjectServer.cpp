@@ -23,6 +23,7 @@ namespace Deltares
             else if (object_type == "stochast")
             {
                 stochasts[counter] = std::make_shared<Deltares::Statistics::Stochast>();
+                stochastIds[stochasts[counter]] = counter;
                 types[counter] = ObjectType::Stochast;
             }
             else if (object_type == "discrete_value")
@@ -59,6 +60,8 @@ namespace Deltares
             case ObjectType::HistogramValue: histogramValues.erase(id); break;
             case ObjectType::FragilityValue: fragilityValues.erase(id); break;
             case ObjectType::Settings: settingsValues.erase(id); break;
+            case ObjectType::DesignPoint: designPoints.erase(id); break;
+            case ObjectType::Alpha: alphas.erase(id); break;
             default: throw probLibException("object type");
             }
             types.erase(id);
@@ -116,6 +119,14 @@ namespace Deltares
                 if (property_ == "relaxation_factor") return settings->RelaxationFactor;
                 else if (property_ == "variation_coefficient") return settings->VariationCoefficient;
                 else if (property_ == "fraction_failed") return settings->FractionFailed;
+            }
+            else if (objectType == ObjectType::DesignPoint)
+            {
+                std::shared_ptr<Reliability::DesignPoint> designPoint = designPoints[id];
+
+                if (property_ == "reliability_index") return designPoint->Beta;
+                else if (property_ == "probability_failure") return designPoint->getFailureProbability();
+                else if (property_ == "convergence") return designPoint->convergenceReport->Convergence;
             }
         }
 
@@ -201,6 +212,19 @@ namespace Deltares
                 else if (property_ == "minimum_variance_loops") return settings->MinimumVarianceLoops;
                 else if (property_ == "maximum_variance_loops") return settings->MaximumVarianceLoops;
                 else if (property_ == "relaxation_loops") return settings->RelaxationLoops;
+            }
+            else if (objectType == ObjectType::DesignPoint)
+            {
+                std::shared_ptr<Reliability::DesignPoint> designPoint = designPoints[id];
+
+                if (property_ == "contributing_design_points_count") return (int)designPoint->ContributingDesignPoints.size();
+                else if (property_ == "alphas_count") return (int)designPoint->Alphas.size();
+            }
+            else if (objectType == ObjectType::Alpha)
+            {
+                std::shared_ptr<Reliability::StochastPointAlpha> alpha = alphas[id];
+
+                if (property_ == "variable") return stochastIds[alpha->Stochast];
             }
 
             return 0;
@@ -309,6 +333,13 @@ namespace Deltares
             }
         }
 
+        std::vector<int> ProjectServer::GetArrayValue(int id, std::string property_)
+        {
+            ObjectType objectType = types[id];
+
+            return std::vector<int>(0);
+        }
+
         void ProjectServer::SetArrayValue(int id, std::string property_, int* values, int size)
         {
             ObjectType objectType = types[id];
@@ -387,6 +418,39 @@ namespace Deltares
             }
         }
 
+        int ProjectServer::GetIndexedIntValue(int id, std::string property_, int index)
+        {
+            ObjectType objectType = types[id];
+
+            if (objectType == ObjectType::DesignPoint)
+            {
+                std::shared_ptr<Reliability::DesignPoint> designPoint = designPoints[id];
+
+                if (property_ == "contributing_design_points")
+                {
+                    return this->GetDesignPointId(designPoint->ContributingDesignPoints[index]);
+                }
+                else if (property_ == "alphas")
+                {
+                    return this->GetAlphaId(designPoint->Alphas[index]);
+                }
+            }
+
+            return 0;
+        }
+
+        void ProjectServer::SetCallBack(int id, std::string property_, ZValuesCallBack callBack)
+        {
+            ObjectType objectType = types[id];
+
+            if (objectType == ObjectType::Project)
+            {
+                std::shared_ptr<Models::Project> project = projects[id];
+
+                if (property_ == "model") project->model = std::make_shared<ZModel>(callBack);
+            }
+        }
+
         void ProjectServer::Execute(int id, std::string method_)
         {
             ObjectType objectType = types[id];
@@ -417,6 +481,19 @@ namespace Deltares
 
                 return designPointIds[designPoint];
             }
+        }
+
+        int ProjectServer::GetAlphaId(std::shared_ptr<StochastPointAlpha> alpha)
+        {
+            if (!alphaIds.contains(alpha))
+            {
+                counter++;
+                alphas[counter] = alpha;
+                types[counter] = ObjectType::Alpha;
+                alphaIds[alpha] = counter;
+            }
+
+            return alphaIds[alpha];
         }
     }
 }
