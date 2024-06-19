@@ -50,19 +50,19 @@ namespace Deltares
 
             void CombinerTest::ImportanceSamplingCombinerAndTest()
             {
-                margin = 0.01;
+                margin = 0.001;
                 auto importance_sampling_combiner = std::make_unique<ImportanceSamplingCombiner>();
                 importance_sampling_combiner->randomGeneratorType = Numeric::MersenneTwister;
-                auto ref = alphaBeta(2.96511, { 0.584, 0.36424, 0.602, 0.4038 }); // pre-computed
+                auto ref = alphaBeta(2.96369, { 0.57367, 0.35851, 0.60798, 0.41561 }); // pre-computed
                 tester(importance_sampling_combiner.get(), 3.0, ref, combineAndOr::combAnd);
             }
 
             void CombinerTest::ImportanceSamplingCombinerInvertedTest()
             {
-                margin = 0.01;
+                margin = 0.001;
                 auto importance_sampling_combiner = std::make_unique<ImportanceSamplingCombiner>();
                 importance_sampling_combiner->randomGeneratorType = Numeric::MersenneTwister;
-                auto ref = alphaBeta(0.99917, { 0.603, 0.373, 0.5898, 0.3861 }); // pre-computed
+                auto ref = alphaBeta(1.00026, { 0.60469, 0.35473, 0.606108, 0.37570 }); // pre-computed
                 tester(importance_sampling_combiner.get(), 1.0, ref, combineAndOr::combOr);
             }
 
