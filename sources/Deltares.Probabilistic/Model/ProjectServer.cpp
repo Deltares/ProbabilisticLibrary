@@ -128,6 +128,16 @@ namespace Deltares
                 else if (property_ == "probability_failure") return designPoint->getFailureProbability();
                 else if (property_ == "convergence") return designPoint->convergenceReport->Convergence;
             }
+            else if (objectType == ObjectType::Alpha)
+            {
+                std::shared_ptr<Reliability::StochastPointAlpha> alpha = alphas[id];
+
+                if (property_ == "alpha") return alpha->Alpha;
+                else if (property_ == "alpha_correlated") return alpha->AlphaCorrelated;
+                else if (property_ == "u") return alpha->U;
+                else if (property_ == "x") return alpha->X;
+                else if (property_ == "influence_factor") return alpha->InfluenceFactor;
+            }
         }
 
         void ProjectServer::SetValue(int id, std::string property_, double value)
@@ -308,6 +318,7 @@ namespace Deltares
                 if (property_ == "reliability_method") return Settings::getReliabilityMethodTypeString(settings->ReliabilityMethod);
                 if (property_ == "design_point_method") return DesignPointBuilder::getDesignPointMethodString(settings->DesignPointMethod);
                 if (property_ == "start_method") return StartPointCalculatorSettings::getStartPointMethodString(settings->StartPointSettings->StartMethod);
+                if (property_ == "random_type") return Numeric::Random::getRandomGeneratorTypeString(settings->RandomSettings->RandomGeneratorType);
             }
 
             return "";
@@ -330,6 +341,7 @@ namespace Deltares
                 if (property_ == "reliability_method") settings->ReliabilityMethod = Settings::getReliabilityMethodType(value);
                 if (property_ == "design_point_method") settings->DesignPointMethod = DesignPointBuilder::getDesignPointMethod(value);
                 if (property_ == "start_method") settings->StartPointSettings->StartMethod = StartPointCalculatorSettings::getStartPointMethod(value);
+                if (property_ == "random_type") settings->RandomSettings->RandomGeneratorType = Numeric::Random::getRandomGeneratorType(value);
             }
         }
 

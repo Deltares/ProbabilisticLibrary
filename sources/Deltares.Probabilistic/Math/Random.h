@@ -1,5 +1,6 @@
 #pragma once
 #include "Randomizers/RandomValueGenerator.h"
+#include <string>
 
 namespace Deltares
 {
@@ -26,7 +27,10 @@ namespace Deltares
 			static void initialize(RandomValueGeneratorType generatorType, bool repeatable = true, int seed = 0, int seedB = 0);
 			static double next();
 			static void restart();
-		};
+
+            static std::string getRandomGeneratorTypeString(Deltares::Numeric::RandomValueGeneratorType method);
+            static Deltares::Numeric::RandomValueGeneratorType getRandomGeneratorType(std::string method);
+        };
 	}
 }
 
