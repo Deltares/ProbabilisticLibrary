@@ -60,7 +60,7 @@ namespace Deltares
                 for (auto x : alphaInput) { x /= length; }
 
                 std::vector< std::shared_ptr<Stochast>> stochasts;
-                for (size_t i = 0; i < nStochasts; i++)
+                for (size_t i = 0; i <= nStochasts; i++)
                 {
                     auto s = std::make_shared<Stochast>();
                     s->setDistributionType(Normal);
@@ -82,6 +82,15 @@ namespace Deltares
                         alpha->Alpha = alphaInput[jj];
                         alpha->Stochast = stochasts[jj];
                         alpha->U = -dp->Beta * alpha->Alpha;
+                        dp->Alphas.push_back(alpha);
+                    }
+                    if (i == 1)
+                    {
+                        // add stochasts with alpha = 0 to have different size sets of design points
+                        auto alpha = std::make_shared<StochastPointAlpha>();
+                        alpha->Alpha = 0.0;
+                        alpha->Stochast = stochasts[nStochasts];
+                        alpha->U = 0.0;
                         dp->Alphas.push_back(alpha);
                     }
                     Elements.push_back(dp);

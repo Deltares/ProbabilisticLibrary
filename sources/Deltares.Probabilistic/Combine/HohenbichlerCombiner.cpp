@@ -1,5 +1,6 @@
 #include "HohenbichlerCombiner.h"
 #include "combineElements.h"
+#include "alphaBeta.h"
 
 namespace Deltares
 {
@@ -7,70 +8,40 @@ namespace Deltares
     {
         std::shared_ptr<DesignPoint> HohenbichlerCombiner::combineDesignPoints(combineAndOr combineMethodType, std::vector<std::shared_ptr<DesignPoint>>& designPoints, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix, std::shared_ptr<ProgressIndicator> progress)
         {
-            std::vector<double> rho;
-
-            for (const auto& Alpha : designPoints[0]->Alphas)
-            {
-                if (selfCorrelationMatrix != nullptr)
-                {
-                    rho.push_back(selfCorrelationMatrix->getSelfCorrelation(Alpha->Stochast));
-                }
-                else
-                {
-                    rho.push_back(1.0);
-                }
-            }
-
-            return this->CombineDesignPoints(designPoints, rho, combineMethodType);
-        }
-
-        std::shared_ptr<DesignPoint> HohenbichlerCombiner::CombineDesignPoints(const std::vector<std::shared_ptr<DesignPoint>>& designPoints, const std::vector<double>& r, const combineAndOr cmbType)
-        {
-            auto nStoch = designPoints[0]->Alphas.size();
             elements elm;
-            std::vector<std::shared_ptr<Statistics::Stochast>> stochasts = getUniqueStochasts(designPoints);
+            const std::vector<std::shared_ptr<Statistics::Stochast>> stochasts = getUniqueStochasts(designPoints);
+            const auto nStochasts = stochasts.size();
 
             for (const auto& designPoint : designPoints)
             {
                 const auto reorderedDesignPoint = designPoint->getSampleForStochasts(stochasts);
-                auto dp = copyAlphaBeta(designPoint);
-                dp.setBeta(designPoint->Beta);
-                for (size_t i = 0; i < nStoch ; i++)
+                auto alpha = vector1D(nStochasts);
+                for (size_t i = 0; i < nStochasts; i++)
                 {
-                    dp.setAlpha(i, -(reorderedDesignPoint->Values[i] / designPoint->Beta));
+                    alpha(i) = -(reorderedDesignPoint->Values[i] / designPoint->Beta);
                 }
+                auto dp = alphaBeta(designPoint->Beta, alpha);
                 elm.push_back(dp);
             }
 
             auto cmb = combineElements();
-            auto rho = vector1D(nStoch);
-            for (size_t i = 0; i < nStoch; i++)
+            auto rho = vector1D(nStochasts);
+            for (size_t i = 0; i < nStochasts; i++)
             {
-                rho(i) = r[i];
+                rho(i) = selfCorrelationMatrix->getSelfCorrelation(stochasts[i]);
             }
 
-            auto result = cmb.combineMultipleElements(elm, rho, cmbType);
+            auto result = cmb.combineMultipleElements(elm, rho, combineMethodType);
 
             auto dp = std::make_shared<DesignPoint>();
             dp->Beta = result.ab.getBeta();
-            for (size_t i = 0; i < nStoch; i++)
+            for (size_t i = 0; i < nStochasts; i++)
             {
                 auto alpha = std::make_shared<StochastPointAlpha>();
                 alpha->Alpha = result.ab.getAlphaI(i);
                 dp->Alphas.push_back(alpha);
             }
             return dp;
-        }
-
-        alphaBeta HohenbichlerCombiner::copyAlphaBeta(const std::shared_ptr<DesignPoint>& dp)
-        {
-            auto nStoch = dp->Alphas.size();
-            auto alphas = vector1D(nStoch);
-            for (size_t i = 0; i < nStoch; i++)
-            {
-                alphas(i) = dp->Alphas[i]->Alpha;
-            }
-            return alphaBeta(dp->Beta, alphas);
         }
 
     };
