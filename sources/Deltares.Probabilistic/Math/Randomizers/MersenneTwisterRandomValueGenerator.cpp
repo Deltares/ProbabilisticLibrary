@@ -13,17 +13,19 @@ namespace Deltares
 		{
 			if (repeatable)
 			{
-				srand(seed);
+				generator.seed(seed);
 			}
 			else
 			{
-				srand(time(nullptr));
+				generator.seed(time(nullptr));
 			}
 		}
 
 		double MersenneTwisterRandomValueGenerator::next()
 		{
-			return Deltares::Numeric::NumericSupport::Divide(rand(), RAND_MAX);
+            std::uniform_real_distribution<double> distribution(0.0, 1.0);
+            double ri = distribution(generator);
+            return ri;
 		};
 	}
 }
