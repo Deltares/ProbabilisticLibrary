@@ -22,12 +22,15 @@ namespace Deltares
             void SetBoolValue(int id, std::string property_, bool value);
             std::string GetStringValue(int id, std::string property_);
             void SetStringValue(int id, std::string property_, std::string value);
+            std::vector<int> GetArrayValue(int id, std::string property_);
             void SetArrayValue(int id, std::string property_, int* values, int size);
             double GetArgValue(int id, std::string property_, double argument);
             void SetArgValue(int id, std::string property_, double argument, double value);
+            int GetIndexedIntValue(int id, std::string property_, int index);
+            void SetCallBack(int id, std::string property_, ZValuesCallBack callBack);
             void Execute(int id, std::string method_);
         private:
-            enum ObjectType {Project, Stochast, DiscreteValue, HistogramValue, FragilityValue, Settings, DesignPoint};
+            enum ObjectType {Project, Stochast, DiscreteValue, HistogramValue, FragilityValue, Settings, DesignPoint, Alpha};
 
             int counter = 0;
             std::map<int, Deltares::Models::ProjectServer::ObjectType> types;
@@ -39,10 +42,14 @@ namespace Deltares
             std::unordered_map<int, std::shared_ptr<Statistics::FragilityValue>> fragilityValues;
             std::unordered_map<int, std::shared_ptr<Reliability::Settings>> settingsValues;
             std::unordered_map<int, std::shared_ptr<Reliability::DesignPoint>> designPoints;
+            std::unordered_map<int, std::shared_ptr<Reliability::StochastPointAlpha>> alphas;
 
             std::unordered_map<std::shared_ptr<Reliability::DesignPoint>, int> designPointIds;
+            std::unordered_map<std::shared_ptr<Reliability::StochastPointAlpha>, int> alphaIds;
+            std::unordered_map<std::shared_ptr<Statistics::Stochast>, int> stochastIds;
 
             int GetDesignPointId(std::shared_ptr<Reliability::DesignPoint> designPoint);
+            int GetAlphaId(std::shared_ptr<StochastPointAlpha> alpha);
         };
     }
 }

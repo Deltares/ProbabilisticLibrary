@@ -62,6 +62,17 @@ extern "C"  __declspec(dllexport) void SetStringValue(int id, char* property, ch
     projectServer->SetStringValue(id, propertyStr, valueStr);
 }
 
+extern "C" __declspec(dllexport) int* GetArrayValue(int id, char* property)
+{
+    std::string propertyStr(property);
+    std::vector<int> values = projectServer->GetArrayValue(id, propertyStr);
+    values.push_back(0);
+
+    int* data = values.data();
+
+    return data;
+}
+
 extern "C" __declspec(dllexport) void SetArrayValue(int id, char* property, int* values, int size)
 {
     std::string propertyStr(property);
@@ -78,6 +89,18 @@ extern "C" __declspec(dllexport) void SetArgValue(int id, char* property, double
 {
     std::string propertyStr(property);
     projectServer->SetArgValue(id, propertyStr, argument, value);
+}
+
+extern "C"  __declspec(dllexport) int GetIndexedIntValue(int id, char* property, int index)
+{
+    std::string propertyStr(property);
+    return projectServer->GetIndexedIntValue(id, propertyStr, index);
+}
+
+extern "C" __declspec(dllexport) void SetCallBack(int id, char* property, Deltares::Models::ZValuesCallBack callBack)
+{
+    std::string propertyStr(property);
+    projectServer->SetCallBack(id, propertyStr, callBack);
 }
 
 extern "C" __declspec(dllexport) void Execute(int id, char* method)
