@@ -47,6 +47,12 @@ namespace Deltares
                 h.ImportanceSamplingCombinerAndTest();
             }
 
+            TEST(unittst, testImportanceSamplingInvertedCombiner)
+            {
+                auto h = CombinerTest();
+                h.ImportanceSamplingCombinerInvertedTest();
+            }
+
             TEST(unittst, testCombinElements)
             {
                 auto h = combinElementsTests();

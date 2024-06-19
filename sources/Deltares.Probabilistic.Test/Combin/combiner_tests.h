@@ -16,6 +16,7 @@ namespace Deltares
                 void DirectionalSamplingCombinerTest();
                 void ImportanceSamplingCombinerTest();
                 void ImportanceSamplingCombinerAndTest();
+                void ImportanceSamplingCombinerInvertedTest();
             private:
                 void tester(Reliability::Combiner* comb, const double beta, const Reliability::alphaBeta& ref, const Reliability::combineAndOr AndOr) const;
                 double margin = 1.0e-7;
