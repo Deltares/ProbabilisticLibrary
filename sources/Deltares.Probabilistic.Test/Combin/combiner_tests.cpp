@@ -76,9 +76,11 @@ namespace Deltares
                     dp->Beta = beta;
                     for (size_t j = 0; j < nStochasts; j++)
                     {
+                        // swap order stochasts for 2nd element:
+                        auto jj = (i == 0 ? j : nStochasts - 1 - j);
                         auto alpha = std::make_shared<StochastPointAlpha>();
-                        alpha->Alpha = alphaInput[j];
-                        alpha->Stochast = stochasts[j];
+                        alpha->Alpha = alphaInput[jj];
+                        alpha->Stochast = stochasts[jj];
                         alpha->U = -dp->Beta * alpha->Alpha;
                         dp->Alphas.push_back(alpha);
                     }

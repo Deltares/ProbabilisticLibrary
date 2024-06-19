@@ -28,9 +28,17 @@ namespace Deltares
         {
             auto nStoch = designPoints[0]->Alphas.size();
             elements elm;
+            std::vector<std::shared_ptr<Statistics::Stochast>> stochasts = getUniqueStochasts(designPoints);
+
             for (const auto& designPoint : designPoints)
             {
+                const auto reorderedDesignPoint = designPoint->getSampleForStochasts(stochasts);
                 auto dp = copyAlphaBeta(designPoint);
+                dp.setBeta(designPoint->Beta);
+                for (size_t i = 0; i < nStoch ; i++)
+                {
+                    dp.setAlpha(i, -(reorderedDesignPoint->Values[i] / designPoint->Beta));
+                }
                 elm.push_back(dp);
             }
 

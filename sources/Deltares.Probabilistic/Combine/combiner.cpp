@@ -6,7 +6,7 @@ namespace Deltares
 {
     namespace Reliability
     {
-        std::vector<std::shared_ptr<Statistics::Stochast>> Combiner::getUniqueStochasts(std::vector<std::shared_ptr<DesignPoint>>& designPoints)
+        std::vector<std::shared_ptr<Statistics::Stochast>> Combiner::getUniqueStochasts(const std::vector<std::shared_ptr<DesignPoint>>& designPoints)
         {
             std::vector<std::shared_ptr<Statistics::Stochast>> uniqueStochasts;
 
@@ -14,9 +14,9 @@ namespace Deltares
 
             // when multiple identical stochasts are present in one design point, they should all be added to the unique design points
 
-            for (const std::shared_ptr<DesignPoint> designPoint : designPoints)
+            for (const std::shared_ptr<DesignPoint>& designPoint : designPoints)
             {
-                for (std::shared_ptr<StochastPointAlpha> alpha : designPoint->Alphas)
+                for (std::shared_ptr<StochastPointAlpha>& alpha : designPoint->Alphas)
                 {
                     if (!addedStochasts.contains(alpha->Stochast))
                     {
@@ -24,7 +24,7 @@ namespace Deltares
                     }
                 }
 
-                for (std::shared_ptr<StochastPointAlpha> alpha : designPoint->Alphas)
+                for (std::shared_ptr<StochastPointAlpha>& alpha : designPoint->Alphas)
                 {
                     if (!addedStochasts.contains(alpha->Stochast))
                     {
