@@ -634,6 +634,17 @@ class Settings:
 		interface.SetStringValue(self._id, 'start_method', value)
 
 	@property   
+	def random_type(self):
+		if self._random_type is None:
+			self._random_type = interface.GetStringValue(self._id, 'random_type')
+		return self._random_type
+		
+	@random_type.setter
+	def random_type(self, value):
+		self._random_type = value
+		interface.SetStringValue(self._id, 'random_type', value)
+
+	@property   
 	def minimum_samples(self):
 		if self._minimum_samples is None:
 			self._minimum_samples = interface.GetIntValue(self._id, 'minimum_samples')
@@ -844,6 +855,9 @@ class Alpha:
 
 	def _clear_values(self):
 		self._alpha = None
+		self._alpha_correlated = None
+		self._influence_factor = None
+		self._u = None
 		self._x = None
 		self._variable = None
 		
@@ -860,6 +874,24 @@ class Alpha:
 			self._alpha = interface.GetValue(self._id, 'alpha')
 		return self._alpha
 		
+	@property   
+	def alpha_correlated(self):
+		if self._alpha_correlated is None:
+			self._alpha_correlated = interface.GetValue(self._id, 'alpha_correlated')
+		return self._alpha_correlated
+		
+	@property   
+	def influence_factor(self):
+		if self._influence_factor is None:
+			self._influence_factor = interface.GetValue(self._id, 'influence_factor')
+		return self._influence_factor
+		
+	@property   
+	def u(self):
+		if self._u is None:
+			self._u = interface.GetValue(self._id, 'u')
+		return self._u
+
 	@property   
 	def x(self):
 		if self._x is None:

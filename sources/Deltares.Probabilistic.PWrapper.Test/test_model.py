@@ -2,7 +2,7 @@ from io import DEFAULT_BUFFER_SIZE
 import unittest
 import sys
 
-from model import Stochast
+from model import Alpha, Stochast
 from model import Settings
 from model import Project
 
@@ -27,24 +27,47 @@ class Test_model(unittest.TestCase):
         self.assertAlmostEqual(6.0, x, 3)
 
     def test_form_linear(self):
-        try:
-            project = project_builder.get_linear_project()
+        project = project_builder.get_linear_project()
 
-            project.settings.reliability_method = 'form'
+        project.settings.reliability_method = 'form'
 
-            project.run();
+        project.run();
 
-            dp = project.design_point;
-
-            beta = dp.reliability_index;
-            alphas = dp.alphas;
-        except:
-            message = sys.exc_info()[0]
-            print('error: ' + message, flush = True)
-            raise
+        dp = project.design_point;
+        beta = dp.reliability_index;
+        alphas = dp.alphas;
 
         self.assertAlmostEqual(2.33, beta, 2)
         self.assertEqual(2, len(alphas))
+
+        self.assertAlmostEqual(-0.71, alphas[0].alpha, 2)
+        self.assertAlmostEqual(-0.71, alphas[1].alpha, 2)
+
+        self.assertAlmostEqual(0.9, alphas[0].x, 2)
+        self.assertAlmostEqual(0.9, alphas[1].x, 2)
+
+    def test_crude_monte_carlo_linear(self):
+        project = project_builder.get_linear_project()
+
+        project.settings.reliability_method = 'crude_monte_carlo'
+        project.settings.random_type = 'mersenne_twister'
+
+        project.run();
+
+        dp = project.design_point;
+        beta = dp.reliability_index;
+        alphas = dp.alphas;
+
+        self.assertAlmostEqual(2.61, beta, 2)
+        self.assertEqual(2, len(alphas))
+
+        self.assertAlmostEqual(-0.69, alphas[0].alpha, 2)
+        self.assertAlmostEqual(-0.73, alphas[1].alpha, 2)
+
+        self.assertAlmostEqual(0.93, alphas[0].x, 2)
+        self.assertAlmostEqual(0.94, alphas[1].x, 2)
+
+
 
 if __name__ == '__main__':
     unittest.main()
