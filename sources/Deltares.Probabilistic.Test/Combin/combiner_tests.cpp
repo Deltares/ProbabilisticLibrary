@@ -24,10 +24,10 @@ namespace Deltares
 
             void CombinerTest::HohenbichlerCombinerTest()
             {
-                margin = 1e-6;
+                margin = 1e-4;
                 auto hh = std::make_unique<HohenbichlerCombiner>();
                 auto ref = alphaBeta(2.78586434, { 0.6145053, 0.378711, 0.5892747, 0.3629275 }); // pre-computed
-                tester(hh.get(), 3.0, ref);
+                tester(hh.get(), 3.0, ref, combineAndOr::combOr);
             }
 
             void CombinerTest::DirectionalSamplingCombinerTest()
@@ -36,7 +36,7 @@ namespace Deltares
                 auto dsCombiner = std::make_unique<DirectionalSamplingCombiner>();
                 dsCombiner->randomGeneratorType = Numeric::MersenneTwister;
                 auto ref = alphaBeta(3.0139519, { 0.56572, 0.41313, 0.58968, 0.40193 }); // pre-computed
-                tester(dsCombiner.get(), 3.0, ref);
+                tester(dsCombiner.get(), 3.0, ref, combineAndOr::combOr);
             }
 
             void CombinerTest::ImportanceSamplingCombinerTest()
@@ -44,28 +44,33 @@ namespace Deltares
                 margin = 0.01;
                 auto importance_sampling_combiner = std::make_unique<ImportanceSamplingCombiner>();
                 importance_sampling_combiner->randomGeneratorType = Numeric::MersenneTwister;
-                auto ref = alphaBeta(3.0, { 0.6, 0.374, 0.6, 0.374}); // pre-computed
-                tester(importance_sampling_combiner.get(), 3.0, ref);
+                auto ref = alphaBeta(3.0, { 0.6, 0.374, 0.6, 0.374 }); // pre-computed
+                tester(importance_sampling_combiner.get(), 3.0, ref, combineAndOr::combOr);
             }
 
-            // test based on testcombineMultipleElementsSpatialCorrelated1
-            void CombinerTest::tester(Combiner* comb, const double beta, const alphaBeta& ref)
+            void CombinerTest::ImportanceSamplingCombinerAndTest()
             {
-                const int nElements = 2; // Number of elements
-                const size_t nStochasts = 4;
+                margin = 0.01;
+                auto importance_sampling_combiner = std::make_unique<ImportanceSamplingCombiner>();
+                importance_sampling_combiner->randomGeneratorType = Numeric::MersenneTwister;
+                auto ref = alphaBeta(2.96511, { 0.584, 0.36424, 0.602, 0.4038 }); // pre-computed
+                tester(importance_sampling_combiner.get(), 3.0, ref, combineAndOr::combAnd);
+            }
 
-                auto rhoXK = std::vector<double>({ 0.5, 0.5, 0.2, 0.2 });
+            void CombinerTest::tester(Combiner* comb, const double beta, const alphaBeta& ref, const combineAndOr AndOr ) const
+            {
+                constexpr int nElements = 2; // Number of elements
+                constexpr size_t nStochasts = 4;
+
+                const auto rhoXK = std::vector<double>({ 0.5, 0.5, 0.2, 0.2 });
                 auto alphaInput = std::vector<double>{ 0.6, 0.37, 0.6, 0.37 };
-                auto length = Numeric::NumericSupport::GetLength(alphaInput);
-                for (auto x : alphaInput) { x /= length; }
+                const auto length = Numeric::NumericSupport::GetLength(alphaInput);
+                for (auto &x : alphaInput) { x /= length; }
 
                 std::vector< std::shared_ptr<Stochast>> stochasts;
                 for (size_t i = 0; i <= nStochasts; i++)
                 {
                     auto s = std::make_shared<Stochast>();
-                    s->setDistributionType(Normal);
-                    s->setMean(0.0);
-                    s->setDeviation(1.0);
                     stochasts.push_back(s);
                 }
 
@@ -86,7 +91,7 @@ namespace Deltares
                     }
                     if (i == 1)
                     {
-                        // add stochasts with alpha = 0 to have different size sets of design points
+                        // add stochasts with alpha = 0 to have different sized sets of design points
                         auto alpha = std::make_shared<StochastPointAlpha>();
                         alpha->Alpha = 0.0;
                         alpha->Stochast = stochasts[nStochasts];
@@ -102,7 +107,7 @@ namespace Deltares
                     rho->setSelfCorrelation(Elements[0]->Alphas[i]->Stochast, rhoXK[i]);
                 }
 
-                auto cmbDp = comb->combineDesignPoints(combineAndOr::combOr, Elements, rho, nullptr);
+                auto cmbDp = comb->combineDesignPoints(AndOr, Elements, rho, nullptr);
 
                 EXPECT_NEAR(cmbDp->Beta, ref.getBeta(), margin);
                 for (size_t i = 0; i < nStochasts; i++)

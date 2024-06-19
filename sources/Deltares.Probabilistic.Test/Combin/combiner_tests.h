@@ -15,8 +15,9 @@ namespace Deltares
                 void HohenbichlerCombinerTest();
                 void DirectionalSamplingCombinerTest();
                 void ImportanceSamplingCombinerTest();
+                void ImportanceSamplingCombinerAndTest();
             private:
-                void tester(Reliability::Combiner* comb, const double beta, const Reliability::alphaBeta& ref);
+                void tester(Reliability::Combiner* comb, const double beta, const Reliability::alphaBeta& ref, const Reliability::combineAndOr AndOr) const;
                 double margin = 1.0e-7;
             };
         }

@@ -364,6 +364,7 @@ namespace Deltares
             settings->VariationCoefficient = 0.1;
             settings->designPointMethod = DesignPointMethod::CenterOfGravity; // result will be ignored, fastest option
             settings->randomSettings->SkipUnvaryingParameters = false;
+            settings->randomSettings->RandomGeneratorType = randomGeneratorType;
 
             for (size_t i = 0; i < model->stochasts.size(); i++)
             {
