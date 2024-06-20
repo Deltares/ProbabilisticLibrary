@@ -5,28 +5,28 @@
 using namespace Deltares::Reliability;
 using namespace Deltares::Models;
 
-void funcWrapper::FDelegate(std::shared_ptr<Deltares::Models::ModelSample> s)
+void funcWrapper::FDelegate(std::shared_ptr<ModelSample> s)
 {
     auto dp = designPointOptions::dpOutFALSE;
-    computationSettings compSetting{ dp, compId, s->threadId, s->relMethodCounter };
-    tError e = tError();
-    double result = zfunc(s->Values.data(), &compSetting, &e);
-    if (e.errorCode != 0) throw probLibException(e.errorMessage);
-    s->Z = result;
+    FDelegateDp(s, dp);
 }
 
-void funcWrapper::FDelegateDp(std::shared_ptr<Deltares::Models::ModelSample> s, const designPointOptions dp)
+void funcWrapper::FDelegateDp(std::shared_ptr<ModelSample> s, const designPointOptions dp)
 {
     computationSettings compSetting{ dp, compId, s->threadId, s->relMethodCounter };
     tError e = tError();
     double result = zfunc(s->Values.data(), &compSetting, &e);
-    if (e.errorCode != 0) throw probLibException(e.errorMessage);
+    if (e.errorCode != 0)
+    {
+        error_messages.push_back((e.errorMessage));
+    }
     s->Z = result;
 }
 
-
-void funcWrapper::FDelegateParallel(std::vector<std::shared_ptr<Deltares::Models::ModelSample>> samples)
+void funcWrapper::FDelegateParallel(std::vector<std::shared_ptr<ModelSample>> samples)
 {
+    auto errorMessagePerThread = std::vector<std::string>(omp_get_num_threads());
+
     #pragma omp parallel for
     for (int i = 0; i < (int)samples.size(); i++)
     {
@@ -34,6 +34,18 @@ void funcWrapper::FDelegateParallel(std::vector<std::shared_ptr<Deltares::Models
         tError e = tError();
         double result = zfunc(samples[i]->Values.data(), &compSetting, &e);
         samples[i]->Z = result;
+        if (e.errorCode != 0)
+        {
+            errorMessagePerThread[omp_get_thread_num()] = e.errorMessage;
+        }
+    }
+
+    for (const auto& s : errorMessagePerThread)
+    {
+        if (s.length() > 0)
+        {
+            error_messages.push_back(s);
+        }
     }
 }
 

@@ -130,8 +130,14 @@ void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, corrStr
         modelRunner->initializeForRun();
         auto newResult = relMethod->getDesignPoint(modelRunner);
 
+        auto allMessages = newResult->Messages;
+        for (const auto& s : fw.error_messages )
+        {
+            allMessages.push_back(std::make_shared<Message>(Error, s));
+        }
+
         ierr->errorCode = 0;
-        for(const auto& message : newResult->Messages)
+        for(const auto& message : allMessages)
         {
             if (message->Type == Error)
             {

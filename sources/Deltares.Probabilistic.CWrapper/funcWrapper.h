@@ -24,6 +24,7 @@ public:
     void FDelegate(std::shared_ptr<Deltares::Models::ModelSample> s);
     void FDelegateDp(std::shared_ptr<Deltares::Models::ModelSample> s, const Deltares::Models::designPointOptions dp);
     void FDelegateParallel(std::vector<std::shared_ptr<Deltares::Models::ModelSample>> s);
+    std::vector<std::string> error_messages;
 private:
     const int compId;
     zFuncExtern zfunc;
