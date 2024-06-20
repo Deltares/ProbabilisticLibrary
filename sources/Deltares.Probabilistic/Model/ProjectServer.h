@@ -30,7 +30,7 @@ namespace Deltares
             void SetCallBack(int id, std::string property_, ZValuesCallBack callBack);
             void Execute(int id, std::string method_);
         private:
-            enum ObjectType {Project, Stochast, DiscreteValue, HistogramValue, FragilityValue, Settings, DesignPoint, Alpha};
+            enum ObjectType {Project, Stochast, DiscreteValue, HistogramValue, FragilityValue, Settings, StochastSettings, DesignPoint, Alpha};
 
             int counter = 0;
             std::map<int, Deltares::Models::ProjectServer::ObjectType> types;
@@ -41,6 +41,7 @@ namespace Deltares
             std::unordered_map<int, std::shared_ptr<Statistics::HistogramValue>> histogramValues;
             std::unordered_map<int, std::shared_ptr<Statistics::FragilityValue>> fragilityValues;
             std::unordered_map<int, std::shared_ptr<Reliability::Settings>> settingsValues;
+            std::unordered_map<int, std::shared_ptr<Reliability::StochastSettings>> stochastSettingsValues;
             std::unordered_map<int, std::shared_ptr<Reliability::DesignPoint>> designPoints;
             std::unordered_map<int, std::shared_ptr<Reliability::StochastPointAlpha>> alphas;
 

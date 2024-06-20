@@ -408,362 +408,233 @@ class Stochast:
 class DiscreteValue:
 
 	def __init__(self):
-		try:
-			self._id = interface.Create('discrete_value')
-		except:
-			message = sys.exc_info()[0]
-			print('error: ' + message, flush = True)
-			raise
-
-		self._x = None
-		self._amount = None
+		self._id = interface.Create('discrete_value')
   
 	@property   
 	def x(self):
-		if self._x is None:
-			self._x = interface.GetValue(self._id, 'x')
-		return self._x
+		return interface.GetValue(self._id, 'x')
 		
 	@x.setter
 	def x(self, value):
-		self._x = value
 		interface.SetValue(self._id, 'x',  value)
 		
 	@property   
 	def amount(self):
-		if self._amount is None:
-			self._amount = interface.GetValue(self._id, 'amount')
-		return self._amount
+		return interface.GetValue(self._id, 'amount')
 		
 	@amount.setter
 	def amount(self, value):
-		self._amount = value
 		interface.SetValue(self._id, 'amount',  value)
 
 class FragilityValue:
 
 	def __init__(self):
-		try:
-			self._id = interface.Create('fragility_value')
-		except:
-			message = sys.exc_info()[0]
-			print('error: ' + message, flush = True)
-			raise
-
-		self._x = None
-		self._clear_values()
-
+		self._id = interface.Create('fragility_value')
 		
-	def _clear_values(self):
-		self._reliability_index = None
-		self._probability_of_failure = None
-		self._probability_of_non_failure = None
-		self._return_period = None
-  
 	@property   
 	def x(self):
-		if self._x is None:
-			self._x = interface.GetValue(self._id, 'x')
-		return self._x
+		return interface.GetValue(self._id, 'x')
 		
 	@x.setter
 	def x(self, value):
-		self._x = value
 		interface.SetValue(self._id, 'x',  value)
 		
 	@property   
 	def reliability_index(self):
-		if self._reliability_index is None:
-			self._reliability_index = interface.GetValue(self._id, 'reliability_index')
-		return self._reliability_index
+		return interface.GetValue(self._id, 'reliability_index')
 		
 	@reliability_index.setter
 	def reliability_index(self, value):
-		self._clear_values()
-		self._reliability_index = value
 		interface.SetValue(self._id, 'reliability_index',  value)
 
 	@property   
 	def probability_of_failure(self):
-		if self._probability_of_failure is None:
-			self._probability_of_failure = interface.GetValue(self._id, 'probability_of_failure')
-		return self._probability_of_failure
+		return interface.GetValue(self._id, 'probability_of_failure')
 		
 	@probability_of_failure.setter
 	def probability_of_failure(self, value):
-		self._clear_values()
-		self._probability_of_failure = value
 		interface.SetValue(self._id, 'probability_of_failure',  value)
 		
 	@property   
 	def probability_of_non_failure(self):
-		if self._probability_of_non_failure is None:
-			self._probability_of_non_failure = interface.GetValue(self._id, 'probability_of_non_failure')
-		return self._probability_of_non_failure
+		return interface.GetValue(self._id, 'probability_of_non_failure')
 		
 	@probability_of_non_failure.setter
 	def probability_of_non_failure(self, value):
-		self._clear_values()
-		self._probability_of_non_failure = value
 		interface.SetValue(self._id, 'probability_of_non_failure',  value)
 		
 	@property   
 	def return_period(self):
-		if self._return_period is None:
-			self._return_period = interface.GetValue(self._id, 'return_period')
-		return self._return_period
+		return interface.GetValue(self._id, 'return_period')
 		
 	@return_period.setter
 	def return_period(self, value):
-		self._clear_values()
-		self._return_period = value
 		interface.SetValue(self._id, 'return_period',  value)
 
 class HistogramValue:
 
 	def __init__(self):
-		try:
-			self._id = interface.Create('histogram_value')
-		except:
-			message = sys.exc_info()[0]
-			print('error: ' + message, flush = True)
-			raise
-
-		self._lower_bound = None
-		self._upper_bound = None
-		self._amount = None
+		self._id = interface.Create('histogram_value')
   
 	@property   
 	def lower_bound(self):
-		if self._lower_bound is None:
-			self._lower_bound = interface.GetValue(self._id, 'lower_bound')
-		return self._lower_bound
+		return interface.GetValue(self._id, 'lower_bound')
 		
 	@lower_bound.setter
 	def lower_bound(self, value):
-		self._lower_bound = value
 		interface.SetValue(self._id, 'lower_bound',  value)
 		
 	@property   
 	def upper_bound(self):
-		if self._upper_bound is None:
-			self._upper_bound = interface.GetValue(self._id, 'upper_bound')
-		return self._upper_bound
+		return interface.GetValue(self._id, 'upper_bound')
 		
 	@upper_bound.setter
 	def upper_bound(self, value):
-		self._upper_bound = value
 		interface.SetValue(self._id, 'upper_bound',  value)
 		
 	@property   
 	def amount(self):
-		if self._amount is None:
-			self._amount = interface.GetValue(self._id, 'amount')
-		return self._amount
+		return interface.GetValue(self._id, 'amount')
 		
 	@amount.setter
 	def amount(self, value):
-		self._amount = value
 		interface.SetValue(self._id, 'amount',  value)
 
 class Settings:
 		  
 	def __init__(self):
-		try:
-			self._id = interface.Create('settings')
-		except:
-			message = sys.exc_info()[0]
-			print('error: ' + message, flush = True)
-			raise
-
-		self._clear_values()
-
-	def _clear_values(self):
-		self._reliability_method = None
-		self._design_point_method = None
-		self._start_method = None
-		self._minimum_samples = None
-		self._maximum_samples = None
-		self._maximum_iterations = None
-		self._minimum_directions = None
-		self._maximum_directions = None
-		self._relaxation_factor = None
-		self._relaxation_loops = None
-		self._variation_coefficient = None
-		self._intervals = None
-		self._variance_factor = None
-		self._start_value = None
-		self._variance_loops = None
-		self._min_variance_loops = None
-		self._fraction_failed = None
-		
-	def set_fragility_values(self, values):
-		toolkit.SetFragilityValues(values)
+		self._id = interface.Create('settings')
+		self._stochast_settings = EventList(self._stochast_settings_changed)
 		
 	@property   
 	def reliability_method(self):
-		if self._reliability_method is None:
-			self._reliability_method= interface.GetStringValue(self._id, 'reliability_method')
-		return self._reliability_method
+		return interface.GetStringValue(self._id, 'reliability_method')
 		
 	@reliability_method.setter
 	def reliability_method(self, value):
-		self._reliability_method = value
 		interface.SetStringValue(self._id, 'reliability_method', value)
 
 	@property   
 	def design_point_method(self):
-		if self._design_point_method is None:
-			self._design_point_method= interface.GetStringValue(self._id, 'design_point_method')
-		return self._design_point_method
+		return interface.GetStringValue(self._id, 'design_point_method')
 		
 	@design_point_method.setter
 	def design_point_method(self, value):
-		self._design_point_method = value
 		interface.SetStringValue(self._id, 'design_point_method', value)
 
 	@property   
 	def start_method(self):
-		if self._start_method is None:
-			self._start_method = interface.GetStringValue(self._id, 'start_method')
-		return self._start_method
+		return interface.GetStringValue(self._id, 'start_method')
 		
 	@start_method.setter
 	def start_method(self, value):
-		self._start_method = value
 		interface.SetStringValue(self._id, 'start_method', value)
 
 	@property   
 	def random_type(self):
-		if self._random_type is None:
-			self._random_type = interface.GetStringValue(self._id, 'random_type')
-		return self._random_type
+		return interface.GetStringValue(self._id, 'random_type')
 		
 	@random_type.setter
 	def random_type(self, value):
-		self._random_type = value
 		interface.SetStringValue(self._id, 'random_type', value)
 
 	@property   
 	def minimum_samples(self):
-		if self._minimum_samples is None:
-			self._minimum_samples = interface.GetIntValue(self._id, 'minimum_samples')
-		return self._minimum_samples
+		return interface.GetIntValue(self._id, 'minimum_samples')
 		
 	@minimum_samples.setter
 	def minimum_samples(self, value):
-		self._minimum_samples = value
 		interface.SetIntValue(self._id, 'minimum_samples', value)
 
 	@property   
 	def maximum_samples(self):
-		if self._maximum_samples is None:
-			self._maximum_samples = interface.GetIntValue(self._id, 'maximum_samples')
-		return self._maximum_samples
+		return interface.GetIntValue(self._id, 'maximum_samples')
 		
 	@maximum_samples.setter
 	def maximum_samples(self, value):
-		self._maximum_samples = value
 		interface.SetIntValue(self._id, 'maximum_samples', value)
 
 	@property   
 	def maximum_iterations(self):
-		if self._maximum_iterations is None:
-			self._maximum_iterations = interface.GetIntValue(self._id, 'maximum_iterations')
-		return self._maximum_iterations
+		return interface.GetIntValue(self._id, 'maximum_iterations')
 		
 	@maximum_iterations.setter
 	def maximum_iterations(self, value):
-		self._maximum_iterations = value
 		interface.SetIntValue(self._id, 'maximum_iterations', value)
 
 	@property   
 	def minimum_directions(self):
-		if self._minimum_directions is None:
-			self._minimum_directions = interface.GetIntValue(self._id, 'minimum_directions')
-		return self._minimum_directions
+		return interface.GetIntValue(self._id, 'minimum_directions')
 		
 	@minimum_directions.setter
 	def minimum_directions(self, value):
-		self._minimum_directions = value
 		interface.SetIntValue(self._id, 'minimum_directions', value)
 
 	@property   
 	def maximum_directions(self):
-		if self._maximum_directions is None:
-			self._maximum_directions = interface.GetIntValue(self._id, 'maximum_directions')
-		return self._maximum_directions
+		return interface.GetIntValue(self._id, 'maximum_directions')
 		
 	@maximum_directions.setter
 	def maximum_directions(self, value):
-		self._maximum_directions = value
 		interface.SetIntValue(self._id, 'maximum_directions', value)
 
 	@property   
 	def relaxation_factor(self):
-		if self._relaxation_factor is None:
-			self._relaxation_factor = interface.GetValue(self._id, 'relaxation_factor')
-		return self._relaxation_factor
+		return interface.GetValue(self._id, 'relaxation_factor')
 		
 	@relaxation_factor.setter
 	def relaxation_factor(self, value):
-		self._relaxation_factor = value
 		interface.SetValue(self._id, 'relaxation_factor', value)
 
 	@property   
 	def relaxation_loops(self):
-		if self._relaxation_loops is None:
-			self._relaxation_loops = interface.GetValue(self._id, 'relaxation_loops')
-		return self._relaxation_loops
+		return interface.GetValue(self._id, 'relaxation_loops')
 		
 	@relaxation_loops.setter
 	def relaxation_loops(self, value):
-		self._relaxation_loops = value
 		interface.SetIntValue(self._id, 'relaxation_loops', value)
 
 	@property   
 	def maximum_variance_loops(self):
-		if self._maximum_variance_loops is None:
-			self._maximum_variance_loops = interface.GetIntValue(self._id, 'maximum_variance_loops')
-		return self._maximum_variance_loops
+		return interface.GetIntValue(self._id, 'maximum_variance_loops')
 		
 	@maximum_variance_loops.setter
 	def maximum_variance_loops(self, value):
-		self._maximum_variance_loops = value
 		interface.SetIntValue(self._id, 'maximum_variance_loops', value)
 
 	@property   
 	def minimum_variance_loops(self):
-		if self._minimum_variance_loops is None:
-			self._minimum_variance_loops = interface.GetIntValue(self._id, 'minimum_variance_loops')
-		return self._minimum_variance_loops
+		return interface.GetIntValue(self._id, 'minimum_variance_loops')
 		
 	@minimum_variance_loops.setter
-	def _minimum_variance_loops(self, value):
-		self._minimum_variance_loops = value
+	def minimum_variance_loops(self, value):
 		interface.SetIntValue(self._id, 'minimum_variance_loops', value)
 
 	@property   
 	def variation_coefficient(self):
-		if self._variation_coefficient is None:
-			self._variation_coefficient = interface.GetValue(self._id, 'variation_coefficient')
-		return self._variation_coefficient
+		return interface.GetValue(self._id, 'variation_coefficient')
 		
 	@variation_coefficient.setter
 	def variation_coefficient(self, value):
-		self._variation_coefficient = value
 		interface.SetValue(self._id, 'variation_coefficient', value)
 
 	@property   
 	def fraction_failed(self):
-		if self._fraction_failed is None:
-			self._fraction_failed = interface.GetValue(self._id, 'fraction_failed')
-		return self._fraction_failed
+		return interface.GetValue(self._id, 'fraction_failed')
 		
 	@fraction_failed.setter
 	def fraction_failed(self, value):
-		self._fraction_failed = value
 		interface.SetValue(self._id, 'fraction_failed', value)
+
+	@property   
+	def stochast_settings(self):
+		return self._stochast_settings
+
+	def _stochast_settings_changed(self):
+		values = [stochast_setting._id for stochast_setting in self._stochast_settings]
+		interface.SetArrayValue(self._id, 'stochast_settings', values)
+
+
 
 	def get_variable_settings(self, stochast):
 		if type(stochast) is Stochast:
@@ -773,58 +644,103 @@ class Settings:
 class StochastSettings:
 		
 	def __init__(self, name):
-		self._name = name
-		self._clear_values()
-
-	def _clear_values(self):
-		self._start_value = None
+		self._id = interface.Create('stochast_settings')
+		self._variable = None
 		
 	@property   
-	def name(self):
-		return self._name
+	def variable(self):
+		if self._variable is None:
+			id_ = interface.GetIntValue(self._id, 'variable')
+			if id_ > 0:
+				self._variable = Stochast(id_)
+		return self._variable
 		
+	@variable.setter
+	def variable(self, value):
+		self._variable = value
+		interface.SetIntValue(self._id, 'variable', self._variable._id)
+
+	@property   
+	def min_value(self):
+		return interface.GetValue(self._id, 'min_value')
+		
+	@min_value.setter
+	def min_value(self, value):
+		interface.SetValue(self._id, 'min_value', value)
+
+	@property   
+	def max_value(self):
+		return interface.GetValue(self._id, 'max_value')
+		
+	@max_value.setter
+	def max_value(self, value):
+		interface.SetValue(self._id, 'max_value', value)
+
 	@property   
 	def start_value(self):
-		if self._start_value is None:
-			self._start_value = toolkit.GetStartValue(self._name)
-		return self._start_value
+		return interface.GetValue(self._id, 'start_value')
 		
 	@start_value.setter
 	def start_value(self, value):
-		self._start_value = value
-		toolkit.SetStartValue(self._name, value)
+		interface.SetValue(self._id, 'start_value', value)
+
+	@property   
+	def intervals(self):
+		return interface.GetIntValue(self._id, 'intervals')
+		
+	@intervals.setter
+	def intervals(self, value):
+		interface.SetIntValue(self._id, 'intervals', value)
+
+	@property   
+	def variance_factor(self):
+		return interface.GetValue(self._id, 'variance_factor')
+		
+	@variance_factor.setter
+	def variance_factor(self, value):
+		interface.SetValue(self._id, 'variance_factor', value)
+
+	@property   
+	def is_initialization_allowed(self):
+		return interface.GetBoolValue(self._id, 'is_initialization_allowed')
+		
+	@is_initialization_allowed.setter
+	def is_initialization_allowed(self, value):
+		interface.SetBoolValue(self._id, 'is_initialization_allowed', value)
+
+	@property   
+	def is_variance_allowed(self):
+		return interface.GetBoolValue(self._id, 'is_variance_allowed')
+		
+	@is_variance_allowed.setter
+	def is_variance_allowed(self, value):
+		interface.SetBoolValue(self._id, 'is_variance_allowed', value)
+
+
+		
 
 class DesignPoint:
 
 	def __init__(self, id):
 		self._id = id
-		self._clear_values()
-
-	def _clear_values(self):
-		self._reliability_index = None
-		self._probability_failure = None
-		self._convergence = None
 		self._alphas = None
 		self._contributing_design_points = None
-		self._realizations = None
 		
 	@property   
 	def reliability_index(self):
-		if self._reliability_index is None:
-			self._reliability_index = interface.GetValue(self._id, 'reliability_index')
-		return self._reliability_index
+		return interface.GetValue(self._id, 'reliability_index')
 		
 	@property   
 	def probability_failure(self):
-		if self._probability_failure is None:
-			self._probability_failure = interface.GetValue(self._id, 'probability_index')
-		return self._probability_failure
+		return interface.GetValue(self._id, 'probability_failure')
 		
 	@property   
 	def convergence(self):
-		if self._convergence is None:
-			self._convergence = interface.GetValue(self._id, 'convergence')
-		return self._convergence
+		return interface.GetValue(self._id, 'convergence')
+		
+	@property   
+	def is_converged(self):
+		return interface.GetBoolValue(self._id, 'is_converged')
 		
 	@property   
 	def alphas(self):
@@ -851,51 +767,34 @@ class Alpha:
 
 	def __init__(self, id):
 		self._id = id
-		self._clear_values()
-
-	def _clear_values(self):
-		self._alpha = None
-		self._alpha_correlated = None
-		self._influence_factor = None
-		self._u = None
-		self._x = None
 		self._variable = None
-		
+
 	@property   
 	def variable(self):
 		if self._variable is None:
 			variable_id = interface.GetIntValue(self._id, 'variable')
-			self._variable = Stochast(variable_id);
+			if variable_id > 0:
+				self._variable = Stochast(variable_id);
 		return self._variable
 		
 	@property   
 	def alpha(self):
-		if self._alpha is None:
-			self._alpha = interface.GetValue(self._id, 'alpha')
-		return self._alpha
+		return interface.GetValue(self._id, 'alpha')
 		
 	@property   
 	def alpha_correlated(self):
-		if self._alpha_correlated is None:
-			self._alpha_correlated = interface.GetValue(self._id, 'alpha_correlated')
-		return self._alpha_correlated
+		return interface.GetValue(self._id, 'alpha_correlated')
 		
 	@property   
 	def influence_factor(self):
-		if self._influence_factor is None:
-			self._influence_factor = interface.GetValue(self._id, 'influence_factor')
-		return self._influence_factor
+		return interface.GetValue(self._id, 'influence_factor')
 		
 	@property   
 	def u(self):
-		if self._u is None:
-			self._u = interface.GetValue(self._id, 'u')
-		return self._u
+		return interface.GetValue(self._id, 'u')
 
 	@property   
 	def x(self):
-		if self._x is None:
-			self._x = interface.GetValue(self._id, 'x')
-		return self._x
+		return interface.GetValue(self._id, 'x')
 
 
