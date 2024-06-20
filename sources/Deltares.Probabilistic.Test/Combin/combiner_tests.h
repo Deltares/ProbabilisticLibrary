@@ -11,15 +11,15 @@ namespace Deltares
             class CombinerTest
             {
             public:
-                void allCombinerTests();
-                void HohenbichlerCombinerTest();
-                void DirectionalSamplingCombinerTest();
-                void ImportanceSamplingCombinerTest();
-                void ImportanceSamplingCombinerAndTest();
-                void ImportanceSamplingCombinerInvertedTest();
+                void allCombinerTests() const;
             private:
+                void HohenbichlerCombinerTest() const;
+                void DirectionalSamplingCombinerTest() const;
+                void ImportanceSamplingCombinerTest() const;
+                void ImportanceSamplingCombinerAndTest() const;
+                void ImportanceSamplingCombinerInvertedTest() const;
                 void tester(Reliability::Combiner* comb, const double beta, const Reliability::alphaBeta& ref, const Reliability::combineAndOr AndOr) const;
-                double margin = 1.0e-7;
+                const double margin = 1.0e-4;
             };
         }
     }

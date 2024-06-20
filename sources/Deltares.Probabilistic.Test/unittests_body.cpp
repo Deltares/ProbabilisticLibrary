@@ -23,34 +23,10 @@ namespace Deltares
                 return RUN_ALL_TESTS();
             }
 
-            TEST(unittst, testHohenbichlerCombiner)
+            TEST(unittst, testCombiner)
             {
                 auto h = CombinerTest();
-                h.HohenbichlerCombinerTest();
-            }
-
-            TEST(unittst, testDirectionalSamplingCombiner)
-            {
-                auto h = CombinerTest();
-                h.DirectionalSamplingCombinerTest();
-            }
-
-            TEST(unittst, testImportanceSamplingCombiner)
-            {
-                auto h = CombinerTest();
-                h.ImportanceSamplingCombinerTest();
-            }
-
-            TEST(unittst, testImportanceSamplingAndCombiner)
-            {
-                auto h = CombinerTest();
-                h.ImportanceSamplingCombinerAndTest();
-            }
-
-            TEST(unittst, testImportanceSamplingInvertedCombiner)
-            {
-                auto h = CombinerTest();
-                h.ImportanceSamplingCombinerInvertedTest();
+                h.allCombinerTests();
             }
 
             TEST(unittst, testCombinElements)

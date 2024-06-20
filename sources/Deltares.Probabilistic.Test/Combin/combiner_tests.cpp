@@ -15,51 +15,48 @@ namespace Deltares
     {
         namespace Test
         {
-            void CombinerTest::allCombinerTests()
+            void CombinerTest::allCombinerTests() const
             {
                 HohenbichlerCombinerTest();
                 DirectionalSamplingCombinerTest();
                 ImportanceSamplingCombinerTest();
+                ImportanceSamplingCombinerAndTest();
+                ImportanceSamplingCombinerInvertedTest();
             }
 
-            void CombinerTest::HohenbichlerCombinerTest()
+            void CombinerTest::HohenbichlerCombinerTest() const
             {
-                margin = 1e-4;
                 auto hh = std::make_unique<HohenbichlerCombiner>();
                 auto ref = alphaBeta(2.78586434, { 0.6145053, 0.378711, 0.5892747, 0.3629275 }); // pre-computed
                 tester(hh.get(), 3.0, ref, combineAndOr::combOr);
             }
 
-            void CombinerTest::DirectionalSamplingCombinerTest()
+            void CombinerTest::DirectionalSamplingCombinerTest() const
             {
-                margin = 0.1;
                 auto dsCombiner = std::make_unique<DirectionalSamplingCombiner>();
                 dsCombiner->randomGeneratorType = Numeric::MersenneTwister;
-                auto ref = alphaBeta(3.0139519, { 0.56572, 0.41313, 0.58968, 0.40193 }); // pre-computed
+                auto ref = alphaBeta(2.96662, { 0.60645, 0.34410, 0.60154, 0.38984 }); // pre-computed
                 tester(dsCombiner.get(), 3.0, ref, combineAndOr::combOr);
             }
 
-            void CombinerTest::ImportanceSamplingCombinerTest()
+            void CombinerTest::ImportanceSamplingCombinerTest() const
             {
-                margin = 0.01;
                 auto importance_sampling_combiner = std::make_unique<ImportanceSamplingCombiner>();
                 importance_sampling_combiner->randomGeneratorType = Numeric::MersenneTwister;
-                auto ref = alphaBeta(3.0, { 0.6, 0.374, 0.6, 0.374 }); // pre-computed
+                auto ref = alphaBeta(3.0, { 0.60187, 0.37115, 0.60187, 0.37115 }); // pre-computed
                 tester(importance_sampling_combiner.get(), 3.0, ref, combineAndOr::combOr);
             }
 
-            void CombinerTest::ImportanceSamplingCombinerAndTest()
+            void CombinerTest::ImportanceSamplingCombinerAndTest() const
             {
-                margin = 0.001;
                 auto importance_sampling_combiner = std::make_unique<ImportanceSamplingCombiner>();
                 importance_sampling_combiner->randomGeneratorType = Numeric::MersenneTwister;
                 auto ref = alphaBeta(2.96369, { 0.57367, 0.35851, 0.60798, 0.41561 }); // pre-computed
                 tester(importance_sampling_combiner.get(), 3.0, ref, combineAndOr::combAnd);
             }
 
-            void CombinerTest::ImportanceSamplingCombinerInvertedTest()
+            void CombinerTest::ImportanceSamplingCombinerInvertedTest() const
             {
-                margin = 0.001;
                 auto importance_sampling_combiner = std::make_unique<ImportanceSamplingCombiner>();
                 importance_sampling_combiner->randomGeneratorType = Numeric::MersenneTwister;
                 auto ref = alphaBeta(1.00026, { 0.60469, 0.35473, 0.606108, 0.37570 }); // pre-computed
