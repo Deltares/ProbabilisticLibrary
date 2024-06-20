@@ -46,6 +46,11 @@ namespace Deltares
                 settingsValues[counter] = std::make_shared<Deltares::Reliability::Settings>();
                 types[counter] = ObjectType::Settings;
             }
+            else if (object_type == "stochast_settings")
+            {
+                stochastSettingsValues[counter] = std::make_shared<Deltares::Reliability::StochastSettings>();
+                types[counter] = ObjectType::StochastSettings;
+            }
 
             return counter;
         }
@@ -60,6 +65,7 @@ namespace Deltares
             case ObjectType::HistogramValue: histogramValues.erase(id); break;
             case ObjectType::FragilityValue: fragilityValues.erase(id); break;
             case ObjectType::Settings: settingsValues.erase(id); break;
+            case ObjectType::StochastSettings: stochastSettingsValues.erase(id); break;
             case ObjectType::DesignPoint: designPoints.erase(id); break;
             case ObjectType::Alpha: alphas.erase(id); break;
             default: throw probLibException("object type");
@@ -119,6 +125,15 @@ namespace Deltares
                 if (property_ == "relaxation_factor") return settings->RelaxationFactor;
                 else if (property_ == "variation_coefficient") return settings->VariationCoefficient;
                 else if (property_ == "fraction_failed") return settings->FractionFailed;
+            }
+            else if (objectType == ObjectType::StochastSettings)
+            {
+                std::shared_ptr<Reliability::StochastSettings> stochastSettings = stochastSettingsValues[id];
+
+                if (property_ == "min_value") return stochastSettings->MinValue;
+                else if (property_ == "max_value") return stochastSettings->MaxValue;
+                else if (property_ == "start_value") return stochastSettings->StartValue;
+                else if (property_ == "variation_factor") return stochastSettings->VarianceFactor;
             }
             else if (objectType == ObjectType::DesignPoint)
             {
@@ -192,6 +207,16 @@ namespace Deltares
                 else if (property_ == "variation_coefficient") settings->VariationCoefficient = value;
                 else if (property_ == "fraction_failed") settings->FractionFailed = value;
             }
+            else if (objectType == ObjectType::StochastSettings)
+            {
+                std::shared_ptr<Reliability::StochastSettings> stochastSettings = stochastSettingsValues[id];
+
+                if (property_ == "min_value") stochastSettings->MinValue = value;
+                else if (property_ == "max_value") stochastSettings->MaxValue = value;
+                else if (property_ == "start_value") stochastSettings->StartValue = value;
+                else if (property_ == "intervals") stochastSettings->Intervals = value;
+                else if (property_ == "variance_factor") stochastSettings->VarianceFactor = value;
+            }
         }
 
         int ProjectServer::GetIntValue(int id, std::string property_)
@@ -222,6 +247,13 @@ namespace Deltares
                 else if (property_ == "minimum_variance_loops") return settings->MinimumVarianceLoops;
                 else if (property_ == "maximum_variance_loops") return settings->MaximumVarianceLoops;
                 else if (property_ == "relaxation_loops") return settings->RelaxationLoops;
+            }
+            else if (objectType == ObjectType::StochastSettings)
+            {
+                std::shared_ptr<Reliability::StochastSettings> stochastSettings = stochastSettingsValues[id];
+
+                if (property_ == "variable") return stochastIds[stochastSettings->stochast];
+                else if (property_ == "intervals") return stochastSettings->Intervals;
             }
             else if (objectType == ObjectType::DesignPoint)
             {
@@ -269,6 +301,13 @@ namespace Deltares
                 else if (property_ == "maximum_variance_loops") settings->MaximumVarianceLoops = value;
                 else if (property_ == "relaxation_loops") settings->RelaxationLoops = value;
             }
+            else if (objectType == ObjectType::StochastSettings)
+            {
+                std::shared_ptr<Reliability::StochastSettings> stochastSettings = stochastSettingsValues[id];
+
+                if (property_ == "variable") stochastSettings->stochast = stochasts[value];
+                else if (property_ == "intervals") stochastSettings->Intervals = value;
+            }
         }
 
         bool ProjectServer::GetBoolValue(int id, std::string property_)
@@ -281,7 +320,20 @@ namespace Deltares
 
                 if (property_ == "inverted") return stochast->isInverted();
                 if (property_ == "truncated") return stochast->isTruncated();
-                else return false;
+            }
+            else if (objectType == ObjectType::StochastSettings)
+            {
+                std::shared_ptr<Reliability::StochastSettings> stochastSettings = stochastSettingsValues[id];
+
+                if (property_ == "is_initialization_allowed") return stochastSettings->IsInitializationAllowed;
+                else if (property_ == "is_variance_allowed") return stochastSettings->IsVarianceAllowed;
+
+            }
+            else if (objectType == ObjectType::DesignPoint)
+            {
+                std::shared_ptr<Reliability::DesignPoint> designPoint = designPoints[id];
+
+                if (property_ == "is_converged") return designPoint->convergenceReport->IsConverged;
             }
 
             return false;
@@ -297,6 +349,13 @@ namespace Deltares
 
                 if (property_ == "inverted") stochast->setInverted(value);
                 else if (property_ == "truncated") stochast->setTruncated(value);
+            }
+            else if (objectType == ObjectType::StochastSettings)
+            {
+                std::shared_ptr<Reliability::StochastSettings> stochastSettings = stochastSettingsValues[id];
+
+                if (property_ == "is_initialization_allowed") stochastSettings->IsInitializationAllowed = value;
+                else if (property_ == "is_variance_allowed") stochastSettings->IsVarianceAllowed = value;
             }
         }
 

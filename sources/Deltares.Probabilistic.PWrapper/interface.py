@@ -33,9 +33,14 @@ if lib == None:
 	raise FileNotFoundError("Could not find " + lib_file)
 
 def Create(object_type):
-	object_type_b = bytes(object_type, 'utf-8')
-	lib.Create.restype = ctypes.c_int
-	return lib.Create(object_type_b)
+	try:
+		object_type_b = bytes(object_type, 'utf-8')
+		lib.Create.restype = ctypes.c_int
+		return lib.Create(object_type_b)
+	except:
+		message = sys.exc_info()[0]
+		print('error: ' + message, flush = True)
+		raise
 
 def Destroy(id_):
 	lib.Destroy(ctypes.c_int(id_))
