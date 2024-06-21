@@ -102,7 +102,17 @@ def GetIntArgValue(id_, property_, arg_):
 	return lib.GetArgValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.c_int(arg_))
 
 def SetCallBack(id_, property_, callBack_):
-	lib.SetCallBack(ctypes.c_int(id_), bytes(property_, 'utf-8'), callBack_)
+	try:
+		lib.SetCallBack(ctypes.c_int(id_), bytes(property_, 'utf-8'), callBack_)
+	except:
+		message = sys.exc_info()[0]
+		print('error: ' + message, flush = True)
+		raise
 
 def Execute(id_, method_):
-	lib.Execute(ctypes.c_int(id_), bytes(method_, 'utf-8'))
+	try:
+		lib.Execute(ctypes.c_int(id_), bytes(method_, 'utf-8'))
+	except:
+		message = sys.exc_info()[0]
+		print('error: ' + message, flush = True)
+		raise

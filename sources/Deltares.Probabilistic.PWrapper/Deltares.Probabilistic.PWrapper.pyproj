@@ -26,7 +26,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="interface.py" />
-    <Compile Include="model.py" />
+    <Compile Include="reliability.py" />
+    <Compile Include="project.py" />
+    <Compile Include="utils.py" />
+    <Compile Include="stochast.py">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Deltares.Probabilistic.CWrapper\Deltares.Probabilistic.CWrapper.vcxproj">
