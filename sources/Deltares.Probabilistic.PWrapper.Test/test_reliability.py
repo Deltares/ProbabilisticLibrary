@@ -2,7 +2,7 @@ from io import DEFAULT_BUFFER_SIZE
 import unittest
 import sys
 
-from statistics import *
+from statistic import *
 from reliability import *
 from project import Project
 
@@ -195,7 +195,6 @@ class Test_reliability(unittest.TestCase):
 
         self.assertAlmostEqual(2.57, beta, delta=margin)
         self.assertEqual(2, len(alphas))
-
 
 if __name__ == '__main__':
     unittest.main()

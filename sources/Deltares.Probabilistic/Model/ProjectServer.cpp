@@ -2,7 +2,6 @@
 
 #include <string>
 #include <memory>
-#include <map>
 
 namespace Deltares
 {
@@ -15,7 +14,11 @@ namespace Deltares
         {
             counter++;
 
-            if (object_type == "project")
+            if (object_type == "standard_normal")
+            {
+                types[counter] = ObjectType::StandardNormal;
+            }
+            else if (object_type == "project")
             {
                 projects[counter] = std::make_shared<Deltares::Models::Project>();
                 types[counter] = ObjectType::Project;
@@ -56,6 +59,26 @@ namespace Deltares
                 stochastSettingsValues[counter] = std::make_shared<Deltares::Reliability::StochastSettings>();
                 types[counter] = ObjectType::StochastSettings;
             }
+            else if (object_type == "design_point")
+            {
+                designPoints[counter] = std::make_shared<Deltares::Reliability::DesignPoint>();
+                types[counter] = ObjectType::DesignPoint;
+            }
+            else if (object_type == "alpha")
+            {
+                alphas[counter] = std::make_shared<Deltares::Reliability::StochastPointAlpha>();
+                types[counter] = ObjectType::Alpha;
+            }
+            else if (object_type == "combine_project")
+            {
+                combineProjects[counter] = std::make_shared<Deltares::Reliability::CombineProject>();
+                types[counter] = ObjectType::CombineProject;
+            }
+            else if (object_type == "combine_settings")
+            {
+                combineSettingsValues[counter] = std::make_shared<Deltares::Reliability::CombineSettings>();
+                types[counter] = ObjectType::CombineSettings;
+            }
 
             return counter;
         }
@@ -74,6 +97,8 @@ namespace Deltares
             case ObjectType::StochastSettings: stochastSettingsValues.erase(id); break;
             case ObjectType::DesignPoint: designPoints.erase(id); break;
             case ObjectType::Alpha: alphas.erase(id); break;
+            case ObjectType::CombineProject: combineProjects.erase(id); break;
+            case ObjectType::CombineSettings: combineSettingsValues.erase(id); break;
             default: throw probLibException("object type");
             }
             types.erase(id);
@@ -223,6 +248,20 @@ namespace Deltares
                 else if (property_ == "intervals") stochastSettings->Intervals = value;
                 else if (property_ == "variance_factor") stochastSettings->VarianceFactor = value;
             }
+            else if (objectType == ObjectType::DesignPoint)
+            {
+                std::shared_ptr<Reliability::DesignPoint> designPoint = designPoints[id];
+
+                if (property_ == "reliability_index") designPoint->Beta = value;
+            }
+            else if (objectType == ObjectType::Alpha)
+            {
+                std::shared_ptr<Reliability::StochastPointAlpha> alpha = alphas[id];
+
+                if (property_ == "alpha") alpha->Alpha = value;
+                if (property_ == "u") alpha->U = value;
+                if (property_ == "x") alpha->X = value;
+            }
         }
 
         int ProjectServer::GetIntValue(int id, std::string property_)
@@ -274,6 +313,12 @@ namespace Deltares
 
                 if (property_ == "variable") return stochastIds[alpha->Stochast];
             }
+            else if (objectType == ObjectType::CombineProject)
+            {
+                std::shared_ptr<Reliability::CombineProject> combineProject = combineProjects[id];
+
+                if (property_ == "design_point") return GetDesignPointId(combineProject->designPoint);
+            }
 
             return 0;
         }
@@ -314,6 +359,18 @@ namespace Deltares
 
                 if (property_ == "variable") stochastSettings->stochast = stochasts[value];
                 else if (property_ == "intervals") stochastSettings->Intervals = value;
+            }
+            if (objectType == ObjectType::CombineProject)
+            {
+                std::shared_ptr<Reliability::CombineProject> combineProject = combineProjects[id];
+
+                if (property_ == "settings") combineProject->settings = combineSettingsValues[value];
+            }
+            else if (objectType == ObjectType::Alpha)
+            {
+                std::shared_ptr<Reliability::StochastPointAlpha> alpha = alphas[id];
+
+                if (property_ == "variable") alpha->Stochast = stochasts[value];
             }
         }
 
@@ -386,6 +443,13 @@ namespace Deltares
                 if (property_ == "start_method") return StartPointCalculatorSettings::getStartPointMethodString(settings->StartPointSettings->StartMethod);
                 if (property_ == "random_type") return Numeric::Random::getRandomGeneratorTypeString(settings->RandomSettings->RandomGeneratorType);
             }
+            else if (objectType == ObjectType::CombineSettings)
+            {
+                std::shared_ptr<Reliability::CombineSettings> settings = combineSettingsValues[id];
+
+                if (property_ == "combiner_method") return DesignPointCombiner::getCombinerMethodString(settings->combinerMethod);
+                else if (property_ == "combine_type") return DesignPointCombiner::getCombineTypeString(settings->combineType);
+            }
 
             return "";
         }
@@ -408,6 +472,13 @@ namespace Deltares
                 if (property_ == "design_point_method") settings->designPointMethod = DesignPointBuilder::getDesignPointMethod(value);
                 if (property_ == "start_method") settings->StartPointSettings->StartMethod = StartPointCalculatorSettings::getStartPointMethod(value);
                 if (property_ == "random_type") settings->RandomSettings->RandomGeneratorType = Numeric::Random::getRandomGeneratorType(value);
+            }
+            else if (objectType == ObjectType::CombineSettings)
+            {
+                std::shared_ptr<Reliability::CombineSettings> settings = combineSettingsValues[id];
+
+                if (property_ == "combiner_method") settings->combinerMethod = DesignPointCombiner::getCombinerMethod(value);
+                else if (property_ == "combine_type") settings->combineType = DesignPointCombiner::getCombineType(value);
             }
         }
 
@@ -464,6 +535,19 @@ namespace Deltares
                     }
                 }
             }
+            else if (objectType == ObjectType::DesignPoint)
+            {
+                std::shared_ptr<Reliability::DesignPoint> designPoint = designPoints[id];
+
+                if (property_ == "alphas")
+                {
+                    designPoint->Alphas.clear();
+                    for (int i = 0; i < size; i++)
+                    {
+                        designPoint->Alphas.push_back(alphas[values[i]]);
+                    }
+                }
+            }
             else if (objectType == ObjectType::CorrelationMatrix)
             {
                 std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix = correlationMatrices[id];
@@ -479,7 +563,20 @@ namespace Deltares
                     correlationMatrix->init(correlationMatrixStochasts);
                 }
             }
+            else if (objectType == ObjectType::CombineProject)
+            {
+                std::shared_ptr<Reliability::CombineProject> project = combineProjects[id];
 
+                if (property_ == "design_points")
+                {
+                    project->designPoints.clear();
+
+                    for (int i = 0; i < size; i++)
+                    {
+                        project->designPoints.push_back(designPoints[values[i]]);
+                    }
+                }
+            }
         }
 
 
@@ -487,14 +584,24 @@ namespace Deltares
         {
             ObjectType objectType = types[id];
 
-            if (objectType == ObjectType::Stochast)
+            if (objectType == ObjectType::StandardNormal)
+            {
+                if (property_ == "u_from_q") return StandardNormal::getUFromQ(argument);
+                else if (property_ == "u_from_p") return StandardNormal::getUFromP(argument);
+                else if (property_ == "q_from_u") return StandardNormal::getQFromU(argument);
+                else if (property_ == "p_from_u") return StandardNormal::getPFromU(argument);
+                else if (property_ == "r_from_p") return StandardNormal::getRFromP(argument);
+                else if (property_ == "p_from_r") return StandardNormal::getPFromR(argument);
+                else if (property_ == "r_from_u") return StandardNormal::getRFromU(argument);
+                else if (property_ == "u_from_r") return StandardNormal::getUFromR(argument);
+            }
+            else if (objectType == ObjectType::Stochast)
             {
                 std::shared_ptr<Statistics::Stochast> stochast = stochasts[id];
 
                 if (property_ == "quantile") return stochast->getQuantile(argument);
                 if (property_ == "x_from_u") return stochast->getXFromU(argument);
                 if (property_ == "u_from_x") return stochast->getUFromX(argument);
-                else return std::nan("");
             }
 
             return std::nan("");
@@ -594,6 +701,12 @@ namespace Deltares
             if (objectType == ObjectType::Project)
             {
                 std::shared_ptr<Models::Project> project = projects[id];
+
+                if (method_ == "run") project->run();
+            }
+            else if (objectType == ObjectType::CombineProject)
+            {
+                std::shared_ptr<Reliability::CombineProject> project = combineProjects[id];
 
                 if (method_ == "run") project->run();
             }

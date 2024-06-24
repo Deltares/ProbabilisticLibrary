@@ -137,8 +137,6 @@ class Settings:
 		values = [stochast_setting._id for stochast_setting in self._stochast_settings]
 		interface.SetArrayValue(self._id, 'stochast_settings', values)
 
-
-
 	def get_variable_settings(self, stochast):
 		if type(stochast) is Stochast:
 			stochast = stochast.name
@@ -224,15 +222,32 @@ class StochastSettings:
 
 class DesignPoint:
 
-	def __init__(self, id):
-		self._id = id
+	def __init__(self, id = None):
+		if id is None:
+			self._id = interface.Create('design_point')
+		else:
+			self._id = id
+
 		self._alphas = None
 		self._contributing_design_points = None
 		
 	@property   
 	def reliability_index(self):
 		return interface.GetValue(self._id, 'reliability_index')
-		
+
+    # testing method
+	def _set_reliability_index(self, reliability_index_value):
+		interface.SetValue(self._id, 'reliability_index', reliability_index_value)
+
+    # testing method
+	def _add_alpha(self, variable, alpha_value):
+		alpha = Alpha();
+		alpha._set_alpha(variable, alpha_value, self.reliability_index);
+		self.alphas.append(alpha)
+
+		values = [a._id for a in self._alphas]
+		interface.SetArrayValue(self._id, 'alphas', values)
+
 	@property   
 	def probability_failure(self):
 		return interface.GetValue(self._id, 'probability_failure')
@@ -268,8 +283,12 @@ class DesignPoint:
 		
 class Alpha:
 
-	def __init__(self, id):
-		self._id = id
+	def __init__(self, id = None):
+		if id is None:
+			self._id = interface.Create('alpha')
+		else:
+			self._id = id
+			
 		self._variable = None
 
 	@property   
@@ -280,6 +299,20 @@ class Alpha:
 				self._variable = Stochast(variable_id);
 		return self._variable
 		
+	@variable.setter
+	def variable(self, value):
+		interface.SetIntValue(self._id, 'variable', value._id)
+
+    # testing method
+	def _set_alpha(self, variable, alpha_value, beta):
+		self._variable = variable
+		interface.SetIntValue(self._id, 'variable', variable._id)
+		interface.SetValue(self._id, 'alpha', alpha_value)
+
+		u = - beta * alpha_value
+		interface.SetValue(self._id, 'u',- beta * alpha_value)
+		interface.SetValue(self._id, 'x', variable.get_x_from_u(u))
+
 	@property   
 	def alpha(self):
 		return interface.GetValue(self._id, 'alpha')
@@ -299,5 +332,27 @@ class Alpha:
 	@property   
 	def x(self):
 		return interface.GetValue(self._id, 'x')
+
+
+class CombineSettings:
+		  
+	def __init__(self):
+		self._id = interface.Create('combine_settings')
+		
+	@property   
+	def combiner_method(self):
+		return interface.GetStringValue(self._id, 'combiner_method')
+		
+	@combiner_method.setter
+	def combiner_method(self, value):
+		interface.SetStringValue(self._id, 'combiner_method', value)
+
+	@property   
+	def combine_type(self):
+		return interface.GetStringValue(self._id, 'combine_type')
+		
+	@combine_type.setter
+	def combine_type(self, value):
+		interface.SetStringValue(self._id, 'combine_type', value)
 
 

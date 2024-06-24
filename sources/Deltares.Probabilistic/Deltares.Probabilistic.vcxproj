@@ -155,6 +155,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Combine\CombineProject.h" />
+    <ClInclude Include="Combine\CombineSettings.h" />
     <ClInclude Include="Combine\CombineType.h" />
     <ClInclude Include="Combine\CombinedDesignPointModel.h" />
     <ClInclude Include="Combine\ImportanceSamplingCombiner.h" />
@@ -284,6 +286,8 @@
     <ClInclude Include="Statistics\Distributions\ConditionalWeibullDistribution.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Combine\CombineProject.cpp" />
+    <ClCompile Include="Combine\CombineSettings.cpp" />
     <ClCompile Include="Combine\CombineType.cpp" />
     <ClCompile Include="Combine\CombinedDesignPointModel.cpp" />
     <ClCompile Include="Combine\ImportanceSamplingCombiner.cpp" />

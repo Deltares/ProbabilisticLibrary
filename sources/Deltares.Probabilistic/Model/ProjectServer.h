@@ -1,9 +1,10 @@
 #pragma once
 #include "Project.h"
 #include "../Reliability/Settings.h"
+#include "../Combine/CombineProject.h"
+#include "../Combine/CombineSettings.h"
 #include "../Statistics/Stochast.h"
 #include "../Statistics/DiscreteValue.h"
-#include <map>
 
 namespace Deltares
 {
@@ -34,10 +35,10 @@ namespace Deltares
             void SetCallBack(int id, std::string property_, ZValuesCallBack callBack);
             void Execute(int id, std::string method_);
         private:
-            enum ObjectType {Project, Stochast, DiscreteValue, HistogramValue, FragilityValue, CorrelationMatrix, Settings, StochastSettings, DesignPoint, Alpha};
+            enum ObjectType {StandardNormal, Project, Stochast, DiscreteValue, HistogramValue, FragilityValue, CorrelationMatrix, Settings, StochastSettings, DesignPoint, Alpha, CombineProject, CombineSettings};
 
             int counter = 0;
-            std::map<int, Deltares::Models::ProjectServer::ObjectType> types;
+            std::unordered_map<int, Deltares::Models::ProjectServer::ObjectType> types;
 
             std::unordered_map<int, std::shared_ptr<Statistics::Stochast>> stochasts;
             std::unordered_map<int, std::shared_ptr<Models::Project>> projects;
@@ -49,6 +50,8 @@ namespace Deltares
             std::unordered_map<int, std::shared_ptr<Reliability::StochastSettings>> stochastSettingsValues;
             std::unordered_map<int, std::shared_ptr<Reliability::DesignPoint>> designPoints;
             std::unordered_map<int, std::shared_ptr<Reliability::StochastPointAlpha>> alphas;
+            std::unordered_map<int, std::shared_ptr<Reliability::CombineProject>> combineProjects;
+            std::unordered_map<int, std::shared_ptr<Reliability::CombineSettings>> combineSettingsValues;
 
             std::unordered_map<std::shared_ptr<Reliability::DesignPoint>, int> designPointIds;
             std::unordered_map<std::shared_ptr<Reliability::StochastPointAlpha>, int> alphaIds;
