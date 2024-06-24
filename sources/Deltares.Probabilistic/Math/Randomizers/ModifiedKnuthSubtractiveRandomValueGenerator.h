@@ -22,6 +22,8 @@ namespace Deltares
 			void initialize(bool repeatable, int seed, int seedB) override;
 			double next() override;
 
+            static bool isAvailable();
+
 			static void setInitializeDelegate(InitializeRandomDelegate initializeDelegate)
 			{
 				ModifiedKnuthSubtractiveRandomValueGenerator::initializeDelegate = initializeDelegate;

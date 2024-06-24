@@ -1,7 +1,7 @@
 import unittest
 import sys
 
-from statistics import Stochast, DiscreteValue, CorrelationMatrix
+from statistic import Stochast, DiscreteValue, CorrelationMatrix
 
 margin = 0.01
 

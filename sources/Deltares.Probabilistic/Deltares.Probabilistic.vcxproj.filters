@@ -148,6 +148,8 @@
     <ClCompile Include="Model\ProjectServer.cpp" />
     <ClCompile Include="Reliability\Settings.cpp" />
     <ClCompile Include="Statistics\SparseCorrelationMatrix.cpp" />
+    <ClCompile Include="Combine\CombineSettings.cpp" />
+    <ClCompile Include="Combine\CombineProject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -315,6 +317,8 @@
     <ClInclude Include="Model\ProjectServer.h" />
     <ClInclude Include="Reliability\Settings.h" />
     <ClInclude Include="Statistics\SparseCorrelationMatrix.h" />
+    <ClInclude Include="Combine\CombineSettings.h" />
+    <ClInclude Include="Combine\CombineProject.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

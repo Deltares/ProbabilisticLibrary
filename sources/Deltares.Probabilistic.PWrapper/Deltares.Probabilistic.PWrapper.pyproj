@@ -29,7 +29,7 @@
     <Compile Include="reliability.py" />
     <Compile Include="project.py" />
     <Compile Include="utils.py" />
-    <Compile Include="statistics.py">
+    <Compile Include="statistic.py">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

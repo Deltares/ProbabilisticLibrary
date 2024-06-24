@@ -1,6 +1,22 @@
 from utils import *
 import interface
 
+class StandardNormal:
+	_id = interface.Create('standard_normal')
+	
+	def get_u_from_q (q : float):
+		return interface.GetArgValue(StandardNormal._id, 'u_from_q', q)
+
+	def get_u_from_p (p : float):
+		return interface.GetArgValue(StandardNormal._id, 'u_from_p', p)
+
+	def get_q_from_u (u : float):
+		return interface.GetArgValue(StandardNormal._id, 'q_from_u', q)
+
+	def get_p_from_u (u : float):
+		return interface.GetArgValue(StandardNormal._id, 'p_from_u', q)
+
+
 class Stochast:
 
 	def __init__(self, id = None):
@@ -204,6 +220,9 @@ class DiscreteValue:
 	def __init__(self):
 		self._id = interface.Create('discrete_value')
   
+	def __del__(self):
+	    interface.Destroy(self._id)
+
 	@property   
 	def x(self):
 		return interface.GetValue(self._id, 'x')
@@ -225,6 +244,9 @@ class FragilityValue:
 	def __init__(self):
 		self._id = interface.Create('fragility_value')
 		
+	def __del__(self):
+	    interface.Destroy(self._id)
+
 	@property   
 	def x(self):
 		return interface.GetValue(self._id, 'x')
@@ -270,6 +292,9 @@ class HistogramValue:
 	def __init__(self):
 		self._id = interface.Create('histogram_value')
   
+	def __del__(self):
+	    interface.Destroy(self._id)
+
 	@property   
 	def lower_bound(self):
 		return interface.GetValue(self._id, 'lower_bound')
@@ -300,6 +325,9 @@ class CorrelationMatrix:
 	def __init__(self):
 		self._id = interface.Create('correlation_matrix')
 		self._variables = CallbackList(self._variables_changed)
+
+	def __del__(self):
+	    interface.Destroy(self._id)
 
 	@property   
 	def variables(self):

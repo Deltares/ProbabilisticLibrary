@@ -16,6 +16,11 @@ namespace Deltares
 	{
 		void Random::initialize(RandomValueGeneratorType generatorType, bool repeatable, int seed, int seedB)
 		{
+            if (generatorType == RandomValueGeneratorType::ModifiedKnuthSubtractive && !ModifiedKnuthSubtractiveRandomValueGenerator::isAvailable())
+            {
+                generatorType = RandomValueGeneratorType::MersenneTwister;
+            }
+
 			switch (generatorType)
 			{
 			case MersenneTwister: Random::randomValueGenerator = new MersenneTwisterRandomValueGenerator(); break;

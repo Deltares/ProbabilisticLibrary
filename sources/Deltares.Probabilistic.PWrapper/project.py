@@ -2,7 +2,7 @@ import sys
 from ctypes import *
 
 import interface
-from statistics import *
+from statistic import *
 from reliability import *
 
 class Project:
@@ -60,5 +60,40 @@ class Project:
 			if designPointId > 0:
 				self._design_point = DesignPoint(designPointId)
 		return self._design_point
+
+
+class CombineProject:
+
+	def __init__(self):
+		self._id = interface.Create('combine_project')
+
+		self._design_points = []
+		self._settings = CombineSettings()
+		self._design_point = None
+		
+		_model = None
+  
+	@property
+	def design_points(self):
+		return self._design_points
+
+	@property   
+	def settings(self):
+		return self._settings
+
+	def run(self):
+		_design_point = None
+		interface.SetArrayValue(self._id, 'design_points', [design_point._id for design_point in self._design_points])
+		interface.SetIntValue(self._id, 'settings', self._settings._id)
+		interface.Execute(self._id, 'run')
+	
+	@property   
+	def design_point(self):
+		if self._design_point is None:
+			designPointId = interface.GetIntValue(self._id, 'design_point')
+			if designPointId > 0:
+				self._design_point = DesignPoint(designPointId)
+		return self._design_point
+
 
 

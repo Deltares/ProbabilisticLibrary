@@ -44,6 +44,11 @@ namespace Deltares
                 return combiner->combineDesignPoints(combineMethodType, designPoints, selfCorrelationMatrix, progress);
             }
 
+            static std::string getCombineTypeString(combineAndOr type);
+            static combineAndOr getCombineType(std::string method);
+            static std::string getCombinerMethodString(CombinerType type);
+            static CombinerType getCombinerMethod(std::string method);
+
         private:
             std::shared_ptr<Combiner> getCombiner()
             {

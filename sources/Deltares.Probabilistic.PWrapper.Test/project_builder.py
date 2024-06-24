@@ -1,7 +1,9 @@
 import sys
+import math
 import interface
 
-from statistics import Stochast
+from statistic import Stochast
+from reliability import DesignPoint, Alpha
 from project import Project
 
 def linear(values):
@@ -108,6 +110,24 @@ def get_linear_partially_correlated_project():
     project.model = linear
 
     return project
+
+def get_design_point(beta : float, count : int):
+    design_point = DesignPoint()
+    design_point._set_reliability_index(beta)
+
+    for i in range(count):
+        alpha = Alpha()
+        
+        variable = Stochast()
+        variable.distribution = 'uniform'
+        variable.minimum = 0
+        variable.maximum = 1
+
+        design_point._add_alpha(variable, - math.sqrt (1.0 / float(count)))
+
+    return design_point
+
+
 
 
 

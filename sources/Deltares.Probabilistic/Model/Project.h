@@ -38,7 +38,7 @@ namespace Deltares
             std::shared_ptr<ZModel> model = nullptr;
 
             /**
-             * \brief Deterministic model which calculates a z-value based on input values
+             * \brief Calculation settings
              */
             std::shared_ptr<Reliability::Settings> settings = std::make_shared<Reliability::Settings>();
 
@@ -71,7 +71,7 @@ namespace Deltares
             std::shared_ptr<Reliability::DesignPoint> getDesignPoint();
 
             /**
-             * \brief Run by using the global settings
+             * \brief Runs the reliability calculation
              */
             void run();
 

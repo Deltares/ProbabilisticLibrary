@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>cafb0eda-ef78-46a8-8227-adee778907f8</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>test_statistics.py</StartupFile>
+    <StartupFile>test_combine.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -28,6 +28,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="project_builder.py" />
+    <Compile Include="test_combine.py" />
     <Compile Include="test_statistics.py" />
     <Compile Include="test_reliability.py">
       <SubType>Code</SubType>
