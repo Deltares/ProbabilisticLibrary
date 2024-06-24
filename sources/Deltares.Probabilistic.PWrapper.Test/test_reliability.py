@@ -2,15 +2,15 @@ from io import DEFAULT_BUFFER_SIZE
 import unittest
 import sys
 
-from stochast import *
+from statistics import *
 from reliability import *
-from project import *
+from project import Project
 
 import project_builder
 
 margin = 0.01
 
-class Test_model(unittest.TestCase):
+class Test_reliability(unittest.TestCase):
 
     def test_form_linear(self):
         project = project_builder.get_linear_project()
@@ -31,6 +31,44 @@ class Test_model(unittest.TestCase):
 
         self.assertAlmostEqual(0.9, alphas[0].x, delta=margin)
         self.assertAlmostEqual(0.9, alphas[1].x, delta=margin)
+
+    def test_form_linear_fully_correlated(self):
+        project = project_builder.get_linear_fully_correlated_project()
+
+        project.settings.reliability_method = 'form'
+
+        project.run();
+
+        dp = project.design_point;
+        beta = dp.reliability_index;
+        alphas = dp.alphas;
+
+        self.assertAlmostEqual(2.33, beta, delta=margin)
+        self.assertEqual(3, len(alphas))
+
+        self.assertAlmostEqual(0.45, alphas[0].x, delta=margin)
+        self.assertAlmostEqual(0.45, alphas[1].x, delta=margin)
+        self.assertAlmostEqual(0.9, alphas[2].x, delta=margin)
+
+        self.assertAlmostEqual(alphas[0].alpha_correlated, alphas[1].alpha_correlated, delta=margin)
+
+    def test_form_linear_partially_correlated(self):
+        project = project_builder.get_linear_partially_correlated_project()
+
+        project.settings.reliability_method = 'form'
+
+        project.run();
+
+        dp = project.design_point;
+        beta = dp.reliability_index;
+        alphas = dp.alphas;
+
+        self.assertAlmostEqual(2.15, beta, delta=margin)
+
+        self.assertAlmostEqual(0.45, alphas[0].x, delta=margin)
+        self.assertAlmostEqual(0.45, alphas[1].x, delta=margin)
+
+        self.assertAlmostEqual(alphas[0].alpha_correlated, alphas[1].alpha_correlated, delta=margin)
 
     def test_crude_monte_carlo_linear(self):
         project = project_builder.get_linear_project()

@@ -41,6 +41,11 @@ namespace Deltares
                 fragilityValues[counter] = std::make_shared<Deltares::Statistics::FragilityValue>();
                 types[counter] = ObjectType::FragilityValue;
             }
+            else if (object_type == "correlation_matrix")
+            {
+                correlationMatrices[counter] = std::make_shared<Deltares::Statistics::CorrelationMatrix>();
+                types[counter] = ObjectType::CorrelationMatrix;
+            }
             else if (object_type == "settings")
             {
                 settingsValues[counter] = std::make_shared<Deltares::Reliability::Settings>();
@@ -64,6 +69,7 @@ namespace Deltares
             case ObjectType::DiscreteValue: discreteValues.erase(id); break;
             case ObjectType::HistogramValue: histogramValues.erase(id); break;
             case ObjectType::FragilityValue: fragilityValues.erase(id); break;
+            case ObjectType::CorrelationMatrix: correlationMatrices.erase(id); break;
             case ObjectType::Settings: settingsValues.erase(id); break;
             case ObjectType::StochastSettings: stochastSettingsValues.erase(id); break;
             case ObjectType::DesignPoint: designPoints.erase(id); break;
@@ -281,6 +287,7 @@ namespace Deltares
                 std::shared_ptr<Models::Project> project = projects[id];
 
                 if (property_ == "settings") project->settings = settingsValues[value];
+                else if (property_ == "correlation_matrix") project->correlationMatrix = correlationMatrices[value];
             }
             else if (objectType == ObjectType::Stochast)
             {
@@ -457,6 +464,22 @@ namespace Deltares
                     }
                 }
             }
+            else if (objectType == ObjectType::CorrelationMatrix)
+            {
+                std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix = correlationMatrices[id];
+
+                if (property_ == "variables")
+                {
+                    std::vector<std::shared_ptr<Statistics::Stochast>> correlationMatrixStochasts;
+                    for (int i = 0; i < size; i++)
+                    {
+                        correlationMatrixStochasts.push_back(stochasts[values[i]]);
+                    }
+
+                    correlationMatrix->init(correlationMatrixStochasts);
+                }
+            }
+
         }
 
 
@@ -486,6 +509,48 @@ namespace Deltares
                 std::shared_ptr<Statistics::Stochast> stochast = stochasts[id];
 
                 if (property_ == "x_at_u") stochast->setXAtU(value, argument, ConstantParameterType::VariationCoefficient);
+            }
+        }
+
+        double ProjectServer::GetIndexedValue(int id, std::string property_, int index)
+        {
+            return std::nan("");
+        }
+
+        void ProjectServer::SetIndexedValue(int id, std::string property_, int index, double value)
+        {
+            // not needed yet
+        }
+
+        double ProjectServer::GetIndexedIndexedValue(int id, std::string property_, int index1, int index2)
+        {
+            ObjectType objectType = types[id];
+
+            if (objectType == ObjectType::CorrelationMatrix)
+            {
+                std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix = correlationMatrices[id];
+
+                if (property_ == "correlation")
+                {
+                    return correlationMatrix->GetCorrelation(stochasts[index1], stochasts[index2]);
+                }
+            }
+
+            return std::nan("");
+        }
+
+        void ProjectServer::SetIndexedIndexedValue(int id, std::string property_, int index1, int index2, double value)
+        {
+            ObjectType objectType = types[id];
+
+            if (objectType == ObjectType::CorrelationMatrix)
+            {
+                std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix = correlationMatrices[id];
+
+                if (property_ == "correlation")
+                {
+                    correlationMatrix->SetCorrelation(stochasts[index1], stochasts[index2], value);
+                }
             }
         }
 

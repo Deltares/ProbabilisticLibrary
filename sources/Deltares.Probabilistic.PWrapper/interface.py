@@ -97,6 +97,20 @@ def GetArgValue(id_, property_, arg_):
 def SetArgValue(id_, property_, arg_, value_):
 	lib.SetArgValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.c_double(arg_), ctypes.c_double(value_))
 
+def GetIndexedValue(id_, property_, index_):
+	lib.GetIndexedValue.restype = ctypes.c_double
+	return lib.GetIndexedValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.c_int(index_))
+
+def SetIndexedValue(id_, property_, index_, value_):
+	lib.SetIndexedValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.c_int(index_), ctypes.c_double(value_))
+
+def GetIndexedIndexedValue(id_, property_, index1_, index2_):
+	lib.GetIndexedIndexedValue.restype = ctypes.c_double
+	return lib.GetIndexedIndexedValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.c_int(index1_), ctypes.c_int(index2_))
+
+def SetIndexedIndexedValue(id_, property_, index1_, index2_, value_):
+	lib.SetIndexedIndexedValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.c_int(index1_), ctypes.c_int(index2_), ctypes.c_double(value_))
+
 def GetIntArgValue(id_, property_, arg_):
 	lib.GetIntArgValue.restype = ctypes.c_int
 	return lib.GetArgValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.c_int(arg_))

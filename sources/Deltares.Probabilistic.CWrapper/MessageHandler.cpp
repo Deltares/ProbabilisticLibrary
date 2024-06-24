@@ -91,6 +91,30 @@ extern "C" __declspec(dllexport) void SetArgValue(int id, char* property, double
     projectServer->SetArgValue(id, propertyStr, argument, value);
 }
 
+extern "C"  __declspec(dllexport) double GetIndexedValue(int id, char* property, int index)
+{
+    std::string propertyStr(property);
+    return projectServer->GetIndexedValue(id, propertyStr, index);
+}
+
+extern "C" __declspec(dllexport) void SetIndexedValue(int id, char* property, int index, double value)
+{
+    std::string propertyStr(property);
+    projectServer->SetIndexedValue(id, propertyStr, index, value);
+}
+
+extern "C"  __declspec(dllexport) double GetIndexedIndexedValue(int id, char* property, int index1, int index2)
+{
+    std::string propertyStr(property);
+    return projectServer->GetIndexedIndexedValue(id, propertyStr, index1, index2);
+}
+
+extern "C" __declspec(dllexport) void SetIndexedIndexedValue(int id, char* property, int index1, int index2, double value)
+{
+    std::string propertyStr(property);
+    projectServer->SetIndexedIndexedValue(id, propertyStr, index1, index2, value);
+}
+
 extern "C"  __declspec(dllexport) int GetIndexedIntValue(int id, char* property, int index)
 {
     std::string propertyStr(property);
