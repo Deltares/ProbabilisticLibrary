@@ -7,7 +7,7 @@ class Settings:
 		  
 	def __init__(self):
 		self._id = interface.Create('settings')
-		self._stochast_settings = EventList(self._stochast_settings_changed)
+		self._stochast_settings = CallbackList(self._stochast_settings_changed)
 		
 	@property   
 	def reliability_method(self):

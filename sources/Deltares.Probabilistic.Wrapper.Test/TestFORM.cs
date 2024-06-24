@@ -138,6 +138,22 @@ namespace Deltares.Probabilistic.Wrapper.Test
         }
 
         [Test]
+        public void TestLinearPartialCorrelated()
+        {
+            Project project = ProjectBuilder.GetLinearPartialCorrelatedProject();
+
+            project.ReliabilityMethod = new FORM();
+            DesignPoint designPoint = project.GetDesignPoint();
+
+            Assert.AreEqual(2.15, designPoint.Beta, margin);
+
+            Assert.AreEqual(0.45, designPoint.Alphas[0].X, margin);
+            Assert.AreEqual(0.45, designPoint.Alphas[1].X, margin);
+
+            Assert.AreEqual(designPoint.Alphas[0].AlphaCorrelated, designPoint.Alphas[1].AlphaCorrelated, margin);
+        }
+
+        [Test]
         public void TestLinearMultiCorrelated()
         {
             Project project = ProjectBuilder.GetLinearMultiCorrelatedProject(false);

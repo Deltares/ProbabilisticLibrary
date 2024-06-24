@@ -29,7 +29,6 @@ namespace Deltares
             return  this->model != nullptr && 
                     this->runSettings != nullptr && this->runSettings->isValid();
         }
-
     }
 }
 

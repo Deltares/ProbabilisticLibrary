@@ -3,6 +3,7 @@
 
 #include "../Statistics/Stochast.h"
 #include "../Statistics/CorrelationMatrix.h"
+#include "../Statistics/SparseCorrelationMatrix.h"
 #include "../Reliability/ReliabilityMethod.h"
 #include "../Reliability/Settings.h"
 
@@ -24,7 +25,7 @@ namespace Deltares
             /**
              * \brief Defines correlations between stochastic variables
              */
-            std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix = std::make_shared<Statistics::CorrelationMatrix>();
+            std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix = nullptr;
 
             /**
              * \brief Method which performs a reliability calculation
@@ -73,6 +74,10 @@ namespace Deltares
              * \brief Run by using the global settings
              */
             void run();
+
+        private:
+            std::shared_ptr<Statistics::CorrelationMatrix> getCorrelationMatrix();
+
         };
     }
 }

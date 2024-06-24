@@ -2,7 +2,7 @@ import sys
 from ctypes import *
 
 import interface
-from stochast import *
+from statistics import *
 from reliability import *
 
 class Project:
@@ -15,21 +15,22 @@ class Project:
 		interface.SetCallBack(self._id, 'model', self._callback)
 
 		self._variables = []
-		self._settings = None
+		self._correlation_matrix = CorrelationMatrix()
+		self._settings = Settings()
 		self._design_point = None
 		
 		_model = None
   
 	@property
 	def variables(self):
-		if self._variables is None:
-			self._variables = []
 		return self._variables
 
 	@property   
+	def correlation_matrix(self):
+		return self._correlation_matrix
+
+	@property   
 	def settings(self):
-		if self._settings is None:
-			self._settings = Settings()
 		return self._settings
 
 	@property   
@@ -47,8 +48,9 @@ class Project:
 
 	def run(self):
 		_design_point = None
-		interface.SetArrayValue(self._id, 'variables', [variable._id for variable in self.variables])
-		interface.SetIntValue(self._id, 'settings', self.settings._id)
+		interface.SetArrayValue(self._id, 'variables', [variable._id for variable in self._variables])
+		interface.SetIntValue(self._id, 'correlation_matrix', self._correlation_matrix._id)
+		interface.SetIntValue(self._id, 'settings', self._settings._id)
 		interface.Execute(self._id, 'run')
 
 	@property   
