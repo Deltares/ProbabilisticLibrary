@@ -10,7 +10,7 @@ namespace Deltares
         {
             auto form = FORM();
             form.Settings = formSettings;
-            modelRunner->setRelMethodCounter(1);
+            modelRunner->setReliabilityMethodSubStepsCounter(1);
             auto formDesignPoint = form.getDesignPoint(modelRunner);
             if (formDesignPoint.get()->convergenceReport->IsConverged)
             {
@@ -25,7 +25,7 @@ namespace Deltares
             modelRunner->clear();
             auto ds = DirectionalSampling();
             ds.Settings = DsSettings;
-            modelRunner->setRelMethodCounter(2);
+            modelRunner->setReliabilityMethodSubStepsCounter(2);
             auto dsDesignPoint = ds.getDesignPoint(modelRunner);
             dsDesignPoint->convergenceReport->TotalIterations = formDesignPoint->convergenceReport->TotalIterations;
             return dsDesignPoint;

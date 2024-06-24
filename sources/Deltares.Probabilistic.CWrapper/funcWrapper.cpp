@@ -1,4 +1,5 @@
 #include "funcWrapper.h"
+
 #include "../Deltares.Probabilistic/Utils/probLibException.h"
 #include <omp.h>
 
@@ -13,14 +14,18 @@ void funcWrapper::FDelegate(std::shared_ptr<ModelSample> s)
 
 void funcWrapper::FDelegateDp(std::shared_ptr<ModelSample> s, const designPointOptions dp)
 {
-    computationSettings compSetting{ dp, compId, s->threadId, s->relMethodCounter };
+    computationSettings compSetting{ dp, compId, s->threadId, s->reliabilityMethodSubStepsCounter };
     tError e = tError();
     double result = zfunc(s->Values.data(), &compSetting, &e);
     if (e.errorCode != 0)
     {
         error_messages.push_back((e.errorMessage));
+        s->Z = std::nan("");
     }
-    s->Z = result;
+    else
+    {
+        s->Z = result;
+    }
 }
 
 void funcWrapper::FDelegateParallel(std::vector<std::shared_ptr<ModelSample>> samples)
@@ -33,10 +38,14 @@ void funcWrapper::FDelegateParallel(std::vector<std::shared_ptr<ModelSample>> sa
         computationSettings compSetting{ designPointOptions::dpOutFALSE, compId, omp_get_thread_num(), 1 };
         tError e = tError();
         double result = zfunc(samples[i]->Values.data(), &compSetting, &e);
-        samples[i]->Z = result;
         if (e.errorCode != 0)
         {
             errorMessagePerThread[omp_get_thread_num()] = e.errorMessage;
+            samples[i]->Z = std::nan("");
+        }
+        else
+        {
+            samples[i]->Z = result;
         }
     }
 

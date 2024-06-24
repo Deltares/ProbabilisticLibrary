@@ -95,7 +95,7 @@ namespace Deltares
         std::vector<double> ModelRunner::getXValues(std::shared_ptr<Sample> sample)
         {
             std::shared_ptr<ModelSample> xSample = getModelSample(sample);
-            xSample->relMethodCounter = Settings->RelMethodCounter;
+            xSample->reliabilityMethodSubStepsCounter = Settings->reliabilityMethodSubStepsCounter;
 
             this->zModel->invoke(xSample, Settings->RunModelAtDesignPoint);
 
@@ -336,7 +336,7 @@ namespace Deltares
             if (convergenceReport != nullptr && Settings->RunModelAtDesignPoint != designPointOptions::dpOutFALSE)
             {
                 auto xValues = getXValues(sample);
-                for (size_t i = 0; i < sample->Values.size(); i++)
+                for (size_t i = 0; i < xValues.size(); i++)
                 {
                     designPoint->Alphas[i]->X = xValues[i];
                 }

@@ -12,7 +12,7 @@ struct computationSettings
     Deltares::Models::designPointOptions dpOut;
     int computationId;         // reserved for e.g. wind direction
     int threadId;
-    int relMethodCounter;
+    int reliabilityMethodSubStepsCounter;
 };
 
 typedef std::function<double(double[], computationSettings*, tError*)> zFuncExtern;

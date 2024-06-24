@@ -234,7 +234,7 @@ module interface_probCalc
         integer :: designPointSetting
         integer :: computationId
         integer :: threadId
-        integer :: relMethodCounter
+        integer :: reliabilityMethodSubStepsCounter
     end type computationSetting
 
   interface

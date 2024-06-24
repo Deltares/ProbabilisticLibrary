@@ -70,7 +70,7 @@ namespace Deltares
 				}
 
 				int loopCounter = 1;
-                modelRunner->setRelMethodCounter(loopCounter);
+                modelRunner->setReliabilityMethodSubStepsCounter(loopCounter);
 
 				this->setCallbacks(this->importanceSampling, loopCounter);
 
@@ -84,7 +84,7 @@ namespace Deltares
 				while (!isStopped() && hasChanged && isNextLoopAllowed(Settings, loopCounter, designPoint->convergenceReport, designPoint))
 				{
 					loopCounter++;
-                    modelRunner->setRelMethodCounter(loopCounter);
+                    modelRunner->setReliabilityMethodSubStepsCounter(loopCounter);
 
 					const std::shared_ptr<ImportanceSamplingSettings> importanceSamplingSettings = importanceSampling->Settings;
 
@@ -138,7 +138,7 @@ namespace Deltares
 
 				if (!fullExecuted)
 				{
-                    modelRunner->setRelMethodCounter(loopCounter+1);
+                    modelRunner->setReliabilityMethodSubStepsCounter(loopCounter+1);
                     const std::shared_ptr<ImportanceSamplingSettings> importanceSamplingSettings = importanceSampling->Settings;
 
 					this->importanceSampling = std::make_shared<ImportanceSampling>();

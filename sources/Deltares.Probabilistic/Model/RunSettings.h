@@ -29,7 +29,7 @@ namespace Deltares
 			std::shared_ptr<ProxySettings> proxySettings = nullptr;
 
             designPointOptions RunModelAtDesignPoint = designPointOptions::dpOutFALSE;
-            int RelMethodCounter = 0;
+            int reliabilityMethodSubStepsCounter = 0;
 
 			bool isValid()
 			{

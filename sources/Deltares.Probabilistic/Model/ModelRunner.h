@@ -62,8 +62,8 @@ namespace Deltares
 			void setDirectionModel(ZBetaLambda zBetaLambda) const;
 			void setShouldExitFunction(ShouldExitLambda shouldExitFunction) { this->shouldExitFunction = shouldExitFunction; }
 			void setRemoveTaskFunction(RemoveTaskLambda removeTaskFunction) { this->removeTaskFunction = removeTaskFunction; }
-            void setRelMethodCounter(const int i) { Settings->RelMethodCounter = i; }
-            int getRelMethodCounter() { return Settings->RelMethodCounter; }
+            void setReliabilityMethodSubStepsCounter(const int i) { Settings->reliabilityMethodSubStepsCounter = i; }
+            int getReliabilityMethodSubStepsCounter() { return Settings->reliabilityMethodSubStepsCounter; }
 
 		private:
             std::vector<double> getXValues(std::shared_ptr<Sample> sample);
