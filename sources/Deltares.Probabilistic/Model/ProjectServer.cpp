@@ -382,7 +382,7 @@ namespace Deltares
                 std::shared_ptr<Reliability::Settings> settings = settingsValues[id];
 
                 if (property_ == "reliability_method") return Settings::getReliabilityMethodTypeString(settings->ReliabilityMethod);
-                if (property_ == "design_point_method") return DesignPointBuilder::getDesignPointMethodString(settings->DesignPointMethod);
+                if (property_ == "design_point_method") return DesignPointBuilder::getDesignPointMethodString(settings->designPointMethod);
                 if (property_ == "start_method") return StartPointCalculatorSettings::getStartPointMethodString(settings->StartPointSettings->StartMethod);
                 if (property_ == "random_type") return Numeric::Random::getRandomGeneratorTypeString(settings->RandomSettings->RandomGeneratorType);
             }
@@ -405,7 +405,7 @@ namespace Deltares
                 std::shared_ptr<Reliability::Settings> settings = settingsValues[id];
 
                 if (property_ == "reliability_method") settings->ReliabilityMethod = Settings::getReliabilityMethodType(value);
-                if (property_ == "design_point_method") settings->DesignPointMethod = DesignPointBuilder::getDesignPointMethod(value);
+                if (property_ == "design_point_method") settings->designPointMethod = DesignPointBuilder::getDesignPointMethod(value);
                 if (property_ == "start_method") settings->StartPointSettings->StartMethod = StartPointCalculatorSettings::getStartPointMethod(value);
                 if (property_ == "random_type") settings->RandomSettings->RandomGeneratorType = Numeric::Random::getRandomGeneratorType(value);
             }
