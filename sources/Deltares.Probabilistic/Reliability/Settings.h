@@ -28,7 +28,7 @@ namespace Deltares
             /**
              * \brief Method type how the design point (alpha values) is calculated
              */
-            DesignPointMethod DesignPointMethod = DesignPointMethod::CenterOfGravity;
+            DesignPointMethod designPointMethod = DesignPointMethod::CenterOfGravity;
 
             /**
              * \brief The minimum samples to be examined

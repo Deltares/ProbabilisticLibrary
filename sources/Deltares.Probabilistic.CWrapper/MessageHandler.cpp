@@ -1,6 +1,11 @@
 #include "../Deltares.Probabilistic/Model/ProjectServer.h"
 
 #include <string>
+#ifdef __GNUC__
+#define DLL_PUBLIC __attribute__ ((visibility("default")))
+#else
+#define DLL_PUBLIC __declspec(dllexport) // Note: actually gcc seems to also supports this syntax.
+#endif
 
 
 #include <string>

@@ -50,7 +50,7 @@ namespace Deltares
         {
             std::shared_ptr<NumericalIntegration> numericalIntegration = std::make_shared<NumericalIntegration>();
 
-            numericalIntegration->Settings.designPointMethod = this->DesignPointMethod;
+            numericalIntegration->Settings.designPointMethod = this->designPointMethod;
             numericalIntegration->Settings.runSettings = this->RunSettings;
             numericalIntegration->Settings.StochastSet = this->StochastSet;
 
@@ -63,7 +63,7 @@ namespace Deltares
 
             crudeMonteCarlo->Settings->MinimumSamples = this->MinimumSamples;
             crudeMonteCarlo->Settings->MaximumSamples = this->MaximumSamples;
-            crudeMonteCarlo->Settings->designPointMethod = this->DesignPointMethod;
+            crudeMonteCarlo->Settings->designPointMethod = this->designPointMethod;
             crudeMonteCarlo->Settings->VariationCoefficient = this->VariationCoefficient;
             crudeMonteCarlo->Settings->RunSettings = this->RunSettings;
             crudeMonteCarlo->Settings->randomSettings = this->RandomSettings;
@@ -78,7 +78,7 @@ namespace Deltares
 
             importanceSampling->Settings->MinimumSamples = this->MinimumSamples;
             importanceSampling->Settings->MaximumSamples = this->MaximumSamples;
-            importanceSampling->Settings->designPointMethod = this->DesignPointMethod;
+            importanceSampling->Settings->designPointMethod = this->designPointMethod;
             importanceSampling->Settings->VariationCoefficient = this->VariationCoefficient;
             importanceSampling->Settings->runSettings = this->RunSettings;
             importanceSampling->Settings->randomSettings = this->RandomSettings;
@@ -93,7 +93,7 @@ namespace Deltares
 
             adaptiveImportanceSampling->Settings->importanceSamplingSettings->MinimumSamples = this->MinimumSamples;
             adaptiveImportanceSampling->Settings->importanceSamplingSettings->MaximumSamples = this->MaximumSamples;
-            adaptiveImportanceSampling->Settings->importanceSamplingSettings->designPointMethod = this->DesignPointMethod;
+            adaptiveImportanceSampling->Settings->importanceSamplingSettings->designPointMethod = this->designPointMethod;
             adaptiveImportanceSampling->Settings->importanceSamplingSettings->VariationCoefficient = this->VariationCoefficient;
             adaptiveImportanceSampling->Settings->importanceSamplingSettings->runSettings = this->RunSettings;
             adaptiveImportanceSampling->Settings->importanceSamplingSettings->randomSettings = this->RandomSettings;
@@ -112,7 +112,7 @@ namespace Deltares
 
             directionalSampling->Settings->MinimumDirections = this->MinimumDirections;
             directionalSampling->Settings->MaximumDirections = this->MaximumDirections;
-            directionalSampling->Settings->designPointMethod = this->DesignPointMethod;
+            directionalSampling->Settings->designPointMethod = this->designPointMethod;
             directionalSampling->Settings->VariationCoefficient = this->VariationCoefficient;
             directionalSampling->Settings->runSettings = this->RunSettings;
             directionalSampling->Settings->randomSettings = this->RandomSettings;
@@ -127,7 +127,7 @@ namespace Deltares
 
             subsetSimulation->Settings->MinimumSamples = this->MinimumSamples;
             subsetSimulation->Settings->MaximumSamples = this->MaximumSamples;
-            subsetSimulation->Settings->designPointMethod = this->DesignPointMethod;
+            subsetSimulation->Settings->designPointMethod = this->designPointMethod;
             subsetSimulation->Settings->VariationCoefficient = this->VariationCoefficient;
             subsetSimulation->Settings->RunSettings = this->RunSettings;
             subsetSimulation->Settings->randomSettings = this->RandomSettings;
