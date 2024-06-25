@@ -29,6 +29,9 @@ class Test_combine(unittest.TestCase):
         project.run()
 
         self.assertAlmostEqual(StandardNormal.get_u_from_q(2 * q - q * q), project.design_point.reliability_index, delta=margin)
+
+        self.assertEqual(len(project.design_points), len(project.design_point.contributing_design_points))
+        self.assertEqual(project.design_points[0], project.design_point.contributing_design_points[0])
         
     def test_importance_sampling_series(self):
         q = 0.01;
@@ -89,6 +92,9 @@ class Test_combine(unittest.TestCase):
         project.run()
 
         self.assertAlmostEqual(StandardNormal.get_u_from_q(q * q), project.design_point.reliability_index, delta=margin)
+
+        self.assertEqual(len(project.design_points), len(project.design_point.contributing_design_points))
+        self.assertEqual(project.design_points[0], project.design_point.contributing_design_points[0])
         
         
 if __name__ == '__main__':

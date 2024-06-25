@@ -62,11 +62,13 @@ namespace Deltares
             else if (object_type == "design_point")
             {
                 designPoints[counter] = std::make_shared<Deltares::Reliability::DesignPoint>();
+                designPointIds[designPoints[counter]] = counter;
                 types[counter] = ObjectType::DesignPoint;
             }
             else if (object_type == "alpha")
             {
                 alphas[counter] = std::make_shared<Deltares::Reliability::StochastPointAlpha>();
+                alphaIds[alphas[counter]] = counter;
                 types[counter] = ObjectType::Alpha;
             }
             else if (object_type == "combine_project")
@@ -259,8 +261,8 @@ namespace Deltares
                 std::shared_ptr<Reliability::StochastPointAlpha> alpha = alphas[id];
 
                 if (property_ == "alpha") alpha->Alpha = value;
-                if (property_ == "u") alpha->U = value;
-                if (property_ == "x") alpha->X = value;
+                else if (property_ == "u") alpha->U = value;
+                else if (property_ == "x") alpha->X = value;
             }
         }
 
@@ -482,14 +484,35 @@ namespace Deltares
             }
         }
 
-        std::vector<int> ProjectServer::GetArrayValue(int id, std::string property_)
+        void ProjectServer::SetArrayValue(int id, std::string property_, double* values, int size)
+        {
+            ObjectType objectType = types[id];
+
+            if (objectType == ObjectType::Stochast)
+            {
+                std::shared_ptr<Statistics::Stochast> stochast = stochasts[id];
+
+                if (property_ == "fit")
+                {
+                    std::vector<double> fitValues;
+                    for (size_t i = 0; i < size; i++)
+                    {
+                        fitValues.push_back(values[i]);
+                    }
+
+                    stochast->fit(fitValues);
+                }
+            }
+        }
+
+        std::vector<int> ProjectServer::GetArrayIntValue(int id, std::string property_)
         {
             ObjectType objectType = types[id];
 
             return std::vector<int>(0);
         }
 
-        void ProjectServer::SetArrayValue(int id, std::string property_, int* values, int size)
+        void ProjectServer::SetArrayIntValue(int id, std::string property_, int* values, int size)
         {
             ObjectType objectType = types[id];
 

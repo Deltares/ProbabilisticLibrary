@@ -7,15 +7,6 @@
 #define DLL_PUBLIC __declspec(dllexport) // Note: actually gcc seems to also supports this syntax.
 #endif
 
-
-#include <string>
-#ifdef __GNUC__
-#define DLL_PUBLIC __attribute__ ((visibility("default")))
-#else
-#define DLL_PUBLIC __declspec(dllexport) // Note: actually gcc seems to also supports this syntax.
-#endif
-
-
 std::shared_ptr<Deltares::Models::ProjectServer> projectServer = std::make_shared< Deltares::Models::ProjectServer>();
 
 extern "C" DLL_PUBLIC int Create(char* type)
@@ -76,10 +67,17 @@ extern "C" DLL_PUBLIC void SetStringValue(int id, char* property, char* value)
     projectServer->SetStringValue(id, propertyStr, valueStr);
 }
 
-extern "C" DLL_PUBLIC int* GetArrayValue(int id, char* property)
+extern "C" DLL_PUBLIC void SetArrayValue(int id, char* property, double* values, int size)
 {
     std::string propertyStr(property);
-    std::vector<int> values = projectServer->GetArrayValue(id, propertyStr);
+    projectServer->SetArrayValue(id, propertyStr, values, size);
+}
+
+// this method does not work
+extern "C" DLL_PUBLIC int* GetArrayIntValue(int id, char* property)
+{
+    std::string propertyStr(property);
+    std::vector<int> values = projectServer->GetArrayIntValue(id, propertyStr);
     values.push_back(0);
 
     int* data = values.data();
@@ -87,10 +85,10 @@ extern "C" DLL_PUBLIC int* GetArrayValue(int id, char* property)
     return data;
 }
 
-extern "C" DLL_PUBLIC void SetArrayValue(int id, char* property, int* values, int size)
+extern "C" DLL_PUBLIC void SetArrayIntValue(int id, char* property, int* values, int size)
 {
     std::string propertyStr(property);
-    projectServer->SetArrayValue(id, propertyStr, values, size);
+    projectServer->SetArrayIntValue(id, propertyStr, values, size);
 }
 
 extern "C"  DLL_PUBLIC double GetArgValue(int id, char* property, double argument)

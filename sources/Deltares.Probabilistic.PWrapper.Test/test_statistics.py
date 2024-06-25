@@ -96,6 +96,22 @@ class Test_statistics(unittest.TestCase):
         # default values
         self.assertAlmostEqual(0.0, correlation_matrix.get_correlation(stochast1, stochast3), delta=margin)
         self.assertAlmostEqual(1.0, correlation_matrix.get_correlation(stochast2, stochast2), delta=margin)
+
+    def test_fit(self):
+        stochasts = []
+
+        stochast = Stochast()
+        stochast.distribution = "normal"
+
+        values = []
+        values.extend({4.1, 4.2, 4.4, 4.5})
+
+        stochast.fit(values)
+
+        # registered stochasts
+        self.assertAlmostEqual(4.3, stochast.mean, delta=margin)
+        self.assertAlmostEqual(0.18, stochast.deviation, delta=margin)
+
         
 if __name__ == '__main__':
     unittest.main()

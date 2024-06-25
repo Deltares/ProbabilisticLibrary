@@ -32,6 +32,10 @@ class Test_reliability(unittest.TestCase):
         self.assertAlmostEqual(0.9, alphas[0].x, delta=margin)
         self.assertAlmostEqual(0.9, alphas[1].x, delta=margin)
 
+        self.assertEqual(len(project.variables), len(project.design_point.alphas))
+        self.assertEqual(project.variables[0], project.design_point.alphas[0].variable)
+
+
     def test_form_linear_fully_correlated(self):
         project = project_builder.get_linear_fully_correlated_project()
 
