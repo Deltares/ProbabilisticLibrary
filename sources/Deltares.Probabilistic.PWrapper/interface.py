@@ -72,7 +72,11 @@ def GetStringValue(id_, property_):
 def SetStringValue(id_, property_, value_):
 	lib.SetStringValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), bytes(value_, 'utf-8'))
 
-def GetArrayValue(id_, property_):
+def SetArrayValue(id_, property_, values_):
+	cvalues = (ctypes.c_double * len(values_))(*values_)
+	lib.SetArrayValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.POINTER(ctypes.c_double)(cvalues), ctypes.c_uint(len(values_)))
+
+def GetArrayIntValue(id_, property_):
 
 	count_property = property_ + '_count'
 	count = GetIntValue(id_, count_property)
@@ -86,9 +90,9 @@ def GetArrayValue(id_, property_):
 		
 	return values
 
-def SetArrayValue(id_, property_, values_):
+def SetArrayIntValue(id_, property_, values_):
 	cvalues = (ctypes.c_int * len(values_))(*values_)
-	lib.SetArrayValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.POINTER(ctypes.c_int)(cvalues), ctypes.c_uint(len(values_)))
+	lib.SetArrayIntValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.POINTER(ctypes.c_int)(cvalues), ctypes.c_uint(len(values_)))
 
 def GetArgValue(id_, property_, arg_):
 	lib.GetArgValue.restype = ctypes.c_double

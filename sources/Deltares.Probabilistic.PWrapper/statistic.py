@@ -165,21 +165,21 @@ class Stochast:
 		return self._discrete_values
 
 	def _discrete_values_changed(self):
-		interface.SetArrayValue(self._id, 'discrete_values', [discrete_value._id for discrete_value in self._discrete_values])
+		interface.SetArrayIntValue(self._id, 'discrete_values', [discrete_value._id for discrete_value in self._discrete_values])
 
 	@property   
 	def histogram_values(self):
 		return self._histogram_values
 
 	def _histogram_values_changed(self):
-		interface.SetArrayValue(self._id, 'histogram_values', [histogram_value._id for histogram_value in self._histogram_values])
+		interface.SetArrayIntValue(self._id, 'histogram_values', [histogram_value._id for histogram_value in self._histogram_values])
 
 	@property   
 	def fragility_values(self):
 		return self._fragility_values
 
 	def _fragility_values_changed(self):
-		interface.SetArrayValue(self._id, 'fragility_values', [fragility_value._id for fragility_value in self._fragility_values])
+		interface.SetArrayIntValue(self._id, 'fragility_values', [fragility_value._id for fragility_value in self._fragility_values])
 
 	@property   
 	def design_fraction(self):
@@ -213,6 +213,9 @@ class Stochast:
 		
 	def get_u_from_x(self, x):
 		return interface.GetArgValue(self._id, 'u_from_x', x)
+
+	def fit(self, values):
+		interface.SetArrayValue(self._id, 'fit', values)
 		
 
 class DiscreteValue:
@@ -334,7 +337,7 @@ class CorrelationMatrix:
 		return self._variables
 
 	def _variables_changed(self):
-		interface.SetArrayValue(self._id, 'variables', [variable._id for variable in self._variables])
+		interface.SetArrayIntValue(self._id, 'variables', [variable._id for variable in self._variables])
 
 	def get_correlation(self, stochast1 : Stochast, stochast2 : Stochast):
 		return interface.GetIndexedIndexedValue(self._id, 'correlation', stochast1._id, stochast2._id)

@@ -23,8 +23,9 @@ namespace Deltares
             void SetBoolValue(int id, std::string property_, bool value);
             std::string GetStringValue(int id, std::string property_);
             void SetStringValue(int id, std::string property_, std::string value);
-            std::vector<int> GetArrayValue(int id, std::string property_);
-            void SetArrayValue(int id, std::string property_, int* values, int size);
+            void SetArrayValue(int id, std::string property_, double* values, int size);
+            std::vector<int> GetArrayIntValue(int id, std::string property_);
+            void SetArrayIntValue(int id, std::string property_, int* values, int size);
             double GetArgValue(int id, std::string property_, double argument);
             void SetArgValue(int id, std::string property_, double argument, double value);
             double GetIndexedValue(int id, std::string property_, int index);

@@ -29,6 +29,11 @@ namespace Deltares
             // convert the stochasts back
             model->replaceStandardNormalStochasts(designPoint);
 
+            for (size_t i = 0; i < designPoints.size(); i++)
+            {
+                designPoint->ContributingDesignPoints.push_back(designPoints[i]);
+            }
+
             return designPoint;
         }
 

@@ -25,6 +25,9 @@ namespace Deltares.Probabilistic.Wrapper.Test
             DesignPoint combined = combiner.Combine(CombinationType.OneFails, designPoints);
 
             Assert.AreEqual(StandardNormal.GetUFromQ(2 * q - q * q), combined.Beta, margin);
+
+            Assert.AreEqual(designPoints.Count, combined.ContributingDesignPoints.Count);
+            Assert.AreEqual(designPoints[0], combined.ContributingDesignPoints[0]);
         }
 
         [Test]

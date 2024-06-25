@@ -1,3 +1,4 @@
+from msilib import knownbits
 import sys
 from ctypes import *
 
@@ -48,7 +49,7 @@ class Project:
 
 	def run(self):
 		_design_point = None
-		interface.SetArrayValue(self._id, 'variables', [variable._id for variable in self._variables])
+		interface.SetArrayIntValue(self._id, 'variables', [variable._id for variable in self._variables])
 		interface.SetIntValue(self._id, 'correlation_matrix', self._correlation_matrix._id)
 		interface.SetIntValue(self._id, 'settings', self._settings._id)
 		interface.Execute(self._id, 'run')
@@ -59,9 +60,10 @@ class Project:
 			designPointId = interface.GetIntValue(self._id, 'design_point')
 			if designPointId > 0:
 				self._design_point = DesignPoint(designPointId)
+				self._design_point._update_variables(self._variables)
+				
 		return self._design_point
-
-
+			
 class CombineProject:
 
 	def __init__(self):
@@ -83,7 +85,7 @@ class CombineProject:
 
 	def run(self):
 		_design_point = None
-		interface.SetArrayValue(self._id, 'design_points', [design_point._id for design_point in self._design_points])
+		interface.SetArrayIntValue(self._id, 'design_points', [design_point._id for design_point in self._design_points])
 		interface.SetIntValue(self._id, 'settings', self._settings._id)
 		interface.Execute(self._id, 'run')
 	
@@ -93,6 +95,7 @@ class CombineProject:
 			designPointId = interface.GetIntValue(self._id, 'design_point')
 			if designPointId > 0:
 				self._design_point = DesignPoint(designPointId)
+				self._design_point._update_contributing_design_points(self._design_points)
 		return self._design_point
 
 
