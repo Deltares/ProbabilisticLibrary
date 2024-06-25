@@ -38,6 +38,7 @@ namespace Deltares
             for (size_t i = 0; i < nStochasts; i++)
             {
                 auto alpha = std::make_shared<StochastPointAlpha>();
+                alpha->Stochast = stochasts[i];
                 alpha->Alpha = result.ab.getAlphaI(i);
                 dp->Alphas.push_back(alpha);
             }
