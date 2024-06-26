@@ -1,6 +1,9 @@
-#include <math.h>
+#include <cmath>
 #include "Hohenbichler.h"
+
+#include "CombineType.h"
 #include "HohenbichlerZ.h"
+#include "../Math/NumericSupport.h"
 #include "../Statistics/StandardNormal.h"
 #include "../Reliability/DesignPoint.h"
 #include "../Model/ModelRunner.h"
@@ -22,10 +25,9 @@ namespace Deltares {
         // i. e. the failure probability of element \f$ {Z_2 }\ \f$ given the failure
         // of element \f$ {Z_1 }\f$. For this computation the correlations are required.
         // The computation of \f$ P\left( {Z_2  < 0|Z_1  < 0} \right)\ \f$ has been performed with the method of Hohenbichler.
-        // Note: the probability of failure can be a probability of exceedance (most of time parameters of load)
-        // or a probability of non-exceedance (mostly parameters of strength)
+        // Note: the probability of failure can be a probability of exceedance or a probability of non-exceedance
         //
-        // This subroutine has two failure probabilities as input,
+        // This method has two failure probabilities as input,
         // \f$ P\left( {Z_2  < 0} \right)\ \f$ and \f$ P\left( {Z_1  < 0} \right)\ \f$,
         // but for the largest one the reliability index (beta-value) is the input; for the smallest failure probability the
         // failure probability itself is the input. The reason why the reliability index is the input for the largest
@@ -34,7 +36,7 @@ namespace Deltares {
         // So this failure probability hasn't to be computed twice.
         //
         // Determining which of the two probabilities of failure is greatest, is also needed outside this routine.
-        // Therefore this is not done within the routine but only outside the routine.
+        // Therefore, this is not done within the routine but only outside the routine.
         //
         // Later on the probability \f$ P\left( {Z_1  < 0\,AND\,Z_2  < 0} \right) \f$ =
         // \f$ P\left( {Z_1  < 0} \right) \cdot P\left( {Z_2  < 0|Z_1  < 0} \right)\f$ is used. This
@@ -65,6 +67,10 @@ namespace Deltares {
             if (fabs(rho) < 1.0e-8)
             {
                 return { StandardNormal::getQFromU(betaV), 0 };
+            }
+            else if (useNumInt)
+            {
+                return { BetaHohenbichler(betaV, StandardNormal::getUFromP(pfU), rho, combAnd), 0 };
             }
             //
             //   Limit the correlation coefficient away from 1. and -1.
@@ -113,6 +119,130 @@ namespace Deltares {
             }
             return { pfVpfU, converged };
         }
+
+        double Hohenbichler::BetaHohenbichler(double dp1, double dp2, double rho, combineAndOr system)
+        {
+            if (dp1 > dp2)
+            {
+                return HohenbichlerNumInt(dp2, dp1, rho, system);
+            }
+            else
+            {
+                return HohenbichlerNumInt(dp1, dp2, rho, system);
+            }
+        }
+
+        double Hohenbichler::HohenbichlerNumInt(double dp1, double dp2, double rho, combineAndOr system)
+        {
+            const double maxDiffRho = 1e-10;
+
+            if (Numeric::NumericSupport::areEqual(rho, 1.0, maxDiffRho))
+            {
+                if (system == combOr)
+                {
+                    return std::min(dp1, dp2);
+                }
+                else
+                {
+                    return std::max(dp1, dp2);
+                }
+            }
+            else if (Numeric::NumericSupport::areEqual(rho, -1.0, maxDiffRho))
+            {
+                if (system)
+                {
+                    double pf = std::min(1.0, StandardNormal::getPFromU(dp1) + StandardNormal::getPFromU(dp2));
+                    return StandardNormal::getUFromQ(pf);
+                }
+                else
+                {
+                    double pf = abs(StandardNormal::getPFromU(dp1) - StandardNormal::getPFromU(dp2));
+                    return StandardNormal::getUFromQ(pf);
+                }
+            }
+
+            // otherwise: start Hohenbichler procedure
+
+            double pCond = 0;
+            double rhoCompl = sqrt(1.0 - rho * rho);
+
+            if (-dp2 > -StandardNormal::UMax)
+            {
+                const int ngridPerBeta = 1000;
+                int ngrid = (int)round((-dp2 + StandardNormal::UMax) * ngridPerBeta) + 1; // number of grids for numerical integration
+
+                auto u = LinearSpaced(ngrid, -StandardNormal::UMax, -dp2); // grid end points
+
+                auto uCentered = std::vector<double>(); // grid centers
+                auto uDiff = std::vector<double>();
+
+                for (size_t i = 0; i < u.size()-1; i++)
+                {
+                    uCentered.push_back((u[i] + u[i + 1]) / 2);
+                    uDiff.push_back(u[i + 1] - u[i]);
+                }
+
+                double pTotal = 0;
+
+                for (size_t i = 0; i < uCentered.size(); i++)
+                {
+                    double prob = StandardNormal::getPFromU(-(dp1 + rho * uCentered[i]) / rhoCompl);
+                    double pRange = StandardNormal::getPFromU(u[i + 1]) - StandardNormal::getPFromU(u[i]);
+
+                    pTotal += pRange * prob;
+                }
+
+                pCond = pTotal / StandardNormal::getPFromU(-dp2);
+
+                pCond = std::min(1.0, pCond);
+            }
+
+            double PfAND = pCond * StandardNormal::getPFromU(dp2);
+            double betaAND = StandardNormal::getUFromP(1.0 - PfAND);
+
+            // compute P(Z1<0 OR PZ2<0)
+            double PfOR = StandardNormal::getPFromU(-dp1) + StandardNormal::getPFromU(dp2) - PfAND;
+            double betaOR = StandardNormal::getUFromP(1.0 - PfOR);
+
+            if (system == combAnd)
+            {
+                return betaAND;
+            }
+            else
+            {
+                return betaOR;
+            }
+        }
+
+        std::vector<double> Hohenbichler::LinearSpaced(int length, double start, double stop)
+        {
+            if (length < 0)
+            {
+                throw probLibException("length in LinearSpaced < 0");
+            }
+
+            switch (length)
+            {
+            case 0:
+                return std::vector<double> {};
+            case 1:
+                return std::vector<double> { stop };
+            default:
+            {
+                double num = (stop - start) / (double)(length - 1);
+                auto array = std::vector<double>();
+                for (int i = 0; i < length; i++)
+                {
+                    array.push_back(start + (double)i * num);
+                }
+
+                array[length - 1] = stop;
+                return array;
+            }
+            }
+        }
+
+
 
     }
 }

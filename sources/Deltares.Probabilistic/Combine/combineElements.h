@@ -36,6 +36,8 @@ namespace Deltares {
             cmbResult combineMultipleElementsSpatialCorrelated(const elements& Element,
                 const std::vector<std::vector<vector1D>>& rho, const combineAndOr combAndOr);
 
+            bool useNumIntInHohenbichler = false;
+
         private:
             void checkArraySizes(const size_t nStochasts, const size_t sizeAlpha2, const size_t sizeRhoP);
             std::pair<double, double> setLargestBeta(const double beta1, const double beta2, const double pf1, const double pf2);
