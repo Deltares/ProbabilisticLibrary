@@ -131,7 +131,7 @@ namespace Deltares {
             {
                 beta = HohenbichlerNumInt(dp1, dp2, rho, system);
             }
-            return StandardNormal::getPFromU(beta);
+            return StandardNormal::getQFromU(beta);
         }
 
         double Hohenbichler::HohenbichlerNumInt(double dp1, double dp2, double rho, combineAndOr system)
@@ -151,7 +151,7 @@ namespace Deltares {
             }
             else if (Numeric::NumericSupport::areEqual(rho, -1.0, maxDiffRho))
             {
-                if (system)
+                if (system == combOr)
                 {
                     double pf = std::min(1.0, StandardNormal::getPFromU(dp1) + StandardNormal::getPFromU(dp2));
                     return StandardNormal::getUFromQ(pf);
@@ -198,21 +198,7 @@ namespace Deltares {
                 pCond = std::min(1.0, pCond);
             }
 
-            double PfAND = pCond * StandardNormal::getQFromU(dp2);
-            double betaAND = StandardNormal::getUFromP(1.0 - PfAND);
-
-            // compute P(Z1<0 OR PZ2<0)
-            double PfOR = StandardNormal::getPFromU(-dp1) + StandardNormal::getQFromU(dp2) - PfAND;
-            double betaOR = StandardNormal::getUFromP(1.0 - PfOR);
-
-            if (system == combAnd)
-            {
-                return betaAND;
-            }
-            else
-            {
-                return betaOR;
-            }
+            return StandardNormal::getUFromQ(pCond);
         }
 
         std::vector<double> Hohenbichler::LinearSpaced(int length, double start, double stop)
