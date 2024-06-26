@@ -70,7 +70,7 @@ namespace Deltares {
             }
             else if (useNumInt)
             {
-                return { BetaHohenbichler(betaV, StandardNormal::getUFromP(pfU), rho, combAnd), 0 };
+                return { BetaHohenbichler(betaV, StandardNormal::getUFromQ(pfU), rho, combAnd), 0 };
             }
             //
             //   Limit the correlation coefficient away from 1. and -1.
@@ -190,7 +190,6 @@ namespace Deltares {
                 {
                     double prob = StandardNormal::getPFromU(-(dp1 + rho * uCentered[i]) / rhoCompl);
                     double pRange = StandardNormal::getPFromU(u[i + 1]) - StandardNormal::getPFromU(u[i]);
-
                     pTotal += pRange * prob;
                 }
 
@@ -199,11 +198,11 @@ namespace Deltares {
                 pCond = std::min(1.0, pCond);
             }
 
-            double PfAND = pCond * StandardNormal::getPFromU(dp2);
+            double PfAND = pCond * StandardNormal::getQFromU(dp2);
             double betaAND = StandardNormal::getUFromP(1.0 - PfAND);
 
             // compute P(Z1<0 OR PZ2<0)
-            double PfOR = StandardNormal::getPFromU(-dp1) + StandardNormal::getPFromU(dp2) - PfAND;
+            double PfOR = StandardNormal::getPFromU(-dp1) + StandardNormal::getQFromU(dp2) - PfAND;
             double betaOR = StandardNormal::getUFromP(1.0 - PfOR);
 
             if (system == combAnd)
