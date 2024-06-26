@@ -28,9 +28,6 @@ namespace Deltares
 
 			std::shared_ptr<ProxySettings> proxySettings = nullptr;
 
-            designPointOptions RunModelAtDesignPoint = designPointOptions::dpOutFALSE;
-            int reliabilityMethodSubStepsCounter = 0;
-
 			bool isValid()
 			{
 				return MaxParallelProcesses >= 1;

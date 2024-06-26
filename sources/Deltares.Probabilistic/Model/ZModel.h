@@ -13,7 +13,7 @@ namespace Deltares
 		typedef std::function<void(std::shared_ptr<ModelSample>)> ZLambda;
 		typedef std::function<void(std::vector<std::shared_ptr<ModelSample>>)> ZMultipleLambda;
 		typedef std::function<double(std::shared_ptr<ModelSample>, double beta)> ZBetaLambda;
-        typedef std::function<void(std::shared_ptr<ModelSample>, const designPointOptions dpOption)> ZLambdaDesignPoint;
+        typedef std::function<void(std::shared_ptr<ModelSample>, const designPointOptions dpOption, const int loggingCounter)> ZLambdaDesignPoint;
 
 		class ZModel
 		{
@@ -43,7 +43,7 @@ namespace Deltares
 
 			void invoke(std::vector<std::shared_ptr<ModelSample>> samples);
 
-            void invoke(std::shared_ptr<ModelSample> sample, const designPointOptions dpOption);
+            void invoke(std::shared_ptr<ModelSample> sample, const designPointOptions dpOption, const int loggingCounter);
 
 			double getBeta(std::shared_ptr<ModelSample> sample, double beta);
 

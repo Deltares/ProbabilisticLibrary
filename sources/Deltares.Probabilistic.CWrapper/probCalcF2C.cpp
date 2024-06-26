@@ -70,6 +70,31 @@ void copyConvergence(tResult& r, const ConvergenceReport& convergenceReport, con
     }
 }
 
+void extraZfuncForXandLogging(const DPoptions dpOption, std::shared_ptr<DesignPoint> designpoint, std::shared_ptr<ModelRunner> modelrunner)
+{
+    switch (dpOption)
+    {
+    case DPoptions::RMinZFunc:
+    case DPoptions::RMinZFuncCompatible:
+        break;
+    default:
+        return;
+    }
+
+    int loggingsCounter = 1;
+    if ( ! designpoint->ContributingDesignPoints.empty())
+    {
+        auto sample = designpoint->ContributingDesignPoints[0]->getSample();
+        modelrunner->getXValues(sample, loggingsCounter++);
+    }
+    auto sample = designpoint->getSample();
+    auto newX = modelrunner->getXValues(sample, loggingsCounter++);
+    for (size_t i = 0; i < newX.size(); i++)
+    {
+        designpoint->Alphas[i]->X = newX[i];
+    }
+}
+
 extern "C"
 void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, corrStruct correlations[], const int nrCorrelations,
     const double(*fx)(double[], computationSettings*, tError*),
@@ -93,7 +118,7 @@ void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, corrStr
         auto relMethod = createRelM.selectMethod(*method, nStoch, stochasts);
         auto zModel = std::make_shared<ZModel>([&fw](std::shared_ptr<ModelSample> v) { return fw.FDelegate(v); },
                                                [&fw](std::vector<std::shared_ptr<ModelSample>> v) { return fw.FDelegateParallel(v); },
-                                               [&fw](std::shared_ptr<ModelSample> v, const designPointOptions dp) { return fw.FDelegateDp(v, dp); }
+                                               [&fw](std::shared_ptr<ModelSample> v, const designPointOptions dp, const int loggingCounter) { return fw.FDelegateDp(v, dp, loggingCounter); }
         );
 
         auto corr = std::make_shared<CorrelationMatrix>();
@@ -116,19 +141,10 @@ void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, corrStr
         modelRunner->Settings->MaxChunkSize = method->chunkSize;
         modelRunner->Settings->SaveMessages = true;
 
-        switch (method->designPointOptions)
-        {
-        case DPoptions::RMinZFunc:
-        case DPoptions::RMinZFuncCompatible:
-            modelRunner->Settings->RunModelAtDesignPoint = designPointOptions::dpOutTRUE;
-            break;
-        default:
-            modelRunner->Settings->RunModelAtDesignPoint = designPointOptions::dpOutFALSE;
-            break;
-        }
-
         modelRunner->initializeForRun();
         auto newResult = relMethod->getDesignPoint(modelRunner);
+
+        extraZfuncForXandLogging(method->designPointOptions, newResult, modelRunner);
 
         auto allMessages = newResult->Messages;
         for (const auto& s : fw.error_messages )
@@ -159,7 +175,7 @@ void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, corrStr
 
         updateX(newResult->Alphas, method->designPointOptions, *r, newResult, x, fw);
 
-        copyConvergence(*r, *newResult->convergenceReport.get(), method->methodId);
+        copyConvergence(*r, *newResult->convergenceReport, method->methodId);
     }
     catch (const std::exception& e)
     {

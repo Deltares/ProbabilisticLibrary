@@ -92,12 +92,11 @@ namespace Deltares
          * \param sample Sample to be calculated
          * \return Z-value of the sample
          */
-        std::vector<double> ModelRunner::getXValues(std::shared_ptr<Sample> sample)
+        std::vector<double> ModelRunner::getXValues(std::shared_ptr<Sample> sample, const int loggingCounter)
         {
             std::shared_ptr<ModelSample> xSample = getModelSample(sample);
-            xSample->reliabilityMethodSubStepsCounter = Settings->reliabilityMethodSubStepsCounter;
 
-            this->zModel->invoke(xSample, Settings->RunModelAtDesignPoint);
+            this->zModel->invoke(xSample, designPointOptions::dpOutTRUE, loggingCounter);
 
             registerEvaluation(xSample);
 
@@ -332,15 +331,6 @@ namespace Deltares
 
 			designPoint->Identifier = identifier;
 			designPoint->convergenceReport = convergenceReport;
-
-            if (convergenceReport != nullptr && Settings->RunModelAtDesignPoint != designPointOptions::dpOutFALSE)
-            {
-                auto xValues = getXValues(sample);
-                for (size_t i = 0; i < xValues.size(); i++)
-                {
-                    designPoint->Alphas[i]->X = xValues[i];
-                }
-            }
 
 			for (size_t i = 0; i < this->reliabilityResults.size(); i++)
 			{

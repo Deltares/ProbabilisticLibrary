@@ -9,12 +9,12 @@ using namespace Deltares::Models;
 void funcWrapper::FDelegate(std::shared_ptr<ModelSample> s)
 {
     auto dp = designPointOptions::dpOutFALSE;
-    FDelegateDp(s, dp);
+    FDelegateDp(s, dp, 0);
 }
 
-void funcWrapper::FDelegateDp(std::shared_ptr<ModelSample> s, const designPointOptions dp)
+void funcWrapper::FDelegateDp(std::shared_ptr<ModelSample> s, const designPointOptions dp, const int loggingCounter)
 {
-    computationSettings compSetting{ dp, compId, s->threadId, s->reliabilityMethodSubStepsCounter };
+    computationSettings compSetting{ dp, compId, s->threadId, loggingCounter };
     tError e = tError();
     double result = zfunc(s->Values.data(), &compSetting, &e);
     if (e.errorCode != 0)

@@ -24,12 +24,11 @@ namespace Deltares
             this->zLambda(sample);
 		}
 
-        void ZModel::invoke(std::shared_ptr<ModelSample> sample, const designPointOptions dpOption)
+        void ZModel::invoke(std::shared_ptr<ModelSample> sample, const designPointOptions dpOption, const int loggingCounter)
         {
             sample->threadId = omp_get_thread_num();
-            this->zLambdaDp(sample, dpOption);
+            this->zLambdaDp(sample, dpOption, loggingCounter);
         }
-
 
 		void ZModel::invoke(std::vector<std::shared_ptr<ModelSample>> samples)
 		{

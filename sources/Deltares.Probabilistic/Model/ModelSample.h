@@ -27,7 +27,6 @@ namespace Deltares
 
 			int IterationIndex = -1;
 			int threadId = 0;
-            int reliabilityMethodSubStepsCounter = 0;
 			double Weight = 1;
 			bool AllowProxy = true;
 			bool IsRestartRequired = false;

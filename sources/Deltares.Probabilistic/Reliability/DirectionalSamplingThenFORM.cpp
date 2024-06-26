@@ -10,7 +10,6 @@ namespace Deltares
         {
             auto ds = DirectionalSampling();
             ds.Settings = DsSettings;
-            modelRunner->setReliabilityMethodSubStepsCounter(1);
             auto dsDesignPoint = ds.getDesignPoint(modelRunner);
 
             auto nStoch = dsDesignPoint->Alphas.size();
@@ -25,10 +24,10 @@ namespace Deltares
             form.Settings = formSettings;
             form.Settings->StartPointSettings->StartMethod = StartMethodType::GivenVector;
             form.Settings->StartPointSettings->startVector = startVector;
-            modelRunner->setReliabilityMethodSubStepsCounter(2);
             auto dsfiDesignPoint = form.getDesignPoint(modelRunner);
             dsfiDesignPoint->convergenceReport->TotalDirections = dsDesignPoint->convergenceReport->TotalDirections;
             dsfiDesignPoint->Beta = dsDesignPoint->Beta;
+            dsfiDesignPoint->ContributingDesignPoints.push_back(dsDesignPoint);
             return dsfiDesignPoint;
         }
     }
