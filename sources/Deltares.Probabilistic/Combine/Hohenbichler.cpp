@@ -122,14 +122,16 @@ namespace Deltares {
 
         double Hohenbichler::BetaHohenbichler(double dp1, double dp2, double rho, combineAndOr system)
         {
+            double beta;
             if (dp1 > dp2)
             {
-                return HohenbichlerNumInt(dp2, dp1, rho, system);
+                beta = HohenbichlerNumInt(dp2, dp1, rho, system);
             }
             else
             {
-                return HohenbichlerNumInt(dp1, dp2, rho, system);
+                beta = HohenbichlerNumInt(dp1, dp2, rho, system);
             }
+            return StandardNormal::getPFromU(beta);
         }
 
         double Hohenbichler::HohenbichlerNumInt(double dp1, double dp2, double rho, combineAndOr system)
