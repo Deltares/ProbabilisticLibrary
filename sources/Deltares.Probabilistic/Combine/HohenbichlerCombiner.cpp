@@ -25,7 +25,6 @@ namespace Deltares
             }
 
             auto cmb = combineElements();
-            cmb.useNumIntInHohenbichler = useNumInt;
             auto rho = vector1D(nStochasts);
             for (size_t i = 0; i < nStochasts; i++)
             {

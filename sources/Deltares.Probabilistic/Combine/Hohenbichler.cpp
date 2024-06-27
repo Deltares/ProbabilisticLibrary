@@ -68,10 +68,6 @@ namespace Deltares {
             {
                 return { StandardNormal::getQFromU(betaV), 0 };
             }
-            else if (useNumInt)
-            {
-                return { BetaHohenbichler(betaV, StandardNormal::getUFromQ(pfU), rho, combAnd), 0 };
-            }
             //
             //   Limit the correlation coefficient away from 1. and -1.
             //   For rho > rhoLimit no calculation is performed, because the result is always equal 1.0.
@@ -118,115 +114,6 @@ namespace Deltares {
                 pfVpfU += (rhoInput - rhoLimitHohenbichler) / (1.0 - rhoLimitHohenbichler) * (1.0 - pfVpfU);
             }
             return { pfVpfU, converged };
-        }
-
-        double Hohenbichler::BetaHohenbichler(double dp1, double dp2, double rho, combineAndOr system)
-        {
-            double beta;
-            if (dp1 > dp2)
-            {
-                beta = HohenbichlerNumInt(dp2, dp1, rho, system);
-            }
-            else
-            {
-                beta = HohenbichlerNumInt(dp1, dp2, rho, system);
-            }
-            return StandardNormal::getQFromU(beta);
-        }
-
-        double Hohenbichler::HohenbichlerNumInt(double dp1, double dp2, double rho, combineAndOr system)
-        {
-            const double maxDiffRho = 1e-10;
-
-            if (Numeric::NumericSupport::areEqual(rho, 1.0, maxDiffRho))
-            {
-                if (system == combOr)
-                {
-                    return std::min(dp1, dp2);
-                }
-                else
-                {
-                    return std::max(dp1, dp2);
-                }
-            }
-            else if (Numeric::NumericSupport::areEqual(rho, -1.0, maxDiffRho))
-            {
-                if (system == combOr)
-                {
-                    double pf = std::min(1.0, StandardNormal::getPFromU(dp1) + StandardNormal::getPFromU(dp2));
-                    return StandardNormal::getUFromQ(pf);
-                }
-                else
-                {
-                    double pf = abs(StandardNormal::getPFromU(dp1) - StandardNormal::getPFromU(dp2));
-                    return StandardNormal::getUFromQ(pf);
-                }
-            }
-
-            // otherwise: start Hohenbichler procedure
-
-            double pCond = 0;
-            double rhoCompl = sqrt(1.0 - rho * rho);
-
-            if (-dp2 > -StandardNormal::UMax)
-            {
-                const int ngridPerBeta = 1000;
-                int ngrid = (int)round((-dp2 + StandardNormal::UMax) * ngridPerBeta) + 1; // number of grids for numerical integration
-
-                auto u = LinearSpaced(ngrid, -StandardNormal::UMax, -dp2); // grid end points
-
-                auto uCentered = std::vector<double>(); // grid centers
-                auto uDiff = std::vector<double>();
-
-                for (size_t i = 0; i < u.size()-1; i++)
-                {
-                    uCentered.push_back((u[i] + u[i + 1]) / 2);
-                    uDiff.push_back(u[i + 1] - u[i]);
-                }
-
-                double pTotal = 0;
-
-                for (size_t i = 0; i < uCentered.size(); i++)
-                {
-                    double prob = StandardNormal::getPFromU(-(dp1 + rho * uCentered[i]) / rhoCompl);
-                    double pRange = StandardNormal::getPFromU(u[i + 1]) - StandardNormal::getPFromU(u[i]);
-                    pTotal += pRange * prob;
-                }
-
-                pCond = pTotal / StandardNormal::getPFromU(-dp2);
-
-                pCond = std::min(1.0, pCond);
-            }
-
-            return StandardNormal::getUFromQ(pCond);
-        }
-
-        std::vector<double> Hohenbichler::LinearSpaced(int length, double start, double stop)
-        {
-            if (length < 0)
-            {
-                throw probLibException("length in LinearSpaced < 0");
-            }
-
-            switch (length)
-            {
-            case 0:
-                return std::vector<double> {};
-            case 1:
-                return std::vector<double> { stop };
-            default:
-            {
-                double num = (stop - start) / (double)(length - 1);
-                auto array = std::vector<double>();
-                for (int i = 0; i < length; i++)
-                {
-                    array.push_back(start + (double)i * num);
-                }
-
-                array[length - 1] = stop;
-                return array;
-            }
-            }
         }
 
 

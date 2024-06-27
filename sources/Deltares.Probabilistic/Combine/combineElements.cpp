@@ -72,7 +72,6 @@ namespace Deltares {
             //
             //auto p = progress();
             auto hh = Hohenbichler();
-            hh.useNumInt = useNumIntInHohenbichler;
             auto pf2pf1 = hh.PerformHohenbichler(pb.second, pb.first, rho);
             if (pf2pf1.second != 0) failureHohenbichler++;
             //

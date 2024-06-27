@@ -7,7 +7,7 @@ namespace Deltares
 {
     namespace Reliability
     {
-        class HohenbichlerCombiner : public Combiner
+        class Hohenbichler2Combiner : public Combiner
         {
         public:
             std::shared_ptr<DesignPoint> combineDesignPoints(combineAndOr combineMethodType, std::vector<std::shared_ptr<DesignPoint>>& designPoints, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix = nullptr, std::shared_ptr<ProgressIndicator> progress = nullptr) override;

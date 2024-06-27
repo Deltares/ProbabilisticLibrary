@@ -193,7 +193,9 @@
     <ClInclude Include="Combine\combineElements.h" />
     <ClInclude Include="Combine\combiner.h" />
     <ClInclude Include="Combine\Hohenbichler.h" />
+    <ClInclude Include="Combine\Hohenbichler2.h" />
     <ClInclude Include="Combine\HohenbichlerCombiner.h" />
+    <ClInclude Include="Combine\Hohenbichler2Combiner.h" />
     <ClInclude Include="Combine\HohenbichlerZ.h" />
     <ClInclude Include="Combine\intEqualElements.h" />
     <ClInclude Include="Combine\upscaling.h" />
@@ -318,7 +320,9 @@
     <ClCompile Include="Combine\combineElements.cpp" />
     <ClCompile Include="Combine\combiner.cpp" />
     <ClCompile Include="Combine\Hohenbichler.cpp" />
+    <ClCompile Include="Combine\Hohenbichler2.cpp" />
     <ClCompile Include="Combine\HohenbichlerCombiner.cpp" />
+    <ClCompile Include="Combine\Hohenbichler2Combiner.cpp" />
     <ClCompile Include="Combine\HohenbichlerZ.cpp" />
     <ClCompile Include="Combine\upscaling.cpp" />
     <ClCompile Include="Reliability\SphereTasks.cpp" />

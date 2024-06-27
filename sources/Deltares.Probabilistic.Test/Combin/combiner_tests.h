@@ -14,6 +14,7 @@ namespace Deltares
                 void allCombinerTests() const;
             private:
                 void HohenbichlerCombinerTest() const;
+                void Hohenbichler2CombinerTest() const;
                 void DirectionalSamplingCombinerTest() const;
                 void ImportanceSamplingCombinerTest() const;
                 void ImportanceSamplingCombinerAndTest() const;

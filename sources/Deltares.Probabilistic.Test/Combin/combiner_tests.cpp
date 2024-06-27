@@ -3,6 +3,7 @@
 #include "combiner_tests.h"
 #include "../../Deltares.Probabilistic/Math/NumericSupport.h"
 #include "../../Deltares.Probabilistic/Combine/HohenbichlerCombiner.h"
+#include "../../Deltares.Probabilistic/Combine/Hohenbichler2Combiner.h"
 #include "../../Deltares.Probabilistic/Combine/DirectionalSamplingCombiner.h"
 #include "../../Deltares.Probabilistic/Combine/ImportanceSamplingCombiner.h"
 
@@ -18,6 +19,7 @@ namespace Deltares
             void CombinerTest::allCombinerTests() const
             {
                 HohenbichlerCombinerTest();
+                //Hohenbichler2CombinerTest();
                 DirectionalSamplingCombinerTest();
                 ImportanceSamplingCombinerTest();
                 ImportanceSamplingCombinerAndTest();
@@ -27,7 +29,13 @@ namespace Deltares
             void CombinerTest::HohenbichlerCombinerTest() const
             {
                 auto hh = std::make_unique<HohenbichlerCombiner>();
-                hh->useNumInt = false;
+                auto ref = alphaBeta(2.78586434, { 0.6145053, 0.378711, 0.5892747, 0.3629275 }); // pre-computed
+                tester(hh.get(), 3.0, ref, combineAndOr::combOr);
+            }
+
+            void CombinerTest::Hohenbichler2CombinerTest() const
+            {
+                auto hh = std::make_unique<Hohenbichler2Combiner>();
                 auto ref = alphaBeta(2.78586434, { 0.6145053, 0.378711, 0.5892747, 0.3629275 }); // pre-computed
                 tester(hh.get(), 3.0, ref, combineAndOr::combOr);
             }
