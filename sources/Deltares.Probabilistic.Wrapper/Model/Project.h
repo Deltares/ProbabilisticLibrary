@@ -28,7 +28,7 @@ namespace Deltares
                     delete shared;
                 }
 
-                void release()
+                void ReleaseHandles()
                 {
                     for (int i = 0; i < handles->Count; i++)
                     {

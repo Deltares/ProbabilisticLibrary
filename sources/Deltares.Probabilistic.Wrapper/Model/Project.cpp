@@ -45,7 +45,7 @@ namespace Deltares
 
                 const std::shared_ptr<Reliability::DesignPoint> designPoint = shared->object->getDesignPoint();
 
-                this->release();
+                this->ReleaseHandles();
 
                 this->DesignPoint = gcnew Reliability::Wrappers::DesignPoint(designPoint, this->Stochasts);
 

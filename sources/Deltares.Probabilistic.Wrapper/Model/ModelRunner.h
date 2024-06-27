@@ -63,7 +63,7 @@ namespace Deltares
                  * \brief Releases the allocated handles
                  * \remark This method cannot be called in the destructor, because the handles to be freed prevent this object from being garbage collected
                  */
-                void Release()
+                void ReleaseHandles()
                 {
                     for (int i = 0; i < handles->Count; i++)
                     {

@@ -89,6 +89,7 @@ namespace Deltares
         {
             switch (types[id])
             {
+            case ObjectType::StandardNormal: break;
             case ObjectType::Project: projects.erase(id); break;
             case ObjectType::Stochast: stochasts.erase(id); break;
             case ObjectType::DiscreteValue: discreteValues.erase(id); break;
