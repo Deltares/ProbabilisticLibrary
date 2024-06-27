@@ -45,20 +45,20 @@ namespace Deltares {
             const std::vector<std::shared_ptr<Stochast>>& stochasts,
             const std::shared_ptr<SelfCorrelationMatrix>& selfCorrelation, const combineAndOr system)
         {
-            // number of variables and Z-functions involved
             auto nVar = stochasts.size();
 
             const auto reorderedDesignPoint1 = designPoint1->getSampleForStochasts(stochasts);
             const auto reorderedDesignPoint2 = designPoint2->getSampleForStochasts(stochasts);
 
             double rho = 0.0;
-            const double betaDp1Dp2 = designPoint1->Beta * designPoint2->Beta;
             for (size_t i = 0; i < nVar; i++)
             {
+                reorderedDesignPoint1->Values[i] /= -designPoint1->Beta;
+                reorderedDesignPoint2->Values[i] /= -designPoint2->Beta;
                 auto corr = selfCorrelation->getSelfCorrelation(stochasts[i], designPoint1, designPoint2);
-                rho += reorderedDesignPoint1->Values[i] * reorderedDesignPoint2->Values[i] * corr / betaDp1Dp2;
+                rho += reorderedDesignPoint1->Values[i] * reorderedDesignPoint2->Values[i] * corr;
             }
-            double betaNew = BetaHohenbichler(designPoint1->Beta, designPoint2->Beta, rho, system);
+            const double betaNew = BetaHohenbichler(designPoint1->Beta, designPoint2->Beta, rho, system);
 
             auto alpha1 = std::vector<double>();
             auto alpha2 = std::vector<double>();
@@ -94,7 +94,7 @@ namespace Deltares {
                 // [2a] perturbation of beta - values
 
                 auto dpx1 = GetRealization(designPoint1->Beta, parameters1); // copy alphas
-                auto dpx2 = GetRealization(designPoint2->Beta + designPoint2->Alphas[i]->Alpha * epsilon * rhoCompl, parameters2);
+                auto dpx2 = GetRealization(designPoint2->Beta + reorderedDesignPoint2->Values[i] * epsilon * rhoCompl, parameters2);
 
                 // [2b] Hohenbichler computation with perturbed beta - values
                 double betax1 = BetaHohenbichler(dpx1.Beta, dpx2.Beta, rho, system);
@@ -118,13 +118,12 @@ namespace Deltares {
 
             if (length == 0.0)
             {
-                //alphaNew = ListSupport.GetValueList(nVar, Math.Sqrt(NumericSupport.GetQuotient(1, nVar))).ToArray();
-                for (auto x : alphaNew) x = 1.0 / length;
+                length = sqrt(nVar);
+                for (auto &x : alphaNew) x = 1.0 / length;
             }
             else
             {
-                //alphaNew = alphaNew.Select(p = > p / length).ToArray();
-                for (auto x : alphaNew) x /= length;
+                for (auto &x : alphaNew) x /= length;
             }
 
             auto returnedDp = std::make_shared<DesignPoint>();
@@ -144,7 +143,7 @@ namespace Deltares {
             {
                 beta = HohenbichlerNumInt(dp1, dp2, rho, system);
             }
-            return StandardNormal::getQFromU(beta);
+            return beta;
         }
 
         double Hohenbichler2::HohenbichlerNumInt(double dp1, double dp2, double rho, combineAndOr system)

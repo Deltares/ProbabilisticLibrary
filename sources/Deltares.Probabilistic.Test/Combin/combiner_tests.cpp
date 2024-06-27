@@ -19,7 +19,7 @@ namespace Deltares
             void CombinerTest::allCombinerTests() const
             {
                 HohenbichlerCombinerTest();
-                //Hohenbichler2CombinerTest();
+                Hohenbichler2CombinerTest();
                 DirectionalSamplingCombinerTest();
                 ImportanceSamplingCombinerTest();
                 ImportanceSamplingCombinerAndTest();
@@ -36,7 +36,7 @@ namespace Deltares
             void CombinerTest::Hohenbichler2CombinerTest() const
             {
                 auto hh = std::make_unique<Hohenbichler2Combiner>();
-                auto ref = alphaBeta(2.78586434, { 0.6145053, 0.378711, 0.5892747, 0.3629275 }); // pre-computed
+                auto ref = alphaBeta(3.0, { 0.487657, 0.491065, 0.508826, 0.511998 }); // pre-computed
                 tester(hh.get(), 3.0, ref, combineAndOr::combOr);
             }
 
