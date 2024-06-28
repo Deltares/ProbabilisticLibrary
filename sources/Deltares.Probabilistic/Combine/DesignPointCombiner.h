@@ -4,7 +4,7 @@
 #include "../Reliability/DesignPoint.h"
 #include "combiner.h"
 #include "DirectionalSamplingCombiner.h"
-#include "HohenbichlerCombiner.h"
+#include "Hohenbichler2Combiner.h"
 #include "ImportanceSamplingCombiner.h"
 
 namespace Deltares
@@ -50,7 +50,7 @@ namespace Deltares
                 switch (combinerType)
                 {
                 case CombinerType::ImportanceSampling: return std::make_shared<ImportanceSamplingCombiner>();
-                case CombinerType::Hohenbichler: return std::make_shared<HohenbichlerCombiner>();
+                case CombinerType::Hohenbichler: return std::make_shared<Hohenbichler2Combiner>();
                 case CombinerType::DirectionalSampling: return std::make_shared<DirectionalSamplingCombiner>();
                 default: throw probLibException("Combiner type");
                 }
