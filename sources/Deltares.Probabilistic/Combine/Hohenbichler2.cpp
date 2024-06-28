@@ -9,42 +9,6 @@ using namespace Deltares::Numeric;
 namespace Deltares {
     namespace Reliability {
 
-        DesignPoint GetRealization(const double beta, const std::vector<std::shared_ptr<StochastPointAlpha>>& alpha)
-        {
-            DesignPoint dp;
-            dp.Beta = beta;
-            dp.Alphas = alpha;
-            return dp;
-        }
-
-        DesignPoint GetRealization(const double beta, const std::vector<std::shared_ptr<StochastPointAlpha>>& alpha, const std::vector<double>& values)
-        {
-            DesignPoint dp;
-            dp.Beta = beta;
-            dp.Alphas = alpha;
-            for (size_t i = 0; i < values.size(); i++)
-            {
-                dp.Alphas[i]->Alpha = values[i];
-                dp.Alphas[i]->U    = -values[i] * beta;
-            }
-            return dp;
-        }
-
-        void copyParameter(const std::shared_ptr<Stochast>& stochast, const std::shared_ptr<DesignPoint>&  designPoint, std::vector<std::shared_ptr<StochastPointAlpha>> & parameters)
-        {
-            for (const auto& Alpha : designPoint->Alphas)
-            {
-                if (Alpha->Stochast == stochast)
-                {
-                    parameters.push_back(Alpha);
-                    return;
-                }
-            }
-            auto empty = std::make_shared<StochastPointAlpha>();
-            parameters.push_back(empty);
-        }
-
-
         std::shared_ptr<DesignPoint> Hohenbichler2::AlphaHohenbichler(const std::shared_ptr<DesignPoint>& designPoint1, const std::shared_ptr<DesignPoint>& designPoint2,
             const std::vector<std::shared_ptr<Stochast>>& stochasts,
             const std::shared_ptr<SelfCorrelationMatrix>& selfCorrelation, const combineAndOr system)
@@ -189,7 +153,7 @@ namespace Deltares {
                 const int ngridPerBeta = 1000;
                 int ngrid = (int)round((-dp2 + StandardNormal::UMax) * ngridPerBeta) + 1; // number of grids for numerical integration
 
-                auto u = LinearSpaced(ngrid, -StandardNormal::UMax, -dp2); // grid end points
+                auto u = NumericSupport::LinearSpaced(ngrid, -StandardNormal::UMax, -dp2); // grid end points
 
                 auto uCentered = std::vector<double>(); // grid centers
                 auto uDiff = std::vector<double>();
@@ -231,32 +195,40 @@ namespace Deltares {
             }
         }
 
-        std::vector<double> Hohenbichler2::LinearSpaced(int length, double start, double stop)
+        DesignPoint Hohenbichler2::GetRealization(const double beta, const std::vector<std::shared_ptr<StochastPointAlpha>>& alpha)
         {
-            if (length < 0)
-            {
-                throw probLibException("length in LinearSpaced < 0");
-            }
-
-            switch (length)
-            {
-            case 0:
-                return std::vector<double> {};
-            case 1:
-                return std::vector<double> { stop };
-            default:
-            {
-                double num = (stop - start) / (double)(length - 1);
-                auto array = std::vector<double>();
-                for (int i = 0; i < length; i++)
-                {
-                    array.push_back(start + (double)i * num);
-                }
-
-                array[length - 1] = stop;
-                return array;
-            }
-            }
+            DesignPoint dp;
+            dp.Beta = beta;
+            dp.Alphas = alpha;
+            return dp;
         }
+
+        DesignPoint Hohenbichler2::GetRealization(const double beta, const std::vector<std::shared_ptr<StochastPointAlpha>>& alpha, const std::vector<double>& values)
+        {
+            DesignPoint dp;
+            dp.Beta = beta;
+            dp.Alphas = alpha;
+            for (size_t i = 0; i < values.size(); i++)
+            {
+                dp.Alphas[i]->Alpha = values[i];
+                dp.Alphas[i]->U = -values[i] * beta;
+            }
+            return dp;
+        }
+
+        void Hohenbichler2::copyParameter(const std::shared_ptr<Stochast>& stochast, const std::shared_ptr<DesignPoint>& designPoint, std::vector<std::shared_ptr<StochastPointAlpha>>& parameters)
+        {
+            for (const auto& Alpha : designPoint->Alphas)
+            {
+                if (Alpha->Stochast == stochast)
+                {
+                    parameters.push_back(Alpha);
+                    return;
+                }
+            }
+            auto empty = std::make_shared<StochastPointAlpha>();
+            parameters.push_back(empty);
+        }
+
     }
 }

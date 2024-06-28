@@ -15,9 +15,11 @@ namespace Deltares {
                 const std::vector<std::shared_ptr<Statistics::Stochast>>& stochasts,
                 const std::shared_ptr<Statistics::SelfCorrelationMatrix>& selfCorrelation, const combineAndOr system);
         private:
-            double BetaHohenbichler(double dp1, double dp2, double rho, combineAndOr system);
-            double HohenbichlerNumInt(double dp1, double dp2, double rho, combineAndOr system);
-            std::vector<double> LinearSpaced(int length, double start, double stop);
+            static double BetaHohenbichler(double dp1, double dp2, double rho, combineAndOr system);
+            static double HohenbichlerNumInt(double dp1, double dp2, double rho, combineAndOr system);
+            static DesignPoint GetRealization(const double beta, const std::vector<std::shared_ptr<Models::StochastPointAlpha>>& alpha);
+            static DesignPoint GetRealization(const double beta, const std::vector<std::shared_ptr<Models::StochastPointAlpha>>& alpha, const std::vector<double>& values);
+            static void copyParameter(const std::shared_ptr<Statistics::Stochast>& stochast, const std::shared_ptr<DesignPoint>& designPoint, std::vector<std::shared_ptr<StochastPointAlpha>>& parameters);
             const double rhoLimitHohenbichler = 0.98;  // Limit value for the correlation coefficient
         };
     }

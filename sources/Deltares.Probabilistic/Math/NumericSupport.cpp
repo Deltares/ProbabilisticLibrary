@@ -610,6 +610,36 @@ namespace Deltares
             }
         }
 
+        std::vector<double> NumericSupport::LinearSpaced(const int length, const double start, const double stop)
+        {
+            if (length < 0)
+            {
+                throw Reliability::probLibException("length in LinearSpaced < 0");
+            }
+
+            switch (length)
+            {
+            case 0:
+                return std::vector<double> {};
+            case 1:
+                return std::vector<double> { stop };
+            default:
+            {
+                double num = (stop - start) / (double)(length - 1);
+                auto array = std::vector<double>();
+                for (int i = 0; i < length; i++)
+                {
+                    array.push_back(start + (double)i * num);
+                }
+
+                array[length - 1] = stop;
+                return array;
+            }
+            }
+        }
+
+
+
 	}
 }
 

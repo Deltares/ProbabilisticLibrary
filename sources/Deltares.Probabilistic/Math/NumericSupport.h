@@ -58,6 +58,7 @@ namespace Deltares
             static std::vector<double> select(std::vector<double>& values, std::function<double(double)> function);
             static double sum(std::vector<double>& values, std::function<double(double)> function);
             static double getMaxAbs(const double val1, const double val2);
+            static std::vector<double> LinearSpaced(const int length, const double start, const double stop);
         };
     }
 }
