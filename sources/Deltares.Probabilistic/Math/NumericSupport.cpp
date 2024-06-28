@@ -592,6 +592,24 @@ namespace Deltares
 			return maxStart;
 		}
 
+        /// <summary>
+        /// Gets the value whose absolute is value is max
+        /// </summary>
+        /// <param name="val1"></param>
+        /// <param name="val2"></param>
+        /// <returns> max value </returns>
+        double NumericSupport::getMaxAbs(const double val1, const double val2)
+        {
+            if (std::abs(val1) >= std::abs(val2))
+            {
+                return val1;
+            }
+            else
+            {
+                return val2;
+            }
+        }
+
 	}
 }
 

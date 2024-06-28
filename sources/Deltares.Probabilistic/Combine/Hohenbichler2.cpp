@@ -105,12 +105,12 @@ namespace Deltares {
 
             // combine alpha - values of correlated and uncorrelated part
             // make sure the sign is the same as the original alphas!!!!!!
-            auto alphaNew = std::vector<double>(); //[nVar];
+            auto alphaNew = std::vector<double>();
             for (size_t j = 0; j < nVar; j++)
             {
-                double alphaMax = std::max(abs(alpha1[j]), abs(alpha2[j]));
-                int sign = alphaMax >= 0 ? 1 : -1;
-                alphaNew.push_back(sign * sqrt(alpha1[j] * alpha1[j] + alpha2[j] * alpha2[j]));
+                double alphaMax = NumericSupport::getMaxAbs(alpha1[j], alpha2[j]);
+                double sign = NumericSupport::GetSign(alphaMax);
+                alphaNew.push_back(sign * hypot(alpha1[j], alpha2[j] ));
             }
 
             // normalization
