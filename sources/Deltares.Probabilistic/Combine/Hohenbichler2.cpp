@@ -77,12 +77,12 @@ namespace Deltares {
                 // perturbation of ui and its effect on beta.
                 // [1] determine alpha-value for correlated part
 
-                rho = selfCorrelation->getSelfCorrelation(stochasts[i]);
-                double rhoCompl = sqrt(1.0 - rho * rho);
+                double rhoSCi = selfCorrelation->getSelfCorrelation(stochasts[i]);
+                double rhoCompl = sqrt(1.0 - rhoSCi * rhoSCi);
 
                 // [1a] perturbation of beta-values
                 auto dpj1 = GetRealization(designPoint1->Beta + reorderedDesignPoint1->Values[i] * epsilon, parameters1); // copy alphas
-                auto dpj2 = GetRealization(designPoint2->Beta + reorderedDesignPoint2->Values[i] * epsilon * rho, parameters2);
+                auto dpj2 = GetRealization(designPoint2->Beta + reorderedDesignPoint2->Values[i] * epsilon * rhoSCi, parameters2);
 
                 // [1b] Hohenbichler computation with perturbed beta-values
                 double betaj1 = BetaHohenbichler(dpj1.Beta, dpj2.Beta, rho, system);

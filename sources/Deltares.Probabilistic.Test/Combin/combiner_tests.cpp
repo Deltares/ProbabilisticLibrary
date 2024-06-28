@@ -36,7 +36,7 @@ namespace Deltares
             void CombinerTest::Hohenbichler2CombinerTest() const
             {
                 auto hh = std::make_unique<Hohenbichler2Combiner>();
-                auto ref = alphaBeta(3.0, { 0.487657, 0.491065, 0.508826, 0.511998 }); // pre-computed
+                auto ref = alphaBeta(3.0, { 0.790292, 0.487347, 0.316117, 0.194939 }); // pre-computed
                 tester(hh.get(), 3.0, ref, combineAndOr::combOr);
             }
 
