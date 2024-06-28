@@ -22,7 +22,11 @@ namespace Deltares {
             DesignPoint dp;
             dp.Beta = beta;
             dp.Alphas = alpha;
-            for (size_t i = 0; i < values.size(); i++) dp.Alphas[i]->Alpha = values[i];
+            for (size_t i = 0; i < values.size(); i++)
+            {
+                dp.Alphas[i]->Alpha = values[i];
+                dp.Alphas[i]->U    = -values[i] * beta;
+            }
             return dp;
         }
 
