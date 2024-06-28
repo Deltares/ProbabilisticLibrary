@@ -43,6 +43,7 @@ namespace Deltares
 
             void initializeForRun();
             void clear();
+            void releaseCallBacks();
             void updateStochastSettings(std::shared_ptr<Reliability::StochastSettingsSet> settings);
             void setSampleProvider(std::shared_ptr<SampleProvider> sampleProvider);
             double getZValue(std::shared_ptr<Sample> sample);

@@ -287,7 +287,7 @@ subroutine testProbabilisticWithFunction ( )
                     call assert_comparable(  0.707106781186547d0, alfa(1), margin, "Linear resistance solicitation: Alfa(1)" )
                     call assert_comparable( -0.707106781186547d0, alfa(2), margin, "Linear resistance solicitation: Alfa(2)" )
                 else if (probMethod == methodImportanceSampling) then
-                    call assert_comparable( 3.5d0, actualBeta, 1d-1, "Linear resistance solicitation: Beta" )
+                    call assert_comparable( 3.498302d0, actualBeta, margin, "Linear resistance solicitation: Beta" )
                     call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 18076, "no samples")
                 else if (probMethod < 10) then
                     call assert_comparable( 3.54d0, actualBeta, 0.05d0 * betaFactor, "Linear resistance solicitation: Beta" )

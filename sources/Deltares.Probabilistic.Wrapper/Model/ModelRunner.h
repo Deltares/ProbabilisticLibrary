@@ -71,6 +71,7 @@ namespace Deltares
                     }
 
                     handles->Clear();
+                    shared->object->releaseCallBacks();
                 }
 
                 System::Collections::Generic::List<Stochast^>^ Stochasts = gcnew System::Collections::Generic::List<Stochast^>();

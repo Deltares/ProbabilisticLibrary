@@ -22,7 +22,6 @@ namespace Deltares
 		private:
             ZLambda zLambda = nullptr;
             ZMultipleLambda zMultipleLambda = nullptr;
-            //ZValuesCallBack zValuesLambda = nullptr;
             ZBetaLambda zBetaLambda = nullptr;
 			int maxProcesses = 1;
 
@@ -47,6 +46,8 @@ namespace Deltares
 			{
 				this->zBetaLambda = zBetaLambda;
 			}
+
+            void releaseCallBacks();
 
 			void setMaxProcesses(int maxProcesses);
 

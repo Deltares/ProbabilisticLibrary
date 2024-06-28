@@ -64,6 +64,14 @@ namespace Deltares
 			this->messages.clear();
 		}
 
+        void ModelRunner::releaseCallBacks()
+		{
+		    if (this->zModel != nullptr)
+		    {
+                zModel->releaseCallBacks();
+		    }
+		}
+
 		std::shared_ptr<ModelSample> ModelRunner::getModelSample(std::shared_ptr<Sample> sample)
 		{
 			std::vector<double> xValues = this->uConverter->getXValues(sample);
