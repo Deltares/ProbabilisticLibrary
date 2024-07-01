@@ -13,7 +13,6 @@ namespace Deltares
 		typedef std::function<void(std::shared_ptr<ModelSample>)> ZLambda;
 		typedef std::function<void(std::vector<std::shared_ptr<ModelSample>>)> ZMultipleLambda;
 		typedef std::function<double(std::shared_ptr<ModelSample>, double beta)> ZBetaLambda;
-        typedef std::function<void(std::shared_ptr<ModelSample>, const designPointOptions dpOption, const int loggingCounter)> ZLambdaDesignPoint;
 
 		class ZModel
 		{
@@ -21,15 +20,13 @@ namespace Deltares
 			ZLambda zLambda = nullptr;
 			ZMultipleLambda zMultipleLambda = nullptr;
 			ZBetaLambda zBetaLambda = nullptr;
-            ZLambdaDesignPoint zLambdaDp = nullptr;
 			int maxProcesses = 1;
 
 		public:
-			ZModel(ZLambda zLambda, ZMultipleLambda zMultipleLambda = nullptr, ZLambdaDesignPoint z_lambda_design_point = nullptr)
+			ZModel(ZLambda zLambda, ZMultipleLambda zMultipleLambda = nullptr)
 			{
 				this->zLambda = zLambda;
 				this->zMultipleLambda = zMultipleLambda;
-                this->zLambdaDp = z_lambda_design_point;
 			}
 
 			void setBetaLambda(ZBetaLambda zBetaLambda)
@@ -42,8 +39,6 @@ namespace Deltares
 			void invoke(std::shared_ptr<ModelSample> sample);
 
 			void invoke(std::vector<std::shared_ptr<ModelSample>> samples);
-
-            void invoke(std::shared_ptr<ModelSample> sample, const designPointOptions dpOption, const int loggingCounter);
 
 			double getBeta(std::shared_ptr<ModelSample> sample, double beta);
 

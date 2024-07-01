@@ -10,7 +10,9 @@ namespace Deltares
         {
             auto form = FORM();
             form.Settings = formSettings;
+
             auto formDesignPoint = form.getDesignPoint(modelRunner);
+
             if (formDesignPoint->convergenceReport->IsConverged)
             {
                 // If the resulting beta is below some threshold, we prefer Directional Sampling (DS)
@@ -22,11 +24,18 @@ namespace Deltares
             }
 
             modelRunner->clear();
+
+            if (modelRunner->Settings->RunAtDesignPoint)
+            {
+                modelRunner->runDesignPoint(formDesignPoint);
+            }
+
             auto ds = DirectionalSampling();
             ds.Settings = DsSettings;
             auto dsDesignPoint = ds.getDesignPoint(modelRunner);
             dsDesignPoint->convergenceReport->TotalIterations = formDesignPoint->convergenceReport->TotalIterations;
             dsDesignPoint->ContributingDesignPoints.push_back(formDesignPoint);
+
             return dsDesignPoint;
         }
     }

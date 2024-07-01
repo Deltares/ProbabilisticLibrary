@@ -20,14 +20,21 @@ namespace Deltares
                 startVector[i] = u;
             }
 
+            if (modelRunner->Settings->RunAtDesignPoint)
+            {
+                modelRunner->runDesignPoint(dsDesignPoint);
+            }
+
             auto form = FORM();
             form.Settings = formSettings;
             form.Settings->StartPointSettings->StartMethod = StartMethodType::GivenVector;
             form.Settings->StartPointSettings->startVector = startVector;
+
             auto dsfiDesignPoint = form.getDesignPoint(modelRunner);
             dsfiDesignPoint->convergenceReport->TotalDirections = dsDesignPoint->convergenceReport->TotalDirections;
             dsfiDesignPoint->Beta = dsDesignPoint->Beta;
             dsfiDesignPoint->ContributingDesignPoints.push_back(dsDesignPoint);
+
             return dsfiDesignPoint;
         }
     }

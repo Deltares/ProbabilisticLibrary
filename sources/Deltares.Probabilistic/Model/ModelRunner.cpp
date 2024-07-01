@@ -50,6 +50,7 @@ namespace Deltares
 			this->reliabilityResults.clear();
 			this->evaluations.clear();
 			this->messages.clear();
+            this->runDesignPointCounter = 1;
 		}
 
 		std::shared_ptr<ModelSample> ModelRunner::getModelSample(std::shared_ptr<Sample> sample)
@@ -88,21 +89,27 @@ namespace Deltares
 		}
 
         /**
-         * \brief Calculates a sample for getting the x-values right
-         * \param sample Sample to be calculated
+         * \brief Runs the model in the design point
+         * \param designPoint design point to be calculated
          * \return Z-value of the sample
          */
-        std::vector<double> ModelRunner::getXValues(std::shared_ptr<Sample> sample, const int loggingCounter)
+        void ModelRunner::runDesignPoint(std::shared_ptr<Reliability::DesignPoint> designPoint)
         {
-            std::shared_ptr<ModelSample> xSample = getModelSample(sample);
+            std::shared_ptr<Sample> sample = designPoint->getSample();
+		    std::shared_ptr<ModelSample> xSample = getModelSample(sample);
 
-            this->zModel->invoke(xSample, designPointOptions::dpOutTRUE, loggingCounter);
+            xSample->ExtendedLogging = this->Settings->ExtendedLoggingAtDesignPoint;
+            xSample->LoggingCounter = runDesignPointCounter++;
+
+            this->zModel->invoke(xSample);
 
             registerEvaluation(xSample);
 
-            return xSample->Values;
+            for (size_t i = 0; i < xSample->Values.size(); i++)
+            {
+                designPoint->Alphas[i]->X = xSample->Values[i];
+            }
         }
-
 
 		/**
 		 * \brief Calculates a number of samples
