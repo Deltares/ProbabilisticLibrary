@@ -1,7 +1,5 @@
 #include <cmath>
 #include "Hohenbichler.h"
-
-#include "CombineType.h"
 #include "HohenbichlerZ.h"
 #include "../Math/NumericSupport.h"
 #include "../Statistics/StandardNormal.h"
@@ -81,27 +79,28 @@ namespace Deltares {
             auto w = HohenbichlerZ(betaV, pfU, rho);
 
             auto stochast = std::vector<std::shared_ptr<Stochast>>();
-            const size_t nStoch = 2;
-            for (size_t i = 0; i < nStoch; i++)
+            constexpr size_t nStochasts = 2;
+            for (size_t i = 0; i < nStochasts; i++)
             {
                 auto dist = DistributionType::Normal;
                 std::vector<double> params{ 0.0, 1.0 };
-                std::shared_ptr<Stochast> s(new Stochast(dist, params));
+                auto s = std::make_shared<Stochast>(dist, params);
                 stochast.push_back(s);
             }
-            std::shared_ptr<CorrelationMatrix> corr(new CorrelationMatrix());
-            std::shared_ptr<UConverter> uConverter(new UConverter(stochast, corr));
+            auto corr = std::make_shared<CorrelationMatrix>();
+            auto uConverter = std::make_shared<UConverter>(stochast, corr);
             uConverter->initializeForRun();
-            std::shared_ptr<ZModel> zModel(new ZModel([&w](std::shared_ptr<ModelSample> v) { return w.zfunc(v); }));
-            std::shared_ptr<ModelRunner> modelRunner(new ModelRunner(zModel, uConverter));
-            std::shared_ptr<FORM> relMethod(new FORM);
+            auto zModel = std::make_shared<ZModel>([&w](std::shared_ptr<ModelSample> v) { return w.zfunc(v); });
+            auto modelRunner = std::make_shared<ModelRunner>(zModel, uConverter);
+            modelRunner->initializeForRun();
+            auto relMethod = std::make_shared<FORM>();
             relMethod->Settings->RelaxationFactor = 0.4;
             relMethod->Settings->RelaxationLoops = maxTrialLoops;
             relMethod->Settings->EpsilonBeta = 0.01;
             relMethod->Settings->GradientSettings->StepSize = 0.1;
             relMethod->Settings->GradientSettings->gradientType = GradientType::TwoDirections;
             relMethod->Settings->MaxIterationsGrowthFactor  = 2;
-            std::shared_ptr<DesignPoint> newResult(relMethod->getDesignPoint(modelRunner));
+            auto newResult = relMethod->getDesignPoint(modelRunner);
             auto converged = (newResult->convergenceReport->IsConverged ? 0 : 1);
 
             //

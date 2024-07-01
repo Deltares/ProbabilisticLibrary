@@ -20,6 +20,8 @@ namespace Deltares
             {
                 HohenbichlerCombinerTest();
                 Hohenbichler2CombinerTest();
+                HohenbichlerCombiner1StochTest();
+                Hohenbichler2Combiner1StochTest();
                 DirectionalSamplingCombinerTest();
                 ImportanceSamplingCombinerTest();
                 ImportanceSamplingCombinerAndTest();
@@ -38,6 +40,33 @@ namespace Deltares
                 auto hh = std::make_unique<Hohenbichler2Combiner>();
                 auto ref = alphaBeta(3.0, { 0.790292, 0.487347, 0.316117, 0.194939 }); // pre-computed
                 tester(hh.get(), 3.0, ref, combineAndOr::combOr);
+            }
+
+            void CombinerTest::HohenbichlerCombiner1StochTest() const
+            {
+                auto hh = std::make_unique<HohenbichlerCombiner>();
+                auto ref = alphaBeta(3.0, { 1.0 }); // pre-computed
+                tester1stoch(hh.get(), 1.0, 3.0, ref, combineAndOr::combOr);
+
+                ref = alphaBeta(3.0, { 1.0 }); // pre-computed
+                tester1stoch(hh.get(), 1.0, 3.0, ref, combineAndOr::combAnd);
+
+                ref = alphaBeta(2.782175, { 1.0 }); // pre-computed
+                tester1stoch(hh.get(), -1.0, 3.0, ref, combineAndOr::combOr);
+                ASSERT_EQ(2, hh->nonConvergedForm);
+            }
+
+            void CombinerTest::Hohenbichler2Combiner1StochTest() const
+            {
+                auto hh = std::make_unique<Hohenbichler2Combiner>();
+                auto ref = alphaBeta(3.0, { 1.0 }); // pre-computed
+                tester1stoch(hh.get(), 1.0, 3.0, ref, combineAndOr::combOr);
+
+                ref = alphaBeta(3.0, { 1.0 }); // pre-computed
+                tester1stoch(hh.get(), 1.0, 3.0, ref, combineAndOr::combAnd);
+
+                ref = alphaBeta(3.0, { -1.0 }); // pre-computed
+                tester1stoch(hh.get(), -1.0, 3.0, ref, combineAndOr::combOr);
             }
 
             void CombinerTest::DirectionalSamplingCombinerTest() const
@@ -123,6 +152,49 @@ namespace Deltares
                 }
 
                 auto cmbDp = comb->combineDesignPoints(AndOr, Elements, rho, nullptr);
+
+                EXPECT_NEAR(cmbDp->Beta, ref.getBeta(), margin);
+                for (size_t i = 0; i < nStochasts; i++)
+                {
+                    EXPECT_NEAR(cmbDp->Alphas[i]->Alpha, ref.getAlphaI(i), margin);
+                }
+            }
+
+            void CombinerTest::tester1stoch(Combiner* comb, const double rho, const double beta, const alphaBeta& ref, const combineAndOr AndOr) const
+            {
+                constexpr int nElements = 2; // Number of elements
+                constexpr size_t nStochasts = 1;
+
+                std::vector< std::shared_ptr<Stochast>> stochasts;
+                for (size_t i = 0; i <= nStochasts; i++)
+                {
+                    auto s = std::make_shared<Stochast>();
+                    stochasts.push_back(s);
+                }
+
+                auto Elements = std::vector<std::shared_ptr<DesignPoint>>();
+                for (size_t i = 0; i < nElements; i++)
+                {
+                    auto dp = std::make_shared<DesignPoint>();
+                    dp->Beta = beta;
+                    for (size_t j = 0; j < nStochasts; j++)
+                    {
+                        auto alpha = std::make_shared<StochastPointAlpha>();
+                        alpha->Alpha = 1.0;
+                        alpha->Stochast = stochasts[j];
+                        alpha->U = -dp->Beta * alpha->Alpha;
+                        dp->Alphas.push_back(alpha);
+                    }
+                    Elements.push_back(dp);
+                }
+
+                auto selfCorrelation = std::make_shared<SelfCorrelationMatrix>();
+                for (size_t i = 0; i < nStochasts; i++)
+                {
+                    selfCorrelation->setSelfCorrelation(Elements[0]->Alphas[i]->Stochast, rho);
+                }
+
+                auto cmbDp = comb->combineDesignPoints(AndOr, Elements, selfCorrelation, nullptr);
 
                 EXPECT_NEAR(cmbDp->Beta, ref.getBeta(), margin);
                 for (size_t i = 0; i < nStochasts; i++)

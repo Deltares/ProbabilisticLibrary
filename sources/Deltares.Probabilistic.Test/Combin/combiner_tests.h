@@ -15,11 +15,14 @@ namespace Deltares
             private:
                 void HohenbichlerCombinerTest() const;
                 void Hohenbichler2CombinerTest() const;
+                void HohenbichlerCombiner1StochTest() const;
+                void Hohenbichler2Combiner1StochTest() const;
                 void DirectionalSamplingCombinerTest() const;
                 void ImportanceSamplingCombinerTest() const;
                 void ImportanceSamplingCombinerAndTest() const;
                 void ImportanceSamplingCombinerInvertedTest() const;
                 void tester(Reliability::Combiner* comb, const double beta, const Reliability::alphaBeta& ref, const Reliability::combineAndOr AndOr) const;
+                void tester1stoch(Reliability::Combiner* comb, const double rho, const double beta, const Reliability::alphaBeta& ref, const Reliability::combineAndOr AndOr) const;
                 const double margin = 1.0e-4;
             };
         }

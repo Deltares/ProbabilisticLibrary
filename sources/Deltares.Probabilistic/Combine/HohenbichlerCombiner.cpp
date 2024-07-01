@@ -32,6 +32,7 @@ namespace Deltares
             }
 
             auto result = cmb.combineMultipleElements(elm, rho, combineMethodType);
+            nonConvergedForm += result.n;
 
             auto dp = std::make_shared<DesignPoint>();
             dp->Beta = result.ab.getBeta();
