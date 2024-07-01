@@ -76,9 +76,9 @@ bool shouldRunAtDesignPoint(const DPoptions dpOption)
     {
     case DPoptions::RMinZFunc:
     case DPoptions::RMinZFuncCompatible:
-        return false;
-    default:
         return true;
+    default:
+        return false;
     }
 }
 
