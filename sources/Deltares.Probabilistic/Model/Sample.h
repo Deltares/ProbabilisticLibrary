@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <memory>
 
+#include "Message.h"
 #include "../Math/NumericSupport.h"
 
 

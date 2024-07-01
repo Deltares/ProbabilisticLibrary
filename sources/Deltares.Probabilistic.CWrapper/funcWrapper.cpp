@@ -8,13 +8,9 @@ using namespace Deltares::Models;
 
 void funcWrapper::FDelegate(std::shared_ptr<ModelSample> s)
 {
-    auto dp = designPointOptions::dpOutFALSE;
-    FDelegateDp(s, dp, 0);
-}
+    designPointOptions dp = s->ExtendedLogging ? designPointOptions::dpOutTRUE : designPointOptions::dpOutFALSE;
 
-void funcWrapper::FDelegateDp(std::shared_ptr<ModelSample> s, const designPointOptions dp, const int loggingCounter)
-{
-    computationSettings compSetting{ dp, compId, s->threadId, loggingCounter };
+    computationSettings compSetting{ dp, compId, s->threadId, s->LoggingCounter };
     tError e = tError();
     double result = zfunc(s->Values.data(), &compSetting, &e);
     if (e.errorCode != 0)
@@ -32,7 +28,7 @@ void funcWrapper::FDelegateParallel(std::vector<std::shared_ptr<ModelSample>> sa
 {
     auto errorMessagePerThread = std::vector<std::string>(omp_get_num_threads());
 
-    #pragma omp parallel for
+#pragma omp parallel for
     for (int i = 0; i < (int)samples.size(); i++)
     {
         computationSettings compSetting{ designPointOptions::dpOutFALSE, compId, omp_get_thread_num(), 1 };

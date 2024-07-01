@@ -62,12 +62,13 @@ namespace Deltares
 			void setDirectionModel(ZBetaLambda zBetaLambda) const;
 			void setShouldExitFunction(ShouldExitLambda shouldExitFunction) { this->shouldExitFunction = shouldExitFunction; }
 			void setRemoveTaskFunction(RemoveTaskLambda removeTaskFunction) { this->removeTaskFunction = removeTaskFunction; }
-            std::vector<double> getXValues(std::shared_ptr<Sample> sample, const int loggingCounter);
+            void runDesignPoint(std::shared_ptr<Reliability::DesignPoint> designPoint);
 
 		private:
             std::shared_ptr<ZModel> zModel;
 			std::shared_ptr<UConverter> uConverter;
-			std::vector<std::shared_ptr<Reliability::ReliabilityResult>> reliabilityResults;
+            int runDesignPointCounter = 1;
+            std::vector<std::shared_ptr<Reliability::ReliabilityResult>> reliabilityResults;
 			std::vector<std::shared_ptr<Evaluation>> evaluations;
 			std::vector< std::shared_ptr<Message>> messages;
 			std::shared_ptr<ProgressIndicator> progressIndicator = nullptr;

@@ -70,28 +70,15 @@ void copyConvergence(tResult& r, const ConvergenceReport& convergenceReport, con
     }
 }
 
-void extraZfuncForXandLogging(const DPoptions dpOption, std::shared_ptr<DesignPoint> designpoint, std::shared_ptr<ModelRunner> modelrunner)
+bool shouldRunAtDesignPoint(const DPoptions dpOption)
 {
     switch (dpOption)
     {
     case DPoptions::RMinZFunc:
     case DPoptions::RMinZFuncCompatible:
-        break;
+        return false;
     default:
-        return;
-    }
-
-    int loggingsCounter = 1;
-    if ( ! designpoint->ContributingDesignPoints.empty())
-    {
-        auto sample = designpoint->ContributingDesignPoints[0]->getSample();
-        modelrunner->getXValues(sample, loggingsCounter++);
-    }
-    auto sample = designpoint->getSample();
-    auto newX = modelrunner->getXValues(sample, loggingsCounter++);
-    for (size_t i = 0; i < newX.size(); i++)
-    {
-        designpoint->Alphas[i]->X = newX[i];
+        return true;
     }
 }
 
@@ -117,8 +104,7 @@ void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, corrStr
         auto createRelM = createReliabilityMethod();
         auto relMethod = createRelM.selectMethod(*method, nStoch, stochasts);
         auto zModel = std::make_shared<ZModel>([&fw](std::shared_ptr<ModelSample> v) { return fw.FDelegate(v); },
-                                               [&fw](std::vector<std::shared_ptr<ModelSample>> v) { return fw.FDelegateParallel(v); },
-                                               [&fw](std::shared_ptr<ModelSample> v, const designPointOptions dp, const int loggingCounter) { return fw.FDelegateDp(v, dp, loggingCounter); }
+                                               [&fw](std::vector<std::shared_ptr<ModelSample>> v) { return fw.FDelegateParallel(v); }
         );
 
         auto corr = std::make_shared<CorrelationMatrix>();
@@ -140,11 +126,16 @@ void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, corrStr
         modelRunner->Settings->MaxParallelProcesses = method->numThreads;
         modelRunner->Settings->MaxChunkSize = method->chunkSize;
         modelRunner->Settings->SaveMessages = true;
+        modelRunner->Settings->RunAtDesignPoint = shouldRunAtDesignPoint(method->designPointOptions);
+        modelRunner->Settings->ExtendedLoggingAtDesignPoint = true;
 
         modelRunner->initializeForRun();
         auto newResult = relMethod->getDesignPoint(modelRunner);
 
-        extraZfuncForXandLogging(method->designPointOptions, newResult, modelRunner);
+        if (modelRunner->Settings->RunAtDesignPoint)
+        {
+            modelRunner->runDesignPoint(newResult);
+        }
 
         auto allMessages = newResult->Messages;
         for (const auto& s : fw.error_messages )

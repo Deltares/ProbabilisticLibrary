@@ -22,7 +22,6 @@ class funcWrapper
 public:
     funcWrapper(const int id, zFuncExtern func) : compId(id), zfunc(func) { ; }
     void FDelegate(std::shared_ptr<Deltares::Models::ModelSample> s);
-    void FDelegateDp(std::shared_ptr<Deltares::Models::ModelSample> s, const Deltares::Models::designPointOptions dp, const int loggingCounter);
     void FDelegateParallel(std::vector<std::shared_ptr<Deltares::Models::ModelSample>> s);
     std::vector<std::string> error_messages;
 private:
