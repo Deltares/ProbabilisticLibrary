@@ -279,7 +279,9 @@ namespace Deltares
             std::shared_ptr<DesignPoint> bestDesignPoint = nullptr;
             bool revertedDirection = false;
 
-            while (true)
+            bool ready = false;
+
+            while (!ready)
             {
                 const std::shared_ptr<ImportanceSampling> importanceSampling = std::make_shared<ImportanceSampling>();
                 fillSettingsParallel(model, importanceSampling->Settings, factor);
@@ -317,7 +319,7 @@ namespace Deltares
                         progress->complete();
                     }
 
-                    return bestDesignPoint;
+                    ready = true;
                 }
                 else if (iteration >= maxIterations || designPoint->convergenceReport->getSmallestFraction() >= requiredFailures)
                 {
@@ -326,7 +328,8 @@ namespace Deltares
                         progress->complete();
                     }
 
-                    return designPoint;
+                    bestDesignPoint = designPoint;
+                    ready = true;
                 }
                 else
                 {
@@ -352,6 +355,8 @@ namespace Deltares
                     }
                 }
             }
+
+            return bestDesignPoint;
         }
 
         void ImportanceSamplingCombiner::fillSettingsParallel(std::shared_ptr<CombinedDesignPointModel> model, std::shared_ptr<ImportanceSamplingSettings> settings, double factor)
