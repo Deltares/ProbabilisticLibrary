@@ -37,6 +37,8 @@ namespace Deltares {
             {
                 copyParameter(stochasts[i], designPoint1, parameters1);
                 copyParameter(stochasts[i], designPoint2, parameters2);
+                if (parameters1[i]->Stochast == nullptr) parameters1[i]->Stochast = parameters2[i]->Stochast;
+                if (parameters2[i]->Stochast == nullptr) parameters2[i]->Stochast = parameters1[i]->Stochast;
             }
 
             for (size_t i = 0; i < nVar; i++)
