@@ -8,7 +8,14 @@ namespace Deltares
 {
 	namespace Models
 	{
-		class RunSettings
+        enum class designPointOptions
+        {
+            dpOutFALSE = 0,
+            dpOutTRUE = 1,
+            dpOutPrintAll = 3,
+        };
+
+        class RunSettings
 		{
 		public:
 			int MaxParallelProcesses = 1;
@@ -16,6 +23,8 @@ namespace Deltares
 			bool SaveEvaluations = false;
 			bool SaveConvergence = false;
 			bool SaveMessages = false;
+            bool RunAtDesignPoint = false;
+            bool ExtendedLoggingAtDesignPoint = false;
 			int MaxMessages = 1000;
 			MessageType LowestMessageType = MessageType::Warning;
 

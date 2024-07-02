@@ -136,7 +136,7 @@ namespace Deltares
 
 				if (!fullExecuted)
 				{
-					const std::shared_ptr<ImportanceSamplingSettings> importanceSamplingSettings = importanceSampling->Settings;
+                    const std::shared_ptr<ImportanceSamplingSettings> importanceSamplingSettings = importanceSampling->Settings;
 
 					this->importanceSampling = std::make_shared<ImportanceSampling>();
 					this->importanceSampling->Settings = importanceSamplingSettings;

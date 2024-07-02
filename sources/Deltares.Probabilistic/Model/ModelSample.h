@@ -8,7 +8,7 @@ namespace Deltares
 {
 	namespace Models
 	{
-		class ModelSample
+        class ModelSample
 		{
 		public:
 			ModelSample(std::vector<double> values)
@@ -41,6 +41,14 @@ namespace Deltares
 			bool IsRestartRequired = false;
 			double Beta = 0;
 			double Z = nan("");
+
+            bool ExtendedLogging = false;
+
+            /**
+             * Indication of a logging message
+             */
+            int LoggingCounter = 0;
+
 
 			int Tag = 0;
 

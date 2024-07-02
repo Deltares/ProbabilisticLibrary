@@ -20,8 +20,9 @@ private:
     void fillFormSettings(std::shared_ptr<Deltares::Reliability::FORMSettings>& Settings, const Deltares::ProbLibCore::basicSettings& bs, const size_t nStoch);
     void fillDsSettings(std::shared_ptr<Deltares::Reliability::DirectionalSamplingSettings>& Settings, const Deltares::ProbLibCore::basicSettings& bs);
     Deltares::Reliability::DesignPointMethod convertDp(const Deltares::ProbLibCore::DPoptions dp);
-    void fillImportanceSamplingSettings( std::shared_ptr<Deltares::Reliability::ImportanceSamplingSettings> settings,
-										 const Deltares::ProbLibCore::basicSettings& bs,
-										 std::vector<std::shared_ptr<Deltares::Statistics::Stochast>>& stochasts);
+    void fillImportanceSamplingSettings(std::shared_ptr<Deltares::Reliability::ImportanceSamplingSettings> settings, const Deltares::ProbLibCore::basicSettings& bs,
+        std::vector<std::shared_ptr<Deltares::Statistics::Stochast>>& stochasts);
+    void fillStartVector(std::shared_ptr<Deltares::Reliability::StartPointCalculatorSettings> startPoint,
+        const Deltares::ProbLibCore::basicSettings& bs, const size_t nStoch);
 };
 
