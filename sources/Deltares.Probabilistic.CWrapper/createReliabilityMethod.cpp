@@ -96,6 +96,7 @@ std::shared_ptr<ReliabilityMethod> createReliabilityMethod::selectMethod(const b
         AdaptImpSampling->Settings->LoopVarianceIncrement = bs.numExtraReal2;
         AdaptImpSampling->Settings->AutoMaximumSamples = bs.numExtraInt != 0;
         AdaptImpSampling->Settings->MinimumFailedSamples = bs.numExtraInt2;
+        fillStartVector(AdaptImpSampling->Settings->startPointSettings, bs, nStoch);
         return AdaptImpSampling; }
         break;
     default:
@@ -117,40 +118,45 @@ DesignPointMethod createReliabilityMethod::convertDp(const DPoptions dp)
     }
 }
 
+void createReliabilityMethod::fillStartVector(std::shared_ptr<StartPointCalculatorSettings> startPoint, const basicSettings& bs, const size_t nStoch)
+{
+    switch (bs.startMethod)
+    {
+    case StartMethods::Zero:
+        startPoint->StartMethod = StartMethodType::None;
+        break;
+    case StartMethods::One:
+        startPoint->StartMethod = StartMethodType::One;
+        break;
+    case StartMethods::RaySearch:
+    case StartMethods::RaySearchVector:
+    case StartMethods::RaySearchVectorScaled:
+        startPoint->StartMethod = StartMethodType::RaySearch;
+        startPoint->MaximumLengthStartPoint = 18.1;
+        startPoint->dsdu = 0.3;
+        startPoint->startVector = copyStartVector(bs.startVector, nStoch);
+        break;
+    case StartMethods::SphereSearch:
+        startPoint->StartMethod = StartMethodType::SphereSearch;
+        startPoint->startVector = copyStartVector(bs.startVector, nStoch);
+        break;
+    case StartMethods::GivenVector:
+        startPoint->StartMethod = StartMethodType::GivenVector;
+        startPoint->startVector = copyStartVector(bs.startVector, nStoch);
+        break;
+    default:
+        throw probLibException("not implemented: start method: ", (int)bs.startMethod);
+        break;
+    }
+}
+
 void createReliabilityMethod::fillFormSettings(std::shared_ptr<FORMSettings>& Settings, const basicSettings& bs, const size_t nStoch)
 {
 	Settings->MaximumIterations = bs.numExtraInt;
 	Settings->GradientSettings->gradientType = GradientType::TwoDirections;
 	Settings->FilterAtNonConvergence = true;
 	Settings->RelaxationFactor = bs.relaxationFactor;
-	switch (bs.startMethod)
-	{
-	case StartMethods::Zero:
-		Settings->StartPointSettings->StartMethod = StartMethodType::None;
-		break;
-	case StartMethods::One:
-		Settings->StartPointSettings->StartMethod = StartMethodType::One;
-		break;
-	case StartMethods::RaySearch:
-	case StartMethods::RaySearchVector:
-	case StartMethods::RaySearchVectorScaled:
-		Settings->StartPointSettings->StartMethod = StartMethodType::RaySearch;
-		Settings->StartPointSettings->MaximumLengthStartPoint = 18.1;
-		Settings->StartPointSettings->dsdu = 0.3;
-		Settings->StartPointSettings->startVector = copyStartVector(bs.startVector, nStoch);
-		break;
-	case StartMethods::SphereSearch:
-		Settings->StartPointSettings->StartMethod = StartMethodType::SphereSearch;
-		Settings->StartPointSettings->startVector = copyStartVector(bs.startVector, nStoch);
-		break;
-	case StartMethods::GivenVector:
-		Settings->StartPointSettings->StartMethod = StartMethodType::GivenVector;
-		Settings->StartPointSettings->startVector = copyStartVector(bs.startVector, nStoch);
-		break;
-	default:
-		throw probLibException("not implemented: start method: ", (int)bs.startMethod);
-		break;
-	}
+    fillStartVector(Settings->StartPointSettings, bs, nStoch);
 }
 
 std::vector<double> createReliabilityMethod::copyStartVector(const double startValues[], const size_t nStoch)

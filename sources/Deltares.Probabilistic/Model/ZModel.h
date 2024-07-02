@@ -4,6 +4,7 @@
 #include <functional>
 
 #include "ModelSample.h"
+#include "RunSettings.h"
 
 namespace Deltares
 {
@@ -45,7 +46,7 @@ namespace Deltares
 			{
 				return this->zBetaLambda != nullptr;
 			}
-		};
+        };
 	}
 }
 

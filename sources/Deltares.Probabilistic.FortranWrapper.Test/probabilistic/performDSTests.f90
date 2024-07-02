@@ -31,6 +31,7 @@ module performDSTests
     use interface_probcalc
     use interface_probcalcdata
     use interface_distributions
+    use class_probCalc
 
     implicit none
 
@@ -140,6 +141,7 @@ subroutine testDSFI
     logical                               :: conv2                          !< Convergence criterium indicator (DS)
     type(storedConvergenceData)           :: convergenceData1               !< convergenceData first computation
     type(storedConvergenceData)           :: convergenceData2               !< convergenceData 2nd computation
+    type(tProbCalc)                       :: probCalc                       !< class prob. calculation
     real(kind=wp), parameter              :: betaExpected = 2.87564_wp
     integer, parameter                    :: numSamples = 1000
 
@@ -150,12 +152,12 @@ subroutine testDSFI
     probDb%method%FORM%maxIterations = 50
     probDb%method%DS%seedPRNG = 1
 
-    call calculateLimitStateFunction(probDb, zFuncNod, alpha1, beta(1), x1, conv1, conv2, convergenceData1)
+    call probCalc%run(probDb, zFuncNod, alpha1, beta(1), x1, conv1, conv2, convergenceData1)
     call assert_true(conv1, 'conv1 - meth. 12')
     call assert_true(conv2, 'conv2 - meth. 12')
 
     probDb%method%calcMethod = methodDirSamplingWithFORMiterationsStartU
-    call calculateLimitStateFunction(probDb, zFuncNod, alpha2, beta(2), x2, conv1, conv2, convergenceData2)
+    call probCalc%run(probDb, zFuncNod, alpha2, beta(2), x2, conv1, conv2, convergenceData2)
     call assert_true(conv1, 'conv1 - meth. 16')
     call assert_true(conv2, 'conv2 - meth. 16')
 
@@ -478,9 +480,10 @@ subroutine performDirectionalSampling( probDb, fx, x, alfa, beta, convCriterium,
 
     type(storedConvergenceData)   :: allConvergenceData  !< struct holding all convergence data
     logical                       :: conv
+    type(tProbCalc)               :: probCalc            !< class prob. calculation
 
     probDb%method%calcMethod = methodDirectionalSampling
-    call calculateLimitStateFunction( probDb, fx, alfa, beta, x, conv, convCriterium, allConvergenceData, pc=pc)
+    call probCalc%run( probDb, fx, alfa, beta, x, conv, convCriterium, allConvergenceData, pc=pc)
     convergenceData = allConvergenceData%cnvg_data_ds
 end subroutine performDirectionalSampling
 

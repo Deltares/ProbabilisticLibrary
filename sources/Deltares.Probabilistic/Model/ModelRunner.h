@@ -44,7 +44,7 @@ namespace Deltares
 			void clear();
 			void updateStochastSettings(std::shared_ptr<Reliability::StochastSettingsSet> settings);
 			double getZValue(std::shared_ptr<Sample> sample);
-			std::vector<double> getZValues(std::vector<std::shared_ptr<Sample>> samples);
+            std::vector<double> getZValues(std::vector<std::shared_ptr<Sample>> samples);
 			double getBeta(std::shared_ptr<Sample> sample);
 			bool canCalculateBeta() const;
 			int getStochastCount();
@@ -62,11 +62,13 @@ namespace Deltares
 			void setDirectionModel(ZBetaLambda zBetaLambda) const;
 			void setShouldExitFunction(ShouldExitLambda shouldExitFunction) { this->shouldExitFunction = shouldExitFunction; }
 			void setRemoveTaskFunction(RemoveTaskLambda removeTaskFunction) { this->removeTaskFunction = removeTaskFunction; }
+            void runDesignPoint(std::shared_ptr<Reliability::DesignPoint> designPoint);
 
 		private:
-			std::shared_ptr<ZModel> zModel;
+            std::shared_ptr<ZModel> zModel;
 			std::shared_ptr<UConverter> uConverter;
-			std::vector<std::shared_ptr<Reliability::ReliabilityResult>> reliabilityResults;
+            int runDesignPointCounter = 1;
+            std::vector<std::shared_ptr<Reliability::ReliabilityResult>> reliabilityResults;
 			std::vector<std::shared_ptr<Evaluation>> evaluations;
 			std::vector< std::shared_ptr<Message>> messages;
 			std::shared_ptr<ProgressIndicator> progressIndicator = nullptr;

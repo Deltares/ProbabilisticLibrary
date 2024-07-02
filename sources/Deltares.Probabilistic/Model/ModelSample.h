@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <memory>
 
+#include "Message.h"
 #include "../Math/NumericSupport.h"
 
 
@@ -12,7 +13,7 @@ namespace Deltares
 {
 	namespace Models
 	{
-		class ModelSample
+        class ModelSample
 		{
 		private:
 			long tag = 0;
@@ -33,7 +34,15 @@ namespace Deltares
 			double Beta = 0;
 			double Z = nan("");
 
-			intptr_t Tag = 0;
+            bool ExtendedLogging = false;
+
+            /**
+             * Indication of a logging message
+             */
+            int LoggingCounter = 0;
+
+
+            intptr_t Tag = 0;
 
 			bool hasSameValues(std::shared_ptr<ModelSample> other)
 			{

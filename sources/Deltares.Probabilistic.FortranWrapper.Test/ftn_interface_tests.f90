@@ -125,7 +125,7 @@ subroutine test_ds_errorhandling
 
     call probCalcF2C(method, distribs, 2, correlations, 0, zfunc, textualProgress, compIds, x, r, ierr)
 
-    call assert_equal(ierr%iCode, -1, "return code probCalcF2C <> 0")
+    call assert_equal(ierr%iCode, 1, "return code probCalcF2C <> 0")
 
     call copystrback(errmsg, ierr%message)
     call assert_equal(errmsg, "just testing", "diff in error message")

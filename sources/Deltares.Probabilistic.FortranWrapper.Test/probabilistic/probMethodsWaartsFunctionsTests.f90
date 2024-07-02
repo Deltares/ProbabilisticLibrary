@@ -32,6 +32,7 @@ module probMethodsWaartsFunctionsTests
     use feedback
     use feedback_parameters
     use interface_probCalc
+    use class_probCalc
     use interface_probCalcData
     use interface_distributions
     use waartsFunctions
@@ -287,7 +288,7 @@ subroutine testProbabilisticWithFunction ( )
                     call assert_comparable(  0.707106781186547d0, alfa(1), margin, "Linear resistance solicitation: Alfa(1)" )
                     call assert_comparable( -0.707106781186547d0, alfa(2), margin, "Linear resistance solicitation: Alfa(2)" )
                 else if (probMethod == methodImportanceSampling) then
-                    call assert_comparable( 3.5d0, actualBeta, 1d-1, "Linear resistance solicitation: Beta" )
+                    call assert_comparable( 3.498302d0, actualBeta, margin, "Linear resistance solicitation: Beta" )
                     call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 18076, "no samples")
                 else if (probMethod < 10) then
                     call assert_comparable( 3.54d0, actualBeta, 0.05d0 * betaFactor, "Linear resistance solicitation: Beta" )
@@ -1021,7 +1022,7 @@ subroutine iterateMechanism (probDb, convergenceData, z_func, probMethod, alfa, 
 
     probDb%method%calcMethod = probMethod
     do i = 1, numberIterations
-        call calculateLimitStateFunction( probDb, z_func, alfa, beta, x, conv, convCriterium, convergenceData )
+        call probCalc%run( probDb, z_func, alfa, beta, x, conv, convCriterium, convergenceData )
 
         combinedBeta = combinedBeta + beta / numberIterations
     end do
@@ -1053,7 +1054,7 @@ subroutine testDeterministicParameterHasNoInfluence
    ! Perform computation numberIterations times
    probDb%method%calcMethod = methodFORM
    call initSparseWaartsTestsFunctions(probDb%stovar%maxStochasts, probDb%method%maxParallelThreads)
-   call calculateLimitStateFunction( probDb, zLinearResistanceSolicitation, alfa, beta, x, conv, convCriterium, convergenceData )
+   call probCalc%run( probDb, zLinearResistanceSolicitation, alfa, beta, x, conv, convCriterium, convergenceData )
    call cleanUpWaartsTestsFunctions
 
    call finalizeProbabilisticCalculation(probDb)
@@ -1067,7 +1068,7 @@ subroutine testDeterministicParameterHasNoInfluence
 
    ! Perform computation numberIterations times
    probDb%method%calcMethod = methodFORM
-   call calculateLimitStateFunction( probDb, zLinearResistanceSolicitationFixed, &
+   call probCalc%run( probDb, zLinearResistanceSolicitationFixed, &
        alfa, beta2, x, conv, convCriterium, convergenceData )
 
    call assert_comparable( beta2, beta, 0.01d0, "Deterministic parameter has influence: different beta's" )
@@ -1089,6 +1090,7 @@ subroutine testErrorHandlingCalculateLimitStateFunction
     real (kind = wp)            :: beta2= 0.0d0
 
     logical                     :: convCriterium, conv
+    type(tProbCalc)             :: probCalc            !< class prob. calculation
 
    ! Initialization of mechanism with no stochastic parameters
    call initializeCalculation (probDb, 0, alfa, x)
@@ -1103,7 +1105,7 @@ subroutine testErrorHandlingCalculateLimitStateFunction
    call SetFatalErrorExpected(.true.)
    probDb%method%calcMethod = methodFORM
    call initSparseWaartsTestsFunctions(probDb%stovar%maxStochasts, probDb%method%maxParallelThreads)
-   call calculateLimitStateFunction( probDb, zLinearResistanceSolicitation, alfa, beta, x, conv, convCriterium, convergenceData )
+   call probCalc%run( probDb, zLinearResistanceSolicitation, alfa, beta, x, conv, convCriterium, convergenceData )
    call cleanUpWaartsTestsFunctions
 
    call SetFatalErrorExpected(.false.)
@@ -1123,8 +1125,7 @@ subroutine testErrorHandlingCalculateLimitStateFunction
    ! Perform computation numberIterations times
    call SetFatalErrorExpected(.true.)
    probDb%method%calcMethod = 99
-   call calculateLimitStateFunction( probDb, zLinearResistanceSolicitationFixed, alfa, beta2, x, conv, convCriterium, &
-       convergenceData )
+   call probCalc%run( probDb, zLinearResistanceSolicitationFixed, alfa, beta2, x, conv, convCriterium, convergenceData )
    call SetFatalErrorExpected(.false.)
    call GetFatalErrorMessage(message)
    ipos = index(message, "99")
