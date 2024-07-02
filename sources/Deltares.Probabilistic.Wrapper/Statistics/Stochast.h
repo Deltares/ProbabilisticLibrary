@@ -34,6 +34,11 @@ namespace Deltares
 				Statistics::ConstantParameterType getNativeConstantParameterType(ConstantParameterType constantParameterType);
 
 				void updateStochast();
+                void updateLists();
+
+                bool AreHistogramValuesMatching();
+                bool AreFragilityValuesMatching();
+                bool AreDiscreteValuesMatching();
 
 				System::Collections::Generic::List<ManagedUXDelegate^>^ handles = gcnew System::Collections::Generic::List<ManagedUXDelegate^>();
 			public:
@@ -253,14 +258,26 @@ namespace Deltares
 					return shared->object->canFit();
 				}
 
-				virtual void Fit(array<double>^ values)
-				{
-					std::vector<double> nativeValues = NativeSupport::toNative(values);
+                virtual void Fit(array<double>^ values)
+                {
+                    std::vector<double> nativeValues = NativeSupport::toNative(values);
 
-					shared->object->fit(nativeValues);
-				}
+                    shared->object->fit(nativeValues);
 
-				virtual array<double>^ GetSpecialXValues()
+                    updateLists();
+                }
+
+                virtual void FitWeighted(array<double>^ values, array<double>^ weights)
+                {
+                    std::vector<double> nativeValues = NativeSupport::toNative(values);
+                    std::vector<double> nativeWeights = NativeSupport::toNative(weights);
+
+                    shared->object->fitWeighted(nativeValues, nativeWeights);
+
+                    updateLists();
+                }
+
+                virtual array<double>^ GetSpecialXValues()
 				{
 					return NativeSupport::toManaged(shared->object->getSpecialXValues());
 				}

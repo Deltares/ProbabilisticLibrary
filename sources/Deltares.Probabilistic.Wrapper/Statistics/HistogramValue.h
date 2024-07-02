@@ -14,14 +14,23 @@ namespace Deltares
 			public ref class HistogramValue
 			{
 			private:
-				SharedPointerProvider<Statistics::HistogramValue>* shared = new SharedPointerProvider(new Statistics::HistogramValue());
+				SharedPointerProvider<Statistics::HistogramValue>* shared = nullptr;
 			public:
-				HistogramValue() { }
+                HistogramValue()
+                {
+                    shared = new SharedPointerProvider(new Statistics::HistogramValue());
+                }
 
-				HistogramValue(double lowerBound, double upperBound, double amount)
+                HistogramValue(std::shared_ptr<Statistics::HistogramValue> histogramValue)
+                {
+                    shared = new SharedPointerProvider(histogramValue);
+                }
+
+                HistogramValue(double lowerBound, double upperBound, double amount)
 				{
-					this->LowerBound = lowerBound;
-					this->UpperBound = upperBound;
+                    shared = new SharedPointerProvider(new Statistics::HistogramValue());
+                    this->LowerBound = lowerBound;
+                    this->UpperBound = upperBound;
 					this->Amount = amount;
 				}
 

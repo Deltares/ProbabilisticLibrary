@@ -51,7 +51,99 @@ namespace Deltares
 				}
 			}
 
-			void Stochast::SetExternalDistribution(ManagedUXDelegate^ uxDelegate)
+            void Stochast::updateLists()
+            {
+                std::shared_ptr<StochastProperties> properties = shared->object->getProperties();
+
+                if (!AreHistogramValuesMatching())
+                {
+                    this->HistogramValues->Clear();
+                    for (int i = 0; i < properties->HistogramValues.size(); i++)
+                    {
+                        this->HistogramValues->Add(gcnew HistogramValue(properties->HistogramValues[i]));
+                    }
+                }
+
+                if (!AreFragilityValuesMatching())
+                {
+                    this->FragilityValues->Clear();
+                    for (int i = 0; i < properties->FragilityValues.size(); i++)
+                    {
+                        this->FragilityValues->Add(gcnew FragilityValue(properties->FragilityValues[i]));
+                    }
+                }
+
+                if (!AreDiscreteValuesMatching())
+                {
+                    this->DiscreteValues->Clear();
+                    for (int i = 0; i < properties->DiscreteValues.size(); i++)
+                    {
+                        this->DiscreteValues->Add(gcnew DiscreteValue(properties->DiscreteValues[i]));
+                    }
+                }
+            }
+
+            bool Stochast::AreHistogramValuesMatching()
+            {
+                std::shared_ptr<StochastProperties> properties = shared->object->getProperties();
+
+                if (this->HistogramValues->Count != properties->HistogramValues.size())
+                {
+                    return false;
+                }
+
+                for (int i = 0; i < this->HistogramValues->Count; i++)
+                {
+                    if (this->HistogramValues[i]->GetValue() != properties->HistogramValues[i])
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+
+            bool Stochast::AreFragilityValuesMatching()
+            {
+                std::shared_ptr<StochastProperties> properties = shared->object->getProperties();
+
+                if (this->FragilityValues->Count != properties->FragilityValues.size())
+                {
+                    return false;
+                }
+
+                for (int i = 0; i < this->FragilityValues->Count; i++)
+                {
+                    if (this->FragilityValues[i]->GetValue() != properties->FragilityValues[i])
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+
+            bool Stochast::AreDiscreteValuesMatching()
+            {
+                std::shared_ptr<StochastProperties> properties = shared->object->getProperties();
+
+                if (this->DiscreteValues->Count != properties->DiscreteValues.size())
+                {
+                    return false;
+                }
+
+                for (int i = 0; i < this->DiscreteValues->Count; i++)
+                {
+                    if (this->DiscreteValues[i]->GetValue() != properties->DiscreteValues[i])
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+
+            void Stochast::SetExternalDistribution(ManagedUXDelegate^ uxDelegate)
 			{
 				System::IntPtr callbackPtr = System::Runtime::InteropServices::Marshal::GetFunctionPointerForDelegate(uxDelegate);
 				UXLambda functionPointer = static_cast<UXDelegate>(callbackPtr.ToPointer());

@@ -222,6 +222,11 @@ namespace Deltares
             distribution->fit(properties, values);
         }
 
+        void Stochast::fitWeighted(std::vector<double> values, std::vector<double> weights)
+        {
+            distribution->fitWeighted(properties, values, weights);
+        }
+
         std::vector<double> Stochast::getSpecialXValues()
         {
             return distribution->getSpecialPoints(properties);

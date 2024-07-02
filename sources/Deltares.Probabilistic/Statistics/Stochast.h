@@ -234,13 +234,20 @@ namespace Deltares
 			 */
 			bool canFit();
 
-			/**
-			 * \brief Estimates stochastic parameters for a given set of x-values
-			 * \param values Given set of x-values
-			 */
-			void fit(std::vector<double> values);
+            /**
+             * \brief Estimates stochastic parameters for a given set of x-values
+             * \param values Given set of x-values
+             */
+            void fit(std::vector<double> values);
 
-			/**
+            /**
+             * \brief Estimates stochastic parameters for a given set of x-values and their weights
+             * \param values Given set of x-values
+             * \param weights Given weights
+             */
+		    void fitWeighted(std::vector<double> values, std::vector<double> weights);
+
+            /**
 			 * \brief Gets a number of interesting x-values
 			 * \remark This method is used when plotting PDF and CDF
 			 * \return Interesting x-values

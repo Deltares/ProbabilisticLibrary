@@ -423,6 +423,98 @@ namespace Deltares.Probabilistic.Wrapper.Test
             Assert.AreEqual(1, stochast.GetCDF(4), margin);
 
             Assert.IsTrue(stochast.IsVarying());
+
+            TestFit(stochast);
+        }
+
+        [Test]
+        public void TestTable()
+        {
+            var stochast = new Stochast { DistributionType = DistributionType.Table };
+            stochast.HistogramValues.Add(new HistogramValue(1, 3, 2));
+            stochast.HistogramValues.Add(new HistogramValue(5, 7, 6));
+            stochast.HistogramValues.Add(new HistogramValue(7, 9, 2));
+
+            stochast.InitializeForRun();
+
+            Assert.AreEqual(2, stochast.GetXFromU(StandardNormal.GetUFromP(0.1)), margin);
+            Assert.AreEqual(6, stochast.GetXFromU(0), margin);
+            Assert.AreEqual(8, stochast.GetXFromU(StandardNormal.GetUFromP(0.9)), margin);
+
+            Assert.AreEqual(StandardNormal.GetUFromP(0.1), stochast.GetUFromX(2), margin);
+            Assert.AreEqual(0, stochast.GetUFromX(6), margin);
+            Assert.AreEqual(StandardNormal.GetUFromP(0.9), stochast.GetUFromX(8), margin);
+
+            Assert.AreEqual(0.1, stochast.GetPDF(2), margin);
+
+            stochast.Fit(new double[] { 2, 3, 5 });
+            Assert.AreEqual(3, stochast.HistogramValues.Count);
+            Assert.AreEqual(1.5, stochast.HistogramValues[0].LowerBound);
+            Assert.AreEqual(5.5, stochast.HistogramValues[stochast.HistogramValues.Count - 1].UpperBound);
+            Assert.AreEqual(1, stochast.HistogramValues[1].Amount);
+            Assert.AreEqual(1, stochast.HistogramValues[2].Amount);
+            Assert.AreEqual(0.33333, stochast.HistogramValues[0].NormalizedAmount, margin);
+
+            stochast.Fit(new double[] { 10 });
+            Assert.AreEqual(1, stochast.HistogramValues.Count);
+            Assert.AreEqual(9.5, stochast.HistogramValues[0].LowerBound);
+            Assert.AreEqual(10.5, stochast.HistogramValues[0].UpperBound);
+
+            stochast.Fit(new double[] { -10 });
+            Assert.AreEqual(1, stochast.HistogramValues.Count);
+            Assert.AreEqual(-10.5, stochast.HistogramValues[0].LowerBound);
+            Assert.AreEqual(-9.5, stochast.HistogramValues[0].UpperBound);
+
+            stochast.Fit(new double[] { 10, 10 });
+            Assert.AreEqual(1, stochast.HistogramValues.Count);
+            Assert.AreEqual(10, stochast.HistogramValues[0].LowerBound);
+            Assert.AreEqual(10, stochast.HistogramValues[0].UpperBound);
+
+            stochast.Fit(new double[] { 10, 10, 10 });
+            Assert.AreEqual(1, stochast.HistogramValues.Count);
+            Assert.AreEqual(10, stochast.HistogramValues[0].LowerBound);
+            Assert.AreEqual(10, stochast.HistogramValues[0].UpperBound);
+
+            stochast.FitWeighted(new double[] { 10, 10, 10 }, new double[] { 1, 10, 100 });
+            Assert.AreEqual(1, stochast.HistogramValues.Count);
+            Assert.AreEqual(10, stochast.HistogramValues[0].LowerBound);
+            Assert.AreEqual(10, stochast.HistogramValues[0].UpperBound);
+
+            stochast.FitWeighted(new double[] { 10, 10, 10 }, new double[] { 1E-6, 1, 1E-6 });
+            Assert.AreEqual(1, stochast.HistogramValues.Count);
+            Assert.AreEqual(10.0, stochast.HistogramValues[0].LowerBound);
+            Assert.AreEqual(10.0, stochast.HistogramValues[0].UpperBound);
+
+            stochast.Fit(new double[] { 1000000, 1000000, 1000000 });
+            Assert.AreEqual(1, stochast.HistogramValues.Count);
+            Assert.AreEqual(1000000, stochast.HistogramValues[0].LowerBound);
+            Assert.AreEqual(1000000, stochast.HistogramValues[0].UpperBound);
+
+            stochast.Fit(new double[] { 10, 10, 10, 20, 20, 20, 20, 20, 30, 30, 40, 40, 40, 40 });
+            Assert.AreEqual(4, stochast.HistogramValues.Count);
+            Assert.AreEqual(10, stochast.HistogramValues[0].LowerBound);
+            Assert.AreEqual(10, stochast.HistogramValues[0].UpperBound);
+
+            stochast.Fit(new double[] { 2, 3, 4, 4, 5, 5, 5, 5, 6, 6, 7, 8, 10000 });
+            Assert.AreEqual(3, stochast.HistogramValues.Count);
+
+            stochast.Fit(new double[] { 2, 2.0001, 2.0001, 2.0002, 2.0003, 2.0003, 2.0005, 7, 8, 10000 });
+            Assert.AreEqual(3, stochast.HistogramValues.Count);
+
+            List<double> samples = new List<double>();
+            for (int i = 0; i < 1000; i++)
+            {
+                // intended loss of fraction for test
+                samples.Add(i / 100);
+            }
+
+            stochast.Fit(samples.ToArray());
+
+            Assert.AreEqual(10, stochast.HistogramValues.Count);
+            for (int j = 1; j < stochast.HistogramValues.Count - 1; j++)
+            {
+                Assert.AreNotEqual(stochast.HistogramValues[j].LowerBound, stochast.HistogramValues[j].UpperBound);
+            }
         }
 
         [Test]

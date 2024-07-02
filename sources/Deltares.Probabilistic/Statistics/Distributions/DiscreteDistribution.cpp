@@ -142,7 +142,7 @@ namespace Deltares
 
 			if (stochast->DiscreteValues.empty())
 			{
-				return nan("");
+				return std::nan("");
 			}
 
 			for (size_t i = 0; i < stochast->DiscreteValues.size(); i++)
@@ -163,7 +163,7 @@ namespace Deltares
 
 			if (stochast->DiscreteValues.empty())
 			{
-				return nan("");
+				return std::nan("");
 			}
 
 			double p = 0;
@@ -187,24 +187,85 @@ namespace Deltares
 			return p;
 		}
 
-		void DiscreteDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values)
+        void DiscreteDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values)
+        {
+            std::vector<double> weights = Numeric::NumericSupport::select(values, [](double x) {return 1.0; });
+            return fitWeighted(stochast, values, weights);
+        }
+
+        void DiscreteDistribution::fitWeighted(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, std::vector<double>& weights)
 		{
 			stochast->DiscreteValues.clear();
 
-			std::sort(values.begin(), values.end());
+            std::vector<std::shared_ptr<WeightedValue>> x = this->GetWeightedValues(values, weights);
 
-			for (size_t i = 0; i < values.size(); i++)
+			for (size_t i = 0; i < x.size(); i++)
 			{
-				if (stochast->DiscreteValues.empty() || values[i] != values[i - 1])
+				if (stochast->DiscreteValues.empty() || x[i]->value != x[i-1]->value)
 				{
-					stochast->DiscreteValues.push_back(std::make_shared<DiscreteValue>(values[i], 1));
+					stochast->DiscreteValues.push_back(std::make_shared<DiscreteValue>(x[i]->value, x[i]->weight));
 				}
 				else
 				{
-					stochast->DiscreteValues.back()->Amount += 1;
+					stochast->DiscreteValues.back()->Amount += x[i]->weight;
 				}
 			}
+
+            initializeForRun(stochast);
 		}
+
+        std::vector<double> DiscreteDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)
+        {
+            constexpr double offset = 0.000001;
+
+            std::vector<double> specialPoints;
+
+            if (stochast->DiscreteValues.size() > 0)
+            {
+                double min = stochast->DiscreteValues[0]->X;
+                double max = stochast->DiscreteValues.back()->X;
+
+                double bigOffset = (max - min) / 10;
+
+                if (bigOffset < offset)
+                {
+                    bigOffset = 1;
+                }
+
+                specialPoints.push_back(stochast->DiscreteValues[0]->X - bigOffset);
+
+                std::shared_ptr<DiscreteValue> previousValue = nullptr;
+
+                for (size_t i = 0; i < stochast->DiscreteValues.size(); i++)
+                {
+                    std::shared_ptr<DiscreteValue> value = stochast->DiscreteValues[i];
+                    if (previousValue != nullptr && Numeric::NumericSupport::areEqual(value->X, previousValue->X, offset))
+                    {
+                        double lastValueStochastValue = specialPoints[specialPoints.size() - 2];
+                        double lastAfterStochastValue = specialPoints[specialPoints.size() - 1];
+
+                        std::erase(specialPoints, lastValueStochastValue);
+                        std::erase(specialPoints, lastAfterStochastValue);
+
+                        specialPoints.push_back(value->X);
+                        specialPoints.push_back(value->X + offset);
+                    }
+                    else
+                    {
+                        specialPoints.push_back(value->X - offset);
+                        specialPoints.push_back(value->X);
+                        specialPoints.push_back(value->X + offset);
+                    }
+
+                    previousValue = value;
+                }
+
+                specialPoints.push_back(stochast->DiscreteValues[stochast->DiscreteValues.size() - 1]->X + bigOffset);
+            }
+
+            return specialPoints;
+        }
+
 	}
 }
 

@@ -1,4 +1,6 @@
 #pragma once
+#include <memory>
+
 namespace Deltares
 {
 	namespace Statistics
@@ -6,6 +8,14 @@ namespace Deltares
 		class HistogramValue
 		{
 		public:
+            HistogramValue() {};
+
+            HistogramValue(double lowerBound, double upperBound)
+		    {
+                this->LowerBound = lowerBound;
+                this->UpperBound = upperBound;
+            }
+
 			double LowerBound = 0;
 			double UpperBound = 0;
 			double Amount = 0;
@@ -46,7 +56,7 @@ namespace Deltares
 				}
 			}
 
-			bool CompareTo(HistogramValue* other)
+			bool compareTo(std::shared_ptr<HistogramValue> other)
 			{
 				if (this->LowerBound == other->LowerBound)
 				{

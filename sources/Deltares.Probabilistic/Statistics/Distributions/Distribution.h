@@ -163,14 +163,22 @@ namespace Deltares
 			 */
 			virtual void setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType) {}
 
-			/**
-			 * \brief Updates parameters of a stochast, so that they fit best a number of given x-values
-			 * \param stochast Stochast to be updated
-			 * \param values Given x-values
-			 */
-			virtual void fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values) { }
+            /**
+             * \brief Updates parameters of a stochast, so that they fit best a number of given x-values
+             * \param stochast Stochast to be updated
+             * \param values Given x-values
+             */
+            virtual void fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values) { }
 
-			/**
+            /**
+             * \brief Updates parameters of a stochast, so that they fit best a number of given x-values and their weights
+             * \param stochast Stochast to be updated
+             * \param values Given x-values
+             * \param weights Given weights
+             */
+            virtual void fitWeighted(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, std::vector<double>& weights) { fit(stochast, values); }
+
+            /**
 			 * \brief Indicates whether parameters of a stochast have valid values
 			 * \remark Only parameters which are used by the distribution are evaluated
 			 * \param stochast Stochast having the parameters
@@ -205,6 +213,24 @@ namespace Deltares
 			virtual double getFittedMinimum(std::vector<double>& x);
 			virtual double getMeanByIteration(std::shared_ptr<StochastProperties> stochast);
 			virtual double getDeviationByIteration(std::shared_ptr<StochastProperties> stochast);
+
+            class WeightedValue
+            {
+            public:
+                WeightedValue(double value, double weight)
+                {
+                    this->value = value;
+                    this->weight = weight;
+                    this->normalized_weight = weight;
+                }
+
+                double value;
+                double weight;
+                double normalized_weight;
+            };
+
+            std::vector<std::shared_ptr<Distribution::WeightedValue>> GetWeightedValues(std::vector<double>& values, std::vector<double>& weights);
+
 		private:
 			std::vector<double> getValuesForIteration(std::shared_ptr<StochastProperties> stochast);
 		};
