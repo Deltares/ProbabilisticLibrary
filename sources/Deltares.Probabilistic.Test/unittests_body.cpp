@@ -2,6 +2,7 @@
 #include "Reliability/testStartPointCalculator.h"
 #include "Math/testNumericSupport.h"
 #include "Math/testKMean.h"
+#include "Math/testRandom.h"
 #include "Combin/hohenbichler_tests.h"
 #include "Combin/intEqualElements_tests.h"
 #include "Combin/upscale_tests.h"
@@ -75,6 +76,12 @@ namespace Deltares
             {
                 auto tstDist = testDistributions();
                 tstDist.allDistributionsTests();
+            }
+
+            TEST(unittst, testRandom)
+            {
+                auto tstRnd = testRandom();
+                tstRnd.allRandomTests();
             }
         }
     }

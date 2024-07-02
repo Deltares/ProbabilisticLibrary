@@ -174,7 +174,6 @@ copy /Y "$(TargetDir)$(TargetName).dll" "$(ProjectDir)..\Deltares.Probabilistic.
     <ClCompile Include="createReliabilityMethod.cpp" />
     <ClCompile Include="progressWrapper.cpp" />
     <ClCompile Include="MessageHandler.cpp" />
-    <ClCompile Include="randomgen.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Deltares.Probabilistic\Deltares.Probabilistic.vcxproj">
