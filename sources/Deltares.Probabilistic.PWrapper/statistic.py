@@ -200,7 +200,7 @@ class Stochast:
 			self._fragility_values = CallbackList(self._fragility_values_changed)
 			fragility_ids = interface.GetArrayIntValue(self._id, 'fragility_values')
 			for fragility_id in fragility_ids:
-				self._fragility_values.append(HistogramValue(int(fragility_id)))
+				self._fragility_values.append(HistogramValue(fragility_id))
 			self._synchronizing = False
 
 		return self._fragility_values
