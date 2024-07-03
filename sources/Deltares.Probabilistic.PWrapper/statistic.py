@@ -25,9 +25,10 @@ class Stochast:
 		else:
 			self._id = id
 
-		self._discrete_values = CallbackList(self._discrete_values_changed)
-		self._histogram_values = CallbackList(self._histogram_values_changed)
-		self._fragility_values = CallbackList(self._fragility_values_changed)
+		self._discrete_values = None
+		self._histogram_values = None
+		self._fragility_values = None
+		self._synchronizing = False
 
 	def __del__(self):
 	    interface.Destroy(self._id)
@@ -162,24 +163,51 @@ class Stochast:
 
 	@property   
 	def discrete_values(self):
+		if self._discrete_values is None:
+			self._synchronizing = True
+			self._discrete_values = CallbackList(self._discrete_values_changed)
+			discrete_ids = interface.GetArrayIntValue(self._id, 'discrete_values')
+			for discrete_id in discrete_ids:
+				self._discrete_values.append(DiscreteValue(discrete_id))
+			self._synchronizing = False
+			
 		return self._discrete_values
 
 	def _discrete_values_changed(self):
-		interface.SetArrayIntValue(self._id, 'discrete_values', [discrete_value._id for discrete_value in self._discrete_values])
+		if not self._synchronizing:
+			interface.SetArrayIntValue(self._id, 'discrete_values', [discrete_value._id for discrete_value in self._discrete_values])
 
 	@property   
 	def histogram_values(self):
+		if self._histogram_values is None:
+			self._synchronizing = True
+			self._histogram_values = CallbackList(self._histogram_values_changed)
+			histogram_ids = interface.GetArrayIntValue(self._id, 'histogram_values')
+			for histogram_id in histogram_ids:
+				self._histogram_values.append(HistogramValue(histogram_id))
+			self._synchronizing = False
+
 		return self._histogram_values
 
 	def _histogram_values_changed(self):
-		interface.SetArrayIntValue(self._id, 'histogram_values', [histogram_value._id for histogram_value in self._histogram_values])
+		if not self._synchronizing:
+			interface.SetArrayIntValue(self._id, 'histogram_values', [histogram_value._id for histogram_value in self._histogram_values])
 
 	@property   
 	def fragility_values(self):
+		if self._fragility_values is None:
+			self._synchronizing = True
+			self._fragility_values = CallbackList(self._fragility_values_changed)
+			fragility_ids = interface.GetArrayIntValue(self._id, 'fragility_values')
+			for fragility_id in fragility_ids:
+				self._fragility_values.append(HistogramValue(int(fragility_id)))
+			self._synchronizing = False
+
 		return self._fragility_values
 
 	def _fragility_values_changed(self):
-		interface.SetArrayIntValue(self._id, 'fragility_values', [fragility_value._id for fragility_value in self._fragility_values])
+		if not self._synchronizing:
+			interface.SetArrayIntValue(self._id, 'fragility_values', [fragility_value._id for fragility_value in self._fragility_values])
 
 	@property   
 	def design_fraction(self):
@@ -214,18 +242,33 @@ class Stochast:
 	def get_u_from_x(self, x):
 		return interface.GetArgValue(self._id, 'u_from_x', x)
 
+	def initialize_for_run(self):
+		interface.Execute(self._id, 'initialize_for_run')
+
 	def fit(self, values):
 		interface.SetArrayValue(self._id, 'fit', values)
+		self._histogram_values = None
+		self._discrete_values = None
+		self._fragility_values = None
 		
 
 class DiscreteValue:
 
-	def __init__(self):
-		self._id = interface.Create('discrete_value')
-  
+	def __init__(self, id = None):
+		if id is None:
+			self._id = interface.Create('discrete_value')
+		else:
+			self._id = id
+		
 	def __del__(self):
-	    interface.Destroy(self._id)
+		interface.Destroy(self._id)
 
+	def create(x : float, amount : float):
+		discreteValue = DiscreteValue()
+		discreteValue.x = x
+		discreteValue.amount = amount
+		return discreteValue
+  
 	@property   
 	def x(self):
 		return interface.GetValue(self._id, 'x')
@@ -244,11 +287,20 @@ class DiscreteValue:
 
 class FragilityValue:
 
-	def __init__(self):
-		self._id = interface.Create('fragility_value')
+	def __init__(self, id = None):
+		if id is None:
+			self._id = interface.Create('fragility_value')
+		else:
+			self._id = id
 		
 	def __del__(self):
-	    interface.Destroy(self._id)
+		interface.Destroy(self._id)
+	    
+	def create(x: float, reliability_index :float):
+		fragilityValue = FragilityValue()
+		fragilityValue.x = x
+		fragilityValue.reliability_index = reliability_index
+		return fragilityValue
 
 	@property   
 	def x(self):
@@ -292,12 +344,22 @@ class FragilityValue:
 
 class HistogramValue:
 
-	def __init__(self):
-		self._id = interface.Create('histogram_value')
+	def __init__(self, id = None):
+		if id is None:
+			self._id = interface.Create('histogram_value')
+		else:
+			self._id = id
   
 	def __del__(self):
-	    interface.Destroy(self._id)
+		interface.Destroy(self._id)
 
+	def create(lower_bound : float, upper_bound : float, amount : float):
+		histogramValue = HistogramValue();
+		histogramValue.lower_bound = lower_bound
+		histogramValue.upper_bound = upper_bound
+		histogramValue.amount = amount
+		return histogramValue
+  
 	@property   
 	def lower_bound(self):
 		return interface.GetValue(self._id, 'lower_bound')

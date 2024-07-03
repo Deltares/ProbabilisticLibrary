@@ -1,7 +1,7 @@
 import unittest
 import sys
 
-from statistic import Stochast, DiscreteValue, CorrelationMatrix
+from statistic import Stochast, DiscreteValue, HistogramValue, CorrelationMatrix, StandardNormal
 
 margin = 0.01
 
@@ -111,6 +111,30 @@ class Test_statistics(unittest.TestCase):
         # registered stochasts
         self.assertAlmostEqual(4.3, stochast.mean, delta=margin)
         self.assertAlmostEqual(0.18, stochast.deviation, delta=margin)
+
+    def test_histogram(self):
+        stochasts = []
+
+        stochast = Stochast()
+        stochast.distribution = "histogram"
+        
+        stochast.histogram_values.append(HistogramValue.create(1, 3, 2))
+        stochast.histogram_values.append(HistogramValue.create(5, 7, 6))
+        stochast.histogram_values.append(HistogramValue.create(7, 9, 2))
+
+        stochast.initialize_for_run()
+
+        u = StandardNormal.get_u_from_p(0.1)
+        self.assertAlmostEqual(2, stochast.get_x_from_u(u), delta=margin)
+
+        values = []
+        values.extend({2, 3, 5})
+
+        stochast.fit(values)
+        self.assertEqual(3, len(stochast.histogram_values))
+
+        # registered stochasts
+        self.assertAlmostEqual(1.5, stochast.histogram_values[0].lower_bound, delta=margin)
 
         
 if __name__ == '__main__':

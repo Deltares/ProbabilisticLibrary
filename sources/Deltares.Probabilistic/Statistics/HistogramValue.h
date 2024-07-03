@@ -8,7 +8,7 @@ namespace Deltares
 		class HistogramValue
 		{
 		public:
-            HistogramValue() {};
+            HistogramValue() {}
 
             HistogramValue(double lowerBound, double upperBound)
 		    {

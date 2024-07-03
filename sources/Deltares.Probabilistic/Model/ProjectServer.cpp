@@ -32,16 +32,19 @@ namespace Deltares
             else if (object_type == "discrete_value")
             {
                 discreteValues[counter] = std::make_shared<Deltares::Statistics::DiscreteValue>();
+                discreteValueIds[discreteValues[counter]] = counter;
                 types[counter] = ObjectType::DiscreteValue;
             }
             else if (object_type == "histogram_value")
             {
                 histogramValues[counter] = std::make_shared<Deltares::Statistics::HistogramValue>();
+                histogramValueIds[histogramValues[counter]] = counter;
                 types[counter] = ObjectType::HistogramValue;
             }
             else if (object_type == "fragility_value")
             {
                 fragilityValues[counter] = std::make_shared<Deltares::Statistics::FragilityValue>();
+                fragilityValueIds[fragilityValues[counter]] = counter;
                 types[counter] = ObjectType::FragilityValue;
             }
             else if (object_type == "correlation_matrix")
@@ -282,6 +285,9 @@ namespace Deltares
                 std::shared_ptr<Statistics::Stochast> stochast = stochasts[id];
 
                 if (property_ == "observations") return stochast->getProperties()->Observations;
+                else if (property_ == "histogram_values_count") return (int)stochast->getProperties()->HistogramValues.size();
+                else if (property_ == "discrete_values_count") return (int)stochast->getProperties()->DiscreteValues.size();
+                else if (property_ == "fragility_values_count") return (int)stochast->getProperties()->FragilityValues.size();
             }
             else if (objectType == ObjectType::Settings)
             {
@@ -689,18 +695,20 @@ namespace Deltares
         {
             ObjectType objectType = types[id];
 
-            if (objectType == ObjectType::DesignPoint)
+            if (objectType == ObjectType::Stochast)
+            {
+                std::shared_ptr<Statistics::Stochast> stochast = stochasts[id];
+
+                if (property_ == "histogram_values") return this->GetHistogramValueId(stochast->getProperties()->HistogramValues[index]);
+                else if (property_ == "discrete_values") return this->GetDiscreteValueId(stochast->getProperties()->DiscreteValues[index]);
+                else if (property_ == "fragility_values") return this->GetFragilityValueId(stochast->getProperties()->FragilityValues[index]);
+            }
+            else if (objectType == ObjectType::DesignPoint)
             {
                 std::shared_ptr<Reliability::DesignPoint> designPoint = designPoints[id];
 
-                if (property_ == "contributing_design_points")
-                {
-                    return this->GetDesignPointId(designPoint->ContributingDesignPoints[index]);
-                }
-                else if (property_ == "alphas")
-                {
-                    return this->GetAlphaId(designPoint->Alphas[index]);
-                }
+                if (property_ == "contributing_design_points") return this->GetDesignPointId(designPoint->ContributingDesignPoints[index]);
+                else if (property_ == "alphas") return this->GetAlphaId(designPoint->Alphas[index]);
             }
 
             return 0;
@@ -722,7 +730,13 @@ namespace Deltares
         {
             ObjectType objectType = types[id];
 
-            if (objectType == ObjectType::Project)
+            if (objectType == ObjectType::Stochast)
+            {
+                std::shared_ptr<Statistics::Stochast> stochast = stochasts[id];
+
+                if (method_ == "initialize_for_run") stochast->initializeForRun();
+            }
+            else if (objectType == ObjectType::Project)
             {
                 std::shared_ptr<Models::Project> project = projects[id];
 
@@ -767,6 +781,45 @@ namespace Deltares
             }
 
             return alphaIds[alpha];
+        }
+
+        int ProjectServer::GetHistogramValueId(std::shared_ptr<Statistics::HistogramValue> histogramValue)
+        {
+            if (!histogramValueIds.contains(histogramValue))
+            {
+                counter++;
+                histogramValues[counter] = histogramValue;
+                types[counter] = ObjectType::HistogramValue;
+                histogramValueIds[histogramValue] = counter;
+            }
+
+            return histogramValueIds[histogramValue];
+        }
+
+        int ProjectServer::GetDiscreteValueId(std::shared_ptr<Statistics::DiscreteValue> discreteValue)
+        {
+            if (!discreteValueIds.contains(discreteValue))
+            {
+                counter++;
+                discreteValues[counter] = discreteValue;
+                types[counter] = ObjectType::DiscreteValue;
+                discreteValueIds[discreteValue] = counter;
+            }
+
+            return discreteValueIds[discreteValue];
+        }
+
+        int ProjectServer::GetFragilityValueId(std::shared_ptr<Statistics::FragilityValue> fragilityValue)
+        {
+            if (!fragilityValueIds.contains(fragilityValue))
+            {
+                counter++;
+                fragilityValues[counter] = fragilityValue;
+                types[counter] = ObjectType::FragilityValue;
+                fragilityValueIds[fragilityValue] = counter;
+            }
+
+            return fragilityValueIds[fragilityValue];
         }
     }
 }
