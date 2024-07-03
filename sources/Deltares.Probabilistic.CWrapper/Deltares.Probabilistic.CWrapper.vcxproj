@@ -132,6 +132,14 @@
       <EnableUAC>false</EnableUAC>
       <ImportLibrary />
     </Link>
+    <CustomBuildStep>
+      <Command>
+      </Command>
+    </CustomBuildStep>
+    <PostBuildEvent>
+      <Command>mkdir -p "$(TargetDir)$(TargetName).dll" "$(ProjectDir)..\Deltares.Probabilistic.PWrapper\bin
+copy /Y "$(TargetDir)$(TargetName).dll" "$(ProjectDir)..\Deltares.Probabilistic.PWrapper\bin\$(TargetName).dll"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -152,6 +160,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
     </Link>
+    <PostBuildEvent>
+      <Command>mkdir -p "$(TargetDir)$(TargetName).dll" "$(ProjectDir)..\Deltares.Probabilistic.PWrapper\bin</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include=".\funcWrapper.cpp" />

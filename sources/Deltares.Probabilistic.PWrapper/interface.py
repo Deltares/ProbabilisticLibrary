@@ -7,30 +7,24 @@ from pathlib import Path
 from ctypes import cdll
 from ctypes import *
 
-paths = []
-paths.append('.')
-paths.append('../x64/Debug')
-paths.append('../x64/Release')
-
-lib_file = 'Deltares.Probabilistic.CWrapper.dll'
-
-lib = None
-
 CALLBACK = CFUNCTYPE(ctypes.c_double, POINTER(ctypes.c_double), ctypes.c_int)
 
-try:
-	for path in paths:
-		full_lib_file = os.path.join(path, lib_file)
-		if os.path.isfile(full_lib_file):
-			lib = cdll.LoadLibrary(full_lib_file)
-			break
-except:
-	message = sys.exc_info()[0]
-	print('error: ' + message, flush = True)
-	raise
+dir_path = os.path.dirname(os.path.realpath(__file__))
+lib_file = 'Deltares.Probabilistic.CWrapper.dll'
+
+lib_full_path = os.path.join(dir_path, 'bin', lib_file);
+
+lib = None
+if os.path.isfile(lib_full_path):
+	try:
+		lib = cdll.LoadLibrary(lib_full_path)
+	except:
+		message = sys.exc_info()[0]
+		print('error: ' + message, flush = True)
+		raise
 
 if lib == None:
-	raise FileNotFoundError("Could not find " + lib_file)
+	raise FileNotFoundError("Could not find " + lib_full_path)
 
 def Create(object_type):
 	try:
