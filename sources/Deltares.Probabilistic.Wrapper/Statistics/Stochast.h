@@ -4,6 +4,7 @@
 #include "../../Deltares.Probabilistic/Statistics/StandardNormal.h"
 #include "../Utils/SharedPointerProvider.h"
 #include "../Utils/NativeSupport.h"
+#include "../Utils/CallBackList.h"
 #include "DiscreteValue.h"
 #include "HistogramValue.h"
 #include "FragilityValue.h"
@@ -24,9 +25,24 @@ namespace Deltares
 			private:
 				Utils::Wrappers::SharedPointerProvider<Statistics::Stochast>* shared = nullptr;
 
-				System::Collections::Generic::List<DiscreteValue^>^ discreteValues = gcnew System::Collections::Generic::List<DiscreteValue^>();
-				System::Collections::Generic::List<HistogramValue^>^ histogramValues = gcnew System::Collections::Generic::List<HistogramValue^>();
-				System::Collections::Generic::List<FragilityValue^>^ fragilityValues = gcnew System::Collections::Generic::List<FragilityValue^>();
+                bool synchronizing = false;
+
+                void Initialize()
+                {
+                    shared->object->ValueSet = this->ValueSet->GetValue();
+
+                    histogramValues->SetCallBack(gcnew ListCallBack<HistogramValue^>(this, &Stochast::SynchronizeHistogramValues));
+                    discreteValues->SetCallBack(gcnew ListCallBack<DiscreteValue^>(this, &Stochast::SynchronizeDiscreteValues));
+                    fragilityValues->SetCallBack(gcnew ListCallBack<FragilityValue^>(this, &Stochast::SynchronizeFragilityValues));
+                }
+
+                void SynchronizeHistogramValues(ListOperationType listOperationType, HistogramValue^ histogramValue);
+                void SynchronizeDiscreteValues(ListOperationType listOperationType, DiscreteValue^ discreteValue);
+                void SynchronizeFragilityValues(ListOperationType listOperationType, FragilityValue^ discreteValue);
+
+                CallBackList<HistogramValue^>^ histogramValues = gcnew CallBackList<HistogramValue^>();
+                CallBackList<DiscreteValue^>^ discreteValues = gcnew CallBackList<DiscreteValue^>();
+                CallBackList<FragilityValue^>^ fragilityValues = gcnew CallBackList<FragilityValue^>();
 
 				Stochast^ source = nullptr;
 				VariableStochastValueSet^ valueSet = gcnew VariableStochastValueSet();
@@ -45,16 +61,17 @@ namespace Deltares
 				Stochast()
 				{
 					shared = new Utils::Wrappers::SharedPointerProvider(new Statistics::Stochast());
-					shared->object->ValueSet = this->ValueSet->GetValue();
+                    this->Initialize();
 				}
 
-				Stochast(DistributionType distributionType, array<double>^ values)
+				Stochast(DistributionType distributionType, array<double>^ values) : Stochast()
 				{
 					const Statistics::DistributionType nativeDistributionType = DistributionTypeConverter::getNativeDistributionType(distributionType);
 					std::vector<double> nValues = NativeSupport::toNative(values);
 
 					shared = new Utils::Wrappers::SharedPointerProvider(new Statistics::Stochast(nativeDistributionType, nValues));
-					shared->object->ValueSet = this->ValueSet->GetValue();
+
+                    this->Initialize();
                 }
 
 				~Stochast() { this->!Stochast(); }

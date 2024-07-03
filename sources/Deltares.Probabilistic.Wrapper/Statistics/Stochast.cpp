@@ -22,24 +22,6 @@ namespace Deltares
 			{
 				std::shared_ptr<StochastProperties> properties = shared->object->getProperties();
 
-				properties->DiscreteValues.clear();
-				for (size_t i = 0; i < this->discreteValues->Count; i++)
-				{
-					properties->DiscreteValues.push_back(discreteValues[i]->GetValue());
-				}
-
-				properties->HistogramValues.clear();
-				for (size_t i = 0; i < this->histogramValues->Count; i++)
-				{
-					properties->HistogramValues.push_back(histogramValues[i]->GetValue());
-				}
-
-				properties->FragilityValues.clear();
-				for (size_t i = 0; i < this->fragilityValues->Count; i++)
-				{
-					properties->FragilityValues.push_back(fragilityValues[i]->GetValue());
-				}
-
 				shared->object->ValueSet = this->ValueSet->GetValue();
 				shared->object->ValueSet->StochastValues.clear();
 				if (this->IsVariableStochast)
@@ -51,35 +33,93 @@ namespace Deltares
 				}
 			}
 
+            void Stochast::SynchronizeHistogramValues(ListOperationType listOperationType, HistogramValue^ histogramValue)
+            {
+                if (!synchronizing)
+                {
+                    std::shared_ptr<StochastProperties> properties = shared->object->getProperties();
+
+                    switch (listOperationType)
+                    {
+                    case ListOperationType::Add: properties->HistogramValues.push_back(histogramValue->GetValue()); break;
+                    case ListOperationType::Remove: std::erase(properties->HistogramValues, histogramValue->GetValue()); break;
+                    case ListOperationType::Clear: properties->HistogramValues.clear(); break;
+                    default: throw gcnew System::NotImplementedException("List operation type");
+                    }
+                }
+            }
+
+            void Stochast::SynchronizeDiscreteValues(ListOperationType listOperationType, DiscreteValue^ discreteValue)
+            {
+                if (!synchronizing)
+                {
+                    std::shared_ptr<StochastProperties> properties = shared->object->getProperties();
+
+                    switch (listOperationType)
+                    {
+                    case ListOperationType::Add: properties->DiscreteValues.push_back(discreteValue->GetValue()); break;
+                    case ListOperationType::Remove: std::erase(properties->DiscreteValues, discreteValue->GetValue()); break;
+                    case ListOperationType::Clear: properties->DiscreteValues.clear(); break;
+                    default: throw gcnew System::NotImplementedException("List operation type");
+                    }
+                }
+            }
+
+            void Stochast::SynchronizeFragilityValues(ListOperationType listOperationType, FragilityValue^ fragilityValue)
+            {
+                if (!synchronizing)
+                {
+                    std::shared_ptr<StochastProperties> properties = shared->object->getProperties();
+
+                    switch (listOperationType)
+                    {
+                    case ListOperationType::Add: properties->FragilityValues.push_back(fragilityValue->GetValue()); break;
+                    case ListOperationType::Remove: std::erase(properties->FragilityValues, fragilityValue->GetValue()); break;
+                    case ListOperationType::Clear: properties->FragilityValues.clear(); break;
+                    default: throw gcnew System::NotImplementedException("List operation type");
+                    }
+                }
+            }
+
+
             void Stochast::updateLists()
             {
                 std::shared_ptr<StochastProperties> properties = shared->object->getProperties();
 
-                if (!AreHistogramValuesMatching())
+                this->synchronizing = true;
+
+                try
                 {
-                    this->HistogramValues->Clear();
-                    for (int i = 0; i < properties->HistogramValues.size(); i++)
+                    if (!AreHistogramValuesMatching())
                     {
-                        this->HistogramValues->Add(gcnew HistogramValue(properties->HistogramValues[i]));
+                        this->HistogramValues->Clear();
+                        for (int i = 0; i < properties->HistogramValues.size(); i++)
+                        {
+                            this->HistogramValues->Add(gcnew HistogramValue(properties->HistogramValues[i]));
+                        }
+                    }
+
+                    if (!AreFragilityValuesMatching())
+                    {
+                        this->FragilityValues->Clear();
+                        for (int i = 0; i < properties->FragilityValues.size(); i++)
+                        {
+                            this->FragilityValues->Add(gcnew FragilityValue(properties->FragilityValues[i]));
+                        }
+                    }
+
+                    if (!AreDiscreteValuesMatching())
+                    {
+                        this->DiscreteValues->Clear();
+                        for (int i = 0; i < properties->DiscreteValues.size(); i++)
+                        {
+                            this->DiscreteValues->Add(gcnew DiscreteValue(properties->DiscreteValues[i]));
+                        }
                     }
                 }
-
-                if (!AreFragilityValuesMatching())
+                finally
                 {
-                    this->FragilityValues->Clear();
-                    for (int i = 0; i < properties->FragilityValues.size(); i++)
-                    {
-                        this->FragilityValues->Add(gcnew FragilityValue(properties->FragilityValues[i]));
-                    }
-                }
-
-                if (!AreDiscreteValuesMatching())
-                {
-                    this->DiscreteValues->Clear();
-                    for (int i = 0; i < properties->DiscreteValues.size(); i++)
-                    {
-                        this->DiscreteValues->Add(gcnew DiscreteValue(properties->DiscreteValues[i]));
-                    }
+                    this->synchronizing = false;
                 }
             }
 
