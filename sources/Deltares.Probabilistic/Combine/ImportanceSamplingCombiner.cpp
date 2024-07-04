@@ -128,7 +128,7 @@ namespace Deltares
                 if (progress != nullptr)
                 {
                     progress->doProgress(0);
-#ifdef __has_include(<format>)
+#ifdef __cpp_lib_format
                     progress->doTextualProgress(ProgressType::Detailed, std::format("Combining design points {0:}/{1:}, Reliability index = {2:.2F}", 0, designPoints.size(), reliabilityIndex));
 #else
                     auto pl = Deltares::Reliability::probLibString();
@@ -169,7 +169,7 @@ namespace Deltares
                     if (progress != nullptr)
                     {
                         progress->doProgress(Numeric::NumericSupport::Divide(i, designPoints.size()));
-#ifdef __has_include(<format>)
+#ifdef __cpp_lib_format
                         progress->doTextualProgress(ProgressType::Detailed, std::format("{0:}/{1:}, Reliability index = {2:.2F}, Δ Reliability index = {3:.3F}", i, designPoints.size(), reliabilityIndex, diffReliability));
 #else
                         auto pl = Deltares::Reliability::probLibString();
@@ -336,7 +336,7 @@ namespace Deltares
                     if (progress != nullptr)
                     {
                         progress->doProgress(Numeric::NumericSupport::Divide(iteration, maxIterations));
-#ifdef __has_include(<format>)
+#ifdef __cpp_lib_format
                         progress->doTextualProgress(ProgressType::Detailed, std::format("{0:}/{1:}, Reliability index = {2:.2F}", iteration, maxIterations, designPoint->Beta));
 #else
                         auto pl = Deltares::Reliability::probLibString();
