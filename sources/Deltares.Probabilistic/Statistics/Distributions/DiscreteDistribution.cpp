@@ -89,7 +89,7 @@ namespace Deltares
 
             if (stochast->DiscreteValues.empty())
 			{
-				return nan("");
+				return std::nan("");
 			}
 
 			double prev = 0;

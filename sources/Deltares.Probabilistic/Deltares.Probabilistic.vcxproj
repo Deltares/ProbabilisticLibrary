@@ -163,6 +163,7 @@
     <ClInclude Include="Combine\DesignPointModel.h" />
     <ClInclude Include="Combine\DesignPointCombiner.h" />
     <ClInclude Include="Combine\DirectionalSamplingCombiner.h" />
+    <ClInclude Include="Statistics\Distributions\FragilityCurveDistribution.h" />
     <ClInclude Include="Utils\DirtySupport.h" />
     <ClInclude Include="Model\ProxySettings.h" />
     <ClInclude Include="Model\Project.h" />
@@ -175,7 +176,6 @@
     <ClInclude Include="Reliability\Settings.h" />
     <ClInclude Include="Statistics\SparseCorrelationMatrix.h" />
     <ClInclude Include="Statistics\SelfCorrelationMatrix.h" />
-    <ClInclude Include="Utils\TagSupport.h" />
     <ClInclude Include="Utils\Locker.h" />
     <ClInclude Include="Math\MatrixSupport.h" />
     <ClInclude Include="Optimization\KMeansClustering.h" />
@@ -295,6 +295,7 @@
     <ClCompile Include="Combine\DesignPointModel.cpp" />
     <ClCompile Include="Combine\DesignPointCombiner.cpp" />
     <ClCompile Include="Combine\DirectionalSamplingCombiner.cpp" />
+    <ClCompile Include="Statistics\Distributions\FragilityCurveDistribution.cpp" />
     <ClCompile Include="Utils\DirtySupport.cpp" />
     <ClCompile Include="Model\ProxySettings.cpp" />
     <ClCompile Include="Model\Project.cpp" />
@@ -307,7 +308,6 @@
     <ClCompile Include="Reliability\Settings.cpp" />
     <ClCompile Include="Statistics\SparseCorrelationMatrix.cpp" />
     <ClCompile Include="Statistics\SelfCorrelationMatrix.cpp" />
-    <ClCompile Include="Utils\TagSupport.cpp" />
     <ClCompile Include="Utils\Locker.cpp" />
     <ClCompile Include="Math\MatrixSupport.cpp" />
     <ClCompile Include="Optimization\KMeansClustering.cpp" />

@@ -254,6 +254,7 @@ namespace Deltares
             else if (distributionType == "rayleigh") return Statistics::DistributionType::Rayleigh;
             else if (distributionType == "rayleigh_n") return Statistics::DistributionType::RayleighN;
             else if (distributionType == "histogram") return Statistics::DistributionType::Table;
+            else if (distributionType == "cdf_curve") return Statistics::DistributionType::CDFCurve;
             else if (distributionType == "discrete") return Statistics::DistributionType::Discrete;
             else if (distributionType == "qualitative") return Statistics::DistributionType::Qualitative;
             else throw Reliability::probLibException("distribution type");
@@ -275,6 +276,7 @@ namespace Deltares
             case Statistics::DistributionType::Rayleigh: return "rayleigh";
             case Statistics::DistributionType::RayleighN: return "rayleigh_n";
             case Statistics::DistributionType::Table: return "histogram";
+            case Statistics::DistributionType::CDFCurve: return "cdf_curve";
             case Statistics::DistributionType::Discrete: return "discrete";
             case Statistics::DistributionType::Qualitative: return "qualitative";
             default: throw Reliability::probLibException("distribution type");

@@ -426,6 +426,52 @@ namespace Deltares.Probabilistic.Wrapper.Test
         }
 
         [Test]
+        public void TestFragilityCurve()
+        {
+            var stochast = new Stochast { DistributionType = DistributionType.CDFCurve };
+            stochast.FragilityValues.Add(new FragilityValue { X = 1, Reliability = -1 });
+            stochast.FragilityValues.Add(new FragilityValue { X = 2, Reliability = 0 });
+            stochast.FragilityValues.Add(new FragilityValue { X = 3, Reliability = 1 });
+
+            Assert.AreEqual(1, stochast.GetXFromU(-1), margin);
+            Assert.AreEqual(2, stochast.GetXFromU(0), margin);
+            Assert.AreEqual(3, stochast.GetXFromU(1), margin);
+            Assert.AreEqual(4, stochast.GetXFromU(2), margin);
+
+            Assert.AreEqual(-1, stochast.GetUFromX(1), margin);
+            Assert.AreEqual(0, stochast.GetUFromX(2), margin);
+            Assert.AreEqual(1, stochast.GetUFromX(3), margin);
+            Assert.AreEqual(2, stochast.GetUFromX(4), margin);
+
+            // compare to normal stochast
+            Stochast normalStochast = new Stochast
+            {
+                DistributionType = DistributionType.Normal,
+                Mean = 2,
+                Deviation = 1
+            };
+
+            Assert.AreEqual(normalStochast.GetUFromX(1.5), stochast.GetUFromX(1.5), margin);
+            Assert.AreEqual(normalStochast.GetXFromU(2.5), stochast.GetXFromU(2.5), margin);
+
+            // not ordered
+            stochast.FragilityValues.Clear();
+            stochast.FragilityValues.Add(new FragilityValue { X = 2, Reliability = 0 });
+            stochast.FragilityValues.Add(new FragilityValue { X = 3, Reliability = 1 });
+            stochast.FragilityValues.Add(new FragilityValue { X = 1, Reliability = -1 });
+
+            Assert.AreEqual(1, stochast.GetXFromU(-1), margin);
+            Assert.AreEqual(2, stochast.GetXFromU(0), margin);
+            Assert.AreEqual(3, stochast.GetXFromU(1), margin);
+            Assert.AreEqual(4, stochast.GetXFromU(2), margin);
+
+            Assert.AreEqual(-1, stochast.GetUFromX(1), margin);
+            Assert.AreEqual(0, stochast.GetUFromX(2), margin);
+            Assert.AreEqual(1, stochast.GetUFromX(3), margin);
+            Assert.AreEqual(2, stochast.GetUFromX(4), margin);
+        }
+
+        [Test]
         public void TestTable()
         {
             var stochast = new Stochast { DistributionType = DistributionType.Table };
