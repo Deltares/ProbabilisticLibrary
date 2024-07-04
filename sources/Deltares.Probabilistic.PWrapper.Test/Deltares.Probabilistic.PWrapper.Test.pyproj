@@ -5,8 +5,7 @@
     <ProjectGuid>cafb0eda-ef78-46a8-8227-adee778907f8</ProjectGuid>
     <ProjectHome>.</ProjectHome>
     <StartupFile>test_statistics.py</StartupFile>
-    <SearchPath>
-    </SearchPath>
+    <SearchPath>..\Deltares.Probabilistic.PWrapper\d-rely</SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
     <Name>Deltares.Probabilistic.PWrapper.Test</Name>
@@ -33,13 +32,6 @@
     <Compile Include="test_reliability.py">
       <SubType>Code</SubType>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Deltares.Probabilistic.PWrapper\Deltares.Probabilistic.PWrapper.pyproj">
-      <Name>Deltares.Probabilistic.PWrapper</Name>
-      <Project>{b3f45238-e095-435e-a838-8cb5552a7f0b}</Project>
-      <Private>True</Private>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in

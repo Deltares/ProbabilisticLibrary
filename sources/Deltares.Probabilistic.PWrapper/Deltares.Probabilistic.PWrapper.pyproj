@@ -25,20 +25,21 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="interface.py" />
-    <Compile Include="reliability.py" />
-    <Compile Include="project.py" />
-    <Compile Include="utils.py" />
-    <Compile Include="statistic.py">
+    <Compile Include="d-rely\interface.py" />
+    <Compile Include="d-rely\reliability.py" />
+    <Compile Include="d-rely\project.py" />
+    <Compile Include="d-rely\utils.py" />
+    <Compile Include="d-rely\statistic.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="d-rely\__init__.py" />
+    <Compile Include="setup.py" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Deltares.Probabilistic.CWrapper\Deltares.Probabilistic.CWrapper.vcxproj">
-      <Name>Deltares.Probabilistic.CWrapper</Name>
-      <Project>{e82a904a-fe1c-4695-be1f-0afce5861fb4}</Project>
-      <Private>True</Private>
-    </ProjectReference>
+    <Content Include="readme.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="d-rely\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
