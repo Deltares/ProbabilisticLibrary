@@ -6,6 +6,7 @@
 #include "DirectionalSamplingCombiner.h"
 #include "HohenbichlerNumIntCombiner.h"
 #include "ImportanceSamplingCombiner.h"
+#include "../Math/Randomizers/RandomValueGenerator.h"
 
 namespace Deltares
 {
@@ -23,6 +24,11 @@ namespace Deltares
             DesignPointCombiner(CombinerType combinerType)
             {
                 this->combinerType = combinerType;
+            }
+            DesignPointCombiner(CombinerType combinerType, Numeric::RandomValueGeneratorType randomGenerator)
+            {
+                this->combinerType = combinerType;
+                this->generator = randomGenerator;
             }
 
             /**
@@ -49,12 +55,24 @@ namespace Deltares
             {
                 switch (combinerType)
                 {
-                case CombinerType::ImportanceSampling: return std::make_shared<ImportanceSamplingCombiner>();
-                case CombinerType::Hohenbichler: return std::make_shared<HohenbichlerNumIntCombiner>();
-                case CombinerType::DirectionalSampling: return std::make_shared<DirectionalSamplingCombiner>();
+                case CombinerType::ImportanceSampling:
+                {
+                    auto impSamplingCombiner = std::make_shared<ImportanceSamplingCombiner>();
+                    impSamplingCombiner->randomGeneratorType = generator;
+                    return impSamplingCombiner;
+                }
+                case CombinerType::Hohenbichler:
+                    return std::make_shared<HohenbichlerNumIntCombiner>();
+                case CombinerType::DirectionalSampling:
+                {
+                    auto directionalSamplingCombiner = std::make_shared<DirectionalSamplingCombiner>();
+                    directionalSamplingCombiner->randomGeneratorType = generator;
+                    return directionalSamplingCombiner;
+                }
                 default: throw probLibException("Combiner type");
                 }
             }
+            Numeric::RandomValueGeneratorType generator = Numeric::ModifiedKnuthSubtractive;
         };
     }
 }
