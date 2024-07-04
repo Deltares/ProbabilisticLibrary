@@ -7,11 +7,13 @@ namespace Deltares
 {
     namespace Reliability
     {
-        class HohenbichlerCombiner : public Combiner
+        class HohenbichlerNumIntCombiner : public Combiner
         {
         public:
             std::shared_ptr<DesignPoint> combineDesignPoints(combineAndOr combineMethodType, std::vector<std::shared_ptr<DesignPoint>>& designPoints, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix = nullptr, std::shared_ptr<ProgressIndicator> progress = nullptr) override;
-            int nonConvergedForm = 0;
+        private:
+            static void findMaxCorrelatedDesignPoints(std::vector<std::shared_ptr<DesignPoint>>& designPoints, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix,
+                const std::vector<std::shared_ptr<Statistics::Stochast>>& stochasts, long long& i1max, long long& i2max);
         };
     };
 }

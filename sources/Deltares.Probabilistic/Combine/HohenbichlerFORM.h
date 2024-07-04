@@ -6,7 +6,7 @@
 namespace Deltares {
     namespace Reliability {
 
-        class Hohenbichler
+        class HohenbichlerFORM
         {
         public:
             std::pair<double, int> PerformHohenbichler(const double betaV, const double pfU, const double rhoInput);

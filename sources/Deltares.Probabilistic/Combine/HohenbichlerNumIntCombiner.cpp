@@ -1,5 +1,5 @@
-#include "Hohenbichler2Combiner.h"
-#include "Hohenbichler2.h"
+#include "HohenbichlerNumIntCombiner.h"
+#include "HohenbichlerNumInt.h"
 #include "../Utils/probLibException.h"
 
 namespace Deltares
@@ -7,7 +7,7 @@ namespace Deltares
     namespace Reliability
     {
 
-        std::shared_ptr<DesignPoint> Hohenbichler2Combiner::combineDesignPoints(combineAndOr combineMethodType, std::vector<std::shared_ptr<DesignPoint>>& designPoints, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix, std::shared_ptr<ProgressIndicator> progress)
+        std::shared_ptr<DesignPoint> HohenbichlerNumIntCombiner::combineDesignPoints(combineAndOr combineMethodType, std::vector<std::shared_ptr<DesignPoint>>& designPoints, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix, std::shared_ptr<ProgressIndicator> progress)
         {
             if (designPoints.empty()) throw probLibException("no design point in combiner");
             if (designPoints.size() == 1) return designPoints[0];
@@ -15,7 +15,7 @@ namespace Deltares
             const std::vector<std::shared_ptr<Statistics::Stochast>> stochasts = getUniqueStochasts(designPoints);
 
             auto dp = std::make_shared<DesignPoint>();
-            auto hh = Hohenbichler2();
+            auto hh = HohenbichlerNumInt();
             while ( ! designPoints.empty())
             {
                 long long i1max; long long i2max;
@@ -32,7 +32,7 @@ namespace Deltares
             return dp;
         }
 
-        void Hohenbichler2Combiner::findMaxCorrelatedDesignPoints(std::vector<std::shared_ptr<DesignPoint>>& designPoints, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix,
+        void HohenbichlerNumIntCombiner::findMaxCorrelatedDesignPoints(std::vector<std::shared_ptr<DesignPoint>>& designPoints, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix,
             const std::vector<std::shared_ptr<Statistics::Stochast>>& stochasts, long long& i1max, long long& i2max)
         {
             double rhoMax = -1.0;

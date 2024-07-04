@@ -1,4 +1,4 @@
-#include "Hohenbichler2.h"
+#include "HohenbichlerNumInt.h"
 #include "../Math/NumericSupport.h"
 #include "../Statistics/StandardNormal.h"
 
@@ -8,7 +8,7 @@ using namespace Deltares::Numeric;
 namespace Deltares {
     namespace Reliability {
 
-        std::shared_ptr<DesignPoint> Hohenbichler2::AlphaHohenbichler(const std::shared_ptr<DesignPoint>& designPoint1, const std::shared_ptr<DesignPoint>& designPoint2,
+        std::shared_ptr<DesignPoint> HohenbichlerNumInt::AlphaHohenbichler(const std::shared_ptr<DesignPoint>& designPoint1, const std::shared_ptr<DesignPoint>& designPoint2,
             const std::vector<std::shared_ptr<Stochast>>& stochasts,
             const std::shared_ptr<SelfCorrelationMatrix>& selfCorrelation, const combineAndOr system)
         {
@@ -101,16 +101,16 @@ namespace Deltares {
             return returnedDp;
         }
 
-        double Hohenbichler2::BetaHohenbichler(double dp1, double dp2, const double rho, const combineAndOr system)
+        double HohenbichlerNumInt::BetaHohenbichler(double dp1, double dp2, const double rho, const combineAndOr system)
         {
             if (dp1 > dp2)
             {
                 std::swap(dp1, dp2);
             }
-            return HohenbichlerNumInt(dp1, dp2, rho, system);
+            return Hohenbichler(dp1, dp2, rho, system);
         }
 
-        double Hohenbichler2::HohenbichlerNumInt(const double dp1, const double dp2, const double rho, const combineAndOr system)
+        double HohenbichlerNumInt::Hohenbichler(const double dp1, const double dp2, const double rho, const combineAndOr system)
         {
             constexpr double maxDiffRho = 1e-10;
 
@@ -190,7 +190,7 @@ namespace Deltares {
             }
         }
 
-        DesignPoint Hohenbichler2::GetRealization(const double beta, const std::vector<std::shared_ptr<StochastPointAlpha>>& alpha)
+        DesignPoint HohenbichlerNumInt::GetRealization(const double beta, const std::vector<std::shared_ptr<StochastPointAlpha>>& alpha)
         {
             DesignPoint dp;
             dp.Beta = beta;
@@ -198,7 +198,7 @@ namespace Deltares {
             return dp;
         }
 
-        DesignPoint Hohenbichler2::GetRealization(const double beta, const std::vector<std::shared_ptr<StochastPointAlpha>>& alpha, const std::vector<double>& values)
+        DesignPoint HohenbichlerNumInt::GetRealization(const double beta, const std::vector<std::shared_ptr<StochastPointAlpha>>& alpha, const std::vector<double>& values)
         {
             DesignPoint dp;
             dp.Beta = beta;
@@ -211,7 +211,7 @@ namespace Deltares {
             return dp;
         }
 
-        void Hohenbichler2::copyParameter(const std::shared_ptr<Stochast>& stochast, const std::shared_ptr<DesignPoint>& designPoint, std::vector<std::shared_ptr<StochastPointAlpha>>& parameters)
+        void HohenbichlerNumInt::copyParameter(const std::shared_ptr<Stochast>& stochast, const std::shared_ptr<DesignPoint>& designPoint, std::vector<std::shared_ptr<StochastPointAlpha>>& parameters)
         {
             for (const auto& Alpha : designPoint->Alphas)
             {

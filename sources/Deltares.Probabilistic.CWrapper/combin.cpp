@@ -1,4 +1,4 @@
-#include "../Deltares.Probabilistic/Combine/Hohenbichler.h"
+#include "../Deltares.Probabilistic/Combine/HohenbichlerFORM.h"
 #include "../Deltares.Probabilistic/Combine/combineElements.h"
 #include "../Deltares.Probabilistic/Combine/upscaling.h"
 #include "../Deltares.Probabilistic/Combine/intEqualElements.h"
@@ -45,7 +45,7 @@ int combinemultipleelements_c(double *betaElement, double *alphaElement, double 
 extern "C"
 int hohenbichler_c(double* betaV, double* pfU, double* rhoInput, double* pfVpfU)
 {
-    auto h = Hohenbichler();
+    auto h = HohenbichlerFORM();
     auto result = h.PerformHohenbichler(*betaV, *pfU, *rhoInput);
     *pfVpfU = result.first;
     return (int)result.second;

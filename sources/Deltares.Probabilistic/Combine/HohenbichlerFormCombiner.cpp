@@ -1,4 +1,4 @@
-#include "HohenbichlerCombiner.h"
+#include "HohenbichlerFormCombiner.h"
 #include "combineElements.h"
 #include "alphaBeta.h"
 
@@ -6,7 +6,7 @@ namespace Deltares
 {
     namespace Reliability
     {
-        std::shared_ptr<DesignPoint> HohenbichlerCombiner::combineDesignPoints(combineAndOr combineMethodType, std::vector<std::shared_ptr<DesignPoint>>& designPoints, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix, std::shared_ptr<ProgressIndicator> progress)
+        std::shared_ptr<DesignPoint> HohenbichlerFormCombiner::combineDesignPoints(combineAndOr combineMethodType, std::vector<std::shared_ptr<DesignPoint>>& designPoints, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix, std::shared_ptr<ProgressIndicator> progress)
         {
             elements elm;
             const std::vector<std::shared_ptr<Statistics::Stochast>> stochasts = getUniqueStochasts(designPoints);
