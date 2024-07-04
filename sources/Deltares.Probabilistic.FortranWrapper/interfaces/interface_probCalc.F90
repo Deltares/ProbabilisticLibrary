@@ -5,6 +5,7 @@ module interface_probCalc
   use precision
   use m_realloc_check
   use f2c_tools
+  use mTpXData
   implicit none
 
   integer, parameter :: maxActiveStochast = 32
@@ -32,10 +33,6 @@ module interface_probCalc
   integer, parameter :: MersenneTwister = 2
 
   logical :: userAborted = .false.
-
-  integer, allocatable :: iPoint(:) ! Pointer to active variables used in the limit state function
-  integer :: nStochActive
-  real(kind=wp), allocatable :: xHR(:)
 
   type, public, bind(c) :: basicCorrelation
     integer       :: first                !< Index of the first stochastic variable
@@ -82,7 +79,6 @@ module interface_probCalc
   type, public, bind(c) :: tResult
     real(kind=c_double)  :: beta
     real(kind=c_double)  :: alpha(maxActiveStochast)
-    integer              :: iPoint(maxActiveStochast)
     integer              :: stepsNeeded
     integer              :: samplesNeeded
     logical(kind=c_bool) :: convergence
@@ -238,6 +234,7 @@ module interface_probCalc
         integer :: designPointSetting
         integer :: computationId
         integer :: threadId
+        integer :: reliabilityMethodSubStepsCounter
     end type computationSetting
 
   interface
@@ -296,34 +293,9 @@ function textualProgress(progress, str) result(cancel) bind(c)
     cancel = userAborted
 end function textualProgress
 
-!> copy x-vector from problib to Hydra-Ring
-subroutine copyDense2Full(xDense, xFull)
-    real(kind=wp), intent(in) :: xDense(*)
-    real(kind=wp), intent(inout) :: xFull(:)
-
-    integer :: i
-
-    xFull = xHR
-    do i = 1, nStochActive
-        xFull(iPoint(i)) = xDense(i)
-    end do
-end subroutine copyDense2Full
-
-!> copy x-vector from Hydra-Ring to problib
-subroutine copyFull2Dense(xFull, xDense)
-    real(kind=wp), intent(in   ) :: xFull(:)
-    real(kind=wp), intent(inout) :: xDense(*)
-
-    integer :: i
-
-    do i = 1, nStochActive
-        xDense(i) = xFull(iPoint(i))
-    end do
-end subroutine copyFull2Dense
-
 !>
 !! Subroutine for the calculation of a limit state function
-subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, conv, convCriterium, convergenceData, pc)
+subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, conv, convCriterium, convergenceData, CpData, pc)
     use feedback
     type(probabilisticDataStructure_data), intent(in) :: probDb    !< Probabilistic data module
     procedure(zfunc)                           :: fx               !< Function implementing the z-function of the failure mechanism
@@ -333,19 +305,21 @@ subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, conv, convCri
     logical,       intent(out)                 :: conv             !< Convergence indicator
     logical,       intent(out)                 :: convCriterium    !< Convergence criterium indicator
     type(storedConvergenceData), intent(inout) :: convergenceData  !< struct holding all convergence data
+    type(tCpData), intent(inout)               :: CpData           !< class for copying the x-vector
     procedure(progressCancel),    optional     :: pc               !< progress function
 
     type(tMethod)               :: method
     type(tDistrib)              :: distribs(probDb%stoVar%maxStochasts)
-    integer                     :: i, k, nstoch
+    integer                     :: i, k, nstoch, nStochActive
     integer                     :: compIds(1) = designPointOutputFALSE
     type(tError)                :: ierr
     type(tResult)               :: rn
     character(len=ErrMsgLength) :: msg
+    integer, allocatable        :: iPoint(:)
     real(kind=wp), allocatable  :: xDense(:)
 
-    call realloc_check (iPoint, probDb%stoVar%maxStochasts, "ipoint" )
-    call realloc_check (xHR, probDb%stoVar%maxStochasts, "xHR" )
+    call realloc_check (iPoint, probDb%stoVar%maxStochasts, "ipoint local" )
+    call realloc_check (CpData%xHR, probDb%stoVar%maxStochasts, "xHR" )
 
     method%methodId   = probDb%method%calcMethod
     method%tolA       = probDb%method%FORM%epsilonBeta
@@ -377,10 +351,6 @@ subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, conv, convCri
         method%tolB            = probDb%method%adaptiveIS%varcoefffailure
         method%minSamples      = probDb%method%adaptiveIS%minimumsamples
         method%maxSamples      = probDb%method%adaptiveIS%maximumsamples
-        do i = 1, size(probDb%method%adaptiveIS%varianceFactor)
-            method%offsets(i)         = probDb%method%adaptiveIS%translation(i)
-            method%varianceFactors(i) = probDb%method%adaptiveIS%varianceFactor(i)
-        end do
         method%seed1           = probDb%method%adaptiveIS%seedPRNG
         method%seed2           = probDb%method%adaptiveIS%seedPRNG
         method%trialLoops      = probDb%method%adaptiveIS%nAdp
@@ -413,14 +383,24 @@ subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, conv, convCri
         end if
     end do
 
-    xHR = x
+    if (method%methodId == methodAdaptiveImportanceSampling) then
+        do i = 1, nStochActive
+            method%offsets(i)         = probDb%method%adaptiveIS%translation(iPoint(i))
+            method%varianceFactors(i) = probDb%method%adaptiveIS%varianceFactor(iPoint(i))
+        end do
+    end if
+
+    CpData%xHR = x
+    CpData%nStochActive = nStochActive
 
     method%designPointOption = probDb%method%dpOption
     method%numThreads        = probDb%method%maxParallelThreads
     method%rnd = GeorgeMarsaglia
-    allocate(xDense(nStochActive))
+    call realloc_check(xDense, nStochActive, "xDense")
+    call realloc_check(cpData%iPoint, nStochActive, "ipoint in cpData" )
+    cpData%iPoint = iPoint(1:nStochActive)
 
-    call convertStartMethod(probDb, method, iPoint(1:nStochActive))
+    call convertStartMethod(probDb, method, CpData%iPoint(1:nStochActive))
 
     if (method%iterationMethod <= 0 .or. method%iterationMethod > 9 .or. method%iterationMethod == 7) then
         call fatalError("Unknown method in subroutine IterationDS: ", method%iterationMethod)
@@ -434,11 +414,11 @@ subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, conv, convCri
                 probDb%number_correlations, fx, textualProgress, compIds, xDense, rn, ierr)
         end if
 
-        call copyDense2Full(xDense, x)
+        call cpData%copyDense2Full(xDense, x)
         beta = rn%beta
         alfaN = 0.0_wp
         do k = 1, nStochActive
-            alfaN(iPoint(k)) = rn%alpha(k)
+            alfaN(CpData%iPoint(k)) = rn%alpha(k)
         end do
         if (method%methodId == methodFORMandDirSampling .and. rn%samplesNeeded > 0) then
             ! to get logging in output.txt right; as we have samples, Form did not succeed (no convergence or beta out of range)
@@ -463,68 +443,66 @@ subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, conv, convCri
 
 end subroutine calculateLimitStateFunction
 
+subroutine copyStartVector(probDb, method, iPoint, methodVectorMandatory)
+    use feedback
+    type(probabilisticDataStructure_data), intent(in)    :: probDb
+    type(tMethod),                         intent(inout) :: method
+    integer,                               intent(in)    :: iPoint(:)
+    character(len=*),            optional, intent(in)    :: methodVectorMandatory
+
+    integer :: nstoch, i
+
+    nstoch = size(iPoint)
+
+    if (allocated(probDb%method%FORM%startValue)) then
+        do i = 1, nstoch
+            method%startVector(i) = probDb%method%FORM%startValue(iPoint(i))
+        end do
+    else if (allocated(probDb%method%AdaptiveIS%startValue)) then
+        do i = 1, nstoch
+            method%startVector(i) = probDb%method%AdaptiveIS%startValue(iPoint(i))
+        end do
+    else if (present(methodVectorMandatory)) then
+        call fatalError("start value must be given for " // methodVectorMandatory)
+    else
+        method%startVector(1:nstoch) = 1.0_wp
+    end if
+end subroutine copyStartVector
+
 subroutine convertStartMethod(probDb, method, iPoint)
     use feedback
     type(probabilisticDataStructure_data), intent(in)    :: probDb
     type(tMethod),                         intent(inout) :: method
     integer,                               intent(in)    :: iPoint(:)
 
-    integer :: nstoch, i
+    integer :: nstoch, i, startMethod
 
     nstoch = size(iPoint)
 
-    select case (probDb%method%FORM%startMethod)
+    startMethod = probDb%method%FORM%startMethod
+    if (method%methodId == methodAdaptiveImportanceSampling) startMethod = probDb%method%adaptiveIS%startMethod
+    select case (startMethod)
     case (fORMStartOne)
-        method%startmethod = probDb%method%FORM%startMethod
+        method%startmethod = startMethod
     case (fORMStartRaySearch, fORMStartRaySearchWind)
         method%startmethod = fORMStartRaySearch
-        if (allocated(probDb%method%FORM%startValue)) then
-            do i = 1, nstoch
-                method%startVector(i) = probDb%method%FORM%startValue(iPoint(i))
-            end do
-        else
-            method%startVector(1:nstoch) = 1.0_wp
-        end if
+        call copyStartVector(probDb, method, iPoint)
     case (fORMStartSphereSearch)
-        method%startmethod = probDb%method%FORM%startMethod
-        if (allocated(probDb%method%FORM%startValue)) then
-            do i = 1, nstoch
-                method%startVector(i) = probDb%method%FORM%startValue(iPoint(i))
-            end do
-        else
-            method%startVector(1:nstoch) = 1.0_wp
-        end if
+        method%startmethod = startMethod
+        call copyStartVector(probDb, method, iPoint)
     case (fORMStartGivenVector)
-        method%startmethod = probDb%method%FORM%startMethod
-        if (allocated(probDb%method%FORM%startValue)) then
-            do i = 1, nstoch
-                method%startVector(i) = probDb%method%FORM%startValue(iPoint(i))
-            end do
-        else
-            call fatalError("start value must be given for fORMStartGivenVector")
-        end if
+        method%startmethod = startMethod
+        call copyStartVector(probDb, method, iPoint, "fORMStartGivenVector")
     case (fORMStartRaySearchVector)
-        method%startmethod = probDb%method%FORM%startMethod
-        if (allocated(probDb%method%FORM%startValue)) then
-            do i = 1, nstoch
-                method%startVector(i) = probDb%method%FORM%startValue(iPoint(i))
-            end do
-        else
-            call fatalError("start value must be given for fORMStartRaySearchVector")
-        end if
+        method%startmethod = startMethod
+        call copyStartVector(probDb, method, iPoint, "fORMStartRaySearchVector")
     case (fORMStartRaySearchVectorScaled)
-        method%startmethod = probDb%method%FORM%startMethod
-        if (allocated(probDb%method%FORM%startValue)) then
-            do i = 1, nstoch
-                method%startVector(i) = probDb%method%FORM%startValue(iPoint(i))
-            end do
-        else
-            call fatalError("start value must be given for fORMStartRaySearchVectorScaled")
-        end if
+        method%startmethod = startMethod
+        call copyStartVector(probDb, method, iPoint, "fORMStartRaySearchVectorScaled")
     case (fORMStartZero)
-        method%startmethod = probDb%method%FORM%startMethod
+        method%startmethod = startMethod
     case default
-        call fatalError("start method not implemented: ", probDb%method%FORM%startMethod)
+        call fatalError("start method not implemented: ", startMethod)
     end select
 end subroutine convertStartMethod
 

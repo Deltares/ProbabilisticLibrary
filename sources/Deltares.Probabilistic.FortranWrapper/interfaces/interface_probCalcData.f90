@@ -94,7 +94,7 @@ subroutine initProbabilisticCalculation( probDb, maxStochasts, databaseFlag, exp
     probDb%method%IS%varCoeffNoFailure      = 0.10D0
     probDb%method%IS%varianceFactor         = 1.5D0
 
-    ! Adative Importance Sampling
+    ! Adaptive Importance Sampling
     probDb%method%AdaptiveIS%seedPRNG               = 0
     probDb%method%AdaptiveIS%minimumSamples         = 1000
     probDb%method%AdaptiveIS%maximumSamples         = 100000
@@ -358,7 +358,6 @@ subroutine setParametersProbabilisticISsimple(probDb, ISseedPRNG, ISminimumSampl
     real(kind=wp), intent(in)               :: ISvarCoeffNoFailure  !< Required variation coefficient Non Failure
     real(kind=wp), intent(in)               :: ISvarianceFactor      !< Multiplicative factor to increase the standard deviation
 
-    integer                                 :: i
     !
     ! Put data in structure
     !

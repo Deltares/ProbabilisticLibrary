@@ -6,13 +6,14 @@ add_library(Deltares.Probabilistic.FortranWrapper
   STATIC
     interfaces/interface_gen.f90
     interfaces/interface_distributions.f90
-    interfaces/interface_randomgen.f90
     interfaces/interface_probCalc.F90
     interfaces/interface_probCalcData.f90
     interfaces/interface_convert.f90
     interfaces/interface_combin.f90
     interfaces/interface_special_funcs.f90
     interfaces/f2c_tools.f90
+    interfaces/class_probCalc.f90
+    interfaces/mTpXdata.f90
   )
 
 if (UNIX)

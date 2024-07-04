@@ -27,7 +27,6 @@ struct tResult
 {
     double beta;
     double alpha[maxActiveStochast];
-    int iPoint[maxActiveStochast];
     int stepsNeeded;
     int samplesNeeded;
     bool convergence;
@@ -44,21 +43,6 @@ void updateX(const std::vector<std::shared_ptr<StochastPointAlpha>> & alpha, con
             for (size_t i = 0; i < alpha.size(); i++)
             {
                 x[i] = 0.0;
-            }
-        }
-        break;
-        case DPoptions::RMinZFunc:
-        case DPoptions::RMinZFuncCompatible:
-        {
-            auto xSparse = std::vector<double>();
-            for (size_t i = 0; i < alpha.size(); i++)
-            {
-                xSparse.push_back(newResult->Alphas[i]->X);
-            }
-            fw.updateXinDesignPoint(xSparse);
-            for (size_t i = 0; i < alpha.size(); i++)
-            {
-                x[i] = xSparse[i];
             }
         }
         break;
@@ -86,6 +70,18 @@ void copyConvergence(tResult& r, const ConvergenceReport& convergenceReport, con
     }
 }
 
+bool shouldRunAtDesignPoint(const DPoptions dpOption)
+{
+    switch (dpOption)
+    {
+    case DPoptions::RMinZFunc:
+    case DPoptions::RMinZFuncCompatible:
+        return true;
+    default:
+        return false;
+    }
+}
+
 extern "C"
 void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, corrStruct correlations[], const int nrCorrelations,
     const double(*fx)(double[], computationSettings*, tError*),
@@ -108,7 +104,9 @@ void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, corrStr
         auto createRelM = createReliabilityMethod();
         auto relMethod = createRelM.selectMethod(*method, nStoch, stochasts);
         auto zModel = std::make_shared<ZModel>([&fw](std::shared_ptr<ModelSample> v) { return fw.FDelegate(v); },
-                                               [&fw](std::vector<std::shared_ptr<ModelSample>> v) { return fw.FDelegateParallel(v); });
+                                               [&fw](std::vector<std::shared_ptr<ModelSample>> v) { return fw.FDelegateParallel(v); }
+        );
+
         auto corr = std::make_shared<CorrelationMatrix>();
         if (nrCorrelations > 0)
         {
@@ -128,11 +126,25 @@ void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, corrStr
         modelRunner->Settings->MaxParallelProcesses = method->numThreads;
         modelRunner->Settings->MaxChunkSize = method->chunkSize;
         modelRunner->Settings->SaveMessages = true;
+        modelRunner->Settings->RunAtDesignPoint = shouldRunAtDesignPoint(method->designPointOptions);
+        modelRunner->Settings->ExtendedLoggingAtDesignPoint = true;
+
         modelRunner->initializeForRun();
         auto newResult = relMethod->getDesignPoint(modelRunner);
 
+        if (modelRunner->Settings->RunAtDesignPoint)
+        {
+            modelRunner->runDesignPoint(newResult);
+        }
+
+        auto allMessages = newResult->Messages;
+        for (const auto& s : fw.error_messages )
+        {
+            allMessages.push_back(std::make_shared<Message>(Error, s));
+        }
+
         ierr->errorCode = 0;
-        for(const auto& message : newResult->Messages)
+        for(const auto& message : allMessages)
         {
             if (message->Type == Error)
             {
@@ -154,11 +166,7 @@ void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, corrStr
 
         updateX(newResult->Alphas, method->designPointOptions, *r, newResult, x, fw);
 
-        for (int i = 0; i < n; i++)
-        {
-            r->iPoint[i] = i + 1;
-        }
-        copyConvergence(*r, *newResult->convergenceReport.get(), method->methodId);
+        copyConvergence(*r, *newResult->convergenceReport, method->methodId);
     }
     catch (const std::exception& e)
     {
