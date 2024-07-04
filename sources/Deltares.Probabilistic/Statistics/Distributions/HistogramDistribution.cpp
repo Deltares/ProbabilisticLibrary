@@ -5,6 +5,7 @@
 #include "../StochastProperties.h"
 #include "../StandardNormal.h"
 #include "../../Math/NumericSupport.h"
+#include "../../Utils/DirtySupport.h"
 
 #include <limits>
 
@@ -42,16 +43,30 @@ namespace Deltares
                 histogramValue->NormalizedAmount = histogramValue->Amount / sum;
             }
 
+            Utils::SetDirtyLambda setDirtyFunction = [stochast]()
+            {
+                stochast->dirty = true;
+            };
+
             double cumulative = 0;
             for (std::shared_ptr<HistogramValue> histogramValue : stochast->HistogramValues)
             {
                 cumulative += histogramValue->NormalizedAmount;
                 histogramValue->CumulativeNormalizedAmount = cumulative;
+
+                histogramValue->setDirtyFunction(setDirtyFunction);
             }
+
+            stochast->dirty = false;
         }
 
         void HistogramDistribution::setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation)
         {
+            if (stochast->dirty)
+            {
+                initializeForRun(stochast);
+            }
+
             double currentMean = this->getMean(stochast);
             double diff = mean - currentMean;
 
@@ -64,7 +79,12 @@ namespace Deltares
 
         bool HistogramDistribution::isValid(std::shared_ptr<StochastProperties> stochast)
         {
-            if (stochast->HistogramValues.size() == 0)
+            if (stochast->dirty)
+            {
+                initializeForRun(stochast);
+            }
+
+            if (stochast->HistogramValues.empty())
             {
                 return false;
             }
@@ -72,6 +92,14 @@ namespace Deltares
             for (std::shared_ptr<HistogramValue> histogramValue : stochast->HistogramValues)
             {
                 if (!histogramValue->isValid())
+                {
+                    return false;
+                }
+            }
+
+            for (size_t i = 1; i < stochast->HistogramValues.size(); i++)
+            {
+                if (stochast->HistogramValues[i]->LowerBound < stochast->HistogramValues[i-1]->UpperBound)
                 {
                     return false;
                 }
@@ -87,6 +115,11 @@ namespace Deltares
 
         double HistogramDistribution::getMean(std::shared_ptr<StochastProperties> stochast)
         {
+            if (stochast->dirty)
+            {
+                initializeForRun(stochast);
+            }
+
             double sum = 0;
             double sumWeights = 0;
 
@@ -130,34 +163,40 @@ namespace Deltares
 
         double HistogramDistribution::getXFromU(std::shared_ptr<StochastProperties> stochast, double u)
         {
-            double pu = StandardNormal::getPFromU(u);
+            if (stochast->dirty)
+            {
+                initializeForRun(stochast);
+            }
+
+            double p = StandardNormal::getPFromU(u);
 
             if (stochast->HistogramValues.empty())
             {
-                return nan("");
+                return std::nan("");
             }
 
             for (size_t i = 0; i < stochast->HistogramValues.size(); i++)
             {
-                if (stochast->HistogramValues[i]->CumulativeNormalizedAmount < pu)
-                {
-                    continue;
-                }
-                else
+                if (stochast->HistogramValues[i]->CumulativeNormalizedAmount >= p)
                 {
                     double previousCumulativeAmount = i > 0 ? stochast->HistogramValues[i - 1]->CumulativeNormalizedAmount : 0;
-                    double offset = (pu - previousCumulativeAmount) / (stochast->HistogramValues[i]->CumulativeNormalizedAmount - previousCumulativeAmount);
+                    double offset = (p - previousCumulativeAmount) / (stochast->HistogramValues[i]->CumulativeNormalizedAmount - previousCumulativeAmount);
 
                     // linear interpolation within range
                     return offset * stochast->HistogramValues[i]->UpperBound + (1 - offset) * stochast->HistogramValues[i]->LowerBound;
                 }
             }
 
-            return stochast->HistogramValues[stochast->HistogramValues.size() - 1]->UpperBound;
+            return stochast->HistogramValues.back()->UpperBound;
         }
 
         double HistogramDistribution::getUFromX(std::shared_ptr<StochastProperties> stochast, double x)
         {
+            if (stochast->dirty)
+            {
+                initializeForRun(stochast);
+            }
+
             double cdf = this->getCDF(stochast, x);
 
             return StandardNormal::getUFromP(cdf);
@@ -190,6 +229,11 @@ namespace Deltares
         {
             const double delta = 0.0000001;
 
+            if (stochast->dirty)
+            {
+                initializeForRun(stochast);
+            }
+
             getSizeForEmptySizedRange(stochast);
 
             for (size_t i = 0; i < stochast->HistogramValues.size(); i++)
@@ -213,9 +257,14 @@ namespace Deltares
 
         double HistogramDistribution::getCDF(std::shared_ptr<StochastProperties> stochast, double x)
         {
+            if (stochast->dirty)
+            {
+                initializeForRun(stochast);
+            }
+
             if (stochast->HistogramValues.empty())
             {
-                return nan("");
+                return std::nan("");
             }
 
             double p = 0;
@@ -242,6 +291,11 @@ namespace Deltares
         std::vector<double> HistogramDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)
         {
             constexpr double delta = 0.0000001;
+
+            if (stochast->dirty)
+            {
+                initializeForRun(stochast);
+            }
 
             std::vector<double> x;
 

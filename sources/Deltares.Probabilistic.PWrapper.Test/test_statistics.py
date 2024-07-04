@@ -122,10 +122,13 @@ class Test_statistics(unittest.TestCase):
         stochast.histogram_values.append(HistogramValue.create(5, 7, 6))
         stochast.histogram_values.append(HistogramValue.create(7, 9, 2))
 
-        stochast.initialize_for_run()
-
         u = StandardNormal.get_u_from_p(0.1)
         self.assertAlmostEqual(2, stochast.get_x_from_u(u), delta=margin)
+
+        stochast.histogram_values[0].lower_bound = 0
+        stochast.histogram_values[0].upper_bound = 2
+
+        self.assertAlmostEqual(1, stochast.get_x_from_u(u), delta=margin)
 
         values = []
         values.extend({2, 3, 5})

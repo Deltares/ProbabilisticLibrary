@@ -1,5 +1,7 @@
 #pragma once
+
 #include <memory>
+#include "../Utils/DirtySupport.h"
 
 namespace Deltares
 {
@@ -44,7 +46,7 @@ namespace Deltares
 			/// </summary>
 			/// <param name="x"></param>
 			/// <returns></returns>
-			bool contains(double x)
+			bool contains(double x) const 
 			{
 				if (LowerBound == UpperBound)
 				{
@@ -68,11 +70,30 @@ namespace Deltares
 				}
 			}
 
-			bool isValid()
+            /**
+             * \brief Indicates whether the properties of the histogram value are valid
+             */
+            bool isValid() const 
 			{
 				return UpperBound >= LowerBound;
 			}
-		};
+
+            void setDirtyFunction(Utils::SetDirtyLambda setDirtyLambda)
+            {
+                this->setDirtyLambda = setDirtyLambda;
+            }
+
+            void setDirty()
+            {
+                if (setDirtyLambda != nullptr)
+                {
+                    setDirtyLambda();
+                }
+            }
+
+        private:
+            Utils::SetDirtyLambda setDirtyLambda = nullptr;
+        };
 	}
 }
 

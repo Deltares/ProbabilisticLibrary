@@ -150,6 +150,7 @@
     <ClCompile Include="Statistics\SparseCorrelationMatrix.cpp" />
     <ClCompile Include="Combine\CombineSettings.cpp" />
     <ClCompile Include="Combine\CombineProject.cpp" />
+    <ClCompile Include="Utils\DirtySupport.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -319,6 +320,7 @@
     <ClInclude Include="Statistics\SparseCorrelationMatrix.h" />
     <ClInclude Include="Combine\CombineSettings.h" />
     <ClInclude Include="Combine\CombineProject.h" />
+    <ClInclude Include="Utils\DirtySupport.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

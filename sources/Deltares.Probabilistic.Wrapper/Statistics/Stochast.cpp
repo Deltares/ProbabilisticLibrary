@@ -39,6 +39,8 @@ namespace Deltares
                 {
                     std::shared_ptr<StochastProperties> properties = shared->object->getProperties();
 
+                    properties->setDirty();
+
                     switch (listOperationType)
                     {
                     case ListOperationType::Add: properties->HistogramValues.push_back(histogramValue->GetValue()); break;
@@ -55,6 +57,8 @@ namespace Deltares
                 {
                     std::shared_ptr<StochastProperties> properties = shared->object->getProperties();
 
+                    properties->setDirty();
+
                     switch (listOperationType)
                     {
                     case ListOperationType::Add: properties->DiscreteValues.push_back(discreteValue->GetValue()); break;
@@ -70,6 +74,8 @@ namespace Deltares
                 if (!synchronizing)
                 {
                     std::shared_ptr<StochastProperties> properties = shared->object->getProperties();
+
+                    properties->setDirty();
 
                     switch (listOperationType)
                     {

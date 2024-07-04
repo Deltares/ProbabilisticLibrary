@@ -242,9 +242,6 @@ class Stochast:
 	def get_u_from_x(self, x):
 		return interface.GetArgValue(self._id, 'u_from_x', x)
 
-	def initialize_for_run(self):
-		interface.Execute(self._id, 'initialize_for_run')
-
 	def fit(self, values):
 		interface.SetArrayValue(self._id, 'fit', values)
 		self._histogram_values = None

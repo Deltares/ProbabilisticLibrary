@@ -15,12 +15,19 @@ namespace Deltares
         {
             setDistributionType(distributionType);
             distribution->initialize(properties, values);
+            this->properties->dirty = true;
         }
 
         Stochast::Stochast(DistributionType distributionType, std::shared_ptr<StochastProperties> properties)
         {
             setDistributionType(distributionType);
             this->properties = properties;
+            this->properties->dirty = true;
+        }
+
+        void Stochast::SetDirty() const
+        {
+            this->properties->dirty = true;
         }
 
         double Stochast::getPDF(double x)
@@ -68,6 +75,7 @@ namespace Deltares
 
             this->distributionType = distributionType;
             this->distribution = DistributionLibrary::getDistribution(this->distributionType, truncated, inverted);
+            this->properties->dirty = true;
 
             if ((oldMean != 0 || oldDeviation != 0) && this->distribution->maintainMeanAndDeviation(this->properties))
             {

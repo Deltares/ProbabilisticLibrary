@@ -282,6 +282,11 @@ namespace Deltares
 			 */
 			std::shared_ptr<VariableStochastValuesSet> ValueSet = std::make_shared<VariableStochastValuesSet>();
 
+            /**
+             * \brief Indicates that internally an update should take place before other methods are invoked
+             */
+            void SetDirty() const;
+
             static Statistics::DistributionType getDistributionType(std::string distributionType);
             static std::string getDistributionTypeString(Statistics::DistributionType distributionType);
 		};

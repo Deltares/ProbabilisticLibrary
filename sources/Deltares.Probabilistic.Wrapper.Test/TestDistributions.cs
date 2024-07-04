@@ -398,8 +398,6 @@ namespace Deltares.Probabilistic.Wrapper.Test
             stochast.DiscreteValues.Add(new DiscreteValue(2, 20));
             stochast.DiscreteValues.Add(new DiscreteValue(3, 20));
 
-            stochast.InitializeForRun();
-
             Assert.AreEqual(1, stochast.GetXFromU(StandardNormal.GetUFromP(0.1)), margin);
             Assert.AreEqual(2, stochast.GetXFromU(0), margin);
             Assert.AreEqual(3, stochast.GetXFromU(StandardNormal.GetUFromP(0.9)), margin);
@@ -435,8 +433,6 @@ namespace Deltares.Probabilistic.Wrapper.Test
             stochast.HistogramValues.Add(new HistogramValue(5, 7, 6));
             stochast.HistogramValues.Add(new HistogramValue(7, 9, 2));
 
-            stochast.InitializeForRun();
-
             Assert.AreEqual(2, stochast.GetXFromU(StandardNormal.GetUFromP(0.1)), margin);
             Assert.AreEqual(6, stochast.GetXFromU(0), margin);
             Assert.AreEqual(8, stochast.GetXFromU(StandardNormal.GetUFromP(0.9)), margin);
@@ -453,7 +449,6 @@ namespace Deltares.Probabilistic.Wrapper.Test
             Assert.AreEqual(5.5, stochast.HistogramValues[stochast.HistogramValues.Count - 1].UpperBound);
             Assert.AreEqual(1, stochast.HistogramValues[1].Amount);
             Assert.AreEqual(1, stochast.HistogramValues[2].Amount);
-            Assert.AreEqual(0.33333, stochast.HistogramValues[0].NormalizedAmount, margin);
 
             stochast.Fit(new double[] { 10 });
             Assert.AreEqual(1, stochast.HistogramValues.Count);

@@ -32,13 +32,21 @@ namespace Deltares
 				property double X
 				{
 					double get() { return shared->object->X; }
-					void set(double value) { shared->object->X = value; }
+					void set(double value)
+					{
+					    shared->object->X = value;
+                        shared->object->setDirty();
+					}
 				}
 
 				property double Reliability
 				{
 					double get() { return shared->object->Reliability; }
-					void set(double value) { shared->object->Reliability = value; }
+					void set(double value)
+					{
+					    shared->object->Reliability = value;
+                        shared->object->setDirty();
+					}
 				}
 
 				std::shared_ptr<Statistics::FragilityValue> GetValue()

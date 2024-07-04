@@ -217,6 +217,8 @@ namespace Deltares
 
                 if (property_ == "x") discreteValue->X = value;
                 else if (property_ == "amount") discreteValue->Amount = value;
+
+                discreteValue->setDirty();
             }
             else if (objectType == ObjectType::HistogramValue)
             {
@@ -225,6 +227,8 @@ namespace Deltares
                 if (property_ == "lower_bound") histogramValue->LowerBound = value;
                 else if (property_ == "upper_bound") histogramValue->UpperBound = value;
                 else if (property_ == "amount") histogramValue->Amount = value;
+
+                histogramValue->setDirty();
             }
             else if (objectType == ObjectType::FragilityValue)
             {
@@ -235,6 +239,8 @@ namespace Deltares
                 else if (property_ == "probability_of_failure") fragilityValue->setProbabilityOfFailure(value);
                 else if (property_ == "probability_of_non_failure") fragilityValue->setProbabilityOfNonFailure(value);
                 else if (property_ == "return_period") fragilityValue->setReturnPeriod(value);
+
+                fragilityValue->setDirty();
             }
             else if (objectType == ObjectType::Settings)
             {
@@ -542,6 +548,7 @@ namespace Deltares
 
                 if (property_ == "discrete_values")
                 {
+                    stochast->getProperties()->setDirty();
                     stochast->getProperties()->DiscreteValues.clear();
                     for (int i = 0; i < size; i++)
                     {
@@ -550,6 +557,7 @@ namespace Deltares
                 }
                 else if (property_ == "histogram_values")
                 {
+                    stochast->getProperties()->setDirty();
                     stochast->getProperties()->HistogramValues.clear();
                     for (int i = 0; i < size; i++)
                     {
@@ -558,6 +566,7 @@ namespace Deltares
                 }
                 else if (property_ == "fragility_values")
                 {
+                    stochast->getProperties()->setDirty();
                     stochast->getProperties()->FragilityValues.clear();
                     for (int i = 0; i < size; i++)
                     {

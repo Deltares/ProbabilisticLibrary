@@ -11,7 +11,39 @@ namespace Deltares
 {
 	namespace Statistics
 	{
-		bool DiscreteDistribution::isValid(std::shared_ptr<StochastProperties> stochast)
+        void DiscreteDistribution::initializeForRun(std::shared_ptr<StochastProperties> stochast)
+        {
+            std::sort(stochast->DiscreteValues.begin(), stochast->DiscreteValues.end(), [](std::shared_ptr<DiscreteValue> val1, std::shared_ptr<DiscreteValue> val2) {return val1->X < val2->X; });
+
+            double sum = 0;
+            for (std::shared_ptr<DiscreteValue> discreteValue : stochast->DiscreteValues)
+            {
+                sum += discreteValue->Amount;
+            }
+
+            for (std::shared_ptr<DiscreteValue> discreteValue : stochast->DiscreteValues)
+            {
+                discreteValue->NormalizedAmount = discreteValue->Amount / sum;
+            }
+
+            Utils::SetDirtyLambda setDirtyFunction = [stochast]()
+            {
+                stochast->dirty = true;
+            };
+
+            double cumulative = 0;
+            for (std::shared_ptr<DiscreteValue> discreteValue : stochast->DiscreteValues)
+            {
+                cumulative += discreteValue->NormalizedAmount;
+                discreteValue->CumulativeNormalizedAmount = cumulative;
+
+                discreteValue->setDirtyFunction(setDirtyFunction);
+            }
+
+            stochast->dirty = false;
+        }
+
+        bool DiscreteDistribution::isValid(std::shared_ptr<StochastProperties> stochast)
 		{
 			return !stochast->DiscreteValues.empty();
 		}
@@ -25,9 +57,14 @@ namespace Deltares
 		{
 			const double delta = 0.0000001;
 
-			if (stochast->DiscreteValues.size() == 0)
+            if (stochast->dirty)
+            {
+                initializeForRun(stochast);
+            }
+
+            if (stochast->DiscreteValues.empty())
 			{
-				return nan("");
+				return std::nan("");
 			}
 
 			const double p = StandardNormal::getPFromU(u);
@@ -45,7 +82,12 @@ namespace Deltares
 
 		double DiscreteDistribution::getUFromX(std::shared_ptr<StochastProperties> stochast, double x)
 		{
-			if (stochast->DiscreteValues.size() == 0)
+            if (stochast->dirty)
+            {
+                initializeForRun(stochast);
+            }
+
+            if (stochast->DiscreteValues.empty())
 			{
 				return nan("");
 			}
@@ -82,32 +124,14 @@ namespace Deltares
 			return uRepresentative;
 		}
 
-		void DiscreteDistribution::initializeForRun(std::shared_ptr<StochastProperties> stochast)
-		{
-			std::sort(stochast->DiscreteValues.begin(), stochast->DiscreteValues.end(), [](std::shared_ptr<DiscreteValue> val1, std::shared_ptr<DiscreteValue> val2) {return val1->X < val2->X; });
-
-			double sum = 0;
-			for (std::shared_ptr<DiscreteValue> discreteValue : stochast->DiscreteValues)
-			{
-				sum += discreteValue->Amount;
-			}
-
-			for (std::shared_ptr<DiscreteValue> discreteValue : stochast->DiscreteValues)
-			{
-				discreteValue->NormalizedAmount = discreteValue->Amount / sum;
-			}
-
-			double cumulative = 0;
-			for (std::shared_ptr<DiscreteValue> discreteValue : stochast->DiscreteValues)
-			{
-				cumulative += discreteValue->NormalizedAmount;
-				discreteValue->CumulativeNormalizedAmount = cumulative;
-			}
-		}
-
 		double DiscreteDistribution::getMean(std::shared_ptr<StochastProperties> stochast)
 		{
-			double sumX = 0;
+            if (stochast->dirty)
+            {
+                initializeForRun(stochast);
+            }
+
+            double sumX = 0;
 			double sumAmounts = 0;
 
 			for (std::shared_ptr<DiscreteValue> val : stochast->DiscreteValues)
@@ -121,13 +145,41 @@ namespace Deltares
 
 		double DiscreteDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
 		{
-			// not supported
-			return 0;
-		}
+            double mean = getMean(stochast);
+
+            double sumVariances = 0;
+            double sumWeights = 0;
+
+            for (std::shared_ptr<DiscreteValue> discreteValue : stochast->DiscreteValues)
+            {
+                const double diff = discreteValue->X - mean;
+
+                sumVariances += diff * diff * discreteValue->Amount;
+                sumWeights += discreteValue->Amount;
+            }
+
+            if (sumWeights == 0)
+            {
+                return 0;
+            }
+            else if (sumWeights <= 1)
+            {
+                return sqrt(sumVariances / sumWeights);
+            }
+            else
+            {
+                return sqrt(sumVariances / (sumWeights - 1));
+            }
+        }
 
 		void DiscreteDistribution::setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation)
 		{
-			double currentMean = getMean(stochast);
+            if (stochast->dirty)
+            {
+                initializeForRun(stochast);
+            }
+
+            double currentMean = getMean(stochast);
 			double diff = mean - currentMean;
 
 			for (std::shared_ptr<DiscreteValue> val : stochast->DiscreteValues)
@@ -140,7 +192,12 @@ namespace Deltares
 		{
 			const double delta = 0.0000001;
 
-			if (stochast->DiscreteValues.empty())
+            if (stochast->dirty)
+            {
+                initializeForRun(stochast);
+            }
+
+            if (stochast->DiscreteValues.empty())
 			{
 				return std::nan("");
 			}
@@ -161,7 +218,12 @@ namespace Deltares
 		{
 			const double delta = 0.0000001;
 
-			if (stochast->DiscreteValues.empty())
+            if (stochast->dirty)
+            {
+                initializeForRun(stochast);
+            }
+
+            if (stochast->DiscreteValues.empty())
 			{
 				return std::nan("");
 			}
@@ -218,9 +280,14 @@ namespace Deltares
         {
             constexpr double offset = 0.000001;
 
+            if (stochast->dirty)
+            {
+                initializeForRun(stochast);
+            }
+
             std::vector<double> specialPoints;
 
-            if (stochast->DiscreteValues.size() > 0)
+            if (!stochast->DiscreteValues.empty())
             {
                 double min = stochast->DiscreteValues[0]->X;
                 double max = stochast->DiscreteValues.back()->X;
