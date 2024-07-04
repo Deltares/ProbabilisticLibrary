@@ -1,7 +1,6 @@
 #include "Hohenbichler2.h"
 #include "../Math/NumericSupport.h"
 #include "../Statistics/StandardNormal.h"
-#include "../Utils/probLibException.h"
 
 using namespace Deltares::Statistics;
 using namespace Deltares::Numeric;
@@ -102,25 +101,20 @@ namespace Deltares {
             return returnedDp;
         }
 
-        double Hohenbichler2::BetaHohenbichler(double dp1, double dp2, double rho, combineAndOr system)
+        double Hohenbichler2::BetaHohenbichler(double dp1, double dp2, const double rho, const combineAndOr system)
         {
-            double beta;
             if (dp1 > dp2)
             {
-                beta = HohenbichlerNumInt(dp2, dp1, rho, system);
+                std::swap(dp1, dp2);
             }
-            else
-            {
-                beta = HohenbichlerNumInt(dp1, dp2, rho, system);
-            }
-            return beta;
+            return HohenbichlerNumInt(dp1, dp2, rho, system);
         }
 
-        double Hohenbichler2::HohenbichlerNumInt(double dp1, double dp2, double rho, combineAndOr system)
+        double Hohenbichler2::HohenbichlerNumInt(const double dp1, const double dp2, const double rho, const combineAndOr system)
         {
             constexpr double maxDiffRho = 1e-10;
 
-            if (Numeric::NumericSupport::areEqual(rho, 1.0, maxDiffRho))
+            if (NumericSupport::areEqual(rho, 1.0, maxDiffRho))
             {
                 if (system == combOr)
                 {
@@ -131,7 +125,7 @@ namespace Deltares {
                     return std::max(dp1, dp2);
                 }
             }
-            else if (Numeric::NumericSupport::areEqual(rho, -1.0, maxDiffRho))
+            else if (NumericSupport::areEqual(rho, -1.0, maxDiffRho))
             {
                 if (system == combOr)
                 {
@@ -140,7 +134,7 @@ namespace Deltares {
                 }
                 else
                 {
-                    double pf = abs(StandardNormal::getPFromU(dp1) - StandardNormal::getPFromU(dp2));
+                    double pf = std::abs(StandardNormal::getPFromU(dp1) - StandardNormal::getPFromU(dp2));
                     return StandardNormal::getUFromQ(pf);
                 }
             }
@@ -181,18 +175,17 @@ namespace Deltares {
             }
 
             double PfAND = pCond * StandardNormal::getQFromU(dp2);
-            double betaAND = StandardNormal::getUFromP(1.0 - PfAND);
-
-            // compute P(Z1<0 OR PZ2<0)
-            double PfOR = StandardNormal::getPFromU(-dp1) + StandardNormal::getQFromU(dp2) - PfAND;
-            double betaOR = StandardNormal::getUFromP(1.0 - PfOR);
 
             if (system == combAnd)
             {
+                double betaAND = StandardNormal::getUFromP(1.0 - PfAND);
                 return betaAND;
             }
             else
             {
+                // compute P(Z1<0 OR PZ2<0)
+                double PfOR = StandardNormal::getPFromU(-dp1) + StandardNormal::getQFromU(dp2) - PfAND;
+                double betaOR = StandardNormal::getUFromP(1.0 - PfOR);
                 return betaOR;
             }
         }
