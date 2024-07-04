@@ -161,7 +161,8 @@ copy /Y "$(TargetDir)$(TargetName).dll" "$(ProjectDir)..\Deltares.Probabilistic.
       <EnableUAC>false</EnableUAC>
     </Link>
     <PostBuildEvent>
-      <Command>mkdir -p "$(TargetDir)$(TargetName).dll" "$(ProjectDir)..\Deltares.Probabilistic.PWrapper\bin</Command>
+      <Command>mkdir -p "$(TargetDir)$(TargetName).dll" "$(ProjectDir)..\Deltares.Probabilistic.PWrapper\bin
+copy /Y "$(TargetDir)$(TargetName).dll" "$(ProjectDir)..\Deltares.Probabilistic.PWrapper\bin\$(TargetName).dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
