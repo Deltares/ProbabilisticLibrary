@@ -1,5 +1,5 @@
 #include <cmath>
-#include "HohenbichlerForm.h"
+#include "HohenbichlerFORM.h"
 #include "HohenbichlerZ.h"
 #include "../Math/NumericSupport.h"
 #include "../Statistics/StandardNormal.h"
