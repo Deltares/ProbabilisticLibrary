@@ -28,6 +28,11 @@ namespace Deltares
              * \return Design point resembling the combined reliability and alpha values
              */
             std::shared_ptr<DesignPoint> combineDesignPoints(combineAndOr combineMethodType, std::vector<std::shared_ptr<DesignPoint>>& designPoints, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix = nullptr, std::shared_ptr<ProgressIndicator> progress = nullptr) override;
+
+            /**
+             * \brief The random number generator to be used
+             */
+            Deltares::Numeric::RandomValueGeneratorType randomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::ModifiedKnuthSubtractive;
         private:
             void fillSettings(std::shared_ptr<CombinedDesignPointModel> model, std::shared_ptr<DirectionalSamplingSettings> settings);
         };

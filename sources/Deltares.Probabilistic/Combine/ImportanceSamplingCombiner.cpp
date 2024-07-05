@@ -69,8 +69,8 @@ namespace Deltares
         {
             if (combineMethodType == combineAndOr::combAnd)
             {
-                double prob = 1;
-                for (const std::shared_ptr<DesignPoint> designPoint : designPoints)
+                double prob = 1.0;
+                for (const std::shared_ptr<DesignPoint>& designPoint : designPoints)
                 {
                     prob *= Statistics::StandardNormal::getQFromU(designPoint->Beta);
                 }
@@ -79,26 +79,26 @@ namespace Deltares
             }
             else
             {
-                double prob = 1;
-                for (const std::shared_ptr<DesignPoint> designPoint : designPoints)
+                double prob = 1.0;
+                for (const std::shared_ptr<DesignPoint>& designPoint : designPoints)
                 {
                     prob *= Statistics::StandardNormal::getPFromU(designPoint->Beta);
                 }
 
-                return 1 - prob;
+                return 1.0 - prob;
             }
         }
 
-        void ImportanceSamplingCombiner::invert(std::shared_ptr<DesignPoint> designPoint)
+        void ImportanceSamplingCombiner::invert(std::shared_ptr<DesignPoint>& designPoint)
         {
             designPoint->Beta = -designPoint->Beta;
-            for (std::shared_ptr<StochastPointAlpha> alpha : designPoint->Alphas)
+            for (std::shared_ptr<StochastPointAlpha>& alpha : designPoint->Alphas)
             {
                 alpha->Alpha = -alpha->Alpha;
                 alpha->AlphaCorrelated = -alpha->AlphaCorrelated;
             }
 
-            for (std::shared_ptr<ReliabilityResult> report : designPoint->ReliabililityResults)
+            for (std::shared_ptr<ReliabilityResult>& report : designPoint->ReliabililityResults)
             {
                 report->Reliability = -report->Reliability;
             }
@@ -244,6 +244,7 @@ namespace Deltares
             settings->VariationCoefficient = 0.1;
             settings->designPointMethod = DesignPointMethod::NearestToMean; // result will be ignored, fastest option
             settings->randomSettings->SkipUnvaryingParameters = false;
+            settings->randomSettings->RandomGeneratorType = randomGeneratorType;
 
             for (size_t i = 0; i < model->stochasts.size(); i++)
             {
@@ -366,6 +367,7 @@ namespace Deltares
             settings->VariationCoefficient = 0.1;
             settings->designPointMethod = DesignPointMethod::CenterOfGravity; // result will be ignored, fastest option
             settings->randomSettings->SkipUnvaryingParameters = false;
+            settings->randomSettings->RandomGeneratorType = randomGeneratorType;
 
             for (size_t i = 0; i < model->stochasts.size(); i++)
             {

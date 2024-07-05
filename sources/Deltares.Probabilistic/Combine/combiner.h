@@ -34,7 +34,7 @@ namespace Deltares
              * \param designPoints design points
              * \return All stochasts without doubling
              */
-            std::vector<std::shared_ptr<Statistics::Stochast>> getUniqueStochasts(std::vector<std::shared_ptr<Reliability::DesignPoint>>& designPoints);
+            std::vector<std::shared_ptr<Statistics::Stochast>> getUniqueStochasts(const std::vector<std::shared_ptr<Reliability::DesignPoint>>& designPoints);
 
             /**
              * \brief Gets the linearized model representing the design points to be combined

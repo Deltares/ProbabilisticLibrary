@@ -592,6 +592,54 @@ namespace Deltares
 			return maxStart;
 		}
 
+        /// <summary>
+        /// Gets the value whose absolute is value is max
+        /// </summary>
+        /// <param name="val1"></param>
+        /// <param name="val2"></param>
+        /// <returns> max value </returns>
+        double NumericSupport::getMaxAbs(const double val1, const double val2)
+        {
+            if (std::abs(val1) >= std::abs(val2))
+            {
+                return val1;
+            }
+            else
+            {
+                return val2;
+            }
+        }
+
+        std::vector<double> NumericSupport::LinearSpaced(const int length, const double start, const double stop)
+        {
+            if (length < 0)
+            {
+                throw Reliability::probLibException("length in LinearSpaced < 0");
+            }
+
+            switch (length)
+            {
+            case 0:
+                return std::vector<double> {};
+            case 1:
+                return std::vector<double> { stop };
+            default:
+            {
+                double num = (stop - start) / (double)(length - 1);
+                auto array = std::vector<double>();
+                for (int i = 0; i < length; i++)
+                {
+                    array.push_back(start + (double)i * num);
+                }
+
+                array[length - 1] = stop;
+                return array;
+            }
+            }
+        }
+
+
+
 	}
 }
 
