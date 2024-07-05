@@ -6,40 +6,40 @@
 
 namespace Deltares
 {
-	namespace Reliability
-	{
-		namespace Wrappers
-		{
-			using namespace Deltares::Utils::Wrappers;
-			using namespace Deltares::Models::Wrappers;
+    namespace Reliability
+    {
+        namespace Wrappers
+        {
+            using namespace Deltares::Utils::Wrappers;
+            using namespace Deltares::Models::Wrappers;
 
-			public ref class NumericalIntegration : public ReliabilityMethod
-			{
-			private:
-				SharedPointerProvider<Reliability::NumericalIntegration>* shared = new SharedPointerProvider(new Reliability::NumericalIntegration());
-			public:
-				NumericalIntegration() {}
-				~NumericalIntegration() { this->!NumericalIntegration(); }
-				!NumericalIntegration() { delete shared; }
+            public ref class NumericalIntegration : public ReliabilityMethod
+            {
+            private:
+                SharedPointerProvider<Reliability::NumericalIntegration>* shared = new SharedPointerProvider(new Reliability::NumericalIntegration());
+            public:
+                NumericalIntegration() {}
+                ~NumericalIntegration() { this->!NumericalIntegration(); }
+                !NumericalIntegration() { delete shared; }
 
-				std::shared_ptr<Reliability::ReliabilityMethod> GetReliabilityMethod() override
-				{
-					shared->object->Settings = *Settings->GetSettings();
-					return shared->object;
-				}
+                std::shared_ptr<Reliability::ReliabilityMethod> GetReliabilityMethod() override
+                {
+                    shared->object->Settings = *Settings->GetSettings();
+                    return shared->object;
+                }
 
-				NumericalIntegrationSettings^ Settings = gcnew NumericalIntegrationSettings();
+                NumericalIntegrationSettings^ Settings = gcnew NumericalIntegrationSettings();
 
-				System::Object^ GetSettings() override { return Settings; }
+                System::Object^ GetSettings() override { return Settings; }
 
-				bool IsValid() override { return Settings->IsValid(); }
+                bool IsValid() override { return Settings->IsValid(); }
 
-				void Stop()	override { shared->object->Stop(); }
+                void Stop()    override { shared->object->Stop(); }
 
-				bool IsStopped() override { return shared->object->isStopped(); }
-			};
-		}
-	}
+                bool IsStopped() override { return shared->object->isStopped(); }
+            };
+        }
+    }
 }
 
 

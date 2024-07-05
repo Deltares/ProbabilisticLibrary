@@ -6,41 +6,41 @@
 
 namespace Deltares
 {
-	namespace Models
-	{
-		namespace Wrappers
-		{
-			using namespace Deltares::Models;
-			using namespace Deltares::Utils::Wrappers;
+    namespace Models
+    {
+        namespace Wrappers
+        {
+            using namespace Deltares::Models;
+            using namespace Deltares::Utils::Wrappers;
 
-			/**
-			 * \brief Sample with values defined in x-space
-			 */
-			public ref class ModelSample
-			{
-			private:
-				array<double>^ values = nullptr;
-				SharedPointerProvider<Models::ModelSample>* shared = nullptr;
+            /**
+             * \brief Sample with values defined in x-space
+             */
+            public ref class ModelSample
+            {
+            private:
+                array<double>^ values = nullptr;
+                SharedPointerProvider<Models::ModelSample>* shared = nullptr;
 
-			public:
-				ModelSample(std::shared_ptr<Models::ModelSample> sample)
-				{
-					shared = new SharedPointerProvider(sample);
-					this->values = NativeSupport::toManaged(sample->Values);
+            public:
+                ModelSample(std::shared_ptr<Models::ModelSample> sample)
+                {
+                    shared = new SharedPointerProvider(sample);
+                    this->values = NativeSupport::toManaged(sample->Values);
                 }
 
-				ModelSample(array<double>^ values)
-				{
-					std::vector<double> nativeValues = NativeSupport::toNative(values);
-					shared = new SharedPointerProvider(new Models::ModelSample(nativeValues));
-					this->values = NativeSupport::toManaged(shared->object->Values);
-				}
+                ModelSample(array<double>^ values)
+                {
+                    std::vector<double> nativeValues = NativeSupport::toNative(values);
+                    shared = new SharedPointerProvider(new Models::ModelSample(nativeValues));
+                    this->values = NativeSupport::toManaged(shared->object->Values);
+                }
 
                 ~ModelSample() { this->!ModelSample(); }
                 !ModelSample()
-				{
+                {
                     delete shared;
-				}
+                }
 
                 void SetNativeModelSample(const std::shared_ptr<Models::ModelSample> nativeModelSample)
                 {
@@ -60,94 +60,94 @@ namespace Deltares
                 }
 
                 property array<double>^ Values
-				{
-					array<double>^ get() { return values; }
-				}
+                {
+                    array<double>^ get() { return values; }
+                }
 
-				property double Beta
-				{
-					double get() { return shared->object->Beta; }
-				}
+                property double Beta
+                {
+                    double get() { return shared->object->Beta; }
+                }
 
-				property double Weight
-				{
-					double get() { return shared->object->Weight; }
-				}
+                property double Weight
+                {
+                    double get() { return shared->object->Weight; }
+                }
 
-				property int Iteration
-				{
-					int get() { return shared->object->IterationIndex; }
-				}
+                property int Iteration
+                {
+                    int get() { return shared->object->IterationIndex; }
+                }
 
-				property bool AllowProxy
-				{
-					bool get() { return shared->object->AllowProxy; }
-					void set(bool value) { shared->object->AllowProxy = value; }
-				}
+                property bool AllowProxy
+                {
+                    bool get() { return shared->object->AllowProxy; }
+                    void set(bool value) { shared->object->AllowProxy = value; }
+                }
 
-				property bool IsRestartRequired
-				{
-					bool get() { return shared->object->IsRestartRequired; }
-					void set(bool value) { shared->object->IsRestartRequired = value; }
-				}
+                property bool IsRestartRequired
+                {
+                    bool get() { return shared->object->IsRestartRequired; }
+                    void set(bool value) { shared->object->IsRestartRequired = value; }
+                }
 
-				property double Z
-				{
-					double get() { return shared->object->Z; }
-					void set(double value) { shared->object->Z = value; }
-				}
+                property double Z
+                {
+                    double get() { return shared->object->Z; }
+                    void set(double value) { shared->object->Z = value; }
+                }
 
-				bool AreValuesEqual(ModelSample^ other)
-				{
-					if (this == other)
-					{
-						return true;
-					}
+                bool AreValuesEqual(ModelSample^ other)
+                {
+                    if (this == other)
+                    {
+                        return true;
+                    }
 
-					if (this->Values->Length != this->Values->Length)
-					{
-						return false;
-					}
+                    if (this->Values->Length != this->Values->Length)
+                    {
+                        return false;
+                    }
 
-					for (int i = 0; i < this->Values->Length; i++)
-					{
-						if (!isnan(this->Values[i]) || !isnan(other->Values[i]))
-						{
-							if (this->Values[i] != other->Values[i])
-							{
-								return false;
-							}
-						}
-					}
+                    for (int i = 0; i < this->Values->Length; i++)
+                    {
+                        if (!isnan(this->Values[i]) || !isnan(other->Values[i]))
+                        {
+                            if (this->Values[i] != other->Values[i])
+                            {
+                                return false;
+                            }
+                        }
+                    }
 
-					return true;
-				}
+                    return true;
+                }
 
                 /// <summary>
                 /// Reference to an object to be attached to the sample
                 /// </summary>
                 property int Tag
-				{
-					int get()
-					{
-						return shared->object->Tag;
-					}
-					void set(int value)
-					{
+                {
+                    int get()
+                    {
+                        return shared->object->Tag;
+                    }
+                    void set(int value)
+                    {
                         shared->object->Tag = value;
-					}
-				}
+                    }
+                }
 
                 /// <summary>
                 /// Gets the native underlying object
                 /// </summary>
                 std::shared_ptr<Models::ModelSample> GetModelSample()
-				{
-					return shared->object;
-				}
+                {
+                    return shared->object;
+                }
             };
-		}
-	}
+        }
+    }
 }
 
 

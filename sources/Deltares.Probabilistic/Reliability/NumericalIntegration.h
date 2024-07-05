@@ -4,17 +4,17 @@
 
 namespace Deltares
 {
-	namespace Reliability
-	{
-		class NumericalIntegration : public ReliabilityMethod
-		{
-		public:
-			NumericalIntegrationSettings Settings;
-			std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
-		private:
-			double getStochastProbability(std::shared_ptr<ModelRunner> modelRunner, int stochastIndex, std::shared_ptr<Sample> parentSample, std::shared_ptr<DesignPointBuilder> designPointBuilder, double density, double z0Fac, double& totalDensity);
-		};
-	}
+    namespace Reliability
+    {
+        class NumericalIntegration : public ReliabilityMethod
+        {
+        public:
+            NumericalIntegrationSettings Settings;
+            std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
+        private:
+            double getStochastProbability(std::shared_ptr<ModelRunner> modelRunner, int stochastIndex, std::shared_ptr<Sample> parentSample, std::shared_ptr<DesignPointBuilder> designPointBuilder, double density, double z0Fac, double& totalDensity);
+        };
+    }
 }
 
 

@@ -7,9 +7,9 @@ namespace Deltares
 {
     namespace Reliability
     {
-	    class ModeFinder;
+        class ModeFinder;
 
-	    enum DesignPointMethod
+        enum DesignPointMethod
         {
             CenterOfGravity,
             CenterOfAngles,

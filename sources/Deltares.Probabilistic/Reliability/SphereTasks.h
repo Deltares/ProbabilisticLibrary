@@ -6,7 +6,7 @@
 namespace Deltares
 {
     namespace Reliability
-	{
+    {
         class sphereTasks
         {
         public:

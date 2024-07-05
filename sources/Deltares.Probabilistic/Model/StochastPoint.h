@@ -8,16 +8,16 @@
 
 namespace Deltares
 {
-	namespace Models
-	{
+    namespace Models
+    {
         /**
          * \brief Defines a point in the parameter space
          */
         class StochastPoint
-		{
-		public:
-			double Beta;
-			std::vector<std::shared_ptr<StochastPointAlpha>> Alphas;
+        {
+        public:
+            double Beta;
+            std::vector<std::shared_ptr<StochastPointAlpha>> Alphas;
 
             /**
              * \brief Gets a sample corresponding with the alpha values (u-value) of this stochast point
@@ -50,8 +50,8 @@ namespace Deltares
              */
             void updateInfluenceFactors();
 
-			virtual ~StochastPoint() { ; }
-		};
-	}
+            virtual ~StochastPoint() { ; }
+        };
+    }
 }
 

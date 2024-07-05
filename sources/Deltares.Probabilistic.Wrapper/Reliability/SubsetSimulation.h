@@ -34,7 +34,7 @@ namespace Deltares
 
                 bool IsValid() override { return Settings->IsValid(); }
 
-                void Stop()	override { shared->object->Stop(); }
+                void Stop()    override { shared->object->Stop(); }
 
                 bool IsStopped() override { return shared->object->isStopped(); }
             };

@@ -7,38 +7,38 @@
 
 namespace Deltares
 {
-	namespace Reliability
-	{
-		using namespace Deltares::Models;
+    namespace Reliability
+    {
+        using namespace Deltares::Models;
 
-		class StochastSettingsSet
-		{
-		private:
-			void loadStochastPoint(std::shared_ptr<StochastPoint> stochastPoint);
-		public:
-			StochastSettingsSet() {}
-			StochastSettingsSet(std::shared_ptr<StochastPoint> stochastPoint)
-			{
-				loadStochastPoint(stochastPoint);
-			}
+        class StochastSettingsSet
+        {
+        private:
+            void loadStochastPoint(std::shared_ptr<StochastPoint> stochastPoint);
+        public:
+            StochastSettingsSet() {}
+            StochastSettingsSet(std::shared_ptr<StochastPoint> stochastPoint)
+            {
+                loadStochastPoint(stochastPoint);
+            }
 
-			std::vector<std::shared_ptr<StochastSettings>> stochastSettings;
-			int getStochastCount()
-			{
-				return static_cast<int>(this->stochastSettings.size());
-			}
+            std::vector<std::shared_ptr<StochastSettings>> stochastSettings;
+            int getStochastCount()
+            {
+                return static_cast<int>(this->stochastSettings.size());
+            }
 
-			std::vector<std::shared_ptr<Deltares::Reliability::StochastSettings>> VaryingStochastSettings;
-			int getVaryingStochastCount()
-			{
-				return static_cast<int>(this->VaryingStochastSettings.size());
-			}
+            std::vector<std::shared_ptr<Deltares::Reliability::StochastSettings>> VaryingStochastSettings;
+            int getVaryingStochastCount()
+            {
+                return static_cast<int>(this->VaryingStochastSettings.size());
+            }
 
-			std::shared_ptr<Sample> getStartPoint();
-			void setStartPoint(std::shared_ptr<Sample> startPoint);
+            std::shared_ptr<Sample> getStartPoint();
+            void setStartPoint(std::shared_ptr<Sample> startPoint);
 
-			bool AreStartValuesCorrelated = true;
-		};
-	}
+            bool AreStartValuesCorrelated = true;
+        };
+    }
 }
 

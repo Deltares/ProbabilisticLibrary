@@ -4,12 +4,12 @@
 
 namespace Deltares
 {
-	namespace Statistics
-	{
-		class QualitativeDistribution : public DiscreteDistribution
-		{
-			bool isQualitative() override { return true; }
-		};
-	}
+    namespace Statistics
+    {
+        class QualitativeDistribution : public DiscreteDistribution
+        {
+            bool isQualitative() override { return true; }
+        };
+    }
 }
 

@@ -2,43 +2,43 @@
 
 namespace Deltares
 {
-	namespace Models
-	{
-		namespace Wrappers
-		{
-			public delegate void ManagedInitializeRandomDelegate(bool repeatable, int seed);
-			public delegate double ManagedNextRandomDelegate();
+    namespace Models
+    {
+        namespace Wrappers
+        {
+            public delegate void ManagedInitializeRandomDelegate(bool repeatable, int seed);
+            public delegate double ManagedNextRandomDelegate();
 
-			ref class RandomProvider
-			{
-			private:
-				static System::Random^ random = gcnew System::Random();
+            ref class RandomProvider
+            {
+            private:
+                static System::Random^ random = gcnew System::Random();
 
-				static void initializeInitializeDelegate();
-				static void initializeNextDelegate();
-				static bool initialized = false;
+                static void initializeInitializeDelegate();
+                static void initializeNextDelegate();
+                static bool initialized = false;
 
-				static void initialize(bool repeatable, int seed)
-				{
-					if (repeatable)
-					{
-						random = gcnew System::Random(seed);
-					}
-					else
-					{
-						random = gcnew System::Random();
-					}
-				}
+                static void initialize(bool repeatable, int seed)
+                {
+                    if (repeatable)
+                    {
+                        random = gcnew System::Random(seed);
+                    }
+                    else
+                    {
+                        random = gcnew System::Random();
+                    }
+                }
 
-				static double next()
-				{
-					return random->NextDouble();
-				}
+                static double next()
+                {
+                    return random->NextDouble();
+                }
 
-			public:
-				static void initialize();
-			};
-		}
-	}
+            public:
+                static void initialize();
+            };
+        }
+    }
 }
 

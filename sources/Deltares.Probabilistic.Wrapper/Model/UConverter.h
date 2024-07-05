@@ -8,40 +8,40 @@
 
 namespace Deltares
 {
-	namespace Models
-	{
-		namespace Wrappers
-		{
-			using namespace Deltares::Models;
-			using namespace Deltares::Utils::Wrappers;
+    namespace Models
+    {
+        namespace Wrappers
+        {
+            using namespace Deltares::Models;
+            using namespace Deltares::Utils::Wrappers;
 
-			public ref class UConverter
-			{
-			private:
-				array<double>^ values = nullptr;
-				System::Object^ tag = nullptr;
-				SharedPointerProvider<Models::UConverter>* shared = nullptr;
+            public ref class UConverter
+            {
+            private:
+                array<double>^ values = nullptr;
+                System::Object^ tag = nullptr;
+                SharedPointerProvider<Models::UConverter>* shared = nullptr;
 
-			public:
-				UConverter(System::Collections::Generic::List<Statistics::Wrappers::Stochast^>^ stochasts, Statistics::Wrappers::CorrelationMatrix^ correlationMatrix);
+            public:
+                UConverter(System::Collections::Generic::List<Statistics::Wrappers::Stochast^>^ stochasts, Statistics::Wrappers::CorrelationMatrix^ correlationMatrix);
                 ~UConverter() { this->!UConverter(); }
                 !UConverter() { delete shared; }
 
-				virtual property int VaryingStochastCount
-				{
-					int get() { return shared->object->getVaryingStochastCount(); }
-				}
+                virtual property int VaryingStochastCount
+                {
+                    int get() { return shared->object->getVaryingStochastCount(); }
+                }
 
-				bool IsVaryingStochast(int index);
+                bool IsVaryingStochast(int index);
 
-				virtual Wrappers::StochastPoint^ GetBaseStochastPoint(double beta, array<double>^ alphas, System::Collections::Generic::List<Statistics::Wrappers::Stochast^>^ stochasts);
+                virtual Wrappers::StochastPoint^ GetBaseStochastPoint(double beta, array<double>^ alphas, System::Collections::Generic::List<Statistics::Wrappers::Stochast^>^ stochasts);
 
-				std::shared_ptr<Models::UConverter> GetConverter()
-				{
-					return shared->object;
-				}
-			};
-		}
-	}
+                std::shared_ptr<Models::UConverter> GetConverter()
+                {
+                    return shared->object;
+                }
+            };
+        }
+    }
 }
 

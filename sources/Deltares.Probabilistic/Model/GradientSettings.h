@@ -2,29 +2,29 @@
 
 namespace Deltares
 {
-	namespace Models
-	{
-		enum GradientType
-		{
-			OneDirection,
-			TwoDirections
-		};
+    namespace Models
+    {
+        enum GradientType
+        {
+            OneDirection,
+            TwoDirections
+        };
 
-		class GradientSettings
-		{
-		public:
-			GradientSettings() {}
+        class GradientSettings
+        {
+        public:
+            GradientSettings() {}
 
-			GradientType gradientType = OneDirection;
-			double StepSize = 0.3;
-			bool OnlyInitializationAllowed = false;
+            GradientType gradientType = OneDirection;
+            double StepSize = 0.3;
+            bool OnlyInitializationAllowed = false;
 
-			bool isValid()
-			{
-				return StepSize >= 0.01;
-			}
-		};
-	}
+            bool isValid()
+            {
+                return StepSize >= 0.01;
+            }
+        };
+    }
 }
 
 

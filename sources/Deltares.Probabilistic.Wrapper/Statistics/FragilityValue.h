@@ -5,17 +5,17 @@
 
 namespace Deltares
 {
-	namespace Statistics
-	{
-		namespace Wrappers
-		{
-			using namespace Deltares::Utils::Wrappers;
+    namespace Statistics
+    {
+        namespace Wrappers
+        {
+            using namespace Deltares::Utils::Wrappers;
 
-			public ref class FragilityValue
-			{
-			private:
-				SharedPointerProvider<Statistics::FragilityValue>* shared = nullptr;
-			public:
+            public ref class FragilityValue
+            {
+            private:
+                SharedPointerProvider<Statistics::FragilityValue>* shared = nullptr;
+            public:
                 FragilityValue()
                 {
                     shared = new SharedPointerProvider(new Statistics::FragilityValue());
@@ -27,33 +27,33 @@ namespace Deltares
                 }
 
                 ~FragilityValue() { this->!FragilityValue(); }
-				!FragilityValue() { delete shared; }
+                !FragilityValue() { delete shared; }
 
-				property double X
-				{
-					double get() { return shared->object->X; }
-					void set(double value)
-					{
-					    shared->object->X = value;
+                property double X
+                {
+                    double get() { return shared->object->X; }
+                    void set(double value)
+                    {
+                        shared->object->X = value;
                         shared->object->setDirty();
-					}
-				}
+                    }
+                }
 
-				property double Reliability
-				{
-					double get() { return shared->object->Reliability; }
-					void set(double value)
-					{
-					    shared->object->Reliability = value;
+                property double Reliability
+                {
+                    double get() { return shared->object->Reliability; }
+                    void set(double value)
+                    {
+                        shared->object->Reliability = value;
                         shared->object->setDirty();
-					}
-				}
+                    }
+                }
 
-				std::shared_ptr<Statistics::FragilityValue> GetValue()
-				{
-					return shared->object;
-				}
-			};
-		}
-	}
+                std::shared_ptr<Statistics::FragilityValue> GetValue()
+                {
+                    return shared->object;
+                }
+            };
+        }
+    }
 }

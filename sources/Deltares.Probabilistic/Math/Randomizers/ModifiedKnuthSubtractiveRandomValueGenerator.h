@@ -11,29 +11,29 @@ typedef double(* NextRandomDelegate) ();
 
 namespace Deltares
 {
-	namespace Numeric
-	{
-		class ModifiedKnuthSubtractiveRandomValueGenerator : public RandomValueGenerator
-		{
-		private:
-			inline static InitializeRandomDelegate initializeDelegate = nullptr;
-			inline static NextRandomDelegate nextDelegate = nullptr;
-		public:
-			void initialize(bool repeatable, int seed, int seedB) override;
-			double next() override;
+    namespace Numeric
+    {
+        class ModifiedKnuthSubtractiveRandomValueGenerator : public RandomValueGenerator
+        {
+        private:
+            inline static InitializeRandomDelegate initializeDelegate = nullptr;
+            inline static NextRandomDelegate nextDelegate = nullptr;
+        public:
+            void initialize(bool repeatable, int seed, int seedB) override;
+            double next() override;
 
             static bool isAvailable();
 
-			static void setInitializeDelegate(InitializeRandomDelegate initializeDelegate)
-			{
-				ModifiedKnuthSubtractiveRandomValueGenerator::initializeDelegate = initializeDelegate;
-			}
+            static void setInitializeDelegate(InitializeRandomDelegate initializeDelegate)
+            {
+                ModifiedKnuthSubtractiveRandomValueGenerator::initializeDelegate = initializeDelegate;
+            }
 
-			static void setNextDelegate(NextRandomDelegate nextDelegate)
-			{
-				ModifiedKnuthSubtractiveRandomValueGenerator::nextDelegate = nextDelegate;
-			}
-		};
-	}
+            static void setNextDelegate(NextRandomDelegate nextDelegate)
+            {
+                ModifiedKnuthSubtractiveRandomValueGenerator::nextDelegate = nextDelegate;
+            }
+        };
+    }
 }
 

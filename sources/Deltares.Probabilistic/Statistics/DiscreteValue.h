@@ -4,28 +4,28 @@
 
 namespace Deltares
 {
-	namespace Statistics
-	{
-		class DiscreteValue
-		{
-		public:
-			DiscreteValue()	{ }
+    namespace Statistics
+    {
+        class DiscreteValue
+        {
+        public:
+            DiscreteValue()    { }
 
-			DiscreteValue(double x, double amount)
-			{
-				this->X = x;
-				this->Amount = amount;
-			}
+            DiscreteValue(double x, double amount)
+            {
+                this->X = x;
+                this->Amount = amount;
+            }
 
-			~DiscreteValue()
-			{
-			}
+            ~DiscreteValue()
+            {
+            }
 
-			double X = 0;
-			double Amount = 0;
+            double X = 0;
+            double Amount = 0;
 
-			double NormalizedAmount = 0; // for internal use
-			double CumulativeNormalizedAmount = 0; // for internal use
+            double NormalizedAmount = 0; // for internal use
+            double CumulativeNormalizedAmount = 0; // for internal use
 
             void setDirtyFunction(Utils::SetDirtyLambda setDirtyLambda)
             {
@@ -40,9 +40,9 @@ namespace Deltares
                 }
             }
 
-		private:
+        private:
             Utils::SetDirtyLambda setDirtyLambda = nullptr;
-		};
-	}
+        };
+    }
 }
 

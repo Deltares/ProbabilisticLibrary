@@ -4,7 +4,7 @@
 namespace Deltares
 {
     namespace Numeric
-	{
+    {
         class MatrixSupport
         {
         public:

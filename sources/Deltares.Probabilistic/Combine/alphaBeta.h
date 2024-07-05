@@ -5,7 +5,7 @@
 namespace Deltares
 {
     namespace Reliability
-	{
+    {
         using Deltares::Numeric::vector1D;
 
         class alphaBeta

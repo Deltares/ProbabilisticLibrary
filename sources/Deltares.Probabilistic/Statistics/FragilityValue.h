@@ -5,13 +5,13 @@
 
 namespace Deltares
 {
-	namespace Statistics
-	{
-		class FragilityValue
-		{
-		public:
-			double X;
-			double Reliability;
+    namespace Statistics
+    {
+        class FragilityValue
+        {
+        public:
+            double X;
+            double Reliability;
 
             double getProbabilityOfFailure()
             {
@@ -23,7 +23,7 @@ namespace Deltares
                 this->Reliability = StandardNormal::getUFromQ(q);
             }
 
-		    double getProbabilityOfNonFailure()
+            double getProbabilityOfNonFailure()
             {
                 return StandardNormal::getPFromU(this->Reliability);
             }
@@ -59,6 +59,6 @@ namespace Deltares
         private:
             Utils::SetDirtyLambda setDirtyLambda = nullptr;
         };
-	}
+    }
 }
 

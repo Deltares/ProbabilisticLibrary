@@ -8,11 +8,11 @@
 
 namespace Deltares
 {
-	namespace Reliability
-	{
-		class ImportanceSamplingSettings
-		{
-		public:
+    namespace Reliability
+    {
+        class ImportanceSamplingSettings
+        {
+        public:
             /**
              * \brief The minimum number of samples to be examined
              */
@@ -33,7 +33,7 @@ namespace Deltares
              */
             double VariationCoefficient = 0.05;
 
-		    double VarianceFactor = 1;
+            double VarianceFactor = 1;
 
             /**
              * \brief Method type how the design point (alpha values) is calculated
@@ -53,74 +53,74 @@ namespace Deltares
             /**
              * \brief Settings per stochastic variable, contains (among others) the center value and multiplication factor used to shift samples in the importance sampling algorithm
              */
-			std::shared_ptr<StochastSettingsSet> StochastSet = std::make_shared<StochastSettingsSet>();
+            std::shared_ptr<StochastSettingsSet> StochastSet = std::make_shared<StochastSettingsSet>();
 
             std::shared_ptr<Deltares::Models::RandomSettings> randomSettings = std::make_shared<Deltares::Models::RandomSettings>();
 
-			bool Clustering = false;
-			std::vector<std::shared_ptr<Sample>> Clusters;
+            bool Clustering = false;
+            std::vector<std::shared_ptr<Sample>> Clusters;
 
-			bool isValid()
-			{
-				return MinimumSamples >= 1 &&
-					MaximumSamples >= MinimumSamples &&
-					VarianceFactor >= 0.01 &&
-					this->isStochastSetValid() &&
+            bool isValid()
+            {
+                return MinimumSamples >= 1 &&
+                    MaximumSamples >= MinimumSamples &&
+                    VarianceFactor >= 0.01 &&
+                    this->isStochastSetValid() &&
 
-					runSettings->isValid();
-			}
+                    runSettings->isValid();
+            }
 
-			bool isStochastSetValid()
-			{
-				for (size_t i = 0; i < this->StochastSet->getVaryingStochastCount(); i++)
-				{
-					std::shared_ptr<StochastSettings> stochastSettings = this->StochastSet->VaryingStochastSettings[i];
-					bool valid =
-						stochastSettings->VarianceFactor >= 0.1 &&
-						stochastSettings->StartValue >= -Statistics::StandardNormal::UMax &&
-						stochastSettings->StartValue <= Statistics::StandardNormal::UMax;
+            bool isStochastSetValid()
+            {
+                for (size_t i = 0; i < this->StochastSet->getVaryingStochastCount(); i++)
+                {
+                    std::shared_ptr<StochastSettings> stochastSettings = this->StochastSet->VaryingStochastSettings[i];
+                    bool valid =
+                        stochastSettings->VarianceFactor >= 0.1 &&
+                        stochastSettings->StartValue >= -Statistics::StandardNormal::UMax &&
+                        stochastSettings->StartValue <= Statistics::StandardNormal::UMax;
 
-						if (!valid)
-						{
-							return false;
-						}
-				}
+                        if (!valid)
+                        {
+                            return false;
+                        }
+                }
 
-				return true;
-			}
+                return true;
+            }
 
             /**
              * \brief Makes a copy of these settings (deep copy of stochast settings)
              * \return Copy
              */
             std::shared_ptr<ImportanceSamplingSettings> clone()
-			{
-				std::shared_ptr<ImportanceSamplingSettings> clone = std::make_shared<ImportanceSamplingSettings>();
+            {
+                std::shared_ptr<ImportanceSamplingSettings> clone = std::make_shared<ImportanceSamplingSettings>();
 
-				clone->MaximumSamples = this->MaximumSamples;
-				clone->MaximumSamplesNoResult = this->MaximumSamplesNoResult;
-				clone->MinimumSamples = this->MinimumSamples;
-				clone->VarianceFactor = this->VarianceFactor;
-				clone->VariationCoefficient = this->VariationCoefficient;
-				clone->designPointMethod = this->designPointMethod;
+                clone->MaximumSamples = this->MaximumSamples;
+                clone->MaximumSamplesNoResult = this->MaximumSamplesNoResult;
+                clone->MinimumSamples = this->MinimumSamples;
+                clone->VarianceFactor = this->VarianceFactor;
+                clone->VariationCoefficient = this->VariationCoefficient;
+                clone->designPointMethod = this->designPointMethod;
 
-				// move to adaptive importance sampling settings
-				clone->Clustering = this->Clustering;
+                // move to adaptive importance sampling settings
+                clone->Clustering = this->Clustering;
 
                 clone->StochastSet->AreStartValuesCorrelated = this->StochastSet->AreStartValuesCorrelated;
 
-			    clone->runSettings = this->runSettings;
-				clone->randomSettings = this->randomSettings;
+                clone->runSettings = this->runSettings;
+                clone->randomSettings = this->randomSettings;
                 clone->startPointSettings = this->startPointSettings->clone();
 
-				for (size_t i = 0; i < this->StochastSet->getStochastCount(); i++)
-				{
-					clone->StochastSet->stochastSettings.push_back(this->StochastSet->stochastSettings[i]->clone());
-				}
+                for (size_t i = 0; i < this->StochastSet->getStochastCount(); i++)
+                {
+                    clone->StochastSet->stochastSettings.push_back(this->StochastSet->stochastSettings[i]->clone());
+                }
 
-				return clone;
-			}
-		};
-	}
+                return clone;
+            }
+        };
+    }
 }
 

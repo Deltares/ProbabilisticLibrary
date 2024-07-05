@@ -4,13 +4,13 @@
 
 namespace Deltares
 {
-	namespace Statistics
-	{
-		class DistributionLibrary
-		{
-		public:
-			static std::shared_ptr<Statistics::Distribution> getDistribution(DistributionType distributionType, bool truncated, bool inverted);
-		};
-	}
+    namespace Statistics
+    {
+        class DistributionLibrary
+        {
+        public:
+            static std::shared_ptr<Statistics::Distribution> getDistribution(DistributionType distributionType, bool truncated, bool inverted);
+        };
+    }
 }
 

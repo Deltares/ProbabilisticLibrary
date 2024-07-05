@@ -5,26 +5,26 @@
 
 namespace Deltares
 {
-	namespace Reliability
-	{
-		enum ModelVaryingType {Monotone, Varying};
+    namespace Reliability
+    {
+        enum ModelVaryingType {Monotone, Varying};
 
-		class DirectionReliabilitySettings
-		{
-		public:
-			ModelVaryingType modelVaryingType = ModelVaryingType::Monotone;
-			double MaximumLengthU = 20;
-			double Dsdu = 1;
-			double EpsilonUStepSize = 0.01;
-			int MaximumIterations = 50;
-			double EpsilonZStepSize = 0.01;
-			bool FindMinimalValue = false;
-			bool UseInitialValues = false;
+        class DirectionReliabilitySettings
+        {
+        public:
+            ModelVaryingType modelVaryingType = ModelVaryingType::Monotone;
+            double MaximumLengthU = 20;
+            double Dsdu = 1;
+            double EpsilonUStepSize = 0.01;
+            int MaximumIterations = 50;
+            double EpsilonZStepSize = 0.01;
+            bool FindMinimalValue = false;
+            bool UseInitialValues = false;
 
-			std::shared_ptr<StochastSettingsSet> StochastSet = std::make_shared<StochastSettingsSet>();
+            std::shared_ptr<StochastSettingsSet> StochastSet = std::make_shared<StochastSettingsSet>();
 
-			bool IsValid();
-		};
-	}
+            bool IsValid();
+        };
+    }
 }
 

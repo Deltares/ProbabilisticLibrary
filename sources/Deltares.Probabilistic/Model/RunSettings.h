@@ -6,8 +6,8 @@
 
 namespace Deltares
 {
-	namespace Models
-	{
+    namespace Models
+    {
         enum class designPointOptions
         {
             dpOutFALSE = 0,
@@ -16,24 +16,24 @@ namespace Deltares
         };
 
         class RunSettings
-		{
-		public:
-			int MaxParallelProcesses = 1;
-			int MaxChunkSize = 16;
-			bool SaveEvaluations = false;
-			bool SaveConvergence = false;
-			bool SaveMessages = false;
+        {
+        public:
+            int MaxParallelProcesses = 1;
+            int MaxChunkSize = 16;
+            bool SaveEvaluations = false;
+            bool SaveConvergence = false;
+            bool SaveMessages = false;
             bool RunAtDesignPoint = false;
             bool ExtendedLoggingAtDesignPoint = false;
-			int MaxMessages = 1000;
-			MessageType LowestMessageType = MessageType::Warning;
+            int MaxMessages = 1000;
+            MessageType LowestMessageType = MessageType::Warning;
 
-			std::shared_ptr<ProxySettings> proxySettings = nullptr;
+            std::shared_ptr<ProxySettings> proxySettings = nullptr;
 
-			bool isValid()
-			{
-				return MaxParallelProcesses >= 1;
-			}
+            bool isValid()
+            {
+                return MaxParallelProcesses >= 1;
+            }
 
             bool IsProxyModel()
             {
@@ -44,7 +44,7 @@ namespace Deltares
                 }
                 return isProxyModel;
             }
-		};
-	}
+        };
+    }
 }
 
