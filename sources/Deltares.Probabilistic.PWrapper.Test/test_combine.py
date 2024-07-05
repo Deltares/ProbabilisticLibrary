@@ -1,9 +1,7 @@
 import unittest
 import sys
 
-from reliability import DesignPoint
-from statistic import StandardNormal, Stochast, DiscreteValue, CorrelationMatrix
-from project import CombineProject
+from ptk import *
 
 import project_builder
 

@@ -74,14 +74,14 @@ def GetArrayIntValue(id_, property_):
 
 	count_property = property_ + '_count'
 	count = GetIntValue(id_, count_property)
-	
+
 	lib.GetIndexedIntValue.restype = ctypes.c_int
 
 	values = []
 	for i in range(count):
 		value = lib.GetIndexedIntValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.c_int(i))
 		values.append(value)
-		
+
 	return values
 
 def SetArrayIntValue(id_, property_, values_):

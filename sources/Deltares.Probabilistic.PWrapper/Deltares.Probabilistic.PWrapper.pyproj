@@ -25,21 +25,21 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="d-rely\interface.py" />
-    <Compile Include="d-rely\reliability.py" />
-    <Compile Include="d-rely\project.py" />
-    <Compile Include="d-rely\utils.py" />
-    <Compile Include="d-rely\statistic.py">
+    <Compile Include="ptk\interface.py" />
+    <Compile Include="ptk\reliability.py" />
+    <Compile Include="ptk\project.py" />
+    <Compile Include="ptk\utils.py" />
+    <Compile Include="ptk\statistic.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="d-rely\__init__.py" />
+    <Compile Include="ptk\__init__.py" />
     <Compile Include="setup.py" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="readme.md" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="d-rely\" />
+    <Folder Include="ptk\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in

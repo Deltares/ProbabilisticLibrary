@@ -1,7 +1,8 @@
 import unittest
 import sys
 
-from statistic import Stochast, DiscreteValue, HistogramValue, CorrelationMatrix, StandardNormal
+#from statistic import Stochast, DiscreteValue, HistogramValue, CorrelationMatrix, StandardNormal
+from ptk import *
 
 margin = 0.01
 

@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
  
 setuptools.setup(
-    name="d-rely",
+    name="ptk",
     version="0.0.1",
     author="Deltares",
     author_email="software.support@deltares.nl",
@@ -12,7 +12,7 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     packages=setuptools.find_packages(),
-    package_data={'d-rely':['bin/Deltares.Probabilistic.CWrapper.dll']},    
+    package_data={'ptk':['bin/Deltares.Probabilistic.CWrapper.dll']},    
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: AGPL License",
