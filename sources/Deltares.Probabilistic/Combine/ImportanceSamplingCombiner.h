@@ -28,6 +28,11 @@ namespace Deltares
              * \return Design point resembling the combined reliability and alpha values
              */
             std::shared_ptr<DesignPoint> combineDesignPoints(combineAndOr combineMethodType, std::vector<std::shared_ptr<DesignPoint>>& designPoints, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix = nullptr, std::shared_ptr<ProgressIndicator> progress = nullptr) override;
+
+            /**
+             * \brief The random number generator to be used
+             */
+            Deltares::Numeric::RandomValueGeneratorType randomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::ModifiedKnuthSubtractive;
         private:
             /**
              * \brief Approximates the probability by assuming design points are independent
@@ -41,7 +46,7 @@ namespace Deltares
              * \brief Inverts the design point, so the probability of failure will be the probability of non-failure of the non-inverted design point
              * \param designPoint Design point to be inverted
              */
-            void invert(std::shared_ptr<DesignPoint> designPoint);
+            void invert(std::shared_ptr<DesignPoint>& designPoint);
 
             /**
              * \brief Combines design points with possibly inverted design points

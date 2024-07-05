@@ -7,7 +7,7 @@
 #include "Combin/intEqualElements_tests.h"
 #include "Combin/upscale_tests.h"
 #include "Combin/combinElements_tests.h"
-#include "Combin/hohenbichlerCombiner_tests.h"
+#include "Combin/combiner_tests.h"
 #include "Distributions/testDistributions.h"
 
 using namespace Deltares::Probabilistic;
@@ -24,10 +24,10 @@ namespace Deltares
                 return RUN_ALL_TESTS();
             }
 
-            TEST(unittst, testHohenbichlerCombinerElements)
+            TEST(unittst, testCombiner)
             {
-                auto h = HohenbichlerCombinerTest();
-                h.allHohenbichlerCombinerTests();
+                auto h = CombinerTest();
+                h.allCombinerTests();
             }
 
             TEST(unittst, testCombinElements)

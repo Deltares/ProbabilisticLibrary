@@ -23,6 +23,7 @@ subroutine run_all_ftn_interface_tests
     call testWithLevel(test_calc_distrib, "test calc distrib", testLevel)
     call testWithLevel(test_conversions, "test conversions", testLevel)
     call testWithLevel(test_combine, "test combine", testLevel)
+    call testWithLevel(test_combine_gen, "test combine general", testLevel)
 
 end subroutine run_all_ftn_interface_tests
 
@@ -264,5 +265,26 @@ subroutine test_combine
     call assert_comparable(alpha, [sqrt(0.5_dp), sqrt(0.5_dp)], margin, "alpha in beta")
 
 end subroutine test_combine
+
+subroutine test_combine_gen
+    use interface_combin
+    implicit none
+    real(kind=dp) :: betas(2), alphas(2,2), rho(2), beta, alpha(2)
+    integer i, j
+    betas = [2.0_dp, 3.0_dp]
+    do i = 1, 2
+        do j = 1, 2
+            alphas(i,j) = sqrt(0.5_dp)
+        end do
+    end do
+    rho = [1.0_dp, 1.0_dp]
+
+    do i = 0, 2
+        call combineMultipleElementsGeneral( betas, alphas, rho, beta, alpha, combOR, i, 2, 2)
+        call assert_comparable(beta, 2.0_wp, 1d-2, "diff in beta")
+        call assert_comparable(alpha, [sqrt(0.5_dp), sqrt(0.5_dp)], 1d-1, "alpha in beta")
+    end do
+
+end subroutine test_combine_gen
 
 end module ftn_interface_tests

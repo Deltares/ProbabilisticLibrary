@@ -1,7 +1,7 @@
 #pragma once
 #include "../Math/vector1D.h"
 #include "alphaBeta.h"
-#include "Hohenbichler.h"
+#include "HohenbichlerFORM.h"
 
 namespace Deltares {
     namespace Reliability {
@@ -24,7 +24,7 @@ namespace Deltares {
         private:
             const double rhoLimit = 0.99999; // Limit value for the correlation coefficient
             const double rhoLowLim = 0.001;          // Lower limit of correlation coefficient before Hohenbichler method must be called
-            Hohenbichler hhb = Hohenbichler();
+            HohenbichlerFORM hhb = HohenbichlerFORM();
             double upscaleBeta(double elm, const double rhoT, const double nrTimes, int& failures);
         };
     }
