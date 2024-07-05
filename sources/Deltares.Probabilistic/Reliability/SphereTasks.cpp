@@ -4,7 +4,7 @@
 namespace Deltares
 {
     namespace Reliability
-	{
+    {
         std::vector<Numeric::vector1D> sphereTasks::examineSurfaceForTasks(const Numeric::vector1D& uRay)
         {
             uTasks.clear();

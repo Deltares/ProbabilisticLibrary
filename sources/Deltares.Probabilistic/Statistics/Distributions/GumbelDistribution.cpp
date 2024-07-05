@@ -9,144 +9,144 @@
 
 namespace Deltares
 {
-	namespace Statistics
-	{
-		void GumbelDistribution::setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation)
-		{
-			stochast->Scale = sqrt(6) * deviation / std::numbers::pi;
-			stochast->Shift = mean - stochast->Scale * std::numbers::egamma;
-		}
+    namespace Statistics
+    {
+        void GumbelDistribution::setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation)
+        {
+            stochast->Scale = sqrt(6) * deviation / std::numbers::pi;
+            stochast->Shift = mean - stochast->Scale * std::numbers::egamma;
+        }
 
-		void GumbelDistribution::initialize(std::shared_ptr<StochastProperties> stochast, std::vector<double> values)
-		{
-			setMeanAndDeviation(stochast, values[0], values[1]);
-		}
+        void GumbelDistribution::initialize(std::shared_ptr<StochastProperties> stochast, std::vector<double> values)
+        {
+            setMeanAndDeviation(stochast, values[0], values[1]);
+        }
 
-		bool GumbelDistribution::isValid(std::shared_ptr<StochastProperties> stochast)
-		{
-			return stochast->Scale >= 0;
-		}
+        bool GumbelDistribution::isValid(std::shared_ptr<StochastProperties> stochast)
+        {
+            return stochast->Scale >= 0;
+        }
 
-		bool GumbelDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)
-		{
-			return stochast->Scale > 0;
-		}
+        bool GumbelDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)
+        {
+            return stochast->Scale > 0;
+        }
 
-		double GumbelDistribution::getMean(std::shared_ptr<StochastProperties> stochast)
-		{
-			return stochast->Shift + stochast->Scale * std::numbers::egamma;
-		}
+        double GumbelDistribution::getMean(std::shared_ptr<StochastProperties> stochast)
+        {
+            return stochast->Shift + stochast->Scale * std::numbers::egamma;
+        }
 
-		double GumbelDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
-		{
-			return std::numbers::pi * stochast->Scale / sqrt(6);
-		}
+        double GumbelDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
+        {
+            return std::numbers::pi * stochast->Scale / sqrt(6);
+        }
 
-		double GumbelDistribution::getXFromU(std::shared_ptr<StochastProperties> stochast, double u)
-		{
-			double p = StandardNormal::getPFromU(u);
+        double GumbelDistribution::getXFromU(std::shared_ptr<StochastProperties> stochast, double u)
+        {
+            double p = StandardNormal::getPFromU(u);
 
-			if (p == 0)
-			{
-				return stochast->Shift;
-			}
-			else
-			{
-				double logp = -log(p);
-				double xscale = -log(logp);
-				double x = xscale * stochast->Scale;
+            if (p == 0)
+            {
+                return stochast->Shift;
+            }
+            else
+            {
+                double logp = -log(p);
+                double xscale = -log(logp);
+                double x = xscale * stochast->Scale;
 
-				return x + stochast->Shift;
-			}
-		}
+                return x + stochast->Shift;
+            }
+        }
 
-		double GumbelDistribution::getUFromX(std::shared_ptr<StochastProperties> stochast, double x)
-		{
-			if (stochast->Scale == 0)
-			{
-				return x < stochast->Shift ? -StandardNormal::UMax : StandardNormal::UMax;
-			}
-			else
-			{
-				x -= stochast->Shift;
-				double cdf = exp(-exp(-x / stochast->Scale));
+        double GumbelDistribution::getUFromX(std::shared_ptr<StochastProperties> stochast, double x)
+        {
+            if (stochast->Scale == 0)
+            {
+                return x < stochast->Shift ? -StandardNormal::UMax : StandardNormal::UMax;
+            }
+            else
+            {
+                x -= stochast->Shift;
+                double cdf = exp(-exp(-x / stochast->Scale));
 
-				return StandardNormal::getUFromP(cdf);
-			}
-		}
+                return StandardNormal::getUFromP(cdf);
+            }
+        }
 
-		double GumbelDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)
-		{
-			if (stochast->Scale == 0)
-			{
-				return x == stochast->Shift ? 1 : 0;
-			}
-			else
-			{
-				x = (x - stochast->Shift) / stochast->Scale;
+        double GumbelDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)
+        {
+            if (stochast->Scale == 0)
+            {
+                return x == stochast->Shift ? 1 : 0;
+            }
+            else
+            {
+                x = (x - stochast->Shift) / stochast->Scale;
 
-				return (1 / stochast->Scale) * exp(-(x + exp(-x)));
-			}
-		}
+                return (1 / stochast->Scale) * exp(-(x + exp(-x)));
+            }
+        }
 
-		double GumbelDistribution::getCDF(std::shared_ptr<StochastProperties> stochast, double x)
-		{
-			if (stochast->Scale == 0)
-			{
-				return x < stochast->Shift ? 0 : 1;
-			}
-			else
-			{
-				x -= stochast->Shift;
-				return exp(-exp(-x / stochast->Scale));
-			}
-		}
+        double GumbelDistribution::getCDF(std::shared_ptr<StochastProperties> stochast, double x)
+        {
+            if (stochast->Scale == 0)
+            {
+                return x < stochast->Shift ? 0 : 1;
+            }
+            else
+            {
+                x -= stochast->Shift;
+                return exp(-exp(-x / stochast->Scale));
+            }
+        }
 
-		void GumbelDistribution::setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
-		{
-			double current = this->getXFromU(stochast, u);
-			double diff = x - current;
+        void GumbelDistribution::setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
+        {
+            double current = this->getXFromU(stochast, u);
+            double diff = x - current;
 
-			stochast->Shift += diff;
-		}
+            stochast->Shift += diff;
+        }
 
-		void GumbelDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values)
-		{
-			// https://stats.stackexchange.com/questions/71197/usable-estimators-for-parameters-in-gumbel-distribution
-			double mean = Numeric::NumericSupport::getMean(values);
+        void GumbelDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values)
+        {
+            // https://stats.stackexchange.com/questions/71197/usable-estimators-for-parameters-in-gumbel-distribution
+            double mean = Numeric::NumericSupport::getMean(values);
 
-			std::unique_ptr<Numeric::BisectionRootFinder> bisection = std::make_unique<Numeric::BisectionRootFinder>();
+            std::unique_ptr<Numeric::BisectionRootFinder> bisection = std::make_unique<Numeric::BisectionRootFinder>();
 
-			Numeric::RootFinderMethod method = [mean, &values](double x)
-			{
-				double counter = Numeric::NumericSupport::sum(values, [x](double p) {return p * exp(-p / x); });
-				double denominator = Numeric::NumericSupport::sum(values, [x](double p) {return exp(-p / x); });
-				return mean - x - counter / denominator;
-			};
+            Numeric::RootFinderMethod method = [mean, &values](double x)
+            {
+                double counter = Numeric::NumericSupport::sum(values, [x](double p) {return p * exp(-p / x); });
+                double denominator = Numeric::NumericSupport::sum(values, [x](double p) {return exp(-p / x); });
+                return mean - x - counter / denominator;
+            };
 
-			double minStart = Numeric::NumericSupport::getMinValidValue(method);
-			double maxStart = Numeric::NumericSupport::getMaxValidValue(method);
+            double minStart = Numeric::NumericSupport::getMinValidValue(method);
+            double maxStart = Numeric::NumericSupport::getMaxValidValue(method);
 
-			stochast->Scale = bisection->CalculateValue(minStart, maxStart, 0, 0.001, method);
+            stochast->Scale = bisection->CalculateValue(minStart, maxStart, 0, 0.001, method);
 
-			double sum = Numeric::NumericSupport::sum(values, [stochast](double p) {return exp(-p / stochast->Scale); });
+            double sum = Numeric::NumericSupport::sum(values, [stochast](double p) {return exp(-p / stochast->Scale); });
 
-			stochast->Shift = -stochast->Scale * log(sum / values.size());
-		}
+            stochast->Shift = -stochast->Scale * log(sum / values.size());
+        }
 
-		double GumbelDistribution::getLogLikelihood(std::shared_ptr<StochastProperties> stochast, double x)
-		{
-			x = (x - stochast->Shift) / stochast->Scale;
+        double GumbelDistribution::getLogLikelihood(std::shared_ptr<StochastProperties> stochast, double x)
+        {
+            x = (x - stochast->Shift) / stochast->Scale;
 
-			return -(log(stochast->Scale) + (x + exp(-x)));
-		}
+            return -(log(stochast->Scale) + (x + exp(-x)));
+        }
 
-		std::vector<double> GumbelDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)
-		{
-			std::vector<double> specialPoints{ stochast->Shift };
-			return specialPoints;
-		}
-	}
+        std::vector<double> GumbelDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)
+        {
+            std::vector<double> specialPoints{ stochast->Shift };
+            return specialPoints;
+        }
+    }
 }
 
 

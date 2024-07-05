@@ -7,7 +7,7 @@
 namespace Deltares
 {
     namespace Numeric
-	{
+    {
         class Matrix
         {
         public:

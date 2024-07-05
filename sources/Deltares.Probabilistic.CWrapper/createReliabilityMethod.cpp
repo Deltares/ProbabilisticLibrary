@@ -31,61 +31,61 @@ std::shared_ptr<RandomSettings> createReliabilityMethod::getRnd(const basicSetti
     rnd->Seed = bs.seed1;
     rnd->SeedB = bs.seed2;
 
-	return rnd;
+    return rnd;
 }
  
 std::shared_ptr<ReliabilityMethod> createReliabilityMethod::selectMethod(const basicSettings& bs,
                                                                          const size_t nStoch,
                                                                          std::vector<std::shared_ptr<Stochast>>& stochasts)
 {
-	switch (bs.methodId)
-	{
-	case (ProbMethod::NI): {
-		auto ni = std::make_shared<NumericalIntegration>();
+    switch (bs.methodId)
+    {
+    case (ProbMethod::NI): {
+        auto ni = std::make_shared<NumericalIntegration>();
         ni->Settings.designPointMethod = DesignPointMethod::NearestToMean;
-		for (size_t i = 0; i < nStoch; i++)
-		{
-			auto s = std::make_shared<StochastSettings>();
-			s->stochast = stochasts[i];
-			s->Intervals = bs.numExtraInt;
+        for (size_t i = 0; i < nStoch; i++)
+        {
+            auto s = std::make_shared<StochastSettings>();
+            s->stochast = stochasts[i];
+            s->Intervals = bs.numExtraInt;
             s->MinValue = bs.numExtraReal1;
             s->MaxValue = bs.numExtraReal2;
             ni->Settings.StochastSet->stochastSettings.push_back(s);
-		}
-		return ni; }
-		break;
-	case (ProbMethod::CM): {
-		auto cm = std::make_shared<CrudeMonteCarlo>();
-		std::shared_ptr<RandomSettings> r(getRnd(bs));
-		cm->Settings->randomSettings.swap(r);
-		cm->Settings->VariationCoefficient = bs.tolB;
-		cm->Settings->MinimumSamples = bs.minSamples;
-		cm->Settings->MaximumSamples = bs.maxSamples;
-		return cm; }
-		break;
-	case (ProbMethod::DS): {
-		auto ds = std::make_shared<DirectionalSampling>();
-		fillDsSettings(ds->Settings, bs);
-		return ds; }
-		break;
-	case (ProbMethod::FORM): {
-		auto form = std::make_shared<FORM>();
-		fillFormSettings(form->Settings, bs, nStoch);
-		return form; }
-		break;
-	case (ProbMethod::FDIR): {
-		auto fdir = std::make_shared<FORMThenDirectionalSampling>(bs.numExtraReal1);
-		fillDsSettings(fdir->DsSettings, bs);
-		fillFormSettings(fdir->formSettings, bs, nStoch);
-		return fdir; }
-		break;
-	case (ProbMethod::DSFIHR):
-	case (ProbMethod::DSFI): {
-		auto dsfi = std::make_shared<DirectionalSamplingThenFORM>();
-		fillDsSettings(dsfi->DsSettings, bs);
-		fillFormSettings(dsfi->formSettings, bs, nStoch);
-		return dsfi; }
-		break;
+        }
+        return ni; }
+        break;
+    case (ProbMethod::CM): {
+        auto cm = std::make_shared<CrudeMonteCarlo>();
+        std::shared_ptr<RandomSettings> r(getRnd(bs));
+        cm->Settings->randomSettings.swap(r);
+        cm->Settings->VariationCoefficient = bs.tolB;
+        cm->Settings->MinimumSamples = bs.minSamples;
+        cm->Settings->MaximumSamples = bs.maxSamples;
+        return cm; }
+        break;
+    case (ProbMethod::DS): {
+        auto ds = std::make_shared<DirectionalSampling>();
+        fillDsSettings(ds->Settings, bs);
+        return ds; }
+        break;
+    case (ProbMethod::FORM): {
+        auto form = std::make_shared<FORM>();
+        fillFormSettings(form->Settings, bs, nStoch);
+        return form; }
+        break;
+    case (ProbMethod::FDIR): {
+        auto fdir = std::make_shared<FORMThenDirectionalSampling>(bs.numExtraReal1);
+        fillDsSettings(fdir->DsSettings, bs);
+        fillFormSettings(fdir->formSettings, bs, nStoch);
+        return fdir; }
+        break;
+    case (ProbMethod::DSFIHR):
+    case (ProbMethod::DSFI): {
+        auto dsfi = std::make_shared<DirectionalSamplingThenFORM>();
+        fillDsSettings(dsfi->DsSettings, bs);
+        fillFormSettings(dsfi->formSettings, bs, nStoch);
+        return dsfi; }
+        break;
     case (ProbMethod::IM): {
         auto impSampling = std::make_shared<ImportanceSampling>();
         fillImportanceSamplingSettings(impSampling->Settings, bs, stochasts);
@@ -154,41 +154,41 @@ void createReliabilityMethod::fillStartVector(std::shared_ptr<StartPointCalculat
 
 void createReliabilityMethod::fillFormSettings(std::shared_ptr<FORMSettings>& Settings, const basicSettings& bs, const size_t nStoch)
 {
-	Settings->MaximumIterations = bs.numExtraInt;
-	Settings->GradientSettings->gradientType = GradientType::TwoDirections;
-	Settings->FilterAtNonConvergence = true;
-	Settings->RelaxationFactor = bs.relaxationFactor;
+    Settings->MaximumIterations = bs.numExtraInt;
+    Settings->GradientSettings->gradientType = GradientType::TwoDirections;
+    Settings->FilterAtNonConvergence = true;
+    Settings->RelaxationFactor = bs.relaxationFactor;
     fillStartVector(Settings->StartPointSettings, bs, nStoch);
 }
 
 std::vector<double> createReliabilityMethod::copyStartVector(const double startValues[], const size_t nStoch)
 {
-	auto startVector = std::vector<double>(nStoch);
-	for (size_t i = 0; i < nStoch; i++)
-	{
-		startVector[i] = startValues[i];
-	}
-	return startVector;
+    auto startVector = std::vector<double>(nStoch);
+    for (size_t i = 0; i < nStoch; i++)
+    {
+        startVector[i] = startValues[i];
+    }
+    return startVector;
 }
 
 void createReliabilityMethod::fillDsSettings(std::shared_ptr<DirectionalSamplingSettings>& DsSettings, const basicSettings& bs)
 {
-	std::shared_ptr<RandomSettings> r(getRnd(bs));
-	DsSettings->randomSettings.swap(r);
-	DsSettings->VariationCoefficient = bs.tolB;
-	DsSettings->MinimumDirections = bs.minSamples;
-	DsSettings->MaximumDirections = bs.maxSamples;
-	switch (bs.iterationMethod)
-	{
-	case DSiterationMethods::DirSamplingIterMethodRobust:
-	case DSiterationMethods::DirSamplingIterMethodRobustBisection:
-		DsSettings->DirectionSettings->Dsdu = 1.0;
-		break;
-	default:
-		DsSettings->DirectionSettings->Dsdu = 3.0;
-		break;
-	}
-	DsSettings->DirectionSettings->EpsilonUStepSize = bs.tolC;
+    std::shared_ptr<RandomSettings> r(getRnd(bs));
+    DsSettings->randomSettings.swap(r);
+    DsSettings->VariationCoefficient = bs.tolB;
+    DsSettings->MinimumDirections = bs.minSamples;
+    DsSettings->MaximumDirections = bs.maxSamples;
+    switch (bs.iterationMethod)
+    {
+    case DSiterationMethods::DirSamplingIterMethodRobust:
+    case DSiterationMethods::DirSamplingIterMethodRobustBisection:
+        DsSettings->DirectionSettings->Dsdu = 1.0;
+        break;
+    default:
+        DsSettings->DirectionSettings->Dsdu = 3.0;
+        break;
+    }
+    DsSettings->DirectionSettings->EpsilonUStepSize = bs.tolC;
 }
 
 void createReliabilityMethod::fillImportanceSamplingSettings(std::shared_ptr<ImportanceSamplingSettings> settings,

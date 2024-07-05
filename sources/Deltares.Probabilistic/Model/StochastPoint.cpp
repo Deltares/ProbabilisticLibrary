@@ -4,8 +4,8 @@
 
 namespace Deltares
 {
-	namespace Models
-	{
+    namespace Models
+    {
         std::shared_ptr<Sample> StochastPoint::getSample()
         {
             std::shared_ptr<Sample> sample = std::make_shared<Sample>(Alphas.size());
@@ -63,21 +63,21 @@ namespace Deltares
         }
 
         void StochastPoint::updateInfluenceFactors()
-		{
-			double sum = 0;
-			for (size_t i = 0; i < Alphas.size(); i++)
-			{
-				sum += this->Alphas[i]->Alpha * this->Alphas[i]->Alpha;
-			}
+        {
+            double sum = 0;
+            for (size_t i = 0; i < Alphas.size(); i++)
+            {
+                sum += this->Alphas[i]->Alpha * this->Alphas[i]->Alpha;
+            }
 
-			if (sum > 0)
-			{
-				for (size_t j = 0; j < this->Alphas.size(); j++)
-				{
-					Alphas[j]->InfluenceFactor = Alphas[j]->Alpha * Alphas[j]->Alpha / sum;
-				}
-			}
-		}
-	}
+            if (sum > 0)
+            {
+                for (size_t j = 0; j < this->Alphas.size(); j++)
+                {
+                    Alphas[j]->InfluenceFactor = Alphas[j]->Alpha * Alphas[j]->Alpha / sum;
+                }
+            }
+        }
+    }
 }
 

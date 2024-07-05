@@ -3,10 +3,10 @@
 
 namespace Deltares
 {
-	namespace Reliability
-	{
-		namespace Wrappers
-		{
+    namespace Reliability
+    {
+        namespace Wrappers
+        {
             using namespace System::Collections::Generic;
 
             void DesignPoint::setDesignPointInfo()
@@ -35,21 +35,21 @@ namespace Deltares
                 }
             }
 
-			void DesignPoint::setDesignPoint(IList<Stochast^>^ stochasts)
-			{
-				setStochastPoint(shared->object, stochasts);
+            void DesignPoint::setDesignPoint(IList<Stochast^>^ stochasts)
+            {
+                setStochastPoint(shared->object, stochasts);
 
                 setDesignPointInfo();
 
-				for (int i = 0; i < shared->object->ContributingDesignPoints.size(); i++)
-				{
-					DesignPoint^ designPointWrapper = gcnew DesignPoint(shared->object->ContributingDesignPoints[i], stochasts);
-					this->ContributingDesignPoints->Add(designPointWrapper);
-				}
-			}
+                for (int i = 0; i < shared->object->ContributingDesignPoints.size(); i++)
+                {
+                    DesignPoint^ designPointWrapper = gcnew DesignPoint(shared->object->ContributingDesignPoints[i], stochasts);
+                    this->ContributingDesignPoints->Add(designPointWrapper);
+                }
+            }
 
             void DesignPoint::setDesignPoints(IList<DesignPoint^>^ contributingDesignPoints)
-			{
+            {
                 List<Stochast^>^ stochasts = gcnew List<Stochast^>();
 
                 for (int i = 0; i < contributingDesignPoints->Count; i++)
@@ -74,7 +74,7 @@ namespace Deltares
                         }
                     }
                 }
-			}
+            }
 
             bool DesignPoint::HasMatchingAlphaValues()
             {
@@ -106,7 +106,7 @@ namespace Deltares
                     this->ContributingDesignPoints[i]->AssignTags(tagRepository);
                 }
             }
-		}
-	}
+        }
+    }
 }
 

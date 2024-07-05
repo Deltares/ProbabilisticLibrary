@@ -5,7 +5,7 @@
 namespace Deltares
 {
     namespace Numeric
-	{
+    {
         // Cholesky decomposition
         Matrix Matrix::CholeskyDecomposition() const
         {

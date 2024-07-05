@@ -530,15 +530,15 @@ subroutine logNormalTypeIITest
     character(len=128) :: errorMessage
 
     expected(1)  = -4.30258509299405_wp
-	expected(2)  = -3.60943791243410_wp
-	expected(3)  = -3.20397280432594_wp
-	expected(4)  = -2.91629073187416_wp
-	expected(5)  = -2.69314718055995_wp
-	expected(6)  = -2.51082562376599_wp
-	expected(7)  = -2.35667494393873_wp
-	expected(8)  = -2.22314355131421_wp
-	expected(9)  = -2.10536051565783_wp
-	expected(10) = -2.00000000000000_wp
+    expected(2)  = -3.60943791243410_wp
+    expected(3)  = -3.20397280432594_wp
+    expected(4)  = -2.91629073187416_wp
+    expected(5)  = -2.69314718055995_wp
+    expected(6)  = -2.51082562376599_wp
+    expected(7)  = -2.35667494393873_wp
+    expected(8)  = -2.22314355131421_wp
+    expected(9)  = -2.10536051565783_wp
+    expected(10) = -2.00000000000000_wp
 
     margin  = 0.000001                                  !margin for comparing output with known value
     mu      = 2.D0                                      !mu, mean of log-transformed variable

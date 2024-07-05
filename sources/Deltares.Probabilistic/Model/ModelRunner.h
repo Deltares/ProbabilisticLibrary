@@ -62,19 +62,19 @@ namespace Deltares
             std::shared_ptr<Models::ModelSample> getModelSample(std::shared_ptr<Sample> sample);
             std::vector<double> getOnlyVaryingValues(std::vector<double> values);
 
-			void setDirectionModel(ZBetaLambda zBetaLambda) const;
-			void setShouldExitFunction(ShouldExitLambda shouldExitFunction) { this->shouldExitFunction = shouldExitFunction; }
-			void setRemoveTaskFunction(RemoveTaskLambda removeTaskFunction) { this->removeTaskFunction = removeTaskFunction; }
+            void setDirectionModel(ZBetaLambda zBetaLambda) const;
+            void setShouldExitFunction(ShouldExitLambda shouldExitFunction) { this->shouldExitFunction = shouldExitFunction; }
+            void setRemoveTaskFunction(RemoveTaskLambda removeTaskFunction) { this->removeTaskFunction = removeTaskFunction; }
             void runDesignPoint(std::shared_ptr<Reliability::DesignPoint> designPoint);
 
-		private:
+        private:
             std::shared_ptr<ZModel> zModel;
-			std::shared_ptr<UConverter> uConverter;
+            std::shared_ptr<UConverter> uConverter;
             int runDesignPointCounter = 1;
             std::vector<std::shared_ptr<Reliability::ReliabilityResult>> reliabilityResults;
-			std::vector<std::shared_ptr<Evaluation>> evaluations;
-			std::vector< std::shared_ptr<Message>> messages;
-			std::shared_ptr<ProgressIndicator> progressIndicator = nullptr;
+            std::vector<std::shared_ptr<Evaluation>> evaluations;
+            std::vector< std::shared_ptr<Message>> messages;
+            std::shared_ptr<ProgressIndicator> progressIndicator = nullptr;
 
             void registerEvaluation(std::shared_ptr<ModelSample> sample);
 

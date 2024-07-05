@@ -8,38 +8,38 @@
 
 namespace Deltares
 {
-	namespace Statistics
-	{
-		double KSCalculator::getGoodnessOfFit(std::vector<double>& xValues, std::shared_ptr<Distribution> distribution, std::shared_ptr<StochastProperties> stochast)
-		{
-			if (xValues.empty())
-			{
-				return std::nan("");
-			}
-			else
-			{
-				std::sort(xValues.begin(), xValues.end());
+    namespace Statistics
+    {
+        double KSCalculator::getGoodnessOfFit(std::vector<double>& xValues, std::shared_ptr<Distribution> distribution, std::shared_ptr<StochastProperties> stochast)
+        {
+            if (xValues.empty())
+            {
+                return std::nan("");
+            }
+            else
+            {
+                std::sort(xValues.begin(), xValues.end());
 
-				double size = xValues.size();
+                double size = xValues.size();
 
-				double ks = 0;
+                double ks = 0;
 
-				for (int i = 0; i < xValues.size(); i++)
-				{
-					double cdf = distribution->getCDF(stochast, xValues[i]);
+                for (int i = 0; i < xValues.size(); i++)
+                {
+                    double cdf = distribution->getCDF(stochast, xValues[i]);
 
-					double diff1 = std::abs(cdf - i / size);
-					double diff2 = std::abs(cdf - (i + 1) / size);
+                    double diff1 = std::abs(cdf - i / size);
+                    double diff2 = std::abs(cdf - (i + 1) / size);
 
-					double diff = std::max(diff1, diff2);
-					if (diff > ks)
-					{
-						ks = diff;
-					}
-				}
+                    double diff = std::max(diff1, diff2);
+                    if (diff > ks)
+                    {
+                        ks = diff;
+                    }
+                }
 
-				return ks;
-			}
-		}
-	}
+                return ks;
+            }
+        }
+    }
 }

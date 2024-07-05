@@ -4,28 +4,28 @@
 
 namespace Deltares
 {
-	namespace Reliability
-	{
-		int ReliabilityMethod::getZFactor(double z)
-		{
-			return std::isnan(z) || z >= 0.0 ? 1 : -1;
-		}
+    namespace Reliability
+    {
+        int ReliabilityMethod::getZFactor(double z)
+        {
+            return std::isnan(z) || z >= 0.0 ? 1 : -1;
+        }
 
-		bool ReliabilityMethod::isStopped()
-		{
-			return this->stopped;
-		}
+        bool ReliabilityMethod::isStopped()
+        {
+            return this->stopped;
+        }
 
-		void ReliabilityMethod::setStopped()
-		{
-			this->stopped = true;
-		}
+        void ReliabilityMethod::setStopped()
+        {
+            this->stopped = true;
+        }
 
-		void ReliabilityMethod::Stop()
-		{
-			setStopped();
-		}
-	}
+        void ReliabilityMethod::Stop()
+        {
+            setStopped();
+        }
+    }
 }
 
 

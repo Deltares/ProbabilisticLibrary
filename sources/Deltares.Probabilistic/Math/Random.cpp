@@ -12,39 +12,39 @@
 
 namespace Deltares
 {
-	namespace Numeric
-	{
-		void Random::initialize(RandomValueGeneratorType generatorType, bool repeatable, int seed, int seedB)
-		{
+    namespace Numeric
+    {
+        void Random::initialize(RandomValueGeneratorType generatorType, bool repeatable, int seed, int seedB)
+        {
             if (generatorType == RandomValueGeneratorType::ModifiedKnuthSubtractive && !ModifiedKnuthSubtractiveRandomValueGenerator::isAvailable())
             {
                 generatorType = RandomValueGeneratorType::MersenneTwister;
             }
 
-			switch (generatorType)
-			{
-			case MersenneTwister: Random::randomValueGenerator = new MersenneTwisterRandomValueGenerator(); break;
-			case GeorgeMarsaglia: Random::randomValueGenerator = new GeorgeMarsagliaRandomValueGenerator(); break;
-			case ModifiedKnuthSubtractive: Random::randomValueGenerator = new ModifiedKnuthSubtractiveRandomValueGenerator(); break;
-			default: throw Deltares::Reliability::probLibException("Generator type not supported");
-			}
+            switch (generatorType)
+            {
+            case MersenneTwister: Random::randomValueGenerator = new MersenneTwisterRandomValueGenerator(); break;
+            case GeorgeMarsaglia: Random::randomValueGenerator = new GeorgeMarsagliaRandomValueGenerator(); break;
+            case ModifiedKnuthSubtractive: Random::randomValueGenerator = new ModifiedKnuthSubtractiveRandomValueGenerator(); break;
+            default: throw Deltares::Reliability::probLibException("Generator type not supported");
+            }
 
-			Random::repeatable = repeatable;
-			Random::seed = seed;
-			Random::seedB = seedB;
+            Random::repeatable = repeatable;
+            Random::seed = seed;
+            Random::seedB = seedB;
 
-			Random::randomValueGenerator->initialize(repeatable, seed, seedB);
-		}
+            Random::randomValueGenerator->initialize(repeatable, seed, seedB);
+        }
 
-		double Random::next()
-		{
-			return Random::randomValueGenerator->next();
-		}
+        double Random::next()
+        {
+            return Random::randomValueGenerator->next();
+        }
 
-		void Random::restart()
-		{
-			return Random::randomValueGenerator->initialize(Random::repeatable, Random::seed, Random::seedB);
-		}
+        void Random::restart()
+        {
+            return Random::randomValueGenerator->initialize(Random::repeatable, Random::seed, Random::seedB);
+        }
 
         std::string Random::getRandomGeneratorTypeString(Deltares::Numeric::RandomValueGeneratorType method)
         {
@@ -64,7 +64,7 @@ namespace Deltares
             else if (method == "modified_knuth_subtractive") return RandomValueGeneratorType::ModifiedKnuthSubtractive;
             else throw Reliability::probLibException("Random generator type");
         }
-	}
+    }
 }
 
 

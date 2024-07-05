@@ -2,36 +2,36 @@
 
 namespace Deltares
 {
-	namespace Statistics
-	{
-		namespace Wrappers
-		{
-			typedef double(__stdcall* UXDelegate) (double);
+    namespace Statistics
+    {
+        namespace Wrappers
+        {
+            typedef double(__stdcall* UXDelegate) (double);
 
-			Statistics::ConstantParameterType Stochast::getNativeConstantParameterType(Wrappers::ConstantParameterType constantParameterType)
-			{
-				switch (constantParameterType)
-				{
-				case Wrappers::ConstantParameterType::Deviation: return Statistics::ConstantParameterType::Deviation;
-				case Wrappers::ConstantParameterType::VariationCoefficient: return Statistics::ConstantParameterType::VariationCoefficient;
-				default: throw gcnew System::NotSupportedException(constantParameterType.ToString());
-				}
-			}
+            Statistics::ConstantParameterType Stochast::getNativeConstantParameterType(Wrappers::ConstantParameterType constantParameterType)
+            {
+                switch (constantParameterType)
+                {
+                case Wrappers::ConstantParameterType::Deviation: return Statistics::ConstantParameterType::Deviation;
+                case Wrappers::ConstantParameterType::VariationCoefficient: return Statistics::ConstantParameterType::VariationCoefficient;
+                default: throw gcnew System::NotSupportedException(constantParameterType.ToString());
+                }
+            }
 
-			void Stochast::updateStochast()
-			{
-				std::shared_ptr<StochastProperties> properties = shared->object->getProperties();
+            void Stochast::updateStochast()
+            {
+                std::shared_ptr<StochastProperties> properties = shared->object->getProperties();
 
-				shared->object->ValueSet = this->ValueSet->GetValue();
-				shared->object->ValueSet->StochastValues.clear();
-				if (this->IsVariableStochast)
-				{
-					for (size_t i = 0; i < this->ValueSet->StochastValues->Count; i++)
-					{
-						shared->object->ValueSet->StochastValues.push_back(this->ValueSet->StochastValues[i]->GetValue());
-					}
-				}
-			}
+                shared->object->ValueSet = this->ValueSet->GetValue();
+                shared->object->ValueSet->StochastValues.clear();
+                if (this->IsVariableStochast)
+                {
+                    for (size_t i = 0; i < this->ValueSet->StochastValues->Count; i++)
+                    {
+                        shared->object->ValueSet->StochastValues.push_back(this->ValueSet->StochastValues[i]->GetValue());
+                    }
+                }
+            }
 
             void Stochast::SynchronizeHistogramValues(ListOperationType listOperationType, HistogramValue^ histogramValue)
             {
@@ -190,14 +190,14 @@ namespace Deltares
             }
 
             void Stochast::SetExternalDistribution(ManagedUXDelegate^ uxDelegate)
-			{
-				System::IntPtr callbackPtr = System::Runtime::InteropServices::Marshal::GetFunctionPointerForDelegate(uxDelegate);
-				UXLambda functionPointer = static_cast<UXDelegate>(callbackPtr.ToPointer());
+            {
+                System::IntPtr callbackPtr = System::Runtime::InteropServices::Marshal::GetFunctionPointerForDelegate(uxDelegate);
+                UXLambda functionPointer = static_cast<UXDelegate>(callbackPtr.ToPointer());
 
-				handles->Add(uxDelegate);
+                handles->Add(uxDelegate);
 
-				shared->object->setExternalDistribution(functionPointer);
-			}
-		}
-	}
+                shared->object->setExternalDistribution(functionPointer);
+            }
+        }
+    }
 }

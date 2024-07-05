@@ -10,23 +10,23 @@ inline double Test() { return 2.4; }
 
 namespace Deltares
 {
-	namespace Models
-	{
+    namespace Models
+    {
         typedef std::function<void(std::shared_ptr<ModelSample>)> ZLambda;
         typedef std::function<void(std::vector<std::shared_ptr<ModelSample>>)> ZMultipleLambda;
         typedef std::function<double(std::shared_ptr<ModelSample>, double beta)> ZBetaLambda;
 
         typedef double (*ZValuesCallBack)(double* data, int size);
 
-		class ZModel
-		{
-		private:
+        class ZModel
+        {
+        private:
             ZLambda zLambda = nullptr;
             ZMultipleLambda zMultipleLambda = nullptr;
             ZBetaLambda zBetaLambda = nullptr;
-			int maxProcesses = 1;
+            int maxProcesses = 1;
 
-		public:
+        public:
             ZModel(ZLambda zLambda, ZMultipleLambda zMultipleLambda = nullptr)
             {
                 this->zLambda = zLambda;
@@ -44,25 +44,25 @@ namespace Deltares
             }
 
             void setBetaLambda(ZBetaLambda zBetaLambda)
-			{
-				this->zBetaLambda = zBetaLambda;
-			}
+            {
+                this->zBetaLambda = zBetaLambda;
+            }
 
             void releaseCallBacks();
 
-			void setMaxProcesses(int maxProcesses);
+            void setMaxProcesses(int maxProcesses);
 
-			void invoke(std::shared_ptr<ModelSample> sample);
+            void invoke(std::shared_ptr<ModelSample> sample);
 
-			void invoke(std::vector<std::shared_ptr<ModelSample>> samples);
+            void invoke(std::vector<std::shared_ptr<ModelSample>> samples);
 
-			double getBeta(std::shared_ptr<ModelSample> sample, double beta);
+            double getBeta(std::shared_ptr<ModelSample> sample, double beta);
 
-			bool canCalculateBeta()
-			{
-				return this->zBetaLambda != nullptr;
-			}
+            bool canCalculateBeta()
+            {
+                return this->zBetaLambda != nullptr;
+            }
         };
-	}
+    }
 }
 

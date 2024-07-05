@@ -13,7 +13,7 @@ namespace Deltares
         const int MAX_INT = 1215752192;
 
         size_t MatrixSupport::count_leading_zeros(Matrix* mat, size_t n, size_t row)
-    	{
+        {
             size_t count = 0;
 
             while (abs(mat->getValue(row, count)) <= SMALL_NUM && count < n) 
@@ -26,7 +26,7 @@ namespace Deltares
 
 
         void MatrixSupport::merge(oa_elem_t A[], int p, int q, int r)
-    	{
+        {
             int size_r, size_l;
             int i, j;
             size_l = q - p + 1;
@@ -68,7 +68,7 @@ namespace Deltares
         }
 
         void MatrixSupport::merge_sort(oa_elem_t A[], int p, int r)
-    	{
+        {
             if (p < r)
             {
                 int q = (p + r) / 2;
@@ -79,13 +79,13 @@ namespace Deltares
         }
 
         void MatrixSupport::mergesort(oa_elem_t A[], int size)
-    	{
+        {
             merge_sort(A, 0, size - 1);
         }
 
         Matrix* MatrixSupport::mergesort_mat(Matrix* mat, size_t n, double* order_arr)
-    	{
-        	oa_elem_t* order_array = new oa_elem_t[n];
+        {
+            oa_elem_t* order_array = new oa_elem_t[n];
 
             for (int row = 0; row < n; ++row) 
             {
@@ -112,7 +112,7 @@ namespace Deltares
         }
 
         void MatrixSupport::sort_mat(double* order_arr, size_t n, Matrix* mat)
-    	{
+        {
             Matrix* mat_ordered = mergesort_mat(mat, n, order_arr);
 
             for (size_t row = 0; row < n; ++row) 
@@ -134,7 +134,7 @@ namespace Deltares
         }
 
         void MatrixSupport::get_order(Matrix* mat, size_t n, double* order_arr)
-    	{
+        {
             for (int row = 0; row < n; ++row) 
             {
                 size_t order = 0;
@@ -150,7 +150,7 @@ namespace Deltares
 
 
         void MatrixSupport::init_mat_inv(Matrix* mat_inv, size_t n)
-    	{
+        {
             for (size_t row = 0; row < n; ++row)
             {
                 for (size_t c = 0; c < n; ++c)
@@ -168,11 +168,11 @@ namespace Deltares
         }
 
         bool MatrixSupport::check_leading_zeros(Matrix* mat, size_t n)
-    	{
+        {
             // Check if matrix is singular
             for (size_t row = 0; row < n; ++row)
             {
-	            const size_t num_lead_zeros = count_leading_zeros(mat, n, row);
+                const size_t num_lead_zeros = count_leading_zeros(mat, n, row);
 
                 if (num_lead_zeros >= row + 1) 
                 {
@@ -238,13 +238,13 @@ namespace Deltares
                     {
                         for (int col = c + 1; col < n; ++col) 
                         {
-	                        const double newValue = -1.0 * source->getValue(row, c) * source->getValue(c, col) + source->getValue(row, col);
+                            const double newValue = -1.0 * source->getValue(row, c) * source->getValue(c, col) + source->getValue(row, col);
                             source->setValue(row, col, newValue);
                         }
 
                         for (int col = 0; col < n; ++col) 
                         {
-	                        const double newValue = -1.0 * source->getValue(row, c) * inverse->getValue(c, col) + inverse->getValue(row, col);
+                            const double newValue = -1.0 * source->getValue(row, c) * inverse->getValue(c, col) + inverse->getValue(row, col);
                             inverse->setValue(row, col, newValue);
                         }
 
@@ -262,7 +262,7 @@ namespace Deltares
                     {
                         for (int col = 0; col < n; ++col) 
                         {
-	                        const double newValue = -1.0 * source->getValue(row, c) * inverse->getValue(c, col) + inverse->getValue(row, col);
+                            const double newValue = -1.0 * source->getValue(row, c) * inverse->getValue(c, col) + inverse->getValue(row, col);
                             inverse->setValue(row, col, newValue);
                         }
 

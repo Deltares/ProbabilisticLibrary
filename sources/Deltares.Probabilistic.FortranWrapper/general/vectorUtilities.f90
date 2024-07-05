@@ -577,7 +577,7 @@ function linearInterpolateAngles( X, Y, xx, error, sinY )
                            cosAngle = interpolateLine( x(idxm1), x(idx), cos(Y(idxm1) * pi / 180.0D0), cos(Y(idx) * pi /180.0D0), &
                                        xx, error )
             if (error%errorCode == 0) then
-	        sinAngle = interpolateLine( x(idxm1), x(idx), sin(Y(idxm1) * pi / 180.0D0), sin(Y(idx) * pi /180.0D0), xx, error )
+            sinAngle = interpolateLine( x(idxm1), x(idx), sin(Y(idxm1) * pi / 180.0D0), sin(Y(idx) * pi /180.0D0), xx, error )
             end if
         end if
 

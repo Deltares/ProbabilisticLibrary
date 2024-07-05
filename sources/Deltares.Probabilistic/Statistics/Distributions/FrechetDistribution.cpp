@@ -11,201 +11,201 @@
 
 namespace Deltares
 {
-	namespace Statistics
-	{
-		void FrechetDistribution::initialize(std::shared_ptr<StochastProperties> stochast, std::vector<double> values)
-		{
-			setMeanAndDeviation(stochast, values[0], values[1]);
-		}
+    namespace Statistics
+    {
+        void FrechetDistribution::initialize(std::shared_ptr<StochastProperties> stochast, std::vector<double> values)
+        {
+            setMeanAndDeviation(stochast, values[0], values[1]);
+        }
 
-		bool FrechetDistribution::isValid(std::shared_ptr<StochastProperties> stochast)
-		{
-			return stochast->Shape >= 0.001 && stochast->Scale >= 0;
-		}
+        bool FrechetDistribution::isValid(std::shared_ptr<StochastProperties> stochast)
+        {
+            return stochast->Shape >= 0.001 && stochast->Scale >= 0;
+        }
 
-		bool FrechetDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)
-		{
-			return stochast->Scale > 0;
-		}
+        bool FrechetDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)
+        {
+            return stochast->Scale > 0;
+        }
 
-		double FrechetDistribution::getMean(std::shared_ptr<StochastProperties> stochast)
-		{
-			double gamma1km = Numeric::SpecialFunctions::getGamma(1 - 1 / stochast->Shape);
-			return stochast->Shift + stochast->Scale * gamma1km;
-		}
+        double FrechetDistribution::getMean(std::shared_ptr<StochastProperties> stochast)
+        {
+            double gamma1km = Numeric::SpecialFunctions::getGamma(1 - 1 / stochast->Shape);
+            return stochast->Shift + stochast->Scale * gamma1km;
+        }
 
-		double FrechetDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
-		{
-			double gamma1k = Numeric::SpecialFunctions::getGamma(1 - 1 / stochast->Shape);
-			double gamma2k = Numeric::SpecialFunctions::getGamma(1 - 2 / stochast->Shape);
-			return stochast->Scale * std::sqrt(gamma2k - gamma1k * gamma1k);
-		}
+        double FrechetDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
+        {
+            double gamma1k = Numeric::SpecialFunctions::getGamma(1 - 1 / stochast->Shape);
+            double gamma2k = Numeric::SpecialFunctions::getGamma(1 - 2 / stochast->Shape);
+            return stochast->Scale * std::sqrt(gamma2k - gamma1k * gamma1k);
+        }
 
-		double FrechetDistribution::getXFromU(std::shared_ptr<StochastProperties> stochast, double u)
-		{
-			double p = StandardNormal::getPFromU(u);
+        double FrechetDistribution::getXFromU(std::shared_ptr<StochastProperties> stochast, double u)
+        {
+            double p = StandardNormal::getPFromU(u);
 
-			if (p == 0)
-			{
-				return stochast->Shift;
-			}
-			else
-			{
-				double pow = -std::log(p);
-				double xScale = std::pow(pow, -1 / stochast->Shape);
-				double x = xScale * stochast->Scale;
+            if (p == 0)
+            {
+                return stochast->Shift;
+            }
+            else
+            {
+                double pow = -std::log(p);
+                double xScale = std::pow(pow, -1 / stochast->Shape);
+                double x = xScale * stochast->Scale;
 
-				return x + stochast->Shift;
-			}
-		}
+                return x + stochast->Shift;
+            }
+        }
 
-		double FrechetDistribution::getUFromX(std::shared_ptr<StochastProperties> stochast, double x)
-		{
-			if (stochast->Scale == 0)
-			{
-				return x < stochast->Shift ? -StandardNormal::UMax : StandardNormal::UMax;
-			}
-			else
-			{
-				double cdf = getCDF(stochast, x);
-				return StandardNormal::getUFromP(cdf);
-			}
-		}
+        double FrechetDistribution::getUFromX(std::shared_ptr<StochastProperties> stochast, double x)
+        {
+            if (stochast->Scale == 0)
+            {
+                return x < stochast->Shift ? -StandardNormal::UMax : StandardNormal::UMax;
+            }
+            else
+            {
+                double cdf = getCDF(stochast, x);
+                return StandardNormal::getUFromP(cdf);
+            }
+        }
 
-		double FrechetDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)
-		{
-			double z = (x - stochast->Shift) / stochast->Scale;
+        double FrechetDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)
+        {
+            double z = (x - stochast->Shift) / stochast->Scale;
 
-			if (stochast->Scale == 0)
-			{
-				return x == stochast->Shift ? 1 : 0;
-			}
-			else if (z <= 0)
-			{
-				return 0;
-			}
-			else
-			{
-				return (stochast->Shape / stochast->Scale) * std::pow(z, -1 - stochast->Shape) * getCDF(stochast, x);
-			}
-		}
+            if (stochast->Scale == 0)
+            {
+                return x == stochast->Shift ? 1 : 0;
+            }
+            else if (z <= 0)
+            {
+                return 0;
+            }
+            else
+            {
+                return (stochast->Shape / stochast->Scale) * std::pow(z, -1 - stochast->Shape) * getCDF(stochast, x);
+            }
+        }
 
-		double FrechetDistribution::getCDF(std::shared_ptr<StochastProperties> stochast, double x)
-		{
-			double z = (x - stochast->Shift) / stochast->Scale;
+        double FrechetDistribution::getCDF(std::shared_ptr<StochastProperties> stochast, double x)
+        {
+            double z = (x - stochast->Shift) / stochast->Scale;
 
-			if (stochast->Scale == 0)
-			{
-				return x < stochast->Shift ? 0 : 1;
-			}
-			else if (z <= 0)
-			{
-				return 0;
-			}
-			else
-			{
-				double pow = std::pow(z, -stochast->Shape);
-				return std::exp(-pow);
-			}
-		}
+            if (stochast->Scale == 0)
+            {
+                return x < stochast->Shift ? 0 : 1;
+            }
+            else if (z <= 0)
+            {
+                return 0;
+            }
+            else
+            {
+                double pow = std::pow(z, -stochast->Shape);
+                return std::exp(-pow);
+            }
+        }
 
-		void FrechetDistribution::setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation)
-		{
-			Numeric::RootFinderMethod method = [](double k)
-			{
-				double gamma1k = Numeric::SpecialFunctions::getGamma(1 - 1 / k);
-				double gamma2k = Numeric::SpecialFunctions::getGamma(1 - 2 / k);
+        void FrechetDistribution::setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation)
+        {
+            Numeric::RootFinderMethod method = [](double k)
+            {
+                double gamma1k = Numeric::SpecialFunctions::getGamma(1 - 1 / k);
+                double gamma2k = Numeric::SpecialFunctions::getGamma(1 - 2 / k);
 
-				return std::sqrt(gamma2k - gamma1k * gamma1k) / gamma1k;
-			};
+                return std::sqrt(gamma2k - gamma1k * gamma1k) / gamma1k;
+            };
 
-			// the quotient deviation / mean is only dependent from the shape parameter, so this will be determined first
-			double u = deviation / (mean - stochast->Shift);
+            // the quotient deviation / mean is only dependent from the shape parameter, so this will be determined first
+            double u = deviation / (mean - stochast->Shift);
 
-			std::unique_ptr<Numeric::BisectionRootFinder> bisection = std::make_unique<Numeric::BisectionRootFinder>();
+            std::unique_ptr<Numeric::BisectionRootFinder> bisection = std::make_unique<Numeric::BisectionRootFinder>();
 
-			// shape must be > 2
-			double minStart = 2.4;
-			double maxStart = 2.6;
+            // shape must be > 2
+            double minStart = 2.4;
+            double maxStart = 2.6;
 
-			stochast->Shape = bisection->CalculateValue(minStart, maxStart, u, 0.00001, method);
+            stochast->Shape = bisection->CalculateValue(minStart, maxStart, u, 0.00001, method);
 
-			stochast->Scale = (mean - stochast->Shift) / Numeric::SpecialFunctions::getGamma(1 - 1 / stochast->Shape);
-		}
+            stochast->Scale = (mean - stochast->Shift) / Numeric::SpecialFunctions::getGamma(1 - 1 / stochast->Shape);
+        }
 
-		void FrechetDistribution::setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
-		{
-			setXAtUByIteration(stochast, x, u, constantType);
-		}
+        void FrechetDistribution::setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
+        {
+            setXAtUByIteration(stochast, x, u, constantType);
+        }
 
-		void FrechetDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values)
-		{
-			int maxLoops = 100;
-			double minValue = 0.001;
+        void FrechetDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values)
+        {
+            int maxLoops = 100;
+            double minValue = 0.001;
 
-			double shift = getFittedMinimum(values);
+            double shift = getFittedMinimum(values);
 
-			std::vector<double> values0 = Numeric::NumericSupport::select(values, [shift](double p) { return p - shift; });
+            std::vector<double> values0 = Numeric::NumericSupport::select(values, [shift](double p) { return p - shift; });
 
-			std::unique_ptr<Numeric::BisectionRootFinder> bisection = std::make_unique<Numeric::BisectionRootFinder>();
+            std::unique_ptr<Numeric::BisectionRootFinder> bisection = std::make_unique<Numeric::BisectionRootFinder>();
 
-			stochast->Shift = 0;
+            stochast->Shift = 0;
 
-			double alpha = 1;
-			double beta = 1;
-			const double n = values0.size();
+            double alpha = 1;
+            double beta = 1;
+            const double n = values0.size();
 
-			int counter = 0;
+            int counter = 0;
 
-			while (true)
-			{
-				counter++;
+            while (true)
+            {
+                counter++;
 
-				const double t = Numeric::NumericSupport::sum(values0, [alpha] (double p) {	return std::pow(1 / p, alpha); });
+                const double t = Numeric::NumericSupport::sum(values0, [alpha] (double p) {    return std::pow(1 / p, alpha); });
 
-				const double betaNew = std::pow(n / t, 1 / alpha);
+                const double betaNew = std::pow(n / t, 1 / alpha);
 
-				const double sumBetaAlpha = Numeric::NumericSupport::sum(values0, [beta, alpha](double p) { return std::pow(beta / p, alpha) * std::log(beta / p); });
-				const double sumLog = Numeric::NumericSupport::sum(values0, [](double q) { return std::log(q); });
+                const double sumBetaAlpha = Numeric::NumericSupport::sum(values0, [beta, alpha](double p) { return std::pow(beta / p, alpha) * std::log(beta / p); });
+                const double sumLog = Numeric::NumericSupport::sum(values0, [](double q) { return std::log(q); });
 
-				const double alphaNew = n / (sumBetaAlpha + sumLog + n * std::log(beta));
+                const double alphaNew = n / (sumBetaAlpha + sumLog + n * std::log(beta));
 
-				const bool ready = Numeric::NumericSupport::areEqual(betaNew, beta, 0.01) && Numeric::NumericSupport::areEqual(alphaNew, alpha, 1E-6);
+                const bool ready = Numeric::NumericSupport::areEqual(betaNew, beta, 0.01) && Numeric::NumericSupport::areEqual(alphaNew, alpha, 1E-6);
 
-				alpha = alphaNew;
-				beta = betaNew;
+                alpha = alphaNew;
+                beta = betaNew;
 
-				if (ready || counter == maxLoops)
-				{
-					break;
-				}
-			}
+                if (ready || counter == maxLoops)
+                {
+                    break;
+                }
+            }
 
-			// perform final log likelihood estimation
-			alpha = std::isnan(alpha) || alpha < minValue ? 1 : alpha;
-			beta = std::isnan(beta) || beta < minValue ? 1 : beta;
+            // perform final log likelihood estimation
+            alpha = std::isnan(alpha) || alpha < minValue ? 1 : alpha;
+            beta = std::isnan(beta) || beta < minValue ? 1 : beta;
 
-			double mean = Numeric::NumericSupport::getMean(values);
+            double mean = Numeric::NumericSupport::getMean(values);
 
-			std::shared_ptr<DistributionFitter> fitter = std::make_shared<DistributionFitter>();
+            std::shared_ptr<DistributionFitter> fitter = std::make_shared<DistributionFitter>();
 
-			std::vector<double> minValues = { minValue, minValue, 3 * shift - 2 * mean };
-			std::vector<double> maxValues = { 2 * alpha - minValue, 2 * beta - minValue, shift };
-			std::vector<double> initValues = { alpha, beta, shift };
-			std::vector<DistributionPropertyType> properties = { DistributionPropertyType::Shape, DistributionPropertyType::Scale, DistributionPropertyType::Shift };
-			std::vector<double> parameters = fitter->fitByLogLikelihood(values, this, stochast, minValues, maxValues, initValues, properties);
+            std::vector<double> minValues = { minValue, minValue, 3 * shift - 2 * mean };
+            std::vector<double> maxValues = { 2 * alpha - minValue, 2 * beta - minValue, shift };
+            std::vector<double> initValues = { alpha, beta, shift };
+            std::vector<DistributionPropertyType> properties = { DistributionPropertyType::Shape, DistributionPropertyType::Scale, DistributionPropertyType::Shift };
+            std::vector<double> parameters = fitter->fitByLogLikelihood(values, this, stochast, minValues, maxValues, initValues, properties);
 
-			stochast->Shape = std::max(minValue, parameters[0]);
-			stochast->Scale = std::max(minValue, parameters[1]);
-			stochast->Shift = parameters[2];
-		}
+            stochast->Shape = std::max(minValue, parameters[0]);
+            stochast->Scale = std::max(minValue, parameters[1]);
+            stochast->Shift = parameters[2];
+        }
 
-		std::vector<double> FrechetDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)
-		{
-			std::vector<double> specialPoints{ stochast->Shift };
-			return specialPoints;
-		}
-	}
+        std::vector<double> FrechetDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)
+        {
+            std::vector<double> specialPoints{ stochast->Shift };
+            return specialPoints;
+        }
+    }
 }
 
 

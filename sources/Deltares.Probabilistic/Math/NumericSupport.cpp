@@ -605,8 +605,8 @@ namespace Deltares
                 maxStart /= 10;
             }
 
-			return maxStart;
-		}
+            return maxStart;
+        }
 
         /// <summary>
         /// Gets the value whose absolute is value is max

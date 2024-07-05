@@ -6,15 +6,15 @@
 
 namespace Deltares
 {
-	namespace Models
-	{
+    namespace Models
+    {
         class ModelSample
-		{
-		public:
-			ModelSample(std::vector<double> values)
-			{
-				this->Values = values;
-			}
+        {
+        public:
+            ModelSample(std::vector<double> values)
+            {
+                this->Values = values;
+            }
 
             /**
              * \brief Resets all contents of the sample to its default values
@@ -32,15 +32,15 @@ namespace Deltares
                 Tag = 0;
             }
 
-			std::vector<double> Values;
+            std::vector<double> Values;
 
-			int IterationIndex = -1;
-			int threadId = 0;
-			double Weight = 1;
-			bool AllowProxy = true;
-			bool IsRestartRequired = false;
-			double Beta = 0;
-			double Z = nan("");
+            int IterationIndex = -1;
+            int threadId = 0;
+            double Weight = 1;
+            bool AllowProxy = true;
+            bool IsRestartRequired = false;
+            double Beta = 0;
+            double Z = nan("");
 
             bool ExtendedLogging = false;
 
@@ -49,26 +49,26 @@ namespace Deltares
              */
             int LoggingCounter = 0;
 
-			int Tag = 0;
+            int Tag = 0;
 
-			bool hasSameValues(std::shared_ptr<ModelSample> other)
-			{
-				if (this->Values.size() != other->Values.size())
-				{
-					return false;
-				}
+            bool hasSameValues(std::shared_ptr<ModelSample> other)
+            {
+                if (this->Values.size() != other->Values.size())
+                {
+                    return false;
+                }
 
-				for (int i = 0; i < this->Values.size(); i++)
-				{
-					if (this->Values[i] != other->Values[i])
-					{
-						return false;
-					}
-				}
+                for (int i = 0; i < this->Values.size(); i++)
+                {
+                    if (this->Values[i] != other->Values[i])
+                    {
+                        return false;
+                    }
+                }
 
-				return true;
-			}
-		};
-	}
+                return true;
+            }
+        };
+    }
 }
 

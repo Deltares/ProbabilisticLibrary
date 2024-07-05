@@ -6,7 +6,7 @@
 namespace Deltares
 {
     namespace Numeric
-	{
+    {
         Matrix::Matrix(size_t rows, size_t columns)
             : m_data(std::vector<double>(rows* columns)),
             m_rows(rows),
