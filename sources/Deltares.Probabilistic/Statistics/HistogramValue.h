@@ -1,4 +1,8 @@
 #pragma once
+
+#include <memory>
+#include "../Utils/DirtySupport.h"
+
 namespace Deltares
 {
 	namespace Statistics
@@ -6,6 +10,14 @@ namespace Deltares
 		class HistogramValue
 		{
 		public:
+            HistogramValue() {}
+
+            HistogramValue(double lowerBound, double upperBound)
+		    {
+                this->LowerBound = lowerBound;
+                this->UpperBound = upperBound;
+            }
+
 			double LowerBound = 0;
 			double UpperBound = 0;
 			double Amount = 0;
@@ -34,7 +46,7 @@ namespace Deltares
 			/// </summary>
 			/// <param name="x"></param>
 			/// <returns></returns>
-			bool contains(double x)
+			bool contains(double x) const 
 			{
 				if (LowerBound == UpperBound)
 				{
@@ -46,7 +58,7 @@ namespace Deltares
 				}
 			}
 
-			bool CompareTo(HistogramValue* other)
+			bool compareTo(std::shared_ptr<HistogramValue> other)
 			{
 				if (this->LowerBound == other->LowerBound)
 				{
@@ -58,11 +70,30 @@ namespace Deltares
 				}
 			}
 
-			bool isValid()
+            /**
+             * \brief Indicates whether the properties of the histogram value are valid
+             */
+            bool isValid() const 
 			{
 				return UpperBound >= LowerBound;
 			}
-		};
+
+            void setDirtyFunction(Utils::SetDirtyLambda setDirtyLambda)
+            {
+                this->setDirtyLambda = setDirtyLambda;
+            }
+
+            void setDirty()
+            {
+                if (setDirtyLambda != nullptr)
+                {
+                    setDirtyLambda();
+                }
+            }
+
+        private:
+            Utils::SetDirtyLambda setDirtyLambda = nullptr;
+        };
 	}
 }
 

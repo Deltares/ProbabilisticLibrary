@@ -3,7 +3,7 @@
 #include <float.h>
 #include <vector>
 #include "combineElements.h"
-#include "Hohenbichler.h"
+#include "HohenbichlerFORM.h"
 #include "../Utils/probLibException.h"
 #include "../Statistics/StandardNormal.h"
 #include "../Math/basic_math.h"
@@ -71,7 +71,7 @@ namespace Deltares {
             //   Computation of P( Z_2 < 0 | Z_1 < 0)
             //
             //auto p = progress();
-            auto hh = Hohenbichler();
+            auto hh = HohenbichlerFORM();
             auto pf2pf1 = hh.PerformHohenbichler(pb.second, pb.first, rho);
             if (pf2pf1.second != 0) failureHohenbichler++;
             //

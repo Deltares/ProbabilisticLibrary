@@ -1,4 +1,5 @@
-#include "../Deltares.Probabilistic/Combine/Hohenbichler.h"
+#include "../Deltares.Probabilistic/Combine/DesignPointCombiner.h"
+#include "../Deltares.Probabilistic/Combine/HohenbichlerFORM.h"
 #include "../Deltares.Probabilistic/Combine/combineElements.h"
 #include "../Deltares.Probabilistic/Combine/upscaling.h"
 #include "../Deltares.Probabilistic/Combine/intEqualElements.h"
@@ -22,8 +23,47 @@ elements fillElements(double* betaElement, double* alphaElement, int nrElms, int
 }
 
 extern "C"
-int combinemultipleelements_c(double *betaElement, double *alphaElement, double *rho,
-  double *beta, double *alpha, combineAndOr combAndOrIn, int nrElms, int nrStoch)
+void combineMultipleElementsGeneral(double* betaElement, double* alphaElement, double* rho,
+    double* beta, double* alpha, combineAndOr combAndOrIn, CombinerType combinerType, int nrElms, int nrStoch)
+{
+    std::vector< std::shared_ptr<Deltares::Statistics::Stochast>> stochasts;
+    for (int i = 0; i < nrStoch; i++)
+    {
+        auto s = std::make_shared<Deltares::Statistics::Stochast>();
+        stochasts.push_back(s);
+    }
+    auto dpCombiner = DesignPointCombiner(combinerType, Deltares::Numeric::MersenneTwister);
+    auto designPoints = std::vector<std::shared_ptr<DesignPoint>>();
+    for (int i = 0; i < nrElms; i++)
+    {
+        auto dp = std::make_shared<DesignPoint>();
+        dp->Beta = betaElement[i];
+        for (int j = 0; j < nrStoch; j++)
+        {
+            auto alphaj = std::make_shared<StochastPointAlpha>();
+            alphaj->Alpha = alphaElement[i + j * nrElms];
+            alphaj->Stochast = stochasts[j];
+            alphaj->U = -dp->Beta * alphaj->Alpha;
+            dp->Alphas.push_back(alphaj);
+        }
+        designPoints.push_back(dp);
+    }
+    auto selfCorrelation = std::make_shared<Deltares::Statistics::SelfCorrelationMatrix>();
+    for (int i = 0; i < nrStoch; i++)
+    {
+        selfCorrelation->setSelfCorrelation(designPoints[0]->Alphas[i]->Stochast, rho[i]);
+    }
+    auto result = dpCombiner.combineDesignPoints(combAndOrIn, designPoints, selfCorrelation);
+    *beta = result->Beta;
+    for (int j = 0; j < nrStoch; j++)
+    {
+        alpha[j] = result->Alphas[j]->Alpha;
+    }
+}
+
+extern "C"
+int combinemultipleelements_c(double* betaElement, double* alphaElement, double* rho,
+    double* beta, double* alpha, combineAndOr combAndOrIn, int nrElms, int nrStoch)
 {
     auto cmb = combineElements();
     auto elm = fillElements(betaElement, alphaElement, nrElms, nrStoch);
@@ -45,7 +85,7 @@ int combinemultipleelements_c(double *betaElement, double *alphaElement, double 
 extern "C"
 int hohenbichler_c(double* betaV, double* pfU, double* rhoInput, double* pfVpfU)
 {
-    auto h = Hohenbichler();
+    auto h = HohenbichlerFORM();
     auto result = h.PerformHohenbichler(*betaV, *pfU, *rhoInput);
     *pfVpfU = result.first;
     return (int)result.second;

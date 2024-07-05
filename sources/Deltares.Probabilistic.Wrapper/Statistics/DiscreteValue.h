@@ -14,16 +14,23 @@ namespace Deltares
 			public ref class DiscreteValue
 			{
 			private:
-				SharedPointerProvider<Statistics::DiscreteValue>* shared = new SharedPointerProvider(new Statistics::DiscreteValue());
+				SharedPointerProvider<Statistics::DiscreteValue>* shared = nullptr;
 
 			public:
-				DiscreteValue()
-				{
-				}
+                DiscreteValue()
+                {
+                    shared = new SharedPointerProvider(new Statistics::DiscreteValue());
+                }
 
-				DiscreteValue(double x, double amount)
+                DiscreteValue(std::shared_ptr<Statistics::DiscreteValue> discreteValue)
+                {
+                    shared = new SharedPointerProvider(discreteValue);
+                }
+
+                DiscreteValue(double x, double amount)
 				{
-					shared->object->X = x;
+                    shared = new SharedPointerProvider(new Statistics::DiscreteValue());
+                    shared->object->X = x;
 					shared->object->Amount = amount;
 				}
 
@@ -33,13 +40,21 @@ namespace Deltares
 				property double X
 				{
 					double get() { return shared->object->X; }
-					void set(double value) { shared->object->X = value; }
+					void set(double value)
+					{
+					    shared->object->X = value;
+                        shared->object->setDirty();
+					}
 				}
 
 				property double Amount
 				{
 					double get() { return shared->object->Amount; }
-					void set(double value) { shared->object->Amount = value; }
+					void set(double value)
+					{
+					    shared->object->Amount = value;
+                        shared->object->setDirty();
+					}
 				}
 
 				property double NormalizedAmount

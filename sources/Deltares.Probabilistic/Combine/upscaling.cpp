@@ -1,10 +1,10 @@
 #ifndef _USE_MATH_DEFINES
 #define _USE_MATH_DEFINES
 #endif
-#include <math.h>
-#include <float.h>
+#include <cmath>
+#include <cfloat>
 #include "upscaling.h"
-#include "Hohenbichler.h"
+#include "HohenbichlerFORM.h"
 #include "intEqualElements.h"
 #include "../Statistics/StandardNormal.h"
 
@@ -18,7 +18,7 @@ namespace Deltares {
         //
         int upscaling::upscaleInTime(const double nrTimes, alphaBeta& element, const vector1D& inRhoT)
         {
-            // nrTimes   : Number of time the origional time
+            // nrTimes   : Number of time the original time
             // beta      : Reliability index of a single time element
             // alpha(:)  : Influence coefficients of a single time element
             // inRhoT(:) : Correlation coefficients for each of the variables, in time
@@ -314,7 +314,6 @@ namespace Deltares {
             }
             else
             {
-                auto hhb = Hohenbichler();
                 auto pfVV = hhb.PerformHohenbichler(betaCrossSection, pf, rhoZ);
                 conv = pfVV.second;
                 pfX = pf + std::max((sectionLength - breachL), 0.0) / deltaL * (pf - pfVV.first * pf);

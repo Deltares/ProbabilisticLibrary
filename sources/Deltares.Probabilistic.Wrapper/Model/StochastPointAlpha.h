@@ -66,6 +66,12 @@ namespace Deltares
 					double get() { return shared->object->InfluenceFactor; }
 					void set(double value) { shared->object->InfluenceFactor = value; }
 				}
+
+                std::shared_ptr<Models::StochastPointAlpha> GetNativeAlpha()
+				{
+                    shared->object->Stochast = this->Parameter->GetStochast();
+                    return shared->object;
+				}
 			};
 		}
 	}

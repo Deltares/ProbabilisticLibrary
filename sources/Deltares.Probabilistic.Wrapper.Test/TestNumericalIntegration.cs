@@ -1,8 +1,7 @@
 ﻿using NUnit.Framework;
-using Deltares.Models.Wrappers;
 using Deltares.Reliability.Wrappers;
 
-namespace Deltares.Probabilistics.Wrappers.Test
+namespace Deltares.Probabilistic.Wrapper.Test
 {
     [TestFixture]
     public class TestNumericalIntegration

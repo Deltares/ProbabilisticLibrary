@@ -24,6 +24,8 @@ namespace Deltares
 
 			public:
 				UConverter(System::Collections::Generic::List<Statistics::Wrappers::Stochast^>^ stochasts, Statistics::Wrappers::CorrelationMatrix^ correlationMatrix);
+                ~UConverter() { this->!UConverter(); }
+                !UConverter() { delete shared; }
 
 				virtual property int VaryingStochastCount
 				{

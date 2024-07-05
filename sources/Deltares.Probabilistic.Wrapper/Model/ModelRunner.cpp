@@ -16,10 +16,8 @@ namespace Deltares
 
 			delegate void ManagedSampleDelegate(std::shared_ptr<Models::ModelSample> sample);
 			delegate void ManagedMultipleSampleDelegate(std::vector<std::shared_ptr<Models::ModelSample>> samples);
-			delegate double ManagedBetaDelegate(std::shared_ptr<Models::ModelSample> sample, double beta);
 			typedef void(__stdcall* ZDelegate) (std::shared_ptr<Models::ModelSample>);
 			typedef void(__stdcall* ZMultipleDelegate) (std::vector<std::shared_ptr<Models::ModelSample>>);
-			typedef double(__stdcall* ZBetaDelegate) (std::shared_ptr<Models::ModelSample>, double beta);
 			typedef bool(__stdcall* ShouldExitNativeDelegate) (bool finalCall);
 			typedef void(__stdcall* RemoveTaskNativeDelegate) (int iterationIndex);
 
@@ -29,18 +27,18 @@ namespace Deltares
 
 				this->Stochasts->AddRange(stochasts);
 
-				std::vector<std::shared_ptr<Statistics::Stochast> > native_stochasts;
+				std::vector<std::shared_ptr<Statistics::Stochast> > nativeStochasts;
 
 				for (int i = 0; i < stochasts->Count; i++)
 				{
-					native_stochasts.push_back(stochasts[i]->GetStochast());
+					nativeStochasts.push_back(stochasts[i]->GetStochast());
 				}
 
-				std::shared_ptr<Models::UConverter> uConverter = std::make_shared<Models::UConverter>(native_stochasts, correlationMatrix->GetCorrelationMatrix());
+                const std::shared_ptr<Models::UConverter> uConverter = std::make_shared<Models::UConverter>(nativeStochasts, correlationMatrix->GetCorrelationMatrix());
 
-				std::shared_ptr<Models::ZModel> zModel = getZModel();
+                const std::shared_ptr<Models::ZModel> zModel = getZModel();
 
-				std::shared_ptr<Models::ProgressIndicator> progress = progressIndicator != nullptr ? progressIndicator->GetProgressIndicator() : nullptr;
+                const std::shared_ptr<Models::ProgressIndicator> progress = progressIndicator != nullptr ? progressIndicator->GetProgressIndicator() : nullptr;
 
 				this->shared = new SharedPointerProvider(new Models::ModelRunner(zModel, uConverter, progress));
 			}
@@ -70,18 +68,6 @@ namespace Deltares
 				return functionPointer;
 			}
 
-			Models::ZBetaLambda ModelRunner::getZBetaLambda()
-			{
-				ManagedBetaDelegate^ fp = gcnew ManagedBetaDelegate(this, &ModelRunner::invokeBetaSample);
-				System::Runtime::InteropServices::GCHandle handle = System::Runtime::InteropServices::GCHandle::Alloc(fp);
-				handles->Add(handle);
-
-				System::IntPtr callbackPtr = System::Runtime::InteropServices::Marshal::GetFunctionPointerForDelegate(fp);
-				Models::ZBetaLambda functionPointer = static_cast<ZBetaDelegate>(callbackPtr.ToPointer());
-
-				return functionPointer;
-			}
-
 			std::shared_ptr<ZModel> ModelRunner::getZModel()
 			{
 				ZLambda zLambda = getZLambda();
@@ -92,24 +78,17 @@ namespace Deltares
 				return zModel;
 			}
 
-			void ModelRunner::SetDirectionModel(ICanCalculateBeta^ directionModel)
-			{
-				if (directionModel->CanCalculateDirection())
-				{
-					this->directionModel = directionModel;
-
-					const ZBetaLambda zBetaLambda = getZBetaLambda();
-					this->shared->object->setDirectionModel(zBetaLambda);
-				}
-			}
-
 			void ModelRunner::invokeSample(std::shared_ptr<Models::ModelSample> sample)
 			{
 				ModelSample^ sampleWrapper = gcnew ModelSample(sample);
 				this->CalcZValue(sampleWrapper);
 			}
 
-			void ModelRunner::invokeMultipleSamples(std::vector<std::shared_ptr<Models::ModelSample>> samples)
+            /**
+             * \brief Callback method for calculating samples in .net invoked by a native algorithm
+             * \param samples 
+             */
+            void ModelRunner::invokeMultipleSamples(std::vector<std::shared_ptr<Models::ModelSample>> samples)
 			{
 				System::Collections::Generic::List<ModelSample^>^ sampleWrappers = gcnew System::Collections::Generic::List<Wrappers::ModelSample^>();
 
@@ -119,13 +98,6 @@ namespace Deltares
 				}
 
 				this->CalcZValues(sampleWrappers);
-			}
-
-			double ModelRunner::invokeBetaSample(std::shared_ptr<Models::ModelSample> sample, double beta)
-			{
-				ModelSample^ sampleWrapper = gcnew ModelSample(sample);
-
-				return this->directionModel->GetBeta(sampleWrapper, beta);
 			}
 
 			void ModelRunner::SetShouldExitDelegate(ShouldExitDelegate^ shouldExitDelegate)

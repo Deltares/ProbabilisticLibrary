@@ -136,6 +136,21 @@
     <ClCompile Include="Reliability\SubsetSimulationSettings.cpp" />
     <ClCompile Include="Reliability\SubsetSimulation.cpp" />
     <ClCompile Include="Model\Project.cpp" />
+    <ClCompile Include="Combine\ImportanceSamplingCombiner.cpp" />
+    <ClCompile Include="Combine\DesignPointModel.cpp" />
+    <ClCompile Include="Combine\CombinedDesignPointModel.cpp" />
+    <ClCompile Include="Combine\DesignPointCombiner.cpp" />
+    <ClCompile Include="Statistics\SelfCorrelationMatrix.cpp" />
+    <ClCompile Include="Model\SampleProvider.cpp" />
+    <ClCompile Include="Combine\DirectionalSamplingCombiner.cpp" />
+    <ClCompile Include="Combine\CombineType.cpp" />
+    <ClCompile Include="Model\ProjectServer.cpp" />
+    <ClCompile Include="Reliability\Settings.cpp" />
+    <ClCompile Include="Statistics\SparseCorrelationMatrix.cpp" />
+    <ClCompile Include="Combine\CombineSettings.cpp" />
+    <ClCompile Include="Combine\CombineProject.cpp" />
+    <ClCompile Include="Utils\DirtySupport.cpp" />
+    <ClCompile Include="Statistics\Distributions\FragilityCurveDistribution.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -291,6 +306,21 @@
     <ClInclude Include="Reliability\SubsetSimulationSettings.h" />
     <ClInclude Include="Reliability\SubsetSimulation.h" />
     <ClInclude Include="Model\Project.h" />
+    <ClInclude Include="Combine\ImportanceSamplingCombiner.h" />
+    <ClInclude Include="Combine\DesignPointModel.h" />
+    <ClInclude Include="Combine\CombinedDesignPointModel.h" />
+    <ClInclude Include="Combine\DesignPointCombiner.h" />
+    <ClInclude Include="Statistics\SelfCorrelationMatrix.h" />
+    <ClInclude Include="Model\SampleProvider.h" />
+    <ClInclude Include="Combine\DirectionalSamplingCombiner.h" />
+    <ClInclude Include="Combine\CombineType.h" />
+    <ClInclude Include="Model\ProjectServer.h" />
+    <ClInclude Include="Reliability\Settings.h" />
+    <ClInclude Include="Statistics\SparseCorrelationMatrix.h" />
+    <ClInclude Include="Combine\CombineSettings.h" />
+    <ClInclude Include="Combine\CombineProject.h" />
+    <ClInclude Include="Utils\DirtySupport.h" />
+    <ClInclude Include="Statistics\Distributions\FragilityCurveDistribution.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

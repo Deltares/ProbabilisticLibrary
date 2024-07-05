@@ -1,7 +1,7 @@
 #pragma once
 #include "RandomSettings.h"
 #include "Sample.h"
-#include "../Reliability/StochastSettingsSet.h"
+#include "SampleProvider.h"
 
 namespace Deltares
 {
@@ -10,8 +10,17 @@ namespace Deltares
 		class RandomSampleGenerator
 		{
 		public:
+            RandomSampleGenerator() {}
+
+            RandomSampleGenerator(std::shared_ptr<RandomSettings> settings, std::shared_ptr<Reliability::StochastSettingsSet> stochastSet)
+            {
+                this->Settings = settings;
+                this->Settings->StochastSet = stochastSet;
+                this->initialize();
+            }
+
 			std::shared_ptr<RandomSettings> Settings = std::make_shared<RandomSettings>();
-			std::shared_ptr<Deltares::Reliability::StochastSettingsSet> StochastSet = std::make_shared<Deltares::Reliability::StochastSettingsSet>();
+            std::shared_ptr<SampleProvider> sampleProvider = nullptr;
 
 			void initialize();
 			void restart();

@@ -23,6 +23,19 @@ interface
 end interface
 
 interface
+    subroutine combineMultipleElementsGeneral( betaElement, alphaElement, rho, beta, alpha, &
+      combAndOrIn, combinerType, nrElms, nrStoch) bind(c, name="combineMultipleElementsGeneral")
+        use, intrinsic :: iso_c_binding, only: c_double
+        real(kind=c_double),  intent(in)  :: betaElement(*)
+        real(kind=c_double),  intent(in)  :: alphaElement(*)
+        real(kind=c_double),  intent(in)  :: rho(*)
+        real(kind=c_double),  intent(out) :: beta
+        real(kind=c_double),  intent(out) :: alpha(*)
+        integer, value,       intent(in)  :: combAndOrIn, combinerType, nrElms, nrStoch
+    end subroutine combineMultipleElementsGeneral
+end interface
+
+interface
     integer function Hohenbichler_c( betaV, pfU, rhoInput, pfVpfU ) bind(c)
         use, intrinsic :: iso_c_binding, only: c_double
         real(kind=c_double),  intent(in)   :: betaV       !< Smallest reliability index of two stochastic parameters.

@@ -4,6 +4,7 @@
 
 #include "../Utils/probLibException.h"
 #include "../Math/Random.h"
+#include "../Math/NumericSupport.h"
 
 namespace Deltares
 {

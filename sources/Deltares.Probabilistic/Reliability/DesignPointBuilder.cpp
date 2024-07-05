@@ -67,14 +67,17 @@ namespace Deltares
 			this->qualitativeIndices.clear();
 			this->modeFinders.clear();
 
-			for (int i = 0; i < stochastSet->getVaryingStochastCount(); i++)
-			{
-				if (stochastSet->VaryingStochastSettings[i]->IsQualitative)
-				{
-					this->qualitativeIndices.push_back(i);
-					this->modeFinders.push_back(std::make_shared<ModeFinder>(stochastSet->VaryingStochastSettings[i]));
-				}
-			}
+            if (stochastSet != nullptr)
+            {
+                for (int i = 0; i < stochastSet->getVaryingStochastCount(); i++)
+                {
+                    if (stochastSet->VaryingStochastSettings[i]->IsQualitative)
+                    {
+                        this->qualitativeIndices.push_back(i);
+                        this->modeFinders.push_back(std::make_shared<ModeFinder>(stochastSet->VaryingStochastSettings[i]));
+                    }
+                }
+            }
 
 			this->qualitativeCount = this->qualitativeIndices.size();
 		}
@@ -204,6 +207,25 @@ namespace Deltares
 					throw std::runtime_error("Not supported");
 				}
 			}
+		}
+
+        std::string DesignPointBuilder::getDesignPointMethodString(DesignPointMethod method)
+		{
+            switch (method)
+            {
+            case DesignPointMethod::NearestToMean: return "nearest_to_mean";
+            case DesignPointMethod::CenterOfGravity: return "center_of_gravity";
+            case DesignPointMethod::CenterOfAngles: return "center_of_angles";
+            default: throw probLibException("Design point method");
+            }
+		}
+
+        DesignPointMethod DesignPointBuilder::getDesignPointMethod(std::string method)
+		{
+            if (method == "nearest_to_mean") return DesignPointMethod::NearestToMean;
+            else if (method == "center_of_gravity") return DesignPointMethod::CenterOfGravity;
+            else if (method == "center_of_angles") return DesignPointMethod::CenterOfAngles;
+            else throw probLibException("Design point method");
 		}
 	}
 }

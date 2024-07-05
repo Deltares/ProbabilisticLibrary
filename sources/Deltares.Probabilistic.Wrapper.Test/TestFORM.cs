@@ -2,7 +2,7 @@
 using Deltares.Reliability.Wrappers;
 using NUnit.Framework;
 
-namespace Deltares.Probabilistics.Wrappers.Test
+namespace Deltares.Probabilistic.Wrapper.Test
 {
     [TestFixture]
     public class TestFORM
@@ -84,6 +84,8 @@ namespace Deltares.Probabilistics.Wrappers.Test
             Assert.AreEqual(6, designPoint.ReliabilityResults.Count);
             Assert.AreEqual(18, designPoint.Evaluations.Count);
 
+            Assert.IsTrue(designPoint.Evaluations[0].Tag is ZFunctionOutput);
+
             for (int i = 0; i < designPoint.ReliabilityResults.Count; i++)
             {
                 Assert.AreEqual(i, designPoint.ReliabilityResults[i].Index);
@@ -132,6 +134,22 @@ namespace Deltares.Probabilistics.Wrappers.Test
             Assert.AreEqual(0.90, designPoint.Alphas[2].X, margin);
 
             Assert.AreEqual(0, designPoint.Alphas[1].Alpha, margin);
+            Assert.AreEqual(designPoint.Alphas[0].AlphaCorrelated, designPoint.Alphas[1].AlphaCorrelated, margin);
+        }
+
+        [Test]
+        public void TestLinearPartialCorrelated()
+        {
+            Project project = ProjectBuilder.GetLinearPartialCorrelatedProject();
+
+            project.ReliabilityMethod = new FORM();
+            DesignPoint designPoint = project.GetDesignPoint();
+
+            Assert.AreEqual(2.15, designPoint.Beta, margin);
+
+            Assert.AreEqual(0.45, designPoint.Alphas[0].X, margin);
+            Assert.AreEqual(0.45, designPoint.Alphas[1].X, margin);
+
             Assert.AreEqual(designPoint.Alphas[0].AlphaCorrelated, designPoint.Alphas[1].AlphaCorrelated, margin);
         }
 

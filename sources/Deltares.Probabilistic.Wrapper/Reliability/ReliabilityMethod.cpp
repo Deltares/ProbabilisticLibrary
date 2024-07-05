@@ -12,17 +12,15 @@ namespace Deltares
 			{
 				const std::shared_ptr<Reliability::ReliabilityMethod> reliabilityMethod = this->GetReliabilityMethod();
 
-				const std::shared_ptr<Models::ModelRunner> modelRunnerNative = modelRunner->GetModelRunner();
+				const std::shared_ptr<Models::ModelRunner> nativeModelRunner = modelRunner->GetModelRunner();
 
-				modelRunnerNative->initializeForRun();
+				nativeModelRunner->initializeForRun();
 
-				const std::shared_ptr<Reliability::DesignPoint> designPoint = reliabilityMethod->getDesignPoint(modelRunnerNative);
+				const std::shared_ptr<Reliability::DesignPoint> nativeDesignPoint = reliabilityMethod->getDesignPoint(nativeModelRunner);
 
-				Wrappers::DesignPoint^ designPointWrapper = gcnew Wrappers::DesignPoint(designPoint, modelRunner->Stochasts);
+				Wrappers::DesignPoint^ designPoint = gcnew Wrappers::DesignPoint(nativeDesignPoint, modelRunner->Stochasts);
 
-				NativeSupport::releaseManagedObjects();
-
-				return designPointWrapper;
+				return designPoint;
 			};
 		}
 	}

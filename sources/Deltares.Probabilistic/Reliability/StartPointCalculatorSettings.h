@@ -49,6 +49,9 @@ namespace Deltares
 
 			std::shared_ptr<StochastSettingsSet> StochastSet = std::make_shared<StochastSettingsSet>();
 			std::vector<double> startVector;
+
+            static std::string getStartPointMethodString(StartMethodType method);
+            static StartMethodType getStartPointMethod(std::string method);
 		};
 	}
 }

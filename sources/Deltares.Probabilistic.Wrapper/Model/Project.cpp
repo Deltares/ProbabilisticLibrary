@@ -12,11 +12,11 @@ namespace Deltares
 
             bool Project::IsValid()
             {
-                shared->object->variables.clear();
+                shared->object->stochasts.clear();
 
                 for (size_t i = 0; i < this->Stochasts->Count; i++)
                 {
-                    shared->object->variables.push_back(this->Stochasts[i]->GetStochast());
+                    shared->object->stochasts.push_back(this->Stochasts[i]->GetStochast());
                 }
 
                 shared->object->correlationMatrix = this->CorrelationMatrix->GetCorrelationMatrix();
@@ -27,11 +27,11 @@ namespace Deltares
 
             Reliability::Wrappers::DesignPoint^ Project::GetDesignPoint()
             {
-                shared->object->variables.clear();
+                shared->object->stochasts.clear();
 
                 for (size_t i = 0; i < this->Stochasts->Count; i++)
                 {
-                    shared->object->variables.push_back(this->Stochasts[i]->GetStochast());
+                    shared->object->stochasts.push_back(this->Stochasts[i]->GetStochast());
                 }
 
                 shared->object->correlationMatrix = this->CorrelationMatrix->GetCorrelationMatrix();
@@ -45,7 +45,11 @@ namespace Deltares
 
                 const std::shared_ptr<Reliability::DesignPoint> designPoint = shared->object->getDesignPoint();
 
+                this->ReleaseHandles();
+
                 this->DesignPoint = gcnew Reliability::Wrappers::DesignPoint(designPoint, this->Stochasts);
+
+                this->DesignPoint->AssignTags(this->TagRepository);
 
                 return this->DesignPoint;
             }
@@ -54,7 +58,7 @@ namespace Deltares
             {
                 ManagedSampleDelegate^ fp = gcnew ManagedSampleDelegate(this, &Project::invokeSample);
                 System::Runtime::InteropServices::GCHandle handle = System::Runtime::InteropServices::GCHandle::Alloc(fp);
-                //handles->Add(handle);
+                handles->Add(handle);
 
                 System::IntPtr callbackPtr = System::Runtime::InteropServices::Marshal::GetFunctionPointerForDelegate(fp);
                 ZLambda functionPointer = static_cast<ZDelegate>(callbackPtr.ToPointer());

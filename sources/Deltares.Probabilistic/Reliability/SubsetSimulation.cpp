@@ -5,6 +5,7 @@
 
 #include "DesignPoint.h"
 #include "DesignPointBuilder.h"
+#include "../Math/NumericSupport.h"
 #include "../Statistics/StandardNormal.h"
 #include "../Model/RandomSampleGenerator.h"
 
@@ -27,12 +28,8 @@ namespace Deltares
 
             modelRunner->updateStochastSettings(this->Settings->StochastSet);
 
-            std::shared_ptr<DesignPointBuilder> uMean = std::make_shared<DesignPointBuilder>(nStochasts, Settings->designPointMethod, Settings->StochastSet);
-
-            std::shared_ptr<RandomSampleGenerator> randomSampleGenerator = std::make_shared<RandomSampleGenerator>();
-            randomSampleGenerator->Settings = this->Settings->randomSettings;
-            randomSampleGenerator->Settings->StochastSet = this->Settings->StochastSet;
-            randomSampleGenerator->initialize();
+            std::shared_ptr<DesignPointBuilder> designPointBuilder = std::make_shared<DesignPointBuilder>(nStochasts, Settings->designPointMethod, Settings->StochastSet);
+            std::shared_ptr<RandomSampleGenerator> randomSampleGenerator = std::make_shared<RandomSampleGenerator>(this->Settings->randomSettings, this->Settings->StochastSet);
 
             // initialize convergence indicator and loops
             double ssFactor = 1;
@@ -44,15 +41,12 @@ namespace Deltares
             int iteration = 0;
 
             std::shared_ptr<ConvergenceReport> convergenceReport = nullptr;
-
-            std::vector<std::shared_ptr<Sample>> selectedSamples;
             std::vector<std::shared_ptr<DesignPoint>> contributingDesignPoints;
+            std::vector<std::shared_ptr<Sample>> selectedSamples;
 
             while (!ready && !isStopped())
             {
                 modelRunner->clear();
-
-                std::vector<double> zValues(0); // copy of z for all parallel threads as double
 
                 int samplesCount = 0;
                 int zIndex = 0;
@@ -67,28 +61,11 @@ namespace Deltares
                 iteration++;
 
                 std::vector<std::shared_ptr<Sample>> samples;
-
                 std::vector<std::shared_ptr<Sample>> performedSamples;
+                std::vector<double> zValues;
 
                 // create samples
-                std::vector<std::shared_ptr<Sample>> newSamples;
-
-                if (selectedSamples.empty())
-                {
-                    newSamples = getInitialSamples(modelRunner, randomSampleGenerator, nStochasts, initial);
-                }
-                else if (Settings->SampleMethod == SampleMethodType::MarkovChain)
-                {
-                    newSamples = getMarkovChainSamples(modelRunner, nStochasts, selectedSamples, z0Fac);
-                }
-                else if (Settings->SampleMethod == SampleMethodType::AdaptiveConditional)
-                {
-                    newSamples = getAdaptiveConditionalSamples(modelRunner, Settings->MaximumSamples, selectedSamples);
-                }
-                else
-                {
-                    throw probLibException("Sample method type");
-                }
+                std::vector<std::shared_ptr<Sample>> newSamples = getNewSamples(modelRunner, randomSampleGenerator, initial, z0Fac, selectedSamples);
 
                 int skip = 0;
 
@@ -98,8 +75,9 @@ namespace Deltares
 
                     if (initial || zIndex >= zValues.size())
                     {
-                        // select the new samples
+                        zIndex = 0;
 
+                        // select the new samples
                         samples.clear();
                         int chunkSize = modelRunner->Settings->MaxChunkSize;
                         int runs = std::min(chunkSize, (int)newSamples.size() - sampleIndex);
@@ -119,33 +97,22 @@ namespace Deltares
                         }
                         else
                         {
-                            zValues = std::vector<double>(samples.size());
-                            for (int i = 0; i < samples.size(); i++)
-                            {
-                                zValues[i] = samples[i]->Z;
-                            }
+                            zValues = Sample::select(samples, [](std::shared_ptr<Sample> p) { return p->Z; });
                         }
 
+                        // determine multiplication factor for z (z<0) at u = 0
                         if (initial)
                         {
-                            z0Fac = this->getZFactor(zValues[0]);
+                            z0Fac = this->getZFactor(zValues[zIndex]);
+                            initial = false;
+                            continue;
                         }
 
                         if (modelRunner->shouldExitPrematurely(samples))
                         {
                             // return the result so far
-                            return modelRunner->getDesignPoint(uMean->getSample(), Statistics::StandardNormal::getUFromQ(pf), convergenceReport);
+                            return modelRunner->getDesignPoint(designPointBuilder->getSample(), Statistics::StandardNormal::getUFromQ(pf), convergenceReport);
                         }
-
-                        zIndex = 0;
-                    }
-
-                    // determine multiplication factor for z (z<0), if u = 0
-                    if (initial)
-                    {
-                        z0Fac = this->getZFactor(zValues[zIndex]);
-                        initial = false;
-                        continue;
                     }
 
                     double z = zValues[zIndex] * z0Fac;
@@ -174,7 +141,7 @@ namespace Deltares
                     // register minimum value of r and alpha
                     if (z * z0Fac < 0)
                     {
-                        uMean->addSample(sample);
+                        designPointBuilder->addSample(sample);
                     }
 
                     // uncorrected prob of failure for convergence
@@ -186,21 +153,17 @@ namespace Deltares
 
                     if (pf > 0 && pf < 1.0)
                     {
-                        double convergence = getConvergence(pf, samplesCount);
+                        // check if convergence is reached (or stop criterion)
+                        convergenceReport->Convergence = getConvergence(pf, samplesCount);
+                        convergenceReport->IsConverged = isConverged(this->Settings, sampleIndex, convergenceReport->Convergence);
 
-                        pf *= ssFactor;
+                        converged = convergenceReport->IsConverged;
 
-                        report->Reliability = z0Fac * Statistics::StandardNormal::getUFromQ(pf);
-                        report->Variation = convergence;
+                        report->Reliability = z0Fac * Statistics::StandardNormal::getUFromQ(pf * ssFactor);
+                        report->Variation = convergenceReport->Convergence;
 
                         modelRunner->reportResult(report);
 
-                        // check if convergence is reached (or stop criterion)
-                        convergenceReport->Convergence = convergence;
-
-                        converged = isConverged(this->Settings, sampleIndex, convergence);
-
-                        convergenceReport->IsConverged = converged;
                     }
                     else
                     {
@@ -213,21 +176,17 @@ namespace Deltares
 
                 if (!selectedSamples.empty())
                 {
-#ifdef __cpp_lib_format
                     const double ratio = 100 * NumericSupport::Divide(rejectedSamples, acceptedSamples + rejectedSamples);
+#if __has_include(<format>)
                     std::string message = std::format("Rejected {0:} values, accepted {1:} values ({2:} % rejected) in iteration {3:}", rejectedSamples, acceptedSamples, ratio, iteration);
-                    modelRunner->reportMessage(MessageType::Debug, message);
+#else
+                    std::string message = "Rejected " + std::to_string(rejectedSamples) + ", accepted " + std::to_string(acceptedSamples) + " samples";
 #endif
+                    modelRunner->reportMessage(MessageType::Debug, message);
                 }
 
                 // select samples for the next round
-                std::sort(performedSamples.begin(), performedSamples.end(), [z0Fac](std::shared_ptr<Sample> val1, std::shared_ptr<Sample> val2) {return val1->Z * z0Fac < val2->Z * z0Fac; });
-
-                selectedSamples.clear();
-                for (int i = 0; i < Settings->SubsetFraction * performedSamples.size(); i++)
-                {
-                    selectedSamples.push_back(performedSamples[i]);
-                }
+                selectedSamples = selectSamples(z0Fac, performedSamples);
 
                 ssFactor *= Settings->SubsetFraction;
 
@@ -235,18 +194,20 @@ namespace Deltares
 
                 if (!ready)
                 {
-                    std::shared_ptr<Sample> sample = uMean->getSample();
+                    std::shared_ptr<Sample> sample = designPointBuilder->getSample();
                     std::shared_ptr<DesignPoint> designPoint = modelRunner->getDesignPoint(sample, Statistics::StandardNormal::getUFromQ(pf), convergenceReport);
-#ifdef __cpp_lib_format
+#if __has_include(<format>)
                     std::string identifier = std::format("Subset iteration {0:}", iteration);
-                    designPoint->Identifier = identifier;
+#else
+                    std::string identifier = "Subset iteration " + std::to_string(iteration);
 #endif
+                    designPoint->Identifier = identifier;
 
                     contributingDesignPoints.push_back(designPoint);
                 }
             }
 
-            std::shared_ptr<Sample> sample = uMean->getSample();
+            std::shared_ptr<Sample> sample = designPointBuilder->getSample();
             std::shared_ptr<DesignPoint> designPoint = modelRunner->getDesignPoint(sample, z0Fac * Statistics::StandardNormal::getUFromQ(pf), convergenceReport);
 
             for (size_t i = 0; i < contributingDesignPoints.size(); i++)
@@ -257,13 +218,33 @@ namespace Deltares
             return designPoint;
         }
 
-        std::vector<std::shared_ptr<Sample>> SubsetSimulation::getInitialSamples(std::shared_ptr<ModelRunner> modelRunner, std::shared_ptr<RandomSampleGenerator> randomSampleGenerator, int nstochasts, bool initial)
+        std::vector<std::shared_ptr<Sample>> SubsetSimulation::getNewSamples(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<RandomSampleGenerator> randomSampleGenerator, bool initial, double z0Fac, std::vector<std::shared_ptr<Sample>> selectedSamples)
+        {
+            if (selectedSamples.empty())
+            {
+                return getInitialSamples(modelRunner, randomSampleGenerator, initial);
+            }
+            else if (Settings->SampleMethod == SampleMethodType::MarkovChain)
+            {
+                return getMarkovChainSamples(modelRunner, selectedSamples, z0Fac);
+            }
+            else if (Settings->SampleMethod == SampleMethodType::AdaptiveConditional)
+            {
+                return getAdaptiveConditionalSamples(modelRunner, Settings->MaximumSamples, selectedSamples);
+            }
+            else
+            {
+                throw probLibException("Sample method type");
+            }
+        }
+
+        std::vector<std::shared_ptr<Sample>> SubsetSimulation::getInitialSamples(std::shared_ptr<ModelRunner> modelRunner, std::shared_ptr<RandomSampleGenerator> randomSampleGenerator, bool initial)
         {
             std::vector<std::shared_ptr<Sample>> samples;
 
             if (initial)
             {
-                samples.push_back(std::make_shared<Sample>(nstochasts));
+                samples.push_back(std::make_shared<Sample>(modelRunner->getVaryingStochastCount()));
             }
 
             for (int i = 0; i < Settings->MaximumSamples; i++)
@@ -278,7 +259,7 @@ namespace Deltares
             return samples;
         }
 
-        std::vector<std::shared_ptr<Sample>> SubsetSimulation::getMarkovChainSamples(std::shared_ptr<ModelRunner> modelRunner, int nstochasts, std::vector<std::shared_ptr<Sample>>& selectedSamples, double z0Fac)
+        std::vector<std::shared_ptr<Sample>> SubsetSimulation::getMarkovChainSamples(std::shared_ptr<ModelRunner> modelRunner, std::vector<std::shared_ptr<Sample>>& selectedSamples, double z0Fac)
         {
             std::vector<std::shared_ptr<Sample>> samples;
 
@@ -309,7 +290,6 @@ namespace Deltares
                     const double random = Random::next();
 
                     const double newValue = oldSample->Values[i] + (2 * random - 1) * Settings->MarkovChainDeviation;
-
                     const double oldDensity = getStandardNormalPDF(oldSample->Values[i]);
                     const double newDensity = getStandardNormalPDF(newValue);
 
@@ -579,6 +559,20 @@ namespace Deltares
             }
 
             return newSamples;
+        }
+
+        std::vector<std::shared_ptr<Sample>> SubsetSimulation::selectSamples(double z0Fac, std::vector<std::shared_ptr<Sample>> performedSamples)
+        {
+            std::sort(performedSamples.begin(), performedSamples.end(), [z0Fac](std::shared_ptr<Sample> val1, std::shared_ptr<Sample> val2) {return val1->Z * z0Fac < val2->Z * z0Fac; });
+
+            std::vector<std::shared_ptr<Sample>> selectedSamples;
+
+            for (int i = 0; i < Settings->SubsetFraction * performedSamples.size(); i++)
+            {
+                selectedSamples.push_back(performedSamples[i]);
+            }
+
+            return selectedSamples;
         }
 
         double SubsetSimulation::getConvergence(double pf, int samples)

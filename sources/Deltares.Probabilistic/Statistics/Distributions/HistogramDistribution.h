@@ -21,8 +21,14 @@ namespace Deltares
 			double getPDF(std::shared_ptr<StochastProperties> stochast, double x) override;
 			double getCDF(std::shared_ptr<StochastProperties> stochast, double x) override;
 			void fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values) override;
-		private:
+            void fitWeighted(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, std::vector<double>& weights) override;
+            std::vector<double> getSpecialPoints(std::shared_ptr<StochastProperties> stochast) override;
+        private:
 			double getSizeForEmptySizedRange(std::shared_ptr<StochastProperties> stochast);
+            void splitRanges(std::shared_ptr<StochastProperties> stochast, std::vector<std::shared_ptr<WeightedValue>>& values);
+            double getAmount(std::shared_ptr<HistogramValue> range, std::vector<std::shared_ptr<WeightedValue>>& values);
+            void mergeLowWeights(std::vector<std::shared_ptr<WeightedValue>>& values);
+            size_t getDistinctCount(std::vector<std::shared_ptr<WeightedValue>>& values);
 		};
 	}
 }

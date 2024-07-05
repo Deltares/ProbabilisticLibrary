@@ -155,12 +155,27 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Model\Project.h" />
+    <ClInclude Include="Combine\CombineProject.h" />
+    <ClInclude Include="Combine\CombineSettings.h" />
+    <ClInclude Include="Combine\CombineType.h" />
+    <ClInclude Include="Combine\CombinedDesignPointModel.h" />
+    <ClInclude Include="Combine\ImportanceSamplingCombiner.h" />
+    <ClInclude Include="Combine\DesignPointModel.h" />
+    <ClInclude Include="Combine\DesignPointCombiner.h" />
+    <ClInclude Include="Combine\DirectionalSamplingCombiner.h" />
+    <ClInclude Include="Statistics\Distributions\FragilityCurveDistribution.h" />
+    <ClInclude Include="Utils\DirtySupport.h" />
     <ClInclude Include="Model\ProxySettings.h" />
+    <ClInclude Include="Model\Project.h" />
+    <ClInclude Include="Model\SampleProvider.h" />
+    <ClInclude Include="Model\ProjectServer.h" />
     <ClInclude Include="Reliability\NumericalIntegration.h" />
     <ClInclude Include="Reliability\NumericalIntegrationSettings.h" />
     <ClInclude Include="Reliability\SubsetSimulationSettings.h" />
     <ClInclude Include="Reliability\SubsetSimulation.h" />
+    <ClInclude Include="Reliability\Settings.h" />
+    <ClInclude Include="Statistics\SparseCorrelationMatrix.h" />
+    <ClInclude Include="Statistics\SelfCorrelationMatrix.h" />
     <ClInclude Include="Utils\Locker.h" />
     <ClInclude Include="Math\MatrixSupport.h" />
     <ClInclude Include="Optimization\KMeansClustering.h" />
@@ -183,8 +198,10 @@
     <ClInclude Include="Combine\alphaBeta.h" />
     <ClInclude Include="Combine\combineElements.h" />
     <ClInclude Include="Combine\combiner.h" />
-    <ClInclude Include="Combine\Hohenbichler.h" />
-    <ClInclude Include="Combine\HohenbichlerCombiner.h" />
+    <ClInclude Include="Combine\HohenbichlerFORM.h" />
+    <ClInclude Include="Combine\HohenbichlerNumInt.h" />
+    <ClInclude Include="Combine\HohenbichlerFormCombiner.h" />
+    <ClInclude Include="Combine\HohenbichlerNumIntCombiner.h" />
     <ClInclude Include="Combine\HohenbichlerZ.h" />
     <ClInclude Include="Combine\intEqualElements.h" />
     <ClInclude Include="Combine\upscaling.h" />
@@ -272,12 +289,27 @@
     <ClInclude Include="Statistics\Distributions\ConditionalWeibullDistribution.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Model\Project.cpp" />
+    <ClCompile Include="Combine\CombineProject.cpp" />
+    <ClCompile Include="Combine\CombineSettings.cpp" />
+    <ClCompile Include="Combine\CombineType.cpp" />
+    <ClCompile Include="Combine\CombinedDesignPointModel.cpp" />
+    <ClCompile Include="Combine\ImportanceSamplingCombiner.cpp" />
+    <ClCompile Include="Combine\DesignPointModel.cpp" />
+    <ClCompile Include="Combine\DesignPointCombiner.cpp" />
+    <ClCompile Include="Combine\DirectionalSamplingCombiner.cpp" />
+    <ClCompile Include="Statistics\Distributions\FragilityCurveDistribution.cpp" />
+    <ClCompile Include="Utils\DirtySupport.cpp" />
     <ClCompile Include="Model\ProxySettings.cpp" />
+    <ClCompile Include="Model\Project.cpp" />
+    <ClCompile Include="Model\SampleProvider.cpp" />
+    <ClCompile Include="Model\ProjectServer.cpp" />
     <ClCompile Include="Reliability\NumericalIntegration.cpp" />
     <ClCompile Include="Reliability\NumericalIntegrationSettings.cpp" />
     <ClCompile Include="Reliability\SubsetSimulationSettings.cpp" />
     <ClCompile Include="Reliability\SubsetSimulation.cpp" />
+    <ClCompile Include="Reliability\Settings.cpp" />
+    <ClCompile Include="Statistics\SparseCorrelationMatrix.cpp" />
+    <ClCompile Include="Statistics\SelfCorrelationMatrix.cpp" />
     <ClCompile Include="Utils\Locker.cpp" />
     <ClCompile Include="Math\MatrixSupport.cpp" />
     <ClCompile Include="Optimization\KMeansClustering.cpp" />
@@ -299,8 +331,10 @@
     <ClCompile Include="Statistics\Distributions\WeibullDistribution.cpp" />
     <ClCompile Include="Combine\combineElements.cpp" />
     <ClCompile Include="Combine\combiner.cpp" />
-    <ClCompile Include="Combine\Hohenbichler.cpp" />
-    <ClCompile Include="Combine\HohenbichlerCombiner.cpp" />
+    <ClCompile Include="Combine\HohenbichlerFORM.cpp" />
+    <ClCompile Include="Combine\HohenbichlerNumInt.cpp" />
+    <ClCompile Include="Combine\HohenbichlerFormCombiner.cpp" />
+    <ClCompile Include="Combine\HohenbichlerNumIntCombiner.cpp" />
     <ClCompile Include="Combine\HohenbichlerZ.cpp" />
     <ClCompile Include="Combine\upscaling.cpp" />
     <ClCompile Include="Reliability\SphereTasks.cpp" />

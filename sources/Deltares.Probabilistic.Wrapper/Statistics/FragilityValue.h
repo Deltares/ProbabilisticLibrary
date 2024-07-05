@@ -14,22 +14,39 @@ namespace Deltares
 			public ref class FragilityValue
 			{
 			private:
-				SharedPointerProvider<Statistics::FragilityValue>* shared = new SharedPointerProvider(new Statistics::FragilityValue());
+				SharedPointerProvider<Statistics::FragilityValue>* shared = nullptr;
 			public:
-				FragilityValue() { }
-				~FragilityValue() { this->!FragilityValue(); }
+                FragilityValue()
+                {
+                    shared = new SharedPointerProvider(new Statistics::FragilityValue());
+                }
+
+                FragilityValue(std::shared_ptr<Statistics::FragilityValue> fragilityValue)
+                {
+                    shared = new SharedPointerProvider(fragilityValue);
+                }
+
+                ~FragilityValue() { this->!FragilityValue(); }
 				!FragilityValue() { delete shared; }
 
 				property double X
 				{
 					double get() { return shared->object->X; }
-					void set(double value) { shared->object->X = value; }
+					void set(double value)
+					{
+					    shared->object->X = value;
+                        shared->object->setDirty();
+					}
 				}
 
 				property double Reliability
 				{
 					double get() { return shared->object->Reliability; }
-					void set(double value) { shared->object->Reliability = value; }
+					void set(double value)
+					{
+					    shared->object->Reliability = value;
+                        shared->object->setDirty();
+					}
 				}
 
 				std::shared_ptr<Statistics::FragilityValue> GetValue()

@@ -4,227 +4,228 @@
 
 namespace Deltares
 {
-	namespace Models
-	{
-		namespace Wrappers
-		{
-			/// <summary>
-			/// Indicates the meaning of <see cref="Sample.Values"/> in a <see cref="Sample"/>
-			/// </summary>
-			public enum class SpaceType { U, X };
+    namespace Models
+    {
+        namespace Wrappers
+        {
+            /// <summary>
+            /// Indicates the meaning of <see cref="Sample.Values"/> in a <see cref="Sample"/>
+            /// </summary>
+            public enum class SpaceType { U, X };
 
-			using namespace Deltares::Models;
-			using namespace Deltares::Utils::Wrappers;
+            using namespace Deltares::Models;
+            using namespace Deltares::Utils::Wrappers;
 
-			public ref class Sample
-			{
-			private:
-				array<double>^ values = nullptr;
-				System::Object^ tag = nullptr;
-				SharedPointerProvider<Models::Sample>* shared = nullptr;
-				bool dirty = false;
+            public ref class Sample
+            {
+            public:
+                Sample(std::shared_ptr<Models::Sample> sample)
+                {
+                    this->shared = new SharedPointerProvider(sample);
+                    this->SpaceType = Wrappers::SpaceType::U;
+                }
 
-			public:
-				Sample(std::shared_ptr<Models::Sample> sample)
-				{
-					shared = new SharedPointerProvider(sample);
+                Sample(array<double>^ values)
+                {
+                    std::vector<double> nativeValues = NativeSupport::toNative(values);
 
-					switch (sample->spaceType)
-					{
-					case Models::SpaceType::U: this->SpaceType = Wrappers::SpaceType::U; break;
-					case Models::SpaceType::X: this->SpaceType = Wrappers::SpaceType::X; break;
-					}
-				}
+                    Models::Sample* sample = new Models::Sample(nativeValues);
 
-				Sample(array<double>^ values)
-				{
-					std::vector<double> nativeValues = NativeSupport::toNative(values);
+                    shared = new SharedPointerProvider(sample);
+                    this->values = values;
+                }
 
-					Models::Sample* sample = new Models::Sample(nativeValues);
+                ~Sample() { this->!Sample(); }
+                !Sample()
+                {
+                    delete shared;
+                }
 
-					shared = new SharedPointerProvider(sample);
-					this->values = values;
-				}
+                property array<double>^ Values
+                {
+                    array<double>^ get()
+                    {
+                        if (values == nullptr)
+                        {
+                            values = NativeSupport::toManaged(shared->object->Values);
+                        }
 
-				property array<double>^ Values
-				{
-					array<double>^ get()
-					{
-						if (values == nullptr)
-						{
-							values = NativeSupport::toManaged(shared->object->Values);
-						}
+                        dirty = true;
 
-						dirty = true;
+                        return values;
+                    }
+                }
 
-						return values;
-					}
-				}
+                property double Weight
+                {
+                    double get() { return shared->object->Weight; }
+                    void set(double value) { shared->object->Weight = value; }
+                }
 
-				property double Weight
-				{
-					double get() { return shared->object->Weight; }
-					void set(double value) { shared->object->Weight = value; }
-				}
+                property int Iteration
+                {
+                    int get() { return shared->object->IterationIndex; }
+                    void set(int value) { shared->object->IterationIndex = value; }
+                }
 
-				property int Iteration
-				{
-					int get() { return shared->object->IterationIndex; }
-					void set(int value) { shared->object->IterationIndex = value; }
-				}
+                property bool AllowProxy
+                {
+                    bool get() { return shared->object->AllowProxy; }
+                    void set(bool value) { shared->object->AllowProxy = value; }
+                }
 
-				property bool AllowProxy
-				{
-					bool get() { return shared->object->AllowProxy; }
-					void set(bool value) { shared->object->AllowProxy = value; }
-				}
+                property bool IsRestartRequired
+                {
+                    bool get() { return shared->object->IsRestartRequired; }
+                    void set(bool value) { shared->object->IsRestartRequired = value; }
+                }
 
-				property bool IsRestartRequired
-				{
-					bool get() { return shared->object->IsRestartRequired; }
-					void set(bool value) { shared->object->IsRestartRequired = value; }
-				}
+                property double Z
+                {
+                    double get() { return shared->object->Z; }
+                    void set(double value) { shared->object->Z = value; }
+                }
 
-				property double Z
-				{
-					double get() { return shared->object->Z; }
-					void set(double value) { shared->object->Z = value; }
-				}
+                std::shared_ptr<Models::Sample> GetSample()
+                {
+                    if (dirty)
+                    {
+                        this->UpdateValues();
+                    }
 
-				std::shared_ptr<Models::Sample> GetSample()
-				{
-					if (dirty)
-					{
-						this->UpdateValues();
-					}
+                    return shared->object;
+                }
 
-					return shared->object;
-				}
+                // TODO: PROBL-42 next methods and properties should be removed after after c++ conversion
 
-				// TODO: next methods and properties should be removed after after c++ conversion
+                Sample(SpaceType spaceType, int count) : Sample(spaceType, -1, count)
+                {
+                }
 
-				Sample(SpaceType spaceType, int count) : Sample(spaceType, -1, count)
-				{
-				}
+                Sample(SpaceType spaceType, int iteration, int count) : Sample(spaceType, iteration, gcnew array<double>(count))
+                {
+                }
 
-				Sample(SpaceType spaceType, int iteration, int count) : Sample(spaceType, iteration, gcnew array<double>(count))
-				{
-				}
+                Sample(SpaceType spaceType, array<double>^ values) : Sample(spaceType, -1, values)
+                {
+                }
 
-				Sample(SpaceType spaceType, array<double>^ values) : Sample(spaceType, -1, values)
-				{
-				}
+                Sample(SpaceType spaceType, int iteration, array<double>^ values) : Sample(values)
+                {
+                    this->SpaceType = spaceType;
+                    this->Iteration = iteration;
+                }
 
-				Sample(SpaceType spaceType, int iteration, array<double>^ values) : Sample(values)
-				{
-					this->SpaceType = spaceType;
-					this->Iteration = iteration;
-				}
+                /// <summary>
+                /// The space type in which the <see cref="Values"/> are defined
+                /// </summary>
+                SpaceType SpaceType = SpaceType::U;
 
-				/// <summary>
-				/// The space type in which the <see cref="Values"/> are defined
-				/// </summary>
-				SpaceType SpaceType = SpaceType::U;
+                double Factor = 0;
 
-				double Factor = 0;
+                Sample^ GetSampleAtBeta(double beta)
+                {
+                    UpdateValues();
+                    return gcnew Sample(shared->object->getSampleAtBeta(beta));
+                }
 
-				Sample^ GetSampleAtBeta(double beta)
-				{
-					UpdateValues();
-					return gcnew Sample(shared->object->getSampleAtBeta(beta));
-				}
+                Sample^ GetNormalizedSample()
+                {
+                    UpdateValues();
+                    return gcnew Sample(shared->object->getNormalizedSample());
+                }
 
-				Sample^ GetNormalizedSample()
-				{
-					UpdateValues();
-					return gcnew Sample(shared->object->getNormalizedSample());
-				}
+                Sample^ GetMultipliedSample(double factor)
+                {
+                    UpdateValues();
+                    return gcnew Sample(shared->object->getMultipliedSample(factor));
+                }
 
-				Sample^ GetMultipliedSample(double factor)
-				{
-					UpdateValues();
-					return gcnew Sample(shared->object->getMultipliedSample(factor));
-				}
+                Sample^ Clone()
+                {
+                    UpdateValues();
+                    return gcnew Sample(shared->object->clone());
+                }
 
-				Sample^ Clone()
-				{
-					UpdateValues();
-					return gcnew Sample(shared->object->clone());
-				}
+                int ScenarioIndex = -1;
 
-				int ScenarioIndex = -1;
+                void UpdateValues()
+                {
+                    if (values != nullptr)
+                    {
+                        // synchronize values
+                        for (int i = 0; i < values->Length; i++)
+                        {
+                            shared->object->Values[i] = values[i];
+                        }
+                    }
 
-				void UpdateValues()
-				{
-					if (values != nullptr)
-					{
-						// synchronize values
-						for (int i = 0; i < values->Length; i++)
-						{
-							shared->object->Values[i] = values[i];
-						}
-					}
+                    dirty = false;
+                }
 
-					dirty = false;
-				}
+                // TODO: PROBL-42 remove after c++ conversion
+                property double Beta
+                {
+                    double get()
+                    {
+                        UpdateValues();
+                        return shared->object->getBeta();
+                    }
+                }
 
-				// TODO: remove after c++ conversion
-				property double Beta
-				{
-					double get()
-					{
-						UpdateValues();
-						return shared->object->getBeta();
-					}
-				}
+                /// <summary>
+                /// Gets the squared distance to another sample
+                /// </summary>
+                /// <param name="other"></param>
+                /// <returns></returns>
+                double GetDistance2(Sample^ other, bool hasWeighting)
+                {
+                    double sum = 0;
+                    for (int j = 0; j < other->Values->Length; ++j)
+                    {
+                        double weight = 1;
+                        if (hasWeighting) weight = other->Weight;
+                        double diff = (this->Values[j] - other->Values[j]) * weight;
+                        sum += diff * diff;
+                    }
 
-				/// <summary>
-/// Gets the squared distance to another sample
-/// </summary>
-/// <param name="other"></param>
-/// <returns></returns>
-				double GetDistance2(Sample^ other, bool hasWeighting)
-				{
-					double sum = 0;
-					for (int j = 0; j < other->Values->Length; ++j)
-					{
-						double weight = 1;
-						if (hasWeighting) weight = other->Weight;
-						double diff = (this->Values[j] - other->Values[j]) * weight;
-						sum += diff * diff;
-					}
+                    return sum;
+                }
 
-					return sum;
-				}
+                bool AreValuesEqual(Sample^ other)
+                {
+                    if (this == other)
+                    {
+                        return true;
+                    }
 
-				bool AreValuesEqual(Sample^ other)
-				{
-					if (this == other)
-					{
-						return true;
-					}
+                    if (this->Values->Length != this->Values->Length)
+                    {
+                        return false;
+                    }
 
-					if (this->Values->Length != this->Values->Length)
-					{
-						return false;
-					}
+                    for (int i = 0; i < this->Values->Length; i++)
+                    {
+                        if (!isnan(this->Values[i]) || !isnan(other->Values[i]))
+                        {
+                            if (this->Values[i] != other->Values[i])
+                            {
+                                return false;
+                            }
+                        }
+                    }
 
-					for (int i = 0; i < this->Values->Length; i++)
-					{
-						if (!isnan(this->Values[i]) || !isnan(other->Values[i]))
-						{
-							if (this->Values[i] != other->Values[i])
-							{
-								return false;
-							}
-						}
-					}
+                    return true;
+                }
 
-					return true;
-				}
-			};
-		}
-	}
+            private:
+                array<double>^ values = nullptr;
+                System::Object^ tag = nullptr;
+                SharedPointerProvider<Models::Sample>* shared = nullptr;
+                bool dirty = false;
+            };
+        }
+    }
 }
 
 

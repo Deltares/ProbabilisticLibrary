@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics.Tracing;
 using System.Linq;
 using System.Threading.Tasks;
 using Deltares.Statistics.Wrappers;
 using Deltares.Models.Wrappers;
+using Deltares.Reliability.Wrappers;
+using Deltares.Utils.Wrappers;
 
-namespace Deltares.Probabilistics.Wrappers.Test
+namespace Deltares.Probabilistic.Wrapper.Test
 {
     public class ProgressHolder
     {
@@ -47,6 +51,7 @@ namespace Deltares.Probabilistics.Wrappers.Test
     public class ZSampleOutput
     {
         private readonly ZDelegate function;
+        private readonly TagRepository tagRepository = new TagRepository();
 
         public ZSampleOutput(ZDelegate function)
         {
@@ -57,7 +62,12 @@ namespace Deltares.Probabilistics.Wrappers.Test
         {
             ZFunctionOutput output = function.Invoke(sample.Values);
             sample.Z = output.Z;
-            sample.Tag = output;
+            sample.Tag = tagRepository.RegisterTag(output);
+        }
+
+        public TagRepository GeTagRepository()
+        {
+            return tagRepository;
         }
     }
 
@@ -66,6 +76,11 @@ namespace Deltares.Probabilistics.Wrappers.Test
         public static ZSampleDelegate SampleDelegate(ZDelegate xDelegate)
         {
             return new ZSampleOutput(xDelegate).CalculateSample;
+        }
+
+        public static ZSampleOutput GetSampleOutput(ZDelegate xDelegate)
+        {
+            return new ZSampleOutput(xDelegate);
         }
 
         public static Project GetLinearProject()
@@ -77,7 +92,10 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
             project.CorrelationMatrix.Initialize(project.Stochasts);
 
-            project.ZFunction = SampleDelegate(Linear);
+            ZSampleOutput zSampleOutput = GetSampleOutput(Linear);
+
+            project.ZFunction = zSampleOutput.CalculateSample;
+            project.TagRepository = zSampleOutput.GeTagRepository();
 
             return project;
         }
@@ -381,7 +399,10 @@ namespace Deltares.Probabilistics.Wrappers.Test
 
             project.CorrelationMatrix.Initialize(project.Stochasts);
 
-            project.ZFunction = SampleDelegate(Noisy);
+            ZSampleOutput zSampleOutput = GetSampleOutput(Noisy);
+
+            project.ZFunction = zSampleOutput.CalculateSample;
+            project.TagRepository = zSampleOutput.GeTagRepository();
 
             return project;
         }
@@ -920,6 +941,26 @@ namespace Deltares.Probabilistics.Wrappers.Test
         private static ZFunctionOutput NonVarying(double[] xValues)
         {
             return new ZFunctionOutput(1);
+        }
+
+        public static DesignPoint GetSimpleDesignPoint(double beta, int count)
+        {
+            DesignPoint designPoint = new DesignPoint();
+            designPoint.Beta = beta;
+
+            for (int i = 0; i < count; i++)
+            {
+                StochastPointAlpha alpha = new StochastPointAlpha();
+                alpha.Parameter = GetUniformStochast();
+                alpha.Alpha = -Math.Sqrt(1.0 / count);
+                alpha.AlphaCorrelated = alpha.Alpha;
+                alpha.U = - beta * alpha.Alpha;
+                alpha.X = alpha.Parameter.GetXFromU(alpha.U);
+
+                designPoint.Alphas.Add(alpha);
+            }
+
+            return designPoint;
         }
     }
 }

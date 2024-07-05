@@ -2,6 +2,7 @@
 #include <omp.h>
 
 #include "ModelSample.h"
+#include "../Utils/probLibException.h"
 
 
 namespace Deltares
@@ -18,8 +19,19 @@ namespace Deltares
 			}
 		}
 
+        void ZModel::releaseCallBacks()
+		{
+            this->zLambda = nullptr;
+            this->zMultipleLambda = nullptr;
+		}
+
 		void ZModel::invoke(std::shared_ptr<ModelSample> sample)
 		{
+            if (this->zLambda == nullptr)
+            {
+                throw Reliability::probLibException("callback function not set or released");
+            }
+
             sample->threadId = omp_get_thread_num();
             this->zLambda(sample);
 		}

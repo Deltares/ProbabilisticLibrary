@@ -9,7 +9,7 @@ namespace Deltares
 	{
 		namespace Wrappers
 		{
-			void StochastPoint::setStochastPoint(std::shared_ptr<Models::StochastPoint> stochastPoint, System::Collections::Generic::List<Statistics::Wrappers::Stochast^>^ stochasts)
+			void StochastPoint::setStochastPoint(std::shared_ptr<Models::StochastPoint> stochastPoint, System::Collections::Generic::IList<Statistics::Wrappers::Stochast^>^ stochasts)
 			{
 				shared = new SharedPointerProvider(stochastPoint);
 

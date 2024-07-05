@@ -32,7 +32,7 @@ namespace Deltares
 			/**
 			 * \brief Default constructor
 			 */
-			Stochast();
+            Stochast();
 
 			/**
 			 * \brief Constructor with distribution type and initial values
@@ -69,7 +69,14 @@ namespace Deltares
 			 */
 			double getCDF(double x);
 
-			/**
+            /**
+             * \brief Gets the x-value corresponding to a quantile (non-exceeding probability)
+             * \param quantile Given quantile
+             * \return x-value
+             */
+            double getQuantile(double quantile);
+
+		    /**
 			 * \brief Gets the x-value corresponding to a given u-value
 			 * \param u Given u-value
 			 * \return x-value
@@ -227,13 +234,20 @@ namespace Deltares
 			 */
 			bool canFit();
 
-			/**
-			 * \brief Estimates stochastic parameters for a given set of x-values
-			 * \param values Given set of x-values
-			 */
-			void fit(std::vector<double> values);
+            /**
+             * \brief Estimates stochastic parameters for a given set of x-values
+             * \param values Given set of x-values
+             */
+            void fit(std::vector<double> values);
 
-			/**
+            /**
+             * \brief Estimates stochastic parameters for a given set of x-values and their weights
+             * \param values Given set of x-values
+             * \param weights Given weights
+             */
+		    void fitWeighted(std::vector<double> values, std::vector<double> weights);
+
+            /**
 			 * \brief Gets a number of interesting x-values
 			 * \remark This method is used when plotting PDF and CDF
 			 * \return Interesting x-values
@@ -267,6 +281,14 @@ namespace Deltares
 			 * \brief In case of a variable stochast, the interpolation table to convert from x-value of the other stochast to the stochastic parameters of this stochast
 			 */
 			std::shared_ptr<VariableStochastValuesSet> ValueSet = std::make_shared<VariableStochastValuesSet>();
+
+            /**
+             * \brief Indicates that internally an update should take place before other methods are invoked
+             */
+            void SetDirty() const;
+
+            static Statistics::DistributionType getDistributionType(std::string distributionType);
+            static std::string getDistributionTypeString(Statistics::DistributionType distributionType);
 		};
 	}
 }
