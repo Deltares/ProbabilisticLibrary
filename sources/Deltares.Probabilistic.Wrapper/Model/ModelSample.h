@@ -20,27 +20,46 @@ namespace Deltares
 			{
 			private:
 				array<double>^ values = nullptr;
-				System::Object^ tag = nullptr;
 				SharedPointerProvider<Models::ModelSample>* shared = nullptr;
 
 			public:
 				ModelSample(std::shared_ptr<Models::ModelSample> sample)
 				{
 					shared = new SharedPointerProvider(sample);
-
 					this->values = NativeSupport::toManaged(sample->Values);
-				}
+                }
 
 				ModelSample(array<double>^ values)
 				{
 					std::vector<double> nativeValues = NativeSupport::toNative(values);
-
 					shared = new SharedPointerProvider(new Models::ModelSample(nativeValues));
-
 					this->values = NativeSupport::toManaged(shared->object->Values);
 				}
 
-				property array<double>^ Values
+                ~ModelSample() { this->!ModelSample(); }
+                !ModelSample()
+				{
+                    delete shared;
+				}
+
+                void SetNativeModelSample(const std::shared_ptr<Models::ModelSample> nativeModelSample)
+                {
+                    shared = new SharedPointerProvider(nativeModelSample);
+
+                    if (this->values->Length == shared->object->Values.size())
+                    {
+                        for (int i = 0; i < this->values->Length; i++)
+                        {
+                            this->values[i] = shared->object->Values[i];
+                        }
+                    }
+                    else
+                    {
+                        this->values = NativeSupport::toManaged(shared->object->Values);
+                    }
+                }
+
+                property array<double>^ Values
 				{
 					array<double>^ get() { return values; }
 				}
@@ -104,29 +123,29 @@ namespace Deltares
 					return true;
 				}
 
-				property System::Object^ Tag
+                /// <summary>
+                /// Reference to an object to be attached to the sample
+                /// </summary>
+                property int Tag
 				{
-					System::Object^ get()
+					int get()
 					{
-						if (tag == nullptr && shared->object->Tag != 0)
-						{
-							tag = NativeSupport::toManagedObject(shared->object->Tag);
-						}
-
-						return tag;
+						return shared->object->Tag;
 					}
-					void set(System::Object^ value)
+					void set(int value)
 					{
-						tag = value;
-						shared->object->Tag = NativeSupport::toNativeObject(value);
+                        shared->object->Tag = value;
 					}
 				}
 
-				std::shared_ptr<Models::ModelSample> GetModelSample()
+                /// <summary>
+                /// Gets the native underlying object
+                /// </summary>
+                std::shared_ptr<Models::ModelSample> GetModelSample()
 				{
 					return shared->object;
 				}
-			};
+            };
 		}
 	}
 }

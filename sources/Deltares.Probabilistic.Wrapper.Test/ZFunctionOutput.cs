@@ -1,4 +1,4 @@
-namespace Deltares.Probabilistics.Wrappers.Test
+namespace Deltares.Probabilistic.Wrapper.Test
 {
     public delegate ZFunctionOutput ZDelegate(double[] x);
 

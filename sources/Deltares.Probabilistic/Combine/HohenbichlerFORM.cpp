@@ -1,10 +1,10 @@
-#include <math.h>
-#include "Hohenbichler.h"
+#include <cmath>
+#include "HohenbichlerFORM.h"
 #include "HohenbichlerZ.h"
+#include "../Math/NumericSupport.h"
 #include "../Statistics/StandardNormal.h"
 #include "../Reliability/DesignPoint.h"
 #include "../Model/ModelRunner.h"
-#include "../Reliability/ReliabilityMethod.h"
 #include "../Reliability/FORM.h"
 
 using namespace Deltares::Statistics;
@@ -23,10 +23,9 @@ namespace Deltares {
         // i. e. the failure probability of element \f$ {Z_2 }\ \f$ given the failure
         // of element \f$ {Z_1 }\f$. For this computation the correlations are required.
         // The computation of \f$ P\left( {Z_2  < 0|Z_1  < 0} \right)\ \f$ has been performed with the method of Hohenbichler.
-        // Note: the probability of failure can be a probability of exceedance (most of time parameters of load)
-        // or a probability of non-exceedance (mostly parameters of strength)
+        // Note: the probability of failure can be a probability of exceedance or a probability of non-exceedance
         //
-        // This subroutine has two failure probabilities as input,
+        // This method has two failure probabilities as input,
         // \f$ P\left( {Z_2  < 0} \right)\ \f$ and \f$ P\left( {Z_1  < 0} \right)\ \f$,
         // but for the largest one the reliability index (beta-value) is the input; for the smallest failure probability the
         // failure probability itself is the input. The reason why the reliability index is the input for the largest
@@ -35,7 +34,7 @@ namespace Deltares {
         // So this failure probability hasn't to be computed twice.
         //
         // Determining which of the two probabilities of failure is greatest, is also needed outside this routine.
-        // Therefore this is not done within the routine but only outside the routine.
+        // Therefore, this is not done within the routine but only outside the routine.
         //
         // Later on the probability \f$ P\left( {Z_1  < 0\,AND\,Z_2  < 0} \right) \f$ =
         // \f$ P\left( {Z_1  < 0} \right) \cdot P\left( {Z_2  < 0|Z_1  < 0} \right)\f$ is used. This
@@ -44,7 +43,7 @@ namespace Deltares {
         // is needed for the computation of the alpha's (i.e. direction of the design point).
         // So the output of the subroutine Hohenbichler is \f$ P\left( {Z_2  < 0|Z_1  < 0} \right)\ \f$
 
-        std::pair<double, int> Hohenbichler::PerformHohenbichler(const double betaV, const double pfU, const double rhoInput)
+        std::pair<double, int> HohenbichlerFORM::PerformHohenbichler(const double betaV, const double pfU, const double rhoInput)
         {
             //
             //   INPUT/OUTPUT VARIABLES
@@ -79,28 +78,29 @@ namespace Deltares {
             //
             auto w = HohenbichlerZ(betaV, pfU, rho);
 
-            auto stochast = std::vector<std::shared_ptr<Deltares::Statistics::Stochast>>();
-            const size_t nStoch = 2;
-            for (size_t i = 0; i < nStoch; i++)
+            auto stochast = std::vector<std::shared_ptr<Stochast>>();
+            constexpr size_t nStochasts = 2;
+            for (size_t i = 0; i < nStochasts; i++)
             {
                 auto dist = DistributionType::Normal;
                 std::vector<double> params{ 0.0, 1.0 };
-                std::shared_ptr<Stochast> s(new Stochast(dist, params));
+                auto s = std::make_shared<Stochast>(dist, params);
                 stochast.push_back(s);
             }
-            std::shared_ptr<Deltares::Statistics::CorrelationMatrix> corr(new Deltares::Statistics::CorrelationMatrix());
-            std::shared_ptr<UConverter> uConverter(new UConverter(stochast, corr));
+            auto corr = std::make_shared<CorrelationMatrix>();
+            auto uConverter = std::make_shared<UConverter>(stochast, corr);
             uConverter->initializeForRun();
-            std::shared_ptr<ZModel> zModel(new ZModel([&w](std::shared_ptr<ModelSample> v) { return w.zfunc(v); }));
-            std::shared_ptr<ModelRunner> modelRunner(new ModelRunner(zModel, uConverter));
-            std::shared_ptr<FORM> relMethod(new FORM);
+            auto zModel = std::make_shared<ZModel>([&w](std::shared_ptr<ModelSample> v) { return w.zfunc(v); });
+            auto modelRunner = std::make_shared<ModelRunner>(zModel, uConverter);
+            modelRunner->initializeForRun();
+            auto relMethod = std::make_shared<FORM>();
             relMethod->Settings->RelaxationFactor = 0.4;
             relMethod->Settings->RelaxationLoops = maxTrialLoops;
             relMethod->Settings->EpsilonBeta = 0.01;
             relMethod->Settings->GradientSettings->StepSize = 0.1;
             relMethod->Settings->GradientSettings->gradientType = GradientType::TwoDirections;
             relMethod->Settings->MaxIterationsGrowthFactor  = 2;
-            std::shared_ptr<DesignPoint> newResult(relMethod->getDesignPoint(modelRunner));
+            auto newResult = relMethod->getDesignPoint(modelRunner);
             auto converged = (newResult->convergenceReport->IsConverged ? 0 : 1);
 
             //
@@ -114,6 +114,8 @@ namespace Deltares {
             }
             return { pfVpfU, converged };
         }
+
+
 
     }
 }

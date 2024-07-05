@@ -23,6 +23,11 @@ namespace Deltares
             int TotalIterations = -1;
 
             std::shared_ptr<Models::Sample> NearestSample = nullptr;
+
+            double getSmallestFraction()
+            {
+                return std::min(FailFraction, 1 - FailFraction);
+            }
         };
     }
 }

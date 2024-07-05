@@ -91,3 +91,7 @@ ftnunit.lst
 ftnunit.run
 last_error.txt
 test*.txt
+.vscode/settings.json
+*.whl
+/sources/Deltares.Probabilistic.PWrapper/d_beta.egg-info
+/sources/Deltares.Probabilistic.PWrapper/d_rely.egg-info

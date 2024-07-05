@@ -100,12 +100,11 @@ namespace Deltares
                     0.999999,
                     1 };
 
-                int ii = 0;
                 for (int i = 1; i < 5; i++)
                 {
                     double x = (double)(i * 5);
                     double cdf = distCondWeibull.getCDF(x);
-                    EXPECT_NEAR(cdf, expectedValues[ii++], 1e-4);
+                    EXPECT_NEAR(cdf, expectedValues[i-1], 1e-4);
                 }
 
                 for (int i = 1; i < 10; i++)

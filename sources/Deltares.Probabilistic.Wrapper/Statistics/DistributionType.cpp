@@ -23,8 +23,10 @@ namespace Deltares
 				case Wrappers::DistributionType::GeneralizedExtremeValue: return Statistics::DistributionType::GeneralizedExtremeValue;
 				case Wrappers::DistributionType::Rayleigh: return Statistics::DistributionType::Rayleigh;
 				case Wrappers::DistributionType::RayleighN: return Statistics::DistributionType::RayleighN;
-				case Wrappers::DistributionType::Discrete: return Statistics::DistributionType::Discrete;
-				case Wrappers::DistributionType::Qualitative: return Statistics::DistributionType::Qualitative;
+                case Wrappers::DistributionType::Table: return Statistics::DistributionType::Table;
+                case Wrappers::DistributionType::CDFCurve: return Statistics::DistributionType::CDFCurve;
+                case Wrappers::DistributionType::Discrete: return Statistics::DistributionType::Discrete;
+                case Wrappers::DistributionType::Qualitative: return Statistics::DistributionType::Qualitative;
 				default: throw gcnew System::NotSupportedException(distributionType.ToString());
 				}
 			}
@@ -44,8 +46,10 @@ namespace Deltares
 				case Statistics::DistributionType::GeneralizedExtremeValue: return Wrappers::DistributionType::GeneralizedExtremeValue;
 				case Statistics::DistributionType::Rayleigh: return Wrappers::DistributionType::Rayleigh;
 				case Statistics::DistributionType::RayleighN: return Wrappers::DistributionType::RayleighN;
-				case Statistics::DistributionType::Discrete: return Wrappers::DistributionType::Discrete;
-				case Statistics::DistributionType::Qualitative: return Wrappers::DistributionType::Qualitative;
+                case Statistics::DistributionType::Table: return Wrappers::DistributionType::Table;
+                case Statistics::DistributionType::CDFCurve: return Wrappers::DistributionType::CDFCurve;
+                case Statistics::DistributionType::Discrete: return Wrappers::DistributionType::Discrete;
+                case Statistics::DistributionType::Qualitative: return Wrappers::DistributionType::Qualitative;
 				default: throw gcnew System::NotSupportedException("distribution type");
 				}
 			}

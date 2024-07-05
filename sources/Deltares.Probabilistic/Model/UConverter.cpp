@@ -394,7 +394,7 @@ namespace Deltares
 
 			const int count = sample->getSize();
 
-			double defaultAlpha = -1 / sqrt(count);
+            const double defaultAlpha = -1 / sqrt(count);
 
 			if (count > 0)
 			{
@@ -448,7 +448,7 @@ namespace Deltares
 
 					if (this->hasQualitiveStochasts && this->stochasts[i]->isQualitative())
 					{
-						int varyingIndex = this->varyingStochastIndex[i];
+                        const int varyingIndex = this->varyingStochastIndex[i];
 						alpha->X = stochasts[i]->getXFromU(sample->Values[varyingIndex]);
 					}
 					else if (!this->hasVariableStochasts || !stochasts[i]->IsVariableStochast)
@@ -464,10 +464,10 @@ namespace Deltares
 				{
 					for (size_t i = 0; i < variableStochastList.size(); i++)
 					{
-						int stochastIndex = variableStochastList[i];
-						int sourceIndex = variableStochastIndex[stochastIndex];
+                        const int stochastIndex = variableStochastList[i];
+                        const int sourceIndex = variableStochastIndex[stochastIndex];
 
-						double xSource = realization->Alphas[sourceIndex]->X;
+                        const double xSource = realization->Alphas[sourceIndex]->X;
 						realization->Alphas[stochastIndex]->X = stochasts[stochastIndex]->getXFromUAndSource(xSource, uCorrelated[stochastIndex]);
 					}
 				}

@@ -4,7 +4,7 @@ using Deltares.Statistics.Wrappers;
 using NUnit.Framework;
 using System.Linq;
 
-namespace Deltares.Probabilistics.Wrappers.Test
+namespace Deltares.Probabilistic.Wrapper.Test
 {
     [TestFixture]
     public class TestAdaptiveImportanceSampling

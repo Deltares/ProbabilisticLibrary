@@ -35,6 +35,16 @@ namespace Deltares
 				void DoDetailedProgress(int step, int loop, double reliability, double convergence);
 				void DoTextualProgress(Wrappers::ProgressType progressType, System::String^ text);
 
+                void ReleaseHandles()
+                {
+                    for (int i = 0; i < handles->Count; i++)
+                    {
+                        handles[i].Free();
+                    }
+
+                    handles->Clear();
+                }
+
 				void Reset()
 				{
 					shared->object->reset();

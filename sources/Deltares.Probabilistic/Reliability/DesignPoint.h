@@ -6,6 +6,7 @@
 #include "../Model/Evaluation.h"
 #include "../Model/Message.h"
 #include "../Model/StochastPoint.h"
+#include "../Statistics/StandardNormal.h"
 #include "ReliabilityResult.h"
 #include "ConvergenceReport.h"
 
@@ -15,7 +16,10 @@ namespace Deltares
 	{
 		using namespace Deltares::Models;
 
-		class DesignPoint : public StochastPoint
+        /**
+         * \brief Design point, result of a reliability calculation
+         */
+        class DesignPoint : public StochastPoint
 		{
 		public:
 			std::string Identifier = "";
@@ -26,7 +30,10 @@ namespace Deltares
 			std::vector<std::shared_ptr<Deltares::Models::Message>> Messages;
 
 			std::shared_ptr<ConvergenceReport> convergenceReport = std::make_shared<ConvergenceReport>();
-		};
+
+            double getFailureProbability() { return Statistics::StandardNormal::getQFromU(this->Beta); }
+            double getNonFailureProbability() { return Statistics::StandardNormal::getPFromU(this->Beta); }
+        };
 	}
 }
 

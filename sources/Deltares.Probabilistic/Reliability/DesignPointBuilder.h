@@ -34,10 +34,13 @@ namespace Deltares
             std::vector<std::shared_ptr<ModeFinder>> modeFinders;
 
         public:
-            DesignPointBuilder(int count, DesignPointMethod method, std::shared_ptr<StochastSettingsSet> stochastSet);
+            DesignPointBuilder(int count, DesignPointMethod method, std::shared_ptr<StochastSettingsSet> stochastSet = nullptr);
             void initialize(double beta);
             void addSample(std::shared_ptr<Sample> sample);
             std::shared_ptr<Sample> getSample();
+
+            static std::string getDesignPointMethodString(DesignPointMethod method);
+            static DesignPointMethod getDesignPointMethod(std::string method);
         };
     }
 }

@@ -1,4 +1,7 @@
 #include "Distribution.h"
+
+#include <algorithm>
+
 #include "../../Math/NumericSupport.h"
 #include "../../Math/RootFinders/BisectionRootFinder.h"
 #include "../../Utils/probLibException.h"
@@ -97,6 +100,26 @@ namespace Deltares
 
 			return values;
 		}
+
+        std::vector<std::shared_ptr<Distribution::WeightedValue>> Distribution::GetWeightedValues(std::vector<double>& values, std::vector<double>& weights)
+        {
+            std::vector<std::shared_ptr<WeightedValue>> weightedValues;
+
+            for (size_t i = 0; i < values.size(); i++)
+            {
+                if (!std::isnan(values[i]))
+                {
+                    weightedValues.push_back(std::make_shared<WeightedValue>(values[i], weights[i]));
+                }
+            }
+
+            if (!weightedValues.empty())
+            {
+                std::sort(weightedValues.begin(), weightedValues.end(), [](std::shared_ptr<WeightedValue> val1, std::shared_ptr<WeightedValue> val2) {return val1->value < val2->value; });
+            }
+
+            return weightedValues;
+        }
 	}
 }
 

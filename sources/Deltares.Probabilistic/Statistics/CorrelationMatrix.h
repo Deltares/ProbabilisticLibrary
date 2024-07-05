@@ -1,8 +1,11 @@
 #pragma once
+#include <map>
 #include <memory>
 
 #include "../Math/matrix.h"
 #include <vector>
+
+#include "Stochast.h"
 
 namespace Deltares
 {
@@ -31,10 +34,17 @@ namespace Deltares
         {
         public:
             void init(const int maxStochasts);
+            void init(std::vector<std::shared_ptr<Stochast>> stochasts);
+
             std::vector<double> Cholesky(const std::vector<double>& uValues);
             std::vector<double> InverseCholesky(const std::vector<double>& uValues);
+
             void SetCorrelation(const int i, const int j, double value);
-            double GetCorrelation(const int i, const int j) const { return matrix(i, j); }
+            void SetCorrelation(std::shared_ptr<Stochast> stochast1, std::shared_ptr<Stochast> stochast2, double value);
+
+            double GetCorrelation(const int i, const int j) const;
+            double GetCorrelation(std::shared_ptr<Stochast> stochast1, std::shared_ptr<Stochast> stochast2);
+
             bool IsIdentity() const;
             int CountCorrelations() const;
             bool HasConflictingCorrelations() const;
@@ -49,6 +59,7 @@ namespace Deltares
             Deltares::Numeric::Matrix choleskyMatrix = Deltares::Numeric::Matrix(0, 0);
             Deltares::Numeric::Matrix inverseCholeskyMatrix = Deltares::Numeric::Matrix(0, 0);
             int findNewIndex(const std::vector<int> index, const size_t i);
+            std::map<std::shared_ptr<Stochast>, int> stochastIndex;
             std::vector<indexWithCorrelation> indexer;
             std::vector<correlationPair> inputCorrelations;
             std::vector<int> GetLinkingCorrelationStochasts(correlationPair correlation, correlationPair otherCorrelation) const;

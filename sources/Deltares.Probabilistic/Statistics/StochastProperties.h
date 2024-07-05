@@ -1,5 +1,7 @@
 #pragma once
 
+#include <functional>
+
 #include "DiscreteValue.h"
 #include "HistogramValue.h"
 #include "FragilityValue.h"
@@ -124,6 +126,36 @@ namespace Deltares
 
 				return clone;
 			}
+
+            /**
+             * \brief Indicates whether InitializeForRun should be invoked before performing other methods
+             * \return Indication
+             */
+            bool dirty = false;
+
+            /**
+             * \brief Indicates whether InitializeForRun should be invoked before performing other methods
+             * \return Indication
+             */
+            void setDirty()
+		    {
+                dirty = true;
+
+                for (std::shared_ptr<Statistics::HistogramValue> histogramValue : this->HistogramValues)
+                {
+                    histogramValue->setDirtyFunction(nullptr);
+                }
+
+                for (std::shared_ptr<Statistics::DiscreteValue> discreteValue : this->DiscreteValues)
+                {
+                    discreteValue->setDirtyFunction(nullptr);
+                }
+
+                for (std::shared_ptr<Statistics::FragilityValue> fragilityValue : this->FragilityValues)
+                {
+                    fragilityValue->setDirtyFunction(nullptr);
+                }
+            }
 		};
 	}
 }

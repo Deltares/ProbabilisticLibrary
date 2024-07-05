@@ -1,5 +1,4 @@
 #pragma once
-#include "ICanCalculateBeta.h"
 #include "../../Deltares.Probabilistic/Model/ZModel.h"
 #include "../../Deltares.Probabilistic/Model/ModelRunner.h"
 #include "../../Deltares.Probabilistic/Model/Sample.h"
@@ -7,138 +6,159 @@
 #include "../Statistics/CorrelationMatrix.h"
 #include "../Statistics/Stochast.h"
 #include "../Utils/SharedPointerProvider.h"
+#include "../Utils/TagRepository.h"
 #include "ProgressIndicator.h"
 #include "RunSettings.h"
 #include "ModelSample.h"
 #include "Sample.h"
+#include "Evaluation.h"
 
 namespace Deltares
 {
-	namespace Models
-	{
-		namespace Wrappers
-		{
-			using namespace Deltares::Reliability;
-			using namespace Deltares::Statistics::Wrappers;
+    namespace Models
+    {
+        namespace Wrappers
+        {
+            using namespace Deltares::Reliability;
+            using namespace Deltares::Statistics::Wrappers;
 
-			public delegate void ZSampleDelegate(ModelSample^);
-			public delegate bool ShouldExitDelegate(bool finalCall);
-			public delegate void RemoveTaskDelegate(int iterationIndex);
+            public delegate void ZSampleDelegate(ModelSample^);
+            public delegate bool ShouldExitDelegate(bool finalCall);
+            public delegate void RemoveTaskDelegate(int iterationIndex);
 
-			public ref class ModelRunner
-			{
-			private:
-				SharedPointerProvider<Models::ModelRunner>* shared = nullptr;
+            public ref class ModelRunner
+            {
+            private:
+                SharedPointerProvider<Models::ModelRunner>* shared = nullptr;
 
-				std::shared_ptr<Models::ZModel> getZModel();
-				ZLambda getZLambda();
-				ZMultipleLambda getZMultipleDelegate();
-				ZBetaLambda getZBetaLambda();
+                std::shared_ptr<Models::ZModel> getZModel();
+                ZLambda getZLambda();
+                ZMultipleLambda getZMultipleDelegate();
 
-				ZSampleDelegate^ zFunction = nullptr;
+                ZSampleDelegate^ zFunction = nullptr;
 
-				void CalcZValues(System::Collections::Generic::IList<ModelSample^>^ samples);
-				void CalcZValue(ModelSample^ sample);
+                void CalcZValues(System::Collections::Generic::IList<ModelSample^>^ samples);
+                void CalcZValue(ModelSample^ sample);
 
-				void invokeSample(std::shared_ptr<Models::ModelSample> sample);
-				void invokeMultipleSamples(std::vector<std::shared_ptr<Models::ModelSample>> samples);
-				double invokeBetaSample(std::shared_ptr<Models::ModelSample> sample, double beta);
+                void invokeSample(std::shared_ptr<Models::ModelSample> sample);
+                void invokeMultipleSamples(std::vector<std::shared_ptr<Models::ModelSample>> samples);
 
-				ICanCalculateBeta^ directionModel = nullptr;
+                Deltares::Utils::Wrappers::TagRepository^ tagRepository = gcnew TagRepository();
 
-				System::Collections::Generic::List<System::Runtime::InteropServices::GCHandle>^ handles = gcnew System::Collections::Generic::List<System::Runtime::InteropServices::GCHandle>();
+                System::Collections::Generic::List<System::Runtime::InteropServices::GCHandle>^ handles = gcnew System::Collections::Generic::List<System::Runtime::InteropServices::GCHandle>();
 
-			public:
-				ModelRunner(ZSampleDelegate^ zFunction, System::Collections::Generic::List<Stochast^>^ stochasts, CorrelationMatrix^ correlationMatrix, ProgressIndicator^ progressIndicator);
-				~ModelRunner() { this->!ModelRunner(); }
-				!ModelRunner()
-				{
-					for (int i = 0; i < handles->Count; i++)
-					{
-						handles[i].Free();
-					}
-					delete shared;
-				}
+            public:
+                /**
+                 * \brief Constructor
+                 * \remark Call Release() when done to prevent a memory leak
+                 */
+                ModelRunner(ZSampleDelegate^ zFunction, System::Collections::Generic::List<Stochast^>^ stochasts, CorrelationMatrix^ correlationMatrix, ProgressIndicator^ progressIndicator);
+                ~ModelRunner() { this->!ModelRunner(); }
+                !ModelRunner()
+                {
+                    delete shared;
+                }
 
-				System::Collections::Generic::List<Stochast^>^ Stochasts = gcnew System::Collections::Generic::List<Stochast^>();
+                /**
+                 * \brief Releases the allocated handles
+                 * \remark This method cannot be called in the destructor, because the handles to be freed prevent this object from being garbage collected
+                 */
+                void ReleaseHandles()
+                {
+                    for (int i = 0; i < handles->Count; i++)
+                    {
+                        handles[i].Free();
+                    }
 
-				virtual void CalcSamples(System::Collections::Generic::IList<ModelSample^>^ samples);
-				virtual void CalcSample(ModelSample^ sample);
+                    handles->Clear();
+                    shared->object->releaseCallBacks();
+                }
 
-				void SetShouldExitDelegate(ShouldExitDelegate^ shouldExitDelegate);
+                System::Collections::Generic::List<Stochast^>^ Stochasts = gcnew System::Collections::Generic::List<Stochast^>();
 
-				void SetRemoveTaskDelegate(RemoveTaskDelegate^ removeTaskDelegate);
+                virtual void CalcSamples(System::Collections::Generic::IList<ModelSample^>^ samples);
+                virtual void CalcSample(ModelSample^ sample);
 
-				virtual property int VaryingStochastCount
-				{
-					int get() { return shared->object->getVaryingStochastCount(); }
-				}
+                void SetShouldExitDelegate(ShouldExitDelegate^ shouldExitDelegate);
 
-				bool IsVaryingStochast(int index)
-				{
-					return shared->object->isVaryingStochast(index);
-				}
+                void SetRemoveTaskDelegate(RemoveTaskDelegate^ removeTaskDelegate);
 
-				/**
-				 * \brief Clears all evaluations and messages
-				 */
-				virtual void Clear()
-				{
-					shared->object->clear();
-				}
+                virtual property int VaryingStochastCount
+                {
+                    int get() { return shared->object->getVaryingStochastCount(); }
+                }
 
-				/**
-				 * \brief Calculates a z-value for a reliability method in .net
-				 * \param sample
-				 * \return
-				 */
-				virtual double GetZValue(Sample^ sample)
-				{
-					return shared->object->getZValue(sample->GetSample());
-				}
+                bool IsVaryingStochast(int index)
+                {
+                    return shared->object->isVaryingStochast(index);
+                }
 
-				/**
-				 * \brief Calculates multiple z-values for a reliability method in .net
-				 * \param samples
-				 * \return
-				 */
-				virtual array<double>^ GetZValues(System::Collections::Generic::List<Sample^>^ samples)
-				{
-					std::vector<std::shared_ptr<Models::Sample>> nativeSamples(samples->Count);
+                /**
+                 * \brief Clears all evaluations and messages
+                 */
+                virtual void Clear()
+                {
+                    shared->object->clear();
+                }
 
-					for (int i = 0; i < samples->Count; i++)
-					{
-						nativeSamples[i] = samples[i]->GetSample();
-					}
+                /**
+                 * \brief Calculates a z-value for a reliability method in .net
+                 * \param sample
+                 * \return
+                 */
+                virtual double GetZValue(Sample^ sample)
+                {
+                    return shared->object->getZValue(sample->GetSample());
+                }
 
-					std::vector<double> zValues = shared->object->getZValues(nativeSamples);
+                /**
+                 * \brief Calculates multiple z-values for a reliability method in .net
+                 * \param samples
+                 * \return
+                 */
+                virtual array<double>^ GetZValues(System::Collections::Generic::List<Sample^>^ samples)
+                {
+                    std::vector<std::shared_ptr<Models::Sample>> nativeSamples(samples->Count);
 
-					return NativeSupport::toManaged(zValues);
-				}
+                    for (int i = 0; i < samples->Count; i++)
+                    {
+                        nativeSamples[i] = samples[i]->GetSample();
+                    }
 
-				RunSettings^ Settings = gcnew RunSettings();
+                    std::vector<double> zValues = shared->object->getZValues(nativeSamples);
 
-				virtual void InitializeForRun()
-				{
-					shared->object->initializeForRun();
-				}
+                    return NativeSupport::toManaged(zValues);
+                }
 
-				ModelSample^ GetModelSample(Sample^ sample);
+                RunSettings^ Settings = gcnew RunSettings();
 
-				array<double>^ GetOnlyVaryingValues(array<double>^ values);
+                virtual void InitializeForRun()
+                {
+                    shared->object->initializeForRun();
+                }
 
-				std::shared_ptr<Models::ModelRunner> GetModelRunner()
-				{
-					shared->object->Settings = this->Settings->GetSettings();
-					return shared->object;
-				}
+                ModelSample^ GetModelSample(Sample^ sample);
 
-			protected:
-				virtual void SetDirectionModel(ICanCalculateBeta^ directionModel);
-			};
+                array<double>^ GetOnlyVaryingValues(array<double>^ values);
 
-		}
-	}
+                int SetTag(System::Object^ object)
+                {
+                    return tagRepository->RegisterTag(object);
+                }
+
+                void AssignTag(Wrappers::Evaluation^ evaluation)
+                {
+                    evaluation->AssignTag(this->tagRepository);
+                }
+
+                std::shared_ptr<Models::ModelRunner> GetModelRunner()
+                {
+                    shared->object->Settings = this->Settings->GetSettings();
+                    return shared->object;
+                }
+            };
+        }
+    }
 }
 
 

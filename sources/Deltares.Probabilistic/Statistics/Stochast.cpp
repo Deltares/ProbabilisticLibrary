@@ -1,226 +1,290 @@
 #include "Stochast.h"
 
+#include "StandardNormal.h"
 #include "Distributions/DistributionLibrary.h"
 #include "Distributions/InvertedDistribution.h"
 #include "Distributions/ExternalDistribution.h"
 
 namespace Deltares
 {
-	namespace Statistics
-	{
-		Stochast::Stochast() {};
+    namespace Statistics
+    {
+        Stochast::Stochast() { };
 
-		Stochast::Stochast(DistributionType distributionType, std::vector<double> values)
-		{
-			setDistributionType(distributionType);
-			distribution->initialize(properties, values);
-		}
+        Stochast::Stochast(DistributionType distributionType, std::vector<double> values)
+        {
+            setDistributionType(distributionType);
+            distribution->initialize(properties, values);
+            this->properties->dirty = true;
+        }
 
-		Stochast::Stochast(DistributionType distributionType, std::shared_ptr<StochastProperties> properties)
-		{
-			setDistributionType(distributionType);
-			this->properties = properties;
-		}
+        Stochast::Stochast(DistributionType distributionType, std::shared_ptr<StochastProperties> properties)
+        {
+            setDistributionType(distributionType);
+            this->properties = properties;
+            this->properties->dirty = true;
+        }
 
-		double Stochast::getPDF(double x)
-		{
-			return this->distribution->getPDF(properties, x);
-		}
+        void Stochast::SetDirty() const
+        {
+            this->properties->dirty = true;
+        }
 
-		double Stochast::getCDF(double x)
-		{
-			return this->distribution->getCDF(properties, x);
-		}
+        double Stochast::getPDF(double x)
+        {
+            return this->distribution->getPDF(properties, x);
+        }
 
-		double Stochast::getXFromU(double u)
-		{
-			return this->distribution->getXFromU(properties, u);
-		}
+        double Stochast::getCDF(double x)
+        {
+            return this->distribution->getCDF(properties, x);
+        }
 
-		double Stochast::getUFromX(double x)
-		{
-			return this->distribution->getUFromX(properties, x);
-		}
+        double Stochast::getQuantile(double quantile)
+        {
+            double u = StandardNormal::getUFromP(quantile);
+            return this->distribution->getXFromU(properties, u);
+        }
 
-		double Stochast::getXFromUAndSource(double xSource, double u)
-		{
-			std::shared_ptr<StochastProperties> valueSetProperties = this->ValueSet->getInterpolatedStochast(xSource);
+        double Stochast::getXFromU(double u)
+        {
+            return this->distribution->getXFromU(properties, u);
+        }
 
-			return this->distribution->getXFromU(valueSetProperties, u);
-		}
+        double Stochast::getUFromX(double x)
+        {
+            return this->distribution->getUFromX(properties, x);
+        }
 
-		void Stochast::setXAtU(double x, double u, ConstantParameterType constantType)
-		{
-			this->distribution->setXAtU(properties, x, u, constantType);
-		}
+        double Stochast::getXFromUAndSource(double xSource, double u)
+        {
+            std::shared_ptr<StochastProperties> valueSetProperties = this->ValueSet->getInterpolatedStochast(xSource);
 
-		void Stochast::setDistributionType(DistributionType distributionType)
-		{
-			double oldMean = this->getMean();
-			double oldDeviation = this->getDistributionType() == Deterministic ? this->getProperties()->Scale : this->getDeviation();
+            return this->distribution->getXFromU(valueSetProperties, u);
+        }
 
-			this->distributionType = distributionType;
-			this->distribution = DistributionLibrary::getDistribution(this->distributionType, truncated, inverted);
+        void Stochast::setXAtU(double x, double u, ConstantParameterType constantType)
+        {
+            this->distribution->setXAtU(properties, x, u, constantType);
+        }
 
-			if ((oldMean != 0 || oldDeviation != 0) && this->distribution->maintainMeanAndDeviation(this->properties))
-			{
-				this->setMeanAndDeviation(oldMean, oldDeviation);
-			}
-		}
+        void Stochast::setDistributionType(DistributionType distributionType)
+        {
+            double oldMean = this->getMean();
+            double oldDeviation = this->getDistributionType() == Deterministic ? this->getProperties()->Scale : this->getDeviation();
 
-		bool Stochast::hasParameter(DistributionPropertyType distributionPropertyType)
-		{
-			for (DistributionPropertyType availableDistributionPropertyType : this->distribution->getParameters())
-			{
-				if (availableDistributionPropertyType == distributionPropertyType)
-				{
-					return true;
-				}
-			}
+            this->distributionType = distributionType;
+            this->distribution = DistributionLibrary::getDistribution(this->distributionType, truncated, inverted);
+            this->properties->dirty = true;
 
-			return false;
-		}
+            if ((oldMean != 0 || oldDeviation != 0) && this->distribution->maintainMeanAndDeviation(this->properties))
+            {
+                this->setMeanAndDeviation(oldMean, oldDeviation);
+            }
+        }
 
-		void Stochast::setExternalDistribution(UXLambda externalFunction)
-		{
-			this->distributionType = DistributionType::External;
+        bool Stochast::hasParameter(DistributionPropertyType distributionPropertyType)
+        {
+            for (DistributionPropertyType availableDistributionPropertyType : this->distribution->getParameters())
+            {
+                if (availableDistributionPropertyType == distributionPropertyType)
+                {
+                    return true;
+                }
+            }
 
-			std::shared_ptr<ExternalDistribution> externalDistribution = std::make_shared<ExternalDistribution>();
-			externalDistribution->setExternalFunction(externalFunction);
+            return false;
+        }
 
-			this->distribution = externalDistribution;
-		}
+        void Stochast::setExternalDistribution(UXLambda externalFunction)
+        {
+            this->distributionType = DistributionType::External;
 
-		DistributionType Stochast::getDistributionType()
-		{
-			return this->distributionType;
-		}
+            std::shared_ptr<ExternalDistribution> externalDistribution = std::make_shared<ExternalDistribution>();
+            externalDistribution->setExternalFunction(externalFunction);
 
-		bool Stochast::canInvert()
-		{
-			return this->distribution->canInvert();
-		}
+            this->distribution = externalDistribution;
+        }
 
-		bool Stochast::isInverted()
-		{
-			return inverted;
-		}
+        DistributionType Stochast::getDistributionType()
+        {
+            return this->distributionType;
+        }
 
-		void Stochast::setInverted(bool inverted)
-		{
-			this->inverted = inverted;
+        bool Stochast::canInvert()
+        {
+            return this->distribution->canInvert();
+        }
 
-			if (this->distributionType != DistributionType::External) 
-			{
-				this->distribution = DistributionLibrary::getDistribution(this->distributionType, truncated, inverted);
-			}
-		}
+        bool Stochast::isInverted()
+        {
+            return inverted;
+        }
 
-		bool Stochast::canTruncate()
-		{
-			return this->distribution->canTruncate();
-		}
+        void Stochast::setInverted(bool inverted)
+        {
+            this->inverted = inverted;
 
-		bool Stochast::isTruncated()
-		{
-			return truncated;
-		}
+            if (this->distributionType != DistributionType::External)
+            {
+                this->distribution = DistributionLibrary::getDistribution(this->distributionType, truncated, inverted);
+            }
+        }
 
-		void Stochast::setTruncated(bool truncated)
-		{
-			this->truncated = truncated;
+        bool Stochast::canTruncate()
+        {
+            return this->distribution->canTruncate();
+        }
 
-			if (this->distributionType != DistributionType::External)
-			{
-				this->distribution = DistributionLibrary::getDistribution(this->distributionType, truncated, inverted);
-			}
-		}
+        bool Stochast::isTruncated()
+        {
+            return truncated;
+        }
 
-		bool Stochast::isVarying()
-		{
-			if (this->IsVariableStochast)
-			{
-				return this->ValueSet->isVarying(this->distributionType);
-			}
-			else 
-			{
-				return this->distribution->isVarying(properties);
-			}
-		}
+        void Stochast::setTruncated(bool truncated)
+        {
+            this->truncated = truncated;
 
-		bool Stochast::isValid()
-		{
-			return this->distribution->isValid(properties);
-		}
+            if (this->distributionType != DistributionType::External)
+            {
+                this->distribution = DistributionLibrary::getDistribution(this->distributionType, truncated, inverted);
+            }
+        }
 
-		bool Stochast::isQualitative()
-		{
-			return this->distribution->isQualitative();
-		}
+        bool Stochast::isVarying()
+        {
+            if (this->IsVariableStochast)
+            {
+                return this->ValueSet->isVarying(this->distributionType);
+            }
+            else
+            {
+                return this->distribution->isVarying(properties);
+            }
+        }
 
-		double Stochast::getRepresentativeU(double u)
-		{
-			return this->distribution->getRepresentativeU(properties, u);
-		}
+        bool Stochast::isValid()
+        {
+            return this->distribution->isValid(properties);
+        }
 
-		double Stochast::getMean()
-		{
-			return distribution->getMean(properties);
-		}
+        bool Stochast::isQualitative()
+        {
+            return this->distribution->isQualitative();
+        }
 
-		void Stochast::setMean(double mean)
-		{
-			double deviation = this->getDistributionType() == Deterministic ? this->getProperties()->Scale : this->getDeviation();
-			distribution->setMeanAndDeviation(properties, mean, deviation);
-		}
+        double Stochast::getRepresentativeU(double u)
+        {
+            return this->distribution->getRepresentativeU(properties, u);
+        }
 
-		double Stochast::getDeviation()
-		{
-			return distribution->getDeviation(properties);
-		}
+        double Stochast::getMean()
+        {
+            return distribution->getMean(properties);
+        }
 
-		void Stochast::setDeviation(double deviation)
-		{
-			double mean = distribution->getMean(properties);
-			distribution->setMeanAndDeviation(properties, mean, deviation);
-		}
+        void Stochast::setMean(double mean)
+        {
+            double deviation = this->getDistributionType() == Deterministic ? this->getProperties()->Scale : this->getDeviation();
+            distribution->setMeanAndDeviation(properties, mean, deviation);
+        }
 
-		void Stochast::setShift(double shift)
-		{
-			distribution->setShift(properties, shift, false);
-		}
+        double Stochast::getDeviation()
+        {
+            return distribution->getDeviation(properties);
+        }
 
-		void Stochast::setMeanAndDeviation(double mean, double deviation)
-		{
-			distribution->setMeanAndDeviation(properties, mean, deviation);
-		}
+        void Stochast::setDeviation(double deviation)
+        {
+            double mean = distribution->getMean(properties);
+            distribution->setMeanAndDeviation(properties, mean, deviation);
+        }
 
-		void Stochast::initializeForRun()
-		{
-			distribution->initializeForRun(properties);
+        void Stochast::setShift(double shift)
+        {
+            distribution->setShift(properties, shift, false);
+        }
 
-			if (this->IsVariableStochast)
-			{
-				this->ValueSet->initializeForRun();
-			}
-		}
+        void Stochast::setMeanAndDeviation(double mean, double deviation)
+        {
+            distribution->setMeanAndDeviation(properties, mean, deviation);
+        }
 
-		bool Stochast::canFit()
-		{
-			return distribution->canFit();
-		}
+        void Stochast::initializeForRun()
+        {
+            distribution->initializeForRun(properties);
 
-		void Stochast::fit(std::vector<double> values)
-		{
-			distribution->fit(properties, values);
-		}
+            if (this->IsVariableStochast)
+            {
+                this->ValueSet->initializeForRun();
+            }
+        }
 
-		std::vector<double> Stochast::getSpecialXValues()
-		{
-			return distribution->getSpecialPoints(properties);
-		}
+        bool Stochast::canFit()
+        {
+            return distribution->canFit();
+        }
 
-	}
+        void Stochast::fit(std::vector<double> values)
+        {
+            distribution->fit(properties, values);
+        }
+
+        void Stochast::fitWeighted(std::vector<double> values, std::vector<double> weights)
+        {
+            distribution->fitWeighted(properties, values, weights);
+        }
+
+        std::vector<double> Stochast::getSpecialXValues()
+        {
+            return distribution->getSpecialPoints(properties);
+        }
+
+        Statistics::DistributionType Stochast::getDistributionType(std::string distributionType)
+        {
+            if (distributionType == "deterministic") return Statistics::DistributionType::Deterministic;
+            else if (distributionType == "normal") return Statistics::DistributionType::Normal;
+            else if (distributionType == "log_normal") return Statistics::DistributionType::LogNormal;
+            else if (distributionType == "uniform") return Statistics::DistributionType::Uniform;
+            else if (distributionType == "gumbel") return Statistics::DistributionType::Gumbel;
+            else if (distributionType == "weibull") return Statistics::DistributionType::Weibull;
+            else if (distributionType == "conditional_weibull") return Statistics::DistributionType::ConditionalWeibull;
+            else if (distributionType == "frechet") return Statistics::DistributionType::Frechet;
+            else if (distributionType == "generalized_extreme_value") return Statistics::DistributionType::GeneralizedExtremeValue;
+            else if (distributionType == "rayleigh") return Statistics::DistributionType::Rayleigh;
+            else if (distributionType == "rayleigh_n") return Statistics::DistributionType::RayleighN;
+            else if (distributionType == "histogram") return Statistics::DistributionType::Table;
+            else if (distributionType == "cdf_curve") return Statistics::DistributionType::CDFCurve;
+            else if (distributionType == "discrete") return Statistics::DistributionType::Discrete;
+            else if (distributionType == "qualitative") return Statistics::DistributionType::Qualitative;
+            else throw Reliability::probLibException("distribution type");
+        }
+
+        std::string Stochast::getDistributionTypeString(Statistics::DistributionType distributionType)
+        {
+            switch (distributionType)
+            {
+            case Statistics::DistributionType::Deterministic: return "deterministic";
+            case Statistics::DistributionType::Normal: return "normal";
+            case Statistics::DistributionType::LogNormal: return "log_normal";
+            case Statistics::DistributionType::Uniform: return "uniform";
+            case Statistics::DistributionType::Gumbel: return "gumbel";
+            case Statistics::DistributionType::Weibull: return "weibull";
+            case Statistics::DistributionType::ConditionalWeibull: return "conditional_weibull";
+            case Statistics::DistributionType::Frechet: return "frechet";
+            case Statistics::DistributionType::GeneralizedExtremeValue: return "generalized_extreme_value";
+            case Statistics::DistributionType::Rayleigh: return "rayleigh";
+            case Statistics::DistributionType::RayleighN: return "rayleigh_n";
+            case Statistics::DistributionType::Table: return "histogram";
+            case Statistics::DistributionType::CDFCurve: return "cdf_curve";
+            case Statistics::DistributionType::Discrete: return "discrete";
+            case Statistics::DistributionType::Qualitative: return "qualitative";
+            default: throw Reliability::probLibException("distribution type");
+            }
+        }
+
+
+    }
 }
 
 

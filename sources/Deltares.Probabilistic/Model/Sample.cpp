@@ -1,9 +1,12 @@
 #include "Sample.h"
+#include "../Math/NumericSupport.h"
 
 namespace Deltares
 {
 	namespace Models
 	{
+        using namespace Deltares::Numeric;
+
 		int Sample::getSize()
 		{
 			return size;

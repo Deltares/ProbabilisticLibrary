@@ -2,6 +2,7 @@
 
 #include "../StandardNormal.h"
 #include "../StochastProperties.h"
+#include "../../Math/NumericSupport.h"
 #include <cmath>
 
 #include "DistributionFitter.h"

@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Deltares.Statistics.Wrappers;
 using NUnit.Framework;
 
-namespace Deltares.Statistics.Test
+namespace Deltares.Probabilistic.Wrapper.Test
 {
     [TestFixture]
     public class TestCorrelationMatrix

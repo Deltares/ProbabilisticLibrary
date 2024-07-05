@@ -160,9 +160,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Model\ICanCalculateBeta.h" />
-    <ClInclude Include="Model\Project.h" />
+    <ClInclude Include="Utils\CallBackList.h" />
+    <ClInclude Include="Reliability\DesignPointCombiner.h" />
     <ClInclude Include="Model\ProxySettings.h" />
+    <ClInclude Include="Model\Project.h" />
     <ClInclude Include="Reliability\NumericalIntegration.h" />
     <ClInclude Include="Reliability\ClusterSettings.h" />
     <ClInclude Include="Reliability\AdaptiveImportanceSampling.h" />
@@ -172,6 +173,7 @@
     <ClInclude Include="Reliability\ImportanceSampling.h" />
     <ClInclude Include="Model\ModelSample.h" />
     <ClInclude Include="Reliability\NumericalIntegrationSettings.h" />
+    <ClInclude Include="Statistics\SelfCorrelationMatrix.h" />
     <ClInclude Include="Statistics\DistributionType.h" />
     <ClInclude Include="Statistics\DiscreteValue.h" />
     <ClInclude Include="Statistics\FragilityValue.h" />
@@ -196,6 +198,7 @@
     <ClInclude Include="Model\UConverter.h" />
     <ClInclude Include="Reliability\SubsetSimulationSettings.h" />
     <ClInclude Include="Reliability\SubsetSimulation.h" />
+    <ClInclude Include="Utils\TagRepository.h" />
     <ClInclude Include="Utils\NativeSupport.h" />
     <ClInclude Include="Model\ProgressIndicator.h" />
     <ClInclude Include="Model\RandomProvider.h" />
@@ -214,15 +217,17 @@
     <ClInclude Include="Statistics\VariableStochastValue.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Model\ICanCalculateBeta.cpp" />
-    <ClCompile Include="Model\Project.cpp" />
+    <ClCompile Include="Utils\CallBackList.cpp" />
+    <ClCompile Include="Reliability\DesignPointCombiner.cpp" />
     <ClCompile Include="Model\ProxySettings.cpp" />
+    <ClCompile Include="Model\Project.cpp" />
     <ClCompile Include="Reliability\NumericalIntegration.cpp" />
     <ClCompile Include="Reliability\ClusterSettings.cpp" />
     <ClCompile Include="Reliability\AdaptiveImportanceSampling.cpp" />
     <ClCompile Include="Reliability\AdaptiveImportanceSamplingSettings.cpp" />
     <ClCompile Include="Reliability\ImportanceSampling.cpp" />
     <ClCompile Include="Reliability\NumericalIntegrationSettings.cpp" />
+    <ClCompile Include="Statistics\SelfCorrelationMatrix.cpp" />
     <ClCompile Include="Statistics\DistributionType.cpp" />
     <ClCompile Include="Model\Message.cpp" />
     <ClCompile Include="Reliability\CrudeMonteCarlo.cpp" />
@@ -235,6 +240,7 @@
     <ClCompile Include="Model\UConverter.cpp" />
     <ClCompile Include="Reliability\SubsetSimulationSettings.cpp" />
     <ClCompile Include="Reliability\SubsetSimulation.cpp" />
+    <ClCompile Include="Utils\TagRepository.cpp" />
     <ClCompile Include="Utils\NativeSupport.cpp" />
     <ClCompile Include="Model\ProgressIndicator.cpp" />
     <ClCompile Include="Model\RandomProvider.cpp" />
