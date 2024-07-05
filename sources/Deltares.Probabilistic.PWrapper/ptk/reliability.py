@@ -2,9 +2,7 @@ import sys
 
 from .utils import *
 from .statistic import Stochast
-
-import interface
-#from .interface import *
+from . import interface
 
 class Settings:
 		  
