@@ -49,15 +49,6 @@ namespace Deltares
              */
             int LoggingCounter = 0;
 
-
-            bool ExtendedLogging = false;
-
-            /**
-             * Indication of a logging message
-             */
-            int LoggingCounter = 0;
-
-
 			int Tag = 0;
 
 			bool hasSameValues(std::shared_ptr<ModelSample> other)
