@@ -2,9 +2,7 @@ from io import DEFAULT_BUFFER_SIZE
 import unittest
 import sys
 
-from statistic import *
-from reliability import *
-from project import Project
+from ptk import *
 
 import project_builder
 

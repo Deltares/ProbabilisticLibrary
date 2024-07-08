@@ -1,10 +1,7 @@
 import sys
 import math
-import interface
 
-from statistic import Stochast
-from reliability import DesignPoint, Alpha
-from project import Project
+from ptk import *
 
 def linear(values):
     return 1.8 - sum(values)

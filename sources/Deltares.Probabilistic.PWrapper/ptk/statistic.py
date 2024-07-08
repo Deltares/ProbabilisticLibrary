@@ -1,5 +1,5 @@
-from utils import *
-import interface
+from .utils import *
+from . import interface
 
 class StandardNormal:
 	_id = interface.Create('standard_normal')

@@ -2,9 +2,9 @@ from msilib import knownbits
 import sys
 from ctypes import *
 
-import interface
-from statistic import *
-from reliability import *
+from .statistic import *
+from .reliability import *
+from . import interface
 
 class Project:
 

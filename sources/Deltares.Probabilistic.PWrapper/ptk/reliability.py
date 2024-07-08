@@ -1,8 +1,8 @@
 import sys
 
-from utils import *
-from statistic import Stochast
-import interface
+from .utils import *
+from .statistic import Stochast
+from . import interface
 
 class Settings:
 		  

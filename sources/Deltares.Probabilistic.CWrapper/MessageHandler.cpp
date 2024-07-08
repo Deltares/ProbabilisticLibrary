@@ -16,6 +16,11 @@ extern "C" DLL_PUBLIC int Create(char* type)
     return id;
 }
 
+extern "C" DLL_PUBLIC void Destroy(int id)
+{
+    projectServer->Destroy(id);
+}
+
 extern "C" DLL_PUBLIC double GetValue(int id, char* property)
 {
     std::string propertyStr(property);
