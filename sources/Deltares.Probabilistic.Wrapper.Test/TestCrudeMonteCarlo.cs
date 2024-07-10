@@ -17,15 +17,17 @@ namespace Deltares.Probabilistic.Wrapper.Test
             var project = ProjectBuilder.GetLinearProject();
 
             project.ReliabilityMethod = new CrudeMonteCarlo();
+            ((CrudeMonteCarlo)project.ReliabilityMethod).Settings.RandomSettings.RandomGeneratorType = RandomGeneratorType.MersenneTwister;
+
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(2.54, designPoint.Beta, margin);
+            Assert.AreEqual(2.58, designPoint.Beta, margin);
             Assert.AreEqual(0.005, designPoint.ProbabilityFailure, margin / 10);
             Assert.AreEqual(0.995, designPoint.ProbabilityNonFailure, margin / 10);
-            Assert.AreEqual(178.1, designPoint.ReturnPeriod, margin * 10);
+            Assert.AreEqual(203.6, designPoint.ReturnPeriod, margin * 10);
 
-            Assert.AreEqual(-0.69, designPoint.Alphas[0].Alpha, margin);
-            Assert.AreEqual(-0.73, designPoint.Alphas[1].Alpha, margin);
+            Assert.AreEqual(-0.70, designPoint.Alphas[0].Alpha, margin);
+            Assert.AreEqual(-0.71, designPoint.Alphas[1].Alpha, margin);
 
             Assert.AreEqual(0.92, designPoint.Alphas[0].X, margin);
             Assert.AreEqual(0.93, designPoint.Alphas[1].X, margin);

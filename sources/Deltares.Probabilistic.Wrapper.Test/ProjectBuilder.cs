@@ -597,7 +597,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             project.CorrelationMatrix.Initialize(project.Stochasts);
 
-            project.ZFunction = SampleDelegate(Linear2);
+            project.ZFunction = SampleDelegate(Linear3_10);
 
             return project;
         }
@@ -633,7 +633,17 @@ namespace Deltares.Probabilistic.Wrapper.Test
             return new ZFunctionOutput(1.8 - x.Sum());
         }
 
-        private static ZFunctionOutput Linear2(double[] x)
+        private static ZFunctionOutput Linear2(double a, double b)
+        {
+            return new ZFunctionOutput(1.8 - (a+b));
+        }
+
+        private static ZFunctionOutput Linear3 (double a, double b, double c)
+        {
+            return new ZFunctionOutput(1.8 - (a+b+c));
+        }
+
+        private static ZFunctionOutput Linear3_10(double[] x)
         {
             double sum = x[0] + x[2];
             return new ZFunctionOutput(10 - sum);

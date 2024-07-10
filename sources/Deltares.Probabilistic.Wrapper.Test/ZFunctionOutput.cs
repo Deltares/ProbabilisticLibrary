@@ -1,6 +1,6 @@
 namespace Deltares.Probabilistic.Wrapper.Test
 {
-    public delegate ZFunctionOutput ZDelegate(double[] x);
+    public delegate ZFunctionOutput ZDelegate(params double[] x);
 
     /// <summary>
     /// Class containing the output of a Z function call.

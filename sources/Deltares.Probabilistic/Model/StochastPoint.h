@@ -39,6 +39,13 @@ namespace Deltares
             std::shared_ptr<Sample> getSampleForStochasts(std::vector<std::shared_ptr<Statistics::Stochast>> stochasts);
 
             /**
+             * \brief Gets the alpha values for a given set of stochasts
+             * \param stochasts Given set of stochasts
+             * \return Alpha values, nullptr if not found
+             */
+            std::vector<std::shared_ptr<StochastPointAlpha>> getAlphas(const std::vector<std::shared_ptr<Statistics::Stochast>>& stochasts) const;
+
+            /**
              * \brief Gets the alpha value for a given stochast
              * \param stochast Given stochast
              * \return Alpha value, nullptr if not found

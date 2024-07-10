@@ -1,4 +1,7 @@
 #include "HohenbichlerNumInt.h"
+
+#include <unordered_set>
+
 #include "../Math/NumericSupport.h"
 #include "../Statistics/StandardNormal.h"
 
@@ -30,15 +33,8 @@ namespace Deltares {
             auto alpha1 = std::vector<double>();
             auto alpha2 = std::vector<double>();
 
-            auto parameters1 = std::vector<std::shared_ptr<StochastPointAlpha>>();
-            auto parameters2 = std::vector<std::shared_ptr<StochastPointAlpha>>();
-            for (size_t i = 0; i < nVar; i++)
-            {
-                copyParameter(stochasts[i], designPoint1, parameters1);
-                copyParameter(stochasts[i], designPoint2, parameters2);
-                if (parameters1[i]->Stochast == nullptr) parameters1[i]->Stochast = parameters2[i]->Stochast;
-                if (parameters2[i]->Stochast == nullptr) parameters2[i]->Stochast = parameters1[i]->Stochast;
-            }
+            std::vector<std::shared_ptr<StochastPointAlpha>> parameters1 = designPoint1->getAlphas(stochasts);
+            std::vector<std::shared_ptr<StochastPointAlpha>> parameters2 = designPoint2->getAlphas(stochasts);
 
             for (size_t i = 0; i < nVar; i++)
             {
@@ -209,20 +205,6 @@ namespace Deltares {
                 dp.Alphas[i]->U = -values[i] * beta;
             }
             return dp;
-        }
-
-        void HohenbichlerNumInt::copyParameter(const std::shared_ptr<Stochast>& stochast, const std::shared_ptr<DesignPoint>& designPoint, std::vector<std::shared_ptr<StochastPointAlpha>>& parameters)
-        {
-            for (const auto& Alpha : designPoint->Alphas)
-            {
-                if (Alpha->Stochast == stochast)
-                {
-                    parameters.push_back(Alpha);
-                    return;
-                }
-            }
-            auto empty = std::make_shared<StochastPointAlpha>();
-            parameters.push_back(empty);
         }
 
     }
