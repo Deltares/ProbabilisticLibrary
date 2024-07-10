@@ -19,7 +19,6 @@ namespace Deltares {
             static double Hohenbichler(const double dp1, const double dp2, const double rho, const combineAndOr system);
             static DesignPoint GetRealization(const double beta, const std::vector<std::shared_ptr<Models::StochastPointAlpha>>& alpha);
             static DesignPoint GetRealization(const double beta, const std::vector<std::shared_ptr<Models::StochastPointAlpha>>& alpha, const std::vector<double>& values);
-            static void copyParameter(const std::shared_ptr<Statistics::Stochast>& stochast, const std::shared_ptr<DesignPoint>& designPoint, std::vector<std::shared_ptr<StochastPointAlpha>>& parameters);
         };
     }
 }

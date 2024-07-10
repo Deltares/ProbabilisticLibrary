@@ -1,5 +1,7 @@
 #include "StochastPoint.h"
 
+#include <unordered_set>
+
 #include "ModelSample.h"
 
 namespace Deltares
@@ -20,6 +22,8 @@ namespace Deltares
 
         std::shared_ptr<Sample> StochastPoint::getSampleForStochasts(std::vector<std::shared_ptr<Statistics::Stochast>> stochasts)
         {
+            std::unordered_set<size_t> usedIndices;
+
             std::shared_ptr<Sample> sample = std::make_shared<Sample>(stochasts.size());
 
             for (size_t i = 0; i < stochasts.size(); i++)
@@ -28,9 +32,11 @@ namespace Deltares
 
                 for (size_t j = 0; j < this->Alphas.size(); j++)
                 {
-                    if (this->Alphas[j]->Stochast == stochasts[i])
+                    if (this->Alphas[j]->Stochast == stochasts[i] && !usedIndices.contains(j))
                     {
                         sample->Values[i] = this->Alphas[j]->U;
+                        usedIndices.insert(j);
+                        break;
                     }
                 }
             }
@@ -48,6 +54,38 @@ namespace Deltares
 
             return std::make_shared<ModelSample>(values);
         }
+
+        std::vector<std::shared_ptr<StochastPointAlpha>> StochastPoint::getAlphas(const std::vector<std::shared_ptr<Statistics::Stochast>>& stochasts) const
+        {
+            std::vector<std::shared_ptr<StochastPointAlpha>> alphas;
+            std::unordered_set<std::shared_ptr<StochastPointAlpha>> usedAlphas;
+
+            for (std::shared_ptr<Statistics::Stochast> stochast : stochasts)
+            {
+                bool found = false;
+
+                for (const auto& alpha : this->Alphas)
+                {
+                    if (alpha->Stochast == stochast && !usedAlphas.contains(alpha))
+                    {
+                        alphas.push_back(alpha);
+                        usedAlphas.insert(alpha);
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found)
+                {
+                    auto empty = std::make_shared<StochastPointAlpha>();
+                    empty->Stochast = stochast;
+                    alphas.push_back(empty);
+                }
+            }
+
+            return alphas;
+        }
+
 
         std::shared_ptr<StochastPointAlpha> StochastPoint::getAlpha(std::shared_ptr<Statistics::Stochast> stochast)
         {

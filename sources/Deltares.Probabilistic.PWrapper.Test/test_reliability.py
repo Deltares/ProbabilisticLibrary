@@ -84,11 +84,11 @@ class Test_reliability(unittest.TestCase):
         beta = dp.reliability_index;
         alphas = dp.alphas;
 
-        self.assertAlmostEqual(2.61, beta, delta=margin)
+        self.assertAlmostEqual(2.58, beta, delta=margin)
         self.assertEqual(2, len(alphas))
 
-        self.assertAlmostEqual(-0.69, alphas[0].alpha, delta=margin)
-        self.assertAlmostEqual(-0.73, alphas[1].alpha, delta=margin)
+        self.assertAlmostEqual(-0.70, alphas[0].alpha, delta=margin)
+        self.assertAlmostEqual(-0.71, alphas[1].alpha, delta=margin)
 
         self.assertAlmostEqual(0.93, alphas[0].x, delta=margin)
         self.assertAlmostEqual(0.94, alphas[1].x, delta=margin)
