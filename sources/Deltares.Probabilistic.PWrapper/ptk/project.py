@@ -1,6 +1,7 @@
 from msilib import knownbits
 import sys
 from ctypes import *
+from typing import FrozenSet
 
 from .statistic import *
 from .reliability import *
@@ -25,6 +26,13 @@ class Project:
 	@property
 	def variables(self):
 		return self._variables
+	
+	def get_variable(self, var_name : str):
+		for variable in self._variables:
+			variable_name = variable.name
+			if variable_name == var_name:
+				return variable
+		return None
 
 	@property   
 	def correlation_matrix(self):
@@ -41,11 +49,20 @@ class Project:
 	@model.setter
 	def model(self, value):
 		Project._model = value
+		
+		variable_names = value.__code__.co_varnames
+
+		self._variables.clear()
+		for var_name in variable_names:
+			variable = Stochast()
+			variable.name = var_name
+			self._variables.append(variable)
 
 	@interface.CALLBACK
 	def _performCallBack(values, size):
 		values_list = values[:size]
-		return Project._model(values_list);
+		z = Project._model(*values_list);
+		return z
 
 	def run(self):
 		_design_point = None

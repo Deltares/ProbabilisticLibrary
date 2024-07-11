@@ -31,7 +31,15 @@ class Stochast:
 		self._synchronizing = False
 
 	def __del__(self):
-	    interface.Destroy(self._id)
+		interface.Destroy(self._id)
+
+	@property
+	def name(self):
+		return interface.GetStringValue(self._id, 'name')
+		
+	@name.setter
+	def name(self, value):
+		interface.SetStringValue(self._id, 'name', value)
 
 	@property   
 	def distribution(self):

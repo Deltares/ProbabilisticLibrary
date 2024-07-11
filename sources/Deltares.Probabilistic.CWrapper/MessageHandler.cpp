@@ -9,6 +9,8 @@
 
 std::shared_ptr<Deltares::Models::ProjectServer> projectServer = std::make_shared< Deltares::Models::ProjectServer>();
 
+char* string_result;
+
 extern "C" DLL_PUBLIC int Create(char* type)
 {
     std::string typeStr = type;
@@ -57,12 +59,21 @@ extern "C" DLL_PUBLIC void SetBoolValue(int id, char* property, bool value)
     projectServer->SetBoolValue(id, propertyStr, value);
 }
 
-extern "C" DLL_PUBLIC const char* GetStringValue(int id, char* property)
+extern "C" DLL_PUBLIC size_t GetStringLength(int id, char* property)
 {
     std::string propertyStr(property);
     std::string result = projectServer->GetStringValue(id, propertyStr);
-    const char* resultC = result.c_str();
-    return resultC;
+    return result.length();
+}
+
+extern "C" DLL_PUBLIC void GetStringValue(int id, char* property, char* result_c, size_t size)
+{
+    std::string propertyStr(property);
+    std::string result = projectServer->GetStringValue(id, propertyStr);
+
+    const char* result_b = result.c_str();
+
+    _snprintf_s(result_c, size, _TRUNCATE, result_b);
 }
 
 extern "C" DLL_PUBLIC void SetStringValue(int id, char* property, char* value)

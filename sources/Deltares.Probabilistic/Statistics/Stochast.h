@@ -50,6 +50,11 @@ namespace Deltares
             Stochast(DistributionType distributionType, std::shared_ptr<StochastProperties> properties);
 
             /**
+             * \brief identifying string for the user
+             */
+            std::string name = "";
+
+            /**
              * \brief Gets the stochastic properties
              * \return Object containing the stochastic properties
              */

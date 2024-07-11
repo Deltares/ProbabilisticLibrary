@@ -61,7 +61,15 @@ def SetBoolValue(id_, property_, value_):
 	lib.SetBoolValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.c_bool(value_))
 
 def GetStringValue(id_, property_):
-	return lib.GetStringValue(ctypes.c_int(id_), bytes(property_, 'utf-8'))
+
+	lib.GetStringLength.restype = ctypes.c_int
+	size = lib.GetStringLength(ctypes.c_int(id_), bytes(property_, 'utf-8'))
+
+	result = ctypes.create_string_buffer(size+1)
+	lib.GetStringValue.restype = ctypes.c_void_p
+	lib.GetStringValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), result, ctypes.c_size_t(sizeof(result)))
+	result_str = result.value.decode()
+	return result_str
 
 def SetStringValue(id_, property_, value_):
 	lib.SetStringValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), bytes(value_, 'utf-8'))
@@ -122,9 +130,4 @@ def SetCallBack(id_, property_, callBack_):
 		raise
 
 def Execute(id_, method_):
-	try:
-		lib.Execute(ctypes.c_int(id_), bytes(method_, 'utf-8'))
-	except:
-		message = sys.exc_info()[0]
-		print('error: ' + message, flush = True)
-		raise
+	lib.Execute(ctypes.c_int(id_), bytes(method_, 'utf-8'))

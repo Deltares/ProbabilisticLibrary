@@ -77,6 +77,12 @@ namespace Deltares
                 ~Stochast() { this->!Stochast(); }
                 !Stochast() { delete shared; }
 
+                property System::String^ Name
+                {
+                    System::String^ get() { return NativeSupport::toManaged(shared->object->name); }
+                    void set(System::String^ value) { shared->object->name = NativeSupport::toNative(value); }
+                }
+
                 virtual property Wrappers::DistributionType DistributionType
                 {
                     Wrappers::DistributionType get() { return DistributionTypeConverter::getManagedDistributionType(shared->object->getDistributionType()); }

@@ -3,24 +3,22 @@ from ptk import *
 
 margin = 0.01
 
-def linear(values):
-    return 1.8 - sum(values)
+def linear(a, b):
+    return 1.8 - (a+b)
 
 project = Project()
 
-stochast1 = Stochast()
+project.model = linear
+
+stochast1 = project.get_variable('a')
 stochast1.distribution = 'uniform'
 stochast1.minimum = -1
 stochast1.maximum = 1
-project.variables.append(stochast1)
 
-stochast2 = Stochast()
+stochast2 = project.get_variable('b')
 stochast2.distribution = 'uniform'
 stochast2.minimum = -1
 stochast2.maximum = 1
-project.variables.append(stochast2)
-
-project.model = linear
 
 project.run()
 

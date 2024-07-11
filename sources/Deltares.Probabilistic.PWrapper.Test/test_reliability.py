@@ -1,4 +1,3 @@
-from io import DEFAULT_BUFFER_SIZE
 import unittest
 import sys
 
@@ -31,8 +30,39 @@ class Test_reliability(unittest.TestCase):
         self.assertAlmostEqual(0.9, alphas[1].x, delta=margin)
 
         self.assertEqual(len(project.variables), len(project.design_point.alphas))
-        self.assertEqual(project.variables[0], project.design_point.alphas[0].variable)
+        self.assertTrue(project.design_point.alphas[0].variable in project.variables)
 
+    def test_form_linear_run_twice(self):
+        project = project_builder.get_linear_project()
+
+        project.settings.reliability_method = 'form'
+
+        project.run();
+
+        dp = project.design_point;
+        beta = dp.reliability_index;
+        alphas = dp.alphas;
+
+        project = project_builder.get_linear_project()
+
+        project.settings.reliability_method = 'form'
+
+        project.run();
+
+        dp = project.design_point;
+        beta = dp.reliability_index;
+
+        self.assertAlmostEqual(2.33, beta, delta=margin)
+        self.assertEqual(2, len(alphas))
+
+        self.assertAlmostEqual(-0.71, alphas[0].alpha, delta=margin)
+        self.assertAlmostEqual(-0.71, alphas[1].alpha, delta=margin)
+
+        self.assertAlmostEqual(0.9, alphas[0].x, delta=margin)
+        self.assertAlmostEqual(0.9, alphas[1].x, delta=margin)
+
+        self.assertEqual(len(project.variables), len(project.design_point.alphas))
+        self.assertTrue(project.design_point.alphas[0].variable in project.variables)
 
     def test_form_linear_fully_correlated(self):
         project = project_builder.get_linear_fully_correlated_project()
@@ -126,7 +156,7 @@ class Test_reliability(unittest.TestCase):
         beta = dp.reliability_index;
         alphas = dp.alphas;
 
-        self.assertAlmostEqual(2.62, beta, delta=margin)
+        self.assertAlmostEqual(2.58, beta, delta=margin)
         self.assertEqual(2, len(alphas))
 
         self.assertAlmostEqual(-0.7, alphas[0].alpha, delta=margin)
@@ -149,7 +179,7 @@ class Test_reliability(unittest.TestCase):
         beta = dp.reliability_index;
         alphas = dp.alphas;
 
-        self.assertAlmostEqual(3.97, beta, delta=margin)
+        self.assertAlmostEqual(3.91, beta, delta=margin)
 
     def test_numerical_integration_linear(self):
         project = project_builder.get_linear_project()

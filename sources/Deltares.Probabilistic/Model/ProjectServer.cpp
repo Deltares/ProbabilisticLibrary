@@ -447,6 +447,7 @@ namespace Deltares
                 std::shared_ptr<Statistics::Stochast> stochast = stochasts[id];
 
                 if (property_ == "distribution") return Stochast::getDistributionTypeString(stochast->getDistributionType());
+                else if (property_ == "name") return stochast->name;
                 else return "";
             }
             else if (objectType == ObjectType::Settings)
@@ -478,6 +479,7 @@ namespace Deltares
                 std::shared_ptr<Statistics::Stochast> stochast = stochasts[id];
 
                 if (property_ == "distribution") stochast->setDistributionType(Stochast::getDistributionType(value));
+                else if (property_ == "name") stochast->name = value;
             }
             else if (objectType == ObjectType::Settings)
             {

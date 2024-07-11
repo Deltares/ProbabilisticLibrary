@@ -3,30 +3,34 @@ import math
 
 from ptk import *
 
-def linear(values):
-    return 1.8 - sum(values)
+def linear_ab(a, b):
+    return 1.8 - (a+b)
 
-def linear_small(values):
-    return 1.98 - sum(values)
+def linear_abc(a, b, c):
+    return 1.8 - (a+b+c)
+
+def linear_small_ab(a, b):
+    return 1.98 - (a+b)
+
+def linear_small_abc(a, b, c):
+    return 1.98 - (a+b+c)
 
 
 def get_linear_project():
 
     project = Project()
 
-    stochast1 = Stochast()
+    project.model = linear_ab
+
+    stochast1 = project.get_variable('a')
     stochast1.distribution = 'uniform'
     stochast1.minimum = -1
     stochast1.maximum = 1;
-    project.variables.append(stochast1)
 
-    stochast2 = Stochast()
+    stochast2 = project.get_variable('b')
     stochast2.distribution = 'uniform'
     stochast2.minimum = -1
     stochast2.maximum = 1;
-    project.variables.append(stochast2)
-
-    project.model = linear
 
     return project
 
@@ -34,19 +38,17 @@ def get_linear_small_project():
 
     project = Project()
 
-    stochast1 = Stochast()
+    project.model = linear_small_ab
+
+    stochast1 = project.get_variable('a')
     stochast1.distribution = 'uniform'
     stochast1.minimum = -1
     stochast1.maximum = 1;
-    project.variables.append(stochast1)
 
-    stochast2 = Stochast()
+    stochast2 = project.get_variable('b')
     stochast2.distribution = 'uniform'
     stochast2.minimum = -1
     stochast2.maximum = 1;
-    project.variables.append(stochast2)
-
-    project.model = linear_small
 
     return project
 
@@ -54,28 +56,25 @@ def get_linear_fully_correlated_project():
 
     project = Project()
 
-    stochast1 = Stochast()
+    project.model = linear_abc
+
+    stochast1 = project.get_variable('a')
     stochast1.distribution = 'uniform'
     stochast1.minimum = -0.5
     stochast1.maximum = 0.5;
-    project.variables.append(stochast1)
 
-    stochast2 = Stochast()
+    stochast2 = project.get_variable('b')
     stochast2.distribution = 'uniform'
     stochast2.minimum = -0.5
     stochast2.maximum = 0.5;
-    project.variables.append(stochast2)
 
-    stochast3 = Stochast()
+    stochast3 = project.get_variable('c')
     stochast3.distribution = 'uniform'
     stochast3.minimum = -1.0
     stochast3.maximum = 1.0
-    project.variables.append(stochast3)
 
     project.correlation_matrix.variables.extend(project.variables)
     project.correlation_matrix.set_correlation(stochast1, stochast2, 1.0)
-
-    project.model = linear
 
     return project
 
@@ -83,28 +82,25 @@ def get_linear_partially_correlated_project():
 
     project = Project()
 
-    stochast1 = Stochast()
+    project.model = linear_abc
+
+    stochast1 = project.get_variable('a')
     stochast1.distribution = 'uniform'
     stochast1.minimum = -0.5
     stochast1.maximum = 0.5
-    project.variables.append(stochast1)
 
-    stochast2 = Stochast()
+    stochast2 = project.get_variable('b')
     stochast2.distribution = 'uniform'
     stochast2.minimum = -0.5
     stochast2.maximum = 0.5
-    project.variables.append(stochast2)
 
-    stochast3 = Stochast()
+    stochast3 = project.get_variable('c')
     stochast3.distribution = 'uniform'
     stochast3.minimum = -1.0
     stochast3.maximum = 1.0
-    project.variables.append(stochast3)
 
     project.correlation_matrix.variables.extend(project.variables)
     project.correlation_matrix.set_correlation(stochast1, stochast2, 0.5)
-
-    project.model = linear
 
     return project
 
