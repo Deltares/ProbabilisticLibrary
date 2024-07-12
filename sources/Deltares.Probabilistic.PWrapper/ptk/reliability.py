@@ -223,7 +223,7 @@ class StochastSettings:
 
 class DesignPoint:
 
-	def __init__(self, id = None):
+	def __init__(self, id = None, known_variables = None, known_design_points = None):
 		if id is None:
 			self._id = interface.Create('design_point')
 		else:
@@ -231,6 +231,8 @@ class DesignPoint:
 
 		self._alphas = None
 		self._contributing_design_points = None
+		self._known_variables = known_variables
+		self._known_design_points = known_design_points
 		
 	@property   
 	def reliability_index(self):
@@ -267,7 +269,7 @@ class DesignPoint:
 			self._alphas = []
 			alpha_ids = interface.GetArrayIntValue(self._id, 'alphas')
 			for alpha_id in alpha_ids:
-				self._alphas.append(Alpha(alpha_id))
+				self._alphas.append(Alpha(alpha_id, self._known_variables))
 				
 		return self._alphas
 	
@@ -277,66 +279,51 @@ class DesignPoint:
 			self._contributing_design_points = []
 			design_point_ids = interface.GetArrayIntValue(self._id, 'contributing_design_points')
 			for design_point_id in design_point_ids:
-				self._contributing_design_points.append(DesignPoint(design_point_id))
+				if design_point_id > 0:
+					added = False
+					if not self._known_design_points is None:
+						for design_point in self._known_design_points:
+							if design_point._id == design_point_id:
+								self._contributing_design_points.append(design_point)
+								added = True
+
+					if not added:
+						self._contributing_design_points.append(DesignPoint(design_point_id, self._known_variables, self._known_design_points))
 				
 		return self._contributing_design_points
 
-	# replace variable objects by variables registered in this project
-	def _update_variables(self, variables): 
+	def get_variables(self):
+		variables = []
 		for alpha in self.alphas:
-			known_variable = self._find_variable(variables, alpha.variable._id)
-			if not known_variable is None:
-				alpha._set_variable (known_variable)
-
-	def _find_variable(self, variables, variable_id):
-		for variable in variables:
-			if variable._id == variable_id:
-				return variable
-		return None
-
-	# replace variable objects by variables registered in this project
-	def _update_contributing_design_points(self, design_points):
-
-		replaced_contributing_design_points = []
-		known_variables = []
-		for design_point in self.contributing_design_points:
-			known_design_point = self._find_design_point(design_points, design_point._id)
-			if not known_design_point is None:
-				replaced_contributing_design_points.append(known_design_point)
-				known_variables.extend([alpha.variable for alpha in known_design_point.alphas])
-			else:
-				replaced_contributing_design_points.append(design_point)
-
-		self._contributing_design_points.clear()
-		self._contributing_design_points.extend(replaced_contributing_design_points)
-
-		self._update_variables(known_variables)
-		
-	def _find_design_point(self, design_points, design_point_id):
-		for design_point in design_points:
-			if design_point._id == design_point_id:
-				return design_point
-		return None
-
-
-	
+			variables.append(alpha.variable)
+		for contributing_design_point in self.contributing_design_points:
+			variables.extend(contributing_design_point.get_variables())
+		return frozenset(variables)
 		
 class Alpha:
 
-	def __init__(self, id = None):
+	def __init__(self, id = None, known_variables = None):
 		if id is None:
 			self._id = interface.Create('alpha')
 		else:
 			self._id = id
 			
 		self._variable = None
+		self._known_variables = known_variables
 
 	@property   
 	def variable(self):
 		if self._variable is None:
 			variable_id = interface.GetIntValue(self._id, 'variable')
 			if variable_id > 0:
-				self._variable = Stochast(variable_id);
+				if not self._known_variables is None:
+					for variable in self._known_variables:
+						if variable._id == variable_id:
+							self._variable = variable
+
+				if self._variable is None:
+					self._variable = Stochast(variable_id);
+				
 		return self._variable
 
 	# internal method		

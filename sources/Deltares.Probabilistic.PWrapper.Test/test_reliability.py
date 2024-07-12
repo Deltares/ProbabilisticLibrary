@@ -43,10 +43,6 @@ class Test_reliability(unittest.TestCase):
         beta = dp.reliability_index;
         alphas = dp.alphas;
 
-        project = project_builder.get_linear_project()
-
-        project.settings.reliability_method = 'form'
-
         project.run();
 
         dp = project.design_point;
@@ -63,6 +59,14 @@ class Test_reliability(unittest.TestCase):
 
         self.assertEqual(len(project.variables), len(project.design_point.alphas))
         self.assertTrue(project.design_point.alphas[0].variable in project.variables)
+
+        project.correlation_matrix.set_correlation(project.variables[0], project.variables[1], 0.5)
+        project.run();
+
+        dp = project.design_point;
+
+        self.assertAlmostEqual(1.90, dp.reliability_index, delta=margin)
+
 
     def test_form_linear_fully_correlated(self):
         project = project_builder.get_linear_fully_correlated_project()

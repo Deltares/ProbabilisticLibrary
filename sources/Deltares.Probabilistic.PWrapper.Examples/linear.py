@@ -6,7 +6,7 @@ margin = 0.01
 def linear(a, b):
     return 1.8 - (a+b)
 
-project = Project()
+project = ReliabilityProject()
 
 project.model = linear
 

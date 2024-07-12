@@ -18,7 +18,7 @@ def linear_small_abc(a, b, c):
 
 def get_linear_project():
 
-    project = Project()
+    project = ReliabilityProject()
 
     project.model = linear_ab
 
@@ -36,7 +36,7 @@ def get_linear_project():
 
 def get_linear_small_project():
 
-    project = Project()
+    project = ReliabilityProject()
 
     project.model = linear_small_ab
 
@@ -54,7 +54,7 @@ def get_linear_small_project():
 
 def get_linear_fully_correlated_project():
 
-    project = Project()
+    project = ReliabilityProject()
 
     project.model = linear_abc
 
@@ -73,14 +73,13 @@ def get_linear_fully_correlated_project():
     stochast3.minimum = -1.0
     stochast3.maximum = 1.0
 
-    project.correlation_matrix.variables.extend(project.variables)
     project.correlation_matrix.set_correlation(stochast1, stochast2, 1.0)
 
     return project
 
 def get_linear_partially_correlated_project():
 
-    project = Project()
+    project = ReliabilityProject()
 
     project.model = linear_abc
 
@@ -99,7 +98,6 @@ def get_linear_partially_correlated_project():
     stochast3.minimum = -1.0
     stochast3.maximum = 1.0
 
-    project.correlation_matrix.variables.extend(project.variables)
     project.correlation_matrix.set_correlation(stochast1, stochast2, 0.5)
 
     return project
