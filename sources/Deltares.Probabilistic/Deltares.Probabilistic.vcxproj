@@ -163,6 +163,7 @@
     <ClInclude Include="Combine\DesignPointModel.h" />
     <ClInclude Include="Combine\DesignPointCombiner.h" />
     <ClInclude Include="Combine\DirectionalSamplingCombiner.h" />
+    <ClInclude Include="Statistics\Distributions\ExponentialDistribution.h" />
     <ClInclude Include="Statistics\Distributions\FragilityCurveDistribution.h" />
     <ClInclude Include="Utils\DirtySupport.h" />
     <ClInclude Include="Model\ProxySettings.h" />
@@ -297,6 +298,7 @@
     <ClCompile Include="Combine\DesignPointModel.cpp" />
     <ClCompile Include="Combine\DesignPointCombiner.cpp" />
     <ClCompile Include="Combine\DirectionalSamplingCombiner.cpp" />
+    <ClCompile Include="Statistics\Distributions\ExponentialDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\FragilityCurveDistribution.cpp" />
     <ClCompile Include="Utils\DirtySupport.cpp" />
     <ClCompile Include="Model\ProxySettings.cpp" />

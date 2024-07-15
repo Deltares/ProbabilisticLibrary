@@ -1,2 +1,1 @@
 jupyter notebook
-pause

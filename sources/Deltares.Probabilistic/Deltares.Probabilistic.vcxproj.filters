@@ -95,12 +95,6 @@
     <ClCompile Include="Combine\combiner.cpp">
       <Filter>Combine</Filter>
     </ClCompile>
-    <ClCompile Include="Combine\Hohenbichler.cpp">
-      <Filter>Combine</Filter>
-    </ClCompile>
-    <ClCompile Include="Combine\HohenbichlerCombiner.cpp">
-      <Filter>Combine</Filter>
-    </ClCompile>
     <ClCompile Include="Combine\HohenbichlerZ.cpp">
       <Filter>Combine</Filter>
     </ClCompile>
@@ -151,6 +145,11 @@
     <ClCompile Include="Combine\CombineProject.cpp" />
     <ClCompile Include="Utils\DirtySupport.cpp" />
     <ClCompile Include="Statistics\Distributions\FragilityCurveDistribution.cpp" />
+    <ClCompile Include="Combine\HohenbichlerFORM.cpp" />
+    <ClCompile Include="Combine\HohenbichlerNumInt.cpp" />
+    <ClCompile Include="Combine\HohenbichlerFormCombiner.cpp" />
+    <ClCompile Include="Combine\HohenbichlerNumIntCombiner.cpp" />
+    <ClCompile Include="Statistics\Distributions\ExponentialDistribution.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -262,12 +261,6 @@
     <ClInclude Include="Combine\combiner.h">
       <Filter>Combine</Filter>
     </ClInclude>
-    <ClInclude Include="Combine\Hohenbichler.h">
-      <Filter>Combine</Filter>
-    </ClInclude>
-    <ClInclude Include="Combine\HohenbichlerCombiner.h">
-      <Filter>Combine</Filter>
-    </ClInclude>
     <ClInclude Include="Combine\HohenbichlerZ.h">
       <Filter>Combine</Filter>
     </ClInclude>
@@ -321,6 +314,11 @@
     <ClInclude Include="Combine\CombineProject.h" />
     <ClInclude Include="Utils\DirtySupport.h" />
     <ClInclude Include="Statistics\Distributions\FragilityCurveDistribution.h" />
+    <ClInclude Include="Combine\HohenbichlerFORM.h" />
+    <ClInclude Include="Combine\HohenbichlerNumInt.h" />
+    <ClInclude Include="Combine\HohenbichlerFormCombiner.h" />
+    <ClInclude Include="Combine\HohenbichlerNumIntCombiner.h" />
+    <ClInclude Include="Statistics\Distributions\ExponentialDistribution.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

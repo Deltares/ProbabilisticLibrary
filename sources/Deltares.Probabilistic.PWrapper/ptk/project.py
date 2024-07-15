@@ -46,7 +46,7 @@ class ReliabilityProject:
 		variable_names = value.__code__.co_varnames
 
 		variables = []
-		for var_name in variable_names:
+		for var_name in variable_names[:value.__code__.co_argcount]:
 			variable = self._variables[var_name]
 			if variable is None:
 				variable = Stochast()

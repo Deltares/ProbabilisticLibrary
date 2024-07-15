@@ -246,6 +246,7 @@ namespace Deltares
             else if (distributionType == "normal") return Statistics::DistributionType::Normal;
             else if (distributionType == "log_normal") return Statistics::DistributionType::LogNormal;
             else if (distributionType == "uniform") return Statistics::DistributionType::Uniform;
+            else if (distributionType == "exponential") return Statistics::DistributionType::Exponential;
             else if (distributionType == "gumbel") return Statistics::DistributionType::Gumbel;
             else if (distributionType == "weibull") return Statistics::DistributionType::Weibull;
             else if (distributionType == "conditional_weibull") return Statistics::DistributionType::ConditionalWeibull;
@@ -268,6 +269,7 @@ namespace Deltares
             case Statistics::DistributionType::Normal: return "normal";
             case Statistics::DistributionType::LogNormal: return "log_normal";
             case Statistics::DistributionType::Uniform: return "uniform";
+            case Statistics::DistributionType::Exponential : return "exponential";
             case Statistics::DistributionType::Gumbel: return "gumbel";
             case Statistics::DistributionType::Weibull: return "weibull";
             case Statistics::DistributionType::ConditionalWeibull: return "conditional_weibull";

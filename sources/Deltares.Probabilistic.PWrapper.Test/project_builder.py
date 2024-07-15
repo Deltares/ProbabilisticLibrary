@@ -4,7 +4,8 @@ import math
 from ptk import *
 
 def linear_ab(a, b):
-    return 1.8 - (a+b)
+    L = 1.8
+    return L - (a+b)
 
 def linear_abc(a, b, c):
     return 1.8 - (a+b+c)

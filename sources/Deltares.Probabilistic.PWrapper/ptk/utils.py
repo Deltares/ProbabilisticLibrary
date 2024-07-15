@@ -61,6 +61,9 @@ class FrozenList():
 	def __len__(self):
 		return len(self._list)
 
+	def __str__(self):
+		return str(self._list)
+
 	def count(self):
 		return self._list.count()
 

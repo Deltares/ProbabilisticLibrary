@@ -207,6 +207,26 @@ namespace Deltares.Probabilistic.Wrapper.Test
         }
 
         [Test]
+        public void TestExponential()
+        {
+            var stochast = new Stochast
+            {
+                DistributionType = DistributionType.Exponential,
+                Mean = 1,
+                Deviation = 0.1,
+                Scale = 1.0 / 3.0
+            };
+
+            TestSettingValuesOrder(stochast);
+            TestStochast(stochast);
+            TestInvert(stochast, true);
+            TestFit(stochast);
+
+            stochast.Fit(new[] { 2.5, 3.0, 3.5, 5.5, 6.5 });
+            Assert.AreEqual(2.5, stochast.Scale, margin);
+        }
+
+        [Test]
         public void TestGumbel()
         {
             Stochast stochast = new Stochast { DistributionType = DistributionType.Gumbel, Scale = 1, Shift = 0 };
