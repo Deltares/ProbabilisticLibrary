@@ -326,6 +326,12 @@ class Alpha:
 				
 		return self._variable
 
+	def __str__(self):
+		if self.variable is None:
+			return ''
+		else:
+			return self._variable.name
+
 	# internal method		
 	def _set_variable(self, variable):
 		self._variable = variable

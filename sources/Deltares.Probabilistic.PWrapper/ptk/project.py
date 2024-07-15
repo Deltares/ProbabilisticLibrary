@@ -16,7 +16,7 @@ class ReliabilityProject:
 		self._callback = interface.CALLBACK(self._performCallBack)
 		interface.SetCallBack(self._id, 'model', self._callback)
 
-		self._variables = []
+		self._variables = FrozenList()
 		self._correlation_matrix = CorrelationMatrix()
 		self._settings = Settings()
 		self._design_point = None
@@ -27,13 +27,6 @@ class ReliabilityProject:
 	def variables(self):
 		return self._variables
 	
-	def get_variable(self, var_name : str):
-		for variable in self._variables:
-			variable_name = variable.name
-			if variable_name == var_name:
-				return variable
-		return None
-
 	@property   
 	def correlation_matrix(self):
 		return self._correlation_matrix
@@ -54,13 +47,14 @@ class ReliabilityProject:
 
 		variables = []
 		for var_name in variable_names:
-			variable = Stochast()
-			variable.name = var_name
+			variable = self._variables[var_name]
+			if variable is None:
+				variable = Stochast()
+				variable.name = var_name
 			variables.append(variable)
 			
-		self._variables = variables
-		self._correlation_matrix.variables.clear()
-		self._correlation_matrix.variables.extend(variables)
+		self._variables = FrozenList(variables)
+		self._correlation_matrix._set_variables(variables)
 
 	@interface.CALLBACK
 	def _performCallBack(values, size):

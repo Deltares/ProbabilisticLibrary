@@ -22,12 +22,12 @@ def get_linear_project():
 
     project.model = linear_ab
 
-    stochast1 = project.get_variable('a')
+    stochast1 = project.variables['a']
     stochast1.distribution = 'uniform'
     stochast1.minimum = -1
     stochast1.maximum = 1;
 
-    stochast2 = project.get_variable('b')
+    stochast2 = project.variables['b']
     stochast2.distribution = 'uniform'
     stochast2.minimum = -1
     stochast2.maximum = 1;
@@ -40,12 +40,12 @@ def get_linear_small_project():
 
     project.model = linear_small_ab
 
-    stochast1 = project.get_variable('a')
+    stochast1 = project.variables['a']
     stochast1.distribution = 'uniform'
     stochast1.minimum = -1
     stochast1.maximum = 1;
 
-    stochast2 = project.get_variable('b')
+    stochast2 = project.variables['b']
     stochast2.distribution = 'uniform'
     stochast2.minimum = -1
     stochast2.maximum = 1;
@@ -58,17 +58,17 @@ def get_linear_fully_correlated_project():
 
     project.model = linear_abc
 
-    stochast1 = project.get_variable('a')
+    stochast1 = project.variables['a']
     stochast1.distribution = 'uniform'
     stochast1.minimum = -0.5
     stochast1.maximum = 0.5;
 
-    stochast2 = project.get_variable('b')
+    stochast2 = project.variables['b']
     stochast2.distribution = 'uniform'
     stochast2.minimum = -0.5
     stochast2.maximum = 0.5;
 
-    stochast3 = project.get_variable('c')
+    stochast3 = project.variables['c']
     stochast3.distribution = 'uniform'
     stochast3.minimum = -1.0
     stochast3.maximum = 1.0
@@ -83,17 +83,17 @@ def get_linear_partially_correlated_project():
 
     project.model = linear_abc
 
-    stochast1 = project.get_variable('a')
+    stochast1 = project.variables['a']
     stochast1.distribution = 'uniform'
     stochast1.minimum = -0.5
     stochast1.maximum = 0.5
 
-    stochast2 = project.get_variable('b')
+    stochast2 = project.variables['b']
     stochast2.distribution = 'uniform'
     stochast2.minimum = -0.5
     stochast2.maximum = 0.5
 
-    stochast3 = project.get_variable('c')
+    stochast3 = project.variables['c']
     stochast3.distribution = 'uniform'
     stochast3.minimum = -1.0
     stochast3.maximum = 1.0

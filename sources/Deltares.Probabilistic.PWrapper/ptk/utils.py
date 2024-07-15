@@ -25,6 +25,44 @@ class CallbackList(list):
 		super().remove(item)
 		self._callback()
 
+	def pop(self, item):
+		item = super().pop(item)
+		self._callback()
+		return item
+
 	def extend(self, items):
 		super().extend(items)
 		self._callback()
+
+class FrozenList():
+	def __init__(self, initial_list = None):
+		self._list = []
+		self._dict = {}
+		if not initial_list is None:
+			self._list.extend(initial_list)
+			for item in self._list:
+				self._dict[str(item)] = item
+
+	def __getitem__(self, index):
+		if isinstance(index, str):
+			if index in self._dict.keys():
+				return self._dict[str(index)]
+			else:
+				return None
+		else:
+			return self._list[index]
+
+	def __iter__(self):
+		return self._list.__iter__()
+
+	def __next__(self):
+		self._list.__next__()
+
+	def __len__(self):
+		return len(self._list)
+
+	def count(self):
+		return self._list.count()
+
+
+		

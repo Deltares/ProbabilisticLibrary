@@ -77,25 +77,48 @@ class Test_statistics(unittest.TestCase):
 
         correlation_matrix = CorrelationMatrix();
 
-        correlation_matrix.variables.extend(stochasts)
+        correlation_matrix._set_variables(stochasts)
 
-        correlation_matrix.set_correlation(stochast1, stochast2, 0.8)
-        correlation_matrix.set_correlation(stochast2, stochast3, 1.0)
-        correlation_matrix.set_correlation(stochast3, stochast4, 0.2)
+        correlation_matrix[(stochast1, stochast2)] = 0.8
+        correlation_matrix[(stochast2, stochast3)] = 1.0
+        correlation_matrix[(stochast3, stochast4)] = 0.2
 
         # registered stochasts
-        self.assertAlmostEqual(0.8, correlation_matrix.get_correlation(stochast1, stochast2), delta=margin)
-        self.assertAlmostEqual(0.8, correlation_matrix.get_correlation(stochast2, stochast1), delta=margin)
-        self.assertAlmostEqual(1.0, correlation_matrix.get_correlation(stochast2, stochast3), delta=margin)
-        self.assertAlmostEqual(1.0, correlation_matrix.get_correlation(stochast3, stochast2), delta=margin)
+        self.assertAlmostEqual(0.8, correlation_matrix[(stochast1, stochast2)], delta=margin)
+        self.assertAlmostEqual(0.8, correlation_matrix[(stochast2, stochast1)], delta=margin)
+        self.assertAlmostEqual(1.0, correlation_matrix[(stochast2, stochast3)], delta=margin)
+        self.assertAlmostEqual(1.0, correlation_matrix[(stochast3, stochast2)], delta=margin)
 
         # unregistered stochasts
-        self.assertAlmostEqual(0.0, correlation_matrix.get_correlation(stochast3, stochast4), delta=margin)
-        self.assertAlmostEqual(0.0, correlation_matrix.get_correlation(stochast4, stochast3), delta=margin)
+        self.assertAlmostEqual(0.0, correlation_matrix[(stochast3, stochast4)], delta=margin)
+        self.assertAlmostEqual(0.0, correlation_matrix[(stochast4, stochast3)], delta=margin)
 
         # default values
-        self.assertAlmostEqual(0.0, correlation_matrix.get_correlation(stochast1, stochast3), delta=margin)
-        self.assertAlmostEqual(1.0, correlation_matrix.get_correlation(stochast2, stochast2), delta=margin)
+        self.assertAlmostEqual(0.0, correlation_matrix[(stochast1, stochast3)], delta=margin)
+        self.assertAlmostEqual(1.0, correlation_matrix[(stochast2, stochast2)], delta=margin)
+
+    def test_correlation_by_name(self):
+        stochasts = []
+
+        stochast1 = Stochast()
+        stochast1.name = 'a'
+        stochast1.distribution = "normal"
+        stochasts.append(stochast1)
+
+        stochast2 = Stochast()
+        stochast2.name = 'b'
+        stochast2.distribution = "normal"
+        stochasts.append(stochast2)
+
+        correlation_matrix = CorrelationMatrix();
+
+        correlation_matrix._set_variables(stochasts)
+
+        correlation_matrix[('a', 'b')] = 0.8
+
+        # registered stochasts
+        self.assertAlmostEqual(0.8, correlation_matrix[(stochast1, stochast2)], delta=margin)
+        self.assertAlmostEqual(0.8, correlation_matrix[('a', 'b')], delta=margin)
 
     def test_fit(self):
         stochasts = []

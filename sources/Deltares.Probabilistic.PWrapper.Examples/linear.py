@@ -10,12 +10,12 @@ project = ReliabilityProject()
 
 project.model = linear
 
-stochast1 = project.get_variable('a')
+stochast1 = project.variables['a']
 stochast1.distribution = 'uniform'
 stochast1.minimum = -1
 stochast1.maximum = 1
 
-stochast2 = project.get_variable('b')
+stochast2 = project.variables['b']
 stochast2.distribution = 'uniform'
 stochast2.minimum = -1
 stochast2.maximum = 1

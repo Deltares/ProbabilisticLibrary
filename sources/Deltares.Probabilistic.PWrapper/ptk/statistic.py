@@ -1,3 +1,4 @@
+from ctypes import ArgumentError
 from .utils import *
 from . import interface
 
@@ -40,6 +41,9 @@ class Stochast:
 	@name.setter
 	def name(self, value):
 		interface.SetStringValue(self._id, 'name', value)
+
+	def __str__(self):
+		return self.name
 
 	@property   
 	def distribution(self):
@@ -394,7 +398,7 @@ class CorrelationMatrix:
 
 	def __init__(self):
 		self._id = interface.Create('correlation_matrix')
-		self._variables = CallbackList(self._variables_changed)
+		self._variables = FrozenList()
 
 	def __del__(self):
 	    interface.Destroy(self._id)
@@ -403,8 +407,35 @@ class CorrelationMatrix:
 	def variables(self):
 		return self._variables
 
-	def _variables_changed(self):
+	def _set_variables(self, variables):
+		self._variables = FrozenList(variables)
 		interface.SetArrayIntValue(self._id, 'variables', [variable._id for variable in self._variables])
+
+	def __getitem__(self, stochasts):
+		if not isinstance(stochasts, tuple) or not len(stochasts) == 2:
+			raise ArgumentError('Expected 2 arguments')
+
+		stochast_list = []
+		for i in range(len(stochasts)):
+			if isinstance(stochasts[i], str):
+				stochast_list.append(self._variables[stochasts[i]])
+			else:
+				stochast_list.append(stochasts[i])
+
+		return interface.GetIndexedIndexedValue(self._id, 'correlation', stochast_list[0]._id, stochast_list[1]._id)
+
+	def __setitem__(self, stochasts, value):
+		if not isinstance(stochasts, tuple) or not len(stochasts) == 2:
+			raise ArgumentError('Expected 2 arguments')
+
+		stochast_list = []
+		for i in range(len(stochasts)):
+			if isinstance(stochasts[i], str):
+				stochast_list.append(self._variables[stochasts[i]])
+			else:
+				stochast_list.append(stochasts[i])
+
+		interface.SetIndexedIndexedValue(self._id, 'correlation', stochast_list[0]._id, stochast_list[1]._id, value)
 
 	def get_correlation(self, stochast1 : Stochast, stochast2 : Stochast):
 		return interface.GetIndexedIndexedValue(self._id, 'correlation', stochast1._id, stochast2._id)
