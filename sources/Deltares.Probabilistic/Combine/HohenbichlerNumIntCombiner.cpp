@@ -31,8 +31,8 @@ namespace Deltares
                 {
                     break;
                 }
-                workDesignPoints.erase(designPoints.begin() + i2max);
-                workDesignPoints.erase(designPoints.begin() + i1max);
+                workDesignPoints.erase(workDesignPoints.begin() + i2max);
+                workDesignPoints.erase(workDesignPoints.begin() + i1max);
                 workDesignPoints.push_back(designPoint);
             }
 
