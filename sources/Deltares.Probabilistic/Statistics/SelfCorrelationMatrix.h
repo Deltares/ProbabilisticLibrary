@@ -48,11 +48,10 @@ namespace Deltares
             double getSelfCorrelation(std::shared_ptr<Stochast> stochast, std::shared_ptr<Reliability::DesignPoint> designPoint1, std::shared_ptr<Reliability::DesignPoint> designPoint2)
             {
                 std::shared_ptr<SelfCorrelationStochast> stochastValue = this->getSelfCorrelationStochast(stochast);
-                std::shared_ptr<SelfCorrelationValue> value = stochastValue->getSelfCorrelationValue(designPoint1, designPoint2);
 
-                if (value != nullptr)
+                if (stochastValue->hasSelfCorrelationValue(designPoint1, designPoint2))
                 {
-                    return value->rho;
+                    return stochastValue->getSelfCorrelationValue(designPoint1, designPoint2)->rho;
                 }
                 else
                 {
@@ -84,6 +83,11 @@ namespace Deltares
             class SelfCorrelationValue
             {
             public:
+                SelfCorrelationValue()
+                {
+                    int k = 1;
+                }
+
                 std::shared_ptr<Reliability::DesignPoint> designPoint1 = nullptr;
                 std::shared_ptr<Reliability::DesignPoint> designPoint2 = nullptr;
                 double rho = 1.0;
@@ -99,6 +103,19 @@ namespace Deltares
             public:
                 std::shared_ptr<Statistics::Stochast> stochast = nullptr;
                 double defaultRho = 1;
+
+                bool hasSelfCorrelationValue(std::shared_ptr<Reliability::DesignPoint> designPoint1, std::shared_ptr<Reliability::DesignPoint> designPoint2)
+                {
+                    for (std::shared_ptr<SelfCorrelationValue> value : rhoValues)
+                    {
+                        if ((value->designPoint1 == designPoint1 && value->designPoint2 == designPoint2) || (value->designPoint1 == designPoint2 && value->designPoint2 == designPoint1))
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
 
                 std::shared_ptr<SelfCorrelationValue> getSelfCorrelationValue(std::shared_ptr<Reliability::DesignPoint> designPoint1, std::shared_ptr<Reliability::DesignPoint> designPoint2)
                 {

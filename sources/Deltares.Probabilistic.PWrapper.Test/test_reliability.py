@@ -60,7 +60,7 @@ class Test_reliability(unittest.TestCase):
         self.assertEqual(len(project.variables), len(project.design_point.alphas))
         self.assertTrue(project.design_point.alphas[0].variable in project.variables)
 
-        project.correlation_matrix.set_correlation(project.variables[0], project.variables[1], 0.5)
+        project.correlation_matrix[(project.variables[0], project.variables[1])] = 0.5
         project.run();
 
         dp = project.design_point;

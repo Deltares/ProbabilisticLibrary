@@ -30,7 +30,6 @@ namespace Deltares
             case CombinerType::DirectionalSampling: return "directional_sampling";
             default: throw probLibException("Combiner method");
             }
-
         }
 
         CombinerType DesignPointCombiner::getCombinerMethod(std::string method)

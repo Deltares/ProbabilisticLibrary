@@ -7,6 +7,10 @@ def linear_ab(a, b):
     L = 1.8
     return L - (a+b)
 
+def linear_bc(b, c):
+    L = 1.8
+    return L - (b + c)
+
 def linear_abc(a, b, c):
     return 1.8 - (a+b+c)
 
@@ -74,7 +78,7 @@ def get_linear_fully_correlated_project():
     stochast3.minimum = -1.0
     stochast3.maximum = 1.0
 
-    project.correlation_matrix.set_correlation(stochast1, stochast2, 1.0)
+    project.correlation_matrix[('a', 'b')] = 1.0
 
     return project
 
@@ -99,7 +103,7 @@ def get_linear_partially_correlated_project():
     stochast3.minimum = -1.0
     stochast3.maximum = 1.0
 
-    project.correlation_matrix.set_correlation(stochast1, stochast2, 0.5)
+    project.correlation_matrix[('a', 'b')] = 0.5
 
     return project
 

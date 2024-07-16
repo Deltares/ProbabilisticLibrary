@@ -14,22 +14,34 @@ namespace Deltares
 
             const std::vector<std::shared_ptr<Statistics::Stochast>> stochasts = getUniqueStochasts(designPoints);
 
-            auto dp = std::make_shared<DesignPoint>();
+            std::vector<std::shared_ptr<DesignPoint>> workDesignPoints;
+            for (size_t i = 0; i < designPoints.size(); i++)
+            {
+                workDesignPoints.push_back(designPoints[i]);
+            }
+
+            auto designPoint = std::make_shared<DesignPoint>();
             auto hh = HohenbichlerNumInt();
-            while ( ! designPoints.empty())
+            while (!workDesignPoints.empty())
             {
                 long long i1max; long long i2max;
-                findMaxCorrelatedDesignPoints(designPoints, selfCorrelationMatrix, stochasts, i1max, i2max);
-                dp = hh.AlphaHohenbichler(designPoints[i1max], designPoints[i2max], stochasts, selfCorrelationMatrix, combineMethodType);
-                if (designPoints.size() == 2)
+                findMaxCorrelatedDesignPoints(workDesignPoints, selfCorrelationMatrix, stochasts, i1max, i2max);
+                designPoint = hh.AlphaHohenbichler(workDesignPoints[i1max], workDesignPoints[i2max], stochasts, selfCorrelationMatrix, combineMethodType);
+                if (workDesignPoints.size() == 2)
                 {
                     break;
                 }
-                designPoints.erase(designPoints.begin() + i2max);
-                designPoints.erase(designPoints.begin() + i1max);
-                designPoints.push_back(dp);
+                workDesignPoints.erase(designPoints.begin() + i2max);
+                workDesignPoints.erase(designPoints.begin() + i1max);
+                workDesignPoints.push_back(designPoint);
             }
-            return dp;
+
+            for (size_t i = 0; i < designPoints.size(); i++)
+            {
+                designPoint->ContributingDesignPoints.push_back(designPoints[i]);
+            }
+
+            return designPoint;
         }
 
         void HohenbichlerNumIntCombiner::findMaxCorrelatedDesignPoints(std::vector<std::shared_ptr<DesignPoint>>& designPoints, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix,

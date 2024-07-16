@@ -47,6 +47,18 @@ extern "C" DLL_PUBLIC void SetIntValue(int id, char* property, int value)
     projectServer->SetIntValue(id, propertyStr, value);
 }
 
+extern "C" DLL_PUBLIC double GetIntArgValue(int id1, int id2, char* property)
+{
+    std::string propertyStr(property);
+    return projectServer->GetIntArgValue(id1, id2, propertyStr);
+}
+
+extern "C" DLL_PUBLIC void SetIntArgValue(int id1, int id2, char* property, double value)
+{
+    std::string propertyStr(property);
+    projectServer->SetIntArgValue(id1, id2, propertyStr, value);
+}
+
 extern "C" DLL_PUBLIC bool GetBoolValue(int id, char* property)
 {
     std::string propertyStr(property);

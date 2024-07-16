@@ -107,7 +107,7 @@ class Test_statistics(unittest.TestCase):
 
         stochast2 = Stochast()
         stochast2.name = 'b'
-        stochast2.distribution = "normal"
+        stochast2.distribution = "exponential"
         stochasts.append(stochast2)
 
         correlation_matrix = CorrelationMatrix();

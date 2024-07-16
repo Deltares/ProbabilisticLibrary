@@ -19,6 +19,8 @@ namespace Deltares
             void SetValue(int id, const std::string property_, double value);
             int GetIntValue(int id, std::string property_);
             void SetIntValue(int id, std::string property_, int value);
+            double GetIntArgValue(int id1, int id2, std::string property_);
+            void SetIntArgValue(int id1, int id2, std::string property_, double value);
             bool GetBoolValue(int id, std::string property_);
             void SetBoolValue(int id, std::string property_, bool value);
             std::string GetStringValue(int id, std::string property_);
@@ -36,7 +38,7 @@ namespace Deltares
             void SetCallBack(int id, std::string property_, ZValuesCallBack callBack);
             void Execute(int id, std::string method_);
         private:
-            enum ObjectType {StandardNormal, Project, Stochast, DiscreteValue, HistogramValue, FragilityValue, CorrelationMatrix, Settings, StochastSettings, DesignPoint, Alpha, CombineProject, CombineSettings};
+            enum ObjectType {StandardNormal, Project, Stochast, DiscreteValue, HistogramValue, FragilityValue, CorrelationMatrix, Settings, StochastSettings, DesignPoint, Alpha, CombineProject, CombineSettings, SelfCorrelationMatrix};
 
             int counter = 0;
             std::unordered_map<int, Deltares::Models::ProjectServer::ObjectType> types;
@@ -53,6 +55,7 @@ namespace Deltares
             std::unordered_map<int, std::shared_ptr<Reliability::StochastPointAlpha>> alphas;
             std::unordered_map<int, std::shared_ptr<Reliability::CombineProject>> combineProjects;
             std::unordered_map<int, std::shared_ptr<Reliability::CombineSettings>> combineSettingsValues;
+            std::unordered_map<int, std::shared_ptr<Statistics::SelfCorrelationMatrix>> selfCorrelationMatrices;
 
             std::unordered_map<std::shared_ptr<Reliability::DesignPoint>, int> designPointIds;
             std::unordered_map<std::shared_ptr<Reliability::StochastPointAlpha>, int> alphaIds;

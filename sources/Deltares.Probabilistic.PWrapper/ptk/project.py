@@ -16,6 +16,7 @@ class ReliabilityProject:
 		self._callback = interface.CALLBACK(self._performCallBack)
 		interface.SetCallBack(self._id, 'model', self._callback)
 
+		self._all_variables = {}
 		self._variables = FrozenList()
 		self._correlation_matrix = CorrelationMatrix()
 		self._settings = Settings()
@@ -47,10 +48,12 @@ class ReliabilityProject:
 
 		variables = []
 		for var_name in variable_names[:value.__code__.co_argcount]:
-			variable = self._variables[var_name]
-			if variable is None:
+			if not var_name in self._all_variables.keys():
 				variable = Stochast()
 				variable.name = var_name
+				self._all_variables[var_name] = variable
+			else:
+				variable = self._all_variables[var_name]
 			variables.append(variable)
 			
 		self._variables = FrozenList(variables)
@@ -83,11 +86,18 @@ class CombineProject:
 	def __init__(self):
 		self._id = interface.Create('combine_project')
 
-		self._design_points = []
+		self._design_points = CallbackList(self._design_points_changed)
 		self._settings = CombineSettings()
+		self._correlation_matrix = SelfCorrelationMatrix()
 		self._design_point = None
 		
 		_model = None
+
+	def _design_points_changed(self):
+		variables = []
+		for design_point in self._design_points:
+			variables.extend(design_point.get_variables())
+		self._correlation_matrix._set_variables(variables)
   
 	@property
 	def design_points(self):
@@ -97,10 +107,15 @@ class CombineProject:
 	def settings(self):
 		return self._settings
 
+	@property   
+	def correlation_matrix(self):
+		return self._correlation_matrix
+
 	def run(self):
-		_design_point = None
+		self._design_point = None
 		interface.SetArrayIntValue(self._id, 'design_points', [design_point._id for design_point in self._design_points])
 		interface.SetIntValue(self._id, 'settings', self._settings._id)
+		interface.SetIntValue(self._id, 'correlation_matrix', self._correlation_matrix._id)
 		interface.Execute(self._id, 'run')
 	
 	@property   

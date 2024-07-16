@@ -84,6 +84,11 @@ namespace Deltares
                 combineSettingsValues[counter] = std::make_shared<Deltares::Reliability::CombineSettings>();
                 types[counter] = ObjectType::CombineSettings;
             }
+            else if (object_type == "self_correlation_matrix")
+            {
+                selfCorrelationMatrices[counter] = std::make_shared<Deltares::Statistics::SelfCorrelationMatrix>();
+                types[counter] = ObjectType::SelfCorrelationMatrix;
+            }
 
             return counter;
         }
@@ -105,6 +110,7 @@ namespace Deltares
             case ObjectType::Alpha: alphas.erase(id); break;
             case ObjectType::CombineProject: combineProjects.erase(id); break;
             case ObjectType::CombineSettings: combineSettingsValues.erase(id); break;
+            case ObjectType::SelfCorrelationMatrix: selfCorrelationMatrices.erase(id); break;
             default: throw probLibException("object type");
             }
             types.erase(id);
@@ -380,12 +386,39 @@ namespace Deltares
                 std::shared_ptr<Reliability::CombineProject> combineProject = combineProjects[id];
 
                 if (property_ == "settings") combineProject->settings = combineSettingsValues[value];
+                else if (property_ == "correlation_matrix") combineProject->selfCorrelationMatrix = selfCorrelationMatrices[value];
             }
             else if (objectType == ObjectType::Alpha)
             {
                 std::shared_ptr<Reliability::StochastPointAlpha> alpha = alphas[id];
 
                 if (property_ == "variable") alpha->Stochast = stochasts[value];
+            }
+        }
+
+        double ProjectServer::GetIntArgValue(int id1, int id2, std::string property_)
+        {
+            ObjectType objectType = types[id1];
+
+            if (objectType == ObjectType::SelfCorrelationMatrix)
+            {
+                std::shared_ptr<Statistics::SelfCorrelationMatrix> correlationMatrix = selfCorrelationMatrices[id1];
+                std::shared_ptr<Statistics::Stochast> stochast = stochasts[id2];
+
+                if (property_ == "rho") return correlationMatrix->getSelfCorrelation(stochast);
+            }
+        }
+
+        void ProjectServer::SetIntArgValue(int id1, int id2, std::string property_, double value)
+        {
+            ObjectType objectType = types[id1];
+
+            if (objectType == ObjectType::SelfCorrelationMatrix)
+            {
+                std::shared_ptr<Statistics::SelfCorrelationMatrix> correlationMatrix = selfCorrelationMatrices[id1];
+                std::shared_ptr<Statistics::Stochast> stochast = stochasts[id2];
+
+                if (property_ == "rho") correlationMatrix->setSelfCorrelation(stochast, value);
             }
         }
 

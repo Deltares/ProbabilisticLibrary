@@ -93,6 +93,69 @@ class Test_combine(unittest.TestCase):
 
         self.assertEqual(len(project.design_points), len(project.design_point.contributing_design_points))
         self.assertEqual(project.design_points[0], project.design_point.contributing_design_points[0])
+
+    def test_calculated_design_points(self):
+
+        project = ReliabilityProject()
+
+        project.model = project_builder.linear_ab;
+
+        project.variables['a'].distribution = 'uniform'
+        project.variables['a'].minimum = -1
+        project.variables['a'].maximum = 1
+
+        project.variables['b'].distribution = 'uniform'
+        project.variables['b'].minimum = -1
+        project.variables['b'].maximum = 1
+
+        project.settings.reliability_method = 'crude_monte_carlo'
+        project.settings.maximum_samples = 100000
+        project.run()
+        dp1 = project.design_point
+
+        beta_expected = StandardNormal.get_u_from_q(0.005)
+        self.assertAlmostEqual(beta_expected, dp1.reliability_index, delta=margin)
+
+        project.model = project_builder.linear_bc;
+
+        self.assertEqual('uniform',  project.variables['b'].distribution)
+
+        project.variables['c'].distribution = 'uniform'
+        project.variables['c'].minimum = -1
+        project.variables['c'].maximum = 1
+
+        project.run()
+        dp2 = project.design_point
+
+        self.assertAlmostEqual(beta_expected, dp2.reliability_index, delta=margin)
+
+        project = CombineProject()
+        project.design_points.append(dp1)
+        project.design_points.append(dp2)
+
+        project.settings.combiner_method = 'hohenbichler'
+        project.settings.combine_type = 'series'
+        project.run()
+
+        dp_correlated = project.design_point
+
+        self.assertEqual(2,  len(dp_correlated.contributing_design_points))
+        self.assertEqual(3,  len(dp_correlated.alphas))
+
+        # correlated result
+        beta_expected = 2.34
+        self.assertAlmostEqual(beta_expected, dp_correlated.reliability_index, delta=margin)
+
+        project.correlation_matrix['b'] = 0
+
+        project.run()
+        dp_uncorrelated = project.design_point
+
+        self.assertNotEqual(dp_correlated.reliability_index, dp_uncorrelated.reliability_index)
+        
+        # uncorrelated result
+        beta_expected = StandardNormal.get_u_from_q(0.01)
+        self.assertAlmostEqual(beta_expected, dp_uncorrelated.reliability_index, delta=margin)
         
         
 if __name__ == '__main__':

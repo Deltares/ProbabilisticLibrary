@@ -54,6 +54,13 @@ def GetIntValue(id_, property_):
 def SetIntValue(id_, property_, value_):
 	lib.SetIntValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.c_int(value_))
 
+def GetIntArgValue(id_, arg_, property_):
+	lib.GetIntArgValue.restype = ctypes.c_double
+	return lib.GetIntArgValue(ctypes.c_int(id_), ctypes.c_int(arg_), bytes(property_, 'utf-8'))
+
+def SetIntArgValue(id_, arg_, property_, value_):
+	lib.SetIntArgValue(ctypes.c_int(id_), ctypes.c_int(arg_), bytes(property_, 'utf-8'), ctypes.c_double(value_))
+
 def GetBoolValue(id_, property_):
 	lib.GetBoolValue.restype = ctypes.c_bool
 	return lib.GetBoolValue(ctypes.c_int(id_), bytes(property_, 'utf-8'))

@@ -12,10 +12,10 @@ class StandardNormal:
 		return interface.GetArgValue(StandardNormal._id, 'u_from_p', p)
 
 	def get_q_from_u (u : float):
-		return interface.GetArgValue(StandardNormal._id, 'q_from_u', q)
+		return interface.GetArgValue(StandardNormal._id, 'q_from_u', u)
 
 	def get_p_from_u (u : float):
-		return interface.GetArgValue(StandardNormal._id, 'p_from_u', q)
+		return interface.GetArgValue(StandardNormal._id, 'p_from_u', u)
 
 
 class Stochast:
@@ -436,12 +436,31 @@ class CorrelationMatrix:
 				stochast_list.append(stochasts[i])
 
 		interface.SetIndexedIndexedValue(self._id, 'correlation', stochast_list[0]._id, stochast_list[1]._id, value)
-
-	def get_correlation(self, stochast1 : Stochast, stochast2 : Stochast):
-		return interface.GetIndexedIndexedValue(self._id, 'correlation', stochast1._id, stochast2._id)
-
-	def set_correlation(self, stochast1 : Stochast, stochast2 : Stochast, value : float):
-		interface.SetIndexedIndexedValue(self._id, 'correlation', stochast1._id, stochast2._id, value)
-
   
+class SelfCorrelationMatrix:
+
+	def __init__(self):
+		self._id = interface.Create('self_correlation_matrix')
+
+	def __del__(self):
+		interface.Destroy(self._id)
+
+	def _set_variables(self, variables):
+		self._variables = FrozenList(variables)
+
+	def __getitem__(self, stochast):
+		stochast_obj = stochast
+		if isinstance(stochast_obj, str):
+			stochast_obj = self._variables[str(stochast_obj)]
+
+		return interface.GetIntArgValue(self._id, stochast_obj._id, 'rho')
+
+	def __setitem__(self, stochast, value):
+		stochast_obj = stochast
+		if isinstance(stochast_obj, str):
+			stochast_obj = self._variables[str(stochast_obj)]
+
+		interface.SetIntArgValue(self._id, stochast_obj._id, 'rho', value)
+  
+
 
