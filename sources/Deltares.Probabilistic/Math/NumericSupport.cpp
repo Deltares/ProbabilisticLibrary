@@ -100,7 +100,7 @@ namespace Deltares
             }
             else
             {
-                return abs(x1 - x2) < tolerance;
+                return fabs(x1 - x2) < tolerance;
             }
         }
 
