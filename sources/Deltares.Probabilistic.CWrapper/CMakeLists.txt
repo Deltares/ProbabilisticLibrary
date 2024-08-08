@@ -3,7 +3,7 @@ file(GLOB cwrapper_files
 )
 
 add_library(Deltares.Probabilistic.CWrapper
-  STATIC
+  SHARED
     ${cwrapper_files}
 )
 

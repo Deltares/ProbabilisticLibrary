@@ -381,7 +381,7 @@ namespace Deltares
                 if (property_ == "variable") stochastSettings->stochast = stochasts[value];
                 else if (property_ == "intervals") stochastSettings->Intervals = value;
             }
-            if (objectType == ObjectType::CombineProject)
+            else if (objectType == ObjectType::CombineProject)
             {
                 std::shared_ptr<Reliability::CombineProject> combineProject = combineProjects[id];
 
@@ -783,6 +783,10 @@ namespace Deltares
             else if (objectType == ObjectType::Project)
             {
                 std::shared_ptr<Models::Project> project = projects[id];
+                for (const auto& value : this->stochastSettingsValues)
+                {
+                    project->settings->StochastSet->stochastSettings.push_back(value.second);
+                }
 
                 if (method_ == "run") project->run();
             }
