@@ -1,4 +1,3 @@
-from msilib import knownbits
 import sys
 from ctypes import *
 from typing import FrozenSet
