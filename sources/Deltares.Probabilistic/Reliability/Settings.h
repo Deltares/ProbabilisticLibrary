@@ -4,6 +4,7 @@
 #include "StochastSettingsSet.h"
 #include "DesignPointBuilder.h"
 #include "ReliabilityMethod.h"
+#include "SubsetSimulationSettings.h"
 #include "../Model/RandomSettings.h"
 #include "../Model/RunSettings.h"
 #include "../Model/GradientSettings.h"
@@ -99,6 +100,11 @@ namespace Deltares
              * \brief If true, makes a guess for the design point if the final FORM loop does not converge
              */
             bool FilterAtNonConvergence = false;
+
+            /**
+             * \brief Method type how to generate new samples for subset simulation
+             */
+            SampleMethodType sampleMethod = SampleMethodType::MarkovChain;
 
             /**
              * \brief Settings for performing model runs

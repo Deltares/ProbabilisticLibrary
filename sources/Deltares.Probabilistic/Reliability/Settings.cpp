@@ -128,6 +128,7 @@ namespace Deltares
             subsetSimulation->Settings->MinimumSamples = this->MinimumSamples;
             subsetSimulation->Settings->MaximumSamples = this->MaximumSamples;
             subsetSimulation->Settings->designPointMethod = this->designPointMethod;
+            subsetSimulation->Settings->SampleMethod = this->sampleMethod;
             subsetSimulation->Settings->VariationCoefficient = this->VariationCoefficient;
             subsetSimulation->Settings->RunSettings = this->RunSettings;
             subsetSimulation->Settings->randomSettings = this->RandomSettings;

@@ -58,6 +58,7 @@ class ReliabilityProject:
 			
 		self._variables = FrozenList(variables)
 		self._correlation_matrix._set_variables(variables)
+		self._settings._set_variables(variables)
 
 	@interface.CALLBACK
 	def _performCallBack(values, size):
@@ -70,6 +71,7 @@ class ReliabilityProject:
 		interface.SetArrayIntValue(self._id, 'variables', [variable._id for variable in self._variables])
 		interface.SetIntValue(self._id, 'correlation_matrix', self._correlation_matrix._id)
 		interface.SetIntValue(self._id, 'settings', self._settings._id)
+		interface.SetArrayIntValue(self.settings._id, 'stochast_settings', [stochast_setting._id for stochast_setting in self.settings.stochast_settings])
 		interface.Execute(self._id, 'run')
 
 	@property   
