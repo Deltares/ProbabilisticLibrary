@@ -195,6 +195,9 @@ class Test_reliability(unittest.TestCase):
             stochastSettings.variable = variable
             stochastSettings.start_value = 0
             stochastSettings.variance_factor = 2
+            stochastSettings.intervals = 150
+            stochastSettings.min_value = -6
+            stochastSettings.max_value =  6
             project.settings.stochast_settings.append(stochastSettings)
 
         project.run();

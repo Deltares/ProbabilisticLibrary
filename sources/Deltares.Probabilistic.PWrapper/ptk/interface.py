@@ -11,7 +11,10 @@ from ctypes import *
 CALLBACK = CFUNCTYPE(ctypes.c_double, POINTER(ctypes.c_double), ctypes.c_int)
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
-lib_file = 'Deltares.Probabilistic.CWrapper.dll'
+if (sys.platform.startswith("linux")):
+	lib_file = 'libDeltares.Probabilistic.CWrapper.so'
+else:
+	lib_file = 'Deltares.Probabilistic.CWrapper.dll'
 
 lib_full_path = os.path.join(dir_path, 'bin', lib_file);
 
