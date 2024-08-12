@@ -16,7 +16,7 @@ namespace Deltares
         {
             size_t count = 0;
 
-            while (abs(mat->getValue(row, count)) <= SMALL_NUM && count < n) 
+            while (fabs(mat->getValue(row, count)) <= SMALL_NUM && count < n) 
             {
                 count++;
             }
@@ -121,7 +121,7 @@ namespace Deltares
                 {
                     double newValue = mat_ordered->getValue(row, c);
 
-                    if (abs(newValue) <= SMALL_NUM)
+                    if (fabs(newValue) <= SMALL_NUM)
                     {
                         newValue = 0.0;
                     }
@@ -138,7 +138,7 @@ namespace Deltares
             for (int row = 0; row < n; ++row) 
             {
                 size_t order = 0;
-                while (abs(mat->getValue(row, order)) <= SMALL_NUM && order < n) 
+                while (fabs(mat->getValue(row, order)) <= SMALL_NUM && order < n) 
                 {
                     mat->setValue(row, order, 0.0);
                     order++;
@@ -186,7 +186,7 @@ namespace Deltares
 
         Matrix* MatrixSupport::Inverse(Matrix* source)
         {
-            if (source->getRowCount() != source->getColumnCount()) throw Reliability::probLibException("CholeskyDecomposition : input matrix must be square.");
+            if (source->getRowCount() != source->getColumnCount()) throw Reliability::probLibException("Matrix inverse: input matrix must be square.");
 
             const size_t n = source->getRowCount();        // Number of stochastic variables
 
@@ -204,7 +204,7 @@ namespace Deltares
             for (size_t c = 0; c < n; ++c) {
 
                 // Sort if under threshold
-                if (abs(source->getValue(c, c)) <= SMALL_NUM)
+                if (fabs(source->getValue(c, c)) <= SMALL_NUM)
                 {
                     get_order(source, n, order_arr);
 
@@ -218,14 +218,14 @@ namespace Deltares
                 // Normalize matrix row
                 for (size_t col = c + 1; col < n; ++col)
                 {
-                    double newValue = abs(source->getValue(c, c)) <= SMALL_NUM ? 0.0 : source->getValue(c, col) / source->getValue(c, c);
+                    double newValue = fabs(source->getValue(c, c)) <= SMALL_NUM ? 0.0 : source->getValue(c, col) / source->getValue(c, c);
                     source->setValue(c, col, newValue);
                 }
 
                 // Update row matrix inverse
                 for (int col = 0; col < n; ++col)
                 {
-                    double newValue = abs(source->getValue(c, c)) <= SMALL_NUM ? 0.0 : inverse->getValue(c, col) / source->getValue(c, c);
+                    double newValue = fabs(source->getValue(c, c)) <= SMALL_NUM ? 0.0 : inverse->getValue(c, col) / source->getValue(c, c);
                     inverse->setValue(c, col, newValue);
                 }
 

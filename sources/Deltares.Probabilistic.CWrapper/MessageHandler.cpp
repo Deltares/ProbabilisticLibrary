@@ -82,10 +82,13 @@ extern "C" DLL_PUBLIC void GetStringValue(int id, char* property, char* result_c
 {
     std::string propertyStr(property);
     std::string result = projectServer->GetStringValue(id, propertyStr);
-
     const char* result_b = result.c_str();
 
+#ifdef __GNUC__
+    printf(result_c, "%s", result_b);
+#else
     _snprintf_s(result_c, size, _TRUNCATE, result_b);
+#endif
 }
 
 extern "C" DLL_PUBLIC void SetStringValue(int id, char* property, char* value)

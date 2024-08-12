@@ -96,3 +96,6 @@ test*.txt
 /sources/Deltares.Probabilistic.PWrapper/d_beta.egg-info
 /sources/Deltares.Probabilistic.PWrapper/d_rely.egg-info
 /sources/Deltares.Probabilistic.PWrapper/ptk.egg-info
+
+# python environments:
+testpytk*

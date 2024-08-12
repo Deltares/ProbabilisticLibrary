@@ -74,10 +74,15 @@ add_executable(FLunittestprogram
 )
 
 target_link_libraries(FLunittestprogram
- FLtestProbabilisticConversions
- FLtestProbabilistic
- Deltares.Probabilistic.CWrapper Deltares.Probabilistic.FortranWrapper
- Deltares.Probabilistic.Kernel ${fctools} feedbackDLL ftnunit pb_wrapper_c_old)
+    FLtestProbabilisticConversions
+    FLtestProbabilistic
+    Deltares.Probabilistic.CWrapper Deltares.Probabilistic.FortranWrapper
+    Deltares.Probabilistic.Kernel ${fctools} feedbackDLL ftnunit pb_wrapper_c_old)
+
+if (WIN32)
+    target_compile_options(FLtestProbabilistic PRIVATE /Qopenmp)
+    target_compile_options(FLunittestprogram PRIVATE /Qopenmp)
+endif()
 
 add_test(
   NAME fortran-interface-tests

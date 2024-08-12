@@ -22,7 +22,7 @@ namespace Deltares
             // with positive values of the z-function. The explanation for searching with positive z-values as the origin
             // has a negative z-value: if searching with negative z-values, the origin is found as the design point, because
             // that is the point who's closest to the origin (distance is zero). For the computation of the probability of
-            // failure all elements of negative z-value has te be used.
+            // failure all elements of negative z-value has to be used.
             double z = modelRunner->getZValue(u);
 
             // parameter for the position of the origin; necessary to determine the design point

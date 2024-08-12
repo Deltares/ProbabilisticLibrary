@@ -38,7 +38,7 @@ namespace Deltares
             void CombinerTest::Hohenbichler2CombinerTest() const
             {
                 auto hh = std::make_unique<HohenbichlerNumIntCombiner>();
-                auto ref = alphaBeta(3.0, { 0.790292, 0.487347, 0.316117, 0.194939 }); // pre-computed
+                auto ref = alphaBeta(2.786202, { 0.634747,  0.391671, 0.566766,  0.3499527 }); // pre-computed
                 tester(hh.get(), 3.0, ref, combineAndOr::combOr);
             }
 
@@ -65,7 +65,7 @@ namespace Deltares
                 ref = alphaBeta(3.0, { 1.0 }); // pre-computed
                 tester1stoch(hh.get(), 1.0, 3.0, ref, combineAndOr::combAnd);
 
-                ref = alphaBeta(3.0, { -1.0 }); // pre-computed
+                ref = alphaBeta(-40.0, { 1.0 }); // pre-computed
                 tester1stoch(hh.get(), -1.0, 3.0, ref, combineAndOr::combOr);
             }
 
@@ -73,7 +73,7 @@ namespace Deltares
             {
                 auto dsCombiner = std::make_unique<DirectionalSamplingCombiner>();
                 dsCombiner->randomGeneratorType = Numeric::MersenneTwister;
-                auto ref = alphaBeta(2.96662, { 0.60645, 0.34410, 0.60154, 0.38984 }); // pre-computed
+                auto ref = alphaBeta(2.82397, { 0.656456, 0.399822, 0.549539, 0.3274373 }); // pre-computed
                 tester(dsCombiner.get(), 3.0, ref, combineAndOr::combOr);
             }
 
@@ -81,7 +81,7 @@ namespace Deltares
             {
                 auto importance_sampling_combiner = std::make_unique<ImportanceSamplingCombiner>();
                 importance_sampling_combiner->randomGeneratorType = Numeric::MersenneTwister;
-                auto ref = alphaBeta(3.0, { 0.60187, 0.37115, 0.60187, 0.37115 }); // pre-computed
+                auto ref = alphaBeta(2.78826, { 0.64757, 0.39934, 0.64757, 0.39934 }); // pre-computed
                 tester(importance_sampling_combiner.get(), 3.0, ref, combineAndOr::combOr);
             }
 
@@ -89,7 +89,7 @@ namespace Deltares
             {
                 auto importance_sampling_combiner = std::make_unique<ImportanceSamplingCombiner>();
                 importance_sampling_combiner->randomGeneratorType = Numeric::MersenneTwister;
-                auto ref = alphaBeta(2.96369, { 0.57367, 0.35851, 0.60798, 0.41561 }); // pre-computed
+                auto ref = alphaBeta(4.13320, { 0.66929, 0.51149, 0.42482, 0.33159 }); // pre-computed
                 tester(importance_sampling_combiner.get(), 3.0, ref, combineAndOr::combAnd);
             }
 
@@ -97,7 +97,7 @@ namespace Deltares
             {
                 auto importance_sampling_combiner = std::make_unique<ImportanceSamplingCombiner>();
                 importance_sampling_combiner->randomGeneratorType = Numeric::MersenneTwister;
-                auto ref = alphaBeta(1.00026, { 0.60469, 0.35473, 0.606108, 0.37570 }); // pre-computed
+                auto ref = alphaBeta(0.60732, { 0.632059, 0.39174, 0.571165, 0.34758 }); // pre-computed
                 tester(importance_sampling_combiner.get(), 1.0, ref, combineAndOr::combOr);
             }
 
