@@ -120,6 +120,8 @@
     <ClInclude Include="Combin\upscale_tests.cpp" />
     <ClInclude Include="Distributions\testDistributions.h" />
     <ClInclude Include="Distributions\testDistributions_body.cpp" />
+    <ClInclude Include="Math\testCholeskiDecomposition.h" />
+    <ClInclude Include="Math\testCholeskiDecomposition_body.cpp" />
     <ClInclude Include="Math\testNumericSupport.h" />
     <ClInclude Include="Math\testNumericSupport_body.cpp" />
     <ClInclude Include="Math\testKMean.h" />
@@ -138,6 +140,7 @@
   <ItemGroup>
     <ClCompile Include="Combin\all_combin_tests.cpp" />
     <ClCompile Include="Distributions\testDistributions.cpp" />
+    <ClCompile Include="Math\testCholeskiDecomposition.cpp" />
     <ClCompile Include="Math\testNumericSupport.cpp" />
     <ClCompile Include="Math\testKMean.cpp" />
     <ClCompile Include="Math\testRandom.cpp" />

@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include "Reliability/testStartPointCalculator.h"
+#include "Math/testCholeskiDecomposition.h"
 #include "Math/testNumericSupport.h"
 #include "Math/testKMean.h"
 #include "Math/testRandom.h"
@@ -54,7 +55,13 @@ namespace Deltares
                 h.allHohenbichlerTests();
             }
 
-            TEST(unittst, testNumericSupport)
+            TEST(unittst, testCholeskiDecomp)
+            {
+                auto tstCholeskiDecomp = choleski_decomp_tests();
+                tstCholeskiDecomp.allCholeskyDecompositionTests();
+            }
+
+            TEST(unittst, testNumericalSupport)
             {
                 auto tstNumSupport = testNumericSupport();
                 tstNumSupport.allNumericSupportTests();

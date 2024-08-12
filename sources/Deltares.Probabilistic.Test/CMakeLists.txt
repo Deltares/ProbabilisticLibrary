@@ -40,10 +40,12 @@ add_executable(Deltares.Probabilistic.Test
     projectBuilder_body.cpp
     Reliability/testStartPointCalculator.h
     Reliability/testStartPointCalculator_body.cpp
-    Math/testNumericSupport.h
-    Math/testNumericSupport_body.cpp
+    Math/testCholeskiDecomposition.h
+    Math/testCholeskiDecomposition_body.cpp
     Math/testKMean.h
     Math/testKMean_body.cpp
+    Math/testNumericSupport.h
+    Math/testNumericSupport_body.cpp
     Math/testRandom.h
     Math/testRandom_body.cpp
     Combin/hohenbichler_tests.h
