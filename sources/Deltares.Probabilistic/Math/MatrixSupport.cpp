@@ -1,6 +1,4 @@
 #include "MatrixSupport.h"
-#include "matrix.h"
-
 #include <cmath>
 
 // Implementation taken from https://github.com/mndxpnsn/gauss-jordan/blob/master/gauss-jordan/main.cpp
@@ -12,11 +10,11 @@ namespace Deltares
         const double SMALL_NUM = 1e-10;
         const int MAX_INT = 1215752192;
 
-        size_t MatrixSupport::count_leading_zeros(Matrix* mat, size_t n, size_t row)
+        size_t MatrixSupport::count_leading_zeros(Matrix& mat, size_t n, size_t row)
         {
             size_t count = 0;
 
-            while (fabs(mat->getValue(row, count)) <= SMALL_NUM && count < n) 
+            while (fabs(mat.getValue(row, count)) <= SMALL_NUM && count < n) 
             {
                 count++;
             }
@@ -83,7 +81,7 @@ namespace Deltares
             merge_sort(A, 0, size - 1);
         }
 
-        Matrix* MatrixSupport::mergesort_mat(Matrix* mat, size_t n, double* order_arr)
+        Matrix MatrixSupport::mergesort_mat(Matrix& mat, size_t n, std::vector<double>& order_arr)
         {
             oa_elem_t* order_array = new oa_elem_t[n];
 
@@ -95,14 +93,14 @@ namespace Deltares
 
             mergesort(order_array, n);
 
-            Matrix* ordered_mat = new Matrix(n, n);
+            Matrix ordered_mat = Matrix(n, n);
 
             for (size_t row = 0; row < n; ++row) 
             {
                 for (size_t c = 0; c < n; ++c)
                 {
                     int old_row = order_array[row].old_row;
-                    ordered_mat->setValue(row, c, mat->getValue(old_row, c));
+                    ordered_mat.setValue(row, c, mat.getValue(old_row, c));
                 }
             }
 
@@ -111,36 +109,34 @@ namespace Deltares
             return ordered_mat;
         }
 
-        void MatrixSupport::sort_mat(double* order_arr, size_t n, Matrix* mat)
+        void MatrixSupport::sort_mat(std::vector<double>& order_arr, size_t n, Matrix& mat)
         {
-            Matrix* mat_ordered = mergesort_mat(mat, n, order_arr);
+            auto mat_ordered = mergesort_mat(mat, n, order_arr);
 
             for (size_t row = 0; row < n; ++row) 
             {
                 for (size_t c = 0; c < n; ++c)
                 {
-                    double newValue = mat_ordered->getValue(row, c);
+                    double newValue = mat_ordered.getValue(row, c);
 
                     if (fabs(newValue) <= SMALL_NUM)
                     {
                         newValue = 0.0;
                     }
 
-                    mat->setValue(row, c, newValue);
+                    mat.setValue(row, c, newValue);
                 }
             }
-
-            //free_mat2D(mat_ordered, n);
         }
 
-        void MatrixSupport::get_order(Matrix* mat, size_t n, double* order_arr)
+        void MatrixSupport::get_order(Matrix& mat, size_t n, std::vector<double>& order_arr)
         {
             for (int row = 0; row < n; ++row) 
             {
                 size_t order = 0;
-                while (fabs(mat->getValue(row, order)) <= SMALL_NUM && order < n) 
+                while (fabs(mat.getValue(row, order)) <= SMALL_NUM && order < n) 
                 {
-                    mat->setValue(row, order, 0.0);
+                    mat.setValue(row, order, 0.0);
                     order++;
                 }
 
@@ -149,7 +145,7 @@ namespace Deltares
         }
 
 
-        void MatrixSupport::init_mat_inv(Matrix* mat_inv, size_t n)
+        void MatrixSupport::init_mat_inv(Matrix& mat_inv, size_t n)
         {
             for (size_t row = 0; row < n; ++row)
             {
@@ -157,17 +153,17 @@ namespace Deltares
                 {
                     if (c == row) 
                     {
-                        mat_inv->setValue(row, c, 1.0);
+                        mat_inv.setValue(row, c, 1.0);
                     }
                     else 
                     {
-                        mat_inv->setValue(row, c, 0.0);
+                        mat_inv.setValue(row, c, 0.0);
                     }
                 }
             }
         }
 
-        bool MatrixSupport::check_leading_zeros(Matrix* mat, size_t n)
+        bool MatrixSupport::check_leading_zeros(Matrix& mat, size_t n)
         {
             // Check if matrix is singular
             for (size_t row = 0; row < n; ++row)
@@ -184,16 +180,16 @@ namespace Deltares
         }
 
 
-        Matrix* MatrixSupport::Inverse(Matrix* source)
+        Matrix MatrixSupport::Inverse(const Matrix* src)
         {
-            if (source->getRowCount() != source->getColumnCount()) throw Reliability::probLibException("Matrix inverse: input matrix must be square.");
+            if (src->getRowCount() != src->getColumnCount()) throw Reliability::probLibException("Matrix inverse: input matrix must be square.");
 
-            const size_t n = source->getRowCount();        // Number of stochastic variables
+            const size_t n = src->getRowCount();        // Number of stochastic variables
+            auto source = *src;
 
-            Matrix* inverse = new Matrix(n, n);
-            source = source->clone();
+            Matrix inverse = Matrix(n, n);
 
-            double* order_arr = new double[n];
+            auto order_arr = std::vector<double>(n);
 
             // Initialize matrix inverse
             init_mat_inv(inverse, n);
@@ -204,7 +200,7 @@ namespace Deltares
             for (size_t c = 0; c < n; ++c) {
 
                 // Sort if under threshold
-                if (fabs(source->getValue(c, c)) <= SMALL_NUM)
+                if (fabs(source.getValue(c, c)) <= SMALL_NUM)
                 {
                     get_order(source, n, order_arr);
 
@@ -218,37 +214,37 @@ namespace Deltares
                 // Normalize matrix row
                 for (size_t col = c + 1; col < n; ++col)
                 {
-                    double newValue = fabs(source->getValue(c, c)) <= SMALL_NUM ? 0.0 : source->getValue(c, col) / source->getValue(c, c);
-                    source->setValue(c, col, newValue);
+                    double newValue = fabs(source.getValue(c, c)) <= SMALL_NUM ? 0.0 : source.getValue(c, col) / source.getValue(c, c);
+                    source.setValue(c, col, newValue);
                 }
 
                 // Update row matrix inverse
                 for (int col = 0; col < n; ++col)
                 {
-                    double newValue = fabs(source->getValue(c, c)) <= SMALL_NUM ? 0.0 : inverse->getValue(c, col) / source->getValue(c, c);
-                    inverse->setValue(c, col, newValue);
+                    double newValue = fabs(source.getValue(c, c)) <= SMALL_NUM ? 0.0 : inverse.getValue(c, col) / source.getValue(c, c);
+                    inverse.setValue(c, col, newValue);
                 }
 
-                source->setValue(c, c, 1.0);
+                source.setValue(c, c, 1.0);
 
                 // Delete elements in rows below
                 for (int row = c + 1; row < n; ++row) 
                 {
-                    if (source->getValue(row, c) != 0) 
+                    if (source.getValue(row, c) != 0) 
                     {
                         for (int col = c + 1; col < n; ++col) 
                         {
-                            const double newValue = -1.0 * source->getValue(row, c) * source->getValue(c, col) + source->getValue(row, col);
-                            source->setValue(row, col, newValue);
+                            const double newValue = -1.0 * source.getValue(row, c) * source.getValue(c, col) + source.getValue(row, col);
+                            source.setValue(row, col, newValue);
                         }
 
                         for (int col = 0; col < n; ++col) 
                         {
-                            const double newValue = -1.0 * source->getValue(row, c) * inverse->getValue(c, col) + inverse->getValue(row, col);
-                            inverse->setValue(row, col, newValue);
+                            const double newValue = -1.0 * source.getValue(row, c) * inverse.getValue(c, col) + inverse.getValue(row, col);
+                            inverse.setValue(row, col, newValue);
                         }
 
-                        source->setValue(row, c, 0);
+                        source.setValue(row, c, 0);
                     }
                 }
             }
@@ -258,21 +254,18 @@ namespace Deltares
             {
                 for (int row = c - 1; row > -1; --row) 
                 {
-                    if (source->getValue(row, c) != 0) 
+                    if (source.getValue(row, c) != 0) 
                     {
                         for (int col = 0; col < n; ++col) 
                         {
-                            const double newValue = -1.0 * source->getValue(row, c) * inverse->getValue(c, col) + inverse->getValue(row, col);
-                            inverse->setValue(row, col, newValue);
+                            const double newValue = -1.0 * source.getValue(row, c) * inverse.getValue(c, col) + inverse.getValue(row, col);
+                            inverse.setValue(row, col, newValue);
                         }
 
-                        source->setValue(row, c, 0);
+                        source.setValue(row, c, 0);
                     }
                 }
             }
-
-            // Free allocated space
-            delete[] order_arr;
 
             return inverse;
         }

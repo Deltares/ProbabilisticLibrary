@@ -15,6 +15,7 @@ namespace Deltares
             void matinv_tests::all_matinv_tests() const
             {
                 matinv_test1();
+                matinv_singular();
             }
 
             void matinv_tests::matinv_test1() const
@@ -30,7 +31,7 @@ namespace Deltares
                 m1(2, 1) = 1.6;
                 m1(2, 2) = 1.4;
                 auto m2 = m1.Inverse();
-                auto m3 = m2->matmul(m1);
+                auto m3 = m2.matmul(m1);
                 for (size_t i = 0; i < 3; i++)
                 {
                     for (size_t j = 0; j < 3; j++)
@@ -45,6 +46,30 @@ namespace Deltares
                         }
                     }
                 }
+            }
+
+            void matinv_tests::matinv_singular() const
+            {
+                auto m1 = Matrix(2, 2);
+                m1(0, 0) = 3.0;
+                m1(0, 1) = 12.0;
+                m1(1, 0) = 2.0;
+                m1(1, 1) = 8.0;
+                try
+                {
+                    auto m2 = m1.Inverse();
+                }
+                catch (const std::exception& e)
+                {
+                    auto msg = e.what();
+                    EXPECT_EQ(msg[0], 'a'); // error message starts with "array bound error"
+                }
+
+                // check that original values are not changed
+                EXPECT_EQ(m1(0, 0), 3.0);
+                EXPECT_EQ(m1(0, 1), 12.0);
+                EXPECT_EQ(m1(1, 0), 2.0);
+                EXPECT_EQ(m1(1, 1), 8.0);
             }
 
         }
