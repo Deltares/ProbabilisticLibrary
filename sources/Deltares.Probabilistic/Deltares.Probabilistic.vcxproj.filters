@@ -150,6 +150,7 @@
     <ClCompile Include="Combine\HohenbichlerFormCombiner.cpp" />
     <ClCompile Include="Combine\HohenbichlerNumIntCombiner.cpp" />
     <ClCompile Include="Statistics\Distributions\ExponentialDistribution.cpp" />
+    <ClCompile Include="Sensitivity\SensitivityMethod.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -319,6 +320,7 @@
     <ClInclude Include="Combine\HohenbichlerFormCombiner.h" />
     <ClInclude Include="Combine\HohenbichlerNumIntCombiner.h" />
     <ClInclude Include="Statistics\Distributions\ExponentialDistribution.h" />
+    <ClInclude Include="Sensitivity\SensitivityMethod.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">
