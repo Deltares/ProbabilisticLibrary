@@ -10,7 +10,7 @@ namespace Deltares
         const double SMALL_NUM = 1e-10;
         const int MAX_INT = 1215752192;
 
-        size_t MatrixSupport::count_leading_zeros(Matrix& mat, size_t n, size_t row)
+        size_t MatrixSupport::count_leading_zeros(const Matrix& mat, const size_t n, const size_t row)
         {
             size_t count = 0;
 
@@ -23,14 +23,14 @@ namespace Deltares
         }
 
 
-        void MatrixSupport::merge(oa_elem_t A[], int p, int q, int r)
+        void MatrixSupport::merge(std::vector<oa_elem_t> & A, int p, int q, int r)
         {
             int size_r, size_l;
             int i, j;
             size_l = q - p + 1;
             size_r = r - q;
-            oa_elem_t* L = new oa_elem_t[size_l + 1];
-            oa_elem_t* R = new oa_elem_t[size_r + 1];
+            auto L = std::vector<oa_elem_t>(size_l + 1);
+            auto R = std::vector<oa_elem_t>(size_r + 1);
             i = 0;
             j = 0;
 
@@ -65,7 +65,7 @@ namespace Deltares
             }
         }
 
-        void MatrixSupport::merge_sort(oa_elem_t A[], int p, int r)
+        void MatrixSupport::merge_sort(std::vector<oa_elem_t> &A, int p, int r)
         {
             if (p < r)
             {
@@ -76,14 +76,14 @@ namespace Deltares
             }
         }
 
-        void MatrixSupport::mergesort(oa_elem_t A[], int size)
+        void MatrixSupport::mergesort(std::vector<oa_elem_t>& A, int size)
         {
             merge_sort(A, 0, size - 1);
         }
 
         Matrix MatrixSupport::mergesort_mat(Matrix& mat, size_t n, std::vector<double>& order_arr)
         {
-            oa_elem_t* order_array = new oa_elem_t[n];
+            auto order_array = std::vector<oa_elem_t>(n);
 
             for (int row = 0; row < n; ++row) 
             {
@@ -103,8 +103,6 @@ namespace Deltares
                     ordered_mat.setValue(row, c, mat.getValue(old_row, c));
                 }
             }
-
-            delete[] order_array;
 
             return ordered_mat;
         }
@@ -163,7 +161,7 @@ namespace Deltares
             }
         }
 
-        bool MatrixSupport::check_leading_zeros(Matrix& mat, size_t n)
+        bool MatrixSupport::check_leading_zeros(const Matrix& mat, const size_t n)
         {
             // Check if matrix is singular
             for (size_t row = 0; row < n; ++row)
@@ -185,7 +183,7 @@ namespace Deltares
             if (src->getRowCount() != src->getColumnCount()) throw Reliability::probLibException("Matrix inverse: input matrix must be square.");
 
             const size_t n = src->getRowCount();        // Number of stochastic variables
-            auto source = *src;
+            Matrix source = *src;
 
             Matrix inverse = Matrix(n, n);
 

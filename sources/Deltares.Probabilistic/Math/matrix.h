@@ -28,7 +28,7 @@ namespace Deltares
             double& operator()(size_t row, size_t col) { return m_data[pos(row, col)]; }
             const double& operator()(size_t row, size_t col) const { return m_data[pos(row, col)]; }
 
-            double getValue(size_t row, size_t col) { return m_data[pos(row, col)]; }
+            double getValue(size_t row, size_t col) const { return m_data[pos(row, col)]; }
             void setValue(size_t row, size_t col, double value) { m_data[pos(row, col)] = value; }
 
             Matrix CholeskyDecomposition() const;
