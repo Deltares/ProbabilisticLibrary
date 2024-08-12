@@ -360,7 +360,10 @@ namespace Deltares
             designPoint->Identifier = identifier;
             designPoint->convergenceReport = convergenceReport;
 
-            designPoint->convergenceReport->TotalModelRuns = this->zModel->getModelRuns();
+            if (designPoint->convergenceReport != nullptr)
+            {
+                designPoint->convergenceReport->TotalModelRuns = this->zModel->getModelRuns();
+            }
             this->zModel->resetModelRuns();
 
             for (size_t i = 0; i < this->reliabilityResults.size(); i++)
