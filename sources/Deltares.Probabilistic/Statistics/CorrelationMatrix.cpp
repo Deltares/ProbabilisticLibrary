@@ -1,6 +1,7 @@
 #include "CorrelationMatrix.h"
 #include <memory>
 #include <algorithm>
+#include <cmath>
 
 #include "../Math/MatrixSupport.h"
 
