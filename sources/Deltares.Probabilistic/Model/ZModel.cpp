@@ -34,21 +34,32 @@ namespace Deltares
 
             sample->threadId = omp_get_thread_num();
             this->zLambda(sample);
+
+            if (countRunsLambda)
+            {
+                this->modelRuns++;
+            }
         }
 
         void ZModel::invoke(std::vector<std::shared_ptr<ModelSample>> samples)
         {
             if (zMultipleLambda == nullptr)
             {
+                this->countRunsLambda = false;
+
                 #pragma omp parallel for
                 for (int i = 0; i < (int)samples.size(); i++)
                 {
                     invoke(samples[i]);
                 }
+
+                this->modelRuns += (int)samples.size();
+                this->countRunsLambda = true;
             }
             else
             {
                 this->zMultipleLambda(samples);
+                this->modelRuns += (int)samples.size();
             }
         }
 
