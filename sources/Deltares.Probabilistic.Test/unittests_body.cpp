@@ -3,6 +3,7 @@
 #include "Math/testCholeskiDecomposition.h"
 #include "Math/testNumericSupport.h"
 #include "Math/testKMean.h"
+#include "Math/testMatrixInverse.h"
 #include "Math/testMatrixMultiplication.h"
 #include "Math/testRandom.h"
 #include "Math/testVector1D.h"
@@ -61,6 +62,12 @@ namespace Deltares
             {
                 auto tstCholeskiDecomp = choleski_decomp_tests();
                 tstCholeskiDecomp.allCholeskyDecompositionTests();
+            }
+
+            TEST(unittst, testMatinv)
+            {
+                auto tstMatInv = matinv_tests();
+                tstMatInv.all_matinv_tests();
             }
 
             TEST(unittst, testMatmul)
