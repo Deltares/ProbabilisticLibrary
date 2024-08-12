@@ -79,18 +79,10 @@ add_executable(problib-unittest
     rnd/gm_tests.cpp
     rnd/normVectorTests.h
     rnd/normVectorTests.cpp
-    math/choleski_decomp_tests.h
-    math/choleski_decomp_tests.cpp
-    math/matmul_tests.h
-    math/matmul_tests.cpp
     correlation/gaussian_correlation_tests.h
     correlation/gaussian_correlation_tests.cpp
     correlation/testTrapeziumRule.h
     correlation/testTrapeziumRule.cpp
-    math/basic_math_tests.h
-    math/basic_math_tests.cpp
-    math/vector1D_tests.h
-    math/vector1D_tests.cpp
     distrib/distributionsTests.h
     distrib/distributionsTests.cpp
     combin/combinElements_tests.h

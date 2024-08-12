@@ -5,6 +5,7 @@
 #include "Math/testKMean.h"
 #include "Math/testMatrixMultiplication.h"
 #include "Math/testRandom.h"
+#include "Math/testVector1D.h"
 #include "Combin/hohenbichler_tests.h"
 #include "Combin/intEqualElements_tests.h"
 #include "Combin/upscale_tests.h"
@@ -96,6 +97,12 @@ namespace Deltares
             {
                 auto tstRnd = testRandom();
                 tstRnd.allRandomTests();
+            }
+
+            TEST(unittst, testVector1D)
+            {
+                auto tstVector1D = vector1D_tests();
+                tstVector1D.allVector1Dtests();
             }
         }
     }

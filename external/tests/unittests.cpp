@@ -2,12 +2,8 @@
 #include "../src/distributions/distrib.h"
 #include "rnd/gm_tests.h"
 #include "rnd/normVectorTests.h"
-#include "math/choleski_decomp_tests.h"
-#include "math/matmul_tests.h"
 #include "correlation/gaussian_correlation_tests.h"
 #include "combin/hohenbichler_tests.h"
-#include "math/basic_math_tests.h"
-#include "math/vector1D_tests.h"
 #include "distrib/distributionsTests.h"
 #include "combin/combinElements_tests.h"
 #include "combin/upscale_tests.h"
@@ -85,15 +81,6 @@ namespace Deltares
             db.allTests();
         }
 
-        TEST(unittst, basicmath_tests)
-        {
-            auto bm = basic_math_tests();
-            bm.test_min();
-            bm.test_max();
-            bm.test_interp();
-            bm.test_sign();
-        }
-
         TEST(unittst, hohenbichler_tests)
         {
             auto h = HohenbichlerTest();
@@ -106,42 +93,11 @@ namespace Deltares
             h.negativeCorrelationZeroBeta();
         }
 
-        TEST(unittst, vector1D_tests)
-        {
-            auto v1D = vector1D_tests();
-            v1D.vector_sum_test();
-            v1D.vector_normalize_test();
-            v1D.minmax_test();
-        }
-
-        TEST(unittst, normvectortest)
-        {
-            auto nv = normVectorTests();
-            nv.allNormVectorTests();
-        }
-
         TEST(unittst, george_marsaglia_test)
         {
             auto t = gm_tests();
             t.test_first_value();
             t.test_last_value();
-        }
-
-        TEST(unittst, choleski_decomp_test)
-        {
-            auto t = choleski_decomp_tests();
-            t.testCholeskyDecompositionUnityMatrix();
-            t.testCholeskyDecompositionCase2();
-            t.testCholeskyDecompositionCase3();
-            t.testCholeskyDecompositionCase4();
-            t.testCholeskyDecompositionCase5();
-        }
-
-        TEST(unittst, matmul_tests)
-        {
-            auto t = matmul_tests();
-            t.matmul_test1();
-            t.matmul_test2();
         }
 
         TEST(unittst, gaussian_correlation_tests)
