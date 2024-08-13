@@ -39,6 +39,24 @@ def get_linear_project():
 
     return project
 
+def get_sensitivity_linear_project():
+
+    project = SensitivityProject()
+
+    project.model = linear_ab
+
+    stochast1 = project.variables['a']
+    stochast1.distribution = 'uniform'
+    stochast1.minimum = -1
+    stochast1.maximum = 1;
+
+    stochast2 = project.variables['b']
+    stochast2.distribution = 'uniform'
+    stochast2.minimum = -1
+    stochast2.maximum = 1;
+
+    return project
+
 def get_linear_small_project():
 
     project = ReliabilityProject()

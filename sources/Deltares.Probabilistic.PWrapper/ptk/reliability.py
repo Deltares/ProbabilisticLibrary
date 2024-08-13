@@ -145,9 +145,11 @@ class Settings:
 		
 class StochastSettings:
 		
-	def __init__(self):
+	def __init__(self, variable = None):
 		self._id = interface.Create('stochast_settings')
-		self._variable = None
+		self._variable = variable
+		if not variable is None:
+			interface.SetIntValue(self._id, 'variable', self._variable._id)
 		
 	@property   
 	def variable(self):

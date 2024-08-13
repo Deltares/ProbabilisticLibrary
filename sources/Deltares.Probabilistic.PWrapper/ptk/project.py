@@ -4,7 +4,85 @@ from typing import FrozenSet
 
 from .statistic import *
 from .reliability import *
+from .sensitivity import *
 from . import interface
+
+class SensitivityProject:
+
+	_model = None
+
+	def __init__(self):
+		self._id = interface.Create('sensitivity_project')
+		self._callback = interface.CALLBACK(self._performCallBack)
+		interface.SetCallBack(self._id, 'model', self._callback)
+
+		self._all_variables = {}
+		self._variables = FrozenList()
+		self._correlation_matrix = CorrelationMatrix()
+		self._settings = SensitivitySettings()
+		self._stochast = None
+		
+		_model = None
+  
+	@property
+	def variables(self):
+		return self._variables
+	
+	@property   
+	def correlation_matrix(self):
+		return self._correlation_matrix
+
+	@property   
+	def settings(self):
+		return self._settings
+
+	@property   
+	def model(self):
+		return SensitivityProject._model
+		
+	@model.setter
+	def model(self, value):
+		SensitivityProject._model = value
+		
+		variable_names = value.__code__.co_varnames
+
+		variables = []
+		for var_name in variable_names[:value.__code__.co_argcount]:
+			if not var_name in self._all_variables.keys():
+				variable = Stochast()
+				variable.name = var_name
+				self._all_variables[var_name] = variable
+			else:
+				variable = self._all_variables[var_name]
+			variables.append(variable)
+			
+		self._variables = FrozenList(variables)
+		self._correlation_matrix._set_variables(variables)
+		self._settings._set_variables(variables)
+
+	@interface.CALLBACK
+	def _performCallBack(values, size):
+		values_list = values[:size]
+		z = SensitivityProject._model(*values_list);
+		return z
+
+	def run(self):
+		self._stochast = None
+		interface.SetArrayIntValue(self._id, 'variables', [variable._id for variable in self._variables])
+		interface.SetIntValue(self._id, 'correlation_matrix', self._correlation_matrix._id)
+		interface.SetIntValue(self._id, 'settings', self._settings._id)
+		interface.SetArrayIntValue(self.settings._id, 'stochast_settings', [stochast_setting._id for stochast_setting in self.settings.stochast_settings])
+		interface.Execute(self._id, 'run')
+
+	@property   
+	def stochast(self):
+		if self._stochast is None:
+			stochastId = interface.GetIntValue(self._id, 'stochast')
+			if stochastId > 0:
+				self._stochast = Stochast(stochastId)
+				
+		return self._stochast
+
 
 class ReliabilityProject:
 
