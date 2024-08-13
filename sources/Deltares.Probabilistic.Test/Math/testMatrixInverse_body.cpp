@@ -62,7 +62,8 @@ namespace Deltares
                 catch (const std::exception& e)
                 {
                     auto msg = e.what();
-                    EXPECT_EQ(msg[0], 'a'); // error message starts with "array bound error"
+                    const char* expected = "can not inverse matrix.";
+                    EXPECT_STREQ(msg, expected);
                 }
 
                 // check that original values are not changed

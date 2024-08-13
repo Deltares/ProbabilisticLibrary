@@ -136,6 +136,10 @@ namespace Deltares
                 {
                     mat.setValue(row, order, 0.0);
                     order++;
+                    if (order >= n)
+                    {
+                        throw Reliability::probLibException("can not inverse matrix.");
+                    }
                 }
 
                 order_arr[row] = order;
