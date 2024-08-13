@@ -160,6 +160,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Sensitivity\CrudeMonteCarloS.h" />
+    <ClInclude Include="Sensitivity\CrudeMonteCarloSettingsS.h" />
+    <ClInclude Include="Sensitivity\SensitivityProject.h" />
+    <ClInclude Include="Sensitivity\SensitivityMethod.h" />
     <ClInclude Include="Utils\CallBackList.h" />
     <ClInclude Include="Reliability\DesignPointCombiner.h" />
     <ClInclude Include="Model\ProxySettings.h" />
@@ -217,6 +221,9 @@
     <ClInclude Include="Statistics\VariableStochastValue.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Sensitivity\CrudeMonteCarloS.cpp" />
+    <ClCompile Include="Sensitivity\SensitivityProject.cpp" />
+    <ClCompile Include="Sensitivity\SensitivityMethod.cpp" />
     <ClCompile Include="Utils\CallBackList.cpp" />
     <ClCompile Include="Reliability\DesignPointCombiner.cpp" />
     <ClCompile Include="Model\ProxySettings.cpp" />

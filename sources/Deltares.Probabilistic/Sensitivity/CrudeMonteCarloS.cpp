@@ -1,12 +1,11 @@
-#include "CrudeMonteCarlo.h"
+#include "CrudeMonteCarloS.h"
 #include <vector>
 #include <cmath>
 #include <memory>
 
-#include "../Statistics/StandardNormal.h"
 #include "../Model/Sample.h"
 #include "../Model/RandomSampleGenerator.h"
-#include "CrudeMonteCarloSettings.h"
+#include "CrudeMonteCarloSettingsS.h"
 
 using namespace Deltares::Models;
 
@@ -14,7 +13,7 @@ namespace Deltares
 {
     namespace Sensitivity
     {
-        std::shared_ptr<Statistics::Stochast> CrudeMonteCarlo::getStochast(std::shared_ptr<Models::ModelRunner> modelRunner)
+        std::shared_ptr<Statistics::Stochast> CrudeMonteCarloS::getStochast(std::shared_ptr<Models::ModelRunner> modelRunner)
         {
             modelRunner->updateStochastSettings(this->Settings->StochastSet);
 
@@ -90,14 +89,14 @@ namespace Deltares
             return stochast;
         }
 
-        bool CrudeMonteCarlo::checkConvergence(double pf, int samples, int sampleIndex)
+        bool CrudeMonteCarloS::checkConvergence(double pf, int samples, int sampleIndex)
         {
             double convergence = getConvergence(pf, samples);
             bool enoughSamples = sampleIndex >= Settings->MinimumSamples;
             return enoughSamples && convergence < Settings->VariationCoefficient;
         }
 
-        double CrudeMonteCarlo::getConvergence(double pf, int samples)
+        double CrudeMonteCarloS::getConvergence(double pf, int samples)
         {
             if (pf > 0 && pf < 1)
             {

@@ -100,6 +100,18 @@ namespace Deltares.Probabilistic.Wrapper.Test
             return project;
         }
 
+        public static SensitivityProject GetSensitivityProject(Project project)
+        {
+            var sensitivityProject = new SensitivityProject();
+
+            sensitivityProject.Stochasts.AddRange(project.Stochasts);
+            sensitivityProject.CorrelationMatrix = project.CorrelationMatrix;
+            sensitivityProject.ZFunction = project.ZFunction;
+            sensitivityProject.TagRepository = project.TagRepository;
+
+            return sensitivityProject;
+        }
+
         public static Project GetInverseLinearProject()
         {
             var project = new Project();

@@ -7,7 +7,7 @@ namespace Deltares
 {
     namespace Sensitivity
     {
-        class CrudeMonteCarloSettings
+        class CrudeMonteCarloSettingsS
         {
         public:
             /**
