@@ -83,6 +83,22 @@ namespace Deltares.Probabilistic.Wrapper.Test
             return new ZSampleOutput(xDelegate);
         }
 
+        public static Project GetAddOneProject()
+        {
+            var project = new Project();
+
+            project.Stochasts.Add(GetDeterministicStochast(1));
+            project.Stochasts.Add(GetUniformStochast(-1));
+
+            project.CorrelationMatrix.Initialize(project.Stochasts);
+
+            ZSampleOutput zSampleOutput = GetSampleOutput(Sum);
+
+            project.ZFunction = zSampleOutput.CalculateSample;
+
+            return project;
+        }
+
         public static Project GetLinearProject()
         {
             var project = new Project();
@@ -638,6 +654,11 @@ namespace Deltares.Probabilistic.Wrapper.Test
         private static Stochast GetGumbelStochast(double mean = 0, double stdev = 1)
         {
             return new Stochast { DistributionType = DistributionType.Gumbel, Mean = mean, Deviation = stdev };
+        }
+
+        private static ZFunctionOutput Sum(double[] x)
+        {
+            return new ZFunctionOutput(x.Sum());
         }
 
         private static ZFunctionOutput Linear(double[] x)

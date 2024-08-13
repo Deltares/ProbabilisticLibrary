@@ -13,6 +13,24 @@ namespace Deltares.Probabilistic.Wrapper.Test
         private const double margin = 0.01;
 
         [Test]
+        public void TestAddOne()
+        {
+            var project = ProjectBuilder.GetSensitivityProject(ProjectBuilder.GetAddOneProject());
+
+            project.SensitivityMethod = new CrudeMonteCarloS();
+            ((CrudeMonteCarloS)project.SensitivityMethod).Settings.RandomSettings.RandomGeneratorType = RandomGeneratorType.MersenneTwister;
+
+            Stochast stochast = project.GetStochast();
+
+            Assert.AreEqual(1, stochast.Mean, margin);
+
+            stochast.DistributionType = DistributionType.Uniform;
+
+            Assert.AreEqual(0, stochast.Minimum, margin);
+            Assert.AreEqual(2, stochast.Maximum, margin);
+        }
+
+        [Test]
         public void TestLinear()
         {
             var project = ProjectBuilder.GetSensitivityProject(ProjectBuilder.GetLinearProject());
