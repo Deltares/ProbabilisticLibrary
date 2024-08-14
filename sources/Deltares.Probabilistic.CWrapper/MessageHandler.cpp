@@ -85,7 +85,7 @@ extern "C" DLL_PUBLIC void GetStringValue(int id, char* property, char* result_c
     const char* result_b = result.c_str();
 
 #ifdef __GNUC__
-    printf(result_c, "%s", result_b);
+    sprintf(result_c, "%s", result_b);
 #else
     _snprintf_s(result_c, size, _TRUNCATE, result_b);
 #endif
