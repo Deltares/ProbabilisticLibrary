@@ -8,7 +8,7 @@ class Settings:
 		  
 	def __init__(self):
 		self._id = interface.Create('settings')
-		self._stochast_settings = CallbackList(self._stochast_settings_changed)
+		self._stochast_settings = FrozenList()
 		
 	@property   
 	def reliability_method(self):
@@ -134,18 +134,20 @@ class Settings:
 	def stochast_settings(self):
 		return self._stochast_settings
 
-	def _stochast_settings_changed(self):
-		values = [stochast_setting._id for stochast_setting in self._stochast_settings]
-		interface.SetArrayIntValue(self._id, 'stochast_settings', values)
+	def _set_variables(self, variables):
+		new_stochast_settings = []
+		for variable in variables:
+			stochast_setting = self._stochast_settings[str(variable)]
+			if stochast_setting is None:
+				stochast_setting = StochastSettings(variable)
+			new_stochast_settings.append(stochast_setting)
+		self._stochast_settings = FrozenList(new_stochast_settings)
+		interface.SetArrayIntValue(self._id, 'stochast_settings', [stochast_setting._id for stochast_setting in self._stochast_settings])
 
-	def get_variable_settings(self, stochast):
-		if type(stochast) is Stochast:
-			stochast = stochast.name
-		return StochastSettings(stochast)
-		
+	
 class StochastSettings:
 		
-	def __init__(self, variable = None):
+	def __init__(self, variable):
 		self._id = interface.Create('stochast_settings')
 		self._variable = variable
 		if not variable is None:
@@ -159,10 +161,11 @@ class StochastSettings:
 				self._variable = Stochast(id_)
 		return self._variable
 		
-	@variable.setter
-	def variable(self, value):
-		self._variable = value
-		interface.SetIntValue(self._id, 'variable', self._variable._id)
+	def __str__(self):
+		if self._variable is None:
+			return ''
+		else:
+			return self._variable.name
 
 	@property   
 	def min_value(self):
@@ -264,6 +267,18 @@ class DesignPoint:
 	@property   
 	def is_converged(self):
 		return interface.GetBoolValue(self._id, 'is_converged')
+		
+	@property   
+	def total_directions(self):
+		return interface.GetIntValue(self._id, 'total_directions')
+		
+	@property   
+	def total_iterations(self):
+		return interface.GetIntValue(self._id, 'total_iterations')
+		
+	@property   
+	def total_model_runs(self):
+		return interface.GetIntValue(self._id, 'total_model_runs')
 		
 	@property   
 	def alphas(self):

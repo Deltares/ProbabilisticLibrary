@@ -77,6 +77,9 @@ namespace Deltares
                     MaximumSamples >= MinimumSamples &&
                     RunSettings->isValid();
             }
+
+            static std::string getSampleMethodString(SampleMethodType method);
+            static SampleMethodType getSampleMethod(std::string method);
         };
     }
 }

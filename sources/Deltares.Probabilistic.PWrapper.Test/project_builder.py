@@ -23,6 +23,8 @@ def linear_small_ab(a, b):
 def linear_small_abc(a, b, c):
     return 1.98 - (a+b+c)
 
+def bligh(m, L, c_creep, delta_H):
+    return m * L / c_creep - delta_H
 
 def get_linear_project():
 
@@ -142,6 +144,29 @@ def get_linear_partially_correlated_project():
     stochast3.maximum = 1.0
 
     project.correlation_matrix[('a', 'b')] = 0.5
+
+    return project
+
+def get_bligh_project():
+
+    project = ReliabilityProject()
+
+    project.model = bligh
+
+    project.variables["m"].distribution = "log_normal"
+    project.variables["m"].mean = 1.76
+    project.variables['m'].deviation = 1.69
+
+    project.variables["L"].distribution = "normal"
+    project.variables["L"].mean = 50
+    project.variables["L"].deviation = 2.5
+
+    project.variables["c_creep"].distribution = "deterministic"
+    project.variables["c_creep"].mean = 18
+
+    project.variables["delta_H"].distribution = "gumbel"
+    project.variables["delta_H"].shift = 0.53
+    project.variables["delta_H"].scale = 0.406
 
     return project
 
