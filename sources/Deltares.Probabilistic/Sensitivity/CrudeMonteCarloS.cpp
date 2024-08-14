@@ -36,15 +36,13 @@ namespace Deltares
             size_t zIndex = 0;
             int nSamples = 0;
 
-            double pf = Settings->NumberSamplesProbability;
-            if (pf > 0.5)
+            int requiredSamples = this->Settings->Samples;
+            if (this->Settings->DeriveSamplesFromVariationCoefficient)
             {
-                pf = 1 - pf;
+                requiredSamples = this->Settings->getRequiredSamples();
             }
 
-            bool isConverged = false;
-
-            for (int sampleIndex = 0; sampleIndex < Settings->MaximumSamples + 1 && !isConverged && !isStopped(); sampleIndex++)
+            for (int sampleIndex = 0; sampleIndex < requiredSamples && !isStopped(); sampleIndex++)
             {
                 zIndex++;
 
@@ -53,7 +51,7 @@ namespace Deltares
                     samples.clear();
 
                     int chunkSize = modelRunner->Settings->MaxChunkSize;
-                    int runs = std::min(chunkSize, Settings->MaximumSamples + 1 - sampleIndex);
+                    int runs = std::min(chunkSize, Settings->Samples - sampleIndex);
 
                     sampleProvider->reset();
 
@@ -80,37 +78,11 @@ namespace Deltares
                 zWeights.push_back(1.0);
 
                 nSamples++;
-
-                isConverged = checkConvergence(pf, nSamples, sampleIndex);
             }
 
             std::shared_ptr<Statistics::Stochast> stochast = this->getStochastFromSamples(zSamples, zWeights);
 
             return stochast;
-        }
-
-        bool CrudeMonteCarloS::checkConvergence(double pf, int samples, int sampleIndex)
-        {
-            double convergence = getConvergence(pf, samples);
-            bool enoughSamples = sampleIndex >= Settings->MinimumSamples;
-            return enoughSamples && convergence < Settings->VariationCoefficient;
-        }
-
-        double CrudeMonteCarloS::getConvergence(double pf, int samples)
-        {
-            if (pf > 0 && pf < 1)
-            {
-                if (pf > 0.5)
-                {
-                    pf = 1 - pf;
-                }
-                double varPf = sqrt((1 - pf) / (samples * pf));
-                return varPf;
-            }
-            else
-            {
-                return nan("");
-            }
         }
     }
 }

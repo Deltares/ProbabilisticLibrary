@@ -196,7 +196,7 @@ namespace Deltares
 
                 if (property_ == "relaxation_factor") return settings->RelaxationFactor;
                 else if (property_ == "variation_coefficient") return settings->VariationCoefficient;
-                else if (property_ == "probability_for_convergence") return settings->NumberSamplesProbability;
+                else if (property_ == "probability_for_convergence") return settings->ProbabilityForConvergence;
             }
             else if (objectType == ObjectType::DesignPoint)
             {
@@ -282,7 +282,7 @@ namespace Deltares
 
                 if (property_ == "relaxation_factor") settings->RelaxationFactor = value;
                 else if (property_ == "variation_coefficient") settings->VariationCoefficient = value;
-                else if (property_ == "probability_for_convergence") settings->NumberSamplesProbability = value;
+                else if (property_ == "probability_for_convergence") settings->ProbabilityForConvergence = value;
             }
             else if (objectType == ObjectType::StochastSettings)
             {
@@ -508,6 +508,12 @@ namespace Deltares
 
                 if (property_ == "is_converged") return designPoint->convergenceReport->IsConverged;
             }
+            else if (objectType == ObjectType::SensitivitySettings)
+            {
+                std::shared_ptr<Sensitivity::SettingsS> settings = sensitivitySettingsValues[id];
+
+                if (property_ == "derive_samples_from_variation_coefficient") return settings->DeriveSamplesFromVariationCoefficient;
+            }
 
             return false;
         }
@@ -530,6 +536,13 @@ namespace Deltares
                 if (property_ == "is_initialization_allowed") stochastSettings->IsInitializationAllowed = value;
                 else if (property_ == "is_variance_allowed") stochastSettings->IsVarianceAllowed = value;
             }
+            else if (objectType == ObjectType::SensitivitySettings)
+            {
+                std::shared_ptr<Sensitivity::SettingsS> settings = sensitivitySettingsValues[id];
+
+                if (property_ == "derive_samples_from_variation_coefficient") settings->DeriveSamplesFromVariationCoefficient = value;
+            }
+
         }
 
         std::string ProjectServer::GetStringValue(int id, std::string property_)

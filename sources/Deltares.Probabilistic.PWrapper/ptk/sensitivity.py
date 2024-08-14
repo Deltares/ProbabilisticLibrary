@@ -92,6 +92,14 @@ class SensitivitySettings:
 		interface.SetValue(self._id, 'probability_for_convergence', value) 
 
 	@property   
+	def derive_samples_from_variation_coefficient(self):
+		return interface.GetBoolValue(self._id, 'derive_samples_from_variation_coefficient')
+		
+	@derive_samples_from_variation_coefficient.setter
+	def derive_samples_from_variation_coefficient(self, value):
+		interface.SetBoolValue(self._id, 'derive_samples_from_variation_coefficient', value)
+
+	@property   
 	def stochast_settings(self):
 		return self._stochast_settings
 

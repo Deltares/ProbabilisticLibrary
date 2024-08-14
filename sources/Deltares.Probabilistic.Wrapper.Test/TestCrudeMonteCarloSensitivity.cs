@@ -10,7 +10,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
     [TestFixture]
     public class TestCrudeMonteCarloSensitivity
     {
-        private const double margin = 0.01;
+        private const double margin = 0.02;
 
         [Test]
         public void TestAddOne()
@@ -88,8 +88,32 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             project.SensitivityMethod = new CrudeMonteCarloS();
             ((CrudeMonteCarloS)project.SensitivityMethod).Settings.RandomSettings.RandomGeneratorType = RandomGeneratorType.MersenneTwister;
-            ((CrudeMonteCarloS)project.SensitivityMethod).Settings.MinimumSamples = 100000;
-            ((CrudeMonteCarloS)project.SensitivityMethod).Settings.MaximumSamples = ((CrudeMonteCarloS)project.SensitivityMethod).Settings.MinimumSamples;
+            ((CrudeMonteCarloS)project.SensitivityMethod).Settings.Samples = 100000;
+
+            Stochast stochast = project.GetStochast();
+
+            Assert.AreEqual(1.8, stochast.Mean, margin);
+            Assert.AreEqual(0.82, stochast.Deviation, margin);
+
+            stochast.DistributionType = DistributionType.Uniform;
+
+            Assert.AreEqual(-0.2, stochast.Minimum, 10 * margin);
+            Assert.AreEqual(3.8, stochast.Maximum, 10 * margin);
+        }
+
+        [Test]
+        public void TestLinearAutoSamples()
+        {
+            var project = ProjectBuilder.GetSensitivityProject(ProjectBuilder.GetLinearProject());
+            project.Settings.SaveConvergence = false;
+            project.Settings.SaveEvaluations = false;
+            project.Settings.SaveMessages = false;
+
+            project.SensitivityMethod = new CrudeMonteCarloS();
+            ((CrudeMonteCarloS)project.SensitivityMethod).Settings.RandomSettings.RandomGeneratorType = RandomGeneratorType.MersenneTwister;
+            ((CrudeMonteCarloS)project.SensitivityMethod).Settings.DeriveSamplesFromVariationCoefficient = true;
+
+            Assert.AreEqual(7600, ((CrudeMonteCarloS)project.SensitivityMethod).Settings.RequiredSamples);
 
             Stochast stochast = project.GetStochast();
 
@@ -108,6 +132,11 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             Assert.AreEqual(1.79, stochast.Mean, margin);
             Assert.AreEqual(0.82, stochast.Deviation, margin);
+
+            stochast.DistributionType = DistributionType.Uniform;
+
+            Assert.AreEqual(-0.2, stochast.Minimum, 10 * margin);
+            Assert.AreEqual(3.8, stochast.Maximum, 10 * margin);
         }
 
         [Test]

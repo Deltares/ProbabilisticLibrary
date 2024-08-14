@@ -50,7 +50,12 @@ namespace Deltares
             /**
              * \brief The probability which is used to check whether the calculation has converged
              */
-            double NumberSamplesProbability = 0.05;
+            double ProbabilityForConvergence = 0.05;
+
+            /**
+             * \brief Indicates whether the number of samples should be derived from the variation coefficient at the probability for convergence
+             */
+            bool DeriveSamplesFromVariationCoefficient = false;
 
             /**
              * \brief Maximum number of guessed design points in one FORM loop

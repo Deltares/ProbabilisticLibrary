@@ -11,14 +11,9 @@ namespace Deltares
         {
         public:
             /**
-             * \brief The minimum samples to be examined
+             * \brief The number of samples to be examined
              */
-            int MinimumSamples = 1000;
-
-            /**
-             * \brief The maximum samples to be examined
-             */
-            int MaximumSamples = 10000;
+            int Samples = 10000;
 
             /**
              * \brief The importance sampling algorithm stops when the calculated variation coefficient is less than this value
@@ -28,7 +23,22 @@ namespace Deltares
             /**
              * \brief The probability which is used to check whether the calculation has converged
              */
-            double NumberSamplesProbability = 0.05;
+            double ProbabilityForConvergence = 0.05;
+
+            /**
+             * \brief Indicates whether the number of samples should be derived from the variation coefficient at the probability for convergence
+             */
+            bool DeriveSamplesFromVariationCoefficient = false;
+
+            /**
+             * \brief Gets the number of runs which is needed to achieve the variation coefficient at the probability for convergence
+             */
+            int getRequiredSamples();
+
+            /**
+             * \brief Modifies the variation coefficient so that the number of required samples matches a given value
+             */
+            void setRequiredSamples(int samples);
 
             /**
              * \brief Settings for generating random values
@@ -51,9 +61,7 @@ namespace Deltares
              */
             bool isValid()
             {
-                return MinimumSamples >= 1 &&
-                    MaximumSamples >= MinimumSamples &&
-                    RunSettings->isValid();
+                return Samples >= 1 && RunSettings->isValid();
             }
         };
     }

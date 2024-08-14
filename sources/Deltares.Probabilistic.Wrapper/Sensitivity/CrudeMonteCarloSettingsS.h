@@ -28,16 +28,10 @@ namespace Deltares
                 ~CrudeMonteCarloSettingsS() { this->!CrudeMonteCarloSettingsS(); }
                 !CrudeMonteCarloSettingsS() { delete shared; }
 
-                property int MinimumSamples
+                property int Samples
                 {
-                    int get() { return shared->object->MinimumSamples; }
-                    void set(int value) { shared->object->MinimumSamples = value; }
-                }
-
-                property int MaximumSamples
-                {
-                    int get() { return shared->object->MaximumSamples; }
-                    void set(int value) { shared->object->MaximumSamples = value; }
+                    int get() { return shared->object->Samples; }
+                    void set(int value) { shared->object->Samples = value; }
                 }
 
                 property double VariationCoefficient
@@ -46,10 +40,22 @@ namespace Deltares
                     void set(double value) { shared->object->VariationCoefficient = value; }
                 }
 
-                property double NumberSamplesProbability
+                property double ProbabilityForConvergence
                 {
-                    double get() { return shared->object->NumberSamplesProbability; }
-                    void set(double value) { shared->object->NumberSamplesProbability = value; }
+                    double get() { return shared->object->ProbabilityForConvergence; }
+                    void set(double value) { shared->object->ProbabilityForConvergence = value; }
+                }
+
+                property double RequiredSamples
+                {
+                    double get() { return shared->object->getRequiredSamples(); }
+                    void set(double value) { shared->object->setRequiredSamples(value); }
+                }
+
+                property bool DeriveSamplesFromVariationCoefficient
+                {
+                    bool get() { return shared->object->DeriveSamplesFromVariationCoefficient; }
+                    void set(bool value) { shared->object->DeriveSamplesFromVariationCoefficient = value; }
                 }
 
                 Wrappers::RandomSettings^ RandomSettings = gcnew Wrappers::RandomSettings();

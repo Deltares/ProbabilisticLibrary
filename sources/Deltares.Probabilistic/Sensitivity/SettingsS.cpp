@@ -34,10 +34,10 @@ namespace Deltares
         {
             std::shared_ptr<CrudeMonteCarloS> crudeMonteCarlo = std::make_shared<CrudeMonteCarloS>();
 
-            crudeMonteCarlo->Settings->MinimumSamples = this->MinimumSamples;
-            crudeMonteCarlo->Settings->MaximumSamples = this->MaximumSamples;
+            crudeMonteCarlo->Settings->Samples = this->MaximumSamples;
             crudeMonteCarlo->Settings->VariationCoefficient = this->VariationCoefficient;
-            crudeMonteCarlo->Settings->NumberSamplesProbability = this->NumberSamplesProbability;
+            crudeMonteCarlo->Settings->ProbabilityForConvergence = this->ProbabilityForConvergence;
+            crudeMonteCarlo->Settings->DeriveSamplesFromVariationCoefficient = this->DeriveSamplesFromVariationCoefficient;
             crudeMonteCarlo->Settings->RunSettings = this->RunSettings;
             crudeMonteCarlo->Settings->randomSettings = this->RandomSettings;
             crudeMonteCarlo->Settings->StochastSet = this->StochastSet;
