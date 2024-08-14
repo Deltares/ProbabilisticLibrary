@@ -25,6 +25,8 @@ namespace Deltares
             ZMultipleLambda zMultipleLambda = nullptr;
             ZBetaLambda zBetaLambda = nullptr;
             int maxProcesses = 1;
+            int modelRuns = 0;
+            bool countRunsLambda = true;
 
         public:
             ZModel(ZLambda zLambda, ZMultipleLambda zMultipleLambda = nullptr)
@@ -61,6 +63,16 @@ namespace Deltares
             bool canCalculateBeta()
             {
                 return this->zBetaLambda != nullptr;
+            }
+
+            int getModelRuns()
+            {
+                return modelRuns;
+            }
+
+            void resetModelRuns()
+            {
+                modelRuns = 0;
             }
         };
     }

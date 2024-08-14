@@ -190,15 +190,11 @@ class Test_reliability(unittest.TestCase):
 
         project.settings.reliability_method = 'numerical_integration'
 
-        for variable in project.variables:
-            stochastSettings = StochastSettings();
-            stochastSettings.variable = variable
+        self.assertEqual(2, len(project.settings.stochast_settings))
+
+        for stochastSettings in project.settings.stochast_settings:
             stochastSettings.start_value = 0
             stochastSettings.variance_factor = 2
-            stochastSettings.intervals = 150
-            stochastSettings.min_value = -6
-            stochastSettings.max_value =  6
-            project.settings.stochast_settings.append(stochastSettings)
 
         project.run();
 
@@ -220,11 +216,8 @@ class Test_reliability(unittest.TestCase):
 
         project.settings.reliability_method = 'numerical_integration'
 
-        for variable in project.variables:
-            stochastSettings = StochastSettings();
-            stochastSettings.variable = variable
-            stochastSettings.min_value = -1
-            project.settings.stochast_settings.append(stochastSettings)
+        project.settings.stochast_settings['a'].min_value = -1
+        project.settings.stochast_settings['b'].min_value = -1
 
         project.run();
 
@@ -234,6 +227,33 @@ class Test_reliability(unittest.TestCase):
 
         self.assertAlmostEqual(2.57, beta, delta=margin)
         self.assertEqual(2, len(alphas))
+
+    def test_numerical_integration_bligh(self):
+        project = project_builder.get_bligh_project()
+
+        project.settings.reliability_method = "crude_monte_carlo"
+
+        project.settings.minimum_samples = 1000
+        project.settings.maximum_samples = 50000
+        project.settings.variation_coefficient = 0.02
+
+        project.run()
+
+        project.settings.reliability_method = 'numerical_integration'
+
+        project.settings.stochast_settings['m'].intervals = 20
+        project.settings.stochast_settings['L'].intervals = 20
+        project.settings.stochast_settings['delta_H'].intervals = 20
+
+        project.run();
+
+        dp = project.design_point;
+        beta = dp.reliability_index;
+        alphas = dp.alphas;
+
+        self.assertEqual(20*20*20+1, dp.total_model_runs)
+        self.assertAlmostEqual(1.55, beta, delta=margin)
+        self.assertEqual(4, len(alphas))
 
 if __name__ == '__main__':
     unittest.main()

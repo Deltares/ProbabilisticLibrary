@@ -240,7 +240,7 @@ namespace Deltares
             {
                 std::shared_ptr<Statistics::FragilityValue> fragilityValue = fragilityValues[id];
 
-                if (property_ == "x") fragilityValue->X;
+                if (property_ == "x") fragilityValue->X = value;
                 else if (property_ == "reliability_index") fragilityValue->Reliability = value;
                 else if (property_ == "probability_of_failure") fragilityValue->setProbabilityOfFailure(value);
                 else if (property_ == "probability_of_non_failure") fragilityValue->setProbabilityOfNonFailure(value);
@@ -263,7 +263,6 @@ namespace Deltares
                 if (property_ == "min_value") stochastSettings->MinValue = value;
                 else if (property_ == "max_value") stochastSettings->MaxValue = value;
                 else if (property_ == "start_value") stochastSettings->StartValue = value;
-                else if (property_ == "intervals") stochastSettings->Intervals = value;
                 else if (property_ == "variance_factor") stochastSettings->VarianceFactor = value;
             }
             else if (objectType == ObjectType::DesignPoint)
@@ -327,6 +326,9 @@ namespace Deltares
 
                 if (property_ == "contributing_design_points_count") return (int)designPoint->ContributingDesignPoints.size();
                 else if (property_ == "alphas_count") return (int)designPoint->Alphas.size();
+                else if (property_ == "total_iterations") return designPoint->convergenceReport->TotalIterations;
+                else if (property_ == "total_directions") return designPoint->convergenceReport->TotalDirections;
+                else if (property_ == "total_model_runs") return designPoint->convergenceReport->TotalModelRuns;
             }
             else if (objectType == ObjectType::Alpha)
             {
@@ -488,9 +490,10 @@ namespace Deltares
                 std::shared_ptr<Reliability::Settings> settings = settingsValues[id];
 
                 if (property_ == "reliability_method") return Settings::getReliabilityMethodTypeString(settings->ReliabilityMethod);
-                if (property_ == "design_point_method") return DesignPointBuilder::getDesignPointMethodString(settings->designPointMethod);
-                if (property_ == "start_method") return StartPointCalculatorSettings::getStartPointMethodString(settings->StartPointSettings->StartMethod);
-                if (property_ == "random_type") return Numeric::Random::getRandomGeneratorTypeString(settings->RandomSettings->RandomGeneratorType);
+                else if (property_ == "design_point_method") return DesignPointBuilder::getDesignPointMethodString(settings->designPointMethod);
+                else if (property_ == "sample_method") return SubsetSimulationSettings::getSampleMethodString(settings->sampleMethod);
+                else if (property_ == "start_method") return StartPointCalculatorSettings::getStartPointMethodString(settings->StartPointSettings->StartMethod);
+                else if (property_ == "random_type") return Numeric::Random::getRandomGeneratorTypeString(settings->RandomSettings->RandomGeneratorType);
             }
             else if (objectType == ObjectType::CombineSettings)
             {
@@ -519,9 +522,10 @@ namespace Deltares
                 std::shared_ptr<Reliability::Settings> settings = settingsValues[id];
 
                 if (property_ == "reliability_method") settings->ReliabilityMethod = Settings::getReliabilityMethodType(value);
-                if (property_ == "design_point_method") settings->designPointMethod = DesignPointBuilder::getDesignPointMethod(value);
-                if (property_ == "start_method") settings->StartPointSettings->StartMethod = StartPointCalculatorSettings::getStartPointMethod(value);
-                if (property_ == "random_type") settings->RandomSettings->RandomGeneratorType = Numeric::Random::getRandomGeneratorType(value);
+                else if (property_ == "design_point_method") settings->designPointMethod = DesignPointBuilder::getDesignPointMethod(value);
+                else if (property_ == "sample_method") settings->sampleMethod = SubsetSimulationSettings::getSampleMethod(value);
+                else if (property_ == "start_method") settings->StartPointSettings->StartMethod = StartPointCalculatorSettings::getStartPointMethod(value);
+                else if (property_ == "random_type") settings->RandomSettings->RandomGeneratorType = Numeric::Random::getRandomGeneratorType(value);
             }
             else if (objectType == ObjectType::CombineSettings)
             {
@@ -606,6 +610,19 @@ namespace Deltares
                     for (int i = 0; i < size; i++)
                     {
                         stochast->getProperties()->FragilityValues.push_back(fragilityValues[values[i]]);
+                    }
+                }
+            }
+            else if (objectType == ObjectType::Settings)
+            {
+                std::shared_ptr<Reliability::Settings> settings = settingsValues[id];
+
+                if (property_ == "stochast_settings")
+                {
+                    settings->StochastSet->stochastSettings.clear();
+                    for (int i = 0; i < size; i++)
+                    {
+                        settings->StochastSet->stochastSettings.push_back(stochastSettingsValues[values[i]]);
                     }
                 }
             }
@@ -783,10 +800,6 @@ namespace Deltares
             else if (objectType == ObjectType::Project)
             {
                 std::shared_ptr<Models::Project> project = projects[id];
-                for (const auto& value : this->stochastSettingsValues)
-                {
-                    project->settings->StochastSet->stochastSettings.push_back(value.second);
-                }
 
                 if (method_ == "run") project->run();
             }

@@ -21,6 +21,7 @@ namespace Deltares
             double ZMargin = 0;
             int TotalDirections = -1;
             int TotalIterations = -1;
+            int TotalModelRuns = 0;
 
             std::shared_ptr<Models::Sample> NearestSample = nullptr;
 
