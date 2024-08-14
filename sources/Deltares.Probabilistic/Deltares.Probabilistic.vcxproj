@@ -163,6 +163,8 @@
     <ClInclude Include="Combine\DesignPointModel.h" />
     <ClInclude Include="Combine\DesignPointCombiner.h" />
     <ClInclude Include="Combine\DirectionalSamplingCombiner.h" />
+    <ClInclude Include="Sensitivity\ImportanceSamplingSettingsS.h" />
+    <ClInclude Include="Sensitivity\ImportanceSamplingS.h" />
     <ClInclude Include="Sensitivity\CrudeMonteCarloS.h" />
     <ClInclude Include="Sensitivity\CrudeMonteCarloSettingsS.h" />
     <ClInclude Include="Sensitivity\SensitivityProject.h" />
@@ -303,6 +305,8 @@
     <ClCompile Include="Combine\DesignPointModel.cpp" />
     <ClCompile Include="Combine\DesignPointCombiner.cpp" />
     <ClCompile Include="Combine\DirectionalSamplingCombiner.cpp" />
+    <ClCompile Include="Sensitivity\ImportanceSamplingSettingsS.cpp" />
+    <ClCompile Include="Sensitivity\ImportanceSamplingS.cpp" />
     <ClCompile Include="Sensitivity\CrudeMonteCarloS.cpp" />
     <ClCompile Include="Sensitivity\CrudeMonteCarloSettingsS.cpp" />
     <ClCompile Include="Sensitivity\SensitivityProject.cpp" />

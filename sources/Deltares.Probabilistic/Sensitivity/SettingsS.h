@@ -68,11 +68,6 @@ namespace Deltares
             double RelaxationFactor = 0.75;
 
             /**
-             * \brief Maximum number of FORM loops when no convergence is reached
-             */
-            int RelaxationLoops = 1;
-
-            /**
              * \brief Settings for performing model runs
              */
             std::shared_ptr<Models::RunSettings> RunSettings = std::make_shared<Models::RunSettings>();

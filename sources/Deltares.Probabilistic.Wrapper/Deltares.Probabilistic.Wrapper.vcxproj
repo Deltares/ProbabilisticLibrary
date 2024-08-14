@@ -160,6 +160,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Sensitivity\ImportanceSamplingS.h" />
+    <ClInclude Include="Sensitivity\ImportanceSamplingSettingsS.h" />
     <ClInclude Include="Sensitivity\CrudeMonteCarloS.h" />
     <ClInclude Include="Sensitivity\CrudeMonteCarloSettingsS.h" />
     <ClInclude Include="Sensitivity\SensitivityProject.h" />
@@ -221,6 +223,7 @@
     <ClInclude Include="Statistics\VariableStochastValue.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Sensitivity\ImportanceSamplingS.cpp" />
     <ClCompile Include="Sensitivity\CrudeMonteCarloS.cpp" />
     <ClCompile Include="Sensitivity\SensitivityProject.cpp" />
     <ClCompile Include="Sensitivity\SensitivityMethod.cpp" />

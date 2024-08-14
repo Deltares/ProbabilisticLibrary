@@ -3,6 +3,8 @@
 
 #include <memory>
 
+#include "ImportanceSamplingS.h"
+
 namespace Deltares
 {
     namespace Sensitivity
@@ -47,7 +49,18 @@ namespace Deltares
 
         const std::shared_ptr<Sensitivity::SensitivityMethod> SettingsS::GetImportanceSamplingMethod()
         {
-            throw Reliability::probLibException("Not implemented yet");
+            std::shared_ptr<ImportanceSamplingS> importanceSampling = std::make_shared<ImportanceSamplingS>();
+
+            importanceSampling->Settings->MinimumSamples = this->MinimumSamples;
+            importanceSampling->Settings->MaximumSamples = this->MaximumSamples;
+            importanceSampling->Settings->VariationCoefficient = this->VariationCoefficient;
+            importanceSampling->Settings->ProbabilityForConvergence = this->ProbabilityForConvergence;
+            importanceSampling->Settings->DeriveSamplesFromVariationCoefficient = this->DeriveSamplesFromVariationCoefficient;
+            importanceSampling->Settings->RunSettings = this->RunSettings;
+            importanceSampling->Settings->randomSettings = this->RandomSettings;
+            importanceSampling->Settings->StochastSet = this->StochastSet;
+
+            return importanceSampling;
         }
 
         const std::shared_ptr<Sensitivity::SensitivityMethod> SettingsS::GetDirectionalSamplingMethod()
@@ -60,6 +73,7 @@ namespace Deltares
             switch (this->SensitivityMethod)
             {
             case SensitivityMethodType::SensitivityCrudeMonteCarlo: return std::dynamic_pointer_cast<CrudeMonteCarloS>(this->GetCrudeMonteCarloMethod())->Settings->isValid();
+            case SensitivityMethodType::SensitivityImportanceSampling: return std::dynamic_pointer_cast<ImportanceSamplingS>(this->GetImportanceSamplingMethod())->Settings->isValid();
             default: throw Reliability::probLibException("Sensitivity method");
             }
         }

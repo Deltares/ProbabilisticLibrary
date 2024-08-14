@@ -353,7 +353,7 @@ namespace Deltares
                 std::shared_ptr<Sensitivity::SettingsS> settings = sensitivitySettingsValues[id];
 
                 if (property_ == "minimum_samples") return settings->MinimumSamples;
-                else if (property_ == "maximum_samples") return settings->MaximumSamples;
+                if (property_ == "maximum_samples") return settings->MaximumSamples;
                 else if (property_ == "maximum_iterations") return settings->MaximumIterations;
                 else if (property_ == "minimum_directions") return settings->MinimumDirections;
                 else if (property_ == "maximum_directions") return settings->MaximumDirections;

@@ -51,5 +51,23 @@ class Test_sensitivity(unittest.TestCase):
         self.assertAlmostEqual(1.8, sens.mean, delta=margin)
         self.assertAlmostEqual(0.83, sens.deviation, delta=margin)
 
+    def test_importance_sampling_add_one(self):
+        project = project_builder.get_sensitivity_add_one_project()
+
+        project.settings.sensitivity_method = 'importance_sampling'
+
+        project.run();
+
+        sens = project.stochast;
+
+        self.assertAlmostEqual(1, sens.mean, delta=margin)
+
+        sens.distribution = 'uniform'
+
+        self.assertAlmostEqual(0, sens.minimum, delta=margin)
+        self.assertAlmostEqual(2, sens.maximum, delta=margin)
+
+
+
 if __name__ == '__main__':
     unittest.main()
