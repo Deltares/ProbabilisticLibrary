@@ -84,6 +84,7 @@ namespace Deltares {
             int                maxSamples = 99000;
             int                seed1 = 2;
             int                seed2 = 1;
+            int                isRepeatableRandom = 1;
             rndTypes           rnd = rndTypes::GeorgeMarsaglia;
             StartMethods       startMethod = StartMethods::Zero;
             int                progressInterval = -1;

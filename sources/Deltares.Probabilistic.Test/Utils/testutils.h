@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include "../../Deltares.Probabilistic/Combine/alphaBeta.h"
+#include "../../Deltares.Probabilistic/Math/matrix.h"
 
 using namespace Deltares::Reliability;
 
@@ -18,6 +19,7 @@ namespace Deltares
                 std::string refFileWithPath(const std::string& sourceFile, const std::string& relativePath);
                 void checkAlphaBeta(alphaBeta& computed, alphaBeta& ref, const double margin);
                 void checkAlphaBeta(alphaBeta& computed, alphaBeta& ref, const double margin1, const double margin2);
+                static Deltares::Numeric::Matrix convert1dmatrix(const std::initializer_list<double>& m);
             private:
                 std::vector<std::string> readWholeFile(const std::string& file) const;
                 bool compareLine(const std::string& ref, const std::string& nw) const;
