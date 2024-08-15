@@ -17,6 +17,7 @@
 #include "RayleighDistribution.h"
 #include "RayleighNDistribution.h"
 #include "TriangularDistribution.h"
+#include "TrapezoidalDistribution.h"
 #include "TruncatedDistribution.h"
 #include "UniformDistribution.h"
 #include "WeibullDistribution.h"
@@ -38,6 +39,7 @@ namespace Deltares
             case DistributionType::LogNormal: distribution = std::make_shared<LogNormalDistribution>(); break;
             case DistributionType::Uniform: distribution = std::make_shared<UniformDistribution>(); break;
             case DistributionType::Triangular: distribution = std::make_shared<TriangularDistribution>(); break;
+            case DistributionType::Trapezoidal: distribution = std::make_shared<TrapezoidalDistribution>(); break;
             case DistributionType::Exponential: distribution = std::make_shared<ExponentialDistribution>(); break;
             case DistributionType::Gumbel: distribution = std::make_shared<GumbelDistribution>(); break;
             case DistributionType::Weibull: distribution = std::make_shared<WeibullDistribution>(); break;

@@ -250,6 +250,85 @@ namespace Deltares.Probabilistic.Wrapper.Test
         }
 
         [Test]
+        public void TestTrapezoidal()
+        {
+            var stochast = new Stochast
+            {
+                DistributionType = DistributionType.Trapezoidal,
+                Shift = 5,
+                ShiftB = 6,
+                Minimum = 4,
+                Maximum = 8
+            };
+
+            Assert.AreEqual(5.75, stochast.GetXFromU(0), margin);
+
+            TestStochast(stochast);
+            TestFit(stochast);
+
+
+            Stochast triangle = new Stochast
+            {
+                DistributionType = DistributionType.Trapezoidal,
+                Shift = 5,
+                ShiftB = 5,
+                Minimum = 4,
+                Maximum = 8
+            };
+
+            TestStochast(triangle);
+            TestFit(triangle);
+
+            Stochast uniform = new Stochast
+            {
+                DistributionType = DistributionType.Trapezoidal,
+                Shift = 4,
+                ShiftB = 8,
+                Minimum = 4,
+                Maximum = 8
+            };
+
+            TestStochast(uniform);
+            TestFit(uniform);
+
+            Stochast left = new Stochast
+            {
+                DistributionType = DistributionType.Trapezoidal,
+                Shift = 4,
+                ShiftB = 4,
+                Minimum = 4,
+                Maximum = 8
+            };
+
+            TestStochast(left);
+            TestFit(left, 0.25, 10000);
+
+            Stochast right = new Stochast
+            {
+                DistributionType = DistributionType.Trapezoidal,
+                Shift = 8,
+                ShiftB = 8,
+                Minimum = 4,
+                Maximum = 8
+            };
+
+            TestStochast(right);
+            TestFit(right, 0.25, 10000);
+
+            Stochast uneven = new Stochast
+            {
+                DistributionType = DistributionType.Trapezoidal,
+                Shift = 7,
+                ShiftB = 9,
+                Minimum = 0,
+                Maximum = 10
+            };
+
+            TestStochast(uneven);
+            TestFit(uneven, 0.25, 10000);
+        }
+
+        [Test]
         public void TestGumbel()
         {
             Stochast stochast = new Stochast { DistributionType = DistributionType.Gumbel, Scale = 1, Shift = 0 };

@@ -152,6 +152,23 @@ namespace Deltares
         }
 
         /// <summary>
+        /// Raises a value to an exponent
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="exponent"></param>
+        /// <returns></returns>
+        double NumericSupport::getPower(double value, int exponent)
+        {
+            double powerValue = 1;
+            for (int i = 0; i < exponent; i++)
+            {
+                powerValue *= value;
+            }
+
+            return powerValue;
+        }
+
+        /// <summary>
         /// Retrieves qualitative information of a numeric value
         /// </summary>
         /// <param name="value"></param>

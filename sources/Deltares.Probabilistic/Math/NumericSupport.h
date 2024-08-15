@@ -25,6 +25,7 @@ namespace Deltares
             static std::vector<double> GetCartesianCoordinates(const std::vector<double>& sphericalCoordinates);
             static double Divide(int counter, int denominator);
             static double round(double value, int decimals);
+            static double getPower(double value, int exponent);
             static bool areEqual(double x1, double x2, double tolerance);
             static bool isLess(double x1, double x2, double tolerance);
             static bool isGreater(double x1, double x2, double tolerance);
