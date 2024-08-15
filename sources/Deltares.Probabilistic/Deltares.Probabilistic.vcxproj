@@ -167,6 +167,7 @@
     <ClInclude Include="Statistics\Distributions\FragilityCurveDistribution.h" />
     <ClInclude Include="Statistics\Distributions\TriangularDistribution.h" />
     <ClInclude Include="Statistics\Distributions\TrapezoidalDistribution.h" />
+    <ClInclude Include="Statistics\Distributions\ParetoDistribution.h" />
     <ClInclude Include="Utils\DirtySupport.h" />
     <ClInclude Include="Model\ProxySettings.h" />
     <ClInclude Include="Model\Project.h" />
@@ -304,6 +305,7 @@
     <ClCompile Include="Statistics\Distributions\FragilityCurveDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\TriangularDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\TrapezoidalDistribution.cpp" />
+    <ClCompile Include="Statistics\Distributions\ParetoDistribution.cpp" />
     <ClCompile Include="Utils\DirtySupport.cpp" />
     <ClCompile Include="Model\ProxySettings.cpp" />
     <ClCompile Include="Model\Project.cpp" />

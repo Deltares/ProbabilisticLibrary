@@ -152,6 +152,7 @@
     <ClCompile Include="Statistics\Distributions\ExponentialDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\TriangularDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\TrapezoidalDistribution.cpp" />
+    <ClCompile Include="Statistics\Distributions\ParetoDistribution.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -323,6 +324,7 @@
     <ClInclude Include="Statistics\Distributions\ExponentialDistribution.h" />
     <ClInclude Include="Statistics\Distributions\TriangularDistribution.h" />
     <ClInclude Include="Statistics\Distributions\TrapezoidalDistribution.h" />
+    <ClInclude Include="Statistics\Distributions\ParetoDistribution.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

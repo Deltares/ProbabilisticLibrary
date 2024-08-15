@@ -289,7 +289,7 @@ namespace Deltares
             }
             else
             {
-                return setXAtUByIteration(stochast, x, u, constantType);
+                setXAtUByIteration(stochast, x, u, constantType);
             }
         }
 
