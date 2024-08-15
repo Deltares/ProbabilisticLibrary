@@ -196,6 +196,7 @@ namespace Deltares
                 else if (property_ == "x") return alpha->X;
                 else if (property_ == "influence_factor") return alpha->InfluenceFactor;
             }
+            return std::nan("");
         }
 
         void ProjectServer::SetValue(int id, std::string property_, double value)
@@ -409,6 +410,7 @@ namespace Deltares
 
                 if (property_ == "rho") return correlationMatrix->getSelfCorrelation(stochast);
             }
+            return std::nan("");
         }
 
         void ProjectServer::SetIntArgValue(int id1, int id2, std::string property_, double value)
