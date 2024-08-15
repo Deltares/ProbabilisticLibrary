@@ -17,6 +17,7 @@ namespace Deltares
                 case Wrappers::DistributionType::LogNormal: return Statistics::DistributionType::LogNormal;
                 case Wrappers::DistributionType::Uniform: return Statistics::DistributionType::Uniform;
                 case Wrappers::DistributionType::Exponential: return Statistics::DistributionType::Exponential;
+                case Wrappers::DistributionType::Triangular: return Statistics::DistributionType::Triangular;
                 case Wrappers::DistributionType::Gumbel: return Statistics::DistributionType::Gumbel;
                 case Wrappers::DistributionType::Weibull: return Statistics::DistributionType::Weibull;
                 case Wrappers::DistributionType::ConditionalWeibull: return Statistics::DistributionType::ConditionalWeibull;
@@ -41,6 +42,7 @@ namespace Deltares
                 case Statistics::DistributionType::LogNormal: return Wrappers::DistributionType::LogNormal;
                 case Statistics::DistributionType::Uniform: return Wrappers::DistributionType::Uniform;
                 case Statistics::DistributionType::Exponential: return Wrappers::DistributionType::Exponential;
+                case Statistics::DistributionType::Triangular: return Wrappers::DistributionType::Triangular;
                 case Statistics::DistributionType::Gumbel: return Wrappers::DistributionType::Gumbel;
                 case Statistics::DistributionType::Weibull: return Wrappers::DistributionType::Weibull;
                 case Statistics::DistributionType::ConditionalWeibull: return Wrappers::DistributionType::ConditionalWeibull;

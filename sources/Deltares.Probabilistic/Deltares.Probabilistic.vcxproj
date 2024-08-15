@@ -165,6 +165,7 @@
     <ClInclude Include="Combine\DirectionalSamplingCombiner.h" />
     <ClInclude Include="Statistics\Distributions\ExponentialDistribution.h" />
     <ClInclude Include="Statistics\Distributions\FragilityCurveDistribution.h" />
+    <ClInclude Include="Statistics\Distributions\TriangularDistribution.h" />
     <ClInclude Include="Utils\DirtySupport.h" />
     <ClInclude Include="Model\ProxySettings.h" />
     <ClInclude Include="Model\Project.h" />
@@ -300,6 +301,7 @@
     <ClCompile Include="Combine\DirectionalSamplingCombiner.cpp" />
     <ClCompile Include="Statistics\Distributions\ExponentialDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\FragilityCurveDistribution.cpp" />
+    <ClCompile Include="Statistics\Distributions\TriangularDistribution.cpp" />
     <ClCompile Include="Utils\DirtySupport.cpp" />
     <ClCompile Include="Model\ProxySettings.cpp" />
     <ClCompile Include="Model\Project.cpp" />

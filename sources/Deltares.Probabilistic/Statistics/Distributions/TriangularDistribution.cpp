@@ -1,0 +1,250 @@
+#include "TriangularDistribution.h"
+#include "../StandardNormal.h"
+#include "../StochastProperties.h"
+#include "../../Math/NumericSupport.h"
+#include "../../Math/RootFinders/BisectionRootFinder.h"
+
+#include <cmath>
+#include <algorithm>
+
+#include "UniformDistribution.h"
+
+namespace Deltares
+{
+    namespace Statistics
+    {
+        void TriangularDistribution::initialize(std::shared_ptr<StochastProperties> stochast, std::vector<double> values)
+        {
+            stochast->Minimum = values[0];
+            stochast->Shift = values[1];
+            stochast->Maximum = values[2];
+        }
+
+        bool TriangularDistribution::isValid(std::shared_ptr<StochastProperties> stochast)
+        {
+            return stochast->Minimum <= stochast->Shift && stochast->Shift <= stochast->Maximum;
+        }
+
+        void TriangularDistribution::setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation)
+        {
+            // set mean value
+            if (this->isValid(stochast))
+            {
+                double currentValue = this->getMean(stochast);
+                double diff = mean - currentValue;
+
+                stochast->Minimum += diff;
+                stochast->Shift += diff;
+                stochast->Maximum += diff;
+            }
+            else
+            {
+                stochast->Minimum = mean;
+                stochast->Shift = mean;
+                stochast->Maximum = mean;
+            }
+
+            // set deviation
+            if (deviation <= 0)
+            {
+                stochast->Minimum = mean;
+                stochast->Shift = mean;
+                stochast->Maximum = mean;
+            }
+            else
+            {
+                std::shared_ptr<StochastProperties> copiedStochast = stochast->clone();
+
+                Numeric::RootFinderMethod method = [this, copiedStochast, stochast](double x)
+                {
+                    double min = stochast->Shift - stochast->Minimum;
+                    double max = stochast->Maximum - stochast->Shift;
+
+                    copiedStochast->Minimum = stochast->Shift - x * min;
+                    copiedStochast->Maximum = stochast->Shift + x * max;
+
+                    return this->getDeviation(copiedStochast);
+                };
+
+                std::unique_ptr<Numeric::BisectionRootFinder> bisection = std::make_unique<Numeric::BisectionRootFinder>();
+
+                double minStart = 0.0;
+                double maxStart = 32.0;
+
+                double factor = bisection->CalculateValue(minStart, maxStart, deviation, 0.00001, method);
+
+                stochast->Minimum = stochast->Shift - factor * (stochast->Shift - stochast->Minimum);
+                stochast->Maximum = stochast->Shift + factor * (stochast->Maximum - stochast->Shift);
+
+                // set mean value again
+                double currentValue = this->getMean(stochast);
+                double diff = mean - currentValue;
+
+                stochast->Minimum += diff;
+                stochast->Shift += diff;
+                stochast->Maximum += diff;
+
+            }
+        }
+
+        bool TriangularDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)
+        {
+            return stochast->Maximum > stochast->Minimum;
+        }
+
+        double TriangularDistribution::getMean(std::shared_ptr<StochastProperties> stochast)
+        {
+            return (stochast->Minimum + stochast->Shift + stochast->Maximum) / 3;
+        }
+
+        double TriangularDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
+        {
+            double a = stochast->Minimum;
+            double b = stochast->Maximum;
+            double c = stochast->Shift;
+
+            return sqrt((a * a + b * b + c * c - (a * b + a * c + b * c)) / 18);
+        }
+
+        double TriangularDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)
+        {
+            if (stochast->Minimum == stochast->Maximum)
+            {
+                return x == stochast->Minimum ? 1 : 0;
+            }
+            else if (x <= stochast->Minimum || x >= stochast->Maximum)
+            {
+                return 0;
+            }
+            else
+            {
+                double maxHeight = 2 / (stochast->Maximum - stochast->Minimum);
+                if (x <= stochast->Minimum || x >= stochast->Maximum)
+                {
+                    return 0;
+                }
+                else if (x < stochast->Shift)
+                {
+                    return maxHeight * (x - stochast->Minimum) / (stochast->Shift - stochast->Minimum);
+                }
+                else
+                {
+                    return maxHeight * (1 - (x - stochast->Shift) / (stochast->Maximum - stochast->Shift));
+                }
+            }
+        }
+
+        double TriangularDistribution::getCDF(std::shared_ptr<StochastProperties> stochast, double x)
+        {
+            if (x < stochast->Minimum)
+            {
+                return 0;
+            }
+            else if (x < stochast->Shift)
+            {
+                return (x - stochast->Minimum) * (x - stochast->Minimum) / ((stochast->Shift - stochast->Minimum) * (stochast->Maximum - stochast->Minimum));
+            }
+            else if (x < stochast->Maximum)
+            {
+                double q = (stochast->Maximum - x) * (stochast->Maximum - x) / ((stochast->Maximum - stochast->Shift) * (stochast->Maximum - stochast->Minimum));
+                return 1 - q;
+            }
+            else
+            {
+                return 1;
+            }
+        }
+
+        double TriangularDistribution::getXFromU(std::shared_ptr<StochastProperties> stochast, double u)
+        {
+            double p = StandardNormal::getPFromU(u);
+
+            if (p < (stochast->Shift - stochast->Minimum) / (stochast->Maximum - stochast->Minimum))
+            {
+                return stochast->Minimum + std::sqrt(p * (stochast->Shift - stochast->Minimum) * (stochast->Maximum - stochast->Minimum));
+            }
+            else
+            {
+                double q = 1 - p;
+                return stochast->Maximum - std::sqrt(q * (stochast->Maximum - stochast->Shift) * (stochast->Maximum - stochast->Minimum));
+            }
+        }
+
+        double TriangularDistribution::getUFromX(std::shared_ptr<StochastProperties> stochast, double x)
+        {
+            if (x <= stochast->Minimum)
+            {
+                return -StandardNormal::UMax;
+            }
+            else if (x >= stochast->Maximum)
+            {
+                return StandardNormal::UMax;
+            }
+            else
+            {
+                double cdf = this->getCDF(stochast, x);
+                return StandardNormal::getUFromP(cdf);
+            }
+        }
+
+        void TriangularDistribution::setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
+        {
+            if (constantType == Deviation)
+            {
+                if (stochast->Minimum == stochast->Maximum)
+                {
+                    stochast->Minimum = x;
+                    stochast->Shift = x;
+                    stochast->Maximum = x;
+                }
+                else
+                {
+                    double currentValue = this->getXFromU(stochast, u);
+                    double diff = x - currentValue;
+
+                    stochast->Minimum += diff;
+                    stochast->Shift += diff;
+                    stochast->Maximum += diff;
+                }
+            }
+            else
+            {
+                return setXAtUByIteration(stochast, x, u, constantType);
+            }
+        }
+
+        void TriangularDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values)
+        {
+            double min = *std::min_element(values.begin(), values.end());
+            double max = *std::max_element(values.begin(), values.end());
+
+            double diff = max - min;
+            double add = diff / values.size();
+
+            stochast->Minimum = min - add;
+            stochast->Maximum = max + add;
+
+            double mean = Numeric::NumericSupport::getMean(values);
+            stochast->Shift = 3 * mean - (min + max);
+
+            stochast->Shift = std::min(stochast->Shift, stochast->Maximum);
+            stochast->Shift = std::max(stochast->Shift, stochast->Minimum);
+        }
+
+        std::vector<double> TriangularDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)
+        {
+            std::vector<double> specialPoints;
+
+            specialPoints.push_back(stochast->Minimum);
+            specialPoints.push_back(stochast->Shift);
+            specialPoints.push_back(stochast->Maximum);
+
+            return specialPoints;
+        }
+    }
+}
+
+
+
+
+

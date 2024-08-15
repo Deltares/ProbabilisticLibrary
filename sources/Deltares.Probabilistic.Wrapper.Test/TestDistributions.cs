@@ -227,6 +227,29 @@ namespace Deltares.Probabilistic.Wrapper.Test
         }
 
         [Test]
+        public void TestTriangular()
+        {
+            var stochast = new Stochast
+            {
+                DistributionType = DistributionType.Triangular,
+                Shift = 5,
+                Minimum = 4,
+                Maximum = 8
+            };
+
+            Assert.AreEqual(5.55, stochast.GetXFromU(0), margin);
+
+            TestStochast(stochast);
+
+            TestFit(stochast);
+
+            stochast.Fit(new[] { 2.5, 3.0, 3.5, 5.5, 6.5 });
+            Assert.AreEqual(1.7, stochast.Minimum, margin);
+            Assert.AreEqual(7.3, stochast.Maximum, margin);
+            Assert.AreEqual(3.6, stochast.Shift, margin);
+        }
+
+        [Test]
         public void TestGumbel()
         {
             Stochast stochast = new Stochast { DistributionType = DistributionType.Gumbel, Scale = 1, Shift = 0 };
