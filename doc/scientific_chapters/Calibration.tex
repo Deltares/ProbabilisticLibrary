@@ -74,7 +74,7 @@ In a genetic algorithm, a population of candidate solutions (individuals) to an 
 
 The evolution starts from a population of randomly (parabolic) generated individuals and is an iterative process, with the population in each iteration called a generation. In each generation, the safety factor (fitness) of every individual in the population is evaluated. This happens through a given limit equilibrium method (the fitness function). Slip planes with a low safety factor are considered to be more fit.
 
-When evolving from one generation to the next, two individuals are combined (see \autoref{sec:GenaticAlgorithmInitialization} and \autoref{sec:ParentalSelection}) to make a new genome (individual). This genome is possibly modified (mutated, see \autoref{sec:Mutation}) to form a new child. Two children ``fight'' to decide which one will go to the next generation, see \autoref{sec:ChildSelection}. Elitism is introduced (\autoref{sec:ChildSelection}) to make sure the best solution thus far will not be lost. The algorithm terminates when a given number of generations have passed.
+When evolving from one generation to the next, two individuals are combined (see \autoref{sec:GeneticAlgorithmInitialization} and \autoref{sec:ParentalSelection}) to make a new genome (individual). This genome is possibly modified (mutated, see \autoref{sec:Mutation}) to form a new child. Two children ``fight'' to decide which one will go to the next generation, see \autoref{sec:ChildSelection}. Elitism is introduced (\autoref{sec:ChildSelection}) to make sure the best solution thus far will not be lost. The algorithm terminates when a given number of generations have passed.
 
 \begin{figure}[H]
 	\centering

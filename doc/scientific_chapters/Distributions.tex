@@ -409,12 +409,15 @@ The properties of the student's T is based on the degrees of freedom $\nu$, whic
 	
 	Mean & $\mu = m$ \\
 	Deviation & $\sigma^2 = \frac{\nu}{\nu - 2} s^2$ \\
-	Fit \citep{stackexchange} & $ \displaystyle{m = \frac{ \sum\limits_{i=1}^N w_i x_i}{\sum\limits_{i=1}^N w_i}} $ \\
+	Fit  & $ \displaystyle{m = \frac{ \sum\limits_{i=1}^N w_i x_i}{\sum\limits_{i=1}^N w_i}} $ \\
 	& $ \displaystyle{s^2 = \frac{ \sum\limits_{i=1}^N w_i \left(x_i-m\right)^2}{\nu + 1}}$ \\
 	& with \\
 	& $ \displaystyle{w_i = \frac{\left(\nu + 1\right) s^2 }{\nu s^2 + \left(x_i - m\right)^2}}$
-	
+
 \end{tabular}
+
+The expression for the fit is from: \\
+\citep{stackexchange} .
 
 \subsection{Gamma distribution}
 
@@ -551,7 +554,7 @@ Fit & $ \displaystyle{a = \left\{\begin{array}{ll} N \left(x_{\text{min}}\right)
 where \\
 $N\left(x_{\text{min}}\right)$ & = the number of appearances of value $x_{\text{min}} $ \\
 $N\left(x_{\text{max}}\right)$ & = the number of appearances of value $x_{\text{max}} $ \\
-$\delta$ & $= \frac{x_{\text{max}} - x_{\text{min}}}{N} $
+$\delta$ & $= \displaystyle { \frac{x_{\text{max}} - x_{\text{min}}}{N}  }$
 
 \end{tabular}
 
