@@ -17,7 +17,6 @@ namespace Deltares
                 void testCholeskyDecompositionCase3();
                 void testCholeskyDecompositionCase4();
                 void testCholeskyDecompositionCase5();
-                Numeric::Matrix convert1dmatrix(const std::initializer_list<double>& m) const;
                 void performTest(const std::initializer_list<double>& m, const std::initializer_list<double>& ref) const;
                 const double margin = 1e-9;
             };

@@ -1,6 +1,7 @@
 #include <math.h>
 #include "gtest/gtest.h"
 #include "testCholeskiDecomposition.h"
+#include "../Utils/testutils.h"
 
 using namespace Deltares::Numeric;
 
@@ -45,11 +46,11 @@ namespace Deltares
             void choleski_decomp_tests::performTest(const std::initializer_list<double>& m,
                 const std::initializer_list<double>& ref) const
             {
-                auto correlation_matrix = convert1dmatrix(m);
+                auto correlation_matrix = testutils::convert1dmatrix(m);
                 size_t nStochasts;
                 size_t col;
                 correlation_matrix.get_dims(nStochasts, col);
-                auto expected_Cholesky = convert1dmatrix(ref);
+                auto expected_Cholesky = testutils::convert1dmatrix(ref);
                 expected_Cholesky.Transpose();
                 auto cholesky = correlation_matrix.CholeskyDecomposition();
 
@@ -60,23 +61,6 @@ namespace Deltares
                         EXPECT_NEAR(expected_Cholesky(i, j), cholesky(i, j), margin);
                     }
                 }
-            }
-
-            Matrix choleski_decomp_tests::convert1dmatrix(const std::initializer_list<double>& m) const
-            {
-                size_t s = (size_t)sqrt((double)m.size());
-                auto vm = std::vector<double>(m);
-                auto cm = Matrix(s, s);
-                size_t ii = 0;
-                for (size_t j = 0; j < s; j++)
-                {
-                    for (size_t i = 0; i < s; i++)
-                    {
-                        cm(i, j) = vm[ii];
-                        ii++;
-                    }
-                }
-                return cm;
             }
 
             void choleski_decomp_tests::testCholeskyDecompositionCase2()

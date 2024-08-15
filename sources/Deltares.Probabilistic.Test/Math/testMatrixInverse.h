@@ -19,6 +19,7 @@ namespace Deltares
                 Deltares::Numeric::Matrix get3x3posDefiniteMatrix() const;
                 Deltares::Numeric::Matrix get2x2singularMatrix() const;
                 Deltares::Numeric::Matrix get2x2symmetrixMatrix() const;
+                Deltares::Numeric::Matrix get16x16Matrix() const;
                 const double margin = 1e-12;
             };
         }
