@@ -13,6 +13,7 @@
 #include "FragilityCurveDistribution.h"
 #include "DiscreteDistribution.h"
 #include "ExponentialDistribution.h"
+#include "GeneralizedParetoDistribution.h"
 #include "QualitativeDistribution.h"
 #include "RayleighDistribution.h"
 #include "RayleighNDistribution.h"
@@ -50,6 +51,7 @@ namespace Deltares
             case DistributionType::Rayleigh: distribution = std::make_shared<RayleighDistribution>(); break;
             case DistributionType::RayleighN: distribution = std::make_shared<RayleighNDistribution>(); break;
             case DistributionType::Pareto: distribution = std::make_shared<ParetoDistribution>(); break;
+            case DistributionType::GeneralizedPareto: distribution = std::make_shared<GeneralizedParetoDistribution>(); break;
             case DistributionType::Table: distribution = std::make_shared<HistogramDistribution>(); break;
             case DistributionType::CDFCurve: distribution = std::make_shared<FragilityCurveDistribution>(); break;
             case DistributionType::Discrete: distribution = std::make_shared<DiscreteDistribution>(); break;

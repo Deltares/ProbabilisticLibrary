@@ -526,6 +526,27 @@ namespace Deltares.Probabilistic.Wrapper.Test
         }
 
         [Test]
+        public void TestGeneralizedPareto()
+        {
+            var stochast = new Stochast
+            {
+                DistributionType = DistributionType.GeneralizedPareto,
+                Shape = -1,
+                Scale = 1,
+                Shift = 30
+            };
+
+            TestStochast(stochast);
+
+            stochast.Shape = 1;
+            stochast.Scale = 5;
+            stochast.Shift = 20;
+
+            TestStochast(stochast);
+        }
+
+
+        [Test]
         public void TestDiscrete()
         {
             var stochast = new Stochast { DistributionType = DistributionType.Discrete };

@@ -27,6 +27,7 @@ namespace Deltares
                 case Wrappers::DistributionType::Rayleigh: return Statistics::DistributionType::Rayleigh;
                 case Wrappers::DistributionType::RayleighN: return Statistics::DistributionType::RayleighN;
                 case Wrappers::DistributionType::Pareto: return Statistics::DistributionType::Pareto;
+                case Wrappers::DistributionType::GeneralizedPareto: return Statistics::DistributionType::GeneralizedPareto;
                 case Wrappers::DistributionType::Table: return Statistics::DistributionType::Table;
                 case Wrappers::DistributionType::CDFCurve: return Statistics::DistributionType::CDFCurve;
                 case Wrappers::DistributionType::Discrete: return Statistics::DistributionType::Discrete;
