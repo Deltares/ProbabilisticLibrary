@@ -524,6 +524,32 @@ namespace Deltares
             }
         }
 
+        double NumericSupport::getWeightedMean(std::vector<double>& values, std::vector<double>& weights)
+        {
+            if (values.size() != weights.size())
+            {
+                throw Reliability::probLibException("Values and weights should have same size");
+            }
+
+            if (values.empty())
+            {
+                return nan("");
+            }
+            else
+            {
+                double sum = 0;
+                double sumWeights = 0;
+
+                for (size_t i = 0; i < values.size(); i++ )
+                {
+                    sum += values[i] * weights[i];
+                    sumWeights += weights[i];
+                }
+
+                return sum / sumWeights;
+            }
+        }
+
         double NumericSupport::getStandardDeviation(double mean, std::vector<double>& values)
         {
             if (values.empty())
@@ -563,6 +589,35 @@ namespace Deltares
             }
 
             return result;
+        }
+
+        std::vector<double> NumericSupport::zip(std::vector<double>& values1, std::vector<double>& values2, std::function<double(double, double)> function)
+        {
+            if (values1.size() != values2.size())
+            {
+                throw Reliability::probLibException("Expected vectors of the same size");
+            }
+
+            std::vector<double> result(values1.size());
+
+            for (size_t i = 0; i < values1.size(); i++)
+            {
+                result[i] = function(values1[i], values2[i]);
+            }
+
+            return result;
+        }
+
+        double NumericSupport::sum(std::vector<double>& values)
+        {
+            double sum = 0;
+
+            for (size_t i = 0; i < values.size(); i++)
+            {
+                sum += values[i];
+            }
+
+            return sum;
         }
 
         double NumericSupport::sum(std::vector<double>& values, std::function<double(double)> function)

@@ -183,6 +183,57 @@ namespace Deltares.Probabilistic.Wrapper.Test
         }
 
         [Test]
+        public void TestStudentT()
+        {
+            var stochast = new Stochast();
+            var normalStochast = new Stochast();
+
+            Assert.AreEqual(2, stochast.Observations);
+
+            stochast.DistributionType = DistributionType.StudentT;
+            stochast.Location = 3;
+            stochast.Scale = 2;
+            stochast.Observations = 5;
+
+            normalStochast.DistributionType = DistributionType.Normal;
+            normalStochast.Mean = 3;
+            normalStochast.Deviation = 2;
+
+            Assert.AreEqual(3, stochast.GetXFromU(0));
+            Assert.AreEqual(3 - 2 * 1.533, stochast.GetXFromP(0.1), margin);
+            Assert.AreEqual(3 + 2 * 1.533, stochast.GetXFromP(0.9), margin);
+
+            // interpolation
+            stochast.Observations = 91;
+            Assert.AreEqual(3 - 2 * 1.2925, stochast.GetXFromP(0.1), margin);
+            Assert.AreEqual(3 + 2 * 1.2925, stochast.GetXFromP(0.9), margin);
+
+            // interpolation
+            stochast.Observations = 5;
+            Assert.AreEqual(3 - 2.48, stochast.GetXFromP(0.15), margin);
+            Assert.AreEqual(3 + 2.48, stochast.GetXFromP(0.85), margin);
+            Assert.AreEqual(3 - 17.062, stochast.GetXFromP(0.0001), margin);
+            Assert.AreEqual(3 + 17.062, stochast.GetXFromP(0.9999), margin);
+
+            // mean adapted when x modified at p
+            stochast.Observations = 10;
+            double p90 = stochast.GetXFromP(0.9);
+            stochast.SetXAtU(p90 + 1, StandardNormal.GetUFromP(0.9), ConstantParameterType.Deviation);
+            Assert.AreEqual(4, stochast.Mean, margin);
+
+            stochast.Observations = 1;
+            Assert.IsTrue(double.IsNaN(stochast.GetXFromP(0.1)));
+
+            stochast.Observations = 3;
+
+            stochast.Observations = 10;
+            TestFit(stochast, 1.0, stochast.Observations);
+
+            stochast.Observations = 100;
+            TestFit(stochast, 0.5, stochast.Observations);
+        }
+
+        [Test]
         public void TestUniform()
         {
             Stochast stochast = new Stochast { DistributionType = DistributionType.Uniform, Minimum = 5, Maximum = 9 };

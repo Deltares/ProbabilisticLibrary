@@ -15,6 +15,7 @@ namespace Deltares
                 case Wrappers::DistributionType::Deterministic: return Statistics::DistributionType::Deterministic;
                 case Wrappers::DistributionType::Normal: return Statistics::DistributionType::Normal;
                 case Wrappers::DistributionType::LogNormal: return Statistics::DistributionType::LogNormal;
+                case Wrappers::DistributionType::StudentT: return Statistics::DistributionType::StudentT;
                 case Wrappers::DistributionType::Uniform: return Statistics::DistributionType::Uniform;
                 case Wrappers::DistributionType::Exponential: return Statistics::DistributionType::Exponential;
                 case Wrappers::DistributionType::Triangular: return Statistics::DistributionType::Triangular;
@@ -47,6 +48,7 @@ namespace Deltares
                 case Statistics::DistributionType::Deterministic: return Wrappers::DistributionType::Deterministic;
                 case Statistics::DistributionType::Normal: return Wrappers::DistributionType::Normal;
                 case Statistics::DistributionType::LogNormal: return Wrappers::DistributionType::LogNormal;
+                case Statistics::DistributionType::StudentT: return Wrappers::DistributionType::StudentT;
                 case Statistics::DistributionType::Uniform: return Wrappers::DistributionType::Uniform;
                 case Statistics::DistributionType::Exponential: return Wrappers::DistributionType::Exponential;
                 case Statistics::DistributionType::Triangular: return Wrappers::DistributionType::Triangular;

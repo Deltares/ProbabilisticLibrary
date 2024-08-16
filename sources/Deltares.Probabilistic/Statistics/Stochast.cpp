@@ -245,6 +245,7 @@ namespace Deltares
             if (distributionType == "deterministic") return Statistics::DistributionType::Deterministic;
             else if (distributionType == "normal") return Statistics::DistributionType::Normal;
             else if (distributionType == "log_normal") return Statistics::DistributionType::LogNormal;
+            else if (distributionType == "student_t") return Statistics::DistributionType::StudentT;
             else if (distributionType == "uniform") return Statistics::DistributionType::Uniform;
             else if (distributionType == "exponential") return Statistics::DistributionType::Exponential;
             else if (distributionType == "triangular") return Statistics::DistributionType::Triangular;
@@ -276,6 +277,7 @@ namespace Deltares
             case Statistics::DistributionType::Deterministic: return "deterministic";
             case Statistics::DistributionType::Normal: return "normal";
             case Statistics::DistributionType::LogNormal: return "log_normal";
+            case Statistics::DistributionType::StudentT: return "student_t";
             case Statistics::DistributionType::Uniform: return "uniform";
             case Statistics::DistributionType::Exponential: return "exponential";
             case Statistics::DistributionType::Triangular: return "triangular";

@@ -158,6 +158,7 @@
     <ClCompile Include="Statistics\Distributions\GammaDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\BernoulliDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\PoissonDistribution.cpp" />
+    <ClCompile Include="Statistics\Distributions\StudentTDistribution.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -335,6 +336,7 @@
     <ClInclude Include="Statistics\Distributions\GammaDistribution.h" />
     <ClInclude Include="Statistics\Distributions\BernoulliDistribution.h" />
     <ClInclude Include="Statistics\Distributions\PoissonDistribution.h" />
+    <ClInclude Include="Statistics\Distributions\StudentTDistribution.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">
