@@ -156,6 +156,7 @@
     <ClCompile Include="Statistics\Distributions\GeneralizedParetoDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\BetaDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\GammaDistribution.cpp" />
+    <ClCompile Include="Statistics\Distributions\BernoulliDistribution.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -331,6 +332,7 @@
     <ClInclude Include="Statistics\Distributions\GeneralizedParetoDistribution.h" />
     <ClInclude Include="Statistics\Distributions\BetaDistribution.h" />
     <ClInclude Include="Statistics\Distributions\GammaDistribution.h" />
+    <ClInclude Include="Statistics\Distributions\BernoulliDistribution.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

@@ -580,6 +580,17 @@ namespace Deltares.Probabilistic.Wrapper.Test
         }
 
         [Test]
+        public void TestBernoulli()
+        {
+            var stochast = new Stochast { DistributionType = DistributionType.Bernoulli, Location = 0.8 };
+
+            Assert.AreEqual(0, stochast.GetXFromU(StandardNormal.GetUFromP(0.1)), margin);
+            Assert.AreEqual(1, stochast.GetXFromU(StandardNormal.GetUFromP(0.9)), margin);
+
+            Assert.IsTrue(stochast.IsVarying());
+        }
+
+        [Test]
         public void TestDiscrete()
         {
             var stochast = new Stochast { DistributionType = DistributionType.Discrete };

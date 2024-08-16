@@ -1,5 +1,6 @@
 #include "DistributionLibrary.h"
 
+#include "BernoulliDistribution.h"
 #include "BetaDistribution.h"
 #include "ConditionalWeibullDistribution.h"
 #include "DeterministicDistribution.h"
@@ -55,6 +56,7 @@ namespace Deltares
             case DistributionType::GeneralizedPareto: distribution = std::make_shared<GeneralizedParetoDistribution>(); break;
             case DistributionType::Beta: distribution = std::make_shared<BetaDistribution>(); break;
             case DistributionType::Gamma: distribution = std::make_shared<GammaDistribution>(); break;
+            case DistributionType::Bernoulli: distribution = std::make_shared<BernoulliDistribution>(); break;
             case DistributionType::Table: distribution = std::make_shared<HistogramDistribution>(); break;
             case DistributionType::CDFCurve: distribution = std::make_shared<FragilityCurveDistribution>(); break;
             case DistributionType::Discrete: distribution = std::make_shared<DiscreteDistribution>(); break;
