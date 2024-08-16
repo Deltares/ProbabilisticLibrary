@@ -315,6 +315,30 @@ where
 	$\Gamma$ & is the gamma function; \\  
 \end{longtable*}
 
+\subsection{Conditional Weibull distribution\label{sec:conditionalweibulldistribution}} 
+
+The conditional Weibull distribution gives the probability that $X=x$ conditionally on the event that $X>\omega $, where $\omega $ represents a threshold. It is used in when considering a peaks-over-threshold (POT) method. The distribution function of the conditional Weibull is given as follows:
+\begin{align}
+	P\left(X\le x|X>\omega \right)=1-\exp \left[\left({\omega \mathord{\left/ {\vphantom {\omega  \sigma }} \right. \kern-\nulldelimiterspace} \sigma } \right)^{\xi } -\left({x\mathord{\left/ {\vphantom {x \sigma }} \right. \kern-\nulldelimiterspace} \sigma } \right)^{\xi } \right]\label{ZEqnNum182046} 
+\end{align}
+
+where the parameters $\omega $, $\sigma $, and $\xi $ refer to the threshold, scale, and shape parameter, respectively. The conditional Weibull distribution is often described in terms of exceedance frequencies rather than probabilities. The exceedance frequency of $x$ can be described as follows:
+\begin{align}
+	Fr\left(X>x\right)=\lambda \cdot P\left(X>x|X>\omega \right)\label{ZEqnNum277845} 
+\end{align}
+
+where Fr refers to `frequency', and $\lambda $ is the frequency with which the selected threshold $\omega $ is exceeded:
+\begin{align}
+	\lambda =Fr\left(X>\omega \right)\label{4.98)} 
+\end{align}
+
+In practice, $\lambda $ is determined by counting the number of independent peaks above the threshold and dividing by the number of years of record.
+
+Expanding equation \eqref{ZEqnNum277845} so that the probability is full written out gives the following form of the exceedance frequency distribution for the condition Weibull:
+\begin{align}
+	Fr\left(X>x\right)=\lambda \exp \left[\left({\omega \mathord{\left/ {\vphantom {\omega  \sigma }} \right. \kern-\nulldelimiterspace} \sigma } \right)^{\xi } -\left({x\mathord{\left/ {\vphantom {x \sigma }} \right. \kern-\nulldelimiterspace} \sigma } \right)^{\xi } \right]\label{4.99)} 
+\end{align}
+
 \subsection{Frechet distribution}
 
 The Frechet distribution is defined by the scale parameter $s$, the shape parameter $k$ and the shift parameter $c$. The shift parameter is also called the location parameter. The Frechet properties are
@@ -364,6 +388,16 @@ The properties of the Rayleigh distribution are
 	& $\displaystyle{\delta = \frac{x_{\text{max}} - x_{\text{min}}}{N}} $
 	
 \end{tabular}
+
+\subsection{Rayleigh-$N$ distribution\label{sec:rayleighNdistribution}}
+The Rayleigh-$N$ distribution is a special distribution implemented in the \probLib. This distribution is based on the Rayleigh distribution (see \Aref{sec:rayleighdistribution}) and it is defined as follows:
+\begin{equation}
+	F(x;\sigma,N) = \left(1-e^{-x^2/(2 \sigma^2)}\right)^N\mbox{ for $x\geq 0$}
+\end{equation}
+where $\sigma>0$ is the scale parameter and $N>0$. The Rayleigh-$N$ distribution is in fact the Rayleigh distribution taken to the power $N$. When $N=1$, the Rayleigh-$N$ distribution is exactly equal to the Rayleigh distribution. The corresponding probability density function is:
+\begin{equation}
+	f(x;\sigma,N) = \frac{N x}{\sigma^2}\left(1-e^{-x^2/(2 \sigma^2)}\right)^{N-1} e^{-x^2/(2 \sigma^2)}\mbox{ for $x\geq 0$}
+\end{equation}
 
 \subsection{Pareto distribution}
 
@@ -468,6 +502,15 @@ where
 	$B\left(\alpha, \beta\right)$ & is the beta function; \\
 	$I_x\left(\alpha, \beta\right)$ & is the regularized incomplete beta function;
 \end{longtable*}
+
+The class of Beta distributions includes a wide variety of shapes and other well-known distributions as special cases (see \Fref{fig:4parbetadist}).
+
+\begin{figure}[H]\centering
+	\includegraphics*[width=3.90in, height=3.04in, keepaspectratio=false]{funcdesign_chapters/figappdistributionfunctions/fig_4parbetadist.png}
+	\caption{Probability density function of the four-parameter Beta distribution for different values of $\alpha$ and $\beta$.}\label{fig:4parbetadist}
+\end{figure}
+
+For example, the Beta distribution is equal to the uniform distribution for $\alpha=\beta=1$. A parabolic shaped distribution is obtained for $\alpha=\beta=2$. It also supports high skewness (influenced by the extent to which $\alpha$ and $\beta$ differ), heavy tails ($\alpha$ and $\beta$ smaller than one) and approximate normality for large $\alpha=\beta$ and a range $[a,b]$ expanding towards infinity. In probabilistic computations not only $F_4$, but also its inverse must be available. For this inverse no analytical expressions are available and one must rely on numerical approximations.
 
 \subsection{Poisson distribution}
 
