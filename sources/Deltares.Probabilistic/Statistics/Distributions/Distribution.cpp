@@ -55,6 +55,26 @@ namespace Deltares
             }
         }
 
+        double Distribution::getXFromUByIteration(std::shared_ptr<StochastProperties> stochast, double u)
+        {
+            std::unique_ptr<Numeric::BisectionRootFinder> bisection = std::make_unique<Numeric::BisectionRootFinder>();
+
+            Numeric::RootFinderMethod function = [this, stochast](double x)
+            {
+                return this->getCDF(stochast, x);
+            };
+
+            double cdf = StandardNormal::getPFromU(u);
+
+            double margin = std::min(std::fabs(1 - cdf) / 1000, std::fabs(cdf) / 1000);
+
+            const double delta = 0.00001;
+            margin = std::min(delta, margin);
+
+            double x = bisection->CalculateValue(0, 1, cdf, margin, function, nullptr, 0);
+            return x;
+        }
+
         double Distribution::getLogLikelihood(std::shared_ptr<StochastProperties> stochast, double x)
         {
             return log(this->getPDF(stochast, x));

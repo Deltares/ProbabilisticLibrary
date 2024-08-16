@@ -415,7 +415,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
                 28.3843074961794
             };
 
-            for (int i = -1; i< 8; i++)
+            for (int i = -1; i < 8; i++)
             {
                 double u = (double)i;
                 double x = stochast.GetXFromU(u);
@@ -545,6 +545,23 @@ namespace Deltares.Probabilistic.Wrapper.Test
             TestStochast(stochast);
         }
 
+        [Test]
+        public void TestBeta()
+        {
+            var stochast = new Stochast { DistributionType = DistributionType.Beta, Shape = 1, ShapeB = 1 };
+
+            Assert.AreEqual(0.1, stochast.GetCDF(0.1), margin);
+
+            TestStochast(stochast);
+            TestFit(stochast);
+
+            stochast.Shape = 3;
+            stochast.ShapeB = 4;
+
+            Assert.AreEqual(0.656, stochast.GetCDF(0.5), margin);
+
+            TestFit(stochast, 0.15);
+        }
 
         [Test]
         public void TestDiscrete()

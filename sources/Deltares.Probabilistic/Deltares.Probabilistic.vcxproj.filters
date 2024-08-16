@@ -154,6 +154,7 @@
     <ClCompile Include="Statistics\Distributions\TrapezoidalDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\ParetoDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\GeneralizedParetoDistribution.cpp" />
+    <ClCompile Include="Statistics\Distributions\BetaDistribution.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -327,6 +328,7 @@
     <ClInclude Include="Statistics\Distributions\TrapezoidalDistribution.h" />
     <ClInclude Include="Statistics\Distributions\ParetoDistribution.h" />
     <ClInclude Include="Statistics\Distributions\GeneralizedParetoDistribution.h" />
+    <ClInclude Include="Statistics\Distributions\BetaDistribution.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

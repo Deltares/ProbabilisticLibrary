@@ -163,6 +163,7 @@
     <ClInclude Include="Combine\DesignPointModel.h" />
     <ClInclude Include="Combine\DesignPointCombiner.h" />
     <ClInclude Include="Combine\DirectionalSamplingCombiner.h" />
+    <ClInclude Include="Statistics\Distributions\BetaDistribution.h" />
     <ClInclude Include="Statistics\Distributions\GeneralizedParetoDistribution.h" />
     <ClInclude Include="Statistics\Distributions\ExponentialDistribution.h" />
     <ClInclude Include="Statistics\Distributions\FragilityCurveDistribution.h" />
@@ -302,6 +303,7 @@
     <ClCompile Include="Combine\DesignPointModel.cpp" />
     <ClCompile Include="Combine\DesignPointCombiner.cpp" />
     <ClCompile Include="Combine\DirectionalSamplingCombiner.cpp" />
+    <ClCompile Include="Statistics\Distributions\BetaDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\GeneralizedParetoDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\ExponentialDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\FragilityCurveDistribution.cpp" />

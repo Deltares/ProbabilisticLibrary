@@ -213,6 +213,7 @@ namespace Deltares
             virtual double getFittedMinimum(std::vector<double>& x);
             virtual double getMeanByIteration(std::shared_ptr<StochastProperties> stochast);
             virtual double getDeviationByIteration(std::shared_ptr<StochastProperties> stochast);
+            virtual double getXFromUByIteration(std::shared_ptr<StochastProperties> stochast, double u);
 
             class WeightedValue
             {

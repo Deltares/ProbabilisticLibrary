@@ -38,6 +38,11 @@ namespace Deltares
 
         double BisectionRootFinder::CalculateValue(double minStart, double maxStart, double resultValue, double tolerance, RootFinderMethod function, StopMethod isStopped, double xTolerance)
         {
+            if (isStopped == nullptr)
+            {
+                isStopped = [] {return false; };
+            }
+
             if (minStart > maxStart)
             {
                 std::swap(minStart, maxStart);
