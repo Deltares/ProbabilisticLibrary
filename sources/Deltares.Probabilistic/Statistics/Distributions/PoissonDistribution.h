@@ -6,7 +6,7 @@ namespace Deltares
 {
     namespace Statistics
     {
-        class BernoulliDistribution : public Distribution
+        class PoissonDistribution : public Distribution
         {
         public:
             void initialize(std::shared_ptr<StochastProperties> stochast, std::vector<double> values) override;
@@ -22,9 +22,11 @@ namespace Deltares
             bool canFit() override { return true; }
             void fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values) override;
             std::vector<double> getSpecialPoints(std::shared_ptr<StochastProperties> stochast) override;
-            std::vector<DistributionPropertyType> getParameters() override { return { Location }; }
+            std::vector<DistributionPropertyType> getParameters() override { return { Scale, Shift }; }
         private:
+            const double kMax = 1000.0;
             const double delta = 0.0000001;
+            double getPowerFactorial(double rate, int power);
         };
     }
 }

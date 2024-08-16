@@ -591,6 +591,18 @@ namespace Deltares.Probabilistic.Wrapper.Test
         }
 
         [Test]
+        public void TestPoisson()
+        {
+            var stochast = new Stochast { DistributionType = DistributionType.Poisson, Location = 5 };
+
+            Assert.AreEqual(2, stochast.GetXFromU(StandardNormal.GetUFromP(0.1)), margin);
+            Assert.AreEqual(5, stochast.GetXFromU(0), margin);
+            Assert.AreEqual(8, stochast.GetXFromU(StandardNormal.GetUFromP(0.9)), margin);
+
+            Assert.IsTrue(stochast.IsVarying());
+        }
+
+        [Test]
         public void TestDiscrete()
         {
             var stochast = new Stochast { DistributionType = DistributionType.Discrete };

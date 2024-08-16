@@ -155,6 +155,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Statistics\Distributions\PoissonDistribution.h" />
     <ClInclude Include="Statistics\Distributions\BernoulliDistribution.h" />
     <ClInclude Include="Statistics\Distributions\GammaDistribution.h" />
     <ClInclude Include="Combine\CombineProject.h" />
@@ -297,6 +298,7 @@
     <ClInclude Include="Statistics\Distributions\ConditionalWeibullDistribution.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Statistics\Distributions\PoissonDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\BernoulliDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\GammaDistribution.cpp" />
     <ClCompile Include="Combine\CombineProject.cpp" />

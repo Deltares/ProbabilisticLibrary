@@ -261,6 +261,7 @@ namespace Deltares
             else if (distributionType == "beta") return Statistics::DistributionType::Beta;
             else if (distributionType == "gamma") return Statistics::DistributionType::Gamma;
             else if (distributionType == "bernoulli") return Statistics::DistributionType::Bernoulli;
+            else if (distributionType == "poisson") return Statistics::DistributionType::Poisson;
             else if (distributionType == "histogram") return Statistics::DistributionType::Table;
             else if (distributionType == "cdf_curve") return Statistics::DistributionType::CDFCurve;
             else if (distributionType == "discrete") return Statistics::DistributionType::Discrete;
@@ -291,6 +292,7 @@ namespace Deltares
             case Statistics::DistributionType::Beta: return "beta";
             case Statistics::DistributionType::Gamma: return "gamma";
             case Statistics::DistributionType::Bernoulli: return "bernoulli";
+            case Statistics::DistributionType::Poisson: return "poisson";
             case Statistics::DistributionType::Table: return "histogram";
             case Statistics::DistributionType::CDFCurve: return "cdf_curve";
             case Statistics::DistributionType::Discrete: return "discrete";

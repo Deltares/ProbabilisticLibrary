@@ -58,8 +58,6 @@ namespace Deltares
 
         double BernoulliDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)
         {
-            const double delta = 0.0000001;
-
             if (Numeric::NumericSupport::areEqual(x, 1.0, delta))
             {
                 return stochast->Location;
@@ -94,8 +92,6 @@ namespace Deltares
         {
             int zeroValues = 0;
 
-            const double delta = 0.0000001;
-
             for (double x : values)
             {
                 if (Numeric::NumericSupport::areEqual(x, 0.0, delta))
@@ -109,7 +105,7 @@ namespace Deltares
 
         std::vector<double> BernoulliDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)
         {
-            const double offset = 0.0000001;
+            double offset = 10 * delta;
 
             std::vector<double> specialPoints;
 
