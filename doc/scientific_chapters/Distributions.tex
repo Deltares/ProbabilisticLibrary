@@ -19,6 +19,7 @@ and the cumulative density function, or in other words the non exceeding probabi
 \end{align}
 
 Since there is no closed form to express $\Phi$, it is approximated by approximation formula 26.2.17 for Normal Probability Function, Handbook of Mathematical Functions, Abramowitz \& Stegun.
+In the \probLib this is done using the methods of \cite{Wichura1988} and \cite{Hall_etall_1968}. Both methods are in double precision.
 
 Other distribution types are converted to the standard normal distribution. The physical value in another distribution type, called $x$, is converted to a value $u$ in the standard normal distribution, in such a way that the non exceeding probability of $x$ is equal to the exceeding probability of $u$. With $\Phi$ the cumulative density function of the standard normal distribution, the converted value $u$ is
 
@@ -39,7 +40,7 @@ The probabilities of the standard normal distribution are displayed in the follo
 \section{Distribution properties}
 \label{sec:DistributionProperties}
 
-This paragraph lists all distribution types supported by the Probabilistic Toolkit. In theory, endless distribution types exist. All dsitributions have the following properties:
+This paragraph lists all distribution types supported by the Probabilistic Library. In theory, endless distribution types exist. All dsitributions have the following properties:
 
 Each distribution reflects actual values. From these values $x_i$ the following properties can be derived
 
