@@ -1,100 +1,25 @@
 \chapter{Introduction}
 
-The probabilistic toolkit is able to perform probabilistic analyses on any model, ranging from python scripts to dedicated applications in the geotechnical or hydrodynamical field or to any other field to combinations of models.
+The Probabilistic Library provides functions to perform probabilistic analyses on any model, ranging from python scripts to dedicated applications in the geotechnical or hydrodynamical field or to any other field to combinations of models.
 
-The Probabilistic Toolkit offers a number of analysis types. They are performed in the order described in the next paragraph.
+We start with a chapter about the terminology used throughout this document
+(\autoref{chp:terminology}).
 
-\section{Workflow}
+%\section{Output uncertainty}
 
-The user should take a number of steps to perform a probabilistic analysis. These steps are 
+%Output uncertainty is an extension of sensitivity analysis. Now all input parameters are varied according to their uncertainty definition. This leads to uncertainty of the output parameters.
 
-\begin{enumerate}
-	\item  Setting up the model (outside probabilistic toolkit)
-	\item  Define the variables
-	\item  Perform the probabilistic analysis. Possible analyses are:
-	\begin{enumerate}
-		\item  Run the model and compare results
-		\item  Investigate the sensitivity of the model
-		\item  Get input variables by calibration
-		\item  Determine the output uncertainty
-		\item  Determine the failure probability
-	\end{enumerate}
-\end{enumerate}
+%This is useful when the user is interested in possible values in the future of a physical property. For example, due to a load subsidence of the soil surface will occur. It is interesting how much subsidence will occur in the next ten years. Another example, due to a side stream a gully will move sidewards. It is interesting to know the location of the gully in the next year.
 
-This is displayed in {\autoref{fig:WorkflowProbabilisticToolkit}}
+%See \autoref{ug:OutputUncertainty} for more information.
 
-\begin{figure}[H]
-	\centering
-	\begin{tikzpicture}[auto, node distance=2cm,>=latex']
-	\node [round, label=east:start] (Start) {};
-	\node [block, below of=Start] (Model) {Attach model};
-	\node [block, below of=Model] (Variables) {Define variables};
-	\node [block, below of=Variables] (BandWidth) {Output unc.};
-	%\node [coordinate, below of=BandWidth] (C2) {};
-	\node [block, left of=BandWidth] (Sensitivity) {Sensitivity};
-	\node [block, left of=Sensitivity] (Run) {Run model};
-	\node [block, right of=BandWidth] (Calibration) {Calibration};
-	\node [block, right of=Calibration] (Failure) {Reliability};
-	\node [block, below of=BandWidth] (Calculations) {Inspect realizations};
-	\node [round, below of=Calculations, label=east:end] (End) {};
-	
-	\draw [->] (Start) -- (Model);
-	\draw [->] (Model) -- (Variables);
-	\draw [->] (Variables) -| (Run);
-	\draw [->] (Variables) -| (Sensitivity);
-	\draw [->] (Variables) -- (BandWidth);
-	\draw [->] (Variables) -| (Calibration);
-	\draw [->] (Variables) -| (Failure);
-	\draw [->] (Run) |- (Calculations);
-	\draw [->] (Sensitivity) |- (Calculations);
-	\draw [->] (BandWidth) -- (Calculations);
-	\draw [->] (Failure) |- (Calculations);
-	\draw [->] (Calibration) |- (Calculations);
-	\draw [->] (Calculations) -- (End);
-	
-	\end{tikzpicture}
-	\caption{Workflow through probabilistic toolkit}
-	\label{fig:WorkflowProbabilisticToolkit}
-\end{figure}
+%\section{Calibration}
 
-The workflow sequence is reflected by the tabs in the main tab control of the application. Depending on the selected analysis type, model and calculation options the visible tabs may change a bit.
+%Calibration is a method where input parameters can be derived from measured output parameters, including uncertainty. Calibration can be used to obtain parameters, which are difficult to obtain directly.
 
-\begin{figure}[H]
-	\label{fig:WorkflowTabs}
-	\centering
-	\includegraphics[scale=1.0]{pictures/workflow-tabs.jpg}
-	\caption{Workflow tabs}
-\end{figure}
+%For example, the roughness of a river bed is hard to obtain. Using measured values such as time series of water levels at different locations, the roughness coefficients are determined. 
 
-The order of the steps 'Attach model', 'Define variables' and 'Perform analysis' is fixed, although one can always return to a previous step. The steps within the step 'Perform analysis', which are 'Run model', 'Sensitivity', 'Output uncertainty', 'Calibration' and 'Reliability' are optional and can be performed in any order.
-
-\section{Run Model}
-
-Running a model is the most simple application in the Probabilistic Toolkit. It just, as the word says, runs a model and displays its results. This can be done for one input set or for several input sets, where one or more parameters are varied.
-
-Running a model helps the user to get a feel for the model and check whether the model has been attached to the Probabilistic Toolkit in the right way. See \autoref{ug:RunModel} for more information.
-
-\section{Sensitivity}
-
-In sensitivity analysis the effects of changes to input variables are investigated. 
-
-This will give insight in which input parameters are important and help the user decide which input parameters must be measured more precisely. See \autoref{ug:Sensitivity} for more information.
-
-\section{Output uncertainty}
-
-Output uncertainty is an extension of sensitivity analysis. Now all input parameters are varied according to their uncertainty definition. This leads to uncertainty of the output parameters.
-
-This is useful when the user is interested in possible values in the future of a physical property. For example, due to a load subsidence of the soil surface will occur. It is interesting how much subsidence will occur in the next ten years. Another example, due to a side stream a gully will move sidewards. It is interesting to know the location of the gully in the next year.
-
-See \autoref{ug:OutputUncertainty} for more information.
-
-\section{Calibration}
-
-Calibration is a method where input parameters can be derived from measured output parameters, including uncertainty. Calibration can be used to obtain parameters, which are difficult to obtain directly.
-
-For example, the roughness of a river bed is hard to obtain. Using measured values such as time series of water levels at different locations, the roughness coefficients are determined. 
-
-See \autoref{ug:Calibration} for more information.
+%See \autoref{ug:Calibration} for more information.
 
 \section{Reliability}
 
@@ -102,16 +27,14 @@ Reliability analysis determines the reliability, or probability of failure, of a
 
 For example, the probability that a dike will fail can be calculated. This is used in assessment of dikes and using this probability, a decision will be made to strengthen it. An accurate calculation of the probability of failure is important, since it can save money by not strengthening it more than necessary.
 
-To calculate an accurate probability of failure, survived situations can be used. Even lots of effort have been put in measuring input values, it is impossible to know the subsoil in long stretches of dikes completely. So it might be possible that a model predicts dike failure, while in reality it has been observed that the dike has survived. The Probabilistic Toolkit uses these events to update the probability of failure.
+To calculate an accurate probability of failure, survived situations can be used. Even lots of effort have been put in measuring input values, it is impossible to know the subsoil in long stretches of dikes completely. So it might be possible that a model predicts dike failure, while in reality it has been observed that the dike has survived. The Probabilistic Library uses these events to update the probability of failure.
 
 Another example is risk based asset management. In risk based asset management a maintenance schedule will be set up, so that total costs over a long period are minimal. The total costs include strengthening actions and risk (risk is probability times damage).
 
-See \autoref{ug:Reliability} for more information.
+See \autoref{sec:Reliability} for more information.
 
-\begin{figure}[H]
-	\label{fig:HighWaterLevel}
-	\centering
-	\includegraphics[width=0.8\textwidth]{pictures/dike.png}
-	\caption{High water level}
-\end{figure}
+\section{Sensitivity}
 
+In sensitivity analysis the effects of changes to input variables are investigated. 
+
+This will give insight in which input parameters are important and help the user decide which input parameters must be measured more precisely. See \autoref{sec:Sensitivity} for more information.
