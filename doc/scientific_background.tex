@@ -41,6 +41,7 @@ minimum height=1em, minimum width=1em, node distance=6em]
 \begin{document}
 	
 \pagestyle{empty}
+\input{common/texdefs}
 
 \title{Probabilistic Library}
 \subtitle{}
@@ -49,10 +50,6 @@ minimum height=1em, minimum width=1em, node distance=6em]
 \manualtitle
 
 \author{ }
-
-\bibliographystyle{apalike}
-
-%\deltarestitle	
 	
 \part{Introduction}
 
@@ -61,6 +58,10 @@ minimum height=1em, minimum width=1em, node distance=6em]
 \include{scientific_chapters/Introduction}
 
 \part{Scientific Background}
+
+\include{scientific_chapters/Terminology}
+
+\include{scientific_chapters/Reliability}
 
 \include{scientific_chapters/Distributions}
 
@@ -71,8 +72,6 @@ minimum height=1em, minimum width=1em, node distance=6em]
 \include{scientific_chapters/Output_uncertainty}
 
 \include{scientific_chapters/Calibration}
-
-\include{scientific_chapters/Reliability}
 
 \include{scientific_chapters/ResponseSurfaces}
 
