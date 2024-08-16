@@ -10,6 +10,7 @@ namespace Deltares
         public:
             static double getGamma(const double x);
             static double getGammaUpperRegularized(const double a, const double x);
+            static double getGammaLowerRegularized(const double a, const double x);
             static double getBeta(double a, double b);
             static double getBetaRegularized(double a, double b, double x);
             static double getBetaIncomplete(double a, double b, double x);

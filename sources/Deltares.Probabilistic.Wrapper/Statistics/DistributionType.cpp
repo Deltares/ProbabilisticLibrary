@@ -29,6 +29,7 @@ namespace Deltares
                 case Wrappers::DistributionType::Pareto: return Statistics::DistributionType::Pareto;
                 case Wrappers::DistributionType::GeneralizedPareto: return Statistics::DistributionType::GeneralizedPareto;
                 case Wrappers::DistributionType::Beta: return Statistics::DistributionType::Beta;
+                case Wrappers::DistributionType::Gamma: return Statistics::DistributionType::Gamma;
                 case Wrappers::DistributionType::Table: return Statistics::DistributionType::Table;
                 case Wrappers::DistributionType::CDFCurve: return Statistics::DistributionType::CDFCurve;
                 case Wrappers::DistributionType::Discrete: return Statistics::DistributionType::Discrete;
@@ -57,6 +58,7 @@ namespace Deltares
                 case Statistics::DistributionType::RayleighN: return Wrappers::DistributionType::RayleighN;
                 case Statistics::DistributionType::Pareto: return Wrappers::DistributionType::Pareto;
                 case Statistics::DistributionType::Beta: return Wrappers::DistributionType::Beta;
+                case Statistics::DistributionType::Gamma: return Wrappers::DistributionType::Gamma;
                 case Statistics::DistributionType::Table: return Wrappers::DistributionType::Table;
                 case Statistics::DistributionType::CDFCurve: return Wrappers::DistributionType::CDFCurve;
                 case Statistics::DistributionType::Discrete: return Wrappers::DistributionType::Discrete;

@@ -45,6 +45,16 @@ namespace Deltares
             }
         }
 
+        double SpecialFunctions::getGammaLowerRegularized(const double a, const double x)
+        {
+            double gamma = getGamma(x);
+            double upperGammaIncomplete = gamma * getGammaUpperRegularized(a, x);
+            double lowerGammaIncomplete = gamma - upperGammaIncomplete;
+            double lowerGammaRegularized = lowerGammaIncomplete / gamma;
+
+            return lowerGammaRegularized;
+        }
+
         // Function for the incomplete gamma function
         // using a series representation
         // See for background: Numerical recipes par. 6.2

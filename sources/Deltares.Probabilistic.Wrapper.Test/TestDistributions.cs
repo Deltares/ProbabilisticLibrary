@@ -564,6 +564,22 @@ namespace Deltares.Probabilistic.Wrapper.Test
         }
 
         [Test]
+        public void TestGamma()
+        {
+            var stochast = new Stochast { DistributionType = DistributionType.Gamma, Scale = 1, Shape = 1 };
+
+            Assert.AreEqual(0.0951, stochast.GetCDF(0.1), margin);
+
+            TestStochast(stochast);
+
+            stochast.Scale = 2;
+            stochast.Shape = 3;
+
+            TestInvert(stochast, false);
+            TestFit(stochast, 0.15);
+        }
+
+        [Test]
         public void TestDiscrete()
         {
             var stochast = new Stochast { DistributionType = DistributionType.Discrete };

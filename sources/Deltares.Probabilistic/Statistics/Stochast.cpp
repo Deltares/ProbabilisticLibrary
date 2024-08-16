@@ -259,6 +259,7 @@ namespace Deltares
             else if (distributionType == "pareto") return Statistics::DistributionType::Pareto;
             else if (distributionType == "generalized_pareto") return Statistics::DistributionType::GeneralizedPareto;
             else if (distributionType == "beta") return Statistics::DistributionType::Beta;
+            else if (distributionType == "gamma") return Statistics::DistributionType::Gamma;
             else if (distributionType == "histogram") return Statistics::DistributionType::Table;
             else if (distributionType == "cdf_curve") return Statistics::DistributionType::CDFCurve;
             else if (distributionType == "discrete") return Statistics::DistributionType::Discrete;
@@ -287,6 +288,7 @@ namespace Deltares
             case Statistics::DistributionType::Pareto: return "pareto";
             case Statistics::DistributionType::GeneralizedPareto: return "generalized_pareto";
             case Statistics::DistributionType::Beta: return "beta";
+            case Statistics::DistributionType::Gamma: return "gamma";
             case Statistics::DistributionType::Table: return "histogram";
             case Statistics::DistributionType::CDFCurve: return "cdf_curve";
             case Statistics::DistributionType::Discrete: return "discrete";
