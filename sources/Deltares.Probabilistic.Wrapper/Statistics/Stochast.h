@@ -1,4 +1,5 @@
 #pragma once
+#include "BaseStochast.h"
 #include "../../Deltares.Probabilistic/Statistics/DistributionType.h"
 #include "../../Deltares.Probabilistic/Statistics/Stochast.h"
 #include "../../Deltares.Probabilistic/Statistics/StandardNormal.h"
@@ -8,6 +9,7 @@
 #include "DiscreteValue.h"
 #include "HistogramValue.h"
 #include "FragilityValue.h"
+#include "ContributingStochast.h"
 #include "VariableStochastValueSet.h"
 #include "DistributionType.h"
 
@@ -20,7 +22,7 @@ namespace Deltares
             public enum class ConstantParameterType { Deviation, VariationCoefficient };
             public delegate double ManagedUXDelegate(double u);
 
-            public ref class Stochast
+            public ref class Stochast : public BaseStochast
             {
             private:
                 Utils::Wrappers::SharedPointerProvider<Statistics::Stochast>* shared = nullptr;
@@ -34,15 +36,18 @@ namespace Deltares
                     histogramValues->SetCallBack(gcnew ListCallBack<HistogramValue^>(this, &Stochast::SynchronizeHistogramValues));
                     discreteValues->SetCallBack(gcnew ListCallBack<DiscreteValue^>(this, &Stochast::SynchronizeDiscreteValues));
                     fragilityValues->SetCallBack(gcnew ListCallBack<FragilityValue^>(this, &Stochast::SynchronizeFragilityValues));
+                    contributingStochasts->SetCallBack(gcnew ListCallBack<ContributingStochast^>(this, &Stochast::SynchronizeContributingStochasts));
                 }
 
                 void SynchronizeHistogramValues(ListOperationType listOperationType, HistogramValue^ histogramValue);
                 void SynchronizeDiscreteValues(ListOperationType listOperationType, DiscreteValue^ discreteValue);
                 void SynchronizeFragilityValues(ListOperationType listOperationType, FragilityValue^ discreteValue);
+                void SynchronizeContributingStochasts(ListOperationType listOperationType, ContributingStochast^ contributingStochast);
 
                 CallBackList<HistogramValue^>^ histogramValues = gcnew CallBackList<HistogramValue^>();
                 CallBackList<DiscreteValue^>^ discreteValues = gcnew CallBackList<DiscreteValue^>();
                 CallBackList<FragilityValue^>^ fragilityValues = gcnew CallBackList<FragilityValue^>();
+                CallBackList<ContributingStochast^>^ contributingStochasts = gcnew CallBackList<ContributingStochast^>();
 
                 Stochast^ source = nullptr;
                 VariableStochastValueSet^ valueSet = gcnew VariableStochastValueSet();
@@ -55,6 +60,7 @@ namespace Deltares
                 bool AreHistogramValuesMatching();
                 bool AreFragilityValuesMatching();
                 bool AreDiscreteValuesMatching();
+                bool AreContributingStochastsMatching();
 
                 System::Collections::Generic::List<ManagedUXDelegate^>^ handles = gcnew System::Collections::Generic::List<ManagedUXDelegate^>();
             public:
@@ -104,7 +110,7 @@ namespace Deltares
                  */
                 void SetExternalDistribution(ManagedUXDelegate^ uxDelegate);
 
-                virtual bool IsValid()
+                virtual bool IsValid() 
                 {
                     return shared->object->isValid();
                 }
@@ -228,6 +234,11 @@ namespace Deltares
                     System::Collections::Generic::IList<FragilityValue^>^ get() { return fragilityValues; }
                 }
 
+                property System::Collections::Generic::IList<ContributingStochast^>^ ContributingStochasts
+                {
+                    System::Collections::Generic::IList<ContributingStochast^>^ get() { return contributingStochasts; }
+                }
+
                 virtual bool HasParameter(DistributionPropertyType property)
                 {
                     return shared->object->hasParameter(DistributionTypeConverter::getNativeDistributionPropertyType(property));
@@ -317,7 +328,7 @@ namespace Deltares
                     void set(Stochast^ value) { this->source = value; }
                 }
 
-                std::shared_ptr<Statistics::Stochast> GetStochast()
+                std::shared_ptr<Statistics::Stochast> GetStochast() override
                 {
                     updateStochast();
 

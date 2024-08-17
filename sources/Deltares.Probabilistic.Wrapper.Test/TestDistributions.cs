@@ -654,6 +654,24 @@ namespace Deltares.Probabilistic.Wrapper.Test
         }
 
         [Test]
+        public void TestComposite()
+        {
+            var stochast = new Stochast { DistributionType = DistributionType.Composite };
+
+            var stochast1 = new Stochast { DistributionType = DistributionType.Uniform, Minimum = 0, Maximum = 8};
+            var stochast2 = new Stochast { DistributionType = DistributionType.Uniform, Minimum = 6, Maximum = 10 };
+
+            stochast.ContributingStochasts.Add(new ContributingStochast { Probability = 0.4, Stochast = stochast1 });
+            stochast.ContributingStochasts.Add(new ContributingStochast { Probability = 0.6, Stochast = stochast2 });
+
+            Assert.IsTrue(stochast.IsVarying());
+
+            Assert.AreEqual(0.4 * 0.125 + 0.6 * 0, stochast.GetCDF(1.0), margin);
+            Assert.AreEqual(0.4 * 0.875 + 0.6 * 0.25, stochast.GetCDF(7.0), margin);
+            Assert.AreEqual(0.4 * 1 + 0.6 * 0.75, stochast.GetCDF(9.0), margin);
+        }
+
+        [Test]
         public void TestDiscrete()
         {
             var stochast = new Stochast { DistributionType = DistributionType.Discrete };

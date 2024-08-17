@@ -2,6 +2,7 @@
 
 #include "BernoulliDistribution.h"
 #include "BetaDistribution.h"
+#include "CompositeDistribution.h"
 #include "ConditionalWeibullDistribution.h"
 #include "DeterministicDistribution.h"
 #include "FragilityCurveDistribution.h"
@@ -65,6 +66,7 @@ namespace Deltares
             case DistributionType::CDFCurve: distribution = std::make_shared<FragilityCurveDistribution>(); break;
             case DistributionType::Discrete: distribution = std::make_shared<DiscreteDistribution>(); break;
             case DistributionType::Qualitative: distribution = std::make_shared<QualitativeDistribution>(); break;
+            case DistributionType::Composite: distribution = std::make_shared<CompositeDistribution>(); break;
             default:
                 throw Deltares::Reliability::probLibException("Distribution type not supported");
             }

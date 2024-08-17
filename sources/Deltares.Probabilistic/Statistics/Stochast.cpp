@@ -267,6 +267,7 @@ namespace Deltares
             else if (distributionType == "cdf_curve") return Statistics::DistributionType::CDFCurve;
             else if (distributionType == "discrete") return Statistics::DistributionType::Discrete;
             else if (distributionType == "qualitative") return Statistics::DistributionType::Qualitative;
+            else if (distributionType == "composite") return Statistics::DistributionType::Composite;
             else throw Reliability::probLibException("distribution type");
         }
 
@@ -299,6 +300,7 @@ namespace Deltares
             case Statistics::DistributionType::CDFCurve: return "cdf_curve";
             case Statistics::DistributionType::Discrete: return "discrete";
             case Statistics::DistributionType::Qualitative: return "qualitative";
+            case Statistics::DistributionType::Composite: return "composite";
             default: throw Reliability::probLibException("distribution type");
             }
         }

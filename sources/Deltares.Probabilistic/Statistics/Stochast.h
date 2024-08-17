@@ -2,6 +2,7 @@
 #include <memory>
 #include <vector>
 
+#include "BaseStochast.h"
 #include "StochastProperties.h"
 #include "Distributions/DeterministicDistribution.h"
 #include "Distributions/Distribution.h"
@@ -16,7 +17,7 @@ namespace Deltares
          * \brief Defines a stochastic variable
          * \remark Contains parameters and a distribution type which describe the stochastic behaviour
          */
-        class Stochast
+        class Stochast : public BaseStochast
         {
         private:
             DistributionType distributionType = DistributionType::Deterministic;
@@ -65,14 +66,14 @@ namespace Deltares
              * \param x Given x-value
              * \return PDF
              */
-            double getPDF(double x);
+            double getPDF(double x) override;
 
             /**
              * \brief Gets the Cumulative Density Function (CDF) for a given x-value
              * \param x Given x-value
              * \return CDF
              */
-            double getCDF(double x);
+            double getCDF(double x) override;
 
             /**
              * \brief Gets the x-value corresponding to a quantile (non-exceeding probability)
@@ -86,14 +87,14 @@ namespace Deltares
              * \param u Given u-value
              * \return x-value
              */
-            double getXFromU(double u);
+            double getXFromU(double u) override;
 
             /**
              * \brief Gets the u-value corresponding to a given x-value
              * \param x Given x-value
              * \return u-value
              */
-            double getUFromX(double x);
+            double getUFromX(double x) override;
 
             /**
              * \brief Gets the x-value for a given u-value for variable stochasts, i.e. stochasts where the stochastic parameters depend on the value of another stochast
@@ -170,7 +171,7 @@ namespace Deltares
              * \brief Indicates whether different u-values can lead to different x-values
              * \return Indication 
              */
-            bool isVarying();
+            bool isVarying() override;
 
             /**
              * \brief Indicates whether it is useful (false) or not (true) to compare x-values to each other.
@@ -191,7 +192,7 @@ namespace Deltares
              * \brief Gets the mean value of a stochast
              * \return Mean value
              */
-            double getMean();
+            double getMean() override;
 
             /**
              * \brief Sets the mean value of a stochast 
@@ -263,7 +264,7 @@ namespace Deltares
              * \brief Indicates whether the stochastic parameter have valid values for the current distribution type
              * \return Indication
              */
-            bool isValid();
+            bool isValid() override;
 
             /**
              * \brief Indicates whether the stochast uses a given parameter type

@@ -159,6 +159,9 @@
     <ClCompile Include="Statistics\Distributions\BernoulliDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\PoissonDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\StudentTDistribution.cpp" />
+    <ClCompile Include="Statistics\ContributingStochast.cpp" />
+    <ClCompile Include="Statistics\BaseStochast.cpp" />
+    <ClCompile Include="Statistics\Distributions\CompositeDistribution.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -337,6 +340,9 @@
     <ClInclude Include="Statistics\Distributions\BernoulliDistribution.h" />
     <ClInclude Include="Statistics\Distributions\PoissonDistribution.h" />
     <ClInclude Include="Statistics\Distributions\StudentTDistribution.h" />
+    <ClInclude Include="Statistics\ContributingStochast.h" />
+    <ClInclude Include="Statistics\BaseStochast.h" />
+    <ClInclude Include="Statistics\Distributions\CompositeDistribution.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

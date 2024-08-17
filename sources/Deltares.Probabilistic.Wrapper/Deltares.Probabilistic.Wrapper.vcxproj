@@ -160,6 +160,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Statistics\BaseStochast.h" />
+    <ClInclude Include="Statistics\ContributingStochast.h" />
     <ClInclude Include="Utils\CallBackList.h" />
     <ClInclude Include="Reliability\DesignPointCombiner.h" />
     <ClInclude Include="Model\ProxySettings.h" />
@@ -217,6 +219,7 @@
     <ClInclude Include="Statistics\VariableStochastValue.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Statistics\BaseStochast.cpp" />
     <ClCompile Include="Utils\CallBackList.cpp" />
     <ClCompile Include="Reliability\DesignPointCombiner.cpp" />
     <ClCompile Include="Model\ProxySettings.cpp" />
