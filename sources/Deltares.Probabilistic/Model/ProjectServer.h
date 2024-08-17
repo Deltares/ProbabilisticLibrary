@@ -38,7 +38,7 @@ namespace Deltares
             void SetCallBack(int id, std::string property_, ZValuesCallBack callBack);
             void Execute(int id, std::string method_);
         private:
-            enum ObjectType {StandardNormal, Project, Stochast, DiscreteValue, HistogramValue, FragilityValue, CorrelationMatrix, Settings, StochastSettings, DesignPoint, Alpha, CombineProject, CombineSettings, SelfCorrelationMatrix};
+            enum ObjectType {StandardNormal, Project, Stochast, DiscreteValue, HistogramValue, FragilityValue, ContributingStochast, CorrelationMatrix, Settings, StochastSettings, DesignPoint, Alpha, CombineProject, CombineSettings, SelfCorrelationMatrix};
 
             int counter = 0;
             std::unordered_map<int, Deltares::Models::ProjectServer::ObjectType> types;
@@ -48,6 +48,7 @@ namespace Deltares
             std::unordered_map<int, std::shared_ptr<Statistics::DiscreteValue>> discreteValues;
             std::unordered_map<int, std::shared_ptr<Statistics::HistogramValue>> histogramValues;
             std::unordered_map<int, std::shared_ptr<Statistics::FragilityValue>> fragilityValues;
+            std::unordered_map<int, std::shared_ptr<Statistics::ContributingStochast>> contributingStochasts;
             std::unordered_map<int, std::shared_ptr<Statistics::CorrelationMatrix>> correlationMatrices;
             std::unordered_map<int, std::shared_ptr<Reliability::Settings>> settingsValues;
             std::unordered_map<int, std::shared_ptr<Reliability::StochastSettings>> stochastSettingsValues;
@@ -63,12 +64,14 @@ namespace Deltares
             std::unordered_map<std::shared_ptr<Statistics::HistogramValue>, int> histogramValueIds;
             std::unordered_map<std::shared_ptr<Statistics::DiscreteValue>, int> discreteValueIds;
             std::unordered_map<std::shared_ptr<Statistics::FragilityValue>, int> fragilityValueIds;
+            std::unordered_map<std::shared_ptr<Statistics::ContributingStochast>, int> contributingStochastIds;
 
             int GetDesignPointId(std::shared_ptr<Reliability::DesignPoint> designPoint);
             int GetAlphaId(std::shared_ptr<StochastPointAlpha> alpha);
             int GetHistogramValueId(std::shared_ptr<Statistics::HistogramValue> histogramValue);
             int GetDiscreteValueId(std::shared_ptr<Statistics::DiscreteValue> discreteValue);
             int GetFragilityValueId(std::shared_ptr<Statistics::FragilityValue> fragilityValue);
+            int GetContributingStochastId(std::shared_ptr<Statistics::ContributingStochast> contributingStochast);
         };
     }
 }

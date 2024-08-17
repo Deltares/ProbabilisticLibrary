@@ -669,6 +669,8 @@ namespace Deltares.Probabilistic.Wrapper.Test
             Assert.AreEqual(0.4 * 0.125 + 0.6 * 0, stochast.GetCDF(1.0), margin);
             Assert.AreEqual(0.4 * 0.875 + 0.6 * 0.25, stochast.GetCDF(7.0), margin);
             Assert.AreEqual(0.4 * 1 + 0.6 * 0.75, stochast.GetCDF(9.0), margin);
+
+            TestStochast(stochast);
         }
 
         [Test]

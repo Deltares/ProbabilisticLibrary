@@ -29,6 +29,7 @@ class Stochast:
 		self._discrete_values = None
 		self._histogram_values = None
 		self._fragility_values = None
+		self._contributing_stochasts = None
 		self._synchronizing = False
 
 	def __del__(self):
@@ -212,7 +213,7 @@ class Stochast:
 			self._fragility_values = CallbackList(self._fragility_values_changed)
 			fragility_ids = interface.GetArrayIntValue(self._id, 'fragility_values')
 			for fragility_id in fragility_ids:
-				self._fragility_values.append(HistogramValue(fragility_id))
+				self._fragility_values.append(FragilityValue(fragility_id))
 			self._synchronizing = False
 
 		return self._fragility_values
@@ -220,6 +221,22 @@ class Stochast:
 	def _fragility_values_changed(self):
 		if not self._synchronizing:
 			interface.SetArrayIntValue(self._id, 'fragility_values', [fragility_value._id for fragility_value in self._fragility_values])
+
+	@property   
+	def contributing_stochasts(self):
+		if self._contributing_stochasts is None:
+			self._synchronizing = True
+			self._contributing_stochasts = CallbackList(self._contributing_stochasts_changed)
+			contributing_stochast_ids = interface.GetArrayIntValue(self._id, 'contributing_stochasts')
+			for contributing_stochast_id in contributing_stochast_ids:
+				self._contributing_stochasts.append(ContributingStochast(contributing_stochast_id))
+			self._synchronizing = False
+
+		return self._contributing_stochasts
+
+	def _contributing_stochasts_changed(self):
+		if not self._synchronizing:
+			interface.SetArrayIntValue(self._id, 'contributing_stochasts', [contributing_stochast._id for contributing_stochast in self._contributing_stochasts])
 
 	@property   
 	def design_fraction(self):
@@ -393,6 +410,46 @@ class HistogramValue:
 	def amount(self, value):
 		interface.SetValue(self._id, 'amount',  value)
 
+
+class ContributingStochast:
+
+	def __init__(self, id = None):
+		if id is None:
+			self._id = interface.Create('contributing_stochast')
+		else:
+			self._id = id
+		self._stochast = None
+  
+	def __del__(self):
+		interface.Destroy(self._id)
+
+	def create(probability : float, variable : Stochast):
+		contributingStochast = ContributingStochast();
+		contributingStochast.probability = probability
+		contributingStochast.variable = variable
+		return contributingStochast
+  
+	@property   
+	def probability(self):
+		return interface.GetValue(self._id, 'property')
+		
+	@probability.setter
+	def probability(self, value):
+		interface.SetValue(self._id, 'probability',  value)
+		
+	@property   
+	def variable(self):
+		if self._variable is None:
+			id_ = interface.GetIntValue(self._id, 'variable')
+			if id_ > 0:
+				self._variable = Stochast(id_)
+		return self._variable
+		
+	@variable.setter
+	def variable(self, value):
+		self._variable = value
+		if not self._variable is None:
+			interface.SetIntValue(self._id, 'variable',  self._variable._id)
 
 class CorrelationMatrix:
 
