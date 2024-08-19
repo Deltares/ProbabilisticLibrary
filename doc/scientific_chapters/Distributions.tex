@@ -40,7 +40,7 @@ The probabilities of the standard normal distribution are displayed in the follo
 \section{Distribution properties}
 \label{sec:DistributionProperties}
 
-This paragraph lists all distribution types supported by the \probLib. In theory, endless distribution types exist. All dsitributions have the following properties:
+This paragraph lists all distribution types supported by the \probLib. In theory, endless distribution types exist. All distributions have the following properties:
 
 Each distribution reflects actual values. From these values $x_i$ the following properties can be derived
 
@@ -51,7 +51,7 @@ Each distribution reflects actual values. From these values $x_i$ the following 
 	\mu =\frac{1}{N}\sum_{i=1}^{N}x_{i}
 	\end{align}	
 	\item Mode: The value with the highest probability density;
-	\item Median: The value for which half of the randomly chosen values is less than this value and  half of the randomly chosen values is more than this value;
+	\item Median: The value for which half of the randomly chosen values is less than this value and half of the randomly chosen values is more than this value;
 	\item Standard deviation $\sigma$: A measure how much randomly chosen values differ from the mean, calculated as follows:
 	\begin{align}
 	\label{eq:StandardDeviation}
@@ -112,7 +112,6 @@ Mean & $\mu = m$ \\
 Deviation & $\sigma = 0$ \\
 Fit & $ \displaystyle{m = \frac{1}{N} \sum\limits_{i=1}^N x_i} $
 
-
 \end{tabular}
 
 \subsection{Normal distribution}
@@ -132,25 +131,42 @@ The properties of the normal distribution are
 	
 \end{tabular}
 
+\Fref{fig:A.3} shows the probability density of the normal distribution, with the parameters $\mu $ and $\sigma $ indicated. \Fref{fig:A.4} shows the variation in the density function for different choices of $\mu $ and $\sigma $.
+
+\begin{figure}[H]\centering
+	\includegraphics*[width=2.76in, height=2.33in, keepaspectratio=false]{funcdesign_chapters/figappdistributionfunctions/image32}
+	\caption{Normal probability density function, with parameters $\mu $ and $\sigma $ indicated}\label{fig:A.3}
+\end{figure}
+
+\begin{figure}[H]\centering
+	\includegraphics*[width=4.10in, height=3.22in, keepaspectratio=false]{funcdesign_chapters/figappdistributionfunctions/image33}
+	\caption{Illustration of the effect of parameters $\mu $ and $\sigma $}\label{fig:A.4}
+\end{figure}
+
 \subsection{Log normal distribution}
 
 If parameter $y=\ln(x)$ has a normal distribution, then parameter $x$ has a log-normal distribution. A log-normal distribution always yields values higher than a given shift (usually 0). The normal and log-normal distributions are similar for small ratios between the standard deviation and the mean. 
 The properties of the log normal distribution are
 
 \begin{tabular}{p{20mm}p{\textwidth-24pt-20mm}}  
-	
+
 	PDF & $ \displaystyle{f\left(x\right)=\frac{1}{\left(x - c\right)s\sqrt{2\pi}}   \exp\left({-\frac{\left(\text{ln}\left(x - c\right) - m\right)^2} {2s^2}}\right)}$ \\
-	
+
 	CDF & $ \displaystyle{F\left(x\right) = \Phi\left(\frac{\text{ln}\left(x - c\right) - m}{s}\right)}$ \\ 
-	
+
 	Mean & $ \displaystyle{\mu = \exp\left( {m + \tfrac{1}{2} s^2}\right) \iff m = \text{ln}\left(\mu - c\right) - \tfrac{1}{2}\sigma^2}$ \\
 	Deviation & $ \displaystyle{\sigma^2 = \left(\mu - c\right)^2 \cdot \left(\exp\left(s^2\right) - 1\right) \iff s^2 =  \text{ln} \left(1 + \left(\frac{\sigma}{\mu - c}\right)^2\right)}$ \\
 	Fit & $ \displaystyle{m = \frac{1}{N}  \sum\limits_{i=1}^N \text{ln} \left(x_i - c\right)} $ \\
 	& $ \displaystyle{s^2 = \frac{1}{N - 1} \sum\limits_{i=1}^N \left(\text{ln}\left(x_i - c\right)-m\right)^2}$ 
-	
-	
+
 \end{tabular}
 
+\Fref{fig:A.5} shows the effect of different choices of the parameters.
+
+\begin{figure}[H]\centering
+	\includegraphics*[width=4.10in, height=3.22in, keepaspectratio=false]{funcdesign_chapters/figappdistributionfunctions/image34}
+	\caption{Illustration of the effect of parameters $\mu $, $\sigma $, and $\varepsilon $ on the lognormal density function}\label{fig:A.5}
+\end{figure}
 
 \subsection{Uniform distribution}
 
@@ -176,6 +192,19 @@ The properties of the uniform distribution are
 	& $\displaystyle{\delta = \frac{x_{\text{max}} - x_{\text{min}}}{N}} $
 	
 \end{tabular}
+
+The distribution parameters a and $B$ indicate the range over which the probability density function is non-zero, with a indicating the starting point and $b$ indicating the ending point.
+\Fref{fig:A.1} and \Fref{fig:A.2} show the uniform probability density and cumulative probability distribution, respectively, as a function of a and b. 
+
+\begin{figure}[H]\centering
+	\includegraphics*[width=3.04in, height=2.33in, keepaspectratio=false]{funcdesign_chapters/figappdistributionfunctions/image30}
+	\caption{Uniform probability density function, with parameters $a$ and $b$ indicated}\label{fig:A.1}
+\end{figure}
+
+\begin{figure}[H]\centering
+	\includegraphics*[width=2.85in, height=2.34in, keepaspectratio=false]{funcdesign_chapters/figappdistributionfunctions/image31}
+	\caption{Uniform cumulative distribution function, with parameters $a$ and $b$ indicated}\label{fig:A.2}
+\end{figure}
 
 \subsection{Triangular distribution}
 
@@ -248,6 +277,12 @@ The exponential distribution is also defined with the rate $\lambda$. The proper
 	
 \end{tabular}
 
+The parameter of the exponential distribution, $\lambda $, is referred to as a rate parameter, and determines how quickly the density function goes to zero. The parameter $\varepsilon $ is the shift parameter and serves to horizontally translate the density. \Fref{fig:A.5} shows the effect of different choices of the parameters.
+
+\begin{figure}[H]\centering
+	\includegraphics*[width=4.17in, height=3.27in, keepaspectratio=false]{funcdesign_chapters/figappdistributionfunctions/image35}
+	\caption{Illustration of the effect of parameters $\lambda $ and $\varepsilon $ on the exponential density function}\label{fig:A.6}
+\end{figure}
 
 \subsection{Gumbel distribution}
 
@@ -271,6 +306,13 @@ where
 
 The expression for the fit is from: \citep{Forbes2010} .
 
+The two parameters that should be input into the \probLib are therefore the rate parameter and the location parameter. \Fref{fig:A.7} shows the effect of different choices of the parameters.
+
+\begin{figure}[H]\centering
+	\includegraphics*[width=4.17in, height=3.27in, keepaspectratio=false]{funcdesign_chapters/figappdistributionfunctions/image36}
+	\caption{Effect of the scale and location parameters, $\alpha $ and $\xi $, on the Gumbel density function}\label{fig:A.7}
+\end{figure}
+
 \subsubsection{Decimation value}
 
 Alternatively, the location and scale can be derived from a decimation value $D$ and a known exceeding probability for a certain $x_\text{exc}$. The decimation value $D$ is the difference in the $x$-value, which reduces the exceeding probability $F_\text{exc}$ with a factor 10. This leads to
@@ -287,7 +329,7 @@ with
 F_{\text{exc}}\left(x\right) = 1 - F\left(x\right)
 \end{align}
 
-The distribution properties can  be derived as follows from the decimation height
+The distribution properties can be derived as follows from the decimation height
 
 \begin{tabular}{p{20mm}p{\textwidth-24pt-20mm}}  
 	
@@ -539,17 +581,17 @@ The properties of the Poisson distribution are (where $\lfloor x \rfloor$ is the
 The properties of the discrete distribution are based on a set of x values $X = \{x_1, x_2, ...,  x_N\}$ and their weights $w_i$
 
 \begin{tabular}{p{20mm}p{\textwidth-24pt-20mm}}  
-	
+
 	PDF & $ \displaystyle{f\left(x\right) = \left\{\begin{array}{ll}x = x_i & \frac{w_i}{\sum\limits_{j=1}^N w_j} \\
 		x \neq x_i & 0
 		\end{array}	
 		\right.}$  \\
 	CDF & $ \displaystyle{F\left(x\right) = \sum\limits_{x_i \leq x} f\left(x\right)}$ \\ 
-	
+
 	Mean & $ \displaystyle{\mu = \frac{\sum\limits_{i=1}^N w_i \cdot x_i}{\sum\limits_{i=1}^N w_i}}$ \\
-		
+
 	Deviation & $ \displaystyle{\sigma^2 = \frac{\sum\limits_{i=1}^N w_i \cdot \left(x_i - \mu\right)^2}{\sum\limits_{i=1}^N w_i}}$
-	
+
 \end{tabular}
 
 \subsection{Bernoulli distribution}
@@ -557,7 +599,7 @@ The properties of the discrete distribution are based on a set of x values $X = 
 The Bernoulli distribution is a special case of a discrete distribution. It consists of two discrete values, one at 0 with weight $1 - \mu$  and one at 1 with weight $\mu$.
 
 \begin{tabular}{p{20mm}p{\textwidth-24pt-20mm}}  
-	
+
 	PDF & $ \displaystyle{f\left(x\right) = \left\{\begin{array}{ll}x = 0 & 1 - \mu \\
 		x = 1 & \mu \\
 		x \notin \left\{0, 1\right\} & 0
@@ -568,11 +610,11 @@ The Bernoulli distribution is a special case of a discrete distribution. It cons
 	x > 1 & 0
 	\end{array}	
 	\right.}$  \\
-	
+
 	Mean & $\mu$ \\
-	
+
 	Deviation & $ \displaystyle{\sigma^2 = \mu \cdot \left(1 - \mu\right)}$
-	
+
 \end{tabular}
 
 \subsection{CDF curve distribution}
@@ -613,7 +655,7 @@ The inverted distribution is a distribution on top of another base distribution.
 The properties of the inverted distribution are 
 
 \begin{tabular}{p{20mm}p{\textwidth-24pt-20mm}}  
-	
+
 	PDF & $ \displaystyle{f\left(x\right) = f_\text{base}\left(c_\text{base} - x\right)}$  \\
 	CDF & $ \displaystyle{F\left(x\right) = 1 - F_\text{base}\left(c_\text{base} - x\right)}$ \\
 	Mean & $ \displaystyle{\mu = 2 c_\text{base} - \mu_\text{base}}$ \\
@@ -626,7 +668,7 @@ The properties of the inverted distribution are
 The inverted distribution is a distribution on top of another base distribution and is truncated below a minimum vale $a$ and maximum value $b$. The mean and standard deviation displayed are the properties of the base distribution, although not being the correct mean and standard deviation. The properties of the truncated distribution are 
 
 \begin{tabular}{p{20mm}p{\textwidth-24pt-20mm}}  
-	
+
 	PDF & $ \displaystyle{f\left(x\right) = \left\{\begin{array}{ll}x < a \lor x > b & 0\\
 	x \geq a \land x \leq b & \frac{f_\text{base}\left(x\right)}{F_\text{base}\left(b\right) - F_\text{base}\left(a\right)}
 	\end{array}	
@@ -639,7 +681,7 @@ CDF & $ \displaystyle{F\left(x\right) = \left\{\begin{array}{ll}x < a & 0\\
 
 Mean & $ \displaystyle{\mu =  \mu_\text{base}}$ \\
 Deviation & $ \displaystyle{\sigma = \sigma_\text{base}}$ \\
-	
+
 \end{tabular}
 
 \section{Goodness of fit}
