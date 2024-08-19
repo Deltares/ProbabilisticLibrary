@@ -9,6 +9,7 @@
 #include "Combin/combinElements_tests.h"
 #include "Combin/combiner_tests.h"
 #include "Distributions/testDistributions.h"
+#include "Sensitivity/TestSensitivity.h"
 
 using namespace Deltares::Probabilistic;
 
@@ -76,6 +77,12 @@ namespace Deltares
             {
                 auto tstDist = testDistributions();
                 tstDist.allDistributionsTests();
+            }
+
+            TEST(unittst, testSensitivity)
+            {
+                auto tstDist = TestSensitivity();
+                tstDist.AllSensitivityTests();
             }
 
             TEST(unittst, testRandom)
