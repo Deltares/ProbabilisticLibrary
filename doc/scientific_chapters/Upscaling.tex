@@ -558,7 +558,7 @@ where $v$ is the non-ergodic constant and $u$ is the ergodic stochastic process 
 \rho \left(\Delta y\right)=\exp \left[-\left(\frac{\Delta y^{2} }{d_{Z}^{2} } \right)\right] \label{eq:sm4} 
 \end{align}
 where $\rho$ is the correlation between two locations within the segment and $\Delta_y$ is the distance between two locations.
-Using the theorem of total probability, the failure probability of the flood defence segment can be described as follows:
+Using the theorem of total probability, the failure probability of the flood defense segment can be described as follows:
 \begin{align}
 P\left[Z<0\right]=\int _{}^{}P\left[Z<0|v\right]f_{V} \left(v\right)dv \label{ZEqnNum551150} 
 \end{align}
@@ -568,22 +568,22 @@ The conditional failure probability, $P[Z<0|v]$, in equation \eqref{ZEqnNum55115
 \begin{array}{l} {P\left[Z<0|v\right]=1-\left(1-P\left(Z_{cross} <0\right)\right)e^{-N_{f} } } \\\\ {N_{f} =\frac{L}{2\pi } e^{-\frac{\beta^{*2} }{2} } \frac{\sqrt{2} }{d_{z} } } \\\\ {\beta^{*}=\frac{\beta _{cross} -v\sqrt{\rho _{z} } }{\sqrt{1-\rho _{z} } } } \end{array}\label{ZEqnNum591781} 
 \end{align}
 where $Z_{cross}$ and $\beta_{cross}$ are the $Z$-function and reliability index of the cross section and $\Phi$ is the standard normal distribution function.
-The combination of equations \eqref{ZEqnNum551150} and \eqref{ZEqnNum591781} provide the probability of failure for a flood defence segment.
+The combination of equations \eqref{ZEqnNum551150} and \eqref{ZEqnNum591781} provide the probability of failure for a flood defense segment.
 More details on the derivation of equations \eqref{ZEqnNum551150} and \eqref{ZEqnNum591781} can be found in \cite{Jongejan2012}.
-Equation \eqref{ZEqnNum591781} can be evauated with high accuracy using for example numerical integration.
+Equation \eqref{ZEqnNum591781} can be evaluated with high accuracy using for example numerical integration.
 
 \Note{in formula \ref{eq:sm3}  the width of the mechanism is not taken into account.
 In the \probLib the width of the mechanism is taken equal to $\Delta L$.
 In the formula for $N_F$ the length $L$ is replaced by $L$ - $\Delta L$.
 The idea behind this correction is that for stretches smaller than $\Delta L$ it is not be possible to have an increase in failure probability as a result of the length effect.}
 
-In earlier versions of PC-Ring, the following approximation for equations \eqref{ZEqnNum551150} and \eqref{ZEqnNum591781} was implemented to save computation time:
-\begin{align}
-P\left[Z<0\right]=\left(1+\frac{L\beta \sqrt{1-\rho _{z} } }{d_{Z} \sqrt{\pi } } \right)\Phi \left(-\beta \right)\label{ZEqnNum246851}
-\end{align}
+%In earlier versions of PC-Ring, the following approximation for equations \eqref{ZEqnNum551150} and \eqref{ZEqnNum591781} was implemented to save computation time:
+%\begin{align}
+%P\left[Z<0\right]=\left(1+\frac{L\beta \sqrt{1-\rho _{z} } }{d_{Z} \sqrt{\pi } } \right)\Phi \left(-\beta %\right)\label{ZEqnNum246851}
+%\end{align}
 
-This approximation is only valid for small values of $\rho_z$.
-With the current day computation power, equation \eqref{ZEqnNum591781} can be evaluated in a split second, so it is recommended not to use the approximation as described with equation \eqref{ZEqnNum246851}.
+%This approximation is only valid for small values of $\rho_z$.
+%With the current day computation power, equation \eqref{ZEqnNum591781} can be evaluated in a split second, so it is recommended not to use the approximation as described with equation \eqref{ZEqnNum246851}.
 
 \Note{formula \eqref{ZEqnNum591781} is only valid for value of $\rho_z$ $>$ $0$.
 For values of $\rho_z = 0$ the Hohenbichler method is used in the \probLib in combination with the outcrossing approach.}
