@@ -38,12 +38,23 @@ The limit state function, $Z$, is a function of a number of random variables rep
 \begin{equation}
 P_{f} =\int \int _{Z<0}...  \int f_{X_{1} ,...,X_{n} } \left(x_{1} ,...,x_{n} \right)dx_{1}  dx_{2} ...dx_{n} =\int _{Z<0}f_{X} \left(x\right)  dx \label{eq:2-4}
 \end{equation}
-where $f$ is the joint probability distribution of the random variables and $X$ is the vector of variables: $X$ = ($X_1$,\dots $X_n$). Note that random variables are typically denoted with a capital letter ($X$), while potential realizations of the random variables are denoted with lower case letters ($x$). 
+where $f$ is the joint probability distribution of the random variables and $X$ is the vector of variables: $X$ = ($X_1$,\dots $X_n$).
+Note that random variables are typically denoted with a capital letter ($X$), while potential realizations of the random variables are denoted with lower case letters ($x$). 
 
-While an analytical solution to equation \eqref{eq:2-4} would be ideal, it is typically not available because the $Z$-function is too complex. Therefore, the probability of failure needs to be estimated with probabilistic computation techniques. Different techniques are available for this purpose. These techniques will be described in detail in the \Aref{Section_2.3}.
+While an analytical solution to equation \eqref{eq:2-4} would be ideal,
+it is typically not available because the $Z$-function is too complex.
+Therefore, the probability of failure needs to be estimated with probabilistic computation techniques.
+Different techniques are available for this purpose.
+These techniques will be described in detail in the \Aref{sec:Reliability}.
 
 \section{Conversion between standard normal variables ($U$-domain) and real variables ($X$-domain)}\label{Section_2.2.3}
-In practice, it is often advantageous to carry out probabilistic analyses in a standardized space, in which each of the variables are independent. This independence can help simplify the probabilistic techniques. The dependence between variables is reintroduced when the standardized variables are transformed back to the real variables. In the \probLib the standardized space that is used is the standard normal space. This means each of the transformed random variables are normally distributed with mean $0$, and standard deviation $1$. Each of the random variables in $X$ can be transformed to independent standard normal variables $U = (U_1,\dots U_n)$. If all the $X$-variables are mutually independent, this transformation can be described as follows:
+In practice, it is often advantageous to carry out probabilistic analyses in a standardized space, in which each of the variables are independent.
+This independence can help simplify the probabilistic techniques.
+The dependence between variables is reintroduced when the standardized variables are transformed back to the real variables.
+In the \probLib the standardized space that is used is the standard normal space.
+This means each of the transformed random variables are normally distributed with mean $0$, and standard deviation $1$.
+Each of the random variables in $X$ can be transformed to independent standard normal variables $U = (U_1,\dots U_n)$.
+If all the $X$-variables are mutually independent, this transformation can be described as follows:
 \begin{equation}
 \Phi \left(u_{i} \right)=F_{i} \left(x_{i} \right) \quad \Rightarrow  \quad u_{i} =\Phi ^{-1} \left[F_{i} \left(x_{i} \right)\right]\quad \Rightarrow \quad x_{i} =F_{i}^{-1} \left(\Phi \left(u_{i} \right)\right) \label{eq:2-5} 
 \end{equation}
@@ -87,11 +98,16 @@ f_{X_{i} } \left(x_{1} ,...,x_{i} \right)=\int _{}... \int _{}f_{X} \left(x_{1} 
 
 The combination of equations \eqref{eq:2-8} and \eqref{eq:2-9} potentially requires a cumbersome (numerical) integration procedure. 
 
-\Note{in \hr, this process is far less complex as correlation is usually limited to pairs of variables. Generally, the pairs are split into a dependent variable and an independent variable, and the dependent variable is written as a function of the independent variable. The function consists of a fully deterministic dependent part and a probabilistic independent part:}
+\Note{in \hr, this process is far less complex as correlation is usually limited to pairs of variables.
+Generally, the pairs are split into a dependent variable and an independent variable, and the dependent variable is written as a function of the independent variable.
+The function consists of a fully deterministic dependent part and a probabilistic independent part:}
 \begin{equation}
 F_{X_{2} } \left(x_{2} |x_{1} \right)=G\left(x_{1} \right)+F_{2} \left(x_{2}^{*} \right) \label{eq:2-10}  
 \end{equation}
-where $G$ is a deterministic function, $F_2$ a probability distribution function and $x_2^{*}$ a newly introduced random variable that represents the part of variable $x_2$ that is independent of $x_1$. This type of correlation models is schematically depicted in \Fref{fig:2.4}. More details on this type of correlation models are described in \Aref{Section_3.4}. For now, it is important to note that with a correlation model as described by the general form of equation \eqref{eq:2-10}, the transformation from and to the $U$-space for variable $X_2$ is done for the independent part: 
+where $G$ is a deterministic function, $F_2$ a probability distribution function and $x_2^{*}$ a newly introduced random variable that represents the part of variable $x_2$ that is independent of $x_1$.
+This type of correlation models is schematically depicted in \Fref{fig:2.4}.
+More details on this type of correlation models are described in \Aref{sec:Correlations}.
+For now, it is important to note that with a correlation model as described by the general form of equation \eqref{eq:2-10}, the transformation from and to the $U$-space for variable $X_2$ is done for the independent part: 
 \begin{equation}
 \Phi \left(u_{2} \right)=F_{2} \left(x_{2}^{*} \right)  \label{eq:2-11)} 
 \end{equation}
@@ -101,19 +117,32 @@ where $G$ is a deterministic function, $F_2$ a probability distribution function
 \caption{Schematic view of correlated variables $x_1$ and $x_2$}\label{fig:2.4}
 \end{figure}
 
-\Note{not all random variables can be represented in a meaningful way by $U$-variables. This is for instance the case for cyclic variables like wind direction. The reason is that transformation \eqref{eq:2-5} only makes sense if large (extreme) $u$-values are associated with large (extreme) $x$-values. Potential outcomes of cyclic variables are not ordered from small to large. The domain for these variables is $1-360$ degrees, but $360$ degrees is not larger than $1$ degree. Actually, $1$ degree is almost the same as $360$ degrees. \cite{TechRef} describes how such cyclic variables are treated.}
+\Note{not all random variables can be represented in a meaningful way by $U$-variables.
+This is for instance the case for cyclic variables like wind direction. The reason is that transformation \eqref{eq:2-5} only makes sense if large (extreme) $u$-values are associated with large (extreme) $x$-values. Potential outcomes of cyclic variables are not ordered from small to large.
+The domain for these variables is $1-360$ degrees, but $360$ degrees is not larger than $1$ degree.
+Actually, $1$ degree is almost the same as $360$ degrees. \cite{TechRef} describes how such cyclic variables are treated.}
 
 \section{Reliability index $\beta$}\label{Section_2.2.4}
-The reliability index, $\beta$, is a measure for the reliability of a system, i.e. a measure for the probability of failure of the system. Similar to the probability of failure, $\beta$ is often defined for a given period of time, e.g. a year. The reliability index is best explained by an example in which the resistance, $R$, and load, $S$, of the system are both described as the sum of independent normally distributed random variables. The sum of a set of independent normally distributed random variables is also a random variable (see, e.g. \cite{GrimmettStirzaker1983}). This means in this case, $R$ and $S$ are also normally distributed variables and the same can be stated about the $Z$-function $(Z=R-S)$. Define $\mu_R$, $\mu_S$ and $\mu_Z$ as the respective mean values of $R$, $S$ and $Z$ and $\sigma_R$, $\sigma_S$ and $\sigma_Z$ as the respective standard deviations of $R$, $S$ and $Z$. The following relations hold:
+The reliability index, $\beta$, is a measure for the reliability of a system, i.e. a measure for the probability of failure of the system.
+Similar to the probability of failure, $\beta$ is often defined for a given period of time, e.g. a year.
+The reliability index is best explained by an example in which the resistance, $R$, and load, $S$, of the system are both described as the sum of independent normally distributed random variables.
+The sum of a set of independent normally distributed random variables is also a random variable (see, e.g. \cite{GrimmettStirzaker1983}).
+This means in this case, $R$ and $S$ are also normally distributed variables and the same can be stated about the $Z$-function $(Z=R-S)$.
+Define $\mu_R$, $\mu_S$ and $\mu_Z$ as the respective mean values of $R$, $S$ and $Z$ and $\sigma_R$, $\sigma_S$ and $\sigma_Z$ as the respective standard deviations of $R$, $S$ and $Z$.
+The following relations hold:
 \begin{equation} 
 \begin{array}{l} {\mu _{Z} =\mu _{R} -\mu _{S} } \\ {\sigma _{Z} =\sqrt{\sigma _{R} ^{2} +\sigma _{S} ^{2} } } \end{array}  \label{eq:2-12}  
 \end{equation}
 
-\Fref{fig:2.5} shows an example with $\mu_R=6$, $\mu_S=2$, $\sigma_R = \sigma_S=1$ and consequently $\mu_Z = 4$ and $\sigma_Z=\surd2$. In reliability analysis, $\mu_Z$ is generally a positive value because otherwise, failure $(Z<0)$ would occur even during ''average'' conditions. Since $Z$ is normally distributed, $P[Z<0]$ is equal to:
+\Fref{fig:2.5} shows an example with $\mu_R=6$, $\mu_S=2$, $\sigma_R = \sigma_S=1$ and consequently $\mu_Z = 4$ and $\sigma_Z=\surd2$.
+In reliability analysis, $\mu_Z$ is generally a positive value because otherwise,
+failure $(Z<0)$ would occur even during ''average'' conditions.
+Since $Z$ is normally distributed, $P[Z<0]$ is equal to:
 \begin{equation} 
 P\left(Z<0\right)=\Phi \left(-\frac{\mu _{Z} }{\sigma _{Z} } \right)=1-\Phi \left(\frac{\mu _{Z} }{\sigma _{Z} } \right) \label{eq:2-13}  
 \end{equation}
-where $\Phi$ is the standard normal distribution function. Based on this equation, the reliability index, $\beta$, is defined as:
+where $\Phi$ is the standard normal distribution function.
+Based on this equation, the reliability index, $\beta$, is defined as:
 \begin{equation}
 \beta =\frac{\mu _{Z} }{\sigma _{Z} }  \label{eq:2-14} 
 \end{equation}
@@ -123,7 +152,8 @@ where $\Phi$ is the standard normal distribution function. Based on this equatio
 \caption{Example of normally distributed $S$, $R$ and $Z$ functions with $\mu_R=2$, $\mu_S=6$, $\sigma_R=1$, $\sigma_S=1$, $\mu_Z= 4$ and $\sigma_Z=\surd2$.}\label{fig:2.5}
 \end{figure}
 
-For the specific case where the $Z$-function is normally distributed, the relation between $\beta$ and the probability of failure is:
+For the specific case where the $Z$-function is normally distributed,
+the relation between $\beta$ and the probability of failure is:
 \begin{equation} 
 P\left(Z<0\right)=\Phi \left(-\beta \right)=1-\Phi \left(\beta \right) \label{eq:2-15}  
 \end{equation}

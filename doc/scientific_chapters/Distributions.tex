@@ -40,7 +40,7 @@ The probabilities of the standard normal distribution are displayed in the follo
 \section{Distribution properties}
 \label{sec:DistributionProperties}
 
-This paragraph lists all distribution types supported by the Probabilistic Library. In theory, endless distribution types exist. All dsitributions have the following properties:
+This paragraph lists all distribution types supported by the \probLib. In theory, endless distribution types exist. All dsitributions have the following properties:
 
 Each distribution reflects actual values. From these values $x_i$ the following properties can be derived
 
@@ -260,7 +260,7 @@ The Gumbel distribution is defined by the scale parameter $s$ and the shift para
 	
 	Mean & $ \displaystyle{\mu = c + s \cdot \gamma}$ \\
 	Deviation & $ \displaystyle{\sigma^2 = \frac{\pi^2}{6} s^2}$ \\
-	Fit \citep{Forbes2010} & $ \displaystyle{s = \frac{1}{N}  \sum\limits_{i=1}^N x_i + \frac{\sum\limits_{i=1}^N x_i  \exp\left({-\frac{x_i}{s}}\right)}{\sum\limits_{i=1}^N \exp\left({-\frac{x_i}{s}}\right)}} $ \\
+	Fit  & $ \displaystyle{s = \frac{1}{N}  \sum\limits_{i=1}^N x_i + \frac{\sum\limits_{i=1}^N x_i  \exp\left({-\frac{x_i}{s}}\right)}{\sum\limits_{i=1}^N \exp\left({-\frac{x_i}{s}}\right)}} $ \\
 	& $ \displaystyle{c = -s \cdot \text{ln} \left(\frac{1}{N} \sum\limits_{i=1}^N \exp\left({-\frac{x_i}{s}}\right)  \right)}$
 \end{tabular}
 
@@ -268,6 +268,8 @@ where
 \begin{longtable*}{p{20mm}p{\textwidth-24pt-20mm}}  
 	$\gamma$ & is the Euler-Mascheroni constant (0.5772156649); \\  
 \end{longtable*}
+
+The expression for the fit is from: \citep{Forbes2010} .
 
 \subsubsection{Decimation value}
 
@@ -306,7 +308,7 @@ The Weibull distribution is defined by the scale parameter $s$, the shape parame
 	
 	Mean & $ \displaystyle{\mu = c + s \cdot \Gamma \left(1 + \frac{1}{k}\right)}$ \\
 	Deviation & $ \displaystyle{\sigma^2 = s^2 \cdot \Gamma \left(1 + \frac{2}{k}\right) - \mu^2}$ \\
-	Fit \citep{Garcia1981} & $ \displaystyle{k = \frac{1}{k} + \frac{\sum\limits_{i=1}^N \text{ln} \left(x_i\right)}{N} - \frac{\sum\limits_{i=1}^N x_i^k \cdot \text{ln} \left(x_i\right)}{\sum\limits_{i=1}^N x_i^k}} $ \\
+	Fit & $ \displaystyle{k = \frac{1}{k} + \frac{\sum\limits_{i=1}^N \text{ln} \left(x_i\right)}{N} - \frac{\sum\limits_{i=1}^N x_i^k \cdot \text{ln} \left(x_i\right)}{\sum\limits_{i=1}^N x_i^k}} $ \\
 	& $ \displaystyle{s^k = \frac{\sum\limits_{i=1}^N x_i^k}{N}}$ 
 	
 \end{tabular}
@@ -315,6 +317,8 @@ where
 \begin{longtable*}{p{20mm}p{\textwidth-24pt-20mm}}  
 	$\Gamma$ & is the gamma function; \\  
 \end{longtable*}
+
+The expression for the fit is from: \citep{Garcia1981} .
 
 \subsection{Conditional Weibull distribution\label{sec:conditionalweibulldistribution}} 
 
@@ -372,7 +376,7 @@ D_\text{GEV}\left(s, k, c\right) = \left\{\begin{array}{ll}	k = 0 & D_\text{Gumb
 	\end{array}\right. 
 \end{align}
 
-\subsection{Rayleigh distribution}
+\subsection{Rayleigh distribution\label{sec:rayleighdistribution}}
 
 The properties of the Rayleigh distribution are
 

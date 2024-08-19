@@ -1,0 +1,71 @@
+\chapter{Glossary\label{glossary}}
+
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}                                                                                                                                                              
+\newcolumntype{J}[1]{>{\arraybackslash}p{#1}} 
+
+{\small
+\begin{longtable}{L{3cm} L{3.5cm} J{7cm}}
+\caption{Glossary of terms.\label{tab:glossary}} \\ \hline
+\textbf{English} & \textbf{Dutch} & \textbf{Description} \\\hline \hline
+\endfirsthead
+\hline
+\textbf{English} & \textbf{Dutch} & \textbf{Description}  \hfill\textsl{(continued from previous page)}\\ \hline \hline
+\endhead
+&  &  \hfill\textsl{(continued on next page)}\\ \hline
+\endfoot
+\hline
+\endlastfoot
+AIMPS & AIMPS & Adaptive Importance Sampling.\\
+\hline
+Combining & Oprollen & Combining failure probabilities for elements with unequal design points, using Hohenbichler.\\
+\hline
+CRMC &  CRMC & Crude Monte Carlo sampling.\\
+\hline
+CMFI &  CMFI & Crude Monte Carlo sampling with FORM iterations for the design point.\\
+\hline
+Design point & Illustratiepunt & Values of the stochastic variables with the highest probability of occurrence on the $Z=0$ line.\\
+\hline
+DIRS & DIRS & Monte Carlo directional sampling.\\
+\hline
+DSFI &  DSFI & Directional Sampling with FORM iterations for the design point.\\
+\hline
+DSFIU &  DSFIU & DIRS to compute the failure probability and FORM to compute the design point, FORM starts with an $u$-vector corresponding with the highest contribution to $\beta$ in DIRS and with $Z=0$.\\ 
+\hline
+Failure probability & Faalkans & The probability of failure of a single component equals to $P(Z<0)$.\\
+\hline
+Failure mechanism  &  Faalmechanisme  &  In the reliability theory, the failure mechanism of a component is defined in terms of a limit state function $Z$, in which the strength of the component $R$ and the imposed load $S$ are compared. Typically: $Z=R-S$. The failure occurs when the load exceeds the strength and hence when $Z<0$.\\ 
+\hline
+Fault tree & Foutenboom & A failure mechanism can be so complex that a fault tree is needed to describe the failure. A fault tree is a schematic hierarchical representation of a failure mechanism. In the fault tree, different sub-mechanisms are contained (each sub-mechanism is described by its own limit state function) and interconnected with AND- or OR-ports.  For example, the dike failure mechanism ''piping'' only occurs if the tree sub-mechanisms ''uplift'', ''heave'' and ''internal erosion'' occur (i.e. AND-port).\\
+\hline
+FORM & FORM & First Order Reliability Method.\\
+\hline
+FDIR & FDIR & FORM and then, if no convergence achived, DIRS.\\
+\hline
+FDSFI & FDSFI & FORM and then, if no convergence achived, DSFI.\\
+\hline
+FDSFIU & FDSFIU & FORM to compute the failure probability and DSFIU in case of no convergence of FORM.\\
+\hline
+IMPS & IMPS & Monte Carlo importance sampling.\\
+\hline
+Influence coefficient $\alpha$ & Invloed coëfficiënt $\alpha$ & An $\alpha$-value of a stochastic variable measures the sensitivity of the reliability index $\beta$ to changes in the mean value of the variable in the standard normal space.\\
+\hline
+ISFI & ISFI & Importance sampling with FORM iterations for the design point.\\
+\hline
+Length effect & Lengte-effect & The increase in failure probability that results from considering longer stretches of dike (or dunes).\\
+\hline
+Limit State Function (LSF) & Grenstoestandsfunctie  & In reliability theory, the failure mechanism of a component is defined in terms of a limit state function $Z$, in which the strength of the component $R$ and the imposed load $S$ are compared. Typically: $Z=R-S$.\\
+\hline
+NINT & NINT & Numerical Integration.\\
+\hline
+Parallel system & Parallel systeem & The system fails when all components fail.\\
+\hline
+Reliability index $\beta$ & Betrouwbaarheidsindex $\beta$ &  A measure for reliability of a component/system.\\
+\hline
+Series system & Serie systeem & The system fails when at least one of the components fails.\\
+\hline
+System reliability analysis & Systeem betrouwbaarheidsanalyse & Derivation of the probability of failure of a system consisting of multiple components.\\
+\hline
+Upscaling & Opschalen & Combining failure probabilities for a number of identical elements (correlated in time or in space).\\
+\hline
+\end{longtable}
+}

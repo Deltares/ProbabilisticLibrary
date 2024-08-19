@@ -77,7 +77,7 @@ where
 	$\sigma_p$ & is the standard deviation of the probability of failure; \\  
 	$p$ & is the probability of failure $p_{\text{failure}}$; \\
 	$N$ & is the total number of realizations; \\
-	$z$ & is the quantile of the standard normal distribution corresponding with $\alpha$. $z$ is 1 in the Probabilistic Library; \\
+	$z$ & is the quantile of the standard normal distribution corresponding with $\alpha$. $z$ is 1 in the \probLib; \\
 	$\Phi$ & is the CDF of the standard normal distribution (see \autoref{eq:StandardNormalCDF}); \\
 	$\alpha$ & is the confidence level.
 \end{longtable}
@@ -120,7 +120,7 @@ The minimum and maximum value for which the integration will run, are defined in
 
 Importance sampling is a variation on Crude Monte Carlo (see \autoref{sec:CrudeMonteCarlo}). The difference is that realization are selected in a smarter way, preferably in the area near the limit state.
 
-Usually Monte Carlo realizations are drawn proportional to their probability density $\varphi\left(u_i\right)$, since in the Probabilistic Toolkit uses the standard normal space. With importance sampling each realization $u$ is translated to $u_{\text{imp}}$. The Probabilisitic Toolkit supports the following translation for each variable separately:
+Usually Monte Carlo realizations are drawn proportional to their probability density $\varphi\left(u_i\right)$, since in the \probLib uses the standard normal space. With importance sampling each realization $u$ is translated to $u_{\text{imp}}$. The \probLib supports the following translation for each variable separately:
 
 \begin{align} 
 \label{eq:ImportanceSamplingVariance}
@@ -199,7 +199,7 @@ p \geq\tfrac{1}{2} & \tfrac{\sigma_p}{\left(1-p\right)} = z \sqrt{\frac{W_{\text
 where
 
 \begin{longtable}{p{16mm}p{\textwidth-24pt-16mm}}  
-	$z$ & is a value related to the confidence level (see \autoref{eq:MonteCarloStandardConfidence}). In the Probabilistic Toolkit, $z$ is 1; \\
+	$z$ & is a value related to the confidence level (see \autoref{eq:MonteCarloStandardConfidence}). In the \probLib, $z$ is 1; \\
 	$W_{\text{design point}}$ & is the weight of the realization of the design point; \\  
 	$N$ & is the total number of realizations; \\  
 \end{longtable}
@@ -640,7 +640,7 @@ where
 
 \subsection{External method}
 
-The user can attach an external failure calculation, which is either an executable or a Python script (version 3.5 or higher). An external failure calculation uses the Probabilistic Toolkit to perform model evaluations.
+The user can attach an external failure calculation, which is either an executable or a Python script (version 3.5 or higher). An external failure calculation uses the \probLib to perform model evaluations.
 
 The executable or Python script will be started with the following arguments.
 
@@ -651,12 +651,12 @@ The executable or Python script will be started with the following arguments.
 	$\{$max$\}$ & Maximum number of steps (optional) \\ 
 \end{tabular}
 
-To communicate with the Probabilistic Toolkit, two files are provided: modelrunner.cs or modelrunner.py, which can be found in the subdirectory External in the Probabilistic Toolkit install directory. The external failure method communicates with the following commands with the Probabilistic Toolkit.
+To communicate with the \probLib, two files are provided: modelrunner.cs or modelrunner.py, which can be found in the subdirectory External in the \probLib install directory. The external failure method communicates with the following commands with the \probLib.
 
 \begin{tabular}{p{1.2in}p{1.2in}p{3.5in}} 
 	GetZValue & float[] u & Gets the z-value for a given u-vector in the standard normal space (mandatory) \\ 
 	Report & float beta, float conv, int step, int maxSteps & Report intermediate progress (optional) \\ 
-	SetDesignPoint & float beta, float[] alpha & Reports the deisgn point. After this call, the Probabilistic Toolkit regards the failure calculation as completed (mandatory) \\ 
+	SetDesignPoint & float beta, float[] alpha & Reports the deisgn point. After this call, the \probLib regards the failure calculation as completed (mandatory) \\ 
 \end{tabular}
 
 An example of a basic Monte Carlo method, with arguments "$\{$n$\}$ $\{$max$\}$", is given below
@@ -697,7 +697,7 @@ To debug an external method, act as follows.
 \begin{enumerate}
 	\item Replace the external model by an executable, which is visible to the user but does nothing in this respect (e.g. Notepad)
 	\item Start the probabilistic calculation. Notepad will start and keep it alive
-	\item Start the external method in a development environment, which is suitable for debugging the code. Calls to GetZValue will be answered by the Probabilistic Toolkit
+	\item Start the external method in a development environment, which is suitable for debugging the code. Calls to GetZValue will be answered by the \probLib
 	\item Close Notepad when the debugging session has ended
 \end{enumerate}
 
@@ -752,7 +752,7 @@ Design point can be combined during the probabilistic analysis already (see \aut
 
 When combining integrated, the failure definitions are merged to one failure definition. This combined failure definition is used in one of the reliability techniques (see \autoref{sec:ReliabilityTechniques}).
 
-When using FORM with integrated, results are not reliable. Therefore the Probabilistic Toolkit prevents this combination.
+When using FORM with integrated, results are not reliable. Therefore the \probLib prevents this combination.
 
 \subsection{Equivalent planes}
 \label{sec:EquivalentPlanes}
@@ -844,7 +844,7 @@ where
 	$M_{\text{k}}\left(u\right)$ & is the equivalent plane of the $i^{\text{th}}$ design point (see \autoref{eq:EquivalentPlane});
 \end{longtable*}
 
-\subsubsection{Hohenbichler}
+\subsubsection{Hohenbichler}\label{sec:Hohenbichler}
 
 The kernel of the Hohenbichler algorithm is combination of two models $M_{\text{combined}}$ (see \autoref{eq:EquivalentPlaneCombine}). This combination is calculated by FORM (see \autoref{sec:FORM}).
 
@@ -852,12 +852,11 @@ The result of this combination is a design point. This design point is represent
 
 First the two most contributing design points are combined, then the remaining design with the highest probability if failure is added, and so on. In this way the error made by representing intermediate design points is as low as possible.
 
-\section{Upscaling}
-\label{sec:Upscaling}
+%\section{Upscaling}\label{sec:Upscaling}
 
-It is assumed that the probability of non failure is exponentially decreasing with increasing upscale factor. This leads to the following calculation:
+%It is assumed that the probability of non failure is exponentially decreasing with increasing upscale factor. This leads to the following calculation:
 
-\begin{align}
-P_{\text{f, nf}} = P_{\text{nf}} \cdot \left(\frac{P_{\text{2, nf}}}{P_{\text{nf}}}\right)^{f - 1}
-\end{align}
+%\begin{align}
+%P_{\text{f, nf}} = P_{\text{nf}} \cdot \left(\frac{P_{\text{2, nf}}}{P_{\text{nf}}}\right)^{f - 1}
+%\end{align}
 
