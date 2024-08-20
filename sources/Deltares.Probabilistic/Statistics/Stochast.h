@@ -258,7 +258,7 @@ namespace Deltares
              * \remark This method is used when plotting PDF and CDF
              * \return Interesting x-values
              */
-            std::vector<double> getSpecialXValues();
+            std::vector<double> getSpecialXValues() override;
 
             /**
              * \brief Indicates whether the stochastic parameter have valid values for the current distribution type

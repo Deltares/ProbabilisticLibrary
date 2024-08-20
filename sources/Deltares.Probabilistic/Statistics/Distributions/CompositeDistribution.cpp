@@ -1,6 +1,7 @@
 #include <cmath>
 #include "CompositeDistribution.h"
 #include "../../Math/NumericSupport.h"
+#include <algorithm>
 
 namespace Deltares
 {
@@ -8,9 +9,32 @@ namespace Deltares
     {
         bool CompositeDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)
         {
+            std::vector<std::shared_ptr<ContributingStochast>> contributingStochasts;
             for (std::shared_ptr<ContributingStochast> contributingStochast : stochast->ContributingStochasts)
             {
-                if (contributingStochast->Probability > 0.0 && contributingStochast->Stochast->isVarying())
+                if (contributingStochast->Probability > 0.0)
+                {
+                    contributingStochasts.push_back(contributingStochast);
+                }
+            }
+
+            for (std::shared_ptr<ContributingStochast> contributingStochast : contributingStochasts)
+            {
+                if (contributingStochast->Stochast->isVarying())
+                {
+                    return true;
+                }
+            }
+
+            if (contributingStochasts.size() < 2)
+            {
+                return false;
+            }
+
+            double firstMean = contributingStochasts.front()->Stochast->getMean();
+            for (std::shared_ptr<ContributingStochast> contributingStochast : contributingStochasts)
+            {
+                if (contributingStochast != contributingStochasts.front() && contributingStochast->Stochast->getMean() != firstMean)
                 {
                     return true;
                 }
@@ -42,8 +66,11 @@ namespace Deltares
 
             for (std::shared_ptr<ContributingStochast> contributingStochast : stochast->ContributingStochasts)
             {
-                sumWeights += contributingStochast->Probability;
-                sum += contributingStochast->Probability * contributingStochast->Stochast->getMean();
+                if (contributingStochast->Probability > 0)
+                {
+                    sumWeights += contributingStochast->Probability;
+                    sum += contributingStochast->Probability * contributingStochast->Stochast->getMean();
+                }
             }
 
             return sum / sumWeights;
@@ -72,8 +99,11 @@ namespace Deltares
 
             for (std::shared_ptr<ContributingStochast> contributingStochast : stochast->ContributingStochasts)
             {
-                sumWeights += contributingStochast->Probability;
-                sum += contributingStochast->Probability * contributingStochast->Stochast->getPDF(x);
+                if (contributingStochast->Probability > 0)
+                {
+                    sumWeights += contributingStochast->Probability;
+                    sum += contributingStochast->Probability * contributingStochast->Stochast->getPDF(x);
+                }
             }
 
             return sum / sumWeights;
@@ -86,8 +116,11 @@ namespace Deltares
 
             for (std::shared_ptr<ContributingStochast> contributingStochast : stochast->ContributingStochasts)
             {
-                sumWeights += contributingStochast->Probability;
-                sum += contributingStochast->Probability * contributingStochast->Stochast->getCDF(x);
+                if (contributingStochast->Probability > 0)
+                {
+                    sumWeights += contributingStochast->Probability;
+                    sum += contributingStochast->Probability * contributingStochast->Stochast->getCDF(x);
+                }
             }
 
             return sum / sumWeights;
@@ -95,17 +128,21 @@ namespace Deltares
 
         std::vector<double> CompositeDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)
         {
-            double offset = 10 * delta;
-
             std::vector<double> specialPoints;
 
-            specialPoints.push_back(-offset);
-            specialPoints.push_back(0.0);
-            specialPoints.push_back(offset);
+            for (std::shared_ptr<ContributingStochast> contributingStochast : stochast->ContributingStochasts)
+            {
+                if (contributingStochast->Probability > 0)
+                {
+                    std::vector<double> contributingSpecialPoints = contributingStochast->Stochast->getSpecialXValues();
+                    for (double x : contributingSpecialPoints)
+                    {
+                        specialPoints.push_back(x);
+                    }
+                }
+            }
 
-            specialPoints.push_back(1.0 - offset);
-            specialPoints.push_back(1.0);
-            specialPoints.push_back(1.0 + offset);
+            std::sort(specialPoints.begin(), specialPoints.end());
 
             return specialPoints;
         }

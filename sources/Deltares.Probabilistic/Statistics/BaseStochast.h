@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cmath>
+#include <vector>
 
 namespace Deltares
 {
@@ -46,6 +47,13 @@ namespace Deltares
              * \return Mean value
              */
             virtual double getMean() { return std::nan(""); }
+
+            /**
+             * \brief Gets a number of interesting x-values
+             * \remark This method is used when plotting PDF and CDF
+             * \return Interesting x-values
+             */
+            virtual std::vector<double> getSpecialXValues() { return std::vector<double>(); }
 
             virtual bool isValid() { return false; }
 
