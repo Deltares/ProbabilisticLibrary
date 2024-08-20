@@ -253,6 +253,11 @@ namespace Deltares
             void fitWeighted(std::vector<double> values, std::vector<double> weights);
 
             /**
+             * \brief Fits the distribution properties from the histogram values in the properties
+             */
+            void fitFromHistogramValues();
+
+            /**
              * \brief Gets a number of interesting x-values
              * \remark This method is used when plotting PDF and CDF
              * \return Interesting x-values

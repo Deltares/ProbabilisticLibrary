@@ -6,6 +6,7 @@ file(GLOB ptkcpp_files
     "Math/RootFinders/*.cpp"
     "Model/*.cpp"
     "Reliability/*.cpp"
+    "Sensitivity/*.cpp"
     "Statistics/*.cpp"
     "Statistics/Distributions/*.cpp"
     "Optimization/*.cpp"

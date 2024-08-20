@@ -28,6 +28,7 @@
     <Compile Include="ptk\interface.py" />
     <Compile Include="ptk\reliability.py" />
     <Compile Include="ptk\project.py" />
+    <Compile Include="ptk\sensitivity.py" />
     <Compile Include="ptk\utils.py" />
     <Compile Include="ptk\statistic.py">
       <SubType>Code</SubType>

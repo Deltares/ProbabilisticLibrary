@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>cafb0eda-ef78-46a8-8227-adee778907f8</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>test_combine.py</StartupFile>
+    <StartupFile>test_sensitivity.py</StartupFile>
     <SearchPath>..\Deltares.Probabilistic.PWrapper;..\Deltares.Probabilistic.PWrapper\ptk</SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
@@ -28,6 +28,9 @@
   <ItemGroup>
     <Compile Include="project_builder.py" />
     <Compile Include="test_combine.py" />
+    <Compile Include="test_sensitivity.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="test_statistics.py" />
     <Compile Include="test_reliability.py">
       <SubType>Code</SubType>

@@ -1,0 +1,94 @@
+#pragma once
+
+#include "../../Deltares.Probabilistic/Sensitivity/ImportanceSamplingSettingsS.h"
+#include "../Model/RandomSettings.h"
+#include "../Model/RunSettings.h"
+#include "../Reliability/StochastSettings.h"
+#include "../Utils/SharedPointerProvider.h"
+
+namespace Deltares
+{
+    namespace Sensitivity
+    {
+        namespace Wrappers
+        {
+            using namespace Deltares::Utils::Wrappers;
+            using namespace Deltares::Models::Wrappers;
+
+            public ref class ImportanceSamplingSettingsS : IHasRunSettings
+            {
+            private:
+                SharedPointerProvider<Sensitivity::ImportanceSamplingSettingsS>* shared = new SharedPointerProvider(new Sensitivity::ImportanceSamplingSettingsS());
+                Wrappers::RunSettings^ runSettings = gcnew Wrappers::RunSettings();
+            public:
+                ImportanceSamplingSettingsS()
+                {
+                    shared->object->randomSettings = RandomSettings->GetSettings();
+                }
+                ~ImportanceSamplingSettingsS() { this->!ImportanceSamplingSettingsS(); }
+                !ImportanceSamplingSettingsS() { delete shared; }
+
+                property int MinimumSamples
+                {
+                    int get() { return shared->object->MinimumSamples; }
+                    void set(int value) { shared->object->MinimumSamples = value; }
+                }
+
+                property int MaximumSamples
+                {
+                    int get() { return shared->object->MaximumSamples; }
+                    void set(int value) { shared->object->MaximumSamples = value; }
+                }
+
+                property double VariationCoefficient
+                {
+                    double get() { return shared->object->VariationCoefficient; }
+                    void set(double value) { shared->object->VariationCoefficient = value; }
+                }
+
+                property double ProbabilityForConvergence
+                {
+                    double get() { return shared->object->ProbabilityForConvergence; }
+                    void set(double value) { shared->object->ProbabilityForConvergence = value; }
+                }
+
+                property bool DeriveSamplesFromVariationCoefficient
+                {
+                    bool get() { return shared->object->DeriveSamplesFromVariationCoefficient; }
+                    void set(bool value) { shared->object->DeriveSamplesFromVariationCoefficient = value; }
+                }
+
+                Wrappers::RandomSettings^ RandomSettings = gcnew Wrappers::RandomSettings();
+
+                virtual property Wrappers::RunSettings^ RunSettings
+                {
+                    Wrappers::RunSettings^ get() { return runSettings; }
+                    void set(Wrappers::RunSettings^ value) { runSettings = value; }
+                }
+
+                System::Collections::Generic::List<Reliability::Wrappers::StochastSettings^>^ StochastSettings = gcnew System::Collections::Generic::List<Reliability::Wrappers::StochastSettings^>();
+
+                bool IsValid()
+                {
+                    return shared->object->isValid();
+                }
+
+                std::shared_ptr<Sensitivity::ImportanceSamplingSettingsS> GetSettings()
+                {
+                    shared->object->StochastSet->stochastSettings.clear();
+                    for (int i = 0; i < StochastSettings->Count; i++)
+                    {
+                        shared->object->StochastSet->stochastSettings.push_back(StochastSettings[i]->GetSettings());
+                    }
+
+                    shared->object->randomSettings = RandomSettings->GetSettings();
+                    shared->object->RunSettings = RunSettings->GetSettings();
+
+                    return shared->object;
+                }
+            };
+        }
+    }
+}
+
+
