@@ -1,8 +1,12 @@
 #include <gtest/gtest.h>
 #include "Reliability/testStartPointCalculator.h"
+#include "Math/testCholeskiDecomposition.h"
 #include "Math/testNumericSupport.h"
 #include "Math/testKMean.h"
+#include "Math/testMatrixInverse.h"
+#include "Math/testMatrixMultiplication.h"
 #include "Math/testRandom.h"
+#include "Math/testVector1D.h"
 #include "Combin/hohenbichler_tests.h"
 #include "Combin/intEqualElements_tests.h"
 #include "Combin/upscale_tests.h"
@@ -55,7 +59,25 @@ namespace Deltares
                 h.allHohenbichlerTests();
             }
 
-            TEST(unittst, testNumericSupport)
+            TEST(unittst, testCholeskiDecomp)
+            {
+                auto tstCholeskiDecomp = choleski_decomp_tests();
+                tstCholeskiDecomp.allCholeskyDecompositionTests();
+            }
+
+            TEST(unittst, testMatinv)
+            {
+                auto tstMatInv = matinv_tests();
+                tstMatInv.all_matinv_tests();
+            }
+
+            TEST(unittst, testMatmul)
+            {
+                auto tstMatMul = matmul_tests();
+                tstMatMul.all_matmul_tests();
+            }
+
+            TEST(unittst, testNumericalSupport)
             {
                 auto tstNumSupport = testNumericSupport();
                 tstNumSupport.allNumericSupportTests();
@@ -89,6 +111,12 @@ namespace Deltares
             {
                 auto tstRnd = testRandom();
                 tstRnd.allRandomTests();
+            }
+
+            TEST(unittst, testVector1D)
+            {
+                auto tstVector1D = vector1D_tests();
+                tstVector1D.allVector1Dtests();
             }
         }
     }

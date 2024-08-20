@@ -21,7 +21,7 @@ namespace Deltares
                 static std::shared_ptr<Deltares::Models::Project> getAddOneProject();
                 static std::shared_ptr<Deltares::Models::Project> getLinearProject();
 
-                bool logZtoScreen = false;
+                static const bool logZtoScreen = false;
             private:
                 void zfunc(std::shared_ptr<Deltares::Models::ModelSample> sample) const;
                 void zfuncWithDeterminist(std::shared_ptr<Deltares::Models::ModelSample> sample) const;

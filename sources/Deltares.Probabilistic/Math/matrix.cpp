@@ -149,19 +149,6 @@ namespace Deltares
             return result;
         }
 
-        Matrix* Matrix::clone() const
-        {
-            Matrix* result = new Matrix(m_rows, m_columns);
-            for (size_t row = 0; row < m_rows; row++)
-            {
-                for (size_t col = 0; col < m_columns; col++)
-                {
-                    result->setValue(row, col,  m_data[pos(row, col)]);
-                }
-            }
-            return result;
-        }
-
         vector1D Matrix::matvec(const vector1D& v) const
         {
             if (m_columns != v.size())
@@ -182,9 +169,42 @@ namespace Deltares
             return result;
         }
 
-        Matrix* Matrix::Inverse()
+        Matrix Matrix::Inverse() const
         {
             return MatrixSupport::Inverse(this);
+        }
+
+        bool Matrix::IsSymmetric() const
+        {
+            if (m_columns != m_rows) return false;
+            for (size_t row = 0; row < m_rows; row++)
+            {
+                for (size_t col = 0; col < row; col++)
+                {
+                    if (m_data[pos(row, col)] != m_data[pos(col, row)]) return false;
+                }
+            }
+            return true;
+        }
+
+        bool Matrix::IsPositiveDefinite() const
+        {
+            try
+            {
+                if (IsSymmetric())
+                {
+                    auto m = CholeskyDecomposition();
+                }
+                else
+                {
+                    auto m = Inverse();
+                }
+                return true;
+            }
+            catch (const std::exception&)
+            {
+                return false;
+            }
         }
     }
 }
