@@ -10,12 +10,15 @@ namespace Deltares
             class TestSensitivity
             {
             public:
-                void AllSensitivityTests();
+                void allSensitivityTests();
             private:
-                void TestAddOneCrudeMonteCarlo();
-                void TestLinear();
-                void TestLinearManySamples();
-                void TestLinearAutoSamples();
+                void testCrudeMonteCarloAddOne();
+                void testCrudeMonteCarloLinear();
+                void testCrudeMonteCarloLinearManySamples();
+                void testCrudeMonteCarloLinearAutoSamples();
+
+                void testImportanceSamplingAddOne();
+
                 const double margin = 0.02;
             };
         };

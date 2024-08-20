@@ -99,10 +99,13 @@ namespace Deltares
                 }
             }
 
-            // adjust for weights not equal to number of samples
-            double weightDifference = nSamples - sumWeights;
+            // adjust for weights not equal to number of samples,
+            // only adjust samples with weight > 1, because they will not be in the tail of the distribution, which is the less interesting part
 
+            double weightDifference = nSamples - sumWeights;
             double overWeightedSum = 0;
+
+            // calculate over weight frm samples with weight > 1
             for (size_t i = 0; i < zWeights.size(); i++)
             {
                 if (zWeights[i] > 1)
@@ -111,6 +114,7 @@ namespace Deltares
                 }
             }
 
+            // correct samples with weight > 1 so that sum of weights equals number of samples
             for (size_t i = 0; i < zWeights.size(); i++)
             {
                 if (zWeights[i] > 1)

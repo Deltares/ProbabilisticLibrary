@@ -5,8 +5,8 @@ namespace Deltares
     namespace Sensitivity
     {
         /**
- * \brief Gets the number of runs which is needed to achieve the variation coefficient at the probability for convergence
- */
+         * \brief Gets the number of runs which is needed to achieve the variation coefficient at the probability for convergence
+         */
         int CrudeMonteCarloSettingsS::getRequiredSamples()
         {
             double probability = this->ProbabilityForConvergence;

@@ -11,12 +11,12 @@ namespace Deltares
         {
         public:
             /**
-             * \brief The number of samples to be examined
+             * \brief The minimum number of samples to be examined
              */
             int MinimumSamples = 1000;
 
             /**
-             * \brief The number of samples to be examined
+             * \brief The maximum number of samples to be examined
              */
             int MaximumSamples = 10000;
 

@@ -82,7 +82,7 @@ namespace Deltares
             TEST(unittst, testSensitivity)
             {
                 auto tstDist = TestSensitivity();
-                tstDist.AllSensitivityTests();
+                tstDist.allSensitivityTests();
             }
 
             TEST(unittst, testRandom)

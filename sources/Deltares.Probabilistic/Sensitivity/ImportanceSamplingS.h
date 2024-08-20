@@ -6,10 +6,23 @@ namespace Deltares
 {
     namespace Sensitivity
     {
+        /**
+         * \brief Calculates the sensitivity using the Importance Sampling algorithm
+         * \remark This algorithm focuses on the tail of the sensitivity, but only works well when the start point (in the settings) is specified well by the user
+         */
         class ImportanceSamplingS : public SensitivityMethod
         {
         public:
+            /**
+             * \brief Settings for this algorithm
+             */
             std::shared_ptr<ImportanceSamplingSettingsS> Settings = std::make_shared<ImportanceSamplingSettingsS>();
+
+            /**
+             * \brief Gets the sensitivity
+             * \param modelRunner The model for which the sensitivity is calculated
+             * \return The sensitivity in the form of a stochastic variable
+             */
             std::shared_ptr<Statistics::Stochast> getStochast(std::shared_ptr<Models::ModelRunner> modelRunner) override;
         private:
             double getDimensionality(std::vector<double> factors);
