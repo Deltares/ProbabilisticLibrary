@@ -81,8 +81,8 @@ namespace Deltares
 
             TEST(unittst, testSensitivity)
             {
-                auto tstDist = TestSensitivity();
-                tstDist.allSensitivityTests();
+                auto tstSensitivity = TestSensitivity();
+                tstSensitivity.allSensitivityTests();
             }
 
             TEST(unittst, testRandom)
