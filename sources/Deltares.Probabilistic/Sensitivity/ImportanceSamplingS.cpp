@@ -94,7 +94,7 @@ namespace Deltares
                 // check if convergence is reached (or stop criterion)
                 if (sampleIndex >= Settings->MinimumSamples)
                 {
-                    double convergence = getConvergence(nSamples, sumWeights);
+                    double convergence = getConvergence(sampleIndex, sumWeights);
                     converged = convergence < this->Settings->VariationCoefficient;
                 }
             }
@@ -171,32 +171,29 @@ namespace Deltares
 
         double ImportanceSamplingS::getConvergence(int samples, double weightedSum)
         {
-            if (samples >= Settings->MinimumSamples)
+            double nSamples = samples;
+
+            //TODO: PROBL-42 check whether this procedure is correct
+
+            double nLow = Settings->ProbabilityForConvergence * weightedSum;
+            double pLow = nLow / nSamples;
+            if (pLow > 0.5)
             {
-                double nSamples = samples;
-
-                //TODO: PROBL-42 check whether this procedure is correct
-
-                double nLow = Settings->ProbabilityForConvergence * weightedSum;
-                double pLow = nLow / nSamples;
-                if (pLow > 0.5)
-                {
-                    pLow = 1 - pLow;
-                }
-
-                double nHigh = (1 - Settings->ProbabilityForConvergence) * weightedSum;
-                double pHigh = nHigh / nSamples;
-                if (pHigh > 0.5)
-                {
-                    pHigh = 1 - pHigh;
-                }
-
-                double pf = std::min(pLow, pHigh);
-
-                double varPf = std::sqrt((1 - pf) / (nSamples * pf));
-
-                return varPf;
+                pLow = 1 - pLow;
             }
+
+            double nHigh = (1 - Settings->ProbabilityForConvergence) * weightedSum;
+            double pHigh = nHigh / nSamples;
+            if (pHigh > 0.5)
+            {
+                pHigh = 1 - pHigh;
+            }
+
+            double pf = std::min(pLow, pHigh);
+
+            double varPf = std::sqrt((1 - pf) / (nSamples * pf));
+
+            return varPf;
         }
     }
 }
