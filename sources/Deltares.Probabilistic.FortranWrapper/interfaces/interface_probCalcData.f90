@@ -66,6 +66,7 @@ subroutine initProbabilisticCalculation( probDb, maxStochasts, databaseFlag, exp
     !
     ! Crude Monte Carlo
     probDb%method%CMC%seedPRNG              = 0
+    probDb%method%CMC%isRepeatableRandom    = .TRUE.
     probDb%method%CMC%minimumSamples        = 1000
     probDb%method%CMC%maximumSamples        = 100000
     probDb%method%CMC%varCoeffFailure       = 0.10D0
@@ -73,6 +74,7 @@ subroutine initProbabilisticCalculation( probDb, maxStochasts, databaseFlag, exp
     !
     ! Directional Sampling
     probDb%method%DS%seedPRNG               = 0
+    probDb%method%DS%isRepeatableRandom     = .TRUE.
     probDb%method%DS%minimumSamples         = 10
     probDb%method%DS%maximumSamples         = 10000
     probDb%method%DS%varCoeffFailure        = 0.10D0
@@ -88,6 +90,7 @@ subroutine initProbabilisticCalculation( probDb, maxStochasts, databaseFlag, exp
     !
     ! Importance Sampling
     probDb%method%IS%seedPRNG               = 0
+    probDb%method%IS%isRepeatableRandom     = .TRUE.
     probDb%method%IS%minimumSamples         = 1000
     probDb%method%IS%maximumSamples         = 100000
     probDb%method%IS%varCoeffFailure        = 0.10D0
@@ -96,6 +99,7 @@ subroutine initProbabilisticCalculation( probDb, maxStochasts, databaseFlag, exp
 
     ! Adaptive Importance Sampling
     probDb%method%AdaptiveIS%seedPRNG               = 0
+    probDb%method%AdaptiveIS%isRepeatableRandom     = .TRUE.
     probDb%method%AdaptiveIS%minimumSamples         = 1000
     probDb%method%AdaptiveIS%maximumSamples         = 100000
     probDb%method%AdaptiveIS%varCoeffFailure        = 0.10D0
@@ -279,11 +283,12 @@ end subroutine setParametersProbabilisticNI
 !>
 !! Subroutine for assignment of numeric control data Crude Monte Carlo
 !!   @ingroup Probabilistic
-subroutine setParametersProbabilisticCMC(probDb, CMCseedPRNG, CMCminimumSamples, &
+subroutine setParametersProbabilisticCMC(probDb, CMCseedPRNG, CMCisRepeatableRandom, CMCminimumSamples, &
                CMCmaximumSamples, CMCvarCoeffFailure, CMCvarCoeffNoFailure)
 
     type(probabilisticDataStructure_data)   :: probDb                !< Probabilistic data module
     integer, intent(in)                     :: CMCseedPRNG           !< Start value random generator
+    logical, intent(in)                     :: CMCisRepeatableRandom !< true: get reproduceble random numbers
     integer, intent(in)                     :: CMCminimumSamples     !< Minimum number samples (>1)
     integer, intent(in)                     :: CMCmaximumSamples     !< Maximum number samples
     real(kind=wp), intent(in)               :: CMCvarCoeffFailure    !< Required variation coefficient Failure
@@ -292,6 +297,7 @@ subroutine setParametersProbabilisticCMC(probDb, CMCseedPRNG, CMCminimumSamples,
     ! Put data in structure
     !
     probDb%method%CMC%seedPRNG           = CMCseedPRNG
+    probDb%method%CMC%isRepeatableRandom = CMCisRepeatableRandom
     probDb%method%CMC%minimumSamples     = CMCminimumSamples
     probDb%method%CMC%maximumSamples     = CMCmaximumSamples
     probDb%method%CMC%varCoeffFailure    = CMCvarCoeffFailure
@@ -302,13 +308,14 @@ end subroutine setParametersProbabilisticCMC
 !>
 !! Subroutine for assignment of numeric control data Directional Sampling
 !!   @ingroup Probabilistic
-subroutine setParametersProbabilisticDS(probDb, DSseedPRNG, DSminimumSamples, &
+subroutine setParametersProbabilisticDS(probDb, DSseedPRNG, DSisRepeatableRandom, DSminimumSamples, &
                DSmaximumSamples, DSvarCoeffFailure, DSvarCoeffNoFailure, &
                DSiterationMethod, DSiterations1, DSdu1, DSmaximumIterations2, &
                DSinitialDu2, DSmaximumDu2, DSepsilonDu, DSmaximumLengthU, DSmaxParThreads)
 
     type(probabilisticDataStructure_data)   :: probDb               !< Probabilistic data module
     integer, intent(in)                     :: DSseedPRNG           !< Start value random generator
+    logical, intent(in)                     :: DSisRepeatableRandom !< true: get reproduceble random numbers
     integer, intent(in)                     :: DSminimumSamples     !< Minimum number samples (>1)
     integer, intent(in)                     :: DSmaximumSamples     !< Maximum number samples
     real(kind=wp), intent(in)               :: DSvarCoeffFailure    !< Required variation coefficient Failure
@@ -327,6 +334,7 @@ subroutine setParametersProbabilisticDS(probDb, DSseedPRNG, DSminimumSamples, &
     !
     associate ( method => probDb%method, DS => probDb%method%DS )
         DS%seedPRNG               = DSseedPRNG
+        DS%isRepeatableRandom     = DSisRepeatableRandom
         DS%minimumSamples         = DSminimumSamples
         DS%maximumSamples         = DSmaximumSamples
         DS%varCoeffFailure        = DSvarCoeffFailure
@@ -347,11 +355,12 @@ end subroutine setParametersProbabilisticDS
 !>
 !! Subroutine for assignment of numeric control data Importance Sampling
 !!   @ingroup Probabilistic
-subroutine setParametersProbabilisticISsimple(probDb, ISseedPRNG, ISminimumSamples, &
+subroutine setParametersProbabilisticISsimple(probDb, ISseedPRNG, ISisRepeatableRandom, ISminimumSamples, &
                ISmaximumSamples, ISvarCoeffFailure, ISvarCoeffNoFailure, ISvarianceFactor)
 
     type(probabilisticDataStructure_data)   :: probDb                !< Probabilistic data module
     integer, intent(in)                     :: ISseedPRNG           !< Start value random generator
+    logical, intent(in)                     :: ISisRepeatableRandom !< true: get reproduceble random numbers
     integer, intent(in)                     :: ISminimumSamples     !< Minimum number samples (>1)
     integer, intent(in)                     :: ISmaximumSamples     !< Maximum number samples
     real(kind=wp), intent(in)               :: ISvarCoeffFailure    !< Required variation coefficient Failure
@@ -362,6 +371,7 @@ subroutine setParametersProbabilisticISsimple(probDb, ISseedPRNG, ISminimumSampl
     ! Put data in structure
     !
     probDb%method%IS%seedPRNG           = ISseedPRNG
+    probDb%method%IS%isRepeatableRandom = ISisRepeatableRandom
     probDb%method%IS%minimumSamples     = ISminimumSamples
     probDb%method%IS%maximumSamples     = ISmaximumSamples
     probDb%method%IS%varCoeffFailure    = ISvarCoeffFailure
@@ -371,11 +381,12 @@ subroutine setParametersProbabilisticISsimple(probDb, ISseedPRNG, ISminimumSampl
 
 end subroutine setParametersProbabilisticISsimple
 
-subroutine setParametersProbabilisticISdetail(probDb, ISseedPRNG, ISminimumSamples, &
+subroutine setParametersProbabilisticISdetail(probDb, ISseedPRNG, ISisRepeatableRandom, ISminimumSamples, &
                ISmaximumSamples, ISvarCoeffFailure, ISvarCoeffNoFailure, ISvarianceFactor, IStranslation)
 
     type(probabilisticDataStructure_data)   :: probDb                !< Probabilistic data module
     integer, intent(in)                     :: ISseedPRNG           !< Start value random generator
+    logical, intent(in)                     :: ISisRepeatableRandom !< true: get reproduceble random numbers
     integer, intent(in)                     :: ISminimumSamples     !< Minimum number samples (>1)
     integer, intent(in)                     :: ISmaximumSamples     !< Maximum number samples
     real(kind=wp), intent(in)               :: ISvarCoeffFailure    !< Required variation coefficient Failure
@@ -396,6 +407,7 @@ subroutine setParametersProbabilisticISdetail(probDb, ISseedPRNG, ISminimumSampl
     ! Put data in structure
     !
     probDb%method%IS%seedPRNG           = ISseedPRNG
+    probDb%method%IS%isRepeatableRandom = ISisRepeatableRandom
     probDb%method%IS%minimumSamples     = ISminimumSamples
     probDb%method%IS%maximumSamples     = ISmaximumSamples
     probDb%method%IS%varCoeffFailure    = ISvarCoeffFailure
