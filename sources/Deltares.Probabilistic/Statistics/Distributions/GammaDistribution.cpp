@@ -58,7 +58,7 @@ namespace Deltares
                 {
                     return std::pow(x, stochast->Shape - 1) * std::exp(-x / stochast->Scale) / (std::pow(stochast->Scale, stochast->Shape) * Numeric::SpecialFunctions::getGamma(stochast->Shape));
                 }
-                catch (_exception)
+                catch (std::exception&)
                 {
                     return std::nan("");
                 }
@@ -85,7 +85,7 @@ namespace Deltares
                 {
                     return Numeric::SpecialFunctions::getGammaLowerRegularized(stochast->Shape, x / stochast->Scale);
                 }
-                catch (_exception)
+                catch (std::exception&)
                 {
                     return std::nan("");
                 }
