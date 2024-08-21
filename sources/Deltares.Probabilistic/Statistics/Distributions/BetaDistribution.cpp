@@ -84,7 +84,7 @@ namespace Deltares
                     double cdf = Numeric::SpecialFunctions::getBetaIncomplete(stochast->Shape, stochast->ShapeB, x);
                     return cdf;
                 }
-                catch (std::exception&)
+                catch (std::exception)
                 {
                     return x <= 0 ? 0 : 1;
                 }
