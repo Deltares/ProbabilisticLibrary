@@ -39,10 +39,12 @@ namespace Deltares
             virtual int GetIndexedIntValue(int id, std::string property_, int index);
             virtual void SetCallBack(int id, std::string property_, ZValuesCallBack callBack);
             virtual void Execute(int id, std::string method_);
+        protected:
+            int GetNewObjectId();
         private:
             enum ObjectType { StandardNormal, Project, Stochast, DiscreteValue, HistogramValue, FragilityValue, CorrelationMatrix, Settings, StochastSettings, DesignPoint, Alpha, CombineProject, CombineSettings, SelfCorrelationMatrix, SensitivityProject, SensitivitySettings };
 
-            int counter = 0;
+            int id_ = 0;
             std::unordered_map<int, Deltares::Models::ProjectServer::ObjectType> types;
 
             std::unordered_map<int, std::shared_ptr<Statistics::Stochast>> stochasts;

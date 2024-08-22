@@ -10,9 +10,14 @@ namespace Deltares
         using namespace Deltares::Statistics;
         using namespace Deltares::Reliability;
 
+        int ProjectServer::GetNewObjectId()
+        {
+            return ++id_;
+        }
+
         int ProjectServer::Create(std::string object_type)
         {
-            counter++;
+            int counter = GetNewObjectId();
 
             if (object_type == "standard_normal")
             {
@@ -948,7 +953,8 @@ namespace Deltares
             {
                 if (!stochastIds.contains(stochast))
                 {
-                    counter++;
+                    int counter = GetNewObjectId();
+
                     stochasts[counter] = stochast;
                     types[counter] = ObjectType::Stochast;
                     stochastIds[stochast] = counter;
@@ -968,7 +974,8 @@ namespace Deltares
             {
                 if (!designPointIds.contains(designPoint))
                 {
-                    counter++;
+                    int counter = GetNewObjectId();
+
                     designPoints[counter] = designPoint;
                     types[counter] = ObjectType::DesignPoint;
                     designPointIds[designPoint] = counter;
@@ -982,7 +989,8 @@ namespace Deltares
         {
             if (!alphaIds.contains(alpha))
             {
-                counter++;
+                int counter = GetNewObjectId();
+
                 alphas[counter] = alpha;
                 types[counter] = ObjectType::Alpha;
                 alphaIds[alpha] = counter;
@@ -995,7 +1003,8 @@ namespace Deltares
         {
             if (!histogramValueIds.contains(histogramValue))
             {
-                counter++;
+                int counter = GetNewObjectId();
+
                 histogramValues[counter] = histogramValue;
                 types[counter] = ObjectType::HistogramValue;
                 histogramValueIds[histogramValue] = counter;
@@ -1008,7 +1017,8 @@ namespace Deltares
         {
             if (!discreteValueIds.contains(discreteValue))
             {
-                counter++;
+                int counter = GetNewObjectId();
+
                 discreteValues[counter] = discreteValue;
                 types[counter] = ObjectType::DiscreteValue;
                 discreteValueIds[discreteValue] = counter;
@@ -1021,7 +1031,8 @@ namespace Deltares
         {
             if (!fragilityValueIds.contains(fragilityValue))
             {
-                counter++;
+                int counter = GetNewObjectId();
+
                 fragilityValues[counter] = fragilityValue;
                 types[counter] = ObjectType::FragilityValue;
                 fragilityValueIds[fragilityValue] = counter;
