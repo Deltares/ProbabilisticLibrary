@@ -15,30 +15,30 @@ namespace Deltares
         class ProjectServer
         {
         public:
-            int Create(std::string object_type);
-            void Destroy(int id);
-            double GetValue(int id, const std::string property_);
-            void SetValue(int id, const std::string property_, double value);
-            int GetIntValue(int id, std::string property_);
-            void SetIntValue(int id, std::string property_, int value);
-            double GetIntArgValue(int id1, int id2, std::string property_);
-            void SetIntArgValue(int id1, int id2, std::string property_, double value);
-            bool GetBoolValue(int id, std::string property_);
-            void SetBoolValue(int id, std::string property_, bool value);
-            std::string GetStringValue(int id, std::string property_);
-            void SetStringValue(int id, std::string property_, std::string value);
-            void SetArrayValue(int id, std::string property_, double* values, int size);
-            std::vector<int> GetArrayIntValue(int id, std::string property_);
-            void SetArrayIntValue(int id, std::string property_, int* values, int size);
-            double GetArgValue(int id, std::string property_, double argument);
-            void SetArgValue(int id, std::string property_, double argument, double value);
-            double GetIndexedValue(int id, std::string property_, int index);
-            void SetIndexedValue(int id, std::string property_, int index, double value);
-            double GetIndexedIndexedValue(int id, std::string property_, int index1, int index2);
-            void SetIndexedIndexedValue(int id, std::string property_, int index1, int index2, double value);
-            int GetIndexedIntValue(int id, std::string property_, int index);
-            void SetCallBack(int id, std::string property_, ZValuesCallBack callBack);
-            void Execute(int id, std::string method_);
+            virtual int Create(std::string object_type);
+            virtual void Destroy(int id);
+            virtual double GetValue(int id, const std::string property_);
+            virtual void SetValue(int id, const std::string property_, double value);
+            virtual int GetIntValue(int id, std::string property_);
+            virtual void SetIntValue(int id, std::string property_, int value);
+            virtual double GetIntArgValue(int id1, int id2, std::string property_);
+            virtual void SetIntArgValue(int id1, int id2, std::string property_, double value);
+            virtual bool GetBoolValue(int id, std::string property_);
+            virtual void SetBoolValue(int id, std::string property_, bool value);
+            virtual std::string GetStringValue(int id, std::string property_);
+            virtual void SetStringValue(int id, std::string property_, std::string value);
+            virtual void SetArrayValue(int id, std::string property_, double* values, int size);
+            virtual std::vector<int> GetArrayIntValue(int id, std::string property_);
+            virtual void SetArrayIntValue(int id, std::string property_, int* values, int size);
+            virtual double GetArgValue(int id, std::string property_, double argument);
+            virtual void SetArgValue(int id, std::string property_, double argument, double value);
+            virtual double GetIndexedValue(int id, std::string property_, int index);
+            virtual void SetIndexedValue(int id, std::string property_, int index, double value);
+            virtual double GetIndexedIndexedValue(int id, std::string property_, int index1, int index2);
+            virtual void SetIndexedIndexedValue(int id, std::string property_, int index1, int index2, double value);
+            virtual int GetIndexedIntValue(int id, std::string property_, int index);
+            virtual void SetCallBack(int id, std::string property_, ZValuesCallBack callBack);
+            virtual void Execute(int id, std::string method_);
         private:
             enum ObjectType { StandardNormal, Project, Stochast, DiscreteValue, HistogramValue, FragilityValue, CorrelationMatrix, Settings, StochastSettings, DesignPoint, Alpha, CombineProject, CombineSettings, SelfCorrelationMatrix, SensitivityProject, SensitivitySettings };
 
