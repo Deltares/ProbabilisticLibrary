@@ -56,6 +56,7 @@ module interface_probCalc
     integer             :: maxSamples = 99000
     integer             :: seed1      = 2
     integer             :: seed2      = 1
+    integer             :: isRepeatableRandom = 1
     integer             :: rnd        = GeorgeMarsaglia
     integer             :: startMethod
     integer             :: progressInterval = -1

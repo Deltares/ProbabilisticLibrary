@@ -3,6 +3,9 @@ import math
 
 from ptk import *
 
+def sum_ab(a, b):
+    return a+b;
+
 def linear_ab(a, b):
     L = 1.8
     return L - (a+b)
@@ -26,6 +29,41 @@ def bligh(m, L, c_creep, delta_H):
 def get_linear_project():
 
     project = ReliabilityProject()
+
+    project.model = linear_ab
+
+    stochast1 = project.variables['a']
+    stochast1.distribution = 'uniform'
+    stochast1.minimum = -1
+    stochast1.maximum = 1;
+
+    stochast2 = project.variables['b']
+    stochast2.distribution = 'uniform'
+    stochast2.minimum = -1
+    stochast2.maximum = 1;
+
+    return project
+
+def get_sensitivity_add_one_project():
+
+    project = SensitivityProject()
+
+    project.model = sum_ab
+
+    stochast1 = project.variables['a']
+    stochast1.distribution = 'deterministic'
+    stochast1.mean = 1
+
+    stochast2 = project.variables['b']
+    stochast2.distribution = 'uniform'
+    stochast2.minimum = -1
+    stochast2.maximum = 1;
+
+    return project
+
+def get_sensitivity_linear_project():
+
+    project = SensitivityProject()
 
     project.model = linear_ab
 

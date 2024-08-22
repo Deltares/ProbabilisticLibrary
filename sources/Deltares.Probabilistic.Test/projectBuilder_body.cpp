@@ -2,9 +2,11 @@
 #include "projectBuilder.h"
 #include <iostream>
 
+
 using namespace Deltares::Reliability;
 using namespace Deltares::Statistics;
 using namespace Deltares::Models;
+using namespace Deltares::Sensitivity;
 
 namespace Deltares
 {
@@ -46,6 +48,24 @@ namespace Deltares
                 return m;
             }
 
+            void projectBuilder::sum(std::shared_ptr<ModelSample> sample)
+            {
+                sample->Z = 0.0;
+                for (double value : sample->Values)
+                {
+                    sample->Z += value;
+                }
+            }
+
+            void projectBuilder::linear(std::shared_ptr<ModelSample> sample)
+            {
+                sample->Z = 1.8;
+                for (double value : sample->Values)
+                {
+                    sample->Z -= value;
+                }
+            }
+
             void projectBuilder::zfunc(std::shared_ptr<Deltares::Models::ModelSample> sample) const
             {
                 sample->Z = 3.0 + sample->Values[1] - 1.25 * sample->Values[0];
@@ -64,6 +84,81 @@ namespace Deltares
                 }
             }
 
+            std::shared_ptr<SensitivityProject> projectBuilder::getSensitivityProject(std::shared_ptr<Project> project)
+            {
+                std::shared_ptr<SensitivityProject> sensitivityProject = std::make_shared<SensitivityProject>();
+
+                for (std::shared_ptr<Stochast> stochast : project->stochasts)
+                {
+                    sensitivityProject->stochasts.push_back(stochast);
+                }
+
+                sensitivityProject->correlationMatrix = project->correlationMatrix;
+                sensitivityProject->model = project->model;
+
+                return sensitivityProject;
+            }
+
+            std::shared_ptr<Project> projectBuilder::getAddOneProject()
+            {
+                std::shared_ptr<Project> project = std::make_shared<Project>();
+
+                project->stochasts.push_back(getDeterministicStochast(1));
+                project->stochasts.push_back(getUniformStochast(-1));
+
+                project->correlationMatrix = std::make_shared<CorrelationMatrix>();
+                project->correlationMatrix->init(project->stochasts);
+
+                project->model = std::make_shared<ZModel>(projectBuilder::sum);
+
+                return project;
+            }
+
+            std::shared_ptr<Project> projectBuilder::getLinearProject()
+            {
+                std::shared_ptr<Project> project = std::make_shared<Project>();
+
+                project->stochasts.push_back(getUniformStochast(-1));
+                project->stochasts.push_back(getUniformStochast(-1));
+
+                project->correlationMatrix = std::make_shared<CorrelationMatrix>();
+                project->correlationMatrix->init(project->stochasts);
+
+                project->model = std::make_shared<ZModel>(projectBuilder::linear);
+
+                return project;
+            }
+
+            std::shared_ptr<Stochast> projectBuilder::getDeterministicStochast(double mean)
+            {
+                std::vector<double> values = {mean};
+                return std::make_shared<Stochast>(DistributionType::Deterministic, values);
+            }
+
+            std::shared_ptr<Stochast>  projectBuilder::getNormalStochast(double mean, double stddev)
+            {
+                std::vector<double> values = { mean, stddev };
+                return std::make_shared<Stochast>(DistributionType::Normal, values);
+            }
+
+            std::shared_ptr<Stochast>  projectBuilder::getUniformStochast(double min, double max)
+            {
+                std::vector<double> values = { min, max };
+                return std::make_shared<Stochast>(DistributionType::Uniform, values);
+            }
+
+            std::shared_ptr<Stochast> projectBuilder::getLogNormalStochast(double mean, double stddev, double shift)
+            {
+                std::vector<double> values = { mean, stddev, shift };
+                return std::make_shared<Stochast>(DistributionType::LogNormal, values);
+
+            }
+
+            std::shared_ptr<Stochast> projectBuilder::getGumbelStochast(double mean, double stddev)
+            {
+                std::vector<double> values = { mean, stddev };
+                return std::make_shared<Stochast>(DistributionType::Gumbel, values);
+            }
         }
     }
 }

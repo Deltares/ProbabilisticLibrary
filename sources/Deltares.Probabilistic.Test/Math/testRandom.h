@@ -14,6 +14,8 @@ namespace Deltares
             private:
                 void georgeMarsagliaTest1();
                 void georgeMarsagliaTest2();
+                void mersenneTwisterTest1();
+                void initializationTest();
                 const double margin = 1e-12;
             };
         }

@@ -1,6 +1,8 @@
 #pragma once
 #include "Project.h"
 #include "../Reliability/Settings.h"
+#include "../Sensitivity/SensitivityProject.h"
+#include "../Sensitivity/SettingsS.h"
 #include "../Combine/CombineProject.h"
 #include "../Combine/CombineSettings.h"
 #include "../Statistics/Stochast.h"
@@ -38,7 +40,9 @@ namespace Deltares
             void SetCallBack(int id, std::string property_, ZValuesCallBack callBack);
             void Execute(int id, std::string method_);
         private:
-            enum ObjectType {StandardNormal, Project, Stochast, DiscreteValue, HistogramValue, FragilityValue, ContributingStochast, CorrelationMatrix, Settings, StochastSettings, DesignPoint, Alpha, CombineProject, CombineSettings, SelfCorrelationMatrix};
+            enum ObjectType {StandardNormal, Project, Stochast, DiscreteValue, HistogramValue, FragilityValue,
+                ContributingStochast, CorrelationMatrix, Settings, StochastSettings, DesignPoint, Alpha,
+                CombineProject, CombineSettings, SelfCorrelationMatrix, SensitivityProject, SensitivitySettings};
 
             int counter = 0;
             std::unordered_map<int, Deltares::Models::ProjectServer::ObjectType> types;
@@ -57,6 +61,8 @@ namespace Deltares
             std::unordered_map<int, std::shared_ptr<Reliability::CombineProject>> combineProjects;
             std::unordered_map<int, std::shared_ptr<Reliability::CombineSettings>> combineSettingsValues;
             std::unordered_map<int, std::shared_ptr<Statistics::SelfCorrelationMatrix>> selfCorrelationMatrices;
+            std::unordered_map<int, std::shared_ptr<Sensitivity::SensitivityProject>> sensitivityProjects;
+            std::unordered_map<int, std::shared_ptr<Sensitivity::SettingsS>> sensitivitySettingsValues;
 
             std::unordered_map<std::shared_ptr<Reliability::DesignPoint>, int> designPointIds;
             std::unordered_map<std::shared_ptr<Reliability::StochastPointAlpha>, int> alphaIds;
@@ -66,6 +72,7 @@ namespace Deltares
             std::unordered_map<std::shared_ptr<Statistics::FragilityValue>, int> fragilityValueIds;
             std::unordered_map<std::shared_ptr<Statistics::ContributingStochast>, int> contributingStochastIds;
 
+            int GetStochastId(std::shared_ptr<Statistics::Stochast> stochast);
             int GetDesignPointId(std::shared_ptr<Reliability::DesignPoint> designPoint);
             int GetAlphaId(std::shared_ptr<StochastPointAlpha> alpha);
             int GetHistogramValueId(std::shared_ptr<Statistics::HistogramValue> histogramValue);

@@ -127,6 +127,24 @@ namespace Deltares
                     EXPECT_NEAR(computed.getAlphaI(iStochast), ref.getAlphaI(iStochast), m2);
                 }
             }
+
+            Deltares::Numeric::Matrix testutils::convert1dmatrix(const std::initializer_list<double>& m)
+            {
+                size_t s = (size_t)sqrt((double)m.size());
+                auto vm = std::vector<double>(m);
+                auto cm = Deltares::Numeric::Matrix(s, s);
+                size_t ii = 0;
+                for (size_t j = 0; j < s; j++)
+                {
+                    for (size_t i = 0; i < s; i++)
+                    {
+                        cm(i, j) = vm[ii];
+                        ii++;
+                    }
+                }
+                return cm;
+            }
+
         }
     }
 }

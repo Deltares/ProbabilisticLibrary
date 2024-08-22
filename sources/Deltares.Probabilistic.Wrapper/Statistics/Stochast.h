@@ -70,6 +70,12 @@ namespace Deltares
                     this->Initialize();
                 }
 
+                Stochast(std::shared_ptr<Statistics::Stochast> nativeStochast)
+                {
+                    shared = new Utils::Wrappers::SharedPointerProvider(nativeStochast);
+                    this->Initialize();
+                }
+
                 Stochast(DistributionType distributionType, array<double>^ values) : Stochast()
                 {
                     const Statistics::DistributionType nativeDistributionType = DistributionTypeConverter::getNativeDistributionType(distributionType);

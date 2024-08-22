@@ -1,6 +1,7 @@
 #include "GeorgeMarsagliaRandomValueGenerator.h"
 
 #include <cmath>
+#include <ctime>
 
 #include "RandomValueGenerator.h"
 #include "../../Utils/probLibException.h"
@@ -39,26 +40,35 @@ namespace Deltares
     {
         void GeorgeMarsagliaRandomValueGenerator::initialize(bool repeatable, const int ij, const int kl)
         {
-            //
-            // Verify the two seeds
-            //
-            if (ij < 0 || ij > 31328)
+            int seed1 = ij;
+            int seed2 = kl;
+            if (repeatable)
             {
-                throw Deltares::Reliability::probLibException("Random seed parameter 1 outside of valid range (0 ... 31328)", ij);
+                //
+                // Verify the two seeds
+                //
+                if (ij < 0 || ij > 31328)
+                {
+                    throw Deltares::Reliability::probLibException("Random seed parameter 1 outside of valid range (0 ... 31328)", ij);
+                }
+                if (kl < 0 || kl > 30081)
+                {
+                    throw Deltares::Reliability::probLibException("Random seed parameter 2 outside of valid range (0 ... 30081)", kl);
+                }
             }
-            if (kl < 0 || kl > 30081)
+            else
             {
-                throw Deltares::Reliability::probLibException("Random seed parameter 2 outside of valid range (0 ... 30081)", kl);
+                seed1 = time(nullptr) % 31328;
+                seed2 = time(nullptr) % 30081;
             }
 
-            gm_state& state = GeorgeMarsagliaRandomValueGenerator::state;
             //
             // Initialize the parameters of the random number generator
             //
-            int i = (ij / 177) % 177 + 2;  // first parameter in the random number generator
-            int j = ij % 177 + 2;  // second param
-            int k = (kl / 169) % 178 + 1;  // third param
-            int l = kl % 169;      // fourth param
+            int i = (seed1 / 177) % 177 + 2;  // first parameter in the random number generator
+            int j = seed1 % 177 + 2;  // second param
+            int k = (seed2 / 169) % 178 + 1;  // third param
+            int l = seed2 % 169;      // fourth param
             //
             // Generate values to the vector u
             //
@@ -95,7 +105,6 @@ namespace Deltares
         // This method returns a uniform random deviate between 0.0 and 1.0
         double GeorgeMarsagliaRandomValueGenerator::next()
         {
-            gm_state& state = GeorgeMarsagliaRandomValueGenerator::state;
             //
             // Generate a uniform random deviate between 0 and 1
             //
