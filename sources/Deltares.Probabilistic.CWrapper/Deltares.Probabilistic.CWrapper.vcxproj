@@ -178,7 +178,7 @@ copy /Y "$(TargetDir)$(TargetName).dll" "$(ProjectDir)..\Deltares.Probabilistic.
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Deltares.Probabilistic\Deltares.Probabilistic.vcxproj">
-      <Project>{e5635375-6faf-459c-ab13-83a85b7134eb}</Project>
+      <Project>{E5635375-6FAF-459C-AB13-83A85B7134EB}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
