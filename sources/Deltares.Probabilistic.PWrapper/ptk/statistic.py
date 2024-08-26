@@ -2,6 +2,9 @@ from ctypes import ArgumentError
 from .utils import *
 from . import interface
 
+if not interface.IsLibraryLoaded():
+	interface.LoadDefaultLibrary()
+
 class StandardNormal:
 	_id = interface.Create('standard_normal')
 	

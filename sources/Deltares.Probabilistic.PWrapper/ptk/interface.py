@@ -10,25 +10,29 @@ from ctypes import *
 
 CALLBACK = CFUNCTYPE(ctypes.c_double, POINTER(ctypes.c_double), ctypes.c_int)
 
-dir_path = os.path.dirname(os.path.realpath(__file__))
-if (sys.platform.startswith("linux")):
-	lib_file = 'libDeltares.Probabilistic.CWrapper.so'
-else:
-	lib_file = 'Deltares.Probabilistic.CWrapper.dll'
+def LoadLibrary(lib_full_path):
+	if os.path.isfile(lib_full_path):
+		try:
+			global lib
+			lib = cdll.LoadLibrary(lib_full_path)
+		except:
+			message = sys.exc_info()[0]
+			print('error: ' + message, flush = True)
+			raise
+	if lib == None:
+		raise FileNotFoundError("Could not find " + lib_full_path)
 
-lib_full_path = os.path.join(dir_path, 'bin', lib_file);
+def IsLibraryLoaded():
+	return 'lib' in globals() and not lib is None
 
-lib = None
-if os.path.isfile(lib_full_path):
-	try:
-		lib = cdll.LoadLibrary(lib_full_path)
-	except:
-		message = sys.exc_info()[0]
-		print('error: ' + message, flush = True)
-		raise
-
-if lib == None:
-	raise FileNotFoundError("Could not find " + lib_full_path)
+def LoadDefaultLibrary():
+	dir_path = os.path.dirname(os.path.realpath(__file__))
+	if (sys.platform.startswith("linux")):
+		lib_file = 'libDeltares.Probabilistic.CWrapper.so'
+	else:
+		lib_file = 'Deltares.Probabilistic.CWrapper.dll'
+	lib_full_path = os.path.join(dir_path, 'bin', lib_file);
+	LoadLibrary(lib_full_path)
 
 def Create(object_type):
 	try:

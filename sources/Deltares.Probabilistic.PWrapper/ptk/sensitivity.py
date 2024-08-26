@@ -5,6 +5,9 @@ from .statistic import Stochast
 from .reliability import StochastSettings
 from . import interface
 
+if not interface.IsLibraryLoaded():
+	interface.LoadDefaultLibrary()
+
 class SensitivitySettings:
 		  
 	def __init__(self):

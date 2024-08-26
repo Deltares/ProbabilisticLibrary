@@ -4,6 +4,9 @@ from .utils import *
 from .statistic import Stochast
 from . import interface
 
+if not interface.IsLibraryLoaded():
+	interface.LoadDefaultLibrary()
+
 class Settings:
 		  
 	def __init__(self):

@@ -7,6 +7,9 @@ from .reliability import *
 from .sensitivity import *
 from . import interface
 
+if not interface.IsLibraryLoaded():
+	interface.LoadDefaultLibrary()
+
 class SensitivityProject:
 
 	_model = None
