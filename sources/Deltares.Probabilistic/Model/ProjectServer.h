@@ -41,6 +41,13 @@ namespace Deltares
             virtual void Execute(int id, std::string method_);
         protected:
             int GetNewObjectId();
+
+            int GetStochastId(std::shared_ptr<Statistics::Stochast> stochast);
+            int GetDesignPointId(std::shared_ptr<Reliability::DesignPoint> designPoint);
+            int GetAlphaId(std::shared_ptr<StochastPointAlpha> alpha);
+            int GetHistogramValueId(std::shared_ptr<Statistics::HistogramValue> histogramValue);
+            int GetDiscreteValueId(std::shared_ptr<Statistics::DiscreteValue> discreteValue);
+            int GetFragilityValueId(std::shared_ptr<Statistics::FragilityValue> fragilityValue);
         private:
             enum ObjectType { StandardNormal, Project, Stochast, DiscreteValue, HistogramValue, FragilityValue, CorrelationMatrix, Settings, StochastSettings, DesignPoint, Alpha, CombineProject, CombineSettings, SelfCorrelationMatrix, SensitivityProject, SensitivitySettings };
 
@@ -69,13 +76,6 @@ namespace Deltares
             std::unordered_map<std::shared_ptr<Statistics::HistogramValue>, int> histogramValueIds;
             std::unordered_map<std::shared_ptr<Statistics::DiscreteValue>, int> discreteValueIds;
             std::unordered_map<std::shared_ptr<Statistics::FragilityValue>, int> fragilityValueIds;
-
-            int GetStochastId(std::shared_ptr<Statistics::Stochast> stochast);
-            int GetDesignPointId(std::shared_ptr<Reliability::DesignPoint> designPoint);
-            int GetAlphaId(std::shared_ptr<StochastPointAlpha> alpha);
-            int GetHistogramValueId(std::shared_ptr<Statistics::HistogramValue> histogramValue);
-            int GetDiscreteValueId(std::shared_ptr<Statistics::DiscreteValue> discreteValue);
-            int GetFragilityValueId(std::shared_ptr<Statistics::FragilityValue> fragilityValue);
         };
     }
 }
