@@ -242,6 +242,14 @@ class DesignPoint:
 		self._known_variables = known_variables
 		self._known_design_points = known_design_points
 		
+	@property
+	def identifier(self):
+		return interface.GetStringValue(self._id, 'identifier')
+		
+	@identifier.setter
+	def identifier(self, value):
+		interface.SetStringValue(self._id, 'identifier', value)
+
 	@property   
 	def reliability_index(self):
 		return interface.GetValue(self._id, 'reliability_index')

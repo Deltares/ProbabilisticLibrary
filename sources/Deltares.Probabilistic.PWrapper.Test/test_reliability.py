@@ -31,6 +31,7 @@ class Test_reliability(unittest.TestCase):
 
         self.assertEqual(len(project.variables), len(project.design_point.alphas))
         self.assertTrue(project.design_point.alphas[0].variable in project.variables)
+        self.assertEqual('a', project.design_point.alphas[0].variable.name)
 
     def test_form_linear_run_twice(self):
         project = project_builder.get_linear_project()

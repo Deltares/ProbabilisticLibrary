@@ -367,7 +367,7 @@ namespace Deltares
             {
                 std::shared_ptr<Reliability::StochastSettings> stochastSettings = stochastSettingsValues[id];
 
-                if (property_ == "variable") return stochastIds[stochastSettings->stochast];
+                if (property_ == "variable") return GetStochastId(stochastSettings->stochast);
                 else if (property_ == "intervals") return stochastSettings->Intervals;
             }
             else if (objectType == ObjectType::DesignPoint)
@@ -384,7 +384,7 @@ namespace Deltares
             {
                 std::shared_ptr<Reliability::StochastPointAlpha> alpha = alphas[id];
 
-                if (property_ == "variable") return stochastIds[alpha->Stochast];
+                if (property_ == "variable") return GetStochastId(alpha->Stochast);
             }
             else if (objectType == ObjectType::CombineProject)
             {
@@ -583,6 +583,12 @@ namespace Deltares
                 if (property_ == "combiner_method") return DesignPointCombiner::getCombinerMethodString(settings->combinerMethod);
                 else if (property_ == "combine_type") return DesignPointCombiner::getCombineTypeString(settings->combineType);
             }
+            else if (objectType == ObjectType::DesignPoint)
+            {
+                std::shared_ptr<Reliability::DesignPoint> designPoint = designPoints[id];
+
+                if (property_ == "identifier") return designPoint->Identifier;
+            }
 
             return "";
         }
@@ -614,6 +620,12 @@ namespace Deltares
 
                 if (property_ == "combiner_method") settings->combinerMethod = DesignPointCombiner::getCombinerMethod(value);
                 else if (property_ == "combine_type") settings->combineType = DesignPointCombiner::getCombineType(value);
+            }
+            else if (objectType == ObjectType::DesignPoint)
+            {
+                std::shared_ptr<Reliability::DesignPoint> designPoint = designPoints[id];
+
+                if (property_ == "identifier") designPoint->Identifier = value;
             }
         }
 
