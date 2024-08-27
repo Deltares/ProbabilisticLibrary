@@ -9,8 +9,6 @@
 
 std::shared_ptr<Deltares::Models::ProjectServer> projectServer = std::make_shared< Deltares::Models::ProjectServer>();
 
-char* string_result;
-
 extern "C" DLL_PUBLIC int Create(char* type)
 {
     std::string typeStr = type;
@@ -85,7 +83,7 @@ extern "C" DLL_PUBLIC void GetStringValue(int id, char* property, char* result_c
     const char* result_b = result.c_str();
 
 #ifdef __GNUC__
-    printf(result_c, "%s", result_b);
+    sprintf(result_c, "%s", result_b);
 #else
     _snprintf_s(result_c, size, _TRUNCATE, result_b);
 #endif
@@ -102,18 +100,6 @@ extern "C" DLL_PUBLIC void SetArrayValue(int id, char* property, double* values,
 {
     std::string propertyStr(property);
     projectServer->SetArrayValue(id, propertyStr, values, size);
-}
-
-// this method does not work
-extern "C" DLL_PUBLIC int* GetArrayIntValue(int id, char* property)
-{
-    std::string propertyStr(property);
-    std::vector<int> values = projectServer->GetArrayIntValue(id, propertyStr);
-    values.push_back(0);
-
-    int* data = values.data();
-
-    return data;
 }
 
 extern "C" DLL_PUBLIC void SetArrayIntValue(int id, char* property, int* values, int size)

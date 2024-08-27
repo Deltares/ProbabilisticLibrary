@@ -150,6 +150,13 @@
     <ClCompile Include="Combine\HohenbichlerFormCombiner.cpp" />
     <ClCompile Include="Combine\HohenbichlerNumIntCombiner.cpp" />
     <ClCompile Include="Statistics\Distributions\ExponentialDistribution.cpp" />
+    <ClCompile Include="Sensitivity\SensitivityMethod.cpp" />
+    <ClCompile Include="Sensitivity\CrudeMonteCarloS.cpp" />
+    <ClCompile Include="Sensitivity\CrudeMonteCarloSettingsS.cpp" />
+    <ClCompile Include="Sensitivity\SensitivityProject.cpp" />
+    <ClCompile Include="Sensitivity\SettingsS.cpp" />
+    <ClCompile Include="Sensitivity\ImportanceSamplingS.cpp" />
+    <ClCompile Include="Sensitivity\ImportanceSamplingSettingsS.cpp" />
     <ClCompile Include="Statistics\Distributions\TriangularDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\TrapezoidalDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\ParetoDistribution.cpp" />
@@ -331,6 +338,13 @@
     <ClInclude Include="Combine\HohenbichlerFormCombiner.h" />
     <ClInclude Include="Combine\HohenbichlerNumIntCombiner.h" />
     <ClInclude Include="Statistics\Distributions\ExponentialDistribution.h" />
+    <ClInclude Include="Sensitivity\SensitivityMethod.h" />
+    <ClInclude Include="Sensitivity\CrudeMonteCarloS.h" />
+    <ClInclude Include="Sensitivity\CrudeMonteCarloSettingsS.h" />
+    <ClInclude Include="Sensitivity\SensitivityProject.h" />
+    <ClInclude Include="Sensitivity\SettingsS.h" />
+    <ClInclude Include="Sensitivity\ImportanceSamplingS.h" />
+    <ClInclude Include="Sensitivity\ImportanceSamplingSettingsS.h" />
     <ClInclude Include="Statistics\Distributions\TriangularDistribution.h" />
     <ClInclude Include="Statistics\Distributions\TrapezoidalDistribution.h" />
     <ClInclude Include="Statistics\Distributions\ParetoDistribution.h" />

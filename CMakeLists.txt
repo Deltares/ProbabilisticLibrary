@@ -50,5 +50,3 @@ option(ENABLE_UNIT_TESTS "Enable unit tests" ON)
 enable_testing()
 
 add_subdirectory(sources)
-
-add_subdirectory(external)

@@ -3,6 +3,7 @@ if(WIN32)
       "Model/*.cpp"
       "Reliability/*.cpp"
       "Statistics/*.cpp"
+      "Sensitivity/*.cpp"
       "Utils/*.cpp"
   )
 

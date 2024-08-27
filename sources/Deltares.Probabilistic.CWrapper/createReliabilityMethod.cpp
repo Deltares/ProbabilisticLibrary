@@ -30,6 +30,7 @@ std::shared_ptr<RandomSettings> createReliabilityMethod::getRnd(const basicSetti
     }
     rnd->Seed = bs.seed1;
     rnd->SeedB = bs.seed2;
+    rnd->IsRepeatableRandom = bs.isRepeatableRandom != 0;
 
     return rnd;
 }

@@ -1,6 +1,7 @@
 #include "CorrelationMatrix.h"
 #include <memory>
 #include <algorithm>
+#include <cmath>
 
 #include "../Math/MatrixSupport.h"
 
@@ -162,7 +163,7 @@ namespace Deltares
 
         void CorrelationMatrix::InverseCholeskyDecomposition()
         {
-            inverseCholeskyMatrix = *MatrixSupport::Inverse(&choleskyMatrix);
+            inverseCholeskyMatrix = MatrixSupport::Inverse(&choleskyMatrix);
         }
 
         bool CorrelationMatrix::isFullyCorrelated(const int index, std::vector<int> varyingIndices) const
@@ -173,7 +174,7 @@ namespace Deltares
             {
                 if (varyingIndex >= 0 && varyingIndex < index)
                 {
-                    if (abs(matrix(varyingIndex, index)) >= 1.0 || abs(matrix(index, varyingIndex)) >= 1.0)
+                    if (fabs(matrix(varyingIndex, index)) >= 1.0 || fabs(matrix(index, varyingIndex)) >= 1.0)
                     {
                         return true;
                     }

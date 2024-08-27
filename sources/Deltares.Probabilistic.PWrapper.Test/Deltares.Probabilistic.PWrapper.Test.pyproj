@@ -28,6 +28,9 @@
   <ItemGroup>
     <Compile Include="project_builder.py" />
     <Compile Include="test_combine.py" />
+    <Compile Include="test_sensitivity.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="test_statistics.py" />
     <Compile Include="test_reliability.py">
       <SubType>Code</SubType>

@@ -3,7 +3,6 @@ using System.Threading;
 using NUnit.Framework;
 using Deltares.Models.Wrappers;
 using Deltares.Reliability.Wrappers;
-using System.Threading;
 
 namespace Deltares.Probabilistic.Wrapper.Test
 {

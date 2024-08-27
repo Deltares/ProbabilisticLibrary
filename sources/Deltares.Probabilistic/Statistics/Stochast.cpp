@@ -73,13 +73,23 @@ namespace Deltares
             double oldMean = this->getMean();
             double oldDeviation = this->getDistributionType() == Deterministic ? this->getProperties()->Scale : this->getDeviation();
 
+            DistributionType oldDistributionType = this->distributionType;
+            bool canSetOldValues = oldMean != 0 || oldDeviation != 0;
+
             this->distributionType = distributionType;
             this->distribution = DistributionLibrary::getDistribution(this->distributionType, truncated, inverted);
             this->properties->dirty = true;
 
-            if ((oldMean != 0 || oldDeviation != 0) && this->distribution->maintainMeanAndDeviation(this->properties))
+            if (canSetOldValues && this->distribution->maintainMeanAndDeviation(this->properties))
             {
-                this->setMeanAndDeviation(oldMean, oldDeviation);
+                if (oldDistributionType == DistributionType::Table && this->canFit())
+                {
+                    this->fitFromHistogramValues();
+                }
+                else
+                {
+                    this->setMeanAndDeviation(oldMean, oldDeviation);
+                }
             }
         }
 
@@ -233,6 +243,22 @@ namespace Deltares
         void Stochast::fitWeighted(std::vector<double> values, std::vector<double> weights)
         {
             distribution->fitWeighted(properties, values, weights);
+        }
+
+        void Stochast::fitFromHistogramValues()
+        {
+            std::vector<double> values;
+
+            // TODO: PROBL-42 Use fitWeighted when this has been implemented for all distributions
+            for (std::shared_ptr<HistogramValue> bin : this->properties->HistogramValues)
+            {
+                for (int i = 0; i < bin->Amount; i++)
+                {
+                    values.push_back(bin->getCenter());
+                }
+            }
+
+            distribution->fit(properties, values);
         }
 
         std::vector<double> Stochast::getSpecialXValues()
