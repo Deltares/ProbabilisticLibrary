@@ -38,9 +38,9 @@ namespace Deltares
 
         double BernoulliDistribution::getXFromU(std::shared_ptr<StochastProperties> stochast, double u)
         {
-            double p = StandardNormal::getPFromU(u);
+            double q = StandardNormal::getQFromU(u);
 
-            if (p < 1 - stochast->Location)
+            if (q > stochast->Location)
             {
                 return 0;
             }

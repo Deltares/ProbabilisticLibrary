@@ -44,11 +44,7 @@ namespace Deltares
 
         double GammaDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)
         {
-            if (!isValid(stochast))
-            {
-                return x == 0 ? 1 : 0;
-            }
-            else if (stochast->Shape <= 0 || stochast->Scale <= 0)
+            if (stochast->Shape <= 0 || stochast->Scale <= 0)
             {
                 return x == 0 ? 1 : 0;
             }
@@ -67,17 +63,13 @@ namespace Deltares
 
         double GammaDistribution::getCDF(std::shared_ptr<StochastProperties> stochast, double x)
         {
-            if (!isValid(stochast))
+            if (x <= 0.0)
             {
-                return x <= 0 ? 0 : 1;
+                return 0.0;
             }
             else if (stochast->Shape <= 0 || stochast->Scale <= 0)
             {
-                return x <= 0 ? 0 : 1;
-            }
-            else if (x <= 0)
-            {
-                return 0;
+                return 1.0;
             }
             else
             {

@@ -54,13 +54,21 @@ namespace Deltares
             else
             {
                 // solve v = m^2/s^2 = k(k-2) => k^2 - 2k - v = 0
-                double v = mean * mean / (deviation * deviation);
+                double vc = mean / deviation;
+                if (std::fabs(vc) > 1.0E150)
+                {
+                    stochast->Scale = 0;
+                }
+                else
+                {
+                    double v = vc * vc;
 
-                // abc-formula
-                double d = 4 + 4 * v;
+                    // abc-formula
+                    double d = 4 + 4 * v;
 
-                stochast->Shape = (2 + std::sqrt(d)) / 2;
-                stochast->Scale = mean * (stochast->Shape - 1) / stochast->Shape;
+                    stochast->Shape = (2 + std::sqrt(d)) / 2;
+                    stochast->Scale = mean * (stochast->Shape - 1) / stochast->Shape;
+                }
             }
         }
 

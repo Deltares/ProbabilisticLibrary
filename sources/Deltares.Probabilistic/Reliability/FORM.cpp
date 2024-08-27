@@ -183,7 +183,7 @@ namespace Deltares
                     }
                 }
 
-                if (std::abs(beta) >= Statistics::StandardNormal::BetaMax)
+                if (std::fabs(beta) >= Statistics::StandardNormal::BetaMax)
                 {
                     modelRunner->reportMessage(Models::MessageType::Error, "No convergence found");
 
@@ -253,8 +253,8 @@ namespace Deltares
         {
             const double uSquared = NumericSupport::GetSquaredSum(sample->Values);
 
-            const double fromZeroDiff = uSquared > 0 ? std::abs(beta * beta - uSquared) / uSquared : 0;
-            const double localDiff = std::abs(sample->Z / zGradientLength);
+            const double fromZeroDiff = uSquared > 0 ? std::fabs(beta * beta - uSquared) / uSquared : 0;
+            const double localDiff = std::fabs(sample->Z / zGradientLength);
             const double betaDiff = std::max(fromZeroDiff, localDiff);
 
             convergenceReport->Convergence = betaDiff;

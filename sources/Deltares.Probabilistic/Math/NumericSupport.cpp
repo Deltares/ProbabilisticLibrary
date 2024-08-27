@@ -152,23 +152,6 @@ namespace Deltares
         }
 
         /// <summary>
-        /// Raises a value to an exponent
-        /// </summary>
-        /// <param name="value"></param>
-        /// <param name="exponent"></param>
-        /// <returns></returns>
-        double NumericSupport::getPower(double value, int exponent)
-        {
-            double powerValue = 1;
-            for (int i = 0; i < exponent; i++)
-            {
-                powerValue *= value;
-            }
-
-            return powerValue;
-        }
-
-        /// <summary>
         /// Retrieves qualitative information of a numeric value
         /// </summary>
         /// <param name="value"></param>
@@ -688,7 +671,7 @@ namespace Deltares
         /// <returns> max value </returns>
         double NumericSupport::getMaxAbs(const double val1, const double val2)
         {
-            if (std::abs(val1) >= std::abs(val2))
+            if (std::fabs(val1) >= std::fabs(val2))
             {
                 return val1;
             }

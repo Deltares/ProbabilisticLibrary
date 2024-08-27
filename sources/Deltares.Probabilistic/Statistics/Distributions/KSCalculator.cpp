@@ -28,8 +28,8 @@ namespace Deltares
                 {
                     double cdf = distribution->getCDF(stochast, xValues[i]);
 
-                    double diff1 = std::abs(cdf - i / size);
-                    double diff2 = std::abs(cdf - (i + 1) / size);
+                    double diff1 = std::fabs(cdf - i / size);
+                    double diff2 = std::fabs(cdf - (i + 1) / size);
 
                     double diff = std::max(diff1, diff2);
                     if (diff > ks)

@@ -7,6 +7,7 @@ namespace Deltares
     {
         class GeneralizedParetoDistribution : public Distribution
         {
+        public:
             double getXFromU(std::shared_ptr<StochastProperties> stochast, double u) override;
             double getUFromX(std::shared_ptr<StochastProperties> stochast, double x) override;
             bool isVarying(std::shared_ptr<StochastProperties> stochast) override;
@@ -18,6 +19,8 @@ namespace Deltares
             bool isValid(std::shared_ptr<StochastProperties> stochast) override;
             std::vector<double> getSpecialPoints(std::shared_ptr<StochastProperties> stochast) override;
             std::vector<DistributionPropertyType> getParameters() override { return { Scale, Shape, Shift }; }
+        private:
+            const double epsilon = 1.0e-4;
         };
     }
 }

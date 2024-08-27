@@ -1,4 +1,3 @@
-#include <cmath>
 #include "CompositeDistribution.h"
 #include "../../Math/NumericSupport.h"
 #include <algorithm>
@@ -14,15 +13,13 @@ namespace Deltares
             {
                 if (contributingStochast->Probability > 0.0)
                 {
-                    contributingStochasts.push_back(contributingStochast);
-                }
-            }
+                    if (contributingStochast->Stochast->isVarying())
+                    {
+                        // There is at least 1 really contributing (probability > 0) stochast which is varying, so the composite stochast is varying
+                        return true;
+                    }
 
-            for (std::shared_ptr<ContributingStochast> contributingStochast : contributingStochasts)
-            {
-                if (contributingStochast->Stochast->isVarying())
-                {
-                    return true;
+                    contributingStochasts.push_back(contributingStochast);
                 }
             }
 
@@ -31,11 +28,13 @@ namespace Deltares
                 return false;
             }
 
+            // All non varying stochasts, but if they do not all lead to the same value, the composite stochast is varying
             double firstMean = contributingStochasts.front()->Stochast->getMean();
             for (std::shared_ptr<ContributingStochast> contributingStochast : contributingStochasts)
             {
                 if (contributingStochast != contributingStochasts.front() && contributingStochast->Stochast->getMean() != firstMean)
                 {
+                    // There are at least 2 stochasts which do not lead to the same value, so the composite stochast is varying
                     return true;
                 }
             }

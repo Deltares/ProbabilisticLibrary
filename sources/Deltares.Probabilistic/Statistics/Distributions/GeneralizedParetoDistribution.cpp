@@ -2,7 +2,6 @@
 #include "../StandardNormal.h"
 #include "../StochastProperties.h"
 #include "../../Math/NumericSupport.h"
-#include "../../Math/RootFinders/BisectionRootFinder.h"
 
 #include <cmath>
 #include <algorithm>
@@ -37,9 +36,7 @@ namespace Deltares
             double s = stochast->Scale;
             double m = stochast->Shift;
 
-            double epsilon = 1e-4;
-
-            if (x >= m && std::abs(k) <= epsilon && s > 0)
+            if (x >= m && std::fabs(k) <= epsilon && s > 0)
             {
                 return std::exp(-(x - m) / s) / s;
             }
@@ -63,13 +60,11 @@ namespace Deltares
             double s = stochast->Scale;
             double m = stochast->Shift;
 
-            double epsilon = 1e-4;
-
             if (x >= m && std::fabs(k) <= epsilon && s > 0)
             {
                 return std::exp(-(x - m) / s);
             }
-            else if (x >= m && (k * x < s + k * m) && std::abs(k) > epsilon)
+            else if (x >= m && (k * x < s + k * m) && std::fabs(k) > epsilon)
             {
                 return 1 - std::pow(1 - k * (x - m) / s, 1 / k);
             }
@@ -85,20 +80,17 @@ namespace Deltares
 
         double GeneralizedParetoDistribution::getXFromU(std::shared_ptr<StochastProperties> stochast, double u)
         {
-            double p = StandardNormal::getPFromU(u);
+            double q = StandardNormal::getQFromU(u);
 
             double k = stochast->Shape;
             double s = stochast->Scale;
             double m = stochast->Shift;
 
-            double epsilon = 1e-4;
-            double q = 1 - p;
-
-            if (std::abs(k) <= epsilon && s > 0)
+            if (std::fabs(k) <= epsilon && s > 0)
             {
                 return m - s * std::log(q);
             }
-            else if (std::abs(k) > epsilon && s > 0)
+            else if (std::fabs(k) > epsilon && s > 0)
             {
                 return m + s * (1 - std::pow(q, k)) / k;
             }

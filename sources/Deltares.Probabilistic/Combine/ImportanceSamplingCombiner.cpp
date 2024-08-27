@@ -164,7 +164,7 @@ namespace Deltares
 
                     const double maxProbability = probability + maxRemainingProbability;
                     const double maxReliability = Statistics::StandardNormal::getUFromQ(maxProbability);
-                    double diffReliability = std::abs(reliabilityIndex - maxReliability);
+                    double diffReliability = std::fabs(reliabilityIndex - maxReliability);
 
                     if (progress != nullptr)
                     {

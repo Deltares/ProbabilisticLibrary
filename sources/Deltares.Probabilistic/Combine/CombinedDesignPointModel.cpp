@@ -189,7 +189,7 @@ namespace Deltares
                 }
             }
 
-            if (std::abs(startLoad) > std::abs(startResistance))
+            if (std::fabs(startLoad) > std::fabs(startResistance))
             {
                 return startLoad;
             }
@@ -298,7 +298,7 @@ namespace Deltares
 
         double CombinedDesignPointModel::getCombinedAlpha(double alpha1, double alpha2)
         {
-            const double sign = std::abs(alpha1) > std::abs(alpha2) ? Numeric::NumericSupport::GetSign(alpha1) : Numeric::NumericSupport::GetSign(alpha2);
+            const double sign = std::fabs(alpha1) > std::fabs(alpha2) ? Numeric::NumericSupport::GetSign(alpha1) : Numeric::NumericSupport::GetSign(alpha2);
             return sign * std::sqrt(alpha1 * alpha1 + alpha2 * alpha2);
         }
     }

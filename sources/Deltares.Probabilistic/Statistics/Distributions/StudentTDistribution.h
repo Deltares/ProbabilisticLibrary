@@ -52,7 +52,7 @@ namespace Deltares
                 double getCoefficient(double p);
 
             private:
-                static constexpr double tolerance = 0.0001;
+                static constexpr double pDelta = 0.0001;
 
                 std::vector<double> pValues;
                 std::vector<double> cValues;
@@ -62,6 +62,8 @@ namespace Deltares
             std::shared_ptr<StudentTDistribution::StudentTValue> GetStudentValue(int degreesOfFreedom);
             std::vector<std::shared_ptr<StudentTDistribution::StudentTValue>> values;
             void loadValues();
+
+            const double minXDelta = 0.00001;
         };
     }
 }

@@ -66,10 +66,11 @@ namespace Deltares
 
                 std::unique_ptr<Numeric::BisectionRootFinder> bisection = std::make_unique<Numeric::BisectionRootFinder>();
 
-                double minStart = 0.0;
-                double maxStart = 32.0;
+                const double minStart = 0.0;
+                const double maxStart = 32.0;
+                const double tolerance = 0.00001;
 
-                double factor = bisection->CalculateValue(minStart, maxStart, deviation, 0.00001, method);
+                double factor = bisection->CalculateValue(minStart, maxStart, deviation, tolerance, method);
 
                 stochast->Minimum = stochast->Shift - factor * (stochast->Shift - stochast->Minimum);
                 stochast->Maximum = stochast->Shift + factor * (stochast->Maximum - stochast->Shift);

@@ -130,7 +130,7 @@ namespace Deltares
             value = std::min(std::max(value, -1.0), 1.0);
             matrix(i, j) = value;
             matrix(j, i) = value;
-            bool fully = (std::abs(value) == 1.0);
+            bool fully = (std::fabs(value) == 1.0);
             for (auto& c : inputCorrelations)
             {
                 if ((c.index1 == i && c.index2 == j) || (c.index1 == j && c.index2 == i))

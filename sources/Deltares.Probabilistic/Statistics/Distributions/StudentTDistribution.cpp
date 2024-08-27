@@ -73,9 +73,7 @@ namespace Deltares
 
         double StudentTDistribution::getUFromX(std::shared_ptr<StochastProperties> stochast, double x)
         {
-            const double delta = 0.00001;
-
-            double margin = std::min(delta, std::abs(x / 1000000));
+            double margin = std::min(minXDelta, std::fabs(x / 1000000));
 
             int degreesOfFreedom = stochast->Observations - 1;
 
@@ -131,6 +129,11 @@ namespace Deltares
 
         void StudentTDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values)
         {
+            const double minSigma = 1.0E-9;
+            const double minRelativeSigma = 0.99;
+            const double maxRelativeSigma = 1.01;
+            const int maxIterations = 25;
+
             stochast->Observations = static_cast<int>(values.size());
 
             std::vector<double> weights = NumericSupport::select(values, [](double x) {return 1.0; });
@@ -159,7 +162,7 @@ namespace Deltares
                     return (nu + 1) * sigma2 / (nu * sigma2 + (xx - mean) * (xx - mean));
                 });
 
-                if (sigma2 < 1E-9 || (prevSigma2 / sigma2 > 0.99 && prevSigma2 / sigma2 < 1.01) || count > 25)
+                if (sigma2 < minSigma || (prevSigma2 / sigma2 > minRelativeSigma && prevSigma2 / sigma2 < maxRelativeSigma) || count > maxIterations)
                 {
                     stochast->Location = mean;
                     stochast->Scale = std::sqrt(sigma2);
@@ -218,7 +221,7 @@ namespace Deltares
 
         double StudentTDistribution::StudentTValue::getCoefficient(double p)
         {
-            if (Numeric::NumericSupport::areEqual(p, 0.5, tolerance))
+            if (Numeric::NumericSupport::areEqual(p, 0.5, pDelta))
             {
                 return 0;
             }
@@ -226,23 +229,23 @@ namespace Deltares
             {
                 return -getCoefficient(1 - p);
             }
-            else if (Numeric::NumericSupport::areEqual(p, 0.1, tolerance))
+            else if (Numeric::NumericSupport::areEqual(p, 0.1, pDelta))
             {
                 return P0_100;
             }
-            else if (Numeric::NumericSupport::areEqual(p, 0.05, tolerance))
+            else if (Numeric::NumericSupport::areEqual(p, 0.05, pDelta))
             {
                 return P0_050;
             }
-            else if (Numeric::NumericSupport::areEqual(p, 0.025, tolerance))
+            else if (Numeric::NumericSupport::areEqual(p, 0.025, pDelta))
             {
                 return P0_025;
             }
-            else if (Numeric::NumericSupport::areEqual(p, 0.010, tolerance))
+            else if (Numeric::NumericSupport::areEqual(p, 0.010, pDelta))
             {
                 return P0_010;
             }
-            else if (Numeric::NumericSupport::areEqual(p, 0.005, tolerance))
+            else if (Numeric::NumericSupport::areEqual(p, 0.005, pDelta))
             {
                 return P0_005;
             }

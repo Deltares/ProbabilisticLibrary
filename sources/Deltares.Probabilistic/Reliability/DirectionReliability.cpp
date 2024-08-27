@@ -252,7 +252,7 @@ namespace Deltares
 
                         if (monotone && zLowType != DoubleType::NaN && zHighType != DoubleType::NaN)
                         {
-                            if (NumericSupport::compareDouble(std::abs(zHigh), std::abs(zLow)) == CmpResult::Greater)
+                            if (NumericSupport::compareDouble(std::fabs(zHigh), std::fabs(zLow)) == CmpResult::Greater)
                             {
                                 found = true;
                             }
@@ -466,7 +466,7 @@ namespace Deltares
                             modelRunner->removeTask(uDirection->IterationIndex);
                             return settings->MaximumLengthU;
                         }
-                        else if (NumericSupport::GetSign(z0) == NumericSupport::GetSign(zResult) && std::abs(zResult) >= std::abs(z0))
+                        else if (NumericSupport::GetSign(z0) == NumericSupport::GetSign(zResult) && std::fabs(zResult) >= std::fabs(z0))
                         {
                             z = zResult;
                             modelRunner->removeTask(uDirection->IterationIndex);

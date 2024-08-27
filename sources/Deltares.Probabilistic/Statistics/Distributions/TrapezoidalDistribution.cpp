@@ -40,7 +40,7 @@ namespace Deltares
             }
             else
             {
-                return (Numeric::NumericSupport::getPower(y, exp) - Numeric::NumericSupport::getPower(x, exp)) / (y - x);
+                return (std::pow(y, exp) - std::pow(x, exp)) / (y - x);
             }
         }
 

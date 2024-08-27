@@ -259,7 +259,7 @@ namespace Deltares
 
                 previousSamples = samples;
 
-                for (auto& z : zValues) { z = std::abs(z); }
+                for (auto& z : zValues) { z = std::fabs(z); }
                 auto indexAbsMinimal = Numeric::NumericSupport::getLocationMinimum(zValues);
                 setBestSample(bestSample, samples[indexAbsMinimal]);
             }

@@ -130,7 +130,7 @@ namespace Deltares {
                 }
                 else
                 {
-                    double pf = std::abs(StandardNormal::getPFromU(dp1) - StandardNormal::getPFromU(dp2));
+                    double pf = std::fabs(StandardNormal::getPFromU(dp1) - StandardNormal::getPFromU(dp2));
                     return StandardNormal::getUFromQ(pf);
                 }
             }
