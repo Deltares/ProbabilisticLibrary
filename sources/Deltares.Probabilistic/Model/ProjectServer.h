@@ -80,6 +80,7 @@ namespace Deltares
             std::unordered_map<std::shared_ptr<Statistics::HistogramValue>, int> histogramValueIds;
             std::unordered_map<std::shared_ptr<Statistics::DiscreteValue>, int> discreteValueIds;
             std::unordered_map<std::shared_ptr<Statistics::FragilityValue>, int> fragilityValueIds;
+            std::unordered_map<std::shared_ptr<Statistics::ContributingStochast>, int> contributingStochastIds;
         };
     }
 }

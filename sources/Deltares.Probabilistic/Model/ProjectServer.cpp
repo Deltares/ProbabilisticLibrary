@@ -1099,7 +1099,8 @@ namespace Deltares
         {
             if (!contributingStochastIds.contains(contributingStochast))
             {
-                counter++;
+                int counter = GetNewObjectId();
+
                 contributingStochasts[counter] = contributingStochast;
                 types[counter] = ObjectType::FragilityValue;
                 contributingStochastIds[contributingStochast] = counter;

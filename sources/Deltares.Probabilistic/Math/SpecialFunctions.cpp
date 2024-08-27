@@ -184,7 +184,7 @@ namespace Deltares
                 return std::nan("");
             }
 
-            bool convergenceExpected = x > (a + 1.0) / (a + b + 2.0);
+            bool convergenceExpected = x >= (a + 1.0) / (a + b + 2.0);
 
             if (!convergenceExpected)
             {
