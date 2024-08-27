@@ -183,6 +183,57 @@ namespace Deltares.Probabilistic.Wrapper.Test
         }
 
         [Test]
+        public void TestStudentT()
+        {
+            var stochast = new Stochast();
+            var normalStochast = new Stochast();
+
+            Assert.AreEqual(2, stochast.Observations);
+
+            stochast.DistributionType = DistributionType.StudentT;
+            stochast.Location = 3;
+            stochast.Scale = 2;
+            stochast.Observations = 5;
+
+            normalStochast.DistributionType = DistributionType.Normal;
+            normalStochast.Mean = 3;
+            normalStochast.Deviation = 2;
+
+            Assert.AreEqual(3, stochast.GetXFromU(0));
+            Assert.AreEqual(3 - 2 * 1.533, stochast.GetXFromP(0.1), margin);
+            Assert.AreEqual(3 + 2 * 1.533, stochast.GetXFromP(0.9), margin);
+
+            // interpolation
+            stochast.Observations = 91;
+            Assert.AreEqual(3 - 2 * 1.2925, stochast.GetXFromP(0.1), margin);
+            Assert.AreEqual(3 + 2 * 1.2925, stochast.GetXFromP(0.9), margin);
+
+            // interpolation
+            stochast.Observations = 5;
+            Assert.AreEqual(3 - 2.48, stochast.GetXFromP(0.15), margin);
+            Assert.AreEqual(3 + 2.48, stochast.GetXFromP(0.85), margin);
+            Assert.AreEqual(3 - 17.062, stochast.GetXFromP(0.0001), margin);
+            Assert.AreEqual(3 + 17.062, stochast.GetXFromP(0.9999), margin);
+
+            // mean adapted when x modified at p
+            stochast.Observations = 10;
+            double p90 = stochast.GetXFromP(0.9);
+            stochast.SetXAtU(p90 + 1, StandardNormal.GetUFromP(0.9), ConstantParameterType.Deviation);
+            Assert.AreEqual(4, stochast.Mean, margin);
+
+            stochast.Observations = 1;
+            Assert.IsTrue(double.IsNaN(stochast.GetXFromP(0.1)));
+
+            stochast.Observations = 3;
+
+            stochast.Observations = 10;
+            TestFit(stochast, 1.0, stochast.Observations);
+
+            stochast.Observations = 100;
+            TestFit(stochast, 0.5, stochast.Observations);
+        }
+
+        [Test]
         public void TestUniform()
         {
             Stochast stochast = new Stochast { DistributionType = DistributionType.Uniform, Minimum = 5, Maximum = 9 };
@@ -224,6 +275,108 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             stochast.Fit(new[] { 2.5, 3.0, 3.5, 5.5, 6.5 });
             Assert.AreEqual(2.5, stochast.Scale, margin);
+        }
+
+        [Test]
+        public void TestTriangular()
+        {
+            var stochast = new Stochast
+            {
+                DistributionType = DistributionType.Triangular,
+                Shift = 5,
+                Minimum = 4,
+                Maximum = 8
+            };
+
+            Assert.AreEqual(5.55, stochast.GetXFromU(0), margin);
+
+            TestStochast(stochast);
+
+            TestFit(stochast);
+
+            stochast.Fit(new[] { 2.5, 3.0, 3.5, 5.5, 6.5 });
+            Assert.AreEqual(1.7, stochast.Minimum, margin);
+            Assert.AreEqual(7.3, stochast.Maximum, margin);
+            Assert.AreEqual(3.6, stochast.Shift, margin);
+        }
+
+        [Test]
+        public void TestTrapezoidal()
+        {
+            var stochast = new Stochast
+            {
+                DistributionType = DistributionType.Trapezoidal,
+                Shift = 5,
+                ShiftB = 6,
+                Minimum = 4,
+                Maximum = 8
+            };
+
+            Assert.AreEqual(5.75, stochast.GetXFromU(0), margin);
+
+            TestStochast(stochast);
+            TestFit(stochast);
+
+
+            Stochast triangle = new Stochast
+            {
+                DistributionType = DistributionType.Trapezoidal,
+                Shift = 5,
+                ShiftB = 5,
+                Minimum = 4,
+                Maximum = 8
+            };
+
+            TestStochast(triangle);
+            TestFit(triangle);
+
+            Stochast uniform = new Stochast
+            {
+                DistributionType = DistributionType.Trapezoidal,
+                Shift = 4,
+                ShiftB = 8,
+                Minimum = 4,
+                Maximum = 8
+            };
+
+            TestStochast(uniform);
+            TestFit(uniform);
+
+            Stochast left = new Stochast
+            {
+                DistributionType = DistributionType.Trapezoidal,
+                Shift = 4,
+                ShiftB = 4,
+                Minimum = 4,
+                Maximum = 8
+            };
+
+            TestStochast(left);
+            TestFit(left, 0.25, 10000);
+
+            Stochast right = new Stochast
+            {
+                DistributionType = DistributionType.Trapezoidal,
+                Shift = 8,
+                ShiftB = 8,
+                Minimum = 4,
+                Maximum = 8
+            };
+
+            TestStochast(right);
+            TestFit(right, 0.25, 10000);
+
+            Stochast uneven = new Stochast
+            {
+                DistributionType = DistributionType.Trapezoidal,
+                Shift = 7,
+                ShiftB = 9,
+                Minimum = 0,
+                Maximum = 10
+            };
+
+            TestStochast(uneven);
+            TestFit(uneven, 0.25, 10000);
         }
 
         [Test]
@@ -313,7 +466,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
                 28.3843074961794
             };
 
-            for (int i = -1; i< 8; i++)
+            for (int i = -1; i < 8; i++)
             {
                 double u = (double)i;
                 double x = stochast.GetXFromU(u);
@@ -408,6 +561,116 @@ namespace Deltares.Probabilistic.Wrapper.Test
             TestInvert(stochast, true);
 
             TestFit(stochast);
+        }
+
+        [Test]
+        public void TestPareto()
+        {
+            var stochast = new Stochast { DistributionType = DistributionType.Pareto, Scale = 1, Shape = 1 };
+
+            TestStochast(stochast);
+
+            stochast.Scale = 2;
+            stochast.Shape = 3;
+
+            TestFit(stochast);
+        }
+
+        [Test]
+        public void TestGeneralizedPareto()
+        {
+            var stochast = new Stochast
+            {
+                DistributionType = DistributionType.GeneralizedPareto,
+                Shape = -1,
+                Scale = 1,
+                Shift = 30
+            };
+
+            TestStochast(stochast);
+
+            stochast.Shape = 1;
+            stochast.Scale = 5;
+            stochast.Shift = 20;
+
+            TestStochast(stochast);
+        }
+
+        [Test]
+        public void TestBeta()
+        {
+            var stochast = new Stochast { DistributionType = DistributionType.Beta, Shape = 1, ShapeB = 1 };
+
+            Assert.AreEqual(0.1, stochast.GetCDF(0.1), margin);
+
+            TestStochast(stochast);
+            TestFit(stochast);
+
+            stochast.Shape = 3;
+            stochast.ShapeB = 4;
+
+            Assert.AreEqual(0.656, stochast.GetCDF(0.5), margin);
+
+            TestFit(stochast, 0.15);
+        }
+
+        [Test]
+        public void TestGamma()
+        {
+            var stochast = new Stochast { DistributionType = DistributionType.Gamma, Scale = 1, Shape = 1 };
+
+            Assert.AreEqual(0.0951, stochast.GetCDF(0.1), margin);
+
+            TestStochast(stochast);
+
+            stochast.Scale = 2;
+            stochast.Shape = 3;
+
+            TestInvert(stochast, false);
+            TestFit(stochast, 0.15);
+        }
+
+        [Test]
+        public void TestBernoulli()
+        {
+            var stochast = new Stochast { DistributionType = DistributionType.Bernoulli, Location = 0.8 };
+
+            Assert.AreEqual(0, stochast.GetXFromU(StandardNormal.GetUFromP(0.1)), margin);
+            Assert.AreEqual(1, stochast.GetXFromU(StandardNormal.GetUFromP(0.9)), margin);
+
+            Assert.IsTrue(stochast.IsVarying());
+        }
+
+        [Test]
+        public void TestPoisson()
+        {
+            var stochast = new Stochast { DistributionType = DistributionType.Poisson, Location = 5 };
+
+            Assert.AreEqual(2, stochast.GetXFromU(StandardNormal.GetUFromP(0.1)), margin);
+            Assert.AreEqual(5, stochast.GetXFromU(0), margin);
+            Assert.AreEqual(8, stochast.GetXFromU(StandardNormal.GetUFromP(0.9)), margin);
+
+            Assert.IsTrue(stochast.IsVarying());
+        }
+
+        [Test]
+        public void TestComposite()
+        {
+            var stochast = new Stochast { DistributionType = DistributionType.Composite };
+
+            var stochast1 = new Stochast { DistributionType = DistributionType.Uniform, Minimum = 0, Maximum = 8};
+            var stochast2 = new Stochast { DistributionType = DistributionType.Uniform, Minimum = 6, Maximum = 10 };
+
+            stochast.ContributingStochasts.Add(new ContributingStochast { Probability = 0.4, Stochast = stochast1 });
+            stochast.ContributingStochasts.Add(new ContributingStochast { Probability = 0.6, Stochast = stochast2 });
+
+            Assert.IsTrue(stochast.IsVarying());
+
+            Assert.AreEqual(0.4 * 0.125 + 0.6 * 0, stochast.GetCDF(1.0), margin);
+            Assert.AreEqual(0.4 * 0.875 + 0.6 * 0.25, stochast.GetCDF(7.0), margin);
+            Assert.AreEqual(0.4 * 1 + 0.6 * 0.75, stochast.GetCDF(9.0), margin);
+
+            TestStochast(stochast);
         }
 
         [Test]

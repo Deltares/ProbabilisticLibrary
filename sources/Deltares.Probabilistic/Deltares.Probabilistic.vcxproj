@@ -155,6 +155,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Statistics\Distributions\CompositeDistribution.h" />
+    <ClInclude Include="Statistics\BaseStochast.h" />
+    <ClInclude Include="Statistics\ContributingStochast.h" />
+    <ClInclude Include="Statistics\Distributions\StudentTDistribution.h" />
+    <ClInclude Include="Statistics\Distributions\PoissonDistribution.h" />
+    <ClInclude Include="Statistics\Distributions\BernoulliDistribution.h" />
+    <ClInclude Include="Statistics\Distributions\GammaDistribution.h" />
     <ClInclude Include="Combine\CombineProject.h" />
     <ClInclude Include="Combine\CombineSettings.h" />
     <ClInclude Include="Combine\CombineType.h" />
@@ -170,8 +177,13 @@
     <ClInclude Include="Sensitivity\SensitivityProject.h" />
     <ClInclude Include="Sensitivity\SensitivityMethod.h" />
     <ClInclude Include="Sensitivity\SettingsS.h" />
+    <ClInclude Include="Statistics\Distributions\BetaDistribution.h" />
+    <ClInclude Include="Statistics\Distributions\GeneralizedParetoDistribution.h" />
     <ClInclude Include="Statistics\Distributions\ExponentialDistribution.h" />
     <ClInclude Include="Statistics\Distributions\FragilityCurveDistribution.h" />
+    <ClInclude Include="Statistics\Distributions\TriangularDistribution.h" />
+    <ClInclude Include="Statistics\Distributions\TrapezoidalDistribution.h" />
+    <ClInclude Include="Statistics\Distributions\ParetoDistribution.h" />
     <ClInclude Include="Utils\DirtySupport.h" />
     <ClInclude Include="Model\ProxySettings.h" />
     <ClInclude Include="Model\Project.h" />
@@ -297,6 +309,13 @@
     <ClInclude Include="Statistics\Distributions\ConditionalWeibullDistribution.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Statistics\Distributions\CompositeDistribution.cpp" />
+    <ClCompile Include="Statistics\BaseStochast.cpp" />
+    <ClCompile Include="Statistics\ContributingStochast.cpp" />
+    <ClCompile Include="Statistics\Distributions\StudentTDistribution.cpp" />
+    <ClCompile Include="Statistics\Distributions\PoissonDistribution.cpp" />
+    <ClCompile Include="Statistics\Distributions\BernoulliDistribution.cpp" />
+    <ClCompile Include="Statistics\Distributions\GammaDistribution.cpp" />
     <ClCompile Include="Combine\CombineProject.cpp" />
     <ClCompile Include="Combine\CombineSettings.cpp" />
     <ClCompile Include="Combine\CombineType.cpp" />
@@ -312,8 +331,13 @@
     <ClCompile Include="Sensitivity\SensitivityProject.cpp" />
     <ClCompile Include="Sensitivity\SensitivityMethod.cpp" />
     <ClCompile Include="Sensitivity\SettingsS.cpp" />
+    <ClCompile Include="Statistics\Distributions\BetaDistribution.cpp" />
+    <ClCompile Include="Statistics\Distributions\GeneralizedParetoDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\ExponentialDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\FragilityCurveDistribution.cpp" />
+    <ClCompile Include="Statistics\Distributions\TriangularDistribution.cpp" />
+    <ClCompile Include="Statistics\Distributions\TrapezoidalDistribution.cpp" />
+    <ClCompile Include="Statistics\Distributions\ParetoDistribution.cpp" />
     <ClCompile Include="Utils\DirtySupport.cpp" />
     <ClCompile Include="Model\ProxySettings.cpp" />
     <ClCompile Include="Model\Project.cpp" />

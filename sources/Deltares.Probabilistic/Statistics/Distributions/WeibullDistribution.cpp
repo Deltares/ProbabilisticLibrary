@@ -134,7 +134,7 @@ namespace Deltares
         void WeibullDistribution::setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
         {
             constexpr double delta = 0.00001;
-            double margin = std::min(delta, std::abs(x / 1000000));
+            double margin = std::min(delta, std::fabs(x / 1000000));
 
             std::unique_ptr<Numeric::BisectionRootFinder> bisection = std::make_unique<Numeric::BisectionRootFinder>();
 

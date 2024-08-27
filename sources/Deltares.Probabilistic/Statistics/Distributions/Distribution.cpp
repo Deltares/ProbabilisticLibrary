@@ -16,7 +16,7 @@ namespace Deltares
         void Distribution::setXAtUByIteration(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
         {
             const double delta = 0.00001;
-            double margin = std::min(delta, std::abs(x / 1000000));
+            double margin = std::min(delta, std::fabs(x / 1000000));
 
             double currentMean = this->getMean(stochast);
             double currentDeviation = this->getDeviation(stochast);
@@ -53,6 +53,26 @@ namespace Deltares
             {
                 throw Deltares::Reliability::probLibException("Constant type not supported");
             }
+        }
+
+        double Distribution::getXFromUByIteration(std::shared_ptr<StochastProperties> stochast, double u)
+        {
+            std::unique_ptr<Numeric::BisectionRootFinder> bisection = std::make_unique<Numeric::BisectionRootFinder>();
+
+            Numeric::RootFinderMethod function = [this, stochast](double x)
+            {
+                return this->getCDF(stochast, x);
+            };
+
+            double cdf = StandardNormal::getPFromU(u);
+
+            double margin = std::min(std::fabs(1 - cdf) / 1000, std::fabs(cdf) / 1000);
+
+            const double delta = 0.00001;
+            margin = std::min(delta, margin);
+
+            double x = bisection->CalculateValue(0, 1, cdf, margin, function, nullptr, 0);
+            return x;
         }
 
         double Distribution::getLogLikelihood(std::shared_ptr<StochastProperties> stochast, double x)

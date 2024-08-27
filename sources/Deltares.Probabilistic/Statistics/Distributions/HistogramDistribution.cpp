@@ -373,14 +373,14 @@ namespace Deltares
 
             if (extra < accuracy)
             {
-                if (std::abs(x[0]->value) < accuracy)
+                if (std::fabs(x[0]->value) < accuracy)
                 {
                     // probably x[0] is zero
                     extra = 0.5;
                 }
                 else
                 {
-                    extra = std::min(0.5, std::abs(x[0]->value / 10));
+                    extra = std::min(0.5, std::fabs(x[0]->value / 10));
                 }
             }
 

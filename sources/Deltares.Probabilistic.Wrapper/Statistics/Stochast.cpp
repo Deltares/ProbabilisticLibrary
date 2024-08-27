@@ -87,6 +87,23 @@ namespace Deltares
                 }
             }
 
+            void Stochast::SynchronizeContributingStochasts(ListOperationType listOperationType, ContributingStochast^ contributingStochast)
+            {
+                if (!synchronizing)
+                {
+                    std::shared_ptr<StochastProperties> properties = shared->object->getProperties();
+
+                    properties->setDirty();
+
+                    switch (listOperationType)
+                    {
+                    case ListOperationType::Add: properties->ContributingStochasts.push_back(contributingStochast->GetValue()); break;
+                    case ListOperationType::Remove: std::erase(properties->ContributingStochasts, contributingStochast->GetValue()); break;
+                    case ListOperationType::Clear: properties->ContributingStochasts.clear(); break;
+                    default: throw gcnew System::NotImplementedException("List operation type");
+                    }
+                }
+            }
 
             void Stochast::updateLists()
             {
@@ -120,6 +137,15 @@ namespace Deltares
                         for (int i = 0; i < properties->DiscreteValues.size(); i++)
                         {
                             this->DiscreteValues->Add(gcnew DiscreteValue(properties->DiscreteValues[i]));
+                        }
+                    }
+
+                    if (!AreContributingStochastsMatching())
+                    {
+                        this->ContributingStochasts->Clear();
+                        for (int i = 0; i < properties->ContributingStochasts.size(); i++)
+                        {
+                            this->ContributingStochasts->Add(gcnew ContributingStochast(properties->ContributingStochasts[i]));
                         }
                     }
                 }
@@ -181,6 +207,26 @@ namespace Deltares
                 for (int i = 0; i < this->DiscreteValues->Count; i++)
                 {
                     if (this->DiscreteValues[i]->GetValue() != properties->DiscreteValues[i])
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+
+            bool Stochast::AreContributingStochastsMatching()
+            {
+                std::shared_ptr<StochastProperties> properties = shared->object->getProperties();
+
+                if (this->ContributingStochasts->Count != properties->ContributingStochasts.size())
+                {
+                    return false;
+                }
+
+                for (int i = 0; i < this->ContributingStochasts->Count; i++)
+                {
+                    if (this->ContributingStochasts[i]->GetValue() != properties->ContributingStochasts[i])
                     {
                         return false;
                     }

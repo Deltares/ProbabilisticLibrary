@@ -52,6 +52,12 @@ namespace Deltares
                 fragilityValueIds[fragilityValues[counter]] = counter;
                 types[counter] = ObjectType::FragilityValue;
             }
+            else if (object_type == "contributing_stochast")
+            {
+                contributingStochasts[counter] = std::make_shared<Deltares::Statistics::ContributingStochast>();
+                contributingStochastIds[contributingStochasts[counter]] = counter;
+                types[counter] = ObjectType::ContributingStochast;
+            }
             else if (object_type == "correlation_matrix")
             {
                 correlationMatrices[counter] = std::make_shared<Deltares::Statistics::CorrelationMatrix>();
@@ -118,6 +124,7 @@ namespace Deltares
             case ObjectType::DiscreteValue: discreteValues.erase(id); break;
             case ObjectType::HistogramValue: histogramValues.erase(id); break;
             case ObjectType::FragilityValue: fragilityValues.erase(id); break;
+            case ObjectType::ContributingStochast: contributingStochasts.erase(id); break;
             case ObjectType::CorrelationMatrix: correlationMatrices.erase(id); break;
             case ObjectType::Settings: settingsValues.erase(id); break;
             case ObjectType::StochastSettings: stochastSettingsValues.erase(id); break;
@@ -177,6 +184,12 @@ namespace Deltares
                 else if (property_ == "probability_of_failure") return fragilityValue->getProbabilityOfFailure();
                 else if (property_ == "probability_of_non_failure") return fragilityValue->getProbabilityOfNonFailure();
                 else if (property_ == "return_period") return fragilityValue->getReturnPeriod();
+            }
+            else if (objectType == ObjectType::ContributingStochast)
+            {
+                std::shared_ptr<Statistics::ContributingStochast> contributingStochast = contributingStochasts[id];
+
+                if (property_ == "probability") return contributingStochast->Probability;
             }
             else if (objectType == ObjectType::Settings)
             {
@@ -274,6 +287,12 @@ namespace Deltares
 
                 fragilityValue->setDirty();
             }
+            else if (objectType == ObjectType::ContributingStochast)
+            {
+                std::shared_ptr<Statistics::ContributingStochast> contributingStochast = contributingStochasts[id];
+
+                if (property_ == "probability") contributingStochast->Probability = value;
+            }
             else if (objectType == ObjectType::Settings)
             {
                 std::shared_ptr<Reliability::Settings> settings = settingsValues[id];
@@ -339,8 +358,15 @@ namespace Deltares
                 else if (property_ == "histogram_values_count") return (int)stochast->getProperties()->HistogramValues.size();
                 else if (property_ == "discrete_values_count") return (int)stochast->getProperties()->DiscreteValues.size();
                 else if (property_ == "fragility_values_count") return (int)stochast->getProperties()->FragilityValues.size();
+                else if (property_ == "contributing_stochasts_count") return (int)stochast->getProperties()->ContributingStochasts.size();
             }
-            else if (objectType == ObjectType::Settings)
+            else if (objectType == ObjectType::ContributingStochast)
+            {
+                std::shared_ptr<Statistics::ContributingStochast> contributingStochast = contributingStochasts[id];
+
+                //if (property_ == "variable") return stochastIds[contributingStochast->Stochast];
+            }
+            else if (objectType == ObjectType::Settings) 
             {
                 std::shared_ptr<Reliability::Settings> settings = settingsValues[id];
 
@@ -419,6 +445,12 @@ namespace Deltares
                 std::shared_ptr<Statistics::Stochast> stochast = stochasts[id];
 
                 if (property_ == "observations") stochast->getProperties()->Observations = value;
+            }
+            else if (objectType == ObjectType::ContributingStochast)
+            {
+                std::shared_ptr<Statistics::ContributingStochast> contributingStochast = contributingStochasts[id];
+
+                if (property_ == "variable") contributingStochast->Stochast = stochasts[value];
             }
             else if (objectType == ObjectType::Settings)
             {
@@ -718,6 +750,15 @@ namespace Deltares
                         stochast->getProperties()->FragilityValues.push_back(fragilityValues[values[i]]);
                     }
                 }
+                else if (property_ == "contributing_stochasts")
+                {
+                    stochast->getProperties()->setDirty();
+                    stochast->getProperties()->ContributingStochasts.clear();
+                    for (int i = 0; i < size; i++)
+                    {
+                        stochast->getProperties()->ContributingStochasts.push_back(contributingStochasts[values[i]]);
+                    }
+                }
             }
             else if (objectType == ObjectType::Settings)
             {
@@ -895,6 +936,7 @@ namespace Deltares
                 if (property_ == "histogram_values") return this->GetHistogramValueId(stochast->getProperties()->HistogramValues[index]);
                 else if (property_ == "discrete_values") return this->GetDiscreteValueId(stochast->getProperties()->DiscreteValues[index]);
                 else if (property_ == "fragility_values") return this->GetFragilityValueId(stochast->getProperties()->FragilityValues[index]);
+                else if (property_ == "contributing_stochasts") return this->GetContributingStochastId(stochast->getProperties()->ContributingStochasts[index]);
             }
             else if (objectType == ObjectType::DesignPoint)
             {
@@ -1051,6 +1093,19 @@ namespace Deltares
             }
 
             return fragilityValueIds[fragilityValue];
+        }
+
+        int ProjectServer::GetContributingStochastId(std::shared_ptr<Statistics::ContributingStochast> contributingStochast)
+        {
+            if (!contributingStochastIds.contains(contributingStochast))
+            {
+                counter++;
+                contributingStochasts[counter] = contributingStochast;
+                types[counter] = ObjectType::FragilityValue;
+                contributingStochastIds[contributingStochast] = counter;
+            }
+
+            return contributingStochastIds[contributingStochast];
         }
     }
 }

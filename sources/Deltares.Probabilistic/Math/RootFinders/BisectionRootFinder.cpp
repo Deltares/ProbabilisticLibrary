@@ -33,7 +33,7 @@ namespace Deltares
 
         double getRelativeDifference(double minValue, double maxValue)
         {
-            return std::abs(maxValue - minValue) / std::max(std::abs(maxValue), std::abs(minValue));
+            return std::fabs(maxValue - minValue) / std::max(std::fabs(maxValue), std::fabs(minValue));
         }
 
         double BisectionRootFinder::CalculateValue(double minStart, double maxStart, double resultValue, double tolerance, RootFinderMethod function, StopMethod isStopped, double xTolerance)
@@ -112,7 +112,7 @@ namespace Deltares
             double value = minStart;
 
             double step = (maxStart - minStart) / 2;
-            double difference = std::abs(resultValue - result);
+            double difference = std::fabs(resultValue - result);
             double xDifference = getRelativeDifference(minStart, maxStart);
 
             // Bisection method
@@ -141,7 +141,7 @@ namespace Deltares
 
                 result = function(value);
 
-                difference = std::abs(resultValue - result);
+                difference = std::fabs(resultValue - result);
 
                 if (step < 1E-30)
                 {
@@ -151,7 +151,7 @@ namespace Deltares
                 xDifference = getRelativeDifference(value, prevValue);
             }
 
-            if (xDifference > xTolerance && std::abs(resultValue - result) > tolerance)
+            if (xDifference > xTolerance && std::fabs(resultValue - result) > tolerance)
             {
                 return NAN;
             }

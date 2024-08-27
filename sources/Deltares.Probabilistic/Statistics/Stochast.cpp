@@ -271,8 +271,11 @@ namespace Deltares
             if (distributionType == "deterministic") return Statistics::DistributionType::Deterministic;
             else if (distributionType == "normal") return Statistics::DistributionType::Normal;
             else if (distributionType == "log_normal") return Statistics::DistributionType::LogNormal;
+            else if (distributionType == "student_t") return Statistics::DistributionType::StudentT;
             else if (distributionType == "uniform") return Statistics::DistributionType::Uniform;
             else if (distributionType == "exponential") return Statistics::DistributionType::Exponential;
+            else if (distributionType == "triangular") return Statistics::DistributionType::Triangular;
+            else if (distributionType == "trapezoidal") return Statistics::DistributionType::Trapezoidal;
             else if (distributionType == "gumbel") return Statistics::DistributionType::Gumbel;
             else if (distributionType == "weibull") return Statistics::DistributionType::Weibull;
             else if (distributionType == "conditional_weibull") return Statistics::DistributionType::ConditionalWeibull;
@@ -280,10 +283,17 @@ namespace Deltares
             else if (distributionType == "generalized_extreme_value") return Statistics::DistributionType::GeneralizedExtremeValue;
             else if (distributionType == "rayleigh") return Statistics::DistributionType::Rayleigh;
             else if (distributionType == "rayleigh_n") return Statistics::DistributionType::RayleighN;
+            else if (distributionType == "pareto") return Statistics::DistributionType::Pareto;
+            else if (distributionType == "generalized_pareto") return Statistics::DistributionType::GeneralizedPareto;
+            else if (distributionType == "beta") return Statistics::DistributionType::Beta;
+            else if (distributionType == "gamma") return Statistics::DistributionType::Gamma;
+            else if (distributionType == "bernoulli") return Statistics::DistributionType::Bernoulli;
+            else if (distributionType == "poisson") return Statistics::DistributionType::Poisson;
             else if (distributionType == "histogram") return Statistics::DistributionType::Table;
             else if (distributionType == "cdf_curve") return Statistics::DistributionType::CDFCurve;
             else if (distributionType == "discrete") return Statistics::DistributionType::Discrete;
             else if (distributionType == "qualitative") return Statistics::DistributionType::Qualitative;
+            else if (distributionType == "composite") return Statistics::DistributionType::Composite;
             else throw Reliability::probLibException("distribution type");
         }
 
@@ -294,8 +304,11 @@ namespace Deltares
             case Statistics::DistributionType::Deterministic: return "deterministic";
             case Statistics::DistributionType::Normal: return "normal";
             case Statistics::DistributionType::LogNormal: return "log_normal";
+            case Statistics::DistributionType::StudentT: return "student_t";
             case Statistics::DistributionType::Uniform: return "uniform";
-            case Statistics::DistributionType::Exponential : return "exponential";
+            case Statistics::DistributionType::Exponential: return "exponential";
+            case Statistics::DistributionType::Triangular: return "triangular";
+            case Statistics::DistributionType::Trapezoidal: return "trapezoidal";
             case Statistics::DistributionType::Gumbel: return "gumbel";
             case Statistics::DistributionType::Weibull: return "weibull";
             case Statistics::DistributionType::ConditionalWeibull: return "conditional_weibull";
@@ -303,10 +316,17 @@ namespace Deltares
             case Statistics::DistributionType::GeneralizedExtremeValue: return "generalized_extreme_value";
             case Statistics::DistributionType::Rayleigh: return "rayleigh";
             case Statistics::DistributionType::RayleighN: return "rayleigh_n";
+            case Statistics::DistributionType::Pareto: return "pareto";
+            case Statistics::DistributionType::GeneralizedPareto: return "generalized_pareto";
+            case Statistics::DistributionType::Beta: return "beta";
+            case Statistics::DistributionType::Gamma: return "gamma";
+            case Statistics::DistributionType::Bernoulli: return "bernoulli";
+            case Statistics::DistributionType::Poisson: return "poisson";
             case Statistics::DistributionType::Table: return "histogram";
             case Statistics::DistributionType::CDFCurve: return "cdf_curve";
             case Statistics::DistributionType::Discrete: return "discrete";
             case Statistics::DistributionType::Qualitative: return "qualitative";
+            case Statistics::DistributionType::Composite: return "composite";
             default: throw Reliability::probLibException("distribution type");
             }
         }

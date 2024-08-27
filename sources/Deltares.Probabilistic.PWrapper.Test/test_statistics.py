@@ -162,6 +162,27 @@ class Test_statistics(unittest.TestCase):
         # registered stochasts
         self.assertAlmostEqual(1.5, stochast.histogram_values[0].lower_bound, delta=margin)
 
+    def test_composite(self):
+        stochasts = []
+
+        stochast1 = Stochast()
+        stochast1.distribution = "uniform"
+        stochast1.minimium = 0
+        stochast1.maximum = 8
+
+        stochast2 = Stochast()
+        stochast2.distribution = "uniform"
+        stochast2.minimum = 6
+        stochast2.maximum = 10
+
+        stochast = Stochast()
+        stochast.distribution = "composite"
+        stochast.contributing_stochasts.append(ContributingStochast.create(0.4, stochast1))
+        stochast.contributing_stochasts.append(ContributingStochast.create(0.6, stochast2))
+
+        self.assertAlmostEqual(StandardNormal.get_u_from_p(0.4 * 0.125 + 0.6 * 0), stochast.get_u_from_x(1.0), delta=margin)
+        self.assertAlmostEqual(StandardNormal.get_u_from_p(0.4 * 0.875 + 0.6 * 0.25), stochast.get_u_from_x(7.0), delta=margin)
+        self.assertAlmostEqual(StandardNormal.get_u_from_p(0.4 * 1 + 0.6 * 0.75), stochast.get_u_from_x(9.0), delta=margin)
         
 if __name__ == '__main__':
     unittest.main()

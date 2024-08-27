@@ -15,8 +15,11 @@ namespace Deltares
                 case Wrappers::DistributionType::Deterministic: return Statistics::DistributionType::Deterministic;
                 case Wrappers::DistributionType::Normal: return Statistics::DistributionType::Normal;
                 case Wrappers::DistributionType::LogNormal: return Statistics::DistributionType::LogNormal;
+                case Wrappers::DistributionType::StudentT: return Statistics::DistributionType::StudentT;
                 case Wrappers::DistributionType::Uniform: return Statistics::DistributionType::Uniform;
                 case Wrappers::DistributionType::Exponential: return Statistics::DistributionType::Exponential;
+                case Wrappers::DistributionType::Triangular: return Statistics::DistributionType::Triangular;
+                case Wrappers::DistributionType::Trapezoidal: return Statistics::DistributionType::Trapezoidal;
                 case Wrappers::DistributionType::Gumbel: return Statistics::DistributionType::Gumbel;
                 case Wrappers::DistributionType::Weibull: return Statistics::DistributionType::Weibull;
                 case Wrappers::DistributionType::ConditionalWeibull: return Statistics::DistributionType::ConditionalWeibull;
@@ -24,10 +27,17 @@ namespace Deltares
                 case Wrappers::DistributionType::GeneralizedExtremeValue: return Statistics::DistributionType::GeneralizedExtremeValue;
                 case Wrappers::DistributionType::Rayleigh: return Statistics::DistributionType::Rayleigh;
                 case Wrappers::DistributionType::RayleighN: return Statistics::DistributionType::RayleighN;
+                case Wrappers::DistributionType::Pareto: return Statistics::DistributionType::Pareto;
+                case Wrappers::DistributionType::GeneralizedPareto: return Statistics::DistributionType::GeneralizedPareto;
+                case Wrappers::DistributionType::Beta: return Statistics::DistributionType::Beta;
+                case Wrappers::DistributionType::Gamma: return Statistics::DistributionType::Gamma;
+                case Wrappers::DistributionType::Bernoulli: return Statistics::DistributionType::Bernoulli;
+                case Wrappers::DistributionType::Poisson: return Statistics::DistributionType::Poisson;
                 case Wrappers::DistributionType::Table: return Statistics::DistributionType::Table;
                 case Wrappers::DistributionType::CDFCurve: return Statistics::DistributionType::CDFCurve;
                 case Wrappers::DistributionType::Discrete: return Statistics::DistributionType::Discrete;
                 case Wrappers::DistributionType::Qualitative: return Statistics::DistributionType::Qualitative;
+                case Wrappers::DistributionType::Composite: return Statistics::DistributionType::Composite;
                 default: throw gcnew System::NotSupportedException(distributionType.ToString());
                 }
             }
@@ -39,8 +49,11 @@ namespace Deltares
                 case Statistics::DistributionType::Deterministic: return Wrappers::DistributionType::Deterministic;
                 case Statistics::DistributionType::Normal: return Wrappers::DistributionType::Normal;
                 case Statistics::DistributionType::LogNormal: return Wrappers::DistributionType::LogNormal;
+                case Statistics::DistributionType::StudentT: return Wrappers::DistributionType::StudentT;
                 case Statistics::DistributionType::Uniform: return Wrappers::DistributionType::Uniform;
                 case Statistics::DistributionType::Exponential: return Wrappers::DistributionType::Exponential;
+                case Statistics::DistributionType::Triangular: return Wrappers::DistributionType::Triangular;
+                case Statistics::DistributionType::Trapezoidal: return Wrappers::DistributionType::Trapezoidal;
                 case Statistics::DistributionType::Gumbel: return Wrappers::DistributionType::Gumbel;
                 case Statistics::DistributionType::Weibull: return Wrappers::DistributionType::Weibull;
                 case Statistics::DistributionType::ConditionalWeibull: return Wrappers::DistributionType::ConditionalWeibull;
@@ -48,10 +61,16 @@ namespace Deltares
                 case Statistics::DistributionType::GeneralizedExtremeValue: return Wrappers::DistributionType::GeneralizedExtremeValue;
                 case Statistics::DistributionType::Rayleigh: return Wrappers::DistributionType::Rayleigh;
                 case Statistics::DistributionType::RayleighN: return Wrappers::DistributionType::RayleighN;
+                case Statistics::DistributionType::Pareto: return Wrappers::DistributionType::Pareto;
+                case Statistics::DistributionType::Beta: return Wrappers::DistributionType::Beta;
+                case Statistics::DistributionType::Gamma: return Wrappers::DistributionType::Gamma;
+                case Statistics::DistributionType::Bernoulli: return Wrappers::DistributionType::Bernoulli;
+                case Statistics::DistributionType::Poisson: return Wrappers::DistributionType::Poisson;
                 case Statistics::DistributionType::Table: return Wrappers::DistributionType::Table;
                 case Statistics::DistributionType::CDFCurve: return Wrappers::DistributionType::CDFCurve;
                 case Statistics::DistributionType::Discrete: return Wrappers::DistributionType::Discrete;
                 case Statistics::DistributionType::Qualitative: return Wrappers::DistributionType::Qualitative;
+                case Statistics::DistributionType::Composite: return Wrappers::DistributionType::Composite;
                 default: throw gcnew System::NotSupportedException("distribution type");
                 }
             }

@@ -11,6 +11,8 @@
 #include <vector>
 #include <memory>
 
+#include "ContributingStochast.h"
+
 namespace Deltares
 {
     namespace Statistics
@@ -82,6 +84,11 @@ namespace Deltares
              * \brief Collection of CDF values
              */
             std::vector<std::shared_ptr<FragilityValue>> FragilityValues;
+
+            /**
+             * \brief Collection of contributing stochasts
+             */
+            std::vector<std::shared_ptr<ContributingStochast>> ContributingStochasts;
 
             /**
              * \brief General method to apply a value to one of the stochastic parameters

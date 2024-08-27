@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>cafb0eda-ef78-46a8-8227-adee778907f8</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>test_sensitivity.py</StartupFile>
+    <StartupFile>test_statistics.py</StartupFile>
     <SearchPath>..\Deltares.Probabilistic.PWrapper;..\Deltares.Probabilistic.PWrapper\ptk</SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>

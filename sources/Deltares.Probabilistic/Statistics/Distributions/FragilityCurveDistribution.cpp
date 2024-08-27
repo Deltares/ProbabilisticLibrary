@@ -190,7 +190,7 @@ namespace Deltares
             double delta = std::numeric_limits<double>::max();
             if (stochast->FragilityValues.size() == 1)
             {
-                delta = std::max(1.0, std::abs(stochast->FragilityValues[0]->X) / 10);
+                delta = std::max(1.0, std::fabs(stochast->FragilityValues[0]->X) / 10);
             }
             else
             {

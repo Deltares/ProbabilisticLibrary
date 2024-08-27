@@ -178,7 +178,7 @@ namespace Deltares
         {
             if (dimension->NumberOfValues > 0) 
             {
-                return std::abs((dimension->MaxValue - dimension->MinValue)) / (10 * dimension->NumberOfValues);
+                return std::fabs((dimension->MaxValue - dimension->MinValue)) / (10 * dimension->NumberOfValues);
             }
             else 
             {
