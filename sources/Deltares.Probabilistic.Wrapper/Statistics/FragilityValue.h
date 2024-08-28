@@ -51,10 +51,10 @@ namespace Deltares
                     }
                 }
 
-                property BaseStochastPoint^ DesignPoint
+                property Models::Wrappers::BaseStochastPoint^ DesignPoint
                 {
-                    BaseStochastPoint^ get() { return this->designPoint; }
-                    void set(BaseStochastPoint^ value) { this->designPoint = value; }
+                    Models::Wrappers::BaseStochastPoint^ get() { return this->designPoint; }
+                    void set(Models::Wrappers::BaseStochastPoint^ value) { this->designPoint = value; }
                 }
 
                 std::shared_ptr<Statistics::FragilityValue> GetValue()

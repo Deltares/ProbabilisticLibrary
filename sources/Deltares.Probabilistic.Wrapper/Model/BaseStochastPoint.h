@@ -8,15 +8,13 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            ref class BaseStochastPoint
+            public ref class BaseStochastPoint
             {
             public:
                 virtual std::shared_ptr<Reliability::DesignPoint> getDesignPoint() 
                 {
                     return nullptr;
                 }
-            };
-
             };
         }
     }

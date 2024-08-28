@@ -69,7 +69,7 @@ namespace Deltares
                 }
             }
 
-            void Stochast::SynchronizeFragilityValues(ListOperationType listOperationType, FragilityValue^ fragilityValue)
+            void Stochast::SynchronizeFragilityValues(ListOperationType listOperationType, Wrappers::FragilityValue^ fragilityValue)
             {
                 if (!synchronizing)
                 {
@@ -127,7 +127,7 @@ namespace Deltares
                         this->FragilityValues->Clear();
                         for (int i = 0; i < properties->FragilityValues.size(); i++)
                         {
-                            this->FragilityValues->Add(gcnew FragilityValue(properties->FragilityValues[i]));
+                            this->FragilityValues->Add(gcnew Wrappers::FragilityValue(properties->FragilityValues[i]));
                         }
                     }
 
