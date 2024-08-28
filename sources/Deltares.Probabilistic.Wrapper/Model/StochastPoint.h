@@ -1,5 +1,6 @@
 #pragma once
 
+#include "BaseStochastPoint.h"
 #include "ModelSample.h"
 #include "StochastPointAlpha.h"
 #include "../../Deltares.Probabilistic/Model/StochastPoint.h"
@@ -13,7 +14,7 @@ namespace Deltares
         {
             using namespace Deltares::Utils::Wrappers;
 
-            public ref class StochastPoint
+            public ref class StochastPoint : public Wrappers::BaseStochastPoint
             {
             private:
                 SharedPointerProvider<Models::StochastPoint>* shared = nullptr;

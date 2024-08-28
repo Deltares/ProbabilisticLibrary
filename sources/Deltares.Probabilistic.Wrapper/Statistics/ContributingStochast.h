@@ -24,9 +24,9 @@ namespace Deltares
                     shared = new SharedPointerProvider(new Statistics::ContributingStochast());
                 }
 
-                ContributingStochast(std::shared_ptr<Statistics::ContributingStochast> histogramValue)
+                ContributingStochast(std::shared_ptr<Statistics::ContributingStochast> contributingStochast)
                 {
-                    shared = new SharedPointerProvider(histogramValue);
+                    shared = new SharedPointerProvider(contributingStochast);
                 }
 
                 ~ContributingStochast() { this->!ContributingStochast(); }

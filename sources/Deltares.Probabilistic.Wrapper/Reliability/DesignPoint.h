@@ -105,7 +105,7 @@ namespace Deltares
 
                 void AssignTags(TagRepository^ tagRepository);
 
-                std::shared_ptr<Reliability::DesignPoint> getDesignPoint()
+                std::shared_ptr<Reliability::DesignPoint> getDesignPoint() override
                 {
                     if (!HasMatchingAlphaValues())
                     {

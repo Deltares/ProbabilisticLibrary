@@ -6,6 +6,8 @@
 #include "ModelSample.h"
 #include "StochastPointAlpha.h"
 
+#include "../Statistics/BaseStochastPoint.h"
+
 namespace Deltares
 {
     namespace Models
@@ -13,10 +15,9 @@ namespace Deltares
         /**
          * \brief Defines a point in the parameter space
          */
-        class StochastPoint
+        class StochastPoint : public Statistics::BaseStochastPoint
         {
         public:
-            double Beta;
             std::vector<std::shared_ptr<StochastPointAlpha>> Alphas;
 
             /**
@@ -57,7 +58,7 @@ namespace Deltares
              */
             void updateInfluenceFactors();
 
-            virtual ~StochastPoint() { ; }
+            virtual ~StochastPoint() { }
         };
     }
 }

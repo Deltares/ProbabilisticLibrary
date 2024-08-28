@@ -9,7 +9,7 @@ namespace Deltares
     {
         /**
           * \brief Base class of a stochast
-          * \remark Introduced to resolve a circular reference from stochast->ContributingStochasts->Stochast
+          * \remark Introduced to prevent a circular reference from stochast->ContributingStochasts->Stochast
           */
         class BaseStochast
         {

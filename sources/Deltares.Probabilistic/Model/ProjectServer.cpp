@@ -360,11 +360,17 @@ namespace Deltares
                 else if (property_ == "fragility_values_count") return (int)stochast->getProperties()->FragilityValues.size();
                 else if (property_ == "contributing_stochasts_count") return (int)stochast->getProperties()->ContributingStochasts.size();
             }
+            else if (objectType == ObjectType::FragilityValue)
+            {
+                std::shared_ptr<Statistics::FragilityValue> fragilityValue = fragilityValues[id];
+
+                if (property_ == "design_point") return GetDesignPointId(std::static_pointer_cast<Reliability::DesignPoint>(fragilityValue->designPoint));
+            }
             else if (objectType == ObjectType::ContributingStochast)
             {
                 std::shared_ptr<Statistics::ContributingStochast> contributingStochast = contributingStochasts[id];
 
-                //if (property_ == "variable") return stochastIds[contributingStochast->Stochast];
+                if (property_ == "variable") return GetStochastId(std::static_pointer_cast<Statistics::Stochast>(contributingStochast->Stochast));
             }
             else if (objectType == ObjectType::Settings) 
             {
@@ -445,6 +451,12 @@ namespace Deltares
                 std::shared_ptr<Statistics::Stochast> stochast = stochasts[id];
 
                 if (property_ == "observations") stochast->getProperties()->Observations = value;
+            }
+            else if (objectType == ObjectType::FragilityValue)
+            {
+                std::shared_ptr<Statistics::FragilityValue> fragilityValue = fragilityValues[id];
+
+                if (property_ == "design_point") fragilityValue->designPoint = designPoints[value];
             }
             else if (objectType == ObjectType::ContributingStochast)
             {

@@ -1,17 +1,36 @@
 #pragma once
 
+#include "BaseStochastPoint.h"
 #include "StandardNormal.h"
 #include "../Utils/DirtySupport.h"
+
+#include <memory>
 
 namespace Deltares
 {
     namespace Statistics
     {
+        /**
+         * \brief Point in a fragility curve or empirical distribution
+         */
         class FragilityValue
         {
         public:
+            /**
+             * \brief Physical value for which the reliability is defined
+             */
             double X;
+
+            /**
+             * \brief Reliability of the fragility point
+             */
             double Reliability;
+
+            /**
+             * \brief Design point corresponding with the reliability
+             * \remark This property is always of the type designPoint. The only reason it is declared as BaseStochastPoint is that C++ does not allow circular references
+             */
+            std::shared_ptr<BaseStochastPoint> designPoint = nullptr;
 
             double getProbabilityOfFailure()
             {

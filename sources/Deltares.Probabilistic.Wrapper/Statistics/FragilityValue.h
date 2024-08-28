@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../Deltares.Probabilistic/Statistics/FragilityValue.h"
+#include "../Model/BaseStochastPoint.h"
 #include "../Utils/SharedPointerProvider.h"
 
 namespace Deltares
@@ -15,6 +16,7 @@ namespace Deltares
             {
             private:
                 SharedPointerProvider<Statistics::FragilityValue>* shared = nullptr;
+                Models::Wrappers::BaseStochastPoint^ designPoint = nullptr;
             public:
                 FragilityValue()
                 {
@@ -49,8 +51,19 @@ namespace Deltares
                     }
                 }
 
+                property BaseStochastPoint^ DesignPoint
+                {
+                    BaseStochastPoint^ get() { return this->designPoint; }
+                    void set(BaseStochastPoint^ value) { this->designPoint = value; }
+                }
+
                 std::shared_ptr<Statistics::FragilityValue> GetValue()
                 {
+                    if (this->designPoint != nullptr)
+                    {
+                        shared->object->designPoint = this->designPoint->getDesignPoint();
+                    }
+
                     return shared->object;
                 }
             };
