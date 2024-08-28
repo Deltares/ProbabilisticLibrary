@@ -615,6 +615,7 @@ namespace Deltares
                 std::shared_ptr<Reliability::Settings> settings = settingsValues[id];
 
                 if (property_ == "reliability_method") return Settings::getReliabilityMethodTypeString(settings->ReliabilityMethod);
+                else if (property_ == "reliability_result") return Settings::getReliabilityResultTypeString(settings->ReliabilityResult);
                 else if (property_ == "design_point_method") return DesignPointBuilder::getDesignPointMethodString(settings->designPointMethod);
                 else if (property_ == "sample_method") return SubsetSimulationSettings::getSampleMethodString(settings->sampleMethod);
                 else if (property_ == "start_method") return StartPointCalculatorSettings::getStartPointMethodString(settings->StartPointSettings->StartMethod);
@@ -653,6 +654,7 @@ namespace Deltares
                 std::shared_ptr<Reliability::Settings> settings = settingsValues[id];
 
                 if (property_ == "reliability_method") settings->ReliabilityMethod = Settings::getReliabilityMethodType(value);
+                else if (property_ == "reliability_result") settings->ReliabilityResult = Settings::getReliabilityResultType(value);
                 else if (property_ == "design_point_method") settings->designPointMethod = DesignPointBuilder::getDesignPointMethod(value);
                 else if (property_ == "sample_method") settings->sampleMethod = SubsetSimulationSettings::getSampleMethod(value);
                 else if (property_ == "start_method") settings->StartPointSettings->StartMethod = StartPointCalculatorSettings::getStartPointMethod(value);

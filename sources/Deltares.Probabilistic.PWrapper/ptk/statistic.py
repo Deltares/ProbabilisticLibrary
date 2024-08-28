@@ -1,7 +1,6 @@
 from ctypes import ArgumentError
 from .utils import *
 from . import interface
-from .reliability import DesignPoint
 
 if not interface.IsLibraryLoaded():
 	interface.LoadDefaultLibrary()
@@ -322,7 +321,6 @@ class FragilityValue:
 			self._id = interface.Create('fragility_value')
 		else:
 			self._id = id
-		self._design_point_retrieved = False
 		self._design_point = None
 		
 	def __del__(self):
@@ -376,12 +374,11 @@ class FragilityValue:
 
 	@property   
 	def design_point(self):
-		if self._design_point_retrieved == False:
-			self._design_point_retrieved = True
-			id_ = interface.GetIntValue(self._id, 'design_point')
-			if id_ > 0:
-				self._design_point = DesignPoint(id_)
 		return self._design_point
+
+	@design_point.setter
+	def design_point(self, value):
+		self._design_point = value
 
 class HistogramValue:
 

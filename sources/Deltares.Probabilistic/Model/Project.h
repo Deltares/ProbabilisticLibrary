@@ -5,6 +5,7 @@
 #include "../Statistics/CorrelationMatrix.h"
 #include "../Statistics/SparseCorrelationMatrix.h"
 #include "../Reliability/ReliabilityMethod.h"
+#include "../Reliability/DesignPoint.h"
 #include "../Reliability/Settings.h"
 
 namespace Deltares
@@ -59,6 +60,11 @@ namespace Deltares
             std::shared_ptr<Reliability::DesignPoint> designPoint = nullptr;
 
             /**
+             * \brief Results of the reliability calculation
+             */
+            std::shared_ptr<Statistics::Stochast> fragilityCurve = nullptr;
+
+            /**
              * \brief Indicates whether the input is valid
              * \return Indication
              */
@@ -69,6 +75,12 @@ namespace Deltares
              * \return Design point
              */
             std::shared_ptr<Reliability::DesignPoint> getDesignPoint();
+
+            /**
+             * \brief Performs the reliability calculation
+             * \return Design point
+             */
+            std::shared_ptr<Statistics::Stochast> getFragilityCurve();
 
             /**
              * \brief Runs the reliability calculation

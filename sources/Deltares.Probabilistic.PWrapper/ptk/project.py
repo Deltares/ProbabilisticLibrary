@@ -101,6 +101,7 @@ class ReliabilityProject:
 		self._correlation_matrix = CorrelationMatrix()
 		self._settings = Settings()
 		self._design_point = None
+		self._fragility_curve = None
 		
 		_model = None
   
@@ -148,6 +149,7 @@ class ReliabilityProject:
 
 	def run(self):
 		self._design_point = None
+		self._fragility_curve = None
 		interface.SetArrayIntValue(self._id, 'variables', [variable._id for variable in self._variables])
 		interface.SetIntValue(self._id, 'correlation_matrix', self._correlation_matrix._id)
 		interface.SetIntValue(self._id, 'settings', self._settings._id)
@@ -162,6 +164,24 @@ class ReliabilityProject:
 				self._design_point = DesignPoint(designPointId, self._variables)
 				
 		return self._design_point
+
+	@property   
+	def fragility_curve(self):
+		if self._fragility_curve is None:
+			fragilityCurveId = interface.GetIntValue(self._id, 'fragility_curve')
+			if fragilityCurveId > 0:
+				self._fragility_curve = Stochast(fragilityCurveId)
+				ReliabilityProject.update_fragility_value(self._fragility_curve, self._variables)
+				
+		return self._fragility_curve
+
+	def update_fragility_curve(stochast: Stochast, variables):
+		for fragility_value in stochast.fragility_values:
+			if fragility_value.design_point == None:
+				id_ = interface.GetIntValue(fragility_value._id, 'design_point')
+				if id_ > 0:
+					fragility_value.design_point = DesignPoint(id_, variables)
+
 			
 class CombineProject:
 

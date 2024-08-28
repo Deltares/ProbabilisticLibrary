@@ -179,6 +179,22 @@ namespace Deltares
             else throw probLibException("Reliability method");
         }
 
+        std::string Settings::getReliabilityResultTypeString(ReliabilityResultType method)
+        {
+            switch (method)
+            {
+            case ReliabilityResultType::ResultDesignPoint: return "design_point";
+            case ReliabilityResultType::ResultFragilityCurve: return "fragility_curve";
+            default: throw probLibException("Reliability result");
+            }
+        }
+
+        ReliabilityResultType Settings::getReliabilityResultType(std::string method)
+        {
+            if (method == "design_point") return ReliabilityResultType::ResultDesignPoint;
+            else if (method == "fragility_curve") return ReliabilityResultType::ResultFragilityCurve;
+            else throw probLibException("Reliability result");
+        }
     }
 }
 

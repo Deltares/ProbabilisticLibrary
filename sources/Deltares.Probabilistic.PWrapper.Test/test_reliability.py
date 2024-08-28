@@ -33,6 +33,32 @@ class Test_reliability(unittest.TestCase):
         self.assertTrue(project.design_point.alphas[0].variable in project.variables)
         self.assertEqual('a', project.design_point.alphas[0].variable.name)
 
+    # def test_form_linear_fragility_curve(self):
+    #     project = project_builder.get_linear_project()
+
+    #     project.settings.reliability_method = 'form'
+    #     project.settings.reliability_result = 'fragility_curve'
+    #     project.settings.fragility_variable = 'a'
+    #     project.settings.fragility_values = [1, 2, 3]
+
+    #     project.run();
+
+    #     dp = project.fragility_curve
+
+    #     self.assertAlmostEqual(2.33, beta, delta=margin)
+    #     self.assertEqual(2, len(alphas))
+
+    #     self.assertAlmostEqual(-0.71, alphas[0].alpha, delta=margin)
+    #     self.assertAlmostEqual(-0.71, alphas[1].alpha, delta=margin)
+
+    #     self.assertAlmostEqual(0.9, alphas[0].x, delta=margin)
+    #     self.assertAlmostEqual(0.9, alphas[1].x, delta=margin)
+
+    #     self.assertEqual(len(project.variables), len(project.design_point.alphas))
+    #     self.assertTrue(project.design_point.alphas[0].variable in project.variables)
+    #     self.assertEqual('a', project.design_point.alphas[0].variable.name)
+
+
     def test_form_linear_run_twice(self):
         project = project_builder.get_linear_project()
 

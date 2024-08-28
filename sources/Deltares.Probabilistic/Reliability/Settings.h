@@ -13,6 +13,8 @@ namespace Deltares
 {
     namespace Reliability
     {
+        enum ReliabilityResultType {ResultDesignPoint, ResultFragilityCurve};
+
         enum ReliabilityMethodType {ReliabilityFORM, ReliabilityNumericalIntegration, ReliabilityCrudeMonteCarlo, ReliabilityImportanceSampling, ReliabilityAdaptiveImportanceSampling, ReliabilityDirectionalSampling, ReliabilitySubsetSimulation };
 
         /**
@@ -21,6 +23,11 @@ namespace Deltares
         class Settings
         {
         public:
+            /**
+             * \brief Method type how the design point (alpha values) is calculated
+             */
+            ReliabilityResultType ReliabilityResult = ReliabilityResultType::ResultDesignPoint;
+
             /**
              * \brief Method type how the design point (alpha values) is calculated
              */
@@ -143,6 +150,8 @@ namespace Deltares
              */
             bool isValid();
 
+            static std::string getReliabilityResultTypeString(ReliabilityResultType method);
+            static ReliabilityResultType getReliabilityResultType(std::string method);
             static std::string getReliabilityMethodTypeString(ReliabilityMethodType method);
             static ReliabilityMethodType getReliabilityMethodType(std::string method);
         private:
