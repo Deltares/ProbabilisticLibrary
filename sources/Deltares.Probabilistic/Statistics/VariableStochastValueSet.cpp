@@ -78,6 +78,15 @@ namespace Deltares
             return false;
         }
 
+        void VariableStochastValuesSet::copyFrom (std::shared_ptr<VariableStochastValuesSet> source)
+        {
+            this->StochastValues.clear();
+
+            for (std::shared_ptr<VariableStochastValue> value : source->StochastValues)
+            {
+                this->StochastValues.push_back(value->clone());
+            }
+        }
     };
 }
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Utils/DirtySupport.h"
+#include <memory>
 
 namespace Deltares
 {
@@ -38,6 +39,16 @@ namespace Deltares
                 {
                     setDirtyLambda();
                 }
+            }
+
+            std::shared_ptr<DiscreteValue> clone()
+            {
+                std::shared_ptr<DiscreteValue> clone = std::make_shared<DiscreteValue>();
+
+                clone->X = this->X;
+                clone->Amount = this->Amount;
+
+                return clone;
             }
 
         private:

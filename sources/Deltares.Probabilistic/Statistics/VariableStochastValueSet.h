@@ -11,6 +11,12 @@ namespace Deltares
     {
         class VariableStochastValuesSet
         {
+        public:
+            std::vector<std::shared_ptr<VariableStochastValue>> StochastValues;
+            void initializeForRun();
+            std::shared_ptr<StochastProperties> getInterpolatedStochast(double x);
+            bool isVarying(DistributionType distributionType);
+            void copyFrom(std::shared_ptr<VariableStochastValuesSet> source);
         private:
             std::vector<double> xValues;
             std::vector<double> locations;
@@ -22,11 +28,6 @@ namespace Deltares
             std::vector<double> shifts;
             std::vector<double> shiftsB;
             std::vector<double> observations;
-        public:
-            std::vector<std::shared_ptr<VariableStochastValue>> StochastValues;
-            void initializeForRun();
-            std::shared_ptr<StochastProperties> getInterpolatedStochast(double x);
-            bool isVarying(DistributionType distributionType);
         };
     }
 }

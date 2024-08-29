@@ -70,25 +70,34 @@ namespace Deltares
 
         void Stochast::setDistributionType(DistributionType distributionType)
         {
-            double oldMean = this->getMean();
-            double oldDeviation = this->getDistributionType() == Deterministic ? this->getProperties()->Scale : this->getDeviation();
+            double oldMean = 0;
+            double oldDeviation = 0;
 
-            DistributionType oldDistributionType = this->distributionType;
-            bool canSetOldValues = oldMean != 0 || oldDeviation != 0;
+            if (this->distributionChangeType == DistributionChangeType::MaintainMeanAndDeviation)
+            {
+                oldMean = this->getMean();
+                oldDeviation = this->getDistributionType() == Deterministic ? this->getProperties()->Scale : this->getDeviation();
+            }
 
             this->distributionType = distributionType;
             this->distribution = DistributionLibrary::getDistribution(this->distributionType, truncated, inverted);
             this->properties->dirty = true;
 
-            if (canSetOldValues && this->distribution->maintainMeanAndDeviation(this->properties))
+            if (this->distribution->maintainMeanAndDeviation(this->properties))
             {
-                if (oldDistributionType == DistributionType::Table && this->canFit())
+                if (this->distributionChangeType == DistributionChangeType::MaintainMeanAndDeviation)
                 {
-                    this->fitFromHistogramValues();
+                    if (oldMean != 0 || oldDeviation != 0)
+                    {
+                        this->setMeanAndDeviation(oldMean, oldDeviation);
+                    }
                 }
-                else
+                else if (this->distributionChangeType == DistributionChangeType::FitFromHistogramValues)
                 {
-                    this->setMeanAndDeviation(oldMean, oldDeviation);
+                    if (this->canFit() && !this->getProperties()->HistogramValues.empty())
+                    {
+                        this->fitFromHistogramValues();
+                    }
                 }
             }
         }
@@ -264,6 +273,24 @@ namespace Deltares
         std::vector<double> Stochast::getSpecialXValues()
         {
             return distribution->getSpecialPoints(properties);
+        }
+
+        void Stochast::copyFrom(std::shared_ptr<Stochast> source)
+        {
+            this->distributionChangeType = DistributionChangeType::Nothing;
+
+            this->getProperties()->copyFrom(source->getProperties());
+            this->inverted = source->inverted;
+            this->truncated = source->truncated;
+
+            this->setDistributionType(source->getDistributionType());
+
+            this->IsVariableStochast = source->IsVariableStochast;
+            this->ValueSet->copyFrom(source->ValueSet);
+
+            this->distributionChangeType = source->distributionChangeType;
+
+            this->SetDirty();
         }
 
         Statistics::DistributionType Stochast::getDistributionType(std::string distributionType)

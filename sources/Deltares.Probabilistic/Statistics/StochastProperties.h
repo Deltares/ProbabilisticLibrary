@@ -134,6 +134,43 @@ namespace Deltares
                 return clone;
             }
 
+            void copyFrom(const std::shared_ptr<StochastProperties> source)
+            {
+                this->Location = source->Location;
+                this->Scale = source->Scale;
+                this->Minimum = source->Minimum;
+                this->Maximum = source->Maximum;
+                this->Shift = source->Shift;
+                this->ShiftB = source->ShiftB;
+                this->Shape = source->Shape;
+                this->ShapeB = source->ShapeB;
+                this->Observations = source->Observations;
+
+                this->HistogramValues.clear();
+                for (std::shared_ptr<HistogramValue> histogramValue : source->HistogramValues)
+                {
+                    this->HistogramValues.push_back(histogramValue->clone());
+                }
+
+                this->FragilityValues.clear();
+                for (std::shared_ptr<FragilityValue> fragilityValue : source->FragilityValues)
+                {
+                    this->FragilityValues.push_back(fragilityValue->clone());
+                }
+
+                this->DiscreteValues.clear();
+                for (std::shared_ptr<DiscreteValue> discreteValue : source->DiscreteValues)
+                {
+                    this->DiscreteValues.push_back(discreteValue->clone());
+                }
+
+                this->ContributingStochasts.clear();
+                for (std::shared_ptr<ContributingStochast> contributingStochast : source->ContributingStochasts)
+                {
+                    this->ContributingStochasts.push_back(contributingStochast->clone());
+                }
+            }
+
             /**
              * \brief Indicates whether InitializeForRun should be invoked before performing other methods
              * \return Indication

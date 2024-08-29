@@ -8,6 +8,7 @@
 #include "Distributions/Distribution.h"
 #include "DistributionType.h"
 #include "VariableStochastValueSet.h"
+#include "DistributionChangeType.h"
 
 namespace Deltares
 {
@@ -279,6 +280,11 @@ namespace Deltares
             bool hasParameter(DistributionPropertyType distributionPropertyType);
 
             /**
+             * \brief Defines what to do when the distribution type changes
+             */
+            DistributionChangeType distributionChangeType = DistributionChangeType::MaintainMeanAndDeviation;
+
+            /**
              * \brief Indicates whether the stochastic parameters depend on the x-value of another stochast
              */
             bool IsVariableStochast = false;
@@ -297,6 +303,11 @@ namespace Deltares
              * \brief Indicates that internally an update should take place before other methods are invoked
              */
             void SetDirty() const;
+
+            /**
+             * \brief Copies all values from another stochast
+             */
+            void copyFrom(std::shared_ptr<Stochast> source);
 
             static Statistics::DistributionType getDistributionType(std::string distributionType);
             static std::string getDistributionTypeString(Statistics::DistributionType distributionType);

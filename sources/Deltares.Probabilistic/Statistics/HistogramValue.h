@@ -91,6 +91,17 @@ namespace Deltares
                 }
             }
 
+            std::shared_ptr<HistogramValue> clone()
+            {
+                std::shared_ptr<HistogramValue> clone = std::make_shared<HistogramValue>();
+
+                clone->LowerBound = this->LowerBound;
+                clone->UpperBound = this->UpperBound;
+                clone->Amount = this->Amount;
+
+                return clone;
+            }
+
         private:
             Utils::SetDirtyLambda setDirtyLambda = nullptr;
         };

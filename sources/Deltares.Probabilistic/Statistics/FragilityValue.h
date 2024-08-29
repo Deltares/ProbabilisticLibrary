@@ -75,6 +75,17 @@ namespace Deltares
                 }
             }
 
+            std::shared_ptr<FragilityValue> clone()
+            {
+                std::shared_ptr<FragilityValue> clone = std::make_shared<FragilityValue>();
+
+                clone->X = this->X;
+                clone->Reliability = this->Reliability;
+                clone->designPoint = this->designPoint;
+
+                return clone;
+            }
+
         private:
             Utils::SetDirtyLambda setDirtyLambda = nullptr;
         };

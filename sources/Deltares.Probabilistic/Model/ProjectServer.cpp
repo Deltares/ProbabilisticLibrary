@@ -451,6 +451,7 @@ namespace Deltares
                 std::shared_ptr<Statistics::Stochast> stochast = stochasts[id];
 
                 if (property_ == "observations") stochast->getProperties()->Observations = value;
+                else if (property_ == "copy_from") stochast->copyFrom(stochasts[value]);
             }
             else if (objectType == ObjectType::FragilityValue)
             {

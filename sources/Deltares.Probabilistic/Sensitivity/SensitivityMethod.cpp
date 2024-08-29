@@ -72,6 +72,7 @@ namespace Deltares
                 {
                     stochast->setDistributionType(Statistics::DistributionType::Table);
                     stochast->fitWeighted(samples, weights);
+                    stochast->distributionChangeType = Statistics::FitFromHistogramValues;
                 }
             }
 

@@ -280,6 +280,14 @@ class Stochast:
 		self._discrete_values = None
 		self._fragility_values = None
 		
+	def copy_from(self, source):
+		if source is Stochast:
+			interface.SetIntValue(self._id, 'copy_from', source._id)
+			self._histogram_values = None
+			self._discrete_values = None
+			self._fragility_values = None
+			self._contributing_stochasts = None
+		
 
 class DiscreteValue:
 
