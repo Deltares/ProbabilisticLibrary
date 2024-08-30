@@ -38,6 +38,7 @@ namespace Deltares
                 case Wrappers::DistributionType::Discrete: return Statistics::DistributionType::Discrete;
                 case Wrappers::DistributionType::Qualitative: return Statistics::DistributionType::Qualitative;
                 case Wrappers::DistributionType::Composite: return Statistics::DistributionType::Composite;
+                case Wrappers::DistributionType::StandardNormal: return Statistics::DistributionType::StandardNormal;
                 default: throw gcnew System::NotSupportedException(distributionType.ToString());
                 }
             }
@@ -71,6 +72,7 @@ namespace Deltares
                 case Statistics::DistributionType::Discrete: return Wrappers::DistributionType::Discrete;
                 case Statistics::DistributionType::Qualitative: return Wrappers::DistributionType::Qualitative;
                 case Statistics::DistributionType::Composite: return Wrappers::DistributionType::Composite;
+                case Statistics::DistributionType::StandardNormal: return Wrappers::DistributionType::StandardNormal;
                 default: throw gcnew System::NotSupportedException("distribution type");
                 }
             }

@@ -22,6 +22,7 @@
 #include "RayleighNDistribution.h"
 #include "ParetoDistribution.h"
 #include "PoissonDistribution.h"
+#include "StandardNormalDistribution.h"
 #include "StudentTDistribution.h"
 #include "TriangularDistribution.h"
 #include "TrapezoidalDistribution.h"
@@ -67,6 +68,7 @@ namespace Deltares
             case DistributionType::Discrete: distribution = std::make_shared<DiscreteDistribution>(); break;
             case DistributionType::Qualitative: distribution = std::make_shared<QualitativeDistribution>(); break;
             case DistributionType::Composite: distribution = std::make_shared<CompositeDistribution>(); break;
+            case DistributionType::StandardNormal: distribution = std::make_shared<StandardNormalDistribution>(); break;
             default:
                 throw Deltares::Reliability::probLibException("Distribution type not supported");
             }

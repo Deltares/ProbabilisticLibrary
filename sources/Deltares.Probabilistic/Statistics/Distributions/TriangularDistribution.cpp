@@ -51,6 +51,12 @@ namespace Deltares
             }
             else
             {
+                if (stochast->Minimum == stochast->Maximum)
+                {
+                    stochast->Minimum = mean - deviation;
+                    stochast->Maximum = mean + deviation;
+                }
+
                 std::shared_ptr<StochastProperties> copiedStochast = stochast->clone();
 
                 Numeric::RootFinderMethod method = [this, copiedStochast, stochast](double x)

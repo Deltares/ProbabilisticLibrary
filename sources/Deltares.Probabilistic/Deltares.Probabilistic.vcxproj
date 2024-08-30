@@ -155,6 +155,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Statistics\Distributions\StandardNormalDistribution.h" />
     <ClInclude Include="Statistics\DistributionChangeType.h" />
     <ClInclude Include="Statistics\BaseStochastPoint.h" />
     <ClInclude Include="Statistics\Distributions\CompositeDistribution.h" />
@@ -311,6 +312,7 @@
     <ClInclude Include="Statistics\Distributions\ConditionalWeibullDistribution.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Statistics\Distributions\StandardNormalDistribution.cpp" />
     <ClCompile Include="Statistics\DistributionChangeType.cpp" />
     <ClCompile Include="Statistics\BaseStochastPoint.cpp" />
     <ClCompile Include="Statistics\Distributions\CompositeDistribution.cpp" />

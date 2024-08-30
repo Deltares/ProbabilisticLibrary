@@ -171,6 +171,7 @@
     <ClCompile Include="Statistics\Distributions\CompositeDistribution.cpp" />
     <ClCompile Include="Statistics\BaseStochastPoint.cpp" />
     <ClCompile Include="Statistics\DistributionChangeType.cpp" />
+    <ClCompile Include="Statistics\Distributions\StandardNormalDistribution.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -361,6 +362,7 @@
     <ClInclude Include="Statistics\Distributions\CompositeDistribution.h" />
     <ClInclude Include="Statistics\BaseStochastPoint.h" />
     <ClInclude Include="Statistics\DistributionChangeType.h" />
+    <ClInclude Include="Statistics\Distributions\StandardNormalDistribution.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

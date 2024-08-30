@@ -74,17 +74,17 @@ namespace Deltares
 
         double BernoulliDistribution::getCDF(std::shared_ptr<StochastProperties> stochast, double x)
         {
-            if (x <= 0)
+            if (x < 0)
             {
                 return 0;
             }
-            else if (x < 1.0)
+            else if (x >= 1.0)
             {
-                return 1.0 - stochast->Location;
+                return 1.0;
             }
             else
             {
-                return 1.0;
+                return 1.0 - stochast->Location;
             }
         }
 

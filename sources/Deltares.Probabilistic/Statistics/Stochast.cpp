@@ -321,6 +321,7 @@ namespace Deltares
             else if (distributionType == "discrete") return Statistics::DistributionType::Discrete;
             else if (distributionType == "qualitative") return Statistics::DistributionType::Qualitative;
             else if (distributionType == "composite") return Statistics::DistributionType::Composite;
+            else if (distributionType == "standard_normal") return Statistics::DistributionType::StandardNormal;
             else throw Reliability::probLibException("distribution type");
         }
 
@@ -354,6 +355,7 @@ namespace Deltares
             case Statistics::DistributionType::Discrete: return "discrete";
             case Statistics::DistributionType::Qualitative: return "qualitative";
             case Statistics::DistributionType::Composite: return "composite";
+            case Statistics::DistributionType::StandardNormal: return "standard_normal";
             default: throw Reliability::probLibException("distribution type");
             }
         }
