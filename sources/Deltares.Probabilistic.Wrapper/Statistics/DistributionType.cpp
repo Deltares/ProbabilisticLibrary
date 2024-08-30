@@ -63,6 +63,7 @@ namespace Deltares
                 case Statistics::DistributionType::Rayleigh: return Wrappers::DistributionType::Rayleigh;
                 case Statistics::DistributionType::RayleighN: return Wrappers::DistributionType::RayleighN;
                 case Statistics::DistributionType::Pareto: return Wrappers::DistributionType::Pareto;
+                case Statistics::DistributionType::GeneralizedPareto: return Wrappers::DistributionType::GeneralizedPareto;
                 case Statistics::DistributionType::Beta: return Wrappers::DistributionType::Beta;
                 case Statistics::DistributionType::Gamma: return Wrappers::DistributionType::Gamma;
                 case Statistics::DistributionType::Bernoulli: return Wrappers::DistributionType::Bernoulli;
