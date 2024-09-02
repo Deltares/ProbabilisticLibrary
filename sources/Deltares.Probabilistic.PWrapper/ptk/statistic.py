@@ -1,12 +1,50 @@
 from ctypes import ArgumentError
+from enum import Enum
 from .utils import *
 from . import interface
 
 if not interface.IsLibraryLoaded():
 	interface.LoadDefaultLibrary()
 
+class DistributionType(Enum):
+	deterministic = 'deterministic'
+	normal = 'normal'
+	log_normal = 'log_normal'
+	standard_normal = 'standard_normal'
+	student_t = 'student_t'
+	uniform = 'uniform'
+	triangular = 'triangular'
+	trapezoidal = 'trapezoidal'
+	exponential = 'exponential'
+	gumbel = 'gumbel'
+	weibull = 'weibull'
+	conditional_weibull = 'conditional_weibull'
+	frechet = 'frechet'
+	generalized_extreme_value = 'generalized_extreme_value'
+	rayleigh = 'rayleigh'
+	rayleigh_n = 'rayleigh_n'
+	pareto = 'pareto'
+	generalized_pareto = 'generalized_pareto'
+	beta = 'beta'
+	gamma = 'gamma'
+	bernoulli = 'bernoulli'
+	poisson = 'poisson'
+	histogram = 'histogram'
+	cdf_curve = 'cdf_curve'
+	discrete = 'discrete'
+	qualitative = 'qualitative'
+	composite = 'composite'
+	def __str__(self):
+		return str(self.value)
+
 class StandardNormal:
 	_id = interface.Create('standard_normal')
+
+	def __dir__(self):
+		return ['get_u_from_q',
+	            'get_u_from_p',
+				'get_q_from_u',
+				'get_p_from_u']
 	
 	def get_u_from_q (q : float):
 		return interface.GetArgValue(StandardNormal._id, 'u_from_q', q)
@@ -38,6 +76,37 @@ class Stochast:
 	def __del__(self):
 		interface.Destroy(self._id)
 
+	def __dir__(self):
+		return ['name',
+	            'distribution',
+				'inverted',
+				'truncated',
+				'mean',
+				'deviation',
+				'variation',
+				'rate',
+				'location',
+				'scale',
+				'shift',
+				'shift_b',
+				'shape',
+				'shape_b',
+				'observations',
+				'minimum',
+				'maximum',
+				'discrete_values',
+				'histogram_values',
+				'fragility_values',
+				'contributing_stochasts',
+				'fit',
+				'copy_from',
+				'get_quantile',
+				'get_x_from_u',
+				'get_u_from_x',
+				'design_factor',
+				'design_fraction',
+				'design_value']
+	
 	@property
 	def name(self):
 		return interface.GetStringValue(self._id, 'name')
@@ -51,18 +120,18 @@ class Stochast:
 
 	@property   
 	def distribution(self):
-		return interface.GetStringValue(self._id, 'distribution')
+		return DistributionType[interface.GetStringValue(self._id, 'distribution')]
 		
 	@distribution.setter
-	def distribution(self, value):
-		interface.SetStringValue(self._id, 'distribution', value)
+	def distribution(self, value : DistributionType):
+		interface.SetStringValue(self._id, 'distribution', str(value))
 
 	@property   
 	def inverted(self):
 		return interface.GetBoolValue(self._id, 'inverted')
 		
 	@inverted.setter
-	def inverted(self, value):
+	def inverted(self, value : bool):
 		interface.SetBoolValue(self._id, 'inverted', value)
 
 	@property   
@@ -70,7 +139,7 @@ class Stochast:
 		return interface.GetBoolValue(self._id, 'truncated')
 		
 	@truncated.setter
-	def truncated(self, value):
+	def truncated(self, value : bool):
 		interface.SetBoolValue(self._id, 'truncated', value)
 
 	@property   
@@ -78,7 +147,7 @@ class Stochast:
 		return interface.GetValue(self._id, 'mean')
 		
 	@mean.setter
-	def mean(self, value):
+	def mean(self, value : float):
 		interface.SetValue(self._id, 'mean', value)
 
 	@property   
@@ -86,7 +155,7 @@ class Stochast:
 		return interface.GetValue(self._id, 'deviation')
 		
 	@deviation.setter
-	def deviation(self, value):
+	def deviation(self, value : float):
 		interface.SetValue(self._id, 'deviation', value)
 		
 	@property   
@@ -94,7 +163,7 @@ class Stochast:
 		return interface.GetValue(self._id, 'variation')
 		
 	@variation.setter
-	def variation(self, value):
+	def variation(self, value : float):
 		interface.SetValue(self._id, 'variation', value)
 
 	@property   
@@ -102,7 +171,7 @@ class Stochast:
 		return interface.GetValue(self._id, 'location')
 		
 	@location.setter
-	def location(self, value):
+	def location(self, value : float):
 		interface.SetValue(self._id, 'location', value)
 
 	@property   
@@ -110,7 +179,7 @@ class Stochast:
 		return interface.GetValue(self._id, 'scale')
 		
 	@scale.setter
-	def scale(self, value):
+	def scale(self, value : float):
 		interface.SetValue(self._id, 'scale', value)
 
 	@property   
@@ -118,7 +187,7 @@ class Stochast:
 		return interface.GetValue(self._id, 'shift')
 		
 	@shift.setter
-	def shift(self, value):
+	def shift(self, value : float):
 		interface.SetValue(self._id, 'shift', value)
 
 	@property   
@@ -134,7 +203,7 @@ class Stochast:
 		return interface.GetValue(self._id, 'minimum')
 		
 	@minimum.setter
-	def minimum(self, value):
+	def minimum(self, value : float):
 		interface.SetValue(self._id, 'minimum', value)
 
 	@property   
@@ -142,7 +211,7 @@ class Stochast:
 		return interface.GetValue(self._id, 'maximum')
 		
 	@maximum.setter
-	def maximum(self, value):
+	def maximum(self, value : float):
 		interface.SetValue(self._id, 'maximum', value)
 
 	@property   
@@ -158,7 +227,7 @@ class Stochast:
 		return interface.GetValue(self._id, 'shape_b')
 		
 	@shape_b.setter
-	def shape_b(self, value):
+	def shape_b(self, value : float):
 		interface.SetValue(self._id, 'shape_b', value)
 
 	@property   
@@ -166,7 +235,7 @@ class Stochast:
 		return interface.GetValue(self._id, 'rate')
 		
 	@rate.setter
-	def rate(self, value):
+	def rate(self, value : float):
 		interface.SetValue(self._id, 'rate', value)
 
 	@property   
@@ -174,7 +243,7 @@ class Stochast:
 		return interface.GetIntValue(self._id, 'observations')
 		
 	@observations.setter
-	def observations(self, value):
+	def observations(self, value : int):
 		interface.SetIntValue(self._id, 'observations', value)
 
 	@property   
@@ -265,13 +334,13 @@ class Stochast:
 	def design_value(self, value):
 		interface.SetValue(self._id, 'design_value', value)
 
-	def get_quantile(self, quantile):
+	def get_quantile(self, quantile : float):
 		return interface.GetArgValue(self._id, 'quantile', quantile)
 		
-	def get_x_from_u(self, u):
+	def get_x_from_u(self, u : float):
 		return interface.GetArgValue(self._id, 'x_from_u', u)
 		
-	def get_u_from_x(self, x):
+	def get_u_from_x(self, x : float):
 		return interface.GetArgValue(self._id, 'u_from_x', x)
 
 	def fit(self, values):
@@ -300,6 +369,10 @@ class DiscreteValue:
 	def __del__(self):
 		interface.Destroy(self._id)
 
+	def __dir__(self):
+		return ['x',
+	            'amount']
+
 	def create(x : float, amount : float):
 		discreteValue = DiscreteValue()
 		discreteValue.x = x
@@ -311,7 +384,7 @@ class DiscreteValue:
 		return interface.GetValue(self._id, 'x')
 		
 	@x.setter
-	def x(self, value):
+	def x(self, value : float):
 		interface.SetValue(self._id, 'x',  value)
 		
 	@property   
@@ -319,7 +392,7 @@ class DiscreteValue:
 		return interface.GetValue(self._id, 'amount')
 		
 	@amount.setter
-	def amount(self, value):
+	def amount(self, value : float):
 		interface.SetValue(self._id, 'amount',  value)
 
 class FragilityValue:
@@ -334,6 +407,14 @@ class FragilityValue:
 	def __del__(self):
 		interface.Destroy(self._id)
 	    
+	def __dir__(self):
+		return ['x',
+	            'reliability_index',
+	            'probability_of_failure',
+	            'probability_of_non_failure',
+	            'return_period',
+	            'design_point']
+
 	def create(x: float, reliability_index :float):
 		fragilityValue = FragilityValue()
 		fragilityValue.x = x
@@ -345,7 +426,7 @@ class FragilityValue:
 		return interface.GetValue(self._id, 'x')
 		
 	@x.setter
-	def x(self, value):
+	def x(self, value : float):
 		interface.SetValue(self._id, 'x',  value)
 		
 	@property   
@@ -353,7 +434,7 @@ class FragilityValue:
 		return interface.GetValue(self._id, 'reliability_index')
 		
 	@reliability_index.setter
-	def reliability_index(self, value):
+	def reliability_index(self, value : float):
 		interface.SetValue(self._id, 'reliability_index',  value)
 
 	@property   
@@ -361,7 +442,7 @@ class FragilityValue:
 		return interface.GetValue(self._id, 'probability_of_failure')
 		
 	@probability_of_failure.setter
-	def probability_of_failure(self, value):
+	def probability_of_failure(self, value : float):
 		interface.SetValue(self._id, 'probability_of_failure',  value)
 		
 	@property   
@@ -369,7 +450,7 @@ class FragilityValue:
 		return interface.GetValue(self._id, 'probability_of_non_failure')
 		
 	@probability_of_non_failure.setter
-	def probability_of_non_failure(self, value):
+	def probability_of_non_failure(self, value : float):
 		interface.SetValue(self._id, 'probability_of_non_failure',  value)
 		
 	@property   
@@ -377,7 +458,7 @@ class FragilityValue:
 		return interface.GetValue(self._id, 'return_period')
 		
 	@return_period.setter
-	def return_period(self, value):
+	def return_period(self, value : float):
 		interface.SetValue(self._id, 'return_period',  value)
 
 	@property   
@@ -398,6 +479,11 @@ class HistogramValue:
   
 	def __del__(self):
 		interface.Destroy(self._id)
+
+	def __dir__(self):
+		return ['lower_bound',
+	            'upper_bound',
+	            'amount']
 
 	def create(lower_bound : float, upper_bound : float, amount : float):
 		histogramValue = HistogramValue();
@@ -443,6 +529,10 @@ class ContributingStochast:
 	def __del__(self):
 		interface.Destroy(self._id)
 
+	def __dir__(self):
+		return ['probability',
+	            'variable']
+
 	def create(probability : float, variable : Stochast):
 		contributingStochast = ContributingStochast();
 		contributingStochast.probability = probability
@@ -451,10 +541,10 @@ class ContributingStochast:
   
 	@property   
 	def probability(self):
-		return interface.GetValue(self._id, 'property')
+		return interface.GetValue(self._id, 'probability')
 		
 	@probability.setter
-	def probability(self, value):
+	def probability(self, value : float):
 		interface.SetValue(self._id, 'probability',  value)
 		
 	@property   

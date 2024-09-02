@@ -33,12 +33,12 @@ def get_linear_project():
     project.model = linear_ab
 
     stochast1 = project.variables['a']
-    stochast1.distribution = 'uniform'
+    stochast1.distribution = DistributionType.uniform
     stochast1.minimum = -1
     stochast1.maximum = 1;
 
     stochast2 = project.variables['b']
-    stochast2.distribution = 'uniform'
+    stochast2.distribution =  DistributionType.uniform
     stochast2.minimum = -1
     stochast2.maximum = 1;
 
@@ -51,11 +51,11 @@ def get_sensitivity_add_one_project():
     project.model = sum_ab
 
     stochast1 = project.variables['a']
-    stochast1.distribution = 'deterministic'
+    stochast1.distribution = DistributionType.deterministic
     stochast1.mean = 1
 
     stochast2 = project.variables['b']
-    stochast2.distribution = 'uniform'
+    stochast2.distribution =  DistributionType.uniform
     stochast2.minimum = -1
     stochast2.maximum = 1;
 
@@ -68,12 +68,12 @@ def get_sensitivity_linear_project():
     project.model = linear_ab
 
     stochast1 = project.variables['a']
-    stochast1.distribution = 'uniform'
+    stochast1.distribution =  DistributionType.uniform
     stochast1.minimum = -1
     stochast1.maximum = 1;
 
     stochast2 = project.variables['b']
-    stochast2.distribution = 'uniform'
+    stochast2.distribution =  DistributionType.uniform
     stochast2.minimum = -1
     stochast2.maximum = 1;
 
@@ -86,12 +86,12 @@ def get_linear_small_project():
     project.model = linear_small_ab
 
     stochast1 = project.variables['a']
-    stochast1.distribution = 'uniform'
+    stochast1.distribution =  DistributionType.uniform
     stochast1.minimum = -1
     stochast1.maximum = 1;
 
     stochast2 = project.variables['b']
-    stochast2.distribution = 'uniform'
+    stochast2.distribution = DistributionType.uniform
     stochast2.minimum = -1
     stochast2.maximum = 1;
 
@@ -104,17 +104,17 @@ def get_linear_fully_correlated_project():
     project.model = linear_abc
 
     stochast1 = project.variables['a']
-    stochast1.distribution = 'uniform'
+    stochast1.distribution = DistributionType.uniform
     stochast1.minimum = -0.5
     stochast1.maximum = 0.5;
 
     stochast2 = project.variables['b']
-    stochast2.distribution = 'uniform'
+    stochast2.distribution = DistributionType.uniform
     stochast2.minimum = -0.5
     stochast2.maximum = 0.5;
 
     stochast3 = project.variables['c']
-    stochast3.distribution = 'uniform'
+    stochast3.distribution = DistributionType.uniform
     stochast3.minimum = -1.0
     stochast3.maximum = 1.0
 
@@ -129,17 +129,17 @@ def get_linear_partially_correlated_project():
     project.model = linear_abc
 
     stochast1 = project.variables['a']
-    stochast1.distribution = 'uniform'
+    stochast1.distribution = DistributionType.uniform
     stochast1.minimum = -0.5
     stochast1.maximum = 0.5
 
     stochast2 = project.variables['b']
-    stochast2.distribution = 'uniform'
+    stochast2.distribution = DistributionType.uniform
     stochast2.minimum = -0.5
     stochast2.maximum = 0.5
 
     stochast3 = project.variables['c']
-    stochast3.distribution = 'uniform'
+    stochast3.distribution = DistributionType.uniform
     stochast3.minimum = -1.0
     stochast3.maximum = 1.0
 
@@ -153,18 +153,18 @@ def get_bligh_project():
 
     project.model = bligh
 
-    project.variables["m"].distribution = "log_normal"
+    project.variables["m"].distribution = DistributionType.log_normal
     project.variables["m"].mean = 1.76
     project.variables['m'].deviation = 1.69
 
-    project.variables["L"].distribution = "normal"
+    project.variables["L"].distribution = DistributionType.normal
     project.variables["L"].mean = 50
     project.variables["L"].deviation = 2.5
 
-    project.variables["c_creep"].distribution = "deterministic"
+    project.variables["c_creep"].distribution = DistributionType.deterministic
     project.variables["c_creep"].mean = 18
 
-    project.variables["delta_H"].distribution = "gumbel"
+    project.variables["delta_H"].distribution = DistributionType.gumbel
     project.variables["delta_H"].shift = 0.53
     project.variables["delta_H"].scale = 0.406
 
@@ -178,7 +178,7 @@ def get_design_point(beta : float, count : int):
         alpha = Alpha()
         
         variable = Stochast()
-        variable.distribution = 'uniform'
+        variable.distribution = DistributionType.uniform
         variable.minimum = 0
         variable.maximum = 1
 

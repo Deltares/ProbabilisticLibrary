@@ -26,7 +26,15 @@ class SensitivityProject:
 		self._stochast = None
 		
 		_model = None
-  
+
+	def __dir__(self):
+		return ['variables',
+	            'correlation_matrix',
+	            'settings',
+	            'model',
+	            'run',
+	            'stochast']
+
 	@property
 	def variables(self):
 		return self._variables
@@ -105,6 +113,14 @@ class ReliabilityProject:
 		
 		_model = None
   
+	def __dir__(self):
+		return ['variables',
+	            'correlation_matrix',
+	            'settings',
+	            'model',
+	            'run',
+	            'design_point']
+
 	@property
 	def variables(self):
 		return self._variables
@@ -194,6 +210,11 @@ class CombineProject:
 		self._design_point = None
 		
 		_model = None
+
+	def __dir__(self):
+		return ['design_points',
+	            'settings',
+	            'design_point']
 
 	def _design_points_changed(self):
 		variables = []
