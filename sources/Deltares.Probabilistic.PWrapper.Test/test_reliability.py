@@ -12,7 +12,7 @@ class Test_reliability(unittest.TestCase):
     def test_form_linear(self):
         project = project_builder.get_linear_project()
 
-        project.settings.reliability_method = 'form'
+        project.settings.reliability_method = ReliabilityMethod.form
 
         project.run();
 
@@ -62,7 +62,7 @@ class Test_reliability(unittest.TestCase):
     def test_form_linear_run_twice(self):
         project = project_builder.get_linear_project()
 
-        project.settings.reliability_method = 'form'
+        project.settings.reliability_method = ReliabilityMethod.form
 
         project.run();
 
@@ -98,7 +98,7 @@ class Test_reliability(unittest.TestCase):
     def test_form_linear_fully_correlated(self):
         project = project_builder.get_linear_fully_correlated_project()
 
-        project.settings.reliability_method = 'form'
+        project.settings.reliability_method = ReliabilityMethod.form
 
         project.run();
 
@@ -118,7 +118,7 @@ class Test_reliability(unittest.TestCase):
     def test_form_linear_partially_correlated(self):
         project = project_builder.get_linear_partially_correlated_project()
 
-        project.settings.reliability_method = 'form'
+        project.settings.reliability_method = ReliabilityMethod.form
 
         project.run();
 
@@ -136,8 +136,8 @@ class Test_reliability(unittest.TestCase):
     def test_crude_monte_carlo_linear(self):
         project = project_builder.get_linear_project()
 
-        project.settings.reliability_method = 'crude_monte_carlo'
-        project.settings.random_type = 'mersenne_twister'
+        project.settings.reliability_method = ReliabilityMethod.crude_monte_carlo
+        project.settings.random_type = RandomType.mersenne_twister
 
         project.run();
 
@@ -157,8 +157,8 @@ class Test_reliability(unittest.TestCase):
     def test_directional_sampling_linear(self):
         project = project_builder.get_linear_project()
 
-        project.settings.reliability_method = 'directional_sampling'
-        project.settings.random_type = 'mersenne_twister'
+        project.settings.reliability_method = ReliabilityMethod.directional_sampling
+        project.settings.random_type = RandomType.mersenne_twister
 
         project.run();
 
@@ -178,8 +178,8 @@ class Test_reliability(unittest.TestCase):
     def test_importance_sampling_linear(self):
         project = project_builder.get_linear_project()
 
-        project.settings.reliability_method = 'importance_sampling'
-        project.settings.random_type = 'mersenne_twister'
+        project.settings.reliability_method = ReliabilityMethod.importance_sampling
+        project.settings.random_type = RandomType.mersenne_twister
 
         project.run();
 
@@ -199,8 +199,8 @@ class Test_reliability(unittest.TestCase):
     def test_importance_sampling_linear_small(self):
         project = project_builder.get_linear_small_project()
 
-        project.settings.reliability_method = 'importance_sampling'
-        project.settings.random_type = 'mersenne_twister'
+        project.settings.reliability_method = ReliabilityMethod.importance_sampling
+        project.settings.random_type = RandomType.mersenne_twister
         project.settings.minimum_samples = 5000
         project.settings.maximum_samples = 10000
 
@@ -215,7 +215,7 @@ class Test_reliability(unittest.TestCase):
     def test_numerical_integration_linear(self):
         project = project_builder.get_linear_project()
 
-        project.settings.reliability_method = 'numerical_integration'
+        project.settings.reliability_method = ReliabilityMethod.numerical_integration
 
         self.assertEqual(2, len(project.settings.stochast_settings))
 
@@ -241,7 +241,7 @@ class Test_reliability(unittest.TestCase):
     def test_numerical_integration_limited_linear(self):
         project = project_builder.get_linear_project()
 
-        project.settings.reliability_method = 'numerical_integration'
+        project.settings.reliability_method = ReliabilityMethod.numerical_integration
 
         project.settings.stochast_settings['a'].min_value = -1
         project.settings.stochast_settings['b'].min_value = -1
@@ -258,7 +258,7 @@ class Test_reliability(unittest.TestCase):
     def test_numerical_integration_bligh(self):
         project = project_builder.get_bligh_project()
 
-        project.settings.reliability_method = "crude_monte_carlo"
+        project.settings.reliability_method = ReliabilityMethod.crude_monte_carlo
 
         project.settings.minimum_samples = 1000
         project.settings.maximum_samples = 50000
@@ -266,7 +266,7 @@ class Test_reliability(unittest.TestCase):
 
         project.run()
 
-        project.settings.reliability_method = 'numerical_integration'
+        project.settings.reliability_method = ReliabilityMethod.numerical_integration
 
         project.settings.stochast_settings['m'].intervals = 20
         project.settings.stochast_settings['L'].intervals = 20

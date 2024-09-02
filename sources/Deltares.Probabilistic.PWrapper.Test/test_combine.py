@@ -21,8 +21,8 @@ class Test_combine(unittest.TestCase):
         dp2 = project_builder.get_design_point(beta, 2)
         project.design_points.append(dp2)
 
-        project.settings.combiner_method = 'directional_sampling'
-        project.settings.combine_type = 'series'
+        project.settings.combiner_method = CombinerMethod.directional_sampling
+        project.settings.combine_type = CombineType.series
 
         project.run()
 
@@ -44,8 +44,8 @@ class Test_combine(unittest.TestCase):
         dp2 = project_builder.get_design_point(beta, 2)
         project.design_points.append(dp2)
 
-        project.settings.combiner_method = 'importance_sampling'
-        project.settings.combine_type = 'series'
+        project.settings.combiner_method = CombinerMethod.importance_sampling
+        project.settings.combine_type = CombineType.series
 
         project.run()
 
@@ -64,8 +64,8 @@ class Test_combine(unittest.TestCase):
         dp2 = project_builder.get_design_point(beta, 2)
         project.design_points.append(dp2)
 
-        project.settings.combiner_method = 'directional_sampling'
-        project.settings.combine_type = 'parallel'
+        project.settings.combiner_method = CombinerMethod.directional_sampling
+        project.settings.combine_type = CombineType.parallel
 
         project.run()
 
@@ -84,8 +84,8 @@ class Test_combine(unittest.TestCase):
         dp2 = project_builder.get_design_point(beta, 2)
         project.design_points.append(dp2)
 
-        project.settings.combiner_method = 'importance_sampling'
-        project.settings.combine_type = 'parallel'
+        project.settings.combiner_method =  CombinerMethod.importance_sampling
+        project.settings.combine_type = CombineType.parallel
 
         project.run()
 
@@ -100,15 +100,15 @@ class Test_combine(unittest.TestCase):
 
         project.model = project_builder.linear_ab;
 
-        project.variables['a'].distribution = 'uniform'
+        project.variables['a'].distribution = DistributionType.uniform
         project.variables['a'].minimum = -1
         project.variables['a'].maximum = 1
 
-        project.variables['b'].distribution = 'uniform'
+        project.variables['b'].distribution = DistributionType.uniform
         project.variables['b'].minimum = -1
         project.variables['b'].maximum = 1
 
-        project.settings.reliability_method = 'crude_monte_carlo'
+        project.settings.reliability_method = ReliabilityMethod.crude_monte_carlo
         project.settings.maximum_samples = 100000
         project.run()
         dp1 = project.design_point
@@ -118,9 +118,9 @@ class Test_combine(unittest.TestCase):
 
         project.model = project_builder.linear_bc;
 
-        self.assertEqual('uniform',  project.variables['b'].distribution)
+        self.assertEqual(DistributionType.uniform,  project.variables['b'].distribution)
 
-        project.variables['c'].distribution = 'uniform'
+        project.variables['c'].distribution = DistributionType.uniform
         project.variables['c'].minimum = -1
         project.variables['c'].maximum = 1
 
@@ -133,8 +133,8 @@ class Test_combine(unittest.TestCase):
         project.design_points.append(dp1)
         project.design_points.append(dp2)
 
-        project.settings.combiner_method = 'hohenbichler'
-        project.settings.combine_type = 'series'
+        project.settings.combiner_method = CombinerMethod.hohenbichler
+        project.settings.combine_type = CombineType.series
         project.run()
 
         dp_correlated = project.design_point
