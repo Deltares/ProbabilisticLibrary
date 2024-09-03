@@ -52,17 +52,20 @@ foreach my $srcFile (@sourceFiles)
     while (my $line = <IN>)
     {
         chomp($line);
-        if ($line =~ m/copyright.*deltares.*hkv.*tno/i)
+        if ($line =~ m/copyright.*deltares/i)
         {
             $skip = 1;
+            print "$srcFile allready with (c)\n";
+            last;
         }
         else
         {
-            push @lines, $line if ($skip == 0 or $line !~ m/^ *! *$/);
-            $skip = 0;
+            push @lines, $line;
         }
     }
     close IN;
+
+    next if ($skip != 0);
 
     open OUT, ">$srcFile" or die "can't open file $srcFile for writing: $!\n";
 
@@ -78,6 +81,5 @@ foreach my $srcFile (@sourceFiles)
         print OUT $lines[$i] . "\n";
     }
     close OUT or die "can't close file $srcFile after writing: $!\n";
-
 }
 
