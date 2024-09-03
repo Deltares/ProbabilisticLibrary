@@ -33,6 +33,9 @@ class Test_reliability(unittest.TestCase):
         self.assertTrue(project.design_point.alphas[0].variable in project.variables)
         self.assertEqual('a', project.design_point.alphas[0].variable.name)
 
+        self.assertEqual(0, len(dp.messages))
+
+
     # def test_form_linear_fragility_curve(self):
     #     project = project_builder.get_linear_project()
 

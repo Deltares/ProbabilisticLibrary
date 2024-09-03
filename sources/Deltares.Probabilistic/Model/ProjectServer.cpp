@@ -23,6 +23,12 @@ namespace Deltares
             {
                 types[counter] = ObjectType::StandardNormal;
             }
+            else if (object_type == "message")
+            {
+                messages[counter] = std::make_shared<Deltares::Models::Message>();
+                messageIds[messages[counter]] = counter;
+                types[counter] = ObjectType::Message;
+            }
             else if (object_type == "project")
             {
                 projects[counter] = std::make_shared<Deltares::Models::Project>();
@@ -119,6 +125,7 @@ namespace Deltares
             switch (types[id])
             {
             case ObjectType::StandardNormal: break;
+            case ObjectType::Message: messages.erase(id); break;
             case ObjectType::Project: projects.erase(id); break;
             case ObjectType::Stochast: stochasts.erase(id); break;
             case ObjectType::DiscreteValue: discreteValues.erase(id); break;
@@ -411,6 +418,7 @@ namespace Deltares
                 else if (property_ == "total_iterations") return designPoint->convergenceReport->TotalIterations;
                 else if (property_ == "total_directions") return designPoint->convergenceReport->TotalDirections;
                 else if (property_ == "total_model_runs") return designPoint->convergenceReport->TotalModelRuns;
+                else if (property_ == "messages_count") return (int) designPoint->Messages.size();
             }
             else if (objectType == ObjectType::Alpha)
             {
@@ -603,7 +611,15 @@ namespace Deltares
         {
             ObjectType objectType = types[id];
 
-            if (objectType == ObjectType::Stochast)
+            if (objectType == ObjectType::Message)
+            {
+                std::shared_ptr<Models::Message> message = messages[id];
+
+                if (property_ == "type") return Message::getMessageTypeString(message->Type);
+                else if (property_ == "text") return message->Text;
+                else return "";
+            }
+            else if (objectType == ObjectType::Stochast)
             {
                 std::shared_ptr<Statistics::Stochast> stochast = stochasts[id];
 
@@ -959,6 +975,7 @@ namespace Deltares
 
                 if (property_ == "contributing_design_points") return this->GetDesignPointId(designPoint->ContributingDesignPoints[index]);
                 else if (property_ == "alphas") return this->GetAlphaId(designPoint->Alphas[index]);
+                else if (property_ == "messages") return this->GetMessageId(designPoint->Messages[index]);
             }
 
             return 0;
@@ -1123,6 +1140,21 @@ namespace Deltares
 
             return contributingStochastIds[contributingStochast];
         }
+
+        int ProjectServer::GetMessageId(std::shared_ptr<Deltares::Models::Message> message)
+        {
+            if (!messageIds.contains(message))
+            {
+                int counter = GetNewObjectId();
+
+                messages[counter] = message;
+                types[counter] = ObjectType::Message;
+                messageIds[message] = counter;
+            }
+
+            return messageIds[message];
+        }
+
     }
 }
 

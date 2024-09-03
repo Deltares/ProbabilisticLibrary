@@ -49,8 +49,9 @@ namespace Deltares
             int GetDiscreteValueId(std::shared_ptr<Statistics::DiscreteValue> discreteValue);
             int GetFragilityValueId(std::shared_ptr<Statistics::FragilityValue> fragilityValue);
             int GetContributingStochastId(std::shared_ptr<Statistics::ContributingStochast> contributingStochast);
+            int GetMessageId(std::shared_ptr<Deltares::Models::Message> message);
         private:
-            enum ObjectType {StandardNormal, Project, Stochast, DiscreteValue, HistogramValue, FragilityValue,
+            enum ObjectType {StandardNormal, Message, Project, Stochast, DiscreteValue, HistogramValue, FragilityValue,
                 ContributingStochast, CorrelationMatrix, Settings, StochastSettings, DesignPoint, Alpha,
                 CombineProject, CombineSettings, SelfCorrelationMatrix, SensitivityProject, SensitivitySettings};
 
@@ -58,6 +59,7 @@ namespace Deltares
             std::unordered_map<int, Deltares::Models::ProjectServer::ObjectType> types;
 
             std::unordered_map<int, std::shared_ptr<Statistics::Stochast>> stochasts;
+            std::unordered_map<int, std::shared_ptr<Models::Message>> messages;
             std::unordered_map<int, std::shared_ptr<Models::Project>> projects;
             std::unordered_map<int, std::shared_ptr<Statistics::DiscreteValue>> discreteValues;
             std::unordered_map<int, std::shared_ptr<Statistics::HistogramValue>> histogramValues;
@@ -81,6 +83,7 @@ namespace Deltares
             std::unordered_map<std::shared_ptr<Statistics::DiscreteValue>, int> discreteValueIds;
             std::unordered_map<std::shared_ptr<Statistics::FragilityValue>, int> fragilityValueIds;
             std::unordered_map<std::shared_ptr<Statistics::ContributingStochast>, int> contributingStochastIds;
+            std::unordered_map<std::shared_ptr<Models::Message>, int> messageIds;
         };
     }
 }

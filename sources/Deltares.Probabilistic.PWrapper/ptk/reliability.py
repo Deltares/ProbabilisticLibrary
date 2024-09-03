@@ -61,6 +61,14 @@ class CombineType(Enum):
 	def __str__(self):
 		return str(self.value)
 
+class MessageType(Enum):
+	debug = 'debug'
+	info = 'info'
+	warning = 'warning'
+	error = 'error'
+	def __str__(self):
+		return str(self.value)
+
 class Settings:
 		  
 	def __init__(self):
@@ -327,6 +335,7 @@ class DesignPoint:
 
 		self._alphas = None
 		self._contributing_design_points = None
+		self._messages = None
 		self._known_variables = known_variables
 		self._known_design_points = known_design_points
 		
@@ -340,7 +349,8 @@ class DesignPoint:
 	            'is_converged',
 	            'total_directions',
 	            'total_iterations',
-	            'total_model_runs']
+	            'total_model_runs',
+		        'messages']
 		
 	@property
 	def identifier(self):
@@ -420,6 +430,16 @@ class DesignPoint:
 				
 		return self._contributing_design_points
 
+	@property   
+	def messages(self):
+		if self._messages is None:
+			self._messages = []
+			message_ids = interface.GetArrayIntValue(self._id, 'messages')
+			for message_id in message_ids:
+				self._messages.append(Message(message_id))
+				
+		return self._messages
+	
 	def get_variables(self):
 		variables = []
 		for alpha in self.alphas:
@@ -528,3 +548,22 @@ class CombineSettings:
 		interface.SetStringValue(self._id, 'combine_type', str(value))
 
 
+class Message:
+		  
+	def __init__(self, id = None):
+		if id == None:
+			self._id = interface.Create('message')
+		else:
+			self._id = id
+
+	def __del__(self):
+		interface.Destroy(self._id)
+		
+	@property   
+	def type(self):
+		return MessageType[interface.GetStringValue(self._id, 'type')]
+		
+	@property   
+	def text(self):
+		return interface.GetStringValue(self._id, 'text')
+		
