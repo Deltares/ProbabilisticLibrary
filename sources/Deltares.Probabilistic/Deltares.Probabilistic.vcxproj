@@ -155,6 +155,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Sensitivity\CorrelationMatrixBuilder.h" />
     <ClInclude Include="Statistics\Distributions\StandardNormalDistribution.h" />
     <ClInclude Include="Statistics\DistributionChangeType.h" />
     <ClInclude Include="Statistics\BaseStochastPoint.h" />
@@ -310,8 +311,10 @@
     <ClInclude Include="Statistics\Distributions\FrechetDistribution.h" />
     <ClInclude Include="Statistics\Distributions\GeneralizedExtremeValueDistribution.h" />
     <ClInclude Include="Statistics\Distributions\ConditionalWeibullDistribution.h" />
+    <ClInclude Include="Math\WeightedValue.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Sensitivity\CorrelationMatrixBuilder.cpp" />
     <ClCompile Include="Statistics\Distributions\StandardNormalDistribution.cpp" />
     <ClCompile Include="Statistics\DistributionChangeType.cpp" />
     <ClCompile Include="Statistics\BaseStochastPoint.cpp" />
@@ -459,6 +462,7 @@
     <ClCompile Include="Statistics\Distributions\FrechetDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\GeneralizedExtremeValueDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\ConditionalWeibullDistribution.cpp" />
+    <ClCompile Include="Math\WeightedValue.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

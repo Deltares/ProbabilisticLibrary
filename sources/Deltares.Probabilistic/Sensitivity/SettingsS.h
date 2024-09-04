@@ -12,7 +12,7 @@ namespace Deltares
         enum SensitivityMethodType {SensitivityFORM, SensitivityNumericalIntegration, SensitivityCrudeMonteCarlo, SensitivityImportanceSampling, SensitivityDirectionalSampling };
 
         /**
-         * \brief General settings applicable to all mechanisms
+         * \brief General settings applicable to all sensitivity mechanisms
          */
         class SettingsS
         {
@@ -21,6 +21,11 @@ namespace Deltares
              * \brief Method type how the design point (alpha values) is calculated
              */
             SensitivityMethodType SensitivityMethod = SensitivityMethodType::SensitivityCrudeMonteCarlo;
+
+            /**
+             * \brief Indicates whether correlations should be calculated
+             */
+            bool CalculateCorrelations = false;
 
             /**
              * \brief The minimum samples to be examined

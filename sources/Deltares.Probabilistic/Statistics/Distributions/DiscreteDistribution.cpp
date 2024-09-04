@@ -259,7 +259,7 @@ namespace Deltares
         {
             stochast->DiscreteValues.clear();
 
-            std::vector<std::shared_ptr<WeightedValue>> x = this->GetWeightedValues(values, weights);
+            std::vector<std::shared_ptr<Numeric::WeightedValue>> x = this->GetWeightedValues(values, weights);
 
             for (size_t i = 0; i < x.size(); i++)
             {

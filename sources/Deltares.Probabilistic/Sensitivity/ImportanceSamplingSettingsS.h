@@ -11,6 +11,11 @@ namespace Deltares
         {
         public:
             /**
+             * \brief Indicates whether correlations should be calculated
+             */
+            bool CalculateCorrelations = false;
+
+            /**
              * \brief The minimum number of samples to be examined
              */
             int MinimumSamples = 1000;

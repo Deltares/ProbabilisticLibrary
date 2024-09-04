@@ -2,6 +2,11 @@
 
 #include "Distribution.h"
 
+namespace Deltares::Numeric
+{
+    class WeightedValue;
+}
+
 namespace Deltares
 {
     namespace Statistics
@@ -25,10 +30,10 @@ namespace Deltares
             std::vector<double> getSpecialPoints(std::shared_ptr<StochastProperties> stochast) override;
         private:
             double getSizeForEmptySizedRange(std::shared_ptr<StochastProperties> stochast);
-            void splitRanges(std::shared_ptr<StochastProperties> stochast, std::vector<std::shared_ptr<WeightedValue>>& values);
-            double getAmount(std::shared_ptr<HistogramValue> range, std::vector<std::shared_ptr<WeightedValue>>& values);
-            void mergeLowWeights(std::vector<std::shared_ptr<WeightedValue>>& values);
-            size_t getDistinctCount(std::vector<std::shared_ptr<WeightedValue>>& values);
+            void splitRanges(std::shared_ptr<StochastProperties> stochast, std::vector<std::shared_ptr<Numeric::WeightedValue>>& values);
+            double getAmount(std::shared_ptr<HistogramValue> range, std::vector<std::shared_ptr<Numeric::WeightedValue>>& values);
+            void mergeLowWeights(std::vector<std::shared_ptr<Numeric::WeightedValue>>& values);
+            size_t getDistinctCount(std::vector<std::shared_ptr<Numeric::WeightedValue>>& values);
         };
     }
 }

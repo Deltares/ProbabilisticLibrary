@@ -5,6 +5,7 @@
 #include "../StochastProperties.h"
 #include "../StandardNormal.h"
 #include "../../Math/NumericSupport.h"
+#include "../../Math/WeightedValue.h"
 #include "../../Utils/DirtySupport.h"
 
 #include <limits>
@@ -339,7 +340,7 @@ namespace Deltares
             }
 
             // Build up list of weighted values
-            std::vector<std::shared_ptr<WeightedValue>> x = this->GetWeightedValues(values, weights);
+            std::vector<std::shared_ptr<Numeric::WeightedValue>> x = this->GetWeightedValues(values, weights);
 
             if (x.empty())
             {
@@ -486,7 +487,7 @@ namespace Deltares
             initializeForRun(stochast);
         }
 
-        void HistogramDistribution::splitRanges(std::shared_ptr<StochastProperties> stochast, std::vector < std::shared_ptr<WeightedValue>> & values)
+        void HistogramDistribution::splitRanges(std::shared_ptr<StochastProperties> stochast, std::vector < std::shared_ptr<Numeric::WeightedValue>> & values)
         {
             std::vector<std::shared_ptr<HistogramValue>> existingRanges(stochast->HistogramValues);
 
@@ -512,7 +513,7 @@ namespace Deltares
             }
         }
 
-        double HistogramDistribution::getAmount(std::shared_ptr<HistogramValue> range, std::vector<std::shared_ptr<WeightedValue>>& values)
+        double HistogramDistribution::getAmount(std::shared_ptr<HistogramValue> range, std::vector<std::shared_ptr<Numeric::WeightedValue>>& values)
         {
             double amount = 0;
             for (size_t j = 0; j < values.size(); j++)
@@ -526,7 +527,7 @@ namespace Deltares
             return amount;
         }
 
-        size_t HistogramDistribution::getDistinctCount(std::vector<std::shared_ptr<WeightedValue>>& values)
+        size_t HistogramDistribution::getDistinctCount(std::vector<std::shared_ptr<Numeric::WeightedValue>>& values)
         {
             size_t count = 1;
 
@@ -542,9 +543,9 @@ namespace Deltares
         }
 
 
-        void HistogramDistribution::mergeLowWeights(std::vector<std::shared_ptr<WeightedValue>>& values)
+        void HistogramDistribution::mergeLowWeights(std::vector<std::shared_ptr<Numeric::WeightedValue>>& values)
         {
-            constexpr double minWeight = 0.00001;
+            constexpr double minWeightNormalized = 0.00001;
 
             double wSum = 0;
             for (size_t i = 0; i < values.size(); i++)
@@ -552,27 +553,25 @@ namespace Deltares
                 wSum += values[i]->weight;
             }
 
-            for (size_t i = 0; i < values.size(); i++)
-            {
-                values[i]->normalized_weight /= wSum;
-            }
-
             double weightedMean = 0;
             for (size_t i = 0; i < values.size(); i++)
             {
-                weightedMean += values[i]->value * values[i]->normalized_weight;
+                weightedMean += values[i]->value * values[i]->weight;
             }
+
+            weightedMean /= wSum;
+            double minWeight = minWeightNormalized * wSum;
 
             bool changed = values.size() > 1;
             while (changed)
             {
                 changed = false;
 
-                std::vector<std::shared_ptr<WeightedValue>> newWeightedValues;
+                std::vector<std::shared_ptr<Numeric::WeightedValue>> newWeightedValues;
 
                 for (size_t i = 0; i < values.size() - 1; i++)
                 {
-                    double combinedWeight = values[i]->normalized_weight + values[i + 1]->normalized_weight;
+                    double combinedWeight = values[i]->weight + values[i + 1]->weight;
 
                     if (combinedWeight < minWeight)
                     {
@@ -581,14 +580,12 @@ namespace Deltares
                         // add the weighted value nearest to the mean
                         if (values[i]->value < weightedMean)
                         {
-                            values[i + 1]->normalized_weight += values[i]->normalized_weight;
                             values[i + 1]->weight += values[i]->weight;
 
                             newWeightedValues.push_back(values[i + 1]);
                         }
                         else
                         {
-                            values[i]->normalized_weight += values[i + 1]->normalized_weight;
                             values[i]->weight += values[i + 1]->weight;
 
                             newWeightedValues.push_back(values[i]);

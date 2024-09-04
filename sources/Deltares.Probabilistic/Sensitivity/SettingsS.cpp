@@ -43,6 +43,7 @@ namespace Deltares
             crudeMonteCarlo->Settings->RunSettings = this->RunSettings;
             crudeMonteCarlo->Settings->randomSettings = this->RandomSettings;
             crudeMonteCarlo->Settings->StochastSet = this->StochastSet;
+            crudeMonteCarlo->Settings->CalculateCorrelations = this->CalculateCorrelations;
 
             return crudeMonteCarlo;
         }
@@ -59,6 +60,7 @@ namespace Deltares
             importanceSampling->Settings->RunSettings = this->RunSettings;
             importanceSampling->Settings->randomSettings = this->RandomSettings;
             importanceSampling->Settings->StochastSet = this->StochastSet;
+            importanceSampling->Settings->CalculateCorrelations = this->CalculateCorrelations;
 
             return importanceSampling;
         }

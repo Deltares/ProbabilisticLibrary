@@ -125,6 +125,12 @@ namespace Deltares
 
             std::shared_ptr<Statistics::Stochast> stochast = this->getStochastFromSamples(zSamples, zWeights);
 
+            if (this->correlationMatrixBuilder != nullptr)
+            {
+                this->correlationMatrixBuilder->registerWeights(zWeights);
+                this->correlationMatrixBuilder->registerSamples(stochast, zSamples);
+            }
+
             return stochast;
         }
 

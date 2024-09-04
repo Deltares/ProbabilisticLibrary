@@ -21,6 +21,11 @@ namespace Deltares
 
                 Statistics::Wrappers::Stochast^ GetStochast(Models::Wrappers::ModelRunner^ modelRunner);
 
+                Statistics::Wrappers::CorrelationMatrix^ GetCorrelationMatrix()
+                {
+                    return gcnew Statistics::Wrappers::CorrelationMatrix(this->GetNativeSensitivityMethod()->getCorrelationMatrix());
+                }
+
                 virtual System::Object^ GetSettings() { return nullptr; }
                 virtual bool IsValid() { return false; }
                 virtual void Stop()    { }
