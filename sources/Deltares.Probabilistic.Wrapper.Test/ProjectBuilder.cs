@@ -116,6 +116,23 @@ namespace Deltares.Probabilistic.Wrapper.Test
             return project;
         }
 
+        public static Project GetUnbalancedLinearProject()
+        {
+            var project = new Project();
+
+            project.Stochasts.Add(GetUniformStochast(-1));
+            project.Stochasts.Add(GetUniformStochast(-1));
+
+            project.CorrelationMatrix.Initialize(project.Stochasts);
+
+            ZSampleOutput zSampleOutput = GetSampleOutput(UnbalancedLinear);
+
+            project.ZFunction = zSampleOutput.CalculateSample;
+            project.TagRepository = zSampleOutput.GeTagRepository();
+
+            return project;
+        }
+
         public static SensitivityProject GetSensitivityProject(Project project)
         {
             var sensitivityProject = new SensitivityProject();
@@ -664,6 +681,17 @@ namespace Deltares.Probabilistic.Wrapper.Test
         private static ZFunctionOutput Linear(double[] x)
         {
             return new ZFunctionOutput(1.8 - x.Sum());
+        }
+
+        private static ZFunctionOutput UnbalancedLinear(double[] x)
+        {
+            double sum = 0;
+            for (int i = 0; i < x.Length; i++)
+            {
+                double factor = i % 2 == 0 ? 0.3 : 1.8;
+                sum += factor * x[i];
+            }
+            return new ZFunctionOutput(1.8 - sum);
         }
 
         private static ZFunctionOutput Linear2(double a, double b)

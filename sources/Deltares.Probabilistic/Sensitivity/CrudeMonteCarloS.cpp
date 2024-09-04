@@ -3,6 +3,7 @@
 #include <cmath>
 #include <memory>
 
+#include "../Math/NumericSupport.h"
 #include "../Model/Sample.h"
 #include "../Model/RandomSampleGenerator.h"
 #include "CrudeMonteCarloSettingsS.h"
@@ -32,7 +33,6 @@ namespace Deltares
             std::shared_ptr<Sample> uMin = std::make_shared<Sample>(nParameters);
             std::vector<std::shared_ptr<Sample>> samples;
             std::vector<double> zSamples;
-            std::vector<double> zWeights;
             size_t zIndex = 0;
             int nSamples = 0;
 
@@ -71,12 +71,18 @@ namespace Deltares
                 }
 
                 zSamples.push_back(z);
-                zWeights.push_back(1.0);
 
                 nSamples++;
             }
 
+            std::vector<double> zWeights = Numeric::NumericSupport::select(zSamples, [](double x) {return 1.0; });
+
             std::shared_ptr<Statistics::Stochast> stochast = this->getStochastFromSamples(zSamples, zWeights);
+
+            if (this->Settings->CalculateCorrelations)
+            {
+                this->correlationMatrixBuilder->registerSamples(stochast, zSamples);
+            }
 
             return stochast;
         }

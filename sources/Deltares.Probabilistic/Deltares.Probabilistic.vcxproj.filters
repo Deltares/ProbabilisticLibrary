@@ -172,6 +172,8 @@
     <ClCompile Include="Statistics\BaseStochastPoint.cpp" />
     <ClCompile Include="Statistics\DistributionChangeType.cpp" />
     <ClCompile Include="Statistics\Distributions\StandardNormalDistribution.cpp" />
+    <ClCompile Include="Math\WeightedValue.cpp" />
+    <ClCompile Include="Sensitivity\CorrelationMatrixBuilder.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -363,6 +365,8 @@
     <ClInclude Include="Statistics\BaseStochastPoint.h" />
     <ClInclude Include="Statistics\DistributionChangeType.h" />
     <ClInclude Include="Statistics\Distributions\StandardNormalDistribution.h" />
+    <ClInclude Include="Math\WeightedValue.h" />
+    <ClInclude Include="Sensitivity\CorrelationMatrixBuilder.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

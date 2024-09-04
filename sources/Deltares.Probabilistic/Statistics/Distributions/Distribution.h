@@ -2,6 +2,7 @@
 #include <functional>
 
 #include "../StochastProperties.h"
+#include "../../Math/WeightedValue.h"
 
 namespace Deltares
 {
@@ -214,23 +215,7 @@ namespace Deltares
             virtual double getMeanByIteration(std::shared_ptr<StochastProperties> stochast);
             virtual double getDeviationByIteration(std::shared_ptr<StochastProperties> stochast);
             virtual double getXFromUByIteration(std::shared_ptr<StochastProperties> stochast, double u);
-
-            class WeightedValue
-            {
-            public:
-                WeightedValue(double value, double weight)
-                {
-                    this->value = value;
-                    this->weight = weight;
-                    this->normalized_weight = weight;
-                }
-
-                double value;
-                double weight;
-                double normalized_weight;
-            };
-
-            std::vector<std::shared_ptr<Distribution::WeightedValue>> GetWeightedValues(std::vector<double>& values, std::vector<double>& weights);
+            std::vector<std::shared_ptr<Numeric::WeightedValue>> GetWeightedValues(std::vector<double>& values, std::vector<double>& weights);
 
         private:
             std::vector<double> getValuesForIteration(std::shared_ptr<StochastProperties> stochast);

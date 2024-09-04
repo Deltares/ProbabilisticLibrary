@@ -28,6 +28,12 @@ namespace Deltares
                 ~CrudeMonteCarloSettingsS() { this->!CrudeMonteCarloSettingsS(); }
                 !CrudeMonteCarloSettingsS() { delete shared; }
 
+                property bool CalculateCorrelations
+                {
+                    bool get() { return shared->object->CalculateCorrelations; }
+                    void set(bool value) { shared->object->CalculateCorrelations = value; }
+                }
+
                 property int Samples
                 {
                     int get() { return shared->object->MaximumSamples; }

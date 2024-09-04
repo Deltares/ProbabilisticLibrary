@@ -1,6 +1,9 @@
 #pragma once
+#include "CorrelationMatrixBuilder.h"
 #include "../Statistics/Stochast.h"
 #include "../Model/ModelRunner.h"
+
+#include <memory>
 
 namespace Deltares
 {
@@ -11,15 +14,10 @@ namespace Deltares
          */
         class SensitivityMethod
         {
-        private:
-            bool stopped = false;
-
-        protected:
-
-            virtual void setStopped();
-            std::shared_ptr<Statistics::Stochast> getStochastFromSamples(std::vector<double>& samples, std::vector<double>& weights);
-
         public:
+
+            virtual ~SensitivityMethod() = default;
+
             /**
              * \brief Gets the sensitivity
              * \param modelRunner The model for which the sensitivity is calculated
@@ -27,7 +25,11 @@ namespace Deltares
              */
             virtual std::shared_ptr<Statistics::Stochast> getStochast(std::shared_ptr<Models::ModelRunner> modelRunner) { return nullptr; }
 
-            virtual ~SensitivityMethod() = default;
+            /**
+             * \brief Gets the correlation matrix
+             * \return Correlation matrix from all getStochast runs
+             */
+            virtual std::shared_ptr<Statistics::CorrelationMatrix> getCorrelationMatrix() { return this->correlationMatrixBuilder->getCorrelationMatrix(); }
 
             /**
              * \brief Indicates whether the calculation has been stopped
@@ -39,6 +41,19 @@ namespace Deltares
              * \remark Usually called from another thread
              */
             void Stop();
+
+        protected:
+            virtual void setStopped();
+            std::shared_ptr<Statistics::Stochast> getStochastFromSamples(std::vector<double>& samples, std::vector<double>& weights);
+
+            /**
+             * \brief Creates a correlation matrix from all sensitivity runs
+             */
+            std::shared_ptr<CorrelationMatrixBuilder> correlationMatrixBuilder = std::make_shared<CorrelationMatrixBuilder>();
+
+        private:
+            bool stopped = false;
+
         };
     }
 }

@@ -14,11 +14,20 @@ namespace Deltares
             public ref class CorrelationMatrix
             {
             private:
-                SharedPointerProvider<Statistics::CorrelationMatrix>* shared = new SharedPointerProvider(new Statistics::CorrelationMatrix());
+                SharedPointerProvider<Statistics::CorrelationMatrix>* shared = nullptr;
                 System::Collections::Generic::List<Stochast^> stochasts = gcnew System::Collections::Generic::List<Stochast^>();
 
             public:
-                CorrelationMatrix() { }
+                CorrelationMatrix()
+                {
+                    shared = new SharedPointerProvider(new Statistics::CorrelationMatrix());
+                }
+
+                CorrelationMatrix(std::shared_ptr<Statistics::CorrelationMatrix> nativeCorrelationMatrix)
+                {
+                    shared = new SharedPointerProvider(nativeCorrelationMatrix);
+                }
+
                 ~CorrelationMatrix() { this->!CorrelationMatrix(); }
                 !CorrelationMatrix() { delete shared; }
 

@@ -167,5 +167,28 @@ namespace Deltares.Probabilistic.Wrapper.Test
             Assert.AreEqual(1.79, stochast.Mean, margin);
             Assert.AreEqual(0.76, stochast.Deviation, margin);
         }
+
+        [Test]
+        public void TestCorrelationMatrix()
+        {
+            CrudeMonteCarloS sensitivityMethod = new CrudeMonteCarloS();
+
+            sensitivityMethod.Settings.RandomSettings.RandomGeneratorType = RandomGeneratorType.MersenneTwister;
+            sensitivityMethod.Settings.CalculateCorrelations = true;
+
+            var project = ProjectBuilder.GetSensitivityProject(ProjectBuilder.GetLinearProject());
+            project.SensitivityMethod = sensitivityMethod;
+            Stochast stochast1 = project.GetStochast();
+
+            var project2 = ProjectBuilder.GetSensitivityProject(ProjectBuilder.GetUnbalancedLinearProject());
+            project2.SensitivityMethod = sensitivityMethod;
+            Stochast stochast2 = project2.GetStochast();
+
+            CorrelationMatrix correlationMatrix = sensitivityMethod.GetCorrelationMatrix();
+
+            double correlationValue = correlationMatrix.GetCorrelation(stochast1, stochast2);
+
+            Assert.AreEqual(0.84, correlationValue, margin);
+        }
     }
 }

@@ -28,6 +28,12 @@ namespace Deltares
                 ~ImportanceSamplingSettingsS() { this->!ImportanceSamplingSettingsS(); }
                 !ImportanceSamplingSettingsS() { delete shared; }
 
+                property bool CalculateCorrelations
+                {
+                    bool get() { return shared->object->CalculateCorrelations; }
+                    void set(bool value) { shared->object->CalculateCorrelations = value; }
+                }
+
                 property int MinimumSamples
                 {
                     int get() { return shared->object->MinimumSamples; }
