@@ -29,6 +29,10 @@ def add_header(filename, header):
 
 def replace_one_type(extension, header):
     for name in glob.iglob("**/*."+extension, recursive = True):
+        if "ASA" in name:
+            continue
+        if "framework.h" in name:
+            continue
         print("add header to file: ", name)
         if not check_already_with_header(name):
             add_header(name, header)
