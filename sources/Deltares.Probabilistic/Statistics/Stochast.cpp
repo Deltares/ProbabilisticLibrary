@@ -70,33 +70,42 @@ namespace Deltares
 
         void Stochast::setDistributionType(DistributionType distributionType)
         {
-            double oldMean = 0;
-            double oldDeviation = 0;
-
-            if (this->distributionChangeType == DistributionChangeType::MaintainMeanAndDeviation)
+            if (this->distributionType != distributionType)
             {
-                oldMean = this->getMean();
-                oldDeviation = this->getDistributionType() == Deterministic ? this->getProperties()->Scale : this->getDeviation();
-            }
+                double oldMean = 0;
+                double oldDeviation = 0;
 
-            this->distributionType = distributionType;
-            this->distribution = DistributionLibrary::getDistribution(this->distributionType, truncated, inverted);
-            this->properties->dirty = true;
-
-            if (this->distribution->maintainMeanAndDeviation(this->properties))
-            {
-                if (this->distributionChangeType == DistributionChangeType::MaintainMeanAndDeviation)
+                DistributionChangeType distributionChangeType = this->distributionChangeType;
+                if (this->distributionType == DistributionType::Table)
                 {
-                    if (oldMean != 0 || oldDeviation != 0)
-                    {
-                        this->setMeanAndDeviation(oldMean, oldDeviation);
-                    }
+                    distributionChangeType = DistributionChangeType::FitFromHistogramValues;
                 }
-                else if (this->distributionChangeType == DistributionChangeType::FitFromHistogramValues)
+
+                if (distributionChangeType == DistributionChangeType::MaintainMeanAndDeviation)
                 {
-                    if (this->canFit() && !this->getProperties()->HistogramValues.empty())
+                    oldMean = this->getMean();
+                    oldDeviation = this->getDistributionType() == Deterministic ? this->getProperties()->Scale : this->getDeviation();
+                }
+
+                this->distributionType = distributionType;
+                this->distribution = DistributionLibrary::getDistribution(this->distributionType, truncated, inverted);
+                this->properties->dirty = true;
+
+                if (this->distribution->maintainMeanAndDeviation(this->properties))
+                {
+                    if (distributionChangeType == DistributionChangeType::MaintainMeanAndDeviation)
                     {
-                        this->fitFromHistogramValues();
+                        if (oldMean != 0 || oldDeviation != 0)
+                        {
+                            this->setMeanAndDeviation(oldMean, oldDeviation);
+                        }
+                    }
+                    else if (distributionChangeType == DistributionChangeType::FitFromHistogramValues)
+                    {
+                        if (this->canFit() && !this->getProperties()->HistogramValues.empty())
+                        {
+                            this->fitFromHistogramValues();
+                        }
                     }
                 }
             }

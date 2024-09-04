@@ -13,7 +13,7 @@ namespace Deltares
             /**
              * \brief The number of samples to be examined
              */
-            int Samples = 10000;
+            int MaximumSamples = 10000;
 
             /**
              * \brief The importance sampling algorithm stops when the calculated variation coefficient is less than this value
@@ -61,7 +61,7 @@ namespace Deltares
              */
             bool isValid()
             {
-                return Samples >= 1 && RunSettings->isValid();
+                return MaximumSamples >= 1 && RunSettings->isValid();
             }
         };
     }

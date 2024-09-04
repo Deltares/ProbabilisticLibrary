@@ -40,6 +40,9 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             Stochast stochast = project.GetStochast();
 
+            Assert.AreEqual(DistributionType.Table, stochast.DistributionType);
+            Assert.AreEqual(84, stochast.HistogramValues.Count);
+
             Assert.AreEqual(1.8, stochast.Mean, margin);
             Assert.AreEqual(0.82, stochast.Deviation, margin);
         }
