@@ -72,15 +72,13 @@ def update_header(header, comment_char):
 
     return new_header
 
-def replace_all():
+def replace_all(folder):
     header = read_header("license.txt")
     header_c = update_header(header, "//")
     header_f90 = update_header(header, "!")
     header_py = update_header(header, "#")
 
-    if len(sys.argv) > 1:
-        folder = sys.argv[1]
-        os.chdir(folder)
+    os.chdir(folder)
 
     extensions = ("cpp", "h")
     for ext in extensions:
@@ -89,4 +87,14 @@ def replace_all():
     replace_one_type("py", header_py)
     replace_one_type("f90", header_f90)
 
-replace_all()
+def start_replace():
+    print("add (c) header to all files (recursive) in given folder")
+    print("template header is in current folder")
+    if len(sys.argv) == 1:
+        print("missing comment line argument")
+        print("usage: python add_license.py <folder>")
+    else:
+        folder = sys.argv[1]
+        replace_all(folder)
+
+start_replace()
