@@ -19,7 +19,7 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-﻿#include "ImportanceSamplingCombiner.h"
+#include "ImportanceSamplingCombiner.h"
 
 #include <algorithm>
 #if __has_include(<format>)
