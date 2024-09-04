@@ -36,11 +36,7 @@ namespace Deltares
             size_t zIndex = 0;
             int nSamples = 0;
 
-            int requiredSamples = this->Settings->Samples;
-            if (this->Settings->DeriveSamplesFromVariationCoefficient)
-            {
-                requiredSamples = this->Settings->getRequiredSamples();
-            }
+            int requiredSamples = std::min(this->Settings->getRequiredSamples(), this->Settings->MaximumSamples);
 
             for (int sampleIndex = 0; sampleIndex < requiredSamples && !isStopped(); sampleIndex++)
             {
@@ -51,7 +47,7 @@ namespace Deltares
                     samples.clear();
 
                     int chunkSize = modelRunner->Settings->MaxChunkSize;
-                    int runs = std::min(chunkSize, Settings->Samples - sampleIndex);
+                    int runs = std::min(chunkSize, Settings->MaximumSamples - sampleIndex);
 
                     sampleProvider->reset();
 

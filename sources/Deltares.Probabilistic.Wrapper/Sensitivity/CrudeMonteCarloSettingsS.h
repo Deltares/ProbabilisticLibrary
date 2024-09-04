@@ -30,8 +30,8 @@ namespace Deltares
 
                 property int Samples
                 {
-                    int get() { return shared->object->Samples; }
-                    void set(int value) { shared->object->Samples = value; }
+                    int get() { return shared->object->MaximumSamples; }
+                    void set(int value) { shared->object->MaximumSamples = value; }
                 }
 
                 property double VariationCoefficient

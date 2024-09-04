@@ -1,4 +1,5 @@
 #include "CrudeMonteCarloSettingsS.h"
+#include <limits>
 
 namespace Deltares
 {
@@ -12,14 +13,21 @@ namespace Deltares
             double probability = this->ProbabilityForConvergence;
             double variationCoefficient = this->VariationCoefficient;
 
-            if (probability > 0.5)
+            if (variationCoefficient <= 0.0 || probability <= 0.0 || probability >= 1.0)
             {
-                probability = 1 - probability;
+                return std::numeric_limits<int>::max();
             }
+            else
+            {
+                if (probability > 0.5)
+                {
+                    probability = 1 - probability;
+                }
 
-            double samples = (1 - probability) / (variationCoefficient * variationCoefficient * probability);
+                double samples = (1 - probability) / (variationCoefficient * variationCoefficient * probability);
 
-            return static_cast<int>(std::ceil(samples));
+                return static_cast<int>(std::ceil(samples));
+            }
         }
 
         /**

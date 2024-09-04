@@ -62,7 +62,7 @@ namespace Deltares
 
                 std::shared_ptr<Sensitivity::CrudeMonteCarloS> sensitivityMethod = std::make_shared<Sensitivity::CrudeMonteCarloS>();
                 sensitivityMethod->Settings->randomSettings->RandomGeneratorType = Deltares::Numeric::MersenneTwister;
-                sensitivityMethod->Settings->Samples = 100000;
+                sensitivityMethod->Settings->MaximumSamples = 100000;
 
                 project->sensitivityMethod = std::make_shared<Sensitivity::CrudeMonteCarloS>();
 

@@ -74,6 +74,7 @@ namespace Deltares
                 {
                     shared = new Utils::Wrappers::SharedPointerProvider(nativeStochast);
                     this->Initialize();
+                    this->updateLists();
                 }
 
                 Stochast(DistributionType distributionType, array<double>^ values) : Stochast()
@@ -315,6 +316,12 @@ namespace Deltares
                     shared->object->fitWeighted(nativeValues, nativeWeights);
 
                     updateLists();
+                }
+
+                virtual void CopyFrom(Stochast^ source)
+                {
+                    shared->object->copyFrom(source->GetStochast());
+                    this->updateLists();
                 }
 
                 virtual array<double>^ GetSpecialXValues()
