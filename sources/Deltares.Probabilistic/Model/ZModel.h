@@ -20,14 +20,6 @@ namespace Deltares
 
         class ZModel
         {
-        private:
-            ZLambda zLambda = nullptr;
-            ZMultipleLambda zMultipleLambda = nullptr;
-            ZBetaLambda zBetaLambda = nullptr;
-            int maxProcesses = 1;
-            int modelRuns = 0;
-            bool countRunsLambda = true;
-
         public:
             ZModel(ZLambda zLambda, ZMultipleLambda zMultipleLambda = nullptr)
             {
@@ -44,6 +36,8 @@ namespace Deltares
 
                 this->zLambda = calcValuesLambda;
             }
+
+            std::string Name = "";
 
             void setBetaLambda(ZBetaLambda zBetaLambda)
             {
@@ -74,6 +68,13 @@ namespace Deltares
             {
                 modelRuns = 0;
             }
+        private:
+            ZLambda zLambda = nullptr;
+            ZMultipleLambda zMultipleLambda = nullptr;
+            ZBetaLambda zBetaLambda = nullptr;
+            int maxProcesses = 1;
+            int modelRuns = 0;
+            bool countRunsLambda = true;
         };
     }
 }

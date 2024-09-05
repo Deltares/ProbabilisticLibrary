@@ -67,6 +67,7 @@ namespace Deltares
             else if (object_type == "correlation_matrix")
             {
                 correlationMatrices[counter] = std::make_shared<Deltares::Statistics::CorrelationMatrix>();
+                correlationMatrixIds[correlationMatrices[counter]] = counter;
                 types[counter] = ObjectType::CorrelationMatrix;
             }
             else if (object_type == "settings")
@@ -356,6 +357,7 @@ namespace Deltares
                 std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
 
                 if (property_ == "stochast") return GetStochastId(project->stochast);
+                else if (property_ == "output_correlation_matrix") return GetCorrelationMatrixId(project->outputCorrelationMatrix);
             }
             else if (objectType == ObjectType::Stochast)
             {
@@ -575,6 +577,7 @@ namespace Deltares
                 std::shared_ptr<Sensitivity::SettingsS> settings = sensitivitySettingsValues[id];
 
                 if (property_ == "derive_samples_from_variation_coefficient") return settings->DeriveSamplesFromVariationCoefficient;
+                else if (property_ == "calculate_correlations") return settings->CalculateCorrelations;
             }
 
             return false;
@@ -603,6 +606,7 @@ namespace Deltares
                 std::shared_ptr<Sensitivity::SettingsS> settings = sensitivitySettingsValues[id];
 
                 if (property_ == "derive_samples_from_variation_coefficient") settings->DeriveSamplesFromVariationCoefficient = value;
+                else if (property_ == "calculate_correlations") settings->CalculateCorrelations = value;
             }
 
         }
@@ -689,6 +693,18 @@ namespace Deltares
                 std::shared_ptr<Reliability::DesignPoint> designPoint = designPoints[id];
 
                 if (property_ == "identifier") designPoint->Identifier = value;
+            }
+            else if (objectType == ObjectType::Project)
+            {
+                std::shared_ptr<Reliability::Project> project = projects[id];
+
+                if (property_ == "model_name") project->model->Name = value;
+            }
+            else if (objectType == ObjectType::SensitivityProject)
+            {
+                std::shared_ptr<Sensitivity::SensitivityProject> sensitivityProject = sensitivityProjects[id];
+
+                if (property_ == "model_name") sensitivityProject->model->Name = value;
             }
         }
 
@@ -1047,6 +1063,27 @@ namespace Deltares
                 }
 
                 return stochastIds[stochast];
+            }
+        }
+
+        int ProjectServer::GetCorrelationMatrixId(std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix)
+        {
+            if (correlationMatrix == nullptr)
+            {
+                return 0;
+            }
+            else
+            {
+                if (!correlationMatrixIds.contains(correlationMatrix))
+                {
+                    int counter = GetNewObjectId();
+
+                    correlationMatrices[counter] = correlationMatrix;
+                    types[counter] = ObjectType::Stochast;
+                    correlationMatrixIds[correlationMatrix] = counter;
+                }
+
+                return correlationMatrixIds[correlationMatrix];
             }
         }
 

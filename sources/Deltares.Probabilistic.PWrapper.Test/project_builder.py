@@ -10,6 +10,10 @@ def linear_ab(a, b):
     L = 1.8
     return L - (a+b)
 
+def unbalanced_linear_ab(a, b):
+    L = 1.8
+    return L - (0.3 * a + 1.9 * b)
+
 def linear_bc(b, c):
     L = 1.8
     return L - (b + c)

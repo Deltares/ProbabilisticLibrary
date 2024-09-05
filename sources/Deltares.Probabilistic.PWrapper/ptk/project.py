@@ -24,6 +24,7 @@ class SensitivityProject:
 		self._correlation_matrix = CorrelationMatrix()
 		self._settings = SensitivitySettings()
 		self._stochast = None
+		self._output_correlation_matrix = None
 		
 		_model = None
 
@@ -33,7 +34,8 @@ class SensitivityProject:
 	            'settings',
 	            'model',
 	            'run',
-	            'stochast']
+	            'stochast',
+		        'output_correlation_matrix']
 
 	@property
 	def variables(self):
@@ -56,6 +58,7 @@ class SensitivityProject:
 		SensitivityProject._model = value
 		
 		variable_names = value.__code__.co_varnames
+		model_name = value.__name__
 
 		variables = []
 		for var_name in variable_names[:value.__code__.co_argcount]:
@@ -70,6 +73,7 @@ class SensitivityProject:
 		self._variables = FrozenList(variables)
 		self._correlation_matrix._set_variables(variables)
 		self._settings._set_variables(variables)
+		interface.SetStringValue(self._id, 'model_name', model_name)
 
 	@interface.CALLBACK
 	def _performCallBack(values, size):
@@ -79,6 +83,7 @@ class SensitivityProject:
 
 	def run(self):
 		self._stochast = None
+		self._output_correlation_matrix = None
 		interface.SetArrayIntValue(self._id, 'variables', [variable._id for variable in self._variables])
 		interface.SetIntValue(self._id, 'correlation_matrix', self._correlation_matrix._id)
 		interface.SetIntValue(self._id, 'settings', self._settings._id)
@@ -94,6 +99,14 @@ class SensitivityProject:
 				
 		return self._stochast
 
+	@property   
+	def output_correlation_matrix(self):
+		if self._output_correlation_matrix is None:
+			correlationMatrixId = interface.GetIntValue(self._id, 'output_correlation_matrix')
+			if correlationMatrixId > 0:
+				self._output_correlation_matrix = CorrelationMatrix(correlationMatrixId)
+				
+		return self._output_correlation_matrix
 
 class ReliabilityProject:
 
@@ -142,6 +155,7 @@ class ReliabilityProject:
 		ReliabilityProject._model = value
 		
 		variable_names = value.__code__.co_varnames
+		model_name = value.__name__
 
 		variables = []
 		for var_name in variable_names[:value.__code__.co_argcount]:
@@ -156,6 +170,8 @@ class ReliabilityProject:
 		self._variables = FrozenList(variables)
 		self._correlation_matrix._set_variables(variables)
 		self._settings._set_variables(variables)
+		interface.SetStringValue(self._id, 'model_name', model_name)
+
 
 	@interface.CALLBACK
 	def _performCallBack(values, size):

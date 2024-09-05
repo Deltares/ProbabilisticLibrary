@@ -43,6 +43,7 @@ namespace Deltares
             int GetNewObjectId();
 
             int GetStochastId(std::shared_ptr<Statistics::Stochast> stochast);
+            int GetCorrelationMatrixId(std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix);
             int GetDesignPointId(std::shared_ptr<Reliability::DesignPoint> designPoint);
             int GetAlphaId(std::shared_ptr<StochastPointAlpha> alpha);
             int GetHistogramValueId(std::shared_ptr<Statistics::HistogramValue> histogramValue);
@@ -79,6 +80,7 @@ namespace Deltares
             std::unordered_map<std::shared_ptr<Reliability::DesignPoint>, int> designPointIds;
             std::unordered_map<std::shared_ptr<Reliability::StochastPointAlpha>, int> alphaIds;
             std::unordered_map<std::shared_ptr<Statistics::Stochast>, int> stochastIds;
+            std::unordered_map<std::shared_ptr<Statistics::CorrelationMatrix>, int> correlationMatrixIds;
             std::unordered_map<std::shared_ptr<Statistics::HistogramValue>, int> histogramValueIds;
             std::unordered_map<std::shared_ptr<Statistics::DiscreteValue>, int> discreteValueIds;
             std::unordered_map<std::shared_ptr<Statistics::FragilityValue>, int> fragilityValueIds;

@@ -67,6 +67,22 @@ class Test_sensitivity(unittest.TestCase):
         self.assertAlmostEqual(0, sens.minimum, delta=margin)
         self.assertAlmostEqual(2, sens.maximum, delta=margin)
 
+    def test_correlation_matrix(self):
+        project = project_builder.get_sensitivity_linear_project()
+        project.model = project_builder.linear_ab;
+
+        project.settings.sensitivity_method = SensitivityMethod.crude_monte_carlo
+
+        project.run();
+        sens1 = project.stochast;
+
+        project.model = project_builder.unbalanced_linear_ab;
+
+        project.run();
+        sens2 = project.stochast;
+
+        #correlation_matrix = project.correlation_matrix;
+        #self.assertAlmostEqual(0.84, project.correlation_matrix['linear', 'unbalanced_linear'])
 
 
 if __name__ == '__main__':

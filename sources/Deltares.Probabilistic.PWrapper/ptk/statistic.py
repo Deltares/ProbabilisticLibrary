@@ -563,8 +563,11 @@ class ContributingStochast:
 
 class CorrelationMatrix:
 
-	def __init__(self):
-		self._id = interface.Create('correlation_matrix')
+	def __init__(self, id = None):
+		if id is None:
+			self._id = interface.Create('correlation_matrix')
+		else:
+			self._id = id
 		self._variables = FrozenList()
 
 	def __del__(self):

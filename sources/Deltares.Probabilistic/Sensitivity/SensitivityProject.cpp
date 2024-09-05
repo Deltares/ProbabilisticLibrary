@@ -10,6 +10,12 @@ namespace Deltares
             this->runSettings = this->settings->RunSettings;
 
             this->stochast = this->getStochast();
+
+            this->outputCorrelationMatrix = nullptr;
+            if (this->settings->CalculateCorrelations)
+            {
+                this->outputCorrelationMatrix = this->sensitivityMethod->getCorrelationMatrix();
+            }
         }
 
         std::shared_ptr<Statistics::Stochast> SensitivityProject::getStochast()
@@ -20,6 +26,7 @@ namespace Deltares
             modelRunner->initializeForRun();
 
             this->stochast = this->sensitivityMethod->getStochast(modelRunner);
+            this->stochast->name = this->model->Name;
 
             return this->stochast;
         }

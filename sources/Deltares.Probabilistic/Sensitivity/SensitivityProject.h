@@ -58,6 +58,11 @@ namespace Deltares
             std::shared_ptr<Statistics::Stochast> stochast = nullptr;
 
             /**
+             * \brief Resulting correlation matrix
+             */
+            std::shared_ptr<Statistics::CorrelationMatrix> outputCorrelationMatrix = nullptr;
+
+            /**
              * \brief Indicates whether the input is valid
              * \return Indication
              */
