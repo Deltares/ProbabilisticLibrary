@@ -25,7 +25,7 @@ This script adds a header on top of source files.
 The license text is "license.txt" in the current directory.
 It handles all files recursive in the given folder.
 
-It works for c++, python and Fortran
+It works for c++, c#, python and Fortran
 """
 
 import glob
@@ -88,7 +88,7 @@ def replace_all(folder):
 
     os.chdir(folder)
 
-    extensions = ("cpp", "h")
+    extensions = ("cpp", "h", "cs")
     for ext in extensions:
         replace_one_type(ext, header_c)
 
