@@ -55,7 +55,12 @@ namespace Deltares
             /**
              * \brief Results of the reliability calculation
              */
-            std::shared_ptr<Statistics::Stochast> stochast = nullptr;
+            std::shared_ptr<Statistics::Stochast> sensitivityStochast = nullptr;
+
+            /**
+             * \brief Results of the reliability calculation
+             */
+            std::vector<std::shared_ptr<Statistics::Stochast>> sensitivityStochasts;
 
             /**
              * \brief Resulting correlation matrix
@@ -78,6 +83,16 @@ namespace Deltares
              * \brief Runs the reliability calculation
              */
             void run();
+
+            /**
+             * \brief Sets the method which is invoked at the beginning of a run
+             */
+            void setInitializer(Models::ZEmptyCallBack initializerCallBack)
+            {
+                this->initializer = initializerCallBack;
+            }
+        private:
+            Models::ZEmptyCallBack initializer = nullptr;
         };
     }
 }

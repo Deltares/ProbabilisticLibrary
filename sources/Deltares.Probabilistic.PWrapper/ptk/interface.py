@@ -9,6 +9,7 @@ from ctypes import cdll
 from ctypes import *
 
 CALLBACK = CFUNCTYPE(ctypes.c_double, POINTER(ctypes.c_double), ctypes.c_int)
+EMPTY_CALLBACK = CFUNCTYPE(ctypes.c_void_p)
 
 def LoadLibrary(lib_full_path):
 	if os.path.isfile(lib_full_path):
@@ -141,7 +142,15 @@ def SetCallBack(id_, property_, callBack_):
 		lib.SetCallBack(ctypes.c_int(id_), bytes(property_, 'utf-8'), callBack_)
 	except:
 		message = sys.exc_info()[0]
-		print('error: ' + message, flush = True)
+		print('error: ' + str(message), flush = True)
+		raise
+
+def SetEmptyCallBack(id_, property_, callBack_):
+	try:
+		lib.SetInitializeCallBack(ctypes.c_int(id_), bytes(property_, 'utf-8'), callBack_)
+	except:
+		message = sys.exc_info()[0]
+		print('error: ' + str(message), flush = True)
 		raise
 
 def Execute(id_, method_):

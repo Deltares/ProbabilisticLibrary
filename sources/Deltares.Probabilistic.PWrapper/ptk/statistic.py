@@ -581,6 +581,9 @@ class CorrelationMatrix:
 		self._variables = FrozenList(variables)
 		interface.SetArrayIntValue(self._id, 'variables', [variable._id for variable in self._variables])
 
+	def _update_variables(self, variables):
+		self._variables = FrozenList(variables)
+
 	def __getitem__(self, stochasts):
 		if not isinstance(stochasts, tuple) or not len(stochasts) == 2:
 			raise ArgumentError('Expected 2 arguments')

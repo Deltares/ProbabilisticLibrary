@@ -38,6 +38,7 @@ namespace Deltares
             virtual void SetIndexedIndexedValue(int id, std::string property_, int index1, int index2, double value);
             virtual int GetIndexedIntValue(int id, std::string property_, int index);
             virtual void SetCallBack(int id, std::string property_, ZValuesCallBack callBack);
+            virtual void SetEmptyCallBack(int id, std::string property_, ZEmptyCallBack callBack);
             virtual void Execute(int id, std::string method_);
         protected:
             int GetNewObjectId();
@@ -52,7 +53,7 @@ namespace Deltares
             int GetContributingStochastId(std::shared_ptr<Statistics::ContributingStochast> contributingStochast);
             int GetMessageId(std::shared_ptr<Deltares::Models::Message> message);
         private:
-            enum ObjectType {StandardNormal, Message, Project, Stochast, DiscreteValue, HistogramValue, FragilityValue,
+            enum ObjectType {StandardNormal, Message, Project, ModelParameter, Stochast, DiscreteValue, HistogramValue, FragilityValue,
                 ContributingStochast, CorrelationMatrix, Settings, StochastSettings, DesignPoint, Alpha,
                 CombineProject, CombineSettings, SelfCorrelationMatrix, SensitivityProject, SensitivitySettings};
 
@@ -62,6 +63,7 @@ namespace Deltares
             std::unordered_map<int, std::shared_ptr<Statistics::Stochast>> stochasts;
             std::unordered_map<int, std::shared_ptr<Models::Message>> messages;
             std::unordered_map<int, std::shared_ptr<Models::Project>> projects;
+            std::unordered_map<int, std::shared_ptr<Models::ModelParameter>> modelParameters;
             std::unordered_map<int, std::shared_ptr<Statistics::DiscreteValue>> discreteValues;
             std::unordered_map<int, std::shared_ptr<Statistics::HistogramValue>> histogramValues;
             std::unordered_map<int, std::shared_ptr<Statistics::FragilityValue>> fragilityValues;
