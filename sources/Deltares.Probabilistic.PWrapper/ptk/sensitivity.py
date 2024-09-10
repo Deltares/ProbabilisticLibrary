@@ -38,6 +38,7 @@ class SensitivitySettings:
 			    'probability_for_convergence'
 			    'derive_samples_from_variation_coefficient'
 			    'calculate_correlations'
+			    'calculate_input_correlations'
 	            'stochast_settings']
 
 		
@@ -136,6 +137,14 @@ class SensitivitySettings:
 	@calculate_correlations.setter
 	def calculate_correlations(self, value : bool):
 		interface.SetBoolValue(self._id, 'calculate_correlations', value) 
+
+	@property   
+	def calculate_input_correlations(self):
+		return interface.GetBoolValue(self._id, 'calculate_input_correlations')
+		
+	@calculate_input_correlations.setter
+	def calculate_input_correlations(self, value : bool):
+		interface.SetBoolValue(self._id, 'calculate_input_correlations', value) 
 
 	@property   
 	def stochast_settings(self):

@@ -148,10 +148,11 @@ class SensitivityProject:
 	@property   
 	def stochasts(self):
 		if self._stochasts is None:
-			self._stochasts = []
+			stochasts = []
 			stochast_ids = interface.GetArrayIntValue(self._id, 'sensitivity_stochasts')
 			for stochast_id in stochast_ids:
-				self._stochasts.append(Stochast(stochast_id))
+				stochasts.append(Stochast(stochast_id))
+			self._stochasts = FrozenList(stochasts)
 				
 		return self._stochasts
 
@@ -161,7 +162,7 @@ class SensitivityProject:
 			correlationMatrixId = interface.GetIntValue(self._id, 'output_correlation_matrix')
 			if correlationMatrixId > 0:
 				self._output_correlation_matrix = CorrelationMatrix(correlationMatrixId)
-				self._output_correlation_matrix._update_variables(self.stochasts)
+				self._output_correlation_matrix._update_variables(self.variables.get_list() + self.stochasts.get_list())
 				
 		return self._output_correlation_matrix
 

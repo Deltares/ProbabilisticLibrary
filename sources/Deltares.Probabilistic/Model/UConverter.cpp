@@ -500,6 +500,16 @@ namespace Deltares
 
             return stochastPoint;
         }
+
+        void  UConverter::registerSample(std::shared_ptr<Sensitivity::CorrelationMatrixBuilder> correlationMatrixBuilder, std::shared_ptr<Sample> sample)
+        {
+            std::vector<double> uValues = this->getExpandedUValues(sample);
+
+            for (int i = 0; i < this->getVaryingStochastCount(); i++)
+            {
+                correlationMatrixBuilder->registerStochastValue(this->varyingStochasts[i], uValues[varyingStochastIndex[i]]);
+            }
+        }
     }
 }
 

@@ -13,20 +13,13 @@ public :: initProbabilisticCalculation, &
           setStochasticDistrib, &
           curParallelThreads, &
           initDeterministicValue, &
-          initPointerToStochast
-
-    interface setParametersProbabilisticIS
-        module procedure setParametersProbabilisticISsimple
-        module procedure setParametersProbabilisticISdetail
-    end interface
-
-    public :: setParametersProbabilisticForm, &
-              setParametersProbabilisticNI, &
-              setParametersProbabilisticCMC, &
-              setParametersProbabilisticDS, &
-              setParametersProbabilisticIS, &
-              setParametersProbabilisticAdpMCIS, &
-              setParametersProbabilisticCalculation
+          initPointerToStochast, &
+          setParametersProbabilisticForm, &
+          setParametersProbabilisticNI, &
+          setParametersProbabilisticCMC, &
+          setParametersProbabilisticDS, &
+          setParametersProbabilisticIS, &
+          setParametersProbabilisticAdpMCIS
 
 contains
 
@@ -66,6 +59,7 @@ subroutine initProbabilisticCalculation( probDb, maxStochasts, databaseFlag, exp
     !
     ! Crude Monte Carlo
     probDb%method%CMC%seedPRNG              = 0
+    probDb%method%CMC%isRepeatableRandom    = .TRUE.
     probDb%method%CMC%minimumSamples        = 1000
     probDb%method%CMC%maximumSamples        = 100000
     probDb%method%CMC%varCoeffFailure       = 0.10D0
@@ -73,6 +67,7 @@ subroutine initProbabilisticCalculation( probDb, maxStochasts, databaseFlag, exp
     !
     ! Directional Sampling
     probDb%method%DS%seedPRNG               = 0
+    probDb%method%DS%isRepeatableRandom     = .TRUE.
     probDb%method%DS%minimumSamples         = 10
     probDb%method%DS%maximumSamples         = 10000
     probDb%method%DS%varCoeffFailure        = 0.10D0
@@ -88,6 +83,7 @@ subroutine initProbabilisticCalculation( probDb, maxStochasts, databaseFlag, exp
     !
     ! Importance Sampling
     probDb%method%IS%seedPRNG               = 0
+    probDb%method%IS%isRepeatableRandom     = .TRUE.
     probDb%method%IS%minimumSamples         = 1000
     probDb%method%IS%maximumSamples         = 100000
     probDb%method%IS%varCoeffFailure        = 0.10D0
@@ -96,6 +92,7 @@ subroutine initProbabilisticCalculation( probDb, maxStochasts, databaseFlag, exp
 
     ! Adaptive Importance Sampling
     probDb%method%AdaptiveIS%seedPRNG               = 0
+    probDb%method%AdaptiveIS%isRepeatableRandom     = .TRUE.
     probDb%method%AdaptiveIS%minimumSamples         = 1000
     probDb%method%AdaptiveIS%maximumSamples         = 100000
     probDb%method%AdaptiveIS%varCoeffFailure        = 0.10D0
@@ -227,32 +224,23 @@ end subroutine initPointerToStochast
 !>
 !! Subroutine for assignment of numeric control data FORM
 !!   @ingroup Probabilistic
-subroutine setParametersProbabilisticForm(probDb, FstartMethod, FmaxIterations, &
-               FtrialLoops, FepsilonBeta, FepsilonZvalue, FrelaxationFactor, &
-               FdU, FstartValue, maxParThreads)
+subroutine setParametersProbabilisticForm(probDb, FORMsettings, maxParThreads)
 
-    type(probabilisticDataStructure_data)   :: probDb               !< Probabilistic data module
-    integer, intent(in)                     :: FstartMethod         !< Method for startvector
-    integer, intent(in)                     :: FmaxIterations       !< Maximum number of iterations
-    integer, intent(in)                     :: FtrialLoops          !< Number of trial loops
-    integer, intent(in)                     :: maxParThreads        !< maximum number of parallel threads
-    real(kind=wp), intent(in)               :: FepsilonBeta         !< Epsilon Beta (relative accuracy)
-    real(kind=wp), intent(in)               :: FepsilonZvalue       !< Epsilon Zfunction (relative accuracy)
-    real(kind=wp), intent(in)               :: FrelaxationFactor    !< Relaxation factor
-    real(kind=wp), intent(in)               :: FdU                  !< Interval size for derivatives
-    real(kind=wp), intent(in)               :: FstartValue(:)       !< Startvector
+    type(probabilisticDataStructure_data), intent(inout) :: probDb        !< Probabilistic data module
+    type(tpFORM),                          intent(in   ) :: FORMsettings  !< setting for FORM
+    integer,                               intent(in   ) :: maxParThreads !< maximum number of parallel threads
     !
     ! Put data in structure
     !
     associate ( method => probDb%method, FORM => probDb%method%FORM )
-        FORM%startMethod          = FstartMethod
-        FORM%maxIterations        = FmaxIterations
-        FORM%trialLoops           = FtrialLoops
-        FORM%epsilonBeta          = FepsilonBeta
-        FORM%epsilonZvalue        = FepsilonZvalue
-        FORM%relaxationFactor     = FrelaxationFactor
-        FORM%dU                   = FdU
-        FORM%startValue           = FstartValue
+        FORM%startMethod          = FORMsettings%startMethod
+        FORM%maxIterations        = FORMsettings%maxIterations
+        FORM%trialLoops           = FORMsettings%trialLoops
+        FORM%epsilonBeta          = FORMsettings%epsilonBeta
+        FORM%epsilonZvalue        = FORMsettings%epsilonZvalue
+        FORM%relaxationFactor     = FORMsettings%relaxationFactor
+        FORM%dU                   = FORMsettings%dU
+        FORM%startValue           = FORMsettings%startValue
         method%maxParallelThreads = maxParThreads
     end associate
 
@@ -261,85 +249,65 @@ end subroutine setParametersProbabilisticForm
 !>
 !! Subroutine for assignment of numeric control data Numeric Integration
 !!   @ingroup Probabilistic
-subroutine setParametersProbabilisticNI(probDb, numExtraInt, NInumExtraReal1, NImaximumUvalue)
+subroutine setParametersProbabilisticNI(probDb, NIsettings)
 
-    type(probabilisticDataStructure_data)   :: probDb               !< Probabilistic data module
-    integer, intent(in)                     :: numExtraInt          !< Number intervals
-    real(kind=wp), intent(in)               :: NInumExtraReal1      !< Minimum U value
-    real(kind=wp), intent(in)               :: NImaximumUvalue      !< Maximum U value
+    type(probabilisticDataStructure_data), intent(inout) :: probDb      !< Probabilistic data module
+    type(tpNI),                            intent(in   ) :: NIsettings  !< settings for numerical integration
     !
     ! Put data in structure
     !
-    probDb%method%NI%numberIntervals    = numExtraInt
-    probDb%method%NI%minimumUvalue      = NInumExtraReal1
-    probDb%method%NI%maximumUvalue      = NImaximumUvalue
+    probDb%method%NI%numberIntervals    = NIsettings%numberIntervals
+    probDb%method%NI%minimumUvalue      = NIsettings%minimumUvalue
+    probDb%method%NI%maximumUvalue      = NIsettings%maximumUvalue
 
 end subroutine setParametersProbabilisticNI
 
 !>
 !! Subroutine for assignment of numeric control data Crude Monte Carlo
 !!   @ingroup Probabilistic
-subroutine setParametersProbabilisticCMC(probDb, CMCseedPRNG, CMCminimumSamples, &
-               CMCmaximumSamples, CMCvarCoeffFailure, CMCvarCoeffNoFailure)
+subroutine setParametersProbabilisticCMC(probDb, CMCsettings)
 
-    type(probabilisticDataStructure_data)   :: probDb                !< Probabilistic data module
-    integer, intent(in)                     :: CMCseedPRNG           !< Start value random generator
-    integer, intent(in)                     :: CMCminimumSamples     !< Minimum number samples (>1)
-    integer, intent(in)                     :: CMCmaximumSamples     !< Maximum number samples
-    real(kind=wp), intent(in)               :: CMCvarCoeffFailure    !< Required variation coefficient Failure
-    real(kind=wp), intent(in)               :: CMCvarCoeffNoFailure  !< Required variation coefficient Non Failure
+    type(probabilisticDataStructure_data), intent(inout) :: probDb       !< Probabilistic data module
+    type(tpCMC),                           intent(in   ) :: CMCsettings  !< settings for Crude Monte Carlo
     !
     ! Put data in structure
     !
-    probDb%method%CMC%seedPRNG           = CMCseedPRNG
-    probDb%method%CMC%minimumSamples     = CMCminimumSamples
-    probDb%method%CMC%maximumSamples     = CMCmaximumSamples
-    probDb%method%CMC%varCoeffFailure    = CMCvarCoeffFailure
-    probDb%method%CMC%varCoeffNoFailure  = CMCvarCoeffNoFailure
+    probDb%method%CMC%seedPRNG           = CMCsettings%seedPRNG
+    probDb%method%CMC%isRepeatableRandom = CMCsettings%isRepeatableRandom
+    probDb%method%CMC%minimumSamples     = CMCsettings%minimumSamples
+    probDb%method%CMC%maximumSamples     = CMCsettings%maximumSamples
+    probDb%method%CMC%varCoeffFailure    = CMCsettings%varCoeffFailure
+    probDb%method%CMC%varCoeffNoFailure  = CMCsettings%varCoeffNoFailure
 
 end subroutine setParametersProbabilisticCMC
 
 !>
 !! Subroutine for assignment of numeric control data Directional Sampling
 !!   @ingroup Probabilistic
-subroutine setParametersProbabilisticDS(probDb, DSseedPRNG, DSminimumSamples, &
-               DSmaximumSamples, DSvarCoeffFailure, DSvarCoeffNoFailure, &
-               DSiterationMethod, DSiterations1, DSdu1, DSmaximumIterations2, &
-               DSinitialDu2, DSmaximumDu2, DSepsilonDu, DSmaximumLengthU, DSmaxParThreads)
+subroutine setParametersProbabilisticDS(probDb, DSsettings, maxParThreads)
 
-    type(probabilisticDataStructure_data)   :: probDb               !< Probabilistic data module
-    integer, intent(in)                     :: DSseedPRNG           !< Start value random generator
-    integer, intent(in)                     :: DSminimumSamples     !< Minimum number samples (>1)
-    integer, intent(in)                     :: DSmaximumSamples     !< Maximum number samples
-    real(kind=wp), intent(in)               :: DSvarCoeffFailure    !< Required variation coefficient Failure
-    real(kind=wp), intent(in)               :: DSvarCoeffNoFailure  !< Required variation coefficient Non Failure
-    integer, intent(in)                     :: DSiterationMethod    !< Iteration method
-    integer, intent(in)                     :: DSiterations1        !< Number iterations method 1
-    real(kind=wp), intent(in)               :: DSdu1                !< Step size methode 1
-    integer, intent(in)                     :: DSmaximumIterations2 !< Maximum number iterations method 2
-    real(kind=wp), intent(in)               :: DSinitialDu2         !< Initial step size du method 2
-    real(kind=wp), intent(in)               :: DSmaximumDu2         !< Maximum step size du method 2
-    real(kind=wp), intent(in)               :: DSepsilonDu          !< Epsilon  step size du methods 1, 2
-    real(kind=wp), intent(in)               :: DSmaximumLengthU     !< Maximum length u-vector
-    integer, intent(in)                     :: DSmaxParThreads      !< Maximum OpenMP threads
+    type(probabilisticDataStructure_data), intent(inout) :: probDb        !< Probabilistic data module
+    type(tpDS),                            intent(in   ) :: DSsettings    !< settings for Directional Sampling
+    integer,                               intent(in   ) :: maxParThreads !< Maximum OpenMP threads
     !
     ! Put data in structure
     !
     associate ( method => probDb%method, DS => probDb%method%DS )
-        DS%seedPRNG               = DSseedPRNG
-        DS%minimumSamples         = DSminimumSamples
-        DS%maximumSamples         = DSmaximumSamples
-        DS%varCoeffFailure        = DSvarCoeffFailure
-        DS%varCoeffNoFailure      = DSvarCoeffNoFailure
-        DS%iterationMethod        = DSiterationMethod
-        DS%iterations1            = DSiterations1
-        DS%du1                    = DSdu1
-        DS%maximumIterations2     = DSmaximumIterations2
-        DS%initialDu2             = DSinitialDu2
-        DS%maximumDu2             = DSmaximumDu2
-        DS%epsilonDu              = DSepsilonDu
-        DS%maximumLengthU         = DSmaximumLengthU
-        method%maxParallelThreads = DSmaxParThreads
+        DS%seedPRNG               = DSsettings%seedPRNG
+        DS%isRepeatableRandom     = DSsettings%isRepeatableRandom
+        DS%minimumSamples         = DSsettings%minimumSamples
+        DS%maximumSamples         = DSsettings%maximumSamples
+        DS%varCoeffFailure        = DSsettings%varCoeffFailure
+        DS%varCoeffNoFailure      = DSsettings%varCoeffNoFailure
+        DS%iterationMethod        = DSsettings%iterationMethod
+        DS%iterations1            = DSsettings%iterations1
+        DS%du1                    = DSsettings%du1
+        DS%maximumIterations2     = DSsettings%maximumIterations2
+        DS%initialDu2             = DSsettings%initialDu2
+        DS%maximumDu2             = DSsettings%maximumDu2
+        DS%epsilonDu              = DSsettings%epsilonDu
+        DS%maximumLengthU         = DSsettings%maximumLengthU
+        method%maxParallelThreads = maxParThreads
     end associate
 
 end subroutine setParametersProbabilisticDS
@@ -347,71 +315,30 @@ end subroutine setParametersProbabilisticDS
 !>
 !! Subroutine for assignment of numeric control data Importance Sampling
 !!   @ingroup Probabilistic
-subroutine setParametersProbabilisticISsimple(probDb, ISseedPRNG, ISminimumSamples, &
-               ISmaximumSamples, ISvarCoeffFailure, ISvarCoeffNoFailure, ISvarianceFactor)
-
-    type(probabilisticDataStructure_data)   :: probDb                !< Probabilistic data module
-    integer, intent(in)                     :: ISseedPRNG           !< Start value random generator
-    integer, intent(in)                     :: ISminimumSamples     !< Minimum number samples (>1)
-    integer, intent(in)                     :: ISmaximumSamples     !< Maximum number samples
-    real(kind=wp), intent(in)               :: ISvarCoeffFailure    !< Required variation coefficient Failure
-    real(kind=wp), intent(in)               :: ISvarCoeffNoFailure  !< Required variation coefficient Non Failure
-    real(kind=wp), intent(in)               :: ISvarianceFactor      !< Multiplicative factor to increase the standard deviation
+subroutine setParametersProbabilisticIS(probDb, ISsettings)
+    type(probabilisticDataStructure_data), intent(inout) :: probDb      !< Probabilistic data module
+    type(tpIS)                           , intent(in   ) :: ISsettings  !< settings for importance sampling
 
     !
     ! Put data in structure
     !
-    probDb%method%IS%seedPRNG           = ISseedPRNG
-    probDb%method%IS%minimumSamples     = ISminimumSamples
-    probDb%method%IS%maximumSamples     = ISmaximumSamples
-    probDb%method%IS%varCoeffFailure    = ISvarCoeffFailure
-    probDb%method%IS%varCoeffNoFailure  = ISvarCoeffNoFailure
-    probDb%method%IS%varianceFactor     = ISvarianceFactor
+    probDb%method%IS%seedPRNG           = ISsettings%seedPRNG
+    probDb%method%IS%isRepeatableRandom = ISsettings%isRepeatableRandom
+    probDb%method%IS%minimumSamples     = ISsettings%minimumSamples
+    probDb%method%IS%maximumSamples     = ISsettings%maximumSamples
+    probDb%method%IS%varCoeffFailure    = ISsettings%varCoeffFailure
+    probDb%method%IS%varCoeffNoFailure  = ISsettings%varCoeffNoFailure
+    probDb%method%IS%varianceFactor     = ISsettings%varianceFactor
 !    probDb%method%IS%translation        = [ (0.0_wp, i = 1,probDb%stoVar%maxStochasts) ]
 
-end subroutine setParametersProbabilisticISsimple
-
-subroutine setParametersProbabilisticISdetail(probDb, ISseedPRNG, ISminimumSamples, &
-               ISmaximumSamples, ISvarCoeffFailure, ISvarCoeffNoFailure, ISvarianceFactor, IStranslation)
-
-    type(probabilisticDataStructure_data)   :: probDb                !< Probabilistic data module
-    integer, intent(in)                     :: ISseedPRNG           !< Start value random generator
-    integer, intent(in)                     :: ISminimumSamples     !< Minimum number samples (>1)
-    integer, intent(in)                     :: ISmaximumSamples     !< Maximum number samples
-    real(kind=wp), intent(in)               :: ISvarCoeffFailure    !< Required variation coefficient Failure
-    real(kind=wp), intent(in)               :: ISvarCoeffNoFailure  !< Required variation coefficient Non Failure
-    real(kind=wp), intent(in)               :: ISvarianceFactor(:)  !< Multiplicative factor to increase the standard deviation
-    real(kind=wp), intent(in)               :: IStranslation(:)     !< Translatory term for u vector
-
-    if ( size(ISvarianceFactor) /= probDb%stoVar%maxstochasts ) then
-        call fatalError( "Array of variance factors should be equal to the maximum number of stochasts:", &
-            size(ISvarianceFactor) )
-    endif
-    if ( size(IStranslation) /= probDb%stoVar%maxstochasts ) then
-        call fatalError( "Array of translation terms for u vector should be equal to the maximum number of stochasts:", &
-            size(ISvarianceFactor) )
-    endif
-
-    !
-    ! Put data in structure
-    !
-    probDb%method%IS%seedPRNG           = ISseedPRNG
-    probDb%method%IS%minimumSamples     = ISminimumSamples
-    probDb%method%IS%maximumSamples     = ISmaximumSamples
-    probDb%method%IS%varCoeffFailure    = ISvarCoeffFailure
-    probDb%method%IS%varCoeffNoFailure  = ISvarCoeffNoFailure
-!    probDb%method%IS%varianceFactor     = ISvarianceFactor
-!    probDb%method%IS%translation        = IStranslation
-
-end subroutine setParametersProbabilisticISdetail
+end subroutine setParametersProbabilisticIS
 
 !>
 !! Subroutine for assignment of numeric control data Adaptive Importance Sampling
 !!   @ingroup Probabilistic
 subroutine setParametersProbabilisticAdpMCIS(probDb, adaptiveIS)
-
-    type(probabilisticDataStructure_data), intent(inout) :: probDb                !< Probabilistic data module
-    type(tpAdaptiveIS)                   , intent(in   ) :: adaptiveIS
+    type(probabilisticDataStructure_data), intent(inout) :: probDb     !< Probabilistic data module
+    type(tpAdaptiveIS)                   , intent(in   ) :: adaptiveIS !< settings for adaptive importance sampling
 
     !
     ! Put data in structure
@@ -427,44 +354,5 @@ subroutine setParametersProbabilisticAdpMCIS(probDb, adaptiveIS)
     probDb%method%AdaptiveIS%varianceFactor     = AdaptiveIS%varianceFactor
 
 end subroutine setParametersProbabilisticAdpMCIS
-
-!>
-!! Subroutine for assignment of numeric control data (small subset)
-!!   @ingroup Probabilistic
-subroutine setParametersProbabilisticCalculation ( probDb, FstartMethod, FmaxIterations, &
-               FtrialLoops, FepsilonBeta, FepsilonZvalue, FrelaxationFactor, Fdu, &
-               MCseedPRNG, MCmaximumSamples, numExtraInt, NInumExtraReal1, &
-               NImaximumUvalue)
-
-    type(probabilisticDataStructure_data)   :: probDb               !< Probabilistic data module
-    integer,       intent(in)               :: FstartMethod         !< Method for startvector
-    integer,       intent(in)               :: FmaxIterations       !< Maximum number of iterations
-    integer,       intent(in)               :: FtrialLoops          !< Number of trial loops
-    real(kind=wp), intent(in)               :: FepsilonBeta         !< Epsilon Beta (relative accuracy)
-    real(kind=wp), intent(in)               :: FepsilonZvalue       !< Epsilon Zfunction (relative accuracy)
-    real(kind=wp), intent(in)               :: FrelaxationFactor    !< Relaxation factor
-    real(kind=wp), intent(in)               :: FdU                  !< Interval size for derivatives
-    integer,       intent(in)               :: MCseedPRNG           !< Start value random generator
-    integer,       intent(in)               :: MCmaximumSamples     !< Maximum number samples
-    integer,       intent(in)               :: numExtraInt          !< Number intervals
-    real(kind=wp), intent(in)               :: NInumExtraReal1      !< Minimum U value
-    real(kind=wp), intent(in)               :: NImaximumUvalue      !< Maximum U value
-    !
-    ! Put data in structure
-    !
-    probDb%method%FORM%startMethod      = FstartMethod
-    probDb%method%FORM%maxIterations    = FmaxIterations
-    probDb%method%FORM%trialLoops       = FtrialLoops
-    probDb%method%FORM%epsilonBeta      = FepsilonBeta
-    probDb%method%FORM%epsilonZvalue    = FepsilonZvalue
-    probDb%method%FORM%relaxationFactor = FrelaxationFactor
-    probDb%method%FORM%dU               = FdU
-    probDb%method%CMC%seedPRNG          = MCseedPRNG
-    probDb%method%CMC%maximumSamples    = MCmaximumSamples
-    probDb%method%NI%numberIntervals    = numExtraInt
-    probDb%method%NI%minimumUvalue      = NInumExtraReal1
-    probDb%method%NI%maximumUvalue      = NImaximumUvalue
-
-end subroutine setParametersProbabilisticCalculation
 
 end module interface_probCalcData

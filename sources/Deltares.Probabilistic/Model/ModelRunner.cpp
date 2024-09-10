@@ -384,6 +384,11 @@ namespace Deltares
             return designPoint;
         }
 
+        void  ModelRunner::registerSample(std::shared_ptr<Sensitivity::CorrelationMatrixBuilder> correlationMatrixBuilder, std::shared_ptr<Sample> sample)
+        {
+            this->uConverter->registerSample(correlationMatrixBuilder, sample);
+        }
+
         std::vector<double> ModelRunner::getOnlyVaryingValues(std::vector<double> values)
         {
             return this->uConverter->getVaryingValues(values);

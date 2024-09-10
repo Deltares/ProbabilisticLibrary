@@ -2,8 +2,13 @@
 
 #include <memory>
 
-#include "../Math/WeightedValue.h"
+#include "../Model/Sample.h"
 #include "../Statistics/CorrelationMatrix.h"
+
+namespace Deltares::Models
+{
+    class ModelRunner;
+}
 
 namespace Deltares
 {
@@ -25,11 +30,28 @@ namespace Deltares
             void registerSamples(const std::shared_ptr<Statistics::Stochast> stochast, const std::vector<double>& values);
 
             /**
+             * \brief Registers the sample input values
+             * \param sample sample values
+             */
+            void registerStochastValue(std::shared_ptr<Statistics::Stochast> stochast, double u);
+
+            /**
              * \brief Creates a correlation matrix for all registered stochasts
              * \return Correlation matrix
              */
             std::shared_ptr<Statistics::CorrelationMatrix> getCorrelationMatrix();
+
+            /**
+             * \brief Indicates whether input values have been added
+             * \return Indication
+             */
+            bool isEmpty()
+            {
+                return stochasts.empty();
+            }
+
         private:
+            bool containsInputValues = false;
             std::vector< std::shared_ptr<Statistics::Stochast>> stochasts;
             std::vector<double> weights;
             std::unordered_map<std::shared_ptr<Statistics::Stochast>, std::vector<double>> stochastValues;

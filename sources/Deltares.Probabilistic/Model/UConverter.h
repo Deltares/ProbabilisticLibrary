@@ -1,6 +1,5 @@
 #pragma once
 
-#include <set>
 #include <vector>
 
 #include "Sample.h"
@@ -8,6 +7,7 @@
 #include "../Statistics/Stochast.h"
 #include "../Statistics/CorrelationMatrix.h"
 #include "../Reliability/StochastSettingsSet.h"
+#include "../Sensitivity/CorrelationMatrixBuilder.h"
 
 namespace Deltares
 {
@@ -55,6 +55,7 @@ namespace Deltares
             std::shared_ptr<StochastPoint> GetStochastPoint(std::shared_ptr<Sample> sample, double beta);
             std::shared_ptr<StochastPoint> GetStochastPoint(double beta, std::vector<double> alphas);
             void updateStochastSettings(std::shared_ptr<Deltares::Reliability::StochastSettingsSet> settings);
+            void registerSample(std::shared_ptr<Sensitivity::CorrelationMatrixBuilder> correlationMatrixBuilder, std::shared_ptr<Sample> sample);
         };
     }
 }

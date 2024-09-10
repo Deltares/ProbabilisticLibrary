@@ -97,9 +97,23 @@ namespace Deltares
 
             for (size_t i = 0; i < stochasts.size(); i++)
             {
-                stochastIndex.insert({ stochasts[i], i });
+                this->stochasts.push_back(stochasts[i]);
+                this->stochastIndex.insert({ stochasts[i], i });
             }
         }
+
+        std::shared_ptr<Statistics::Stochast> CorrelationMatrix::getStochast(int index)
+        {
+            if (index < stochasts.size())
+            {
+                return stochasts[index];
+            }
+            else
+            {
+                return nullptr;
+            }
+        }
+
 
         double CorrelationMatrix::GetCorrelation(const int i, const int j) const
         {

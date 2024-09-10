@@ -1,4 +1,6 @@
 #include "CorrelationMatrixBuilder.h"
+#include "../Model/Sample.h"
+#include "../Model/ModelRunner.h"
 #include "../Math/NumericSupport.h"
 
 namespace Deltares
@@ -25,6 +27,18 @@ namespace Deltares
 
             this->stochastValues[stochast] = uValues;
         };
+
+        void CorrelationMatrixBuilder::registerStochastValue(std::shared_ptr<Statistics::Stochast> stochast, double u)
+        {
+            if (!this->stochastValues.contains(stochast))
+            {
+                this->stochasts.push_back(stochast);
+                this->stochastValues[stochast] = std::vector<double>();
+            }
+
+            this->stochastValues[stochast].push_back(u);
+        }
+
 
         double CorrelationMatrixBuilder::getCorrelationValue(std::shared_ptr<Statistics::Stochast> x, std::shared_ptr<Statistics::Stochast> y)
         {

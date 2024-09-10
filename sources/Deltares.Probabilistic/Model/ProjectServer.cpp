@@ -396,7 +396,13 @@ namespace Deltares
 
                 if (property_ == "variable") return GetStochastId(std::static_pointer_cast<Statistics::Stochast>(contributingStochast->Stochast));
             }
-            else if (objectType == ObjectType::Settings) 
+            else if (objectType == ObjectType::CorrelationMatrix)
+            {
+                std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix = correlationMatrices[id];
+
+                if (property_ == "variables_count") return correlationMatrix->getDimension();
+            }
+            else if (objectType == ObjectType::Settings)
             {
                 std::shared_ptr<Reliability::Settings> settings = settingsValues[id];
 
@@ -599,6 +605,7 @@ namespace Deltares
 
                 if (property_ == "derive_samples_from_variation_coefficient") return settings->DeriveSamplesFromVariationCoefficient;
                 else if (property_ == "calculate_correlations") return settings->CalculateCorrelations;
+                else if (property_ == "calculate_input_correlations") return settings->CalculateInputCorrelations;
             }
 
             return false;
@@ -628,6 +635,7 @@ namespace Deltares
 
                 if (property_ == "derive_samples_from_variation_coefficient") settings->DeriveSamplesFromVariationCoefficient = value;
                 else if (property_ == "calculate_correlations") settings->CalculateCorrelations = value;
+                else if (property_ == "calculate_input_correlations") settings->CalculateInputCorrelations = value;
             }
 
         }
@@ -1049,6 +1057,12 @@ namespace Deltares
                 else if (property_ == "discrete_values") return this->GetDiscreteValueId(stochast->getProperties()->DiscreteValues[index]);
                 else if (property_ == "fragility_values") return this->GetFragilityValueId(stochast->getProperties()->FragilityValues[index]);
                 else if (property_ == "contributing_stochasts") return this->GetContributingStochastId(stochast->getProperties()->ContributingStochasts[index]);
+            }
+            else if (objectType == ObjectType::CorrelationMatrix)
+            {
+                std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix = correlationMatrices[id];
+
+                if (property_ == "variables") return this->GetStochastId(correlationMatrix->getStochast(index));
             }
             else if (objectType == ObjectType::DesignPoint)
             {

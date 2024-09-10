@@ -132,6 +132,7 @@ module interface_probCalc
 
   type, public :: tpDS
       integer                     :: seedPRNG             !< Start value random generator
+      logical                     :: isRepeatableRandom   !< true: sampling is reproducable
       integer                     :: minimumSamples       !< Minimum number samples (>1)
       integer                     :: maximumSamples       !< Maximum number samples
       real(kind=wp)               :: varCoeffFailure      !< Required variation coefficient Failure
@@ -149,6 +150,7 @@ module interface_probCalc
 
   type, public :: tpCMC
       integer                     :: seedPRNG             !< Start value random generator
+      logical                     :: isRepeatableRandom   !< true: sampling is reproducable
       integer                     :: minimumSamples       !< Minimum number samples (>1)
       integer                     :: maximumSamples       !< Maximum number samples
       real(kind=wp)               :: varCoeffFailure      !< Required variation coefficient Failure
@@ -157,6 +159,7 @@ module interface_probCalc
 
   type, public :: tpIS
       integer                     :: seedPRNG             !< Start value random generator
+      logical                     :: isRepeatableRandom   !< true: sampling is reproducable
       integer                     :: minimumSamples       !< Minimum number samples (>1)
       integer                     :: maximumSamples       !< Maximum number samples
       real(kind=wp)               :: varCoeffFailure      !< Required variation coefficient Failure
@@ -166,6 +169,7 @@ module interface_probCalc
 
   type, public :: tpAdaptiveIS
       integer                     :: seedPRNG                    !< Start value random generator
+      logical                     :: isRepeatableRandom          !< true: sampling is reproducable
       integer                     :: minimumSamples              !< Minimum number samples (>1)
       integer                     :: maximumSamples              !< Maximum number samples
       real(kind=wp)               :: varCoeffFailure             !< Required variation coefficient
@@ -334,6 +338,7 @@ subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, conv, convCri
         method%maxSamples    = probDb%method%DS%maximumsamples
         method%seed1         = probDb%method%DS%seedPRNG
         method%seed2         = probDb%method%DS%seedPRNG
+        method%isRepeatableRandom = merge(1, 0, probDb%method%DS%isRepeatableRandom)
         method%numExtraReal1 = -2.0_wp ! FDthreshold
     case(methodCrudeMonteCarlo, methodCrudeMonteCarloWithFORMiterations)
         method%tolB       = probDb%method%CMC%varcoefffailure
@@ -341,6 +346,7 @@ subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, conv, convCri
         method%maxSamples = probDb%method%CMC%maximumsamples
         method%seed1      = probDb%method%CMC%seedPRNG
         method%seed2      = probDb%method%CMC%seedPRNG
+        method%isRepeatableRandom = merge(1, 0, probDb%method%CMC%isRepeatableRandom)
     case(methodImportanceSampling, methodImportanceSamplingWithFORMiterations)
         method%tolB           = probDb%method%IS%varcoefffailure
         method%minSamples     = probDb%method%IS%minimumsamples
@@ -348,12 +354,14 @@ subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, conv, convCri
         method%varianceFactor = probDb%method%IS%varianceFactor
         method%seed1          = probDb%method%IS%seedPRNG
         method%seed2          = probDb%method%IS%seedPRNG
+        method%isRepeatableRandom = merge(1, 0, probDb%method%IS%isRepeatableRandom)
     case(methodAdaptiveImportanceSampling)
         method%tolB            = probDb%method%adaptiveIS%varcoefffailure
         method%minSamples      = probDb%method%adaptiveIS%minimumsamples
         method%maxSamples      = probDb%method%adaptiveIS%maximumsamples
         method%seed1           = probDb%method%adaptiveIS%seedPRNG
         method%seed2           = probDb%method%adaptiveIS%seedPRNG
+        method%isRepeatableRandom = merge(1, 0, probDb%method%adaptiveIS%isRepeatableRandom)
         method%trialLoops      = probDb%method%adaptiveIS%nAdp
         method%numExtraInt     = merge(1, 0, probDb%method%adaptiveIS%AutoMaximumSamples)
         method%numExtraReal1   = probDb%method%adaptiveIS%epsFailed
