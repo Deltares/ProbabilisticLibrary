@@ -8,6 +8,7 @@
 There are a number of ways the reliability index can be calculated. They all have their own advantages and disadvantages.
 
 \subsection{Numerical integration}
+\subsubsection{Algorithm}
 
 This is the most time consuming, but most exact way to calculate the failure probability. A step size and minimum and maximum values of the input variables are needed for the evaluation.
 
@@ -19,7 +20,7 @@ The minimum and maximum value for which the integration will run, are defined in
 	\label{fig:NumericalIntegration}
 	\centering
 	\includegraphics[width=1.0\textwidth]{pictures/numericalintegration.jpg}
-	\caption{Numerical integration}
+	\caption{Numerical integration: realizations for two stochasts}
 \end{figure}
 
 \subsection{Numerical bisection}
@@ -32,7 +33,7 @@ This process ends when the cells, which don't have a similar result, represent a
 	\label{fig:NumericalBisection}
 	\centering
 	\includegraphics[width=1.0\textwidth]{pictures/numericalbisection.jpg}
-	\caption{Numerical bisection}
+	\caption{Numerical bisection: realizations for two stochasts}
 \end{figure}
 
 \subsection{Crude Monte Carlo}
@@ -109,7 +110,7 @@ The minimum and maximum value for which the integration will run, are defined in
 	\label{fig:MonteCarlo}
 	\centering
 	\includegraphics[width=1.0\textwidth]{pictures/montecarlo.jpg}
-	\caption{Crude Monte Carlo}
+	\caption{Crude Monte Carlo: realizations for two stochasts}
 \end{figure}
 
 \subsection{Importance sampling}
@@ -210,7 +211,7 @@ When the underlying model does not succeed for a certain realization, its result
 	\label{fig:ImportanceSampling}
 	\centering
 	\includegraphics[width=1.0\textwidth]{pictures/ImportanceSampling.jpg}
-	\caption{Importance sampling}
+	\caption{Importance sampling: realizations for two stochasts}
 \end{figure}
 
 \subsubsection{Mean realization}
@@ -447,7 +448,7 @@ The minimum and maximum number of iterations refer to an internal procedure to d
 	\label{fig:DirectionalSampling}
 	\centering
 	\includegraphics[width=1.0\textwidth]{pictures/DirectionalSampling.jpg}
-	\caption{Directional sampling}
+	\caption{Directional sampling: realizations for two stochasts}
 \end{figure}
 
 \subsection{Latin hypercube}
@@ -613,7 +614,7 @@ The convergence criterion is defined as the relative difference in length of $u_
 	\label{fig:FORM}
 	\centering
 	\includegraphics[width=1.0\textwidth]{pictures/form.jpg}
-	\caption{FORM}
+	\caption{FORM: example of iteration path to design point}
 \end{figure}
 
 \subsubsection{Start point}

@@ -1,9 +1,16 @@
 \chapter{Basic techniques and terminology}\label{chp:terminology}
 
+\section{Components in a reliability calculation}
+The model for which a reliability calculation is performed, often falls into a system
+of multiple components which describes it certain physical phenomenon.
+Such a system is called a fault tree.
+We first describe how to solve a single component in this fault tree.
+The components are combined with methods given in \autoref{sec:CombiningDesignPoints}.
+
 \section{Formulation of the probability of failure of a single component}\label{Section_2.2.2}
 The probability of failure for a single component can be written formally as follows:
 \begin{equation}
-P_{f} =P(Z(X_1, X_2, \dots, X_n)<0) \label{eq:2-1}
+P_{f} = P(Z(X_1, X_2, \dots, X_n)<0) \label{eq:2-1}
 \end{equation}
 where:
 
