@@ -2,13 +2,8 @@
 
 #include <memory>
 
-#include "../Model/Sample.h"
+#include "../Math/WeightedValue.h"
 #include "../Statistics/CorrelationMatrix.h"
-
-namespace Deltares::Models
-{
-    class ModelRunner;
-}
 
 namespace Deltares
 {
