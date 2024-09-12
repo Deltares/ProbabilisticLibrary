@@ -91,7 +91,7 @@ class MessageType(Enum):
 		return str(self.value)
 
 class Settings:
-		  
+
 	def __init__(self):
 		self._id = interface.Create('settings')
 		self._stochast_settings = FrozenList()
@@ -101,7 +101,7 @@ class Settings:
 	            'design_point_method',
 	            'start_method',
 	            'random_type',
-                'sample_method'
+	            'sample_method'
 	            'minimum_samples',
 	            'maximum_samples',
 	            'maximum_iterations',
@@ -114,16 +114,16 @@ class Settings:
 	            'variation_coefficient',
 	            'fraction_failed',
 	            'stochast_settings']
-		
-	@property   
+
+	@property
 	def reliability_method(self):
 		return ReliabilityMethod[interface.GetStringValue(self._id, 'reliability_method')]
-		
+
 	@reliability_method.setter
 	def reliability_method(self, value : ReliabilityMethod):
 		interface.SetStringValue(self._id, 'reliability_method', str(value))
 
-	@property   
+	@property
 	def design_point_method(self):
 		return DesignPointMethod[interface.GetStringValue(self._id, 'design_point_method')]
 		
@@ -131,31 +131,31 @@ class Settings:
 	def design_point_method(self, value : DesignPointMethod):
 		interface.SetStringValue(self._id, 'design_point_method', str(value))
 
-	@property   
+	@property
 	def start_method(self):
 		return StartMethod[interface.GetStringValue(self._id, 'start_method')]
-		
+
 	@start_method.setter
 	def start_method(self, value : StartMethod):
 		interface.SetStringValue(self._id, 'start_method', str(value))
 
-	@property   
+	@property
 	def random_type(self):
 		return RandomType[interface.GetStringValue(self._id, 'random_type')]
-		
+
 	@random_type.setter
 	def random_type(self, value : RandomType):
 		interface.SetStringValue(self._id, 'random_type', str(value))
 
-	@property   
+	@property
 	def sample_method(self):
 		return interface.GetStringValue(self._id, 'sample_method')
-		
+
 	@sample_method.setter
 	def sample_method(self, value : SampleMethod):
 		interface.SetStringValue(self._id, 'sample_method', str(value))
 
-	@property   
+	@property
 	def minimum_samples(self):
 		return interface.GetIntValue(self._id, 'minimum_samples')
 		
@@ -163,7 +163,7 @@ class Settings:
 	def minimum_samples(self, value : int):
 		interface.SetIntValue(self._id, 'minimum_samples', value)
 
-	@property   
+	@property
 	def maximum_samples(self):
 		return interface.GetIntValue(self._id, 'maximum_samples')
 		
@@ -171,7 +171,7 @@ class Settings:
 	def maximum_samples(self, value : int):
 		interface.SetIntValue(self._id, 'maximum_samples', value)
 
-	@property   
+	@property
 	def maximum_iterations(self):
 		return interface.GetIntValue(self._id, 'maximum_iterations')
 		
@@ -179,7 +179,7 @@ class Settings:
 	def maximum_iterations(self, value : int):
 		interface.SetIntValue(self._id, 'maximum_iterations', value)
 
-	@property   
+	@property
 	def minimum_directions(self):
 		return interface.GetIntValue(self._id, 'minimum_directions')
 		
@@ -187,7 +187,7 @@ class Settings:
 	def minimum_directions(self, value : int):
 		interface.SetIntValue(self._id, 'minimum_directions', value)
 
-	@property   
+	@property
 	def maximum_directions(self):
 		return interface.GetIntValue(self._id, 'maximum_directions')
 		
@@ -195,7 +195,7 @@ class Settings:
 	def maximum_directions(self, value : int):
 		interface.SetIntValue(self._id, 'maximum_directions', value)
 
-	@property   
+	@property
 	def relaxation_factor(self):
 		return interface.GetValue(self._id, 'relaxation_factor')
 		
@@ -203,7 +203,7 @@ class Settings:
 	def relaxation_factor(self, value : float):
 		interface.SetValue(self._id, 'relaxation_factor', value)
 
-	@property   
+	@property
 	def relaxation_loops(self):
 		return interface.GetIntValue(self._id, 'relaxation_loops')
 		
@@ -211,7 +211,7 @@ class Settings:
 	def relaxation_loops(self, value):
 		interface.SetIntValue(self._id, 'relaxation_loops', value)
 
-	@property   
+	@property
 	def maximum_variance_loops(self):
 		return interface.GetIntValue(self._id, 'maximum_variance_loops')
 		
@@ -219,7 +219,7 @@ class Settings:
 	def maximum_variance_loops(self, value : int):
 		interface.SetIntValue(self._id, 'maximum_variance_loops', value)
 
-	@property   
+	@property
 	def minimum_variance_loops(self):
 		return interface.GetIntValue(self._id, 'minimum_variance_loops')
 		
@@ -227,7 +227,7 @@ class Settings:
 	def minimum_variance_loops(self, value : int):
 		interface.SetIntValue(self._id, 'minimum_variance_loops', value)
 
-	@property   
+	@property
 	def variation_coefficient(self):
 		return interface.GetValue(self._id, 'variation_coefficient')
 		
@@ -235,7 +235,7 @@ class Settings:
 	def variation_coefficient(self, value : float):
 		interface.SetValue(self._id, 'variation_coefficient', value)
 
-	@property   
+	@property
 	def fraction_failed(self):
 		return interface.GetValue(self._id, 'fraction_failed')
 		
@@ -243,7 +243,7 @@ class Settings:
 	def fraction_failed(self, value : float):
 		interface.SetValue(self._id, 'fraction_failed', value)
 
-	@property   
+	@property
 	def stochast_settings(self):
 		return self._stochast_settings
 
@@ -275,7 +275,7 @@ class StochastSettings:
 	            'is_variance_allowed',
 	            'intervals']
 		
-	@property   
+	@property
 	def variable(self):
 		if self._variable is None:
 			id_ = interface.GetIntValue(self._id, 'variable')
@@ -289,7 +289,7 @@ class StochastSettings:
 		else:
 			return self._variable.name
 
-	@property   
+	@property
 	def min_value(self):
 		return interface.GetValue(self._id, 'min_value')
 		
@@ -297,7 +297,7 @@ class StochastSettings:
 	def min_value(self, value : float):
 		interface.SetValue(self._id, 'min_value', value)
 
-	@property   
+	@property
 	def max_value(self):
 		return interface.GetValue(self._id, 'max_value')
 		
@@ -305,7 +305,7 @@ class StochastSettings:
 	def max_value(self, value : float):
 		interface.SetValue(self._id, 'max_value', value)
 
-	@property   
+	@property
 	def start_value(self):
 		return interface.GetValue(self._id, 'start_value')
 		
@@ -313,7 +313,7 @@ class StochastSettings:
 	def start_value(self, value : float):
 		interface.SetValue(self._id, 'start_value', value)
 
-	@property   
+	@property
 	def intervals(self):
 		return interface.GetIntValue(self._id, 'intervals')
 		
@@ -321,7 +321,7 @@ class StochastSettings:
 	def intervals(self, value : int):
 		interface.SetIntValue(self._id, 'intervals', value)
 
-	@property   
+	@property
 	def variance_factor(self):
 		return interface.GetValue(self._id, 'variance_factor')
 		
@@ -329,7 +329,7 @@ class StochastSettings:
 	def variance_factor(self, value : float):
 		interface.SetValue(self._id, 'variance_factor', value)
 
-	@property   
+	@property
 	def is_initialization_allowed(self):
 		return interface.GetBoolValue(self._id, 'is_initialization_allowed')
 		
@@ -337,7 +337,7 @@ class StochastSettings:
 	def is_initialization_allowed(self, value : bool):
 		interface.SetBoolValue(self._id, 'is_initialization_allowed', value)
 
-	@property   
+	@property
 	def is_variance_allowed(self):
 		return interface.GetBoolValue(self._id, 'is_variance_allowed')
 		
@@ -381,7 +381,7 @@ class DesignPoint:
 	def identifier(self, value : str):
 		interface.SetStringValue(self._id, 'identifier', value)
 
-	@property   
+	@property
 	def reliability_index(self):
 		return interface.GetValue(self._id, 'reliability_index')
 
@@ -398,31 +398,31 @@ class DesignPoint:
 		values = [a._id for a in self._alphas]
 		interface.SetArrayIntValue(self._id, 'alphas', values)
 
-	@property   
+	@property
 	def probability_failure(self):
 		return interface.GetValue(self._id, 'probability_failure')
 		
-	@property   
+	@property
 	def convergence(self):
 		return interface.GetValue(self._id, 'convergence')
 		
-	@property   
+	@property
 	def is_converged(self):
 		return interface.GetBoolValue(self._id, 'is_converged')
 		
-	@property   
+	@property
 	def total_directions(self):
 		return interface.GetIntValue(self._id, 'total_directions')
 		
-	@property   
+	@property
 	def total_iterations(self):
 		return interface.GetIntValue(self._id, 'total_iterations')
 		
-	@property   
+	@property
 	def total_model_runs(self):
 		return interface.GetIntValue(self._id, 'total_model_runs')
 		
-	@property   
+	@property
 	def alphas(self):
 		if self._alphas is None:
 			self._alphas = []
@@ -432,7 +432,7 @@ class DesignPoint:
 				
 		return self._alphas
 	
-	@property   
+	@property
 	def contributing_design_points(self):
 		if self._contributing_design_points is None:
 			self._contributing_design_points = []
@@ -451,7 +451,7 @@ class DesignPoint:
 				
 		return self._contributing_design_points
 
-	@property   
+	@property
 	def messages(self):
 		if self._messages is None:
 			self._messages = []
@@ -487,7 +487,7 @@ class Alpha:
 	            'influence_factor',
 	            'x']
 
-	@property   
+	@property
 	def variable(self):
 		if self._variable is None:
 			variable_id = interface.GetIntValue(self._id, 'variable')
@@ -522,29 +522,29 @@ class Alpha:
 		interface.SetValue(self._id, 'u',- beta * alpha_value)
 		interface.SetValue(self._id, 'x', variable.get_x_from_u(u))
 
-	@property   
+	@property
 	def alpha(self):
 		return interface.GetValue(self._id, 'alpha')
 		
-	@property   
+	@property
 	def alpha_correlated(self):
 		return interface.GetValue(self._id, 'alpha_correlated')
 		
-	@property   
+	@property
 	def influence_factor(self):
 		return interface.GetValue(self._id, 'influence_factor')
 		
-	@property   
+	@property
 	def u(self):
 		return interface.GetValue(self._id, 'u')
 
-	@property   
+	@property
 	def x(self):
 		return interface.GetValue(self._id, 'x')
 
 
 class CombineSettings:
-		  
+
 	def __init__(self):
 		self._id = interface.Create('combine_settings')
 		
@@ -552,7 +552,7 @@ class CombineSettings:
 		return ['combiner_method',
 	            'combine_type']
 
-	@property   
+	@property
 	def combiner_method(self):
 		return CombinerMethod[interface.GetStringValue(self._id, 'combiner_method')]
 		
@@ -560,7 +560,7 @@ class CombineSettings:
 	def combiner_method(self, value : CombinerMethod):
 		interface.SetStringValue(self._id, 'combiner_method', str(value))
 
-	@property   
+	@property
 	def combine_type(self):
 		return CombineType[interface.GetStringValue(self._id, 'combine_type')]
 		
@@ -570,7 +570,7 @@ class CombineSettings:
 
 
 class Message:
-		  
+
 	def __init__(self, id = None):
 		if id == None:
 			self._id = interface.Create('message')
@@ -580,11 +580,11 @@ class Message:
 	def __del__(self):
 		interface.Destroy(self._id)
 		
-	@property   
+	@property
 	def type(self):
 		return MessageType[interface.GetStringValue(self._id, 'type')]
 		
-	@property   
+	@property
 	def text(self):
 		return interface.GetStringValue(self._id, 'text')
 		

@@ -40,7 +40,7 @@ class SensitivityMethod(Enum):
 		return str(self.value)
 
 class SensitivitySettings:
-		  
+
 	def __init__(self):
 		self._id = interface.Create('sensitivity_settings')
 		self._stochast_settings = FrozenList()
@@ -56,12 +56,12 @@ class SensitivitySettings:
 	            'relaxation_factor',
 	            'relaxation_loops',
 	            'variation_coefficient',
-			    'probability_for_convergence'
-			    'derive_samples_from_variation_coefficient'
+	            'probability_for_convergence'
+	            'derive_samples_from_variation_coefficient'
 	            'stochast_settings']
 
 		
-	@property   
+	@property
 	def sensitivity_method(self):
 		return SensitivityMethod[interface.GetStringValue(self._id, 'sensitivity_method')]
 		
@@ -69,7 +69,7 @@ class SensitivitySettings:
 	def sensitivity_method(self, value : SensitivityMethod):
 		interface.SetStringValue(self._id, 'sensitivity_method', str(value))
 
-	@property   
+	@property
 	def random_type(self):
 		return RandomType[interface.GetStringValue(self._id, 'random_type')]
 		
@@ -77,7 +77,7 @@ class SensitivitySettings:
 	def random_type(self, value : RandomType):
 		interface.SetStringValue(self._id, 'random_type', str(value))
 
-	@property   
+	@property
 	def minimum_samples(self):
 		return interface.GetIntValue(self._id, 'minimum_samples')
 		
@@ -85,7 +85,7 @@ class SensitivitySettings:
 	def minimum_samples(self, value : int):
 		interface.SetIntValue(self._id, 'minimum_samples', value)
 
-	@property   
+	@property
 	def maximum_samples(self):
 		return interface.GetIntValue(self._id, 'maximum_samples')
 		
@@ -93,7 +93,7 @@ class SensitivitySettings:
 	def maximum_samples(self, value : int):
 		interface.SetIntValue(self._id, 'maximum_samples', value)
 
-	@property   
+	@property
 	def maximum_iterations(self):
 		return interface.GetIntValue(self._id, 'maximum_iterations')
 		
@@ -101,7 +101,7 @@ class SensitivitySettings:
 	def maximum_iterations(self, value : int):
 		interface.SetIntValue(self._id, 'maximum_iterations', value)
 
-	@property   
+	@property
 	def minimum_directions(self):
 		return interface.GetIntValue(self._id, 'minimum_directions')
 		
@@ -109,7 +109,7 @@ class SensitivitySettings:
 	def minimum_directions(self, value : int):
 		interface.SetIntValue(self._id, 'minimum_directions', value)
 
-	@property   
+	@property
 	def maximum_directions(self):
 		return interface.GetIntValue(self._id, 'maximum_directions')
 		
@@ -117,7 +117,7 @@ class SensitivitySettings:
 	def maximum_directions(self, value : int):
 		interface.SetIntValue(self._id, 'maximum_directions', value)
 
-	@property   
+	@property
 	def relaxation_factor(self):
 		return interface.GetValue(self._id, 'relaxation_factor')
 		
@@ -125,23 +125,23 @@ class SensitivitySettings:
 	def relaxation_factor(self, value : float):
 		interface.SetValue(self._id, 'relaxation_factor', value)
 
-	@property   
+	@property
 	def variation_coefficient(self):
 		return interface.GetValue(self._id, 'variation_coefficient')
 		
 	@variation_coefficient.setter
 	def variation_coefficient(self, value : float):
-		interface.SetValue(self._id, 'variation_coefficient', value) 
+		interface.SetValue(self._id, 'variation_coefficient', value)
 
-	@property   
+	@property
 	def probability_for_convergence(self):
 		return interface.GetValue(self._id, 'probability_for_convergence')
 		
 	@probability_for_convergence.setter
 	def probability_for_convergence(self, value : float):
-		interface.SetValue(self._id, 'probability_for_convergence', value) 
+		interface.SetValue(self._id, 'probability_for_convergence', value)
 
-	@property   
+	@property
 	def derive_samples_from_variation_coefficient(self):
 		return interface.GetBoolValue(self._id, 'derive_samples_from_variation_coefficient')
 		
@@ -149,7 +149,7 @@ class SensitivitySettings:
 	def derive_samples_from_variation_coefficient(self, value : bool):
 		interface.SetBoolValue(self._id, 'derive_samples_from_variation_coefficient', value)
 
-	@property   
+	@property
 	def stochast_settings(self):
 		return self._stochast_settings
 

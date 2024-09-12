@@ -45,7 +45,7 @@ class SensitivityProject:
 		self._correlation_matrix = CorrelationMatrix()
 		self._settings = SensitivitySettings()
 		self._stochast = None
-		
+
 		_model = None
 
 	def __dir__(self):
@@ -59,23 +59,23 @@ class SensitivityProject:
 	@property
 	def variables(self):
 		return self._variables
-	
-	@property   
+
+	@property
 	def correlation_matrix(self):
 		return self._correlation_matrix
 
-	@property   
+	@property
 	def settings(self):
 		return self._settings
 
-	@property   
+	@property
 	def model(self):
 		return SensitivityProject._model
-		
+
 	@model.setter
 	def model(self, value):
 		SensitivityProject._model = value
-		
+
 		variable_names = value.__code__.co_varnames
 
 		variables = []
@@ -87,7 +87,7 @@ class SensitivityProject:
 			else:
 				variable = self._all_variables[var_name]
 			variables.append(variable)
-			
+
 		self._variables = FrozenList(variables)
 		self._correlation_matrix._set_variables(variables)
 		self._settings._set_variables(variables)
@@ -106,13 +106,13 @@ class SensitivityProject:
 		interface.SetArrayIntValue(self.settings._id, 'stochast_settings', [stochast_setting._id for stochast_setting in self.settings.stochast_settings])
 		interface.Execute(self._id, 'run')
 
-	@property   
+	@property
 	def stochast(self):
 		if self._stochast is None:
 			stochastId = interface.GetIntValue(self._id, 'stochast')
 			if stochastId > 0:
 				self._stochast = Stochast(stochastId)
-				
+
 		return self._stochast
 
 
@@ -131,9 +131,9 @@ class ReliabilityProject:
 		self._settings = Settings()
 		self._design_point = None
 		self._fragility_curve = None
-		
+
 		_model = None
-  
+
 	def __dir__(self):
 		return ['variables',
 	            'correlation_matrix',
@@ -145,23 +145,23 @@ class ReliabilityProject:
 	@property
 	def variables(self):
 		return self._variables
-	
-	@property   
+
+	@property
 	def correlation_matrix(self):
 		return self._correlation_matrix
 
-	@property   
+	@property
 	def settings(self):
 		return self._settings
 
-	@property   
+	@property
 	def model(self):
 		return ReliabilityProject._model
-		
+
 	@model.setter
 	def model(self, value):
 		ReliabilityProject._model = value
-		
+
 		variable_names = value.__code__.co_varnames
 
 		variables = []
@@ -173,7 +173,7 @@ class ReliabilityProject:
 			else:
 				variable = self._all_variables[var_name]
 			variables.append(variable)
-			
+
 		self._variables = FrozenList(variables)
 		self._correlation_matrix._set_variables(variables)
 		self._settings._set_variables(variables)
@@ -193,23 +193,23 @@ class ReliabilityProject:
 		interface.SetArrayIntValue(self.settings._id, 'stochast_settings', [stochast_setting._id for stochast_setting in self.settings.stochast_settings])
 		interface.Execute(self._id, 'run')
 
-	@property   
+	@property
 	def design_point(self):
 		if self._design_point is None:
 			designPointId = interface.GetIntValue(self._id, 'design_point')
 			if designPointId > 0:
 				self._design_point = DesignPoint(designPointId, self._variables)
-				
+
 		return self._design_point
 
-	@property   
+	@property
 	def fragility_curve(self):
 		if self._fragility_curve is None:
 			fragilityCurveId = interface.GetIntValue(self._id, 'fragility_curve')
 			if fragilityCurveId > 0:
 				self._fragility_curve = Stochast(fragilityCurveId)
 				ReliabilityProject.update_fragility_value(self._fragility_curve, self._variables)
-				
+
 		return self._fragility_curve
 
 	def update_fragility_curve(stochast: Stochast, variables):
@@ -219,7 +219,7 @@ class ReliabilityProject:
 				if id_ > 0:
 					fragility_value.design_point = DesignPoint(id_, variables)
 
-			
+
 class CombineProject:
 
 	def __init__(self):
@@ -229,7 +229,7 @@ class CombineProject:
 		self._settings = CombineSettings()
 		self._correlation_matrix = SelfCorrelationMatrix()
 		self._design_point = None
-		
+
 		_model = None
 
 	def __dir__(self):
@@ -242,16 +242,16 @@ class CombineProject:
 		for design_point in self._design_points:
 			variables.extend(design_point.get_variables())
 		self._correlation_matrix._set_variables(variables)
-  
+
 	@property
 	def design_points(self):
 		return self._design_points
 
-	@property   
+	@property
 	def settings(self):
 		return self._settings
 
-	@property   
+	@property
 	def correlation_matrix(self):
 		return self._correlation_matrix
 
@@ -261,8 +261,8 @@ class CombineProject:
 		interface.SetIntValue(self._id, 'settings', self._settings._id)
 		interface.SetIntValue(self._id, 'correlation_matrix', self._correlation_matrix._id)
 		interface.Execute(self._id, 'run')
-	
-	@property   
+
+	@property
 	def design_point(self):
 		if self._design_point is None:
 			designPointId = interface.GetIntValue(self._id, 'design_point')
