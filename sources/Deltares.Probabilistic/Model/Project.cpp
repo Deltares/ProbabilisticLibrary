@@ -27,6 +27,11 @@ namespace Deltares
     {
         void Project::run()
         {
+            if (this->initializer != nullptr)
+            {
+                this->initializer();
+            }
+
             this->reliabilityMethod = this->settings->GetReliabilityMethod();
             this->runSettings = this->settings->RunSettings;
 

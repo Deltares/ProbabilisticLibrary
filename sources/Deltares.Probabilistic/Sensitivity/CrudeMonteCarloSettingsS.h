@@ -37,6 +37,11 @@ namespace Deltares
             bool CalculateCorrelations = false;
 
             /**
+             * \brief Indicates whether correlations with input values should be calculated
+             */
+            bool CalculateInputCorrelations = false;
+
+            /**
              * \brief The number of samples to be examined
              */
             int MaximumSamples = 10000;

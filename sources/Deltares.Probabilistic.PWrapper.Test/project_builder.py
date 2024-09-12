@@ -31,6 +31,24 @@ def linear_ab(a, b):
     L = 1.8
     return L - (a+b)
 
+def unbalanced_linear_ab(a, b):
+    L = 1.8
+    return L - (0.3 * a + 1.9 * b)
+
+def multiple_unbalanced_linear_ab(a, b):
+    L = 1.8
+    x = L - (0.3 * a + 1.9 * b)
+    y = L - (0.6 * a + 1.3 * b)
+    z = L - (0.1 * a + 1.6 * b)
+    return x, y, z
+
+def multiple_identical_linear_ab(a, b):
+    L = 1.8
+    x = L - (a + b)
+    y = L - (a + b)
+    z = L - (a + b)
+    return x, y, z
+
 def linear_bc(b, c):
     L = 1.8
     return L - (b + c)
@@ -52,6 +70,24 @@ def get_linear_project():
     project = ReliabilityProject()
 
     project.model = linear_ab
+
+    stochast1 = project.variables['a']
+    stochast1.distribution = DistributionType.uniform
+    stochast1.minimum = -1
+    stochast1.maximum = 1;
+
+    stochast2 = project.variables['b']
+    stochast2.distribution =  DistributionType.uniform
+    stochast2.minimum = -1
+    stochast2.maximum = 1;
+
+    return project
+
+def get_multiple_linear_project():
+
+    project = ReliabilityProject()
+
+    project.model = multiple_linear_ab
 
     stochast1 = project.variables['a']
     stochast1.distribution = DistributionType.uniform
@@ -87,6 +123,42 @@ def get_sensitivity_linear_project():
     project = SensitivityProject()
 
     project.model = linear_ab
+
+    stochast1 = project.variables['a']
+    stochast1.distribution =  DistributionType.uniform
+    stochast1.minimum = -1
+    stochast1.maximum = 1;
+
+    stochast2 = project.variables['b']
+    stochast2.distribution =  DistributionType.uniform
+    stochast2.minimum = -1
+    stochast2.maximum = 1;
+
+    return project
+
+def get_sensitivity_multiple_identical_linear_project():
+
+    project = SensitivityProject()
+
+    project.model = multiple_identical_linear_ab
+
+    stochast1 = project.variables['a']
+    stochast1.distribution =  DistributionType.uniform
+    stochast1.minimum = -1
+    stochast1.maximum = 1;
+
+    stochast2 = project.variables['b']
+    stochast2.distribution =  DistributionType.uniform
+    stochast2.minimum = -1
+    stochast2.maximum = 1;
+
+    return project
+
+def get_sensitivity_multiple_unbalanced_linear_project():
+
+    project = SensitivityProject()
+
+    project.model = multiple_unbalanced_linear_ab
 
     stochast1 = project.variables['a']
     stochast1.distribution =  DistributionType.uniform

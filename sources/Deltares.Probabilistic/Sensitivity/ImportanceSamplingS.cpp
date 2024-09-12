@@ -59,6 +59,10 @@ namespace Deltares
             int nSamples = 0;
             double sumWeights = 0;
 
+            bool registerSamplesForCorrelation = this->correlationMatrixBuilder->isEmpty() &&
+                                                 this->Settings->CalculateCorrelations &&
+                                                 this->Settings->CalculateInputCorrelations;
+
             std::shared_ptr<Sample> center = Settings->StochastSet->getStartPoint();
 
             std::vector<double> factors = this->getFactors(Settings->StochastSet);
@@ -109,6 +113,11 @@ namespace Deltares
 
                 zSamples.push_back(z);
                 zWeights.push_back(samples[zIndex]->Weight);
+                if (registerSamplesForCorrelation)
+                {
+                    modelRunner->registerSample(this->correlationMatrixBuilder, samples[zIndex]);
+                }
+
                 sumWeights += samples[zIndex]->Weight;
                 nSamples++;
 

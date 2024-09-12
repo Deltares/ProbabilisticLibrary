@@ -48,14 +48,14 @@ namespace Deltares
             randomSampleGenerator->sampleProvider = sampleProvider;
             randomSampleGenerator->initialize();
 
-            int nParameters = modelRunner->getVaryingStochastCount();
             std::vector<double> zValues; // copy of z for all parallel threads as double
 
-            std::shared_ptr<Sample> uMin = std::make_shared<Sample>(nParameters);
             std::vector<std::shared_ptr<Sample>> samples;
             std::vector<double> zSamples;
             size_t zIndex = 0;
             int nSamples = 0;
+
+            bool registerSamplesForCorrelation = this->correlationMatrixBuilder->isEmpty() && this->Settings->CalculateCorrelations && this->Settings->CalculateInputCorrelations;
 
             int requiredSamples = std::min(this->Settings->getRequiredSamples(), this->Settings->MaximumSamples);
 
@@ -78,13 +78,12 @@ namespace Deltares
                         samples.push_back(sample);
                     }
 
-                    zValues = modelRunner->getZValues(samples);
+                    modelRunner->getZValues(samples);
 
                     zIndex = 0;
                 }
 
-                double z = zValues[zIndex];
-                std::shared_ptr<Sample> u = samples[zIndex];
+                double z = samples[zIndex]->Z;
 
                 if (std::isnan(z))
                 {
@@ -92,6 +91,11 @@ namespace Deltares
                 }
 
                 zSamples.push_back(z);
+
+                if (registerSamplesForCorrelation)
+                {
+                    modelRunner->registerSample(this->correlationMatrixBuilder, samples[zIndex]);
+                }
 
                 nSamples++;
             }

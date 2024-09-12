@@ -155,6 +155,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Model\ModelParameter.h" />
     <ClInclude Include="Sensitivity\CorrelationMatrixBuilder.h" />
     <ClInclude Include="Statistics\Distributions\StandardNormalDistribution.h" />
     <ClInclude Include="Statistics\DistributionChangeType.h" />
@@ -314,6 +315,7 @@
     <ClInclude Include="Math\WeightedValue.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Model\ModelParameter.cpp" />
     <ClCompile Include="Sensitivity\CorrelationMatrixBuilder.cpp" />
     <ClCompile Include="Statistics\Distributions\StandardNormalDistribution.cpp" />
     <ClCompile Include="Statistics\DistributionChangeType.cpp" />

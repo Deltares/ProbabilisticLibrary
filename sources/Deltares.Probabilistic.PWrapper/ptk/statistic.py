@@ -584,8 +584,11 @@ class ContributingStochast:
 
 class CorrelationMatrix:
 
-	def __init__(self):
-		self._id = interface.Create('correlation_matrix')
+	def __init__(self, id = None):
+		if id is None:
+			self._id = interface.Create('correlation_matrix')
+		else:
+			self._id = id
 		self._variables = FrozenList()
 
 	def __del__(self):
@@ -598,6 +601,19 @@ class CorrelationMatrix:
 	def _set_variables(self, variables):
 		self._variables = FrozenList(variables)
 		interface.SetArrayIntValue(self._id, 'variables', [variable._id for variable in self._variables])
+
+	def _update_variables(self, known_variables):
+		update_variables = []
+		stochast_ids = interface.GetArrayIntValue(self._id, 'variables')
+		for stochast_id in stochast_ids:
+			found = False
+			for known_variable in known_variables:
+				if not found and known_variable._id == stochast_id:
+					update_variables.append(known_variable)
+					found = True
+			if not found:
+				update_variables.append(Stochast(stochast_id))
+		self._variables = FrozenList(update_variables)
 
 	def __getitem__(self, stochasts):
 		if not isinstance(stochasts, tuple) or not len(stochasts) == 2:

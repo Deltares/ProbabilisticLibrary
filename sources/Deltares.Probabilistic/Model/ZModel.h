@@ -24,10 +24,9 @@
 #include <vector>
 #include <functional>
 
+#include "ModelParameter.h"
 #include "ModelSample.h"
 #include "RunSettings.h"
-
-inline double Test() { return 2.4; }
 
 namespace Deltares
 {
@@ -39,16 +38,10 @@ namespace Deltares
 
         typedef double (*ZValuesCallBack)(double* data, int size);
 
+        typedef void (*ZEmptyCallBack)();
+
         class ZModel
         {
-        private:
-            ZLambda zLambda = nullptr;
-            ZMultipleLambda zMultipleLambda = nullptr;
-            ZBetaLambda zBetaLambda = nullptr;
-            int maxProcesses = 1;
-            int modelRuns = 0;
-            bool countRunsLambda = true;
-
         public:
             ZModel(ZLambda zLambda, ZMultipleLambda zMultipleLambda = nullptr)
             {
@@ -65,6 +58,16 @@ namespace Deltares
 
                 this->zLambda = calcValuesLambda;
             }
+
+            /**
+             * \brief Name of the model
+             */
+            std::string Name = "";
+
+            /**
+             * \brief The index of the underlying model values if the model returns an array or tuple
+             */
+            int Index = 0;
 
             void setBetaLambda(ZBetaLambda zBetaLambda)
             {
@@ -95,6 +98,32 @@ namespace Deltares
             {
                 modelRuns = 0;
             }
+
+            /**
+             * \brief Gets the name corresponding to the Index in this class
+             */
+            std::string getIndexedName()
+            {
+                if (this->Index < this->outputParameters.size())
+                {
+                    return this->outputParameters[this->Index]->name;
+                }
+                else
+                {
+                    return this->Name;
+                }
+            }
+
+            std::vector<std::shared_ptr<ModelParameter>> inputParameters;
+            std::vector<std::shared_ptr<ModelParameter>> outputParameters;
+
+        private:
+            ZLambda zLambda = nullptr;
+            ZMultipleLambda zMultipleLambda = nullptr;
+            ZBetaLambda zBetaLambda = nullptr;
+            int maxProcesses = 1;
+            int modelRuns = 0;
+            bool countRunsLambda = true;
         };
     }
 }

@@ -88,5 +88,10 @@ class FrozenList():
 	def count(self):
 		return self._list.count()
 
+	def get_list(self):
+		getlist = []
+		getlist.extend(self._list)
+		return getlist
+
 
 		

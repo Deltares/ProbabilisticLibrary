@@ -56,8 +56,10 @@ class SensitivitySettings:
 	            'relaxation_factor',
 	            'relaxation_loops',
 	            'variation_coefficient',
-	            'probability_for_convergence'
-	            'derive_samples_from_variation_coefficient'
+			    'probability_for_convergence'
+			    'derive_samples_from_variation_coefficient'
+			    'calculate_correlations'
+			    'calculate_input_correlations'
 	            'stochast_settings']
 
 		
@@ -149,7 +151,23 @@ class SensitivitySettings:
 	def derive_samples_from_variation_coefficient(self, value : bool):
 		interface.SetBoolValue(self._id, 'derive_samples_from_variation_coefficient', value)
 
-	@property
+	@property   
+	def calculate_correlations(self):
+		return interface.GetBoolValue(self._id, 'calculate_correlations')
+		
+	@calculate_correlations.setter
+	def calculate_correlations(self, value : bool):
+		interface.SetBoolValue(self._id, 'calculate_correlations', value) 
+
+	@property   
+	def calculate_input_correlations(self):
+		return interface.GetBoolValue(self._id, 'calculate_input_correlations')
+		
+	@calculate_input_correlations.setter
+	def calculate_input_correlations(self, value : bool):
+		interface.SetBoolValue(self._id, 'calculate_input_correlations', value) 
+
+	@property   
 	def stochast_settings(self):
 		return self._stochast_settings
 

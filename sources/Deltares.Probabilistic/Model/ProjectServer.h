@@ -59,11 +59,13 @@ namespace Deltares
             virtual void SetIndexedIndexedValue(int id, std::string property_, int index1, int index2, double value);
             virtual int GetIndexedIntValue(int id, std::string property_, int index);
             virtual void SetCallBack(int id, std::string property_, ZValuesCallBack callBack);
+            virtual void SetEmptyCallBack(int id, std::string property_, ZEmptyCallBack callBack);
             virtual void Execute(int id, std::string method_);
         protected:
             int GetNewObjectId();
 
             int GetStochastId(std::shared_ptr<Statistics::Stochast> stochast);
+            int GetCorrelationMatrixId(std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix);
             int GetDesignPointId(std::shared_ptr<Reliability::DesignPoint> designPoint);
             int GetAlphaId(std::shared_ptr<StochastPointAlpha> alpha);
             int GetHistogramValueId(std::shared_ptr<Statistics::HistogramValue> histogramValue);
@@ -72,7 +74,7 @@ namespace Deltares
             int GetContributingStochastId(std::shared_ptr<Statistics::ContributingStochast> contributingStochast);
             int GetMessageId(std::shared_ptr<Deltares::Models::Message> message);
         private:
-            enum ObjectType {StandardNormal, Message, Project, Stochast, DiscreteValue, HistogramValue, FragilityValue,
+            enum ObjectType {StandardNormal, Message, Project, ModelParameter, Stochast, DiscreteValue, HistogramValue, FragilityValue,
                 ContributingStochast, CorrelationMatrix, Settings, StochastSettings, DesignPoint, Alpha,
                 CombineProject, CombineSettings, SelfCorrelationMatrix, SensitivityProject, SensitivitySettings};
 
@@ -82,6 +84,7 @@ namespace Deltares
             std::unordered_map<int, std::shared_ptr<Statistics::Stochast>> stochasts;
             std::unordered_map<int, std::shared_ptr<Models::Message>> messages;
             std::unordered_map<int, std::shared_ptr<Models::Project>> projects;
+            std::unordered_map<int, std::shared_ptr<Models::ModelParameter>> modelParameters;
             std::unordered_map<int, std::shared_ptr<Statistics::DiscreteValue>> discreteValues;
             std::unordered_map<int, std::shared_ptr<Statistics::HistogramValue>> histogramValues;
             std::unordered_map<int, std::shared_ptr<Statistics::FragilityValue>> fragilityValues;
@@ -100,6 +103,7 @@ namespace Deltares
             std::unordered_map<std::shared_ptr<Reliability::DesignPoint>, int> designPointIds;
             std::unordered_map<std::shared_ptr<Reliability::StochastPointAlpha>, int> alphaIds;
             std::unordered_map<std::shared_ptr<Statistics::Stochast>, int> stochastIds;
+            std::unordered_map<std::shared_ptr<Statistics::CorrelationMatrix>, int> correlationMatrixIds;
             std::unordered_map<std::shared_ptr<Statistics::HistogramValue>, int> histogramValueIds;
             std::unordered_map<std::shared_ptr<Statistics::DiscreteValue>, int> discreteValueIds;
             std::unordered_map<std::shared_ptr<Statistics::FragilityValue>, int> fragilityValueIds;

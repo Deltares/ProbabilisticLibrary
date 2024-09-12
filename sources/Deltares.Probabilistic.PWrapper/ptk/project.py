@@ -28,33 +28,45 @@ from .reliability import *
 from .sensitivity import *
 from . import interface
 
+import inspect
+
 if not interface.IsLibraryLoaded():
 	interface.LoadDefaultLibrary()
 
 class SensitivityProject:
 
 	_model = None
+	_index = 0
+	_project_id = 0
 
 	def __init__(self):
 		self._id = interface.Create('sensitivity_project')
 		self._callback = interface.CALLBACK(self._performCallBack)
 		interface.SetCallBack(self._id, 'model', self._callback)
 
+		self._initialize_callback = interface.EMPTY_CALLBACK(self._initialize)
+		interface.SetEmptyCallBack(self._id, 'initialize', self._initialize_callback)
+
 		self._all_variables = {}
 		self._variables = FrozenList()
+		self._output_parameters = FrozenList()
 		self._correlation_matrix = CorrelationMatrix()
 		self._settings = SensitivitySettings()
 		self._stochast = None
+		self._output_correlation_matrix = None
 
-		_model = None
+		SensitivityProject._index = 0;
+		SensitivityProject._model = None
+		SensitivityProject._project_id = self._id
 
 	def __dir__(self):
 		return ['variables',
-	            'correlation_matrix',
-	            'settings',
-	            'model',
-	            'run',
-	            'stochast']
+				'correlation_matrix',
+				'settings',
+				'model',
+				'run',
+				'stochast',
+				'output_correlation_matrix']
 
 	@property
 	def variables(self):
@@ -75,11 +87,9 @@ class SensitivityProject:
 	@model.setter
 	def model(self, value):
 		SensitivityProject._model = value
-
-		variable_names = value.__code__.co_varnames
-
+		
 		variables = []
-		for var_name in variable_names[:value.__code__.co_argcount]:
+		for var_name in self._get_input_parameters(value):
 			if not var_name in self._all_variables.keys():
 				variable = Stochast()
 				variable.name = var_name
@@ -92,15 +102,56 @@ class SensitivityProject:
 		self._correlation_matrix._set_variables(variables)
 		self._settings._set_variables(variables)
 
+		self._output_parameters = self._get_output_parameters(value)
+
+		model_name = value.__name__
+		interface.SetStringValue(self._id, 'model_name', model_name)
+
+	def _get_input_parameters(self, function):
+		variable_names = function.__code__.co_varnames
+		return variable_names[:function.__code__.co_argcount]
+		
+	def _get_output_parameters(self, function):
+		parameters = []
+		source = inspect.getsource(function)
+		lines = source.splitlines()
+		for line in lines:
+			if line.strip().startswith('return'):
+				line = line.replace('return', '')
+				line = line.strip().split('#')[0]
+				line = line.lstrip('[').rstrip(';').rstrip(']')
+				words = line.split(',')
+				parameters = [word.strip() for word in words]
+
+		for i in range(len(parameters)):
+			modelParameter = ModelParameter()
+			modelParameter.name = parameters[i]
+			modelParameter.index = i
+			parameters[i] = modelParameter
+		
+		return parameters
+
+	@interface.EMPTY_CALLBACK
+	def _initialize():
+		SensitivityProject._index = interface.GetIntValue(SensitivityProject._project_id, 'index')
+
 	@interface.CALLBACK
 	def _performCallBack(values, size):
 		values_list = values[:size]
 		z = SensitivityProject._model(*values_list);
-		return z
+		if type(z) is float or type(z) is int:
+			return z
+		elif type(z) is list or type(z) is tuple:
+			return z[SensitivityProject._index]
+		else:
+			raise ValueError('Unrecognized response from model')
 
 	def run(self):
 		self._stochast = None
+		self._stochasts = None
+		self._output_correlation_matrix = None
 		interface.SetArrayIntValue(self._id, 'variables', [variable._id for variable in self._variables])
+		interface.SetArrayIntValue(self._id, 'output_parameters', [output_parameter._id for output_parameter in self._output_parameters])
 		interface.SetIntValue(self._id, 'correlation_matrix', self._correlation_matrix._id)
 		interface.SetIntValue(self._id, 'settings', self._settings._id)
 		interface.SetArrayIntValue(self.settings._id, 'stochast_settings', [stochast_setting._id for stochast_setting in self.settings.stochast_settings])
@@ -109,21 +160,44 @@ class SensitivityProject:
 	@property
 	def stochast(self):
 		if self._stochast is None:
-			stochastId = interface.GetIntValue(self._id, 'stochast')
+			stochastId = interface.GetIntValue(self._id, 'sensitivity_stochast')
 			if stochastId > 0:
 				self._stochast = Stochast(stochastId)
 
 		return self._stochast
 
+	@property   
+	def stochasts(self):
+		if self._stochasts is None:
+			stochasts = []
+			stochast_ids = interface.GetArrayIntValue(self._id, 'sensitivity_stochasts')
+			for stochast_id in stochast_ids:
+				stochasts.append(Stochast(stochast_id))
+			self._stochasts = FrozenList(stochasts)
+				
+		return self._stochasts
+
+	@property   
+	def output_correlation_matrix(self):
+		if self._output_correlation_matrix is None:
+			correlationMatrixId = interface.GetIntValue(self._id, 'output_correlation_matrix')
+			if correlationMatrixId > 0:
+				self._output_correlation_matrix = CorrelationMatrix(correlationMatrixId)
+				self._output_correlation_matrix._update_variables(self.variables.get_list() + self.stochasts.get_list())
+				
+		return self._output_correlation_matrix
 
 class ReliabilityProject:
 
 	_model = None
+	_index = 0
 
 	def __init__(self):
 		self._id = interface.Create('project')
 		self._callback = interface.CALLBACK(self._performCallBack)
 		interface.SetCallBack(self._id, 'model', self._callback)
+		self._initialize_callback = interface.EMPTY_CALLBACK(self._initialize)
+		interface.SetEmptyCallBack(self._id, 'initialize', self._initialize_callback)
 
 		self._all_variables = {}
 		self._variables = FrozenList()
@@ -133,14 +207,19 @@ class ReliabilityProject:
 		self._fragility_curve = None
 
 		_model = None
-
+		_index = 0
+  
 	def __dir__(self):
 		return ['variables',
-	            'correlation_matrix',
-	            'settings',
-	            'model',
-	            'run',
-	            'design_point']
+				'correlation_matrix',
+				'settings',
+				'model',
+				'run',
+				'design_point']
+
+	@interface.EMPTY_CALLBACK
+	def _initialize(self):
+		_index = interface.GetIntValue(self._id, 'index')
 
 	@property
 	def variables(self):
@@ -163,6 +242,7 @@ class ReliabilityProject:
 		ReliabilityProject._model = value
 
 		variable_names = value.__code__.co_varnames
+		model_name = value.__name__
 
 		variables = []
 		for var_name in variable_names[:value.__code__.co_argcount]:
@@ -177,12 +257,19 @@ class ReliabilityProject:
 		self._variables = FrozenList(variables)
 		self._correlation_matrix._set_variables(variables)
 		self._settings._set_variables(variables)
+		interface.SetStringValue(self._id, 'model_name', model_name)
+
 
 	@interface.CALLBACK
 	def _performCallBack(values, size):
 		values_list = values[:size]
 		z = ReliabilityProject._model(*values_list);
-		return z
+		if type(z) is float or type(z) is int:
+			return z
+		elif type(z) is list or type(z) is tuple:
+			return z[SensitivityProject._index]
+		else:
+			raise ValueError('Unrecognized response from model')
 
 	def run(self):
 		self._design_point = None
@@ -273,6 +360,40 @@ class CombineProject:
 				self._design_point = DesignPoint(designPointId, variables, self._design_points)
 		return self._design_point
 
+
+class ModelParameter:
+
+	def __init__(self, id = None):
+		if id is None:
+			self._id = interface.Create('model_parameter')
+		else:
+			self._id = id
+
+	def __del__(self):
+		interface.Destroy(self._id)
+
+	def __dir__(self):
+		return ['name',
+	            'index']
+	
+	@property
+	def name(self):
+		return interface.GetStringValue(self._id, 'name')
+		
+	@name.setter
+	def name(self, value):
+		interface.SetStringValue(self._id, 'name', value)
+
+	@property
+	def index(self):
+		return interface.GetIntValue(self._id, 'index')
+		
+	@name.setter
+	def index(self, value):
+		interface.SetIntValue(self._id, 'index', value)
+
+	def __str__(self):
+		return self.name
 
 
 

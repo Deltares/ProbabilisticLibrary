@@ -49,6 +49,11 @@ namespace Deltares
             bool CalculateCorrelations = false;
 
             /**
+             * \brief Indicates whether correlations with input variables should be calculated
+             */
+            bool CalculateInputCorrelations = false;
+
+            /**
              * \brief The minimum samples to be examined
              */
             int MinimumSamples = 1000;

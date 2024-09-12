@@ -19,4 +19,19 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include "WeightedValue.h"
+#pragma once
+#include <string>
+
+namespace Deltares
+{
+    namespace Models
+    {
+        class ModelParameter
+        {
+        public:
+            std::string name = "";
+            int index = 0;
+        };
+    }
+}
+

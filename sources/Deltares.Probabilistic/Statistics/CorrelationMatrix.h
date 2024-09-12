@@ -68,6 +68,8 @@ namespace Deltares
 
             bool IsIdentity() const;
             int CountCorrelations() const;
+            int getDimension() { return (int) dim; }
+            std::shared_ptr<Statistics::Stochast> getStochast(int index);
             bool HasConflictingCorrelations() const;
             void resolveConflictingCorrelations();
             void CholeskyDecomposition();
@@ -81,6 +83,7 @@ namespace Deltares
             Deltares::Numeric::Matrix inverseCholeskyMatrix = Deltares::Numeric::Matrix(0, 0);
             int findNewIndex(const std::vector<int> index, const size_t i);
             std::map<std::shared_ptr<Stochast>, int> stochastIndex;
+            std::vector<std::shared_ptr<Stochast>> stochasts;
             std::vector<indexWithCorrelation> indexer;
             std::vector<correlationPair> inputCorrelations;
             std::vector<int> GetLinkingCorrelationStochasts(correlationPair correlation, correlationPair otherCorrelation) const;
