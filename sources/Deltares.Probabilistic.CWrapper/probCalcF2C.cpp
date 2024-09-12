@@ -105,15 +105,16 @@ bool shouldRunAtDesignPoint(const DPoptions dpOption)
 }
 
 extern "C"
-void probcalcf2c(const basicSettings* method, fdistribs c[], const int n, corrStruct correlations[], const int nrCorrelations,
+void probcalcf2c(const basicSettings* method, fdistribs c[], corrStruct correlations[],
     const double(*fx)(double[], computationSettings*, tError*),
     const bool(*pc)(ProgressType, const char*),
     const int compIds[], double x[], tResult* result)
 {
     try
     {
-        auto nStoch = (size_t)n;
+        auto nStoch = (size_t)compIds[1];
         auto fw = funcWrapper(compIds[0], fx);
+        auto nrCorrelations = compIds[2];
 
         auto stochasts = std::vector<std::shared_ptr<Deltares::Statistics::Stochast>>();
         for (size_t i = 0; i < nStoch; i++)
@@ -132,7 +133,7 @@ void probcalcf2c(const basicSettings* method, fdistribs c[], const int n, corrSt
         auto corr = std::make_shared<CorrelationMatrix>();
         if (nrCorrelations > 0)
         {
-            corr->init(n);
+            corr->init((int)nStoch);
             for (int i = 0; i < nrCorrelations; i++)
             {
                 corr->SetCorrelation(correlations[i].idx1, correlations[i].idx2, correlations[i].correlation);

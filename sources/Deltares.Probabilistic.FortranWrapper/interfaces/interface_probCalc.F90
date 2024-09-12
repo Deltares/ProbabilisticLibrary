@@ -53,7 +53,7 @@ module interface_probCalc
   end interface
 
   interface
-    subroutine probCalcF2C(method, distribs, nstoch, correlations, nrCorrelations, fx, pc, &
+    subroutine probCalcF2C(method, distribs, correlations, fx, pc, &
         compIds, x, rn) bind(C)
       use, intrinsic :: iso_c_binding, only: c_double
 #ifdef _MSC_VER
@@ -63,9 +63,7 @@ module interface_probCalc
 #endif
       type(tMethod),  intent(in)    :: method
       type(tDistrib), intent(in)    :: distribs(*)
-      integer, value, intent(in)    :: nstoch
       type(basicCorrelation), intent(in)  :: correlations(*)
-      integer, value, intent(in)    :: nrCorrelations
       integer,        intent(in)    :: compIds(*)
       procedure(zfunc)              :: fx
       procedure(progressCancel)     :: pc
@@ -104,7 +102,7 @@ subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, convergenceDa
     type(tMethod)               :: method
     type(tDistrib)              :: distribs(probDb%stoVar%maxStochasts)
     integer                     :: i, k, nstoch, nStochActive
-    integer                     :: compIds(1) = designPointOutputFALSE
+    integer                     :: compIds(3)
     type(tResult)               :: rn
     character(len=ErrMsgLength) :: msg
     integer, allocatable        :: iPoint(:)
@@ -202,12 +200,13 @@ subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, convergenceDa
         call fatalError("Unknown method in subroutine IterationDS: ", method%iterationMethod)
     else if (nstoch > 0) then
         method%progressInterval = 1
+        compIds(1) = designPointOutputFALSE
+        compIds(2) = nStochActive
+        compIds(3) = probDb%number_correlations
         if (present(pc)) then
-            call probCalcF2C(method, distribs, nStochActive, probDb%basic_correlation, &
-                probDb%number_correlations, fx, pc, compIds, xDense, rn)
+            call probCalcF2C(method, distribs, probDb%basic_correlation, fx, pc, compIds, xDense, rn)
         else
-            call probCalcF2C(method, distribs, nStochActive, probDb%basic_correlation, &
-                probDb%number_correlations, fx, textualProgress, compIds, xDense, rn)
+            call probCalcF2C(method, distribs, probDb%basic_correlation, fx, textualProgress, compIds, xDense, rn)
         end if
 
         call cpData%copyDense2Full(xDense, x)
