@@ -4,41 +4,31 @@ The package \probLib provides functions to perform probabilistic analyses on any
 
 This document describes the techniques used in the functions of \probLib.
 
-%\section{Output uncertainty}
-
-%Output uncertainty is an extension of sensitivity analysis. Now all input parameters are varied according to their uncertainty definition. This leads to uncertainty of the output parameters.
-
-%This is useful when the user is interested in possible values in the future of a physical property. For example, due to a load subsidence of the soil surface will occur. It is interesting how much subsidence will occur in the next ten years. Another example, due to a side stream a gully will move sidewards. It is interesting to know the location of the gully in the next year.
-
-%See \autoref{ug:OutputUncertainty} for more information.
-
-%\section{Calibration}
-
-%Calibration is a method where input parameters can be derived from measured output parameters, including uncertainty. Calibration can be used to obtain parameters, which are difficult to obtain directly.
-
-%For example, the roughness of a river bed is hard to obtain. Using measured values such as time series of water levels at different locations, the roughness coefficients are determined. 
-
-%See \autoref{ug:Calibration} for more information.
-
-\section{Overview of this document}
-
 Reliability analysis determines the reliability, or probability of failure, of a physical construction. This gives the user insight of the probability that an unwanted phenomenon will happen, possibly within a given period of time. 
 
 For example, the probability that a dike will fail can be calculated. This is used in assessment of dikes and using this probability, a decision will be made to strengthen it. An accurate calculation of the probability of failure is important, since it can save money by not strengthening it more than necessary.
 
 To calculate an accurate probability of failure, survived situations can be used. Even lots of effort have been put in measuring input values, it is impossible to know the subsoil in long stretches of dikes completely. So it might be possible that a model predicts dike failure, while in reality it has been observed that the dike has survived. The \probLib uses these events to update the probability of failure.
 
-Another example is risk based asset management. In risk based asset management a maintenance schedule will be set up, so that total costs over a long period are minimal. The total costs include strengthening actions and risk (risk is probability times damage).
+Another example is risk based asset management.
+In risk based asset management a maintenance schedule will be set up,
+so that total costs over a long period are minimal.
+The total costs include strengthening actions and risk
+(risk is probability times damage).
+
+\section{Overview of this document}
 
 We start with a chapter about the terminology used throughout this document
 (\autoref{chp:terminology}).
 
-In \autoref{sec:Reliability} the reliability techniques are described,
+In \autoref{sec:Reliability} and \autoref{chp:CombiningDesignPoints}
+the reliability techniques are described,
 in \autoref{chp:upscaling} the upscaling methods are described,
 and in \autoref{chp:distributions} the distribution functions that are available in \probLib are given.
 
 In sensitivity analysis the effects of changes to input variables are investigated. 
 This will give insight in which input parameters are important and help the user decide
-which input parameters must be measured more precisely. See \autoref{sec:Sensitivity} for more information.
+which input parameters must be measured more precisely.
+See \autoref{sec:Sensitivity} and \autoref{chp:OutputUncertaint} for more information.
 
 See \autoref{Section_2.2.5} for background information of linearizations used in some parts of \probLib.
