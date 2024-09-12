@@ -1,21 +1,30 @@
 \chapter{Combining design points}
 \label{chp:CombiningDesignPoints}
 
-Design points can be combined. This is most of the times desired when multiple failure definitions are applied.
+Design points can be combined.
+This is most of the times desired when multiple failure definitions are applied.
 
-Design points can be combined during the probabilistic analysis already (see \autoref{sec:CombiningDesignPointsIntegrated}) or afterwards. When combining afterwards, the design points are simulated by equivalent planes. A number of methods exist how to derive the combined design point from the equivalent planes (see \autoref{sec:EquivalentPlanes}).
+Design points can be combined during the probabilistic analysis already (see \autoref{sec:CombiningDesignPointsIntegrated}) or afterwards.
+When combining afterwards, the design points are simulated by equivalent planes.
+A number of methods exist how to derive the combined design point from the equivalent planes
+(see \autoref{sec:EquivalentPlanes}).
 
-\section{Integrated}
+\section{Integrated in reliability calculation}
 \label{sec:CombiningDesignPointsIntegrated}
 
-When combining integrated, the failure definitions are merged to one failure definition. This combined failure definition is used in one of the reliability techniques (see \autoref{sec:ReliabilityTechniques}).
+When combining integrated, the failure definitions are merged to one failure definition.
+This combined failure definition is used in one of the reliability techniques
+(see \autoref{sec:ReliabilityTechniques}).
 
-When using FORM with integrated, results are not reliable. Therefore the \probLib prevents this combination.
+When using FORM with integrated, results are not reliable.
+Therefore the \probLib prevents this combination.
 
 \section{Equivalent planes}
 \label{sec:EquivalentPlanes}
 
-When combining afterwards, first design points are calculated for each failure definition individually and then they are combined. This combination uses an equivalent plane $M$ for each design point, by which we make an approximation. The equivalent plane is defined as follows:
+When combining afterwards, first design points are calculated for each failure definition individually and then they are combined.
+This combination uses an equivalent plane $M$ for each design point, by which we make an approximation.
+The equivalent plane is defined as follows:
 
 \begin{align}
 \label{eq:EquivalentPlane}
@@ -44,7 +53,8 @@ where
 \subsection{Directional sampling}
 \label{sec:CombiningDesignPointsDS}
 
-Directional sampling (see \autoref{sec:DirectionalSampling}) is applied on the combined model $M_{\text{combined}}$ (see \autoref{eq:EquivalentPlaneCombine}). The following settings are applied: 
+Directional sampling (see \autoref{sec:DirectionalSampling}) is applied on the combined model $M_{\text{combined}}$
+(see \autoref{eq:EquivalentPlaneCombine}). The following settings are applied: 
 
 \begin{longtable*}{p{40mm}p{\textwidth-40mm}}  
 	Design point method & Center of gravity; \\
@@ -59,7 +69,10 @@ Depending on the combination method (series or parallel) the following algorithm
 
 \paragraph{Importance sampling - Series}
 
-Importance sampling (see \autoref{sec:ImportanceSampling}) is applied on the combined model $M_{\text{combined}}$ (see \autoref{eq:EquivalentPlaneCombine}) in the following iterative way: The combined probability of the first $N+1$ design points is the probability of the first $N+1$ design points added with the contribution of design point $N+1$, where it does not have an overlap with one of the previous design points (see \autoref{eq:ImportanceSamplingSeries}).
+Importance sampling (see \autoref{sec:ImportanceSampling}) is applied on the combined model $M_{\text{combined}}$
+(see \autoref{eq:EquivalentPlaneCombine}) in the following iterative way:
+The combined probability of the first $N+1$ design points is the probability of the first $N+1$ design points added with the contribution of design point $N+1$,
+where it does not have an overlap with one of the previous design points (see \autoref{eq:ImportanceSamplingSeries}).
 
 \begin{align}
 \label{eq:ImportanceSamplingSeries}
@@ -82,11 +95,16 @@ P\left(X_{1 \ldots N+1}\right) = P\left(X_{1 \ldots N}\right) + P\left(X_{N+1}\r
 \end{align}
 
 
-The last term ($P\left(X_{1 \ldots N} | X_{N+1}\right)$) is calculated by importance sampling (see \autoref{sec:ImportanceSampling}). The start point of the importance sampling is set to the design point of $X_{N+1}$. The calculation is stopped when the remainder of the design points represent a small probability of failure.
+The last term ($P\left(X_{1 \ldots N} | X_{N+1}\right)$) is calculated by importance sampling (see \autoref{sec:ImportanceSampling}).
+The start point of the importance sampling is set to the design point of $X_{N+1}$.
+The calculation is stopped when the remainder of the design points represent a small probability of failure.
 
 \paragraph{Importance sampling - Parallel}
 
-The parallel combination uses Crude Monte Carlo (see \autoref{sec:CrudeMonteCarlo}). The sampling space is limited to the area which can lead to failure, which could be very small. Only values for $u_{\text{i}}$ are allowed for which the following condition is true:
+The parallel combination uses Crude Monte Carlo (see \autoref{sec:CrudeMonteCarlo}).
+The sampling space is limited to the area which can lead to failure,
+which could be very small.
+Only values for $u_{\text{i}}$ are allowed for which the following condition is true:
 
 \begin{align}
 \forall k, u_{\text{min}} < u_{\text{j}} < u_{\text{min}} < u_{\text{j}} \exists u_{\text{i}} | M_{\text{k}}\left(u\right) = 0 \land u_{\text{min}} < u_{\text{i}} < u_{\text{max}}
@@ -104,17 +122,13 @@ where
 
 \subsection{Hohenbichler}\label{sec:Hohenbichler}
 
-The kernel of the Hohenbichler algorithm is combination of two models $M_{\text{combined}}$ (see \autoref{eq:EquivalentPlaneCombine}). This combination is calculated by FORM (see \autoref{sec:FORM}).
+The kernel of the Hohenbichler algorithm is combination of two models $M_{\text{combined}}$ (see \autoref{eq:EquivalentPlaneCombine}).
+This combination is calculated by FORM (see \autoref{sec:FORM}).
 
-The result of this combination is a design point. This design point is represented as an equivalent plane again when it should be combined with a third design point. This will be repeated until all design points have been combined. 
+The result of this combination is a design point.
+This design point is represented as an equivalent plane again when it should be combined with a third design point.
+This will be repeated until all design points have been combined. 
 
-First the two most contributing design points are combined, then the remaining design with the highest probability if failure is added, and so on. In this way the error made by representing intermediate design points is as low as possible.
-
-%\section{Upscaling}\label{sec:Upscaling}
-
-%It is assumed that the probability of non failure is exponentially decreasing with increasing upscale factor. This leads to the following calculation:
-
-%\begin{align}
-%P_{\text{f, nf}} = P_{\text{nf}} \cdot \left(\frac{P_{\text{2, nf}}}{P_{\text{nf}}}\right)^{f - 1}
-%\end{align}
-
+First the two most contributing design points are combined,
+then the remaining design with the highest probability if failure is added, and so on.
+In this way the error made by representing intermediate design points is as low as possible.
