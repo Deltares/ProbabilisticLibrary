@@ -99,3 +99,6 @@ test*.txt
 
 # python environments:
 testpytk*
+
+# status jupyter notebooks:
+.ipynb_checkpoints
