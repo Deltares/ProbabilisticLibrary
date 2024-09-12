@@ -61,12 +61,12 @@ class SensitivityProject:
 
 	def __dir__(self):
 		return ['variables',
-	            'correlation_matrix',
-	            'settings',
-	            'model',
-	            'run',
-	            'stochast',
-		        'output_correlation_matrix']
+				'correlation_matrix',
+				'settings',
+				'model',
+				'run',
+				'stochast',
+				'output_correlation_matrix']
 
 	@property
 	def variables(self):
@@ -211,11 +211,11 @@ class ReliabilityProject:
   
 	def __dir__(self):
 		return ['variables',
-	            'correlation_matrix',
-	            'settings',
-	            'model',
-	            'run',
-	            'design_point']
+				'correlation_matrix',
+				'settings',
+				'model',
+				'run',
+				'design_point']
 
 	@interface.EMPTY_CALLBACK
 	def _initialize(self):

@@ -59,7 +59,9 @@ namespace Deltares
             int nSamples = 0;
             double sumWeights = 0;
 
-            bool registerSamplesForCorrelation = this->correlationMatrixBuilder->isEmpty() && this->Settings->CalculateCorrelations && this->Settings->CalculateInputCorrelations;
+            bool registerSamplesForCorrelation = this->correlationMatrixBuilder->isEmpty() &&
+                                                 this->Settings->CalculateCorrelations &&
+                                                 this->Settings->CalculateInputCorrelations;
 
             std::shared_ptr<Sample> center = Settings->StochastSet->getStartPoint();
 

@@ -76,8 +76,7 @@ namespace Deltares
 
         bool SensitivityProject::isValid() const
         {
-            return  this->model != nullptr &&
-                this->runSettings != nullptr && this->runSettings->isValid();
+            return this->model != nullptr && this->runSettings != nullptr && this->runSettings->isValid();
         }
     }
 }
