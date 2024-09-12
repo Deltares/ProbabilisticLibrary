@@ -54,12 +54,12 @@ module interface_probCalc
 
   interface
     subroutine probCalcF2C(method, distribs, nstoch, correlations, nrCorrelations, fx, pc, &
-        compIds, x, rn, ierr) bind(C)
+        compIds, x, rn) bind(C)
       use, intrinsic :: iso_c_binding, only: c_double
 #ifdef _MSC_VER
-      import tMethod, tDistrib, basicCorrelation, tError, tResult, zfunc, progressCancel
+      import tMethod, tDistrib, basicCorrelation, tResult, zfunc, progressCancel
 #else
-      import tMethod, tDistrib, basicCorrelation, tError, tResult
+      import tMethod, tDistrib, basicCorrelation, tResult
 #endif
       type(tMethod),  intent(in)    :: method
       type(tDistrib), intent(in)    :: distribs(*)
@@ -70,7 +70,6 @@ module interface_probCalc
       procedure(zfunc)              :: fx
       procedure(progressCancel)     :: pc
       real(kind=c_double), intent(inout) :: x(*)
-      type(tError),   intent(  out) :: ierr
       type(tResult),  intent(  out) :: rn
     end subroutine probCalcF2C
   end interface
@@ -106,7 +105,6 @@ subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, convergenceDa
     type(tDistrib)              :: distribs(probDb%stoVar%maxStochasts)
     integer                     :: i, k, nstoch, nStochActive
     integer                     :: compIds(1) = designPointOutputFALSE
-    type(tError)                :: ierr
     type(tResult)               :: rn
     character(len=ErrMsgLength) :: msg
     integer, allocatable        :: iPoint(:)
@@ -206,10 +204,10 @@ subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, convergenceDa
         method%progressInterval = 1
         if (present(pc)) then
             call probCalcF2C(method, distribs, nStochActive, probDb%basic_correlation, &
-                probDb%number_correlations, fx, pc, compIds, xDense, rn, ierr)
+                probDb%number_correlations, fx, pc, compIds, xDense, rn)
         else
             call probCalcF2C(method, distribs, nStochActive, probDb%basic_correlation, &
-                probDb%number_correlations, fx, textualProgress, compIds, xDense, rn, ierr)
+                probDb%number_correlations, fx, textualProgress, compIds, xDense, rn)
         end if
 
         call cpData%copyDense2Full(xDense, x)
@@ -227,9 +225,9 @@ subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, convergenceDa
         convergenceData%convCriterium = rn%convergence
         convergenceData%cnvg_data_ds%numberSamples = rn%samplesNeeded
         convergenceData%cnvg_data_form%numberiterations = rn%stepsNeeded
-        if (ierr%iCode /= 0) then
-            call copystrback(msg, ierr%message)
-            if (ierr%iCode > 0) then
+        if (rn%error%iCode /= 0) then
+            call copystrback(msg, rn%error%message)
+            if (rn%error%iCode > 0) then
                 call warningMessage(msg)
             else
                 call fatalError(msg)
