@@ -88,7 +88,7 @@ subroutine test_ds
     type(tMethod)               :: method
     type(tResult)               :: results
     integer                     :: i
-    integer                     :: compIds(20)
+    integer                     :: compIds(3)
     character(len=ErrMsgLength) :: errmsg
     type(basicCorrelation)      :: correlations(0)
     real(kind=wp)               :: x(2)
@@ -106,8 +106,10 @@ subroutine test_ds
     method%numExtraInt = 50
 
     compIds(1) = 16
+    compIds(2) = 2
+    compIds(3) = 0
 
-    call probCalcF2C(method, distribs, 2, correlations, 0,  zfunc, textualProgress, compIds, x, results)
+    call probCalcF2C(method, distribs, correlations, zfunc, textualProgress, compIds, x, results)
 
     call assert_equal(results%error%iCode, 0, "return code probCalcF2C <> 0")
 
@@ -129,7 +131,7 @@ subroutine test_ds_errorhandling
     type(tdistrib)              :: distribs(2)
     type(tMethod)               :: method
     type(tResult)               :: results
-    integer                     :: compIds(20)
+    integer                     :: compIds(3)
     character(len=ErrMsgLength) :: errmsg
     type(basicCorrelation)      :: correlations(0)
     real(kind=wp)               :: x(2)
@@ -142,8 +144,10 @@ subroutine test_ds_errorhandling
     method%numExtraInt = 50
 
     compIds(1) = 17
+    compIds(2) = 2
+    compIds(3) = 0
 
-    call probCalcF2C(method, distribs, 2, correlations, 0, zfunc, textualProgress, compIds, x, results)
+    call probCalcF2C(method, distribs, correlations, zfunc, textualProgress, compIds, x, results)
 
     call assert_equal(results%error%iCode, 1, "return code probCalcF2C <> 0")
 
@@ -157,7 +161,7 @@ subroutine test_form_errorhandling
     type(tdistrib)              :: distribs(2)
     type(tMethod)               :: method
     type(tResult)               :: results
-    integer                     :: compIds(20)
+    integer                     :: compIds(3)
     character(len=ErrMsgLength) :: errmsg
     type(basicCorrelation)      :: correlations(0)
     real(kind=wp)               :: x(2)
@@ -172,8 +176,10 @@ subroutine test_form_errorhandling
     method%numExtraInt = 50
 
     compIds(1) = 17
+    compIds(2) = 2
+    compIds(3) = 0
 
-    call probCalcF2C(method, distribs, 2, correlations, 0, zfunc, textualProgress, compIds, x, results)
+    call probCalcF2C(method, distribs, correlations, zfunc, textualProgress, compIds, x, results)
 
     call assert_equal(results%error%iCode, 0, "diff in return code probCalcF2C")
     convergence = results%convergence
