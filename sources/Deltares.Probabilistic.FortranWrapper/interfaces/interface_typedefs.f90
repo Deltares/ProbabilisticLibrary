@@ -194,8 +194,10 @@ module interface_typedefs
     end type convDataSamplingMethods
 
     type, public :: storedConvergenceData
-      type(convDataSamplingMethods)   :: cnvg_data_ds
-      type(storedConvergenceDataFORM) :: cnvg_data_form
+      type(convDataSamplingMethods)   :: cnvg_data_ds     !< Convergence data directional sampling
+      type(storedConvergenceDataFORM) :: cnvg_data_form   !< Convergence data FORM
+      logical                         :: conv             !< Convergence indicator
+      logical                         :: convCriterium    !< Convergence criterium indicator
     end type storedConvergenceData
 
     type, public, bind(c) :: computationSetting

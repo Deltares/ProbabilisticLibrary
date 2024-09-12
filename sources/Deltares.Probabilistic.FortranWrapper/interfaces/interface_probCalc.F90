@@ -91,15 +91,13 @@ end function textualProgress
 
 !>
 !! Subroutine for the calculation of a limit state function
-subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, conv, convCriterium, convergenceData, CpData, pc)
+subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, convergenceData, CpData, pc)
     use feedback
     type(probabilisticDataStructure_data), intent(in) :: probDb    !< Probabilistic data module
     procedure(zfunc)                           :: fx               !< Function implementing the z-function of the failure mechanism
     real(kind=wp), intent(out)                 :: alfaN(:)         !< Alpha values
     real(kind=wp), intent(out)                 :: beta             !< Reliability index
     real(kind=wp), intent(inout)               :: x(:)             !< X values of design point
-    logical,       intent(out)                 :: conv             !< Convergence indicator
-    logical,       intent(out)                 :: convCriterium    !< Convergence criterium indicator
     type(storedConvergenceData), intent(inout) :: convergenceData  !< struct holding all convergence data
     type(tCpData), intent(inout)               :: CpData           !< class for copying the x-vector
     procedure(progressCancel),    optional     :: pc               !< progress function
@@ -222,11 +220,11 @@ subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, conv, convCri
         end do
         if (method%methodId == methodFORMandDirSampling .and. rn%samplesNeeded > 0) then
             ! to get logging in output.txt right; as we have samples, Form did not succeed (no convergence or beta out of range)
-            conv = .false.
+            convergenceData%conv = .false.
         else
-            conv = rn%convergence
+            convergenceData%conv = rn%convergence
         end if
-        convCriterium = rn%convergence
+        convergenceData%convCriterium = rn%convergence
         convergenceData%cnvg_data_ds%numberSamples = rn%samplesNeeded
         convergenceData%cnvg_data_form%numberiterations = rn%stepsNeeded
         if (ierr%iCode /= 0) then
