@@ -677,21 +677,21 @@ This method takes from all realizations, which were regarded as failing accordin
 Although this is the fastest method, this method is not recommended for Monte Carlo techniques. Its results suffer from the randomness in Monte Carlo methods. Unimportant variables may get a significant alpha value for the same reason.
 
 
-\section{Combining design points}
+\chapter{Combining design points}
 \label{sec:CombiningDesignPoints}
 
 Design points can be combined. This is most of the times desired when multiple failure definitions are applied.
 
-Design point can be combined during the probabilistic analysis already (see \autoref{sec:CombiningDesignPointsIntegrated}) or afterwards. When combining afterwards, the design points are simulated by equivalent planes. A number of methods exist how to derive the combined design point from the equivalent planes (see \autoref{sec:EquivalentPlanes}).
+Design points can be combined during the probabilistic analysis already (see \autoref{sec:CombiningDesignPointsIntegrated}) or afterwards. When combining afterwards, the design points are simulated by equivalent planes. A number of methods exist how to derive the combined design point from the equivalent planes (see \autoref{sec:EquivalentPlanes}).
 
-\subsection{Integrated}
+\section{Integrated}
 \label{sec:CombiningDesignPointsIntegrated}
 
 When combining integrated, the failure definitions are merged to one failure definition. This combined failure definition is used in one of the reliability techniques (see \autoref{sec:ReliabilityTechniques}).
 
 When using FORM with integrated, results are not reliable. Therefore the \probLib prevents this combination.
 
-\subsection{Equivalent planes}
+\section{Equivalent planes}
 \label{sec:EquivalentPlanes}
 
 When combining afterwards, first design points are calculated for each failure definition individually and then they are combined. This combination uses an equivalent plane $M$ for each design point, by which we make an approximation. The equivalent plane is defined as follows:
@@ -720,7 +720,7 @@ where
 	$\alpha_{i,j}$ & is the alpha factor of variable $j$ in design point $i$;
 \end{longtable*}
 
-\subsubsection{Directional sampling}
+\subsection{Directional sampling}
 \label{sec:CombiningDesignPointsDS}
 
 Directional sampling (see \autoref{sec:DirectionalSampling}) is applied on the combined model $M_{\text{combined}}$ (see \autoref{eq:EquivalentPlaneCombine}). The following settings are applied: 
@@ -731,7 +731,7 @@ Directional sampling (see \autoref{sec:DirectionalSampling}) is applied on the c
 	Convergence factor & 0.1;
 \end{longtable*}
 
-\subsubsection{Importance sampling}
+\subsection{Importance sampling}
 \label{sec:CombiningDesignPointsIS}
 
 Depending on the combination method (series or parallel) the following algorithms are applied:
@@ -781,7 +781,7 @@ where
 	$M_{\text{k}}\left(u\right)$ & is the equivalent plane of the $i^{\text{th}}$ design point (see \autoref{eq:EquivalentPlane});
 \end{longtable*}
 
-\subsubsection{Hohenbichler}\label{sec:Hohenbichler}
+\subsection{Hohenbichler}\label{sec:Hohenbichler}
 
 The kernel of the Hohenbichler algorithm is combination of two models $M_{\text{combined}}$ (see \autoref{eq:EquivalentPlaneCombine}). This combination is calculated by FORM (see \autoref{sec:FORM}).
 
