@@ -85,9 +85,8 @@ end subroutine fillDistribs
 subroutine test_ds
     use interface_probCalc
     type(tdistrib)              :: distribs(2)
-    type(tError)                :: ierr
     type(tMethod)               :: method
-    type(tResult)               :: r
+    type(tResult)               :: results
     integer                     :: i
     integer                     :: compIds(20)
     character(len=ErrMsgLength) :: errmsg
@@ -108,18 +107,18 @@ subroutine test_ds
 
     compIds(1) = 16
 
-    call probCalcF2C(method, distribs, 2, correlations, 0,  zfunc, textualProgress, compIds, x, r, ierr)
+    call probCalcF2C(method, distribs, 2, correlations, 0,  zfunc, textualProgress, compIds, x, results)
 
-    call assert_equal(ierr%iCode, 0, "return code probCalcF2C <> 0")
+    call assert_equal(results%error%iCode, 0, "return code probCalcF2C <> 0")
 
-    if (ierr%iCode == 0) then
-        call assert_comparable(r%beta, -0.22178518912_wp, margin, "diff in beta")
-        call assert_comparable(r%alpha(1:2), [-0.89448_wp, -0.44710_wp], 1d-2, "diff in alpha")
+    if (results%error%iCode == 0) then
+        call assert_comparable(results%beta, -0.22178518912_wp, margin, "diff in beta")
+        call assert_comparable(results%alpha(1:2), [-0.89448_wp, -0.44710_wp], 1d-2, "diff in alpha")
         call assert_comparable(x(1:2), [0.59998_wp, 0.80005_wp], 1d-2, "diff in x")
-        convergence = r%convergence
+        convergence = results%convergence
         call assert_false(convergence, "diff in convergence flag")
     else
-        call copystrback(errmsg, ierr%message)
+        call copystrback(errmsg, results%error%message)
         call assert(errmsg)
     end if
 
@@ -128,9 +127,8 @@ end subroutine test_ds
 subroutine test_ds_errorhandling
     use interface_probCalc
     type(tdistrib)              :: distribs(2)
-    type(tError)                :: ierr
     type(tMethod)               :: method
-    type(tResult)               :: r
+    type(tResult)               :: results
     integer                     :: compIds(20)
     character(len=ErrMsgLength) :: errmsg
     type(basicCorrelation)      :: correlations(0)
@@ -145,11 +143,11 @@ subroutine test_ds_errorhandling
 
     compIds(1) = 17
 
-    call probCalcF2C(method, distribs, 2, correlations, 0, zfunc, textualProgress, compIds, x, r, ierr)
+    call probCalcF2C(method, distribs, 2, correlations, 0, zfunc, textualProgress, compIds, x, results)
 
-    call assert_equal(ierr%iCode, 1, "return code probCalcF2C <> 0")
+    call assert_equal(results%error%iCode, 1, "return code probCalcF2C <> 0")
 
-    call copystrback(errmsg, ierr%message)
+    call copystrback(errmsg, results%error%message)
     call assert_equal(errmsg, "just testing", "diff in error message")
 
 end subroutine test_ds_errorhandling
@@ -157,9 +155,8 @@ end subroutine test_ds_errorhandling
 subroutine test_form_errorhandling
     use interface_probCalc
     type(tdistrib)              :: distribs(2)
-    type(tError)                :: ierr
     type(tMethod)               :: method
-    type(tResult)               :: r
+    type(tResult)               :: results
     integer                     :: compIds(20)
     character(len=ErrMsgLength) :: errmsg
     type(basicCorrelation)      :: correlations(0)
@@ -176,12 +173,12 @@ subroutine test_form_errorhandling
 
     compIds(1) = 17
 
-    call probCalcF2C(method, distribs, 2, correlations, 0, zfunc, textualProgress, compIds, x, r, ierr)
+    call probCalcF2C(method, distribs, 2, correlations, 0, zfunc, textualProgress, compIds, x, results)
 
-    call assert_equal(ierr%iCode, 0, "diff in return code probCalcF2C")
-    convergence = r%convergence
+    call assert_equal(results%error%iCode, 0, "diff in return code probCalcF2C")
+    convergence = results%convergence
     call assert_false(convergence, "diff in convergence flag")
-    call assert_comparable(r%beta, 40.0_wp, margin, "diff in beta")
+    call assert_comparable(results%beta, 40.0_wp, margin, "diff in beta")
 
 end subroutine test_form_errorhandling
 

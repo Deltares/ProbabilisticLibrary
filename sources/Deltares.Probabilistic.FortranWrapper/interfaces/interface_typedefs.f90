@@ -23,7 +23,8 @@ module interface_typedefs
   use, intrinsic :: iso_c_binding, only: c_double, c_bool
   use precision, only : wp
   use interface_enums, only : GeorgeMarsaglia
-  private :: wp, GeorgeMarsaglia
+  use interface_gen, only : tError
+  private :: wp, GeorgeMarsaglia, tError
 
   integer, parameter :: maxActiveStochast = 32
 
@@ -71,6 +72,7 @@ module interface_typedefs
   end type tMethod
 
   type, public, bind(c) :: tResult
+    type(tError)         :: error
     real(kind=c_double)  :: beta
     real(kind=c_double)  :: alpha(maxActiveStochast)
     integer              :: stepsNeeded
