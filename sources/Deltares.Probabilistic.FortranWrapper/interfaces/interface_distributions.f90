@@ -113,14 +113,14 @@ subroutine calculateDistributionInverse2(u, y, distType, p4, ierr)
     call calculateDistributionInverse_c(u, y, distType, p4, ierr)
 end subroutine calculateDistributionInverse2
 
-function conditionalWeibull(distParameters, x)
+function conditionalWeibull(distParams, x)
     use precision, only : wp
     use interface_convert
     real(kind = wp), intent(in)     :: x                  !<  value in the distribution for which the non-exceedance probability is desired
-    real(kind = wp), intent(in)     :: distParameters(:)  !<  parameters a, b, w and L
+    real(kind = wp), intent(in)     :: distParams(:)      !<  parameters a, b, w and L
     real(kind = wp)                 :: conditionalWeibull !<  conditional
 
-    conditionalWeibull  = distParameters(4) * exp((distParameters(3)/distParameters(1))**distParameters(2) - (x/distParameters(1))**distParameters(2))
+    conditionalWeibull  = distParams(4) * exp((distParams(3)/distParams(1))**distParams(2) - (x/distParams(1))**distParams(2))
 
 end function conditionalWeibull
 
@@ -272,7 +272,8 @@ function inputCheckTruncatedNormal(distParameters, errorMessage)
         write(errorMessage,*) 'Truncated Normal: minimum must be < maximum; found: ', distParameters(3), distParameters(4)
     else if ((distParameters(4) - distParameters(3)) < diffMinMax) then
         inputCheckTruncatedNormal = .false.
-        write(errorMessage,*) 'Truncated Normal: minimum and maximum are too close; difference found: ', distParameters(4) - distParameters(3)
+        write(errorMessage,*) 'Truncated Normal: minimum and maximum are too close; difference found: ', &
+            distParameters(4) - distParameters(3)
     else
         inputCheckTruncatedNormal = .true.
     endif
