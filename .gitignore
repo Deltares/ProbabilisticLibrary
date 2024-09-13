@@ -102,3 +102,6 @@ testpytk*
 
 # status jupyter notebooks:
 .ipynb_checkpoints
+/sources/Deltares.Probabilistic.PWrapper/streams.egg-info/dependency_links.txt
+/sources/Deltares.Probabilistic.PWrapper/streams.egg-info/SOURCES.txt
+/sources/Deltares.Probabilistic.PWrapper/streams.egg-info/top_level.txt
