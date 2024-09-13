@@ -113,41 +113,30 @@ subroutine calculateDistributionInverse2(u, y, distType, p4, ierr)
     call calculateDistributionInverse_c(u, y, distType, p4, ierr)
 end subroutine calculateDistributionInverse2
 
-function conditionalWeibull(distParameter1, distParameter2, distParameter3, distParameter4, x)
+function conditionalWeibull(distParameters, x)
     use precision, only : wp
+    use interface_convert
     real(kind = wp), intent(in)     :: x                  !<  value in the distribution for which the non-exceedance probability is desired
-    real(kind = wp), intent(in)     :: distParameter1     !<  a, scale parameter
-    real(kind = wp), intent(in)     :: distParameter2     !<  b, shape parameter
-    real(kind = wp), intent(in)     :: distParameter3     !<  w, threshold parameter
-    real(kind = wp), intent(in)     :: distParameter4     !<  L, lambda
-    real(kind = wp)                 :: conditionalWeibull !<  conditional 
+    real(kind = wp), intent(in)     :: distParameters(:)  !<  parameters a, b, w and L
+    real(kind = wp)                 :: conditionalWeibull !<  conditional
 
-    conditionalWeibull  = distParameter4 * exp((distParameter3/distParameter1)**distParameter2 - (x/distParameter1)**distParameter2)
+    conditionalWeibull  = distParameters(4) * exp((distParameters(3)/distParameters(1))**distParameters(2) - (x/distParameters(1))**distParameters(2))
 
 end function conditionalWeibull
+
 !> Calculates U value from X values conform distribution type.
-subroutine calculateDistribution( x, u, distType, distParameter1, distParameter2, &
-               distParameter3, distParameter4, ierr, errorMessage )
+subroutine calculateDistribution( x, u, distType, distParameters, ierr, errorMessage )
     use precision, only : wp
     real(kind=wp),    intent(in)    :: x                  !< Standard normally distributed variable
     real(kind=wp),    intent(out)   :: u                  !< Physical stochastic variable associated with u
     integer,          intent(in)    :: distType           !< Distribution type, see distributionEnumerations
-    real(kind=wp),    intent(in)    :: distParameter1     !< Parameter 1 of distribution type
-    real(kind=wp),    intent(in)    :: distParameter2     !< Parameter 2 of distribution type
-    real(kind=wp),    intent(in)    :: distParameter3     !< Parameter 3 of distribution type
-    real(kind=wp),    intent(in)    :: distParameter4     !< Parameter 4 of distribution type
+    real(kind=wp),    intent(in)    :: distParameters(:)  !< Parameters 1 - 4 of distribution type
     integer,          intent(out)   :: ierr               !< error code; 0=success
     character(len=*), intent(inout) :: errorMessage       !< error message; only set in case of error
 
-    real(kind=wp) :: p4(4)
     type(tError)  :: error
 
-    p4(1) = distParameter1
-    p4(2) = distParameter2
-    p4(3) = distParameter3
-    p4(4) = distParameter4
-
-    call calculateDistribution_c(x, u, distType, p4, error)
+    call calculateDistribution_c(x, u, distType, distParameters, error)
 
     ierr = error%iCode
     if (ierr /= 0) then
@@ -156,11 +145,9 @@ subroutine calculateDistribution( x, u, distType, distParameter1, distParameter2
 
 end subroutine calculateDistribution
 
-function logNormalII( distParameter1, distParameter2, distParameter3, x, ierr, errorMessage )
+function logNormalII( distParameters, x, ierr, errorMessage )
     use precision
-    real(kind = wp), intent(in)     :: distParameter1         !< m, mean of actual variable (not log-transformed)
-    real(kind = wp), intent(in)     :: distParameter2         !< s, standard deviation of actual variable (not log-transformed)
-    real(kind = wp), intent(in)     :: distParameter3         !< Epsilon, horizontal shifting
+    real(kind = wp), intent(in)     :: distParameters(:)      !< parametrs mean, standard deviation and shift of actual variable (not log-transformed)
     real(kind = wp), intent(in)     :: x                      !< Standard normally distributed variable u
     integer,          intent(out)   :: ierr                   !< error code; 0=success
     character(len=*), intent(inout) :: errorMessage           !< error message; only set in case of error
@@ -172,37 +159,34 @@ function logNormalII( distParameter1, distParameter2, distParameter3, x, ierr, e
     real(kind = wp), parameter      :: qMin = 1.0d-300
 
     ierr = 0
-    if (( distParameter1 - distParameter3) < qMin ) then
+    if (( distParameters(1) - distParameters(3)) < qMin ) then
         errorMessage = "Parameter 1 of logNormalII should be larger than parameter 3"
         ierr = -1
-    else if (distParameter2 < 0.0D0 ) then
+    else if (distParameters(2) < 0.0D0 ) then
         errorMessage = "Standard deviation should be larger than zero"
         ierr = -1
-    else if ((x - distParameter3) < qMin ) then
+    else if ((x - distParameters(3)) < qMin ) then
         errorMessage = "The x-value of logNormalII should be larger than parameter 3"
         ierr = -1
     end if
 
     if (ierr == 0) then
         ! Compute standard deviation and mean of log-transformed variable from mean and standard deviation of actual variable
-        sigma   = sqrt( log(1.0d0 + (distParameter2 / (distParameter1 - distParameter3))**2))
-        mu      = log(distParameter1 - distParameter3) - 0.5d0 * sigma * sigma
+        sigma   = sqrt( log(1.0d0 + (distParameters(2) / (distParameters(1) - distParameters(3)))**2))
+        mu      = log(distParameters(1) - distParameters(3)) - 0.5d0 * sigma * sigma
 
-        logNormalII = log(x - distParameter3)
+        logNormalII = log(x - distParameters(3))
 
         logNormalII = ( logNormalII - mu ) / sigma
     end if
 
 end function logNormalII
 
-function truncatedNormal(u, mean, deviation, minimum, maximum, ierr, errorMessage)
+function truncatedNormal(u, distParameters, ierr, errorMessage)
     use precision
     use interface_convert
     real(kind=wp), intent(in)       :: u                !< input u
-    real(kind=wp), intent(in)       :: mean             !< a parameter: mean
-    real(kind=wp), intent(in)       :: deviation        !< b parameter: deviation
-    real(kind=wp), intent(in)       :: minimum          !< c parameter: minimum
-    real(kind=wp), intent(in)       :: maximum          !< d parameter: maximum 
+    real(kind=wp), intent(in)       :: distParameters(:) !< parameters: mean, deviation, minimum, maximum
     integer, intent(out)            :: ierr             !< error code; 0=success
     character(len=*), intent(inout) :: errorMessage     !< error message, only set in case of an error
     real(kind=wp)                   :: truncatedNormal  !< function result
@@ -228,7 +212,7 @@ function truncatedNormal(u, mean, deviation, minimum, maximum, ierr, errorMessag
     !
     ! input check
     !
-    if (.not. inputCheckTruncatedNormal(deviation, minimum, maximum, errorMessage)) then
+    if (.not. inputCheckTruncatedNormal(distParameters, errorMessage)) then
         call set_nan(truncatedNormal)
         ierr = -1
     else
@@ -237,8 +221,8 @@ function truncatedNormal(u, mean, deviation, minimum, maximum, ierr, errorMessag
         !
 
         ! transform limits to u-space
-        au = (minimum - mean) / deviation
-        bu = (maximum - mean) / deviation
+        au = (distParameters(3) - distParameters(1)) / distParameters(2)
+        bu = (distParameters(4) - distParameters(1)) / distParameters(2)
 
         ! detect exceedance probability of limits if it were a normal standard distribution
         call pQFromBeta(au, pa, dummy)
@@ -265,32 +249,30 @@ function truncatedNormal(u, mean, deviation, minimum, maximum, ierr, errorMessag
             zt = -zt
         endif
 
-        truncatedNormal = mean + zt * deviation
+        truncatedNormal = distParameters(1) + zt * distParameters(2)
     endif
 
 end function truncatedNormal
 
 !> validation for truncated normal
-function inputCheckTruncatedNormal(deviation, minimum, maximum, errorMessage)
+function inputCheckTruncatedNormal(distParameters, errorMessage)
     use precision
-    real(kind=wp), intent(in)       :: deviation        !< b parameter: deviation
-    real(kind=wp), intent(in)       :: minimum          !< c parameter: minimum
-    real(kind=wp), intent(in)       :: maximum          !< d parameter: maximum 
+    real(kind=wp), intent(in)       :: distParameters(:) !< parameters: mean, deviation, minimum, maximum
     character(len=*), intent(inout) :: errorMessage     !< error message, only set in case of an error
     logical                         :: inputCheckTruncatedNormal  !< function result
 
     real(kind=wp), parameter :: zero = 0.0_wp        ! constant 0.0
     real(kind=wp), parameter :: diffMinMax = 1e-4_wp ! smallest allowed difference between minimum and maximum
 
-    if (deviation <= zero) then
+    if (distParameters(2) <= zero) then
         inputCheckTruncatedNormal = .false.
-        write(errorMessage,*) 'Truncated Normal: deviation must be > 0; found: ', deviation
-    else if (minimum > maximum) then
+        write(errorMessage,*) 'Truncated Normal: deviation must be > 0; found: ', distParameters(2)
+    else if (distParameters(3) > distParameters(4)) then
         inputCheckTruncatedNormal = .false.
-        write(errorMessage,*) 'Truncated Normal: minimum must be < maximum; found: ', minimum, maximum
-    else if ((maximum - minimum) < diffMinMax) then
+        write(errorMessage,*) 'Truncated Normal: minimum must be < maximum; found: ', distParameters(3), distParameters(4)
+    else if ((distParameters(4) - distParameters(3)) < diffMinMax) then
         inputCheckTruncatedNormal = .false.
-        write(errorMessage,*) 'Truncated Normal: minimum and maximum are too close; difference found: ', maximum - minimum
+        write(errorMessage,*) 'Truncated Normal: minimum and maximum are too close; difference found: ', distParameters(4) - distParameters(3)
     else
         inputCheckTruncatedNormal = .true.
     endif
