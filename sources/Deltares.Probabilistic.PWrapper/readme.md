@@ -1,6 +1,6 @@
-# Deltares Probabilistic Library
+# Deltares Streams
 
-This is the awesome Deltares Probabilistic Library
+This is the awesome Deltares Streams Library
 
 ## A second-level heading
 ### A third-level heading

@@ -25,15 +25,15 @@ with open("readme.md", "r") as fh:
     long_description = fh.read()
  
 setuptools.setup(
-    name="ptk",
+    name="streams",
     version="0.0.1",
     author="Deltares",
     author_email="software.support@deltares.nl",
-    description="Package to perform probabilistic analyses",
+    description="Package which provides STatistical and REliability Analysis MethodS",
     long_description=long_description,
     long_description_content_type="text/markdown",
     packages=setuptools.find_packages(),
-    package_data={'ptk':['bin/*Deltares.Probabilistic.CWrapper.*']},    
+    package_data={'streams':['bin/*Deltares.Probabilistic.CWrapper.*']},    
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: AGPL License",

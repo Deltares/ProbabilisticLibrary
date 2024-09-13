@@ -21,8 +21,9 @@
 #
 import sys
 import math
+import numpy as np
 
-from ptk import *
+from streams import *
 
 def sum_ab(a, b):
     return a+b;
@@ -64,6 +65,14 @@ def linear_small_abc(a, b, c):
 
 def bligh(m, L, c_creep, delta_H):
     return m * L / c_creep - delta_H
+
+def hunt(T_p, tan_alpha, H_s, h_crest, h):
+    g = 9.81
+    L_0 = g  * T_p * T_p
+    xi = tan_alpha / np.sqrt(2 * np.pi * H_s / L_0)
+    R_u = xi * H_s
+
+    return h_crest - (h + R_u)
 
 def get_linear_project():
 
@@ -260,6 +269,33 @@ def get_bligh_project():
     project.variables["delta_H"].distribution = DistributionType.gumbel
     project.variables["delta_H"].shift = 0.53
     project.variables["delta_H"].scale = 0.406
+
+    return project
+
+def get_hunt_project():
+
+    project = ReliabilityProject()
+
+    project.model = hunt
+
+    project.variables["T_p"].distribution = DistributionType.log_normal
+    project.variables["T_p"].mean = 6
+    project.variables["T_p"].deviation = 2
+
+    project.variables["tan_alpha"].distribution = DistributionType.deterministic
+    project.variables["tan_alpha"].mean = 0.333333
+
+    project.variables["H_s"].distribution = DistributionType.log_normal
+    project.variables["H_s"].mean = 3
+    project.variables["H_s"].deviation = 1
+
+    project.variables["h_crest"].distribution = DistributionType.log_normal
+    project.variables["h_crest"].mean = 10
+    project.variables["h_crest"].deviation = 0.05
+
+    project.variables["h"].distribution = DistributionType.exponential
+    project.variables["h"].shift = 0.5
+    project.variables["h"].scale = 1
 
     return project
 

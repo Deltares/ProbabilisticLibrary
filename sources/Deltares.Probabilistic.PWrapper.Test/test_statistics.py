@@ -22,7 +22,7 @@
 import unittest
 import sys
 
-from ptk import *
+from streams import *
 
 margin = 0.01
 

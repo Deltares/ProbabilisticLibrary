@@ -22,7 +22,7 @@
 import unittest
 import sys
 
-from ptk import *
+from streams import *
 
 import project_builder
 
@@ -305,6 +305,24 @@ class Test_reliability(unittest.TestCase):
         self.assertEqual(20*20*20+1, dp.total_model_runs)
         self.assertAlmostEqual(1.55, beta, delta=margin)
         self.assertEqual(4, len(alphas))
+
+    def test_directional_sampling_hunt(self):
+        project = project_builder.get_hunt_project()
+
+        project.settings.reliability_method = ReliabilityMethod.directional_sampling
+
+        project.settings.minimum_directions = 1000
+        project.settings.maximum_directions = 2000
+        project.settings.variation_coefficient = 0.02
+
+        project.run()
+
+        dp = project.design_point;
+        beta = dp.reliability_index;
+        alphas = dp.alphas;
+
+        self.assertAlmostEqual(1.88, beta, delta=margin)
+        self.assertEqual(5, len(alphas))
 
 if __name__ == '__main__':
     unittest.main()

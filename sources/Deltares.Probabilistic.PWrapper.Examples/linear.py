@@ -20,7 +20,7 @@
 # All rights reserved.
 #
 import sys
-from ptk import *
+from stresms import *
 
 margin = 0.01
 

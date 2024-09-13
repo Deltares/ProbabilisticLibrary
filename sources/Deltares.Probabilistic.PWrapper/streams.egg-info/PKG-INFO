@@ -1,0 +1,18 @@
+Metadata-Version: 2.1
+Name: streams
+Version: 0.0.1
+Summary: Package which provides STatistical and REliability Analysis MethodS
+Author: Deltares
+Author-email: software.support@deltares.nl
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: AGPL License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+
+# Deltares Streams
+
+This is the awesome Deltares Streams Library
+
+## A second-level heading
+### A third-level heading

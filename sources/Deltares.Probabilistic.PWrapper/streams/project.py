@@ -139,12 +139,10 @@ class SensitivityProject:
 	def _performCallBack(values, size):
 		values_list = values[:size]
 		z = SensitivityProject._model(*values_list);
-		if type(z) is float or type(z) is int:
-			return z
-		elif type(z) is list or type(z) is tuple:
+		if type(z) is list or type(z) is tuple:
 			return z[SensitivityProject._index]
 		else:
-			raise ValueError('Unrecognized response from model')
+			return z
 
 	def run(self):
 		self._stochast = None
@@ -191,6 +189,7 @@ class ReliabilityProject:
 
 	_model = None
 	_index = 0
+	_project_id = 0
 
 	def __init__(self):
 		self._id = interface.Create('project')
@@ -206,8 +205,9 @@ class ReliabilityProject:
 		self._design_point = None
 		self._fragility_curve = None
 
-		_model = None
-		_index = 0
+		ReliabilityProject._index = 0;
+		ReliabilityProject._model = None
+		ReliabilityProject._project_id = self._id
   
 	def __dir__(self):
 		return ['variables',
@@ -216,10 +216,6 @@ class ReliabilityProject:
 				'model',
 				'run',
 				'design_point']
-
-	@interface.EMPTY_CALLBACK
-	def _initialize(self):
-		_index = interface.GetIntValue(self._id, 'index')
 
 	@property
 	def variables(self):
@@ -260,16 +256,18 @@ class ReliabilityProject:
 		interface.SetStringValue(self._id, 'model_name', model_name)
 
 
+	@interface.EMPTY_CALLBACK
+	def _initialize():
+		ReliabilityProject._index = interface.GetIntValue(ReliabilityProject._project_id, 'index')
+
 	@interface.CALLBACK
 	def _performCallBack(values, size):
 		values_list = values[:size]
 		z = ReliabilityProject._model(*values_list);
-		if type(z) is float or type(z) is int:
-			return z
-		elif type(z) is list or type(z) is tuple:
+		if type(z) is list or type(z) is tuple:
 			return z[SensitivityProject._index]
 		else:
-			raise ValueError('Unrecognized response from model')
+			return z
 
 	def run(self):
 		self._design_point = None
