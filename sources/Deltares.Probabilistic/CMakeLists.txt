@@ -14,7 +14,7 @@ file(GLOB ptkcpp_files
 )
 
 add_library(Deltares.Probabilistic.Kernel
-    STATIC
+    SHARED
     ${ptkcpp_files}
 )
 if (WIN32)
@@ -24,6 +24,7 @@ set_target_properties(Deltares.Probabilistic.Kernel
   PROPERTIES
     CXX_STANDARD 20
     POSITION_INDEPENDENT_CODE 1
+    COMMON_LANGUAGE_RUNTIME ""
   )
 
 find_package(OpenMP)
