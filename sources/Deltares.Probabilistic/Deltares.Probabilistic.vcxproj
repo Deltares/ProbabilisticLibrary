@@ -155,6 +155,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Server\BaseServer.h" />
+    <ClInclude Include="Server\ProjectHandler.h" />
+    <ClInclude Include="Server\BaseHandler.h" />
+    <ClInclude Include="Server\ExternalHandler.h" />
     <ClInclude Include="Model\ModelParameter.h" />
     <ClInclude Include="Sensitivity\CorrelationMatrixBuilder.h" />
     <ClInclude Include="Statistics\Distributions\StandardNormalDistribution.h" />
@@ -191,9 +195,9 @@
     <ClInclude Include="Statistics\Distributions\ParetoDistribution.h" />
     <ClInclude Include="Utils\DirtySupport.h" />
     <ClInclude Include="Model\ProxySettings.h" />
-    <ClInclude Include="Model\Project.h" />
+    <ClInclude Include="Reliability\ReliabilityProject.h" />
     <ClInclude Include="Model\SampleProvider.h" />
-    <ClInclude Include="Model\ProjectServer.h" />
+    <ClInclude Include="Server\ProjectServer.h" />
     <ClInclude Include="Reliability\NumericalIntegration.h" />
     <ClInclude Include="Reliability\NumericalIntegrationSettings.h" />
     <ClInclude Include="Reliability\SubsetSimulationSettings.h" />
@@ -315,6 +319,10 @@
     <ClInclude Include="Math\WeightedValue.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Server\BaseServer.cpp" />
+    <ClCompile Include="Server\ProjectHandler.cpp" />
+    <ClCompile Include="Server\BaseHandler.cpp" />
+    <ClCompile Include="Server\ExternalHandler.cpp" />
     <ClCompile Include="Model\ModelParameter.cpp" />
     <ClCompile Include="Sensitivity\CorrelationMatrixBuilder.cpp" />
     <ClCompile Include="Statistics\Distributions\StandardNormalDistribution.cpp" />
@@ -351,9 +359,9 @@
     <ClCompile Include="Statistics\Distributions\ParetoDistribution.cpp" />
     <ClCompile Include="Utils\DirtySupport.cpp" />
     <ClCompile Include="Model\ProxySettings.cpp" />
-    <ClCompile Include="Model\Project.cpp" />
+    <ClCompile Include="Reliability\ReliabilityProject.cpp" />
     <ClCompile Include="Model\SampleProvider.cpp" />
-    <ClCompile Include="Model\ProjectServer.cpp" />
+    <ClCompile Include="Server\ProjectServer.cpp" />
     <ClCompile Include="Reliability\NumericalIntegration.cpp" />
     <ClCompile Include="Reliability\NumericalIntegrationSettings.cpp" />
     <ClCompile Include="Reliability\SubsetSimulationSettings.cpp" />

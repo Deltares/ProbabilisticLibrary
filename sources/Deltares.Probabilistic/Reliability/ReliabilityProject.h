@@ -31,12 +31,12 @@
 
 namespace Deltares
 {
-    namespace Models
+    namespace Reliability
     {
         /**
          * \brief Combines a model, stochastic variables and calculation settings, can perform a calculation and holds results
          */
-        class Project
+        class ReliabilityProject
         {
         public:
             /**
