@@ -10,11 +10,20 @@ There are a number of ways the reliability index can be calculated. They all hav
 \subsection{Numerical integration}
 \subsubsection{Algorithm}
 
-This is the most time consuming, but most exact way to calculate the failure probability. A step size and minimum and maximum values of the input variables are needed for the evaluation.
+Numerical Integration is the most time consuming,
+but most exact way to calculate the failure probability.
+A step size and minimum and maximum values of the input variables are needed for the evaluation.
 
-When the underlying model does not succeed for a certain realization, its results will be ignored. The user should decide whether the number of non succeeded realizations is acceptable.
+When the underlying model does not succeed for a certain realization,
+its results will be ignored.
+The user should decide whether the number of non succeeded realizations is acceptable.
 
-The minimum and maximum value for which the integration will run, are defined in the u-space. The numerical integration will fill up the left over space between these values and -8 and 8 by additional cells, so the whole integration domain will be covered always. (Values -8 and 8 are used, because numerical problems arise beyond these values)
+The minimum and maximum value for which the integration will run,
+are defined in the u-space.
+The numerical integration will fill up the left over space between these values and -8 and 8 by additional cells,
+so the whole integration domain will be covered always.
+(Note that u=8 corresponds to a probability of $\approx 6*10^{-16}$,
+which is orders of magnitude smaller than probabilities of common situations.)
 
 \begin{figure}[H]
 	\label{fig:NumericalIntegration}
@@ -132,7 +141,10 @@ The minimum and maximum value for which the integration will run, are defined in
 
 Importance sampling is a variation on Crude Monte Carlo (see \autoref{sec:CrudeMonteCarlo}). The difference is that realization are selected in a smarter way, preferably in the area near the limit state.
 
-Usually Monte Carlo realizations are drawn proportional to their probability density $\varphi\left(u_i\right)$, since in the \probLib uses the standard normal space. With importance sampling each realization $u$ is translated to $u_{\text{imp}}$. The \probLib supports the following translation for each variable separately:
+Usually Monte Carlo realizations are drawn proportional to their probability density $\varphi\left(u_i\right)$,
+since \probLib uses the standard normal space.
+With importance sampling each realization $u$ is translated to $u_{\text{imp}}$. 
+The \probLib supports the following translation for each variable separately:
 
 \begin{align} 
 \label{eq:ImportanceSamplingVariance}
