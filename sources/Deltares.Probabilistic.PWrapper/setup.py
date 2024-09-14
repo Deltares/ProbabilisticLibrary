@@ -33,7 +33,7 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     packages=setuptools.find_packages(),
-    package_data={'streams':['bin/*Deltares.Probabilistic.Kernel.*']},    
+    package_data={'streams':['bin/*Deltares.Probabilistic.*.*']},    
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: AGPL License",

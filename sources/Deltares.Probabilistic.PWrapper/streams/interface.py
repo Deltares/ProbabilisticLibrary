@@ -50,9 +50,9 @@ def IsLibraryLoaded():
 def LoadDefaultLibrary():
 	dir_path = os.path.dirname(os.path.realpath(__file__))
 	if (sys.platform.startswith("linux")):
-		lib_file = 'libDeltares.Probabilistic.Kernel.so'
+		lib_file = 'libDeltares.Probabilistic.CWrapper.so'
 	else:
-		lib_file = 'Deltares.Probabilistic.Kernel.dll'
+		lib_file = 'Deltares.Probabilistic.CWrapper.dll'
 	lib_full_path = os.path.join(dir_path, 'bin', lib_file);
 	LoadLibrary(lib_full_path)
 
