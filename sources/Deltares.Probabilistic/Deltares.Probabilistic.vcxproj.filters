@@ -179,6 +179,7 @@
     <ClCompile Include="Server\BaseHandler.cpp" />
     <ClCompile Include="Server\ProjectHandler.cpp" />
     <ClCompile Include="Server\BaseServer.cpp" />
+    <ClCompile Include="Server\ExportedMethods.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />

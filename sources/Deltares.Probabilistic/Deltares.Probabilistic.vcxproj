@@ -133,6 +133,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
     </Link>
+    <PostBuildEvent>
+      <Command>mkdir -p "$(TargetDir)$(TargetName).dll" "$(ProjectDir)..\Deltares.Probabilistic.PWrapper\streams\bin"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -320,6 +323,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Server\BaseServer.cpp" />
+    <ClCompile Include="Server\ExportedMethods.cpp" />
     <ClCompile Include="Server\ProjectHandler.cpp" />
     <ClCompile Include="Server\BaseHandler.cpp" />
     <ClCompile Include="Server\ExternalHandler.cpp" />

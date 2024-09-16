@@ -19,11 +19,11 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include "../Deltares.Probabilistic/Server/ProjectServer.h"
+#include "ProjectServer.h"
 
 #include <string>
 
-#include "../Deltares.Probabilistic/Server/ExternalHandler.h"
+#include "ExternalHandler.h"
 #ifdef __GNUC__
 #define DLL_PUBLIC __attribute__ ((visibility("default")))
 #else
