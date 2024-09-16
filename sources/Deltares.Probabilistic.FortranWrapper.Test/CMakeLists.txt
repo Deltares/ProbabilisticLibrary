@@ -32,7 +32,7 @@ endif (UNIX)
 target_link_libraries(unitTestTools ftnunit feedback ${fctools})
 
 target_link_libraries(ftn_unit_test_prog
-  Deltares.Probabilistic.CWrapper Deltares.Probabilistic.FortranWrapper Deltares.Probabilistic.Kernel
+  Deltares.Probabilistic.CWrapper Deltares.Probabilistic.FortranWrapper Deltares.Probabilistic
   ${fctools} ftnunit feedback feedbackDLL unitTestTools)
 
 add_library(FLtestProbabilistic
@@ -77,7 +77,7 @@ target_link_libraries(FLunittestprogram
     FLtestProbabilisticConversions
     FLtestProbabilistic
     Deltares.Probabilistic.CWrapper Deltares.Probabilistic.FortranWrapper
-    Deltares.Probabilistic.Kernel ${fctools} feedbackDLL ftnunit)
+    Deltares.Probabilistic ${fctools} feedbackDLL ftnunit)
 
 if (WIN32)
     target_compile_options(FLtestProbabilistic PRIVATE /Qopenmp)

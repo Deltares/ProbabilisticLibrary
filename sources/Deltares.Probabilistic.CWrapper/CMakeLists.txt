@@ -28,7 +28,7 @@ set_target_properties(Deltares.Probabilistic.CWrapper
     POSITION_INDEPENDENT_CODE 1
 )
 
-target_link_libraries(Deltares.Probabilistic.CWrapper Deltares.Probabilistic.Kernel)
+target_link_libraries(Deltares.Probabilistic.CWrapper Deltares.Probabilistic)
 
 if(WIN32)
     target_link_options(Deltares.Probabilistic.CWrapper PRIVATE "$<$<CONFIG:Debug>:/Debug>")
