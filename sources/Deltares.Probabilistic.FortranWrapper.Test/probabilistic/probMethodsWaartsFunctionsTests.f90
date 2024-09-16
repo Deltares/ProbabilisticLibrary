@@ -1,4 +1,4 @@
-! Copyright (C) Stichting Deltares 2024. All rights reserved.
+! Copyright (C) Stichting Deltares. All rights reserved.
 !
 ! This file is part of Streams.
 !
