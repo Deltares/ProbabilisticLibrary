@@ -182,13 +182,6 @@ void upscaletolargestblockc(double* betaSmallBlock, double* alphaSmallBlock, dou
 }
 
 extern "C"
-void integrateequalelements(double * beta, double * rhoT, double * nrElements, double * betaT)
-{
-    auto ee = intEqualElements();
-    *betaT = ee.integrateEqualElements(*beta, *rhoT, *nrElements);
-}
-
-extern "C"
 int combinetwoelementspartialcorrelationc1(double* beta1, double* alpha1, double* beta2, double* alpha2, double* rhoP,
     double* betaC, double* alphaC, const int combAndOr, const int nStochasts, double* alphaI, double* alphaII)
 {

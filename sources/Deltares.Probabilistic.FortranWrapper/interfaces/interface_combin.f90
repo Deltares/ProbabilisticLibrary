@@ -107,18 +107,6 @@ interface
 end interface
 
 interface
-!>
-!! Subroutine for combining failure probabilities over equal elements (core of upscaling subroutines)
-    subroutine integrateEqualElements( beta, rhoT, nrElements, betaT ) bind(c)
-        use, intrinsic :: iso_c_binding, only: c_double
-        real(kind=c_double),  intent(in)  :: beta       !< Reliability index of a single time element
-        real(kind=c_double),  intent(in)  :: rhoT       !< Autocorrelation coefficients for each of the variables, over the elements to be combined (space or time)
-        real(kind=c_double),  intent(in)  :: nrElements !< Number of time elements (e.g. tidal periods)
-        real(kind=c_double),  intent(out) :: betaT      !< Reliability index of combined elements
-    end subroutine integrateEqualElements
-end interface
-
-interface
 !> Subroutine for combining two elements with partial correlation
     integer function combineTwoElementsPartialCorrelationC1( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combAndOr, &
             nStochasts, alphaI, alphaII ) bind(c)
