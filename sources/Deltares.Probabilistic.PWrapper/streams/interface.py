@@ -56,6 +56,19 @@ def LoadDefaultLibrary():
 	lib_full_path = os.path.join(dir_path, 'bin', lib_file);
 	LoadLibrary(lib_full_path)
 
+def AddLibrary(add_lib_full_path):
+	if not IsLibraryLoaded():
+		LoadDefaultLibrary()
+		
+	if os.path.isfile(add_lib_full_path):
+		try:
+			cdll.AddLibrary(add_lib_full_path)
+		except:
+			message = sys.exc_info()[0]
+			print('error: ' + message, flush = True)
+			raise
+
+
 def Create(object_type):
 	try:
 		object_type_b = bytes(object_type, 'utf-8')
@@ -169,6 +182,14 @@ def SetCallBack(id_, property_, callBack_):
 def SetEmptyCallBack(id_, property_, callBack_):
 	try:
 		lib.SetInitializeCallBack(ctypes.c_int(id_), bytes(property_, 'utf-8'), callBack_)
+	except:
+		message = sys.exc_info()[0]
+		print('error: ' + str(message), flush = True)
+		raise
+
+def GetCallBack(id_, property_):
+	try:
+		return lib.GetCallBack(ctypes.c_int(id_), bytes(property_, 'utf-8'))
 	except:
 		message = sys.exc_info()[0]
 		print('error: ' + str(message), flush = True)

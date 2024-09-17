@@ -19,16 +19,28 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include "../Deltares.Probabilistic/Model/ProjectServer.h"
 
 #include <string>
+#include <memory>
+
+#include "../Deltares.Probabilistic/Server/ProjectServer.h"
+#include "../Deltares.Probabilistic/Server/ExternalHandler.h"
+
 #ifdef __GNUC__
 #define DLL_PUBLIC __attribute__ ((visibility("default")))
 #else
 #define DLL_PUBLIC __declspec(dllexport) // Note: actually gcc seems to also supports this syntax.
 #endif
 
-std::shared_ptr<Deltares::Models::ProjectServer> projectServer = std::make_shared< Deltares::Models::ProjectServer>();
+std::shared_ptr<Deltares::Server::ProjectServer> projectServer = std::make_shared< Deltares::Server::ProjectServer>();
+
+extern "C" DLL_PUBLIC void AddLibrary(char* library)
+{
+    std::string libraryStr(library);
+    std::shared_ptr<Deltares::Server::ExternalHandler> externalHandler = std::make_shared<Deltares::Server::ExternalHandler>(libraryStr);
+
+    return projectServer->AddHandler(externalHandler);
+}
 
 extern "C" DLL_PUBLIC int Create(char* type)
 {
@@ -181,6 +193,12 @@ extern "C" DLL_PUBLIC void SetInitializeCallBack(int id, char* property, Deltare
 {
     std::string propertyStr(property);
     projectServer->SetEmptyCallBack(id, propertyStr, callBack);
+}
+
+extern "C" DLL_PUBLIC Deltares::Models::ZLambda GetCallBack(int id, char* property)
+{
+    std::string propertyStr(property);
+    return projectServer->GetCallBack(id, propertyStr);
 }
 
 extern "C" DLL_PUBLIC void Execute(int id, char* method)
