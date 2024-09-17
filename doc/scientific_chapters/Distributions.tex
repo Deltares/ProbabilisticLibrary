@@ -19,7 +19,7 @@ and the cumulative density function, or in other words the non exceeding probabi
 \end{align}
 
 Since there is no closed form to express $\Phi$, it is approximated by approximation formula 26.2.17 for Normal Probability Function, Handbook of Mathematical Functions, Abramowitz \& Stegun.
-In the \probLib this is done using the methods of \cite{Wichura1988} and \cite{Hall_etall_1968}. Both methods are in double precision.
+In \probLib this is done using the methods of \cite{Wichura1988} and \cite{Hall_etall_1968}. Both methods are in double precision.
 
 Other distribution types are converted to the standard normal distribution. The physical value in another distribution type, called $x$, is converted to a value $u$ in the standard normal distribution, in such a way that the non exceeding probability of $x$ is equal to the exceeding probability of $u$. With $\Phi$ the cumulative density function of the standard normal distribution, the converted value $u$ is
 
@@ -40,7 +40,8 @@ The probabilities of the standard normal distribution are displayed in the follo
 \section{Distribution properties}
 \label{sec:DistributionProperties}
 
-This paragraph lists all distribution types supported by the \probLib. In theory, endless distribution types exist. All distributions have the following properties:
+This paragraph lists all distribution types supported by \probLib.
+In theory, endless distribution types exist. All distributions have the following properties:
 
 Each distribution reflects actual values. From these values $x_i$ the following properties can be derived
 
@@ -306,7 +307,8 @@ where
 
 The expression for the fit is from: \citep{Forbes2010} .
 
-The two parameters that should be input into the \probLib are therefore the rate parameter and the location parameter. \Fref{fig:A.7} shows the effect of different choices of the parameters.
+The two parameters that should be input into \probLib are therefore the rate parameter and the location parameter.
+\Fref{fig:A.7} shows the effect of different choices of the parameters.
 
 \begin{figure}[H]\centering
 	\includegraphics*[width=4.17in, height=3.27in, keepaspectratio=false]{Pictures/gumbel_dist}
@@ -437,11 +439,16 @@ The properties of the Rayleigh distribution are
 \end{tabular}
 
 \subsection{Rayleigh-$N$ distribution\label{sec:rayleighNdistribution}}
-The Rayleigh-$N$ distribution is a special distribution implemented in the \probLib. This distribution is based on the Rayleigh distribution (see \Aref{sec:rayleighdistribution}) and it is defined as follows:
+The Rayleigh-$N$ distribution is a special distribution implemented in \probLib.
+This distribution is based on the Rayleigh distribution
+(see \Aref{sec:rayleighdistribution}) and it is defined as follows:
 \begin{equation}
 	F(x;\sigma,N) = \left(1-e^{-x^2/(2 \sigma^2)}\right)^N\mbox{ for $x\geq 0$}
 \end{equation}
-where $\sigma>0$ is the scale parameter and $N>0$. The Rayleigh-$N$ distribution is in fact the Rayleigh distribution taken to the power $N$. When $N=1$, the Rayleigh-$N$ distribution is exactly equal to the Rayleigh distribution. The corresponding probability density function is:
+where $\sigma>0$ is the scale parameter and $N>0$.
+The Rayleigh-$N$ distribution is in fact the Rayleigh distribution taken to the power $N$.
+When $N=1$, the Rayleigh-$N$ distribution is exactly equal to the Rayleigh distribution.
+The corresponding probability density function is:
 \begin{equation}
 	f(x;\sigma,N) = \frac{N x}{\sigma^2}\left(1-e^{-x^2/(2 \sigma^2)}\right)^{N-1} e^{-x^2/(2 \sigma^2)}\mbox{ for $x\geq 0$}
 \end{equation}
@@ -709,7 +716,8 @@ where
 	$F\left(x_i\right)$ & is the CDF value corresponding with $x_i$ (see \autoref{eq:CDF}); \\  
 \end{longtable*}
 
-The goodness of fit is also applied to observation sets in the tab "Source". This is an indication whether two series of observations originate from the same measurements.
+The goodness of fit is also applied to observation sets in the tab "Source" (in PTK).
+This is an indication whether two series of observations originate from the same measurements.
 
 \section{Prior distribution}
 \label{sec:PriorDistribution}

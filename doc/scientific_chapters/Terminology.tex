@@ -58,7 +58,7 @@ These techniques will be described in detail in the \Aref{sec:Reliability}.
 In practice, it is often advantageous to carry out probabilistic analyses in a standardized space, in which each of the variables are independent.
 This independence can help simplify the probabilistic techniques.
 The dependence between variables is reintroduced when the standardized variables are transformed back to the real variables.
-In the \probLib the standardized space that is used is the standard normal space.
+In \probLib the standardized space that is used is the standard normal space.
 This means each of the transformed random variables are normally distributed with mean $0$, and standard deviation $1$.
 Each of the random variables in $X$ can be transformed to independent standard normal variables $U = (U_1,\dots U_n)$.
 If all the $X$-variables are mutually independent, this transformation can be described as follows:
@@ -105,7 +105,7 @@ f_{X_{i} } \left(x_{1} ,...,x_{i} \right)=\int _{}... \int _{}f_{X} \left(x_{1} 
 
 The combination of equations \eqref{eq:2-8} and \eqref{eq:2-9} potentially requires a cumbersome (numerical) integration procedure. 
 
-\Note{in \hr, this process is far less complex as correlation is usually limited to pairs of variables.
+\Note{in practice, this process is far less complex as correlation is usually limited to pairs of variables.
 Generally, the pairs are split into a dependent variable and an independent variable, and the dependent variable is written as a function of the independent variable.
 The function consists of a fully deterministic dependent part and a probabilistic independent part:}
 \begin{equation}

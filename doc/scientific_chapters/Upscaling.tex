@@ -1,4 +1,4 @@
-\chapter{Upscaling for systems with identical components: numerical integration with constant correlation}\label{chp:upscaling}
+\chapter{Upscaling for systems with identical components}\label{chp:upscaling}
 
 Upscaling refers to combining failure probabilities over ''identical components''.
 Upscaling is distinguished from the more generic Hohenbichler combination techniques because the components being identical allows for a more convenient and efficient combination procedure.
@@ -442,7 +442,7 @@ P_{F} \left(T\right)=1-{\rm  }\left[1-P_{{\rm F}} \left(0\right)\right]\exp \lef
 The equations above can also be used if $Z$ is a function of space.
 In that case, $t$ and $T$ need to be replaced by $x$ and $X$, where $x$ represents distance, e.g. the longitudinal distance along a dike section. 
 
-\Note{in the \probLib, the outcrossing method is applied in time as well as in space.
+\Note{in \probLib, the outcrossing method is applied in time as well as in space.
 First, the probabilities of failure of the smallest ''components'' are computed with the probabilistic techniques for single components as described in \Aref{sec:ReliabilityTechniques}.
 The smallest component is e.g. a cross section of a flood defense (space) during a tidal period (time) for a single failure mechanism.
 So, the initial result of the probabilistic procedure is the probability that failure occurs at a certain cross section within the time-span of a tidal period for a single mechanism.
@@ -454,7 +454,7 @@ This is described in more detail in \cite{TechRef}.
 In general, functions $\nu(t)$ and $\nu(x)$ are too complex to solve equation \eqref{ZEqnNum131880} analytically, which means approximating techniques are required.
 The \probLib uses different outcrossing approaches for space and time because of mutual differences in autocorrelation structures.
 
-Note that the component for which  $P_F(0)$ is computed in the \probLib has a ''width'' equal to the assumed breach width.
+Note that the component for which  $P_F(0)$ is computed in \probLib has a ''width'' equal to the assumed breach width.
 This means a (slight) reduction in the length of the remainder of the dike section and hence a (slight) reduction in the computed failure probability.
 The assumed breach width depends on the mechanism under consideration.
 The ''width'' in time is taken equal to a tidal period.
@@ -483,7 +483,7 @@ For the upscaling from cross-section to longitudinal segment (assuming statistic
 \end{align}
 where $P_{f,segment}$ refers to the failure probability of the longitudinal segment and $P_{f,cross-section}$ refers to the failure probability of the cross section within that longitudinal segment.
 To derive the ratio of equation \eqref{ZEqnNum163660}, a notion of the spatial correlation within the segment is required, for each random variable, $X$, involved.
-In the \probLib this correlation is described with the following model:
+In \probLib this correlation is described with the following model:
 \begin{align}
 \rho \left(\Delta y\right)=\rho _{x} +(1-\rho _{x} )\exp \left[-\left(\frac{\Delta y^{2} }{d_{x}^{2} } \right)\right]\label{ZEqnNum807806} 
 \end{align}
@@ -536,7 +536,7 @@ This means the continuous process, in which failure can occur at any location al
 This simplification/approximation is only valid for a well selected value of $\Delta L$.
 If we assume that the spatial variation of $Z$ is a Gaussian ergodic process (i.e. $\rho_Z=0$), the length $\Delta L$ should be taken equal to:
 \begin{align}
-\Delta L=d_{Z} \sqrt{\pi } /\beta \quad ;{\rm if} \rho _{Z} =0\label{ZEqnNum979631} 
+\Delta L=d_{Z} \sqrt{\pi } /\beta \quad ;{\rm if} ~ \rho _{Z} =0\label{ZEqnNum979631} 
 \end{align}
 where $\beta$ is the reliability index as derived in the probabilistic computation for a cross-section (see \Aref{sec:ReliabilityTechniques}).
 The value of $\Delta L$ is a result of the outcrossing approach (see \Aref{Section_2.4.5.3}) in which the spatial variation of $Z$ is assumed to be a Gaussian ergodic process.
@@ -544,7 +544,7 @@ The derivation of $\Delta L$, as described in equation \eqref{ZEqnNum979631}, is
 
 With the assumption of a Gaussian ergodic process, the failure probability of a dike segment of length $L$ is approximately equal to (combine equations \eqref{ZEqnNum665818} and \eqref{ZEqnNum979631}):
 \begin{align}
-P_{f,segment} \approx \left(1+\frac{L\beta }{d_{Z} \sqrt{\pi } } \right) \Phi \left(-\beta \right)\quad ;{\rm if} \rho _{Z} =0\label{eq:sm3} 
+P_{f,segment} \approx \left(1+\frac{L\beta }{d_{Z} \sqrt{\pi } } \right) \Phi \left(-\beta \right)\quad ;{\rm if} ~ \rho _{Z} =0\label{eq:sm3} 
 \end{align}
 
 If $\rho_Z$$>$0, the assumption of a Gausian ergodic process does not hold and an alternative solution is required.
@@ -565,7 +565,7 @@ P\left[Z<0\right]=\int _{}^{}P\left[Z<0|v\right]f_{V} \left(v\right)dv \label{ZE
 where $f_V(v)$ is the standard normal density function.
 The conditional failure probability, $P[Z<0|v]$, in equation \eqref{ZEqnNum551150} can be written as (see Jongejan, 2012):
 \begin{align}
-\begin{array}{l} {P\left[Z<0|v\right]=1-\left(1-P\left(Z_{cross} <0\right)\right)e^{-N_{f} } } \\\\ {N_{f} =\frac{L}{2\pi } e^{-\frac{\beta^{*2} }{2} } \frac{\sqrt{2} }{d_{z} } } \\\\ {\beta^{*}=\frac{\beta _{cross} -v\sqrt{\rho _{z} } }{\sqrt{1-\rho _{z} } } } \end{array}\label{ZEqnNum591781} 
+\begin{array}{l} {P\left[Z<0|v\right]=1-\left(1-P\left(Z_{cross} <0\right)\right)e^{-N_{f} } } \\\\ {N_{f} = \displaystyle \frac{L}{2\pi } e^{-\frac{\beta^{*2} }{2} } \frac{\sqrt{2} }{d_{z} } } \\\\ {\beta^{*}= \displaystyle \frac{\beta _{cross} -v\sqrt{\rho _{z} } }{\sqrt{1-\rho _{z} } } } \end{array}\label{ZEqnNum591781} 
 \end{align}
 where $Z_{cross}$ and $\beta_{cross}$ are the $Z$-function and reliability index of the cross section and $\Phi$ is the standard normal distribution function.
 The combination of equations \eqref{ZEqnNum551150} and \eqref{ZEqnNum591781} provide the probability of failure for a flood defense segment.
@@ -573,7 +573,7 @@ More details on the derivation of equations \eqref{ZEqnNum551150} and \eqref{ZEq
 Equation \eqref{ZEqnNum591781} can be evaluated with high accuracy using for example numerical integration.
 
 \Note{in formula \ref{eq:sm3}  the width of the mechanism is not taken into account.
-In the \probLib the width of the mechanism is taken equal to $\Delta L$.
+In \probLib the width of the mechanism is taken equal to $\Delta L$.
 In the formula for $N_F$ the length $L$ is replaced by $L$ - $\Delta L$.
 The idea behind this correction is that for stretches smaller than $\Delta L$ it is not be possible to have an increase in failure probability as a result of the length effect.}
 
@@ -586,7 +586,7 @@ The idea behind this correction is that for stretches smaller than $\Delta L$ it
 %With the current day computation power, equation \eqref{ZEqnNum591781} can be evaluated in a split second, so it is recommended not to use the approximation as described with equation \eqref{ZEqnNum246851}.
 
 \Note{formula \eqref{ZEqnNum591781} is only valid for value of $\rho_z$ $>$ $0$.
-For values of $\rho_z = 0$ the Hohenbichler method is used in the \probLib in combination with the outcrossing approach.}
+For values of $\rho_z = 0$ the Hohenbichler method is used in \probLib in combination with the outcrossing approach.}
 
 \subsection{Computing equivalent $\alpha$-values}\label{Section_2.5.5.2}
 
@@ -610,4 +610,4 @@ Since components in this case have length $\Delta L$, this correlation is equal 
 \begin{align}
 \rho _{k} =\rho _{kr} +\left(1-\rho _{kr} \right)\cdot \exp \left[-\left(\frac{\Delta L}{d_{k} } \right)^{2} \right]\label{eq:sm5} 
 \end{align}
-where, $\rho_{kr}$ is the residual correlation length of variable $k$ and $d_x$ is the spatial correlation length of variable $k$. 
+where $\rho_{kr}$ is the residual correlation length of variable $k$ and $d_x$ is the spatial correlation length of variable $k$. 

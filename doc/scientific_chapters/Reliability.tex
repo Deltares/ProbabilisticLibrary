@@ -98,7 +98,8 @@ where
 	$\sigma_p$ & is the standard deviation of the probability of failure; \\  
 	$p$ & is the probability of failure $p_{\text{failure}}$; \\
 	$N$ & is the total number of realizations; \\
-	$z$ & is the quantile of the standard normal distribution corresponding with $\alpha$. $z$ is 1 in the \probLib; \\
+	$z$ & is the quantile of the standard normal distribution corresponding with $\alpha$.
+	$z$ is 1 in \probLib; \\
 	$\Phi$ & is the CDF of the standard normal distribution (see \autoref{eq:StandardNormalCDF}); \\
 	$\alpha$ & is the confidence level.
 \end{longtable}
@@ -122,9 +123,11 @@ The user can set the maximum variation coefficient $\varepsilon_{\text{max}}$. T
 	\caption{Crude Monte Carlo convergence}
 \end{figure}
 
-When the underlying model does not succeed for a certain realization, its results will be ignored. The user should decide whether the number of non succeeded realizations is acceptable.
+When the underlying model does not succeed for a certain realization, its results will be ignored.
+The user should decide whether the number of non succeeded realizations is acceptable.
 
-The minimum and maximum value for which the integration will run, are defined in the u-space. The Monte Carlo analysis will detect by a minimum number of samples whether the left over area fails or does not fail. 
+The minimum and maximum value for which the integration will run, are defined in the u-space.
+The Monte Carlo analysis will check whether the left over area fails or not. 
 
 \begin{figure}[H]
 	\label{fig:MonteCarlo}
@@ -144,7 +147,7 @@ Importance sampling is a variation on Crude Monte Carlo (see \autoref{sec:CrudeM
 Usually Monte Carlo realizations are drawn proportional to their probability density $\varphi\left(u_i\right)$,
 since \probLib uses the standard normal space.
 With importance sampling each realization $u$ is translated to $u_{\text{imp}}$. 
-The \probLib supports the following translation for each variable separately:
+\probLib supports the following translation for each variable separately:
 
 \begin{align} 
 \label{eq:ImportanceSamplingVariance}
@@ -223,7 +226,7 @@ p \geq\tfrac{1}{2} & \tfrac{\sigma_p}{\left(1-p\right)} = z \sqrt{\frac{W_{\text
 where
 
 \begin{longtable}{p{16mm}p{\textwidth-24pt-16mm}}  
-	$z$ & is a value related to the confidence level (see \autoref{eq:MonteCarloStandardConfidence}). In the \probLib, $z$ is 1; \\
+	$z$ & is a value related to the confidence level (see \autoref{eq:MonteCarloStandardConfidence}). In \probLib, $z$ is 1; \\
 	$W_{\text{design point}}$ & is the weight of the realization of the design point; \\  
 	$N$ & is the total number of realizations; \\  
 \end{longtable}
@@ -240,7 +243,9 @@ When the underlying model does not succeed for a certain realization, its result
 \subsubsection{Mean realization}
 \label{sec:StartPoint}
 
-The mean realization (see {\autoref{eq:ImportanceSamplingVariance}) is essential for succeedance of the importance sampling algorithm. The mean realization can be user defined or derived automatically. The following options are available:
+The mean realization (see {\autoref{eq:ImportanceSamplingVariance}) is essential for the successful behaviour of the importance sampling algorithm.
+The mean realization can be user defined or derived automatically.
+The following options are available:
 	
 \begin{longtable}{p{16mm}p{\textwidth-24pt-16mm}}  
 	None & The mean realization is user defined. \\
@@ -308,7 +313,7 @@ The following is performed in each step.
 \begin{longtable}{p{40mm}p{\textwidth-24pt-40mm}}  
 	Initialize start point & Find the start point with one of the start point algorithms (see \autoref{sec:StartPoint}). \\
 	Importance sampling & The importance sampling algorithm (see \autoref{sec:ImportanceSamplingAlgorithm}). The number of samples in each importance sampling can be set to a maximum. When the auto break option is used, the algorithm decides when to break a loop and continue with the next loop (see \autoref{sec:AutoBreakLoops}). \\
-	Converged? & Checks whether convergence is (see \autoref{eq:ISFractionFailed})  \\
+	Converged? & Checks whether there is convergence (see \autoref{eq:ISFractionFailed})  \\
 	Final round? & Checks whether the last allowed round is reached, in order to prevent endless loops  \\
 	Recalculate & Recalculates the last round with a possibly higher number of realizations. \\
 	Enough failures? & Checks whether enough failures are found. Depending on this value, the kind of modification of importance sampling settings is determined. \\
@@ -356,7 +361,9 @@ where
 	$n_\text{current}$ & the number of samples already made in the current loop. \\
 	$W_\text{max}$ & the maximum weight of a failed sample in the current loop. \\
 	$W_\text{total}$ & the total weight of the failed samples in the current loop. \\
-	$\beta_\text{current}$ & the reliability index based on the samples in the current loop.
+	$\beta_\text{current}$ & the reliability index based on the samples in the current loop. \\
+	$\varepsilon_\text{weight}$ convergence criterion,
+	which specifies the maximum relative weight of all failing samples. Default is 0.1.
 \end{longtable}
 
 
@@ -399,7 +406,9 @@ where
 	$R_{\text{[-1, 1]}}$ & is a random value between -1 and 1; \\  
 	$r_{\text{var}}$ & is the ratio of probability density between $u_{\text{var, prop}}$ and $u_{\text{var, prev}}$; \\  
 	$\varphi$ & is the probability density function of a standard normal distribution (see \autoref{eq:StandardNormalPDF}); \\  
-	$\Delta \sigma$ & is the user given max deviation from the previous $u$-value. In case the option 'Adaptive Conditional' is used, this value is derived automatically and updated during the process [\cite{PAPAIOANNOU201589}].
+	$\Delta \sigma$ & is the user given maximum deviation from the previous $u$-value.
+	In case the option 'Adaptive Conditional' is used,
+	this value is derived automatically and updated during the process [\cite{PAPAIOANNOU201589}].
 \end{longtable}
 
 The proposed sample $u_{\text{prop}}$ is used if the corresponding z-value is less than the $z_{\text{k}}$, which is the highest z-value in the subset used to generate new realizations, otherwise the original sample is used.
@@ -692,7 +701,8 @@ where
 \section{Contribution per variable}
 \label{sec:Contribution per variable}
 
-For all numerical integration based (Numerical Integration and Numerical Bisection) and Monte Carlo based (Crude Monte Carlo, Importance Sampling, Directional Sampling and Subset Simulation) reliabilty techniques, the contribution per variable is calculated after the calculation of the reliability index. 
+% TODO Numerical Bisection not in Streams yet
+For all numerical integration based (Numerical Integration) and Monte Carlo based (Crude Monte Carlo, Importance Sampling, Directional Sampling and Subset Simulation) reliability techniques, the contribution per variable is calculated after the calculation of the reliability index. 
 
 In the next subsections various methods will be explained.
 
