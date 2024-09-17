@@ -26,7 +26,7 @@ implicit none
 integer, parameter :: combAND =  0
 integer, parameter :: combOR  =  1
 
-private :: combineMultipleElements_c, warnHohenbichler, upscaleLengthC, upscaleInTimeC, &
+private :: combineMultipleElements_c, warnHohenbichler, upscaleLengthC, &
     combineTwoElementsPartialCorrelationC1, combineTwoElementsPartialCorrelationC2, &
     combineMultipleElementsProb_c, c_double, wp
 
@@ -72,19 +72,6 @@ interface
         real(kind=c_double), intent (in)  :: BreachLength         !< Breach length (mechanism width)
         integer, value,      intent (in)  :: nStochasts           !< number of stochasts
     end function upscaleLengthC
-end interface
-
-interface
-!>
-!! Subroutine for combining failure probabilities over equal elements, with exceptions for correlations close to zero
-    integer function upscaleInTimeC (nrTimes, beta, alpha, inRhoT, nStochasts) bind(c)
-        use, intrinsic :: iso_c_binding, only: c_double
-        real(kind=c_double),  intent(in)    :: nrTimes    !< Number of time the origional time
-        real(kind=c_double),  intent(inout) :: beta       !< Reliability index of a single time element
-        real(kind=c_double),  intent(inout) :: alpha(*)   !< Influence coefficients of a single time element
-        real(kind=c_double),  intent(in)    :: inRhoT(*)  !< Correlation coefficients for each of the variables, in time
-        integer, value,       intent(in)    :: nStochasts !< number of stochasts
-    end function upscaleInTimeC
 end interface
 
 interface
@@ -193,18 +180,6 @@ contains
         end if
         call warnHohenbichler(n)
     end subroutine upscaleLength
-
-    subroutine upscaleInTime (nrTimes, beta, alpha, inRhoT)
-        real(kind=c_double),  intent(in)    :: nrTimes   !< Number of time the origional time
-        real(kind=c_double),  intent(inout) :: beta      !< Reliability index of a single time element
-        real(kind=c_double),  intent(inout) :: alpha(:)  !< Influence coefficients of a single time element
-        real(kind=c_double),  intent(in)    :: inRhoT(:) !< Correlation coefficients for each of the variables, in time
-
-        integer :: n
-
-        n = upscaleInTimeC(nrTimes, beta, alpha, inRhoT, size(alpha))
-        call warnHohenbichler(n)
-    end subroutine upscaleInTime
 
 !>
 !! Subroutine for upscaling random variables to the largest block duration
