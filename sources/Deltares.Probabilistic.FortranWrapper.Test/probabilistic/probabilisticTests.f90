@@ -32,7 +32,6 @@ module probabilisticTests
     use waartsFunctionsTests
     use performImportanceSamplingTests
     use performAdaptiveMCIStests
-    use HohenbichlerTests
     use combineElementsTests
     use performDSTests
     use upscalingTests
@@ -58,7 +57,6 @@ subroutine allProbabilisticTests
     call allDistributionFunctionsTests
     call allWaartsFunctionsTests
     call allProbMethodsWaartsFunctionsNoIterationTest
-    call allHohenbichlerTests
     call allCombineElementsTests
     call allPerformImportanceSamplingTests
     call allPerformAdaptiveMCIStests
