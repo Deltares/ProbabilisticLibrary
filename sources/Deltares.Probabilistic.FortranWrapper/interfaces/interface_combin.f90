@@ -28,7 +28,7 @@ integer, parameter :: combOR  =  1
 
 private :: combineMultipleElements_c, warnHohenbichler, upscaleLengthC, upscaleInTimeC, &
     combineTwoElementsPartialCorrelationC1, combineTwoElementsPartialCorrelationC2, &
-    combineMultipleElementsSpatialCorrelated_c, combineMultipleElementsProb_c, ComputeBetaSection_c, c_double, wp
+    combineMultipleElementsSpatialCorrelated_c, combineMultipleElementsProb_c, c_double, wp
 
 interface
     integer function combineMultipleElements_c( betaElement, alphaElement, rho, beta, alpha, &
@@ -54,21 +54,6 @@ interface
         real(kind=c_double),  intent(out) :: alpha(*)
         integer, value,       intent(in)  :: combAndOrIn, combinerType, nrElms, nrStoch
     end subroutine combineMultipleElementsGeneral
-end interface
-
-interface
-!>
-!! Subroutine used in upscaling for computing the beta of a section from the beta of a cross section.
-    integer function ComputeBetaSection_c( betaCrossSection, sectionLength, breachL, rhoZ, dz, deltaL, betaSection) bind(c)
-        use, intrinsic :: iso_c_binding, only: c_double
-        real( kind= c_double), intent(in)  :: betaCrossSection     !< Reliability index of the cross section
-        real( kind= c_double), intent(in)  :: sectionLength        !< Length of the section
-        real( kind= c_double), intent(in)  :: breachL              !< Breach length
-        real( kind= c_double), intent(in)  :: rhoZ                 !< Correlation Z-function
-        real( kind= c_double), intent(in)  :: dz                   !< Correlation length
-        real( kind= c_double), intent(in)  :: deltaL               !< Delta L
-        real( kind= c_double), intent(out) :: betaSection          !< Reliability index of the section after upscaling
-    end function ComputeBetaSection_c
 end interface
 
 interface
@@ -365,24 +350,6 @@ subroutine combineMultipleElementsProb( betaElement, alphaElement, percentages, 
     call warnHohenbichler(n)
 
 end subroutine combineMultipleElementsProb
-
-subroutine ComputeBetaSection( betaCrossSection, sectionLength, breachL, rhoZ, dz, deltaL, betaSection)
-    real( kind=wp), intent(in)  :: betaCrossSection     !< Reliability index of the cross section
-    real( kind=wp), intent(in)  :: sectionLength        !< Length of the section
-    real( kind=wp), intent(in)  :: breachL              !< Breach length
-    real( kind=wp), intent(in)  :: rhoZ                 !< Correlation Z-function
-    real( kind=wp), intent(in)  :: dz                   !< Correlation length
-    real( kind=wp), intent(in)  :: deltaL               !< Delta L
-    real( kind=wp), intent(out) :: betaSection          !< Reliability index of the section after upscaling
-
-    integer :: n
-
-    n = ComputeBetaSection_c(betaCrossSection, sectionLength, breachL, rhoZ, dz, deltaL, betaSection)
-
-    call warnHohenbichler(n)
-
-end subroutine ComputeBetaSection
-
 
 ! TODO convert to wrapper to cpp code
 subroutine calculateCombinationWithLargestCorrelation( nStochasts, rhoP, nElements, alpha, i1max, i2max)

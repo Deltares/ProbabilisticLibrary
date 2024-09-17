@@ -104,16 +104,6 @@ int combinemultipleelements_c(double* betaElement, double* alphaElement, double*
 }
 
 extern "C"
-int computebetasection_c(double * betaCrossSection, double* sectionLength, double* breachL, double* rhoZ,
-    double* dz, double* deltaL, double* betaSection)
-{
-    auto up = upscaling();
-    auto result = up.ComputeBetaSection(*betaCrossSection, *sectionLength, *breachL, *rhoZ, *dz, *deltaL);
-    *betaSection = result.first;
-    return (int)result.second;
-}
-
-extern "C"
 int upscalelengthc(double* betaCrossSection, double* alphaCrossSection, double* rhoXK, double* dXK,
     double* sectionLength, double* betaSection, double* alphaSection, double* breachLength, int nStochasts)
 {
