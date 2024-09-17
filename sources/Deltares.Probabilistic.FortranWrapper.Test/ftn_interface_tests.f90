@@ -88,7 +88,7 @@ subroutine test_ds
     type(tMethod)               :: method
     type(tResult)               :: results
     integer                     :: i
-    integer                     :: compIds(3)
+    type(tCompIds)              :: compIds
     character(len=ErrMsgLength) :: errmsg
     type(basicCorrelation)      :: correlations(0)
     real(kind=wp)               :: x(2)
@@ -105,9 +105,9 @@ subroutine test_ds
     method%progressInterval = 5000
     method%numExtraInt = 50
 
-    compIds(1) = 16
-    compIds(2) = 2
-    compIds(3) = 0
+    compIds%id = 16
+    compIds%nrStochasts = 2
+    compIds%nrCorrelations = 0
 
     call probCalcF2C(method, distribs, correlations, zfunc, textualProgress, compIds, x, results)
 
@@ -131,7 +131,7 @@ subroutine test_ds_errorhandling
     type(tdistrib)              :: distribs(2)
     type(tMethod)               :: method
     type(tResult)               :: results
-    integer                     :: compIds(3)
+    type(tCompIds)              :: compIds
     character(len=ErrMsgLength) :: errmsg
     type(basicCorrelation)      :: correlations(0)
     real(kind=wp)               :: x(2)
@@ -143,9 +143,9 @@ subroutine test_ds_errorhandling
     method%numThreads = 1
     method%numExtraInt = 50
 
-    compIds(1) = 17
-    compIds(2) = 2
-    compIds(3) = 0
+    compIds%id = 17
+    compIds%nrStochasts = 2
+    compIds%nrCorrelations = 0
 
     call probCalcF2C(method, distribs, correlations, zfunc, textualProgress, compIds, x, results)
 
@@ -161,7 +161,7 @@ subroutine test_form_errorhandling
     type(tdistrib)              :: distribs(2)
     type(tMethod)               :: method
     type(tResult)               :: results
-    integer                     :: compIds(3)
+    type(tCompIds)              :: compIds
     character(len=ErrMsgLength) :: errmsg
     type(basicCorrelation)      :: correlations(0)
     real(kind=wp)               :: x(2)
@@ -175,9 +175,9 @@ subroutine test_form_errorhandling
     method%trialLoops = 1
     method%numExtraInt = 50
 
-    compIds(1) = 17
-    compIds(2) = 2
-    compIds(3) = 0
+    compIds%id = 17
+    compIds%nrStochasts = 2
+    compIds%nrCorrelations = 0
 
     call probCalcF2C(method, distribs, correlations, zfunc, textualProgress, compIds, x, results)
 

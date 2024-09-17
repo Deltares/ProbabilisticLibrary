@@ -57,14 +57,14 @@ module interface_probCalc
         compIds, x, rn) bind(C)
       use, intrinsic :: iso_c_binding, only: c_double
 #ifdef _MSC_VER
-      import tMethod, tDistrib, basicCorrelation, tResult, zfunc, progressCancel
+      import tMethod, tDistrib, basicCorrelation, tResult, tCompIds, zfunc, progressCancel
 #else
-      import tMethod, tDistrib, basicCorrelation, tResult
+      import tMethod, tDistrib, basicCorrelation, tResult, tCompIds
 #endif
       type(tMethod),  intent(in)    :: method
       type(tDistrib), intent(in)    :: distribs(*)
       type(basicCorrelation), intent(in)  :: correlations(*)
-      integer,        intent(in)    :: compIds(*)
+      type(tCompIds), intent(in)    :: compIds
       procedure(zfunc)              :: fx
       procedure(progressCancel)     :: pc
       real(kind=c_double), intent(inout) :: x(*)
@@ -102,7 +102,7 @@ subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, convergenceDa
     type(tMethod)               :: method
     type(tDistrib)              :: distribs(probDb%stoVar%maxStochasts)
     integer                     :: i, k, nstoch, nStochActive
-    integer                     :: compIds(3)
+    type(tCompIds)              :: compIds
     type(tResult)               :: rn
     character(len=ErrMsgLength) :: msg
     integer, allocatable        :: iPoint(:)
@@ -200,9 +200,9 @@ subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, convergenceDa
         call fatalError("Unknown method in subroutine IterationDS: ", method%iterationMethod)
     else if (nstoch > 0) then
         method%progressInterval = 1
-        compIds(1) = designPointOutputFALSE
-        compIds(2) = nStochActive
-        compIds(3) = probDb%number_correlations
+        compIds%id             = designPointOutputFALSE
+        compIds%nrStochasts    = nStochActive
+        compIds%nrCorrelations = probDb%number_correlations
         if (present(pc)) then
             call probCalcF2C(method, distribs, probDb%basic_correlation, fx, pc, compIds, xDense, rn)
         else

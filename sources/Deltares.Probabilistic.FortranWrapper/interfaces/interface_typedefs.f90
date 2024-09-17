@@ -80,6 +80,12 @@ module interface_typedefs
     logical(kind=c_bool) :: convergence
   end type tResult
 
+  type, public, bind(c) :: tCompIds
+    integer :: id
+    integer ::  nrStochasts
+    integer :: nrCorrelations
+  end type tCompIds
+
   type, public :: tpFORM
       integer                     :: startMethod          !< Method for startvector
       integer                     :: maxIterations        !< Maximum number of iterations

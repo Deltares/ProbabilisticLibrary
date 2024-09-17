@@ -54,6 +54,13 @@ struct tResult
     bool convergence;
 };
 
+struct tCompIds
+{
+    int id;
+    int nrStochasts;
+    int nrCorrelations;
+};
+
 void updateX(const std::vector<std::shared_ptr<StochastPointAlpha>> & alpha, const DPoptions option, tResult & r, const std::shared_ptr<DesignPoint> & newResult,
     double x[], funcWrapper fw)
 {
@@ -108,13 +115,13 @@ extern "C"
 void probcalcf2c(const basicSettings* method, fdistribs c[], corrStruct correlations[],
     const double(*fx)(double[], computationSettings*, tError*),
     const bool(*pc)(ProgressType, const char*),
-    const int compIds[], double x[], tResult* result)
+    const tCompIds* compIds, double x[], tResult* result)
 {
     try
     {
-        auto nStoch = (size_t)compIds[1];
-        auto fw = funcWrapper(compIds[0], fx);
-        auto nrCorrelations = compIds[2];
+        auto nStoch = (size_t)compIds->nrStochasts;
+        auto fw = funcWrapper(compIds->id, fx);
+        auto nrCorrelations = compIds->nrCorrelations;
 
         auto stochasts = std::vector<std::shared_ptr<Deltares::Statistics::Stochast>>();
         for (size_t i = 0; i < nStoch; i++)
