@@ -18,6 +18,6 @@ if(WIN32)
       POSITION_INDEPENDENT_CODE 1
       COMMON_LANGUAGE_RUNTIME ""
     )
-  target_link_libraries(Deltares.Probabilistics.Wrappers Deltares.Probabilistic.Kernel)
+  target_link_libraries(Deltares.Probabilistics.Wrappers Deltares.Probabilistic)
 endif()
 
