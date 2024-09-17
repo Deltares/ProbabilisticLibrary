@@ -28,7 +28,7 @@ integer, parameter :: combOR  =  1
 
 private :: combineMultipleElements_c, warnHohenbichler, upscaleLengthC, upscaleInTimeC, &
     combineTwoElementsPartialCorrelationC1, combineTwoElementsPartialCorrelationC2, &
-    combineMultipleElementsSpatialCorrelated_c, combineMultipleElementsProb_c, c_double, wp
+    combineMultipleElementsProb_c, c_double, wp
 
 interface
     integer function combineMultipleElements_c( betaElement, alphaElement, rho, beta, alpha, &
@@ -152,20 +152,6 @@ interface
         integer, value,       intent(in)           :: combAndOr   !< Combination type, And or Or
         integer, value,       intent(in)           :: nStochasts  !< number of stochasts
     end function combineTwoElementsPartialCorrelationC2
-end interface
-
-interface
-    integer function combineMultipleElementsSpatialCorrelated_c( betaElement, alphaElement, rho, beta, alpha, &
-            combAndOrIn, nrElms, nrStoch ) bind(c)
-        use, intrinsic :: iso_c_binding, only: c_double
-        real(kind=c_double),  intent(in)  :: betaElement(*)     !< Reliability index per element
-        real(kind=c_double),  intent(in)  :: alphaElement(*)    !< Alpha vector per element
-        real(kind=c_double),  intent(in)  :: rho(*)             !< Correlation data
-        real(kind=c_double),  intent(out) :: beta               !< Reliability index after combining over elements
-        real(kind=c_double),  intent(out) :: alpha(*)           !< Alpha vector after combining over elements
-        integer, value,       intent(in)  :: combAndOrIn        !< Combination type, And or Or
-        integer, value,       intent(in)  :: nrElms, nrStoch
-    end function combineMultipleElementsSpatialCorrelated_c
 end interface
 
 interface
@@ -300,31 +286,6 @@ subroutine combineMultipleElements( betaElement, alphaElement, rho, beta, alpha,
     call warnHohenbichler(n)
 
 end subroutine combineMultipleElements
-
-!> This subroutine combines multiple elements with spatial correlation
-subroutine combineMultipleElementsSpatialCorrelated( betaElement, alphaElement, rho, beta, alpha, combAndOrIn )
-    real(kind=c_double),  intent(in)  :: betaElement(:)     !< Reliability index per element
-    real(kind=c_double),  intent(in)  :: alphaElement(:,:)  !< Alpha vector per element
-    real(kind=c_double),  intent(in)  :: rho(:,:,:)         !< Correlation data
-    real(kind=c_double),  intent(out) :: beta               !< Reliability index after combining over elements
-    real(kind=c_double),  intent(out) :: alpha(:)           !< Alpha vector after combining over elements
-    integer, optional,    intent(in)  :: combAndOrIn        !< Combination type, And or Or
-
-    integer :: nrElms, nrStoch, combAndOr, n
-
-    nrElms =  size(betaElement)
-    nrStoch = size(alpha)
-    if ( present(combAndOrIn) ) then
-        combAndOr = combAndOrIn
-    else
-        combAndOr = combOr
-    end if
-
-    n = combineMultipleElementsSpatialCorrelated_c(betaElement, alphaElement, rho, beta, alpha, combAndOr, nrElms, nrStoch)
-
-    call warnHohenbichler(n)
-
-end subroutine combineMultipleElementsSpatialCorrelated
 
 !> This subroutine calculates the reliability index (beta) and alpha values combining over elements
 subroutine combineMultipleElementsProb( betaElement, alphaElement, percentages, beta, alpha, combAndOrIn )

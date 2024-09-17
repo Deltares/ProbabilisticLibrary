@@ -126,8 +126,6 @@ subroutine allCombineElementsTests
        "combineElementsTests: Test 2 for the development of a spatial correlation model", level)
    call testWithLevel( testcombineMultipleElementsSpatialCorrelated3, &
        "combineElementsTests: Test 3 for the development of a spatial correlation model", level)
-   call testWithLevel( testcombineMultipleElementsSpatialCorrelated4, &
-       "combineElementsTests: Test 4 for the development of a spatial correlation model", level)
    call testWithLevel( testcombinaTwoElementsPartialCorrelationPiping, &
        "combineElementsTests: test to reproduce failing piping calculation ", level)
 
@@ -1932,80 +1930,6 @@ subroutine testcombineMultipleElementsSpatialCorrelated3
 
 end subroutine testcombineMultipleElementsSpatialCorrelated3
 !
-!> Test of combine multiple elements spatial correlated \n
-!! This test gives the results as calculated with the method residual correlation
-!!
-subroutine testcombineMultipleElementsSpatialCorrelated4
-    integer, parameter                                              :: nStochast = 4        ! Number of stochastic variables
-    integer, parameter                                              :: nElements = 20       ! Number of elements
-    real (kind = wp)                                                :: betaCrossSection     ! Beta for the cross section
-    real (kind = wp), dimension(nStochast)                          :: alphaCrossSection
-    real (kind = wp), dimension(nElements)                          :: betaElement      ! Beta for the elements
-    real (kind = wp), dimension(:, :), allocatable                  :: alphaElement     ! Alpha() for the elements
-    real (kind = wp)                                                :: betaSection      ! Beta for the section
-    real (kind = wp), dimension(nStochast)                          :: alphaSection     ! Alpha() for the section
-    real (kind = wp)                                                :: betaC            ! Beta for the combination of the elements
-    real (kind = wp), dimension(nStochast)                          :: alphaC           ! Alpha() for the combination of the elements
-    real (kind = wp), dimension(nStochast)                          :: rhoXK            !
-    real (kind = wp), dimension(nStochast)                          :: dXK              !
-    real (kind = wp)                                                :: deltaX           !
-    real (kind = wp)                                                :: sectionLength    !
-    integer                                                         :: i                ! Counter
-    integer                                                         :: j                ! Counter
-    integer                                                         :: k                ! Counter
-    integer                                                         :: iStochast        ! Index for referring to a stochastic variable
-    integer                                                         :: ierr             ! Error code of allocate
-    character( len = 132)                                           :: errorText        ! Diagnostic message in case of test failure
-    real (kind = wp), dimension(:, :, :), allocatable               :: rhoSpatial       ! Correlation of the stochastic variables
-    real (kind = wp), dimension(nStochast)                          :: expectedAlphaC
-    real (kind = wp)                                                :: expectedBeta
-
-    allocate(rhoSpatial(nElements, nElements, nStochast), stat=ierr)
-    call assert_equal(ierr, 0, "allocation of rhoSpatial failed")
-
-    betaCrossSection     = 5.0d0
-    alphaCrossSection(1) = 0.6D0
-    alphaCrossSection(2) = sqrt(0.5D0 - 0.36_wp)
-    alphaCrossSection(3) = 0.6D0
-    alphaCrossSection(4) = sqrt(0.5D0 - 0.36_wp)
-    rhoXK                = (/  0.5D0,  0.5D0,  0.2D0,  0.2D0 /)
-    dXK                  = (/ 500.D0, 300.D0, 500.D0, 300.D0 /)
-    sectionLength        = 100.D0
-!
-    expectedBeta  =    4.46188711523653_wp                                                                         ! pre-computed
-    expectedAlphaC= (/ 0.601319423661625_wp, 0.377260946406375_wp, 0.598102531853429_wp, 0.371971088169949_wp /)   ! pre-computed
-!
-    call upscaleLength ( betaCrossSection, alphaCrossSection, rhoXK, dXK, sectionLength, betaSection, alphaSection )
-    betaElement = betaSection
-!
-    allocate (alphaElement(nElements, nStochast), stat=ierr)
-    call assert_equal(ierr, 0, "allocation of alphaElement failed")
-
-    do i = 1, nElements
-        alphaElement(i,:) = alphaSection
-    end do
-    do i = 1, nStochast
-        do j = 1, nElements
-            do k = 1, nElements
-                deltaX = min( j-k, k-j ) * sectionLength
-                rhoSpatial(k, j, i) = rhoXK(i) + (1.0D0 - rhoXK(i)) * exp(- deltaX * deltaX / dXK(i) / dXK(i) )
-            end do
-        end do
-    end do
-!
-    call combineMultipleElementsSpatialCorrelated( betaElement, alphaElement, rhoSpatial, betaC, alphaC)
-!
-!
-    call assert_comparable( betaC, expectedBeta, 1d-6, "An unexpected value is found for the beta of the combined elements" )
-!
-    do iStochast= 1, nStochast
-       write( errorText, '(a, i0, a)')                                                    &
-             "An unexpected value is found for design point entry  alpha(", iStochast,    &
-             ")  of the combined elements"
-       call assert_comparable( alphaC(iStochast), expectedAlphaC(iStochast), 1d-6, errorText)
-    end do
-
-end subroutine testcombineMultipleElementsSpatialCorrelated4
 
 !
 ! NOTE. The tests below are a redo of a subset of the tests implemented above. In the preceding tests it is

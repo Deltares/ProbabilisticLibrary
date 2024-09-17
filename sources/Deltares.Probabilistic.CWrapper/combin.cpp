@@ -246,39 +246,6 @@ int combinetwoelementspartialcorrelationc2(double* beta1, double* alpha1, double
 }
 
 extern "C"
-int combinemultipleelementsspatialcorrelated_c(double* betaElement, double* alphaElement, double* rhoIn,
-    double* beta, double* alpha, const combineAndOr combAndOr, int nrElms, int nrStoch)
-{
-    auto cmb = combineElements();
-    auto elm = fillElements(betaElement, alphaElement, nrElms, nrStoch);
-
-    std::vector<std::vector<vector1D>> rho;
-    for (int k = 0; k < nrElms; k++)
-    {
-        auto q = std::vector<vector1D>();
-        for (int j = 0; j < nrElms; j++)
-        {
-            auto r = vector1D(nrStoch);
-            for (int i = 0; i < nrStoch; i++)
-            {
-                r(i) = rhoIn[j + nrElms * k + nrElms * nrElms * i];
-            }
-            q.push_back(r);
-        }
-        rho.push_back(q);
-    }
-
-    auto result = cmb.combineMultipleElementsSpatialCorrelated(elm, rho, combAndOr);
-
-    *beta = result.ab.getBeta();
-    for (int i = 0; i < nrStoch; i++)
-    {
-        alpha[i] = result.ab.getAlphaI(i);
-    }
-    return result.n;
-}
-
-extern "C"
 int combinemultipleelementsprob_c(double* betaElement, double* alphaElement, double* percentagesIn,
     double* beta, double* alpha, const int combAndOr, int nrElms, int nrStoch)
 {
