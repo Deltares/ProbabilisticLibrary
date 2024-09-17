@@ -13,7 +13,12 @@ namespace Deltares
     {
         class ExternalHandler : public BaseHandler
         {
-#ifndef __GNUC__
+        public:
+#ifdef __GNUC__
+            ExternalHandler(std::string libraryName)
+            {
+            }
+#else 
         public:
             ExternalHandler(std::string libraryName)
             {

@@ -39,7 +39,7 @@ def LoadLibrary(lib_full_path):
 			lib = cdll.LoadLibrary(lib_full_path)
 		except:
 			message = sys.exc_info()[0]
-			print('error: ' + message, flush = True)
+			print('error: ' + str(message), flush = True)
 			raise
 	if lib == None:
 		raise FileNotFoundError("Could not find " + lib_full_path)
@@ -62,10 +62,10 @@ def AddLibrary(add_lib_full_path):
 		
 	if os.path.isfile(add_lib_full_path):
 		try:
-			cdll.AddLibrary(add_lib_full_path)
+			lib.AddLibrary(bytes(add_lib_full_path, 'utf-8'))
 		except:
 			message = sys.exc_info()[0]
-			print('error: ' + message, flush = True)
+			print('error: ' + str(message), flush = True)
 			raise
 
 
