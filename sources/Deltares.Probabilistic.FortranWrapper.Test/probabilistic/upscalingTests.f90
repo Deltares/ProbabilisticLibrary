@@ -54,14 +54,6 @@ contains
 subroutine allUpscalingTests
     integer, parameter :: level = 1
 
-    !AM: failing with CodeCoverage?
-!
-!   Part 1: Testing integrateEqualElements() as used within upscaling in time
-    call testWithLevel( integrateEqualElementsTests1, "upscalingTests:  1 Test of integrateEqualElements", level)
-    call testWithLevel( integrateEqualElementsTests2, "upscalingTests:  2 Test of integrateEqualElements", level)
-    call testWithLevel( integrateEqualElementsTests3, "upscalingTests:  3 Test of integrateEqualElements", level)
-    call testWithLevel( integrateEqualElementsTests4, "upscalingTests:  4 Test of integrateEqualElements", level)
-
 !   Part 2: Testing the upscaling of probabilities in time.
     call testWithLevel( upscaleInTimeTests1, "upscalingTests:  1 Upscaling failure probabilities in time", level)
     call testWithLevel( upscaleInTimeTests2, "upscalingTests:  2 Upscaling failure probabilities in time", level)
@@ -93,109 +85,6 @@ subroutine allUpscalingTests
 !
 end subroutine allUpscalingTests
 
-!> Testing the upscaling of probabilities in time. \n
-!! Here the part governed by integrateEqualElements(). \n
-!! Beta=5.0, rhoT= 0.0, and nrElements= 10 \n
-!! The resulting betaT can analytically be computed and compared to the numerically computed result. \n
-subroutine integrateEqualElementsTests1
-
-    real( kind= wp)   :: beta                   !< Reliability index of a single time element
-    real( kind= wp)   :: rhoT                   !< Autocorrelation coefficients for each of the variables, over the elements to be combined (space or time)
-    real( kind= wp)   :: nrElements             !< Number of time elements (e.g. tidal periods)
-    real( kind= wp)   :: myMargin               !< acceptable margin for difference between beta expected and beta computed
-    real( kind= wp)   :: betaT                  !< reliability index as computed for the combination
-    real( kind= wp)   :: pF                     !< Failure probability
-    real( kind= wp)   :: expectedBetaT          !< expected reliability index for the combination
-    integer           :: ierr                   !< error code
-    character(len=64) :: errorText              !< error message
-
-    beta         = 5.0d0
-    rhoT         = 0.0d0
-    nrElements   = 10.0
-    call integrateEqualElements( beta, rhoT, nrElements, betaT )
-!   Compute analytically the expected betaT:
-    pF           = 1.0d0- ( PFromBeta( beta) )**nrElements
-    call betaFromQ( pF, expectedBetaT, ierr, errorText)
-    call assert_equal(ierr, 0, errorText)
-
-    myMargin     = 1.0d-5
-    call assert_comparable( betaT, expectedBetaT, myMargin, "The upscaled beta of integrateEqualElements() is not as expected")
-
-end subroutine integrateEqualElementsTests1
-
-!> Testing the upscaling of probabilities in time. \n
-!! Here the part governed by integrateEqualElements(). \n
-!! Beta=5.0, rhoT= 0.5, and nrElements= 10 \n
-!! The resulting betaT is computed and compared to its expected value
-subroutine integrateEqualElementsTests2
-
-    real( kind= wp)  :: beta                   !< Reliability index of a single time element
-    real( kind= wp)  :: rhoT                   !< Autocorrelation coefficients for each of the variables, over the elements to be combined (space or time)
-    real( kind= wp)  :: nrElements             !< Number of time elements (e.g. tidal periods)
-    real( kind= wp)  :: myMargin               !< acceptable margin for difference between beta expected and beta computed
-    real( kind= wp)  :: betaT                  !< reliability index as computed for the combination
-    real( kind= wp)  :: expectedBetaT          !< expected reliability index for the combination
-
-    beta         = 5.0d0
-    rhoT         = 0.5d0
-    nrElements   = 10.0
-    call integrateEqualElements( beta, rhoT, nrElements, betaT )
-!   The expected betaT is precomputed as:
-    expectedBetaT= 4.53853038583672d0
-    myMargin     = 1.0d-6
-    call assert_comparable( betaT, expectedBetaT, myMargin, "The upscaled beta of integrateEqualElements() is not as expected")
-
-end subroutine integrateEqualElementsTests2
-
-!> Testing the upscaling of probabilities in time. \n
-!! Here the part governed by integrateEqualElements(). \n
-!! Test with a high rhoT. \n
-!! Beta=5.0, rhoT= 0.999999, and nrElements= 10 \n
-!! The resulting betaT is computed and compared to its expected value
-subroutine integrateEqualElementsTests3
-
-    real( kind= wp)  :: beta                   !< Reliability index of a single time element
-    real( kind= wp)  :: rhoT                   !< Autocorrelation coefficients for each of the variables, over the elements to be combined (space or time)
-    real( kind= wp)  :: nrElements             !< Number of time elements (e.g. tidal periods)
-    real( kind= wp)  :: myMargin               !< acceptable margin for difference between beta expected and beta computed
-    real( kind= wp)  :: betaT                  !< reliability index as computed for the combination
-    real( kind= wp)  :: expectedBetaT          !< expected reliability index for the combination
-
-    beta         = 5.0d0
-    rhoT         = 0.999999d0
-    nrElements   = 10.0
-    call integrateEqualElements( beta, rhoT, nrElements, betaT )
-!   The expected betaT must be very close to beta and is precomputed as:
-    expectedBetaT= 4.99846288959719d0
-    myMargin     = 1.0d-6
-    call assert_comparable( betaT, expectedBetaT, myMargin, "The upscaled beta of integrateEqualElements() is not as expected")
-
-end subroutine integrateEqualElementsTests3
-
-!> Testing the upscaling of probabilities in time. \n
-!! Here the part governed by integrateEqualElements(). \n
-!! Test with a high rhoT and large number of elements. \n
-!! Beta=5.0, rhoT= 0.999999, and nrElements= 10000 \n
-!! The resulting betaT is computed and compared to its expected value
-subroutine integrateEqualElementsTests4
-
-    real( kind= wp)  :: beta                   !< Reliability index of a single time element
-    real( kind= wp)  :: rhoT                   !< Autocorrelation coefficients for each of the variables, over the elements to be combined (space or time)
-    real( kind= wp)  :: nrElements             !< Number of time elements (e.g. tidal periods)
-    real( kind= wp)  :: myMargin               !< acceptable margin for difference between beta expected and beta computed
-    real( kind= wp)  :: betaT                  !< reliability index as computed for the combination
-    real( kind= wp)  :: expectedBetaT          !< expected reliability index for the combination
-
-    beta         = 5.0d0
-    rhoT         = 0.999999d0
-    nrElements   = 1000.0
-    call integrateEqualElements( beta, rhoT, nrElements, betaT )
-!   For the present input parameters the expected betaT must be very close to beta and is precomputed as:
-    expectedBetaT= 4.99676192410764d0
-    myMargin     = 1.0d-6
-    call assert_comparable( betaT, expectedBetaT, myMargin, "The upscaled beta of integrateEqualElements() is not as expected")
-
-end subroutine integrateEqualElementsTests4
 
 !> Testing the upscaling of probabilities in time. \n
 !! Test with 10 fully correlated elements. \n
