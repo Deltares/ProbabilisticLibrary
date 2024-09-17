@@ -4,22 +4,23 @@
 Design points can be combined.
 This is most of the times desired when multiple failure definitions are applied.
 
-Design points can be combined during the probabilistic analysis already (see \autoref{sec:CombiningDesignPointsIntegrated}) or afterwards.
+Design points can currently only be combined afterwards.
 When combining afterwards, the design points are simulated by equivalent planes.
 A number of methods exist how to derive the combined design point from the equivalent planes
 (see \autoref{sec:EquivalentPlanes}).
 
-\section{Integrated in reliability calculation}
-\label{sec:CombiningDesignPointsIntegrated}
+% TODO not yet in Streams:
+% \section{Integrated in reliability calculation}
+% \label{sec:CombiningDesignPointsIntegrated}
+%
+%When combining the design points integrated during the reliability calculation for a single component,
+%the failure definitions are merged to one failure definition.
+%This combined failure definition is used in one of the reliability techniques
+%(see \autoref{sec:ReliabilityTechniques}).
 
-When combining the design points integrated during the reliability calculation for a single component,
-the failure definitions are merged to one failure definition.
-This combined failure definition is used in one of the reliability techniques
-(see \autoref{sec:ReliabilityTechniques}).
-
-When using FORM with integrated combining of design points,
-results are not reliable.
-Therefore \probLib prevents this combination.
+%When using FORM with integrated combining of design points,
+%results are not reliable.
+%Therefore \probLib prevents this combination.
 
 \section{Equivalent planes}
 \label{sec:EquivalentPlanes}
