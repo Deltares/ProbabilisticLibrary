@@ -79,7 +79,7 @@ set_target_properties(Deltares.Probabilistic.Test
     CXX_STANDARD_REQUIRED ON
 )
 
-target_link_libraries(Deltares.Probabilistic.Test Deltares.Probabilistic.Kernel gtest_main)
+target_link_libraries(Deltares.Probabilistic.Test Deltares.Probabilistic gtest_main)
 
 if(WIN32)
   target_link_options(Deltares.Probabilistic.Test PRIVATE "$<$<CONFIG:Debug>:/Debug>")

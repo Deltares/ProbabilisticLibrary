@@ -1,6 +1,6 @@
 // Copyright (C) Stichting Deltares. All rights reserved.
 //
-// This file is part of the Probabilistic Library.
+// This file is part of Streams.
 //
 // Streams is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as published by

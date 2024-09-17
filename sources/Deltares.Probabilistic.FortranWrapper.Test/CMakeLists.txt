@@ -20,19 +20,19 @@ else ()
   target_link_libraries(ftnunit ${fctools})
 endif()
 
-add_executable(ftn_unit_test_prog
+add_executable(Deltares.Probabilistic.FortranWrapper.Test
     ftn_interface_tests.f90
     ftn_unit_tests.f90
 )
 
 if (UNIX)
-  target_compile_options(ftn_unit_test_prog PUBLIC -cpp)
+  target_compile_options(Deltares.Probabilistic.FortranWrapper.Test PUBLIC -cpp)
 endif (UNIX)
 
 target_link_libraries(unitTestTools ftnunit feedback ${fctools})
 
-target_link_libraries(ftn_unit_test_prog
-  Deltares.Probabilistic.CWrapper Deltares.Probabilistic.FortranWrapper Deltares.Probabilistic.Kernel
+target_link_libraries(Deltares.Probabilistic.FortranWrapper.Test
+  Deltares.Probabilistic.CWrapper Deltares.Probabilistic.FortranWrapper Deltares.Probabilistic
   ${fctools} ftnunit feedback feedbackDLL unitTestTools)
 
 add_library(FLtestProbabilistic
@@ -76,7 +76,7 @@ target_link_libraries(FLunittestprogram
     FLtestProbabilisticConversions
     FLtestProbabilistic
     Deltares.Probabilistic.CWrapper Deltares.Probabilistic.FortranWrapper
-    Deltares.Probabilistic.Kernel ${fctools} feedbackDLL ftnunit)
+    Deltares.Probabilistic ${fctools} feedbackDLL ftnunit)
 
 if (WIN32)
     target_compile_options(FLtestProbabilistic PRIVATE /Qopenmp)
@@ -85,12 +85,12 @@ endif()
 
 add_test(
   NAME fortran-interface-tests
-  COMMAND $<TARGET_FILE:ftn_unit_test_prog> /s
+  COMMAND $<TARGET_FILE:Deltares.Probabilistic.FortranWrapper.Test> /s
   WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
 )
 
 add_test(
-  NAME fortran-legacy-conversion-tests
+  NAME fortran-conversion-tests
   COMMAND $<TARGET_FILE:FLunittestprogram> conv 1 /s
 )
 
@@ -104,7 +104,7 @@ endif(UNIX)
 message(STATUS "Level tests = ${LEVEL}")
 
 add_test(
-  NAME fortran-legacy-prob-tests
+  NAME fortran-probabilistic-tests
   COMMAND $<TARGET_FILE:FLunittestprogram> prob ${LEVEL} 2 /s
   WORKING_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/unitTests"
 )

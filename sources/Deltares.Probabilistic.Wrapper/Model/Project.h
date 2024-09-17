@@ -1,8 +1,8 @@
 // Copyright (C) Stichting Deltares. All rights reserved.
 //
-// This file is part of the Probabilistic Library.
+// This file is part of Streams.
 //
-// The Probabilistic Library is free software: you can redistribute it and/or modify
+// Streams is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
@@ -25,7 +25,7 @@
 #include "../Statistics/Stochast.h"
 #include "../Reliability/ReliabilityMethod.h"
 #include "../Reliability/DesignPoint.h"
-#include "../../Deltares.Probabilistic/Model/Project.h"
+#include "../../Deltares.Probabilistic/Reliability/ReliabilityProject.h"
 #include "../Statistics/CorrelationMatrix.h"
 
 namespace Deltares
@@ -37,7 +37,7 @@ namespace Deltares
             public ref class Project
             {
             private:
-                SharedPointerProvider<Models::Project>* shared = new Utils::Wrappers::SharedPointerProvider(new Models::Project());
+                SharedPointerProvider<Reliability::ReliabilityProject>* shared = new Utils::Wrappers::SharedPointerProvider(new Reliability::ReliabilityProject());
                 ZLambda getZLambda();
                 void invokeSample(std::shared_ptr<Models::ModelSample> sample);
                 System::Collections::Generic::List<System::Runtime::InteropServices::GCHandle>^ handles = gcnew System::Collections::Generic::List<System::Runtime::InteropServices::GCHandle>();

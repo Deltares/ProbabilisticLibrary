@@ -1,0 +1,60 @@
+\chapter{Sensitivity}
+\label{sec:Sensitivity}
+
+\section{Single value variation}
+\label{sec:SingleValueVariation}
+
+In single value variation variables are varied one by one and set to a high and low value. The non varied variables are set their median (u = 0).
+
+The major drawback of this method is that combined effects of input variables are not taken into account.
+
+\section{Sobol indices}
+\label{sec:SobolIndices}
+
+Sobol indices give the influence of a parameter using a Monte Carlo simulation [\cite{SALTELLI2010259}]. By mixing samples values from an initial Monte Carlo run, the sobol indices are determined. This is done as follows:
+
+The first step consists of two Monte Carlo simulations of each $N$ samples, leading to the sets $A$ and $B$. Of the combined set, the variance $v$ of the model results is calculated.
+		
+Then for each variable $p$ new sample sets $A^p$ and $B^p$ are generated, with value for sample $i$:  
+
+\begin{align}
+A^p = u_\text{i, j, A} = \left\{\begin{array}{ll} j = p & u_{\text{i, j, B}}\\
+j \neq p & u_{\text{i, j, A}}
+\end{array}	
+\right.
+\end{align}
+
+and 
+
+\begin{align}
+B^p = u_\text{i, j, B} = \left\{\begin{array}{ll} j = p & u_{\text{i, j, A}}\\
+	j \neq p & u_{\text{i, j, B}}
+	\end{array}	
+	\right.
+\end{align}
+
+Then the model values $z$ belonging to samples $u$ are calculated. The first order index and total index of variable $p$ are calculated as follows:
+
+\begin{align}
+I_\text{first order} = \frac{1}{N} \cdot \frac{1}{v} \cdot \sum_{i = 1}^{N} z\left(A_i\right) z\left(B^p_i\right) - z\left(A_i\right) z\left(B_i\right)
+\end{align}
+
+and 
+
+\begin{align}
+I_\text{total} = \frac{1}{2N} \cdot \frac{1}{v} \cdot \sum_{i = 1}^{N} \left[z\left(A_i\right) -  z\left(A^p_i\right)\right]^2
+\end{align}
+
+where
+
+\begin{longtable*}{p{20mm}p{\textwidth-24pt-20mm}}  
+	$i$ & is the index number of the sample; \\  
+	$j$ & is the variable index; \\
+	$A_i$ & is the $i^{th}$ sample in sample set $A$; \\
+	$z\left(A_i\right)$ & is the model result of the $i^{th}$ sample in sample set $A$; \\
+	$N$ & is the number of samples in a Monte Carlo simulation; \\  
+	$v$ & is the variance of the model results of the combined set $A$ and $B$; 
+\end{longtable*}
+
+The total index $I_\text{total}$ gives the relevant influence of the parameter on the model result.
+
