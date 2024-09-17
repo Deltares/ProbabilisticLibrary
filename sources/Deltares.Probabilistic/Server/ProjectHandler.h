@@ -84,7 +84,7 @@ namespace Deltares
             std::unordered_map<int, std::shared_ptr<Statistics::Stochast>> stochasts;
             std::unordered_map<int, std::shared_ptr<Models::Message>> messages;
             std::unordered_map<int, std::shared_ptr<Reliability::ReliabilityProject>> projects;
-            std::unordered_map<int, std::shared_ptr<Models::ModelParameter>> modelParameters;
+            std::unordered_map<int, std::shared_ptr<Models::ModelInputParameter>> modelParameters;
             std::unordered_map<int, std::shared_ptr<Statistics::DiscreteValue>> discreteValues;
             std::unordered_map<int, std::shared_ptr<Statistics::HistogramValue>> histogramValues;
             std::unordered_map<int, std::shared_ptr<Statistics::FragilityValue>> fragilityValues;

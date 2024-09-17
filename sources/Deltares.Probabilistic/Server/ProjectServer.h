@@ -38,6 +38,11 @@ namespace Deltares
                 this->AddHandler(defaultHandler);
             }
 
+            ProjectServer(std::shared_ptr<BaseHandler> handler) : ProjectServer()
+            {
+                this->AddHandler(handler);
+            }
+
             int GetNewObjectId(int handlerIndex) override;
             int Create(std::string object_type);
             void Destroy(int id);
@@ -65,6 +70,8 @@ namespace Deltares
             void SetEmptyCallBack(int id, std::string property_, Models::ZEmptyCallBack callBack);
             void Execute(int id, std::string method_);
             void AddHandler(std::shared_ptr<BaseHandler> handler);
+            Models::ZLambda GetCallBack(int id, std::string method);
+
         private:
             int id_ = 0;
             std::vector<std::shared_ptr<BaseHandler>> handlers;

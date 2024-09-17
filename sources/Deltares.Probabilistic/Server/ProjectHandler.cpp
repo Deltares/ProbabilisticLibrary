@@ -73,7 +73,7 @@ namespace Deltares
             }
             else if (object_type == "model_parameter")
             {
-                modelParameters[id] = std::make_shared<Deltares::Models::ModelParameter>();
+                modelParameters[id] = std::make_shared<Deltares::Models::ModelInputParameter>();
                 types[id] = ObjectType::ModelParameter;
             }
             else if (object_type == "stochast")
@@ -396,7 +396,7 @@ namespace Deltares
             }
             else if (objectType == ObjectType::ModelParameter)
             {
-                std::shared_ptr<Models::ModelParameter> parameter = modelParameters[id];
+                std::shared_ptr<Models::ModelInputParameter> parameter = modelParameters[id];
 
                 if (property_ == "index") return parameter->index;
             }
@@ -514,7 +514,7 @@ namespace Deltares
             }
             else if (objectType == ObjectType::ModelParameter)
             {
-                std::shared_ptr<Models::ModelParameter> parameter = modelParameters[id];
+                std::shared_ptr<Models::ModelInputParameter> parameter = modelParameters[id];
 
                 if (property_ == "index") parameter->index = value;
             }
@@ -689,7 +689,7 @@ namespace Deltares
             }
             else if (objectType == ObjectType::ModelParameter)
             {
-                std::shared_ptr<Models::ModelParameter> parameter = modelParameters[id];
+                std::shared_ptr<Models::ModelInputParameter> parameter = modelParameters[id];
 
                 if (property_ == "name") return parameter->name;
             }
@@ -742,7 +742,7 @@ namespace Deltares
             }
             else if (objectType == ObjectType::ModelParameter)
             {
-                std::shared_ptr<Models::ModelParameter> parameter = modelParameters[id];
+                std::shared_ptr<Models::ModelInputParameter> parameter = modelParameters[id];
 
                 if (property_ == "name") parameter->name = value;
             }

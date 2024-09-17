@@ -195,6 +195,12 @@ extern "C" DLL_PUBLIC void SetInitializeCallBack(int id, char* property, Deltare
     projectServer->SetEmptyCallBack(id, propertyStr, callBack);
 }
 
+extern "C" DLL_PUBLIC Deltares::Models::ZLambda GetCallBack(int id, char* property)
+{
+    std::string propertyStr(property);
+    return projectServer->GetCallBack(id, propertyStr);
+}
+
 extern "C" DLL_PUBLIC void Execute(int id, char* method)
 {
     std::string methodStr(method);

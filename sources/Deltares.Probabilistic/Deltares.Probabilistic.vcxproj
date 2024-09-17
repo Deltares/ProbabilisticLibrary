@@ -163,7 +163,7 @@
     <ClInclude Include="Server\ProjectHandler.h" />
     <ClInclude Include="Server\BaseHandler.h" />
     <ClInclude Include="Server\ExternalHandler.h" />
-    <ClInclude Include="Model\ModelParameter.h" />
+    <ClInclude Include="Model\ModelInputParameter.h" />
     <ClInclude Include="Sensitivity\CorrelationMatrixBuilder.h" />
     <ClInclude Include="Statistics\Distributions\StandardNormalDistribution.h" />
     <ClInclude Include="Statistics\DistributionChangeType.h" />
@@ -327,7 +327,7 @@
     <ClCompile Include="Server\ProjectHandler.cpp" />
     <ClCompile Include="Server\BaseHandler.cpp" />
     <ClCompile Include="Server\ExternalHandler.cpp" />
-    <ClCompile Include="Model\ModelParameter.cpp" />
+    <ClCompile Include="Model\ModelInputParameter.cpp" />
     <ClCompile Include="Sensitivity\CorrelationMatrixBuilder.cpp" />
     <ClCompile Include="Statistics\Distributions\StandardNormalDistribution.cpp" />
     <ClCompile Include="Statistics\DistributionChangeType.cpp" />
