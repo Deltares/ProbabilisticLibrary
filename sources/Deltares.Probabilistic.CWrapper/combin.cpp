@@ -130,29 +130,6 @@ int upscalelengthc(double* betaCrossSection, double* alphaCrossSection, double* 
 }
 
 extern "C"
-int upscaleintimec(double* nrTimes, double* beta, double* alpha, double* inRhoT, int nStochasts)
-{
-    auto alfa = vector1D(nStochasts);
-    auto rho = vector1D(nStochasts);
-    for (int i = 0; i < nStochasts; i++)
-    {
-        alfa(i) = alpha[i];
-        rho(i) = inRhoT[i];
-    }
-    auto ab = alphaBeta(*beta, alfa);
-
-    auto up = upscaling();
-    int n = up.upscaleInTime(*nrTimes, ab, rho);
-
-    *beta = ab.getBeta();
-    for (int i = 0; i < nStochasts; i++)
-    {
-        alpha[i] = ab.getAlphaI(i);
-    }
-    return n;
-}
-
-extern "C"
 void upscaletolargestblockc(double* betaSmallBlock, double* alphaSmallBlock, double* rhoTSmallBlock,
     double* blockDurations, double* largestBlockDuration,
     double* betaLargestBlock, double* alphaLargestBlock, double* durationsLargestBlock, int nStochasts)
