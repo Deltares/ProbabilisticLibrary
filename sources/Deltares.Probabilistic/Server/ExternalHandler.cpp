@@ -1,5 +1,6 @@
 #include "ExternalHandler.h"
 
+#ifndef __GNUC__
 namespace Deltares
 {
     namespace Server
@@ -75,4 +76,5 @@ namespace Deltares
         }
     }
 }
+#endif
 
