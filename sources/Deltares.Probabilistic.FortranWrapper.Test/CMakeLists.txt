@@ -47,7 +47,6 @@ add_library(FLtestProbabilistic
     probabilistic/performImportanceSamplingTests.f90
     probabilistic/upscaleLengthTests.f90
     probabilistic/upscalingTests.f90
-    probabilistic/HohenbichlerTests.f90
     probabilistic/probabilisticTests.f90
     probabilistic/waartsFunctions.f90
     probabilistic/waartsFunctionsTests.f90

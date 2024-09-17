@@ -104,15 +104,6 @@ int combinemultipleelements_c(double* betaElement, double* alphaElement, double*
 }
 
 extern "C"
-int hohenbichler_c(double* betaV, double* pfU, double* rhoInput, double* pfVpfU)
-{
-    auto h = HohenbichlerFORM();
-    auto result = h.PerformHohenbichler(*betaV, *pfU, *rhoInput);
-    *pfVpfU = result.first;
-    return (int)result.second;
-}
-
-extern "C"
 int computebetasection_c(double * betaCrossSection, double* sectionLength, double* breachL, double* rhoZ,
     double* dz, double* deltaL, double* betaSection)
 {

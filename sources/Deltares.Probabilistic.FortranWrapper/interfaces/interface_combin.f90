@@ -26,7 +26,7 @@ implicit none
 integer, parameter :: combAND =  0
 integer, parameter :: combOR  =  1
 
-private :: combineMultipleElements_c, Hohenbichler_c, warnHohenbichler, upscaleLengthC, upscaleInTimeC, &
+private :: combineMultipleElements_c, warnHohenbichler, upscaleLengthC, upscaleInTimeC, &
     combineTwoElementsPartialCorrelationC1, combineTwoElementsPartialCorrelationC2, &
     combineMultipleElementsSpatialCorrelated_c, combineMultipleElementsProb_c, ComputeBetaSection_c, c_double, wp
 
@@ -54,18 +54,6 @@ interface
         real(kind=c_double),  intent(out) :: alpha(*)
         integer, value,       intent(in)  :: combAndOrIn, combinerType, nrElms, nrStoch
     end subroutine combineMultipleElementsGeneral
-end interface
-
-interface
-    integer function Hohenbichler_c( betaV, pfU, rhoInput, pfVpfU ) bind(c)
-        use, intrinsic :: iso_c_binding, only: c_double
-        real(kind=c_double),  intent(in)   :: betaV       !< Smallest reliability index of two stochastic parameters.
-                                                          !! This one has the largest probability of failure, \f$ P\left( {Z_2  < 0} \right) \f$
-        real(kind=c_double),  intent(in)   :: pfU         !< Smallest probability of failure of two stochastic parameters, \f$ P\left( {Z_1  < 0} \right) \f$
-                                                          !! This one has the largest reliability index
-        real(kind=c_double),  intent(in)   :: rhoInput    !< Correlation coefficient between \f$ {Z_1 } \f$ and \f$ {Z_2 } \f$
-        real(kind=c_double),  intent(out)  :: pfVpfU      !< Failure probability \f$ P\left( {Z_2  < 0|Z_1  < 0} \right) \f$
-    end function Hohenbichler_c
 end interface
 
 interface
@@ -221,22 +209,6 @@ contains
         end if
     end subroutine warnHohenbichler
 
-    subroutine Hohenbichler( betaV, pfU, rhoInput, pfVpfU )
-        use, intrinsic :: iso_c_binding, only: c_double
-        real(kind=c_double),  intent(in)   :: betaV       !< Smallest reliability index of two stochastic parameters.
-                                                          !! This one has the largest probability of failure, \f$ P\left( {Z_2  < 0} \right) \f$
-        real(kind=c_double),  intent(in)   :: pfU         !< Smallest probability of failure of two stochastic parameters, \f$ P\left( {Z_1  < 0} \right) \f$
-                                                          !! This one has the largest reliability index
-        real(kind=c_double),  intent(in)   :: rhoInput    !< Correlation coefficient between \f$ {Z_1 } \f$ and \f$ {Z_2 } \f$
-        real(kind=c_double),  intent(out)  :: pfVpfU      !< Failure probability \f$ P\left( {Z_2  < 0|Z_1  < 0} \right) \f$
-
-        integer :: n
-
-        n = Hohenbichler_c( betaV, pfU, rhoInput, pfVpfU )
-        if (n > 0) then
-            call warnHohenbichler(1)
-        end if
-    end subroutine Hohenbichler
 !>
 !! This subroutine upscales from a cross section to a given section length
     subroutine upscaleLength ( betaCrossSection, alphaCrossSection, rhoXK, dXK, sectionLength, betaSection, alphaSection, &
