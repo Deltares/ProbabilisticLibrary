@@ -1,6 +1,8 @@
 #pragma once
 
+#ifndef __GNUC__
 #include <windows.h>
+#endif
 
 #include "BaseHandler.h"
 #include "../Utils/probLibException.h"
@@ -14,6 +16,9 @@ namespace Deltares
         public:
             ExternalHandler(std::string libraryName)
             {
+#ifdef __GNUC__
+                throw Reliability::probLibException("Add library only supported on Windows");
+#else
                 std::wstring stemp = std::wstring(libraryName.begin(), libraryName.end());
                 LPCWSTR library = stemp.c_str();
 
@@ -39,6 +44,12 @@ namespace Deltares
                 this->getIndexedIntMethod = (f_get_indexed_int_value)GetProcAddress(libInstance, "GetIndexedIntValue");
                 this->setArrayIntMethod = (f_set_array_int_value)GetProcAddress(libInstance, "SetArrayIntValue");
                 this->getCallbackMethod = (f_get_callback_method)GetProcAddress(libInstance, "GetCallBack");
+#endif
+            }
+
+            void SetServer(std::shared_ptr<BaseServer> server, int handlerIndex, std::shared_ptr<BaseHandler> defaultHandler) override
+            {
+                BaseHandler::SetServer(server, handlerIndex, defaultHandler);
             }
 
             bool CanHandle(std::string objectType) override;
@@ -55,6 +66,8 @@ namespace Deltares
             int GetIndexedIntValue(int id, std::string property_, int index) override;
             void SetArrayIntValue(int id, std::string property_, int* values, int size) override;
             Models::ZLambda GetCallBack(int id, std::string method) override;
+
+
         private:
             typedef bool(__stdcall* f_can_handle)(const char*);
             typedef void(__stdcall* f_create)(const char*, int);

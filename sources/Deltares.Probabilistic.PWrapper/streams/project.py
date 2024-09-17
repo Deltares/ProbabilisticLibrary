@@ -42,7 +42,7 @@ class ZModel:
 		ZModel._index = 0;
 		ZModel._callback = callback
 
-		if not callback is None:
+		if inspect.isfunction(callback):
 			self._input_parameters = self._get_input_parameters(callback)
 			self._output_parameters = self._get_output_parameters(callback)
 			self._model_name = callback.__name__
@@ -164,7 +164,10 @@ class SensitivityProject:
 
 	@model.setter
 	def model(self, value):
-		SensitivityProject._model = ZModel(value)
+		if inspect.isfunction(value):
+			SensitivityProject._model = ZModel(value)
+		else:
+			SensitivityProject._model = value
 
 		variables = []
 		for input_parameter in SensitivityProject._model.input_parameters:
@@ -283,7 +286,10 @@ class ReliabilityProject:
 
 	@model.setter
 	def model(self, value):
-		ReliabilityProject._model = ZModel(value)
+		if inspect.isfunction(value):
+			ReliabilityProject._model = ZModel(value)
+		else:
+			ReliabilityProject._model = value
 
 		variables = []
 		for input_parameter in ReliabilityProject._model.input_parameters:
@@ -303,32 +309,6 @@ class ReliabilityProject:
 		self._output_parameters = ReliabilityProject._model.output_parameters
 
 		interface.SetStringValue(self._id, 'model_name', ReliabilityProject._model.name)
-
-	@model.setter
-	def ptk_model(self, value):
-		interface.GetCallBack();
-
-
-		ReliabilityProject._model = value
-
-		variable_names = value.__code__.co_varnames
-		model_name = value.__name__
-
-		variables = []
-		for var_name in variable_names[:value.__code__.co_argcount]:
-			if not var_name in self._all_variables.keys():
-				variable = Stochast()
-				variable.name = var_name
-				self._all_variables[var_name] = variable
-			else:
-				variable = self._all_variables[var_name]
-			variables.append(variable)
-
-		self._variables = FrozenList(variables)
-		self._correlation_matrix._set_variables(variables)
-		self._settings._set_variables(variables)
-		interface.SetStringValue(self._id, 'model_name', model_name)
-
 
 	@interface.EMPTY_CALLBACK
 	def _initialize():
