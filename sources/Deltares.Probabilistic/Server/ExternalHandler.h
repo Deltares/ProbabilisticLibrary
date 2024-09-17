@@ -1,6 +1,6 @@
 #pragma once
 
-#ifndef __GNUC__
+#if __has_include(<windows.h>)
 #include <windows.h>
 #endif
 
@@ -14,11 +14,7 @@ namespace Deltares
         class ExternalHandler : public BaseHandler
         {
         public:
-#ifdef __GNUC__
-            ExternalHandler(std::string libraryName)
-            {
-            }
-#else 
+#if __has_include(<windows.h>)
         public:
             ExternalHandler(std::string libraryName)
             {
@@ -47,6 +43,11 @@ namespace Deltares
                 this->getIndexedIntMethod = (f_get_indexed_int_value)GetProcAddress(libInstance, "GetIndexedIntValue");
                 this->setArrayIntMethod = (f_set_array_int_value)GetProcAddress(libInstance, "SetArrayIntValue");
                 this->getCallbackMethod = (f_get_callback_method)GetProcAddress(libInstance, "GetCallBack");
+            }
+
+            ~ExternalHandler()
+            {
+                int k = 1;
             }
 
             void SetServer(std::shared_ptr<BaseServer> server, int handlerIndex, std::shared_ptr<BaseHandler> defaultHandler) override
@@ -98,6 +99,10 @@ namespace Deltares
             f_get_indexed_int_value getIndexedIntMethod = nullptr;
             f_set_array_int_value setArrayIntMethod = nullptr;
             f_get_callback_method getCallbackMethod = nullptr;
+#else
+            ExternalHandler(std::string libraryName)
+            {
+            }
 #endif
         };
 

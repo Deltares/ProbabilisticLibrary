@@ -1,6 +1,6 @@
 #include "ExternalHandler.h"
 
-#ifndef __GNUC__
+#if __has_include(<windows.h>)
 namespace Deltares
 {
     namespace Server
