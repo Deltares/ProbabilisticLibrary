@@ -33,11 +33,90 @@ import inspect
 if not interface.IsLibraryLoaded():
 	interface.LoadDefaultLibrary()
 
+
+class ZModel:
+	_callback = None
+	_index = 0
+	
+	def __init__(self, callback = None):
+		ZModel._index = 0;
+		ZModel._callback = callback
+
+		if not callback is None:
+			self._input_parameters = self._get_input_parameters(callback)
+			self._output_parameters = self._get_output_parameters(callback)
+			self._model_name = callback.__name__
+		else:
+			self._input_parameters = []
+			self._output_parameters = []
+			self._model_name = ''
+		
+	def _get_input_parameters(self, function):
+		variable_names = function.__code__.co_varnames
+		parameters = []
+		for i in range(function.__code__.co_argcount):
+			modelParameter = ModelParameter()
+			modelParameter.name = variable_names[i]
+			modelParameter.index = i
+			parameters.append(modelParameter)
+			
+		return parameters
+		
+	def _get_output_parameters(self, function):
+		parameters = []
+		source = inspect.getsource(function)
+		lines = source.splitlines()
+		for line in lines:
+			if line.strip().startswith('return'):
+				line = line.replace('return', '')
+				line = line.strip().split('#')[0]
+				line = line.lstrip('[').rstrip(';').rstrip(']')
+				words = line.split(',')
+				parameters = [word.strip() for word in words]
+
+		for i in range(len(parameters)):
+			modelParameter = ModelParameter()
+			modelParameter.name = parameters[i]
+			modelParameter.index = i
+			parameters[i] = modelParameter
+		
+		return parameters
+
+	@property   
+	def input_parameters(self):
+		return self._input_parameters
+
+	@property   
+	def output_parameters(self):
+		return self._output_parameters
+
+	@property   
+	def index(self):
+		return ZModel._index
+
+	@index.setter
+	def index(self, value : int):
+		ZModel._index = value
+	
+	def run(self, values):
+		z = ZModel._callback(*values);
+		if type(z) is list or type(z) is tuple:
+			return z[ZModel._index]
+		else:
+			return z
+
+	@property   
+	def name(self):
+		return self._model_name
+
+	def __str__(self):
+		return self.name
+
+
 class SensitivityProject:
 
-	_model = None
-	_index = 0
 	_project_id = 0
+	_model = None
 
 	def __init__(self):
 		self._id = interface.Create('sensitivity_project')
@@ -55,9 +134,8 @@ class SensitivityProject:
 		self._stochast = None
 		self._output_correlation_matrix = None
 
-		SensitivityProject._index = 0;
-		SensitivityProject._model = None
 		SensitivityProject._project_id = self._id
+		SensitivityProject._model = None
 
 	def __dir__(self):
 		return ['variables',
@@ -86,10 +164,11 @@ class SensitivityProject:
 
 	@model.setter
 	def model(self, value):
-		SensitivityProject._model = value
-		
+		SensitivityProject._model = ZModel(value)
+
 		variables = []
-		for var_name in self._get_input_parameters(value):
+		for input_parameter in SensitivityProject._model.input_parameters:
+			var_name = input_parameter.name
 			if not var_name in self._all_variables.keys():
 				variable = Stochast()
 				variable.name = var_name
@@ -102,47 +181,18 @@ class SensitivityProject:
 		self._correlation_matrix._set_variables(variables)
 		self._settings._set_variables(variables)
 
-		self._output_parameters = self._get_output_parameters(value)
+		self._output_parameters = SensitivityProject._model.output_parameters
 
-		model_name = value.__name__
-		interface.SetStringValue(self._id, 'model_name', model_name)
-
-	def _get_input_parameters(self, function):
-		variable_names = function.__code__.co_varnames
-		return variable_names[:function.__code__.co_argcount]
-		
-	def _get_output_parameters(self, function):
-		parameters = []
-		source = inspect.getsource(function)
-		lines = source.splitlines()
-		for line in lines:
-			if line.strip().startswith('return'):
-				line = line.replace('return', '')
-				line = line.strip().split('#')[0]
-				line = line.lstrip('[').rstrip(';').rstrip(']')
-				words = line.split(',')
-				parameters = [word.strip() for word in words]
-
-		for i in range(len(parameters)):
-			modelParameter = ModelParameter()
-			modelParameter.name = parameters[i]
-			modelParameter.index = i
-			parameters[i] = modelParameter
-		
-		return parameters
+		interface.SetStringValue(self._id, 'model_name', SensitivityProject._model.name)
 
 	@interface.EMPTY_CALLBACK
 	def _initialize():
-		SensitivityProject._index = interface.GetIntValue(SensitivityProject._project_id, 'index')
+		SensitivityProject._model.index = interface.GetIntValue(SensitivityProject._project_id, 'index')
 
 	@interface.CALLBACK
 	def _performCallBack(values, size):
 		values_list = values[:size]
-		z = SensitivityProject._model(*values_list);
-		if type(z) is list or type(z) is tuple:
-			return z[SensitivityProject._index]
-		else:
-			return z
+		return SensitivityProject._model.run(values_list)
 
 	def run(self):
 		self._stochast = None
@@ -188,7 +238,6 @@ class SensitivityProject:
 class ReliabilityProject:
 
 	_model = None
-	_index = 0
 	_project_id = 0
 
 	def __init__(self):
@@ -205,7 +254,6 @@ class ReliabilityProject:
 		self._design_point = None
 		self._fragility_curve = None
 
-		ReliabilityProject._index = 0;
 		ReliabilityProject._model = None
 		ReliabilityProject._project_id = self._id
   
@@ -234,14 +282,12 @@ class ReliabilityProject:
 		return ReliabilityProject._model
 
 	@model.setter
-	def model(self, value : function):
-		ReliabilityProject._model = value
-
-		variable_names = value.__code__.co_varnames
-		model_name = value.__name__
+	def model(self, value):
+		ReliabilityProject._model = ZModel(value)
 
 		variables = []
-		for var_name in variable_names[:value.__code__.co_argcount]:
+		for input_parameter in ReliabilityProject._model.input_parameters:
+			var_name = input_parameter.name
 			if not var_name in self._all_variables.keys():
 				variable = Stochast()
 				variable.name = var_name
@@ -253,7 +299,10 @@ class ReliabilityProject:
 		self._variables = FrozenList(variables)
 		self._correlation_matrix._set_variables(variables)
 		self._settings._set_variables(variables)
-		interface.SetStringValue(self._id, 'model_name', model_name)
+
+		self._output_parameters = ReliabilityProject._model.output_parameters
+
+		interface.SetStringValue(self._id, 'model_name', ReliabilityProject._model.name)
 
 	@model.setter
 	def ptk_model(self, value):
@@ -283,16 +332,12 @@ class ReliabilityProject:
 
 	@interface.EMPTY_CALLBACK
 	def _initialize():
-		ReliabilityProject._index = interface.GetIntValue(ReliabilityProject._project_id, 'index')
+		ReliabilityProject._model.index = interface.GetIntValue(ReliabilityProject._project_id, 'index')
 
 	@interface.CALLBACK
 	def _performCallBack(values, size):
 		values_list = values[:size]
-		z = ReliabilityProject._model(*values_list);
-		if type(z) is list or type(z) is tuple:
-			return z[SensitivityProject._index]
-		else:
-			return z
+		return ReliabilityProject._model.run(values_list)
 
 	def run(self):
 		self._design_point = None

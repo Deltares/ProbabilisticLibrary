@@ -59,6 +59,16 @@ namespace Deltares
             this->setStringValueMethod(id, property.c_str(), value.c_str());
         }
 
+        int ExternalHandler::GetIndexedIntValue(int id, std::string property_, int index)
+        {
+            return this->getIndexedIntMethod(id, property_.c_str(), index);
+        }
+
+        void ExternalHandler::SetArrayIntValue(int id, std::string property_, int* values, int size)
+        {
+            this->setArrayIntMethod(id, property_.c_str(), values, size);
+        }
+
         Models::ZLambda ExternalHandler::GetCallBack(int id, std::string method)
         {
             return this->getCallbackMethod(id, method.c_str());

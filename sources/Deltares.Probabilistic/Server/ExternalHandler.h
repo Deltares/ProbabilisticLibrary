@@ -36,6 +36,8 @@ namespace Deltares
                 this->setIntValueMethod = (f_set_int_value)GetProcAddress(libInstance, "SetIntValue");
                 this->getStringValueMethod = (f_get_string_value)GetProcAddress(libInstance, "GetStringValue");
                 this->setStringValueMethod = (f_set_string_value)GetProcAddress(libInstance, "SetStringValue");
+                this->getIndexedIntMethod = (f_get_indexed_int_value)GetProcAddress(libInstance, "GetIndexedIntValue");
+                this->setArrayIntMethod = (f_set_array_int_value)GetProcAddress(libInstance, "SetArrayIntValue");
                 this->getCallbackMethod = (f_get_callback_method)GetProcAddress(libInstance, "GetCallBack");
             }
 
@@ -50,6 +52,8 @@ namespace Deltares
             void SetIntValue(int id, std::string property, int value) override;
             std::string GetStringValue(int id, std::string property) override;
             void SetStringValue(int id, std::string property, std::string value) override;
+            int GetIndexedIntValue(int id, std::string property_, int index) override;
+            void SetArrayIntValue(int id, std::string property_, int* values, int size) override;
             Models::ZLambda GetCallBack(int id, std::string method) override;
         private:
             typedef bool(__stdcall* f_can_handle)(const char*);
@@ -63,6 +67,8 @@ namespace Deltares
             typedef void(__stdcall* f_set_int_value)(int, const char*, int);
             typedef char*(__stdcall* f_get_string_value)(int, const char*);
             typedef void(__stdcall* f_set_string_value)(int, const char*, const char*);
+            typedef int(__stdcall* f_get_indexed_int_value)(int, const char*, int);
+            typedef void(__stdcall* f_set_array_int_value)(int, const char*, int*, int);
             typedef Models::ZLambda(__stdcall* f_get_callback_method)(int, const char*);
 
             f_can_handle canHandle = nullptr;
@@ -76,6 +82,8 @@ namespace Deltares
             f_set_int_value setIntValueMethod = nullptr;
             f_get_string_value getStringValueMethod = nullptr;
             f_set_string_value setStringValueMethod = nullptr;
+            f_get_indexed_int_value getIndexedIntMethod = nullptr;
+            f_set_array_int_value setArrayIntMethod = nullptr;
             f_get_callback_method getCallbackMethod = nullptr;
         };
     }
