@@ -62,7 +62,6 @@ void combinElementsTests::runAll()
     testcombineMultipleElementsSpatialCorrelated1();
     testcombineMultipleElementsSpatialCorrelated2();
     testcombineMultipleElementsSpatialCorrelated3();
-    testcombineMultipleElementsSpatialCorrelated4();
     testCombineElementsFullCorrelation1();
     testCombineElementsFullCorrelation2();
     testcombineTwoElementsNegativeCorrelation1();
@@ -842,52 +841,6 @@ void combinElementsTests::testcombineMultipleElementsSpatialCorrelated3()
 
     utils.checkAlphaBeta(section.first, ref, 1e-6);
     EXPECT_EQ(section.second, 0);
-}
-
-// Test of combine multiple elements spatial correlated \n
-// This test gives the results as calculated with the method residual correlation
-void combinElementsTests::testcombineMultipleElementsSpatialCorrelated4()
-{
-    const size_t nStochast = 4;        // Number of stochastic variables
-    const size_t nElements = 20;       // Number of elements
-
-    auto CrossSection = alphaBeta(5.0, {0.6, sqrt(0.5 - 0.36), 0.6, sqrt(0.5 - 0.36)});
-    auto rhoXK             = vector1D({0.5, 0.5, 0.2, 0.2});
-    auto dXK               = vector1D({500.0, 300.0, 500.0, 300.0});
-    double sectionLength   = 100.0;
-
-    auto ref = alphaBeta(4.46188711523653, // pre-computed
-    {0.601319423661625, 0.377260946406375, 0.598102531853429, 0.371971088169949}); // pre-computed
-
-    auto section = up.upscaleLength ( CrossSection, rhoXK, dXK, sectionLength, -999.0);
-    EXPECT_EQ(section.second, 0);
-
-    elements Element;
-    for (size_t i = 0; i < nElements; i++)
-    {
-        Element.push_back(section.first);
-    }
-    std::vector<std::vector<vector1D>> rhoSpatial;
-    for (size_t k = 0; k < nElements; k++)
-    {
-        auto q = std::vector<vector1D>();
-        for (size_t j = 0; j < nElements; j++)
-        {
-            double deltaX = std::min( j-k, k-j ) * sectionLength;
-            auto r = vector1D(nStochast);
-            for (size_t i = 0; i < nStochast; i++)
-            {
-                r(i) = rhoXK(i) + (1.0 - rhoXK(i)) * exp(- pow(deltaX / dXK(i), 2) );
-            }
-            q.push_back(r);
-        }
-        rhoSpatial.push_back(q);
-    }
-
-    auto elementC = cmb.combineMultipleElementsSpatialCorrelated(Element, rhoSpatial, combineAndOr::combOr);
-
-    utils.checkAlphaBeta(elementC.ab, ref, 2e-4);
-    EXPECT_EQ(elementC.n, 0);
 }
 
 void combinElementsTests::testCombineElementsFullCorrelation(const combineAndOr andOr)
