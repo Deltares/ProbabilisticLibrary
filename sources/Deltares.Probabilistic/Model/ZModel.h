@@ -24,7 +24,7 @@
 #include <vector>
 #include <functional>
 
-#include "ModelInputParameter.h"
+#include "ModelParameter.h"
 #include "ModelSample.h"
 #include "RunSettings.h"
 
@@ -114,8 +114,8 @@ namespace Deltares
                 }
             }
 
-            std::vector<std::shared_ptr<ModelInputParameter>> inputParameters;
-            std::vector<std::shared_ptr<ModelInputParameter>> outputParameters;
+            std::vector<std::shared_ptr<ModelParameter>> inputParameters;
+            std::vector<std::shared_ptr<ModelParameter>> outputParameters;
 
         private:
             ZLambda zLambda = nullptr;

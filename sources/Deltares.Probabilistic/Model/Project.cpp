@@ -19,13 +19,13 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include "ReliabilityProject.h"
+#include "Project.h"
 
 namespace Deltares
 {
-    namespace Reliability
+    namespace Models
     {
-        void ReliabilityProject::run()
+        void Project::run()
         {
             if (this->initializer != nullptr)
             {
@@ -45,7 +45,7 @@ namespace Deltares
             }
         }
 
-        std::shared_ptr<Reliability::DesignPoint> ReliabilityProject::getDesignPoint()
+        std::shared_ptr<Reliability::DesignPoint> Project::getDesignPoint()
         {
             std::shared_ptr<UConverter> uConverter = std::make_shared<UConverter>(this->stochasts, this->correlationMatrix);
             const std::shared_ptr<ModelRunner> modelRunner = std::make_shared<ModelRunner>(this->model, uConverter, this->progressIndicator);
@@ -57,7 +57,7 @@ namespace Deltares
             return this->designPoint;
         }
 
-        std::shared_ptr<Statistics::Stochast> ReliabilityProject::getFragilityCurve()
+        std::shared_ptr<Statistics::Stochast> Project::getFragilityCurve()
         {
             this->fragilityCurve = std::make_shared<Statistics::Stochast>();
             fragilityCurve->setDistributionType(Statistics::CDFCurve);
@@ -72,7 +72,7 @@ namespace Deltares
             return this->fragilityCurve;
         }
 
-        bool ReliabilityProject::isValid() const
+        bool Project::isValid() const
         {
             return  this->model != nullptr && 
                     this->runSettings != nullptr && this->runSettings->isValid();

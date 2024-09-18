@@ -33,7 +33,7 @@ namespace Deltares
             this->sensitivityMethod = this->settings->GetSensitivityMethod();
             this->runSettings = this->settings->RunSettings;
 
-            for (std::shared_ptr<Models::ModelInputParameter> modelParameter : this->model->outputParameters)
+            for (std::shared_ptr<Models::ModelParameter> modelParameter : this->model->outputParameters)
             {
                 this->model->Index = modelParameter->index;
 

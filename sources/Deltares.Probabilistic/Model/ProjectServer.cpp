@@ -16,152 +16,138 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 //
 // All names, logos, and references to "Deltares" are registered trademarks of
-// Stichting Deltares and remain full property of Stichting Deltares at all times
-// All rights reserved 
+// Stichting Deltares and remain full property of Stichting Deltares at all times.
+// All rights reserved.
+//
+#include "ProjectServer.h"
 
-# include "ProjectHandler.h"
 #include <string>
 #include <memory>
 
 namespace Deltares
 {
-    namespace Server
+    namespace Models
     {
         using namespace Deltares::Statistics;
         using namespace Deltares::Reliability;
 
-        bool ProjectHandler::CanHandle(std::string object_type)
+        int ProjectServer::GetNewObjectId()
         {
-            return
-               (object_type == "standard_normal" ||
-                object_type == "message" ||
-                object_type == "project" ||
-                object_type == "model_parameter" ||
-                object_type == "stochast" ||
-                object_type == "discrete_value" ||
-                object_type == "histogram_value" ||
-                object_type == "fragility_value" ||
-                object_type == "contributing_stochast" ||
-                object_type == "correlation_matrix" ||
-                object_type == "settings" ||
-                object_type == "stochast_settings" ||
-                object_type == "design_point" ||
-                object_type == "alpha" ||
-                object_type == "combine_project" ||
-                object_type == "combine_settings" ||
-                object_type == "self_correlation_matrix" ||
-                object_type == "sensitivity_project" ||
-                object_type == "sensitivity_settings");
+            return ++id_;
         }
 
-        void ProjectHandler::Create(std::string object_type, int id)
+        int ProjectServer::Create(std::string object_type)
         {
+            int counter = GetNewObjectId();
+
             if (object_type == "standard_normal")
             {
-                types[id] = ObjectType::StandardNormal;
+                types[counter] = ObjectType::StandardNormal;
             }
             else if (object_type == "message")
             {
-                messages[id] = std::make_shared<Deltares::Models::Message>();
-                messageIds[messages[id]] = id;
-                types[id] = ObjectType::Message;
+                messages[counter] = std::make_shared<Deltares::Models::Message>();
+                messageIds[messages[counter]] = counter;
+                types[counter] = ObjectType::Message;
             }
             else if (object_type == "project")
             {
-                projects[id] = std::make_shared<Deltares::Reliability::ReliabilityProject>();
-                types[id] = ObjectType::Project;
+                projects[counter] = std::make_shared<Deltares::Models::Project>();
+                types[counter] = ObjectType::Project;
             }
             else if (object_type == "model_parameter")
             {
-                modelParameters[id] = std::make_shared<Deltares::Models::ModelInputParameter>();
-                types[id] = ObjectType::ModelParameter;
+                modelParameters[counter] = std::make_shared<Deltares::Models::ModelParameter>();
+                types[counter] = ObjectType::ModelParameter;
             }
             else if (object_type == "stochast")
             {
-                stochasts[id] = std::make_shared<Deltares::Statistics::Stochast>();
-                stochastIds[stochasts[id]] = id;
-                types[id] = ObjectType::Stochast;
+                stochasts[counter] = std::make_shared<Deltares::Statistics::Stochast>();
+                stochastIds[stochasts[counter]] = counter;
+                types[counter] = ObjectType::Stochast;
             }
             else if (object_type == "discrete_value")
             {
-                discreteValues[id] = std::make_shared<Deltares::Statistics::DiscreteValue>();
-                discreteValueIds[discreteValues[id]] = id;
-                types[id] = ObjectType::DiscreteValue;
+                discreteValues[counter] = std::make_shared<Deltares::Statistics::DiscreteValue>();
+                discreteValueIds[discreteValues[counter]] = counter;
+                types[counter] = ObjectType::DiscreteValue;
             }
             else if (object_type == "histogram_value")
             {
-                histogramValues[id] = std::make_shared<Deltares::Statistics::HistogramValue>();
-                histogramValueIds[histogramValues[id]] = id;
-                types[id] = ObjectType::HistogramValue;
+                histogramValues[counter] = std::make_shared<Deltares::Statistics::HistogramValue>();
+                histogramValueIds[histogramValues[counter]] = counter;
+                types[counter] = ObjectType::HistogramValue;
             }
             else if (object_type == "fragility_value")
             {
-                fragilityValues[id] = std::make_shared<Deltares::Statistics::FragilityValue>();
-                fragilityValueIds[fragilityValues[id]] = id;
-                types[id] = ObjectType::FragilityValue;
+                fragilityValues[counter] = std::make_shared<Deltares::Statistics::FragilityValue>();
+                fragilityValueIds[fragilityValues[counter]] = counter;
+                types[counter] = ObjectType::FragilityValue;
             }
             else if (object_type == "contributing_stochast")
             {
-                contributingStochasts[id] = std::make_shared<Deltares::Statistics::ContributingStochast>();
-                contributingStochastIds[contributingStochasts[id]] = id;
-                types[id] = ObjectType::ContributingStochast;
+                contributingStochasts[counter] = std::make_shared<Deltares::Statistics::ContributingStochast>();
+                contributingStochastIds[contributingStochasts[counter]] = counter;
+                types[counter] = ObjectType::ContributingStochast;
             }
             else if (object_type == "correlation_matrix")
             {
-                correlationMatrices[id] = std::make_shared<Deltares::Statistics::CorrelationMatrix>();
-                correlationMatrixIds[correlationMatrices[id]] = id;
-                types[id] = ObjectType::CorrelationMatrix;
+                correlationMatrices[counter] = std::make_shared<Deltares::Statistics::CorrelationMatrix>();
+                correlationMatrixIds[correlationMatrices[counter]] = counter;
+                types[counter] = ObjectType::CorrelationMatrix;
             }
             else if (object_type == "settings")
             {
-                settingsValues[id] = std::make_shared<Deltares::Reliability::Settings>();
-                types[id] = ObjectType::Settings;
+                settingsValues[counter] = std::make_shared<Deltares::Reliability::Settings>();
+                types[counter] = ObjectType::Settings;
             }
             else if (object_type == "stochast_settings")
             {
-                stochastSettingsValues[id] = std::make_shared<Deltares::Reliability::StochastSettings>();
-                types[id] = ObjectType::StochastSettings;
+                stochastSettingsValues[counter] = std::make_shared<Deltares::Reliability::StochastSettings>();
+                types[counter] = ObjectType::StochastSettings;
             }
             else if (object_type == "design_point")
             {
-                designPoints[id] = std::make_shared<Deltares::Reliability::DesignPoint>();
-                designPointIds[designPoints[id]] = id;
-                types[id] = ObjectType::DesignPoint;
+                designPoints[counter] = std::make_shared<Deltares::Reliability::DesignPoint>();
+                designPointIds[designPoints[counter]] = counter;
+                types[counter] = ObjectType::DesignPoint;
             }
             else if (object_type == "alpha")
             {
-                alphas[id] = std::make_shared<Deltares::Reliability::StochastPointAlpha>();
-                alphaIds[alphas[id]] = id;
-                types[id] = ObjectType::Alpha;
+                alphas[counter] = std::make_shared<Deltares::Reliability::StochastPointAlpha>();
+                alphaIds[alphas[counter]] = counter;
+                types[counter] = ObjectType::Alpha;
             }
             else if (object_type == "combine_project")
             {
-                combineProjects[id] = std::make_shared<Deltares::Reliability::CombineProject>();
-                types[id] = ObjectType::CombineProject;
+                combineProjects[counter] = std::make_shared<Deltares::Reliability::CombineProject>();
+                types[counter] = ObjectType::CombineProject;
             }
             else if (object_type == "combine_settings")
             {
-                combineSettingsValues[id] = std::make_shared<Deltares::Reliability::CombineSettings>();
-                types[id] = ObjectType::CombineSettings;
+                combineSettingsValues[counter] = std::make_shared<Deltares::Reliability::CombineSettings>();
+                types[counter] = ObjectType::CombineSettings;
             }
             else if (object_type == "self_correlation_matrix")
             {
-                selfCorrelationMatrices[id] = std::make_shared<Deltares::Statistics::SelfCorrelationMatrix>();
-                types[id] = ObjectType::SelfCorrelationMatrix;
+                selfCorrelationMatrices[counter] = std::make_shared<Deltares::Statistics::SelfCorrelationMatrix>();
+                types[counter] = ObjectType::SelfCorrelationMatrix;
             }
             else if (object_type == "sensitivity_project")
             {
-                sensitivityProjects[id] = std::make_shared<Deltares::Sensitivity::SensitivityProject>();
-                types[id] = ObjectType::SensitivityProject;
+                sensitivityProjects[counter] = std::make_shared<Deltares::Sensitivity::SensitivityProject>();
+                types[counter] = ObjectType::SensitivityProject;
             }
             else if (object_type == "sensitivity_settings")
             {
-                sensitivitySettingsValues[id] = std::make_shared<Deltares::Sensitivity::SettingsS>();
-                types[id] = ObjectType::SensitivitySettings;
+                sensitivitySettingsValues[counter] = std::make_shared<Deltares::Sensitivity::SettingsS>();
+                types[counter] = ObjectType::SensitivitySettings;
             }
+
+            return counter;
         }
 
-        void ProjectHandler::Destroy(int id)
+        void ProjectServer::Destroy(int id)
         {
             switch (types[id])
             {
@@ -189,7 +175,7 @@ namespace Deltares
             types.erase(id);
         }
 
-        double ProjectHandler::GetValue(int id, std::string property_)
+        double ProjectServer::GetValue(int id, std::string property_)
         {
             ObjectType objectType = types[id];
 
@@ -286,7 +272,7 @@ namespace Deltares
             return std::nan("");
         }
 
-        void ProjectHandler::SetValue(int id, std::string property_, double value)
+        void ProjectServer::SetValue(int id, std::string property_, double value)
         {
             ObjectType objectType = types[id];
 
@@ -383,20 +369,20 @@ namespace Deltares
             }
         }
 
-        int ProjectHandler::GetIntValue(int id, std::string property_)
+        int ProjectServer::GetIntValue(int id, std::string property_)
         {
             ObjectType objectType = types[id];
 
             if (objectType == ObjectType::Project)
             {
-                std::shared_ptr<Reliability::ReliabilityProject> project = projects[id];
+                std::shared_ptr<Models::Project> project = projects[id];
 
                 if (property_ == "design_point") return GetDesignPointId(project->designPoint);
                 else if (property_ == "index") return project->model->Index;
             }
             else if (objectType == ObjectType::ModelParameter)
             {
-                std::shared_ptr<Models::ModelInputParameter> parameter = modelParameters[id];
+                std::shared_ptr<Models::ModelParameter> parameter = modelParameters[id];
 
                 if (property_ == "index") return parameter->index;
             }
@@ -405,7 +391,7 @@ namespace Deltares
                 std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
 
                 if (property_ == "sensitivity_stochast") return GetStochastId(project->sensitivityStochast);
-                else if (property_ == "sensitivity_stochasts_count") return (int)project->sensitivityStochasts.size();
+                else if (property_ == "sensitivity_stochasts_count") return (int) project->sensitivityStochasts.size();
                 else if (property_ == "output_correlation_matrix") return GetCorrelationMatrixId(project->outputCorrelationMatrix);
                 else if (property_ == "index") return project->model->Index;
             }
@@ -476,7 +462,7 @@ namespace Deltares
                 else if (property_ == "total_iterations") return designPoint->convergenceReport->TotalIterations;
                 else if (property_ == "total_directions") return designPoint->convergenceReport->TotalDirections;
                 else if (property_ == "total_model_runs") return designPoint->convergenceReport->TotalModelRuns;
-                else if (property_ == "messages_count") return (int)designPoint->Messages.size();
+                else if (property_ == "messages_count") return (int) designPoint->Messages.size();
             }
             else if (objectType == ObjectType::Alpha)
             {
@@ -494,13 +480,13 @@ namespace Deltares
             return 0;
         }
 
-        void ProjectHandler::SetIntValue(int id, std::string property_, int value)
+        void ProjectServer::SetIntValue(int id, std::string property_, int value)
         {
             ObjectType objectType = types[id];
 
             if (objectType == ObjectType::Project)
             {
-                std::shared_ptr<Reliability::ReliabilityProject> project = projects[id];
+                std::shared_ptr<Models::Project> project = projects[id];
 
                 if (property_ == "settings") project->settings = settingsValues[value];
                 else if (property_ == "correlation_matrix") project->correlationMatrix = correlationMatrices[value];
@@ -514,7 +500,7 @@ namespace Deltares
             }
             else if (objectType == ObjectType::ModelParameter)
             {
-                std::shared_ptr<Models::ModelInputParameter> parameter = modelParameters[id];
+                std::shared_ptr<Models::ModelParameter> parameter = modelParameters[id];
 
                 if (property_ == "index") parameter->index = value;
             }
@@ -582,7 +568,7 @@ namespace Deltares
             }
         }
 
-        double ProjectHandler::GetIntArgValue(int id1, int id2, std::string property_)
+        double ProjectServer::GetIntArgValue(int id1, int id2, std::string property_)
         {
             ObjectType objectType = types[id1];
 
@@ -596,7 +582,7 @@ namespace Deltares
             return std::nan("");
         }
 
-        void ProjectHandler::SetIntArgValue(int id1, int id2, std::string property_, double value)
+        void ProjectServer::SetIntArgValue(int id1, int id2, std::string property_, double value)
         {
             ObjectType objectType = types[id1];
 
@@ -609,7 +595,7 @@ namespace Deltares
             }
         }
 
-        bool ProjectHandler::GetBoolValue(int id, std::string property_)
+        bool ProjectServer::GetBoolValue(int id, std::string property_)
         {
             ObjectType objectType = types[id];
 
@@ -646,7 +632,7 @@ namespace Deltares
             return false;
         }
 
-        void ProjectHandler::SetBoolValue(int id, std::string property_, bool value)
+        void ProjectServer::SetBoolValue(int id, std::string property_, bool value)
         {
             ObjectType objectType = types[id];
 
@@ -675,7 +661,7 @@ namespace Deltares
 
         }
 
-        std::string ProjectHandler::GetStringValue(int id, std::string property_)
+        std::string ProjectServer::GetStringValue(int id, std::string property_)
         {
             ObjectType objectType = types[id];
 
@@ -689,7 +675,7 @@ namespace Deltares
             }
             else if (objectType == ObjectType::ModelParameter)
             {
-                std::shared_ptr<Models::ModelInputParameter> parameter = modelParameters[id];
+                std::shared_ptr<Models::ModelParameter> parameter = modelParameters[id];
 
                 if (property_ == "name") return parameter->name;
             }
@@ -729,7 +715,7 @@ namespace Deltares
             return "";
         }
 
-        void ProjectHandler::SetStringValue(int id, std::string property_, std::string value)
+        void ProjectServer::SetStringValue(int id, std::string property_, std::string value)
         {
             ObjectType objectType = types[id];
 
@@ -742,7 +728,7 @@ namespace Deltares
             }
             else if (objectType == ObjectType::ModelParameter)
             {
-                std::shared_ptr<Models::ModelInputParameter> parameter = modelParameters[id];
+                std::shared_ptr<Models::ModelParameter> parameter = modelParameters[id];
 
                 if (property_ == "name") parameter->name = value;
             }
@@ -772,7 +758,7 @@ namespace Deltares
             }
             else if (objectType == ObjectType::Project)
             {
-                std::shared_ptr<Reliability::ReliabilityProject> project = projects[id];
+                std::shared_ptr<Reliability::Project> project = projects[id];
 
                 if (property_ == "model_name") project->model->Name = value;
             }
@@ -784,7 +770,7 @@ namespace Deltares
             }
         }
 
-        void ProjectHandler::SetArrayValue(int id, std::string property_, double* values, int size)
+        void ProjectServer::SetArrayValue(int id, std::string property_, double* values, int size)
         {
             ObjectType objectType = types[id];
 
@@ -805,20 +791,20 @@ namespace Deltares
             }
         }
 
-        std::vector<int> ProjectHandler::GetArrayIntValue(int id, std::string property_)
+        std::vector<int> ProjectServer::GetArrayIntValue(int id, std::string property_)
         {
             ObjectType objectType = types[id];
 
             return std::vector<int>(0);
         }
 
-        void ProjectHandler::SetArrayIntValue(int id, std::string property_, int* values, int size)
+        void ProjectServer::SetArrayIntValue(int id, std::string property_, int* values, int size)
         {
             ObjectType objectType = types[id];
 
             if (objectType == ObjectType::Project)
             {
-                std::shared_ptr<Reliability::ReliabilityProject> project = projects[id];
+                std::shared_ptr<Models::Project> project = projects[id];
 
                 if (property_ == "variables")
                 {
@@ -999,7 +985,7 @@ namespace Deltares
         }
 
 
-        double ProjectHandler::GetArgValue(int id, std::string property_, double argument)
+        double ProjectServer::GetArgValue(int id, std::string property_, double argument)
         {
             ObjectType objectType = types[id];
 
@@ -1026,7 +1012,7 @@ namespace Deltares
             return std::nan("");
         }
 
-        void ProjectHandler::SetArgValue(int id, std::string property_, double argument, double value)
+        void ProjectServer::SetArgValue(int id, std::string property_, double argument, double value)
         {
             ObjectType objectType = types[id];
 
@@ -1038,17 +1024,17 @@ namespace Deltares
             }
         }
 
-        double ProjectHandler::GetIndexedValue(int id, std::string property_, int index)
+        double ProjectServer::GetIndexedValue(int id, std::string property_, int index)
         {
             return std::nan("");
         }
 
-        void ProjectHandler::SetIndexedValue(int id, std::string property_, int index, double value)
+        void ProjectServer::SetIndexedValue(int id, std::string property_, int index, double value)
         {
             // not needed yet
         }
 
-        double ProjectHandler::GetIndexedIndexedValue(int id, std::string property_, int index1, int index2)
+        double ProjectServer::GetIndexedIndexedValue(int id, std::string property_, int index1, int index2)
         {
             ObjectType objectType = types[id];
 
@@ -1065,7 +1051,7 @@ namespace Deltares
             return std::nan("");
         }
 
-        void ProjectHandler::SetIndexedIndexedValue(int id, std::string property_, int index1, int index2, double value)
+        void ProjectServer::SetIndexedIndexedValue(int id, std::string property_, int index1, int index2, double value)
         {
             ObjectType objectType = types[id];
 
@@ -1080,7 +1066,7 @@ namespace Deltares
             }
         }
 
-        int ProjectHandler::GetIndexedIntValue(int id, std::string property_, int index)
+        int ProjectServer::GetIndexedIntValue(int id, std::string property_, int index)
         {
             ObjectType objectType = types[id];
 
@@ -1109,7 +1095,7 @@ namespace Deltares
             }
             else if (objectType == ObjectType::SensitivityProject)
             {
-                std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
+                std::shared_ptr<Sensitivity::SensitivityProject> project =sensitivityProjects[id];
 
                 if (property_ == "sensitivity_stochasts") return this->GetStochastId(project->sensitivityStochasts[index]);
             }
@@ -1117,13 +1103,13 @@ namespace Deltares
             return 0;
         }
 
-        void ProjectHandler::SetCallBack(int id, std::string property_, ZValuesCallBack callBack)
+        void ProjectServer::SetCallBack(int id, std::string property_, ZValuesCallBack callBack)
         {
             ObjectType objectType = types[id];
 
             if (objectType == ObjectType::Project)
             {
-                std::shared_ptr<Reliability::ReliabilityProject> project = projects[id];
+                std::shared_ptr<Models::Project> project = projects[id];
 
                 if (property_ == "model") project->model = std::make_shared<ZModel>(callBack);
             }
@@ -1135,13 +1121,13 @@ namespace Deltares
             }
         }
 
-        void ProjectHandler::SetEmptyCallBack(int id, std::string property_, ZEmptyCallBack callBack)
+        void ProjectServer::SetEmptyCallBack(int id, std::string property_, ZEmptyCallBack callBack)
         {
             ObjectType objectType = types[id];
 
             if (objectType == ObjectType::Project)
             {
-                std::shared_ptr<Reliability::ReliabilityProject> project = projects[id];
+                std::shared_ptr<Models::Project> project = projects[id];
 
                 if (property_ == "initialize") project->setInitializer(callBack);
             }
@@ -1153,7 +1139,7 @@ namespace Deltares
             }
         }
 
-        void ProjectHandler::Execute(int id, std::string method_)
+        void ProjectServer::Execute(int id, std::string method_)
         {
             ObjectType objectType = types[id];
 
@@ -1165,7 +1151,7 @@ namespace Deltares
             }
             else if (objectType == ObjectType::Project)
             {
-                std::shared_ptr<Reliability::ReliabilityProject> project = projects[id];
+                std::shared_ptr<Models::Project> project = projects[id];
 
                 if (method_ == "run") project->run();
             }
@@ -1183,7 +1169,7 @@ namespace Deltares
             }
         }
 
-        int ProjectHandler::GetStochastId(std::shared_ptr<Statistics::Stochast> stochast)
+        int ProjectServer::GetStochastId(std::shared_ptr<Statistics::Stochast> stochast)
         {
             if (stochast == nullptr)
             {
@@ -1193,7 +1179,7 @@ namespace Deltares
             {
                 if (!stochastIds.contains(stochast))
                 {
-                    int counter = this->server->GetNewObjectId(this->handlerIndex);
+                    int counter = GetNewObjectId();
 
                     stochasts[counter] = stochast;
                     types[counter] = ObjectType::Stochast;
@@ -1204,7 +1190,7 @@ namespace Deltares
             }
         }
 
-        int ProjectHandler::GetCorrelationMatrixId(std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix)
+        int ProjectServer::GetCorrelationMatrixId(std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix)
         {
             if (correlationMatrix == nullptr)
             {
@@ -1214,7 +1200,7 @@ namespace Deltares
             {
                 if (!correlationMatrixIds.contains(correlationMatrix))
                 {
-                    int counter = this->server->GetNewObjectId(this->handlerIndex);
+                    int counter = GetNewObjectId();
 
                     correlationMatrices[counter] = correlationMatrix;
                     types[counter] = ObjectType::CorrelationMatrix;
@@ -1225,7 +1211,7 @@ namespace Deltares
             }
         }
 
-        int ProjectHandler::GetDesignPointId(std::shared_ptr<Reliability::DesignPoint> designPoint)
+        int ProjectServer::GetDesignPointId(std::shared_ptr<Reliability::DesignPoint> designPoint)
         {
             if (designPoint == nullptr)
             {
@@ -1235,7 +1221,7 @@ namespace Deltares
             {
                 if (!designPointIds.contains(designPoint))
                 {
-                    int counter = this->server->GetNewObjectId(this->handlerIndex);
+                    int counter = GetNewObjectId();
 
                     designPoints[counter] = designPoint;
                     types[counter] = ObjectType::DesignPoint;
@@ -1246,11 +1232,11 @@ namespace Deltares
             }
         }
 
-        int ProjectHandler::GetAlphaId(std::shared_ptr<StochastPointAlpha> alpha)
+        int ProjectServer::GetAlphaId(std::shared_ptr<StochastPointAlpha> alpha)
         {
             if (!alphaIds.contains(alpha))
             {
-                int counter = this->server->GetNewObjectId(this->handlerIndex);
+                int counter = GetNewObjectId();
 
                 alphas[counter] = alpha;
                 types[counter] = ObjectType::Alpha;
@@ -1260,11 +1246,11 @@ namespace Deltares
             return alphaIds[alpha];
         }
 
-        int ProjectHandler::GetHistogramValueId(std::shared_ptr<Statistics::HistogramValue> histogramValue)
+        int ProjectServer::GetHistogramValueId(std::shared_ptr<Statistics::HistogramValue> histogramValue)
         {
             if (!histogramValueIds.contains(histogramValue))
             {
-                int counter = this->server->GetNewObjectId(this->handlerIndex);
+                int counter = GetNewObjectId();
 
                 histogramValues[counter] = histogramValue;
                 types[counter] = ObjectType::HistogramValue;
@@ -1274,11 +1260,11 @@ namespace Deltares
             return histogramValueIds[histogramValue];
         }
 
-        int ProjectHandler::GetDiscreteValueId(std::shared_ptr<Statistics::DiscreteValue> discreteValue)
+        int ProjectServer::GetDiscreteValueId(std::shared_ptr<Statistics::DiscreteValue> discreteValue)
         {
             if (!discreteValueIds.contains(discreteValue))
             {
-                int counter = this->server->GetNewObjectId(this->handlerIndex);
+                int counter = GetNewObjectId();
 
                 discreteValues[counter] = discreteValue;
                 types[counter] = ObjectType::DiscreteValue;
@@ -1288,11 +1274,11 @@ namespace Deltares
             return discreteValueIds[discreteValue];
         }
 
-        int ProjectHandler::GetFragilityValueId(std::shared_ptr<Statistics::FragilityValue> fragilityValue)
+        int ProjectServer::GetFragilityValueId(std::shared_ptr<Statistics::FragilityValue> fragilityValue)
         {
             if (!fragilityValueIds.contains(fragilityValue))
             {
-                int counter = this->server->GetNewObjectId(this->handlerIndex);
+                int counter = GetNewObjectId();
 
                 fragilityValues[counter] = fragilityValue;
                 types[counter] = ObjectType::FragilityValue;
@@ -1302,11 +1288,11 @@ namespace Deltares
             return fragilityValueIds[fragilityValue];
         }
 
-        int ProjectHandler::GetContributingStochastId(std::shared_ptr<Statistics::ContributingStochast> contributingStochast)
+        int ProjectServer::GetContributingStochastId(std::shared_ptr<Statistics::ContributingStochast> contributingStochast)
         {
             if (!contributingStochastIds.contains(contributingStochast))
             {
-                int counter = this->server->GetNewObjectId(this->handlerIndex);
+                int counter = GetNewObjectId();
 
                 contributingStochasts[counter] = contributingStochast;
                 types[counter] = ObjectType::FragilityValue;
@@ -1316,11 +1302,11 @@ namespace Deltares
             return contributingStochastIds[contributingStochast];
         }
 
-        int ProjectHandler::GetMessageId(std::shared_ptr<Deltares::Models::Message> message)
+        int ProjectServer::GetMessageId(std::shared_ptr<Deltares::Models::Message> message)
         {
             if (!messageIds.contains(message))
             {
-                int counter = this->server->GetNewObjectId(this->handlerIndex);
+                int counter = GetNewObjectId();
 
                 messages[counter] = message;
                 types[counter] = ObjectType::Message;

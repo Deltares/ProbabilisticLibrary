@@ -22,7 +22,7 @@
 #include "DirectionalSamplingCombiner.h"
 #include "../Reliability/DirectionalSampling.h"
 #include "../Reliability/DirectionalSamplingSettings.h"
-#include "../Reliability/ReliabilityProject.h"
+#include "../Model/Project.h"
 
 namespace Deltares
 {
@@ -38,7 +38,7 @@ namespace Deltares
             // create the model from design points
             const std::shared_ptr<CombinedDesignPointModel> model = getModel(combineMethodType, nullptr, designPoints, stochasts, selfCorrelationMatrix);
 
-            const std::shared_ptr<Reliability::ReliabilityProject> project = getProject(model, selfCorrelationMatrix);
+            const std::shared_ptr<Project> project = getProject(model, selfCorrelationMatrix);
 
             const std::shared_ptr<DirectionalSampling> directionalSampling = std::make_shared<DirectionalSampling>();
             fillSettings(model, directionalSampling->Settings);

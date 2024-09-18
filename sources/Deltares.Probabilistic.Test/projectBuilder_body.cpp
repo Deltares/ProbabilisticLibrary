@@ -105,7 +105,7 @@ namespace Deltares
                 }
             }
 
-            std::shared_ptr<SensitivityProject> projectBuilder::getSensitivityProject(std::shared_ptr<ReliabilityProject> project)
+            std::shared_ptr<SensitivityProject> projectBuilder::getSensitivityProject(std::shared_ptr<Project> project)
             {
                 std::shared_ptr<SensitivityProject> sensitivityProject = std::make_shared<SensitivityProject>();
 
@@ -120,9 +120,9 @@ namespace Deltares
                 return sensitivityProject;
             }
 
-            std::shared_ptr<ReliabilityProject> projectBuilder::getAddOneProject()
+            std::shared_ptr<Project> projectBuilder::getAddOneProject()
             {
-                std::shared_ptr<ReliabilityProject> project = std::make_shared<ReliabilityProject>();
+                std::shared_ptr<Project> project = std::make_shared<Project>();
 
                 project->stochasts.push_back(getDeterministicStochast(1));
                 project->stochasts.push_back(getUniformStochast(-1));
@@ -135,9 +135,9 @@ namespace Deltares
                 return project;
             }
 
-            std::shared_ptr<ReliabilityProject> projectBuilder::getLinearProject()
+            std::shared_ptr<Project> projectBuilder::getLinearProject()
             {
-                std::shared_ptr<ReliabilityProject> project = std::make_shared<ReliabilityProject>();
+                std::shared_ptr<Project> project = std::make_shared<Project>();
 
                 project->stochasts.push_back(getUniformStochast(-1));
                 project->stochasts.push_back(getUniformStochast(-1));

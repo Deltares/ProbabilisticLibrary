@@ -26,7 +26,7 @@
 #include "../Statistics/CorrelationMatrix.h"
 #include "../Statistics/SelfCorrelationMatrix.h"
 #include "../Model/ProgressIndicator.h"
-#include "../Reliability/ReliabilityProject.h"
+#include "../Model/Project.h"
 #include "CombinedDesignPointModel.h"
 #include "CombineType.h"
 
@@ -71,10 +71,11 @@ namespace Deltares
             /**
              * \brief Gets a project containing the linearized model
              * \param model Linearized model
+             * \param correlationMatrix Correlation matrix
              * \param selfCorrelationMatrix Self correlation administration
              * \return Project
              */
-            std::shared_ptr<Reliability::ReliabilityProject> getProject(std::shared_ptr<Reliability::CombinedDesignPointModel> model, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix);
+            std::shared_ptr<Project> getProject(std::shared_ptr<Reliability::CombinedDesignPointModel> model, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix);
 
         };
     };
