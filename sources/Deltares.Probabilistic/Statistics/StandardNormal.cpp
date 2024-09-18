@@ -193,9 +193,9 @@ namespace Deltares
             return q;
         }
 
-        double StandardNormal::getUFromPQ(const PQ* pq)
+        double StandardNormal::getUFromPQ(const PQ& pq)
         {
-            return getUFromQ(pq->q);
+            return getUFromQ(pq.q);
         }
 
         double StandardNormal::getUFromP(const double p)
@@ -258,7 +258,7 @@ namespace Deltares
         /// <returns></returns>
         double StandardNormal::getRFromP(double p)
         {
-            return - 1 / log(1 - p);
+            return - 1.0 / log(1.0 - p);
         }
 
         /// <summary>
@@ -268,7 +268,7 @@ namespace Deltares
         /// <returns></returns>
         double StandardNormal::getPFromR(double r)
         {
-            return 1 - exp(-1 / abs(r));
+            return 1.0 - exp(-1.0 / fabs(r));
         }
 
         /// <summary>
@@ -279,7 +279,7 @@ namespace Deltares
         double StandardNormal::getRFromU(double u)
         {
             double q = getQFromU(u);
-            return -1 / log(q);
+            return -1.0 / log(q);
         }
 
         /// <summary>
@@ -289,13 +289,27 @@ namespace Deltares
         /// <returns></returns>
         double StandardNormal::getUFromR(double r)
         {
-            double q = exp(-1 / abs(r));
+            double q = exp(-1.0 / fabs(r));
             return getUFromQ(q);
         }
 
         double StandardNormal::ReturnTimeFromBeta(const double beta)
         {
             return 1.0 / FreqFromBeta(beta);
+        }
+
+        double StandardNormal::BetaFromReturnTime(const double return_time)
+        {
+            const double return_time_limit = 93304555.446497560; // this return time gives beta = uLimit = 5.6, see FreqFromBeta
+            double freq = 1.0 / return_time;
+            if (return_time > return_time_limit)
+            {
+                return getUFromQ(freq);
+            }
+            else
+            {
+                return getUFromP(exp(-freq));
+            }
         }
 
         double StandardNormal::FreqFromBeta(const double beta)

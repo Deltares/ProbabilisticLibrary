@@ -65,7 +65,8 @@ class StandardNormal:
 		return ['get_u_from_q',
 			'get_u_from_p',
 			'get_q_from_u',
-			'get_p_from_u']
+			'get_p_from_u',
+			'return_time_from_beta']
 
 	def get_u_from_q (q : float):
 		return interface.GetArgValue(StandardNormal._id, 'u_from_q', q)
@@ -79,6 +80,11 @@ class StandardNormal:
 	def get_p_from_u (u : float):
 		return interface.GetArgValue(StandardNormal._id, 'p_from_u', u)
 
+	def return_time_from_beta (u : float):
+		return interface.GetArgValue(StandardNormal._id, 'return_time_from_beta', u)
+
+	def beta_from_return_time (t : float):
+		return interface.GetArgValue(StandardNormal._id, 'beta_from_return_time', t)
 
 class Stochast:
 
