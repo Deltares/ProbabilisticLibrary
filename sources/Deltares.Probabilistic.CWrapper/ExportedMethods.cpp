@@ -39,7 +39,16 @@ extern "C" DLL_PUBLIC void AddLibrary(char* library)
     std::string libraryStr(library);
     std::shared_ptr<Deltares::Server::ExternalHandler> externalHandler = std::make_shared<Deltares::Server::ExternalHandler>(libraryStr);
 
-    return projectServer->AddHandler(externalHandler);
+    try
+    {
+        bool handle = externalHandler->CanHandle("ptk_model");
+    }
+    catch (std::exception& e)
+    {
+        int k = 1;
+    }
+
+    projectServer->AddHandler(externalHandler);
 }
 
 extern "C" DLL_PUBLIC int Create(char* type)

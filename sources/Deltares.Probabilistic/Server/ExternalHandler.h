@@ -70,20 +70,20 @@ namespace Deltares
             void SetArrayIntValue(int id, std::string property_, int* values, int size) override;
             Models::ZLambda GetCallBack(int id, std::string method) override;
         private:
-            typedef bool(__stdcall* f_can_handle)(const char*);
-            typedef void(__stdcall* f_create)(const char*, int);
-            typedef void(__stdcall* f_destroy)(int);
-            typedef double(__stdcall* f_get_value)(int, const char*);
-            typedef void(__stdcall* f_set_value)(int, const char*, double);
-            typedef bool(__stdcall* f_get_bool_value)(int, const char*);
-            typedef void(__stdcall* f_set_bool_value)(int, const char*, bool);
-            typedef int(__stdcall* f_get_int_value)(int, const char*);
-            typedef void(__stdcall* f_set_int_value)(int, const char*, int);
-            typedef char*(__stdcall* f_get_string_value)(int, const char*);
-            typedef void(__stdcall* f_set_string_value)(int, const char*, const char*);
-            typedef int(__stdcall* f_get_indexed_int_value)(int, const char*, int);
-            typedef void(__stdcall* f_set_array_int_value)(int, const char*, int*, int);
-            typedef Models::ZLambda(__stdcall* f_get_callback_method)(int, const char*);
+            typedef bool(*f_can_handle)(const char*);
+            typedef void(*f_create)(const char*, int);
+            typedef void(* f_destroy)(int);
+            typedef double(* f_get_value)(int, const char*);
+            typedef void(* f_set_value)(int, const char*, double);
+            typedef bool(* f_get_bool_value)(int, const char*);
+            typedef void(* f_set_bool_value)(int, const char*, bool);
+            typedef int(* f_get_int_value)(int, const char*);
+            typedef void(* f_set_int_value)(int, const char*, int);
+            typedef char*(* f_get_string_value)(int, const char*);
+            typedef void(* f_set_string_value)(int, const char*, const char*);
+            typedef int(* f_get_indexed_int_value)(int, const char*, int);
+            typedef void(* f_set_array_int_value)(int, const char*, int*, int);
+            typedef Models::ZLambda(* f_get_callback_method)(int, const char*);
 
             f_can_handle canHandle = nullptr;
             f_create createMethod = nullptr;
