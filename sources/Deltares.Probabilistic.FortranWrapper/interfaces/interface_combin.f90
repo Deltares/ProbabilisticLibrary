@@ -26,9 +26,9 @@ implicit none
 integer, parameter :: combAND =  0
 integer, parameter :: combOR  =  1
 
-private :: combineMultipleElements_c, Hohenbichler_c, warnHohenbichler, upscaleLengthC, upscaleInTimeC, &
+private :: combineMultipleElements_c, warnHohenbichler, upscaleLengthC, &
     combineTwoElementsPartialCorrelationC1, combineTwoElementsPartialCorrelationC2, &
-    combineMultipleElementsSpatialCorrelated_c, combineMultipleElementsProb_c, ComputeBetaSection_c, c_double, wp
+    combineMultipleElementsProb_c, c_double, wp
 
 interface
     integer function combineMultipleElements_c( betaElement, alphaElement, rho, beta, alpha, &
@@ -57,33 +57,6 @@ interface
 end interface
 
 interface
-    integer function Hohenbichler_c( betaV, pfU, rhoInput, pfVpfU ) bind(c)
-        use, intrinsic :: iso_c_binding, only: c_double
-        real(kind=c_double),  intent(in)   :: betaV       !< Smallest reliability index of two stochastic parameters.
-                                                          !! This one has the largest probability of failure, \f$ P\left( {Z_2  < 0} \right) \f$
-        real(kind=c_double),  intent(in)   :: pfU         !< Smallest probability of failure of two stochastic parameters, \f$ P\left( {Z_1  < 0} \right) \f$
-                                                          !! This one has the largest reliability index
-        real(kind=c_double),  intent(in)   :: rhoInput    !< Correlation coefficient between \f$ {Z_1 } \f$ and \f$ {Z_2 } \f$
-        real(kind=c_double),  intent(out)  :: pfVpfU      !< Failure probability \f$ P\left( {Z_2  < 0|Z_1  < 0} \right) \f$
-    end function Hohenbichler_c
-end interface
-
-interface
-!>
-!! Subroutine used in upscaling for computing the beta of a section from the beta of a cross section.
-    integer function ComputeBetaSection_c( betaCrossSection, sectionLength, breachL, rhoZ, dz, deltaL, betaSection) bind(c)
-        use, intrinsic :: iso_c_binding, only: c_double
-        real( kind= c_double), intent(in)  :: betaCrossSection     !< Reliability index of the cross section
-        real( kind= c_double), intent(in)  :: sectionLength        !< Length of the section
-        real( kind= c_double), intent(in)  :: breachL              !< Breach length
-        real( kind= c_double), intent(in)  :: rhoZ                 !< Correlation Z-function
-        real( kind= c_double), intent(in)  :: dz                   !< Correlation length
-        real( kind= c_double), intent(in)  :: deltaL               !< Delta L
-        real( kind= c_double), intent(out) :: betaSection          !< Reliability index of the section after upscaling
-    end function ComputeBetaSection_c
-end interface
-
-interface
 !>
 !! This subroutine upscales from a cross section to a given section length
     integer function upscaleLengthC ( betaCrossSection, alphaCrossSection, rhoXK, dXK, sectionLength, betaSection, alphaSection, &
@@ -103,19 +76,6 @@ end interface
 
 interface
 !>
-!! Subroutine for combining failure probabilities over equal elements, with exceptions for correlations close to zero
-    integer function upscaleInTimeC (nrTimes, beta, alpha, inRhoT, nStochasts) bind(c)
-        use, intrinsic :: iso_c_binding, only: c_double
-        real(kind=c_double),  intent(in)    :: nrTimes    !< Number of time the origional time
-        real(kind=c_double),  intent(inout) :: beta       !< Reliability index of a single time element
-        real(kind=c_double),  intent(inout) :: alpha(*)   !< Influence coefficients of a single time element
-        real(kind=c_double),  intent(in)    :: inRhoT(*)  !< Correlation coefficients for each of the variables, in time
-        integer, value,       intent(in)    :: nStochasts !< number of stochasts
-    end function upscaleInTimeC
-end interface
-
-interface
-!>
 !! Subroutine for upscaling random variables to the largest block duration
     subroutine upscaleToLargestBlockC( betaSmallBlock, alphaSmallBlock, rhoTSmallBlock,  &
                                       blockDurations, largestBlockDuration,             &
@@ -131,18 +91,6 @@ interface
         real(kind=c_double), intent (out) :: durationsLargestBlock(*) !< Block durations vector result
         integer, value,      intent (in)  :: nStochasts               !< number of stochasts
     end subroutine upscaleToLargestBlockC
-end interface
-
-interface
-!>
-!! Subroutine for combining failure probabilities over equal elements (core of upscaling subroutines)
-    subroutine integrateEqualElements( beta, rhoT, nrElements, betaT ) bind(c)
-        use, intrinsic :: iso_c_binding, only: c_double
-        real(kind=c_double),  intent(in)  :: beta       !< Reliability index of a single time element
-        real(kind=c_double),  intent(in)  :: rhoT       !< Autocorrelation coefficients for each of the variables, over the elements to be combined (space or time)
-        real(kind=c_double),  intent(in)  :: nrElements !< Number of time elements (e.g. tidal periods)
-        real(kind=c_double),  intent(out) :: betaT      !< Reliability index of combined elements
-    end subroutine integrateEqualElements
 end interface
 
 interface
@@ -182,20 +130,6 @@ interface
 end interface
 
 interface
-    integer function combineMultipleElementsSpatialCorrelated_c( betaElement, alphaElement, rho, beta, alpha, &
-            combAndOrIn, nrElms, nrStoch ) bind(c)
-        use, intrinsic :: iso_c_binding, only: c_double
-        real(kind=c_double),  intent(in)  :: betaElement(*)     !< Reliability index per element
-        real(kind=c_double),  intent(in)  :: alphaElement(*)    !< Alpha vector per element
-        real(kind=c_double),  intent(in)  :: rho(*)             !< Correlation data
-        real(kind=c_double),  intent(out) :: beta               !< Reliability index after combining over elements
-        real(kind=c_double),  intent(out) :: alpha(*)           !< Alpha vector after combining over elements
-        integer, value,       intent(in)  :: combAndOrIn        !< Combination type, And or Or
-        integer, value,       intent(in)  :: nrElms, nrStoch
-    end function combineMultipleElementsSpatialCorrelated_c
-end interface
-
-interface
     integer function combineMultipleElementsProb_c( betaElement, alphaElement, percentages, beta, alpha, &
             combAndOrIn, nrElms, nrStoch ) bind(c)
         use, intrinsic :: iso_c_binding, only: c_double
@@ -221,22 +155,6 @@ contains
         end if
     end subroutine warnHohenbichler
 
-    subroutine Hohenbichler( betaV, pfU, rhoInput, pfVpfU )
-        use, intrinsic :: iso_c_binding, only: c_double
-        real(kind=c_double),  intent(in)   :: betaV       !< Smallest reliability index of two stochastic parameters.
-                                                          !! This one has the largest probability of failure, \f$ P\left( {Z_2  < 0} \right) \f$
-        real(kind=c_double),  intent(in)   :: pfU         !< Smallest probability of failure of two stochastic parameters, \f$ P\left( {Z_1  < 0} \right) \f$
-                                                          !! This one has the largest reliability index
-        real(kind=c_double),  intent(in)   :: rhoInput    !< Correlation coefficient between \f$ {Z_1 } \f$ and \f$ {Z_2 } \f$
-        real(kind=c_double),  intent(out)  :: pfVpfU      !< Failure probability \f$ P\left( {Z_2  < 0|Z_1  < 0} \right) \f$
-
-        integer :: n
-
-        n = Hohenbichler_c( betaV, pfU, rhoInput, pfVpfU )
-        if (n > 0) then
-            call warnHohenbichler(1)
-        end if
-    end subroutine Hohenbichler
 !>
 !! This subroutine upscales from a cross section to a given section length
     subroutine upscaleLength ( betaCrossSection, alphaCrossSection, rhoXK, dXK, sectionLength, betaSection, alphaSection, &
@@ -262,18 +180,6 @@ contains
         end if
         call warnHohenbichler(n)
     end subroutine upscaleLength
-
-    subroutine upscaleInTime (nrTimes, beta, alpha, inRhoT)
-        real(kind=c_double),  intent(in)    :: nrTimes   !< Number of time the origional time
-        real(kind=c_double),  intent(inout) :: beta      !< Reliability index of a single time element
-        real(kind=c_double),  intent(inout) :: alpha(:)  !< Influence coefficients of a single time element
-        real(kind=c_double),  intent(in)    :: inRhoT(:) !< Correlation coefficients for each of the variables, in time
-
-        integer :: n
-
-        n = upscaleInTimeC(nrTimes, beta, alpha, inRhoT, size(alpha))
-        call warnHohenbichler(n)
-    end subroutine upscaleInTime
 
 !>
 !! Subroutine for upscaling random variables to the largest block duration
@@ -344,31 +250,6 @@ subroutine combineMultipleElements( betaElement, alphaElement, rho, beta, alpha,
 
 end subroutine combineMultipleElements
 
-!> This subroutine combines multiple elements with spatial correlation
-subroutine combineMultipleElementsSpatialCorrelated( betaElement, alphaElement, rho, beta, alpha, combAndOrIn )
-    real(kind=c_double),  intent(in)  :: betaElement(:)     !< Reliability index per element
-    real(kind=c_double),  intent(in)  :: alphaElement(:,:)  !< Alpha vector per element
-    real(kind=c_double),  intent(in)  :: rho(:,:,:)         !< Correlation data
-    real(kind=c_double),  intent(out) :: beta               !< Reliability index after combining over elements
-    real(kind=c_double),  intent(out) :: alpha(:)           !< Alpha vector after combining over elements
-    integer, optional,    intent(in)  :: combAndOrIn        !< Combination type, And or Or
-
-    integer :: nrElms, nrStoch, combAndOr, n
-
-    nrElms =  size(betaElement)
-    nrStoch = size(alpha)
-    if ( present(combAndOrIn) ) then
-        combAndOr = combAndOrIn
-    else
-        combAndOr = combOr
-    end if
-
-    n = combineMultipleElementsSpatialCorrelated_c(betaElement, alphaElement, rho, beta, alpha, combAndOr, nrElms, nrStoch)
-
-    call warnHohenbichler(n)
-
-end subroutine combineMultipleElementsSpatialCorrelated
-
 !> This subroutine calculates the reliability index (beta) and alpha values combining over elements
 subroutine combineMultipleElementsProb( betaElement, alphaElement, percentages, beta, alpha, combAndOrIn )
     real(kind=c_double),  intent(in)    :: betaElement(:)       !< Reliability index per element
@@ -393,24 +274,6 @@ subroutine combineMultipleElementsProb( betaElement, alphaElement, percentages, 
     call warnHohenbichler(n)
 
 end subroutine combineMultipleElementsProb
-
-subroutine ComputeBetaSection( betaCrossSection, sectionLength, breachL, rhoZ, dz, deltaL, betaSection)
-    real( kind=wp), intent(in)  :: betaCrossSection     !< Reliability index of the cross section
-    real( kind=wp), intent(in)  :: sectionLength        !< Length of the section
-    real( kind=wp), intent(in)  :: breachL              !< Breach length
-    real( kind=wp), intent(in)  :: rhoZ                 !< Correlation Z-function
-    real( kind=wp), intent(in)  :: dz                   !< Correlation length
-    real( kind=wp), intent(in)  :: deltaL               !< Delta L
-    real( kind=wp), intent(out) :: betaSection          !< Reliability index of the section after upscaling
-
-    integer :: n
-
-    n = ComputeBetaSection_c(betaCrossSection, sectionLength, breachL, rhoZ, dz, deltaL, betaSection)
-
-    call warnHohenbichler(n)
-
-end subroutine ComputeBetaSection
-
 
 ! TODO convert to wrapper to cpp code
 subroutine calculateCombinationWithLargestCorrelation( nStochasts, rhoP, nElements, alpha, i1max, i2max)

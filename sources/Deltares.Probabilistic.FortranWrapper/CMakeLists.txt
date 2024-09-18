@@ -2,19 +2,9 @@ enable_language(C)
 include(FortranCInterface)
 FortranCInterface_VERIFY(CXX)
 
-add_library(Deltares.Probabilistic.FortranWrapper
-  STATIC
-    interfaces/interface_gen.f90
-    interfaces/interface_distributions.f90
-    interfaces/interface_probCalc.F90
-    interfaces/interface_probCalcData.f90
-    interfaces/interface_convert.f90
-    interfaces/interface_combin.f90
-    interfaces/interface_special_funcs.f90
-    interfaces/f2c_tools.f90
-    interfaces/class_probCalc.f90
-    interfaces/mTpXdata.f90
-  )
+file(GLOB interface_files "interfaces/*.[fF]90")
+
+add_library(Deltares.Probabilistic.FortranWrapper STATIC ${interface_files})
 
 if (UNIX)
   target_compile_options(Deltares.Probabilistic.FortranWrapper PUBLIC -cpp)

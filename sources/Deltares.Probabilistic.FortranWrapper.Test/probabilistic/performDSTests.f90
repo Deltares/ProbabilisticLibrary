@@ -137,8 +137,6 @@ subroutine testDSFI
     real(kind=wp)                         :: alpha1(nStochasts)             !< Alpha values (short vector) first computation
     real(kind=wp)                         :: alpha2(nStochasts)             !< Alpha values (short vector) 2nd computation
     real(kind=wp)                         :: beta(2)                        !< Reliability index all cases
-    logical                               :: conv1                          !< Convergence criterium indicator (FORM)
-    logical                               :: conv2                          !< Convergence criterium indicator (DS)
     type(storedConvergenceData)           :: convergenceData1               !< convergenceData first computation
     type(storedConvergenceData)           :: convergenceData2               !< convergenceData 2nd computation
     type(tProbCalc)                       :: probCalc                       !< class prob. calculation
@@ -152,14 +150,14 @@ subroutine testDSFI
     probDb%method%FORM%maxIterations = 50
     probDb%method%DS%seedPRNG = 1
 
-    call probCalc%run(probDb, zFuncNod, alpha1, beta(1), x1, conv1, conv2, convergenceData1)
-    call assert_true(conv1, 'conv1 - meth. 12')
-    call assert_true(conv2, 'conv2 - meth. 12')
+    call probCalc%run(probDb, zFuncNod, alpha1, beta(1), x1, convergenceData1)
+    call assert_true(convergenceData1%conv, 'conv1 - meth. 12')
+    call assert_true(convergenceData1%convCriterium, 'conv2 - meth. 12')
 
     probDb%method%calcMethod = methodDirSamplingWithFORMiterationsStartU
-    call probCalc%run(probDb, zFuncNod, alpha2, beta(2), x2, conv1, conv2, convergenceData2)
-    call assert_true(conv1, 'conv1 - meth. 16')
-    call assert_true(conv2, 'conv2 - meth. 16')
+    call probCalc%run(probDb, zFuncNod, alpha2, beta(2), x2, convergenceData2)
+    call assert_true(convergenceData1%conv, 'conv1 - meth. 16')
+    call assert_true(convergenceData1%convCriterium, 'conv2 - meth. 16')
 
     call assert_equal(convergenceData1%cnvg_data_form%numberIterations, 10, '# FORM iterations u = -alpha * beta')
     call assert_equal(convergenceData2%cnvg_data_form%numberIterations, 2, '# FORM iterations u = u design point DS')
@@ -479,11 +477,11 @@ subroutine performDirectionalSampling( probDb, fx, x, alfa, beta, convCriterium,
     procedure(progressCancel), optional        :: pc               !< progress/cancel function
 
     type(storedConvergenceData)   :: allConvergenceData  !< struct holding all convergence data
-    logical                       :: conv
     type(tProbCalc)               :: probCalc            !< class prob. calculation
 
     probDb%method%calcMethod = methodDirectionalSampling
-    call probCalc%run( probDb, fx, alfa, beta, x, conv, convCriterium, allConvergenceData, pc=pc)
+    call probCalc%run( probDb, fx, alfa, beta, x, allConvergenceData, pc=pc)
+    convCriterium  = allConvergenceData%convCriterium
     convergenceData = allConvergenceData%cnvg_data_ds
 end subroutine performDirectionalSampling
 

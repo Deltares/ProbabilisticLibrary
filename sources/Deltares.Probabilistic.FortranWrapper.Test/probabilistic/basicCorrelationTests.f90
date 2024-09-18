@@ -159,8 +159,6 @@ subroutine testFormWithCorrelation
     real(kind=wp), pointer                 :: x(:)
     type(storedConvergenceData)            :: convergenceData  !< struct holding all convergence data
     type(probabilisticDataStructure_data)  :: probDb
-    logical                                :: conv
-    logical                                :: convCriterium
     type(tProbCalc)                        :: probCalc            !< class prob. calculation
 
     call init_probdb_x(probDb, x, iPoint, nStochasts)
@@ -177,7 +175,7 @@ subroutine testFormWithCorrelation
     call registerCorrelation( probDb, 1, 2, 0.1_wp )
     call registerCorrelation( probDb, 2, 3, 0.1_wp )
 
-    call probCalc%run( probDb, zFuncSimpleA, alfaN, beta, x, conv, convCriterium, convergenceData )
+    call probCalc%run( probDb, zFuncSimpleA, alfaN, beta, x, convergenceData )
 
     call assert_comparable( beta, 0.66270_wp, 1.0e-5_wp, "diff in beta")
 

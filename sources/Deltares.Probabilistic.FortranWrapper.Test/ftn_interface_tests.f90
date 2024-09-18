@@ -85,11 +85,10 @@ end subroutine fillDistribs
 subroutine test_ds
     use interface_probCalc
     type(tdistrib)              :: distribs(2)
-    type(tError)                :: ierr
     type(tMethod)               :: method
-    type(tResult)               :: r
+    type(tResult)               :: results
     integer                     :: i
-    integer                     :: compIds(20)
+    type(tCompIds)              :: compIds
     character(len=ErrMsgLength) :: errmsg
     type(basicCorrelation)      :: correlations(0)
     real(kind=wp)               :: x(2)
@@ -106,20 +105,22 @@ subroutine test_ds
     method%progressInterval = 5000
     method%numExtraInt = 50
 
-    compIds(1) = 16
+    compIds%id = 16
+    compIds%nrStochasts = 2
+    compIds%nrCorrelations = 0
 
-    call probCalcF2C(method, distribs, 2, correlations, 0,  zfunc, textualProgress, compIds, x, r, ierr)
+    call probCalcF2C(method, distribs, correlations, zfunc, textualProgress, compIds, x, results)
 
-    call assert_equal(ierr%iCode, 0, "return code probCalcF2C <> 0")
+    call assert_equal(results%error%iCode, 0, "return code probCalcF2C <> 0")
 
-    if (ierr%iCode == 0) then
-        call assert_comparable(r%beta, -0.22178518912_wp, margin, "diff in beta")
-        call assert_comparable(r%alpha(1:2), [-0.89448_wp, -0.44710_wp], 1d-2, "diff in alpha")
+    if (results%error%iCode == 0) then
+        call assert_comparable(results%beta, -0.22178518912_wp, margin, "diff in beta")
+        call assert_comparable(results%alpha(1:2), [-0.89448_wp, -0.44710_wp], 1d-2, "diff in alpha")
         call assert_comparable(x(1:2), [0.59998_wp, 0.80005_wp], 1d-2, "diff in x")
-        convergence = r%convergence
+        convergence = results%convergence
         call assert_false(convergence, "diff in convergence flag")
     else
-        call copystrback(errmsg, ierr%message)
+        call copystrback(errmsg, results%error%message)
         call assert(errmsg)
     end if
 
@@ -128,10 +129,9 @@ end subroutine test_ds
 subroutine test_ds_errorhandling
     use interface_probCalc
     type(tdistrib)              :: distribs(2)
-    type(tError)                :: ierr
     type(tMethod)               :: method
-    type(tResult)               :: r
-    integer                     :: compIds(20)
+    type(tResult)               :: results
+    type(tCompIds)              :: compIds
     character(len=ErrMsgLength) :: errmsg
     type(basicCorrelation)      :: correlations(0)
     real(kind=wp)               :: x(2)
@@ -143,13 +143,15 @@ subroutine test_ds_errorhandling
     method%numThreads = 1
     method%numExtraInt = 50
 
-    compIds(1) = 17
+    compIds%id = 17
+    compIds%nrStochasts = 2
+    compIds%nrCorrelations = 0
 
-    call probCalcF2C(method, distribs, 2, correlations, 0, zfunc, textualProgress, compIds, x, r, ierr)
+    call probCalcF2C(method, distribs, correlations, zfunc, textualProgress, compIds, x, results)
 
-    call assert_equal(ierr%iCode, 1, "return code probCalcF2C <> 0")
+    call assert_equal(results%error%iCode, 1, "return code probCalcF2C <> 0")
 
-    call copystrback(errmsg, ierr%message)
+    call copystrback(errmsg, results%error%message)
     call assert_equal(errmsg, "just testing", "diff in error message")
 
 end subroutine test_ds_errorhandling
@@ -157,10 +159,9 @@ end subroutine test_ds_errorhandling
 subroutine test_form_errorhandling
     use interface_probCalc
     type(tdistrib)              :: distribs(2)
-    type(tError)                :: ierr
     type(tMethod)               :: method
-    type(tResult)               :: r
-    integer                     :: compIds(20)
+    type(tResult)               :: results
+    type(tCompIds)              :: compIds
     character(len=ErrMsgLength) :: errmsg
     type(basicCorrelation)      :: correlations(0)
     real(kind=wp)               :: x(2)
@@ -174,14 +175,16 @@ subroutine test_form_errorhandling
     method%trialLoops = 1
     method%numExtraInt = 50
 
-    compIds(1) = 17
+    compIds%id = 17
+    compIds%nrStochasts = 2
+    compIds%nrCorrelations = 0
 
-    call probCalcF2C(method, distribs, 2, correlations, 0, zfunc, textualProgress, compIds, x, r, ierr)
+    call probCalcF2C(method, distribs, correlations, zfunc, textualProgress, compIds, x, results)
 
-    call assert_equal(ierr%iCode, 0, "diff in return code probCalcF2C")
-    convergence = r%convergence
+    call assert_equal(results%error%iCode, 0, "diff in return code probCalcF2C")
+    convergence = results%convergence
     call assert_false(convergence, "diff in convergence flag")
-    call assert_comparable(r%beta, 40.0_wp, margin, "diff in beta")
+    call assert_comparable(results%beta, 40.0_wp, margin, "diff in beta")
 
 end subroutine test_form_errorhandling
 
@@ -217,7 +220,7 @@ subroutine test_calc_distrib
     real(kind=wp), parameter    :: xValues (2) = [ 3.0_wp, 4.0_wp ]
 
     do i = 1, size(uValues)
-        call calculateDistribution(xValues(i), u, distributionNormal, mean, deviation, 0.0_wp, 0.0_wp, ierr, errmsg)
+        call calculateDistribution(xValues(i), u, distributionNormal, [mean, deviation, 0.0_wp, 0.0_wp], ierr, errmsg)
         call assert_comparable(u, uValues(i), 1d-12, "diff in result normal distribution")
         call assert_equal(ierr, 0, errmsg)
     end do

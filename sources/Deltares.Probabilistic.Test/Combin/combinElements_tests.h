@@ -66,7 +66,6 @@ namespace Deltares
                 void testcombineMultipleElementsSpatialCorrelated1();
                 void testcombineMultipleElementsSpatialCorrelated2();
                 void testcombineMultipleElementsSpatialCorrelated3();
-                void testcombineMultipleElementsSpatialCorrelated4();
                 void testCombineElementsFullCorrelation1();
                 void testCombineElementsFullCorrelation2();
                 void testCombineElementsFullCorrelation(const Deltares::Reliability::combineAndOr andOr);
