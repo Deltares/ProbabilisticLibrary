@@ -18,10 +18,15 @@ namespace Deltares
         public:
             ExternalHandler(std::string libraryName)
             {
+#ifdef UNICODE
                 std::wstring stemp = std::wstring(libraryName.begin(), libraryName.end());
                 LPCWSTR library = stemp.c_str();
 
                 HINSTANCE libInstance = LoadLibrary(library);
+#else
+                LPCSTR library = libraryName.c_str();
+                HINSTANCE libInstance = LoadLibrary(library);
+#endif
 
                 if (!libInstance)
                 {
