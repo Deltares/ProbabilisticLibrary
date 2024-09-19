@@ -204,6 +204,13 @@ class Test_statistics(unittest.TestCase):
         self.assertAlmostEqual(StandardNormal.get_u_from_p(0.4 * 0.125 + 0.6 * 0), stochast.get_u_from_x(1.0), delta=margin)
         self.assertAlmostEqual(StandardNormal.get_u_from_p(0.4 * 0.875 + 0.6 * 0.25), stochast.get_u_from_x(7.0), delta=margin)
         self.assertAlmostEqual(StandardNormal.get_u_from_p(0.4 * 1 + 0.6 * 0.75), stochast.get_u_from_x(9.0), delta=margin)
-        
+
+    def test_return_time(self):
+        for i in range(6):
+            beta = float(i)
+            rt = StandardNormal.return_time_from_beta(beta)
+            betaCalculated = StandardNormal.beta_from_return_time(rt)
+            self.assertAlmostEqual(beta, betaCalculated, delta=margin)
+
 if __name__ == '__main__':
     unittest.main()

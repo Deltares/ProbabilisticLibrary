@@ -999,6 +999,8 @@ namespace Deltares
                 else if (property_ == "p_from_r") return StandardNormal::getPFromR(argument);
                 else if (property_ == "r_from_u") return StandardNormal::getRFromU(argument);
                 else if (property_ == "u_from_r") return StandardNormal::getUFromR(argument);
+                else if (property_ == "return_time_from_beta") return StandardNormal::ReturnTimeFromBeta(argument);
+                else if (property_ == "beta_from_return_time") return StandardNormal::BetaFromReturnTime(argument);
             }
             else if (objectType == ObjectType::Stochast)
             {
