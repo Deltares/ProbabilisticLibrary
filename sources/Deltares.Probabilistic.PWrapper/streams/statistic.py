@@ -66,7 +66,8 @@ class StandardNormal:
 			'get_u_from_p',
 			'get_q_from_u',
 			'get_p_from_u',
-			'return_time_from_beta']
+			'return_time_from_beta',
+			'beta_from_return_time']
 
 	def get_u_from_q (q : float):
 		return interface.GetArgValue(StandardNormal._id, 'u_from_q', q)
