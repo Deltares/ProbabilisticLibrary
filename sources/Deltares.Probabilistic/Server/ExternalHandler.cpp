@@ -5,6 +5,11 @@ namespace Deltares
 {
     namespace Server
     {
+        void ExternalHandler::Initialize()
+        {
+            this->initialize();
+        }
+
         bool ExternalHandler::CanHandle(std::string objectType)
         {
             return this->canHandle(objectType.c_str());

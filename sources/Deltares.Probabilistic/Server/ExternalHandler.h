@@ -29,6 +29,7 @@ namespace Deltares
                 }
 
                 // resolve all function addresses
+                this->initialize = (f_initialize)GetProcAddress(libInstance, "Initialize");
                 this->canHandle = (f_can_handle)GetProcAddress(libInstance, "CanHandle");
                 this->createMethod = (f_create)GetProcAddress(libInstance, "Create");
                 this->destroyMethod = (f_destroy)GetProcAddress(libInstance, "Destroy");
@@ -55,6 +56,7 @@ namespace Deltares
                 BaseHandler::SetServer(server, handlerIndex, defaultHandler);
             }
 
+            void Initialize();
             bool CanHandle(std::string objectType) override;
             void Create(std::string objectType, int id) override;
             void Destroy(int id) override;
@@ -70,6 +72,7 @@ namespace Deltares
             void SetArrayIntValue(int id, std::string property_, int* values, int size) override;
             Models::ZLambda GetCallBack(int id, std::string method) override;
         private:
+            typedef void(*f_initialize)();
             typedef bool(*f_can_handle)(const char*);
             typedef void(*f_create)(const char*, int);
             typedef void(* f_destroy)(int);
@@ -85,6 +88,7 @@ namespace Deltares
             typedef void(* f_set_array_int_value)(int, const char*, int*, int);
             typedef Models::ZLambda(* f_get_callback_method)(int, const char*);
 
+            f_initialize initialize = nullptr;
             f_can_handle canHandle = nullptr;
             f_create createMethod = nullptr;
             f_destroy destroyMethod = nullptr;
