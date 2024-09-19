@@ -23,6 +23,7 @@
 #include <math.h>
 #include "combinElements_tests.h"
 #include "../../Deltares.Probabilistic/Statistics/StandardNormal.h"
+#include "../../Deltares.Probabilistic/Combine/LengthEffect.h"
 
 using namespace Deltares::Reliability;
 using namespace Deltares::Statistics;
@@ -62,6 +63,7 @@ void combinElementsTests::runAll()
     testcombineMultipleElementsSpatialCorrelated1();
     testcombineMultipleElementsSpatialCorrelated2();
     testcombineMultipleElementsSpatialCorrelated3();
+    testUpscalingLengthNewInterface();
     testCombineElementsFullCorrelation1();
     testCombineElementsFullCorrelation2();
     testcombineTwoElementsNegativeCorrelation1();
@@ -841,6 +843,46 @@ void combinElementsTests::testcombineMultipleElementsSpatialCorrelated3()
 
     utils.checkAlphaBeta(section.first, ref, 1e-6);
     EXPECT_EQ(section.second, 0);
+}
+
+void combinElementsTests::testUpscalingLengthNewInterface()
+{
+    const int nStochasts = 4;
+    std::vector< std::shared_ptr<Stochast>> stochasts;
+    for (size_t i = 0; i <= nStochasts; i++)
+    {
+        auto s = std::make_shared<Stochast>();
+        stochasts.push_back(s);
+    }
+
+    auto section = DesignPoint();
+    section.Beta = 5.0;
+    auto alphaValues = std::vector<double>({ 0.6, sqrt(0.5 - 0.36), 0.6, sqrt(0.5 - 0.36) });
+    for (int i = 0; i < alphaValues.size(); i++ )
+    {
+        auto alphaValue = alphaValues[i];
+        auto alpha = std::make_shared<StochastPointAlpha>();
+        alpha->Alpha = alphaValue;
+        alpha->Stochast = stochasts[i];
+        section.Alphas.push_back(alpha);
+    }
+
+    auto rhoXK = std::vector<double>({ 0.5, 0.5, 0.2, 0.2 });
+    auto rho = std::make_shared<SelfCorrelationMatrix>();
+    for (size_t i = 0; i < nStochasts; i++)
+    {
+        rho->setSelfCorrelation(section.Alphas[i]->Stochast, rhoXK[i]);
+    }
+
+    auto dp = LengthEffect::UpscaleLength(section, rho, { 500.0, 300.0, 500.0, 300.0 }, 2000.0, -999.0);
+
+    auto ref = alphaBeta(4.5064103581966,
+        { 0.578741673689891, 0.385418150246354, 0.598199853682860, 0.398331344045516 }); // pre-computed
+    EXPECT_NEAR(dp.Beta, ref.getBeta(), 1e-6);
+    for (size_t i = 0; i < nStochasts; i++)
+    {
+        EXPECT_NEAR(dp.Alphas[i]->Alpha, ref.getAlphaI(i), 1e-6);
+    }
 }
 
 void combinElementsTests::testCombineElementsFullCorrelation(const combineAndOr andOr)
