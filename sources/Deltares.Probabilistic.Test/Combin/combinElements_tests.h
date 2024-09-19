@@ -33,7 +33,8 @@ namespace Deltares
             class combinElementsTests
             {
             public:
-                void runAll();
+                void runAllCombineTwoElementsTests();
+                void runAllLengthEffectTests();
             private:
                 void testCombineTwoElementsNoCorrelation1();
                 void testCombineTwoElementsNoCorrelation2();

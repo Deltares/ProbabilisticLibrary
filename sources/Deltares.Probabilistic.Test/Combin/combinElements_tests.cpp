@@ -30,7 +30,8 @@ using namespace Deltares::Statistics;
 
 namespace Deltares{ namespace Probabilistic { namespace Test {
 
-void combinElementsTests::runAll()
+
+ void combinElementsTests::runAllCombineTwoElementsTests()
 {
     testCombineTwoElementsNoCorrelation1();
     testCombineTwoElementsNoCorrelation2();
@@ -60,10 +61,6 @@ void combinElementsTests::runAll()
     testcombineMultipleElementsProb3();
     testcombineMultipleElementsProb4();
     testcombineMultipleElementsProb5();
-    testcombineMultipleElementsSpatialCorrelated1();
-    testcombineMultipleElementsSpatialCorrelated2();
-    testcombineMultipleElementsSpatialCorrelated3();
-    testUpscalingLengthNewInterface();
     testCombineElementsFullCorrelation1();
     testCombineElementsFullCorrelation2();
     testcombineTwoElementsNegativeCorrelation1();
@@ -80,6 +77,14 @@ void combinElementsTests::runAll()
     testcombineTwoElementsPartialCorrelation13a();
     testcombineTwoElementsPartialCorrelation14a();
     testcombineTwoElementsPartialCorrelation99a();
+}
+
+void combinElementsTests::runAllLengthEffectTests()
+{
+    testUpscalingLengthNewInterface();
+    testcombineMultipleElementsSpatialCorrelated1();
+    testcombineMultipleElementsSpatialCorrelated2();
+    testcombineMultipleElementsSpatialCorrelated3();
 }
 
 // Test of combineTwoElementsPartialCorrelation
