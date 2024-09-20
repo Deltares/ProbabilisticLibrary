@@ -27,37 +27,37 @@ namespace Deltares
 {
     namespace Reliability
     {
-        DesignPoint LengthEffect::UpscaleLength(DesignPoint& section,
+        DesignPoint LengthEffect::UpscaleLength(DesignPoint& crossSection,
             const std::shared_ptr<Statistics::SelfCorrelationMatrix>& selfCorrelationMatrix,
             const std::vector<double>& correlationLengths,
             const double length, const double breachLength)
         {
-            const size_t nStochasts = section.Alphas.size();
+            const size_t nStochasts = crossSection.Alphas.size();
             auto selfCorrelation = std::vector<double>();
 
             for (size_t i = 0; i < nStochasts; i++)
             {
-                auto stochast = section.Alphas[i]->Stochast;
+                auto stochast = crossSection.Alphas[i]->Stochast;
                 selfCorrelation.push_back(selfCorrelationMatrix->getSelfCorrelation(stochast));
             }
 
-            return UpscaleLength(section, selfCorrelation, correlationLengths, length, breachLength);
+            return UpscaleLength(crossSection, selfCorrelation, correlationLengths, length, breachLength);
         };
 
-        DesignPoint LengthEffect::UpscaleLength(DesignPoint& section,
+        DesignPoint LengthEffect::UpscaleLength(DesignPoint& crossSection,
             const std::vector<double>& selfCorrelations,
             const std::vector<double>& correlationLengths,
             const double length, const double breachLength)
         {
-            const size_t nStochasts = section.Alphas.size();
+            const size_t nStochasts = crossSection.Alphas.size();
 
             auto up = upscaling();
             auto alpha = vector1D(nStochasts);
             for (size_t i = 0; i < nStochasts; i++)
             {
-                alpha(i) = section.Alphas[i]->Alpha;
+                alpha(i) = crossSection.Alphas[i]->Alpha;
             }
-            auto dp = alphaBeta(section.Beta, alpha);
+            auto dp = alphaBeta(crossSection.Beta, alpha);
             vector1D rho1(nStochasts);
             vector1D rho2(nStochasts);
             for (size_t i = 0; i < nStochasts; i++)
@@ -75,7 +75,7 @@ namespace Deltares
                 auto alphaValue = dpLength.first.getAlphaI(i);
                 auto alpha = std::make_shared<StochastPointAlpha>();
                 alpha->Alpha = alphaValue;
-                alpha->Stochast = section.Alphas[i]->Stochast;
+                alpha->Stochast = crossSection.Alphas[i]->Stochast;
                 dpL.Alphas.push_back(alpha);
             }
 

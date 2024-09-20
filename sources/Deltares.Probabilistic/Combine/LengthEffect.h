@@ -27,14 +27,18 @@ namespace Deltares
 {
     namespace Reliability
     {
+        /**
+         * \brief Class for length effect calculation
+         * (wrapper for upscaleLength in upscaling)
+         */
         class LengthEffect
         {
         public:
-            static DesignPoint UpscaleLength(DesignPoint& section,
+            static DesignPoint UpscaleLength(DesignPoint& crossSection,
                 const std::shared_ptr<Statistics::SelfCorrelationMatrix>& selfCorrelationMatrix,
                 const std::vector<double>& correlationLengths,
                 const double length, const double breachLength);
-            static DesignPoint UpscaleLength(DesignPoint& section,
+            static DesignPoint UpscaleLength(DesignPoint& crossSection,
                 const std::vector<double>& selfCorrelations,
                 const std::vector<double>& correlationLengths,
                 const double length, const double breachLength);

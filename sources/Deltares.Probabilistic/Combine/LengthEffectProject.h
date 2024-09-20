@@ -34,7 +34,7 @@ namespace Deltares
             /**
              * \brief The design point for a section
              */
-            std::shared_ptr<Deltares::Reliability::DesignPoint> designPointSection;
+            std::shared_ptr<Deltares::Reliability::DesignPoint> designPointCrossSection;
 
 
             /**

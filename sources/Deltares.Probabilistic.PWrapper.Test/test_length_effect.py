@@ -40,7 +40,7 @@ class Test_Length_Effect(unittest.TestCase):
 
         beta = StandardNormal.get_u_from_q(q)
         dp1 = project_builder.get_design_point(beta, 2)
-        project.design_point_section.append(dp1)
+        project.design_point_cross_section.append(dp1)
 
         values = [0.45, 0.55]
         project.self_correlation(values)
@@ -63,7 +63,7 @@ class Test_Length_Effect(unittest.TestCase):
 
         beta = StandardNormal.get_u_from_q(q)
         dp1 = project_builder.get_design_point(beta, 2)
-        project.design_point_section.append(dp1)
+        project.design_point_cross_section.append(dp1)
 
         values = [0.45, 0.55]
         project.self_correlation(values)
@@ -86,7 +86,7 @@ class Test_Length_Effect(unittest.TestCase):
 
         beta = StandardNormal.get_u_from_q(q)
         dp1 = project_builder.get_design_point(beta, 2)
-        project.design_point_section.append(dp1)
+        project.design_point_cross_section.append(dp1)
 
         values = [0.0, 0.0]
         project.self_correlation(values)

@@ -1029,9 +1029,9 @@ namespace Deltares
             {
                 std::shared_ptr<Reliability::LengthEffectProject> project = lengthEffectProjects[id];
 
-                if (property_ == "design_point_section")
+                if (property_ == "design_point_cross_section")
                 {
-                    project->designPointSection = designPoints[values[0]];
+                    project->designPointCrossSection = designPoints[values[0]];
                 }
             }
         }

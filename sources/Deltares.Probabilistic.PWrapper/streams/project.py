@@ -361,24 +361,24 @@ class CombineProject:
 class LengthEffectProject:
 	def __init__(self):
 		self._id = interface.Create('length_effect_project')
-		self._design_point_section = CallbackList(self._design_points_changed)
+		self._design_point_cross_section = CallbackList(self._design_points_changed)
 		self._correlation_matrix = SelfCorrelationMatrix()
 		self._design_point = None
 
 	def __dir__(self):
-		return ['design_point_section',
+		return ['design_point_cross_section',
 				'correlation_lengths'
 				'length',
 				'correlation_matrix',
 				'design_point']
 
 	@property
-	def design_point_section(self):
-		return self._design_point_section
+	def design_point_cross_section(self):
+		return self._design_point_cross_section
 
 	def _design_points_changed(self):
 		variables = []
-		for design_point in self._design_point_section:
+		for design_point in self._design_point_cross_section:
 			variables.extend(design_point.get_variables())
 		self._correlation_matrix._set_variables(variables)
 
@@ -414,7 +414,7 @@ class LengthEffectProject:
 
 	def run(self):
 		self._design_point = None
-		interface.SetArrayIntValue(self._id, 'design_point_section', [design_point._id for design_point in self._design_point_section])
+		interface.SetArrayIntValue(self._id, 'design_point_cross_section', [design_point._id for design_point in self._design_point_cross_section])
 		interface.SetIntValue(self._id, 'correlation_matrix', self._correlation_matrix._id)
 		interface.Execute(self._id, 'run')
 
@@ -424,9 +424,9 @@ class LengthEffectProject:
 			designPointId = interface.GetIntValue(self._id, 'design_point')
 			if designPointId > 0:
 				variables = []
-				for design_point in self._design_point_section:
+				for design_point in self._design_point_cross_section:
 					variables.extend(design_point.get_variables())
-				self._design_point = DesignPoint(designPointId, variables, self._design_point_section)
+				self._design_point = DesignPoint(designPointId, variables, self._design_point_cross_section)
 		return self._design_point
 
 

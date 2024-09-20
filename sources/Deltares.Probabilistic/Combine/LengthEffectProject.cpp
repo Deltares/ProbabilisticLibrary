@@ -29,18 +29,18 @@ namespace Deltares
     {
         void LengthEffectProject::run()
         {
-            if (correlationLengths.size() != designPointSection->Alphas.size())
+            if (correlationLengths.size() != designPointCrossSection->Alphas.size())
             {
                 std::cout << "mismatch in dimensions in running length effect." << std::endl;
             }
             else if (self_correlations.size() == correlationLengths.size())
             {
-                auto result = LengthEffect().UpscaleLength(*designPointSection, self_correlations, correlationLengths, length, breachLength);
+                auto result = LengthEffect().UpscaleLength(*designPointCrossSection, self_correlations, correlationLengths, length, breachLength);
                 designPoint = std::make_shared<DesignPoint>(result);
             }
             else
             {
-                auto result = LengthEffect().UpscaleLength(*designPointSection, selfCorrelationMatrix, correlationLengths, length, breachLength);
+                auto result = LengthEffect().UpscaleLength(*designPointCrossSection, selfCorrelationMatrix, correlationLengths, length, breachLength);
                 designPoint = std::make_shared<DesignPoint>(result);
             }
         }
