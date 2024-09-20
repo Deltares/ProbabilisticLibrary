@@ -34,6 +34,10 @@ namespace Deltares
                 const std::shared_ptr<Statistics::SelfCorrelationMatrix>& selfCorrelationMatrix,
                 const std::vector<double>& correlationLengths,
                 const double length, const double breachLength);
+            static DesignPoint UpscaleLength(DesignPoint& section,
+                const std::vector<double>& selfCorrelations,
+                const std::vector<double>& correlationLengths,
+                const double length, const double breachLength);
         };
     }
 }

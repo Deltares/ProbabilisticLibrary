@@ -21,6 +21,7 @@
 //
 #include "LengthEffectProject.h"
 #include "LengthEffect.h"
+#include <iostream>
 
 namespace Deltares
 {
@@ -28,8 +29,20 @@ namespace Deltares
     {
         void LengthEffectProject::run()
         {
-            auto result = LengthEffect().UpscaleLength(*designPointSection, selfCorrelationMatrix, correlationLengths, length, breachLength);
-            designPoint = std::make_shared<DesignPoint>(result);
+            if (correlationLengths.size() != designPointSection->Alphas.size())
+            {
+                std::cout << "mismatch in dimensions in running length effect." << std::endl;
+            }
+            else if (self_correlations.size() == correlationLengths.size())
+            {
+                auto result = LengthEffect().UpscaleLength(*designPointSection, self_correlations, correlationLengths, length, breachLength);
+                designPoint = std::make_shared<DesignPoint>(result);
+            }
+            else
+            {
+                auto result = LengthEffect().UpscaleLength(*designPointSection, selfCorrelationMatrix, correlationLengths, length, breachLength);
+                designPoint = std::make_shared<DesignPoint>(result);
+            }
         }
     }
 }

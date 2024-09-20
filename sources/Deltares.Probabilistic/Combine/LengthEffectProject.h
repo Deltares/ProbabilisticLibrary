@@ -53,7 +53,12 @@ namespace Deltares
             std::vector<double> correlationLengths = std::vector<double>();
 
             /**
-             * \brief Self correlations
+             * \brief Self correlations as a simple vector
+             */
+            std::vector<double> self_correlations = std::vector<double>();
+
+            /**
+             * \brief Self correlations as SelfCorrelationMatrix
              */
             std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix = std::make_shared<Statistics::SelfCorrelationMatrix>();
 

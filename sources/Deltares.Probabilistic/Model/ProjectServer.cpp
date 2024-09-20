@@ -824,6 +824,13 @@ namespace Deltares
                         lengthEffect->correlationLengths.push_back(values[i]);
                     }
                 }
+                else if (property_ == "self_correlation")
+                {
+                    for (size_t i = 0; i < size; i++)
+                    {
+                        lengthEffect->self_correlations.push_back(values[i]);
+                    }
+                }
             }
         }
 

@@ -21,6 +21,7 @@
 //
 #include "LengthEffect.h"
 #include "upscaling.h"
+#include "../Utils/probLibException.h"
 
 namespace Deltares
 {
@@ -28,6 +29,23 @@ namespace Deltares
     {
         DesignPoint LengthEffect::UpscaleLength(DesignPoint& section,
             const std::shared_ptr<Statistics::SelfCorrelationMatrix>& selfCorrelationMatrix,
+            const std::vector<double>& correlationLengths,
+            const double length, const double breachLength)
+        {
+            const size_t nStochasts = section.Alphas.size();
+            auto selfCorrelation = std::vector<double>();
+
+            for (size_t i = 0; i < nStochasts; i++)
+            {
+                auto stochast = section.Alphas[i]->Stochast;
+                selfCorrelation.push_back(selfCorrelationMatrix->getSelfCorrelation(stochast));
+            }
+
+            return UpscaleLength(section, selfCorrelation, correlationLengths, length, breachLength);
+        };
+
+        DesignPoint LengthEffect::UpscaleLength(DesignPoint& section,
+            const std::vector<double>& selfCorrelations,
             const std::vector<double>& correlationLengths,
             const double length, const double breachLength)
         {
@@ -44,8 +62,7 @@ namespace Deltares
             vector1D rho2(nStochasts);
             for (size_t i = 0; i < nStochasts; i++)
             {
-                auto stochast = section.Alphas[i]->Stochast;
-                rho1(i) = selfCorrelationMatrix->getSelfCorrelation(stochast);
+                rho1(i) = selfCorrelations[i];
                 rho2(i) = correlationLengths[i];
             }
 
@@ -64,6 +81,7 @@ namespace Deltares
 
             return dpL;
         };
+
     }
 }
 

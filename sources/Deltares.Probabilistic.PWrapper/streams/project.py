@@ -390,6 +390,9 @@ class LengthEffectProject:
 	def correlation_matrix(self):
 		return self._correlation_matrix
 
+	def self_correlation(self, values):
+		interface.SetArrayValue(self._id, 'self_correlation', values)
+
 	def correlation_lengths(self, values):
 		interface.SetArrayValue(self._id, 'correlation_lengths', values)
 
@@ -397,6 +400,7 @@ class LengthEffectProject:
 	def length(self):
 		return interface.GetValue(self._id, 'length')
 
+	@length.setter
 	def length(self, value: float):
 		interface.SetValue(self._id, 'length', value)
 
@@ -404,6 +408,7 @@ class LengthEffectProject:
 	def breach_length(self):
 		return interface.GetValue(self._id, 'breach_length')
 
+	@breach_length.setter
 	def breach_length(self, value: float):
 		interface.SetValue(self._id, 'breach_length', value)
 

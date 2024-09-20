@@ -304,8 +304,6 @@ def get_design_point(beta : float, count : int):
     design_point._set_reliability_index(beta)
 
     for i in range(count):
-        alpha = Alpha()
-        
         variable = Stochast()
         variable.distribution = DistributionType.uniform
         variable.minimum = 0

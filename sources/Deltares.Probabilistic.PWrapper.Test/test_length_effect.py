@@ -20,8 +20,6 @@
 # All rights reserved.
 #
 import unittest
-import sys
-from weakref import ref
 
 from streams import *
 
@@ -35,8 +33,7 @@ class Test_Length_Effect(unittest.TestCase):
 
         project = LengthEffectProject()
 
-        values = []
-        values.extend({100.0, 200.0, 100.0, 200.0})
+        values = [100.0, 200.0]
         project.correlation_lengths(values)
         project.length = 2000
         project.breach_length = 500
@@ -45,10 +42,13 @@ class Test_Length_Effect(unittest.TestCase):
         dp1 = project_builder.get_design_point(beta, 2)
         project.design_point_section.append(dp1)
 
+        values = [0.45, 0.55]
+        project.self_correlation(values)
+
         project.run()
 
         design_point_upscaled = project.design_point
-        self.assertAlmostEqual(design_point_upscaled.reliability_index, 2.326347874, delta=margin)
+        self.assertAlmostEqual(design_point_upscaled.reliability_index,  1.282, delta=margin)
         for alpha in design_point_upscaled.alphas:
             self.assertAlmostEqual(alpha.alpha, -0.7071, delta=margin)
 
