@@ -48,9 +48,53 @@ class Test_Length_Effect(unittest.TestCase):
         project.run()
 
         design_point_upscaled = project.design_point
-        self.assertAlmostEqual(design_point_upscaled.reliability_index,  1.282, delta=margin)
+        self.assertAlmostEqual(design_point_upscaled.reliability_index, 1.282, delta=margin)
         for alpha in design_point_upscaled.alphas:
             self.assertAlmostEqual(alpha.alpha, -0.7071, delta=margin)
+
+    def test_length_effect_no_breach_length(self):
+        q = 0.01;
+
+        project = LengthEffectProject()
+
+        values = [100.0, 200.0]
+        project.correlation_lengths(values)
+        project.length = 2000
+
+        beta = StandardNormal.get_u_from_q(q)
+        dp1 = project_builder.get_design_point(beta, 2)
+        project.design_point_section.append(dp1)
+
+        values = [0.45, 0.55]
+        project.self_correlation(values)
+
+        project.run()
+
+        design_point_upscaled = project.design_point
+        self.assertAlmostEqual(design_point_upscaled.reliability_index, 1.201, delta=margin)
+        for alpha in design_point_upscaled.alphas:
+            self.assertAlmostEqual(alpha.alpha, -0.7071, delta=margin)
+
+    def test_length_effect_no_self_correlation(self):
+        q = 0.01;
+
+        project = LengthEffectProject()
+
+        values = [100.0, 200.0]
+        project.correlation_lengths(values)
+        project.length = 2000
+
+        beta = StandardNormal.get_u_from_q(q)
+        dp1 = project_builder.get_design_point(beta, 2)
+        project.design_point_section.append(dp1)
+
+        values = [0.0, 0.0]
+        project.self_correlation(values)
+
+        project.run()
+
+        design_point_upscaled = project.design_point
+        self.assertAlmostEqual(design_point_upscaled.reliability_index, 0.82196, delta=margin)
 
 if __name__ == '__main__':
     unittest.main()
