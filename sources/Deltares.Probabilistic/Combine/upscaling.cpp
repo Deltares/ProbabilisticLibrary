@@ -171,14 +171,14 @@ namespace Deltares {
             //
             // Calculate correlation
             //
-            double rhoZ;
+            double rhoZ = DBL_MAX;
             if (sectionLength != 0.0)
             {
                 rhoZ = crossSectionElement.sumOfInners(crossSectionElement, rhoXK);
             }
-            else
-            {
-                rhoZ = DBL_MAX;
+            if (rhoZ >= rhoLimit)
+            {   // No length effect (correlation = 1)
+                return { crossSectionElement, 0 };
             }
 
             //
@@ -207,7 +207,7 @@ namespace Deltares {
 
             int failures = 0;
 
-            if (rhoZ < rhoLimit && breachL < sectionLength)
+            if (breachL < sectionLength)
             {
                 alphaBeta element;
                 element.setAlpha(vector1D(nrVar));
@@ -262,9 +262,7 @@ namespace Deltares {
             }
             else
             {
-                //
-                // No length effect (correlation = 1)
-                //
+                // No length effect (breachL < sectionLength)
                 return { crossSectionElement, 0 };
             }
         }
