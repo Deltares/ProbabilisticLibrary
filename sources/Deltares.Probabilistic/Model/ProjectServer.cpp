@@ -143,6 +143,11 @@ namespace Deltares
                 sensitivitySettingsValues[counter] = std::make_shared<Deltares::Sensitivity::SettingsS>();
                 types[counter] = ObjectType::SensitivitySettings;
             }
+            else if (object_type == "length_effect_project")
+            {
+                lengthEffectProjects[counter] = std::make_shared<Deltares::Reliability::LengthEffectProject>();
+                types[counter] = ObjectType::LengthEffectProject;
+            }
 
             return counter;
         }
@@ -269,6 +274,13 @@ namespace Deltares
                 else if (property_ == "x") return alpha->X;
                 else if (property_ == "influence_factor") return alpha->InfluenceFactor;
             }
+            else if (objectType == ObjectType::LengthEffectProject)
+            {
+                std::shared_ptr<Reliability::LengthEffectProject> length_effect = lengthEffectProjects[id];
+
+                if (property_ == "length") return length_effect->length;
+                else if (property_ == "breach_length") return length_effect->breachLength;
+            }
             return std::nan("");
         }
 
@@ -366,6 +378,13 @@ namespace Deltares
                 if (property_ == "alpha") alpha->Alpha = value;
                 else if (property_ == "u") alpha->U = value;
                 else if (property_ == "x") alpha->X = value;
+            }
+            else if (objectType == ObjectType::LengthEffectProject)
+            {
+                std::shared_ptr<Reliability::LengthEffectProject> length_effect = lengthEffectProjects[id];
+
+                if (property_ == "length") length_effect->length = value;
+                else if (property_ == "breach_length") length_effect->breachLength = value;
             }
         }
 
@@ -475,6 +494,12 @@ namespace Deltares
                 std::shared_ptr<Reliability::CombineProject> combineProject = combineProjects[id];
 
                 if (property_ == "design_point") return GetDesignPointId(combineProject->designPoint);
+            }
+            else if (objectType == ObjectType::LengthEffectProject)
+            {
+                std::shared_ptr<Reliability::LengthEffectProject> project = lengthEffectProjects[id];
+
+                if (property_ == "design_point") return GetDesignPointId(project->designPoint);
             }
 
             return 0;
@@ -789,6 +814,17 @@ namespace Deltares
                     stochast->fit(fitValues);
                 }
             }
+            else if (objectType == ObjectType::LengthEffectProject)
+            {
+                std::shared_ptr<Reliability::LengthEffectProject> lengthEffect = lengthEffectProjects[id];
+                if (property_ == "correlation_lengths")
+                {
+                    for (size_t i = 0; i < size; i++)
+                    {
+                        lengthEffect->correlationLengths.push_back(values[i]);
+                    }
+                }
+            }
         }
 
         std::vector<int> ProjectServer::GetArrayIntValue(int id, std::string property_)
@@ -982,6 +1018,15 @@ namespace Deltares
                     }
                 }
             }
+            else if (objectType == ObjectType::LengthEffectProject)
+            {
+                std::shared_ptr<Reliability::LengthEffectProject> project = lengthEffectProjects[id];
+
+                if (property_ == "design_point_section")
+                {
+                    project->designPointSection = designPoints[values[0]];
+                }
+            }
         }
 
 
@@ -1158,6 +1203,12 @@ namespace Deltares
             else if (objectType == ObjectType::CombineProject)
             {
                 std::shared_ptr<Reliability::CombineProject> project = combineProjects[id];
+
+                if (method_ == "run") project->run();
+            }
+            else if (objectType == ObjectType::LengthEffectProject)
+            {
+                std::shared_ptr<Reliability::LengthEffectProject> project = lengthEffectProjects[id];
 
                 if (method_ == "run") project->run();
             }

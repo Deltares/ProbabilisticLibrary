@@ -358,6 +358,72 @@ class CombineProject:
 				self._design_point = DesignPoint(designPointId, variables, self._design_points)
 		return self._design_point
 
+class LengthEffectProject:
+	def __init__(self):
+		self._id = interface.Create('length_effect_project')
+		self._design_point_section = CallbackList(self._design_points_changed)
+		self._correlation_matrix = SelfCorrelationMatrix()
+		self._design_point = None
+
+	def __dir__(self):
+		return ['design_point_section',
+				'correlation_lengths'
+				'length',
+				'correlation_matrix',
+				'design_point']
+
+	@property
+	def design_point_section(self):
+		return self._design_point_section
+
+	def _design_points_changed(self):
+		variables = []
+		for design_point in self._design_point_section:
+			variables.extend(design_point.get_variables())
+		self._correlation_matrix._set_variables(variables)
+
+	@property
+	def settings(self):
+		return self._settings
+
+	@property
+	def correlation_matrix(self):
+		return self._correlation_matrix
+
+	def correlation_lengths(self, values):
+		interface.SetArrayValue(self._id, 'correlation_lengths', values)
+
+	@property
+	def length(self):
+		return interface.GetValue(self._id, 'length')
+
+	def length(self, value: float):
+		interface.SetValue(self._id, 'length', value)
+
+	@property
+	def breach_length(self):
+		return interface.GetValue(self._id, 'breach_length')
+
+	def breach_length(self, value: float):
+		interface.SetValue(self._id, 'breach_length', value)
+
+	def run(self):
+		self._design_point = None
+		interface.SetArrayIntValue(self._id, 'design_point_section', [design_point._id for design_point in self._design_point_section])
+		interface.SetIntValue(self._id, 'correlation_matrix', self._correlation_matrix._id)
+		interface.Execute(self._id, 'run')
+
+	@property
+	def design_point(self):
+		if self._design_point is None:
+			designPointId = interface.GetIntValue(self._id, 'design_point')
+			if designPointId > 0:
+				variables = []
+				for design_point in self._design_point_section:
+					variables.extend(design_point.get_variables())
+				self._design_point = DesignPoint(designPointId, variables, self._design_point_section)
+		return self._design_point
+
 
 class ModelParameter:
 
