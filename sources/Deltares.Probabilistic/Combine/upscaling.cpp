@@ -310,7 +310,7 @@ namespace Deltares {
                 }
                 else
                 {
-                    auto termI = new double[nGridPoints + 1];
+                    auto termI = std::vector<double>(nGridPoints + 1);
                     for (size_t i = 1; i <= nGridPoints; i++)
                     {
                         double v = vLower + vDelta * double(i - 1);
@@ -328,7 +328,6 @@ namespace Deltares {
                         pfX += termI[nGridPoints + 1 - i];
                     }
                     pfX += termI[nGridPoints / 2 + 1];
-                    delete[] termI;
                 }
                 pfX = std::max(pfX, pf);
                 conv = 0;
