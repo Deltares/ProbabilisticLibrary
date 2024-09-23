@@ -501,7 +501,6 @@ namespace Deltares
 
                 if (property_ == "design_point") return GetDesignPointId(project->designPoint);
                 else if (property_ == "correlation_lengths_count") return project->correlationLengths.size();
-                else if (property_ == "self_correlation_count") return project->self_correlations.size();
             }
 
             return 0;
@@ -832,13 +831,6 @@ namespace Deltares
                         lengthEffect->correlationLengths.push_back(values[i]);
                     }
                 }
-                else if (property_ == "self_correlation")
-                {
-                    for (size_t i = 0; i < size; i++)
-                    {
-                        lengthEffect->self_correlations.push_back(values[i]);
-                    }
-                }
             }
         }
 
@@ -1093,10 +1085,6 @@ namespace Deltares
                 if (property_ == "correlation_lengths")
                 {
                     return lengthEffect->correlationLengths[index];
-                }
-                else if (property_ == "self_correlation")
-                {
-                    return lengthEffect->self_correlations[index];
                 }
             }
 

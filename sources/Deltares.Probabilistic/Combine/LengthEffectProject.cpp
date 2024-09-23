@@ -33,11 +33,6 @@ namespace Deltares
             {
                 std::cout << "mismatch in dimensions in running length effect." << std::endl;
             }
-            else if (self_correlations.size() == correlationLengths.size())
-            {
-                auto result = LengthEffect().UpscaleLength(*designPointCrossSection, self_correlations, correlationLengths, length, breachLength);
-                designPoint = std::make_shared<DesignPoint>(result);
-            }
             else
             {
                 auto result = LengthEffect().UpscaleLength(*designPointCrossSection, selfCorrelationMatrix, correlationLengths, length, breachLength);

@@ -368,6 +368,7 @@ class LengthEffectProject:
 	def __dir__(self):
 		return ['design_point_cross_section',
 				'correlation_lengths'
+				'breach_length',
 				'length',
 				'correlation_matrix',
 				'design_point']
@@ -389,14 +390,6 @@ class LengthEffectProject:
 	@property
 	def correlation_matrix(self):
 		return self._correlation_matrix
-
-	@property
-	def self_correlation(self):
-		return interface.GetArrayValue(self._id, 'self_correlation')
-
-	@self_correlation.setter
-	def self_correlation(self, values):
-		interface.SetArrayValue(self._id, 'self_correlation', values)
 
 	@property
 	def correlation_lengths(self):

@@ -120,7 +120,6 @@ class Test_Length_Effect(unittest.TestCase):
         values = [0.4, 0.6]
         project.correlation_matrix['a'] = values[0]
         project.correlation_matrix['b'] = values[1]
-        testje = project.correlation_matrix
         self.assertEqual(values[0], project.correlation_matrix["a"])
         self.assertEqual(values[1], project.correlation_matrix["b"])
 
