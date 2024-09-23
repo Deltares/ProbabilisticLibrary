@@ -159,10 +159,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Server\ExternalServerHandler.h" />
     <ClInclude Include="Server\BaseServer.h" />
     <ClInclude Include="Server\ProjectHandler.h" />
     <ClInclude Include="Server\BaseHandler.h" />
-    <ClInclude Include="Server\ExternalHandler.h" />
     <ClInclude Include="Model\ModelInputParameter.h" />
     <ClInclude Include="Sensitivity\CorrelationMatrixBuilder.h" />
     <ClInclude Include="Statistics\Distributions\StandardNormalDistribution.h" />
@@ -323,10 +323,10 @@
     <ClInclude Include="Math\WeightedValue.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Server\ExternalServerHandler.cpp" />
     <ClCompile Include="Server\BaseServer.cpp" />
     <ClCompile Include="Server\ProjectHandler.cpp" />
     <ClCompile Include="Server\BaseHandler.cpp" />
-    <ClCompile Include="Server\ExternalHandler.cpp" />
     <ClCompile Include="Model\ModelInputParameter.cpp" />
     <ClCompile Include="Sensitivity\CorrelationMatrixBuilder.cpp" />
     <ClCompile Include="Statistics\Distributions\StandardNormalDistribution.cpp" />

@@ -24,7 +24,7 @@
 #include <memory>
 
 #include "../Deltares.Probabilistic/Server/ProjectServer.h"
-#include "../Deltares.Probabilistic/Server/ExternalHandler.h"
+#include "../Deltares.Probabilistic/Server/ExternalServerHandler.h"
 
 #ifdef __GNUC__
 #define DLL_PUBLIC __attribute__ ((visibility("default")))
@@ -37,11 +37,13 @@ std::shared_ptr<Deltares::Server::ProjectServer> projectServer = std::make_share
 extern "C" DLL_PUBLIC void AddLibrary(char* library)
 {
     std::string libraryStr(library);
-    std::shared_ptr<Deltares::Server::ExternalHandler> externalHandler = std::make_shared<Deltares::Server::ExternalHandler>(libraryStr);
 
-    externalHandler->Initialize();
-
-    projectServer->AddHandler(externalHandler);
+    if (libraryStr.ends_with(".exe"))
+    {
+        std::shared_ptr<Deltares::Server::ExternalServerHandler> externalHandler = std::make_shared<Deltares::Server::ExternalServerHandler>(libraryStr);
+        externalHandler->Initialize();
+        projectServer->AddHandler(externalHandler);
+    }
 }
 
 extern "C" DLL_PUBLIC int Create(char* type)
