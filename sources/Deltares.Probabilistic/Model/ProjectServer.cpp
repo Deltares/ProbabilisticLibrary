@@ -593,6 +593,12 @@ namespace Deltares
 
                 if (property_ == "variable") alpha->Stochast = stochasts[value];
             }
+            else if (objectType == ObjectType::LengthEffectProject)
+            {
+                std::shared_ptr<Reliability::LengthEffectProject> project = lengthEffectProjects[id];
+
+                if (property_ == "correlation_matrix") project->selfCorrelationMatrix = selfCorrelationMatrices[value];
+            }
         }
 
         double ProjectServer::GetIntArgValue(int id1, int id2, std::string property_)

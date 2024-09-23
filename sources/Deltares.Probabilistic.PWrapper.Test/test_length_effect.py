@@ -39,11 +39,11 @@ class Test_Length_Effect(unittest.TestCase):
         project.breach_length = 500
 
         beta = StandardNormal.get_u_from_q(q)
-        dp1 = project_builder.get_design_point(beta, 2)
+        dp1 = project_builder.get_design_point_with_name(beta, 2, ["a", "b"])
         project.design_point_cross_section.append(dp1)
 
-        values = [0.45, 0.55]
-        project.self_correlation = values
+        project.correlation_matrix['a'] = 0.45
+        project.correlation_matrix['b'] = 0.55
 
         project.run()
 
@@ -62,11 +62,12 @@ class Test_Length_Effect(unittest.TestCase):
         project.length = 2000
 
         beta = StandardNormal.get_u_from_q(q)
-        dp1 = project_builder.get_design_point(beta, 2)
+        dp1 = project_builder.get_design_point_with_name(beta, 2, ["a", "b"])
         project.design_point_cross_section.append(dp1)
 
         values = [0.45, 0.55]
-        project.self_correlation = values
+        project.correlation_matrix['a'] = values[0]
+        project.correlation_matrix['b'] = values[1]
 
         project.run()
 
@@ -85,11 +86,12 @@ class Test_Length_Effect(unittest.TestCase):
         project.length = 2000
 
         beta = StandardNormal.get_u_from_q(q)
-        dp1 = project_builder.get_design_point(beta, 2)
+        dp1 = project_builder.get_design_point_with_name(beta, 2, ["a", "b"])
         project.design_point_cross_section.append(dp1)
 
         values = [0.0, 0.0]
-        project.self_correlation = values
+        project.correlation_matrix['a'] = values[0]
+        project.correlation_matrix['b'] = values[1]
 
         project.run()
 
@@ -111,14 +113,17 @@ class Test_Length_Effect(unittest.TestCase):
         project.breach_length = 123.0
         self.assertEqual(project.breach_length, 123.0)
 
-        values = [0.4, 0.6]
-        project.self_correlation = values
-        for i in range(2):
-            self.assertEqual(values[i], project.self_correlation[i])
-
         beta = StandardNormal.get_u_from_q(q)
-        dp1 = project_builder.get_design_point(beta, 2)
+        dp1 = project_builder.get_design_point_with_name(beta, 2, ["a", "b"])
         project.design_point_cross_section.append(dp1)
+
+        values = [0.4, 0.6]
+        project.correlation_matrix['a'] = values[0]
+        project.correlation_matrix['b'] = values[1]
+        testje = project.correlation_matrix
+        self.assertEqual(values[0], project.correlation_matrix["a"])
+        self.assertEqual(values[1], project.correlation_matrix["b"])
+
         self.assertEqual(project.design_point_cross_section[0].reliability_index, beta)
 
 if __name__ == '__main__':
