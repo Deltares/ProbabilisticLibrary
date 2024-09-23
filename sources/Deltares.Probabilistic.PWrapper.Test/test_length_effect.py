@@ -34,7 +34,7 @@ class Test_Length_Effect(unittest.TestCase):
         project = LengthEffectProject()
 
         values = [100.0, 200.0]
-        project.correlation_lengths(values)
+        project.correlation_lengths = values
         project.length = 2000
         project.breach_length = 500
 
@@ -43,7 +43,7 @@ class Test_Length_Effect(unittest.TestCase):
         project.design_point_cross_section.append(dp1)
 
         values = [0.45, 0.55]
-        project.self_correlation(values)
+        project.self_correlation = values
 
         project.run()
 
@@ -58,7 +58,7 @@ class Test_Length_Effect(unittest.TestCase):
         project = LengthEffectProject()
 
         values = [100.0, 200.0]
-        project.correlation_lengths(values)
+        project.correlation_lengths = values
         project.length = 2000
 
         beta = StandardNormal.get_u_from_q(q)
@@ -66,7 +66,7 @@ class Test_Length_Effect(unittest.TestCase):
         project.design_point_cross_section.append(dp1)
 
         values = [0.45, 0.55]
-        project.self_correlation(values)
+        project.self_correlation = values
 
         project.run()
 
@@ -81,7 +81,7 @@ class Test_Length_Effect(unittest.TestCase):
         project = LengthEffectProject()
 
         values = [100.0, 200.0]
-        project.correlation_lengths(values)
+        project.correlation_lengths = values
         project.length = 2000
 
         beta = StandardNormal.get_u_from_q(q)
@@ -89,12 +89,37 @@ class Test_Length_Effect(unittest.TestCase):
         project.design_point_cross_section.append(dp1)
 
         values = [0.0, 0.0]
-        project.self_correlation(values)
+        project.self_correlation = values
 
         project.run()
 
         design_point_upscaled = project.design_point
         self.assertAlmostEqual(design_point_upscaled.reliability_index, 0.82196, delta=margin)
+
+    def test_settings(self):
+        q = 0.01;
+
+        project = LengthEffectProject()
+
+        values = [100.0, 200.0]
+        project.correlation_lengths = values
+        for i in range(2):
+            self.assertEqual(values[i], project.correlation_lengths[i])
+        project.length = 2000.0
+        self.assertEqual(project.length, 2000.0)
+
+        project.breach_length = 123.0
+        self.assertEqual(project.breach_length, 123.0)
+
+        values = [0.4, 0.6]
+        project.self_correlation = values
+        for i in range(2):
+            self.assertEqual(values[i], project.self_correlation[i])
+
+        beta = StandardNormal.get_u_from_q(q)
+        dp1 = project_builder.get_design_point(beta, 2)
+        project.design_point_cross_section.append(dp1)
+        self.assertEqual(project.design_point_cross_section[0].reliability_index, beta)
 
 if __name__ == '__main__':
     unittest.main()

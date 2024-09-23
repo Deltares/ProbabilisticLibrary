@@ -390,9 +390,19 @@ class LengthEffectProject:
 	def correlation_matrix(self):
 		return self._correlation_matrix
 
+	@property
+	def self_correlation(self):
+		return interface.GetArrayValue(self._id, 'self_correlation')
+
+	@self_correlation.setter
 	def self_correlation(self, values):
 		interface.SetArrayValue(self._id, 'self_correlation', values)
 
+	@property
+	def correlation_lengths(self):
+		return interface.GetArrayValue(self._id, 'correlation_lengths')
+
+	@correlation_lengths.setter
 	def correlation_lengths(self, values):
 		interface.SetArrayValue(self._id, 'correlation_lengths', values)
 

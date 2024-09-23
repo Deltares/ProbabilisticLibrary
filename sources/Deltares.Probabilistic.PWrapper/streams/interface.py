@@ -115,6 +115,20 @@ def SetArrayValue(id_, property_, values_):
 	cvalues = (ctypes.c_double * len(values_))(*values_)
 	lib.SetArrayValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.POINTER(ctypes.c_double)(cvalues), ctypes.c_uint(len(values_)))
 
+def GetArrayValue(id_, property_):
+
+	count_property = property_ + '_count'
+	count = GetIntValue(id_, count_property)
+
+	lib.GetIndexedValue.restype = ctypes.c_double
+
+	values = []
+	for i in range(count):
+		value = lib.GetIndexedValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.c_int(i))
+		values.append(value)
+
+	return values
+
 def GetArrayIntValue(id_, property_):
 
 	count_property = property_ + '_count'

@@ -500,6 +500,8 @@ namespace Deltares
                 std::shared_ptr<Reliability::LengthEffectProject> project = lengthEffectProjects[id];
 
                 if (property_ == "design_point") return GetDesignPointId(project->designPoint);
+                else if (property_ == "correlation_lengths_count") return project->correlationLengths.size();
+                else if (property_ == "self_correlation_count") return project->self_correlations.size();
             }
 
             return 0;
@@ -1078,6 +1080,20 @@ namespace Deltares
 
         double ProjectServer::GetIndexedValue(int id, std::string property_, int index)
         {
+            ObjectType objectType = types[id];
+            if (objectType == ObjectType::LengthEffectProject)
+            {
+                std::shared_ptr<Reliability::LengthEffectProject> lengthEffect = lengthEffectProjects[id];
+                if (property_ == "correlation_lengths")
+                {
+                    return lengthEffect->correlationLengths[index];
+                }
+                else if (property_ == "self_correlation")
+                {
+                    return lengthEffect->self_correlations[index];
+                }
+            }
+
             return std::nan("");
         }
 
