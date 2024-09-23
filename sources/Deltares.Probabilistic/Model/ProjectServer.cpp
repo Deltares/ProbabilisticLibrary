@@ -457,11 +457,14 @@ namespace Deltares
             {
                 std::shared_ptr<Reliability::DesignPoint> designPoint = designPoints[id];
 
+                if (designPoint->convergenceReport != nullptr)
+                {
+                    if (property_ == "total_iterations") return designPoint->convergenceReport->TotalIterations;
+                    else if (property_ == "total_directions") return designPoint->convergenceReport->TotalDirections;
+                    else if (property_ == "total_model_runs") return designPoint->convergenceReport->TotalModelRuns;
+                }
                 if (property_ == "contributing_design_points_count") return (int)designPoint->ContributingDesignPoints.size();
                 else if (property_ == "alphas_count") return (int)designPoint->Alphas.size();
-                else if (property_ == "total_iterations") return designPoint->convergenceReport->TotalIterations;
-                else if (property_ == "total_directions") return designPoint->convergenceReport->TotalDirections;
-                else if (property_ == "total_model_runs") return designPoint->convergenceReport->TotalModelRuns;
                 else if (property_ == "messages_count") return (int) designPoint->Messages.size();
             }
             else if (objectType == ObjectType::Alpha)
@@ -628,6 +631,12 @@ namespace Deltares
                 else if (property_ == "calculate_correlations") return settings->CalculateCorrelations;
                 else if (property_ == "calculate_input_correlations") return settings->CalculateInputCorrelations;
             }
+            else if (objectType == ObjectType::Settings)
+            {
+                std::shared_ptr<Reliability::Settings> setting = settingsValues[id];
+
+                if (property_ == "all_quadrants") return setting->StartPointSettings->allQuadrants;
+            }
 
             return false;
         }
@@ -657,6 +666,12 @@ namespace Deltares
                 if (property_ == "derive_samples_from_variation_coefficient") settings->DeriveSamplesFromVariationCoefficient = value;
                 else if (property_ == "calculate_correlations") settings->CalculateCorrelations = value;
                 else if (property_ == "calculate_input_correlations") settings->CalculateInputCorrelations = value;
+            }
+            else if (objectType == ObjectType::Settings)
+            {
+                std::shared_ptr<Reliability::Settings> setting = settingsValues[id];
+
+                if (property_ == "all_quadrants") setting->StartPointSettings->allQuadrants = value;
             }
 
         }
