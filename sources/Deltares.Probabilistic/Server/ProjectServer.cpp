@@ -117,6 +117,12 @@ namespace Deltares
             handlersTable[id]->SetStringValue(id, property_, value);
         }
 
+        std::string ProjectServer::GetIndexedStringValue(int id, const std::string property_, int index)
+        {
+            return handlersTable[id]->GetIndexedStringValue(id, property_, index);
+        }
+
+
         void ProjectServer::SetArrayValue(int id, std::string property_, double* values, int size)
         {
             handlersTable[id]->SetArrayValue(id, property_, values, size);

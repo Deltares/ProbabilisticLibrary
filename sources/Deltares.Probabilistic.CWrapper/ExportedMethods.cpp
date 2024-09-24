@@ -25,6 +25,7 @@
 
 #include "../Deltares.Probabilistic/Server/ProjectServer.h"
 #include "../Deltares.Probabilistic/Server/ExternalServerHandler.h"
+#include "../Deltares.Probabilistic/Server/ExternalLibraryHandler.h"
 
 #ifdef __GNUC__
 #define DLL_PUBLIC __attribute__ ((visibility("default")))
@@ -32,7 +33,7 @@
 #define DLL_PUBLIC __declspec(dllexport) // Note: actually gcc seems to also supports this syntax.
 #endif
 
-std::shared_ptr<Deltares::Server::ProjectServer> projectServer = std::make_shared< Deltares::Server::ProjectServer>();
+Deltares::Server::ProjectServer* projectServer = new Deltares::Server::ProjectServer();
 
 extern "C" DLL_PUBLIC void AddLibrary(char* library)
 {
@@ -41,6 +42,12 @@ extern "C" DLL_PUBLIC void AddLibrary(char* library)
     if (libraryStr.ends_with(".exe"))
     {
         std::shared_ptr<Deltares::Server::ExternalServerHandler> externalHandler = std::make_shared<Deltares::Server::ExternalServerHandler>(libraryStr);
+        externalHandler->Initialize();
+        projectServer->AddHandler(externalHandler);
+    }
+    else if (libraryStr.ends_with(".dll"))
+    {
+        std::shared_ptr<Deltares::Server::ExternalLibraryHandler> externalHandler = std::make_shared<Deltares::Server::ExternalLibraryHandler>(libraryStr);
         externalHandler->Initialize();
         projectServer->AddHandler(externalHandler);
     }
@@ -185,6 +192,27 @@ extern "C" DLL_PUBLIC int GetIndexedIntValue(int id, char* property, int index)
 {
     std::string propertyStr(property);
     return projectServer->GetIndexedIntValue(id, propertyStr, index);
+}
+
+extern "C" DLL_PUBLIC size_t GetIndexedStringLength(int id, char* property, int index)
+{
+    std::string propertyStr(property);
+    std::string result = projectServer->GetIndexedStringValue(id, propertyStr, index);
+    return result.length();
+}
+
+extern "C" DLL_PUBLIC void GetIndexedStringValue(int id, char* property, int index, char* result_c, size_t size)
+{
+    std::string propertyStr(property);
+    std::string result = projectServer->GetIndexedStringValue(id, propertyStr, index);
+
+    const char* result_b = result.c_str();
+
+#ifdef __GNUC__
+    sprintf(result_c, "%s", result_b);
+#else
+    _snprintf_s(result_c, size, _TRUNCATE, result_b);
+#endif
 }
 
 extern "C" DLL_PUBLIC void SetCallBack(int id, char* property, Deltares::Models::ZValuesCallBack callBack)

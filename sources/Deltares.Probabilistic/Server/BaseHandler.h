@@ -31,6 +31,7 @@ namespace Deltares
             virtual bool GetBoolValue(int id, std::string property_) { return false; }
             virtual void SetBoolValue(int id, std::string property_, bool value) {}
             virtual std::string GetStringValue(int id, std::string property_) { return ""; }
+            virtual std::string GetIndexedStringValue(int id, std::string property_, int index) { return ""; }
             virtual void SetStringValue(int id, std::string property_, std::string value) {}
             virtual void SetArrayValue(int id, std::string property_, double* values, int size) {}
             virtual std::vector<int> GetArrayIntValue(int id, std::string property_) { return std::vector<int>(); }

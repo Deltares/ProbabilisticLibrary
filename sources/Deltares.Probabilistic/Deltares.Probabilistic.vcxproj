@@ -159,6 +159,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Server\ExternalLibraryHandler.h" />
     <ClInclude Include="Server\ExternalServerHandler.h" />
     <ClInclude Include="Server\BaseServer.h" />
     <ClInclude Include="Server\ProjectHandler.h" />
@@ -323,6 +324,7 @@
     <ClInclude Include="Math\WeightedValue.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Server\ExternalLibraryHandler.cpp" />
     <ClCompile Include="Server\ExternalServerHandler.cpp" />
     <ClCompile Include="Server\BaseServer.cpp" />
     <ClCompile Include="Server\ProjectHandler.cpp" />
