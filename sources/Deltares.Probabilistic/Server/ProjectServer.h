@@ -61,6 +61,7 @@ namespace Deltares
             std::vector<int> GetArrayIntValue(int id, std::string property_);
             void SetArrayIntValue(int id, std::string property_, int* values, int size);
             double GetArgValue(int id, std::string property_, double argument);
+            double GetArgValues(int id, std::string property_, double* values, int size);
             void SetArgValue(int id, std::string property_, double argument, double value);
             double GetIndexedValue(int id, std::string property_, int index);
             void SetIndexedValue(int id, std::string property_, int index, double value);
@@ -72,6 +73,7 @@ namespace Deltares
             void Execute(int id, std::string method_);
             void AddHandler(std::shared_ptr<BaseHandler> handler);
             Models::ZLambda GetCallBack(int id, std::string method);
+
         private:
             int id_ = 0;
             std::vector<std::shared_ptr<BaseHandler>> handlers;

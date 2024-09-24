@@ -27,17 +27,14 @@ namespace Deltares
     {
         // implementation based on https ://learn.microsoft.com/en-us/windows/win32/winsock/complete-client-code
 
-        SOCKET ExternalServerHandler::ConnectSocket()
+        void ExternalServerHandler::UpdateAddressInfo()
         {
-            SOCKET ConnectSocket = INVALID_SOCKET;
-            struct addrinfo* address = NULL, * ptr = NULL, hints;
-
             // Initialize Winsock
             int iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
             if (iResult != 0)
             {
                 printf("WSAStartup failed with error: %d\n", iResult);
-                return 0;
+                return;
             }
 
             ZeroMemory(&hints, sizeof(hints));
@@ -54,11 +51,15 @@ namespace Deltares
             {
                 printf("getaddrinfo failed with error: %d\n", iResult);
                 WSACleanup();
-                return 1;
             }
+        }
+
+        SOCKET ExternalServerHandler::ConnectSocket()
+        {
+            SOCKET ConnectSocket = INVALID_SOCKET;
 
             // Attempt to connect to an address until one succeeds
-            for (ptr = address; ptr != NULL; ptr = ptr->ai_next) {
+            for (addrinfo* ptr = address; ptr != nullptr; ptr = ptr->ai_next) {
 
                 // Create a SOCKET for connecting to server
                 ConnectSocket = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
@@ -70,7 +71,7 @@ namespace Deltares
                 }
 
                 // Connect to server.
-                iResult = connect(ConnectSocket, ptr->ai_addr, (int)ptr->ai_addrlen);
+                int iResult = connect(ConnectSocket, ptr->ai_addr, (int)ptr->ai_addrlen);
                 if (iResult == SOCKET_ERROR)
                 {
                     printf("socket connection failed with error: %ld\n", WSAGetLastError());
@@ -82,8 +83,6 @@ namespace Deltares
                 break;
             }
 
-            freeaddrinfo(address);
-
             if (ConnectSocket == INVALID_SOCKET) {
                 printf("Unable to connect to server!\n");
                 WSACleanup();
@@ -93,66 +92,39 @@ namespace Deltares
             return ConnectSocket;
         }
 
-        void ExternalServerHandler::DisconnectSocket()
-        {
-            // shutdown the connection since no more data will be sent
-            int iResult = shutdown(this->server_socket, SD_SEND);
-
-            if (iResult == SOCKET_ERROR)
-            {
-                printf("shutdown failed with error: %d\n", WSAGetLastError());
-                closesocket(this->server_socket);
-                WSACleanup();
-            }
-
-            char recvbuf[DEFAULT_BUFLEN];
-            int recvbuflen = DEFAULT_BUFLEN;
-
-            // Receive until the peer closes the connection
-            do {
-                iResult = recv(this->server_socket, recvbuf, recvbuflen, 0);
-                if (iResult > 0)
-                    printf("Bytes received: %d\n", iResult);
-                else if (iResult == 0)
-                    printf("Connection closed\n");
-                else
-                    printf("recv failed with error: %d\n", WSAGetLastError());
-
-            } while (iResult > 0);
-
-            // cleanup
-            closesocket(this->server_socket);
-            WSACleanup();
-
-            this->server_socket = INVALID_SOCKET;
-        }
-
         std::string ExternalServerHandler::Send(std::string message, bool waitForAnswer)
         {
+            SOCKET server_socket = this->ConnectSocket();
+
             const char* sendbuf = message.c_str();
 
             // Send an initial buffer
-            int iResult = send(this->server_socket, sendbuf, message.size() + 1, 0);
+            int iResult = send(server_socket, sendbuf, message.size() + 1, 0);
             if (iResult == SOCKET_ERROR)
             {
                 printf("send failed with error: %d\n", WSAGetLastError());
-                closesocket(this->server_socket);
+                closesocket(server_socket);
                 WSACleanup();
                 return "";
             }
 
             if (waitForAnswer)
             {
-                char recvbuf[DEFAULT_BUFLEN];
-                int recvbuflen = DEFAULT_BUFLEN;
+                char receiveBuffer[DEFAULT_BUFLEN];
 
-                int received = recv(this->server_socket, recvbuf, sizeof(recvbuf), 0);
+                int received = recv(server_socket, receiveBuffer, sizeof(receiveBuffer), 0);
+
+                closesocket(server_socket);
                 if (received < 0)
                 {
                     throw std::runtime_error("Receive failed");
                 }
 
-                return std::string(recvbuf, received);
+                return std::string(receiveBuffer, received);
+            }
+            else
+            {
+                closesocket(server_socket);
             }
 
             return "";
@@ -170,8 +142,6 @@ namespace Deltares
                 this->server_started = true;
 
                 std::this_thread::sleep_for(std::chrono::seconds(1));
-
-                this->server_socket = this->ConnectSocket();
 
                 connected = CheckConnection();
                 if (!connected)
@@ -237,6 +207,8 @@ namespace Deltares
 
         void ExternalServerHandler::Initialize()
         {
+            this->UpdateAddressInfo();
+
             this->StartServer();
         }
 
@@ -258,52 +230,57 @@ namespace Deltares
 
         double ExternalServerHandler::GetValue(int id, std::string property)
         {
-            std::string result = this->Send("get_value:" + property, true);
+            std::string result = this->Send("get_value:" + std::to_string(id) + ":" + property, true);
             return std::stod(result);
         }
 
         void ExternalServerHandler::SetValue(int id, std::string property, double value)
         {
-            this->Send("set_value:" + property + ":" + std::to_string(value), false);
+            this->Send("set_value:" + std::to_string(id) + ":" + property + ":" + std::to_string(value), false);
         }
 
         bool ExternalServerHandler::GetBoolValue(int id, std::string property)
         {
-            std::string result = this->Send("get_bool_value:" + property, true);
+            std::string result = this->Send("get_bool_value:" + std::to_string(id) + ":" + property, true);
             return result == "true";
         }
 
         void ExternalServerHandler::SetBoolValue(int id, std::string property, bool value)
         {
             std::string bvalue = value ? "true" : "false";
-            this->Send("set_bool_value:" + property + ":" + bvalue, false);
+            this->Send("set_bool_value:" + std::to_string(id) + ":" + property + ":" + bvalue, false);
         }
 
         int ExternalServerHandler::GetIntValue(int id, std::string property)
         {
-            std::string result = this->Send("get_int_value:" + property, true);
+            std::string result = this->Send("get_int_value:" + std::to_string(id) + ":" + property, true);
             return std::stoi(result);
         }
 
         void ExternalServerHandler::SetIntValue(int id, std::string property, int value)
         {
-            this->Send("set_int_value:" + property + ":" + std::to_string(value), false);
+            this->Send("set_int_value:" + std::to_string(id) + ":" + property + ":" + std::to_string(value), false);
         }
 
         std::string ExternalServerHandler::GetStringValue(int id, std::string property)
         {
-            return this->Send("get_string_value:" + property, true);
+            return this->Send("get_string_value:" + std::to_string(id) + ":" + property, true);
         }
 
         void ExternalServerHandler::SetStringValue(int id, std::string property, std::string value)
         {
-            this->Send("set_string_value:" + property + ":" + value, false);
+            this->Send("set_string_value:" + std::to_string(id) + ":" + property + ":" + value, false);
         }
 
         int ExternalServerHandler::GetIndexedIntValue(int id, std::string property, int index)
         {
-            std::string result = this->Send("get_indexed_int_value:" + property + ":" + std::to_string(index), true);
+            std::string result = this->Send("get_indexed_int_value:" + std::to_string(id) + ":" + property + ":" + std::to_string(index), true);
             return std::stoi(result);
+        }
+
+        std::string ExternalServerHandler::GetIndexedStringValue(int id, std::string property, int index)
+        {
+            return this->Send("get_indexed_string_value:" + std::to_string(id) + ":" + property + ":" + std::to_string(index), true);
         }
 
         void ExternalServerHandler::SetArrayIntValue(int id, std::string property, int* values, int size)
@@ -314,7 +291,24 @@ namespace Deltares
                 strings.push_back(std::to_string(values[i]));
             }
 
-            this->Send("set_array_int_value:" + property + ":" + StringJoin(strings, ":"), false);
+            this->Send("set_array_int_value:" + std::to_string(id) + ":" + property + ":" + StringJoin(strings, ":"), false);
+        }
+
+        double ExternalServerHandler::GetArgValues(int id, std::string property, double* values, int size)
+        {
+            std::vector<std::string> strings;
+            for (int i = 0; i < size; i++)
+            {
+                strings.push_back(std::to_string(values[i]));
+            }
+
+            std::string result = this->Send("get_arg_values:" + std::to_string(id) + ":" + property + ":" + StringJoin(strings, ":"), true);
+            return std::stod(result);
+        }
+
+        void ExternalServerHandler::Execute(int id, std::string method)
+        {
+            this->Send("execute:" + std::to_string(id) + ":" + method, false);
         }
 
         Models::ZLambda ExternalServerHandler::GetCallBack(int id, std::string method)

@@ -121,12 +121,28 @@ def GetStringValue(id_, property_):
 	result_str = result.value.decode()
 	return result_str
 
+def GetIndexedStringValue(id_, property_, index_):
+
+	lib.GetIndexedStringLength.restype = ctypes.c_int
+	size = lib.GetIndexedStringLength(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.c_int(index_))
+
+	result = ctypes.create_string_buffer(size+1)
+	lib.GetIndexedStringValue.restype = ctypes.c_void_p
+	lib.GetIndexedStringValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.c_int(index_), result, ctypes.c_size_t(sizeof(result)))
+	result_str = result.value.decode()
+	return result_str
+
 def SetStringValue(id_, property_, value_):
 	lib.SetStringValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), bytes(value_, 'utf-8'))
 
 def SetArrayValue(id_, property_, values_):
 	cvalues = (ctypes.c_double * len(values_))(*values_)
 	lib.SetArrayValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.POINTER(ctypes.c_double)(cvalues), ctypes.c_uint(len(values_)))
+
+def GetArgValues(id_, property_, values_):
+	cvalues = (ctypes.c_double * len(values_))(*values_)
+	lib.GetArgValues.restype = ctypes.c_double
+	return lib.GetArgValues(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.POINTER(ctypes.c_double)(cvalues), ctypes.c_uint(len(values_)))
 
 def GetArrayIntValue(id_, property_):
 
@@ -138,6 +154,18 @@ def GetArrayIntValue(id_, property_):
 	values = []
 	for i in range(count):
 		value = lib.GetIndexedIntValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.c_int(i))
+		values.append(value)
+
+	return values
+
+def GetArrayStringValue(id_, property_):
+
+	count_property = property_ + '_count'
+	count = GetIntValue(id_, count_property)
+
+	values = []
+	for i in range(count):
+		value = GetIndexedStringValue(id_, property_, i)
 		values.append(value)
 
 	return values

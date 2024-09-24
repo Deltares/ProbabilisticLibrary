@@ -164,6 +164,12 @@ extern "C" DLL_PUBLIC void SetArgValue(int id, char* property, double argument, 
     projectServer->SetArgValue(id, propertyStr, argument, value);
 }
 
+extern "C"  DLL_PUBLIC double GetArgValues(int id, char* property, double* values, int size)
+{
+    std::string propertyStr(property);
+    return projectServer->GetArgValues(id, propertyStr, values, size);
+}
+
 extern "C"  DLL_PUBLIC double GetIndexedValue(int id, char* property, int index)
 {
     std::string propertyStr(property);

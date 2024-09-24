@@ -26,13 +26,13 @@ namespace Deltares
 
             ~ExternalServerHandler()
             {
+                freeaddrinfo(address);
+
                 if (this->server_started)
                 {
                     this->Send("exit", false);
                     this->server_started = false;
                 }
-
-                this->DisconnectSocket();
             }
 
             void SetServer(std::shared_ptr<BaseServer> server, int handlerIndex, std::shared_ptr<BaseHandler> defaultHandler) override
@@ -53,23 +53,28 @@ namespace Deltares
             std::string GetStringValue(int id, std::string property) override;
             void SetStringValue(int id, std::string property, std::string value) override;
             int GetIndexedIntValue(int id, std::string property_, int index) override;
+            std::string GetIndexedStringValue(int id, std::string property, int index);
             void SetArrayIntValue(int id, std::string property_, int* values, int size) override;
+            double GetArgValues(int id, std::string property, double* values, int size) override;
+            void Execute(int id, std::string method_) override;
             Models::ZLambda GetCallBack(int id, std::string method) override;
         private:
             std::string serverName = "";
             bool server_started = false;
 
             WSADATA wsaData;
-            SOCKET server_socket = INVALID_SOCKET;
 
             std::string Send(std::string message, bool waitForAnswer);
             SOCKET ConnectSocket();
-            void DisconnectSocket();
             void StartServer();
             bool CheckConnection();
 
             std::string StringJoin(const std::vector<std::string>& strings, const std::string delim);
             void StartProcess(std::string processName, bool waitForExit);
+            void UpdateAddressInfo();
+
+            addrinfo* address = nullptr;
+            addrinfo hints;
 
 
 

@@ -97,6 +97,9 @@ class ZModel:
 	@index.setter
 	def index(self, value : int):
 		ZModel._index = value
+
+	def _set_callback(self, callback):
+		ZModel._callback = callback
 	
 	def run(self, values):
 		z = ZModel._callback(*values);
