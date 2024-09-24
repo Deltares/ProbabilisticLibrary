@@ -343,6 +343,25 @@ class Test_reliability(unittest.TestCase):
         self.assertAlmostEqual(1.9877, beta, delta=margin)
         self.assertEqual(2, len(alphas))
 
+    def test_form_start_methods_given_vector(self):
+        project = project_builder.get_linear_project()
+
+        project.settings.reliability_method = ReliabilityMethod.form
+        project.settings.start_method = StartMethod.none
+        project.settings.stochast_settings["a"].start_value = 1.2
+        project.settings.stochast_settings["b"].start_value = 2.4
+
+        project.run();
+
+        dp = project.design_point;
+        beta = dp.reliability_index;
+        alphas = dp.alphas;
+        self.assertEqual(dp.total_model_runs, 150)
+        self.assertFalse(dp.is_converged)
+        self.assertEqual(len(dp.contributing_design_points), 0)
+
+        self.assertAlmostEqual(1.9877, beta, delta=margin)
+        self.assertEqual(2, len(alphas))
 
 if __name__ == '__main__':
     unittest.main()
