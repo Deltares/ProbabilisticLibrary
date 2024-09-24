@@ -39,20 +39,32 @@ namespace Deltares
             switch (this->Settings->StartMethod)
             {
             case StartMethodType::None:
-                return this->Settings->StochastSet->getStartPoint();
-            case StartMethodType::One:
-                return getOneStartPoint(modelRunner);
+                return getNoneStartPoint();
             case StartMethodType::RaySearch:
                 return getRayStartPoint(modelRunner);
             case StartMethodType::SensitivitySearch:
                 return getSensitivityStartPoint(modelRunner);
             case StartMethodType::SphereSearch:
                 return getSphereStartPoint(modelRunner);
-            case StartMethodType::GivenVector:
-                return getGivenVectorStartPoint(modelRunner);
             default:
                 throw probLibException("Start method not supported: ", (int)this->Settings->StartMethod);
             }
+        }
+
+        std::shared_ptr<Sample> StartPointCalculator::getNoneStartPoint()
+        {
+            std::shared_ptr<Sample> startPoint = Settings->StochastSet->getStartPoint();
+            if (Settings->startVector.size() > 0)
+            {
+                if (Settings->startVector.size() > 0)
+                {
+                    for (int i = 0; i < startPoint.get()->getSize(); i++)
+                    {
+                        startPoint->Values[i] = Settings->startVector[i];
+                    }
+                }
+            }
+            return startPoint;
         }
 
         void StartPointCalculator::correctDefaultValues(std::shared_ptr<Sample> startPoint)
@@ -73,22 +85,6 @@ namespace Deltares
                     startPoint->Values[i] = 1;
                 }
             }
-        }
-
-        std::shared_ptr<Sample> StartPointCalculator::getOneStartPoint(std::shared_ptr<Models::ModelRunner> modelRunner)
-        {
-            std::shared_ptr<Sample> startPoint = this->Settings->StochastSet->getStartPoint();
-
-            correctDefaultValues(startPoint);
-
-            return startPoint;
-        }
-
-        std::shared_ptr<Sample> StartPointCalculator::getGivenVectorStartPoint(std::shared_ptr<Models::ModelRunner> modelRunner)
-        {
-            std::shared_ptr<Sample> startPoint = this->Settings->StochastSet->getStartPoint();
-            startPoint->Values = this->Settings->startVector;
-            return startPoint;
         }
 
         std::shared_ptr<Sample> StartPointCalculator::getRayStartPoint(std::shared_ptr<Models::ModelRunner> modelRunner)

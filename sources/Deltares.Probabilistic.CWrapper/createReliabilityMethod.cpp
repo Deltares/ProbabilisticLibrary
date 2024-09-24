@@ -150,23 +150,35 @@ void createReliabilityMethod::fillStartVector(std::shared_ptr<StartPointCalculat
         startPoint->StartMethod = StartMethodType::None;
         break;
     case StartMethods::One:
-        startPoint->StartMethod = StartMethodType::One;
+        {
+            startPoint->StartMethod = StartMethodType::None;
+            for (size_t i = 0; i < nStoch; i++)
+            {
+                startPoint->startVector.push_back(1.0);
+            }
+        }
         break;
     case StartMethods::RaySearch:
     case StartMethods::RaySearchVector:
     case StartMethods::RaySearchVectorScaled:
-        startPoint->StartMethod = StartMethodType::RaySearch;
-        startPoint->MaximumLengthStartPoint = 18.1;
-        startPoint->dsdu = 0.3;
-        startPoint->startVector = copyStartVector(bs.startVector, nStoch);
+        {
+            startPoint->StartMethod = StartMethodType::RaySearch;
+            startPoint->MaximumLengthStartPoint = 18.1;
+            startPoint->dsdu = 0.3;
+            startPoint->startVector = copyStartVector(bs.startVector, nStoch);
+        }
         break;
     case StartMethods::SphereSearch:
-        startPoint->StartMethod = StartMethodType::SphereSearch;
-        startPoint->startVector = copyStartVector(bs.startVector, nStoch);
+        {
+            startPoint->StartMethod = StartMethodType::SphereSearch;
+            startPoint->startVector = copyStartVector(bs.startVector, nStoch);
+        }
         break;
     case StartMethods::GivenVector:
-        startPoint->StartMethod = StartMethodType::GivenVector;
-        startPoint->startVector = copyStartVector(bs.startVector, nStoch);
+        {
+            startPoint->StartMethod = StartMethodType::None;
+            startPoint->startVector = copyStartVector(bs.startVector, nStoch);
+        }
         break;
     default:
         throw probLibException("not implemented: start method: ", (int)bs.startMethod);

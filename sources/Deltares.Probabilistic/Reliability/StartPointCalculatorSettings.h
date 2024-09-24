@@ -27,7 +27,7 @@ namespace Deltares
 {
     namespace Reliability
     {
-        enum StartMethodType { None, One, RaySearch, SensitivitySearch, SphereSearch, GivenVector };
+        enum StartMethodType { None, RaySearch, SensitivitySearch, SphereSearch };
 
         /**
          * \brief Settings for the start point calculator

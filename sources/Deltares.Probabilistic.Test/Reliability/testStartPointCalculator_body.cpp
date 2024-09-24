@@ -48,7 +48,8 @@ namespace Deltares
                 auto calculator = StartPointCalculator();
 
                 modelRunner->updateStochastSettings(calculator.Settings->StochastSet);
-                calculator.Settings->StartMethod = StartMethodType::One;
+                calculator.Settings->StartMethod = StartMethodType::None;
+                calculator.Settings->startVector = { 1.0, 1.0 };
 
                 auto r = calculator.getStartPoint(modelRunner);
 
