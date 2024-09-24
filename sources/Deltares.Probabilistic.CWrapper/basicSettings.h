@@ -58,7 +58,8 @@ namespace Deltares {
             RaySearch,
             SphereSearch,
             RaySearchVector = 8,
-            RaySearchVectorScaled
+            RaySearchVectorScaled,
+            Sensitivity = 11
         };
 
         enum class DPoptions

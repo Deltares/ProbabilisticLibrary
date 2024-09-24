@@ -294,7 +294,7 @@ subroutine convertStartMethod(probDb, method, iPoint)
     case (fORMStartRaySearchVectorScaled)
         method%startmethod = startMethod
         call copyStartVector(probDb, method, iPoint, "fORMStartRaySearchVectorScaled")
-    case (fORMStartZero)
+    case (fORMStartZero, fORMStartSensitivity)
         method%startmethod = startMethod
     case default
         call fatalError("start method not implemented: ", startMethod)

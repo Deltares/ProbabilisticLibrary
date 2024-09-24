@@ -180,6 +180,9 @@ void createReliabilityMethod::fillStartVector(std::shared_ptr<StartPointCalculat
             startPoint->startVector = copyStartVector(bs.startVector, nStoch);
         }
         break;
+    case StartMethods::Sensitivity:
+        startPoint->StartMethod = StartMethodType::SensitivitySearch;
+        break;
     default:
         throw probLibException("not implemented: start method: ", (int)bs.startMethod);
         break;

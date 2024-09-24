@@ -607,7 +607,7 @@ subroutine testProbabilisticWithFunction ( )
             call initializeNumericalIntegration( probDb%method%NI%minimumUvalue, probDb%method%NI%maximumUvalue, &
                      probDb%method%NI%numberIntervals )
 
-            probDb%method%FORM%startMethod = fORMStartOne
+            probDb%method%FORM%startMethod = fORMStartSensitivity
 
             ! Perform computation numberIterations times
             call initSparseWaartsTestsFunctions(probDb%stovar%maxStochasts, probDb%method%maxParallelThreads)
@@ -617,7 +617,7 @@ subroutine testProbabilisticWithFunction ( )
 
             select case (probMethod)
                 case ( methodFORM )
-                    call assert_comparable( 3.30d0, actualBeta, 0.15d0 * betaFactor, "Oblate spheroid: Beta" )
+                    call assert_comparable( 3.37d0, actualBeta, 0.15d0 * betaFactor, "Oblate spheroid: Beta" )
 
                 case ( methodNumericalIntegration )
                     call assert_comparable( 0.56649404_wp, actualBeta, margin, "Oblate spheroid: Beta" )
