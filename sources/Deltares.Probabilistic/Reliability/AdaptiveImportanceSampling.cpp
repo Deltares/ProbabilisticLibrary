@@ -69,9 +69,8 @@ namespace Deltares
                 const std::shared_ptr<DesignPoint> startDesignPoint = modelRunner->getDesignPoint(startPoint, startPoint->getBeta());
                 startDesignPoint->Identifier = "Start point";
                 previousDesignPoints.push_back(startDesignPoint);
-
-                importanceSampling->Settings->StochastSet->setStartPoint(startPoint);
             }
+            importanceSampling->Settings->StochastSet->setStartPoint(startPoint);
 
             modelRunner->doTextualProgress(ProgressType::Global, "Calculating design point.");
 
