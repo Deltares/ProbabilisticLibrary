@@ -47,7 +47,6 @@ namespace Deltares
             virtual void SetCallBack(int id, std::string property_, Models::ZValuesCallBack callBack) {}
             virtual void SetEmptyCallBack(int id, std::string property_, Models::ZEmptyCallBack callBack) {}
             virtual void Execute(int id, std::string method_) {}
-            virtual Models::ZLambda GetCallBack(int id, std::string method) { return 0; }
 
         protected:
             std::shared_ptr<BaseServer> server = nullptr;

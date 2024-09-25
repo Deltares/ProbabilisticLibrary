@@ -157,21 +157,26 @@ namespace Deltares
             STARTUPINFO si;
             PROCESS_INFORMATION pi;
 
+#ifdef UNICODE
             std::wstring processNameW(processName.begin(), processName.end());
+            LPWSTR processNameL = processNameW.data();
+#else
+            LPSTR processNameL = processName.data();
+#endif
 
             ZeroMemory(&si, sizeof(si));
             si.cb = sizeof(si);
             ZeroMemory(&pi, sizeof(pi));
 
             // Start the child process. 
-            if (!CreateProcess(NULL,   // No module name (use command line)
-                processNameW.data(),        // Command line
-                NULL,           // Process handle not inheritable
-                NULL,           // Thread handle not inheritable
-                FALSE,          // Set handle inheritance to FALSE
+            if (!CreateProcess(nullptr,   // No module name (use command line)
+                processNameL,        // Command line
+                nullptr,           // Process handle not inheritable
+                nullptr,           // Thread handle not inheritable
+                false,          // Set handle inheritance to FALSE
                 0,              // No creation flags
-                NULL,           // Use parent's environment block
-                NULL,           // Use parent's starting directory 
+                nullptr,           // Use parent's environment block
+                nullptr,           // Use parent's starting directory 
                 &si,            // Pointer to STARTUPINFO structure
                 &pi)           // Pointer to PROCESS_INFORMATION structure
                 )
@@ -309,11 +314,6 @@ namespace Deltares
         void ExternalServerHandler::Execute(int id, std::string method)
         {
             this->Send("execute:" + std::to_string(id) + ":" + method, false);
-        }
-
-        Models::ZLambda ExternalServerHandler::GetCallBack(int id, std::string method)
-        {
-            return nullptr;
         }
 
         std::string ExternalServerHandler::StringJoin(const std::vector<std::string>& strings, const std::string delim)

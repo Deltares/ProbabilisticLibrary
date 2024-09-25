@@ -79,11 +79,6 @@ namespace Deltares
         {
             this->setArrayIntMethod(id, property_.c_str(), values, size);
         }
-
-        Models::ZLambda ExternalLibraryHandler::GetCallBack(int id, std::string method)
-        {
-            return this->getCallbackMethod(id, method.c_str());
-        }
     }
 }
 #endif
