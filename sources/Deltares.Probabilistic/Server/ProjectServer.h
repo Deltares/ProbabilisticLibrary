@@ -72,7 +72,6 @@ namespace Deltares
             void SetEmptyCallBack(int id, std::string property_, Models::ZEmptyCallBack callBack);
             void Execute(int id, std::string method_);
             void AddHandler(std::shared_ptr<BaseHandler> handler);
-            Models::ZLambda GetCallBack(int id, std::string method);
 
         private:
             int id_ = 0;

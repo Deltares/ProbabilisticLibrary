@@ -57,7 +57,6 @@ namespace Deltares
             void SetArrayIntValue(int id, std::string property_, int* values, int size) override;
             double GetArgValues(int id, std::string property, double* values, int size) override;
             void Execute(int id, std::string method_) override;
-            Models::ZLambda GetCallBack(int id, std::string method) override;
         private:
             std::string serverName = "";
             bool server_started = false;
@@ -75,9 +74,6 @@ namespace Deltares
 
             addrinfo* address = nullptr;
             addrinfo hints;
-
-
-
         };
     }
 }

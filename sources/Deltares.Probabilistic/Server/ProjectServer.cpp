@@ -192,11 +192,6 @@ namespace Deltares
         {
             handlersTable[id]->Execute(id, method_);
         }
-
-        ZLambda ProjectServer::GetCallBack(int id, std::string method_)
-        {
-            return handlersTable[id]->GetCallBack(id, method_);
-        }
     }
 }
 

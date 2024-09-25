@@ -49,17 +49,6 @@ namespace Deltares
                 this->getIndexedIntMethod = (f_get_indexed_int_value)GetProcAddress(libInstance, "GetIndexedIntValue");
                 this->getIndexedStringMethod = (f_get_indexed_string_value)GetProcAddress(libInstance, "GetIndexedStringValue");
                 this->setArrayIntMethod = (f_set_array_int_value)GetProcAddress(libInstance, "SetArrayIntValue");
-                this->getCallbackMethod = (f_get_callback_method)GetProcAddress(libInstance, "GetCallBack");
-            }
-
-            ~ExternalLibraryHandler()
-            {
-                int k = 1;
-            }
-
-            void SetServer(std::shared_ptr<BaseServer> server, int handlerIndex, std::shared_ptr<BaseHandler> defaultHandler) override
-            {
-                BaseHandler::SetServer(server, handlerIndex, defaultHandler);
             }
 
             void Initialize();
@@ -77,7 +66,6 @@ namespace Deltares
             int GetIndexedIntValue(int id, std::string property_, int index) override;
             std::string GetIndexedStringValue(int id, std::string property_, int index) override;
             void SetArrayIntValue(int id, std::string property_, int* values, int size) override;
-            Models::ZLambda GetCallBack(int id, std::string method) override;
         private:
             typedef void(*f_initialize)();
             typedef bool(*f_can_handle)(const char*);
@@ -111,7 +99,6 @@ namespace Deltares
             f_get_indexed_int_value getIndexedIntMethod = nullptr;
             f_get_indexed_string_value getIndexedStringMethod = nullptr;
             f_set_array_int_value setArrayIntMethod = nullptr;
-            f_get_callback_method getCallbackMethod = nullptr;
 #else
             ExternalHandler(std::string libraryName)
             {
