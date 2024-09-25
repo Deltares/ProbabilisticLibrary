@@ -995,10 +995,12 @@ namespace Deltares
                 else if (property_ == "u_from_p") return StandardNormal::getUFromP(argument);
                 else if (property_ == "q_from_u") return StandardNormal::getQFromU(argument);
                 else if (property_ == "p_from_u") return StandardNormal::getPFromU(argument);
-                else if (property_ == "r_from_p") return StandardNormal::getRFromP(argument);
-                else if (property_ == "p_from_r") return StandardNormal::getPFromR(argument);
-                else if (property_ == "r_from_u") return StandardNormal::getRFromU(argument);
-                else if (property_ == "u_from_r") return StandardNormal::getUFromR(argument);
+                else if (property_ == "r_from_p") return StandardNormal::getTFromP(argument);
+                else if (property_ == "p_from_r") return StandardNormal::getPFromT(argument);
+                else if (property_ == "r_from_u") return StandardNormal::getTFromU(argument);
+                else if (property_ == "u_from_r") return StandardNormal::getUFromT(argument);
+                else if (property_ == "t_from_u") return StandardNormal::getTFromU(argument);
+                else if (property_ == "u_from_t") return StandardNormal::getUFromT(argument);
             }
             else if (objectType == ObjectType::Stochast)
             {
