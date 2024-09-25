@@ -208,8 +208,8 @@ class Test_statistics(unittest.TestCase):
     def test_return_time(self):
         for i in range(6):
             beta = float(i)
-            rt = StandardNormal.return_time_from_beta(beta)
-            betaCalculated = StandardNormal.beta_from_return_time(rt)
+            rt = StandardNormal.get_t_from_u(beta)
+            betaCalculated = StandardNormal.get_u_from_t(rt)
             self.assertAlmostEqual(beta, betaCalculated, delta=margin)
 
 if __name__ == '__main__':

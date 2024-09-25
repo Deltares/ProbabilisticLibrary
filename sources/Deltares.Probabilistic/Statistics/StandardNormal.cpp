@@ -256,7 +256,7 @@ namespace Deltares
         /// </summary>
         /// <param name="p"></param>
         /// <returns></returns>
-        double StandardNormal::getRFromP(double p)
+        double StandardNormal::getTFromP(double p)
         {
             return - 1.0 / log(1.0 - p);
         }
@@ -266,43 +266,21 @@ namespace Deltares
         /// </summary>
         /// <param name="r">return period</param>
         /// <returns></returns>
-        double StandardNormal::getPFromR(double r)
+        double StandardNormal::getPFromT(double t)
         {
-            return 1.0 - exp(-1.0 / fabs(r));
+            return 1.0 - exp(-1.0 / fabs(t));
         }
 
-        /// <summary>
-        /// Gets the return period from the reliability index
-        /// </summary>
-        /// <param name="p"></param>
-        /// <returns></returns>
-        double StandardNormal::getRFromU(double u)
+        double StandardNormal::getTFromU(const double u)
         {
-            double q = getQFromU(u);
-            return -1.0 / log(q);
+            return 1.0 / getFreqFromU(u);
         }
 
-        /// <summary>
-        /// Gets the reliability index from the return period
-        /// </summary>
-        /// <param name="r">return period</param>
-        /// <returns></returns>
-        double StandardNormal::getUFromR(double r)
-        {
-            double q = exp(-1.0 / fabs(r));
-            return getUFromQ(q);
-        }
-
-        double StandardNormal::ReturnTimeFromBeta(const double beta)
-        {
-            return 1.0 / FreqFromBeta(beta);
-        }
-
-        double StandardNormal::BetaFromReturnTime(const double return_time)
+        double StandardNormal::getUFromT(const double t)
         {
             const double return_time_limit = 93304555.446497560; // this return time gives beta = uLimit = 5.6, see FreqFromBeta
-            double freq = 1.0 / return_time;
-            if (return_time > return_time_limit)
+            double freq = 1.0 / t;
+            if (t > return_time_limit)
             {
                 return getUFromQ(freq);
             }
@@ -312,33 +290,29 @@ namespace Deltares
             }
         }
 
-        double StandardNormal::FreqFromBeta(const double beta)
+        double StandardNormal::getFreqFromU(const double u)
         {
             const double uLimit = 5.6;
             double p; double q;
-            if (beta > uLimit)
+            if (u > uLimit)
             {
-                q = getQFromU(beta);
+                q = getQFromU(u);
                 q = std::max(q, qMin);
                 return q;
             }
             else
             {
-                p = getPFromU(beta);
+                p = getPFromU(u);
                 p = std::max(p, qMin);
                 return -log(p);
             }
         }
 
-        double StandardNormal::LogQFromBeta(const double beta)
+        double StandardNormal::getLogQFromU(const double u)
         {
-            return -log(FreqFromBeta(beta));
+            return -log(getFreqFromU(u));
         }
 
     }
 }
-
-
-
-
 

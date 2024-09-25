@@ -36,6 +36,8 @@ namespace Deltares
             private:
                 void testPQbetaConversions();
                 void testReturnTime();
+                void testFreqFromBeta();
+                void testLogQFromBeta();
                 const double margin = 1e-9;
             };
         }

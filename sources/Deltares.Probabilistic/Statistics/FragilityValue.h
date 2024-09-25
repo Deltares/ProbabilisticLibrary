@@ -75,12 +75,12 @@ namespace Deltares
 
             double getReturnPeriod()
             {
-                return StandardNormal::getRFromU(this->Reliability);
+                return StandardNormal::getTFromU(this->Reliability);
             }
 
             void setReturnPeriod(double r)
             {
-                this->Reliability = StandardNormal::getUFromR(r);
+                this->Reliability = StandardNormal::getUFromT(r);
             }
 
             void setDirtyFunction(Utils::SetDirtyLambda setDirtyLambda)
