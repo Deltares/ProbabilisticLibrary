@@ -257,7 +257,10 @@ namespace Deltares
 
                 if (property_ == "reliability_index") return designPoint->Beta;
                 else if (property_ == "probability_failure") return designPoint->getFailureProbability();
-                else if (property_ == "convergence") return designPoint->convergenceReport->Convergence;
+                else if (property_ == "convergence" && designPoint->convergenceReport != nullptr)
+                {
+                    return designPoint->convergenceReport->Convergence;
+                }
             }
             else if (objectType == ObjectType::Alpha)
             {
@@ -621,7 +624,10 @@ namespace Deltares
             {
                 std::shared_ptr<Reliability::DesignPoint> designPoint = designPoints[id];
 
-                if (property_ == "is_converged") return designPoint->convergenceReport->IsConverged;
+                if (property_ == "is_converged" && designPoint->convergenceReport != nullptr)
+                {
+                    return designPoint->convergenceReport->IsConverged;
+                }
             }
             else if (objectType == ObjectType::SensitivitySettings)
             {
