@@ -40,7 +40,7 @@ class Test_Length_Effect(unittest.TestCase):
 
         beta = StandardNormal.get_u_from_q(q)
         dp1 = project_builder.get_design_point_with_name(beta, 2, ["a", "b"])
-        project.design_point_cross_section.append(dp1)
+        project.design_point_cross_section = dp1
 
         project.correlation_matrix['a'] = 0.45
         project.correlation_matrix['b'] = 0.55
@@ -63,7 +63,7 @@ class Test_Length_Effect(unittest.TestCase):
 
         beta = StandardNormal.get_u_from_q(q)
         dp1 = project_builder.get_design_point_with_name(beta, 2, ["a", "b"])
-        project.design_point_cross_section.append(dp1)
+        project.design_point_cross_section = dp1
 
         values = [0.45, 0.55]
         project.correlation_matrix['a'] = values[0]
@@ -87,7 +87,7 @@ class Test_Length_Effect(unittest.TestCase):
 
         beta = StandardNormal.get_u_from_q(q)
         dp1 = project_builder.get_design_point_with_name(beta, 2, ["a", "b"])
-        project.design_point_cross_section.append(dp1)
+        project.design_point_cross_section = dp1
 
         values = [0.0, 0.0]
         project.correlation_matrix['a'] = values[0]
@@ -115,7 +115,7 @@ class Test_Length_Effect(unittest.TestCase):
 
         beta = StandardNormal.get_u_from_q(q)
         dp1 = project_builder.get_design_point_with_name(beta, 2, ["a", "b"])
-        project.design_point_cross_section.append(dp1)
+        project.design_point_cross_section = dp1
 
         values = [0.4, 0.6]
         project.correlation_matrix['a'] = values[0]
@@ -123,7 +123,7 @@ class Test_Length_Effect(unittest.TestCase):
         self.assertEqual(values[0], project.correlation_matrix["a"])
         self.assertEqual(values[1], project.correlation_matrix["b"])
 
-        self.assertEqual(project.design_point_cross_section[0].reliability_index, beta)
+        self.assertEqual(project.design_point_cross_section.reliability_index, beta)
 
 if __name__ == '__main__':
     unittest.main()

@@ -597,6 +597,7 @@ namespace Deltares
                 std::shared_ptr<Reliability::LengthEffectProject> project = lengthEffectProjects[id];
 
                 if (property_ == "correlation_matrix") project->selfCorrelationMatrix = selfCorrelationMatrices[value];
+                else if (property_ == "design_point_cross_section") project->designPointCrossSection = designPoints[value];
             }
         }
 
@@ -1024,15 +1025,6 @@ namespace Deltares
                     {
                         project->designPoints.push_back(designPoints[values[i]]);
                     }
-                }
-            }
-            else if (objectType == ObjectType::LengthEffectProject)
-            {
-                std::shared_ptr<Reliability::LengthEffectProject> project = lengthEffectProjects[id];
-
-                if (property_ == "design_point_cross_section")
-                {
-                    project->designPointCrossSection = designPoints[values[0]];
                 }
             }
         }
