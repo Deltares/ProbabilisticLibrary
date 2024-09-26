@@ -32,10 +32,9 @@ namespace Deltares
         {
         public:
             /**
-             * \brief The design point for a section
+             * \brief The design point for a cross section
              */
-            std::shared_ptr<Deltares::Reliability::DesignPoint> designPointCrossSection;
-
+            std::shared_ptr<Deltares::Reliability::DesignPoint> designPointCrossSection = nullptr;
 
             /**
              * \brief The breach length

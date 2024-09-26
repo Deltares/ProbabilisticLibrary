@@ -826,6 +826,7 @@ namespace Deltares
                 std::shared_ptr<Reliability::LengthEffectProject> lengthEffect = lengthEffectProjects[id];
                 if (property_ == "correlation_lengths")
                 {
+                    lengthEffect->correlationLengths.clear();
                     for (size_t i = 0; i < size; i++)
                     {
                         lengthEffect->correlationLengths.push_back(values[i]);

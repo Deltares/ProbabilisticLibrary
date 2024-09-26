@@ -20,7 +20,8 @@
 // All rights reserved.
 //
 #include "gtest/gtest.h"
-#include <math.h>
+#include <cmath>
+#include <memory>
 #include "combinElements_tests.h"
 #include "../../Deltares.Probabilistic/Statistics/StandardNormal.h"
 #include "../../Deltares.Probabilistic/Combine/LengthEffect.h"
@@ -81,7 +82,7 @@ namespace Deltares{ namespace Probabilistic { namespace Test {
 
 void combinElementsTests::runAllLengthEffectTests()
 {
-    testUpscalingLengthNewInterface();
+    testLengthEffectFourStochasts();
     testcombineMultipleElementsSpatialCorrelated1();
     testcombineMultipleElementsSpatialCorrelated2();
     testcombineMultipleElementsSpatialCorrelated3();
@@ -850,18 +851,18 @@ void combinElementsTests::testcombineMultipleElementsSpatialCorrelated3()
     EXPECT_EQ(section.second, 0);
 }
 
-void combinElementsTests::testUpscalingLengthNewInterface()
+void combinElementsTests::testLengthEffectFourStochasts()
 {
     const int nStochasts = 4;
     std::vector< std::shared_ptr<Stochast>> stochasts;
-    for (size_t i = 0; i <= nStochasts; i++)
+    for (size_t i = 0; i < nStochasts; i++)
     {
         auto s = std::make_shared<Stochast>();
         stochasts.push_back(s);
     }
 
-    auto section = DesignPoint();
-    section.Beta = 5.0;
+    auto section = std::make_shared<DesignPoint>();
+    section->Beta = 5.0;
     auto alphaValues = std::vector<double>({ 0.6, sqrt(0.5 - 0.36), 0.6, sqrt(0.5 - 0.36) });
     for (int i = 0; i < alphaValues.size(); i++ )
     {
@@ -869,14 +870,14 @@ void combinElementsTests::testUpscalingLengthNewInterface()
         auto alpha = std::make_shared<StochastPointAlpha>();
         alpha->Alpha = alphaValue;
         alpha->Stochast = stochasts[i];
-        section.Alphas.push_back(alpha);
+        section->Alphas.push_back(alpha);
     }
 
     auto rhoXK = std::vector<double>({ 0.5, 0.5, 0.2, 0.2 });
     auto rho = std::make_shared<SelfCorrelationMatrix>();
     for (size_t i = 0; i < nStochasts; i++)
     {
-        rho->setSelfCorrelation(section.Alphas[i]->Stochast, rhoXK[i]);
+        rho->setSelfCorrelation(section->Alphas[i]->Stochast, rhoXK[i]);
     }
 
     auto dp = LengthEffect::UpscaleLength(section, rho, { 500.0, 300.0, 500.0, 300.0 }, 2000.0, -999.0);
@@ -888,6 +889,7 @@ void combinElementsTests::testUpscalingLengthNewInterface()
     {
         EXPECT_NEAR(dp.Alphas[i]->Alpha, ref.getAlphaI(i), 1e-6);
     }
+    EXPECT_EQ(1, dp.ContributingDesignPoints.size());
 }
 
 void combinElementsTests::testCombineElementsFullCorrelation(const combineAndOr andOr)

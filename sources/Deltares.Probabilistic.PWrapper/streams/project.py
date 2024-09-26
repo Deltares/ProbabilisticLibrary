@@ -384,10 +384,6 @@ class LengthEffectProject:
 		self._correlation_matrix._set_variables(variables)
 
 	@property
-	def settings(self):
-		return self._settings
-
-	@property
 	def correlation_matrix(self):
 		return self._correlation_matrix
 

@@ -20,6 +20,7 @@
 // All rights reserved.
 //
 #pragma once
+#include <memory>
 #include "combiner.h"
 #include "../Reliability/DesignPoint.h"
 
@@ -34,11 +35,11 @@ namespace Deltares
         class LengthEffect
         {
         public:
-            static DesignPoint UpscaleLength(DesignPoint& crossSection,
+            static DesignPoint UpscaleLength(std::shared_ptr<DesignPoint> crossSection,
                 const std::shared_ptr<Statistics::SelfCorrelationMatrix>& selfCorrelationMatrix,
                 const std::vector<double>& correlationLengths,
                 const double length, const double breachLength);
-            static DesignPoint UpscaleLength(DesignPoint& crossSection,
+            static DesignPoint UpscaleLength(std::shared_ptr<DesignPoint> crossSection,
                 const std::vector<double>& selfCorrelations,
                 const std::vector<double>& correlationLengths,
                 const double length, const double breachLength);
