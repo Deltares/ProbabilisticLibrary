@@ -286,10 +286,10 @@ namespace Deltares {
                 }
                 else
                 {
-                    auto termI = std::vector<double>(nGridPoints + 1); // i-th term to add
-                    for (size_t i = 1; i <= nGridPoints; i++)
+                    auto termI = std::vector<double>(nGridPoints); // i-th term to add
+                    for (size_t i = 0; i < nGridPoints; i++)
                     {
-                        double v = vLower + vDelta * double(i - 1);
+                        double v = vLower + vDelta * double(i);
                         double x = (betaCrossSection - sqrt(rhoZ) * v) / sqrt(1.0 - rhoZ); // x = beta*
                         double nf = std::max((sectionLength - breachL), 0.0) / (sqrt(2.0) * M_PI) / dz * exp(-x * x / 2.0); // Number of cross section
                         termI[i] = (1.0 - p * exp(-nf)) * exp(-v * v / 2.0) / sqrt(2.0 * M_PI) * vDelta;
@@ -298,12 +298,12 @@ namespace Deltares {
                     // add up all terms; start with smallest numbers
                     //
                     pfX = 0.0;
-                    for (size_t i = 1; i <= nGridPoints / 2; i++)
+                    for (size_t i = 0; i < nGridPoints / 2; i++)
                     {
                         pfX += termI[i];
-                        pfX += termI[nGridPoints + 1 - i];
+                        pfX += termI[nGridPoints - i - 1];
                     }
-                    pfX += termI[nGridPoints / 2 + 1];
+                    pfX += termI[nGridPoints / 2];
                 }
                 pfX = std::max(pfX, pf);
                 conv = 0;
