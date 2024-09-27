@@ -175,6 +175,7 @@
     <ClInclude Include="Combine\DesignPointModel.h" />
     <ClInclude Include="Combine\DesignPointCombiner.h" />
     <ClInclude Include="Combine\DirectionalSamplingCombiner.h" />
+    <ClInclude Include="Combine\LengthEffectProject.h" />
     <ClInclude Include="Sensitivity\ImportanceSamplingSettingsS.h" />
     <ClInclude Include="Sensitivity\ImportanceSamplingS.h" />
     <ClInclude Include="Sensitivity\CrudeMonteCarloS.h" />
@@ -230,6 +231,7 @@
     <ClInclude Include="Combine\HohenbichlerZ.h" />
     <ClInclude Include="Combine\intEqualElements.h" />
     <ClInclude Include="Combine\upscaling.h" />
+    <ClInclude Include="Combine\LengthEffect.h" />
     <ClInclude Include="Model\ModelSample.h" />
     <ClInclude Include="Reliability\SphereTasks.h" />
     <ClInclude Include="Statistics\Distributions\DistributionLibrary.h" />
@@ -335,6 +337,7 @@
     <ClCompile Include="Combine\DesignPointModel.cpp" />
     <ClCompile Include="Combine\DesignPointCombiner.cpp" />
     <ClCompile Include="Combine\DirectionalSamplingCombiner.cpp" />
+    <ClCompile Include="Combine\LengthEffectProject.cpp" />
     <ClCompile Include="Sensitivity\ImportanceSamplingSettingsS.cpp" />
     <ClCompile Include="Sensitivity\ImportanceSamplingS.cpp" />
     <ClCompile Include="Sensitivity\CrudeMonteCarloS.cpp" />
@@ -388,6 +391,7 @@
     <ClCompile Include="Combine\HohenbichlerNumIntCombiner.cpp" />
     <ClCompile Include="Combine\HohenbichlerZ.cpp" />
     <ClCompile Include="Combine\upscaling.cpp" />
+    <ClCompile Include="Combine\LengthEffect.cpp" />
     <ClCompile Include="Reliability\SphereTasks.cpp" />
     <ClCompile Include="Statistics\Distributions\DistributionLibrary.cpp" />
     <ClCompile Include="Math\RootFinders\BisectionRootFinder.cpp" />

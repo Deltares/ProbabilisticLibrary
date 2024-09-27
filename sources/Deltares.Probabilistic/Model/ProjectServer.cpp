@@ -143,6 +143,11 @@ namespace Deltares
                 sensitivitySettingsValues[counter] = std::make_shared<Deltares::Sensitivity::SettingsS>();
                 types[counter] = ObjectType::SensitivitySettings;
             }
+            else if (object_type == "length_effect_project")
+            {
+                lengthEffectProjects[counter] = std::make_shared<Deltares::Reliability::LengthEffectProject>();
+                types[counter] = ObjectType::LengthEffectProject;
+            }
 
             return counter;
         }
@@ -269,6 +274,13 @@ namespace Deltares
                 else if (property_ == "x") return alpha->X;
                 else if (property_ == "influence_factor") return alpha->InfluenceFactor;
             }
+            else if (objectType == ObjectType::LengthEffectProject)
+            {
+                std::shared_ptr<Reliability::LengthEffectProject> length_effect = lengthEffectProjects[id];
+
+                if (property_ == "length") return length_effect->length;
+                else if (property_ == "minimum_failure_length") return length_effect->minimumFailureLength;
+            }
             return std::nan("");
         }
 
@@ -366,6 +378,13 @@ namespace Deltares
                 if (property_ == "alpha") alpha->Alpha = value;
                 else if (property_ == "u") alpha->U = value;
                 else if (property_ == "x") alpha->X = value;
+            }
+            else if (objectType == ObjectType::LengthEffectProject)
+            {
+                std::shared_ptr<Reliability::LengthEffectProject> length_effect = lengthEffectProjects[id];
+
+                if (property_ == "length") length_effect->length = value;
+                else if (property_ == "minimum_failure_length") length_effect->minimumFailureLength = value;
             }
         }
 
@@ -476,6 +495,13 @@ namespace Deltares
 
                 if (property_ == "design_point") return GetDesignPointId(combineProject->designPoint);
             }
+            else if (objectType == ObjectType::LengthEffectProject)
+            {
+                std::shared_ptr<Reliability::LengthEffectProject> project = lengthEffectProjects[id];
+
+                if (property_ == "design_point") return GetDesignPointId(project->designPoint);
+                else if (property_ == "correlation_lengths_count") return project->correlationLengths.size();
+            }
 
             return 0;
         }
@@ -565,6 +591,13 @@ namespace Deltares
                 std::shared_ptr<Reliability::StochastPointAlpha> alpha = alphas[id];
 
                 if (property_ == "variable") alpha->Stochast = stochasts[value];
+            }
+            else if (objectType == ObjectType::LengthEffectProject)
+            {
+                std::shared_ptr<Reliability::LengthEffectProject> project = lengthEffectProjects[id];
+
+                if (property_ == "correlation_matrix") project->selfCorrelationMatrix = selfCorrelationMatrices[value];
+                else if (property_ == "design_point_cross_section") project->designPointCrossSection = designPoints[value];
             }
         }
 
@@ -787,6 +820,18 @@ namespace Deltares
                     }
 
                     stochast->fit(fitValues);
+                }
+            }
+            else if (objectType == ObjectType::LengthEffectProject)
+            {
+                std::shared_ptr<Reliability::LengthEffectProject> lengthEffect = lengthEffectProjects[id];
+                if (property_ == "correlation_lengths")
+                {
+                    lengthEffect->correlationLengths.clear();
+                    for (size_t i = 0; i < size; i++)
+                    {
+                        lengthEffect->correlationLengths.push_back(values[i]);
+                    }
                 }
             }
         }
@@ -1028,6 +1073,16 @@ namespace Deltares
 
         double ProjectServer::GetIndexedValue(int id, std::string property_, int index)
         {
+            ObjectType objectType = types[id];
+            if (objectType == ObjectType::LengthEffectProject)
+            {
+                std::shared_ptr<Reliability::LengthEffectProject> lengthEffect = lengthEffectProjects[id];
+                if (property_ == "correlation_lengths")
+                {
+                    return lengthEffect->correlationLengths[index];
+                }
+            }
+
             return std::nan("");
         }
 
@@ -1160,6 +1215,12 @@ namespace Deltares
             else if (objectType == ObjectType::CombineProject)
             {
                 std::shared_ptr<Reliability::CombineProject> project = combineProjects[id];
+
+                if (method_ == "run") project->run();
+            }
+            else if (objectType == ObjectType::LengthEffectProject)
+            {
+                std::shared_ptr<Reliability::LengthEffectProject> project = lengthEffectProjects[id];
 
                 if (method_ == "run") project->run();
             }
