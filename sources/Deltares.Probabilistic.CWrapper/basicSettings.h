@@ -109,6 +109,8 @@ namespace Deltares {
             int                isRepeatableRandom = 1;
             rndTypes           rnd = rndTypes::GeorgeMarsaglia;
             StartMethods       startMethod = StartMethods::Zero;
+            int                allQuadrants = 0;
+            int                maxStepsSphereSearch = 5;
             int                progressInterval = -1;
             double             varianceFactor = 1.5;
             double             epsilonDu = 0.001;

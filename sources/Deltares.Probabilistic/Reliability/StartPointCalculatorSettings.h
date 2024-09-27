@@ -44,6 +44,7 @@ namespace Deltares
             double RadiusSphereSearch = 10;
             double dsdu = 1;
             bool allQuadrants = false;
+            int maxStepsSphereSearch = 5;
 
             std::shared_ptr<StartPointCalculatorSettings> clone()
             {
@@ -54,6 +55,7 @@ namespace Deltares
                 copy->RadiusSphereSearch = this->RadiusSphereSearch;
                 copy->StartMethod = this->StartMethod;
                 copy->allQuadrants = this->allQuadrants;
+                copy->maxStepsSphereSearch = this->maxStepsSphereSearch;
 
                 copy->StochastSet = this->StochastSet;
 
@@ -65,7 +67,7 @@ namespace Deltares
                 return StartMethod == StartMethodType::None ||
                     (StartMethod == StartMethodType::RaySearch && MaximumLengthStartPoint >= 1) ||
                     (StartMethod == StartMethodType::SensitivitySearch && MaximumLengthStartPoint >= 1) ||
-                    (StartMethod == StartMethodType::SphereSearch && RadiusSphereSearch >= 0.1);
+                    (StartMethod == StartMethodType::SphereSearch && RadiusSphereSearch >= 0.1 && maxStepsSphereSearch >= 1);
             }
 
             std::shared_ptr<StochastSettingsSet> StochastSet = std::make_shared<StochastSettingsSet>();

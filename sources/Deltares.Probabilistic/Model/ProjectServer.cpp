@@ -438,6 +438,7 @@ namespace Deltares
                 else if (property_ == "minimum_variance_loops") return settings->MinimumVarianceLoops;
                 else if (property_ == "maximum_variance_loops") return settings->MaximumVarianceLoops;
                 else if (property_ == "relaxation_loops") return settings->RelaxationLoops;
+                else if (property_ == "max_steps_sphere_search") return settings->StartPointSettings->maxStepsSphereSearch;
             }
             else if (objectType == ObjectType::SensitivitySettings)
             {
@@ -541,6 +542,7 @@ namespace Deltares
                 else if (property_ == "minimum_variance_loops") settings->MinimumVarianceLoops = value;
                 else if (property_ == "maximum_variance_loops") settings->MaximumVarianceLoops = value;
                 else if (property_ == "relaxation_loops") settings->RelaxationLoops = value;
+                else if (property_ == "max_steps_sphere_search") settings->StartPointSettings->maxStepsSphereSearch = value;
             }
             else if (objectType == ObjectType::SensitivitySettings)
             {

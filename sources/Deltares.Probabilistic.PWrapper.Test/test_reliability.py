@@ -363,5 +363,26 @@ class Test_reliability(unittest.TestCase):
         self.assertAlmostEqual(1.9877, beta, delta=margin)
         self.assertEqual(2, len(alphas))
 
+    def test_form_start_methods_max_steps(self):
+        project = project_builder.get_linear_project()
+
+        project.settings.reliability_method = ReliabilityMethod.form
+        project.settings.start_method = StartMethod.sphere_search
+        project.settings.all_quadrants = True
+        project.settings.max_steps_sphere_search = 25
+
+        project.run();
+
+        dp = project.design_point;
+        beta = dp.reliability_index;
+        alphas = dp.alphas;
+        self.assertEqual(dp.total_model_runs, 6)
+        self.assertTrue(dp.is_converged)
+        self.assertEqual(len(dp.contributing_design_points), 1)
+        self.assertEqual(176, dp.contributing_design_points[0].total_model_runs)
+
+        self.assertAlmostEqual(2.3258, beta, delta=margin)
+        self.assertEqual(2, len(alphas))
+
 if __name__ == '__main__':
     unittest.main()

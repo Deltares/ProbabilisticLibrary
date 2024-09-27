@@ -172,6 +172,8 @@ void createReliabilityMethod::fillStartVector(std::shared_ptr<StartPointCalculat
         {
             startPoint->StartMethod = StartMethodType::SphereSearch;
             startPoint->startVector = copyStartVector(bs.startVector, nStoch);
+            startPoint->allQuadrants = (bs.allQuadrants != 0);
+            startPoint->maxStepsSphereSearch = bs.maxStepsSphereSearch;
         }
         break;
     case StartMethods::GivenVector:

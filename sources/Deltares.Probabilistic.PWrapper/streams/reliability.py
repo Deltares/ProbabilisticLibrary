@@ -101,6 +101,7 @@ class Settings:
 				'design_point_method',
 				'start_method',
 				'all_quadrants',
+				'max_steps_sphere_search',
 				'random_type',
 				'sample_method'
 				'minimum_samples',
@@ -147,6 +148,14 @@ class Settings:
 	@all_quadrants.setter
 	def all_quadrants(self, value : bool):
 		interface.SetBoolValue(self._id, 'all_quadrants', value)
+
+	@property
+	def max_steps_sphere_search(self):
+		return interface.GetIntValue(self._id, 'max_steps_sphere_search')
+
+	@max_steps_sphere_search.setter
+	def max_steps_sphere_search(self, value : int):
+		interface.SetIntValue(self._id, 'max_steps_sphere_search', value)
 
 	@property
 	def random_type(self):

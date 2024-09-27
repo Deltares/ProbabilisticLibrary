@@ -214,7 +214,7 @@ namespace Deltares
         std::shared_ptr<Sample> StartPointCalculator::getSphereStartPoint(std::shared_ptr<Models::ModelRunner> modelRunner)
         {
             constexpr int nRadiusFactors = 20;
-            constexpr int maxSteps = 5;
+            auto maxSteps = Settings->maxStepsSphereSearch;
 
             std::shared_ptr<Sample> zeroSample = std::make_shared<Sample>(modelRunner->getVaryingStochastCount());
             double z0 = modelRunner->getZValue(zeroSample);

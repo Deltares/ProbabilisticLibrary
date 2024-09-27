@@ -868,7 +868,10 @@ subroutine testProbabilisticWithFunction ( )
             probDb%method%DS%iterationMethod = methodDS
 
             ! Set the starting vector for FORM
-            probDb%method%FORM%startMethod = fORMStartOne
+            probDb%method%FORM%startMethod = fORMStartSphereSearch
+            probDb%method%FORM%startValue  = (/ 1.0, 1.0 /)
+            probDb%method%FORM%allQuadrants = .true.
+            probDb%method%FORM%maxStepsSphereSearch = 16
 
             ! Initialize stochast data
             call initializeStochast (probDb, 1, distributionNormal, 0.0d0, 1.0D0, 0.0d0, 0.0d0)

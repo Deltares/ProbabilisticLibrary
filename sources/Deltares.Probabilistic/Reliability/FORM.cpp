@@ -55,7 +55,8 @@ namespace Deltares
 
             if (Settings->StartPointSettings->StartMethod != StartMethodType::None)
             {
-                const std::shared_ptr<DesignPoint> startDesignPoint = modelRunner->getDesignPoint(startPoint, startPoint->getBeta());
+                const std::shared_ptr<DesignPoint> startDesignPoint =
+                    modelRunner->getDesignPoint(startPoint, startPoint->getBeta(), std::make_shared<ConvergenceReport>());
                 startDesignPoint->Identifier = "Start point";
                 previousDesignPoints.push_back(startDesignPoint);
             }
