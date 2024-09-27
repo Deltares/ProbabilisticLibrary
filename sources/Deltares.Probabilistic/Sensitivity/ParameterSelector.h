@@ -15,6 +15,7 @@ namespace Deltares
         private:
             int parameterIndex = 0;
             bool parameterIndexFromInput = false;
+            bool useSampleZValue = false;
         };
     }
 }

@@ -11,9 +11,13 @@ namespace Deltares
             {
                 this->parameterIndex = 0;
                 this->parameterIndexFromInput = false;
+
+                // if no output parameters are available, use the z-value in the sample
+                this->useSampleZValue = outputParameters.empty();
             }
             else
             {
+                this->useSampleZValue = false;
                 this->parameterIndex = -1;
 
                 for (int i = 0; i < inputParameters.size(); i++)
@@ -38,7 +42,10 @@ namespace Deltares
 
         void ParameterSelector::updateZValue(std::shared_ptr<Models::ModelSample> sample)
         {
-            sample->Z = this->parameterIndexFromInput ? sample->Values[this->parameterIndex] : sample->OutputValues[this->parameterIndex];
+            if (!this->useSampleZValue)
+            {
+                sample->Z = this->parameterIndexFromInput ? sample->Values[this->parameterIndex] : sample->OutputValues[this->parameterIndex];
+            }
         }
     }
 }
