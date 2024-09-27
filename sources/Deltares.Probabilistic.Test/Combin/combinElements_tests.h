@@ -33,7 +33,8 @@ namespace Deltares
             class combinElementsTests
             {
             public:
-                void runAll();
+                void runAllCombineTwoElementsTests();
+                void runAllLengthEffectTests();
             private:
                 void testCombineTwoElementsNoCorrelation1();
                 void testCombineTwoElementsNoCorrelation2();
@@ -66,6 +67,7 @@ namespace Deltares
                 void testcombineMultipleElementsSpatialCorrelated1();
                 void testcombineMultipleElementsSpatialCorrelated2();
                 void testcombineMultipleElementsSpatialCorrelated3();
+                void testLengthEffectFourStochasts();
                 void testCombineElementsFullCorrelation1();
                 void testCombineElementsFullCorrelation2();
                 void testCombineElementsFullCorrelation(const Deltares::Reliability::combineAndOr andOr);

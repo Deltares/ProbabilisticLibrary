@@ -60,7 +60,13 @@ namespace Deltares
             TEST(unittst, testCombinElements)
             {
                 auto h = combinElementsTests();
-                h.runAll();
+                h.runAllCombineTwoElementsTests();
+            }
+
+            TEST(unittst, testLengthEffect)
+            {
+                auto h = combinElementsTests();
+                h.runAllLengthEffectTests();
             }
 
             TEST(unittst, testUpscaling)
