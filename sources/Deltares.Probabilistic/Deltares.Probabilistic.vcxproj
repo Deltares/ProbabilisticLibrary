@@ -159,6 +159,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+  <ClInclude Include="Reliability\LimitStateFunction.h" />
     <ClInclude Include="Server\ExternalLibraryHandler.h" />
     <ClInclude Include="Server\ExternalServerHandler.h" />
     <ClInclude Include="Server\BaseServer.h" />
@@ -322,6 +323,7 @@
     <ClInclude Include="Statistics\Distributions\GeneralizedExtremeValueDistribution.h" />
     <ClInclude Include="Statistics\Distributions\ConditionalWeibullDistribution.h" />
     <ClInclude Include="Math\WeightedValue.h" />
+    <ClInclude Include="Model\ZValueConverter.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Server\ExternalLibraryHandler.cpp" />
@@ -330,6 +332,7 @@
     <ClCompile Include="Server\ProjectHandler.cpp" />
     <ClCompile Include="Server\BaseHandler.cpp" />
     <ClCompile Include="Model\ModelInputParameter.cpp" />
+    <ClCompile Include="Reliability\LimitStateFunction.cpp" />
     <ClCompile Include="Sensitivity\CorrelationMatrixBuilder.cpp" />
     <ClCompile Include="Statistics\Distributions\StandardNormalDistribution.cpp" />
     <ClCompile Include="Statistics\DistributionChangeType.cpp" />
@@ -479,6 +482,7 @@
     <ClCompile Include="Statistics\Distributions\GeneralizedExtremeValueDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\ConditionalWeibullDistribution.cpp" />
     <ClCompile Include="Math\WeightedValue.cpp" />
+    <ClCompile Include="Model\ZValueConverter.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -22,6 +22,8 @@
 #pragma once
 #include <vector>
 
+#include "LimitStateFunction.h"
+#include "../Model/ZValueConverter.h"
 #include "../Statistics/Stochast.h"
 #include "../Statistics/CorrelationMatrix.h"
 #include "../Statistics/SparseCorrelationMatrix.h"
@@ -58,6 +60,16 @@ namespace Deltares
              * \brief Deterministic model which calculates a z-value based on input values
              */
             std::shared_ptr<ZModel> model = nullptr;
+
+            /**
+             * \brief Converts the output of a model to a z value
+             */
+            std::shared_ptr<ZValueConverter> zValueConverter = nullptr;
+
+            /**
+             * \brief Limit state function
+             */
+            std::shared_ptr<Reliability::LimitStateFunction> limitStateFunction = std::make_shared<Reliability::LimitStateFunction>();
 
             /**
              * \brief Calculation settings

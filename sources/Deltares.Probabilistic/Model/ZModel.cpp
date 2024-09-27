@@ -56,6 +56,8 @@ namespace Deltares
             sample->threadId = omp_get_thread_num();
             this->zLambda(sample);
 
+            this->zValueConverter->updateZValue(sample);
+
             if (countRunsLambda)
             {
                 this->modelRuns++;
@@ -80,6 +82,12 @@ namespace Deltares
             else
             {
                 this->zMultipleLambda(samples);
+
+                for (int i = 0; i < (int)samples.size(); i++)
+                {
+                    this->zValueConverter->updateZValue(samples[i]);
+                }
+
                 this->modelRuns += (int)samples.size();
             }
         }

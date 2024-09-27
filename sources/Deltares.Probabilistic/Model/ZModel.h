@@ -27,6 +27,7 @@
 #include "ModelInputParameter.h"
 #include "ModelSample.h"
 #include "RunSettings.h"
+#include "ZValueConverter.h"
 
 namespace Deltares
 {
@@ -51,9 +52,10 @@ namespace Deltares
 
             ZModel(ZValuesCallBack zValuesLambda)
             {
-                ZLambda calcValuesLambda = [zValuesLambda](std::shared_ptr<ModelSample> sample)
+                ZLambda calcValuesLambda = [zValuesLambda, this](std::shared_ptr<ModelSample> sample)
                 {
                     sample->Z = (*zValuesLambda)(sample->Values.data(), (int)sample->Values.size());
+                    this->zValueConverter->updateZValue(sample);
                 };
 
                 this->zLambda = calcValuesLambda;
@@ -68,6 +70,8 @@ namespace Deltares
              * \brief The index of the underlying model values if the model returns an array or tuple
              */
             int Index = 0;
+
+            std::shared_ptr<ZValueConverter> zValueConverter = std::make_shared<ZValueConverter>();
 
             void setBetaLambda(ZBetaLambda zBetaLambda)
             {
