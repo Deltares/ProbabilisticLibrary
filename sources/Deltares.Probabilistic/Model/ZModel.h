@@ -37,7 +37,7 @@ namespace Deltares
         typedef std::function<void(std::vector<std::shared_ptr<ModelSample>>)> ZMultipleLambda;
         typedef std::function<double(std::shared_ptr<ModelSample>, double beta)> ZBetaLambda;
 
-        typedef double (*ZValuesCallBack)(double* data, int size);
+        typedef void (*ZValuesCallBack)(double* data, int size, double* outputValues);
 
         typedef void (*ZEmptyCallBack)();
 
@@ -52,25 +52,37 @@ namespace Deltares
 
             ZModel(ZValuesCallBack zValuesLambda)
             {
-                ZLambda calcValuesLambda = [zValuesLambda, this](std::shared_ptr<ModelSample> sample)
-                {
-                    sample->Z = (*zValuesLambda)(sample->Values.data(), (int)sample->Values.size());
-                    this->zValueConverter->updateZValue(sample);
-                };
-
-                this->zLambda = calcValuesLambda;
+                this->zLambda = this->getLambdaFromZValuesCallBack(zValuesLambda);
             }
 
             /**
              * \brief Name of the model
              */
-            std::string Name = "";
+            std::string name = "";
+
+            /**
+             * \brief Input parameters of the model
+             */
+            std::vector<std::shared_ptr<ModelInputParameter>> inputParameters;
+
+            /**
+             * \brief Output parameters of the model
+             */
+            std::vector<std::shared_ptr<ModelInputParameter>> outputParameters;
+
+            /**
+             * \brief Makes the model ready for invocations
+             */
+            void initializeForRun();
 
             /**
              * \brief The index of the underlying model values if the model returns an array or tuple
              */
             int Index = 0;
 
+            /**
+             * \brief Calculates the z-value of a sample based on a calculated sample
+             */
             std::shared_ptr<ZValueConverter> zValueConverter = std::make_shared<ZValueConverter>();
 
             void setBetaLambda(ZBetaLambda zBetaLambda)
@@ -82,8 +94,14 @@ namespace Deltares
 
             void setMaxProcesses(int maxProcesses);
 
+            /**
+             * \brief Calculates a sample
+             */
             void invoke(std::shared_ptr<ModelSample> sample);
 
+            /**
+             * \brief Calculates a number of samples
+             */
             void invoke(std::vector<std::shared_ptr<ModelSample>> samples);
 
             double getBeta(std::shared_ptr<ModelSample> sample, double beta);
@@ -103,24 +121,6 @@ namespace Deltares
                 modelRuns = 0;
             }
 
-            /**
-             * \brief Gets the name corresponding to the Index in this class
-             */
-            std::string getIndexedName()
-            {
-                if (this->Index < this->outputParameters.size())
-                {
-                    return this->outputParameters[this->Index]->name;
-                }
-                else
-                {
-                    return this->Name;
-                }
-            }
-
-            std::vector<std::shared_ptr<ModelInputParameter>> inputParameters;
-            std::vector<std::shared_ptr<ModelInputParameter>> outputParameters;
-
         private:
             ZLambda zLambda = nullptr;
             ZMultipleLambda zMultipleLambda = nullptr;
@@ -128,6 +128,7 @@ namespace Deltares
             int maxProcesses = 1;
             int modelRuns = 0;
             bool countRunsLambda = true;
+            ZLambda getLambdaFromZValuesCallBack(ZValuesCallBack zValuesLambda);
         };
     }
 }

@@ -9,54 +9,78 @@ namespace Deltares
     {
         void LimitStateFunction::initialize(std::vector<std::shared_ptr<Models::ModelInputParameter>>& inputParameters, std::vector<std::shared_ptr<Models::ModelInputParameter>>& outputParameters)
         {
-            this->criticalParameterIndex = -1;
-            this->compareParameterIndex = -1;
-
-            for (int i = 0; i < inputParameters.size(); i++)
+            // if no parameter is specified, always use the first output parameter
+            if (this->criticalParameter == "")
             {
-                if (inputParameters[i]->name == this->criticalParameter)
+                this->criticalParameterIndex = 0;
+                this->criticalParameterIndexFromInput = false;
+            }
+            else
+            {
+                this->criticalParameterIndex = -1;
+
+                for (int i = 0; i < inputParameters.size(); i++)
                 {
-                    this->criticalParameterIndex = i;
-                    this->criticalParameterIndexFromInput = true;
+                    if (inputParameters[i]->name == this->criticalParameter)
+                    {
+                        this->criticalParameterIndex = inputParameters[i]->index;
+                        this->criticalParameterIndexFromInput = true;
+                    }
                 }
-                if (this->useCompareParameter && inputParameters[i]->name == this->compareParameter)
+
+                for (int i = 0; i < outputParameters.size(); i++)
                 {
-                    this->compareParameterIndex = i;
-                    this->compareParameterIndexFromInput = true;
+                    if (outputParameters[i]->name == this->criticalParameter)
+                    {
+                        this->criticalParameterIndex = outputParameters[i]->index;
+                        this->criticalParameterIndexFromInput = false;
+                    }
                 }
             }
 
-            for (int i = 0; i < outputParameters.size(); i++)
+            this->compareParameterIndex = -1;
+
+            if (this->useCompareParameter)
             {
-                if (outputParameters[i]->name == this->criticalParameter)
+                for (int i = 0; i < inputParameters.size(); i++)
                 {
-                    this->criticalParameterIndex = i;
-                    this->criticalParameterIndexFromInput = false;
+                    if (inputParameters[i]->name == this->compareParameter)
+                    {
+                        this->compareParameterIndex = inputParameters[i]->index;;
+                        this->compareParameterIndexFromInput = true;
+                    }
                 }
-                if (this->useCompareParameter && outputParameters[i]->name == this->compareParameter)
+
+                for (int i = 0; i < outputParameters.size(); i++)
                 {
-                    this->compareParameterIndex = i;
-                    this->compareParameterIndexFromInput = false;
+                    if (outputParameters[i]->name == this->compareParameter)
+                    {
+                        this->compareParameterIndex = outputParameters[i]->index;
+                        this->compareParameterIndexFromInput = false;
+                    }
                 }
             }
         }
 
         void LimitStateFunction::updateZValue(std::shared_ptr<Models::ModelSample> sample)
         {
-            double criticalResultValue = this->criticalParameterIndexFromInput ? sample->Values[this->criticalParameterIndex] : sample->OutputValues[this->criticalParameterIndex];
-            double criticalCompareValue = this->criticalValue;
-            if (this->useCompareParameter)
+            if (this->isActive)
             {
-                criticalCompareValue = this->compareParameterIndexFromInput ? sample->Values[this->compareParameterIndex] : sample->OutputValues[this->compareParameterIndex];
-            }
+                double criticalResultValue = this->criticalParameterIndexFromInput ? sample->Values[this->criticalParameterIndex] : sample->OutputValues[this->criticalParameterIndex];
+                double criticalCompareValue = this->criticalValue;
+                if (this->useCompareParameter)
+                {
+                    criticalCompareValue = this->compareParameterIndexFromInput ? sample->Values[this->compareParameterIndex] : sample->OutputValues[this->compareParameterIndex];
+                }
 
-            if (this->compareType == CompareType::LessThan)
-            {
-                sample->Z = criticalResultValue - criticalCompareValue;
-            }
-            else
-            {
-                sample->Z = criticalCompareValue - criticalResultValue;
+                if (this->compareType == CompareType::LessThan)
+                {
+                    sample->Z = criticalResultValue - criticalCompareValue;
+                }
+                else
+                {
+                    sample->Z = criticalCompareValue - criticalResultValue;
+                }
             }
         }
 

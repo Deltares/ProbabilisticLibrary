@@ -62,11 +62,6 @@ namespace Deltares
             std::shared_ptr<ZModel> model = nullptr;
 
             /**
-             * \brief Converts the output of a model to a z value
-             */
-            std::shared_ptr<ZValueConverter> zValueConverter = nullptr;
-
-            /**
              * \brief Limit state function
              */
             std::shared_ptr<Reliability::LimitStateFunction> limitStateFunction = std::make_shared<Reliability::LimitStateFunction>();

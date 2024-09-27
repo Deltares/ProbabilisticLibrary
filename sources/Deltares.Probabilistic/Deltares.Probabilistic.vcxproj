@@ -159,7 +159,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-  <ClInclude Include="Reliability\LimitStateFunction.h" />
+    <ClInclude Include="Sensitivity\ParameterSelector.h" />
+    <ClInclude Include="Reliability\LimitStateFunction.h" />
     <ClInclude Include="Server\ExternalLibraryHandler.h" />
     <ClInclude Include="Server\ExternalServerHandler.h" />
     <ClInclude Include="Server\BaseServer.h" />
@@ -326,6 +327,7 @@
     <ClInclude Include="Model\ZValueConverter.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Sensitivity\ParameterSelector.cpp" />
     <ClCompile Include="Server\ExternalLibraryHandler.cpp" />
     <ClCompile Include="Server\ExternalServerHandler.cpp" />
     <ClCompile Include="Server\BaseServer.cpp" />

@@ -392,7 +392,7 @@ class LimitStateFunction:
 		
 	@critical_value.setter
 	def critical_value(self, value):
-		if value is float or value is int:
+		if type(value) is float or type(value) is int:
 			interface.SetBoolValue(self._id, 'use_compare_parameter', False)
 			interface.SetValue(self._id, 'critical_value', value)
 		else:

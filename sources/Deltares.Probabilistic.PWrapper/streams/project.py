@@ -36,7 +36,6 @@ if not interface.IsLibraryLoaded():
 
 class ZModel:
 	_callback = None
-	_index = 0
 	
 	def __init__(self, callback = None):
 		ZModel._index = 0;
@@ -102,23 +101,15 @@ class ZModel:
 	def output_parameters(self):
 		return self._output_parameters
 
-	@property   
-	def index(self):
-		return ZModel._index
-
-	@index.setter
-	def index(self, value : int):
-		ZModel._index = value
-
 	def _set_callback(self, callback):
 		ZModel._callback = callback
 	
 	def run(self, values):
 		z = ZModel._callback(*values);
 		if type(z) is list or type(z) is tuple:
-			return z[ZModel._index]
-		else:
 			return z
+		else:
+			return [z]
 
 
 class SensitivityProject:
@@ -130,9 +121,6 @@ class SensitivityProject:
 		self._id = interface.Create('sensitivity_project')
 		self._callback = interface.CALLBACK(self._performCallBack)
 		interface.SetCallBack(self._id, 'model', self._callback)
-
-		self._initialize_callback = interface.EMPTY_CALLBACK(self._initialize)
-		interface.SetEmptyCallBack(self._id, 'initialize', self._initialize_callback)
 
 		self._all_variables = {}
 		self._variables = FrozenList()
@@ -150,6 +138,7 @@ class SensitivityProject:
 				'correlation_matrix',
 				'settings',
 				'model',
+				'parameter',
 				'run',
 				'stochast',
 				'output_correlation_matrix']
@@ -165,6 +154,14 @@ class SensitivityProject:
 	@property
 	def settings(self):
 		return self._settings
+
+	@property
+	def parameter(self):
+		return interface.GetStringValue(self._id, 'parameter')
+		
+	@parameter.setter
+	def parameter(self, value : int):
+		interface.SetStringValue(self._id, 'parameter', str(value))
 
 	@property
 	def model(self):
@@ -198,14 +195,12 @@ class SensitivityProject:
 		interface.SetArrayIntValue(self._id, 'output_parameters', [output_parameter._id for output_parameter in SensitivityProject._model.output_parameters])
 		interface.SetStringValue(self._id, 'model_name', SensitivityProject._model.name)
 
-	@interface.EMPTY_CALLBACK
-	def _initialize():
-		SensitivityProject._model.index = interface.GetIntValue(SensitivityProject._project_id, 'index')
-
 	@interface.CALLBACK
-	def _performCallBack(values, size):
+	def _performCallBack(values, size, output_values):
 		values_list = values[:size]
-		return SensitivityProject._model.run(values_list)
+		model_output_values = SensitivityProject._model.run(values_list)
+		for i in range(len(model_output_values)):
+			output_values[i] = model_output_values[i]
 
 	def run(self):
 		self._stochast = None
@@ -256,8 +251,6 @@ class ReliabilityProject:
 		self._id = interface.Create('project')
 		self._callback = interface.CALLBACK(self._performCallBack)
 		interface.SetCallBack(self._id, 'model', self._callback)
-		self._initialize_callback = interface.EMPTY_CALLBACK(self._initialize)
-		interface.SetEmptyCallBack(self._id, 'initialize', self._initialize_callback)
 
 		self._all_variables = {}
 		self._variables = FrozenList()
@@ -331,14 +324,12 @@ class ReliabilityProject:
 		interface.SetArrayIntValue(self._id, 'output_parameters', [output_parameter._id for output_parameter in ReliabilityProject._model.output_parameters])
 		interface.SetStringValue(self._id, 'model_name', ReliabilityProject._model.name)
 
-	@interface.EMPTY_CALLBACK
-	def _initialize():
-		ReliabilityProject._model.index = interface.GetIntValue(ReliabilityProject._project_id, 'index')
-
 	@interface.CALLBACK
-	def _performCallBack(values, size):
+	def _performCallBack(values, size, output_values):
 		values_list = values[:size]
-		return ReliabilityProject._model.run(values_list)
+		model_output_values = ReliabilityProject._model.run(values_list)
+		for i in range(len(model_output_values)):
+			output_values[i] = model_output_values[i]
 
 	def run(self):
 		self._design_point = None

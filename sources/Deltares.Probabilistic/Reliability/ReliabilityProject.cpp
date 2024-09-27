@@ -47,6 +47,9 @@ namespace Deltares
 
         std::shared_ptr<Reliability::DesignPoint> ReliabilityProject::getDesignPoint()
         {
+            this->model->zValueConverter = this->limitStateFunction;
+            this->model->initializeForRun();
+
             std::shared_ptr<UConverter> uConverter = std::make_shared<UConverter>(this->stochasts, this->correlationMatrix);
             const std::shared_ptr<ModelRunner> modelRunner = std::make_shared<ModelRunner>(this->model, uConverter, this->progressIndicator);
             modelRunner->Settings = this->runSettings;

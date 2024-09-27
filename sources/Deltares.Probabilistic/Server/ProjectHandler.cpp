@@ -822,13 +822,13 @@ namespace Deltares
             {
                 std::shared_ptr<Reliability::ReliabilityProject> project = projects[id];
 
-                if (property_ == "model_name") project->model->Name = value;
+                if (property_ == "model_name") project->model->name = value;
             }
             else if (objectType == ObjectType::SensitivityProject)
             {
                 std::shared_ptr<Sensitivity::SensitivityProject> sensitivityProject = sensitivityProjects[id];
 
-                if (property_ == "model_name") sensitivityProject->model->Name = value;
+                if (property_ == "model_name") sensitivityProject->model->name = value;
             }
         }
 
@@ -1190,12 +1190,6 @@ namespace Deltares
             if (objectType == ObjectType::Project)
             {
                 std::shared_ptr<Reliability::ReliabilityProject> project = projects[id];
-
-                if (property_ == "initialize") project->setInitializer(callBack);
-            }
-            else if (objectType == ObjectType::SensitivityProject)
-            {
-                std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
 
                 if (property_ == "initialize") project->setInitializer(callBack);
             }

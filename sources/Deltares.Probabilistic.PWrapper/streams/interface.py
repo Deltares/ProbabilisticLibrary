@@ -29,7 +29,7 @@ from pathlib import Path
 from ctypes import cdll
 from ctypes import *
 
-CALLBACK = CFUNCTYPE(ctypes.c_double, POINTER(ctypes.c_double), ctypes.c_int)
+CALLBACK = CFUNCTYPE(ctypes.c_void_p, POINTER(ctypes.c_double), ctypes.c_int, POINTER(ctypes.c_double))
 EMPTY_CALLBACK = CFUNCTYPE(ctypes.c_void_p)
 
 def LoadLibrary(lib_full_path):

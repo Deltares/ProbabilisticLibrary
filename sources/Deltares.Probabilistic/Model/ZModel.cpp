@@ -46,6 +46,31 @@ namespace Deltares
             this->zMultipleLambda = nullptr;
         }
 
+        ZLambda ZModel::getLambdaFromZValuesCallBack(ZValuesCallBack zValuesLambda)
+        {
+            ZLambda calcValuesLambda = [zValuesLambda, this](std::shared_ptr<ModelSample> sample)
+            {
+                double* outputValues = new double[this->outputParameters.size()];
+
+                (*zValuesLambda)(sample->Values.data(), (int)sample->Values.size(), outputValues);
+
+                sample->OutputValues.clear();
+                for (size_t i = 0; i < this->outputParameters.size(); i++)
+                {
+                    sample->OutputValues.push_back(outputValues[i]);
+                }
+
+                delete[] outputValues;
+            };
+
+            return calcValuesLambda;
+        }
+
+        void ZModel::initializeForRun()
+        {
+            this->zValueConverter->initialize(this->inputParameters, this->outputParameters);
+        }
+
         void ZModel::invoke(std::shared_ptr<ModelSample> sample)
         {
             if (this->zLambda == nullptr)
