@@ -37,9 +37,9 @@ namespace Deltares
             std::shared_ptr<Deltares::Reliability::DesignPoint> designPointCrossSection = nullptr;
 
             /**
-             * \brief The breach length
+             * \brief The minimum failure length
              */
-            double breachLength = -999.0;
+            double minimumFailureLength = -999.0;
 
             /**
              * \brief The length for the upscaling calculation

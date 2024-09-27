@@ -36,7 +36,7 @@ class Test_Length_Effect(unittest.TestCase):
         values = [100.0, 200.0]
         project.correlation_lengths = values
         project.length = 2000
-        project.breach_length = 500
+        project.minimum_failure_length = 500
 
         beta = StandardNormal.get_u_from_q(q)
         dp1 = project_builder.get_design_point_with_name(beta, 2, ["a", "b"])
@@ -52,7 +52,7 @@ class Test_Length_Effect(unittest.TestCase):
         for alpha in design_point_upscaled.alphas:
             self.assertAlmostEqual(alpha.alpha, -0.7071, delta=margin)
 
-    def test_length_effect_no_breach_length(self):
+    def test_length_effect_no_minimum_failure_length(self):
         q = 0.01;
 
         project = LengthEffectProject()
@@ -111,8 +111,8 @@ class Test_Length_Effect(unittest.TestCase):
         project.length = 2000.0
         self.assertEqual(project.length, 2000.0)
 
-        project.breach_length = 123.0
-        self.assertEqual(project.breach_length, 123.0)
+        project.minimum_failure_length = 123.0
+        self.assertEqual(project.minimum_failure_length, 123.0)
 
         beta = StandardNormal.get_u_from_q(q)
         dp1 = project_builder.get_design_point_with_name(beta, 2, ["a", "b"])

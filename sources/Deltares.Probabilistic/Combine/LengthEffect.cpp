@@ -30,7 +30,7 @@ namespace Deltares
         DesignPoint LengthEffect::UpscaleLength(std::shared_ptr<DesignPoint> crossSection,
             const std::shared_ptr<Statistics::SelfCorrelationMatrix>& selfCorrelationMatrix,
             const std::vector<double>& correlationLengths,
-            const double length, const double breachLength)
+            const double length, const double minimumFailureLength)
         {
             const size_t nStochasts = crossSection->Alphas.size();
             auto selfCorrelation = std::vector<double>();
@@ -41,13 +41,13 @@ namespace Deltares
                 selfCorrelation.push_back(selfCorrelationMatrix->getSelfCorrelation(stochast));
             }
 
-            return UpscaleLength(crossSection, selfCorrelation, correlationLengths, length, breachLength);
+            return UpscaleLength(crossSection, selfCorrelation, correlationLengths, length, minimumFailureLength);
         };
 
         DesignPoint LengthEffect::UpscaleLength(std::shared_ptr<DesignPoint> crossSection,
             const std::vector<double>& selfCorrelations,
             const std::vector<double>& correlationLengths,
-            const double length, const double breachLength)
+            const double length, const double minimumFailureLength)
         {
             const size_t nStochasts = crossSection->Alphas.size();
 
@@ -66,7 +66,7 @@ namespace Deltares
                 rho2(i) = correlationLengths[i];
             }
 
-            auto dpLength = up.upscaleLength(dp, rho1, rho2, length, breachLength);
+            auto dpLength = up.upscaleLength(dp, rho1, rho2, length, minimumFailureLength);
 
             auto dpL = DesignPoint();
             dpL.Identifier = "Length Effect";

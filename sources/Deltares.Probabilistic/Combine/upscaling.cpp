@@ -148,10 +148,10 @@ namespace Deltares {
         // \param rhoXK(:) : Correlation variables
         // \param dXK(:) : Correlation length variables
         // \param sectionLength : Section length
-        // \param BreachLength : Breach length (mechanism width)
+        // \param minimumFailureLength : minimum failure length (breach length in certain mechanisms)
         // \return Reliability index, alpha for section and indication of non-converged Hohenbichler calculations
         std::pair<alphaBeta, int> upscaling::upscaleLength(alphaBeta& crossSectionElement,
-            const vector1D& rhoXK, const vector1D& dXK, const double sectionLength, double breachL)
+            const vector1D& rhoXK, const vector1D& dXK, const double sectionLength, double minimumFailureLength)
         {
             const double deltaBeta = 0.01; // perturbation of beta in computation alpha in the upscaling from cross section to segment
             //
@@ -193,18 +193,18 @@ namespace Deltares {
             double deltaL = dz / crossSectionElement.getBeta() * sqrt(M_PI) / sqrt(1.0 - rhoZ);
             deltaL = std::max(deltaL, 0.01);
 
-            if (breachL < 0) breachL = deltaL;
+            if (minimumFailureLength < 0) minimumFailureLength = deltaL;
 
             int failures = 0;
 
-            if (breachL < sectionLength)
+            if (minimumFailureLength < sectionLength)
             {
                 alphaBeta element;
                 element.setAlpha(vector1D(nrVar));
                 //
                 // Calculate beta for section from the beta of the cross section
                 deltaL = std::min(deltaL, sectionLength);
-                auto betaSection = ComputeBetaSection(crossSectionElement.getBeta(), sectionLength, breachL, rhoZ, dz, deltaL);
+                auto betaSection = ComputeBetaSection(crossSectionElement.getBeta(), sectionLength, minimumFailureLength, rhoZ, dz, deltaL);
                 if (betaSection.second != 0) failures++;
                 element.setBeta(betaSection.first);
                 //
@@ -213,7 +213,7 @@ namespace Deltares {
                 // Correlated part. Perturbation of the betaCrossSection
                 double betaK = crossSectionElement.getBeta() - sqrt(rhoZ) * deltaBeta;
                 // Calculate beta for section from the beta of the cross section
-                auto betaKX = ComputeBetaSection(betaK, sectionLength, breachL, rhoZ, dz, deltaL);
+                auto betaKX = ComputeBetaSection(betaK, sectionLength, minimumFailureLength, rhoZ, dz, deltaL);
                 if (betaKX.second != 0) failures++;
 
                 double alphaC = (element.getBeta() - betaKX.first) / deltaBeta;
@@ -260,13 +260,13 @@ namespace Deltares {
         // \brief Method used in upscaling for computing the beta of a section from the beta of a cross section.
         // \param betaCrossSection : Reliability index of the cross section
         // \param sectionLength : Length of the section
-        // \param breachL : Breach length
+        // \param minimumFailureLength : minimum failure length (breach length in certain mechanisms)
         // \param rhoZ : Correlation Z-function
         // \param dz : Correlation length
         // \param deltaL : Delta L
         // \return Reliability index for the section and indication of non-converged Hohenbichler calculation
         std::pair<double, int> upscaling::ComputeBetaSection(const double betaCrossSection, const double sectionLength,
-            const double breachL, const double rhoZ, const double dz, const double deltaL)
+            const double minimumFailureLength, const double rhoZ, const double dz, const double deltaL)
         {
             const int    nGridPoints = 30001;    // Number gridpoints for v in numerical integration
             const double vLower = -30.0;  // Lower bound of v-values in the numerical integration
@@ -280,7 +280,7 @@ namespace Deltares {
             {
                 double vDelta = (vUpper - vLower) / double(nGridPoints - 1); // Step size in the numerical integration over v in [vLower, vUpper]
                 double p = StandardNormal::getPFromU(betaCrossSection); // Probability
-                if (sectionLength <= breachL)
+                if (sectionLength <= minimumFailureLength)
                 {
                     pfX = pf;
                 }
@@ -291,7 +291,7 @@ namespace Deltares {
                     {
                         double v = vLower + vDelta * double(i);
                         double x = (betaCrossSection - sqrt(rhoZ) * v) / sqrt(1.0 - rhoZ); // x = beta*
-                        double nf = std::max((sectionLength - breachL), 0.0) / (sqrt(2.0) * M_PI) / dz * exp(-x * x / 2.0); // Number of cross section
+                        double nf = std::max((sectionLength - minimumFailureLength), 0.0) / (sqrt(2.0) * M_PI) / dz * exp(-x * x / 2.0); // Number of cross section
                         termI[i] = (1.0 - p * exp(-nf)) * exp(-v * v / 2.0) / sqrt(2.0 * M_PI) * vDelta;
                     }
                     //
@@ -312,7 +312,7 @@ namespace Deltares {
             {
                 auto pfVV = hhb.PerformHohenbichler(betaCrossSection, pf, rhoZ); // Failure probability vv, Hohenbichler
                 conv = pfVV.second;
-                pfX = pf + std::max((sectionLength - breachL), 0.0) / deltaL * (pf - pfVV.first * pf);
+                pfX = pf + std::max((sectionLength - minimumFailureLength), 0.0) / deltaL * (pf - pfVV.first * pf);
                 pfX = std::min(pfX, 1.0);
             }
 
