@@ -14,9 +14,13 @@ namespace Deltares
             {
                 this->criticalParameterIndex = 0;
                 this->criticalParameterIndexFromInput = false;
+
+                // if no output parameters are available, use the z-value in the sample
+                this->useSampleZValue = outputParameters.empty();
             }
             else
             {
+                this->useSampleZValue = false;
                 this->criticalParameterIndex = -1;
 
                 for (int i = 0; i < inputParameters.size(); i++)
@@ -64,7 +68,7 @@ namespace Deltares
 
         void LimitStateFunction::updateZValue(std::shared_ptr<Models::ModelSample> sample)
         {
-            if (this->isActive)
+            if (!this->useSampleZValue)
             {
                 double criticalResultValue = this->criticalParameterIndexFromInput ? sample->Values[this->criticalParameterIndex] : sample->OutputValues[this->criticalParameterIndex];
                 double criticalCompareValue = this->criticalValue;

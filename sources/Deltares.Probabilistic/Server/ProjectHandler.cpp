@@ -1183,18 +1183,6 @@ namespace Deltares
             }
         }
 
-        void ProjectHandler::SetEmptyCallBack(int id, std::string property_, ZEmptyCallBack callBack)
-        {
-            ObjectType objectType = types[id];
-
-            if (objectType == ObjectType::Project)
-            {
-                std::shared_ptr<Reliability::ReliabilityProject> project = projects[id];
-
-                if (property_ == "initialize") project->setInitializer(callBack);
-            }
-        }
-
         void ProjectHandler::Execute(int id, std::string method_)
         {
             ObjectType objectType = types[id];

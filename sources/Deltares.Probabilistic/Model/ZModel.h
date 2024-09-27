@@ -39,8 +39,6 @@ namespace Deltares
 
         typedef void (*ZValuesCallBack)(double* data, int size, double* outputValues);
 
-        typedef void (*ZEmptyCallBack)();
-
         class ZModel
         {
         public:

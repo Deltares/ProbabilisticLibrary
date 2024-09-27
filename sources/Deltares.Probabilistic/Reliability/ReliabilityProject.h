@@ -115,18 +115,8 @@ namespace Deltares
              */
             void run();
 
-            /**
-             * \brief Sets the method which is invoked at the beginning of a run
-             */
-            void setInitializer(ZEmptyCallBack initializerCallBack)
-            {
-                this->initializer = initializerCallBack;
-            }
-
         private:
             std::shared_ptr<Statistics::CorrelationMatrix> getCorrelationMatrix();
-
-            ZEmptyCallBack initializer = nullptr;
         };
     }
 }

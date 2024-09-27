@@ -45,7 +45,6 @@ namespace Deltares
             virtual void SetIndexedIndexedValue(int id, std::string property_, int index1, int index2, double value) {}
             virtual int GetIndexedIntValue(int id, std::string property_, int index) { return 0; }
             virtual void SetCallBack(int id, std::string property_, Models::ZValuesCallBack callBack) {}
-            virtual void SetEmptyCallBack(int id, std::string property_, Models::ZEmptyCallBack callBack) {}
             virtual void Execute(int id, std::string method_) {}
 
         protected:

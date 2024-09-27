@@ -183,11 +183,6 @@ namespace Deltares
             handlersTable[id]->SetCallBack(id, property_, callBack);
         }
 
-        void ProjectServer::SetEmptyCallBack(int id, std::string property_, ZEmptyCallBack callBack)
-        {
-            handlersTable[id]->SetEmptyCallBack(id, property_, callBack);
-        }
-
         void ProjectServer::Execute(int id, std::string method_)
         {
             handlersTable[id]->Execute(id, method_);

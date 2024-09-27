@@ -62,7 +62,6 @@ namespace Deltares
             void SetIndexedIndexedValue(int id, std::string property_, int index1, int index2, double value) override;
             int GetIndexedIntValue(int id, std::string property_, int index) override;
             void SetCallBack(int id, std::string property_, Models::ZValuesCallBack callBack) override;
-            void SetEmptyCallBack(int id, std::string property_, Models::ZEmptyCallBack callBack) override;
             void Execute(int id, std::string method_) override;
 
             int GetStochastId(std::shared_ptr<Statistics::Stochast> stochast);
