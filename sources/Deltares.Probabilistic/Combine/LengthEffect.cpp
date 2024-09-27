@@ -77,6 +77,8 @@ namespace Deltares
                 auto alpha = std::make_shared<StochastPointAlpha>();
                 alpha->Alpha = alphaValue;
                 alpha->Stochast = crossSection->Alphas[i]->Stochast;
+                alpha->U = -dpL.Beta * alphaValue;
+                alpha->X = alpha->Stochast->getXFromU(alpha->U);
                 dpL.Alphas.push_back(alpha);
             }
             dpL.ContributingDesignPoints.push_back(crossSection);

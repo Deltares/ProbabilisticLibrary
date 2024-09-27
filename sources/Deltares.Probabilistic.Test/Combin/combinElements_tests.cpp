@@ -858,12 +858,14 @@ void combinElementsTests::testLengthEffectFourStochasts()
     for (size_t i = 0; i < nStochasts; i++)
     {
         auto s = std::make_shared<Stochast>();
+        s->setDistributionType (DistributionType::Normal);
+        s->setMeanAndDeviation(0.0, 1.0);
         stochasts.push_back(s);
     }
 
     auto section = std::make_shared<DesignPoint>();
     section->Beta = 5.0;
-    auto alphaValues = std::vector<double>({ 0.6, sqrt(0.5 - 0.36), 0.6, sqrt(0.5 - 0.36) });
+    auto alphaValues = std::vector<double>({ -0.6, -sqrt(0.5 - 0.36), -0.6, -sqrt(0.5 - 0.36) });
     for (int i = 0; i < alphaValues.size(); i++ )
     {
         auto alphaValue = alphaValues[i];
@@ -883,11 +885,13 @@ void combinElementsTests::testLengthEffectFourStochasts()
     auto dp = LengthEffect::UpscaleLength(section, rho, { 500.0, 300.0, 500.0, 300.0 }, 2000.0, -999.0);
 
     auto ref = alphaBeta(4.5064103581966,
-        { 0.578741673689891, 0.385418150246354, 0.598199853682860, 0.398331344045516 }); // pre-computed
+        { -0.578741673689891, -0.385418150246354, -0.598199853682860, -0.398331344045516 }); // pre-computed
+    auto refX = std::vector<double>({ 2.60804747, 1.73685234, 2.69573402, 1.79504449 }); // pre-computed
     EXPECT_NEAR(dp.Beta, ref.getBeta(), 1e-6);
     for (size_t i = 0; i < nStochasts; i++)
     {
         EXPECT_NEAR(dp.Alphas[i]->Alpha, ref.getAlphaI(i), 1e-6);
+        EXPECT_NEAR(dp.Alphas[i]->X, refX[i], 1e-6);
     }
     EXPECT_EQ(1, dp.ContributingDesignPoints.size());
 }

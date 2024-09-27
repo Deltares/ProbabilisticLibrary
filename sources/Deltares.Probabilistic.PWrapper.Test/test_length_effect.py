@@ -75,6 +75,7 @@ class Test_Length_Effect(unittest.TestCase):
         self.assertAlmostEqual(design_point_upscaled.reliability_index, 1.201, delta=margin)
         for alpha in design_point_upscaled.alphas:
             self.assertAlmostEqual(alpha.alpha, -0.7071, delta=margin)
+            self.assertAlmostEqual(alpha.x, 0.8, delta=margin)
 
     def test_length_effect_no_self_correlation(self):
         q = 0.01;
