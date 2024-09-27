@@ -55,7 +55,7 @@ namespace Deltares
             int GetIndexedIntValue(int id, std::string property_, int index) override;
             std::string GetIndexedStringValue(int id, std::string property, int index) override;
             void SetArrayIntValue(int id, std::string property_, int* values, int size) override;
-            double GetArgValues(int id, std::string property, double* values, int size) override;
+            void GetArgValues(int id, std::string property, double* values, int size, double* outputValues) override;
             void Execute(int id, std::string method_) override;
         private:
             std::string serverName = "";
@@ -69,6 +69,8 @@ namespace Deltares
             bool CheckConnection();
 
             std::string StringJoin(const std::vector<std::string>& strings, const std::string delim);
+            std::vector<std::string> StringSplit(std::string& text, const std::string& delimiter);
+
             void StartProcess(std::string processName, bool waitForExit);
             void UpdateAddressInfo();
 

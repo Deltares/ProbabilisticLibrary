@@ -299,7 +299,7 @@ namespace Deltares
             this->Send("set_array_int_value:" + std::to_string(id) + ":" + property + ":" + StringJoin(strings, ":"), false);
         }
 
-        double ExternalServerHandler::GetArgValues(int id, std::string property, double* values, int size)
+        void ExternalServerHandler::GetArgValues(int id, std::string property, double* values, int size, double* outputValues)
         {
             std::vector<std::string> strings;
             for (int i = 0; i < size; i++)
@@ -308,7 +308,12 @@ namespace Deltares
             }
 
             std::string result = this->Send("get_arg_values:" + std::to_string(id) + ":" + property + ":" + StringJoin(strings, ":"), true);
-            return std::stod(result);
+
+            std::vector<std::string> results = StringSplit(result, ":");
+            for (size_t i = 0; i < results.size(); i++)
+            {
+                outputValues[i] = std::stod(results[i]);
+            }
         }
 
         void ExternalServerHandler::Execute(int id, std::string method)
@@ -327,6 +332,22 @@ namespace Deltares
             }
             for (auto c : strings[strings.size() - 1]) res.push_back(c);
             return std::string{ res.begin(), res.end() };
+        }
+
+        std::vector<std::string> ExternalServerHandler::StringSplit(std::string& text, const std::string& delimiter)
+        {
+            std::vector<std::string> tokens;
+            size_t pos = 0;
+            size_t delimiterLength = delimiter.length();
+            while ((pos = text.find(delimiter)) != std::string::npos)
+            {
+                std::string token = text.substr(0, pos);
+                tokens.push_back(token);
+                text.erase(0, pos + delimiterLength);
+            }
+            tokens.push_back(text);
+
+            return tokens;
         }
     }
 }

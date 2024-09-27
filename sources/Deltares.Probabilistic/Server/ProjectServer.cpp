@@ -148,9 +148,9 @@ namespace Deltares
             handlersTable[id]->SetArgValue(id, property_, argument, value);
         }
 
-        double ProjectServer::GetArgValues(int id, std::string property_, double* values, int size)
+        void ProjectServer::GetArgValues(int id, std::string property_, double* values, int size, double* outputValues)
         {
-            return handlersTable[id]->GetArgValues(id, property_, values, size);
+            return handlersTable[id]->GetArgValues(id, property_, values, size, outputValues);
         }
 
         double ProjectServer::GetIndexedValue(int id, std::string property_, int index)

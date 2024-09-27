@@ -40,8 +40,9 @@ class ZModel:
 	def __init__(self, callback = None):
 		ZModel._index = 0;
 		ZModel._callback = callback
+		self._is_function = inspect.isfunction(callback)
 
-		if inspect.isfunction(callback):
+		if self._is_function:
 			self._input_parameters = self._get_input_parameters(callback)
 			self._output_parameters = self._get_output_parameters(callback)
 			self._model_name = callback.__name__
@@ -104,12 +105,16 @@ class ZModel:
 	def _set_callback(self, callback):
 		ZModel._callback = callback
 	
-	def run(self, values):
-		z = ZModel._callback(*values);
-		if type(z) is list or type(z) is tuple:
-			return z
+	def run(self, values, output_values):
+		if self._is_function:
+			z = ZModel._callback(*values);
+			if type(z) is list or type(z) is tuple:
+				for i in range(len(z)):
+					output_values[i] = z[i]
+			else:
+				output_values[0] = z
 		else:
-			return [z]
+			z = ZModel._callback(*values, output_values);
 
 
 class SensitivityProject:
@@ -198,9 +203,7 @@ class SensitivityProject:
 	@interface.CALLBACK
 	def _performCallBack(values, size, output_values):
 		values_list = values[:size]
-		model_output_values = SensitivityProject._model.run(values_list)
-		for i in range(len(model_output_values)):
-			output_values[i] = model_output_values[i]
+		SensitivityProject._model.run(values_list, output_values)
 
 	def run(self):
 		self._stochast = None
@@ -327,9 +330,7 @@ class ReliabilityProject:
 	@interface.CALLBACK
 	def _performCallBack(values, size, output_values):
 		values_list = values[:size]
-		model_output_values = ReliabilityProject._model.run(values_list)
-		for i in range(len(model_output_values)):
-			output_values[i] = model_output_values[i]
+		ReliabilityProject._model.run(values_list, output_values)
 
 	def run(self):
 		self._design_point = None

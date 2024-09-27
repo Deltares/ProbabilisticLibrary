@@ -34,7 +34,7 @@ namespace Deltares
             virtual std::string GetIndexedStringValue(int id, std::string property_, int index) { return ""; }
             virtual void SetStringValue(int id, std::string property_, std::string value) {}
             virtual void SetArrayValue(int id, std::string property_, double* values, int size) {}
-            virtual double GetArgValues(int id, std::string property_, double* values, int size) { return 0; }
+            virtual void GetArgValues(int id, std::string property_, double* values, int size, double* outputValues) {}
             virtual std::vector<int> GetArrayIntValue(int id, std::string property_) { return std::vector<int>(); }
             virtual void SetArrayIntValue(int id, std::string property_, int* values, int size) {}
             virtual double GetArgValue(int id, std::string property_, double argument) { return 0; }
