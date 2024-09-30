@@ -81,10 +81,10 @@ namespace Deltares
         }
 
 
-        std::shared_ptr<Project> Combiner::getProject(std::shared_ptr<Reliability::CombinedDesignPointModel> model, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix)
+        std::shared_ptr<ReliabilityProject> Combiner::getProject(std::shared_ptr<Reliability::CombinedDesignPointModel> model, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix)
         {
             // create project
-            std::shared_ptr<Project> project = std::make_shared<Project>();
+            std::shared_ptr<ReliabilityProject> project = std::make_shared<ReliabilityProject>();
 
             // set run settings with minimal overhead
             project->runSettings->SaveMessages = false;

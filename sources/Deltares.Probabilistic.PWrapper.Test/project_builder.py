@@ -313,7 +313,7 @@ def get_design_point(beta : float, count : int):
 
     return design_point
 
-def get_design_point_with_name(beta : float, count : int, names: list[str]):
+def get_design_point_with_name(beta : float, count : int, names):
     design_point = DesignPoint()
     design_point._set_reliability_index(beta)
 
