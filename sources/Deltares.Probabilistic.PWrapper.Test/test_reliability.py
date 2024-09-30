@@ -79,17 +79,19 @@ class Test_reliability(unittest.TestCase):
         self.assertAlmostEqual(1.99, beta, delta=margin)
         self.assertEqual(2, len(alphas))
 
-        # self.assertAlmostEqual(-0.71, alphas[0].alpha, delta=margin)
-        # self.assertAlmostEqual(-0.71, alphas[1].alpha, delta=margin)
+        self.assertAlmostEqual(-0.31, alphas[0].alpha, delta=margin)
+        self.assertAlmostEqual(-0.95, alphas[1].alpha, delta=margin)
 
-        # self.assertAlmostEqual(0.9, alphas[0].x, delta=margin)
-        # self.assertAlmostEqual(0.9, alphas[1].x, delta=margin)
+        project.limit_state_function.critical_value = 'z'
 
-        # self.assertEqual(len(project.variables), len(project.design_point.alphas))
-        # self.assertTrue(project.design_point.alphas[0].variable in project.variables)
-        # self.assertEqual('a', project.design_point.alphas[0].variable.name)
+        project.run();
 
-        # self.assertEqual(0, len(dp.messages))
+        dp = project.design_point;
+        beta = dp.reliability_index;
+        alphas = dp.alphas;
+
+        self.assertAlmostEqual(0.0, beta, delta=margin)
+        self.assertEqual(2, len(alphas))
 
 
     # def test_form_linear_fragility_curve(self):

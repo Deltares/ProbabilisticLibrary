@@ -139,10 +139,11 @@ def SetArrayValue(id_, property_, values_):
 	cvalues = (ctypes.c_double * len(values_))(*values_)
 	lib.SetArrayValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.POINTER(ctypes.c_double)(cvalues), ctypes.c_uint(len(values_)))
 
-def GetArgValues(id_, property_, values_):
+def GetArgValues(id_, property_, values_, output_values_):
 	cvalues = (ctypes.c_double * len(values_))(*values_)
-	lib.GetArgValues.restype = ctypes.c_double
-	return lib.GetArgValues(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.POINTER(ctypes.c_double)(cvalues), ctypes.c_uint(len(values_)))
+	lib.GetArgValues.restype = ctypes.c_void_p
+	lib.GetArgValues(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.POINTER(ctypes.c_double)(cvalues), ctypes.c_uint(len(values_)), output_values_)
+
 def GetArrayValue(id_, property_):
 
 	count_property = property_ + '_count'
