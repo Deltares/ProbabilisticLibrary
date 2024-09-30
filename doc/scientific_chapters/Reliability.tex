@@ -485,30 +485,29 @@ The minimum and maximum number of iterations refer to an internal procedure to d
 	\caption{Directional sampling: realizations for two stochasts}
 \end{figure}
 
-%\subsection{Latin hypercube}
-% TODO: Latin hypercube only in PTK, not in Streams
-%\subsubsection{Algorithm}
+\subsection{Latin hypercube}
+\subsubsection{Algorithm}
 
-%The Latin hypercube algorithm is a kind of Monte Carlo sampling method. 
+The Latin hypercube algorithm is a kind of Monte Carlo sampling method. 
 
-%Latin hypercube uses a fixed number of realizations $N$.
-%The algorithm divides the u-space in $N$ equal sections,
-%starting from $u_\text{min}$ and ending at $u_\text{max}$.
-%The algorithm ensures that each section is represented in the number of realizations.
-%In this way it is ensured that extreme values are used.
-%Note that the weights of realizations differ from each other.
+Latin hypercube uses a fixed number of realizations $N$.
+The algorithm divides the u-space in $N$ equal sections,
+starting from $u_\text{min}$ and ending at $u_\text{max}$.
+The algorithm ensures that each section is represented in the number of realizations.
+In this way it is ensured that extreme values are used.
+Note that the weights of realizations differ from each other.
 
-%If $u_\text{min}$ and ending at $u_\text{max}$ differ from -8 and 8
-%(beyond these values no calculation is possible due to numerical reasons),
-%the remainder is regarded as one cell and is used in the failure analysis.
+If $u_\text{min}$ and ending at $u_\text{max}$ differ from -8 and 8
+(beyond these values no calculation is possible due to numerical reasons),
+the remainder is regarded as one cell and is used in the failure analysis.
 
-%Latin hypercube uses the same definition for convergence as Crude Monte Carlo
-%(see \autoref{sec:MCConvergence}).
-%It is only calculated for informative reasons,
-%because a fixed number of realizations is used.
+Latin hypercube uses the same definition for convergence as Crude Monte Carlo
+(see \autoref{sec:MCConvergence}).
+It is only calculated for informative reasons,
+because a fixed number of realizations is used.
 
-%The advantage of Latin hypercube is calculation time.
-%But it only gives a rough approximation of the probability of failure.
+The advantage of Latin hypercube is calculation time.
+But it only gives a rough approximation of the probability of failure.
 
 %\subsection{Cobyla}
 % TODO: Cobyla only in PTK, not in Streams

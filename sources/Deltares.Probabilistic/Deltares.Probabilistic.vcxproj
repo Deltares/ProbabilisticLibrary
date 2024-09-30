@@ -200,6 +200,8 @@
     <ClInclude Include="Reliability\SubsetSimulationSettings.h" />
     <ClInclude Include="Reliability\SubsetSimulation.h" />
     <ClInclude Include="Reliability\Settings.h" />
+    <ClInclude Include="Reliability\LatinHyperCube.h" />
+    <ClInclude Include="Reliability\LatinHyperCubeSettings.h" />
     <ClInclude Include="Statistics\SparseCorrelationMatrix.h" />
     <ClInclude Include="Statistics\SelfCorrelationMatrix.h" />
     <ClInclude Include="Utils\Locker.h" />
@@ -362,6 +364,8 @@
     <ClCompile Include="Reliability\SubsetSimulationSettings.cpp" />
     <ClCompile Include="Reliability\SubsetSimulation.cpp" />
     <ClCompile Include="Reliability\Settings.cpp" />
+    <ClCompile Include="Reliability\LatinHyperCube.cpp" />
+    <ClCompile Include="Reliability\LatinHyperCubeSettings.cpp" />
     <ClCompile Include="Statistics\SparseCorrelationMatrix.cpp" />
     <ClCompile Include="Statistics\SelfCorrelationMatrix.cpp" />
     <ClCompile Include="Utils\Locker.cpp" />

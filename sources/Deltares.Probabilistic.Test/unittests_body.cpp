@@ -21,6 +21,7 @@
 //
 #include <gtest/gtest.h>
 #include "Reliability/testStartPointCalculator.h"
+#include "Reliability/testReliabilityMethods.h"
 #include "Math/testCholeskiDecomposition.h"
 #include "Math/testNumericSupport.h"
 #include "Math/testKMean.h"
@@ -121,6 +122,12 @@ namespace Deltares
             {
                 auto tstStartPoint = testStartPointCalculator();
                 tstStartPoint.allStartPointTests();
+            }
+
+            TEST(unittst, testReliabilityMethods)
+            {
+                auto tstRelMethods = testReliabilityMethods();
+                tstRelMethods.allReliabilityMethods();
             }
 
             TEST(unittst, testDistributions)
