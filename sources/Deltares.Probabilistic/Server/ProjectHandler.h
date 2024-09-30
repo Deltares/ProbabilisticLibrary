@@ -27,6 +27,7 @@
 #include "../Sensitivity/SettingsS.h"
 #include "../Combine/CombineProject.h"
 #include "../Combine/CombineSettings.h"
+#include "../Combine/LengthEffectProject.h"
 #include "../Statistics/Stochast.h"
 #include "../Statistics/DiscreteValue.h"
 
@@ -76,8 +77,8 @@ namespace Deltares
         private:
             enum ObjectType {StandardNormal, Message, Project, ModelParameter, Stochast, DiscreteValue, HistogramValue, FragilityValue,
                 ContributingStochast, CorrelationMatrix, Settings, StochastSettings, DesignPoint, Alpha,
-                CombineProject, CombineSettings, SelfCorrelationMatrix, SensitivityProject, SensitivitySettings};
-
+                CombineProject, CombineSettings, SelfCorrelationMatrix, SensitivityProject, SensitivitySettings,
+                LengthEffectProject};
             int id_ = 0;
             std::unordered_map<int, Deltares::Server::ProjectHandler::ObjectType> types;
 
@@ -96,6 +97,7 @@ namespace Deltares
             std::unordered_map<int, std::shared_ptr<Reliability::StochastPointAlpha>> alphas;
             std::unordered_map<int, std::shared_ptr<Reliability::CombineProject>> combineProjects;
             std::unordered_map<int, std::shared_ptr<Reliability::CombineSettings>> combineSettingsValues;
+            std::unordered_map<int, std::shared_ptr<Reliability::LengthEffectProject>> lengthEffectProjects;
             std::unordered_map<int, std::shared_ptr<Statistics::SelfCorrelationMatrix>> selfCorrelationMatrices;
             std::unordered_map<int, std::shared_ptr<Sensitivity::SensitivityProject>> sensitivityProjects;
             std::unordered_map<int, std::shared_ptr<Sensitivity::SettingsS>> sensitivitySettingsValues;

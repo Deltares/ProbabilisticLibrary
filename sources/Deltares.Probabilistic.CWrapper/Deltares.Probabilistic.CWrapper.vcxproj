@@ -137,7 +137,7 @@
       </Command>
     </CustomBuildStep>
     <PostBuildEvent>
-      <Command>mkdir -p "$(TargetDir)$(TargetName).dll" "$(ProjectDir)..\Deltares.Probabilistic.PWrapper\streams\bin"
+      <Command>mkdir -p "$(TargetDir)$(TargetName).dll" "$(ProjectDir)..\Deltares.Probabilistic.PWrapper\ptk\bin"
 copy /Y "$(TargetDir)$(TargetName).dll" "$(ProjectDir)..\Deltares.Probabilistic.PWrapper\streams\bin\$(TargetName).dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -173,8 +173,8 @@ copy /Y "$(TargetDir)$(TargetName).dll" "$(ProjectDir)..\Deltares.Probabilistic.
     <ClCompile Include="convert.cpp" />
     <ClCompile Include="createDistribution.cpp" />
     <ClCompile Include="createReliabilityMethod.cpp" />
-    <ClCompile Include="ExportedMethods.cpp" />
     <ClCompile Include="progressWrapper.cpp" />
+    <ClCompile Include="MessageHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Deltares.Probabilistic\Deltares.Probabilistic.vcxproj">

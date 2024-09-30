@@ -78,6 +78,7 @@ ApplicationPayload.wxs
 doc/*.log
 doc/funcdesign.pdf
 doc/scientific_background.pdf
+doc/starting_up.pdf
 
 # Windows shortcuts
 *.lnk

@@ -156,9 +156,9 @@ subroutine performImportanceSampling( probDb, fx, x, alfa, beta, convCriterium )
     logical,       intent(out)                 :: convCriterium    !< Convergence criterium indicator
 
     type(storedConvergenceData) :: convergenceData  !< struct holding all convergence data
-    logical :: conv
 
-    call probCalc%run( probDb, fx, alfa, beta, x, conv, convCriterium, convergenceData)
+    call probCalc%run( probDb, fx, alfa, beta, x, convergenceData)
+    convCriterium = convergenceData%convCriterium
 end subroutine performImportanceSampling
 
 end module performImportanceSamplingTests

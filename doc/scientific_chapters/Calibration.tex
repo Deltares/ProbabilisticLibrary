@@ -1,0 +1,321 @@
+\chapter{Calibration}
+\label{sec:Calibration}
+
+Calibration is a method where input parameters can be derived from measured output parameters,
+including uncertainty.
+Calibration can be used to obtain parameters, which are difficult to obtain directly.
+
+For example, the roughness of a river bed is hard to obtain.
+Using measured values such as time series of water levels at different locations,
+the roughness coefficients are determined. 
+
+\section{Cost function}
+
+The cost function is calculated per realization and is defined as follows:
+
+\begin{align}
+\label{eq:Cost}
+C = \sqrt{\sum_i \left(\frac{m_{\text{model, i}} - m_{\text{observed, i}}}{\sigma_i}\right)^2}
+\end{align}
+
+where
+\begin{longtable*}{p{20mm}p{\textwidth-24pt-20mm}}  
+	$m_{\text{model, i}}$ & is the calculated result value (by the model) of the $i^{th}$ parameter in the current realization; \\  
+	$m_{\text{observed, i}}$ & is the observed mean value of the $i^{th}$ parameter; \\  
+	$\sigma_i$ & is the deviation of the $i^{th}$ parameter \\
+\end{longtable*}
+
+In case the observed value and the calculated result value refer to series, all individual observed points and their related calculated values are represented as a parameter in \autoref{eq:Cost}. But to prevent over-emphasis of series over individual parameters or series with many points over series with few points, the deviation of a point in a series is corrected as follows:
+
+\begin{align}
+\label{eq:CostPoint}
+\sigma_{\text{point}} = \sigma_{\text{series}} \times \sqrt{N}
+\end{align}
+
+where
+\begin{longtable*}{p{20mm}p{\textwidth-24pt-20mm}}  
+	$\sigma_{\text{point}}$ & is the deviation of a single point; \\  
+	$\sigma_{\text{series}}$ & is the deviation of the series, given by the user; \\  
+	$N$ & is the number of points in the series \\
+\end{longtable*}
+
+\section{Calibration algorithms}
+
+The following calibration algorithms are used to minimize the cost function
+
+\subsection{Grid} \label{sec:GridSearch}
+
+A grid search has a number of dimensions, called N. Each dimension contains a number of numeric items. All item combinations, also called points, are evaluated with the cost function. In essence, the grid search does no more that sequentially evaluating all these points and return the point with the minimum cost value.
+
+Each dimension has a number of items which should be evaluated. The items are defined as a range with a minimum and maximum value and the number of steps into which the range should be subdivided.
+
+Possibly one item cannot be evaluated, because the realization can not be calculated. It will be ignored in the optimization process.
+
+\subsubsection{Move grid if minimum is on edge} \label{sec:MoveGrid}
+
+If, in any dimension, the optimum is on the edge of a dimension, the edge will be extended one step in the direction of the edge. This extension can happen in several dimensions at the same time. 
+
+Only dimensions with at least three items can be moved and the items should be defined as minimum/maximum/steps. Per dimension this feature is optional.
+
+This process will be repeated until the optimum is not on the edge of the dimension area any more.
+
+\subsubsection{Refinement of the grid}\label{sec:RefineGrid}
+
+When the minimum has been found, eventually moved (\autoref{sec:MoveGrid}), the optimization process will refine the grid automatically around the point with the optimum. Per dimension three items will be defined, around the point and with half of the step size. This leads to a $3^{N}-1$ new evaluations in an N-dimensional grid. 
+
+Only dimensions with at least two items can be refined and the items should be defined as minimum/maximum/steps. Per dimension this feature is optional.
+
+Several refinement steps can be taken. Refinement stops after a provided number of refinement steps.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\textwidth]{pictures/RefinementGrid.png}
+	\caption{Refinement grid in a two dimensional grid}
+	\label{fig:RefinementGrid}
+\end{figure}
+
+\subsection{Genetic algorithm} \label{sec:GeneticAlgorithm}
+
+The genetic algorithm is an optimization procedure used to find the representative slip plane within the search area. A genetic algorithm is particularly efficient in solving optimization problems that are not well suited for standard optimization algorithms, including problems in which the objective function is discontinuous, non-differentiable, stochastic, highly non-linear, or has a large number of variables. The genetic algorithm follows the procedure from \autoref{fig:Figure_ProcedureGA}.
+
+In a genetic algorithm, a population of candidate solutions (individuals) to an optimization problem is evolved toward better solutions. Each candidate solution has a set of properties. In the case of this kernel, a set of properties that describe the slip plane. These properties evolve over a number of generations towards an optimal solution.
+
+The evolution starts from a population of randomly (parabolic) generated individuals and is an iterative process, with the population in each iteration called a generation. In each generation, the safety factor (fitness) of every individual in the population is evaluated. This happens through a given limit equilibrium method (the fitness function). Slip planes with a low safety factor are considered to be more fit.
+
+When evolving from one generation to the next, two individuals are combined (see \autoref{sec:GeneticAlgorithmInitialization} and \autoref{sec:ParentalSelection}) to make a new genome (individual). This genome is possibly modified (mutated, see \autoref{sec:Mutation}) to form a new child. Two children ``fight'' to decide which one will go to the next generation, see \autoref{sec:ChildSelection}. Elitism is introduced (\autoref{sec:ChildSelection}) to make sure the best solution thus far will not be lost. The algorithm terminates when a given number of generations have passed.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.30\textwidth]{pictures/GeneticAlgorithm.png}
+	\caption{Procedure of the genetic algorithm}
+	\label{fig:Figure_ProcedureGA}
+\end{figure}
+
+\subsubsection{Initialization}  
+\label{sec:GeneticAlgorithmInitialization}
+Like in any other optimization method an initial guess of the final outcome is required. This guess concerns a choice of all individual genes in the population. In many problems the influence of the individual genes is fully independent. By implication, a random choice of the values of the genes between its appropriate limits is adequate.
+
+In some problems a weak connection between the gene values is observed. An example is a free slip plane in slope analysis. Such a plane must be as flexible as possible in order to allow a wide variety of shapes. However, buckling planes will not survive as they have a surplus of resisting power. It is better to exclude these already at initialization.
+
+From these perspectives, so far, two ways of initialization are defined:
+\begin{itemize}
+	\item Uniform:
+	\begin{align}
+	\frac{g_{n} - g_{min}}{g_{max} - g_{min}} = \eta_{n}  \quad \text{with} \quad 0 < \eta_{n} < 1
+	\end{align}
+	\item Parabolic:
+	\begin{align}
+	\nonumber &\dfrac{g_{n} - g_{min}}{g_{max} - g_{min}} = \\
+	&\left\{ \begin{array}{lll}
+	\left(\eta_{A} - \eta_{B}\right) \left(\dfrac{1}{\eta_{C}} \dfrac{n-1}{N-1} - 1 \right)^{2} + \eta_{B} & \text{if} & \dfrac{1}{2} < \eta_{C} < \infty \\
+	\left(\eta_{A} - \eta_{B}\right) \left(\dfrac{1}{1 - \eta_{C}} \dfrac{N - n}{N-1} - 1 \right)^{2} + \eta_{B} &  \text{if} & -\infty < \eta_{C} < \dfrac{1}{2} 	\end{array} \right. \\
+	\nonumber &\text{with} \quad \quad 0 < \eta_{A} < 1 \quad \text{and} \quad 0 < \eta_{B} < 1
+	\end{align}
+\end{itemize}
+
+In the uniform case every gene has its own random number. The corresponding value of the gene ranges between its minimum and maximum value. These bounds may even be different for every gene. The parabolic case is defined by three random numbers. They are chosen in such a way that the parabola for all genes ranges between 0 and 1.
+
+Note that $\eta_{c}$ is the relative position of the parabola's extreme. If this position is located outside the gene's position, the available space is not uniformly filled up, since the extreme enforces an extra offset. Therefore, it could be decided to fix the extreme always in the gene's range, $0 < \eta_{c} < 1$.
+
+\subsubsection{Parental selection} 
+\label{sec:ParentalSelection}
+Selection options specify how the genetic algorithm chooses parents for the next generation. The simplest selection method is a uniform random choice within the population. Parents are selected according to their index:
+\begin{align}
+P\left[m\right] = G_{m}  \quad  \quad  m = \text{int}\left(\eta \  M\right)
+\end{align}
+
+This selection type is implemented in the kernel. More advanced options exist, based on the fitness scaling function or a remainder approach but are not (yet) implemented.
+
+\subsubsection{Crossover}
+
+The crossover rules realize the combination of two parents to form children for the next generation. Several types are in use, which meet certain specific demands in the problem at hand. The crossover mask is a vector of choices: 0 for the mother and 1 for the father.
+
+\begin{itemize}
+	\item Scattered:
+	
+	The father and mother are combined by having a completely random crossover mask. This works well for a small genome with independent genes. The crossover mask reads:
+	\begin{align}
+	\chi =\left( 0 | 1 \right)_{n}
+	\end{align}
+	
+	\item Single Point:
+	A single point crossover will combine the first part of one parent with the second part of the other parent. For genome types which specify a coherent object it will facilitate a more smooth convergence. It is defined as:
+	\begin{align}
+	\chi = \left\{0 ... 0, 1 ... 1\right\}
+	\end{align}
+	
+	\item Double point:
+	A double point crossover combines the middle of one slip plane with the edges of another. The definition is:
+	\begin{align}
+	\chi = \left\{0 ... 0, 1 ... 1, 0 ... 0\right\}
+	\end{align}
+	
+\end{itemize}
+
+\subsubsection{Mutation} 
+\label{sec:Mutation}
+
+Mutation options specify how the genetic algorithm makes small random changes in the individuals in the population to create mutation children. Mutation provides genetic diversity and enables the genetic algorithm to search a broader space. Three options are defined, a jump, creep and an inversion.
+
+\begin{itemize}
+	\item Jump: applies a completely random mutation. A jump helps finding the global minimum by jumping out of a local minimum. 
+	\item Creep: applies a small mutation. For example, one parameter can change 10\% as a mutation. The creep method applies only for one point of the genome. A Creep Reduction factor must be specified. This reduction factor is the maximum percentage a point can change. The mutation is random between zero and the maximum percentage.  
+	\item Inversion: is the inverse of the entire genome.
+\end{itemize}
+
+\subsubsection{Child selection} \label{sec:ChildSelection}
+
+The routine uses "tournament selection" to determine the strongest child. This means that the program chooses the individual with the lowest cost function on to the next generation. This causes quick conversion to a minimum but little diversion.
+
+The genetic algorithm uses elitism. The elite is passed directly through to the next generation. The size of the elite is variable.
+
+The search terminates after a fixed number of generations. This number is variable.
+
+\subsection{Adaptive Particle Swarm Optimization} 
+\label{sec:APSO}
+
+The Adaptive Particle Swarm Optimization (APSO) algorithm is an algorithm that uses a population and performs a number of steps to improve a population. The algorithm uses particles. Each particle consists of a number of parameters, such as a coordinate in a sliding plane. The parameter values are normalized, so they all have a value between 0 and 1. Of each particle the model result is calculated. 
+
+The step from one population to the next is given by
+
+\begin{align}\label{eq:APSO}
+X_{i\text{,APSO}}^{t+1} = \left\{\begin{array}{ll}r_{\text{c}} < C & \left(1 - \beta\right)X_{i}^{t} + \beta B_{i}^{t} + \alpha r_{\text{a}} \\
+r_{\text{c}} > C & X_{i}^{t}
+\end{array}	
+\right.
+\end{align}
+
+with
+
+\begin{align}
+\alpha = \delta ^ t
+\end{align}
+
+where
+
+\begin{longtable*}{p{18mm}p{\textwidth-24pt-18mm}}  
+	$i$ & is the index number of the parameter in the particle; \\  
+	$X$ & represents the particle; \\  
+	$t$ & is the generation step in the iteration process;\\
+	$B$ & is the best particle found so far;\\  
+	$C$ & is a given cross over fraction [0, 1];\\  
+	$\beta$ & is the parameter convergence factor [0, 1]; \\  
+	$\delta$ & is the parameter step size [0.1, 0.99]; \\  
+	$r_{\text{c}}$ & is a random number, generated per parameter, particle and generation [0, 1]; \\	$r_{\text{a}}$ & is a random number, generated per parameter, particle and generation [-1, 1]; 
+\end{longtable*}
+
+The algorithm keeps an elite, which consists of the best particles found so far. The elite has size $K$. To improve the population, the APSO algorithm is combined with a differential evolution algorithm, which is defined by
+
+\begin{align}\label{eq:DE}
+X_{\text{DE,} i}^{t+1} = \left\{\begin{array}{ll}r_{\text{c}} < C & B_{i}^{t} + F \times \left(E_{\text{r1,} i}^{t} - E_{\text{r2,} i}^{t} + E_{\text{r3,} i}^{t} - E_{\text{r4,} i}^{t}\right)\\
+r_{\text{c}} > C & X_{i}^{t}
+\end{array}	
+\right.
+\end{align}
+
+where
+
+\begin{longtable*}{p{18mm}p{\textwidth-24pt-18mm}}  
+	$F$ & is the given differential weight; \\  
+	$E$ & are particles in the elite; \\  
+	$r1, r2, r3, r4$ & are random index numbers in the elite; \\  
+\end{longtable*}
+
+Combining these algorithms, the next particle is defined as 
+
+\begin{align}\label{eq:APSODE}
+X_i^{t+1} = \left\{\begin{array}{ll}r_{\text{s}} < S & X_{\text{APSO,} i}^{t+1}\\
+r_{\text{s}} > S & X_{\text{DE,} i}^{t+1}
+\end{array}	
+\right.
+\end{align}
+
+where
+
+\begin{longtable*}{p{18mm}p{\textwidth-24pt-18mm}}  
+	$S$ & is the APSO/DE separation factor, which linearly declines from 0.9 in the first generation to 0.1 in the last generation; \\  
+	$r_{\text{s}}$ & is a random number, generated per particle and generation [0, 1]; \\  
+\end{longtable*}
+
+Using a random factor, in each iteration and per each particle it is decided whether the new particle comes from \autoref{eq:APSO} or from \autoref{eq:DE}. This is a random process which uses the APSO/DE separation factor $S$. Next there is another random process, which uses the cross over fraction $C$, which decides per parameter in the particle whether the value comes from from \autoref{eq:APSO} or from \autoref{eq:DE}.
+
+\subsection{Levenberg-Marquardt} \label{sec:LevenbergMarquardt}
+
+The Levenberg-Marquardt algorithm, also known as the damped least-squares method, a steepest descent type of algorithm, provides a numerical solution to the problem of minimizing a function, over a space of parameters of the function.
+
+Levenberg-Marquardt needs a starting point, a minimal tolerated error, and the function to be optimized.
+
+The algorithm iterates a number of times to a situation where the drift $\delta$ is less than a predefined value $\delta_{\text{max}}$. The drift is calculated as follows:
+
+\begin{align}\label{eq:Drift}
+\delta = \sqrt{\frac{\sum_{i = 1}^{N} \left(\frac{\partial f}{\partial x_i}\right)^2}{N}}
+\end{align}
+
+\begin{longtable}{p{8mm}p{\textwidth-24pt-8mm}}  
+	$f$  & is the model function; \\
+	$x_i$ & is the parameter value; \\
+	$N$ & is the total number of parameters;
+\end{longtable}
+
+The iteration takes a situation $(x_{\text{i}})$ as input. In each iteration step, the algorithm calculates a new situation $(x_{\text{i;new}})$. The relation between the old and new situation is
+
+\begin{align}\label{eq:LevenbergMarquardt}
+\left[\frac{\partial^2 f}{\partial x_i \partial x_j} \times \left(1 + \lambda_{i,j}\right)\right]_{N \times N} \times \left[x_{\text{i;new}}\right]_N = \left[\frac{\partial f}{\partial x_i}\right]_N \times \left[x_{\text{i;new}}\right]_N
+\end{align}
+with
+\begin{align}\label{eq:LevenbergMarquardtLambda}
+\lambda_{i,j} = \left\{ \begin{array}{ll} i = j & \lambda \\
+i \neq j & 0
+\end{array}\right.
+\end{align}
+
+where 
+
+\begin{longtable}{p{16mm}p{\textwidth-24pt-16mm}}  
+	$\lambda$ & is the strengthening parameter; 
+\end{longtable}
+
+When the drift at the new situation is less than a maximum value, or if a maximum number of iterations has taken place, the algorithm stops and delivers $(x_{\text{i;new}})$ as the solution.
+
+\subsection{Dud}
+
+Dud is one of the optimization algorithms, which do not use any derivative of the function being evaluated. It can be seen as a Gauss-Newton method, in the sense that it transforms the nonlinear least square problem into the well-known linear square problem. The difference is that instead of approximating the nonlinear function by its tangent function, the Dud uses an affine function for the linearization. For N calibration parameters, Dud requires (N+1) set of parameters estimates. The affine function for the linearization is formed through all these (N+1) guesses. Note that the affine function gives exact value at each of the (N+1) points. The resulting least square problem is then solved along the affine function to get a new estimate, whose cost is smaller than those of all other previous estimates. If it does not produce a better estimate, the Dud will perform different steps, like searching in opposite direction and/or decreasing searching-step, until a better estimate is found. Afterwards, the estimate with the largest cost is replaced with the new one and the procedure is repeated for the new set of (N+1) estimates. The procedure is stopped when one of the stopping criteria is fulfilled.
+
+\subsection{Simplex}
+
+The simplex algorithm used is the one due to Nelder-Mead. This is also called a Downhill Simplex Method. Simplex algorithm is one of the popular techniques in solving minimization problems, without using any derivative of the cost function to minimize. For minimization of a cost function with N parameters, it uses a polytope of (N+1) vertices. Each vertex represents a possible set of parameters, which is associated with a cost value. The minimization is performed by replacing the highest-cost vertex with a new vertex with a lower cost. The new vertex is sought for systematically by trying a sequence of different steps of moving the vertex relative to the other N vertices, until a new vertex with smaller cost is found. This procedure is repeated for the new polytope until convergence is reached, that is when the costs of all vertices are within a predefined bound of tolerance. The first trial step is simply to reflect the worst vertex with respect to the centroid of the remaining N vertices. Depending on whether the reflected cost is higher or lower than the previous ones, the algorithm will try out different step to see if it will produce a vertex with even smaller cost. In short the possible steps are reflection, expansion, contraction, and reduction. The figures below illustrate all these steps for a case of two parameters (N=2). The left most vertex is the one with highest cost. The gray vertices are newly tried vertices.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics{pictures/Simplex.png}
+	\caption{Simplex steps in two dimensions}
+	\label{fig:Simplex}
+\end{figure}
+
+
+\subsection{Powell}
+
+Powell algorithm, similar to Simplex and Dud algorithms, is also an optimization method, which does not require any derivative of the cost function being minimized. In this method, for minimizing a function with N parameters, a user should provide an initial parameter guess as well as N search vectors. The method transforms the multi-dimensional minimization problem into a sequence of one-dimensional minimization problem. It is also an iterative procedure. At each iteration, a new parameter guess is determined by a sequence of line searches, starting from the previous parameter guess. The new parameter guess therefore can be written as a linear combination of all search vectors. Afterwards, the search direction which gives the largest impact is replaced by a new search direction. The iteration is performed until convergence. The line search is the so called Brent's method.
+
+\subsection{Conjugate gradient}
+
+The Conjugate Gradient Method is an optimization method based on the second order Taylor approximation of a (cost-)function depending on N parameters. The method needs to be able to evaluate the gradient of the function in any N-dimensional parameter. A user should provide an initial parameter guess and the method determines iteratively better approximations of the desired minimum. This is done by reducing the multi-dimensional problem into a sequence of line minimizations. These line minimizations are done by Brent's method, which determines the minimum of the (cost-)function on a line with starting point the current parameters and direction the so-called search direction. The search directions are determined either by the Fletcher-Reeves method (method 1) or the Polak-Ribieri method (method 2). For these methods, the new search direction is conjugate to the gradient at the previous parameters. It is also possible to choose the search direction equal to the negative of the gradient, which is known as Steepest Descent (method 3). In this case, the search direction is perpendicular to the gradient at the previous parameters. The iteration is performed until one of the stopping criteria is satisfied.
+
+\subsection{Broyden-Fletcher-Goldfarb-Shanno}
+
+The BFGS (Broyden-Fletcher-Goldfarb-Shanno) Algorithm is a Quasi Newton Method. It is based on the Newton Method which iteratively determines a root of an N-dimensional function (based on the first order Taylor approximation of this function). Since at a minimum of a (cost-)function the gradient is equal to zero, the method can also be used as a minimization algorithm. The algorithm needs to be able to evaluate the gradient of the function in any N-dimensional parameter. Since the inverse of the Hessian is also needed but hard to find, a certain approximation of this inverse is determined at each iteration (hence the term Quasi). A user should provide an initial parameter guess (and possibly an initial approximation of the inverse of the Hessian) and the method determines iteratively better approximations of the actual minimum, after updating the approximation of the inverse of the Hessian. This is done by reducing the multi-dimensional problem into a sequence of line minimizations. The line minimizations are done by Brent's method, which determines the minimum of the (cost-)function on a line with starting point the current parameters and direction the so-called search direction. The search direction is determined by the approximation of the inverse Hessian. The iteration is performed until one of the stopping criteria is satisfied.
+
+The L-BFGS (Limited Memory-BFGS) Algorithm does not compute and store an entire matrix but instead uses a number of vectors of updates of the position and of the gradient, which represent the approximation of the inverse Hessian implicitly.
+
+\subsection{Shuffled Complex Evolution}
+
+The Shuffled Complex Evolution (SCE) algorithm finds a global minimum of a function of several variables. The algorithm is introduced in 1992 by Duan et al.
+
+Initially, a set of points are drawn randomly from the specified distributions. Each point consists of a set of values of the calibration parameters. For each point, a cost is assigned. These points are then ordered and grouped into "complexes" based on their costs. The next step is an iterative procedure, where the first step is to divide each complex into "simplexes" and propagate each simplex to find a new point with smaller cost using the simplex method. Afterwards, the complexes are merged back, all the points are reshuffled and regrouped into a new set of complexes. After each iteration the points will tend to become neighbours of each other around the global minimum of the cost function.
+
+\subsection{Generalized Likelihood Uncertainty Estimation}
+
+Unlike other optimization algorithms, which find a cost-minimizing point in the parameter space, the Generalized Likelihood Uncertainty Estimation (GLUE) methodology finds a set of possible points in the calibration parameters space. It adopts the idea of equifinality of models, parameters and variables (Beven and Binley 1992). Equifinality originates from the imperfect knowledge of the system under consideration, and many sets of models, variables, and parameters may therefore be considered equal simulators of the system.
+
+The GLUE analysis is implemented as to consist of (1) random draws of sets of the calibration parameters from the respective distributions, (2) run the model with each parameter set and evaluate the likelihood of each set. User needs to select manually the most probable sets of parameters based on their likelihood. The random draw of the parameters set can be done either from uniform distributions (with user specified ranges) or from a table of the most likely sets of the calibration parameters. For the latter, user needs to prepare such a table manually and can use the results of the previous analysis.
+

@@ -549,7 +549,7 @@ subroutine logNormalTypeIITest
 
     do i = 1, 10
         u = 0.1_wp * real(i, wp)
-        call calculateDistribution( u, x(i), distributionShiftedLognormal2, M, S, par3, 0d0, ierr, errorMessage)
+        call calculateDistribution( u, x(i), distributionShiftedLognormal2, [M, S, par3, 0d0], ierr, errorMessage)
         call assert_equal(ierr, 0, errorMessage)
     enddo
 
@@ -1310,17 +1310,13 @@ subroutine conditionalWeibullTest
     real(kind=wp) :: x
     real(kind=wp) :: y
     real(kind=wp) :: expected
-    real(kind=wp), parameter :: distParameter1 = 1.0_wp
-    real(kind=wp), parameter :: distParameter2 = 1.0_wp
-    real(kind=wp), parameter :: distParameter3 = 1.0_wp
-    real(kind=wp), parameter :: distParameter4 = 1.0_wp
+    real(kind=wp), parameter :: distParameters(4) = [1.0_wp, 1.0_wp, 1.0_wp, 1.0_wp]
     integer :: i
-    
+
     do i = -5, 5
         x = real(i, wp)
-        y = conditionalWeibull(distParameter1, distParameter2, distParameter3, distParameter4, x)
+        y = conditionalWeibull(distParameters, x)
         expected = exp(1.0_wp - x)
-    
         call assert_comparable(y, expected, margin, 'difference in conditionalWeibullTest too big')
     enddo
 
@@ -1350,7 +1346,7 @@ subroutine calculateDistributionTest
         !
         ! test distributionNormal
         !
-        call calculateDistribution(x, u, distributionNormal, distParameter1, distParameter2, distParameter3, distParameter4, &
+        call calculateDistribution(x, u, distributionNormal, [distParameter1, distParameter2, distParameter3, distParameter4], &
             ierr, message)
         call assert_equal(ierr, 0, message)
         expected = (x - distParameter1) / distParameter2
@@ -1360,8 +1356,8 @@ subroutine calculateDistributionTest
         ! test distributionShiftedLognormal2
         !
         x = real(i+8, wp) * 0.5_wp
-        call calculateDistribution(x, u, distributionShiftedLognormal2, distParameter1, distParameter2, distParameter3, &
-            distParameter4, ierr, message)
+        call calculateDistribution(x, u, distributionShiftedLognormal2, [distParameter1, distParameter2, distParameter3, &
+            distParameter4], ierr, message)
         call assert_equal(ierr, 0, message)
         expected = logNormalIIresults( i+6 )
         call assert_comparable(u, expected, margin, 'difference in distributionShiftedLognormal2 too big')
@@ -1372,22 +1368,22 @@ subroutine calculateDistributionTest
     minimum = -3.0_wp
     maximum =  3.0_wp
     x = minimum
-    call calculateDistribution(x, u, distributionTruncatedNormal, distParameter1, distParameter2, minimum, maximum, ierr, message)
+    call calculateDistribution(x, u, distributionTruncatedNormal, [distParameter1, distParameter2, minimum, maximum], ierr, message)
     call assert_equal(ierr, 0, message)
     x = maximum
-    call calculateDistribution(x, u, distributionTruncatedNormal, distParameter1, distParameter2, minimum, maximum, ierr, message)
+    call calculateDistribution(x, u, distributionTruncatedNormal, [distParameter1, distParameter2, minimum, maximum], ierr, message)
     call assert_equal(ierr, 0, message)
 
     ! error handling truncated Normal: check x is in range [minimum - maximum]
     minimum = -3.0_wp
     maximum =  3.0_wp
     x = -3.1_wp
-    call calculateDistribution(x, u, distributionTruncatedNormal, distParameter1, distParameter2, minimum, maximum, ierr, message)
+    call calculateDistribution(x, u, distributionTruncatedNormal, [distParameter1, distParameter2, minimum, maximum], ierr, message)
     call assert_true(ierr == 0, message)
     
     ! test not implemented distributions
     !
-    call calculateDistribution(x, u, distributionUniform, distParameter1, distParameter2, distParameter3, distParameter4, &
+    call calculateDistribution(x, u, distributionUniform, [distParameter1, distParameter2, distParameter3, distParameter4], &
         ierr, message)
     !call assert_equal(message, "Not yet implemented", "test distributionUniform")
     !call calculateDistribution(x, u, distributionShiftedLognormal, distParameter1, distParameter2, distParameter3, distParameter4,&
@@ -1398,9 +1394,9 @@ subroutine calculateDistributionTest
     !    distParameter4, ierr, message)
     !call calculateDistribution(x, u, distributionGumbelDistribution2, distParameter1, distParameter2, distParameter3, &
     !    distParameter4, ierr, message)
-    call calculateDistribution(x, u, distributionWeibull, distParameter1, distParameter2, distParameter3, distParameter4, &
+    call calculateDistribution(x, u, distributionWeibull, [distParameter1, distParameter2, distParameter3, distParameter4], &
         ierr, message)
-    call calculateDistribution(x, u, distributionRayleigh, distParameter1, distParameter2, distParameter3, distParameter4, &
+    call calculateDistribution(x, u, distributionRayleigh, [distParameter1, distParameter2, distParameter3, distParameter4], &
         ierr, message)
     !call calculateDistribution(x, u, distributionPareto, distParameter1, distParameter2, distParameter3, distParameter4, &
     !    ierr, message)
@@ -1408,9 +1404,9 @@ subroutine calculateDistributionTest
     !    ierr, message)
     !call calculateDistribution(x, u, distributionLogLinearInterpolation, distParameter1, distParameter2, distParameter3, &
     !    distParameter4, ierr, message)
-    call calculateDistribution(x, u, distributionConditionalWeibull, distParameter1, distParameter2, distParameter3, &
-        distParameter4, ierr, message)
-    call calculateDistribution(x, u, -999, distParameter1, distParameter2, distParameter3, distParameter4, ierr, message)
+    call calculateDistribution(x, u, distributionConditionalWeibull, [distParameter1, distParameter2, distParameter3, &
+        distParameter4], ierr, message)
+    call calculateDistribution(x, u, -999, [distParameter1, distParameter2, distParameter3, distParameter4], ierr, message)
     call assert_equal(message, "Unknown distribution function - code: -999", "test wrong input")
 end subroutine calculateDistributionTest
 

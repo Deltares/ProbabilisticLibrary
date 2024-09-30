@@ -36,8 +36,8 @@ namespace Deltares
                 static double GetUFromQ(double q) { return Statistics::StandardNormal::getUFromQ(q); }
                 static double GetPFromU(double u) { return Statistics::StandardNormal::getPFromU(u); }
                 static double GetQFromU(double u) { return Statistics::StandardNormal::getQFromU(u); }
-                static double GetRFromP(double p) { return Statistics::StandardNormal::getRFromP(p); }
-                static double GetPFromR(double r) { return Statistics::StandardNormal::getPFromR(r); }
+                static double GetRFromP(double p) { return Statistics::StandardNormal::getTFromP(p); }
+                static double GetPFromR(double r) { return Statistics::StandardNormal::getPFromT(r); }
 
                 static property double UMax
                 {

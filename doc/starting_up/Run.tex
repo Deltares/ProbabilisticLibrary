@@ -1,0 +1,27 @@
+\chapter{Run}
+
+The Probabilistic Toolkit supports the following ways of running a probabilistic analysis:
+
+\section{Application}
+
+The Probabilistic toolkit should be started with its user interface, which can be found in the start menu or as icon on the desktop. Then the user can enter all data required by the workflow and execute the run button. All data and results be saved and later opened again from a tkx-file. 
+
+\section{Console}
+\label{sec:Console}
+
+The console version enables execution of a probabilistic analysis without user interface. An input file should be available (made with the user interface). The console version performs the calculation as specified in the input file. 
+
+The console application should be run as follows:
+
+\begin{lstlisting}[language=sh, basicstyle=\ttfamily, frame=single]
+Deltares.Probabilistic.Console.exe input.tkx [output.tkx]
+\end{lstlisting}
+
+If no output file is specified, the input file is used and overwritten as the file containing the calculation results.
+
+\section{Python}
+
+Using Python, the input file of the Probabilistic Toolkit can be modified and run (only for reliability analysis). The Probabilistic Toolkit installs a python file, named toolkit.py, by which properties in an existing toolkit file can be modified and run. This file is located in the sub directory Python of the installation directory (usually C:/Program Files (x86)/Deltares/Probabilistic toolkit/Python).
+
+See \autoref{ug:PythonInterface} for more information.
+

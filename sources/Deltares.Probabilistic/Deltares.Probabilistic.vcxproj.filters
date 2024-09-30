@@ -129,7 +129,7 @@
     <ClCompile Include="Reliability\NumericalIntegrationSettings.cpp" />
     <ClCompile Include="Reliability\SubsetSimulationSettings.cpp" />
     <ClCompile Include="Reliability\SubsetSimulation.cpp" />
-    <ClCompile Include="Reliability\ReliabilityProject.cpp" />
+    <ClCompile Include="Model\Project.cpp" />
     <ClCompile Include="Combine\ImportanceSamplingCombiner.cpp" />
     <ClCompile Include="Combine\DesignPointModel.cpp" />
     <ClCompile Include="Combine\CombinedDesignPointModel.cpp" />
@@ -138,7 +138,7 @@
     <ClCompile Include="Model\SampleProvider.cpp" />
     <ClCompile Include="Combine\DirectionalSamplingCombiner.cpp" />
     <ClCompile Include="Combine\CombineType.cpp" />
-    <ClCompile Include="Server\ProjectServer.cpp" />
+    <ClCompile Include="Model\ProjectServer.cpp" />
     <ClCompile Include="Reliability\Settings.cpp" />
     <ClCompile Include="Statistics\SparseCorrelationMatrix.cpp" />
     <ClCompile Include="Combine\CombineSettings.cpp" />
@@ -328,7 +328,7 @@
     <ClInclude Include="Reliability\NumericalIntegrationSettings.h" />
     <ClInclude Include="Reliability\SubsetSimulationSettings.h" />
     <ClInclude Include="Reliability\SubsetSimulation.h" />
-    <ClInclude Include="Reliability\ReliabilityProject.h" />
+    <ClInclude Include="Model\Project.h" />
     <ClInclude Include="Combine\ImportanceSamplingCombiner.h" />
     <ClInclude Include="Combine\DesignPointModel.h" />
     <ClInclude Include="Combine\CombinedDesignPointModel.h" />
@@ -337,7 +337,7 @@
     <ClInclude Include="Model\SampleProvider.h" />
     <ClInclude Include="Combine\DirectionalSamplingCombiner.h" />
     <ClInclude Include="Combine\CombineType.h" />
-    <ClInclude Include="Server\ProjectServer.h" />
+    <ClInclude Include="Model\ProjectServer.h" />
     <ClInclude Include="Reliability\Settings.h" />
     <ClInclude Include="Statistics\SparseCorrelationMatrix.h" />
     <ClInclude Include="Combine\CombineSettings.h" />

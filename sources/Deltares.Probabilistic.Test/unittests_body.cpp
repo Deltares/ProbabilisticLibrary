@@ -33,6 +33,7 @@
 #include "Combin/upscale_tests.h"
 #include "Combin/combinElements_tests.h"
 #include "Combin/combiner_tests.h"
+#include "Statistics/testStandardNormal.h"
 #include "Distributions/testDistributions.h"
 #include "Sensitivity/TestSensitivity.h"
 
@@ -59,7 +60,13 @@ namespace Deltares
             TEST(unittst, testCombinElements)
             {
                 auto h = combinElementsTests();
-                h.runAll();
+                h.runAllCombineTwoElementsTests();
+            }
+
+            TEST(unittst, testLengthEffect)
+            {
+                auto h = combinElementsTests();
+                h.runAllLengthEffectTests();
             }
 
             TEST(unittst, testUpscaling)
@@ -120,6 +127,12 @@ namespace Deltares
             {
                 auto tstDist = testDistributions();
                 tstDist.allDistributionsTests();
+            }
+
+            TEST(unittst, testStandardNormal)
+            {
+                auto tstStdNormal = testStandardNormal();
+                tstStdNormal.allStandardNormalTests();
             }
 
             TEST(unittst, testSensitivity)
