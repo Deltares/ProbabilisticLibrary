@@ -45,7 +45,6 @@ namespace Deltares
                 calculator.Settings->randomSettings->RandomGeneratorType = Numeric::MersenneTwister;
 
                 auto modelRunner = projectBuilder().BuildProject();
-                modelRunner->updateStochastSettings(calculator.Settings->StochastSet);
 
                 auto designPoint = calculator.getDesignPoint(modelRunner);
 

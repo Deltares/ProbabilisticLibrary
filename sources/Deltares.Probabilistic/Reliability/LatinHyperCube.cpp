@@ -90,24 +90,24 @@ namespace Deltares
             std::vector<std::vector<int>> indices;
             for (int i = 0; i < nStochasts; i++)
             {
-                std::vector<std::shared_ptr<IndexedItem>> values;
+                std::vector<IndexedItem> values;
                 for (const auto& p : list)
                 {
-                    std::shared_ptr<IndexedItem> temp_var = std::make_shared<IndexedItem>();
-                    temp_var->Value = p.first;
-                    temp_var->Sequence = p.second->Values[i];
+                    auto temp_var = IndexedItem();
+                    temp_var.Value = p.first;
+                    temp_var.Sequence = p.second->Values[i];
                     values.push_back(temp_var);
                 }
 
                 std::sort(values.begin(), values.end(), [](const auto& lhs, const auto& rhs)
                     {
-                        return lhs->Sequence < rhs->Sequence;
+                        return lhs.Sequence < rhs.Sequence;
                     });
 
                 std::vector<int> iValues;
                 for (const auto& p : values)
                 {
-                    iValues.push_back(p->Value);
+                    iValues.push_back(p.Value);
                 }
                 indices.push_back(iValues);
             }
