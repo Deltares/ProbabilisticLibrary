@@ -41,7 +41,6 @@ namespace Deltares
             modelRunner->setSampleProvider(sampleProvider);
 
             double qRange = 1.0;
-            double zRemainder = 1.0;
 
             std::shared_ptr<Sample> remainderSample = sampleProvider->getSample();
 
@@ -52,7 +51,7 @@ namespace Deltares
                     double probLow = StandardNormal::getPFromU(this->Settings->StochastSet->VaryingStochastSettings[i]->MinValue);
                     double probHigh = StandardNormal::getQFromU(this->Settings->StochastSet->VaryingStochastSettings[i]->MaxValue);
 
-                    double prob = 1 - probLow - probHigh;
+                    double prob = 1.0 - probLow - probHigh;
 
                     qRange *= prob;
 
@@ -67,47 +66,20 @@ namespace Deltares
                 }
             }
 
-            if (qRange < 1)
-            {
-                // perform one run to identify whether the remainder is failing
-                zRemainder = modelRunner->getZValue(remainderSample);
-            }
-
             sampleProvider->reset();
 
-            return getReducedDesignPoint(modelRunner, sampleProvider, zRemainder, qRange);
+            return getReducedDesignPoint(modelRunner, sampleProvider, qRange);
         };
 
-
-        std::shared_ptr<DesignPoint> LatinHyperCube::getReducedDesignPoint(std::shared_ptr<ModelRunner> modelRunner, std::shared_ptr<SampleProvider> sampleProvider, double zRemainder, double qRange)
+        std::vector<std::shared_ptr<Sample>> LatinHyperCube::CreateAllSamples(int nStochasts, const std::shared_ptr<SampleProvider>& sampleProvider) const
         {
-            int nStochasts = modelRunner->getVaryingStochastCount();
-
-            auto zValues = std::vector<double>(0); // copy of z for all parallel threads as double
-
-            const std::shared_ptr<DesignPointBuilder> uMean = std::make_shared<DesignPointBuilder>(nStochasts, Settings->designPointMethod, this->Settings->StochastSet);
-
-            std::shared_ptr<Sample> uMin = std::make_shared<Sample>(nStochasts);
-
-            // initialise convergence indicator and loops
-            auto rmin = std::numeric_limits<double>::max();
-            bool initial = true;
-            double z0Fac = 0.0;
-            double qFail = 0.0;
-
-            int nFailed = 0;
-            int nSamples = 0;
-            std::shared_ptr<ConvergenceReport> convergenceReport = std::make_shared<ConvergenceReport>();
-
-            size_t zIndex = 0;
-
             auto randomSampleGenerator = RandomSampleGenerator();
             randomSampleGenerator.Settings = this->Settings->randomSettings;
             randomSampleGenerator.Settings->StochastSet = this->Settings->StochastSet;
             randomSampleGenerator.sampleProvider = sampleProvider;
             randomSampleGenerator.initialize();
 
-            std::vector<std::pair<int,std::shared_ptr<Sample>>> list;
+            std::vector<std::pair<int, std::shared_ptr<Sample>>> list;
             for (int i = 0; i < Settings->MinimumSamples; i++)
             {
                 auto s = randomSampleGenerator.getRandomSample();
@@ -181,15 +153,34 @@ namespace Deltares
                 sample->Weight = weight / nStochasts;
                 samples.push_back(sample);
             }
+            return samples;
+        }
 
-            double sum = 0.0;
-            for (const auto& s : samples)
-            {
-                sum += s->Weight;
-            }
+        std::shared_ptr<DesignPoint> LatinHyperCube::getReducedDesignPoint(std::shared_ptr<ModelRunner>& modelRunner, std::shared_ptr<SampleProvider>& sampleProvider, double qRange)
+        {
+            int nStochasts = modelRunner->getVaryingStochastCount();
+
+            auto zValues = std::vector<double>(0); // copy of z for all parallel threads as double
+
+            const std::shared_ptr<DesignPointBuilder> uMean = std::make_shared<DesignPointBuilder>(nStochasts, Settings->designPointMethod, this->Settings->StochastSet);
+
+            std::shared_ptr<Sample> uMin = std::make_shared<Sample>(nStochasts);
+
+            // initialise convergence indicator and loops
+            auto rmin = std::numeric_limits<double>::max();
+            bool initial = true;
+            double z0Fac = 0.0;
+
+            int nFailed = 0;
+            int nSamples = 0;
+            std::shared_ptr<ConvergenceReport> convergenceReport = std::make_shared<ConvergenceReport>();
+
+            size_t zIndex = 0;
+
+            auto samples = CreateAllSamples(nStochasts, sampleProvider);
 
             std::vector<std::shared_ptr<Sample>> calcSamples;
-            double probFailure = qFail;
+            double probFailure = 0.0;
 
             for (int n = 0; n < Settings->MinimumSamples + 1 && !isStopped(); n++)
             {
@@ -217,6 +208,7 @@ namespace Deltares
 
                     if (initial)
                     {
+                        // determine multiplication factor for z (z<0), if u = 0
                         z0Fac = getZFactor(zValues[0]);
                         uMin = uMin->getSampleAtBeta(z0Fac * StandardNormal::BetaMax);
                         uMean->initialize(z0Fac * StandardNormal::BetaMax);
@@ -225,19 +217,8 @@ namespace Deltares
                     zIndex = 0;
                 }
 
-                // determine multiplication factor for z (z<0), if u = 0
                 if (initial)
                 {
-                    double zRemainderFactor = getZFactor(zRemainder);
-
-                    if (z0Fac != zRemainderFactor)
-                    {
-                        qFail = 1.0 - qRange;
-                    }
-                    else
-                    {
-                        qFail = 0.0;
-                    }
                     initial = false;
                     continue;
                 }
@@ -255,10 +236,7 @@ namespace Deltares
                 nSamples++;
 
                 // determine total probability of failure
-                if (z < 0)
-                {
-                    nFailed = nFailed + 1;
-                }
+                if (z < 0) nFailed++;
 
                 convergenceReport->FailedSamples = nFailed;
                 convergenceReport->FailFraction = Numeric::NumericSupport::Divide(nFailed, nSamples);
@@ -294,7 +272,7 @@ namespace Deltares
             return designPoint;
         }
 
-        double LatinHyperCube::ReportConvergence(std::shared_ptr<ModelRunner> modelRunner, double pf, int samples, int nMaal) const
+        double LatinHyperCube::ReportConvergence(std::shared_ptr<ModelRunner>& modelRunner, double pf, int samples, int nMaal) const
         {
             auto report = std::make_shared<ReliabilityReport>(nMaal, Settings->MinimumSamples);
 

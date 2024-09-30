@@ -40,8 +40,9 @@ namespace Deltares
             std::shared_ptr<LatinHyperCubeSettings> Settings = std::make_shared<LatinHyperCubeSettings>();
             std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
         private:
-            std::shared_ptr<DesignPoint> getReducedDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<SampleProvider> sampleProvider, double zRemainder, double qRange);
-            double ReportConvergence(std::shared_ptr<Models::ModelRunner> modelRunner, double pf, int samples, int nMaal) const;
+            std::shared_ptr<DesignPoint> getReducedDesignPoint(std::shared_ptr<Models::ModelRunner>& modelRunner, std::shared_ptr<Models::SampleProvider>& sampleProvider, double qRange);
+            double ReportConvergence(std::shared_ptr<Models::ModelRunner>& modelRunner, double pf, int samples, int nMaal) const;
+            std::vector<std::shared_ptr<Sample>> CreateAllSamples(int nStochasts, const std::shared_ptr<Models::SampleProvider>& sampleProvider) const;
         };
     }
 }
