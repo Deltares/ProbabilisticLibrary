@@ -20,6 +20,7 @@
 // All rights reserved.
 //
 #include <gtest/gtest.h>
+#include <cmath>
 #include "testStartPointCalculator.h"
 #include "../../Deltares.Probabilistic/Reliability/StartPointCalculator.h"
 #include "../projectBuilder.h"
@@ -39,6 +40,7 @@ namespace Deltares
                 testMethodOne();
                 testMethodRaySearch();
                 testMethodSphereSearch();
+                testMethodSphereSearchAllDirections();
                 testMethodSphereSearchWithDeterminist();
             }
 
@@ -86,8 +88,29 @@ namespace Deltares
                 auto r = calculator.getStartPoint(modelRunner);
 
                 ASSERT_EQ(r->Values.size(), 2);
+                auto z = modelRunner->getZValue(r);
+                EXPECT_TRUE(std::abs(z) < margin);
                 EXPECT_NEAR(r->Values[0], 2.4, margin);
                 EXPECT_NEAR(r->Values[1], 0.0, margin);
+            }
+
+            void testStartPointCalculator::testMethodSphereSearchAllDirections()
+            {
+                auto modelRunner = projectBuilder().BuildProject();
+                auto calculator = StartPointCalculator();
+
+                modelRunner->updateStochastSettings(calculator.Settings->StochastSet);
+                calculator.Settings->StartMethod = StartMethodType::SphereSearch;
+                calculator.Settings->allQuadrants = true;
+                calculator.Settings->maxStepsSphereSearch = 16;
+
+                auto r = calculator.getStartPoint(modelRunner);
+
+                ASSERT_EQ(r->Values.size(), 2);
+                auto z = modelRunner->getZValue(r);
+                EXPECT_TRUE(std::abs(z) < margin);
+                EXPECT_NEAR(r->Values[0], 1.64172137689, margin);
+                EXPECT_NEAR(r->Values[1], -0.94784827888, margin);
             }
 
             void testStartPointCalculator::testMethodSphereSearchWithDeterminist()
