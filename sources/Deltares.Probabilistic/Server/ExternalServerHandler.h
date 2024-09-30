@@ -6,6 +6,7 @@
 #define _WINSOCKAPI_
 
 #if __has_include(<windows.h>)
+#include <windows.h>
 #include <winsock.h>
 #include <ws2tcpip.h>
 #include <filesystem>
@@ -24,9 +25,9 @@ namespace Deltares
                 this->serverName = serverName;
             }
 
-#if __has_include(<windows.h>)
             ~ExternalServerHandler()
             {
+#if __has_include(<windows.h>)
                 freeaddrinfo(address);
 
                 if (this->server_started)
@@ -34,8 +35,8 @@ namespace Deltares
                     this->Send("exit", false);
                     this->server_started = false;
                 }
-            }
 #endif
+            }
 
             void SetServer(std::shared_ptr<BaseServer> server, int handlerIndex, std::shared_ptr<BaseHandler> defaultHandler) override
             {

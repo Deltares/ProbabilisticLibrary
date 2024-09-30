@@ -243,8 +243,8 @@ namespace Deltares
             // create the model from design points
             const std::shared_ptr<CombinedDesignPointModel> model = getModel(combineAndOr::combOr, currentDesignPoint, previousDesignPoints, stochasts, selfCorrelationMatrix);
 
-            const std::shared_ptr<Reliability::ReliabilityProject> project = getProject(model, selfCorrelationMatrix);
-            
+            const std::shared_ptr<ReliabilityProject> project = getProject(model, selfCorrelationMatrix);
+
             const std::shared_ptr<ImportanceSampling> importanceSampling = std::make_shared<ImportanceSampling>();
             fillSettingsSeries(startPoint, model, importanceSampling->Settings);
 
@@ -293,7 +293,7 @@ namespace Deltares
             // create the model from design points
             const std::shared_ptr<CombinedDesignPointModel> model = getModel(combineAndOr::combAnd, nullptr, previousDesignPoints, stochasts, selfCorrelationMatrix);
 
-            const std::shared_ptr<Reliability::ReliabilityProject> project = getProject(model, selfCorrelationMatrix);
+            const std::shared_ptr<ReliabilityProject> project = getProject(model, selfCorrelationMatrix);
 
             int iteration = 0;
             double factor = 1;

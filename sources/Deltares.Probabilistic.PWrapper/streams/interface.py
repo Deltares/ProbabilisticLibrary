@@ -143,6 +143,19 @@ def GetArgValues(id_, property_, values_):
 	cvalues = (ctypes.c_double * len(values_))(*values_)
 	lib.GetArgValues.restype = ctypes.c_double
 	return lib.GetArgValues(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.POINTER(ctypes.c_double)(cvalues), ctypes.c_uint(len(values_)))
+def GetArrayValue(id_, property_):
+
+	count_property = property_ + '_count'
+	count = GetIntValue(id_, count_property)
+
+	lib.GetIndexedValue.restype = ctypes.c_double
+
+	values = []
+	for i in range(count):
+		value = lib.GetIndexedValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.c_int(i))
+		values.append(value)
+
+	return values
 
 def GetArrayIntValue(id_, property_):
 
@@ -195,10 +208,6 @@ def GetIndexedIndexedValue(id_, property_, index1_, index2_):
 def SetIndexedIndexedValue(id_, property_, index1_, index2_, value_):
 	lib.SetIndexedIndexedValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.c_int(index1_), ctypes.c_int(index2_), ctypes.c_double(value_))
 
-def GetIntArgValue(id_, property_, arg_):
-	lib.GetIntArgValue.restype = ctypes.c_int
-	return lib.GetArgValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.c_int(arg_))
-
 def SetCallBack(id_, property_, callBack_):
 	try:
 		lib.SetCallBack(ctypes.c_int(id_), bytes(property_, 'utf-8'), callBack_)
@@ -222,6 +231,5 @@ def GetCallBack(id_, property_):
 		message = sys.exc_info()[0]
 		print('error: ' + str(message), flush = True)
 		raise
-
 def Execute(id_, method_):
 	lib.Execute(ctypes.c_int(id_), bytes(method_, 'utf-8'))

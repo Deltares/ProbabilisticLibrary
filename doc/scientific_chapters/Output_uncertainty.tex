@@ -1,0 +1,80 @@
+\chapter{Output uncertainty}
+\label{chp:OutputUncertainty}
+
+Output uncertainty is an extension of sensitivity analysis.
+Now all input parameters are varied according to their uncertainty definition.
+This leads to uncertainty of the output parameters.
+
+This is useful when the user is interested in possible values in the future of a physical property.
+For example, due to a load subsidence of the soil surface will occur.
+It is interesting how much subsidence will occur in the next ten years.
+Another example, due to a side stream a gully will move sidewards.
+It is interesting to know the location of the gully in the next year.
+
+\section{Numerical integration}
+
+Numerical integration varies all input parameters step by step and for each step combination,
+a realization is generated and calculated.
+Realization results are collected in bins, which form a histogram distribution.
+
+\section{Crude Monte Carlo}
+
+Crude Monte Carlo is the 'standard' Monte Carlo simulation.
+Random realizations will be generated and realization results are categorized into bins.
+When a bin gets more realizations, it has a higher probability.
+
+The Crude Monte Carlo simulation results in a histogram distribution
+(see  \autoref{sec:HistogramDistribution}) or,
+if all model results are equal, a deterministic distribution
+(see \autoref{sec:DeterministicDistribution}).
+The distribution is fitted with all model results. 
+
+\section{Importance sampling}
+
+Importance sampling modifies randomly selected realizations
+in such a way that more realizations are selected in an area selected by the user.
+Therefore each realization is translated to  another realization.
+This is done in the same way as Importance Sampling for reliability,
+see \autoref{sec:ImportanceSampling}.
+
+Importance sampling is useful when the user is interested in the tail of the distribution.
+
+\section{FORM}
+
+FORM (First Order Reliability Method) is like FORM in reliability analysis (see \autoref{sec:FORM}).
+Starting from the origin in u-space, steps of fixed length are taken along the steepest gradient.
+For each step a realization is performed and its result is added to a CDF curve
+(see \autoref{sec:CDFCurveDistribution}).
+
+Each subsequent step in the resulting CDF curve is calculated as follows:
+
+\begin{align}
+\label{eq:FORMCDF}
+\vec{u}_{i+1} = \vec{u}_{i} + L \cdot \nabla z \left(\vec{u_{i}}\right)
+\end{align}
+
+The reliability of the added point is
+
+\begin{align}
+\label{eq:FORMReliability}
+\beta_{i+1} = \mid\mid\vec{u}_{i+1}\mid\mid
+\end{align}
+
+where
+\begin{longtable*}{p{20mm}p{\textwidth-24pt-20mm}}  
+	$\vec{u}$ & is a point in the parameter space defined in u-values; \\  
+	$z\left(\vec{u}\right)$ & is the z value calculated at $\vec{u}$; \\  
+	$L$ & is the step size; \\  
+	$\nabla z\left(\vec{u}\right)$ & is the steepest gradient of $z$ at $\vec u$. \\
+\end{longtable*}
+
+%\section{FOSM}
+% TODO: FOSM only in PTK, not in Streams yet
+%FOSM (First Order Second Moment) is a much faster technique than Crude Monte Carlo.
+%It takes the gradient in the origin and then it predicts
+%the further shape of the result distributions.
+%It assumes the results have a normal distribution.
+
+%Although very fast, its assumptions that results have a normal distribution is often not true.
+%But for a quick feeling of the output uncertainty it can be very useful.
+

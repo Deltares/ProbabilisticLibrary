@@ -104,27 +104,8 @@ int combinemultipleelements_c(double* betaElement, double* alphaElement, double*
 }
 
 extern "C"
-int hohenbichler_c(double* betaV, double* pfU, double* rhoInput, double* pfVpfU)
-{
-    auto h = HohenbichlerFORM();
-    auto result = h.PerformHohenbichler(*betaV, *pfU, *rhoInput);
-    *pfVpfU = result.first;
-    return (int)result.second;
-}
-
-extern "C"
-int computebetasection_c(double * betaCrossSection, double* sectionLength, double* breachL, double* rhoZ,
-    double* dz, double* deltaL, double* betaSection)
-{
-    auto up = upscaling();
-    auto result = up.ComputeBetaSection(*betaCrossSection, *sectionLength, *breachL, *rhoZ, *dz, *deltaL);
-    *betaSection = result.first;
-    return (int)result.second;
-}
-
-extern "C"
 int upscalelengthc(double* betaCrossSection, double* alphaCrossSection, double* rhoXK, double* dXK,
-    double* sectionLength, double* betaSection, double* alphaSection, double* breachLength, int nStochasts)
+    double* sectionLength, double* betaSection, double* alphaSection, double* minimumFailureLength, int nStochasts)
 {
     vector1D alpha = vector1D(nStochasts);
     vector1D rhoxk = vector1D(nStochasts);
@@ -138,7 +119,7 @@ int upscalelengthc(double* betaCrossSection, double* alphaCrossSection, double* 
     auto crossSectionElement = alphaBeta(*betaCrossSection, alpha);
 
     auto up = upscaling();
-    auto alphaBeta = up.upscaleLength(crossSectionElement, rhoxk, dxk, *sectionLength, *breachLength);
+    auto alphaBeta = up.upscaleLength(crossSectionElement, rhoxk, dxk, *sectionLength, *minimumFailureLength);
 
     *betaSection = alphaBeta.first.getBeta();
     for (int i = 0; i < nStochasts; i++)
@@ -146,29 +127,6 @@ int upscalelengthc(double* betaCrossSection, double* alphaCrossSection, double* 
         alphaSection[i] = alphaBeta.first.getAlphaI(i);
     }
     return alphaBeta.second;
-}
-
-extern "C"
-int upscaleintimec(double* nrTimes, double* beta, double* alpha, double* inRhoT, int nStochasts)
-{
-    auto alfa = vector1D(nStochasts);
-    auto rho = vector1D(nStochasts);
-    for (int i = 0; i < nStochasts; i++)
-    {
-        alfa(i) = alpha[i];
-        rho(i) = inRhoT[i];
-    }
-    auto ab = alphaBeta(*beta, alfa);
-
-    auto up = upscaling();
-    int n = up.upscaleInTime(*nrTimes, ab, rho);
-
-    *beta = ab.getBeta();
-    for (int i = 0; i < nStochasts; i++)
-    {
-        alpha[i] = ab.getAlphaI(i);
-    }
-    return n;
 }
 
 extern "C"
@@ -198,13 +156,6 @@ void upscaletolargestblockc(double* betaSmallBlock, double* alphaSmallBlock, dou
         alphaLargestBlock[i] = largestBlock.getAlphaI(i);
         durationsLargestBlock[i] = durationsLB(i);
     }
-}
-
-extern "C"
-void integrateequalelements(double * beta, double * rhoT, double * nrElements, double * betaT)
-{
-    auto ee = intEqualElements();
-    *betaT = ee.integrateEqualElements(*beta, *rhoT, *nrElements);
 }
 
 extern "C"
@@ -262,39 +213,6 @@ int combinetwoelementspartialcorrelationc2(double* beta1, double* alpha1, double
         alphaC[i] = elm.ab.getAlphaI(i);
     }
     return elm.n;
-}
-
-extern "C"
-int combinemultipleelementsspatialcorrelated_c(double* betaElement, double* alphaElement, double* rhoIn,
-    double* beta, double* alpha, const combineAndOr combAndOr, int nrElms, int nrStoch)
-{
-    auto cmb = combineElements();
-    auto elm = fillElements(betaElement, alphaElement, nrElms, nrStoch);
-
-    std::vector<std::vector<vector1D>> rho;
-    for (int k = 0; k < nrElms; k++)
-    {
-        auto q = std::vector<vector1D>();
-        for (int j = 0; j < nrElms; j++)
-        {
-            auto r = vector1D(nrStoch);
-            for (int i = 0; i < nrStoch; i++)
-            {
-                r(i) = rhoIn[j + nrElms * k + nrElms * nrElms * i];
-            }
-            q.push_back(r);
-        }
-        rho.push_back(q);
-    }
-
-    auto result = cmb.combineMultipleElementsSpatialCorrelated(elm, rho, combAndOr);
-
-    *beta = result.ab.getBeta();
-    for (int i = 0; i < nrStoch; i++)
-    {
-        alpha[i] = result.ab.getAlphaI(i);
-    }
-    return result.n;
 }
 
 extern "C"

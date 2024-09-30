@@ -46,11 +46,19 @@ struct fdistribs
 
 struct tResult
 {
+    tError error;
     double beta;
     double alpha[maxActiveStochast];
     int stepsNeeded;
     int samplesNeeded;
     bool convergence;
+};
+
+struct tCompIds
+{
+    int id;
+    int nrStochasts;
+    int nrCorrelations;
 };
 
 void updateX(const std::vector<std::shared_ptr<StochastPointAlpha>> & alpha, const DPoptions option, tResult & r, const std::shared_ptr<DesignPoint> & newResult,
@@ -104,15 +112,16 @@ bool shouldRunAtDesignPoint(const DPoptions dpOption)
 }
 
 extern "C"
-void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, corrStruct correlations[], const int nrCorrelations,
+void probcalcf2c(const basicSettings* method, fdistribs c[], corrStruct correlations[],
     const double(*fx)(double[], computationSettings*, tError*),
     const bool(*pc)(ProgressType, const char*),
-    const int compIds[], double x[], tResult* r, tError* ierr)
+    const tCompIds* compIds, double x[], tResult* result)
 {
     try
     {
-        auto nStoch = (size_t)n;
-        auto fw = funcWrapper(compIds[0], fx);
+        auto nStoch = (size_t)compIds->nrStochasts;
+        auto fw = funcWrapper(compIds->id, fx);
+        auto nrCorrelations = compIds->nrCorrelations;
 
         auto stochasts = std::vector<std::shared_ptr<Deltares::Statistics::Stochast>>();
         for (size_t i = 0; i < nStoch; i++)
@@ -131,7 +140,7 @@ void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, corrStr
         auto corr = std::make_shared<CorrelationMatrix>();
         if (nrCorrelations > 0)
         {
-            corr->init(n);
+            corr->init((int)nStoch);
             for (int i = 0; i < nrCorrelations; i++)
             {
                 corr->SetCorrelation(correlations[i].idx1, correlations[i].idx2, correlations[i].correlation);
@@ -164,13 +173,13 @@ void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, corrStr
             allMessages.push_back(std::make_shared<Message>(Error, s));
         }
 
-        ierr->errorCode = 0;
+        result->error.errorCode = 0;
         for(const auto& message : allMessages)
         {
             if (message->Type == Error)
             {
-                ierr->errorCode = 1;
-                fillErrorMessage(*ierr, message->Text);
+                result->error.errorCode = 1;
+                fillErrorMessage(result->error, message->Text);
             }
             else
             {
@@ -179,20 +188,20 @@ void probcalcf2c(const basicSettings* method, fdistribs* c, const int n, corrStr
             }
         }
 
-        r->beta = newResult->Beta;
+        result->beta = newResult->Beta;
         for (size_t i = 0; i < nStoch; i++)
         {
-            r->alpha[i] = newResult->Alphas[i]->Alpha;
+            result->alpha[i] = newResult->Alphas[i]->Alpha;
         }
 
-        updateX(newResult->Alphas, method->designPointOptions, *r, newResult, x, fw);
+        updateX(newResult->Alphas, method->designPointOptions, *result, newResult, x, fw);
 
-        copyConvergence(*r, *newResult->convergenceReport, method->methodId);
+        copyConvergence(*result, *newResult->convergenceReport, method->methodId);
     }
     catch (const std::exception& e)
     {
         std::string s = e.what();
-        ierr->errorCode = -1;
-        fillErrorMessage(*ierr, s);
+        result->error.errorCode = -1;
+        fillErrorMessage(result->error, s);
     }
 }

@@ -95,7 +95,7 @@ namespace Deltares
 
                 property double ReturnPeriod
                 {
-                    double get() { return Statistics::StandardNormal::getRFromP(this->ProbabilityFailure); }
+                    double get() { return Statistics::StandardNormal::getTFromP(this->ProbabilityFailure); }
                 }
 
                 property Wrappers::ConvergenceReport^ ConvergenceReport

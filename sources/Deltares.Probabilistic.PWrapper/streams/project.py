@@ -421,6 +421,74 @@ class CombineProject:
 				self._design_point = DesignPoint(designPointId, variables, self._design_points)
 		return self._design_point
 
+class LengthEffectProject:
+	def __init__(self):
+		self._id = interface.Create('length_effect_project')
+		self._design_point_cross_section = DesignPoint()
+		self._correlation_matrix = SelfCorrelationMatrix()
+		self._design_point = None
+
+	def __dir__(self):
+		return ['design_point_cross_section',
+				'correlation_lengths'
+				'minimum_failure_length',
+				'length',
+				'correlation_matrix',
+				'design_point']
+
+	@property
+	def design_point_cross_section(self):
+		return self._design_point_cross_section
+
+	@design_point_cross_section.setter
+	def design_point_cross_section(self, value: DesignPoint):
+		self._design_point_cross_section = value
+		variables = value.get_variables()
+		self._correlation_matrix._set_variables(variables)
+
+	@property
+	def correlation_matrix(self):
+		return self._correlation_matrix
+
+	@property
+	def correlation_lengths(self):
+		return interface.GetArrayValue(self._id, 'correlation_lengths')
+
+	@correlation_lengths.setter
+	def correlation_lengths(self, values):
+		interface.SetArrayValue(self._id, 'correlation_lengths', values)
+
+	@property
+	def length(self):
+		return interface.GetValue(self._id, 'length')
+
+	@length.setter
+	def length(self, value: float):
+		interface.SetValue(self._id, 'length', value)
+
+	@property
+	def minimum_failure_length(self):
+		return interface.GetValue(self._id, 'minimum_failure_length')
+
+	@minimum_failure_length.setter
+	def minimum_failure_length(self, value: float):
+		interface.SetValue(self._id, 'minimum_failure_length', value)
+
+	def run(self):
+		self._design_point = None
+		interface.SetIntValue(self._id, 'design_point_cross_section', self._design_point_cross_section._id)
+		interface.SetIntValue(self._id, 'correlation_matrix', self._correlation_matrix._id)
+		interface.Execute(self._id, 'run')
+
+	@property
+	def design_point(self):
+		if self._design_point is None:
+			designPointId = interface.GetIntValue(self._id, 'design_point')
+			if designPointId > 0:
+				variables = self._design_point_cross_section.get_variables()
+				self._design_point = DesignPoint(designPointId, variables, self._design_point_cross_section)
+		return self._design_point
+
 
 class ModelParameter:
 

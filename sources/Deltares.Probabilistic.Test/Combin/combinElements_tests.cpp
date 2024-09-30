@@ -20,16 +20,19 @@
 // All rights reserved.
 //
 #include "gtest/gtest.h"
-#include <math.h>
+#include <cmath>
+#include <memory>
 #include "combinElements_tests.h"
 #include "../../Deltares.Probabilistic/Statistics/StandardNormal.h"
+#include "../../Deltares.Probabilistic/Combine/LengthEffect.h"
 
 using namespace Deltares::Reliability;
 using namespace Deltares::Statistics;
 
 namespace Deltares{ namespace Probabilistic { namespace Test {
 
-void combinElementsTests::runAll()
+
+ void combinElementsTests::runAllCombineTwoElementsTests()
 {
     testCombineTwoElementsNoCorrelation1();
     testCombineTwoElementsNoCorrelation2();
@@ -59,10 +62,6 @@ void combinElementsTests::runAll()
     testcombineMultipleElementsProb3();
     testcombineMultipleElementsProb4();
     testcombineMultipleElementsProb5();
-    testcombineMultipleElementsSpatialCorrelated1();
-    testcombineMultipleElementsSpatialCorrelated2();
-    testcombineMultipleElementsSpatialCorrelated3();
-    testcombineMultipleElementsSpatialCorrelated4();
     testCombineElementsFullCorrelation1();
     testCombineElementsFullCorrelation2();
     testcombineTwoElementsNegativeCorrelation1();
@@ -79,6 +78,14 @@ void combinElementsTests::runAll()
     testcombineTwoElementsPartialCorrelation13a();
     testcombineTwoElementsPartialCorrelation14a();
     testcombineTwoElementsPartialCorrelation99a();
+}
+
+void combinElementsTests::runAllLengthEffectTests()
+{
+    testLengthEffectFourStochasts();
+    testcombineMultipleElementsSpatialCorrelated1();
+    testcombineMultipleElementsSpatialCorrelated2();
+    testcombineMultipleElementsSpatialCorrelated3();
 }
 
 // Test of combineTwoElementsPartialCorrelation
@@ -844,50 +851,49 @@ void combinElementsTests::testcombineMultipleElementsSpatialCorrelated3()
     EXPECT_EQ(section.second, 0);
 }
 
-// Test of combine multiple elements spatial correlated \n
-// This test gives the results as calculated with the method residual correlation
-void combinElementsTests::testcombineMultipleElementsSpatialCorrelated4()
+void combinElementsTests::testLengthEffectFourStochasts()
 {
-    const size_t nStochast = 4;        // Number of stochastic variables
-    const size_t nElements = 20;       // Number of elements
-
-    auto CrossSection = alphaBeta(5.0, {0.6, sqrt(0.5 - 0.36), 0.6, sqrt(0.5 - 0.36)});
-    auto rhoXK             = vector1D({0.5, 0.5, 0.2, 0.2});
-    auto dXK               = vector1D({500.0, 300.0, 500.0, 300.0});
-    double sectionLength   = 100.0;
-
-    auto ref = alphaBeta(4.46188711523653, // pre-computed
-    {0.601319423661625, 0.377260946406375, 0.598102531853429, 0.371971088169949}); // pre-computed
-
-    auto section = up.upscaleLength ( CrossSection, rhoXK, dXK, sectionLength, -999.0);
-    EXPECT_EQ(section.second, 0);
-
-    elements Element;
-    for (size_t i = 0; i < nElements; i++)
+    const int nStochasts = 4;
+    std::vector< std::shared_ptr<Stochast>> stochasts;
+    for (size_t i = 0; i < nStochasts; i++)
     {
-        Element.push_back(section.first);
-    }
-    std::vector<std::vector<vector1D>> rhoSpatial;
-    for (size_t k = 0; k < nElements; k++)
-    {
-        auto q = std::vector<vector1D>();
-        for (size_t j = 0; j < nElements; j++)
-        {
-            double deltaX = std::min( j-k, k-j ) * sectionLength;
-            auto r = vector1D(nStochast);
-            for (size_t i = 0; i < nStochast; i++)
-            {
-                r(i) = rhoXK(i) + (1.0 - rhoXK(i)) * exp(- pow(deltaX / dXK(i), 2) );
-            }
-            q.push_back(r);
-        }
-        rhoSpatial.push_back(q);
+        auto s = std::make_shared<Stochast>();
+        s->setDistributionType (DistributionType::Normal);
+        s->setMeanAndDeviation(0.0, 1.0);
+        stochasts.push_back(s);
     }
 
-    auto elementC = cmb.combineMultipleElementsSpatialCorrelated(Element, rhoSpatial, combineAndOr::combOr);
+    auto section = std::make_shared<DesignPoint>();
+    section->Beta = 5.0;
+    auto alphaValues = std::vector<double>({ -0.6, -sqrt(0.5 - 0.36), -0.6, -sqrt(0.5 - 0.36) });
+    for (int i = 0; i < alphaValues.size(); i++ )
+    {
+        auto alphaValue = alphaValues[i];
+        auto alpha = std::make_shared<StochastPointAlpha>();
+        alpha->Alpha = alphaValue;
+        alpha->Stochast = stochasts[i];
+        section->Alphas.push_back(alpha);
+    }
 
-    utils.checkAlphaBeta(elementC.ab, ref, 2e-4);
-    EXPECT_EQ(elementC.n, 0);
+    auto rhoXK = std::vector<double>({ 0.5, 0.5, 0.2, 0.2 });
+    auto rho = std::make_shared<SelfCorrelationMatrix>();
+    for (size_t i = 0; i < nStochasts; i++)
+    {
+        rho->setSelfCorrelation(section->Alphas[i]->Stochast, rhoXK[i]);
+    }
+
+    auto dp = LengthEffect::UpscaleLength(section, rho, { 500.0, 300.0, 500.0, 300.0 }, 2000.0, -999.0);
+
+    auto ref = alphaBeta(4.5064103581966,
+        { -0.578741673689891, -0.385418150246354, -0.598199853682860, -0.398331344045516 }); // pre-computed
+    auto refX = std::vector<double>({ 2.60804747, 1.73685234, 2.69573402, 1.79504449 }); // pre-computed
+    EXPECT_NEAR(dp.Beta, ref.getBeta(), 1e-6);
+    for (size_t i = 0; i < nStochasts; i++)
+    {
+        EXPECT_NEAR(dp.Alphas[i]->Alpha, ref.getAlphaI(i), 1e-6);
+        EXPECT_NEAR(dp.Alphas[i]->X, refX[i], 1e-6);
+    }
+    EXPECT_EQ(1, dp.ContributingDesignPoints.size());
 }
 
 void combinElementsTests::testCombineElementsFullCorrelation(const combineAndOr andOr)

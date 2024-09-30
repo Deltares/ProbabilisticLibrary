@@ -1,0 +1,137 @@
+\chapter{Combining design points}
+\label{chp:CombiningDesignPoints}
+
+Design points can be combined.
+This is most of the times desired when multiple failure definitions are applied.
+
+Design points can currently only be combined afterwards.
+When combining afterwards, the design points are simulated by equivalent planes.
+A number of methods exist how to derive the combined design point from the equivalent planes
+(see \autoref{sec:EquivalentPlanes}).
+
+% TODO not yet in Streams:
+% \section{Integrated in reliability calculation}
+% \label{sec:CombiningDesignPointsIntegrated}
+%
+%When combining the design points integrated during the reliability calculation for a single component,
+%the failure definitions are merged to one failure definition.
+%This combined failure definition is used in one of the reliability techniques
+%(see \autoref{sec:ReliabilityTechniques}).
+
+%When using FORM with integrated combining of design points,
+%results are not reliable.
+%Therefore \probLib prevents this combination.
+
+\section{Equivalent planes}
+\label{sec:EquivalentPlanes}
+
+When combining afterwards, first design points are calculated for each failure definition individually and then they are combined.
+This combination uses an equivalent plane $M$ for each design point, by which we make an approximation.
+The equivalent plane is defined as follows:
+
+\begin{align}
+\label{eq:EquivalentPlane}
+M_{\text{i}}\left(u\right) = \beta_{\text{i}} + \sum_{\text{j}} \alpha_{i,j} \cdot u_{\text{j}}
+\end{align}
+
+and 
+
+\begin{align}
+\label{eq:EquivalentPlaneCombine}
+M_{\text{combined}}\left(u\right) = \left\{\begin{array}{ll}{\text{series}} & \min\limits_{\text{i}} M_{\text{i}}\left(u\right)\\
+\text{parallel} & \max\limits_{\text{i}} M_{\text{i}}\left(u\right)
+\end{array}	
+\right.
+\end{align}
+
+where
+
+\begin{longtable*}{p{20mm}p{\textwidth-24pt-20mm}}  
+	$M_{\text{i}}$ & is the result of the equivalent plane of design point $i$; \\
+	$M_{\text{combined}}$ & is the result of the combination of a number of design points $i$; \\
+	$\beta_{\text{i}}$ & is the reliability index of design point $i$; \\
+	$\alpha_{i,j}$ & is the alpha factor of variable $j$ in design point $i$;
+\end{longtable*}
+
+\subsection{Directional sampling}
+\label{sec:CombiningDesignPointsDS}
+
+Directional sampling (see \autoref{sec:DirectionalSampling}) is applied on the combined model $M_{\text{combined}}$
+(see \autoref{eq:EquivalentPlaneCombine}). The following settings are applied: 
+
+\begin{longtable*}{p{40mm}p{\textwidth-40mm}}  
+	Design point method & Center of gravity; \\
+	Directions & 1000 - 10000; \\
+	Convergence factor & 0.1;
+\end{longtable*}
+
+\subsection{Importance sampling}
+\label{sec:CombiningDesignPointsIS}
+
+Depending on the combination method (series or parallel) the following algorithms are applied:
+
+\paragraph{Importance sampling - Series}
+
+Importance sampling (see \autoref{sec:ImportanceSampling}) is applied on the combined model $M_{\text{combined}}$
+(see \autoref{eq:EquivalentPlaneCombine}) in the following iterative way:
+The combined probability of the first $N+1$ design points is the probability of the first $N+1$ design points added with the contribution of design point $N+1$,
+where it does not have an overlap with one of the previous design points (see \autoref{eq:ImportanceSamplingSeries}).
+
+\begin{align}
+\label{eq:ImportanceSamplingSeries}
+P\left(X_{1 \ldots N+1}\right) = P\left(X_{1 \ldots N}\right) + P\left(X_{N+1}\right) \cap P\left(\overline{X_{1 \ldots N}}\right)
+\end{align}
+
+where 
+
+\begin{longtable*}{p{20mm}p{\textwidth-24pt-20mm}}  
+	$P\left(X_{1 \ldots N+1}\right)$ & is the combined probability of the first $N+1$ design points; \\
+	$P\left(\overline{X_{1 \ldots N}}\right)$ & is the complement of the combined probability of the first $N$ design points; \\
+	$P\left(X_{N+1}\right)$ & is the probability of design point $N+1$;
+\end{longtable*}
+
+\autoref{eq:ImportanceSamplingSeries} can be rewritten as:
+
+\begin{align}
+\label{eq:ImportanceSamplingSeriesCond}
+P\left(X_{1 \ldots N+1}\right) = P\left(X_{1 \ldots N}\right) + P\left(X_{N+1}\right) \cdot \left(1 - P\left(X_{1 \ldots N} | X_{N+1}\right)\right) 
+\end{align}
+
+
+The last term ($P\left(X_{1 \ldots N} | X_{N+1}\right)$) is calculated by importance sampling (see \autoref{sec:ImportanceSampling}).
+The start point of the importance sampling is set to the design point of $X_{N+1}$.
+The calculation is stopped when the remainder of the design points represent a small probability of failure.
+
+\paragraph{Importance sampling - Parallel}
+
+The parallel combination uses Crude Monte Carlo (see \autoref{sec:CrudeMonteCarlo}).
+The sampling space is limited to the area which can lead to failure,
+which could be very small.
+Only values for $u_{\text{i}}$ are allowed for which the following condition is true:
+
+\begin{align}
+\forall k, u_{\text{min}} < u_{\text{j}} < u_{\text{min}} < u_{\text{j}} \exists u_{\text{i}} | M_{\text{k}}\left(u\right) = 0 \land u_{\text{min}} < u_{\text{i}} < u_{\text{max}}
+\end{align}
+
+where
+\begin{longtable*}{p{20mm}p{\textwidth-24pt-20mm}}  
+	$i$ & is the index of the $i^{\text{th}}$ variable; \\
+	$j$ & is any other variable index ($j \neq i$); \\
+	$k$ & is the index of the design point; \\
+	$u_{\text{min}}$ & is the computationally minimum possible value of $u$ (-8); \\
+	$u_{\text{max}}$ & is the computationally maximum possible value of $u$ (8); \\
+	$M_{\text{k}}\left(u\right)$ & is the equivalent plane of the $i^{\text{th}}$ design point (see \autoref{eq:EquivalentPlane});
+\end{longtable*}
+
+\subsection{Hohenbichler}\label{sec:Hohenbichler}
+
+The kernel of the Hohenbichler algorithm is combination of two models $M_{\text{combined}}$ (see \autoref{eq:EquivalentPlaneCombine}).
+This combination is calculated by FORM (see \autoref{sec:FORM}).
+
+The result of this combination is a design point.
+This design point is represented as an equivalent plane again when it should be combined with a third design point.
+This will be repeated until all design points have been combined. 
+
+First the two most contributing design points are combined,
+then the remaining design with the highest probability if failure is added, and so on.
+In this way the error made by representing intermediate design points is as low as possible.
