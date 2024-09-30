@@ -113,6 +113,16 @@ namespace Deltares
             }
 
             // Create all samples
+            std::vector<double> pMinValues;
+            std::vector<double> pMaxValues;
+            for (int i = 0; i < nStochasts; i++)
+            {
+                double uMin = Settings->StochastSet->VaryingStochastSettings[i]->MinValue;
+                double uMax = Settings->StochastSet->VaryingStochastSettings[i]->MaxValue;
+                pMinValues.push_back(StandardNormal::getQFromU(uMin));
+                pMaxValues.push_back(StandardNormal::getQFromU(uMax));
+            }
+
             std::vector<std::shared_ptr<Sample>> samples;
             for (int n = 0; n < Settings->MinimumSamples; n++)
             {
@@ -125,23 +135,11 @@ namespace Deltares
                 std::vector<double> uValues(nStochasts);
                 double weight = 0.0;
 
-                std::vector<double> uMinValues;
-                std::vector<double> uMaxValues;
                 for (int i = 0; i < nStochasts; i++)
                 {
-                    uMinValues.push_back(Settings->StochastSet->VaryingStochastSettings[i]->MinValue);
-                    uMaxValues.push_back(Settings->StochastSet->VaryingStochastSettings[i]->MaxValue);
-                }
-
-                for (int i = 0; i < nStochasts; i++)
-                {
-                    double umin = uMinValues[i];
-                    double umax = uMaxValues[i];
-
-                    double pMin = StandardNormal::getQFromU(umin);
-                    double pMax = StandardNormal::getQFromU(umax);
-
-                    double step = (pMin - pMax) / (Settings->MinimumSamples);
+                    double pMin = pMinValues[i];
+                    double pMax = pMaxValues[i];
+                    double step = (pMin - pMax) / Settings->MinimumSamples;
 
                     double pLow = pMin - uIndices[i] * step;
                     double pHigh = pMin - (uIndices[i] + 1) * step;
