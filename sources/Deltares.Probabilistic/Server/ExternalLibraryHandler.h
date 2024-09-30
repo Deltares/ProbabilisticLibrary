@@ -14,10 +14,9 @@ namespace Deltares
         class ExternalLibraryHandler : public BaseHandler
         {
         public:
-#if __has_include(<windows.h>)
-        public:
             ExternalLibraryHandler(std::string libraryName)
             {
+#if __has_include(<windows.h>)
 #ifdef UNICODE
                 std::wstring stemp = std::wstring(libraryName.begin(), libraryName.end());
                 LPCWSTR library = stemp.c_str();
@@ -27,7 +26,6 @@ namespace Deltares
                 LPCSTR library = libraryName.c_str();
                 HINSTANCE libInstance = LoadLibrary(library);
 #endif
-
                 if (!libInstance)
                 {
                     throw Reliability::probLibException("Could not load the dynamic library " + std::string(libraryName));
@@ -49,6 +47,7 @@ namespace Deltares
                 this->getIndexedIntMethod = (f_get_indexed_int_value)GetProcAddress(libInstance, "GetIndexedIntValue");
                 this->getIndexedStringMethod = (f_get_indexed_string_value)GetProcAddress(libInstance, "GetIndexedStringValue");
                 this->setArrayIntMethod = (f_set_array_int_value)GetProcAddress(libInstance, "SetArrayIntValue");
+#endif
             }
 
             void Initialize();
@@ -99,11 +98,6 @@ namespace Deltares
             f_get_indexed_int_value getIndexedIntMethod = nullptr;
             f_get_indexed_string_value getIndexedStringMethod = nullptr;
             f_set_array_int_value setArrayIntMethod = nullptr;
-#else
-            ExternalHandler(std::string libraryName)
-            {
-            }
-#endif
         };
 
     }

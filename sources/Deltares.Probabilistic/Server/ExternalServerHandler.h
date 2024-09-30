@@ -24,6 +24,7 @@ namespace Deltares
                 this->serverName = serverName;
             }
 
+#if __has_include(<windows.h>)
             ~ExternalServerHandler()
             {
                 freeaddrinfo(address);
@@ -34,6 +35,7 @@ namespace Deltares
                     this->server_started = false;
                 }
             }
+#endif
 
             void SetServer(std::shared_ptr<BaseServer> server, int handlerIndex, std::shared_ptr<BaseHandler> defaultHandler) override
             {
@@ -61,6 +63,7 @@ namespace Deltares
             std::string serverName = "";
             bool server_started = false;
 
+#if __has_include(<windows.h>)
             WSADATA wsaData;
 
             std::string Send(std::string message, bool waitForAnswer);
@@ -76,6 +79,7 @@ namespace Deltares
 
             addrinfo* address = nullptr;
             addrinfo hints;
+#endif
         };
     }
 }
