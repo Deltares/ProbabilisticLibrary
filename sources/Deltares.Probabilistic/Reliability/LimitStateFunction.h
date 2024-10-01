@@ -23,14 +23,8 @@
 #pragma once
 #include <memory>
 #include <vector>
-#include <xstring>
 
 #include "../Model/ZValueConverter.h"
-
-namespace Deltares::Models
-{
-    class ModelInputParameter;
-}
 
 namespace Deltares
 {
