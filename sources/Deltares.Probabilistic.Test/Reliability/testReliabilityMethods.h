@@ -33,6 +33,7 @@ namespace Deltares
                 void allReliabilityMethods() const;
             private:
                 void testLatinHyperCube() const;
+                void testNumericalBisection() const;
                 const double margin = 1e-9;
             };
         }

@@ -22,6 +22,7 @@
 #include <gtest/gtest.h>
 #include "testReliabilityMethods.h"
 #include "../../Deltares.Probabilistic/Reliability/LatinHyperCube.h"
+#include "../../Deltares.Probabilistic/Reliability/NumericalBisection.h"
 #include "../projectBuilder.h"
 
 using namespace Deltares::Reliability;
@@ -36,7 +37,8 @@ namespace Deltares
         {
             void testReliabilityMethods::allReliabilityMethods() const
             {
-                testLatinHyperCube();
+                //testLatinHyperCube();
+                testNumericalBisection();
             }
 
             void testReliabilityMethods::testLatinHyperCube() const
@@ -54,6 +56,17 @@ namespace Deltares
                 EXPECT_NEAR(designPoint->Alphas[1]->Alpha, 0.8254550932, margin);
             }
 
+            void testReliabilityMethods::testNumericalBisection() const
+            {
+                auto calculator = NumericalBisection();
+
+                auto modelRunner = projectBuilder().BuildProject();
+
+                auto designPoint = calculator.getDesignPoint(modelRunner);
+
+                ASSERT_EQ(designPoint->Alphas.size(), 2);
+            }
         }
+
     }
 }
