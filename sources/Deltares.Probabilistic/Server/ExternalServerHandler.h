@@ -38,12 +38,12 @@ namespace Deltares
 #endif
             }
 
+#if __has_include(<windows.h>)
             void SetServer(std::shared_ptr<BaseServer> server, int handlerIndex, std::shared_ptr<BaseHandler> defaultHandler) override
             {
                 BaseHandler::SetServer(server, handlerIndex, defaultHandler);
             }
 
-            void Initialize();
             bool CanHandle(std::string objectType) override;
             void Create(std::string objectType, int id) override;
             void Destroy(int id) override;
@@ -60,6 +60,9 @@ namespace Deltares
             void SetArrayIntValue(int id, std::string property_, int* values, int size) override;
             void GetArgValues(int id, std::string property, double* values, int size, double* outputValues) override;
             void Execute(int id, std::string method_) override;
+#endif
+            void Initialize();
+
         private:
             std::string serverName = "";
             bool server_started = false;

@@ -215,7 +215,6 @@ namespace Deltares
         void ExternalServerHandler::Initialize()
         {
             this->UpdateAddressInfo();
-
             this->StartServer();
         }
 
@@ -335,25 +334,6 @@ namespace Deltares
             for (auto c : strings[strings.size() - 1]) res.push_back(c);
             return std::string{ res.begin(), res.end() };
         }
-#else
-void ExternalServerHandler::Initialize() {}
-bool ExternalServerHandler::CanHandle(std::string objectType) { return false; };
-void ExternalServerHandler::Create(std::string objectType, int id) {};
-void ExternalServerHandler::Destroy(int id) {};
-double ExternalServerHandler::GetValue(int id, std::string property) { return std::nan(""); };
-void ExternalServerHandler::SetValue(int id, std::string property, double value) {};
-bool ExternalServerHandler::GetBoolValue(int id, std::string property) { return false; };
-void ExternalServerHandler::SetBoolValue(int id, std::string property, bool value) {};
-int ExternalServerHandler::GetIntValue(int id, std::string property) { return -1; };
-void ExternalServerHandler::SetIntValue(int id, std::string property, int value) {};
-std::string ExternalServerHandler::ExternalServerHandler::GetStringValue(int id, std::string property) { return "";};
-void ExternalServerHandler::SetStringValue(int id, std::string property, std::string value) {};
-int ExternalServerHandler::GetIndexedIntValue(int id, std::string property_, int index) { return -1; };
-std::string ExternalServerHandler::GetIndexedStringValue(int id, std::string property, int index) { return ""; };
-void ExternalServerHandler::SetArrayIntValue(int id, std::string property_, int* values, int size) {};
-double ExternalServerHandler::GetArgValues(int id, std::string property, double* values, int size) { return std::nan(""); };
-void ExternalServerHandler::Execute(int id, std::string method_) {};
-#endif
 
         std::vector<std::string> ExternalServerHandler::StringSplit(std::string& text, const std::string& delimiter)
         {
@@ -370,6 +350,13 @@ void ExternalServerHandler::Execute(int id, std::string method_) {};
 
             return tokens;
         }
+#else
+void ExternalServerHandler::Initialize()
+{
+}
+
+#endif
+
     }
 }
 
