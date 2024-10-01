@@ -4,6 +4,7 @@ namespace Deltares
 {
     namespace Server
     {
+#if __has_include(<windows.h>)
         bool ExternalHandler::CanHandle(std::string objectType)
         {
             return this->canHandle(objectType.c_str());
@@ -73,6 +74,7 @@ namespace Deltares
         {
             return this->getCallbackMethod(id, method.c_str());
         }
+#endif
     }
 }
 

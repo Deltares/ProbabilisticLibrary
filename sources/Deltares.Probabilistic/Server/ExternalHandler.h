@@ -1,6 +1,8 @@
 #pragma once
 
+#if __has_include(<windows.h>)
 #include <windows.h>
+#endif
 
 #include "BaseHandler.h"
 #include "../Utils/probLibException.h"
@@ -14,6 +16,7 @@ namespace Deltares
         public:
             ExternalHandler(std::string libraryName)
             {
+#if __has_include(<windows.h>)
                 std::wstring stemp = std::wstring(libraryName.begin(), libraryName.end());
                 LPCWSTR library = stemp.c_str();
 
@@ -39,8 +42,10 @@ namespace Deltares
                 this->getIndexedIntMethod = (f_get_indexed_int_value)GetProcAddress(libInstance, "GetIndexedIntValue");
                 this->setArrayIntMethod = (f_set_array_int_value)GetProcAddress(libInstance, "SetArrayIntValue");
                 this->getCallbackMethod = (f_get_callback_method)GetProcAddress(libInstance, "GetCallBack");
+#endif
             }
 
+#if __has_include(<windows.h>)
             bool CanHandle(std::string objectType) override;
             void Create(std::string objectType, int id) override;
             void Destroy(int id) override;
@@ -85,6 +90,7 @@ namespace Deltares
             f_get_indexed_int_value getIndexedIntMethod = nullptr;
             f_set_array_int_value setArrayIntMethod = nullptr;
             f_get_callback_method getCallbackMethod = nullptr;
+#endif
         };
     }
 }
