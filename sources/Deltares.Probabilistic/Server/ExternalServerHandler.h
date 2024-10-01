@@ -55,6 +55,7 @@ namespace Deltares
             void SetIntValue(int id, std::string property, int value) override;
             std::string GetStringValue(int id, std::string property) override;
             void SetStringValue(int id, std::string property, std::string value) override;
+            double GetIndexedValue(int id, std::string property_, int index) override;
             int GetIndexedIntValue(int id, std::string property_, int index) override;
             std::string GetIndexedStringValue(int id, std::string property, int index) override;
             void SetArrayIntValue(int id, std::string property_, int* values, int size) override;

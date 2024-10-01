@@ -259,6 +259,12 @@ namespace Deltares
 
                 if (property_ == "critical_value") return limitStateFunction->criticalValue;
             }
+            else if (objectType == ObjectType::ModelParameter)
+            {
+                std::shared_ptr<Models::ModelInputParameter> parameter = modelParameters[id];
+
+                if (property_ == "default_value") return parameter->defaultValue;
+            }
             else if (objectType == ObjectType::Settings)
             {
                 std::shared_ptr<Reliability::Settings> settings = settingsValues[id];
@@ -373,6 +379,12 @@ namespace Deltares
                 std::shared_ptr<Reliability::LimitStateFunction> limitStateFunction = limitStateFunctions[id];
 
                 if (property_ == "critical_value") limitStateFunction->criticalValue = value;
+            }
+            else if (objectType == ObjectType::ModelParameter)
+            {
+                std::shared_ptr<Models::ModelInputParameter> parameter = modelParameters[id];
+
+                if (property_ == "default_value") parameter->defaultValue = value;
             }
             else if (objectType == ObjectType::Settings)
             {

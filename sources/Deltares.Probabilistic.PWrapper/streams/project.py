@@ -114,7 +114,7 @@ class ZModel:
 			else:
 				output_values[0] = z
 		else:
-			z = ZModel._callback(*values, output_values);
+			z = ZModel._callback(values, output_values);
 
 
 class SensitivityProject:
@@ -185,6 +185,7 @@ class SensitivityProject:
 			if not var_name in self._all_variables.keys():
 				variable = Stochast()
 				variable.name = var_name
+				variable.mean = input_parameter.default_value
 				self._all_variables[var_name] = variable
 			else:
 				variable = self._all_variables[var_name]
@@ -312,6 +313,7 @@ class ReliabilityProject:
 			if not var_name in self._all_variables.keys():
 				variable = Stochast()
 				variable.name = var_name
+				variable.mean = input_parameter.default_value
 				self._all_variables[var_name] = variable
 			else:
 				variable = self._all_variables[var_name]
@@ -503,7 +505,8 @@ class ModelParameter:
 
 	def __dir__(self):
 		return ['name',
-	            'index']
+	            'index',
+		        'mean']
 	
 	@property
 	def name(self):
@@ -520,6 +523,14 @@ class ModelParameter:
 	@name.setter
 	def index(self, value):
 		interface.SetIntValue(self._id, 'index', value)
+
+	@property
+	def default_value(self):
+		return interface.GetValue(self._id, 'default_value')
+		
+	@default_value.setter
+	def default_value(self, value):
+		interface.SetValue(self._id, 'default_value', value)
 
 	def __str__(self):
 		return self.name

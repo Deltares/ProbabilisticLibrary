@@ -50,9 +50,10 @@ namespace Deltares
         {
             ZLambda calcValuesLambda = [zValuesLambda, this](std::shared_ptr<ModelSample> sample)
             {
+                double* inputValues = sample->Values.data();
                 double* outputValues = new double[this->outputParameters.size()];
 
-                (*zValuesLambda)(sample->Values.data(), (int)sample->Values.size(), outputValues);
+                (*zValuesLambda)(inputValues, (int) this->inputParameters.size(), outputValues);
 
                 sample->OutputValues.clear();
                 for (size_t i = 0; i < this->outputParameters.size(); i++)

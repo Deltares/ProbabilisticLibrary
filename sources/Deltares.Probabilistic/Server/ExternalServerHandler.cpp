@@ -278,6 +278,12 @@ namespace Deltares
             this->Send("set_string_value:" + std::to_string(id) + ":" + property + ":" + value, false);
         }
 
+        double ExternalServerHandler::GetIndexedValue(int id, std::string property, int index)
+        {
+            std::string result = this->Send("get_indexed_value:" + std::to_string(id) + ":" + property + ":" + std::to_string(index), true);
+            return std::stod(result);
+        }
+
         int ExternalServerHandler::GetIndexedIntValue(int id, std::string property, int index)
         {
             std::string result = this->Send("get_indexed_int_value:" + std::to_string(id) + ":" + property + ":" + std::to_string(index), true);
