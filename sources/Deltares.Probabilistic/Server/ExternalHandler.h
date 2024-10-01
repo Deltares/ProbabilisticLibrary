@@ -17,8 +17,13 @@ namespace Deltares
             ExternalHandler(std::string libraryName)
             {
 #if __has_include(<windows.h>)
+
+#ifdef UNICODE
                 std::wstring stemp = std::wstring(libraryName.begin(), libraryName.end());
                 LPCWSTR library = stemp.c_str();
+#else
+                LPCSTR library = libraryName.c_str();
+#endif
 
                 HINSTANCE libInstance = LoadLibrary(library);
 
