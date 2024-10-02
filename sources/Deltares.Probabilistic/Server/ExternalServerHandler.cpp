@@ -369,11 +369,6 @@ namespace Deltares
 
             return tokens;
         }
-#else
-void ExternalServerHandler::Initialize()
-{
-}
-
 #endif
 
     }
