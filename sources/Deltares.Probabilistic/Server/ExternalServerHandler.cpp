@@ -134,6 +134,8 @@ namespace Deltares
 
         void ExternalServerHandler::StartServer()
         {
+            this->UpdateAddressInfo();
+
             bool connected = false;
             int count = 0;
 
@@ -206,32 +208,43 @@ namespace Deltares
                 std::string data = Send(message, true);
                 return true;
             }
-            catch (const std::exception& e)
+            catch (const std::exception& )
             {
                 return false;
             }
         }
 
-        void ExternalServerHandler::Initialize()
-        {
-            this->UpdateAddressInfo();
-            this->StartServer();
-        }
-
         bool ExternalServerHandler::CanHandle(std::string objectType)
         {
+            if (!this->server_started)
+            {
+                StartServer();
+            }
+
             std::string result = this->Send("can_handle:" + objectType, true);
             return result == "true";
         }
 
         void ExternalServerHandler::Create(std::string objectType, int id)
         {
+            if (!this->server_started)
+            {
+                StartServer();
+            }
+
             this->Send("create:" + objectType + ":" + std::to_string(id), false);
+            liveObjects++;
         }
 
         void ExternalServerHandler::Destroy(int id)
         {
             this->Send("destroy:" + std::to_string(id), false);
+            liveObjects--;
+
+            if (liveObjects == 0)
+            {
+                this->server_started = false;
+            }
         }
 
         double ExternalServerHandler::GetValue(int id, std::string property)

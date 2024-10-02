@@ -42,7 +42,6 @@ extern "C" DLL_PUBLIC void AddLibrary(char* library)
     if (libraryStr.ends_with(".exe"))
     {
         std::shared_ptr<Deltares::Server::ExternalServerHandler> externalHandler = std::make_shared<Deltares::Server::ExternalServerHandler>(libraryStr);
-        externalHandler->Initialize();
         projectServer->AddHandler(externalHandler);
     }
     else if (libraryStr.ends_with(".dll"))

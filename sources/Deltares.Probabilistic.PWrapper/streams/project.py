@@ -34,13 +34,25 @@ if not interface.IsLibraryLoaded():
 	interface.LoadDefaultLibrary()
 
 
+class ZModelContainer:
+	def get_model(self):
+		return None
+	
+	def is_dirty(self):
+		return False
+			
+	def update_model(self):
+		pass
+
 class ZModel:
 	_callback = None
 	
 	def __init__(self, callback = None):
 		ZModel._index = 0;
 		ZModel._callback = callback
+		self._model = None
 		self._is_function = inspect.isfunction(callback)
+		self._is_dirty = False
 
 		if self._is_function:
 			self._input_parameters = self._get_input_parameters(callback)
@@ -104,6 +116,21 @@ class ZModel:
 
 	def _set_callback(self, callback):
 		ZModel._callback = callback
+		
+	def _set_model(self, value):
+		self._model = value
+		
+	def initialize_for_run(self):
+		if not self._model is None:
+			self._model.initialize_for_run()
+	
+	def update(self):
+		if not self._model is None:
+			if self._model.is_dirty():
+				self._model.update_model()
+				return True
+			
+		return False
 	
 	def run(self, values, output_values):
 		if self._is_function:
@@ -116,17 +143,17 @@ class ZModel:
 		else:
 			z = ZModel._callback(values, output_values);
 
-
 class SensitivityProject:
 
 	_project_id = 0
-	_model = None
+	_zmodel = None
 
 	def __init__(self):
 		self._id = interface.Create('sensitivity_project')
 		self._callback = interface.CALLBACK(self._performCallBack)
 		interface.SetCallBack(self._id, 'model', self._callback)
 
+		self._is_dirty = False
 		self._all_variables = {}
 		self._variables = FrozenList()
 		self._output_parameters = FrozenList()
@@ -136,7 +163,7 @@ class SensitivityProject:
 		self._output_correlation_matrix = None
 
 		SensitivityProject._project_id = self._id
-		SensitivityProject._model = None
+		SensitivityProject._zmodel = None
 
 	def __dir__(self):
 		return ['variables',
@@ -150,14 +177,17 @@ class SensitivityProject:
 
 	@property
 	def variables(self):
+		self._check_model()
 		return self._variables
 
 	@property
 	def correlation_matrix(self):
+		self._check_model()
 		return self._correlation_matrix
 
 	@property
 	def settings(self):
+		self._check_model()
 		return self._settings
 
 	@property
@@ -170,17 +200,26 @@ class SensitivityProject:
 
 	@property
 	def model(self):
-		return SensitivityProject._model
+		SensitivityProject._zmodel
 
 	@model.setter
 	def model(self, value):
 		if inspect.isfunction(value):
-			SensitivityProject._model = ZModel(value)
+			SensitivityProject._zmodel = ZModel(value)
+			self._update_model()
+		elif isinstance(value, ZModelContainer):
+			SensitivityProject._zmodel = value.get_model()
 		else:
-			SensitivityProject._model = value
-
+			raise ValueError('ZModel container expected')
+		
+	def _check_model(self):
+		if not SensitivityProject._zmodel is None:
+			if SensitivityProject._zmodel.update():
+				self._update_model()
+	
+	def _update_model(self):
 		variables = []
-		for input_parameter in SensitivityProject._model.input_parameters:
+		for input_parameter in SensitivityProject._zmodel.input_parameters:
 			var_name = input_parameter.name
 			if not var_name in self._all_variables.keys():
 				variable = Stochast()
@@ -195,25 +234,30 @@ class SensitivityProject:
 		self._correlation_matrix._set_variables(variables)
 		self._settings._set_variables(variables)
 
-		self._output_parameters = SensitivityProject._model.output_parameters
+		self._output_parameters = SensitivityProject._zmodel.output_parameters
 
-		interface.SetArrayIntValue(self._id, 'input_parameters', [input_parameter._id for input_parameter in SensitivityProject._model.input_parameters])
-		interface.SetArrayIntValue(self._id, 'output_parameters', [output_parameter._id for output_parameter in SensitivityProject._model.output_parameters])
-		interface.SetStringValue(self._id, 'model_name', SensitivityProject._model.name)
+		interface.SetArrayIntValue(self._id, 'input_parameters', [input_parameter._id for input_parameter in SensitivityProject._zmodel.input_parameters])
+		interface.SetArrayIntValue(self._id, 'output_parameters', [output_parameter._id for output_parameter in SensitivityProject._zmodel.output_parameters])
+		interface.SetStringValue(self._id, 'model_name', SensitivityProject._zmodel.name)
 
 	@interface.CALLBACK
 	def _performCallBack(values, size, output_values):
 		values_list = values[:size]
-		SensitivityProject._model.run(values_list, output_values)
+		SensitivityProject._zmodel.run(values_list, output_values)
 
 	def run(self):
+		self._check_model()
+
 		self._stochast = None
 		self._stochasts = None
 		self._output_correlation_matrix = None
+
 		interface.SetArrayIntValue(self._id, 'variables', [variable._id for variable in self._variables])
 		interface.SetIntValue(self._id, 'correlation_matrix', self._correlation_matrix._id)
 		interface.SetIntValue(self._id, 'settings', self._settings._id)
 		interface.SetArrayIntValue(self.settings._id, 'stochast_settings', [stochast_setting._id for stochast_setting in self.settings.stochast_settings])
+
+		SensitivityProject._zmodel.initialize_for_run()
 		interface.Execute(self._id, 'run')
 
 	@property
@@ -248,7 +292,7 @@ class SensitivityProject:
 
 class ReliabilityProject:
 
-	_model = None
+	_zmodel = None
 	_project_id = 0
 
 	def __init__(self):
@@ -264,7 +308,7 @@ class ReliabilityProject:
 		self._design_point = None
 		self._fragility_curve = None
 
-		ReliabilityProject._model = None
+		ReliabilityProject._zmodel = None
 		ReliabilityProject._project_id = self._id
   
 	def __dir__(self):
@@ -278,14 +322,17 @@ class ReliabilityProject:
 
 	@property
 	def variables(self):
+		self._check_model()
 		return self._variables
 
 	@property
 	def correlation_matrix(self):
+		self._check_model()
 		return self._correlation_matrix
 
 	@property
 	def settings(self):
+		self._check_model()
 		return self._settings
 
 	@property
@@ -298,17 +345,26 @@ class ReliabilityProject:
 
 	@property
 	def model(self):
-		return ReliabilityProject._model
+		return ReliabilityProject._zmodel
 
 	@model.setter
 	def model(self, value):
 		if inspect.isfunction(value):
-			ReliabilityProject._model = ZModel(value)
+			ReliabilityProject._zmodel = ZModel(value)
+			self._update_model()
+		elif isinstance(value, ZModelContainer):
+			ReliabilityProject._zmodel = value.get_model()
 		else:
-			ReliabilityProject._model = value
+			raise ValueError('ZModel container expected')
+	
+	def _check_model(self):
+		if not ReliabilityProject._zmodel is None:
+			if ReliabilityProject._zmodel.update():
+				self._update_model()
 
+	def _update_model(self):
 		variables = []
-		for input_parameter in ReliabilityProject._model.input_parameters:
+		for input_parameter in ReliabilityProject._zmodel.input_parameters:
 			var_name = input_parameter.name
 			if not var_name in self._all_variables.keys():
 				variable = Stochast()
@@ -323,24 +379,27 @@ class ReliabilityProject:
 		self._correlation_matrix._set_variables(variables)
 		self._settings._set_variables(variables)
 
-		self._output_parameters = ReliabilityProject._model.output_parameters
+		self._output_parameters = ReliabilityProject._zmodel.output_parameters
 
-		interface.SetArrayIntValue(self._id, 'input_parameters', [input_parameter._id for input_parameter in ReliabilityProject._model.input_parameters])
-		interface.SetArrayIntValue(self._id, 'output_parameters', [output_parameter._id for output_parameter in ReliabilityProject._model.output_parameters])
-		interface.SetStringValue(self._id, 'model_name', ReliabilityProject._model.name)
+		interface.SetArrayIntValue(self._id, 'input_parameters', [input_parameter._id for input_parameter in ReliabilityProject._zmodel.input_parameters])
+		interface.SetArrayIntValue(self._id, 'output_parameters', [output_parameter._id for output_parameter in ReliabilityProject._zmodel.output_parameters])
+		interface.SetStringValue(self._id, 'model_name', ReliabilityProject._zmodel.name)
 
 	@interface.CALLBACK
 	def _performCallBack(values, size, output_values):
 		values_list = values[:size]
-		ReliabilityProject._model.run(values_list, output_values)
+		ReliabilityProject._zmodel.run(values_list, output_values)
 
 	def run(self):
 		self._design_point = None
 		self._fragility_curve = None
+
 		interface.SetArrayIntValue(self._id, 'variables', [variable._id for variable in self._variables])
 		interface.SetIntValue(self._id, 'correlation_matrix', self._correlation_matrix._id)
 		interface.SetIntValue(self._id, 'settings', self._settings._id)
 		interface.SetArrayIntValue(self.settings._id, 'stochast_settings', [stochast_setting._id for stochast_setting in self.settings.stochast_settings])
+
+		ReliabilityProject._zmodel.initialize_for_run()
 		interface.Execute(self._id, 'run')
 
 	@property
@@ -379,8 +438,6 @@ class CombineProject:
 		self._settings = CombineSettings()
 		self._correlation_matrix = SelfCorrelationMatrix()
 		self._design_point = None
-
-		_model = None
 
 	def __dir__(self):
 		return ['design_points',

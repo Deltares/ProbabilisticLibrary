@@ -62,7 +62,6 @@ namespace Deltares
             void GetArgValues(int id, std::string property, double* values, int size, double* outputValues) override;
             void Execute(int id, std::string method_) override;
 #endif
-            void Initialize();
 
         private:
             std::string serverName = "";
@@ -84,6 +83,8 @@ namespace Deltares
 
             addrinfo* address = nullptr;
             addrinfo hints;
+
+            int liveObjects = 0;
 #endif
         };
     }
