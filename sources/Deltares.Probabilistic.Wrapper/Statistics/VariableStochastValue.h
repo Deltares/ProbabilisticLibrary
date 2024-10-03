@@ -32,10 +32,16 @@ namespace Deltares
         {
             using namespace Deltares::Utils::Wrappers;
 
+            public enum class VariableStochastType { Properties, MeanAndDeviation };
+
             public ref class VariableStochastValue : System::IComparable<VariableStochastValue^>
             {
             private:
                 SharedPointerProvider<Statistics::VariableStochastValue>* shared = new SharedPointerProvider(new Statistics::VariableStochastValue());
+
+                static Statistics::VariableStochastType getNativeVariableStochastType(Wrappers::VariableStochastType variableStochastType);
+                static Statistics::Wrappers::VariableStochastType getVariableStochastType(Statistics::VariableStochastType variableStochastType);
+
             public:
                 VariableStochastValue()    {}
                 ~VariableStochastValue() { this->!VariableStochastValue(); }
@@ -47,44 +53,28 @@ namespace Deltares
                     void set(double value) { shared->object->X = value; }
                 }
 
-                // TODO: Implement mean
                 property double Mean
                 {
-                    double get() { return shared->object->Stochast->Location; }
-                    void set(double value) { shared->object->Stochast->Location = value; }
+                    double get() { return shared->object->mean; }
+                    void set(double value) { shared->object->mean = value; }
                 }
 
-                // TODO: Implement deviation
                 property double Deviation
                 {
-                    double get() { return shared->object->Stochast->Scale; }
-                    void set(double value) { shared->object->Stochast->Scale = value; }
+                    double get() { return shared->object->deviation; }
+                    void set(double value) { shared->object->deviation = value; }
                 }
 
                 property double Location
                 {
                     double get() { return shared->object->Stochast->Location; }
-                    void set(double value)
-                    {
-                        // TODO: implement properly
-                        if (shared->object->Stochast->Scale == 0)
-                        {
-                            shared->object->Stochast->Location = value;
-                        }
-                    }
+                    void set(double value) { shared->object->Stochast->Location = value; }
                 }
 
                 property double Scale
                 {
                     double get() { return shared->object->Stochast->Scale; }
-                    void set(double value)
-                    {
-                        // TODO: implement properly
-                        if (shared->object->Stochast->Scale == 0)
-                        {
-                            shared->object->Stochast->Scale = value;
-                        }
-                    }
+                    void set(double value) { shared->object->Stochast->Scale = value; }
                 }
 
                 property double Shift
@@ -127,6 +117,12 @@ namespace Deltares
                 {
                     int get() { return shared->object->Stochast->Observations; }
                     void set(int value) { shared->object->Stochast->Observations = value; }
+                }
+
+                virtual property Deltares::Statistics::Wrappers::VariableStochastType VariableStochastType
+                {
+                    Deltares::Statistics::Wrappers::VariableStochastType get() { return this->getVariableStochastType(shared->object->variableStochastType); }
+                    void set(Deltares::Statistics::Wrappers::VariableStochastType value) { shared->object->variableStochastType = this->getNativeVariableStochastType(value); }
                 }
 
                 std::shared_ptr<Statistics::VariableStochastValue> GetValue()

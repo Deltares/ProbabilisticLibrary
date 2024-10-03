@@ -309,7 +309,7 @@ namespace Deltares
 
             if (this->IsVariableStochast)
             {
-                this->ValueSet->initializeForRun();
+                this->ValueSet->initializeForRun(this->distributionType, this->truncated, this->inverted);
             }
         }
 

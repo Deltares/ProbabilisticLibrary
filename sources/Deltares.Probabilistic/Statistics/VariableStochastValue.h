@@ -27,10 +27,18 @@ namespace Deltares
 {
     namespace Statistics
     {
+        enum VariableStochastType { Properties, MeanAndDeviation };
+
         class VariableStochastValue
         {
         public:
-            double X;
+            double X = 0;
+
+            VariableStochastType variableStochastType = VariableStochastType::Properties;
+
+            double mean = 0;
+            double deviation = 0;
+
             std::shared_ptr<StochastProperties> Stochast = std::make_shared<StochastProperties>();
 
             std::shared_ptr<VariableStochastValue> clone()
@@ -38,10 +46,17 @@ namespace Deltares
                 std::shared_ptr<VariableStochastValue> value = std::make_shared<VariableStochastValue>();
 
                 value->X = this->X;
+                value->mean = this->mean;
+                value->deviation = this->deviation;
+                value->variableStochastType = this->variableStochastType;
+
                 value->Stochast = this->Stochast->clone();
 
                 return value;
             }
+
+            static VariableStochastType getVariableStochastType(std::string variableStochastType);
+            static std::string getVariableStochastTypeString(Statistics::VariableStochastType variableStochastType);
         };
     }
 }

@@ -230,6 +230,31 @@ class Test_statistics(unittest.TestCase):
 
         self.assertAlmostEqual(2.0, stochast.get_x_from_u_and_source(1.0, 0.5), delta=margin)
 
+    def test_conditional_from_mean_values(self):
+
+        stochast = Stochast()
+        stochast.distribution = "normal"
+        stochast.mean = 0
+        stochast.deviation = 1
+
+        self.assertAlmostEqual(1.0, stochast.get_x_from_u(1.0), delta=margin)
+        
+        stochast.conditional = True
+
+        conditional1 = ConditionalValue()
+        conditional1.x = 0
+        conditional1.mean = 0
+        conditional1.deviation = 1
+        stochast.conditional_values.append(conditional1)
+
+        conditional2 = ConditionalValue()
+        conditional2.x = 1
+        conditional2.mean = 1
+        conditional2.deviation = 2
+        stochast.conditional_values.append(conditional2)
+
+        self.assertAlmostEqual(2.0, stochast.get_x_from_u_and_source(1.0, 0.5), delta=margin)
+
     def test_design_value(self):
 
         stochast = Stochast()
