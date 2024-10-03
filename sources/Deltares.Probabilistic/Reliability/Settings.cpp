@@ -27,6 +27,7 @@
 #include "DirectionalSampling.h"
 #include "SubsetSimulation.h"
 #include "NumericalIntegration.h"
+#include "NumericalBisection.h"
 
 #include <memory>
 
@@ -45,6 +46,7 @@ namespace Deltares
             case ReliabilityMethodType::ReliabilityAdaptiveImportanceSampling: return this->GetAdaptiveImportanceSamplingMethod();
             case ReliabilityMethodType::ReliabilityDirectionalSampling: return this->GetDirectionalSamplingMethod();
             case ReliabilityMethodType::ReliabilitySubsetSimulation: return this->GetSubsetSimulationMethod();
+            case ReliabilityMethodType::ReliabilityNumericalBisection: return this->GetNumericalBisectionMethod();
             default: throw probLibException("Reliability method");
             }
         }
@@ -76,6 +78,16 @@ namespace Deltares
             numericalIntegration->Settings.StochastSet = this->StochastSet;
 
             return numericalIntegration;
+        }
+
+        const std::shared_ptr<Reliability::ReliabilityMethod> Settings::GetNumericalBisectionMethod()
+        {
+            std::shared_ptr<NumericalBisection> numericalBisection = std::make_shared<NumericalBisection>();
+
+            numericalBisection->Settings->designPointMethod = this->designPointMethod;
+            numericalBisection->Settings->StochastSet = this->StochastSet;
+
+            return numericalBisection;
         }
 
         const std::shared_ptr<Reliability::ReliabilityMethod> Settings::GetCrudeMonteCarloMethod()
@@ -168,6 +180,7 @@ namespace Deltares
             case ReliabilityMethodType::ReliabilityImportanceSampling: return std::dynamic_pointer_cast<ImportanceSampling>(this->GetImportanceSamplingMethod())->Settings->isValid();
             case ReliabilityMethodType::ReliabilityAdaptiveImportanceSampling: return std::dynamic_pointer_cast<AdaptiveImportanceSampling>(this->GetAdaptiveImportanceSamplingMethod())->Settings->isValid();
             case ReliabilityMethodType::ReliabilityDirectionalSampling: return std::dynamic_pointer_cast<DirectionalSampling>(this->GetDirectionalSamplingMethod())->Settings->isValid();
+            case ReliabilityMethodType::ReliabilityNumericalBisection: return std::dynamic_pointer_cast<NumericalBisection>(this->GetNumericalBisectionMethod())->Settings->isValid();
             case ReliabilityMethodType::ReliabilitySubsetSimulation: return std::dynamic_pointer_cast<SubsetSimulation>(this->GetSubsetSimulationMethod())->Settings->isValid();
             default: throw probLibException("Reliability method");
             }

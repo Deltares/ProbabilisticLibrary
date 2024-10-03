@@ -34,6 +34,7 @@ namespace Deltares
             private:
                 void testLatinHyperCube() const;
                 void testNumericalBisection() const;
+                void testNumericalBisectionLinear() const;
                 const double margin = 1e-9;
             };
         }

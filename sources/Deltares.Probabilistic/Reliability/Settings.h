@@ -36,7 +36,10 @@ namespace Deltares
     {
         enum ReliabilityResultType {ResultDesignPoint, ResultFragilityCurve};
 
-        enum ReliabilityMethodType {ReliabilityFORM, ReliabilityNumericalIntegration, ReliabilityCrudeMonteCarlo, ReliabilityImportanceSampling, ReliabilityAdaptiveImportanceSampling, ReliabilityDirectionalSampling, ReliabilitySubsetSimulation };
+        enum ReliabilityMethodType {ReliabilityFORM, ReliabilityNumericalIntegration, ReliabilityCrudeMonteCarlo,
+            ReliabilityImportanceSampling, ReliabilityAdaptiveImportanceSampling, ReliabilityDirectionalSampling,
+            ReliabilityNumericalBisection, ReliabilityLatinHyperCube,
+            ReliabilitySubsetSimulation };
 
         /**
          * \brief General settings applicable to all mechanisms
@@ -182,6 +185,7 @@ namespace Deltares
             const std::shared_ptr<Reliability::ReliabilityMethod> GetImportanceSamplingMethod();
             const std::shared_ptr<Reliability::ReliabilityMethod> GetAdaptiveImportanceSamplingMethod();
             const std::shared_ptr<Reliability::ReliabilityMethod> GetDirectionalSamplingMethod();
+            const std::shared_ptr<Reliability::ReliabilityMethod> GetNumericalBisectionMethod();
             const std::shared_ptr<Reliability::ReliabilityMethod> GetSubsetSimulationMethod();
         };
     }

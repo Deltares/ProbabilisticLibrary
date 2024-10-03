@@ -86,6 +86,8 @@ namespace Deltares
             IntegrationLine(int dimension, double origin) : Dimension(dimension), Origin(origin) {};
             std::unordered_map<IntegrationPoint*, int> pointSides = std::unordered_map<IntegrationPoint*, int>();
             std::vector<std::shared_ptr<IntegrationPoint>> Points;
+            void Add(std::shared_ptr<IntegrationPoint> point);
+            int GetSide(std::shared_ptr<IntegrationPoint> point) const;
             std::shared_ptr<IntegrationPoint> GetPreviousKnownPoint(IntegrationPoint* p);
             std::shared_ptr<IntegrationPoint> GetNextKnownPoint(IntegrationPoint* p);
             bool OnSameSide(IntegrationPoint& p1, IntegrationPoint& p2);

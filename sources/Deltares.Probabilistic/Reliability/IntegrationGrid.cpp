@@ -372,12 +372,43 @@ namespace Deltares
                     line = std::make_shared<IntegrationLine>(i, origin[i]);
                     Lines[i].push_back(line);
                     LinesSet[i][probLibString::doubles2str(lineCoordinates)] = line;
-
-                    //getAllLines().push_back(line);
                 }
 
-                line->Points.push_back(point);
+                line->Add(point);
                 point->Lines.push_back(line);
+            }
+        }
+
+        void IntegrationLine::Add(std::shared_ptr<IntegrationPoint> point)
+        {
+            pointSides[point.get()] = GetSide(point);
+
+            for (int i = 0; i < Points.size(); i++)
+            {
+                if (Points[i]->Coordinates[getDimension()] > point->Coordinates[getDimension()])
+                {
+                    Points.insert(Points.begin()+ i, point);
+                    return;
+                }
+            }
+
+            Points.push_back(point);
+        }
+
+        int IntegrationLine::GetSide(std::shared_ptr<IntegrationPoint> point) const
+        {
+            constexpr double tolerance = 1E-10;
+
+            if (NumericSupport::areEqual(point->Coordinates[getDimension()], Origin, tolerance))
+            {
+                return 0;
+            }
+            else
+            {
+                auto diffCoordinates = (point->Coordinates[getDimension()] - Origin);
+                if (diffCoordinates > 0) return 1;
+                if (diffCoordinates < 0) return -1;
+                return 0;
             }
         }
 

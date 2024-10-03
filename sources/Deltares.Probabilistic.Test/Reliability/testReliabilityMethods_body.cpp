@@ -39,6 +39,7 @@ namespace Deltares
             {
                 testLatinHyperCube();
                 testNumericalBisection();
+                testNumericalBisectionLinear();
             }
 
             void testReliabilityMethods::testLatinHyperCube() const
@@ -59,14 +60,29 @@ namespace Deltares
             void testReliabilityMethods::testNumericalBisection() const
             {
                 auto calculator = NumericalBisection();
-                calculator.Settings->MaximumIterations = 8;
+                calculator.Settings->MaximumIterations = 20;
 
                 auto modelRunner = projectBuilder().BuildProject();
 
                 auto designPoint = calculator.getDesignPoint(modelRunner);
 
                 ASSERT_EQ(designPoint->Alphas.size(), 2);
-                ASSERT_NEAR(designPoint->Beta, 0.69892571876, margin);
+                ASSERT_NEAR(designPoint->Beta, 1.87406654375, margin);
+            }
+
+            void testReliabilityMethods::testNumericalBisectionLinear() const
+            {
+                auto calculator = std::make_shared<NumericalBisection>();
+
+                auto project = projectBuilder::getLinearProject();
+                project->reliabilityMethod = calculator;
+                project->settings->ReliabilityMethod = ReliabilityNumericalBisection;
+                project->settings->MaximumIterations = 20;
+
+                auto designPoint = project->getDesignPoint();
+
+                ASSERT_EQ(designPoint->Alphas.size(), 2);
+                ASSERT_NEAR(designPoint->Beta, 2.57, 0.01);
             }
         }
 
