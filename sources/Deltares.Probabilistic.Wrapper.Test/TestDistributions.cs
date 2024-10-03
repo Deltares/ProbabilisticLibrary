@@ -863,7 +863,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         }
 
         [Test]
-        public void TestVariableStochast()
+        public void TestConditionalStochast()
         {
             Stochast realizedStochast = new Stochast { DistributionType = DistributionType.Uniform, Minimum = 0, Maximum = 1 };
             realizedStochast.IsVariableStochast = true;
@@ -886,6 +886,20 @@ namespace Deltares.Probabilistic.Wrapper.Test
             // extrapolated
             Assert.AreEqual(0.5, realizedStochast.GetXFromUAndSource(-1, 0), margin);
             Assert.AreEqual(11.5, realizedStochast.GetXFromUAndSource(3, 0), margin);
+        }
+
+        [Test]
+        public void TestDesignValue()
+        {
+            Stochast stochast = new Stochast { DistributionType = DistributionType.Normal, Mean = 10, Deviation = 2 };
+
+            // not modified
+            Assert.AreEqual(10, stochast.DesignValue, margin);
+
+            stochast.DesignFactor = 2;
+            stochast.DesignQuantile = StandardNormal.GetPFromU(2);
+
+            Assert.AreEqual((10 + 2*2) /2.0, stochast.DesignValue, margin);
         }
 
         private void TestStochast(Stochast stochast, double delta = 0.01)

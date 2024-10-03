@@ -308,6 +308,24 @@ namespace Deltares
                     shared->object->setXAtU(x, u, this->getNativeConstantParameterType(constantType));
                 }
 
+                virtual property double DesignQuantile
+                {
+                    double get() { return shared->object->designQuantile; }
+                    void set(double value) { shared->object->designQuantile = value; }
+                }
+
+                virtual property double DesignFactor
+                {
+                    double get() { return shared->object->designFactor; }
+                    void set(double value) { shared->object->designFactor = value; }
+                }
+
+                virtual property double DesignValue
+                {
+                    double get() { return shared->object->getDesignValue(); }
+                    void set(double value) { shared->object->setDesignValue(value); }
+                }
+
                 virtual void InitializeForRun()
                 {
                     updateStochast();

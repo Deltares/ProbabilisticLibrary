@@ -412,12 +412,12 @@ class Stochast:
 			interface.SetArrayIntValue(self._id, 'conditional_values', [conditional_value._id for conditional_value in self._conditional_values])
 
 	@property
-	def design_fraction(self):
-		return interface.GetValue(self._id, 'design_fraction')
+	def design_quantile(self):
+		return interface.GetValue(self._id, 'design_quantile')
 
-	@design_fraction.setter
-	def design_fraction(self, value):
-		interface.SetValue(self._id, 'design_fraction', value)
+	@design_quantile.setter
+	def design_quantile(self, value):
+		interface.SetValue(self._id, 'design_quantile', value)
 
 	@property
 	def design_factor(self):

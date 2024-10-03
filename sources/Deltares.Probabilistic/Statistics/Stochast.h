@@ -321,6 +321,26 @@ namespace Deltares
             std::shared_ptr<VariableStochastValuesSet> ValueSet = std::make_shared<VariableStochastValuesSet>();
 
             /**
+             * \brief The design factor used for calculating the design value
+             */
+            double designFactor = 1.0;
+
+            /**
+             * \brief The design fraction used for calculating the design value
+             */
+            double designQuantile = 0.5;
+
+            /**
+             * \brief Calculates the design value
+             */
+            double getDesignValue();
+
+            /**
+             * \brief Updates the stochast properties by setting the design value
+             */
+            void setDesignValue(double designValue);
+
+            /**
              * \brief Indicates that internally an update should take place before other methods are invoked
              */
             void SetDirty() const;

@@ -230,6 +230,26 @@ class Test_statistics(unittest.TestCase):
 
         self.assertAlmostEqual(2.0, stochast.get_x_from_u_and_source(1.0, 0.5), delta=margin)
 
+    def test_design_value(self):
+
+        stochast = Stochast()
+        stochast.distribution = "normal"
+        stochast.mean = 10
+        stochast.deviation = 2
+
+        self.assertAlmostEqual(10.0, stochast.design_value, delta=margin)
+
+        stochast.design_factor = 2;
+        stochast.design_quantile = StandardNormal.get_p_from_u(2);
+
+        self.assertAlmostEqual((10 + 2*2) /2.0, stochast.design_value, delta=margin)
+
+        stochast.design_value = (15 + 2 * 3) / 2.0
+
+        self.assertAlmostEqual(15, stochast.mean, delta=margin)
+        self.assertAlmostEqual(3, stochast.deviation, delta=margin)
+
+
     def test_return_time(self):
         for i in range(6):
             beta = float(i)

@@ -306,6 +306,20 @@ namespace Deltares
             distribution->fit(properties, values);
         }
 
+        double Stochast::getDesignValue()
+        {
+            double u = StandardNormal::getUFromP(this->designQuantile);
+            return this->getXFromU(u) / this->designFactor;
+        }
+
+        void Stochast::setDesignValue(double designValue)
+        {
+            if (this->designFactor >= 0 && this->designQuantile >= 0 && this->designQuantile <= 1)
+            {
+                this->setXAtU(designValue * this->designFactor, StandardNormal::getUFromP(this->designQuantile), ConstantParameterType::VariationCoefficient);
+            }
+        }
+
         std::vector<double> Stochast::getSpecialXValues()
         {
             return distribution->getSpecialPoints(properties);

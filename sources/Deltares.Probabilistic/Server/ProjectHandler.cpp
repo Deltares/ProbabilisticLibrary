@@ -220,6 +220,9 @@ namespace Deltares
                 else if (property_ == "maximum") return stochast->getProperties()->Maximum;
                 else if (property_ == "mean") return stochast->getMean();
                 else if (property_ == "deviation") return stochast->getDeviation();
+                else if (property_ == "design_quantile") return stochast->designQuantile;
+                else if (property_ == "design_factor") return stochast->designFactor;
+                else if (property_ == "design_value") return stochast->getDesignValue();
                 else if (property_ == "x_from_u_and_source") return stochast->getXFromUAndSource(tempValues["u_and_x"][1], tempValues["u_and_x"][0]);
                 else return std::nan("");
             }
@@ -340,6 +343,9 @@ namespace Deltares
                 else if (property_ == "maximum") stochast->getProperties()->Maximum = value;
                 else if (property_ == "mean") stochast->setMean(value);
                 else if (property_ == "deviation") stochast->setDeviation(value);
+                else if (property_ == "design_quantile") stochast->designQuantile = value;
+                else if (property_ == "design_factor") stochast->designFactor = value;
+                else if (property_ == "design_value") stochast->setDesignValue(value);
             }
             else if (objectType == ObjectType::DiscreteValue)
             {
