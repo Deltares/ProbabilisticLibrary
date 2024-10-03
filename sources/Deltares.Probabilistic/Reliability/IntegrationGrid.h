@@ -42,16 +42,19 @@ namespace Deltares
         class IntegrationPoint
         {
         public:
-            bool Known;
-            double ZValue;
-            double ProbabilityDensity;
+            IntegrationPoint(std::vector<double> coord) : Coordinates (coord) {}
+            double ZValue = std::nan("");
+            double ProbabilityDensity() const;
             void deriveByExtrapolation();
             void derive();
             std::vector<double> Coordinates;
-            Numeric::DoubleType Result;
+            Numeric::DoubleType getResult() const { return Numeric::NumericSupport::getDoubleType(ZValue); };
             std::vector<std::shared_ptr<IntegrationLine>> Lines;
             void setKnown(const bool b) { Known = b; }
+            bool getKnown() const { return Known; }
             void setZValue(const double z) { ZValue = z; }
+        private:
+            bool Known = false;
         };
 
         class IntegrationCell

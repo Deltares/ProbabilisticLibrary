@@ -1,4 +1,6 @@
 #include <set>
+#include <numbers>
+#include <cmath>
 #include "IntegrationGrid.h"
 #include "../Math/BinarySupport.h"
 #include "../Utils/probLibString.h"
@@ -18,15 +20,15 @@ namespace Deltares
 
                 if (previousPoint != nullptr && nextPoint != nullptr && line->OnSameSide(*previousPoint, *nextPoint))
                 {
-                    if (previousPoint->Result == nextPoint->Result)
+                    if (previousPoint->getResult() == nextPoint->getResult())
                     {
                         setKnown(true);
                     }
-                    else if (previousPoint->Result == DoubleType::Zero && (nextPoint->Result == DoubleType::Negative || nextPoint->Result == DoubleType::Positive))
+                    else if (previousPoint->getResult() == DoubleType::Zero && (nextPoint->getResult() == DoubleType::Negative || nextPoint->getResult() == DoubleType::Positive))
                     {
                         setKnown(true);
                     }
-                    else if (nextPoint->Result == DoubleType::Zero && (previousPoint->Result == DoubleType::Negative || previousPoint->Result == DoubleType::Positive))
+                    else if (nextPoint->getResult() == DoubleType::Zero && (previousPoint->getResult() == DoubleType::Negative || previousPoint->getResult() == DoubleType::Positive))
                     {
                         setKnown(true);
                     }
@@ -61,7 +63,7 @@ namespace Deltares
 
                 if (previousPoint == nullptr && nextPoint != nullptr && line->OnSameSide(*this, *nextPoint))
                 {
-                    if (nextPoint->Result == DoubleType::Negative)
+                    if (nextPoint->getResult() == DoubleType::Negative)
                     {
                         if (line->HasNextKnownPoint(nextPoint, DoubleType::Positive))
                         {
@@ -69,7 +71,7 @@ namespace Deltares
                             setZValue(nextPoint->ZValue);
                         }
                     }
-                    else if (nextPoint->Result == DoubleType::Positive)
+                    else if (nextPoint->getResult() == DoubleType::Positive)
                     {
                         if (line->HasNextKnownPoint(nextPoint, DoubleType::Negative))
                         {
@@ -80,7 +82,7 @@ namespace Deltares
                 }
                 else if (previousPoint != nullptr && nextPoint == nullptr && line->OnSameSide(*this, *previousPoint))
                 {
-                    if (previousPoint->Result == DoubleType::Negative)
+                    if (previousPoint->getResult() == DoubleType::Negative)
                     {
                         if (line->HasPreviousKnownPoint(previousPoint, DoubleType::Positive))
                         {
@@ -88,7 +90,7 @@ namespace Deltares
                             setZValue(previousPoint->ZValue);
                         }
                     }
-                    else if (previousPoint->Result == DoubleType::Positive)
+                    else if (previousPoint->getResult() == DoubleType::Positive)
                     {
                         if (line->HasPreviousKnownPoint(previousPoint, DoubleType::Negative))
                         {
@@ -103,6 +105,24 @@ namespace Deltares
                     return;
                 }
             }
+        }
+
+        double GetPDF(double x)
+        {   // todo use pdf from normal distribution
+            double normalFactor = 1.0 / (sqrt(2.0 * std::numbers::pi));
+            double distance = -x * x / 2.0;
+
+            return normalFactor * exp(distance);
+        }
+
+        double IntegrationPoint::ProbabilityDensity() const
+        {
+            double probability = 1.0;
+            for(double coordinate : Coordinates)
+            {
+                probability *= GetPDF(coordinate);
+            }
+            return probability;
         }
 
 
@@ -143,7 +163,7 @@ namespace Deltares
             {
                 for (size_t i = index + 1; i < this->Points.size(); i++)
                 {
-                    if (this->Points[i]->Known && (this->Points[i]->Result == result || this->Points[i]->Result == DoubleType::Zero))
+                    if (this->Points[i]->getKnown() && (this->Points[i]->getResult() == result || this->Points[i]->getResult() == DoubleType::Zero))
                     {
                         return true;
                     }
@@ -160,7 +180,7 @@ namespace Deltares
             {
                 for (int i = index - 1; i >= 0; i--)
                 {
-                    if (this->Points[i]->Known && (this->Points[i]->Result == result || this->Points[i]->Result == DoubleType::Zero))
+                    if (this->Points[i]->getKnown() && (this->Points[i]->getResult() == result || this->Points[i]->getResult() == DoubleType::Zero))
                     {
                         return true;
                     }
@@ -254,7 +274,7 @@ namespace Deltares
             bool allKnown = true;
             for(const auto& p : CornerPoints)
             {
-                if (p->Known)
+                if ( ! p->getKnown())
                 {
                     allKnown = false;
                     break;
@@ -271,7 +291,7 @@ namespace Deltares
                 std::set<DoubleType> resultsSet;
                 for(const auto& p : CornerPoints)
                 {
-                    resultsSet.insert(p->Result);
+                    resultsSet.insert(p->getResult());
                 }
 
                 std::vector<DoubleType> results(resultsSet.begin(), resultsSet.end());
@@ -329,8 +349,7 @@ namespace Deltares
 
             if (integrationPoint == nullptr)
             {
-                integrationPoint = std::make_shared<IntegrationPoint>();
-                integrationPoint->Coordinates = coordinates;
+                integrationPoint = std::make_shared<IntegrationPoint>(coordinates);
                 AddPoint(integrationPoint);
             }
 
@@ -382,7 +401,7 @@ namespace Deltares
             {
                 for (int i = index - 1; i >= 0; i--)
                 {
-                    if (Points[i]->Known)
+                    if (Points[i]->getKnown())
                     {
                         return Points[i];
                     }
@@ -399,7 +418,7 @@ namespace Deltares
             {
                 for (int i = index + 1; i < Points.size(); i++)
                 {
-                    if (Points[i]->Known)
+                    if (Points[i]->getKnown())
                     {
                         return Points[i];
                     }
@@ -408,9 +427,6 @@ namespace Deltares
 
             return nullptr;
         }
-
-
-
 
     }
 }

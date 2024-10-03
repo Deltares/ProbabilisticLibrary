@@ -1,7 +1,7 @@
 #include "NumericalBisection.h"
 
 #include <algorithm>
-
+#include <cmath>
 #include "../Statistics/StandardNormal.h"
 
 using namespace Deltares::Models;
@@ -68,7 +68,7 @@ namespace Deltares
                 std::vector<std::shared_ptr<IntegrationPoint>> unknownPoints;
                 for(auto& points : domain->Points)
                 {
-                    if (!points->Known) unknownPoints.push_back(points);
+                    if (!points->getKnown()) unknownPoints.push_back(points);
                 }
 
                 std::vector<std::shared_ptr<Sample>> upar;
@@ -81,7 +81,7 @@ namespace Deltares
 
                 for (size_t i = 0; i < unknownPoints.size(); i++)
                 {
-                    unknownPoints[i]->Known = true;
+                    unknownPoints[i]->setKnown(true);
                     unknownPoints[i]->ZValue = zValues[i];
                 }
 
@@ -188,10 +188,10 @@ namespace Deltares
                 changed = false;
                 for (auto& point : domain->Points)
                 {
-                    if (!point->Known)
+                    if (!point->getKnown())
                     {
                         point->derive();
-                        changed |= point->Known;
+                        changed |= point->getKnown();
                     }
                 }
             }
@@ -202,10 +202,10 @@ namespace Deltares
                 changed = false;
                 for (auto& point : domain->Points)
                 {
-                    if (!point->Known)
+                    if (!point->getKnown())
                     {
                         point->deriveByExtrapolation();
-                        changed |= point->Known;
+                        changed |= point->getKnown();
                     }
                 }
             }
@@ -255,12 +255,12 @@ namespace Deltares
             {
                 for (auto& point : domain->Points)
                 {
-                    if (point->Result == DoubleType::Negative || point->Result == DoubleType::Zero)
+                    if (point->getResult() == DoubleType::Negative || point->getResult() == DoubleType::Zero)
                     {
-                        if (point->ProbabilityDensity > minProbability)
+                        if (point->ProbabilityDensity() > minProbability)
                         {
                             designPoint = point;
-                            minProbability = designPoint->ProbabilityDensity;
+                            minProbability = designPoint->ProbabilityDensity();
                         }
                     }
                 }
@@ -269,12 +269,12 @@ namespace Deltares
             {
                 for (auto& point : domain->Points)
                 {
-                    if (point->Result == DoubleType::Positive || point->Result == DoubleType::Zero)
+                    if (point->getResult() == DoubleType::Positive || point->getResult() == DoubleType::Zero)
                     {
-                        if (point->ProbabilityDensity > minProbability)
+                        if (point->ProbabilityDensity() > minProbability)
                         {
                             designPoint = point;
-                            minProbability = designPoint->ProbabilityDensity;
+                            minProbability = designPoint->ProbabilityDensity();
                         }
                     }
                 }

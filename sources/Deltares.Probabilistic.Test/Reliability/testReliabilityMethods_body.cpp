@@ -37,7 +37,7 @@ namespace Deltares
         {
             void testReliabilityMethods::allReliabilityMethods() const
             {
-                //testLatinHyperCube();
+                testLatinHyperCube();
                 testNumericalBisection();
             }
 
@@ -59,12 +59,14 @@ namespace Deltares
             void testReliabilityMethods::testNumericalBisection() const
             {
                 auto calculator = NumericalBisection();
+                calculator.Settings->MaximumIterations = 8;
 
                 auto modelRunner = projectBuilder().BuildProject();
 
                 auto designPoint = calculator.getDesignPoint(modelRunner);
 
                 ASSERT_EQ(designPoint->Alphas.size(), 2);
+                ASSERT_NEAR(designPoint->Beta, 0.69892571876, margin);
             }
         }
 
