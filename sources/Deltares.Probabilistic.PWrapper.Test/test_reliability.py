@@ -347,7 +347,7 @@ class Test_reliability(unittest.TestCase):
         project = project_builder.get_linear_project()
 
         project.settings.reliability_method = ReliabilityMethod.form
-        project.settings.start_method = StartMethod.none
+        project.settings.start_method = StartMethod.fixed_value
         project.settings.stochast_settings["a"].start_value = 1.2
         project.settings.stochast_settings["b"].start_value = 2.4
 

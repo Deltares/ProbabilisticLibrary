@@ -147,11 +147,11 @@ void createReliabilityMethod::fillStartVector(std::shared_ptr<StartPointCalculat
     switch (bs.startMethod)
     {
     case StartMethods::Zero:
-        startPoint->StartMethod = StartMethodType::None;
+        startPoint->StartMethod = StartMethodType::FixedValue;
         break;
     case StartMethods::One:
         {
-            startPoint->StartMethod = StartMethodType::None;
+            startPoint->StartMethod = StartMethodType::FixedValue;
             for (size_t i = 0; i < nStoch; i++)
             {
                 startPoint->startVector.push_back(1.0);
@@ -178,7 +178,7 @@ void createReliabilityMethod::fillStartVector(std::shared_ptr<StartPointCalculat
         break;
     case StartMethods::GivenVector:
         {
-            startPoint->StartMethod = StartMethodType::None;
+            startPoint->StartMethod = StartMethodType::FixedValue;
             startPoint->startVector = copyStartVector(bs.startVector, nStoch);
         }
         break;

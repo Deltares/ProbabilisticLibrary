@@ -38,7 +38,7 @@ namespace Deltares
         {
             switch (this->Settings->StartMethod)
             {
-            case StartMethodType::None:
+            case StartMethodType::FixedValue:
                 return getNoneStartPoint();
             case StartMethodType::RaySearch:
                 return getRayStartPoint(modelRunner);

@@ -48,7 +48,7 @@ namespace Deltares
 
             auto form = FORM();
             form.Settings = formSettings;
-            form.Settings->StartPointSettings->StartMethod = StartMethodType::None;
+            form.Settings->StartPointSettings->StartMethod = StartMethodType::FixedValue;
             form.Settings->StartPointSettings->startVector = startVector;
 
             auto dsfiDesignPoint = form.getDesignPoint(modelRunner);

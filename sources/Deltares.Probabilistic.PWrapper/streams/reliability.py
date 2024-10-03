@@ -48,7 +48,7 @@ class DesignPointMethod(Enum):
 		return str(self.value)
 
 class StartMethod(Enum):
-	none = 'none'
+	fixed_value = 'fixed_value'
 	one = 'one'
 	ray_search = 'ray_search'
 	sphere_search = 'sphere_search'
