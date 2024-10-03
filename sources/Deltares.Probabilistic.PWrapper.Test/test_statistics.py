@@ -205,6 +205,31 @@ class Test_statistics(unittest.TestCase):
         self.assertAlmostEqual(StandardNormal.get_u_from_p(0.4 * 0.875 + 0.6 * 0.25), stochast.get_u_from_x(7.0), delta=margin)
         self.assertAlmostEqual(StandardNormal.get_u_from_p(0.4 * 1 + 0.6 * 0.75), stochast.get_u_from_x(9.0), delta=margin)
 
+    def test_conditional(self):
+
+        stochast = Stochast()
+        stochast.distribution = "normal"
+        stochast.mean = 0
+        stochast.deviation = 1
+
+        self.assertAlmostEqual(1.0, stochast.get_x_from_u(1.0), delta=margin)
+        
+        stochast.conditional = True
+
+        conditional1 = ConditionalValue()
+        conditional1.x = 0
+        conditional1.location = 0
+        conditional1.scale = 1
+        stochast.conditional_values.append(conditional1)
+
+        conditional2 = ConditionalValue()
+        conditional2.x = 1
+        conditional2.location = 1
+        conditional2.scale = 2
+        stochast.conditional_values.append(conditional2)
+
+        self.assertAlmostEqual(2.0, stochast.get_x_from_u_and_source(1.0, 0.5), delta=margin)
+
     def test_return_time(self):
         for i in range(6):
             beta = float(i)

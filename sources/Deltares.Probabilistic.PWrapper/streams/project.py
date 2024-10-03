@@ -101,6 +101,8 @@ class SensitivityProject:
 		self._variables = FrozenList(variables)
 		self._correlation_matrix._set_variables(variables)
 		self._settings._set_variables(variables)
+		for var in self._variables:
+			var._set_variables(self._variables)
 
 		self._output_parameters = self._get_output_parameters(value)
 
@@ -253,6 +255,9 @@ class ReliabilityProject:
 		self._variables = FrozenList(variables)
 		self._correlation_matrix._set_variables(variables)
 		self._settings._set_variables(variables)
+		for var in self._variables:
+			var._set_variables(self._variables)
+
 		interface.SetStringValue(self._id, 'model_name', model_name)
 
 

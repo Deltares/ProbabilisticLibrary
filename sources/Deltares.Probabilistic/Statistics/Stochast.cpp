@@ -79,9 +79,15 @@ namespace Deltares
 
         double Stochast::getXFromUAndSource(double xSource, double u)
         {
-            std::shared_ptr<StochastProperties> valueSetProperties = this->ValueSet->getInterpolatedStochast(xSource);
-
-            return this->distribution->getXFromU(valueSetProperties, u);
+            if (this->IsVariableStochast)
+            {
+                std::shared_ptr<StochastProperties> valueSetProperties = this->ValueSet->getInterpolatedStochast(xSource);
+                return this->distribution->getXFromU(valueSetProperties, u);
+            }
+            else
+            {
+                return this->getXFromU(u);
+            }
         }
 
         void Stochast::setXAtU(double x, double u, ConstantParameterType constantType)
