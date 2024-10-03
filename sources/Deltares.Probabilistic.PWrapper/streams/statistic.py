@@ -27,6 +27,12 @@ from . import interface
 if not interface.IsLibraryLoaded():
 	interface.LoadDefaultLibrary()
 
+class ConstantParameterType(Enum):
+	deviation = 'deviation'
+	variation = 'variation'
+	def __str__(self):
+		return str(self.value)
+
 class DistributionType(Enum):
 	deterministic = 'deterministic'
 	normal = 'normal'
@@ -170,7 +176,7 @@ class Stochast:
 		return interface.GetStringValue(self._id, 'name')
 
 	@name.setter
-	def name(self, value):
+	def name(self, value : str):
 		interface.SetStringValue(self._id, 'name', value)
 
 	def __str__(self):
@@ -214,6 +220,7 @@ class Stochast:
 
 	@deviation.setter
 	def deviation(self, value : float):
+		interface.SetStringValue(self._id, 'constant_parameter', str(ConstantParameterType.deviation))
 		interface.SetValue(self._id, 'deviation', value)
 
 	@property
@@ -222,6 +229,7 @@ class Stochast:
 
 	@variation.setter
 	def variation(self, value : float):
+		interface.SetStringValue(self._id, 'constant_parameter', str(ConstantParameterType.variation))
 		interface.SetValue(self._id, 'variation', value)
 
 	@property

@@ -249,6 +249,31 @@ class Test_statistics(unittest.TestCase):
         self.assertAlmostEqual(15, stochast.mean, delta=margin)
         self.assertAlmostEqual(3, stochast.deviation, delta=margin)
 
+    def test_variation_coefficient(self):
+
+        stochast = Stochast()
+        stochast.distribution = "normal"
+        stochast.mean = 10
+        stochast.variation = 0.1
+
+        self.assertAlmostEqual(1.0, stochast.deviation, delta=margin)
+
+        # variation is kept constant
+        stochast.mean = 20
+
+        self.assertAlmostEqual(0.1, stochast.variation, delta=margin)
+        self.assertAlmostEqual(2.0, stochast.deviation, delta=margin)
+
+        # deviation is kept constant
+        stochast.deviation = 4
+
+        self.assertAlmostEqual(0.2, stochast.variation, delta=margin)
+        self.assertAlmostEqual(4.0, stochast.deviation, delta=margin)
+
+        stochast.mean = 10
+
+        self.assertAlmostEqual(0.4, stochast.variation, delta=margin)
+        self.assertAlmostEqual(4.0, stochast.deviation, delta=margin)
 
     def test_return_time(self):
         for i in range(6):

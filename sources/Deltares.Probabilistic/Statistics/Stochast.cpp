@@ -241,7 +241,24 @@ namespace Deltares
         void Stochast::setMean(double mean)
         {
             double deviation = this->getDistributionType() == Deterministic ? this->getProperties()->Scale : this->getDeviation();
-            distribution->setMeanAndDeviation(properties, mean, deviation);
+
+            if (this->constantParameterType == ConstantParameterType::Deviation)
+            {
+                distribution->setMeanAndDeviation(properties, mean, deviation);
+            }
+            else if (this->constantParameterType == ConstantParameterType::VariationCoefficient)
+            {
+                double currentMean = this->getMean();
+                if (currentMean == 0.0)
+                {
+                    distribution->setMeanAndDeviation(properties, mean, mean * this->lastVariation);
+                }
+                else
+                {
+                    double variation = deviation / currentMean;
+                    distribution->setMeanAndDeviation(properties, mean, mean * variation);
+                }
+            }
         }
 
         double Stochast::getDeviation()
@@ -251,18 +268,39 @@ namespace Deltares
 
         void Stochast::setDeviation(double deviation)
         {
-            double mean = distribution->getMean(properties);
+            double mean = this->getMean();
+            distribution->setMeanAndDeviation(properties, mean, deviation);
+        }
+
+        double Stochast::getVariation()
+        {
+            double mean = this->getMean();
+
+            if (mean == 0.0)
+            {
+                return lastVariation;
+            }
+            else
+            {
+                return this->getDeviation() / mean;
+            }
+        }
+
+        void Stochast::setVariation(double variation)
+        {
+            double mean = this->getMean();
+            distribution->setMeanAndDeviation(properties, mean, variation * mean);
+            this->lastVariation = variation;
+        }
+
+        void Stochast::setMeanAndDeviation(double mean, double deviation)
+        {
             distribution->setMeanAndDeviation(properties, mean, deviation);
         }
 
         void Stochast::setShift(double shift)
         {
             distribution->setShift(properties, shift, false);
-        }
-
-        void Stochast::setMeanAndDeviation(double mean, double deviation)
-        {
-            distribution->setMeanAndDeviation(properties, mean, deviation);
         }
 
         void Stochast::initializeForRun()
@@ -341,6 +379,23 @@ namespace Deltares
             this->distributionChangeType = source->distributionChangeType;
 
             this->SetDirty();
+        }
+
+        Statistics::ConstantParameterType Stochast::getConstantParameterType(std::string distributionType)
+        {
+            if (distributionType == "deviation") return Statistics::ConstantParameterType::Deviation;
+            else if (distributionType == "variation") return Statistics::ConstantParameterType::VariationCoefficient;
+            else throw Reliability::probLibException("constant parameter type");
+        }
+
+        std::string Stochast::getConstantParameterTypeString(Statistics::ConstantParameterType distributionType)
+        {
+            switch (distributionType)
+            {
+            case Statistics::ConstantParameterType::Deviation: return "deviation";
+            case Statistics::ConstantParameterType::VariationCoefficient: return "variation";
+            default:  throw Reliability::probLibException("constant parameter type");
+            }
         }
 
         Statistics::DistributionType Stochast::getDistributionType(std::string distributionType)

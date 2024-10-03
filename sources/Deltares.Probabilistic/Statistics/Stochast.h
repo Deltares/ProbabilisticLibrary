@@ -47,6 +47,7 @@ namespace Deltares
 
             bool inverted = false;
             bool truncated = false;
+            double lastVariation = 0;
 
         protected:
             std::shared_ptr<Distribution> distribution = std::make_shared<DeterministicDistribution>();
@@ -232,7 +233,7 @@ namespace Deltares
             /**
              * \brief Sets the standard deviation of a stochast
              * \remark This will lead to a modification of the stochast parameters, such as the scale. The mean value will not be changed.
-             * \param deviation Mean value
+             * \param deviation Standard deviation
              */
             void setDeviation(double deviation);
 
@@ -243,6 +244,25 @@ namespace Deltares
              * \param deviation Given standard deviation
              */
             void setMeanAndDeviation(double mean, double deviation);
+
+            /**
+             * \brief Gets the variation coefficient of a stochast
+             * \return Variation coefficient
+             */
+            double getVariation();
+
+            /**
+             * \brief Sets the variation coefficient of a stochast
+             * \remark This will lead to a modification of the stochast parameters, such as the scale. The mean value will not be changed.
+             * \param variation Variation coefficient
+             */
+            void setVariation(double variation);
+
+            /**
+             * \brief Indicates which parameter should be kept constant when the mean value is changed (by setMean())
+             * \return Constant parameter type
+             */
+            ConstantParameterType constantParameterType = ConstantParameterType::Deviation;
 
             /**
              * \brief Sets the shift value of a stochast
@@ -350,6 +370,8 @@ namespace Deltares
              */
             void copyFrom(std::shared_ptr<Stochast> source);
 
+            static Statistics::ConstantParameterType getConstantParameterType(std::string distributionType);
+            static std::string getConstantParameterTypeString(Statistics::ConstantParameterType distributionType);
             static Statistics::DistributionType getDistributionType(std::string distributionType);
             static std::string getDistributionTypeString(Statistics::DistributionType distributionType);
         };

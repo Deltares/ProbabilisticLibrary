@@ -220,6 +220,7 @@ namespace Deltares
                 else if (property_ == "maximum") return stochast->getProperties()->Maximum;
                 else if (property_ == "mean") return stochast->getMean();
                 else if (property_ == "deviation") return stochast->getDeviation();
+                else if (property_ == "variation") return stochast->getVariation();
                 else if (property_ == "design_quantile") return stochast->designQuantile;
                 else if (property_ == "design_factor") return stochast->designFactor;
                 else if (property_ == "design_value") return stochast->getDesignValue();
@@ -343,6 +344,7 @@ namespace Deltares
                 else if (property_ == "maximum") stochast->getProperties()->Maximum = value;
                 else if (property_ == "mean") stochast->setMean(value);
                 else if (property_ == "deviation") stochast->setDeviation(value);
+                else if (property_ == "variation") stochast->setVariation(value);
                 else if (property_ == "design_quantile") stochast->designQuantile = value;
                 else if (property_ == "design_factor") stochast->designFactor = value;
                 else if (property_ == "design_value") stochast->setDesignValue(value);
@@ -792,6 +794,7 @@ namespace Deltares
                 std::shared_ptr<Statistics::Stochast> stochast = stochasts[id];
 
                 if (property_ == "distribution") return Stochast::getDistributionTypeString(stochast->getDistributionType());
+                else if (property_ == "constant_parameter") return Stochast::getConstantParameterTypeString(stochast->constantParameterType);
                 else if (property_ == "name") return stochast->name;
                 else return "";
             }
@@ -832,6 +835,7 @@ namespace Deltares
                 std::shared_ptr<Statistics::Stochast> stochast = stochasts[id];
 
                 if (property_ == "distribution") stochast->setDistributionType(Stochast::getDistributionType(value));
+                else if (property_ == "constant_parameter") stochast->constantParameterType = Stochast::getConstantParameterType(value);
                 else if (property_ == "name") stochast->name = value;
             }
             else if (objectType == ObjectType::ModelParameter)
