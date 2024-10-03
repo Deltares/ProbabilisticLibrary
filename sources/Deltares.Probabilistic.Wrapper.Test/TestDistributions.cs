@@ -70,6 +70,16 @@ namespace Deltares.Probabilistic.Wrapper.Test
             stochast.SetXAtU(2, 0.05, ConstantParameterType.Deviation);
             Assert.AreEqual(stochast.GetXFromU(0.05), 2, margin);
 
+            stochast.Mean = 2;
+            stochast.Deviation = 1;
+            stochast.SetXAtU(3, 0.05, ConstantParameterType.VariationCoefficient);
+            Assert.AreEqual(stochast.GetXFromU(0.05), 3, margin);
+
+            stochast.Mean = -2;
+            stochast.Deviation = 1;
+            stochast.SetXAtU(-1, 0.05, ConstantParameterType.VariationCoefficient);
+            Assert.AreEqual(stochast.GetXFromU(0.05), -1, margin);
+
             stochast.Mean = 0;
             stochast.Deviation = 1;
             stochast.SetXAtU(2, 0.05, ConstantParameterType.VariationCoefficient);
