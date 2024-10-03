@@ -40,37 +40,37 @@ module interface_typedefs
   end type tdistrib
 
   type, public, bind(c) :: tMethod
-    integer             :: methodId
-    real(kind=c_double) :: tolA       = 0.001_c_double
-    real(kind=c_double) :: tolB       = 0.1_c_double
-    real(kind=c_double) :: tolC       = 0.001_c_double
-    integer             :: numThreads = 1
-    integer             :: chunkSize  = 200
-    integer             :: minSamples = 10000
-    integer             :: maxSamples = 99000
-    integer             :: seed1      = 2
-    integer             :: seed2      = 1
-    integer             :: isRepeatableRandom = 1
-    integer             :: rnd        = GeorgeMarsaglia
-    integer             :: startMethod
-    integer             :: allQuadrants = 0
-    integer             :: maxStepsSphereSearch = 5
-    integer             :: progressInterval = -1
-    real(kind=c_double) :: varianceFactor = 1.5
-    real(kind=c_double) :: epsilonDu      = 0.001_c_double
-    integer             :: designPointOption = 3
-    real(kind=c_double) :: du
-    real(kind=c_double) :: du1
-    real(kind=c_double) :: relaxationFactor
-    integer             :: trialLoops
-    integer             :: iterationMethod      !< iterationMethod or minFailed
-    integer             :: numExtraInt          !< Number intervals or maxSamplesDef
-    integer             :: numExtraInt2 = 0     !< global model option
-    real(kind=c_double) :: numExtraReal1        !< Minimum U value or epsFailed
-    real(kind=c_double) :: numExtraReal2        !< Maximum U value or increaseVariance
-    real(kind=c_double) :: startVector(maxActiveStochast)
-    real(kind=c_double) :: offsets(maxActiveStochast)
-    real(kind=c_double) :: varianceFactors(maxActiveStochast)
+    integer              :: methodId
+    real(kind=c_double)  :: tolA       = 0.001_c_double
+    real(kind=c_double)  :: tolB       = 0.1_c_double
+    real(kind=c_double)  :: tolC       = 0.001_c_double
+    integer              :: numThreads = 1
+    integer              :: chunkSize  = 200
+    integer              :: minSamples = 10000
+    integer              :: maxSamples = 99000
+    integer              :: seed1      = 2
+    integer              :: seed2      = 1
+    integer              :: isRepeatableRandom = 1
+    integer              :: rnd        = GeorgeMarsaglia
+    integer              :: startMethod
+    integer              :: maxStepsSphereSearch = 5
+    integer              :: progressInterval = -1
+    real(kind=c_double)  :: varianceFactor = 1.5
+    real(kind=c_double)  :: epsilonDu      = 0.001_c_double
+    integer              :: designPointOption = 3
+    real(kind=c_double)  :: du
+    real(kind=c_double)  :: du1
+    real(kind=c_double)  :: relaxationFactor
+    integer              :: trialLoops
+    integer              :: iterationMethod      !< iterationMethod or minFailed
+    integer              :: numExtraInt          !< Number intervals or maxSamplesDef
+    integer              :: numExtraInt2 = 0     !< global model option
+    real(kind=c_double)  :: numExtraReal1        !< Minimum U value or epsFailed
+    real(kind=c_double)  :: numExtraReal2        !< Maximum U value or increaseVariance
+    real(kind=c_double)  :: startVector(maxActiveStochast)
+    real(kind=c_double)  :: offsets(maxActiveStochast)
+    real(kind=c_double)  :: varianceFactors(maxActiveStochast)
+    logical(kind=c_bool) :: allQuadrants = .false.
   end type tMethod
 
   type, public, bind(c) :: tResult

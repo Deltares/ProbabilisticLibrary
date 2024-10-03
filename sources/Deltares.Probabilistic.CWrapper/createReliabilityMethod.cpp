@@ -162,9 +162,11 @@ void createReliabilityMethod::fillStartVector(std::shared_ptr<StartPointCalculat
     case StartMethods::RaySearchVector:
     case StartMethods::RaySearchVectorScaled:
         {
+            constexpr double startPointLength = 18.1; // be consistent with previous implementation; avoids stopping too early.
+            constexpr double stepSize = 0.3;          // be consistent with previous implementation.
             startPoint->StartMethod = StartMethodType::RaySearch;
-            startPoint->MaximumLengthStartPoint = 18.1;
-            startPoint->dsdu = 0.3;
+            startPoint->MaximumLengthStartPoint = startPointLength;
+            startPoint->dsdu = stepSize;
             startPoint->startVector = copyStartVector(bs.startVector, nStoch);
         }
         break;
@@ -172,7 +174,7 @@ void createReliabilityMethod::fillStartVector(std::shared_ptr<StartPointCalculat
         {
             startPoint->StartMethod = StartMethodType::SphereSearch;
             startPoint->startVector = copyStartVector(bs.startVector, nStoch);
-            startPoint->allQuadrants = (bs.allQuadrants != 0);
+            startPoint->allQuadrants = bs.allQuadrants;
             startPoint->maxStepsSphereSearch = bs.maxStepsSphereSearch;
         }
         break;

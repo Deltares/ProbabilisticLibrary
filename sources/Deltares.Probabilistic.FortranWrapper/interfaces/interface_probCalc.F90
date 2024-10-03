@@ -284,7 +284,7 @@ subroutine convertStartMethod(probDb, method, iPoint)
         call copyStartVector(probDb, method, iPoint)
     case (fORMStartSphereSearch)
         method%startmethod = startMethod
-        method%allQuadrants = merge(1, 0, probDb%method%FORM%allQuadrants)
+        method%allQuadrants = probDb%method%FORM%allQuadrants
         method%maxStepsSphereSearch = probDb%method%FORM%maxStepsSphereSearch
         call copyStartVector(probDb, method, iPoint)
     case (fORMStartGivenVector)
