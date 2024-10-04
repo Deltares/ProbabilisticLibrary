@@ -59,26 +59,54 @@ class DistributionType(Enum):
 		return str(self.value)
 
 class StandardNormal:
+	"""
+	Provides conversions between probabilities (p,q), reliability (u) and return time (t)
+	"""
 	_id = interface.Create('standard_normal')
 
 	def __dir__(self):
 		return ['get_u_from_q',
 			'get_u_from_p',
 			'get_q_from_u',
-			'get_p_from_u']
+			'get_p_from_u',
+			'get_t_from_u',
+			'get_u_from_t']
 
-	def get_u_from_q (q : float):
+	def get_u_from_q (q : float) -> float:
+		"""
+		get u from q (probability of exceedence)
+		"""
 		return interface.GetArgValue(StandardNormal._id, 'u_from_q', q)
 
-	def get_u_from_p (p : float):
+	def get_u_from_p (p : float) -> float:
+		"""
+		get u from p (probability of non-exceedence)
+		"""
 		return interface.GetArgValue(StandardNormal._id, 'u_from_p', p)
 
-	def get_q_from_u (u : float):
+	def get_q_from_u (u : float) -> float:
+		"""
+		get q (probability of exceedence) from u
+		"""
 		return interface.GetArgValue(StandardNormal._id, 'q_from_u', u)
 
-	def get_p_from_u (u : float):
+	def get_p_from_u (u : float) -> float:
+		"""
+		get p (probability of non-exceedence) from u
+		"""
 		return interface.GetArgValue(StandardNormal._id, 'p_from_u', u)
 
+	def get_t_from_u (u : float) -> float:
+		"""
+		get return time from u
+		"""
+		return interface.GetArgValue(StandardNormal._id, 't_from_u', u)
+
+	def get_u_from_t (t : float) -> float:
+		"""
+		get u from return time
+		"""
+		return interface.GetArgValue(StandardNormal._id, 'u_from_t', t)
 
 class Stochast:
 

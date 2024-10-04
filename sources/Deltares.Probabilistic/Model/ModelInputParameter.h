@@ -26,7 +26,7 @@ namespace Deltares
 {
     namespace Models
     {
-        class ModelParameter
+        class ModelInputParameter
         {
         public:
             std::string name = "";

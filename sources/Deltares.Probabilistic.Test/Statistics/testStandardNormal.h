@@ -19,4 +19,28 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include "ModelParameter.h"
+#pragma once
+#include <gtest/gtest.h>
+#include "../../Deltares.Probabilistic/Statistics/StandardNormal.h"
+
+namespace Deltares
+{
+    namespace Probabilistic
+    {
+        namespace Test
+        {
+            class testStandardNormal
+            {
+            public:
+                void allStandardNormalTests();
+            private:
+                void testPQbetaConversions();
+                void testReturnTime();
+                void testFreqFromBeta();
+                void testLogQFromBeta();
+                const double margin = 1e-9;
+            };
+        }
+    }
+}
+

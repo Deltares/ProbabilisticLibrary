@@ -25,7 +25,7 @@
 #include "../Statistics/Stochast.h"
 #include "../Reliability/ReliabilityMethod.h"
 #include "../Reliability/DesignPoint.h"
-#include "../../Deltares.Probabilistic/Model/Project.h"
+#include "../../Deltares.Probabilistic/Reliability/ReliabilityProject.h"
 #include "../Statistics/CorrelationMatrix.h"
 
 namespace Deltares
@@ -37,7 +37,7 @@ namespace Deltares
             public ref class Project
             {
             private:
-                SharedPointerProvider<Models::Project>* shared = new Utils::Wrappers::SharedPointerProvider(new Models::Project());
+                SharedPointerProvider<ReliabilityProject>* shared = new Utils::Wrappers::SharedPointerProvider(new ReliabilityProject());
                 ZLambda getZLambda();
                 void invokeSample(std::shared_ptr<Models::ModelSample> sample);
                 System::Collections::Generic::List<System::Runtime::InteropServices::GCHandle>^ handles = gcnew System::Collections::Generic::List<System::Runtime::InteropServices::GCHandle>();

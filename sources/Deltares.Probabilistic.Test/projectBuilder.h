@@ -23,7 +23,7 @@
 
 #include <memory>
 #include "../Deltares.Probabilistic/Model/ModelRunner.h"
-#include "../Deltares.Probabilistic/Model/Project.h"
+#include "../Deltares.Probabilistic/Reliability/ReliabilityProject.h"
 #include "../Deltares.Probabilistic/Sensitivity/SensitivityProject.h"
 
 namespace Deltares
@@ -38,9 +38,9 @@ namespace Deltares
                 std::shared_ptr<Deltares::Models::ModelRunner> BuildProject();
                 std::shared_ptr<Deltares::Models::ModelRunner> BuildProjectWithDeterminist();
 
-                static std::shared_ptr<Sensitivity::SensitivityProject> getSensitivityProject(std::shared_ptr<Deltares::Models::Project> project);
-                static std::shared_ptr<Deltares::Models::Project> getAddOneProject();
-                static std::shared_ptr<Deltares::Models::Project> getLinearProject();
+                static std::shared_ptr<Sensitivity::SensitivityProject> getSensitivityProject(std::shared_ptr<Deltares::Reliability::ReliabilityProject> project);
+                static std::shared_ptr<Deltares::Reliability::ReliabilityProject> getAddOneProject();
+                static std::shared_ptr<Deltares::Reliability::ReliabilityProject> getLinearProject();
 
                 static const bool logZtoScreen = false;
             private:
