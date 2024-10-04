@@ -82,7 +82,7 @@ namespace Deltares
              * \brief Gets the stochastic properties
              * \return Object containing the stochastic properties
              */
-            std::shared_ptr<StochastProperties> getProperties()    { return properties; }
+            std::shared_ptr<StochastProperties> getProperties() { return properties; }
 
             /**
              * \brief Gets the Probability Density Function (PDF) for a given x-value

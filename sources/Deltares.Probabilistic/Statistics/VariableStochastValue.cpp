@@ -21,25 +21,68 @@
 //
 #include "VariableStochastValue.h"
 
+#include "DistributionType.h"
+#include "Distributions/Distribution.h"
+
 namespace Deltares
 {
     namespace Statistics
     {
-        Statistics::VariableStochastType VariableStochastValue::getVariableStochastType(std::string variableStochastType)
+        std::shared_ptr<StochastProperties> VariableStochastValue::getMergedStochast(std::shared_ptr<Distribution> distribution, std::shared_ptr<StochastProperties> defaultStochast)
         {
-            if (variableStochastType == "properties") return Statistics::VariableStochastType::Properties;
-            else if (variableStochastType == "mean_and_deviation") return Statistics::VariableStochastType::MeanAndDeviation;
-            else throw Reliability::probLibException("variable stochast type");
+            std::shared_ptr<StochastProperties> source = this->Stochast->clone();
+
+            // assign default properties if stochast property is not set (has value nan)
+            if (defaultStochast != nullptr)
+            {
+                source->Location = getNonNanValue(source->Location, defaultStochast->Location);
+                source->Scale = getNonNanValue(source->Scale, defaultStochast->Scale);
+                source->Shift = getNonNanValue(source->Shift, defaultStochast->Shift);
+                source->ShiftB = getNonNanValue(source->ShiftB, defaultStochast->ShiftB);
+                source->Shape = getNonNanValue(source->Shape, defaultStochast->Shape);
+                source->ShapeB = getNonNanValue(source->ShapeB, defaultStochast->ShapeB);
+                source->Minimum = getNonNanValue(source->Minimum, defaultStochast->Minimum);
+                source->Maximum = getNonNanValue(source->Maximum, defaultStochast->Maximum);
+                if (source->Observations == -1)
+                {
+                    source->Observations = defaultStochast->Observations;
+                }
+            }
+
+            if (!std::isnan(this->mean) || !std::isnan(this->deviation))
+            {
+                double requiredMean = std::isnan(this->mean) ? distribution->getMean(source) : this->mean;
+                double requiredDeviation = std::isnan(this->deviation) ? distribution->getDeviation(source) : this->deviation;
+                distribution->setMeanAndDeviation(source, requiredMean, requiredDeviation);
+            }
+
+            return source;
         }
 
-        std::string VariableStochastValue::getVariableStochastTypeString(Statistics::VariableStochastType variableStochastType)
+        std::shared_ptr<VariableStochastValue> VariableStochastValue::clone()
         {
-            switch (variableStochastType)
+            std::shared_ptr<VariableStochastValue> value = std::make_shared<VariableStochastValue>();
+
+            value->X = this->X;
+            value->mean = this->mean;
+            value->deviation = this->deviation;
+
+            value->Stochast = this->Stochast->clone();
+
+            return value;
+        }
+
+        double VariableStochastValue::getNonNanValue(double value1, double value2)
+        {
+            if (std::isnan(value1))
             {
-            case Statistics::VariableStochastType::Properties: return "properties";
-            case Statistics::VariableStochastType::MeanAndDeviation: return "mean_and_deviation";
-            default:  throw Reliability::probLibException("constant parameter type");
+                return value2;
+            }
+            else
+            {
+                return value1;
             }
         }
+
     }
 }

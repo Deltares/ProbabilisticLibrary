@@ -723,7 +723,6 @@ class ConditionalValue:
 
 	@mean.setter
 	def mean(self, value : float):
-		interface.SetStringValue(self._id, 'variable_type', str(VariableType.mean_and_deviation))
 		interface.SetValue(self._id, 'mean', value)
 
 	@property
@@ -732,7 +731,6 @@ class ConditionalValue:
 
 	@deviation.setter
 	def deviation(self, value : float):
-		interface.SetStringValue(self._id, 'variable_type', str(VariableType.mean_and_deviation))
 		interface.SetValue(self._id, 'deviation', value)
 
 	@property
@@ -741,7 +739,6 @@ class ConditionalValue:
 
 	@location.setter
 	def location(self, value : float):
-		interface.SetStringValue(self._id, 'variable_type', str(VariableType.properties))
 		interface.SetValue(self._id, 'location', value)
 
 	@property
@@ -750,7 +747,6 @@ class ConditionalValue:
 
 	@scale.setter
 	def scale(self, value : float):
-		interface.SetStringValue(self._id, 'variable_type', str(VariableType.properties))
 		interface.SetValue(self._id, 'scale', value)
 
 	@property
@@ -759,7 +755,6 @@ class ConditionalValue:
 
 	@shift.setter
 	def shift(self, value : float):
-		interface.SetStringValue(self._id, 'variable_type', str(VariableType.properties))
 		interface.SetValue(self._id, 'shift', value)
 
 	@property
@@ -768,7 +763,6 @@ class ConditionalValue:
 
 	@shift_b.setter
 	def shift_b(self, value):
-		interface.SetStringValue(self._id, 'variable_type', str(VariableType.properties))
 		interface.SetValue(self._id, 'shift_b', value)
 
 	@property
@@ -777,7 +771,6 @@ class ConditionalValue:
 
 	@minimum.setter
 	def minimum(self, value : float):
-		interface.SetStringValue(self._id, 'variable_type', str(VariableType.properties))
 		interface.SetValue(self._id, 'minimum', value)
 
 	@property
@@ -786,7 +779,6 @@ class ConditionalValue:
 
 	@maximum.setter
 	def maximum(self, value : float):
-		interface.SetStringValue(self._id, 'variable_type', str(VariableType.properties))
 		interface.SetValue(self._id, 'maximum', value)
 
 	@property
@@ -795,7 +787,6 @@ class ConditionalValue:
 
 	@shape.setter
 	def shape(self, value):
-		interface.SetStringValue(self._id, 'variable_type', str(VariableType.properties))
 		interface.SetValue(self._id, 'shape', value)
 
 	@property
@@ -804,7 +795,6 @@ class ConditionalValue:
 
 	@shape_b.setter
 	def shape_b(self, value : float):
-		interface.SetStringValue(self._id, 'variable_type', str(VariableType.properties))
 		interface.SetValue(self._id, 'shape_b', value)
 
 	@property
@@ -813,7 +803,6 @@ class ConditionalValue:
 
 	@observations.setter
 	def observations(self, value : int):
-		interface.SetStringValue(self._id, 'variable_type', str(VariableType.properties))
 		interface.SetIntValue(self._id, 'observations', value)
 
 class CorrelationMatrix:

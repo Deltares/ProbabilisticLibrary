@@ -802,12 +802,6 @@ namespace Deltares
                 else if (property_ == "name") return stochast->name;
                 else return "";
             }
-            else if (objectType == ObjectType::ConditionalValue)
-            {
-                std::shared_ptr<Statistics::VariableStochastValue> conditionalValue = conditionalValues[id];
-
-                if (property_ == "variable_type") return VariableStochastValue::getVariableStochastTypeString(conditionalValue->variableStochastType);
-            }
             else if (objectType == ObjectType::Settings)
             {
                 std::shared_ptr<Reliability::Settings> settings = settingsValues[id];
@@ -847,12 +841,6 @@ namespace Deltares
                 if (property_ == "distribution") stochast->setDistributionType(Stochast::getDistributionType(value));
                 else if (property_ == "constant_parameter") stochast->constantParameterType = Stochast::getConstantParameterType(value);
                 else if (property_ == "name") stochast->name = value;
-            }
-            else if (objectType == ObjectType::ConditionalValue)
-            {
-                std::shared_ptr<Statistics::VariableStochastValue> conditionalValue = conditionalValues[id];
-
-                if (property_ == "variable_type") conditionalValue->variableStochastType = VariableStochastValue::getVariableStochastType(value);
             }
             else if (objectType == ObjectType::ModelParameter)
             {
@@ -1317,7 +1305,7 @@ namespace Deltares
                 std::shared_ptr<Statistics::Stochast> stochast = stochasts[id];
 
                 if (method_ == "initialize_for_run") stochast->initializeForRun(); 
-                else if (method_ == "initialize_conditional_values") stochast->ValueSet->initializeForRun(stochast->getDistributionType(), stochast->isTruncated(), stochast->isInverted());
+                else if (method_ == "initialize_conditional_values") stochast->ValueSet->initializeForRun(stochast->getProperties(), stochast->getDistributionType(), stochast->isTruncated(), stochast->isInverted());
             }
             else if (objectType == ObjectType::Project)
             {

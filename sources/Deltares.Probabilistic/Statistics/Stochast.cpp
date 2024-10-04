@@ -210,7 +210,7 @@ namespace Deltares
         {
             if (this->IsVariableStochast)
             {
-                return this->ValueSet->isVarying(this->distributionType);
+                return this->ValueSet->isVarying(this->distributionType, this->properties);
             }
             else
             {
@@ -309,7 +309,7 @@ namespace Deltares
 
             if (this->IsVariableStochast)
             {
-                this->ValueSet->initializeForRun(this->distributionType, this->truncated, this->inverted);
+                this->ValueSet->initializeForRun(this->properties, this->distributionType, this->truncated, this->inverted);
             }
         }
 

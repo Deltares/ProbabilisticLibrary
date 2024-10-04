@@ -35,7 +35,7 @@ namespace Deltares
     {
         using namespace Deltares::Numeric;
 
-        void VariableStochastValuesSet::initializeForRun(DistributionType distributionType, bool truncated, bool inverted)
+        void VariableStochastValuesSet::initializeForRun(std::shared_ptr<StochastProperties> defaultStochast, DistributionType distributionType, bool truncated, bool inverted)
         {
             xValues.clear();
             locations.clear();
@@ -57,13 +57,7 @@ namespace Deltares
 
                 xValues.push_back(value->X);
 
-                std::shared_ptr<StochastProperties> source = value->Stochast;
-
-                if (value->variableStochastType == VariableStochastType::MeanAndDeviation)
-                {
-                    source = source->clone();
-                    distribution->setMeanAndDeviation(source, value->mean, value->deviation);
-                }
+                std::shared_ptr<StochastProperties> source = value->getMergedStochast(distribution, defaultStochast);
 
                 locations.push_back(source->Location);
                 scales.push_back(source->Scale);
@@ -94,13 +88,14 @@ namespace Deltares
             return properties;
         }
 
-        bool VariableStochastValuesSet::isVarying(DistributionType distributionType)
+        bool VariableStochastValuesSet::isVarying(DistributionType distributionType, std::shared_ptr<StochastProperties> defaultStochast)
         {
             std::shared_ptr<Distribution> distribution = DistributionLibrary::getDistribution(distributionType, false, false);
 
             for (size_t i = 0; i < StochastValues.size(); i++)
             {
-                if (distribution->isVarying(StochastValues[i]->Stochast))
+                std::shared_ptr<StochastProperties> mergedStochast = defaultStochast != nullptr ?  StochastValues[i]->getMergedStochast(distribution, defaultStochast) : StochastValues[i]->Stochast;
+                if (distribution->isVarying(mergedStochast))
                 {
                     return true;
                 }

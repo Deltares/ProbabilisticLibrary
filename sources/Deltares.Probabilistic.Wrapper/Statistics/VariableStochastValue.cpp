@@ -23,32 +23,3 @@
 
 #include "VariableStochastValue.h"
 
-namespace Deltares
-{
-    namespace Statistics
-    {
-        namespace Wrappers
-        {
-            Statistics::VariableStochastType VariableStochastValue::getNativeVariableStochastType(Wrappers::VariableStochastType variableStochastType)
-            {
-                switch (variableStochastType)
-                {
-                case Wrappers::VariableStochastType::Properties: return Statistics::VariableStochastType::Properties;
-                case Wrappers::VariableStochastType::MeanAndDeviation: return Statistics::VariableStochastType::MeanAndDeviation;
-                default: throw gcnew System::NotSupportedException(variableStochastType.ToString());
-                }
-            }
-
-            Statistics::Wrappers::VariableStochastType VariableStochastValue::getVariableStochastType(Statistics::VariableStochastType variableStochastType)
-            {
-                switch (variableStochastType)
-                {
-                case Statistics::VariableStochastType::Properties: return Statistics::Wrappers::VariableStochastType::Properties;
-                case Statistics::VariableStochastType::MeanAndDeviation: return Statistics::Wrappers::VariableStochastType::MeanAndDeviation;
-                default: throw gcnew System::NotSupportedException("variable stochast type");
-                }
-            }
-        }
-    }
-}
-

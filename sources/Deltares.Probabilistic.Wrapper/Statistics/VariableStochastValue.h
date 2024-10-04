@@ -32,15 +32,10 @@ namespace Deltares
         {
             using namespace Deltares::Utils::Wrappers;
 
-            public enum class VariableStochastType { Properties, MeanAndDeviation };
-
             public ref class VariableStochastValue : System::IComparable<VariableStochastValue^>
             {
             private:
                 SharedPointerProvider<Statistics::VariableStochastValue>* shared = new SharedPointerProvider(new Statistics::VariableStochastValue());
-
-                static Statistics::VariableStochastType getNativeVariableStochastType(Wrappers::VariableStochastType variableStochastType);
-                static Statistics::Wrappers::VariableStochastType getVariableStochastType(Statistics::VariableStochastType variableStochastType);
 
             public:
                 VariableStochastValue()    {}
@@ -117,12 +112,6 @@ namespace Deltares
                 {
                     int get() { return shared->object->Stochast->Observations; }
                     void set(int value) { shared->object->Stochast->Observations = value; }
-                }
-
-                virtual property Deltares::Statistics::Wrappers::VariableStochastType VariableStochastType
-                {
-                    Deltares::Statistics::Wrappers::VariableStochastType get() { return this->getVariableStochastType(shared->object->variableStochastType); }
-                    void set(Deltares::Statistics::Wrappers::VariableStochastType value) { shared->object->variableStochastType = this->getNativeVariableStochastType(value); }
                 }
 
                 std::shared_ptr<Statistics::VariableStochastValue> GetValue()

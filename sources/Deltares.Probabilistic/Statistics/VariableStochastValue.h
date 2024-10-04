@@ -21,42 +21,72 @@
 //
 #pragma once
 
+#include "DistributionType.h"
 #include "StochastProperties.h"
+#include "Distributions/Distribution.h"
 
 namespace Deltares
 {
     namespace Statistics
     {
-        enum VariableStochastType { Properties, MeanAndDeviation };
-
+        /**
+          * \brief Defines a conditional value
+          */
         class VariableStochastValue
         {
         public:
-            double X = 0;
-
-            VariableStochastType variableStochastType = VariableStochastType::Properties;
-
-            double mean = 0;
-            double deviation = 0;
-
-            std::shared_ptr<StochastProperties> Stochast = std::make_shared<StochastProperties>();
-
-            std::shared_ptr<VariableStochastValue> clone()
+            VariableStochastValue()
             {
-                std::shared_ptr<VariableStochastValue> value = std::make_shared<VariableStochastValue>();
-
-                value->X = this->X;
-                value->mean = this->mean;
-                value->deviation = this->deviation;
-                value->variableStochastType = this->variableStochastType;
-
-                value->Stochast = this->Stochast->clone();
-
-                return value;
+                // assign nan values to all Stochast properties
+                Stochast->Location = std::nan("");
+                Stochast->Scale = std::nan("");
+                Stochast->Shift = std::nan("");
+                Stochast->ShiftB = std::nan("");
+                Stochast->Shape = std::nan("");
+                Stochast->ShapeB = std::nan("");
+                Stochast->Minimum = std::nan("");
+                Stochast->Maximum = std::nan("");
+                Stochast->Observations = -1;
             }
 
-            static VariableStochastType getVariableStochastType(std::string variableStochastType);
-            static std::string getVariableStochastTypeString(Statistics::VariableStochastType variableStochastType);
+            /**
+              * \brief X-value for which the conditional value is defined
+              */
+            double X = 0;
+
+            /**
+              * \brief Mean value, if set (value not equal tot nan) it prevails over the stochast properties
+              */
+            double mean = std::nan("");
+
+            /**
+              * \brief Standard deviation value, if set (value not equal tot nan) it prevails over the stochast properties
+              */
+            double deviation = std::nan("");
+
+            /**
+              * \brief Stochast properties at X
+              * \remark If a property in this class is not set (value equal tot nan), the value will be ignored
+              */
+            std::shared_ptr<StochastProperties> Stochast = std::make_shared<StochastProperties>();
+
+            /**
+              * \brief Combines a given stochast with the conditional values in this class
+              * \param distribution Distribution
+              * \param defaultStochast Given stochast
+              * \return Combined stochast
+              */
+            std::shared_ptr<StochastProperties> getMergedStochast(std::shared_ptr<Distribution> distribution, std::shared_ptr<StochastProperties> defaultStochast = nullptr);
+
+            /**
+              * \brief Clones this object
+              */
+            std::shared_ptr<VariableStochastValue> clone();
+        private:
+            /**
+             * \brief Gets the first non nan value
+             */
+            double getNonNanValue(double value1, double value2);
         };
     }
 }
