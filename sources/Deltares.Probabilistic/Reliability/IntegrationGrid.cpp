@@ -25,8 +25,10 @@
 #include "IntegrationGrid.h"
 #include "../Math/BinarySupport.h"
 #include "../Utils/probLibString.h"
+#include "../Statistics/Stochast.h"
 
 using namespace Deltares::Numeric;
+using namespace Deltares::Statistics;
 
 namespace Deltares
 {
@@ -128,24 +130,17 @@ namespace Deltares
             }
         }
 
-        double GetPDF(double x)
-        {   // todo use pdf from normal distribution
-            double normalFactor = 1.0 / (sqrt(2.0 * std::numbers::pi));
-            double distance = -x * x / 2.0;
-
-            return normalFactor * exp(distance);
-        }
-
         double IntegrationPoint::ProbabilityDensity() const
         {
+            auto normalDist = Stochast(DistributionType::Normal, {0.0, 1.0});
+
             double probability = 1.0;
             for(double coordinate : Coordinates)
             {
-                probability *= GetPDF(coordinate);
+                probability *= normalDist.getPDF(coordinate);
             }
             return probability;
         }
-
 
         bool IntegrationLine::OnSameSide(IntegrationPoint& previousPoint, IntegrationPoint& nextPoint)
         {
