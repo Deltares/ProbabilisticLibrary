@@ -375,19 +375,19 @@ namespace Deltares
         void IntegrationDomain::AddPoint(std::shared_ptr<IntegrationPoint> point)
         {
             Points.push_back(point);
-            pointsSet.insert({ probLibString::doubles2str(point->Coordinates), point});
+            pointsSet.insert({ probLibString::doubles2strTrimmed(point->Coordinates), point});
 
             for (int i = 0; i < Dimension; i++)
             {
                 auto lineCoordinates = point->Coordinates;
                 lineCoordinates.erase(lineCoordinates.begin()+i);
 
-                auto line = LinesSet[i][probLibString::doubles2str(lineCoordinates)];
+                auto line = LinesSet[i][probLibString::doubles2strTrimmed(lineCoordinates)];
                 if (line == nullptr)
                 {
                     line = std::make_shared<IntegrationLine>(i, origin[i]);
                     Lines[i].push_back(line);
-                    LinesSet[i][probLibString::doubles2str(lineCoordinates)] = line;
+                    LinesSet[i][probLibString::doubles2strTrimmed(lineCoordinates)] = line;
                 }
 
                 line->Add(point);
