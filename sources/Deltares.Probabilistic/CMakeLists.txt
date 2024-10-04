@@ -10,6 +10,7 @@ file(GLOB probabilistic_files
     "Statistics/*.cpp"
     "Statistics/Distributions/*.cpp"
     "Optimization/*.cpp"
+    "Server/*.cpp"
     "Utils/*.cpp"
 )
 

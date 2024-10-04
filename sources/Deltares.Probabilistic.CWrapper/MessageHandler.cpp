@@ -19,7 +19,7 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include "../Deltares.Probabilistic/Model/ProjectServer.h"
+#include "../Deltares.Probabilistic/Server/ProjectServer.h"
 
 #include <string>
 #ifdef __GNUC__
@@ -28,7 +28,7 @@
 #define DLL_PUBLIC __declspec(dllexport) // Note: actually gcc seems to also supports this syntax.
 #endif
 
-std::shared_ptr<Deltares::Models::ProjectServer> projectServer = std::make_shared< Deltares::Models::ProjectServer>();
+std::shared_ptr<Deltares::Server::ProjectServer> projectServer = std::make_shared< Deltares::Server::ProjectServer>();
 
 extern "C" DLL_PUBLIC int Create(char* type)
 {
