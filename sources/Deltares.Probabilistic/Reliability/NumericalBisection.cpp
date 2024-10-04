@@ -95,7 +95,7 @@ namespace Deltares
                 std::vector<std::shared_ptr<Sample>> upar;
                 for (auto& points : unknownPoints)
                 {
-                    upar.push_back(std::make_shared<Sample>(points->Coordinates));  // TODO add step-1 to iteration
+                    upar.push_back(std::make_shared<Sample>(points->Coordinates));
                 }
 
                 std::vector<double> zValues = modelRunner->getZValues(upar);
@@ -122,17 +122,13 @@ namespace Deltares
 
                 updateProbabilities(domain, probUnknown, probExcluded, probFail);
 
-                double pLower = probFail / (1 - probExcluded);
-                double pUpper = (probFail + probUnknown) / (1 - probExcluded);
+                double pLower = probFail / (1.0 - probExcluded);
+                double pUpper = (probFail + probUnknown) / (1.0 - probExcluded);
 
                 double betaLower = -StandardNormal::getUFromP(pLower);
                 double betaUpper = -StandardNormal::getUFromP(pUpper);
 
                 beta = 0.5 * (betaLower + betaUpper);
-
-                //double convLower = Math.Abs(betaLower - beta) / settings.EpsilonBeta;
-                //double convUpper = Math.Abs(betaUpper - beta) / settings.EpsilonBeta;
-                //double convergence = Math.Max(convLower, convUpper);
 
                 double diffLower = std::abs(betaLower - beta);
                 double diffUpper = std::abs(betaUpper - beta);
@@ -175,7 +171,7 @@ namespace Deltares
             size_t chunkSize = 8192;
             for (int i = 0; i < std::min(10, nStochasts); i++)
             {
-                chunkSize = chunkSize / 2;
+                chunkSize /= 2;
             }
 
             return chunkSize;

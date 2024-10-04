@@ -20,7 +20,6 @@
 // All rights reserved.
 //
 #include <set>
-#include <numbers>
 #include <cmath>
 #include "IntegrationGrid.h"
 #include "../Math/BinarySupport.h"
@@ -65,8 +64,6 @@ namespace Deltares
                         double fraction = (x - xPrev) / (xNext - xPrev);
 
                         setZValue(fraction * nextPoint->ZValue + (1 - fraction) * previousPoint->ZValue);
-
-                        //zValue = (previousPoint.ZValue + nextPoint.ZValue) / 2;
                     }
                 }
 
@@ -352,11 +349,12 @@ namespace Deltares
 
         std::shared_ptr<IntegrationPoint> IntegrationDomain::GetIntegrationPoint(std::vector<double>& coordinates)
         {
+            constexpr double tolerance = 1E-10;
+
             std::shared_ptr<IntegrationPoint> integrationPoint;
             for(const auto& point : Points)
             {
-                // TODO compare with tolerance
-                if (point->Coordinates[0] == coordinates[0] && point->Coordinates[1] == coordinates[1])
+                if (NumericSupport::doublesAreEqual(point->Coordinates, coordinates, tolerance))
                 {
                     integrationPoint = point;
                     break;
