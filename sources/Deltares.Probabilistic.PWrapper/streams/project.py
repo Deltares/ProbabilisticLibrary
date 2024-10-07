@@ -200,7 +200,7 @@ class SensitivityProject:
 
 	@property
 	def model(self):
-		SensitivityProject._zmodel
+		return SensitivityProject._zmodel
 
 	@model.setter
 	def model(self, value):

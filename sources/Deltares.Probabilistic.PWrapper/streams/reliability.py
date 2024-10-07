@@ -361,7 +361,7 @@ class LimitStateFunction:
 
 	def __dir__(self):
 		return ['parameter',
-	            'compare_type',
+		        'compare_type',
 		        'critical_value']
 		
 	def __str__(self):
