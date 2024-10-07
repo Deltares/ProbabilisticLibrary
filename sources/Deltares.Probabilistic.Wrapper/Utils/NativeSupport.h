@@ -33,7 +33,9 @@ namespace Deltares
             {
             public:
                 static std::string toNative(System::String^ text);
+                static std::wstring toNativeW(System::String^ text);
                 static System::String^ toManaged(std::string text);
+                static System::String^ toManagedW(std::wstring text);
 
                 static std::vector<double> toNative(array<double>^ values);
                 static array<double>^ toManaged(std::vector<double>& values, int count);

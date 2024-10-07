@@ -41,6 +41,20 @@ namespace Deltares
                 return gcnew System::String(text.c_str());
             }
 
+            std::wstring NativeSupport::toNativeW(System::String^ text)
+            {
+                const wchar_t* chars = (const wchar_t*)(System::Runtime::InteropServices::Marshal::StringToHGlobalUni(text)).ToPointer();
+                std::wstring os = chars;
+                System::Runtime::InteropServices::Marshal::FreeHGlobal(System::IntPtr((void*)chars));
+
+                return os;
+            }
+
+            System::String^ NativeSupport::toManagedW(std::wstring text)
+            {
+                return gcnew System::String(text.c_str());
+            }
+
             std::vector<double> NativeSupport::toNative(array<double>^ values)
             {
                 std::vector<double> nValues(values->Length);
