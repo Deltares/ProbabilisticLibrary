@@ -368,7 +368,6 @@ class LengthEffectProject:
 	def __dir__(self):
 		return ['design_point_cross_section',
 				'correlation_lengths'
-				'minimum_failure_length',
 				'length',
 				'correlation_matrix',
 				'design_point']
@@ -402,14 +401,6 @@ class LengthEffectProject:
 	@length.setter
 	def length(self, value: float):
 		interface.SetValue(self._id, 'length', value)
-
-	@property
-	def minimum_failure_length(self):
-		return interface.GetValue(self._id, 'minimum_failure_length')
-
-	@minimum_failure_length.setter
-	def minimum_failure_length(self, value: float):
-		interface.SetValue(self._id, 'minimum_failure_length', value)
 
 	def run(self):
 		self._design_point = None

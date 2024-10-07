@@ -294,7 +294,6 @@ namespace Deltares
                 std::shared_ptr<Reliability::LengthEffectProject> length_effect = lengthEffectProjects[id];
 
                 if (property_ == "length") return length_effect->length;
-                else if (property_ == "minimum_failure_length") return length_effect->minimumFailureLength;
             }
             return std::nan("");
         }
@@ -399,7 +398,6 @@ namespace Deltares
                 std::shared_ptr<Reliability::LengthEffectProject> length_effect = lengthEffectProjects[id];
 
                 if (property_ == "length") length_effect->length = value;
-                else if (property_ == "minimum_failure_length") length_effect->minimumFailureLength = value;
             }
         }
 

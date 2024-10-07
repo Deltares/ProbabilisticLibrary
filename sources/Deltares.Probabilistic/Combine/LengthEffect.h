@@ -40,24 +40,22 @@ namespace Deltares
             // \param selfCorrelationMatrix : Correlation variables
             // \param correlationLengths : Correlation length variables
             // \param length : Section length
-            // \param minimumFailureLength : minimum failure length (breach length in certain mechanisms)
             // \return Design point for section
             static DesignPoint UpscaleLength(std::shared_ptr<DesignPoint> crossSection,
                 const std::shared_ptr<Statistics::SelfCorrelationMatrix>& selfCorrelationMatrix,
                 const std::vector<double>& correlationLengths,
-                const double length, const double minimumFailureLength);
+                const double length);
 
             // \brief This method upscales from a cross section to a given section length
             // \param crossSection : Reliability index and alpha cross section
             // \param selfCorrelations : Correlation variables
             // \param correlationLengths : Correlation length variables
             // \param length : Section length
-            // \param minimumFailureLength : minimum failure length (breach length in certain mechanisms)
             // \return Design point for section
             static DesignPoint UpscaleLength(std::shared_ptr<DesignPoint> crossSection,
                 const std::vector<double>& selfCorrelations,
                 const std::vector<double>& correlationLengths,
-                const double length, const double minimumFailureLength);
+                const double length);
         };
     }
 }

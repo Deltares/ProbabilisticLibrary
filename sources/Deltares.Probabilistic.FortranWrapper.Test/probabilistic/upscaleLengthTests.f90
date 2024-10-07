@@ -82,7 +82,6 @@ subroutine upscaleLengthTests10
     real( kind= wp)      :: rhoXK( nStoch)                !< Correlation variables
     real( kind= wp)      :: dXK( nStoch)                  !< Correlation length variables
     real( kind= wp)      :: sectionLength                 !< Length of the section
-    real( kind= wp)      :: breachLength                  !< Breach Length
     real( kind= wp)      :: myMargin                      !< Acceptable margin for difference between expected and computed beta
     character( len= 132) :: errorText                     !< character string for diagnostic message in case of test failure
 
@@ -92,10 +91,9 @@ subroutine upscaleLengthTests10
     rhoXK              = 0.8d0
     dXK                = 200.0d0
     sectionLength      = 250.0d0
-    breachLength       = 0.0d0
     myMargin           = 1.0d-6
 
-    call upscaleLength( betaCrossSection, alphaCrossSection, rhoXK, dXK, sectionLength, betaSection, alphaSection, breachLength)
+    call upscaleLength( betaCrossSection, alphaCrossSection, rhoXK, dXK, sectionLength, betaSection, alphaSection)
 !
 !   The expected value of beta is taken from a previous calculation; this test must ensure that the code does not change the result
     expectedBetaSection= 4.81288713415857d0
@@ -162,7 +160,6 @@ subroutine upscaleLengthTests12
     real( kind= wp)      :: betaCrossSection              !< Reliability index of a cross section
     real( kind= wp)      :: betaSection                   !< Reliability index of the section after upscaling
     real( kind= wp)      :: expectedBetaSection           !< Expected reliability index of the section after upscaling
-    real( kind= wp)      :: breachLength                  !< Breach Length
     real( kind= wp)      :: alphaCrossSection( nStoch)    !< Alpha vector cross section
     real( kind= wp)      :: alphaSection( nStoch)         !< Alpha vector for the section after upscaling
     real( kind= wp)      :: expectedAlphaSection( nStoch) !< Alpha vector that is expected for the section after upscaling
@@ -178,10 +175,9 @@ subroutine upscaleLengthTests12
     rhoXK              = (/ 1.0d0, 0.0d0, 1.0d0,  0.0d0, 1.0d0 /)
     dXK                = 200.0d0
     sectionLength      = 250.0d0
-    breachLength       = 0.0d0
     myMargin           = 1.0d-6
 
-    call upscaleLength( betaCrossSection, alphaCrossSection, rhoXK, dXK, sectionLength, betaSection, alphaSection, breachLength)
+    call upscaleLength( betaCrossSection, alphaCrossSection, rhoXK, dXK, sectionLength, betaSection, alphaSection)
 !   The expected value of beta is taken from a previous calculation; this test must ensure that the code does not change the result
     expectedBetaSection= 4.7005296730163d0
     call assert_comparable( betaSection, expectedBetaSection, myMargin, 'The upscaled beta is not as expected')
@@ -213,7 +209,6 @@ subroutine upscaleLengthTests13
     real( kind= wp)      :: rhoXK( nStoch)                !< Correlation variables
     real( kind= wp)      :: dXK( nStoch)                  !< Correlation length variables
     real( kind= wp)      :: sectionLength                 !< Length of the section
-    real( kind= wp)      :: breachLength                  !< Breach Length
     real( kind= wp)      :: myMargin                      !< Acceptable margin for difference between expected and computed beta
     character( len= 132) :: errorText                     !< character string for diagnostic message in case of test failure
 
@@ -223,10 +218,9 @@ subroutine upscaleLengthTests13
     rhoXK              = (/ 0.0d0, 1.0d0, 0.0d0,  1.0d0, 0.0d0 /)
     dXK                = 200.0d0
     sectionLength      = 250.0d0
-    breachLength       = 0.0d0
     myMargin           = 1.0d-6
 
-    call upscaleLength( betaCrossSection, alphaCrossSection, rhoXK, dXK, sectionLength, betaSection, alphaSection, breachLength)
+    call upscaleLength( betaCrossSection, alphaCrossSection, rhoXK, dXK, sectionLength, betaSection, alphaSection)
 !   For betaSection the same value as for betaCrossSection is expected because in this case rhoZ= 1
     expectedBetaSection= betaCrossSection
     call assert_comparable( betaSection, expectedBetaSection, myMargin, 'The upscaled beta is not as expected')
@@ -256,7 +250,6 @@ subroutine upscaleLengthTests14
     real( kind= wp)      :: rhoXK( nStoch)                !< Correlation variables
     real( kind= wp)      :: dXK( nStoch)                  !< Correlation length variables
     real( kind= wp)      :: sectionLength                 !< Length of the section
-    real( kind= wp)      :: breachLength                  !< Breach Length
     real( kind= wp)      :: myMargin                      !< Acceptable margin for difference between expected and computed beta
     character( len= 132) :: errorText                     !< character string for diagnostic message in case of test failure
 
@@ -266,10 +259,9 @@ subroutine upscaleLengthTests14
     rhoXK              = 0.8d0
     dXK                = 10.0d0
     sectionLength      = 250.0d0
-    breachLength       = 0.0d0
     myMargin           = 1.0d-6
 
-    call upscaleLength( betaCrossSection, alphaCrossSection, rhoXK, dXK, sectionLength, betaSection, alphaSection, breachLength)
+    call upscaleLength( betaCrossSection, alphaCrossSection, rhoXK, dXK, sectionLength, betaSection, alphaSection)
 !
 !   The expected value of beta is taken from a previous calculation; this test must ensure that the code does not change the result
     expectedBetaSection= 4.34229408482452d0
@@ -299,7 +291,6 @@ subroutine upscaleLengthTests15
     real( kind= wp)      :: rhoXK( nStoch)                !< Correlation variables
     real( kind= wp)      :: dXK( nStoch)                  !< Correlation length variables
     real( kind= wp)      :: sectionLength                 !< Length of the section
-    real( kind= wp)      :: breachLength                  !< Breach Length
     real( kind= wp)      :: myMargin                      !< Acceptable margin for difference between expected and computed beta
     character( len= 132) :: errorText                     !< character string for diagnostic message in case of test failure
 
@@ -310,10 +301,9 @@ subroutine upscaleLengthTests15
     rhoXK              = (/   0.8d0,   0.0d0,  1.0d0,   0.5d0,   1.0d0 /)
     dXK                = (/ 100.0d0, 200.0d0, 50.0d0, 150.0d0, 300.0d0 /)
     sectionLength      = 250.0d0
-    breachLength       = 0.0d0
     myMargin           = 1.0d-6
 
-    call upscaleLength( betaCrossSection, alphaCrossSection, rhoXK, dXK, sectionLength, betaSection, alphaSection, breachLength)
+    call upscaleLength( betaCrossSection, alphaCrossSection, rhoXK, dXK, sectionLength, betaSection, alphaSection)
 !
 !   The expected value of beta is taken from a previous calculation; this test must ensure that the code does not change the result
     expectedBetaSection= 4.82816016866383d0
