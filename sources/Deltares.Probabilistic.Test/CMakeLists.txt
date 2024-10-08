@@ -68,6 +68,8 @@ add_executable(Deltares.Probabilistic.Test
     Combin/combiner_tests.cpp
     Distributions/testDistributions.h
     Distributions/testDistributions_body.cpp
+    Optimization/testCobyla.h
+    Optimization/testCobyla_body.cpp
     Statistics/testStandardNormal.h
     Statistics/testStandardNormal_body.cpp
     Sensitivity/TestSensitivity.h

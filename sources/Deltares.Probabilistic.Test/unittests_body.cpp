@@ -37,6 +37,7 @@
 #include "Statistics/testStandardNormal.h"
 #include "Distributions/testDistributions.h"
 #include "Sensitivity/TestSensitivity.h"
+#include "Optimization/testCobyla.h"
 
 using namespace Deltares::Probabilistic;
 
@@ -159,6 +160,13 @@ namespace Deltares
                 auto tstVector1D = vector1D_tests();
                 tstVector1D.allVector1Dtests();
             }
+
+            TEST(unittst, testCobylaOptimization)
+            {
+                auto tstCobylaOpt = testCobyla();
+                tstCobylaOpt.allCobylaTests();
+            }
+
         }
     }
 }
