@@ -117,6 +117,12 @@ namespace Deltares
             handlersTable[id]->SetStringValue(id, property_, value);
         }
 
+        std::string ProjectServer::GetIndexedStringValue(int id, const std::string property_, int index)
+        {
+            return handlersTable[id]->GetIndexedStringValue(id, property_, index);
+        }
+
+
         void ProjectServer::SetArrayValue(int id, std::string property_, double* values, int size)
         {
             handlersTable[id]->SetArrayValue(id, property_, values, size);
@@ -140,6 +146,11 @@ namespace Deltares
         void ProjectServer::SetArgValue(int id, std::string property_, double argument, double value)
         {
             handlersTable[id]->SetArgValue(id, property_, argument, value);
+        }
+
+        void ProjectServer::GetArgValues(int id, std::string property_, double* values, int size, double* outputValues)
+        {
+            return handlersTable[id]->GetArgValues(id, property_, values, size, outputValues);
         }
 
         double ProjectServer::GetIndexedValue(int id, std::string property_, int index)
@@ -172,19 +183,9 @@ namespace Deltares
             handlersTable[id]->SetCallBack(id, property_, callBack);
         }
 
-        void ProjectServer::SetEmptyCallBack(int id, std::string property_, ZEmptyCallBack callBack)
-        {
-            handlersTable[id]->SetEmptyCallBack(id, property_, callBack);
-        }
-
         void ProjectServer::Execute(int id, std::string method_)
         {
             handlersTable[id]->Execute(id, method_);
-        }
-
-        ZLambda ProjectServer::GetCallBack(int id, std::string method_)
-        {
-            return handlersTable[id]->GetCallBack(id, method_);
         }
     }
 }

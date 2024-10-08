@@ -37,6 +37,7 @@ namespace Deltares
                 object_type == "message" ||
                 object_type == "project" ||
                 object_type == "model_parameter" ||
+                object_type == "limit_state_function" ||
                 object_type == "stochast" ||
                 object_type == "discrete_value" ||
                 object_type == "histogram_value" ||
@@ -77,6 +78,11 @@ namespace Deltares
             {
                 modelParameters[id] = std::make_shared<Deltares::Models::ModelInputParameter>();
                 types[id] = ObjectType::ModelParameter;
+            }
+            else if (object_type == "limit_state_function")
+            {
+                limitStateFunctions[id] = std::make_shared<Deltares::Reliability::LimitStateFunction>();
+                types[id] = ObjectType::LimitStateFunction;
             }
             else if (object_type == "stochast")
             {
@@ -182,6 +188,7 @@ namespace Deltares
             case ObjectType::Message: messages.erase(id); break;
             case ObjectType::Project: projects.erase(id); break;
             case ObjectType::ModelParameter: modelParameters.erase(id); break;
+            case ObjectType::LimitStateFunction: limitStateFunctions.erase(id); break;
             case ObjectType::Stochast: stochasts.erase(id); break;
             case ObjectType::DiscreteValue: discreteValues.erase(id); break;
             case ObjectType::HistogramValue: histogramValues.erase(id); break;
@@ -257,6 +264,18 @@ namespace Deltares
                 std::shared_ptr<Statistics::ContributingStochast> contributingStochast = contributingStochasts[id];
 
                 if (property_ == "probability") return contributingStochast->Probability;
+            }
+            else if (objectType == ObjectType::LimitStateFunction)
+            {
+                std::shared_ptr<Reliability::LimitStateFunction> limitStateFunction = limitStateFunctions[id];
+
+                if (property_ == "critical_value") return limitStateFunction->criticalValue;
+            }
+            else if (objectType == ObjectType::ModelParameter)
+            {
+                std::shared_ptr<Models::ModelInputParameter> parameter = modelParameters[id];
+
+                if (property_ == "default_value") return parameter->defaultValue;
             }
             else if (objectType == ObjectType::ConditionalValue)
             {
@@ -388,6 +407,18 @@ namespace Deltares
 
                 if (property_ == "probability") contributingStochast->Probability = value;
             }
+            else if (objectType == ObjectType::LimitStateFunction)
+            {
+                std::shared_ptr<Reliability::LimitStateFunction> limitStateFunction = limitStateFunctions[id];
+
+                if (property_ == "critical_value") limitStateFunction->criticalValue = value;
+            }
+            else if (objectType == ObjectType::ModelParameter)
+            {
+                std::shared_ptr<Models::ModelInputParameter> parameter = modelParameters[id];
+
+                if (property_ == "default_value") parameter->defaultValue = value;
+            }
             else if (objectType == ObjectType::ConditionalValue)
             {
                 std::shared_ptr<Statistics::VariableStochastValue> conditionalValue = conditionalValues[id];
@@ -461,6 +492,7 @@ namespace Deltares
                 std::shared_ptr<Reliability::ReliabilityProject> project = projects[id];
 
                 if (property_ == "design_point") return GetDesignPointId(project->designPoint);
+                else if (property_ == "limit_state_function") return GetLimitStateFunctionId(project->limitStateFunction);
                 else if (property_ == "index") return project->model->Index;
             }
             else if (objectType == ObjectType::ModelParameter)
@@ -719,6 +751,12 @@ namespace Deltares
                 else if (property_ == "truncated") return stochast->isTruncated();
                 else if (property_ == "conditional") return stochast->IsVariableStochast;
             }
+            else if (objectType == ObjectType::LimitStateFunction)
+            {
+                std::shared_ptr<Reliability::LimitStateFunction> limitStateFunction = limitStateFunctions[id];
+
+                if (property_ == "use_compare_parameter") return limitStateFunction->useCompareParameter;
+            }
             else if (objectType == ObjectType::StochastSettings)
             {
                 std::shared_ptr<Reliability::StochastSettings> stochastSettings = stochastSettingsValues[id];
@@ -756,6 +794,12 @@ namespace Deltares
                 if (property_ == "inverted") stochast->setInverted(value);
                 else if (property_ == "truncated") stochast->setTruncated(value);
                 else if (property_ == "conditional") stochast->IsVariableStochast = value;
+            }
+            else if (objectType == ObjectType::LimitStateFunction)
+            {
+                std::shared_ptr<Reliability::LimitStateFunction> limitStateFunction = limitStateFunctions[id];
+
+                if (property_ == "use_compare_parameter") limitStateFunction->useCompareParameter = value;
             }
             else if (objectType == ObjectType::StochastSettings)
             {
@@ -801,6 +845,14 @@ namespace Deltares
                 else if (property_ == "constant_parameter") return Stochast::getConstantParameterTypeString(stochast->constantParameterType);
                 else if (property_ == "name") return stochast->name;
                 else return "";
+            }
+            else if (objectType == ObjectType::LimitStateFunction)
+            {
+                std::shared_ptr<Reliability::LimitStateFunction> limitStateFunction = limitStateFunctions[id];
+
+                if (property_ == "parameter") return limitStateFunction->criticalParameter;
+                else if (property_ == "compare_parameter") return limitStateFunction->compareParameter;
+                else if (property_ == "compare_type") return LimitStateFunction::GetCompareTypeString(limitStateFunction->compareType);
             }
             else if (objectType == ObjectType::Settings)
             {
@@ -848,6 +900,14 @@ namespace Deltares
 
                 if (property_ == "name") parameter->name = value;
             }
+            else if (objectType == ObjectType::LimitStateFunction)
+            {
+                std::shared_ptr<Reliability::LimitStateFunction> limitStateFunction = limitStateFunctions[id];
+
+                if (property_ == "parameter") limitStateFunction->criticalParameter = value;
+                else if (property_ == "compare_parameter") limitStateFunction->compareParameter = value;
+                else if (property_ == "compare_type") limitStateFunction->compareType = LimitStateFunction::GetCompareType(value);
+            }
             else if (objectType == ObjectType::Settings)
             {
                 std::shared_ptr<Reliability::Settings> settings = settingsValues[id];
@@ -876,13 +936,13 @@ namespace Deltares
             {
                 std::shared_ptr<Reliability::ReliabilityProject> project = projects[id];
 
-                if (property_ == "model_name") project->model->Name = value;
+                if (property_ == "model_name") project->model->name = value;
             }
             else if (objectType == ObjectType::SensitivityProject)
             {
                 std::shared_ptr<Sensitivity::SensitivityProject> sensitivityProject = sensitivityProjects[id];
 
-                if (property_ == "model_name") sensitivityProject->model->Name = value;
+                if (property_ == "model_name") sensitivityProject->model->name = value;
             }
         }
 
@@ -1278,24 +1338,6 @@ namespace Deltares
             }
         }
 
-        void ProjectHandler::SetEmptyCallBack(int id, std::string property_, ZEmptyCallBack callBack)
-        {
-            ObjectType objectType = types[id];
-
-            if (objectType == ObjectType::Project)
-            {
-                std::shared_ptr<Reliability::ReliabilityProject> project = projects[id];
-
-                if (property_ == "initialize") project->setInitializer(callBack);
-            }
-            else if (objectType == ObjectType::SensitivityProject)
-            {
-                std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
-
-                if (property_ == "initialize") project->setInitializer(callBack);
-            }
-        }
-
         void ProjectHandler::Execute(int id, std::string method_)
         {
             ObjectType objectType = types[id];
@@ -1372,6 +1414,27 @@ namespace Deltares
                 }
 
                 return correlationMatrixIds[correlationMatrix];
+            }
+        }
+
+        int ProjectHandler::GetLimitStateFunctionId(std::shared_ptr<Reliability::LimitStateFunction> limitStateFunction)
+        {
+            if (limitStateFunction == nullptr)
+            {
+                return 0;
+            }
+            else
+            {
+                if (!limitStateFunctionIds.contains(limitStateFunction))
+                {
+                    int counter = this->server->GetNewObjectId(this->handlerIndex);
+
+                    limitStateFunctions[counter] = limitStateFunction;
+                    types[counter] = ObjectType::LimitStateFunction;
+                    limitStateFunctionIds[limitStateFunction] = counter;
+                }
+
+                return limitStateFunctionIds[limitStateFunction];
             }
         }
 

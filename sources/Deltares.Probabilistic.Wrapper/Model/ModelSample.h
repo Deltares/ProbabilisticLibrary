@@ -118,6 +118,11 @@ namespace Deltares
                     void set(double value) { shared->object->Z = value; }
                 }
 
+                void SetOutputValues(array<double>^ outputValues)
+                {
+                    shared->object->OutputValues = NativeSupport::toNative(outputValues);
+                }
+
                 bool AreValuesEqual(ModelSample^ other)
                 {
                     if (this == other)

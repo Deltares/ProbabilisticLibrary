@@ -344,6 +344,60 @@ class StochastSettings:
 	@is_variance_allowed.setter
 	def is_variance_allowed(self, value: bool):
 		interface.SetBoolValue(self._id, 'is_variance_allowed', value)
+
+class CompareType(Enum):
+	less_than = 'less_than'
+	greater_than = 'greater_than'
+	def __str__(self):
+		return str(self.value)
+
+class LimitStateFunction:
+		
+	def __init__(self, id = None):
+		if id is None:
+			self._id = interface.Create('limit_state_function')
+		else:
+			self._id = id
+
+	def __dir__(self):
+		return ['parameter',
+		        'compare_type',
+		        'critical_value']
+		
+	def __str__(self):
+		return self.parameter + ' ' + str(self.compare_type) + ' ' + str(self.critical_value)
+
+	@property
+	def parameter(self):
+		return interface.GetStringValue(self._id, 'parameter')
+		
+	@parameter.setter
+	def parameter(self, value):
+		interface.SetStringValue(self._id, 'parameter', str(value))
+
+	@property
+	def compare_type(self):
+		return CompareType[interface.GetStringValue(self._id, 'compare_type')]
+		
+	@compare_type.setter
+	def compare_type(self, value : CompareType):
+		interface.SetStringValue(self._id, 'compare_type', str(value))
+
+	@property
+	def critical_value(self):
+		if interface.GetBoolValue('use_compare_parameter'):
+			return interface.GetStringValue(self._id, 'compare_parameter')
+		else:
+			return interface.GetValue(self._id, 'critical_value')
+		
+	@critical_value.setter
+	def critical_value(self, value):
+		if type(value) is float or type(value) is int:
+			interface.SetBoolValue(self._id, 'use_compare_parameter', False)
+			interface.SetValue(self._id, 'critical_value', value)
+		else:
+			interface.SetBoolValue(self._id, 'use_compare_parameter', True)
+			interface.SetStringValue(self._id, 'compare_parameter', str(value))
 		
 
 class DesignPoint:

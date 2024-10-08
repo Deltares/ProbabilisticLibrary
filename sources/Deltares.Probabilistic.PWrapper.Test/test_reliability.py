@@ -56,6 +56,43 @@ class Test_reliability(unittest.TestCase):
 
         self.assertEqual(0, len(dp.messages))
 
+    def test_form_limit_state_functions(self):
+        project = project_builder.get_multiple_unbalanced_linear_project()
+
+        self.assertEqual(3, len(project.model.output_parameters))
+        self.assertEqual('x', project.model.output_parameters[0].name)
+        self.assertEqual('y', project.model.output_parameters[1].name)
+        self.assertEqual('z', project.model.output_parameters[2].name)
+
+        project.limit_state_function.parameter = 'y'
+        project.limit_state_function.compare_type = CompareType.less_than
+        project.limit_state_function.critical_value = 0.1
+
+        project.settings.reliability_method = ReliabilityMethod.form
+
+        project.run();
+
+        dp = project.design_point;
+        beta = dp.reliability_index;
+        alphas = dp.alphas;
+
+        self.assertAlmostEqual(1.99, beta, delta=margin)
+        self.assertEqual(2, len(alphas))
+
+        self.assertAlmostEqual(-0.31, alphas[0].alpha, delta=margin)
+        self.assertAlmostEqual(-0.95, alphas[1].alpha, delta=margin)
+
+        project.limit_state_function.critical_value = 'z'
+
+        project.run();
+
+        dp = project.design_point;
+        beta = dp.reliability_index;
+        alphas = dp.alphas;
+
+        self.assertAlmostEqual(0.0, beta, delta=margin)
+        self.assertEqual(2, len(alphas))
+
 
     # def test_form_linear_fragility_curve(self):
     #     project = project_builder.get_linear_project()
