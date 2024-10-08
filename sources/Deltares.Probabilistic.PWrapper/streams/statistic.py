@@ -162,8 +162,9 @@ class Stochast:
 				'histogram_values',
 				'fragility_values',
 				'contributing_stochasts',
-				'fit',
 				'copy_from',
+				'fit',
+				'get_ks_test',
 				'get_quantile',
 				'get_x_from_u',
 				'get_u_from_x',
@@ -468,6 +469,10 @@ class Stochast:
 		self._histogram_values = None
 		self._discrete_values = None
 		self._fragility_values = None
+
+	def get_ks_test(self, values):
+		interface.SetArrayValue(self._id, 'data', values)
+		return interface.GetValue(self._id, 'ks_test')
 
 	def copy_from(self, source):
 		if type(source) == str:

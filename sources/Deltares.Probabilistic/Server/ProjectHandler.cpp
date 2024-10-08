@@ -231,6 +231,7 @@ namespace Deltares
                 else if (property_ == "design_quantile") return stochast->designQuantile;
                 else if (property_ == "design_factor") return stochast->designFactor;
                 else if (property_ == "design_value") return stochast->getDesignValue();
+                else if (property_ == "ks_test") return stochast->getKSTest(tempValues["data"]);
                 else if (property_ == "x_from_u_and_source") return stochast->getXFromUAndSource(tempValues["u_and_x"][1], tempValues["u_and_x"][0]);
                 else return std::nan("");
             }
@@ -963,6 +964,16 @@ namespace Deltares
                     }
 
                     stochast->fit(fitValues);
+                }
+                else if (property_ == "data")
+                {
+                    std::vector<double> data;
+                    for (size_t i = 0; i < size; i++)
+                    {
+                        data.push_back(values[i]);
+                    }
+
+                    tempValues["data"] = data;
                 }
                 else if (property_ == "u_and_x")
                 {

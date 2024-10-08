@@ -301,6 +301,12 @@ namespace Deltares
             void fitFromHistogramValues();
 
             /**
+             * \brief Calculates the Kolmogorov-Smirnov statistic, which is an indication how well data correspond with the stochast (0 = perfect, 1 = no correspondence at all)
+             * \return Kolmogorov-Smirnov statistic
+             */
+            double getKSTest(std::vector<double> values);
+
+            /**
              * \brief Gets a number of interesting x-values
              * \remark This method is used when plotting PDF and CDF
              * \return Interesting x-values

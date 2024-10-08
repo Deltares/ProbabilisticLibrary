@@ -25,6 +25,7 @@
 #include "Distributions/DistributionLibrary.h"
 #include "Distributions/InvertedDistribution.h"
 #include "Distributions/ExternalDistribution.h"
+#include "Distributions/KSCalculator.h"
 
 namespace Deltares
 {
@@ -342,6 +343,11 @@ namespace Deltares
             }
 
             distribution->fit(properties, values);
+        }
+
+        double Stochast::getKSTest(std::vector<double> values)
+        {
+            return KSCalculator::getGoodnessOfFit(values, distribution, this->properties);
         }
 
         double Stochast::getDesignValue()
