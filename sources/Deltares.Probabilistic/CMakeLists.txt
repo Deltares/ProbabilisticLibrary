@@ -9,7 +9,7 @@ file(GLOB probabilistic_files
     "Sensitivity/*.cpp"
     "Statistics/*.cpp"
     "Statistics/Distributions/*.cpp"
-    "Optimization/*.cpp"
+    "Optimization/*.c*"
     "Utils/*.cpp"
 )
 
