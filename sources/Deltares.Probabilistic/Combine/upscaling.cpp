@@ -176,16 +176,15 @@ namespace Deltares {
             //
             // Calculate correlation length dz
             //
-            double dz = 0.0;
+            double sumAlphaDxk = 0.0;
             for (size_t i = 0; i < nrVar; i++)
             {
                 if (dXK(i) != 0.0)
                 {
-                    dz += (1.0 - rhoXK(i)) * pow(crossSectionElement.getAlphaI(i) / dXK(i), 2);
+                    sumAlphaDxk += (1.0 - rhoXK(i)) * pow(crossSectionElement.getAlphaI(i) / dXK(i), 2);
                 }
             }
-            dz = dz / (1.0 - rhoZ);
-            dz = sqrt(1.0 / dz);
+            double dz = sqrt((1.0 - rhoZ) / sumAlphaDxk);
             //
             // Calculate delta L
             //
@@ -199,7 +198,6 @@ namespace Deltares {
                 element.setAlpha(vector1D(nrVar));
                 //
                 // Calculate beta for section from the beta of the cross section
-                deltaL = std::min(deltaL, sectionLength);
                 auto betaSection = ComputeBetaSection(crossSectionElement.getBeta(), sectionLength, rhoZ, dz, deltaL);
                 if (betaSection.second != 0) failures++;
                 element.setBeta(betaSection.first);
