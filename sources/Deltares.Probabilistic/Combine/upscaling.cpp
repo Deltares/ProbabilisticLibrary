@@ -187,15 +187,14 @@ namespace Deltares {
             dz = dz / (1.0 - rhoZ);
             dz = sqrt(1.0 / dz);
             //
-            // Calculate delta L and breach L
+            // Calculate delta L
             //
             double deltaL = dz / crossSectionElement.getBeta() * sqrt(M_PI) / sqrt(1.0 - rhoZ);
             deltaL = std::max(deltaL, 0.01);
 
-            int failures = 0;
-
-            if (sectionLength > 0.0)
+            if (deltaL < sectionLength)
             {
+                int failures = 0;
                 alphaBeta element;
                 element.setAlpha(vector1D(nrVar));
                 //
@@ -264,24 +263,24 @@ namespace Deltares {
         std::pair<double, int> upscaling::ComputeBetaSection(const double betaCrossSection, const double sectionLength,
             const double rhoZ, const double dz, const double deltaL)
         {
-            const int    nGridPoints = 30001;    // Number of grid points for v in numerical integration
+            const int    nGridPoints = 30001; // Number of grid points for v in numerical integration
             const double vLower = -30.0;  // Lower bound of v-values in the numerical integration
             const double vUpper = 30.0;  // Upper bound of v-values in the numerical integration
 
             // Compute failure probability cross section from beta
             double pf = StandardNormal::getQFromU(betaCrossSection); // Failure probability cross section
             double pfX; // Failure probability section
-            int conv;
+            int conv; // indicator of non-converged Hohenbichler calculation
             if (rhoZ > 0.001)
             {
-                double vDelta = (vUpper - vLower) / double(nGridPoints - 1); // Step size in the numerical integration over v in [vLower, vUpper]
+                double vDelta = (vUpper - vLower) / static_cast<double>(nGridPoints - 1); // Step size in the numerical integration over v in [vLower, vUpper]
                 double p = StandardNormal::getPFromU(betaCrossSection); // Probability
                 auto termI = std::vector<double>(nGridPoints); // i-th term to add
                 for (size_t i = 0; i < nGridPoints; i++)
                 {
-                    double v = vLower + vDelta * double(i);
+                    double v = vLower + vDelta * static_cast<double>(i);
                     double x = (betaCrossSection - sqrt(rhoZ) * v) / sqrt(1.0 - rhoZ); // x = beta*
-                    double nf = sectionLength / (sqrt(2.0) * M_PI) / dz * exp(-x * x / 2.0); // Number of cross sections
+                    double nf = (sectionLength - deltaL) / (sqrt(2.0) * M_PI) / dz * exp(-x * x / 2.0); // Number of cross section
                     termI[i] = (1.0 - p * exp(-nf)) * exp(-v * v / 2.0) / sqrt(2.0 * M_PI) * vDelta;
                 }
                 //
@@ -301,7 +300,7 @@ namespace Deltares {
             {
                 auto pfVV = hhb.PerformHohenbichler(betaCrossSection, pf, rhoZ); // Failure probability vv, Hohenbichler
                 conv = pfVV.second;
-                pfX = pf + sectionLength / deltaL * (pf - pfVV.first * pf);
+                pfX = pf + (sectionLength - deltaL) / deltaL * (pf - pfVV.first * pf);
                 pfX = std::min(pfX, 1.0);
             }
 

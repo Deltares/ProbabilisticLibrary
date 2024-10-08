@@ -782,8 +782,8 @@ void combinElementsTests::testcombineMultipleElementsSpatialCorrelated1()
     auto dXK   = vector1D({500.0, 300.0, 500.0, 300.0});
     double sectionLength = 100.0;
 
-    auto ref = alphaBeta(4.287746877, // pre-computed
-    { 0.62016385, 0.4091082, 0.55737489, 0.3706218 }); // pre-computed
+    auto ref = alphaBeta(4.38787743765301, // pre-computed
+    {0.635285167139092, 0.393519326675495, 0.565059833788674, 0.349660807332817}); // pre-computed
 
     auto section = up.upscaleLength(CrossSection, rhoXK, dXK, sectionLength);
     EXPECT_EQ(section.second, 0);
@@ -810,8 +810,8 @@ void combinElementsTests::testcombineMultipleElementsSpatialCorrelated2()
     auto dXK   = vector1D({500.0, 300.0, 500.0, 300.0});
     double sectionLength = 100.0;
 
-    auto ref = alphaBeta(4.5181616,
-    { 0.57814789, 0.386077316, 0.59537102, 0.402768758 }); // pre-computed
+    auto ref = alphaBeta(4.61415014812874,
+    {0.597708361676096, 0.375385677437277, 0.599181645055476, 0.377904305064187}); // pre-computed
 
     auto section = up.upscaleLength(crossSection, rhoXK, dXK, sectionLength);
     EXPECT_EQ(section.second, 0);
@@ -842,8 +842,8 @@ void combinElementsTests::testcombineMultipleElementsSpatialCorrelated3()
     auto dXK   = vector1D({500.0, 300.0, 500.0, 300.0});
     double sectionLength = 100.0;
 
-    auto ref = alphaBeta(4.4880814,
-    { 0.57891362, 0.385336899, 0.59823508, 0.3981071199 }); // pre-computed
+    auto ref = alphaBeta(4.5064103581966,
+    {0.578741673689891, 0.385418150246354, 0.598199853682860, 0.398331344045516}); // pre-computed
 
     auto section = up.upscaleLength(crossSection, rhoXK, dXK, nElements * sectionLength);
 
@@ -884,9 +884,9 @@ void combinElementsTests::testLengthEffectFourStochasts()
 
     auto dp = LengthEffect::UpscaleLength(section, rho, { 500.0, 300.0, 500.0, 300.0 }, 2000.0);
 
-    auto ref = alphaBeta(4.4880814,
-        { -0.57891362, -0.385336899, -0.59823508, -0.39810712 }); // pre-computed
-    auto refX = std::vector<double>({ 2.5982115, 1.729423377, 2.68492775, 1.78673717 }); // pre-computed
+    auto ref = alphaBeta(4.5064103581966,
+        { -0.578741673689891, -0.385418150246354, -0.598199853682860, -0.398331344045516 }); // pre-computed
+    auto refX = std::vector<double>({ 2.60804747, 1.73685234, 2.69573402, 1.79504449 }); // pre-computed
     EXPECT_NEAR(dp.Beta, ref.getBeta(), 1e-6);
     for (size_t i = 0; i < nStochasts; i++)
     {
