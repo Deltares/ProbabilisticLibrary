@@ -342,5 +342,21 @@ class Test_reliability(unittest.TestCase):
         self.assertAlmostEqual(1.88, beta, delta=margin)
         self.assertEqual(5, len(alphas))
 
+    def test_latin_hypercube_hunt(self):
+        project = project_builder.get_hunt_project()
+
+        project.settings.reliability_method = ReliabilityMethod.latin_hypercube
+
+        project.settings.minimum_samples = 25000
+
+        project.run()
+
+        dp = project.design_point;
+        beta = dp.reliability_index;
+        alphas = dp.alphas;
+
+        self.assertAlmostEqual(1.88, beta, delta=margin)
+        self.assertEqual(5, len(alphas))
+
 if __name__ == '__main__':
     unittest.main()

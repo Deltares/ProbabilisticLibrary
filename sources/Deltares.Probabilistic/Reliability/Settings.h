@@ -191,6 +191,7 @@ namespace Deltares
             const std::shared_ptr<Reliability::ReliabilityMethod> GetAdaptiveImportanceSamplingMethod();
             const std::shared_ptr<Reliability::ReliabilityMethod> GetDirectionalSamplingMethod();
             const std::shared_ptr<Reliability::ReliabilityMethod> GetNumericalBisectionMethod();
+            const std::shared_ptr<Reliability::ReliabilityMethod> GetLatinHypercubeMethod();
             const std::shared_ptr<Reliability::ReliabilityMethod> GetSubsetSimulationMethod();
         };
     }

@@ -28,6 +28,7 @@
 #include "SubsetSimulation.h"
 #include "NumericalIntegration.h"
 #include "NumericalBisection.h"
+#include "LatinHyperCube.h"
 
 #include <memory>
 
@@ -47,11 +48,12 @@ namespace Deltares
             case ReliabilityMethodType::ReliabilityDirectionalSampling: return this->GetDirectionalSamplingMethod();
             case ReliabilityMethodType::ReliabilitySubsetSimulation: return this->GetSubsetSimulationMethod();
             case ReliabilityMethodType::ReliabilityNumericalBisection: return this->GetNumericalBisectionMethod();
+            case ReliabilityMethodType::ReliabilityLatinHyperCube: return this->GetLatinHypercubeMethod();
             default: throw probLibException("Reliability method");
             }
         }
 
-        const std::shared_ptr<Reliability::ReliabilityMethod> Settings::GetFORMMethod()
+        const std::shared_ptr<ReliabilityMethod> Settings::GetFORMMethod()
         {
             std::shared_ptr<FORM> form = std::make_shared<FORM>();
 
@@ -69,7 +71,7 @@ namespace Deltares
             return form;
         }
 
-        const std::shared_ptr<Reliability::ReliabilityMethod> Settings::GetNumericalIntegrationMethod()
+        const std::shared_ptr<ReliabilityMethod> Settings::GetNumericalIntegrationMethod()
         {
             std::shared_ptr<NumericalIntegration> numericalIntegration = std::make_shared<NumericalIntegration>();
 
@@ -80,7 +82,7 @@ namespace Deltares
             return numericalIntegration;
         }
 
-        const std::shared_ptr<Reliability::ReliabilityMethod> Settings::GetNumericalBisectionMethod()
+        const std::shared_ptr<ReliabilityMethod> Settings::GetNumericalBisectionMethod()
         {
             std::shared_ptr<NumericalBisection> numericalBisection = std::make_shared<NumericalBisection>();
 
@@ -94,7 +96,19 @@ namespace Deltares
             return numericalBisection;
         }
 
-        const std::shared_ptr<Reliability::ReliabilityMethod> Settings::GetCrudeMonteCarloMethod()
+        const std::shared_ptr<ReliabilityMethod> Settings::GetLatinHypercubeMethod()
+        {
+            std::shared_ptr<LatinHyperCube> latinHypercube = std::make_shared<LatinHyperCube>();
+
+            latinHypercube->Settings->designPointMethod = this->designPointMethod;
+            latinHypercube->Settings->StochastSet = this->StochastSet;
+
+            latinHypercube->Settings->MinimumSamples = this->MinimumSamples;
+
+            return latinHypercube;
+        }
+
+        const std::shared_ptr<ReliabilityMethod> Settings::GetCrudeMonteCarloMethod()
         {
             std::shared_ptr<CrudeMonteCarlo> crudeMonteCarlo = std::make_shared<CrudeMonteCarlo>();
 
@@ -109,7 +123,7 @@ namespace Deltares
             return crudeMonteCarlo;
         }
 
-        const std::shared_ptr<Reliability::ReliabilityMethod> Settings::GetImportanceSamplingMethod()
+        const std::shared_ptr<ReliabilityMethod> Settings::GetImportanceSamplingMethod()
         {
             std::shared_ptr<ImportanceSampling> importanceSampling = std::make_shared<ImportanceSampling>();
 
@@ -124,7 +138,7 @@ namespace Deltares
             return importanceSampling;
         }
 
-        const std::shared_ptr<Reliability::ReliabilityMethod> Settings::GetAdaptiveImportanceSamplingMethod()
+        const std::shared_ptr<ReliabilityMethod> Settings::GetAdaptiveImportanceSamplingMethod()
         {
             std::shared_ptr<AdaptiveImportanceSampling> adaptiveImportanceSampling = std::make_shared<AdaptiveImportanceSampling>();
 
@@ -143,7 +157,7 @@ namespace Deltares
             return adaptiveImportanceSampling;
         }
 
-        const std::shared_ptr<Reliability::ReliabilityMethod> Settings::GetDirectionalSamplingMethod()
+        const std::shared_ptr<ReliabilityMethod> Settings::GetDirectionalSamplingMethod()
         {
             std::shared_ptr<DirectionalSampling> directionalSampling = std::make_shared<DirectionalSampling>();
 
@@ -158,7 +172,7 @@ namespace Deltares
             return directionalSampling;
         }
 
-        const std::shared_ptr<Reliability::ReliabilityMethod> Settings::GetSubsetSimulationMethod()
+        const std::shared_ptr<ReliabilityMethod> Settings::GetSubsetSimulationMethod()
         {
             std::shared_ptr<SubsetSimulation> subsetSimulation = std::make_shared<SubsetSimulation>();
 
