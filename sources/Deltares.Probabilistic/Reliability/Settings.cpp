@@ -199,6 +199,7 @@ namespace Deltares
             case ReliabilityMethodType::ReliabilityAdaptiveImportanceSampling: return std::dynamic_pointer_cast<AdaptiveImportanceSampling>(this->GetAdaptiveImportanceSamplingMethod())->Settings->isValid();
             case ReliabilityMethodType::ReliabilityDirectionalSampling: return std::dynamic_pointer_cast<DirectionalSampling>(this->GetDirectionalSamplingMethod())->Settings->isValid();
             case ReliabilityMethodType::ReliabilityNumericalBisection: return std::dynamic_pointer_cast<NumericalBisection>(this->GetNumericalBisectionMethod())->Settings->isValid();
+            case ReliabilityMethodType::ReliabilityLatinHyperCube: return std::dynamic_pointer_cast<LatinHyperCube>(this->GetLatinHypercubeMethod())->Settings->isValid();
             case ReliabilityMethodType::ReliabilitySubsetSimulation: return std::dynamic_pointer_cast<SubsetSimulation>(this->GetSubsetSimulationMethod())->Settings->isValid();
             default: throw probLibException("Reliability method");
             }
