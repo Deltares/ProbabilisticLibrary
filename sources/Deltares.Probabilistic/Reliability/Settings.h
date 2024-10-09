@@ -103,6 +103,11 @@ namespace Deltares
             double FractionFailed = 0.1;
 
             /**
+             * \brief Minimum number of iterations in numerical bisection
+             */
+            int MinimumIterations = 5;
+
+            /**
              * \brief Maximum number of guessed design points in one FORM loop
              */
             int MaximumIterations = 50;

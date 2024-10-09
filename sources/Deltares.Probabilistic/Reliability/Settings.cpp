@@ -87,6 +87,10 @@ namespace Deltares
             numericalBisection->Settings->designPointMethod = this->designPointMethod;
             numericalBisection->Settings->StochastSet = this->StochastSet;
 
+            numericalBisection->Settings->MinimumIterations = this->MinimumIterations;
+            numericalBisection->Settings->MaximumIterations = this->MaximumIterations;
+            numericalBisection->Settings->EpsilonBeta = this->EpsilonBeta;
+
             return numericalBisection;
         }
 
@@ -197,6 +201,8 @@ namespace Deltares
             case ReliabilityMethodType::ReliabilityAdaptiveImportanceSampling: return "adaptive_importance_sampling";
             case ReliabilityMethodType::ReliabilityDirectionalSampling: return "directional_sampling";
             case ReliabilityMethodType::ReliabilitySubsetSimulation: return "subset_simulation";
+            case ReliabilityMethodType::ReliabilityNumericalBisection: return "numerical_bisection";
+            case ReliabilityMethodType::ReliabilityLatinHyperCube: return "latin_hypercube";
             default: throw probLibException("Reliability method");
             }
         }
@@ -210,6 +216,8 @@ namespace Deltares
             else if (method == "adaptive_importance_sampling") return ReliabilityMethodType::ReliabilityAdaptiveImportanceSampling;
             else if (method == "directional_sampling") return ReliabilityMethodType::ReliabilityDirectionalSampling;
             else if (method == "subset_simulation") return ReliabilityMethodType::ReliabilitySubsetSimulation;
+            else if (method == "numerical_bisection") return ReliabilityMethodType::ReliabilityNumericalBisection;
+            else if (method == "latin_hypercube") return ReliabilityMethodType::ReliabilityLatinHyperCube;
             else throw probLibException("Reliability method");
         }
 
