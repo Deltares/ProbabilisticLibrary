@@ -378,6 +378,13 @@ namespace Deltares
                     updateLists();
                 }
 
+                virtual double GetGoodnessOfFit(array<double>^ values)
+                {
+                    std::vector<double> nativeValues = NativeSupport::toNative(values);
+
+                    return shared->object->getKSTest(nativeValues);
+                }
+
                 virtual void CopyFrom(Stochast^ source)
                 {
                     shared->object->copyFrom(source->GetStochast());
