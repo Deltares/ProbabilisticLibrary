@@ -32,7 +32,8 @@ namespace Deltares
             class testModel : public Optimization::optimizationModel
             {
             public:
-                double GetZValue(const Models::Sample& sample);
+                double GetZValue(const Models::Sample& sample) const;
+                double GetZValue(const double* values) const;
             };
 
             class testCobyla

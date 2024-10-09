@@ -36,14 +36,20 @@ namespace Deltares
             void testCobyla::test1()
             {
                 auto cb = Optimization::CobylaOptimization();
-                auto model = testModel();
+                auto model = std::make_shared<testModel>();
                 auto searchArea = Optimization::SearchArea();
+                searchArea.Dimensions = std::vector<Optimization::SearchDimension>(2);
                 cb.GetCalibrationPoint(searchArea, model);
             }
 
-            double testModel::GetZValue(const Models::Sample& sample)
+            double testModel::GetZValue(const Models::Sample& sample) const
             {
                 return 10.0 * std::pow(sample.Values[0] + 1.0, 2) + std::pow(sample.Values[1], 2);
+            };
+
+            double testModel::GetZValue(const double* values) const
+            {
+                return 10.0 * std::pow(values[0] + 1.0, 2) + std::pow(values[1], 2);
             };
 
 

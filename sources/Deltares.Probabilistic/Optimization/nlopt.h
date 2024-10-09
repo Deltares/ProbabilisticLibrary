@@ -24,7 +24,7 @@
 #define NLOPT_H
 
 #include <stddef.h>             /* for ptrdiff_t and size_t */
-
+#include <functional>
 /* Change 0 to 1 to use stdcall convention under Win32 */
 #if 0 && (defined(_WIN32) || defined(__WIN32__))
 #  if defined(__GNUC__)
@@ -57,9 +57,9 @@
 extern "C" {
 #endif /* __cplusplus */
 
-typedef double (*nlopt_func) (unsigned n, const double *x,
+typedef std::function<double (unsigned n, const double *x,
                               double *gradient, /* NULL if not needed */
-                              void *func_data);
+                              void *func_data)> nlopt_func;
 
 typedef void (*nlopt_mfunc) (unsigned m, double *result, unsigned n, const double *x,
                              double *gradient, /* NULL if not needed */

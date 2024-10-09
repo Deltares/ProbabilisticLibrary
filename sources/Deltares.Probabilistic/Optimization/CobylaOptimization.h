@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <memory>
 #include <functional>
 #include "CobylaOptimizationSettings.h"
 #include "../Model/Sample.h"
@@ -11,7 +12,9 @@ namespace Deltares
         class SearchDimension
         {
         public:
-            double StartValue;
+            double StartValue = 0.0;
+            double LowerBound = -1e30;
+            double UpperBound = 1e30;
         };
 
         class SearchArea
@@ -30,7 +33,8 @@ namespace Deltares
         class optimizationModel
         {
         public:
-            double GetZValue(const Models::Sample& sample);
+            double GetZValue(const Models::Sample& sample) const { return -1; };
+            double GetZValue(const double* x) const { return -1; };
         };
 
         class CobylaOptimization
@@ -38,7 +42,7 @@ namespace Deltares
         public:
 
             CobylaOptimizationSettings settings;
-            OptimizationSample GetCalibrationPoint(SearchArea searchArea, optimizationModel model);
+            OptimizationSample GetCalibrationPoint(SearchArea searchArea, std::shared_ptr<optimizationModel> model);
         private:
             double calcfcWrapper(int n, int m, const double x[], double con[], void* data);
 
