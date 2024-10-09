@@ -34,6 +34,18 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
 
         [Test]
+        public void TestStochastName()
+        {
+            var stochast = new Stochast();
+
+            foreach (string name in new[] { "simple", "with space", "and Γρεεκ symbols", "Ϣ" })
+            {
+                stochast.Name = name;
+                Assert.AreEqual(name, stochast.Name);
+            }
+        }
+
+        [Test]
         public void TestDeterministic()
         {
             var stochast = new Stochast

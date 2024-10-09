@@ -29,7 +29,7 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            ref class NativeSupport
+            public ref class NativeSupport
             {
             public:
                 static std::string toNative(System::String^ text);
@@ -40,6 +40,9 @@ namespace Deltares
                 static std::vector<double> toNative(array<double>^ values);
                 static array<double>^ toManaged(std::vector<double>& values, int count);
                 static array<double>^ toManaged(const std::vector<double> & values);
+            private:
+                static System::String^ escape(System::String^ text);
+                static System::String^ unescape(System::String^ text);
             };
         }
     }
