@@ -20,73 +20,74 @@
 // All rights reserved.
 //
 #pragma once
-#include "Project.h"
+#include "BaseHandler.h"
+#include "../Reliability/ReliabilityProject.h"
+#include "../Reliability/LimitStateFunction.h"
 #include "../Reliability/Settings.h"
 #include "../Sensitivity/SensitivityProject.h"
 #include "../Sensitivity/SettingsS.h"
 #include "../Combine/CombineProject.h"
-#include "../Combine/LengthEffectProject.h"
 #include "../Combine/CombineSettings.h"
+#include "../Combine/LengthEffectProject.h"
 #include "../Statistics/Stochast.h"
 #include "../Statistics/DiscreteValue.h"
 
 namespace Deltares
 {
-    namespace Models
+    namespace Server
     {
-        class ProjectServer
+        class ProjectHandler : public BaseHandler
         {
         public:
-            virtual int Create(std::string object_type);
-            virtual void Destroy(int id);
-            virtual double GetValue(int id, const std::string property_);
-            virtual void SetValue(int id, const std::string property_, double value);
-            virtual int GetIntValue(int id, std::string property_);
-            virtual void SetIntValue(int id, std::string property_, int value);
-            virtual double GetIntArgValue(int id1, int id2, std::string property_);
-            virtual void SetIntArgValue(int id1, int id2, std::string property_, double value);
-            virtual bool GetBoolValue(int id, std::string property_);
-            virtual void SetBoolValue(int id, std::string property_, bool value);
-            virtual std::string GetStringValue(int id, std::string property_);
-            virtual void SetStringValue(int id, std::string property_, std::string value);
-            virtual void SetArrayValue(int id, std::string property_, double* values, int size);
-            virtual std::vector<int> GetArrayIntValue(int id, std::string property_);
-            virtual void SetArrayIntValue(int id, std::string property_, int* values, int size);
-            virtual double GetArgValue(int id, std::string property_, double argument);
-            virtual void SetArgValue(int id, std::string property_, double argument, double value);
-            virtual double GetIndexedValue(int id, std::string property_, int index);
-            virtual void SetIndexedValue(int id, std::string property_, int index, double value);
-            virtual double GetIndexedIndexedValue(int id, std::string property_, int index1, int index2);
-            virtual void SetIndexedIndexedValue(int id, std::string property_, int index1, int index2, double value);
-            virtual int GetIndexedIntValue(int id, std::string property_, int index);
-            virtual void SetCallBack(int id, std::string property_, ZValuesCallBack callBack);
-            virtual void SetEmptyCallBack(int id, std::string property_, ZEmptyCallBack callBack);
-            virtual void Execute(int id, std::string method_);
-        protected:
-            int GetNewObjectId();
+            bool CanHandle(std::string object_type) override;
+            void Create(std::string object_type, int id) override;
+            void Destroy(int id) override;
+            double GetValue(int id, const std::string property_) override;
+            void SetValue(int id, const std::string property_, double value) override;
+            int GetIntValue(int id, std::string property_) override;
+            void SetIntValue(int id, std::string property_, int value) override;
+            double GetIntArgValue(int id1, int id2, std::string property_) override;
+            void SetIntArgValue(int id1, int id2, std::string property_, double value) override;
+            bool GetBoolValue(int id, std::string property_) override;
+            void SetBoolValue(int id, std::string property_, bool value) override;
+            std::string GetStringValue(int id, std::string property_) override;
+            void SetStringValue(int id, std::string property_, std::string value) override;
+            void SetArrayValue(int id, std::string property_, double* values, int size) override;
+            std::vector<int> GetArrayIntValue(int id, std::string property_) override;
+            void SetArrayIntValue(int id, std::string property_, int* values, int size) override;
+            double GetArgValue(int id, std::string property_, double argument) override;
+            void SetArgValue(int id, std::string property_, double argument, double value) override;
+            double GetIndexedValue(int id, std::string property_, int index) override;
+            void SetIndexedValue(int id, std::string property_, int index, double value) override;
+            double GetIndexedIndexedValue(int id, std::string property_, int index1, int index2) override;
+            void SetIndexedIndexedValue(int id, std::string property_, int index1, int index2, double value) override;
+            int GetIndexedIntValue(int id, std::string property_, int index) override;
+            void SetCallBack(int id, std::string property_, Models::ZValuesCallBack callBack) override;
+            void Execute(int id, std::string method_) override;
 
             int GetStochastId(std::shared_ptr<Statistics::Stochast> stochast);
             int GetCorrelationMatrixId(std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix);
+            int GetLimitStateFunctionId(std::shared_ptr<Reliability::LimitStateFunction> limitStateFunction);
             int GetDesignPointId(std::shared_ptr<Reliability::DesignPoint> designPoint);
-            int GetAlphaId(std::shared_ptr<StochastPointAlpha> alpha);
+            int GetAlphaId(std::shared_ptr<Models::StochastPointAlpha> alpha);
             int GetHistogramValueId(std::shared_ptr<Statistics::HistogramValue> histogramValue);
             int GetDiscreteValueId(std::shared_ptr<Statistics::DiscreteValue> discreteValue);
             int GetFragilityValueId(std::shared_ptr<Statistics::FragilityValue> fragilityValue);
             int GetContributingStochastId(std::shared_ptr<Statistics::ContributingStochast> contributingStochast);
             int GetMessageId(std::shared_ptr<Deltares::Models::Message> message);
         private:
-            enum ObjectType {StandardNormal, Message, Project, ModelParameter, Stochast, DiscreteValue, HistogramValue, FragilityValue,
+            enum ObjectType {StandardNormal, Message, Project, ModelParameter, LimitStateFunction, Stochast, DiscreteValue, HistogramValue, FragilityValue,
                 ContributingStochast, CorrelationMatrix, Settings, StochastSettings, DesignPoint, Alpha,
                 CombineProject, CombineSettings, SelfCorrelationMatrix, SensitivityProject, SensitivitySettings,
                 LengthEffectProject};
-
             int id_ = 0;
-            std::unordered_map<int, Deltares::Models::ProjectServer::ObjectType> types;
+            std::unordered_map<int, Deltares::Server::ProjectHandler::ObjectType> types;
 
             std::unordered_map<int, std::shared_ptr<Statistics::Stochast>> stochasts;
             std::unordered_map<int, std::shared_ptr<Models::Message>> messages;
-            std::unordered_map<int, std::shared_ptr<Models::Project>> projects;
-            std::unordered_map<int, std::shared_ptr<Models::ModelParameter>> modelParameters;
+            std::unordered_map<int, std::shared_ptr<Reliability::ReliabilityProject>> projects;
+            std::unordered_map<int, std::shared_ptr<Models::ModelInputParameter>> modelParameters;
+            std::unordered_map<int, std::shared_ptr<Reliability::LimitStateFunction>> limitStateFunctions;
             std::unordered_map<int, std::shared_ptr<Statistics::DiscreteValue>> discreteValues;
             std::unordered_map<int, std::shared_ptr<Statistics::HistogramValue>> histogramValues;
             std::unordered_map<int, std::shared_ptr<Statistics::FragilityValue>> fragilityValues;
@@ -103,6 +104,7 @@ namespace Deltares
             std::unordered_map<int, std::shared_ptr<Sensitivity::SensitivityProject>> sensitivityProjects;
             std::unordered_map<int, std::shared_ptr<Sensitivity::SettingsS>> sensitivitySettingsValues;
 
+            std::unordered_map<std::shared_ptr<Reliability::LimitStateFunction>, int> limitStateFunctionIds;
             std::unordered_map<std::shared_ptr<Reliability::DesignPoint>, int> designPointIds;
             std::unordered_map<std::shared_ptr<Reliability::StochastPointAlpha>, int> alphaIds;
             std::unordered_map<std::shared_ptr<Statistics::Stochast>, int> stochastIds;

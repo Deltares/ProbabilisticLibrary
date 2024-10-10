@@ -33,9 +33,19 @@ namespace Deltares
             this->sensitivityMethod = this->settings->GetSensitivityMethod();
             this->runSettings = this->settings->RunSettings;
 
-            for (std::shared_ptr<Models::ModelParameter> modelParameter : this->model->outputParameters)
+            if (this->parameter == "")
             {
-                this->model->Index = modelParameter->index;
+                for (std::shared_ptr<Models::ModelInputParameter> modelParameter : this->model->outputParameters)
+                {
+                    this->parameterSelector->parameter = modelParameter->name;
+
+                    std::shared_ptr<Statistics::Stochast> stochast = this->getStochast();
+                    this->sensitivityStochasts.push_back(stochast);
+                }
+            }
+            else
+            {
+                this->parameterSelector->parameter = this->parameter;
 
                 std::shared_ptr<Statistics::Stochast> stochast = this->getStochast();
                 this->sensitivityStochasts.push_back(stochast);
@@ -58,10 +68,8 @@ namespace Deltares
 
         std::shared_ptr<Statistics::Stochast> SensitivityProject::getStochast()
         {
-            if (this->initializer != nullptr)
-            {
-                initializer();
-            }
+            this->model->zValueConverter = this->parameterSelector;
+            this->model->initializeForRun();
 
             std::shared_ptr<Models::UConverter> uConverter = std::make_shared<Models::UConverter>(this->stochasts, this->correlationMatrix);
             const std::shared_ptr<Models::ModelRunner> modelRunner = std::make_shared<Models::ModelRunner>(this->model, uConverter, this->progressIndicator);
@@ -69,7 +77,7 @@ namespace Deltares
             modelRunner->initializeForRun();
 
             std::shared_ptr<Statistics::Stochast> sensitivityStochast = this->sensitivityMethod->getStochast(modelRunner);
-            sensitivityStochast->name = this->model->getIndexedName();
+            sensitivityStochast->name = this->parameterSelector->parameter;
 
             return sensitivityStochast;
         }

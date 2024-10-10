@@ -19,16 +19,38 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include "../Deltares.Probabilistic/Model/ProjectServer.h"
 
 #include <string>
+#include <memory>
+
+#include "../Deltares.Probabilistic/Server/ProjectServer.h"
+#include "../Deltares.Probabilistic/Server/ExternalServerHandler.h"
+#include "../Deltares.Probabilistic/Server/ExternalLibraryHandler.h"
+
 #ifdef __GNUC__
 #define DLL_PUBLIC __attribute__ ((visibility("default")))
 #else
 #define DLL_PUBLIC __declspec(dllexport) // Note: actually gcc seems to also supports this syntax.
 #endif
 
-std::shared_ptr<Deltares::Models::ProjectServer> projectServer = std::make_shared< Deltares::Models::ProjectServer>();
+Deltares::Server::ProjectServer* projectServer = new Deltares::Server::ProjectServer();
+
+extern "C" DLL_PUBLIC void AddLibrary(char* library)
+{
+    std::string libraryStr(library);
+
+    if (libraryStr.ends_with(".exe"))
+    {
+        std::shared_ptr<Deltares::Server::ExternalServerHandler> externalHandler = std::make_shared<Deltares::Server::ExternalServerHandler>(libraryStr);
+        projectServer->AddHandler(externalHandler);
+    }
+    else if (libraryStr.ends_with(".dll"))
+    {
+        std::shared_ptr<Deltares::Server::ExternalLibraryHandler> externalHandler = std::make_shared<Deltares::Server::ExternalLibraryHandler>(libraryStr);
+        externalHandler->Initialize();
+        projectServer->AddHandler(externalHandler);
+    }
+}
 
 extern "C" DLL_PUBLIC int Create(char* type)
 {
@@ -141,6 +163,12 @@ extern "C" DLL_PUBLIC void SetArgValue(int id, char* property, double argument, 
     projectServer->SetArgValue(id, propertyStr, argument, value);
 }
 
+extern "C"  DLL_PUBLIC void GetArgValues(int id, char* property, double* values, int size, double* outputValues)
+{
+    std::string propertyStr(property);
+    projectServer->GetArgValues(id, propertyStr, values, size, outputValues);
+}
+
 extern "C"  DLL_PUBLIC double GetIndexedValue(int id, char* property, int index)
 {
     std::string propertyStr(property);
@@ -171,16 +199,31 @@ extern "C" DLL_PUBLIC int GetIndexedIntValue(int id, char* property, int index)
     return projectServer->GetIndexedIntValue(id, propertyStr, index);
 }
 
+extern "C" DLL_PUBLIC size_t GetIndexedStringLength(int id, char* property, int index)
+{
+    std::string propertyStr(property);
+    std::string result = projectServer->GetIndexedStringValue(id, propertyStr, index);
+    return result.length();
+}
+
+extern "C" DLL_PUBLIC void GetIndexedStringValue(int id, char* property, int index, char* result_c, size_t size)
+{
+    std::string propertyStr(property);
+    std::string result = projectServer->GetIndexedStringValue(id, propertyStr, index);
+
+    const char* result_b = result.c_str();
+
+#ifdef __GNUC__
+    sprintf(result_c, "%s", result_b);
+#else
+    _snprintf_s(result_c, size, _TRUNCATE, result_b);
+#endif
+}
+
 extern "C" DLL_PUBLIC void SetCallBack(int id, char* property, Deltares::Models::ZValuesCallBack callBack)
 {
     std::string propertyStr(property);
     projectServer->SetCallBack(id, propertyStr, callBack);
-}
-
-extern "C" DLL_PUBLIC void SetInitializeCallBack(int id, char* property, Deltares::Models::ZEmptyCallBack callBack)
-{
-    std::string propertyStr(property);
-    projectServer->SetEmptyCallBack(id, propertyStr, callBack);
 }
 
 extern "C" DLL_PUBLIC void Execute(int id, char* method)

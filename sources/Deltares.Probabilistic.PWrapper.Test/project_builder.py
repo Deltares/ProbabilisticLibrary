@@ -163,6 +163,24 @@ def get_sensitivity_multiple_identical_linear_project():
 
     return project
 
+def get_multiple_unbalanced_linear_project():
+
+    project = ReliabilityProject()
+
+    project.model = multiple_unbalanced_linear_ab
+
+    stochast1 = project.variables['a']
+    stochast1.distribution =  DistributionType.uniform
+    stochast1.minimum = -1
+    stochast1.maximum = 1;
+
+    stochast2 = project.variables['b']
+    stochast2.distribution =  DistributionType.uniform
+    stochast2.minimum = -1
+    stochast2.maximum = 1;
+
+    return project
+
 def get_sensitivity_multiple_unbalanced_linear_project():
 
     project = SensitivityProject()
@@ -313,7 +331,7 @@ def get_design_point(beta : float, count : int):
 
     return design_point
 
-def get_design_point_with_name(beta : float, count : int, names: list[str]):
+def get_design_point_with_name(beta : float, count : int, names):
     design_point = DesignPoint()
     design_point._set_reliability_index(beta)
 
