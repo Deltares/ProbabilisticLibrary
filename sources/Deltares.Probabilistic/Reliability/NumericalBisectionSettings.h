@@ -51,6 +51,10 @@ namespace Deltares
 
             bool isValid() const { return MaximumIterations > 0; }
 
+            /**
+             * \brief Settings for performing model runs
+             */
+            std::shared_ptr<Models::RunSettings> runSettings = std::make_shared<Models::RunSettings>();
         };
     }
 }
