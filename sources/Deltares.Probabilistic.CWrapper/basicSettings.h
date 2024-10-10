@@ -95,6 +95,18 @@ namespace Deltares {
             double correlation;
         };
 
+        struct numericalBisectionSettings
+        {
+            int MinimumIterations;
+            int MaximumIterations;
+            double EpsilonBeta;
+        };
+
+        struct latinHypercubeSettings
+        {
+            int MinimumSamples;
+        };
+
         struct basicSettings
         {
             ProbMethod         methodId;
@@ -126,6 +138,8 @@ namespace Deltares {
             double             startVector[maxActiveStochast];
             double             offsets[maxActiveStochast];
             double             varianceFactors[maxActiveStochast];
+            numericalBisectionSettings numerical_bisection_settings;
+            latinHypercubeSettings latin_hypercube_settings;
         };
 
     }

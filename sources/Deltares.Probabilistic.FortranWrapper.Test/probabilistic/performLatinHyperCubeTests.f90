@@ -61,7 +61,7 @@ subroutine latinHyperCubeTest1
     real (kind = wp)                      :: beta
     logical                               :: convCriterium
     integer                               :: nStochasts
-    real (kind = wp), parameter           :: betaKnown = 2.88d0
+    real (kind = wp), parameter           :: betaKnown = 2.82d0
 
     allocate( alfa(2), x(3), iPoint(2) )
     nStochasts = 2
@@ -77,6 +77,7 @@ subroutine latinHyperCubeTest1
     call initDeterministicValue( probDb, x )
 
     probDb%method%calcMethod = methodLatinHyperCube
+    probDb%method%latinHypercubeSettings%MinimumSamples = 2500
 
     ! Perform computation to determine alpha and beta
     call initSparseWaartsTestsFunctions(probDb%stovar%maxStochasts, probDb%method%maxParallelThreads)

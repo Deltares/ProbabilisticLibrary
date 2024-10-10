@@ -77,6 +77,9 @@ subroutine NumericalBisectionTest1
     call initDeterministicValue( probDb, x )
 
     probDb%method%calcMethod = methodNumericalBisection
+    probDb%method%numericalBisectionSettings%minimumIterations = 6
+    probDb%method%numericalBisectionSettings%maximumIterations = 16
+    probDb%method%numericalBisectionSettings%epsilonBeta = 0.01_wp
 
     ! Perform computation to determine alpha and beta
     call initSparseWaartsTestsFunctions(probDb%stovar%maxStochasts, probDb%method%maxParallelThreads)

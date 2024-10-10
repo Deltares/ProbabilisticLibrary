@@ -39,6 +39,16 @@ module interface_typedefs
     real(kind=c_double) :: params(4)
   end type tdistrib
 
+  type, public, bind(c) :: tpNumericalBisectionSettings
+    integer             :: minimumIterations = 8
+    integer             :: maximumIterations = 50
+    real(kind=c_double) :: epsilonBeta = 0.01_wp
+  end type tpNumericalBisectionSettings
+
+  type, public, bind(c) :: tpLatinHypercubeSettings
+      integer           :: MinimumSamples = 1000
+  end type tpLatinHypercubeSettings
+
   type, public, bind(c) :: tMethod
     integer             :: methodId
     real(kind=c_double) :: tolA       = 0.001_c_double
@@ -69,6 +79,8 @@ module interface_typedefs
     real(kind=c_double) :: startVector(maxActiveStochast)
     real(kind=c_double) :: offsets(maxActiveStochast)
     real(kind=c_double) :: varianceFactors(maxActiveStochast)
+    type(tpNumericalBisectionSettings) :: numericalBisectionSettings
+    type(tpLatinHypercubeSettings)     :: latinHypercubeSettings
   end type tMethod
 
   type, public, bind(c) :: tResult
@@ -163,7 +175,11 @@ module interface_typedefs
     type(tpDS)          :: DS                 !< Data for DS method
     type(tpIS)          :: IS                 !< Data for IS method
     type(tpAdaptiveIS)  :: AdaptiveIS         !< Data for AdaptiveMCIS method
-    type(tpNI)     :: NI                      !< Data for NI method
+    type(tpNI)          :: NI                 !< Data for NI method
+    type(tpNumericalBisectionSettings) :: &
+        numericalBisectionSettings            !< data for numerical bisection method
+    type(tpLatinHypercubeSettings)     :: &
+        latinHypercubeSettings                !< data for Latin hyper cube method
     integer        :: DPoption                !< Options for calculation of the design point
     integer        :: maxParallelThreads = 1  !< Maximum number of OpenMP threads
     integer        :: chunkSizeOpenMP = 200   !< Number of samples to handle simultaneously, when using OpenMP

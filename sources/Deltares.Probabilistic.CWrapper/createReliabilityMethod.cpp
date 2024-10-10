@@ -57,7 +57,7 @@ std::shared_ptr<RandomSettings> createReliabilityMethod::getRnd(const basicSetti
 
     return rnd;
 }
- 
+
 std::shared_ptr<ReliabilityMethod> createReliabilityMethod::selectMethod(const basicSettings& bs,
                                                                          const size_t nStoch,
                                                                          std::vector<std::shared_ptr<Stochast>>& stochasts)
@@ -128,12 +128,16 @@ std::shared_ptr<ReliabilityMethod> createReliabilityMethod::selectMethod(const b
     case (ProbMethod::LatinHyperCube):
         {
             auto latinHyperCube = std::make_shared<LatinHyperCube>();
+            latinHyperCube->Settings->MinimumSamples = bs.latin_hypercube_settings.MinimumSamples;
             return latinHyperCube;
         }
         break;
     case (ProbMethod::NumericalBisection):
         {
             auto numerical_bisection = std::make_shared<NumericalBisection>();
+            numerical_bisection->Settings->MinimumIterations = bs.numerical_bisection_settings.MinimumIterations;
+            numerical_bisection->Settings->MaximumIterations = bs.numerical_bisection_settings.MaximumIterations;
+            numerical_bisection->Settings->EpsilonBeta = bs.numerical_bisection_settings.EpsilonBeta;
             return numerical_bisection;
         }
         break;
