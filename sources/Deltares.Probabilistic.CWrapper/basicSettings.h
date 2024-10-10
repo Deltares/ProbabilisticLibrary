@@ -42,6 +42,8 @@ namespace Deltares {
             FORMDSFIHR,
             DSFI,
             FORMDSFI,
+            LatinHyperCube = 18,
+            NumericalBisection = 19,
             FORMSTART = 1234,
         };
 

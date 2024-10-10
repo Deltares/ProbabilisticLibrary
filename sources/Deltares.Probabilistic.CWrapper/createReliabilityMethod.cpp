@@ -28,6 +28,8 @@
 #include "../Deltares.Probabilistic/Reliability/DirectionalSamplingThenFORM.h"
 #include "../Deltares.Probabilistic/Reliability/ImportanceSampling.h"
 #include "../Deltares.Probabilistic/Reliability/AdaptiveImportanceSampling.h"
+#include "../Deltares.Probabilistic/Reliability/LatinHyperCube.h"
+#include "../Deltares.Probabilistic/Reliability/NumericalBisection.h"
 
 using namespace Deltares::ProbLibCore;
 using namespace Deltares::Models;
@@ -122,6 +124,18 @@ std::shared_ptr<ReliabilityMethod> createReliabilityMethod::selectMethod(const b
         AdaptImpSampling->Settings->MinimumFailedSamples = bs.numExtraInt2;
         fillStartVector(AdaptImpSampling->Settings->startPointSettings, bs, nStoch);
         return AdaptImpSampling; }
+        break;
+    case (ProbMethod::LatinHyperCube):
+        {
+            auto latinHyperCube = std::make_shared<LatinHyperCube>();
+            return latinHyperCube;
+        }
+        break;
+    case (ProbMethod::NumericalBisection):
+        {
+            auto numerical_bisection = std::make_shared<NumericalBisection>();
+            return numerical_bisection;
+        }
         break;
     default:
         throw probLibException("method not implemented yet: ", (int)bs.methodId);
