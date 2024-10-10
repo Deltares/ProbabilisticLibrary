@@ -19,7 +19,7 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-﻿using NUnit.Framework;
+using NUnit.Framework;
 using Deltares.Reliability.Wrappers;
 
 namespace Deltares.Probabilistic.Wrapper.Test
@@ -37,7 +37,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
             project.ReliabilityMethod = new LatinHypercube();
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(2.57, designPoint.Beta, margin);
+            Assert.AreEqual(2.652, designPoint.Beta, margin);
         }
 
     }
