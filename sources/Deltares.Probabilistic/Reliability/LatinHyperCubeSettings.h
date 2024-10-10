@@ -61,6 +61,11 @@ namespace Deltares
                 return MinimumSamples >= 1;
             }
 
+            /**
+             * \brief Settings for performing model runs
+             */
+            std::shared_ptr<Models::RunSettings> runSettings = std::make_shared<Models::RunSettings>();
+
         };
     }
 }
