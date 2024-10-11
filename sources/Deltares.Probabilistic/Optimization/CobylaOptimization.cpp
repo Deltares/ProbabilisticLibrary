@@ -6,11 +6,10 @@ namespace Deltares
 {
     namespace Optimization
     {
-
         OptimizationSample CobylaOptimization::GetCalibrationPoint(SearchArea searchArea, std::shared_ptr<optimizationModel> model)
         {
             unsigned n = static_cast<unsigned>(searchArea.Dimensions.size());
-            unsigned m = 0; // TODO
+            unsigned m = model->GetNumberOfConstraints();
 
             double* x0 = new double[n];
             double* lb = new double[n];
@@ -36,10 +35,27 @@ namespace Deltares
                 return model->GetZValue(s);
             };
 
+            auto myfuncC = [model](unsigned n, const double* x, double* gradient, void* func_data)
+                {
+                    auto s = Models::Sample(n);
+                    for (int i = 0; i < n; i++)
+                    {
+                        s.Values[i] = x[i];
+                    }
+                    return model->GetConstraintValue(s);
+                };
+
             nlopt_func f = myfunc;
             nlopt_constraint* fc = new nlopt_constraint[m];
-            nlopt_constraint* h = new nlopt_constraint[m];
-            double* minf = new double[n];
+            if (m > 0)
+            {
+                fc[0].f = myfuncC;
+                fc[0].m = 1;
+                fc[0].tol = new double[1];
+                fc[0].tol[0] = 0.001;
+            }
+            nlopt_constraint* h = new nlopt_constraint[0];
+            double* minf = new double[1];
             nlopt_stopping stop = nlopt_stopping();
             stop.nevals_p = new int;
             stop.xtol_rel = 0.001;
@@ -53,8 +69,13 @@ namespace Deltares
                 s.Input.push_back(x0[i]);
             }
             delete[] x0; delete[] lb; delete[] ub;
-            delete[] fc; delete[] h; delete[] dx; delete[] minf;
+            delete[] dx; delete[] minf;
             delete stop.nevals_p;
+            for(int i = 0; i < m; i++)
+            {
+                delete[] fc[i].tol;
+            }
+            delete[] fc; delete[] h;
             return s;
         };
 

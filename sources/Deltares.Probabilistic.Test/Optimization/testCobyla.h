@@ -39,13 +39,22 @@ namespace Deltares
                 const double offset2 = 0.0;
             };
 
+            class testModelWithConstraint : public Optimization::optimizationModel
+            {
+            public:
+                double GetZValue(const Models::Sample& sample) const override;
+                double GetConstraintValue(const Models::Sample& sample) const override;
+                unsigned GetNumberOfConstraints() const override { return 1; }
+            };
+
             class testCobyla
             {
             public:
                 void allCobylaTests();
             private:
-                void test1();
-                void test2();
+                static void test_no_constraints1();
+                static void test_no_constraints2();
+                static void test_with_constraint1();
                 const double margin = 1e-2;
             };
         }

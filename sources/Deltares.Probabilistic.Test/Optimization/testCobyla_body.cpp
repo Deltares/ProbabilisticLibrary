@@ -32,11 +32,12 @@ namespace Deltares
         {
             void testCobyla::allCobylaTests()
             {
-                test1();
-                test2();
+                test_with_constraint1();
+                test_no_constraints1();
+                test_no_constraints2();
             }
 
-            void testCobyla::test1()
+            void testCobyla::test_no_constraints1()
             {
                 auto cb = CobylaOptimization();
                 auto model = std::make_shared<testModel>();
@@ -47,7 +48,7 @@ namespace Deltares
                 EXPECT_NEAR(result.Input[1], 0.0, 1e-3);
             }
 
-            void testCobyla::test2()
+            void testCobyla::test_no_constraints2()
             {
                 auto cb = CobylaOptimization();
                 auto model = std::make_shared<testModel>(2, 3);
@@ -58,10 +59,35 @@ namespace Deltares
                 EXPECT_NEAR(result.Input[1], 3.0, 1e-3);
             }
 
+            void testCobyla::test_with_constraint1()
+            {
+                auto cb = CobylaOptimization();
+                auto model = std::make_shared<testModelWithConstraint>();
+                auto searchArea = SearchArea();
+                searchArea.Dimensions = std::vector<SearchDimension>(2);
+                searchArea.Dimensions[0].StartValue = 1.0;
+                searchArea.Dimensions[1].StartValue = 1.0;
+                auto result = cb.GetCalibrationPoint(searchArea, model);
+                EXPECT_NEAR(result.Input[0], 0.707, 1e-2);
+                EXPECT_NEAR(result.Input[1], -0.707, 1e-2);
+            }
+
             double testModel::GetZValue(const Models::Sample& sample) const
             {
                 return 10.0 * std::pow(sample.Values[0] - offset1, 2) + std::pow(sample.Values[1] - offset2, 2);
             };
+
+            double testModelWithConstraint::GetZValue(const Models::Sample& sample) const
+            {
+                double Z = sample.Values[0] * sample.Values[1];
+                return Z;
+            }
+
+            double testModelWithConstraint::GetConstraintValue(const Models::Sample& sample) const
+            {
+                double C = 1.0 - hypot(sample.Values[0], sample.Values[1]);
+                return std::abs(C);
+            }
 
         }
     }

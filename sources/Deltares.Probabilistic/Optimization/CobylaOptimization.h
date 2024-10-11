@@ -34,6 +34,8 @@ namespace Deltares
         {
         public:
             virtual double GetZValue(const Models::Sample& sample) const { return -1; };
+            virtual double GetConstraintValue(const Models::Sample& sample) const { return -1; };
+            virtual unsigned GetNumberOfConstraints() const { return 0; };
         };
 
         class CobylaOptimization
