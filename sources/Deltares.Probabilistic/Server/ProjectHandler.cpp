@@ -296,7 +296,10 @@ namespace Deltares
 
                 if (property_ == "reliability_index") return designPoint->Beta;
                 else if (property_ == "probability_failure") return designPoint->getFailureProbability();
-                else if (property_ == "convergence") return designPoint->convergenceReport->Convergence;
+                else if (property_ == "convergence" && designPoint->convergenceReport != nullptr)
+                {
+                    return designPoint->convergenceReport->Convergence;
+                }
             }
             else if (objectType == ObjectType::Alpha)
             {
@@ -501,6 +504,7 @@ namespace Deltares
                 else if (property_ == "minimum_variance_loops") return settings->MinimumVarianceLoops;
                 else if (property_ == "maximum_variance_loops") return settings->MaximumVarianceLoops;
                 else if (property_ == "relaxation_loops") return settings->RelaxationLoops;
+                else if (property_ == "max_steps_sphere_search") return settings->StartPointSettings->maxStepsSphereSearch;
             }
             else if (objectType == ObjectType::SensitivitySettings)
             {
@@ -523,6 +527,12 @@ namespace Deltares
             {
                 std::shared_ptr<Reliability::DesignPoint> designPoint = designPoints[id];
 
+                if (designPoint->convergenceReport != nullptr)
+                {
+                    if (property_ == "total_iterations") return designPoint->convergenceReport->TotalIterations;
+                    else if (property_ == "total_directions") return designPoint->convergenceReport->TotalDirections;
+                    else if (property_ == "total_model_runs") return designPoint->convergenceReport->TotalModelRuns;
+                }
                 if (property_ == "contributing_design_points_count") return (int)designPoint->ContributingDesignPoints.size();
                 else if (property_ == "alphas_count") return (int)designPoint->Alphas.size();
                 else if (property_ == "total_iterations") return designPoint->convergenceReport->TotalIterations;
@@ -608,6 +618,7 @@ namespace Deltares
                 else if (property_ == "minimum_variance_loops") settings->MinimumVarianceLoops = value;
                 else if (property_ == "maximum_variance_loops") settings->MaximumVarianceLoops = value;
                 else if (property_ == "relaxation_loops") settings->RelaxationLoops = value;
+                else if (property_ == "max_steps_sphere_search") settings->StartPointSettings->maxStepsSphereSearch = value;
             }
             else if (objectType == ObjectType::SensitivitySettings)
             {
@@ -704,7 +715,10 @@ namespace Deltares
             {
                 std::shared_ptr<Reliability::DesignPoint> designPoint = designPoints[id];
 
-                if (property_ == "is_converged") return designPoint->convergenceReport->IsConverged;
+                if (property_ == "is_converged" && designPoint->convergenceReport != nullptr)
+                {
+                    return designPoint->convergenceReport->IsConverged;
+                }
             }
             else if (objectType == ObjectType::SensitivitySettings)
             {
@@ -713,6 +727,12 @@ namespace Deltares
                 if (property_ == "derive_samples_from_variation_coefficient") return settings->DeriveSamplesFromVariationCoefficient;
                 else if (property_ == "calculate_correlations") return settings->CalculateCorrelations;
                 else if (property_ == "calculate_input_correlations") return settings->CalculateInputCorrelations;
+            }
+            else if (objectType == ObjectType::Settings)
+            {
+                std::shared_ptr<Reliability::Settings> setting = settingsValues[id];
+
+                if (property_ == "all_quadrants") return setting->StartPointSettings->allQuadrants;
             }
 
             return false;
@@ -749,6 +769,12 @@ namespace Deltares
                 if (property_ == "derive_samples_from_variation_coefficient") settings->DeriveSamplesFromVariationCoefficient = value;
                 else if (property_ == "calculate_correlations") settings->CalculateCorrelations = value;
                 else if (property_ == "calculate_input_correlations") settings->CalculateInputCorrelations = value;
+            }
+            else if (objectType == ObjectType::Settings)
+            {
+                std::shared_ptr<Reliability::Settings> setting = settingsValues[id];
+
+                if (property_ == "all_quadrants") setting->StartPointSettings->allQuadrants = value;
             }
 
         }

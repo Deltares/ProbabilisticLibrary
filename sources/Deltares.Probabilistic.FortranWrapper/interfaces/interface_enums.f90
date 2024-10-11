@@ -64,6 +64,7 @@ module interface_enums
   integer, parameter :: fORMStartRaySearchVector                      =  8
   integer, parameter :: fORMStartRaySearchVectorScaled                =  9
   integer, parameter :: fORMStartSphereSearchKW                       =  10
+  integer, parameter :: fORMStartSensitivity                          =  11
 
   integer, parameter :: DirSamplingIterMethodRobust                   =  1
 

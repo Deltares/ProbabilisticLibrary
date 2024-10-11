@@ -284,6 +284,8 @@ subroutine convertStartMethod(probDb, method, iPoint)
         call copyStartVector(probDb, method, iPoint)
     case (fORMStartSphereSearch)
         method%startmethod = startMethod
+        method%allQuadrants = probDb%method%FORM%allQuadrants
+        method%maxStepsSphereSearch = probDb%method%FORM%maxStepsSphereSearch
         call copyStartVector(probDb, method, iPoint)
     case (fORMStartGivenVector)
         method%startmethod = startMethod
@@ -294,7 +296,7 @@ subroutine convertStartMethod(probDb, method, iPoint)
     case (fORMStartRaySearchVectorScaled)
         method%startmethod = startMethod
         call copyStartVector(probDb, method, iPoint, "fORMStartRaySearchVectorScaled")
-    case (fORMStartZero)
+    case (fORMStartZero, fORMStartSensitivity)
         method%startmethod = startMethod
     case default
         call fatalError("start method not implemented: ", startMethod)
