@@ -33,7 +33,7 @@ namespace Deltares
             public:
                 testModel() = default;
                 testModel(double offset_1, double offset_2) : offset1(offset_1), offset2(offset_2) {}
-                double GetZValue(const Models::Sample& sample) const override;
+                double GetZValue(std::shared_ptr<Models::Sample> sample) const override;
             private:
                 const double offset1 = -1.0;
                 const double offset2 = 0.0;
@@ -42,7 +42,7 @@ namespace Deltares
             class testModelWithConstraint : public Optimization::optimizationModel
             {
             public:
-                double GetZValue(const Models::Sample& sample) const override;
+                double GetZValue(std::shared_ptr<Models::Sample> sample) const override;
                 double GetConstraintValue(const Models::Sample& sample) const override;
                 unsigned GetNumberOfConstraints() const override { return 1; }
             };

@@ -72,19 +72,19 @@ namespace Deltares
                 EXPECT_NEAR(result.Input[1], -0.707, 1e-2);
             }
 
-            double testModel::GetZValue(const Models::Sample& sample) const
+            double testModel::GetZValue(std::shared_ptr<Models::Sample> sample) const
             {
-                return 10.0 * std::pow(sample.Values[0] - offset1, 2) + std::pow(sample.Values[1] - offset2, 2);
+                return 10.0 * std::pow(sample->Values[0] - offset1, 2) + std::pow(sample->Values[1] - offset2, 2);
             };
 
-            double testModelWithConstraint::GetZValue(const Models::Sample& sample) const
+            double testModelWithConstraint::GetZValue(std::shared_ptr<Models::Sample> sample) const
             {
-                double Z = sample.Values[0] * sample.Values[1];
+                double Z = sample->Values[0] * sample->Values[1];
                 return Z;
             }
 
             double testModelWithConstraint::GetConstraintValue(const Models::Sample& sample) const
-            {
+            {   // constraint: point lies on unit sphere
                 double C = 1.0 - hypot(sample.Values[0], sample.Values[1]);
                 return std::abs(C);
             }

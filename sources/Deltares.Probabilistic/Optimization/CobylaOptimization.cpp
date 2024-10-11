@@ -27,10 +27,10 @@ namespace Deltares
 
             auto myfunc = [model](unsigned n, const double* x, double* gradient, void* func_data)
             {
-                auto s = Models::Sample(n);
+                auto s = std::make_shared<Models::Sample>(n);
                 for (int i = 0; i < n; i++)
                 {
-                    s.Values[i] = x[i];
+                    s->Values[i] = x[i];
                 }
                 return model->GetZValue(s);
             };

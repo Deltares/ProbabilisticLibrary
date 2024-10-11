@@ -23,6 +23,7 @@
 #include "testReliabilityMethods.h"
 #include "../../Deltares.Probabilistic/Reliability/LatinHyperCube.h"
 #include "../../Deltares.Probabilistic/Reliability/NumericalBisection.h"
+#include "../../Deltares.Probabilistic/Reliability/CobylaReliability.h"
 #include "../projectBuilder.h"
 
 using namespace Deltares::Reliability;
@@ -37,6 +38,7 @@ namespace Deltares
         {
             void testReliabilityMethods::allReliabilityMethods() const
             {
+                testCobylaReliability();
                 testLatinHyperCube();
                 testNumericalBisection();
                 testNumericalBisectionLinear();
@@ -84,6 +86,22 @@ namespace Deltares
                 ASSERT_EQ(designPoint->Alphas.size(), 2);
                 ASSERT_NEAR(designPoint->Beta, 2.57, 0.01);
             }
+
+            void testReliabilityMethods::testCobylaReliability() const
+            {
+                auto calculator = CobylaReliability();
+
+                auto modelRunner = projectBuilder().BuildProject();
+
+                auto designPoint = calculator.getDesignPoint(modelRunner);
+
+                ASSERT_EQ(designPoint->Alphas.size(), 2);
+                EXPECT_NEAR(designPoint->Beta, 1.8250068211, margin);
+                EXPECT_NEAR(designPoint->Alphas[0]->Alpha, -0.5644677927, margin);
+                EXPECT_NEAR(designPoint->Alphas[1]->Alpha, 0.8254550932, margin);
+            }
+
+
         }
 
     }

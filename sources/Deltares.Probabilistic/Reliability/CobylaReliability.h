@@ -21,23 +21,30 @@
 //
 #pragma once
 
+#include "CobylaReliabilitySettings.h"
+#include "ReliabilityMethod.h"
+#include "../Optimization/CobylaOptimization.h"
+
 namespace Deltares
 {
-    namespace Probabilistic
+    namespace Reliability
     {
-        namespace Test
+        class wrappedOptimizationModel : public Optimization::optimizationModel
         {
-            class testReliabilityMethods
-            {
-            public:
-                void allReliabilityMethods() const;
-            private:
-                void testLatinHyperCube() const;
-                void testNumericalBisection() const;
-                void testNumericalBisectionLinear() const;
-                void testCobylaReliability() const;
-                const double margin = 1e-9;
-            };
-        }
+        public:
+            wrappedOptimizationModel(std::shared_ptr<Models::ModelRunner> model_runner) : modelRunner(model_runner) {}
+            double GetZValue(std::shared_ptr<Models::Sample> sample) const override;
+        private:
+            std::shared_ptr<Models::ModelRunner> modelRunner;
+        };
+
+        class CobylaReliability : public ReliabilityMethod
+        {
+        public:
+            std::shared_ptr<CobylaReliabilitySettings> Settings = std::make_shared<CobylaReliabilitySettings>();
+            std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
+        };
     }
 }
+
+
