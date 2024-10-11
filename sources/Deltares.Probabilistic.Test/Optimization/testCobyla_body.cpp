@@ -22,6 +22,8 @@
 #include "testCobyla.h"
 #include "../../Deltares.Probabilistic/Model/Sample.h"
 
+using namespace Deltares::Optimization;
+
 namespace Deltares
 {
     namespace Probabilistic
@@ -35,23 +37,19 @@ namespace Deltares
 
             void testCobyla::test1()
             {
-                auto cb = Optimization::CobylaOptimization();
+                auto cb = CobylaOptimization();
                 auto model = std::make_shared<testModel>();
-                auto searchArea = Optimization::SearchArea();
-                searchArea.Dimensions = std::vector<Optimization::SearchDimension>(2);
-                cb.GetCalibrationPoint(searchArea, model);
+                auto searchArea = SearchArea();
+                searchArea.Dimensions = std::vector<SearchDimension>(2);
+                auto result = cb.GetCalibrationPoint(searchArea, model);
+                EXPECT_NEAR(result.Input[0], -1.0, 1e-3);
+                EXPECT_NEAR(result.Input[1], 0.0, 1e-3);
             }
 
             double testModel::GetZValue(const Models::Sample& sample) const
             {
                 return 10.0 * std::pow(sample.Values[0] + 1.0, 2) + std::pow(sample.Values[1], 2);
             };
-
-            double testModel::GetZValue(const double* values) const
-            {
-                return 10.0 * std::pow(values[0] + 1.0, 2) + std::pow(values[1], 2);
-            };
-
 
         }
     }

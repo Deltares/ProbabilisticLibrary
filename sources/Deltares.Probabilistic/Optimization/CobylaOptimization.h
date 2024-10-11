@@ -33,8 +33,7 @@ namespace Deltares
         class optimizationModel
         {
         public:
-            double GetZValue(const Models::Sample& sample) const { return -1; };
-            double GetZValue(const double* x) const { return -1; };
+            virtual double GetZValue(const Models::Sample& sample) const { return -1; };
         };
 
         class CobylaOptimization
