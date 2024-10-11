@@ -20,7 +20,6 @@
 // All rights reserved.
 //
 #pragma once
-#include <gtest/gtest.h>
 #include "../../Deltares.Probabilistic/Optimization/CobylaOptimization.h"
 
 namespace Deltares
@@ -32,7 +31,12 @@ namespace Deltares
             class testModel : public Optimization::optimizationModel
             {
             public:
+                testModel() = default;
+                testModel(double offset_1, double offset_2) : offset1(offset_1), offset2(offset_2) {}
                 double GetZValue(const Models::Sample& sample) const override;
+            private:
+                const double offset1 = -1.0;
+                const double offset2 = 0.0;
             };
 
             class testCobyla
@@ -41,6 +45,7 @@ namespace Deltares
                 void allCobylaTests();
             private:
                 void test1();
+                void test2();
                 const double margin = 1e-2;
             };
         }
