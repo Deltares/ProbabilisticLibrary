@@ -6,7 +6,7 @@ namespace Deltares
 {
     namespace Optimization
     {
-        OptimizationSample CobylaOptimization::GetCalibrationPoint(SearchArea searchArea, std::shared_ptr<optimizationModel> model)
+        OptimizationSample CobylaOptimization::GetCalibrationPoint(const SearchArea& searchArea, std::shared_ptr<optimizationModel> model) const
         {
             unsigned n = static_cast<unsigned>(searchArea.Dimensions.size());
             unsigned m = model->GetNumberOfConstraints();
@@ -66,6 +66,19 @@ namespace Deltares
             OptimizationSample s;
             s.numberOfSamples = *stop.nevals_p;
             s.minimumValue = *minf;
+            switch (status)
+            {
+            case NLOPT_SUCCESS:
+            case NLOPT_STOPVAL_REACHED:
+            case NLOPT_FTOL_REACHED:
+            case NLOPT_XTOL_REACHED:
+                s.success = true;
+                break;
+            default:
+                s.success = false;
+                break;
+            }
+
             for (int i = 0; i < n; i++)
             {
                 s.Input.push_back(x0[i]);

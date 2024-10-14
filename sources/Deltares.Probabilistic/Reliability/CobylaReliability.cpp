@@ -43,7 +43,9 @@ namespace Deltares
             beta = z0Fac * std::sqrt(beta);
 
             auto dp = std::make_shared<DesignPoint>();
+            dp->Identifier = "Cobyla Reliability";
             dp->Beta = beta;
+            dp->convergenceReport->IsConverged = result.success;
             for (int i = 0; i < nStochasts; i++)
             {
                 auto alpha = std::make_shared<StochastPointAlpha>();

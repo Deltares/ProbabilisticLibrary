@@ -30,6 +30,7 @@ namespace Deltares
             std::vector<double> Deviations;
             int numberOfSamples;
             double minimumValue;
+            bool success;
         };
 
         class optimizationModel
@@ -40,15 +41,15 @@ namespace Deltares
             virtual unsigned GetNumberOfConstraints() const { return 0; };
         };
 
+        /**
+         * \brief Wrapper for Cobyla optimization algorithm
+         * \note At this moment: this wrapper handles only zero or one constraints
+         */
         class CobylaOptimization
         {
         public:
-
             CobylaOptimizationSettings settings;
-            OptimizationSample GetCalibrationPoint(SearchArea searchArea, std::shared_ptr<optimizationModel> model);
-        private:
-            double calcfcWrapper(int n, int m, const double x[], double con[], void* data);
-
+            OptimizationSample GetCalibrationPoint(const SearchArea& searchArea, std::shared_ptr<optimizationModel> model) const;
         };
 
     }

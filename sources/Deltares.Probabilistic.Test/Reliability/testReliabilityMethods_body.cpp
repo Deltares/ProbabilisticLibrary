@@ -99,6 +99,7 @@ namespace Deltares
                 EXPECT_NEAR(designPoint->Beta, 1.8741, 1e-3);
                 EXPECT_NEAR(designPoint->Alphas[0]->Alpha, -0.78092, 1e-3);
                 EXPECT_NEAR(designPoint->Alphas[1]->Alpha, 0.624628, 1e-3);
+                EXPECT_TRUE(designPoint->convergenceReport->IsConverged);
             }
 
 
