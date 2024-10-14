@@ -1,5 +1,5 @@
 #include "CobylaOptimization.h"
-#include "cobyla.h"
+#include "Cobyla.h"
 #include <functional>
 
 namespace Deltares

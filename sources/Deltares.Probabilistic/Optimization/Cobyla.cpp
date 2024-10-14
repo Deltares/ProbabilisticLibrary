@@ -42,7 +42,7 @@
 #include <stdio.h>
 #include <math.h>
 
-#include "cobyla.h"
+#include "Cobyla.h"
 #include "nlopt-util.h"
 #include "nlopt.h"
 
