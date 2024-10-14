@@ -390,8 +390,7 @@
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">
-      <UniqueIdentifier>{30dccd3c-9e22-4a6c-8    <ClInclude Include="Combine\LengthEffectProject.h" />
-e72-9b18cde1ec1f}</UniqueIdentifier>
+      <UniqueIdentifier>{30dccd3c-9e22-4a6c-8e72-9b18cde1ec1f}</UniqueIdentifier>
     </Filter>
     <Filter Include="Model">
       <UniqueIdentifier>{3a585b12-521e-4cc6-a8fe-85b3ff52219a}</UniqueIdentifier>

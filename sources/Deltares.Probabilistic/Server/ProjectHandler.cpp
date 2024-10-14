@@ -194,6 +194,7 @@ namespace Deltares
             case ObjectType::HistogramValue: histogramValues.erase(id); break;
             case ObjectType::FragilityValue: fragilityValues.erase(id); break;
             case ObjectType::ContributingStochast: contributingStochasts.erase(id); break;
+            case ObjectType::ConditionalValue: conditionalValues.erase(id); break;
             case ObjectType::CorrelationMatrix: correlationMatrices.erase(id); break;
             case ObjectType::Settings: settingsValues.erase(id); break;
             case ObjectType::StochastSettings: stochastSettingsValues.erase(id); break;
@@ -204,6 +205,7 @@ namespace Deltares
             case ObjectType::SelfCorrelationMatrix: selfCorrelationMatrices.erase(id); break;
             case ObjectType::SensitivityProject: sensitivityProjects.erase(id); break;
             case ObjectType::SensitivitySettings: sensitivitySettingsValues.erase(id); break;
+            case ObjectType::LengthEffectProject: lengthEffectProjects.erase(id); break;
             default: throw probLibException("object type");
             }
             types.erase(id);
