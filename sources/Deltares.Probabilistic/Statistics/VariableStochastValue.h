@@ -21,7 +21,6 @@
 //
 #pragma once
 
-#include "DistributionType.h"
 #include "StochastProperties.h"
 #include "Distributions/Distribution.h"
 
@@ -48,6 +47,13 @@ namespace Deltares
                 Stochast->Maximum = std::nan("");
                 Stochast->Observations = -1;
             }
+
+            VariableStochastValue(double x, std::shared_ptr<StochastProperties> stochast) : VariableStochastValue()
+            {
+                this->X = x;
+                this->Stochast = stochast;
+            }
+
 
             /**
               * \brief X-value for which the conditional value is defined
@@ -85,6 +91,7 @@ namespace Deltares
         private:
             /**
              * \brief Gets the first non nan value
+             * \remark If both nan, nan is returned
              */
             double getNonNanValue(double value1, double value2);
         };

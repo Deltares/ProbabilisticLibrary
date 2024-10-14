@@ -194,6 +194,7 @@ namespace Deltares
             case ObjectType::HistogramValue: histogramValues.erase(id); break;
             case ObjectType::FragilityValue: fragilityValues.erase(id); break;
             case ObjectType::ContributingStochast: contributingStochasts.erase(id); break;
+            case ObjectType::ConditionalValue: conditionalValues.erase(id); break;
             case ObjectType::CorrelationMatrix: correlationMatrices.erase(id); break;
             case ObjectType::Settings: settingsValues.erase(id); break;
             case ObjectType::StochastSettings: stochastSettingsValues.erase(id); break;

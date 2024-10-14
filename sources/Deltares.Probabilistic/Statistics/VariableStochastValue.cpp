@@ -20,8 +20,6 @@
 // All rights reserved.
 //
 #include "VariableStochastValue.h"
-
-#include "DistributionType.h"
 #include "Distributions/Distribution.h"
 
 namespace Deltares
