@@ -37,12 +37,12 @@ namespace Deltares
         public:
 
             /**
-             * \brief Maximum number of guessed design points in one FORM loop
+             * \brief Maximum number of iterations in Cobyla
              */
-            int MaximumIterations = 50;
+            int MaximumIterations = 150;
 
             /**
-             * \brief The FORM loop stops when the next guessed design point is less than this value away from the current guessed design point
+             * \brief Tolerance in the Cobyla iteration
              */
             double EpsilonBeta = 0.01;
 
@@ -50,11 +50,6 @@ namespace Deltares
              * \brief Settings for performing model runs
              */
             std::shared_ptr<Models::RunSettings> RunSettings = std::make_shared<Models::RunSettings>();
-
-            /**
-             * \brief Settings for calculating the initial guessed design point
-             */
-            std::shared_ptr<StartPointCalculatorSettings> StartPointSettings = std::make_shared<StartPointCalculatorSettings>();
 
             /**
              * \brief Settings for individual stochastic variable, such as the start value
@@ -69,8 +64,7 @@ namespace Deltares
             {
                 return
                     MaximumIterations >= 1 &&
-                    EpsilonBeta >= 0.0001 &&
-                    StartPointSettings->isValid() &&
+                    EpsilonBeta > 1e-6 &&
                     RunSettings->isValid();
             }
         };

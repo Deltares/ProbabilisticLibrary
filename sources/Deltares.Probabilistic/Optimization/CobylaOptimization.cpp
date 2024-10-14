@@ -51,13 +51,14 @@ namespace Deltares
                 fc[0].f = myfuncC;
                 fc[0].m = 1;
                 fc[0].tol = new double[1];
-                fc[0].tol[0] = 0.001;
+                fc[0].tol[0] = settings.EpsilonBeta;
             }
             nlopt_constraint* h = new nlopt_constraint[0];
             double* minf = new double[1];
             nlopt_stopping stop = nlopt_stopping();
             stop.nevals_p = new int;
-            stop.xtol_rel = 0.001;
+            stop.xtol_rel = settings.EpsilonBeta;
+            stop.maxeval = settings.MaxIterations;
             unsigned p = 0;
 
             auto status = cobyla_minimize(n, myfunc, funcData, m, fc, p, h, lb, ub, x0, minf, &stop, dx);

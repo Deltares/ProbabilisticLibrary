@@ -21,6 +21,8 @@ namespace Deltares
             auto optModel = std::make_shared<wrappedOptimizationModel>(modelRunner);
 
             auto optimizer = CobylaOptimization();
+            optimizer.settings.EpsilonBeta = Settings->EpsilonBeta;
+            optimizer.settings.MaxIterations = Settings->MaximumIterations;
 
             auto searchArea = SearchArea();
             searchArea.Dimensions = std::vector<SearchDimension>(nStochasts);
