@@ -45,7 +45,6 @@ namespace Deltares
                     return model->GetConstraintValue(s);
                 };
 
-            nlopt_func f = myfunc;
             nlopt_constraint* fc = new nlopt_constraint[m];
             if (m > 0)
             {
@@ -61,9 +60,11 @@ namespace Deltares
             stop.xtol_rel = 0.001;
             unsigned p = 0;
 
-            auto status = cobyla_minimize(n, f, funcData, m, fc, p, h, lb, ub, x0, minf, &stop, dx);
+            auto status = cobyla_minimize(n, myfunc, funcData, m, fc, p, h, lb, ub, x0, minf, &stop, dx);
 
             OptimizationSample s;
+            s.numberOfSamples = *stop.nevals_p;
+            s.minimumValue = *minf;
             for (int i = 0; i < n; i++)
             {
                 s.Input.push_back(x0[i]);

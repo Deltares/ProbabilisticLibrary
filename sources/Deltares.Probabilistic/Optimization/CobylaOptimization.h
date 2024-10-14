@@ -28,6 +28,8 @@ namespace Deltares
         public:
             std::vector<double> Input;
             std::vector<double> Deviations;
+            int numberOfSamples;
+            double minimumValue;
         };
 
         class optimizationModel

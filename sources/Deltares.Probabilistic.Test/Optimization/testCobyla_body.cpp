@@ -46,6 +46,8 @@ namespace Deltares
                 auto result = cb.GetCalibrationPoint(searchArea, model);
                 EXPECT_NEAR(result.Input[0], -1.0, 1e-3);
                 EXPECT_NEAR(result.Input[1], 0.0, 1e-3);
+                EXPECT_NEAR(result.minimumValue, 0.0, 1e-3);
+                EXPECT_EQ(result.numberOfSamples, 69);
             }
 
             void testCobyla::test_no_constraints2()
@@ -57,6 +59,8 @@ namespace Deltares
                 auto result = cb.GetCalibrationPoint(searchArea, model);
                 EXPECT_NEAR(result.Input[0], 2.0, 1e-3);
                 EXPECT_NEAR(result.Input[1], 3.0, 1e-3);
+                EXPECT_NEAR(result.minimumValue, 0.0, 1e-3);
+                EXPECT_EQ(result.numberOfSamples, 83);
             }
 
             void testCobyla::test_with_constraint1()
@@ -70,6 +74,8 @@ namespace Deltares
                 auto result = cb.GetCalibrationPoint(searchArea, model);
                 EXPECT_NEAR(result.Input[0], 0.707, 1e-2);
                 EXPECT_NEAR(result.Input[1], -0.707, 1e-2);
+                EXPECT_NEAR(result.minimumValue, -0.5, 1e-3);
+                EXPECT_EQ(result.numberOfSamples, 49);
             }
 
             double testModel::GetZValue(const std::shared_ptr<Models::Sample> sample) const
