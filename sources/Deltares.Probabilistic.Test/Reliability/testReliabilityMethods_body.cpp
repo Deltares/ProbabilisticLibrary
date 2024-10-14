@@ -36,14 +36,6 @@ namespace Deltares
     {
         namespace Test
         {
-            void testReliabilityMethods::allReliabilityMethods() const
-            {
-                testCobylaReliability();
-                testLatinHyperCube();
-                testNumericalBisection();
-                testNumericalBisectionLinear();
-            }
-
             void testReliabilityMethods::testLatinHyperCube() const
             {
                 auto calculator = LatinHyperCube();

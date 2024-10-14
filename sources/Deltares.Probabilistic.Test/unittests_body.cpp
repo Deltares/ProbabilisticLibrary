@@ -125,10 +125,28 @@ namespace Deltares
                 tstStartPoint.allStartPointTests();
             }
 
-            TEST(unittst, testReliabilityMethods)
+            TEST(reliability_method_test, testLatinHyperCube)
             {
                 auto tstRelMethods = testReliabilityMethods();
-                tstRelMethods.allReliabilityMethods();
+                tstRelMethods.testLatinHyperCube();
+            }
+
+            TEST(reliability_method_test, testCobylaReliability)
+            {
+                auto tstRelMethods = testReliabilityMethods();
+                tstRelMethods.testCobylaReliability();
+            }
+
+            TEST(reliability_method_test, testNumBisection1)
+            {
+                auto tstRelMethods = testReliabilityMethods();
+                tstRelMethods.testNumericalBisection();
+            }
+
+            TEST(reliability_method_test, testNumBisection2)
+            {
+                auto tstRelMethods = testReliabilityMethods();
+                tstRelMethods.testNumericalBisectionLinear();
             }
 
             TEST(unittst, testDistributions)
