@@ -518,7 +518,7 @@ namespace Deltares
 
 				std::shared_ptr<Sample> startPoint = startPointCalculator->getStartPoint(modelRunner);
 
-				if (Settings->startPointSettings->StartMethod != StartMethodType::None)
+				if (Settings->startPointSettings->StartMethod != StartMethodType::FixedValue)
 				{
 					startDesignPoint = modelRunner->getDesignPoint(startPoint, startPoint->getBeta());
 					startDesignPoint->Identifier = "Start point";

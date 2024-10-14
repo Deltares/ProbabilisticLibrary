@@ -22,6 +22,8 @@
 #pragma once
 #include <vector>
 
+#include "LimitStateFunction.h"
+#include "../Model/ZValueConverter.h"
 #include "../Statistics/Stochast.h"
 #include "../Statistics/CorrelationMatrix.h"
 #include "../Statistics/SparseCorrelationMatrix.h"
@@ -58,6 +60,11 @@ namespace Deltares
              * \brief Deterministic model which calculates a z-value based on input values
              */
             std::shared_ptr<ZModel> model = nullptr;
+
+            /**
+             * \brief Limit state function
+             */
+            std::shared_ptr<Reliability::LimitStateFunction> limitStateFunction = std::make_shared<Reliability::LimitStateFunction>();
 
             /**
              * \brief Calculation settings
@@ -108,18 +115,8 @@ namespace Deltares
              */
             void run();
 
-            /**
-             * \brief Sets the method which is invoked at the beginning of a run
-             */
-            void setInitializer(ZEmptyCallBack initializerCallBack)
-            {
-                this->initializer = initializerCallBack;
-            }
-
         private:
             std::shared_ptr<Statistics::CorrelationMatrix> getCorrelationMatrix();
-
-            ZEmptyCallBack initializer = nullptr;
         };
     }
 }

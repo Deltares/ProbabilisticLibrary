@@ -36,7 +36,7 @@ namespace Deltares
 
             public enum class StartMethodType
             {
-                None,
+                FixedValue,
                 RaySearch,
                 SensitivitySearch,
                 SphereSearch
@@ -82,7 +82,7 @@ namespace Deltares
                     {
                         switch (shared->object->StartMethod)
                         {
-                        case Deltares::Reliability::StartMethodType::None: return Wrappers::StartMethodType::None;
+                        case Deltares::Reliability::StartMethodType::FixedValue: return Wrappers::StartMethodType::FixedValue;
                         case Deltares::Reliability::StartMethodType::RaySearch: return Wrappers::StartMethodType::RaySearch;
                         case Deltares::Reliability::StartMethodType::SensitivitySearch: return Wrappers::StartMethodType::SensitivitySearch;
                         case Deltares::Reliability::StartMethodType::SphereSearch: return Wrappers::StartMethodType::SphereSearch;
@@ -93,7 +93,7 @@ namespace Deltares
                     {
                         switch (value)
                         {
-                        case Wrappers::StartMethodType::None: shared->object->StartMethod = Reliability::None; break;
+                        case Wrappers::StartMethodType::FixedValue: shared->object->StartMethod = Reliability::FixedValue; break;
                         case Wrappers::StartMethodType::RaySearch: shared->object->StartMethod = Reliability::RaySearch; break;
                         case Wrappers::StartMethodType::SensitivitySearch: shared->object->StartMethod = Reliability::SensitivitySearch; break;
                         case Wrappers::StartMethodType::SphereSearch: shared->object->StartMethod = Reliability::SphereSearch; break;

@@ -22,6 +22,7 @@
 #pragma once
 #include <vector>
 
+#include "ParameterSelector.h"
 #include "SensitivityMethod.h"
 #include "SettingsS.h"
 #include "../Statistics/Stochast.h"
@@ -51,6 +52,11 @@ namespace Deltares
              * \brief Method which performs a reliability calculation
              */
             std::shared_ptr<Sensitivity::SensitivityMethod> sensitivityMethod = nullptr;
+
+            /**
+             * \brief Output parameter for which the sensitivity is calculated, blank for all parameters
+             */
+            std::string parameter = "";
 
             /**
              * \brief Deterministic model which calculates a z-value based on input values
@@ -105,15 +111,8 @@ namespace Deltares
              */
             void run();
 
-            /**
-             * \brief Sets the method which is invoked at the beginning of a run
-             */
-            void setInitializer(Models::ZEmptyCallBack initializerCallBack)
-            {
-                this->initializer = initializerCallBack;
-            }
         private:
-            Models::ZEmptyCallBack initializer = nullptr;
+            std::shared_ptr<ParameterSelector> parameterSelector = std::make_shared<ParameterSelector>();
         };
     }
 }

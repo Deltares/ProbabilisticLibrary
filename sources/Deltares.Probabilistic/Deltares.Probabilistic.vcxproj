@@ -155,14 +155,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Sensitivity\ParameterSelector.h" />
+    <ClInclude Include="Reliability\LimitStateFunction.h" />
+    <ClInclude Include="Server\ExternalLibraryHandler.h" />
+    <ClInclude Include="Server\ExternalServerHandler.h" />
+    <ClInclude Include="Server\BaseServer.h" />
+    <ClInclude Include="Server\ProjectServer.h" />
+    <ClInclude Include="Server\ProjectHandler.h" />
+    <ClInclude Include="Server\BaseHandler.h" />
     <ClInclude Include="Model\ModelInputParameter.h" />
     <ClInclude Include="Reliability\ReliabilityProject.h" />
     <ClInclude Include="Sensitivity\CorrelationMatrixBuilder.h" />
-    <ClInclude Include="Server\BaseHandler.h" />
-    <ClInclude Include="Server\BaseServer.h" />
-    <ClInclude Include="Server\ExternalHandler.h" />
-    <ClInclude Include="Server\ProjectHandler.h" />
-    <ClInclude Include="Server\ProjectServer.h" />
     <ClInclude Include="Statistics\Distributions\StandardNormalDistribution.h" />
     <ClInclude Include="Statistics\DistributionChangeType.h" />
     <ClInclude Include="Statistics\BaseStochastPoint.h" />
@@ -319,16 +322,20 @@
     <ClInclude Include="Statistics\Distributions\GeneralizedExtremeValueDistribution.h" />
     <ClInclude Include="Statistics\Distributions\ConditionalWeibullDistribution.h" />
     <ClInclude Include="Math\WeightedValue.h" />
+    <ClInclude Include="Model\ZValueConverter.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Sensitivity\ParameterSelector.cpp" />
+    <ClCompile Include="Server\BaseServer.cpp" />
+    <ClCompile Include="Server\ProjectServer.cpp" />
+    <ClCompile Include="Server\BaseHandler.cpp" />
+    <ClCompile Include="Server\ProjectHandler.cpp" />
+    <ClCompile Include="Server\ExternalLibraryHandler.cpp" />
+    <ClCompile Include="Server\ExternalServerHandler.cpp" />
     <ClCompile Include="Model\ModelInputParameter.cpp" />
+    <ClCompile Include="Reliability\LimitStateFunction.cpp" />
     <ClCompile Include="Reliability\ReliabilityProject.cpp" />
     <ClCompile Include="Sensitivity\CorrelationMatrixBuilder.cpp" />
-    <ClCompile Include="Server\BaseHandler.cpp" />
-    <ClCompile Include="Server\BaseServer.cpp" />
-    <ClCompile Include="Server\ExternalHandler.cpp" />
-    <ClCompile Include="Server\ProjectHandler.cpp" />
-    <ClCompile Include="Server\ProjectServer.cpp" />
     <ClCompile Include="Statistics\Distributions\StandardNormalDistribution.cpp" />
     <ClCompile Include="Statistics\DistributionChangeType.cpp" />
     <ClCompile Include="Statistics\BaseStochastPoint.cpp" />
@@ -477,6 +484,7 @@
     <ClCompile Include="Statistics\Distributions\GeneralizedExtremeValueDistribution.cpp" />
     <ClCompile Include="Statistics\Distributions\ConditionalWeibullDistribution.cpp" />
     <ClCompile Include="Math\WeightedValue.cpp" />
+    <ClCompile Include="Model\ZValueConverter.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

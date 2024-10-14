@@ -31,8 +31,10 @@ namespace Deltares
             virtual bool GetBoolValue(int id, std::string property_) { return false; }
             virtual void SetBoolValue(int id, std::string property_, bool value) {}
             virtual std::string GetStringValue(int id, std::string property_) { return ""; }
+            virtual std::string GetIndexedStringValue(int id, std::string property_, int index) { return ""; }
             virtual void SetStringValue(int id, std::string property_, std::string value) {}
             virtual void SetArrayValue(int id, std::string property_, double* values, int size) {}
+            virtual void GetArgValues(int id, std::string property_, double* values, int size, double* outputValues) {}
             virtual std::vector<int> GetArrayIntValue(int id, std::string property_) { return std::vector<int>(); }
             virtual void SetArrayIntValue(int id, std::string property_, int* values, int size) {}
             virtual double GetArgValue(int id, std::string property_, double argument) { return 0; }
@@ -43,9 +45,7 @@ namespace Deltares
             virtual void SetIndexedIndexedValue(int id, std::string property_, int index1, int index2, double value) {}
             virtual int GetIndexedIntValue(int id, std::string property_, int index) { return 0; }
             virtual void SetCallBack(int id, std::string property_, Models::ZValuesCallBack callBack) {}
-            virtual void SetEmptyCallBack(int id, std::string property_, Models::ZEmptyCallBack callBack) {}
             virtual void Execute(int id, std::string method_) {}
-            virtual Models::ZLambda GetCallBack(int id, std::string method) { return 0; }
 
         protected:
             std::shared_ptr<BaseServer> server = nullptr;
