@@ -42,6 +42,7 @@ namespace Deltares {
             FORMDSFIHR,
             DSFI,
             FORMDSFI,
+            CobylaReliability = 20,
             FORMSTART = 1234,
         };
 
@@ -93,6 +94,12 @@ namespace Deltares {
             double correlation;
         };
 
+        struct cobylaReliabilitySettings
+        {
+            double EpsilonBeta;
+            int MaximumIterations;
+        };
+
         struct basicSettings
         {
             ProbMethod         methodId;
@@ -124,6 +131,7 @@ namespace Deltares {
             double             startVector[maxActiveStochast];
             double             offsets[maxActiveStochast];
             double             varianceFactors[maxActiveStochast];
+            cobylaReliabilitySettings cobyla_reliability_settings;
         };
 
     }

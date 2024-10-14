@@ -39,6 +39,11 @@ module interface_typedefs
     real(kind=c_double) :: params(4)
   end type tdistrib
 
+  type, public, bind(c) :: tpCobylaReliability
+    real(kind=c_double) :: EpsilonBeta = 1e-3_c_double
+    integer             :: MaximumIterations = 150
+  end type tpCobylaReliability
+
   type, public, bind(c) :: tMethod
     integer             :: methodId
     real(kind=c_double) :: tolA       = 0.001_c_double
@@ -69,6 +74,7 @@ module interface_typedefs
     real(kind=c_double) :: startVector(maxActiveStochast)
     real(kind=c_double) :: offsets(maxActiveStochast)
     real(kind=c_double) :: varianceFactors(maxActiveStochast)
+    type(tpCobylaReliability) :: cobylaReliability
   end type tMethod
 
   type, public, bind(c) :: tResult
@@ -164,6 +170,8 @@ module interface_typedefs
     type(tpIS)          :: IS                 !< Data for IS method
     type(tpAdaptiveIS)  :: AdaptiveIS         !< Data for AdaptiveMCIS method
     type(tpNI)     :: NI                      !< Data for NI method
+    type(tpCobylaReliability) :: &
+                      CobylaReliability       !< Data for Cobyla Reliability
     integer        :: DPoption                !< Options for calculation of the design point
     integer        :: maxParallelThreads = 1  !< Maximum number of OpenMP threads
     integer        :: chunkSizeOpenMP = 200   !< Number of samples to handle simultaneously, when using OpenMP

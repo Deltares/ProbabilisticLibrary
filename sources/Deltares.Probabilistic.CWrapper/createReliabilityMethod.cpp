@@ -28,6 +28,7 @@
 #include "../Deltares.Probabilistic/Reliability/DirectionalSamplingThenFORM.h"
 #include "../Deltares.Probabilistic/Reliability/ImportanceSampling.h"
 #include "../Deltares.Probabilistic/Reliability/AdaptiveImportanceSampling.h"
+#include "../Deltares.Probabilistic/Reliability/CobylaReliability.h"
 
 using namespace Deltares::ProbLibCore;
 using namespace Deltares::Models;
@@ -122,6 +123,12 @@ std::shared_ptr<ReliabilityMethod> createReliabilityMethod::selectMethod(const b
         AdaptImpSampling->Settings->MinimumFailedSamples = bs.numExtraInt2;
         fillStartVector(AdaptImpSampling->Settings->startPointSettings, bs, nStoch);
         return AdaptImpSampling; }
+        break;
+    case (ProbMethod::CobylaReliability): {
+        auto cobyla_reliability = std::make_shared<CobylaReliability>();
+        cobyla_reliability->Settings->EpsilonBeta = bs.cobyla_reliability_settings.EpsilonBeta;
+        cobyla_reliability->Settings->MaximumIterations = bs.cobyla_reliability_settings.MaximumIterations;
+        return cobyla_reliability; }
         break;
     default:
         throw probLibException("method not implemented yet: ", (int)bs.methodId);
