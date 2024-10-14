@@ -33,7 +33,9 @@ namespace Deltares
         {
         public:
             wrappedOptimizationModel(std::shared_ptr<Models::ModelRunner> model_runner) : modelRunner(model_runner) {}
-            double GetZValue(std::shared_ptr<Models::Sample> sample) const override;
+            double GetZValue(const std::shared_ptr<Models::Sample> sample) const override;
+            double GetConstraintValue(const std::shared_ptr<Models::Sample> sample) const override;
+            unsigned GetNumberOfConstraints() const { return 1; };
         private:
             std::shared_ptr<Models::ModelRunner> modelRunner;
         };
