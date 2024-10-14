@@ -20,4 +20,4 @@
 // All rights reserved.
 //
 #include "pch.h"
-#include "testKMean_body.cpp"
+#include "testCobyla_body.cpp"

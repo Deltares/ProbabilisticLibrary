@@ -200,6 +200,8 @@
     <ClInclude Include="Reliability\SubsetSimulationSettings.h" />
     <ClInclude Include="Reliability\SubsetSimulation.h" />
     <ClInclude Include="Reliability\Settings.h" />
+    <ClInclude Include="Reliability\CobylaReliability.h" />
+    <ClInclude Include="Reliability\CobylaReliabilitySettings.h" />
     <ClInclude Include="Reliability\LatinHyperCube.h" />
     <ClInclude Include="Reliability\LatinHyperCubeSettings.h" />
     <ClInclude Include="Reliability\NumericalBisection.h" />
@@ -211,6 +213,9 @@
     <ClInclude Include="Math\MatrixSupport.h" />
     <ClInclude Include="Optimization\KMeansClustering.h" />
     <ClInclude Include="Optimization\ClusterSettings.h" />
+    <ClInclude Include="Optimization\Cobyla.h" />
+    <ClInclude Include="Optimization\CobylaOptimization.h" />
+    <ClInclude Include="Optimization\CobylaOptimizationSettings.h" />
     <ClInclude Include="Reliability\AdaptiveImportanceSampling.h" />
     <ClInclude Include="Reliability\AdaptiveImportanceSamplingSettings.h" />
     <ClInclude Include="Reliability\ImportanceSamplingCluster.h" />
@@ -368,6 +373,8 @@
     <ClCompile Include="Reliability\SubsetSimulationSettings.cpp" />
     <ClCompile Include="Reliability\SubsetSimulation.cpp" />
     <ClCompile Include="Reliability\Settings.cpp" />
+    <ClCompile Include="Reliability\CobylaReliability.cpp" />
+    <ClCompile Include="Reliability\CobylaReliabilitySettings.cpp" />
     <ClCompile Include="Reliability\LatinHyperCube.cpp" />
     <ClCompile Include="Reliability\LatinHyperCubeSettings.cpp" />
     <ClCompile Include="Reliability\NumericalBisection.cpp" />
@@ -379,6 +386,12 @@
     <ClCompile Include="Math\MatrixSupport.cpp" />
     <ClCompile Include="Optimization\KMeansClustering.cpp" />
     <ClCompile Include="Optimization\ClusterSettings.cpp" />
+    <ClCompile Include="Optimization\Cobyla.cpp" />
+    <ClCompile Include="Optimization\CobylaOptimization.cpp" />
+    <ClCompile Include="Optimization\CobylaOptimizationSettings.cpp" />
+    <ClCompile Include="Optimization\rescale.cpp" />
+    <ClCompile Include="Optimization\stop.cpp" />
+    <ClCompile Include="Optimization\timer.cpp" />
     <ClCompile Include="Reliability\AdaptiveImportanceSampling.cpp" />
     <ClCompile Include="Reliability\AdaptiveImportanceSamplingSettings.cpp" />
     <ClCompile Include="Reliability\ImportanceSamplingCluster.cpp" />
