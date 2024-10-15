@@ -46,10 +46,10 @@ namespace Deltares
                 this->origin = origin;
             }
             std::vector<std::shared_ptr<IntegrationPoint>> Points;
-            std::unordered_map<std::string,std::shared_ptr<IntegrationPoint>> pointsSet;
+            std::unordered_map<unsigned long,std::shared_ptr<IntegrationPoint>> pointsSet;
             std::vector<std::shared_ptr<IntegrationCell>> Cells;
             std::vector <std::vector<std::shared_ptr<IntegrationLine>>> Lines;
-            std::vector<std::unordered_map<std::string,std::shared_ptr<IntegrationLine>>> LinesSet;
+            std::vector<std::unordered_map<unsigned long,std::shared_ptr<IntegrationLine>>> LinesSet;
             std::shared_ptr<IntegrationPoint> GetIntegrationPoint(std::vector<double>& coordinates);
             void AddPoint(std::shared_ptr<IntegrationPoint> point);
             int getDimension() const { return Dimension; }

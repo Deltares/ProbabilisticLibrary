@@ -22,6 +22,9 @@
 #include <set>
 #include <cmath>
 #include "IntegrationGrid.h"
+
+#include <iostream>
+
 #include "../Math/BinarySupport.h"
 #include "../Utils/probLibString.h"
 #include "../Statistics/Stochast.h"
@@ -343,7 +346,7 @@ namespace Deltares
             for (int i = 0; i < Dimension; i++)
             {
                 Lines.push_back(std::vector<std::shared_ptr<IntegrationLine>>());
-                LinesSet.push_back(std::unordered_map<std::string, std::shared_ptr<IntegrationLine>>());
+                LinesSet.push_back(std::unordered_map<unsigned long, std::shared_ptr<IntegrationLine>>());
             }
         };
 
@@ -370,22 +373,47 @@ namespace Deltares
             return integrationPoint;
         }
 
+        inline unsigned long GetHashCodeForBytes(const char* bytes, int numBytes)
+        {
+            unsigned long h = 0, g;
+            for (int i = 0; i < numBytes; i++)
+            {
+                h = (h << 4) + bytes[i];
+                if (g = h & 0xF0000000L) { h ^= g >> 24; }
+                h &= ~g;
+            }
+            return h;
+        }
+
+        inline unsigned long GetHashForDouble(double v)
+        {
+            return GetHashCodeForBytes((const char*)&v, sizeof(v));
+        }
+
+        inline unsigned long GetHashForDoubleVector(const std::vector<double>& v)
+        {
+            unsigned long ret = 0;
+            constexpr double noise = 0.0123;
+            for (int i = 0; i < v.size(); i++) ret += ((i + 1) * (GetHashForDouble(noise+v[i])));
+            return ret;
+        }
+
         void IntegrationDomain::AddPoint(std::shared_ptr<IntegrationPoint> point)
         {
             Points.push_back(point);
-            pointsSet.insert({ probLibString::doubles2strTrimmed(point->Coordinates), point});
+            pointsSet.insert({ GetHashForDoubleVector(point->Coordinates), point});
 
             for (int i = 0; i < Dimension; i++)
             {
                 auto lineCoordinates = point->Coordinates;
                 lineCoordinates.erase(lineCoordinates.begin()+i);
 
-                auto line = LinesSet[i][probLibString::doubles2strTrimmed(lineCoordinates)];
+                auto line = LinesSet[i][GetHashForDoubleVector(lineCoordinates)];
                 if (line == nullptr)
                 {
                     line = std::make_shared<IntegrationLine>(i, origin[i]);
                     Lines[i].push_back(line);
-                    LinesSet[i][probLibString::doubles2strTrimmed(lineCoordinates)] = line;
+                    LinesSet[i][GetHashForDoubleVector(lineCoordinates)] = line;
                 }
 
                 line->Add(point);
