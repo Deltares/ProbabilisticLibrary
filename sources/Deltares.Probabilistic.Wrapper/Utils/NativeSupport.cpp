@@ -29,6 +29,8 @@ namespace Deltares
         {
             std::string NativeSupport::toNative(System::String^ text)
             {
+                text = escape(text);
+
                 const char* chars = (const char*)(System::Runtime::InteropServices::Marshal::StringToHGlobalAnsi(text)).ToPointer();
                 std::string os = chars;
                 System::Runtime::InteropServices::Marshal::FreeHGlobal(System::IntPtr((void*)chars));
@@ -38,7 +40,9 @@ namespace Deltares
 
             System::String^ NativeSupport::toManaged(std::string text)
             {
-                return gcnew System::String(text.c_str());
+                System::String^ result = gcnew System::String(text.c_str());
+
+                return unescape(result);
             }
 
             std::vector<double> NativeSupport::toNative(array<double>^ values)
@@ -75,6 +79,56 @@ namespace Deltares
                 }
 
                 return mValues;
+            }
+
+            System::String^ NativeSupport::escape(System::String^ text)
+            {
+                System::Text::StringBuilder^ sb = gcnew System::Text::StringBuilder(16);
+                for (int i = 0; i < text->Length; i++)
+                {
+                    if (text[i] < System::SByte::MaxValue)
+                    {
+                        sb->Append(text[i]);
+                    }
+                    else
+                    {
+                        sb->Append("\\u")->Append(((int)text[i]).ToString("x4"));
+                    }
+                }
+                return sb->ToString();
+            }
+
+            System::String^ NativeSupport::unescape(System::String^ text)
+            {
+                const int hexaLength = 6;
+
+                if (text->Length < hexaLength)
+                {
+                    return text;
+                }
+                else
+                {
+                    System::Text::StringBuilder^ sb = gcnew System::Text::StringBuilder();
+
+                    int maxIndexHexaChar = text->Length - hexaLength;
+
+                    for (int i = 0; i < text->Length; i++)
+                    {
+                        if (i <= maxIndexHexaChar && text[i] == '\\' && text[i + 1] == 'u')
+                        {
+                            System::String^ hexadecimalCode = text->Substring(i + 2, 4);
+                            wchar_t c = System::Convert::ToChar(System::Convert::ToUInt32(hexadecimalCode, 16));
+                            sb->Append(c);
+                            i = i + hexaLength - 1;
+                        }
+                        else
+                        {
+                            sb->Append(text[i]);
+                        }
+                    }
+
+                    return sb->ToString();
+                }
             }
         }
     }

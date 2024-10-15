@@ -57,18 +57,18 @@ namespace Deltares
             }
             else if (constantType == VariationCoefficient)
             {
-                double variationCoefficient = abs(currentDeviation / currentMean);
+                double variationCoefficient = currentMean == 0.0 ? currentDeviation : std::abs(currentDeviation / currentMean);
 
                 Numeric::RootFinderMethod function = [this, stochast, variationCoefficient, u](double mean)
                 {
-                    double deviation = abs(mean * variationCoefficient);
+                    double deviation = std::abs(mean * variationCoefficient);
                     this->setMeanAndDeviation(stochast, mean, deviation);
                     return this->getXFromU(stochast, u);
                 };
 
                 double newMean = bisection->CalculateValue(x, currentMean, x, margin, function);
 
-                this->setMeanAndDeviation(stochast, newMean, abs(newMean * variationCoefficient));
+                this->setMeanAndDeviation(stochast, newMean, std::abs(newMean * variationCoefficient));
             }
             else
             {

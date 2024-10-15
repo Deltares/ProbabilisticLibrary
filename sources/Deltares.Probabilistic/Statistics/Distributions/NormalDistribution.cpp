@@ -87,7 +87,14 @@ namespace Deltares
 
         void NormalDistribution::setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
         {
-            stochast->Location = x - u * stochast->Scale;
+            if (constantType == ConstantParameterType::Deviation)
+            {
+                stochast->Location = x - u * stochast->Scale;
+            }
+            else if (constantType == ConstantParameterType::VariationCoefficient)
+            {
+                this->setXAtUByIteration(stochast, x, u, constantType);
+            }
         }
 
         double NormalDistribution::getLogLikelihood(std::shared_ptr<StochastProperties> stochast, double x)

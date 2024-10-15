@@ -36,6 +36,8 @@ namespace Deltares
                 testConditionalWeibullMeanDeviation();
                 testConditionalWeibullCdfPdf();
                 testConditionalWeibullCdfPdf2();
+                testConditionalStochast();
+                testDesignValue();
             }
 
             void testDistributions::testConditionalWeibull()
@@ -154,6 +156,52 @@ namespace Deltares
                 }
             }
 
+            void testDistributions::testConditionalStochast()
+            {
+                std::shared_ptr<StochastProperties> params = std::make_shared<StochastProperties>();
+                params->Minimum = 0.0;
+                params->Maximum = 1.0;
+                std::shared_ptr<Stochast> realizedStochast = std::make_shared<Stochast>(DistributionType::Uniform, params);
+
+                realizedStochast->IsVariableStochast = true;
+
+                std::shared_ptr<Stochast> variableDefinition1 = std::make_shared<Stochast> (DistributionType::Uniform, std::vector({0.0, 1.0 }));
+                realizedStochast->ValueSet->StochastValues.push_back(std::make_shared<VariableStochastValue> (0.0, variableDefinition1->getProperties()));
+
+                std::shared_ptr<Stochast> variableDefinition2 = std::make_shared<Stochast>(DistributionType::Uniform, std::vector({ 11.0, 12.0 }));
+                realizedStochast->ValueSet->StochastValues.push_back(std::make_shared<VariableStochastValue> (2.0, variableDefinition2->getProperties()));
+
+                std::shared_ptr<Stochast> variableDefinition3 = std::make_shared<Stochast>(DistributionType::Uniform, std::vector({ 1.0, 2.0 }));
+                realizedStochast->ValueSet->StochastValues.push_back(std::make_shared<VariableStochastValue> (1.0, variableDefinition3->getProperties()));
+
+                realizedStochast->initializeForRun();
+
+                // exact value
+                EXPECT_NEAR(0.5, realizedStochast->getXFromUAndSource(0, 0), margin);
+                EXPECT_NEAR(1.5, realizedStochast->getXFromUAndSource(1, 0), margin);
+                EXPECT_NEAR(11.5, realizedStochast->getXFromUAndSource(2, 0), margin);
+
+                // interpolated
+                EXPECT_NEAR(1, realizedStochast->getXFromUAndSource(0.5, 0), margin);
+                EXPECT_NEAR(6.5, realizedStochast->getXFromUAndSource(1.5, 0), margin);
+
+                // extrapolated
+                EXPECT_NEAR(0.5, realizedStochast->getXFromUAndSource(-1, 0), margin);
+                EXPECT_NEAR(11.5, realizedStochast->getXFromUAndSource(3, 0), margin);
+            }
+
+            void testDistributions::testDesignValue()
+            {
+                std::shared_ptr<Stochast> stochast = std::make_shared<Stochast>(DistributionType::Normal, std::vector({10.0, 2.0}));
+
+                // not modified
+                EXPECT_NEAR(10.0, stochast->getDesignValue(), margin);
+
+                stochast->designFactor = 2;
+                stochast->designQuantile = StandardNormal::getPFromU(2.0);
+
+                EXPECT_NEAR((10.0 + 2 * 2) / 2.0, stochast->getDesignValue(), margin);
+            }
         }
     }
 }

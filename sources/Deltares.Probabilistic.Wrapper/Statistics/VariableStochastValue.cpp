@@ -19,30 +19,6 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#pragma once
-#include <string>
-#include <vector>
 
-namespace Deltares
-{
-    namespace Utils
-    {
-        namespace Wrappers
-        {
-            public ref class NativeSupport
-            {
-            public:
-                static std::string toNative(System::String^ text);
-                static System::String^ toManaged(std::string text);
-
-                static std::vector<double> toNative(array<double>^ values);
-                static array<double>^ toManaged(std::vector<double>& values, int count);
-                static array<double>^ toManaged(const std::vector<double> & values);
-            private:
-                static System::String^ escape(System::String^ text);
-                static System::String^ unescape(System::String^ text);
-            };
-        }
-    }
-}
+#include "VariableStochastValue.h"
 

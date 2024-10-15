@@ -30,7 +30,7 @@ class Test_statistics(unittest.TestCase):
     def test_u_to_x(self):
         try:
             stochast = Stochast()
-            stochast.distribution = "normal"
+            stochast.distribution = DistributionType.normal
             stochast.mean = 5
             stochast.deviation = 1;
 
@@ -46,7 +46,7 @@ class Test_statistics(unittest.TestCase):
 
     def test_discrete(self):
         stochast = Stochast()
-        stochast.distribution = "discrete"
+        stochast.distribution = DistributionType.discrete
 
         dv1 = DiscreteValue()
         dv1.x = 2
@@ -81,19 +81,19 @@ class Test_statistics(unittest.TestCase):
         stochasts = []
 
         stochast1 = Stochast()
-        stochast1.distribution = "normal"
+        stochast1.distribution = DistributionType.normal
         stochasts.append(stochast1)
 
         stochast2 = Stochast()
-        stochast2.distribution = "normal"
+        stochast2.distribution = DistributionType.normal
         stochasts.append(stochast2)
 
         stochast3 = Stochast()
-        stochast3.distribution = "normal"
+        stochast3.distribution = DistributionType.normal
         stochasts.append(stochast3)
 
         stochast4 = Stochast()
-        stochast4.distribution = "normal"
+        stochast4.distribution = DistributionType.normal
         # do not add to stochasts
 
         correlation_matrix = CorrelationMatrix();
@@ -123,12 +123,12 @@ class Test_statistics(unittest.TestCase):
 
         stochast1 = Stochast()
         stochast1.name = 'a'
-        stochast1.distribution = "normal"
+        stochast1.distribution = DistributionType.normal
         stochasts.append(stochast1)
 
         stochast2 = Stochast()
         stochast2.name = 'b'
-        stochast2.distribution = "exponential"
+        stochast2.distribution = DistributionType.exponential
         stochasts.append(stochast2)
 
         correlation_matrix = CorrelationMatrix();
@@ -142,8 +142,6 @@ class Test_statistics(unittest.TestCase):
         self.assertAlmostEqual(0.8, correlation_matrix[('a', 'b')], delta=margin)
 
     def test_fit(self):
-        stochasts = []
-
         stochast = Stochast()
         stochast.distribution = "normal"
 
@@ -152,15 +150,27 @@ class Test_statistics(unittest.TestCase):
 
         stochast.fit(values)
 
-        # registered stochasts
         self.assertAlmostEqual(4.3, stochast.mean, delta=margin)
         self.assertAlmostEqual(0.18, stochast.deviation, delta=margin)
+
+    def test_ks_test(self):
+        stochast = Stochast()
+        stochast.distribution = DistributionType.normal
+        stochast.mean = 4.2
+        stochast.deviation = 0.2
+
+        values = []
+        values.extend({4.1, 4.2, 4.4, 4.5})
+
+        ks = stochast.get_ks_test(values)
+
+        self.assertAlmostEqual(0.34, ks, delta=margin)
 
     def test_histogram(self):
         stochasts = []
 
         stochast = Stochast()
-        stochast.distribution = "histogram"
+        stochast.distribution = DistributionType.histogram
         
         stochast.histogram_values.append(HistogramValue.create(1, 3, 2))
         stochast.histogram_values.append(HistogramValue.create(5, 7, 6))
@@ -187,23 +197,118 @@ class Test_statistics(unittest.TestCase):
         stochasts = []
 
         stochast1 = Stochast()
-        stochast1.distribution = "uniform"
+        stochast1.distribution = DistributionType.uniform
         stochast1.minimium = 0
         stochast1.maximum = 8
 
         stochast2 = Stochast()
-        stochast2.distribution = "uniform"
+        stochast2.distribution = DistributionType.uniform
         stochast2.minimum = 6
         stochast2.maximum = 10
 
         stochast = Stochast()
-        stochast.distribution = "composite"
+        stochast.distribution = DistributionType.composite
         stochast.contributing_stochasts.append(ContributingStochast.create(0.4, stochast1))
         stochast.contributing_stochasts.append(ContributingStochast.create(0.6, stochast2))
 
         self.assertAlmostEqual(StandardNormal.get_u_from_p(0.4 * 0.125 + 0.6 * 0), stochast.get_u_from_x(1.0), delta=margin)
         self.assertAlmostEqual(StandardNormal.get_u_from_p(0.4 * 0.875 + 0.6 * 0.25), stochast.get_u_from_x(7.0), delta=margin)
         self.assertAlmostEqual(StandardNormal.get_u_from_p(0.4 * 1 + 0.6 * 0.75), stochast.get_u_from_x(9.0), delta=margin)
+
+    def test_conditional(self):
+
+        stochast = Stochast()
+        stochast.distribution = DistributionType.normal
+        stochast.mean = 0
+        stochast.deviation = 1
+
+        self.assertAlmostEqual(1.0, stochast.get_x_from_u(1.0), delta=margin)
+        
+        stochast.conditional = True
+
+        conditional1 = ConditionalValue()
+        conditional1.x = 0
+        conditional1.location = 0
+        conditional1.scale = 1
+        stochast.conditional_values.append(conditional1)
+
+        conditional2 = ConditionalValue()
+        conditional2.x = 1
+        conditional2.location = 1
+        conditional2.scale = 2
+        stochast.conditional_values.append(conditional2)
+
+        self.assertAlmostEqual(2.0, stochast.get_x_from_u_and_source(1.0, 0.5), delta=margin)
+
+    def test_conditional_from_mean_values(self):
+
+        stochast = Stochast()
+        stochast.distribution = DistributionType.normal
+        stochast.mean = 0
+        stochast.deviation = 1
+
+        self.assertAlmostEqual(1.0, stochast.get_x_from_u(1.0), delta=margin)
+        
+        stochast.conditional = True
+
+        conditional1 = ConditionalValue()
+        conditional1.x = 0
+        conditional1.mean = 0
+        conditional1.deviation = 1
+        stochast.conditional_values.append(conditional1)
+
+        conditional2 = ConditionalValue()
+        conditional2.x = 1
+        conditional2.mean = 1
+        conditional2.deviation = 2
+        stochast.conditional_values.append(conditional2)
+
+        self.assertAlmostEqual(2.0, stochast.get_x_from_u_and_source(1.0, 0.5), delta=margin)
+
+    def test_design_value(self):
+
+        stochast = Stochast()
+        stochast.distribution = DistributionType.normal
+        stochast.mean = 10
+        stochast.deviation = 2
+
+        self.assertAlmostEqual(10.0, stochast.design_value, delta=margin)
+
+        stochast.design_factor = 2;
+        stochast.design_quantile = StandardNormal.get_p_from_u(2);
+
+        self.assertAlmostEqual((10 + 2*2) /2.0, stochast.design_value, delta=margin)
+
+        stochast.design_value = (15 + 2 * 3) / 2.0
+
+        self.assertAlmostEqual(15, stochast.mean, delta=margin)
+        self.assertAlmostEqual(3, stochast.deviation, delta=margin)
+
+    def test_variation_coefficient(self):
+
+        stochast = Stochast()
+        stochast.distribution = DistributionType.normal
+        stochast.mean = 10
+        stochast.variation = 0.1
+
+        self.assertAlmostEqual(1.0, stochast.deviation, delta=margin)
+
+        # variation is kept constant
+        stochast.mean = 20
+
+        self.assertAlmostEqual(0.1, stochast.variation, delta=margin)
+        self.assertAlmostEqual(2.0, stochast.deviation, delta=margin)
+
+        # deviation is kept constant
+        stochast.deviation = 4
+
+        self.assertAlmostEqual(0.2, stochast.variation, delta=margin)
+        self.assertAlmostEqual(4.0, stochast.deviation, delta=margin)
+
+        stochast.mean = 10
+
+        self.assertAlmostEqual(0.4, stochast.variation, delta=margin)
+        self.assertAlmostEqual(4.0, stochast.deviation, delta=margin)
 
     def test_return_time(self):
         for i in range(6):
