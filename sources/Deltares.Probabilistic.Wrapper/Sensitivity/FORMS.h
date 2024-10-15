@@ -20,31 +20,41 @@
 // All rights reserved.
 //
 #pragma once
-#include "CrudeMonteCarloSettingsS.h"
+
+#include "FORMSettingsS.h"
 #include "SensitivityMethod.h"
+#include "../../Deltares.Probabilistic/Sensitivity/FORMS.h"
 
 namespace Deltares
 {
     namespace Sensitivity
     {
-        /**
-         * \brief Calculates the sensitivity using the Crude Monte Carlo algorithm
-         */
-        class CrudeMonteCarloS : public SensitivityMethod
+        namespace Wrappers
         {
-        public:
-            /**
-             * \brief Settings for this algorithm
-             */
-            std::shared_ptr<CrudeMonteCarloSettingsS> Settings = std::make_shared<CrudeMonteCarloSettingsS>();
+            public ref class FORMS : public SensitivityMethod
+            {
+            private:
+                Utils::Wrappers::SharedPointerProvider<Sensitivity::FORMS>* shared = new Utils::Wrappers::SharedPointerProvider(new Sensitivity::FORMS());
+            public:
+                FORMS() { }
+                ~FORMS() { this->!FORMS(); }
+                !FORMS() { delete shared; }
 
-            /**
-             * \brief Gets the sensitivity
-             * \param modelRunner The model for which the sensitivity is calculated
-             * \return The sensitivity in the form of a stochastic variable
-             */
-            std::shared_ptr<Statistics::Stochast> getStochast(std::shared_ptr<Models::ModelRunner> modelRunner) override;
-        };
+                FORMSettingsS^ Settings = gcnew FORMSettingsS();
+
+                System::Object^ GetSettings() override { return Settings; }
+
+                bool IsValid() override { return Settings->IsValid(); }
+
+                std::shared_ptr<Sensitivity::SensitivityMethod> GetNativeSensitivityMethod() override
+                {
+                    shared->object->Settings = Settings->GetSettings();
+                    return shared->object;
+                }
+            };
+        }
     }
 }
+
+
 

@@ -19,32 +19,39 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#pragma once
-#include "CrudeMonteCarloSettingsS.h"
-#include "SensitivityMethod.h"
+#include "FORMS.h"
+#include <vector>
+#include <cmath>
+#include <memory>
+
+#include "../Math/NumericSupport.h"
+#include "../Model/Sample.h"
+#include "../Model/GradientCalculator.h"
+#include "../Statistics/DistributionType.h"
+
+using namespace Deltares::Models;
 
 namespace Deltares
 {
     namespace Sensitivity
     {
-        /**
-         * \brief Calculates the sensitivity using the Crude Monte Carlo algorithm
-         */
-        class CrudeMonteCarloS : public SensitivityMethod
+        std::shared_ptr<Statistics::Stochast> FORMS::getStochast(std::shared_ptr<Models::ModelRunner> modelRunner)
         {
-        public:
-            /**
-             * \brief Settings for this algorithm
-             */
-            std::shared_ptr<CrudeMonteCarloSettingsS> Settings = std::make_shared<CrudeMonteCarloSettingsS>();
+            int nStochasts = modelRunner->getVaryingStochastCount();
 
-            /**
-             * \brief Gets the sensitivity
-             * \param modelRunner The model for which the sensitivity is calculated
-             * \return The sensitivity in the form of a stochastic variable
-             */
-            std::shared_ptr<Statistics::Stochast> getStochast(std::shared_ptr<Models::ModelRunner> modelRunner) override;
-        };
+            std::shared_ptr<Models::GradientCalculator> gradientCalculator = std::make_shared<GradientCalculator>();
+            gradientCalculator->Settings = std::make_shared<GradientSettings>();
+            gradientCalculator->Settings->StepSize = Settings->StepSize;
+            gradientCalculator->Settings->gradientType = GradientType::OneDirection;
+
+            std::shared_ptr<Sample> zeroSample = std::make_shared<Sample>(nStochasts);
+
+            double z0 = modelRunner->getZValue(zeroSample);
+
+            return nullptr;
+        }
     }
 }
+
+
 

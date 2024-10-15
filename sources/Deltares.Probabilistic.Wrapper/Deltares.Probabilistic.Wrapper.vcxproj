@@ -160,7 +160,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Sensitivity\FORMS.h" />
+    <ClInclude Include="Sensitivity\DirectionalSamplingS.h" />
+    <ClInclude Include="Sensitivity\FORMSettingsS.h" />
+    <ClInclude Include="Sensitivity\DirectionalSamplingSettingsS.h" />
+    <ClInclude Include="Sensitivity\NumericalIntegrationSettingsS.h" />
+    <ClInclude Include="Sensitivity\NumericalIntegrationS.h" />
     <ClInclude Include="Model\BaseStochastPoint.h" />
+    <ClInclude Include="Sensitivity\FOSM.h" />
+    <ClInclude Include="Sensitivity\FOSMSettings.h" />
     <ClInclude Include="Sensitivity\ImportanceSamplingS.h" />
     <ClInclude Include="Sensitivity\ImportanceSamplingSettingsS.h" />
     <ClInclude Include="Sensitivity\CrudeMonteCarloS.h" />
@@ -226,7 +234,12 @@
     <ClInclude Include="Statistics\VariableStochastValue.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Sensitivity\FORMSettingsS.cpp" />
+    <ClCompile Include="Sensitivity\DirectionalSamplingSettingsS.cpp" />
+    <ClCompile Include="Sensitivity\NumericalIntegrationSettingsS.cpp" />
     <ClCompile Include="Model\BaseStochastPoint.cpp" />
+    <ClCompile Include="Sensitivity\FOSM.cpp" />
+    <ClCompile Include="Sensitivity\FOSMSettings.cpp" />
     <ClCompile Include="Sensitivity\ImportanceSamplingS.cpp" />
     <ClCompile Include="Sensitivity\CrudeMonteCarloS.cpp" />
     <ClCompile Include="Sensitivity\SensitivityProject.cpp" />

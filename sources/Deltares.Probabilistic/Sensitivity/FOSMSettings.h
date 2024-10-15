@@ -20,30 +20,45 @@
 // All rights reserved.
 //
 #pragma once
-#include "CrudeMonteCarloSettingsS.h"
-#include "SensitivityMethod.h"
+
+#include "../Model/RunSettings.h"
+#include <memory>
 
 namespace Deltares
 {
     namespace Sensitivity
     {
-        /**
-         * \brief Calculates the sensitivity using the Crude Monte Carlo algorithm
-         */
-        class CrudeMonteCarloS : public SensitivityMethod
+        class FOSMSettings
         {
         public:
             /**
-             * \brief Settings for this algorithm
+             * \brief Indicates whether correlations should be calculated
              */
-            std::shared_ptr<CrudeMonteCarloSettingsS> Settings = std::make_shared<CrudeMonteCarloSettingsS>();
+            bool CalculateCorrelations = false;
 
             /**
-             * \brief Gets the sensitivity
-             * \param modelRunner The model for which the sensitivity is calculated
-             * \return The sensitivity in the form of a stochastic variable
+             * \brief Indicates whether correlations with input values should be calculated
              */
-            std::shared_ptr<Statistics::Stochast> getStochast(std::shared_ptr<Models::ModelRunner> modelRunner) override;
+            bool CalculateInputCorrelations = false;
+
+            /**
+             * \brief The step size to calculate the gradient
+             */
+            double StepSize = 0.01;
+
+            /**
+             * \brief Settings for performing model runs
+             */
+            std::shared_ptr<Models::RunSettings> RunSettings = std::make_shared<Models::RunSettings>();
+
+            /**
+             * \brief Indicates whether the settings have valid values
+             * \return Indication
+             */
+            bool isValid()
+            {
+                return StepSize >= 0.001;
+            }
         };
     }
 }

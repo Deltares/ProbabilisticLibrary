@@ -20,7 +20,7 @@
 // All rights reserved.
 //
 #pragma once
-#include "CrudeMonteCarloSettingsS.h"
+#include "FOSMSettings.h"
 #include "SensitivityMethod.h"
 
 namespace Deltares
@@ -30,13 +30,13 @@ namespace Deltares
         /**
          * \brief Calculates the sensitivity using the Crude Monte Carlo algorithm
          */
-        class CrudeMonteCarloS : public SensitivityMethod
+        class FOSM : public SensitivityMethod
         {
         public:
             /**
              * \brief Settings for this algorithm
              */
-            std::shared_ptr<CrudeMonteCarloSettingsS> Settings = std::make_shared<CrudeMonteCarloSettingsS>();
+            std::shared_ptr<FOSMSettings> Settings = std::make_shared<FOSMSettings>();
 
             /**
              * \brief Gets the sensitivity

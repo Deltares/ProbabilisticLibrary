@@ -20,31 +20,41 @@
 // All rights reserved.
 //
 #pragma once
-#include "CrudeMonteCarloSettingsS.h"
+
+#include "FOSMSettings.h"
 #include "SensitivityMethod.h"
+#include "../../Deltares.Probabilistic/Sensitivity/FOSM.h"
 
 namespace Deltares
 {
     namespace Sensitivity
     {
-        /**
-         * \brief Calculates the sensitivity using the Crude Monte Carlo algorithm
-         */
-        class CrudeMonteCarloS : public SensitivityMethod
+        namespace Wrappers
         {
-        public:
-            /**
-             * \brief Settings for this algorithm
-             */
-            std::shared_ptr<CrudeMonteCarloSettingsS> Settings = std::make_shared<CrudeMonteCarloSettingsS>();
+            public ref class FOSM : public SensitivityMethod
+            {
+            private:
+                Utils::Wrappers::SharedPointerProvider<Sensitivity::FOSM>* shared = new Utils::Wrappers::SharedPointerProvider(new Sensitivity::FOSM());
+            public:
+                FOSM() { }
+                ~FOSM() { this->!FOSM(); }
+                !FOSM() { delete shared; }
 
-            /**
-             * \brief Gets the sensitivity
-             * \param modelRunner The model for which the sensitivity is calculated
-             * \return The sensitivity in the form of a stochastic variable
-             */
-            std::shared_ptr<Statistics::Stochast> getStochast(std::shared_ptr<Models::ModelRunner> modelRunner) override;
-        };
+                FOSMSettings^ Settings = gcnew FOSMSettings();
+
+                System::Object^ GetSettings() override { return Settings; }
+
+                bool IsValid() override { return Settings->IsValid(); }
+
+                std::shared_ptr<Sensitivity::SensitivityMethod> GetNativeSensitivityMethod() override
+                {
+                    shared->object->Settings = Settings->GetSettings();
+                    return shared->object;
+                }
+            };
+        }
     }
 }
+
+
 
