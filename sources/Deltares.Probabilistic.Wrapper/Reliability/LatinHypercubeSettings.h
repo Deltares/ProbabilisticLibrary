@@ -22,6 +22,7 @@
 #pragma once
 
 #include "../../Deltares.Probabilistic/Reliability/LatinHyperCubeSettings.h"
+#include "../Model/RandomSettings.h"
 #include "../Model/RunSettings.h"
 #include "../Reliability/StartPointCalculatorSettings.h"
 #include "../Reliability/StochastSettings.h"
@@ -42,6 +43,7 @@ namespace Deltares
             {
             private:
                 SharedPointerProvider<Reliability::LatinHyperCubeSettings>* shared = new SharedPointerProvider(new Reliability::LatinHyperCubeSettings());
+                Wrappers::RandomSettings^ randomSettings = gcnew Wrappers::RandomSettings();
                 Wrappers::RunSettings^ runSettings = gcnew Wrappers::RunSettings();
             public:
                 LatinHypercubeSettings()
@@ -51,6 +53,12 @@ namespace Deltares
 
                 ~LatinHypercubeSettings() { this->!LatinHypercubeSettings(); }
                 !LatinHypercubeSettings() { delete shared; }
+
+                property int MinimumSamples
+                {
+                    int get() { return shared->object->MinimumSamples; }
+                    void set(int value) { shared->object->MinimumSamples = value; }
+                }
 
                 property Wrappers::DesignPointMethod DesignPointMethod
                 {
@@ -74,6 +82,12 @@ namespace Deltares
                         default: throw gcnew System::NotSupportedException("Design point method");
                         }
                     }
+                }
+
+                virtual property Wrappers::RandomSettings^ RandomSettings
+                {
+                    Wrappers::RandomSettings^ get() { return randomSettings; }
+                    void set(Wrappers::RandomSettings^ value) { randomSettings = value; }
                 }
 
                 virtual property Wrappers::RunSettings^ RunSettings

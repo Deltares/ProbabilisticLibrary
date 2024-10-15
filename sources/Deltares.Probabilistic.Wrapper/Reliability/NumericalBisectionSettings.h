@@ -52,6 +52,24 @@ namespace Deltares
                 ~NumericalBisectionSettings() { this->!NumericalBisectionSettings(); }
                 !NumericalBisectionSettings() { delete shared; }
 
+                property double EpsilonBeta
+                {
+                    double get() { return shared->object->EpsilonBeta; }
+                    void set(double value) { shared->object->EpsilonBeta = value; }
+                }
+
+                property int MinimumIterations
+                {
+                    int get() { return shared->object->MinimumIterations; }
+                    void set(int value) { shared->object->MinimumIterations = value; }
+                }
+
+                property int MaximumIterations
+                {
+                    int get() { return shared->object->MaximumIterations; }
+                    void set(int value) { shared->object->MaximumIterations = value; }
+                }
+
                 property Wrappers::DesignPointMethod DesignPointMethod
                 {
                     Wrappers::DesignPointMethod get()
