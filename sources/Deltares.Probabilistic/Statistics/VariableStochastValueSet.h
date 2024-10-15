@@ -30,13 +30,46 @@ namespace Deltares
 {
     namespace Statistics
     {
+        /**
+          * \brief Produces an interpolated stochast based on a number of conditional values
+          */
         class VariableStochastValuesSet
         {
         public:
+            /**
+              * \brief Collection of conditional values
+              */
             std::vector<std::shared_ptr<VariableStochastValue>> StochastValues;
-            void initializeForRun();
+
+            void getMergedStochast(std::shared_ptr<StochastProperties> defaultStochast,
+                                   std::shared_ptr<Distribution> distribution,
+                                   std::shared_ptr<VariableStochastValue> value,
+                                   std::shared_ptr<StochastProperties>& source);
+            /**
+              * \brief Prepares this class for running
+              */
+            void initializeForRun(std::shared_ptr<StochastProperties> defaultStochast, DistributionType distributionType, bool truncated, bool inverted);
+
+            /**
+              * \brief Gets the interpolated stochast at a given x-value
+              * \param x The value at which the interpolated stochast is generated
+              * \return Interpolated stochast
+              */
             std::shared_ptr<StochastProperties> getInterpolatedStochast(double x);
-            bool isVarying(DistributionType distributionType);
+
+            /**
+              * \brief Indicates whether an interpolated stochast can lead to different x values
+              * \param distributionType distribution type
+              * \param defaultStochast default stochast
+              * \return Indication
+              */
+            bool isVarying(DistributionType distributionType, std::shared_ptr<StochastProperties> defaultStochast = nullptr);
+
+            /**
+              * \brief Makes a deep copy of a source
+              * \param source Source
+              * \return Copy
+              */
             void copyFrom(std::shared_ptr<VariableStochastValuesSet> source);
         private:
             std::vector<double> xValues;

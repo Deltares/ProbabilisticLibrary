@@ -47,6 +47,7 @@ namespace Deltares
 
             bool inverted = false;
             bool truncated = false;
+            double lastVariation = 0;
 
         protected:
             std::shared_ptr<Distribution> distribution = std::make_shared<DeterministicDistribution>();
@@ -81,7 +82,7 @@ namespace Deltares
              * \brief Gets the stochastic properties
              * \return Object containing the stochastic properties
              */
-            std::shared_ptr<StochastProperties> getProperties()    { return properties; }
+            std::shared_ptr<StochastProperties> getProperties() { return properties; }
 
             /**
              * \brief Gets the Probability Density Function (PDF) for a given x-value
@@ -232,7 +233,7 @@ namespace Deltares
             /**
              * \brief Sets the standard deviation of a stochast
              * \remark This will lead to a modification of the stochast parameters, such as the scale. The mean value will not be changed.
-             * \param deviation Mean value
+             * \param deviation Standard deviation
              */
             void setDeviation(double deviation);
 
@@ -243,6 +244,25 @@ namespace Deltares
              * \param deviation Given standard deviation
              */
             void setMeanAndDeviation(double mean, double deviation);
+
+            /**
+             * \brief Gets the variation coefficient of a stochast
+             * \return Variation coefficient
+             */
+            double getVariation();
+
+            /**
+             * \brief Sets the variation coefficient of a stochast
+             * \remark This will lead to a modification of the stochast parameters, such as the scale. The mean value will not be changed.
+             * \param variation Variation coefficient
+             */
+            void setVariation(double variation);
+
+            /**
+             * \brief Indicates which parameter should be kept constant when the mean value is changed (by setMean())
+             * \return Constant parameter type
+             */
+            ConstantParameterType constantParameterType = ConstantParameterType::Deviation;
 
             /**
              * \brief Sets the shift value of a stochast
@@ -279,6 +299,12 @@ namespace Deltares
              * \brief Fits the distribution properties from the histogram values in the properties
              */
             void fitFromHistogramValues();
+
+            /**
+             * \brief Calculates the Kolmogorov-Smirnov statistic, which is an indication how well data correspond with the stochast (0 = perfect, 1 = no correspondence at all)
+             * \return Kolmogorov-Smirnov statistic
+             */
+            double getKSTest(std::vector<double> values);
 
             /**
              * \brief Gets a number of interesting x-values
@@ -321,6 +347,26 @@ namespace Deltares
             std::shared_ptr<VariableStochastValuesSet> ValueSet = std::make_shared<VariableStochastValuesSet>();
 
             /**
+             * \brief The design factor used for calculating the design value
+             */
+            double designFactor = 1.0;
+
+            /**
+             * \brief The design fraction used for calculating the design value
+             */
+            double designQuantile = 0.5;
+
+            /**
+             * \brief Calculates the design value
+             */
+            double getDesignValue();
+
+            /**
+             * \brief Updates the stochast properties by setting the design value
+             */
+            void setDesignValue(double designValue);
+
+            /**
              * \brief Indicates that internally an update should take place before other methods are invoked
              */
             void SetDirty() const;
@@ -330,6 +376,8 @@ namespace Deltares
              */
             void copyFrom(std::shared_ptr<Stochast> source);
 
+            static Statistics::ConstantParameterType getConstantParameterType(std::string distributionType);
+            static std::string getConstantParameterTypeString(Statistics::ConstantParameterType distributionType);
             static Statistics::DistributionType getDistributionType(std::string distributionType);
             static std::string getDistributionTypeString(Statistics::DistributionType distributionType);
         };

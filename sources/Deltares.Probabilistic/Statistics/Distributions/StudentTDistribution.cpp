@@ -122,10 +122,17 @@ namespace Deltares
 
         void StudentTDistribution::setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
         {
-            double current = getXFromU(stochast, u);
-            double diff = x - current;
+            if (constantType == ConstantParameterType::Deviation)
+            {
+                double current = getXFromU(stochast, u);
+                double diff = x - current;
 
-            stochast->Location += diff;
+                stochast->Location += diff;
+            }
+            else if (constantType == ConstantParameterType::VariationCoefficient)
+            {
+                this->setXAtUByIteration(stochast, x, u, constantType);
+            }
         }
 
         double StudentTDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)
@@ -159,7 +166,7 @@ namespace Deltares
 
             std::vector<double> weights = NumericSupport::select(values, [](double x) {return 1.0; });
 
-            int nu =  static_cast<int>(values.size()) - 1;
+            int nu = static_cast<int>(values.size()) - 1;
 
             double prevSigma2 = 0;
             int count = 0;
@@ -169,7 +176,7 @@ namespace Deltares
                 // EM algorithm
                 // https://stats.stackexchange.com/questions/63647/estimating-parameters-of-students-t-distribution
 
-                double mean = NumericSupport::getWeightedMean (values, weights);
+                double mean = NumericSupport::getWeightedMean(values, weights);
 
                 std::vector<double> sigma2Values = NumericSupport::zip(values, weights, [mean](double xx, double ww)
                 {
@@ -178,7 +185,7 @@ namespace Deltares
 
                 double sigma2 = NumericSupport::sum(sigma2Values) / stochast->Observations;
 
-                weights = NumericSupport::select(values, [nu, sigma2, mean] (double xx)
+                weights = NumericSupport::select(values, [nu, sigma2, mean](double xx)
                 {
                     return (nu + 1) * sigma2 / (nu * sigma2 + (xx - mean) * (xx - mean));
                 });

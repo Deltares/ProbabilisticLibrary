@@ -39,7 +39,10 @@ namespace Deltares
                 void testConditionalWeibullMeanDeviation();
                 void testConditionalWeibullCdfPdf();
                 void testConditionalWeibullCdfPdf2();
+                void testConditionalStochast();
+                void testDesignValue();
                 double getPdfNumerical(Deltares::Statistics::Stochast& s, const double x);
+
                 const double margin = 1e-9;
             };
         }

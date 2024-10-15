@@ -485,6 +485,7 @@
     <ClCompile Include="Statistics\Distributions\ConditionalWeibullDistribution.cpp" />
     <ClCompile Include="Math\WeightedValue.cpp" />
     <ClCompile Include="Model\ZValueConverter.cpp" />
+    <ClCompile Include="Statistics\VariableStochastValue.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

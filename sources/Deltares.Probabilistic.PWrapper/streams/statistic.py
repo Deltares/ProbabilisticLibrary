@@ -27,6 +27,18 @@ from . import interface
 if not interface.IsLibraryLoaded():
 	interface.LoadDefaultLibrary()
 
+class ConstantParameterType(Enum):
+	deviation = 'deviation'
+	variation = 'variation'
+	def __str__(self):
+		return str(self.value)
+
+class VariableType(Enum):
+	properties = 'properties'
+	mean_and_deviation = 'mean_and_deviation'
+	def __str__(self):
+		return str(self.value)
+
 class DistributionType(Enum):
 	deterministic = 'deterministic'
 	normal = 'normal'
@@ -120,6 +132,9 @@ class Stochast:
 		self._histogram_values = None
 		self._fragility_values = None
 		self._contributing_stochasts = None
+		self._conditional_values = None
+		self._conditional_source = None
+		self._variables = FrozenList() # other known variables, to which a reference can exist
 		self._synchronizing = False
 
 	def __del__(self):
@@ -147,21 +162,28 @@ class Stochast:
 				'histogram_values',
 				'fragility_values',
 				'contributing_stochasts',
-				'fit',
 				'copy_from',
+				'fit',
+				'get_ks_test',
 				'get_quantile',
 				'get_x_from_u',
 				'get_u_from_x',
+				'conditional',
+				'conditional_source',
+				'conditional_values'
 				'design_factor',
 				'design_fraction',
 				'design_value']
 
+	def _set_variables(self, variables):
+		self._variables = variables
+		
 	@property
 	def name(self):
 		return interface.GetStringValue(self._id, 'name')
 
 	@name.setter
-	def name(self, value):
+	def name(self, value : str):
 		interface.SetStringValue(self._id, 'name', value)
 
 	def __str__(self):
@@ -205,6 +227,7 @@ class Stochast:
 
 	@deviation.setter
 	def deviation(self, value : float):
+		interface.SetStringValue(self._id, 'constant_parameter', str(ConstantParameterType.deviation))
 		interface.SetValue(self._id, 'deviation', value)
 
 	@property
@@ -213,6 +236,7 @@ class Stochast:
 
 	@variation.setter
 	def variation(self, value : float):
+		interface.SetStringValue(self._id, 'constant_parameter', str(ConstantParameterType.variation))
 		interface.SetValue(self._id, 'variation', value)
 
 	@property
@@ -360,12 +384,55 @@ class Stochast:
 			interface.SetArrayIntValue(self._id, 'contributing_stochasts', [contributing_stochast._id for contributing_stochast in self._contributing_stochasts])
 
 	@property
-	def design_fraction(self):
-		return interface.GetValue(self._id, 'design_fraction')
+	def conditional(self):
+		return interface.GetBoolValue(self._id, 'conditional')
 
-	@design_fraction.setter
-	def design_fraction(self, value):
-		interface.SetValue(self._id, 'design_fraction', value)
+	@conditional.setter
+	def conditional(self, value : bool):
+		interface.SetBoolValue(self._id, 'conditional', value)
+
+	@property
+	def conditional_source(self):
+		cs_id = interface.GetIntValue(self._id, 'conditional_source')
+		if cs_id > 0:
+			if self._conditional_source is None or not self._conditional_source._id == cs_id:
+				for var in self._variables:
+					if var._id == cs_id:
+						self._conditional_source = var
+			return self._conditional_source
+		else:
+			return None
+
+	@conditional_source.setter
+	def conditional_source(self, value):
+		if type(value) == str:
+			value = self._variables[value]
+		if isinstance(value, Stochast):
+			interface.SetIntValue(self._id, 'conditional_source', value._id)
+
+	@property
+	def conditional_values(self):
+		if self._conditional_values is None:
+			self._synchronizing = True
+			self._conditional_values = CallbackList(self._conditional_values_changed)
+			conditional_value_ids = interface.GetArrayIntValue(self._id, 'conditional_values')
+			for conditional_value_id in conditional_value_ids:
+				self._conditional_values.append(ConditionalValue(conditional_value_id))
+			self._synchronizing = False
+
+		return self._conditional_values
+
+	def _conditional_values_changed(self):
+		if not self._synchronizing:
+			interface.SetArrayIntValue(self._id, 'conditional_values', [conditional_value._id for conditional_value in self._conditional_values])
+
+	@property
+	def design_quantile(self):
+		return interface.GetValue(self._id, 'design_quantile')
+
+	@design_quantile.setter
+	def design_quantile(self, value):
+		interface.SetValue(self._id, 'design_quantile', value)
 
 	@property
 	def design_factor(self):
@@ -392,19 +459,31 @@ class Stochast:
 	def get_u_from_x(self, x : float):
 		return interface.GetArgValue(self._id, 'u_from_x', x)
 
+	def get_x_from_u_and_source(self, u : float, x: float):
+		interface.SetArrayValue(self._id, 'u_and_x', [u, x])
+		interface.Execute(self._id, 'initialize_conditional_values');
+		return interface.GetValue(self._id, 'x_from_u_and_source')
+
 	def fit(self, values):
 		interface.SetArrayValue(self._id, 'fit', values)
 		self._histogram_values = None
 		self._discrete_values = None
 		self._fragility_values = None
 
+	def get_ks_test(self, values):
+		interface.SetArrayValue(self._id, 'data', values)
+		return interface.GetValue(self._id, 'ks_test')
+
 	def copy_from(self, source):
+		if type(source) == str:
+			source = self._variables[source]
 		if source is Stochast:
 			interface.SetIntValue(self._id, 'copy_from', source._id)
 			self._histogram_values = None
 			self._discrete_values = None
 			self._fragility_values = None
 			self._contributing_stochasts = None
+			self._conditional_values = None
 
 
 class DiscreteValue:
@@ -609,6 +688,127 @@ class ContributingStochast:
 		self._variable = value
 		if not self._variable is None:
 			interface.SetIntValue(self._id, 'variable',  self._variable._id)
+
+class ConditionalValue:
+
+	def __init__(self, id = None):
+		if id is None:
+			self._id = interface.Create('conditional_value')
+		else:
+			self._id = id
+
+	def __del__(self):
+		interface.Destroy(self._id)
+
+	def __dir__(self):
+		return ['x',
+	            'mean',
+	            'deviation',
+				'location',
+				'scale',
+				'shift',
+				'shift_b',
+				'shape',
+				'shape_b',
+				'observations',
+				'minimum',
+				'maximum']
+
+	@property
+	def x(self):
+		return interface.GetValue(self._id, 'x')
+
+	@x.setter
+	def x(self, value : float):
+		interface.SetValue(self._id, 'x',  value)
+
+	@property
+	def mean(self):
+		return interface.GetValue(self._id, 'mean')
+
+	@mean.setter
+	def mean(self, value : float):
+		interface.SetValue(self._id, 'mean', value)
+
+	@property
+	def deviation(self):
+		return interface.GetValue(self._id, 'deviation')
+
+	@deviation.setter
+	def deviation(self, value : float):
+		interface.SetValue(self._id, 'deviation', value)
+
+	@property
+	def location(self):
+		return interface.GetValue(self._id, 'location')
+
+	@location.setter
+	def location(self, value : float):
+		interface.SetValue(self._id, 'location', value)
+
+	@property
+	def scale(self):
+		return interface.GetValue(self._id, 'scale')
+
+	@scale.setter
+	def scale(self, value : float):
+		interface.SetValue(self._id, 'scale', value)
+
+	@property
+	def shift(self):
+		return interface.GetValue(self._id, 'shift')
+
+	@shift.setter
+	def shift(self, value : float):
+		interface.SetValue(self._id, 'shift', value)
+
+	@property
+	def shift_b(self):
+		return interface.GetValue(self._id, 'shift_b')
+
+	@shift_b.setter
+	def shift_b(self, value):
+		interface.SetValue(self._id, 'shift_b', value)
+
+	@property
+	def minimum(self):
+		return interface.GetValue(self._id, 'minimum')
+
+	@minimum.setter
+	def minimum(self, value : float):
+		interface.SetValue(self._id, 'minimum', value)
+
+	@property
+	def maximum(self):
+		return interface.GetValue(self._id, 'maximum')
+
+	@maximum.setter
+	def maximum(self, value : float):
+		interface.SetValue(self._id, 'maximum', value)
+
+	@property
+	def shape(self):
+		return interface.GetValue(self._id, 'shape')
+
+	@shape.setter
+	def shape(self, value):
+		interface.SetValue(self._id, 'shape', value)
+
+	@property
+	def shape_b(self):
+		return interface.GetValue(self._id, 'shape_b')
+
+	@shape_b.setter
+	def shape_b(self, value : float):
+		interface.SetValue(self._id, 'shape_b', value)
+
+	@property
+	def observations(self):
+		return interface.GetIntValue(self._id, 'observations')
+
+	@observations.setter
+	def observations(self, value : int):
+		interface.SetIntValue(self._id, 'observations', value)
 
 class CorrelationMatrix:
 
