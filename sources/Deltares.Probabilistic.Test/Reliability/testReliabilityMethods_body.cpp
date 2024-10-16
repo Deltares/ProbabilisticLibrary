@@ -44,17 +44,22 @@ namespace Deltares
 
             void testReliabilityMethods::testLatinHyperCube() const
             {
-                auto calculator = LatinHyperCube();
-                calculator.Settings->randomSettings->RandomGeneratorType = Numeric::MersenneTwister;
+                const auto chunckSizes = std::vector<int>({ 1, 15, 2000 });
+                for(const auto& chunkSize : chunckSizes)
+                {
+                    auto calculator = LatinHyperCube();
+                    calculator.Settings->randomSettings->RandomGeneratorType = Numeric::MersenneTwister;
+                    calculator.Settings->RunSettings->MaxChunkSize = chunkSize;
 
-                auto modelRunner = projectBuilder().BuildProject();
+                    auto modelRunner = projectBuilder().BuildProject();
 
-                auto designPoint = calculator.getDesignPoint(modelRunner);
+                    auto designPoint = calculator.getDesignPoint(modelRunner);
 
-                ASSERT_EQ(designPoint->Alphas.size(), 2);
-                EXPECT_NEAR(designPoint->Beta, 1.8250068211, margin);
-                EXPECT_NEAR(designPoint->Alphas[0]->Alpha, -0.5644677927, margin);
-                EXPECT_NEAR(designPoint->Alphas[1]->Alpha, 0.8254550932, margin);
+                    ASSERT_EQ(designPoint->Alphas.size(), 2);
+                    EXPECT_NEAR(designPoint->Beta, 1.8250068211, 1e-4);
+                    EXPECT_NEAR(designPoint->Alphas[0]->X, 1.27313, 1e-4);
+                    EXPECT_NEAR(designPoint->Alphas[1]->X, -1.30758, 1e-4);
+                }
             }
 
             void testReliabilityMethods::testNumericalBisection() const

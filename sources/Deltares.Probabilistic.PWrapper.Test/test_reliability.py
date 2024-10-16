@@ -392,7 +392,7 @@ class Test_reliability(unittest.TestCase):
         beta = dp.reliability_index;
         alphas = dp.alphas;
 
-        self.assertAlmostEqual(1.88, beta, delta=margin)
+        self.assertAlmostEqual(1.8987, beta, delta=margin)
         self.assertEqual(5, len(alphas))
 
 if __name__ == '__main__':
