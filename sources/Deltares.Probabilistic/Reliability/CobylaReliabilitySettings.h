@@ -24,6 +24,7 @@
 #include "StartPointCalculatorSettings.h"
 #include "StochastSettingsSet.h"
 #include "../Model/RunSettings.h"
+#include "DesignPointBuilder.h"
 
 namespace Deltares
 {
@@ -45,6 +46,11 @@ namespace Deltares
              * \brief Tolerance in the Cobyla iteration
              */
             double EpsilonBeta = 0.01;
+
+            /**
+             * \brief Method type how the design point (alpha values) is calculated
+             */
+            DesignPointMethod designPointMethod = DesignPointMethod::CenterOfGravity;
 
             /**
              * \brief Settings for performing model runs

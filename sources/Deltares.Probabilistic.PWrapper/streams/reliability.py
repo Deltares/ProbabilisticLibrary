@@ -37,6 +37,7 @@ class ReliabilityMethod(Enum):
 	adaptive_importance_sampling = 'adaptive_importance_sampling'
 	directional_sampling = 'directional_sampling'
 	subset_simulation = 'subset_simulation'
+	cobyla_reliability = 'cobyla_reliability'
 	def __str__(self):
 		return str(self.value)
 

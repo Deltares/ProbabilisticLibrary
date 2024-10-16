@@ -28,6 +28,7 @@
 #include "SubsetSimulation.h"
 #include "NumericalIntegration.h"
 #include "NumericalBisection.h"
+#include "CobylaReliability.h"
 
 #include <memory>
 
@@ -47,6 +48,7 @@ namespace Deltares
             case ReliabilityMethodType::ReliabilityDirectionalSampling: return this->GetDirectionalSamplingMethod();
             case ReliabilityMethodType::ReliabilitySubsetSimulation: return this->GetSubsetSimulationMethod();
             case ReliabilityMethodType::ReliabilityNumericalBisection: return this->GetNumericalBisectionMethod();
+            case ReliabilityMethodType::ReliabilityCobyla: return this->GetCobylaReliabilityMethod();
             default: throw probLibException("Reliability method");
             }
         }
@@ -88,6 +90,19 @@ namespace Deltares
             numericalBisection->Settings->StochastSet = this->StochastSet;
 
             return numericalBisection;
+        }
+
+        // 
+        const std::shared_ptr<Reliability::ReliabilityMethod> Settings::GetCobylaReliabilityMethod()
+        {
+            auto cobyla_reliability = std::make_shared<CobylaReliability>();
+
+            cobyla_reliability->Settings->designPointMethod = this->designPointMethod;
+            cobyla_reliability->Settings->StochastSet = this->StochastSet;
+            cobyla_reliability->Settings->EpsilonBeta = this->EpsilonBeta;
+            cobyla_reliability->Settings->MaximumIterations = this->MaximumIterations;
+
+            return cobyla_reliability;
         }
 
         const std::shared_ptr<Reliability::ReliabilityMethod> Settings::GetCrudeMonteCarloMethod()
@@ -197,6 +212,7 @@ namespace Deltares
             case ReliabilityMethodType::ReliabilityAdaptiveImportanceSampling: return "adaptive_importance_sampling";
             case ReliabilityMethodType::ReliabilityDirectionalSampling: return "directional_sampling";
             case ReliabilityMethodType::ReliabilitySubsetSimulation: return "subset_simulation";
+            case ReliabilityMethodType::ReliabilityCobyla: return "cobyla_reliability";
             default: throw probLibException("Reliability method");
             }
         }
@@ -210,6 +226,7 @@ namespace Deltares
             else if (method == "adaptive_importance_sampling") return ReliabilityMethodType::ReliabilityAdaptiveImportanceSampling;
             else if (method == "directional_sampling") return ReliabilityMethodType::ReliabilityDirectionalSampling;
             else if (method == "subset_simulation") return ReliabilityMethodType::ReliabilitySubsetSimulation;
+            else if (method == "cobyla_reliability") return ReliabilityMethodType::ReliabilityCobyla;
             else throw probLibException("Reliability method");
         }
 
