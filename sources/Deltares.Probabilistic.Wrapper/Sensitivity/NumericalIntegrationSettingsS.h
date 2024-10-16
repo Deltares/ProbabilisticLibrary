@@ -57,6 +57,8 @@ namespace Deltares
                     void set(bool value) { shared->object->CalculateInputCorrelations = value; }
                 }
 
+                System::Collections::Generic::List<Reliability::Wrappers::StochastSettings^>^ StochastSettings = gcnew System::Collections::Generic::List<Reliability::Wrappers::StochastSettings^>();
+
                 virtual property Wrappers::RunSettings^ RunSettings
                 {
                     Wrappers::RunSettings^ get() { return runSettings; }
@@ -70,6 +72,12 @@ namespace Deltares
 
                 std::shared_ptr<Sensitivity::NumericalIntegrationSettingsS> GetSettings()
                 {
+                    shared->object->StochastSet->stochastSettings.clear();
+                    for (int i = 0; i < StochastSettings->Count; i++)
+                    {
+                        shared->object->StochastSet->stochastSettings.push_back(StochastSettings[i]->GetSettings());
+                    }
+
                     shared->object->RunSettings = RunSettings->GetSettings();
                     return shared->object;
                 }

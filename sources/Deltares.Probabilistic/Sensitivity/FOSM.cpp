@@ -46,21 +46,19 @@ namespace Deltares
 
             std::shared_ptr<Sample> zeroSample = std::make_shared<Sample>(nStochasts);
 
-            double z0 = modelRunner->getZValue(zeroSample);
             std::vector<double> gradient = gradientCalculator->getGradient(modelRunner, zeroSample);
             double length = Numeric::NumericSupport::GetLength(gradient);
+            double z0 = zeroSample->Z;
 
             // disturb slightly if no gradient found
             if (length < 1E-6)
             {
                 std::shared_ptr<Sample>  disturbedSample = std::make_shared<Sample>(Numeric::NumericSupport::select(zeroSample->Values, [](double p) { return 0.001; }));
                 gradient = gradientCalculator->getGradient(modelRunner, disturbedSample);
-                length = Numeric::NumericSupport::GetLength(gradient);
             }
 
             std::shared_ptr<Sample> nextSample = std::make_shared<Sample>(gradient);
             nextSample = nextSample->getNormalizedSample();
-
             double z1 = modelRunner->getZValue(nextSample);
 
             if (this->correlationMatrixBuilder->isEmpty() && this->Settings->CalculateCorrelations && this->Settings->CalculateInputCorrelations)
