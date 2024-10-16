@@ -52,8 +52,8 @@ namespace Deltares
             std::vector<std::unordered_map<std::string,std::shared_ptr<IntegrationLine>>> LinesSet;
             std::shared_ptr<IntegrationPoint> GetIntegrationPoint(std::vector<double>& coordinates);
             void AddPoint(std::shared_ptr<IntegrationPoint> point);
-            int getDimension() const { return Dimension; }
-            std::vector<std::vector<int>> getSplit() const { return split; }
+            inline int getDimension() const { return Dimension; }
+            inline std::vector<std::vector<int>> getSplit() const { return split; }
         private:
             std::vector<std::vector<int>> split;
             int Dimension;
@@ -69,11 +69,11 @@ namespace Deltares
             void deriveByExtrapolation();
             void derive();
             std::vector<double> Coordinates;
-            Numeric::DoubleType getResult() const { return Numeric::NumericSupport::getDoubleType(ZValue); };
+            inline Numeric::DoubleType getResult() const { return Numeric::NumericSupport::getDoubleType(ZValue); };
             std::vector<std::shared_ptr<IntegrationLine>> Lines;
-            void setKnown(const bool b) { Known = b; }
-            bool getKnown() const { return Known; }
-            void setZValue(const double z) { ZValue = z; }
+            inline void setKnown(const bool b) { Known = b; }
+            inline bool getKnown() const { return Known; }
+            inline void setZValue(const double z) { ZValue = z; }
         private:
             bool Known = false;
         };
@@ -116,7 +116,7 @@ namespace Deltares
             bool HasPreviousKnownPoint(std::shared_ptr<IntegrationPoint> point, const Numeric::DoubleType r);
             size_t get_index(std::shared_ptr<IntegrationPoint> point);
             size_t get_index(IntegrationPoint* point);
-            int getDimension() const { return Dimension; }
+            inline int getDimension() const { return Dimension; }
         private:
             int Dimension;
             double Origin;
