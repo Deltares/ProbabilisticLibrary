@@ -18,34 +18,5 @@
 // All names, logos, and references to "Deltares" are registered trademarks of
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
-//
-#pragma once
 
-namespace Deltares
-{
-    namespace Models
-    {
-        enum GradientType
-        {
-            OneDirection,
-            TwoDirections
-        };
-
-        class GradientSettings
-        {
-        public:
-            GradientSettings() = default;
-
-            GradientType gradientType = OneDirection;
-            double StepSize = 0.3;
-            bool OnlyInitializationAllowed = false;
-
-            bool isValid()
-            {
-                return StepSize >= 0.01;
-            }
-        };
-    }
-}
-
-
+#include "NumericalIntegrationS.h"

@@ -234,8 +234,11 @@
     <ClInclude Include="Statistics\VariableStochastValue.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Sensitivity\DirectionalSamplingS.cpp" />
+    <ClCompile Include="Sensitivity\FORMS.cpp" />
     <ClCompile Include="Sensitivity\FORMSettingsS.cpp" />
     <ClCompile Include="Sensitivity\DirectionalSamplingSettingsS.cpp" />
+    <ClCompile Include="Sensitivity\NumericalIntegrationS.cpp" />
     <ClCompile Include="Sensitivity\NumericalIntegrationSettingsS.cpp" />
     <ClCompile Include="Model\BaseStochastPoint.cpp" />
     <ClCompile Include="Sensitivity\FOSM.cpp" />

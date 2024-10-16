@@ -22,6 +22,8 @@
 #pragma once
 
 #include "../Model/RunSettings.h"
+#include "../Model/GradientSettings.h"
+#include "../Statistics/StandardNormal.h"
 #include <memory>
 
 namespace Deltares
@@ -42,9 +44,24 @@ namespace Deltares
             bool CalculateInputCorrelations = false;
 
             /**
-             * \brief The step size to calculate the gradient
+             * \brief Minimum u value from where to start calculation
              */
-            double StepSize = 0.01;
+            double Minimum = -Statistics::StandardNormal::UMax;
+
+            /**
+             * \brief Maximum u value where to stop calculation
+             */
+            double Maximum = Statistics::StandardNormal::UMax;
+
+            /**
+             * \brief Minimum u value from where to start calculation
+             */
+            double StepSize = 1.0;
+
+            /**
+              * \brief Settings for calculating the gradient at a stochast point
+              */
+            std::shared_ptr<Models::GradientSettings> GradientSettings = std::make_shared<Models::GradientSettings>();
 
             /**
              * \brief Settings for performing model runs
@@ -57,7 +74,7 @@ namespace Deltares
              */
             bool isValid()
             {
-                return StepSize >= 0.001;
+                return this->GradientSettings->isValid();
             }
         };
     }

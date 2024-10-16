@@ -23,6 +23,7 @@
 
 #include "../../Deltares.Probabilistic/Sensitivity/FORMSettingsS.h"
 #include "../Model/RunSettings.h"
+#include "../Model/GradientSettings.h"
 #include "../Reliability/StochastSettings.h"
 #include "../Utils/SharedPointerProvider.h"
 
@@ -45,16 +46,16 @@ namespace Deltares
                 ~FORMSettingsS() { this->!FORMSettingsS(); }
                 !FORMSettingsS() { delete shared; }
 
-                property bool CalculateCorrelations
+                property double Minimum
                 {
-                    bool get() { return shared->object->CalculateCorrelations; }
-                    void set(bool value) { shared->object->CalculateCorrelations = value; }
+                    double get() { return shared->object->Minimum; }
+                    void set(double value) { shared->object->Minimum = value; }
                 }
 
-                property bool CalculateInputCorrelations
+                property double Maximum
                 {
-                    bool get() { return shared->object->CalculateInputCorrelations; }
-                    void set(bool value) { shared->object->CalculateInputCorrelations = value; }
+                    double get() { return shared->object->Maximum; }
+                    void set(double value) { shared->object->Maximum = value; }
                 }
 
                 property double StepSize
@@ -63,6 +64,10 @@ namespace Deltares
                     void set(double value) { shared->object->StepSize = value; }
                 }
 
+                /**
+                 * \brief Settings for calculating the gradient at a stochast point
+                 */
+                Wrappers::GradientSettings^ GradientSettings = gcnew Wrappers::GradientSettings();
 
                 virtual property Wrappers::RunSettings^ RunSettings
                 {
@@ -77,6 +82,7 @@ namespace Deltares
 
                 std::shared_ptr<Sensitivity::FORMSettingsS> GetSettings()
                 {
+                    shared->object->GradientSettings = this->GradientSettings->GetSettings();
                     shared->object->RunSettings = RunSettings->GetSettings();
                     return shared->object;
                 }

@@ -28,7 +28,7 @@ namespace Deltares
     namespace Sensitivity
     {
         /**
-         * \brief Calculates the sensitivity using the Crude Monte Carlo algorithm
+         * \brief Calculates the sensitivity using the FORM algorithm
          */
         class FORMS : public SensitivityMethod
         {
@@ -44,6 +44,13 @@ namespace Deltares
              * \return The sensitivity in the form of a stochastic variable
              */
             std::shared_ptr<Statistics::Stochast> getStochast(std::shared_ptr<Models::ModelRunner> modelRunner) override;
+        private:
+            bool isZValid(std::shared_ptr<Models::ModelRunner> modelRunner, double z);
+            bool isMonotone(std::shared_ptr<Models::ModelRunner> modelRunner, double z, double zPrevious, bool ascending);
+            bool isGradientValid(std::shared_ptr<Models::ModelRunner> modelRunner, std::vector<double>& gradient);
+            bool isBetaValid(std::shared_ptr<Models::ModelRunner> modelRunner, double beta, double betaPrevious, double requiredBetaIncrement);
+            void repairResults(std::vector<double>& values);
+            bool areResultsValid(std::vector<double>& values);
         };
     }
 }
