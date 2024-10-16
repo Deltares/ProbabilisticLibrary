@@ -47,7 +47,7 @@ namespace Deltares
             std::vector <std::vector<std::shared_ptr<IntegrationLine>>> Lines;
             std::vector<std::unordered_map<std::string,std::shared_ptr<IntegrationLine>>> LinesSet;
             std::shared_ptr<IntegrationPoint> GetIntegrationPoint(std::vector<double>& coordinates);
-            void AddPoint(std::shared_ptr<IntegrationPoint> point);
+            void AddPoint(std::shared_ptr<IntegrationPoint> point, const std::string& coordHash);
             inline size_t getDimension() const { return origin.size(); }
             inline std::vector<std::vector<int>> getSplit() const { return split; }
         private:

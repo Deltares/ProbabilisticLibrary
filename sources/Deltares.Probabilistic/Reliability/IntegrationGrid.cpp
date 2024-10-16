@@ -363,31 +363,22 @@ namespace Deltares
 
         std::shared_ptr<IntegrationPoint> IntegrationDomain::GetIntegrationPoint(std::vector<double>& coordinates)
         {
-            constexpr double tolerance = 1E-10;
-
-            std::shared_ptr<IntegrationPoint> integrationPoint;
-            for(const auto& point : Points)
-            {
-                if (NumericSupport::doublesAreEqual(point->Coordinates, coordinates, tolerance))
-                {
-                    integrationPoint = point;
-                    break;
-                }
-            }
+            auto hash = probLibString::doubles2strTrimmed(coordinates);
+            auto integrationPoint = pointsSet[hash];
 
             if (integrationPoint == nullptr)
             {
                 integrationPoint = std::make_shared<IntegrationPoint>(coordinates);
-                AddPoint(integrationPoint);
+                AddPoint(integrationPoint, hash);
             }
 
             return integrationPoint;
         }
 
-        void IntegrationDomain::AddPoint(std::shared_ptr<IntegrationPoint> point)
+        void IntegrationDomain::AddPoint(std::shared_ptr<IntegrationPoint> point, const std::string& coordHash)
         {
             Points.push_back(point);
-            pointsSet.insert({ probLibString::doubles2strTrimmed(point->Coordinates), point});
+            pointsSet.insert({ coordHash, point});
 
             for (int i = 0; i < getDimension(); i++)
             {
