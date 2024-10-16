@@ -203,9 +203,8 @@ namespace Deltares
             return false;
         }
 
-        IntegrationCell::IntegrationCell(std::shared_ptr<IntegrationDomain> domain, std::vector<double> lowerBoundaries, std::vector<double> upperBoundaries)
+        IntegrationCell::IntegrationCell(IntegrationDomain& d, std::vector<double> lowerBoundaries, std::vector<double> upperBoundaries) : domain(d)
         {
-            this->domain = domain;
             this->lowerBoundaries = lowerBoundaries;
             this->upperBoundaries = upperBoundaries;
             for(const auto& bnd: lowerBoundaries)
@@ -224,15 +223,15 @@ namespace Deltares
             CornerPoints = std::vector<std::shared_ptr<IntegrationPoint>>();
             std::vector<std::vector<double>> allBoundaries = { lowerBoundaries, upperBoundaries };
 
-            for (auto& side : domain->getSplit())
+            for (auto& side : domain.getSplit())
             {
-                std::vector<double> coordinates(domain->getDimension());
-                for (int i = 0; i < domain->getDimension(); i++)
+                std::vector<double> coordinates(domain.getDimension());
+                for (int i = 0; i < domain.getDimension(); i++)
                 {
                     coordinates[i] = allBoundaries[side[i]][i];
                 }
 
-                CornerPoints.push_back(domain->GetIntegrationPoint(coordinates));
+                CornerPoints.push_back(domain.GetIntegrationPoint(coordinates));
             }
         }
 
@@ -249,9 +248,9 @@ namespace Deltares
 
         size_t IntegrationCell::get_index() const
         {
-            for (size_t i = 0; i < domain->Cells.size(); i++)
+            for (size_t i = 0; i < domain.Cells.size(); i++)
             {
-                if (domain->Cells[i].get() == this) return i;
+                if (domain.Cells[i].get() == this) return i;
             }
             throw probLibException("index not found in integration cell");
         }
@@ -266,12 +265,12 @@ namespace Deltares
                 std::shared_ptr<IntegrationCell> cell = std::make_shared<IntegrationCell>(domain, cornerPoint->Coordinates, getCenterPoint()->Coordinates);
                 if (isFirst)
                 {
-                    domain->Cells[index] = cell;
+                    domain.Cells[index] = cell;
                     isFirst = false;
                 }
                 else
                 {
-                    domain->Cells.push_back(cell);
+                    domain.Cells.push_back(cell);
                 }
             }
         }
@@ -286,12 +285,12 @@ namespace Deltares
                 std::shared_ptr<IntegrationCell> cell = std::make_shared<IntegrationCell>(domain, cornerPoint->Coordinates, coordinates);
                 if (isFirst)
                 {
-                    domain->Cells[index] = cell;
+                    domain.Cells[index] = cell;
                     isFirst = false;
                 }
                 else
                 {
-                    domain->Cells.push_back(cell);
+                    domain.Cells.push_back(cell);
                 }
             }
         }
@@ -449,13 +448,13 @@ namespace Deltares
 
         std::shared_ptr<IntegrationPoint> IntegrationCell::getCenterPoint() const
         {
-            std::vector<double> coordinates(domain->getDimension());
-            for (int i = 0; i < domain->getDimension(); i++)
+            std::vector<double> coordinates(domain.getDimension());
+            for (int i = 0; i < domain.getDimension(); i++)
             {
                 coordinates[i] = (lowerBoundaries[i] + upperBoundaries[i]) / 2;
             }
 
-            auto centerPoint = domain->GetIntegrationPoint(coordinates);
+            auto centerPoint = domain.GetIntegrationPoint(coordinates);
 
             return centerPoint;
         }

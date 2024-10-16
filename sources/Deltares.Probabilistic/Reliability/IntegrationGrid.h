@@ -81,7 +81,7 @@ namespace Deltares
         class IntegrationCell
         {
         public:
-            IntegrationCell(std::shared_ptr<IntegrationDomain> domain, std::vector<double> lowerBoundaries, std::vector<double> upperBoundaries);
+            IntegrationCell(IntegrationDomain& domain, std::vector<double> lowerBoundaries, std::vector<double> upperBoundaries);
             bool Determined = false;
             bool Known = false;
             double getProbability() const;
@@ -97,7 +97,7 @@ namespace Deltares
             std::vector<double> upperBoundaries;
             std::vector<double> lowerProbabilities;
             std::vector<double> upperProbabilities;
-            std::shared_ptr<IntegrationDomain> domain;
+            IntegrationDomain& domain;
             void UpdateCornerPoints();
         };
 
