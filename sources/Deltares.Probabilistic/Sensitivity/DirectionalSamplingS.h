@@ -44,6 +44,33 @@ namespace Deltares
              * \return The sensitivity in the form of a stochastic variable
              */
             std::shared_ptr<Statistics::Stochast> getStochast(std::shared_ptr<Models::ModelRunner> modelRunner) override;
+        private:
+            class Result
+            {
+            public:
+                double Distance;
+                double ZValue;
+            };
+
+            class Direction
+            {
+            public:
+                Direction(std::shared_ptr<Models::Sample> sample) { this->sample = sample; }
+                void AddResult(double distance, double z);
+                double GetDistanceAtZ(double z);
+                std::shared_ptr<Models::Sample> CreateNewSampleAt(double z, double maxBeta);
+                bool Valid = true;
+            private:
+                std::shared_ptr<Models::Sample> sample;
+                std::vector<double> distances = std::vector<double>();
+                std::vector<double> zValues = std::vector<double>();
+                std::shared_ptr<Models::Sample> newSample = nullptr;
+            };
+
+            double getZForRequiredQ(std::shared_ptr<Models::ModelRunner> modelRunner, double requestedQuantile, int nstochasts, double Z0);
+            double calculateProbabilityOfFailure(std::vector<double>& dValues, double nstochasts);
+            double getBetaDistance(double betaRequired, int nStochasts);
+            double calculateError(std::vector<double>& zValues, std::vector<double>& newZValues);
         };
     }
 }

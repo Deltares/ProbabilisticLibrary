@@ -23,6 +23,7 @@
 
 #include "../../Deltares.Probabilistic/Sensitivity/DirectionalSamplingSettingsS.h"
 #include "../Model/RunSettings.h"
+#include "../Model/RandomSettings.h"
 #include "../Reliability/StochastSettings.h"
 #include "../Utils/SharedPointerProvider.h"
 
@@ -57,6 +58,8 @@ namespace Deltares
                     void set(bool value) { shared->object->CalculateInputCorrelations = value; }
                 }
 
+                Wrappers::RandomSettings^ RandomSettings = gcnew Wrappers::RandomSettings();
+
                 virtual property Wrappers::RunSettings^ RunSettings
                 {
                     Wrappers::RunSettings^ get() { return runSettings; }
@@ -70,6 +73,7 @@ namespace Deltares
 
                 std::shared_ptr<Sensitivity::DirectionalSamplingSettingsS> GetSettings()
                 {
+                    shared->object->randomSettings = RandomSettings->GetSettings(),
                     shared->object->RunSettings = RunSettings->GetSettings();
                     return shared->object;
                 }

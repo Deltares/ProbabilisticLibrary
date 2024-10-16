@@ -22,6 +22,7 @@
 #pragma once
 
 #include "../Model/RunSettings.h"
+#include "../Model/RandomSettings.h"
 #include <memory>
 
 namespace Deltares
@@ -41,6 +42,20 @@ namespace Deltares
              */
             bool CalculateInputCorrelations = false;
 
+            int MaximumIterations;
+            int MaximumSamples;
+            double VariationCoefficientFailure;
+
+            /**
+             * \brief Settings for performing model runs
+             */
+            std::shared_ptr<Models::RandomSettings> randomSettings = std::make_shared<Models::RandomSettings>();
+
+            /**
+             * \brief Settings for individual stochastic variables, such as the start value
+             */
+            std::shared_ptr<Reliability::StochastSettingsSet> StochastSet = std::make_shared<Reliability::StochastSettingsSet>();
+
             /**
              * \brief Settings for performing model runs
              */
@@ -52,7 +67,7 @@ namespace Deltares
              */
             bool isValid()
             {
-                return true;
+                return this->RunSettings->isValid();
             }
         };
     }
