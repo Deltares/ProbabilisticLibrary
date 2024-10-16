@@ -40,11 +40,7 @@ namespace Deltares
         class IntegrationDomain
         {
         public:
-            IntegrationDomain(const int n);
-            void SetOrigin(const std::vector<double>& origin)
-            {
-                this->origin = origin;
-            }
+            IntegrationDomain(const std::vector<double>& origin);
             std::vector<std::shared_ptr<IntegrationPoint>> Points;
             std::unordered_map<std::string,std::shared_ptr<IntegrationPoint>> pointsSet;
             std::vector<std::shared_ptr<IntegrationCell>> Cells;
@@ -52,12 +48,11 @@ namespace Deltares
             std::vector<std::unordered_map<std::string,std::shared_ptr<IntegrationLine>>> LinesSet;
             std::shared_ptr<IntegrationPoint> GetIntegrationPoint(std::vector<double>& coordinates);
             void AddPoint(std::shared_ptr<IntegrationPoint> point);
-            inline int getDimension() const { return Dimension; }
+            inline size_t getDimension() const { return origin.size(); }
             inline std::vector<std::vector<int>> getSplit() const { return split; }
         private:
             std::vector<std::vector<int>> split;
-            int Dimension;
-            std::vector<double> origin;
+            const std::vector<double> origin;
         };
 
         class IntegrationPoint

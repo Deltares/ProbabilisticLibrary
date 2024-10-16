@@ -350,8 +350,9 @@ namespace Deltares
             }
         }
 
-        IntegrationDomain::IntegrationDomain(const int n) : Dimension(n)
+        IntegrationDomain::IntegrationDomain(const std::vector<double>& o) : origin(o)
         {
+            auto Dimension = origin.size();
             split = Mathematics::BinarySupport::GetBinaryList(Dimension, 0, 1);
             for (int i = 0; i < Dimension; i++)
             {
@@ -388,7 +389,7 @@ namespace Deltares
             Points.push_back(point);
             pointsSet.insert({ probLibString::doubles2strTrimmed(point->Coordinates), point});
 
-            for (int i = 0; i < Dimension; i++)
+            for (int i = 0; i < getDimension(); i++)
             {
                 auto lineCoordinates = std::vector<double>();
                 for (int j = 0; j < point->Coordinates.size(); j++)

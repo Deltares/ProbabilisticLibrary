@@ -39,9 +39,7 @@ namespace Deltares
 
             int nStochasts = modelRunner->getVaryingStochastCount();
 
-            auto domain = IntegrationDomain(nStochasts);
-
-            domain.SetOrigin(getStartPoint(nStochasts));
+            auto domain = IntegrationDomain(getStartPoint(nStochasts));
 
             auto lowerBoundaries = std::vector<double>(nStochasts, -8.0);
             auto upperBoundaries = std::vector<double>(nStochasts, 8.0);
