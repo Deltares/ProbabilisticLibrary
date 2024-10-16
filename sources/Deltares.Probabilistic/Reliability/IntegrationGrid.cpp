@@ -260,12 +260,19 @@ namespace Deltares
         {
             auto index = get_index();
 
-            domain->Cells.erase(domain->Cells.begin()+index);
-
+            bool isFirst = true;
             for (auto& cornerPoint : this->CornerPoints)
             {
                 std::shared_ptr<IntegrationCell> cell = std::make_shared<IntegrationCell>(domain, cornerPoint->Coordinates, getCenterPoint()->Coordinates);
-                domain->Cells.push_back(cell);
+                if (isFirst)
+                {
+                    domain->Cells[index] = cell;
+                    isFirst = false;
+                }
+                else
+                {
+                    domain->Cells.push_back(cell);
+                }
             }
         }
 
@@ -273,12 +280,19 @@ namespace Deltares
         {
             auto index = get_index();
 
-            domain->Cells.erase(domain->Cells.begin() + index);
-
+            bool isFirst = true;
             for (auto cornerPoint : this->CornerPoints)
             {
                 std::shared_ptr<IntegrationCell> cell = std::make_shared<IntegrationCell>(domain, cornerPoint->Coordinates, coordinates);
-                domain->Cells.push_back(cell);
+                if (isFirst)
+                {
+                    domain->Cells[index] = cell;
+                    isFirst = false;
+                }
+                else
+                {
+                    domain->Cells.push_back(cell);
+                }
             }
         }
 
@@ -377,15 +391,22 @@ namespace Deltares
 
             for (int i = 0; i < Dimension; i++)
             {
-                auto lineCoordinates = point->Coordinates;
-                lineCoordinates.erase(lineCoordinates.begin()+i);
+                auto lineCoordinates = std::vector<double>();
+                for (int j = 0; j < point->Coordinates.size(); j++)
+                {
+                    if (j != i)
+                    {
+                        lineCoordinates.push_back(point->Coordinates[j]);
+                    }
+                }
 
-                auto line = LinesSet[i][probLibString::doubles2strTrimmed(lineCoordinates)];
+                auto hash = probLibString::doubles2strTrimmed(lineCoordinates);
+                auto line = LinesSet[i][hash];
                 if (line == nullptr)
                 {
                     line = std::make_shared<IntegrationLine>(i, origin[i]);
                     Lines[i].push_back(line);
-                    LinesSet[i][probLibString::doubles2strTrimmed(lineCoordinates)] = line;
+                    LinesSet[i][hash] = line;
                 }
 
                 line->Add(point);
