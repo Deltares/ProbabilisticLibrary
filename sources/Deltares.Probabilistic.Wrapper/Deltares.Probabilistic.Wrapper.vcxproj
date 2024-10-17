@@ -160,6 +160,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Statistics\ProbabilityValue.h" />
     <ClInclude Include="Sensitivity\FORMS.h" />
     <ClInclude Include="Sensitivity\DirectionalSamplingS.h" />
     <ClInclude Include="Sensitivity\FORMSettingsS.h" />

@@ -155,6 +155,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Statistics\ProbabilityValue.h" />
     <ClInclude Include="Sensitivity\DirectionalSamplingS.h" />
     <ClInclude Include="Sensitivity\DirectionalSamplingSettingsS.h" />
     <ClInclude Include="Sensitivity\NumericalIntegrationS.h" />
@@ -333,6 +334,7 @@
     <ClInclude Include="Model\ZValueConverter.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Statistics\ProbabilityValue.cpp" />
     <ClCompile Include="Sensitivity\DirectionalSamplingS.cpp" />
     <ClCompile Include="Sensitivity\NumericalIntegrationS.cpp" />
     <ClCompile Include="Sensitivity\FORMS.cpp" />

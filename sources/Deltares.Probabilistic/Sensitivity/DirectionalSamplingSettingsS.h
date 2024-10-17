@@ -42,9 +42,25 @@ namespace Deltares
              */
             bool CalculateInputCorrelations = false;
 
+            /**
+             * \brief The number of iterations within a direction
+             */
             int MaximumIterations;
-            int MaximumSamples;
+
+            /**
+             * \brief The number of directions to be calculated
+             */
+            int NumberDirections;
+
+            /**
+             * \brief Convergence criterion
+             */
             double VariationCoefficientFailure;
+
+            /**
+             * \brief Quantiles which should be calculated
+             */
+            std::vector<std::shared_ptr<Statistics::ProbabilityValue>> RequestedQuantiles;
 
             /**
              * \brief Settings for performing model runs
@@ -67,7 +83,8 @@ namespace Deltares
              */
             bool isValid()
             {
-                return this->RunSettings->isValid();
+                return this->RequestedQuantiles.size() > 0 &&
+                       this->RunSettings->isValid();
             }
         };
     }

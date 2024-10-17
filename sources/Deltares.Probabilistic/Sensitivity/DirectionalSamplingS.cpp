@@ -52,33 +52,29 @@ namespace Deltares
             double Z0 = modelRunner->getZValue(u0);
 
             // Step 2: Calculate beta_q, the reliability index corresponding to the given quantile value / exceeding probability
-            std::vector<double> requestedQuantiles; // = this->Settings->GetRequestedQuantiles(); <==== TODO
 
             std::shared_ptr<Statistics::Stochast> stochast = std::make_shared<Statistics::Stochast>();
             stochast->setDistributionType(Statistics::CDFCurve);
 
-            for (size_t i = 0; i < requestedQuantiles.size(); i++)
+            for (size_t i = 0; i < this->Settings->RequestedQuantiles.size(); i++)
             {
-                double z = getZForRequiredQ(modelRunner, requestedQuantiles[i], nStochasts, Z0);
                 std::shared_ptr<Statistics::FragilityValue> fragilityValue = std::make_shared<Statistics::FragilityValue>();
-                fragilityValue->X = z;
-                fragilityValue->Reliability = Statistics::StandardNormal::getUFromQ(requestedQuantiles[i]);
+                fragilityValue->X = getZForRequiredQ(modelRunner, this->Settings->RequestedQuantiles[i]->Reliability, nStochasts, Z0);
+                fragilityValue->Reliability = this->Settings->RequestedQuantiles[i]->Reliability;
                 stochast->getProperties()->FragilityValues.push_back(fragilityValue);
             }
 
             return stochast;
         }
 
-        double DirectionalSamplingS::getZForRequiredQ(std::shared_ptr<Models::ModelRunner> modelRunner, double requestedQuantile, int nstochasts, double Z0)
+        double DirectionalSamplingS::getZForRequiredQ(std::shared_ptr<Models::ModelRunner> modelRunner, double betaRequested, int nStochasts, double Z0)
         {
             int performedIterations = 0;
-
-            double betaRequested = Statistics::StandardNormal::getUFromQ(requestedQuantile);
 
             // Step 3: Calculate n samples in random directions, all at the same distance d of the origin
 
             int maxIterations = this->Settings->MaximumIterations;
-            int directionNumber = this->Settings->MaximumSamples;
+            int directionNumber = this->Settings->NumberDirections;
             double tolerance = this->Settings->VariationCoefficientFailure;
 
             std::shared_ptr<SampleProvider> sampleProvider = std::make_shared<SampleProvider>(this->Settings->StochastSet, false);
@@ -100,14 +96,14 @@ namespace Deltares
 
             // Calculate the corresponding distance d of the origin using the length of the samples list
 
-            double initialDistance = getBetaDistance(std::abs(betaRequested), nstochasts);
+            double initialDistance = getBetaDistance(std::abs(betaRequested), nStochasts);
             initialDistance = std::max(0.1, initialDistance);
 
             // Normalize the value of Samples via d
             for (size_t i = 0; i < samples.size(); i++)
             {
                 samples[i] = samples[i]->getSampleAtBeta(initialDistance);
-                samples[i]->IterationIndex = i;
+                samples[i]->IterationIndex = static_cast<int>(i);
             }
 
             std::vector<double> zValues = modelRunner->getZValues(samples);
@@ -152,61 +148,20 @@ namespace Deltares
                 double zMin = Z0;
                 double zMax = betaRequested > beta0 ? Numeric::NumericSupport::getMaximum(zValues) : Numeric::NumericSupport::getMinimum(zValues);
 
-                zPred = bisection->CalculateValue(zMin, zMax, qRequired, 0.001, [&](double predZi)
-                {
-                    std::vector<double> dValues(directions.size());
-
-                    for (int i = 0; i < directions.size(); i++)
-                    {
-                        if (directions[i]->Valid)
-                        {
-                            dValues[i] = directions[i]->GetDistanceAtZ(predZi); // Record dValues for each direction (i) and for each iteration (j)
-                        }
-                        else
-                        {
-                            dValues[i] = 0;
-                        }
-                    }
-
-                    // Check if all dValues are zero
-                    bool allZero = true;
-                    for (double p : dValues)
-                    {
-                        if (p != 0.0)
-                        {
-                            allZero = false;
-                            break;
-                        }
-                    }
-
-                    double probFailure;
-
-                    if (allZero)
-                    {
-                        // If all dValues are zero, set probFailure to 0.5
-                        probFailure = probability0;
-                    }
-                    else
-                    {
-                        // Otherwise, calculate the probability of failure using the existing method
-                        probFailure = calculateProbabilityOfFailure(dValues, nstochasts);
-                    }
-
-                    return probFailure; //probFailure shall be the closest to the qRequired
-                });
+                zPred = bisection->CalculateValue(zMin, zMax, qRequired, 0.001,
+                    [&, directions, nStochasts, probability0](double predZi) { return predict(predZi, directions, probability0, nStochasts); });
 
                 //for each new scale in direction i values, the new z values are calculated (zValues[i,j])
                 std::vector<std::shared_ptr<Sample>> newSamples;
-
                 std::vector<std::shared_ptr<Sample>> calculateSamples;
 
-                for (int i = 0; i < directions.size(); i++)
+                for (size_t i = 0; i < directions.size(); i++)
                 {
                     std::shared_ptr<Sample> newSample = directions[i]->CreateNewSampleAt(zPred, maxBetaDirection);
                     newSamples.push_back(newSample);
                     if (directions[i]->Valid)
                     {
-                        newSample->IterationIndex = i;
+                        newSample->IterationIndex = static_cast<int>(i);
                         calculateSamples.push_back(newSample); //calculateSamples are the samples that are used to calculate the new z values ( only for valid directions to prevent z values of NaN/infinity)
                     }
                 }
@@ -216,7 +171,7 @@ namespace Deltares
                 std::vector<double> newZValues = Sample::select(newSamples, [](std::shared_ptr<Sample> p) {return p->Z; });
 
                 //add the newZvalues to the list of zValues
-                for (int i = 0; i < directions.size(); i++)
+                for (size_t i = 0; i < directions.size(); i++)
                 {
                     if (directions[i]->Valid)
                     {
@@ -234,6 +189,38 @@ namespace Deltares
             }
 
             return zPred;
+        }
+
+        double DirectionalSamplingS::predict(double predZi, std::vector<std::shared_ptr<Direction>> directions, double probability0, int nStochasts)
+        {
+            std::vector<double> dValues(directions.size());
+
+            for (size_t i = 0; i < directions.size(); i++)
+            {
+                dValues[i] = directions[i]->GetDistanceAtZ(predZi); // Record dValues for each direction (i) and for each iteration (j)
+            }
+
+            // Check if all dValues are zero
+            bool allZero = true;
+            for (double p : dValues)
+            {
+                if (p != 0.0)
+                {
+                    allZero = false;
+                    break;
+                }
+            }
+
+            if (allZero)
+            {
+                // If all dValues are zero, set probFailure to 0.5
+                return probability0;
+            }
+            else
+            {
+                // Otherwise, calculate the probability of failure using the existing method
+                return calculateProbabilityOfFailure(dValues, nStochasts);
+            }
         }
 
         double DirectionalSamplingS::calculateProbabilityOfFailure(std::vector<double>& dValues, double nstochasts)
@@ -323,16 +310,12 @@ namespace Deltares
         {
             if (Valid)
             {
-                double dist = Numeric::NumericSupport::interpolate(z, zValues, distances, true);
-                return dist;
+                return Numeric::NumericSupport::interpolate(z, zValues, distances, true);
             }
             else
             {
                 return 0;
             }
-            //double[] xValues = { 3, 5, 6 };
-            //double[] yyValues = { 20, 30, 60 };
-            ///double xInterpolated = Interpolation.Interpolate(5.5, xValues, yyValues); // results in 45
         }
 
         std::shared_ptr<Sample> DirectionalSamplingS::Direction::CreateNewSampleAt(double z, double maxBeta)

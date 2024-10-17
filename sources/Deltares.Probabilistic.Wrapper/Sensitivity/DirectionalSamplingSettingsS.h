@@ -24,6 +24,7 @@
 #include "../../Deltares.Probabilistic/Sensitivity/DirectionalSamplingSettingsS.h"
 #include "../Model/RunSettings.h"
 #include "../Model/RandomSettings.h"
+#include "../Statistics/ProbabilityValue.h"
 #include "../Reliability/StochastSettings.h"
 #include "../Utils/SharedPointerProvider.h"
 
@@ -58,6 +59,26 @@ namespace Deltares
                     void set(bool value) { shared->object->CalculateInputCorrelations = value; }
                 }
 
+                property int NumberDirections
+                {
+                    int get() { return shared->object->NumberDirections; }
+                    void set(int value) { shared->object->NumberDirections = value; }
+                }
+
+                property int MaximumIterations
+                {
+                    int get() { return shared->object->MaximumIterations; }
+                    void set(int value) { shared->object->MaximumIterations = value; }
+                }
+
+                property double VariationCoefficientFailure
+                {
+                    double get() { return shared->object->VariationCoefficientFailure; }
+                    void set(double value) { shared->object->VariationCoefficientFailure = value; }
+                }
+
+                System::Collections::Generic::List<Statistics::Wrappers::ProbabilityValue^>^ RequestedQuantiles = gcnew System::Collections::Generic::List<Statistics::Wrappers::ProbabilityValue^>();
+
                 Wrappers::RandomSettings^ RandomSettings = gcnew Wrappers::RandomSettings();
 
                 virtual property Wrappers::RunSettings^ RunSettings
@@ -73,6 +94,12 @@ namespace Deltares
 
                 std::shared_ptr<Sensitivity::DirectionalSamplingSettingsS> GetSettings()
                 {
+                    shared->object->RequestedQuantiles.clear();
+                    for (int i = 0; i < RequestedQuantiles->Count; i++)
+                    {
+                        shared->object->RequestedQuantiles.push_back(RequestedQuantiles[i]->GetValue());
+                    }
+
                     shared->object->randomSettings = RandomSettings->GetSettings(),
                     shared->object->RunSettings = RunSettings->GetSettings();
                     return shared->object;

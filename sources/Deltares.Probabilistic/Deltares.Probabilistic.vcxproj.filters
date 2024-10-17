@@ -192,6 +192,7 @@
     <ClCompile Include="Sensitivity\FORMS.cpp" />
     <ClCompile Include="Sensitivity\NumericalIntegrationS.cpp" />
     <ClCompile Include="Sensitivity\DirectionalSamplingS.cpp" />
+    <ClCompile Include="Statistics\ProbabilityValue.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -405,6 +406,7 @@
     <ClInclude Include="Sensitivity\NumericalIntegrationSettingsS.h" />
     <ClInclude Include="Sensitivity\DirectionalSamplingS.h" />
     <ClInclude Include="Sensitivity\DirectionalSamplingSettingsS.h" />
+    <ClInclude Include="Statistics\ProbabilityValue.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">
