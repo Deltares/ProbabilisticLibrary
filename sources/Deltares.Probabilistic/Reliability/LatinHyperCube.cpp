@@ -284,6 +284,7 @@ namespace Deltares
             }
             else
             {
+                report->Reliability = std::nan("");
                 modelRunner->reportResult(report);
                 return std::nan("");
             }

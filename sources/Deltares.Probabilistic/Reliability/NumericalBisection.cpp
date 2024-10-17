@@ -94,7 +94,7 @@ namespace Deltares
                 for (auto& points : unknownPoints)
                 {
                     auto sample = std::make_shared<Sample>(points->Coordinates);
-                    sample->IterationIndex = step;
+                    sample->IterationIndex = step-1;
                     upar.push_back(sample);
                 }
 
