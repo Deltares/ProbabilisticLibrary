@@ -69,7 +69,7 @@ namespace Deltares
 
                 std::sort(unknownCells.begin(), unknownCells.end(), [](const auto& lhs, const auto& rhs)
                     {
-                        return lhs->getProbability() > rhs->getProbability(); // TODO check < or >
+                        return lhs->getProbability() > rhs->getProbability();
                     });
 
                 if (unknownCells.size() > chunkSize)
@@ -93,7 +93,9 @@ namespace Deltares
                 std::vector<std::shared_ptr<Sample>> upar;
                 for (auto& points : unknownPoints)
                 {
-                    upar.push_back(std::make_shared<Sample>(points->Coordinates));
+                    auto sample = std::make_shared<Sample>(points->Coordinates);
+                    sample->IterationIndex = step;
+                    upar.push_back(sample);
                 }
 
                 std::vector<double> zValues = modelRunner->getZValues(upar);
