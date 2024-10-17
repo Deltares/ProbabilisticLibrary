@@ -54,6 +54,7 @@ namespace Deltares
             }
 
             std::vector<double> Values;
+            std::vector<double> OutputValues;
 
             int IterationIndex = -1;
             int threadId = 0;

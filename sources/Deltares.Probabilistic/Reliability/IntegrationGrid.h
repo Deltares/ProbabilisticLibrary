@@ -40,24 +40,19 @@ namespace Deltares
         class IntegrationDomain
         {
         public:
-            IntegrationDomain(const int n);
-            void SetOrigin(const std::vector<double>& origin)
-            {
-                this->origin = origin;
-            }
+            IntegrationDomain(const std::vector<double>& origin);
             std::vector<std::shared_ptr<IntegrationPoint>> Points;
             std::unordered_map<std::string,std::shared_ptr<IntegrationPoint>> pointsSet;
             std::vector<std::shared_ptr<IntegrationCell>> Cells;
             std::vector <std::vector<std::shared_ptr<IntegrationLine>>> Lines;
             std::vector<std::unordered_map<std::string,std::shared_ptr<IntegrationLine>>> LinesSet;
             std::shared_ptr<IntegrationPoint> GetIntegrationPoint(std::vector<double>& coordinates);
-            void AddPoint(std::shared_ptr<IntegrationPoint> point);
-            int getDimension() const { return Dimension; }
-            std::vector<std::vector<int>> getSplit() const { return split; }
+            void AddPoint(std::shared_ptr<IntegrationPoint> point, const std::string& coordHash);
+            inline size_t getDimension() const { return origin.size(); }
+            inline std::vector<std::vector<int>> getSplit() const { return split; }
         private:
             std::vector<std::vector<int>> split;
-            int Dimension;
-            std::vector<double> origin;
+            const std::vector<double> origin;
         };
 
         class IntegrationPoint
@@ -69,11 +64,11 @@ namespace Deltares
             void deriveByExtrapolation();
             void derive();
             std::vector<double> Coordinates;
-            Numeric::DoubleType getResult() const { return Numeric::NumericSupport::getDoubleType(ZValue); };
+            inline Numeric::DoubleType getResult() const { return Numeric::NumericSupport::getDoubleType(ZValue); };
             std::vector<std::shared_ptr<IntegrationLine>> Lines;
-            void setKnown(const bool b) { Known = b; }
-            bool getKnown() const { return Known; }
-            void setZValue(const double z) { ZValue = z; }
+            inline void setKnown(const bool b) { Known = b; }
+            inline bool getKnown() const { return Known; }
+            inline void setZValue(const double z) { ZValue = z; }
         private:
             bool Known = false;
         };
@@ -81,7 +76,7 @@ namespace Deltares
         class IntegrationCell
         {
         public:
-            IntegrationCell(std::shared_ptr<IntegrationDomain> domain, std::vector<double> lowerBoundaries, std::vector<double> upperBoundaries);
+            IntegrationCell(IntegrationDomain& domain, std::vector<double> lowerBoundaries, std::vector<double> upperBoundaries);
             bool Determined = false;
             bool Known = false;
             double getProbability() const;
@@ -97,7 +92,7 @@ namespace Deltares
             std::vector<double> upperBoundaries;
             std::vector<double> lowerProbabilities;
             std::vector<double> upperProbabilities;
-            std::shared_ptr<IntegrationDomain> domain;
+            IntegrationDomain& domain;
             void UpdateCornerPoints();
         };
 
@@ -116,7 +111,7 @@ namespace Deltares
             bool HasPreviousKnownPoint(std::shared_ptr<IntegrationPoint> point, const Numeric::DoubleType r);
             size_t get_index(std::shared_ptr<IntegrationPoint> point);
             size_t get_index(IntegrationPoint* point);
-            int getDimension() const { return Dimension; }
+            inline int getDimension() const { return Dimension; }
         private:
             int Dimension;
             double Origin;

@@ -37,6 +37,8 @@ class ReliabilityMethod(Enum):
 	adaptive_importance_sampling = 'adaptive_importance_sampling'
 	directional_sampling = 'directional_sampling'
 	subset_simulation = 'subset_simulation'
+	numerical_bisection = 'numerical_bisection'
+	latin_hypercube = 'latin_hypercube'
 	cobyla_reliability = 'cobyla_reliability'
 	def __str__(self):
 		return str(self.value)
@@ -105,9 +107,11 @@ class Settings:
 	            'sample_method'
 	            'minimum_samples',
 	            'maximum_samples',
+	            'minimum_iterations',
 	            'maximum_iterations',
 	            'minimum_directions',
 	            'maximum_directions',
+	            'epsilon_beta',
 	            'relaxation_factor',
 	            'relaxation_loops',
 	            'minimum_variance_loops',
@@ -173,9 +177,17 @@ class Settings:
 		interface.SetIntValue(self._id, 'maximum_samples', value)
 
 	@property
+	def minimum_iterations(self):
+		return interface.GetIntValue(self._id, 'minimum_iterations')
+
+	@minimum_iterations.setter
+	def minimum_iterations(self, value : int):
+		interface.SetIntValue(self._id, 'minimum_iterations', value)
+
+	@property
 	def maximum_iterations(self):
 		return interface.GetIntValue(self._id, 'maximum_iterations')
-		
+
 	@maximum_iterations.setter
 	def maximum_iterations(self, value : int):
 		interface.SetIntValue(self._id, 'maximum_iterations', value)
@@ -183,7 +195,7 @@ class Settings:
 	@property
 	def minimum_directions(self):
 		return interface.GetIntValue(self._id, 'minimum_directions')
-		
+
 	@minimum_directions.setter
 	def minimum_directions(self, value : int):
 		interface.SetIntValue(self._id, 'minimum_directions', value)
@@ -191,15 +203,23 @@ class Settings:
 	@property
 	def maximum_directions(self):
 		return interface.GetIntValue(self._id, 'maximum_directions')
-		
+
 	@maximum_directions.setter
 	def maximum_directions(self, value : int):
 		interface.SetIntValue(self._id, 'maximum_directions', value)
 
 	@property
+	def epsilon_beta(self):
+		return interface.GetValue(self._id, 'epsilon_beta')
+
+	@epsilon_beta.setter
+	def epsilon_beta(self, value : float):
+		interface.SetValue(self._id, 'epsilon_beta', value)
+
+	@property
 	def relaxation_factor(self):
 		return interface.GetValue(self._id, 'relaxation_factor')
-		
+
 	@relaxation_factor.setter
 	def relaxation_factor(self, value : float):
 		interface.SetValue(self._id, 'relaxation_factor', value)
@@ -345,6 +365,60 @@ class StochastSettings:
 	@is_variance_allowed.setter
 	def is_variance_allowed(self, value: bool):
 		interface.SetBoolValue(self._id, 'is_variance_allowed', value)
+
+class CompareType(Enum):
+	less_than = 'less_than'
+	greater_than = 'greater_than'
+	def __str__(self):
+		return str(self.value)
+
+class LimitStateFunction:
+		
+	def __init__(self, id = None):
+		if id is None:
+			self._id = interface.Create('limit_state_function')
+		else:
+			self._id = id
+
+	def __dir__(self):
+		return ['parameter',
+		        'compare_type',
+		        'critical_value']
+		
+	def __str__(self):
+		return self.parameter + ' ' + str(self.compare_type) + ' ' + str(self.critical_value)
+
+	@property
+	def parameter(self):
+		return interface.GetStringValue(self._id, 'parameter')
+		
+	@parameter.setter
+	def parameter(self, value):
+		interface.SetStringValue(self._id, 'parameter', str(value))
+
+	@property
+	def compare_type(self):
+		return CompareType[interface.GetStringValue(self._id, 'compare_type')]
+		
+	@compare_type.setter
+	def compare_type(self, value : CompareType):
+		interface.SetStringValue(self._id, 'compare_type', str(value))
+
+	@property
+	def critical_value(self):
+		if interface.GetBoolValue('use_compare_parameter'):
+			return interface.GetStringValue(self._id, 'compare_parameter')
+		else:
+			return interface.GetValue(self._id, 'critical_value')
+		
+	@critical_value.setter
+	def critical_value(self, value):
+		if type(value) is float or type(value) is int:
+			interface.SetBoolValue(self._id, 'use_compare_parameter', False)
+			interface.SetValue(self._id, 'critical_value', value)
+		else:
+			interface.SetBoolValue(self._id, 'use_compare_parameter', True)
+			interface.SetStringValue(self._id, 'compare_parameter', str(value))
 		
 
 class DesignPoint:

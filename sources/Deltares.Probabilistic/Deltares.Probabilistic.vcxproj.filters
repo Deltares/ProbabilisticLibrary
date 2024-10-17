@@ -81,7 +81,7 @@
     <ClCompile Include="Statistics\HistogramValue.cpp" />
     <ClCompile Include="Statistics\FragilityValue.cpp" />
     <ClCompile Include="Statistics\Distributions\DiscreteDistribution.cpp" />
-    <ClCompile Include="Statistics\Distributions\QualitativeDistribution.cpp" />
+    <ClCompile Include="Statistics\Distributions\Distribution.cpp" />
     <ClCompile Include="Statistics\VariableStochastValueSet.cpp" />
     <ClCompile Include="Math\RootFinders\BisectionRootFinder.cpp" />
     <ClCompile Include="Statistics\Distributions\Distribution.cpp" />
@@ -174,7 +174,14 @@
     <ClCompile Include="Statistics\Distributions\StandardNormalDistribution.cpp" />
     <ClCompile Include="Math\WeightedValue.cpp" />
     <ClCompile Include="Sensitivity\CorrelationMatrixBuilder.cpp" />
-    <ClCompile Include="Model\ModelParameter.cpp" />
+    <ClCompile Include="Reliability\LimitStateFunction.cpp" />
+    <ClCompile Include="Model\ZValueConverter.cpp" />
+    <ClCompile Include="Model\ModelInputParameter.cpp" />
+    <ClCompile Include="Server\BaseHandler.cpp" />
+    <ClCompile Include="Server\ProjectHandler.cpp" />
+    <ClCompile Include="Server\BaseServer.cpp" />
+    <ClCompile Include="Server\ExternalServerHandler.cpp" />
+    <ClCompile Include="Server\ExternalLibraryHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -368,7 +375,14 @@
     <ClInclude Include="Statistics\Distributions\StandardNormalDistribution.h" />
     <ClInclude Include="Math\WeightedValue.h" />
     <ClInclude Include="Sensitivity\CorrelationMatrixBuilder.h" />
-    <ClInclude Include="Model\ModelParameter.h" />
+    <ClInclude Include="Reliability\LimitStateFunction.h" />
+    <ClInclude Include="Model\ZValueConverter.h" />
+    <ClInclude Include="Model\ModelInputParameter.h" />
+    <ClInclude Include="Server\BaseHandler.h" />
+    <ClInclude Include="Server\ProjectHandler.h" />
+    <ClInclude Include="Server\BaseServer.h" />
+    <ClInclude Include="Server\ExternalServerHandler.h" />
+    <ClInclude Include="Server\ExternalLibraryHandler.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

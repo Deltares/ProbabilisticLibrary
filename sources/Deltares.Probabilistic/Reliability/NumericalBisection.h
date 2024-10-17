@@ -40,10 +40,10 @@ namespace Deltares
             std::vector<double> getStartPoint(const int nStochasts) const;
             static size_t getChunkSize(const int nStochasts);
             void splitUnknownCells(std::shared_ptr<Models::ModelRunner> model, int step, std::vector<std::shared_ptr<IntegrationCell>>& unknownCells) const;
-            void derivePoints(std::shared_ptr<IntegrationDomain> domain);
-            static void updateProbabilities(std::shared_ptr<IntegrationDomain> domain, double& probUnknown, double& probExcluded, double& probFail);
+            void derivePoints(IntegrationDomain& domain);
+            static void updateProbabilities(IntegrationDomain& domain, double& probUnknown, double& probExcluded, double& probFail);
             bool isReady(double diff, int step) const;
-            static std::shared_ptr<IntegrationPoint> getMostProbableFailingPoint(double beta, std::shared_ptr<IntegrationDomain> domain);
+            static std::shared_ptr<IntegrationPoint> getMostProbableFailingPoint(double beta, IntegrationDomain& domain);
         };
     }
 }

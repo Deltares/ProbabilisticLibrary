@@ -103,6 +103,11 @@ namespace Deltares
             double FractionFailed = 0.1;
 
             /**
+             * \brief Minimum number of iterations in numerical bisection
+             */
+            int MinimumIterations = 5;
+
+            /**
              * \brief Maximum number of guessed design points in one FORM loop
              */
             int MaximumIterations = 50;
@@ -186,6 +191,7 @@ namespace Deltares
             const std::shared_ptr<Reliability::ReliabilityMethod> GetAdaptiveImportanceSamplingMethod();
             const std::shared_ptr<Reliability::ReliabilityMethod> GetDirectionalSamplingMethod();
             const std::shared_ptr<Reliability::ReliabilityMethod> GetNumericalBisectionMethod();
+            const std::shared_ptr<Reliability::ReliabilityMethod> GetLatinHypercubeMethod();
             const std::shared_ptr<Reliability::ReliabilityMethod> GetSubsetSimulationMethod();
             const std::shared_ptr<Reliability::ReliabilityMethod> GetCobylaReliabilityMethod();
         };

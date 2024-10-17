@@ -24,10 +24,11 @@
 #include "DesignPointBuilder.h"
 #include "../Statistics/StandardNormal.h"
 #include "../Math/NumericSupport.h"
-#include "../Model/RandomSampleGenerator.h"
+#include "../Math/Random.h"
 
 using namespace Deltares::Models;
 using namespace Deltares::Statistics;
+using namespace Deltares::Numeric;
 
 namespace Deltares
 {
@@ -68,22 +69,24 @@ namespace Deltares
 
             sampleProvider->reset();
 
-            return getReducedDesignPoint(modelRunner, sampleProvider, qRange);
+            return getReducedDesignPoint(modelRunner, qRange);
         };
 
-        std::vector<std::shared_ptr<Sample>> LatinHyperCube::CreateAllSamples(int nStochasts, const std::shared_ptr<SampleProvider>& sampleProvider) const
+        std::vector<std::shared_ptr<Sample>> LatinHyperCube::CreateAllSamples(int nStochasts) const
         {
-            auto randomSampleGenerator = RandomSampleGenerator();
-            randomSampleGenerator.Settings = this->Settings->randomSettings;
-            randomSampleGenerator.Settings->StochastSet = this->Settings->StochastSet;
-            randomSampleGenerator.sampleProvider = sampleProvider;
-            randomSampleGenerator.initialize();
+            Random::initialize(Settings->randomSettings->RandomGeneratorType, Settings->randomSettings->IsRepeatableRandom,
+                Settings->randomSettings->Seed, Settings->randomSettings->SeedB);
 
-            std::vector<std::pair<int, std::shared_ptr<Sample>>> list;
+            std::vector<std::pair<int, std::vector<double>>> list;
             for (int i = 0; i < Settings->MinimumSamples; i++)
             {
-                auto s = randomSampleGenerator.getRandomSample();
-                list.push_back({ i, s });
+                auto values = std::vector<double>();
+                for (int j = 0; j < nStochasts; j++)
+                {
+                    auto s = Random::next();
+                    values.push_back(s);
+                }
+                list.push_back({ i, values });
             }
 
             // Create all indices
@@ -95,7 +98,7 @@ namespace Deltares
                 {
                     auto temp_var = IndexedItem();
                     temp_var.Value = p.first;
-                    temp_var.Sequence = p.second->Values[i];
+                    temp_var.Sequence = p.second[i];
                     values.push_back(temp_var);
                 }
 
@@ -154,7 +157,7 @@ namespace Deltares
             return samples;
         }
 
-        std::shared_ptr<DesignPoint> LatinHyperCube::getReducedDesignPoint(std::shared_ptr<ModelRunner>& modelRunner, std::shared_ptr<SampleProvider>& sampleProvider, double qRange)
+        std::shared_ptr<DesignPoint> LatinHyperCube::getReducedDesignPoint(std::shared_ptr<ModelRunner>& modelRunner, double qRange)
         {
             int nStochasts = modelRunner->getVaryingStochastCount();
 
@@ -165,7 +168,6 @@ namespace Deltares
             std::shared_ptr<Sample> uMin = std::make_shared<Sample>(nStochasts);
 
             // initialise convergence indicator and loops
-            auto rmin = std::numeric_limits<double>::max();
             bool initial = true;
             double z0Fac = 0.0;
 
@@ -175,26 +177,26 @@ namespace Deltares
 
             size_t zIndex = 0;
 
-            auto samples = CreateAllSamples(nStochasts, sampleProvider);
+            auto samples = CreateAllSamples(nStochasts);
 
             std::vector<std::shared_ptr<Sample>> calcSamples;
             double probFailure = 0.0;
+            const int chunkSize = Settings->RunSettings->MaxChunkSize;
 
-            for (int n = 0; n < Settings->MinimumSamples + 1 && !isStopped(); n++)
+            for (int n = 0; n < Settings->MinimumSamples && !isStopped(); n++)
             {
                 zIndex++;
 
                 if (initial || zIndex >= zValues.size())
                 {
                     calcSamples.clear();
-                    const int chunkSize = Settings->RunSettings->MaxChunkSize;
 
-                    int runs = std::min(chunkSize, Settings->MinimumSamples + 1 - n);
+                    int runs = std::min(chunkSize, Settings->MinimumSamples - n);
 
                     if (initial)
                     {
-                        samples.push_back(std::make_shared<Sample>(nStochasts));
-                        runs = runs - 1;
+                        calcSamples.push_back(std::make_shared<Sample>(nStochasts));
+                        runs = std::max(1, runs - 1);
                     }
 
                     for (int i = 0; i < runs; i++)
@@ -210,19 +212,18 @@ namespace Deltares
                         z0Fac = getZFactor(zValues[0]);
                         uMin = uMin->getSampleAtBeta(z0Fac * StandardNormal::BetaMax);
                         uMean->initialize(z0Fac * StandardNormal::BetaMax);
+                        initial = false;
+                        zIndex = 1;
                     }
-
-                    zIndex = 0;
+                    else
+                    {
+                        zIndex = 0;
+                    }
                 }
 
-                if (initial)
-                {
-                    initial = false;
-                    continue;
-                }
 
                 double z = zValues[zIndex];
-                std::shared_ptr<Sample> u = samples[zIndex];
+                std::shared_ptr<Sample> u = calcSamples[zIndex];
 
                 // ignore a failed evaluation
                 if (std::isnan(z))
@@ -237,19 +238,12 @@ namespace Deltares
                 if (z < 0) nFailed++;
 
                 convergenceReport->FailedSamples = nFailed;
-                convergenceReport->FailFraction = Numeric::NumericSupport::Divide(nFailed, nSamples);
+                convergenceReport->FailFraction = NumericSupport::Divide(nFailed, nSamples);
 
                 // register minimum value of r and alpha
                 if (z * z0Fac < 0)
                 {
                     uMean->addSample(u);
-
-                    auto rBeta = u->getBeta();
-                    if (rBeta < rmin)
-                    {
-                        rmin = rBeta;
-                        uMin = u;
-                    }
                 }
 
                 if (z < 0.0)
@@ -290,6 +284,7 @@ namespace Deltares
             }
             else
             {
+                report->Reliability = std::nan("");
                 modelRunner->reportResult(report);
                 return std::nan("");
             }

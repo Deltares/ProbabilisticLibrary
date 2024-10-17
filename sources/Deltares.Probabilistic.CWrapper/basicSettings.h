@@ -42,6 +42,8 @@ namespace Deltares {
             FORMDSFIHR,
             DSFI,
             FORMDSFI,
+            LatinHyperCube = 18,
+            NumericalBisection = 19,
             CobylaReliability = 20,
             FORMSTART = 1234,
         };
@@ -94,6 +96,18 @@ namespace Deltares {
             double correlation;
         };
 
+        struct numericalBisectionSettings
+        {
+            int MinimumIterations;
+            int MaximumIterations;
+            double EpsilonBeta;
+        };
+
+        struct latinHypercubeSettings
+        {
+            int MinimumSamples;
+        };
+
         struct cobylaReliabilitySettings
         {
             double EpsilonBeta;
@@ -131,6 +145,8 @@ namespace Deltares {
             double             startVector[maxActiveStochast];
             double             offsets[maxActiveStochast];
             double             varianceFactors[maxActiveStochast];
+            numericalBisectionSettings numerical_bisection_settings;
+            latinHypercubeSettings latin_hypercube_settings;
             cobylaReliabilitySettings cobyla_reliability_settings;
         };
 

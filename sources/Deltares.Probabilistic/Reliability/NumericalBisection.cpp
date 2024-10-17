@@ -39,14 +39,12 @@ namespace Deltares
 
             int nStochasts = modelRunner->getVaryingStochastCount();
 
-            std::shared_ptr<IntegrationDomain> domain = std::make_shared<IntegrationDomain>(nStochasts);
-
-            domain->SetOrigin(getStartPoint(nStochasts));
+            auto domain = IntegrationDomain(getStartPoint(nStochasts));
 
             auto lowerBoundaries = std::vector<double>(nStochasts, -8.0);
             auto upperBoundaries = std::vector<double>(nStochasts, 8.0);
 
-            domain->Cells.push_back(std::make_shared<IntegrationCell>(domain, lowerBoundaries, upperBoundaries));
+            domain.Cells.push_back(std::make_shared<IntegrationCell>(domain, lowerBoundaries, upperBoundaries));
 
             bool ready = false;
 
@@ -64,14 +62,14 @@ namespace Deltares
                 // determine the biggest unknown cells
 
                 std::vector<std::shared_ptr<IntegrationCell>> unknownCells;
-                for (const auto& cell : domain->Cells)
+                for (const auto& cell : domain.Cells)
                 {
                     if (!cell->Determined) unknownCells.push_back(cell);
                 }
 
                 std::sort(unknownCells.begin(), unknownCells.end(), [](const auto& lhs, const auto& rhs)
                     {
-                        return lhs->getProbability() > rhs->getProbability(); // TODO check < or >
+                        return lhs->getProbability() > rhs->getProbability();
                     });
 
                 if (unknownCells.size() > chunkSize)
@@ -87,7 +85,7 @@ namespace Deltares
 
                 // calculate the unknown points
                 std::vector<std::shared_ptr<IntegrationPoint>> unknownPoints;
-                for(auto& points : domain->Points)
+                for(auto& points : domain.Points)
                 {
                     if (!points->getKnown()) unknownPoints.push_back(points);
                 }
@@ -95,7 +93,9 @@ namespace Deltares
                 std::vector<std::shared_ptr<Sample>> upar;
                 for (auto& points : unknownPoints)
                 {
-                    upar.push_back(std::make_shared<Sample>(points->Coordinates));
+                    auto sample = std::make_shared<Sample>(points->Coordinates);
+                    sample->IterationIndex = step-1;
+                    upar.push_back(sample);
                 }
 
                 std::vector<double> zValues = modelRunner->getZValues(upar);
@@ -107,7 +107,7 @@ namespace Deltares
                 }
 
                 // update cells
-                for (auto& cell : domain->Cells)
+                for (auto& cell : domain.Cells)
                 {
                     if (!cell->Known)
                     {
@@ -197,13 +197,13 @@ namespace Deltares
             }
         }
 
-        void NumericalBisection::derivePoints(std::shared_ptr<IntegrationDomain> domain)
+        void NumericalBisection::derivePoints(IntegrationDomain& domain)
         {
             bool changed = true;
             while (changed)
             {
                 changed = false;
-                for (auto& point : domain->Points)
+                for (auto& point : domain.Points)
                 {
                     if (!point->getKnown())
                     {
@@ -217,7 +217,7 @@ namespace Deltares
             while (changed)
             {
                 changed = false;
-                for (auto& point : domain->Points)
+                for (auto& point : domain.Points)
                 {
                     if (!point->getKnown())
                     {
@@ -228,11 +228,11 @@ namespace Deltares
             }
         }
 
-        void NumericalBisection::updateProbabilities(std::shared_ptr<IntegrationDomain> domain, double& probUnknown, double& probExcluded, double& probFail)
+        void NumericalBisection::updateProbabilities(IntegrationDomain& domain, double& probUnknown, double& probExcluded, double& probFail)
         {
-            for (int i = domain->Cells.size() - 1; i >= 0; i--)
+            for (int i = domain.Cells.size() - 1; i >= 0; i--)
             {
-                std::shared_ptr<IntegrationCell> cell = domain->Cells[i];
+                std::shared_ptr<IntegrationCell> cell = domain.Cells[i];
                 if (!cell->Known || !cell->Determined)
                 {
                     probUnknown += cell->getProbability();
@@ -263,14 +263,14 @@ namespace Deltares
             return (diff < Settings->EpsilonBeta && step >= Settings->MinimumIterations) || step >= Settings->MaximumIterations;
         }
 
-        std::shared_ptr<IntegrationPoint> NumericalBisection::getMostProbableFailingPoint(double beta, std::shared_ptr<IntegrationDomain> domain)
+        std::shared_ptr<IntegrationPoint> NumericalBisection::getMostProbableFailingPoint(double beta, IntegrationDomain& domain)
         {
             double minProbability = 0;
             std::shared_ptr<IntegrationPoint> designPoint = nullptr;
 
             if (beta >= 0)
             {
-                for (auto& point : domain->Points)
+                for (auto& point : domain.Points)
                 {
                     if (point->getResult() == DoubleType::Negative || point->getResult() == DoubleType::Zero)
                     {
@@ -284,7 +284,7 @@ namespace Deltares
             }
             else
             {
-                for (auto& point : domain->Points)
+                for (auto& point : domain.Points)
                 {
                     if (point->getResult() == DoubleType::Positive || point->getResult() == DoubleType::Zero)
                     {

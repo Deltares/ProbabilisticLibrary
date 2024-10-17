@@ -32,6 +32,8 @@ module probabilisticTests
     use waartsFunctionsTests
     use performImportanceSamplingTests
     use performAdaptiveMCIStests
+    use performLatinHyperCubeTests
+    use performNumericalBisectionTests
     use performCobylaReliabilityTests
     use combineElementsTests
     use performDSTests
@@ -61,6 +63,8 @@ subroutine allProbabilisticTests
     call allCombineElementsTests
     call allPerformImportanceSamplingTests
     call allPerformAdaptiveMCIStests
+    call allPerformLatinHyperCubeTests
+    call allPerformNumericalBisectionTests
     call allPerformCobylaReliabilityTests
     call performAllDSTests
     call allUpscalingTests
