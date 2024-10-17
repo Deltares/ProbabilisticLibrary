@@ -28,6 +28,12 @@
 #include "../Model/Sample.h"
 #include "../Model/GradientCalculator.h"
 #include "../Statistics/DistributionType.h"
+#include "../Statistics/ProbabilityIterator.h"
+
+namespace Deltares::Statistics
+{
+    class ProbabilityIterator;
+}
 
 using namespace Deltares::Models;
 
@@ -99,7 +105,7 @@ namespace Deltares
             uValues.push_back(Statistics::StandardNormal::UMax);
 
             // Initialize first probabilities
-            Statistics::PQ pq = Statistics::StandardNormal::getPQFromU(uValues[0]);
+            std::shared_ptr<Statistics::ProbabilityIterator> pq = std::make_shared<Statistics::ProbabilityIterator>(uValues[0]);
 
             if (stochastIndex < nStochasts - 1)
             {
@@ -109,11 +115,7 @@ namespace Deltares
                 {
                     parentSample->Values[stochastIndex] = (uValues[j] + uValues[j + 1]) / 2;
 
-                    const Statistics::PQ pqPrev = pq;
-                    pq = Statistics::StandardNormal::getPQFromU(uValues[j + 1]);
-
-                    // depending on the value of u(i) use the probabilities of exceeding or the probabilities of non-exceeding
-                    const double contribution = parentSample->Values[stochastIndex] < 0 ? pq.p - pqPrev.p : pqPrev.q - pq.q;
+                    double contribution = pq->getDifference(uValues[j + 1]);
 
                     std::vector<std::shared_ptr<Numeric::WeightedValue>> newValues = collectSamples(modelRunner, stochastIndex + 1, parentSample, density * contribution, nSamples * (uValues.size() - 1), registerSamplesForCorrelation);
                     for (std::shared_ptr<Numeric::WeightedValue> v : newValues)
@@ -140,6 +142,9 @@ namespace Deltares
                     std::shared_ptr<Sample> sample = parentSample->clone();
                     sample->Values[stochastIndex] = (uValues[j] + uValues[j + 1]) / 2;
 
+                    double contribution = pq->getDifference(uValues[j + 1]);
+                    sample->Weight = density * contribution * nSamples * (uValues.size() - 1);
+
                     samples.push_back(sample);
                 }
 
@@ -152,14 +157,6 @@ namespace Deltares
 
                     if (!std::isnan(sample->Z))
                     {
-                        Statistics::PQ pqPrev = pq;
-                        pq = Statistics::StandardNormal::getPQFromU(uValues[j + 1]);
-
-                        // depending on the value of u(i) use the probabilities of exceeding or the probabilities of non-exceeding
-                        const double contribution = sample->Values[stochastIndex] < 0 ? pq.p - pqPrev.p : pqPrev.q - pq.q;
-
-                        sample->Weight = density * contribution * nSamples * samples.size();
-
                         values.push_back(std::make_shared<Numeric::WeightedValue>(sample->Z, sample->Weight));
 
                         if (registerSamplesForCorrelation)

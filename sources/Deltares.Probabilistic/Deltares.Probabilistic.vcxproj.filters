@@ -407,6 +407,7 @@
     <ClInclude Include="Sensitivity\DirectionalSamplingS.h" />
     <ClInclude Include="Sensitivity\DirectionalSamplingSettingsS.h" />
     <ClInclude Include="Statistics\ProbabilityValue.h" />
+    <ClInclude Include="Statistics\ProbabilityIterator.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

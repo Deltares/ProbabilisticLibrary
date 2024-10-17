@@ -155,6 +155,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Statistics\ProbabilityIterator.h" />
     <ClInclude Include="Statistics\ProbabilityValue.h" />
     <ClInclude Include="Sensitivity\DirectionalSamplingS.h" />
     <ClInclude Include="Sensitivity\DirectionalSamplingSettingsS.h" />
