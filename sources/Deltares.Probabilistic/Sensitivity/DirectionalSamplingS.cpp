@@ -43,6 +43,8 @@ namespace Deltares
         {
             //Step 0: Initialize the algorithm
 
+            modelRunner->updateStochastSettings(this->Settings->StochastSet);
+
             int nStochasts = modelRunner->getVaryingStochastCount();
 
             // Step 1: Calculate Z0, the model result at u = 0.
@@ -113,7 +115,7 @@ namespace Deltares
             int nZValuesGreaterZero = 0;
             for (double z : zValues)
             {
-                if (z > 0)
+                if (z > Z0)
                 {
                     nZValuesGreaterZero++;
                 }

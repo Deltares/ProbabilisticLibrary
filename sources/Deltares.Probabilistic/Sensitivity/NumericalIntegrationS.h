@@ -45,7 +45,7 @@ namespace Deltares
              */
             std::shared_ptr<Statistics::Stochast> getStochast(std::shared_ptr<Models::ModelRunner> modelRunner) override;
         private:
-            std::vector<std::shared_ptr<Numeric::WeightedValue>> collectSamples(std::shared_ptr<Models::ModelRunner> modelRunner, int stochastIndex, std::shared_ptr<Models::Sample> parentSample, double density, bool registerSamplesForCorrelation);
+            std::vector<std::shared_ptr<Numeric::WeightedValue>> collectSamples(std::shared_ptr<Models::ModelRunner> modelRunner, int stochastIndex, std::shared_ptr<Models::Sample> parentSample, double density, int nSamples, bool registerSamplesForCorrelation);
         };
     }
 }

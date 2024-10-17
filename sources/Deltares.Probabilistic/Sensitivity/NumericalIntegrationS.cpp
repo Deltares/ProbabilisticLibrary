@@ -57,11 +57,12 @@ namespace Deltares
 
             // Initialize parameters for the recursive part of the numerical integration computation.
             constexpr double density = 1.0; // joint probability density
+            constexpr int nSamples = 1; // number of samples
             constexpr int stochastIndex = 0; // number of the stochastic parameter
             std::shared_ptr<Sample> rootSample = std::make_shared<Sample>(nStochasts); //local vector with values in u-space
             bool registerSamplesForCorrelation = this->correlationMatrixBuilder->isEmpty() && this->Settings->CalculateCorrelations && this->Settings->CalculateInputCorrelations;
 
-            std::vector<std::shared_ptr<Numeric::WeightedValue>> samples = collectSamples(modelRunner, stochastIndex, rootSample, density, registerSamplesForCorrelation);
+            std::vector<std::shared_ptr<Numeric::WeightedValue>> samples = collectSamples(modelRunner, stochastIndex, rootSample, density, nSamples, registerSamplesForCorrelation);
 
             std::shared_ptr<Statistics::Stochast> stochast = this->getStochastFromSamples(samples);
 
@@ -73,7 +74,7 @@ namespace Deltares
             return stochast;
         }
 
-        std::vector<std::shared_ptr<Numeric::WeightedValue>> NumericalIntegrationS::collectSamples(std::shared_ptr<ModelRunner> modelRunner, int stochastIndex, std::shared_ptr<Sample> parentSample, double density, bool registerSamplesForCorrelation)
+        std::vector<std::shared_ptr<Numeric::WeightedValue>> NumericalIntegrationS::collectSamples(std::shared_ptr<ModelRunner> modelRunner, int stochastIndex, std::shared_ptr<Sample> parentSample, double density, int nSamples, bool registerSamplesForCorrelation)
         {
             const double uDelta = 0.01;
             const int nStochasts = Settings->StochastSet->getVaryingStochastCount();
@@ -114,7 +115,7 @@ namespace Deltares
                     // depending on the value of u(i) use the probabilities of exceeding or the probabilities of non-exceeding
                     const double contribution = parentSample->Values[stochastIndex] < 0 ? pq.p - pqPrev.p : pqPrev.q - pq.q;
 
-                    std::vector<std::shared_ptr<Numeric::WeightedValue>> newValues = collectSamples(modelRunner, stochastIndex + 1, parentSample, density * contribution, registerSamplesForCorrelation);
+                    std::vector<std::shared_ptr<Numeric::WeightedValue>> newValues = collectSamples(modelRunner, stochastIndex + 1, parentSample, density * contribution, nSamples * (uValues.size() - 1), registerSamplesForCorrelation);
                     for (std::shared_ptr<Numeric::WeightedValue> v : newValues)
                     {
                         values.push_back(v);
@@ -157,7 +158,7 @@ namespace Deltares
                         // depending on the value of u(i) use the probabilities of exceeding or the probabilities of non-exceeding
                         const double contribution = sample->Values[stochastIndex] < 0 ? pq.p - pqPrev.p : pqPrev.q - pq.q;
 
-                        sample->Weight = density * contribution;
+                        sample->Weight = density * contribution * nSamples * samples.size();
 
                         values.push_back(std::make_shared<Numeric::WeightedValue>(sample->Z, sample->Weight));
 
