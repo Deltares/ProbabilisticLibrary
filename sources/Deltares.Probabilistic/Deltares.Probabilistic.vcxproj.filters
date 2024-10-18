@@ -193,6 +193,7 @@
     <ClCompile Include="Sensitivity\NumericalIntegrationS.cpp" />
     <ClCompile Include="Sensitivity\DirectionalSamplingS.cpp" />
     <ClCompile Include="Statistics\ProbabilityValue.cpp" />
+    <ClCompile Include="Model\GradientSettings.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />

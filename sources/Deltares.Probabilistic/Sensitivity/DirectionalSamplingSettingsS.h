@@ -45,17 +45,17 @@ namespace Deltares
             /**
              * \brief The number of iterations within a direction
              */
-            int MaximumIterations;
+            int MaximumIterations = 50;
 
             /**
              * \brief The number of directions to be calculated
              */
-            int NumberDirections;
+            int NumberDirections = 1000;
 
             /**
              * \brief Convergence criterion
              */
-            double VariationCoefficientFailure;
+            double VariationCoefficientFailure = 0.05;
 
             /**
              * \brief Quantiles which should be calculated

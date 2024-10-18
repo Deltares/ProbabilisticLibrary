@@ -19,37 +19,30 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#pragma once
-#include <string>
+
+#include "GradientSettings.h"
+#include "../Utils/probLibException.h"
 
 namespace Deltares
 {
     namespace Models
     {
-        enum GradientType
+        std::string GradientSettings::getGradientTypeString(GradientType method)
         {
-            OneDirection,
-            TwoDirections
-        };
-
-        class GradientSettings
-        {
-        public:
-            GradientSettings() = default;
-
-            GradientType gradientType = OneDirection;
-            double StepSize = 0.3;
-            bool OnlyInitializationAllowed = false;
-
-            bool isValid()
+            switch (method)
             {
-                return StepSize >= 0.01;
+            case GradientType::OneDirection: return "single";
+            case GradientType::TwoDirections: return "double";
+            default: throw Reliability::probLibException("Gradient type");
             }
+        }
 
-            static std::string getGradientTypeString(GradientType method);
-            static GradientType getGradientType(std::string method);
-        };
+        GradientType GradientSettings::getGradientType(std::string method)
+        {
+            if (method == "single") return GradientType::OneDirection;
+            else if (method == "double") return GradientType::TwoDirections;
+            else throw Reliability::probLibException("Gradient type");
+        }
     }
 }
-
 

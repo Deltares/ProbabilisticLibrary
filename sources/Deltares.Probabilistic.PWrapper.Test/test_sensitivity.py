@@ -169,6 +169,64 @@ class Test_sensitivity(unittest.TestCase):
         self.assertAlmostEqual(0, sens.minimum, delta=margin)
         self.assertAlmostEqual(2, sens.maximum, delta=margin)
 
+    def test_numerical_integration_linear(self):
+        project = project_builder.get_sensitivity_linear_project()
+
+        project.settings.sensitivity_method = SensitivityMethod.numerical_integration
+
+        project.run();
+
+        sens = project.stochast;
+
+        self.assertEqual('L - (a+b)' , sens.name)
+        self.assertEqual(DistributionType.histogram, sens.distribution)
+        self.assertAlmostEqual(1.8, sens.mean, delta=margin)
+        self.assertAlmostEqual(0.81, sens.deviation, delta=margin)
+
+    def test_fosm_linear(self):
+        project = project_builder.get_sensitivity_linear_project()
+
+        project.settings.sensitivity_method = SensitivityMethod.fosm
+
+        project.run();
+
+        sens = project.stochast;
+
+        self.assertEqual('L - (a+b)' , sens.name)
+        self.assertEqual(DistributionType.normal, sens.distribution)
+        self.assertAlmostEqual(1.8, sens.mean, delta=margin)
+        self.assertAlmostEqual(1.04, sens.deviation, delta=margin)
+
+    def test_form_linear(self):
+        project = project_builder.get_sensitivity_linear_project()
+
+        project.settings.sensitivity_method = SensitivityMethod.form
+
+        project.run();
+
+        sens = project.stochast;
+
+        self.assertEqual('L - (a+b)' , sens.name)
+        self.assertEqual(DistributionType.cdf_curve, sens.distribution)
+        self.assertAlmostEqual(1.8, sens.mean, delta=margin)
+        self.assertAlmostEqual(0.92, sens.deviation, delta=margin)
+
+    def test_directional_sampling_linear(self):
+        project = project_builder.get_sensitivity_linear_project()
+
+        project.settings.sensitivity_method = SensitivityMethod.directional_sampling
+        project.settings.quantiles.append(0.9)
+
+        project.run();
+
+        sens = project.stochast;
+
+        self.assertEqual('L - (a+b)' , sens.name)
+        self.assertEqual(DistributionType.cdf_curve, sens.distribution)
+        self.assertEqual(1, len(sens.fragility_values))
+        self.assertAlmostEqual(2.89, sens.fragility_values[0].x, delta=margin)
+        self.assertAlmostEqual(0.9, sens.fragility_values[0].probability_of_non_failure, delta=margin)
+
 
 if __name__ == '__main__':
     unittest.main()

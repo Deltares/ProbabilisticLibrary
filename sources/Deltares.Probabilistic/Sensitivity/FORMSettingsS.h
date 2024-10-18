@@ -54,9 +54,9 @@ namespace Deltares
             double Maximum = Statistics::StandardNormal::UMax;
 
             /**
-             * \brief Minimum u value from where to start calculation
+             * \brief Step size
              */
-            double StepSize = 1.0;
+            double StepSize = 0.5;
 
             /**
               * \brief Settings for calculating the gradient at a stochast point
