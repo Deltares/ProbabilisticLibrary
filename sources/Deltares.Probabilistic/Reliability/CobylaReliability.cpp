@@ -39,7 +39,8 @@ namespace Deltares
             auto initialSample = sampleProvider.getSample();
             double z0Fac = getZFactor(modelRunner->getZValue(initialSample));
 
-            auto optModel = std::make_shared<wrappedOptimizationModel>(modelRunner);
+            auto optModel = std::make_shared<wrappedOptimizationModel>(modelRunner, z0Fac);
+            optModel->uMean = std::make_shared<DesignPointBuilder>(nStochasts, Settings->designPointMethod, this->Settings->StochastSet);
 
             auto optimizer = CobylaOptimization();
             optimizer.settings.EpsilonBeta = Settings->EpsilonBeta;
@@ -63,26 +64,22 @@ namespace Deltares
             }
             beta = z0Fac * std::sqrt(beta);
 
-            auto dp = std::make_shared<DesignPoint>();
-            dp->Identifier = "Cobyla Reliability";
-            dp->Beta = beta;
-            dp->convergenceReport->IsConverged = result.success;
-            for (int i = 0; i < nStochasts; i++)
-            {
-                auto alpha = std::make_shared<StochastPointAlpha>();
-                alpha->Stochast = Settings->StochastSet->stochastSettings[i]->stochast;
-                alpha->U = result.Input[i];
-                alpha->Alpha = -alpha->U / beta;
-                alpha->X = alpha->Stochast->getXFromU(alpha->U);
-                dp->Alphas.push_back(alpha);
-            }
+            auto uMin = optModel->uMean->getSample();
+            std::shared_ptr<ConvergenceReport> convergenceReport = std::make_shared<ConvergenceReport>();
+            convergenceReport->IsConverged = result.success;
+            std::shared_ptr<DesignPoint> designPoint = modelRunner->getDesignPoint(uMin, beta, convergenceReport, "Cobyla Reliability");
 
-            return dp;
+            return designPoint;
         };
 
         double wrappedOptimizationModel::GetConstraintValue(const std::shared_ptr<Sample> sample) const
         {
             auto z = modelRunner->getZValue(sample);
+
+            if (z * z0Fac < 0.0)
+            {
+                uMean->addSample(sample);
+            }
             return std::abs(z);
         }
 

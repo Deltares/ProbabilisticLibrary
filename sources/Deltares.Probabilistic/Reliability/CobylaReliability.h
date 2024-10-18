@@ -32,12 +32,15 @@ namespace Deltares
         class wrappedOptimizationModel : public Optimization::optimizationModel
         {
         public:
-            wrappedOptimizationModel(std::shared_ptr<Models::ModelRunner> model_runner) : modelRunner(model_runner) {}
+            wrappedOptimizationModel(std::shared_ptr<Models::ModelRunner> model_runner, double z0fac) :
+                modelRunner(model_runner), z0Fac(z0fac) {}
             double GetZValue(const std::shared_ptr<Models::Sample> sample) const override;
             double GetConstraintValue(const std::shared_ptr<Models::Sample> sample) const override;
             unsigned GetNumberOfConstraints() const { return 1; };
+            std::shared_ptr<DesignPointBuilder> uMean;
         private:
             std::shared_ptr<Models::ModelRunner> modelRunner;
+            const double z0Fac;
         };
 
         class CobylaReliability : public ReliabilityMethod
