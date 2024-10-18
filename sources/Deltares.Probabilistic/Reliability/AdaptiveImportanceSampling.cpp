@@ -50,7 +50,7 @@ namespace Deltares
         {
             this->importanceSampling = std::make_shared<ImportanceSampling>();
             importanceSampling->Settings = this->Settings->importanceSamplingSettings->clone();
-            importanceSampling->Settings->startPointSettings->StartMethod = StartMethodType::None;
+            importanceSampling->Settings->startPointSettings->StartMethod = StartMethodType::FixedValue;
 
             modelRunner->updateStochastSettings(importanceSampling->Settings->StochastSet);
 
@@ -64,14 +64,13 @@ namespace Deltares
             const std::shared_ptr<Sample> startPoint = startPointCalculator->getStartPoint(modelRunner);
             this->lastStartPoint = startPoint;
 
-            if (Settings->startPointSettings->StartMethod != StartMethodType::None)
+            if (Settings->startPointSettings->StartMethod != StartMethodType::FixedValue)
             {
                 const std::shared_ptr<DesignPoint> startDesignPoint = modelRunner->getDesignPoint(startPoint, startPoint->getBeta());
                 startDesignPoint->Identifier = "Start point";
                 previousDesignPoints.push_back(startDesignPoint);
-
-                importanceSampling->Settings->StochastSet->setStartPoint(startPoint);
             }
+            importanceSampling->Settings->StochastSet->setStartPoint(startPoint);
 
             modelRunner->doTextualProgress(ProgressType::Global, "Calculating design point.");
 

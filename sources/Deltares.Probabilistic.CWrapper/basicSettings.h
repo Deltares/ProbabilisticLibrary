@@ -60,7 +60,8 @@ namespace Deltares {
             RaySearch,
             SphereSearch,
             RaySearchVector = 8,
-            RaySearchVectorScaled
+            RaySearchVectorScaled,
+            Sensitivity = 11
         };
 
         enum class DPoptions
@@ -122,6 +123,7 @@ namespace Deltares {
             int                isRepeatableRandom = 1;
             rndTypes           rnd = rndTypes::GeorgeMarsaglia;
             StartMethods       startMethod = StartMethods::Zero;
+            int                maxStepsSphereSearch = 5;
             int                progressInterval = -1;
             double             varianceFactor = 1.5;
             double             epsilonDu = 0.001;
@@ -138,6 +140,7 @@ namespace Deltares {
             double             startVector[maxActiveStochast];
             double             offsets[maxActiveStochast];
             double             varianceFactors[maxActiveStochast];
+            bool               allQuadrants = false;
             numericalBisectionSettings numerical_bisection_settings;
             latinHypercubeSettings latin_hypercube_settings;
         };

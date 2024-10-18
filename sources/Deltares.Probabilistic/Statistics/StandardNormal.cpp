@@ -21,6 +21,7 @@
 //
 #include "StandardNormal.h"
 #include <cmath>
+#include <algorithm>
 #include "../Math/ASA/asa241.hpp"
 
 using namespace ASA::conversions;

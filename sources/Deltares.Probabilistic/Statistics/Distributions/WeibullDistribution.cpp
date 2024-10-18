@@ -71,7 +71,7 @@ namespace Deltares
                 // note that q can be exactly 1 due to numerical limitations in getQFromU
                 return stochast->Shift;
             }
-            else 
+            else
             {
                 const double log = std::log(q);
                 const double xScale = std::pow(-log, 1 / stochast->Shape);
@@ -154,23 +154,30 @@ namespace Deltares
 
         void WeibullDistribution::setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
         {
-            constexpr double delta = 0.00001;
-            double margin = std::min(delta, std::fabs(x / 1000000));
-
-            std::unique_ptr<Numeric::BisectionRootFinder> bisection = std::make_unique<Numeric::BisectionRootFinder>();
-
-            double deviation = this->getDeviation(stochast);
-            Distribution* distribution = this;
-
-            Numeric::RootFinderMethod method = [distribution, stochast, deviation, u](double mean)
+            if (constantType == ConstantParameterType::Deviation)
             {
-                distribution->setMeanAndDeviation(stochast, mean, deviation);
-                return distribution->getXFromU(stochast, u);
-            };
+                constexpr double delta = 0.00001;
+                double margin = std::min(delta, std::fabs(x / 1000000));
 
-            double mean = bisection->CalculateValue(x, this->getMean(stochast), x, margin, method);
+                std::unique_ptr<Numeric::BisectionRootFinder> bisection = std::make_unique<Numeric::BisectionRootFinder>();
 
-            this->setMeanAndDeviation(stochast, mean, deviation);
+                double deviation = this->getDeviation(stochast);
+                Distribution* distribution = this;
+
+                Numeric::RootFinderMethod method = [distribution, stochast, deviation, u](double mean)
+                {
+                    distribution->setMeanAndDeviation(stochast, mean, deviation);
+                    return distribution->getXFromU(stochast, u);
+                };
+
+                double mean = bisection->CalculateValue(x, this->getMean(stochast), x, margin, method);
+
+                this->setMeanAndDeviation(stochast, mean, deviation);
+            }
+            else if (constantType == ConstantParameterType::VariationCoefficient)
+            {
+                this->setXAtUByIteration(stochast, x, u, constantType);
+            }
         }
 
         void WeibullDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values)

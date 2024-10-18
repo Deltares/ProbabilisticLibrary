@@ -74,7 +74,7 @@ namespace Deltares
             {
                 return this->requestedDeviation;
             }
-            else 
+            else
             {
                 double p = sqrt(exp(stochast->Scale * stochast->Scale) - 1);
 
@@ -179,17 +179,24 @@ namespace Deltares
 
         void LogNormalDistribution::setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
         {
-            if (stochast->Scale <= 0)
+            if (constantType == ConstantParameterType::Deviation)
             {
-                setMeanAndDeviation(stochast, x, 0);
+                if (stochast->Scale <= 0)
+                {
+                    setMeanAndDeviation(stochast, x, 0);
+                }
+                else if (x <= stochast->Shift)
+                {
+                    setMeanAndDeviation(stochast, x, 0);
+                }
+                else
+                {
+                    this->setXAtUByIteration(stochast, x, u, constantType);
+                }
             }
-            else if (x <= stochast->Shift)
+            else if (constantType == ConstantParameterType::VariationCoefficient)
             {
-                setMeanAndDeviation(stochast, x, 0);
-            }
-            else
-            {
-                return this->setXAtUByIteration(stochast, x, u, constantType);
+                this->setXAtUByIteration(stochast, x, u, constantType);
             }
         }
 
@@ -261,7 +268,7 @@ namespace Deltares
 
         std::vector<double> LogNormalDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)
         {
-            std::vector<double> specialPoints {stochast->Shift};
+            std::vector<double> specialPoints{ stochast->Shift };
             return specialPoints;
         }
     }

@@ -34,6 +34,18 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
 
         [Test]
+        public void TestStochastName()
+        {
+            var stochast = new Stochast();
+
+            foreach (string name in new[] { "simple", "with space", "and Γρεεκ symbols", "Ϣ" })
+            {
+                stochast.Name = name;
+                Assert.AreEqual(name, stochast.Name);
+            }
+        }
+
+        [Test]
         public void TestDeterministic()
         {
             var stochast = new Stochast
@@ -69,6 +81,16 @@ namespace Deltares.Probabilistic.Wrapper.Test
             stochast.Deviation = 1;
             stochast.SetXAtU(2, 0.05, ConstantParameterType.Deviation);
             Assert.AreEqual(stochast.GetXFromU(0.05), 2, margin);
+
+            stochast.Mean = 2;
+            stochast.Deviation = 1;
+            stochast.SetXAtU(3, 0.05, ConstantParameterType.VariationCoefficient);
+            Assert.AreEqual(stochast.GetXFromU(0.05), 3, margin);
+
+            stochast.Mean = -2;
+            stochast.Deviation = 1;
+            stochast.SetXAtU(-1, 0.05, ConstantParameterType.VariationCoefficient);
+            Assert.AreEqual(stochast.GetXFromU(0.05), -1, margin);
 
             stochast.Mean = 0;
             stochast.Deviation = 1;
@@ -863,7 +885,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         }
 
         [Test]
-        public void TestVariableStochast()
+        public void TestConditionalStochast()
         {
             Stochast realizedStochast = new Stochast { DistributionType = DistributionType.Uniform, Minimum = 0, Maximum = 1 };
             realizedStochast.IsVariableStochast = true;
@@ -886,6 +908,20 @@ namespace Deltares.Probabilistic.Wrapper.Test
             // extrapolated
             Assert.AreEqual(0.5, realizedStochast.GetXFromUAndSource(-1, 0), margin);
             Assert.AreEqual(11.5, realizedStochast.GetXFromUAndSource(3, 0), margin);
+        }
+
+        [Test]
+        public void TestDesignValue()
+        {
+            Stochast stochast = new Stochast { DistributionType = DistributionType.Normal, Mean = 10, Deviation = 2 };
+
+            // not modified
+            Assert.AreEqual(10, stochast.DesignValue, margin);
+
+            stochast.DesignFactor = 2;
+            stochast.DesignQuantile = StandardNormal.GetPFromU(2);
+
+            Assert.AreEqual((10 + 2*2) /2.0, stochast.DesignValue, margin);
         }
 
         private void TestStochast(Stochast stochast, double delta = 0.01)

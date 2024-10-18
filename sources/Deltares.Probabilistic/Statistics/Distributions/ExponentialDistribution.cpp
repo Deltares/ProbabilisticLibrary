@@ -104,10 +104,17 @@ namespace Deltares
 
         void ExponentialDistribution::setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
         {
-            double current = getXFromU(stochast, u);
-            double diff = x - current;
+            if (constantType == ConstantParameterType::Deviation)
+            {
+                double current = getXFromU(stochast, u);
+                double diff = x - current;
 
-            stochast->Shift += diff;
+                stochast->Shift += diff;
+            }
+            else if (constantType == ConstantParameterType::VariationCoefficient)
+            {
+                this->setXAtUByIteration(stochast, x, u, constantType);
+            }
         }
 
         void ExponentialDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values)

@@ -236,6 +236,7 @@
     <ClCompile Include="Sensitivity\SensitivityProject.cpp" />
     <ClCompile Include="Sensitivity\SensitivityMethod.cpp" />
     <ClCompile Include="Statistics\BaseStochast.cpp" />
+    <ClCompile Include="Statistics\VariableStochastValue.cpp" />
     <ClCompile Include="Utils\CallBackList.cpp" />
     <ClCompile Include="Reliability\DesignPointCombiner.cpp" />
     <ClCompile Include="Model\ProxySettings.cpp" />

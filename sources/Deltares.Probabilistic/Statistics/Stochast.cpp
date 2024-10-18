@@ -25,6 +25,7 @@
 #include "Distributions/DistributionLibrary.h"
 #include "Distributions/InvertedDistribution.h"
 #include "Distributions/ExternalDistribution.h"
+#include "Distributions/KSCalculator.h"
 
 namespace Deltares
 {
@@ -79,9 +80,15 @@ namespace Deltares
 
         double Stochast::getXFromUAndSource(double xSource, double u)
         {
-            std::shared_ptr<StochastProperties> valueSetProperties = this->ValueSet->getInterpolatedStochast(xSource);
-
-            return this->distribution->getXFromU(valueSetProperties, u);
+            if (this->IsVariableStochast)
+            {
+                std::shared_ptr<StochastProperties> valueSetProperties = this->ValueSet->getInterpolatedStochast(xSource);
+                return this->distribution->getXFromU(valueSetProperties, u);
+            }
+            else
+            {
+                return this->getXFromU(u);
+            }
         }
 
         void Stochast::setXAtU(double x, double u, ConstantParameterType constantType)
@@ -204,7 +211,7 @@ namespace Deltares
         {
             if (this->IsVariableStochast)
             {
-                return this->ValueSet->isVarying(this->distributionType);
+                return this->ValueSet->isVarying(this->distributionType, this->properties);
             }
             else
             {
@@ -235,7 +242,24 @@ namespace Deltares
         void Stochast::setMean(double mean)
         {
             double deviation = this->getDistributionType() == Deterministic ? this->getProperties()->Scale : this->getDeviation();
-            distribution->setMeanAndDeviation(properties, mean, deviation);
+
+            if (this->constantParameterType == ConstantParameterType::Deviation)
+            {
+                distribution->setMeanAndDeviation(properties, mean, deviation);
+            }
+            else if (this->constantParameterType == ConstantParameterType::VariationCoefficient)
+            {
+                double currentMean = this->getMean();
+                if (currentMean == 0.0)
+                {
+                    distribution->setMeanAndDeviation(properties, mean, mean * this->lastVariation);
+                }
+                else
+                {
+                    double variation = deviation / currentMean;
+                    distribution->setMeanAndDeviation(properties, mean, abs(mean * variation));
+                }
+            }
         }
 
         double Stochast::getDeviation()
@@ -245,7 +269,33 @@ namespace Deltares
 
         void Stochast::setDeviation(double deviation)
         {
-            double mean = distribution->getMean(properties);
+            double mean = this->getMean();
+            distribution->setMeanAndDeviation(properties, mean, deviation);
+        }
+
+        double Stochast::getVariation()
+        {
+            double mean = this->getMean();
+
+            if (mean == 0.0)
+            {
+                return lastVariation;
+            }
+            else
+            {
+                return this->getDeviation() / abs(mean);
+            }
+        }
+
+        void Stochast::setVariation(double variation)
+        {
+            double mean = this->getMean();
+            distribution->setMeanAndDeviation(properties, mean, variation * abs(mean));
+            this->lastVariation = variation;
+        }
+
+        void Stochast::setMeanAndDeviation(double mean, double deviation)
+        {
             distribution->setMeanAndDeviation(properties, mean, deviation);
         }
 
@@ -254,18 +304,13 @@ namespace Deltares
             distribution->setShift(properties, shift, false);
         }
 
-        void Stochast::setMeanAndDeviation(double mean, double deviation)
-        {
-            distribution->setMeanAndDeviation(properties, mean, deviation);
-        }
-
         void Stochast::initializeForRun()
         {
             distribution->initializeForRun(properties);
 
             if (this->IsVariableStochast)
             {
-                this->ValueSet->initializeForRun();
+                this->ValueSet->initializeForRun(this->properties, this->distributionType, this->truncated, this->inverted);
             }
         }
 
@@ -300,6 +345,25 @@ namespace Deltares
             distribution->fit(properties, values);
         }
 
+        double Stochast::getKSTest(std::vector<double> values)
+        {
+            return KSCalculator::getGoodnessOfFit(values, distribution, this->properties);
+        }
+
+        double Stochast::getDesignValue()
+        {
+            double u = StandardNormal::getUFromP(this->designQuantile);
+            return this->getXFromU(u) / this->designFactor;
+        }
+
+        void Stochast::setDesignValue(double designValue)
+        {
+            if (this->designFactor >= 0 && this->designQuantile >= 0 && this->designQuantile <= 1)
+            {
+                this->setXAtU(designValue * this->designFactor, StandardNormal::getUFromP(this->designQuantile), ConstantParameterType::VariationCoefficient);
+            }
+        }
+
         std::vector<double> Stochast::getSpecialXValues()
         {
             return distribution->getSpecialPoints(properties);
@@ -321,6 +385,23 @@ namespace Deltares
             this->distributionChangeType = source->distributionChangeType;
 
             this->SetDirty();
+        }
+
+        Statistics::ConstantParameterType Stochast::getConstantParameterType(std::string distributionType)
+        {
+            if (distributionType == "deviation") return Statistics::ConstantParameterType::Deviation;
+            else if (distributionType == "variation") return Statistics::ConstantParameterType::VariationCoefficient;
+            else throw Reliability::probLibException("constant parameter type");
+        }
+
+        std::string Stochast::getConstantParameterTypeString(Statistics::ConstantParameterType distributionType)
+        {
+            switch (distributionType)
+            {
+            case Statistics::ConstantParameterType::Deviation: return "deviation";
+            case Statistics::ConstantParameterType::VariationCoefficient: return "variation";
+            default:  throw Reliability::probLibException("constant parameter type");
+            }
         }
 
         Statistics::DistributionType Stochast::getDistributionType(std::string distributionType)

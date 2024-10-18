@@ -22,6 +22,7 @@
 #pragma once
 #include "DistributionType.h"
 #include "VariableStochastValue.h"
+#include "BaseStochast.h"
 
 #include "../../Deltares.Probabilistic/Statistics/VariableStochastValueSet.h"
 #include "../Utils/SharedPointerProvider.h"

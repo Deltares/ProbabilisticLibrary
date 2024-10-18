@@ -27,7 +27,7 @@ namespace Deltares
 {
     namespace Reliability
     {
-        enum StartMethodType { None, One, RaySearch, SensitivitySearch, SphereSearch, GivenVector };
+        enum StartMethodType { FixedValue, RaySearch, SensitivitySearch, SphereSearch };
 
         /**
          * \brief Settings for the start point calculator
@@ -38,12 +38,13 @@ namespace Deltares
             /**
              * \brief Type of start point calculation
              */
-            StartMethodType StartMethod = StartMethodType::None;
+            StartMethodType StartMethod = StartMethodType::FixedValue;
             double MaximumLengthStartPoint = 6;
             double GradientStepSize = 4;
             double RadiusSphereSearch = 10;
             double dsdu = 1;
             bool allQuadrants = false;
+            int maxStepsSphereSearch = 5;
 
             std::shared_ptr<StartPointCalculatorSettings> clone()
             {
@@ -54,6 +55,7 @@ namespace Deltares
                 copy->RadiusSphereSearch = this->RadiusSphereSearch;
                 copy->StartMethod = this->StartMethod;
                 copy->allQuadrants = this->allQuadrants;
+                copy->maxStepsSphereSearch = this->maxStepsSphereSearch;
 
                 copy->StochastSet = this->StochastSet;
 
@@ -62,10 +64,10 @@ namespace Deltares
 
             bool isValid()
             {
-                return StartMethod == StartMethodType::None ||
+                return StartMethod == StartMethodType::FixedValue ||
                     (StartMethod == StartMethodType::RaySearch && MaximumLengthStartPoint >= 1) ||
                     (StartMethod == StartMethodType::SensitivitySearch && MaximumLengthStartPoint >= 1) ||
-                    (StartMethod == StartMethodType::SphereSearch && RadiusSphereSearch >= 0.1);
+                    (StartMethod == StartMethodType::SphereSearch && RadiusSphereSearch >= 0.1 && maxStepsSphereSearch >= 1);
             }
 
             std::shared_ptr<StochastSettingsSet> StochastSet = std::make_shared<StochastSettingsSet>();

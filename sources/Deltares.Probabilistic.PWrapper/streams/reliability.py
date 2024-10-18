@@ -50,7 +50,7 @@ class DesignPointMethod(Enum):
 		return str(self.value)
 
 class StartMethod(Enum):
-	none = 'none'
+	fixed_value = 'fixed_value'
 	one = 'one'
 	ray_search = 'ray_search'
 	sphere_search = 'sphere_search'
@@ -100,24 +100,25 @@ class Settings:
 
 	def __dir__(self):
 		return ['reliability_method',
-	            'design_point_method',
-	            'start_method',
-	            'random_type',
-	            'sample_method'
-	            'minimum_samples',
-	            'maximum_samples',
-	            'minimum_iterations',
-	            'maximum_iterations',
-	            'minimum_directions',
-	            'maximum_directions',
-	            'epsilon_beta',
-	            'relaxation_factor',
-	            'relaxation_loops',
-	            'minimum_variance_loops',
-	            'maximum_variance_loops',
-	            'variation_coefficient',
-	            'fraction_failed',
-	            'stochast_settings']
+				'design_point_method',
+				'start_method',
+				'all_quadrants',
+				'max_steps_sphere_search',
+				'random_type',
+				'sample_method'
+				'minimum_samples',
+				'maximum_samples',
+				'maximum_iterations',
+				'minimum_directions',
+				'maximum_directions',
+				'epsilon_beta',
+				'relaxation_factor',
+				'relaxation_loops',
+				'minimum_variance_loops',
+				'maximum_variance_loops',
+				'variation_coefficient',
+				'fraction_failed',
+				'stochast_settings']
 
 	@property
 	def reliability_method(self):
@@ -142,6 +143,22 @@ class Settings:
 	@start_method.setter
 	def start_method(self, value : StartMethod):
 		interface.SetStringValue(self._id, 'start_method', str(value))
+
+	@property
+	def all_quadrants(self):
+		return interface.GetBoolValue(self._id, 'all_quadrants')
+
+	@all_quadrants.setter
+	def all_quadrants(self, value : bool):
+		interface.SetBoolValue(self._id, 'all_quadrants', value)
+
+	@property
+	def max_steps_sphere_search(self):
+		return interface.GetIntValue(self._id, 'max_steps_sphere_search')
+
+	@max_steps_sphere_search.setter
+	def max_steps_sphere_search(self, value : int):
+		interface.SetIntValue(self._id, 'max_steps_sphere_search', value)
 
 	@property
 	def random_type(self):
@@ -288,12 +305,12 @@ class StochastSettings:
 
 	def __dir__(self):
 		return ['min_value',
-	            'max_value',
-	            'start_value',
-	            'variance_factor',
-	            'is_initialization_allowed',
-	            'is_variance_allowed',
-	            'intervals']
+				'max_value',
+				'start_value',
+				'variance_factor',
+				'is_initialization_allowed',
+				'is_variance_allowed',
+				'intervals']
 		
 	@property
 	def variable(self):
@@ -436,16 +453,16 @@ class DesignPoint:
 		
 	def __dir__(self):
 		return ['identifier',
-	            'reliability_index',
-	            'probability_failure',
-	            'alphas',
-	            'contributing_design_points',
-	            'convergence',
-	            'is_converged',
-	            'total_directions',
-	            'total_iterations',
-	            'total_model_runs',
-		        'messages']
+				'reliability_index',
+				'probability_failure',
+				'alphas',
+				'contributing_design_points',
+				'convergence',
+				'is_converged',
+				'total_directions',
+				'total_iterations',
+				'total_model_runs',
+				'messages']
 		
 	@property
 	def identifier(self):
@@ -459,11 +476,11 @@ class DesignPoint:
 	def reliability_index(self):
 		return interface.GetValue(self._id, 'reliability_index')
 
-    # testing method
+	# testing method
 	def _set_reliability_index(self, reliability_index_value):
 		interface.SetValue(self._id, 'reliability_index', reliability_index_value)
 
-    # testing method
+	# testing method
 	def _add_alpha(self, variable, alpha_value):
 		alpha = Alpha();
 		alpha._set_alpha(variable, alpha_value, self.reliability_index);
@@ -556,10 +573,10 @@ class Alpha:
 
 	def __dir__(self):
 		return ['variable',
-	            'alpha',
-	            'alpha_correlated',
-	            'influence_factor',
-	            'x']
+				'alpha',
+				'alpha_correlated',
+				'influence_factor',
+				'x']
 
 	@property
 	def variable(self):
@@ -586,7 +603,7 @@ class Alpha:
 	def _set_variable(self, variable):
 		self._variable = variable
 
-    # testing method
+	# testing method
 	def _set_alpha(self, variable, alpha_value, beta):
 		self._variable = variable
 		interface.SetIntValue(self._id, 'variable', variable._id)
@@ -624,7 +641,7 @@ class CombineSettings:
 		
 	def __dir__(self):
 		return ['combiner_method',
-	            'combine_type']
+				'combine_type']
 
 	@property
 	def combiner_method(self):

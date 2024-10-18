@@ -165,26 +165,45 @@ void createReliabilityMethod::fillStartVector(std::shared_ptr<StartPointCalculat
     switch (bs.startMethod)
     {
     case StartMethods::Zero:
-        startPoint->StartMethod = StartMethodType::None;
+        startPoint->StartMethod = StartMethodType::FixedValue;
         break;
     case StartMethods::One:
-        startPoint->StartMethod = StartMethodType::One;
+        {
+            startPoint->StartMethod = StartMethodType::FixedValue;
+            for (size_t i = 0; i < nStoch; i++)
+            {
+                startPoint->startVector.push_back(1.0);
+            }
+        }
         break;
     case StartMethods::RaySearch:
     case StartMethods::RaySearchVector:
     case StartMethods::RaySearchVectorScaled:
-        startPoint->StartMethod = StartMethodType::RaySearch;
-        startPoint->MaximumLengthStartPoint = 18.1;
-        startPoint->dsdu = 0.3;
-        startPoint->startVector = copyStartVector(bs.startVector, nStoch);
+        {
+            constexpr double startPointLength = 18.1; // be consistent with previous implementation; avoids stopping too early.
+            constexpr double stepSize = 0.3;          // be consistent with previous implementation.
+            startPoint->StartMethod = StartMethodType::RaySearch;
+            startPoint->MaximumLengthStartPoint = startPointLength;
+            startPoint->dsdu = stepSize;
+            startPoint->startVector = copyStartVector(bs.startVector, nStoch);
+        }
         break;
     case StartMethods::SphereSearch:
-        startPoint->StartMethod = StartMethodType::SphereSearch;
-        startPoint->startVector = copyStartVector(bs.startVector, nStoch);
+        {
+            startPoint->StartMethod = StartMethodType::SphereSearch;
+            startPoint->startVector = copyStartVector(bs.startVector, nStoch);
+            startPoint->allQuadrants = bs.allQuadrants;
+            startPoint->maxStepsSphereSearch = bs.maxStepsSphereSearch;
+        }
         break;
     case StartMethods::GivenVector:
-        startPoint->StartMethod = StartMethodType::GivenVector;
-        startPoint->startVector = copyStartVector(bs.startVector, nStoch);
+        {
+            startPoint->StartMethod = StartMethodType::FixedValue;
+            startPoint->startVector = copyStartVector(bs.startVector, nStoch);
+        }
+        break;
+    case StartMethods::Sensitivity:
+        startPoint->StartMethod = StartMethodType::SensitivitySearch;
         break;
     default:
         throw probLibException("not implemented: start method: ", (int)bs.startMethod);
