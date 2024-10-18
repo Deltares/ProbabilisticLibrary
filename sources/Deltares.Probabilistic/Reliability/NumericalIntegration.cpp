@@ -81,7 +81,7 @@ namespace Deltares
 
             std::shared_ptr<ConvergenceReport> convergenceReport = std::make_shared<ConvergenceReport>();
 
-            double probFailure = getStochastProbability(modelRunner, stochastIndex, u, designPointBuilder, density, z0Fac, totalDensity);
+            double probFailure = getStochastProbability(modelRunner, stochastIndex, u, designPointBuilder, density, z0Fac, totalDensity, 1);
 
             probFailure = probFailure / totalDensity;
 
@@ -94,7 +94,7 @@ namespace Deltares
             return modelRunner->getDesignPoint(designPoint, beta, convergenceReport);
         }
 
-        double NumericalIntegration::getStochastProbability(std::shared_ptr<ModelRunner> modelRunner, int stochastIndex, std::shared_ptr<Sample> parentSample, std::shared_ptr<DesignPointBuilder> designPointBuilder, double density, double z0Fac, double& totalDensity)
+        double NumericalIntegration::getStochastProbability(std::shared_ptr<ModelRunner> modelRunner, int stochastIndex, std::shared_ptr<Sample> parentSample, std::shared_ptr<DesignPointBuilder> designPointBuilder, double density, double z0Fac, double& totalDensity, int nSamples)
         {
             const double uDelta = 0.01;
             const int nStochasts = Settings.StochastSet->getVaryingStochastCount();
@@ -121,6 +121,8 @@ namespace Deltares
             // Initialize first probabilities
             std::shared_ptr<Statistics::ProbabilityIterator> pq = std::make_shared<Statistics::ProbabilityIterator>(uValues[0]);
 
+            nSamples *= static_cast<int>(uValues.size()) - 1;
+
             if (stochastIndex < nStochasts - 1)
             {
                 double probFailure = 0;
@@ -131,15 +133,15 @@ namespace Deltares
 
                     double contribution = pq->getDifference(uValues[j + 1]);
 
-                    probFailure += getStochastProbability(modelRunner, stochastIndex + 1, parentSample, designPointBuilder, density * contribution, z0Fac, totalDensity);
+                    probFailure += getStochastProbability(modelRunner, stochastIndex + 1, parentSample, designPointBuilder, density * contribution, z0Fac, totalDensity, nSamples);
 
                     if (stochastIndex == 0)
                     {
                         double beta = -Statistics::StandardNormal::getUFromP(probFailure);
 
                         std::shared_ptr<ReliabilityReport> report = std::make_shared<ReliabilityReport>();
-                        report->Step = j;
-                        report->MaxSteps = (int)uValues.size();
+                        report->Step = static_cast<int>(j);
+                        report->MaxSteps = nSamples;
                         report->Reliability = beta;
 
                         modelRunner->reportResult(report);
@@ -152,13 +154,13 @@ namespace Deltares
             {
                 std::vector<std::shared_ptr<Sample>> samples;
 
-                for (int j = 0; j < uValues.size() - 1; j++)
+                for (size_t j = 0; j < uValues.size() - 1; j++)
                 {
                     std::shared_ptr<Sample> sample = parentSample->clone();
                     sample->Values[stochastIndex] = (uValues[j] + uValues[j + 1]) / 2;
 
                     double contribution = pq->getDifference(uValues[j + 1]);
-                    sample->Weight = density * contribution;
+                    sample->Weight = density * contribution * nSamples;
 
                     samples.push_back(sample);
                 }
@@ -174,12 +176,14 @@ namespace Deltares
 
                     if (!std::isnan(zValues[j]))
                     {
-                        totalDensity += sample->Weight;
+                        double sampleProbability = sample->Weight / nSamples;
+
+                        totalDensity += sampleProbability;
 
                         // if the z-value is negative add the probability density to the probability of failure
                         if (zValues[j] < 0.0)
                         {
-                            probFailure += sample->Weight;
+                            probFailure += sampleProbability;
                         }
 
                         // If the combination of the z-value and the parameter for the position of the origin is negative
