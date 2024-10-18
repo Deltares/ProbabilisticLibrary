@@ -148,12 +148,10 @@ namespace Deltares
             }
 
             // find the design point
-
-            auto designPoint = getMostProbableFailingPoint(beta, domain);
-
-            auto uMin = std::make_shared<Sample>(designPoint->Coordinates);
-            std::shared_ptr<DesignPoint> dp = modelRunner->getDesignPoint(uMin, beta, convergenceReport);
-            return dp;
+            auto mostProbableFailingPoint = getMostProbableFailingPoint(beta, domain);
+            auto uMin = mostProbableFailingPoint->getSample();
+            std::shared_ptr<DesignPoint> designPoint = modelRunner->getDesignPoint(uMin, beta, convergenceReport, "Numerical Bisection");
+            return designPoint;
         }
 
         std::vector<double> NumericalBisection::getStartPoint(const int nStochasts) const
@@ -263,10 +261,10 @@ namespace Deltares
             return (diff < Settings->EpsilonBeta && step >= Settings->MinimumIterations) || step >= Settings->MaximumIterations;
         }
 
-        std::shared_ptr<IntegrationPoint> NumericalBisection::getMostProbableFailingPoint(double beta, IntegrationDomain& domain)
+        std::shared_ptr<DesignPointBuilder> NumericalBisection::getMostProbableFailingPoint(double beta, IntegrationDomain& domain)
         {
             double minProbability = 0;
-            std::shared_ptr<IntegrationPoint> designPoint = nullptr;
+            auto designPoint = std::make_shared<DesignPointBuilder>(domain.getDimension(), CenterOfGravity);
 
             if (beta >= 0)
             {
@@ -276,8 +274,8 @@ namespace Deltares
                     {
                         if (point->ProbabilityDensity() > minProbability)
                         {
-                            designPoint = point;
-                            minProbability = designPoint->ProbabilityDensity();
+                            designPoint->getSample()->Values = point->Coordinates;
+                            minProbability = point->ProbabilityDensity();
                         }
                     }
                 }
@@ -290,8 +288,8 @@ namespace Deltares
                     {
                         if (point->ProbabilityDensity() > minProbability)
                         {
-                            designPoint = point;
-                            minProbability = designPoint->ProbabilityDensity();
+                            designPoint->getSample()->Values = point->Coordinates;
+                            minProbability = point->ProbabilityDensity();
                         }
                     }
                 }
