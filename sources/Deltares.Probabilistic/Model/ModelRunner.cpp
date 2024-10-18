@@ -342,13 +342,13 @@ namespace Deltares
 
 #ifdef __cpp_lib_format
                 auto text = std::format("{}/{}", step, maxSteps);
-                if (!isnan(reliability) || !isnan(convergence))
+                if (!std::isnan(reliability) || !std::isnan(convergence))
                 {
                     text = text + std::format(", Reliability = {:.3f}, Convergence = {:.3f}", reliability, convergence);
                 }
 #else
                 auto text = std::to_string(step) + "/" + std::to_string(maxSteps);
-                if (!isnan(reliability) || !isnan(convergence))
+                if (!std::isnan(reliability) || !std::isnan(convergence))
                 {
                     auto pl = Deltares::Reliability::probLibString();
                     text = text + ", Reliability = " + pl.double2str(reliability);
