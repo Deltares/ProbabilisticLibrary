@@ -74,6 +74,12 @@ namespace Deltares
 
         std::vector<std::shared_ptr<Sample>> LatinHyperCube::CreateAllSamples(int nStochasts) const
         {
+            struct IndexedItem
+            {
+                int Value = 0;
+                double Sequence = 0.0;
+            };
+
             Random::initialize(Settings->randomSettings->RandomGeneratorType, Settings->randomSettings->IsRepeatableRandom,
                 Settings->randomSettings->Seed, Settings->randomSettings->SeedB);
 
@@ -264,9 +270,9 @@ namespace Deltares
             return designPoint;
         }
 
-        double LatinHyperCube::ReportConvergence(std::shared_ptr<ModelRunner>& modelRunner, double pf, int samples, int nMaal) const
+        double LatinHyperCube::ReportConvergence(std::shared_ptr<ModelRunner>& modelRunner, double pf, int samples, int Index) const
         {
-            auto report = std::make_shared<ReliabilityReport>(nMaal, Settings->MinimumSamples);
+            auto report = std::make_shared<ReliabilityReport>(Index);
 
             if (pf > 0.0 && pf < 1.0)
             {
@@ -284,7 +290,6 @@ namespace Deltares
             }
             else
             {
-                report->Reliability = std::nan("");
                 modelRunner->reportResult(report);
                 return std::nan("");
             }

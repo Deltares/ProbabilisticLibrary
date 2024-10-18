@@ -41,8 +41,8 @@ namespace Deltares
 
             auto domain = IntegrationDomain(getStartPoint(nStochasts));
 
-            auto lowerBoundaries = std::vector<double>(nStochasts, -8.0);
-            auto upperBoundaries = std::vector<double>(nStochasts, 8.0);
+            auto lowerBoundaries = std::vector<double>(nStochasts, -StandardNormal::UMax);
+            auto upperBoundaries = std::vector<double>(nStochasts, StandardNormal::UMax);
 
             domain.Cells.push_back(std::make_shared<IntegrationCell>(domain, lowerBoundaries, upperBoundaries));
 
@@ -87,7 +87,7 @@ namespace Deltares
                 std::vector<std::shared_ptr<IntegrationPoint>> unknownPoints;
                 for(auto& points : domain.Points)
                 {
-                    if (!points->getKnown()) unknownPoints.push_back(points);
+                    if (!points->isKnown()) unknownPoints.push_back(points);
                 }
 
                 std::vector<std::shared_ptr<Sample>> upar;
@@ -205,10 +205,10 @@ namespace Deltares
                 changed = false;
                 for (auto& point : domain.Points)
                 {
-                    if (!point->getKnown())
+                    if (!point->isKnown())
                     {
                         point->derive();
-                        changed |= point->getKnown();
+                        changed |= point->isKnown();
                     }
                 }
             }
@@ -219,10 +219,10 @@ namespace Deltares
                 changed = false;
                 for (auto& point : domain.Points)
                 {
-                    if (!point->getKnown())
+                    if (!point->isKnown())
                     {
                         point->deriveByExtrapolation();
-                        changed |= point->getKnown();
+                        changed |= point->isKnown();
                     }
                 }
             }

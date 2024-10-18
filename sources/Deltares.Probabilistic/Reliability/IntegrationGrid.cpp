@@ -176,7 +176,7 @@ namespace Deltares
             {
                 for (size_t i = index + 1; i < this->Points.size(); i++)
                 {
-                    if (this->Points[i]->getKnown() && (this->Points[i]->getResult() == result || this->Points[i]->getResult() == DoubleType::Zero))
+                    if (this->Points[i]->isKnown() && (this->Points[i]->getResult() == result || this->Points[i]->getResult() == DoubleType::Zero))
                     {
                         return true;
                     }
@@ -193,7 +193,7 @@ namespace Deltares
             {
                 for (int i = index - 1; i >= 0; i--)
                 {
-                    if (this->Points[i]->getKnown() && (this->Points[i]->getResult() == result || this->Points[i]->getResult() == DoubleType::Zero))
+                    if (this->Points[i]->isKnown() && (this->Points[i]->getResult() == result || this->Points[i]->getResult() == DoubleType::Zero))
                     {
                         return true;
                     }
@@ -300,7 +300,7 @@ namespace Deltares
             bool allKnown = true;
             for(const auto& p : CornerPoints)
             {
-                if ( ! p->getKnown())
+                if ( ! p->isKnown())
                 {
                     allKnown = false;
                     break;
@@ -458,7 +458,7 @@ namespace Deltares
             {
                 for (int i = index - 1; i >= 0; i--)
                 {
-                    if (Points[i]->getKnown())
+                    if (Points[i]->isKnown())
                     {
                         return Points[i];
                     }
@@ -475,7 +475,7 @@ namespace Deltares
             {
                 for (int i = index + 1; i < Points.size(); i++)
                 {
-                    if (Points[i]->getKnown())
+                    if (Points[i]->isKnown())
                     {
                         return Points[i];
                     }
