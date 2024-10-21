@@ -150,7 +150,8 @@ namespace Deltares
                     iteration++;
                 }
 
-                valid &= startPoint->getBeta() > Settings->Maximum;
+                const double tolerance = 1E-6;
+                valid &= Numeric::NumericSupport::isGreater(startPoint->getBeta(), Settings->Maximum, tolerance);
             }
 
 

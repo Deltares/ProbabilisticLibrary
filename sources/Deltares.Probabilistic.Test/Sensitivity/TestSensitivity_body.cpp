@@ -183,8 +183,8 @@ namespace Deltares
 
                 std::shared_ptr<Statistics::Stochast> stochast = project->getStochast();
 
-                ASSERT_NEAR(stochast->getMean(), 1.76, margin);
-                ASSERT_NEAR(stochast->getDeviation(), 1.02, margin);
+                ASSERT_NEAR(stochast->getMean(), 1.8, margin);
+                ASSERT_NEAR(stochast->getDeviation(), 0.92, margin);
             }
 
             void TestSensitivity::testFOSM()
