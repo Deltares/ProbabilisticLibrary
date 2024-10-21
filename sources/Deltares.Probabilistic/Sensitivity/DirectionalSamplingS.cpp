@@ -66,6 +66,8 @@ namespace Deltares
                 stochast->getProperties()->FragilityValues.push_back(fragilityValue);
             }
 
+            std::sort(stochast->getProperties()->FragilityValues.begin(), stochast->getProperties()->FragilityValues.end(), [](std::shared_ptr<Statistics::FragilityValue> val1, std::shared_ptr<Statistics::FragilityValue> val2) {return val1->X < val2->X; });
+
             return stochast;
         }
 
