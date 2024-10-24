@@ -36,7 +36,7 @@ namespace Deltares
                 modelRunner(model_runner), z0Fac(z0fac) {}
             double GetZValue(const std::shared_ptr<Models::Sample> sample) const override;
             double GetConstraintValue(const std::shared_ptr<Models::Sample> sample) const override;
-            unsigned GetNumberOfConstraints() const { return 1; };
+            unsigned GetNumberOfConstraints() const override { return 1; }
             std::shared_ptr<DesignPointBuilder> uMean;
         private:
             std::shared_ptr<Models::ModelRunner> modelRunner;

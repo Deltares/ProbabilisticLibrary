@@ -36,7 +36,8 @@ module performCobylaReliabilityTests
     real (kind = wp), parameter :: margin = 0.01d0
 
 contains
-!> This subroutine contains the calls for all the tests for the probabilistic computation techniques.
+
+!> This subroutine contains the calls for all the tests for the cobyla reliability tests.
 
 subroutine allPerformCobylaReliabilityTests
 
@@ -48,7 +49,7 @@ end subroutine allPerformCobylaReliabilityTests
 subroutine cobylaReliabilityTest1
 
     !
-    ! Test perform Cobyla Reliability tests
+    ! Perform a Cobyla Reliability test
     !
 
     implicit none
