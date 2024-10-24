@@ -68,6 +68,8 @@ namespace Deltares
             double GetIndexedIndexedValue(int id, std::string property_, int index1, int index2);
             void SetIndexedIndexedValue(int id, std::string property_, int index1, int index2, double value);
             int GetIndexedIntValue(int id, std::string property_, int index);
+            int GetIdValue(int id, std::string property_);
+            int GetIndexedIdValue(int id, std::string property_, int index);
             void SetCallBack(int id, std::string property_, Models::ZValuesCallBack callBack);
             void Execute(int id, std::string method_);
             void AddHandler(std::shared_ptr<BaseHandler> handler);

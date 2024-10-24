@@ -281,6 +281,12 @@ namespace Deltares
             this->Send("set_int_value:" + std::to_string(id) + ":" + property + ":" + std::to_string(value), false);
         }
 
+        int ExternalServerHandler::GetIdValue(int id, std::string property, int newId)
+        {
+            std::string result = this->Send("get_id_value:" + std::to_string(id) + ":" + property + ":" + std::to_string(id), true);
+            return std::stoi(result);
+        }
+
         std::string ExternalServerHandler::GetStringValue(int id, std::string property)
         {
             return this->Send("get_string_value:" + std::to_string(id) + ":" + property, true);
@@ -300,6 +306,12 @@ namespace Deltares
         int ExternalServerHandler::GetIndexedIntValue(int id, std::string property, int index)
         {
             std::string result = this->Send("get_indexed_int_value:" + std::to_string(id) + ":" + property + ":" + std::to_string(index), true);
+            return std::stoi(result);
+        }
+
+        int ExternalServerHandler::GetIndexedIdValue(int id, std::string property, int index, int newId)
+        {
+            std::string result = this->Send("get_indexed_id_value:" + std::to_string(id) + ":" + property + ":" + std::to_string(index) + ":" + std::to_string(newId), true);
             return std::stoi(result);
         }
 

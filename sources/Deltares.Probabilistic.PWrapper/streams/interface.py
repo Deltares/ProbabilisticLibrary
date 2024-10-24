@@ -96,6 +96,10 @@ def GetIntValue(id_, property_):
 def SetIntValue(id_, property_, value_):
 	lib.SetIntValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.c_int(value_))
 
+def GetIdValue(id_, property_):
+	lib.GetIdValue.restype = ctypes.c_int
+	return lib.GetIdValue(ctypes.c_int(id_), bytes(property_, 'utf-8'))
+
 def GetIntArgValue(id_, arg_, property_):
 	lib.GetIntArgValue.restype = ctypes.c_double
 	return lib.GetIntArgValue(ctypes.c_int(id_), ctypes.c_int(arg_), bytes(property_, 'utf-8'))
@@ -168,6 +172,20 @@ def GetArrayIntValue(id_, property_):
 	values = []
 	for i in range(count):
 		value = lib.GetIndexedIntValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.c_int(i))
+		values.append(value)
+
+	return values
+
+def GetArrayIdValue(id_, property_):
+
+	count_property = property_ + '_count'
+	count = GetIntValue(id_, count_property)
+
+	lib.GetIndexedIdValue.restype = ctypes.c_int
+
+	values = []
+	for i in range(count):
+		value = lib.GetIndexedIdValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.c_int(i))
 		values.append(value)
 
 	return values

@@ -178,6 +178,32 @@ namespace Deltares
             return handlersTable[id]->GetIndexedIntValue(id, property_, index);
         }
 
+        int ProjectServer::GetIdValue(int id, std::string property_)
+        {
+            int newId = id_ + 1;
+            int objectId = handlersTable[id]->GetIdValue(id, property_, newId);
+            if (objectId == newId)
+            {
+                handlersTable[newId] = this->handlers[id];
+                id_ += 1;
+            }
+
+            return objectId;
+        }
+
+        int ProjectServer::GetIndexedIdValue(int id, std::string property_, int index)
+        {
+            int newId = id_ + 1;
+            int objectId = handlersTable[id]->GetIndexedIdValue(id, property_, index, newId);
+            if (objectId == newId)
+            {
+                handlersTable[newId] = this->handlers[id];
+                id_ += 1;
+            }
+
+            return objectId;
+        }
+
         void ProjectServer::SetCallBack(int id, std::string property_, ZValuesCallBack callBack)
         {
             handlersTable[id]->SetCallBack(id, property_, callBack);
