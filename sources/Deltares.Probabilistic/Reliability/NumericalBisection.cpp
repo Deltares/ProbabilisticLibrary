@@ -148,9 +148,8 @@ namespace Deltares
             }
 
             // find the design point
-            auto mostProbableFailingPoint = getMostProbableFailingPoint(beta, domain);
-            auto uMin = mostProbableFailingPoint->getSample();
-            std::shared_ptr<DesignPoint> designPoint = modelRunner->getDesignPoint(uMin, beta, convergenceReport, "Numerical Bisection");
+            auto uMin = getMostProbableFailingPoint(beta, domain);
+            auto designPoint = modelRunner->getDesignPoint(uMin, beta, convergenceReport, "Numerical Bisection");
             return designPoint;
         }
 
@@ -261,10 +260,11 @@ namespace Deltares
             return (diff < Settings->EpsilonBeta && step >= Settings->MinimumIterations) || step >= Settings->MaximumIterations;
         }
 
-        std::shared_ptr<DesignPointBuilder> NumericalBisection::getMostProbableFailingPoint(double beta, IntegrationDomain& domain)
+        std::shared_ptr<Sample> NumericalBisection::getMostProbableFailingPoint(double beta, IntegrationDomain& domain) const
         {
             double minProbability = 0.0;
-            auto designPoint = std::make_shared<DesignPointBuilder>(domain.getDimension(), CenterOfGravity);
+            auto method = Settings->designPointMethod;
+            auto designPoint = std::make_shared<DesignPointBuilder>(domain.getDimension(), method);
 
             const auto compResult = (beta >= 0.0 ? DoubleType::Negative : DoubleType::Positive);
             for (const auto& point : domain.Points)
@@ -278,8 +278,8 @@ namespace Deltares
                     }
                 }
             }
-
-            return designPoint;
+            auto uMin = designPoint->getSample();
+            return uMin;
         }
 
     }

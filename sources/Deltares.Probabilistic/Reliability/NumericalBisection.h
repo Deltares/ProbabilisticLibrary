@@ -43,7 +43,7 @@ namespace Deltares
             void derivePoints(IntegrationDomain& domain);
             static void updateProbabilities(IntegrationDomain& domain, double& probUnknown, double& probExcluded, double& probFail);
             bool isReady(double diff, int step) const;
-            static std::shared_ptr<DesignPointBuilder> getMostProbableFailingPoint(double beta, IntegrationDomain& domain);
+            std::shared_ptr<Models::Sample> getMostProbableFailingPoint(double beta, IntegrationDomain& domain) const;
         };
     }
 }
