@@ -66,6 +66,7 @@ namespace Deltares
             {
                 auto calculator = NumericalBisection();
                 calculator.Settings->MaximumIterations = 20;
+                calculator.Settings->designPointMethod = NearestToMean;
 
                 auto modelRunner = projectBuilder().BuildProject();
 
@@ -73,6 +74,8 @@ namespace Deltares
 
                 ASSERT_EQ(designPoint->Alphas.size(), 2);
                 ASSERT_NEAR(designPoint->Beta, 1.87406654375, margin);
+                EXPECT_NEAR(designPoint->Alphas[0]->X, 1.4371, 1e-4);
+                EXPECT_NEAR(designPoint->Alphas[1]->X, -1.20282, 1e-4);
             }
 
             void testReliabilityMethods::testNumericalBisectionLinear() const
@@ -83,11 +86,14 @@ namespace Deltares
                 project->reliabilityMethod = calculator;
                 project->settings->ReliabilityMethod = ReliabilityNumericalBisection;
                 project->settings->MaximumIterations = 20;
+                project->settings->designPointMethod = CenterOfGravity;
 
                 auto designPoint = project->getDesignPoint();
 
                 ASSERT_EQ(designPoint->Alphas.size(), 2);
                 ASSERT_NEAR(designPoint->Beta, 2.57, 0.01);
+                EXPECT_NEAR(designPoint->Alphas[0]->X, 0.931456, 1e-4);
+                EXPECT_NEAR(designPoint->Alphas[1]->X, 0.931459, 1e-4);
             }
         }
 

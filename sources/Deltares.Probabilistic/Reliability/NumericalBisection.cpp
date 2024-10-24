@@ -262,7 +262,6 @@ namespace Deltares
 
         std::shared_ptr<Sample> NumericalBisection::getMostProbableFailingPoint(double beta, IntegrationDomain& domain) const
         {
-            double minProbability = 0.0;
             auto method = Settings->designPointMethod;
             auto designPoint = std::make_shared<DesignPointBuilder>(domain.getDimension(), method);
 
@@ -271,11 +270,9 @@ namespace Deltares
             {
                 if (point->getResult() == compResult || point->getResult() == DoubleType::Zero)
                 {
-                    if (point->ProbabilityDensity() > minProbability)
-                    {
-                        designPoint->getSample()->Values = point->Coordinates;
-                        minProbability = point->ProbabilityDensity();
-                    }
+                    auto sample = std::make_shared<Sample>(point->Coordinates);
+                    sample->Weight = point->ProbabilityDensity();
+                    designPoint->addSample(sample);
                 }
             }
             auto uMin = designPoint->getSample();
