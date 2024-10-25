@@ -40,7 +40,7 @@ namespace Deltares
             }
 
             /**
-             * \brief Assigns a nw value to u and returns the difference in probability with the previously assigned u-value
+             * \brief Assigns a new value to u and returns the difference in probability with the previously assigned u-value
              * \param u Next value of u
              * \return Difference
              */
@@ -49,7 +49,7 @@ namespace Deltares
                 pqPrev = pq;
                 pq = Statistics::StandardNormal::getPQFromU(u);
 
-                // depending on the value of u(i) use the probabilities of exceeding or the probabilities of non-exceeding
+                // depending on the value of u use exceeding or non-exceeding probabilities
                 return pq.p < 0.5 ? pq.p - pqPrev.p : pqPrev.q - pq.q;
             }
 

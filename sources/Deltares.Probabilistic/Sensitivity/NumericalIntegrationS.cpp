@@ -27,7 +27,6 @@
 #include "../Math/NumericSupport.h"
 #include "../Model/Sample.h"
 #include "../Model/GradientCalculator.h"
-#include "../Statistics/DistributionType.h"
 #include "../Statistics/ProbabilityIterator.h"
 
 namespace Deltares::Statistics
@@ -41,7 +40,7 @@ namespace Deltares
 {
     namespace Sensitivity
     {
-        std::shared_ptr<Statistics::Stochast> NumericalIntegrationS::getStochast(std::shared_ptr<Models::ModelRunner> modelRunner)
+        std::shared_ptr<Statistics::Stochast> NumericalIntegrationS::getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner)
         {
             modelRunner->updateStochastSettings(Settings->StochastSet);
 

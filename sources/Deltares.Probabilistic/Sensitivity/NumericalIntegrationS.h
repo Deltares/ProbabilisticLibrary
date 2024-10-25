@@ -28,7 +28,7 @@ namespace Deltares
     namespace Sensitivity
     {
         /**
-         * \brief Calculates the sensitivity using the Crude Monte Carlo algorithm
+         * \brief Calculates the sensitivity using the numerical integration algorithm
          */
         class NumericalIntegrationS : public SensitivityMethod
         {
@@ -43,7 +43,7 @@ namespace Deltares
              * \param modelRunner The model for which the sensitivity is calculated
              * \return The sensitivity in the form of a stochastic variable
              */
-            std::shared_ptr<Statistics::Stochast> getStochast(std::shared_ptr<Models::ModelRunner> modelRunner) override;
+            std::shared_ptr<Statistics::Stochast> getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner) override;
         private:
             std::vector<std::shared_ptr<Numeric::WeightedValue>> collectSamples(std::shared_ptr<Models::ModelRunner> modelRunner, int stochastIndex, std::shared_ptr<Models::Sample> parentSample, double density, int nSamples, bool registerSamplesForCorrelation);
         };

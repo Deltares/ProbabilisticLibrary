@@ -45,19 +45,19 @@ Directional sampling is an accelerated sampling method which identifies the fail
 
 After transferring the model into the standard space, the value of model $Z_0$ for a sample at the center of space $u_0$ is calculated. 
 
-$n$ points are drawn randomly in the variable space according to an uniform distribution. The line between these points and the origin will serve as the random directions. In the next step, the required of reliability index $\beta_{q}$ corresponding with the given quantile value / probability of exceedance is evaluated, and used to find the distance $d_{i,0} = |\beta_{q}|$ from the origin, using equation \autoref{eq:DirectionalSamplingWeight}, with the assumption of $\beta_{dir} = d_{i,0}$ for all directions. 
+$n$ points are drawn randomly in the variable space according to an uniform distribution. The line between these points and the origin will serve as the random directions. In the next step, the required reliability index $\beta_{q}$ corresponding with the given quantile value / probability of exceedance is evaluated, and used to find the distance $d_{i,0} = |\beta_{q}|$ from the origin, using \autoref{eq:DirectionalSamplingWeight}, with the assumption of $\beta_{dir} = d_{i,0}$ for all directions. 
 
 Now the value of model $Z_{i,1}$ at each sample point ($d_{i,0}$ distance from the origin on each direction) is evaluated. 
 
 Here the probability of having $Z_{i,1}$ values bigger than the $Z_0$, and the related reliability index $\beta_0$ are calculated to examine the validity of random directions. If the $\beta_{q}$ is bigger than $\beta_0$, every direction with $Z_{i,1} < Z0$ is disregarded in the probability calculations.
 
-The main goal is to find the same value of $Z$ in all directions, as the model response on given exceedance probability. If the $Z$ values are not same for all the directions, we have to go through the following steps to find it.
+The main goal is to find the same value of $Z$ in all directions, in such a way that the given exceedance probability does not change. If the $Z$ values are not same for all the directions, we have to go through the following steps to find it.
 
 Per direction $i$, find a new distance $d_{i,2}$ from the origin for each direction, so that is searched to satisfy the following:
 
 \begin{itemize}
 	\item the predicted $Z_{pred}$ is the same for all directions (prediction based on interpolation between $Z_0$ and $max(Z_{i,1})$) 
-	\item the combined reliability remains $\beta_q$, based on equation \autoref{eq:DirectionalSampling}. Note that even when a direction is disregarded in previous steps, still the number of directions $n$, is not changed. 
+	\item the combined reliability remains $\beta_q$, based on \autoref{eq:DirectionalSampling}. Note that even when a direction is disregarded in previous steps, still the number of directions $n$ is not changed. 
 \end{itemize}
 
 $d_{i,2}$ is calculated based on the interpolation between $Z_{pred}$ and $Z_{i,1}$ values. Now the model response $Z_{i,2}$ at distance $d_{i,2}$ is evaluated. 
@@ -67,7 +67,7 @@ The last steps will perform maximum up to $N$ times to reach the same value of $
 It worthy to mention that the directions are disregarded in the analysis, if:
 
 \begin{itemize}
-	\item calculated distance for them is much higher than $/beta_q$ or
+	\item calculated distance for them is much higher than $\beta_q$ or
 	\item calculated distance for them is negative
 \end{itemize}
 

@@ -28,7 +28,7 @@ namespace Deltares
     namespace Sensitivity
     {
         /**
-         * \brief Calculates the sensitivity using the Crude Monte Carlo algorithm
+         * \brief Calculates the sensitivity using the FOSM (First Order Second Moment) algorithm
          */
         class FOSM : public SensitivityMethod
         {
@@ -43,7 +43,7 @@ namespace Deltares
              * \param modelRunner The model for which the sensitivity is calculated
              * \return The sensitivity in the form of a stochastic variable
              */
-            std::shared_ptr<Statistics::Stochast> getStochast(std::shared_ptr<Models::ModelRunner> modelRunner) override;
+            std::shared_ptr<Statistics::Stochast> getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner) override;
         };
     }
 }

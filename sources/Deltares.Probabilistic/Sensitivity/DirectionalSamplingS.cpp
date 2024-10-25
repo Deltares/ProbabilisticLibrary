@@ -39,7 +39,7 @@ namespace Deltares
 {
     namespace Sensitivity
     {
-        std::shared_ptr<Statistics::Stochast> DirectionalSamplingS::getStochast(std::shared_ptr<Models::ModelRunner> modelRunner)
+        std::shared_ptr<Statistics::Stochast> DirectionalSamplingS::getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner)
         {
             //Step 0: Initialize the algorithm
 

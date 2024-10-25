@@ -42,7 +42,7 @@ namespace Deltares
         using namespace Deltares::Models;
         using namespace Deltares::Statistics;
 
-        std::shared_ptr<Stochast> FORMS::getStochast(std::shared_ptr<ModelRunner> modelRunner)
+        std::shared_ptr<Stochast> FORMS::getSensitivityStochast(std::shared_ptr<ModelRunner> modelRunner)
         {
             int nStochasts = modelRunner->getVaryingStochastCount();
 
@@ -51,7 +51,7 @@ namespace Deltares
             gradientCalculator->Settings = Settings->GradientSettings;
 
             int iteration = 0;
-            double zPrevious = NAN;
+            double zPrevious = std::nan("");
             bool ascending = true;
             double factorBeta = 1;
 
@@ -296,20 +296,20 @@ namespace Deltares
 
         void FORMS::repairResults(std::vector<double>& values)
         {
-            for (int k = 0; k < values.size(); k++)
+            for (auto& value : values)
             {
-                if (std::isnan(values[k]))
+                if (std::isnan(value))
                 {
-                    values[k] = 0;
+                    value = 0;
                 }
             }
         }
 
         bool FORMS::areResultsValid(std::vector<double>& values)
         {
-            for (int k = 0; k < values.size(); k++)
+            for (auto& value : values)
             {
-                if (!std::isnan(values[k]))
+                if (!std::isnan(value))
                 {
                     return true;
                 }
