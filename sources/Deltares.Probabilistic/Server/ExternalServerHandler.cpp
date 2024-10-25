@@ -283,7 +283,7 @@ namespace Deltares
 
         int ExternalServerHandler::GetIdValue(int id, std::string property, int newId)
         {
-            std::string result = this->Send("get_id_value:" + std::to_string(id) + ":" + property + ":" + std::to_string(id), true);
+            std::string result = this->Send("get_id_value:" + std::to_string(id) + ":" + property + ":" + std::to_string(newId), true);
             return std::stoi(result);
         }
 

@@ -184,7 +184,7 @@ namespace Deltares
             int objectId = handlersTable[id]->GetIdValue(id, property_, newId);
             if (objectId == newId)
             {
-                handlersTable[newId] = this->handlers[id];
+                handlersTable[newId] = this->handlersTable[id];
                 id_ += 1;
             }
 
@@ -197,7 +197,7 @@ namespace Deltares
             int objectId = handlersTable[id]->GetIndexedIdValue(id, property_, index, newId);
             if (objectId == newId)
             {
-                handlersTable[newId] = this->handlers[id];
+                handlersTable[newId] = this->handlersTable[id];
                 id_ += 1;
             }
 
