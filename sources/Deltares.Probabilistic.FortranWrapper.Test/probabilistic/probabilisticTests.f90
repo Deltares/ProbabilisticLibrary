@@ -32,6 +32,8 @@ module probabilisticTests
     use waartsFunctionsTests
     use performImportanceSamplingTests
     use performAdaptiveMCIStests
+    use performLatinHyperCubeTests
+    use performNumericalBisectionTests
     use combineElementsTests
     use performDSTests
     use upscalingTests
@@ -60,6 +62,8 @@ subroutine allProbabilisticTests
     call allCombineElementsTests
     call allPerformImportanceSamplingTests
     call allPerformAdaptiveMCIStests
+    call allPerformLatinHyperCubeTests
+    call allPerformNumericalBisectionTests
     call performAllDSTests
     call allUpscalingTests
     call allUpscaleLengthTests

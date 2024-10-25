@@ -304,6 +304,7 @@ namespace Deltares
                 if (property_ == "relaxation_factor") return settings->RelaxationFactor;
                 else if (property_ == "variation_coefficient") return settings->VariationCoefficient;
                 else if (property_ == "fraction_failed") return settings->FractionFailed;
+                else if (property_ == "epsilon_beta") return settings->EpsilonBeta;
             }
             else if (objectType == ObjectType::StochastSettings)
             {
@@ -448,6 +449,7 @@ namespace Deltares
                 if (property_ == "relaxation_factor") settings->RelaxationFactor = value;
                 else if (property_ == "variation_coefficient") settings->VariationCoefficient = value;
                 else if (property_ == "fraction_failed") settings->FractionFailed = value;
+                else if (property_ == "epsilon_beta") settings->EpsilonBeta = value;
             }
             else if (objectType == ObjectType::SensitivitySettings)
             {
@@ -558,6 +560,7 @@ namespace Deltares
 
                 if (property_ == "minimum_samples") return settings->MinimumSamples;
                 else if (property_ == "maximum_samples") return settings->MaximumSamples;
+                else if (property_ == "minimum_iterations") return settings->MinimumIterations;
                 else if (property_ == "maximum_iterations") return settings->MaximumIterations;
                 else if (property_ == "minimum_directions") return settings->MinimumDirections;
                 else if (property_ == "maximum_directions") return settings->MaximumDirections;
@@ -679,6 +682,7 @@ namespace Deltares
 
                 if (property_ == "minimum_samples") settings->MinimumSamples = value;
                 else if (property_ == "maximum_samples") settings->MaximumSamples = value;
+                else if (property_ == "minimum_iterations") settings->MinimumIterations = value;
                 else if (property_ == "maximum_iterations") settings->MaximumIterations = value;
                 else if (property_ == "minimum_directions") settings->MinimumDirections = value;
                 else if (property_ == "maximum_directions") settings->MaximumDirections = value;

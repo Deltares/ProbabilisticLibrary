@@ -141,6 +141,8 @@
     <ClInclude Include="projectBuilder_body.cpp" />
     <ClInclude Include="Reliability\testStartPointCalculator.h" />
     <ClInclude Include="Reliability\testStartPointCalculator_body.cpp" />
+    <ClInclude Include="Reliability\testReliabilityMethods.h" />
+    <ClInclude Include="Reliability\testReliabilityMethods_body.cpp" />
     <ClInclude Include="Sensitivity\TestSensitivity.h" />
     <ClInclude Include="Sensitivity\TestSensitivity_body.cpp" />
     <ClInclude Include="Utils\testutils.h" />
@@ -166,6 +168,7 @@
     </ClCompile>
     <ClCompile Include="projectBuilder.cpp" />
     <ClCompile Include="Reliability\testStartPointCalculator.cpp" />
+    <ClCompile Include="Reliability\testReliabilityMethods.cpp" />
     <ClCompile Include="Sensitivity\TestSensitivity.cpp" />
     <ClCompile Include="unittests.cpp" />
     <ClCompile Include="Utils\testutils.cpp" />

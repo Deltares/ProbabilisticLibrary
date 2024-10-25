@@ -35,26 +35,8 @@ target_link_libraries(Deltares.Probabilistic.FortranWrapper.Test
   Deltares.Probabilistic.CWrapper Deltares.Probabilistic.FortranWrapper Deltares.Probabilistic
   ${fctools} ftnunit feedback feedbackDLL unitTestTools)
 
-add_library(FLtestProbabilistic
-  STATIC
-    probabilistic/initProbabilisticTests.f90
-    probabilistic/incompleteGammaFunctionTests.f90
-    probabilistic/basicCorrelationTests.f90
-    probabilistic/distributionFunctions.f90
-    probabilistic/distributionFunctionsTests.f90
-    probabilistic/combineElementsTests.f90
-    probabilistic/performDSTests.f90
-    probabilistic/performImportanceSamplingTests.f90
-    probabilistic/upscaleLengthTests.f90
-    probabilistic/upscalingTests.f90
-    probabilistic/probabilisticTests.f90
-    probabilistic/waartsFunctions.f90
-    probabilistic/waartsFunctionsTests.f90
-    probabilistic/probMethodsWaartsFunctionsTests.f90
-    probabilistic/toolkitTestFunctions.f90
-    probabilistic/performAdaptiveMCISTests.f90
-    probabilistic/sparseWaartsTestFunctions.f90
-)
+file(GLOB testFortranProbabilisticFiles "probabilistic/*.f90")
+add_library(FLtestProbabilistic STATIC ${testFortranProbabilisticFiles})
 target_link_libraries(FLtestProbabilistic ${fctools} Deltares.Probabilistic.FortranWrapper ftnunit)
 
 add_library(FLtestProbabilisticConversions

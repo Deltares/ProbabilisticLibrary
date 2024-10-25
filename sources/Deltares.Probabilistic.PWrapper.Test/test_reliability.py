@@ -421,5 +421,39 @@ class Test_reliability(unittest.TestCase):
         self.assertAlmostEqual(2.3258, beta, delta=margin)
         self.assertEqual(2, len(alphas))
 
+    def test_numerical_bisection_hunt(self):
+        project = project_builder.get_hunt_project()
+
+        project.settings.reliability_method = ReliabilityMethod.numerical_bisection
+
+        project.settings.minimum_iterations = 5
+        project.settings.maximum_iterations = 6
+        project.settings.epsilon_beta = 0.1
+
+        project.run()
+
+        dp = project.design_point;
+        beta = dp.reliability_index;
+        alphas = dp.alphas;
+
+        self.assertAlmostEqual(1.861, beta, delta=margin)
+        self.assertEqual(5, len(alphas))
+
+    def test_latin_hypercube_hunt(self):
+        project = project_builder.get_hunt_project()
+
+        project.settings.reliability_method = ReliabilityMethod.latin_hypercube
+
+        project.settings.minimum_samples = 25000
+
+        project.run()
+
+        dp = project.design_point;
+        beta = dp.reliability_index;
+        alphas = dp.alphas;
+
+        self.assertAlmostEqual(1.8987, beta, delta=margin)
+        self.assertEqual(5, len(alphas))
+
 if __name__ == '__main__':
     unittest.main()

@@ -20,33 +20,23 @@
 // All rights reserved.
 //
 #pragma once
-#include <string>
-#include <vector>
 
-namespace Deltares {
-    namespace Reliability {
+#include "ReliabilityMethod.h"
+#include "LatinHyperCubeSettings.h"
 
-        class probLibString
+namespace Deltares
+{
+    namespace Reliability
+    {
+        class LatinHyperCube: public ReliabilityMethod
         {
         public:
-            bool iStrcmp(const std::string& s1, const std::string& s2);
-            bool iFind(const std::string& s1, const std::string& s2);
-            static std::string double2str(const double x);
-            static std::string double2strTrimmed(const double x);
-            static std::string doubles2str(const std::vector<double>& x);
-            static std::string doubles2strTrimmed(const std::vector<double>& x);
-
-            // trim from both ends of string (right then left)
-            std::string trim(const std::string& s, const char* t);
-
+            std::shared_ptr<LatinHyperCubeSettings> Settings = std::make_shared<LatinHyperCubeSettings>();
+            std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
         private:
-            std::string strToLower(const std::string& data);
-
-            // trim from end of string (right)
-            std::string rtrim(const std::string& s, const char* t);
-
-            // trim from beginning of string (left)
-            std::string ltrim(const std::string& s, const char* t);
+            std::shared_ptr<DesignPoint> getReducedDesignPoint(std::shared_ptr<Models::ModelRunner>& modelRunner, double qRange);
+            double ReportConvergence(std::shared_ptr<Models::ModelRunner>& modelRunner, double pf, int samples, int nMaal) const;
+            std::vector<std::shared_ptr<Sample>> CreateAllSamples(int nStochasts) const;
         };
     }
 }
