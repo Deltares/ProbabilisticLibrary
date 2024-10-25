@@ -104,14 +104,16 @@ module interface_typedefs
   end type tCompIds
 
   type, public :: tpFORM
-      integer                     :: startMethod          !< Method for startvector
-      integer                     :: maxIterations        !< Maximum number of iterations
-      integer                     :: trialLoops           !< Number of trial loops
-      real(kind=wp)               :: epsilonBeta          !< Epsilon Beta (relative accuracy)
-      real(kind=wp)               :: epsilonZvalue        !< Epsilon Zfunction (relative accuracy)
-      real(kind=wp)               :: relaxationFactor     !< Relaxation factor
-      real(kind=wp)               :: dU                   !< Interval size for derivatives
-      real(kind=wp), allocatable  :: startValue(:)        !< Start values u for FORM computation
+      integer                     :: startMethod              !< Method for startvector
+      integer                     :: maxIterations            !< Maximum number of iterations
+      integer                     :: trialLoops               !< Number of trial loops
+      real(kind=wp)               :: epsilonBeta              !< Epsilon Beta (relative accuracy)
+      real(kind=wp)               :: epsilonZvalue            !< Epsilon Zfunction (relative accuracy)
+      real(kind=wp)               :: relaxationFactor         !< Relaxation factor
+      real(kind=wp)               :: dU                       !< Interval size for derivatives
+      logical                     :: allQuadrants = .false.   !< option all quadrants of sphere search
+      integer                     :: maxStepsSphereSearch = 5 !< max steps of sphere search
+      real(kind=wp), allocatable  :: startValue(:)            !< Start values u for FORM computation
   end type tpFORM
 
   type, public :: tpNI

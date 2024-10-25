@@ -28,12 +28,6 @@ namespace Deltares
 {
     namespace Reliability
     {
-        struct IndexedItem
-        {
-            int Value = 0;
-            double Sequence = 0.0;
-        };
-
         class LatinHyperCube: public ReliabilityMethod
         {
         public:

@@ -32,7 +32,7 @@ namespace Deltares
 {
     namespace Reliability
     {
-        // forward declarations:
+        // forward declarations (needed for circular dependencies):
         class IntegrationPoint;
         class IntegrationCell;
         class IntegrationLine;
@@ -67,7 +67,7 @@ namespace Deltares
             inline Numeric::DoubleType getResult() const { return Numeric::NumericSupport::getDoubleType(ZValue); };
             std::vector<std::shared_ptr<IntegrationLine>> Lines;
             inline void setKnown(const bool b) { Known = b; }
-            inline bool getKnown() const { return Known; }
+            inline bool isKnown() const { return Known; }
             inline void setZValue(const double z) { ZValue = z; }
         private:
             bool Known = false;

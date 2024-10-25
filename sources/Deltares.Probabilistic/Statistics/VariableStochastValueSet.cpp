@@ -35,7 +35,7 @@ namespace Deltares
     {
         using namespace Deltares::Numeric;
 
-        void VariableStochastValuesSet::initializeForRun()
+        void VariableStochastValuesSet::initializeForRun(std::shared_ptr<StochastProperties> defaultStochast, DistributionType distributionType, bool truncated, bool inverted)
         {
             xValues.clear();
             locations.clear();
@@ -49,21 +49,25 @@ namespace Deltares
             observations.clear();
 
             std::sort(this->StochastValues.begin(), this->StochastValues.end(), [](std::shared_ptr<VariableStochastValue> val1, std::shared_ptr<VariableStochastValue> val2) {return val1->X < val2->X; });
+            std::shared_ptr<Distribution> distribution = DistributionLibrary::getDistribution(distributionType, truncated, inverted);
 
             for (size_t i = 0; i < this->StochastValues.size(); i++)
             {
                 std::shared_ptr<VariableStochastValue> value = this->StochastValues[i];
 
                 xValues.push_back(value->X);
-                locations.push_back(value->Stochast->Location);
-                scales.push_back(value->Stochast->Scale);
-                minimums.push_back(value->Stochast->Minimum);
-                maximums.push_back(value->Stochast->Maximum);
-                shapes.push_back(value->Stochast->Shape);
-                shapesB.push_back(value->Stochast->ShapeB);
-                shifts.push_back(value->Stochast->Shift);
-                shiftsB.push_back(value->Stochast->ShiftB);
-                observations.push_back(value->Stochast->Observations);
+
+                std::shared_ptr<StochastProperties> source = value->getMergedStochast(distribution, defaultStochast);
+
+                locations.push_back(source->Location);
+                scales.push_back(source->Scale);
+                minimums.push_back(source->Minimum);
+                maximums.push_back(source->Maximum);
+                shapes.push_back(source->Shape);
+                shapesB.push_back(source->ShapeB);
+                shifts.push_back(source->Shift);
+                shiftsB.push_back(source->ShiftB);
+                observations.push_back(source->Observations);
             }
         }
 
@@ -83,14 +87,15 @@ namespace Deltares
 
             return properties;
         }
-        
-        bool VariableStochastValuesSet::isVarying(DistributionType distributionType)
+
+        bool VariableStochastValuesSet::isVarying(DistributionType distributionType, std::shared_ptr<StochastProperties> defaultStochast)
         {
             std::shared_ptr<Distribution> distribution = DistributionLibrary::getDistribution(distributionType, false, false);
 
             for (size_t i = 0; i < StochastValues.size(); i++)
             {
-                if (distribution->isVarying(StochastValues[i]->Stochast))
+                std::shared_ptr<StochastProperties> mergedStochast = defaultStochast != nullptr ?  StochastValues[i]->getMergedStochast(distribution, defaultStochast) : StochastValues[i]->Stochast;
+                if (distribution->isVarying(mergedStochast))
                 {
                     return true;
                 }
@@ -99,7 +104,7 @@ namespace Deltares
             return false;
         }
 
-        void VariableStochastValuesSet::copyFrom (std::shared_ptr<VariableStochastValuesSet> source)
+        void VariableStochastValuesSet::copyFrom(std::shared_ptr<VariableStochastValuesSet> source)
         {
             this->StochastValues.clear();
 

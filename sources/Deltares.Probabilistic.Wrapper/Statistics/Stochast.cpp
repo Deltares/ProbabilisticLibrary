@@ -39,6 +39,16 @@ namespace Deltares
                 }
             }
 
+            Statistics::Wrappers::ConstantParameterType Stochast::getConstantParameterType(Statistics::ConstantParameterType constantParameterType)
+            {
+                switch (constantParameterType)
+                {
+                case Statistics::ConstantParameterType::Deviation: return Statistics::Wrappers::ConstantParameterType::Deviation;
+                case Statistics::ConstantParameterType::VariationCoefficient: return Statistics::Wrappers::ConstantParameterType::VariationCoefficient;
+                default: throw gcnew System::NotSupportedException("constant parameter type");
+                }
+            }
+
             void Stochast::updateStochast()
             {
                 std::shared_ptr<StochastProperties> properties = shared->object->getProperties();

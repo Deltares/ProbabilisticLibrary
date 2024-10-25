@@ -41,8 +41,8 @@ namespace Deltares
 
             auto domain = IntegrationDomain(getStartPoint(nStochasts));
 
-            auto lowerBoundaries = std::vector<double>(nStochasts, -8.0);
-            auto upperBoundaries = std::vector<double>(nStochasts, 8.0);
+            auto lowerBoundaries = std::vector<double>(nStochasts, -StandardNormal::UMax);
+            auto upperBoundaries = std::vector<double>(nStochasts, StandardNormal::UMax);
 
             domain.Cells.push_back(std::make_shared<IntegrationCell>(domain, lowerBoundaries, upperBoundaries));
 
@@ -87,7 +87,7 @@ namespace Deltares
                 std::vector<std::shared_ptr<IntegrationPoint>> unknownPoints;
                 for(auto& points : domain.Points)
                 {
-                    if (!points->getKnown()) unknownPoints.push_back(points);
+                    if (!points->isKnown()) unknownPoints.push_back(points);
                 }
 
                 std::vector<std::shared_ptr<Sample>> upar;
@@ -148,12 +148,9 @@ namespace Deltares
             }
 
             // find the design point
-
-            auto designPoint = getMostProbableFailingPoint(beta, domain);
-
-            auto uMin = std::make_shared<Sample>(designPoint->Coordinates);
-            std::shared_ptr<DesignPoint> dp = modelRunner->getDesignPoint(uMin, beta, convergenceReport);
-            return dp;
+            auto uMin = getMostProbableFailingPoint(beta, domain);
+            auto designPoint = modelRunner->getDesignPoint(uMin, beta, convergenceReport, "Numerical Bisection");
+            return designPoint;
         }
 
         std::vector<double> NumericalBisection::getStartPoint(const int nStochasts) const
@@ -205,10 +202,10 @@ namespace Deltares
                 changed = false;
                 for (auto& point : domain.Points)
                 {
-                    if (!point->getKnown())
+                    if (!point->isKnown())
                     {
                         point->derive();
-                        changed |= point->getKnown();
+                        changed |= point->isKnown();
                     }
                 }
             }
@@ -219,10 +216,10 @@ namespace Deltares
                 changed = false;
                 for (auto& point : domain.Points)
                 {
-                    if (!point->getKnown())
+                    if (!point->isKnown())
                     {
                         point->deriveByExtrapolation();
-                        changed |= point->getKnown();
+                        changed |= point->isKnown();
                     }
                 }
             }
@@ -230,7 +227,7 @@ namespace Deltares
 
         void NumericalBisection::updateProbabilities(IntegrationDomain& domain, double& probUnknown, double& probExcluded, double& probFail)
         {
-            for (int i = domain.Cells.size() - 1; i >= 0; i--)
+            for (int i = static_cast<int>(domain.Cells.size()) - 1; i >= 0; i--)
             {
                 std::shared_ptr<IntegrationCell> cell = domain.Cells[i];
                 if (!cell->Known || !cell->Determined)
@@ -263,41 +260,23 @@ namespace Deltares
             return (diff < Settings->EpsilonBeta && step >= Settings->MinimumIterations) || step >= Settings->MaximumIterations;
         }
 
-        std::shared_ptr<IntegrationPoint> NumericalBisection::getMostProbableFailingPoint(double beta, IntegrationDomain& domain)
+        std::shared_ptr<Sample> NumericalBisection::getMostProbableFailingPoint(double beta, IntegrationDomain& domain) const
         {
-            double minProbability = 0;
-            std::shared_ptr<IntegrationPoint> designPoint = nullptr;
+            auto method = Settings->designPointMethod;
+            auto designPoint = DesignPointBuilder(static_cast<int>(domain.getDimension()), method);
 
-            if (beta >= 0)
+            const auto compResult = (beta >= 0.0 ? DoubleType::Negative : DoubleType::Positive);
+            for (const auto& point : domain.Points)
             {
-                for (auto& point : domain.Points)
+                if (point->getResult() == compResult || point->getResult() == DoubleType::Zero)
                 {
-                    if (point->getResult() == DoubleType::Negative || point->getResult() == DoubleType::Zero)
-                    {
-                        if (point->ProbabilityDensity() > minProbability)
-                        {
-                            designPoint = point;
-                            minProbability = designPoint->ProbabilityDensity();
-                        }
-                    }
+                    auto sample = std::make_shared<Sample>(point->Coordinates);
+                    sample->Weight = point->ProbabilityDensity();
+                    designPoint.addSample(sample);
                 }
             }
-            else
-            {
-                for (auto& point : domain.Points)
-                {
-                    if (point->getResult() == DoubleType::Positive || point->getResult() == DoubleType::Zero)
-                    {
-                        if (point->ProbabilityDensity() > minProbability)
-                        {
-                            designPoint = point;
-                            minProbability = designPoint->ProbabilityDensity();
-                        }
-                    }
-                }
-            }
-
-            return designPoint;
+            auto uMin = designPoint.getSample();
+            return uMin;
         }
 
     }

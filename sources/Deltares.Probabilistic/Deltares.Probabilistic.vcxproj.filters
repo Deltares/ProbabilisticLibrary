@@ -129,7 +129,6 @@
     <ClCompile Include="Reliability\NumericalIntegrationSettings.cpp" />
     <ClCompile Include="Reliability\SubsetSimulationSettings.cpp" />
     <ClCompile Include="Reliability\SubsetSimulation.cpp" />
-    <ClCompile Include="Model\Project.cpp" />
     <ClCompile Include="Combine\ImportanceSamplingCombiner.cpp" />
     <ClCompile Include="Combine\DesignPointModel.cpp" />
     <ClCompile Include="Combine\CombinedDesignPointModel.cpp" />
@@ -138,7 +137,6 @@
     <ClCompile Include="Model\SampleProvider.cpp" />
     <ClCompile Include="Combine\DirectionalSamplingCombiner.cpp" />
     <ClCompile Include="Combine\CombineType.cpp" />
-    <ClCompile Include="Model\ProjectServer.cpp" />
     <ClCompile Include="Reliability\Settings.cpp" />
     <ClCompile Include="Statistics\SparseCorrelationMatrix.cpp" />
     <ClCompile Include="Combine\CombineSettings.cpp" />
@@ -182,7 +180,12 @@
     <ClCompile Include="Server\BaseServer.cpp" />
     <ClCompile Include="Server\ExternalServerHandler.cpp" />
     <ClCompile Include="Server\ExternalLibraryHandler.cpp" />
-  </ItemGroup>
+    <ClCompile Include="Model\ModelInputParameter.cpp" />
+
+    <ClCompile Include="Combine\LengthEffectProject.cpp" />
+    <ClCompile Include="Combine\LengthEffect.cpp" />
+    <ClCompile Include="Statistics\VariableStochastValue.cpp" />
+</ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
     <ClInclude Include="Statistics\Distributions\DeterministicDistribution.h">
@@ -330,7 +333,6 @@
     <ClInclude Include="Reliability\NumericalIntegrationSettings.h" />
     <ClInclude Include="Reliability\SubsetSimulationSettings.h" />
     <ClInclude Include="Reliability\SubsetSimulation.h" />
-    <ClInclude Include="Model\Project.h" />
     <ClInclude Include="Combine\ImportanceSamplingCombiner.h" />
     <ClInclude Include="Combine\DesignPointModel.h" />
     <ClInclude Include="Combine\CombinedDesignPointModel.h" />
@@ -339,7 +341,6 @@
     <ClInclude Include="Model\SampleProvider.h" />
     <ClInclude Include="Combine\DirectionalSamplingCombiner.h" />
     <ClInclude Include="Combine\CombineType.h" />
-    <ClInclude Include="Model\ProjectServer.h" />
     <ClInclude Include="Reliability\Settings.h" />
     <ClInclude Include="Statistics\SparseCorrelationMatrix.h" />
     <ClInclude Include="Combine\CombineSettings.h" />
@@ -383,6 +384,9 @@
     <ClInclude Include="Server\BaseServer.h" />
     <ClInclude Include="Server\ExternalServerHandler.h" />
     <ClInclude Include="Server\ExternalLibraryHandler.h" />
+    <ClInclude Include="Combine\LengthEffect.h" />
+    <ClInclude Include="Combine\LengthEffectProject.h" />
+    <ClInclude Include="Combine\LengthEffect.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

@@ -122,7 +122,7 @@ namespace Deltares
             return cobyla_reliability;
         }
 
-        const std::shared_ptr<Reliability::ReliabilityMethod> Settings::GetCrudeMonteCarloMethod()
+        const std::shared_ptr<ReliabilityMethod> Settings::GetCrudeMonteCarloMethod()
         {
             std::shared_ptr<CrudeMonteCarlo> crudeMonteCarlo = std::make_shared<CrudeMonteCarlo>();
 

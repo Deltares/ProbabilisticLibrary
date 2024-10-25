@@ -73,7 +73,8 @@ namespace Deltares
                 Stochast^ source = nullptr;
                 VariableStochastValueSet^ valueSet = gcnew VariableStochastValueSet();
 
-                Statistics::ConstantParameterType getNativeConstantParameterType(ConstantParameterType constantParameterType);
+                static Deltares::Statistics::ConstantParameterType getNativeConstantParameterType(ConstantParameterType constantParameterType);
+                static Statistics::Wrappers::ConstantParameterType getConstantParameterType(Statistics::ConstantParameterType constantParameterType);
 
                 void updateStochast();
                 void updateLists();
@@ -163,7 +164,27 @@ namespace Deltares
                 virtual property double Deviation
                 {
                     double get() { return shared->object->getDeviation(); }
-                    void set(double value) { shared->object->setDeviation(value); }
+                    void set(double value)
+                    {
+                        shared->object->constantParameterType = this->getNativeConstantParameterType(Deltares::Statistics::Wrappers::ConstantParameterType::Deviation);
+                        shared->object->setDeviation(value);
+                    }
+                }
+
+                virtual property double Variation
+                {
+                    double get() { return shared->object->getVariation(); }
+                    void set(double value)
+                    {
+                        shared->object->constantParameterType = this->getNativeConstantParameterType(Deltares::Statistics::Wrappers::ConstantParameterType::VariationCoefficient);
+                        shared->object->setVariation(value);
+                    }
+                }
+
+                virtual property Deltares::Statistics::Wrappers::ConstantParameterType ConstantParameterType
+                {
+                    Deltares::Statistics::Wrappers::ConstantParameterType get() { return this->getConstantParameterType(shared->object->constantParameterType); }
+                    void set(Deltares::Statistics::Wrappers::ConstantParameterType value) { shared->object->constantParameterType = this->getNativeConstantParameterType(Deltares::Statistics::Wrappers::ConstantParameterType::VariationCoefficient); }
                 }
 
                 virtual property double Location
@@ -303,9 +324,27 @@ namespace Deltares
                     return shared->object->getUFromX(x);
                 }
 
-                virtual void SetXAtU(double x, double u, ConstantParameterType constantType)
+                virtual void SetXAtU(double x, double u, Deltares::Statistics::Wrappers::ConstantParameterType constantType)
                 {
                     shared->object->setXAtU(x, u, this->getNativeConstantParameterType(constantType));
+                }
+
+                virtual property double DesignQuantile
+                {
+                    double get() { return shared->object->designQuantile; }
+                    void set(double value) { shared->object->designQuantile = value; }
+                }
+
+                virtual property double DesignFactor
+                {
+                    double get() { return shared->object->designFactor; }
+                    void set(double value) { shared->object->designFactor = value; }
+                }
+
+                virtual property double DesignValue
+                {
+                    double get() { return shared->object->getDesignValue(); }
+                    void set(double value) { shared->object->setDesignValue(value); }
                 }
 
                 virtual void InitializeForRun()
@@ -337,6 +376,13 @@ namespace Deltares
                     shared->object->fitWeighted(nativeValues, nativeWeights);
 
                     updateLists();
+                }
+
+                virtual double GetGoodnessOfFit(array<double>^ values)
+                {
+                    std::vector<double> nativeValues = NativeSupport::toNative(values);
+
+                    return shared->object->getKSTest(nativeValues);
                 }
 
                 virtual void CopyFrom(Stochast^ source)
