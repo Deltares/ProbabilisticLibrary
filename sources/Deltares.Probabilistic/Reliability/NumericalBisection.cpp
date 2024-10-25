@@ -227,7 +227,7 @@ namespace Deltares
 
         void NumericalBisection::updateProbabilities(IntegrationDomain& domain, double& probUnknown, double& probExcluded, double& probFail)
         {
-            for (int i = domain.Cells.size() - 1; i >= 0; i--)
+            for (int i = static_cast<int>(domain.Cells.size()) - 1; i >= 0; i--)
             {
                 std::shared_ptr<IntegrationCell> cell = domain.Cells[i];
                 if (!cell->Known || !cell->Determined)
@@ -263,7 +263,7 @@ namespace Deltares
         std::shared_ptr<Sample> NumericalBisection::getMostProbableFailingPoint(double beta, IntegrationDomain& domain) const
         {
             auto method = Settings->designPointMethod;
-            auto designPoint = std::make_shared<DesignPointBuilder>(domain.getDimension(), method);
+            auto designPoint = DesignPointBuilder(static_cast<int>(domain.getDimension()), method);
 
             const auto compResult = (beta >= 0.0 ? DoubleType::Negative : DoubleType::Positive);
             for (const auto& point : domain.Points)
@@ -272,10 +272,10 @@ namespace Deltares
                 {
                     auto sample = std::make_shared<Sample>(point->Coordinates);
                     sample->Weight = point->ProbabilityDensity();
-                    designPoint->addSample(sample);
+                    designPoint.addSample(sample);
                 }
             }
-            auto uMin = designPoint->getSample();
+            auto uMin = designPoint.getSample();
             return uMin;
         }
 
