@@ -241,6 +241,8 @@ class Settings:
 	@epsilon_beta.setter
 	def epsilon_beta(self, value : float):
 		interface.SetValue(self._id, 'epsilon_beta', value)
+		
+	@property
 	def step_size(self):
 		return interface.GetValue(self._id, 'step_size')
 		
