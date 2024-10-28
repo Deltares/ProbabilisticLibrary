@@ -52,7 +52,7 @@ namespace Deltares {
             return s;
         }
 
-        std::string probLibString::double2str(const double x) const
+        std::string probLibString::double2str(const double x)
         {
             char buffer[32];
 #ifdef _WIN32
@@ -62,6 +62,35 @@ namespace Deltares {
 #endif // _WIN32
             std::string retval = buffer;
             return retval;
+        }
+
+        std::string probLibString::double2strTrimmed(const double x)
+        {
+            auto str = double2str(x);
+            str.erase(std::remove(str.begin(), str.end(), ' '), str.end());
+            return str;
+        }
+
+        std::string probLibString::doubles2str(const std::vector<double>& x)
+        {
+            std::string s;
+            for (const auto& value : x)
+            {
+                if (!s.empty()) s += "_";
+                s += double2str(value);
+            }
+            return s;
+        }
+
+        std::string probLibString::doubles2strTrimmed(const std::vector<double>& x)
+        {
+            std::string s;
+            for (const auto& value : x)
+            {
+                if (!s.empty()) s += "_";
+                s += double2strTrimmed(value);
+            }
+            return s;
         }
 
         // trim from end of string (right)

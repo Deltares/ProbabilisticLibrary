@@ -37,6 +37,8 @@ class ReliabilityMethod(Enum):
 	adaptive_importance_sampling = 'adaptive_importance_sampling'
 	directional_sampling = 'directional_sampling'
 	subset_simulation = 'subset_simulation'
+	numerical_bisection = 'numerical_bisection'
+	latin_hypercube = 'latin_hypercube'
 	def __str__(self):
 		return str(self.value)
 
@@ -115,6 +117,7 @@ class Settings:
 				'maximum_iterations',
 				'minimum_directions',
 				'maximum_directions',
+				'epsilon_beta',
 				'step_size',
 				'gradient_type',
 				'relaxation_factor',
@@ -198,9 +201,17 @@ class Settings:
 		interface.SetIntValue(self._id, 'maximum_samples', value)
 
 	@property
+	def minimum_iterations(self):
+		return interface.GetIntValue(self._id, 'minimum_iterations')
+
+	@minimum_iterations.setter
+	def minimum_iterations(self, value : int):
+		interface.SetIntValue(self._id, 'minimum_iterations', value)
+
+	@property
 	def maximum_iterations(self):
 		return interface.GetIntValue(self._id, 'maximum_iterations')
-		
+
 	@maximum_iterations.setter
 	def maximum_iterations(self, value : int):
 		interface.SetIntValue(self._id, 'maximum_iterations', value)
@@ -208,7 +219,7 @@ class Settings:
 	@property
 	def minimum_directions(self):
 		return interface.GetIntValue(self._id, 'minimum_directions')
-		
+
 	@minimum_directions.setter
 	def minimum_directions(self, value : int):
 		interface.SetIntValue(self._id, 'minimum_directions', value)
@@ -216,12 +227,18 @@ class Settings:
 	@property
 	def maximum_directions(self):
 		return interface.GetIntValue(self._id, 'maximum_directions')
-		
+
 	@maximum_directions.setter
 	def maximum_directions(self, value : int):
 		interface.SetIntValue(self._id, 'maximum_directions', value)
 
 	@property
+	def epsilon_beta(self):
+		return interface.GetValue(self._id, 'epsilon_beta')
+
+	@epsilon_beta.setter
+	def epsilon_beta(self, value : float):
+		interface.SetValue(self._id, 'epsilon_beta', value)
 	def step_size(self):
 		return interface.GetValue(self._id, 'step_size')
 		
@@ -240,7 +257,7 @@ class Settings:
 	@property
 	def relaxation_factor(self):
 		return interface.GetValue(self._id, 'relaxation_factor')
-		
+
 	@relaxation_factor.setter
 	def relaxation_factor(self, value : float):
 		interface.SetValue(self._id, 'relaxation_factor', value)

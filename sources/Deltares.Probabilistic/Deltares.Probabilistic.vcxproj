@@ -55,7 +55,7 @@
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
-    <CLRSupport>true</CLRSupport>
+    <CLRSupport>false</CLRSupport>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -145,6 +145,8 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <CompileAsManaged>false</CompileAsManaged>
+      <AdditionalOptions>/Zc:twoPhase- %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -217,6 +219,11 @@
     <ClInclude Include="Reliability\SubsetSimulationSettings.h" />
     <ClInclude Include="Reliability\SubsetSimulation.h" />
     <ClInclude Include="Reliability\Settings.h" />
+    <ClInclude Include="Reliability\LatinHyperCube.h" />
+    <ClInclude Include="Reliability\LatinHyperCubeSettings.h" />
+    <ClInclude Include="Reliability\NumericalBisection.h" />
+    <ClInclude Include="Reliability\NumericalBisectionSettings.h" />
+    <ClInclude Include="Reliability\IntegrationGrid.h" />
     <ClInclude Include="Statistics\SparseCorrelationMatrix.h" />
     <ClInclude Include="Statistics\SelfCorrelationMatrix.h" />
     <ClInclude Include="Utils\Locker.h" />
@@ -275,6 +282,7 @@
     <ClInclude Include="Math\ASA\asa239.hpp" />
     <ClInclude Include="Math\ASA\asa241.hpp" />
     <ClInclude Include="Math\SpecialFunctions.h" />
+    <ClInclude Include="Math\BinarySupport.h" />
     <ClInclude Include="Statistics\Distributions\TruncatedDistribution.h" />
     <ClInclude Include="Reliability\DirectionalSampling.h" />
     <ClInclude Include="Reliability\DirectionalSamplingSettings.h" />
@@ -393,6 +401,11 @@
     <ClCompile Include="Reliability\SubsetSimulationSettings.cpp" />
     <ClCompile Include="Reliability\SubsetSimulation.cpp" />
     <ClCompile Include="Reliability\Settings.cpp" />
+    <ClCompile Include="Reliability\LatinHyperCube.cpp" />
+    <ClCompile Include="Reliability\LatinHyperCubeSettings.cpp" />
+    <ClCompile Include="Reliability\NumericalBisection.cpp" />
+    <ClCompile Include="Reliability\NumericalBisectionSettings.cpp" />
+    <ClCompile Include="Reliability\IntegrationGrid.cpp" />
     <ClCompile Include="Statistics\SparseCorrelationMatrix.cpp" />
     <ClCompile Include="Statistics\SelfCorrelationMatrix.cpp" />
     <ClCompile Include="Utils\Locker.cpp" />
@@ -444,6 +457,7 @@
     <ClCompile Include="Math\ASA\asa109.cpp" />
     <ClCompile Include="Math\ASA\asa239.cpp" />
     <ClCompile Include="Math\SpecialFunctions.cpp" />
+    <ClCompile Include="Math\BinarySupport.cpp" />
     <ClCompile Include="Statistics\Distributions\TruncatedDistribution.cpp" />
     <ClCompile Include="Reliability\DirectionalSampling.cpp" />
     <ClCompile Include="Reliability\DirectionalSamplingSettings.cpp" />

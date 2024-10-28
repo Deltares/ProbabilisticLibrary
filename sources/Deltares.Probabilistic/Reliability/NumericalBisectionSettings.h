@@ -20,33 +20,41 @@
 // All rights reserved.
 //
 #pragma once
-#include <string>
-#include <vector>
 
-namespace Deltares {
-    namespace Reliability {
+#include <memory>
 
-        class probLibString
+#include "DesignPointBuilder.h"
+#include "StochastSettingsSet.h"
+
+namespace Deltares
+{
+    namespace Reliability
+    {
+        class NumericalBisectionSettings
         {
         public:
-            bool iStrcmp(const std::string& s1, const std::string& s2);
-            bool iFind(const std::string& s1, const std::string& s2);
-            static std::string double2str(const double x);
-            static std::string double2strTrimmed(const double x);
-            static std::string doubles2str(const std::vector<double>& x);
-            static std::string doubles2strTrimmed(const std::vector<double>& x);
+            int MinimumIterations = 8;
 
-            // trim from both ends of string (right then left)
-            std::string trim(const std::string& s, const char* t);
+            int MaximumIterations = 50;
 
-        private:
-            std::string strToLower(const std::string& data);
+            double EpsilonBeta = 0.01;
 
-            // trim from end of string (right)
-            std::string rtrim(const std::string& s, const char* t);
+            /**
+             * \brief Method type how the design point (alpha values) is calculated
+             */
+            DesignPointMethod designPointMethod = DesignPointMethod::CenterOfGravity;
 
-            // trim from beginning of string (left)
-            std::string ltrim(const std::string& s, const char* t);
+            /**
+             * \brief Settings for individual stochastic variables, such as the start value
+             */
+            std::shared_ptr<StochastSettingsSet> StochastSet = std::make_shared<StochastSettingsSet>();
+
+            bool isValid() const { return MaximumIterations > 0; }
+
+            /**
+             * \brief Settings for performing model runs
+             */
+            std::shared_ptr<Models::RunSettings> runSettings = std::make_shared<Models::RunSettings>();
         };
     }
 }

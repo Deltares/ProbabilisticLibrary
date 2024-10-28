@@ -182,6 +182,8 @@
     <ClInclude Include="Reliability\DesignPointCombiner.h" />
     <ClInclude Include="Model\ProxySettings.h" />
     <ClInclude Include="Model\Project.h" />
+    <ClInclude Include="Reliability\LatinHypercube.h" />
+    <ClInclude Include="Reliability\NumericalBisection.h" />
     <ClInclude Include="Reliability\NumericalIntegration.h" />
     <ClInclude Include="Reliability\ClusterSettings.h" />
     <ClInclude Include="Reliability\AdaptiveImportanceSampling.h" />
@@ -190,6 +192,8 @@
     <ClInclude Include="Reliability\ImportanceSamplingSettings.h" />
     <ClInclude Include="Reliability\ImportanceSampling.h" />
     <ClInclude Include="Model\ModelSample.h" />
+    <ClInclude Include="Reliability\LatinHypercubeSettings.h" />
+    <ClInclude Include="Reliability\NumericalBisectionSettings.h" />
     <ClInclude Include="Reliability\NumericalIntegrationSettings.h" />
     <ClInclude Include="Statistics\SelfCorrelationMatrix.h" />
     <ClInclude Include="Statistics\DistributionType.h" />
@@ -254,11 +258,15 @@
     <ClCompile Include="Reliability\DesignPointCombiner.cpp" />
     <ClCompile Include="Model\ProxySettings.cpp" />
     <ClCompile Include="Model\Project.cpp" />
+    <ClCompile Include="Reliability\LatinHypercube.cpp" />
+    <ClCompile Include="Reliability\NumericalBisection.cpp" />
     <ClCompile Include="Reliability\NumericalIntegration.cpp" />
     <ClCompile Include="Reliability\ClusterSettings.cpp" />
     <ClCompile Include="Reliability\AdaptiveImportanceSampling.cpp" />
     <ClCompile Include="Reliability\AdaptiveImportanceSamplingSettings.cpp" />
     <ClCompile Include="Reliability\ImportanceSampling.cpp" />
+    <ClCompile Include="Reliability\LatinHypercubeSettings.cpp" />
+    <ClCompile Include="Reliability\NumericalBisectionSettings.cpp" />
     <ClCompile Include="Reliability\NumericalIntegrationSettings.cpp" />
     <ClCompile Include="Statistics\SelfCorrelationMatrix.cpp" />
     <ClCompile Include="Statistics\DistributionType.cpp" />

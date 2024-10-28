@@ -39,7 +39,7 @@ module performImportanceSamplingTests
     real (kind = wp), parameter :: margin = 0.1d0
 
 contains
-!> This subroutine contains the calls for all the tests for the probablistic computation techniques.
+!> This subroutine contains the calls for all the tests for the probabilistic computation techniques.
 
 subroutine allPerformImportanceSamplingTests
 
@@ -95,6 +95,8 @@ subroutine importanceSamplingTest1
     call assert_comparable(beta, betaKnown, margin, "The computed beta deviates from the analytically computed value")
     call finalizeProbabilisticCalculation(probDb)
 
+    deallocate(alfa, x, iPoint)
+
 end subroutine importanceSamplingTest1
 
 subroutine importanceSamplingTest2
@@ -143,6 +145,7 @@ subroutine importanceSamplingTest2
     end do
 
     call finalizeProbabilisticCalculation(probDb)
+    deallocate(alfa, x, iPoint)
 
 end subroutine importanceSamplingTest2
 
