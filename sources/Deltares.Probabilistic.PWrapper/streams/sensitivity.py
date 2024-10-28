@@ -23,8 +23,8 @@ import sys
 from enum import Enum
 
 from .utils import *
-from .statistic import Stochast
-from .reliability import StochastSettings, RandomType
+from .statistic import Stochast, ProbabilityValue
+from .reliability import StochastSettings, RandomType, GradientType
 from . import interface
 
 if not interface.IsLibraryLoaded():
@@ -32,6 +32,7 @@ if not interface.IsLibraryLoaded():
 
 class SensitivityMethod(Enum):
 	form = 'form'
+	fosm = 'fosm'
 	numerical_integration = 'numerical_integration'
 	crude_monte_carlo = 'crude_monte_carlo'
 	importance_sampling = 'importance_sampling'
@@ -44,6 +45,8 @@ class SensitivitySettings:
 	def __init__(self):
 		self._id = interface.Create('sensitivity_settings')
 		self._stochast_settings = FrozenList()
+		self._quantiles = None
+		self._synchronizing = False
 
 	def __dir__(self):
 		return ['sensitivity_method',
@@ -53,13 +56,17 @@ class SensitivitySettings:
 	            'maximum_iterations',
 	            'minimum_directions',
 	            'maximum_directions',
-	            'relaxation_factor',
-	            'relaxation_loops',
+	            'minimum_u',
+	            'maximum_u',
+	            'step_size',
+		        'gradient_type',
+	            'global_step_size',
 	            'variation_coefficient',
-			    'probability_for_convergence'
-			    'derive_samples_from_variation_coefficient'
-			    'calculate_correlations'
-			    'calculate_input_correlations'
+			    'probability_for_convergence',
+			    'derive_samples_from_variation_coefficient',
+			    'calculate_correlations',
+			    'calculate_input_correlations',
+			    'quantiles',
 	            'stochast_settings']
 
 		
@@ -120,6 +127,46 @@ class SensitivitySettings:
 		interface.SetIntValue(self._id, 'maximum_directions', value)
 
 	@property
+	def minimum_u(self):
+		return interface.GetValue(self._id, 'minimum_u')
+		
+	@minimum_u.setter
+	def minimum_u(self, value : float):
+		interface.SetValue(self._id, 'minimum_u', value)
+
+	@property
+	def maximum_u(self):
+		return interface.GetValue(self._id, 'maximum_u')
+		
+	@maximum_u.setter
+	def maximum_u(self, value : float):
+		interface.SetValue(self._id, 'maximum_u', value)
+
+	@property
+	def global_step_size(self):
+		return interface.GetValue(self._id, 'global_step_size')
+		
+	@global_step_size.setter
+	def global_step_size(self, value : float):
+		interface.SetValue(self._id, 'global_step_size', value)
+
+	@property
+	def step_size(self):
+		return interface.GetValue(self._id, 'step_size')
+		
+	@step_size.setter
+	def step_size(self, value : float):
+		interface.SetValue(self._id, 'step_size', value)
+
+	@property
+	def gradient_type(self):
+		return GradientType[interface.GetStringValue(self._id, 'gradient_type')]
+		
+	@gradient_type.setter
+	def gradient_type(self, value : GradientType):
+		interface.SetStringValue(self._id, 'gradient_type', str(value))
+
+	@property
 	def relaxation_factor(self):
 		return interface.GetValue(self._id, 'relaxation_factor')
 		
@@ -170,6 +217,31 @@ class SensitivitySettings:
 	@property   
 	def stochast_settings(self):
 		return self._stochast_settings
+
+	@property
+	def quantiles(self):
+		if self._quantiles is None:
+			self._synchronizing = True
+			self._quantiles = CallbackList(self._quantiles_changed)
+			quantile_ids = interface.GetArrayIntValue(self._id, 'quantiles')
+			for quantile_id in quantile_ids:
+				self._quantiles.append(ProbabilityValue(quantile_id))
+			self._synchronizing = False
+
+		return self._quantiles
+
+	def _quantiles_changed(self):
+		if not self._synchronizing:
+			# replace floats by ProbabilityValue
+			self._synchronizing = True
+			for i in range(len(self._quantiles)):
+				if type(self._quantiles[i]) == int or type(self._quantiles[i]) == float:
+					val = self._quantiles[i]
+					self._quantiles[i] = ProbabilityValue()
+					self._quantiles[i].probability_of_non_failure = val
+			self._synchronizing = False
+
+			interface.SetArrayIntValue(self._id, 'quantiles', [quantile._id for quantile in self._quantiles])
 
 	def _set_variables(self, variables):
 		new_stochast_settings = []

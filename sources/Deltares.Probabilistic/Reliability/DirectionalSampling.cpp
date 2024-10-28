@@ -35,7 +35,7 @@ namespace Deltares
             double pf = 0;
             double qtot = 0;
             double rmin = 200; // initialise convergence indicator and loops
-            std::shared_ptr<DesignPointBuilder> uMean = std::make_shared<DesignPointBuilder> (nstochasts, this->Settings->designPointMethod, this->Settings->StochastSet);
+            std::shared_ptr<DesignPointBuilder> designPointBuilder = std::make_shared<DesignPointBuilder> (nstochasts, this->Settings->designPointMethod, this->Settings->StochastSet);
             int parSamples = 0;
 
             std::vector<double> betaValues;
@@ -54,10 +54,11 @@ namespace Deltares
             double z0 = modelRunner->getZValue(zeroSample);
             double z0Fac = this->getZFactor(z0);
 
-            std::shared_ptr<Sample> uMin = std::make_shared<Sample>(nstochasts);
             int chunkSize = modelRunner->Settings->MaxChunkSize;
 
-            double sumPfSamp = 0.0; double sumPfSamp2 = 0.0;
+            double sumWeights = 0.0;
+            double sumWeights2 = 0.0;
+
             int validSamples = 0;
 
             if (modelRunner->Settings->MaxParallelProcesses > 0)
@@ -88,7 +89,7 @@ namespace Deltares
                     if (modelRunner->shouldExitPrematurely(samples))
                     {
                         // return the result so far
-                        return modelRunner->getDesignPoint(uMean->getSample(), Statistics::StandardNormal::getUFromQ(pf), convergenceReport);
+                        return modelRunner->getDesignPoint(designPointBuilder->getSample(), Statistics::StandardNormal::getUFromQ(pf), convergenceReport);
                     }
 
                     parSamples = parSamples + 1;
@@ -113,12 +114,7 @@ namespace Deltares
 
                     qtot += uSurface->Weight;
 
-                    if (uSurface->Weight > 0)
-                    {
-                        int k = 1;
-                    }
-
-                    uMean->addSample(uSurface);
+                    designPointBuilder->addSample(uSurface);
                 }
                 else
                 {
@@ -133,21 +129,20 @@ namespace Deltares
                 if (betaDirection < rmin)
                 {
                     rmin = betaDirection;
-                    uMin = uSurface;
                 }
 
                 // check on convergence criterium
                 bool enoughSamples = nmaal >= Settings->MinimumDirections;
                 convergenceReport->TotalDirections = nmaal+1;
 
-                sumPfSamp += uSurface->Weight;
-                sumPfSamp2 += pow(uSurface->Weight, 2);
+                sumWeights += uSurface->Weight;
+                sumWeights2 += uSurface->Weight * uSurface->Weight;
 
                 if (qtot > 0)
                 {
                     // determine accuracy
 
-                    double convergence = getConvergence(pf, sumPfSamp, sumPfSamp2, (double)validSamples);
+                    double convergence = getConvergence(pf, sumWeights, sumWeights2, (double)validSamples);
 
                     double beta = z0Fac * Statistics::StandardNormal::getUFromQ(pf);
 
@@ -174,10 +169,10 @@ namespace Deltares
                 }
             }
 
-            convergenceReport->Convergence = getConvergence(pf, sumPfSamp, sumPfSamp2, (double)validSamples);
+            convergenceReport->Convergence = getConvergence(pf, sumWeights, sumWeights2, (double)validSamples);
             convergenceReport->IsConverged = (convergenceReport->Convergence <= Settings->VariationCoefficient);
 
-            std::shared_ptr<Sample> uDesign = uMean->getSample();
+            std::shared_ptr<Sample> uDesign = designPointBuilder->getSample();
 
             if (z0 < 0)
             {
@@ -189,9 +184,9 @@ namespace Deltares
             return modelRunner->getDesignPoint(uDesign, Statistics::StandardNormal::getUFromQ(pf), convergenceReport);
         }
 
-        double DirectionalSampling::getConvergence(const double pf, const double sumPfSamp, const double sumPfSamp2, const double dTimes)
+        double DirectionalSampling::getConvergence(const double pf, const double sumWeights, const double sumWeights2, const double dTimes)
         {
-            double covar = sumPfSamp2 - 2.0 * pf * sumPfSamp + dTimes * pow(pf, 2);
+            double covar = sumWeights2 - 2.0 * pf * sumWeights + dTimes * pow(pf, 2);
             covar = std::sqrt(covar / dTimes / (dTimes - 1.0));
             double covarpf = covar / pf;
             double covarnpf = covar / (1 - pf);
@@ -210,7 +205,7 @@ namespace Deltares
             directionReliability->Threshold = threshold;
 
             #pragma omp parallel for
-            for (int i = 0; i < (int)samples.size(); i++)
+            for (int i = 0; i < static_cast<int>(samples.size()); i++)
             {
                 samples[i]->threadId = omp_get_thread_num();
                 // retain previous results from model if running in a proxy model environment

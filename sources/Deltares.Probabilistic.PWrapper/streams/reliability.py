@@ -66,6 +66,12 @@ class RandomType(Enum):
 	def __str__(self):
 		return str(self.value)
 
+class GradientType(Enum):
+	single = 'single'
+	double = 'double'
+	def __str__(self):
+		return str(self.value)
+
 class SampleMethod(Enum):
 	markov_chain = 'markov_chain'
 	adaptive_conditional = 'adaptive_conditional'
@@ -114,6 +120,8 @@ class Settings:
 				'minimum_directions',
 				'maximum_directions',
 				'epsilon_beta',
+				'step_size',
+				'gradient_type',
 				'relaxation_factor',
 				'relaxation_loops',
 				'minimum_variance_loops',
@@ -233,6 +241,20 @@ class Settings:
 	@epsilon_beta.setter
 	def epsilon_beta(self, value : float):
 		interface.SetValue(self._id, 'epsilon_beta', value)
+	def step_size(self):
+		return interface.GetValue(self._id, 'step_size')
+		
+	@step_size.setter
+	def step_size(self, value : float):
+		interface.SetValue(self._id, 'step_size', value)
+
+	@property
+	def gradient_type(self):
+		return GradientType[interface.GetStringValue(self._id, 'gradient_type')]
+		
+	@gradient_type.setter
+	def gradient_type(self, value : GradientType):
+		interface.SetStringValue(self._id, 'gradient_type', str(value))
 
 	@property
 	def relaxation_factor(self):

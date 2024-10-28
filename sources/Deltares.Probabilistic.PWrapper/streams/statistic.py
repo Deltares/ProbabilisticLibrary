@@ -120,6 +120,58 @@ class StandardNormal:
 		"""
 		return interface.GetArgValue(StandardNormal._id, 'u_from_t', t)
 
+class ProbabilityValue:
+
+	def __init__(self, id = None):
+		if id is None:
+			self._id = interface.Create('probability_value')
+		else:
+			self._id = id
+
+	def __del__(self):
+		interface.Destroy(self._id)
+
+	def __dir__(self):
+		return ['reliability_index',
+		        'probability_of_failure',
+		        'probability_of_non_failure',
+		        'return_period']
+
+	def __str__(self):
+		return str(self.probability_of_non_failure)
+
+	@property
+	def reliability_index(self):
+		return interface.GetValue(self._id, 'reliability_index')
+
+	@reliability_index.setter
+	def reliability_index(self, value : float):
+		interface.SetValue(self._id, 'reliability_index',  value)
+
+	@property
+	def probability_of_failure(self):
+		return interface.GetValue(self._id, 'probability_of_failure')
+
+	@probability_of_failure.setter
+	def probability_of_failure(self, value : float):
+		interface.SetValue(self._id, 'probability_of_failure',  value)
+
+	@property
+	def probability_of_non_failure(self):
+		return interface.GetValue(self._id, 'probability_of_non_failure')
+
+	@probability_of_non_failure.setter
+	def probability_of_non_failure(self, value : float):
+		interface.SetValue(self._id, 'probability_of_non_failure',  value)
+
+	@property
+	def return_period(self):
+		return interface.GetValue(self._id, 'return_period')
+
+	@return_period.setter
+	def return_period(self, value : float):
+		interface.SetValue(self._id, 'return_period',  value)
+
 class Stochast:
 
 	def __init__(self, id = None):
