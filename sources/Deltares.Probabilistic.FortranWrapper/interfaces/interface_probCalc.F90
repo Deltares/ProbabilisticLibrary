@@ -160,6 +160,8 @@ subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, convergenceDa
         method%numericalBisectionSettings = probDb%method%numericalBisectionSettings
     case (methodLatinHyperCube)
         method%latinHypercubeSettings = probDb%method%latinHyperCubeSettings
+    case (methodCobylaReliability)
+        method%cobylaReliability = probDb%method%cobylaReliability
     end select
     method%du               = probDb%method%FORM%du
     method%relaxationFactor = probDb%method%FORM%relaxationFactor

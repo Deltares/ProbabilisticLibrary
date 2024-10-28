@@ -39,6 +39,7 @@ class ReliabilityMethod(Enum):
 	subset_simulation = 'subset_simulation'
 	numerical_bisection = 'numerical_bisection'
 	latin_hypercube = 'latin_hypercube'
+	cobyla_reliability = 'cobyla_reliability'
 	def __str__(self):
 		return str(self.value)
 
@@ -108,6 +109,7 @@ class Settings:
 				'sample_method'
 				'minimum_samples',
 				'maximum_samples',
+				'minimum_iterations',
 				'maximum_iterations',
 				'minimum_directions',
 				'maximum_directions',

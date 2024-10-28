@@ -37,6 +37,7 @@
 #include "Statistics/testStandardNormal.h"
 #include "Distributions/testDistributions.h"
 #include "Sensitivity/TestSensitivity.h"
+#include "Optimization/testCobyla.h"
 
 using namespace Deltares::Probabilistic;
 
@@ -124,10 +125,28 @@ namespace Deltares
                 tstStartPoint.allStartPointTests();
             }
 
-            TEST(unittst, testReliabilityMethods)
+            TEST(reliability_method_test, testLatinHyperCube)
             {
                 auto tstRelMethods = testReliabilityMethods();
-                tstRelMethods.allReliabilityMethods();
+                tstRelMethods.testLatinHyperCube();
+            }
+
+            TEST(reliability_method_test, testCobylaReliability)
+            {
+                auto tstRelMethods = testReliabilityMethods();
+                tstRelMethods.testCobylaReliability();
+            }
+
+            TEST(reliability_method_test, testNumBisection1)
+            {
+                auto tstRelMethods = testReliabilityMethods();
+                tstRelMethods.testNumericalBisection();
+            }
+
+            TEST(reliability_method_test, testNumBisection2)
+            {
+                auto tstRelMethods = testReliabilityMethods();
+                tstRelMethods.testNumericalBisectionLinear();
             }
 
             TEST(unittst, testDistributions)
@@ -159,6 +178,13 @@ namespace Deltares
                 auto tstVector1D = vector1D_tests();
                 tstVector1D.allVector1Dtests();
             }
+
+            TEST(unittst, testCobylaOptimization)
+            {
+                auto tstCobylaOpt = testCobyla();
+                tstCobylaOpt.allCobylaTests();
+            }
+
         }
     }
 }

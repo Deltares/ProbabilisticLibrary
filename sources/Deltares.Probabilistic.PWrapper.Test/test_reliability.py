@@ -455,5 +455,22 @@ class Test_reliability(unittest.TestCase):
         self.assertAlmostEqual(1.8987, beta, delta=margin)
         self.assertEqual(5, len(alphas))
 
+    def test_cobyla_linear(self):
+        project = project_builder.get_linear_project()
+
+        project.settings.reliability_method = ReliabilityMethod.cobyla_reliability
+
+        project.run();
+
+        dp = project.design_point;
+        beta = dp.reliability_index;
+        alphas = dp.alphas;
+
+        self.assertAlmostEqual(2.326, beta, delta=margin)
+        self.assertEqual(2, len(alphas))
+
+        self.assertAlmostEqual(-0.71, alphas[0].alpha, delta=margin)
+        self.assertAlmostEqual(-0.71, alphas[1].alpha, delta=margin)
+
 if __name__ == '__main__':
     unittest.main()

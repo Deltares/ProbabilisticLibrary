@@ -44,6 +44,7 @@ namespace Deltares {
             FORMDSFI,
             LatinHyperCube = 18,
             NumericalBisection = 19,
+            CobylaReliability = 20,
             FORMSTART = 1234,
         };
 
@@ -108,6 +109,12 @@ namespace Deltares {
             int MinimumSamples;
         };
 
+        struct cobylaReliabilitySettings
+        {
+            double EpsilonBeta;
+            int MaximumIterations;
+        };
+
         struct basicSettings
         {
             ProbMethod         methodId;
@@ -143,6 +150,7 @@ namespace Deltares {
             bool               allQuadrants = false;
             numericalBisectionSettings numerical_bisection_settings;
             latinHypercubeSettings latin_hypercube_settings;
+            cobylaReliabilitySettings cobyla_reliability_settings;
         };
 
     }

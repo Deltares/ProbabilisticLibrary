@@ -19,24 +19,5 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#pragma once
-
-namespace Deltares
-{
-    namespace Probabilistic
-    {
-        namespace Test
-        {
-            class testReliabilityMethods
-            {
-            public:
-                void testLatinHyperCube() const;
-                void testNumericalBisection() const;
-                void testNumericalBisectionLinear() const;
-                void testCobylaReliability() const;
-            private:
-                const double margin = 1e-9;
-            };
-        }
-    }
-}
+#include "pch.h"
+#include "testCobyla_body.cpp"

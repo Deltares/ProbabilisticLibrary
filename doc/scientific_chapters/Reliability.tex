@@ -508,26 +508,25 @@ because a fixed number of realizations is used.
 The advantage of Latin hypercube is calculation time.
 But it only gives a rough approximation of the probability of failure.
 
-%\subsection{Cobyla}
-% TODO: Cobyla only in PTK, not in Streams
-%\subsubsection{Algorithm}
+\subsection{Cobyla}
+\subsubsection{Algorithm}
 
-%The Cobyla algorithm searches for the point in the u space
-%with the highest probability of density and which indicates failure.
-%This point is assumed to be representative for the design point.
+The Cobyla algorithm searches for the point in the u space
+with the highest probability of density and which indicates failure.
+This point is assumed to be representative for the design point.
 
-%The Cobyla algorithm is an implementation of
-%Powell's nonlinear derivative-free constrained optimization
-%that uses a linear approximation approach.
-%The algorithm is a sequential trust-region algorithm that
-%employs linear approximations to the objective and constraint functions,
-%where the approximations are formed by linear interpolation at n + 1 points
-%in the space of the variables and tries to maintain
-%a regular-shaped simplex over iterations.
+The Cobyla algorithm is an implementation of
+Powell's nonlinear derivative-free constrained optimization
+that uses a linear approximation approach \cite{Powell1994}.
+The algorithm is a sequential trust-region algorithm that
+employs linear approximations to the objective and constraint functions,
+where the approximations are formed by linear interpolation at n + 1 points
+in the space of the variables and tries to maintain
+a regular-shaped simplex over iterations.
 
-%The Cobyla algorithm only gives a rough estimation
-%of the reliability and design point.
-%It should only be used as a first method in a reliability study. 
+The Cobyla algorithm only gives a rough estimation
+of the reliability and design point.
+It should only be used as a first method in a reliability study. 
 
 \subsection{FORM}
 \label{sec:FORM}

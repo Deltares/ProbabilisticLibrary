@@ -19,24 +19,26 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#pragma once
+using NUnit.Framework;
+using Deltares.Reliability.Wrappers;
 
-namespace Deltares
+namespace Deltares.Probabilistic.Wrapper.Test
 {
-    namespace Probabilistic
+    [TestFixture]
+    public class TestCobylaReliability
     {
-        namespace Test
+        private const double margin = 0.01;
+
+        [Test]
+        public void TestLinear()
         {
-            class testReliabilityMethods
-            {
-            public:
-                void testLatinHyperCube() const;
-                void testNumericalBisection() const;
-                void testNumericalBisectionLinear() const;
-                void testCobylaReliability() const;
-            private:
-                const double margin = 1e-9;
-            };
+            var project = ProjectBuilder.GetLinearProject();
+
+            project.ReliabilityMethod = new CobylaReliability();
+            DesignPoint designPoint = project.GetDesignPoint();
+
+            Assert.AreEqual(2.326, designPoint.Beta, margin);
         }
+
     }
 }

@@ -49,6 +49,11 @@ module interface_typedefs
       integer           :: MinimumSamples = 1000
   end type tpLatinHypercubeSettings
 
+  type, public, bind(c) :: tpCobylaReliability
+    real(kind=c_double) :: EpsilonBeta = 1e-3_c_double
+    integer             :: MaximumIterations = 150
+  end type tpCobylaReliability
+
   type, public, bind(c) :: tMethod
     integer              :: methodId
     real(kind=c_double)  :: tolA       = 0.001_c_double
@@ -83,6 +88,7 @@ module interface_typedefs
     logical(kind=c_bool) :: allQuadrants = .false.
     type(tpNumericalBisectionSettings) :: numericalBisectionSettings
     type(tpLatinHypercubeSettings)     :: latinHypercubeSettings
+    type(tpCobylaReliability)          :: cobylaReliability
   end type tMethod
 
   type, public, bind(c) :: tResult
@@ -184,6 +190,8 @@ module interface_typedefs
         numericalBisectionSettings            !< data for numerical bisection method
     type(tpLatinHypercubeSettings)     :: &
         latinHypercubeSettings                !< data for Latin hyper cube method
+    type(tpCobylaReliability) :: &
+                      CobylaReliability       !< Data for Cobyla Reliability
     integer        :: DPoption                !< Options for calculation of the design point
     integer        :: maxParallelThreads = 1  !< Maximum number of OpenMP threads
     integer        :: chunkSizeOpenMP = 200   !< Number of samples to handle simultaneously, when using OpenMP

@@ -182,6 +182,8 @@
     <ClInclude Include="Reliability\DesignPointMethodSettings.h" />
     <ClInclude Include="Reliability\ImportanceSamplingSettings.h" />
     <ClInclude Include="Reliability\ImportanceSampling.h" />
+    <ClInclude Include="Reliability\CobylaReliabilitySettings.h" />
+    <ClInclude Include="Reliability\CobylaReliability.h" />
     <ClInclude Include="Model\ModelSample.h" />
     <ClInclude Include="Reliability\LatinHypercubeSettings.h" />
     <ClInclude Include="Reliability\NumericalBisectionSettings.h" />
@@ -250,6 +252,8 @@
     <ClCompile Include="Reliability\ImportanceSampling.cpp" />
     <ClCompile Include="Reliability\LatinHypercubeSettings.cpp" />
     <ClCompile Include="Reliability\NumericalBisectionSettings.cpp" />
+    <ClCompile Include="Reliability\CobylaReliability.cpp" />
+    <ClCompile Include="Reliability\CobylaReliabilitySettings.cpp" />
     <ClCompile Include="Reliability\NumericalIntegrationSettings.cpp" />
     <ClCompile Include="Statistics\SelfCorrelationMatrix.cpp" />
     <ClCompile Include="Statistics\DistributionType.cpp" />

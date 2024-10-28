@@ -23,20 +23,16 @@
 
 namespace Deltares
 {
-    namespace Probabilistic
+    namespace Optimization
     {
-        namespace Test
+        class CobylaOptimizationSettings
         {
-            class testReliabilityMethods
-            {
-            public:
-                void testLatinHyperCube() const;
-                void testNumericalBisection() const;
-                void testNumericalBisectionLinear() const;
-                void testCobylaReliability() const;
-            private:
-                const double margin = 1e-9;
-            };
-        }
+        public:
+            int MaxIterations = 10000;
+
+            double EpsilonBeta = 0.001;
+        };
+
     }
 }
+
