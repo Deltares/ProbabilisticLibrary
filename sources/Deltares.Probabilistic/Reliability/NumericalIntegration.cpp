@@ -23,6 +23,7 @@
 #include "DesignPoint.h"
 #include "DesignPointBuilder.h"
 #include "../Statistics/StandardNormal.h"
+#include "../Statistics/ProbabilityIterator.h"
 
 namespace Deltares
 {
@@ -80,7 +81,7 @@ namespace Deltares
 
             std::shared_ptr<ConvergenceReport> convergenceReport = std::make_shared<ConvergenceReport>();
 
-            double probFailure = getStochastProbability(modelRunner, stochastIndex, u, designPointBuilder, density, z0Fac, totalDensity);
+            double probFailure = getStochastProbability(modelRunner, stochastIndex, u, designPointBuilder, density, z0Fac, totalDensity, 1);
 
             probFailure = probFailure / totalDensity;
 
@@ -93,7 +94,7 @@ namespace Deltares
             return modelRunner->getDesignPoint(designPoint, beta, convergenceReport);
         }
 
-        double NumericalIntegration::getStochastProbability(std::shared_ptr<ModelRunner> modelRunner, int stochastIndex, std::shared_ptr<Sample> parentSample, std::shared_ptr<DesignPointBuilder> designPointBuilder, double density, double z0Fac, double& totalDensity)
+        double NumericalIntegration::getStochastProbability(std::shared_ptr<ModelRunner> modelRunner, int stochastIndex, std::shared_ptr<Sample> parentSample, std::shared_ptr<DesignPointBuilder> designPointBuilder, double density, double z0Fac, double& totalDensity, int nSamples)
         {
             const double uDelta = 0.01;
             const int nStochasts = Settings.StochastSet->getVaryingStochastCount();
@@ -118,31 +119,29 @@ namespace Deltares
             uValues.push_back(Statistics::StandardNormal::UMax);
 
             // Initialize first probabilities
-            Statistics::PQ pq = Statistics::StandardNormal::getPQFromU(uValues[0]);
+            std::shared_ptr<Statistics::ProbabilityIterator> pq = std::make_shared<Statistics::ProbabilityIterator>(uValues[0]);
+
+            nSamples *= static_cast<int>(uValues.size()) - 1;
 
             if (stochastIndex < nStochasts - 1)
             {
                 double probFailure = 0;
 
-                for (int j = 0; j < uValues.size() - 1; j++)
+                for (size_t j = 0; j < uValues.size() - 1; j++)
                 {
                     parentSample->Values[stochastIndex] = (uValues[j] + uValues[j + 1]) / 2;
 
-                    const Statistics::PQ pqPrev = pq;
-                    pq = Statistics::StandardNormal::getPQFromU(uValues[j + 1]);
+                    double contribution = pq->getDifference(uValues[j + 1]);
 
-                    // depending on the value of u(i) use the probabilities of exceeding or the probabilities of non-exceeding
-                    const double contribution = parentSample->Values[stochastIndex] < 0 ? pq.p - pqPrev.p : pqPrev.q - pq.q;
-
-                    probFailure += getStochastProbability(modelRunner, stochastIndex + 1, parentSample, designPointBuilder, density * contribution, z0Fac, totalDensity);
+                    probFailure += getStochastProbability(modelRunner, stochastIndex + 1, parentSample, designPointBuilder, density * contribution, z0Fac, totalDensity, nSamples);
 
                     if (stochastIndex == 0)
                     {
                         double beta = -Statistics::StandardNormal::getUFromP(probFailure);
 
                         std::shared_ptr<ReliabilityReport> report = std::make_shared<ReliabilityReport>();
-                        report->Step = j;
-                        report->MaxSteps = (int)uValues.size();
+                        report->Step = static_cast<int>(j);
+                        report->MaxSteps = nSamples;
                         report->Reliability = beta;
 
                         modelRunner->reportResult(report);
@@ -155,10 +154,13 @@ namespace Deltares
             {
                 std::vector<std::shared_ptr<Sample>> samples;
 
-                for (int j = 0; j < uValues.size() - 1; j++)
+                for (size_t j = 0; j < uValues.size() - 1; j++)
                 {
                     std::shared_ptr<Sample> sample = parentSample->clone();
                     sample->Values[stochastIndex] = (uValues[j] + uValues[j + 1]) / 2;
+
+                    double contribution = pq->getDifference(uValues[j + 1]);
+                    sample->Weight = density * contribution * nSamples;
 
                     samples.push_back(sample);
                 }
@@ -168,25 +170,20 @@ namespace Deltares
 
                 double probFailure = 0;
 
-                for (int j = 0; j < samples.size(); j++)
+                for (size_t j = 0; j < samples.size(); j++)
                 {
                     const std::shared_ptr<Sample> sample = samples[j];
 
                     if (!std::isnan(zValues[j]))
                     {
-                        Statistics::PQ pqPrev = pq;
-                        pq = Statistics::StandardNormal::getPQFromU(uValues[j + 1]);
+                        double sampleProbability = sample->Weight / nSamples;
 
-                        // depending on the value of u(i) use the probabilities of exceeding or the probabilities of non-exceeding
-                        const double contribution = sample->Values[stochastIndex] < 0 ? pq.p - pqPrev.p : pqPrev.q - pq.q;
-
-                        sample->Weight = density * contribution;
-                        totalDensity += sample->Weight;
+                        totalDensity += sampleProbability;
 
                         // if the z-value is negative add the probability density to the probability of failure
                         if (zValues[j] < 0.0)
                         {
-                            probFailure += density * contribution;
+                            probFailure += sampleProbability;
                         }
 
                         // If the combination of the z-value and the parameter for the position of the origin is negative

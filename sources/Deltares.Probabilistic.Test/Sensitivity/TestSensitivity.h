@@ -40,6 +40,12 @@ namespace Deltares
 
                 void testImportanceSamplingAddOne();
 
+                void testNumericalIntegration();
+                void testDirectionalSampling();
+                void testFORM();
+                void testFOSM();
+
+
                 const double margin = 0.02;
             };
         };

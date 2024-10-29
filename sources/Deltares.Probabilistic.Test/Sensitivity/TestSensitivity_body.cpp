@@ -26,6 +26,10 @@
 #include "../../Deltares.Probabilistic/Sensitivity/SensitivityProject.h"
 #include "../../Deltares.Probabilistic/Sensitivity/CrudeMonteCarloS.h"
 #include "../../Deltares.Probabilistic/Sensitivity/ImportanceSamplingS.h"
+#include "../../Deltares.Probabilistic/Sensitivity/NumericalIntegrationS.h"
+#include "../../Deltares.Probabilistic/Sensitivity/DirectionalSamplingS.h"
+#include "../../Deltares.Probabilistic/Sensitivity/FORMS.h"
+#include "../../Deltares.Probabilistic/Sensitivity/FOSM.h"
 
 namespace Deltares
 {
@@ -41,6 +45,11 @@ namespace Deltares
                 testCrudeMonteCarloLinearAutoSamples();
 
                 testImportanceSamplingAddOne();
+
+                testNumericalIntegration();
+                testDirectionalSampling();
+                testFORM();
+                testFOSM();
             }
 
             void TestSensitivity::testCrudeMonteCarloAddOne()
@@ -50,7 +59,7 @@ namespace Deltares
                 std::shared_ptr<Sensitivity::CrudeMonteCarloS> sensitivityMethod = std::make_shared<Sensitivity::CrudeMonteCarloS>();
                 sensitivityMethod->Settings->randomSettings->RandomGeneratorType = Deltares::Numeric::MersenneTwister;
 
-                project->sensitivityMethod = std::make_shared<Sensitivity::CrudeMonteCarloS>();
+                project->sensitivityMethod = sensitivityMethod;
 
                 std::shared_ptr<Statistics::Stochast> stochast = project->getStochast();
 
@@ -69,7 +78,7 @@ namespace Deltares
                 std::shared_ptr<Sensitivity::CrudeMonteCarloS> sensitivityMethod = std::make_shared<Sensitivity::CrudeMonteCarloS>();
                 sensitivityMethod->Settings->randomSettings->RandomGeneratorType = Deltares::Numeric::MersenneTwister;
 
-                project->sensitivityMethod = std::make_shared<Sensitivity::CrudeMonteCarloS>();
+                project->sensitivityMethod = sensitivityMethod;
 
                 std::shared_ptr<Statistics::Stochast> stochast = project->getStochast();
 
@@ -85,7 +94,7 @@ namespace Deltares
                 sensitivityMethod->Settings->randomSettings->RandomGeneratorType = Deltares::Numeric::MersenneTwister;
                 sensitivityMethod->Settings->MaximumSamples = 100000;
 
-                project->sensitivityMethod = std::make_shared<Sensitivity::CrudeMonteCarloS>();
+                project->sensitivityMethod = sensitivityMethod;
 
                 std::shared_ptr<Statistics::Stochast> stochast = project->getStochast();
 
@@ -106,7 +115,7 @@ namespace Deltares
                 sensitivityMethod->Settings->randomSettings->RandomGeneratorType = Deltares::Numeric::MersenneTwister;
                 sensitivityMethod->Settings->DeriveSamplesFromVariationCoefficient = true;
 
-                project->sensitivityMethod = std::make_shared<Sensitivity::CrudeMonteCarloS>();
+                project->sensitivityMethod = sensitivityMethod;
 
                 std::shared_ptr<Statistics::Stochast> stochast = project->getStochast();
 
@@ -122,7 +131,7 @@ namespace Deltares
                 std::shared_ptr<Sensitivity::ImportanceSamplingS> sensitivityMethod = std::make_shared<Sensitivity::ImportanceSamplingS>();
                 sensitivityMethod->Settings->randomSettings->RandomGeneratorType = Deltares::Numeric::MersenneTwister;
 
-                project->sensitivityMethod = std::make_shared<Sensitivity::CrudeMonteCarloS>();
+                project->sensitivityMethod = sensitivityMethod;
 
                 std::shared_ptr<Statistics::Stochast> stochast = project->getStochast();
 
@@ -132,6 +141,63 @@ namespace Deltares
 
                 ASSERT_NEAR(0.0, stochast->getProperties()->Minimum, margin);
                 ASSERT_NEAR(2.0, stochast->getProperties()->Maximum, margin);
+            }
+
+            void TestSensitivity::testNumericalIntegration()
+            {
+                std::shared_ptr<Sensitivity::SensitivityProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearProject());
+
+                std::shared_ptr<Sensitivity::NumericalIntegrationS> sensitivityMethod = std::make_shared<Sensitivity::NumericalIntegrationS>();
+                project->sensitivityMethod = sensitivityMethod;
+
+                std::shared_ptr<Statistics::Stochast> stochast = project->getStochast();
+
+                ASSERT_NEAR(stochast->getMean(), 1.8, margin);
+                ASSERT_NEAR(stochast->getDeviation(), 0.81, margin);
+            }
+
+            void TestSensitivity::testDirectionalSampling()
+            {
+                std::shared_ptr<Sensitivity::SensitivityProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearProject());
+
+                std::shared_ptr<Sensitivity::DirectionalSamplingS> sensitivityMethod = std::make_shared<Sensitivity::DirectionalSamplingS>();
+
+                std::shared_ptr<Statistics::ProbabilityValue> value1 = std::make_shared<Statistics::ProbabilityValue>();
+                value1->setProbabilityOfNonFailure(0.9);
+
+                sensitivityMethod->Settings->RequestedQuantiles.push_back(value1);
+                project->sensitivityMethod = sensitivityMethod;
+
+                std::shared_ptr<Statistics::Stochast> stochast = project->getStochast();
+
+                ASSERT_NEAR(stochast->getProperties()->FragilityValues[0]->X, 2.9, margin);
+                ASSERT_NEAR(stochast->getProperties()->FragilityValues[0]->getProbabilityOfNonFailure(), 0.9, margin);
+            }
+
+            void TestSensitivity::testFORM()
+            {
+                std::shared_ptr<Sensitivity::SensitivityProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearProject());
+
+                std::shared_ptr<Sensitivity::FORMS> sensitivityMethod = std::make_shared<Sensitivity::FORMS>();
+                project->sensitivityMethod = sensitivityMethod;
+
+                std::shared_ptr<Statistics::Stochast> stochast = project->getStochast();
+
+                ASSERT_NEAR(stochast->getMean(), 1.8, margin);
+                ASSERT_NEAR(stochast->getDeviation(), 0.92, margin);
+            }
+
+            void TestSensitivity::testFOSM()
+            {
+                std::shared_ptr<Sensitivity::SensitivityProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearProject());
+
+                std::shared_ptr<Sensitivity::FOSM> sensitivityMethod = std::make_shared<Sensitivity::FOSM>();
+                project->sensitivityMethod = sensitivityMethod;
+
+                std::shared_ptr<Statistics::Stochast> stochast = project->getStochast();
+
+                ASSERT_NEAR(stochast->getMean(), 1.8, margin);
+                ASSERT_NEAR(stochast->getDeviation(), 1.04, margin);
             }
         }
     }

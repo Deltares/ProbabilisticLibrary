@@ -41,6 +41,21 @@ namespace Deltares
             setStopped();
         }
 
+        std::shared_ptr<Statistics::Stochast> SensitivityMethod::getStochastFromSamples(std::vector<std::shared_ptr<Numeric::WeightedValue>>& weightedValues)
+        {
+            std::vector<double> values;
+            std::vector<double> weights;
+
+            for (std::shared_ptr<Numeric::WeightedValue> weightedValue : weightedValues)
+            {
+                values.push_back(weightedValue->value);
+                weights.push_back(weightedValue->weight);
+            }
+
+            return getStochastFromSamples(values, weights);
+        }
+
+
         std::shared_ptr<Statistics::Stochast> SensitivityMethod::getStochastFromSamples(std::vector<double>& samples, std::vector<double>& weights)
         {
             bool hasInvalidValues = false;

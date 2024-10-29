@@ -36,10 +36,10 @@ namespace Deltares
     {
         std::vector<double> GradientCalculator::getGradient(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<Sample> sample)
         {
-            int nstochasts = modelRunner->getVaryingStochastCount();
+            int nStochasts = modelRunner->getVaryingStochastCount();
 
             std::vector<std::shared_ptr<Sample>> samples;
-            std::vector<double> gradient(nstochasts);
+            std::vector<double> gradient(nStochasts);
 
             // first sample is the sample itself
             samples.push_back(sample);
@@ -47,7 +47,7 @@ namespace Deltares
             if (Settings->gradientType == OneDirection)
             {
                 double du = Settings->StepSize * 0.5;
-                for (int k = 0; k < nstochasts; k++)
+                for (int k = 0; k < nStochasts; k++)
                 {
                     std::shared_ptr<Sample> uNew = sample->clone();
                     uNew->Values[k] += du;
@@ -58,7 +58,7 @@ namespace Deltares
                 std::vector<double> zValues = modelRunner->getZValues(samples);
 
                 double z = zValues[0];
-                for (int k = 0; k < nstochasts; k++)
+                for (int k = 0; k < nStochasts; k++)
                 {
                     double zp = zValues[k + 1];
                     gradient[k] = (zp - z) / du;
@@ -66,7 +66,7 @@ namespace Deltares
             }
             else if (Settings->gradientType == TwoDirections)
             {
-                for (int k = 0; k < nstochasts; k++)
+                for (int k = 0; k < nStochasts; k++)
                 {
                     std::shared_ptr<Sample> u1 = sample->clone();
                     u1->Values[k] -= Settings->StepSize * 0.5;
@@ -79,7 +79,7 @@ namespace Deltares
 
                 std::vector<double> zValues = modelRunner->getZValues(samples);
 
-                for (int k = 0; k < nstochasts; k++)
+                for (int k = 0; k < nStochasts; k++)
                 {
                     const double zLow = zValues[2 * k + 1];
                     const double zHigh = zValues[2 * k + 2];

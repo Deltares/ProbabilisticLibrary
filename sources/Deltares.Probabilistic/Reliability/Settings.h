@@ -36,7 +36,10 @@ namespace Deltares
     {
         enum ReliabilityResultType {ResultDesignPoint, ResultFragilityCurve};
 
-        enum ReliabilityMethodType {ReliabilityFORM, ReliabilityNumericalIntegration, ReliabilityCrudeMonteCarlo, ReliabilityImportanceSampling, ReliabilityAdaptiveImportanceSampling, ReliabilityDirectionalSampling, ReliabilitySubsetSimulation };
+        enum ReliabilityMethodType {ReliabilityFORM, ReliabilityNumericalIntegration, ReliabilityCrudeMonteCarlo,
+            ReliabilityImportanceSampling, ReliabilityAdaptiveImportanceSampling, ReliabilityDirectionalSampling,
+            ReliabilityNumericalBisection, ReliabilityLatinHyperCube, ReliabilityCobyla,
+            ReliabilitySubsetSimulation };
 
         /**
          * \brief General settings applicable to all mechanisms
@@ -98,6 +101,11 @@ namespace Deltares
              * \brief The calls to importance sampling will be stopped until the fraction of failed samples (Z < 0) is between this value and 1 - this value
              */
             double FractionFailed = 0.1;
+
+            /**
+             * \brief Minimum number of iterations in numerical bisection
+             */
+            int MinimumIterations = 5;
 
             /**
              * \brief Maximum number of guessed design points in one FORM loop
@@ -182,7 +190,10 @@ namespace Deltares
             const std::shared_ptr<Reliability::ReliabilityMethod> GetImportanceSamplingMethod();
             const std::shared_ptr<Reliability::ReliabilityMethod> GetAdaptiveImportanceSamplingMethod();
             const std::shared_ptr<Reliability::ReliabilityMethod> GetDirectionalSamplingMethod();
+            const std::shared_ptr<Reliability::ReliabilityMethod> GetNumericalBisectionMethod();
+            const std::shared_ptr<Reliability::ReliabilityMethod> GetLatinHypercubeMethod();
             const std::shared_ptr<Reliability::ReliabilityMethod> GetSubsetSimulationMethod();
+            const std::shared_ptr<Reliability::ReliabilityMethod> GetCobylaReliabilityMethod();
         };
     }
 }

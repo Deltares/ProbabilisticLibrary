@@ -1,0 +1,61 @@
+// Copyright (C) Stichting Deltares. All rights reserved.
+//
+// This file is part of Streams.
+//
+// Streams is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU Affero General Public License for more details.
+//
+// You should have received a copy of the GNU Affero General Public License
+// along with this program. If not, see <http://www.gnu.org/licenses/>.
+//
+// All names, logos, and references to "Deltares" are registered trademarks of
+// Stichting Deltares and remain full property of Stichting Deltares at all times.
+// All rights reserved.
+//
+#pragma once
+
+#include "NumericalIntegrationS.h"
+#include "NumericalIntegrationSettingsS.h"
+#include "SensitivityMethod.h"
+#include "../../Deltares.Probabilistic/Sensitivity/NumericalIntegrationS.h"
+
+namespace Deltares
+{
+    namespace Sensitivity
+    {
+        namespace Wrappers
+        {
+            public ref class NumericalIntegrationS : public SensitivityMethod
+            {
+            private:
+                Utils::Wrappers::SharedPointerProvider<Sensitivity::NumericalIntegrationS>* shared = new Utils::Wrappers::SharedPointerProvider(new Sensitivity::NumericalIntegrationS());
+            public:
+                NumericalIntegrationS() { }
+                ~NumericalIntegrationS() { this->!NumericalIntegrationS(); }
+                !NumericalIntegrationS() { delete shared; }
+
+                NumericalIntegrationSettingsS^ Settings = gcnew NumericalIntegrationSettingsS();
+
+                System::Object^ GetSettings() override { return Settings; }
+
+                bool IsValid() override { return Settings->IsValid(); }
+
+                std::shared_ptr<Sensitivity::SensitivityMethod> GetNativeSensitivityMethod() override
+                {
+                    shared->object->Settings = Settings->GetSettings();
+                    return shared->object;
+                }
+            };
+        }
+    }
+}
+
+
+

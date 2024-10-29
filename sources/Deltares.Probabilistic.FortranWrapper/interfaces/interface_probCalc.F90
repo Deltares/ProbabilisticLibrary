@@ -156,6 +156,12 @@ subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, convergenceDa
         method%numExtraInt     = probDb%method%NI%numberIntervals
         method%numExtraReal1   = probDb%method%NI%minimumUvalue
         method%numExtraReal2   = probDb%method%NI%maximumUvalue
+    case (methodNumericalBisection)
+        method%numericalBisectionSettings = probDb%method%numericalBisectionSettings
+    case (methodLatinHyperCube)
+        method%latinHypercubeSettings = probDb%method%latinHyperCubeSettings
+    case (methodCobylaReliability)
+        method%cobylaReliability = probDb%method%cobylaReliability
     end select
     method%du               = probDb%method%FORM%du
     method%relaxationFactor = probDb%method%FORM%relaxationFactor

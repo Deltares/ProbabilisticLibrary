@@ -151,6 +151,19 @@ namespace Deltares
             }
         }
 
+        bool NumericSupport::doublesAreEqual(const std::vector<double>& p1, const std::vector<double>& p2, const double tol)
+        {
+            if (p1.size() != p2.size())
+            {
+                throw Reliability::probLibException("lengths differ in doublesAreEqual.");
+            }
+            for (size_t i = 0; i < p1.size(); i++)
+            {
+                if (!areEqual(p1[i], p2[i], tol)) return false;
+            }
+            return true;
+        }
+
         double NumericSupport::round(double value, int decimals)
         {
             double multiplier = 1;

@@ -55,7 +55,7 @@
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
-    <CLRSupport>true</CLRSupport>
+    <CLRSupport>false</CLRSupport>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -145,6 +145,8 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <CompileAsManaged>false</CompileAsManaged>
+      <AdditionalOptions>/Zc:twoPhase- %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -155,6 +157,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Statistics\ProbabilityIterator.h" />
+    <ClInclude Include="Statistics\ProbabilityValue.h" />
+    <ClInclude Include="Sensitivity\DirectionalSamplingS.h" />
+    <ClInclude Include="Sensitivity\DirectionalSamplingSettingsS.h" />
+    <ClInclude Include="Sensitivity\NumericalIntegrationS.h" />
+    <ClInclude Include="Sensitivity\NumericalIntegrationSettingsS.h" />
+    <ClInclude Include="Sensitivity\FORMSettingsS.h" />
+    <ClInclude Include="Sensitivity\FORMS.h" />
+    <ClInclude Include="Sensitivity\FOSMSettings.h" />
+    <ClInclude Include="Sensitivity\FOSM.h" />
     <ClInclude Include="Sensitivity\ParameterSelector.h" />
     <ClInclude Include="Reliability\LimitStateFunction.h" />
     <ClInclude Include="Server\ExternalLibraryHandler.h" />
@@ -207,12 +219,22 @@
     <ClInclude Include="Reliability\SubsetSimulationSettings.h" />
     <ClInclude Include="Reliability\SubsetSimulation.h" />
     <ClInclude Include="Reliability\Settings.h" />
+    <ClInclude Include="Reliability\CobylaReliability.h" />
+    <ClInclude Include="Reliability\CobylaReliabilitySettings.h" />
+    <ClInclude Include="Reliability\LatinHyperCube.h" />
+    <ClInclude Include="Reliability\LatinHyperCubeSettings.h" />
+    <ClInclude Include="Reliability\NumericalBisection.h" />
+    <ClInclude Include="Reliability\NumericalBisectionSettings.h" />
+    <ClInclude Include="Reliability\IntegrationGrid.h" />
     <ClInclude Include="Statistics\SparseCorrelationMatrix.h" />
     <ClInclude Include="Statistics\SelfCorrelationMatrix.h" />
     <ClInclude Include="Utils\Locker.h" />
     <ClInclude Include="Math\MatrixSupport.h" />
     <ClInclude Include="Optimization\KMeansClustering.h" />
     <ClInclude Include="Optimization\ClusterSettings.h" />
+    <ClInclude Include="Optimization\Cobyla.h" />
+    <ClInclude Include="Optimization\CobylaOptimization.h" />
+    <ClInclude Include="Optimization\CobylaOptimizationSettings.h" />
     <ClInclude Include="Reliability\AdaptiveImportanceSampling.h" />
     <ClInclude Include="Reliability\AdaptiveImportanceSamplingSettings.h" />
     <ClInclude Include="Reliability\ImportanceSamplingCluster.h" />
@@ -265,6 +287,7 @@
     <ClInclude Include="Math\ASA\asa239.hpp" />
     <ClInclude Include="Math\ASA\asa241.hpp" />
     <ClInclude Include="Math\SpecialFunctions.h" />
+    <ClInclude Include="Math\BinarySupport.h" />
     <ClInclude Include="Statistics\Distributions\TruncatedDistribution.h" />
     <ClInclude Include="Reliability\DirectionalSampling.h" />
     <ClInclude Include="Reliability\DirectionalSamplingSettings.h" />
@@ -325,6 +348,12 @@
     <ClInclude Include="Model\ZValueConverter.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Model\GradientSettings.cpp" />
+    <ClCompile Include="Statistics\ProbabilityValue.cpp" />
+    <ClCompile Include="Sensitivity\DirectionalSamplingS.cpp" />
+    <ClCompile Include="Sensitivity\NumericalIntegrationS.cpp" />
+    <ClCompile Include="Sensitivity\FORMS.cpp" />
+    <ClCompile Include="Sensitivity\FOSM.cpp" />
     <ClCompile Include="Sensitivity\ParameterSelector.cpp" />
     <ClCompile Include="Server\BaseServer.cpp" />
     <ClCompile Include="Server\ProjectServer.cpp" />
@@ -377,12 +406,25 @@
     <ClCompile Include="Reliability\SubsetSimulationSettings.cpp" />
     <ClCompile Include="Reliability\SubsetSimulation.cpp" />
     <ClCompile Include="Reliability\Settings.cpp" />
+    <ClCompile Include="Reliability\CobylaReliability.cpp" />
+    <ClCompile Include="Reliability\CobylaReliabilitySettings.cpp" />
+    <ClCompile Include="Reliability\LatinHyperCube.cpp" />
+    <ClCompile Include="Reliability\LatinHyperCubeSettings.cpp" />
+    <ClCompile Include="Reliability\NumericalBisection.cpp" />
+    <ClCompile Include="Reliability\NumericalBisectionSettings.cpp" />
+    <ClCompile Include="Reliability\IntegrationGrid.cpp" />
     <ClCompile Include="Statistics\SparseCorrelationMatrix.cpp" />
     <ClCompile Include="Statistics\SelfCorrelationMatrix.cpp" />
     <ClCompile Include="Utils\Locker.cpp" />
     <ClCompile Include="Math\MatrixSupport.cpp" />
     <ClCompile Include="Optimization\KMeansClustering.cpp" />
     <ClCompile Include="Optimization\ClusterSettings.cpp" />
+    <ClCompile Include="Optimization\Cobyla.cpp" />
+    <ClCompile Include="Optimization\CobylaOptimization.cpp" />
+    <ClCompile Include="Optimization\CobylaOptimizationSettings.cpp" />
+    <ClCompile Include="Optimization\rescale.cpp" />
+    <ClCompile Include="Optimization\stop.cpp" />
+    <ClCompile Include="Optimization\timer.cpp" />
     <ClCompile Include="Reliability\AdaptiveImportanceSampling.cpp" />
     <ClCompile Include="Reliability\AdaptiveImportanceSamplingSettings.cpp" />
     <ClCompile Include="Reliability\ImportanceSamplingCluster.cpp" />
@@ -428,6 +470,7 @@
     <ClCompile Include="Math\ASA\asa109.cpp" />
     <ClCompile Include="Math\ASA\asa239.cpp" />
     <ClCompile Include="Math\SpecialFunctions.cpp" />
+    <ClCompile Include="Math\BinarySupport.cpp" />
     <ClCompile Include="Statistics\Distributions\TruncatedDistribution.cpp" />
     <ClCompile Include="Reliability\DirectionalSampling.cpp" />
     <ClCompile Include="Reliability\DirectionalSamplingSettings.cpp" />

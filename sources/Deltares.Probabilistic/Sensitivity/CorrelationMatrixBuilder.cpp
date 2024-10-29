@@ -46,6 +46,21 @@ namespace Deltares
             this->stochastValues[stochast] = uValues;
         };
 
+        void CorrelationMatrixBuilder::registerWeightedValues(const std::shared_ptr<Statistics::Stochast> stochast, const std::vector<std::shared_ptr<Numeric::WeightedValue>>& weightedValues)
+        {
+            std::vector<double> values;
+            std::vector<double> weights;
+
+            for (std::shared_ptr<Numeric::WeightedValue> weightedValue : weightedValues)
+            {
+                values.push_back(weightedValue->value);
+                weights.push_back(weightedValue->weight);
+            }
+
+            registerWeights(weights);
+            registerSamples(stochast, values);
+        }
+
         void CorrelationMatrixBuilder::registerStochastValue(std::shared_ptr<Statistics::Stochast> stochast, double u)
         {
             if (!this->stochastValues.contains(stochast))

@@ -45,6 +45,13 @@ namespace Deltares
             void registerSamples(const std::shared_ptr<Statistics::Stochast> stochast, const std::vector<double>& values);
 
             /**
+             * \brief Registers the sample values and weights of an uncertainty calculation
+             * \param stochast The model for which the sensitivity is calculated
+             * \param weightedValues sample values and weights
+             */
+            void registerWeightedValues(const std::shared_ptr<Statistics::Stochast> stochast, const std::vector<std::shared_ptr<Numeric::WeightedValue>>& weightedValues);
+
+            /**
              * \brief Registers the sample input values
              * \param sample sample values
              */
