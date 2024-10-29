@@ -75,10 +75,11 @@ namespace Deltares
             int GetFragilityValueId(std::shared_ptr<Statistics::FragilityValue> fragilityValue);
             int GetContributingStochastId(std::shared_ptr<Statistics::ContributingStochast> contributingStochast);
             int GetConditionalValueId(std::shared_ptr<Statistics::VariableStochastValue> conditionalValue);
+            int GetEvaluationId(std::shared_ptr<Deltares::Reliability::Evaluation> evaluation);
             int GetMessageId(std::shared_ptr<Deltares::Models::Message> message);
         private:
             enum ObjectType {StandardNormal, Message, Project, ModelParameter, LimitStateFunction, Stochast, DiscreteValue, HistogramValue, FragilityValue,
-                ContributingStochast, ConditionalValue, CorrelationMatrix, Settings, StochastSettings, DesignPoint, Alpha,
+                ContributingStochast, ConditionalValue, CorrelationMatrix, Settings, StochastSettings, DesignPoint, Alpha, Evaluation,
                 CombineProject, CombineSettings, SelfCorrelationMatrix, SensitivityProject, SensitivitySettings,
                 LengthEffectProject};
             int id_ = 0;
@@ -99,6 +100,7 @@ namespace Deltares
             std::unordered_map<int, std::shared_ptr<Reliability::StochastSettings>> stochastSettingsValues;
             std::unordered_map<int, std::shared_ptr<Reliability::DesignPoint>> designPoints;
             std::unordered_map<int, std::shared_ptr<Reliability::StochastPointAlpha>> alphas;
+            std::unordered_map<int, std::shared_ptr<Reliability::Evaluation>> evaluations;
             std::unordered_map<int, std::shared_ptr<Reliability::CombineProject>> combineProjects;
             std::unordered_map<int, std::shared_ptr<Reliability::CombineSettings>> combineSettingsValues;
             std::unordered_map<int, std::shared_ptr<Reliability::LengthEffectProject>> lengthEffectProjects;
@@ -116,6 +118,7 @@ namespace Deltares
             std::unordered_map<std::shared_ptr<Statistics::FragilityValue>, int> fragilityValueIds;
             std::unordered_map<std::shared_ptr<Statistics::ContributingStochast>, int> contributingStochastIds;
             std::unordered_map<std::shared_ptr<Statistics::VariableStochastValue>, int> conditionalValueIds;
+            std::unordered_map<std::shared_ptr<Reliability::Evaluation>, int> evaluationIds;
             std::unordered_map<std::shared_ptr<Models::Message>, int> messageIds;
 
             std::unordered_map <std::string, std::vector<double>> tempValues;

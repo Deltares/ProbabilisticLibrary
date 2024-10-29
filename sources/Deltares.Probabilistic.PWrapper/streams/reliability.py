@@ -117,6 +117,9 @@ class Settings:
 				'fraction_failed',
 				'stochast_settings']
 
+	def __del__(self):
+		interface.Destroy(self._id)
+
 	@property
 	def reliability_method(self):
 		return ReliabilityMethod[interface.GetStringValue(self._id, 'reliability_method')]
@@ -293,6 +296,15 @@ class StochastSettings:
 				'is_variance_allowed',
 				'intervals']
 		
+	def __del__(self):
+		interface.Destroy(self._id)
+
+	def __str__(self):
+		if self._variable is None:
+			return ''
+		else:
+			return self._variable.name
+
 	@property
 	def variable(self):
 		if self._variable is None:
@@ -300,12 +312,6 @@ class StochastSettings:
 			if id_ > 0:
 				self._variable = Stochast(id_)
 		return self._variable
-		
-	def __str__(self):
-		if self._variable is None:
-			return ''
-		else:
-			return self._variable.name
 
 	@property
 	def min_value(self):
@@ -382,6 +388,9 @@ class LimitStateFunction:
 		        'compare_type',
 		        'critical_value']
 		
+	def __del__(self):
+		interface.Destroy(self._id)
+
 	def __str__(self):
 		return self.parameter + ' ' + str(self.compare_type) + ' ' + str(self.critical_value)
 
@@ -429,6 +438,7 @@ class DesignPoint:
 		self._alphas = None
 		self._contributing_design_points = None
 		self._messages = None
+		self._realizations = None
 		self._known_variables = known_variables
 		self._known_design_points = known_design_points
 		
@@ -443,8 +453,12 @@ class DesignPoint:
 				'total_directions',
 				'total_iterations',
 				'total_model_runs',
+				'realizations',
 				'messages']
 		
+	def __del__(self):
+		interface.Destroy(self._id)
+
 	@property
 	def identifier(self):
 		return interface.GetStringValue(self._id, 'identifier')
@@ -524,12 +538,24 @@ class DesignPoint:
 		return self._contributing_design_points
 
 	@property
+	def realizations(self):
+		if self._realizations is None:
+			realizations = []
+			realization_ids = interface.GetArrayIntValue(self._id, 'evaluations')
+			for realization_id in realization_ids:
+				realizations.append(Evalution(realization_id))
+			self._realizations = FrozenList(realizations)
+				
+		return self._realizations
+	
+	@property
 	def messages(self):
 		if self._messages is None:
-			self._messages = []
+			messages = []
 			message_ids = interface.GetArrayIntValue(self._id, 'messages')
 			for message_id in message_ids:
-				self._messages.append(Message(message_id))
+				messages.append(Message(message_id))
+			self._messages = FrozenList(messages)
 				
 		return self._messages
 	
@@ -558,6 +584,9 @@ class Alpha:
 				'alpha_correlated',
 				'influence_factor',
 				'x']
+
+	def __del__(self):
+		interface.Destroy(self._id)
 
 	@property
 	def variable(self):
@@ -624,6 +653,9 @@ class CombineSettings:
 		return ['combiner_method',
 				'combine_type']
 
+	def __del__(self):
+		interface.Destroy(self._id)
+
 	@property
 	def combiner_method(self):
 		return CombinerMethod[interface.GetStringValue(self._id, 'combiner_method')]
@@ -659,4 +691,45 @@ class Message:
 	@property
 	def text(self):
 		return interface.GetStringValue(self._id, 'text')
+
 		
+class Evalution:
+		
+	def __init__(self, id = None):
+		if id == None:
+			self._id = interface.Create('evaluation')
+		else:
+			self._id = id
+
+	def __dir__(self):
+		return ['iteration',
+				'z',
+				'beta',
+				'weight',
+				'get_value']
+	
+	def __del__(self):
+		interface.Destroy(self._id)
+
+	def get_value(self, variable : str):
+		if isinstance(variable, str):
+			return interface.GetArgValue(self._id, 'get_value', variable)
+		else:
+			return 0
+
+	@property   
+	def iteration(self):
+		return interface.GetIntValue(self._id, 'iteration')
+		
+	@property   
+	def z(self):
+		return interface.GetValue(self._id, 'z')
+		
+	@property   
+	def beta(self):
+		return interface.GetValue(self._id, 'beta')
+		
+	@property   
+	def weight(self):
+		return interface.GetValue(self._id, 'weight')
+				

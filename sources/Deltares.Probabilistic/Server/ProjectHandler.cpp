@@ -49,6 +49,7 @@ namespace Deltares
                 object_type == "stochast_settings" ||
                 object_type == "design_point" ||
                 object_type == "alpha" ||
+                object_type == "evaluation" ||
                 object_type == "combine_project" ||
                 object_type == "combine_settings" ||
                 object_type == "self_correlation_matrix" ||
@@ -148,6 +149,12 @@ namespace Deltares
                 alphaIds[alphas[id]] = id;
                 types[id] = ObjectType::Alpha;
             }
+            else if (object_type == "evaluation")
+            {
+                evaluations[id] = std::make_shared<Deltares::Reliability::Evaluation>();
+                evaluationIds[evaluations[id]] = id;
+                types[id] = ObjectType::Evaluation;
+            }
             else if (object_type == "combine_project")
             {
                 combineProjects[id] = std::make_shared<Deltares::Reliability::CombineProject>();
@@ -200,6 +207,7 @@ namespace Deltares
             case ObjectType::StochastSettings: stochastSettingsValues.erase(id); break;
             case ObjectType::DesignPoint: designPoints.erase(id); break;
             case ObjectType::Alpha: alphas.erase(id); break;
+            case ObjectType::Evaluation: evaluations.erase(id); break;
             case ObjectType::CombineProject: combineProjects.erase(id); break;
             case ObjectType::CombineSettings: combineSettingsValues.erase(id); break;
             case ObjectType::SelfCorrelationMatrix: selfCorrelationMatrices.erase(id); break;
@@ -342,6 +350,13 @@ namespace Deltares
                 else if (property_ == "u") return alpha->U;
                 else if (property_ == "x") return alpha->X;
                 else if (property_ == "influence_factor") return alpha->InfluenceFactor;
+            }
+            else if (objectType == ObjectType::Evaluation)
+            {
+                std::shared_ptr<Reliability::Evaluation> evaluation = evaluations[id];
+
+                if (property_ == "z") return evaluation->Z;
+                else if (property_ == "weight") return evaluation->Weight;
             }
             else if (objectType == ObjectType::LengthEffectProject)
             {
@@ -598,13 +613,20 @@ namespace Deltares
                 else if (property_ == "total_iterations") return designPoint->convergenceReport->TotalIterations;
                 else if (property_ == "total_directions") return designPoint->convergenceReport->TotalDirections;
                 else if (property_ == "total_model_runs") return designPoint->convergenceReport->TotalModelRuns;
+                else if (property_ == "evaluations_count") return (int)designPoint->Evaluations.size();
                 else if (property_ == "messages_count") return (int)designPoint->Messages.size();
-            }
+                }
             else if (objectType == ObjectType::Alpha)
             {
                 std::shared_ptr<Reliability::StochastPointAlpha> alpha = alphas[id];
 
                 if (property_ == "variable") return GetStochastId(alpha->Stochast);
+            }
+            else if (objectType == ObjectType::Evaluation)
+            {
+                std::shared_ptr<Reliability::Evaluation> evaluation = evaluations[id];
+
+                if (property_ == "iteration") return evaluation->Iteration;
             }
             else if (objectType == ObjectType::CombineProject)
             {
@@ -1347,6 +1369,7 @@ namespace Deltares
 
                 if (property_ == "contributing_design_points") return this->GetDesignPointId(designPoint->ContributingDesignPoints[index]);
                 else if (property_ == "alphas") return this->GetAlphaId(designPoint->Alphas[index]);
+                else if (property_ == "evaluations") return this->GetEvaluationId(designPoint->Evaluations[index]);
                 else if (property_ == "messages") return this->GetMessageId(designPoint->Messages[index]);
             }
             else if (objectType == ObjectType::SensitivityProject)
@@ -1580,6 +1603,20 @@ namespace Deltares
             }
 
             return conditionalValueIds[conditionalValue];
+        }
+
+        int ProjectHandler::GetEvaluationId(std::shared_ptr<Deltares::Reliability::Evaluation> evaluation)
+        {
+            if (!evaluationIds.contains(evaluation))
+            {
+                int counter = this->server->GetNewObjectId(this->handlerIndex);
+
+                evaluations[counter] = evaluation;
+                types[counter] = ObjectType::Evaluation;
+                evaluationIds[evaluation] = counter;
+            }
+
+            return evaluationIds[evaluation];
         }
 
         int ProjectHandler::GetMessageId(std::shared_ptr<Deltares::Models::Message> message)
