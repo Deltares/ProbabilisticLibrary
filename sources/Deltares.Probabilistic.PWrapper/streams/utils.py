@@ -65,13 +65,15 @@ class FrozenList():
 				self._dict[str(item)] = item
 
 	def __getitem__(self, index):
-		if isinstance(index, str):
+		if isinstance(index, int):
+			return self._list[index]
+		else:
+			if not isinstance(index, str):
+				index = str(index)
 			if index in self._dict.keys():
-				return self._dict[str(index)]
+				return self._dict[index]
 			else:
 				return None
-		else:
-			return self._list[index]
 
 	def __iter__(self):
 		return self._list.__iter__()
