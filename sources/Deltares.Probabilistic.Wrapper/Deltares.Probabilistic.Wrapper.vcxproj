@@ -206,6 +206,8 @@
     <ClInclude Include="Model\GradientSettings.h" />
     <ClInclude Include="Reliability\FORMSettings.h" />
     <ClInclude Include="Reliability\FORM.h" />
+    <ClInclude Include="Reliability\FORMThenDirectionalSampling.h" />
+    <ClInclude Include="Reliability\FORMThenDirectionalSamplingSettings.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Reliability\ConvergenceReport.h" />
     <ClInclude Include="Reliability\StartPointCalculatorSettings.h" />
@@ -281,6 +283,7 @@
     <ClCompile Include="Reliability\DirectionalSampling.cpp" />
     <ClCompile Include="Reliability\DirectionReliability.cpp" />
     <ClCompile Include="Reliability\FORM.cpp" />
+    <ClCompile Include="Reliability\FORMThenDirectionalSampling.cpp" />
     <ClCompile Include="Statistics\StandardNormal.cpp" />
     <ClCompile Include="Model\UConverter.cpp" />
     <ClCompile Include="Reliability\SubsetSimulationSettings.cpp" />
