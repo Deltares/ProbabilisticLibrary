@@ -164,12 +164,18 @@ namespace Deltares.Probabilistic.Wrapper.Test
             Project project = ProjectBuilder.GetLinearPartialCorrelatedProject();
 
             project.ReliabilityMethod = new FORMThenDirectionalSampling();
+
+            FORMThenDirectionalSampling fdir = new FORMThenDirectionalSampling();
+            fdir.Settings.MinimumDirections = 10000;
+            fdir.Settings.MaximumDirections = 50000;
+            fdir.Settings.RandomSettings.RandomGeneratorType = RandomGeneratorType.MersenneTwister;
+            project.ReliabilityMethod = fdir;
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(2.15, designPoint.Beta, margin);
+            Assert.AreEqual(2.85, designPoint.Beta, margin);
 
-            Assert.AreEqual(0.45, designPoint.Alphas[0].X, margin);
-            Assert.AreEqual(0.45, designPoint.Alphas[1].X, margin);
+            Assert.AreEqual(0.4656, designPoint.Alphas[0].X, margin);
+            Assert.AreEqual(0.4658, designPoint.Alphas[1].X, margin);
 
             Assert.AreEqual(designPoint.Alphas[0].AlphaCorrelated, designPoint.Alphas[1].AlphaCorrelated, margin);
         }
@@ -426,10 +432,17 @@ namespace Deltares.Probabilistic.Wrapper.Test
             DesignPoint designPoint = project.GetDesignPoint();
 
             Assert.AreEqual(40, designPoint.Beta, margin);
-            Assert.AreEqual(1, designPoint.Messages.Count);
+            Assert.AreEqual(1, designPoint.ContributingDesignPoints[0].Messages.Count);
 
-            Assert.AreEqual(MessageType.Error, designPoint.Messages[0].Type);
-            Assert.AreEqual("No variation in model results found at start point", designPoint.Messages[0].Text);
+            Assert.AreEqual(MessageType.Error, designPoint.ContributingDesignPoints[0].Messages[0].Type);
+            Assert.AreEqual("No variation in model results found at start point", designPoint.ContributingDesignPoints[0].Messages[0].Text);
+        }
+
+        static void Main()
+        {
+            var test = new TestFORMthenDirectionalSampling();
+            test.TestLinearPartialCorrelated();
+            test.TestNonVarying();
         }
 
     }
