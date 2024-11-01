@@ -30,6 +30,8 @@
 #include "NumericalBisection.h"
 #include "LatinHyperCube.h"
 #include "CobylaReliability.h"
+#include "FORMThenDirectionalSampling.h"
+#include "DirectionalSamplingThenFORM.h"
 
 #include <memory>
 
@@ -51,6 +53,9 @@ namespace Deltares
             case ReliabilityMethodType::ReliabilityNumericalBisection: return this->GetNumericalBisectionMethod();
             case ReliabilityMethodType::ReliabilityLatinHyperCube: return this->GetLatinHypercubeMethod();
             case ReliabilityMethodType::ReliabilityCobyla: return this->GetCobylaReliabilityMethod();
+            case ReliabilityMethodType::ReliabilityFORMthenDirectionalSampling: return this->GetFormThenDsReliabilityMethod();
+            case ReliabilityMethodType::ReliabilityDirectionalSamplingThenFORM: return this->GetDsThenFormReliabilityMethod();
+
             default: throw probLibException("Reliability method");
             }
         }
@@ -121,6 +126,33 @@ namespace Deltares
 
             return cobyla_reliability;
         }
+
+        const std::shared_ptr<Reliability::ReliabilityMethod> Settings::GetFormThenDsReliabilityMethod()
+        {
+            // todo : make settings complete
+            auto fdir = std::make_shared<FORMThenDirectionalSampling>();
+
+            fdir->DsSettings->designPointMethod = this->designPointMethod;
+            fdir->formSettings->StochastSet = this->StochastSet;
+            fdir->formSettings->EpsilonBeta = this->EpsilonBeta;
+            fdir->formSettings->MaximumIterations = this->MaximumIterations;
+
+            return fdir;
+        }
+
+        const std::shared_ptr<Reliability::ReliabilityMethod> Settings::GetDsThenFormReliabilityMethod()
+        {
+            // todo : make settings complete
+            auto dsfi = std::make_shared<DirectionalSamplingThenFORM>();
+
+            dsfi->DsSettings->designPointMethod = this->designPointMethod;
+            dsfi->formSettings->StochastSet = this->StochastSet;
+            dsfi->formSettings->EpsilonBeta = this->EpsilonBeta;
+            dsfi->formSettings->MaximumIterations = this->MaximumIterations;
+
+            return dsfi;
+        }
+
 
         const std::shared_ptr<ReliabilityMethod> Settings::GetCrudeMonteCarloMethod()
         {
@@ -232,7 +264,7 @@ namespace Deltares
             case ReliabilityMethodType::ReliabilitySubsetSimulation: return "subset_simulation";
             case ReliabilityMethodType::ReliabilityNumericalBisection: return "numerical_bisection";
             case ReliabilityMethodType::ReliabilityLatinHyperCube: return "latin_hypercube";
-            case ReliabilityMethodType::ReliabilityCobyla: return "cobyla_reliability";
+            case ReliabilityMethodType::ReliabilityCobyla: return "fdir";
             default: throw probLibException("Reliability method");
             }
         }
@@ -248,7 +280,7 @@ namespace Deltares
             else if (method == "subset_simulation") return ReliabilityMethodType::ReliabilitySubsetSimulation;
             else if (method == "numerical_bisection") return ReliabilityMethodType::ReliabilityNumericalBisection;
             else if (method == "latin_hypercube") return ReliabilityMethodType::ReliabilityLatinHyperCube;
-            else if (method == "cobyla_reliability") return ReliabilityMethodType::ReliabilityCobyla;
+            else if (method == "fdir") return ReliabilityMethodType::ReliabilityCobyla;
             else throw probLibException("Reliability method");
         }
 

@@ -39,7 +39,7 @@ namespace Deltares
         enum ReliabilityMethodType {ReliabilityFORM, ReliabilityNumericalIntegration, ReliabilityCrudeMonteCarlo,
             ReliabilityImportanceSampling, ReliabilityAdaptiveImportanceSampling, ReliabilityDirectionalSampling,
             ReliabilityNumericalBisection, ReliabilityLatinHyperCube, ReliabilityCobyla,
-            ReliabilitySubsetSimulation };
+            ReliabilitySubsetSimulation, ReliabilityFORMthenDirectionalSampling, ReliabilityDirectionalSamplingThenFORM};
 
         /**
          * \brief General settings applicable to all mechanisms
@@ -194,6 +194,9 @@ namespace Deltares
             const std::shared_ptr<Reliability::ReliabilityMethod> GetLatinHypercubeMethod();
             const std::shared_ptr<Reliability::ReliabilityMethod> GetSubsetSimulationMethod();
             const std::shared_ptr<Reliability::ReliabilityMethod> GetCobylaReliabilityMethod();
+            const std::shared_ptr<Reliability::ReliabilityMethod> GetFormThenDsReliabilityMethod();
+            const std::shared_ptr<Reliability::ReliabilityMethod> GetDsThenFormReliabilityMethod();
+
         };
     }
 }

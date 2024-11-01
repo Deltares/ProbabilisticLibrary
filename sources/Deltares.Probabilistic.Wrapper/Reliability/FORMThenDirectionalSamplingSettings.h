@@ -20,6 +20,8 @@
 // All rights reserved.
 //
 #pragma once
+#include "DesignPointMethodSettings.h"
+#include "DirectionReliabilitySettings.h"
 #include "../../Deltares.Probabilistic/Reliability/FORMSettings.h"
 #include "../../Deltares.Probabilistic/Reliability/DirectionalSamplingSettings.h"
 #include "../Model/RandomSettings.h"
@@ -104,11 +106,37 @@ namespace Deltares
                     void set(double value) { sharedDS->object->VariationCoefficient = value; }
                 }
 
+                property Wrappers::DesignPointMethod DesignPointMethod
+                {
+                    Wrappers::DesignPointMethod get()
+                    {
+                        switch (sharedDS->object->designPointMethod)
+                        {
+                        case Reliability::DesignPointMethod::NearestToMean: return Wrappers::DesignPointMethod::NearestToMean;
+                        case Reliability::DesignPointMethod::CenterOfGravity: return Wrappers::DesignPointMethod::CentreOfGravity;
+                        case Reliability::DesignPointMethod::CenterOfAngles: return Wrappers::DesignPointMethod::CentreOfAngles;
+                        default: throw gcnew System::NotSupportedException("Design point method");
+                        }
+                    }
+                    void set(Wrappers::DesignPointMethod value)
+                    {
+                        switch (value)
+                        {
+                        case Wrappers::DesignPointMethod::NearestToMean: sharedDS->object->designPointMethod = Reliability::DesignPointMethod::NearestToMean; break;
+                        case Wrappers::DesignPointMethod::CentreOfGravity: sharedDS->object->designPointMethod = Reliability::DesignPointMethod::CenterOfGravity; break;
+                        case Wrappers::DesignPointMethod::CentreOfAngles: sharedDS->object->designPointMethod = Reliability::DesignPointMethod::CenterOfAngles; break;
+                        default: throw gcnew System::NotSupportedException("Design point method");
+                        }
+                    }
+                }
+
                 virtual property Wrappers::RunSettings^ RunSettings
                 {
                     Wrappers::RunSettings^ get() { return runSettings; }
                     void set (Wrappers::RunSettings^ value) { runSettings = value; }
                 }
+
+                DirectionReliabilitySettings^ DirectionalSettings = gcnew DirectionReliabilitySettings();
 
                 StartPointCalculatorSettings^ StartPointCalculatorSettings = gcnew Wrappers::StartPointCalculatorSettings();
                 Wrappers::GradientSettings^ GradientCalculatorSettings = gcnew Wrappers::GradientSettings();
@@ -134,17 +162,13 @@ namespace Deltares
 
                 std::shared_ptr<Reliability::DirectionalSamplingSettings> GetDsSettings()
                 {
-                    sharedForm->object->StochastSet->stochastSettings.clear();
+                    sharedDS->object->StochastSet->stochastSettings.clear();
                     for (int i = 0; i < StochastSettings->Count; i++)
                     {
-                        sharedForm->object->StochastSet->stochastSettings.push_back(StochastSettings[i]->GetSettings());
+                        sharedDS->object->StochastSet->stochastSettings.push_back(StochastSettings[i]->GetSettings());
                     }
 
-                    sharedForm->object->StartPointSettings = StartPointCalculatorSettings->GetSettings();
-                    sharedForm->object->StartPointSettings->StochastSet = sharedForm->object->StochastSet;
-
-                    sharedForm->object->GradientSettings = GradientCalculatorSettings->GetSettings();
-                    sharedForm->object->RunSettings = RunSettings->GetSettings();
+                    //sharedDS->object->RunSettings = RunSettings->GetSettings();
 
                     return sharedDS->object;
                 }
