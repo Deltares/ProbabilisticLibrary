@@ -26,7 +26,7 @@ using NUnit.Framework;
 namespace Deltares.Probabilistic.Wrapper.Test
 {
     [TestFixture]
-    public class TestFORMthenDirectionalSampling
+    public class TestDirectionalSamplingThenFORM
     {
         private const double margin = 0.01;
 
@@ -35,21 +35,17 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             Project project = ProjectBuilder.GetLinearProject();
 
-            project.ReliabilityMethod = new FORMThenDirectionalSampling();
+            project.ReliabilityMethod = new DirectionalSamplingThenFORM();
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(2.33, designPoint.Beta, margin);
+            Assert.AreEqual(2.5824, designPoint.Beta, margin);
             Assert.IsTrue(designPoint.ConvergenceReport.IsConverged);
 
-            Assert.AreEqual(0.01, designPoint.ProbabilityFailure, margin / 10);
-            Assert.AreEqual(0.99, designPoint.ProbabilityNonFailure, margin / 10);
-            Assert.AreEqual(99.7, designPoint.ReturnPeriod, margin * 10);
+            Assert.AreEqual(-0.680, designPoint.Alphas[0].Alpha, margin);
+            Assert.AreEqual(-0.733, designPoint.Alphas[1].Alpha, margin);
 
-            Assert.AreEqual(-0.7, designPoint.Alphas[0].Alpha, margin);
-            Assert.AreEqual(-0.7, designPoint.Alphas[1].Alpha, margin);
-
-            Assert.AreEqual(0.9, designPoint.Alphas[0].X, margin);
-            Assert.AreEqual(0.9, designPoint.Alphas[1].X, margin);
+            Assert.AreEqual(0.886, designPoint.Alphas[0].X, margin);
+            Assert.AreEqual(0.912, designPoint.Alphas[1].X, margin);
         }
 
         [Test]
@@ -57,14 +53,14 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var project = ProjectBuilder.GetLinearProject();
 
-            project.ReliabilityMethod = new FORMThenDirectionalSampling();
+            project.ReliabilityMethod = new DirectionalSamplingThenFORM();
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(2.33, designPoint.Beta, margin);
+            Assert.AreEqual(2.5824, designPoint.Beta, margin);
 
             DesignPoint designPoint2 = project.GetDesignPoint();
 
-            Assert.AreEqual(2.33, designPoint2.Beta, margin);
+            Assert.AreEqual(2.5824, designPoint2.Beta, margin);
 
             Assert.AreNotSame(designPoint, designPoint2);
             Assert.AreNotSame(designPoint.Alphas[0], designPoint2.Alphas[0]);
@@ -76,17 +72,17 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var project = ProjectBuilder.GetInverseLinearProject();
 
-            project.ReliabilityMethod = new FORMThenDirectionalSampling();
+            project.ReliabilityMethod = new DirectionalSamplingThenFORM();
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(-2.33, designPoint.Beta, margin);
+            Assert.AreEqual(-2.582, designPoint.Beta, margin);
             Assert.IsTrue(designPoint.ConvergenceReport.IsConverged);
 
-            Assert.AreEqual(0.7, designPoint.Alphas[0].Alpha, margin);
-            Assert.AreEqual(0.7, designPoint.Alphas[1].Alpha, margin);
+            Assert.AreEqual(0.680, designPoint.Alphas[0].Alpha, margin);
+            Assert.AreEqual(0.733, designPoint.Alphas[1].Alpha, margin);
 
-            Assert.AreEqual(0.9, designPoint.Alphas[0].X, margin);
-            Assert.AreEqual(0.9, designPoint.Alphas[1].X, margin);
+            Assert.AreEqual(0.886, designPoint.Alphas[0].X, margin);
+            Assert.AreEqual(0.912, designPoint.Alphas[1].X, margin);
         }
 
         [Test]
@@ -97,13 +93,13 @@ namespace Deltares.Probabilistic.Wrapper.Test
             project.Settings.SaveConvergence = true;
             project.Settings.SaveEvaluations = true;
 
-            project.ReliabilityMethod = new FORMThenDirectionalSampling();
+            project.ReliabilityMethod = new DirectionalSamplingThenFORM();
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(2.33, designPoint.Beta, margin);
+            Assert.AreEqual(2.582, designPoint.Beta, margin);
 
-            Assert.AreEqual(6, designPoint.ReliabilityResults.Count);
-            Assert.AreEqual(18, designPoint.Evaluations.Count);
+            Assert.AreEqual(2, designPoint.ReliabilityResults.Count);
+            Assert.AreEqual(6, designPoint.Evaluations.Count);
 
             Assert.IsTrue(designPoint.Evaluations[0].Tag is ZFunctionOutput);
 
@@ -126,18 +122,18 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             project.ProgressIndicator = new ProgressIndicator(progressHolder.SetProgress, progressHolder.SetDetailedProgress, progressHolder.SetTextualProgress);
 
-            project.ReliabilityMethod = new FORMThenDirectionalSampling();
+            project.ReliabilityMethod = new DirectionalSamplingThenFORM();
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(2.33, designPoint.Beta, margin);
+            Assert.AreEqual(2.582, designPoint.Beta, margin);
 
-            Assert.AreEqual(6, progressHolder.Invocations);
-            Assert.AreEqual(0.1, progressHolder.Progress, margin);
-            Assert.AreEqual("5/50, Reliability = 2.327, Convergence = 0.009", progressHolder.Text);
-            Assert.AreEqual(5, progressHolder.Step);
+            Assert.AreEqual(3719, progressHolder.Invocations);
+            Assert.AreEqual(0.02, progressHolder.Progress, margin);
+            Assert.AreEqual("1/50, Reliability = 2.325, Convergence = 0.006", progressHolder.Text);
+            Assert.AreEqual(1, progressHolder.Step);
             Assert.AreEqual(0, progressHolder.Loop);
-            Assert.AreEqual(2.327, progressHolder.Reliability, 1e-3);
-            Assert.AreEqual(0.009, progressHolder.Convergence, 1e-3);
+            Assert.AreEqual(2.325, progressHolder.Reliability, 1e-3);
+            Assert.AreEqual(0.005536, progressHolder.Convergence, 1e-3);
         }
 
         [Test]
@@ -145,14 +141,14 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             Project project = ProjectBuilder.GetLinearFullyCorrelatedProject();
 
-            project.ReliabilityMethod = new FORMThenDirectionalSampling();
+            project.ReliabilityMethod = new DirectionalSamplingThenFORM();
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(2.33, designPoint.Beta, margin);
+            Assert.AreEqual(2.55, designPoint.Beta, margin);
 
-            Assert.AreEqual(0.45, designPoint.Alphas[0].X, margin);
-            Assert.AreEqual(0.45, designPoint.Alphas[1].X, margin);
-            Assert.AreEqual(0.90, designPoint.Alphas[2].X, margin);
+            Assert.AreEqual(0.467, designPoint.Alphas[0].X, margin);
+            Assert.AreEqual(0.467, designPoint.Alphas[1].X, margin);
+            Assert.AreEqual(0.549, designPoint.Alphas[2].X, margin);
 
             Assert.AreEqual(0, designPoint.Alphas[1].Alpha, margin);
             Assert.AreEqual(designPoint.Alphas[0].AlphaCorrelated, designPoint.Alphas[1].AlphaCorrelated, margin);
@@ -163,9 +159,9 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             Project project = ProjectBuilder.GetLinearPartialCorrelatedProject();
 
-            project.ReliabilityMethod = new FORMThenDirectionalSampling();
+            project.ReliabilityMethod = new DirectionalSamplingThenFORM();
 
-            FORMThenDirectionalSampling fdir = new FORMThenDirectionalSampling();
+            DirectionalSamplingThenFORM fdir = new DirectionalSamplingThenFORM();
             fdir.Settings.MinimumDirections = 10000;
             fdir.Settings.MaximumDirections = 50000;
             fdir.Settings.RandomSettings.RandomGeneratorType = RandomGeneratorType.MersenneTwister;
@@ -174,8 +170,8 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             Assert.AreEqual(2.85, designPoint.Beta, margin);
 
-            Assert.AreEqual(0.4656, designPoint.Alphas[0].X, margin);
-            Assert.AreEqual(0.4658, designPoint.Alphas[1].X, margin);
+            Assert.AreEqual(0.4475, designPoint.Alphas[0].X, margin);
+            Assert.AreEqual(0.4472, designPoint.Alphas[1].X, margin);
 
             Assert.AreEqual(designPoint.Alphas[0].AlphaCorrelated, designPoint.Alphas[1].AlphaCorrelated, margin);
         }
@@ -187,7 +183,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             project.CorrelationMatrix.ResolveConflictingCorrelations();
 
-            project.ReliabilityMethod = new FORMThenDirectionalSampling();
+            project.ReliabilityMethod = new DirectionalSamplingThenFORM();
             DesignPoint designPoint = project.GetDesignPoint();
 
             Assert.AreEqual(1.65, designPoint.Beta, margin);
@@ -210,7 +206,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             project.CorrelationMatrix.ResolveConflictingCorrelations();
 
-            project.ReliabilityMethod = new FORMThenDirectionalSampling();
+            project.ReliabilityMethod = new DirectionalSamplingThenFORM();
             DesignPoint designPoint = project.GetDesignPoint();
 
             Assert.AreEqual(1.65, designPoint.Beta, margin);
@@ -233,10 +229,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             Project project = ProjectBuilder.GetLoadStrengthProject();
 
-            project.ReliabilityMethod = new FORMThenDirectionalSampling();
+            project.ReliabilityMethod = new DirectionalSamplingThenFORM();
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(1.41, designPoint.Beta, margin);
+            Assert.AreEqual(1.40, designPoint.Beta, margin);
         }
 
         [Test]
@@ -244,76 +240,14 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             Project project = ProjectBuilder.GetConvexProject();
 
-            FORMThenDirectionalSampling form = new FORMThenDirectionalSampling();
+            DirectionalSamplingThenFORM form = new DirectionalSamplingThenFORM();
             form.Settings.StochastSettings.Add(new StochastSettings { StartValue = 1, Stochast = project.Stochasts[0] });
             form.Settings.StochastSettings.Add(new StochastSettings { StartValue = 1, Stochast = project.Stochasts[1] });
             project.ReliabilityMethod = form;
 
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(2.5, designPoint.Beta, margin);
-        }
-
-        [Test]
-        public void TestConvexRayStartPoint()
-        {
-            Project project = ProjectBuilder.GetConvexProject();
-
-            FORMThenDirectionalSampling form = new FORMThenDirectionalSampling();
-            form.Settings.StochastSettings.Add(new StochastSettings { StartValue = 1, Stochast = project.Stochasts[0] });
-            form.Settings.StochastSettings.Add(new StochastSettings { StartValue = 1, Stochast = project.Stochasts[1] });
-            form.Settings.StartPointCalculatorSettings.StartMethod = StartMethodType.RaySearch;
-            project.ReliabilityMethod = form;
-
-            DesignPoint designPoint = project.GetDesignPoint();
-
-            Assert.AreEqual(2.5, designPoint.Beta, margin);
-        }
-
-        [Test]
-        public void TestConvexRayStartPointNoInitialization()
-        {
-            Project project = ProjectBuilder.GetConvexProject();
-
-            FORMThenDirectionalSampling form = new FORMThenDirectionalSampling();
-            form.Settings.StartPointCalculatorSettings.StartMethod = StartMethodType.RaySearch;
-            project.ReliabilityMethod = form;
-
-            DesignPoint designPoint = project.GetDesignPoint();
-
-            Assert.AreEqual(2.5, designPoint.Beta, margin);
-        }
-
-        [Test]
-        public void TestConvexRaySphereStartPoint()
-        {
-            Project project = ProjectBuilder.GetConvexProject();
-
-            FORMThenDirectionalSampling form = new FORMThenDirectionalSampling();
-            form.Settings.StartPointCalculatorSettings.StartMethod = StartMethodType.SphereSearch;
-            form.Settings.StartPointCalculatorSettings.AllQuadrants = true;
-            project.ReliabilityMethod = form;
-
-            DesignPoint designPoint = project.GetDesignPoint();
-
-            Assert.AreEqual(2.5, designPoint.Beta, margin);
-
-            Assert.AreEqual(1, designPoint.ContributingDesignPoints.Count, margin);
-            Assert.AreEqual(3.54, designPoint.ContributingDesignPoints[0].Beta, margin);
-        }
-
-        [Test]
-        public void TestConvexRaySensitivityStartPoint()
-        {
-            Project project = ProjectBuilder.GetConvexProject();
-
-            FORMThenDirectionalSampling form = new FORMThenDirectionalSampling();
-            form.Settings.StartPointCalculatorSettings.StartMethod = StartMethodType.SensitivitySearch;
-            project.ReliabilityMethod = form;
-
-            DesignPoint designPoint = project.GetDesignPoint();
-
-            Assert.AreEqual(2.5, designPoint.Beta, margin);
+            Assert.AreEqual(2.635, designPoint.Beta, margin);
         }
 
         [Test]
@@ -321,10 +255,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             Project project = ProjectBuilder.GetNoisyProject();
 
-            project.ReliabilityMethod = new FORMThenDirectionalSampling();
+            project.ReliabilityMethod = new DirectionalSamplingThenFORM();
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(2.59, designPoint.Beta, margin);
+            Assert.AreEqual(2.505, designPoint.Beta, margin);
         }
 
         [Test]
@@ -332,10 +266,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             Project project = ProjectBuilder.GetOblateSpheroidProject();
 
-            project.ReliabilityMethod = new FORMThenDirectionalSampling();
+            project.ReliabilityMethod = new DirectionalSamplingThenFORM();
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(3.39, designPoint.Beta, margin);
+            Assert.AreEqual(1.10, designPoint.Beta, margin);
         }
 
         [Test]
@@ -343,10 +277,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             Project project = ProjectBuilder.GetQuadraticProject();
 
-            project.ReliabilityMethod = new FORMThenDirectionalSampling();
+            project.ReliabilityMethod = new DirectionalSamplingThenFORM();
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(-4.5, designPoint.Beta, margin);
+            Assert.AreEqual(-4.417, designPoint.Beta, margin);
         }
 
         [Test]
@@ -354,15 +288,15 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             Project project = ProjectBuilder.GetWaveProject();
 
-            FORMThenDirectionalSampling form = new FORMThenDirectionalSampling();
+            DirectionalSamplingThenFORM form = new DirectionalSamplingThenFORM();
             form.Settings.RelaxationFactor = 0.7;
             form.Settings.RelaxationLoops = 5;
             project.ReliabilityMethod = form;
 
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(2.09, designPoint.Beta, margin);
-            Assert.AreEqual(2, designPoint.ContributingDesignPoints.Count);
+            Assert.AreEqual(2.076, designPoint.Beta, margin);
+            Assert.AreEqual(3, designPoint.ContributingDesignPoints.Count);
         }
 
         [Test]
@@ -370,7 +304,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             Project project = ProjectBuilder.GetWaveProject();
 
-            FORMThenDirectionalSampling form = new FORMThenDirectionalSampling();
+            DirectionalSamplingThenFORM form = new DirectionalSamplingThenFORM();
             form.Settings.RelaxationFactor = 0.7;
             form.Settings.RelaxationLoops = 5;
             form.Settings.GradientCalculatorSettings.GradientType = GradientType.TwoDirections;
@@ -389,7 +323,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             Project project = ProjectBuilder.GetNonLinearProject();
 
-            FORMThenDirectionalSampling fdir = new FORMThenDirectionalSampling();
+            DirectionalSamplingThenFORM fdir = new DirectionalSamplingThenFORM();
             fdir.Settings.RelaxationFactor = 0.75;
             fdir.Settings.RelaxationLoops = 4;
             fdir.Settings.FilterAtNonConvergence = false;
@@ -403,9 +337,9 @@ namespace Deltares.Probabilistic.Wrapper.Test
             DesignPoint designPoint = project.GetDesignPoint();
 
             Assert.AreEqual(3.57, designPoint.Beta, margin);
-            Assert.AreEqual(1, designPoint.ContributingDesignPoints.Count);
+            Assert.AreEqual(4, designPoint.ContributingDesignPoints.Count);
 
-            Assert.IsTrue(designPoint.ConvergenceReport.IsConverged);
+            Assert.IsFalse(designPoint.ConvergenceReport.IsConverged);
         }
 
         [Test]
@@ -413,10 +347,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             Project project = ProjectBuilder.GetBlighProject();
 
-            project.ReliabilityMethod = new FORMThenDirectionalSampling();
+            project.ReliabilityMethod = new DirectionalSamplingThenFORM();
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(1.63, designPoint.Beta, margin);
+            Assert.AreEqual(1.6566, designPoint.Beta, margin);
         }
 
         [Test]
@@ -428,14 +362,14 @@ namespace Deltares.Probabilistic.Wrapper.Test
             project.Settings.MaxMessages = 1000;
             project.Settings.LowestMessageType = MessageType.Warning;
 
-            project.ReliabilityMethod = new FORMThenDirectionalSampling();
+            project.ReliabilityMethod = new DirectionalSamplingThenFORM();
             DesignPoint designPoint = project.GetDesignPoint();
 
             Assert.AreEqual(40.0, designPoint.Beta, margin);
-            Assert.AreEqual(1, designPoint.ContributingDesignPoints[0].Messages.Count);
+            Assert.AreEqual(1, designPoint.Messages.Count);
 
-            Assert.AreEqual(MessageType.Error, designPoint.ContributingDesignPoints[0].Messages[0].Type);
-            Assert.AreEqual("No variation in model results found at start point", designPoint.ContributingDesignPoints[0].Messages[0].Text);
+            Assert.AreEqual(MessageType.Error, designPoint.Messages[0].Type);
+            Assert.AreEqual("No variation in model results found at start point", designPoint.Messages[0].Text);
         }
 
     }
