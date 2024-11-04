@@ -149,6 +149,18 @@ namespace Deltares
                 tstRelMethods.testNumericalBisectionLinear();
             }
 
+            TEST(reliability_method_test, testFDIRReliability)
+            {
+                auto tstRelMethods = testReliabilityMethods();
+                tstRelMethods.testFDIRReliability();
+            }
+
+            TEST(reliability_method_test, testDSFIReliability)
+            {
+                auto tstRelMethods = testReliabilityMethods();
+                tstRelMethods.testDSFIReliability();
+            }
+
             TEST(unittst, testDistributions)
             {
                 auto tstDist = testDistributions();
