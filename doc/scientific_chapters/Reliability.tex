@@ -695,11 +695,42 @@ where
 	$f_\text{relax, prev}$ & is the relaxation factor in the previous loop. \\
 \end{longtable}
 
+\subsection{FORM then Directional sampling}
+\subsubsection{Algorithm}
+The method 'FORM then Directional sampling' is a reliability method that is based on
+FORM (see \autoref{sec:FORM}) and Directional sampling (see \autoref{sec:DirectionalSampling}).
+
+It starts a FORM reliability calculation. If that succeeds, the calculation is finished,
+and the result of FORM is returned.
+If it not succeeds, a Directional sampling calculation is performed,
+and the result of Directional sampling is returned.
+
+The idea behind this method is to use FORM whenever possible because it is very efficient.
+But fall back on Directional sampling if FORM for some reason does not converge.
+In a gui the user could of course do this by hand, but when running many runs in batch mode,
+it is convenient to switch automatically between FORM and Directional sampling.
+
+\subsection{Directional Sampling then FORM}
+\subsubsection{Algorithm}
+The method 'Directional sampling then FORM' is a reliability method that is based on
+Directional sampling (see \autoref{sec:DirectionalSampling}) and FORM (see \autoref{sec:FORM}).
+
+It starts a Directional sampling reliability calculation followed by a FORM calculation.
+It returns the reliability index (beta) from Directional sampling and the alpha values from FORM.
+FORM is started from the design point of Directional sampling, therefore it usually needs only a few iterations.
+
+The idea behind this method is that Directional sampling finds the beta value quite fast,
+but it takes much more samples to get all the alpha values accurate enough.
+FORM is able to get these alpha values efficient, if starts close the design point.
+
+Note that the start point of FORM depends on the method for Contribution per variable (see \autoref{sec:Contribution per variable}).
+
 \section{Contribution per variable}
 \label{sec:Contribution per variable}
 
-% TODO Numerical Bisection not in Streams yet
-For all numerical integration based (Numerical Integration) and Monte Carlo based (Crude Monte Carlo, Importance Sampling, Directional Sampling and Subset Simulation) reliability techniques, the contribution per variable is calculated after the calculation of the reliability index. 
+For all numerical integration based (Numerical Integration and Numerical Bisection) and Monte Carlo based
+(Crude Monte Carlo, Importance Sampling, Directional Sampling and Subset Simulation) reliability techniques,
+the contribution per variable is calculated after the calculation of the reliability index. 
 
 In the next subsections various methods will be explained.
 
