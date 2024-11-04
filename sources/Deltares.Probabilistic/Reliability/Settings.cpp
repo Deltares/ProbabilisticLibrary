@@ -247,6 +247,16 @@ namespace Deltares
             case ReliabilityMethodType::ReliabilityNumericalBisection: return std::dynamic_pointer_cast<NumericalBisection>(this->GetNumericalBisectionMethod())->Settings->isValid();
             case ReliabilityMethodType::ReliabilityLatinHyperCube: return std::dynamic_pointer_cast<LatinHyperCube>(this->GetLatinHypercubeMethod())->Settings->isValid();
             case ReliabilityMethodType::ReliabilitySubsetSimulation: return std::dynamic_pointer_cast<SubsetSimulation>(this->GetSubsetSimulationMethod())->Settings->isValid();
+            case ReliabilityMethodType::ReliabilityFORMthenDirectionalSampling:
+            {
+                auto fdir = std::dynamic_pointer_cast<FORMThenDirectionalSampling>(this->GetFormThenDsReliabilityMethod());
+                return fdir->formSettings->isValid() && fdir->DsSettings->isValid();
+            }
+            case ReliabilityMethodType::ReliabilityDirectionalSamplingThenFORM:
+            {
+                auto dsfi = std::dynamic_pointer_cast<DirectionalSamplingThenFORM>(this->GetDsThenFormReliabilityMethod());
+                return dsfi->formSettings->isValid() && dsfi->DsSettings->isValid();
+            }
             default: throw probLibException("Reliability method");
             }
         }
@@ -264,7 +274,9 @@ namespace Deltares
             case ReliabilityMethodType::ReliabilitySubsetSimulation: return "subset_simulation";
             case ReliabilityMethodType::ReliabilityNumericalBisection: return "numerical_bisection";
             case ReliabilityMethodType::ReliabilityLatinHyperCube: return "latin_hypercube";
-            case ReliabilityMethodType::ReliabilityCobyla: return "fdir";
+            case ReliabilityMethodType::ReliabilityCobyla: return "cobyla_reliability";
+            case ReliabilityMethodType::ReliabilityFORMthenDirectionalSampling: return "form_then_directional_sampling";
+            case ReliabilityMethodType::ReliabilityDirectionalSamplingThenFORM: return "directional_sampling_then_form";
             default: throw probLibException("Reliability method");
             }
         }
@@ -280,7 +292,9 @@ namespace Deltares
             else if (method == "subset_simulation") return ReliabilityMethodType::ReliabilitySubsetSimulation;
             else if (method == "numerical_bisection") return ReliabilityMethodType::ReliabilityNumericalBisection;
             else if (method == "latin_hypercube") return ReliabilityMethodType::ReliabilityLatinHyperCube;
-            else if (method == "fdir") return ReliabilityMethodType::ReliabilityCobyla;
+            else if (method == "cobyla_reliability") return ReliabilityMethodType::ReliabilityCobyla;
+            else if (method == "form_then_directional_sampling") return ReliabilityMethodType::ReliabilityFORMthenDirectionalSampling;
+            else if (method == "directional_sampling_then_form") return ReliabilityMethodType::ReliabilityDirectionalSamplingThenFORM;
             else throw probLibException("Reliability method");
         }
 
