@@ -258,6 +258,12 @@ namespace Deltares
             this->Send("set_value:" + std::to_string(id) + ":" + property + ":" + std::to_string(value), false);
         }
 
+        double ExternalServerHandler::GetArgValue(int id, std::string property, double argument)
+        {
+            std::string result = this->Send("get_arg_value:" + std::to_string(id) + ":" + property + ":" + std::to_string(argument), true);
+            return std::stod(result);
+        }
+
         bool ExternalServerHandler::GetBoolValue(int id, std::string property)
         {
             std::string result = this->Send("get_bool_value:" + std::to_string(id) + ":" + property, true);

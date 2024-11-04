@@ -160,7 +160,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Reliability\Settings.h" />
     <ClInclude Include="Model\BaseStochastPoint.h" />
+    <ClInclude Include="Server\ProjectHandler.h" />
     <ClInclude Include="Sensitivity\ImportanceSamplingS.h" />
     <ClInclude Include="Sensitivity\ImportanceSamplingSettingsS.h" />
     <ClInclude Include="Sensitivity\CrudeMonteCarloS.h" />
@@ -227,6 +229,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Model\BaseStochastPoint.cpp" />
+    <ClCompile Include="Server\ProjectHandler.cpp" />
     <ClCompile Include="Sensitivity\ImportanceSamplingS.cpp" />
     <ClCompile Include="Sensitivity\CrudeMonteCarloS.cpp" />
     <ClCompile Include="Sensitivity\SensitivityProject.cpp" />

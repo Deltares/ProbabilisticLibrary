@@ -265,7 +265,7 @@ class SensitivityProject:
 	@property
 	def stochast(self):
 		if self._stochast is None:
-			stochastId = interface.GetIntValue(self._id, 'sensitivity_stochast')
+			stochastId = interface.GetIdValue(self._id, 'sensitivity_stochast')
 			if stochastId > 0:
 				self._stochast = Stochast(stochastId)
 
@@ -275,7 +275,7 @@ class SensitivityProject:
 	def stochasts(self):
 		if self._stochasts is None:
 			stochasts = []
-			stochast_ids = interface.GetArrayIntValue(self._id, 'sensitivity_stochasts')
+			stochast_ids = interface.GetArrayIdValue(self._id, 'sensitivity_stochasts')
 			for stochast_id in stochast_ids:
 				stochasts.append(Stochast(stochast_id))
 			self._stochasts = FrozenList(stochasts)

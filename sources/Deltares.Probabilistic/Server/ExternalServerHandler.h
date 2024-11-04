@@ -1,6 +1,7 @@
 #pragma once
 
 #include "BaseHandler.h"
+#include "ProjectServer.h"
 #include "../Utils/probLibException.h"
 
 #define _WINSOCKAPI_
@@ -49,6 +50,7 @@ namespace Deltares
             void Destroy(int id) override;
             double GetValue(int id, std::string property) override;
             void SetValue(int id, std::string property, double value) override;
+            double GetArgValue(int id, std::string property, double argument) override;
             bool GetBoolValue(int id, std::string property) override;
             void SetBoolValue(int id, std::string property, bool value) override;
             int GetIntValue(int id, std::string property) override;

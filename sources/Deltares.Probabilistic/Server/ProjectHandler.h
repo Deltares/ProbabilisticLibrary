@@ -46,6 +46,7 @@ namespace Deltares
             void SetValue(int id, const std::string property_, double value) override;
             int GetIntValue(int id, std::string property_) override;
             void SetIntValue(int id, std::string property_, int value) override;
+            int GetIdValue(int id, std::string property_, int newId) override;
             double GetIntArgValue(int id1, int id2, std::string property_) override;
             void SetIntArgValue(int id1, int id2, std::string property_, double value) override;
             bool GetBoolValue(int id, std::string property_) override;
@@ -62,12 +63,14 @@ namespace Deltares
             double GetIndexedIndexedValue(int id, std::string property_, int index1, int index2) override;
             void SetIndexedIndexedValue(int id, std::string property_, int index1, int index2, double value) override;
             int GetIndexedIntValue(int id, std::string property_, int index) override;
+            int GetIndexedIdValue(int id, std::string property_, int index, int newId) override;
             void SetCallBack(int id, std::string property_, Models::ZValuesCallBack callBack) override;
             void Execute(int id, std::string method_) override;
 
-            int GetStochastId(std::shared_ptr<Statistics::Stochast> stochast);
+            int GetStochastId(std::shared_ptr<Statistics::Stochast> stochast, int newId);
             int GetCorrelationMatrixId(std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix);
             int GetLimitStateFunctionId(std::shared_ptr<Reliability::LimitStateFunction> limitStateFunction);
+            int GetSettingsId(std::shared_ptr<Reliability::Settings> settings);
             int GetDesignPointId(std::shared_ptr<Reliability::DesignPoint> designPoint);
             int GetAlphaId(std::shared_ptr<Models::StochastPointAlpha> alpha);
             int GetHistogramValueId(std::shared_ptr<Statistics::HistogramValue> histogramValue);
@@ -109,6 +112,7 @@ namespace Deltares
             std::unordered_map<int, std::shared_ptr<Sensitivity::SettingsS>> sensitivitySettingsValues;
 
             std::unordered_map<std::shared_ptr<Reliability::LimitStateFunction>, int> limitStateFunctionIds;
+            std::unordered_map<std::shared_ptr<Reliability::Settings>, int> settingsValuesIds;
             std::unordered_map<std::shared_ptr<Reliability::DesignPoint>, int> designPointIds;
             std::unordered_map<std::shared_ptr<Reliability::StochastPointAlpha>, int> alphaIds;
             std::unordered_map<std::shared_ptr<Statistics::Stochast>, int> stochastIds;

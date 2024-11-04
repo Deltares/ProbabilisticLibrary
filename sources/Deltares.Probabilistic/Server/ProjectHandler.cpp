@@ -23,6 +23,8 @@
 #include <string>
 #include <memory>
 
+#include "ProjectServer.h"
+
 namespace Deltares
 {
     namespace Server
@@ -33,29 +35,29 @@ namespace Deltares
         bool ProjectHandler::CanHandle(std::string object_type)
         {
             return
-               (object_type == "standard_normal" ||
-                object_type == "message" ||
-                object_type == "project" ||
-                object_type == "model_parameter" ||
-                object_type == "limit_state_function" ||
-                object_type == "stochast" ||
-                object_type == "discrete_value" ||
-                object_type == "histogram_value" ||
-                object_type == "fragility_value" ||
-                object_type == "contributing_stochast" ||
-                object_type == "conditional_value" ||
-                object_type == "correlation_matrix" ||
-                object_type == "settings" ||
-                object_type == "stochast_settings" ||
-                object_type == "design_point" ||
-                object_type == "alpha" ||
-                object_type == "evaluation" ||
-                object_type == "combine_project" ||
-                object_type == "combine_settings" ||
-                object_type == "self_correlation_matrix" ||
-                object_type == "sensitivity_project" ||
-                object_type == "sensitivity_settings" ||
-                object_type == "length_effect_project");
+                (object_type == "standard_normal" ||
+                    object_type == "message" ||
+                    object_type == "project" ||
+                    object_type == "model_parameter" ||
+                    object_type == "limit_state_function" ||
+                    object_type == "stochast" ||
+                    object_type == "discrete_value" ||
+                    object_type == "histogram_value" ||
+                    object_type == "fragility_value" ||
+                    object_type == "contributing_stochast" ||
+                    object_type == "conditional_value" ||
+                    object_type == "correlation_matrix" ||
+                    object_type == "settings" ||
+                    object_type == "stochast_settings" ||
+                    object_type == "design_point" ||
+                    object_type == "alpha" ||
+                    object_type == "evaluation" ||
+                    object_type == "combine_project" ||
+                    object_type == "combine_settings" ||
+                    object_type == "self_correlation_matrix" ||
+                    object_type == "sensitivity_project" ||
+                    object_type == "sensitivity_settings" ||
+                    object_type == "length_effect_project");
         }
 
         void ProjectHandler::Create(std::string object_type, int id)
@@ -130,6 +132,7 @@ namespace Deltares
             else if (object_type == "settings")
             {
                 settingsValues[id] = std::make_shared<Deltares::Reliability::Settings>();
+                settingsValuesIds[settingsValues[id]] = id;
                 types[id] = ObjectType::Settings;
             }
             else if (object_type == "stochast_settings")
@@ -526,8 +529,7 @@ namespace Deltares
             {
                 std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
 
-                if (property_ == "sensitivity_stochast") return GetStochastId(project->sensitivityStochast);
-                else if (property_ == "sensitivity_stochasts_count") return (int)project->sensitivityStochasts.size();
+                if (property_ == "sensitivity_stochasts_count") return (int)project->sensitivityStochasts.size();
                 else if (property_ == "output_correlation_matrix") return GetCorrelationMatrixId(project->outputCorrelationMatrix);
                 else if (property_ == "index") return project->model->Index;
             }
@@ -536,7 +538,6 @@ namespace Deltares
                 std::shared_ptr<Statistics::Stochast> stochast = stochasts[id];
 
                 if (property_ == "observations") return stochast->getProperties()->Observations;
-                else if (property_ == "conditional_source") return GetStochastId(stochast->VariableSource);
                 else if (property_ == "histogram_values_count") return (int)stochast->getProperties()->HistogramValues.size();
                 else if (property_ == "discrete_values_count") return (int)stochast->getProperties()->DiscreteValues.size();
                 else if (property_ == "fragility_values_count") return (int)stochast->getProperties()->FragilityValues.size();
@@ -548,12 +549,6 @@ namespace Deltares
                 std::shared_ptr<Statistics::FragilityValue> fragilityValue = fragilityValues[id];
 
                 if (property_ == "design_point") return GetDesignPointId(std::static_pointer_cast<Reliability::DesignPoint>(fragilityValue->designPoint));
-            }
-            else if (objectType == ObjectType::ContributingStochast)
-            {
-                std::shared_ptr<Statistics::ContributingStochast> contributingStochast = contributingStochasts[id];
-
-                if (property_ == "variable") return GetStochastId(std::static_pointer_cast<Statistics::Stochast>(contributingStochast->Stochast));
             }
             else if (objectType == ObjectType::ConditionalValue)
             {
@@ -595,8 +590,7 @@ namespace Deltares
             {
                 std::shared_ptr<Reliability::StochastSettings> stochastSettings = stochastSettingsValues[id];
 
-                if (property_ == "variable") return GetStochastId(stochastSettings->stochast);
-                else if (property_ == "intervals") return stochastSettings->Intervals;
+                if (property_ == "intervals") return stochastSettings->Intervals;
             }
             else if (objectType == ObjectType::DesignPoint)
             {
@@ -615,12 +609,6 @@ namespace Deltares
                 else if (property_ == "total_model_runs") return designPoint->convergenceReport->TotalModelRuns;
                 else if (property_ == "evaluations_count") return (int)designPoint->Evaluations.size();
                 else if (property_ == "messages_count") return (int)designPoint->Messages.size();
-                }
-            else if (objectType == ObjectType::Alpha)
-            {
-                std::shared_ptr<Reliability::StochastPointAlpha> alpha = alphas[id];
-
-                if (property_ == "variable") return GetStochastId(alpha->Stochast);
             }
             else if (objectType == ObjectType::Evaluation)
             {
@@ -640,6 +628,44 @@ namespace Deltares
 
                 if (property_ == "design_point") return GetDesignPointId(project->designPoint);
                 else if (property_ == "correlation_lengths_count") return project->correlationLengths.size();
+            }
+
+            return 0;
+        }
+
+        int ProjectHandler::GetIdValue(int id, std::string property_, int newId)
+        {
+            ObjectType objectType = types[id];
+
+            if (objectType == ObjectType::SensitivityProject)
+            {
+                std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
+
+                if (property_ == "sensitivity_stochast") return GetStochastId(project->sensitivityStochast, newId);
+            }
+            else if (objectType == ObjectType::Stochast)
+            {
+                std::shared_ptr<Statistics::Stochast> stochast = stochasts[id];
+
+                if (property_ == "conditional_source") return GetStochastId(stochast->VariableSource, newId);
+            }
+            else if (objectType == ObjectType::ContributingStochast)
+            {
+                std::shared_ptr<Statistics::ContributingStochast> contributingStochast = contributingStochasts[id];
+
+                if (property_ == "variable") return GetStochastId(std::static_pointer_cast<Statistics::Stochast>(contributingStochast->Stochast), newId);
+            }
+            else if (objectType == ObjectType::StochastSettings)
+            {
+                std::shared_ptr<Reliability::StochastSettings> stochastSettings = stochastSettingsValues[id];
+
+                if (property_ == "variable") return GetStochastId(stochastSettings->stochast, newId);
+            }
+            else if (objectType == ObjectType::Alpha)
+            {
+                std::shared_ptr<Reliability::StochastPointAlpha> alpha = alphas[id];
+
+                if (property_ == "variable") return GetStochastId(alpha->Stochast, newId);
             }
 
             return 0;
@@ -1357,12 +1383,6 @@ namespace Deltares
                 else if (property_ == "contributing_stochasts") return this->GetContributingStochastId(stochast->getProperties()->ContributingStochasts[index]);
                 else if (property_ == "conditional_values") return this->GetConditionalValueId(stochast->ValueSet->StochastValues[index]);
             }
-            else if (objectType == ObjectType::CorrelationMatrix)
-            {
-                std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix = correlationMatrices[id];
-
-                if (property_ == "variables") return this->GetStochastId(correlationMatrix->getStochast(index));
-            }
             else if (objectType == ObjectType::DesignPoint)
             {
                 std::shared_ptr<Reliability::DesignPoint> designPoint = designPoints[id];
@@ -1372,15 +1392,30 @@ namespace Deltares
                 else if (property_ == "evaluations") return this->GetEvaluationId(designPoint->Evaluations[index]);
                 else if (property_ == "messages") return this->GetMessageId(designPoint->Messages[index]);
             }
+
+            return 0;
+        }
+
+        int ProjectHandler::GetIndexedIdValue(int id, std::string property_, int index, int newId)
+        {
+            ObjectType objectType = types[id];
+
+            if (objectType == ObjectType::CorrelationMatrix)
+            {
+                std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix = correlationMatrices[id];
+
+                if (property_ == "variables") return this->GetStochastId(correlationMatrix->getStochast(index), newId);
+            }
             else if (objectType == ObjectType::SensitivityProject)
             {
                 std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
 
-                if (property_ == "sensitivity_stochasts") return this->GetStochastId(project->sensitivityStochasts[index]);
+                if (property_ == "sensitivity_stochasts") return this->GetStochastId(project->sensitivityStochasts[index], newId);
             }
 
             return 0;
         }
+
 
         void ProjectHandler::SetCallBack(int id, std::string property_, ZValuesCallBack callBack)
         {
@@ -1408,7 +1443,7 @@ namespace Deltares
             {
                 std::shared_ptr<Statistics::Stochast> stochast = stochasts[id];
 
-                if (method_ == "initialize_for_run") stochast->initializeForRun(); 
+                if (method_ == "initialize_for_run") stochast->initializeForRun();
                 else if (method_ == "initialize_conditional_values") stochast->ValueSet->initializeForRun(stochast->getProperties(), stochast->getDistributionType(), stochast->isTruncated(), stochast->isInverted());
             }
             else if (objectType == ObjectType::Project)
@@ -1437,7 +1472,7 @@ namespace Deltares
             }
         }
 
-        int ProjectHandler::GetStochastId(std::shared_ptr<Statistics::Stochast> stochast)
+        int ProjectHandler::GetStochastId(std::shared_ptr<Statistics::Stochast> stochast, int newId)
         {
             if (stochast == nullptr)
             {
@@ -1447,11 +1482,11 @@ namespace Deltares
             {
                 if (!stochastIds.contains(stochast))
                 {
-                    int counter = this->server->GetNewObjectId(this->handlerIndex);
+                    //int counter = this->server->GetNewObjectId(this->handlerIndex);
 
-                    stochasts[counter] = stochast;
-                    types[counter] = ObjectType::Stochast;
-                    stochastIds[stochast] = counter;
+                    stochasts[newId] = stochast;
+                    types[newId] = ObjectType::Stochast;
+                    stochastIds[stochast] = newId;
                 }
 
                 return stochastIds[stochast];
@@ -1476,6 +1511,27 @@ namespace Deltares
                 }
 
                 return correlationMatrixIds[correlationMatrix];
+            }
+        }
+
+        int ProjectHandler::GetSettingsId(std::shared_ptr<Reliability::Settings> settings)
+        {
+            if (settings == nullptr)
+            {
+                return 0;
+            }
+            else
+            {
+                if (!settingsValuesIds.contains(settings))
+                {
+                    int counter = this->server->GetNewObjectId(this->handlerIndex);
+
+                    settingsValues[counter] = settings;
+                    types[counter] = ObjectType::Settings;
+                    settingsValuesIds[settings] = counter;
+                }
+
+                return settingsValuesIds[settings];
             }
         }
 

@@ -308,7 +308,7 @@ class StochastSettings:
 	@property
 	def variable(self):
 		if self._variable is None:
-			id_ = interface.GetIntValue(self._id, 'variable')
+			id_ = interface.GetIdValue(self._id, 'variable')
 			if id_ > 0:
 				self._variable = Stochast(id_)
 		return self._variable
@@ -591,7 +591,7 @@ class Alpha:
 	@property
 	def variable(self):
 		if self._variable is None:
-			variable_id = interface.GetIntValue(self._id, 'variable')
+			variable_id = interface.GetIdValue(self._id, 'variable')
 			if variable_id > 0:
 				if not self._known_variables is None:
 					for variable in self._known_variables:

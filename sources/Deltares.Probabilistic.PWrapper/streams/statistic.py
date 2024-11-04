@@ -393,7 +393,7 @@ class Stochast:
 
 	@property
 	def conditional_source(self):
-		cs_id = interface.GetIntValue(self._id, 'conditional_source')
+		cs_id = interface.GetIdValue(self._id, 'conditional_source')
 		if cs_id > 0:
 			if self._conditional_source is None or not self._conditional_source._id == cs_id:
 				for var in self._variables:
@@ -678,7 +678,7 @@ class ContributingStochast:
 	@property
 	def variable(self):
 		if self._variable is None:
-			id_ = interface.GetIntValue(self._id, 'variable')
+			id_ = interface.GetIdValue(self._id, 'variable')
 			if id_ > 0:
 				self._variable = Stochast(id_)
 		return self._variable
@@ -832,7 +832,7 @@ class CorrelationMatrix:
 
 	def _update_variables(self, known_variables):
 		update_variables = []
-		stochast_ids = interface.GetArrayIntValue(self._id, 'variables')
+		stochast_ids = interface.GetArrayIdValue(self._id, 'variables')
 		for stochast_id in stochast_ids:
 			found = False
 			for known_variable in known_variables:
