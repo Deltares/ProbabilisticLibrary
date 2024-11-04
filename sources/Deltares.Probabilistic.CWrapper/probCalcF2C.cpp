@@ -86,16 +86,27 @@ void updateX(const std::vector<std::shared_ptr<StochastPointAlpha>> & alpha, con
     }
 }
 
-void copyConvergence(tResult& r, const ConvergenceReport& convergenceReport, const ProbMethod methodId)
+void copyConvergence(tResult& r, const DesignPoint& designPoint, const ProbMethod methodId)
 {
     if (methodId == ProbMethod::NI) return;
+
+    const auto convergenceReport = *designPoint.convergenceReport;
 
     r.convergence = convergenceReport.IsConverged;
     r.stepsNeeded = convergenceReport.TotalIterations;
     r.samplesNeeded = convergenceReport.TotalDirections;
-    if (r.samplesNeeded < 0 && convergenceReport.FailFraction > 0.0)
+    double failFraction = convergenceReport.FailFraction;
+    int failedSamples = convergenceReport.FailedSamples;
+    if (methodId == ProbMethod::DSFI || methodId == ProbMethod::DSFIHR)
     {
-        r.samplesNeeded = (int)round(convergenceReport.FailedSamples / convergenceReport.FailFraction);
+        // number of samples for DS from first step:
+        r.samplesNeeded = designPoint.ContributingDesignPoints[0]->convergenceReport->TotalDirections;
+        // number of FORM iterations from second step:
+        r.stepsNeeded   = designPoint.ContributingDesignPoints[1]->convergenceReport->TotalIterations;
+    }
+    else if (r.samplesNeeded < 0 && failFraction > 0.0)
+    {
+        r.samplesNeeded = (int)round(failedSamples / failFraction);
     }
 }
 
@@ -196,7 +207,7 @@ void probcalcf2c(const basicSettings* method, fdistribs c[], corrStruct correlat
 
         updateX(newResult->Alphas, method->designPointOptions, *result, newResult, x, fw);
 
-        copyConvergence(*result, *newResult->convergenceReport, method->methodId);
+        copyConvergence(*result, *newResult, method->methodId);
     }
     catch (const std::exception& e)
     {

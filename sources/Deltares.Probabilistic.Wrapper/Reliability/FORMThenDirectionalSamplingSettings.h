@@ -168,7 +168,8 @@ namespace Deltares
                         sharedDS->object->StochastSet->stochastSettings.push_back(StochastSettings[i]->GetSettings());
                     }
 
-                    //sharedDS->object->RunSettings = RunSettings->GetSettings();
+                    sharedDS->object->runSettings = RunSettings->GetSettings();
+                    sharedDS->object->DirectionSettings = DirectionalSettings->GetSettings();
 
                     return sharedDS->object;
                 }
