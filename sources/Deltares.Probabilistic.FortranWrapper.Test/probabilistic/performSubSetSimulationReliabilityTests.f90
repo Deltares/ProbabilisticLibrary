@@ -41,18 +41,15 @@ contains
 
 subroutine allPerformSubSetSimulationReliabilityTests
 
-    call testWithLevel( SubSetSimulationReliabilityTest1, "Basic SubSetSimulation Reliability test", 0)
+    call testWithLevel( MarkovChainTest, "Basic SubSetSimulation Reliability test: MarkovChain", 1)
+    call testWithLevel( AdaptiveConditionalTest, "Basic SubSetSimulation Reliability test: AdaptiveConditional", 1)
 
 end subroutine allPerformSubSetSimulationReliabilityTests
 
-
-subroutine SubSetSimulationReliabilityTest1
-
-    !
-    ! Perform a SubSetSimulation Reliability test
-    !
-
+subroutine runSubSetTest(SampleMethod, expectedBeta)
     implicit none
+    integer,                    intent(in) :: SampleMethod
+    real(kind=wp),              intent(in) :: expectedBeta
 
     type(probabilisticDataStructure_data) :: probDb
     type(storedConvergenceData)           :: convergenceData  !< struct holding all convergence data
@@ -62,7 +59,6 @@ subroutine SubSetSimulationReliabilityTest1
     real (kind = wp)                      :: beta
     logical                               :: convCriterium
     integer                               :: nStochasts
-    real (kind = wp), parameter           :: betaKnown = 2.82d0
 
     allocate( alfa(2), x(3), iPoint(2) )
     nStochasts = 2
@@ -79,7 +75,8 @@ subroutine SubSetSimulationReliabilityTest1
 
     probDb%method%calcMethod = methodSubSetSimulationReliability
     probDb%method%SubSetSimulationReliability%MarkovChainDeviation = 0.5_wp
-    probDb%method%SubSetSimulationReliability%VariationCoefficient = 0.0_wp
+    probDb%method%SubSetSimulationReliability%VariationCoefficient = 0.01_wp
+    probDb%method%SubSetSimulationReliability%SampleMethod = SampleMethod
 
     ! Perform computation to determine alpha and beta
     call initSparseWaartsTestsFunctions(probDb%stovar%maxStochasts, probDb%method%maxParallelThreads)
@@ -88,12 +85,27 @@ subroutine SubSetSimulationReliabilityTest1
 
     call cleanUpWaartsTestsFunctions
 
-    call assert_comparable(beta, betaKnown, margin, "The computed beta deviates from the analytically computed value")
+    call assert_comparable(beta, expectedBeta, margin, "The computed beta deviates from the analytically computed value")
     call finalizeProbabilisticCalculation(probDb)
 
     deallocate(alfa, x, iPoint)
 
-end subroutine SubSetSimulationReliabilityTest1
+end subroutine runSubSetTest
+
+subroutine MarkovChainTest
+    implicit none
+
+    call runSubSetTest(MarkovChain, 2.7651306_wp)
+
+end subroutine MarkovChainTest
+
+subroutine AdaptiveConditionalTest
+
+    implicit none
+
+    call runSubSetTest(AdaptiveConditional, 2.82_wp)
+
+end subroutine AdaptiveConditionalTest
 
 
 end module performSubSetSimulationReliabilityTests

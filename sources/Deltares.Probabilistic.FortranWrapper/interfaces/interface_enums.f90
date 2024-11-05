@@ -47,6 +47,9 @@ module interface_enums
   integer, parameter :: GeorgeMarsaglia = 1
   integer, parameter :: MersenneTwister = 2
 
+  integer, parameter :: MarkovChain = 0
+  integer, parameter :: AdaptiveConditional = 1
+
   integer, parameter :: designPointNone                               =  0
   integer, parameter :: designPointXfromU                             =  1
   integer, parameter :: designPointXCorrelatedFromU                   =  2

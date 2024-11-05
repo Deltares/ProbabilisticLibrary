@@ -156,6 +156,8 @@ std::shared_ptr<ReliabilityMethod> createReliabilityMethod::selectMethod(const b
         subSetSimulation->Settings->MaximumSamples = bs.sub_set_simulation_reliability_settings.MaximumIterations;
         subSetSimulation->Settings->SampleMethod = static_cast<SampleMethodType>(bs.sub_set_simulation_reliability_settings.SampleMethod);
         subSetSimulation->Settings->randomSettings = getRnd(bs);
+        subSetSimulation->Settings->RunSettings->MaxChunkSize = bs.chunkSize;
+        subSetSimulation->Settings->RunSettings->MaxParallelProcesses = bs.numThreads;
         return subSetSimulation; }
         break;
     default:
