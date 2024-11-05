@@ -184,18 +184,18 @@ namespace Deltares
             static std::string getReliabilityMethodTypeString(ReliabilityMethodType method);
             static ReliabilityMethodType getReliabilityMethodType(std::string method);
         private:
-            const std::shared_ptr<Reliability::ReliabilityMethod> GetFORMMethod();
-            const std::shared_ptr<Reliability::ReliabilityMethod> GetNumericalIntegrationMethod();
-            const std::shared_ptr<Reliability::ReliabilityMethod> GetCrudeMonteCarloMethod();
-            const std::shared_ptr<Reliability::ReliabilityMethod> GetImportanceSamplingMethod();
-            const std::shared_ptr<Reliability::ReliabilityMethod> GetAdaptiveImportanceSamplingMethod();
-            const std::shared_ptr<Reliability::ReliabilityMethod> GetDirectionalSamplingMethod();
-            const std::shared_ptr<Reliability::ReliabilityMethod> GetNumericalBisectionMethod();
-            const std::shared_ptr<Reliability::ReliabilityMethod> GetLatinHypercubeMethod();
-            const std::shared_ptr<Reliability::ReliabilityMethod> GetSubsetSimulationMethod();
-            const std::shared_ptr<Reliability::ReliabilityMethod> GetCobylaReliabilityMethod();
-            const std::shared_ptr<Reliability::ReliabilityMethod> GetFormThenDsReliabilityMethod();
-            const std::shared_ptr<Reliability::ReliabilityMethod> GetDsThenFormReliabilityMethod();
+            std::shared_ptr<Reliability::ReliabilityMethod> GetFORMMethod() const;
+            std::shared_ptr<Reliability::ReliabilityMethod> GetNumericalIntegrationMethod() const;
+            std::shared_ptr<Reliability::ReliabilityMethod> GetCrudeMonteCarloMethod() const;
+            std::shared_ptr<Reliability::ReliabilityMethod> GetImportanceSamplingMethod() const;
+            std::shared_ptr<Reliability::ReliabilityMethod> GetAdaptiveImportanceSamplingMethod() const;
+            std::shared_ptr<Reliability::ReliabilityMethod> GetDirectionalSamplingMethod() const;
+            std::shared_ptr<Reliability::ReliabilityMethod> GetNumericalBisectionMethod() const;
+            std::shared_ptr<Reliability::ReliabilityMethod> GetLatinHypercubeMethod() const;
+            std::shared_ptr<Reliability::ReliabilityMethod> GetSubsetSimulationMethod() const;
+            std::shared_ptr<Reliability::ReliabilityMethod> GetCobylaReliabilityMethod() const;
+            std::shared_ptr<Reliability::ReliabilityMethod> GetFormThenDsReliabilityMethod() const;
+            std::shared_ptr<Reliability::ReliabilityMethod> GetDsThenFormReliabilityMethod() const;
 
         };
     }

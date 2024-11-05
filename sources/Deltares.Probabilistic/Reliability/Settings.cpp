@@ -60,7 +60,7 @@ namespace Deltares
             }
         }
 
-        const std::shared_ptr<ReliabilityMethod> Settings::GetFORMMethod()
+        std::shared_ptr<ReliabilityMethod> Settings::GetFORMMethod() const
         {
             std::shared_ptr<FORM> form = std::make_shared<FORM>();
 
@@ -78,7 +78,7 @@ namespace Deltares
             return form;
         }
 
-        const std::shared_ptr<ReliabilityMethod> Settings::GetNumericalIntegrationMethod()
+        std::shared_ptr<ReliabilityMethod> Settings::GetNumericalIntegrationMethod() const
         {
             std::shared_ptr<NumericalIntegration> numericalIntegration = std::make_shared<NumericalIntegration>();
 
@@ -89,7 +89,7 @@ namespace Deltares
             return numericalIntegration;
         }
 
-        const std::shared_ptr<ReliabilityMethod> Settings::GetNumericalBisectionMethod()
+        std::shared_ptr<ReliabilityMethod> Settings::GetNumericalBisectionMethod() const
         {
             std::shared_ptr<NumericalBisection> numericalBisection = std::make_shared<NumericalBisection>();
 
@@ -103,7 +103,7 @@ namespace Deltares
             return numericalBisection;
         }
 
-        const std::shared_ptr<ReliabilityMethod> Settings::GetLatinHypercubeMethod()
+        std::shared_ptr<ReliabilityMethod> Settings::GetLatinHypercubeMethod() const
         {
             std::shared_ptr<LatinHyperCube> latinHypercube = std::make_shared<LatinHyperCube>();
 
@@ -115,7 +115,7 @@ namespace Deltares
             return latinHypercube;
         }
 
-        const std::shared_ptr<Reliability::ReliabilityMethod> Settings::GetCobylaReliabilityMethod()
+        std::shared_ptr<ReliabilityMethod> Settings::GetCobylaReliabilityMethod() const
         {
             auto cobyla_reliability = std::make_shared<CobylaReliability>();
 
@@ -127,34 +127,61 @@ namespace Deltares
             return cobyla_reliability;
         }
 
-        const std::shared_ptr<Reliability::ReliabilityMethod> Settings::GetFormThenDsReliabilityMethod()
+        std::shared_ptr<ReliabilityMethod> Settings::GetFormThenDsReliabilityMethod() const
         {
-            // todo : make settings complete
             auto fdir = std::make_shared<FORMThenDirectionalSampling>();
 
             fdir->DsSettings->designPointMethod = this->designPointMethod;
             fdir->formSettings->StochastSet = this->StochastSet;
             fdir->formSettings->EpsilonBeta = this->EpsilonBeta;
             fdir->formSettings->MaximumIterations = this->MaximumIterations;
+            fdir->formSettings->FilterAtNonConvergence = this->FilterAtNonConvergence;
+            fdir->formSettings->MaxIterationsGrowthFactor = this->MaxIterationsGrowthFactor;
+            fdir->formSettings->MaximumIterations = this->MaximumIterations;
+            fdir->formSettings->RelaxationFactor = this->RelaxationFactor;
+            fdir->formSettings->RelaxationLoops = this->RelaxationLoops;
+            fdir->formSettings->GradientSettings = this->GradientSettings;
+            fdir->formSettings->RunSettings = this->RunSettings;
+            fdir->formSettings->StartPointSettings = this->StartPointSettings;
+            fdir->DsSettings->MinimumDirections = this->MinimumDirections;
+            fdir->DsSettings->MaximumDirections = this->MaximumDirections;
+            fdir->DsSettings->designPointMethod = this->designPointMethod;
+            fdir->DsSettings->VariationCoefficient = this->VariationCoefficient;
+            fdir->DsSettings->runSettings = this->RunSettings;
+            fdir->DsSettings->randomSettings = this->RandomSettings;
+            fdir->DsSettings->StochastSet = this->StochastSet;
 
             return fdir;
         }
 
-        const std::shared_ptr<Reliability::ReliabilityMethod> Settings::GetDsThenFormReliabilityMethod()
+        std::shared_ptr<ReliabilityMethod> Settings::GetDsThenFormReliabilityMethod() const
         {
-            // todo : make settings complete
             auto dsfi = std::make_shared<DirectionalSamplingThenFORM>();
 
             dsfi->DsSettings->designPointMethod = this->designPointMethod;
             dsfi->formSettings->StochastSet = this->StochastSet;
             dsfi->formSettings->EpsilonBeta = this->EpsilonBeta;
             dsfi->formSettings->MaximumIterations = this->MaximumIterations;
+            dsfi->formSettings->FilterAtNonConvergence = this->FilterAtNonConvergence;
+            dsfi->formSettings->MaxIterationsGrowthFactor = this->MaxIterationsGrowthFactor;
+            dsfi->formSettings->MaximumIterations = this->MaximumIterations;
+            dsfi->formSettings->RelaxationFactor = this->RelaxationFactor;
+            dsfi->formSettings->RelaxationLoops = this->RelaxationLoops;
+            dsfi->formSettings->GradientSettings = this->GradientSettings;
+            dsfi->formSettings->RunSettings = this->RunSettings;
+            dsfi->formSettings->StartPointSettings = this->StartPointSettings;
+            dsfi->DsSettings->MinimumDirections = this->MinimumDirections;
+            dsfi->DsSettings->MaximumDirections = this->MaximumDirections;
+            dsfi->DsSettings->designPointMethod = this->designPointMethod;
+            dsfi->DsSettings->VariationCoefficient = this->VariationCoefficient;
+            dsfi->DsSettings->runSettings = this->RunSettings;
+            dsfi->DsSettings->randomSettings = this->RandomSettings;
+            dsfi->DsSettings->StochastSet = this->StochastSet;
 
             return dsfi;
         }
 
-
-        const std::shared_ptr<ReliabilityMethod> Settings::GetCrudeMonteCarloMethod()
+        std::shared_ptr<ReliabilityMethod> Settings::GetCrudeMonteCarloMethod() const
         {
             std::shared_ptr<CrudeMonteCarlo> crudeMonteCarlo = std::make_shared<CrudeMonteCarlo>();
 
@@ -169,7 +196,7 @@ namespace Deltares
             return crudeMonteCarlo;
         }
 
-        const std::shared_ptr<ReliabilityMethod> Settings::GetImportanceSamplingMethod()
+        std::shared_ptr<ReliabilityMethod> Settings::GetImportanceSamplingMethod() const
         {
             std::shared_ptr<ImportanceSampling> importanceSampling = std::make_shared<ImportanceSampling>();
 
@@ -184,7 +211,7 @@ namespace Deltares
             return importanceSampling;
         }
 
-        const std::shared_ptr<ReliabilityMethod> Settings::GetAdaptiveImportanceSamplingMethod()
+        std::shared_ptr<ReliabilityMethod> Settings::GetAdaptiveImportanceSamplingMethod() const
         {
             std::shared_ptr<AdaptiveImportanceSampling> adaptiveImportanceSampling = std::make_shared<AdaptiveImportanceSampling>();
 
@@ -203,7 +230,7 @@ namespace Deltares
             return adaptiveImportanceSampling;
         }
 
-        const std::shared_ptr<ReliabilityMethod> Settings::GetDirectionalSamplingMethod()
+        std::shared_ptr<ReliabilityMethod> Settings::GetDirectionalSamplingMethod() const
         {
             std::shared_ptr<DirectionalSampling> directionalSampling = std::make_shared<DirectionalSampling>();
 
@@ -218,7 +245,7 @@ namespace Deltares
             return directionalSampling;
         }
 
-        const std::shared_ptr<ReliabilityMethod> Settings::GetSubsetSimulationMethod()
+        std::shared_ptr<ReliabilityMethod> Settings::GetSubsetSimulationMethod() const
         {
             std::shared_ptr<SubsetSimulation> subsetSimulation = std::make_shared<SubsetSimulation>();
 
