@@ -515,8 +515,7 @@ namespace Deltares
             {
                 std::shared_ptr<Reliability::ReliabilityProject> project = projects[id];
 
-                if (property_ == "design_point") return GetDesignPointId(project->designPoint);
-                else if (property_ == "limit_state_function") return GetLimitStateFunctionId(project->limitStateFunction);
+                if (property_ == "limit_state_function") return GetLimitStateFunctionId(project->limitStateFunction);
                 else if (property_ == "index") return project->model->Index;
             }
             else if (objectType == ObjectType::ModelParameter)
@@ -542,12 +541,6 @@ namespace Deltares
                 else if (property_ == "fragility_values_count") return (int)stochast->getProperties()->FragilityValues.size();
                 else if (property_ == "contributing_stochasts_count") return (int)stochast->getProperties()->ContributingStochasts.size();
                 else if (property_ == "conditional_values_count") return (int)stochast->ValueSet->StochastValues.size();
-            }
-            else if (objectType == ObjectType::FragilityValue)
-            {
-                std::shared_ptr<Statistics::FragilityValue> fragilityValue = fragilityValues[id];
-
-                if (property_ == "design_point") return GetDesignPointId(std::static_pointer_cast<Reliability::DesignPoint>(fragilityValue->designPoint));
             }
             else if (objectType == ObjectType::ConditionalValue)
             {
@@ -615,18 +608,11 @@ namespace Deltares
 
                 if (property_ == "iteration") return evaluation->Iteration;
             }
-            else if (objectType == ObjectType::CombineProject)
-            {
-                std::shared_ptr<Reliability::CombineProject> combineProject = combineProjects[id];
-
-                if (property_ == "design_point") return GetDesignPointId(combineProject->designPoint);
-            }
             else if (objectType == ObjectType::LengthEffectProject)
             {
                 std::shared_ptr<Reliability::LengthEffectProject> project = lengthEffectProjects[id];
 
-                if (property_ == "design_point") return GetDesignPointId(project->designPoint);
-                else if (property_ == "correlation_lengths_count") return project->correlationLengths.size();
+                if (property_ == "correlation_lengths_count") return project->correlationLengths.size();
             }
 
             return 0;
@@ -636,7 +622,13 @@ namespace Deltares
         {
             ObjectType objectType = types[id];
 
-            if (objectType == ObjectType::SensitivityProject)
+            if (objectType == ObjectType::Project)
+            {
+                std::shared_ptr<Reliability::ReliabilityProject> project = projects[id];
+
+                if (property_ == "design_point") return GetDesignPointId(project->designPoint, newId);
+            }
+            else if (objectType == ObjectType::SensitivityProject)
             {
                 std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
 
@@ -648,6 +640,12 @@ namespace Deltares
                 std::shared_ptr<Statistics::Stochast> stochast = stochasts[id];
 
                 if (property_ == "conditional_source") return GetStochastId(stochast->VariableSource, newId);
+            }
+            else if (objectType == ObjectType::FragilityValue)
+            {
+                std::shared_ptr<Statistics::FragilityValue> fragilityValue = fragilityValues[id];
+
+                if (property_ == "design_point") return GetDesignPointId(std::static_pointer_cast<Reliability::DesignPoint>(fragilityValue->designPoint), newId);
             }
             else if (objectType == ObjectType::ContributingStochast)
             {
@@ -666,6 +664,18 @@ namespace Deltares
                 std::shared_ptr<Reliability::StochastPointAlpha> alpha = alphas[id];
 
                 if (property_ == "variable") return GetStochastId(alpha->Stochast, newId);
+            }
+            else if (objectType == ObjectType::CombineProject)
+            {
+                std::shared_ptr<Reliability::CombineProject> combineProject = combineProjects[id];
+
+                if (property_ == "design_point") return GetDesignPointId(combineProject->designPoint, newId);
+            }
+            else if (objectType == ObjectType::LengthEffectProject)
+            {
+                std::shared_ptr<Reliability::LengthEffectProject> project = lengthEffectProjects[id];
+
+                if (property_ == "design_point") return GetDesignPointId(project->designPoint, newId);
             }
 
             return 0;
@@ -1387,8 +1397,7 @@ namespace Deltares
             {
                 std::shared_ptr<Reliability::DesignPoint> designPoint = designPoints[id];
 
-                if (property_ == "contributing_design_points") return this->GetDesignPointId(designPoint->ContributingDesignPoints[index]);
-                else if (property_ == "alphas") return this->GetAlphaId(designPoint->Alphas[index]);
+                if (property_ == "alphas") return this->GetAlphaId(designPoint->Alphas[index]);
                 else if (property_ == "evaluations") return this->GetEvaluationId(designPoint->Evaluations[index]);
                 else if (property_ == "messages") return this->GetMessageId(designPoint->Messages[index]);
             }
@@ -1411,6 +1420,12 @@ namespace Deltares
                 std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
 
                 if (property_ == "sensitivity_stochasts") return this->GetStochastId(project->sensitivityStochasts[index], newId);
+            }
+            else if (objectType == ObjectType::DesignPoint)
+            {
+                std::shared_ptr<Reliability::DesignPoint> designPoint = designPoints[id];
+
+                if (property_ == "contributing_design_points") return this->GetDesignPointId(designPoint->ContributingDesignPoints[index], newId);
             }
 
             return 0;
@@ -1552,7 +1567,7 @@ namespace Deltares
             }
         }
 
-        int ProjectHandler::GetDesignPointId(std::shared_ptr<Reliability::DesignPoint> designPoint)
+        int ProjectHandler::GetDesignPointId(std::shared_ptr<Reliability::DesignPoint> designPoint, int newId)
         {
             if (designPoint == nullptr)
             {
@@ -1562,11 +1577,9 @@ namespace Deltares
             {
                 if (!designPointIds.contains(designPoint))
                 {
-                    int counter = this->server->GetNewObjectId(this->handlerIndex);
-
-                    designPoints[counter] = designPoint;
-                    types[counter] = ObjectType::DesignPoint;
-                    designPointIds[designPoint] = counter;
+                    designPoints[newId] = designPoint;
+                    types[newId] = ObjectType::DesignPoint;
+                    designPointIds[designPoint] = newId;
                 }
 
                 return designPointIds[designPoint];

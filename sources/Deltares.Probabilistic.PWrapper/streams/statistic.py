@@ -21,6 +21,7 @@
 #
 from ctypes import ArgumentError
 from enum import Enum
+
 from .utils import *
 from . import interface
 

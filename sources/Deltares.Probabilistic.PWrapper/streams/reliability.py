@@ -92,8 +92,11 @@ class MessageType(Enum):
 
 class Settings:
 
-	def __init__(self):
-		self._id = interface.Create('settings')
+	def __init__(self, id_ = None):
+		if id_ is None:
+			self._id = interface.Create('settings')
+		else:
+			self._id = id_
 		self._stochast_settings = FrozenList()
 
 	def __dir__(self):
@@ -522,7 +525,7 @@ class DesignPoint:
 	def contributing_design_points(self):
 		if self._contributing_design_points is None:
 			self._contributing_design_points = []
-			design_point_ids = interface.GetArrayIntValue(self._id, 'contributing_design_points')
+			design_point_ids = interface.GetArrayIdValue(self._id, 'contributing_design_points')
 			for design_point_id in design_point_ids:
 				if design_point_id > 0:
 					added = False

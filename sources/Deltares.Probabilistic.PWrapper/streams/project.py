@@ -409,7 +409,7 @@ class ReliabilityProject:
 	@property
 	def design_point(self):
 		if self._design_point is None:
-			designPointId = interface.GetIntValue(self._id, 'design_point')
+			designPointId = interface.GetIdValue(self._id, 'design_point')
 			if designPointId > 0:
 				self._design_point = DesignPoint(designPointId, self._variables)
 
@@ -428,7 +428,7 @@ class ReliabilityProject:
 	def update_fragility_curve(stochast: Stochast, variables):
 		for fragility_value in stochast.fragility_values:
 			if fragility_value.design_point == None:
-				id_ = interface.GetIntValue(fragility_value._id, 'design_point')
+				id_ = interface.GetIdValue(fragility_value._id, 'design_point')
 				if id_ > 0:
 					fragility_value.design_point = DesignPoint(id_, variables)
 
@@ -476,7 +476,7 @@ class CombineProject:
 	@property
 	def design_point(self):
 		if self._design_point is None:
-			designPointId = interface.GetIntValue(self._id, 'design_point')
+			designPointId = interface.GetIdValue(self._id, 'design_point')
 			if designPointId > 0:
 				variables = []
 				for design_point in self._design_points:
@@ -546,7 +546,7 @@ class LengthEffectProject:
 	@property
 	def design_point(self):
 		if self._design_point is None:
-			designPointId = interface.GetIntValue(self._id, 'design_point')
+			designPointId = interface.GetIdValue(self._id, 'design_point')
 			if designPointId > 0:
 				variables = self._design_point_cross_section.get_variables()
 				self._design_point = DesignPoint(designPointId, variables, self._design_point_cross_section)

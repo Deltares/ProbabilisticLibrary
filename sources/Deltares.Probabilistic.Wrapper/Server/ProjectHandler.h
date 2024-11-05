@@ -162,7 +162,7 @@ namespace Deltares
 
                 int GetDesignPointId(Reliability::Wrappers::DesignPoint^ designPoint, int newId)
                 {
-                    return shared->object->GetDesignPointId(designPoint->getDesignPoint());
+                    return shared->object->GetDesignPointId(designPoint->getDesignPoint(), newId);
                 }
             };
         }
