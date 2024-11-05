@@ -20,18 +20,6 @@
 // All rights reserved.
 //
 #include "Settings.h"
-#include "FORM.h"
-#include "CrudeMonteCarlo.h"
-#include "ImportanceSampling.h"
-#include "AdaptiveImportanceSampling.h"
-#include "DirectionalSampling.h"
-#include "SubsetSimulation.h"
-#include "NumericalIntegration.h"
-#include "NumericalBisection.h"
-#include "LatinHyperCube.h"
-#include "CobylaReliability.h"
-#include "FORMThenDirectionalSampling.h"
-#include "DirectionalSamplingThenFORM.h"
 
 #include <memory>
 
@@ -60,7 +48,7 @@ namespace Deltares
             }
         }
 
-        std::shared_ptr<ReliabilityMethod> Settings::GetFORMMethod() const
+        std::shared_ptr<FORM> Settings::GetFORMMethod() const
         {
             std::shared_ptr<FORM> form = std::make_shared<FORM>();
 
@@ -78,7 +66,7 @@ namespace Deltares
             return form;
         }
 
-        std::shared_ptr<ReliabilityMethod> Settings::GetNumericalIntegrationMethod() const
+        std::shared_ptr<NumericalIntegration> Settings::GetNumericalIntegrationMethod() const
         {
             std::shared_ptr<NumericalIntegration> numericalIntegration = std::make_shared<NumericalIntegration>();
 
@@ -89,7 +77,7 @@ namespace Deltares
             return numericalIntegration;
         }
 
-        std::shared_ptr<ReliabilityMethod> Settings::GetNumericalBisectionMethod() const
+        std::shared_ptr<NumericalBisection> Settings::GetNumericalBisectionMethod() const
         {
             std::shared_ptr<NumericalBisection> numericalBisection = std::make_shared<NumericalBisection>();
 
@@ -103,7 +91,7 @@ namespace Deltares
             return numericalBisection;
         }
 
-        std::shared_ptr<ReliabilityMethod> Settings::GetLatinHypercubeMethod() const
+        std::shared_ptr<LatinHyperCube> Settings::GetLatinHypercubeMethod() const
         {
             std::shared_ptr<LatinHyperCube> latinHypercube = std::make_shared<LatinHyperCube>();
 
@@ -115,7 +103,7 @@ namespace Deltares
             return latinHypercube;
         }
 
-        std::shared_ptr<ReliabilityMethod> Settings::GetCobylaReliabilityMethod() const
+        std::shared_ptr<CobylaReliability> Settings::GetCobylaReliabilityMethod() const
         {
             auto cobyla_reliability = std::make_shared<CobylaReliability>();
 
@@ -127,7 +115,7 @@ namespace Deltares
             return cobyla_reliability;
         }
 
-        std::shared_ptr<ReliabilityMethod> Settings::GetFormThenDsReliabilityMethod() const
+        std::shared_ptr<FORMThenDirectionalSampling> Settings::GetFormThenDsReliabilityMethod() const
         {
             auto fdir = std::make_shared<FORMThenDirectionalSampling>();
 
@@ -154,7 +142,7 @@ namespace Deltares
             return fdir;
         }
 
-        std::shared_ptr<ReliabilityMethod> Settings::GetDsThenFormReliabilityMethod() const
+        std::shared_ptr<DirectionalSamplingThenFORM> Settings::GetDsThenFormReliabilityMethod() const
         {
             auto dsfi = std::make_shared<DirectionalSamplingThenFORM>();
 
@@ -181,7 +169,7 @@ namespace Deltares
             return dsfi;
         }
 
-        std::shared_ptr<ReliabilityMethod> Settings::GetCrudeMonteCarloMethod() const
+        std::shared_ptr<CrudeMonteCarlo> Settings::GetCrudeMonteCarloMethod() const
         {
             std::shared_ptr<CrudeMonteCarlo> crudeMonteCarlo = std::make_shared<CrudeMonteCarlo>();
 
@@ -196,7 +184,7 @@ namespace Deltares
             return crudeMonteCarlo;
         }
 
-        std::shared_ptr<ReliabilityMethod> Settings::GetImportanceSamplingMethod() const
+        std::shared_ptr<ImportanceSampling> Settings::GetImportanceSamplingMethod() const
         {
             std::shared_ptr<ImportanceSampling> importanceSampling = std::make_shared<ImportanceSampling>();
 
@@ -211,7 +199,7 @@ namespace Deltares
             return importanceSampling;
         }
 
-        std::shared_ptr<ReliabilityMethod> Settings::GetAdaptiveImportanceSamplingMethod() const
+        std::shared_ptr<AdaptiveImportanceSampling> Settings::GetAdaptiveImportanceSamplingMethod() const
         {
             std::shared_ptr<AdaptiveImportanceSampling> adaptiveImportanceSampling = std::make_shared<AdaptiveImportanceSampling>();
 
@@ -230,7 +218,7 @@ namespace Deltares
             return adaptiveImportanceSampling;
         }
 
-        std::shared_ptr<ReliabilityMethod> Settings::GetDirectionalSamplingMethod() const
+        std::shared_ptr<DirectionalSampling> Settings::GetDirectionalSamplingMethod() const
         {
             std::shared_ptr<DirectionalSampling> directionalSampling = std::make_shared<DirectionalSampling>();
 
@@ -245,7 +233,7 @@ namespace Deltares
             return directionalSampling;
         }
 
-        std::shared_ptr<ReliabilityMethod> Settings::GetSubsetSimulationMethod() const
+        std::shared_ptr<SubsetSimulation> Settings::GetSubsetSimulationMethod() const
         {
             std::shared_ptr<SubsetSimulation> subsetSimulation = std::make_shared<SubsetSimulation>();
 
@@ -261,27 +249,27 @@ namespace Deltares
             return subsetSimulation;
         }
 
-        bool Settings::isValid()
+        bool Settings::isValid() const
         {
             switch (this->ReliabilityMethod)
             {
-            case ReliabilityMethodType::ReliabilityFORM: return std::dynamic_pointer_cast<FORM>(this->GetFORMMethod())->Settings->isValid();
-            case ReliabilityMethodType::ReliabilityNumericalIntegration: return std::dynamic_pointer_cast<NumericalIntegration>(this->GetNumericalIntegrationMethod())->Settings.isValid();
-            case ReliabilityMethodType::ReliabilityCrudeMonteCarlo: return std::dynamic_pointer_cast<CrudeMonteCarlo>(this->GetCrudeMonteCarloMethod())->Settings->isValid();
-            case ReliabilityMethodType::ReliabilityImportanceSampling: return std::dynamic_pointer_cast<ImportanceSampling>(this->GetImportanceSamplingMethod())->Settings->isValid();
-            case ReliabilityMethodType::ReliabilityAdaptiveImportanceSampling: return std::dynamic_pointer_cast<AdaptiveImportanceSampling>(this->GetAdaptiveImportanceSamplingMethod())->Settings->isValid();
-            case ReliabilityMethodType::ReliabilityDirectionalSampling: return std::dynamic_pointer_cast<DirectionalSampling>(this->GetDirectionalSamplingMethod())->Settings->isValid();
-            case ReliabilityMethodType::ReliabilityNumericalBisection: return std::dynamic_pointer_cast<NumericalBisection>(this->GetNumericalBisectionMethod())->Settings->isValid();
-            case ReliabilityMethodType::ReliabilityLatinHyperCube: return std::dynamic_pointer_cast<LatinHyperCube>(this->GetLatinHypercubeMethod())->Settings->isValid();
-            case ReliabilityMethodType::ReliabilitySubsetSimulation: return std::dynamic_pointer_cast<SubsetSimulation>(this->GetSubsetSimulationMethod())->Settings->isValid();
+            case ReliabilityMethodType::ReliabilityFORM: return GetFORMMethod()->Settings->isValid();
+            case ReliabilityMethodType::ReliabilityNumericalIntegration: return GetNumericalIntegrationMethod()->Settings.isValid();
+            case ReliabilityMethodType::ReliabilityCrudeMonteCarlo: return GetCrudeMonteCarloMethod()->Settings->isValid();
+            case ReliabilityMethodType::ReliabilityImportanceSampling: return GetImportanceSamplingMethod()->Settings->isValid();
+            case ReliabilityMethodType::ReliabilityAdaptiveImportanceSampling: return GetAdaptiveImportanceSamplingMethod()->Settings->isValid();
+            case ReliabilityMethodType::ReliabilityDirectionalSampling: return GetDirectionalSamplingMethod()->Settings->isValid();
+            case ReliabilityMethodType::ReliabilityNumericalBisection: return GetNumericalBisectionMethod()->Settings->isValid();
+            case ReliabilityMethodType::ReliabilityLatinHyperCube: return GetLatinHypercubeMethod()->Settings->isValid();
+            case ReliabilityMethodType::ReliabilitySubsetSimulation: return GetSubsetSimulationMethod()->Settings->isValid();
             case ReliabilityMethodType::ReliabilityFORMthenDirectionalSampling:
             {
-                auto fdir = std::dynamic_pointer_cast<FORMThenDirectionalSampling>(this->GetFormThenDsReliabilityMethod());
+                auto fdir = GetFormThenDsReliabilityMethod();
                 return fdir->formSettings->isValid() && fdir->DsSettings->isValid();
             }
             case ReliabilityMethodType::ReliabilityDirectionalSamplingThenFORM:
             {
-                auto dsfi = std::dynamic_pointer_cast<DirectionalSamplingThenFORM>(this->GetDsThenFormReliabilityMethod());
+                auto dsfi = GetDsThenFormReliabilityMethod();
                 return dsfi->formSettings->isValid() && dsfi->DsSettings->isValid();
             }
             default: throw probLibException("Reliability method");
