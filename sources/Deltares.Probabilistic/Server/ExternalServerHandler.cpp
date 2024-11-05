@@ -143,7 +143,7 @@ namespace Deltares
             {
                 StartProcess(this->serverName, false);
 
-                this->server_started = true;
+                 this->server_started = true;
 
                 std::this_thread::sleep_for(std::chrono::seconds(1));
 
