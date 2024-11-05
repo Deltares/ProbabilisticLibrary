@@ -41,12 +41,12 @@ namespace Deltares
             std::vector<std::shared_ptr<Sample>> getInitialSamples(std::shared_ptr<ModelRunner> modelRunner, std::shared_ptr<RandomSampleGenerator> randomSampleGenerator, bool initial);
             std::vector<std::shared_ptr<Sample>> getMarkovChainSamples(std::shared_ptr<ModelRunner> modelRunner, std::vector<std::shared_ptr<Sample>>& selectedSamples, double z0Fac);
             std::shared_ptr<Sample> getMarkovChainSample(std::shared_ptr<Sample> oldSample, std::shared_ptr<ModelRunner> modelRunner, double maxZ, double z0Fac);
-            std::vector<std::shared_ptr<Sample>> getAdaptiveConditionalSamples(std::shared_ptr<ModelRunner> modelRunner, int nSamples, std::vector<std::shared_ptr<Sample>>& selectedSamples);
+            std::vector<std::shared_ptr<Sample>> getAdaptiveConditionalSamples(std::shared_ptr<ModelRunner> modelRunner, std::vector<std::shared_ptr<Sample>>& selectedSamples);
 
             std::vector<std::shared_ptr<Sample>> getNewSamples(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<RandomSampleGenerator> randomSampleGenerator, bool initial, double z0Fac, std::vector<std::shared_ptr<Sample>> selectedSamples);
             std::vector<std::shared_ptr<Sample>> selectSamples(double z0Fac, std::vector<std::shared_ptr<Sample>> performedSamples);
-            double getConvergence(double pf, int samples);
-            bool isConverged(std::shared_ptr<SubsetSimulationSettings> settings, int sampleIndex, double convergence);
+            static double getConvergence(double pf, int samples);
+            bool isConverged(int sampleIndex, double convergence) const;
 
             double getStandardNormalPDF(double u);
 

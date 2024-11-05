@@ -176,7 +176,7 @@ namespace Deltares
                     {
                         // check if convergence is reached (or stop criterion)
                         convergenceReport->Convergence = getConvergence(pf, samplesCount);
-                        convergenceReport->IsConverged = isConverged(this->Settings, sampleIndex, convergenceReport->Convergence);
+                        convergenceReport->IsConverged = isConverged(sampleIndex, convergenceReport->Convergence);
 
                         converged = convergenceReport->IsConverged;
 
@@ -251,7 +251,7 @@ namespace Deltares
             }
             else if (Settings->SampleMethod == SampleMethodType::AdaptiveConditional)
             {
-                return getAdaptiveConditionalSamples(modelRunner, Settings->MaximumSamples, selectedSamples);
+                return getAdaptiveConditionalSamples(modelRunner, selectedSamples);
             }
             else
             {
@@ -348,21 +348,18 @@ namespace Deltares
             return oldSample;
         }
 
-        std::vector<std::shared_ptr<Sample>> SubsetSimulation::getAdaptiveConditionalSamples(std::shared_ptr<ModelRunner> modelRunner, int nSamples, std::vector<std::shared_ptr<Sample>>& selectedSamples)
+        std::vector<std::shared_ptr<Sample>> SubsetSimulation::getAdaptiveConditionalSamples(std::shared_ptr<ModelRunner> modelRunner, std::vector<std::shared_ptr<Sample>>& selectedSamples)
         {
             double b = selectedSamples.back()->Z;
 
-            //private Sample GetMarkovChainSaf b =mpleA(Sample oldSample, ModelRunner modelRunner, double deviation, int iteration, double b)
             int nStochasts = modelRunner->getVaryingStochastCount(); //number of parameters
-            int nSelectedSamples = selectedSamples.size(); // number of seeds
+            size_t nSelectedSamples = selectedSamples.size(); // number of seeds
 
             int nMaximumSamples = Settings->MaximumSamples;
 
             int nChains = static_cast<int>(std::ceil(100.0 * nSelectedSamples / nMaximumSamples)); // number of chains after which the proposal is adapted
 
-            //int max_it = 10;       // estimated number of iterations
-            double oldLambda = 0.60;
-
+            constexpr double oldLambda = 0.60;
 
             // initialization
             std::vector<int> acceptance(Settings->MaximumSamples); // store acceptance
@@ -372,11 +369,11 @@ namespace Deltares
 
             //  number of samples per chain
             std::vector<int> nChain(nSelectedSamples);
-            for (int j = 0; j < nSelectedSamples; j++)
+            for (size_t j = 0; j < nSelectedSamples; j++)
             {
                 nChain[j] = static_cast<int>(std::floor(static_cast<float>(nMaximumSamples) / static_cast<float>(nSelectedSamples)));
             }
-            for (int j = 0; j < nMaximumSamples % nSelectedSamples; j++)
+            for (size_t j = 0; j < nMaximumSamples % nSelectedSamples; j++)
             {
                 nChain[j]++;
             }
@@ -389,7 +386,7 @@ namespace Deltares
                 acceptance[k] = 0;
             }
 
-            for (int j = 0; j < mu_acc.size(); j++)
+            for (size_t j = 0; j < mu_acc.size(); j++)
             {
                 mu_acc[j] = 0.0;
                 hat_a[j] = 0.0;
@@ -399,48 +396,13 @@ namespace Deltares
             // 1. compute the standard deviation
 
             std::vector<double> sigma_0(nStochasts);
+
             for (int j = 0; j < nStochasts; j++)
             {
-                sigma_0[j] = 0.0;
-            }
-
-            wchar_t opc = L'a';
-
-            if (opc == L'a') // 1a. sigma = ones(n,1)
-            {
-                for (int j = 0; j < nStochasts; j++)
-                {
-                    sigma_0[j] = 1.0;
-                }
-            }
-            else if (opc == L'b') // 1b. sigma = sigma_hat (sample standard deviations)
-            {
-                std::vector<double> mu_hat(nStochasts); // sample mean
-                std::vector<double> var_hat(nStochasts); // sample std
-
-
-                for (int j = 0; j < nStochasts; j++) // find mean and std of samples
-                {
-                    mu_hat[j] = 0.0;
-                    for (int k = 0; k < nSelectedSamples; k++)
-                    {
-                        mu_hat[j] += selectedSamples[k]->Values[j];
-                    } // mean
-                    mu_hat[j] /= static_cast<double>(nSelectedSamples);
-
-                    var_hat[j] = 0.0;
-                    for (int k = 0; k < nSelectedSamples; k++)
-                    {
-                        var_hat[j] += std::pow(selectedSamples[k]->Values[j] - mu_hat[j], 2);
-                    } // std
-                    var_hat[j] /= static_cast<double>(nSelectedSamples - 1);
-
-                    sigma_0[j] = std::sqrt(var_hat[j]);
-                }
+                sigma_0[j] = 1.0;
             }
 
             // 2. iteration
-            double star_a = 0.44; //  optimal acceptance rate
             lam[0] = oldLambda; //  initial scaling parameter \in (0,1)
             std::vector<double> sigma(nStochasts);
             std::vector<double> rho(nStochasts);
@@ -507,7 +469,7 @@ namespace Deltares
                 } // end of for-t loop
 
                 // average of the accepted samples for each seed 'mu_acc'
-                // here the warning "Mean of empty slice" is not an issue        
+                // here the warning "Mean of empty slice" is not an issue
 
                 double mean = 0;
                 for (int j = idx + 1; j < idx + nChain[k - 1]; j++)
@@ -523,6 +485,8 @@ namespace Deltares
                 {
                     if (nChain[k - 1] > 1)
                     {
+                        constexpr double star_a = 0.44; // optimal acceptance rate
+
                         // c. evaluate average acceptance rate
 
                         hat_a[i] = mu_acc[i] / static_cast<double>(nChains); // Ref. 1 Eq. 25
@@ -584,7 +548,9 @@ namespace Deltares
 
         std::vector<std::shared_ptr<Sample>> SubsetSimulation::selectSamples(double z0Fac, std::vector<std::shared_ptr<Sample>> performedSamples)
         {
-            std::sort(performedSamples.begin(), performedSamples.end(), [z0Fac](std::shared_ptr<Sample> val1, std::shared_ptr<Sample> val2) {return val1->Z * z0Fac < val2->Z * z0Fac; });
+            std::sort(performedSamples.begin(), performedSamples.end(),
+                [z0Fac](std::shared_ptr<Sample> val1, std::shared_ptr<Sample> val2)
+                {return val1->Z * z0Fac < val2->Z * z0Fac; });
 
             std::vector<std::shared_ptr<Sample>> selectedSamples;
 
@@ -613,10 +579,10 @@ namespace Deltares
             }
         }
 
-        bool SubsetSimulation::isConverged(std::shared_ptr<SubsetSimulationSettings> settings, int sampleIndex, double convergence)
+        bool SubsetSimulation::isConverged(int sampleIndex, double convergence) const
         {
-            double requiredConvergence = settings->SampleMethod == SampleMethodType::AdaptiveConditional ? 0 : settings->VariationCoefficient;
-            return sampleIndex >= settings->MinimumSamples && convergence < requiredConvergence;
+            double requiredConvergence = Settings->SampleMethod == SampleMethodType::AdaptiveConditional ? 0 : Settings->VariationCoefficient;
+            return sampleIndex >= Settings->MinimumSamples && convergence < requiredConvergence;
         }
 
         double SubsetSimulation::getStandardNormalPDF(double u)
