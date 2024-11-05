@@ -68,9 +68,9 @@ namespace Deltares
             void Execute(int id, std::string method_) override;
 
             int GetStochastId(std::shared_ptr<Statistics::Stochast> stochast, int newId);
-            int GetCorrelationMatrixId(std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix);
+            int GetCorrelationMatrixId(std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix, int newid);
             int GetLimitStateFunctionId(std::shared_ptr<Reliability::LimitStateFunction> limitStateFunction);
-            int GetSettingsId(std::shared_ptr<Reliability::Settings> settings);
+            int GetSettingsId(std::shared_ptr<Reliability::Settings> settings, int newId);
             int GetDesignPointId(std::shared_ptr<Reliability::DesignPoint> designPoint);
             int GetAlphaId(std::shared_ptr<Models::StochastPointAlpha> alpha);
             int GetHistogramValueId(std::shared_ptr<Statistics::HistogramValue> histogramValue);

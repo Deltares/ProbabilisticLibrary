@@ -530,7 +530,6 @@ namespace Deltares
                 std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
 
                 if (property_ == "sensitivity_stochasts_count") return (int)project->sensitivityStochasts.size();
-                else if (property_ == "output_correlation_matrix") return GetCorrelationMatrixId(project->outputCorrelationMatrix);
                 else if (property_ == "index") return project->model->Index;
             }
             else if (objectType == ObjectType::Stochast)
@@ -642,6 +641,7 @@ namespace Deltares
                 std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
 
                 if (property_ == "sensitivity_stochast") return GetStochastId(project->sensitivityStochast, newId);
+                else if (property_ == "output_correlation_matrix") return GetCorrelationMatrixId(project->outputCorrelationMatrix, newId);
             }
             else if (objectType == ObjectType::Stochast)
             {
@@ -1493,7 +1493,7 @@ namespace Deltares
             }
         }
 
-        int ProjectHandler::GetCorrelationMatrixId(std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix)
+        int ProjectHandler::GetCorrelationMatrixId(std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix, int newId)
         {
             if (correlationMatrix == nullptr)
             {
@@ -1503,18 +1503,16 @@ namespace Deltares
             {
                 if (!correlationMatrixIds.contains(correlationMatrix))
                 {
-                    int counter = this->server->GetNewObjectId(this->handlerIndex);
-
-                    correlationMatrices[counter] = correlationMatrix;
-                    types[counter] = ObjectType::CorrelationMatrix;
-                    correlationMatrixIds[correlationMatrix] = counter;
+                    correlationMatrices[newId] = correlationMatrix;
+                    types[newId] = ObjectType::CorrelationMatrix;
+                    correlationMatrixIds[correlationMatrix] = newId;
                 }
 
                 return correlationMatrixIds[correlationMatrix];
             }
         }
 
-        int ProjectHandler::GetSettingsId(std::shared_ptr<Reliability::Settings> settings)
+        int ProjectHandler::GetSettingsId(std::shared_ptr<Reliability::Settings> settings, int newId)
         {
             if (settings == nullptr)
             {
@@ -1524,11 +1522,9 @@ namespace Deltares
             {
                 if (!settingsValuesIds.contains(settings))
                 {
-                    int counter = this->server->GetNewObjectId(this->handlerIndex);
-
-                    settingsValues[counter] = settings;
-                    types[counter] = ObjectType::Settings;
-                    settingsValuesIds[settings] = counter;
+                    settingsValues[newId] = settings;
+                    types[newId] = ObjectType::Settings;
+                    settingsValuesIds[settings] = newId;
                 }
 
                 return settingsValuesIds[settings];

@@ -285,7 +285,7 @@ class SensitivityProject:
 	@property   
 	def output_correlation_matrix(self):
 		if self._output_correlation_matrix is None:
-			correlationMatrixId = interface.GetIntValue(self._id, 'output_correlation_matrix')
+			correlationMatrixId = interface.GetIdValue(self._id, 'output_correlation_matrix')
 			if correlationMatrixId > 0:
 				self._output_correlation_matrix = CorrelationMatrix(correlationMatrixId)
 				self._output_correlation_matrix._update_variables(self.variables.get_list() + self.stochasts.get_list())

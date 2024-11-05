@@ -22,6 +22,7 @@
 #pragma once
 #include "../../Deltares.Probabilistic/Server/ProjectHandler.h"
 #include "../Statistics/Stochast.h"
+#include "../Statistics/CorrelationMatrix.h"
 #include "../Reliability/Settings.h"
 #include "../Utils/SharedPointerProvider.h"
 #include "../Utils/NativeSupport.h"
@@ -149,9 +150,19 @@ namespace Deltares
                     return shared->object->GetStochastId(stochast->GetStochast(), newId);
                 }
 
-                int GetSettingsId(Reliability::Wrappers::Settings^ settings)
+                int GetSettingsId(Reliability::Wrappers::Settings^ settings, int newId)
                 {
-                    return shared->object->GetSettingsId(settings->GetSettings());
+                    return shared->object->GetSettingsId(settings->GetSettings(), newId);
+                }
+
+                int GetCorrelationMatrixId(Statistics::Wrappers::CorrelationMatrix^ correlationMatrix, int newId)
+                {
+                    return shared->object->GetCorrelationMatrixId(correlationMatrix->GetCorrelationMatrix(), newId);
+                }
+
+                int GetDesignPointId(Reliability::Wrappers::DesignPoint^ designPoint, int newId)
+                {
+                    return shared->object->GetDesignPointId(designPoint->getDesignPoint());
                 }
             };
         }
