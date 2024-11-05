@@ -41,6 +41,7 @@ module interface_enums
   integer, parameter :: methodLatinHyperCube                             = 18
   integer, parameter :: methodNumericalBisection                         = 19
   integer, parameter :: methodCobylaReliability                          = 20
+  integer, parameter :: methodSubSetSimulationReliability                = 21
   integer, parameter :: methodFORMstart                                  = 1234
 
   integer, parameter :: GeorgeMarsaglia = 1
