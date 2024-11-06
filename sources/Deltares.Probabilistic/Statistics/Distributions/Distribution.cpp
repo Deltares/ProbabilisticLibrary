@@ -92,7 +92,7 @@ namespace Deltares
             margin = std::min(delta, margin);
             auto bisection = Numeric::BisectionRootFinder(margin, 0);
 
-            double x = bisection.CalculateValue(0, 1, cdf, function, nullptr);
+            double x = bisection.CalculateValue(0, 1, cdf, function);
             return x;
         }
 

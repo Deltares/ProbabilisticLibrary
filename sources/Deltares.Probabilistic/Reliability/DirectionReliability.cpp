@@ -385,7 +385,7 @@ namespace Deltares
                 {
                     const double xTolerance = 0.01;
                     auto bisectionCalculation = BisectionRootFinder(zTolerance, xTolerance);
-                    uResult = bisectionCalculation.CalculateValue(uLow, uHigh, 0, [directionCalculation](double v) { return directionCalculation->GetZ(v); }, nullptr);
+                    uResult = bisectionCalculation.CalculateValue(uLow, uHigh, 0, [directionCalculation](double v) { return directionCalculation->GetZ(v); });
                 }
 
                 z = std::isnan(uResult) ? nan("") : directionCalculation->GetZ(uResult);

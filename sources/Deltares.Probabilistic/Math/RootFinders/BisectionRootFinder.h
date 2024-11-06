@@ -31,7 +31,7 @@ namespace Deltares
             BisectionRootFinder() {}
             BisectionRootFinder(double tol) : tolerance(tol) {}
             BisectionRootFinder(double ztol, double xtol) : tolerance(ztol), xTolerance(xtol) {}
-            double CalculateValue(double minStart, double maxStart, double resultValue, RootFinderMethod function, StopMethod isStopped = nullptr);
+            double CalculateValue(double minStart, double maxStart, double resultValue, RootFinderMethod function);
         private:
             double tolerance = 0.001;
             double xTolerance = 1E-6;

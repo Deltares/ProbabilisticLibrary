@@ -28,7 +28,6 @@ namespace Deltares
     namespace Numeric
     {
         typedef std::function<double(double)> RootFinderMethod;
-        typedef std::function<bool()> StopMethod;
 
         class RootFinder
         {
