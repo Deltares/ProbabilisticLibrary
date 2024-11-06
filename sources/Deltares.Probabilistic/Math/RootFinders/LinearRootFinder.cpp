@@ -39,7 +39,7 @@ namespace Deltares
             double Value = 0.0;
         };
 
-        double LinearRootFinder::CalculateValue(double xLow, double xHigh, double target, double tolerance, int maxIterations, RootFinderMethod function, double knownLowValue, double knownHighValue)
+        double LinearRootFinder::CalculateValue(double xLow, double xHigh, double target, int maxIterations, RootFinderMethod function, double knownLowValue, double knownHighValue)
         {
             constexpr double windowLimit = 0.05;
             constexpr double solutionLimit = 0.2;

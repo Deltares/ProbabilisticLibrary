@@ -143,13 +143,13 @@ namespace Deltares
             // the quotient deviation / mean is only dependent from the shape parameter, so this will be determined first
             double u = deviation / (mean - stochast->Shift);
 
-            std::unique_ptr<Numeric::BisectionRootFinder> bisection = std::make_unique<Numeric::BisectionRootFinder>();
+            auto bisection = Numeric::BisectionRootFinder(0.00001);
 
             // shape must be > 2
             double minStart = 2.4;
             double maxStart = 2.6;
 
-            stochast->Shape = bisection->CalculateValue(minStart, maxStart, u, 0.00001, method);
+            stochast->Shape = bisection.CalculateValue(minStart, maxStart, u, method);
 
             stochast->Scale = (mean - stochast->Shift) / Numeric::SpecialFunctions::getGamma(1 - 1 / stochast->Shape);
         }

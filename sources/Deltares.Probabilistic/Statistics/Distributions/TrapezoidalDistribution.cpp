@@ -159,12 +159,12 @@ namespace Deltares
                     return this->getDeviation(copiedStochast);
                 };
 
-                std::unique_ptr<Numeric::BisectionRootFinder> bisection = std::make_unique<Numeric::BisectionRootFinder>();
+                auto bisection = Numeric::BisectionRootFinder(0.00001);
 
                 double minStart = 0.0;
                 double maxStart = 32.0;
 
-                double factor = bisection->CalculateValue(minStart, maxStart, deviation, 0.00001, method);
+                double factor = bisection.CalculateValue(minStart, maxStart, deviation, method);
 
                 stochast->Minimum *= factor;
                 stochast->Shift *= factor;

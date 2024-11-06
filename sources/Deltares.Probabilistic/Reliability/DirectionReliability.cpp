@@ -376,16 +376,16 @@ namespace Deltares
 
                 double zTolerance = GetZTolerance(settings, uLow, uHigh, zLow, zHigh);
 
-                std::shared_ptr<LinearRootFinder> linearSearchCalculation = std::make_shared<LinearRootFinder>();
+                std::shared_ptr<LinearRootFinder> linearSearchCalculation = std::make_shared<LinearRootFinder>(zTolerance);
 
-                double uResult = linearSearchCalculation->CalculateValue(uLow, uHigh, 0, zTolerance, settings->MaximumIterations, [directionCalculation](double v) { return directionCalculation->GetZ(v); }, zLow, zHigh);
+                double uResult = linearSearchCalculation->CalculateValue(uLow, uHigh, 0, settings->MaximumIterations, [directionCalculation](double v) { return directionCalculation->GetZ(v); }, zLow, zHigh);
 
                 // TODO: PROBL-42 remove linear search , because bisection is more robust
                 if (std::isnan(uResult))
                 {
                     const double xTolerance = 0.01;
-                    std::shared_ptr<BisectionRootFinder> bisectionCalculation = std::make_shared<BisectionRootFinder>();
-                    uResult = bisectionCalculation->CalculateValue(uLow, uHigh, 0, zTolerance, [directionCalculation](double v) { return directionCalculation->GetZ(v); }, nullptr, xTolerance);
+                    std::shared_ptr<BisectionRootFinder> bisectionCalculation = std::make_shared<BisectionRootFinder>(zTolerance);
+                    uResult = bisectionCalculation->CalculateValue(uLow, uHigh, 0, [directionCalculation](double v) { return directionCalculation->GetZ(v); }, nullptr, xTolerance);
                 }
 
                 z = std::isnan(uResult) ? nan("") : directionCalculation->GetZ(uResult);
@@ -466,11 +466,11 @@ namespace Deltares
             {
                 std::shared_ptr<DirectionCalculation> directionCalculation = std::make_shared<DirectionCalculation>(modelRunner, uDirection, invertZ);
 
-                const std::shared_ptr<LinearRootFinder> linearSearchCalculation = std::make_shared<LinearRootFinder>();
-
                 const double zTolerance = DirectionReliability::GetZTolerance(settings, uLow, uHigh, zLow, zHigh);
 
-                double uResult = linearSearchCalculation->CalculateValue(uLow, uHigh, 0, zTolerance, settings->MaximumIterations, [directionCalculation](double v) { return directionCalculation->GetZ(v); }, zLow, zHigh);
+                const std::shared_ptr<LinearRootFinder> linearSearchCalculation = std::make_shared<LinearRootFinder>(zTolerance);
+
+                double uResult = linearSearchCalculation->CalculateValue(uLow, uHigh, 0, settings->MaximumIterations, [directionCalculation](double v) { return directionCalculation->GetZ(v); }, zLow, zHigh);
 
                 z = std::isnan(uResult) ? nan("") : directionCalculation->GetZ(uResult);
 
@@ -478,8 +478,8 @@ namespace Deltares
                 {
                     if (std::isnan(uResult))
                     {
-                        std::shared_ptr<BisectionRootFinder> bisectionCalculation = std::make_shared<BisectionRootFinder>();
-                        uResult = bisectionCalculation->CalculateValue(uLow, uHigh, 0, zTolerance, [directionCalculation](double v) { return directionCalculation->GetZ(v); });
+                        std::shared_ptr<BisectionRootFinder> bisectionCalculation = std::make_shared<BisectionRootFinder>(zTolerance);
+                        uResult = bisectionCalculation->CalculateValue(uLow, uHigh, 0, [directionCalculation](double v) { return directionCalculation->GetZ(v); });
                     }
 
                     if (modelRunner->Settings->proxySettings->ShouldUpdateFinalSteps && !isProxyAllowed(modelRunner, uResult, this->Threshold))
@@ -511,7 +511,7 @@ namespace Deltares
                             }
                         }
 
-                        uResult = linearSearchCalculation->CalculateValue(0, uResult, 0, zTolerance, settings->MaximumIterations, [directionCalculation](double v) { return directionCalculation->GetZNoProxy(v); }, z0, zResult);
+                        uResult = linearSearchCalculation->CalculateValue(0, uResult, 0, settings->MaximumIterations, [directionCalculation](double v) { return directionCalculation->GetZNoProxy(v); }, z0, zResult);
                         if (std::isnan(uResult))
                         {
                             z = zResult;
