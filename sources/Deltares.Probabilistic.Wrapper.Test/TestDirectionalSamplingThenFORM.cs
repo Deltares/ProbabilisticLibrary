@@ -98,17 +98,17 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             Assert.AreEqual(2.582, designPoint.Beta, margin);
 
-            Assert.AreEqual(2, designPoint.ReliabilityResults.Count);
-            Assert.AreEqual(6, designPoint.Evaluations.Count);
+            Assert.AreEqual(2, designPoint.ContributingDesignPoints[1].ReliabilityResults.Count);
+            Assert.AreEqual(6, designPoint.ContributingDesignPoints[1].Evaluations.Count);
 
             Assert.IsTrue(designPoint.Evaluations[0].Tag is ZFunctionOutput);
 
-            for (int i = 0; i < designPoint.ReliabilityResults.Count; i++)
+            for (int i = 0; i < designPoint.ContributingDesignPoints[1].ReliabilityResults.Count; i++)
             {
-                Assert.AreEqual(i, designPoint.ReliabilityResults[i].Index);
-                Assert.AreEqual(i, designPoint.Evaluations[3 * i].Iteration);
-                Assert.AreEqual(i, designPoint.Evaluations[3 * i + 1].Iteration);
-                Assert.AreEqual(i, designPoint.Evaluations[3 * i + 2].Iteration);
+                Assert.AreEqual(i, designPoint.ContributingDesignPoints[1].ReliabilityResults[i].Index);
+                Assert.AreEqual(i, designPoint.ContributingDesignPoints[1].Evaluations[3 * i].Iteration);
+                Assert.AreEqual(i, designPoint.ContributingDesignPoints[1].Evaluations[3 * i + 1].Iteration);
+                Assert.AreEqual(i, designPoint.ContributingDesignPoints[1].Evaluations[3 * i + 2].Iteration);
             }
         }
 
@@ -161,11 +161,11 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             project.ReliabilityMethod = new DirectionalSamplingThenFORM();
 
-            DirectionalSamplingThenFORM fdir = new DirectionalSamplingThenFORM();
-            fdir.Settings.MinimumDirections = 10000;
-            fdir.Settings.MaximumDirections = 50000;
-            fdir.Settings.RandomSettings.RandomGeneratorType = RandomGeneratorType.MersenneTwister;
-            project.ReliabilityMethod = fdir;
+            DirectionalSamplingThenFORM dsfi = new DirectionalSamplingThenFORM();
+            dsfi.Settings.MinimumDirections = 10000;
+            dsfi.Settings.MaximumDirections = 50000;
+            dsfi.Settings.RandomSettings.RandomGeneratorType = RandomGeneratorType.MersenneTwister;
+            project.ReliabilityMethod = dsfi;
             DesignPoint designPoint = project.GetDesignPoint();
 
             Assert.AreEqual(2.85, designPoint.Beta, margin);
@@ -240,10 +240,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             Project project = ProjectBuilder.GetConvexProject();
 
-            DirectionalSamplingThenFORM form = new DirectionalSamplingThenFORM();
-            form.Settings.StochastSettings.Add(new StochastSettings { StartValue = 1, Stochast = project.Stochasts[0] });
-            form.Settings.StochastSettings.Add(new StochastSettings { StartValue = 1, Stochast = project.Stochasts[1] });
-            project.ReliabilityMethod = form;
+            DirectionalSamplingThenFORM dsfi = new DirectionalSamplingThenFORM();
+            dsfi.Settings.StochastSettings.Add(new StochastSettings { StartValue = 1, Stochast = project.Stochasts[0] });
+            dsfi.Settings.StochastSettings.Add(new StochastSettings { StartValue = 1, Stochast = project.Stochasts[1] });
+            project.ReliabilityMethod = dsfi;
 
             DesignPoint designPoint = project.GetDesignPoint();
 
@@ -288,15 +288,15 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             Project project = ProjectBuilder.GetWaveProject();
 
-            DirectionalSamplingThenFORM form = new DirectionalSamplingThenFORM();
-            form.Settings.RelaxationFactor = 0.7;
-            form.Settings.RelaxationLoops = 5;
-            project.ReliabilityMethod = form;
+            DirectionalSamplingThenFORM dsfi = new DirectionalSamplingThenFORM();
+            dsfi.Settings.RelaxationFactor = 0.7;
+            dsfi.Settings.RelaxationLoops = 5;
+            project.ReliabilityMethod = dsfi;
 
             DesignPoint designPoint = project.GetDesignPoint();
 
             Assert.AreEqual(2.076, designPoint.Beta, margin);
-            Assert.AreEqual(3, designPoint.ContributingDesignPoints.Count);
+            Assert.AreEqual(2, designPoint.ContributingDesignPoints.Count);
         }
 
         [Test]
@@ -304,16 +304,16 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             Project project = ProjectBuilder.GetWaveProject();
 
-            DirectionalSamplingThenFORM form = new DirectionalSamplingThenFORM();
-            form.Settings.RelaxationFactor = 0.7;
-            form.Settings.RelaxationLoops = 5;
-            form.Settings.GradientCalculatorSettings.GradientType = GradientType.TwoDirections;
-            project.ReliabilityMethod = form;
+            DirectionalSamplingThenFORM dsfi = new DirectionalSamplingThenFORM();
+            dsfi.Settings.RelaxationFactor = 0.7;
+            dsfi.Settings.RelaxationLoops = 5;
+            dsfi.Settings.GradientCalculatorSettings.GradientType = GradientType.TwoDirections;
+            project.ReliabilityMethod = dsfi;
 
             DesignPoint designPoint = project.GetDesignPoint();
 
             Assert.AreEqual(2.08, designPoint.Beta, margin);
-            Assert.AreEqual(1, designPoint.ContributingDesignPoints.Count);
+            Assert.AreEqual(2, designPoint.ContributingDesignPoints.Count);
 
             Assert.IsTrue(designPoint.ConvergenceReport.IsConverged);
         }
@@ -323,21 +323,23 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             Project project = ProjectBuilder.GetNonLinearProject();
 
-            DirectionalSamplingThenFORM fdir = new DirectionalSamplingThenFORM();
-            fdir.Settings.RelaxationFactor = 0.75;
-            fdir.Settings.RelaxationLoops = 4;
-            fdir.Settings.FilterAtNonConvergence = false;
-            fdir.Settings.MinimumDirections = 10000;
-            fdir.Settings.MaximumDirections = 50000;
-            fdir.Settings.VariationCoefficient = 0.04;
-            fdir.Settings.RandomSettings.RandomGeneratorType = RandomGeneratorType.MersenneTwister;
-            fdir.Settings.RandomSettings.Seed = 1234;
-            project.ReliabilityMethod = fdir;
+            DirectionalSamplingThenFORM dsfi = new DirectionalSamplingThenFORM();
+            dsfi.Settings.RelaxationFactor = 0.75;
+            dsfi.Settings.RelaxationLoops = 4;
+            dsfi.Settings.FilterAtNonConvergence = false;
+            dsfi.Settings.MinimumDirections = 10000;
+            dsfi.Settings.MaximumDirections = 50000;
+            dsfi.Settings.VariationCoefficient = 0.04;
+            dsfi.Settings.RandomSettings.RandomGeneratorType = RandomGeneratorType.MersenneTwister;
+            dsfi.Settings.RandomSettings.Seed = 1234;
+            project.ReliabilityMethod = dsfi;
 
             DesignPoint designPoint = project.GetDesignPoint();
 
             Assert.AreEqual(3.57, designPoint.Beta, margin);
-            Assert.AreEqual(4, designPoint.ContributingDesignPoints.Count);
+            Assert.AreEqual(2, designPoint.ContributingDesignPoints.Count);
+            Assert.AreEqual(0, designPoint.ContributingDesignPoints[0].ContributingDesignPoints.Count);
+            Assert.AreEqual(3, designPoint.ContributingDesignPoints[1].ContributingDesignPoints.Count);
 
             Assert.IsFalse(designPoint.ConvergenceReport.IsConverged);
         }
@@ -366,10 +368,11 @@ namespace Deltares.Probabilistic.Wrapper.Test
             DesignPoint designPoint = project.GetDesignPoint();
 
             Assert.AreEqual(40.0, designPoint.Beta, margin);
-            Assert.AreEqual(1, designPoint.Messages.Count);
+            var messages = designPoint.ContributingDesignPoints[1].Messages;
+            Assert.AreEqual(1, messages.Count);
 
-            Assert.AreEqual(MessageType.Error, designPoint.Messages[0].Type);
-            Assert.AreEqual("No variation in model results found at start point", designPoint.Messages[0].Text);
+            Assert.AreEqual(MessageType.Error, messages[0].Type);
+            Assert.AreEqual("No variation in model results found at start point", messages[0].Text);
         }
 
     }
