@@ -158,6 +158,7 @@ std::shared_ptr<ReliabilityMethod> createReliabilityMethod::selectMethod(const b
         subSetSimulation->Settings->randomSettings = getRnd(bs);
         subSetSimulation->Settings->RunSettings->MaxChunkSize = bs.chunkSize;
         subSetSimulation->Settings->RunSettings->MaxParallelProcesses = bs.numThreads;
+        subSetSimulation->Settings->designPointMethod = convertDp(bs.designPointOptions);
         return subSetSimulation; }
         break;
     default:

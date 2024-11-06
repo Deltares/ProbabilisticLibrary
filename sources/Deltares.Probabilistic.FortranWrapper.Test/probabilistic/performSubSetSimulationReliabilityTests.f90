@@ -33,7 +33,7 @@ module performSubSetSimulationReliabilityTests
 
     public :: allPerformSubSetSimulationReliabilityTests
 
-    real (kind = wp), parameter :: margin = 0.01d0
+    real (kind = wp), parameter :: margin = 0.001d0
 
 contains
 
@@ -75,7 +75,7 @@ subroutine runSubSetTest(SampleMethod, expectedBeta)
 
     probDb%method%calcMethod = methodSubSetSimulationReliability
     probDb%method%SubSetSimulationReliability%MarkovChainDeviation = 0.5_wp
-    probDb%method%SubSetSimulationReliability%VariationCoefficient = 0.01_wp
+    probDb%method%SubSetSimulationReliability%VariationCoefficient = 0.02_wp
     probDb%method%SubSetSimulationReliability%SampleMethod = SampleMethod
 
     ! Perform computation to determine alpha and beta
@@ -95,7 +95,7 @@ end subroutine runSubSetTest
 subroutine MarkovChainTest
     implicit none
 
-    call runSubSetTest(MarkovChain, 2.7651306_wp)
+    call runSubSetTest(MarkovChain, 2.757_wp)
 
 end subroutine MarkovChainTest
 
@@ -103,7 +103,7 @@ subroutine AdaptiveConditionalTest
 
     implicit none
 
-    call runSubSetTest(AdaptiveConditional, 2.82_wp)
+    call runSubSetTest(AdaptiveConditional, 2.8388_wp)
 
 end subroutine AdaptiveConditionalTest
 
