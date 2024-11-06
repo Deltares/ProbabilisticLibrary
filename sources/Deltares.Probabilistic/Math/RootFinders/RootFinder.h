@@ -33,7 +33,7 @@ namespace Deltares
         {
 
         public:
-            virtual double CalculateValue(double xLow, double xHigh, double target, int maxIterations, RootFinderMethod function)
+            virtual double CalculateValue(double xLow, double xHigh, double target, RootFinderMethod function)
             {
                 return nan("");
             }

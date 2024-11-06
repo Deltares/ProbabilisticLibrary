@@ -39,7 +39,7 @@ namespace Deltares
             double Value = 0.0;
         };
 
-        double LinearRootFinder::CalculateValue(double xLow, double xHigh, double target, int maxIterations, RootFinderMethod function)
+        double LinearRootFinder::CalculateValue(double xLow, double xHigh, double target, RootFinderMethod function)
         {
             constexpr double windowLimit = 0.05;
             constexpr double solutionLimit = 0.2;
@@ -63,7 +63,7 @@ namespace Deltares
 
             auto solution = interpolate(low, high, target, function);
 
-            // Linear search method method
+            // Linear search method
             int iterations = 0;
             double previousWindow = std::numeric_limits<double>::max();
             double previousSolution = std::numeric_limits<double>::max();
