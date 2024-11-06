@@ -31,8 +31,9 @@ namespace Deltares
     {
         using namespace Deltares::Numeric;
 
-        std::shared_ptr<DesignPoint> NumericalIntegration::getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner)
+        std::shared_ptr<DesignPoint> NumericalIntegration::getDesignPoint(std::shared_ptr<Models::ModelRunner> runner)
         {
+            modelRunner = runner;
             modelRunner->updateStochastSettings(Settings.StochastSet);
 
             int nStochasts = modelRunner->getVaryingStochastCount();
@@ -48,7 +49,7 @@ namespace Deltares
             double z = modelRunner->getZValue(u);
 
             // parameter for the position of the origin; necessary to determine the design point
-            double z0Fac = z > 0.0 ? 1.0 : -1.0; 
+            z0Fac = getZFactor(z);
 
             // Numerical integration isn't possible with a large set of stochastic parameters
             // warnings and errors are presented.
@@ -72,7 +73,7 @@ namespace Deltares
             constexpr double density = 1.0; // joint probability density
             constexpr int stochastIndex = 0; // number of the stochastic parameter
 
-            std::shared_ptr<DesignPointBuilder> designPointBuilder = std::make_shared<DesignPointBuilder>(nStochasts, Settings.designPointMethod, Settings.StochastSet);
+            designPointBuilder = std::make_shared<DesignPointBuilder>(nStochasts, Settings.designPointMethod, Settings.StochastSet);
             double totalDensity = 0;
 
             // Call to the recursive part of the numerical integration computation
@@ -81,7 +82,7 @@ namespace Deltares
 
             std::shared_ptr<ConvergenceReport> convergenceReport = std::make_shared<ConvergenceReport>();
 
-            double probFailure = getStochastProbability(modelRunner, stochastIndex, u, designPointBuilder, density, z0Fac, totalDensity, 1);
+            double probFailure = getStochastProbability(stochastIndex, u, density, totalDensity, 1);
 
             probFailure = probFailure / totalDensity;
 
@@ -94,7 +95,7 @@ namespace Deltares
             return modelRunner->getDesignPoint(designPoint, beta, convergenceReport);
         }
 
-        double NumericalIntegration::getStochastProbability(std::shared_ptr<ModelRunner> modelRunner, int stochastIndex, std::shared_ptr<Sample> parentSample, std::shared_ptr<DesignPointBuilder> designPointBuilder, double density, double z0Fac, double& totalDensity, int nSamples)
+        double NumericalIntegration::getStochastProbability(int stochastIndex, std::shared_ptr<Sample> parentSample, double density, double& totalDensity, int nSamples)
         {
             const double uDelta = 0.01;
             const int nStochasts = Settings.StochastSet->getVaryingStochastCount();
@@ -119,7 +120,7 @@ namespace Deltares
             uValues.push_back(Statistics::StandardNormal::UMax);
 
             // Initialize first probabilities
-            std::shared_ptr<Statistics::ProbabilityIterator> pq = std::make_shared<Statistics::ProbabilityIterator>(uValues[0]);
+            auto pq = Statistics::ProbabilityIterator(uValues[0]);
 
             nSamples *= static_cast<int>(uValues.size()) - 1;
 
@@ -131,9 +132,9 @@ namespace Deltares
                 {
                     parentSample->Values[stochastIndex] = (uValues[j] + uValues[j + 1]) / 2;
 
-                    double contribution = pq->getDifference(uValues[j + 1]);
+                    double contribution = pq.getDifference(uValues[j + 1]);
 
-                    probFailure += getStochastProbability(modelRunner, stochastIndex + 1, parentSample, designPointBuilder, density * contribution, z0Fac, totalDensity, nSamples);
+                    probFailure += getStochastProbability(stochastIndex + 1, parentSample, density * contribution, totalDensity, nSamples);
 
                     if (stochastIndex == 0)
                     {
@@ -159,7 +160,7 @@ namespace Deltares
                     std::shared_ptr<Sample> sample = parentSample->clone();
                     sample->Values[stochastIndex] = (uValues[j] + uValues[j + 1]) / 2;
 
-                    double contribution = pq->getDifference(uValues[j + 1]);
+                    double contribution = pq.getDifference(uValues[j + 1]);
                     sample->Weight = density * contribution * nSamples;
 
                     samples.push_back(sample);
