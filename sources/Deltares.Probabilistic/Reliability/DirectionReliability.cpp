@@ -376,16 +376,16 @@ namespace Deltares
 
                 double zTolerance = GetZTolerance(settings, uLow, uHigh, zLow, zHigh);
 
-                std::shared_ptr<LinearRootFinder> linearSearchCalculation = std::make_shared<LinearRootFinder>(zTolerance);
+                auto linearSearchCalculation = LinearRootFinder(zTolerance);
 
-                double uResult = linearSearchCalculation->CalculateValue(uLow, uHigh, 0, settings->MaximumIterations, [directionCalculation](double v) { return directionCalculation->GetZ(v); }, zLow, zHigh);
+                double uResult = linearSearchCalculation.CalculateValue(uLow, uHigh, 0, settings->MaximumIterations, [directionCalculation](double v) { return directionCalculation->GetZ(v); }, zLow, zHigh);
 
                 // TODO: PROBL-42 remove linear search , because bisection is more robust
                 if (std::isnan(uResult))
                 {
                     const double xTolerance = 0.01;
-                    std::shared_ptr<BisectionRootFinder> bisectionCalculation = std::make_shared<BisectionRootFinder>(zTolerance);
-                    uResult = bisectionCalculation->CalculateValue(uLow, uHigh, 0, [directionCalculation](double v) { return directionCalculation->GetZ(v); }, nullptr, xTolerance);
+                    auto bisectionCalculation = BisectionRootFinder(zTolerance, xTolerance);
+                    uResult = bisectionCalculation.CalculateValue(uLow, uHigh, 0, [directionCalculation](double v) { return directionCalculation->GetZ(v); }, nullptr);
                 }
 
                 z = std::isnan(uResult) ? nan("") : directionCalculation->GetZ(uResult);

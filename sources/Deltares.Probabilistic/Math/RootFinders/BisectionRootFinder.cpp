@@ -57,7 +57,7 @@ namespace Deltares
             return std::fabs(maxValue - minValue) / std::max(std::fabs(maxValue), std::fabs(minValue));
         }
 
-        double BisectionRootFinder::CalculateValue(double minStart, double maxStart, double resultValue, RootFinderMethod function, StopMethod isStopped, double xTolerance)
+        double BisectionRootFinder::CalculateValue(double minStart, double maxStart, double resultValue, RootFinderMethod function, StopMethod isStopped)
         {
             if (isStopped == nullptr)
             {

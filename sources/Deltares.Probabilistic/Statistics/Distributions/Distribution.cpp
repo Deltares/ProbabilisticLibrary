@@ -90,9 +90,9 @@ namespace Deltares
 
             const double delta = 0.00001;
             margin = std::min(delta, margin);
-            auto bisection = Numeric::BisectionRootFinder(margin);
+            auto bisection = Numeric::BisectionRootFinder(margin, 0);
 
-            double x = bisection.CalculateValue(0, 1, cdf, function, nullptr, 0);
+            double x = bisection.CalculateValue(0, 1, cdf, function, nullptr);
             return x;
         }
 
