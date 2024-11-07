@@ -128,7 +128,8 @@ subroutine upscaleLengthTests16
     myMargin           = 1.0d-6
 
     do iLength=1,size(sectionLengths)
-       call upscaleLengthWrapper( betaCrossSection, alphaCrossSection, rhoXK, dXK, sectionLengths(iLength), betaSection, alphaSection)
+       call upscaleLengthWrapper( betaCrossSection, alphaCrossSection, rhoXK, dXK, sectionLengths(iLength), &
+           betaSection, alphaSection)
 !
 !      The expected value of alphaSection() is alphaCrossSection for the given length
        do iStoch= 1, nStoch
