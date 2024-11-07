@@ -36,7 +36,7 @@ module combineElementsTests
     implicit none
 
     private
-    public :: allCombineElementsTests
+    public :: allCombineElementsTests, upscaleLengthWrapper
 
 contains
 !
@@ -1808,7 +1808,7 @@ subroutine testcombineMultipleElementsSpatialCorrelated1
     expectedBeta  =    4.38787743765301_wp                                                                         ! pre-computed
     expectedAlphaC= (/ 0.635285167139092_wp, 0.393519326675495_wp, 0.565059833788674_wp, 0.349660807332817_wp /)   ! pre-computed
 !
-    call upscaleLength ( betaCrossSection, alphaCrossSection, rhoXK, dXK, sectionLength, betaSection, alphaSection )
+    call upscaleLengthWrapper ( betaCrossSection, alphaCrossSection, rhoXK, dXK, sectionLength, betaSection, alphaSection )
     betaElement = betaSection
     do i = 1, nElements
         alphaElement(i,:) = alphaSection
@@ -1866,7 +1866,7 @@ subroutine testcombineMultipleElementsSpatialCorrelated2
     expectedBeta  =    4.61415014812874_wp                                                                         ! pre-computed
     expectedAlphaC= (/0.597708361676096_wp, 0.375385677437277_wp, 0.599181645055476_wp, 0.377904305064187_wp /)   ! pre-computed
 !
-    call upscaleLength ( betaCrossSection, alphaCrossSection, rhoXK, dXK, sectionLength, betaSection, alphaSection )
+    call upscaleLengthWrapper ( betaCrossSection, alphaCrossSection, rhoXK, dXK, sectionLength, betaSection, alphaSection )
     betaElement = betaSection
     do i = 1, nElements
         alphaElement(i,:) = alphaSection
@@ -1917,7 +1917,7 @@ subroutine testcombineMultipleElementsSpatialCorrelated3
     expectedBeta  =    4.50641035819668_wp                                                                         ! pre-computed
     expectedAlphaC= (/ 0.578741673689891_wp, 0.385418150246354_wp, 0.598199853682860_wp, 0.398331344045516_wp /)   ! pre-computed
 !
-    call upscaleLength ( betaCrossSection, alphaCrossSection, rhoXK, dXK, nElements * sectionLength, betaSection, alphaSection )
+    call upscaleLengthWrapper ( betaCrossSection, alphaCrossSection, rhoXK, dXK, nElements * sectionLength, betaSection, alphaSection )
 !
     call assert_comparable( betaSection, expectedBeta, 1d-6, "An unexpected value is found for the beta of the combined elements" )
 !
@@ -2641,4 +2641,34 @@ subroutine testFromRealCasesC
     end do
 end subroutine testFromRealCasesC
 
+subroutine upscaleLengthWrapper ( betaCrossSection, alphaCrossSection, rhoXK, dXK, sectionLength, betaSection, alphaSection)
+        real(kind=wp), intent (in)          :: betaCrossSection       !< Reliability index cross section
+        real(kind=wp), intent (in)          :: alphaCrossSection(:)   !< Alpha vector cross section
+        real(kind=wp), intent (in)          :: rhoXK(:)               !< Correlation variables
+        real(kind=wp), intent (in)          :: dXK(:)                 !< Correlation length variables
+        real(kind=wp), intent (in)          :: sectionLength          !< Section length
+        real(kind=wp), intent (out)         :: betaSection            !< Reliability index section
+        real(kind=wp), intent (out)         :: alphaSection(:)        !< Alpha vector section
+
+        type(designPoint)    :: dpCrossSection !< design point cross section
+        type(designPoint)    :: dpSection      !< design point section
+        integer              :: i, nStoch
+
+        nStoch = size(alphaCrossSection)
+        dpCrossSection%beta = betaCrossSection
+        allocate(dpCrossSection%alpha(nStoch))
+        allocate(dpCrossSection%rho(nStoch))
+        allocate(dpCrossSection%correlation_length(nStoch))
+        do i = 1, nStoch
+            dpCrossSection%alpha(i) = alphaCrossSection(i)
+            dpCrossSection%rho(i) = rhoXK(i)
+            dpCrossSection%correlation_length(i) = dXK(i)
+        end do
+        allocate(dpSection%alpha(nStoch))
+        call  upscaleLength ( dpCrossSection, sectionLength, dpSection)
+        betaSection = dpSection%beta
+        do i = 1, nStoch
+            alphaSection(i) = dpSection%alpha(i)
+        end do
+end subroutine upscaleLengthWrapper
 end module combineElementsTests

@@ -276,7 +276,7 @@ subroutine convertStartMethod(probDb, method, iPoint)
     type(tMethod),                         intent(inout) :: method
     integer,                               intent(in)    :: iPoint(:)
 
-    integer :: nstoch, i, startMethod
+    integer :: nstoch, startMethod
 
     nstoch = size(iPoint)
 

@@ -39,6 +39,14 @@ type betaAlphaCF
     integer             :: size               = 0
 end type betaAlphaCF
 
+type DesignPoint
+    real(kind=wp) :: beta
+    real(kind=wp), allocatable :: alpha(:)
+    real(kind=wp), allocatable :: rho(:)
+    real(kind=wp), allocatable :: duration(:)
+    real(kind=wp), allocatable :: correlation_length(:)
+end type DesignPoint
+
 interface
     integer function combineMultipleElements_c( betaElement, alphaElement, rho, beta, alpha, &
       combAndOrIn, nrElms, nrStoch) bind(c)
@@ -71,9 +79,9 @@ interface
     integer function upscaleLengthC ( dpCrossSection, sectionLength, dpSection ) bind(c)
         use, intrinsic :: iso_c_binding, only: c_double
         import betaAlphaCF
-        type(betaAlphaCF),   intent (in)  :: dpCrossSection     !< design point cross section
-        real(kind=c_double), intent (in)  :: sectionLength      !< Section length
-        type(betaAlphaCF),   intent (out) :: dpSection          !< design point section
+        type(betaAlphaCF),   intent (in)    :: dpCrossSection     !< design point cross section
+        real(kind=c_double), intent (in)    :: sectionLength      !< Section length
+        type(betaAlphaCF),   intent (inout) :: dpSection          !< design point section
     end function upscaleLengthC
 end interface
 
@@ -83,9 +91,9 @@ interface
     subroutine upscaleToLargestBlockC( dpSmallBlock, largestBlockDuration, dpLargestBlock) bind(c)
         use, intrinsic :: iso_c_binding, only: c_double
         import betaAlphaCF
-        type(betaAlphaCF),   intent (in)  :: dpSmallBlock           !< design point input
-        real(kind=c_double), intent (in)  :: largestBlockDuration   !< Target block duration
-        type(betaAlphaCF),   intent (out) :: dpLargestBlock         !< design point result
+        type(betaAlphaCF),   intent (in)    :: dpSmallBlock           !< design point input
+        real(kind=c_double), intent (in)    :: largestBlockDuration   !< Target block duration
+        type(betaAlphaCF),   intent (inout) :: dpLargestBlock         !< design point result
     end subroutine upscaleToLargestBlockC
 end interface
 
@@ -97,7 +105,7 @@ interface
         type(betaAlphaCF),    intent(in)           :: dp1         !< design point of element 1
         type(betaAlphaCF),    intent(in)           :: dp2         !< design point of element 2
         real(kind=c_double),  intent(in)           :: rhoP(*)     !< Autocorrelation of the stochastic variables between element 1 and element 2
-        type(betaAlphaCF),    intent(out)          :: dpC         !< design point of the combined elements
+        type(betaAlphaCF),    intent(inout)        :: dpC         !< design point of the combined elements
         integer, value,       intent(in)           :: combAndOr   !< Combination type, And or Or
         real(kind=c_double),  intent(out)          :: alphaI(*)   !< AlphaI values of the combined elements in case of a spatial correlation
         real(kind=c_double),  intent(out)          :: alphaII(*)  !< AlphaII values of the combined elements in case of a spatial correlation
@@ -112,7 +120,7 @@ interface
         type(betaAlphaCF),    intent(in)           :: dp1         !< design point of element 1
         type(betaAlphaCF),    intent(in)           :: dp2         !< design point of element 2
         real(kind=c_double),  intent(in)           :: rhoP(*)     !< Autocorrelation of the stochastic variables between element 1 and element 2
-        type(betaAlphaCF),    intent(out)          :: dpC         !< design point of the combined elements
+        type(betaAlphaCF),    intent(inout)        :: dpC         !< design point of the combined elements
         integer, value,       intent(in)           :: combAndOr   !< Combination type, And or Or
     end function combineTwoElementsPartialCorrelationC2
 end interface
@@ -145,30 +153,26 @@ contains
 
 !>
 !! This subroutine upscales from a cross section to a given section length
-    subroutine upscaleLength ( betaCrossSection, alphaCrossSection, rhoXK, dXK, sectionLength, betaSection, alphaSection)
-        real(kind=c_double), intent (in)          :: betaCrossSection       !< Reliability index cross section
-        real(kind=c_double), intent (in), target  :: alphaCrossSection(:)   !< Alpha vector cross section
-        real(kind=c_double), intent (in), target  :: rhoXK(:)               !< Correlation variables
-        real(kind=c_double), intent (in), target  :: dXK(:)                 !< Correlation length variables
-        real(kind=c_double), intent (in)          :: sectionLength          !< Section length
-        real(kind=c_double), intent (out)         :: betaSection            !< Reliability index section
-        real(kind=c_double), intent (out), target :: alphaSection(:)        !< Alpha vector section
+    subroutine upscaleLength ( dpCrossSection, sectionLength, dpSection)
+        type(designPoint),   intent (in), target  :: dpCrossSection !< design point cross section
+        real(kind=c_double), intent (in)          :: sectionLength  !< Section length
+        type(designPoint),   intent (inout), target :: dpSection      !< design point section
 
         integer :: n
-        type(betaAlphaCF) :: dpCrossSection, dpSection
+        type(betaAlphaCF) :: dpCrossSectionC, dpSectionC
 
-        dpCrossSection%beta  = betaCrossSection
-        dpCrossSection%size  = size(alphaCrossSection)
-        dpCrossSection%alpha = c_loc(alphaCrossSection)
-        dpCrossSection%rho   = c_loc(rhoXK)
-        dpCrossSection%correlation_length = c_loc(dXK)
+        dpCrossSectionC%beta  = dpCrossSection%beta
+        dpCrossSectionC%size  = size(dpCrossSection%alpha)
+        dpCrossSectionC%alpha = c_loc(dpCrossSection%alpha)
+        dpCrossSectionC%rho   = c_loc(dpCrossSection%rho)
+        dpCrossSectionC%correlation_length = c_loc(dpCrossSection%correlation_length)
 
-        dpSection%size  = size(alphaSection)
-        dpSection%alpha = c_loc(alphaSection)
+        dpSectionC%size  = size(dpSection%alpha)
+        dpSectionC%alpha = c_loc(dpSection%alpha)
 
-        n = upscaleLengthC ( dpCrossSection, sectionLength, dpSection )
+        n = upscaleLengthC ( dpCrossSectionC, sectionLength, dpSectionC )
         call warnHohenbichler(n)
-        betaSection = dpSection%beta
+        dpSection%beta = dpSectionC%beta
     end subroutine upscaleLength
 
 !>
