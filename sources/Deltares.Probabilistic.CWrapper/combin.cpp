@@ -23,9 +23,15 @@
 #include "../Deltares.Probabilistic/Combine/HohenbichlerFORM.h"
 #include "../Deltares.Probabilistic/Combine/combineElements.h"
 #include "../Deltares.Probabilistic/Combine/upscaling.h"
-#include "../Deltares.Probabilistic/Combine/intEqualElements.h"
 
 using namespace Deltares::Reliability;
+
+struct betaAlphaCF
+{
+    double beta;
+    double* alpha;
+    int size;
+};
 
 elements fillElements(double* betaElement, double* alphaElement, int nrElms, int nrStoch)
 {
@@ -159,9 +165,10 @@ void upscaletolargestblockc(double* betaSmallBlock, double* alphaSmallBlock, dou
 }
 
 extern "C"
-int combinetwoelementspartialcorrelationc1(double* beta1, double* alpha1, double* beta2, double* alpha2, double* rhoP,
-    double* betaC, double* alphaC, const int combAndOr, const int nStochasts, double* alphaI, double* alphaII)
+int combinetwoelementspartialcorrelationc1(betaAlphaCF* dp1, betaAlphaCF* dp2, double* rhoP,
+    betaAlphaCF* dpC, const int combAndOr, double* alphaI, double* alphaII)
 {
+    const int nStochasts = dp1->size;
     auto rho = vector1D(nStochasts);
     auto alfa1 = vector1D(nStochasts);
     auto alfa2 = vector1D(nStochasts);
@@ -170,19 +177,19 @@ int combinetwoelementspartialcorrelationc1(double* beta1, double* alpha1, double
     for (int i = 0; i < nStochasts; i++)
     {
         rho(i) = rhoP[i];
-        alfa1(i) = alpha1[i];
-        alfa2(i) = alpha2[i];
+        alfa1(i) = dp1->alpha[i];
+        alfa2(i) = dp2->alpha[i];
     }
-    auto elm1 = alphaBeta(*beta1, alfa1);
-    auto elm2 = alphaBeta(*beta2, alfa2);
+    auto elm1 = alphaBeta(dp1->beta, alfa1);
+    auto elm2 = alphaBeta(dp2->beta, alfa2);
 
     auto cmb = combineElements();
     auto elm = cmb.combineTwoElementsPartialCorrelation(elm1, elm2, rho, (combineAndOr)combAndOr, alfai, alfaii);
 
-    *betaC = elm.ab.getBeta();
+    dpC->beta = elm.ab.getBeta();
     for (int i = 0; i < nStochasts; i++)
     {
-        alphaC[i] = elm.ab.getAlphaI(i);
+        dpC->alpha[i] = elm.ab.getAlphaI(i);
         alphaI[i] = alfai(i);
         alphaII[i] = alfaii(i);
     }
@@ -190,9 +197,9 @@ int combinetwoelementspartialcorrelationc1(double* beta1, double* alpha1, double
 }
 
 extern "C"
-int combinetwoelementspartialcorrelationc2(double* beta1, double* alpha1, double* beta2, double* alpha2, double* rhoP,
-    double* betaC, double* alphaC, const int combAndOr, const int nStochasts)
+int combinetwoelementspartialcorrelationc2(betaAlphaCF* dp1, betaAlphaCF* dp2, double* rhoP, betaAlphaCF* dpC, const int combAndOr)
 {
+    auto nStochasts = dp1->size;
     auto cmb = combineElements();
     auto rho = vector1D(nStochasts);
     auto alfa1 = vector1D(nStochasts);
@@ -200,17 +207,17 @@ int combinetwoelementspartialcorrelationc2(double* beta1, double* alpha1, double
     for (int i = 0; i < nStochasts; i++)
     {
         rho(i) = rhoP[i];
-        alfa1(i) = alpha1[i];
-        alfa2(i) = alpha2[i];
+        alfa1(i) = dp1->alpha[i];
+        alfa2(i) = dp2->alpha[i];
     }
-    auto elm1 = alphaBeta(*beta1, alfa1);
-    auto elm2 = alphaBeta(*beta2, alfa2);
+    auto elm1 = alphaBeta(dp1->beta, alfa1);
+    auto elm2 = alphaBeta(dp2->beta, alfa2);
     auto elm = cmb.combineTwoElementsPartialCorrelation(elm1, elm2, rho, (combineAndOr)combAndOr);
 
-    *betaC = elm.ab.getBeta();
+    dpC->beta = elm.ab.getBeta();
     for (int i = 0; i < nStochasts; i++)
     {
-        alphaC[i] = elm.ab.getAlphaI(i);
+        dpC->alpha[i] = elm.ab.getAlphaI(i);
     }
     return elm.n;
 }
