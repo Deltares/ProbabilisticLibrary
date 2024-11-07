@@ -28,9 +28,12 @@ using namespace Deltares::Reliability;
 
 struct betaAlphaCF
 {
-    double beta;
+    double  beta;
     double* alpha;
-    int size;
+    double* rho;
+    double* duration;
+    double* correlation_length;
+    int     size;
 };
 
 elements fillElements(double* betaElement, double* alphaElement, int nrElms, int nrStoch)
@@ -110,57 +113,56 @@ int combinemultipleelements_c(double* betaElement, double* alphaElement, double*
 }
 
 extern "C"
-int upscalelengthc(double* betaCrossSection, double* alphaCrossSection, double* rhoXK, double* dXK,
-    double* sectionLength, double* betaSection, double* alphaSection, int nStochasts)
+int upscalelengthc(betaAlphaCF* dpCrossSection, double* sectionLength, betaAlphaCF* dpSection)
 {
+    const int nStochasts = dpCrossSection->size;
     vector1D alpha = vector1D(nStochasts);
     vector1D rhoxk = vector1D(nStochasts);
     vector1D dxk = vector1D(nStochasts);
     for (int i = 0; i < nStochasts; i++)
     {
-        alpha(i) = alphaCrossSection[i];
-        rhoxk(i) = rhoXK[i];
-        dxk(i) = dXK[i];
+        alpha(i) = dpCrossSection->alpha[i];
+        rhoxk(i) = dpCrossSection->rho[i];
+        dxk(i) = dpCrossSection->correlation_length[i];
     }
-    auto crossSectionElement = alphaBeta(*betaCrossSection, alpha);
+    auto crossSectionElement = alphaBeta(dpCrossSection->beta, alpha);
 
     auto up = upscaling();
     auto alphaBeta = up.upscaleLength(crossSectionElement, rhoxk, dxk, *sectionLength);
 
-    *betaSection = alphaBeta.first.getBeta();
+    dpSection->beta = alphaBeta.first.getBeta();
     for (int i = 0; i < nStochasts; i++)
     {
-        alphaSection[i] = alphaBeta.first.getAlphaI(i);
+        dpSection->alpha[i] = alphaBeta.first.getAlphaI(i);
     }
     return alphaBeta.second;
 }
 
 extern "C"
-void upscaletolargestblockc(double* betaSmallBlock, double* alphaSmallBlock, double* rhoTSmallBlock,
-    double* blockDurations, double* largestBlockDuration,
-    double* betaLargestBlock, double* alphaLargestBlock, double* durationsLargestBlock, int nStochasts)
+void upscaletolargestblockc(betaAlphaCF* dpSmallBlock, double* largestBlockDuration, betaAlphaCF* dpLargestBlock)
 {
+    int nStochasts = dpSmallBlock->size;
     auto alfasmall = vector1D(nStochasts);
     auto rho = vector1D(nStochasts);
     auto durations = vector1D(nStochasts);
     for (int i = 0; i < nStochasts; i++)
     {
-        alfasmall(i) = alphaSmallBlock[i];
-        rho(i) = rhoTSmallBlock[i];
-        durations(i) = blockDurations[i];
+        alfasmall(i) = dpSmallBlock->alpha[i];
+        rho(i) = dpSmallBlock->rho[i];
+        durations(i) = dpSmallBlock->duration[i];
     }
-    auto smallBlock = alphaBeta(*betaSmallBlock, alfasmall);
+    auto smallBlock = alphaBeta(dpSmallBlock->beta, alfasmall);
     alphaBeta largestBlock;
     vector1D durationsLB;
 
     auto up = upscaling();
     up.upscaleToLargestBlock(smallBlock, rho, durations, *largestBlockDuration, largestBlock, durationsLB);
 
-    *betaLargestBlock = largestBlock.getBeta();
+    dpLargestBlock->beta = largestBlock.getBeta();
     for (int i = 0; i < nStochasts; i++)
     {
-        alphaLargestBlock[i] = largestBlock.getAlphaI(i);
-        durationsLargestBlock[i] = durationsLB(i);
+        dpLargestBlock->alpha[i] = largestBlock.getAlphaI(i);
+        dpLargestBlock->duration[i] = durationsLB(i);
     }
 }
 
