@@ -1917,7 +1917,8 @@ subroutine testcombineMultipleElementsSpatialCorrelated3
     expectedBeta  =    4.50641035819668_wp                                                                         ! pre-computed
     expectedAlphaC= (/ 0.578741673689891_wp, 0.385418150246354_wp, 0.598199853682860_wp, 0.398331344045516_wp /)   ! pre-computed
 !
-    call upscaleLengthWrapper ( betaCrossSection, alphaCrossSection, rhoXK, dXK, nElements * sectionLength, betaSection, alphaSection )
+    call upscaleLengthWrapper ( betaCrossSection, alphaCrossSection, rhoXK, dXK, nElements * sectionLength, &
+        betaSection, alphaSection )
 !
     call assert_comparable( betaSection, expectedBeta, 1d-6, "An unexpected value is found for the beta of the combined elements" )
 !

@@ -30,7 +30,7 @@ private :: combineMultipleElements_c, warnHohenbichler, upscaleLengthC, &
     combineTwoElementsPartialCorrelationC1, combineTwoElementsPartialCorrelationC2, &
     combineMultipleElementsProb_c, c_double, wp
 
-type betaAlphaCF
+type, bind(C) :: betaAlphaCF
     real(kind=c_double) :: beta               = 0.0_c_double
     type(c_ptr)         :: alpha              = c_null_ptr
     type(c_ptr)         :: rho                = c_null_ptr
