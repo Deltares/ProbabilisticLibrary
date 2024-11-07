@@ -111,7 +111,7 @@ int combinemultipleelements_c(double* betaElement, double* alphaElement, double*
 
 extern "C"
 int upscalelengthc(double* betaCrossSection, double* alphaCrossSection, double* rhoXK, double* dXK,
-    double* sectionLength, double* betaSection, double* alphaSection, double* minimumFailureLength, int nStochasts)
+    double* sectionLength, double* betaSection, double* alphaSection, int nStochasts)
 {
     vector1D alpha = vector1D(nStochasts);
     vector1D rhoxk = vector1D(nStochasts);
@@ -125,7 +125,7 @@ int upscalelengthc(double* betaCrossSection, double* alphaCrossSection, double* 
     auto crossSectionElement = alphaBeta(*betaCrossSection, alpha);
 
     auto up = upscaling();
-    auto alphaBeta = up.upscaleLength(crossSectionElement, rhoxk, dxk, *sectionLength, *minimumFailureLength);
+    auto alphaBeta = up.upscaleLength(crossSectionElement, rhoxk, dxk, *sectionLength);
 
     *betaSection = alphaBeta.first.getBeta();
     for (int i = 0; i < nStochasts; i++)
