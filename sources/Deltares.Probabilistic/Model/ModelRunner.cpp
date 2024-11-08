@@ -322,7 +322,7 @@ namespace Deltares
 
             if (this->progressIndicator != nullptr)
             {
-                const double progressIndicator = Numeric::NumericSupport::Divide(report->Step, report->MaxSteps);
+                const double progress = Numeric::NumericSupport::Divide(report->Step, report->MaxSteps);
 
                 double convergence = report->ConvBeta;
                 if (std::isnan(convergence))
@@ -330,14 +330,32 @@ namespace Deltares
                     convergence = report->Variation;
                 }
 
-                this->progressIndicator->doProgress(progressIndicator);
+                this->reportProgress(report->Step, report->MaxSteps, report->Reliability, convergence);
+
                 this->progressIndicator->doDetailedProgress(report->Step, report->Loop, report->Reliability, convergence);
+            }
+        }
+
+        void ModelRunner::reportProgress(int step, int maxSteps, double reliability, double convergence)
+        {
+            if (this->progressIndicator != nullptr)
+            {
+                const double progress = Numeric::NumericSupport::Divide(step, maxSteps);
+                this->progressIndicator->doProgress(progress);
 
 #ifdef __cpp_lib_format
-                auto text = std::format("{}/{}, Reliability = {:.3f}, Convergence = {:.3f}", report->Step, report->MaxSteps, report->Reliability, convergence);
+                auto text = std::format("{}/{}", step, maxSteps);
+                if (!std::isnan(reliability) || !std::isnan(convergence))
+                {
+                    text = text + std::format(", Reliability = {:.3f}, Convergence = {:.3f}", reliability, convergence);
+                }
 #else
-                auto pl = Deltares::Reliability::probLibString();
-                auto text = "Reliability = " + pl.double2str(report->Reliability);
+                auto text = std::to_string(step) + "/" + std::to_string(maxSteps);
+                if (!std::isnan(reliability) || !std::isnan(convergence))
+                {
+                    auto pl = Deltares::Reliability::probLibString();
+                    text = text + ", Reliability = " + pl.double2str(reliability);
+                }
 #endif
 
                 this->progressIndicator->doTextualProgress(ProgressType::Detailed, text);

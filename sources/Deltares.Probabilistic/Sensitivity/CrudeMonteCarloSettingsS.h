@@ -22,6 +22,7 @@
 #pragma once
 
 #include "../Model/RandomSettings.h"
+#include "../Reliability/StochastSettingsSet.h"
 #include "../Model/RunSettings.h"
 
 namespace Deltares

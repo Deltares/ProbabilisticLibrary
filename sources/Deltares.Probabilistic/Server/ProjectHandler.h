@@ -82,7 +82,7 @@ namespace Deltares
             int GetEvaluationId(std::shared_ptr<Deltares::Reliability::Evaluation> evaluation, int newId);
             int GetMessageId(std::shared_ptr<Deltares::Models::Message> message, int newId);
         private:
-            enum ObjectType {StandardNormal, Message, Project, ModelParameter, LimitStateFunction, Stochast, DiscreteValue, HistogramValue, FragilityValue,
+            enum ObjectType {StandardNormal, Message, ProbabilityValue, Project, ModelParameter, LimitStateFunction, Stochast, DiscreteValue, HistogramValue, FragilityValue,
                 ContributingStochast, ConditionalValue, CorrelationMatrix, Settings, StochastSettings, DesignPoint, Alpha, Evaluation,
                 CombineProject, CombineSettings, SelfCorrelationMatrix, SensitivityProject, SensitivitySettings,
                 LengthEffectProject};
@@ -90,6 +90,7 @@ namespace Deltares
             std::unordered_map<int, Deltares::Server::ProjectHandler::ObjectType> types;
 
             std::unordered_map<int, std::shared_ptr<Statistics::Stochast>> stochasts;
+            std::unordered_map<int, std::shared_ptr<Statistics::ProbabilityValue>> probabilityValues;
             std::unordered_map<int, std::shared_ptr<Models::Message>> messages;
             std::unordered_map<int, std::shared_ptr<Reliability::ReliabilityProject>> projects;
             std::unordered_map<int, std::shared_ptr<Models::ModelInputParameter>> modelParameters;
@@ -117,6 +118,7 @@ namespace Deltares
             std::unordered_map<std::shared_ptr<Reliability::DesignPoint>, int> designPointIds;
             std::unordered_map<std::shared_ptr<Reliability::StochastPointAlpha>, int> alphaIds;
             std::unordered_map<std::shared_ptr<Statistics::Stochast>, int> stochastIds;
+            std::unordered_map<std::shared_ptr<Statistics::ProbabilityValue>, int> probabilityValueIds;
             std::unordered_map<std::shared_ptr<Statistics::CorrelationMatrix>, int> correlationMatrixIds;
             std::unordered_map<std::shared_ptr<Statistics::HistogramValue>, int> histogramValueIds;
             std::unordered_map<std::shared_ptr<Statistics::DiscreteValue>, int> discreteValueIds;

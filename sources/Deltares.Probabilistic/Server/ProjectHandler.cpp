@@ -36,28 +36,29 @@ namespace Deltares
         {
             return
                 (object_type == "standard_normal" ||
-                    object_type == "message" ||
-                    object_type == "project" ||
-                    object_type == "model_parameter" ||
-                    object_type == "limit_state_function" ||
-                    object_type == "stochast" ||
-                    object_type == "discrete_value" ||
-                    object_type == "histogram_value" ||
-                    object_type == "fragility_value" ||
-                    object_type == "contributing_stochast" ||
-                    object_type == "conditional_value" ||
-                    object_type == "correlation_matrix" ||
-                    object_type == "settings" ||
-                    object_type == "stochast_settings" ||
-                    object_type == "design_point" ||
-                    object_type == "alpha" ||
+                object_type == "probability_value" ||
+                object_type == "message" ||
+                object_type == "project" ||
+                object_type == "model_parameter" ||
+                object_type == "limit_state_function" ||
+                object_type == "stochast" ||
+                object_type == "discrete_value" ||
+                object_type == "histogram_value" ||
+                object_type == "fragility_value" ||
+                object_type == "contributing_stochast" ||
+                object_type == "conditional_value" ||
+                object_type == "correlation_matrix" ||
+                object_type == "settings" ||
+                object_type == "stochast_settings" ||
+                object_type == "design_point" ||
+                object_type == "alpha" ||
                     object_type == "evaluation" ||
-                    object_type == "combine_project" ||
-                    object_type == "combine_settings" ||
-                    object_type == "self_correlation_matrix" ||
-                    object_type == "sensitivity_project" ||
-                    object_type == "sensitivity_settings" ||
-                    object_type == "length_effect_project");
+                object_type == "combine_project" ||
+                object_type == "combine_settings" ||
+                object_type == "self_correlation_matrix" ||
+                object_type == "sensitivity_project" ||
+                object_type == "sensitivity_settings" ||
+                object_type == "length_effect_project");
         }
 
         void ProjectHandler::Create(std::string object_type, int id)
@@ -65,6 +66,12 @@ namespace Deltares
             if (object_type == "standard_normal")
             {
                 types[id] = ObjectType::StandardNormal;
+            }
+            else if (object_type == "probability_value")
+            {
+                probabilityValues[id] = std::make_shared<Deltares::Statistics::ProbabilityValue>();
+                probabilityValueIds[probabilityValues[id]] = id;
+                types[id] = ObjectType::ProbabilityValue;
             }
             else if (object_type == "message")
             {
@@ -195,6 +202,7 @@ namespace Deltares
             switch (types[id])
             {
             case ObjectType::StandardNormal: break;
+            case ObjectType::ProbabilityValue: probabilityValues.erase(id); break;
             case ObjectType::Message: messages.erase(id); break;
             case ObjectType::Project: projects.erase(id); break;
             case ObjectType::ModelParameter: modelParameters.erase(id); break;
@@ -231,7 +239,16 @@ namespace Deltares
         {
             ObjectType objectType = types[id];
 
-            if (objectType == ObjectType::Stochast)
+            if (objectType == ObjectType::ProbabilityValue)
+            {
+                std::shared_ptr<Statistics::ProbabilityValue> probabilityValue = probabilityValues[id];
+
+                if (property_ == "reliability_index") return probabilityValue->Reliability;
+                else if (property_ == "probability_of_failure") return probabilityValue->getProbabilityOfFailure();
+                else if (property_ == "probability_of_non_failure") return probabilityValue->getProbabilityOfNonFailure();
+                else if (property_ == "return_period") return probabilityValue->getReturnPeriod();
+            }
+            else if (objectType == ObjectType::Stochast)
             {
                 std::shared_ptr<Statistics::Stochast> stochast = stochasts[id];
 
@@ -320,6 +337,8 @@ namespace Deltares
                 if (property_ == "relaxation_factor") return settings->RelaxationFactor;
                 else if (property_ == "variation_coefficient") return settings->VariationCoefficient;
                 else if (property_ == "fraction_failed") return settings->FractionFailed;
+                else if (property_ == "epsilon_beta") return settings->EpsilonBeta;
+                else if (property_ == "step_size") return settings->GradientSettings->StepSize;
             }
             else if (objectType == ObjectType::StochastSettings)
             {
@@ -334,9 +353,12 @@ namespace Deltares
             {
                 std::shared_ptr<Sensitivity::SettingsS> settings = sensitivitySettingsValues[id];
 
-                if (property_ == "relaxation_factor") return settings->RelaxationFactor;
-                else if (property_ == "variation_coefficient") return settings->VariationCoefficient;
+                if (property_ == "variation_coefficient") return settings->VariationCoefficient;
                 else if (property_ == "probability_for_convergence") return settings->ProbabilityForConvergence;
+                else if (property_ == "minimum_u") return settings->MinimumU;
+                else if (property_ == "maximum_u") return settings->MaximumU;
+                else if (property_ == "step_size") return settings->GradientSettings->StepSize;
+                else if (property_ == "global_step_size") return settings->GlobalStepSize;
             }
             else if (objectType == ObjectType::DesignPoint)
             {
@@ -372,7 +394,6 @@ namespace Deltares
                 std::shared_ptr<Reliability::LengthEffectProject> length_effect = lengthEffectProjects[id];
 
                 if (property_ == "length") return length_effect->length;
-                else if (property_ == "minimum_failure_length") return length_effect->minimumFailureLength;
             }
             return std::nan("");
         }
@@ -381,7 +402,16 @@ namespace Deltares
         {
             ObjectType objectType = types[id];
 
-            if (objectType == ObjectType::Stochast)
+            if (objectType == ObjectType::ProbabilityValue)
+            {
+                std::shared_ptr<Statistics::ProbabilityValue> probabilityValue = probabilityValues[id];
+
+                if (property_ == "reliability_index") probabilityValue->Reliability = value;
+                else if (property_ == "probability_of_failure") probabilityValue->setProbabilityOfFailure(value);
+                else if (property_ == "probability_of_non_failure") probabilityValue->setProbabilityOfNonFailure(value);
+                else if (property_ == "return_period") probabilityValue->setReturnPeriod(value);
+            }
+            else if (objectType == ObjectType::Stochast)
             {
                 std::shared_ptr<Statistics::Stochast> stochast = stochasts[id];
 
@@ -472,14 +502,19 @@ namespace Deltares
                 if (property_ == "relaxation_factor") settings->RelaxationFactor = value;
                 else if (property_ == "variation_coefficient") settings->VariationCoefficient = value;
                 else if (property_ == "fraction_failed") settings->FractionFailed = value;
+                else if (property_ == "epsilon_beta") settings->EpsilonBeta = value;
+                else if (property_ == "step_size") settings->GradientSettings->StepSize = value;
             }
             else if (objectType == ObjectType::SensitivitySettings)
             {
                 std::shared_ptr<Sensitivity::SettingsS> settings = sensitivitySettingsValues[id];
 
-                if (property_ == "relaxation_factor") settings->RelaxationFactor = value;
-                else if (property_ == "variation_coefficient") settings->VariationCoefficient = value;
+                if (property_ == "variation_coefficient") settings->VariationCoefficient = value;
                 else if (property_ == "probability_for_convergence") settings->ProbabilityForConvergence = value;
+                else if (property_ == "minimum_u") settings->MinimumU = value;
+                else if (property_ == "maximum_u") settings->MaximumU = value;
+                else if (property_ == "step_size") settings->GradientSettings->StepSize = value;
+                else if (property_ == "global_step_size") settings->GlobalStepSize = value;
             }
             else if (objectType == ObjectType::StochastSettings)
             {
@@ -509,7 +544,6 @@ namespace Deltares
                 std::shared_ptr<Reliability::LengthEffectProject> length_effect = lengthEffectProjects[id];
 
                 if (property_ == "length") length_effect->length = value;
-                else if (property_ == "minimum_failure_length") length_effect->minimumFailureLength = value;
             }
         }
 
@@ -565,6 +599,7 @@ namespace Deltares
 
                 if (property_ == "minimum_samples") return settings->MinimumSamples;
                 else if (property_ == "maximum_samples") return settings->MaximumSamples;
+                else if (property_ == "minimum_iterations") return settings->MinimumIterations;
                 else if (property_ == "maximum_iterations") return settings->MaximumIterations;
                 else if (property_ == "minimum_directions") return settings->MinimumDirections;
                 else if (property_ == "maximum_directions") return settings->MaximumDirections;
@@ -582,6 +617,7 @@ namespace Deltares
                 else if (property_ == "maximum_iterations") return settings->MaximumIterations;
                 else if (property_ == "minimum_directions") return settings->MinimumDirections;
                 else if (property_ == "maximum_directions") return settings->MaximumDirections;
+                else if (property_ == "quantiles_count") return (int)settings->RequestedQuantiles.size();
             }
             else if (objectType == ObjectType::StochastSettings)
             {
@@ -745,6 +781,7 @@ namespace Deltares
 
                 if (property_ == "minimum_samples") settings->MinimumSamples = value;
                 else if (property_ == "maximum_samples") settings->MaximumSamples = value;
+                else if (property_ == "minimum_iterations") settings->MinimumIterations = value;
                 else if (property_ == "maximum_iterations") settings->MaximumIterations = value;
                 else if (property_ == "minimum_directions") settings->MinimumDirections = value;
                 else if (property_ == "maximum_directions") settings->MaximumDirections = value;
@@ -958,7 +995,15 @@ namespace Deltares
                 else if (property_ == "design_point_method") return DesignPointBuilder::getDesignPointMethodString(settings->designPointMethod);
                 else if (property_ == "sample_method") return SubsetSimulationSettings::getSampleMethodString(settings->sampleMethod);
                 else if (property_ == "start_method") return StartPointCalculatorSettings::getStartPointMethodString(settings->StartPointSettings->StartMethod);
+                else if (property_ == "gradient_type") return GradientSettings::getGradientTypeString(settings->GradientSettings->gradientType);
                 else if (property_ == "random_type") return Numeric::Random::getRandomGeneratorTypeString(settings->RandomSettings->RandomGeneratorType);
+            }
+            else if (objectType == ObjectType::SensitivitySettings)
+            {
+                std::shared_ptr<Sensitivity::SettingsS> settings = sensitivitySettingsValues[id];
+
+                if (property_ == "sensitivity_method") return Sensitivity::SettingsS::getSensitivityMethodTypeString(settings->SensitivityMethod);
+                else if (property_ == "gradient_type") return GradientSettings::getGradientTypeString(settings->GradientSettings->gradientType);
             }
             else if (objectType == ObjectType::CombineSettings)
             {
@@ -1012,7 +1057,15 @@ namespace Deltares
                 else if (property_ == "design_point_method") settings->designPointMethod = DesignPointBuilder::getDesignPointMethod(value);
                 else if (property_ == "sample_method") settings->sampleMethod = SubsetSimulationSettings::getSampleMethod(value);
                 else if (property_ == "start_method") settings->StartPointSettings->StartMethod = StartPointCalculatorSettings::getStartPointMethod(value);
+                else if (property_ == "gradient_type") settings->GradientSettings->gradientType = GradientSettings::getGradientType(value);
                 else if (property_ == "random_type") settings->RandomSettings->RandomGeneratorType = Numeric::Random::getRandomGeneratorType(value);
+            }
+            else if (objectType == ObjectType::SensitivitySettings)
+            {
+                std::shared_ptr<Sensitivity::SettingsS> settings = sensitivitySettingsValues[id];
+
+                if (property_ == "sensitivity_method") settings->SensitivityMethod = Sensitivity::SettingsS::getSensitivityMethodType(value);
+                else if (property_ == "gradient_type") settings->GradientSettings->gradientType = GradientSettings::getGradientType(value);
             }
             else if (objectType == ObjectType::CombineSettings)
             {
@@ -1212,19 +1265,6 @@ namespace Deltares
                     }
                 }
             }
-            else if (objectType == ObjectType::Settings)
-            {
-                std::shared_ptr<Reliability::Settings> settings = settingsValues[id];
-
-                if (property_ == "stochast_settings")
-                {
-                    settings->StochastSet->stochastSettings.clear();
-                    for (int i = 0; i < size; i++)
-                    {
-                        settings->StochastSet->stochastSettings.push_back(stochastSettingsValues[values[i]]);
-                    }
-                }
-            }
             else if (objectType == ObjectType::DesignPoint)
             {
                 std::shared_ptr<Reliability::DesignPoint> designPoint = designPoints[id];
@@ -1276,6 +1316,14 @@ namespace Deltares
                     for (int i = 0; i < size; i++)
                     {
                         settings->StochastSet->stochastSettings.push_back(stochastSettingsValues[values[i]]);
+                    }
+                }
+                else if (property_ == "quantiles")
+                {
+                    settings->RequestedQuantiles.clear();
+                    for (int i = 0; i < size; i++)
+                    {
+                        settings->RequestedQuantiles.push_back(probabilityValues[values[i]]);
                     }
                 }
             }
@@ -1434,6 +1482,12 @@ namespace Deltares
                 else if (property_ == "evaluations") return this->GetEvaluationId(designPoint->Evaluations[index], newId);
                 else if (property_ == "messages") return this->GetMessageId(designPoint->Messages[index], newId);
             }
+            else if (objectType == ObjectType::SensitivitySettings)
+            {
+                std::shared_ptr<Sensitivity::SettingsS> settings = sensitivitySettingsValues[id];
+
+                if (property_ == "quantiles") return this->GetProbabilityValueId(settings->RequestedQuantiles[index]);
+            }
 
             return 0;
         }
@@ -1490,6 +1544,27 @@ namespace Deltares
                 std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
 
                 if (method_ == "run") project->run();
+            }
+        }
+
+        int ProjectHandler::GetProbabilityValueId(std::shared_ptr<Statistics::ProbabilityValue> probability)
+        {
+            if (probability == nullptr)
+            {
+                return 0;
+            }
+            else
+            {
+                if (!probabilityValueIds.contains(probability))
+                {
+                    int counter = this->server->GetNewObjectId(this->handlerIndex);
+
+                    probabilityValues[counter] = probability;
+                    types[counter] = ObjectType::ProbabilityValue;
+                    probabilityValueIds[probability] = counter;
+                }
+
+                return probabilityValueIds[probability];
             }
         }
 

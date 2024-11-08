@@ -21,6 +21,7 @@
 //
 #pragma once
 #include <string>
+#include <vector>
 
 namespace Deltares {
     namespace Reliability {
@@ -30,7 +31,10 @@ namespace Deltares {
         public:
             bool iStrcmp(const std::string& s1, const std::string& s2);
             bool iFind(const std::string& s1, const std::string& s2);
-            std::string double2str(const double x) const;
+            static std::string double2str(const double x);
+            static std::string double2strTrimmed(const double x);
+            static std::string doubles2str(const std::vector<double>& x);
+            static std::string doubles2strTrimmed(const std::vector<double>& x);
 
             // trim from both ends of string (right then left)
             std::string trim(const std::string& s, const char* t);

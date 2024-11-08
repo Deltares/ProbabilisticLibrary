@@ -50,6 +50,7 @@ namespace Deltares
             static bool isLess(double x1, double x2, double tolerance);
             static bool isGreater(double x1, double x2, double tolerance);
             static CmpResult compareDouble(const double x1, const double x2, const double tol = 1e-14);
+            static bool doublesAreEqual(const std::vector<double>& p1, const std::vector<double>& p2, const double tol = 1e-14);
             static double* getCopy(double* values, int count);
             static double* getCopy(const std::vector<double>& values);
             static double* getArray(double initialValue, int count);

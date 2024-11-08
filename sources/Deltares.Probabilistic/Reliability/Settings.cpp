@@ -27,6 +27,9 @@
 #include "DirectionalSampling.h"
 #include "SubsetSimulation.h"
 #include "NumericalIntegration.h"
+#include "NumericalBisection.h"
+#include "LatinHyperCube.h"
+#include "CobylaReliability.h"
 
 #include <memory>
 
@@ -45,11 +48,14 @@ namespace Deltares
             case ReliabilityMethodType::ReliabilityAdaptiveImportanceSampling: return this->GetAdaptiveImportanceSamplingMethod();
             case ReliabilityMethodType::ReliabilityDirectionalSampling: return this->GetDirectionalSamplingMethod();
             case ReliabilityMethodType::ReliabilitySubsetSimulation: return this->GetSubsetSimulationMethod();
+            case ReliabilityMethodType::ReliabilityNumericalBisection: return this->GetNumericalBisectionMethod();
+            case ReliabilityMethodType::ReliabilityLatinHyperCube: return this->GetLatinHypercubeMethod();
+            case ReliabilityMethodType::ReliabilityCobyla: return this->GetCobylaReliabilityMethod();
             default: throw probLibException("Reliability method");
             }
         }
 
-        const std::shared_ptr<Reliability::ReliabilityMethod> Settings::GetFORMMethod()
+        const std::shared_ptr<ReliabilityMethod> Settings::GetFORMMethod()
         {
             std::shared_ptr<FORM> form = std::make_shared<FORM>();
 
@@ -67,7 +73,7 @@ namespace Deltares
             return form;
         }
 
-        const std::shared_ptr<Reliability::ReliabilityMethod> Settings::GetNumericalIntegrationMethod()
+        const std::shared_ptr<ReliabilityMethod> Settings::GetNumericalIntegrationMethod()
         {
             std::shared_ptr<NumericalIntegration> numericalIntegration = std::make_shared<NumericalIntegration>();
 
@@ -78,7 +84,45 @@ namespace Deltares
             return numericalIntegration;
         }
 
-        const std::shared_ptr<Reliability::ReliabilityMethod> Settings::GetCrudeMonteCarloMethod()
+        const std::shared_ptr<ReliabilityMethod> Settings::GetNumericalBisectionMethod()
+        {
+            std::shared_ptr<NumericalBisection> numericalBisection = std::make_shared<NumericalBisection>();
+
+            numericalBisection->Settings->designPointMethod = this->designPointMethod;
+            numericalBisection->Settings->StochastSet = this->StochastSet;
+
+            numericalBisection->Settings->MinimumIterations = this->MinimumIterations;
+            numericalBisection->Settings->MaximumIterations = this->MaximumIterations;
+            numericalBisection->Settings->EpsilonBeta = this->EpsilonBeta;
+
+            return numericalBisection;
+        }
+
+        const std::shared_ptr<ReliabilityMethod> Settings::GetLatinHypercubeMethod()
+        {
+            std::shared_ptr<LatinHyperCube> latinHypercube = std::make_shared<LatinHyperCube>();
+
+            latinHypercube->Settings->designPointMethod = this->designPointMethod;
+            latinHypercube->Settings->StochastSet = this->StochastSet;
+
+            latinHypercube->Settings->MinimumSamples = this->MinimumSamples;
+
+            return latinHypercube;
+        }
+
+        const std::shared_ptr<Reliability::ReliabilityMethod> Settings::GetCobylaReliabilityMethod()
+        {
+            auto cobyla_reliability = std::make_shared<CobylaReliability>();
+
+            cobyla_reliability->Settings->designPointMethod = this->designPointMethod;
+            cobyla_reliability->Settings->StochastSet = this->StochastSet;
+            cobyla_reliability->Settings->EpsilonBeta = this->EpsilonBeta;
+            cobyla_reliability->Settings->MaximumIterations = this->MaximumIterations;
+
+            return cobyla_reliability;
+        }
+
+        const std::shared_ptr<ReliabilityMethod> Settings::GetCrudeMonteCarloMethod()
         {
             std::shared_ptr<CrudeMonteCarlo> crudeMonteCarlo = std::make_shared<CrudeMonteCarlo>();
 
@@ -93,7 +137,7 @@ namespace Deltares
             return crudeMonteCarlo;
         }
 
-        const std::shared_ptr<Reliability::ReliabilityMethod> Settings::GetImportanceSamplingMethod()
+        const std::shared_ptr<ReliabilityMethod> Settings::GetImportanceSamplingMethod()
         {
             std::shared_ptr<ImportanceSampling> importanceSampling = std::make_shared<ImportanceSampling>();
 
@@ -108,7 +152,7 @@ namespace Deltares
             return importanceSampling;
         }
 
-        const std::shared_ptr<Reliability::ReliabilityMethod> Settings::GetAdaptiveImportanceSamplingMethod()
+        const std::shared_ptr<ReliabilityMethod> Settings::GetAdaptiveImportanceSamplingMethod()
         {
             std::shared_ptr<AdaptiveImportanceSampling> adaptiveImportanceSampling = std::make_shared<AdaptiveImportanceSampling>();
 
@@ -127,7 +171,7 @@ namespace Deltares
             return adaptiveImportanceSampling;
         }
 
-        const std::shared_ptr<Reliability::ReliabilityMethod> Settings::GetDirectionalSamplingMethod()
+        const std::shared_ptr<ReliabilityMethod> Settings::GetDirectionalSamplingMethod()
         {
             std::shared_ptr<DirectionalSampling> directionalSampling = std::make_shared<DirectionalSampling>();
 
@@ -142,7 +186,7 @@ namespace Deltares
             return directionalSampling;
         }
 
-        const std::shared_ptr<Reliability::ReliabilityMethod> Settings::GetSubsetSimulationMethod()
+        const std::shared_ptr<ReliabilityMethod> Settings::GetSubsetSimulationMethod()
         {
             std::shared_ptr<SubsetSimulation> subsetSimulation = std::make_shared<SubsetSimulation>();
 
@@ -168,6 +212,8 @@ namespace Deltares
             case ReliabilityMethodType::ReliabilityImportanceSampling: return std::dynamic_pointer_cast<ImportanceSampling>(this->GetImportanceSamplingMethod())->Settings->isValid();
             case ReliabilityMethodType::ReliabilityAdaptiveImportanceSampling: return std::dynamic_pointer_cast<AdaptiveImportanceSampling>(this->GetAdaptiveImportanceSamplingMethod())->Settings->isValid();
             case ReliabilityMethodType::ReliabilityDirectionalSampling: return std::dynamic_pointer_cast<DirectionalSampling>(this->GetDirectionalSamplingMethod())->Settings->isValid();
+            case ReliabilityMethodType::ReliabilityNumericalBisection: return std::dynamic_pointer_cast<NumericalBisection>(this->GetNumericalBisectionMethod())->Settings->isValid();
+            case ReliabilityMethodType::ReliabilityLatinHyperCube: return std::dynamic_pointer_cast<LatinHyperCube>(this->GetLatinHypercubeMethod())->Settings->isValid();
             case ReliabilityMethodType::ReliabilitySubsetSimulation: return std::dynamic_pointer_cast<SubsetSimulation>(this->GetSubsetSimulationMethod())->Settings->isValid();
             default: throw probLibException("Reliability method");
             }
@@ -184,6 +230,9 @@ namespace Deltares
             case ReliabilityMethodType::ReliabilityAdaptiveImportanceSampling: return "adaptive_importance_sampling";
             case ReliabilityMethodType::ReliabilityDirectionalSampling: return "directional_sampling";
             case ReliabilityMethodType::ReliabilitySubsetSimulation: return "subset_simulation";
+            case ReliabilityMethodType::ReliabilityNumericalBisection: return "numerical_bisection";
+            case ReliabilityMethodType::ReliabilityLatinHyperCube: return "latin_hypercube";
+            case ReliabilityMethodType::ReliabilityCobyla: return "cobyla_reliability";
             default: throw probLibException("Reliability method");
             }
         }
@@ -197,6 +246,9 @@ namespace Deltares
             else if (method == "adaptive_importance_sampling") return ReliabilityMethodType::ReliabilityAdaptiveImportanceSampling;
             else if (method == "directional_sampling") return ReliabilityMethodType::ReliabilityDirectionalSampling;
             else if (method == "subset_simulation") return ReliabilityMethodType::ReliabilitySubsetSimulation;
+            else if (method == "numerical_bisection") return ReliabilityMethodType::ReliabilityNumericalBisection;
+            else if (method == "latin_hypercube") return ReliabilityMethodType::ReliabilityLatinHyperCube;
+            else if (method == "cobyla_reliability") return ReliabilityMethodType::ReliabilityCobyla;
             else throw probLibException("Reliability method");
         }
 

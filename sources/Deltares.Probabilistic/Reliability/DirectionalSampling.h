@@ -31,7 +31,7 @@ namespace Deltares
         class DirectionalSampling : public ReliabilityMethod
         {
         private:
-            double getConvergence(const double pf, const double sumPfSamp, const double sumPfSamp2, const double dTimes);
+            double getConvergence(const double pf, const double sumWeights, const double sumWeights2, const double dTimes);
             std::vector<double> getDirectionBetas(std::shared_ptr<Models::ModelRunner> modelRunner, std::vector<std::shared_ptr<Sample>> samples, double z0, double threshold);
             std::unordered_map<int, double> previousResults;
         public:

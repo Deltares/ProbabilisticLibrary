@@ -76,7 +76,7 @@ namespace Deltares
             modelRunner->Settings = this->runSettings;
             modelRunner->initializeForRun();
 
-            std::shared_ptr<Statistics::Stochast> sensitivityStochast = this->sensitivityMethod->getStochast(modelRunner);
+            std::shared_ptr<Statistics::Stochast> sensitivityStochast = this->sensitivityMethod->getSensitivityStochast(modelRunner);
             sensitivityStochast->name = this->parameterSelector->parameter;
 
             return sensitivityStochast;

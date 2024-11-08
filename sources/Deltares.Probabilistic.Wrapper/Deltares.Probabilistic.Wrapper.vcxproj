@@ -162,6 +162,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Statistics\ProbabilityValue.h" />
+    <ClInclude Include="Sensitivity\FORMS.h" />
+    <ClInclude Include="Sensitivity\DirectionalSamplingS.h" />
+    <ClInclude Include="Sensitivity\FORMSettingsS.h" />
+    <ClInclude Include="Sensitivity\DirectionalSamplingSettingsS.h" />
+    <ClInclude Include="Sensitivity\NumericalIntegrationSettingsS.h" />
+    <ClInclude Include="Sensitivity\NumericalIntegrationS.h" />
+    <ClInclude Include="Model\BaseStochastPoint.h" />
+    <ClInclude Include="Sensitivity\FOSM.h" />
+    <ClInclude Include="Sensitivity\FOSMSettings.h" />
     <ClInclude Include="Reliability\Settings.h" />
     <ClInclude Include="Model\BaseStochastPoint.h" />
     <ClInclude Include="Server\ProjectHandler.h" />
@@ -177,6 +187,8 @@
     <ClInclude Include="Reliability\DesignPointCombiner.h" />
     <ClInclude Include="Model\ProxySettings.h" />
     <ClInclude Include="Model\Project.h" />
+    <ClInclude Include="Reliability\LatinHypercube.h" />
+    <ClInclude Include="Reliability\NumericalBisection.h" />
     <ClInclude Include="Reliability\NumericalIntegration.h" />
     <ClInclude Include="Reliability\ClusterSettings.h" />
     <ClInclude Include="Reliability\AdaptiveImportanceSampling.h" />
@@ -184,7 +196,11 @@
     <ClInclude Include="Reliability\DesignPointMethodSettings.h" />
     <ClInclude Include="Reliability\ImportanceSamplingSettings.h" />
     <ClInclude Include="Reliability\ImportanceSampling.h" />
+    <ClInclude Include="Reliability\CobylaReliabilitySettings.h" />
+    <ClInclude Include="Reliability\CobylaReliability.h" />
     <ClInclude Include="Model\ModelSample.h" />
+    <ClInclude Include="Reliability\LatinHypercubeSettings.h" />
+    <ClInclude Include="Reliability\NumericalBisectionSettings.h" />
     <ClInclude Include="Reliability\NumericalIntegrationSettings.h" />
     <ClInclude Include="Statistics\SelfCorrelationMatrix.h" />
     <ClInclude Include="Statistics\DistributionType.h" />
@@ -230,7 +246,15 @@
     <ClInclude Include="Statistics\VariableStochastValue.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Sensitivity\DirectionalSamplingS.cpp" />
+    <ClCompile Include="Sensitivity\FORMS.cpp" />
+    <ClCompile Include="Sensitivity\FORMSettingsS.cpp" />
+    <ClCompile Include="Sensitivity\DirectionalSamplingSettingsS.cpp" />
+    <ClCompile Include="Sensitivity\NumericalIntegrationS.cpp" />
+    <ClCompile Include="Sensitivity\NumericalIntegrationSettingsS.cpp" />
     <ClCompile Include="Model\BaseStochastPoint.cpp" />
+    <ClCompile Include="Sensitivity\FOSM.cpp" />
+    <ClCompile Include="Sensitivity\FOSMSettings.cpp" />
     <ClCompile Include="Server\ProjectHandler.cpp" />
     <ClCompile Include="Sensitivity\ImportanceSamplingS.cpp" />
     <ClCompile Include="Sensitivity\CrudeMonteCarloS.cpp" />
@@ -242,11 +266,17 @@
     <ClCompile Include="Reliability\DesignPointCombiner.cpp" />
     <ClCompile Include="Model\ProxySettings.cpp" />
     <ClCompile Include="Model\Project.cpp" />
+    <ClCompile Include="Reliability\LatinHypercube.cpp" />
+    <ClCompile Include="Reliability\NumericalBisection.cpp" />
     <ClCompile Include="Reliability\NumericalIntegration.cpp" />
     <ClCompile Include="Reliability\ClusterSettings.cpp" />
     <ClCompile Include="Reliability\AdaptiveImportanceSampling.cpp" />
     <ClCompile Include="Reliability\AdaptiveImportanceSamplingSettings.cpp" />
     <ClCompile Include="Reliability\ImportanceSampling.cpp" />
+    <ClCompile Include="Reliability\LatinHypercubeSettings.cpp" />
+    <ClCompile Include="Reliability\NumericalBisectionSettings.cpp" />
+    <ClCompile Include="Reliability\CobylaReliability.cpp" />
+    <ClCompile Include="Reliability\CobylaReliabilitySettings.cpp" />
     <ClCompile Include="Reliability\NumericalIntegrationSettings.cpp" />
     <ClCompile Include="Statistics\SelfCorrelationMatrix.cpp" />
     <ClCompile Include="Statistics\DistributionType.cpp" />

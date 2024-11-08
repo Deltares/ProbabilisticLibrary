@@ -331,12 +331,37 @@ namespace Deltares
 
         void Stochast::fitFromHistogramValues()
         {
+            const int maxValues = 1000;
+
             std::vector<double> values;
+
+            // if all low amounts, make amounts bigger to get a useful set to perform fit
+
+            double minWeight = 1.0;
+            double totalWeight = 0.0;
+
+            for (size_t i = 0; i < this->properties->HistogramValues.size(); i++)
+            {
+                if (this->properties->HistogramValues[i]->Amount > 0 && this->properties->HistogramValues[i]->Amount < minWeight)
+                {
+                    minWeight = this->properties->HistogramValues[i]->Amount;
+                }
+
+                totalWeight += this->properties->HistogramValues[i]->Amount;
+            }
+
+            double factor = 1.0;
+            if (minWeight < 1.0)
+            {
+                factor = 1.0 / minWeight;
+                factor = std::min(maxValues / totalWeight, factor);
+                factor = std::max(1.0, factor);
+            }
 
             // TODO: PROBL-42 Use fitWeighted when this has been implemented for all distributions
             for (std::shared_ptr<HistogramValue> bin : this->properties->HistogramValues)
             {
-                for (int i = 0; i < bin->Amount; i++)
+                for (int i = 0; i < std::round(factor * bin->Amount); i++)
                 {
                     values.push_back(bin->getCenter());
                 }

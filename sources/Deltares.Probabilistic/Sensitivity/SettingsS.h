@@ -30,7 +30,7 @@ namespace Deltares
 {
     namespace Sensitivity
     {
-        enum SensitivityMethodType {SensitivityFORM, SensitivityNumericalIntegration, SensitivityCrudeMonteCarlo, SensitivityImportanceSampling, SensitivityDirectionalSampling };
+        enum SensitivityMethodType { SensitivityFORM, SensitivityFOSM, SensitivityNumericalIntegration, SensitivityCrudeMonteCarlo, SensitivityImportanceSampling, SensitivityDirectionalSampling };
 
         /**
          * \brief General settings applicable to all sensitivity mechanisms
@@ -54,6 +54,16 @@ namespace Deltares
             bool CalculateInputCorrelations = false;
 
             /**
+             * \brief The minimum u value
+             */
+            double MinimumU = -Statistics::StandardNormal::UMax;
+
+            /**
+             * \brief The maximum u value
+             */
+            double MaximumU = Statistics::StandardNormal::UMax;
+
+            /**
              * \brief The minimum samples to be examined
              */
             int MinimumSamples = 1000;
@@ -66,12 +76,12 @@ namespace Deltares
             /**
              * \brief The minimum directions to be examined
              */
-            int MinimumDirections = 1000;
+            int MinimumDirections = 100;
 
             /**
              * \brief The maximum directions to be examined
              */
-            int MaximumDirections = 10000;
+            int MaximumDirections = 1000;
 
             /**
              * \brief The importance sampling algorithm stops when the calculated variation coefficient is less than this value
@@ -94,9 +104,14 @@ namespace Deltares
             int MaximumIterations = 50;
 
             /**
-             * \brief Relaxation factor, which is applied when generating the guessed design point for a new iteration
+             * \brief Step size in form calculation
              */
-            double RelaxationFactor = 0.75;
+            double GlobalStepSize = 0.5;
+
+            /**
+             * \brief Requested quantiles
+             */
+            std::vector<std::shared_ptr<Statistics::ProbabilityValue>> RequestedQuantiles;
 
             /**
              * \brief Settings for performing model runs
@@ -134,6 +149,7 @@ namespace Deltares
             static SensitivityMethodType getSensitivityMethodType(std::string method);
         private:
             const std::shared_ptr<Sensitivity::SensitivityMethod> GetFORMMethod();
+            const std::shared_ptr<Sensitivity::SensitivityMethod> GetFOSMMethod();
             const std::shared_ptr<Sensitivity::SensitivityMethod> GetNumericalIntegrationMethod();
             const std::shared_ptr<Sensitivity::SensitivityMethod> GetCrudeMonteCarloMethod();
             const std::shared_ptr<Sensitivity::SensitivityMethod> GetImportanceSamplingMethod();

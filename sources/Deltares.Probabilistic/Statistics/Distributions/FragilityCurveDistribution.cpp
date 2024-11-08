@@ -87,6 +87,16 @@ namespace Deltares
             return !stochast->FragilityValues.size() > 1;
         }
 
+        double FragilityCurveDistribution::getMean(std::shared_ptr<StochastProperties> stochast)
+        {
+            return getMeanByIteration(stochast);
+        }
+
+        double FragilityCurveDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
+        {
+            return getDeviationByIteration(stochast);
+        }
+
         double FragilityCurveDistribution::getXFromU(std::shared_ptr<StochastProperties> stochast, double u)
         {
             if (stochast->dirty)

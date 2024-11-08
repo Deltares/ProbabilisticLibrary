@@ -20,6 +20,7 @@
 // All rights reserved.
 //
 #pragma once
+#include <string>
 
 namespace Deltares
 {
@@ -34,7 +35,7 @@ namespace Deltares
         class GradientSettings
         {
         public:
-            GradientSettings() {}
+            GradientSettings() = default;
 
             GradientType gradientType = OneDirection;
             double StepSize = 0.3;
@@ -44,6 +45,9 @@ namespace Deltares
             {
                 return StepSize >= 0.01;
             }
+
+            static std::string getGradientTypeString(GradientType method);
+            static GradientType getGradientType(std::string method);
         };
     }
 }

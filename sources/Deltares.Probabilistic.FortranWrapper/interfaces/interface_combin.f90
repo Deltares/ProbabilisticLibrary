@@ -60,7 +60,7 @@ interface
 !>
 !! This subroutine upscales from a cross section to a given section length
     integer function upscaleLengthC ( betaCrossSection, alphaCrossSection, rhoXK, dXK, sectionLength, betaSection, alphaSection, &
-            minimumFailureLength, nStochasts ) bind(c)
+            nStochasts ) bind(c)
         use, intrinsic :: iso_c_binding, only: c_double
         real(kind=c_double), intent (in)  :: betaCrossSection     !< Reliability index cross section
         real(kind=c_double), intent (in)  :: alphaCrossSection(*) !< Alpha vector cross section
@@ -69,7 +69,6 @@ interface
         real(kind=c_double), intent (in)  :: sectionLength        !< Section length
         real(kind=c_double), intent (out) :: betaSection          !< Reliability index section
         real(kind=c_double), intent (out) :: alphaSection(*)      !< Alpha vector section
-        real(kind=c_double), intent (in)  :: minimumFailureLength !< minimumFailureLength (breach length in certain mechanisms)
         integer, value,      intent (in)  :: nStochasts           !< number of stochasts
     end function upscaleLengthC
 end interface
@@ -157,8 +156,7 @@ contains
 
 !>
 !! This subroutine upscales from a cross section to a given section length
-    subroutine upscaleLength ( betaCrossSection, alphaCrossSection, rhoXK, dXK, sectionLength, betaSection, alphaSection, &
-            minimumFailureLength )
+    subroutine upscaleLength ( betaCrossSection, alphaCrossSection, rhoXK, dXK, sectionLength, betaSection, alphaSection)
         real(kind=c_double), intent (in)          :: betaCrossSection       !< Reliability index cross section
         real(kind=c_double), intent (in)          :: alphaCrossSection(:)   !< Alpha vector cross section
         real(kind=c_double), intent (in)          :: rhoXK(:)               !< Correlation variables
@@ -166,18 +164,11 @@ contains
         real(kind=c_double), intent (in)          :: sectionLength          !< Section length
         real(kind=c_double), intent (out)         :: betaSection            !< Reliability index section
         real(kind=c_double), intent (out)         :: alphaSection(:)        !< Alpha vector section
-        real(kind=c_double), optional, intent(in) :: minimumFailureLength   !< minimum failure length (breach length in certain mechanisms)
 
-        real(kind=c_double), parameter :: missingMinimumFailureLength = -999.0_c_double
         integer :: n
 
-        if (present(minimumFailureLength)) then
-            n = upscaleLengthC ( betaCrossSection, alphaCrossSection, rhoXK, dXK, sectionLength, betaSection, alphaSection, &
-                minimumFailureLength, size(rhoXK) )
-        else
-            n = upscaleLengthC ( betaCrossSection, alphaCrossSection, rhoXK, dXK, sectionLength, betaSection, alphaSection, &
-                missingMinimumFailureLength, size(rhoXK) )
-        end if
+        n = upscaleLengthC ( betaCrossSection, alphaCrossSection, rhoXK, dXK, sectionLength, betaSection, alphaSection, &
+                size(rhoXK) )
         call warnHohenbichler(n)
     end subroutine upscaleLength
 

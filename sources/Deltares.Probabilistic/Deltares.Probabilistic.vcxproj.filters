@@ -184,10 +184,16 @@
     <ClCompile Include="Combine\LengthEffectProject.cpp" />
     <ClCompile Include="Combine\LengthEffect.cpp" />
     <ClCompile Include="Statistics\VariableStochastValue.cpp" />
+    <ClCompile Include="Sensitivity\FOSM.cpp" />
     <ClCompile Include="Sensitivity\ParameterSelector.cpp" />
     <ClCompile Include="Server\ProjectServer.cpp" />
     <ClCompile Include="Reliability\ReliabilityProject.cpp" />
     <ClCompile Include="Statistics\Distributions\QualitativeDistribution.cpp" />
+    <ClCompile Include="Sensitivity\FORMS.cpp" />
+    <ClCompile Include="Sensitivity\NumericalIntegrationS.cpp" />
+    <ClCompile Include="Sensitivity\DirectionalSamplingS.cpp" />
+    <ClCompile Include="Statistics\ProbabilityValue.cpp" />
+    <ClCompile Include="Model\GradientSettings.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -390,9 +396,19 @@
     <ClInclude Include="Combine\LengthEffect.h" />
     <ClInclude Include="Combine\LengthEffectProject.h" />
     <ClInclude Include="Combine\LengthEffect.h" />
+    <ClInclude Include="Sensitivity\FOSMSettings.h" />
+    <ClInclude Include="Sensitivity\FOSM.h" />
     <ClInclude Include="Sensitivity\ParameterSelector.h" />
     <ClInclude Include="Server\ProjectServer.h" />
     <ClInclude Include="Reliability\ReliabilityProject.h" />
+    <ClInclude Include="Sensitivity\FORMS.h" />
+    <ClInclude Include="Sensitivity\FORMSettingsS.h" />
+    <ClInclude Include="Sensitivity\NumericalIntegrationS.h" />
+    <ClInclude Include="Sensitivity\NumericalIntegrationSettingsS.h" />
+    <ClInclude Include="Sensitivity\DirectionalSamplingS.h" />
+    <ClInclude Include="Sensitivity\DirectionalSamplingSettingsS.h" />
+    <ClInclude Include="Statistics\ProbabilityValue.h" />
+    <ClInclude Include="Statistics\ProbabilityIterator.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

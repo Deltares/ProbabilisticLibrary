@@ -121,7 +121,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
             project.ReliabilityMethod = new NumericalIntegration();
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(1.66, designPoint.Beta, margin);
+            Assert.AreEqual(1.87, designPoint.Beta, margin);
         }
     }
 }

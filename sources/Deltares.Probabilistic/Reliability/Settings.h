@@ -37,7 +37,10 @@ namespace Deltares
     {
         enum ReliabilityResultType {ResultDesignPoint, ResultFragilityCurve};
 
-        enum ReliabilityMethodType {ReliabilityFORM, ReliabilityNumericalIntegration, ReliabilityCrudeMonteCarlo, ReliabilityImportanceSampling, ReliabilityAdaptiveImportanceSampling, ReliabilityDirectionalSampling, ReliabilitySubsetSimulation };
+        enum ReliabilityMethodType {ReliabilityFORM, ReliabilityNumericalIntegration, ReliabilityCrudeMonteCarlo,
+            ReliabilityImportanceSampling, ReliabilityAdaptiveImportanceSampling, ReliabilityDirectionalSampling,
+            ReliabilityNumericalBisection, ReliabilityLatinHyperCube, ReliabilityCobyla,
+            ReliabilitySubsetSimulation };
 
         /**
          * \brief General settings applicable to all mechanisms
@@ -111,9 +114,9 @@ namespace Deltares
             double FractionFailed = 0.1;
 
             /**
-             * \brief Minimum number of guessed design points in one FORM loop
+             * \brief Minimum number of iterations in numerical bisection
              */
-            int MinimumIterations = 20;
+            int MinimumIterations = 5;
 
             /**
              * \brief Maximum number of guessed design points in one FORM loop
@@ -228,7 +231,10 @@ namespace Deltares
             const std::shared_ptr<Reliability::ReliabilityMethod> GetImportanceSamplingMethod();
             const std::shared_ptr<Reliability::ReliabilityMethod> GetAdaptiveImportanceSamplingMethod();
             const std::shared_ptr<Reliability::ReliabilityMethod> GetDirectionalSamplingMethod();
+            const std::shared_ptr<Reliability::ReliabilityMethod> GetNumericalBisectionMethod();
+            const std::shared_ptr<Reliability::ReliabilityMethod> GetLatinHypercubeMethod();
             const std::shared_ptr<Reliability::ReliabilityMethod> GetSubsetSimulationMethod();
+            const std::shared_ptr<Reliability::ReliabilityMethod> GetCobylaReliabilityMethod();
         };
     }
 }
