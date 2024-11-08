@@ -68,6 +68,7 @@ namespace Deltares
             void SetCallBack(int id, std::string property_, Models::ZValuesCallBack callBack) override;
             void Execute(int id, std::string method_) override;
 
+            int GetProbabilityValueId(std::shared_ptr<Statistics::ProbabilityValue> probability, int newId);
             int GetStochastId(std::shared_ptr<Statistics::Stochast> stochast, int newId);
             int GetCorrelationMatrixId(std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix, int newid);
             int GetLimitStateFunctionId(std::shared_ptr<Reliability::LimitStateFunction> limitStateFunction, int newid);

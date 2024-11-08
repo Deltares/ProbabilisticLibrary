@@ -1486,7 +1486,7 @@ namespace Deltares
             {
                 std::shared_ptr<Sensitivity::SettingsS> settings = sensitivitySettingsValues[id];
 
-                if (property_ == "quantiles") return this->GetProbabilityValueId(settings->RequestedQuantiles[index]);
+                if (property_ == "quantiles") return this->GetProbabilityValueId(settings->RequestedQuantiles[index], newId);
             }
 
             return 0;
@@ -1547,7 +1547,7 @@ namespace Deltares
             }
         }
 
-        int ProjectHandler::GetProbabilityValueId(std::shared_ptr<Statistics::ProbabilityValue> probability)
+        int ProjectHandler::GetProbabilityValueId(std::shared_ptr<Statistics::ProbabilityValue> probability, int newId)
         {
             if (probability == nullptr)
             {
@@ -1557,11 +1557,9 @@ namespace Deltares
             {
                 if (!probabilityValueIds.contains(probability))
                 {
-                    int counter = this->server->GetNewObjectId(this->handlerIndex);
-
-                    probabilityValues[counter] = probability;
-                    types[counter] = ObjectType::ProbabilityValue;
-                    probabilityValueIds[probability] = counter;
+                    probabilityValues[newId] = probability;
+                    types[newId] = ObjectType::ProbabilityValue;
+                    probabilityValueIds[probability] = newId;
                 }
 
                 return probabilityValueIds[probability];

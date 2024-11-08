@@ -169,7 +169,6 @@
     <ClInclude Include="Sensitivity\DirectionalSamplingSettingsS.h" />
     <ClInclude Include="Sensitivity\NumericalIntegrationSettingsS.h" />
     <ClInclude Include="Sensitivity\NumericalIntegrationS.h" />
-    <ClInclude Include="Model\BaseStochastPoint.h" />
     <ClInclude Include="Sensitivity\FOSM.h" />
     <ClInclude Include="Sensitivity\FOSMSettings.h" />
     <ClInclude Include="Reliability\Settings.h" />
