@@ -172,7 +172,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
             project.ReliabilityMethod = fdir;
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(2.85, designPoint.Beta, margin);
+            Assert.AreEqual(2.835, designPoint.Beta, margin);
 
             Assert.AreEqual(0.4656, designPoint.Alphas[0].X, margin);
             Assert.AreEqual(0.4658, designPoint.Alphas[1].X, margin);
@@ -402,7 +402,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(3.57, designPoint.Beta, margin);
+            Assert.AreEqual(3.594, designPoint.Beta, margin);
             Assert.AreEqual(1, designPoint.ContributingDesignPoints.Count);
 
             Assert.IsTrue(designPoint.ConvergenceReport.IsConverged);

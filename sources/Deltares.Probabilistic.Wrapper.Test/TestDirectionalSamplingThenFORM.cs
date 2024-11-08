@@ -168,10 +168,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
             project.ReliabilityMethod = dsfi;
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(2.85, designPoint.Beta, margin);
+            Assert.AreEqual(2.8351, designPoint.Beta, margin);
 
-            Assert.AreEqual(0.4475, designPoint.Alphas[0].X, margin);
-            Assert.AreEqual(0.4472, designPoint.Alphas[1].X, margin);
+            Assert.AreEqual(0.4334, designPoint.Alphas[0].X, margin);
+            Assert.AreEqual(0.4333, designPoint.Alphas[1].X, margin);
 
             Assert.AreEqual(designPoint.Alphas[0].AlphaCorrelated, designPoint.Alphas[1].AlphaCorrelated, margin);
         }
@@ -336,7 +336,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(3.57, designPoint.Beta, margin);
+            Assert.AreEqual(3.594, designPoint.Beta, margin);
             Assert.AreEqual(2, designPoint.ContributingDesignPoints.Count);
             Assert.AreEqual(0, designPoint.ContributingDesignPoints[0].ContributingDesignPoints.Count);
             Assert.AreEqual(3, designPoint.ContributingDesignPoints[1].ContributingDesignPoints.Count);

@@ -170,6 +170,7 @@ namespace Deltares
 
                     sharedDS->object->runSettings = RunSettings->GetSettings();
                     sharedDS->object->DirectionSettings = DirectionalSettings->GetSettings();
+                    sharedDS->object->randomSettings = randomSettings->GetSettings();
 
                     return sharedDS->object;
                 }
