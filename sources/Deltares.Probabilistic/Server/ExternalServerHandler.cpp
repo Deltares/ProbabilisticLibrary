@@ -143,7 +143,7 @@ namespace Deltares
             {
                 StartProcess(this->serverName, false);
 
-                 this->server_started = true;
+                this->server_started = true;
 
                 std::this_thread::sleep_for(std::chrono::seconds(1));
 
@@ -208,7 +208,7 @@ namespace Deltares
                 std::string data = Send(message, true);
                 return true;
             }
-            catch (const std::exception& )
+            catch (const std::exception&)
             {
                 return false;
             }
@@ -233,16 +233,21 @@ namespace Deltares
             }
 
             this->Send("create:" + objectType + ":" + std::to_string(id), false);
-            liveObjects++;
         }
 
         void ExternalServerHandler::Destroy(int id)
         {
-            this->Send("destroy:" + std::to_string(id), false);
-            liveObjects--;
-
-            if (liveObjects == 0)
+            if (this->server_started)
             {
+                this->Send("destroy:" + std::to_string(id), false);
+            }
+        }
+
+        void ExternalServerHandler::Exit()
+        {
+            if (this->server_started)
+            {
+                this->Send("exit", false);
                 this->server_started = false;
             }
         }
@@ -352,6 +357,17 @@ namespace Deltares
             {
                 outputValues[i] = std::stod(results[i]);
             }
+        }
+
+        double ExternalServerHandler::GetIndexedIndexedValue(int id, std::string property, int index1, int index2)
+        {
+            std::string result = this->Send("get_indexed_indexed_value:" + std::to_string(id) + ":" + property + ":" + std::to_string(index1) + ":" + std::to_string(index2), true);
+            return std::stod(result);
+        }
+
+        void ExternalServerHandler::SetIndexedIndexedValue(int id, std::string property, int index1, int index2, double value)
+        {
+            this->Send("set_indexed_indexed_value:" + std::to_string(id) + ":" + property + ":" + std::to_string(index1) + ":" + std::to_string(index2) + ":" + std::to_string(value), false);
         }
 
         void ExternalServerHandler::Execute(int id, std::string method)

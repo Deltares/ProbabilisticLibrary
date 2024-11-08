@@ -45,6 +45,9 @@ class SensitivitySettings:
 		self._id = interface.Create('sensitivity_settings')
 		self._stochast_settings = FrozenList()
 
+	def __del__(self):
+		interface.Destroy(self._id)
+
 	def __dir__(self):
 		return ['sensitivity_method',
 	            'random_type',

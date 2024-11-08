@@ -82,6 +82,9 @@ def Create(object_type):
 def Destroy(id_):
 	lib.Destroy(ctypes.c_int(id_))
 
+def Exit():
+	lib.Exit()
+
 def GetValue(id_, property_):
 	lib.GetValue.restype = ctypes.c_double
 	return lib.GetValue(ctypes.c_int(id_), bytes(property_, 'utf-8'))

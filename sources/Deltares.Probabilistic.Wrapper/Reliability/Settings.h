@@ -22,6 +22,7 @@
 #pragma once
 #include "DesignPointMethodSettings.h"
 #include "DirectionReliabilitySettings.h"
+#include "ReliabilityMethod.h"
 #include "SubsetSimulationSettings.h"
 
 #include "../../Deltares.Probabilistic/Reliability/Settings.h"
@@ -52,6 +53,34 @@ namespace Deltares
                 Settings() {}
                 ~Settings() { this->!Settings(); }
                 !Settings() { delete shared; }
+
+                //virtual property Wrappers::ProbabilisticMethod ReliabilityMethod
+                //{
+                //    Wrappers::ProbabilisticMethod get()
+                //    {
+                //        switch (shared->object->ReliabilityMethod)
+                //        {
+                //        case Reliability::ReliabilityMethodType::ReliabilityNumericalIntegration: return Wrappers::ProbabilisticMethod::NumericalIntegration;
+                //        case Reliability::ReliabilityMethodType::ReliabilityDirectionalSampling: return Wrappers::ProbabilisticMethod::DirectionalSampling;
+                //        case Reliability::ReliabilityMethodType::ReliabilityImportanceSampling: return Wrappers::ProbabilisticMethod::ImportanceSampling;
+                //        case Reliability::ReliabilityMethodType::ReliabilitySubsetSimulation: return Wrappers::ProbabilisticMethod::SubsetSimulation;
+                //        case Reliability::ReliabilityMethodType::ReliabilityFORM: return Wrappers::ProbabilisticMethod::FORM;
+                //        default: throw gcnew System::NotSupportedException("Reliability method not supported");
+                //        }
+                //    }
+                //    void set(Wrappers::ProbabilisticMethod value)
+                //    {
+                //        switch (value)
+                //        {
+                //        case Wrappers::ProbabilisticMethod::NumericalIntegration: shared->object->ReliabilityMethod = Reliability::ReliabilityMethodType::ReliabilityNumericalIntegration; break;
+                //        case Wrappers::ProbabilisticMethod::DirectionalSampling: shared->object->ReliabilityMethod = Reliability::ReliabilityMethodType::ReliabilityDirectionalSampling; break;
+                //        case Wrappers::ProbabilisticMethod::ImportanceSampling: shared->object->ReliabilityMethod = Reliability::ReliabilityMethodType::ReliabilityImportanceSampling; break;
+                //        case Wrappers::ProbabilisticMethod::FORM: shared->object->ReliabilityMethod = Reliability::ReliabilityMethodType::ReliabilityFORM; break;
+                //        case Wrappers::ProbabilisticMethod::SubsetSimulation: shared->object->ReliabilityMethod = Reliability::ReliabilityMethodType::ReliabilitySubsetSimulation; break;
+                //        default: throw gcnew System::NotSupportedException("Reliability method not supported");
+                //        }
+                //    }
+                //}
 
                 virtual property int MinimumSamples
                 {

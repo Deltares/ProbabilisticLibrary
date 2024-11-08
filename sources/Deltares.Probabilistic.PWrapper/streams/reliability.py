@@ -99,6 +99,9 @@ class Settings:
 			self._id = id_
 		self._stochast_settings = FrozenList()
 
+	def __del__(self):
+		interface.Destroy(self._id)
+
 	def __dir__(self):
 		return ['reliability_method',
 				'design_point_method',
@@ -119,9 +122,6 @@ class Settings:
 				'variation_coefficient',
 				'fraction_failed',
 				'stochast_settings']
-
-	def __del__(self):
-		interface.Destroy(self._id)
 
 	@property
 	def reliability_method(self):
@@ -290,6 +290,9 @@ class StochastSettings:
 		if not variable is None:
 			interface.SetIntValue(self._id, 'variable', self._variable._id)
 
+	def __del__(self):
+		interface.Destroy(self._id)
+
 	def __dir__(self):
 		return ['min_value',
 				'max_value',
@@ -299,9 +302,6 @@ class StochastSettings:
 				'is_variance_allowed',
 				'intervals']
 		
-	def __del__(self):
-		interface.Destroy(self._id)
-
 	def __str__(self):
 		if self._variable is None:
 			return ''
@@ -386,14 +386,14 @@ class LimitStateFunction:
 		else:
 			self._id = id
 
+	def __del__(self):
+		interface.Destroy(self._id)
+
 	def __dir__(self):
 		return ['parameter',
 		        'compare_type',
 		        'critical_value']
 		
-	def __del__(self):
-		interface.Destroy(self._id)
-
 	def __str__(self):
 		return self.parameter + ' ' + str(self.compare_type) + ' ' + str(self.critical_value)
 
@@ -445,6 +445,9 @@ class DesignPoint:
 		self._known_variables = known_variables
 		self._known_design_points = known_design_points
 		
+	def __del__(self):
+		interface.Destroy(self._id)
+
 	def __dir__(self):
 		return ['identifier',
 				'reliability_index',
@@ -459,9 +462,6 @@ class DesignPoint:
 				'realizations',
 				'messages']
 		
-	def __del__(self):
-		interface.Destroy(self._id)
-
 	@property
 	def identifier(self):
 		return interface.GetStringValue(self._id, 'identifier')
@@ -482,8 +482,12 @@ class DesignPoint:
 	def _add_alpha(self, variable, alpha_value):
 		alpha = Alpha();
 		alpha._set_alpha(variable, alpha_value, self.reliability_index);
-		self.alphas.append(alpha)
 
+		alphas = []
+		alphas.extend(self.alphas)
+		alphas.append(alpha)
+		self._alphas = FrozenList(alphas)
+		
 		values = [a._id for a in self._alphas]
 		interface.SetArrayIntValue(self._id, 'alphas', values)
 
@@ -514,17 +518,17 @@ class DesignPoint:
 	@property
 	def alphas(self):
 		if self._alphas is None:
-			self._alphas = []
-			alpha_ids = interface.GetArrayIntValue(self._id, 'alphas')
+			alphas = []
+			alpha_ids = interface.GetArrayIdValue(self._id, 'alphas')
 			for alpha_id in alpha_ids:
-				self._alphas.append(Alpha(alpha_id, self._known_variables))
-				
+				alphas.append(Alpha(alpha_id, self._known_variables))
+			self._alphas = FrozenList(alphas)
 		return self._alphas
 	
 	@property
 	def contributing_design_points(self):
 		if self._contributing_design_points is None:
-			self._contributing_design_points = []
+			contributing_design_points = []
 			design_point_ids = interface.GetArrayIdValue(self._id, 'contributing_design_points')
 			for design_point_id in design_point_ids:
 				if design_point_id > 0:
@@ -532,11 +536,12 @@ class DesignPoint:
 					if not self._known_design_points is None:
 						for design_point in self._known_design_points:
 							if design_point._id == design_point_id:
-								self._contributing_design_points.append(design_point)
+								contributing_design_points.append(design_point)
 								added = True
 
 					if not added:
-						self._contributing_design_points.append(DesignPoint(design_point_id, self._known_variables, self._known_design_points))
+						contributing_design_points.append(DesignPoint(design_point_id, self._known_variables, self._known_design_points))
+			self._contributing_design_points = FrozenList(contributing_design_points)
 				
 		return self._contributing_design_points
 
@@ -544,7 +549,7 @@ class DesignPoint:
 	def realizations(self):
 		if self._realizations is None:
 			realizations = []
-			realization_ids = interface.GetArrayIntValue(self._id, 'evaluations')
+			realization_ids = interface.GetArrayIdValue(self._id, 'evaluations')
 			for realization_id in realization_ids:
 				realizations.append(Evalution(realization_id))
 			self._realizations = FrozenList(realizations)
@@ -555,7 +560,7 @@ class DesignPoint:
 	def messages(self):
 		if self._messages is None:
 			messages = []
-			message_ids = interface.GetArrayIntValue(self._id, 'messages')
+			message_ids = interface.GetArrayIdValue(self._id, 'messages')
 			for message_id in message_ids:
 				messages.append(Message(message_id))
 			self._messages = FrozenList(messages)
@@ -581,15 +586,15 @@ class Alpha:
 		self._variable = None
 		self._known_variables = known_variables
 
+	def __del__(self):
+		interface.Destroy(self._id)
+
 	def __dir__(self):
 		return ['variable',
 				'alpha',
 				'alpha_correlated',
 				'influence_factor',
 				'x']
-
-	def __del__(self):
-		interface.Destroy(self._id)
 
 	@property
 	def variable(self):
@@ -652,12 +657,12 @@ class CombineSettings:
 	def __init__(self):
 		self._id = interface.Create('combine_settings')
 		
+	def __del__(self):
+		interface.Destroy(self._id)
+
 	def __dir__(self):
 		return ['combiner_method',
 				'combine_type']
-
-	def __del__(self):
-		interface.Destroy(self._id)
 
 	@property
 	def combiner_method(self):
@@ -703,23 +708,20 @@ class Evalution:
 			self._id = interface.Create('evaluation')
 		else:
 			self._id = id
+		self._input_values = None	
+		self._output_values = None	
+
+	def __del__(self):
+		interface.Destroy(self._id)
 
 	def __dir__(self):
 		return ['iteration',
 				'z',
 				'beta',
 				'weight',
-				'get_value']
+				'input_values',
+				'output_values']
 	
-	def __del__(self):
-		interface.Destroy(self._id)
-
-	def get_value(self, variable : str):
-		if isinstance(variable, str):
-			return interface.GetArgValue(self._id, 'get_value', variable)
-		else:
-			return 0
-
 	@property   
 	def iteration(self):
 		return interface.GetIntValue(self._id, 'iteration')
@@ -735,4 +737,20 @@ class Evalution:
 	@property   
 	def weight(self):
 		return interface.GetValue(self._id, 'weight')
+
+	@property   
+	def input_values(self):
+		if self._input_values is None:
+			input_values = interface.GetArrayValue(self._id, 'input_values')
+			self._input_values = FrozenList(input_values)
+		return self._input_values
+		
+	@property   
+	def output_values(self):
+		if self._output_values is None:
+			output_values = interface.GetArrayValue(self._id, 'output_values')
+			self._output_values = FrozenList(output_values)
+		return self._output_values
+		
+
 				

@@ -34,9 +34,7 @@ namespace Deltares
 
         void ProjectServer::AddHandler(std::shared_ptr<BaseHandler> handler)
         {
-            int handlerIndex = handlers.size();
             handlers.push_back(handler);
-            handler->SetServer(std::shared_ptr<BaseServer>(this), handlerIndex, handlers[0]);
         }
 
         int ProjectServer::GetNewObjectId(int handlerIndex)
@@ -65,6 +63,14 @@ namespace Deltares
         void ProjectServer::Destroy(int id)
         {
             handlersTable[id]->Destroy(id);
+        }
+
+        void ProjectServer::Exit()
+        {
+            for (std::shared_ptr<BaseHandler> handler : handlers)
+            {
+                handler->Exit();
+            }
         }
 
         double ProjectServer::GetValue(int id, std::string property_)

@@ -165,6 +165,9 @@ class SensitivityProject:
 		SensitivityProject._project_id = self._id
 		SensitivityProject._zmodel = None
 
+	def __del__(self):
+		interface.Destroy(self._id)
+
 	def __dir__(self):
 		return ['variables',
 				'correlation_matrix',
@@ -313,6 +316,9 @@ class ReliabilityProject:
 		ReliabilityProject._zmodel = None
 		ReliabilityProject._project_id = self._id
   
+	def __del__(self):
+		interface.Destroy(self._id)
+
 	def __dir__(self):
 		return ['variables',
 				'correlation_matrix',
@@ -340,7 +346,7 @@ class ReliabilityProject:
 	@property
 	def limit_state_function(self):
 		if self._limit_state_function is None:
-			lsf_id = interface.GetIntValue(self._id, 'limit_state_function')
+			lsf_id = interface.GetIdValue(self._id, 'limit_state_function')
 			if lsf_id > 0:
 				self._limit_state_function = LimitStateFunction(lsf_id)
 		return self._limit_state_function
@@ -443,6 +449,9 @@ class CombineProject:
 		self._correlation_matrix = SelfCorrelationMatrix()
 		self._design_point = None
 
+	def __del__(self):
+		interface.Destroy(self._id)
+
 	def __dir__(self):
 		return ['design_points',
 	            'settings',
@@ -490,6 +499,9 @@ class LengthEffectProject:
 		self._design_point_cross_section = DesignPoint()
 		self._correlation_matrix = SelfCorrelationMatrix()
 		self._design_point = None
+
+	def __del__(self):
+		interface.Destroy(self._id)
 
 	def __dir__(self):
 		return ['design_point_cross_section',

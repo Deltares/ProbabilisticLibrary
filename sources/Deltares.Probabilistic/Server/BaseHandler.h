@@ -2,7 +2,6 @@
 #include <string>
 #include <vector>
 
-#include "BaseServer.h"
 #include "../Model/ZModel.h"
 
 namespace Deltares
@@ -12,16 +11,11 @@ namespace Deltares
         class BaseHandler
         {
         public:
-            virtual void SetServer(std::shared_ptr<BaseServer> server, int handlerIndex, std::shared_ptr<BaseHandler> defaultHandler)
-            {
-                this->server = server;
-                this->handlerIndex = handlerIndex;
-                this->defaultHandler = defaultHandler;
-            }
-
             virtual bool CanHandle(std::string object_type) { return false; }
             virtual void Create(std::string object_type, int id) { }
             virtual void Destroy(int id) {}
+            virtual void Exit() {}
+            virtual bool ShouldClose() { return false; }
             virtual double GetValue(int id, const std::string property_) { return 0; }
             virtual void SetValue(int id, const std::string property_, double value) {}
             virtual int GetIntValue(int id, std::string property_) { return 0; }
@@ -48,11 +42,6 @@ namespace Deltares
             virtual int GetIndexedIdValue(int id, std::string property_, int index, int newId) { return GetIndexedIntValue(id, property_, index); }
             virtual void SetCallBack(int id, std::string property_, Models::ZValuesCallBack callBack) {}
             virtual void Execute(int id, std::string method_) {}
-
-        protected:
-            std::shared_ptr<BaseServer> server = nullptr;
-            int handlerIndex = -1;
-            std::shared_ptr<BaseHandler> defaultHandler = nullptr;
         };
     }
 }

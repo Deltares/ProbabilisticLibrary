@@ -59,6 +59,11 @@ namespace Deltares
                     shared->object->Destroy(id);
                 }
 
+                virtual bool ShouldClose()
+                {
+                    return shared->object->ShouldClose();
+                }
+
                 virtual double GetValue(int id, System::String^ property)
                 {
                     return shared->object->GetValue(id, NativeSupport::toNative(property));
@@ -137,6 +142,16 @@ namespace Deltares
                 virtual void GetArgValues(int id, System::String^ property, array<double>^ values, array<double>^ outputValues)
                 {
                     shared->object->GetArgValues(id, NativeSupport::toNative(property), NativeSupport::toNative(values).data(), values->Length,NativeSupport::toNative(outputValues).data());
+                }
+
+                virtual double GetIndexedIndexedValue(int id, System::String^ property, int index1, int index2)
+                {
+                    return shared->object->GetIndexedIndexedValue(id, NativeSupport::toNative(property), index1, index2);
+                }
+
+                virtual void SetIndexedIndexedValue(int id, System::String^ property, int index1, int index2, double value)
+                {
+                    shared->object->SetIndexedIndexedValue(id, NativeSupport::toNative(property), index1, index2, value);
                 }
 
                 virtual void Execute(int id, System::String^ method)

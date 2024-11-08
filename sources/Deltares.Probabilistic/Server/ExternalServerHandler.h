@@ -40,14 +40,10 @@ namespace Deltares
             }
 
 #if __has_include(<windows.h>)
-            void SetServer(std::shared_ptr<BaseServer> server, int handlerIndex, std::shared_ptr<BaseHandler> defaultHandler) override
-            {
-                BaseHandler::SetServer(server, handlerIndex, defaultHandler);
-            }
-
             bool CanHandle(std::string objectType) override;
             void Create(std::string objectType, int id) override;
             void Destroy(int id) override;
+            void Exit() override;
             double GetValue(int id, std::string property) override;
             void SetValue(int id, std::string property, double value) override;
             double GetArgValue(int id, std::string property, double argument) override;
@@ -64,6 +60,8 @@ namespace Deltares
             void GetArgValues(int id, std::string property, double* values, int size, double* outputValues) override;
             int GetIdValue(int id, std::string property_, int newId) override;
             int GetIndexedIdValue(int id, std::string property_, int index, int newId) override;
+            double GetIndexedIndexedValue(int id, std::string property, int index1, int index2) override;
+            void SetIndexedIndexedValue(int id, std::string property, int index1, int index2, double value) override;
             void Execute(int id, std::string method_) override;
 #endif
 
@@ -87,8 +85,6 @@ namespace Deltares
 
             addrinfo* address = nullptr;
             addrinfo hints;
-
-            int liveObjects = 0;
 #endif
         };
     }
