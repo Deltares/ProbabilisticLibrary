@@ -369,9 +369,16 @@ where
 \subsection{Subset simulation}
 \subsubsection{Algorithm}
 
-Subset simulation [\cite{Au2001}] is a staged form of Crude Monte Carlo (see \autoref{sec:CrudeMonteCarlo}). There are several iterations, the first being the same as Crude Monte Carlo. The simulation stops when the Crude Monte Carlo convergence criterion is met: when $\varepsilon \leq \varepsilon_{\text{max}}$  (see \autoref{eq:MonteCarloVariationCoefficient}).
+Subset simulation [\cite{Au2001}] is a staged form of Crude Monte Carlo (see \autoref{sec:CrudeMonteCarlo}).
+There are several iterations, the first being the same as Crude Monte Carlo.
+The simulation stops when the Crude Monte Carlo convergence criterion is met:
+when $\varepsilon \leq \varepsilon_{\text{max}}$  (see \autoref{eq:MonteCarloVariationCoefficient}).
 
-When the criterion is not met, a new Crude Monte Carlo is taken using on the $k$ fraction of the previous Monte Carlo run. The realizations closest to failure are taken and from there new realizations are generated using a Markov Chain. Per old realization $\tfrac{1}{k}$ new realizations are generated. A new realization is generated in the following way with u-values for each variable $var$:
+When the criterion is not met, a new Crude Monte Carlo is taken using on the $k$ fraction of the previous Monte Carlo run.
+The realizations closest to failure are taken and from there new realizations are generated using a Markov Chain,
+or with Adaptive Conditional [\cite{PAPAIOANNOU201589}].
+Per old realization $\tfrac{1}{k}$ new realizations are generated.
+A new realization is generated in the following way with u-values for each variable $var$:
 
 \begin{align} 
 \label{eq:SubsetSimulationMarkovChain}
@@ -407,10 +414,11 @@ where
 	$\varphi$ & is the probability density function of a standard normal distribution (see \autoref{eq:StandardNormalPDF}); \\  
 	$\Delta \sigma$ & is the user given maximum deviation from the previous $u$-value.
 	In case the option 'Adaptive Conditional' is used,
-	this value is derived automatically and updated during the process [\cite{PAPAIOANNOU201589}].
+	this value is derived automatically and updated during the process.
 \end{longtable}
 
-The proposed sample $u_{\text{prop}}$ is used if the corresponding z-value is less than the $z_{\text{k}}$, which is the highest z-value in the subset used to generate new realizations, otherwise the original sample is used.
+The proposed sample $u_{\text{prop}}$ is used if the corresponding z-value is less than the $z_{\text{k}}$,
+which is the highest z-value in the subset used to generate new realizations, otherwise the original sample is used.
 
 The probability of failure is calculated as follows:
 

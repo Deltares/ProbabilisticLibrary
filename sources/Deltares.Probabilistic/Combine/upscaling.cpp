@@ -148,10 +148,9 @@ namespace Deltares {
         // \param rhoXK(:) : Correlation variables
         // \param dXK(:) : Correlation length variables
         // \param sectionLength : Section length
-        // \param minimumFailureLength : minimum failure length (breach length in certain mechanisms)
         // \return Reliability index, alpha for section and indication of non-converged Hohenbichler calculations
         std::pair<alphaBeta, int> upscaling::upscaleLength(alphaBeta& crossSectionElement,
-            const vector1D& rhoXK, const vector1D& dXK, const double sectionLength, double minimumFailureLength)
+            const vector1D& rhoXK, const vector1D& dXK, const double sectionLength)
         {
             const double deltaBeta = 0.01; // perturbation of beta in computation alpha in the upscaling from cross section to segment
             //
@@ -177,34 +176,29 @@ namespace Deltares {
             //
             // Calculate correlation length dz
             //
-            double dz = 0.0;
+            double sumAlphaDxk = 0.0;
             for (size_t i = 0; i < nrVar; i++)
             {
                 if (dXK(i) != 0.0)
                 {
-                    dz += (1.0 - rhoXK(i)) * pow(crossSectionElement.getAlphaI(i) / dXK(i), 2);
+                    sumAlphaDxk += (1.0 - rhoXK(i)) * pow(crossSectionElement.getAlphaI(i) / dXK(i), 2);
                 }
             }
-            dz = dz / (1.0 - rhoZ);
-            dz = sqrt(1.0 / dz);
+            double dz = sqrt((1.0 - rhoZ) / sumAlphaDxk);
             //
-            // Calculate delta L and breach L
+            // Calculate delta L
             //
             double deltaL = dz / crossSectionElement.getBeta() * sqrt(M_PI) / sqrt(1.0 - rhoZ);
             deltaL = std::max(deltaL, 0.01);
 
-            if (minimumFailureLength < 0) minimumFailureLength = deltaL;
-
-            int failures = 0;
-
-            if (minimumFailureLength < sectionLength)
+            if (deltaL < sectionLength)
             {
+                int failures = 0;
                 alphaBeta element;
                 element.setAlpha(vector1D(nrVar));
                 //
                 // Calculate beta for section from the beta of the cross section
-                deltaL = std::min(deltaL, sectionLength);
-                auto betaSection = ComputeBetaSection(crossSectionElement.getBeta(), sectionLength, minimumFailureLength, rhoZ, dz, deltaL);
+                auto betaSection = ComputeBetaSection(crossSectionElement.getBeta(), sectionLength, rhoZ, dz, deltaL);
                 if (betaSection.second != 0) failures++;
                 element.setBeta(betaSection.first);
                 //
@@ -213,7 +207,7 @@ namespace Deltares {
                 // Correlated part. Perturbation of the betaCrossSection
                 double betaK = crossSectionElement.getBeta() - sqrt(rhoZ) * deltaBeta;
                 // Calculate beta for section from the beta of the cross section
-                auto betaKX = ComputeBetaSection(betaK, sectionLength, minimumFailureLength, rhoZ, dz, deltaL);
+                auto betaKX = ComputeBetaSection(betaK, sectionLength, rhoZ, dz, deltaL);
                 if (betaKX.second != 0) failures++;
 
                 double alphaC = (element.getBeta() - betaKX.first) / deltaBeta;
@@ -260,51 +254,43 @@ namespace Deltares {
         // \brief Method used in upscaling for computing the beta of a section from the beta of a cross section.
         // \param betaCrossSection : Reliability index of the cross section
         // \param sectionLength : Length of the section
-        // \param minimumFailureLength : minimum failure length (breach length in certain mechanisms)
         // \param rhoZ : Correlation Z-function
         // \param dz : Correlation length
         // \param deltaL : Delta L
         // \return Reliability index for the section and indication of non-converged Hohenbichler calculation
         std::pair<double, int> upscaling::ComputeBetaSection(const double betaCrossSection, const double sectionLength,
-            const double minimumFailureLength, const double rhoZ, const double dz, const double deltaL)
+            const double rhoZ, const double dz, const double deltaL)
         {
-            const int    nGridPoints = 30001;    // Number gridpoints for v in numerical integration
+            const int    nGridPoints = 30001; // Number of grid points for v in numerical integration
             const double vLower = -30.0;  // Lower bound of v-values in the numerical integration
             const double vUpper = 30.0;  // Upper bound of v-values in the numerical integration
 
-        //   Compute failure probability cross section from beta
+            // Compute failure probability cross section from beta
             double pf = StandardNormal::getQFromU(betaCrossSection); // Failure probability cross section
             double pfX; // Failure probability section
-            int conv = 0;
+            int conv; // indicator of non-converged Hohenbichler calculation
             if (rhoZ > 0.001)
             {
-                double vDelta = (vUpper - vLower) / double(nGridPoints - 1); // Step size in the numerical integration over v in [vLower, vUpper]
+                double vDelta = (vUpper - vLower) / static_cast<double>(nGridPoints - 1); // Step size in the numerical integration over v in [vLower, vUpper]
                 double p = StandardNormal::getPFromU(betaCrossSection); // Probability
-                if (sectionLength <= minimumFailureLength)
+                auto termI = std::vector<double>(nGridPoints); // i-th term to add
+                for (size_t i = 0; i < nGridPoints; i++)
                 {
-                    pfX = pf;
+                    double v = vLower + vDelta * static_cast<double>(i);
+                    double x = (betaCrossSection - sqrt(rhoZ) * v) / sqrt(1.0 - rhoZ); // x = beta*
+                    double nf = (sectionLength - deltaL) / (sqrt(2.0) * M_PI) / dz * exp(-x * x / 2.0); // Number of cross section
+                    termI[i] = (1.0 - p * exp(-nf)) * exp(-v * v / 2.0) / sqrt(2.0 * M_PI) * vDelta;
                 }
-                else
+                //
+                // add up all terms; start with the smallest numbers
+                //
+                pfX = 0.0;
+                for (size_t i = 0; i < nGridPoints / 2; i++)
                 {
-                    auto termI = std::vector<double>(nGridPoints); // i-th term to add
-                    for (size_t i = 0; i < nGridPoints; i++)
-                    {
-                        double v = vLower + vDelta * double(i);
-                        double x = (betaCrossSection - sqrt(rhoZ) * v) / sqrt(1.0 - rhoZ); // x = beta*
-                        double nf = std::max((sectionLength - minimumFailureLength), 0.0) / (sqrt(2.0) * M_PI) / dz * exp(-x * x / 2.0); // Number of cross section
-                        termI[i] = (1.0 - p * exp(-nf)) * exp(-v * v / 2.0) / sqrt(2.0 * M_PI) * vDelta;
-                    }
-                    //
-                    // add up all terms; start with smallest numbers
-                    //
-                    pfX = 0.0;
-                    for (size_t i = 0; i < nGridPoints / 2; i++)
-                    {
-                        pfX += termI[i];
-                        pfX += termI[nGridPoints - i - 1];
-                    }
-                    pfX += termI[nGridPoints / 2];
+                    pfX += termI[i];
+                    pfX += termI[nGridPoints - i - 1];
                 }
+                pfX += termI[nGridPoints / 2];
                 pfX = std::max(pfX, pf);
                 conv = 0;
             }
@@ -312,7 +298,7 @@ namespace Deltares {
             {
                 auto pfVV = hhb.PerformHohenbichler(betaCrossSection, pf, rhoZ); // Failure probability vv, Hohenbichler
                 conv = pfVV.second;
-                pfX = pf + std::max((sectionLength - minimumFailureLength), 0.0) / deltaL * (pf - pfVV.first * pf);
+                pfX = pf + (sectionLength - deltaL) / deltaL * (pf - pfVV.first * pf);
                 pfX = std::min(pfX, 1.0);
             }
 
