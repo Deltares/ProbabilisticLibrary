@@ -36,6 +36,8 @@ namespace Deltares
                 void testCobylaReliability() const;
                 static void testSubSetSimulationReliabilityNearestToMean();
                 static void testSubSetSimulationReliabilityCenterOfGravity();
+                static void testFDIRReliability();
+                static void testDSFIReliability();
             private:
                 const double margin = 1e-9;
             };

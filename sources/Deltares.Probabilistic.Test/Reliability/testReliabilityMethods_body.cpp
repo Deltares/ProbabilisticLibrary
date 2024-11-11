@@ -25,6 +25,8 @@
 #include "../../Deltares.Probabilistic/Reliability/NumericalBisection.h"
 #include "../../Deltares.Probabilistic/Reliability/CobylaReliability.h"
 #include "../../Deltares.Probabilistic/Reliability/SubsetSimulation.h"
+#include "../../Deltares.Probabilistic/Reliability/FORMThenDirectionalSampling.h"
+#include "../../Deltares.Probabilistic/Reliability/DirectionalSamplingThenFORM.h"
 #include "../projectBuilder.h"
 
 using namespace Deltares::Reliability;
@@ -138,6 +140,36 @@ namespace Deltares
                 EXPECT_NEAR(designPoint->Alphas[0]->Alpha, -0.77594, 1e-3);
                 EXPECT_NEAR(designPoint->Alphas[1]->Alpha, 0.63081, 1e-3);
                 EXPECT_FALSE(designPoint->convergenceReport->IsConverged);
+            }
+
+            void testReliabilityMethods::testFDIRReliability()
+            {
+                auto calculator = FORMThenDirectionalSampling();
+
+                auto modelRunner = projectBuilder().BuildProject();
+
+                auto designPoint = calculator.getDesignPoint(modelRunner);
+
+                ASSERT_EQ(designPoint->Alphas.size(), 2);
+                EXPECT_NEAR(designPoint->Beta, 1.8741, 1e-3);
+                EXPECT_NEAR(designPoint->Alphas[0]->Alpha, -0.78087, 1e-3);
+                EXPECT_NEAR(designPoint->Alphas[1]->Alpha, 0.6247, 1e-3);
+                EXPECT_TRUE(designPoint->convergenceReport->IsConverged);
+            }
+
+            void testReliabilityMethods::testDSFIReliability()
+            {
+                auto calculator = DirectionalSamplingThenFORM();
+
+                auto modelRunner = projectBuilder().BuildProject();
+
+                auto designPoint = calculator.getDesignPoint(modelRunner);
+
+                ASSERT_EQ(designPoint->Alphas.size(), 2);
+                EXPECT_NEAR(designPoint->Beta, 1.9117, 1e-3);
+                EXPECT_NEAR(designPoint->Alphas[0]->Alpha, -0.7809, 1e-3);
+                EXPECT_NEAR(designPoint->Alphas[1]->Alpha, 0.6247, 1e-3);
+                EXPECT_TRUE(designPoint->convergenceReport->IsConverged);
             }
 
         }

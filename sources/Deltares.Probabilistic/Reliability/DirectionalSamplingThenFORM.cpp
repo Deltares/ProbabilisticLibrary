@@ -51,10 +51,23 @@ namespace Deltares
             form.Settings->StartPointSettings->StartMethod = StartMethodType::FixedValue;
             form.Settings->StartPointSettings->startVector = startVector;
 
-            auto dsfiDesignPoint = form.getDesignPoint(modelRunner);
-            dsfiDesignPoint->convergenceReport->TotalDirections = dsDesignPoint->convergenceReport->TotalDirections;
+            auto formDesignPoint = form.getDesignPoint(modelRunner);
+
+            auto dsfiDesignPoint = std::make_shared<DesignPoint>();
             dsfiDesignPoint->Beta = dsDesignPoint->Beta;
+            dsfiDesignPoint->Alphas = formDesignPoint->Alphas;
             dsfiDesignPoint->ContributingDesignPoints.push_back(dsDesignPoint);
+            dsfiDesignPoint->ContributingDesignPoints.push_back(formDesignPoint);
+            dsfiDesignPoint->convergenceReport->IsConverged = dsDesignPoint->convergenceReport->IsConverged && formDesignPoint->convergenceReport->IsConverged;
+            dsfiDesignPoint->Identifier = "Dir. Sampling then FORM";
+
+            for (const auto& contributingDesignPoint : dsfiDesignPoint->ContributingDesignPoints)
+            {
+                for (const auto& evaluation : contributingDesignPoint->Evaluations)
+                {
+                    dsfiDesignPoint->Evaluations.push_back(evaluation);
+                }
+            }
 
             return dsfiDesignPoint;
         }
