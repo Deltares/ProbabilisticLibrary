@@ -1604,25 +1604,6 @@ namespace Deltares
             }
         }
 
-        int ProjectHandler::GetSettingsId(std::shared_ptr<Reliability::Settings> settings, int newId)
-        {
-            if (settings == nullptr)
-            {
-                return 0;
-            }
-            else
-            {
-                if (!settingsValuesIds.contains(settings))
-                {
-                    settingsValues[newId] = settings;
-                    types[newId] = ObjectType::Settings;
-                    settingsValuesIds[settings] = newId;
-                }
-
-                return settingsValuesIds[settings];
-            }
-        }
-
         int ProjectHandler::GetLimitStateFunctionId(std::shared_ptr<Reliability::LimitStateFunction> limitStateFunction, int newId)
         {
             if (limitStateFunction == nullptr)

@@ -596,7 +596,7 @@ class DesignPoint:
 			realizations = []
 			realization_ids = interface.GetArrayIdValue(self._id, 'evaluations')
 			for realization_id in realization_ids:
-				realizations.append(Evalution(realization_id))
+				realizations.append(Evaluation(realization_id))
 			self._realizations = FrozenList(realizations)
 				
 		return self._realizations
@@ -746,7 +746,7 @@ class Message:
 		return interface.GetStringValue(self._id, 'text')
 
 		
-class Evalution:
+class Evaluation:
 		
 	def __init__(self, id = None):
 		if id == None:

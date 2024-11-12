@@ -72,7 +72,6 @@ namespace Deltares
             int GetStochastId(std::shared_ptr<Statistics::Stochast> stochast, int newId);
             int GetCorrelationMatrixId(std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix, int newid);
             int GetLimitStateFunctionId(std::shared_ptr<Reliability::LimitStateFunction> limitStateFunction, int newid);
-            int GetSettingsId(std::shared_ptr<Reliability::Settings> settings, int newId);
             int GetDesignPointId(std::shared_ptr<Reliability::DesignPoint> designPoint, int newId);
             int GetAlphaId(std::shared_ptr<Models::StochastPointAlpha> alpha, int newId);
             int GetHistogramValueId(std::shared_ptr<Statistics::HistogramValue> histogramValue, int newId);
