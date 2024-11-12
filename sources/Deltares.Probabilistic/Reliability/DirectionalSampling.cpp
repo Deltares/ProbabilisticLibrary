@@ -181,7 +181,7 @@ namespace Deltares
 
             samples.clear();
 
-            return modelRunner->getDesignPoint(uDesign, Statistics::StandardNormal::getUFromQ(pf), convergenceReport);
+            return modelRunner->getDesignPoint(uDesign, Statistics::StandardNormal::getUFromQ(pf), convergenceReport, "Directional Sampling");
         }
 
         double DirectionalSampling::getConvergence(const double pf, const double sumWeights, const double sumWeights2, const double dTimes)

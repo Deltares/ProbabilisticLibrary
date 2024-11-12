@@ -43,8 +43,9 @@ namespace Deltares {
             DSFI,
             FORMDSFI,
             LatinHyperCube = 18,
-            NumericalBisection = 19,
-            CobylaReliability = 20,
+            NumericalBisection,
+            CobylaReliability,
+            SubSetSimulation,
             FORMSTART = 1234,
         };
 
@@ -115,6 +116,15 @@ namespace Deltares {
             int MaximumIterations;
         };
 
+    	struct subSetSimulationReliabilitySettings
+        {
+            double VariationCoefficient;
+            double MarkovChainDeviation;
+            int MinimumIterations;
+            int MaximumIterations;
+            int SampleMethod;
+        };
+
         struct basicSettings
         {
             ProbMethod         methodId;
@@ -151,6 +161,7 @@ namespace Deltares {
             numericalBisectionSettings numerical_bisection_settings;
             latinHypercubeSettings latin_hypercube_settings;
             cobylaReliabilitySettings cobyla_reliability_settings;
+            subSetSimulationReliabilitySettings sub_set_simulation_reliability_settings;
         };
 
     }

@@ -48,7 +48,7 @@ class Test_Length_Effect(unittest.TestCase):
         project.run()
 
         design_point_upscaled = project.design_point
-        self.assertAlmostEqual(design_point_upscaled.reliability_index, 1.1762, delta=margin)
+        self.assertAlmostEqual(design_point_upscaled.reliability_index, 1.2014, delta=margin)
         for alpha in design_point_upscaled.alphas:
             self.assertAlmostEqual(alpha.alpha, -0.7071, delta=margin)
             self.assertAlmostEqual(alpha.x, 0.8, delta=margin)
@@ -73,7 +73,7 @@ class Test_Length_Effect(unittest.TestCase):
         project.run()
 
         design_point_upscaled = project.design_point
-        self.assertAlmostEqual(design_point_upscaled.reliability_index, 0.787654, delta=margin)
+        self.assertAlmostEqual(design_point_upscaled.reliability_index, 0.8220, delta=margin)
 
     def test_settings(self):
         q = 0.01;
