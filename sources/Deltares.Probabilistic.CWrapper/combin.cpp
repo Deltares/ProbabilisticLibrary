@@ -34,6 +34,8 @@ struct betaAlphaCF
     double* duration;
     double* correlation_length;
     int     size;
+    int     stride_alpha;
+    int     stride_duration;
 };
 
 elements fillElements(double* betaElement, double* alphaElement, int nrElms, int nrStoch)
@@ -147,9 +149,9 @@ void upscaletolargestblockc(betaAlphaCF* dpSmallBlock, double* largestBlockDurat
     auto durations = vector1D(nStochasts);
     for (int i = 0; i < nStochasts; i++)
     {
-        alfasmall(i) = dpSmallBlock->alpha[i];
+        alfasmall(i) = dpSmallBlock->alpha[i*dpSmallBlock->stride_alpha];
         rho(i) = dpSmallBlock->rho[i];
-        durations(i) = dpSmallBlock->duration[i];
+        durations(i) = dpSmallBlock->duration[i*dpSmallBlock->stride_duration];
     }
     auto smallBlock = alphaBeta(dpSmallBlock->beta, alfasmall);
     alphaBeta largestBlock;
@@ -161,8 +163,8 @@ void upscaletolargestblockc(betaAlphaCF* dpSmallBlock, double* largestBlockDurat
     dpLargestBlock->beta = largestBlock.getBeta();
     for (int i = 0; i < nStochasts; i++)
     {
-        dpLargestBlock->alpha[i] = largestBlock.getAlphaI(i);
-        dpLargestBlock->duration[i] = durationsLB(i);
+        dpLargestBlock->alpha[i*dpLargestBlock->stride_alpha] = largestBlock.getAlphaI(i);
+        dpLargestBlock->duration[i*dpLargestBlock->stride_duration] = durationsLB(i);
     }
 }
 

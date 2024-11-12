@@ -37,6 +37,8 @@ type, bind(C) :: betaAlphaCF
     type(c_ptr)         :: duration           = c_null_ptr
     type(c_ptr)         :: correlation_length = c_null_ptr
     integer             :: size               = 0
+    integer             :: stride_alpha       = 1
+    integer             :: stride_duration    = 1
 end type betaAlphaCF
 
 type DesignPoint
@@ -175,31 +177,45 @@ contains
         dpSection%beta = dpSectionC%beta
     end subroutine upscaleLength
 
+    subroutine fill_loc_stride(array, loc, stride)
+    real(kind=wp), intent(in   ), target :: array(:)
+    type(c_ptr),   intent(  out)         :: loc
+    integer,       intent(  out)         :: stride
+    type(c_ptr)     :: loc2
+    integer(kind=8) :: lc1, lc2
+
+    loc = c_loc(array(1))
+    loc2 = c_loc(array(2))
+    lc1 = transfer(loc, lc1)
+    lc2 = transfer(loc2, lc2)
+    stride = (lc2 - lc1) / sizeof(array(1))
+    end subroutine fill_loc_stride
+
 !>
 !! Subroutine for upscaling random variables to the largest block duration
     subroutine upscaleToLargestBlock( betaSmallBlock, alphaSmallBlock, rhoTSmallBlock,  &
                                       blockDurations, largestBlockDuration,             &
                                       betaLargestBlock, alphaLargestBlock, durationsLargestBlock)
-    real(kind=c_double), intent (in)          :: betaSmallBlock           !< Reliability index input
-    real(kind=c_double), intent (in), target  :: alphaSmallBlock(:)       !< Alpha vector input
-    real(kind=c_double), intent (in), target  :: rhoTSmallBlock(:)        !< Correlations
-    real(kind=c_double), intent (in), target  :: blockDurations(:)        !< Block durations vector input
-    real(kind=c_double), intent (in)          :: largestBlockDuration     !< Target block duration
-    real(kind=c_double), intent (out)         :: betaLargestBlock         !< Reliability index result
-    real(kind=c_double), intent (out), target :: alphaLargestBlock(:)     !< Alpha vector result
-    real(kind=c_double), intent (out), target :: durationsLargestBlock(:) !< Block durations vector result
+    real(kind=wp), intent (in)          :: betaSmallBlock           !< Reliability index input
+    real(kind=wp), intent (in), target  :: alphaSmallBlock(:)       !< Alpha vector input
+    real(kind=wp), intent (in), target  :: rhoTSmallBlock(:)        !< Correlations
+    real(kind=wp), intent (in), target  :: blockDurations(:)        !< Block durations vector input
+    real(kind=wp), intent (in)          :: largestBlockDuration     !< Target block duration
+    real(kind=wp), intent (out)         :: betaLargestBlock         !< Reliability index result
+    real(kind=wp), intent (out), target :: alphaLargestBlock(:)     !< Alpha vector result
+    real(kind=wp), intent (out), target :: durationsLargestBlock(:) !< Block durations vector result
 
     type(betaAlphaCF) :: dpSmall, dpLargest
 
     dpSmall%beta       = betaSmallBlock
     dpSmall%size       = size(alphaSmallBlock)
-    dpSmall%alpha      = c_loc(alphaSmallBlock)
+    call fill_loc_stride(alphaSmallBlock, dpSmall%alpha, dpSmall%stride_alpha)
     dpSmall%rho        = c_loc(rhoTSmallBlock)
-    dpSmall%duration   = c_loc(blockDurations)
+    call fill_loc_stride(blockDurations, dpSmall%duration, dpSmall%stride_duration)
 
     dpLargest%size     = size(alphaLargestBlock)
-    dpLargest%alpha    = c_loc(alphaLargestBlock)
-    dpLargest%duration = c_loc(durationsLargestBlock)
+    call fill_loc_stride(alphaLargestBlock, dpLargest%alpha, dpLargest%stride_alpha)
+    call fill_loc_stride(durationsLargestBlock, dpLargest%duration, dpLargest%stride_duration)
 
     call upscaleToLargestBlockC(dpSmall, largestBlockDuration, dpLargest )
 
