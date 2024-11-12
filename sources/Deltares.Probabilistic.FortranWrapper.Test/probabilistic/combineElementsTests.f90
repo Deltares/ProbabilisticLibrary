@@ -2671,5 +2671,6 @@ subroutine upscaleLengthWrapper ( betaCrossSection, alphaCrossSection, rhoXK, dX
         do i = 1, nStoch
             alphaSection(i) = dpSection%alpha(i)
         end do
+        deallocate(dpCrossSection%alpha, dpCrossSection%rho, dpCrossSection%correlation_length, dpSection%alpha)
 end subroutine upscaleLengthWrapper
 end module combineElementsTests

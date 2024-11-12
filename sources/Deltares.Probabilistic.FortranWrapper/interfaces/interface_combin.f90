@@ -20,7 +20,7 @@
 ! All rights reserved.
 !
 module interface_combin
-use, intrinsic :: iso_c_binding, only: c_double, c_ptr, c_loc, c_null_ptr
+use, intrinsic :: iso_c_binding, only: c_double, c_ptr, c_loc, c_null_ptr, c_intptr_t
 use precision, only : wp
 implicit none
 integer, parameter :: combAND =  0
@@ -28,7 +28,7 @@ integer, parameter :: combOR  =  1
 
 private :: combineMultipleElements_c, warnHohenbichler, upscaleLengthC, &
     combineTwoElementsPartialCorrelationC1, combineTwoElementsPartialCorrelationC2, &
-    combineMultipleElementsProb_c, c_double, wp
+    combineMultipleElementsProb_c, c_double,  c_ptr, c_loc, c_null_ptr, c_intptr_t, wp
 
 type, bind(C) :: betaAlphaCF
     real(kind=c_double) :: beta               = 0.0_c_double
@@ -43,10 +43,10 @@ end type betaAlphaCF
 
 type DesignPoint
     real(kind=wp) :: beta
-    real(kind=wp), allocatable :: alpha(:)
-    real(kind=wp), allocatable :: rho(:)
-    real(kind=wp), allocatable :: duration(:)
-    real(kind=wp), allocatable :: correlation_length(:)
+    real(kind=wp), pointer :: alpha(:)
+    real(kind=wp), pointer :: rho(:)
+    real(kind=wp), pointer :: duration(:)
+    real(kind=wp), pointer :: correlation_length(:)
 end type DesignPoint
 
 interface
@@ -182,7 +182,7 @@ contains
     type(c_ptr),   intent(  out)         :: loc
     integer,       intent(  out)         :: stride
     type(c_ptr)     :: loc2
-    integer(kind=8) :: lc1, lc2
+    integer(kind=c_intptr_t) :: lc1, lc2
 
     loc = c_loc(array(1))
     loc2 = c_loc(array(2))
