@@ -44,6 +44,12 @@ struct multipleElements
     int size;
 };
 
+struct combinerSettings
+{
+    combineAndOr combAndOr;
+    CombinerType combinerType;
+};
+
 elements fillElements(multipleElements* m_elements)
 {
     auto elm = elements();
@@ -78,25 +84,25 @@ elements fillElements(double* betaElement, double* alphaElement, int nrElms, int
 }
 
 extern "C"
-void combineMultipleElementsGeneral(double* betaElement, double* alphaElement, double* rho,
-    double* beta, double* alpha, combineAndOr combAndOrIn, CombinerType combinerType, int nrElms, int nrStoch)
+void combineMultipleElementsGeneral(multipleElements* elements, betaAlphaCF* dpOut, combinerSettings* settings)
 {
+    const int nrStoch = dpOut->size;
     std::vector< std::shared_ptr<Deltares::Statistics::Stochast>> stochasts;
     for (int i = 0; i < nrStoch; i++)
     {
         auto s = std::make_shared<Deltares::Statistics::Stochast>();
         stochasts.push_back(s);
     }
-    auto dpCombiner = DesignPointCombiner(combinerType, Deltares::Numeric::MersenneTwister);
+    auto dpCombiner = DesignPointCombiner(settings->combinerType, Deltares::Numeric::MersenneTwister);
     auto designPoints = std::vector<std::shared_ptr<DesignPoint>>();
-    for (int i = 0; i < nrElms; i++)
+    for (int i = 0; i < elements->size; i++)
     {
         auto dp = std::make_shared<DesignPoint>();
-        dp->Beta = betaElement[i];
+        dp->Beta = elements->designPoints[i].beta;
         for (int j = 0; j < nrStoch; j++)
         {
             auto alphaj = std::make_shared<StochastPointAlpha>();
-            alphaj->Alpha = alphaElement[i + j * nrElms];
+            alphaj->Alpha = elements->designPoints[i].alpha[j*elements->designPoints[i].stride_alpha];
             alphaj->Stochast = stochasts[j];
             alphaj->U = -dp->Beta * alphaj->Alpha;
             dp->Alphas.push_back(alphaj);
@@ -106,13 +112,13 @@ void combineMultipleElementsGeneral(double* betaElement, double* alphaElement, d
     auto selfCorrelation = std::make_shared<Deltares::Statistics::SelfCorrelationMatrix>();
     for (int i = 0; i < nrStoch; i++)
     {
-        selfCorrelation->setSelfCorrelation(designPoints[0]->Alphas[i]->Stochast, rho[i]);
+        selfCorrelation->setSelfCorrelation(designPoints[0]->Alphas[i]->Stochast, elements->designPoints[0].rho[i]);
     }
-    auto result = dpCombiner.combineDesignPoints(combAndOrIn, designPoints, selfCorrelation);
-    *beta = result->Beta;
+    auto result = dpCombiner.combineDesignPoints(settings->combAndOr, designPoints, selfCorrelation);
+    dpOut->beta = result->Beta;
     for (int j = 0; j < nrStoch; j++)
     {
-        alpha[j] = result->Alphas[j]->Alpha;
+        dpOut->alpha[j] = result->Alphas[j]->Alpha;
     }
 }
 

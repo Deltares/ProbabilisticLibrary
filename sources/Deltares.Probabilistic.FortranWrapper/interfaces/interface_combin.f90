@@ -54,6 +54,11 @@ type DesignPoint
     real(kind=wp), pointer :: correlation_length(:)
 end type DesignPoint
 
+type combinerSettings
+    integer combAndOr
+    integer combinerType
+end type combinerSettings
+
 interface
     integer function combineMultipleElements_c( elements, dpOut) bind(c)
         import betaAlphaCF, multipleElements
@@ -63,15 +68,11 @@ interface
 end interface
 
 interface
-    subroutine combineMultipleElementsGeneral( betaElement, alphaElement, rho, beta, alpha, &
-      combAndOrIn, combinerType, nrElms, nrStoch) bind(c, name="combineMultipleElementsGeneral")
-        use, intrinsic :: iso_c_binding, only: c_double
-        real(kind=c_double),  intent(in)  :: betaElement(*)
-        real(kind=c_double),  intent(in)  :: alphaElement(*)
-        real(kind=c_double),  intent(in)  :: rho(*)
-        real(kind=c_double),  intent(out) :: beta
-        real(kind=c_double),  intent(out) :: alpha(*)
-        integer, value,       intent(in)  :: combAndOrIn, combinerType, nrElms, nrStoch
+    subroutine combineMultipleElementsGeneral( elements, dpOut, settings) bind(c, name="combineMultipleElementsGeneral")
+        import betaAlphaCF, multipleElements, combinerSettings
+        type(multipleElements), intent(in)  :: elements
+        type(betaAlphaCF),      intent(out) :: dpOut
+        type(combinerSettings), intent(in)  :: settings
     end subroutine combineMultipleElementsGeneral
 end interface
 
