@@ -41,6 +41,11 @@ type, bind(C) :: betaAlphaCF
     integer             :: stride_duration    = 1
 end type betaAlphaCF
 
+type, bind(C) :: multipleElements
+    type(c_ptr) :: designPoints
+    integer     :: nElements
+end type multipleElements
+
 type DesignPoint
     real(kind=wp) :: beta
     real(kind=wp), pointer :: alpha(:)
@@ -50,15 +55,10 @@ type DesignPoint
 end type DesignPoint
 
 interface
-    integer function combineMultipleElements_c( betaElement, alphaElement, rho, beta, alpha, &
-      combAndOrIn, nrElms, nrStoch) bind(c)
-        use, intrinsic :: iso_c_binding, only: c_double
-        real(kind=c_double),  intent(in)  :: betaElement(*)
-        real(kind=c_double),  intent(in)  :: alphaElement(*)
-        real(kind=c_double),  intent(in)  :: rho(*)
-        real(kind=c_double),  intent(out) :: beta
-        real(kind=c_double),  intent(out) :: alpha(*)
-        integer, value,       intent(in)  :: combAndOrIn, nrElms, nrStoch
+    integer function combineMultipleElements_c( elements, dpOut) bind(c)
+        import betaAlphaCF, multipleElements
+        type(multipleElements),  intent(in)  :: elements
+        type(betaAlphaCF),       intent(out) :: dpOut
     end function combineMultipleElements_c
 end interface
 
@@ -259,25 +259,36 @@ contains
     call warnHohenbichler(n)
 end subroutine combineTwoElementsPartialCorrelation
 
-subroutine combineMultipleElements( betaElement, alphaElement, rho, beta, alpha, combAndOrIn)
+subroutine combineMultipleElements( betaElement, alphaElement, rho, beta, alpha)
     real(kind=c_double),  intent(in)  :: betaElement(:)
-    real(kind=c_double),  intent(in)  :: alphaElement(:,:)
-    real(kind=c_double),  intent(in)  :: rho(:)
+    real(kind=c_double),  intent(in), target  :: alphaElement(:,:)
+    real(kind=c_double),  intent(in), target  :: rho(:)
     real(kind=c_double),  intent(out) :: beta
-    real(kind=c_double),  intent(out) :: alpha(:)
-    integer, optional,    intent(in)  :: combAndOrIn
+    real(kind=c_double),  intent(out), target :: alpha(:)
 
-    integer :: nrElms, nrStoch, combAndOr, n
+    integer :: nrElms, nrStoch, n, i
+    type(betaAlphaCF) :: dpOut
+    type(multipleElements) :: elements
+    type(betaAlphaCF), allocatable, target :: dpIn(:)
 
     nrElms =  size(betaElement)
     nrStoch = size(rho)
-    if ( present(combAndOrIn) ) then
-        combAndOr = combAndOrIn
-    else
-        combAndOr = combOr
-    end if
+    allocate(dpIn(nrElms))
+    
+    do i = 1, nrElms
+        dpIn(i)%beta = betaElement(i)
+        dpIn(i)%alpha = c_loc(alphaElement(i,1))
+        dpIn(i)%size = nrStoch
+        dpIn(i)%stride_alpha = nrElms
+    end do
+    dpIn(1)%rho = c_loc(rho)
+    elements%designPoints = c_loc(dpIn)
+    elements%nElements = nrElms
 
-    n = combineMultipleElements_c(betaElement, alphaElement, rho, beta, alpha, combAndOr, nrElms, nrStoch)
+    call fill_loc_stride(alpha, dpOut%alpha, dpOut%stride_alpha)
+    dpOut%size = nrStoch
+    n = combineMultipleElements_c(elements, dpOut)
+    beta = dpOut%beta
 
     call warnHohenbichler(n)
 

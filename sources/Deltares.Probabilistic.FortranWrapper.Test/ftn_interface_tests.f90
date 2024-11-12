@@ -284,7 +284,7 @@ subroutine test_combine
         end do
     end do
     rho = [1.0_dp, 1.0_dp]
-    call combineMultipleElements( betas, alphas, rho, beta, alpha, combOR)
+    call combineMultipleElements( betas, alphas, rho, beta, alpha)
     call assert_comparable(beta, 2.0_wp, margin, "diff in beta")
     call assert_comparable(alpha, [sqrt(0.5_dp), sqrt(0.5_dp)], margin, "alpha in beta")
 

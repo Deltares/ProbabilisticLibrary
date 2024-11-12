@@ -38,6 +38,29 @@ struct betaAlphaCF
     int     stride_duration;
 };
 
+struct multipleElements
+{
+    betaAlphaCF* designPoints;
+    int size;
+};
+
+elements fillElements(multipleElements* m_elements)
+{
+    auto elm = elements();
+    const int nrStoch = m_elements->designPoints[0].size;
+    for (int i = 0; i < m_elements->size; i++)
+    {
+        auto alpha = vector1D(nrStoch);
+        for (int j = 0; j < nrStoch; j++)
+        {
+            alpha(j) = m_elements->designPoints[i].alpha[j*m_elements->designPoints[i].stride_alpha];
+        }
+        auto ab = alphaBeta(m_elements->designPoints[i].beta, alpha);
+        elm.push_back(ab);
+    }
+    return elm;
+}
+
 elements fillElements(double* betaElement, double* alphaElement, int nrElms, int nrStoch)
 {
     auto elm = elements();
@@ -94,22 +117,22 @@ void combineMultipleElementsGeneral(double* betaElement, double* alphaElement, d
 }
 
 extern "C"
-int combinemultipleelements_c(double* betaElement, double* alphaElement, double* rho,
-    double* beta, double* alpha, combineAndOr combAndOrIn, int nrElms, int nrStoch)
+int combinemultipleelements_c(multipleElements* elements, betaAlphaCF* dpOut)
 {
+    const int nrStoch = dpOut->size;
     auto cmb = combineElements();
-    auto elm = fillElements(betaElement, alphaElement, nrElms, nrStoch);
+    auto elm = fillElements(elements);
     auto rhoC = vector1D(nrStoch);
     for (int i = 0; i < nrStoch; i++)
     {
-        rhoC(i) = rho[i];
+        rhoC(i) = elements->designPoints[0].rho[i];
     }
-    auto result = cmb.combineMultipleElements(elm, rhoC, combAndOrIn);
+    auto result = cmb.combineMultipleElements(elm, rhoC, combineAndOr::combOr);
 
-    *beta = result.ab.getBeta();
+    dpOut->beta = result.ab.getBeta();
     for (int i = 0; i < nrStoch; i++)
     {
-        alpha[i] = result.ab.getAlphaI(i);
+        dpOut->alpha[i*dpOut->stride_alpha] = result.ab.getAlphaI(i);
     }
     return result.n;
 }
