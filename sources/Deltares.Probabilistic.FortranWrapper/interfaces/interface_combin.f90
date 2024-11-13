@@ -102,12 +102,11 @@ end interface
 
 interface
 !> Subroutine for combining two elements with partial correlation
-    integer function combineTwoElementsPartialCorrelationC2( dp1, dp2, rhoP, dpC, combAndOr ) bind(c)
+    integer function combineTwoElementsPartialCorrelationC2( dp1, dp2, dpC, combAndOr ) bind(c)
         use, intrinsic :: iso_c_binding, only: c_double
         import betaAlphaCF
         type(betaAlphaCF),    intent(in)           :: dp1         !< design point of element 1
         type(betaAlphaCF),    intent(in)           :: dp2         !< design point of element 2
-        real(kind=c_double),  intent(in)           :: rhoP(*)     !< Autocorrelation of the stochastic variables between element 1 and element 2
         type(betaAlphaCF),    intent(inout)        :: dpC         !< design point of the combined elements
         integer, value,       intent(in)           :: combAndOr   !< Combination type, And or Or
     end function combineTwoElementsPartialCorrelationC2
@@ -213,32 +212,29 @@ contains
     end subroutine upscaleToLargestBlock
 
 !> Subroutine for combining two elements with partial correlation
-    subroutine combineTwoElementsPartialCorrelation( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combAndOr)
+    subroutine combineTwoElementsPartialCorrelation( elm1, elm2, elmC, combAndOr)
 !
 !   INPUT/OUTPUT VARIABLES
 !
-    real(kind=c_double),  intent(in)              :: beta1             !< Reliability index of element 1
-    real(kind=c_double),  intent(in), target      :: alpha1(:)         !< Alpha values of element 1
-    real(kind=c_double),  intent(in)              :: beta2             !< Reliability index of element 2
-    real(kind=c_double),  intent(in), target      :: alpha2(:)         !< Alpha values of element 2
-    real(kind=c_double),  intent(in)              :: rhoP(:)           !< Autocorrelation of the stochastic variables between element 1 and element 2
-    real(kind=c_double),  intent(out)             :: betaC             !< Reliability index of the combined elements
-    real(kind=c_double),  intent(out), target     :: alphaC(:)         !< Alpha values of the combined elements
-    integer,              intent(in)              :: combAndOr         !< Combination type, And or Or
+    type(designPoint),    intent(in)     :: elm1       !< design point of element 1
+    type(designPoint),    intent(in)     :: elm2       !< design point of element 2
+    type(designPoint),    intent(inout)  :: elmC       !< design point of resulting element
+    integer,              intent(in)     :: combAndOr  !< Combination type, And or Or
 
     integer :: n
     type(betaAlphaCF) :: dp1, dp2, dpC
 
-    dp1%beta = beta1
-    dp1%size = size(alpha1)
-    dp1%alpha = c_loc(alpha1)
-    dp2%beta = beta2
-    dp2%size = size(alpha2)
-    dp2%alpha = c_loc(alpha2)
-    dpC%size = size(alphaC)
-    dpC%alpha = c_loc(alphaC)
-    n = combineTwoElementsPartialCorrelationC2(dp1, dp2, rhoP, dpC, combAndOr)
-    betaC = dpC%beta
+    dp1%beta = elm1%beta
+    dp1%size = size(elm1%alpha)
+    dp1%alpha = c_loc(elm1%alpha)
+    dp1%rho = c_loc( elm1%rho)
+    dp2%beta = elm2%beta
+    dp2%size = size(elm2%alpha)
+    dp2%alpha = c_loc(elm2%alpha)
+    dpC%size = size(elmC%alpha)
+    dpC%alpha = c_loc(elmC%alpha)
+    n = combineTwoElementsPartialCorrelationC2(dp1, dp2, dpC, combAndOr)
+    elmC%beta = dpC%beta
     call warnHohenbichler(n)
 end subroutine combineTwoElementsPartialCorrelation
 
