@@ -309,6 +309,7 @@ namespace Deltares {
                     local[nrElementsComp - 2] = ab.ab;
 
                     nrElementsComp--;
+                    local.pop_back();
                 }
                 return { ab.ab, failures };
             }
