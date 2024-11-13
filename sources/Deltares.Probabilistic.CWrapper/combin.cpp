@@ -67,22 +67,6 @@ elements fillElements(multipleElements* m_elements)
     return elm;
 }
 
-elements fillElements(double* betaElement, double* alphaElement, int nrElms, int nrStoch)
-{
-    auto elm = elements();
-    for (int i = 0; i < nrElms; i++)
-    {
-        auto alpha = vector1D(nrStoch);
-        for (int j = 0; j < nrStoch; j++)
-        {
-            alpha(j) = alphaElement[i + j * nrElms];
-        }
-        auto ab = alphaBeta(betaElement[i], alpha);
-        elm.push_back(ab);
-    }
-    return elm;
-}
-
 extern "C"
 void combineMultipleElementsGeneral(multipleElements* elements, betaAlphaCF* dpOut, combinerSettings* settings)
 {
@@ -271,5 +255,4 @@ void calculate_combination_with_largest_correlation_c(multipleElements* elements
     *i1max = static_cast<int>(j1max);
     *i2max = static_cast<int>(j2max);
 }
-
 

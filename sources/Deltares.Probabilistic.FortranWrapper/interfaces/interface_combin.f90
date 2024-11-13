@@ -320,16 +320,16 @@ end subroutine combineMultipleElementsProb
 
 subroutine calculateCombinationWithLargestCorrelation( rhoP, alpha, i1max, i2max)
     use feedback, only : fatalError
-    real(kind=wp),  intent(in)  :: rhoP(:)     !< Autocorrelation the random variables between elements
-    real(kind=wp),  intent(in), target  :: alpha(:,:)           !< Alpha vector per element
-    integer,        intent(out) :: i1max                !< Index of first element with the largest correlation
-    integer,        intent(out) :: i2max                !< Index of second element with the largest correlation
+    real(kind=wp),  intent(in)          :: rhoP(:)     !< Autocorrelation the random variables between elements
+    real(kind=wp),  intent(in), target  :: alpha(:,:)  !< Alpha vector per element
+    integer,        intent(out)         :: i1max       !< Index of first element with the largest correlation
+    integer,        intent(out)         :: i2max       !< Index of second element with the largest correlation
 
     type(betaAlphaCF), allocatable, target :: dpIn(:)
-    type(multipleElements) :: elements
-    integer :: i
-    integer :: nStochasts           !< Number of random variables
-    integer :: nElements            !< Number of elements to be combined (for instance tidal periods)
+    type(multipleElements)                 :: elements
+    integer                                :: i
+    integer                                :: nStochasts !< Number of random variables
+    integer                                :: nElements  !< Number of elements to be combined
 
     nStochasts = size(rhoP)
     nElements = size(alpha,1)
@@ -344,7 +344,7 @@ subroutine calculateCombinationWithLargestCorrelation( rhoP, alpha, i1max, i2max
     elements%nElements =nElements
     allocate(dpIn(elements%nElements))
     do i = 1, elements%nElements
-        dpIn(i)%beta = 0.0 !betaElement(i)
+        dpIn(i)%beta = 0.0_wp
         dpIn(i)%alpha = c_loc(alpha(i,1))
         dpIn(i)%size = nStochasts
         dpIn(i)%stride_alpha = nElements
