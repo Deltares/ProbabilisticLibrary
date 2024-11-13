@@ -189,33 +189,26 @@ contains
 
 !>
 !! Subroutine for upscaling random variables to the largest block duration
-    subroutine upscaleToLargestBlock( betaSmallBlock, alphaSmallBlock, rhoTSmallBlock,  &
-                                      blockDurations, largestBlockDuration,             &
-                                      betaLargestBlock, alphaLargestBlock, durationsLargestBlock)
-    real(kind=wp), intent (in)          :: betaSmallBlock           !< Reliability index input
-    real(kind=wp), intent (in), target  :: alphaSmallBlock(:)       !< Alpha vector input
-    real(kind=wp), intent (in), target  :: rhoTSmallBlock(:)        !< Correlations
-    real(kind=wp), intent (in), target  :: blockDurations(:)        !< Block durations vector input
+    subroutine upscaleToLargestBlock( dpSmallBlock, largestBlockDuration, dpLargestBlock )
+    type(designPoint), intent(in)       :: dpSmallBlock             !< design point input
     real(kind=wp), intent (in)          :: largestBlockDuration     !< Target block duration
-    real(kind=wp), intent (out)         :: betaLargestBlock         !< Reliability index result
-    real(kind=wp), intent (out), target :: alphaLargestBlock(:)     !< Alpha vector result
-    real(kind=wp), intent (out), target :: durationsLargestBlock(:) !< Block durations vector result
+    type(designPoint), intent(inout)    :: dpLargestBlock           !< resulting design point
 
     type(betaAlphaCF) :: dpSmall, dpLargest
 
-    dpSmall%beta       = betaSmallBlock
-    dpSmall%size       = size(alphaSmallBlock)
-    call fill_loc_stride(alphaSmallBlock, dpSmall%alpha, dpSmall%stride_alpha)
-    dpSmall%rho        = c_loc(rhoTSmallBlock)
-    call fill_loc_stride(blockDurations, dpSmall%duration, dpSmall%stride_duration)
+    dpSmall%beta       = dpSmallBlock%beta
+    dpSmall%size       = size(dpSmallBlock%alpha)
+    call fill_loc_stride(dpSmallBlock%alpha, dpSmall%alpha, dpSmall%stride_alpha)
+    dpSmall%rho        = c_loc(dpSmallBlock%rho)
+    call fill_loc_stride(dpSmallBlock%Duration, dpSmall%duration, dpSmall%stride_duration)
 
-    dpLargest%size     = size(alphaLargestBlock)
-    call fill_loc_stride(alphaLargestBlock, dpLargest%alpha, dpLargest%stride_alpha)
-    call fill_loc_stride(durationsLargestBlock, dpLargest%duration, dpLargest%stride_duration)
+    dpLargest%size     = size(dpLargestBlock%alpha)
+    call fill_loc_stride(dpLargestBlock%alpha, dpLargest%alpha, dpLargest%stride_alpha)
+    call fill_loc_stride(dpLargestBlock%duration, dpLargest%duration, dpLargest%stride_duration)
 
     call upscaleToLargestBlockC(dpSmall, largestBlockDuration, dpLargest )
 
-    betaLargestBlock = dpLargest%beta
+    dpLargestBlock%beta = dpLargest%beta
 
     end subroutine upscaleToLargestBlock
 
