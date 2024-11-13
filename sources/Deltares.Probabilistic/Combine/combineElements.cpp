@@ -285,7 +285,7 @@ namespace Deltares {
                     // Calculate the combination of two elements which has
                     // together the largest correlation
                     //
-                    calculateCombinationWithLargestCorrelation(rho, nrElementsComp, local, i1, i2);
+                    calculateCombinationWithLargestCorrelation(rho, local, i1, i2);
                     //
                     // Combine these two elements with partial correlation
                     //
@@ -323,7 +323,7 @@ namespace Deltares {
         //! element 2, \f$ \alpha _{1,j} \f$ refers to the influence coefficient of variable j in element 1, and \f$ \alpha _{2,j} \f$ refers to
         //! the influence coefficient of variable j in element 2.
         void combineElements::calculateCombinationWithLargestCorrelation(const vector1D& rhoP,
-            const size_t nElements, const std::vector<alphaBeta>& ab, size_t& i1max, size_t& i2max)
+            const std::vector<alphaBeta>& ab, size_t& i1max, size_t& i2max)
         {
             // rhoP(nStochasts)  : Autocorrelation the random variables between elements
             // nElements         : Number of elements to be combined (for instance tidal periods)
@@ -333,6 +333,7 @@ namespace Deltares {
             //
             // Two elements can't be computed if there is only one element
             //
+            const size_t nElements = ab.size();
             if (nElements < 2)
             {
                 throw probLibException("The method calculateCombinationWithLargestCorrelation is called with only one element");

@@ -247,3 +247,29 @@ int combinemultipleelementsprob_c(multipleElements* elements, double* percentage
     return result.n;
 }
 
+extern "C"
+void calculate_combination_with_largest_correlation_c(multipleElements* elements, int* i1max, int* i2max)
+{
+    int nStoch = elements->designPoints[0].size;
+    int nElements = elements->size;
+    vector1D rho(nStoch);
+    for (int i = 0; i < nStoch; i++) rho(i) = elements->designPoints[0].rho[i];
+    std::vector<alphaBeta> alpha;
+    for (int i = 0; i < nElements; i++)
+    {
+        auto alphai = vector1D(nStoch);
+        for (int j = 1; j < nStoch; j++)
+        {
+            alphai(j) = elements->designPoints[i].alpha[j];
+        }
+        alphaBeta elm(elements->designPoints[i].beta, alphai);
+        alpha.push_back(elm);
+    }
+    size_t j1max;
+    size_t j2max;
+    combineElements::calculateCombinationWithLargestCorrelation( rho, alpha, j1max, j2max);
+    *i1max = static_cast<int>(j1max);
+    *i2max = static_cast<int>(j2max);
+}
+
+

@@ -50,13 +50,14 @@ namespace Deltares {
             cmbResult combineMultipleElementsProb(elements& Elements,
                 const std::vector<double>& percentages, const combineAndOr combAndOr);
 
+            static void calculateCombinationWithLargestCorrelation(const vector1D& rhoP,
+                const std::vector<alphaBeta>& alpha, size_t& i1max, size_t& i2max);
+
         private:
             void checkArraySizes(const size_t nStochasts, const size_t sizeAlpha2, const size_t sizeRhoP);
             std::pair<double, double> setLargestBeta(const double beta1, const double beta2, const double pf1, const double pf2);
             double combinedFailure(const combineAndOr combAndOr, const double pf1, const double pf2,
                 const double pfu, const double pf2pf1);
-            void calculateCombinationWithLargestCorrelation(const vector1D& rhoP, const size_t nElements,
-                const std::vector<alphaBeta>& alpha, size_t& i1max, size_t& i2max);
         };
     }
 }

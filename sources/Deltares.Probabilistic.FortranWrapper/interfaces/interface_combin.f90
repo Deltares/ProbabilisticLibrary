@@ -123,6 +123,15 @@ interface
     end function combineMultipleElementsProb_c
 end interface
 
+interface
+    subroutine calculate_combination_with_largest_correlation_c(elements, i1max, i2max) bind(c)
+        import :: multipleElements
+        type(multipleElements) :: elements
+        integer :: i1max
+        integer :: i2max
+    end subroutine calculate_combination_with_largest_correlation_c
+end interface
+
 contains
 
     subroutine warnHohenbichler(n)
@@ -309,22 +318,21 @@ subroutine combineMultipleElementsProb( betaElement, alphaElement, percentages, 
 
 end subroutine combineMultipleElementsProb
 
-! TODO convert to wrapper to cpp code
-subroutine calculateCombinationWithLargestCorrelation( nStochasts, rhoP, nElements, alpha, i1max, i2max)
-    use precision, only : wp
+subroutine calculateCombinationWithLargestCorrelation( rhoP, alpha, i1max, i2max)
     use feedback, only : fatalError
-    integer,        intent(in)  :: nStochasts           !< Number of random variables
-    real(kind=wp),  intent(in)  :: rhoP(nStochasts)     !< Autocorrelation the random variables between elements
-    integer,        intent(in)  :: nElements            !< Number of elements to be combined (for instance tidal periods)
-    real(kind=wp),  intent(in)  :: alpha(:,:)           !< Alpha vector per element
+    real(kind=wp),  intent(in)  :: rhoP(:)     !< Autocorrelation the random variables between elements
+    real(kind=wp),  intent(in), target  :: alpha(:,:)           !< Alpha vector per element
     integer,        intent(out) :: i1max                !< Index of first element with the largest correlation
     integer,        intent(out) :: i2max                !< Index of second element with the largest correlation
 
-    integer                     :: i1                   ! Do-loop counter1
-    integer                     :: i2                   ! Do-loop counter2
-    integer                     :: j                    ! Do-loop counter for the random variables
-    real                        :: rhoT                 ! Correlation between elements
-    real(kind=wp)               :: rhoMax               ! Largest correlation between two elements in the vector
+    type(betaAlphaCF), allocatable, target :: dpIn(:)
+    type(multipleElements) :: elements
+    integer :: i
+    integer :: nStochasts           !< Number of random variables
+    integer :: nElements            !< Number of elements to be combined (for instance tidal periods)
+
+    nStochasts = size(rhoP)
+    nElements = size(alpha,1)
     !
     ! Two elements can't be computed if there is only one element
     !
@@ -332,34 +340,22 @@ subroutine calculateCombinationWithLargestCorrelation( nStochasts, rhoP, nElemen
         call fatalError( "The subroutine calculateCombinationWithLargestCorrelation is called with only one element" )
         return
     end if
-    !
-    ! Initialize rhoMax and the indices for the maximum element
-    !
-    rhoMax = -1.0d0
-    i1max  = -1
-    i2max  = -1
-    !
-    !   Determine which two elements have the highest correlation
-    !
-    do i1 = 1, nElements - 1
-        do i2 = i1 + 1, nElements
-            !
-            ! Computate correlation
-            !
-            rhoT = 0.0d0
-            do j = 1, nStochasts
-                rhoT = rhoT + alpha(i1, j) * alpha(i2, j) * rhoP(j)
-            end do
-            if (rhoT > rhoMax .or. (i1 == 1 .and. i2 == 2)) then
-                !
-                ! For the first combination the parameters i1max, i2max and rhoMax are set
-                !
-                i1max  = i1
-                i2max  = i2
-                rhoMax = rhoT
-            end if
-        end do
+
+    elements%nElements =nElements
+    allocate(dpIn(elements%nElements))
+    do i = 1, elements%nElements
+        dpIn(i)%beta = 0.0 !betaElement(i)
+        dpIn(i)%alpha = c_loc(alpha(i,1))
+        dpIn(i)%size = nStochasts
+        dpIn(i)%stride_alpha = nElements
     end do
+    elements%designPoints = c_loc(dpIn)
+
+    call fill_loc_stride(rhoP, dpIn(1)%rho, i)
+
+    call calculate_combination_with_largest_correlation_c(elements, i1max, i2max)
+    i1max = i1max + 1 ! zero based => one based
+    i2max = i2max + 1 ! idem
 end subroutine calculateCombinationWithLargestCorrelation
 
 end module interface_combin
