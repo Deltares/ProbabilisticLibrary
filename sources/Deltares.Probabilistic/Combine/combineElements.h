@@ -42,10 +42,6 @@ namespace Deltares {
             cmbResult combineTwoElementsPartialCorrelation(alphaBeta& element1,
                 alphaBeta& element2, const vector1D& rhoP, const combineAndOr combAndOr);
 
-            cmbResult combineTwoElementsPartialCorrelation(alphaBeta& element1,
-                alphaBeta& element2, const vector1D& rhoP, const combineAndOr combAndOr,
-                vector1D& alphaI, vector1D& alphaII);
-
             cmbResult combineMultipleElements(const elements& Elements,
                 const vector1D& rho, const combineAndOr combAndOrIn);
 

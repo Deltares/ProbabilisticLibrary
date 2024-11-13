@@ -198,38 +198,6 @@ void upscaletolargestblockc(betaAlphaCF* dpSmallBlock, double* largestBlockDurat
 }
 
 extern "C"
-int combinetwoelementspartialcorrelationc1(betaAlphaCF* dp1, betaAlphaCF* dp2, double* rhoP,
-    betaAlphaCF* dpC, const int combAndOr, double* alphaI, double* alphaII)
-{
-    const int nStochasts = dp1->size;
-    auto rho = vector1D(nStochasts);
-    auto alfa1 = vector1D(nStochasts);
-    auto alfa2 = vector1D(nStochasts);
-    auto alfai = vector1D(nStochasts);
-    auto alfaii = vector1D(nStochasts);
-    for (int i = 0; i < nStochasts; i++)
-    {
-        rho(i) = rhoP[i];
-        alfa1(i) = dp1->alpha[i];
-        alfa2(i) = dp2->alpha[i];
-    }
-    auto elm1 = alphaBeta(dp1->beta, alfa1);
-    auto elm2 = alphaBeta(dp2->beta, alfa2);
-
-    auto cmb = combineElements();
-    auto elm = cmb.combineTwoElementsPartialCorrelation(elm1, elm2, rho, (combineAndOr)combAndOr, alfai, alfaii);
-
-    dpC->beta = elm.ab.getBeta();
-    for (int i = 0; i < nStochasts; i++)
-    {
-        dpC->alpha[i] = elm.ab.getAlphaI(i);
-        alphaI[i] = alfai(i);
-        alphaII[i] = alfaii(i);
-    }
-    return elm.n;
-}
-
-extern "C"
 int combinetwoelementspartialcorrelationc2(betaAlphaCF* dp1, betaAlphaCF* dp2, double* rhoP, betaAlphaCF* dpC, const int combAndOr)
 {
     auto nStochasts = dp1->size;
