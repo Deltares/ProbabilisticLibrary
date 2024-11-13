@@ -51,11 +51,8 @@ namespace Deltares
                 parameter->setMeanAndDeviation(1, 1);
             }
 
-            std::shared_ptr<StochastSettingsSet> stochastSettings = std::make_shared<StochastSettingsSet>();
-            stochastSettings->stochastSettings.push_back(std::make_shared<StochastSettings> {.stochast = parameter});
-            stochastSettings->stochastSettings.push_back(std::make_shared<StochastSettings> {.stochast = fragilityCurve});
-
-            std::shared_ptr<DesignPointBuilder> designPointBuilder = std::make_shared<DesignPointBuilder>(2, Settings->designPointMethod);
+            std::vector<std::shared_ptr<Statistics::Stochast>> stochasts = std::vector{ parameter, fragilityCurve };
+            std::shared_ptr<DesignPointBuilder> designPointBuilder = std::make_shared<DesignPointBuilder>(Settings->designPointMethod, stochasts);
             designPointBuilder->initialize(Statistics::StandardNormal::BetaMax);
 
             // Perform numerical integration over the fragility curve stochast
@@ -128,9 +125,9 @@ namespace Deltares
                 designPoint->Alphas.push_back(alphaCurve);
             }
 
-            designPoint->CorrectFragilityCurves();
+            designPoint->correctFragilityCurves();
 
-            designPoint->ExpandContributions();
+            designPoint->expandContributions();
 
             return designPoint;
         }
@@ -190,11 +187,11 @@ namespace Deltares
             double alphaParameter = -designPointSample->Values[0] / beta; // u = - beta * alpha
             double alphaFragilityCurve = -designPointSample->Values[1] / beta; // u = - beta * alpha
 
-            std::vector<double> alphas = modelRunner->VaryingStochastCount == 1 ? {alphaFragilityCurve} : {alphaParameter, alphaFragilityCurve};
+            std::vector<double> alphas = modelRunner->getVaryingStochastCount() == 1 ? std::vector {alphaFragilityCurve} : std::vector {alphaParameter, alphaFragilityCurve};
 
-            std::shared_ptr<DesignPoint> designPoint = modelRunner->getDesignPoint(beta, alphas);
+            std::shared_ptr<DesignPoint> designPoint = modelRunner->getDesignPoint(designPointSample, beta, nullptr);
 
-            designPoint->ExpandContributions();
+            designPoint->expandContributions();
 
             return designPoint;
         }

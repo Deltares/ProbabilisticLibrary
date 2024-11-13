@@ -41,7 +41,12 @@ namespace Deltares
             /**
              * \brief Method type how the design point (alpha values) is calculated
              */
-            DesignPointMethod designPointMethod = DesignPointMethod::CenterOfGravity;
+            DesignPointMethod designPointMethod = DesignPointMethod::NearestToMean;
+
+            /**
+             * \brief Settings for individual stochastic variable, such as the start value
+             */
+            std::shared_ptr<StochastSettingsSet> StochastSet = std::make_shared<StochastSettingsSet>();
 
             /**
              * \brief Indicates whether these settings have valid values

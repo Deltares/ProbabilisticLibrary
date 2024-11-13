@@ -54,6 +54,12 @@ namespace Deltares
 
             double getFailureProbability() { return Statistics::StandardNormal::getQFromU(this->Beta); }
             double getNonFailureProbability() { return Statistics::StandardNormal::getPFromU(this->Beta); }
+
+            void expandContributions();
+            void correctFragilityCurves();
+        private:
+            void expandFragilityCurves();
+            void expandContributingFragilityCurves();
         };
     }
 }

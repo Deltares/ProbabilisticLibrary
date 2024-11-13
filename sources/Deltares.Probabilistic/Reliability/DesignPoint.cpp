@@ -19,4 +19,107 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
+
+#include "FragilityCurve.h"
 #include "DesignPoint.h"
+#include "../Math/NumericSupport.h"
+
+namespace Deltares
+{
+    namespace Reliability
+    {
+        void DesignPoint::expandContributions()
+        {
+            this->expandContributingFragilityCurves();
+            this->expandFragilityCurves();
+            this->updateInfluenceFactors();
+        }
+
+        void DesignPoint::expandFragilityCurves()
+        {
+            std::vector<std::shared_ptr<StochastPointAlpha>> stochastRealizations(Alphas);
+
+            // replace fragility curve by stochasts in fragility points
+            for (auto stochastRealization : stochastRealizations)
+            {
+                std::shared_ptr<FragilityCurve> fragilityCurve = std::dynamic_pointer_cast<FragilityCurve>(stochastRealization->Stochast);
+                if (fragilityCurve != nullptr)
+                {
+                    std::shared_ptr<StochastPoint> fragilityCurveAlpha = fragilityCurve->getDesignPoint(stochastRealization->X);
+
+                    if (fragilityCurveAlpha != nullptr && !fragilityCurveAlpha->Alphas.empty() && fragilityCurveAlpha->Alphas[0]->Stochast != fragilityCurve)
+                    {
+                        std::erase(Alphas, stochastRealization);
+
+                        double factor = (fragilityCurve->isGloballyDescending() ^ fragilityCurve->inverted) ? -1 : 1;
+                        if (std::dynamic_pointer_cast<FragilityCurve>(stochastRealization->Stochast) != nullptr)
+                        {
+                            factor = -1;
+                        }
+
+                        for (std::shared_ptr<StochastPointAlpha> alphaRealization : fragilityCurveAlpha->Alphas)
+                        {
+                            std::shared_ptr<StochastPointAlpha> subAlpha = std::make_shared<StochastPointAlpha>();
+                            subAlpha->Stochast = alphaRealization->Stochast;
+                            subAlpha->Alpha = factor * stochastRealization->Alpha * alphaRealization->Alpha;
+                            subAlpha->AlphaCorrelated = factor * stochastRealization->AlphaCorrelated * alphaRealization->AlphaCorrelated;
+                            subAlpha->U = - this->Beta / subAlpha->Alpha;
+                            subAlpha->X = subAlpha->Stochast->getXFromU(-this->Beta / subAlpha->AlphaCorrelated);
+
+                            this->Alphas.push_back(subAlpha);
+                        }
+                    }
+                }
+            }
+        }
+
+        void DesignPoint::expandContributingFragilityCurves()
+        {
+            std::vector<std::shared_ptr<StochastPointAlpha>> stochastRealizations(Alphas);
+
+            // replace fragility curve by fragility curves by which it is built up
+            for (auto stochastRealization : stochastRealizations)
+            {
+                std::shared_ptr<FragilityCurve> fragilityCurve = std::dynamic_pointer_cast<FragilityCurve>(stochastRealization->Stochast);
+                if (fragilityCurve != nullptr)
+                {
+                    double uCurve = stochastRealization->U;
+
+                    for (std::shared_ptr<FragilityCurve> subCurve : fragilityCurve->contributingFragilityCurves)
+                    {
+                        if (subCurve != fragilityCurve)
+                        {
+                            std::erase(this->Alphas, stochastRealization);
+
+                            double xValue = subCurve->getXFromU(uCurve);
+
+                            std::shared_ptr<StochastPointAlpha> subAlpha = std::make_shared<StochastPointAlpha>();
+                            subAlpha->Stochast = subCurve;
+                            subAlpha->Alpha = stochastRealization->Alpha;
+                            subAlpha->AlphaCorrelated = stochastRealization->AlphaCorrelated;
+                            subAlpha->U = uCurve;
+                            subAlpha->X = xValue;
+                            this->Alphas.push_back(subAlpha);
+                        }
+                    }
+                }
+            }
+        }
+
+        void DesignPoint::correctFragilityCurves()
+        {
+            if (this->Beta < 0)
+            {
+                for (std::shared_ptr<StochastPointAlpha> stochastRealization : this->Alphas)
+                {
+                    std::shared_ptr<FragilityCurve> fragilityCurve = std::dynamic_pointer_cast<FragilityCurve>(stochastRealization->Stochast);
+                    if (fragilityCurve != nullptr && fragilityCurve->inverted)
+                    {
+                        stochastRealization->invert();
+                    }
+                }
+            }
+        }
+    }
+}
+

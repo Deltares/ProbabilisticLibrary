@@ -149,6 +149,11 @@ namespace Deltares
                     return shared->object->isVarying();
                 }
 
+                virtual bool IsQualitative()
+                {
+                    return shared->object->isQualitative();
+                }
+
                 virtual property bool IsVariableStochast
                 {
                     bool get() { return shared->object->IsVariableStochast; }

@@ -140,7 +140,7 @@ namespace Deltares
              * \remark Internally, the Distribution field is updated
              * \param distributionType Distribution type
              */
-            void setDistributionType(DistributionType distributionType);
+            virtual void setDistributionType(DistributionType distributionType);
 
             /**
              * \brief Gets the distribution type
