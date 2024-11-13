@@ -54,9 +54,9 @@ type DesignPoint
     real(kind=wp), pointer :: correlation_length(:)
 end type DesignPoint
 
-type combinerSettings
-    integer combAndOr
-    integer combinerType
+type, bind(C) :: combinerSettings
+    integer :: combAndOr
+    integer :: combinerType
 end type combinerSettings
 
 interface
