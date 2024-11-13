@@ -114,16 +114,12 @@ interface
 end interface
 
 interface
-    integer function combineMultipleElementsProb_c( betaElement, alphaElement, percentages, beta, alpha, &
-            combAndOrIn, nrElms, nrStoch ) bind(c)
+    integer function combineMultipleElementsProb_c( elements,  percentages, dpOut ) bind(c)
         use, intrinsic :: iso_c_binding, only: c_double
-        real(kind=c_double),  intent(in)    :: betaElement(*)       !< Reliability index per element
-        real(kind=c_double),  intent(in)    :: alphaElement(*)      !< Alpha vector per element
-        real(kind=c_double),  intent(in)    :: percentages(*)       !< Array of percentages
-        real(kind=c_double),  intent(out)   :: beta                 !< Reliability index after combining over elements
-        real(kind=c_double),  intent(out)   :: alpha(*)             !< Alpha vector after combining over elements
-        integer, value,       intent(in)    :: combAndOrIn          !< Combination type, And or Or
-        integer, value,       intent(in)    :: nrElms, nrStoch
+        import :: betaAlphaCF, multipleElements
+        type(multipleElements), intent(in)    :: elements         !< input design points
+        real(kind=c_double),    intent(in)    :: percentages(*)   !< Array of percentages
+        type(betaAlphaCF),      intent(out)   :: dpOut            !< Reliability index after combining over elements
     end function combineMultipleElementsProb_c
 end interface
 
@@ -167,14 +163,19 @@ contains
     real(kind=wp), intent(in   ), target :: array(:)
     type(c_ptr),   intent(  out)         :: loc
     integer,       intent(  out)         :: stride
-    type(c_ptr)     :: loc2
+
+    type(c_ptr)              :: loc2
     integer(kind=c_intptr_t) :: lc1, lc2
 
     loc = c_loc(array(1))
-    loc2 = c_loc(array(2))
-    lc1 = transfer(loc, lc1)
-    lc2 = transfer(loc2, lc2)
-    stride = (lc2 - lc1) / sizeof(array(1))
+    if (size(array) == 1) then
+        stride = 1
+    else
+        loc2 = c_loc(array(2))
+        lc1 = transfer(loc, lc1)
+        lc2 = transfer(loc2, lc2)
+        stride = (lc2 - lc1) / sizeof(array(1))
+    end if
     end subroutine fill_loc_stride
 
 !>
@@ -275,25 +276,34 @@ subroutine combineMultipleElements( betaElement, alphaElement, rho, beta, alpha)
 end subroutine combineMultipleElements
 
 !> This subroutine calculates the reliability index (beta) and alpha values combining over elements
-subroutine combineMultipleElementsProb( betaElement, alphaElement, percentages, beta, alpha, combAndOrIn )
-    real(kind=c_double),  intent(in)    :: betaElement(:)       !< Reliability index per element
-    real(kind=c_double),  intent(in)    :: alphaElement(:,:)    !< Alpha vector per element
-    real(kind=c_double),  intent(in)    :: percentages(:)       !< Array of percentages
-    real(kind=c_double),  intent(out)   :: beta                 !< Reliability index after combining over elements
-    real(kind=c_double),  intent(out)   :: alpha(:)             !< Alpha vector after combining over elements
-    integer, optional,    intent(in)    :: combAndOrIn          !< Combination type, And or Or
+subroutine combineMultipleElementsProb( betaElement, alphaElement, percentages, dpOutF )
+    real(kind=c_double),  intent(in)         :: betaElement(:)       !< Reliability index per element
+    real(kind=c_double),  intent(in), target :: alphaElement(:,:)    !< Alpha vector per element
+    real(kind=c_double),  intent(in)         :: percentages(:)       !< Array of percentages
+    type(designPoint),    intent(out)        :: dpOutF               !< design point after combining over elements
 
-    integer :: nrElms, nrStoch, combAndOr, n
+    integer :: nrElms, n, nrStoch, i
+    type(betaAlphaCF) :: dpOut
+    type(multipleElements) :: elements
+    type(betaAlphaCF), allocatable, target :: dpIn(:)
 
-    nrElms =  size(betaElement)
-    nrStoch = size(alpha)
-    if ( present(combAndOrIn) ) then
-        combAndOr = combAndOrIn
-    else
-        combAndOr = combOr
-    end if
+    nrElms = size(betaElement)
+    elements%nElements =nrElms
+    nrStoch = size(dpOutF%alpha)
+    allocate(dpIn(elements%nElements))
+    do i = 1, elements%nElements
+        dpIn(i)%beta = betaElement(i)
+        dpIn(i)%alpha = c_loc(alphaElement(i,1))
+        dpIn(i)%size = nrStoch
+        dpIn(i)%stride_alpha = nrElms
+    end do
+    elements%designPoints = c_loc(dpIn)
 
-    n = combineMultipleElementsProb_c( betaElement, alphaElement, percentages, beta, alpha, combAndOr, nrElms, nrStoch)
+    dpOut%size = size(dpOutF%alpha)
+    call fill_loc_stride(dpOutF%alpha, dpOut%alpha, dpOut%stride_alpha)
+
+    n = combineMultipleElementsProb_c( elements, percentages, dpOut)
+    dpOutF%beta = dpOut%beta
 
     call warnHohenbichler(n)
 

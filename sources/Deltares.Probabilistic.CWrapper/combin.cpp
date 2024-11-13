@@ -213,7 +213,7 @@ int combinetwoelementspartialcorrelationc2(betaAlphaCF* dp1, betaAlphaCF* dp2, d
     }
     auto elm1 = alphaBeta(dp1->beta, alfa1);
     auto elm2 = alphaBeta(dp2->beta, alfa2);
-    auto elm = cmb.combineTwoElementsPartialCorrelation(elm1, elm2, rho, (combineAndOr)combAndOr);
+    auto elm = cmb.combineTwoElementsPartialCorrelation(elm1, elm2, rho, static_cast<combineAndOr>(combAndOr));
 
     dpC->beta = elm.ab.getBeta();
     for (int i = 0; i < nStochasts; i++)
@@ -224,11 +224,12 @@ int combinetwoelementspartialcorrelationc2(betaAlphaCF* dp1, betaAlphaCF* dp2, d
 }
 
 extern "C"
-int combinemultipleelementsprob_c(double* betaElement, double* alphaElement, double* percentagesIn,
-    double* beta, double* alpha, const int combAndOr, int nrElms, int nrStoch)
+int combinemultipleelementsprob_c(multipleElements* elements, double* percentagesIn, betaAlphaCF* dpOut)
 {
+    const int nrElms = elements->size;
+    const int nrStoch = dpOut->size;
     auto cmb = combineElements();
-    auto elm = fillElements(betaElement, alphaElement, nrElms, nrStoch);
+    auto elm = fillElements(elements);
 
     auto percentages = std::vector<double>(nrElms);
     for (int i = 0; i < nrElms; i++)
@@ -236,12 +237,12 @@ int combinemultipleelementsprob_c(double* betaElement, double* alphaElement, dou
         percentages[i] = percentagesIn[i];
     }
 
-    auto result = cmb.combineMultipleElementsProb(elm, percentages, (combineAndOr)combAndOr);
+    auto result = cmb.combineMultipleElementsProb(elm, percentages, combineAndOr::combOr);
 
-    *beta = result.ab.getBeta();
+    dpOut->beta = result.ab.getBeta();
     for (int i = 0; i < nrStoch; i++)
     {
-        alpha[i] = result.ab.getAlphaI(i);
+        dpOut->alpha[i*dpOut->stride_alpha] = result.ab.getAlphaI(i);
     }
     return result.n;
 }

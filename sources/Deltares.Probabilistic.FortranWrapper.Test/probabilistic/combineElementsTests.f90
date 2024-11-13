@@ -2358,11 +2358,11 @@ subroutine testcombineMultipleElementsProb1
     real(kind=wp)               :: betaElement(nElements)               !< Reliability index per element
     real(kind=wp)               :: alphaElement(nElements,nStochasts)   !< Alpha vector per element
     real(kind=wp)               :: percentages(nElements)               !< Array of percentages
-    real(kind=wp)               :: beta                                 !< Reliability index after combining over elements
-    real(kind=wp)               :: alpha(nStochasts)                    !< Alpha vector after combining over elements
+    real(kind=wp), target       :: alpha(nStochasts)                    !< Alpha vector after combining over elements
     real(kind=wp)               :: betaExpected                         !< Expected reliability index after combining over elements
     real(kind=wp)               :: alphaExpected(nStochasts)            !< Expected alpha vector after combining over elements
     real(kind=wp), parameter    :: margin = 1d-6
+    type(DesignPoint)           :: dpOut
 
     betaElement(1)    = 3.5_wp
     alphaElement(1,1) = 1.0_wp
@@ -2375,9 +2375,10 @@ subroutine testcombineMultipleElementsProb1
     alphaExpected(2) = alphaElement(1,2)
     alphaExpected(3) = alphaElement(1,3)
 
-    call combineMultipleElementsProb( betaElement, alphaElement, percentages, beta, alpha, combOr )
+    dpOut%alpha => alpha
+    call combineMultipleElementsProb( betaElement, alphaElement, percentages, dpOut)
 
-    call assert_comparable(beta, betaExpected, margin, "difference in beta")
+    call assert_comparable(dpOut%beta, betaExpected, margin, "difference in beta")
     call assert_comparable(alpha, alphaExpected, margin, "difference in alpha")
 
 end subroutine testcombineMultipleElementsProb1
@@ -2390,12 +2391,12 @@ subroutine testcombineMultipleElementsProb2
     real(kind=wp)               :: betaElement(nElements)               !< Reliability index per element
     real(kind=wp)               :: alphaElement(nElements,nStochasts)   !< Alpha vector per element
     real(kind=wp)               :: percentages(nElements)               !< Array of percentages
-    real(kind=wp)               :: beta                                 !< Reliability index after combining over elements
-    real(kind=wp)               :: alpha(nStochasts)                    !< Alpha vector after combining over elements
+    real(kind=wp), target       :: alpha(nStochasts)                    !< Alpha vector after combining over elements
     real(kind=wp)               :: betaExpected                         !< Expected reliability index after combining over elements
     real(kind=wp)               :: alphaExpected(nStochasts)            !< Expected alpha vector after combining over elements
     real(kind=wp), parameter    :: margin = 1d-7
     integer                     :: i
+    type(DesignPoint)           :: dpOut
 
     do i = 1, nElements
         betaElement(i)    = 3.5_wp
@@ -2410,9 +2411,10 @@ subroutine testcombineMultipleElementsProb2
     alphaExpected(2) = alphaElement(1,2)
     alphaExpected(3) = alphaElement(1,3)
 
-    call combineMultipleElementsProb( betaElement, alphaElement, percentages, beta, alpha, combOr )
+    dpOut%alpha => alpha
+    call combineMultipleElementsProb( betaElement, alphaElement, percentages, dpOut)
 
-    call assert_comparable(beta, betaExpected, margin, "difference in beta")
+    call assert_comparable(dpOut%beta, betaExpected, margin, "difference in beta")
     call assert_comparable(alpha, alphaExpected, margin, "difference in alpha")
 
 end subroutine testcombineMultipleElementsProb2
@@ -2425,12 +2427,12 @@ subroutine testcombineMultipleElementsProb3
     real(kind=wp)               :: betaElement(nElements)               !< Reliability index per element
     real(kind=wp)               :: alphaElement(nElements,nStochasts)   !< Alpha vector per element
     real(kind=wp)               :: percentages(nElements)               !< Array of percentages
-    real(kind=wp)               :: beta                                 !< Reliability index after combining over elements
-    real(kind=wp)               :: alpha(nStochasts)                    !< Alpha vector after combining over elements
+    real(kind=wp), target       :: alpha(nStochasts)                    !< Alpha vector after combining over elements
     real(kind=wp)               :: betaExpected                         !< Expected reliability index after combining over elements
     real(kind=wp)               :: alphaExpected(nStochasts)            !< Expected alpha vector after combining over elements
     real(kind=wp), parameter    :: margin = 1d-7
     integer                     :: i
+    type(DesignPoint)           :: dpOut
 
     do i = 1, nElements
         betaElement(i)    = 3.5_wp
@@ -2445,9 +2447,10 @@ subroutine testcombineMultipleElementsProb3
     alphaExpected(2) = alphaElement(1,2)
     alphaExpected(3) = alphaElement(1,3)
 
-    call combineMultipleElementsProb( betaElement, alphaElement, percentages, beta, alpha, combOr )
+    dpOut%alpha => alpha
+    call combineMultipleElementsProb( betaElement, alphaElement, percentages, dpOut )
 
-    call assert_comparable(beta, betaExpected, margin, "difference in beta")
+    call assert_comparable(dpOut%beta, betaExpected, margin, "difference in beta")
     call assert_comparable(alpha, alphaExpected, margin, "difference in alpha")
     
 end subroutine testcombineMultipleElementsProb3
@@ -2460,12 +2463,12 @@ subroutine testcombineMultipleElementsProb4
     real(kind=wp)               :: betaElement(nElements)               !< Reliability index per element
     real(kind=wp)               :: alphaElement(nElements,nStochasts)   !< Alpha vector per element
     real(kind=wp)               :: percentages(nElements)               !< Array of percentages
-    real(kind=wp)               :: beta                                 !< Reliability index after combining over elements
-    real(kind=wp)               :: alpha(nStochasts)                    !< Alpha vector after combining over elements
+    real(kind=wp), target       :: alpha(nStochasts)                    !< Alpha vector after combining over elements
     real(kind=wp)               :: betaExpected                         !< Expected reliability index after combining over elements
     real(kind=wp)               :: alphaExpected(nStochasts)            !< Expected alpha vector after combining over elements
     real(kind=wp), parameter    :: margin = 1d-3
     integer                     :: i
+    type(DesignPoint)           :: dpOut
 
     betaElement(1) = 3.0_wp
     betaElement(2) = 3.5_wp
@@ -2484,9 +2487,10 @@ subroutine testcombineMultipleElementsProb4
     alphaExpected(2) = alphaElement(1,2)
     alphaExpected(3) = alphaElement(1,3)
 
-    call combineMultipleElementsProb( betaElement, alphaElement, percentages, beta, alpha, combOr )
+    dpOut%alpha => alpha
+    call combineMultipleElementsProb( betaElement, alphaElement, percentages, dpOut )
 
-    call assert_comparable(beta, betaExpected, margin, "difference in beta")
+    call assert_comparable(dpOut%beta, betaExpected, margin, "difference in beta")
     call assert_comparable(alpha, alphaExpected, margin, "difference in alpha")
 
 end subroutine testcombineMultipleElementsProb4
@@ -2499,12 +2503,12 @@ subroutine testcombineMultipleElementsProb5
     real(kind=wp)               :: betaElement(nElements)               !< Reliability index per element
     real(kind=wp)               :: alphaElement(nElements,nStochasts)   !< Alpha vector per element
     real(kind=wp)               :: percentages(nElements)               !< Array of percentages
-    real(kind=wp)               :: beta                                 !< Reliability index after combining over elements
-    real(kind=wp)               :: alpha(nStochasts)                    !< Alpha vector after combining over elements
+    real(kind=wp), target       :: alpha(nStochasts)                    !< Alpha vector after combining over elements
     real(kind=wp)               :: betaExpected                         !< Expected reliability index after combining over elements
     real(kind=wp)               :: alphaExpected(nStochasts)            !< Expected alpha vector after combining over elements
     real(kind=wp), parameter    :: margin = 1d-3
     integer                     :: i
+    type(DesignPoint)           :: dpOut
 
     do i = 1, nElements
         betaElement(i)    = 3.0_wp + (i-1)*0.1_wp
@@ -2519,9 +2523,10 @@ subroutine testcombineMultipleElementsProb5
     alphaExpected(2) = alphaElement(1,2)
     alphaExpected(3) = alphaElement(1,3)
 
-    call combineMultipleElementsProb( betaElement, alphaElement, percentages, beta, alpha, combOr )
+    dpOut%alpha => alpha
+    call combineMultipleElementsProb( betaElement, alphaElement, percentages, dpOut )
 
-    call assert_comparable(beta, betaExpected, margin, "difference in beta")
+    call assert_comparable(dpOut%beta, betaExpected, margin, "difference in beta")
     call assert_comparable(alpha, alphaExpected, margin, "difference in alpha")
 
 end subroutine testcombineMultipleElementsProb5
