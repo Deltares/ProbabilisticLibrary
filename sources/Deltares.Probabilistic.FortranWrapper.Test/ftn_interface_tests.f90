@@ -20,6 +20,7 @@
 ! All rights reserved.
 !
 module ftn_interface_tests
+use iso_c_binding, only : c_loc
 use precision
 use ftnunit
 use interface_gen, only : tError, ErrMsgLength
