@@ -67,7 +67,9 @@ function logNormalInverseII( u, M, S, par3, ierr, errorMessage )
     real(kind = wp) :: logNormalInverseII
     integer, intent(out) :: ierr
     character(len=*), intent(inout) :: errorMessage
-    call calculateDistributionInverse(u, logNormalInverseII, distributionShiftedLognormal2, M, S, par3, 0.0_wp, ierr, errorMessage)
+    type(tError) :: error
+    call calculateDistributionInverse(u, logNormalInverseII, distributionShiftedLognormal2, [M, S, par3, 0.0_wp], error)
+    ierr = error%iCode
 end function logNormalInverseII
 
 function gumbelInverse( uin, a, b, p, q )
