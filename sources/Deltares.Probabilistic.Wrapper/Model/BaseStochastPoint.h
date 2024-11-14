@@ -32,7 +32,7 @@ namespace Deltares
             public ref class BaseStochastPoint
             {
             public:
-                virtual std::shared_ptr<Reliability::DesignPoint> getDesignPoint() 
+                virtual std::shared_ptr<Reliability::DesignPoint> getDesignPoint()
                 {
                     return nullptr;
                 }

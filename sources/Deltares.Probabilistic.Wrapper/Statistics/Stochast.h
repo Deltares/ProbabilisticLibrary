@@ -85,27 +85,31 @@ namespace Deltares
                 bool AreContributingStochastsMatching();
 
                 System::Collections::Generic::List<ManagedUXDelegate^>^ handles = gcnew System::Collections::Generic::List<ManagedUXDelegate^>();
+            protected:
+                virtual void setNativeObject(std::shared_ptr<Statistics::Stochast> nativeStochast)
+                {
+                    shared = new Utils::Wrappers::SharedPointerProvider(nativeStochast);
+                }
             public:
                 Stochast()
                 {
-                    shared = new Utils::Wrappers::SharedPointerProvider(new Statistics::Stochast());
+                    this->setNativeObject(std::make_shared<Statistics::Stochast>());
                     this->Initialize();
                 }
 
                 Stochast(std::shared_ptr<Statistics::Stochast> nativeStochast)
                 {
-                    shared = new Utils::Wrappers::SharedPointerProvider(nativeStochast);
+                    this->setNativeObject(nativeStochast);
                     this->Initialize();
                     this->updateLists();
                 }
 
-                Stochast(DistributionType distributionType, array<double>^ values) : Stochast()
+                Stochast(DistributionType distributionType, array<double>^ values)
                 {
                     const Statistics::DistributionType nativeDistributionType = DistributionTypeConverter::getNativeDistributionType(distributionType);
                     std::vector<double> nValues = NativeSupport::toNative(values);
 
-                    shared = new Utils::Wrappers::SharedPointerProvider(new Statistics::Stochast(nativeDistributionType, nValues));
-
+                    this->setNativeObject(std::make_shared<Statistics::Stochast>(nativeDistributionType, nValues));
                     this->Initialize();
                 }
 

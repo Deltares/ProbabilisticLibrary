@@ -75,7 +75,11 @@ namespace Deltares
                 property Models::Wrappers::BaseStochastPoint^ DesignPoint
                 {
                     Models::Wrappers::BaseStochastPoint^ get() { return this->designPoint; }
-                    void set(Models::Wrappers::BaseStochastPoint^ value) { this->designPoint = value; }
+                    void set(Models::Wrappers::BaseStochastPoint^ value)
+                    {
+                        this->designPoint = value;
+                        shared->object->designPoint = value->getDesignPoint();
+                    }
                 }
 
                 virtual int CompareTo(FragilityValue^ other)

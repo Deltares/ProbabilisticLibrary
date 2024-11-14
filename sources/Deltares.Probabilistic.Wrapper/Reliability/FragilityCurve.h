@@ -24,6 +24,7 @@
 #include "DesignPoint.h"
 #include "../Statistics/Stochast.h"
 #include "../../Deltares.Probabilistic/Reliability/FragilityCurve.h"
+#include "../../Deltares.Probabilistic/Statistics/Stochast.h"
 
 namespace Deltares
 {
@@ -37,14 +38,21 @@ namespace Deltares
             public ref class FragilityCurve : public Statistics::Wrappers::Stochast
             {
             private:
-                SharedPointerProvider<Reliability::FragilityCurve>* shared = new SharedPointerProvider(new Reliability::FragilityCurve());
+                SharedPointerProvider<Reliability::FragilityCurve>* shared = nullptr;
 
                 CallBackList<FragilityCurve^>^ contributingFragilityCurves = gcnew CallBackList<FragilityCurve^>();
                 void SynchronizeContributingFragilityCurves(ListOperationType listOperationType, FragilityCurve^ fragilityCurve);
+                bool HasMatchingFragilityValues();
 
                 bool synchronizing = false;
+            protected:
+                void setNativeObject(std::shared_ptr<Statistics::Stochast> nativeStochast) override
+                {
+                    shared = new Utils::Wrappers::SharedPointerProvider(static_pointer_cast<Reliability::FragilityCurve>(nativeStochast));
+                    Stochast::setNativeObject(nativeStochast);
+                }
             public:
-                FragilityCurve()
+                FragilityCurve() : Stochast(std::make_shared<Reliability::FragilityCurve>())
                 {
                     contributingFragilityCurves->SetCallBack(gcnew ListCallBack<FragilityCurve^>(this, &FragilityCurve::SynchronizeContributingFragilityCurves));
                 }
@@ -72,8 +80,19 @@ namespace Deltares
 
                 std::shared_ptr<Reliability::FragilityCurve> GetNativeValue()
                 {
+                    if (!HasMatchingFragilityValues())
+                    {
+                        shared->object->getProperties()->FragilityValues.clear();
+
+                        for (int i = 0; i < this->FragilityValues->Count; i++)
+                        {
+                            shared->object->getProperties()->FragilityValues.push_back(this->FragilityValues[i]->GetValue());
+                        }
+                    }
+
                     return shared->object;
                 }
+
             };
         }
     }

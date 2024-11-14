@@ -49,7 +49,7 @@ namespace Deltares
             // check whether there is a fragility value exactly at x
             for (std::shared_ptr<Statistics::FragilityValue> fragilityValue : this->getProperties()->FragilityValues)
             {
-                if (Numeric::NumericSupport::areEqual(x, fragilityValue->X, margin))
+                if (fragilityValue->designPoint != nullptr && Numeric::NumericSupport::areEqual(x, fragilityValue->X, margin))
                 {
                     return fragilityValue->designPoint;
                 }

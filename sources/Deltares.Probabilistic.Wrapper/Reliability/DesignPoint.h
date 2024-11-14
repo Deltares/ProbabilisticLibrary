@@ -44,7 +44,7 @@ namespace Deltares
             public ref class DesignPoint : public Wrappers::StochastPoint
             {
             private:
-                SharedPointerProvider<Reliability::DesignPoint>* shared = new SharedPointerProvider<Reliability::DesignPoint>();
+                SharedPointerProvider<Reliability::DesignPoint>* shared = nullptr;
                 ConvergenceReport^ convergenceReport = gcnew Wrappers::ConvergenceReport();
                 System::Collections::Generic::List<Wrappers::ReliabilityResult^>^ reliabilityResults = gcnew System::Collections::Generic::List<ReliabilityResult^>();
                 System::Collections::Generic::List<Wrappers::Evaluation^>^ evaluations = gcnew System::Collections::Generic::List<Wrappers::Evaluation^>();
@@ -56,22 +56,25 @@ namespace Deltares
                 void setDesignPoints(System::Collections::Generic::IList<Reliability::Wrappers::DesignPoint^>^ contributingDesignPoints);
 
                 bool HasMatchingAlphaValues();
-            public:
-                DesignPoint()
+            protected:
+                void setNativeObject(std::shared_ptr<Models::StochastPoint> nativeStochastPoint) override
                 {
-                    shared = new SharedPointerProvider(new Reliability::DesignPoint());
+                    shared = new Utils::Wrappers::SharedPointerProvider(static_pointer_cast<Reliability::DesignPoint>(nativeStochastPoint));
+                    StochastPoint::setNativeObject(nativeStochastPoint);
+                }
+            public:
+                DesignPoint() : StochastPoint(std::make_shared<Reliability::DesignPoint>())
+                {
                     setDesignPoint(gcnew System::Collections::Generic::List<Statistics::Wrappers::Stochast^>());
                 }
 
-                DesignPoint(std::shared_ptr<Reliability::DesignPoint> designPoint, System::Collections::Generic::IList<Statistics::Wrappers::Stochast^>^ stochasts)
+                DesignPoint(std::shared_ptr<Reliability::DesignPoint> designPoint, System::Collections::Generic::IList<Statistics::Wrappers::Stochast^>^ stochasts) : StochastPoint(designPoint)
                 {
-                    shared = new SharedPointerProvider(designPoint);
                     setDesignPoint(stochasts);
                 }
 
-                DesignPoint(std::shared_ptr<Reliability::DesignPoint> designPoint, System::Collections::Generic::IList<Reliability::Wrappers::DesignPoint^>^ designPoints)
+                DesignPoint(std::shared_ptr<Reliability::DesignPoint> designPoint, System::Collections::Generic::IList<Reliability::Wrappers::DesignPoint^>^ designPoints) : StochastPoint(designPoint)
                 {
-                    shared = new SharedPointerProvider(designPoint);
                     setDesignPoints(designPoints);
                 }
                 ~DesignPoint() { this->!DesignPoint(); }
