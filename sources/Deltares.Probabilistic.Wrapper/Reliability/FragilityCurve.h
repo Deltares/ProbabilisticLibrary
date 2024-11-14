@@ -59,10 +59,22 @@ namespace Deltares
                 ~FragilityCurve() { this->!FragilityCurve(); }
                 !FragilityCurve() { delete shared; }
 
-                virtual property bool Inverted 
+                virtual property bool Inverted
                 {
                     bool get() override { return shared->object->inverted; }
                     void set(bool value) override { shared->object->inverted = value; }
+                }
+
+                virtual property bool Fixed
+                {
+                    bool get() { return shared->object->fixed; }
+                    void set(bool value) { shared->object->fixed = value; }
+                }
+
+                virtual property double FixedValue
+                {
+                    double get() { return shared->object->fixedValue; }
+                    void set(double value) { shared->object->fixedValue = value; }
                 }
 
                 property System::Collections::Generic::IList<FragilityCurve^>^ ContributingFragilityCurves

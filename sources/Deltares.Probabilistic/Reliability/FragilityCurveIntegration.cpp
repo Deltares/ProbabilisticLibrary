@@ -184,10 +184,12 @@ namespace Deltares
 
             double beta = Statistics::StandardNormal::getUFromQ(probFailure);
 
-            double alphaParameter = -designPointSample->Values[0] / beta; // u = - beta * alpha
-            double alphaFragilityCurve = -designPointSample->Values[1] / beta; // u = - beta * alpha
-
-            std::vector<double> alphas = modelRunner->getVaryingStochastCount() == 1 ? std::vector {alphaFragilityCurve} : std::vector {alphaParameter, alphaFragilityCurve};
+            if (modelRunner->getVaryingStochastCount() == 1)
+            {
+                double alphaFragilityCurve = -designPointSample->Values[1] / beta; // u = - beta * alpha
+                std::vector<double> alphas = std::vector{ alphaFragilityCurve };
+                designPointSample = std::make_shared<Sample>(alphas);
+            }
 
             std::shared_ptr<DesignPoint> designPoint = modelRunner->getDesignPoint(designPointSample, beta, nullptr);
 

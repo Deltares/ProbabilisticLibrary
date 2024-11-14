@@ -44,12 +44,23 @@ namespace Deltares
 
             bool inverted = false;
 
+            bool fixed = false;
+
+            double fixedValue = 0;
+
             std::vector<std::shared_ptr<FragilityCurve>> contributingFragilityCurves;
 
             double getUFromX(double x) override
             {
-                int factor = inverted ? -1 : 1;
-                return factor * Stochast::getUFromX(x);
+                if (fixed)
+                {
+                    return fixedValue;
+                }
+                else
+                {
+                    int factor = inverted ? -1 : 1;
+                    return factor * Stochast::getUFromX(x);
+                }
             }
 
             bool isGloballyDescending();
