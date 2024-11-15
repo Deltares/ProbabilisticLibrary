@@ -40,6 +40,8 @@ class ReliabilityMethod(Enum):
 	numerical_bisection = 'numerical_bisection'
 	latin_hypercube = 'latin_hypercube'
 	cobyla_reliability = 'cobyla_reliability'
+	form_then_directional_sampling = 'form_then_directional_sampling'
+	directional_sampling_then_form = 'directional_sampling_then_form'
 	def __str__(self):
 		return str(self.value)
 

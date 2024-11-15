@@ -54,6 +54,14 @@ module interface_typedefs
     integer             :: MaximumIterations = 150
   end type tpCobylaReliability
 
+  type, public, bind(c) :: tpSubSetSimulationReliability
+    real(kind=c_double) :: VariationCoefficient = 0.05_c_double
+    real(kind=c_double) :: MarkovChainDeviation = 1.0_c_double
+    integer             :: MinimumIterations = 1000
+    integer             :: MaximumIterations = 10000
+    integer             :: SampleMethod = 0
+  end type tpSubSetSimulationReliability
+
   type, public, bind(c) :: tMethod
     integer              :: methodId
     real(kind=c_double)  :: tolA       = 0.001_c_double
@@ -89,6 +97,7 @@ module interface_typedefs
     type(tpNumericalBisectionSettings) :: numericalBisectionSettings
     type(tpLatinHypercubeSettings)     :: latinHypercubeSettings
     type(tpCobylaReliability)          :: cobylaReliability
+    type(tpSubSetSimulationReliability) :: subSetSimulationReliability
   end type tMethod
 
   type, public, bind(c) :: tResult
@@ -192,6 +201,8 @@ module interface_typedefs
         latinHypercubeSettings                !< data for Latin hyper cube method
     type(tpCobylaReliability) :: &
                       CobylaReliability       !< Data for Cobyla Reliability
+    type(tpSubSetSimulationReliability) :: &
+        subSetSimulationReliability           !< Data for sub set simulation
     integer        :: DPoption                !< Options for calculation of the design point
     integer        :: maxParallelThreads = 1  !< Maximum number of OpenMP threads
     integer        :: chunkSizeOpenMP = 200   !< Number of samples to handle simultaneously, when using OpenMP

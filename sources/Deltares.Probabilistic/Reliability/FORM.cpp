@@ -255,7 +255,7 @@ namespace Deltares
             {
                 std::tie(beta, resultSample) = estimateBetaNonConv(lastBetas, lastSamples);
             }
-            return modelRunner->getDesignPoint(resultSample, beta, convergenceReport);
+            return modelRunner->getDesignPoint(resultSample, beta, convergenceReport, "FORM");
         }
 
         bool FORM::areAllResultsValid(std::vector<double> values)

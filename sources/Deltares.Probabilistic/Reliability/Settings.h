@@ -21,11 +21,22 @@
 //
 #pragma once
 
+#include "AdaptiveImportanceSampling.h"
+#include "CobylaReliability.h"
+#include "CrudeMonteCarlo.h"
 #include "StartPointCalculatorSettings.h"
 #include "StochastSettingsSet.h"
 #include "DesignPointBuilder.h"
+#include "DirectionalSampling.h"
+#include "DirectionalSamplingThenFORM.h"
+#include "FORM.h"
+#include "FORMThenDirectionalSampling.h"
+#include "LatinHyperCube.h"
+#include "NumericalBisection.h"
+#include "NumericalIntegration.h"
 #include "DirectionReliabilitySettings.h"
 #include "ReliabilityMethod.h"
+#include "SubsetSimulation.h"
 #include "SubsetSimulationSettings.h"
 #include "../Model/RandomSettings.h"
 #include "../Model/RunSettings.h"
@@ -40,7 +51,7 @@ namespace Deltares
         enum ReliabilityMethodType {ReliabilityFORM, ReliabilityNumericalIntegration, ReliabilityCrudeMonteCarlo,
             ReliabilityImportanceSampling, ReliabilityAdaptiveImportanceSampling, ReliabilityDirectionalSampling,
             ReliabilityNumericalBisection, ReliabilityLatinHyperCube, ReliabilityCobyla,
-            ReliabilitySubsetSimulation };
+            ReliabilitySubsetSimulation, ReliabilityFORMthenDirectionalSampling, ReliabilityDirectionalSamplingThenFORM};
 
         /**
          * \brief General settings applicable to all mechanisms
@@ -218,23 +229,26 @@ namespace Deltares
              * \brief Indicates whether these settings have valid values
              * \return Indication
              */
-            bool isValid();
+            bool isValid() const;
 
             static std::string getReliabilityResultTypeString(ReliabilityResultType method);
             static ReliabilityResultType getReliabilityResultType(std::string method);
             static std::string getReliabilityMethodTypeString(ReliabilityMethodType method);
             static ReliabilityMethodType getReliabilityMethodType(std::string method);
         private:
-            const std::shared_ptr<Reliability::ReliabilityMethod> GetFORMMethod();
-            const std::shared_ptr<Reliability::ReliabilityMethod> GetNumericalIntegrationMethod();
-            const std::shared_ptr<Reliability::ReliabilityMethod> GetCrudeMonteCarloMethod();
-            const std::shared_ptr<Reliability::ReliabilityMethod> GetImportanceSamplingMethod();
-            const std::shared_ptr<Reliability::ReliabilityMethod> GetAdaptiveImportanceSamplingMethod();
-            const std::shared_ptr<Reliability::ReliabilityMethod> GetDirectionalSamplingMethod();
-            const std::shared_ptr<Reliability::ReliabilityMethod> GetNumericalBisectionMethod();
-            const std::shared_ptr<Reliability::ReliabilityMethod> GetLatinHypercubeMethod();
-            const std::shared_ptr<Reliability::ReliabilityMethod> GetSubsetSimulationMethod();
-            const std::shared_ptr<Reliability::ReliabilityMethod> GetCobylaReliabilityMethod();
+            std::shared_ptr<FORM> GetFORMMethod() const;
+            std::shared_ptr<NumericalIntegration> GetNumericalIntegrationMethod() const;
+            std::shared_ptr<CrudeMonteCarlo> GetCrudeMonteCarloMethod() const;
+            std::shared_ptr<ImportanceSampling> GetImportanceSamplingMethod() const;
+            std::shared_ptr<AdaptiveImportanceSampling> GetAdaptiveImportanceSamplingMethod() const;
+            std::shared_ptr<DirectionalSampling> GetDirectionalSamplingMethod() const;
+            std::shared_ptr<NumericalBisection> GetNumericalBisectionMethod() const;
+            std::shared_ptr<LatinHyperCube> GetLatinHypercubeMethod() const;
+            std::shared_ptr<SubsetSimulation> GetSubsetSimulationMethod() const;
+            std::shared_ptr<CobylaReliability> GetCobylaReliabilityMethod() const;
+            std::shared_ptr<FORMThenDirectionalSampling> GetFormThenDsReliabilityMethod() const;
+            std::shared_ptr<DirectionalSamplingThenFORM> GetDsThenFormReliabilityMethod() const;
+
         };
     }
 }

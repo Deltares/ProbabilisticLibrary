@@ -31,6 +31,7 @@
 #include "../Deltares.Probabilistic/Reliability/LatinHyperCube.h"
 #include "../Deltares.Probabilistic/Reliability/NumericalBisection.h"
 #include "../Deltares.Probabilistic/Reliability/CobylaReliability.h"
+#include "../Deltares.Probabilistic/Reliability/SubsetSimulation.h"
 
 using namespace Deltares::ProbLibCore;
 using namespace Deltares::Models;
@@ -147,8 +148,21 @@ std::shared_ptr<ReliabilityMethod> createReliabilityMethod::selectMethod(const b
         cobyla_reliability->Settings->MaximumIterations = bs.cobyla_reliability_settings.MaximumIterations;
         return cobyla_reliability; }
         break;
+    case (ProbMethod::SubSetSimulation): {
+        auto subSetSimulation = std::make_shared<SubsetSimulation>();
+        subSetSimulation->Settings->VariationCoefficient = bs.sub_set_simulation_reliability_settings.VariationCoefficient;
+        subSetSimulation->Settings->MarkovChainDeviation = bs.sub_set_simulation_reliability_settings.MarkovChainDeviation;
+        subSetSimulation->Settings->MinimumSamples = bs.sub_set_simulation_reliability_settings.MinimumIterations;
+        subSetSimulation->Settings->MaximumSamples = bs.sub_set_simulation_reliability_settings.MaximumIterations;
+        subSetSimulation->Settings->SampleMethod = static_cast<SampleMethodType>(bs.sub_set_simulation_reliability_settings.SampleMethod);
+        subSetSimulation->Settings->randomSettings = getRnd(bs);
+        subSetSimulation->Settings->RunSettings->MaxChunkSize = bs.chunkSize;
+        subSetSimulation->Settings->RunSettings->MaxParallelProcesses = bs.numThreads;
+        subSetSimulation->Settings->designPointMethod = convertDp(bs.designPointOptions);
+        return subSetSimulation; }
+        break;
     default:
-        throw probLibException("method not implemented yet: ", (int)bs.methodId);
+        throw probLibException("method not implemented yet: ", static_cast<int>(bs.methodId));
         break;
     }
 }
