@@ -48,6 +48,9 @@ class SensitivitySettings:
 		self._quantiles = None
 		self._synchronizing = False
 
+	def __del__(self):
+		interface.Destroy(self._id)
+
 	def __dir__(self):
 		return ['sensitivity_method',
 	            'random_type',

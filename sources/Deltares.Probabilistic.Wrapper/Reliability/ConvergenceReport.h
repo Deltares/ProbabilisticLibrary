@@ -34,31 +34,71 @@ namespace Deltares
         {
             public ref class ConvergenceReport
             {
+            private:
+                Utils::Wrappers::SharedPointerProvider<Reliability::ConvergenceReport>* shared = nullptr;
             public:
-                ConvergenceReport() {}
+                ConvergenceReport()
+                {
+                    shared = new Utils::Wrappers::SharedPointerProvider<Reliability::ConvergenceReport>(new Reliability::ConvergenceReport());
+                }
                 ConvergenceReport(std::shared_ptr<Reliability::ConvergenceReport> report)
                 {
-                    this->Convergence = report->Convergence;
-                    this->FailedSamples = report->FailedSamples;
-                    this->FailFraction = report->FailFraction;
-                    this->RelaxationFactor = report->RelaxationFactor;
-                    this->VarianceFactor = report->VarianceFactor;
-                    this->MaxWeight = report->MaxWeight;
-                    this->FailWeight = report->FailWeight;
-                    this->FailedSamples = report->FailedSamples;
-                    this->ZMargin = report->ZMargin;
-                    this->IsConverged = report->IsConverged;
+                    shared = new Utils::Wrappers::SharedPointerProvider<Reliability::ConvergenceReport>(report);
                 }
 
-                property double Convergence;
-                property int FailedSamples;
-                property double FailFraction;
-                property double RelaxationFactor;
-                property double VarianceFactor;
-                property double MaxWeight;
-                property double FailWeight;
-                property double ZMargin;
-                property bool IsConverged;
+                property double Convergence
+                {
+                    double get() { return shared->object->Convergence; }
+                    void set(double value) { shared->object->Convergence = value; }
+                }
+
+                property int FailedSamples
+                {
+                    int get() { return shared->object->FailedSamples; }
+                    void set(int value) { shared->object->FailedSamples = value; }
+                }
+
+                property double FailFraction
+                {
+                    double get() { return shared->object->FailFraction; }
+                    void set(double value) { shared->object->FailFraction = value; }
+                }
+
+                property double RelaxationFactor
+                {
+                    double get() { return shared->object->RelaxationFactor; }
+                    void set(double value) { shared->object->RelaxationFactor = value; }
+                }
+
+                property double VarianceFactor
+                {
+                    double get() { return shared->object->VarianceFactor; }
+                    void set(double value) { shared->object->VarianceFactor = value; }
+                }
+
+                property double MaxWeight
+                {
+                    double get() { return shared->object->MaxWeight; }
+                    void set(double value) { shared->object->MaxWeight = value; }
+                }
+
+                property double FailWeight
+                {
+                    double get() { return shared->object->FailWeight; }
+                    void set(double value) { shared->object->FailWeight = value; }
+                }
+
+                property double ZMargin
+                {
+                    double get() { return shared->object->ZMargin; }
+                    void set(double value) { shared->object->ZMargin = value; }
+                }
+
+                property bool IsConverged
+                {
+                    bool get() { return shared->object->IsConverged; }
+                    void set(bool value) { shared->object->IsConverged = value; }
+                }
 
                 Deltares::Models::Wrappers::Sample^ NearestStochastPoint = nullptr;
             };

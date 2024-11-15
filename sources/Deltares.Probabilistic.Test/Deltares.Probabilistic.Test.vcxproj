@@ -94,7 +94,8 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <CompileAsManaged>false</CompileAsManaged>
+      <CompileAsManaged>
+      </CompileAsManaged>
       <SDLCheck>true</SDLCheck>
       <ExceptionHandling>Async</ExceptionHandling>
       <OpenMPSupport>true</OpenMPSupport>

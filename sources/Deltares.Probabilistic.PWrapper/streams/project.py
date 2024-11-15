@@ -165,6 +165,9 @@ class SensitivityProject:
 		SensitivityProject._project_id = self._id
 		SensitivityProject._zmodel = None
 
+	def __del__(self):
+		interface.Destroy(self._id)
+
 	def __dir__(self):
 		return ['variables',
 				'correlation_matrix',
@@ -265,7 +268,7 @@ class SensitivityProject:
 	@property
 	def stochast(self):
 		if self._stochast is None:
-			stochastId = interface.GetIntValue(self._id, 'sensitivity_stochast')
+			stochastId = interface.GetIdValue(self._id, 'sensitivity_stochast')
 			if stochastId > 0:
 				self._stochast = Stochast(stochastId)
 
@@ -275,7 +278,7 @@ class SensitivityProject:
 	def stochasts(self):
 		if self._stochasts is None:
 			stochasts = []
-			stochast_ids = interface.GetArrayIntValue(self._id, 'sensitivity_stochasts')
+			stochast_ids = interface.GetArrayIdValue(self._id, 'sensitivity_stochasts')
 			for stochast_id in stochast_ids:
 				stochasts.append(Stochast(stochast_id))
 			self._stochasts = FrozenList(stochasts)
@@ -285,7 +288,7 @@ class SensitivityProject:
 	@property   
 	def output_correlation_matrix(self):
 		if self._output_correlation_matrix is None:
-			correlationMatrixId = interface.GetIntValue(self._id, 'output_correlation_matrix')
+			correlationMatrixId = interface.GetIdValue(self._id, 'output_correlation_matrix')
 			if correlationMatrixId > 0:
 				self._output_correlation_matrix = CorrelationMatrix(correlationMatrixId)
 				self._output_correlation_matrix._update_variables(self.variables.get_list() + self.stochasts.get_list())
@@ -313,6 +316,9 @@ class ReliabilityProject:
 		ReliabilityProject._zmodel = None
 		ReliabilityProject._project_id = self._id
   
+	def __del__(self):
+		interface.Destroy(self._id)
+
 	def __dir__(self):
 		return ['variables',
 				'correlation_matrix',
@@ -340,7 +346,7 @@ class ReliabilityProject:
 	@property
 	def limit_state_function(self):
 		if self._limit_state_function is None:
-			lsf_id = interface.GetIntValue(self._id, 'limit_state_function')
+			lsf_id = interface.GetIdValue(self._id, 'limit_state_function')
 			if lsf_id > 0:
 				self._limit_state_function = LimitStateFunction(lsf_id)
 		return self._limit_state_function
@@ -409,7 +415,7 @@ class ReliabilityProject:
 	@property
 	def design_point(self):
 		if self._design_point is None:
-			designPointId = interface.GetIntValue(self._id, 'design_point')
+			designPointId = interface.GetIdValue(self._id, 'design_point')
 			if designPointId > 0:
 				self._design_point = DesignPoint(designPointId, self._variables)
 
@@ -428,7 +434,7 @@ class ReliabilityProject:
 	def update_fragility_curve(stochast: Stochast, variables):
 		for fragility_value in stochast.fragility_values:
 			if fragility_value.design_point == None:
-				id_ = interface.GetIntValue(fragility_value._id, 'design_point')
+				id_ = interface.GetIdValue(fragility_value._id, 'design_point')
 				if id_ > 0:
 					fragility_value.design_point = DesignPoint(id_, variables)
 
@@ -442,6 +448,9 @@ class CombineProject:
 		self._settings = CombineSettings()
 		self._correlation_matrix = SelfCorrelationMatrix()
 		self._design_point = None
+
+	def __del__(self):
+		interface.Destroy(self._id)
 
 	def __dir__(self):
 		return ['design_points',
@@ -476,7 +485,7 @@ class CombineProject:
 	@property
 	def design_point(self):
 		if self._design_point is None:
-			designPointId = interface.GetIntValue(self._id, 'design_point')
+			designPointId = interface.GetIdValue(self._id, 'design_point')
 			if designPointId > 0:
 				variables = []
 				for design_point in self._design_points:
@@ -490,6 +499,9 @@ class LengthEffectProject:
 		self._design_point_cross_section = DesignPoint()
 		self._correlation_matrix = SelfCorrelationMatrix()
 		self._design_point = None
+
+	def __del__(self):
+		interface.Destroy(self._id)
 
 	def __dir__(self):
 		return ['design_point_cross_section',
@@ -537,7 +549,7 @@ class LengthEffectProject:
 	@property
 	def design_point(self):
 		if self._design_point is None:
-			designPointId = interface.GetIntValue(self._id, 'design_point')
+			designPointId = interface.GetIdValue(self._id, 'design_point')
 			if designPointId > 0:
 				variables = self._design_point_cross_section.get_variables()
 				self._design_point = DesignPoint(designPointId, variables, self._design_point_cross_section)
