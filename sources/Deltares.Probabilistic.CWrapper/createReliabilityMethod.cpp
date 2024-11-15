@@ -51,7 +51,6 @@ std::shared_ptr<RandomSettings> createReliabilityMethod::getRnd(const basicSetti
         break;
     default:
         throw probLibException("Random generator type is not implemented in C wrapper");
-        break;
     }
     rnd->Seed = bs.seed1;
     rnd->SeedB = bs.seed2;
@@ -79,7 +78,6 @@ std::shared_ptr<ReliabilityMethod> createReliabilityMethod::selectMethod(const b
             ni->Settings.StochastSet->stochastSettings.push_back(s);
         }
         return ni; }
-        break;
     case (ProbMethod::CM): {
         auto cm = std::make_shared<CrudeMonteCarlo>();
         std::shared_ptr<RandomSettings> r(getRnd(bs));
@@ -88,35 +86,29 @@ std::shared_ptr<ReliabilityMethod> createReliabilityMethod::selectMethod(const b
         cm->Settings->MinimumSamples = bs.minSamples;
         cm->Settings->MaximumSamples = bs.maxSamples;
         return cm; }
-        break;
     case (ProbMethod::DS): {
         auto ds = std::make_shared<DirectionalSampling>();
         fillDsSettings(ds->Settings, bs);
         return ds; }
-        break;
     case (ProbMethod::FORM): {
         auto form = std::make_shared<FORM>();
         fillFormSettings(form->Settings, bs, nStoch);
         return form; }
-        break;
     case (ProbMethod::FDIR): {
         auto fdir = std::make_shared<FORMThenDirectionalSampling>(bs.numExtraReal1);
         fillDsSettings(fdir->DsSettings, bs);
         fillFormSettings(fdir->formSettings, bs, nStoch);
         return fdir; }
-        break;
     case (ProbMethod::DSFIHR):
     case (ProbMethod::DSFI): {
         auto dsfi = std::make_shared<DirectionalSamplingThenFORM>();
         fillDsSettings(dsfi->DsSettings, bs);
         fillFormSettings(dsfi->formSettings, bs, nStoch);
         return dsfi; }
-        break;
     case (ProbMethod::IM): {
         auto impSampling = std::make_shared<ImportanceSampling>();
         fillImportanceSamplingSettings(impSampling->Settings, bs, stochasts);
         return impSampling; }
-        break;
     case (ProbMethod::AdaptiveIM): {
         auto AdaptImpSampling = std::make_shared<AdaptiveImportanceSampling>();
         fillImportanceSamplingSettings(AdaptImpSampling->Settings->importanceSamplingSettings, bs, stochasts);
@@ -126,14 +118,12 @@ std::shared_ptr<ReliabilityMethod> createReliabilityMethod::selectMethod(const b
         AdaptImpSampling->Settings->MinimumFailedSamples = bs.numExtraInt2;
         fillStartVector(AdaptImpSampling->Settings->startPointSettings, bs, nStoch);
         return AdaptImpSampling; }
-        break;
     case (ProbMethod::LatinHyperCube):
         {
             auto latinHyperCube = std::make_shared<LatinHyperCube>();
             latinHyperCube->Settings->MinimumSamples = bs.latin_hypercube_settings.MinimumSamples;
             return latinHyperCube;
         }
-        break;
     case (ProbMethod::NumericalBisection):
         {
             auto numerical_bisection = std::make_shared<NumericalBisection>();
@@ -147,7 +137,6 @@ std::shared_ptr<ReliabilityMethod> createReliabilityMethod::selectMethod(const b
         cobyla_reliability->Settings->EpsilonBeta = bs.cobyla_reliability_settings.EpsilonBeta;
         cobyla_reliability->Settings->MaximumIterations = bs.cobyla_reliability_settings.MaximumIterations;
         return cobyla_reliability; }
-        break;
     case (ProbMethod::SubSetSimulation): {
         auto subSetSimulation = std::make_shared<SubsetSimulation>();
         subSetSimulation->Settings->VariationCoefficient = bs.sub_set_simulation_reliability_settings.VariationCoefficient;
@@ -160,10 +149,8 @@ std::shared_ptr<ReliabilityMethod> createReliabilityMethod::selectMethod(const b
         subSetSimulation->Settings->RunSettings->MaxParallelProcesses = bs.numThreads;
         subSetSimulation->Settings->designPointMethod = convertDp(bs.designPointOptions);
         return subSetSimulation; }
-        break;
     default:
         throw probLibException("method not implemented yet: ", static_cast<int>(bs.methodId));
-        break;
     }
 }
 
@@ -180,7 +167,7 @@ DesignPointMethod createReliabilityMethod::convertDp(const DPoptions dp)
     }
 }
 
-void createReliabilityMethod::fillStartVector(std::shared_ptr<StartPointCalculatorSettings> startPoint, const basicSettings& bs, const size_t nStoch)
+void createReliabilityMethod::fillStartVector(std::shared_ptr<StartPointCalculatorSettings>& startPoint, const basicSettings& bs, const size_t nStoch)
 {
     switch (bs.startMethod)
     {
@@ -225,9 +212,9 @@ void createReliabilityMethod::fillStartVector(std::shared_ptr<StartPointCalculat
     case StartMethods::Sensitivity:
         startPoint->StartMethod = StartMethodType::SensitivitySearch;
         break;
-    default:
-        throw probLibException("not implemented: start method: ", (int)bs.startMethod);
-        break;
+    default:  // NOLINT(clang-diagnostic-covered-switch-default)
+        // startMethod is filled in Fortran and can have an unexpected value
+        throw probLibException("not implemented: start method: ", static_cast<int>(bs.startMethod));
     }
 }
 
@@ -270,7 +257,7 @@ void createReliabilityMethod::fillDsSettings(std::shared_ptr<DirectionalSampling
     DsSettings->DirectionSettings->EpsilonUStepSize = bs.tolC;
 }
 
-void createReliabilityMethod::fillImportanceSamplingSettings(std::shared_ptr<ImportanceSamplingSettings> settings,
+void createReliabilityMethod::fillImportanceSamplingSettings(std::shared_ptr<ImportanceSamplingSettings>& settings,
                                                              const basicSettings& bs,
                                                              std::vector<std::shared_ptr<Stochast>>& stochasts)
 {

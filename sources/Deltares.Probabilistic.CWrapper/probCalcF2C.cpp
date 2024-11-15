@@ -25,7 +25,6 @@
 
 #include "basicSettings.h"
 #include "createDistribution.h"
-#include "../Deltares.Probabilistic/Utils/probLibException.h"
 #include "../Deltares.Probabilistic/Math/vector1D.h"
 
 #include "funcWrapper.h"
@@ -61,8 +60,7 @@ struct tCompIds
     int nrCorrelations;
 };
 
-void updateX(const std::vector<std::shared_ptr<StochastPointAlpha>> & alpha, const DPoptions option, tResult & r, const std::shared_ptr<DesignPoint> & newResult,
-    double x[], funcWrapper fw)
+void updateX(const std::vector<std::shared_ptr<StochastPointAlpha>> & alpha, const DPoptions option, const std::shared_ptr<DesignPoint> & newResult, double x[])
 {
     if (alpha.size() <= maxActiveStochast)
     {
@@ -106,7 +104,7 @@ void copyConvergence(tResult& r, const DesignPoint& designPoint, const ProbMetho
     }
     else if (r.samplesNeeded < 0 && failFraction > 0.0)
     {
-        r.samplesNeeded = (int)round(failedSamples / failFraction);
+        r.samplesNeeded = static_cast<int>(round(failedSamples / failFraction));
     }
 }
 
@@ -130,20 +128,19 @@ void probcalcf2c(const basicSettings* method, fdistribs c[], corrStruct correlat
 {
     try
     {
-        auto nStoch = (size_t)compIds->nrStochasts;
+        auto nStoch = static_cast<size_t>(compIds->nrStochasts);
         auto fw = funcWrapper(compIds->id, fx);
         auto nrCorrelations = compIds->nrCorrelations;
 
-        auto stochasts = std::vector<std::shared_ptr<Deltares::Statistics::Stochast>>();
+        auto stochasts = std::vector<std::shared_ptr<Stochast>>();
         for (size_t i = 0; i < nStoch; i++)
         {
-            auto distHR = (EnumDistributions)c[i].distId;
+            auto distHR = static_cast<EnumDistributions>(c[i].distId);
             auto s = createDistribution::createValid(distHR, c[i].params);
             stochasts.push_back(s);
         }
 
-        auto createRelM = createReliabilityMethod();
-        auto relMethod = createRelM.selectMethod(*method, nStoch, stochasts);
+        auto relMethod = createReliabilityMethod::selectMethod(*method, nStoch, stochasts);
         auto zModel = std::make_shared<ZModel>([&fw](std::shared_ptr<ModelSample> v) { return fw.FDelegate(v); },
                                                [&fw](std::vector<std::shared_ptr<ModelSample>> v) { return fw.FDelegateParallel(v); }
         );
@@ -151,7 +148,7 @@ void probcalcf2c(const basicSettings* method, fdistribs c[], corrStruct correlat
         auto corr = std::make_shared<CorrelationMatrix>();
         if (nrCorrelations > 0)
         {
-            corr->init((int)nStoch);
+            corr->init(static_cast<int>(nStoch));
             for (int i = 0; i < nrCorrelations; i++)
             {
                 corr->SetCorrelation(correlations[i].idx1, correlations[i].idx2, correlations[i].correlation);
@@ -205,7 +202,7 @@ void probcalcf2c(const basicSettings* method, fdistribs c[], corrStruct correlat
             result->alpha[i] = newResult->Alphas[i]->Alpha;
         }
 
-        updateX(newResult->Alphas, method->designPointOptions, *result, newResult, x, fw);
+        updateX(newResult->Alphas, method->designPointOptions, newResult, x);
 
         copyConvergence(*result, *newResult, method->methodId);
     }
