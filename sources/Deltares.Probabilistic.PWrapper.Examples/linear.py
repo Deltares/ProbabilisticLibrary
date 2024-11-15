@@ -19,8 +19,7 @@
 # Stichting Deltares and remain full property of Stichting Deltares at all times.
 # All rights reserved.
 #
-import sys
-from stresms import *
+from streams import ReliabilityProject
 
 margin = 0.01
 
