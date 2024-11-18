@@ -159,7 +159,7 @@ namespace Deltares
                     return this->getDeviation(copiedStochast);
                 };
 
-                auto bisection = Numeric::BisectionRootFinder(0.00001);
+                auto bisection = Numeric::BisectionRootFinder(tolBisection);
 
                 double minStart = 0.0;
                 double maxStart = 32.0;

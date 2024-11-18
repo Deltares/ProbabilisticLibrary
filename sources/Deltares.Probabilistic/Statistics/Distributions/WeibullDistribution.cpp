@@ -135,7 +135,7 @@ namespace Deltares
             // see https://www.researchgate.net/post/Can_anybody_explain_how_to_find_out_the_shape_and_scale_parameters_for_weibull_statistics_for_average_wind_speed_data_for_a_month
             double kGuess = 1.2785 / u - 0.5004;
 
-            auto bisection = Numeric::BisectionRootFinder(0.00001);
+            auto bisection = Numeric::BisectionRootFinder(tolBisection);
 
             Numeric::RootFinderMethod method = [](double k)
             {

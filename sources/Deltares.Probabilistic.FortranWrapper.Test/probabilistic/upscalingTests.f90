@@ -140,9 +140,9 @@ subroutine upscaleToLargestBlockTests2
 !
     beta            = 3.5d0
     alpha1          = sqrt(1.0d0/5)
-    alpha           = (/ alpha1, alpha1, alpha1, alpha1, alpha1 /)      !equal alpha values
-    duration        = (/ 1.0d0, 2.0d0, 3.0d0, 4.0d0, 5.0d0 /)           !individual block durations
-    inrhot          = (/ 1.0d0, 1.0d0, 1.0d0, 1.0d0, 1.0d0 /)           !all rho values
+    alpha           = [ alpha1, alpha1, alpha1, alpha1, alpha1 ]      !equal alpha values
+    duration        = [ 1.0d0, 2.0d0, 3.0d0, 4.0d0, 5.0d0 ]           !individual block durations
+    inrhot          = [ 1.0d0, 1.0d0, 1.0d0, 1.0d0, 1.0d0 ]           !all rho values
 
     betaORG         = beta                                              !Copy of the original beta value
     alphaORG        = alpha                                             !Copy of the original influence coefficients
@@ -194,9 +194,9 @@ subroutine upscaleToLargestBlockTests3
 !   ASSIGN VARIABLES
 !
     beta            = 3.5d0
-    alpha           = (/ 0.0d0, 0.6d0, 0.0d0, 0.8d0, 0.0d0 /)           !alpha values
-    duration        = (/ 20.0d0, 2.0d0, 1.0d0, 2.0d0, 10.0d0 /)         !individual block durations
-    inrhot          = (/ 0.0d0, 0.0d0, 0.0d0, 0.0d0, 0.0d0 /)           !all rho values set to one
+    alpha           = [ 0.0d0, 0.6d0, 0.0d0, 0.8d0, 0.0d0 ]           !alpha values
+    duration        = [ 20.0d0, 2.0d0, 1.0d0, 2.0d0, 10.0d0 ]         !individual block durations
+    inrhot          = [ 0.0d0, 0.0d0, 0.0d0, 0.0d0, 0.0d0 ]           !all rho values set to one
 
     betaORG         = beta                                              !Copy of the original beta value
     alphaORG        = alpha                                             !Copy of the original influence coefficients
@@ -252,9 +252,9 @@ subroutine upscaleToLargestBlockTests4
 !   ASSIGN VARIABLES
 !
     beta            = 3.5d0
-    alpha           = (/ 0.0d0, 0.6d0, 0.0d0, 0.8d0, 0.0d0 /)           !alpha values
-    duration        = (/ 20.0d0, 2.0d0, 1.0d0, 2.0d0, 10.0d0 /)         !individual block durations
-    inrhot          = (/ 0.0d0, 0.0d0, 0.0d0, 0.0d0, 0.0d0 /)           !all rho values set to one
+    alpha           = [ 0.0d0, 0.6d0, 0.0d0, 0.8d0, 0.0d0 ]           !alpha values
+    duration        = [ 20.0d0, 2.0d0, 1.0d0, 2.0d0, 10.0d0 ]         !individual block durations
+    inrhot          = [ 0.0d0, 0.0d0, 0.0d0, 0.0d0, 0.0d0 ]           !all rho values set to one
 
     allocate(alphaORG(nrWindDirs, nrStochasts))
     allocate(durationORG(nrWindDirs, nrStochasts))

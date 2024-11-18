@@ -46,8 +46,8 @@ function dgammq(a, x, ierr, errorMessage)
 
     type(tError) :: ierror
 
-    dgammq = -999
-    ierr = -999
+    dgammq = -999.0_c_double
+    ierr = -999.0_c_double
 end function dgammq
 
 end module interface_special_funcs

@@ -135,7 +135,7 @@ namespace Deltares
         {
             if (stochast->Shape != 1.0 || stochast->ShapeB != 1.0)
             {
-                auto bisection = Numeric::BisectionRootFinder(0.00001);
+                auto bisection = Numeric::BisectionRootFinder(tolBisection);
 
                 Distribution* distribution = this;
 

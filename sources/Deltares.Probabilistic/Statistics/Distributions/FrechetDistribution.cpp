@@ -143,7 +143,7 @@ namespace Deltares
             // the quotient deviation / mean is only dependent from the shape parameter, so this will be determined first
             double u = deviation / (mean - stochast->Shift);
 
-            auto bisection = Numeric::BisectionRootFinder(0.00001);
+            auto bisection = Numeric::BisectionRootFinder(tolBisection);
 
             // shape must be > 2
             double minStart = 2.4;

@@ -26,9 +26,13 @@ implicit none
 integer, parameter :: combAND =  0
 integer, parameter :: combOR  =  1
 
-private :: combineMultipleElements_c, warnHohenbichler, upscaleLengthC, &
-    combineTwoElementsPartialCorrelationC2, &
-    combineMultipleElementsProb_c, c_double,  c_ptr, c_loc, c_null_ptr, c_intptr_t, wp
+private 
+
+public :: betaAlphaCF, DesignPoint, multipleElements, combAND, combOR, &
+    combineMultipleElementsGeneral, upscaleLength, upscaleToLargestBlock, &
+    combinerSettings, combineMultipleElements, combineMultipleElementsProb, &
+    combineTwoElementsPartialCorrelation
+
 
 type, bind(C) :: betaAlphaCF
     real(kind=c_double) :: beta               = 0.0_c_double
@@ -167,16 +171,17 @@ contains
         dpSection%beta = dpSectionC%beta
     end subroutine upscaleLength
 
+    !> helper function to get the address and stride of an array
     subroutine fill_loc_stride(array, loc, stride)
-    real(kind=wp), intent(in   ), target :: array(:)
-    type(c_ptr),   intent(  out)         :: loc
-    integer,       intent(  out)         :: stride
+    real(kind=wp), intent(in   ), target :: array(:)  !< input array
+    type(c_ptr),   intent(  out)         :: loc       !< address of the array
+    integer,       intent(  out)         :: stride    !< stride in terms of doubles
 
     type(c_ptr)              :: loc2
     integer(kind=c_intptr_t) :: lc1, lc2
 
     loc = c_loc(array(1))
-    if (size(array) == 1) then
+    if (is_contiguous(array)) then
         stride = 1
     else
         loc2 = c_loc(array(2))
