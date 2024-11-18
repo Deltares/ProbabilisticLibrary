@@ -31,8 +31,7 @@ private
 public :: betaAlphaCF, DesignPoint, multipleElements, combAND, combOR, &
     combineMultipleElementsGeneral, upscaleLength, upscaleToLargestBlock, &
     combinerSettings, combineMultipleElements, combineMultipleElementsProb, &
-    combineTwoElementsPartialCorrelation
-
+    combineTwoElementsPartialCorrelation, calculateCombinationWithLargestCorrelation
 
 type, bind(C) :: betaAlphaCF
     real(kind=c_double) :: beta               = 0.0_c_double
