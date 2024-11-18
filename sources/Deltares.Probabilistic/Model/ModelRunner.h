@@ -45,6 +45,7 @@ namespace Deltares
     {
         typedef std::function<bool(bool finalCall)> ShouldExitLambda;
         typedef std::function<void(int iterationIndex)> RemoveTaskLambda;
+        typedef std::function<bool(int stochastIndex)> ShouldInvertLambda;
 
         class ModelRunner
         {
@@ -89,6 +90,7 @@ namespace Deltares
 
             void setDirectionModel(ZBetaLambda zBetaLambda) const;
             void setShouldExitFunction(ShouldExitLambda shouldExitFunction) { this->shouldExitFunction = shouldExitFunction; }
+            void setShouldInvertFunction(ShouldInvertLambda shouldInvertFunction) { this->shouldInvertFunction = shouldInvertFunction; }
             void setRemoveTaskFunction(RemoveTaskLambda removeTaskFunction) { this->removeTaskFunction = removeTaskFunction; }
             void runDesignPoint(std::shared_ptr<Reliability::DesignPoint> designPoint);
             void registerSample(std::shared_ptr<Sensitivity::CorrelationMatrixBuilder> correlationMatrixBuilder, std::shared_ptr<Sample> sample);
@@ -106,6 +108,7 @@ namespace Deltares
             std::shared_ptr<SampleProvider> sampleProvider = nullptr;
 
             ShouldExitLambda shouldExitFunction = nullptr;
+            ShouldInvertLambda shouldInvertFunction = nullptr;
             RemoveTaskLambda removeTaskFunction = nullptr;
 
             Utils::Locker* locker = nullptr;

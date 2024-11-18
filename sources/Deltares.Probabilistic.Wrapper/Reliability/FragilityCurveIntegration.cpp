@@ -44,11 +44,46 @@ namespace Deltares
                 System::Collections::Generic::List<Statistics::Wrappers::Stochast^>^ stochasts = gcnew System::Collections::Generic::List<Statistics::Wrappers::Stochast^>();
                 stochasts->Add(stochast);
                 stochasts->Add(fragilityCurve);
+                stochasts->AddRange(this->GetReferencedStochasts(fragilityCurve));
+
+                if (normalizingFragilityCurve != nullptr)
+                {
+                    stochasts->Add(normalizingFragilityCurve);
+                    stochasts->AddRange(this->GetReferencedStochasts(normalizingFragilityCurve));
+                }
 
                 Wrappers::DesignPoint^ designPoint = gcnew Wrappers::DesignPoint(nativeDesignPoint, stochasts);
 
                 return designPoint;
             };
+
+            System::Collections::Generic::List<Statistics::Wrappers::Stochast^>^ FragilityCurveIntegration::GetReferencedStochasts(Statistics::Wrappers::Stochast^ stochast)
+            {
+                System::Collections::Generic::List<Statistics::Wrappers::Stochast^>^ referencedStochasts = gcnew System::Collections::Generic::List<Statistics::Wrappers::Stochast^>();
+
+                if (stochast->DistributionType == DistributionType::CDFCurve)
+                {
+                    for (int i = 0; i < stochast->FragilityValues->Count; i++)
+                    {
+                        if (stochast->FragilityValues[i]->DesignPoint != nullptr)
+                        {
+                            Deltares::Models::Wrappers::StochastPoint^ stochastPoint = (Deltares::Models::Wrappers::StochastPoint^)stochast->FragilityValues[i]->DesignPoint;
+                            if (stochastPoint != nullptr)
+                            {
+                                for (int j = 0; j < stochastPoint->Alphas->Count; j++)
+                                {
+                                    if (stochastPoint->Alphas[j]->Parameter != nullptr && !referencedStochasts->Contains(stochastPoint->Alphas[j]->Parameter))
+                                    {
+                                        referencedStochasts->Add(stochastPoint->Alphas[j]->Parameter);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                return referencedStochasts;
+            }
         }
     }
 }

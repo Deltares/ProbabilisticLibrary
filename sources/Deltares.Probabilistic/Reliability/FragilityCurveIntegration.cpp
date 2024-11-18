@@ -186,13 +186,14 @@ namespace Deltares
 
             if (modelRunner->getVaryingStochastCount() == 1)
             {
-                double alphaFragilityCurve = -designPointSample->Values[1] / beta; // u = - beta * alpha
+                double alphaFragilityCurve = - designPointSample->Values[1] / beta; // u = - beta * alpha
                 std::vector<double> alphas = std::vector{ alphaFragilityCurve };
                 designPointSample = std::make_shared<Sample>(alphas);
             }
 
             std::shared_ptr<DesignPoint> designPoint = modelRunner->getDesignPoint(designPointSample, beta, nullptr);
 
+            designPoint->correctFragilityCurves();
             designPoint->expandContributions();
 
             return designPoint;

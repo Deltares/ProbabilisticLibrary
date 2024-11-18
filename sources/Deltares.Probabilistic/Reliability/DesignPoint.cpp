@@ -59,14 +59,33 @@ namespace Deltares
 
                         for (std::shared_ptr<StochastPointAlpha> alphaRealization : fragilityCurveAlpha->Alphas)
                         {
-                            std::shared_ptr<StochastPointAlpha> subAlpha = std::make_shared<StochastPointAlpha>();
-                            subAlpha->Stochast = alphaRealization->Stochast;
-                            subAlpha->Alpha = factor * stochastRealization->Alpha * alphaRealization->Alpha;
-                            subAlpha->AlphaCorrelated = factor * stochastRealization->AlphaCorrelated * alphaRealization->AlphaCorrelated;
-                            subAlpha->U = - this->Beta / subAlpha->Alpha;
-                            subAlpha->X = subAlpha->Stochast->getXFromU(-this->Beta / subAlpha->AlphaCorrelated);
+                            // merge alpha values for same stochast from different fragility curves,
+                            // therefore find an already existing alpha value for the stochast
 
-                            this->Alphas.push_back(subAlpha);
+                            std::shared_ptr<StochastPointAlpha> subAlpha = nullptr;
+                            for (std::shared_ptr<StochastPointAlpha> existingAlpha : this->Alphas)
+                            {
+                                if (existingAlpha->Stochast == alphaRealization->Stochast)
+                                {
+                                    subAlpha = existingAlpha;
+                                    break;
+                                }
+                            }
+
+                            if (subAlpha == nullptr)
+                            {
+                                subAlpha = std::make_shared<StochastPointAlpha>();
+                                subAlpha->Stochast = alphaRealization->Stochast;
+                                this->Alphas.push_back(subAlpha);
+                            }
+
+                            double alpha = factor * stochastRealization->Alpha * alphaRealization->Alpha;
+                            int prevailingSign = std::fabs(subAlpha->Alpha) > std::fabs(alpha) ? Numeric::NumericSupport::GetSign(subAlpha->Alpha) : Numeric::NumericSupport::GetSign(alpha);
+
+                            subAlpha->Alpha = prevailingSign * std::sqrt(subAlpha->Alpha * subAlpha->Alpha + alpha * alpha);
+                            subAlpha->AlphaCorrelated = subAlpha->Alpha;
+                            subAlpha->U = - this->Beta * subAlpha->Alpha;
+                            subAlpha->X = subAlpha->Stochast->getXFromU(subAlpha->U);
                         }
                     }
                 }

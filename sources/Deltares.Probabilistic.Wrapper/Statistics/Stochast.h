@@ -417,6 +417,11 @@ namespace Deltares
                     void set(Stochast^ value) { this->source = value; }
                 }
 
+                System::String^ ToString() override
+                {
+                    return this->Name;
+                }
+
                 std::shared_ptr<Statistics::Stochast> GetStochast() override
                 {
                     updateStochast();

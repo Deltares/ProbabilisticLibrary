@@ -90,7 +90,7 @@ namespace Deltares
 
                 std::shared_ptr<Models::StochastPointAlpha> GetNativeAlpha()
                 {
-                    shared->object->Stochast = this->Parameter->GetStochast();
+                    shared->object->Stochast = this->Parameter != nullptr ? this->Parameter->GetStochast() : nullptr;
                     return shared->object;
                 }
             };

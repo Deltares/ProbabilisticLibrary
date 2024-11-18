@@ -45,6 +45,7 @@ namespace Deltares
 
             public delegate void ZSampleDelegate(ModelSample^);
             public delegate bool ShouldExitDelegate(bool finalCall);
+            public delegate bool ShouldInvertDelegate(int stochastIndex);
             public delegate void RemoveTaskDelegate(int iterationIndex);
 
             public ref class ModelRunner
@@ -100,8 +101,8 @@ namespace Deltares
                 virtual void CalcSamples(System::Collections::Generic::IList<ModelSample^>^ samples);
                 virtual void CalcSample(ModelSample^ sample);
 
+                void SetShouldInvertDelegate(ShouldInvertDelegate^ shouldInvertDelegate);
                 void SetShouldExitDelegate(ShouldExitDelegate^ shouldExitDelegate);
-
                 void SetRemoveTaskDelegate(RemoveTaskDelegate^ removeTaskDelegate);
 
                 virtual property int VaryingStochastCount
