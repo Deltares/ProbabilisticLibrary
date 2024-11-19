@@ -43,6 +43,7 @@ namespace Deltares
                 CallBackList<FragilityCurve^>^ contributingFragilityCurves = gcnew CallBackList<FragilityCurve^>();
                 void SynchronizeContributingFragilityCurves(ListOperationType listOperationType, FragilityCurve^ fragilityCurve);
                 bool HasMatchingFragilityValues();
+                void  updateNativeObject();
 
                 bool synchronizing = false;
             protected:
@@ -87,21 +88,13 @@ namespace Deltares
                 // TODO: PROBL-42 remove when fragility curve integration to c++ is complete
                 bool IsGloballyDescending()
                 {
+                    this->updateNativeObject();
                     return shared->object->isGloballyDescending();
                 }
 
                 std::shared_ptr<Reliability::FragilityCurve> GetNativeValue()
                 {
-                    if (!HasMatchingFragilityValues())
-                    {
-                        shared->object->getProperties()->FragilityValues.clear();
-
-                        for (int i = 0; i < this->FragilityValues->Count; i++)
-                        {
-                            shared->object->getProperties()->FragilityValues.push_back(this->FragilityValues[i]->GetValue());
-                        }
-                    }
-
+                    this->updateNativeObject();
                     return shared->object;
                 }
 

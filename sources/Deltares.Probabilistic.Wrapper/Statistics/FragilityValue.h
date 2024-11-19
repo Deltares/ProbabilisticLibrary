@@ -78,7 +78,7 @@ namespace Deltares
                     void set(Models::Wrappers::BaseStochastPoint^ value)
                     {
                         this->designPoint = value;
-                        shared->object->designPoint = value->getDesignPoint();
+                        shared->object->designPoint = value != nullptr ?  value->getDesignPoint() : nullptr;
                     }
                 }
 

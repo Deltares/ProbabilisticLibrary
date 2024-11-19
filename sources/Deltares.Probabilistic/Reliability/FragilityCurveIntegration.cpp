@@ -116,13 +116,16 @@ namespace Deltares
             // Set the contribution of the fragility curve(s)
             for (std::shared_ptr<Statistics::Stochast> fCurve : { fragilityCurve, fragilityCurveNormalized })
             {
-                std::shared_ptr<StochastPointAlpha> alphaCurve = std::make_shared<StochastPointAlpha>();
-                alphaCurve->Stochast = fCurve;
-                alphaCurve->U = designPointSample->Values[1];
-                alphaCurve->X = fCurve->getXFromU(alphaCurve->U);
-                alphaCurve->Alpha = -alphaCurve->U / designPoint->Beta;
-                alphaCurve->AlphaCorrelated = alphaCurve->Alpha;
-                designPoint->Alphas.push_back(alphaCurve);
+                if (fCurve != nullptr)
+                {
+                    std::shared_ptr<StochastPointAlpha> alphaCurve = std::make_shared<StochastPointAlpha>();
+                    alphaCurve->Stochast = fCurve;
+                    alphaCurve->U = designPointSample->Values[1];
+                    alphaCurve->X = fCurve->getXFromU(alphaCurve->U);
+                    alphaCurve->Alpha = -alphaCurve->U / designPoint->Beta;
+                    alphaCurve->AlphaCorrelated = alphaCurve->Alpha;
+                    designPoint->Alphas.push_back(alphaCurve);
+                }
             }
 
             designPoint->correctFragilityCurves();

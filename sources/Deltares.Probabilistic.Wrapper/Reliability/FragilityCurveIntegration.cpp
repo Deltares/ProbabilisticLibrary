@@ -74,7 +74,10 @@ namespace Deltares
                                 {
                                     if (stochastPoint->Alphas[j]->Parameter != nullptr && !referencedStochasts->Contains(stochastPoint->Alphas[j]->Parameter))
                                     {
-                                        referencedStochasts->Add(stochastPoint->Alphas[j]->Parameter);
+                                        if (!referencedStochasts->Contains(stochastPoint->Alphas[j]->Parameter))
+                                        {
+                                            referencedStochasts->Add(stochastPoint->Alphas[j]->Parameter);
+                                        }
                                     }
                                 }
                             }
