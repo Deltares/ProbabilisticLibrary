@@ -26,9 +26,8 @@ namespace Deltares
 {
     namespace Numeric
     {
-        enum DirectionType { Positive, Negative, Zero };
 
-        DirectionType getDirection(double value1, double value2, double result1, double result2)
+        DirectionType BisectionRootFinder::getDirection(double value1, double value2, double result1, double result2)
         {
             if (result1 > result2 && value1 > value2)
             {
@@ -52,7 +51,7 @@ namespace Deltares
             }
         }
 
-        double getRelativeDifference(double minValue, double maxValue)
+        double BisectionRootFinder::getRelativeDifference(double minValue, double maxValue)
         {
             return std::fabs(maxValue - minValue) / std::max(std::fabs(maxValue), std::fabs(minValue));
         }
@@ -66,11 +65,12 @@ namespace Deltares
 
             double minResult = function(minStart);
             double maxResult = function(maxStart);
+            int cntFunctionCalls = 2;
 
             DirectionType direction = getDirection(minStart, maxStart, minResult, maxResult);
 
             // Extrapolate until target is between minStart and maxStart, first check whether result is high enough
-            while (minResult < resultValue && maxResult < resultValue)
+            while (minResult < resultValue && maxResult < resultValue && cntFunctionCalls < maxIterations)
             {
                 if (direction == DirectionType::Zero)
                 {
@@ -81,23 +81,26 @@ namespace Deltares
 
                     minStart -= diff;
                     minResult = function(minStart);
+                    cntFunctionCalls += 2;
                 }
                 else if (direction == DirectionType::Positive)
                 {
                     maxStart += maxStart - minStart;
                     maxResult = function(maxStart);
+                    cntFunctionCalls++;
                 }
                 else
                 {
                     minStart -= maxStart - minStart;
                     minResult = function(minStart);
+                    cntFunctionCalls++;
                 }
 
                 direction = getDirection(minStart, maxStart, minResult, maxResult);
             }
 
             // Extrapolate until target is between minStart and maxStart, check whether result is low enough
-            while (minResult > resultValue && maxResult > resultValue)
+            while (minResult > resultValue && maxResult > resultValue && cntFunctionCalls < maxIterations)
             {
                 if (direction == DirectionType::Zero)
                 {
@@ -108,16 +111,19 @@ namespace Deltares
 
                     minStart -= diff;
                     minResult = function(minStart);
+                    cntFunctionCalls += 2;
                 }
                 else if (direction == DirectionType::Negative)
                 {
                     maxStart += maxStart - minStart;
                     maxResult = function(maxStart);
+                    cntFunctionCalls++;
                 }
                 else
                 {
                     minStart -= maxStart - minStart;
                     minResult = function(minStart);
+                    cntFunctionCalls++;
                 }
 
                 direction = getDirection(minStart, maxStart, minResult, maxResult);
@@ -132,7 +138,7 @@ namespace Deltares
             double xDifference = getRelativeDifference(minStart, maxStart);
 
             // Bisection method
-            while (difference > tolerance && xDifference > xTolerance)
+            while (difference > tolerance && xDifference > xTolerance && cntFunctionCalls < maxIterations)
             {
                 double prevValue = value;
 
@@ -156,6 +162,7 @@ namespace Deltares
                 step = step / 2;
 
                 result = function(value);
+                cntFunctionCalls++;
 
                 difference = std::fabs(resultValue - result);
 
@@ -169,7 +176,7 @@ namespace Deltares
 
             if (xDifference > xTolerance && std::fabs(resultValue - result) > tolerance)
             {
-                return NAN;
+                return nan("");
             }
 
             return value;

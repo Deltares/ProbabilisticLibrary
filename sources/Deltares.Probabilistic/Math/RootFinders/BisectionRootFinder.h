@@ -25,6 +25,8 @@ namespace Deltares
 {
     namespace Numeric
     {
+        enum class  DirectionType { Positive, Negative, Zero };
+
         class BisectionRootFinder : public RootFinder
         {
         public:
@@ -33,8 +35,11 @@ namespace Deltares
             explicit BisectionRootFinder(double ztol, double xtol) : tolerance(ztol), xTolerance(xtol) {}
             double CalculateValue(double minStart, double maxStart, double resultValue, RootFinderMethod function) override;
         private:
+            static DirectionType getDirection(double value1, double value2, double result1, double result2);
+            static double getRelativeDifference(double minValue, double maxValue);
             double tolerance = 0.001;
             double xTolerance = 1E-6;
+            int maxIterations = 750;
         };
     }
 }

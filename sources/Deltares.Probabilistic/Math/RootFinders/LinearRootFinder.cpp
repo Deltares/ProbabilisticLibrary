@@ -145,16 +145,16 @@ namespace Deltares
         {
             double x = low.X + ((low.Value - target) / (low.Value - high.Value)) * (high.X - low.X);
             double xValue = function(x);
-
-            return XValue(x, xValue);
+            auto result = XValue(x, xValue);
+            return result;
         }
 
         XValue LinearRootFinder::bisection(const XValue& low, const XValue& high, RootFinderMethod& function)
         {
             double x = (low.X + high.X) / 2;
             double xValue = function(x);
-
-            return XValue(x, xValue);
+            auto result = XValue(x, xValue);
+            return result;
         }
     }
 }
