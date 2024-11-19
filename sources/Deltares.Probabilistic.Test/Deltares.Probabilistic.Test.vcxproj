@@ -135,6 +135,8 @@
     <ClInclude Include="Math\testMatrixMultiplication_body.cpp" />
     <ClInclude Include="Math\testRandom.h" />
     <ClInclude Include="Math\testRandom_body.cpp" />
+    <ClInclude Include="Math\testRootfinder.h" />
+    <ClInclude Include="Math\testRootfinder_body.cpp" />
     <ClInclude Include="Math\testVector1D.h" />
     <ClInclude Include="Math\testVector1D_body.cpp" />
     <ClInclude Include="Optimization\testCobyla.h" />
@@ -162,6 +164,7 @@
     <ClCompile Include="Math\testMatrixInverse.cpp" />
     <ClCompile Include="Math\testMatrixMultiplication.cpp" />
     <ClCompile Include="Math\testRandom.cpp" />
+    <ClCompile Include="Math\testRootfinder.cpp" />
     <ClCompile Include="Math\testVector1D.cpp" />
     <ClCompile Include="Optimization\testCobyla.cpp" />
     <ClCompile Include="pch.cpp">
