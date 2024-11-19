@@ -50,25 +50,25 @@ struct combinerSettings
     CombinerType combinerType;
 };
 
-elements fillElements(multipleElements* m_elements)
+elements fillElements(const multipleElements& m_elements)
 {
     auto elm = elements();
-    const int nrStoch = m_elements->designPoints[0].size;
-    for (int i = 0; i < m_elements->size; i++)
+    const int nrStoch = m_elements.designPoints[0].size;
+    for (int i = 0; i < m_elements.size; i++)
     {
         auto alpha = vector1D(nrStoch);
         for (int j = 0; j < nrStoch; j++)
         {
-            alpha(j) = m_elements->designPoints[i].alpha[j*m_elements->designPoints[i].stride_alpha];
+            alpha(j) = m_elements.designPoints[i].alpha[j*m_elements.designPoints[i].stride_alpha];
         }
-        auto ab = alphaBeta(m_elements->designPoints[i].beta, alpha);
+        auto ab = alphaBeta(m_elements.designPoints[i].beta, alpha);
         elm.push_back(ab);
     }
     return elm;
 }
 
 extern "C"
-void combineMultipleElementsGeneral(multipleElements* elements, betaAlphaCF* dpOut, combinerSettings* settings)
+void combineMultipleElementsGeneral(const multipleElements* elements, betaAlphaCF* dpOut, const combinerSettings* settings)
 {
     const int nrStoch = dpOut->size;
     std::vector< std::shared_ptr<Deltares::Statistics::Stochast>> stochasts;
@@ -107,11 +107,11 @@ void combineMultipleElementsGeneral(multipleElements* elements, betaAlphaCF* dpO
 }
 
 extern "C"
-int combinemultipleelements_c(multipleElements* elements, betaAlphaCF* dpOut)
+int combinemultipleelements_c(const multipleElements* elements, betaAlphaCF* dpOut)
 {
     const int nrStoch = dpOut->size;
     auto cmb = combineElements();
-    auto elm = fillElements(elements);
+    auto elm = fillElements(*elements);
     auto rhoC = vector1D(nrStoch);
     for (int i = 0; i < nrStoch; i++)
     {
@@ -128,7 +128,7 @@ int combinemultipleelements_c(multipleElements* elements, betaAlphaCF* dpOut)
 }
 
 extern "C"
-int upscalelengthc(betaAlphaCF* dpCrossSection, double* sectionLength, betaAlphaCF* dpSection)
+int upscalelengthc(const betaAlphaCF* dpCrossSection, const double* sectionLength, betaAlphaCF* dpSection)
 {
     const int nStochasts = dpCrossSection->size;
     vector1D alpha = vector1D(nStochasts);
@@ -154,7 +154,7 @@ int upscalelengthc(betaAlphaCF* dpCrossSection, double* sectionLength, betaAlpha
 }
 
 extern "C"
-void upscaletolargestblockc(betaAlphaCF* dpSmallBlock, double* largestBlockDuration, betaAlphaCF* dpLargestBlock)
+void upscaletolargestblockc(const betaAlphaCF* dpSmallBlock, const double* largestBlockDuration, betaAlphaCF* dpLargestBlock)
 {
     int nStochasts = dpSmallBlock->size;
     auto alfasmall = vector1D(nStochasts);
@@ -182,7 +182,7 @@ void upscaletolargestblockc(betaAlphaCF* dpSmallBlock, double* largestBlockDurat
 }
 
 extern "C"
-int combinetwoelementspartialcorrelationc2(betaAlphaCF* dp1, betaAlphaCF* dp2, betaAlphaCF* dpC, const int combAndOr)
+int combinetwoelementspartialcorrelationc2(const betaAlphaCF* dp1, const betaAlphaCF* dp2, betaAlphaCF* dpC, const int combAndOr)
 {
     auto nStochasts = dp1->size;
     auto cmb = combineElements();
@@ -208,12 +208,12 @@ int combinetwoelementspartialcorrelationc2(betaAlphaCF* dp1, betaAlphaCF* dp2, b
 }
 
 extern "C"
-int combinemultipleelementsprob_c(multipleElements* elements, double* percentagesIn, betaAlphaCF* dpOut)
+int combinemultipleelementsprob_c(const multipleElements* elements, const double* percentagesIn, betaAlphaCF* dpOut)
 {
     const int nrElms = elements->size;
     const int nrStoch = dpOut->size;
     auto cmb = combineElements();
-    auto elm = fillElements(elements);
+    auto elm = fillElements(*elements);
 
     auto percentages = std::vector<double>(nrElms);
     for (int i = 0; i < nrElms; i++)
@@ -232,7 +232,7 @@ int combinemultipleelementsprob_c(multipleElements* elements, double* percentage
 }
 
 extern "C"
-void calculate_combination_with_largest_correlation_c(multipleElements* elements, int* i1max, int* i2max)
+void calculate_combination_with_largest_correlation_c(const multipleElements* elements, int* i1max, int* i2max)
 {
     int nStoch = elements->designPoints[0].size;
     int nElements = elements->size;
