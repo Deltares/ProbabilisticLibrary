@@ -37,12 +37,12 @@ public:
 private:
     static std::shared_ptr<Deltares::Models::RandomSettings> getRnd(const Deltares::ProbLibCore::basicSettings& bs);
     static std::vector<double> copyStartVector(const double startVector[], const size_t nStoch);
-    static void fillFormSettings(std::shared_ptr<Deltares::Reliability::FORMSettings>& Settings, const Deltares::ProbLibCore::basicSettings& bs, const size_t nStoch);
-    static void fillDsSettings(std::shared_ptr<Deltares::Reliability::DirectionalSamplingSettings>& Settings, const Deltares::ProbLibCore::basicSettings& bs);
+    static void fillFormSettings(Deltares::Reliability::FORMSettings& Settings, const Deltares::ProbLibCore::basicSettings& bs, const size_t nStoch);
+    static void fillDsSettings(Deltares::Reliability::DirectionalSamplingSettings& Settings, const Deltares::ProbLibCore::basicSettings& bs);
     static Deltares::Reliability::DesignPointMethod convertDp(const Deltares::ProbLibCore::DPoptions dp);
-    static void fillImportanceSamplingSettings(std::shared_ptr<Deltares::Reliability::ImportanceSamplingSettings>& settings, const Deltares::ProbLibCore::basicSettings& bs,
+    static void fillImportanceSamplingSettings(Deltares::Reliability::ImportanceSamplingSettings& settings, const Deltares::ProbLibCore::basicSettings& bs,
         std::vector<std::shared_ptr<Deltares::Statistics::Stochast>>& stochasts);
-    static void fillStartVector(std::shared_ptr<Deltares::Reliability::StartPointCalculatorSettings>& startPoint,
+    static void fillStartVector(Deltares::Reliability::StartPointCalculatorSettings& startPoint,
         const Deltares::ProbLibCore::basicSettings& bs, const size_t nStoch);
 };
 

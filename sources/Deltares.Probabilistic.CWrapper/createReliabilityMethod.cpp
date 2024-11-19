@@ -88,35 +88,35 @@ std::shared_ptr<ReliabilityMethod> createReliabilityMethod::selectMethod(const b
         return cm; }
     case (ProbMethod::DS): {
         auto ds = std::make_shared<DirectionalSampling>();
-        fillDsSettings(ds->Settings, bs);
+        fillDsSettings(*ds->Settings, bs);
         return ds; }
     case (ProbMethod::FORM): {
         auto form = std::make_shared<FORM>();
-        fillFormSettings(form->Settings, bs, nStoch);
+        fillFormSettings(*form->Settings, bs, nStoch);
         return form; }
     case (ProbMethod::FDIR): {
         auto fdir = std::make_shared<FORMThenDirectionalSampling>(bs.numExtraReal1);
-        fillDsSettings(fdir->DsSettings, bs);
-        fillFormSettings(fdir->formSettings, bs, nStoch);
+        fillDsSettings(*fdir->DsSettings, bs);
+        fillFormSettings(*fdir->formSettings, bs, nStoch);
         return fdir; }
     case (ProbMethod::DSFIHR):
     case (ProbMethod::DSFI): {
         auto dsfi = std::make_shared<DirectionalSamplingThenFORM>();
-        fillDsSettings(dsfi->DsSettings, bs);
-        fillFormSettings(dsfi->formSettings, bs, nStoch);
+        fillDsSettings(*dsfi->DsSettings, bs);
+        fillFormSettings(*dsfi->formSettings, bs, nStoch);
         return dsfi; }
     case (ProbMethod::IM): {
         auto impSampling = std::make_shared<ImportanceSampling>();
-        fillImportanceSamplingSettings(impSampling->Settings, bs, stochasts);
+        fillImportanceSamplingSettings(*impSampling->Settings, bs, stochasts);
         return impSampling; }
     case (ProbMethod::AdaptiveIM): {
         auto AdaptImpSampling = std::make_shared<AdaptiveImportanceSampling>();
-        fillImportanceSamplingSettings(AdaptImpSampling->Settings->importanceSamplingSettings, bs, stochasts);
+        fillImportanceSamplingSettings(*AdaptImpSampling->Settings->importanceSamplingSettings, bs, stochasts);
         AdaptImpSampling->Settings->MaxVarianceLoops = bs.trialLoops;
         AdaptImpSampling->Settings->LoopVarianceIncrement = bs.numExtraReal2;
         AdaptImpSampling->Settings->AutoMaximumSamples = bs.numExtraInt != 0;
         AdaptImpSampling->Settings->MinimumFailedSamples = bs.numExtraInt2;
-        fillStartVector(AdaptImpSampling->Settings->startPointSettings, bs, nStoch);
+        fillStartVector(*AdaptImpSampling->Settings->startPointSettings, bs, nStoch);
         return AdaptImpSampling; }
     case (ProbMethod::LatinHyperCube):
         {
@@ -167,19 +167,19 @@ DesignPointMethod createReliabilityMethod::convertDp(const DPoptions dp)
     }
 }
 
-void createReliabilityMethod::fillStartVector(std::shared_ptr<StartPointCalculatorSettings>& startPoint, const basicSettings& bs, const size_t nStoch)
+void createReliabilityMethod::fillStartVector(StartPointCalculatorSettings& startPoint, const basicSettings& bs, const size_t nStoch)
 {
     switch (bs.startMethod)
     {
     case StartMethods::Zero:
-        startPoint->StartMethod = StartMethodType::FixedValue;
+        startPoint.StartMethod = StartMethodType::FixedValue;
         break;
     case StartMethods::One:
         {
-            startPoint->StartMethod = StartMethodType::FixedValue;
+            startPoint.StartMethod = StartMethodType::FixedValue;
             for (size_t i = 0; i < nStoch; i++)
             {
-                startPoint->startVector.push_back(1.0);
+                startPoint.startVector.push_back(1.0);
             }
         }
         break;
@@ -189,28 +189,28 @@ void createReliabilityMethod::fillStartVector(std::shared_ptr<StartPointCalculat
         {
             constexpr double startPointLength = 18.1; // be consistent with previous implementation; avoids stopping too early.
             constexpr double stepSize = 0.3;          // be consistent with previous implementation.
-            startPoint->StartMethod = StartMethodType::RaySearch;
-            startPoint->MaximumLengthStartPoint = startPointLength;
-            startPoint->dsdu = stepSize;
-            startPoint->startVector = copyStartVector(bs.startVector, nStoch);
+            startPoint.StartMethod = StartMethodType::RaySearch;
+            startPoint.MaximumLengthStartPoint = startPointLength;
+            startPoint.dsdu = stepSize;
+            startPoint.startVector = copyStartVector(bs.startVector, nStoch);
         }
         break;
     case StartMethods::SphereSearch:
         {
-            startPoint->StartMethod = StartMethodType::SphereSearch;
-            startPoint->startVector = copyStartVector(bs.startVector, nStoch);
-            startPoint->allQuadrants = bs.allQuadrants;
-            startPoint->maxStepsSphereSearch = bs.maxStepsSphereSearch;
+            startPoint.StartMethod = StartMethodType::SphereSearch;
+            startPoint.startVector = copyStartVector(bs.startVector, nStoch);
+            startPoint.allQuadrants = bs.allQuadrants;
+            startPoint.maxStepsSphereSearch = bs.maxStepsSphereSearch;
         }
         break;
     case StartMethods::GivenVector:
         {
-            startPoint->StartMethod = StartMethodType::FixedValue;
-            startPoint->startVector = copyStartVector(bs.startVector, nStoch);
+            startPoint.StartMethod = StartMethodType::FixedValue;
+            startPoint.startVector = copyStartVector(bs.startVector, nStoch);
         }
         break;
     case StartMethods::Sensitivity:
-        startPoint->StartMethod = StartMethodType::SensitivitySearch;
+        startPoint.StartMethod = StartMethodType::SensitivitySearch;
         break;
     default:  // NOLINT(clang-diagnostic-covered-switch-default)
         // startMethod is filled in Fortran and can have an unexpected value
@@ -218,13 +218,13 @@ void createReliabilityMethod::fillStartVector(std::shared_ptr<StartPointCalculat
     }
 }
 
-void createReliabilityMethod::fillFormSettings(std::shared_ptr<FORMSettings>& Settings, const basicSettings& bs, const size_t nStoch)
+void createReliabilityMethod::fillFormSettings(FORMSettings& Settings, const basicSettings& bs, const size_t nStoch)
 {
-    Settings->MaximumIterations = bs.numExtraInt;
-    Settings->GradientSettings->gradientType = GradientType::TwoDirections;
-    Settings->FilterAtNonConvergence = true;
-    Settings->RelaxationFactor = bs.relaxationFactor;
-    fillStartVector(Settings->StartPointSettings, bs, nStoch);
+    Settings.MaximumIterations = bs.numExtraInt;
+    Settings.GradientSettings->gradientType = GradientType::TwoDirections;
+    Settings.FilterAtNonConvergence = true;
+    Settings.RelaxationFactor = bs.relaxationFactor;
+    fillStartVector(*Settings.StartPointSettings, bs, nStoch);
 }
 
 std::vector<double> createReliabilityMethod::copyStartVector(const double startValues[], const size_t nStoch)
@@ -237,45 +237,45 @@ std::vector<double> createReliabilityMethod::copyStartVector(const double startV
     return startVector;
 }
 
-void createReliabilityMethod::fillDsSettings(std::shared_ptr<DirectionalSamplingSettings>& DsSettings, const basicSettings& bs)
+void createReliabilityMethod::fillDsSettings(DirectionalSamplingSettings& DsSettings, const basicSettings& bs)
 {
     std::shared_ptr<RandomSettings> r(getRnd(bs));
-    DsSettings->randomSettings.swap(r);
-    DsSettings->VariationCoefficient = bs.tolB;
-    DsSettings->MinimumDirections = bs.minSamples;
-    DsSettings->MaximumDirections = bs.maxSamples;
+    DsSettings.randomSettings.swap(r);
+    DsSettings.VariationCoefficient = bs.tolB;
+    DsSettings.MinimumDirections = bs.minSamples;
+    DsSettings.MaximumDirections = bs.maxSamples;
     switch (bs.iterationMethod)
     {
     case DSiterationMethods::DirSamplingIterMethodRobust:
     case DSiterationMethods::DirSamplingIterMethodRobustBisection:
-        DsSettings->DirectionSettings->Dsdu = 1.0;
+        DsSettings.DirectionSettings->Dsdu = 1.0;
         break;
     default:
-        DsSettings->DirectionSettings->Dsdu = 3.0;
+        DsSettings.DirectionSettings->Dsdu = 3.0;
         break;
     }
-    DsSettings->DirectionSettings->EpsilonUStepSize = bs.tolC;
+    DsSettings.DirectionSettings->EpsilonUStepSize = bs.tolC;
 }
 
-void createReliabilityMethod::fillImportanceSamplingSettings(std::shared_ptr<ImportanceSamplingSettings>& settings,
+void createReliabilityMethod::fillImportanceSamplingSettings(ImportanceSamplingSettings& settings,
                                                              const basicSettings& bs,
                                                              std::vector<std::shared_ptr<Stochast>>& stochasts)
 {
     auto r = getRnd(bs);
-    settings->randomSettings.swap(r);
-    settings->VariationCoefficient = bs.tolB;
-    settings->MinimumSamples = bs.minSamples;
-    settings->MaximumSamples = bs.maxSamples;
+    settings.randomSettings.swap(r);
+    settings.VariationCoefficient = bs.tolB;
+    settings.MinimumSamples = bs.minSamples;
+    settings.MaximumSamples = bs.maxSamples;
     if (bs.methodId == ProbMethod::AdaptiveIM)
     {
-        settings->MaximumSamplesNoResult = bs.maxSamples;
-        settings->designPointMethod = convertDp(bs.designPointOptions);
+        settings.MaximumSamplesNoResult = bs.maxSamples;
+        settings.designPointMethod = convertDp(bs.designPointOptions);
     }
     for (size_t i = 0; i < stochasts.size(); i++)
     {
         auto s = std::make_shared<StochastSettings>();
         s->stochast = stochasts[i];
         s->VarianceFactor = bs.varianceFactor;
-        settings->StochastSet->stochastSettings.push_back(s);
+        settings.StochastSet->stochastSettings.push_back(s);
     }
 }

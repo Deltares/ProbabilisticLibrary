@@ -185,7 +185,6 @@ extern "C"
 int combinetwoelementspartialcorrelationc2(const betaAlphaCF* dp1, const betaAlphaCF* dp2, betaAlphaCF* dpC, const int combAndOr)
 {
     auto nStochasts = dp1->size;
-    auto cmb = combineElements();
     auto rho = vector1D(nStochasts);
     auto alfa1 = vector1D(nStochasts);
     auto alfa2 = vector1D(nStochasts);
@@ -197,7 +196,7 @@ int combinetwoelementspartialcorrelationc2(const betaAlphaCF* dp1, const betaAlp
     }
     auto elm1 = alphaBeta(dp1->beta, alfa1);
     auto elm2 = alphaBeta(dp2->beta, alfa2);
-    auto elm = cmb.combineTwoElementsPartialCorrelation(elm1, elm2, rho, static_cast<combineAndOr>(combAndOr));
+    auto elm = combineElements::combineTwoElementsPartialCorrelation(elm1, elm2, rho, static_cast<combineAndOr>(combAndOr));
 
     dpC->beta = elm.ab.getBeta();
     for (int i = 0; i < nStochasts; i++)
