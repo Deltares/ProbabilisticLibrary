@@ -143,7 +143,7 @@ namespace Deltares
             // https://stats.stackexchange.com/questions/71197/usable-estimators-for-parameters-in-gumbel-distribution
             double mean = Numeric::NumericSupport::getMean(values);
 
-            std::unique_ptr<Numeric::BisectionRootFinder> bisection = std::make_unique<Numeric::BisectionRootFinder>();
+            auto bisection = Numeric::BisectionRootFinder(0.001);
 
             Numeric::RootFinderMethod method = [mean, &values](double x)
             {
@@ -155,7 +155,7 @@ namespace Deltares
             double minStart = Numeric::NumericSupport::getMinValidValue(method);
             double maxStart = Numeric::NumericSupport::getMaxValidValue(method);
 
-            stochast->Scale = bisection->CalculateValue(minStart, maxStart, 0, 0.001, method);
+            stochast->Scale = bisection.CalculateValue(minStart, maxStart, 0, method);
 
             double sum = Numeric::NumericSupport::sum(values, [stochast](double p) {return exp(-p / stochast->Scale); });
 

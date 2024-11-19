@@ -42,7 +42,7 @@ namespace Deltares
             double currentMean = this->getMean(stochast);
             double currentDeviation = this->getDeviation(stochast);
 
-            std::unique_ptr<Numeric::BisectionRootFinder> bisection = std::make_unique<Numeric::BisectionRootFinder>();
+            auto bisection = Numeric::BisectionRootFinder(margin);
 
             if (constantType == Deviation)
             {
@@ -52,7 +52,7 @@ namespace Deltares
                     return this->getXFromU(stochast, u);
                 };
 
-                double newMean = bisection->CalculateValue(x, currentMean, x, margin, function);
+                double newMean = bisection.CalculateValue(x, currentMean, x, function);
                 this->setMeanAndDeviation(stochast, newMean, currentDeviation);
             }
             else if (constantType == VariationCoefficient)
@@ -66,7 +66,7 @@ namespace Deltares
                     return this->getXFromU(stochast, u);
                 };
 
-                double newMean = bisection->CalculateValue(x, currentMean, x, margin, function);
+                double newMean = bisection.CalculateValue(x, currentMean, x, function);
 
                 this->setMeanAndDeviation(stochast, newMean, std::fabs(newMean * variationCoefficient));
             }
@@ -78,7 +78,6 @@ namespace Deltares
 
         double Distribution::getXFromUByIteration(std::shared_ptr<StochastProperties> stochast, double u)
         {
-            std::unique_ptr<Numeric::BisectionRootFinder> bisection = std::make_unique<Numeric::BisectionRootFinder>();
 
             Numeric::RootFinderMethod function = [this, stochast](double x)
             {
@@ -91,8 +90,9 @@ namespace Deltares
 
             const double delta = 0.00001;
             margin = std::min(delta, margin);
+            auto bisection = Numeric::BisectionRootFinder(margin, 0);
 
-            double x = bisection->CalculateValue(0, 1, cdf, margin, function, nullptr, 0);
+            double x = bisection.CalculateValue(0, 1, cdf, function);
             return x;
         }
 

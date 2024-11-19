@@ -50,11 +50,6 @@ interface
     end subroutine calculateDistribution_c
 end interface
 
-interface calculateDistributionInverse
-    module procedure calculateDistributionInverse1
-    module procedure calculateDistributionInverse2
-end interface calculateDistributionInverse
-
 integer, parameter :: distributionUnknown            = -1
 integer, parameter :: distributionDeterministic      =  0
 integer, parameter :: distributionUniform            =  1
@@ -81,37 +76,13 @@ integer, parameter :: distributionLogLinearInterpolation = 112
 
 contains
 
-!> Calculates X value from U values conform distribution type.
-subroutine calculateDistributionInverse1( u, x, distType, distParameter1, distParameter2, &
-               distParameter3, distParameter4, ierr, errorMessage )
-    real(kind=c_double), intent(in)        :: u                  !< Standard normally distributed variable
-    real(kind=c_double), intent(out)       :: x                  !< Physical stochastic variable associated with u
-    integer,             intent(in)        :: distType           !< Distribution type, see distributionEnumerations
-    real(kind=c_double), intent(in)        :: distParameter1     !< Parameter 1 of distribution type
-    real(kind=c_double), intent(in)        :: distParameter2     !< Parameter 2 of distribution type
-    real(kind=c_double), intent(in)        :: distParameter3     !< Parameter 3 of distribution type
-    real(kind=c_double), intent(in)        :: distParameter4     !< Parameter 4 of distribution type
-    integer            , intent(out)       :: ierr               !< error code; 0=success
-    character(len=*),    intent(inout)     :: errorMessage       !< error message; only set in case of error
-
-    type(tError)        :: ierror
-    real(kind=c_double) :: p4(4)
-
-    p4 = [distParameter1, distParameter2, distParameter3, distParameter4]
-    call calculateDistributionInverse_c(u, x, distType, p4, ierror)
-    ierr = ierror%iCode
-    if (ierr /= 0) then
-        call copystrback(errorMessage, ierror%message)
-    end if
-end subroutine calculateDistributionInverse1
-
-subroutine calculateDistributionInverse2(u, y, distType, p4, ierr)
+subroutine calculateDistributionInverse(u, y, distType, p4, ierr)
     integer(c_int),      intent(in   ) :: distType
     real(kind=c_double), intent(in   ) :: p4(*), u
     real(kind=c_double), intent(  out) :: y
     type(tError),        intent(  out) :: ierr
     call calculateDistributionInverse_c(u, y, distType, p4, ierr)
-end subroutine calculateDistributionInverse2
+end subroutine calculateDistributionInverse
 
 function conditionalWeibull(distParams, x)
     use precision, only : wp

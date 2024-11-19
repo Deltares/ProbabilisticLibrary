@@ -251,14 +251,13 @@ namespace Deltares
                 auto elmORG = elm;   // copy of original beta
 
                 up.upscaleInTime(nrElements, elm, inRhoT);
-                auto a1 = vector1D(); auto a2 = vector1D();
-                auto elm3 = cmb.combineTwoElementsPartialCorrelation(elmORG, elmORG, inRhoT, combineAndOr::combOr, a1, a2);
+                auto elm3 = cmb.combineTwoElementsPartialCorrelation(elmORG, elmORG, inRhoT, combineAndOr::combOr);
 
                 ut.checkAlphaBeta(elm, elm3.ab, 1.0e-3);
                 EXPECT_EQ(elm3.n, 0);
             }
 
-            // Testing of the consistency of the equivalent alpha according to the methodes upscaleInTime and combineTwoElementsPartialCorrelation
+            // Testing of the consistency of the equivalent alpha according to the methods upscaleInTime and combineTwoElementsPartialCorrelation
             // Test with 2 partially correlated elements.
             // Beta is 3.5, the design point is equal to (0.6 0.8), and Rho is equal to (1.0 0.5)
             // The resulting beta is verified and resulting alfa's should be (approximately) equal

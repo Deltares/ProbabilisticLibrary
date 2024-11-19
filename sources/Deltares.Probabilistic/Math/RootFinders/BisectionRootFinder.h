@@ -28,7 +28,13 @@ namespace Deltares
         class BisectionRootFinder : public RootFinder
         {
         public:
-            double CalculateValue(double minStart, double maxStart, double resultValue, double tolerance, RootFinderMethod function, StopMethod isStopped = nullptr, double xTolerance = 1E-6);
+            BisectionRootFinder() {}
+            BisectionRootFinder(double tol) : tolerance(tol) {}
+            BisectionRootFinder(double ztol, double xtol) : tolerance(ztol), xTolerance(xtol) {}
+            double CalculateValue(double minStart, double maxStart, double resultValue, RootFinderMethod function) override;
+        private:
+            double tolerance = 0.001;
+            double xTolerance = 1E-6;
         };
     }
 }

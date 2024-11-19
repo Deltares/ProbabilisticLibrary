@@ -237,6 +237,7 @@ namespace Deltares
             virtual double getDeviationByIteration(std::shared_ptr<StochastProperties> stochast);
             virtual double getXFromUByIteration(std::shared_ptr<StochastProperties> stochast, double u);
             std::vector<std::shared_ptr<Numeric::WeightedValue>> GetWeightedValues(std::vector<double>& values, std::vector<double>& weights);
+            const double tolBisection = 0.00001;
 
         private:
             std::vector<double> getValuesForIteration(std::shared_ptr<StochastProperties> stochast);
