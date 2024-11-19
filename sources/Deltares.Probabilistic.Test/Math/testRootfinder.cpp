@@ -19,23 +19,6 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#pragma once
-#include "RootFinder.h"
-namespace Deltares
-{
-    namespace Numeric
-    {
-        class BisectionRootFinder : public RootFinder
-        {
-        public:
-            BisectionRootFinder() = default;
-            explicit BisectionRootFinder(double tol) : tolerance(tol) {}
-            explicit BisectionRootFinder(double ztol, double xtol) : tolerance(ztol), xTolerance(xtol) {}
-            double CalculateValue(double minStart, double maxStart, double resultValue, RootFinderMethod function) override;
-        private:
-            double tolerance = 0.001;
-            double xTolerance = 1E-6;
-        };
-    }
-}
+#include "pch.h"
+#include "testRootfinder_body.cpp"
 

@@ -20,22 +20,31 @@
 // All rights reserved.
 //
 #pragma once
-#include "RootFinder.h"
+
 namespace Deltares
 {
-    namespace Numeric
+    namespace Probabilistic
     {
-        class BisectionRootFinder : public RootFinder
+        namespace Test
         {
-        public:
-            BisectionRootFinder() = default;
-            explicit BisectionRootFinder(double tol) : tolerance(tol) {}
-            explicit BisectionRootFinder(double ztol, double xtol) : tolerance(ztol), xTolerance(xtol) {}
-            double CalculateValue(double minStart, double maxStart, double resultValue, RootFinderMethod function) override;
-        private:
-            double tolerance = 0.001;
-            double xTolerance = 1E-6;
-        };
+            class rootfinder_tests
+            {
+            public:
+                void allRootfinder_tests();
+            private:
+                double testLinearFunc(double x) const;
+                double testConstFunc(double x);
+                void bisection_test();
+                void bisection_test2();
+                void bisection_const_test();
+                void linear_root_finder_test();
+                void linear_root_finder_test2();
+                void linear_root_finder_const_test();
+                double a = 0.0;
+                double b = 0.0;
+                int cnt = 0;
+            };
+        }
     }
 }
 

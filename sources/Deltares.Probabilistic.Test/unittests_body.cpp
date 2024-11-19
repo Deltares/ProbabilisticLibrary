@@ -29,6 +29,7 @@
 #include "Math/testMatrixMultiplication.h"
 #include "Math/testRandom.h"
 #include "Math/testVector1D.h"
+#include "Math/testRootfinder.h"
 #include "Combin/hohenbichler_tests.h"
 #include "Combin/intEqualElements_tests.h"
 #include "Combin/upscale_tests.h"
@@ -191,6 +192,12 @@ namespace Deltares
             {
                 auto tstRnd = testRandom();
                 tstRnd.allRandomTests();
+            }
+
+            TEST(unittst, testRootfinder)
+            {
+                auto tstRF = rootfinder_tests();
+                tstRF.allRootfinder_tests();
             }
 
             TEST(unittst, testVector1D)

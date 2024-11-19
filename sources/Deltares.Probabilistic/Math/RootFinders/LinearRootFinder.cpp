@@ -19,6 +19,7 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
+#include <cmath>
 #include "LinearRootFinder.h"
 #include "../NumericSupport.h"
 
@@ -132,7 +133,7 @@ namespace Deltares
                 iterations++;
             }
 
-            if (abs(solution.Value - target) > tolerance)
+            if (std::abs(solution.Value - target) > tolerance)
             {
                 return nan("");
             }
@@ -140,7 +141,7 @@ namespace Deltares
             return solution.X;
         }
 
-        XValue LinearRootFinder::interpolate(const XValue& low, const XValue& high, double target, RootFinderMethod function)
+        XValue LinearRootFinder::interpolate(const XValue& low, const XValue& high, double target, RootFinderMethod& function)
         {
             double x = low.X + ((low.Value - target) / (low.Value - high.Value)) * (high.X - low.X);
             double xValue = function(x);
@@ -148,7 +149,7 @@ namespace Deltares
             return XValue(x, xValue);
         }
 
-        XValue LinearRootFinder::bisection(const XValue& low, const XValue& high, RootFinderMethod function)
+        XValue LinearRootFinder::bisection(const XValue& low, const XValue& high, RootFinderMethod& function)
         {
             double x = (low.X + high.X) / 2;
             double xValue = function(x);

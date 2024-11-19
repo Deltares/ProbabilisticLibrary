@@ -37,9 +37,14 @@ namespace Deltares
             /// <summary>
             /// constructor
             /// </summary>
+            LinearRootFinder(double tol, int maxIter) : tolerance(tol), maxIterations(maxIter) {}
+
+            /// <summary>
+            /// constructor
+            /// </summary>
             /// <param name="tol"> z tolerance</param>
-            /// <param name="knownLowValue">Optional already calculated result for minStart</param>
-            /// <param name="knownHighValue">Optional already calculated result for maxStart</param>
+            /// <param name="low">already calculated result for minStart</param>
+            /// <param name="high">already calculated result for maxStart</param>
             /// <param name="maxIter"> maximum number of iterations </param>
             LinearRootFinder(double tol, double low, double high, int maxIter)
                : tolerance(tol), knownLowValue(low), knownHighValue(high), maxIterations(maxIter) {}
@@ -55,8 +60,8 @@ namespace Deltares
             double CalculateValue(double xLow, double xHigh, double target, RootFinderMethod function) override;
 
         private:
-            XValue interpolate(const XValue& low, const XValue& high, double target, RootFinderMethod function);
-            XValue bisection(const XValue& low, const XValue& high, RootFinderMethod function);
+            static XValue interpolate(const XValue& low, const XValue& high, double target, RootFinderMethod& function);
+            static XValue bisection(const XValue& low, const XValue& high, RootFinderMethod& function);
             const double tolerance = 0.001;
             double knownLowValue = nan("");
             double knownHighValue = nan("");
