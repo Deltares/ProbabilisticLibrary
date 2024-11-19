@@ -60,8 +60,8 @@ namespace Deltares
             double CalculateValue(double xLow, double xHigh, double target, RootFinderMethod function) override;
 
         private:
-            static XValue interpolate(const XValue& low, const XValue& high, double target, RootFinderMethod& function);
-            static XValue bisection(const XValue& low, const XValue& high, RootFinderMethod& function);
+            static XValue interpolate(const XValue& low, const XValue& high, double target, const RootFinderMethod& function);
+            static XValue bisection(const XValue& low, const XValue& high, const RootFinderMethod& function);
             const double tolerance = 0.001;
             double knownLowValue = nan("");
             double knownHighValue = nan("");

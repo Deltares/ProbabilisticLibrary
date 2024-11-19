@@ -80,7 +80,8 @@ namespace Deltares
             // the result of this computation is the probability of failure and the
             // direction of the design point (alpha values).
 
-            std::shared_ptr<ConvergenceReport> convergenceReport = std::make_shared<ConvergenceReport>();
+            auto convergenceReport = std::make_shared<ConvergenceReport>();
+            hasReporting = modelRunner->Settings->SaveConvergence && modelRunner->hasProgressFunction();
 
             double probFailure = getStochastProbability(stochastIndex, u, density, totalDensity, 1);
 
@@ -93,6 +94,21 @@ namespace Deltares
             std::shared_ptr<Sample> designPoint = designPointBuilder->getSample();
 
             return modelRunner->getDesignPoint(designPoint, beta, convergenceReport);
+        }
+
+        void NumericalIntegration::reportSample(int stochastIndex, double probFailure, int nSamples, size_t j)
+        {
+            if (stochastIndex == 0 && hasReporting)
+            {
+                double beta = -Statistics::StandardNormal::getUFromP(probFailure);
+
+                auto report = std::make_shared<ReliabilityReport>();
+                report->Step = static_cast<int>(j);
+                report->MaxSteps = nSamples;
+                report->Reliability = beta;
+
+                modelRunner->reportResult(report);
+            }
         }
 
         double NumericalIntegration::getStochastProbability(int stochastIndex, std::shared_ptr<Sample> parentSample, double density, double& totalDensity, int nSamples)
@@ -136,17 +152,7 @@ namespace Deltares
 
                     probFailure += getStochastProbability(stochastIndex + 1, parentSample, density * contribution, totalDensity, nSamples);
 
-                    if (stochastIndex == 0)
-                    {
-                        double beta = -Statistics::StandardNormal::getUFromP(probFailure);
-
-                        std::shared_ptr<ReliabilityReport> report = std::make_shared<ReliabilityReport>();
-                        report->Step = static_cast<int>(j);
-                        report->MaxSteps = nSamples;
-                        report->Reliability = beta;
-
-                        modelRunner->reportResult(report);
-                    }
+                    reportSample(stochastIndex, probFailure, nSamples, j);
                 }
 
                 return probFailure;
@@ -173,26 +179,25 @@ namespace Deltares
 
                 for (size_t j = 0; j < samples.size(); j++)
                 {
+                    if (std::isnan(zValues[j])) continue;
+
                     const std::shared_ptr<Sample> sample = samples[j];
 
-                    if (!std::isnan(zValues[j]))
+                    const double sampleProbability = sample->Weight / nSamples;
+
+                    totalDensity += sampleProbability;
+
+                    // if the z-value is negative add the probability density to the probability of failure
+                    if (zValues[j] < 0.0)
                     {
-                        double sampleProbability = sample->Weight / nSamples;
+                        probFailure += sampleProbability;
+                    }
 
-                        totalDensity += sampleProbability;
-
-                        // if the z-value is negative add the probability density to the probability of failure
-                        if (zValues[j] < 0.0)
-                        {
-                            probFailure += sampleProbability;
-                        }
-
-                        // If the combination of the z-value and the parameter for the position of the origin is negative
-                        // it is possible that a new design point is computed. Then also the alpha values are computed.
-                        if (zValues[j] * z0Fac < 0)
-                        {
-                            designPointBuilder->addSample(sample);
-                        }
+                    // If the combination of the z-value and the parameter for the position of the origin is negative
+                    // it is possible that a new design point is computed. Then also the alpha values are computed.
+                    if (zValues[j] * z0Fac < 0)
+                    {
+                        designPointBuilder->addSample(sample);
                     }
                 }
 

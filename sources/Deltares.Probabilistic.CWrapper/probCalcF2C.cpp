@@ -160,6 +160,7 @@ void probcalcf2c(const basicSettings* method, fdistribs c[], corrStruct correlat
         auto detailedProgressDelegate = DetailedProgressLambda();
         auto textualProgress = TextualProgressLambda([&pw](ProgressType p, std::string s) {pw.FPgDelegate(p, s); });
         auto progress = std::make_shared<ProgressIndicator>(progressDelegate, detailedProgressDelegate, textualProgress);
+        if (method->methodId == ProbMethod::NI) progress = nullptr; // progress slow down num. int. too much
         auto modelRunner = std::make_shared<ModelRunner>(zModel, uConverter, progress);
         modelRunner->Settings->MaxParallelProcesses = method->numThreads;
         modelRunner->Settings->MaxChunkSize = method->chunkSize;

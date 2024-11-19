@@ -141,7 +141,7 @@ namespace Deltares
             return solution.X;
         }
 
-        XValue LinearRootFinder::interpolate(const XValue& low, const XValue& high, double target, RootFinderMethod& function)
+        XValue LinearRootFinder::interpolate(const XValue& low, const XValue& high, double target, const RootFinderMethod& function)
         {
             double x = low.X + ((low.Value - target) / (low.Value - high.Value)) * (high.X - low.X);
             double xValue = function(x);
@@ -149,7 +149,7 @@ namespace Deltares
             return result;
         }
 
-        XValue LinearRootFinder::bisection(const XValue& low, const XValue& high, RootFinderMethod& function)
+        XValue LinearRootFinder::bisection(const XValue& low, const XValue& high, const RootFinderMethod& function)
         {
             double x = (low.X + high.X) / 2;
             double xValue = function(x);
