@@ -37,12 +37,12 @@ namespace Deltares
 
             void rootfinder_tests::allRootfinder_tests()
             {
-                //bisection_test();
-                //bisection_test2();
+                bisection_test();
+                bisection_test2();
                 bisection_const_test();
-                //linear_root_finder_test();
-                //linear_root_finder_test2();
-                //linear_root_finder_const_test();
+                linear_root_finder_test();
+                linear_root_finder_test2();
+                linear_root_finder_const_test();
             }
 
             double rootfinder_tests::testLinearFunc(double x) const

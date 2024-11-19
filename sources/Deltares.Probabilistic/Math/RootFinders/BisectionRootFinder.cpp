@@ -69,64 +69,43 @@ namespace Deltares
 
             DirectionType direction = getDirection(minStart, maxStart, minResult, maxResult);
 
-            // Extrapolate until target is between minStart and maxStart, first check whether result is high enough
-            while (minResult < resultValue && maxResult < resultValue && cntFunctionCalls < maxIterations)
+            for (int i = 0; i < 2; i++)
             {
-                if (direction == DirectionType::Zero)
+                // Extrapolate until target is between minStart and maxStart
+                // first check whether result is high enough
+                // second check for result is low enough
+                const auto cmp_direction = (i == 0 ? DirectionType::Positive : DirectionType::Negative);
+                while (cntFunctionCalls < maxIterations)
                 {
-                    double diff = maxStart - minStart;
+                    const bool cmp_results = (i == 0 ? minResult < resultValue && maxResult < resultValue
+                                                     : minResult > resultValue && maxResult > resultValue);
+                    if (!cmp_results) break;
+                    if (direction == DirectionType::Zero)
+                    {
+                        double diff = maxStart - minStart;
 
-                    maxStart += diff;
-                    maxResult = function(maxStart);
+                        maxStart += diff;
+                        maxResult = function(maxStart);
 
-                    minStart -= diff;
-                    minResult = function(minStart);
-                    cntFunctionCalls += 2;
+                        minStart -= diff;
+                        minResult = function(minStart);
+                        cntFunctionCalls += 2;
+                    }
+                    else if (direction == cmp_direction)
+                    {
+                        maxStart += maxStart - minStart;
+                        maxResult = function(maxStart);
+                        cntFunctionCalls++;
+                    }
+                    else
+                    {
+                        minStart -= maxStart - minStart;
+                        minResult = function(minStart);
+                        cntFunctionCalls++;
+                    }
+
+                    direction = getDirection(minStart, maxStart, minResult, maxResult);
                 }
-                else if (direction == DirectionType::Positive)
-                {
-                    maxStart += maxStart - minStart;
-                    maxResult = function(maxStart);
-                    cntFunctionCalls++;
-                }
-                else
-                {
-                    minStart -= maxStart - minStart;
-                    minResult = function(minStart);
-                    cntFunctionCalls++;
-                }
-
-                direction = getDirection(minStart, maxStart, minResult, maxResult);
-            }
-
-            // Extrapolate until target is between minStart and maxStart, check whether result is low enough
-            while (minResult > resultValue && maxResult > resultValue && cntFunctionCalls < maxIterations)
-            {
-                if (direction == DirectionType::Zero)
-                {
-                    double diff = maxStart - minStart;
-
-                    maxStart += diff;
-                    maxResult = function(maxStart);
-
-                    minStart -= diff;
-                    minResult = function(minStart);
-                    cntFunctionCalls += 2;
-                }
-                else if (direction == DirectionType::Negative)
-                {
-                    maxStart += maxStart - minStart;
-                    maxResult = function(maxStart);
-                    cntFunctionCalls++;
-                }
-                else
-                {
-                    minStart -= maxStart - minStart;
-                    minResult = function(minStart);
-                    cntFunctionCalls++;
-                }
-
-                direction = getDirection(minStart, maxStart, minResult, maxResult);
             }
 
             // Initialize bisection method
