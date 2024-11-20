@@ -64,6 +64,11 @@ extern "C" DLL_PUBLIC void Destroy(int id)
     projectServer->Destroy(id);
 }
 
+extern "C" DLL_PUBLIC void Exit()
+{
+    projectServer->Exit();
+}
+
 extern "C" DLL_PUBLIC double GetValue(int id, char* property)
 {
     std::string propertyStr(property);
@@ -86,6 +91,12 @@ extern "C" DLL_PUBLIC void SetIntValue(int id, char* property, int value)
 {
     std::string propertyStr(property);
     projectServer->SetIntValue(id, propertyStr, value);
+}
+
+extern "C" DLL_PUBLIC int GetIdValue(int id, char* property)
+{
+    std::string propertyStr(property);
+    return projectServer->GetIdValue(id, propertyStr);
 }
 
 extern "C" DLL_PUBLIC double GetIntArgValue(int id1, int id2, char* property)
@@ -197,6 +208,12 @@ extern "C" DLL_PUBLIC int GetIndexedIntValue(int id, char* property, int index)
 {
     std::string propertyStr(property);
     return projectServer->GetIndexedIntValue(id, propertyStr, index);
+}
+
+extern "C" DLL_PUBLIC int GetIndexedIdValue(int id, char* property, int index)
+{
+    std::string propertyStr(property);
+    return projectServer->GetIndexedIdValue(id, propertyStr, index);
 }
 
 extern "C" DLL_PUBLIC size_t GetIndexedStringLength(int id, char* property, int index)

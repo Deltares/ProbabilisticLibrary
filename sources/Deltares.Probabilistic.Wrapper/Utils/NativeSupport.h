@@ -38,6 +38,8 @@ namespace Deltares
                 static std::vector<double> toNative(array<double>^ values);
                 static array<double>^ toManaged(std::vector<double>& values, int count);
                 static array<double>^ toManaged(const std::vector<double> & values);
+
+                static std::vector<int> toNative(array<int>^ values);
             private:
                 static System::String^ escape(System::String^ text);
                 static System::String^ unescape(System::String^ text);

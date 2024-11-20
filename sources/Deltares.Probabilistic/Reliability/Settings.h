@@ -34,6 +34,7 @@
 #include "LatinHyperCube.h"
 #include "NumericalBisection.h"
 #include "NumericalIntegration.h"
+#include "DirectionReliabilitySettings.h"
 #include "ReliabilityMethod.h"
 #include "SubsetSimulation.h"
 #include "SubsetSimulationSettings.h"
@@ -74,6 +75,11 @@ namespace Deltares
             DesignPointMethod designPointMethod = DesignPointMethod::CenterOfGravity;
 
             /**
+             * \brief Defines the way new samples are generated
+             */
+            SampleMethodType SampleMethod = SampleMethodType::MarkovChain;
+
+            /**
              * \brief The minimum samples to be examined
              */
             int MinimumSamples = 1000;
@@ -82,6 +88,11 @@ namespace Deltares
              * \brief The maximum samples to be examined
              */
             int MaximumSamples = 10000;
+
+            /**
+             * \brief The maximum samples to be examined
+             */
+            int MaximumSamplesNoResult = 10000;
 
             /**
              * \brief The minimum directions to be examined
@@ -124,6 +135,21 @@ namespace Deltares
             int MaximumIterations = 50;
 
             /**
+             * \brief Default start value
+             */
+            double StartValue = 0.0;
+
+            /**
+             * \brief Default variance factor in importance sampling
+             */
+            double VarianceFactor = 1.5;
+
+            /**
+             * \brief Default number of intervals in numerical integration
+             */
+            int Intervals = 200;
+
+            /**
              * \brief Relaxation factor, which is applied when generating the guessed design point for a new iteration
              */
             double RelaxationFactor = 0.75;
@@ -154,6 +180,16 @@ namespace Deltares
             SampleMethodType sampleMethod = SampleMethodType::MarkovChain;
 
             /**
+             * \brief Standard deviation in the Markov chain
+             */
+            double MarkovChainDeviation = 1;
+
+            /**
+             * \brief Fraction of the samples which will be used in the next iteration
+             */
+            double SubsetFraction = 0.1;
+
+            /**
              * \brief Settings for performing model runs
              */
             std::shared_ptr<Models::RunSettings> RunSettings = std::make_shared<Models::RunSettings>();
@@ -172,6 +208,11 @@ namespace Deltares
              * \brief Settings for calculating the initial guessed design point
              */
             std::shared_ptr<StartPointCalculatorSettings> StartPointSettings = std::make_shared<StartPointCalculatorSettings>();
+
+            /**
+             * \brief Settings for calculating one direction
+             */
+            std::shared_ptr<DirectionReliabilitySettings> DirectionSettings = std::make_shared<DirectionReliabilitySettings>();
 
             /**
              * \brief Settings for individual stochastic variable, such as the start value

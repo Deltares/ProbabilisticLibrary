@@ -20,6 +20,7 @@
 ! All rights reserved.
 !
 module ftn_interface_tests
+use iso_c_binding, only : c_loc
 use precision
 use ftnunit
 use interface_gen, only : tError, ErrMsgLength
@@ -284,7 +285,7 @@ subroutine test_combine
         end do
     end do
     rho = [1.0_dp, 1.0_dp]
-    call combineMultipleElements( betas, alphas, rho, beta, alpha, combOR)
+    call combineMultipleElements( betas, alphas, rho, beta, alpha)
     call assert_comparable(beta, 2.0_wp, margin, "diff in beta")
     call assert_comparable(alpha, [sqrt(0.5_dp), sqrt(0.5_dp)], margin, "alpha in beta")
 
@@ -293,19 +294,37 @@ end subroutine test_combine
 subroutine test_combine_gen
     use interface_combin
     implicit none
-    real(kind=dp) :: betas(2), alphas(2,2), rho(2), beta, alpha(2)
-    integer i, j
+    real(kind=dp) :: betas(2)
+    real(kind=dp), target :: alpha(2), rho(2), alphas(2,2)
+    type(betaAlphaCF) :: dpOut
+    type(multipleElements) :: elements
+    type(betaAlphaCF), target :: dpIn(2)
+    type(combinerSettings) :: settings
+    integer                :: i, j
+
     betas = [2.0_dp, 3.0_dp]
     do i = 1, 2
         do j = 1, 2
             alphas(i,j) = sqrt(0.5_dp)
         end do
+        dpIn(i)%alpha = c_loc(alphas(i,1))
+        dpIn(i)%stride_alpha = 2
+        dpIn(i)%size = 2
+        dpIn(i)%beta = betas(i)
     end do
     rho = [1.0_dp, 1.0_dp]
+    dpIn(1)%rho = c_loc(rho)
+    elements%designPoints = c_loc(dpIn)
+    elements%nElements = 2
+
+    dpOut%alpha = c_loc(alpha)
+    dpOut%size = 2
 
     do i = 0, 2
-        call combineMultipleElementsGeneral( betas, alphas, rho, beta, alpha, combOR, i, 2, 2)
-        call assert_comparable(beta, 2.0_wp, 1d-2, "diff in beta")
+        settings%combAndOr = combOR
+        settings%combinerType = i
+        call combineMultipleElementsGeneral( elements, dpOut, settings)
+        call assert_comparable(dpOut%beta, 2.0_wp, 1d-2, "diff in beta")
         call assert_comparable(alpha, [sqrt(0.5_dp), sqrt(0.5_dp)], 1d-1, "alpha in beta")
     end do
 

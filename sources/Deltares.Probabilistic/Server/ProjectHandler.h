@@ -42,10 +42,12 @@ namespace Deltares
             bool CanHandle(std::string object_type) override;
             void Create(std::string object_type, int id) override;
             void Destroy(int id) override;
+            bool ShouldClose() override;
             double GetValue(int id, const std::string property_) override;
             void SetValue(int id, const std::string property_, double value) override;
             int GetIntValue(int id, std::string property_) override;
             void SetIntValue(int id, std::string property_, int value) override;
+            int GetIdValue(int id, std::string property_, int newId) override;
             double GetIntArgValue(int id1, int id2, std::string property_) override;
             void SetIntArgValue(int id1, int id2, std::string property_, double value) override;
             bool GetBoolValue(int id, std::string property_) override;
@@ -62,24 +64,26 @@ namespace Deltares
             double GetIndexedIndexedValue(int id, std::string property_, int index1, int index2) override;
             void SetIndexedIndexedValue(int id, std::string property_, int index1, int index2, double value) override;
             int GetIndexedIntValue(int id, std::string property_, int index) override;
+            int GetIndexedIdValue(int id, std::string property_, int index, int newId) override;
             void SetCallBack(int id, std::string property_, Models::ZValuesCallBack callBack) override;
             void Execute(int id, std::string method_) override;
 
-            int GetProbabilityValueId(std::shared_ptr<Statistics::ProbabilityValue> probability);
-            int GetStochastId(std::shared_ptr<Statistics::Stochast> stochast);
-            int GetCorrelationMatrixId(std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix);
-            int GetLimitStateFunctionId(std::shared_ptr<Reliability::LimitStateFunction> limitStateFunction);
-            int GetDesignPointId(std::shared_ptr<Reliability::DesignPoint> designPoint);
-            int GetAlphaId(std::shared_ptr<Models::StochastPointAlpha> alpha);
-            int GetHistogramValueId(std::shared_ptr<Statistics::HistogramValue> histogramValue);
-            int GetDiscreteValueId(std::shared_ptr<Statistics::DiscreteValue> discreteValue);
-            int GetFragilityValueId(std::shared_ptr<Statistics::FragilityValue> fragilityValue);
-            int GetContributingStochastId(std::shared_ptr<Statistics::ContributingStochast> contributingStochast);
-            int GetConditionalValueId(std::shared_ptr<Statistics::VariableStochastValue> conditionalValue);
-            int GetMessageId(std::shared_ptr<Deltares::Models::Message> message);
+            int GetProbabilityValueId(std::shared_ptr<Statistics::ProbabilityValue> probability, int newId);
+            int GetStochastId(std::shared_ptr<Statistics::Stochast> stochast, int newId);
+            int GetCorrelationMatrixId(std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix, int newid);
+            int GetLimitStateFunctionId(std::shared_ptr<Reliability::LimitStateFunction> limitStateFunction, int newid);
+            int GetDesignPointId(std::shared_ptr<Reliability::DesignPoint> designPoint, int newId);
+            int GetAlphaId(std::shared_ptr<Models::StochastPointAlpha> alpha, int newId);
+            int GetHistogramValueId(std::shared_ptr<Statistics::HistogramValue> histogramValue, int newId);
+            int GetDiscreteValueId(std::shared_ptr<Statistics::DiscreteValue> discreteValue, int newId);
+            int GetFragilityValueId(std::shared_ptr<Statistics::FragilityValue> fragilityValue, int newId);
+            int GetContributingStochastId(std::shared_ptr<Statistics::ContributingStochast> contributingStochast, int newId);
+            int GetConditionalValueId(std::shared_ptr<Statistics::VariableStochastValue> conditionalValue, int newId);
+            int GetEvaluationId(std::shared_ptr<Deltares::Reliability::Evaluation> evaluation, int newId);
+            int GetMessageId(std::shared_ptr<Deltares::Models::Message> message, int newId);
         private:
-            enum ObjectType {StandardNormal, ProbabilityValue, Message, Project, ModelParameter, LimitStateFunction, Stochast, DiscreteValue, HistogramValue, FragilityValue,
-                ContributingStochast, ConditionalValue, CorrelationMatrix, Settings, StochastSettings, DesignPoint, Alpha,
+            enum ObjectType {StandardNormal, Message, ProbabilityValue, Project, ModelParameter, LimitStateFunction, Stochast, DiscreteValue, HistogramValue, FragilityValue,
+                ContributingStochast, ConditionalValue, CorrelationMatrix, Settings, StochastSettings, DesignPoint, Alpha, Evaluation,
                 CombineProject, CombineSettings, SelfCorrelationMatrix, SensitivityProject, SensitivitySettings,
                 LengthEffectProject};
             int id_ = 0;
@@ -101,6 +105,7 @@ namespace Deltares
             std::unordered_map<int, std::shared_ptr<Reliability::StochastSettings>> stochastSettingsValues;
             std::unordered_map<int, std::shared_ptr<Reliability::DesignPoint>> designPoints;
             std::unordered_map<int, std::shared_ptr<Reliability::StochastPointAlpha>> alphas;
+            std::unordered_map<int, std::shared_ptr<Reliability::Evaluation>> evaluations;
             std::unordered_map<int, std::shared_ptr<Reliability::CombineProject>> combineProjects;
             std::unordered_map<int, std::shared_ptr<Reliability::CombineSettings>> combineSettingsValues;
             std::unordered_map<int, std::shared_ptr<Reliability::LengthEffectProject>> lengthEffectProjects;
@@ -109,6 +114,7 @@ namespace Deltares
             std::unordered_map<int, std::shared_ptr<Sensitivity::SettingsS>> sensitivitySettingsValues;
 
             std::unordered_map<std::shared_ptr<Reliability::LimitStateFunction>, int> limitStateFunctionIds;
+            std::unordered_map<std::shared_ptr<Reliability::Settings>, int> settingsValuesIds;
             std::unordered_map<std::shared_ptr<Reliability::DesignPoint>, int> designPointIds;
             std::unordered_map<std::shared_ptr<Reliability::StochastPointAlpha>, int> alphaIds;
             std::unordered_map<std::shared_ptr<Statistics::Stochast>, int> stochastIds;
@@ -119,6 +125,7 @@ namespace Deltares
             std::unordered_map<std::shared_ptr<Statistics::FragilityValue>, int> fragilityValueIds;
             std::unordered_map<std::shared_ptr<Statistics::ContributingStochast>, int> contributingStochastIds;
             std::unordered_map<std::shared_ptr<Statistics::VariableStochastValue>, int> conditionalValueIds;
+            std::unordered_map<std::shared_ptr<Reliability::Evaluation>, int> evaluationIds;
             std::unordered_map<std::shared_ptr<Models::Message>, int> messageIds;
 
             std::unordered_map <std::string, std::vector<double>> tempValues;

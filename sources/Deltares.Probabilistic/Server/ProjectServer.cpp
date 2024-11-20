@@ -34,9 +34,7 @@ namespace Deltares
 
         void ProjectServer::AddHandler(std::shared_ptr<BaseHandler> handler)
         {
-            int handlerIndex = handlers.size();
             handlers.push_back(handler);
-            handler->SetServer(std::shared_ptr<BaseServer>(this), handlerIndex, handlers[0]);
         }
 
         int ProjectServer::GetNewObjectId(int handlerIndex)
@@ -65,6 +63,14 @@ namespace Deltares
         void ProjectServer::Destroy(int id)
         {
             handlersTable[id]->Destroy(id);
+        }
+
+        void ProjectServer::Exit()
+        {
+            for (std::shared_ptr<BaseHandler> handler : handlers)
+            {
+                handler->Exit();
+            }
         }
 
         double ProjectServer::GetValue(int id, std::string property_)
@@ -176,6 +182,32 @@ namespace Deltares
         int ProjectServer::GetIndexedIntValue(int id, std::string property_, int index)
         {
             return handlersTable[id]->GetIndexedIntValue(id, property_, index);
+        }
+
+        int ProjectServer::GetIdValue(int id, std::string property_)
+        {
+            int newId = id_ + 1;
+            int objectId = handlersTable[id]->GetIdValue(id, property_, newId);
+            if (objectId == newId)
+            {
+                handlersTable[newId] = this->handlersTable[id];
+                id_ += 1;
+            }
+
+            return objectId;
+        }
+
+        int ProjectServer::GetIndexedIdValue(int id, std::string property_, int index)
+        {
+            int newId = id_ + 1;
+            int objectId = handlersTable[id]->GetIndexedIdValue(id, property_, index, newId);
+            if (objectId == newId)
+            {
+                handlersTable[newId] = this->handlersTable[id];
+                id_ += 1;
+            }
+
+            return objectId;
         }
 
         void ProjectServer::SetCallBack(int id, std::string property_, ZValuesCallBack callBack)

@@ -121,7 +121,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <ExceptionHandling>Async</ExceptionHandling>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
-      <AdditionalOptions>/Zc:twoPhase- %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/Zc:twoPhase- /bigobj %(AdditionalOptions)</AdditionalOptions>
       <OpenMPSupport>true</OpenMPSupport>
       <AdditionalIncludeDirectories>$(SolutionDir)$(Platform)\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
@@ -140,7 +140,8 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <FunctionLevelLinking>
+      </FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;DELTARESPROBABILISTICSWRAPPERS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -148,6 +149,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -170,9 +172,10 @@
     <ClInclude Include="Sensitivity\DirectionalSamplingSettingsS.h" />
     <ClInclude Include="Sensitivity\NumericalIntegrationSettingsS.h" />
     <ClInclude Include="Sensitivity\NumericalIntegrationS.h" />
-    <ClInclude Include="Model\BaseStochastPoint.h" />
     <ClInclude Include="Sensitivity\FOSM.h" />
     <ClInclude Include="Sensitivity\FOSMSettings.h" />
+    <ClInclude Include="Model\BaseStochastPoint.h" />
+    <ClInclude Include="Server\ProjectHandler.h" />
     <ClInclude Include="Sensitivity\ImportanceSamplingS.h" />
     <ClInclude Include="Sensitivity\ImportanceSamplingSettingsS.h" />
     <ClInclude Include="Sensitivity\CrudeMonteCarloS.h" />
@@ -259,6 +262,7 @@
     <ClCompile Include="Model\BaseStochastPoint.cpp" />
     <ClCompile Include="Sensitivity\FOSM.cpp" />
     <ClCompile Include="Sensitivity\FOSMSettings.cpp" />
+    <ClCompile Include="Server\ProjectHandler.cpp" />
     <ClCompile Include="Sensitivity\ImportanceSamplingS.cpp" />
     <ClCompile Include="Sensitivity\CrudeMonteCarloS.cpp" />
     <ClCompile Include="Sensitivity\SensitivityProject.cpp" />

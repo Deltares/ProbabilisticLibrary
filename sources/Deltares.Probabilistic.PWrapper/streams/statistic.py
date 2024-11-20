@@ -21,6 +21,7 @@
 #
 from ctypes import ArgumentError
 from enum import Enum
+
 from .utils import *
 from . import interface
 
@@ -376,7 +377,7 @@ class Stochast:
 		if self._discrete_values is None:
 			self._synchronizing = True
 			self._discrete_values = CallbackList(self._discrete_values_changed)
-			discrete_ids = interface.GetArrayIntValue(self._id, 'discrete_values')
+			discrete_ids = interface.GetArrayIdValue(self._id, 'discrete_values')
 			for discrete_id in discrete_ids:
 				self._discrete_values.append(DiscreteValue(discrete_id))
 			self._synchronizing = False
@@ -392,7 +393,7 @@ class Stochast:
 		if self._histogram_values is None:
 			self._synchronizing = True
 			self._histogram_values = CallbackList(self._histogram_values_changed)
-			histogram_ids = interface.GetArrayIntValue(self._id, 'histogram_values')
+			histogram_ids = interface.GetArrayIdValue(self._id, 'histogram_values')
 			for histogram_id in histogram_ids:
 				self._histogram_values.append(HistogramValue(histogram_id))
 			self._synchronizing = False
@@ -408,7 +409,7 @@ class Stochast:
 		if self._fragility_values is None:
 			self._synchronizing = True
 			self._fragility_values = CallbackList(self._fragility_values_changed)
-			fragility_ids = interface.GetArrayIntValue(self._id, 'fragility_values')
+			fragility_ids = interface.GetArrayIdValue(self._id, 'fragility_values')
 			for fragility_id in fragility_ids:
 				self._fragility_values.append(FragilityValue(fragility_id))
 			self._synchronizing = False
@@ -424,7 +425,7 @@ class Stochast:
 		if self._contributing_stochasts is None:
 			self._synchronizing = True
 			self._contributing_stochasts = CallbackList(self._contributing_stochasts_changed)
-			contributing_stochast_ids = interface.GetArrayIntValue(self._id, 'contributing_stochasts')
+			contributing_stochast_ids = interface.GetArrayIdValue(self._id, 'contributing_stochasts')
 			for contributing_stochast_id in contributing_stochast_ids:
 				self._contributing_stochasts.append(ContributingStochast(contributing_stochast_id))
 			self._synchronizing = False
@@ -445,7 +446,7 @@ class Stochast:
 
 	@property
 	def conditional_source(self):
-		cs_id = interface.GetIntValue(self._id, 'conditional_source')
+		cs_id = interface.GetIdValue(self._id, 'conditional_source')
 		if cs_id > 0:
 			if self._conditional_source is None or not self._conditional_source._id == cs_id:
 				for var in self._variables:
@@ -467,7 +468,7 @@ class Stochast:
 		if self._conditional_values is None:
 			self._synchronizing = True
 			self._conditional_values = CallbackList(self._conditional_values_changed)
-			conditional_value_ids = interface.GetArrayIntValue(self._id, 'conditional_values')
+			conditional_value_ids = interface.GetArrayIdValue(self._id, 'conditional_values')
 			for conditional_value_id in conditional_value_ids:
 				self._conditional_values.append(ConditionalValue(conditional_value_id))
 			self._synchronizing = False
@@ -730,7 +731,7 @@ class ContributingStochast:
 	@property
 	def variable(self):
 		if self._variable is None:
-			id_ = interface.GetIntValue(self._id, 'variable')
+			id_ = interface.GetIdValue(self._id, 'variable')
 			if id_ > 0:
 				self._variable = Stochast(id_)
 		return self._variable
@@ -884,7 +885,7 @@ class CorrelationMatrix:
 
 	def _update_variables(self, known_variables):
 		update_variables = []
-		stochast_ids = interface.GetArrayIntValue(self._id, 'variables')
+		stochast_ids = interface.GetArrayIdValue(self._id, 'variables')
 		for stochast_id in stochast_ids:
 			found = False
 			for known_variable in known_variables:

@@ -36,7 +36,7 @@ module combineElementsTests
     implicit none
 
     private
-    public :: allCombineElementsTests
+    public :: allCombineElementsTests, upscaleLengthWrapper
 
 contains
 !
@@ -217,7 +217,7 @@ subroutine testCombineTwoElementsNoCorrelation1
 
     expectedAlphaC = (/ 0.246342425266045d0, 0.969182251096718d0 /)         ! Is somewhere pre-computed
 
-    call combineTwoElementsPartialCorrelation( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR )
+    call combineTwoElementsPartialCorrelationWrapper( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR )
 
     call assert_comparable( betaC, expectedBeta, margin, "An unexpected value is found for the beta of the combined elements" )
 
@@ -272,7 +272,7 @@ subroutine testCombineTwoElementsNoCorrelation2
 
     expectedAlphaC = (/ 0.246342425266045d0, 0.969182251096718d0 /)         ! Is somewhere pre-computed
 
-    call combineTwoElementsPartialCorrelation( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR )
+    call combineTwoElementsPartialCorrelationWrapper( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR )
 
     call assert_comparable( betaC, expectedBeta, margin, "An unexpected value is found for the beta of the combined elements" )
 
@@ -331,7 +331,7 @@ subroutine testCombineTwoElementsNoCorrelation3
 !   NB. The expectedAlphaC(1) and expectedAlphaC(2) must now be in reversed order compared to
 !       the preceding tests testCombineTwoElementsNoCorrelation1 and testCombineTwoElementsNoCorrelation2
 
-    call combineTwoElementsPartialCorrelation( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR )
+    call combineTwoElementsPartialCorrelationWrapper( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR )
 
     call assert_comparable( betaC, expectedBeta, margin, "An unexpected value is found for the beta of the combined elements" )
 
@@ -384,7 +384,7 @@ subroutine testCombineTwoElementsNoCorrelation4
 
     expectedAlphaC = (/ 0.651828661927589d0, 0.758366267373285d0 /)         ! Is somewhere pre-computed
 
-    call combineTwoElementsPartialCorrelation( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combAND )
+    call combineTwoElementsPartialCorrelationWrapper( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combAND )
 
     call assert_comparable( betaC, expectedBeta, margin, "An unexpected value is found for the beta of the combined elements" )
 
@@ -437,7 +437,7 @@ subroutine testCombineTwoElementsNoCorrelation5
 
     expectedAlphaC = (/ 0.970353143592546d0, 0.241688910290521d0 /)         ! Is somewhere pre-computed
 
-    call combineTwoElementsPartialCorrelation( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combAND )
+    call combineTwoElementsPartialCorrelationWrapper( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combAND )
 
     call assert_comparable( betaC, expectedBeta, margin, "An unexpected value is found for the beta of the combined elements" )
 
@@ -490,7 +490,7 @@ subroutine testCombineTwoElementsNoCorrelation6
 
     expectedAlphaC= sqrt(0.5d0)  !   The alpha()-components of the combination must be equal because of equal beta1 and beta2
 
-    call combineTwoElementsPartialCorrelation( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combAND )
+    call combineTwoElementsPartialCorrelationWrapper( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combAND )
 
     call assert_comparable( betaC, expectedBeta, margin, "An unexpected value is found for the beta of the combined elements" )
 
@@ -535,7 +535,7 @@ subroutine testcombineTwoElementsPartialCorrelation1
     expectedBeta   = 2.43858507200259d0                                     ! pre-computed
     expectedAlphaC = (/ 0.777037047950730d0, 0.629454864237314d0 /)         ! pre-computed
 
-    call combineTwoElementsPartialCorrelation( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR )
+    call combineTwoElementsPartialCorrelationWrapper( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR )
 !
     call assert_comparable( betaC, expectedBeta, margin, "An unexpected value is found for the beta of the combined elements" )
 
@@ -582,7 +582,7 @@ subroutine testcombineTwoElementsPartialCorrelation2
     expectedBeta  =    2.49715643746047d0
     expectedAlphaC= (/ 0.795187280968291d0, 0.606363907390814d0 /)
 
-    call combineTwoElementsPartialCorrelation( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR )
+    call combineTwoElementsPartialCorrelationWrapper( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR )
 
     call assert_comparable( betaC, expectedBeta, margin, "An unexpected value is found for the beta of the combined elements" )
 
@@ -630,7 +630,7 @@ subroutine testcombineTwoElementsPartialCorrelation3
     expectedBeta  = 2.38813303477200d0
     expectedAlphaC= sqrt(0.5d0)  !   The alpha()-components of the combination must be equal because of equal beta1 and beta2
 
-    call combineTwoElementsPartialCorrelation( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR )
+    call combineTwoElementsPartialCorrelationWrapper( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR )
 !
     call assert_comparable( betaC, expectedBeta, margin, "An unexpected value is found for the beta of the combined elements" )
 
@@ -686,7 +686,7 @@ subroutine testcombineTwoElementsPartialCorrelation4
 
     expectedAlphaC= (/ 0.149904324474973d0, 0.988700507486318d0 /)         ! pre-computed
 
-    call combineTwoElementsPartialCorrelation( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR )
+    call combineTwoElementsPartialCorrelationWrapper( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR )
 
     call assert_comparable( betaC, expectedBeta, margin, "An unexpected value is found for the beta of the combined elements" )
 
@@ -735,7 +735,7 @@ subroutine testcombineTwoElementsPartialCorrelation5
     expectedAlphaC= sqrt(0.5d0) * (/ -1.0d0, 1.0d0 /)   ! theoretically expected, but not exactly (re)produced
     expectedAlphaC= (/ -0.713029134520995d0, 0.701134404607448d0 /)
 
-    call combineTwoElementsPartialCorrelation( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR )
+    call combineTwoElementsPartialCorrelationWrapper( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR )
 
     call assert_comparable( betaC, expectedBeta, margin, "An unexpected value is found for the beta of the combined elements" )
 
@@ -792,7 +792,7 @@ subroutine testcombineTwoElementsPartialCorrelation6
 
     expectedAlphaC = (/ -0.689062334733955d0, -0.158849035402622d0, 0.157472623165194d0, 0.689320285321795d0 /)   ! pre-computed
 
-    call combineTwoElementsPartialCorrelation( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR )
+    call combineTwoElementsPartialCorrelationWrapper( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR )
 !
     call assert_comparable( betaC, expectedBeta, margin, "An unexpected value is found for the beta of the combined elements" )
 
@@ -838,7 +838,7 @@ subroutine testcombineTwoElementsPartialCorrelation7
     expectedBeta  = 2.24390055691005d0
 !   The alpha of the combination is not well defined and will not be verified
 
-    call combineTwoElementsPartialCorrelation( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR)
+    call combineTwoElementsPartialCorrelationWrapper( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR)
 
     call assert_comparable( betaC, expectedBeta, margin, "An unexpected value is found for the beta of the combined elements" )
 
@@ -876,7 +876,7 @@ subroutine testcombineTwoElementsPartialCorrelation8
     expectedBeta  = 2.24390055691005d0
 !   The alpha of the combination is not well defined and will not be verified
 
-    call combineTwoElementsPartialCorrelation( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR)
+    call combineTwoElementsPartialCorrelationWrapper( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR)
 
     call assert_comparable( betaC, expectedBeta, margin, "An unexpected value is found for the beta of the combined elements" )
 
@@ -920,7 +920,7 @@ subroutine testcombineTwoElementsPartialCorrelation9
     expectedBeta  =    3.31256284734426d0                            ! pre-computed
     expectedAlphaC= (/ 0.764786211092966d0, 0.644284138654728d0 /)   ! pre-computed
 
-    call combineTwoElementsPartialCorrelation( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR)
+    call combineTwoElementsPartialCorrelationWrapper( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR)
 
     call assert_comparable( betaC, expectedBeta, margin, "An unexpected value is found for the beta of the combined elements" )
 
@@ -971,7 +971,7 @@ subroutine testcombineTwoElementsPartialCorrelation10
     expectedBeta  =    3.31256284734426d0                                                 ! pre-computed
     expectedAlphaC= (/ 0.764786211092966d0, 0.580277735143150d0, 0.279963928782266d0 /)   ! pre-computed
 
-    call combineTwoElementsPartialCorrelation( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR)
+    call combineTwoElementsPartialCorrelationWrapper( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR)
 
     call assert_comparable( betaC, expectedBeta, margin, "An unexpected value is found for the beta of the combined elements" )
 
@@ -1021,7 +1021,7 @@ subroutine testcombineTwoElementsPartialCorrelation11
     expectedBeta  =    3.3121491224946d0                            ! pre-computed
     expectedAlphaC= (/ 0.634952576684642d0, 0.772551115047758d0 /)   ! pre-computed
 
-    call combineTwoElementsPartialCorrelation( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR)
+    call combineTwoElementsPartialCorrelationWrapper( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR)
 
     call assert_comparable( betaC, expectedBeta, margin, "An unexpected value is found for the beta of the combined elements" )
 
@@ -1071,7 +1071,7 @@ subroutine testcombineTwoElementsPartialCorrelation12
     expectedBeta     =    3.31214912249458d0                                                 ! pre-computed
     expectedAlphaC   = (/ 0.634952576684642d0, 0.546276132263498d0, 0.546276132263498d0 /)   ! pre-computed
 
-    call combineTwoElementsPartialCorrelation( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR)
+    call combineTwoElementsPartialCorrelationWrapper( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR)
 
     call assert_comparable( betaC, expectedBeta, margin, "An unexpected value is found for the beta of the combined elements" )
 
@@ -1121,7 +1121,7 @@ subroutine testcombineTwoElementsPartialCorrelation13
     expectedBeta  =    3.42801564331459d0                            ! pre-computed
     expectedAlphaC= (/ 0.631154181145020d0, 0.775657398355201d0 /)   ! pre-computed
 
-    call combineTwoElementsPartialCorrelation( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR)
+    call combineTwoElementsPartialCorrelationWrapper( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR)
 
     call assert_comparable( betaC, expectedBeta, margin, "An unexpected value is found for the beta of the combined elements" )
 
@@ -1176,7 +1176,7 @@ subroutine testcombineTwoElementsPartialCorrelation14
 !   expectedAlphaC2EQ= sqrt( expectedAlphaC(2)**2 + expectedAlphaC(3)**2 )
     expectedAlphaC2EQ= 0.727073922142432d0
 
-    call combineTwoElementsPartialCorrelation( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR)
+    call combineTwoElementsPartialCorrelationWrapper( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR)
     alphaC2EQ= sqrt( alphaC(2)**2 + alphaC(3)**2 )
     dAlphaC2EQ= alphaC2EQ - expectedAlphaC2EQ
 
@@ -1221,7 +1221,7 @@ subroutine testcombineTwoElementsPartialCorrelation15
     expectedBeta  =    3.5_wp               ! pre-computed
     expectedAlphaC= (/ 0.8_wp, 0.6_wp /)   ! pre-computed
 
-    call combineTwoElementsPartialCorrelation( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR)
+    call combineTwoElementsPartialCorrelationWrapper( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR)
     call assert_comparable( betaC, expectedBeta, 1d-6, "An unexpected value is found for the beta of the combined elements" )
 
     do iStochast= 1, nStochast
@@ -1269,7 +1269,7 @@ subroutine testcombineTwoElementsPartialCorrelation99
                           0.222247930634836d0, 0.395033459584985d0, 0.427126699802553d0, &
                           0.451566604194081d0 /) ! PreComputed
 
-    call combineTwoElementsPartialCorrelation( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR)
+    call combineTwoElementsPartialCorrelationWrapper( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR)
 
 !   Check computed beta, and alpha()
     call assert_comparable( betaC, expectedBetaC  , margin, "An unexpected value is found for the beta of the combined elements" )
@@ -1320,7 +1320,7 @@ subroutine testcombineTwoElementsPCorWithNonContrAlphas
     expectedBeta  =    3.42801564331459d0                                                 ! pre-computed
     expectedAlphaC= (/ 0.0D0, 0.631154181145020d0, 0.0D0, 0.775657398355201d0, 0.0D0 /)   ! pre-computed and based on testcombineTwoElementsPartialCorrelation13
 
-    call combineTwoElementsPartialCorrelation( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR)
+    call combineTwoElementsPartialCorrelationWrapper( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR)
 
     call assert_comparable( betaC, expectedBeta, margin, "An unexpected value is found for the beta of the combined elements" )
 
@@ -1364,7 +1364,7 @@ subroutine testcombineTwoElementsFullCorrelation1
     expectedBeta  = min( beta1, beta2)    ! Because of an OR-port in the combination
     expectedAlphaC= alpha1
 
-    call combineTwoElementsPartialCorrelation( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR )
+    call combineTwoElementsPartialCorrelationWrapper( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR )
 
     call assert_comparable( betaC, expectedBeta, margin, "An unexpected value is found for the beta of the combined elements" )
 
@@ -1408,7 +1408,7 @@ subroutine testcombineTwoElementsFullCorrelation2
     expectedBeta  = max( beta1, beta2)    ! Because of an AND-port in the combination
     expectedAlphaC= alpha1
 
-    call combineTwoElementsPartialCorrelation( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combAND )
+    call combineTwoElementsPartialCorrelationWrapper( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combAND )
 
     call assert_comparable( betaC, expectedBeta, margin, "An unexpected value is found for the beta of the combined elements" )
 
@@ -1465,7 +1465,7 @@ subroutine testcombineTwoElementsNegativeCorrelation1
 
     expectedAlphaC= alpha2
 
-    call combineTwoElementsPartialCorrelation( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR )
+    call combineTwoElementsPartialCorrelationWrapper( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR )
 
     call assert_comparable( betaC, expectedBeta, margin, "An unexpected value is found for the beta of the combined elements" )
 
@@ -1512,7 +1512,7 @@ subroutine testcombineTwoElementsNegativeCorrelation2
 
     expectedAlphaC= [ sqrt(0.5_wp), sqrt(0.5_wp) ]
 
-    call combineTwoElementsPartialCorrelation( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combAND )
+    call combineTwoElementsPartialCorrelationWrapper( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combAND )
 
     call assert_comparable( betaC, expectedBeta, margin, "An unexpected value is found for the beta of the combined elements" )
 
@@ -1568,8 +1568,8 @@ subroutine testcombineThreeElementsPartialCorrelation1
     expectedBeta  =    3.21126288603446d0                                                 ! pre-computed
     expectedAlphaC= (/ 0.833189348302311d0, 0.471747264980611d0, 0.227197897520706d0, 0.177851463927219d0/)   ! pre-computed
 
-    call combineTwoElementsPartialCorrelation( beta1, alpha1, beta2, alpha2, rhoP, betaC12, alphaC12, combOR)
-    call combineTwoElementsPartialCorrelation( betaC12, alphaC12, beta3, alpha3, rhoP, betaC, alphaC, combOR)
+    call combineTwoElementsPartialCorrelationWrapper( beta1, alpha1, beta2, alpha2, rhoP, betaC12, alphaC12, combOR)
+    call combineTwoElementsPartialCorrelationWrapper( betaC12, alphaC12, beta3, alpha3, rhoP, betaC, alphaC, combOR)
 
     call assert_comparable( betaC, expectedBeta, margin, "An unexpected value is found for the beta of the combined elements" )
 
@@ -1625,8 +1625,8 @@ subroutine testcombineThreeElementsPartialCorrelation2
     expectedBeta  =    3.21478388977581d0                                                ! pre-computed
     expectedAlphaC= (/ 0.844702211809561d0,  0.330698381721459d0,  0.330698381721459d0, 0.260298547859284d0 /)   ! pre-computed
 
-    call combineTwoElementsPartialCorrelation( beta1, alpha1, beta2, alpha2, rhoP, betaC12, alphaC12, combOR)
-    call combineTwoElementsPartialCorrelation( betaC12, alphaC12, beta3, alpha3, rhoP, betaC, alphaC, combOR)
+    call combineTwoElementsPartialCorrelationWrapper( beta1, alpha1, beta2, alpha2, rhoP, betaC12, alphaC12, combOR)
+    call combineTwoElementsPartialCorrelationWrapper( betaC12, alphaC12, beta3, alpha3, rhoP, betaC, alphaC, combOR)
 
     call assert_comparable( betaC, expectedBeta, margin, "An unexpected value is found for the beta of the combined elements" )
 
@@ -1689,11 +1689,11 @@ subroutine testcombineThreeElementsPartialCorrelation3
     expectedBeta  =    3.03591902024806_wp                                                   ! pre-computed
     expectedAlphaC= (/ 0.730696091970909_wp, 0.572806816016527_wp, 0.371450632929127_wp /)   ! pre-computed
 
-    call combineTwoElementsPartialCorrelation( beta1, alpha1, beta2, alpha2, rhoP, betaC12, alphaC12, combOR)
-    call combineTwoElementsPartialCorrelation( betaC12, alphaC12, beta3, alpha3, rhoP, betaC, alphaC, combOR)
+    call combineTwoElementsPartialCorrelationWrapper( beta1, alpha1, beta2, alpha2, rhoP, betaC12, alphaC12, combOR)
+    call combineTwoElementsPartialCorrelationWrapper( betaC12, alphaC12, beta3, alpha3, rhoP, betaC, alphaC, combOR)
 
-    call combineTwoElementsPartialCorrelation( beta1, alpha1, beta3, alpha3, rhoP, betaC12, alphaC12, combOR)
-    call combineTwoElementsPartialCorrelation( betaC12, alphaC12, beta2, alpha2, rhoP, betaC, alphaC, combOR)
+    call combineTwoElementsPartialCorrelationWrapper( beta1, alpha1, beta3, alpha3, rhoP, betaC12, alphaC12, combOR)
+    call combineTwoElementsPartialCorrelationWrapper( betaC12, alphaC12, beta2, alpha2, rhoP, betaC, alphaC, combOR)
 
     call assert_comparable( betaC, expectedBeta, 1d-6, "An unexpected value is found for the beta of the combined elements" )
 
@@ -1748,14 +1748,14 @@ subroutine testcombineThreeElementsPartialCorrelation4
     expectedBeta  =    3.06335717484026_wp                                                   ! pre-computed
     expectedAlphaC= (/ 0.711080695307172_wp, 0.613705694896886_wp, 0.343117421318999_wp /)   ! pre-computed
 
-    call combineTwoElementsPartialCorrelation( beta1, alpha1, beta2, alpha2, rhoP, betaC12, alphaC12, combOR)
-    call combineTwoElementsPartialCorrelation( betaC12, alphaC12, beta3, alpha3, rhoP, betaC, alphaC, combOR)
+    call combineTwoElementsPartialCorrelationWrapper( beta1, alpha1, beta2, alpha2, rhoP, betaC12, alphaC12, combOR)
+    call combineTwoElementsPartialCorrelationWrapper( betaC12, alphaC12, beta3, alpha3, rhoP, betaC, alphaC, combOR)
 
-    call combineTwoElementsPartialCorrelation( beta1, alpha1, beta3, alpha3, rhoP, betaC12, alphaC12, combOR)
-    call combineTwoElementsPartialCorrelation( betaC12, alphaC12, beta2, alpha2, rhoP, betaC, alphaC, combOR)
+    call combineTwoElementsPartialCorrelationWrapper( beta1, alpha1, beta3, alpha3, rhoP, betaC12, alphaC12, combOR)
+    call combineTwoElementsPartialCorrelationWrapper( betaC12, alphaC12, beta2, alpha2, rhoP, betaC, alphaC, combOR)
 
-    call combineTwoElementsPartialCorrelation( beta2, alpha2, beta3, alpha3, rhoP, betaC12, alphaC12, combOR)
-    call combineTwoElementsPartialCorrelation( betaC12, alphaC12, beta1, alpha1, rhoP, betaC, alphaC, combOR)
+    call combineTwoElementsPartialCorrelationWrapper( beta2, alpha2, beta3, alpha3, rhoP, betaC12, alphaC12, combOR)
+    call combineTwoElementsPartialCorrelationWrapper( betaC12, alphaC12, beta1, alpha1, rhoP, betaC, alphaC, combOR)
 
     call assert_comparable( betaC, expectedBeta, 1d-6, "An unexpected value is found for the beta of the combined elements" )
 
@@ -1808,7 +1808,7 @@ subroutine testcombineMultipleElementsSpatialCorrelated1
     expectedBeta  =    4.38787743765301_wp                                                                         ! pre-computed
     expectedAlphaC= (/ 0.635285167139092_wp, 0.393519326675495_wp, 0.565059833788674_wp, 0.349660807332817_wp /)   ! pre-computed
 !
-    call upscaleLength ( betaCrossSection, alphaCrossSection, rhoXK, dXK, sectionLength, betaSection, alphaSection )
+    call upscaleLengthWrapper ( betaCrossSection, alphaCrossSection, rhoXK, dXK, sectionLength, betaSection, alphaSection )
     betaElement = betaSection
     do i = 1, nElements
         alphaElement(i,:) = alphaSection
@@ -1866,7 +1866,7 @@ subroutine testcombineMultipleElementsSpatialCorrelated2
     expectedBeta  =    4.61415014812874_wp                                                                         ! pre-computed
     expectedAlphaC= (/0.597708361676096_wp, 0.375385677437277_wp, 0.599181645055476_wp, 0.377904305064187_wp /)   ! pre-computed
 !
-    call upscaleLength ( betaCrossSection, alphaCrossSection, rhoXK, dXK, sectionLength, betaSection, alphaSection )
+    call upscaleLengthWrapper ( betaCrossSection, alphaCrossSection, rhoXK, dXK, sectionLength, betaSection, alphaSection )
     betaElement = betaSection
     do i = 1, nElements
         alphaElement(i,:) = alphaSection
@@ -1917,7 +1917,8 @@ subroutine testcombineMultipleElementsSpatialCorrelated3
     expectedBeta  =    4.50641035819668_wp                                                                         ! pre-computed
     expectedAlphaC= (/ 0.578741673689891_wp, 0.385418150246354_wp, 0.598199853682860_wp, 0.398331344045516_wp /)   ! pre-computed
 !
-    call upscaleLength ( betaCrossSection, alphaCrossSection, rhoXK, dXK, nElements * sectionLength, betaSection, alphaSection )
+    call upscaleLengthWrapper ( betaCrossSection, alphaCrossSection, rhoXK, dXK, nElements * sectionLength, &
+        betaSection, alphaSection )
 !
     call assert_comparable( betaSection, expectedBeta, 1d-6, "An unexpected value is found for the beta of the combined elements" )
 !
@@ -1988,7 +1989,7 @@ subroutine testcombineTwoElementsPartialCorrelation9a
     expectedBeta  =    3.31256284734426d0                                                 ! pre-computed
     expectedAlphaC= (/ 0.764785923688505d0, 0.580278077398837d0, 0.279964004504562d0 /)   ! pre-computed with    alpha() correction
 
-    call combineTwoElementsPartialCorrelation( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR)
+    call combineTwoElementsPartialCorrelationWrapper( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR)
 
     call assert_comparable( betaC, expectedBeta, margin, "An unexpected value is found for the beta of the combined elements" )
 
@@ -2039,7 +2040,7 @@ subroutine testcombineTwoElementsPartialCorrelation10a
     expectedBeta  =    3.31256284734426d0                            ! pre-computed
     expectedAlphaC= (/ 0.764785923688505d0, 0.64428447981301d0 /)   ! pre-computed with    alpha() correction
 
-    call combineTwoElementsPartialCorrelation( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR)
+    call combineTwoElementsPartialCorrelationWrapper( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR)
 
     call assert_comparable( betaC, expectedBeta, margin, "An unexpected value is found for the beta of the combined elements" )
 
@@ -2088,7 +2089,7 @@ subroutine testcombineTwoElementsPartialCorrelation11a
     expectedBeta  =    3.31214912249458d0                            ! pre-computed
     expectedAlphaC= (/ 0.634952167871736d0, 0.772551451047102d0 /)   ! pre-computed with alpha() correction
 
-    call combineTwoElementsPartialCorrelation( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR)
+    call combineTwoElementsPartialCorrelationWrapper( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR)
 
     call assert_comparable( betaC, expectedBeta, margin, "An unexpected value is found for the beta of the combined elements" )
 
@@ -2139,7 +2140,7 @@ subroutine testcombineTwoElementsPartialCorrelation12a
     expectedBeta     =    3.31214912249458d0                                                 ! pre-computed
     expectedAlphaC   = (/ 0.634952167871736d0, 0.546276369850913d0, 0.546276369850913d0 /)   ! pre-computed with alpha() correction
 
-    call combineTwoElementsPartialCorrelation( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR)
+    call combineTwoElementsPartialCorrelationWrapper( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR)
 
     call assert_comparable( betaC, expectedBeta, margin, "An unexpected value is found for the beta of the combined elements" )
 
@@ -2188,7 +2189,7 @@ subroutine testcombineTwoElementsPartialCorrelation13a
     expectedBeta  =    3.42801564331459d0                            ! pre-computed
     expectedAlphaC= (/ 0.631154181145020d0, 0.775657398355201d0 /)   ! pre-computed with alpha() correction
 
-    call combineTwoElementsPartialCorrelation( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR)
+    call combineTwoElementsPartialCorrelationWrapper( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR)
 
     call assert_comparable( betaC, expectedBeta, margin, "An unexpected value is found for the beta of the combined elements" )
 
@@ -2238,7 +2239,7 @@ subroutine testcombineTwoElementsPartialCorrelation14a
     expectedBeta     =    3.42801564331459d0                                                  ! pre-computed
     expectedAlphaC   = (/ 0.631154181145020d0, 0.735508613458735d0, 0.246315811817203d0 /)    ! pre-computed with alpha() correction
 
-    call combineTwoElementsPartialCorrelation( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR)
+    call combineTwoElementsPartialCorrelationWrapper( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR)
 
     call assert_comparable( betaC, expectedBeta, margin, "An unexpected value is found for the beta of the combined elements" )
 
@@ -2309,7 +2310,7 @@ subroutine testcombineTwoElementsPartialCorrelation99a
     maxDifAlpha= maxval( abs( diffAlpha) )              ! In present case the result will be 1.808143227518799D-002
     nrmDifAlpha= sqrt  ( sum ( diffAlpha * diffAlpha) ) ! In present case the result will be 2.501029768417005D-002
 
-    call combineTwoElementsPartialCorrelation( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR)
+    call combineTwoElementsPartialCorrelationWrapper( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR)
 
 !   Check computed beta when no alpha() correction is applied:
 !   call assert_comparable( betaC, expectedBetaNoC, margin, "An unexpected value is found for the beta of the combined elements" )
@@ -2343,7 +2344,7 @@ subroutine testcombinaTwoElementsPartialCorrelationPiping
     alpha2 = [0.941548934494231_wp, 0.336876242987242_wp, 2.938671066518333d-005]
     rhoP =   [1.0_wp, 1.0_wp, 0.0_wp]
 
-    call combineTwoElementsPartialCorrelation( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR)
+    call combineTwoElementsPartialCorrelationWrapper( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR)
 
     call assert_comparable(betaC, -1.66664950156622_wp, margin, "diff in betaC")
     call assert_comparable(alphaC, [ 0.941544051697653_wp, 0.336889889798984_wp, 2.939378451871372D-005], margin, "diff in alphaC")
@@ -2357,11 +2358,11 @@ subroutine testcombineMultipleElementsProb1
     real(kind=wp)               :: betaElement(nElements)               !< Reliability index per element
     real(kind=wp)               :: alphaElement(nElements,nStochasts)   !< Alpha vector per element
     real(kind=wp)               :: percentages(nElements)               !< Array of percentages
-    real(kind=wp)               :: beta                                 !< Reliability index after combining over elements
-    real(kind=wp)               :: alpha(nStochasts)                    !< Alpha vector after combining over elements
+    real(kind=wp), target       :: alpha(nStochasts)                    !< Alpha vector after combining over elements
     real(kind=wp)               :: betaExpected                         !< Expected reliability index after combining over elements
     real(kind=wp)               :: alphaExpected(nStochasts)            !< Expected alpha vector after combining over elements
     real(kind=wp), parameter    :: margin = 1d-6
+    type(DesignPoint)           :: dpOut
 
     betaElement(1)    = 3.5_wp
     alphaElement(1,1) = 1.0_wp
@@ -2374,9 +2375,10 @@ subroutine testcombineMultipleElementsProb1
     alphaExpected(2) = alphaElement(1,2)
     alphaExpected(3) = alphaElement(1,3)
 
-    call combineMultipleElementsProb( betaElement, alphaElement, percentages, beta, alpha, combOr )
+    dpOut%alpha => alpha
+    call combineMultipleElementsProb( betaElement, alphaElement, percentages, dpOut)
 
-    call assert_comparable(beta, betaExpected, margin, "difference in beta")
+    call assert_comparable(dpOut%beta, betaExpected, margin, "difference in beta")
     call assert_comparable(alpha, alphaExpected, margin, "difference in alpha")
 
 end subroutine testcombineMultipleElementsProb1
@@ -2389,12 +2391,12 @@ subroutine testcombineMultipleElementsProb2
     real(kind=wp)               :: betaElement(nElements)               !< Reliability index per element
     real(kind=wp)               :: alphaElement(nElements,nStochasts)   !< Alpha vector per element
     real(kind=wp)               :: percentages(nElements)               !< Array of percentages
-    real(kind=wp)               :: beta                                 !< Reliability index after combining over elements
-    real(kind=wp)               :: alpha(nStochasts)                    !< Alpha vector after combining over elements
+    real(kind=wp), target       :: alpha(nStochasts)                    !< Alpha vector after combining over elements
     real(kind=wp)               :: betaExpected                         !< Expected reliability index after combining over elements
     real(kind=wp)               :: alphaExpected(nStochasts)            !< Expected alpha vector after combining over elements
     real(kind=wp), parameter    :: margin = 1d-7
     integer                     :: i
+    type(DesignPoint)           :: dpOut
 
     do i = 1, nElements
         betaElement(i)    = 3.5_wp
@@ -2409,9 +2411,10 @@ subroutine testcombineMultipleElementsProb2
     alphaExpected(2) = alphaElement(1,2)
     alphaExpected(3) = alphaElement(1,3)
 
-    call combineMultipleElementsProb( betaElement, alphaElement, percentages, beta, alpha, combOr )
+    dpOut%alpha => alpha
+    call combineMultipleElementsProb( betaElement, alphaElement, percentages, dpOut)
 
-    call assert_comparable(beta, betaExpected, margin, "difference in beta")
+    call assert_comparable(dpOut%beta, betaExpected, margin, "difference in beta")
     call assert_comparable(alpha, alphaExpected, margin, "difference in alpha")
 
 end subroutine testcombineMultipleElementsProb2
@@ -2424,12 +2427,12 @@ subroutine testcombineMultipleElementsProb3
     real(kind=wp)               :: betaElement(nElements)               !< Reliability index per element
     real(kind=wp)               :: alphaElement(nElements,nStochasts)   !< Alpha vector per element
     real(kind=wp)               :: percentages(nElements)               !< Array of percentages
-    real(kind=wp)               :: beta                                 !< Reliability index after combining over elements
-    real(kind=wp)               :: alpha(nStochasts)                    !< Alpha vector after combining over elements
+    real(kind=wp), target       :: alpha(nStochasts)                    !< Alpha vector after combining over elements
     real(kind=wp)               :: betaExpected                         !< Expected reliability index after combining over elements
     real(kind=wp)               :: alphaExpected(nStochasts)            !< Expected alpha vector after combining over elements
     real(kind=wp), parameter    :: margin = 1d-7
     integer                     :: i
+    type(DesignPoint)           :: dpOut
 
     do i = 1, nElements
         betaElement(i)    = 3.5_wp
@@ -2444,9 +2447,10 @@ subroutine testcombineMultipleElementsProb3
     alphaExpected(2) = alphaElement(1,2)
     alphaExpected(3) = alphaElement(1,3)
 
-    call combineMultipleElementsProb( betaElement, alphaElement, percentages, beta, alpha, combOr )
+    dpOut%alpha => alpha
+    call combineMultipleElementsProb( betaElement, alphaElement, percentages, dpOut )
 
-    call assert_comparable(beta, betaExpected, margin, "difference in beta")
+    call assert_comparable(dpOut%beta, betaExpected, margin, "difference in beta")
     call assert_comparable(alpha, alphaExpected, margin, "difference in alpha")
     
 end subroutine testcombineMultipleElementsProb3
@@ -2459,12 +2463,12 @@ subroutine testcombineMultipleElementsProb4
     real(kind=wp)               :: betaElement(nElements)               !< Reliability index per element
     real(kind=wp)               :: alphaElement(nElements,nStochasts)   !< Alpha vector per element
     real(kind=wp)               :: percentages(nElements)               !< Array of percentages
-    real(kind=wp)               :: beta                                 !< Reliability index after combining over elements
-    real(kind=wp)               :: alpha(nStochasts)                    !< Alpha vector after combining over elements
+    real(kind=wp), target       :: alpha(nStochasts)                    !< Alpha vector after combining over elements
     real(kind=wp)               :: betaExpected                         !< Expected reliability index after combining over elements
     real(kind=wp)               :: alphaExpected(nStochasts)            !< Expected alpha vector after combining over elements
     real(kind=wp), parameter    :: margin = 1d-3
     integer                     :: i
+    type(DesignPoint)           :: dpOut
 
     betaElement(1) = 3.0_wp
     betaElement(2) = 3.5_wp
@@ -2483,9 +2487,10 @@ subroutine testcombineMultipleElementsProb4
     alphaExpected(2) = alphaElement(1,2)
     alphaExpected(3) = alphaElement(1,3)
 
-    call combineMultipleElementsProb( betaElement, alphaElement, percentages, beta, alpha, combOr )
+    dpOut%alpha => alpha
+    call combineMultipleElementsProb( betaElement, alphaElement, percentages, dpOut )
 
-    call assert_comparable(beta, betaExpected, margin, "difference in beta")
+    call assert_comparable(dpOut%beta, betaExpected, margin, "difference in beta")
     call assert_comparable(alpha, alphaExpected, margin, "difference in alpha")
 
 end subroutine testcombineMultipleElementsProb4
@@ -2498,12 +2503,12 @@ subroutine testcombineMultipleElementsProb5
     real(kind=wp)               :: betaElement(nElements)               !< Reliability index per element
     real(kind=wp)               :: alphaElement(nElements,nStochasts)   !< Alpha vector per element
     real(kind=wp)               :: percentages(nElements)               !< Array of percentages
-    real(kind=wp)               :: beta                                 !< Reliability index after combining over elements
-    real(kind=wp)               :: alpha(nStochasts)                    !< Alpha vector after combining over elements
+    real(kind=wp), target       :: alpha(nStochasts)                    !< Alpha vector after combining over elements
     real(kind=wp)               :: betaExpected                         !< Expected reliability index after combining over elements
     real(kind=wp)               :: alphaExpected(nStochasts)            !< Expected alpha vector after combining over elements
     real(kind=wp), parameter    :: margin = 1d-3
     integer                     :: i
+    type(DesignPoint)           :: dpOut
 
     do i = 1, nElements
         betaElement(i)    = 3.0_wp + (i-1)*0.1_wp
@@ -2518,9 +2523,10 @@ subroutine testcombineMultipleElementsProb5
     alphaExpected(2) = alphaElement(1,2)
     alphaExpected(3) = alphaElement(1,3)
 
-    call combineMultipleElementsProb( betaElement, alphaElement, percentages, beta, alpha, combOr )
+    dpOut%alpha => alpha
+    call combineMultipleElementsProb( betaElement, alphaElement, percentages, dpOut )
 
-    call assert_comparable(beta, betaExpected, margin, "difference in beta")
+    call assert_comparable(dpOut%beta, betaExpected, margin, "difference in beta")
     call assert_comparable(alpha, alphaExpected, margin, "difference in alpha")
 
 end subroutine testcombineMultipleElementsProb5
@@ -2567,7 +2573,7 @@ subroutine testFromRealCasesA
     expectedAlpha(11) =-0.3793992085_wp
     expectedAlpha(12) =-0.2001004044_wp
 
-    call combineTwoElementsPartialCorrelation( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR )
+    call combineTwoElementsPartialCorrelationWrapper( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR )
     call assert_comparable(betaC, expectedBeta, 1d-8, "diff in beta")
     call assert_comparable(alphaC, expectedAlpha, 1d-8, "diff in alpha")
 end subroutine testFromRealCasesA
@@ -2606,7 +2612,7 @@ subroutine testFromRealCasesB
     expectedAlpha( 8) =  0.401235113663744_wp
     expectedAlpha(12) =  0.401235113663744_wp
 
-    call combineTwoElementsPartialCorrelation( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR )
+    call combineTwoElementsPartialCorrelationWrapper( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combOR )
     call assert_comparable(betaC, expectedBeta, 1d-8, "diff in beta")
     call assert_comparable(alphaC, expectedAlpha, 1d-8, "diff in alpha")
 end subroutine testFromRealCasesB
@@ -2632,13 +2638,70 @@ subroutine testFromRealCasesC
     do i = 1, 50
         beta1 =  beta1finalA * real(i, wp) / 50.0_wp
         beta2 =  beta2finalA * real(i, wp) / 50.0_wp
-        call combineTwoElementsPartialCorrelation( beta1, alpha1, beta2, alpha2, rhoP, beta3A, alpha3A, combOR )
+        call combineTwoElementsPartialCorrelationWrapper( beta1, alpha1, beta2, alpha2, rhoP, beta3A, alpha3A, combOR )
 
         beta1 =  beta1finalB * real(i, wp) / 50.0_wp
         beta2 =  beta2finalB * real(i, wp) / 50.0_wp
-        call combineTwoElementsPartialCorrelation( beta1, alpha1, beta2, alpha2, rhoP, beta3B, alpha3B, combOR )
+        call combineTwoElementsPartialCorrelationWrapper( beta1, alpha1, beta2, alpha2, rhoP, beta3B, alpha3B, combOR )
         write(*,*) i, real(alpha3A), real(alpha3B)
     end do
 end subroutine testFromRealCasesC
+
+subroutine upscaleLengthWrapper ( betaCrossSection, alphaCrossSection, rhoXK, dXK, sectionLength, betaSection, alphaSection)
+        real(kind=wp), intent (in)          :: betaCrossSection       !< Reliability index cross section
+        real(kind=wp), intent (in)          :: alphaCrossSection(:)   !< Alpha vector cross section
+        real(kind=wp), intent (in)          :: rhoXK(:)               !< Correlation variables
+        real(kind=wp), intent (in)          :: dXK(:)                 !< Correlation length variables
+        real(kind=wp), intent (in)          :: sectionLength          !< Section length
+        real(kind=wp), intent (out)         :: betaSection            !< Reliability index section
+        real(kind=wp), intent (out)         :: alphaSection(:)        !< Alpha vector section
+
+        type(designPoint)    :: dpCrossSection !< design point cross section
+        type(designPoint)    :: dpSection      !< design point section
+        integer              :: i, nStoch
+
+        nStoch = size(alphaCrossSection)
+        dpCrossSection%beta = betaCrossSection
+        allocate(dpCrossSection%alpha(nStoch))
+        allocate(dpCrossSection%rho(nStoch))
+        allocate(dpCrossSection%correlation_length(nStoch))
+        do i = 1, nStoch
+            dpCrossSection%alpha(i) = alphaCrossSection(i)
+            dpCrossSection%rho(i) = rhoXK(i)
+            dpCrossSection%correlation_length(i) = dXK(i)
+        end do
+        allocate(dpSection%alpha(nStoch))
+        call  upscaleLength ( dpCrossSection, sectionLength, dpSection)
+        betaSection = dpSection%beta
+        do i = 1, nStoch
+            alphaSection(i) = dpSection%alpha(i)
+        end do
+        deallocate(dpCrossSection%alpha, dpCrossSection%rho, dpCrossSection%correlation_length, dpSection%alpha)
+end subroutine upscaleLengthWrapper
+
+!> Subroutine for combining two elements with partial correlation
+    subroutine combineTwoElementsPartialCorrelationWrapper( beta1, alpha1, beta2, alpha2, rhoP, betaC, alphaC, combAndOr)
+!
+!   INPUT/OUTPUT VARIABLES
+!
+    real(kind=wp),  intent(in)              :: beta1             !< Reliability index of element 1
+    real(kind=wp),  intent(in), target      :: alpha1(:)         !< Alpha values of element 1
+    real(kind=wp),  intent(in)              :: beta2             !< Reliability index of element 2
+    real(kind=wp),  intent(in), target      :: alpha2(:)         !< Alpha values of element 2
+    real(kind=wp),  intent(in), target      :: rhoP(:)           !< Autocorrelation of the stochastic variables between element 1 and element 2
+    real(kind=wp),  intent(out)             :: betaC             !< Reliability index of the combined elements
+    real(kind=wp),  intent(out), target     :: alphaC(:)         !< Alpha values of the combined elements
+    integer,        intent(in)              :: combAndOr         !< Combination type, And or Or
+
+    type(designPoint) :: dp1, dp2, dpC
+    dp1%beta = beta1
+    dp1%alpha => alpha1
+    dp1%rho =>rhoP
+    dp2%beta = beta2
+    dp2%alpha => alpha2
+    dpC%alpha => alphaC
+    call combineTwoElementsPartialCorrelation( dp1, dp2, dpC, combAndOr)
+    betaC = dpC%beta
+    end subroutine combineTwoElementsPartialCorrelationWrapper
 
 end module combineElementsTests

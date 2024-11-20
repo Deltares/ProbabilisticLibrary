@@ -152,7 +152,7 @@ namespace Deltares
                 double zMin = Z0;
                 double zMax = betaRequested > beta0 ? Numeric::NumericSupport::getMaximum(zValues) : Numeric::NumericSupport::getMinimum(zValues);
 
-                zPred = bisection->CalculateValue(zMin, zMax, qRequired, 0.001,
+                zPred = bisection->CalculateValue(zMin, zMax, qRequired,
                     [&, directions, nStochasts, probability0](double predZi) { return predict(predZi, directions, probability0, nStochasts); });
 
                 //for each new scale in direction i values, the new z values are calculated (zValues[i,j])
@@ -253,14 +253,14 @@ namespace Deltares
             {
                 Numeric::RootFinderMethod method = [nStochasts](double beta)
                 {
-                    return Numeric::SpecialFunctions::getGammaUpperRegularized(0.5 * nStochasts, 0.5 * beta * beta); //here no devision by number of direction is needed as the same d applied for every direction.
+                    return Numeric::SpecialFunctions::getGammaUpperRegularized(0.5 * nStochasts, 0.5 * beta * beta); //here no division by number of direction is needed as the same d applied for every direction.
                 };
 
                 double qRequired = Statistics::StandardNormal::getQFromU(betaRequired);
 
                 std::shared_ptr<Numeric::BisectionRootFinder> bisection = std::make_shared<Numeric::BisectionRootFinder>();
 
-                double distance = bisection->CalculateValue(0, 2 * betaRequired, qRequired, 0.001, method);
+                double distance = bisection->CalculateValue(0, 2 * betaRequired, qRequired, method);
                 return distance;
             }
         }
