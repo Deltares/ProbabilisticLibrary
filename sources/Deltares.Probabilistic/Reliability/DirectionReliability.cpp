@@ -114,30 +114,30 @@ namespace Deltares
             std::shared_ptr<Models::ModelRunner> modelRunner;
             std::shared_ptr<Sample> uDirection;
             bool inverted;
-            ZGetter* model;
+            ZGetter model;
 
         public:
             DirectionCalculation(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<Sample> uDirection, bool inverted)
+                : model(ZGetter(modelRunner))
             {
                 this->modelRunner = modelRunner;
                 this->uDirection = uDirection;
                 this->inverted = inverted;
-                this->model = new ZGetter(modelRunner);
             }
 
             double GetZProxy(double u, bool allowProxy)
             {
-                return model->GetZ(uDirection, u, inverted, allowProxy);
+                return model.GetZ(uDirection, u, inverted, allowProxy);
             }
 
             double GetZ(double u)
             {
-                return model->GetZ(uDirection, u, inverted, true);
+                return model.GetZ(uDirection, u, inverted, true);
             }
 
             double GetZNoProxy(double u)
             {
-                return model->GetZ(uDirection, u, inverted, false);
+                return model.GetZ(uDirection, u, inverted, false);
             }
         };
 
@@ -372,7 +372,7 @@ namespace Deltares
             }
             else
             {
-                std::shared_ptr<DirectionCalculation> directionCalculation = std::make_shared<DirectionCalculation>(modelRunner, uDirection, invertZ);
+                auto directionCalculation = std::make_shared<DirectionCalculation>(modelRunner, uDirection, invertZ);
 
                 double zTolerance = GetZTolerance(settings, uLow, uHigh, zLow, zHigh);
 
@@ -464,7 +464,7 @@ namespace Deltares
             }
             else
             {
-                std::shared_ptr<DirectionCalculation> directionCalculation = std::make_shared<DirectionCalculation>(modelRunner, uDirection, invertZ);
+                auto directionCalculation = std::make_shared<DirectionCalculation>(modelRunner, uDirection, invertZ);
 
                 const double zTolerance = GetZTolerance(settings, uLow, uHigh, zLow, zHigh);
 
