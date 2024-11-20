@@ -20,24 +20,25 @@
 // All rights reserved.
 //
 #pragma once
-#include "RootFinder.h"
-namespace Deltares::Numeric
-{
-    enum class  DirectionType { Positive, Negative, Zero };
 
-    class BisectionRootFinder : public RootFinder
+namespace Deltares::Probabilistic::Test
+{
+    class rootfinder_tests
     {
     public:
-        BisectionRootFinder() = default;
-        explicit BisectionRootFinder(double tol) : tolerance(tol) {}
-        explicit BisectionRootFinder(double ztol, double xtol) : tolerance(ztol), xTolerance(xtol) {}
-        explicit BisectionRootFinder(double ztol, double xtol, int maxIter) : tolerance(ztol), xTolerance(xtol), maxIterations(maxIter) {}
-        double CalculateValue(double minStart, double maxStart, double resultValue, RootFinderMethod function) override;
+        void all_rootfinder_tests();
     private:
-        static DirectionType getDirection(double value1, double value2, double result1, double result2);
-        static double getRelativeDifference(double minValue, double maxValue);
-        double tolerance = 0.001;
-        double xTolerance = 1E-6;
-        int maxIterations = 750;
+        double testLinearFunc(double x) const;
+        double testConstFunc(double x);
+        void bisection_test();
+        void bisection_test2();
+        void bisection_const_test();
+        void linear_root_finder_test();
+        void linear_root_finder_test2();
+        void linear_root_finder_const_test();
+        double a = 0.0;
+        double b = 0.0;
+        int cnt = 0;
     };
 }
+
