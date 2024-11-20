@@ -39,8 +39,8 @@ namespace Deltares {
         class combineElements
         {
         public:
-            cmbResult combineTwoElementsPartialCorrelation(alphaBeta& element1,
-                alphaBeta& element2, const vector1D& rhoP, const combineAndOr combAndOr);
+            cmbResult combineTwoElementsPartialCorrelation(const alphaBeta& element1,
+                const alphaBeta& element2, const vector1D& rhoP, const combineAndOr combAndOr);
 
             cmbResult combineMultipleElements(const elements& Elements,
                 const vector1D& rho, const combineAndOr combAndOrIn);
