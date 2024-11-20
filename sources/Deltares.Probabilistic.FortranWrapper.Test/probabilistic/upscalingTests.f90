@@ -61,6 +61,8 @@ subroutine allUpscalingTests
         "upscalingTests:  2 Upscaling failure probabilities to largest block duration", level)
     call testWithLevel( upscaleToLargestBlockTests3, &
         "upscalingTests:  3 Upscaling failure probabilities to largest block duration", level)
+    call testWithLevel( upscaleToLargestBlockTests4, &
+        "upscalingTests:  4 Upscaling failure probabilities to largest block duration; multiple wind dimensions", level)
 !
 end subroutine allUpscalingTests
 
@@ -75,12 +77,13 @@ subroutine upscaleToLargestBlockTests1
     real(kind=wp)  :: margin                 !< acceptable margin for difference between beta original and beta computed
     real(kind=wp)  :: beta                   !< Reliability index of a single element
     real(kind=wp)  :: betaORG                !< Reliability index of a single element
-    real(kind=wp)  :: alpha(5)               !< Influence coefficients of a single element
-    real(kind=wp)  :: alphaORG(5)            !< Influence coefficients of a single element
-    real(kind=wp)  :: duration(5)            !< Block duration of a single element
-    real(kind=wp)  :: durationORG(5)         !< Block duration of a single time element
+    real(kind=wp), target  :: alpha(5)               !< Influence coefficients of a single element
+    real(kind=wp), target  :: alphaORG(5)            !< Influence coefficients of a single element
+    real(kind=wp), target  :: duration(5)            !< Block duration of a single element
+    real(kind=wp), target  :: durationORG(5)         !< Block duration of a single time element
     real(kind=wp)  :: maxduration            !< Maximum block duration
-    real(kind=wp)  :: inrhot(5)              !< Autocorrelation coefficients for each of the variables, in time
+    real(kind=wp), target  :: inrhot(5)              !< Autocorrelation coefficients for each of the variables, in time
+    type(designPoint) :: dpORG, dpOut
 !
 !   ASSIGN VARIABLES
 !
@@ -96,13 +99,14 @@ subroutine upscaleToLargestBlockTests1
     maxduration     = maxval(duration)
     margin          = 0.001d0
 
-    call upscaleToLargestBlock(betaORG, alphaORG, inrhot, durationORG, maxduration, beta, alpha, duration)
-    write(*,*) 'Beta  for one element    :          ', betaORG
-    write(*,*) 'Beta  for combined system:          ', beta
-    write(*,*) 'Alpha for one element    :          ', alphaORG
-    write(*,*) 'Alpha for combined system:          ', alpha
-    write(*,*) 'Block duration for one element    : ', durationORG
-    write(*,*) 'Block duration for combined system: ', duration
+    dpORG%beta = beta
+    dpORG%alpha => alphaORG
+    dpORG%rho => inrhot
+    dpORG%duration => durationORG
+    dpOut%alpha => alpha
+    dpOut%duration => duration
+    call upscaleToLargestBlock(dpORG, maxduration, dpOut)
+    beta = dpOut%beta
 
     call assert_comparable(beta , betaORG , margin, &
         "The upscaled beta should be the same as for a single element when the block durations are equal")
@@ -124,20 +128,21 @@ subroutine upscaleToLargestBlockTests2
     real(kind=wp)  :: beta                   !< Reliability index of a single element
     real(kind=wp)  :: betaORG                !< Reliability index of a single element
     real(kind=wp)  :: alpha1                 !< Influence coefficients of a single element
-    real(kind=wp)  :: alpha(5)               !< Influence coefficients of a single element
-    real(kind=wp)  :: alphaORG(5)            !< Influence coefficients of a single element
-    real(kind=wp)  :: duration(5)            !< Block duration of a single element
-    real(kind=wp)  :: durationORG(5)         !< Block duration of a single time element
+    real(kind=wp), target  :: alpha(5)               !< Influence coefficients of a single element
+    real(kind=wp), target  :: alphaORG(5)            !< Influence coefficients of a single element
+    real(kind=wp), target  :: duration(5)            !< Block duration of a single element
+    real(kind=wp), target  :: durationORG(5)         !< Block duration of a single time element
     real(kind=wp)  :: maxduration            !< Maximum block duration
-    real(kind=wp)  :: inrhot(5)              !< Autocorrelation coefficients for each of the variables, in time
+    real(kind=wp), target  :: inrhot(5)              !< Autocorrelation coefficients for each of the variables, in time
+    type(designPoint) :: dpORG, dpOut
 !
 !   ASSIGN VARIABLES
 !
     beta            = 3.5d0
     alpha1          = sqrt(1.0d0/5)
-    alpha           = (/ alpha1, alpha1, alpha1, alpha1, alpha1 /)      !equal alpha values
-    duration        = (/ 1.0d0, 2.0d0, 3.0d0, 4.0d0, 5.0d0 /)           !individual block durations
-    inrhot          = (/ 1.0d0, 1.0d0, 1.0d0, 1.0d0, 1.0d0 /)           !all rho values
+    alpha           = [ alpha1, alpha1, alpha1, alpha1, alpha1 ]      !equal alpha values
+    duration        = [ 1.0d0, 2.0d0, 3.0d0, 4.0d0, 5.0d0 ]           !individual block durations
+    inrhot          = [ 1.0d0, 1.0d0, 1.0d0, 1.0d0, 1.0d0 ]           !all rho values
 
     betaORG         = beta                                              !Copy of the original beta value
     alphaORG        = alpha                                             !Copy of the original influence coefficients
@@ -145,13 +150,14 @@ subroutine upscaleToLargestBlockTests2
     maxduration     = maxval(duration)
     margin          = 0.001d0
 
-    call upscaleToLargestBlock(betaORG, alphaORG, inrhot, durationORG, maxduration, beta, alpha, duration)
-    write(*,*) 'Beta  for one element    :          ', betaORG
-    write(*,*) 'Beta  for combined system:          ', beta
-    write(*,*) 'Alpha for one element    :          ', alphaORG
-    write(*,*) 'Alpha for combined system:          ', alpha
-    write(*,*) 'Block duration for one element    : ', durationORG
-    write(*,*) 'Block duration for combined system: ', duration
+    dpORG%beta = beta
+    dpORG%alpha => alphaORG
+    dpORG%rho => inrhot
+    dpORG%duration => durationORG
+    dpOut%alpha => alpha
+    dpOut%duration => duration
+    call upscaleToLargestBlock(dpORG, maxduration, dpOut)
+    beta = dpOut%beta
 
     call assert_comparable(beta , betaORG , margin, &
         "The upscaled beta  should be the same as for a single element when the rho values of all variables are equal to one")
@@ -172,24 +178,25 @@ subroutine upscaleToLargestBlockTests3
     real(kind=wp)     :: margin                 !< acceptable margin for difference between beta original and beta computed
     real(kind=wp)     :: beta                   !< Reliability index of a single element
     real(kind=wp)     :: betaORG                !< Reliability index of a single element
-    real(kind=wp)     :: alpha(5)               !< Influence coefficients of a single element
-    real(kind=wp)     :: alphaORG(5)            !< Influence coefficients of a single element
-    real(kind=wp)     :: duration(5)            !< Block duration of a single element
-    real(kind=wp)     :: durationORG(5)         !< Block duration of a single time element
-    real(kind=wp)     :: maxduration            !< Maximum block duration
-    real(kind=wp)     :: inrhot(5)              !< Autocorrelation coefficients for each of the variables, in time
+    real(kind=wp), target :: alpha(5)               !< Influence coefficients of a single element
+    real(kind=wp), target :: alphaORG(5)            !< Influence coefficients of a single element
+    real(kind=wp), target :: duration(5)            !< Block duration of a single element
+    real(kind=wp), target :: durationORG(5)         !< Block duration of a single time element
+    real(kind=wp) :: maxduration            !< Maximum block duration
+    real(kind=wp), target :: inrhot(5)              !< Autocorrelation coefficients for each of the variables, in time
     real(kind=wp)     :: Pf                     !< Failure probability of a single element
     real(kind=wp)     :: tmp                    !< temp placeholder for the unused non-exceedance probability
     real(kind=wp)     :: betaExpectedResult     !< Reliability index for the combined elements
     integer           :: ierr                   !< error code
     character(len=64) :: errorText              !< error message
+    type(designPoint) :: dpORG, dpOut
 !
 !   ASSIGN VARIABLES
 !
     beta            = 3.5d0
-    alpha           = (/ 0.0d0, 0.6d0, 0.0d0, 0.8d0, 0.0d0 /)           !alpha values
-    duration        = (/ 20.0d0, 2.0d0, 1.0d0, 2.0d0, 10.0d0 /)         !individual block durations
-    inrhot          = (/ 0.0d0, 0.0d0, 0.0d0, 0.0d0, 0.0d0 /)           !all rho values set to one
+    alpha           = [ 0.0d0, 0.6d0, 0.0d0, 0.8d0, 0.0d0 ]           !alpha values
+    duration        = [ 20.0d0, 2.0d0, 1.0d0, 2.0d0, 10.0d0 ]         !individual block durations
+    inrhot          = [ 0.0d0, 0.0d0, 0.0d0, 0.0d0, 0.0d0 ]           !all rho values set to one
 
     betaORG         = beta                                              !Copy of the original beta value
     alphaORG        = alpha                                             !Copy of the original influence coefficients
@@ -201,14 +208,14 @@ subroutine upscaleToLargestBlockTests3
     call BetaFromQ ( 1.D0-tmp**10.0d0, betaExpectedResult, ierr, errorText )
     call assert_equal( ierr, 0, errorText)
 
-    call upscaleToLargestBlock(betaORG, alphaORG, inrhot, durationORG, maxduration, beta, alpha, duration)
-    write(*,*) 'Beta  for one element    :          ', betaORG
-    write(*,*) 'Expected beta for combined system:  ', betaExpectedResult
-    write(*,*) 'Beta  for combined system:          ', beta
-    write(*,*) 'Alpha for one element    :          ', alphaORG
-    write(*,*) 'Alpha for combined system:          ', alpha
-    write(*,*) 'Block duration for one element    : ', durationORG
-    write(*,*) 'Block duration for combined system: ', duration
+    dpORG%beta = beta
+    dpORG%alpha => alphaORG
+    dpORG%rho => inrhot
+    dpORG%duration => durationORG
+    dpOut%alpha => alpha
+    dpOut%duration => duration
+    call upscaleToLargestBlock(dpORG, maxduration, dpOut)
+    beta = dpOut%beta
 
     call assert_comparable(beta , betaExpectedResult, margin, &
         'The upscaled beta should agree with the one that can be derived analytically ' // &
@@ -217,5 +224,69 @@ subroutine upscaleToLargestBlockTests3
         'The upscaled alpha should be the same as for a single element when the rho values of all variables are equal to zero')
 
 end subroutine upscaleToLargestBlockTests3
+
+! test identical to upscaleToLargestBlockTests3, but data is in a multi dimensional array
+subroutine upscaleToLargestBlockTests4
+!
+!   INPUT/OUTPUT VARIABLES
+!
+    integer, parameter         :: nrStochasts = 5       !< number of stochasts
+    real(kind=wp)              :: margin                !< acceptable margin for difference between beta original and beta computed
+    real(kind=wp)              :: beta                  !< Reliability index of a single element
+    real(kind=wp)              :: betaORG               !< Reliability index of a single element
+    real(kind=wp), target              :: alpha(nrStochasts)    !< Influence coefficients of a single element
+    real(kind=wp), allocatable, target :: alphaORG(:,:)         !< Influence coefficients of a single element
+    real(kind=wp), target              :: duration(nrStochasts) !< Block duration of a single element
+    real(kind=wp), allocatable, target :: durationORG(:,:)      !< Block duration of a single time element
+    real(kind=wp)                      :: maxduration           !< Maximum block duration
+    real(kind=wp), target              :: inrhot(5)             !< Autocorrelation coefficients for each of the variables, in time
+    real(kind=wp)              :: Pf                    !< Failure probability of a single element
+    real(kind=wp)              :: tmp                   !< temp placeholder for the unused non-exceedance probability
+    real(kind=wp)              :: betaExpectedResult    !< Reliability index for the combined elements
+    integer                    :: i                     !< loop counter
+    integer                    :: ierr                  !< error code
+    character(len=64)          :: errorText             !< error message
+    integer, parameter         :: nrWindDirs = 16       !< number of wind directions
+    type(designPoint)          :: dpORG, dpOut
+!
+!   ASSIGN VARIABLES
+!
+    beta            = 3.5d0
+    alpha           = [ 0.0d0, 0.6d0, 0.0d0, 0.8d0, 0.0d0 ]           !alpha values
+    duration        = [ 20.0d0, 2.0d0, 1.0d0, 2.0d0, 10.0d0 ]         !individual block durations
+    inrhot          = [ 0.0d0, 0.0d0, 0.0d0, 0.0d0, 0.0d0 ]           !all rho values set to one
+
+    allocate(alphaORG(nrWindDirs, nrStochasts))
+    allocate(durationORG(nrWindDirs, nrStochasts))
+    betaORG         = beta                                              !Copy of the original beta value
+    do i = 1, nrWindDirs
+        alphaORG(i,:)    = alpha                                             !Copy of the original influence coefficients
+        durationORG(i,:) = duration                                          !Copy of the original durations
+    end do
+    maxduration     = maxval(duration)
+    margin          = 0.001d0
+
+    call PQfromBeta( beta, tmp, Pf )
+    call BetaFromQ ( 1.D0-tmp**10.0d0, betaExpectedResult, ierr, errorText )
+    call assert_equal( ierr, 0, errorText)
+
+    do i = 1, nrWindDirs
+        dpORG%beta = betaORG
+        dpORG%alpha => alphaORG(i,:)
+        dpORG%rho => inrhot
+        dpORG%duration => durationORG(i, :)
+        dpOut%alpha => alpha
+        dpOut%duration => duration
+        call upscaleToLargestBlock(dpORG, maxduration, dpOut)
+        beta = dpOut%beta
+
+        call assert_comparable(beta , betaExpectedResult, margin, &
+            'The upscaled beta should agree with the one that can be derived analytically ' // &
+            'for a series of 10 identical and uncorrelated single elements')
+        call assert_comparable(alpha, alphaORG(i,:)          , margin, &
+            'The upscaled alpha should be the same as for a single element when the rho values of all variables are equal to zero')
+    end do
+
+end subroutine upscaleToLargestBlockTests4
 
 end module upscalingTests

@@ -57,13 +57,8 @@ namespace Deltares
             return std::fabs(maxValue - minValue) / std::max(std::fabs(maxValue), std::fabs(minValue));
         }
 
-        double BisectionRootFinder::CalculateValue(double minStart, double maxStart, double resultValue, double tolerance, RootFinderMethod function, StopMethod isStopped, double xTolerance)
+        double BisectionRootFinder::CalculateValue(double minStart, double maxStart, double resultValue, RootFinderMethod function)
         {
-            if (isStopped == nullptr)
-            {
-                isStopped = [] {return false; };
-            }
-
             if (minStart > maxStart)
             {
                 std::swap(minStart, maxStart);
@@ -75,7 +70,7 @@ namespace Deltares
             DirectionType direction = getDirection(minStart, maxStart, minResult, maxResult);
 
             // Extrapolate until target is between minStart and maxStart, first check whether result is high enough
-            while (minResult < resultValue && maxResult < resultValue && !isStopped())
+            while (minResult < resultValue && maxResult < resultValue)
             {
                 if (direction == DirectionType::Zero)
                 {
@@ -102,7 +97,7 @@ namespace Deltares
             }
 
             // Extrapolate until target is between minStart and maxStart, check whether result is low enough
-            while (minResult > resultValue && maxResult > resultValue && !isStopped())
+            while (minResult > resultValue && maxResult > resultValue)
             {
                 if (direction == DirectionType::Zero)
                 {
@@ -137,7 +132,7 @@ namespace Deltares
             double xDifference = getRelativeDifference(minStart, maxStart);
 
             // Bisection method
-            while (difference > tolerance && xDifference > xTolerance && !isStopped())
+            while (difference > tolerance && xDifference > xTolerance)
             {
                 double prevValue = value;
 

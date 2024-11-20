@@ -135,7 +135,7 @@ namespace Deltares
             // see https://www.researchgate.net/post/Can_anybody_explain_how_to_find_out_the_shape_and_scale_parameters_for_weibull_statistics_for_average_wind_speed_data_for_a_month
             double kGuess = 1.2785 / u - 0.5004;
 
-            std::unique_ptr<Numeric::BisectionRootFinder> bisection = std::make_unique<Numeric::BisectionRootFinder>();
+            auto bisection = Numeric::BisectionRootFinder(tolBisection);
 
             Numeric::RootFinderMethod method = [](double k)
             {
@@ -148,7 +148,7 @@ namespace Deltares
             double minStart = std::max(0.01, kGuess - 0.1);
             double maxStart = kGuess + 0.1;
 
-            stochast->Shape = bisection->CalculateValue(minStart, maxStart, u, 0.00001, method);
+            stochast->Shape = bisection.CalculateValue(minStart, maxStart, u, method);
             stochast->Scale = mean / Numeric::SpecialFunctions::getGamma(1 + 1 / stochast->Shape);
         }
 
@@ -159,7 +159,7 @@ namespace Deltares
                 constexpr double delta = 0.00001;
                 double margin = std::min(delta, std::fabs(x / 1000000));
 
-                std::unique_ptr<Numeric::BisectionRootFinder> bisection = std::make_unique<Numeric::BisectionRootFinder>();
+                auto bisection = Numeric::BisectionRootFinder(margin);
 
                 double deviation = this->getDeviation(stochast);
                 Distribution* distribution = this;
@@ -170,7 +170,7 @@ namespace Deltares
                     return distribution->getXFromU(stochast, u);
                 };
 
-                double mean = bisection->CalculateValue(x, this->getMean(stochast), x, margin, method);
+                double mean = bisection.CalculateValue(x, this->getMean(stochast), x, method);
 
                 this->setMeanAndDeviation(stochast, mean, deviation);
             }
@@ -186,7 +186,8 @@ namespace Deltares
 
             std::vector<double> shiftedValues = Numeric::NumericSupport::select(values, [stochast](double p) { return p - stochast->Shift; });
 
-            std::unique_ptr<Numeric::BisectionRootFinder> bisection = std::make_unique<Numeric::BisectionRootFinder>();
+            constexpr double tolerance = 0.001;
+            auto bisection = Numeric::BisectionRootFinder(tolerance);
 
             Numeric::RootFinderMethod method = [&shiftedValues](double x)
             {
@@ -200,7 +201,7 @@ namespace Deltares
             double minStart = Numeric::NumericSupport::getMinValidValue(method);
             double maxStart = Numeric::NumericSupport::getMaxValidValue(method);
 
-            stochast->Shape = bisection->CalculateValue(minStart, maxStart, 0, 0.001, method);
+            stochast->Shape = bisection.CalculateValue(minStart, maxStart, 0, method);
 
             double sum = Numeric::NumericSupport::sum(shiftedValues, [stochast](double p) {return std::pow(p, stochast->Shape); });
 

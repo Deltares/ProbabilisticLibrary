@@ -34,6 +34,7 @@ module upscaleLengthTests
     use interface_probCalc
     use interface_convert
     use vectorUtilities
+    use combineElementsTests, only : upscaleLengthWrapper
 
     implicit none
 
@@ -84,7 +85,7 @@ subroutine upscaleLengthTests11
     sectionLength      = 250.0d0
     myMargin           = 1.0d-6
 
-    call upscaleLength( betaCrossSection, alphaCrossSection, rhoXK, dXK, sectionLength, betaSection, alphaSection)
+    call upscaleLengthWrapper( betaCrossSection, alphaCrossSection, rhoXK, dXK, sectionLength, betaSection, alphaSection)
 !   No breach length provided. In upscaleLength() it will be set to 158.533091904240
 !   The expected value of beta is taken from a previous calculation; this test must ensure that the code does not change the result
     expectedBetaSection= 4.9094794340831d0
@@ -127,7 +128,8 @@ subroutine upscaleLengthTests16
     myMargin           = 1.0d-6
 
     do iLength=1,size(sectionLengths)
-       call upscaleLength( betaCrossSection, alphaCrossSection, rhoXK, dXK, sectionLengths(iLength), betaSection, alphaSection)
+       call upscaleLengthWrapper( betaCrossSection, alphaCrossSection, rhoXK, dXK, sectionLengths(iLength), &
+           betaSection, alphaSection)
 !
 !      The expected value of alphaSection() is alphaCrossSection for the given length
        do iStoch= 1, nStoch

@@ -10,6 +10,10 @@ exclude:
   - ".*/feedback/.*"
   - ".*/feedback_dll/.*"
   - ".*/general/.*f90"
+  - ".*/Cobyla.cpp"
+  - ".*/rescale.cpp"
+  - ".*/stop.cpp"
+  - ".*/timer.cpp"
 languages:
   - name: "cpp"
     production:
