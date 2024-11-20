@@ -84,8 +84,23 @@ namespace Deltares
 
                             subAlpha->Alpha = prevailingSign * std::sqrt(subAlpha->Alpha * subAlpha->Alpha + alpha * alpha);
                             subAlpha->AlphaCorrelated = subAlpha->Alpha;
-                            subAlpha->U = - this->Beta * subAlpha->Alpha;
+                            subAlpha->U = -this->Beta * subAlpha->Alpha;
                             subAlpha->X = subAlpha->Stochast->getXFromU(subAlpha->U);
+                        }
+
+                        // update variable stochasts
+                        for (std::shared_ptr<StochastPointAlpha> alpha : fragilityCurveAlpha->Alphas)
+                        {
+                            if (alpha->Stochast->IsVariableStochast)
+                            {
+                                for (std::shared_ptr<StochastPointAlpha> alpha2 : fragilityCurveAlpha->Alphas)
+                                {
+                                    if (alpha2->Stochast == alpha->Stochast->VariableSource)
+                                    {
+                                        alpha->X = alpha->Stochast->getXFromUAndSource(alpha2->X, alpha->U);
+                                    }
+                                }
+                            }
                         }
                     }
                 }

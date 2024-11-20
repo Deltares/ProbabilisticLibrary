@@ -39,6 +39,7 @@ namespace Deltares
                     nativeNormalizingFragilityCurve = normalizingFragilityCurve->GetStochast();
                 }
 
+                shared->object->Settings = this->Settings->GetSettings();
                 const std::shared_ptr<Reliability::DesignPoint> nativeDesignPoint = shared->object->getDesignPoint(nativeStochast, nativeFragilityCurve, nativeNormalizingFragilityCurve);
 
                 System::Collections::Generic::List<Statistics::Wrappers::Stochast^>^ stochasts = gcnew System::Collections::Generic::List<Statistics::Wrappers::Stochast^>();

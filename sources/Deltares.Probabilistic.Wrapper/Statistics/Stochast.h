@@ -164,6 +164,11 @@ namespace Deltares
                     void set(bool value) { shared->object->IsVariableStochast = value; }
                 }
 
+                Stochast^ GetVariableStochast(double x)
+                {
+                    return gcnew Stochast(shared->object->getVariableStochast(x));
+                }
+
                 virtual property double Mean
                 {
                     double get() { return shared->object->getMean(); }

@@ -347,6 +347,12 @@ namespace Deltares
             std::shared_ptr<VariableStochastValuesSet> ValueSet = std::make_shared<VariableStochastValuesSet>();
 
             /**
+             * \brief Gets a realization of a variable stochast
+             * \param x X-value at which the variable stochast is generated
+             */
+            std::shared_ptr<Stochast> getVariableStochast(double x);
+
+            /**
              * \brief The design factor used for calculating the design value
              */
             double designFactor = 1.0;
