@@ -30,7 +30,7 @@ namespace Deltares
             class rootfinder_tests
             {
             public:
-                void allRootfinder_tests();
+                void all_rootfinder_tests();
             private:
                 double testLinearFunc(double x) const;
                 double testConstFunc(double x);

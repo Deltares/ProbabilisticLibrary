@@ -29,7 +29,7 @@
 namespace Deltares::Probabilistic::Test
 {
 
-    void rootfinder_tests::allRootfinder_tests()
+    void rootfinder_tests::all_rootfinder_tests()
     {
         bisection_test();
         bisection_test2();
@@ -44,7 +44,7 @@ namespace Deltares::Probabilistic::Test
         return a + b * x;
     }
 
-    double rootfinder_tests::testConstFunc(double x)
+    double rootfinder_tests::testConstFunc([[maybe_unused]] double x)
     {
         cnt++;
         if (cnt > 1000) throw Reliability::probLibException("too many function calls");

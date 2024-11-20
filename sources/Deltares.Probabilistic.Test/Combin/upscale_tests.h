@@ -20,43 +20,30 @@
 // All rights reserved.
 //
 #pragma once
-#include "../../Deltares.Probabilistic/Combine/upscaling.h"
-#include "../../Deltares.Probabilistic/Combine/combineElements.h"
-#include "../Utils/testutils.h"
 
-namespace Deltares
+namespace Deltares::Probabilistic::Test
 {
-    namespace Probabilistic
+    class upscale_tests
     {
-        namespace Test
-        {
-            class upscale_tests
-            {
-            public:
-                void runAll();
-            private:
-                void upscaleInTimeTests1();
-                void upscaleInTimeTests2();
-                void upscaleInTimeTests3();
-                void upscaleInTimeTests4();
-                void upscaleInTimeTests5();
-                void upscaleInTimeTests6();
-                void upscaleInTimeTests7();
-                void upscaleInTimeTests8();
-                void EquivalentAlphaTesting1();
-                void EquivalentAlphaTesting2();
-                void EquivalentAlphaTesting3();
-                void EquivalentAlphaTesting4();
-                void EquivalentAlphaTesting5();
-                void EquivalentAlphaTesting6();
-                void upscaleToLargestBlockTests1();
-                void upscaleToLargestBlockTests2();
-                void upscaleToLargestBlockTests3();
-                Deltares::Reliability::upscaling up;
-                Deltares::Reliability::combineElements cmb;
-                testutils ut;
-            };
-
-        }
-    }
+    public:
+        static void runAll();
+    private:
+        static void upscaleInTimeTests1();
+        static void upscaleInTimeTests2();
+        static void upscaleInTimeTests3();
+        static void upscaleInTimeTests4();
+        static void upscaleInTimeTests5();
+        static void upscaleInTimeTests6();
+        static void upscaleInTimeTests7();
+        static void upscaleInTimeTests8();
+        static void EquivalentAlphaTesting1();
+        static void EquivalentAlphaTesting2();
+        static void EquivalentAlphaTesting3();
+        static void EquivalentAlphaTesting4();
+        static void EquivalentAlphaTesting5();
+        static void EquivalentAlphaTesting6();
+        static void upscaleToLargestBlockTests1();
+        static void upscaleToLargestBlockTests2();
+        static void upscaleToLargestBlockTests3();
+    };
 }

@@ -197,7 +197,7 @@ namespace Deltares
             TEST(unittst, testRootfinder)
             {
                 auto tstRF = rootfinder_tests();
-                tstRF.allRootfinder_tests();
+                tstRF.all_rootfinder_tests();
             }
 
             TEST(unittst, testVector1D)
