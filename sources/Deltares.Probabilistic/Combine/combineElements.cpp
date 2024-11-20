@@ -20,8 +20,7 @@
 // All rights reserved.
 //
 #include <string>
-#include <math.h>
-#include <float.h>
+#include <cmath>
 #include <vector>
 #include "combineElements.h"
 #include "HohenbichlerFORM.h"

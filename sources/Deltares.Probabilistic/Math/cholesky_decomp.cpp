@@ -19,7 +19,6 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include <math.h>
 #include "matrix.h"
 #include "../Utils/probLibException.h"
 
