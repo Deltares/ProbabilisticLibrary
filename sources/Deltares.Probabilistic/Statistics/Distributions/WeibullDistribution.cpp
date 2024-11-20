@@ -186,7 +186,8 @@ namespace Deltares
 
             std::vector<double> shiftedValues = Numeric::NumericSupport::select(values, [stochast](double p) { return p - stochast->Shift; });
 
-            auto bisection = Numeric::BisectionRootFinder(0.001);
+            constexpr double tolerance = 0.001;
+            auto bisection = Numeric::BisectionRootFinder(tolerance);
 
             Numeric::RootFinderMethod method = [&shiftedValues](double x)
             {
