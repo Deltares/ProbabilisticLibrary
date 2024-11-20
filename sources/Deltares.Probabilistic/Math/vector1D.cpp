@@ -19,10 +19,8 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include <math.h>
 #include <cmath>
 #include "vector1D.h"
-#include <iostream>
 #include <fstream>
 
 namespace Deltares

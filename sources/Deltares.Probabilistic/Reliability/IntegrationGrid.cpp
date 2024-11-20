@@ -35,10 +35,10 @@ namespace Deltares
     {
         void IntegrationPoint::derive()
         {
-            for (auto& line : Lines)
+            for (const auto& line : Lines)
             {
-                std::shared_ptr<IntegrationPoint> previousPoint = line->GetPreviousKnownPoint(this);
-                std::shared_ptr<IntegrationPoint> nextPoint = line->GetNextKnownPoint(this);
+                auto previousPoint = line->GetPreviousKnownPoint(this);
+                auto nextPoint = line->GetNextKnownPoint(this);
 
                 if (previousPoint != nullptr && nextPoint != nullptr && line->OnSameSide(*previousPoint, *nextPoint))
                 {
@@ -76,10 +76,10 @@ namespace Deltares
 
         void IntegrationPoint::deriveByExtrapolation()
         {
-            for (auto& line : Lines)
+            for (const auto& line : Lines)
             {
-                std::shared_ptr<IntegrationPoint> previousPoint = line->GetPreviousKnownPoint(this);
-                std::shared_ptr<IntegrationPoint> nextPoint = line->GetNextKnownPoint(this);
+                auto previousPoint = line->GetPreviousKnownPoint(this);
+                auto nextPoint = line->GetNextKnownPoint(this);
 
                 if (previousPoint == nullptr && nextPoint != nullptr && line->OnSameSide(*this, *nextPoint))
                 {
@@ -203,10 +203,9 @@ namespace Deltares
             return false;
         }
 
-        IntegrationCell::IntegrationCell(IntegrationDomain& d, std::vector<double> lowerBoundaries, std::vector<double> upperBoundaries) : domain(d)
+        IntegrationCell::IntegrationCell(IntegrationDomain& d, const std::vector<double>& lower_bounds, const std::vector<double>& upper_bounds)
+        : lowerBoundaries(lower_bounds), upperBoundaries(upper_bounds), domain(d)
         {
-            this->lowerBoundaries = lowerBoundaries;
-            this->upperBoundaries = upperBoundaries;
             for(const auto& bnd: lowerBoundaries)
             {
                 lowerProbabilities.push_back(Statistics::StandardNormal::getPFromU(bnd));

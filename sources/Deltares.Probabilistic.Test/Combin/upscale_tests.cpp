@@ -19,7 +19,7 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include <math.h>
+#include <cmath>
 #include <gtest/gtest.h>
 #include "upscale_tests.h"
 #include "../../Deltares.Probabilistic/Statistics/StandardNormal.h"
