@@ -19,7 +19,6 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include <math.h>
 #include "gtest/gtest.h"
 #include "testCholeskiDecomposition.h"
 #include "../Utils/testutils.h"
@@ -32,7 +31,7 @@ namespace Deltares
     {
         namespace Test
         {
-            void choleski_decomp_tests::allCholeskyDecompositionTests()
+            void choleski_decomp_tests::allCholeskyDecompositionTests() const
             {
                 testCholeskyDecompositionUnityMatrix();
                 testCholeskyDecompositionCase2();
@@ -41,7 +40,7 @@ namespace Deltares
                 testCholeskyDecompositionCase5();
             }
 
-            void choleski_decomp_tests::testCholeskyDecompositionUnityMatrix()
+            void choleski_decomp_tests::testCholeskyDecompositionUnityMatrix() const
             {
                 const size_t nStochasts = 6;
 
@@ -84,7 +83,7 @@ namespace Deltares
                 }
             }
 
-            void choleski_decomp_tests::testCholeskyDecompositionCase2()
+            void choleski_decomp_tests::testCholeskyDecompositionCase2() const
             {
                 auto correlation_matrix1d =
                 { 1.00, -0.85, -0.78,  0.68, -0.87,  0.42,
@@ -105,7 +104,7 @@ namespace Deltares
                 performTest(correlation_matrix1d, expected_Cholesky1d);
             }
 
-            void choleski_decomp_tests::testCholeskyDecompositionCase3()
+            void choleski_decomp_tests::testCholeskyDecompositionCase3() const
             {
                 auto correlation_matrix1d =
                 { 1.0000,  0.1000, -0.2608,  0.7539,  0.0140,  0.2256,
@@ -126,7 +125,7 @@ namespace Deltares
                 performTest(correlation_matrix1d, expected_Cholesky1d);
             }
 
-            void choleski_decomp_tests::testCholeskyDecompositionCase4()
+            void choleski_decomp_tests::testCholeskyDecompositionCase4() const
             {
                 auto correlation_matrix1d =
                 { 1.0000,  0.0098, -0.3539,  0.6517,  0.0000,  0.2202,
@@ -147,7 +146,7 @@ namespace Deltares
                 performTest(correlation_matrix1d, expected_Cholesky1d);
             }
 
-            void choleski_decomp_tests::testCholeskyDecompositionCase5()
+            void choleski_decomp_tests::testCholeskyDecompositionCase5() const
             {
                 auto correlation_matrix1d =
                 { 1.0, 0.8, 0.7, 0.7, 0.0, 0.8,

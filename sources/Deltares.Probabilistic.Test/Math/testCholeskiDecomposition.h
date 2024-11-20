@@ -31,13 +31,13 @@ namespace Deltares
             class choleski_decomp_tests
             {
             public:
-                void allCholeskyDecompositionTests();
+                void allCholeskyDecompositionTests() const;
             private:
-                void testCholeskyDecompositionUnityMatrix();
-                void testCholeskyDecompositionCase2();
-                void testCholeskyDecompositionCase3();
-                void testCholeskyDecompositionCase4();
-                void testCholeskyDecompositionCase5();
+                void testCholeskyDecompositionUnityMatrix() const;
+                void testCholeskyDecompositionCase2() const;
+                void testCholeskyDecompositionCase3() const;
+                void testCholeskyDecompositionCase4() const;
+                void testCholeskyDecompositionCase5() const;
                 void performTest(const std::initializer_list<double>& m, const std::initializer_list<double>& ref) const;
                 const double margin = 1e-9;
             };
