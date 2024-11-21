@@ -48,8 +48,6 @@ namespace Deltares
 
             double fixedValue = 0;
 
-            std::vector<std::shared_ptr<FragilityCurve>> contributingFragilityCurves;
-
             double getUFromX(double x) override
             {
                 if (fixed)

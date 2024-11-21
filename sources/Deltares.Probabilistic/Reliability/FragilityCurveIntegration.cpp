@@ -133,7 +133,6 @@ namespace Deltares
             }
 
             designPoint->correctFragilityCurves();
-
             designPoint->expandContributions();
 
             designPoint->convergenceReport->Convergence = 0;
@@ -206,7 +205,7 @@ namespace Deltares
                 designPointSample = std::make_shared<Sample>(alphas);
             }
 
-            std::shared_ptr<DesignPoint> designPoint = modelRunner->getDesignPoint(designPointSample, beta, nullptr);
+            std::shared_ptr<DesignPoint> designPoint = modelRunner->getDesignPoint(designPointSample, beta, std::make_shared<ConvergenceReport>());
 
             designPoint->correctFragilityCurves();
             designPoint->expandContributions();

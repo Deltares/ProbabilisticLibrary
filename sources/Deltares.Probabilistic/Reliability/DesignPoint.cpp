@@ -30,7 +30,6 @@ namespace Deltares
     {
         void DesignPoint::expandContributions()
         {
-            this->expandContributingFragilityCurves();
             this->expandFragilityCurves();
             this->updateInfluenceFactors();
         }
@@ -101,39 +100,6 @@ namespace Deltares
                                     }
                                 }
                             }
-                        }
-                    }
-                }
-            }
-        }
-
-        void DesignPoint::expandContributingFragilityCurves()
-        {
-            std::vector<std::shared_ptr<StochastPointAlpha>> stochastRealizations(Alphas);
-
-            // replace fragility curve by fragility curves by which it is built up
-            for (auto stochastRealization : stochastRealizations)
-            {
-                std::shared_ptr<FragilityCurve> fragilityCurve = std::dynamic_pointer_cast<FragilityCurve>(stochastRealization->Stochast);
-                if (fragilityCurve != nullptr)
-                {
-                    double uCurve = stochastRealization->U;
-
-                    for (std::shared_ptr<FragilityCurve> subCurve : fragilityCurve->contributingFragilityCurves)
-                    {
-                        if (subCurve != fragilityCurve)
-                        {
-                            std::erase(this->Alphas, stochastRealization);
-
-                            double xValue = subCurve->getXFromU(uCurve);
-
-                            std::shared_ptr<StochastPointAlpha> subAlpha = std::make_shared<StochastPointAlpha>();
-                            subAlpha->Stochast = subCurve;
-                            subAlpha->Alpha = stochastRealization->Alpha;
-                            subAlpha->AlphaCorrelated = stochastRealization->AlphaCorrelated;
-                            subAlpha->U = uCurve;
-                            subAlpha->X = xValue;
-                            this->Alphas.push_back(subAlpha);
                         }
                     }
                 }

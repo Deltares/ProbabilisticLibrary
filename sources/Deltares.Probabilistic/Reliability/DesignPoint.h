@@ -59,7 +59,6 @@ namespace Deltares
             void correctFragilityCurves();
         private:
             void expandFragilityCurves();
-            void expandContributingFragilityCurves();
         };
     }
 }

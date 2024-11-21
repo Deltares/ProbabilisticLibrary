@@ -40,8 +40,6 @@ namespace Deltares
             private:
                 SharedPointerProvider<Reliability::FragilityCurve>* shared = nullptr;
 
-                CallBackList<FragilityCurve^>^ contributingFragilityCurves = gcnew CallBackList<FragilityCurve^>();
-                void SynchronizeContributingFragilityCurves(ListOperationType listOperationType, FragilityCurve^ fragilityCurve);
                 bool HasMatchingFragilityValues();
                 void  updateNativeObject();
 
@@ -53,10 +51,7 @@ namespace Deltares
                     Stochast::setNativeObject(nativeStochast);
                 }
             public:
-                FragilityCurve() : Stochast(std::make_shared<Reliability::FragilityCurve>())
-                {
-                    contributingFragilityCurves->SetCallBack(gcnew ListCallBack<FragilityCurve^>(this, &FragilityCurve::SynchronizeContributingFragilityCurves));
-                }
+                FragilityCurve() : Stochast(std::make_shared<Reliability::FragilityCurve>()) {}
                 ~FragilityCurve() { this->!FragilityCurve(); }
                 !FragilityCurve() { delete shared; }
 
@@ -76,11 +71,6 @@ namespace Deltares
                 {
                     double get() { return shared->object->fixedValue; }
                     void set(double value) { shared->object->fixedValue = value; }
-                }
-
-                property System::Collections::Generic::IList<FragilityCurve^>^ ContributingFragilityCurves
-                {
-                    System::Collections::Generic::IList<FragilityCurve^>^ get() { return contributingFragilityCurves; }
                 }
 
                 virtual Deltares::Models::Wrappers::StochastPoint^ GetRealization(double x);

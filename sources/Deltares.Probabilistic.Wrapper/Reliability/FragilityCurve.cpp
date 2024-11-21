@@ -55,17 +55,6 @@ namespace Deltares
                 }
             };
 
-            void FragilityCurve::SynchronizeContributingFragilityCurves(ListOperationType listOperationType, FragilityCurve^ fragilityCurve)
-            {
-                switch (listOperationType)
-                {
-                case ListOperationType::Add: shared->object->contributingFragilityCurves.push_back(fragilityCurve->GetNativeValue()); break;
-                case ListOperationType::Remove: std::erase(shared->object->contributingFragilityCurves, fragilityCurve->GetNativeValue()); break;
-                case ListOperationType::Clear: shared->object->contributingFragilityCurves.clear(); break;
-                default: throw gcnew System::NotImplementedException("List operation type");
-                }
-            }
-
             bool FragilityCurve::HasMatchingFragilityValues()
             {
                 if (this->FragilityValues->Count != shared->object->getProperties()->FragilityValues.size())
