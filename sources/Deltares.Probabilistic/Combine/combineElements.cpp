@@ -20,8 +20,7 @@
 // All rights reserved.
 //
 #include <string>
-#include <math.h>
-#include <float.h>
+#include <cmath>
 #include <vector>
 #include "combineElements.h"
 #include "HohenbichlerFORM.h"
@@ -35,8 +34,8 @@ namespace Deltares {
     namespace Reliability {
 
         //> Method for combining two elements with partial correlation
-        cmbResult combineElements::combineTwoElementsPartialCorrelation(alphaBeta& element1,
-            alphaBeta& element2, const vector1D& rhoP, const combineAndOr combAndOr)
+        cmbResult combineElements::combineTwoElementsPartialCorrelation(const alphaBeta& element1,
+            const alphaBeta& element2, const vector1D& rhoP, const combineAndOr combAndOr)
         {
             //
             //   INPUT/OUTPUT VARIABLES
@@ -124,8 +123,8 @@ namespace Deltares {
                     pf2pf1 = hh.PerformHohenbichler(pb.second, pb.first, rho);
                     if (pf2pf1.second != 0) failureHohenbichler++;
                     //
-        //           Computation of combined failure probability (AND/OR)
-        //
+                    //           Computation of combined failure probability (AND/OR)
+                    //
                     double pfxk = combinedFailure(combAndOr, pf1, pf2, pb.first, pf2pf1.first);
                     //
                     double betaxk = StandardNormal::getUFromQ(pfxk);

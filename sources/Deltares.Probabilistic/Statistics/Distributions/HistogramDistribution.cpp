@@ -249,7 +249,7 @@ namespace Deltares
 
         double HistogramDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)
         {
-            const double delta = 0.0000001;
+            constexpr double delta = 0.0000001;
 
             if (stochast->dirty)
             {
@@ -258,18 +258,18 @@ namespace Deltares
 
             getSizeForEmptySizedRange(stochast);
 
-            for (size_t i = 0; i < stochast->HistogramValues.size(); i++)
+            for (const auto& histogram_value : stochast->HistogramValues)
             {
-                if (Numeric::NumericSupport::areEqual(stochast->HistogramValues[i]->LowerBound, stochast->HistogramValues[i]->UpperBound, delta) &&
-                    Numeric::NumericSupport::areEqual(stochast->HistogramValues[i]->LowerBound, x, delta))
+                if (Numeric::NumericSupport::areEqual(histogram_value->LowerBound, histogram_value->UpperBound, delta) &&
+                    Numeric::NumericSupport::areEqual(histogram_value->LowerBound, x, delta))
                 {
-                    return stochast->HistogramValues[i]->NormalizedAmount / getSizeForEmptySizedRange(stochast);
+                    return histogram_value->NormalizedAmount / getSizeForEmptySizedRange(stochast);
                 }
                 else
                 {
-                    if (stochast->HistogramValues[i]->contains(x))
+                    if (histogram_value->contains(x))
                     {
-                        return stochast->HistogramValues[i]->NormalizedAmount / stochast->HistogramValues[i]->getSize();
+                        return histogram_value->NormalizedAmount / histogram_value->getSize();
                     }
                 }
             }
@@ -291,18 +291,18 @@ namespace Deltares
 
             double p = 0;
 
-            for (size_t i = 0; i < stochast->HistogramValues.size(); i++)
+            for (const auto& histogram_value : stochast->HistogramValues)
             {
-                if (stochast->HistogramValues[i]->LowerBound < x)
+                if (histogram_value->LowerBound < x)
                 {
-                    if (stochast->HistogramValues[i]->UpperBound < x)
+                    if (histogram_value->UpperBound < x)
                     {
-                        p += stochast->HistogramValues[i]->NormalizedAmount;
+                        p += histogram_value->NormalizedAmount;
                     }
                     else
                     {
-                        double offset = (x - stochast->HistogramValues[i]->LowerBound) / (stochast->HistogramValues[i]->UpperBound - stochast->HistogramValues[i]->LowerBound);
-                        p += stochast->HistogramValues[i]->NormalizedAmount * offset;
+                        const double offset = (x - histogram_value->LowerBound) / (histogram_value->UpperBound - histogram_value->LowerBound);
+                        p += histogram_value->NormalizedAmount * offset;
                     }
                 }
             }
@@ -344,7 +344,7 @@ namespace Deltares
 
         void HistogramDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values)
         {
-            std::vector<double> weights = Numeric::NumericSupport::select(values, [](double x) {return 1.0; });
+            auto weights = std::vector(values.size(), 1.0);
             return fitWeighted(stochast, values, weights);
         }
 
