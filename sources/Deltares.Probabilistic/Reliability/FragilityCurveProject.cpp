@@ -19,29 +19,22 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#pragma once
+#include "FragilityCurveProject.h"
+#include "FragilityCurveIntegration.h"
+
+#include <memory>
 
 namespace Deltares
 {
-    namespace Probabilistic
+    namespace Reliability
     {
-        namespace Test
+        void FragilityCurveProject::run()
         {
-            class testReliabilityMethods
-            {
-            public:
-                void testLatinHyperCube() const;
-                void testNumericalBisection() const;
-                void testNumericalBisectionLinear() const;
-                void testCobylaReliability() const;
-                static void testSubSetSimulationReliabilityNearestToMean();
-                static void testSubSetSimulationReliabilityCenterOfGravity();
-                static void testFDIRReliability();
-                static void testDSFIReliability();
-                static void testFragilityCurveIntegration();
-            private:
-                const double margin = 1e-9;
-            };
+            std::unique_ptr<FragilityCurveIntegration> calculator = std::make_unique<FragilityCurveIntegration>();
+            calculator->Settings = this->settings;
+
+            this->designPoint = calculator->getDesignPoint(this->integrand, this->fragilityCurve);
         }
     }
 }
+

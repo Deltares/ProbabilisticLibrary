@@ -59,6 +59,8 @@ namespace Deltares
 
             std::vector<std::shared_ptr<UStep>> steps = getSteps(parameter, Settings->StepSize);
 
+            int count = 0;
+
             for (std::shared_ptr<UStep> step : steps)
             {
                 // Do one step in the numerical integration
@@ -91,6 +93,8 @@ namespace Deltares
                 designPointBuilder->addSample(sample);
 
                 probFailure += addition;
+
+                count++;
             }
 
             if (fragilityCurveNormalized != nullptr)
@@ -132,6 +136,10 @@ namespace Deltares
 
             designPoint->expandContributions();
 
+            designPoint->convergenceReport->Convergence = 0;
+            designPoint->convergenceReport->IsConverged = true;
+            designPoint->convergenceReport->TotalModelRuns = count;
+
             return designPoint;
         }
 
@@ -153,6 +161,8 @@ namespace Deltares
             designPointBuilder->initialize(Statistics::StandardNormal::BetaMax);
 
             // Perform numerical integration over the fragility curve stochast
+
+            int count = 0;
 
             while (u < uMax)
             {
@@ -181,6 +191,8 @@ namespace Deltares
 
                 u += stepSize;
                 cdfLow = cdfHigh;
+
+                count++;
             }
 
             std::shared_ptr<Sample> designPointSample = designPointBuilder->getSample();
@@ -198,6 +210,10 @@ namespace Deltares
 
             designPoint->correctFragilityCurves();
             designPoint->expandContributions();
+
+            designPoint->convergenceReport->Convergence = 0;
+            designPoint->convergenceReport->IsConverged = true;
+            designPoint->convergenceReport->TotalModelRuns = count;
 
             return designPoint;
         }

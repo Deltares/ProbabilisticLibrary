@@ -36,29 +36,31 @@ namespace Deltares
         {
             return
                 (object_type == "standard_normal" ||
-                object_type == "probability_value" ||
-                object_type == "message" ||
-                object_type == "project" ||
-                object_type == "model_parameter" ||
-                object_type == "limit_state_function" ||
-                object_type == "stochast" ||
-                object_type == "discrete_value" ||
-                object_type == "histogram_value" ||
-                object_type == "fragility_value" ||
-                object_type == "contributing_stochast" ||
-                object_type == "conditional_value" ||
-                object_type == "correlation_matrix" ||
-                object_type == "settings" ||
-                object_type == "stochast_settings" ||
-                object_type == "design_point" ||
-                object_type == "alpha" ||
+                    object_type == "probability_value" ||
+                    object_type == "message" ||
+                    object_type == "project" ||
+                    object_type == "model_parameter" ||
+                    object_type == "limit_state_function" ||
+                    object_type == "stochast" ||
+                    object_type == "discrete_value" ||
+                    object_type == "histogram_value" ||
+                    object_type == "fragility_value" ||
+                    object_type == "contributing_stochast" ||
+                    object_type == "conditional_value" ||
+                    object_type == "correlation_matrix" ||
+                    object_type == "settings" ||
+                    object_type == "stochast_settings" ||
+                    object_type == "design_point" ||
+                    object_type == "alpha" ||
+                    object_type == "fragility_curve" ||
+                    object_type == "fragility_curve_project" ||
                     object_type == "evaluation" ||
-                object_type == "combine_project" ||
-                object_type == "combine_settings" ||
-                object_type == "self_correlation_matrix" ||
-                object_type == "sensitivity_project" ||
-                object_type == "sensitivity_settings" ||
-                object_type == "length_effect_project");
+                    object_type == "combine_project" ||
+                    object_type == "combine_settings" ||
+                    object_type == "self_correlation_matrix" ||
+                    object_type == "sensitivity_project" ||
+                    object_type == "sensitivity_settings" ||
+                    object_type == "length_effect_project");
         }
 
         void ProjectHandler::Create(std::string object_type, int id)
@@ -159,6 +161,17 @@ namespace Deltares
                 alphaIds[alphas[id]] = id;
                 types[id] = ObjectType::Alpha;
             }
+            else if (object_type == "fragility_curve")
+            {
+                fragilityCurves[id] = std::make_shared<Deltares::Reliability::FragilityCurve>();
+                fragilityCurveIds[fragilityCurves[id]] = id;
+                types[id] = ObjectType::FragilityCurve;
+            }
+            else if (object_type == "fragility_curve_project")
+            {
+                fragilityCurveProjects[id] = std::make_shared<Deltares::Reliability::FragilityCurveProject>();
+                types[id] = ObjectType::FragilityCurveProject;
+                }
             else if (object_type == "evaluation")
             {
                 evaluations[id] = std::make_shared<Deltares::Reliability::Evaluation>();
@@ -218,6 +231,8 @@ namespace Deltares
             case ObjectType::StochastSettings: stochastSettingsValues.erase(id); break;
             case ObjectType::DesignPoint: designPoints.erase(id); break;
             case ObjectType::Alpha: alphas.erase(id); break;
+            case ObjectType::FragilityCurve: fragilityCurves.erase(id); break;
+            case ObjectType::FragilityCurveProject: fragilityCurveProjects.erase(id); break;
             case ObjectType::Evaluation: evaluations.erase(id); break;
             case ObjectType::CombineProject: combineProjects.erase(id); break;
             case ObjectType::CombineSettings: combineSettingsValues.erase(id); break;
@@ -380,6 +395,15 @@ namespace Deltares
                 else if (property_ == "u") return alpha->U;
                 else if (property_ == "x") return alpha->X;
                 else if (property_ == "influence_factor") return alpha->InfluenceFactor;
+            }
+            else if (objectType == ObjectType::FragilityCurve)
+            {
+                std::shared_ptr<Reliability::FragilityCurve> fragilityCurve = fragilityCurves[id];
+
+                if (property_ == "mean") return fragilityCurve->getMean();
+                else if (property_ == "deviation") return fragilityCurve->getDeviation();
+                else if (property_ == "variation") return fragilityCurve->getVariation();
+                else return std::nan("");
             }
             else if (objectType == ObjectType::Evaluation)
             {
@@ -593,6 +617,12 @@ namespace Deltares
 
                 if (property_ == "variables_count") return correlationMatrix->getDimension();
             }
+            else if (objectType == ObjectType::FragilityCurve)
+            {
+                std::shared_ptr<Reliability::FragilityCurve> fragilityCurve = fragilityCurves[id];
+
+                if (property_ == "fragility_values_count") return (int)fragilityCurve->getProperties()->FragilityValues.size();
+            }
             else if (objectType == ObjectType::Settings)
             {
                 std::shared_ptr<Reliability::Settings> settings = settingsValues[id];
@@ -672,6 +702,12 @@ namespace Deltares
                 if (property_ == "limit_state_function") return GetLimitStateFunctionId(project->limitStateFunction, newId);
                 else if (property_ == "design_point") return GetDesignPointId(project->designPoint, newId);
             }
+            else if (objectType == ObjectType::FragilityCurveProject)
+            {
+                std::shared_ptr<Reliability::FragilityCurveProject> project = fragilityCurveProjects[id];
+
+                if (property_ == "design_point") return GetDesignPointId(project->designPoint, newId);
+            }
             else if (objectType == ObjectType::SensitivityProject)
             {
                 std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
@@ -707,7 +743,14 @@ namespace Deltares
             {
                 std::shared_ptr<Reliability::StochastPointAlpha> alpha = alphas[id];
 
-                if (property_ == "variable") return GetStochastId(alpha->Stochast, newId);
+                if (property_ == "variable")
+                {
+                    if (alpha->Stochast == nullptr) return 0;
+
+                    std::shared_ptr<Reliability::FragilityCurve> fragilityCurve = std::dynamic_pointer_cast<Reliability::FragilityCurve>(alpha->Stochast);
+                    if (fragilityCurve == nullptr) return GetStochastId(alpha->Stochast, newId);
+                    else return GetFragilityCurveId(fragilityCurve, newId);
+                }
             }
             else if (objectType == ObjectType::CombineProject)
             {
@@ -743,6 +786,13 @@ namespace Deltares
                 if (property_ == "settings") project->settings = sensitivitySettingsValues[value];
                 else if (property_ == "correlation_matrix") project->correlationMatrix = correlationMatrices[value];
             }
+            else if (objectType == ObjectType::FragilityCurveProject)
+            {
+                std::shared_ptr<Reliability::FragilityCurveProject> project = fragilityCurveProjects[id];
+
+                if (property_ == "integrand") project->integrand = stochasts[value];
+                else if (property_ == "fragility_curve") project->fragilityCurve = fragilityCurves[value];
+            }
             else if (objectType == ObjectType::ModelParameter)
             {
                 std::shared_ptr<Models::ModelInputParameter> parameter = modelParameters[id];
@@ -761,7 +811,14 @@ namespace Deltares
             {
                 std::shared_ptr<Statistics::FragilityValue> fragilityValue = fragilityValues[id];
 
-                if (property_ == "design_point") fragilityValue->designPoint = designPoints[value];
+                if (property_ == "design_point")
+                {
+                    fragilityValue->designPoint = designPoints.contains(value) ? designPoints[value] : nullptr;
+                    if (fragilityValue->designPoint != nullptr)
+                    {
+                        fragilityValue->Reliability = fragilityValue->designPoint->Beta;
+                    }
+                }
             }
             else if (objectType == ObjectType::ContributingStochast)
             {
@@ -774,6 +831,12 @@ namespace Deltares
                 std::shared_ptr<Statistics::VariableStochastValue> conditionalValue = conditionalValues[id];
 
                 if (property_ == "observations") conditionalValue->Stochast->Observations = value;
+            }
+            else if (objectType == ObjectType::FragilityCurve)
+            {
+                std::shared_ptr<Reliability::FragilityCurve> fragilityCurve = fragilityCurves[id];
+
+                if (property_ == "copy_from") fragilityCurve->copyFrom(fragilityCurves[value]);
             }
             else if (objectType == ObjectType::Settings)
             {
@@ -978,6 +1041,13 @@ namespace Deltares
                 else if (property_ == "name") return stochast->name;
                 else return "";
             }
+            else if (objectType == ObjectType::FragilityCurve)
+            {
+                std::shared_ptr<Reliability::FragilityCurve> fragilityCurve = fragilityCurves[id];
+
+                if (property_ == "name") return fragilityCurve->name;
+                else return "";
+            }
             else if (objectType == ObjectType::LimitStateFunction)
             {
                 std::shared_ptr<Reliability::LimitStateFunction> limitStateFunction = limitStateFunctions[id];
@@ -1039,6 +1109,12 @@ namespace Deltares
                 std::shared_ptr<Models::ModelInputParameter> parameter = modelParameters[id];
 
                 if (property_ == "name") parameter->name = value;
+            }
+            else if (objectType == ObjectType::FragilityCurve)
+            {
+                std::shared_ptr<Reliability::FragilityCurve> fragilityCurve = fragilityCurves[id];
+
+                if (property_ == "name") fragilityCurve->name = value;
             }
             else if (objectType == ObjectType::LimitStateFunction)
             {
@@ -1278,6 +1354,20 @@ namespace Deltares
                     }
                 }
             }
+            else if (objectType == ObjectType::FragilityCurve)
+            {
+                std::shared_ptr<Reliability::FragilityCurve> fragilityCurve = fragilityCurves[id];
+
+                if (property_ == "fragility_values")
+                {
+                    fragilityCurve->getProperties()->setDirty();
+                    fragilityCurve->getProperties()->FragilityValues.clear();
+                    for (int i = 0; i < size; i++)
+                    {
+                        fragilityCurve->getProperties()->FragilityValues.push_back(fragilityValues[values[i]]);
+                    }
+                }
+            }
             else if (objectType == ObjectType::CorrelationMatrix)
             {
                 std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix = correlationMatrices[id];
@@ -1366,6 +1456,14 @@ namespace Deltares
                 if (property_ == "quantile") return stochast->getQuantile(argument);
                 if (property_ == "x_from_u") return stochast->getXFromU(argument);
                 if (property_ == "u_from_x") return stochast->getUFromX(argument);
+            }
+            else if (objectType == ObjectType::FragilityCurve)
+            {
+                std::shared_ptr<Reliability::FragilityCurve> fragilityCurve = fragilityCurves[id];
+
+                if (property_ == "quantile") return fragilityCurve->getQuantile(argument);
+                if (property_ == "x_from_u") return fragilityCurve->getXFromU(argument);
+                if (property_ == "u_from_x") return fragilityCurve->getUFromX(argument);
             }
 
             return std::nan("");
@@ -1461,6 +1559,12 @@ namespace Deltares
                 else if (property_ == "contributing_stochasts") return this->GetContributingStochastId(stochast->getProperties()->ContributingStochasts[index], newId);
                 else if (property_ == "conditional_values") return this->GetConditionalValueId(stochast->ValueSet->StochastValues[index], newId);
             }
+            else if (objectType == ObjectType::FragilityCurve)
+            {
+                std::shared_ptr<Reliability::FragilityCurve> fragilityCurve = fragilityCurves[id];
+
+                if (property_ == "fragility_values") return this->GetFragilityValueId(fragilityCurve->getProperties()->FragilityValues[index], newId);
+            }
             else if (objectType == ObjectType::CorrelationMatrix)
             {
                 std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix = correlationMatrices[id];
@@ -1527,6 +1631,12 @@ namespace Deltares
 
                 if (method_ == "run") project->run();
             }
+            else if (objectType == ObjectType::FragilityCurveProject)
+            {
+                std::shared_ptr<Reliability::FragilityCurveProject> project = fragilityCurveProjects[id];
+
+                if (method_ == "run") project->run();
+            }
             else if (objectType == ObjectType::CombineProject)
             {
                 std::shared_ptr<Reliability::CombineProject> project = combineProjects[id];
@@ -1582,6 +1692,25 @@ namespace Deltares
                 }
 
                 return stochastIds[stochast];
+            }
+        }
+
+        int ProjectHandler::GetFragilityCurveId(std::shared_ptr<Reliability::FragilityCurve> fragilityCurve, int newId)
+        {
+            if (fragilityCurve == nullptr)
+            {
+                return 0;
+            }
+            else
+            {
+                if (!fragilityCurveIds.contains(fragilityCurve))
+                {
+                    fragilityCurves[newId] = fragilityCurve;
+                    types[newId] = ObjectType::FragilityCurve;
+                    fragilityCurveIds[fragilityCurve] = newId;
+                }
+
+                return fragilityCurveIds[fragilityCurve];
             }
         }
 

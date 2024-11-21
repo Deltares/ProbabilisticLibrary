@@ -23,7 +23,7 @@ import sys
 from enum import Enum
 
 from .utils import *
-from .statistic import Stochast
+from .statistic import Stochast, FragilityValue
 from . import interface
 
 if not interface.IsLibraryLoaded():
@@ -697,6 +697,148 @@ class Alpha:
 	@property
 	def x(self):
 		return interface.GetValue(self._id, 'x')
+
+class FragilityCurve:
+
+	def __init__(self, id = None):
+		if id is None:
+			self._id = interface.Create('fragility_curve')
+		else:
+			self._id = id
+
+		self._fragility_values = None
+
+	def __del__(self):
+		interface.Destroy(self._id)
+
+	def __dir__(self):
+		return ['name',
+				'mean',
+				'deviation',
+				'variation',
+				'fragility_values',
+				'copy_from',
+				'get_quantile',
+				'get_x_from_u',
+				'get_u_from_x',
+				'integrate']
+
+	@property
+	def name(self):
+		return interface.GetStringValue(self._id, 'name')
+
+	@name.setter
+	def name(self, value : str):
+		interface.SetStringValue(self._id, 'name', value)
+
+	def __str__(self):
+		return self.name
+
+	@property
+	def mean(self):
+		return interface.GetValue(self._id, 'mean')
+
+	@property
+	def deviation(self):
+		return interface.GetValue(self._id, 'deviation')
+
+	@property
+	def variation(self):
+		return interface.GetValue(self._id, 'variation')
+
+	@property
+	def fragility_values(self):
+		if self._fragility_values is None:
+			self._synchronizing = True
+			self._fragility_values = CallbackList(self._fragility_values_changed)
+			fragility_ids = interface.GetArrayIdValue(self._id, 'fragility_values')
+			for fragility_id in fragility_ids:
+				self._fragility_values.append(FragilityValue(fragility_id))
+			self._synchronizing = False
+
+		return self._fragility_values
+
+	def _fragility_values_changed(self):
+		if not self._synchronizing:
+			interface.SetArrayIntValue(self._id, 'fragility_values', [fragility_value._id for fragility_value in self._fragility_values])
+
+	def get_quantile(self, quantile : float):
+		return interface.GetArgValue(self._id, 'quantile', quantile)
+
+	def get_x_from_u(self, u : float):
+		return interface.GetArgValue(self._id, 'x_from_u', u)
+
+	def get_u_from_x(self, x : float):
+		return interface.GetArgValue(self._id, 'u_from_x', x)
+
+	def copy_from(self, source):
+		if source is FragilityCurve:
+			interface.SetIntValue(self._id, 'copy_from', source._id)
+			self._fragility_values = None
+
+	def integrate(self, integrand : Stochast):
+		project = FragilityCurveProject()
+		project.integrand = integrand
+		project.fragility_curve = self
+		project.run()
+		return project.design_point
+
+class FragilityCurveProject:
+
+	def __init__(self):
+		self._id = interface.Create('fragility_curve_project')
+		self._integrand = None
+		self._fragility_curve = None
+		self._design_point = None
+
+	def __del__(self):
+		interface.Destroy(self._id)
+
+	def __dir__(self):
+		return ['integrand',
+				'fragility_curve',
+				'design_point']
+
+	@property
+	def integrand(self):
+		return self._integrand
+
+	@integrand.setter
+	def integrand(self, value : Stochast):
+		self._integrand = value
+		interface.SetIntValue(self._id, 'integrand', value._id)
+
+	@property
+	def fragility_curve(self):
+		return self._fragility_curve
+
+	@fragility_curve.setter
+	def fragility_curve(self, value : FragilityCurve):
+		self._fragility_curve = value
+		interface.SetIntValue(self._id, 'fragility_curve', value._id)
+
+	@property
+	def design_point(self):
+		return self._design_point
+
+	def run(self):
+		self._design_point = None
+		interface.Execute(self._id, 'run')
+		designPointId = interface.GetIdValue(self._id, 'design_point')
+		if designPointId > 0:
+			known_variables = self._get_variables()
+			self._design_point = DesignPoint(designPointId, known_variables)
+
+	def _get_variables(self):
+		variables = []
+		variables.append(self.integrand)
+		variables.append(self.fragility_curve)
+		for fragility_value in self.fragility_curve.fragility_values:
+			if isinstance(fragility_value.design_point, DesignPoint):
+				for alpha in fragility_value.design_point.alphas:
+					if not alpha.variable is None and not alpha.variable in variables:
+						variables.append(alpha.variable)
+		return variables
 
 
 class CombineSettings:
