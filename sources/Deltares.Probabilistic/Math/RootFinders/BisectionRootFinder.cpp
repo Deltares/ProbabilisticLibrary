@@ -23,21 +23,21 @@
 
 namespace Deltares::Numeric
 {
-    DirectionType BisectionRootFinder::getDirection(double value1, double value2, double result1, double result2)
+    DirectionType BisectionRootFinder::getDirection(XValue xvalue1, XValue xvalue2)
     {
-        if (result1 > result2 && value1 > value2)
+        if (xvalue1.Value > xvalue2.Value && xvalue1.X > xvalue2.X)
         {
             return DirectionType::Positive;
         }
-        else if (result1 < result2 && value1 > value2)
+        else if (xvalue1.Value < xvalue2.Value && xvalue1.X > xvalue2.X)
         {
             return DirectionType::Negative;
         }
-        else if (result1 > result2 && value1 < value2)
+        else if (xvalue1.Value > xvalue2.Value && xvalue1.X < xvalue2.X)
         {
             return DirectionType::Negative;
         }
-        else if (result1 < result2 && value1 < value2)
+        else if (xvalue1.Value < xvalue2.Value && xvalue1.X < xvalue2.X)
         {
             return DirectionType::Positive;
         }
@@ -57,7 +57,7 @@ namespace Deltares::Numeric
         double lowValue = function(minStart);
         double highValue = function(maxStart);
 
-        // Initialize linear search method
+        // Initialize search method
         auto low = XValue(minStart, lowValue);
         auto high = XValue(maxStart, highValue);
         return CalculateValue(low, high, resultValue, function);
@@ -70,11 +70,9 @@ namespace Deltares::Numeric
             std::swap(minStart, maxStart);
         }
 
-        double minResult = minStart.Value;
-        double maxResult = maxStart.Value;
-        int cntFunctionCalls = 2;
+        int cntFunctionCalls = 0;
 
-        DirectionType direction = getDirection(minStart.X, maxStart.X, minResult, maxResult);
+        DirectionType direction = getDirection(minStart, maxStart);
         const auto cmp_directions = std::vector<DirectionType> { DirectionType::Positive , DirectionType::Negative };
 
         for (const auto& cmp_direction : cmp_directions)
@@ -86,39 +84,39 @@ namespace Deltares::Numeric
             {
                 const bool cmp_results = (
                     cmp_direction == DirectionType::Positive
-                        ? minResult < resultValue && maxResult < resultValue
-                        : minResult > resultValue && maxResult > resultValue);
+                        ? minStart.Value < resultValue && maxStart.Value < resultValue
+                        : minStart.Value > resultValue && maxStart.Value > resultValue);
                 if (!cmp_results) break;
                 if (direction == DirectionType::Zero)
                 {
                     double diff = maxStart.X - minStart.X;
 
                     maxStart.X += diff;
-                    maxResult = function(maxStart.X);
+                    maxStart.Value = function(maxStart.X);
 
                     minStart.X -= diff;
-                    minResult = function(minStart.X);
+                    minStart.Value = function(minStart.X);
                     cntFunctionCalls += 2;
                 }
                 else if (direction == cmp_direction)
                 {
                     maxStart.X += maxStart.X - minStart.X;
-                    maxResult = function(maxStart.X);
+                    maxStart.Value = function(maxStart.X);
                     cntFunctionCalls++;
                 }
                 else
                 {
                     minStart.X -= maxStart.X - minStart.X;
-                    minResult = function(minStart.X);
+                    minStart.Value = function(minStart.X);
                     cntFunctionCalls++;
                 }
 
-                direction = getDirection(minStart.X, maxStart.X, minResult, maxResult);
+                direction = getDirection(minStart, maxStart);
             }
         }
 
         // Initialize bisection method
-        double result = minResult;
+        double result = minStart.Value;
         double value = minStart.X;
 
         double step = (maxStart.X - minStart.X) / 2;
