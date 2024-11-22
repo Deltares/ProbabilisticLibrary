@@ -76,7 +76,7 @@ namespace Deltares
         class IntegrationCell
         {
         public:
-            IntegrationCell(IntegrationDomain& domain, std::vector<double> lowerBoundaries, std::vector<double> upperBoundaries);
+            IntegrationCell(IntegrationDomain& domain, const std::vector<double>& lower_bounds, const std::vector<double>& upper_bounds);
             bool Determined = false;
             bool Known = false;
             double getProbability() const;

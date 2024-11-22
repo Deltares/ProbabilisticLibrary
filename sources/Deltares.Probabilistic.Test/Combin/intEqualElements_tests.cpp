@@ -20,7 +20,7 @@
 // All rights reserved.
 //
 #include <gtest/gtest.h>
-#include <math.h>
+#include <cmath>
 #include "intEqualElements_tests.h"
 #include "../../Deltares.Probabilistic/Statistics/StandardNormal.h"
 

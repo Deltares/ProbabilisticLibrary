@@ -1012,7 +1012,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             double center = stochast.Shift;
 
-            Assert.AreEqual(false, stochast.Inverted);
+            Assert.IsFalse(stochast.Inverted);
 
             // test mean inverted
             stochast.Inverted = true;
@@ -1049,7 +1049,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
                 InvertMinMax(stochast, useShift);
             }
 
-            Assert.AreEqual(false, stochast.Inverted);
+            Assert.IsFalse(stochast.Inverted);
         }
 
         private void InvertMinMax(Stochast stochast, bool useShift)

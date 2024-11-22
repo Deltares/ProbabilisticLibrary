@@ -21,10 +21,8 @@
 //
 #include "testutils.h"
 #include "gtest/gtest.h"
-#include <math.h>
-#include <sstream>
+#include <cmath>
 #include <fstream>
-#include <iostream>
 #include <iterator>
 #include "../../Deltares.Probabilistic/Utils/probLibString.h"
 
