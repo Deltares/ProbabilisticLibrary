@@ -38,7 +38,7 @@ namespace Deltares
             return CalculateValue(low, high, target, function);
         }
 
-        double LinearRootFinder::CalculateValue(XValue low, XValue high, double target, RootFinderMethod function) const
+        double LinearRootFinder::CalculateValue(XValue low, XValue high, double target, RootFinderMethod function)
         {
             constexpr double windowLimit = 0.05;
             constexpr double solutionLimit = 0.2;

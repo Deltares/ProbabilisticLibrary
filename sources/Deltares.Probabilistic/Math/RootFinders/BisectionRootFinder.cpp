@@ -54,63 +54,76 @@ namespace Deltares::Numeric
 
     double BisectionRootFinder::CalculateValue(double minStart, double maxStart, double resultValue, RootFinderMethod function)
     {
-        if (minStart > maxStart)
+        double lowValue = function(minStart);
+        double highValue = function(maxStart);
+
+        // Initialize linear search method
+        auto low = XValue(minStart, lowValue);
+        auto high = XValue(maxStart, highValue);
+        return CalculateValue(low, high, resultValue, function);
+    }
+
+    double BisectionRootFinder::CalculateValue(XValue minStart, XValue maxStart, double resultValue, RootFinderMethod function)
+    {
+        if (minStart.X > maxStart.X)
         {
             std::swap(minStart, maxStart);
         }
 
-        double minResult = function(minStart);
-        double maxResult = function(maxStart);
+        double minResult = minStart.Value;
+        double maxResult = maxStart.Value;
         int cntFunctionCalls = 2;
 
-        DirectionType direction = getDirection(minStart, maxStart, minResult, maxResult);
+        DirectionType direction = getDirection(minStart.X, maxStart.X, minResult, maxResult);
         const auto cmp_directions = std::vector<DirectionType> { DirectionType::Positive , DirectionType::Negative };
 
-        for (int i = 0; i < 2; i++)
+        for (const auto& cmp_direction : cmp_directions)
         {
             // Extrapolate until target is between minStart and maxStart
             // first check whether result is high enough
             // second check for result is low enough
             while (cntFunctionCalls < maxIterations)
             {
-                const bool cmp_results = (i == 0 ? minResult < resultValue && maxResult < resultValue
-                                                 : minResult > resultValue && maxResult > resultValue);
+                const bool cmp_results = (
+                    cmp_direction == DirectionType::Positive
+                        ? minResult < resultValue && maxResult < resultValue
+                        : minResult > resultValue && maxResult > resultValue);
                 if (!cmp_results) break;
                 if (direction == DirectionType::Zero)
                 {
-                    double diff = maxStart - minStart;
+                    double diff = maxStart.X - minStart.X;
 
-                    maxStart += diff;
-                    maxResult = function(maxStart);
+                    maxStart.X += diff;
+                    maxResult = function(maxStart.X);
 
-                    minStart -= diff;
-                    minResult = function(minStart);
+                    minStart.X -= diff;
+                    minResult = function(minStart.X);
                     cntFunctionCalls += 2;
                 }
-                else if (direction == cmp_directions[i])
+                else if (direction == cmp_direction)
                 {
-                    maxStart += maxStart - minStart;
-                    maxResult = function(maxStart);
+                    maxStart.X += maxStart.X - minStart.X;
+                    maxResult = function(maxStart.X);
                     cntFunctionCalls++;
                 }
                 else
                 {
-                    minStart -= maxStart - minStart;
-                    minResult = function(minStart);
+                    minStart.X -= maxStart.X - minStart.X;
+                    minResult = function(minStart.X);
                     cntFunctionCalls++;
                 }
 
-                direction = getDirection(minStart, maxStart, minResult, maxResult);
+                direction = getDirection(minStart.X, maxStart.X, minResult, maxResult);
             }
         }
 
         // Initialize bisection method
         double result = minResult;
-        double value = minStart;
+        double value = minStart.X;
 
-        double step = (maxStart - minStart) / 2;
+        double step = (maxStart.X - minStart.X) / 2;
         double difference = std::fabs(resultValue - result);
-        double xDifference = getRelativeDifference(minStart, maxStart);
+        double xDifference = getRelativeDifference(minStart.X, maxStart.X);
 
         // Bisection method
         while (difference > tolerance && xDifference > xTolerance && cntFunctionCalls < maxIterations)

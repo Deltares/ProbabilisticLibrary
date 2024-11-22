@@ -29,15 +29,6 @@ namespace Deltares
 {
     namespace Numeric
     {
-        class XValue
-        {
-        public:
-            XValue(double x, double value) : X(x), Value(value) {}
-
-            double X = 0.0;
-            double Value = 0.0;
-        };
-
         class LinearRootFinder : public RootFinder
         {
         public:
@@ -57,7 +48,7 @@ namespace Deltares
             /// <param name="function">The function</param>
             /// <returns>The value which would lead to the result value when invoked for the function</returns>
             double CalculateValue(double xLow, double xHigh, double target, RootFinderMethod function) override;
-            double CalculateValue(XValue low, XValue high, double target, RootFinderMethod function) const;
+            double CalculateValue(XValue low, XValue high, double target, RootFinderMethod function) override;
 
         private:
             static XValue interpolate(const XValue& low, const XValue& high, double target, const RootFinderMethod& function);
