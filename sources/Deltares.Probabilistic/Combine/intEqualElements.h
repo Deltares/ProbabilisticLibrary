@@ -20,7 +20,7 @@
 // All rights reserved.
 //
 #pragma once
-#include <math.h>
+#include <cmath>
 #include <numbers>
 #include "../Statistics/StandardNormal.h"
 

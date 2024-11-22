@@ -209,7 +209,7 @@ namespace Deltares
             double min = minX - Numeric::NumericSupport::getFraction(minX, 1);
             double max = minX - Numeric::NumericSupport::getFraction(minX, 1E-6);
 
-            std::unique_ptr<Numeric::BisectionRootFinder> bisection = std::make_unique<Numeric::BisectionRootFinder>();
+            auto bisection = Numeric::BisectionRootFinder(0.001);
 
             Numeric::RootFinderMethod method = [this, &values](double shift)
             {
@@ -223,7 +223,7 @@ namespace Deltares
                 return result;
             };
 
-            double shift = bisection->CalculateValue(min, max, 0, 0.001, method);
+            double shift = bisection.CalculateValue(min, max, 0, method);
 
             double shiftValue = method(shift);
             if (shiftValue != 0)

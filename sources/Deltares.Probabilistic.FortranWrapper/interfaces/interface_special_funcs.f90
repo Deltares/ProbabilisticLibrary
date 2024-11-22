@@ -34,7 +34,8 @@ function betain(x, p, q, beta, ifault)
     real(kind=c_double), intent(in   ) :: x, p, q, beta
     integer,             intent(  out) :: ifault
     real(kind=c_double) :: betain
-    betain = -999.0;
+    betain = -999.0
+    ifault = -999
 end function betain
 
 function dgammq(a, x, ierr, errorMessage)
@@ -44,10 +45,8 @@ function dgammq(a, x, ierr, errorMessage)
     character(len=*),    intent(inout)     :: errorMessage
     real(kind=c_double)                    :: dgammq
 
-    type(tError) :: ierror
-
-    dgammq = -999;
-    ierr = -999;
+    dgammq = -999.0_c_double
+    ierr   = -999
 end function dgammq
 
 end module interface_special_funcs

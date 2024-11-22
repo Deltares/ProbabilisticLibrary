@@ -22,6 +22,7 @@
 #pragma once
 
 #include <cmath>
+#include <vector>
 
 namespace Deltares
 {
@@ -31,8 +32,11 @@ namespace Deltares
         {
         public:
             double Z = std::nan("");
+            double Beta = 1;
             double Weight = 1;
             int Iteration = -1;
+            std::vector<double> InputValues;
+            std::vector<double> OutputValues;
             int Tag = 0;
         };
     }

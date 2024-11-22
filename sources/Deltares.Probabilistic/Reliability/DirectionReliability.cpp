@@ -114,30 +114,30 @@ namespace Deltares
             std::shared_ptr<Models::ModelRunner> modelRunner;
             std::shared_ptr<Sample> uDirection;
             bool inverted;
-            ZGetter* model;
+            ZGetter model;
 
         public:
             DirectionCalculation(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<Sample> uDirection, bool inverted)
+                : model(ZGetter(modelRunner))
             {
                 this->modelRunner = modelRunner;
                 this->uDirection = uDirection;
                 this->inverted = inverted;
-                this->model = new ZGetter(modelRunner);
             }
 
             double GetZProxy(double u, bool allowProxy)
             {
-                return model->GetZ(uDirection, u, inverted, allowProxy);
+                return model.GetZ(uDirection, u, inverted, allowProxy);
             }
 
             double GetZ(double u)
             {
-                return model->GetZ(uDirection, u, inverted, true);
+                return model.GetZ(uDirection, u, inverted, true);
             }
 
             double GetZNoProxy(double u)
             {
-                return model->GetZ(uDirection, u, inverted, false);
+                return model.GetZ(uDirection, u, inverted, false);
             }
         };
 
@@ -372,20 +372,20 @@ namespace Deltares
             }
             else
             {
-                std::shared_ptr<DirectionCalculation> directionCalculation = std::make_shared<DirectionCalculation>(modelRunner, uDirection, invertZ);
+                auto directionCalculation = std::make_shared<DirectionCalculation>(modelRunner, uDirection, invertZ);
 
                 double zTolerance = GetZTolerance(settings, uLow, uHigh, zLow, zHigh);
 
-                std::shared_ptr<LinearRootFinder> linearSearchCalculation = std::make_shared<LinearRootFinder>();
+                auto linearSearchCalculation = LinearRootFinder(zTolerance, zLow, zHigh, settings->MaximumIterations);
 
-                double uResult = linearSearchCalculation->CalculateValue(uLow, uHigh, 0, zTolerance, settings->MaximumIterations, [directionCalculation](double v) { return directionCalculation->GetZ(v); }, zLow, zHigh);
+                double uResult = linearSearchCalculation.CalculateValue(uLow, uHigh, 0, [directionCalculation](double v) { return directionCalculation->GetZ(v); });
 
                 // TODO: PROBL-42 remove linear search , because bisection is more robust
                 if (std::isnan(uResult))
                 {
                     const double xTolerance = 0.01;
-                    std::shared_ptr<BisectionRootFinder> bisectionCalculation = std::make_shared<BisectionRootFinder>();
-                    uResult = bisectionCalculation->CalculateValue(uLow, uHigh, 0, zTolerance, [directionCalculation](double v) { return directionCalculation->GetZ(v); }, nullptr, xTolerance);
+                    auto bisectionCalculation = BisectionRootFinder(zTolerance, xTolerance);
+                    uResult = bisectionCalculation.CalculateValue(uLow, uHigh, 0, [directionCalculation](double v) { return directionCalculation->GetZ(v); });
                 }
 
                 z = std::isnan(uResult) ? nan("") : directionCalculation->GetZ(uResult);
@@ -464,13 +464,13 @@ namespace Deltares
             }
             else
             {
-                std::shared_ptr<DirectionCalculation> directionCalculation = std::make_shared<DirectionCalculation>(modelRunner, uDirection, invertZ);
+                auto directionCalculation = std::make_shared<DirectionCalculation>(modelRunner, uDirection, invertZ);
 
-                const std::shared_ptr<LinearRootFinder> linearSearchCalculation = std::make_shared<LinearRootFinder>();
+                const double zTolerance = GetZTolerance(settings, uLow, uHigh, zLow, zHigh);
 
-                const double zTolerance = DirectionReliability::GetZTolerance(settings, uLow, uHigh, zLow, zHigh);
+                auto linearSearchCalculation = LinearRootFinder(zTolerance, zLow, zHigh, settings->MaximumIterations);
 
-                double uResult = linearSearchCalculation->CalculateValue(uLow, uHigh, 0, zTolerance, settings->MaximumIterations, [directionCalculation](double v) { return directionCalculation->GetZ(v); }, zLow, zHigh);
+                double uResult = linearSearchCalculation.CalculateValue(uLow, uHigh, 0, [directionCalculation](double v) { return directionCalculation->GetZ(v); });
 
                 z = std::isnan(uResult) ? nan("") : directionCalculation->GetZ(uResult);
 
@@ -478,8 +478,8 @@ namespace Deltares
                 {
                     if (std::isnan(uResult))
                     {
-                        std::shared_ptr<BisectionRootFinder> bisectionCalculation = std::make_shared<BisectionRootFinder>();
-                        uResult = bisectionCalculation->CalculateValue(uLow, uHigh, 0, zTolerance, [directionCalculation](double v) { return directionCalculation->GetZ(v); });
+                        auto bisectionCalculation = BisectionRootFinder(zTolerance);
+                        uResult = bisectionCalculation.CalculateValue(uLow, uHigh, 0, [directionCalculation](double v) { return directionCalculation->GetZ(v); });
                     }
 
                     if (modelRunner->Settings->proxySettings->ShouldUpdateFinalSteps && !isProxyAllowed(modelRunner, uResult, this->Threshold))
@@ -511,7 +511,7 @@ namespace Deltares
                             }
                         }
 
-                        uResult = linearSearchCalculation->CalculateValue(0, uResult, 0, zTolerance, settings->MaximumIterations, [directionCalculation](double v) { return directionCalculation->GetZNoProxy(v); }, z0, zResult);
+                        uResult = linearSearchCalculation.CalculateValue(0, uResult, 0, [directionCalculation](double v) { return directionCalculation->GetZNoProxy(v); });
                         if (std::isnan(uResult))
                         {
                             z = zResult;

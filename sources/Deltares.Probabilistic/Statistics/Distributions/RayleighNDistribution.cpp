@@ -142,7 +142,7 @@ namespace Deltares
 
             if (stochast->Shape != 1.0) 
             {
-                std::unique_ptr<Numeric::BisectionRootFinder> bisection = std::make_unique<Numeric::BisectionRootFinder>();
+                auto bisection = Numeric::BisectionRootFinder(tolBisection);
 
                 Distribution* distribution = this;
 
@@ -155,7 +155,7 @@ namespace Deltares
                 double minStart = 0.5 * stochast->Scale;
                 double maxStart = 1.5 * stochast->Scale;
 
-                stochast->Scale = bisection->CalculateValue(minStart, maxStart, mean, 0.00001, method);
+                stochast->Scale = bisection.CalculateValue(minStart, maxStart, mean, method);
             }
         }
 

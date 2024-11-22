@@ -28,31 +28,7 @@ import project_builder
 margin = 0.02
 
 class Test_Length_Effect(unittest.TestCase):
-    def test_length_effect1(self):
-        q = 0.01;
-
-        project = LengthEffectProject()
-
-        values = [100.0, 200.0]
-        project.correlation_lengths = values
-        project.length = 2000
-        project.minimum_failure_length = 500
-
-        beta = StandardNormal.get_u_from_q(q)
-        dp1 = project_builder.get_design_point_with_name(beta, 2, ["a", "b"])
-        project.design_point_cross_section = dp1
-
-        project.correlation_matrix['a'] = 0.45
-        project.correlation_matrix['b'] = 0.55
-
-        project.run()
-
-        design_point_upscaled = project.design_point
-        self.assertAlmostEqual(design_point_upscaled.reliability_index, 1.282, delta=margin)
-        for alpha in design_point_upscaled.alphas:
-            self.assertAlmostEqual(alpha.alpha, -0.7071, delta=margin)
-
-    def test_length_effect_no_minimum_failure_length(self):
+    def test_length_effect(self):
         q = 0.01;
 
         project = LengthEffectProject()
@@ -72,7 +48,7 @@ class Test_Length_Effect(unittest.TestCase):
         project.run()
 
         design_point_upscaled = project.design_point
-        self.assertAlmostEqual(design_point_upscaled.reliability_index, 1.201, delta=margin)
+        self.assertAlmostEqual(design_point_upscaled.reliability_index, 1.2014, delta=margin)
         for alpha in design_point_upscaled.alphas:
             self.assertAlmostEqual(alpha.alpha, -0.7071, delta=margin)
             self.assertAlmostEqual(alpha.x, 0.8, delta=margin)
@@ -97,7 +73,7 @@ class Test_Length_Effect(unittest.TestCase):
         project.run()
 
         design_point_upscaled = project.design_point
-        self.assertAlmostEqual(design_point_upscaled.reliability_index, 0.82196, delta=margin)
+        self.assertAlmostEqual(design_point_upscaled.reliability_index, 0.8220, delta=margin)
 
     def test_settings(self):
         q = 0.01;
@@ -110,9 +86,6 @@ class Test_Length_Effect(unittest.TestCase):
             self.assertEqual(values[i], project.correlation_lengths[i])
         project.length = 2000.0
         self.assertEqual(project.length, 2000.0)
-
-        project.minimum_failure_length = 123.0
-        self.assertEqual(project.minimum_failure_length, 123.0)
 
         beta = StandardNormal.get_u_from_q(q)
         dp1 = project_builder.get_design_point_with_name(beta, 2, ["a", "b"])

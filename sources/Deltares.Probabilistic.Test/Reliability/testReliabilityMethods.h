@@ -34,6 +34,10 @@ namespace Deltares
                 void testNumericalBisection() const;
                 void testNumericalBisectionLinear() const;
                 void testCobylaReliability() const;
+                static void testSubSetSimulationReliabilityNearestToMean();
+                static void testSubSetSimulationReliabilityCenterOfGravity();
+                static void testFDIRReliability();
+                static void testDSFIReliability();
             private:
                 const double margin = 1e-9;
             };

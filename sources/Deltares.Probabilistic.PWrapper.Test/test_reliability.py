@@ -472,5 +472,39 @@ class Test_reliability(unittest.TestCase):
         self.assertAlmostEqual(-0.71, alphas[0].alpha, delta=margin)
         self.assertAlmostEqual(-0.71, alphas[1].alpha, delta=margin)
 
+    def test_fdir_hunt(self):
+        project = project_builder.get_hunt_project()
+
+        project.settings.reliability_method = ReliabilityMethod.form_then_directional_sampling
+
+        project.settings.maximum_iterations = 50
+        project.settings.epsilon_beta = 0.05
+
+        project.run()
+
+        dp = project.design_point;
+        beta = dp.reliability_index;
+        alphas = dp.alphas;
+
+        self.assertAlmostEqual(2.05, beta, delta=margin)
+        self.assertEqual(5, len(alphas))
+
+    def test_dsfi_hunt(self):
+        project = project_builder.get_hunt_project()
+
+        project.settings.reliability_method = ReliabilityMethod.directional_sampling_then_form
+
+        project.settings.maximum_iterations = 50
+        project.settings.epsilon_beta = 0.05
+
+        project.run()
+
+        dp = project.design_point;
+        beta = dp.reliability_index;
+        alphas = dp.alphas;
+
+        self.assertAlmostEqual(1.87, beta, delta=margin)
+        self.assertEqual(5, len(alphas))
+
 if __name__ == '__main__':
     unittest.main()

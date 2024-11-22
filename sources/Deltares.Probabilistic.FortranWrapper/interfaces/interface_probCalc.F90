@@ -162,6 +162,8 @@ subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, convergenceDa
         method%latinHypercubeSettings = probDb%method%latinHyperCubeSettings
     case (methodCobylaReliability)
         method%cobylaReliability = probDb%method%cobylaReliability
+    case (methodSubSetSimulationReliability)
+        method%subSetSimulationReliability = probDb%method%subSetSimulationReliability
     end select
     method%du               = probDb%method%FORM%du
     method%relaxationFactor = probDb%method%FORM%relaxationFactor
@@ -276,7 +278,7 @@ subroutine convertStartMethod(probDb, method, iPoint)
     type(tMethod),                         intent(inout) :: method
     integer,                               intent(in)    :: iPoint(:)
 
-    integer :: nstoch, i, startMethod
+    integer :: nstoch, startMethod
 
     nstoch = size(iPoint)
 

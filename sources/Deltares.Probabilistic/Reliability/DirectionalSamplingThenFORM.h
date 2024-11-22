@@ -29,7 +29,8 @@ namespace Deltares
 {
     namespace Reliability
     {
-        // class for DirectionalSamplingThenFORM: Directional Sampling and FORM to improve alpha values (design point)
+        // class for DirectionalSamplingThenFORM: Directional Sampling for beta (reliability index)
+        // and FORM to improve alpha values (design point)
         class DirectionalSamplingThenFORM : public ReliabilityMethod
         {
         public:

@@ -785,7 +785,7 @@ void combinElementsTests::testcombineMultipleElementsSpatialCorrelated1()
     auto ref = alphaBeta(4.38787743765301, // pre-computed
     {0.635285167139092, 0.393519326675495, 0.565059833788674, 0.349660807332817}); // pre-computed
 
-    auto section = up.upscaleLength(CrossSection, rhoXK, dXK, sectionLength, -999.0);
+    auto section = up.upscaleLength(CrossSection, rhoXK, dXK, sectionLength);
     EXPECT_EQ(section.second, 0);
     auto Elements = elements(nElements);
     for (size_t i = 0; i < nElements; i++)
@@ -813,7 +813,7 @@ void combinElementsTests::testcombineMultipleElementsSpatialCorrelated2()
     auto ref = alphaBeta(4.61415014812874,
     {0.597708361676096, 0.375385677437277, 0.599181645055476, 0.377904305064187}); // pre-computed
 
-    auto section = up.upscaleLength(crossSection, rhoXK, dXK, sectionLength, -999.0);
+    auto section = up.upscaleLength(crossSection, rhoXK, dXK, sectionLength);
     EXPECT_EQ(section.second, 0);
     auto elms = elements(nElements);
     for (size_t i = 0; i < nElements; i++)
@@ -845,7 +845,7 @@ void combinElementsTests::testcombineMultipleElementsSpatialCorrelated3()
     auto ref = alphaBeta(4.5064103581966,
     {0.578741673689891, 0.385418150246354, 0.598199853682860, 0.398331344045516}); // pre-computed
 
-    auto section = up.upscaleLength(crossSection, rhoXK, dXK, nElements * sectionLength, -999.0);
+    auto section = up.upscaleLength(crossSection, rhoXK, dXK, nElements * sectionLength);
 
     utils.checkAlphaBeta(section.first, ref, 1e-6);
     EXPECT_EQ(section.second, 0);
@@ -882,7 +882,7 @@ void combinElementsTests::testLengthEffectFourStochasts()
         rho->setSelfCorrelation(section->Alphas[i]->Stochast, rhoXK[i]);
     }
 
-    auto dp = LengthEffect::UpscaleLength(section, rho, { 500.0, 300.0, 500.0, 300.0 }, 2000.0, -999.0);
+    auto dp = LengthEffect::UpscaleLength(section, rho, { 500.0, 300.0, 500.0, 300.0 }, 2000.0);
 
     auto ref = alphaBeta(4.5064103581966,
         { -0.578741673689891, -0.385418150246354, -0.598199853682860, -0.398331344045516 }); // pre-computed

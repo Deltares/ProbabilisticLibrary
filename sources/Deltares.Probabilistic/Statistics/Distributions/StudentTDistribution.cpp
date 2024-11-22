@@ -105,7 +105,7 @@ namespace Deltares
                 return std::nan("");
             }
 
-            std::unique_ptr<Numeric::BisectionRootFinder> bisection = std::make_unique<Numeric::BisectionRootFinder>();
+            auto bisection = Numeric::BisectionRootFinder(margin);
 
             Numeric::RootFinderMethod function = [this, stochast, studentValue](double u)
             {
@@ -115,7 +115,7 @@ namespace Deltares
                 return stochast->Location - c * stochast->Scale;
             };
 
-            double result = bisection->CalculateValue(-1, 1, x, margin, function);
+            double result = bisection.CalculateValue(-1, 1, x, function);
 
             return result;
         }

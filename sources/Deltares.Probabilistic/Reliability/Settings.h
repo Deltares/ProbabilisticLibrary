@@ -21,10 +21,22 @@
 //
 #pragma once
 
+#include "AdaptiveImportanceSampling.h"
+#include "CobylaReliability.h"
+#include "CrudeMonteCarlo.h"
 #include "StartPointCalculatorSettings.h"
 #include "StochastSettingsSet.h"
 #include "DesignPointBuilder.h"
+#include "DirectionalSampling.h"
+#include "DirectionalSamplingThenFORM.h"
+#include "FORM.h"
+#include "FORMThenDirectionalSampling.h"
+#include "LatinHyperCube.h"
+#include "NumericalBisection.h"
+#include "NumericalIntegration.h"
+#include "DirectionReliabilitySettings.h"
 #include "ReliabilityMethod.h"
+#include "SubsetSimulation.h"
 #include "SubsetSimulationSettings.h"
 #include "../Model/RandomSettings.h"
 #include "../Model/RunSettings.h"
@@ -39,7 +51,7 @@ namespace Deltares
         enum ReliabilityMethodType {ReliabilityFORM, ReliabilityNumericalIntegration, ReliabilityCrudeMonteCarlo,
             ReliabilityImportanceSampling, ReliabilityAdaptiveImportanceSampling, ReliabilityDirectionalSampling,
             ReliabilityNumericalBisection, ReliabilityLatinHyperCube, ReliabilityCobyla,
-            ReliabilitySubsetSimulation };
+            ReliabilitySubsetSimulation, ReliabilityFORMthenDirectionalSampling, ReliabilityDirectionalSamplingThenFORM};
 
         /**
          * \brief General settings applicable to all mechanisms
@@ -63,6 +75,11 @@ namespace Deltares
             DesignPointMethod designPointMethod = DesignPointMethod::CenterOfGravity;
 
             /**
+             * \brief Defines the way new samples are generated
+             */
+            SampleMethodType SampleMethod = SampleMethodType::MarkovChain;
+
+            /**
              * \brief The minimum samples to be examined
              */
             int MinimumSamples = 1000;
@@ -71,6 +88,11 @@ namespace Deltares
              * \brief The maximum samples to be examined
              */
             int MaximumSamples = 10000;
+
+            /**
+             * \brief The maximum samples to be examined
+             */
+            int MaximumSamplesNoResult = 10000;
 
             /**
              * \brief The minimum directions to be examined
@@ -113,6 +135,21 @@ namespace Deltares
             int MaximumIterations = 50;
 
             /**
+             * \brief Default start value
+             */
+            double StartValue = 0.0;
+
+            /**
+             * \brief Default variance factor in importance sampling
+             */
+            double VarianceFactor = 1.5;
+
+            /**
+             * \brief Default number of intervals in numerical integration
+             */
+            int Intervals = 200;
+
+            /**
              * \brief Relaxation factor, which is applied when generating the guessed design point for a new iteration
              */
             double RelaxationFactor = 0.75;
@@ -143,6 +180,16 @@ namespace Deltares
             SampleMethodType sampleMethod = SampleMethodType::MarkovChain;
 
             /**
+             * \brief Standard deviation in the Markov chain
+             */
+            double MarkovChainDeviation = 1;
+
+            /**
+             * \brief Fraction of the samples which will be used in the next iteration
+             */
+            double SubsetFraction = 0.1;
+
+            /**
              * \brief Settings for performing model runs
              */
             std::shared_ptr<Models::RunSettings> RunSettings = std::make_shared<Models::RunSettings>();
@@ -163,6 +210,11 @@ namespace Deltares
             std::shared_ptr<StartPointCalculatorSettings> StartPointSettings = std::make_shared<StartPointCalculatorSettings>();
 
             /**
+             * \brief Settings for calculating one direction
+             */
+            std::shared_ptr<DirectionReliabilitySettings> DirectionSettings = std::make_shared<DirectionReliabilitySettings>();
+
+            /**
              * \brief Settings for individual stochastic variable, such as the start value
              */
             std::shared_ptr<StochastSettingsSet> StochastSet = std::make_shared<StochastSettingsSet>();
@@ -177,23 +229,26 @@ namespace Deltares
              * \brief Indicates whether these settings have valid values
              * \return Indication
              */
-            bool isValid();
+            bool isValid() const;
 
             static std::string getReliabilityResultTypeString(ReliabilityResultType method);
             static ReliabilityResultType getReliabilityResultType(std::string method);
             static std::string getReliabilityMethodTypeString(ReliabilityMethodType method);
             static ReliabilityMethodType getReliabilityMethodType(std::string method);
         private:
-            const std::shared_ptr<Reliability::ReliabilityMethod> GetFORMMethod();
-            const std::shared_ptr<Reliability::ReliabilityMethod> GetNumericalIntegrationMethod();
-            const std::shared_ptr<Reliability::ReliabilityMethod> GetCrudeMonteCarloMethod();
-            const std::shared_ptr<Reliability::ReliabilityMethod> GetImportanceSamplingMethod();
-            const std::shared_ptr<Reliability::ReliabilityMethod> GetAdaptiveImportanceSamplingMethod();
-            const std::shared_ptr<Reliability::ReliabilityMethod> GetDirectionalSamplingMethod();
-            const std::shared_ptr<Reliability::ReliabilityMethod> GetNumericalBisectionMethod();
-            const std::shared_ptr<Reliability::ReliabilityMethod> GetLatinHypercubeMethod();
-            const std::shared_ptr<Reliability::ReliabilityMethod> GetSubsetSimulationMethod();
-            const std::shared_ptr<Reliability::ReliabilityMethod> GetCobylaReliabilityMethod();
+            std::shared_ptr<FORM> GetFORMMethod() const;
+            std::shared_ptr<NumericalIntegration> GetNumericalIntegrationMethod() const;
+            std::shared_ptr<CrudeMonteCarlo> GetCrudeMonteCarloMethod() const;
+            std::shared_ptr<ImportanceSampling> GetImportanceSamplingMethod() const;
+            std::shared_ptr<AdaptiveImportanceSampling> GetAdaptiveImportanceSamplingMethod() const;
+            std::shared_ptr<DirectionalSampling> GetDirectionalSamplingMethod() const;
+            std::shared_ptr<NumericalBisection> GetNumericalBisectionMethod() const;
+            std::shared_ptr<LatinHyperCube> GetLatinHypercubeMethod() const;
+            std::shared_ptr<SubsetSimulation> GetSubsetSimulationMethod() const;
+            std::shared_ptr<CobylaReliability> GetCobylaReliabilityMethod() const;
+            std::shared_ptr<FORMThenDirectionalSampling> GetFormThenDsReliabilityMethod() const;
+            std::shared_ptr<DirectionalSamplingThenFORM> GetDsThenFormReliabilityMethod() const;
+
         };
     }
 }

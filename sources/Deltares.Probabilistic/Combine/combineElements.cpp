@@ -20,8 +20,7 @@
 // All rights reserved.
 //
 #include <string>
-#include <math.h>
-#include <float.h>
+#include <cmath>
 #include <vector>
 #include "combineElements.h"
 #include "HohenbichlerFORM.h"
@@ -35,17 +34,9 @@ namespace Deltares {
     namespace Reliability {
 
         //> Method for combining two elements with partial correlation
-        cmbResult combineElements::combineTwoElementsPartialCorrelation(alphaBeta& element1,
-            alphaBeta& element2, const vector1D& rhoP, const combineAndOr combAndOr)
+        cmbResult combineElements::combineTwoElementsPartialCorrelation(const alphaBeta& element1,
+            const alphaBeta& element2, const vector1D& rhoP, const combineAndOr combAndOr)
         {
-            vector1D alphaI; vector1D alphaII;
-            return combineTwoElementsPartialCorrelation(element1, element2, rhoP, combAndOr, alphaI, alphaII);
-        }
-
-        //> Method for combining two elements with partial correlation
-        cmbResult combineElements::combineTwoElementsPartialCorrelation(alphaBeta& element1,
-            alphaBeta& element2, const vector1D& rhoP, const combineAndOr combAndOr,
-            vector1D& alphaI, vector1D& alphaII)
             //
             //   INPUT/OUTPUT VARIABLES
             //
@@ -53,13 +44,10 @@ namespace Deltares {
             // element2  : Reliability index and alpha of element 2
             // rhoP(:)   : Autocorrelation of the stochastic variables between element 1 and element 2
             // combAndOr : Combination type, And or Or
-            // alphaI(:) : AlphaI values of the combined elements in case of a spatial correlation
-            // alphaII(:): AlphaII values of the combined elements in case of a spatial correlation
 
             //
             //   LOCAL VARIABLES
             //
-        {
             const double epsilon = 0.01;
             int failureHohenbichler = 0;
             //
@@ -135,8 +123,8 @@ namespace Deltares {
                     pf2pf1 = hh.PerformHohenbichler(pb.second, pb.first, rho);
                     if (pf2pf1.second != 0) failureHohenbichler++;
                     //
-        //           Computation of combined failure probability (AND/OR)
-        //
+                    //           Computation of combined failure probability (AND/OR)
+                    //
                     double pfxk = combinedFailure(combAndOr, pf1, pf2, pb.first, pf2pf1.first);
                     //
                     double betaxk = StandardNormal::getUFromQ(pfxk);
@@ -214,15 +202,6 @@ namespace Deltares {
             //
             element3.normalize();
 
-            if (alphaI.size() == nStochasts && alphaII.size() == nStochasts)
-            {
-                for (size_t k = 0; k < nStochasts; k++)
-                {
-                    double factor = element3.getAlphaI(k) / hypot(alphaX1(k), alphaX2(k));
-                    alphaI(k) = alphaX1(k) * factor;
-                    alphaII(k) = alphaX2(k) * factor;
-                }
-            }
             return { element3, failureHohenbichler };
         }
 
@@ -305,12 +284,11 @@ namespace Deltares {
                     // Calculate the combination of two elements which has
                     // together the largest correlation
                     //
-                    calculateCombinationWithLargestCorrelation(rho, nrElementsComp, local, i1, i2);
+                    calculateCombinationWithLargestCorrelation(rho, local, i1, i2);
                     //
                     // Combine these two elements with partial correlation
                     //
-                    auto a1 = vector1D(nrStochasts); auto a2 = vector1D(nrStochasts);
-                    ab = combineTwoElementsPartialCorrelation(local[i1], local[i2], rho, combAndOr, a1, a2);
+                    ab = combineTwoElementsPartialCorrelation(local[i1], local[i2], rho, combAndOr);
                     failures += ab.n;
 
                     //
@@ -330,6 +308,7 @@ namespace Deltares {
                     local[nrElementsComp - 2] = ab.ab;
 
                     nrElementsComp--;
+                    local.pop_back();
                 }
                 return { ab.ab, failures };
             }
@@ -344,7 +323,7 @@ namespace Deltares {
         //! element 2, \f$ \alpha _{1,j} \f$ refers to the influence coefficient of variable j in element 1, and \f$ \alpha _{2,j} \f$ refers to
         //! the influence coefficient of variable j in element 2.
         void combineElements::calculateCombinationWithLargestCorrelation(const vector1D& rhoP,
-            const size_t nElements, const std::vector<alphaBeta>& ab, size_t& i1max, size_t& i2max)
+            const std::vector<alphaBeta>& ab, size_t& i1max, size_t& i2max)
         {
             // rhoP(nStochasts)  : Autocorrelation the random variables between elements
             // nElements         : Number of elements to be combined (for instance tidal periods)
@@ -354,6 +333,7 @@ namespace Deltares {
             //
             // Two elements can't be computed if there is only one element
             //
+            const size_t nElements = ab.size();
             if (nElements < 2)
             {
                 throw probLibException("The method calculateCombinationWithLargestCorrelation is called with only one element");

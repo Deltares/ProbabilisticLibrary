@@ -10,7 +10,6 @@ namespace Deltares
         {
         public:
             virtual int GetNewObjectId(int handlerIndex) { return 0; }
-            //virtual std::shared_ptr<BaseHandler> GetHandler(std::string objectType) { return nullptr; }
         };
     }
 }

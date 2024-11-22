@@ -82,6 +82,11 @@ namespace Deltares
                     void set(bool value) { shared->object->FilterAtNonConvergence = value; }
                 }
 
+                property int MaxIterationsGrowthFactor
+                {
+                    int get() { return shared->object->MaxIterationsGrowthFactor; }
+                    void set(int value) { shared->object->MaxIterationsGrowthFactor = value; }
+                }
 
                 virtual property Wrappers::RunSettings^ RunSettings
                 {
