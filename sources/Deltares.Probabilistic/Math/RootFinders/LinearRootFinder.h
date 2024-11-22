@@ -29,7 +29,14 @@ namespace Deltares
 {
     namespace Numeric
     {
-        class XValue;
+        class XValue
+        {
+        public:
+            XValue(double x, double value) : X(x), Value(value) {}
+
+            double X = 0.0;
+            double Value = 0.0;
+        };
 
         class LinearRootFinder : public RootFinder
         {
@@ -42,16 +49,6 @@ namespace Deltares
             LinearRootFinder(double tol, int maxIter) : tolerance(tol), maxIterations(maxIter) {}
 
             /// <summary>
-            /// constructor
-            /// </summary>
-            /// <param name="tol"> z tolerance</param>
-            /// <param name="low">already calculated result for minStart</param>
-            /// <param name="high">already calculated result for maxStart</param>
-            /// <param name="maxIter"> maximum number of iterations </param>
-            LinearRootFinder(double tol, double low, double high, int maxIter)
-               : tolerance(tol), knownLowValue(low), knownHighValue(high), maxIterations(maxIter) {}
-
-            /// <summary>
             /// Calculates the input value, which would lead to a result value when invoked for a given function. Extrapolation is allowed.
             /// </summary>
             /// <param name="xLow">Minimum start value</param>
@@ -60,13 +57,12 @@ namespace Deltares
             /// <param name="function">The function</param>
             /// <returns>The value which would lead to the result value when invoked for the function</returns>
             double CalculateValue(double xLow, double xHigh, double target, RootFinderMethod function) override;
+            double CalculateValue(XValue low, XValue high, double target, RootFinderMethod function) const;
 
         private:
             static XValue interpolate(const XValue& low, const XValue& high, double target, const RootFinderMethod& function);
             static XValue bisection(const XValue& low, const XValue& high, const RootFinderMethod& function);
             const double tolerance = 0.001;
-            double knownLowValue = nan("");
-            double knownHighValue = nan("");
             int maxIterations;
         };
     }
