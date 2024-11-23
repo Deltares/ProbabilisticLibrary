@@ -28,11 +28,10 @@
 
 namespace Deltares::Probabilistic::Test
 {
-
     void rootfinder_tests::all_rootfinder_tests()
     {
-        //bisection_test();
-        //bisection_test2();
+        bisection_test();
+        bisection_test2();
         bisection_const_test();
         bisection_nod_test();
         linear_root_finder_test();
