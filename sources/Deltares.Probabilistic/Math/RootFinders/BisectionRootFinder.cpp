@@ -67,29 +67,92 @@ namespace Deltares::Numeric
 
     double BisectionRootFinder::CalculateValue(XValue minStart, XValue maxStart, double resultValue, RootFinderMethod function)
     {
+        UpdateMinMax(minStart, maxStart, resultValue, function);
+        if (minStart.Value > resultValue || maxStart.Value < resultValue)
+        {
+            return nan("");
+        }
+
+        DirectionType direction = getDirection(minStart, maxStart);
+
+        // Initialize bisection method
+        double result = minStart.Value;
+        double value = minStart.X;
+
+        double step = (maxStart.X - minStart.X) / 2.0;
+        double difference = std::fabs(resultValue - result);
+        double xDifference = getRelativeDifference(minStart.X, maxStart.X);
+
+        // Bisection method
+        int cntFunctionCalls = 0;
+        while (difference > tolerance && xDifference > xTolerance && cntFunctionCalls < maxIterationsPerLoop)
+        {
+            double prevValue = value;
+
+            if (direction == Positive && resultValue > result)
+            {
+                value += step;
+            }
+            else if (direction == Positive && resultValue < result)
+            {
+                value -= step;
+            }
+            else if (direction == Negative && resultValue > result)
+            {
+                value -= step;
+            }
+            else if (direction == Negative && resultValue < result)
+            {
+                value += step;
+            }
+
+            step /= 2.0;
+
+            result = function(value);
+            cntFunctionCalls++;
+
+            difference = std::fabs(resultValue - result);
+
+            if (step < 1E-30)
+            {
+                difference = 0.0; // enforce quit
+            }
+
+            xDifference = getRelativeDifference(value, prevValue);
+        }
+
+        if (xDifference > xTolerance && std::fabs(resultValue - result) > tolerance)
+        {
+            return nan("");
+        }
+
+        return value;
+    }
+
+    // Extrapolate until target is between minStart and maxStart
+    // first check whether result is high enough
+    // second check for result is low enough
+    void BisectionRootFinder::UpdateMinMax(XValue& minStart, XValue& maxStart, double resultValue, RootFinderMethod& function) const
+    {
         if (minStart.X > maxStart.X)
         {
             std::swap(minStart, maxStart);
         }
 
-        int cntFunctionCalls = 0;
-
         DirectionType direction = getDirection(minStart, maxStart);
-        const auto cmp_directions = std::vector<DirectionType> { DirectionType::Positive , DirectionType::Negative };
+        const auto cmp_directions = std::vector{ Positive , Negative };
 
         for (const auto& cmp_direction : cmp_directions)
         {
-            // Extrapolate until target is between minStart and maxStart
-            // first check whether result is high enough
-            // second check for result is low enough
-            while (cntFunctionCalls < maxIterations)
+            int cntFunctionCalls = 0;
+            while (cntFunctionCalls < maxIterationsPerLoop)
             {
                 const bool cmp_results = (
-                    cmp_direction == DirectionType::Positive
-                        ? minStart.Value < resultValue && maxStart.Value < resultValue
-                        : minStart.Value > resultValue && maxStart.Value > resultValue);
+                    cmp_direction == Positive
+                    ? minStart.Value < resultValue && maxStart.Value < resultValue
+                    : minStart.Value > resultValue && maxStart.Value > resultValue);
                 if (!cmp_results) break;
-                if (direction == DirectionType::Zero)
+                if (direction == Zero)
                 {
                     double diff = maxStart.X - minStart.X;
 
@@ -116,58 +179,7 @@ namespace Deltares::Numeric
                 direction = getDirection(minStart, maxStart);
             }
         }
-
-        // Initialize bisection method
-        double result = minStart.Value;
-        double value = minStart.X;
-
-        double step = (maxStart.X - minStart.X) / 2;
-        double difference = std::fabs(resultValue - result);
-        double xDifference = getRelativeDifference(minStart.X, maxStart.X);
-
-        // Bisection method
-        while (difference > tolerance && xDifference > xTolerance && cntFunctionCalls < maxIterations)
-        {
-            double prevValue = value;
-
-            if (direction == Positive && resultValue > result)
-            {
-                value += step;
-            }
-            else if (direction == Positive && resultValue < result)
-            {
-                value -= step;
-            }
-            else if (direction == Negative && resultValue > result)
-            {
-                value -= step;
-            }
-            else if (direction == Negative && resultValue < result)
-            {
-                value += step;
-            }
-
-            step = step / 2;
-
-            result = function(value);
-            cntFunctionCalls++;
-
-            difference = std::fabs(resultValue - result);
-
-            if (step < 1E-30)
-            {
-                difference = 0; // enforce quit
-            }
-
-            xDifference = getRelativeDifference(value, prevValue);
-        }
-
-        if (xDifference > xTolerance && std::fabs(resultValue - result) > tolerance)
-        {
-            return nan("");
-        }
-
-        return value;
     }
+
 }
 
