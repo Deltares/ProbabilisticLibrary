@@ -30,12 +30,15 @@ namespace Deltares::Probabilistic::Test
     private:
         double testLinearFunc(double x) const;
         double testConstFunc(double x);
+        double testNodFunc(double x);
         void bisection_test();
         void bisection_test2();
         void bisection_const_test();
+        void bisection_nod_test();
         void linear_root_finder_test();
         void linear_root_finder_test2();
         void linear_root_finder_const_test();
+        void linear_root_finder_nod_test();
         double a = 0.0;
         double b = 0.0;
         int cnt = 0;
