@@ -23,27 +23,29 @@
 
 namespace Deltares::Numeric
 {
+    using enum DirectionType;
+
     DirectionType BisectionRootFinder::getDirection(XValue xvalue1, XValue xvalue2)
     {
         if (xvalue1.Value > xvalue2.Value && xvalue1.X > xvalue2.X)
         {
-            return DirectionType::Positive;
+            return Positive;
         }
         else if (xvalue1.Value < xvalue2.Value && xvalue1.X > xvalue2.X)
         {
-            return DirectionType::Negative;
+            return Negative;
         }
         else if (xvalue1.Value > xvalue2.Value && xvalue1.X < xvalue2.X)
         {
-            return DirectionType::Negative;
+            return Negative;
         }
         else if (xvalue1.Value < xvalue2.Value && xvalue1.X < xvalue2.X)
         {
-            return DirectionType::Positive;
+            return Positive;
         }
         else
         {
-            return DirectionType::Zero;
+            return Zero;
         }
     }
 
@@ -128,19 +130,19 @@ namespace Deltares::Numeric
         {
             double prevValue = value;
 
-            if (direction == DirectionType::Positive && resultValue > result)
+            if (direction == Positive && resultValue > result)
             {
                 value += step;
             }
-            else if (direction == DirectionType::Positive && resultValue < result)
+            else if (direction == Positive && resultValue < result)
             {
                 value -= step;
             }
-            else if (direction == DirectionType::Negative && resultValue > result)
+            else if (direction == Negative && resultValue > result)
             {
                 value -= step;
             }
-            else if (direction == DirectionType::Negative && resultValue < result)
+            else if (direction == Negative && resultValue < result)
             {
                 value += step;
             }
