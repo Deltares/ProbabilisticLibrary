@@ -62,7 +62,7 @@ namespace Deltares
             for (const auto& RequestedQuantile : this->Settings->RequestedQuantiles)
             {
                 auto fragilityValue = std::make_shared<Statistics::FragilityValue>();
-                fragilityValue->X = getZForRequiredQ(modelRunner, RequestedQuantile->Reliability, nStochasts, Z0);
+                fragilityValue->X = getZForRequiredQ(*modelRunner, RequestedQuantile->Reliability, nStochasts, Z0);
                 fragilityValue->Reliability = RequestedQuantile->Reliability;
                 stochast->getProperties()->FragilityValues.push_back(fragilityValue);
             }
@@ -74,7 +74,7 @@ namespace Deltares
             return stochast;
         }
 
-        double DirectionalSamplingS::getZForRequiredQ(std::shared_ptr<ModelRunner> modelRunner, double betaRequested, int nStochasts, double Z0)
+        double DirectionalSamplingS::getZForRequiredQ(ModelRunner& modelRunner, double betaRequested, int nStochasts, double Z0) const
         {
             int performedIterations = 0;
 
@@ -85,7 +85,7 @@ namespace Deltares
             double tolerance = this->Settings->VariationCoefficientFailure;
 
             auto sampleProvider = std::make_shared<SampleProvider>(this->Settings->StochastSet, false);
-            modelRunner->setSampleProvider(sampleProvider);
+            modelRunner.setSampleProvider(sampleProvider);
 
             auto randomSampleGenerator = RandomSampleGenerator();
             randomSampleGenerator.Settings = this->Settings->randomSettings;
@@ -113,9 +113,9 @@ namespace Deltares
                 samples[i]->IterationIndex = static_cast<int>(i);
             }
 
-            auto zValues = modelRunner->getZValues(samples);
+            auto zValues = modelRunner.getZValues(samples);
 
-            modelRunner->reportProgress(++performedIterations, maxIterations + 1);
+            modelRunner.reportProgress(++performedIterations, maxIterations + 1);
 
             int nZValuesGreaterZero = 0;
             for (const double z : zValues)
@@ -156,7 +156,7 @@ namespace Deltares
                 double zMax = betaRequested > beta0 ? NumericSupport::getMaximum(zValues) : NumericSupport::getMinimum(zValues);
 
                 zPred = bisection.CalculateValue(zMin, zMax, qRequired,
-                    [&, directions, nStochasts, probability0](double predZi)
+                    [directions, nStochasts, probability0](double predZi)
                     { return predict(predZi, directions, probability0, nStochasts); });
 
                 //for each new scale in direction i values, the new z values are calculated (zValues[i,j])
@@ -174,7 +174,7 @@ namespace Deltares
                     }
                 }
 
-                modelRunner->getZValues(calculateSamples);
+                modelRunner.getZValues(calculateSamples);
 
                 std::vector<double> newZValues = Sample::select(newSamples, [](std::shared_ptr<Sample> p) {return p->Z; });
 
@@ -193,7 +193,7 @@ namespace Deltares
                 j++;
                 zValues = newZValues;
 
-                modelRunner->reportProgress(++performedIterations, maxIterations + 1);
+                modelRunner.reportProgress(++performedIterations, maxIterations + 1);
             }
 
             return zPred;
@@ -210,7 +210,7 @@ namespace Deltares
 
             // Check if all dValues are zero
             bool allZero = true;
-            for (double p : dValues)
+            for (const double p : dValues)
             {
                 if (p != 0.0)
                 {
@@ -243,7 +243,7 @@ namespace Deltares
                 }
             }
 
-            return qTotal / dValues.size(); // Here, the number of directions is used in the calculations (valid+invalid directions)
+            return qTotal / static_cast<double>(dValues.size()); // Here, the number of directions is used in the calculations (valid+invalid directions)
         }
 
         double DirectionalSamplingS::getBetaDistance(double betaRequired, int nStochasts)
@@ -282,7 +282,7 @@ namespace Deltares
             {
                 error += std::fabs(zValues[i] - newZValues[i]);
             }
-            return error / zValues.size();
+            return error / static_cast<double>(zValues.size());
         }
 
         void DirectionalSamplingS::Direction::AddResult(double distance, double z)
