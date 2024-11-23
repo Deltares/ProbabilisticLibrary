@@ -247,20 +247,21 @@ namespace Deltares
         {
             if (betaRequired == 0.0)
             {
-                return 0;
+                return 0.0;
             }
             else
             {
-                Numeric::RootFinderMethod method = [nStochasts](double beta)
+                const double par_a = 0.5 * static_cast<double>(nStochasts);
+                Numeric::RootFinderMethod method = [par_a](double beta)
                 {
-                    return Numeric::SpecialFunctions::getGammaUpperRegularized(0.5 * nStochasts, 0.5 * beta * beta); //here no division by number of direction is needed as the same d applied for every direction.
+                    return Numeric::SpecialFunctions::getGammaUpperRegularized(par_a, 0.5 * beta * beta); //here no division by number of direction is needed as the same d applied for every direction.
                 };
 
-                double qRequired = Statistics::StandardNormal::getQFromU(betaRequired);
+                const double qRequired = Statistics::StandardNormal::getQFromU(betaRequired);
 
-                std::shared_ptr<Numeric::BisectionRootFinder> bisection = std::make_shared<Numeric::BisectionRootFinder>();
+                auto bisection = Numeric::BisectionRootFinder();
 
-                double distance = bisection->CalculateValue(0, 2 * betaRequired, qRequired, method);
+                double distance = bisection.CalculateValue(0.0, 2.0 * betaRequired, qRequired, method);
                 return distance;
             }
         }
