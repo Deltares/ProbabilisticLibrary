@@ -132,7 +132,7 @@ namespace Deltares::Numeric
     // Extrapolate until target is between minStart and maxStart
     // first check whether result is high enough
     // second check for result is low enough
-    void BisectionRootFinder::UpdateMinMax(XValue& minStart, XValue& maxStart, double resultValue, RootFinderMethod& function) const
+    void BisectionRootFinder::UpdateMinMax(XValue& minStart, XValue& maxStart, double resultValue, const RootFinderMethod& function) const
     {
         if (minStart.X > maxStart.X)
         {
@@ -151,7 +151,10 @@ namespace Deltares::Numeric
                     cmp_direction == Positive
                     ? minStart.Value < resultValue && maxStart.Value < resultValue
                     : minStart.Value > resultValue && maxStart.Value > resultValue);
-                if (!cmp_results) break;
+                if (!cmp_results)
+                {
+                    break;
+                }
                 if (direction == Zero)
                 {
                     double diff = maxStart.X - minStart.X;

@@ -37,7 +37,7 @@ namespace Deltares::Numeric
     private:
         static DirectionType getDirection(XValue xvalue1, XValue xvalue2);
         static double getRelativeDifference(double minValue, double maxValue);
-        void UpdateMinMax(XValue& minStart, XValue& maxStart, double resultValue, RootFinderMethod& function) const;
+        void UpdateMinMax(XValue& minStart, XValue& maxStart, double resultValue, const RootFinderMethod& function) const;
         double tolerance = 0.001;
         double xTolerance = 1E-6;
         int maxIterationsPerLoop = 250; // a maximum per while loop
