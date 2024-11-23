@@ -68,12 +68,8 @@ namespace Deltares::Numeric
     double BisectionRootFinder::CalculateValue(XValue minStart, XValue maxStart, double resultValue, RootFinderMethod function)
     {
         UpdateMinMax(minStart, maxStart, resultValue, function);
-        if (minStart.Value > resultValue || maxStart.Value < resultValue)
-        {
-            return nan("");
-        }
 
-        DirectionType direction = getDirection(minStart, maxStart);
+        auto direction = getDirection(minStart, maxStart);
 
         // Initialize bisection method
         double result = minStart.Value;
