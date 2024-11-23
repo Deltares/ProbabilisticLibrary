@@ -28,7 +28,7 @@ namespace Deltares
     namespace Sensitivity
     {
         /**
-         * \brief Calculates the sensitivity using the Crude Monte Carlo algorithm
+         * \brief Calculates the sensitivity using the Directional Sampling algorithm
          */
         class DirectionalSamplingS : public SensitivityMethod
         {
@@ -57,7 +57,7 @@ namespace Deltares
             public:
                 Direction(std::shared_ptr<Models::Sample> sample) { this->sample = sample; }
                 void AddResult(double distance, double z);
-                double GetDistanceAtZ(double z);
+                double GetDistanceAtZ(double z) const;
                 std::shared_ptr<Models::Sample> CreateNewSampleAt(double z, double maxBeta);
                 bool Valid = true;
             private:
@@ -68,10 +68,10 @@ namespace Deltares
             };
 
             double getZForRequiredQ(std::shared_ptr<Models::ModelRunner> modelRunner, double requestedBeta, int nStochasts, double Z0);
-            double predict(double predZi, std::vector<std::shared_ptr<Direction>> directions, double probability0, int nStochasts);
-            double calculateProbabilityOfFailure(std::vector<double>& dValues, double nstochasts);
+            static double predict(double predZi, const std::vector<std::shared_ptr<Direction>>& directions, double probability0, int nStochasts);
+            static double calculateProbabilityOfFailure(const std::vector<double>& dValues, double nstochasts);
             static double getBetaDistance(double betaRequired, int nStochasts);
-            double calculateError(std::vector<double>& zValues, std::vector<double>& newZValues);
+            static double calculateError(std::vector<double>& zValues, std::vector<double>& newZValues);
         };
     }
 }
