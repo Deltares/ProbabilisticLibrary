@@ -19,41 +19,6 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#pragma once
-#include <functional>
-#include <cmath>
-
-namespace Deltares
-{
-    namespace Numeric
-    {
-        typedef std::function<double(double)> RootFinderMethod;
-
-        class XValue
-        {
-        public:
-            XValue(double x, double value) : X(x), Value(value) {}
-
-            double X = 0.0;
-            double Value = 0.0;
-        };
-
-        class RootFinder
-        {
-
-        public:
-            virtual double CalculateValue(double xLow, double xHigh, double target, RootFinderMethod function)
-            {
-                return nan("");
-            }
-            virtual double CalculateValue(XValue low, XValue high, double target, RootFinderMethod function)
-            {
-                return nan("");
-            }
-        };
-    }
-}
-
-
-
+#include "pch.h"
+#include "testRootfinder_body.cpp"
 

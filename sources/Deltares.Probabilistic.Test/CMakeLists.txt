@@ -54,6 +54,8 @@ add_executable(Deltares.Probabilistic.Test
     Math/testNumericSupport_body.cpp
     Math/testRandom.h
     Math/testRandom_body.cpp
+    Math/testRootfinder.h
+    Math/testRootfinder_body.cpp
     Math/testVector1D.h
     Math/testVector1D_body.cpp
     Combin/hohenbichler_tests.h
