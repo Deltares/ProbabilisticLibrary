@@ -34,7 +34,7 @@ namespace Deltares::Optimization
         auto lb = std::vector<double>(n);
         auto ub = std::vector<double>(n);
         auto dx = std::vector<double>(n);
-        for (int i = 0 ; i < n; i++)
+        for (unsigned i = 0 ; i < n; i++)
         {
             x0[i] = searchArea.Dimensions[i].StartValue;
             lb[i] = searchArea.Dimensions[i].LowerBound;
@@ -44,20 +44,20 @@ namespace Deltares::Optimization
         long long fData;
         void* funcData = &fData;
 
-        auto myfunc = [model](unsigned n, const double* x, double* gradient, void* func_data)
+        auto myfunc = [model](unsigned n, const double* x, [[maybe_unused]] double* gradient, [[maybe_unused]] void* func_data)
         {
             auto s = std::make_shared<Models::Sample>(n);
-            for (int i = 0; i < n; i++)
+            for (unsigned i = 0; i < n; i++)
             {
                 s->Values[i] = x[i];
             }
             return model->GetZValue(s);
         };
 
-        auto myfuncC = [model](unsigned n, const double* x, double* gradient, void* func_data)
+        auto myfuncC = [model](unsigned n, const double* x, [[maybe_unused]] double* gradient, [[maybe_unused]] void* func_data)
             {
                 auto s = std::make_shared<Models::Sample>(n);
-                for (int i = 0; i < n; i++)
+                for (unsigned i = 0; i < n; i++)
                 {
                     s->Values[i] = x[i];
                 }
@@ -100,7 +100,7 @@ namespace Deltares::Optimization
             break;
         }
 
-        for (int i = 0; i < n; i++)
+        for (unsigned i = 0; i < n; i++)
         {
             s.Input.push_back(x0[i]);
         }
