@@ -133,7 +133,7 @@ namespace Deltares {
 
             if (NumericSupport::areEqual(rho, 1.0, maxDiffRho))
             {
-                if (system == combOr)
+                if (system == combineAndOr::combOr)
                 {
                     return std::min(dp1, dp2);
                 }
@@ -144,7 +144,7 @@ namespace Deltares {
             }
             else if (NumericSupport::areEqual(rho, -1.0, maxDiffRho))
             {
-                if (system == combOr)
+                if (system == combineAndOr::combOr)
                 {
                     double pf = std::min(1.0, StandardNormal::getPFromU(dp1) + StandardNormal::getPFromU(dp2));
                     return StandardNormal::getUFromQ(pf);
@@ -193,7 +193,7 @@ namespace Deltares {
 
             double PfAND = pCond * StandardNormal::getQFromU(dp2);
 
-            if (system == combAnd)
+            if (system == combineAndOr::combAnd)
             {
                 double betaAND = StandardNormal::getUFromP(1.0 - PfAND);
                 return betaAND;

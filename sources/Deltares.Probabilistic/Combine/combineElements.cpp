@@ -53,12 +53,12 @@ namespace Deltares {
             //
             alphaBeta element3; // returned value
             element3.setAlpha(vector1D(nStochasts));
-            vector1D alphaX1 = vector1D(nStochasts);
-            vector1D alphaX2 = vector1D(nStochasts);
+            auto alphaX1 = vector1D(nStochasts);
+            auto alphaX2 = vector1D(nStochasts);
             //
             //   Determine the correlation of the system
             //
-            double rho = element1.sumOfInners(element2, rhoP);
+            const double rho = element1.sumOfInners(element2, rhoP);
             //
             //   Part 1:
             //   Determining the reliability index
@@ -79,7 +79,7 @@ namespace Deltares {
             //
             //   Computation of combined failure probability (AND/OR)
             //
-            double pfCombined = combinedFailure(combAndOr, pf1, pf2, pb.first, pf2pf1.first);
+            const double pfCombined = combinedFailure(combAndOr, pf1, pf2, pb.first, pf2pf1.first);
 
             //
             //   Compute reliability index
@@ -135,11 +135,11 @@ namespace Deltares {
                         //
                         pb = setLargestBeta(beta1Delta, beta2Delta, pf1, pf2);
                         //
-                        //               Computation of P( Z_2 < 0 | Z_1 < -alpha2(k) * epsilon * sqrt( 1 - rhoP(k))^2) )
+                        // Computation of P( Z_2 < 0 | Z_1 < -alpha2(k) * epsilon * sqrt( 1 - rhoP(k))^2) )
                         pf2pf1 = hh.PerformHohenbichler(pb.second, pb.first, rho);
                         if (pf2pf1.second != 0) failureHohenbichler++;
                         //
-                        //               Computation of combined failure probability (AND/OR)
+                        // Computation of combined failure probability (AND/OR)
                         //
                         pfxk = combinedFailure(combAndOr, pf1, pf2, pb.first, pf2pf1.first);
 
@@ -157,9 +157,9 @@ namespace Deltares {
             //
             for (size_t k = 0; k < nStochasts; k++)
             {
-                double alphaFactor;
                 if (element1.getAlphaI(k) != 0.0 || element2.getAlphaI(k) != 0.0)
                 {
+                    double alphaFactor;
                     if (fabs(element1.getAlphaI(k)) >= fabs(element2.getAlphaI(k)))
                     {
                         alphaFactor = 1.0 - rhoP(k) * fabs((element2.getAlphaI(k) / element1.getAlphaI(k)));
@@ -216,11 +216,11 @@ namespace Deltares {
         {
             if (beta1 > beta2)
             {
-                return std::pair<double, double>(pf1, beta2);
+                return { pf1, beta2 };
             }
             else
             {
-                return std::pair<double, double>(pf2, beta1);
+                return { pf2, beta1 };
             }
         }
 
@@ -228,14 +228,10 @@ namespace Deltares {
         double combineElements::combinedFailure(const combineAndOr combAndOr, const double pf1,
             const double pf2, const double pfu, const double pf2pf1)
         {
-            switch (combAndOr)
-            {
-            case combineAndOr::combOr:
+            if (combAndOr == combineAndOr::combOr)
                 return pf1 + pf2 - pfu * pf2pf1;
-
-            default:
+            else
                 return pfu * pf2pf1;
-            }
         }
 
         // \brief This method combines multiple elements with partial correlation
