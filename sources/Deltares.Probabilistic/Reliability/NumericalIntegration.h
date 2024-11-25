@@ -33,7 +33,7 @@ namespace Deltares
             NumericalIntegrationSettings Settings;
             std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> runner) override;
         private:
-            double getStochastProbability(int stochastIndex, std::shared_ptr<Sample> parentSample, double density, double& totalDensity, int nSamples);
+            double getStochastProbability(int stochastIndex, Sample& parentSample, double density, double& totalDensity, int nSamples);
             std::shared_ptr<DesignPointBuilder> designPointBuilder;
             std::shared_ptr<Models::ModelRunner> modelRunner;
             double z0Fac;

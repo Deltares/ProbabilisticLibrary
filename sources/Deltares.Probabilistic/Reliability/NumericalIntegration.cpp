@@ -83,7 +83,7 @@ namespace Deltares
 
             auto convergenceReport = std::make_shared<ConvergenceReport>();
 
-            double probFailure = getStochastProbability(stochastIndex, u, density, totalDensity, 1);
+            double probFailure = getStochastProbability(stochastIndex, *u, density, totalDensity, 1);
 
             probFailure /= totalDensity;
 
@@ -96,7 +96,7 @@ namespace Deltares
             return modelRunner->getDesignPoint(designPoint, beta, convergenceReport);
         }
 
-        double NumericalIntegration::getStochastProbability(int stochastIndex, std::shared_ptr<Sample> parentSample, double density, double& totalDensity, int nSamples)
+        double NumericalIntegration::getStochastProbability(int stochastIndex, Sample& parentSample, double density, double& totalDensity, int nSamples)
         {
             const double uDelta = 0.01;
             const int nStochasts = Settings.StochastSet->getVaryingStochastCount();
@@ -131,7 +131,7 @@ namespace Deltares
 
                 for (size_t j = 0; j < uValues.size() - 1; j++)
                 {
-                    parentSample->Values[stochastIndex] = (uValues[j] + uValues[j + 1]) / 2;
+                    parentSample.Values[stochastIndex] = (uValues[j] + uValues[j + 1]) / 2;
 
                     const double contribution = pq.getDifference(uValues[j + 1]);
 
@@ -158,7 +158,7 @@ namespace Deltares
 
                 for (size_t j = 0; j < uValues.size() - 1; j++)
                 {
-                    std::shared_ptr<Sample> sample = parentSample->clone();
+                    std::shared_ptr<Sample> sample = parentSample.clone();
                     sample->Values[stochastIndex] = (uValues[j] + uValues[j + 1]) / 2;
 
                     const double contribution = pq.getDifference(uValues[j + 1]);
