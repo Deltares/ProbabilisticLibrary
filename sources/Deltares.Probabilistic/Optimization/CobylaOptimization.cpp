@@ -23,93 +23,88 @@
 #include "Cobyla.h"
 #include <functional>
 
-namespace Deltares
+namespace Deltares::Optimization
 {
-    namespace Optimization
+    OptimizationSample CobylaOptimization::GetCalibrationPoint(const SearchArea& searchArea, std::shared_ptr<optimizationModel> model) const
     {
-        OptimizationSample CobylaOptimization::GetCalibrationPoint(const SearchArea& searchArea, std::shared_ptr<optimizationModel> model) const
+        unsigned n = static_cast<unsigned>(searchArea.Dimensions.size());
+        unsigned m = model->GetNumberOfConstraints();
+
+        auto x0 = std::vector<double>(n);
+        auto lb = std::vector<double>(n);
+        auto ub = std::vector<double>(n);
+        auto dx = std::vector<double>(n);
+        for (int i = 0 ; i < n; i++)
         {
-            unsigned n = static_cast<unsigned>(searchArea.Dimensions.size());
-            unsigned m = model->GetNumberOfConstraints();
+            x0[i] = searchArea.Dimensions[i].StartValue;
+            lb[i] = searchArea.Dimensions[i].LowerBound;
+            ub[i] = searchArea.Dimensions[i].UpperBound;
+            dx[i] = 0.1;
+        }
+        long long fData;
+        void* funcData = &fData;
 
-            auto x0 = std::vector<double>(n);
-            auto lb = std::vector<double>(n);
-            auto ub = std::vector<double>(n);
-            auto dx = std::vector<double>(n);
-            for (int i = 0 ; i < n; i++)
+        auto myfunc = [model](unsigned n, const double* x, double* gradient, void* func_data)
+        {
+            auto s = std::make_shared<Models::Sample>(n);
+            for (int i = 0; i < n; i++)
             {
-                x0[i] = searchArea.Dimensions[i].StartValue;
-                lb[i] = searchArea.Dimensions[i].LowerBound;
-                ub[i] = searchArea.Dimensions[i].UpperBound;
-                dx[i] = 0.1;
+                s->Values[i] = x[i];
             }
-            long long fData;
-            void* funcData = &fData;
+            return model->GetZValue(s);
+        };
 
-            auto myfunc = [model](unsigned n, const double* x, double* gradient, void* func_data)
+        auto myfuncC = [model](unsigned n, const double* x, double* gradient, void* func_data)
             {
                 auto s = std::make_shared<Models::Sample>(n);
                 for (int i = 0; i < n; i++)
                 {
                     s->Values[i] = x[i];
                 }
-                return model->GetZValue(s);
+                return model->GetConstraintValue(s);
             };
 
-            auto myfuncC = [model](unsigned n, const double* x, double* gradient, void* func_data)
-                {
-                    auto s = std::make_shared<Models::Sample>(n);
-                    for (int i = 0; i < n; i++)
-                    {
-                        s->Values[i] = x[i];
-                    }
-                    return model->GetConstraintValue(s);
-                };
+        auto fc = std::vector<nlopt_constraint>(m);
+        if (m > 0)
+        {
+            fc[0].f = myfuncC;
+            fc[0].m = 1;
+            fc[0].tol = std::vector<double>(1);
+            fc[0].tol[0] = settings.EpsilonBeta;
+        }
+        auto h = std::vector<nlopt_constraint>(0);
+        auto minf = std::vector<double>(1);
+        nlopt_stopping stop = nlopt_stopping();
+        auto nevals = std::vector<int>(1);
+        stop.nevals_p = nevals.data();
+        stop.xtol_rel = settings.EpsilonBeta;
+        stop.maxeval = settings.MaxIterations;
+        unsigned p = 0;
 
-            auto fc = std::vector<nlopt_constraint>(m);
-            if (m > 0)
-            {
-                fc[0].f = myfuncC;
-                fc[0].m = 1;
-                fc[0].tol = std::vector<double>(1);
-                fc[0].tol[0] = settings.EpsilonBeta;
-            }
-            auto h = std::vector<nlopt_constraint>(0);
-            auto minf = std::vector<double>(1);
-            nlopt_stopping stop = nlopt_stopping();
-            auto nevals = std::vector<int>(1);
-            stop.nevals_p = nevals.data();
-            stop.xtol_rel = settings.EpsilonBeta;
-            stop.maxeval = settings.MaxIterations;
-            unsigned p = 0;
+        auto status = cobyla_minimize(n, myfunc, funcData, m, fc.data(), p, h.data(),
+            lb.data(), ub.data(), x0.data(), minf.data(), &stop, dx.data());
 
-            auto status = cobyla_minimize(n, myfunc, funcData, m, fc.data(), p, h.data(),
-                lb.data(), ub.data(), x0.data(), minf.data(), &stop, dx.data());
+        OptimizationSample s;
+        s.numberOfSamples = *stop.nevals_p;
+        s.minimumValue = minf[0];
+        switch (status)
+        {
+        case NLOPT_SUCCESS:
+        case NLOPT_STOPVAL_REACHED:
+        case NLOPT_FTOL_REACHED:
+        case NLOPT_XTOL_REACHED:
+            s.success = true;
+            break;
+        default:
+            s.success = false;
+            break;
+        }
 
-            OptimizationSample s;
-            s.numberOfSamples = *stop.nevals_p;
-            s.minimumValue = minf[0];
-            switch (status)
-            {
-            case NLOPT_SUCCESS:
-            case NLOPT_STOPVAL_REACHED:
-            case NLOPT_FTOL_REACHED:
-            case NLOPT_XTOL_REACHED:
-                s.success = true;
-                break;
-            default:
-                s.success = false;
-                break;
-            }
-
-            for (int i = 0; i < n; i++)
-            {
-                s.Input.push_back(x0[i]);
-            }
-            return s;
-        };
-
-    }
+        for (int i = 0; i < n; i++)
+        {
+            s.Input.push_back(x0[i]);
+        }
+        return s;
+    };
 }
-
 
