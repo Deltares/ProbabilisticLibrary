@@ -26,6 +26,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <math.h>
+#include <vector>
 #include "nlopt_config.h"
 
 #include "nlopt.h"
@@ -120,7 +121,7 @@ extern "C" {
         nlopt_mfunc mf;
         nlopt_precond pre;      /* preconditioner for f (NULL if none or if mf) */
         void *f_data;
-        double *tol;
+        std::vector<double> tol;
     } nlopt_constraint;
 
     extern unsigned nlopt_count_constraints(unsigned p, const nlopt_constraint * c);
