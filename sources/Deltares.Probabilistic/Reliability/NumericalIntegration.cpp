@@ -24,6 +24,7 @@
 #include "DesignPointBuilder.h"
 #include "../Statistics/StandardNormal.h"
 #include "../Statistics/ProbabilityIterator.h"
+#include "../Math/NumericSupport.h"
 
 namespace Deltares
 {
@@ -49,7 +50,7 @@ namespace Deltares
             double z = modelRunner->getZValue(u);
 
             // parameter for the position of the origin; necessary to determine the design point
-            z0Fac = getZFactor(z);
+            z0Fac = NumericSupport::GetSign(z);
 
             // Numerical integration isn't possible with a large set of stochastic parameters
             // warnings and errors are presented.
