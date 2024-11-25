@@ -33,21 +33,14 @@ using namespace Deltares::Statistics;
 namespace Deltares {
     namespace Reliability {
 
-        //> Method for combining two elements with partial correlation
+        // \brief Method for combining two elements with partial correlation
+        // \param element1  : first design point
+        // \param element2  : second design point
+        // \param rhoP      : Auto correlation of the stochastic variables between element 1 and element 2
+        // \param combAndOr : Combination type, And / Or
         cmbResult combineElements::combineTwoElementsPartialCorrelation(const alphaBeta& element1,
             const alphaBeta& element2, const vector1D& rhoP, const combineAndOr combAndOr)
         {
-            //
-            //   INPUT/OUTPUT VARIABLES
-            //
-            // element1  : Reliability index and alpha of element 1
-            // element2  : Reliability index and alpha of element 2
-            // rhoP(:)   : Autocorrelation of the stochastic variables between element 1 and element 2
-            // combAndOr : Combination type, And or Or
-
-            //
-            //   LOCAL VARIABLES
-            //
             const double epsilon = 0.01;
             int failureHohenbichler = 0;
             //
@@ -245,14 +238,13 @@ namespace Deltares {
             }
         }
 
-        //>
-        //! This method combines multiple elements with partial correlation
+        // \brief This method combines multiple elements with partial correlation
+        // \param Elements(:)       : Reliability index and alpha per element
+        // \param rho(:)            : Correlation data
+        // \param combAndOrIn       : Combination type, And / Or
         cmbResult combineElements::combineMultipleElements(const elements& Elements,
             const vector1D& rho, const combineAndOr combAndOr)
         {
-            // Elements(:)       : Reliability index and alpha per element
-            // rho(:)            : Correlation data
-            // combAndOrIn       : Combination type, And or Or
             //
             // Get the vector dimensions
             //
@@ -314,22 +306,21 @@ namespace Deltares {
             }
         }
 
-        //>
-        //! This method computes the correlation between elements and returns the index of the two elements with the highest correlation.
-        //! The input is a matrix of alpha values, one vector per element, and the autocorrelation of the random variables between elements.
-        //! The correlation between two elements, element 1 and 2, is computed as follows:
-        //! \f$ \rho _{1,2}  = \sum\limits_{j = 1}^n {\rho _{1,2,j}  \cdot \alpha _{1,j} }  \cdot \alpha _{2,j} \f$
-        //! where j sums over the n random variables, \f$\rho _{1,2,j} \f$ refers to the correlation of variable j in element 1 with variable j
-        //! element 2, \f$ \alpha _{1,j} \f$ refers to the influence coefficient of variable j in element 1, and \f$ \alpha _{2,j} \f$ refers to
-        //! the influence coefficient of variable j in element 2.
+        // \brief This method computes the correlation between elements and returns the index of the two elements with the highest correlation.
+        // The input is a matrix of alpha values, one vector per element, and the auto correlation of the random variables between elements.
+        // The correlation between two elements, element 1 and 2, is computed as follows:
+        // \f$ \rho _{1,2}  = \sum\limits_{j = 1}^n {\rho _{1,2,j}  \cdot \alpha _{1,j} }  \cdot \alpha _{2,j} \f$
+        // where j sums over the n random variables, \f$\rho _{1,2,j} \f$ refers to the correlation of variable j in element 1 with variable j
+        // element 2, \f$ \alpha _{1,j} \f$ refers to the influence coefficient of variable j in element 1, and \f$ \alpha _{2,j} \f$ refers to
+        // the influence coefficient of variable j in element 2.
+        // \param rhoP(nStochasts)  : Auto correlation the random variables between elements
+        // \param nElements         : Number of elements to be combined (for instance tidal periods)
+        // \param alpha(:,:)        : Alpha vector per element
+        // \param i1max             : Index of first element with the largest correlation
+        // \param i2max             : Index of second element with the largest correlation
         void combineElements::calculateCombinationWithLargestCorrelation(const vector1D& rhoP,
             const std::vector<alphaBeta>& ab, size_t& i1max, size_t& i2max)
         {
-            // rhoP(nStochasts)  : Autocorrelation the random variables between elements
-            // nElements         : Number of elements to be combined (for instance tidal periods)
-            // alpha(:,:)        : Alpha vector per element
-            // i1max             : Index of first element with the largest correlation
-            // i2max             : Index of second element with the largest correlation
             //
             // Two elements can't be computed if there is only one element
             //
@@ -369,18 +360,15 @@ namespace Deltares {
             }
         }
 
-        //>
-        //! This method calculates the reliability index (beta) and alpha values combining over elements
-        cmbResult combineElements::combineMultipleElementsFull(const elements& Elements,
-            const combineAndOr combAndOr)
+        // \brief This method calculates the reliability index (beta) and alpha values combining over elements
+        // \param Elements(:)       : Reliability index and alpha per element
+        // \param combAndOrIn       : Combination type, And or Or
+        cmbResult combineElements::combineMultipleElementsFull(const elements& Elements, const combineAndOr combAndOr)
         {
-            // Elements(:)       : Reliability index and alpha per element
-            // combAndOrIn       : Combination type, And or Or
-
             //
             // Get the vector dimensions
             //
-            size_t nrStochasts = Elements[0].size();
+            const size_t nrStochasts = Elements[0].size();
             //
             // Allocate vectors and matrices
             // Get the correlation coefficients of all the strength variables
@@ -391,20 +379,18 @@ namespace Deltares {
             return combineMultipleElements(Elements, rhoP, combAndOr);
         }
 
-        //>
-        //! This method calculates the reliability index (beta) and alpha values combining over elements
+        // \brief This method calculates the reliability index (beta) and alpha values combining over elements
+        // \param Elements(:)        : Reliability index and alpha per element
+        // \param percentages(:)     : Array of percentages
+        // \param combAndOrIn        : Combination type, And or Or
         cmbResult combineElements::combineMultipleElementsProb(elements& Elements,
             const std::vector<double>& percentages, const combineAndOr combAndOr)
         {
-            // Elements(:)        : Reliability index and alpha per element
-            // percentages(:)     : Array of percentages
-            // combAndOrIn        : Combination type, And or Or
-
             //
             // Get the vector dimensions
             //
-            size_t nrStochasts = Elements[0].size();
-            size_t nrElements = Elements.size();
+            const size_t nrStochasts = Elements[0].size();
+            const size_t nrElements = Elements.size();
             //
             // Allocate vectors and matrices
             //
