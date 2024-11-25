@@ -25,39 +25,38 @@
 #include "alphaBeta.h"
 #include "combiner.h"
 
-namespace Deltares {
-    namespace Reliability {
+namespace Deltares ::Reliability
+{
+    typedef std::vector<alphaBeta> elements;
 
-        typedef std::vector<alphaBeta> elements;
+    struct cmbResult
+    {
+        alphaBeta ab; // beta and alpha vector
+        int       n;  // number of non converged Hohenblicher runs
+    };
 
-        struct cmbResult
-        {
-            alphaBeta ab; // beta and alpha vector
-            int       n;  // number of non converged Hohenblicher runs
-        };
+    class combineElements
+    {
+    public:
+        cmbResult combineTwoElementsPartialCorrelation(const alphaBeta& element1,
+            const alphaBeta& element2, const vector1D& rhoP, const combineAndOr combAndOr);
 
-        class combineElements
-        {
-        public:
-            cmbResult combineTwoElementsPartialCorrelation(const alphaBeta& element1,
-                const alphaBeta& element2, const vector1D& rhoP, const combineAndOr combAndOr);
+        cmbResult combineMultipleElements(const elements& Elements,
+            const vector1D& rho, const combineAndOr combAndOrIn);
 
-            cmbResult combineMultipleElements(const elements& Elements,
-                const vector1D& rho, const combineAndOr combAndOrIn);
+        cmbResult combineMultipleElementsFull(const elements& Elements, const combineAndOr combAndOr);
 
-            cmbResult combineMultipleElementsFull(const elements& Elements, const combineAndOr combAndOr);
+        cmbResult combineMultipleElementsProb(elements& Elements,
+            const std::vector<double>& percentages, const combineAndOr combAndOr);
 
-            cmbResult combineMultipleElementsProb(elements& Elements,
-                const std::vector<double>& percentages, const combineAndOr combAndOr);
+        static void calculateCombinationWithLargestCorrelation(const vector1D& rhoP,
+            const std::vector<alphaBeta>& alpha, size_t& i1max, size_t& i2max);
 
-            static void calculateCombinationWithLargestCorrelation(const vector1D& rhoP,
-                const std::vector<alphaBeta>& alpha, size_t& i1max, size_t& i2max);
-
-        private:
-            static void checkArraySizes(const size_t nStochasts, const size_t sizeAlpha2, const size_t sizeRhoP);
-            static std::pair<double, double> setLargestBeta(const double beta1, const double beta2, const double pf1, const double pf2);
-            static double combinedFailure(const combineAndOr combAndOr, const double pf1, const double pf2,
-                const double pfu, const double pf2pf1);
-        };
-    }
+    private:
+        static void checkArraySizes(const size_t nStochasts, const size_t sizeAlpha2, const size_t sizeRhoP);
+        static std::pair<double, double> setLargestBeta(const double beta1, const double beta2, const double pf1, const double pf2);
+        static double combinedFailure(const combineAndOr combAndOr, const double pf1, const double pf2,
+            const double pfu, const double pf2pf1);
+    };
 }
+
