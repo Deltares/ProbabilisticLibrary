@@ -20,40 +20,28 @@
 // All rights reserved.
 //
 #pragma once
-#include <functional>
-#include <cmath>
 
-namespace Deltares
+namespace Deltares::Probabilistic::Test
 {
-    namespace Numeric
+    class rootfinder_tests
     {
-        typedef std::function<double(double)> RootFinderMethod;
-
-        class XValue
-        {
-        public:
-            XValue(double x, double value) : X(x), Value(value) {}
-
-            double X = 0.0;
-            double Value = 0.0;
-        };
-
-        class RootFinder
-        {
-
-        public:
-            virtual double CalculateValue(double xLow, double xHigh, double target, RootFinderMethod function)
-            {
-                return nan("");
-            }
-            virtual double CalculateValue(XValue low, XValue high, double target, RootFinderMethod function)
-            {
-                return nan("");
-            }
-        };
-    }
+    public:
+        void all_rootfinder_tests();
+    private:
+        double testLinearFunc(double x) const;
+        double testConstFunc(double x);
+        double testNodFunc(double x);
+        void bisection_test();
+        void bisection_test2();
+        void bisection_const_test();
+        void bisection_nod_test();
+        void linear_root_finder_test();
+        void linear_root_finder_test2();
+        void linear_root_finder_const_test();
+        void linear_root_finder_nod_test();
+        double a = 0.0;
+        double b = 0.0;
+        int cnt = 0;
+    };
 }
-
-
-
 

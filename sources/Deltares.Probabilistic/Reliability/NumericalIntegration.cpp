@@ -24,6 +24,7 @@
 #include "DesignPointBuilder.h"
 #include "../Statistics/StandardNormal.h"
 #include "../Statistics/ProbabilityIterator.h"
+#include "../Math/NumericSupport.h"
 
 namespace Deltares
 {
@@ -39,17 +40,17 @@ namespace Deltares
             int nStochasts = modelRunner->getVaryingStochastCount();
 
             // local variables
-            std::shared_ptr<Sample> u = std::make_shared<Sample>(nStochasts); //local vector with values in u-space
+            const auto u = std::make_shared<Sample>(nStochasts); //local vector with values in u-space
 
             // Examine the position of the origin: if the origin has a negative z-value the design point must be searched
             // with positive values of the z-function. The explanation for searching with positive z-values as the origin
             // has a negative z-value: if searching with negative z-values, the origin is found as the design point, because
             // that is the point who's closest to the origin (distance is zero). For the computation of the probability of
             // failure all elements of negative z-value has to be used.
-            double z = modelRunner->getZValue(u);
+            const double z = modelRunner->getZValue(u);
 
             // parameter for the position of the origin; necessary to determine the design point
-            z0Fac = getZFactor(z);
+            z0Fac = NumericSupport::GetSign(z);
 
             // Numerical integration isn't possible with a large set of stochastic parameters
             // warnings and errors are presented.
@@ -80,22 +81,22 @@ namespace Deltares
             // the result of this computation is the probability of failure and the
             // direction of the design point (alpha values).
 
-            std::shared_ptr<ConvergenceReport> convergenceReport = std::make_shared<ConvergenceReport>();
+            auto convergenceReport = std::make_shared<ConvergenceReport>();
 
-            double probFailure = getStochastProbability(stochastIndex, u, density, totalDensity, 1);
+            double probFailure = getStochastProbability(stochastIndex, *u, density, totalDensity, 1);
 
-            probFailure = probFailure / totalDensity;
+            probFailure /= totalDensity;
 
             // Compute beta from the probability failure. Beta is because of this no longer per definition the
             // distance from the design point to the origin.
             const double beta = Statistics::StandardNormal::getUFromQ(probFailure);
 
-            std::shared_ptr<Sample> designPoint = designPointBuilder->getSample();
+            const auto designPoint = designPointBuilder->getSample();
 
             return modelRunner->getDesignPoint(designPoint, beta, convergenceReport);
         }
 
-        double NumericalIntegration::getStochastProbability(int stochastIndex, std::shared_ptr<Sample> parentSample, double density, double& totalDensity, int nSamples)
+        double NumericalIntegration::getStochastProbability(int stochastIndex, Sample& parentSample, double density, double& totalDensity, int nSamples)
         {
             const double uDelta = 0.01;
             const int nStochasts = Settings.StochastSet->getVaryingStochastCount();
@@ -130,17 +131,17 @@ namespace Deltares
 
                 for (size_t j = 0; j < uValues.size() - 1; j++)
                 {
-                    parentSample->Values[stochastIndex] = (uValues[j] + uValues[j + 1]) / 2;
+                    parentSample.Values[stochastIndex] = (uValues[j] + uValues[j + 1]) / 2;
 
-                    double contribution = pq.getDifference(uValues[j + 1]);
+                    const double contribution = pq.getDifference(uValues[j + 1]);
 
                     probFailure += getStochastProbability(stochastIndex + 1, parentSample, density * contribution, totalDensity, nSamples);
 
                     if (stochastIndex == 0)
                     {
-                        double beta = -Statistics::StandardNormal::getUFromP(probFailure);
+                        const double beta = -Statistics::StandardNormal::getUFromP(probFailure);
 
-                        std::shared_ptr<ReliabilityReport> report = std::make_shared<ReliabilityReport>();
+                        auto report = std::make_shared<ReliabilityReport>();
                         report->Step = static_cast<int>(j);
                         report->MaxSteps = nSamples;
                         report->Reliability = beta;
@@ -157,27 +158,27 @@ namespace Deltares
 
                 for (size_t j = 0; j < uValues.size() - 1; j++)
                 {
-                    std::shared_ptr<Sample> sample = parentSample->clone();
+                    std::shared_ptr<Sample> sample = parentSample.clone();
                     sample->Values[stochastIndex] = (uValues[j] + uValues[j + 1]) / 2;
 
-                    double contribution = pq.getDifference(uValues[j + 1]);
+                    const double contribution = pq.getDifference(uValues[j + 1]);
                     sample->Weight = density * contribution * nSamples;
 
                     samples.push_back(sample);
                 }
 
                 // compute the z-value(s)
-                const std::vector<double> zValues = modelRunner->getZValues(samples); // z-value (failure if z < 0)
+                const auto zValues = modelRunner->getZValues(samples); // z-value (failure if z < 0)
 
                 double probFailure = 0;
 
                 for (size_t j = 0; j < samples.size(); j++)
                 {
-                    const std::shared_ptr<Sample> sample = samples[j];
+                    const auto sample = samples[j];
 
                     if (!std::isnan(zValues[j]))
                     {
-                        double sampleProbability = sample->Weight / nSamples;
+                        const double sampleProbability = sample->Weight / nSamples;
 
                         totalDensity += sampleProbability;
 

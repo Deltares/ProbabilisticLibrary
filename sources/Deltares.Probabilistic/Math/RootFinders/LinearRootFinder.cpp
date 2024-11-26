@@ -19,6 +19,7 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
+#include <cmath>
 #include "LinearRootFinder.h"
 #include "../NumericSupport.h"
 
@@ -26,37 +27,26 @@ namespace Deltares
 {
     namespace Numeric
     {
-        class XValue
-        {
-        public:
-            XValue(double x, double value)
-            {
-                this->X = x;
-                this->Value = value;
-            }
-
-            double X = 0.0;
-            double Value = 0.0;
-        };
-
         double LinearRootFinder::CalculateValue(double xLow, double xHigh, double target, RootFinderMethod function)
         {
-            constexpr double windowLimit = 0.05;
-            constexpr double solutionLimit = 0.2;
-
-            if (xLow > xHigh)
-            {
-                std::swap(xLow, xHigh);
-                std::swap(knownLowValue, knownHighValue);
-            }
-
-            double lowValue = std::isnan(knownLowValue) ? function(xLow) : knownLowValue;
-
-            double highValue = std::isnan(knownHighValue) ? function(xHigh) : knownHighValue;
+            double lowValue = function(xLow);
+            double highValue = function(xHigh);
 
             // Initialize linear search method
             auto low = XValue(xLow, lowValue);
             auto high = XValue(xHigh, highValue);
+            return CalculateValue(low, high, target, function);
+        }
+
+        double LinearRootFinder::CalculateValue(XValue low, XValue high, double target, RootFinderMethod function)
+        {
+            constexpr double windowLimit = 0.05;
+            constexpr double solutionLimit = 0.2;
+
+            if (low.X > high.X)
+            {
+                std::swap(low, high);
+            }
 
             bool ascending = low.Value < high.Value;
             bool descending = low.Value > high.Value;
@@ -132,7 +122,7 @@ namespace Deltares
                 iterations++;
             }
 
-            if (abs(solution.Value - target) > tolerance)
+            if (std::abs(solution.Value - target) > tolerance)
             {
                 return nan("");
             }
@@ -140,20 +130,20 @@ namespace Deltares
             return solution.X;
         }
 
-        XValue LinearRootFinder::interpolate(const XValue& low, const XValue& high, double target, RootFinderMethod function)
+        XValue LinearRootFinder::interpolate(const XValue& low, const XValue& high, double target, const RootFinderMethod& function)
         {
             double x = low.X + ((low.Value - target) / (low.Value - high.Value)) * (high.X - low.X);
             double xValue = function(x);
-
-            return XValue(x, xValue);
+            auto result = XValue(x, xValue);
+            return result;
         }
 
-        XValue LinearRootFinder::bisection(const XValue& low, const XValue& high, RootFinderMethod function)
+        XValue LinearRootFinder::bisection(const XValue& low, const XValue& high, const RootFinderMethod& function)
         {
             double x = (low.X + high.X) / 2;
             double xValue = function(x);
-
-            return XValue(x, xValue);
+            auto result = XValue(x, xValue);
+            return result;
         }
     }
 }
