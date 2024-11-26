@@ -35,17 +35,15 @@ end type tProbCalc
 
 contains
 
-subroutine wrapperProbCalc(this, probDb, fx, alfaN, beta, x, convergenceData, pc)
+subroutine wrapperProbCalc(this, probDb, fx, dp, convergenceData, pc)
     class(tProbCalc), intent(inout)                   :: this
     type(probabilisticDataStructure_data), intent(in) :: probDb           !< Probabilistic data module
     procedure(zfunc)                                  :: fx               !< Function implementing the z-function of the failure mechanism
-    real(kind=wp), intent(out)                        :: alfaN(:)         !< Alpha values
-    real(kind=wp), intent(out)                        :: beta             !< Reliability index
-    real(kind=wp), intent(inout)                      :: x(:)             !< X values of design point
+    type(designPoint),           intent(inout)        :: dp               !< design point
     type(storedConvergenceData), intent(inout)        :: convergenceData  !< struct holding all convergence data
     procedure(progressCancel),    optional            :: pc               !< progress function
 
-    call calculateLimitStateFunction(probDb, fx, alfaN, beta, x, convergenceData, this%cpData, pc)
+    call calculateLimitStateFunction(probDb, fx, dp, convergenceData, this%cpData, pc)
 
 end subroutine wrapperProbCalc
 

@@ -22,6 +22,7 @@
 module interface_combin
 use, intrinsic :: iso_c_binding, only: c_double, c_ptr, c_loc, c_null_ptr, c_intptr_t
 use precision, only : wp
+use interface_typedefs, only : designPoint
 implicit none
 integer, parameter :: combAND =  0
 integer, parameter :: combOR  =  1
@@ -48,14 +49,6 @@ type, bind(C) :: multipleElements
     type(c_ptr) :: designPoints
     integer     :: nElements
 end type multipleElements
-
-type DesignPoint
-    real(kind=wp) :: beta
-    real(kind=wp), pointer :: alpha(:)
-    real(kind=wp), pointer :: rho(:)
-    real(kind=wp), pointer :: duration(:)
-    real(kind=wp), pointer :: correlation_length(:)
-end type DesignPoint
 
 type, bind(C) :: combinerSettings
     integer :: combAndOr

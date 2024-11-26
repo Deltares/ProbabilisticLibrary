@@ -68,7 +68,10 @@ function logNormalInverseII( u, M, S, par3, ierr, errorMessage )
     integer, intent(out) :: ierr
     character(len=*), intent(inout) :: errorMessage
     type(tError) :: error
-    call calculateDistributionInverse(u, logNormalInverseII, distributionShiftedLognormal2, [M, S, par3, 0.0_wp], error)
+    real(kind=wp) :: p4(4)
+
+    p4 = [M, S, par3, 0.0_wp]
+    call calculateDistributionInverse(u, logNormalInverseII, distributionShiftedLognormal2, p4, error)
     ierr = error%iCode
 end function logNormalInverseII
 
@@ -77,6 +80,7 @@ function gumbelInverse( uin, a, b, p, q )
     real(kind = wp) :: gumbelInverse
     real(kind = wp) :: p4(4), u
     type(tError)    :: ierr
+
     p4 = [a, b, p, q]
     call betaFromQ(q, u)
     call calculateDistributionInverse(u, gumbelInverse, distributionGumbelDistribution, p4, ierr)
@@ -87,6 +91,7 @@ function gumbelInverseII( uin, M, S, p, q )
     real(kind = wp) :: gumbelInverseII
     real(kind = wp) :: p4(4), u
     type(tError)    :: ierr
+
     p4 = [M, S, p, q]
     call betaFromQ(q, u)
     call calculateDistributionInverse(u, gumbelInverseII, distributionGumbelDistribution2, p4, ierr)
@@ -97,6 +102,7 @@ function weibullInverse(a, b, c, q)
     real(kind = wp) :: weibullInverse
     real(kind = wp) :: p3(3),u
     type(tError)    :: ierr
+
     p3 = [a, b, c]
     call betaFromQ(q, u)
     call calculateDistributionInverse(u, weibullInverse, distributionWeibull, p3, ierr)

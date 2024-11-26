@@ -154,12 +154,12 @@ end subroutine registerManyCorrelationsTest
 subroutine testFormWithCorrelation
     integer, parameter                     :: nStochasts = 3
     integer, dimension(nStochasts)         :: iPoint = (/ 1, 2, 3 /)
-    real(kind=wp), dimension(nStochasts)   :: alfaN
-    real(kind=wp)                          :: beta
+    real(kind=wp), dimension(nStochasts), target :: alfaN
     real(kind=wp), pointer                 :: x(:)
     type(storedConvergenceData)            :: convergenceData  !< struct holding all convergence data
     type(probabilisticDataStructure_data)  :: probDb
     type(tProbCalc)                        :: probCalc            !< class prob. calculation
+    type(designPoint)                      :: dp
 
     call init_probdb_x(probDb, x, iPoint, nStochasts)
     probDb%stovar%maxstochasts = nStochasts
@@ -175,9 +175,11 @@ subroutine testFormWithCorrelation
     call registerCorrelation( probDb, 1, 2, 0.1_wp )
     call registerCorrelation( probDb, 2, 3, 0.1_wp )
 
-    call probCalc%run( probDb, zFuncSimpleA, alfaN, beta, x, convergenceData )
+    dp%alpha => alfaN
+    dp%x     => x
+    call probCalc%run( probDb, zFuncSimpleA, dp, convergenceData )
 
-    call assert_comparable( beta, 0.66270_wp, 1.0e-5_wp, "diff in beta")
+    call assert_comparable( dp%beta, 0.66270_wp, 1.0e-5_wp, "diff in beta")
 
 end subroutine testFormWithCorrelation
 
