@@ -191,9 +191,10 @@ namespace Deltares
             bool modified = true; //  result from UpdateClustering (to exit loop)
             int iteration = 0;
 
-            while (modified && iteration++ < options.MaxIterations)
+            while (modified && iteration < options.MaxIterations)
             {
                 modified = updateClustering(newClusters);
+                iteration++;
             }
 
             return newClusters;
