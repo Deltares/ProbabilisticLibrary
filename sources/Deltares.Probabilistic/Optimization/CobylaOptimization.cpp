@@ -27,8 +27,8 @@ namespace Deltares::Optimization
 {
     OptimizationSample CobylaOptimization::GetCalibrationPoint(const SearchArea& searchArea, std::shared_ptr<optimizationModel> model) const
     {
-        unsigned n = static_cast<unsigned>(searchArea.Dimensions.size());
-        unsigned m = model->GetNumberOfConstraints();
+        const unsigned n = static_cast<unsigned>(searchArea.Dimensions.size());
+        const unsigned m = model->GetNumberOfConstraints();
 
         auto x0 = std::vector<double>(n);
         auto lb = std::vector<double>(n);
@@ -41,23 +41,22 @@ namespace Deltares::Optimization
             ub[i] = searchArea.Dimensions[i].UpperBound;
             dx[i] = 0.1;
         }
-        long long fData;
-        void* funcData = &fData;
+        long long fData = 0;
 
-        auto myfunc = [model](unsigned n, const double* x, [[maybe_unused]] double* gradient, [[maybe_unused]] void* func_data)
+        auto myfunc = [model](unsigned dim_x, const double* x, [[maybe_unused]] double* gradient, [[maybe_unused]] void* func_data)
         {
-            auto s = std::make_shared<Models::Sample>(n);
-            for (unsigned i = 0; i < n; i++)
+            auto s = std::make_shared<Models::Sample>(dim_x);
+            for (unsigned i = 0; i < dim_x; i++)
             {
                 s->Values[i] = x[i];
             }
             return model->GetZValue(s);
         };
 
-        auto myfuncC = [model](unsigned n, const double* x, [[maybe_unused]] double* gradient, [[maybe_unused]] void* func_data)
+        auto myfuncC = [model](unsigned dim_x, const double* x, [[maybe_unused]] double* gradient, [[maybe_unused]] void* func_data)
             {
-                auto s = std::make_shared<Models::Sample>(n);
-                for (unsigned i = 0; i < n; i++)
+                auto s = std::make_shared<Models::Sample>(dim_x);
+                for (unsigned i = 0; i < dim_x; i++)
                 {
                     s->Values[i] = x[i];
                 }
@@ -73,20 +72,20 @@ namespace Deltares::Optimization
             fc[0].tol[0] = settings.EpsilonBeta;
         }
         auto h = std::vector<nlopt_constraint>(0);
-        auto minf = std::vector<double>(1);
-        nlopt_stopping stop = nlopt_stopping();
-        auto nevals = std::vector<int>(1);
-        stop.nevals_p = nevals.data();
+        double minimum_f_value = 0.0;
+        auto stop = nlopt_stopping();
+        int number_of_evaluations = 0;
+        stop.nevals_p = &number_of_evaluations;
         stop.xtol_rel = settings.EpsilonBeta;
         stop.maxeval = settings.MaxIterations;
         unsigned p = 0;
 
-        auto status = cobyla_minimize(n, myfunc, funcData, m, fc.data(), p, h.data(),
-            lb.data(), ub.data(), x0.data(), minf.data(), &stop, dx.data());
+        auto status = cobyla_minimize(n, myfunc, &fData, m, fc.data(), p, h.data(),
+            lb.data(), ub.data(), x0.data(), &minimum_f_value, &stop, dx.data());
 
         OptimizationSample s;
         s.numberOfSamples = *stop.nevals_p;
-        s.minimumValue = minf[0];
+        s.minimumValue = minimum_f_value;
         switch (status)
         {
         case NLOPT_SUCCESS:
