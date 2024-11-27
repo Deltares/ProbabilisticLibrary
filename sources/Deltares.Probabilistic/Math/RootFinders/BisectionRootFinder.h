@@ -21,21 +21,25 @@
 //
 #pragma once
 #include "RootFinder.h"
-namespace Deltares
+namespace Deltares::Numeric
 {
-    namespace Numeric
-    {
-        class BisectionRootFinder : public RootFinder
-        {
-        public:
-            BisectionRootFinder() {}
-            BisectionRootFinder(double tol) : tolerance(tol) {}
-            BisectionRootFinder(double ztol, double xtol) : tolerance(ztol), xTolerance(xtol) {}
-            double CalculateValue(double minStart, double maxStart, double resultValue, RootFinderMethod function) override;
-        private:
-            double tolerance = 0.001;
-            double xTolerance = 1E-6;
-        };
-    }
-}
+    enum class  DirectionType { Positive, Negative, Zero };
 
+    class BisectionRootFinder : public RootFinder
+    {
+    public:
+        BisectionRootFinder() = default;
+        explicit BisectionRootFinder(double tol) : tolerance(tol) {}
+        explicit BisectionRootFinder(double ztol, double xtol) : tolerance(ztol), xTolerance(xtol) {}
+        explicit BisectionRootFinder(double ztol, double xtol, int maxIter) : tolerance(ztol), xTolerance(xtol), maxIterationsPerLoop(maxIter) {}
+        double CalculateValue(double minStart, double maxStart, double resultValue, RootFinderMethod function) override;
+        double CalculateValue(XValue minStart, XValue maxStart, double resultValue, RootFinderMethod function) override;
+    private:
+        static DirectionType getDirection(XValue xvalue1, XValue xvalue2);
+        static double getRelativeDifference(double minValue, double maxValue);
+        void UpdateMinMax(XValue& minStart, XValue& maxStart, double resultValue, const RootFinderMethod& function) const;
+        double tolerance = 0.001;
+        double xTolerance = 1E-6;
+        int maxIterationsPerLoop = 250; // a maximum per while loop
+    };
+}
