@@ -79,7 +79,7 @@ namespace Deltares
                             }
 
                             double alpha = factor * stochastRealization->Alpha * alphaRealization->Alpha;
-                            int prevailingSign = std::fabs(subAlpha->Alpha) > std::fabs(alpha) ? Numeric::NumericSupport::GetSign(subAlpha->Alpha) : Numeric::NumericSupport::GetSign(alpha);
+                            double prevailingSign = std::fabs(subAlpha->Alpha) > std::fabs(alpha) ? Numeric::NumericSupport::GetSign(subAlpha->Alpha) : Numeric::NumericSupport::GetSign(alpha);
 
                             subAlpha->Alpha = prevailingSign * std::sqrt(subAlpha->Alpha * subAlpha->Alpha + alpha * alpha);
                             subAlpha->AlphaCorrelated = subAlpha->Alpha;

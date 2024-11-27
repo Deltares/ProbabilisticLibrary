@@ -85,9 +85,9 @@ namespace Deltares
                 // Multiply this probability with the probability of the fragility curve stochast value
                 double addition = step->Weight * prob;
 
-                double beta = step->U * step->U + uFrag * uFrag;
-
                 std::shared_ptr<Sample> sample = std::make_shared<Sample>(std::vector<double> { step->U, uFrag });
+
+                double beta = std::sqrt(step->U * step->U + uFrag * uFrag);
                 sample->Weight = Statistics::StandardNormal::getQFromU(beta);
 
                 designPointBuilder->addSample(sample);
@@ -180,17 +180,18 @@ namespace Deltares
                 // Multiply this probability with the probability of the fragility curve stochast value
                 double addition = pdf * prob;
 
-                double betaSample = parU * parU + uFrag * uFrag;
-
                 std::shared_ptr<Sample> fragilitySample = std::make_shared<Sample>(std::vector<double>{ parU, uFrag });
+
+                double betaSample = std::sqrt(parU * parU + uFrag * uFrag);
                 fragilitySample->Weight = Statistics::StandardNormal::getQFromU(betaSample);
+
                 designPointBuilder->addSample(fragilitySample);
 
                 probFailure += addition;
 
                 u += stepSize;
                 cdfLow = cdfHigh;
-
+                
                 count++;
             }
 
