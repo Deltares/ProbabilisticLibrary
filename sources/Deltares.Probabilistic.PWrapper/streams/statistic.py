@@ -649,7 +649,7 @@ class FragilityValue:
 	@design_point.setter
 	def design_point(self, value):
 		self._design_point = value
-		if not self._design_point is None:
+		if self._design_point is not None:
 			interface.SetIntValue(self._id, 'design_point',  self._design_point._id)
 
 class HistogramValue:

@@ -824,10 +824,10 @@ class FragilityCurveProject:
 	def run(self):
 		self._design_point = None
 		interface.Execute(self._id, 'run')
-		designPointId = interface.GetIdValue(self._id, 'design_point')
-		if designPointId > 0:
+		design_point_id = interface.GetIdValue(self._id, 'design_point')
+		if design_point_id > 0:
 			known_variables = self._get_variables()
-			self._design_point = DesignPoint(designPointId, known_variables)
+			self._design_point = DesignPoint(design_point_id, known_variables)
 
 	def _get_variables(self):
 		variables = []
@@ -836,7 +836,7 @@ class FragilityCurveProject:
 		for fragility_value in self.fragility_curve.fragility_values:
 			if isinstance(fragility_value.design_point, DesignPoint):
 				for alpha in fragility_value.design_point.alphas:
-					if not alpha.variable is None and not alpha.variable in variables:
+					if alpha.variable is not None and alpha.variable not in variables:
 						variables.append(alpha.variable)
 		return variables
 

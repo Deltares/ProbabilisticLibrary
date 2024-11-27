@@ -32,9 +32,6 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Utils::Wrappers;
-            using namespace Deltares::Models::Wrappers;
-
             public ref class FragilityCurve : public Statistics::Wrappers::Stochast
             {
             private:

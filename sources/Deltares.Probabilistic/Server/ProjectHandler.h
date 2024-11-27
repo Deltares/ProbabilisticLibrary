@@ -89,6 +89,7 @@ namespace Deltares
                 ContributingStochast, ConditionalValue, CorrelationMatrix, Settings, StochastSettings, DesignPoint, Alpha, FragilityCurve, FragilityCurveProject, Evaluation,
                 CombineProject, CombineSettings, SelfCorrelationMatrix, SensitivityProject, SensitivitySettings,
                 LengthEffectProject};
+            ObjectType GetType(std::string object_type);
             std::unordered_map<int, Deltares::Server::ProjectHandler::ObjectType> types;
 
             std::unordered_map<int, std::shared_ptr<Statistics::Stochast>> stochasts;

@@ -30,12 +30,10 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Utils::Wrappers;
-
             public ref class FragilityCurveIntegrationSettings
             {
             private:
-                SharedPointerProvider<Reliability::FragilityCurveIntegrationSettings>* shared = new SharedPointerProvider(new Reliability::FragilityCurveIntegrationSettings());
+                Utils::Wrappers::SharedPointerProvider<Reliability::FragilityCurveIntegrationSettings>* shared = new Utils::Wrappers::SharedPointerProvider(new Reliability::FragilityCurveIntegrationSettings());
 
             public:
                 FragilityCurveIntegrationSettings() {}

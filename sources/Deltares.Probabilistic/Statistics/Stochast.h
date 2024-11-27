@@ -259,6 +259,12 @@ namespace Deltares
             void setVariation(double variation);
 
             /**
+             * \brief Indicates whether this stochast is a fragility curve
+             * \return Indication
+             */
+            virtual bool isFragilityCurve() { return false; }
+
+            /**
              * \brief Indicates which parameter should be kept constant when the mean value is changed (by setMean())
              * \return Constant parameter type
              */

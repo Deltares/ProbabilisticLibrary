@@ -41,69 +41,83 @@ namespace Deltares
             // replace fragility curve by stochasts in fragility points
             for (auto stochastRealization : stochastRealizations)
             {
-                std::shared_ptr<FragilityCurve> fragilityCurve = std::dynamic_pointer_cast<FragilityCurve>(stochastRealization->Stochast);
-                if (fragilityCurve != nullptr)
+                if (stochastRealization->Stochast->isFragilityCurve())
                 {
-                    std::shared_ptr<StochastPoint> fragilityCurveAlpha = fragilityCurve->getDesignPoint(stochastRealization->X);
+                    expandStochastRealization(stochastRealization);
+                }
+            }
+        }
 
-                    if (fragilityCurveAlpha != nullptr && !fragilityCurveAlpha->Alphas.empty() && fragilityCurveAlpha->Alphas[0]->Stochast != fragilityCurve)
+        void DesignPoint::expandStochastRealization(std::shared_ptr<StochastPointAlpha> stochastRealization)
+        {
+            std::shared_ptr<FragilityCurve> fragilityCurve = std::static_pointer_cast<FragilityCurve>(stochastRealization->Stochast);
+
+            std::shared_ptr<StochastPoint> fragilityCurveAlpha = fragilityCurve->getDesignPoint(stochastRealization->X);
+
+            if (fragilityCurveAlpha != nullptr && !fragilityCurveAlpha->Alphas.empty() && fragilityCurveAlpha->Alphas[0]->Stochast != fragilityCurve)
+            {
+                std::erase(Alphas, stochastRealization);
+
+                double factor = fragilityCurve->getAlphaFactor();
+                if (stochastRealization->Stochast->isFragilityCurve())
+                {
+                    factor = -1;
+                }
+
+                for (std::shared_ptr<StochastPointAlpha> alphaRealization : fragilityCurveAlpha->Alphas)
+                {
+                    // merge alpha values for same stochast from different fragility curves,
+                    // therefore find an already existing alpha value for the stochast
+
+                    std::shared_ptr<StochastPointAlpha> subAlpha = getStochastPoint(alphaRealization);
+
+                    double alpha = factor * stochastRealization->Alpha * alphaRealization->Alpha;
+                    double prevailingSign = Numeric::NumericSupport::GetPrevailingSign(std::vector{ subAlpha->Alpha, alpha });
+
+                    subAlpha->Alpha = prevailingSign * std::sqrt(subAlpha->Alpha * subAlpha->Alpha + alpha * alpha);
+                    subAlpha->AlphaCorrelated = subAlpha->Alpha;
+                    subAlpha->U = -this->Beta * subAlpha->Alpha;
+                    subAlpha->X = subAlpha->Stochast->getXFromU(subAlpha->U);
+                }
+
+                // update variable stochasts
+                updateVariableStochasts(fragilityCurveAlpha);
+            }
+        }
+
+        void DesignPoint::updateVariableStochasts(std::shared_ptr<StochastPoint> fragilityCurveAlpha)
+        {
+            for (std::shared_ptr<StochastPointAlpha> alpha : fragilityCurveAlpha->Alphas)
+            {
+                if (alpha->Stochast->IsVariableStochast)
+                {
+                    for (std::shared_ptr<StochastPointAlpha> alpha2 : fragilityCurveAlpha->Alphas)
                     {
-                        std::erase(Alphas, stochastRealization);
-
-                        double factor = (fragilityCurve->isGloballyDescending() ^ fragilityCurve->inverted) ? -1 : 1;
-                        if (std::dynamic_pointer_cast<FragilityCurve>(stochastRealization->Stochast) != nullptr)
+                        if (alpha2->Stochast == alpha->Stochast->VariableSource)
                         {
-                            factor = -1;
-                        }
-
-                        for (std::shared_ptr<StochastPointAlpha> alphaRealization : fragilityCurveAlpha->Alphas)
-                        {
-                            // merge alpha values for same stochast from different fragility curves,
-                            // therefore find an already existing alpha value for the stochast
-
-                            std::shared_ptr<StochastPointAlpha> subAlpha = nullptr;
-                            for (std::shared_ptr<StochastPointAlpha> existingAlpha : this->Alphas)
-                            {
-                                if (existingAlpha->Stochast == alphaRealization->Stochast)
-                                {
-                                    subAlpha = existingAlpha;
-                                    break;
-                                }
-                            }
-
-                            if (subAlpha == nullptr)
-                            {
-                                subAlpha = std::make_shared<StochastPointAlpha>();
-                                subAlpha->Stochast = alphaRealization->Stochast;
-                                this->Alphas.push_back(subAlpha);
-                            }
-
-                            double alpha = factor * stochastRealization->Alpha * alphaRealization->Alpha;
-                            double prevailingSign = std::fabs(subAlpha->Alpha) > std::fabs(alpha) ? Numeric::NumericSupport::GetSign(subAlpha->Alpha) : Numeric::NumericSupport::GetSign(alpha);
-
-                            subAlpha->Alpha = prevailingSign * std::sqrt(subAlpha->Alpha * subAlpha->Alpha + alpha * alpha);
-                            subAlpha->AlphaCorrelated = subAlpha->Alpha;
-                            subAlpha->U = -this->Beta * subAlpha->Alpha;
-                            subAlpha->X = subAlpha->Stochast->getXFromU(subAlpha->U);
-                        }
-
-                        // update variable stochasts
-                        for (std::shared_ptr<StochastPointAlpha> alpha : fragilityCurveAlpha->Alphas)
-                        {
-                            if (alpha->Stochast->IsVariableStochast)
-                            {
-                                for (std::shared_ptr<StochastPointAlpha> alpha2 : fragilityCurveAlpha->Alphas)
-                                {
-                                    if (alpha2->Stochast == alpha->Stochast->VariableSource)
-                                    {
-                                        alpha->X = alpha->Stochast->getXFromUAndSource(alpha2->X, alpha->U);
-                                    }
-                                }
-                            }
+                            alpha->X = alpha->Stochast->getXFromUAndSource(alpha2->X, alpha->U);
                         }
                     }
                 }
             }
+        }
+
+        std::shared_ptr<StochastPointAlpha> DesignPoint::getStochastPoint(std::shared_ptr<StochastPointAlpha> alphaRealization)
+        {
+            std::shared_ptr<StochastPointAlpha> subAlpha = nullptr;
+            for (std::shared_ptr<StochastPointAlpha> existingAlpha : this->Alphas)
+            {
+                if (existingAlpha->Stochast == alphaRealization->Stochast)
+                {
+                    return existingAlpha;
+                }
+            }
+
+            subAlpha = std::make_shared<StochastPointAlpha>();
+            subAlpha->Stochast = alphaRealization->Stochast;
+            this->Alphas.push_back(subAlpha);
+
+            return subAlpha;
         }
 
         void DesignPoint::correctFragilityCurves()

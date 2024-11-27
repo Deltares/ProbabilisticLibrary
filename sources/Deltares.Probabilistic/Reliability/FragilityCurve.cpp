@@ -44,6 +44,12 @@ namespace Deltares
             }
         }
 
+        double FragilityCurve::getAlphaFactor()
+        {
+            // exclusive or
+            return (this->isGloballyDescending() ^ this->inverted) ? -1.0 : 1.0;
+        }
+
         std::shared_ptr<StochastPoint> FragilityCurve::getDesignPoint(double x)
         {
             // check whether there is a fragility value exactly at x
@@ -78,18 +84,8 @@ namespace Deltares
             {
                 std::shared_ptr<Statistics::FragilityValue> fragilityValue = lowerPresent ? lowerFragilityValue : upperFragilityValue;
 
-                std::shared_ptr<StochastPoint> designPoint = std::make_shared<StochastPoint>();
-                designPoint->Beta = this->getUFromX(x);
-
-                for (std::shared_ptr<StochastPointAlpha> alpha : fragilityValue->designPoint->Alphas)
-                {
-                    if (std::fabs(alpha->Alpha) > margin)
-                    {
-                        designPoint->Alphas.push_back(alpha->clone());
-                    }
-                }
-
-                return designPoint;
+                double beta = this->getUFromX(x);
+                return fragilityValue->designPoint->getCopy(beta, margin);
             }
             else
             {

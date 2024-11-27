@@ -63,150 +63,135 @@ namespace Deltares
                     object_type == "length_effect_project");
         }
 
+        ProjectHandler::ObjectType ProjectHandler::GetType(std::string object_type)
+        {
+            if (object_type == "standard_normal") return ObjectType::StandardNormal;
+            else if (object_type == "probability_value") return ObjectType::ProbabilityValue;
+            else if (object_type == "message") return ObjectType::Message;
+            else if (object_type == "project") return ObjectType::Project;
+            else if (object_type == "model_parameter") return ObjectType::ModelParameter;
+            else if (object_type == "limit_state_function") return  ObjectType::LimitStateFunction;
+            else if (object_type == "stochast") return ObjectType::Stochast;
+            else if (object_type == "discrete_value") return ObjectType::DiscreteValue;
+            else if (object_type == "histogram_value") return ObjectType::HistogramValue;
+            else if (object_type == "fragility_value") return ObjectType::FragilityValue;
+            else if (object_type == "contributing_stochast") return ObjectType::ContributingStochast;
+            else if (object_type == "conditional_value") return ObjectType::ConditionalValue;
+            else if (object_type == "correlation_matrix") return ObjectType::CorrelationMatrix;
+            else if (object_type == "settings") return ObjectType::Settings;
+            else if (object_type == "stochast_settings") return  ObjectType::StochastSettings;
+            else if (object_type == "design_point") return  ObjectType::DesignPoint;
+            else if (object_type == "alpha") return  ObjectType::Alpha;
+            else if (object_type == "fragility_curve") return  ObjectType::FragilityCurve;
+            else if (object_type == "fragility_curve_project") return ObjectType::FragilityCurveProject;
+            else if (object_type == "evaluation") return  ObjectType::Evaluation;
+            else if (object_type == "combine_project") return ObjectType::CombineProject;
+            else if (object_type == "combine_settings") return ObjectType::CombineSettings;
+            else if (object_type == "self_correlation_matrix") return ObjectType::SelfCorrelationMatrix;
+            else if (object_type == "sensitivity_project") return ObjectType::SensitivityProject;
+            else if (object_type == "sensitivity_settings") return ObjectType::SensitivitySettings;
+            else if (object_type == "length_effect_project") return ObjectType::LengthEffectProject;
+            else throw probLibException("type not supported: " + object_type);
+        }
+
         void ProjectHandler::Create(std::string object_type, int id)
         {
-            if (object_type == "standard_normal")
+            types[id] = GetType(object_type);
+
+            switch (types[id])
             {
-                types[id] = ObjectType::StandardNormal;
-            }
-            else if (object_type == "probability_value")
-            {
+            case ObjectType::StandardNormal:
+                break; // nothing to do
+            case ObjectType::ProbabilityValue:
                 probabilityValues[id] = std::make_shared<Deltares::Statistics::ProbabilityValue>();
                 probabilityValueIds[probabilityValues[id]] = id;
-                types[id] = ObjectType::ProbabilityValue;
-            }
-            else if (object_type == "message")
-            {
+                break;
+            case ObjectType::Message:
                 messages[id] = std::make_shared<Deltares::Models::Message>();
                 messageIds[messages[id]] = id;
-                types[id] = ObjectType::Message;
-            }
-            else if (object_type == "project")
-            {
+                break;
+            case ObjectType::Project:
                 projects[id] = std::make_shared<Deltares::Reliability::ReliabilityProject>();
-                types[id] = ObjectType::Project;
-            }
-            else if (object_type == "model_parameter")
-            {
+                break;
+            case ObjectType::ModelParameter:
                 modelParameters[id] = std::make_shared<Deltares::Models::ModelInputParameter>();
-                types[id] = ObjectType::ModelParameter;
-            }
-            else if (object_type == "limit_state_function")
-            {
+                break;
+            case ObjectType::LimitStateFunction:
                 limitStateFunctions[id] = std::make_shared<Deltares::Reliability::LimitStateFunction>();
-                types[id] = ObjectType::LimitStateFunction;
-            }
-            else if (object_type == "stochast")
-            {
+                break;
+            case ObjectType::Stochast:
                 stochasts[id] = std::make_shared<Deltares::Statistics::Stochast>();
                 stochastIds[stochasts[id]] = id;
-                types[id] = ObjectType::Stochast;
-            }
-            else if (object_type == "discrete_value")
-            {
+                break;
+            case ObjectType::DiscreteValue:
                 discreteValues[id] = std::make_shared<Deltares::Statistics::DiscreteValue>();
                 discreteValueIds[discreteValues[id]] = id;
-                types[id] = ObjectType::DiscreteValue;
-            }
-            else if (object_type == "histogram_value")
-            {
+                break;
+            case ObjectType::HistogramValue:
                 histogramValues[id] = std::make_shared<Deltares::Statistics::HistogramValue>();
                 histogramValueIds[histogramValues[id]] = id;
-                types[id] = ObjectType::HistogramValue;
-            }
-            else if (object_type == "fragility_value")
-            {
+                break;
+            case ObjectType::FragilityValue:
                 fragilityValues[id] = std::make_shared<Deltares::Statistics::FragilityValue>();
                 fragilityValueIds[fragilityValues[id]] = id;
-                types[id] = ObjectType::FragilityValue;
-            }
-            else if (object_type == "contributing_stochast")
-            {
+                break;
+            case ObjectType::ContributingStochast:
                 contributingStochasts[id] = std::make_shared<Deltares::Statistics::ContributingStochast>();
                 contributingStochastIds[contributingStochasts[id]] = id;
-                types[id] = ObjectType::ContributingStochast;
-            }
-            else if (object_type == "conditional_value")
-            {
+                break;
+            case ObjectType::ConditionalValue:
                 conditionalValues[id] = std::make_shared<Deltares::Statistics::VariableStochastValue>();
                 conditionalValueIds[conditionalValues[id]] = id;
-                types[id] = ObjectType::ConditionalValue;
-            }
-            else if (object_type == "correlation_matrix")
-            {
+                break;
+            case ObjectType::CorrelationMatrix:
                 correlationMatrices[id] = std::make_shared<Deltares::Statistics::CorrelationMatrix>();
                 correlationMatrixIds[correlationMatrices[id]] = id;
-                types[id] = ObjectType::CorrelationMatrix;
-            }
-            else if (object_type == "settings")
-            {
+                break;
+            case ObjectType::Settings:
                 settingsValues[id] = std::make_shared<Deltares::Reliability::Settings>();
                 settingsValuesIds[settingsValues[id]] = id;
-                types[id] = ObjectType::Settings;
-            }
-            else if (object_type == "stochast_settings")
-            {
+                break;
+            case ObjectType::StochastSettings:
                 stochastSettingsValues[id] = std::make_shared<Deltares::Reliability::StochastSettings>();
-                types[id] = ObjectType::StochastSettings;
-            }
-            else if (object_type == "design_point")
-            {
+                break;
+            case ObjectType::DesignPoint:
                 designPoints[id] = std::make_shared<Deltares::Reliability::DesignPoint>();
                 designPointIds[designPoints[id]] = id;
-                types[id] = ObjectType::DesignPoint;
-            }
-            else if (object_type == "alpha")
-            {
+                break;
+            case ObjectType::Alpha:
                 alphas[id] = std::make_shared<Deltares::Reliability::StochastPointAlpha>();
                 alphaIds[alphas[id]] = id;
-                types[id] = ObjectType::Alpha;
-            }
-            else if (object_type == "fragility_curve")
-            {
+                break;
+            case ObjectType::FragilityCurve:
                 fragilityCurves[id] = std::make_shared<Deltares::Reliability::FragilityCurve>();
                 fragilityCurveIds[fragilityCurves[id]] = id;
-                types[id] = ObjectType::FragilityCurve;
-            }
-            else if (object_type == "fragility_curve_project")
-            {
+                break;
+            case ObjectType::FragilityCurveProject:
                 fragilityCurveProjects[id] = std::make_shared<Deltares::Reliability::FragilityCurveProject>();
-                types[id] = ObjectType::FragilityCurveProject;
-                }
-            else if (object_type == "evaluation")
-            {
+                break;
+            case ObjectType::Evaluation:
                 evaluations[id] = std::make_shared<Deltares::Reliability::Evaluation>();
                 evaluationIds[evaluations[id]] = id;
-                types[id] = ObjectType::Evaluation;
-            }
-            else if (object_type == "combine_project")
-            {
+                break;
+            case ObjectType::CombineProject:
                 combineProjects[id] = std::make_shared<Deltares::Reliability::CombineProject>();
-                types[id] = ObjectType::CombineProject;
-            }
-            else if (object_type == "combine_settings")
-            {
+                break;
+            case ObjectType::CombineSettings:
                 combineSettingsValues[id] = std::make_shared<Deltares::Reliability::CombineSettings>();
-                types[id] = ObjectType::CombineSettings;
-            }
-            else if (object_type == "self_correlation_matrix")
-            {
+                break;
+            case ObjectType::SelfCorrelationMatrix:
                 selfCorrelationMatrices[id] = std::make_shared<Deltares::Statistics::SelfCorrelationMatrix>();
-                types[id] = ObjectType::SelfCorrelationMatrix;
-            }
-            else if (object_type == "sensitivity_project")
-            {
+                break;
+            case ObjectType::SensitivityProject:
                 sensitivityProjects[id] = std::make_shared<Deltares::Sensitivity::SensitivityProject>();
-                types[id] = ObjectType::SensitivityProject;
-            }
-            else if (object_type == "sensitivity_settings")
-            {
+                break;
+            case ObjectType::SensitivitySettings:
                 sensitivitySettingsValues[id] = std::make_shared<Deltares::Sensitivity::SettingsS>();
-                types[id] = ObjectType::SensitivitySettings;
-            }
-            else if (object_type == "length_effect_project")
-            {
+                break;
+            case ObjectType::LengthEffectProject:
                 lengthEffectProjects[id] = std::make_shared<Deltares::Reliability::LengthEffectProject>();
-                types[id] = ObjectType::LengthEffectProject;
+                break;
+            default: throw probLibException("object type");
             }
         }
 

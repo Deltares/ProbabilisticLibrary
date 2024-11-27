@@ -31,9 +31,6 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Utils::Wrappers;
-            using namespace Deltares::Models::Wrappers;
-
             public ref class FragilityCurveIntegration : public ReliabilityMethod
             {
             private:

@@ -42,6 +42,12 @@ namespace Deltares
                 // do not change distribution type
             }
 
+            /**
+             * \brief Gets a correction factor for alpha values
+             * \return Correction factor
+             */
+            double getAlphaFactor();
+
             bool inverted = false;
 
             bool fixed = false;
@@ -61,13 +67,29 @@ namespace Deltares
                 }
             }
 
+            /**
+             * \brief Indicates that this stochast is a fragility curve
+             * \return Indication
+             */
+            bool isFragilityCurve() override { return true; }
+
+            /**
+             * \brief Indicates whether the first fragility value has a higher reliability than the last fragility value
+             * \return Indication
+             */
             bool isGloballyDescending();
-            std::shared_ptr<StochastPoint> getDesignPoint(double x);
+
+            /**
+             * \brief Gets the design point at a given x-value
+             * \param x X-value
+             * \return Design point
+             */
+            std::shared_ptr<Models::StochastPoint> getDesignPoint(double x);
 
         private:
             const double margin = 1E-8;
 
-            std::shared_ptr<StochastPoint> getRealizationBetweenPoints(double x, std::shared_ptr<Statistics::FragilityValue> lowerFragilityValue, std::shared_ptr<Statistics::FragilityValue> upperFragilityValue);
+            std::shared_ptr<Models::StochastPoint> getRealizationBetweenPoints(double x, std::shared_ptr<Statistics::FragilityValue> lowerFragilityValue, std::shared_ptr<Statistics::FragilityValue> upperFragilityValue);
             double interpolateAlphas(double lowerFraction, double lowerAlpha, double upperAlpha);
         };
     }
