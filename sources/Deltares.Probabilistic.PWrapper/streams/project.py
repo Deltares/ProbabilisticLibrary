@@ -30,8 +30,8 @@ from . import interface
 
 import inspect
 
-if not interface.IsLibraryLoaded():
-	interface.LoadDefaultLibrary()
+#if not interface.IsLibraryLoaded():
+#	interface.LoadDefaultLibrary()
 
 
 class ZModelContainer:

@@ -25,8 +25,8 @@ from enum import Enum
 from .utils import *
 from . import interface
 
-if not interface.IsLibraryLoaded():
-	interface.LoadDefaultLibrary()
+#if not interface.IsLibraryLoaded():
+#	interface.LoadDefaultLibrary()
 
 class ConstantParameterType(Enum):
 	deviation = 'deviation'
@@ -75,7 +75,7 @@ class StandardNormal:
 	"""
 	Provides conversions between probabilities (p,q), reliability (u) and return time (t)
 	"""
-	_id = interface.Create('standard_normal')
+	#_id = interface.Create('standard_normal')
 
 	def __dir__(self):
 		return ['get_u_from_q',

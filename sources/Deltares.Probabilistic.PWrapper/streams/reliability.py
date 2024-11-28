@@ -26,8 +26,8 @@ from .utils import *
 from .statistic import Stochast
 from . import interface
 
-if not interface.IsLibraryLoaded():
-	interface.LoadDefaultLibrary()
+#if not interface.IsLibraryLoaded():
+# interface.LoadDefaultLibrary()
 
 class ReliabilityMethod(Enum):
 	form = 'form'

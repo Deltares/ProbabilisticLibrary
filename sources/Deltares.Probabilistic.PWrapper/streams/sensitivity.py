@@ -27,8 +27,8 @@ from .statistic import Stochast, ProbabilityValue
 from .reliability import StochastSettings, RandomType, GradientType
 from . import interface
 
-if not interface.IsLibraryLoaded():
-	interface.LoadDefaultLibrary()
+#if not interface.IsLibraryLoaded():
+#	interface.LoadDefaultLibrary()
 
 class SensitivityMethod(Enum):
 	form = 'form'
