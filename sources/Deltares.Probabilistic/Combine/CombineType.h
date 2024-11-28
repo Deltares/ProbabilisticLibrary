@@ -21,15 +21,12 @@
 //
 #pragma once
 
-namespace Deltares
+namespace Deltares::Reliability
 {
-    namespace Reliability
+    enum class combineAndOr
     {
-        enum combineAndOr
-        {
-            combAnd,
-            combOr
-        };
-    }
+        combAnd,
+        combOr
+    };
 }
 

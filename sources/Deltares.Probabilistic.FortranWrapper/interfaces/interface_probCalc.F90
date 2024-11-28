@@ -88,13 +88,11 @@ end function textualProgress
 
 !>
 !! Subroutine for the calculation of a limit state function
-subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, convergenceData, CpData, pc)
+subroutine calculateLimitStateFunction(probDb, fx, dp, convergenceData, CpData, pc)
     use feedback
     type(probabilisticDataStructure_data), intent(in) :: probDb    !< Probabilistic data module
     procedure(zfunc)                           :: fx               !< Function implementing the z-function of the failure mechanism
-    real(kind=wp), intent(out)                 :: alfaN(:)         !< Alpha values
-    real(kind=wp), intent(out)                 :: beta             !< Reliability index
-    real(kind=wp), intent(inout)               :: x(:)             !< X values of design point
+    type(designPoint), intent(inout)           :: dp               !< design point: beta, alpha and x values
     type(storedConvergenceData), intent(inout) :: convergenceData  !< struct holding all convergence data
     type(tCpData), intent(inout)               :: CpData           !< class for copying the x-vector
     procedure(progressCancel),    optional     :: pc               !< progress function
@@ -176,7 +174,7 @@ subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, convergenceDa
     nStochActive = 0
     do i = 1, nstoch
         if (probDb%stovar%disttypex(i) == distributionDeterministic) then
-            x(i) = probDb%stovar%distparameterx(i,1)
+            dp%x(i) = probDb%stovar%distparameterx(i,1)
         else if (probDb%stovar%activex(i) == stochastActive) then
             nStochActive = nStochActive + 1
             distribs(nStochActive)%distributionId = probDb%stovar%disttypex(i)
@@ -192,7 +190,7 @@ subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, convergenceDa
         end do
     end if
 
-    CpData%xHR = x
+    CpData%xHR = dp%x
     CpData%nStochActive = nStochActive
 
     method%designPointOption = probDb%method%dpOption
@@ -217,11 +215,11 @@ subroutine calculateLimitStateFunction(probDb, fx, alfaN, beta, x, convergenceDa
             call probCalcF2C(method, distribs, probDb%basic_correlation, fx, textualProgress, compIds, xDense, rn)
         end if
 
-        call cpData%copyDense2Full(xDense, x)
-        beta = rn%beta
-        alfaN = 0.0_wp
+        call cpData%copyDense2Full(xDense, dp%x)
+        dp%beta = rn%beta
+        dp%alpha = 0.0_wp
         do k = 1, nStochActive
-            alfaN(CpData%iPoint(k)) = rn%alpha(k)
+            dp%alpha(CpData%iPoint(k)) = rn%alpha(k)
         end do
         if (method%methodId == methodFORMandDirSampling .and. rn%samplesNeeded > 0) then
             ! to get logging in output.txt right; as we have samples, Form did not succeed (no convergence or beta out of range)

@@ -30,17 +30,16 @@ namespace Deltares
             class testReliabilityMethods
             {
             public:
-                void testLatinHyperCube() const;
-                void testNumericalBisection() const;
-                void testNumericalBisectionLinear() const;
-                void testCobylaReliability() const;
+                static void testLatinHyperCube();
+                static void testNumericalBisection();
+                static void testNumericalBisectionLinear();
+                static void testCobylaReliability();
                 static void testSubSetSimulationReliabilityNearestToMean();
                 static void testSubSetSimulationReliabilityCenterOfGravity();
                 static void testFDIRReliability();
                 static void testDSFIReliability();
                 static void testFragilityCurveIntegration();
-            private:
-                const double margin = 1e-9;
+                static void testNumericalIntegrationReliability();
             };
         }
     }

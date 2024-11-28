@@ -153,14 +153,18 @@ end subroutine importanceSamplingTest2
 subroutine performImportanceSampling( probDb, fx, x, alfa, beta, convCriterium )
     type(probabilisticDataStructure_data)      :: probDb           !< Probabilistic data module
     procedure(zfunc)                           :: fx               !< Function implementing the z-function of the failure mechanism
-    real(kind=wp), intent(out)                 :: alfa(:)          !< Alpha values
+    real(kind=wp), intent(inout), target       :: alfa(:)          !< Alpha values
     real(kind=wp), intent(out)                 :: beta             !< Reliability index
-    real(kind=wp), intent(inout)               :: x(:)             !< X values of design point
+    real(kind=wp), intent(inout), target       :: x(:)             !< X values of design point
     logical,       intent(out)                 :: convCriterium    !< Convergence criterium indicator
 
     type(storedConvergenceData) :: convergenceData  !< struct holding all convergence data
+    type(designPoint)           :: dp               !< design point
 
-    call probCalc%run( probDb, fx, alfa, beta, x, convergenceData)
+    dp%alpha => alfa
+    dp%x     => x
+    call probCalc%run( probDb, fx, dp, convergenceData)
+    beta = dp%beta
     convCriterium = convergenceData%convCriterium
 end subroutine performImportanceSampling
 

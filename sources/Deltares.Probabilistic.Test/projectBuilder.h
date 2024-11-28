@@ -37,7 +37,7 @@ namespace Deltares
             {
             public:
                 std::shared_ptr<Deltares::Models::ModelRunner> BuildProject();
-                std::shared_ptr<Deltares::Models::ModelRunner> BuildProjectWithDeterminist();
+                std::shared_ptr<Deltares::Models::ModelRunner> BuildProjectWithDeterminist(double valueDeterminist);
                 std::shared_ptr<Reliability::FragilityCurve> BuildFragilityCurve();
 
                 static std::shared_ptr<Sensitivity::SensitivityProject> getSensitivityProject(std::shared_ptr<Deltares::Reliability::ReliabilityProject> project);

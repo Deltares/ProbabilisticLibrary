@@ -134,12 +134,13 @@ subroutine testDSFI
     integer                               :: iPoint(nStochasts)             !< Pointer from (U) to (X) variables
     real(kind=wp), pointer                :: x1(:)                          !< X values first computation
     real(kind=wp), pointer                :: x2(:)                          !< X values 2nd computation
-    real(kind=wp)                         :: alpha1(nStochasts)             !< Alpha values (short vector) first computation
-    real(kind=wp)                         :: alpha2(nStochasts)             !< Alpha values (short vector) 2nd computation
+    real(kind=wp), target                 :: alpha1(nStochasts)             !< Alpha values (short vector) first computation
+    real(kind=wp), target                 :: alpha2(nStochasts)             !< Alpha values (short vector) 2nd computation
     real(kind=wp)                         :: beta(2)                        !< Reliability index all cases
     type(storedConvergenceData)           :: convergenceData1               !< convergenceData first computation
     type(storedConvergenceData)           :: convergenceData2               !< convergenceData 2nd computation
     type(tProbCalc)                       :: probCalc                       !< class prob. calculation
+    type(designPoint)                     :: dp1, dp2                       !< design point
     real(kind=wp), parameter              :: betaExpected = 2.87564_wp
     integer, parameter                    :: numSamples = 1000
 
@@ -150,12 +151,18 @@ subroutine testDSFI
     probDb%method%FORM%maxIterations = 50
     probDb%method%DS%seedPRNG = 1
 
-    call probCalc%run(probDb, zFuncNod, alpha1, beta(1), x1, convergenceData1)
+    dp1%alpha => alpha1
+    dp1%x     => x1
+    call probCalc%run(probDb, zFuncNod, dp1, convergenceData1)
+    beta(1) = dp1%beta
     call assert_true(convergenceData1%conv, 'conv1 - meth. 12')
     call assert_true(convergenceData1%convCriterium, 'conv2 - meth. 12')
 
     probDb%method%calcMethod = methodDirSamplingWithFORMiterationsStartU
-    call probCalc%run(probDb, zFuncNod, alpha2, beta(2), x2, convergenceData2)
+    dp2%alpha => alpha2
+    dp2%x     => x2
+    call probCalc%run(probDb, zFuncNod, dp2, convergenceData2)
+    beta(1) = dp2%beta
     call assert_true(convergenceData1%conv, 'conv1 - meth. 16')
     call assert_true(convergenceData1%convCriterium, 'conv2 - meth. 16')
 
@@ -469,18 +476,22 @@ end function zFuncError
 subroutine performDirectionalSampling( probDb, fx, x, alfa, beta, convCriterium, convergenceData, pc )
     type(probabilisticDataStructure_data)      :: probDb           !< Probabilistic data module
     procedure(zfunc)                           :: fx               !< Function implementing the z-function of the failure mechanism
-    real(kind=wp), intent(out)                 :: alfa(:)          !< Alpha values
+    real(kind=wp), intent(out), target         :: alfa(:)          !< Alpha values
     real(kind=wp), intent(out)                 :: beta             !< Reliability index
-    real(kind=wp), intent(inout)               :: x(:)             !< X values of design point
+    real(kind=wp), intent(inout), target       :: x(:)             !< X values of design point
     logical,       intent(out)                 :: convCriterium    !< Convergence criterium indicator
     type(convDataSamplingMethods), intent(out) :: convergenceData  !< struct holding convergence data for sampling methods
     procedure(progressCancel), optional        :: pc               !< progress/cancel function
 
     type(storedConvergenceData)   :: allConvergenceData  !< struct holding all convergence data
     type(tProbCalc)               :: probCalc            !< class prob. calculation
+    type(designPoint)             :: dp                  !< design point
 
     probDb%method%calcMethod = methodDirectionalSampling
-    call probCalc%run( probDb, fx, alfa, beta, x, allConvergenceData, pc=pc)
+    dp%alpha => alfa
+    dp%x     => x
+    call probCalc%run( probDb, fx, dp, allConvergenceData, pc=pc)
+    beta = dp%beta
     convCriterium  = allConvergenceData%convCriterium
     convergenceData = allConvergenceData%cnvg_data_ds
 end subroutine performDirectionalSampling

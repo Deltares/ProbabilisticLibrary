@@ -38,12 +38,12 @@ namespace Deltares
             return Numeric::NumericSupport::GetLength(Values);
         }
 
-        double Sample::getDistance(std::shared_ptr<Sample> other)
+        double Sample::getDistance(const std::shared_ptr<Sample>& other) const
         {
             return Numeric::NumericSupport::getDistance(this->Values, other->Values);
         }
 
-        double Sample::getDistance2(std::shared_ptr<Sample> other)
+        double Sample::getDistance2(const std::shared_ptr<Sample>& other) const
         {
             return Numeric::NumericSupport::getDistance2(this->Values, other->Values);
         }
