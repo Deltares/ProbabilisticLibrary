@@ -208,6 +208,8 @@
     <ClCompile Include="Optimization\stop.cpp" />
     <ClCompile Include="Optimization\timer.cpp" />
     <ClCompile Include="Math\BinarySupport.cpp" />
+    <ClCompile Include="Reliability\FragilityCurveIntegration.cpp" />
+    <ClCompile Include="Reliability\FragilityCurve.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -434,6 +436,9 @@
     <ClInclude Include="Optimization\CobylaOptimization.h" />
     <ClInclude Include="Optimization\CobylaOptimizationSettings.h" />
     <ClInclude Include="Math\BinarySupport.h" />
+    <ClInclude Include="Reliability\FragilityCurveIntegration.h" />
+    <ClInclude Include="Reliability\FragilityCurveIntegrationSettings.h" />
+    <ClInclude Include="Reliability\FragilityCurve.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

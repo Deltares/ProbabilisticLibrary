@@ -21,23 +21,34 @@
 //
 #pragma once
 
-#include "../../Deltares.Probabilistic/Reliability/DesignPoint.h"
+#include "FragilityCurveIntegrationSettings.h"
+#include "ReliabilityMethod.h"
 
 namespace Deltares
 {
-    namespace Models
+    namespace Reliability
     {
-        namespace Wrappers
+        class FragilityCurveIntegration : public ReliabilityMethod
         {
-            public ref class BaseStochastPoint
+        public:
+            std::shared_ptr<FragilityCurveIntegrationSettings> Settings = std::make_shared<FragilityCurveIntegrationSettings>();
+
+            std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Statistics::Stochast> parameter, std::shared_ptr<Statistics::Stochast> fragilityCurve, std::shared_ptr<Statistics::Stochast> fragilityCurveNormalized = nullptr);
+            std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
+        private:
+            class UStep
             {
             public:
-                virtual std::shared_ptr<Reliability::DesignPoint> getDesignPoint()
+                UStep(double u, double weight)
                 {
-                    return nullptr;
-                }
+                    this->U = u;
+                    this->Weight = weight;
+                };
+                double U = 0.0;
+                double Weight = 0.0;
             };
-        }
+            std::vector<std::shared_ptr<UStep>> getSteps(std::shared_ptr<Statistics::Stochast> stochast, double stepSize);
+        };
     }
 }
 

@@ -27,6 +27,7 @@
 #include "../../Deltares.Probabilistic/Reliability/SubsetSimulation.h"
 #include "../../Deltares.Probabilistic/Reliability/FORMThenDirectionalSampling.h"
 #include "../../Deltares.Probabilistic/Reliability/DirectionalSamplingThenFORM.h"
+#include "../../Deltares.Probabilistic/Reliability/FragilityCurveIntegration.h"
 #include "../../Deltares.Probabilistic/Reliability/NumericalIntegration.h"
 #include "../projectBuilder.h"
 
@@ -174,6 +175,23 @@ namespace Deltares
                 EXPECT_TRUE(designPoint->convergenceReport->IsConverged);
             }
 
+            void testReliabilityMethods::testFragilityCurveIntegration()
+            {
+                auto calculator = FragilityCurveIntegration();
+
+                auto fragilityCurve = projectBuilder().BuildFragilityCurve();
+
+                std::shared_ptr<Stochast> h = std::make_shared<Stochast>(DistributionType::Normal, std::vector {5.0, 1.0});
+
+                auto designPoint = calculator.getDesignPoint(h, fragilityCurve);
+
+                ASSERT_EQ(designPoint->Alphas.size(), 2);
+                EXPECT_NEAR(designPoint->Beta, 3.3572, 1e-3);
+                EXPECT_NEAR(designPoint->Alphas[0]->Alpha, -0.1578, 1e-3);
+                EXPECT_NEAR(designPoint->Alphas[1]->Alpha, -0.9874, 1e-3);
+                EXPECT_TRUE(designPoint->convergenceReport->IsConverged);
+            }
+            
             void testReliabilityMethods::testNumericalIntegrationReliability()
             {
                 // test to see how num int handles sign for u==0:

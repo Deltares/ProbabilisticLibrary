@@ -30,6 +30,7 @@
 #include "../Statistics/StandardNormal.h"
 #include "ReliabilityResult.h"
 #include "ConvergenceReport.h"
+#include "FragilityCurve.h"
 
 namespace Deltares
 {
@@ -54,6 +55,14 @@ namespace Deltares
 
             double getFailureProbability() { return Statistics::StandardNormal::getQFromU(this->Beta); }
             double getNonFailureProbability() { return Statistics::StandardNormal::getPFromU(this->Beta); }
+
+            void expandContributions();
+            void correctFragilityCurves();
+        private:
+            void expandFragilityCurves();
+            void expandStochastRealization(std::shared_ptr<StochastPointAlpha> stochastRealization);
+            std::shared_ptr<StochastPointAlpha> getStochastPoint(std::shared_ptr<StochastPointAlpha> alphaRealization);
+            void updateVariableStochasts(std::shared_ptr<StochastPoint> fragilityCurveAlpha);
         };
     }
 }

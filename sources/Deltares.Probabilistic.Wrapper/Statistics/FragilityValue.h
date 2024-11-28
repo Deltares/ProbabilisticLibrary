@@ -33,7 +33,7 @@ namespace Deltares
         {
             using namespace Deltares::Utils::Wrappers;
 
-            public ref class FragilityValue
+            public ref class FragilityValue : System::IComparable<FragilityValue^>
             {
             private:
                 SharedPointerProvider<Statistics::FragilityValue>* shared = nullptr;
@@ -75,7 +75,16 @@ namespace Deltares
                 property Models::Wrappers::BaseStochastPoint^ DesignPoint
                 {
                     Models::Wrappers::BaseStochastPoint^ get() { return this->designPoint; }
-                    void set(Models::Wrappers::BaseStochastPoint^ value) { this->designPoint = value; }
+                    void set(Models::Wrappers::BaseStochastPoint^ value)
+                    {
+                        this->designPoint = value;
+                        shared->object->designPoint = value != nullptr ?  value->getDesignPoint() : nullptr;
+                    }
+                }
+
+                virtual int CompareTo(FragilityValue^ other)
+                {
+                    return this->X.CompareTo(other->X);
                 }
 
                 std::shared_ptr<Statistics::FragilityValue> GetValue()

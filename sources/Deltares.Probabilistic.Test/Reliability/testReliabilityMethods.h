@@ -38,6 +38,7 @@ namespace Deltares
                 static void testSubSetSimulationReliabilityCenterOfGravity();
                 static void testFDIRReliability();
                 static void testDSFIReliability();
+                static void testFragilityCurveIntegration();
                 static void testNumericalIntegrationReliability();
             };
         }

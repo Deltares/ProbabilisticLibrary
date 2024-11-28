@@ -36,164 +36,162 @@ namespace Deltares
         {
             return
                 (object_type == "standard_normal" ||
-                object_type == "probability_value" ||
-                object_type == "message" ||
-                object_type == "project" ||
-                object_type == "model_parameter" ||
-                object_type == "limit_state_function" ||
-                object_type == "stochast" ||
-                object_type == "discrete_value" ||
-                object_type == "histogram_value" ||
-                object_type == "fragility_value" ||
-                object_type == "contributing_stochast" ||
-                object_type == "conditional_value" ||
-                object_type == "correlation_matrix" ||
-                object_type == "settings" ||
-                object_type == "stochast_settings" ||
-                object_type == "design_point" ||
-                object_type == "alpha" ||
+                    object_type == "probability_value" ||
+                    object_type == "message" ||
+                    object_type == "project" ||
+                    object_type == "model_parameter" ||
+                    object_type == "limit_state_function" ||
+                    object_type == "stochast" ||
+                    object_type == "discrete_value" ||
+                    object_type == "histogram_value" ||
+                    object_type == "fragility_value" ||
+                    object_type == "contributing_stochast" ||
+                    object_type == "conditional_value" ||
+                    object_type == "correlation_matrix" ||
+                    object_type == "settings" ||
+                    object_type == "stochast_settings" ||
+                    object_type == "design_point" ||
+                    object_type == "alpha" ||
+                    object_type == "fragility_curve" ||
+                    object_type == "fragility_curve_project" ||
                     object_type == "evaluation" ||
-                object_type == "combine_project" ||
-                object_type == "combine_settings" ||
-                object_type == "self_correlation_matrix" ||
-                object_type == "sensitivity_project" ||
-                object_type == "sensitivity_settings" ||
-                object_type == "length_effect_project");
+                    object_type == "combine_project" ||
+                    object_type == "combine_settings" ||
+                    object_type == "self_correlation_matrix" ||
+                    object_type == "sensitivity_project" ||
+                    object_type == "sensitivity_settings" ||
+                    object_type == "length_effect_project");
+        }
+
+        ProjectHandler::ObjectType ProjectHandler::GetType(std::string object_type)
+        {
+            if (object_type == "standard_normal") return ObjectType::StandardNormal;
+            else if (object_type == "probability_value") return ObjectType::ProbabilityValue;
+            else if (object_type == "message") return ObjectType::Message;
+            else if (object_type == "project") return ObjectType::Project;
+            else if (object_type == "model_parameter") return ObjectType::ModelParameter;
+            else if (object_type == "limit_state_function") return  ObjectType::LimitStateFunction;
+            else if (object_type == "stochast") return ObjectType::Stochast;
+            else if (object_type == "discrete_value") return ObjectType::DiscreteValue;
+            else if (object_type == "histogram_value") return ObjectType::HistogramValue;
+            else if (object_type == "fragility_value") return ObjectType::FragilityValue;
+            else if (object_type == "contributing_stochast") return ObjectType::ContributingStochast;
+            else if (object_type == "conditional_value") return ObjectType::ConditionalValue;
+            else if (object_type == "correlation_matrix") return ObjectType::CorrelationMatrix;
+            else if (object_type == "settings") return ObjectType::Settings;
+            else if (object_type == "stochast_settings") return  ObjectType::StochastSettings;
+            else if (object_type == "design_point") return  ObjectType::DesignPoint;
+            else if (object_type == "alpha") return  ObjectType::Alpha;
+            else if (object_type == "fragility_curve") return  ObjectType::FragilityCurve;
+            else if (object_type == "fragility_curve_project") return ObjectType::FragilityCurveProject;
+            else if (object_type == "evaluation") return  ObjectType::Evaluation;
+            else if (object_type == "combine_project") return ObjectType::CombineProject;
+            else if (object_type == "combine_settings") return ObjectType::CombineSettings;
+            else if (object_type == "self_correlation_matrix") return ObjectType::SelfCorrelationMatrix;
+            else if (object_type == "sensitivity_project") return ObjectType::SensitivityProject;
+            else if (object_type == "sensitivity_settings") return ObjectType::SensitivitySettings;
+            else if (object_type == "length_effect_project") return ObjectType::LengthEffectProject;
+            else throw probLibException("type not supported: " + object_type);
         }
 
         void ProjectHandler::Create(std::string object_type, int id)
         {
-            if (object_type == "standard_normal")
+            types[id] = GetType(object_type);
+
+            switch (types[id])
             {
-                types[id] = ObjectType::StandardNormal;
-            }
-            else if (object_type == "probability_value")
-            {
+            case ObjectType::StandardNormal:
+                break; // nothing to do
+            case ObjectType::ProbabilityValue:
                 probabilityValues[id] = std::make_shared<Deltares::Statistics::ProbabilityValue>();
                 probabilityValueIds[probabilityValues[id]] = id;
-                types[id] = ObjectType::ProbabilityValue;
-            }
-            else if (object_type == "message")
-            {
+                break;
+            case ObjectType::Message:
                 messages[id] = std::make_shared<Deltares::Models::Message>();
                 messageIds[messages[id]] = id;
-                types[id] = ObjectType::Message;
-            }
-            else if (object_type == "project")
-            {
+                break;
+            case ObjectType::Project:
                 projects[id] = std::make_shared<Deltares::Reliability::ReliabilityProject>();
-                types[id] = ObjectType::Project;
-            }
-            else if (object_type == "model_parameter")
-            {
+                break;
+            case ObjectType::ModelParameter:
                 modelParameters[id] = std::make_shared<Deltares::Models::ModelInputParameter>();
-                types[id] = ObjectType::ModelParameter;
-            }
-            else if (object_type == "limit_state_function")
-            {
+                break;
+            case ObjectType::LimitStateFunction:
                 limitStateFunctions[id] = std::make_shared<Deltares::Reliability::LimitStateFunction>();
-                types[id] = ObjectType::LimitStateFunction;
-            }
-            else if (object_type == "stochast")
-            {
+                break;
+            case ObjectType::Stochast:
                 stochasts[id] = std::make_shared<Deltares::Statistics::Stochast>();
                 stochastIds[stochasts[id]] = id;
-                types[id] = ObjectType::Stochast;
-            }
-            else if (object_type == "discrete_value")
-            {
+                break;
+            case ObjectType::DiscreteValue:
                 discreteValues[id] = std::make_shared<Deltares::Statistics::DiscreteValue>();
                 discreteValueIds[discreteValues[id]] = id;
-                types[id] = ObjectType::DiscreteValue;
-            }
-            else if (object_type == "histogram_value")
-            {
+                break;
+            case ObjectType::HistogramValue:
                 histogramValues[id] = std::make_shared<Deltares::Statistics::HistogramValue>();
                 histogramValueIds[histogramValues[id]] = id;
-                types[id] = ObjectType::HistogramValue;
-            }
-            else if (object_type == "fragility_value")
-            {
+                break;
+            case ObjectType::FragilityValue:
                 fragilityValues[id] = std::make_shared<Deltares::Statistics::FragilityValue>();
                 fragilityValueIds[fragilityValues[id]] = id;
-                types[id] = ObjectType::FragilityValue;
-            }
-            else if (object_type == "contributing_stochast")
-            {
+                break;
+            case ObjectType::ContributingStochast:
                 contributingStochasts[id] = std::make_shared<Deltares::Statistics::ContributingStochast>();
                 contributingStochastIds[contributingStochasts[id]] = id;
-                types[id] = ObjectType::ContributingStochast;
-            }
-            else if (object_type == "conditional_value")
-            {
+                break;
+            case ObjectType::ConditionalValue:
                 conditionalValues[id] = std::make_shared<Deltares::Statistics::VariableStochastValue>();
                 conditionalValueIds[conditionalValues[id]] = id;
-                types[id] = ObjectType::ConditionalValue;
-            }
-            else if (object_type == "correlation_matrix")
-            {
+                break;
+            case ObjectType::CorrelationMatrix:
                 correlationMatrices[id] = std::make_shared<Deltares::Statistics::CorrelationMatrix>();
                 correlationMatrixIds[correlationMatrices[id]] = id;
-                types[id] = ObjectType::CorrelationMatrix;
-            }
-            else if (object_type == "settings")
-            {
+                break;
+            case ObjectType::Settings:
                 settingsValues[id] = std::make_shared<Deltares::Reliability::Settings>();
                 settingsValuesIds[settingsValues[id]] = id;
-                types[id] = ObjectType::Settings;
-            }
-            else if (object_type == "stochast_settings")
-            {
+                break;
+            case ObjectType::StochastSettings:
                 stochastSettingsValues[id] = std::make_shared<Deltares::Reliability::StochastSettings>();
-                types[id] = ObjectType::StochastSettings;
-            }
-            else if (object_type == "design_point")
-            {
+                break;
+            case ObjectType::DesignPoint:
                 designPoints[id] = std::make_shared<Deltares::Reliability::DesignPoint>();
                 designPointIds[designPoints[id]] = id;
-                types[id] = ObjectType::DesignPoint;
-            }
-            else if (object_type == "alpha")
-            {
+                break;
+            case ObjectType::Alpha:
                 alphas[id] = std::make_shared<Deltares::Reliability::StochastPointAlpha>();
                 alphaIds[alphas[id]] = id;
-                types[id] = ObjectType::Alpha;
-            }
-            else if (object_type == "evaluation")
-            {
+                break;
+            case ObjectType::FragilityCurve:
+                fragilityCurves[id] = std::make_shared<Deltares::Reliability::FragilityCurve>();
+                fragilityCurveIds[fragilityCurves[id]] = id;
+                break;
+            case ObjectType::FragilityCurveProject:
+                fragilityCurveProjects[id] = std::make_shared<Deltares::Reliability::FragilityCurveProject>();
+                break;
+            case ObjectType::Evaluation:
                 evaluations[id] = std::make_shared<Deltares::Reliability::Evaluation>();
                 evaluationIds[evaluations[id]] = id;
-                types[id] = ObjectType::Evaluation;
-            }
-            else if (object_type == "combine_project")
-            {
+                break;
+            case ObjectType::CombineProject:
                 combineProjects[id] = std::make_shared<Deltares::Reliability::CombineProject>();
-                types[id] = ObjectType::CombineProject;
-            }
-            else if (object_type == "combine_settings")
-            {
+                break;
+            case ObjectType::CombineSettings:
                 combineSettingsValues[id] = std::make_shared<Deltares::Reliability::CombineSettings>();
-                types[id] = ObjectType::CombineSettings;
-            }
-            else if (object_type == "self_correlation_matrix")
-            {
+                break;
+            case ObjectType::SelfCorrelationMatrix:
                 selfCorrelationMatrices[id] = std::make_shared<Deltares::Statistics::SelfCorrelationMatrix>();
-                types[id] = ObjectType::SelfCorrelationMatrix;
-            }
-            else if (object_type == "sensitivity_project")
-            {
+                break;
+            case ObjectType::SensitivityProject:
                 sensitivityProjects[id] = std::make_shared<Deltares::Sensitivity::SensitivityProject>();
-                types[id] = ObjectType::SensitivityProject;
-            }
-            else if (object_type == "sensitivity_settings")
-            {
+                break;
+            case ObjectType::SensitivitySettings:
                 sensitivitySettingsValues[id] = std::make_shared<Deltares::Sensitivity::SettingsS>();
-                types[id] = ObjectType::SensitivitySettings;
-            }
-            else if (object_type == "length_effect_project")
-            {
+                break;
+            case ObjectType::LengthEffectProject:
                 lengthEffectProjects[id] = std::make_shared<Deltares::Reliability::LengthEffectProject>();
-                types[id] = ObjectType::LengthEffectProject;
+                break;
+            default: throw probLibException("object type");
             }
         }
 
@@ -218,6 +216,8 @@ namespace Deltares
             case ObjectType::StochastSettings: stochastSettingsValues.erase(id); break;
             case ObjectType::DesignPoint: designPoints.erase(id); break;
             case ObjectType::Alpha: alphas.erase(id); break;
+            case ObjectType::FragilityCurve: fragilityCurves.erase(id); break;
+            case ObjectType::FragilityCurveProject: fragilityCurveProjects.erase(id); break;
             case ObjectType::Evaluation: evaluations.erase(id); break;
             case ObjectType::CombineProject: combineProjects.erase(id); break;
             case ObjectType::CombineSettings: combineSettingsValues.erase(id); break;
@@ -380,6 +380,15 @@ namespace Deltares
                 else if (property_ == "u") return alpha->U;
                 else if (property_ == "x") return alpha->X;
                 else if (property_ == "influence_factor") return alpha->InfluenceFactor;
+            }
+            else if (objectType == ObjectType::FragilityCurve)
+            {
+                std::shared_ptr<Reliability::FragilityCurve> fragilityCurve = fragilityCurves[id];
+
+                if (property_ == "mean") return fragilityCurve->getMean();
+                else if (property_ == "deviation") return fragilityCurve->getDeviation();
+                else if (property_ == "variation") return fragilityCurve->getVariation();
+                else return std::nan("");
             }
             else if (objectType == ObjectType::Evaluation)
             {
@@ -593,6 +602,12 @@ namespace Deltares
 
                 if (property_ == "variables_count") return correlationMatrix->getDimension();
             }
+            else if (objectType == ObjectType::FragilityCurve)
+            {
+                std::shared_ptr<Reliability::FragilityCurve> fragilityCurve = fragilityCurves[id];
+
+                if (property_ == "fragility_values_count") return (int)fragilityCurve->getProperties()->FragilityValues.size();
+            }
             else if (objectType == ObjectType::Settings)
             {
                 std::shared_ptr<Reliability::Settings> settings = settingsValues[id];
@@ -672,6 +687,12 @@ namespace Deltares
                 if (property_ == "limit_state_function") return GetLimitStateFunctionId(project->limitStateFunction, newId);
                 else if (property_ == "design_point") return GetDesignPointId(project->designPoint, newId);
             }
+            else if (objectType == ObjectType::FragilityCurveProject)
+            {
+                std::shared_ptr<Reliability::FragilityCurveProject> project = fragilityCurveProjects[id];
+
+                if (property_ == "design_point") return GetDesignPointId(project->designPoint, newId);
+            }
             else if (objectType == ObjectType::SensitivityProject)
             {
                 std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
@@ -707,7 +728,14 @@ namespace Deltares
             {
                 std::shared_ptr<Reliability::StochastPointAlpha> alpha = alphas[id];
 
-                if (property_ == "variable") return GetStochastId(alpha->Stochast, newId);
+                if (property_ == "variable")
+                {
+                    if (alpha->Stochast == nullptr) return 0;
+
+                    std::shared_ptr<Reliability::FragilityCurve> fragilityCurve = std::dynamic_pointer_cast<Reliability::FragilityCurve>(alpha->Stochast);
+                    if (fragilityCurve == nullptr) return GetStochastId(alpha->Stochast, newId);
+                    else return GetFragilityCurveId(fragilityCurve, newId);
+                }
             }
             else if (objectType == ObjectType::CombineProject)
             {
@@ -743,6 +771,13 @@ namespace Deltares
                 if (property_ == "settings") project->settings = sensitivitySettingsValues[value];
                 else if (property_ == "correlation_matrix") project->correlationMatrix = correlationMatrices[value];
             }
+            else if (objectType == ObjectType::FragilityCurveProject)
+            {
+                std::shared_ptr<Reliability::FragilityCurveProject> project = fragilityCurveProjects[id];
+
+                if (property_ == "integrand") project->integrand = stochasts[value];
+                else if (property_ == "fragility_curve") project->fragilityCurve = fragilityCurves[value];
+            }
             else if (objectType == ObjectType::ModelParameter)
             {
                 std::shared_ptr<Models::ModelInputParameter> parameter = modelParameters[id];
@@ -761,7 +796,14 @@ namespace Deltares
             {
                 std::shared_ptr<Statistics::FragilityValue> fragilityValue = fragilityValues[id];
 
-                if (property_ == "design_point") fragilityValue->designPoint = designPoints[value];
+                if (property_ == "design_point")
+                {
+                    fragilityValue->designPoint = designPoints.contains(value) ? designPoints[value] : nullptr;
+                    if (fragilityValue->designPoint != nullptr)
+                    {
+                        fragilityValue->Reliability = fragilityValue->designPoint->Beta;
+                    }
+                }
             }
             else if (objectType == ObjectType::ContributingStochast)
             {
@@ -774,6 +816,12 @@ namespace Deltares
                 std::shared_ptr<Statistics::VariableStochastValue> conditionalValue = conditionalValues[id];
 
                 if (property_ == "observations") conditionalValue->Stochast->Observations = value;
+            }
+            else if (objectType == ObjectType::FragilityCurve)
+            {
+                std::shared_ptr<Reliability::FragilityCurve> fragilityCurve = fragilityCurves[id];
+
+                if (property_ == "copy_from") fragilityCurve->copyFrom(fragilityCurves[value]);
             }
             else if (objectType == ObjectType::Settings)
             {
@@ -978,6 +1026,13 @@ namespace Deltares
                 else if (property_ == "name") return stochast->name;
                 else return "";
             }
+            else if (objectType == ObjectType::FragilityCurve)
+            {
+                std::shared_ptr<Reliability::FragilityCurve> fragilityCurve = fragilityCurves[id];
+
+                if (property_ == "name") return fragilityCurve->name;
+                else return "";
+            }
             else if (objectType == ObjectType::LimitStateFunction)
             {
                 std::shared_ptr<Reliability::LimitStateFunction> limitStateFunction = limitStateFunctions[id];
@@ -1039,6 +1094,12 @@ namespace Deltares
                 std::shared_ptr<Models::ModelInputParameter> parameter = modelParameters[id];
 
                 if (property_ == "name") parameter->name = value;
+            }
+            else if (objectType == ObjectType::FragilityCurve)
+            {
+                std::shared_ptr<Reliability::FragilityCurve> fragilityCurve = fragilityCurves[id];
+
+                if (property_ == "name") fragilityCurve->name = value;
             }
             else if (objectType == ObjectType::LimitStateFunction)
             {
@@ -1278,6 +1339,20 @@ namespace Deltares
                     }
                 }
             }
+            else if (objectType == ObjectType::FragilityCurve)
+            {
+                std::shared_ptr<Reliability::FragilityCurve> fragilityCurve = fragilityCurves[id];
+
+                if (property_ == "fragility_values")
+                {
+                    fragilityCurve->getProperties()->setDirty();
+                    fragilityCurve->getProperties()->FragilityValues.clear();
+                    for (int i = 0; i < size; i++)
+                    {
+                        fragilityCurve->getProperties()->FragilityValues.push_back(fragilityValues[values[i]]);
+                    }
+                }
+            }
             else if (objectType == ObjectType::CorrelationMatrix)
             {
                 std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix = correlationMatrices[id];
@@ -1366,6 +1441,14 @@ namespace Deltares
                 if (property_ == "quantile") return stochast->getQuantile(argument);
                 if (property_ == "x_from_u") return stochast->getXFromU(argument);
                 if (property_ == "u_from_x") return stochast->getUFromX(argument);
+            }
+            else if (objectType == ObjectType::FragilityCurve)
+            {
+                std::shared_ptr<Reliability::FragilityCurve> fragilityCurve = fragilityCurves[id];
+
+                if (property_ == "quantile") return fragilityCurve->getQuantile(argument);
+                if (property_ == "x_from_u") return fragilityCurve->getXFromU(argument);
+                if (property_ == "u_from_x") return fragilityCurve->getUFromX(argument);
             }
 
             return std::nan("");
@@ -1461,6 +1544,12 @@ namespace Deltares
                 else if (property_ == "contributing_stochasts") return this->GetContributingStochastId(stochast->getProperties()->ContributingStochasts[index], newId);
                 else if (property_ == "conditional_values") return this->GetConditionalValueId(stochast->ValueSet->StochastValues[index], newId);
             }
+            else if (objectType == ObjectType::FragilityCurve)
+            {
+                std::shared_ptr<Reliability::FragilityCurve> fragilityCurve = fragilityCurves[id];
+
+                if (property_ == "fragility_values") return this->GetFragilityValueId(fragilityCurve->getProperties()->FragilityValues[index], newId);
+            }
             else if (objectType == ObjectType::CorrelationMatrix)
             {
                 std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix = correlationMatrices[id];
@@ -1527,6 +1616,12 @@ namespace Deltares
 
                 if (method_ == "run") project->run();
             }
+            else if (objectType == ObjectType::FragilityCurveProject)
+            {
+                std::shared_ptr<Reliability::FragilityCurveProject> project = fragilityCurveProjects[id];
+
+                if (method_ == "run") project->run();
+            }
             else if (objectType == ObjectType::CombineProject)
             {
                 std::shared_ptr<Reliability::CombineProject> project = combineProjects[id];
@@ -1582,6 +1677,25 @@ namespace Deltares
                 }
 
                 return stochastIds[stochast];
+            }
+        }
+
+        int ProjectHandler::GetFragilityCurveId(std::shared_ptr<Reliability::FragilityCurve> fragilityCurve, int newId)
+        {
+            if (fragilityCurve == nullptr)
+            {
+                return 0;
+            }
+            else
+            {
+                if (!fragilityCurveIds.contains(fragilityCurve))
+                {
+                    fragilityCurves[newId] = fragilityCurve;
+                    types[newId] = ObjectType::FragilityCurve;
+                    fragilityCurveIds[fragilityCurve] = newId;
+                }
+
+                return fragilityCurveIds[fragilityCurve];
             }
         }
 

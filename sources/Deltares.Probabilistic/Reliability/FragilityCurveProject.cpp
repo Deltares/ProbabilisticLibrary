@@ -19,28 +19,22 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#pragma once
+#include "FragilityCurveProject.h"
+#include "FragilityCurveIntegration.h"
 
-#include "../Statistics/Stochast.h"
 #include <memory>
 
 namespace Deltares
 {
-    namespace Models
+    namespace Reliability
     {
-        class StochastPointAlpha
+        void FragilityCurveProject::run()
         {
-        public:
-            std::shared_ptr<Deltares::Statistics::Stochast> Stochast = nullptr;
-            double Alpha = 0;
-            double AlphaCorrelated = 0;
-            double U = 0;
-            double X = 0;
-            double InfluenceFactor = 0;
+            std::unique_ptr<FragilityCurveIntegration> calculator = std::make_unique<FragilityCurveIntegration>();
+            calculator->Settings = this->settings;
 
-            std::shared_ptr<StochastPointAlpha> clone();
-            void invert();
-        };
+            this->designPoint = calculator->getDesignPoint(this->integrand, this->fragilityCurve);
+        }
     }
 }
 

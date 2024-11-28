@@ -69,6 +69,25 @@ namespace Deltares
                 return m;
             }
 
+            std::shared_ptr<FragilityCurve> projectBuilder::BuildFragilityCurve()
+            {
+                std::shared_ptr<FragilityCurve> fragilityCurve = std::make_shared<FragilityCurve>();
+
+                std::shared_ptr<FragilityValue> value1 = std::make_shared<FragilityValue>();
+                value1->X = 0;
+                value1->Reliability = 4.2;
+
+                fragilityCurve->getProperties()->FragilityValues.push_back(value1);
+
+                std::shared_ptr<FragilityValue> value2 = std::make_shared<FragilityValue>();
+                value2->X = 10;
+                value2->Reliability = 2.6;
+
+                fragilityCurve->getProperties()->FragilityValues.push_back(value2);
+
+                return fragilityCurve;
+            }
+
             void projectBuilder::sum(std::shared_ptr<ModelSample> sample)
             {
                 sample->Z = 0.0;

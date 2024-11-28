@@ -75,11 +75,19 @@ namespace Deltares
             std::shared_ptr<StochastPointAlpha> getAlpha(std::shared_ptr<Statistics::Stochast> stochast);
 
             /**
+             * \brief Gets a copy at a given beta
+             * \param beta Beta
+             * \param alphaMargin Minimum alpha value to be copied
+             */
+            std::shared_ptr<StochastPoint> getCopy(double beta, double alphaMargin = 1E-8);
+
+            /**
              * \brief Updates the influence factors in the alpha values
              */
             void updateInfluenceFactors();
 
             virtual ~StochastPoint() { }
+
         };
     }
 }

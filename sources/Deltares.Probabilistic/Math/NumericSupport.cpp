@@ -37,6 +37,35 @@ namespace Deltares
             return value > 0.0 ? 1 : -1;
         }
 
+        double NumericSupport::GetPrevailingSign(std::vector<double> values)
+        {
+            if (values.empty())
+            {
+                return 0;
+            }
+            else if (values.size() == 1)
+            {
+                return GetSign(values[0]);
+            }
+            else if (values.size() == 2)
+            {
+                return std::fabs(values[0]) >= std::fabs(values[1]) ? GetSign(values[0]) : GetSign(values[1]);
+            }
+            else
+            {
+                double sumNeg = 0;
+                double sumPos = 0;
+
+                for (auto value : values)
+                {
+                    if (value > 0) sumPos += value * value;
+                    if (value < 0) sumNeg -= value * value;
+                }
+
+                return sumPos >= sumNeg ? 1.0 : -1.0;
+            }
+        }
+
         double NumericSupport::GetSquaredSum(const std::vector<double>& values)
         {
             double sum = 0;

@@ -390,6 +390,17 @@ namespace Deltares
         {
             std::shared_ptr<StochastPoint> stochastPoint = uConverter->GetStochastPoint(sample, beta);
 
+            if (this->shouldInvertFunction != nullptr)
+            {
+                for (size_t i = 0; i < stochastPoint->Alphas.size(); i++)
+                {
+                    if (shouldInvertFunction(static_cast<int>(i)))
+                    {
+                        stochastPoint->Alphas[i]->invert();
+                    }
+                }
+            }
+
             std::shared_ptr<Reliability::DesignPoint> designPoint = std::make_shared<Reliability::DesignPoint>();
 
             designPoint->Beta = stochastPoint->Beta;

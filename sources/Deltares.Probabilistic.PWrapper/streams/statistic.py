@@ -530,7 +530,7 @@ class Stochast:
 	def copy_from(self, source):
 		if type(source) == str:
 			source = self._variables[source]
-		if source is Stochast:
+		if isinstance(source, Stochast):
 			interface.SetIntValue(self._id, 'copy_from', source._id)
 			self._histogram_values = None
 			self._discrete_values = None
@@ -649,6 +649,8 @@ class FragilityValue:
 	@design_point.setter
 	def design_point(self, value):
 		self._design_point = value
+		if self._design_point is not None:
+			interface.SetIntValue(self._id, 'design_point',  self._design_point._id)
 
 class HistogramValue:
 

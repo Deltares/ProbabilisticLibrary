@@ -21,25 +21,42 @@
 //
 #pragma once
 
+#include "DesignPoint.h"
+#include "FragilityCurve.h"
+#include "FragilityCurveIntegrationSettings.h"
 #include "../Statistics/Stochast.h"
-#include <memory>
 
 namespace Deltares
 {
-    namespace Models
+    namespace Reliability
     {
-        class StochastPointAlpha
+        class FragilityCurveProject
         {
         public:
-            std::shared_ptr<Deltares::Statistics::Stochast> Stochast = nullptr;
-            double Alpha = 0;
-            double AlphaCorrelated = 0;
-            double U = 0;
-            double X = 0;
-            double InfluenceFactor = 0;
+            /**
+             * \brief Collection of all design points to be combined
+             */
+            std::shared_ptr<Deltares::Statistics::Stochast> integrand = nullptr;
 
-            std::shared_ptr<StochastPointAlpha> clone();
-            void invert();
+            /**
+             * \brief Collection of all design points to be combined
+             */
+            std::shared_ptr<Deltares::Statistics::Stochast> fragilityCurve = nullptr;
+
+            /**
+             * \brief Calculation settings
+             */
+            std::shared_ptr<FragilityCurveIntegrationSettings> settings = std::make_shared<FragilityCurveIntegrationSettings>();
+
+            /**
+             * \brief Results of the combination
+             */
+            std::shared_ptr<Reliability::DesignPoint> designPoint = nullptr;
+
+            /**
+             * \brief Executes the combination
+             */
+            void run();
         };
     }
 }

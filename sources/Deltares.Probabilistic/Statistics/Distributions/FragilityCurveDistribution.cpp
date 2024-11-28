@@ -84,7 +84,7 @@ namespace Deltares
 
         bool FragilityCurveDistribution::isValid(std::shared_ptr<StochastProperties> stochast)
         {
-            return !stochast->FragilityValues.size() > 1;
+            return stochast->FragilityValues.size() > 1;
         }
 
         double FragilityCurveDistribution::getMean(std::shared_ptr<StochastProperties> stochast)

@@ -506,5 +506,66 @@ class Test_reliability(unittest.TestCase):
         self.assertAlmostEqual(1.87, beta, delta=margin)
         self.assertEqual(5, len(alphas))
 
+    def test_fragility_curve(self):
+        fragility_curve = FragilityCurve()
+        fragility_curve.name = 'q'
+        
+        value1 = FragilityValue()
+        value1.x = 0
+        value1.reliability_index = 4.2
+        fragility_curve.fragility_values.append(value1)
+
+        value2 = FragilityValue()
+        value2.x = 10
+        value2.reliability_index = 2.6
+        fragility_curve.fragility_values.append(value2)
+        
+        integrand = Stochast()
+        integrand.name = 'h'
+        integrand.distribution = DistributionType.normal
+        integrand.mean = 5
+        integrand.deviation = 1
+        
+        dp = fragility_curve.integrate(integrand)
+
+        beta = dp.reliability_index;
+        alphas = dp.alphas;
+
+        self.assertAlmostEqual(3.35, beta, delta=margin)
+        self.assertEqual(2, len(alphas))
+        self.assertEqual(integrand, alphas[0].variable)
+        self.assertEqual(fragility_curve, alphas[1].variable)
+
+    def test_fragility_curve_hunt(self):
+        project = project_builder.get_hunt_project()
+        project.settings.reliability_method = ReliabilityMethod.form
+        
+        h_stochast = Stochast()
+        h_stochast.name = 'h'
+        h_stochast.copy_from(project.variables['h'])
+
+        fragility_curve = FragilityCurve()
+        fragility_curve.name = 'q'
+        
+        for h_value in [1, 2, 3]:
+            project.variables['h'].distribution = DistributionType.deterministic
+            project.variables['h'].mean = h_value
+            project.run()
+            dp = project.design_point;
+        
+            value = FragilityValue()
+            value.x = 10
+            value.design_point = dp
+            fragility_curve.fragility_values.append(value)
+
+        dp = fragility_curve.integrate(h_stochast)
+
+        beta = dp.reliability_index;
+        alphas = dp.alphas;
+
+        self.assertAlmostEqual(3.79, beta, delta=margin)
+        self.assertEqual(6, len(alphas))
+        self.assertEqual(h_stochast, alphas[0].variable)
+
 if __name__ == '__main__':
     unittest.main()

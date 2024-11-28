@@ -41,15 +41,23 @@ namespace Deltares
                 SharedPointerProvider<Models::StochastPoint>* shared = nullptr;
 
                 System::Collections::Generic::List<StochastPointAlpha^>^ alphas = gcnew System::Collections::Generic::List<StochastPointAlpha^>();
-
             protected:
 
                 void setStochastPoint(std::shared_ptr<Models::StochastPoint> stochastPoint, System::Collections::Generic::IList<Statistics::Wrappers::Stochast^>^ stochasts);
 
+                virtual void setNativeObject(std::shared_ptr<Models::StochastPoint> nativeStochast)
+                {
+                    shared = new Utils::Wrappers::SharedPointerProvider(nativeStochast);
+                }
             public:
                 StochastPoint()
                 {
                     shared = new SharedPointerProvider(new Models::StochastPoint());
+                }
+
+                StochastPoint(std::shared_ptr<Models::StochastPoint> nativeStochastPoint)
+                {
+                    this->setNativeObject(nativeStochastPoint);
                 }
 
                 StochastPoint(std::shared_ptr<Models::StochastPoint> stochastPoint, System::Collections::Generic::List<Statistics::Wrappers::Stochast^>^ stochasts)

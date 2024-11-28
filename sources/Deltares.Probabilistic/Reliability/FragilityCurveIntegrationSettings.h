@@ -21,25 +21,41 @@
 //
 #pragma once
 
-#include "../Statistics/Stochast.h"
-#include <memory>
+#include "DesignPointBuilder.h"
 
 namespace Deltares
 {
-    namespace Models
+    namespace Reliability
     {
-        class StochastPointAlpha
+        /**
+         * \brief Settings for FORM algorithm
+         */
+        class FragilityCurveIntegrationSettings
         {
         public:
-            std::shared_ptr<Deltares::Statistics::Stochast> Stochast = nullptr;
-            double Alpha = 0;
-            double AlphaCorrelated = 0;
-            double U = 0;
-            double X = 0;
-            double InfluenceFactor = 0;
+            /**
+             * \brief Step size in the integration
+             */
+            double StepSize = 0.001;
 
-            std::shared_ptr<StochastPointAlpha> clone();
-            void invert();
+            /**
+             * \brief Method type how the design point (alpha values) is calculated
+             */
+            DesignPointMethod designPointMethod = DesignPointMethod::NearestToMean;
+
+            /**
+             * \brief Settings for individual stochastic variable, such as the start value
+             */
+            std::shared_ptr<StochastSettingsSet> StochastSet = std::make_shared<StochastSettingsSet>();
+
+            /**
+             * \brief Indicates whether these settings have valid values
+             * \return Indication
+             */
+            bool isValid()
+            {
+                return StepSize >= 1E-6;
+            }
         };
     }
 }
