@@ -121,6 +121,23 @@ namespace Deltares
             return nullptr;
         }
 
+        std::shared_ptr<StochastPoint> StochastPoint::getCopy(double beta, double alphaMargin)
+        {
+            std::shared_ptr<StochastPoint> copy = std::make_shared<StochastPoint>();
+
+            copy->Beta = beta;
+
+            for (std::shared_ptr<StochastPointAlpha> alpha : this->Alphas)
+            {
+                if (std::fabs(alpha->Alpha) > alphaMargin)
+                {
+                    copy->Alphas.push_back(alpha->clone());
+                }
+            }
+
+            return copy;
+        }
+
         void StochastPoint::updateInfluenceFactors()
         {
             double sum = 0;

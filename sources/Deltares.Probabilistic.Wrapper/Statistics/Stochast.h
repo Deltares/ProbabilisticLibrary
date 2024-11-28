@@ -85,27 +85,31 @@ namespace Deltares
                 bool AreContributingStochastsMatching();
 
                 System::Collections::Generic::List<ManagedUXDelegate^>^ handles = gcnew System::Collections::Generic::List<ManagedUXDelegate^>();
+            protected:
+                virtual void setNativeObject(std::shared_ptr<Statistics::Stochast> nativeStochast)
+                {
+                    shared = new Utils::Wrappers::SharedPointerProvider(nativeStochast);
+                }
             public:
                 Stochast()
                 {
-                    shared = new Utils::Wrappers::SharedPointerProvider(new Statistics::Stochast());
+                    this->setNativeObject(std::make_shared<Statistics::Stochast>());
                     this->Initialize();
                 }
 
                 Stochast(std::shared_ptr<Statistics::Stochast> nativeStochast)
                 {
-                    shared = new Utils::Wrappers::SharedPointerProvider(nativeStochast);
+                    this->setNativeObject(nativeStochast);
                     this->Initialize();
                     this->updateLists();
                 }
 
-                Stochast(DistributionType distributionType, array<double>^ values) : Stochast()
+                Stochast(DistributionType distributionType, array<double>^ values)
                 {
                     const Statistics::DistributionType nativeDistributionType = DistributionTypeConverter::getNativeDistributionType(distributionType);
                     std::vector<double> nValues = NativeSupport::toNative(values);
 
-                    shared = new Utils::Wrappers::SharedPointerProvider(new Statistics::Stochast(nativeDistributionType, nValues));
-
+                    this->setNativeObject(std::make_shared<Statistics::Stochast>(nativeDistributionType, nValues));
                     this->Initialize();
                 }
 
@@ -149,10 +153,20 @@ namespace Deltares
                     return shared->object->isVarying();
                 }
 
+                virtual bool IsQualitative()
+                {
+                    return shared->object->isQualitative();
+                }
+
                 virtual property bool IsVariableStochast
                 {
                     bool get() { return shared->object->IsVariableStochast; }
                     void set(bool value) { shared->object->IsVariableStochast = value; }
+                }
+
+                Stochast^ GetVariableStochast(double x)
+                {
+                    return gcnew Stochast(shared->object->getVariableStochast(x));
                 }
 
                 virtual property double Mean
@@ -406,6 +420,11 @@ namespace Deltares
                 {
                     Stochast^ get() { return this->source; }
                     void set(Stochast^ value) { this->source = value; }
+                }
+
+                System::String^ ToString() override
+                {
+                    return this->Name;
                 }
 
                 std::shared_ptr<Statistics::Stochast> GetStochast() override

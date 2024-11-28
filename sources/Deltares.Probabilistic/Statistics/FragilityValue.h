@@ -27,6 +27,12 @@
 
 #include <memory>
 
+
+namespace Deltares::Models
+{
+    class StochastPoint;
+}
+
 namespace Deltares
 {
     namespace Statistics
@@ -46,7 +52,7 @@ namespace Deltares
              * \brief Design point corresponding with the reliability
              * \remark This property is always of the type designPoint. The only reason it is declared as BaseStochastPoint is that C++ does not allow circular references
              */
-            std::shared_ptr<BaseStochastPoint> designPoint = nullptr;
+            std::shared_ptr<Models::StochastPoint> designPoint = nullptr;
 
             void setDirtyFunction(Utils::SetDirtyLambda setDirtyLambda)
             {

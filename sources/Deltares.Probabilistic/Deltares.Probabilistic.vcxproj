@@ -159,6 +159,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Reliability\FragilityCurveProject.h" />
+    <ClInclude Include="Reliability\FragilityCurve.h" />
+    <ClInclude Include="Reliability\FragilityCurveIntegrationSettings.h" />
+    <ClInclude Include="Reliability\FragilityCurveIntegration.h" />
     <ClInclude Include="Statistics\ProbabilityIterator.h" />
     <ClInclude Include="Statistics\ProbabilityValue.h" />
     <ClInclude Include="Sensitivity\DirectionalSamplingS.h" />
@@ -350,6 +354,9 @@
     <ClInclude Include="Model\ZValueConverter.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Reliability\FragilityCurveProject.cpp" />
+    <ClCompile Include="Reliability\FragilityCurve.cpp" />
+    <ClCompile Include="Reliability\FragilityCurveIntegration.cpp" />
     <ClCompile Include="Model\GradientSettings.cpp" />
     <ClCompile Include="Statistics\ProbabilityValue.cpp" />
     <ClCompile Include="Sensitivity\DirectionalSamplingS.cpp" />

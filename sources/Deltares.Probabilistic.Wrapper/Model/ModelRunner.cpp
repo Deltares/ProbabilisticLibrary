@@ -40,6 +40,7 @@ namespace Deltares
             typedef void(__stdcall* ZDelegate) (std::shared_ptr<Models::ModelSample>);
             typedef void(__stdcall* ZMultipleDelegate) (std::vector<std::shared_ptr<Models::ModelSample>>);
             typedef bool(__stdcall* ShouldExitNativeDelegate) (bool finalCall);
+            typedef bool(__stdcall* ShouldInvertNativeDelegate) (int stochastIndex);
             typedef void(__stdcall* RemoveTaskNativeDelegate) (int iterationIndex);
 
             ModelRunner::ModelRunner(ZSampleDelegate^ zFunction, System::Collections::Generic::List<Stochast^>^ stochasts, CorrelationMatrix^ correlationMatrix, ProgressIndicator^ progressIndicator)
@@ -119,6 +120,17 @@ namespace Deltares
                 }
 
                 this->CalcZValues(sampleWrappers);
+            }
+
+            void ModelRunner::SetShouldInvertDelegate(ShouldInvertDelegate^ shouldInvertDelegate)
+            {
+                System::Runtime::InteropServices::GCHandle handle = System::Runtime::InteropServices::GCHandle::Alloc(shouldInvertDelegate);
+                handles->Add(handle);
+
+                System::IntPtr callbackPtr = System::Runtime::InteropServices::Marshal::GetFunctionPointerForDelegate(shouldInvertDelegate);
+                Models::ShouldInvertLambda functionPointer = static_cast<ShouldInvertNativeDelegate>(callbackPtr.ToPointer());
+
+                shared->object->setShouldInvertFunction(functionPointer);
             }
 
             void ModelRunner::SetShouldExitDelegate(ShouldExitDelegate^ shouldExitDelegate)

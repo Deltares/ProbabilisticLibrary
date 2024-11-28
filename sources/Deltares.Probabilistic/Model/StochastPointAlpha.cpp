@@ -20,3 +20,31 @@
 // All rights reserved.
 //
 #include "StochastPointAlpha.h"
+
+namespace Deltares
+{
+    namespace Models
+    {
+        std::shared_ptr<StochastPointAlpha> StochastPointAlpha::clone()
+        {
+            std::shared_ptr<StochastPointAlpha> clone = std::make_shared<StochastPointAlpha>();
+            clone->Alpha = this->Alpha;
+            clone->AlphaCorrelated = this->AlphaCorrelated;
+            clone->Stochast = this->Stochast;
+            clone->U = this->U;
+            clone->X = this->X;
+
+            return clone;
+        }
+
+        void StochastPointAlpha::invert()
+        {
+            this->Alpha = - this->Alpha;
+            this->AlphaCorrelated = - this->AlphaCorrelated;
+            this->U = - this->U;
+            this->X = this->Stochast->getXFromU(this->U);
+        }
+    }
+}
+
+

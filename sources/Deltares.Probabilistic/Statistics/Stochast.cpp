@@ -375,6 +375,13 @@ namespace Deltares
             return KSCalculator::getGoodnessOfFit(values, distribution, this->properties);
         }
 
+        std::shared_ptr<Stochast> Stochast::getVariableStochast(double x)
+        {
+            std::shared_ptr<Stochast> stochast = std::make_shared<Stochast>(this->distributionType, this->ValueSet->getInterpolatedStochast(x));
+            stochast->name = this->name;
+            return stochast;
+        }
+
         double Stochast::getDesignValue()
         {
             double u = StandardNormal::getUFromP(this->designQuantile);
