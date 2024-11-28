@@ -23,7 +23,7 @@ namespace Deltares
 #else
                 LPCSTR library = libraryName.c_str();
 #endif
-                HINSTANCE libInstance = LoadLibraryEx(library, NULL, LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR);
+                HINSTANCE libInstance = LoadLibraryEx(library, nullptr, LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR);
                 if (!libInstance)
                 {
                     throw Reliability::probLibException("Could not load the dynamic library " + std::string(libraryName));
