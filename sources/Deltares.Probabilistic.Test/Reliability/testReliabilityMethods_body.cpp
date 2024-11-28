@@ -27,6 +27,7 @@
 #include "../../Deltares.Probabilistic/Reliability/SubsetSimulation.h"
 #include "../../Deltares.Probabilistic/Reliability/FORMThenDirectionalSampling.h"
 #include "../../Deltares.Probabilistic/Reliability/DirectionalSamplingThenFORM.h"
+#include "../../Deltares.Probabilistic/Reliability/NumericalIntegration.h"
 #include "../projectBuilder.h"
 
 using namespace Deltares::Reliability;
@@ -171,6 +172,28 @@ namespace Deltares
                 EXPECT_NEAR(designPoint->Alphas[0]->Alpha, -0.7809, 1e-3);
                 EXPECT_NEAR(designPoint->Alphas[1]->Alpha, 0.6247, 1e-3);
                 EXPECT_TRUE(designPoint->convergenceReport->IsConverged);
+            }
+
+            void testReliabilityMethods::testNumericalIntegrationReliability()
+            {
+                // test to see how num int handles sign for u==0:
+                auto testValuesOffset = { -1e-100, 0.0, 1e-100 };
+
+                for(const auto& testValue : testValuesOffset)
+                {
+                    auto calculator = NumericalIntegration();
+
+                    auto modelRunner = projectBuilder().BuildProjectWithDeterminist(testValue);
+
+                    auto designPoint = calculator.getDesignPoint(modelRunner);
+                    const double sign = testValue > 0.0 ? 1.0 : -1.0;
+
+                    ASSERT_EQ(designPoint->Alphas.size(), 3);
+                    EXPECT_NEAR(designPoint->Beta, 0.0, 1e-6);
+                    EXPECT_NEAR(designPoint->Alphas[0]->Alpha, sign*-0.624695, 1e-4);
+                    EXPECT_NEAR(designPoint->Alphas[1]->Alpha, 0.0, 1e-6);
+                    EXPECT_NEAR(designPoint->Alphas[2]->Alpha, sign*0.78087, 1e-4);
+                }
             }
 
         }

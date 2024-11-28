@@ -170,6 +170,11 @@ namespace Deltares
                 testReliabilityMethods::testDSFIReliability();
             }
 
+            TEST(reliability_method_test, testNumericalIntegrationReliability)
+            {
+                testReliabilityMethods::testNumericalIntegrationReliability();
+            }
+
             TEST(unittst, testDistributions)
             {
                 auto tstDist = testDistributions();
