@@ -312,6 +312,12 @@ namespace Deltares
             {
                 this->ValueSet->initializeForRun(this->properties, this->distributionType, this->truncated, this->inverted);
             }
+
+            if (this->modelParameter != nullptr)
+            {
+                this->modelParameter->isArray = this->isArray;
+                this->modelParameter->arraySize = this->arraySize;
+            }
         }
 
         bool Stochast::canFit()

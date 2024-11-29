@@ -587,6 +587,7 @@ namespace Deltares
                 std::shared_ptr<Statistics::Stochast> stochast = stochasts[id];
 
                 if (property_ == "observations") return stochast->getProperties()->Observations;
+                else if (property_ == "array_size") return stochast->arraySize;
                 else if (property_ == "histogram_values_count") return (int)stochast->getProperties()->HistogramValues.size();
                 else if (property_ == "discrete_values_count") return (int)stochast->getProperties()->DiscreteValues.size();
                 else if (property_ == "fragility_values_count") return (int)stochast->getProperties()->FragilityValues.size();
@@ -793,6 +794,7 @@ namespace Deltares
                 std::shared_ptr<Statistics::Stochast> stochast = stochasts[id];
 
                 if (property_ == "observations") stochast->getProperties()->Observations = value;
+                else if (property_ == "array_size") stochast->arraySize = value;
                 else if (property_ == "copy_from") stochast->copyFrom(stochasts[value]);
                 else if (property_ == "conditional_source") stochast->VariableSource = stochasts[value];
             }
@@ -919,6 +921,7 @@ namespace Deltares
                 if (property_ == "inverted") return stochast->isInverted();
                 else if (property_ == "truncated") return stochast->isTruncated();
                 else if (property_ == "conditional") return stochast->IsVariableStochast;
+                else if (property_ == "is_array") return stochast->isArray;
             }
             else if (objectType == ObjectType::ModelParameter)
             {
@@ -978,6 +981,7 @@ namespace Deltares
                 if (property_ == "inverted") stochast->setInverted(value);
                 else if (property_ == "truncated") stochast->setTruncated(value);
                 else if (property_ == "conditional") stochast->IsVariableStochast = value;
+                else if (property_ == "is_array") stochast->isArray = value;
             }
             else if (objectType == ObjectType::ModelParameter)
             {

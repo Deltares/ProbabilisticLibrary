@@ -85,7 +85,7 @@ class ZModel:
 			if param.default != param.empty:
 				modelParameter.default_value = param.default
 			if param.annotation != param.empty:
-				modelParameter.is_array = '[' in param.annotation
+				modelParameter.is_array = '[' in str(param)
 			modelParameter.index = index
 			parameters.append(modelParameter)
 			index += 1
@@ -148,6 +148,67 @@ class ZModel:
 				output_values[0] = z
 		else:
 			z = ZModel._callback(values, output_values);
+
+class ModelParameter:
+
+	def __init__(self, id = None):
+		if id is None:
+			self._id = interface.Create('model_parameter')
+		else:
+			self._id = id
+
+	def __del__(self):
+		interface.Destroy(self._id)
+
+	def __dir__(self):
+		return ['name',
+	            'index',
+		        'mean',
+                'is_array',
+                'array_size']
+	
+	@property
+	def name(self):
+		return interface.GetStringValue(self._id, 'name')
+		
+	@name.setter
+	def name(self, value):
+		interface.SetStringValue(self._id, 'name', value)
+
+	@property
+	def index(self):
+		return interface.GetIntValue(self._id, 'index')
+		
+	@name.setter
+	def index(self, value):
+		interface.SetIntValue(self._id, 'index', value)
+
+	@property
+	def default_value(self):
+		return interface.GetValue(self._id, 'default_value')
+		
+	@default_value.setter
+	def default_value(self, value):
+		interface.SetValue(self._id, 'default_value', value)
+
+	@property
+	def is_array(self):
+		return interface.GetBoolValue(self._id, 'is_array')
+		
+	@is_array.setter
+	def is_array(self, value):
+		interface.SetBoolValue(self._id, 'is_array', value)
+
+	@property
+	def array_size(self):
+		return interface.GetIntValue(self._id, 'array_size')
+		
+	@is_array.setter
+	def array_size(self, value):
+		interface.SetIntValue(self._id, 'array_size', value)
+
+	def __str__(self):
+		return self.name
 
 class SensitivityProject:
 
@@ -560,67 +621,6 @@ class LengthEffectProject:
 				self._design_point = DesignPoint(designPointId, variables, self._design_point_cross_section)
 		return self._design_point
 
-
-class ModelParameter:
-
-	def __init__(self, id = None):
-		if id is None:
-			self._id = interface.Create('model_parameter')
-		else:
-			self._id = id
-
-	def __del__(self):
-		interface.Destroy(self._id)
-
-	def __dir__(self):
-		return ['name',
-	            'index',
-		        'mean',
-                'is_array',
-                'array_size']
-	
-	@property
-	def name(self):
-		return interface.GetStringValue(self._id, 'name')
-		
-	@name.setter
-	def name(self, value):
-		interface.SetStringValue(self._id, 'name', value)
-
-	@property
-	def index(self):
-		return interface.GetIntValue(self._id, 'index')
-		
-	@name.setter
-	def index(self, value):
-		interface.SetIntValue(self._id, 'index', value)
-
-	@property
-	def default_value(self):
-		return interface.GetValue(self._id, 'default_value')
-		
-	@default_value.setter
-	def default_value(self, value):
-		interface.SetValue(self._id, 'default_value', value)
-
-	@property
-	def is_array(self):
-		return interface.GetBoolValue(self._id, 'is_array')
-		
-	@is_array.setter
-	def is_array(self, value):
-		interface.SetBoolValue(self._id, 'is_array', value)
-
-	@property
-	def array_size(self):
-		return interface.GetIntValue(self._id, 'array_size')
-		
-	@is_array.setter
-	def array_size(self, value):
-		interface.SetIntValue(self._id, 'array_size', value)
-
-	def __str__(self):
-		return self.name
 
 
 

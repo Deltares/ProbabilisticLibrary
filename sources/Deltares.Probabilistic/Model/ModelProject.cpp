@@ -43,8 +43,12 @@ namespace Deltares
                         stochast = std::make_shared<Statistics::Stochast>();
                         stochast->name = parameter->name;
                         stochast->setMean(parameter->defaultValue);
+                        stochast->isArray = parameter->isArray;
+                        stochast->arraySize = parameter->arraySize;
                         existingStochasts[stochast->name] = stochast;
                     }
+
+                    stochast->modelParameter = parameter;
 
                     this->stochasts.push_back(stochast);
                 }

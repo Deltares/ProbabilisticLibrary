@@ -44,7 +44,17 @@ namespace Deltares
 
             for (size_t i = 0; i < stochasts.size(); i++)
             {
-                this->stochasts.push_back(stochasts[i]);
+                if (stochasts[i]->isArray)
+                {
+                    for (size_t j = 0; j < stochasts[i]->arraySize; j++)
+                    {
+                        this->stochasts.push_back(std::make_shared<ComputationalStochast>(stochasts[i], j));
+                    }
+                }
+                else
+                {
+                    this->stochasts.push_back(std::make_shared<ComputationalStochast>(stochasts[i]));
+                }
             }
 
             this->correlationMatrix = correlationMatrix;
@@ -60,33 +70,36 @@ namespace Deltares
             this->hasQualitiveStochasts = false;
             this->hasVariableStochasts = false;
 
-            for (std::shared_ptr<Deltares::Statistics::Stochast> stochast : this->stochasts)
+            for (std::shared_ptr<ComputationalStochast> stochast : this->stochasts)
             {
-                stochast->initializeForRun();
+                if (stochast->index == 0)
+                {
+                    stochast->definition->initializeForRun();
+                }
             }
 
             for (size_t i = 0; i < this->stochasts.size(); i++)
             {
-                if (this->stochasts[i]->isVarying() && !isFullyCorrelated(i, this->varyingStochastIndex))
+                if (this->stochasts[i]->definition->isVarying() && !isFullyCorrelated(i, this->varyingStochastIndex))
                 {
                     this->varyingStochastIndex.push_back(i);
                     this->varyingStochasts.push_back(this->stochasts[i]);
-                    this->hasQualitiveStochasts |= this->stochasts[i]->isQualitative();
+                    this->hasQualitiveStochasts |= this->stochasts[i]->definition->isQualitative();
                 }
                 else
                 {
-                    int type = (this->stochasts[i]->isVarying() ? -1 : -2);
+                    int type = (this->stochasts[i]->definition->isVarying() ? -1 : -2);
                     this->varyingStochastIndex.push_back(type);
                 }
 
                 variableStochastIndex.push_back(-1);
 
-                if (this->stochasts[i]->IsVariableStochast)
+                if (this->stochasts[i]->definition->IsVariableStochast)
                 {
                     this->hasVariableStochasts = true;
                     for (size_t j = 0; j < this->stochasts.size(); j++)
                     {
-                        if (stochasts[j] == this->stochasts[i]->VariableSource)
+                        if (stochasts[j]->definition == this->stochasts[i]->definition->VariableSource)
                         {
                             variableStochastIndex[i] = j;
                             break;
@@ -168,9 +181,9 @@ namespace Deltares
 
             for (size_t i = 0; i < stochasts.size(); i++)
             {
-                if (stochastSettingsMap.contains(stochasts[i]))
+                if (stochastSettingsMap.contains(stochasts[i]->definition))
                 {
-                    settings->stochastSettings.push_back(stochastSettingsMap[stochasts[i]]->clone());
+                    settings->stochastSettings.push_back(stochastSettingsMap[stochasts[i]->definition]->clone());
                 }
                 else
                 {
@@ -178,13 +191,13 @@ namespace Deltares
                     settings->stochastSettings.push_back(newStochastSettings);
                 }
 
-                if (stochasts[i]->isVarying() && !isFullyCorrelated(i, this->varyingStochastIndex))
+                if (stochasts[i]->definition->isVarying() && !isFullyCorrelated(i, this->varyingStochastIndex))
                 {
                     std::shared_ptr<Deltares::Reliability::StochastSettings> varyingStochastSettings = settings->stochastSettings.back();
 
                     varyingStochastSettings->StochastIndex = i;
-                    varyingStochastSettings->IsQualitative = varyingStochasts[j]->isQualitative();
-                    varyingStochastSettings->stochast = varyingStochasts[j];
+                    varyingStochastSettings->IsQualitative = varyingStochasts[j]->definition->isQualitative();
+                    varyingStochastSettings->stochast = varyingStochasts[j]->definition;
 
                     varyingStochastSettings->initializeForRun();
 
@@ -196,8 +209,8 @@ namespace Deltares
                 }
             }
 
-            if (settings->AreStartValuesCorrelated) {
-
+            if (settings->AreStartValuesCorrelated)
+            {
                 const std::vector<double> uncorrelatedStartValues = varyingCorrelationMatrix->InverseCholesky(startValues);
 
                 for (size_t i = 0; i < settings->VaryingStochastSettings.size(); i++)
@@ -303,9 +316,9 @@ namespace Deltares
 
             for (size_t i = 0; i < this->stochasts.size(); i++)
             {
-                if (!this->hasVariableStochasts || !stochasts[i]->IsVariableStochast)
+                if (!this->hasVariableStochasts || !stochasts[i]->definition->IsVariableStochast)
                 {
-                    xValues[i] = this->stochasts[i]->getXFromU(expandedUValues[i]);
+                    xValues[i] = this->stochasts[i]->definition->getXFromU(expandedUValues[i]);
                 }
             }
 
@@ -317,7 +330,7 @@ namespace Deltares
                     int sourceIndex = variableStochastIndex[stochastIndex];
 
                     double xSource = xValues[sourceIndex];
-                    xValues[stochastIndex] = stochasts[stochastIndex]->getXFromUAndSource(xSource, expandedUValues[stochastIndex]);
+                    xValues[stochastIndex] = stochasts[stochastIndex]->definition->getXFromUAndSource(xSource, expandedUValues[stochastIndex]);
                 }
             }
 
@@ -330,7 +343,7 @@ namespace Deltares
 
             for (size_t i = 0; i < sample->Values.size(); i++)
             {
-                if (this->varyingStochasts[i]->isQualitative())
+                if (this->varyingStochasts[i]->definition->isQualitative())
                 {
                     qualitativeExcludedSample->Values[i] = 0;
                 }
@@ -352,7 +365,7 @@ namespace Deltares
             // build up initial administration which stochasts have been assigned and which not
             for (size_t i = 0; i < this->stochasts.size(); i++)
             {
-                if (!this->stochasts[i]->IsVariableStochast)
+                if (!this->stochasts[i]->definition->IsVariableStochast)
                 {
                     assignedAlphas.insert(i);
                 }
@@ -462,19 +475,20 @@ namespace Deltares
                 for (size_t i = 0; i < this->stochasts.size(); i++)
                 {
                     std::shared_ptr<StochastPointAlpha> alpha = std::make_shared<StochastPointAlpha>();
-                    alpha->Stochast = this->stochasts[i];
+                    alpha->Stochast = this->stochasts[i]->definition;
+                    alpha->Index = this->stochasts[i]->index;
                     alpha->Alpha = alphas[i];
                     alpha->AlphaCorrelated = alphaCorrelated[i];
                     alpha->U = uValues[i];
 
-                    if (this->hasQualitiveStochasts && this->stochasts[i]->isQualitative())
+                    if (this->hasQualitiveStochasts && this->stochasts[i]->definition->isQualitative())
                     {
                         const int varyingIndex = this->varyingStochastIndex[i];
-                        alpha->X = stochasts[i]->getXFromU(sample->Values[varyingIndex]);
+                        alpha->X = stochasts[i]->definition->getXFromU(sample->Values[varyingIndex]);
                     }
-                    else if (!this->hasVariableStochasts || !stochasts[i]->IsVariableStochast)
+                    else if (!this->hasVariableStochasts || !stochasts[i]->definition->IsVariableStochast)
                     {
-                        alpha->X = stochasts[i]->getXFromU(uCorrelated[i]);
+                        alpha->X = stochasts[i]->definition->getXFromU(uCorrelated[i]);
                     }
 
                     realization->Alphas.push_back(alpha);
@@ -489,7 +503,7 @@ namespace Deltares
                         const int sourceIndex = variableStochastIndex[stochastIndex];
 
                         const double xSource = realization->Alphas[sourceIndex]->X;
-                        realization->Alphas[stochastIndex]->X = stochasts[stochastIndex]->getXFromUAndSource(xSource, uCorrelated[stochastIndex]);
+                        realization->Alphas[stochastIndex]->X = stochasts[stochastIndex]->definition->getXFromUAndSource(xSource, uCorrelated[stochastIndex]);
                     }
                 }
             }
@@ -528,7 +542,7 @@ namespace Deltares
 
             for (int i = 0; i < this->getVaryingStochastCount(); i++)
             {
-                correlationMatrixBuilder->registerStochastValue(this->varyingStochasts[i], uValues[varyingStochastIndex[i]]);
+                correlationMatrixBuilder->registerStochastValue(this->varyingStochasts[i]->definition, uValues[varyingStochastIndex[i]]);
             }
         }
     }

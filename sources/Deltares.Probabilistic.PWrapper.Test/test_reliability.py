@@ -56,6 +56,36 @@ class Test_reliability(unittest.TestCase):
 
         self.assertEqual(0, len(dp.messages))
 
+    def test_form_linear_array(self):
+        project = project_builder.get_linear_array_project()
+
+        self.assertEqual(False, project.variables['L'].is_array)
+        self.assertEqual(True, project.variables['a'].is_array)
+        self.assertEqual(True, project.variables['b'].is_array)
+
+        project.settings.reliability_method = ReliabilityMethod.form
+
+        # project.run();
+
+        # dp = project.design_point;
+        # beta = dp.reliability_index;
+        # alphas = dp.alphas;
+
+        # self.assertAlmostEqual(2.33, beta, delta=margin)
+        # self.assertEqual(2, len(alphas))
+
+        # self.assertAlmostEqual(-0.71, alphas[0].alpha, delta=margin)
+        # self.assertAlmostEqual(-0.71, alphas[1].alpha, delta=margin)
+
+        # self.assertAlmostEqual(0.9, alphas[0].x, delta=margin)
+        # self.assertAlmostEqual(0.9, alphas[1].x, delta=margin)
+
+        # self.assertEqual(len(project.variables), len(project.design_point.alphas))
+        # self.assertTrue(project.design_point.alphas[0].variable in project.variables)
+        # self.assertEqual('a', project.design_point.alphas[0].variable.name)
+
+        # self.assertEqual(0, len(dp.messages))
+
     def test_form_limit_state_functions(self):
         project = project_builder.get_multiple_unbalanced_linear_project()
 

@@ -32,6 +32,12 @@ def linear_ab(a, b):
     L = 1.8
     return L - (a+b)
 
+def linear_ab_array(L:float, a:list[float], b:list[float]):
+    z = L
+    for i in range(len(a)):
+        z = z - a[i] - b[i]
+    return z
+
 def unbalanced_linear_ab(a, b):
     L = 1.8
     return L - (0.3 * a + 1.9 * b)
@@ -79,6 +85,28 @@ def get_linear_project():
     project = ReliabilityProject()
 
     project.model = linear_ab
+
+    stochast1 = project.variables['a']
+    stochast1.distribution = DistributionType.uniform
+    stochast1.minimum = -1
+    stochast1.maximum = 1;
+
+    stochast2 = project.variables['b']
+    stochast2.distribution =  DistributionType.uniform
+    stochast2.minimum = -1
+    stochast2.maximum = 1;
+
+    return project
+
+def get_linear_array_project():
+
+    project = ReliabilityProject()
+
+    project.model = linear_ab_array
+
+    stochast1 = project.variables['L']
+    stochast1.distribution = DistributionType.deterministic
+    stochast1.mean = 1.8
 
     stochast1 = project.variables['a']
     stochast1.distribution = DistributionType.uniform

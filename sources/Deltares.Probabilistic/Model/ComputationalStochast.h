@@ -21,26 +21,34 @@
 //
 #pragma once
 
-#include "../Statistics/Stochast.h"
 #include <memory>
+#include "../Statistics/Stochast.h"
 
 namespace Deltares
 {
     namespace Models
     {
-        class StochastPointAlpha
+        /**
+         * \brief Defines a stochastic variable for reliability and sensitivity algorithms
+         */
+        class ComputationalStochast
         {
         public:
-            std::shared_ptr<Deltares::Statistics::Stochast> Stochast = nullptr;
-            int Index = 0;
-            double Alpha = 0;
-            double AlphaCorrelated = 0;
-            double U = 0;
-            double X = 0;
-            double InfluenceFactor = 0;
+            ComputationalStochast() {}
 
-            std::shared_ptr<StochastPointAlpha> clone();
-            void invert();
+            ComputationalStochast(std::shared_ptr<Statistics::Stochast> definition, int index = 0)
+            {
+                this->definition = definition;
+                this->index = index;
+            }
+
+            /**
+             * \brief Defines the reference to a stochast
+             * \remark Multiple computational stochasts can reference the same stochast
+             */
+            std::shared_ptr<Statistics::Stochast> definition = nullptr;
+
+            int index = 0;
         };
     }
 }

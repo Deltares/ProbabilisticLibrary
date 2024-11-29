@@ -226,7 +226,9 @@ class Stochast:
 				'conditional_values'
 				'design_factor',
 				'design_fraction',
-				'design_value']
+				'design_value',
+                'is_array',
+                'array_size']
 
 	def _set_variables(self, variables):
 		self._variables = variables
@@ -502,6 +504,22 @@ class Stochast:
 	@design_value.setter
 	def design_value(self, value):
 		interface.SetValue(self._id, 'design_value', value)
+
+	@property
+	def is_array(self):
+		return interface.GetBoolValue(self._id, 'is_array')
+		
+	@is_array.setter
+	def is_array(self, value):
+		interface.SetBoolValue(self._id, 'is_array', value)
+
+	@property
+	def array_size(self):
+		return interface.GetIntValue(self._id, 'array_size')
+		
+	@is_array.setter
+	def array_size(self, value):
+		interface.SetIntValue(self._id, 'array_size', value)
 
 	def get_quantile(self, quantile : float):
 		return interface.GetArgValue(self._id, 'quantile', quantile)

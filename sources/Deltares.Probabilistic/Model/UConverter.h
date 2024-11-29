@@ -25,6 +25,7 @@
 
 #include "Sample.h"
 #include "StochastPoint.h"
+#include "ComputationalStochast.h"
 #include "../Statistics/Stochast.h"
 #include "../Statistics/CorrelationMatrix.h"
 #include "../Reliability/StochastSettingsSet.h"
@@ -40,8 +41,8 @@ namespace Deltares
             bool hasQualitiveStochasts = false;
             bool hasVariableStochasts = false;
 
-            std::vector<std::shared_ptr<Deltares::Statistics::Stochast>> stochasts;
-            std::vector<std::shared_ptr<Deltares::Statistics::Stochast>> varyingStochasts;
+            std::vector<std::shared_ptr<ComputationalStochast>> stochasts;
+            std::vector<std::shared_ptr<ComputationalStochast>> varyingStochasts;
             std::vector<int> varyingStochastIndex;
 
             std::vector<int> variableStochastIndex; // reference of the stochast index to the variable source index

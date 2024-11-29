@@ -30,6 +30,7 @@
 #include "DistributionType.h"
 #include "VariableStochastValueSet.h"
 #include "DistributionChangeType.h"
+#include "../Model/ModelInputParameter.h"
 
 namespace Deltares
 {
@@ -72,6 +73,11 @@ namespace Deltares
              * \param properties Object containing stochastic parameters
              */
             Stochast(DistributionType distributionType, std::shared_ptr<StochastProperties> properties);
+
+            /**
+             * \brief Reference to input parameter of a model
+             */
+            std::shared_ptr<Models::ModelInputParameter> modelParameter = nullptr;
 
             /**
              * \brief identifying string for the user
@@ -367,6 +373,16 @@ namespace Deltares
              * \brief The design fraction used for calculating the design value
              */
             double designQuantile = 0.5;
+
+            /**
+             * \brief Indicates whether the parameter in the model expects in the form of an array
+             */
+            bool isArray = false;
+
+            /**
+             * \brief Size of the array in case of an array
+             */
+            int arraySize = 1;
 
             /**
              * \brief Calculates the design value

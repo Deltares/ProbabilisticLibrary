@@ -19,29 +19,4 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#pragma once
-
-#include "../Statistics/Stochast.h"
-#include <memory>
-
-namespace Deltares
-{
-    namespace Models
-    {
-        class StochastPointAlpha
-        {
-        public:
-            std::shared_ptr<Deltares::Statistics::Stochast> Stochast = nullptr;
-            int Index = 0;
-            double Alpha = 0;
-            double AlphaCorrelated = 0;
-            double U = 0;
-            double X = 0;
-            double InfluenceFactor = 0;
-
-            std::shared_ptr<StochastPointAlpha> clone();
-            void invert();
-        };
-    }
-}
-
+#include "ComputationalStochast.h"
