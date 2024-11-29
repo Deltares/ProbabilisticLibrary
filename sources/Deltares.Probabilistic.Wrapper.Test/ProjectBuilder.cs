@@ -137,6 +137,30 @@ namespace Deltares.Probabilistic.Wrapper.Test
             return project;
         }
 
+        public static Project GetLinearArrayProject()
+        {
+            var project = new Project();
+
+            project.Stochasts.Add(GetDeterministicStochast(1.8));
+            project.Stochasts.Add(GetUniformStochast(-1));
+            project.Stochasts.Add(GetUniformStochast(-1));
+
+            project.Stochasts[1].IsArray = true;
+            project.Stochasts[1].ArraySize = 10;
+
+            project.Stochasts[2].IsArray = true;
+            project.Stochasts[2].ArraySize = 5;
+
+            project.CorrelationMatrix.Initialize(project.Stochasts);
+
+            ZSampleOutput zSampleOutput = GetSampleOutput(Linear);
+
+            project.ZFunction = zSampleOutput.CalculateSample;
+            project.TagRepository = zSampleOutput.GeTagRepository();
+
+            return project;
+        }
+
         public static Project GetUnbalancedLinearProject()
         {
             var project = new Project();

@@ -53,6 +53,8 @@ class ZModel:
 		self._model = None
 		self._is_function = inspect.isfunction(callback)
 		self._is_dirty = False
+		self._has_arrays = False
+		self._array_sizes = None
 
 		if self._is_function:
 			self._input_parameters = self._get_input_parameters(callback)
@@ -127,6 +129,19 @@ class ZModel:
 		self._model = value
 		
 	def initialize_for_run(self):
+		self._has_arrays = False
+		for parameter in self.input_parameters:
+			if parameter.is_array:
+				self._has_arrays = True
+
+		if self._has_arrays:
+			self._array_sizes = []
+			for parameter in self.input_parameters:
+				if parameter.is_array:
+					self._array_sizes.append(parameter.array_size)
+				else:
+					self._array_sizes.append(-1)
+
 		if not self._model is None:
 			self._model.initialize_for_run()
 	
@@ -137,10 +152,29 @@ class ZModel:
 				return True
 			
 		return False
+
+	def _get_args(self, values):
+		args = []
+		index = 0;
+		for i in range(len(self._array_sizes)):
+			if self._array_sizes[i] == -1:
+				args.append(values[index])
+				index += 1
+			else:
+				arg_array = []
+				for j in range(self._array_sizes[i]):
+					arg_array.append(values[index])
+					index += 1
+				args.append(arg_array)
+		return args
 	
 	def run(self, values, output_values):
 		if self._is_function:
-			z = ZModel._callback(*values);
+			if self._has_arrays:
+				args = self._get_args(values)
+				z = ZModel._callback(*args)
+			else:
+				z = ZModel._callback(*values)
 			if type(z) is list or type(z) is tuple:
 				for i in range(len(z)):
 					output_values[i] = z[i]

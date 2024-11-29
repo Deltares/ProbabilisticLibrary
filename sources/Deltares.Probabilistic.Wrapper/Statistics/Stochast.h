@@ -118,32 +118,32 @@ namespace Deltares
 
                 property System::String^ Name
                 {
-                    System::String^ get() { return NativeSupport::toManaged(shared->object->name); }
-                    void set(System::String^ value) { shared->object->name = NativeSupport::toNative(value); }
+                    System::String ^ get() { return NativeSupport::toManaged(shared->object->name); }
+                    void set(System::String ^ value) { shared->object->name = NativeSupport::toNative(value); }
                 }
 
-                virtual property Wrappers::DistributionType DistributionType
+                    virtual property Wrappers::DistributionType DistributionType
                 {
                     Wrappers::DistributionType get() { return DistributionTypeConverter::getManagedDistributionType(shared->object->getDistributionType()); }
                     void set(Wrappers::DistributionType value) { shared->object->setDistributionType(DistributionTypeConverter::getNativeDistributionType(value)); }
                 }
 
-                /**
-                 * \brief Sets the distribution type and maintains the mean and deviation for some distributions
-                 * \param distributionType
-                 */
-                void SetDistributionType(Wrappers::DistributionType distributionType)
+                    /**
+                     * \brief Sets the distribution type and maintains the mean and deviation for some distributions
+                     * \param distributionType
+                     */
+                    void SetDistributionType(Wrappers::DistributionType distributionType)
                 {
                     shared->object->setDistributionType(DistributionTypeConverter::getNativeDistributionType(distributionType));
                 }
 
                 /**
                  * \brief Sets a call back function, which calculates the transformation from u to x
-                 * \param uxDelegate 
+                 * \param uxDelegate
                  */
                 void SetExternalDistribution(ManagedUXDelegate^ uxDelegate);
 
-                virtual bool IsValid() 
+                virtual bool IsValid()
                 {
                     return shared->object->isValid();
                 }
@@ -164,7 +164,7 @@ namespace Deltares
                     void set(bool value) { shared->object->IsVariableStochast = value; }
                 }
 
-                Stochast^ GetVariableStochast(double x)
+                    Stochast^ GetVariableStochast(double x)
                 {
                     return gcnew Stochast(shared->object->getVariableStochast(x));
                 }
@@ -175,7 +175,7 @@ namespace Deltares
                     void set(double value) { shared->object->setMean(value); }
                 }
 
-                virtual property double Deviation
+                    virtual property double Deviation
                 {
                     double get() { return shared->object->getDeviation(); }
                     void set(double value)
@@ -185,7 +185,7 @@ namespace Deltares
                     }
                 }
 
-                virtual property double Variation
+                    virtual property double Variation
                 {
                     double get() { return shared->object->getVariation(); }
                     void set(double value)
@@ -195,31 +195,31 @@ namespace Deltares
                     }
                 }
 
-                virtual property Deltares::Statistics::Wrappers::ConstantParameterType ConstantParameterType
+                    virtual property Deltares::Statistics::Wrappers::ConstantParameterType ConstantParameterType
                 {
                     Deltares::Statistics::Wrappers::ConstantParameterType get() { return this->getConstantParameterType(shared->object->constantParameterType); }
                     void set(Deltares::Statistics::Wrappers::ConstantParameterType value) { shared->object->constantParameterType = this->getNativeConstantParameterType(Deltares::Statistics::Wrappers::ConstantParameterType::VariationCoefficient); }
                 }
 
-                virtual property double Location
+                    virtual property double Location
                 {
                     double get() { return shared->object->getProperties()->Location; }
                     void set(double value) { shared->object->getProperties()->Location = value; }
                 }
 
-                virtual property double Scale
+                    virtual property double Scale
                 {
                     double get() { return shared->object->getProperties()->Scale; }
                     void set(double value) { shared->object->getProperties()->Scale = value; }
                 }
 
-                virtual property double Shift
+                    virtual property double Shift
                 {
                     double get() { return shared->object->getProperties()->Shift; }
                     void set(double value) { shared->object->getProperties()->Shift = value; }
                 }
 
-                void SetShift(double shift)
+                    void SetShift(double shift)
                 {
                     shared->object->setShift(shift);
                 }
@@ -230,37 +230,37 @@ namespace Deltares
                     void set(double value) { shared->object->getProperties()->ShiftB = value; }
                 }
 
-                virtual property double Shape
+                    virtual property double Shape
                 {
                     double get() { return shared->object->getProperties()->Shape; }
                     void set(double value) { shared->object->getProperties()->Shape = value; }
                 }
 
-                virtual property double ShapeB
+                    virtual property double ShapeB
                 {
                     double get() { return shared->object->getProperties()->ShapeB; }
                     void set(double value) { shared->object->getProperties()->ShapeB = value; }
                 }
 
-                virtual property double Minimum
+                    virtual property double Minimum
                 {
                     double get() { return shared->object->getProperties()->Minimum; }
                     void set(double value) { shared->object->getProperties()->Minimum = value; }
                 }
 
-                virtual property double Maximum
+                    virtual property double Maximum
                 {
                     double get() { return shared->object->getProperties()->Maximum; }
                     void set(double value) { shared->object->getProperties()->Maximum = value; }
                 }
 
-                property int Observations
+                    property int Observations
                 {
                     int get() { return shared->object->getProperties()->Observations; }
                     void set(int value) { shared->object->getProperties()->Observations = value; }
                 }
 
-                virtual bool CanTruncate()
+                    virtual bool CanTruncate()
                 {
                     return shared->object->canTruncate();
                 }
@@ -271,7 +271,7 @@ namespace Deltares
                     void set(bool value) { shared->object->setTruncated(value); }
                 }
 
-                virtual bool CanInvert()
+                    virtual bool CanInvert()
                 {
                     return shared->object->canInvert();
                 }
@@ -282,27 +282,27 @@ namespace Deltares
                     void set(bool value) { shared->object->setInverted(value); }
                 }
 
-                property System::Collections::Generic::IList<DiscreteValue^>^ DiscreteValues
+                    property System::Collections::Generic::IList<DiscreteValue^>^ DiscreteValues
                 {
-                    System::Collections::Generic::IList<DiscreteValue^>^ get() { return discreteValues; }
+                    System::Collections::Generic::IList<DiscreteValue^> ^ get() { return discreteValues; }
                 }
 
-                property System::Collections::Generic::IList<HistogramValue^>^ HistogramValues
+                    property System::Collections::Generic::IList<HistogramValue^>^ HistogramValues
                 {
-                    System::Collections::Generic::IList<HistogramValue^>^ get() { return histogramValues; }
+                    System::Collections::Generic::IList<HistogramValue^> ^ get() { return histogramValues; }
                 }
 
-                property System::Collections::Generic::IList<FragilityValue^>^ FragilityValues
+                    property System::Collections::Generic::IList<FragilityValue^>^ FragilityValues
                 {
-                    System::Collections::Generic::IList<FragilityValue^>^ get() { return fragilityValues; }
+                    System::Collections::Generic::IList<FragilityValue^> ^ get() { return fragilityValues; }
                 }
 
-                property System::Collections::Generic::IList<ContributingStochast^>^ ContributingStochasts
+                    property System::Collections::Generic::IList<ContributingStochast^>^ ContributingStochasts
                 {
-                    System::Collections::Generic::IList<ContributingStochast^>^ get() { return contributingStochasts; }
+                    System::Collections::Generic::IList<ContributingStochast^> ^ get() { return contributingStochasts; }
                 }
 
-                virtual bool HasParameter(DistributionPropertyType property)
+                    virtual bool HasParameter(DistributionPropertyType property)
                 {
                     return shared->object->hasParameter(DistributionTypeConverter::getNativeDistributionPropertyType(property));
                 }
@@ -361,6 +361,18 @@ namespace Deltares
                     void set(double value) { shared->object->setDesignValue(value); }
                 }
 
+                property bool IsArray
+                {
+                    bool get() { return shared->object->isArray; }
+                    void set(bool value) { shared->object->isArray = value; }
+                }
+
+                property int ArraySize
+                {
+                    int get() { return shared->object->arraySize; }
+                    void set(int value) { shared->object->arraySize = value; }
+                }
+
                 virtual void InitializeForRun()
                 {
                     updateStochast();
@@ -412,17 +424,17 @@ namespace Deltares
 
                 property VariableStochastValueSet^ ValueSet
                 {
-                    VariableStochastValueSet^ get() { return valueSet; }
-                    void set(VariableStochastValueSet^ value) { this->valueSet = value; }
+                    VariableStochastValueSet ^ get() { return valueSet; }
+                    void set(VariableStochastValueSet ^ value) { this->valueSet = value; }
                 }
 
-                property Stochast^ VariableSource
+                    property Stochast^ VariableSource
                 {
-                    Stochast^ get() { return this->source; }
-                    void set(Stochast^ value) { this->source = value; }
+                    Stochast ^ get() { return this->source; }
+                    void set(Stochast ^ value) { this->source = value; }
                 }
 
-                System::String^ ToString() override
+                    System::String^ ToString() override
                 {
                     return this->Name;
                 }

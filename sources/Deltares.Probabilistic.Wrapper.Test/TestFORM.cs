@@ -53,6 +53,28 @@ namespace Deltares.Probabilistic.Wrapper.Test
         }
 
         [Test]
+        public void TestLinearArray()
+        {
+            Project project = ProjectBuilder.GetLinearArrayProject();
+
+            project.ReliabilityMethod = new FORM();
+            DesignPoint designPoint = project.GetDesignPoint();
+
+            Assert.AreEqual(2.33, designPoint.Beta, margin);
+            Assert.IsTrue(designPoint.ConvergenceReport.IsConverged);
+
+            Assert.AreEqual(0.01, designPoint.ProbabilityFailure, margin / 10);
+            Assert.AreEqual(0.99, designPoint.ProbabilityNonFailure, margin / 10);
+            Assert.AreEqual(99.7, designPoint.ReturnPeriod, margin * 10);
+
+            Assert.AreEqual(-0.7, designPoint.Alphas[0].Alpha, margin);
+            Assert.AreEqual(-0.7, designPoint.Alphas[1].Alpha, margin);
+
+            Assert.AreEqual(0.9, designPoint.Alphas[0].X, margin);
+            Assert.AreEqual(0.9, designPoint.Alphas[1].X, margin);
+        }
+
+        [Test]
         public void TestLinearDoubleExecuted()
         {
             var project = ProjectBuilder.GetLinearProject();

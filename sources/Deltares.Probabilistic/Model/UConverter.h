@@ -59,8 +59,6 @@ namespace Deltares
             std::shared_ptr<Sample> getQualitativeExcludedSample(std::shared_ptr<Sample> sample);
             std::vector<int> getVariableStochastIndex();
 
-            int id = 0;
-
             static int inline counter = 0;
 
         public:
