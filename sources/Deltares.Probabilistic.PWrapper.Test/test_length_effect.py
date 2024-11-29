@@ -37,7 +37,7 @@ class Test_Length_Effect(unittest.TestCase):
         project.correlation_lengths = values
         project.length = 2000
 
-        beta = StandardNormal.get_u_from_q(q)
+        beta = StandardNormal().get_u_from_q(q)
         dp1 = project_builder.get_design_point_with_name(beta, 2, ["a", "b"])
         project.design_point_cross_section = dp1
 
@@ -62,7 +62,7 @@ class Test_Length_Effect(unittest.TestCase):
         project.correlation_lengths = values
         project.length = 2000
 
-        beta = StandardNormal.get_u_from_q(q)
+        beta = StandardNormal().get_u_from_q(q)
         dp1 = project_builder.get_design_point_with_name(beta, 2, ["a", "b"])
         project.design_point_cross_section = dp1
 
@@ -87,7 +87,7 @@ class Test_Length_Effect(unittest.TestCase):
         project.length = 2000.0
         self.assertEqual(project.length, 2000.0)
 
-        beta = StandardNormal.get_u_from_q(q)
+        beta = StandardNormal().get_u_from_q(q)
         dp1 = project_builder.get_design_point_with_name(beta, 2, ["a", "b"])
         project.design_point_cross_section = dp1
 

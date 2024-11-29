@@ -25,9 +25,6 @@ from enum import Enum
 from .utils import *
 from . import interface
 
-#if not interface.IsLibraryLoaded():
-#	interface.LoadDefaultLibrary()
-
 class ConstantParameterType(Enum):
 	deviation = 'deviation'
 	variation = 'variation'
@@ -75,7 +72,13 @@ class StandardNormal:
 	"""
 	Provides conversions between probabilities (p,q), reliability (u) and return time (t)
 	"""
-	#_id = interface.Create('standard_normal')
+	def __init__(self):
+		if not interface.IsLibraryLoaded():
+			interface.LoadDefaultLibrary()
+		self._id = interface.Create('standard_normal')
+
+	def __del__(self):
+		interface.Destroy(self._id)
 
 	def __dir__(self):
 		return ['get_u_from_q',
@@ -85,45 +88,47 @@ class StandardNormal:
 			'get_t_from_u',
 			'get_u_from_t']
 
-	def get_u_from_q (q : float) -> float:
+	def get_u_from_q (self, q : float) -> float:
 		"""
 		get u from q (probability of exceedence)
 		"""
-		return interface.GetArgValue(StandardNormal._id, 'u_from_q', q)
+		return interface.GetArgValue(self._id, 'u_from_q', q)
 
-	def get_u_from_p (p : float) -> float:
+	def get_u_from_p (self, p : float) -> float:
 		"""
 		get u from p (probability of non-exceedence)
 		"""
-		return interface.GetArgValue(StandardNormal._id, 'u_from_p', p)
+		return interface.GetArgValue(self._id, 'u_from_p', p)
 
-	def get_q_from_u (u : float) -> float:
+	def get_q_from_u (self, u : float) -> float:
 		"""
 		get q (probability of exceedence) from u
 		"""
-		return interface.GetArgValue(StandardNormal._id, 'q_from_u', u)
+		return interface.GetArgValue(self._id, 'q_from_u', u)
 
-	def get_p_from_u (u : float) -> float:
+	def get_p_from_u (self, u : float) -> float:
 		"""
 		get p (probability of non-exceedence) from u
 		"""
-		return interface.GetArgValue(StandardNormal._id, 'p_from_u', u)
+		return interface.GetArgValue(self._id, 'p_from_u', u)
 
-	def get_t_from_u (u : float) -> float:
+	def get_t_from_u (self, u : float) -> float:
 		"""
 		get return time from u
 		"""
-		return interface.GetArgValue(StandardNormal._id, 't_from_u', u)
+		return interface.GetArgValue(self._id, 't_from_u', u)
 
-	def get_u_from_t (t : float) -> float:
+	def get_u_from_t (self, t : float) -> float:
 		"""
 		get u from return time
 		"""
-		return interface.GetArgValue(StandardNormal._id, 'u_from_t', t)
+		return interface.GetArgValue(self._id, 'u_from_t', t)
 
 class ProbabilityValue:
 
 	def __init__(self, id = None):
+		if not interface.IsLibraryLoaded():
+			interface.LoadDefaultLibrary()
 		if id is None:
 			self._id = interface.Create('probability_value')
 		else:
@@ -176,6 +181,8 @@ class ProbabilityValue:
 class Stochast:
 
 	def __init__(self, id = None):
+		if not interface.IsLibraryLoaded():
+			interface.LoadDefaultLibrary()
 		if id is None:
 			self._id = interface.Create('stochast')
 		else:
@@ -542,6 +549,8 @@ class Stochast:
 class DiscreteValue:
 
 	def __init__(self, id = None):
+		if not interface.IsLibraryLoaded():
+			interface.LoadDefaultLibrary()
 		if id is None:
 			self._id = interface.Create('discrete_value')
 		else:
@@ -579,6 +588,8 @@ class DiscreteValue:
 class FragilityValue:
 
 	def __init__(self, id = None):
+		if not interface.IsLibraryLoaded():
+			interface.LoadDefaultLibrary()
 		if id is None:
 			self._id = interface.Create('fragility_value')
 		else:
@@ -653,6 +664,8 @@ class FragilityValue:
 class HistogramValue:
 
 	def __init__(self, id = None):
+		if not interface.IsLibraryLoaded():
+			interface.LoadDefaultLibrary()
 		if id is None:
 			self._id = interface.Create('histogram_value')
 		else:
@@ -701,6 +714,8 @@ class HistogramValue:
 class ContributingStochast:
 
 	def __init__(self, id = None):
+		if not interface.IsLibraryLoaded():
+			interface.LoadDefaultLibrary()
 		if id is None:
 			self._id = interface.Create('contributing_stochast')
 		else:
@@ -745,6 +760,8 @@ class ContributingStochast:
 class ConditionalValue:
 
 	def __init__(self, id = None):
+		if not interface.IsLibraryLoaded():
+			interface.LoadDefaultLibrary()
 		if id is None:
 			self._id = interface.Create('conditional_value')
 		else:
@@ -866,6 +883,8 @@ class ConditionalValue:
 class CorrelationMatrix:
 
 	def __init__(self, id = None):
+		if not interface.IsLibraryLoaded():
+			interface.LoadDefaultLibrary()
 		if id is None:
 			self._id = interface.Create('correlation_matrix')
 		else:
@@ -925,6 +944,8 @@ class CorrelationMatrix:
 class SelfCorrelationMatrix:
 
 	def __init__(self):
+		if not interface.IsLibraryLoaded():
+			interface.LoadDefaultLibrary()
 		self._id = interface.Create('self_correlation_matrix')
 
 	def __del__(self):

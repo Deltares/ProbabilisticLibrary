@@ -34,7 +34,7 @@ class Test_combine(unittest.TestCase):
 
         project = CombineProject()
 
-        beta = StandardNormal.get_u_from_q(q)
+        beta = StandardNormal().get_u_from_q(q)
 
         dp1 = project_builder.get_design_point(beta, 2)
         project.design_points.append(dp1)
@@ -47,7 +47,7 @@ class Test_combine(unittest.TestCase):
 
         project.run()
 
-        self.assertAlmostEqual(StandardNormal.get_u_from_q(2 * q - q * q), project.design_point.reliability_index, delta=margin)
+        self.assertAlmostEqual(StandardNormal().get_u_from_q(2 * q - q * q), project.design_point.reliability_index, delta=margin)
 
         self.assertEqual(len(project.design_points), len(project.design_point.contributing_design_points))
         self.assertEqual(project.design_points[0], project.design_point.contributing_design_points[0])
@@ -57,7 +57,7 @@ class Test_combine(unittest.TestCase):
 
         project = CombineProject()
 
-        beta = StandardNormal.get_u_from_q(q)
+        beta = StandardNormal().get_u_from_q(q)
 
         dp1 = project_builder.get_design_point(beta, 2)
         project.design_points.append(dp1)
@@ -70,14 +70,14 @@ class Test_combine(unittest.TestCase):
 
         project.run()
 
-        self.assertAlmostEqual(StandardNormal.get_u_from_q(2 * q - q * q), project.design_point.reliability_index, delta=margin)
+        self.assertAlmostEqual(StandardNormal().get_u_from_q(2 * q - q * q), project.design_point.reliability_index, delta=margin)
         
     def test_directional_sampling_parallel(self):
         q = 0.01;
 
         project = CombineProject()
 
-        beta = StandardNormal.get_u_from_q(q)
+        beta = StandardNormal().get_u_from_q(q)
 
         dp1 = project_builder.get_design_point(beta, 2)
         project.design_points.append(dp1)
@@ -90,14 +90,14 @@ class Test_combine(unittest.TestCase):
 
         project.run()
 
-        self.assertAlmostEqual(StandardNormal.get_u_from_q(q * q), project.design_point.reliability_index, delta=margin)
+        self.assertAlmostEqual(StandardNormal().get_u_from_q(q * q), project.design_point.reliability_index, delta=margin)
         
     def test_importance_sampling_parallel(self):
         q = 0.01;
 
         project = CombineProject()
 
-        beta = StandardNormal.get_u_from_q(q)
+        beta = StandardNormal().get_u_from_q(q)
 
         dp1 = project_builder.get_design_point(beta, 2)
         project.design_points.append(dp1)
@@ -110,7 +110,7 @@ class Test_combine(unittest.TestCase):
 
         project.run()
 
-        self.assertAlmostEqual(StandardNormal.get_u_from_q(q * q), project.design_point.reliability_index, delta=margin)
+        self.assertAlmostEqual(StandardNormal().get_u_from_q(q * q), project.design_point.reliability_index, delta=margin)
 
         self.assertEqual(len(project.design_points), len(project.design_point.contributing_design_points))
         self.assertEqual(project.design_points[0], project.design_point.contributing_design_points[0])
@@ -134,7 +134,7 @@ class Test_combine(unittest.TestCase):
         project.run()
         dp1 = project.design_point
 
-        beta_expected = StandardNormal.get_u_from_q(0.005)
+        beta_expected = StandardNormal().get_u_from_q(0.005)
         self.assertAlmostEqual(beta_expected, dp1.reliability_index, delta=margin)
 
         project.model = project_builder.linear_bc;
@@ -175,7 +175,7 @@ class Test_combine(unittest.TestCase):
         self.assertNotEqual(dp_correlated.reliability_index, dp_uncorrelated.reliability_index)
         
         # uncorrelated result
-        beta_expected = StandardNormal.get_u_from_q(0.01)
+        beta_expected = StandardNormal().get_u_from_q(0.01)
         self.assertAlmostEqual(beta_expected, dp_uncorrelated.reliability_index, delta=margin)
         
         

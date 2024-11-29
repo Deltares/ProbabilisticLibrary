@@ -176,7 +176,7 @@ class Test_statistics(unittest.TestCase):
         stochast.histogram_values.append(HistogramValue.create(5, 7, 6))
         stochast.histogram_values.append(HistogramValue.create(7, 9, 2))
 
-        u = StandardNormal.get_u_from_p(0.1)
+        u = StandardNormal().get_u_from_p(0.1)
         self.assertAlmostEqual(2, stochast.get_x_from_u(u), delta=margin)
 
         stochast.histogram_values[0].lower_bound = 0
@@ -211,9 +211,9 @@ class Test_statistics(unittest.TestCase):
         stochast.contributing_stochasts.append(ContributingStochast.create(0.4, stochast1))
         stochast.contributing_stochasts.append(ContributingStochast.create(0.6, stochast2))
 
-        self.assertAlmostEqual(StandardNormal.get_u_from_p(0.4 * 0.125 + 0.6 * 0), stochast.get_u_from_x(1.0), delta=margin)
-        self.assertAlmostEqual(StandardNormal.get_u_from_p(0.4 * 0.875 + 0.6 * 0.25), stochast.get_u_from_x(7.0), delta=margin)
-        self.assertAlmostEqual(StandardNormal.get_u_from_p(0.4 * 1 + 0.6 * 0.75), stochast.get_u_from_x(9.0), delta=margin)
+        self.assertAlmostEqual(StandardNormal().get_u_from_p(0.4 * 0.125 + 0.6 * 0), stochast.get_u_from_x(1.0), delta=margin)
+        self.assertAlmostEqual(StandardNormal().get_u_from_p(0.4 * 0.875 + 0.6 * 0.25), stochast.get_u_from_x(7.0), delta=margin)
+        self.assertAlmostEqual(StandardNormal().get_u_from_p(0.4 * 1 + 0.6 * 0.75), stochast.get_u_from_x(9.0), delta=margin)
 
     def test_conditional(self):
 
@@ -275,7 +275,7 @@ class Test_statistics(unittest.TestCase):
         self.assertAlmostEqual(10.0, stochast.design_value, delta=margin)
 
         stochast.design_factor = 2;
-        stochast.design_quantile = StandardNormal.get_p_from_u(2);
+        stochast.design_quantile = StandardNormal().get_p_from_u(2);
 
         self.assertAlmostEqual((10 + 2*2) /2.0, stochast.design_value, delta=margin)
 
@@ -313,8 +313,8 @@ class Test_statistics(unittest.TestCase):
     def test_return_time(self):
         for i in range(6):
             beta = float(i)
-            rt = StandardNormal.get_t_from_u(beta)
-            betaCalculated = StandardNormal.get_u_from_t(rt)
+            rt = StandardNormal().get_t_from_u(beta)
+            betaCalculated = StandardNormal().get_u_from_t(rt)
             self.assertAlmostEqual(beta, betaCalculated, delta=margin)
 
 if __name__ == '__main__':

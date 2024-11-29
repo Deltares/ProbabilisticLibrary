@@ -27,9 +27,6 @@ from .statistic import Stochast, ProbabilityValue
 from .reliability import StochastSettings, RandomType, GradientType
 from . import interface
 
-#if not interface.IsLibraryLoaded():
-#	interface.LoadDefaultLibrary()
-
 class SensitivityMethod(Enum):
 	form = 'form'
 	fosm = 'fosm'
@@ -43,6 +40,8 @@ class SensitivityMethod(Enum):
 class SensitivitySettings:
 
 	def __init__(self):
+		if not interface.IsLibraryLoaded():
+			interface.LoadDefaultLibrary()
 		self._id = interface.Create('sensitivity_settings')
 		self._stochast_settings = FrozenList()
 		self._quantiles = None

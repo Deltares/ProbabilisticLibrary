@@ -30,10 +30,6 @@ from . import interface
 
 import inspect
 
-#if not interface.IsLibraryLoaded():
-#	interface.LoadDefaultLibrary()
-
-
 class ZModelContainer:
 	def get_model(self):
 		return None
@@ -149,6 +145,8 @@ class SensitivityProject:
 	_zmodel = None
 
 	def __init__(self):
+		if not interface.IsLibraryLoaded():
+			interface.LoadDefaultLibrary()
 		self._id = interface.Create('sensitivity_project')
 		self._callback = interface.CALLBACK(self._performCallBack)
 		interface.SetCallBack(self._id, 'model', self._callback)
@@ -301,6 +299,8 @@ class ReliabilityProject:
 	_project_id = 0
 
 	def __init__(self):
+		if not interface.IsLibraryLoaded():
+			interface.LoadDefaultLibrary()
 		self._id = interface.Create('project')
 		self._callback = interface.CALLBACK(self._performCallBack)
 		interface.SetCallBack(self._id, 'model', self._callback)
@@ -442,6 +442,8 @@ class ReliabilityProject:
 class CombineProject:
 
 	def __init__(self):
+		if not interface.IsLibraryLoaded():
+			interface.LoadDefaultLibrary()
 		self._id = interface.Create('combine_project')
 
 		self._design_points = CallbackList(self._design_points_changed)
@@ -495,6 +497,8 @@ class CombineProject:
 
 class LengthEffectProject:
 	def __init__(self):
+		if not interface.IsLibraryLoaded():
+			interface.LoadDefaultLibrary()
 		self._id = interface.Create('length_effect_project')
 		self._design_point_cross_section = DesignPoint()
 		self._correlation_matrix = SelfCorrelationMatrix()
@@ -559,6 +563,8 @@ class LengthEffectProject:
 class ModelParameter:
 
 	def __init__(self, id = None):
+		if not interface.IsLibraryLoaded():
+			interface.LoadDefaultLibrary()
 		if id is None:
 			self._id = interface.Create('model_parameter')
 		else:
