@@ -115,7 +115,7 @@ namespace Deltares
 
             void testStartPointCalculator::testMethodSphereSearchWithDeterminist()
             {
-                auto modelRunner = projectBuilder().BuildProjectWithDeterminist();
+                auto modelRunner = projectBuilder().BuildProjectWithDeterminist(3.0);
                 auto calculator = StartPointCalculator();
 
                 modelRunner->updateStochastSettings(calculator.Settings->StochastSet);

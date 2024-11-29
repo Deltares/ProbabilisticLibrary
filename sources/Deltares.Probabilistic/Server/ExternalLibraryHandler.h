@@ -20,12 +20,10 @@ namespace Deltares
 #ifdef UNICODE
                 std::wstring stemp = std::wstring(libraryName.begin(), libraryName.end());
                 LPCWSTR library = stemp.c_str();
-
-                HINSTANCE libInstance = LoadLibrary(library);
 #else
                 LPCSTR library = libraryName.c_str();
-                HINSTANCE libInstance = LoadLibrary(library);
 #endif
+                HINSTANCE libInstance = LoadLibraryEx(library, nullptr, LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR);
                 if (!libInstance)
                 {
                     throw Reliability::probLibException("Could not load the dynamic library " + std::string(libraryName));

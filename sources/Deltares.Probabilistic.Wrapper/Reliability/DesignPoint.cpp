@@ -97,6 +97,19 @@ namespace Deltares
                 }
             }
 
+            void DesignPoint::AssignTags(TagRepository^ tagRepository)
+            {
+                for (int i = 0; i < this->Evaluations->Count; i++)
+                {
+                    this->Evaluations[i]->AssignTag(tagRepository);
+                }
+
+                for (int i = 0; i < this->ContributingDesignPoints->Count; i++)
+                {
+                    this->ContributingDesignPoints[i]->AssignTags(tagRepository);
+                }
+            }
+
             bool DesignPoint::HasMatchingAlphaValues()
             {
                 if (this->Alphas->Count != shared->object->Alphas.size())
@@ -115,18 +128,6 @@ namespace Deltares
                 return true;
             }
 
-            void DesignPoint::AssignTags(TagRepository^ tagRepository)
-            {
-                for (int i = 0; i < this->Evaluations->Count; i++)
-                {
-                    this->Evaluations[i]->AssignTag(tagRepository);
-                }
-
-                for (int i = 0; i < this->ContributingDesignPoints->Count; i++)
-                {
-                    this->ContributingDesignPoints[i]->AssignTags(tagRepository);
-                }
-            }
         }
     }
 }

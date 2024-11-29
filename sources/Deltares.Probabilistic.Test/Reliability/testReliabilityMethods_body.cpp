@@ -27,6 +27,8 @@
 #include "../../Deltares.Probabilistic/Reliability/SubsetSimulation.h"
 #include "../../Deltares.Probabilistic/Reliability/FORMThenDirectionalSampling.h"
 #include "../../Deltares.Probabilistic/Reliability/DirectionalSamplingThenFORM.h"
+#include "../../Deltares.Probabilistic/Reliability/FragilityCurveIntegration.h"
+#include "../../Deltares.Probabilistic/Reliability/NumericalIntegration.h"
 #include "../projectBuilder.h"
 
 using namespace Deltares::Reliability;
@@ -39,7 +41,7 @@ namespace Deltares
     {
         namespace Test
         {
-            void testReliabilityMethods::testLatinHyperCube() const
+            void testReliabilityMethods::testLatinHyperCube()
             {
                 const auto chunckSizes = std::vector<int>({ 1, 15, 2000 });
                 for(const auto& chunkSize : chunckSizes)
@@ -59,8 +61,9 @@ namespace Deltares
                 }
             }
 
-            void testReliabilityMethods::testNumericalBisection() const
+            void testReliabilityMethods::testNumericalBisection()
             {
+                constexpr double margin = 1e-9;
                 auto calculator = NumericalBisection();
                 calculator.Settings->MaximumIterations = 20;
                 calculator.Settings->designPointMethod = NearestToMean;
@@ -75,7 +78,7 @@ namespace Deltares
                 EXPECT_NEAR(designPoint->Alphas[1]->X, -1.20282, 1e-4);
             }
 
-            void testReliabilityMethods::testNumericalBisectionLinear() const
+            void testReliabilityMethods::testNumericalBisectionLinear()
             {
                 auto calculator = std::make_shared<NumericalBisection>();
 
@@ -93,7 +96,7 @@ namespace Deltares
                 EXPECT_NEAR(designPoint->Alphas[1]->X, 0.931459, 1e-4);
             }
 
-            void testReliabilityMethods::testCobylaReliability() const
+            void testReliabilityMethods::testCobylaReliability()
             {
                 auto calculator = CobylaReliability();
 
@@ -170,6 +173,45 @@ namespace Deltares
                 EXPECT_NEAR(designPoint->Alphas[0]->Alpha, -0.7809, 1e-3);
                 EXPECT_NEAR(designPoint->Alphas[1]->Alpha, 0.6247, 1e-3);
                 EXPECT_TRUE(designPoint->convergenceReport->IsConverged);
+            }
+
+            void testReliabilityMethods::testFragilityCurveIntegration()
+            {
+                auto calculator = FragilityCurveIntegration();
+
+                auto fragilityCurve = projectBuilder().BuildFragilityCurve();
+
+                std::shared_ptr<Stochast> h = std::make_shared<Stochast>(DistributionType::Normal, std::vector {5.0, 1.0});
+
+                auto designPoint = calculator.getDesignPoint(h, fragilityCurve);
+
+                ASSERT_EQ(designPoint->Alphas.size(), 2);
+                EXPECT_NEAR(designPoint->Beta, 3.3572, 1e-3);
+                EXPECT_NEAR(designPoint->Alphas[0]->Alpha, -0.1578, 1e-3);
+                EXPECT_NEAR(designPoint->Alphas[1]->Alpha, -0.9874, 1e-3);
+                EXPECT_TRUE(designPoint->convergenceReport->IsConverged);
+            }
+            
+            void testReliabilityMethods::testNumericalIntegrationReliability()
+            {
+                // test to see how num int handles sign for u==0:
+                auto testValuesOffset = { -1e-100, 0.0, 1e-100 };
+
+                for(const auto& testValue : testValuesOffset)
+                {
+                    auto calculator = NumericalIntegration();
+
+                    auto modelRunner = projectBuilder().BuildProjectWithDeterminist(testValue);
+
+                    auto designPoint = calculator.getDesignPoint(modelRunner);
+                    const double sign = testValue > 0.0 ? 1.0 : -1.0;
+
+                    ASSERT_EQ(designPoint->Alphas.size(), 3);
+                    EXPECT_NEAR(designPoint->Beta, 0.0, 1e-6);
+                    EXPECT_NEAR(designPoint->Alphas[0]->Alpha, sign*-0.624695, 1e-4);
+                    EXPECT_NEAR(designPoint->Alphas[1]->Alpha, 0.0, 1e-6);
+                    EXPECT_NEAR(designPoint->Alphas[2]->Alpha, sign*0.78087, 1e-4);
+                }
             }
 
         }

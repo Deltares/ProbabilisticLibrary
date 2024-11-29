@@ -54,8 +54,12 @@ namespace Deltares
             int qualitativeCount = 0;
             std::vector<std::shared_ptr<ModeFinder>> modeFinders;
 
+            void initializeSamples(int count, DesignPointMethod method);
+
         public:
             DesignPointBuilder(int count, DesignPointMethod method, std::shared_ptr<StochastSettingsSet> stochastSet = nullptr);
+            DesignPointBuilder(DesignPointMethod method, std::vector<std::shared_ptr<Statistics::Stochast>> stochasts);
+
             void initialize(double beta);
             void addSample(std::shared_ptr<Sample> sample);
             std::shared_ptr<Sample> getSample();

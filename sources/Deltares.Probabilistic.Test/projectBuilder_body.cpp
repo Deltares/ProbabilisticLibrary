@@ -51,14 +51,14 @@ namespace Deltares
                 return m;
             }
 
-            std::shared_ptr<ModelRunner> projectBuilder::BuildProjectWithDeterminist()
+            std::shared_ptr<ModelRunner> projectBuilder::BuildProjectWithDeterminist(double valueDeterminist)
             {
                 std::shared_ptr<ZModel> z(new ZModel(ZModel([this](std::shared_ptr<ModelSample> v) { return zfuncWithDeterminist(v); })));
                 auto stochast = std::vector<std::shared_ptr<Stochast>>();
                 auto dist = DistributionType::Normal;
                 std::vector<double> params{ 0.0, 1.0 };
                 std::shared_ptr<Stochast> s(new Stochast(dist, params));
-                std::shared_ptr<Stochast> determinist(new Stochast(DistributionType::Deterministic, {2.6}));
+                std::shared_ptr<Stochast> determinist(new Stochast(DistributionType::Deterministic, { valueDeterminist }));
                 stochast.push_back(s);
                 stochast.push_back(determinist);
                 stochast.push_back(s);
@@ -67,6 +67,25 @@ namespace Deltares
                 uConverter->initializeForRun();
                 std::shared_ptr<ModelRunner> m(new ModelRunner(z, uConverter));
                 return m;
+            }
+
+            std::shared_ptr<FragilityCurve> projectBuilder::BuildFragilityCurve()
+            {
+                std::shared_ptr<FragilityCurve> fragilityCurve = std::make_shared<FragilityCurve>();
+
+                std::shared_ptr<FragilityValue> value1 = std::make_shared<FragilityValue>();
+                value1->X = 0;
+                value1->Reliability = 4.2;
+
+                fragilityCurve->getProperties()->FragilityValues.push_back(value1);
+
+                std::shared_ptr<FragilityValue> value2 = std::make_shared<FragilityValue>();
+                value2->X = 10;
+                value2->Reliability = 2.6;
+
+                fragilityCurve->getProperties()->FragilityValues.push_back(value2);
+
+                return fragilityCurve;
             }
 
             void projectBuilder::sum(std::shared_ptr<ModelSample> sample)
@@ -98,7 +117,7 @@ namespace Deltares
 
             void projectBuilder::zfuncWithDeterminist(std::shared_ptr<Deltares::Models::ModelSample> sample) const
             {
-                sample->Z = 3.0 + sample->Values[0] - 1.25 * sample->Values[2];
+                sample->Z = sample->Values[1] + sample->Values[0] - 1.25 * sample->Values[2];
                 if (logZtoScreen)
                 {
                     std::cout << "u, z = " << sample->Values[0] << " , " << sample->Values[1] << " , " << sample->Z << std::endl;

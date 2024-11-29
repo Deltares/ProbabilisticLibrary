@@ -22,6 +22,7 @@
 #pragma once
 
 #include "../Statistics/Stochast.h"
+#include <memory>
 
 namespace Deltares
 {
@@ -36,6 +37,9 @@ namespace Deltares
             double U = 0;
             double X = 0;
             double InfluenceFactor = 0;
+
+            std::shared_ptr<StochastPointAlpha> clone();
+            void invert();
         };
     }
 }

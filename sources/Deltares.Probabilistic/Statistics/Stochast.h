@@ -140,7 +140,7 @@ namespace Deltares
              * \remark Internally, the Distribution field is updated
              * \param distributionType Distribution type
              */
-            void setDistributionType(DistributionType distributionType);
+            virtual void setDistributionType(DistributionType distributionType);
 
             /**
              * \brief Gets the distribution type
@@ -259,6 +259,12 @@ namespace Deltares
             void setVariation(double variation);
 
             /**
+             * \brief Indicates whether this stochast is a fragility curve
+             * \return Indication
+             */
+            virtual bool isFragilityCurve() { return false; }
+
+            /**
              * \brief Indicates which parameter should be kept constant when the mean value is changed (by setMean())
              * \return Constant parameter type
              */
@@ -345,6 +351,12 @@ namespace Deltares
              * \brief In case of a variable stochast, the interpolation table to convert from x-value of the other stochast to the stochastic parameters of this stochast
              */
             std::shared_ptr<VariableStochastValuesSet> ValueSet = std::make_shared<VariableStochastValuesSet>();
+
+            /**
+             * \brief Gets a realization of a variable stochast
+             * \param x X-value at which the variable stochast is generated
+             */
+            std::shared_ptr<Stochast> getVariableStochast(double x);
 
             /**
              * \brief The design factor used for calculating the design value

@@ -1431,23 +1431,23 @@ subroutine calculateDistributionInverseTest
     type(tError) :: error
     integer :: ierr
     character(len=128) :: message
-    
+    real(kind=wp) :: p4(4)
+
+    p4 = [distParameter1, distParameter2, distParameter3, distParameter4]
     do i = 0, 10
         u = real(i, wp) * 0.1_wp
         
         !
         ! test distributionDeterministic
         !
-        call calculateDistributionInverse(u, x, distributionDeterministic, [distParameter1, distParameter2, &
-            distParameter3, distParameter4], error)
+        call calculateDistributionInverse(u, x, distributionDeterministic, p4, error)
         expected = distParameter1
         call assert_comparable(x, expected, margin, 'difference in distributionDeterministic too big')
 
         !
         ! test distributionUniform
         !
-        call calculateDistributionInverse(u, x, distributionUniform, [distParameter1, distParameter2, distParameter3, &
-            distParameter4], error)
+        call calculateDistributionInverse(u, x, distributionUniform, p4, error)
         if (error%icode == 0) then
             call pQFromBeta ( u, p, q )
             expected = uniformInverse( p, distParameter1, distParameter2 )
@@ -1457,8 +1457,7 @@ subroutine calculateDistributionInverseTest
         !
         ! test distributionNormal
         !
-        call calculateDistributionInverse(u, x, distributionNormal, [distParameter1, distParameter2, distParameter3, &
-            distParameter4], error)
+        call calculateDistributionInverse(u, x, distributionNormal, p4, error)
         expected = distParameter1 + u * distParameter2
         call assert_comparable(x, expected, margin, 'difference in distributionNormal too big')
         
@@ -1473,8 +1472,7 @@ subroutine calculateDistributionInverseTest
         !
         ! test distributionShiftedLognormal2
         !
-        call calculateDistributionInverse(u, x, distributionShiftedLognormal2, [distParameter1, distParameter2, &
-            distParameter3, distParameter4], error)
+        call calculateDistributionInverse(u, x, distributionShiftedLognormal2, p4, error)
         expected = logNormalInverseII(u, distParameter1, distParameter2, distParameter3, ierr, message )
         call assert_equal(error%icode, 0, message)
         call assert_comparable(x, expected, margin, 'difference in distributionShiftedLognormal2 too big')
@@ -1509,8 +1507,7 @@ subroutine calculateDistributionInverseTest
         !
         ! test distributionWeibull
         !
-        call calculateDistributionInverse(u, x, distributionWeibull, [distParameter1, distParameter2, distParameter3, &
-            distParameter4], error)
+        call calculateDistributionInverse(u, x, distributionWeibull, p4, error)
         call pQFromBeta ( u, p, q )
         expected = weibullInverse( distParameter1, distParameter2, distParameter3, q )
         call assert_comparable(x, expected, margin, 'difference in distributionWeibull too big')
@@ -1518,8 +1515,7 @@ subroutine calculateDistributionInverseTest
         !
         ! test distributionRayleigh
         !
-        call calculateDistributionInverse(u, x, distributionRayleigh, [distParameter1, distParameter2, distParameter3, &
-            distParameter4], error)
+        call calculateDistributionInverse(u, x, distributionRayleigh, p4, error)
         call pQFromBeta ( u, p, q )
         expected = rayleighInverse( distParameter1, distParameter2, distParameter3, q )
         call assert_comparable(x, expected, margin, 'difference in distributionRayleigh too big')
@@ -1527,8 +1523,7 @@ subroutine calculateDistributionInverseTest
         !
         ! test distributionRayleighN
         !
-        call calculateDistributionInverse(u, x, distributionRayleighN, [distParameter1, distParameter2, distParameter3, &
-            distParameter4], error)
+        call calculateDistributionInverse(u, x, distributionRayleighN, p4, error)
         call pQFromBeta ( u, p, q )
         expected = rayleighNInverse( distParameter1, distParameter2, distParameter3, q )
         call assert_comparable(x, expected, margin, 'difference in distributionRayleighN too big')
@@ -1556,8 +1551,7 @@ subroutine calculateDistributionInverseTest
         !
         ! test distributionConditionalWeibull
         !
-        call calculateDistributionInverse(u, x, distributionConditionalWeibull, [distParameter1, distParameter2, distParameter3, &
-            distParameter4], error)
+        call calculateDistributionInverse(u, x, distributionConditionalWeibull, p4, error)
         call pQFromBeta ( u, p, q )
         expected = conditionalWeibullInverse(distParameter1, distParameter2, distParameter3, distParameter4, p, q)
         call assert_comparable(x, expected, margin, 'difference in distributionConditionalWeibull too big')
@@ -1591,7 +1585,7 @@ subroutine calculateDistributionInverseTest
     
     ! test default case
     !
-    call calculateDistributionInverse(u, x, -999, [distParameter1, distParameter2, distParameter3, distParameter4], error)
+    call calculateDistributionInverse(u, x, -999, p4, error)
     call copystrback(message, error%message)
     call assert_equal(message, "Unknown distribution function - code: -999", "test wrong input")
 end subroutine calculateDistributionInverseTest
@@ -1603,6 +1597,7 @@ subroutine TruncatedNormalTests
     integer :: ierr, i
     character(len=128) :: errorMessage
     type(tError) :: error
+    real(kind = wp) :: p4(4)
 
     !
     ! for negative large u, minimum is expected
@@ -1612,7 +1607,8 @@ subroutine TruncatedNormalTests
     deviation = 1.0_wp
     minimum = 0.1_wp
     maximum = 9.9_wp
-    call calculateDistributionInverse( u, x, distType, [mean, deviation, minimum, maximum], error )
+    p4 = [mean, deviation, minimum, maximum]
+    call calculateDistributionInverse( u, x, distType, p4, error )
     call copystrback(errorMessage, error%message)
     call assert_equal(error%icode, 0, errorMessage)
     call assert_comparable(x, minimum, 1d-5, "diff in x for u=-9999; truncated normal")
@@ -1621,7 +1617,7 @@ subroutine TruncatedNormalTests
     ! for positive large u, maximum is expected
     !
     u = 9999.0_wp
-    call calculateDistributionInverse( u, x, distType, [mean, deviation, minimum, maximum], error )
+    call calculateDistributionInverse( u, x, distType, p4, error )
     call copystrback(errorMessage, error%message)
     call assert_equal(error%icode, 0, errorMessage)
     call assert_comparable(x, maximum, 1d-5, "diff in x for u=9999; truncated normal")
@@ -1631,9 +1627,10 @@ subroutine TruncatedNormalTests
     !
     minimum = -huge(minimum)
     maximum = huge(maximum)
+    p4 = [mean, deviation, minimum, maximum]
     do i = -25, 25
         u = 0.1_wp * real(i, wp)
-        call calculateDistributionInverse( u, x, distType, [mean, deviation, minimum, maximum], error )
+        call calculateDistributionInverse( u, x, distType, p4, error )
         call copystrback(errorMessage, error%message)
         call assert_equal(error%icode, 0, errorMessage)
         expected = mean + u * deviation
@@ -1648,7 +1645,8 @@ subroutine TruncatedNormalTests
     deviation = 1.0_wp
     minimum = 0.1_wp
     maximum = -9.9_wp
-    call calculateDistributionInverse( u, x, distType, [mean, deviation, minimum, maximum], error )
+    p4 = [mean, deviation, minimum, maximum]
+    call calculateDistributionInverse( u, x, distType, p4, error )
     call copystrback(errorMessage, error%message)
     call assert_true(error%icode /= 0, errorMessage)
 

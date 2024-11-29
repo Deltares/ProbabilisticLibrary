@@ -31,11 +31,11 @@ namespace Deltares
 {
     namespace Optimization
     {
-        double KMeansClustering::Cluster::getSumSquared()
+        double KMeansClustering::Cluster::getSumSquared() const
         {
-            double sum = 0;
+            double sum = 0.0;
 
-            for (std::shared_ptr<Models::Sample> sample : this->Samples)
+            for (const std::shared_ptr<Models::Sample>& sample : this->Samples)
             {
                 sum += this->Center->getDistance2(sample);
             }
@@ -64,10 +64,10 @@ namespace Deltares
             }
         }
 
-        std::vector<std::shared_ptr<Models::Sample>> KMeansClustering::getCentersFromClusters(std::vector<std::shared_ptr<KMeansClustering::Cluster>> clusters)
+        std::vector<std::shared_ptr<Models::Sample>> KMeansClustering::getCentersFromClusters(const std::vector<std::shared_ptr<Cluster>>& clusters)
         {
             std::vector<std::shared_ptr<Models::Sample>> centers;
-            for (std::shared_ptr<Cluster> cluster : clusters)
+            for (const auto& cluster : clusters)
             {
                 centers.push_back(cluster->Center);
             }
@@ -87,17 +87,15 @@ namespace Deltares
 
                 for (int k = 2; k <= this->Settings->MaxClusters; k++)
                 {
-                    std::shared_ptr<ClusterSettings> fixedClusterOptions = std::make_shared<ClusterSettings>();
+                    auto fixedClusterOptions = ClusterSettings();
 
-                    fixedClusterOptions->NumberClusters = k;
-                    fixedClusterOptions->clusterInitializationMethod = this->Settings->clusterInitializationMethod;
-                    fixedClusterOptions->MaxIterations = this->Settings->MaxIterations;
-                    fixedClusterOptions->Trials = this->Settings->MaxIterations;
-                    fixedClusterOptions->SampleHasWeighting = true;
+                    fixedClusterOptions.NumberClusters = k;
+                    fixedClusterOptions.clusterInitializationMethod = this->Settings->clusterInitializationMethod;
+                    fixedClusterOptions.MaxIterations = this->Settings->MaxIterations;
+                    fixedClusterOptions.Trials = this->Settings->MaxIterations;
+                    fixedClusterOptions.SampleHasWeighting = true;
 
-                    double sumSquared;
-
-                    std::vector<std::shared_ptr<Cluster>> newClusters = FixedCluster(samples, fixedClusterOptions, sumSquared);
+                    std::vector<std::shared_ptr<Cluster>> newClusters = FixedCluster(samples, fixedClusterOptions);
 
                     double score2 = SilhouetteCoefficient(newClusters);
 
@@ -118,16 +116,15 @@ namespace Deltares
 
                 if (bestScore < 0.5)
                 {
-                    std::shared_ptr<ClusterSettings> fixedClusterOptions = std::make_shared<ClusterSettings>();
+                    auto fixedClusterOptions = ClusterSettings();
 
-                    fixedClusterOptions->NumberClusters = 1;
-                    fixedClusterOptions->clusterInitializationMethod = this->Settings->clusterInitializationMethod;
-                    fixedClusterOptions->MaxIterations = this->Settings->MaxIterations;
-                    fixedClusterOptions->Trials = this->Settings->MaxIterations;
-                    fixedClusterOptions->SampleHasWeighting = true;
+                    fixedClusterOptions.NumberClusters = 1;
+                    fixedClusterOptions.clusterInitializationMethod = this->Settings->clusterInitializationMethod;
+                    fixedClusterOptions.MaxIterations = this->Settings->MaxIterations;
+                    fixedClusterOptions.Trials = this->Settings->MaxIterations;
+                    fixedClusterOptions.SampleHasWeighting = true;
 
-                    double sumSquared;
-                    std::vector<std::shared_ptr<Cluster>> newClusters = FixedCluster(samples, fixedClusterOptions, sumSquared);
+                    std::vector<std::shared_ptr<Cluster>> newClusters = FixedCluster(samples, fixedClusterOptions);
 
                     return getCentersFromClusters(newClusters);
                 }
@@ -136,34 +133,33 @@ namespace Deltares
             }
             else
             {
-                std::shared_ptr<ClusterSettings> fixedClusterOptions = std::make_shared<ClusterSettings>();
+                auto fixedClusterOptions = ClusterSettings();
 
-                fixedClusterOptions->NumberClusters = this->Settings->MaxClusters;
-                fixedClusterOptions->clusterInitializationMethod = this->Settings->clusterInitializationMethod;
-                fixedClusterOptions->MaxIterations = this->Settings->MaxIterations;
-                fixedClusterOptions->SampleHasWeighting = true;
+                fixedClusterOptions.NumberClusters = this->Settings->MaxClusters;
+                fixedClusterOptions.clusterInitializationMethod = this->Settings->clusterInitializationMethod;
+                fixedClusterOptions.MaxIterations = this->Settings->MaxIterations;
+                fixedClusterOptions.SampleHasWeighting = true;
 
-                double sumSquared;
-                std::vector<std::shared_ptr<Cluster>> clusters = FixedCluster(samples, fixedClusterOptions, sumSquared);
+                std::vector<std::shared_ptr<Cluster>> clusters = FixedCluster(samples, fixedClusterOptions);
 
                 return getCentersFromClusters(clusters);
             }
         }
 
-        std::vector<std::shared_ptr<KMeansClustering::Cluster>> KMeansClustering::FixedCluster(std::vector<std::shared_ptr<Models::Sample>>& samples, std::shared_ptr<ClusterSettings> options, double& sumSquared)
+        std::vector<std::shared_ptr<KMeansClustering::Cluster>> KMeansClustering::FixedCluster(std::vector<std::shared_ptr<Models::Sample>>& samples, const ClusterSettings& options)
         {
             std::vector<std::shared_ptr<Cluster>> clusters;
-            sumSquared = std::numeric_limits<double>::max(); // smaller is better
+            double sumSquared = std::numeric_limits<double>::max(); // smaller is better
 
             int unchangedClusters = 0;
             constexpr int maxUnchangedClusters = 10;
 
-            for (int trial = 0; trial < options->Trials; trial++)
+            for (int trial = 0; trial < options.Trials; trial++)
             {
                 std::vector<std::shared_ptr<Cluster>> newClusters = DoClustering(samples, options, trial); // find a clustering and update bests
 
                 double newSumSquared = 0;
-                for (std::shared_ptr<Cluster> cluster : newClusters)
+                for (const auto& cluster : newClusters)
                 {
                     newSumSquared += cluster->getSumSquared();
                 }
@@ -188,27 +184,28 @@ namespace Deltares
             return clusters;
         }
 
-        std::vector<std::shared_ptr<KMeansClustering::Cluster>> KMeansClustering::DoClustering(std::vector<std::shared_ptr<Models::Sample>>& samples, std::shared_ptr<ClusterSettings> options, int randomSeed)
+        std::vector<std::shared_ptr<KMeansClustering::Cluster>> KMeansClustering::DoClustering(std::vector<std::shared_ptr<Models::Sample>>& samples, const ClusterSettings& options, int randomSeed)
         {
             std::vector<std::shared_ptr<Cluster>> newClusters = InitializeClusters(samples, options, randomSeed);
 
             bool modified = true; //  result from UpdateClustering (to exit loop)
             int iteration = 0;
 
-            while (modified && iteration++ < options->MaxIterations)
+            while (modified && iteration < options.MaxIterations)
             {
                 modified = updateClustering(newClusters);
+                iteration++;
             }
 
             return newClusters;
         }
 
-        std::vector<std::shared_ptr<KMeansClustering::Cluster>> KMeansClustering::InitializeClusters(std::vector<std::shared_ptr<Models::Sample>>& samples, std::shared_ptr<ClusterSettings> options, int randomSeed)
+        std::vector<std::shared_ptr<KMeansClustering::Cluster>> KMeansClustering::InitializeClusters(std::vector<std::shared_ptr<Models::Sample>>& samples, const ClusterSettings& options, int randomSeed)
         {
-            switch (options->clusterInitializationMethod)
+            switch (options.clusterInitializationMethod)
             {
             case ClusterInitializationMethod::PlusPlus:
-                return InitPlusPlus(options->NumberClusters, samples, randomSeed, options->SampleHasWeighting);
+                return InitPlusPlus(options.NumberClusters, samples, randomSeed, options.SampleHasWeighting);
             default:
                 throw Reliability::probLibException("Cluster initialization method");
             }
@@ -224,10 +221,10 @@ namespace Deltares
             // TODO: PROBL-42 remove this line 
             double dummy = Numeric::Random::next();  //  random->Next(0, samples.size()); // [0, N)
 
-            std::shared_ptr<Cluster> firstCluster = std::make_shared<Cluster>();
+            auto firstCluster = std::make_shared<Cluster>();
 
             firstCluster->Samples.reserve(samples.size());
-            for (std::shared_ptr<Models::Sample> sample : samples)
+            for (const auto& sample : samples)
             {
                 firstCluster->Samples.push_back(sample);
             }
@@ -241,9 +238,9 @@ namespace Deltares
                 std::vector<double> squaredDistances(samples.size()); // from each item to its closest mean
                 int n = 0;
 
-                for (std::shared_ptr<Models::Sample> sample : samples)
+                for (const auto& sample : samples)
                 {
-                    std::shared_ptr<Cluster> nearestCluster = getNearestCluster(sample, clusters);
+                    const auto nearestCluster = getNearestCluster(sample, clusters);
 
                     double distance2 = nearestCluster->Center->getDistance2(sample);
 
@@ -259,7 +256,7 @@ namespace Deltares
                 // if a sample has been used as a mean its distance will become 0 so it will not be selected
                 int newMeanIndex = ProporSelect(squaredDistances);
 
-                std::shared_ptr<Cluster> nextCluster = std::make_shared<Cluster>(samples[newMeanIndex]->clone());
+                auto nextCluster = std::make_shared<Cluster>(samples[newMeanIndex]->clone());
 
                 clusters.push_back(nextCluster);
             }
@@ -293,7 +290,7 @@ namespace Deltares
             return n - 1; // last index
         }
 
-        bool KMeansClustering::updateClustering(std::vector<std::shared_ptr<Cluster>>& clusters)
+        bool KMeansClustering::updateClustering(const std::vector<std::shared_ptr<Cluster>>& clusters)
         {
             // proposed clustering would have an empty cluster: return false - no change to clustering
             // proposed clustering would be no change: return false, no change to clustering
@@ -346,12 +343,12 @@ namespace Deltares
             return modified;
         }
 
-        std::shared_ptr<KMeansClustering::Cluster> KMeansClustering::getNearestCluster(std::shared_ptr<Models::Sample> sample, std::vector<std::shared_ptr<Cluster>>& clusters)
+        std::shared_ptr<KMeansClustering::Cluster> KMeansClustering::getNearestCluster(const std::shared_ptr<Models::Sample>& sample, const std::vector<std::shared_ptr<Cluster>>& clusters)
         {
             std::shared_ptr<Cluster> nearestCluster = nullptr;
             double minDistance = std::numeric_limits<double>::max();
 
-            for (auto cluster : clusters)
+            for (const auto& cluster : clusters)
             {
                 double distance = cluster->Center->getDistance2(sample);
                 if (nearestCluster == nullptr || distance < minDistance)
@@ -364,13 +361,13 @@ namespace Deltares
             return nearestCluster;
         }
 
-        double KMeansClustering::SilhouetteCoefficient(std::vector<std::shared_ptr<Cluster>>& clusters)
+        double KMeansClustering::SilhouetteCoefficient(const std::vector<std::shared_ptr<Cluster>>& clusters)
         {
             double score = 0.0;
             double nSamples = 0;
-            for (auto cluster : clusters)
+            for (const auto& cluster : clusters)
             {
-                for (std::shared_ptr<Models::Sample> sample : cluster->Samples)
+                for (const auto& sample : cluster->Samples)
                 {
                     ++nSamples;
                     double a_i = IntraClusterDistance(cluster, sample);
@@ -381,11 +378,11 @@ namespace Deltares
             return score / nSamples;
         }
 
-        double KMeansClustering::IntraClusterDistance(std::shared_ptr<Cluster> cluster, std::shared_ptr<Models::Sample> sample)
+        double KMeansClustering::IntraClusterDistance(const std::shared_ptr<Cluster>& cluster, const std::shared_ptr<Models::Sample>& sample)
         {
             double intraClusterDistance = 0.0;
 
-            for (std::shared_ptr<Models::Sample> otherSample : cluster->Samples)
+            for (const auto& otherSample : cluster->Samples)
             {
                 if (sample != otherSample)
                 {
@@ -393,25 +390,26 @@ namespace Deltares
                 }
             }
 
-            return intraClusterDistance / (cluster->Samples.size() - 1);
+            return intraClusterDistance / static_cast<double>(cluster->Samples.size() - 1);
         }
 
-        double KMeansClustering::InterClusterDistance(std::shared_ptr<Cluster> cluster, std::shared_ptr<Models::Sample> sample, std::vector<std::shared_ptr<Cluster>>& clusters)
+        double KMeansClustering::InterClusterDistance(const std::shared_ptr<Cluster>& cluster,
+            const std::shared_ptr<Models::Sample>& sample, const std::vector<std::shared_ptr<Cluster>>& clusters)
         {
             double interClusterDistance = std::numeric_limits<double>::max();
 
-            for (std::shared_ptr<Cluster> otherCluster : clusters)
+            for (const std::shared_ptr<Cluster>& otherCluster : clusters)
             {
                 if (cluster != otherCluster)
                 {
                     double clusterDissimilarity = 0.0;
 
-                    for (const std::shared_ptr<Models::Sample> otherSample : otherCluster->Samples)
+                    for (const std::shared_ptr<Models::Sample>& otherSample : otherCluster->Samples)
                     {
                         clusterDissimilarity += sample->getDistance(otherSample);
                     }
 
-                    clusterDissimilarity /= otherCluster->Samples.size();
+                    clusterDissimilarity /= static_cast<double>(otherCluster->Samples.size());
 
                     if (clusterDissimilarity < interClusterDistance)
                     {

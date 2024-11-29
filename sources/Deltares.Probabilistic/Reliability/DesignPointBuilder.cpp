@@ -37,17 +37,17 @@ namespace Deltares
         {
         private:
             std::map<double, double> values;
-            std::shared_ptr<StochastSettings> settings = nullptr;
+            std::shared_ptr<Statistics::Stochast> stochast = nullptr;
 
         public:
-            ModeFinder(std::shared_ptr<StochastSettings> settings)
+            ModeFinder(std::shared_ptr<Statistics::Stochast> stochast)
             {
-                this->settings = settings;
+                this->stochast = stochast;
             }
 
             void add(double u, double weight)
             {
-                u = settings->getRepresentativeU(u);
+                u = stochast->getRepresentativeU(u);
 
                 if (!values.contains(u))
                 {
@@ -77,6 +77,41 @@ namespace Deltares
 
         DesignPointBuilder::DesignPointBuilder(int count, DesignPointMethod method, std::shared_ptr<StochastSettingsSet> stochastSet)
         {
+            initializeSamples(count, method);
+
+            if (stochastSet != nullptr)
+            {
+                for (int i = 0; i < stochastSet->getVaryingStochastCount(); i++)
+                {
+                    if (stochastSet->VaryingStochastSettings[i]->IsQualitative)
+                    {
+                        this->qualitativeIndices.push_back(i);
+                        this->modeFinders.push_back(std::make_shared<ModeFinder>(stochastSet->VaryingStochastSettings[i]->stochast));
+                    }
+                }
+            }
+
+            this->qualitativeCount = this->qualitativeIndices.size();
+        }
+
+        DesignPointBuilder::DesignPointBuilder(DesignPointMethod method, std::vector<std::shared_ptr<Statistics::Stochast>> stochasts)
+        {
+            initializeSamples(stochasts.size(), method);
+
+            for (int i = 0; i < stochasts.size(); i++)
+            {
+                if (stochasts[i]->isQualitative())
+                {
+                    this->qualitativeIndices.push_back(i);
+                    this->modeFinders.push_back(std::make_shared<ModeFinder>(stochasts[i]));
+                }
+            }
+
+            this->qualitativeCount = this->qualitativeIndices.size();
+        }
+
+        void DesignPointBuilder::initializeSamples(int count, DesignPointMethod method)
+        {
             this->count = count;
             this->method = method;
 
@@ -88,19 +123,6 @@ namespace Deltares
             this->qualitativeIndices.clear();
             this->modeFinders.clear();
 
-            if (stochastSet != nullptr)
-            {
-                for (int i = 0; i < stochastSet->getVaryingStochastCount(); i++)
-                {
-                    if (stochastSet->VaryingStochastSettings[i]->IsQualitative)
-                    {
-                        this->qualitativeIndices.push_back(i);
-                        this->modeFinders.push_back(std::make_shared<ModeFinder>(stochastSet->VaryingStochastSettings[i]));
-                    }
-                }
-            }
-
-            this->qualitativeCount = this->qualitativeIndices.size();
         }
 
         void DesignPointBuilder::initialize(double beta)

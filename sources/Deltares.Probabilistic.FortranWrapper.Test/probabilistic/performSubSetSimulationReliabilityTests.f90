@@ -53,14 +53,12 @@ subroutine runSubSetTest(SampleMethod, expectedBeta)
 
     type(probabilisticDataStructure_data) :: probDb
     type(storedConvergenceData)           :: convergenceData  !< struct holding all convergence data
-    real (kind = wp), pointer             :: alfa(:)
-    real (kind = wp), pointer             :: x(:)
     integer, pointer                      :: iPoint(:)
-    real (kind = wp)                      :: beta
     logical                               :: convCriterium
     integer                               :: nStochasts
+    type(designPoint)                     :: dp
 
-    allocate( alfa(2), x(3), iPoint(2) )
+    allocate( dp%alpha(2), dp%x(3), iPoint(2) )
     nStochasts = 2
     iPoint     = (/ 1, 2 /)
     call initProbabilisticCalculation ( probDb, 3, .false., .false. )
@@ -71,7 +69,7 @@ subroutine runSubSetTest(SampleMethod, expectedBeta)
     call setStochasticDistrib( probDb, 3, distributionDeterministic, 4.0d0, 0.0d0, 0.0d0, 0.0d0)
 
     ! Initialise deterministic parameters
-    call initDeterministicValue( probDb, x )
+    call initDeterministicValue( probDb, dp%x )
 
     probDb%method%calcMethod = methodSubSetSimulationReliability
     probDb%method%SubSetSimulationReliability%MarkovChainDeviation = 0.5_wp
@@ -80,15 +78,15 @@ subroutine runSubSetTest(SampleMethod, expectedBeta)
 
     ! Perform computation to determine alpha and beta
     call initSparseWaartsTestsFunctions(probDb%stovar%maxStochasts, probDb%method%maxParallelThreads)
-    call probCalc%run( probDb, simpleZ, alfa, beta, x, convergenceData)
+    call probCalc%run( probDb, simpleZ, dp, convergenceData)
     convCriterium = convergenceData%convCriterium
 
     call cleanUpWaartsTestsFunctions
 
-    call assert_comparable(beta, expectedBeta, margin, "The computed beta deviates from the analytically computed value")
+    call assert_comparable(dp%beta, expectedBeta, margin, "The computed beta deviates from the analytically computed value")
     call finalizeProbabilisticCalculation(probDb)
 
-    deallocate(alfa, x, iPoint)
+    deallocate(dp%alpha, dp%x, iPoint)
 
 end subroutine runSubSetTest
 

@@ -29,6 +29,7 @@
 #include "Math/testMatrixMultiplication.h"
 #include "Math/testRandom.h"
 #include "Math/testVector1D.h"
+#include "Math/testRootfinder.h"
 #include "Combin/hohenbichler_tests.h"
 #include "Combin/intEqualElements_tests.h"
 #include "Combin/upscale_tests.h"
@@ -169,6 +170,16 @@ namespace Deltares
                 testReliabilityMethods::testDSFIReliability();
             }
 
+            TEST(reliability_method_test, testFragilityCurveIntegration)
+            {
+                testReliabilityMethods::testFragilityCurveIntegration();
+            }
+    
+            TEST(reliability_method_test, testNumericalIntegrationReliability)
+            {
+                testReliabilityMethods::testNumericalIntegrationReliability();
+            }
+
             TEST(unittst, testDistributions)
             {
                 auto tstDist = testDistributions();
@@ -191,6 +202,12 @@ namespace Deltares
             {
                 auto tstRnd = testRandom();
                 tstRnd.allRandomTests();
+            }
+
+            TEST(unittst, testRootfinder)
+            {
+                auto tstRF = rootfinder_tests();
+                tstRF.all_rootfinder_tests();
             }
 
             TEST(unittst, testVector1D)

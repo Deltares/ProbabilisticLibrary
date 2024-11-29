@@ -22,7 +22,6 @@
 #pragma once
 #include <functional>
 #include <vector>
-#include <memory>
 
 namespace Deltares
 {
@@ -30,7 +29,6 @@ namespace Deltares
     {
         enum DoubleType { Positive, Negative, Zero, NaN };
         enum InterpolationType { Linear, Logarithmic, Harmonic };
-
         enum CmpResult { Equal, Greater, Smaller };
 
         class NumericSupport
@@ -38,6 +36,7 @@ namespace Deltares
         private:
         public:
             static double GetSign(double value);
+            static double GetPrevailingSign(std::vector<double> values);
             static double GetSquaredSum(const std::vector<double>& values);
             static double GetLength(const std::vector<double>& values);
             static double getDistance(const std::vector<double>& values1, const std::vector<double>& values2);

@@ -115,6 +115,15 @@ module interface_typedefs
     integer :: nrCorrelations
   end type tCompIds
 
+  type, public :: DesignPoint
+      real(kind=wp) :: beta
+      real(kind=wp), pointer :: alpha(:)
+      real(kind=wp), pointer :: rho(:)
+      real(kind=wp), pointer :: duration(:)
+      real(kind=wp), pointer :: correlation_length(:)
+      real(kind=wp), pointer :: x(:)
+  end type DesignPoint
+
   type, public :: tpFORM
       integer                     :: startMethod              !< Method for startvector
       integer                     :: maxIterations            !< Maximum number of iterations

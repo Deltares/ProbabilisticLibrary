@@ -1010,21 +1010,23 @@ subroutine iterateMechanism (probDb, convergenceData, z_func, probMethod, alfa, 
     type(probabilisticDataStructure_data)   :: probDb
     type(storedConvergenceData)             :: convergenceData
     procedure(zfunc)                        :: z_func
-    integer,       intent(in)    :: probMethod
-    real(kind=wp), intent(out)   :: alfa(:)
-    real(kind=wp), intent(out)   :: combinedBeta
-    real(kind=wp), intent(out)   :: x(:)
+    integer,       intent(in)               :: probMethod
+    real(kind=wp), intent(inout), target   :: alfa(:)
+    real(kind=wp), intent(  out)           :: combinedBeta
+    real(kind=wp), intent(inout), target   :: x(:)
 
     integer                      :: i
-    real(kind=wp)                :: beta
+    type(designPoint)            :: dp
 
     combinedBeta = 0.0_wp
 
     probDb%method%calcMethod = probMethod
+    dp%alpha => alfa
+    dp%x     => x
     do i = 1, numberIterations
-        call probCalc%run( probDb, z_func, alfa, beta, x, convergenceData )
+        call probCalc%run( probDb, z_func, dp, convergenceData )
 
-        combinedBeta = combinedBeta + beta / numberIterations
+        combinedBeta = combinedBeta + dp%beta / numberIterations
     end do
 
 end subroutine iterateMechanism
@@ -1034,13 +1036,10 @@ subroutine testDeterministicParameterHasNoInfluence
 
     type(probabilisticDataStructure_data)  :: probDb
     type(storedConvergenceData)            :: convergenceData
-    real (kind = wp), pointer   :: alfa(:)
-    real (kind = wp), pointer   :: x(:)
-    real (kind = wp)            :: beta = 0.0d0
-    real (kind = wp)            :: beta2= 0.0d0
+    type(designPoint)                      :: dp1, dp2
 
    ! Initialization of mechanism
-   call initializeCalculation (probDb, 2, alfa, x)
+   call initializeCalculation (probDb, 2, dp1%alpha, dp1%x)
 
    probDb%method%FORM%trialLoops = 10
 
@@ -1051,24 +1050,23 @@ subroutine testDeterministicParameterHasNoInfluence
    ! Perform computation numberIterations times
    probDb%method%calcMethod = methodFORM
    call initSparseWaartsTestsFunctions(probDb%stovar%maxStochasts, probDb%method%maxParallelThreads)
-   call probCalc%run( probDb, zLinearResistanceSolicitation, alfa, beta, x, convergenceData )
+   call probCalc%run( probDb, zLinearResistanceSolicitation, dp1, convergenceData )
    call cleanUpWaartsTestsFunctions
 
    call finalizeProbabilisticCalculation(probDb)
 
    !! Now again but with deterministic value fixed in z function
 
-   call initializeCalculation (probDb, 1, alfa, x)
+   call initializeCalculation (probDb, 1, dp2%alpha, dp2%x)
 
    ! Initialize stochast data
    call initializeStochast ( probDb, 1, distributionNormal, 2.0d0, 1.0d0, 0.0d0, 0.0d0)
 
    ! Perform computation numberIterations times
    probDb%method%calcMethod = methodFORM
-   call probCalc%run( probDb, zLinearResistanceSolicitationFixed, &
-       alfa, beta2, x, convergenceData )
+   call probCalc%run( probDb, zLinearResistanceSolicitationFixed, dp2, convergenceData )
 
-   call assert_comparable( beta2, beta, 0.01d0, "Deterministic parameter has influence: different beta's" )
+   call assert_comparable( dp2%beta, dp1%beta, 0.01d0, "Deterministic parameter has influence: different beta's" )
    call finalizeProbabilisticCalculation(probDb)
 
 end subroutine testDeterministicParameterHasNoInfluence
@@ -1081,15 +1079,12 @@ subroutine testErrorHandlingCalculateLimitStateFunction
     character(len=255)                     :: message
 
     integer                     :: ipos
-    real (kind = wp), pointer   :: alfa(:)
-    real (kind = wp), pointer   :: x(:)
-    real (kind = wp)            :: beta = 0.0d0
-    real (kind = wp)            :: beta2= 0.0d0
 
     type(tProbCalc)             :: probCalc            !< class prob. calculation
+    type(designPoint)           :: dp
 
    ! Initialization of mechanism with no stochastic parameters
-   call initializeCalculation (probDb, 0, alfa, x)
+   call initializeCalculation (probDb, 0, dp%alpha, dp%x)
 
    probDb%method%FORM%trialLoops = 10
 
@@ -1101,7 +1096,7 @@ subroutine testErrorHandlingCalculateLimitStateFunction
    call SetFatalErrorExpected(.true.)
    probDb%method%calcMethod = methodFORM
    call initSparseWaartsTestsFunctions(probDb%stovar%maxStochasts, probDb%method%maxParallelThreads)
-   call probCalc%run( probDb, zLinearResistanceSolicitation, alfa, beta, x, convergenceData )
+   call probCalc%run( probDb, zLinearResistanceSolicitation, dp, convergenceData )
    call cleanUpWaartsTestsFunctions
 
    call SetFatalErrorExpected(.false.)
@@ -1113,7 +1108,7 @@ subroutine testErrorHandlingCalculateLimitStateFunction
    !! Now again but with deterministic value fixed in z function
    !! But with an unknown method
 
-   call initializeCalculation (probDb, 1, alfa, x)
+   call initializeCalculation (probDb, 1, dp%alpha, dp%x)
 
    ! Initialize stochast data
    call initializeStochast ( probDb, 1, distributionNormal, 2.0d0, 1.0d0, 0.0d0, 0.0d0)
@@ -1121,7 +1116,7 @@ subroutine testErrorHandlingCalculateLimitStateFunction
    ! Perform computation numberIterations times
    call SetFatalErrorExpected(.true.)
    probDb%method%calcMethod = 99
-   call probCalc%run( probDb, zLinearResistanceSolicitationFixed, alfa, beta2, x, convergenceData )
+   call probCalc%run( probDb, zLinearResistanceSolicitationFixed, dp, convergenceData )
    call SetFatalErrorExpected(.false.)
    call GetFatalErrorMessage(message)
    ipos = index(message, "99")
