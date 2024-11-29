@@ -20,13 +20,10 @@
 // All rights reserved.
 //
 #pragma once
-#include <vector>
 
 #include "LimitStateFunction.h"
-#include "../Model/ZValueConverter.h"
+#include "../Model/ModelProject.h"
 #include "../Statistics/Stochast.h"
-#include "../Statistics/CorrelationMatrix.h"
-#include "../Statistics/SparseCorrelationMatrix.h"
 #include "../Reliability/ReliabilityMethod.h"
 #include "../Reliability/DesignPoint.h"
 #include "../Reliability/Settings.h"
@@ -38,28 +35,13 @@ namespace Deltares
         /**
          * \brief Combines a model, stochastic variables and calculation settings, can perform a calculation and holds results
          */
-        class ReliabilityProject
+        class ReliabilityProject : public Models::ModelProject
         {
         public:
-            /**
-             * \brief Collection of all stochastic variables
-             */
-            std::vector<std::shared_ptr<Statistics::Stochast>> stochasts;
-
-            /**
-             * \brief Defines correlations between stochastic variables
-             */
-            std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix = nullptr;
-
             /**
              * \brief Method which performs a reliability calculation
              */
             std::shared_ptr<Reliability::ReliabilityMethod> reliabilityMethod = nullptr;
-
-            /**
-             * \brief Deterministic model which calculates a z-value based on input values
-             */
-            std::shared_ptr<ZModel> model = nullptr;
 
             /**
              * \brief Limit state function
@@ -114,9 +96,6 @@ namespace Deltares
              * \brief Runs the reliability calculation
              */
             void run();
-
-        private:
-            std::shared_ptr<Statistics::CorrelationMatrix> getCorrelationMatrix();
         };
     }
 }

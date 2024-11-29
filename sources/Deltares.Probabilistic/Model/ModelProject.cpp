@@ -19,22 +19,37 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#pragma once
-#include <string>
+#include "ModelProject.h"
 
 namespace Deltares
 {
     namespace Models
     {
-        class ModelInputParameter
+        void ModelProject::updateStochasts()
         {
-        public:
-            std::string name = "";
-            int index = 0;
-            double defaultValue = 0.0;
-            bool isArray = false;
-            int arraySize = 1;
-        };
+            this->stochasts.clear();
+
+            if (model != nullptr)
+            {
+                for (std::shared_ptr<ModelInputParameter> parameter : model->inputParameters)
+                {
+                    std::shared_ptr<Statistics::Stochast> stochast = nullptr;
+                    if (this->existingStochasts.contains(parameter->name))
+                    {
+                        stochast = this->existingStochasts[parameter->name];
+                    }
+                    else
+                    {
+                        stochast = std::make_shared<Statistics::Stochast>();
+                        stochast->name = parameter->name;
+                        stochast->setMean(parameter->defaultValue);
+                        existingStochasts[stochast->name] = stochast;
+                    }
+
+                    this->stochasts.push_back(stochast);
+                }
+            }
+        }
     }
 }
 

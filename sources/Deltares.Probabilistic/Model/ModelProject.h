@@ -20,20 +20,44 @@
 // All rights reserved.
 //
 #pragma once
-#include <string>
+
+#include <vector>
+#include <memory>
+#include "../Statistics/Stochast.h"
+#include "../Statistics/CorrelationMatrix.h"
+#include "ZModel.h"
 
 namespace Deltares
 {
     namespace Models
     {
-        class ModelInputParameter
+        /**
+         * \brief Base class for projects containing a model
+         */
+        class ModelProject
         {
         public:
-            std::string name = "";
-            int index = 0;
-            double defaultValue = 0.0;
-            bool isArray = false;
-            int arraySize = 1;
+            /**
+             * \brief Collection of all stochastic variables
+             */
+            std::vector<std::shared_ptr<Statistics::Stochast>> stochasts;
+
+            /**
+             * \brief Defines correlations between stochastic variables
+             */
+            std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix = nullptr;
+
+            /**
+             * \brief Deterministic model which calculates a z-value based on input values
+             */
+            std::shared_ptr<ZModel> model = nullptr;
+
+            /**
+             * \brief Updates the stochasts with the parameters of the model
+             */
+            void updateStochasts();
+        private:
+            std::unordered_map<std::string, std::shared_ptr<Statistics::Stochast>> existingStochasts;
         };
     }
 }

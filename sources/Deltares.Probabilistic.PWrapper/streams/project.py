@@ -76,13 +76,19 @@ class ZModel:
 		return self._model_name
 
 	def _get_input_parameters(self, function):
-		variable_names = function.__code__.co_varnames
+		sig = inspect.signature(function)
 		parameters = []
-		for i in range(function.__code__.co_argcount):
+		index = 0
+		for name, param in sig.parameters.items():
 			modelParameter = ModelParameter()
-			modelParameter.name = variable_names[i]
-			modelParameter.index = i
+			modelParameter.name = name
+			if param.default != param.empty:
+				modelParameter.default_value = param.default
+			if param.annotation != param.empty:
+				modelParameter.is_array = '[' in param.annotation
+			modelParameter.index = index
 			parameters.append(modelParameter)
+			index += 1
 			
 		return FrozenList(parameters)
 		
@@ -154,7 +160,7 @@ class SensitivityProject:
 		interface.SetCallBack(self._id, 'model', self._callback)
 
 		self._is_dirty = False
-		self._all_variables = {}
+		self._known_variables = []
 		self._variables = FrozenList()
 		self._output_parameters = FrozenList()
 		self._correlation_matrix = CorrelationMatrix()
@@ -221,19 +227,23 @@ class SensitivityProject:
 				self._update_model()
 	
 	def _update_model(self):
-		variables = []
-		for input_parameter in SensitivityProject._zmodel.input_parameters:
-			var_name = input_parameter.name
-			if not var_name in self._all_variables.keys():
-				variable = Stochast()
-				variable.name = var_name
-				variable.mean = input_parameter.default_value
-				self._all_variables[var_name] = variable
-			else:
-				variable = self._all_variables[var_name]
-			variables.append(variable)
+		interface.SetArrayIntValue(self._id, 'input_parameters', [input_parameter._id for input_parameter in SensitivityProject._zmodel.input_parameters])
+		interface.SetArrayIntValue(self._id, 'output_parameters', [output_parameter._id for output_parameter in SensitivityProject._zmodel.output_parameters])
+		interface.SetStringValue(self._id, 'model_name', SensitivityProject._zmodel.name)
 
+		variables = []
+		variable_ids = interface.GetArrayIdValue(self._id, 'stochasts')
+		for variable_id in variable_ids:
+			variable = None
+			for known_variable in self._known_variables:
+				if known_variable._id == variable_id:
+					variable = known_variable
+			if variable is None:
+				variable = Stochast(variable_id);
+				self._known_variables.append(variable)
+			variables.append(variable)
 		self._variables = FrozenList(variables)
+
 		self._correlation_matrix._set_variables(variables)
 		self._settings._set_variables(variables)
 		for var in self._variables:
@@ -241,9 +251,6 @@ class SensitivityProject:
 
 		self._output_parameters = SensitivityProject._zmodel.output_parameters
 
-		interface.SetArrayIntValue(self._id, 'input_parameters', [input_parameter._id for input_parameter in SensitivityProject._zmodel.input_parameters])
-		interface.SetArrayIntValue(self._id, 'output_parameters', [output_parameter._id for output_parameter in SensitivityProject._zmodel.output_parameters])
-		interface.SetStringValue(self._id, 'model_name', SensitivityProject._zmodel.name)
 
 	@interface.CALLBACK
 	def _performCallBack(values, size, output_values):
@@ -257,7 +264,6 @@ class SensitivityProject:
 		self._stochasts = None
 		self._output_correlation_matrix = None
 
-		interface.SetArrayIntValue(self._id, 'variables', [variable._id for variable in self._variables])
 		interface.SetIntValue(self._id, 'correlation_matrix', self._correlation_matrix._id)
 		interface.SetIntValue(self._id, 'settings', self._settings._id)
 		interface.SetArrayIntValue(self.settings._id, 'stochast_settings', [stochast_setting._id for stochast_setting in self.settings.stochast_settings])
@@ -305,7 +311,7 @@ class ReliabilityProject:
 		self._callback = interface.CALLBACK(self._performCallBack)
 		interface.SetCallBack(self._id, 'model', self._callback)
 
-		self._all_variables = {}
+		self._known_variables = []
 		self._variables = FrozenList()
 		self._correlation_matrix = CorrelationMatrix()
 		self._settings = Settings()
@@ -371,29 +377,29 @@ class ReliabilityProject:
 				self._update_model()
 
 	def _update_model(self):
-		variables = []
-		for input_parameter in ReliabilityProject._zmodel.input_parameters:
-			var_name = input_parameter.name
-			if not var_name in self._all_variables.keys():
-				variable = Stochast()
-				variable.name = var_name
-				variable.mean = input_parameter.default_value
-				self._all_variables[var_name] = variable
-			else:
-				variable = self._all_variables[var_name]
-			variables.append(variable)
+		interface.SetArrayIntValue(self._id, 'input_parameters', [input_parameter._id for input_parameter in ReliabilityProject._zmodel.input_parameters])
+		interface.SetArrayIntValue(self._id, 'output_parameters', [output_parameter._id for output_parameter in ReliabilityProject._zmodel.output_parameters])
+		interface.SetStringValue(self._id, 'model_name', ReliabilityProject._zmodel.name)
 
+		variables = []
+		variable_ids = interface.GetArrayIdValue(self._id, 'stochasts')
+		for variable_id in variable_ids:
+			variable = None
+			for known_variable in self._known_variables:
+				if known_variable._id == variable_id:
+					variable = known_variable
+			if variable is None:
+				variable = Stochast(variable_id);
+				self._known_variables.append(variable)
+			variables.append(variable)
 		self._variables = FrozenList(variables)
+
 		self._correlation_matrix._set_variables(variables)
 		self._settings._set_variables(variables)
 		for var in self._variables:
 			var._set_variables(self._variables)
 
 		self._output_parameters = ReliabilityProject._zmodel.output_parameters
-
-		interface.SetArrayIntValue(self._id, 'input_parameters', [input_parameter._id for input_parameter in ReliabilityProject._zmodel.input_parameters])
-		interface.SetArrayIntValue(self._id, 'output_parameters', [output_parameter._id for output_parameter in ReliabilityProject._zmodel.output_parameters])
-		interface.SetStringValue(self._id, 'model_name', ReliabilityProject._zmodel.name)
 
 	@interface.CALLBACK
 	def _performCallBack(values, size, output_values):
@@ -404,7 +410,6 @@ class ReliabilityProject:
 		self._design_point = None
 		self._fragility_curve = None
 
-		interface.SetArrayIntValue(self._id, 'variables', [variable._id for variable in self._variables])
 		interface.SetIntValue(self._id, 'correlation_matrix', self._correlation_matrix._id)
 		interface.SetIntValue(self._id, 'settings', self._settings._id)
 		interface.SetArrayIntValue(self.settings._id, 'stochast_settings', [stochast_setting._id for stochast_setting in self.settings.stochast_settings])
@@ -570,7 +575,9 @@ class ModelParameter:
 	def __dir__(self):
 		return ['name',
 	            'index',
-		        'mean']
+		        'mean',
+                'is_array',
+                'array_size']
 	
 	@property
 	def name(self):
@@ -595,6 +602,22 @@ class ModelParameter:
 	@default_value.setter
 	def default_value(self, value):
 		interface.SetValue(self._id, 'default_value', value)
+
+	@property
+	def is_array(self):
+		return interface.GetBoolValue(self._id, 'is_array')
+		
+	@is_array.setter
+	def is_array(self, value):
+		interface.SetBoolValue(self._id, 'is_array', value)
+
+	@property
+	def array_size(self):
+		return interface.GetIntValue(self._id, 'array_size')
+		
+	@is_array.setter
+	def array_size(self, value):
+		interface.SetIntValue(self._id, 'array_size', value)
 
 	def __str__(self):
 		return self.name

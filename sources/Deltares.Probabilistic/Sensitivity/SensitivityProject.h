@@ -22,6 +22,7 @@
 #pragma once
 #include <vector>
 
+#include "../Model/ModelProject.h"
 #include "ParameterSelector.h"
 #include "SensitivityMethod.h"
 #include "SettingsS.h"
@@ -35,19 +36,9 @@ namespace Deltares
         /**
          * \brief Combines a model, stochastic variables and calculation settings, can perform a calculation and holds results
          */
-        class SensitivityProject
+        class SensitivityProject : public Models::ModelProject
         {
         public:
-            /**
-             * \brief Collection of all stochastic variables
-             */
-            std::vector<std::shared_ptr<Statistics::Stochast>> stochasts;
-
-            /**
-             * \brief Defines correlations between stochastic variables
-             */
-            std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix = nullptr;
-
             /**
              * \brief Method which performs a reliability calculation
              */
@@ -57,11 +48,6 @@ namespace Deltares
              * \brief Output parameter for which the sensitivity is calculated, blank for all parameters
              */
             std::string parameter = "";
-
-            /**
-             * \brief Deterministic model which calculates a z-value based on input values
-             */
-            std::shared_ptr<Models::ZModel> model = nullptr;
 
             /**
              * \brief Calculation settings

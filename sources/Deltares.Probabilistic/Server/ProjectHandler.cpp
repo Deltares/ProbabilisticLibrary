@@ -565,18 +565,21 @@ namespace Deltares
                 std::shared_ptr<Reliability::ReliabilityProject> project = projects[id];
 
                 if (property_ == "index") return project->model->Index;
+                else if (property_ == "stochasts_count") return static_cast<int>(project->stochasts.size());
             }
             else if (objectType == ObjectType::ModelParameter)
             {
                 std::shared_ptr<Models::ModelInputParameter> parameter = modelParameters[id];
 
                 if (property_ == "index") return parameter->index;
+                else if (property_ == "array_size") return parameter->arraySize;
             }
             else if (objectType == ObjectType::SensitivityProject)
             {
                 std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
 
                 if (property_ == "sensitivity_stochasts_count") return (int)project->sensitivityStochasts.size();
+                else if (property_ == "stochasts_count") return static_cast<int>(project->stochasts.size());
                 else if (property_ == "index") return project->model->Index;
             }
             else if (objectType == ObjectType::Stochast)
@@ -783,6 +786,7 @@ namespace Deltares
                 std::shared_ptr<Models::ModelInputParameter> parameter = modelParameters[id];
 
                 if (property_ == "index") parameter->index = value;
+                else if (property_ == "array_size") parameter->arraySize = value;
             }
             else if (objectType == ObjectType::Stochast)
             {
@@ -916,6 +920,12 @@ namespace Deltares
                 else if (property_ == "truncated") return stochast->isTruncated();
                 else if (property_ == "conditional") return stochast->IsVariableStochast;
             }
+            else if (objectType == ObjectType::ModelParameter)
+            {
+                std::shared_ptr<Models::ModelInputParameter> parameter = modelParameters[id];
+
+                if (property_ == "is_array") return parameter->isArray;
+            }
             else if (objectType == ObjectType::LimitStateFunction)
             {
                 std::shared_ptr<Reliability::LimitStateFunction> limitStateFunction = limitStateFunctions[id];
@@ -968,6 +978,12 @@ namespace Deltares
                 if (property_ == "inverted") stochast->setInverted(value);
                 else if (property_ == "truncated") stochast->setTruncated(value);
                 else if (property_ == "conditional") stochast->IsVariableStochast = value;
+            }
+            else if (objectType == ObjectType::ModelParameter)
+            {
+                std::shared_ptr<Models::ModelInputParameter> parameter = modelParameters[id];
+
+                if (property_ == "is_array") parameter->isArray = value;
             }
             else if (objectType == ObjectType::LimitStateFunction)
             {
@@ -1238,6 +1254,7 @@ namespace Deltares
                     {
                         project->model->inputParameters.push_back(modelParameters[values[i]]);
                     }
+                    project->updateStochasts();
                 }
                 else if (property_ == "output_parameters")
                 {
@@ -1267,6 +1284,7 @@ namespace Deltares
                     {
                         project->model->inputParameters.push_back(modelParameters[values[i]]);
                     }
+                    project->updateStochasts();
                 }
                 else if (property_ == "output_parameters")
                 {
@@ -1556,11 +1574,18 @@ namespace Deltares
 
                 if (property_ == "variables") return this->GetStochastId(correlationMatrix->getStochast(index), newId);
             }
+            else if (objectType == ObjectType::Project)
+            {
+                std::shared_ptr<Reliability::ReliabilityProject> project = projects[id];
+
+                if (property_ == "stochasts") return this->GetStochastId(project->stochasts[index], newId);
+            }
             else if (objectType == ObjectType::SensitivityProject)
             {
                 std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
 
-                if (property_ == "sensitivity_stochasts") return this->GetStochastId(project->sensitivityStochasts[index], newId);
+                if (property_ == "stochasts") return this->GetStochastId(project->stochasts[index], newId);
+                else if (property_ == "sensitivity_stochasts") return this->GetStochastId(project->sensitivityStochasts[index], newId);
             }
             else if (objectType == ObjectType::DesignPoint)
             {

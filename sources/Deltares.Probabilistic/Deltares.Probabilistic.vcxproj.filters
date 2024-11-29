@@ -210,6 +210,8 @@
     <ClCompile Include="Math\BinarySupport.cpp" />
     <ClCompile Include="Reliability\FragilityCurveIntegration.cpp" />
     <ClCompile Include="Reliability\FragilityCurve.cpp" />
+    <ClCompile Include="Reliability\FragilityCurveProject.cpp" />
+    <ClCompile Include="Model\ModelProject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -439,6 +441,8 @@
     <ClInclude Include="Reliability\FragilityCurveIntegration.h" />
     <ClInclude Include="Reliability\FragilityCurveIntegrationSettings.h" />
     <ClInclude Include="Reliability\FragilityCurve.h" />
+    <ClInclude Include="Reliability\FragilityCurveProject.h" />
+    <ClInclude Include="Model\ModelProject.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

@@ -875,7 +875,7 @@ class CorrelationMatrix:
 		self._variables = FrozenList()
 
 	def __del__(self):
-	    interface.Destroy(self._id)
+		interface.Destroy(self._id)
 
 	@property
 	def variables(self):
