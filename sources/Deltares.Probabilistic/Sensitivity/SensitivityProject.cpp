@@ -69,7 +69,6 @@ namespace Deltares
         std::shared_ptr<Statistics::Stochast> SensitivityProject::getStochast()
         {
             this->model->zValueConverter = this->parameterSelector;
-            this->model->initializeForRun();
 
             std::shared_ptr<Models::UConverter> uConverter = std::make_shared<Models::UConverter>(this->stochasts, this->correlationMatrix);
             const std::shared_ptr<Models::ModelRunner> modelRunner = std::make_shared<Models::ModelRunner>(this->model, uConverter, this->progressIndicator);

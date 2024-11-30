@@ -68,7 +68,8 @@ class ZModel:
 	def __dir__(self):
 		return ['name',
 				'input_parameters',
-				'output_parameters']
+				'output_parameters',
+                '_array_sizes']
 
 	def __str__(self):
 		return self.name
@@ -237,7 +238,7 @@ class ModelParameter:
 	def array_size(self):
 		return interface.GetIntValue(self._id, 'array_size')
 		
-	@is_array.setter
+	@array_size.setter
 	def array_size(self, value):
 		interface.SetIntValue(self._id, 'array_size', value)
 
@@ -362,8 +363,8 @@ class SensitivityProject:
 		interface.SetIntValue(self._id, 'correlation_matrix', self._correlation_matrix._id)
 		interface.SetIntValue(self._id, 'settings', self._settings._id)
 		interface.SetArrayIntValue(self.settings._id, 'stochast_settings', [stochast_setting._id for stochast_setting in self.settings.stochast_settings])
-
 		SensitivityProject._zmodel.initialize_for_run()
+
 		interface.Execute(self._id, 'run')
 
 	@property
@@ -504,12 +505,13 @@ class ReliabilityProject:
 	def run(self):
 		self._design_point = None
 		self._fragility_curve = None
+		self._initialized = False
 
 		interface.SetIntValue(self._id, 'correlation_matrix', self._correlation_matrix._id)
 		interface.SetIntValue(self._id, 'settings', self._settings._id)
 		interface.SetArrayIntValue(self.settings._id, 'stochast_settings', [stochast_setting._id for stochast_setting in self.settings.stochast_settings])
-
 		ReliabilityProject._zmodel.initialize_for_run()
+
 		interface.Execute(self._id, 'run')
 
 	@property

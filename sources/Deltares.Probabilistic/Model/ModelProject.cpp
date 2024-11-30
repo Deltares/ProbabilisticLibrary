@@ -37,14 +37,17 @@ namespace Deltares
                     if (this->existingStochasts.contains(parameter->name))
                     {
                         stochast = this->existingStochasts[parameter->name];
+                        if (stochast->modelParameter != nullptr)
+                        {
+                            parameter->isArray = stochast->modelParameter->isArray;
+                            parameter->arraySize = stochast->modelParameter->arraySize;
+                        }
                     }
                     else
                     {
                         stochast = std::make_shared<Statistics::Stochast>();
                         stochast->name = parameter->name;
                         stochast->setMean(parameter->defaultValue);
-                        stochast->isArray = parameter->isArray;
-                        stochast->arraySize = parameter->arraySize;
                         existingStochasts[stochast->name] = stochast;
                     }
 

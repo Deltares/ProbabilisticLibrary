@@ -20,20 +20,20 @@ namespace Deltares
                 this->useSampleZValue = false;
                 this->parameterIndex = -1;
 
-                for (int i = 0; i < inputParameters.size(); i++)
+                for (size_t i = 0; i < inputParameters.size(); i++)
                 {
                     if (inputParameters[i]->name == this->parameter)
                     {
-                        this->parameterIndex = inputParameters[i]->index;
+                        this->parameterIndex = inputParameters[i]->computationalIndex;
                         this->parameterIndexFromInput = true;
                     }
                 }
 
-                for (int i = 0; i < outputParameters.size(); i++)
+                for (size_t i = 0; i < outputParameters.size(); i++)
                 {
                     if (outputParameters[i]->name == this->parameter)
                     {
-                        this->parameterIndex = outputParameters[i]->index;
+                        this->parameterIndex = outputParameters[i]->computationalIndex;
                         this->parameterIndexFromInput = false;
                     }
                 }

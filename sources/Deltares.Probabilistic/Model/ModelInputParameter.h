@@ -31,6 +31,7 @@ namespace Deltares
         public:
             std::string name = "";
             int index = 0;
+            int computationalIndex = 0;
             double defaultValue = 0.0;
             bool isArray = false;
             int arraySize = 1;

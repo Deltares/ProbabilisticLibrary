@@ -51,12 +51,12 @@ namespace Deltares
             ZLambda calcValuesLambda = [zValuesLambda, this](std::shared_ptr<ModelSample> sample)
             {
                 double* inputValues = sample->Values.data();
-                double* outputValues = new double[this->outputParameters.size()];
+                double* outputValues = new double[this->outputParametersCount];
 
-                (*zValuesLambda)(inputValues, (int) this->inputParameters.size(), outputValues);
+                (*zValuesLambda)(inputValues, this->inputParametersCount, outputValues);
 
                 sample->OutputValues.clear();
-                for (size_t i = 0; i < this->outputParameters.size(); i++)
+                for (size_t i = 0; i < this->outputParametersCount; i++)
                 {
                     sample->OutputValues.push_back(outputValues[i]);
                 }
@@ -69,6 +69,28 @@ namespace Deltares
 
         void ZModel::initializeForRun()
         {
+            this->inputParametersCount = 0;
+            this->outputParametersCount = 0;
+
+            for (std::shared_ptr<ModelInputParameter> parameter : this->inputParameters)
+            {
+                parameter->computationalIndex = this->inputParametersCount;
+                if (parameter->isArray)
+                {
+                    this->inputParametersCount += parameter->arraySize;
+                }
+                else
+                {
+                    this->inputParametersCount++;
+                }
+            }
+
+            for (std::shared_ptr<ModelInputParameter> parameter : this->outputParameters)
+            {
+                parameter->computationalIndex = this->outputParametersCount;
+                this->outputParametersCount++;
+            }
+
             this->zValueConverter->initialize(this->inputParameters, this->outputParameters);
         }
 
@@ -96,7 +118,7 @@ namespace Deltares
             {
                 this->countRunsLambda = false;
 
-                #pragma omp parallel for
+#pragma omp parallel for
                 for (int i = 0; i < (int)samples.size(); i++)
                 {
                     invoke(samples[i]);

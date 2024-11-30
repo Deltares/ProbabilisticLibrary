@@ -23,20 +23,20 @@ namespace Deltares
                 this->useSampleZValue = false;
                 this->criticalParameterIndex = -1;
 
-                for (int i = 0; i < inputParameters.size(); i++)
+                for (size_t i = 0; i < inputParameters.size(); i++)
                 {
                     if (inputParameters[i]->name == this->criticalParameter)
                     {
-                        this->criticalParameterIndex = inputParameters[i]->index;
+                        this->criticalParameterIndex = inputParameters[i]->computationalIndex;
                         this->criticalParameterIndexFromInput = true;
                     }
                 }
 
-                for (int i = 0; i < outputParameters.size(); i++)
+                for (size_t i = 0; i < outputParameters.size(); i++)
                 {
                     if (outputParameters[i]->name == this->criticalParameter)
                     {
-                        this->criticalParameterIndex = outputParameters[i]->index;
+                        this->criticalParameterIndex = outputParameters[i]->computationalIndex;
                         this->criticalParameterIndexFromInput = false;
                     }
                 }
@@ -46,20 +46,20 @@ namespace Deltares
 
             if (this->useCompareParameter)
             {
-                for (int i = 0; i < inputParameters.size(); i++)
+                for (size_t i = 0; i < inputParameters.size(); i++)
                 {
                     if (inputParameters[i]->name == this->compareParameter)
                     {
-                        this->compareParameterIndex = inputParameters[i]->index;;
+                        this->compareParameterIndex = inputParameters[i]->computationalIndex;
                         this->compareParameterIndexFromInput = true;
                     }
                 }
 
-                for (int i = 0; i < outputParameters.size(); i++)
+                for (size_t i = 0; i < outputParameters.size(); i++)
                 {
                     if (outputParameters[i]->name == this->compareParameter)
                     {
-                        this->compareParameterIndex = outputParameters[i]->index;
+                        this->compareParameterIndex = outputParameters[i]->computationalIndex;
                         this->compareParameterIndexFromInput = false;
                     }
                 }

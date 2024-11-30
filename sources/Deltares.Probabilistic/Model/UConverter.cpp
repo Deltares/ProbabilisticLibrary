@@ -45,9 +45,9 @@ namespace Deltares
             int k = 0;
             for (size_t i = 0; i < stochasts.size(); i++)
             {
-                if (stochasts[i]->isArray)
+                if (stochasts[i]->modelParameter->isArray)
                 {
-                    for (size_t j = 0; j < stochasts[i]->arraySize; j++)
+                    for (size_t j = 0; j < stochasts[i]->modelParameter->arraySize; j++)
                     {
                         this->stochasts.push_back(std::make_shared<ComputationalStochast>(stochasts[i], j));
                         mapping[k++] = i;

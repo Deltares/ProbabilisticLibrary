@@ -90,6 +90,10 @@ namespace Deltares
 
             void releaseCallBacks();
 
+            /**
+             * \brief defines the maximum number of parallel processes or threads
+             * \param maxProcesses Maximum number of parallel processes or threads
+             */
             void setMaxProcesses(int maxProcesses);
 
             /**
@@ -125,6 +129,8 @@ namespace Deltares
             ZBetaLambda zBetaLambda = nullptr;
             int maxProcesses = 1;
             int modelRuns = 0;
+            int inputParametersCount = 0;
+            int outputParametersCount = 0;
             bool countRunsLambda = true;
             ZLambda getLambdaFromZValuesCallBack(ZValuesCallBack zValuesLambda);
         };

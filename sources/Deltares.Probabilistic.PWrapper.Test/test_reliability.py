@@ -63,8 +63,8 @@ class Test_reliability(unittest.TestCase):
         self.assertEqual(True, project.variables['a'].is_array)
         self.assertEqual(True, project.variables['b'].is_array)
 
-        project.variables['a'].is_array = 10
-        project.variables['b'].is_array = 10
+        project.variables['a'].array_size = 5
+        project.variables['b'].array_size = 5
 
         project.settings.reliability_method = ReliabilityMethod.form
 
@@ -75,8 +75,8 @@ class Test_reliability(unittest.TestCase):
         beta = dp.reliability_index;
         alphas = dp.alphas;
 
-        # self.assertAlmostEqual(2.33, beta, delta=margin)
-        self.assertEqual(21, len(alphas))
+        self.assertAlmostEqual(0.71, beta, delta=margin)
+        self.assertEqual(11, len(alphas))
 
         # self.assertAlmostEqual(-0.71, alphas[0].alpha, delta=margin)
         # self.assertAlmostEqual(-0.71, alphas[1].alpha, delta=margin)

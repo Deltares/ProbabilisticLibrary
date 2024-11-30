@@ -363,14 +363,14 @@ namespace Deltares
 
                 property bool IsArray
                 {
-                    bool get() { return shared->object->isArray; }
-                    void set(bool value) { shared->object->isArray = value; }
+                    bool get() { return shared->object->modelParameter->isArray; }
+                    void set(bool value) { shared->object->modelParameter->isArray = value; }
                 }
 
                 property int ArraySize
                 {
-                    int get() { return shared->object->arraySize; }
-                    void set(int value) { shared->object->arraySize = value; }
+                    int get() { return shared->object->modelParameter->arraySize; }
+                    void set(int value) { shared->object->modelParameter->arraySize = value; }
                 }
 
                 virtual void InitializeForRun()

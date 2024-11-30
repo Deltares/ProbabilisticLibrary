@@ -68,6 +68,8 @@ namespace Deltares
             this->zModel->setMaxProcesses(this->Settings->MaxParallelProcesses);
             this->zModel->resetModelRuns();
 
+            this->zModel->initializeForRun();
+
             if (this->locker == nullptr)
             {
                 this->locker = new Utils::Locker();

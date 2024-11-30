@@ -517,7 +517,7 @@ class Stochast:
 	def array_size(self):
 		return interface.GetIntValue(self._id, 'array_size')
 		
-	@is_array.setter
+	@array_size.setter
 	def array_size(self, value):
 		interface.SetIntValue(self._id, 'array_size', value)
 
