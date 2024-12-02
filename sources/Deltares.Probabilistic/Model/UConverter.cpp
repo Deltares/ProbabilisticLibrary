@@ -36,7 +36,7 @@ namespace Deltares
 {
     namespace Models
     {
-        UConverter::UConverter(std::vector<std::shared_ptr<Deltares::Statistics::Stochast>> stochasts, std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix)
+        UConverter::UConverter(std::vector<std::shared_ptr<Deltares::Statistics::Stochast>> stochasts, std::shared_ptr<Statistics::CorrelationMatrix> stochastCorrelationMatrix)
         {
             this->stochasts.clear();
 
@@ -62,18 +62,26 @@ namespace Deltares
             }
 
             this->correlationMatrix = std::make_shared<Statistics::CorrelationMatrix>();
-            correlationMatrix->init(this->stochasts.size());
+            this->correlationMatrix->init(this->stochasts.size());
 
             for (int i = 0; i < this->stochasts.size(); i++)
             {
                 for (int j = 0; j < this->stochasts.size(); j++)
                 {
-                    int k_i = mapping[i];
-                    int k_j = mapping[j];
-
-                    if (k_i != k_j)
+                    if (i == j)
                     {
-                        correlationMatrix->SetCorrelation(i, j, correlationMatrix->GetCorrelation(k_i, k_j));
+                        this->correlationMatrix->SetCorrelation(i, j, 1.0);
+                    }
+                    else
+                    {
+                        int k_i = mapping[i];
+                        int k_j = mapping[j];
+
+                        if (k_i != k_j)
+                        {
+                            double correlationValue = stochastCorrelationMatrix->GetCorrelation(k_i, k_j);
+                            this->correlationMatrix->SetCorrelation(i, j, correlationValue);
+                        }
                     }
                 }
             }

@@ -146,7 +146,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
             project.Stochasts.Add(GetUniformStochast(-1));
 
             project.Stochasts[1].IsArray = true;
-            project.Stochasts[1].ArraySize = 10;
+            project.Stochasts[1].ArraySize = 5;
 
             project.Stochasts[2].IsArray = true;
             project.Stochasts[2].ArraySize = 5;

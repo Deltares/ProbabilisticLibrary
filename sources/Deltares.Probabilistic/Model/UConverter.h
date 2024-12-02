@@ -63,7 +63,7 @@ namespace Deltares
 
         public:
 
-            UConverter(std::vector<std::shared_ptr<Deltares::Statistics::Stochast>> stochasts, std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix);
+            UConverter(std::vector<std::shared_ptr<Deltares::Statistics::Stochast>> stochasts, std::shared_ptr<Statistics::CorrelationMatrix> stochastCorrelationMatrix);
             void initializeForRun();
             std::vector<double> getUValues(std::shared_ptr<Sample> sample);
             std::vector<double> getExpandedUValues(std::shared_ptr<Sample> sample);
