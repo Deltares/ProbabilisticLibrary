@@ -20,29 +20,32 @@
 // All rights reserved.
 //
 #pragma once
+#include "VariableStochastValueSet.h"
+#include "VariableStochastValue.h"
+#include "BaseStochast.h"
+#include "../Utils/CallBackList.h"
 
 namespace Deltares
 {
-    namespace Probabilistic
+    namespace Statistics
     {
-        namespace Test
+        namespace Wrappers
         {
-            class testReliabilityMethods
+            using namespace Deltares::Utils::Wrappers;
+
+            void VariableStochastValueSet::SynchronizeStochastValues(ListOperationType listOperationType, VariableStochastValue^ value)
             {
-            public:
-                static void testFORM();
-                static void testFORMArray();
-                static void testLatinHyperCube();
-                static void testNumericalBisection();
-                static void testNumericalBisectionLinear();
-                static void testCobylaReliability();
-                static void testSubSetSimulationReliabilityNearestToMean();
-                static void testSubSetSimulationReliabilityCenterOfGravity();
-                static void testFDIRReliability();
-                static void testDSFIReliability();
-                static void testFragilityCurveIntegration();
-                static void testNumericalIntegrationReliability();
-            };
+                switch (listOperationType)
+                {
+                case ListOperationType::Add: shared->object->StochastValues.push_back(value->GetValue()); break;
+                case ListOperationType::Remove: std::erase(shared->object->StochastValues, value->GetValue()); break;
+                case ListOperationType::Clear: shared->object->StochastValues.clear(); break;
+                default: throw gcnew System::NotImplementedException("List operation type");
+                }
+            }
         }
     }
 }
+
+
+

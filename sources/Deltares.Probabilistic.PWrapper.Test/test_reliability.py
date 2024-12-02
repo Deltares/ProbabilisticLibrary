@@ -56,6 +56,45 @@ class Test_reliability(unittest.TestCase):
 
         self.assertEqual(0, len(dp.messages))
 
+    def test_form_linear_conditional(self):
+        project = project_builder.get_linear_project()
+
+        project.variables['b'].conditional = True
+
+        conditional1 = ConditionalValue()
+        conditional1.x = -1
+        conditional1.minimum = -1.2
+        conditional1.maximum = -0.8
+        conditional1.scale = 1
+        project.variables['b'].conditional_values.append(conditional1)
+
+        conditional2 = ConditionalValue()
+        conditional2.x = 1
+        conditional2.minimum = 0.8
+        conditional2.maximum = 1.2
+        project.variables['b'].conditional_values.append(conditional2)
+
+        project.variables['b'].conditional_source = 'a'
+
+        project.settings.reliability_method = ReliabilityMethod.form
+
+        project.run();
+
+        dp = project.design_point;
+
+        beta = dp.reliability_index;
+        alphas = dp.alphas;
+
+        self.assertAlmostEqual(1.56, beta, delta=margin)
+        self.assertEqual(2, len(alphas))
+
+        self.assertAlmostEqual(-0.96, alphas[0].alpha, delta=margin)
+        self.assertAlmostEqual(0.86, alphas[0].x, delta=margin)
+
+        self.assertAlmostEqual(-0.29, alphas[1].alpha, delta=margin)
+        self.assertAlmostEqual(0.93, alphas[1].x, delta=margin)
+
+
     def test_form_linear_array(self):
         project = project_builder.get_linear_array_project()
 
@@ -93,6 +132,58 @@ class Test_reliability(unittest.TestCase):
         self.assertEqual(0, alphas[6].index)
         self.assertEqual(project.variables['b'], alphas[6].variable)
 
+    def test_form_linear_conditional_array(self):
+        project = project_builder.get_linear_array_project()
+
+        project.variables['a'].array_size = 5
+        project.variables['b'].array_size = 5
+
+        project.variables['b'].conditional = True
+
+        conditional1 = ConditionalValue()
+        conditional1.x = -1
+        conditional1.minimum = -1.2
+        conditional1.maximum = -0.8
+        conditional1.scale = 1
+        project.variables['b'].conditional_values.append(conditional1)
+
+        conditional2 = ConditionalValue()
+        conditional2.x = 1
+        conditional2.minimum = 0.8
+        conditional2.maximum = 1.2
+        project.variables['b'].conditional_values.append(conditional2)
+
+        project.variables['b'].conditional_source = 'a'
+
+        project.settings.reliability_method = ReliabilityMethod.form
+
+        project.run();
+
+        dp = project.design_point;
+
+        beta = dp.reliability_index;
+        alphas = dp.alphas;
+
+        self.assertAlmostEqual(0.51, beta, delta=margin)
+        self.assertEqual(11, len(alphas))
+
+        self.assertAlmostEqual(0, alphas[0].alpha, delta=margin)
+        self.assertAlmostEqual(-0.44, alphas[1].alpha, delta=margin)
+        self.assertAlmostEqual(-0.046, alphas[6].alpha, delta=margin)
+
+        self.assertEqual(0, alphas[0].index)
+        self.assertEqual(0, alphas[1].index)
+        self.assertEqual(4, alphas[5].index)
+        self.assertEqual(0, alphas[6].index)
+
+        self.assertEqual(project.variables['L'], alphas[0].variable)
+        self.assertEqual(project.variables['a'], alphas[1].variable)
+        self.assertEqual(project.variables['a'], alphas[5].variable)
+        self.assertEqual(project.variables['b'], alphas[6].variable)
+
+        self.assertAlmostEqual(1.8, alphas[0].x, delta=margin)
+        self.assertAlmostEqual(0.18, alphas[1].x, delta=margin)
+        self.assertAlmostEqual(0.18, alphas[6].x, delta=margin)
 
     def test_form_limit_state_functions(self):
         project = project_builder.get_multiple_unbalanced_linear_project()

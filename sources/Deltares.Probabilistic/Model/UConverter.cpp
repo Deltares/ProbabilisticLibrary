@@ -43,12 +43,15 @@ namespace Deltares
             std::unordered_map<int, int> mapping;
 
             int k = 0;
+            bool hasArrayStochasts = false;
+
             for (size_t i = 0; i < stochasts.size(); i++)
             {
                 if (stochasts[i]->modelParameter->isArray)
                 {
                     for (size_t j = 0; j < stochasts[i]->modelParameter->arraySize; j++)
                     {
+                        hasArrayStochasts = true;
                         this->stochasts.push_back(std::make_shared<ComputationalStochast>(stochasts[i], j));
                         mapping[k++] = i;
                         k++;
@@ -61,20 +64,32 @@ namespace Deltares
                 }
             }
 
-            this->correlationMatrix = std::make_shared<Statistics::CorrelationMatrix>();
-            this->correlationMatrix->init(this->stochasts.size());
-
-            for (int i = 0; i < this->stochasts.size(); i++)
+            if (!hasArrayStochasts)
             {
-                for (int j = 0; j < i; j++)
-                {
-                    int k_i = mapping[i];
-                    int k_j = mapping[j];
+                this->correlationMatrix = stochastCorrelationMatrix;
+            }
+            else if (stochastCorrelationMatrix->IsIdentity())
+            {
+                this->correlationMatrix = std::make_shared<Statistics::CorrelationMatrix>();
+                this->correlationMatrix->init(this->stochasts.size());
+            }
+            else
+            {
+                this->correlationMatrix = std::make_shared<Statistics::CorrelationMatrix>();
+                this->correlationMatrix->init(this->stochasts.size());
 
-                    if (k_i != k_j)
+                for (int i = 0; i < this->stochasts.size(); i++)
+                {
+                    for (int j = 0; j < i; j++)
                     {
-                        double correlationValue = stochastCorrelationMatrix->GetCorrelation(k_i, k_j);
-                        this->correlationMatrix->SetCorrelation(i, j, correlationValue);
+                        int k_i = mapping[i];
+                        int k_j = mapping[j];
+
+                        if (k_i != k_j)
+                        {
+                            double correlationValue = stochastCorrelationMatrix->GetCorrelation(k_i, k_j);
+                            this->correlationMatrix->SetCorrelation(i, j, correlationValue);
+                        }
                     }
                 }
             }
@@ -117,13 +132,33 @@ namespace Deltares
                 if (this->stochasts[i]->definition->IsVariableStochast)
                 {
                     this->hasVariableStochasts = true;
+                    bool variableStochastIndexFound = false;
                     for (size_t j = 0; j < this->stochasts.size(); j++)
                     {
                         if (stochasts[j]->definition == this->stochasts[i]->definition->VariableSource)
                         {
-                            variableStochastIndex[i] = j;
-                            break;
+                            bool valid = !stochasts[j]->definition->modelParameter->isArray ||
+                                         (this->stochasts[i]->definition->modelParameter->isArray &&
+                                          this->stochasts[i]->definition->modelParameter->arraySize == this->stochasts[j]->definition->modelParameter->arraySize);
+
+                            if (!valid)
+                            {
+                                throw new Reliability::probLibException("When using array variable stochasts, the size of the arrays must match");
+                            }
+
+                            if (!stochasts[j]->definition->modelParameter->isArray ||
+                                this->stochasts[i]->index == this->stochasts[j]->index)
+                            {
+                                variableStochastIndex[i] = j;
+                                variableStochastIndexFound = true;
+                                break;
+                            }
                         }
+                    }
+
+                    if (!variableStochastIndexFound)
+                    {
+                        throw new Reliability::probLibException("Variable stochast source has not been set");
                     }
                 }
             }

@@ -21,6 +21,7 @@
 //
 ﻿using Deltares.Models.Wrappers;
 using Deltares.Reliability.Wrappers;
+using Deltares.Statistics.Wrappers;
 using NUnit.Framework;
 
 namespace Deltares.Probabilistic.Wrapper.Test
@@ -83,6 +84,99 @@ namespace Deltares.Probabilistic.Wrapper.Test
             Assert.AreEqual(-0.17, designPoint.Alphas[6].X, margin);
             Assert.AreEqual(0, designPoint.Alphas[6].Index);
             Assert.AreEqual(project.Stochasts[2], designPoint.Alphas[6].Parameter);
+        }
+
+        [Test]
+        public void TestLinearConditional()
+        {
+            Project project = ProjectBuilder.GetLinearProject();
+
+            project.Stochasts[1].IsVariableStochast = true;
+
+            VariableStochastValue conditional1 = new VariableStochastValue();
+            conditional1.X = -1;
+            conditional1.Minimum = -1.2;
+            conditional1.Maximum = -0.8;
+            project.Stochasts[1].ValueSet.StochastValues.Add(conditional1);
+
+            VariableStochastValue conditional2 = new VariableStochastValue();
+            conditional2.X = 1;
+            conditional2.Minimum = 0.8;
+            conditional2.Maximum = 1.2;
+            project.Stochasts[1].ValueSet.StochastValues.Add(conditional2);
+
+            project.Stochasts[1].VariableSource = project.Stochasts[0];
+
+            project.ReliabilityMethod = new FORM();
+            DesignPoint designPoint = project.GetDesignPoint();
+
+            Assert.AreEqual(1.56, designPoint.Beta, margin);
+            Assert.IsTrue(designPoint.ConvergenceReport.IsConverged);
+
+            Assert.AreEqual(-0.96, designPoint.Alphas[0].Alpha, margin);
+            Assert.AreEqual(-0.29, designPoint.Alphas[1].Alpha, margin);
+
+            Assert.AreEqual(0.86, designPoint.Alphas[0].X, margin);
+            Assert.AreEqual(0.93, designPoint.Alphas[1].X, margin);
+        }
+
+        [Test]
+        public void TestLinearConditionalArray()
+        {
+            Project project = ProjectBuilder.GetLinearArrayProject();
+
+            project.Stochasts[0].Name = "L";
+            project.Stochasts[1].Name = "a";
+            project.Stochasts[2].Name = "b";
+
+            project.Stochasts[2].IsVariableStochast = true;
+
+            VariableStochastValue conditional1 = new VariableStochastValue();
+            conditional1.X = -1;
+            conditional1.Minimum = -1.2;
+            conditional1.Maximum = -0.8;
+            project.Stochasts[2].ValueSet.StochastValues.Add(conditional1);
+
+            VariableStochastValue conditional2 = new VariableStochastValue();
+            conditional2.X = 1;
+            conditional2.Minimum = 0.8;
+            conditional2.Maximum = 1.2;
+            project.Stochasts[2].ValueSet.StochastValues.Add(conditional2);
+
+            project.Stochasts[2].VariableSource = project.Stochasts[1];
+
+            project.ReliabilityMethod = new FORM();
+            DesignPoint designPoint = project.GetDesignPoint();
+
+            Assert.AreEqual(0.51, designPoint.Beta, margin);
+            Assert.IsTrue(designPoint.ConvergenceReport.IsConverged);
+
+            Assert.AreEqual(11, designPoint.Alphas.Count);
+
+            Assert.AreEqual(0, designPoint.Alphas[0].Alpha, margin);
+            Assert.AreEqual(1.8, designPoint.Alphas[0].X, margin);
+            Assert.AreEqual(0, designPoint.Alphas[0].Index);
+            Assert.AreEqual(project.Stochasts[0], designPoint.Alphas[0].Parameter);
+
+            Assert.AreEqual(0.44, designPoint.Alphas[1].Alpha, margin);
+            Assert.AreEqual(0.44, designPoint.Alphas[2].Alpha, margin);
+            Assert.AreEqual(0.045, designPoint.Alphas[6].Alpha, margin / 10);
+            Assert.AreEqual(0.045, designPoint.Alphas[7].Alpha, margin / 10);
+
+            Assert.AreEqual(project.Stochasts[1], designPoint.Alphas[1].Parameter);
+            Assert.AreEqual(project.Stochasts[1], designPoint.Alphas[2].Parameter);
+            Assert.AreEqual(project.Stochasts[2], designPoint.Alphas[6].Parameter);
+            Assert.AreEqual(project.Stochasts[2], designPoint.Alphas[7].Parameter);
+
+            Assert.AreEqual(0, designPoint.Alphas[1].Index);
+            Assert.AreEqual(1, designPoint.Alphas[2].Index);
+            Assert.AreEqual(0, designPoint.Alphas[6].Index);
+            Assert.AreEqual(1, designPoint.Alphas[7].Index);
+
+            Assert.AreEqual(-0.18, designPoint.Alphas[1].X, margin);
+            Assert.AreEqual(-0.18, designPoint.Alphas[2].X, margin);
+            Assert.AreEqual(-0.18, designPoint.Alphas[6].X, margin);
+            Assert.AreEqual(-0.18, designPoint.Alphas[7].X, margin);
         }
 
         [Test]

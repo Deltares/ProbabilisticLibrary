@@ -310,8 +310,13 @@ namespace Deltares
 
             if (this->IsVariableStochast)
             {
-                this->ValueSet->initializeForRun(this->properties, this->distributionType, this->truncated, this->inverted);
+                this->initializeConditionalValues();
             }
+        }
+
+        void Stochast::initializeConditionalValues()
+        {
+            this->ValueSet->initializeForRun(this->properties, this->distributionType, this->truncated, this->inverted);
         }
 
         bool Stochast::canFit()

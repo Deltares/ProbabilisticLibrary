@@ -41,10 +41,42 @@ namespace Deltares
     {
         namespace Test
         {
+            void testReliabilityMethods::testFORM()
+            {
+                auto calculator = FORM();
+
+                auto modelRunner = projectBuilder().BuildLinearProject();
+
+                auto designPoint = calculator.getDesignPoint(modelRunner);
+
+                ASSERT_EQ(designPoint->Alphas.size(), 2);
+                EXPECT_NEAR(designPoint->Beta, 2.33, 1e-2);
+                EXPECT_NEAR(designPoint->Alphas[0]->Alpha, -0.71, 1e-2);
+                EXPECT_NEAR(designPoint->Alphas[1]->Alpha, -0.71, 1e-2);
+                EXPECT_NEAR(designPoint->Alphas[0]->X, 0.9, 1e-2);
+                EXPECT_NEAR(designPoint->Alphas[1]->X, 0.9, 1e-2);
+            }
+
+            void testReliabilityMethods::testFORMArray()
+            {
+                auto calculator = FORM();
+
+                auto modelRunner = projectBuilder().BuildLinearArrayProject();
+
+                auto designPoint = calculator.getDesignPoint(modelRunner);
+
+                ASSERT_EQ(designPoint->Alphas.size(), 10);
+                EXPECT_NEAR(designPoint->Beta, 0.72, 1e-2);
+                EXPECT_NEAR(designPoint->Alphas[0]->Alpha, -0.31, 1e-2);
+                EXPECT_NEAR(designPoint->Alphas[5]->Alpha, -0.31, 1e-2);
+                EXPECT_NEAR(designPoint->Alphas[0]->X, 0.18, 1e-2);
+                EXPECT_NEAR(designPoint->Alphas[5]->X, 0.18, 1e-2);
+            }
+
             void testReliabilityMethods::testLatinHyperCube()
             {
                 const auto chunckSizes = std::vector<int>({ 1, 15, 2000 });
-                for(const auto& chunkSize : chunckSizes)
+                for (const auto& chunkSize : chunckSizes)
                 {
                     auto calculator = LatinHyperCube();
                     calculator.Settings->randomSettings->RandomGeneratorType = Numeric::MersenneTwister;
@@ -181,7 +213,7 @@ namespace Deltares
 
                 auto fragilityCurve = projectBuilder().BuildFragilityCurve();
 
-                std::shared_ptr<Stochast> h = std::make_shared<Stochast>(DistributionType::Normal, std::vector {5.0, 1.0});
+                std::shared_ptr<Stochast> h = std::make_shared<Stochast>(DistributionType::Normal, std::vector{ 5.0, 1.0 });
 
                 auto designPoint = calculator.getDesignPoint(h, fragilityCurve);
 
@@ -191,13 +223,13 @@ namespace Deltares
                 EXPECT_NEAR(designPoint->Alphas[1]->Alpha, -0.9874, 1e-3);
                 EXPECT_TRUE(designPoint->convergenceReport->IsConverged);
             }
-            
+
             void testReliabilityMethods::testNumericalIntegrationReliability()
             {
                 // test to see how num int handles sign for u==0:
                 auto testValuesOffset = { -1e-100, 0.0, 1e-100 };
 
-                for(const auto& testValue : testValuesOffset)
+                for (const auto& testValue : testValuesOffset)
                 {
                     auto calculator = NumericalIntegration();
 
@@ -208,9 +240,9 @@ namespace Deltares
 
                     ASSERT_EQ(designPoint->Alphas.size(), 3);
                     EXPECT_NEAR(designPoint->Beta, 0.0, 1e-6);
-                    EXPECT_NEAR(designPoint->Alphas[0]->Alpha, sign*-0.624695, 1e-4);
+                    EXPECT_NEAR(designPoint->Alphas[0]->Alpha, sign * -0.624695, 1e-4);
                     EXPECT_NEAR(designPoint->Alphas[1]->Alpha, 0.0, 1e-6);
-                    EXPECT_NEAR(designPoint->Alphas[2]->Alpha, sign*0.78087, 1e-4);
+                    EXPECT_NEAR(designPoint->Alphas[2]->Alpha, sign * 0.78087, 1e-4);
                 }
             }
 

@@ -324,6 +324,7 @@ namespace Deltares
 
                 virtual double GetXFromUAndSource(double xSource, double u)
                 {
+                    shared->object->initializeConditionalValues();
                     return shared->object->getXFromUAndSource(xSource, u);
                 }
 
@@ -428,13 +429,13 @@ namespace Deltares
                     void set(VariableStochastValueSet ^ value) { this->valueSet = value; }
                 }
 
-                    property Stochast^ VariableSource
+                property Stochast^ VariableSource
                 {
                     Stochast ^ get() { return this->source; }
                     void set(Stochast ^ value) { this->source = value; }
                 }
 
-                    System::String^ ToString() override
+                System::String^ ToString() override
                 {
                     return this->Name;
                 }

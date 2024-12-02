@@ -308,6 +308,7 @@
     <ClCompile Include="Model\StochastPoint.cpp" />
     <ClCompile Include="Statistics\Stochast.cpp" />
     <ClCompile Include="Utils\SharedPointerProvider.cpp" />
+    <ClCompile Include="Statistics\VariableStochastValueSet.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

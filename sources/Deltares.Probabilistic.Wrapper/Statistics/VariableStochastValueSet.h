@@ -26,6 +26,7 @@
 
 #include "../../Deltares.Probabilistic/Statistics/VariableStochastValueSet.h"
 #include "../Utils/SharedPointerProvider.h"
+#include "../Utils/CallBackList.h"
 
 namespace Deltares
 {
@@ -40,16 +41,20 @@ namespace Deltares
             private:
                 SharedPointerProvider<Statistics::VariableStochastValuesSet>* shared = new SharedPointerProvider(new Statistics::VariableStochastValuesSet());
 
-                System::Collections::Generic::List<VariableStochastValue^>^ stochastValues = gcnew System::Collections::Generic::List<VariableStochastValue^>();
+                CallBackList<VariableStochastValue^>^ stochastValues = gcnew CallBackList<VariableStochastValue^>();
 
+                void SynchronizeStochastValues(ListOperationType listOperationType, VariableStochastValue^ histogramValue);
             public:
-                VariableStochastValueSet() {}
+                VariableStochastValueSet()
+                {
+                    stochastValues->SetCallBack(gcnew ListCallBack<VariableStochastValue^>(this, &VariableStochastValueSet::SynchronizeStochastValues));
+                }
                 ~VariableStochastValueSet() { this->!VariableStochastValueSet(); }
                 !VariableStochastValueSet() { delete shared; }
 
-                property System::Collections::Generic::List<VariableStochastValue^>^ StochastValues
+                property System::Collections::Generic::IList<VariableStochastValue^>^ StochastValues
                 {
-                    System::Collections::Generic::List<VariableStochastValue^>^ get() { return stochastValues; }
+                    System::Collections::Generic::IList<VariableStochastValue^>^ get() { return stochastValues; }
                 }
 
                 bool IsVarying(Wrappers::DistributionType distributionType)

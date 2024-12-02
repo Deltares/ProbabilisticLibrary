@@ -126,6 +126,18 @@ namespace Deltares
                 tstStartPoint.allStartPointTests();
             }
 
+            TEST(reliability_method_test, testFORM)
+            {
+                auto tstRelMethods = testReliabilityMethods();
+                tstRelMethods.testFORM();
+            }
+
+            TEST(reliability_method_test, testFORMArray)
+            {
+                auto tstRelMethods = testReliabilityMethods();
+                tstRelMethods.testFORMArray();
+            }
+
             TEST(reliability_method_test, testLatinHyperCube)
             {
                 auto tstRelMethods = testReliabilityMethods();

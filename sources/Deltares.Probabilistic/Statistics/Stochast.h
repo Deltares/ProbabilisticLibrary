@@ -289,6 +289,11 @@ namespace Deltares
             void initializeForRun();
 
             /**
+             * \brief Prepares a conditional stochast for running
+             */
+            void initializeConditionalValues();
+
+            /**
              * \brief Indicates whether stochastic parameters can be estimated for a given set of x-values
              * \return Indication
              */

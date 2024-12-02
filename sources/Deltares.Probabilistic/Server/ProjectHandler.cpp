@@ -1643,7 +1643,7 @@ namespace Deltares
                 std::shared_ptr<Statistics::Stochast> stochast = stochasts[id];
 
                 if (method_ == "initialize_for_run") stochast->initializeForRun();
-                else if (method_ == "initialize_conditional_values") stochast->ValueSet->initializeForRun(stochast->getProperties(), stochast->getDistributionType(), stochast->isTruncated(), stochast->isInverted());
+                else if (method_ == "initialize_conditional_values") stochast->initializeConditionalValues();
             }
             else if (objectType == ObjectType::Project)
             {

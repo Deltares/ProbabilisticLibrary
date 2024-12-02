@@ -51,6 +51,40 @@ namespace Deltares
                 return m;
             }
 
+            std::shared_ptr<ModelRunner> projectBuilder::BuildLinearProject()
+            {
+                std::shared_ptr<ZModel> z(new ZModel(ZModel([this](std::shared_ptr<ModelSample> v) { return linear(v); })));
+                auto stochast = std::vector<std::shared_ptr<Stochast>>();
+                auto dist = DistributionType::Uniform;
+                std::vector<double> params{ -1.0, 1.0 };
+                std::shared_ptr<Stochast> s(new Stochast(dist, params));
+                stochast.push_back(s);
+                stochast.push_back(s);
+                std::shared_ptr<CorrelationMatrix> corr(new CorrelationMatrix());
+                std::shared_ptr<UConverter> uConverter(new UConverter(stochast, corr));
+                uConverter->initializeForRun();
+                std::shared_ptr<ModelRunner> m(new ModelRunner(z, uConverter));
+                return m;
+            }
+
+            std::shared_ptr<ModelRunner> projectBuilder::BuildLinearArrayProject()
+            {
+                std::shared_ptr<ZModel> z(new ZModel(ZModel([this](std::shared_ptr<ModelSample> v) { return linear(v); })));
+                auto stochast = std::vector<std::shared_ptr<Stochast>>();
+                auto dist = DistributionType::Uniform;
+                std::vector<double> params{ -1.0, 1.0 };
+                std::shared_ptr<Stochast> s(new Stochast(dist, params));
+                s->modelParameter->isArray = true;
+                s->modelParameter->arraySize = 5;
+                stochast.push_back(s);
+                stochast.push_back(s);
+                std::shared_ptr<CorrelationMatrix> corr(new CorrelationMatrix());
+                std::shared_ptr<UConverter> uConverter(new UConverter(stochast, corr));
+                uConverter->initializeForRun();
+                std::shared_ptr<ModelRunner> m(new ModelRunner(z, uConverter));
+                return m;
+            }
+
             std::shared_ptr<ModelRunner> projectBuilder::BuildProjectWithDeterminist(double valueDeterminist)
             {
                 std::shared_ptr<ZModel> z(new ZModel(ZModel([this](std::shared_ptr<ModelSample> v) { return zfuncWithDeterminist(v); })));
