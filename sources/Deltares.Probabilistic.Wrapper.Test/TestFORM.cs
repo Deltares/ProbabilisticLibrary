@@ -60,18 +60,29 @@ namespace Deltares.Probabilistic.Wrapper.Test
             project.ReliabilityMethod = new FORM();
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(2.33, designPoint.Beta, margin);
+            Assert.AreEqual(0.71, designPoint.Beta, margin);
             Assert.IsTrue(designPoint.ConvergenceReport.IsConverged);
 
-            Assert.AreEqual(0.01, designPoint.ProbabilityFailure, margin / 10);
-            Assert.AreEqual(0.99, designPoint.ProbabilityNonFailure, margin / 10);
-            Assert.AreEqual(99.7, designPoint.ReturnPeriod, margin * 10);
+            Assert.AreEqual(0.24, designPoint.ProbabilityFailure, margin);
+            Assert.AreEqual(0.76, designPoint.ProbabilityNonFailure, margin);
+            Assert.AreEqual(3.7, designPoint.ReturnPeriod, margin * 10);
+            Assert.AreEqual(11, designPoint.Alphas.Count);
 
-            Assert.AreEqual(-0.7, designPoint.Alphas[0].Alpha, margin);
-            Assert.AreEqual(-0.7, designPoint.Alphas[1].Alpha, margin);
+            Assert.AreEqual(0, designPoint.Alphas[0].Alpha, margin);
+            Assert.AreEqual(1.8, designPoint.Alphas[0].X, margin);
+            Assert.AreEqual(0, designPoint.Alphas[0].Index);
+            Assert.AreEqual(project.Stochasts[0], designPoint.Alphas[0].Parameter);
 
-            Assert.AreEqual(0.9, designPoint.Alphas[0].X, margin);
-            Assert.AreEqual(0.9, designPoint.Alphas[1].X, margin);
+            Assert.AreEqual(0.31, designPoint.Alphas[1].Alpha, margin);
+            Assert.AreEqual(-0.17, designPoint.Alphas[1].X, margin);
+            Assert.AreEqual(0, designPoint.Alphas[1].Index);
+            Assert.AreEqual(4, designPoint.Alphas[5].Index);
+            Assert.AreEqual(project.Stochasts[1], designPoint.Alphas[1].Parameter);
+
+            Assert.AreEqual(0.31, designPoint.Alphas[6].Alpha, margin);
+            Assert.AreEqual(-0.17, designPoint.Alphas[6].X, margin);
+            Assert.AreEqual(0, designPoint.Alphas[6].Index);
+            Assert.AreEqual(project.Stochasts[2], designPoint.Alphas[6].Parameter);
         }
 
         [Test]

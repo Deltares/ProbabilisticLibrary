@@ -153,7 +153,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             project.CorrelationMatrix.Initialize(project.Stochasts);
 
-            ZSampleOutput zSampleOutput = GetSampleOutput(Linear);
+            ZSampleOutput zSampleOutput = GetSampleOutput(Sum);
 
             project.ZFunction = zSampleOutput.CalculateSample;
             project.TagRepository = zSampleOutput.GeTagRepository();

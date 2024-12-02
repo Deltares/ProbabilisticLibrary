@@ -574,6 +574,12 @@ namespace Deltares
                 if (property_ == "index") return parameter->index;
                 else if (property_ == "array_size") return parameter->arraySize;
             }
+            if (objectType == ObjectType::Alpha)
+            {
+                std::shared_ptr<Reliability::StochastPointAlpha> alpha = alphas[id];
+
+                if (property_ == "index") return alpha->Index;
+            }
             else if (objectType == ObjectType::SensitivityProject)
             {
                 std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];

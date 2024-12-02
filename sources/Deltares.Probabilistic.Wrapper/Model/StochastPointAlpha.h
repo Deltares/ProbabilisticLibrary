@@ -54,8 +54,8 @@ namespace Deltares
 
                 property Statistics::Wrappers::Stochast^ Parameter
                 {
-                    Statistics::Wrappers::Stochast^ get() { return parameter; }
-                    void set(Statistics::Wrappers::Stochast^ value) { parameter = value; }
+                    Statistics::Wrappers::Stochast ^ get() { return parameter; }
+                    void set(Statistics::Wrappers::Stochast ^ value) { parameter = value; }
                 }
 
                 property double Alpha
@@ -82,13 +82,19 @@ namespace Deltares
                     void set(double value) { shared->object->X = value; }
                 }
 
+                property double Index
+                {
+                    double get() { return shared->object->Index; }
+                    void set(double value) { shared->object->Index = value; }
+                }
+
                 property double InfluenceFactor
                 {
                     double get() { return shared->object->InfluenceFactor; }
                     void set(double value) { shared->object->InfluenceFactor = value; }
                 }
 
-                std::shared_ptr<Models::StochastPointAlpha> GetNativeAlpha()
+                    std::shared_ptr<Models::StochastPointAlpha> GetNativeAlpha()
                 {
                     shared->object->Stochast = this->Parameter != nullptr ? this->Parameter->GetStochast() : nullptr;
                     return shared->object;

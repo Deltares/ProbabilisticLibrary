@@ -641,7 +641,9 @@ class Alpha:
 				'alpha',
 				'alpha_correlated',
 				'influence_factor',
-				'x']
+                'index',
+				'x',
+                'u']
 
 	@property
 	def variable(self):
@@ -691,12 +693,17 @@ class Alpha:
 		return interface.GetValue(self._id, 'influence_factor')
 		
 	@property
+	def index(self):
+		return interface.GetIntValue(self._id, 'index')
+
+	@property
 	def u(self):
 		return interface.GetValue(self._id, 'u')
 
 	@property
 	def x(self):
 		return interface.GetValue(self._id, 'x')
+
 
 class FragilityCurve:
 

@@ -78,17 +78,21 @@ class Test_reliability(unittest.TestCase):
         self.assertAlmostEqual(0.71, beta, delta=margin)
         self.assertEqual(11, len(alphas))
 
-        # self.assertAlmostEqual(-0.71, alphas[0].alpha, delta=margin)
-        # self.assertAlmostEqual(-0.71, alphas[1].alpha, delta=margin)
+        self.assertAlmostEqual(0, alphas[0].alpha, delta=margin)
+        self.assertAlmostEqual(1.8, alphas[0].x, delta=margin)
+        self.assertEqual(project.variables['L'], alphas[0].variable)
 
-        # self.assertAlmostEqual(0.9, alphas[0].x, delta=margin)
-        # self.assertAlmostEqual(0.9, alphas[1].x, delta=margin)
+        self.assertAlmostEqual(-0.31, alphas[1].alpha, delta=margin)
+        self.assertAlmostEqual(0.18, alphas[1].x, delta=margin)
+        self.assertEqual(0, alphas[1].index)
+        self.assertEqual(4, alphas[5].index)
+        self.assertEqual(project.variables['a'], alphas[1].variable)
 
-        # self.assertEqual(len(project.variables), len(project.design_point.alphas))
-        # self.assertTrue(project.design_point.alphas[0].variable in project.variables)
-        # self.assertEqual('a', project.design_point.alphas[0].variable.name)
+        self.assertAlmostEqual(-0.31, alphas[6].alpha, delta=margin)
+        self.assertAlmostEqual(0.18, alphas[6].x, delta=margin)
+        self.assertEqual(0, alphas[6].index)
+        self.assertEqual(project.variables['b'], alphas[6].variable)
 
-        # self.assertEqual(0, len(dp.messages))
 
     def test_form_limit_state_functions(self):
         project = project_builder.get_multiple_unbalanced_linear_project()

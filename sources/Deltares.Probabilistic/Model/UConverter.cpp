@@ -66,22 +66,15 @@ namespace Deltares
 
             for (int i = 0; i < this->stochasts.size(); i++)
             {
-                for (int j = 0; j < this->stochasts.size(); j++)
+                for (int j = 0; j < i; j++)
                 {
-                    if (i == j)
-                    {
-                        this->correlationMatrix->SetCorrelation(i, j, 1.0);
-                    }
-                    else
-                    {
-                        int k_i = mapping[i];
-                        int k_j = mapping[j];
+                    int k_i = mapping[i];
+                    int k_j = mapping[j];
 
-                        if (k_i != k_j)
-                        {
-                            double correlationValue = stochastCorrelationMatrix->GetCorrelation(k_i, k_j);
-                            this->correlationMatrix->SetCorrelation(i, j, correlationValue);
-                        }
+                    if (k_i != k_j)
+                    {
+                        double correlationValue = stochastCorrelationMatrix->GetCorrelation(k_i, k_j);
+                        this->correlationMatrix->SetCorrelation(i, j, correlationValue);
                     }
                 }
             }
