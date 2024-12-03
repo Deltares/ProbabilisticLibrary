@@ -68,8 +68,7 @@ class ZModel:
 	def __dir__(self):
 		return ['name',
 				'input_parameters',
-				'output_parameters',
-                '_array_sizes']
+				'output_parameters']
 
 	def __str__(self):
 		return self.name
