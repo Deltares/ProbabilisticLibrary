@@ -126,6 +126,7 @@ class Test_reliability(unittest.TestCase):
         self.assertEqual(0, alphas[1].index)
         self.assertEqual(4, alphas[5].index)
         self.assertEqual(project.variables['a'], alphas[1].variable)
+        self.assertEqual('a[0]', str(alphas[1]))
 
         self.assertAlmostEqual(-0.31, alphas[6].alpha, delta=margin)
         self.assertAlmostEqual(0.18, alphas[6].x, delta=margin)

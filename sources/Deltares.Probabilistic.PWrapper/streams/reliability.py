@@ -641,9 +641,9 @@ class Alpha:
 				'alpha',
 				'alpha_correlated',
 				'influence_factor',
-                'index',
+				'index',
 				'x',
-                'u']
+				'u']
 
 	@property
 	def variable(self):
@@ -663,8 +663,10 @@ class Alpha:
 	def __str__(self):
 		if self.variable is None:
 			return ''
+		elif self.variable.is_array:
+			return self.variable.name + '[' + str(self.index) + ']'
 		else:
-			return self._variable.name
+			return self.variable.name
 
 	# internal method		
 	def _set_variable(self, variable):

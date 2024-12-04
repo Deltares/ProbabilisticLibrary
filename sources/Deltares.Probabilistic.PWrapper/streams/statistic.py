@@ -227,8 +227,8 @@ class Stochast:
 				'design_factor',
 				'design_fraction',
 				'design_value',
-                'is_array',
-                'array_size']
+				'is_array',
+				'array_size']
 
 	def _set_variables(self, variables):
 		self._variables = variables
