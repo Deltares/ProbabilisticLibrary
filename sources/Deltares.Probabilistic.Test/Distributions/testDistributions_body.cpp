@@ -207,6 +207,7 @@ namespace Deltares
             void testDistributions::testVariationCoefficient()
             {
                 constexpr double mean = 2.5;
+                constexpr double mean2 = 5.2;
                 constexpr double var = 2.4;
 
                 auto dist = Stochast(DistributionType::Normal, {mean, 1.0});
@@ -214,6 +215,10 @@ namespace Deltares
                 dist.setVariation(var);
                 auto sd = dist.getDeviation();
                 EXPECT_NEAR(sd, mean*var, 1e-9);
+
+                dist.setMean(mean2);
+                auto sd2 = dist.getDeviation();
+                EXPECT_NEAR(sd2, mean2*var, 1e-9);
 
             }
 
