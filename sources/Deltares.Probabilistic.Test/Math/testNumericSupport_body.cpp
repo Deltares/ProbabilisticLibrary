@@ -36,6 +36,7 @@ namespace Deltares
                 testLogLinearInterpolate();
                 testHarmonicInterpolate();
                 testMinMaxFunctions();
+                testGetFraction();
             }
 
             void testNumericSupport::testLinearInterpolate()
@@ -104,6 +105,13 @@ namespace Deltares
                 EXPECT_EQ(locmax, 6);
 
             }
+
+            void testNumericSupport::testGetFraction()
+            {
+                auto q = NumericSupport::getFraction(3.4, 4.3);
+                EXPECT_NEAR(q, 3.4 * 4.3, 1e-9);
+            }
+
         }
     }
 }
