@@ -6,6 +6,8 @@
 # include "../../Utils/probLibException.h"
 # include "asa239.hpp"
 
+// START-NOSCAN
+
 using namespace std;
 
 namespace ASA {
@@ -537,3 +539,4 @@ namespace ASA {
         //****************************************************************************80
     }
 }
+// END-NOSCAN

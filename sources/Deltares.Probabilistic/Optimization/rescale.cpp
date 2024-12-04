@@ -20,6 +20,8 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
  */
 
+// START-NOSCAN
+
 #include <stdlib.h>
 #include "nlopt-util.h"
 
@@ -94,3 +96,5 @@ void nlopt_reorder_bounds(unsigned n, double *lb, double *ub)
             ub[i] = t;
         }
 }
+
+// END-NOSCAN

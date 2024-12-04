@@ -37,6 +37,7 @@
  *
  */
 
+// START-NOSCAN
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -1869,3 +1870,6 @@ L490:
 L500:
   return NLOPT_SUCCESS;
 } /* trstlp */
+
+// END-NOSCAN
+
