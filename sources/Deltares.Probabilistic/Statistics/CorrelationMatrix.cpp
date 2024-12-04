@@ -294,12 +294,12 @@ namespace Deltares
             for (int i = 0; i < j; i++)
             {
                 double correlation = matrix(i, j);
-                if (abs(correlation) < 1.0)
+                if (std::abs(correlation) < 1.0)
                 {
                     correlation = matrix(j, i);
                 }
 
-                if (abs(correlation) >= 1.0)
+                if (std::abs(correlation) >= 1.0)
                 {
                     return { (int)i, correlation };
                 }
