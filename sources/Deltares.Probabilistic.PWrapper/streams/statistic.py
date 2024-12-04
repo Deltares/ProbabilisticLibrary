@@ -221,6 +221,9 @@ class Stochast:
 				'get_quantile',
 				'get_x_from_u',
 				'get_u_from_x',
+				'get_pdf',
+				'get_cdf',
+				'get_special_values',
 				'conditional',
 				'conditional_source',
 				'conditional_values'
@@ -512,10 +515,19 @@ class Stochast:
 	def get_u_from_x(self, x : float):
 		return interface.GetArgValue(self._id, 'u_from_x', x)
 
+	def get_pdf(self, x : float):
+		return interface.GetArgValue(self._id, 'pdf', x)
+
+	def get_cdf(self, x : float):
+		return interface.GetArgValue(self._id, 'cdf', x)
+
 	def get_x_from_u_and_source(self, u : float, x: float):
 		interface.SetArrayValue(self._id, 'u_and_x', [u, x])
 		interface.Execute(self._id, 'initialize_conditional_values');
 		return interface.GetValue(self._id, 'x_from_u_and_source')
+
+	def get_special_values(self):
+		return interface.GetArrayValue(self._id, 'special_values')
 
 	def fit(self, values):
 		interface.SetArrayValue(self._id, 'fit', values)
@@ -875,7 +887,7 @@ class CorrelationMatrix:
 		self._variables = FrozenList()
 
 	def __del__(self):
-	    interface.Destroy(self._id)
+		interface.Destroy(self._id)
 
 	@property
 	def variables(self):

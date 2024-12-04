@@ -576,7 +576,7 @@ namespace Deltares
             {
                 std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
 
-                if (property_ == "sensitivity_stochasts_count") return (int)project->sensitivityStochasts.size();
+                if (property_ == "sensitivity_stochasts_count") return static_cast<int>(project->sensitivityStochasts.size());
                 else if (property_ == "index") return project->model->Index;
             }
             else if (objectType == ObjectType::Stochast)
@@ -584,11 +584,12 @@ namespace Deltares
                 std::shared_ptr<Statistics::Stochast> stochast = stochasts[id];
 
                 if (property_ == "observations") return stochast->getProperties()->Observations;
-                else if (property_ == "histogram_values_count") return (int)stochast->getProperties()->HistogramValues.size();
-                else if (property_ == "discrete_values_count") return (int)stochast->getProperties()->DiscreteValues.size();
-                else if (property_ == "fragility_values_count") return (int)stochast->getProperties()->FragilityValues.size();
-                else if (property_ == "contributing_stochasts_count") return (int)stochast->getProperties()->ContributingStochasts.size();
-                else if (property_ == "conditional_values_count") return (int)stochast->ValueSet->StochastValues.size();
+                else if (property_ == "histogram_values_count") return static_cast<int>(stochast->getProperties()->HistogramValues.size());
+                else if (property_ == "discrete_values_count") return static_cast<int>(stochast->getProperties()->DiscreteValues.size());
+                else if (property_ == "fragility_values_count") return static_cast<int>(stochast->getProperties()->FragilityValues.size());
+                else if (property_ == "contributing_stochasts_count") return static_cast<int>(stochast->getProperties()->ContributingStochasts.size());
+                else if (property_ == "conditional_values_count") return static_cast<int>(stochast->ValueSet->StochastValues.size());
+                else if (property_ == "special_values_count") tempValues["special_values"] = stochast->getSpecialXValues(); return static_cast<int>(tempValues["special_values"].size());
             }
             else if (objectType == ObjectType::ConditionalValue)
             {
@@ -606,7 +607,8 @@ namespace Deltares
             {
                 std::shared_ptr<Reliability::FragilityCurve> fragilityCurve = fragilityCurves[id];
 
-                if (property_ == "fragility_values_count") return (int)fragilityCurve->getProperties()->FragilityValues.size();
+                if (property_ == "fragility_values_count") return static_cast<int>(fragilityCurve->getProperties()->FragilityValues.size());
+                else if (property_ == "special_values_count") tempValues["special_values"] = fragilityCurve->getSpecialXValues(); return static_cast<int>(tempValues["special_values"].size());
             }
             else if (objectType == ObjectType::Settings)
             {
@@ -1439,16 +1441,20 @@ namespace Deltares
                 std::shared_ptr<Statistics::Stochast> stochast = stochasts[id];
 
                 if (property_ == "quantile") return stochast->getQuantile(argument);
-                if (property_ == "x_from_u") return stochast->getXFromU(argument);
-                if (property_ == "u_from_x") return stochast->getUFromX(argument);
+                else if (property_ == "x_from_u") return stochast->getXFromU(argument);
+                else if (property_ == "u_from_x") return stochast->getUFromX(argument);
+                else if (property_ == "pdf") return stochast->getPDF(argument);
+                else if (property_ == "cdf") return stochast->getCDF(argument);
             }
             else if (objectType == ObjectType::FragilityCurve)
             {
                 std::shared_ptr<Reliability::FragilityCurve> fragilityCurve = fragilityCurves[id];
 
                 if (property_ == "quantile") return fragilityCurve->getQuantile(argument);
-                if (property_ == "x_from_u") return fragilityCurve->getXFromU(argument);
-                if (property_ == "u_from_x") return fragilityCurve->getUFromX(argument);
+                else if (property_ == "x_from_u") return fragilityCurve->getXFromU(argument);
+                else if (property_ == "u_from_x") return fragilityCurve->getUFromX(argument);
+                else if (property_ == "pdf") return fragilityCurve->getPDF(argument);
+                else if (property_ == "cdf") return fragilityCurve->getCDF(argument);
             }
 
             return std::nan("");
@@ -1469,7 +1475,22 @@ namespace Deltares
         double ProjectHandler::GetIndexedValue(int id, std::string property_, int index)
         {
             ObjectType objectType = types[id];
-            if (objectType == ObjectType::LengthEffectProject)
+
+            if (objectType == ObjectType::Stochast)
+            {
+                if (property_ == "special_values")
+                {
+                    return tempValues["special_values"][index];
+                }
+            }
+            else if (objectType == ObjectType::FragilityCurve)
+            {
+                if (property_ == "special_values")
+                {
+                    return tempValues["special_values"][index];
+                }
+            }
+            else if (objectType == ObjectType::LengthEffectProject)
             {
                 std::shared_ptr<Reliability::LengthEffectProject> lengthEffect = lengthEffectProjects[id];
                 if (property_ == "correlation_lengths")
