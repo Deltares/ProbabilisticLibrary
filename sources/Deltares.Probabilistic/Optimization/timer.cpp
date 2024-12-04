@@ -20,6 +20,8 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
  */
 
+// START-NOSCAN
+
 #include "nlopt-util.h"
 
 #ifdef TIME_WITH_SYS_TIME
@@ -91,3 +93,4 @@ unsigned long nlopt_time_seed(void)
     return clock();
 #endif
 }
+// END-NOSCAN

@@ -20,6 +20,8 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+// START-NOSCAN
+
 #include <math.h>
 #include <float.h>
 #include <string.h>
@@ -264,3 +266,5 @@ int nlopt_isnan(double x)
     return (x != x);            /* might fail with aggressive optimization */
 #endif
 }
+
+// END-NOSCAN

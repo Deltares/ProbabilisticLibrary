@@ -16,6 +16,8 @@
 # Cmake under Linux/Win32
 #============================================================================*/
 
+// START-NOSCAN
+
 /* Bugfix version number. */
 #define BUGFIX_VERSION 0
 
@@ -141,3 +143,5 @@
 #ifndef __cplusplus
 #undef inline
 #endif
+
+// END-NOSCAN

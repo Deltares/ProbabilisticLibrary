@@ -5,6 +5,8 @@
 # include <ctime>
 # include "asa241.hpp"
 
+// START-NOSCAN
+
 using namespace std;
 
 namespace ASA {
@@ -581,3 +583,5 @@ namespace ASA {
 
     }
 }
+
+// END-NOSCAN

@@ -6,6 +6,8 @@
 # include "asa109.hpp"
 # include "asa063.hpp"
 
+// START-NOSCAN
+
 using namespace std;
 
 namespace ASA {
@@ -348,3 +350,5 @@ namespace ASA {
         }
     }
 }
+
+// END-NOSCAN
