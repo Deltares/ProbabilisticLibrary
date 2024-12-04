@@ -38,6 +38,7 @@ namespace Deltares
                 testConditionalWeibullCdfPdf2();
                 testConditionalStochast();
                 testDesignValue();
+                testVariationCoefficient();
             }
 
             void testDistributions::testConditionalWeibull()
@@ -202,6 +203,20 @@ namespace Deltares
 
                 EXPECT_NEAR((10.0 + 2 * 2) / 2.0, stochast->getDesignValue(), margin);
             }
+
+            void testDistributions::testVariationCoefficient()
+            {
+                constexpr double mean = 2.5;
+                constexpr double var = 2.4;
+
+                auto dist = Stochast(DistributionType::Normal, {mean, 1.0});
+                dist.constantParameterType = ConstantParameterType::VariationCoefficient;
+                dist.setVariation(var);
+                auto sd = dist.getDeviation();
+                EXPECT_NEAR(sd, mean*var, 1e-9);
+
+            }
+
         }
     }
 }

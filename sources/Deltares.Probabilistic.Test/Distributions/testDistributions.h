@@ -41,6 +41,7 @@ namespace Deltares
                 void testConditionalWeibullCdfPdf2();
                 void testConditionalStochast();
                 void testDesignValue();
+                void testVariationCoefficient();
                 double getPdfNumerical(Deltares::Statistics::Stochast& s, const double x);
 
                 const double margin = 1e-9;
