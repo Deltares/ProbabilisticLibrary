@@ -7,11 +7,13 @@
         <owners>Deltares</owners>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>.Net Wrapper for Deltares probabilistic library</description>
+        <readme>docs\readme.md</readme>
     </metadata>
     <files>
         <file src="..\x64\$configuration$\Deltares.Probabilistic.lib" target="lib\net48\x64" />
         <file src="..\x64\$configuration$\Deltares.Probabilistic.pdb" target="lib\net48\x64" />
         <file src="..\x64\$configuration$\Deltares.Probabilistic.Wrapper.dll" target="lib\net48\x64" />
         <file src="..\x64\$configuration$\Deltares.Probabilistic.Wrapper.pdb" target="lib\net48\x64" />
+        <file src="readme.md" target="docs\" />
     </files>
 </package>
