@@ -136,6 +136,9 @@
       <LinkLibraryDependencies>
       </LinkLibraryDependencies>
     </ProjectReference>
+    <PostBuildEvent>
+      <Command>..\..\extra\nuget pack Deltares.Probabilistic.Wrapper.nuspec -OutputDirectory ..\Nuget -p Configuration=Debug</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -160,6 +163,9 @@
       <AdditionalLibraryDirectories>$(SolutionDir)$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>$(SolutionDir)$(Platform)\$(Configuration)\Deltares.Probabilistic.lib</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>..\..\extra\nuget pack Deltares.Probabilistic.Wrapper.nuspec -OutputDirectory ..\Nuget -p Configuration=Release</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Reliability\FragilityCurveIntegration.h" />
