@@ -41,6 +41,8 @@ namespace Deltares
 
             std::shared_ptr<StochastPointAlpha> clone();
             void invert();
+
+            std::string getIdentifier();
         };
     }
 }

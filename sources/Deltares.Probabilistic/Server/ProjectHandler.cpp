@@ -1099,6 +1099,12 @@ namespace Deltares
 
                 if (property_ == "identifier") return designPoint->Identifier;
             }
+            else if (objectType == ObjectType::Alpha)
+            {
+                std::shared_ptr<Reliability::StochastPointAlpha> alpha = alphas[id];
+
+                if (property_ == "identifier") return alpha->getIdentifier();
+            }
 
             return "";
         }

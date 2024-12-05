@@ -44,6 +44,22 @@ namespace Deltares
             this->U = - this->U;
             this->X = this->Stochast->getXFromU(this->U);
         }
+
+        std::string StochastPointAlpha::getIdentifier()
+        {
+            if (this->Stochast == nullptr)
+            {
+                return "";
+            }
+            else if (this->Stochast->modelParameter->isArray)
+            {
+                return this->Stochast->name + "[" + std::to_string(this->Index) + "]";
+            }
+            else
+            {
+                return this->Stochast->name;
+            }
+        }
     }
 }
 

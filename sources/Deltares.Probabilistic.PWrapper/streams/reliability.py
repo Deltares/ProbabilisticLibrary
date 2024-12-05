@@ -509,6 +509,9 @@ class DesignPoint:
 				'realizations',
 				'messages']
 		
+	def __str__(self):
+		return self.identifier
+
 	@property
 	def identifier(self):
 		return interface.GetStringValue(self._id, 'identifier')
@@ -638,6 +641,7 @@ class Alpha:
 
 	def __dir__(self):
 		return ['variable',
+				'identifier',
 				'alpha',
 				'alpha_correlated',
 				'influence_factor',
@@ -661,12 +665,11 @@ class Alpha:
 		return self._variable
 
 	def __str__(self):
-		if self.variable is None:
-			return ''
-		elif self.variable.is_array:
-			return self.variable.name + '[' + str(self.index) + ']'
-		else:
-			return self.variable.name
+		return self.identifier
+
+	@property
+	def identifier(self):
+		return interface.GetStringValue(self._id, 'identifier')
 
 	# internal method		
 	def _set_variable(self, variable):
