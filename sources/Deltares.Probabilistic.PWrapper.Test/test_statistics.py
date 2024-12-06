@@ -43,6 +43,8 @@ class Test_statistics(unittest.TestCase):
 
         self.assertAlmostEqual(5.0, m, delta=margin)
         self.assertAlmostEqual(6.0, x, delta=margin)
+        self.assertAlmostEqual(0.84, stochast.get_cdf(6), delta=margin)
+        self.assertAlmostEqual(0.24, stochast.get_pdf(6), delta=margin)
 
     def test_discrete(self):
         stochast = Stochast()
@@ -58,8 +60,23 @@ class Test_statistics(unittest.TestCase):
         dv2.amount = 3
         stochast.discrete_values.append(dv2)
 
+        # check mean value
         self.assertAlmostEqual(2.75, stochast.mean, delta=margin)
 
+        # check pdf and cdf
+        self.assertAlmostEqual(0.125, stochast.get_cdf(2.0), delta=margin)
+        self.assertAlmostEqual(0.25, stochast.get_pdf(2.0), delta=margin)
+        
+        self.assertAlmostEqual(0.25, stochast.get_cdf(2.5), delta=margin)
+        self.assertAlmostEqual(0.0, stochast.get_pdf(2.5), delta=margin)
+
+        # check special values
+        special_values = stochast.get_special_values()
+        self.assertEqual(8, len(special_values))
+        self.assertAlmostEqual(dv1.x, special_values[1], delta=margin)
+        self.assertAlmostEqual(dv2.x, special_values[6], delta=margin)
+
+        # check updates to the list of discrete values
         stochast.discrete_values.remove(dv1)
 
         self.assertAlmostEqual(3.0, stochast.mean, delta=margin)
@@ -76,7 +93,7 @@ class Test_statistics(unittest.TestCase):
         stochast.discrete_values[0] = dv2
 
         self.assertAlmostEqual(3.0, stochast.mean, delta=margin)
-        
+
     def test_correlation(self):
         stochasts = []
 

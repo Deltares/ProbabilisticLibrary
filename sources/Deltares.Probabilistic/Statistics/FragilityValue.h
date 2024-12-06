@@ -46,7 +46,7 @@ namespace Deltares
             /**
              * \brief Physical value for which the reliability is defined
              */
-            double X;
+            double X = 0;
 
             /**
              * \brief Design point corresponding with the reliability
