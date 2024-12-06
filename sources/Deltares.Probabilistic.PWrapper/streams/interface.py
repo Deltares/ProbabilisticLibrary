@@ -142,6 +142,10 @@ def GetIndexedStringValue(id_, property_, index_):
 def SetStringValue(id_, property_, value_):
 	lib.SetStringValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), bytes(value_, 'utf-8'))
 
+def GetArrayValue(id_, property_, values_):
+	cvalues = (ctypes.c_double * len(values_))(*values_)
+	lib.GetArrayValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.POINTER(ctypes.c_double)(cvalues), ctypes.c_uint(len(values_)))
+
 def SetArrayValue(id_, property_, values_):
 	cvalues = (ctypes.c_double * len(values_))(*values_)
 	lib.SetArrayValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.POINTER(ctypes.c_double)(cvalues), ctypes.c_uint(len(values_)))
@@ -240,7 +244,7 @@ def SetCallBack(id_, property_, callBack_):
 
 def SetEmptyCallBack(id_, property_, callBack_):
 	try:
-		lib.SetInitializeCallBack(ctypes.c_int(id_), bytes(property_, 'utf-8'), callBack_)
+		lib.SetEmptyCallBack(ctypes.c_int(id_), bytes(property_, 'utf-8'), callBack_)
 	except:
 		message = sys.exc_info()[0]
 		print('error: ' + str(message), flush = True)

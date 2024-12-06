@@ -38,6 +38,7 @@ namespace Deltares
         typedef std::function<double(std::shared_ptr<ModelSample>, double beta)> ZBetaLambda;
 
         typedef void (*ZValuesCallBack)(double* data, int size, double* outputValues);
+        typedef void (*EmptyCallBack)();
 
         class ZModel
         {
@@ -72,6 +73,11 @@ namespace Deltares
              * \brief Makes the model ready for invocations
              */
             void initializeForRun();
+
+            void setRunMethod(EmptyCallBack runMethod)
+            {
+                this->runMethod = runMethod;
+            }
 
             /**
              * \brief The index of the underlying model values if the model returns an array or tuple
@@ -127,6 +133,7 @@ namespace Deltares
             ZLambda zLambda = nullptr;
             ZMultipleLambda zMultipleLambda = nullptr;
             ZBetaLambda zBetaLambda = nullptr;
+            EmptyCallBack runMethod = nullptr;
             int maxProcesses = 1;
             int modelRuns = 0;
             int inputParametersCount = 0;

@@ -331,6 +331,28 @@ namespace Deltares
             return this->Send("get_indexed_string_value:" + std::to_string(id) + ":" + property + ":" + std::to_string(index), true);
         }
 
+        void ExternalServerHandler::GetArrayValue(int id, std::string property, double* values, int size)
+        {
+            std::string result = this->Send("get_array_value:" + std::to_string(id) + ":" + property, true);
+
+            std::vector<std::string> results = StringSplit(result, ":");
+            for (size_t i = 0; i < results.size(); i++)
+            {
+                values[i] = std::stod(results[i]);
+            }
+        }
+
+        void ExternalServerHandler::SetArrayValue(int id, std::string property, double* values, int size)
+        {
+            std::vector<std::string> strings;
+            for (int i = 0; i < size; i++)
+            {
+                strings.push_back(std::to_string(values[i]));
+            }
+
+            this->Send("set_array_value:" + std::to_string(id) + ":" + property + ":" + StringJoin(strings, ":"), false);
+        }
+
         void ExternalServerHandler::SetArrayIntValue(int id, std::string property, int* values, int size)
         {
             std::vector<std::string> strings;

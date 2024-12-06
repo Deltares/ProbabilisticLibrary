@@ -57,6 +57,7 @@ namespace Deltares
             std::string GetStringValue(int id, std::string property_);
             std::string GetIndexedStringValue(int id, const std::string property_, int index);
             void SetStringValue(int id, std::string property_, std::string value);
+            void GetArrayValue(int id, std::string property_, double* values, int size);
             void SetArrayValue(int id, std::string property_, double* values, int size);
             std::vector<int> GetArrayIntValue(int id, std::string property_);
             void SetArrayIntValue(int id, std::string property_, int* values, int size);
@@ -71,6 +72,7 @@ namespace Deltares
             int GetIdValue(int id, std::string property_);
             int GetIndexedIdValue(int id, std::string property_, int index);
             void SetCallBack(int id, std::string property_, Models::ZValuesCallBack callBack);
+            void SetEmptyCallBack(int id, std::string property_, Models::EmptyCallBack callBack);
             void Execute(int id, std::string method_);
             void AddHandler(std::shared_ptr<BaseHandler> handler);
             void Exit();

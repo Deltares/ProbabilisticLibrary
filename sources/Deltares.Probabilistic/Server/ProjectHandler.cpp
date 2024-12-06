@@ -1640,6 +1640,24 @@ namespace Deltares
             }
         }
 
+        void ProjectHandler::SetEmptyCallBack(int id, std::string property_, EmptyCallBack callBack)
+        {
+            ObjectType objectType = types[id];
+
+            if (objectType == ObjectType::Project)
+            {
+                std::shared_ptr<Reliability::ReliabilityProject> project = projects[id];
+
+                if (property_ == "run_samples") project->model->setRunMethod(callBack);
+            }
+            else if (objectType == ObjectType::SensitivityProject)
+            {
+                std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
+
+                if (property_ == "run_samples") project->model->setRunMethod(callBack);
+            }
+        }
+
         void ProjectHandler::Execute(int id, std::string method_)
         {
             ObjectType objectType = types[id];
