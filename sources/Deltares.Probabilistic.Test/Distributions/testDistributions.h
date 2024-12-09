@@ -20,32 +20,24 @@
 // All rights reserved.
 //
 #pragma once
-#include <gtest/gtest.h>
 #include "../../Deltares.Probabilistic/Statistics/Stochast.h"
 
-namespace Deltares
+namespace Deltares::Probabilistic::Test
 {
-    namespace Probabilistic
+    class testDistributions
     {
-        namespace Test
-        {
-            class testDistributions
-            {
-            public:
-                void allDistributionsTests();
-            private:
-                void testConditionalWeibull();
-                void testConditionalWeibullNonIntegerShape();
-                void testConditionalWeibullMeanDeviation();
-                void testConditionalWeibullCdfPdf();
-                void testConditionalWeibullCdfPdf2();
-                void testConditionalStochast();
-                void testDesignValue();
-                double getPdfNumerical(Deltares::Statistics::Stochast& s, const double x);
-
-                const double margin = 1e-9;
-            };
-        }
-    }
+    public:
+        static void allDistributionsTests();
+    private:
+        static void testConditionalWeibull();
+        static void testConditionalWeibullNonIntegerShape();
+        static void testConditionalWeibullMeanDeviation();
+        static void testConditionalWeibullCdfPdf();
+        static void testConditionalWeibullCdfPdf2();
+        static void testConditionalStochast();
+        static void testDesignValue();
+        static void testVariationCoefficient();
+        static double getPdfNumerical(Statistics::Stochast& s, const double x);
+    };
 }
 

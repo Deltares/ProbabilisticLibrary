@@ -257,7 +257,7 @@ namespace Deltares
                 else
                 {
                     double variation = deviation / currentMean;
-                    distribution->setMeanAndDeviation(properties, mean, abs(mean * variation));
+                    distribution->setMeanAndDeviation(properties, mean, std::abs(mean * variation));
                 }
             }
         }
@@ -283,14 +283,14 @@ namespace Deltares
             }
             else
             {
-                return this->getDeviation() / abs(mean);
+                return this->getDeviation() / std::abs(mean);
             }
         }
 
         void Stochast::setVariation(double variation)
         {
             double mean = this->getMean();
-            distribution->setMeanAndDeviation(properties, mean, variation * abs(mean));
+            distribution->setMeanAndDeviation(properties, mean, variation * std::abs(mean));
             this->lastVariation = variation;
         }
 
