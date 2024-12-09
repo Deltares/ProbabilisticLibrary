@@ -20,27 +20,19 @@
 // All rights reserved.
 //
 #pragma once
-#include <gtest/gtest.h>
 
-namespace Deltares
+namespace Deltares::Probabilistic::Test
 {
-    namespace Probabilistic
+    class testNumericSupport
     {
-        namespace Test
-        {
-            class testNumericSupport
-            {
-            public:
-                void allNumericSupportTests();
-            private:
-                void testLinearInterpolate();
-                void testLogLinearInterpolate();
-                void testHarmonicInterpolate();
-                void testMinMaxFunctions();
-                static void testGetFraction();
-                const double margin = 1e-9;
-            };
-        }
-    }
+    public:
+        static void allNumericSupportTests();
+    private:
+        static void testLinearInterpolate();
+        static void testLogLinearInterpolate();
+        static void testHarmonicInterpolate();
+        static void testMinMaxFunctions();
+        static void testGetFraction();
+    };
 }
 

@@ -110,8 +110,7 @@ namespace Deltares
 
             TEST(unittst, testNumericalSupport)
             {
-                auto tstNumSupport = testNumericSupport();
-                tstNumSupport.allNumericSupportTests();
+                testNumericSupport::allNumericSupportTests();
             }
 
             TEST(unittst, testKMeanClustering)
