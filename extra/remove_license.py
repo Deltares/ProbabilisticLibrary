@@ -50,26 +50,16 @@ def remove_header(filename):
         with open(filename, "w") as f:
             f.writelines(contents)
 
+def is_excluded(filename):
+    excluded_files = ["Cobyla.h", "Cobyla.cpp", "stop.cpp", "timer.cpp", "rescale.cpp", "nlopt", "ASA", "framework.h", "TestDistributions.cs"]
+    for excluded in excluded_files:
+        if filename in excluded:
+            return True
+    return False
+
 def replace_one_type(extension):
     for name in glob.iglob("**/*."+extension, recursive = True):
-        if "Cobyla.h" in name:
-            continue
-        if "Cobyla.cpp" in name:
-            continue
-        if "stop.cpp" in name:
-            continue
-        if "timer.cpp" in name:
-            continue
-        if "rescale.cpp" in name:
-            continue
-        if "nlopt" in name:
-            continue
-        if "ASA" in name:
-            continue
-        if "framework.h" in name:
-            continue
-        if "TestDistributions.cs" in name:
-            # strange characters in this file
+        if is_excluded(name):
             continue
         print("remove header in file: ", name)
         remove_header(name)
