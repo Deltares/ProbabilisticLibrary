@@ -50,9 +50,18 @@ namespace Deltares
                 this->zMultipleLambda = zMultipleLambda;
             }
 
-            ZModel(ZValuesCallBack zValuesLambda)
+            ZModel(ZValuesCallBack zValuesLambda, ZValuesMultipleCallBack zValuesMultipleLambda = nullptr)
             {
                 this->zLambda = this->getLambdaFromZValuesCallBack(zValuesLambda);
+                if (zValuesMultipleLambda != nullptr)
+                {
+                    this->zMultipleLambda = this->getLambdaFromZValuesMultipleCallBack(zValuesMultipleLambda);
+                }
+            }
+
+            void setMultipleCallback(ZValuesMultipleCallBack multipleCallBack)
+            {
+                this->zMultipleLambda = this->getLambdaFromZValuesMultipleCallBack(multipleCallBack);
             }
 
             /**
@@ -141,6 +150,7 @@ namespace Deltares
             int outputParametersCount = 0;
             bool countRunsLambda = true;
             ZLambda getLambdaFromZValuesCallBack(ZValuesCallBack zValuesLambda);
+            ZMultipleLambda getLambdaFromZValuesMultipleCallBack(ZValuesMultipleCallBack zValuesMultipleLambda);
         };
     }
 }

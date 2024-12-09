@@ -52,7 +52,11 @@ class SensitivitySettings:
 		interface.Destroy(self._id)
 
 	def __dir__(self):
-		return ['sensitivity_method',
+		return ['max_parallel_processes',
+				'save_realizations',
+				'save_convergence',
+				'save_messages',
+				'sensitivity_method',
 	            'random_type',
 	            'minimum_samples',
 	            'maximum_samples',
@@ -73,6 +77,38 @@ class SensitivitySettings:
 	            'stochast_settings']
 
 		
+	@property
+	def max_parallel_processes(self):
+		return interface.GetIntValue(self._id, 'max_parallel_processes')
+
+	@max_parallel_processes.setter
+	def max_parallel_processes(self, value : int):
+		interface.SetIntValue(self._id, 'max_parallel_processes', value)
+
+	@property
+	def save_realizations(self):
+		return interface.GetBoolValue(self._id, 'save_realizations')
+
+	@save_realizations.setter
+	def save_realizations(self, value : bool):
+		interface.SetBoolValue(self._id, 'save_realizations', value)
+
+	@property
+	def save_convergence(self):
+		return interface.GetBoolValue(self._id, 'save_convergence')
+
+	@save_convergence.setter
+	def save_convergence(self, value : bool):
+		interface.SetBoolValue(self._id, 'save_convergence', value)
+
+	@property
+	def save_messages(self):
+		return interface.GetBoolValue(self._id, 'save_messages')
+
+	@save_messages.setter
+	def save_messages(self, value : bool):
+		interface.SetBoolValue(self._id, 'save_messages', value)
+
 	@property
 	def sensitivity_method(self):
 		return SensitivityMethod[interface.GetStringValue(self._id, 'sensitivity_method')]

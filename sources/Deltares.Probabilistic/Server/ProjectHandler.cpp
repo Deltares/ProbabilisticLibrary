@@ -622,7 +622,8 @@ namespace Deltares
             {
                 std::shared_ptr<Reliability::Settings> settings = settingsValues[id];
 
-                if (property_ == "minimum_samples") return settings->MinimumSamples;
+                if (property_ == "max_parallel_processes") return settings->RunSettings->MaxParallelProcesses;
+                else if (property_ == "minimum_samples") return settings->MinimumSamples;
                 else if (property_ == "maximum_samples") return settings->MaximumSamples;
                 else if (property_ == "minimum_iterations") return settings->MinimumIterations;
                 else if (property_ == "maximum_iterations") return settings->MaximumIterations;
@@ -637,7 +638,8 @@ namespace Deltares
             {
                 std::shared_ptr<Sensitivity::SettingsS> settings = sensitivitySettingsValues[id];
 
-                if (property_ == "minimum_samples") return settings->MinimumSamples;
+                if (property_ == "max_parallel_processes") return settings->RunSettings->MaxParallelProcesses;
+                else if (property_ == "minimum_samples") return settings->MinimumSamples;
                 else if (property_ == "maximum_samples") return settings->MaximumSamples;
                 else if (property_ == "maximum_iterations") return settings->MaximumIterations;
                 else if (property_ == "minimum_directions") return settings->MinimumDirections;
@@ -839,7 +841,8 @@ namespace Deltares
             {
                 std::shared_ptr<Reliability::Settings> settings = settingsValues[id];
 
-                if (property_ == "minimum_samples") settings->MinimumSamples = value;
+                if (property_ == "max_parallel_processes") settings->RunSettings->MaxParallelProcesses = value;
+                else if (property_ == "minimum_samples") settings->MinimumSamples = value;
                 else if (property_ == "maximum_samples") settings->MaximumSamples = value;
                 else if (property_ == "minimum_iterations") settings->MinimumIterations = value;
                 else if (property_ == "maximum_iterations") settings->MaximumIterations = value;
@@ -854,7 +857,8 @@ namespace Deltares
             {
                 std::shared_ptr<Sensitivity::SettingsS> settings = sensitivitySettingsValues[id];
 
-                if (property_ == "minimum_samples") settings->MinimumSamples = value;
+                if (property_ == "max_parallel_processes") settings->RunSettings->MaxParallelProcesses = value;
+                else if (property_ == "minimum_samples") settings->MinimumSamples = value;
                 else if (property_ == "maximum_samples") settings->MaximumSamples = value;
                 else if (property_ == "maximum_iterations") settings->MaximumIterations = value;
                 else if (property_ == "minimum_directions") settings->MinimumDirections = value;
@@ -965,12 +969,18 @@ namespace Deltares
                 if (property_ == "derive_samples_from_variation_coefficient") return settings->DeriveSamplesFromVariationCoefficient;
                 else if (property_ == "calculate_correlations") return settings->CalculateCorrelations;
                 else if (property_ == "calculate_input_correlations") return settings->CalculateInputCorrelations;
+                else if (property_ == "save_realizations") return settings->RunSettings->SaveEvaluations;
+                else if (property_ == "save_convergence") return settings->RunSettings->SaveConvergence;
+                else if (property_ == "save_messages") return settings->RunSettings->SaveMessages;
             }
             else if (objectType == ObjectType::Settings)
             {
                 std::shared_ptr<Reliability::Settings> setting = settingsValues[id];
 
                 if (property_ == "all_quadrants") return setting->StartPointSettings->allQuadrants;
+                else if (property_ == "save_realizations") return setting->RunSettings->SaveEvaluations;
+                else if (property_ == "save_convergence") return setting->RunSettings->SaveConvergence;
+                else if (property_ == "save_messages") return setting->RunSettings->SaveMessages;
             }
 
             return false;
@@ -1015,12 +1025,18 @@ namespace Deltares
                 if (property_ == "derive_samples_from_variation_coefficient") settings->DeriveSamplesFromVariationCoefficient = value;
                 else if (property_ == "calculate_correlations") settings->CalculateCorrelations = value;
                 else if (property_ == "calculate_input_correlations") settings->CalculateInputCorrelations = value;
+                else if (property_ == "save_realizations") settings->RunSettings->SaveEvaluations = value;
+                else if (property_ == "save_convergence") settings->RunSettings->SaveConvergence = value;
+                else if (property_ == "save_messages") settings->RunSettings->SaveMessages = value;
             }
             else if (objectType == ObjectType::Settings)
             {
                 std::shared_ptr<Reliability::Settings> setting = settingsValues[id];
 
                 if (property_ == "all_quadrants") setting->StartPointSettings->allQuadrants = value;
+                else if (property_ == "save_realizations") setting->RunSettings->SaveEvaluations = value;
+                else if (property_ == "save_convergence") setting->RunSettings->SaveConvergence = value;
+                else if (property_ == "save_messages") setting->RunSettings->SaveMessages = value;
             }
 
         }
@@ -1648,13 +1664,13 @@ namespace Deltares
             {
                 std::shared_ptr<Reliability::ReliabilityProject> project = projects[id];
 
-                // TODO
+                if (property_ == "model") project->model->setMultipleCallback(callBack);
             }
             else if (objectType == ObjectType::SensitivityProject)
             {
                 std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
 
-                // TODO
+                if (property_ == "model") project->model->setMultipleCallback(callBack);
             }
         }
 

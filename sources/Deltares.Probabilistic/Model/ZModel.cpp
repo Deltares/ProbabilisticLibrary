@@ -67,6 +67,37 @@ namespace Deltares
             return calcValuesLambda;
         }
 
+        ZMultipleLambda ZModel::getLambdaFromZValuesMultipleCallBack(ZValuesMultipleCallBack zValuesMultipleLambda)
+        {
+            ZMultipleLambda calcValuesLambda = [zValuesMultipleLambda, this](std::vector<std::shared_ptr<ModelSample>> samples)
+            {
+                double** inputValues = new double* [samples.size()];
+                double** outputValues = new double* [samples.size()];
+                for (size_t i = 0; i < samples.size(); i++)
+                {
+                    inputValues[i] = samples[i]->Values.data();
+                    outputValues[i] = new double[this->outputParametersCount];
+                }
+
+                (*zValuesMultipleLambda)(static_cast<int>(samples.size()), inputValues, this->inputParametersCount, outputValues);
+
+                for (size_t i = 0; i < samples.size(); i++)
+                {
+                    samples[i]->OutputValues.clear();
+                    for (size_t j = 0; j < this->outputParametersCount; j++)
+                    {
+                        samples[i]->OutputValues.push_back(outputValues[i][j]);
+                    }
+                    delete[] outputValues[i];
+                }
+
+                delete[] inputValues;
+                delete[] outputValues;
+            };
+
+            return calcValuesLambda;
+        }
+
         void ZModel::initializeForRun()
         {
             this->inputParametersCount = 0;
