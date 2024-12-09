@@ -33,6 +33,10 @@ import inspect
 if not interface.IsLibraryLoaded():
 	interface.LoadDefaultLibrary()
 
+class Sample:
+	def __init__(self, input_values, output_values):
+		self.input_values = input_values
+		self.output_values = output_values
 
 class ZModelContainer:
 	def get_model(self):
@@ -168,20 +172,20 @@ class ZModel:
 				args.append(arg_array)
 		return args
 	
-	def run(self, values, output_values):
+	def run(self, sample):
 		if self._is_function:
 			if self._has_arrays:
-				args = self._get_args(values)
+				args = self._get_args(sample.input_values)
 				z = ZModel._callback(*args)
 			else:
-				z = ZModel._callback(*values)
+				z = ZModel._callback(*sample.input_values)
 			if type(z) is list or type(z) is tuple:
 				for i in range(len(z)):
-					output_values[i] = z[i]
+					sample.output_values[i] = z[i]
 			else:
-				output_values[0] = z
+				sample.output_values[0] = z
 		else:
-			z = ZModel._callback(values, output_values);
+			z = ZModel._callback(sample.values, sample.output_values);
 
 class ModelParameter:
 
@@ -251,8 +255,12 @@ class SensitivityProject:
 
 	def __init__(self):
 		self._id = interface.Create('sensitivity_project')
+
 		self._callback = interface.CALLBACK(self._performCallBack)
 		interface.SetCallBack(self._id, 'model', self._callback)
+
+		self._multiple_callback = interface.MULTIPLE_CALLBACK(self._perform_multiple_callback)
+		interface.SetMultipleCallBack(self._id, 'model', self._multiple_callback)
 
 		self._is_dirty = False
 		self._known_variables = []
@@ -349,8 +357,15 @@ class SensitivityProject:
 
 	@interface.CALLBACK
 	def _performCallBack(values, size, output_values):
-		values_list = values[:size]
-		SensitivityProject._zmodel.run(values_list, output_values)
+		sample = Sample(values[:size], output_values)
+		SensitivityProject._zmodel.run(sample)
+
+	@interface.MULTIPLE_CALLBACK
+	def _perform_multiple_callback(sample_count, values, input_size, output_values):
+		samples = []
+		for i in range(sample_count):
+			samples.append(Sample(values[i][:input_size], output_values[i]))
+		SensitivityProject._zmodel.run_multiple(samples)
 
 	def run(self):
 		self._check_model()
@@ -405,6 +420,9 @@ class ReliabilityProject:
 		self._id = interface.Create('project')
 		self._callback = interface.CALLBACK(self._performCallBack)
 		interface.SetCallBack(self._id, 'model', self._callback)
+
+		self._multiple_callback = interface.MULTIPLE_CALLBACK(self._perform_multiple_callback)
+		interface.SetMultipleCallBack(self._id, 'model', self._multiple_callback)
 
 		self._known_variables = []
 		self._variables = FrozenList()
@@ -498,8 +516,15 @@ class ReliabilityProject:
 
 	@interface.CALLBACK
 	def _performCallBack(values, size, output_values):
-		values_list = values[:size]
-		ReliabilityProject._zmodel.run(values_list, output_values)
+		sample = Sample(values[:size], output_values)
+		ReliabilityProject._zmodel.run(sample)
+
+	@interface.MULTIPLE_CALLBACK
+	def _perform_multiple_callback(sample_count, values, input_size, output_values):
+		samples = []
+		for i in range(sample_count):
+			samples.append(Sample(values[i][:input_size], output_values[i]))
+		ReliabilityProject._zmodel.run_multiple(samples)
 
 	def run(self):
 		self._design_point = None

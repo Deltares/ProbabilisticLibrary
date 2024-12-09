@@ -30,6 +30,7 @@ from ctypes import cdll
 from ctypes import *
 
 CALLBACK = CFUNCTYPE(ctypes.c_void_p, POINTER(ctypes.c_double), ctypes.c_int, POINTER(ctypes.c_double))
+MULTIPLE_CALLBACK = CFUNCTYPE(ctypes.c_void_p, ctypes.c_int, POINTER(POINTER(ctypes.c_double)), ctypes.c_int, POINTER(POINTER(ctypes.c_double)))
 EMPTY_CALLBACK = CFUNCTYPE(ctypes.c_void_p)
 
 def LoadLibrary(lib_full_path):
@@ -237,6 +238,14 @@ def SetIndexedIndexedValue(id_, property_, index1_, index2_, value_):
 def SetCallBack(id_, property_, callBack_):
 	try:
 		lib.SetCallBack(ctypes.c_int(id_), bytes(property_, 'utf-8'), callBack_)
+	except:
+		message = sys.exc_info()[0]
+		print('error: ' + str(message), flush = True)
+		raise
+
+def SetMultipleCallBack(id_, property_, callBack_):
+	try:
+		lib.SetMultipleCallBack(ctypes.c_int(id_), bytes(property_, 'utf-8'), callBack_)
 	except:
 		message = sys.exc_info()[0]
 		print('error: ' + str(message), flush = True)
