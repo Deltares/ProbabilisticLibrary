@@ -181,8 +181,7 @@ namespace Deltares
 
             TEST(unittst, testDistributions)
             {
-                auto tstDist = testDistributions();
-                tstDist.allDistributionsTests();
+                testDistributions::allDistributionsTests();
             }
 
             TEST(unittst, testStandardNormal)
