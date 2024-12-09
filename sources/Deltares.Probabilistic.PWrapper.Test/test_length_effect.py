@@ -21,7 +21,7 @@
 #
 import unittest
 
-from probabilistic-library import *
+from probabilistic_library import *
 
 import project_builder
 

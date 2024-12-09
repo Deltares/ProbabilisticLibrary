@@ -25,7 +25,7 @@ with open("readme.md", "r") as fh:
     long_description = fh.read()
  
 setuptools.setup(
-    name="probabilistic-library",
+    name="probabilistic_library",
     version="24.1.1",
     author="Deltares",
     author_email="software.support@deltares.nl",
@@ -33,7 +33,7 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     packages=setuptools.find_packages(),
-    package_data={'streams':['bin/*Deltares.Probabilistic.*.*']},    
+    package_data={'probabilistic_library':['bin/*Deltares.Probabilistic.*.*']},    
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: AGPL License",

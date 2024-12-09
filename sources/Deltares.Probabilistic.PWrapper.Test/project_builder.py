@@ -23,7 +23,7 @@ import sys
 import math
 import numpy as np
 
-from probabilistic-library import *
+from probabilistic_library import *
 
 def sum_ab(a, b):
     return a+b;

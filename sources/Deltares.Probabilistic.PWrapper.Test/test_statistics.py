@@ -22,7 +22,7 @@
 import unittest
 import sys
 
-from probabilistic-library import *
+from probabilistic_library import *
 
 margin = 0.01
 
