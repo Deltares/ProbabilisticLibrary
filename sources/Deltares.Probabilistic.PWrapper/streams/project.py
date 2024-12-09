@@ -50,6 +50,7 @@ class ZModelContainer:
 
 class ZModel:
 	_callback = None
+	_multiple_callback = None
 	
 	def __init__(self, callback = None):
 		ZModel._index = 0;
@@ -129,6 +130,9 @@ class ZModel:
 	def _set_callback(self, callback):
 		ZModel._callback = callback
 		
+	def _set_multiple_callback(self, multiple_callback):
+		ZModel._multiple_callback = multiple_callback
+		
 	def _set_model(self, value):
 		self._model = value
 		
@@ -171,7 +175,14 @@ class ZModel:
 					index += 1
 				args.append(arg_array)
 		return args
-	
+
+	def run_multiple(self, samples):
+		if self._is_function:
+			for sample in samples:
+				self.run(sample)
+		else:
+			ZModel._multiple_callback(samples)
+
 	def run(self, sample):
 		if self._is_function:
 			if self._has_arrays:
@@ -185,7 +196,7 @@ class ZModel:
 			else:
 				sample.output_values[0] = z
 		else:
-			z = ZModel._callback(sample.values, sample.output_values);
+			z = ZModel._callback(sample);
 
 class ModelParameter:
 
