@@ -21,43 +21,36 @@
 #
 
 """_summary_
-This script adds a header on top of source files.
-The license text is "license.txt" in the current directory.
+This script remove the header on top of source files.
+So that in the next step a new/updated header can be added.
 It handles all files recursive in the given folder.
 
-It works for c++, c#, python and Fortran
 """
 
 import glob
 import sys
 import os
 
-def read_header(filename):
+def remove_header(filename):
+    lastLine = "All rights reserved."
+    count = 0
+    contents = []
+    skip_extra = False
     with open(filename, "r") as f:
-        contents = f.readlines()
-    return contents
+        for line in f:
+            if lastLine in line:
+                count += 1
+            elif count == 2:
+                if not skip_extra:
+                    skip_extra = True
+                else:
+                    contents.append(line)
 
-def check_already_with_header(filename):
-    with open(filename, "r") as f:
-        contents = f.readlines()
+    if count == 2:
+        with open(filename, "w") as f:
+            f.writelines(contents)
 
-    for line in contents:
-        if "Copyright (C) Stichting Deltares" in line:
-            return True
-
-    return False
-
-def add_header(filename, header):
-    with open(filename, "r") as f:
-        contents = f.readlines()
-
-    for h in reversed(header):
-        contents.insert(0, h)
-
-    with open(filename, "w") as f:
-        f.writelines(contents)
-
-def replace_one_type(extension, header):
+def replace_one_type(extension):
     for name in glob.iglob("**/*."+extension, recursive = True):
         if "Cobyla.h" in name:
             continue
@@ -78,40 +71,18 @@ def replace_one_type(extension, header):
         if "TestDistributions.cs" in name:
             # strange characters in this file
             continue
-        print("add header to file: ", name)
-        if not check_already_with_header(name):
-            add_header(name, header)
-        else:
-            print("already with header: ", name)
-
-def update_header(header, comment_char):
-    new_header = []
-    for line in header:
-        if line.isspace() > 0:
-            with_comment = comment_char + line
-        else:
-            with_comment = comment_char + " " + line
-        new_header.append(with_comment.strip(" "))
-
-    return new_header
+        print("remove header in file: ", name)
+        remove_header(name)
 
 def replace_all(folder):
-    header = read_header("license.txt")
-    header_c = update_header(header, "//")
-    header_f90 = update_header(header, "!")
-    header_py = update_header(header, "#")
-
     os.chdir(folder)
 
-    extensions = ("cpp", "h", "cs")
+    extensions = ("cpp", "h", "cs", "py", "f90")
     for ext in extensions:
-        replace_one_type(ext, header_c)
-
-    replace_one_type("py", header_py)
-    replace_one_type("f90", header_f90)
+        replace_one_type(ext)
 
 def start_replace():
-    print("add (c) header to all files (recursive) in given folder")
+    print("remove (c) header to all files (recursive) in given folder")
     print("template header is in current folder")
     if len(sys.argv) == 1:
         print("missing comment line argument")
