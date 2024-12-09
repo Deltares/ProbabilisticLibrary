@@ -25,11 +25,11 @@ with open("readme.md", "r") as fh:
     long_description = fh.read()
  
 setuptools.setup(
-    name="streams",
-    version="0.0.1",
+    name="probabilistic-library",
+    version="24.1.1",
     author="Deltares",
     author_email="software.support@deltares.nl",
-    description="Package which provides STatistical and REliability Analysis MethodS",
+    description="Package which provides probabilistic methods",
     long_description=long_description,
     long_description_content_type="text/markdown",
     packages=setuptools.find_packages(),

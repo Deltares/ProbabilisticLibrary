@@ -22,7 +22,7 @@
 import unittest
 import sys
 
-from streams import *
+from probabilistic-library import *
 
 import project_builder
 

@@ -20,7 +20,7 @@
 # All rights reserved.
 #
 import sys
-from stresms import *
+from probabilistic-library import *
 
 margin = 0.01
 

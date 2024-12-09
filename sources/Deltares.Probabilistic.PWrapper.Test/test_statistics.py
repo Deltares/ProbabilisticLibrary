@@ -22,7 +22,7 @@
 import unittest
 import sys
 
-from streams import *
+from probabilistic-library import *
 
 margin = 0.01
 
