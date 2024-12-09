@@ -38,6 +38,7 @@ namespace Deltares
         typedef std::function<double(std::shared_ptr<ModelSample>, double beta)> ZBetaLambda;
 
         typedef void (*ZValuesCallBack)(double* data, int size, double* outputValues);
+        typedef void (*ZValuesMultipleCallBack)(int arraySize, double** data, int inputSize, double** outputValues);
         typedef void (*EmptyCallBack)();
 
         class ZModel

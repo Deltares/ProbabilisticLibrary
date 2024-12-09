@@ -219,6 +219,11 @@ namespace Deltares
             handlersTable[id]->SetCallBack(id, property_, callBack);
         }
 
+        void ProjectServer::SetMultipleCallBack(int id, std::string property_, ZValuesMultipleCallBack callBack)
+        {
+            handlersTable[id]->SetMultipleCallBack(id, property_, callBack);
+        }
+
         void ProjectServer::SetEmptyCallBack(int id, std::string property_, EmptyCallBack callBack)
         {
             handlersTable[id]->SetEmptyCallBack(id, property_, callBack);

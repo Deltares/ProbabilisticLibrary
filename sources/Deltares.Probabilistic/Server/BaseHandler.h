@@ -42,6 +42,7 @@ namespace Deltares
             virtual int GetIdValue(int id, std::string property_, int newId) { return GetIntValue(id, property_); }
             virtual int GetIndexedIdValue(int id, std::string property_, int index, int newId) { return GetIndexedIntValue(id, property_, index); }
             virtual void SetCallBack(int id, std::string property_, Models::ZValuesCallBack callBack) {}
+            virtual void SetMultipleCallBack(int id, std::string property_, Models::ZValuesMultipleCallBack callBack) {}
             virtual void SetEmptyCallBack(int id, std::string property_, Models::EmptyCallBack callBack) {}
             virtual void Execute(int id, std::string method_) {}
         };

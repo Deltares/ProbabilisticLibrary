@@ -249,6 +249,12 @@ extern "C" DLL_PUBLIC void SetCallBack(int id, char* property, Deltares::Models:
     projectServer->SetCallBack(id, propertyStr, callBack);
 }
 
+extern "C" DLL_PUBLIC void SetMultipleCallBack(int id, char* property, Deltares::Models::ZValuesMultipleCallBack callBack)
+{
+    std::string propertyStr(property);
+    projectServer->SetMultipleCallBack(id, propertyStr, callBack);
+}
+
 extern "C" DLL_PUBLIC void SetEmptyCallBack(int id, char* property, Deltares::Models::EmptyCallBack callBack)
 {
     std::string propertyStr(property);
