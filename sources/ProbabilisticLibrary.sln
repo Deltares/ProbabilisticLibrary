@@ -23,6 +23,11 @@ Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Deltares.Probabilistic.PWra
 EndProject
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Deltares.Probabilistic.PWrapper.Test", "Deltares.Probabilistic.PWrapper.Test\Deltares.Probabilistic.PWrapper.Test.pyproj", "{CAFB0EDA-EF78-46A8-8227-ADEE778907F8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Deltares.Probabilistic.Nuget.Test", "Deltares.Probabilistic.Nuget.Test\Deltares.Probabilistic.Nuget.Test.csproj", "{4D30881A-CE42-4E47-B651-18F8201A8586}"
+	ProjectSection(ProjectDependencies) = postProject
+		{8142BF85-77C9-4340-A643-C837F0EC93AF} = {8142BF85-77C9-4340-A643-C837F0EC93AF}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -261,6 +266,42 @@ Global
 		{CAFB0EDA-EF78-46A8-8227-ADEE778907F8}.Setup|Any CPU.ActiveCfg = Debug|Any CPU
 		{CAFB0EDA-EF78-46A8-8227-ADEE778907F8}.Setup|x64.ActiveCfg = Debug|Any CPU
 		{CAFB0EDA-EF78-46A8-8227-ADEE778907F8}.Setup|x86.ActiveCfg = Debug|Any CPU
+		{4D30881A-CE42-4E47-B651-18F8201A8586}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D30881A-CE42-4E47-B651-18F8201A8586}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D30881A-CE42-4E47-B651-18F8201A8586}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{4D30881A-CE42-4E47-B651-18F8201A8586}.Debug|x64.Build.0 = Debug|Any CPU
+		{4D30881A-CE42-4E47-B651-18F8201A8586}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4D30881A-CE42-4E47-B651-18F8201A8586}.Debug|x86.Build.0 = Debug|Any CPU
+		{4D30881A-CE42-4E47-B651-18F8201A8586}.DebugAlgorithms|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D30881A-CE42-4E47-B651-18F8201A8586}.DebugAlgorithms|Any CPU.Build.0 = Debug|Any CPU
+		{4D30881A-CE42-4E47-B651-18F8201A8586}.DebugAlgorithms|x64.ActiveCfg = Debug|Any CPU
+		{4D30881A-CE42-4E47-B651-18F8201A8586}.DebugAlgorithms|x64.Build.0 = Debug|Any CPU
+		{4D30881A-CE42-4E47-B651-18F8201A8586}.DebugAlgorithms|x86.ActiveCfg = Debug|Any CPU
+		{4D30881A-CE42-4E47-B651-18F8201A8586}.DebugAlgorithms|x86.Build.0 = Debug|Any CPU
+		{4D30881A-CE42-4E47-B651-18F8201A8586}.DebugStandard|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D30881A-CE42-4E47-B651-18F8201A8586}.DebugStandard|Any CPU.Build.0 = Debug|Any CPU
+		{4D30881A-CE42-4E47-B651-18F8201A8586}.DebugStandard|x64.ActiveCfg = Debug|Any CPU
+		{4D30881A-CE42-4E47-B651-18F8201A8586}.DebugStandard|x64.Build.0 = Debug|Any CPU
+		{4D30881A-CE42-4E47-B651-18F8201A8586}.DebugStandard|x86.ActiveCfg = Debug|Any CPU
+		{4D30881A-CE42-4E47-B651-18F8201A8586}.DebugStandard|x86.Build.0 = Debug|Any CPU
+		{4D30881A-CE42-4E47-B651-18F8201A8586}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D30881A-CE42-4E47-B651-18F8201A8586}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D30881A-CE42-4E47-B651-18F8201A8586}.Release|x64.ActiveCfg = Release|Any CPU
+		{4D30881A-CE42-4E47-B651-18F8201A8586}.Release|x64.Build.0 = Release|Any CPU
+		{4D30881A-CE42-4E47-B651-18F8201A8586}.Release|x86.ActiveCfg = Release|Any CPU
+		{4D30881A-CE42-4E47-B651-18F8201A8586}.Release|x86.Build.0 = Release|Any CPU
+		{4D30881A-CE42-4E47-B651-18F8201A8586}.ReleaseAlgorithms|Any CPU.ActiveCfg = Release|Any CPU
+		{4D30881A-CE42-4E47-B651-18F8201A8586}.ReleaseAlgorithms|Any CPU.Build.0 = Release|Any CPU
+		{4D30881A-CE42-4E47-B651-18F8201A8586}.ReleaseAlgorithms|x64.ActiveCfg = Release|Any CPU
+		{4D30881A-CE42-4E47-B651-18F8201A8586}.ReleaseAlgorithms|x64.Build.0 = Release|Any CPU
+		{4D30881A-CE42-4E47-B651-18F8201A8586}.ReleaseAlgorithms|x86.ActiveCfg = Release|Any CPU
+		{4D30881A-CE42-4E47-B651-18F8201A8586}.ReleaseAlgorithms|x86.Build.0 = Release|Any CPU
+		{4D30881A-CE42-4E47-B651-18F8201A8586}.Setup|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D30881A-CE42-4E47-B651-18F8201A8586}.Setup|Any CPU.Build.0 = Debug|Any CPU
+		{4D30881A-CE42-4E47-B651-18F8201A8586}.Setup|x64.ActiveCfg = Debug|Any CPU
+		{4D30881A-CE42-4E47-B651-18F8201A8586}.Setup|x64.Build.0 = Debug|Any CPU
+		{4D30881A-CE42-4E47-B651-18F8201A8586}.Setup|x86.ActiveCfg = Debug|Any CPU
+		{4D30881A-CE42-4E47-B651-18F8201A8586}.Setup|x86.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
