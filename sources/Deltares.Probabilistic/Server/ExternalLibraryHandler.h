@@ -23,7 +23,6 @@ namespace Deltares
 #else
                 LPCSTR library = libraryName.c_str();
 #endif
-                SetSearchPathMode(BASE_SEARCH_PATH_ENABLE_SAFE_SEARCHMODE);
                 HMODULE libInstance = LoadLibraryEx(library, nullptr, LOAD_LIBRARY_SEARCH_APPLICATION_DIR);
                 if (!libInstance)
                 {
