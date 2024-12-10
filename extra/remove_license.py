@@ -32,13 +32,13 @@ import sys
 import os
 
 def remove_header(filename):
-    lastLine = "All rights reserved."
+    last_line = "All rights reserved."
     count = 0
     contents = []
     skip_extra = False
     with open(filename, "r") as f:
         for line in f:
-            if lastLine in line:
+            if last_line in line:
                 count += 1
             elif count == 2:
                 if not skip_extra:
