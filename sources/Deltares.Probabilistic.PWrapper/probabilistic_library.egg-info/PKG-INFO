@@ -1,7 +1,7 @@
 Metadata-Version: 2.1
-Name: streams
-Version: 0.0.1
-Summary: Package which provides STatistical and REliability Analysis MethodS
+Name: probabilistic_library
+Version: 24.1.1
+Summary: Package which provides probabilistic methods
 Author: Deltares
 Author-email: software.support@deltares.nl
 Classifier: Programming Language :: Python :: 3
@@ -10,9 +10,9 @@ Classifier: Operating System :: OS Independent
 Requires-Python: >=3.7
 Description-Content-Type: text/markdown
 
-# Deltares Streams
+# Deltares Probabilistic Library
 
-This is the awesome Deltares Streams Library
+This is the awesome Deltares Probabilistic Library
 
 ## A second-level heading
 ### A third-level heading
