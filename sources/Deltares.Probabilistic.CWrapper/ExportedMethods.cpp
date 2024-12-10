@@ -150,7 +150,7 @@ extern "C" DLL_PUBLIC void SetStringValue(int id, char* property, char* value)
     projectServer->SetStringValue(id, propertyStr, valueStr);
 }
 
-extern "C" DLL_PUBLIC void GetArrayValue(int id, char* property, double* values, int size)
+extern "C" DLL_PUBLIC void FillArrayValue(int id, char* property, double* values, int size)
 {
     std::string propertyStr(property);
     projectServer->GetArrayValue(id, propertyStr, values, size);

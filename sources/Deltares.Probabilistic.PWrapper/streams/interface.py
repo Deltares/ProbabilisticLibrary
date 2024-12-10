@@ -143,9 +143,8 @@ def GetIndexedStringValue(id_, property_, index_):
 def SetStringValue(id_, property_, value_):
 	lib.SetStringValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), bytes(value_, 'utf-8'))
 
-def GetArrayValue(id_, property_, values_):
-	cvalues = (ctypes.c_double * len(values_))(*values_)
-	lib.GetArrayValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.POINTER(ctypes.c_double)(cvalues), ctypes.c_uint(len(values_)))
+def FillArrayValue(id_, property_, values_, size):
+	lib.FillArrayValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), values_, ctypes.c_uint(size))
 
 def SetArrayValue(id_, property_, values_):
 	cvalues = (ctypes.c_double * len(values_))(*values_)
