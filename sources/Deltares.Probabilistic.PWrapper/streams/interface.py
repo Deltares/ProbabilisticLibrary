@@ -77,7 +77,7 @@ def Create(object_type):
 		return lib.Create(object_type_b)
 	except:
 		message = sys.exc_info()[0]
-		print('error: ' + message, flush = True)
+		print('error: ' + str(message), flush = True)
 		raise
 
 def Destroy(id_):
