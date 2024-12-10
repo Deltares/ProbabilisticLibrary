@@ -136,6 +136,10 @@ class ZModel:
 	def _set_model(self, value):
 		self._model = value
 		
+	def set_max_processes(self, value):
+		if not self._model is None:
+			self._model.set_max_processes(value)
+
 	def initialize_for_run(self):
 		self._has_arrays = False
 		for parameter in self.input_parameters:
@@ -389,6 +393,7 @@ class SensitivityProject:
 		interface.SetIntValue(self._id, 'settings', self._settings._id)
 		interface.SetArrayIntValue(self.settings._id, 'stochast_settings', [stochast_setting._id for stochast_setting in self.settings.stochast_settings])
 		SensitivityProject._zmodel.initialize_for_run()
+		SensitivityProject._zmodel.set_max_processes(self.settings.max_parallel_processes)
 
 		interface.Execute(self._id, 'run')
 
@@ -546,6 +551,7 @@ class ReliabilityProject:
 		interface.SetIntValue(self._id, 'settings', self._settings._id)
 		interface.SetArrayIntValue(self.settings._id, 'stochast_settings', [stochast_setting._id for stochast_setting in self.settings.stochast_settings])
 		ReliabilityProject._zmodel.initialize_for_run()
+		ReliabilityProject._zmodel.set_max_processes(self.settings.max_parallel_processes)
 
 		interface.Execute(self._id, 'run')
 
