@@ -769,6 +769,9 @@ class FragilityCurve:
 				'get_quantile',
 				'get_x_from_u',
 				'get_u_from_x',
+				'get_pdf',
+				'get_cdf',
+				'get_special_values',
 				'integrate']
 
 	@property
@@ -818,6 +821,15 @@ class FragilityCurve:
 
 	def get_u_from_x(self, x : float):
 		return interface.GetArgValue(self._id, 'u_from_x', x)
+
+	def get_pdf(self, x : float):
+		return interface.GetArgValue(self._id, 'pdf', x)
+
+	def get_cdf(self, x : float):
+		return interface.GetArgValue(self._id, 'cdf', x)
+
+	def get_special_values(self):
+		return interface.GetArrayValue(self._id, 'special_values')
 
 	def copy_from(self, source):
 		if source is FragilityCurve:

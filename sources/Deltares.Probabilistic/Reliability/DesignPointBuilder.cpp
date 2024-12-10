@@ -127,7 +127,7 @@ namespace Deltares
 
         void DesignPointBuilder::initialize(double beta)
         {
-            double value = Numeric::NumericSupport::GetSign(beta) * sqrt(abs(beta) / count);
+            double value = Numeric::NumericSupport::GetSign(beta) * sqrt(std::abs(beta) / count);
 
             for (int i = 0; i < count; i++)
             {

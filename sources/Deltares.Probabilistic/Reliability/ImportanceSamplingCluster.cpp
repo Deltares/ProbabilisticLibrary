@@ -50,7 +50,7 @@ namespace Deltares
                 DesignPointBuilder->addSample(sample);
             }
 
-            if (this->NearestSample == nullptr || abs(sample->Z) < abs(this->NearestSample->Z))
+            if (this->NearestSample == nullptr || std::abs(sample->Z) < std::abs(this->NearestSample->Z))
             {
                 this->NearestSample = sample;
             }

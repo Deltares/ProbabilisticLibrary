@@ -229,13 +229,13 @@ namespace Deltares
             if (shiftValue != 0)
             {
                 double negShiftValue = method(-shift);
-                if (abs((shiftValue - negShiftValue) / shiftValue) < 1E-6)
+                if (std::abs((shiftValue - negShiftValue) / shiftValue) < 1E-6)
                 {
                     shift = 0;
                 }
             }
 
-            if (abs(shift) > 1E10)
+            if (std::abs(shift) > 1E10)
             {
                 shift = min;
             }

@@ -264,7 +264,7 @@ namespace Deltares
             }
             else
             {
-                return fraction * abs(value);
+                return fraction * std::abs(value);
             }
         }
 
