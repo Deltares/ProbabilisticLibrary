@@ -14,7 +14,7 @@ You can access the routines of the library using a Python wrapper.
 
 ### Installation
 
-Request the wheel of the Probabilistic Library from Deltares.
+Request the wheel of the wrapper from Deltares.
 
 Place the wheel in the `dist` folder.
 ```
@@ -26,6 +26,7 @@ Navigate to `.\dist` and install the wheel as follows:
 ```
 pip install dist/probabilistic_library-24.1.1-py3-none-any.whl --force-reinstall
 ```
+
 ## Jupyter notebooks
 Several Jupyter notebooks are available to demonstrate how to use the library through the Python wrapper:
 
@@ -45,7 +46,7 @@ Several Jupyter notebooks are available to demonstrate how to use the library th
 
     * [Numerical bisection, Latin hypercube and COBYLA](sources/Deltares.Probabilistic.PWrapper.Notebooks/reliability_methods_overtopping.ipynb)
 
-    * [Hybrid reliability methods (fdir, dsfi)](sources/Deltares.Probabilistic.PWrapper.Notebooks/hybrid_reliability_methods.ipynb)
+    * [Hybrid reliability methods (FDIR, DSFI)](sources/Deltares.Probabilistic.PWrapper.Notebooks/hybrid_reliability_methods.ipynb)
 
     * [Reliability calculations with a model](sources/Deltares.Probabilistic.PWrapper.Notebooks/reliability_with_piping_model.ipynb)
 
