@@ -1,8 +1,8 @@
 # Copyright (C) Stichting Deltares. All rights reserved.
 #
-# This file is part of Streams.
+# This file is part of the Probabilistic Library.
 #
-# Streams is free software: you can redistribute it and/or modify
+# The Probabilistic Library is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
@@ -25,15 +25,15 @@ with open("readme.md", "r") as fh:
     long_description = fh.read()
  
 setuptools.setup(
-    name="streams",
-    version="0.0.1",
+    name="probabilistic_library",
+    version="24.1.1",
     author="Deltares",
     author_email="software.support@deltares.nl",
-    description="Package which provides STatistical and REliability Analysis MethodS",
+    description="Package which provides probabilistic methods",
     long_description=long_description,
     long_description_content_type="text/markdown",
     packages=setuptools.find_packages(),
-    package_data={'streams':['bin/*Deltares.Probabilistic.*.*']},    
+    package_data={'probabilistic_library':['bin/*Deltares.Probabilistic.*.*']},    
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: AGPL License",

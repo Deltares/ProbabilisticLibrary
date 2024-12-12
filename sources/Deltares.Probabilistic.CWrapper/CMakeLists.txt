@@ -7,8 +7,8 @@ include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/generate_product_version.cmake")
 set_version_numbers("../version_number.ini")
 generate_product_version(
    VersionFilesOutputVariable
-   NAME "Streams c-wrapper"
-   ICON "${CMAKE_CURRENT_SOURCE_DIR}/../streams.ico"
+   NAME "Probabilistic Library c-wrapper"
+   ICON "${CMAKE_CURRENT_SOURCE_DIR}/../problib.ico"
    COMPANY_NAME "Deltares"
    VERSION_MAJOR ${ver_major}
    VERSION_MINOR ${ver_minor}
