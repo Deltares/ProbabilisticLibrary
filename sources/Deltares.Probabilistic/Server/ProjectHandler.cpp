@@ -1,8 +1,8 @@
 // Copyright (C) Stichting Deltares. All rights reserved.
 //
-// This file is part of Streams.
+// This file is part of the Probabilistic Library.
 //
-// Streams is free software: you can redistribute it and/or modify
+// The Probabilistic Library is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
@@ -16,9 +16,9 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 //
 // All names, logos, and references to "Deltares" are registered trademarks of
-// Stichting Deltares and remain full property of Stichting Deltares at all times
-// All rights reserved 
-
+// Stichting Deltares and remain full property of Stichting Deltares at all times.
+// All rights reserved.
+//
 # include "ProjectHandler.h"
 #include <string>
 #include <memory>
