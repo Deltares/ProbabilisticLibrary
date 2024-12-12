@@ -21,7 +21,7 @@
 #
 
 """_summary_
-This script remove the header on top of source files.
+This script removes the header on top of source files.
 So that in the next step a new/updated header can be added.
 It handles all files recursive in the given folder.
 
@@ -30,15 +30,16 @@ It handles all files recursive in the given folder.
 import glob
 import sys
 import os
+from license_helper import is_excluded
 
 def remove_header(filename):
-    last_line = "All rights reserved."
+    first_and_last_line = "All rights reserved."
     count = 0
     contents = []
     skip_extra = False
     with open(filename, "r") as f:
         for line in f:
-            if last_line in line:
+            if first_and_last_line in line:
                 count += 1
             elif count == 2:
                 if not skip_extra:
@@ -50,18 +51,11 @@ def remove_header(filename):
         with open(filename, "w") as f:
             f.writelines(contents)
 
-def is_excluded(filename):
-    excluded_files = ["Cobyla.h", "Cobyla.cpp", "stop.cpp", "timer.cpp", "rescale.cpp", "nlopt", "ASA", "framework.h", "TestDistributions.cs"]
-    for excluded in excluded_files:
-        if filename in excluded:
-            return True
-    return False
-
 def replace_one_type(extension):
     for name in glob.iglob("**/*."+extension, recursive = True):
         if is_excluded(name):
             continue
-        print("remove header in file: ", name)
+        print("removing header in file: ", name)
         remove_header(name)
 
 def replace_all(folder):
@@ -72,11 +66,10 @@ def replace_all(folder):
         replace_one_type(ext)
 
 def start_replace():
-    print("remove (c) header to all files (recursive) in given folder")
-    print("template header is in current folder")
+    print("removes (c) header from all files (recursive) in given folder")
     if len(sys.argv) == 1:
         print("missing comment line argument")
-        print("usage: python add_license.py <folder>")
+        print("usage: python remove_license.py <folder>")
     else:
         folder = sys.argv[1]
         replace_all(folder)

@@ -31,6 +31,7 @@ It works for c++, c#, python and Fortran
 import glob
 import sys
 import os
+from license_helper import is_excluded
 
 def read_header(filename):
     with open(filename, "r") as f:
@@ -56,13 +57,6 @@ def add_header(filename, header):
 
     with open(filename, "w") as f:
         f.writelines(contents)
-
-def is_excluded(filename):
-    excluded_files = ["Cobyla.h", "Cobyla.cpp", "stop.cpp", "timer.cpp", "rescale.cpp", "nlopt", "ASA", "framework.h", "TestDistributions.cs"]
-    for excluded in excluded_files:
-        if filename in excluded:
-            return True
-    return False
 
 def replace_one_type(extension, header):
     for name in glob.iglob("**/*."+extension, recursive = True):
