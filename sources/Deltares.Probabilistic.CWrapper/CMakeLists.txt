@@ -2,8 +2,8 @@ file(GLOB cwrapper_files
     "*.cpp"
 )
 
-include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/version_number.cmake")
-include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/generate_product_version.cmake")
+include("${CMAKE_CURRENT_SOURCE_DIR}/../cmake_vn/version_number.cmake")
+include("${CMAKE_CURRENT_SOURCE_DIR}/../cmake_vn/generate_product_version.cmake")
 set_version_numbers("../version_number.ini")
 generate_product_version(
    VersionFilesOutputVariable
