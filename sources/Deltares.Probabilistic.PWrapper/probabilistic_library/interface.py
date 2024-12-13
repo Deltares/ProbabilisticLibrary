@@ -29,13 +29,11 @@ from pathlib import Path
 from ctypes import cdll
 
 CALLBACK = ctypes.CFUNCTYPE(ctypes.c_void_p, ctypes.POINTER(ctypes.c_double), ctypes.c_int, ctypes.POINTER(ctypes.c_double))
+MULTIPLE_CALLBACK = ctypes.CFUNCTYPE(ctypes.c_void_p, ctypes.c_int, ctypes.POINTER(ctypes.POINTER(ctypes.c_double)), ctypes.c_int, ctypes.POINTER(ctypes.POINTER(ctypes.c_double)))
 EMPTY_CALLBACK = ctypes.CFUNCTYPE(ctypes.c_void_p)
 
 def _print_error(message):
 	print('error: ' + str(message), flush = True)
-CALLBACK = CFUNCTYPE(ctypes.c_void_p, POINTER(ctypes.c_double), ctypes.c_int, POINTER(ctypes.c_double))
-MULTIPLE_CALLBACK = CFUNCTYPE(ctypes.c_void_p, ctypes.c_int, POINTER(POINTER(ctypes.c_double)), ctypes.c_int, POINTER(POINTER(ctypes.c_double)))
-EMPTY_CALLBACK = CFUNCTYPE(ctypes.c_void_p)
 
 def LoadLibrary(lib_full_path):
 	if os.path.isfile(lib_full_path):
