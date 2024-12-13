@@ -14,21 +14,15 @@ You can access the routines of the library using a Python wrapper.
 
 ### Installation
 
-Request the wheel of the wrapper from Deltares.
+Request the wheel of the Probabilistic Library from Deltares.
 
-Place the wheel in the `dist` folder.
+Install the wheel as follows:
 ```
-dist:
-- probabilistic_library-24.1.1-py3-none-any.whl
-```
-
-Navigate to `.\dist` and install the wheel as follows:
-```
-pip install dist/probabilistic_library-24.1.1-py3-none-any.whl --force-reinstall
+pip install probabilistic_library-24.1.1-py3-none-any.whl --force-reinstall
 ```
 
 ## Jupyter notebooks
-Several Jupyter notebooks are available to demonstrate how to use the library through the Python wrapper:
+Several Jupyter notebooks are available to demonstrate how to use the Probabilistic Library through the Python wrapper:
 
 1. [Overview of the available distribution functions](sources/Deltares.Probabilistic.PWrapper.Notebooks/overview_distribution_functions.ipynb)
 
@@ -50,7 +44,7 @@ Several Jupyter notebooks are available to demonstrate how to use the library th
 
     * [Reliability calculations with a model](sources/Deltares.Probabilistic.PWrapper.Notebooks/reliability_with_piping_model.ipynb)
 
-    * [Reliability calculations with a limit state function with arrays as inputs](sources/Deltares.Probabilistic.PWrapper.Notebooks/limit_state_function_with_arrays.ipynb)
+    * [Reliability calculations with arrays as arguments in the model](sources/Deltares.Probabilistic.PWrapper.Notebooks/limit_state_function_with_arrays.ipynb)
 
 5. Reliability analysis of a system of components:
 
