@@ -6,7 +6,7 @@ The library provides a set of routines that enable reliability analysis of a com
 
 ## Scientific background
 
-The scientific background of the library can be found here: [DOCUMENTATION](doc/scientific_background.tex).
+Contact Deltares to obtain the scientific background document.
 
 ## Python wrapper
 
