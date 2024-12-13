@@ -1,18 +1,18 @@
 # Copyright (C) Stichting Deltares. All rights reserved.
 #
-# This file is part of Streams.
+# This file is part of the Probabilistic Library.
 #
-# Streams is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as published by
+# The Probabilistic Library is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-# GNU Affero General Public License for more details.
+# GNU Lesser General Public License for more details.
 #
-# You should have received a copy of the GNU Affero General Public License
+# You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 # All names, logos, and references to "Deltares" are registered trademarks of
@@ -41,10 +41,10 @@ class Sample:
 class ZModelContainer:
 	def get_model(self):
 		return None
-	
+
 	def is_dirty(self):
 		return False
-			
+
 	def update_model(self):
 		pass
 
@@ -69,7 +69,7 @@ class ZModel:
 			self._input_parameters = []
 			self._output_parameters = []
 			self._model_name = ''
-		
+
 	def __dir__(self):
 		return ['name',
 				'input_parameters',
@@ -78,7 +78,7 @@ class ZModel:
 	def __str__(self):
 		return self.name
 
-	@property   
+	@property
 	def name(self):
 		return self._model_name
 
@@ -96,9 +96,9 @@ class ZModel:
 			modelParameter.index = index
 			parameters.append(modelParameter)
 			index += 1
-			
+
 		return FrozenList(parameters)
-		
+
 	def _get_output_parameters(self, function):
 		parameters = []
 		source = inspect.getsource(function)
@@ -116,14 +116,14 @@ class ZModel:
 			modelParameter.name = parameters[i]
 			modelParameter.index = i
 			parameters[i] = modelParameter
-		
+
 		return FrozenList(parameters)
 
-	@property   
+	@property
 	def input_parameters(self):
 		return self._input_parameters
 
-	@property   
+	@property
 	def output_parameters(self):
 		return self._output_parameters
 
@@ -215,10 +215,10 @@ class ModelParameter:
 
 	def __dir__(self):
 		return ['name',
-	            'index',
-		        'mean',
-                'is_array',
-                'array_size']
+				'index',
+				'mean',
+				'is_array',
+				'array_size']
 	
 	@property
 	def name(self):
@@ -255,7 +255,7 @@ class ModelParameter:
 	@property
 	def array_size(self):
 		return interface.GetIntValue(self._id, 'array_size')
-		
+
 	@array_size.setter
 	def array_size(self, value):
 		interface.SetIntValue(self._id, 'array_size', value)
@@ -421,7 +421,7 @@ class SensitivityProject(ModelProject):
 
 		return self._stochast
 
-	@property   
+	@property
 	def stochasts(self):
 		if self._stochasts is None:
 			stochasts = []
@@ -432,7 +432,7 @@ class SensitivityProject(ModelProject):
 				
 		return self._stochasts
 
-	@property   
+	@property
 	def output_correlation_matrix(self):
 		if self._output_correlation_matrix is None:
 			correlationMatrixId = interface.GetIdValue(self._id, 'output_correlation_matrix')
@@ -524,8 +524,8 @@ class CombineProject:
 
 	def __dir__(self):
 		return ['design_points',
-	            'settings',
-	            'design_point']
+				'settings',
+				'design_point']
 
 	def _design_points_changed(self):
 		variables = []
@@ -624,8 +624,4 @@ class LengthEffectProject:
 				variables = self._design_point_cross_section.get_variables()
 				self._design_point = DesignPoint(designPointId, variables, self._design_point_cross_section)
 		return self._design_point
-
-
-
-
 

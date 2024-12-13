@@ -1,18 +1,18 @@
 # Copyright (C) Stichting Deltares. All rights reserved.
 #
-# This file is part of Streams.
+# This file is part of the Probabilistic Library.
 #
-# Streams is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as published by
+# The Probabilistic Library is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-# GNU Affero General Public License for more details.
+# GNU Lesser General Public License for more details.
 #
-# You should have received a copy of the GNU Affero General Public License
+# You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 # All names, logos, and references to "Deltares" are registered trademarks of
@@ -27,8 +27,12 @@ import time
 
 from pathlib import Path
 from ctypes import cdll
-from ctypes import *
 
+CALLBACK = ctypes.CFUNCTYPE(ctypes.c_void_p, ctypes.POINTER(ctypes.c_double), ctypes.c_int, ctypes.POINTER(ctypes.c_double))
+EMPTY_CALLBACK = ctypes.CFUNCTYPE(ctypes.c_void_p)
+
+def _print_error(message):
+	print('error: ' + str(message), flush = True)
 CALLBACK = CFUNCTYPE(ctypes.c_void_p, POINTER(ctypes.c_double), ctypes.c_int, POINTER(ctypes.c_double))
 MULTIPLE_CALLBACK = CFUNCTYPE(ctypes.c_void_p, ctypes.c_int, POINTER(POINTER(ctypes.c_double)), ctypes.c_int, POINTER(POINTER(ctypes.c_double)))
 EMPTY_CALLBACK = CFUNCTYPE(ctypes.c_void_p)
@@ -40,7 +44,7 @@ def LoadLibrary(lib_full_path):
 			lib = cdll.LoadLibrary(lib_full_path)
 		except:
 			message = sys.exc_info()[0]
-			print('error: ' + str(message), flush = True)
+			_print_error(message)
 			raise
 	if lib == None:
 		raise FileNotFoundError("Could not find " + lib_full_path)
@@ -66,7 +70,7 @@ def AddLibrary(add_lib_full_path):
 			lib.AddLibrary(bytes(add_lib_full_path, 'utf-8'))
 		except:
 			message = sys.exc_info()[0]
-			print('error: ' + str(message), flush = True)
+			_print_error(message)
 			raise
 
 
@@ -77,7 +81,7 @@ def Create(object_type):
 		return lib.Create(object_type_b)
 	except:
 		message = sys.exc_info()[0]
-		print('error: ' + str(message), flush = True)
+		_print_error(message)
 		raise
 
 def Destroy(id_):
@@ -125,7 +129,7 @@ def GetStringValue(id_, property_):
 
 	result = ctypes.create_string_buffer(size+1)
 	lib.GetStringValue.restype = ctypes.c_void_p
-	lib.GetStringValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), result, ctypes.c_size_t(sizeof(result)))
+	lib.GetStringValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), result, ctypes.c_size_t(ctypes.sizeof(result)))
 	result_str = result.value.decode()
 	return result_str
 
@@ -239,7 +243,7 @@ def SetCallBack(id_, property_, callBack_):
 		lib.SetCallBack(ctypes.c_int(id_), bytes(property_, 'utf-8'), callBack_)
 	except:
 		message = sys.exc_info()[0]
-		print('error: ' + str(message), flush = True)
+		_print_error(message)
 		raise
 
 def SetMultipleCallBack(id_, property_, callBack_):
@@ -255,7 +259,7 @@ def SetEmptyCallBack(id_, property_, callBack_):
 		lib.SetEmptyCallBack(ctypes.c_int(id_), bytes(property_, 'utf-8'), callBack_)
 	except:
 		message = sys.exc_info()[0]
-		print('error: ' + str(message), flush = True)
+		_print_error(message)
 		raise
 
 def GetCallBack(id_, property_):
@@ -263,7 +267,7 @@ def GetCallBack(id_, property_):
 		return lib.GetCallBack(ctypes.c_int(id_), bytes(property_, 'utf-8'))
 	except:
 		message = sys.exc_info()[0]
-		print('error: ' + str(message), flush = True)
+		_print_error(message)
 		raise
 def Execute(id_, method_):
 	lib.Execute(ctypes.c_int(id_), bytes(method_, 'utf-8'))

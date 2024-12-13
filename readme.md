@@ -25,7 +25,7 @@ The scientific background of the library can be found here: [DOCUMENTATION](doc/
 
 ## License
 
-This library is released under the AGPL v3 license. For full text of this license, refer to the [LICENSE](LICENSE) file. 
+This library is released under the LGPL license. For full text of this license, refer to the [LICENSE](LICENSE) file. 
 
 ## Dependencies
 
