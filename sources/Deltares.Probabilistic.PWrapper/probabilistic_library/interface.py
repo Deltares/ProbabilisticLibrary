@@ -138,7 +138,7 @@ def GetIndexedStringValue(id_, property_, index_):
 
 	result = ctypes.create_string_buffer(size+1)
 	lib.GetIndexedStringValue.restype = ctypes.c_void_p
-	lib.GetIndexedStringValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.c_int(index_), result, ctypes.c_size_t(sizeof(result)))
+	lib.GetIndexedStringValue(ctypes.c_int(id_), bytes(property_, 'utf-8'), ctypes.c_int(index_), result, ctypes.c_size_t(ctypes.sizeof(result)))
 	result_str = result.value.decode()
 	return result_str
 
