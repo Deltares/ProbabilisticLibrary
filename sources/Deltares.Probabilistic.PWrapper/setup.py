@@ -36,7 +36,7 @@ setuptools.setup(
     package_data={'probabilistic_library':['bin/*Deltares.Probabilistic.*.*']},    
     classifiers=[
         "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: AGPL License",
+        "License :: OSI Approved :: LGPL License",
         "Operating System :: OS Independent",
     ],
     python_requires='>=3.7',
