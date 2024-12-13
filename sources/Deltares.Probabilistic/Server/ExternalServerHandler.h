@@ -78,6 +78,7 @@ namespace Deltares
             SOCKET ConnectSocket();
             void StartServer();
             bool CheckConnection();
+            void SetParentProcess();
 
             std::string StringJoin(const std::vector<std::string>& strings, const std::string delim);
             std::vector<std::string> StringSplit(std::string& text, const std::string& delimiter);

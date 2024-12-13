@@ -153,6 +153,8 @@ namespace Deltares
                     std::this_thread::sleep_for(std::chrono::seconds(1));
                     count++;
                 }
+
+                SetParentProcess();
             }
         }
 
@@ -212,6 +214,14 @@ namespace Deltares
             {
                 return false;
             }
+        }
+
+        void ExternalServerHandler::SetParentProcess()
+        {
+            DWORD processId = GetCurrentProcessId();
+
+            std::string message = "parent:" + std::to_string(processId);
+            std::string data = Send(message, false);
         }
 
         bool ExternalServerHandler::CanHandle(std::string objectType)
