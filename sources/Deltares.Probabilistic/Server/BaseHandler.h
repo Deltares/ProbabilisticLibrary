@@ -28,6 +28,7 @@ namespace Deltares
             virtual std::string GetIndexedStringValue(int id, std::string property_, int index) { return ""; }
             virtual void SetStringValue(int id, std::string property_, std::string value) {}
             virtual void SetArrayValue(int id, std::string property_, double* values, int size) {}
+            virtual void GetArrayValue(int id, std::string property_, double* values, int size) {}
             virtual void GetArgValues(int id, std::string property_, double* values, int size, double* outputValues) {}
             virtual std::vector<int> GetArrayIntValue(int id, std::string property_) { return std::vector<int>(); }
             virtual void SetArrayIntValue(int id, std::string property_, int* values, int size) {}
@@ -41,6 +42,8 @@ namespace Deltares
             virtual int GetIdValue(int id, std::string property_, int newId) { return GetIntValue(id, property_); }
             virtual int GetIndexedIdValue(int id, std::string property_, int index, int newId) { return GetIndexedIntValue(id, property_, index); }
             virtual void SetCallBack(int id, std::string property_, Models::ZValuesCallBack callBack) {}
+            virtual void SetMultipleCallBack(int id, std::string property_, Models::ZValuesMultipleCallBack callBack) {}
+            virtual void SetEmptyCallBack(int id, std::string property_, Models::EmptyCallBack callBack) {}
             virtual void Execute(int id, std::string method_) {}
         };
     }

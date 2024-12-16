@@ -68,6 +68,8 @@ namespace Deltares
             int GetIndexedIntValue(int id, std::string property_, int index) override;
             int GetIndexedIdValue(int id, std::string property_, int index, int newId) override;
             void SetCallBack(int id, std::string property_, Models::ZValuesCallBack callBack) override;
+            void SetMultipleCallBack(int id, std::string property_, Models::ZValuesMultipleCallBack callBack) override;
+            void SetEmptyCallBack(int id, std::string property_, Models::EmptyCallBack callBack) override;
             void Execute(int id, std::string method_) override;
 
             int GetProbabilityValueId(std::shared_ptr<Statistics::ProbabilityValue> probability, int newId);

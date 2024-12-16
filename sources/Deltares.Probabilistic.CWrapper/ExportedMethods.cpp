@@ -150,6 +150,12 @@ extern "C" DLL_PUBLIC void SetStringValue(int id, char* property, char* value)
     projectServer->SetStringValue(id, propertyStr, valueStr);
 }
 
+extern "C" DLL_PUBLIC void FillArrayValue(int id, char* property, double* values, int size)
+{
+    std::string propertyStr(property);
+    projectServer->GetArrayValue(id, propertyStr, values, size);
+}
+
 extern "C" DLL_PUBLIC void SetArrayValue(int id, char* property, double* values, int size)
 {
     std::string propertyStr(property);
@@ -241,6 +247,18 @@ extern "C" DLL_PUBLIC void SetCallBack(int id, char* property, Deltares::Models:
 {
     std::string propertyStr(property);
     projectServer->SetCallBack(id, propertyStr, callBack);
+}
+
+extern "C" DLL_PUBLIC void SetMultipleCallBack(int id, char* property, Deltares::Models::ZValuesMultipleCallBack callBack)
+{
+    std::string propertyStr(property);
+    projectServer->SetMultipleCallBack(id, propertyStr, callBack);
+}
+
+extern "C" DLL_PUBLIC void SetEmptyCallBack(int id, char* property, Deltares::Models::EmptyCallBack callBack)
+{
+    std::string propertyStr(property);
+    projectServer->SetEmptyCallBack(id, propertyStr, callBack);
 }
 
 extern "C" DLL_PUBLIC void Execute(int id, char* method)

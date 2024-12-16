@@ -153,6 +153,8 @@ namespace Deltares
                     std::this_thread::sleep_for(std::chrono::seconds(1));
                     count++;
                 }
+
+                SetParentProcess();
             }
         }
 
@@ -212,6 +214,14 @@ namespace Deltares
             {
                 return false;
             }
+        }
+
+        void ExternalServerHandler::SetParentProcess()
+        {
+            DWORD processId = GetCurrentProcessId();
+
+            std::string message = "parent:" + std::to_string(processId);
+            std::string data = Send(message, false);
         }
 
         bool ExternalServerHandler::CanHandle(std::string objectType)
@@ -329,6 +339,28 @@ namespace Deltares
         std::string ExternalServerHandler::GetIndexedStringValue(int id, std::string property, int index)
         {
             return this->Send("get_indexed_string_value:" + std::to_string(id) + ":" + property + ":" + std::to_string(index), true);
+        }
+
+        void ExternalServerHandler::GetArrayValue(int id, std::string property, double* values, int size)
+        {
+            std::string result = this->Send("get_array_value:" + std::to_string(id) + ":" + property, true);
+
+            std::vector<std::string> results = StringSplit(result, ":");
+            for (size_t i = 0; i < results.size(); i++)
+            {
+                values[i] = std::stod(results[i]);
+            }
+        }
+
+        void ExternalServerHandler::SetArrayValue(int id, std::string property, double* values, int size)
+        {
+            std::vector<std::string> strings;
+            for (int i = 0; i < size; i++)
+            {
+                strings.push_back(std::to_string(values[i]));
+            }
+
+            this->Send("set_array_value:" + std::to_string(id) + ":" + property + ":" + StringJoin(strings, ":"), false);
         }
 
         void ExternalServerHandler::SetArrayIntValue(int id, std::string property, int* values, int size)

@@ -134,6 +134,11 @@ namespace Deltares
                     return NativeSupport::toManaged(shared->object->GetIndexedStringValue(id, NativeSupport::toNative(property), index));
                 }
 
+                virtual void SetArrayValue(int id, System::String^ property, array<double>^ values)
+                {
+                    shared->object->SetArrayValue(id, NativeSupport::toNative(property), NativeSupport::toNative(values).data(), values->Length);
+                }
+
                 virtual void SetArrayIntValue(int id, System::String^ property, array<int>^ values)
                 {
                     shared->object->SetArrayIntValue(id, NativeSupport::toNative(property), NativeSupport::toNative(values).data(), values->Length);
@@ -142,6 +147,11 @@ namespace Deltares
                 virtual void GetArgValues(int id, System::String^ property, array<double>^ values, array<double>^ outputValues)
                 {
                     shared->object->GetArgValues(id, NativeSupport::toNative(property), NativeSupport::toNative(values).data(), values->Length,NativeSupport::toNative(outputValues).data());
+                }
+
+                virtual void GetArrayValue(int id, System::String^ property, array<double>^ values)
+                {
+                    shared->object->GetArrayValue(id, NativeSupport::toNative(property), NativeSupport::toNative(values).data(), values->Length);
                 }
 
                 virtual double GetIndexedIndexedValue(int id, System::String^ property, int index1, int index2)

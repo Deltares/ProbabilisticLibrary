@@ -128,6 +128,10 @@ namespace Deltares
             return handlersTable[id]->GetIndexedStringValue(id, property_, index);
         }
 
+        void ProjectServer::GetArrayValue(int id, std::string property_, double* values, int size)
+        {
+            return handlersTable[id]->GetArrayValue(id, property_, values, size);
+        }
 
         void ProjectServer::SetArrayValue(int id, std::string property_, double* values, int size)
         {
@@ -213,6 +217,16 @@ namespace Deltares
         void ProjectServer::SetCallBack(int id, std::string property_, ZValuesCallBack callBack)
         {
             handlersTable[id]->SetCallBack(id, property_, callBack);
+        }
+
+        void ProjectServer::SetMultipleCallBack(int id, std::string property_, ZValuesMultipleCallBack callBack)
+        {
+            handlersTable[id]->SetMultipleCallBack(id, property_, callBack);
+        }
+
+        void ProjectServer::SetEmptyCallBack(int id, std::string property_, EmptyCallBack callBack)
+        {
+            handlersTable[id]->SetEmptyCallBack(id, property_, callBack);
         }
 
         void ProjectServer::Execute(int id, std::string method_)
