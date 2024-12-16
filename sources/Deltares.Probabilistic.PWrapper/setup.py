@@ -21,7 +21,7 @@
 #
 import setuptools
  
-with open("readme.md", "r") as fh:
+with open(r"../../readme.md", "r") as fh:
     long_description = fh.read()
  
 setuptools.setup(
@@ -41,4 +41,3 @@ setuptools.setup(
     ],
     python_requires='>=3.7',
 )
-
