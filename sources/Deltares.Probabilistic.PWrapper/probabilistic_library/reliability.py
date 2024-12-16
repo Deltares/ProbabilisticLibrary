@@ -1,18 +1,18 @@
 # Copyright (C) Stichting Deltares. All rights reserved.
 #
-# This file is part of Streams.
+# This file is part of the Probabilistic Library.
 #
-# Streams is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as published by
+# The Probabilistic Library is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-# GNU Affero General Public License for more details.
+# GNU Lesser General Public License for more details.
 #
-# You should have received a copy of the GNU Affero General Public License
+# You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 # All names, logos, and references to "Deltares" are registered trademarks of
@@ -114,7 +114,11 @@ class Settings:
 		interface.Destroy(self._id)
 
 	def __dir__(self):
-		return ['reliability_method',
+		return ['max_parallel_processes',
+				'save_realizations',
+				'save_convergence',
+				'save_messages',
+				'reliability_method',
 				'design_point_method',
 				'start_method',
 				'all_quadrants',
@@ -137,6 +141,38 @@ class Settings:
 				'variation_coefficient',
 				'fraction_failed',
 				'stochast_settings']
+
+	@property
+	def max_parallel_processes(self):
+		return interface.GetIntValue(self._id, 'max_parallel_processes')
+
+	@max_parallel_processes.setter
+	def max_parallel_processes(self, value : int):
+		interface.SetIntValue(self._id, 'max_parallel_processes', value)
+
+	@property
+	def save_realizations(self):
+		return interface.GetBoolValue(self._id, 'save_realizations')
+
+	@save_realizations.setter
+	def save_realizations(self, value : bool):
+		interface.SetBoolValue(self._id, 'save_realizations', value)
+
+	@property
+	def save_convergence(self):
+		return interface.GetBoolValue(self._id, 'save_convergence')
+
+	@save_convergence.setter
+	def save_convergence(self, value : bool):
+		interface.SetBoolValue(self._id, 'save_convergence', value)
+
+	@property
+	def save_messages(self):
+		return interface.GetBoolValue(self._id, 'save_messages')
+
+	@save_messages.setter
+	def save_messages(self, value : bool):
+		interface.SetBoolValue(self._id, 'save_messages', value)
 
 	@property
 	def reliability_method(self):

@@ -1,3 +1,24 @@
+// Copyright (C) Stichting Deltares. All rights reserved.
+//
+// This file is part of the Probabilistic Library.
+//
+// The Probabilistic Library is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with this program. If not, see <http://www.gnu.org/licenses/>.
+//
+// All names, logos, and references to "Deltares" are registered trademarks of
+// Stichting Deltares and remain full property of Stichting Deltares at all times.
+// All rights reserved.
+//
 #pragma once
 #include <string>
 #include <vector>
@@ -28,6 +49,7 @@ namespace Deltares
             virtual std::string GetIndexedStringValue(int id, std::string property_, int index) { return ""; }
             virtual void SetStringValue(int id, std::string property_, std::string value) {}
             virtual void SetArrayValue(int id, std::string property_, double* values, int size) {}
+            virtual void GetArrayValue(int id, std::string property_, double* values, int size) {}
             virtual void GetArgValues(int id, std::string property_, double* values, int size, double* outputValues) {}
             virtual std::vector<int> GetArrayIntValue(int id, std::string property_) { return std::vector<int>(); }
             virtual void SetArrayIntValue(int id, std::string property_, int* values, int size) {}
@@ -41,6 +63,8 @@ namespace Deltares
             virtual int GetIdValue(int id, std::string property_, int newId) { return GetIntValue(id, property_); }
             virtual int GetIndexedIdValue(int id, std::string property_, int index, int newId) { return GetIndexedIntValue(id, property_, index); }
             virtual void SetCallBack(int id, std::string property_, Models::ZValuesCallBack callBack) {}
+            virtual void SetMultipleCallBack(int id, std::string property_, Models::ZValuesMultipleCallBack callBack) {}
+            virtual void SetEmptyCallBack(int id, std::string property_, Models::EmptyCallBack callBack) {}
             virtual void Execute(int id, std::string method_) {}
         };
     }

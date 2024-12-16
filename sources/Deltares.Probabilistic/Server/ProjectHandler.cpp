@@ -1,24 +1,24 @@
 // Copyright (C) Stichting Deltares. All rights reserved.
 //
-// This file is part of Streams.
+// This file is part of the Probabilistic Library.
 //
-// Streams is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Affero General Public License as published by
+// The Probabilistic Library is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Affero General Public License for more details.
+// GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Affero General Public License
+// You should have received a copy of the GNU Lesser General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 //
 // All names, logos, and references to "Deltares" are registered trademarks of
-// Stichting Deltares and remain full property of Stichting Deltares at all times
-// All rights reserved 
-
+// Stichting Deltares and remain full property of Stichting Deltares at all times.
+// All rights reserved.
+//
 # include "ProjectHandler.h"
 #include <string>
 #include <memory>
@@ -624,7 +624,8 @@ namespace Deltares
             {
                 std::shared_ptr<Reliability::Settings> settings = settingsValues[id];
 
-                if (property_ == "minimum_samples") return settings->MinimumSamples;
+                if (property_ == "max_parallel_processes") return settings->RunSettings->MaxParallelProcesses;
+                else if (property_ == "minimum_samples") return settings->MinimumSamples;
                 else if (property_ == "maximum_samples") return settings->MaximumSamples;
                 else if (property_ == "minimum_iterations") return settings->MinimumIterations;
                 else if (property_ == "maximum_iterations") return settings->MaximumIterations;
@@ -639,7 +640,8 @@ namespace Deltares
             {
                 std::shared_ptr<Sensitivity::SettingsS> settings = sensitivitySettingsValues[id];
 
-                if (property_ == "minimum_samples") return settings->MinimumSamples;
+                if (property_ == "max_parallel_processes") return settings->RunSettings->MaxParallelProcesses;
+                else if (property_ == "minimum_samples") return settings->MinimumSamples;
                 else if (property_ == "maximum_samples") return settings->MaximumSamples;
                 else if (property_ == "maximum_iterations") return settings->MaximumIterations;
                 else if (property_ == "minimum_directions") return settings->MinimumDirections;
@@ -841,7 +843,8 @@ namespace Deltares
             {
                 std::shared_ptr<Reliability::Settings> settings = settingsValues[id];
 
-                if (property_ == "minimum_samples") settings->MinimumSamples = value;
+                if (property_ == "max_parallel_processes") settings->RunSettings->MaxParallelProcesses = value;
+                else if (property_ == "minimum_samples") settings->MinimumSamples = value;
                 else if (property_ == "maximum_samples") settings->MaximumSamples = value;
                 else if (property_ == "minimum_iterations") settings->MinimumIterations = value;
                 else if (property_ == "maximum_iterations") settings->MaximumIterations = value;
@@ -856,7 +859,8 @@ namespace Deltares
             {
                 std::shared_ptr<Sensitivity::SettingsS> settings = sensitivitySettingsValues[id];
 
-                if (property_ == "minimum_samples") settings->MinimumSamples = value;
+                if (property_ == "max_parallel_processes") settings->RunSettings->MaxParallelProcesses = value;
+                else if (property_ == "minimum_samples") settings->MinimumSamples = value;
                 else if (property_ == "maximum_samples") settings->MaximumSamples = value;
                 else if (property_ == "maximum_iterations") settings->MaximumIterations = value;
                 else if (property_ == "minimum_directions") settings->MinimumDirections = value;
@@ -967,12 +971,18 @@ namespace Deltares
                 if (property_ == "derive_samples_from_variation_coefficient") return settings->DeriveSamplesFromVariationCoefficient;
                 else if (property_ == "calculate_correlations") return settings->CalculateCorrelations;
                 else if (property_ == "calculate_input_correlations") return settings->CalculateInputCorrelations;
+                else if (property_ == "save_realizations") return settings->RunSettings->SaveEvaluations;
+                else if (property_ == "save_convergence") return settings->RunSettings->SaveConvergence;
+                else if (property_ == "save_messages") return settings->RunSettings->SaveMessages;
             }
             else if (objectType == ObjectType::Settings)
             {
                 std::shared_ptr<Reliability::Settings> setting = settingsValues[id];
 
                 if (property_ == "all_quadrants") return setting->StartPointSettings->allQuadrants;
+                else if (property_ == "save_realizations") return setting->RunSettings->SaveEvaluations;
+                else if (property_ == "save_convergence") return setting->RunSettings->SaveConvergence;
+                else if (property_ == "save_messages") return setting->RunSettings->SaveMessages;
             }
 
             return false;
@@ -1017,12 +1027,18 @@ namespace Deltares
                 if (property_ == "derive_samples_from_variation_coefficient") settings->DeriveSamplesFromVariationCoefficient = value;
                 else if (property_ == "calculate_correlations") settings->CalculateCorrelations = value;
                 else if (property_ == "calculate_input_correlations") settings->CalculateInputCorrelations = value;
+                else if (property_ == "save_realizations") settings->RunSettings->SaveEvaluations = value;
+                else if (property_ == "save_convergence") settings->RunSettings->SaveConvergence = value;
+                else if (property_ == "save_messages") settings->RunSettings->SaveMessages = value;
             }
             else if (objectType == ObjectType::Settings)
             {
                 std::shared_ptr<Reliability::Settings> setting = settingsValues[id];
 
                 if (property_ == "all_quadrants") setting->StartPointSettings->allQuadrants = value;
+                else if (property_ == "save_realizations") setting->RunSettings->SaveEvaluations = value;
+                else if (property_ == "save_convergence") setting->RunSettings->SaveConvergence = value;
+                else if (property_ == "save_messages") setting->RunSettings->SaveMessages = value;
             }
 
         }
@@ -1658,6 +1674,42 @@ namespace Deltares
                 std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
 
                 if (property_ == "model") project->model = std::make_shared<ZModel>(callBack);
+            }
+        }
+
+        void ProjectHandler::SetMultipleCallBack(int id, std::string property_, ZValuesMultipleCallBack callBack)
+        {
+            ObjectType objectType = types[id];
+
+            if (objectType == ObjectType::Project)
+            {
+                std::shared_ptr<Reliability::ReliabilityProject> project = projects[id];
+
+                if (property_ == "model") project->model->setMultipleCallback(callBack);
+            }
+            else if (objectType == ObjectType::SensitivityProject)
+            {
+                std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
+
+                if (property_ == "model") project->model->setMultipleCallback(callBack);
+            }
+        }
+
+        void ProjectHandler::SetEmptyCallBack(int id, std::string property_, EmptyCallBack callBack)
+        {
+            ObjectType objectType = types[id];
+
+            if (objectType == ObjectType::Project)
+            {
+                std::shared_ptr<Reliability::ReliabilityProject> project = projects[id];
+
+                if (property_ == "run_samples") project->model->setRunMethod(callBack);
+            }
+            else if (objectType == ObjectType::SensitivityProject)
+            {
+                std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
+
+                if (property_ == "run_samples") project->model->setRunMethod(callBack);
             }
         }
 

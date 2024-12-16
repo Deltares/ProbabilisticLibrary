@@ -1,18 +1,18 @@
 // Copyright (C) Stichting Deltares. All rights reserved.
 //
-// This file is part of Streams.
+// This file is part of the Probabilistic Library.
 //
-// Streams is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Affero General Public License as published by
+// The Probabilistic Library is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Affero General Public License for more details.
+// GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Affero General Public License
+// You should have received a copy of the GNU Lesser General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 //
 // All names, logos, and references to "Deltares" are registered trademarks of
@@ -38,6 +38,8 @@ namespace Deltares
         typedef std::function<double(std::shared_ptr<ModelSample>, double beta)> ZBetaLambda;
 
         typedef void (*ZValuesCallBack)(double* data, int size, double* outputValues);
+        typedef void (*ZValuesMultipleCallBack)(int arraySize, double** data, int inputSize, double** outputValues);
+        typedef void (*EmptyCallBack)();
 
         class ZModel
         {
@@ -48,9 +50,18 @@ namespace Deltares
                 this->zMultipleLambda = zMultipleLambda;
             }
 
-            ZModel(ZValuesCallBack zValuesLambda)
+            ZModel(ZValuesCallBack zValuesLambda, ZValuesMultipleCallBack zValuesMultipleLambda = nullptr)
             {
                 this->zLambda = this->getLambdaFromZValuesCallBack(zValuesLambda);
+                if (zValuesMultipleLambda != nullptr)
+                {
+                    this->zMultipleLambda = this->getLambdaFromZValuesMultipleCallBack(zValuesMultipleLambda);
+                }
+            }
+
+            void setMultipleCallback(ZValuesMultipleCallBack multipleCallBack)
+            {
+                this->zMultipleLambda = this->getLambdaFromZValuesMultipleCallBack(multipleCallBack);
             }
 
             /**
@@ -72,6 +83,11 @@ namespace Deltares
              * \brief Makes the model ready for invocations
              */
             void initializeForRun();
+
+            void setRunMethod(EmptyCallBack runMethod)
+            {
+                this->runMethod = runMethod;
+            }
 
             /**
              * \brief The index of the underlying model values if the model returns an array or tuple
@@ -127,12 +143,14 @@ namespace Deltares
             ZLambda zLambda = nullptr;
             ZMultipleLambda zMultipleLambda = nullptr;
             ZBetaLambda zBetaLambda = nullptr;
+            EmptyCallBack runMethod = nullptr;
             int maxProcesses = 1;
             int modelRuns = 0;
             int inputParametersCount = 0;
             int outputParametersCount = 0;
             bool countRunsLambda = true;
             ZLambda getLambdaFromZValuesCallBack(ZValuesCallBack zValuesLambda);
+            ZMultipleLambda getLambdaFromZValuesMultipleCallBack(ZValuesMultipleCallBack zValuesMultipleLambda);
         };
     }
 }

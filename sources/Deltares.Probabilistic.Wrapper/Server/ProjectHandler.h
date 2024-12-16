@@ -1,18 +1,18 @@
 // Copyright (C) Stichting Deltares. All rights reserved.
 //
-// This file is part of Streams.
+// This file is part of the Probabilistic Library.
 //
-// Streams is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Affero General Public License as published by
+// The Probabilistic Library is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Affero General Public License for more details.
+// GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Affero General Public License
+// You should have received a copy of the GNU Lesser General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 //
 // All names, logos, and references to "Deltares" are registered trademarks of
@@ -134,6 +134,11 @@ namespace Deltares
                     return NativeSupport::toManaged(shared->object->GetIndexedStringValue(id, NativeSupport::toNative(property), index));
                 }
 
+                virtual void SetArrayValue(int id, System::String^ property, array<double>^ values)
+                {
+                    shared->object->SetArrayValue(id, NativeSupport::toNative(property), NativeSupport::toNative(values).data(), values->Length);
+                }
+
                 virtual void SetArrayIntValue(int id, System::String^ property, array<int>^ values)
                 {
                     shared->object->SetArrayIntValue(id, NativeSupport::toNative(property), NativeSupport::toNative(values).data(), values->Length);
@@ -142,6 +147,11 @@ namespace Deltares
                 virtual void GetArgValues(int id, System::String^ property, array<double>^ values, array<double>^ outputValues)
                 {
                     shared->object->GetArgValues(id, NativeSupport::toNative(property), NativeSupport::toNative(values).data(), values->Length,NativeSupport::toNative(outputValues).data());
+                }
+
+                virtual void GetArrayValue(int id, System::String^ property, array<double>^ values)
+                {
+                    shared->object->GetArrayValue(id, NativeSupport::toNative(property), NativeSupport::toNative(values).data(), values->Length);
                 }
 
                 virtual double GetIndexedIndexedValue(int id, System::String^ property, int index1, int index2)

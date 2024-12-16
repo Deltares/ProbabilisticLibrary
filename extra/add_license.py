@@ -1,18 +1,18 @@
 # Copyright (C) Stichting Deltares. All rights reserved.
 #
-# This file is part of Streams.
+# This file is part of the Probabilistic Library.
 #
-# Streams is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as published by
+# The Probabilistic Library is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-# GNU Affero General Public License for more details.
+# GNU Lesser General Public License for more details.
 #
-# You should have received a copy of the GNU Affero General Public License
+# You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 # All names, logos, and references to "Deltares" are registered trademarks of
@@ -31,6 +31,7 @@ It works for c++, c#, python and Fortran
 import glob
 import sys
 import os
+from license_helper import is_excluded
 
 def read_header(filename):
     with open(filename, "r") as f:
@@ -59,9 +60,7 @@ def add_header(filename, header):
 
 def replace_one_type(extension, header):
     for name in glob.iglob("**/*."+extension, recursive = True):
-        if "ASA" in name:
-            continue
-        if "framework.h" in name:
+        if is_excluded(name):
             continue
         print("add header to file: ", name)
         if not check_already_with_header(name):
