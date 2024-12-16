@@ -1,18 +1,18 @@
 // Copyright (C) Stichting Deltares. All rights reserved.
 //
-// This file is part of the Probabilistic Library.
+// This file is part of Streams.
 //
-// The Probabilistic Library is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
+// Streams is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Lesser General Public License for more details.
+// GNU Affero General Public License for more details.
 //
-// You should have received a copy of the GNU Lesser General Public License
+// You should have received a copy of the GNU Affero General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 //
 // All names, logos, and references to "Deltares" are registered trademarks of
@@ -20,24 +20,32 @@
 // All rights reserved.
 //
 #pragma once
+#include <gtest/gtest.h>
 #include "../../Deltares.Probabilistic/Statistics/Stochast.h"
 
-namespace Deltares::Probabilistic::Test
+namespace Deltares
 {
-    class testDistributions
+    namespace Probabilistic
     {
-    public:
-        static void allDistributionsTests();
-    private:
-        static void testConditionalWeibull();
-        static void testConditionalWeibullNonIntegerShape();
-        static void testConditionalWeibullMeanDeviation();
-        static void testConditionalWeibullCdfPdf();
-        static void testConditionalWeibullCdfPdf2();
-        static void testConditionalStochast();
-        static void testDesignValue();
-        static void testVariationCoefficient();
-        static double getPdfNumerical(Statistics::Stochast& s, const double x);
-    };
+        namespace Test
+        {
+            class testDistributions
+            {
+            public:
+                void allDistributionsTests();
+            private:
+                void testConditionalWeibull();
+                void testConditionalWeibullNonIntegerShape();
+                void testConditionalWeibullMeanDeviation();
+                void testConditionalWeibullCdfPdf();
+                void testConditionalWeibullCdfPdf2();
+                void testConditionalStochast();
+                void testDesignValue();
+                double getPdfNumerical(Deltares::Statistics::Stochast& s, const double x);
+
+                const double margin = 1e-9;
+            };
+        }
+    }
 }
 

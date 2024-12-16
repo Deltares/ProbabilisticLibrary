@@ -25,22 +25,22 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="probabilistic_library\interface.py" />
-    <Compile Include="probabilistic_library\reliability.py" />
-    <Compile Include="probabilistic_library\project.py" />
-    <Compile Include="probabilistic_library\sensitivity.py" />
-    <Compile Include="probabilistic_library\utils.py" />
-    <Compile Include="probabilistic_library\statistic.py">
+    <Compile Include="streams\interface.py" />
+    <Compile Include="streams\reliability.py" />
+    <Compile Include="streams\project.py" />
+    <Compile Include="streams\sensitivity.py" />
+    <Compile Include="streams\utils.py" />
+    <Compile Include="streams\statistic.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="probabilistic_library\__init__.py" />
+    <Compile Include="streams\__init__.py" />
     <Compile Include="setup.py" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="readme.md" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="probabilistic_library\" />
+    <Folder Include="streams\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
