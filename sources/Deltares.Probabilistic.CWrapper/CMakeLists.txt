@@ -8,7 +8,7 @@ set_version_numbers("../version_number.ini")
 generate_product_version(
    VersionFilesOutputVariable
    NAME "Probabilistic Library c-wrapper"
-   ICON "${CMAKE_CURRENT_SOURCE_DIR}/../problib.ico"
+   ICON "${CMAKE_CURRENT_SOURCE_DIR}/../empty.ico"
    COMPANY_NAME "Deltares"
    VERSION_MAJOR ${ver_major}
    VERSION_MINOR ${ver_minor}
