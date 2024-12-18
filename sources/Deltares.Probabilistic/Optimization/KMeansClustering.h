@@ -22,6 +22,7 @@
 #pragma once
 
 #include "../Model/Sample.h"
+#include "../Math/Random.h"
 #include "ClusterSettings.h"
 
 namespace Deltares
@@ -74,6 +75,7 @@ namespace Deltares
             static double InterClusterDistance(const std::shared_ptr<Cluster>& cluster,
                 const std::shared_ptr<Models::Sample>& sample, const std::vector<std::shared_ptr<Cluster>>& clusters);
             static std::vector<std::shared_ptr<Models::Sample>> getCentersFromClusters(const std::vector<std::shared_ptr<Cluster>>& clusters);
+            Numeric::Random random;
         };
     }
 }

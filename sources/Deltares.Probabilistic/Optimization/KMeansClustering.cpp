@@ -24,7 +24,6 @@
 #include <map>
 
 #include "../Utils/probLibException.h"
-#include "../Math/Random.h"
 #include "../Math/NumericSupport.h"
 
 namespace Deltares
@@ -216,10 +215,10 @@ namespace Deltares
             std::vector<std::shared_ptr<Cluster>> clusters;
 
             // select one data item index at random as 1st mean
-            Numeric::Random::initialize(Settings->generatorType, true, randomSeed, 0);
+            random.initialize(Settings->generatorType, true, randomSeed, 0);
 
             // TODO: PROBL-42 remove this line 
-            double dummy = Numeric::Random::next();  //  random->Next(0, samples.size()); // [0, N)
+            double dummy = random.next();  //  random->Next(0, samples.size()); // [0, N)
 
             auto firstCluster = std::make_shared<Cluster>();
 
@@ -276,7 +275,7 @@ namespace Deltares
 
             double cumP = 0.0; // cumulative prob
 
-            double p = Numeric::Random::next();
+            double p = random.next();
 
             for (int i = 0; i < n; ++i)
             {

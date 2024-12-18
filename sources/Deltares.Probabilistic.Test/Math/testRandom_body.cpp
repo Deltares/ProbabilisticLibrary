@@ -22,6 +22,7 @@
 #include "testRandom.h"
 #include "../../Deltares.Probabilistic/Math/Randomizers/GeorgeMarsagliaRandomValueGenerator.h"
 #include "../../Deltares.Probabilistic/Math/Randomizers/MersenneTwisterRandomValueGenerator.h"
+#include "../../Deltares.Probabilistic/Math/Random.h"
 
 namespace Deltares
 {
@@ -37,6 +38,7 @@ namespace Deltares
                 georgeMarsagliaTest2();
                 mersenneTwisterTest1();
                 initializationTest();
+                twoInstances();
             }
 
             void testRandom::georgeMarsagliaTest1()
@@ -91,6 +93,19 @@ namespace Deltares
                 ASSERT_TRUE(val1 >= 0.0 && val1 <= 1.0);
                 ASSERT_TRUE(val2 >= 0.0 && val2 <= 1.0);
             }
+
+            void testRandom::twoInstances()
+            {
+                auto mt1 = Random();
+                mt1.initialize(RandomValueGeneratorType::MersenneTwister, true, 0, 0);
+                auto mt2 = Random();
+                mt2.initialize(RandomValueGeneratorType::MersenneTwister, true, 0, 0);
+
+                double val1 = mt1.next();
+                double val2 = mt2.next();
+                ASSERT_EQ(val1, val2);
+            }
+
 
         }
     }

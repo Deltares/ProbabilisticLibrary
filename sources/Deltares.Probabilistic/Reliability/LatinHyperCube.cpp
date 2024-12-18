@@ -24,7 +24,6 @@
 #include "DesignPointBuilder.h"
 #include "../Statistics/StandardNormal.h"
 #include "../Math/NumericSupport.h"
-#include "../Math/Random.h"
 
 using namespace Deltares::Models;
 using namespace Deltares::Statistics;
@@ -72,7 +71,7 @@ namespace Deltares
             return getReducedDesignPoint(modelRunner, qRange);
         };
 
-        std::vector<std::shared_ptr<Sample>> LatinHyperCube::CreateAllSamples(int nStochasts) const
+        std::vector<std::shared_ptr<Sample>> LatinHyperCube::CreateAllSamples(int nStochasts)
         {
             struct IndexedItem
             {
@@ -80,7 +79,8 @@ namespace Deltares
                 double Sequence = 0.0;
             };
 
-            Random::initialize(Settings->randomSettings->RandomGeneratorType, Settings->randomSettings->IsRepeatableRandom,
+            Random random;
+            random.initialize(Settings->randomSettings->RandomGeneratorType, Settings->randomSettings->IsRepeatableRandom,
                 Settings->randomSettings->Seed, Settings->randomSettings->SeedB);
 
             std::vector<std::pair<int, std::vector<double>>> list;
@@ -89,7 +89,7 @@ namespace Deltares
                 auto values = std::vector<double>();
                 for (int j = 0; j < nStochasts; j++)
                 {
-                    auto s = Random::next();
+                    auto s = random.next();
                     values.push_back(s);
                 }
                 list.push_back({ i, values });

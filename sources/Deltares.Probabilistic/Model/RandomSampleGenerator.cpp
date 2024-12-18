@@ -24,7 +24,6 @@
 
 #include "SampleProvider.h"
 #include "../Statistics/StandardNormal.h"
-#include "../Math/Random.h"
 
 namespace Deltares
 {
@@ -32,7 +31,7 @@ namespace Deltares
     {
         void RandomSampleGenerator::initialize()
         {
-            Deltares::Numeric::Random::initialize(this->Settings->RandomGeneratorType, this->Settings->IsRepeatableRandom, this->Settings->Seed, this->Settings->SeedB);
+            random.initialize(this->Settings->RandomGeneratorType, this->Settings->IsRepeatableRandom, this->Settings->Seed, this->Settings->SeedB);
 
             if (sampleProvider == nullptr)
             {
@@ -42,7 +41,7 @@ namespace Deltares
 
         void RandomSampleGenerator::restart()
         {
-            Deltares::Numeric::Random::restart();
+            random.restart();
 
             if (sampleProvider != nullptr)
             {
@@ -57,7 +56,7 @@ namespace Deltares
             const int size = this->Settings->SkipUnvaryingParameters ? this->Settings->StochastSet->getStochastCount() : this->Settings->StochastSet->getVaryingStochastCount();
             for (int i = 0; i < size; i++)
             {
-                randomValues.push_back(Deltares::Numeric::Random::next());
+                randomValues.push_back(random.next());
             }
 
             std::shared_ptr<Sample> sample = sampleProvider->getSample();

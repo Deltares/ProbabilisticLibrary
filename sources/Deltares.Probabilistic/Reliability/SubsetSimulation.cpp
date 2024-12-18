@@ -50,7 +50,8 @@ namespace Deltares
             modelRunner->updateStochastSettings(this->Settings->StochastSet);
 
             std::shared_ptr<DesignPointBuilder> designPointBuilder = std::make_shared<DesignPointBuilder>(nStochasts, Settings->designPointMethod, Settings->StochastSet);
-            std::shared_ptr<RandomSampleGenerator> randomSampleGenerator = std::make_shared<RandomSampleGenerator>(this->Settings->randomSettings, this->Settings->StochastSet);
+            randomSampleGenerator = std::make_shared<RandomSampleGenerator>(this->Settings->randomSettings, this->Settings->StochastSet);
+            randomSampleGenerator->initialize();
 
             // initialize convergence indicator and loops
             double ssFactor = 1;
@@ -308,7 +309,7 @@ namespace Deltares
 
                 for (int i = 0; i < oldSample->Values.size(); i++)
                 {
-                    const double random = Random::next();
+                    const double random = randomSampleGenerator->random.next();
 
                     const double newValue = oldSample->Values[i] + (2 * random - 1) * Settings->MarkovChainDeviation;
                     const double oldDensity = getStandardNormalPDF(oldSample->Values[i]);
@@ -316,7 +317,7 @@ namespace Deltares
 
                     const double acceptanceRatio = std::min(1.0, newDensity / oldDensity);
 
-                    if (acceptanceRatio > Random::next())
+                    if (acceptanceRatio > randomSampleGenerator->random.next())
                     {
                         acceptedSamples++;
                         newValues[i] = newValue;
@@ -415,7 +416,7 @@ namespace Deltares
 
                     for (size_t j = 0; j < nStochasts; j++)
                     {
-                        double random = Random::next();
+                        double random = randomSampleGenerator->random.next();
                         double u = Statistics::StandardNormal::getUFromQ(random);
                         values[j] = previousSample->Values[j] * rho[j] + sigma[j] * u;
                     }

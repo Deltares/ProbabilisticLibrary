@@ -77,7 +77,7 @@ void combineMultipleElementsGeneral(multipleElements* elements, betaAlphaCF* dpO
         auto s = std::make_shared<Deltares::Statistics::Stochast>();
         stochasts.push_back(s);
     }
-    auto dpCombiner = DesignPointCombiner(settings->combinerType, Deltares::Numeric::MersenneTwister);
+    auto dpCombiner = DesignPointCombiner(settings->combinerType, Deltares::Numeric::RandomValueGeneratorType::MersenneTwister);
     auto designPoints = std::vector<std::shared_ptr<DesignPoint>>();
     for (int i = 0; i < elements->size; i++)
     {
