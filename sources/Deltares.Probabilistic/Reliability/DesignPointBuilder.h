@@ -49,12 +49,14 @@ namespace Deltares
             std::shared_ptr<Sample> sinSample = nullptr;
             std::shared_ptr<Sample> cosSample = nullptr;
             bool sampleAdded = false;
+            bool weightedSampleAdded = false;
 
             std::vector<int> qualitativeIndices;
             int qualitativeCount = 0;
             std::vector<std::shared_ptr<ModeFinder>> modeFinders;
 
             void initializeSamples(int count, DesignPointMethod method);
+            void initializeTotals();
 
         public:
             DesignPointBuilder(int count, DesignPointMethod method, std::shared_ptr<StochastSettingsSet> stochastSet = nullptr);

@@ -57,6 +57,11 @@ namespace Deltares
                 values[u] += weight;
             }
 
+            void clear()
+            {
+                values.clear();
+            }
+
             double getMode()
             {
                 double mode = 0;
@@ -115,14 +120,23 @@ namespace Deltares
             this->count = count;
             this->method = method;
 
+            this->qualitativeIndices.clear();
+            this->modeFinders.clear();
+
+            this->initializeTotals();
+        }
+
+        void DesignPointBuilder::initializeTotals()
+        {
             defaultSample = std::make_shared<Sample>(count);
             meanSample = std::make_shared<Sample>(count);
             sinSample = std::make_shared<Sample>(count);
             cosSample = std::make_shared<Sample>(count);
 
-            this->qualitativeIndices.clear();
-            this->modeFinders.clear();
-
+            for (std::shared_ptr<ModeFinder> modeFinder : this->modeFinders)
+            {
+                modeFinder->clear();
+            }
         }
 
         void DesignPointBuilder::initialize(double beta)
@@ -139,6 +153,22 @@ namespace Deltares
         {
             sampleAdded = true;
 
+            double weight = std::isnan(sample->Weight) ? 1 : sample->Weight;
+
+            if (!weightedSampleAdded && method != DesignPointMethod::NearestToMean)
+            {
+                // assign a preliminary weight when weight is zero, restart counting when a real weight arrives
+                if (weight > 0)
+                {
+                    this->initializeTotals();
+                    weightedSampleAdded = true;
+                }
+                else
+                {
+                    weight = 1;
+                }
+            }
+
             switch (method)
             {
             case DesignPointMethod::NearestToMean:
@@ -154,8 +184,6 @@ namespace Deltares
             }
             case DesignPointMethod::CenterOfGravity:
             {
-                const double weight = std::isnan(sample->Weight) ? 1 : sample->Weight;
-
                 for (int j = 0; j < this->qualitativeCount; j++)
                 {
                     int qIndex = qualitativeIndices[j];
@@ -173,6 +201,11 @@ namespace Deltares
             case DesignPointMethod::CenterOfAngles:
             {
                 const double weight = std::isnan(sample->Weight) ? 1 : sample->Weight;
+
+                if (weight > 0)
+                {
+                    weightedSampleAdded = true;
+                }
 
                 for (int j = 0; j < this->qualitativeCount; j++)
                 {
