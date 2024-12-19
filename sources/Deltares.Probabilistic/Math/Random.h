@@ -44,11 +44,11 @@ namespace Deltares::Numeric
 
     public:
         void initialize(RandomValueGeneratorType generatorType, bool repeatable = true, int seed = 0, int seedB = 0);
-        double next();
-        void restart();
+        double next() const;
+        void restart() const;
 
         static std::string getRandomGeneratorTypeString(RandomValueGeneratorType method);
-        static RandomValueGeneratorType getRandomGeneratorType(std::string method);
+        static RandomValueGeneratorType getRandomGeneratorType(const std::string& method);
     };
 }
 

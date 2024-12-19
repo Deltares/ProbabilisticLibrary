@@ -49,7 +49,7 @@ namespace Deltares
 
             modelRunner->updateStochastSettings(this->Settings->StochastSet);
 
-            std::shared_ptr<DesignPointBuilder> designPointBuilder = std::make_shared<DesignPointBuilder>(nStochasts, Settings->designPointMethod, Settings->StochastSet);
+            auto designPointBuilder = DesignPointBuilder(nStochasts, Settings->designPointMethod, Settings->StochastSet);
             randomSampleGenerator = std::make_shared<RandomSampleGenerator>(this->Settings->randomSettings, this->Settings->StochastSet);
             randomSampleGenerator->initialize();
 
@@ -87,7 +87,7 @@ namespace Deltares
                 std::vector<double> zValues;
 
                 // create samples
-                std::vector<std::shared_ptr<Sample>> newSamples = getNewSamples(modelRunner, randomSampleGenerator, initial, z0Fac, selectedSamples);
+                std::vector<std::shared_ptr<Sample>> newSamples = getNewSamples(modelRunner, initial, z0Fac, selectedSamples);
 
                 int skip = 0;
 
@@ -133,7 +133,7 @@ namespace Deltares
                         if (modelRunner->shouldExitPrematurely(samples))
                         {
                             // return the result so far
-                            return modelRunner->getDesignPoint(designPointBuilder->getSample(), Statistics::StandardNormal::getUFromQ(pf), convergenceReport);
+                            return modelRunner->getDesignPoint(designPointBuilder.getSample(), Statistics::StandardNormal::getUFromQ(pf), convergenceReport);
                         }
                     }
 
@@ -163,7 +163,7 @@ namespace Deltares
                     // register minimum value of r and alpha
                     if (z * z0Fac < 0)
                     {
-                        designPointBuilder->addSample(sample);
+                        designPointBuilder.addSample(sample);
                     }
 
                     // uncorrected prob of failure for convergence
@@ -216,7 +216,7 @@ namespace Deltares
 
                 if (!ready)
                 {
-                    std::shared_ptr<Sample> sample = designPointBuilder->getSample();
+                    std::shared_ptr<Sample> sample = designPointBuilder.getSample();
                     std::shared_ptr<DesignPoint> designPoint = modelRunner->getDesignPoint(sample, Statistics::StandardNormal::getUFromQ(pf), convergenceReport);
 #if __has_include(<format>)
                     std::string identifier = std::format("Subset iteration {0:}", iteration);
@@ -229,7 +229,7 @@ namespace Deltares
                 }
             }
 
-            std::shared_ptr<Sample> sample = designPointBuilder->getSample();
+            std::shared_ptr<Sample> sample = designPointBuilder.getSample();
             std::shared_ptr<DesignPoint> designPoint = modelRunner->getDesignPoint(sample, z0Fac * Statistics::StandardNormal::getUFromQ(pf), convergenceReport);
 
             for (size_t i = 0; i < contributingDesignPoints.size(); i++)
@@ -240,11 +240,11 @@ namespace Deltares
             return designPoint;
         }
 
-        std::vector<std::shared_ptr<Sample>> SubsetSimulation::getNewSamples(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<RandomSampleGenerator> randomSampleGenerator, bool initial, double z0Fac, std::vector<std::shared_ptr<Sample>> selectedSamples)
+        std::vector<std::shared_ptr<Sample>> SubsetSimulation::getNewSamples(std::shared_ptr<Models::ModelRunner> modelRunner, bool initial, double z0Fac, std::vector<std::shared_ptr<Sample>> selectedSamples)
         {
             if (selectedSamples.empty())
             {
-                return getInitialSamples(modelRunner, randomSampleGenerator, initial);
+                return getInitialSamples(modelRunner, initial);
             }
             else if (Settings->SampleMethod == SampleMethodType::MarkovChain)
             {
@@ -260,7 +260,7 @@ namespace Deltares
             }
         }
 
-        std::vector<std::shared_ptr<Sample>> SubsetSimulation::getInitialSamples(std::shared_ptr<ModelRunner> modelRunner, std::shared_ptr<RandomSampleGenerator> randomSampleGenerator, bool initial)
+        std::vector<std::shared_ptr<Sample>> SubsetSimulation::getInitialSamples(std::shared_ptr<ModelRunner> modelRunner, bool initial)
         {
             std::vector<std::shared_ptr<Sample>> samples;
 
