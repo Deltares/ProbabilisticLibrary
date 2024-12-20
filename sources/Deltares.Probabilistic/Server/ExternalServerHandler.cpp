@@ -131,26 +131,38 @@ namespace Deltares
                 return "";
             }
 
+
             if (waitForAnswer)
             {
                 char receiveBuffer[DEFAULT_BUFLEN];
 
                 int received = recv(server_socket, receiveBuffer, sizeof(receiveBuffer), 0);
-
-                closesocket(server_socket);
                 if (received < 0)
                 {
                     throw std::runtime_error("Receive failed");
                 }
 
-                return std::string(receiveBuffer, received);
+                std::string answer = std::string(receiveBuffer, received);
+
+                while (received == DEFAULT_BUFLEN)
+                {
+                    received = recv(server_socket, receiveBuffer, sizeof(receiveBuffer), 0);
+                    if (received < 0)
+                    {
+                        throw std::runtime_error("Receive failed");
+                    }
+
+                    answer += std::string(receiveBuffer, received);
+                }
+
+                closesocket(server_socket);
+
+                return answer;
             }
             else
             {
-                closesocket(server_socket);
+                return "";
             }
-
-            return "";
         }
 
         void ExternalServerHandler::StartServer()
@@ -162,7 +174,7 @@ namespace Deltares
 
             while (!connected && count < 10)
             {
-                StartProcess(this->serverName, false);
+                StartProcess(this->serverName, false);  
 
                 this->server_started = true;
 

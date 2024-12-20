@@ -941,6 +941,9 @@ class Message:
 	def __del__(self):
 		interface.Destroy(self._id)
 		
+	def __str__(self):
+		return str(self.type) + ': ' + self.text
+		
 	@property
 	def type(self):
 		return MessageType[interface.GetStringValue(self._id, 'type')]

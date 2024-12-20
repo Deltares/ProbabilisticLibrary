@@ -172,17 +172,20 @@ namespace Deltares
             protected:
                 int GetStochastId(Statistics::Wrappers::Stochast^ stochast, int newId)
                 {
-                    return shared->object->GetStochastId(stochast->GetStochast(), newId);
+                    std::shared_ptr<Statistics::Stochast> nativeStochast = stochast != nullptr ? stochast->GetStochast() : nullptr;
+                    return shared->object->GetStochastId(nativeStochast, newId);
                 }
 
                 int GetCorrelationMatrixId(Statistics::Wrappers::CorrelationMatrix^ correlationMatrix, int newId)
                 {
-                    return shared->object->GetCorrelationMatrixId(correlationMatrix->GetCorrelationMatrix(), newId);
+                    std::shared_ptr<Statistics::CorrelationMatrix> nativeCorrelationMatrix = correlationMatrix != nullptr ? correlationMatrix->GetCorrelationMatrix() : nullptr;
+                    return shared->object->GetCorrelationMatrixId(nativeCorrelationMatrix, newId);
                 }
 
                 int GetDesignPointId(Reliability::Wrappers::DesignPoint^ designPoint, int newId)
                 {
-                    return shared->object->GetDesignPointId(designPoint->getDesignPoint(), newId);
+                    std::shared_ptr<Reliability::DesignPoint> nativeDesignPoint = designPoint != nullptr ? designPoint->getDesignPoint() : nullptr;
+                    return shared->object->GetDesignPointId(nativeDesignPoint, newId);
                 }
             };
         }
