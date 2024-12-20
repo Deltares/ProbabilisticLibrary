@@ -38,12 +38,12 @@ namespace Deltares
             std::shared_ptr<SubsetSimulationSettings> Settings = std::make_shared<SubsetSimulationSettings>();
             std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
         private:
-            std::vector<std::shared_ptr<Sample>> getInitialSamples(std::shared_ptr<ModelRunner> modelRunner, std::shared_ptr<RandomSampleGenerator> randomSampleGenerator, bool initial);
+            std::vector<std::shared_ptr<Sample>> getInitialSamples(std::shared_ptr<ModelRunner> modelRunner, bool initial);
             std::vector<std::shared_ptr<Sample>> getMarkovChainSamples(std::shared_ptr<ModelRunner> modelRunner, std::vector<std::shared_ptr<Sample>>& selectedSamples, double z0Fac);
             std::shared_ptr<Sample> getMarkovChainSample(std::shared_ptr<Sample> oldSample, std::shared_ptr<ModelRunner> modelRunner, double maxZ, double z0Fac);
             std::vector<std::shared_ptr<Sample>> getAdaptiveConditionalSamples(std::shared_ptr<ModelRunner> modelRunner, std::vector<std::shared_ptr<Sample>>& selectedSamples);
 
-            std::vector<std::shared_ptr<Sample>> getNewSamples(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<RandomSampleGenerator> randomSampleGenerator, bool initial, double z0Fac, std::vector<std::shared_ptr<Sample>> selectedSamples);
+            std::vector<std::shared_ptr<Sample>> getNewSamples(std::shared_ptr<Models::ModelRunner> modelRunner, bool initial, double z0Fac, std::vector<std::shared_ptr<Sample>> selectedSamples);
             std::vector<std::shared_ptr<Sample>> selectSamples(double z0Fac, std::vector<std::shared_ptr<Sample>> performedSamples);
             static double getConvergence(double pf, int samples);
             bool isConverged(int sampleIndex, double convergence) const;
@@ -53,6 +53,7 @@ namespace Deltares
             int rejectedSamples = 0;
             int acceptedSamples = 0;
             double acceptanceRate = 0.0;
+            std::shared_ptr<RandomSampleGenerator> randomSampleGenerator;
         };
     }
 }

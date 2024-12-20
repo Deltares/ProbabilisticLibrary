@@ -20,26 +20,19 @@
 // All rights reserved.
 //
 #pragma once
-#include <gtest/gtest.h>
 
-namespace Deltares
+namespace Deltares::Probabilistic::Test
 {
-    namespace Probabilistic
+    class testRandom
     {
-        namespace Test
-        {
-            class testRandom
-            {
-            public:
-                void allRandomTests();
-            private:
-                void georgeMarsagliaTest1();
-                void georgeMarsagliaTest2();
-                void mersenneTwisterTest1();
-                void initializationTest();
-                const double margin = 1e-12;
-            };
-        }
-    }
+    public:
+        static void allRandomTests();
+    private:
+        static void georgeMarsagliaTest1();
+        static void georgeMarsagliaTest2();
+        static void mersenneTwisterTest1();
+        static void initializationTest();
+        static void twoInstances();
+    };
 }
 

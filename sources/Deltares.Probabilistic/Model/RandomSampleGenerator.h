@@ -23,6 +23,7 @@
 #include "RandomSettings.h"
 #include "Sample.h"
 #include "SampleProvider.h"
+#include "../Math/Random.h"
 
 namespace Deltares
 {
@@ -42,6 +43,7 @@ namespace Deltares
 
             std::shared_ptr<RandomSettings> Settings = std::make_shared<RandomSettings>();
             std::shared_ptr<SampleProvider> sampleProvider = nullptr;
+            Numeric::Random random;
 
             void initialize();
             void restart();

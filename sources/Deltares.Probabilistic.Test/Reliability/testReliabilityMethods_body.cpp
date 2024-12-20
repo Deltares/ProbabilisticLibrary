@@ -79,7 +79,7 @@ namespace Deltares
                 for (const auto& chunkSize : chunckSizes)
                 {
                     auto calculator = LatinHyperCube();
-                    calculator.Settings->randomSettings->RandomGeneratorType = Numeric::MersenneTwister;
+                    calculator.Settings->randomSettings->RandomGeneratorType = Numeric::RandomValueGeneratorType::MersenneTwister;
                     calculator.Settings->RunSettings->MaxChunkSize = chunkSize;
 
                     auto modelRunner = projectBuilder().BuildProject();
