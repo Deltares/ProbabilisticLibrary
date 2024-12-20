@@ -200,13 +200,6 @@ namespace Deltares
             }
             case DesignPointMethod::CenterOfAngles:
             {
-                const double weight = std::isnan(sample->Weight) ? 1 : sample->Weight;
-
-                if (weight > 0)
-                {
-                    weightedSampleAdded = true;
-                }
-
                 for (int j = 0; j < this->qualitativeCount; j++)
                 {
                     int qIndex = qualitativeIndices[j];
