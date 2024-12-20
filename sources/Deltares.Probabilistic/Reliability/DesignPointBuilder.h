@@ -42,7 +42,7 @@ namespace Deltares
         private:
             int count = 0;
             DesignPointMethod method = DesignPointMethod::NearestToMean;
-            double rmin = std::numeric_limits<double>::infinity();
+            double minimumBeta = std::numeric_limits<double>::infinity();
             double sumWeights = 0;
             std::shared_ptr<Sample> defaultSample = nullptr;
             std::shared_ptr<Sample> meanSample = nullptr;

@@ -133,7 +133,7 @@ namespace Deltares
             sinSample = std::make_shared<Sample>(count);
             cosSample = std::make_shared<Sample>(count);
 
-            for (std::shared_ptr<ModeFinder> modeFinder : this->modeFinders)
+            for (const auto& modeFinder : this->modeFinders)
             {
                 modeFinder->clear();
             }
@@ -173,10 +173,10 @@ namespace Deltares
             {
             case DesignPointMethod::NearestToMean:
             {
-                double rbeta = sample->getBeta();
-                if (rbeta < rmin)
+                double beta = sample->getBeta();
+                if (beta < minimumBeta)
                 {
-                    rmin = rbeta;
+                    minimumBeta = beta;
 
                     meanSample = sample->clone();
                 }
