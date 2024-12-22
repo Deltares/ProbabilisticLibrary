@@ -137,6 +137,8 @@ namespace Deltares
             {
                 modeFinder->clear();
             }
+
+            sumWeights = 0;
         }
 
         void DesignPointBuilder::initialize(double beta)
