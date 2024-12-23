@@ -42,6 +42,12 @@ class ZModelContainer:
 	def get_model(self):
 		return None
 
+	def is_valid(self):
+		return True
+
+	def validate(self):
+		return FrozenList() 
+
 	def is_dirty(self):
 		return False
 
@@ -118,6 +124,22 @@ class ZModel:
 			parameters[i] = modelParameter
 
 		return FrozenList(parameters)
+
+	def validate(self):
+		if self._is_function:
+			return FrozenList()
+		elif not self._model is None:
+			return self._model.validate()
+		else:
+			return FrozenList([Message.from_message(MessageType.error, 'No model provided')])
+
+	def is_valid(self):
+		if self._is_function:
+			return True
+		elif not self._model is None:
+			return self._model.is_valid()
+		else:
+			return False
 
 	@property
 	def input_parameters(self):
@@ -302,6 +324,18 @@ class ModelProject:
 			samples.append(Sample(values[i][:input_size], output_values[i]))
 		ModelProject._zmodel.run_multiple(samples)
 
+	def validate(self):
+		if not ModelProject._zmodel is None:
+			return ModelProject._zmodel.validate()
+		else:
+			return FrozenList([Message.from_message(MessageType.error, 'No model provided')])
+
+	def is_valid(self):
+		if not ModelProject._zmodel is None:
+			return ModelProject._zmodel.is_valid()
+		else:
+			return False
+
 	@property
 	def variables(self):
 		self._check_model()
@@ -395,7 +429,9 @@ class SensitivityProject(ModelProject):
 				'parameter',
 				'run',
 				'stochast',
-				'output_correlation_matrix']
+				'output_correlation_matrix',
+                'validate',
+                'is_valid']
 
 	@property
 	def parameter(self):
@@ -465,7 +501,9 @@ class ReliabilityProject(ModelProject):
 				'settings',
 				'model',
 				'run',
-				'design_point']
+				'design_point',
+                'validate',
+                'is_valid']
 
 	@property
 	def limit_state_function(self):

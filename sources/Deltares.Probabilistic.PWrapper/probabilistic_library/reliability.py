@@ -938,6 +938,13 @@ class Message:
 		else:
 			self._id = id
 
+	@classmethod
+	def from_message(cls, message_type, message_text):
+		message = cls()
+		interface.SetStringValue(message._id, 'type', str(message_type))
+		interface.SetStringValue(message._id, 'text', message_text)
+		return message
+
 	def __del__(self):
 		interface.Destroy(self._id)
 		

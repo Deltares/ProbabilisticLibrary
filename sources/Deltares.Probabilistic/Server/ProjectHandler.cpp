@@ -1131,7 +1131,14 @@ namespace Deltares
         {
             ObjectType objectType = types[id];
 
-            if (objectType == ObjectType::Stochast)
+            if (objectType == ObjectType::Message)
+            {
+                std::shared_ptr<Models::Message> message = messages[id];
+
+                if (property_ == "type") message->Type = Message::getMessageType(value);
+                else if (property_ == "text") message->Text = value;
+            }
+            else if (objectType == ObjectType::Stochast)
             {
                 std::shared_ptr<Statistics::Stochast> stochast = stochasts[id];
 
