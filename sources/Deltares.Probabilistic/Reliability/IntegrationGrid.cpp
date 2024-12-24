@@ -377,7 +377,7 @@ namespace Deltares
         void IntegrationDomain::AddPoint(std::shared_ptr<IntegrationPoint> point, const std::string& coordHash)
         {
             Points.push_back(point);
-            pointsSet.insert({ coordHash, point});
+            pointsSet[coordHash] = point;
 
             for (int i = 0; i < getDimension(); i++)
             {
