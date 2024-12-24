@@ -29,6 +29,8 @@ namespace Deltares
 {
     namespace Sensitivity
     {
+        enum class ModelType { Plane, Sphere };
+
         class DirectionalSamplingSettingsS
         {
         public:
@@ -56,6 +58,11 @@ namespace Deltares
              * \brief Convergence criterion
              */
             double VariationCoefficientFailure = 0.05;
+
+            /**
+             * \brief Initial assumed model
+             */
+            ModelType ModelType = ModelType::Plane;
 
             /**
              * \brief Quantiles which should be calculated
