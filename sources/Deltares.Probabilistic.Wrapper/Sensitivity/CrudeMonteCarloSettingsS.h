@@ -79,10 +79,14 @@ namespace Deltares
                     void set(double value) { shared->object->ProbabilityForConvergence = value; }
                 }
 
-                property double RequiredSamples
+                int GetRequiredSamples()
                 {
-                    double get() { return shared->object->getRequiredSamples(); }
-                    void set(double value) { shared->object->setRequiredSamples(value); }
+                    return shared->object->getRequiredSamples();
+                }
+
+                static int GetRequiredSamples(double probability, double variationCoefficient)
+                {
+                    return Sensitivity::CrudeMonteCarloSettingsS::getRequiredSamples(probability, variationCoefficient);
                 }
 
                 property bool DeriveSamplesFromVariationCoefficient

@@ -91,7 +91,10 @@ namespace Deltares
 
             std::vector<std::shared_ptr<Sample>> samples;
 
-            for (int i = 0; i < this->Settings->NumberDirections; i++)
+            int nDirections = this->Settings->getRequiredSamples(modelRunner->getVaryingStochastCount());
+            nDirections = std::min(nDirections, this->Settings->NumberDirections);
+
+            for (int i = 0; i < nDirections; i++)
             {
                 std::shared_ptr<Sample> randomSample = randomSampleGenerator.getRandomSample();
                 samples.push_back(randomSample);

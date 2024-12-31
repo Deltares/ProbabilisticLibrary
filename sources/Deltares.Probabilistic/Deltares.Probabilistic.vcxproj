@@ -362,6 +362,7 @@
     <ClCompile Include="Reliability\FragilityCurve.cpp" />
     <ClCompile Include="Reliability\FragilityCurveIntegration.cpp" />
     <ClCompile Include="Model\GradientSettings.cpp" />
+    <ClCompile Include="Sensitivity\DirectionalSamplingSettingsS.cpp" />
     <ClCompile Include="Statistics\ProbabilityValue.cpp" />
     <ClCompile Include="Sensitivity\DirectionalSamplingS.cpp" />
     <ClCompile Include="Sensitivity\NumericalIntegrationS.cpp" />

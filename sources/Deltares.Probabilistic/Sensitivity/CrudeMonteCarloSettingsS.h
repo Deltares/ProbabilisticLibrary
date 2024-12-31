@@ -68,6 +68,11 @@ namespace Deltares
             int getRequiredSamples();
 
             /**
+             * \brief Gets the number of runs which is needed to achieve the variation coefficient at the probability for convergence
+             */
+            static int getRequiredSamples(double probability, double variationCoefficient);
+
+            /**
              * \brief Modifies the variation coefficient so that the number of required samples matches a given value
              */
             void setRequiredSamples(int samples);

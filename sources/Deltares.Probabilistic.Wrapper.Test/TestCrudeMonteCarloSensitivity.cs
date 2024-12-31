@@ -137,7 +137,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
             ((CrudeMonteCarloS)project.SensitivityMethod).Settings.RandomSettings.RandomGeneratorType = RandomGeneratorType.MersenneTwister;
             ((CrudeMonteCarloS)project.SensitivityMethod).Settings.DeriveSamplesFromVariationCoefficient = true;
 
-            Assert.AreEqual(7600, ((CrudeMonteCarloS)project.SensitivityMethod).Settings.RequiredSamples);
+            Assert.AreEqual(7600, ((CrudeMonteCarloS)project.SensitivityMethod).Settings.GetRequiredSamples());
 
             Stochast stochast = project.GetStochast();
 

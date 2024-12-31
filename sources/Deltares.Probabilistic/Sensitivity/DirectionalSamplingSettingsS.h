@@ -60,6 +60,26 @@ namespace Deltares
             double VariationCoefficientFailure = 0.05;
 
             /**
+             * \brief Indicates whether the number of samples should be derived from the variation coefficient at the probability for convergence
+             */
+            bool DeriveSamplesFromVariationCoefficient = false;
+
+            /**
+             * \brief Gets the number of runs which is needed to achieve the variation coefficient at the probability for convergence
+             */
+            static int getRequiredSamples(double probability, double variationCoefficient, int nStochasts);
+
+            /**
+             * \brief Gets the number of runs which is needed to achieve the variation coefficient at the probability for convergence
+             */
+            int getRequiredSamples(int nStochasts) const;
+
+            /**
+             * \brief Modifies the variation coefficient so that the number of required samples matches a given value
+             */
+            void setRequiredSamples(int nDirections, int nStochasts);
+
+            /**
              * \brief Initial assumed model
              */
             ModelType ModelType = ModelType::Plane;
@@ -88,11 +108,14 @@ namespace Deltares
              * \brief Indicates whether the settings have valid values
              * \return Indication
              */
-            bool isValid()
+            bool isValid() const 
             {
-                return this->RequestedQuantiles.size() > 0 &&
+                return !this->RequestedQuantiles.empty() &&
                        this->RunSettings->isValid();
             }
+        private:
+            static double getVariationCoefficient(double q, int nDirections, int nStochasts);
+            double getMaxProbability() const;
         };
     }
 }
