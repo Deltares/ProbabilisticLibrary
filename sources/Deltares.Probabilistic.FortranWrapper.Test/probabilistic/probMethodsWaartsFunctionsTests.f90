@@ -98,7 +98,15 @@ subroutine allProbMethodsWaartsFunctionsTests(minTestLevel)
     character(len=255)            :: testName
 
     integer                       :: level
-    integer, parameter            :: availableMethods(*) = [7, 5, 6, 12, 11, 1, 3, 4] ! TODO the rest is not implemented yet
+    integer, parameter            :: availableMethods(*) = [ &
+        methodFORM, &
+        methodCrudeMonteCarlo, &
+        methodDirectionalSampling, &
+        methodNumericalIntegration, &
+        methodImportanceSampling, &
+        methodFORMandDirSampling, &
+        methodDirSamplingWithFORMiterations, &
+        methodAdaptiveImportanceSampling]
 
     character(len=60), dimension(14) :: functionName = &
         (/   "LinearResistanceSolicitation           ", &     ! 1
@@ -140,16 +148,6 @@ subroutine allProbMethodsWaartsFunctionsTests(minTestLevel)
                 probMethodName = "FORMandDirSampling"
             case (methodDirSamplingWithFORMiterations)
                 probMethodName = "DirSamplingWithFORMiterations"
-            case (methodCrudeMonteCarloWithFORMiterations)
-                probMethodName = "CrudeMonteCarloWithFORMiterations"
-            case (methodImportanceSamplingWithFORMiterations)
-                probMethodName = "ImportanceSamplingWithFORMiterations"
-            case (methodFORMandDirSamplingWithFORMiterations)
-                probMethodName = "FORMandDirSamplingWithFORMiterations"
-            case (methodDirSamplingWithFORMiterationsStartU)
-                probMethodName = "DirSamplingWithFORMiterationsStartU"
-            case (methodFORMandDirSamplingWithFORMiterationsStartU)
-                probMethodName = "FORMandDirSamplingWithFORMiterationsStartU"
             case default
                 cycle
         end select
