@@ -397,6 +397,11 @@ namespace Deltares
         {
             if (this->designFactor >= 0 && this->designQuantile >= 0 && this->designQuantile <= 1)
             {
+                if (this->getMean() == 0.0 && this->lastVariation > 0)
+                {
+                    const double disturbedMeanValue = 0.1;
+                    this->setMeanAndDeviation(disturbedMeanValue, this->lastVariation * disturbedMeanValue);
+                }
                 this->setXAtU(designValue * this->designFactor, StandardNormal::getUFromP(this->designQuantile), ConstantParameterType::VariationCoefficient);
             }
         }

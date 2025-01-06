@@ -80,6 +80,23 @@ def hunt(T_p, tan_alpha, H_s, h_crest, h):
 
     return h_crest - (h + R_u)
 
+def pile(Load, z, q_clay, q_sand, D, L):
+    A = 0.25 * math.pi * D * D
+    L_clay = min(L, z)
+    L_sand = max(0, L - z)
+
+    q_i = q_sand if L > z else q_sand * ((z-L) / 0.7 * A) + q_clay * (1 - (z-L)/0.7 * A)
+    q_ii = q_i
+    q_iii = q_sand if L_sand > 8 * A else q_sand * (L_sand/8*A) + q_clay * (1 - L_sand/(8*A))
+    q_tip = 0.25 * q_i + 0.25 * q_ii + 0.5 * q_iii
+    p_tip = A * q_tip
+    p_shaft = math.pi * D * (q_clay * L_clay + q_sand * L_sand)
+    p = p_tip + p_shaft
+
+    UC = Load / p
+
+    return UC
+
 def get_linear_project():
 
     project = ReliabilityProject()
@@ -170,6 +187,51 @@ def get_sensitivity_linear_project():
     stochast2.distribution =  DistributionType.uniform
     stochast2.minimum = -1
     stochast2.maximum = 1;
+
+    return project
+
+def get_sensitivity_pile_project():
+
+    project = SensitivityProject()
+
+    project.model = pile
+
+    load = project.variables['Load']
+    load.distribution =  DistributionType.gumbel
+    load.design_quantile = 0.95
+    load.mean = 1
+    load.variation = 0.1
+    load.design_value = 1E5;
+
+
+
+    z = project.variables['z']
+    z.distribution =  DistributionType.normal
+    z.mean = 10
+    z.deviation = 0.2
+
+    d = project.variables['D']
+    d.distribution =  DistributionType.normal
+    d.mean = 0.2
+    d.deviation = 0.04
+    d.truncated = True
+    d.minimum = 0
+    d.maximum = 1
+
+    l = project.variables['L']
+    l.distribution =  DistributionType.normal
+    l.mean = 12
+    l.deviation = 0.8
+
+    s = project.variables['q_sand']
+    s.distribution =  DistributionType.log_normal
+    s.mean = 500
+    s.deviation = 50
+
+    c = project.variables['q_clay']
+    c.distribution =  DistributionType.log_normal
+    c.mean = 25000
+    c.deviation = 400
 
     return project
 

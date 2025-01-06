@@ -801,7 +801,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestTable()
         {
-            var stochast = new Stochast { DistributionType = DistributionType.Table };
+            var stochast = new Stochast { DistributionType = DistributionType.Histogram };
             stochast.HistogramValues.Add(new HistogramValue(1, 3, 2));
             stochast.HistogramValues.Add(new HistogramValue(5, 7, 6));
             stochast.HistogramValues.Add(new HistogramValue(7, 9, 2));
