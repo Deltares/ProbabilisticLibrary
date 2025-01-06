@@ -41,22 +41,10 @@ using namespace Deltares::Statistics;
 std::shared_ptr<RandomSettings> createReliabilityMethod::getRnd(const basicSettings& bs)
 {
     auto rnd = std::make_shared<RandomSettings>();
-    switch (bs.rnd)
-    {
-    case rndTypes::GeorgeMarsaglia:
-        rnd->RandomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::GeorgeMarsaglia;
-        break;
-    case rndTypes::MersenneTwister:
-        rnd->RandomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::MersenneTwister;
-        break;
-    default:
-        throw probLibException("Random generator type is not implemented in C wrapper");
-        break;
-    }
+    rnd->RandomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::MersenneTwister;
     rnd->Seed = bs.seed1;
     rnd->SeedB = bs.seed2;
     rnd->IsRepeatableRandom = bs.isRepeatableRandom != 0;
-
     return rnd;
 }
 
