@@ -3,7 +3,7 @@ get_property(generalLib GLOBAL PROPERTY general_lib)
 
 add_library(unitTestTools
   STATIC
-    utils/TestTools.f90
+    utils/unitTestTools.f90
 )
 
 if ( TARGET ftnunit )
