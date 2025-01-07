@@ -35,8 +35,6 @@ namespace Deltares
             private:
                 static System::Random^ random = gcnew System::Random();
 
-                static void initializeInitializeDelegate();
-                static void initializeNextDelegate();
                 static bool initialized = false;
 
                 static void initialize(bool repeatable, int seed)
