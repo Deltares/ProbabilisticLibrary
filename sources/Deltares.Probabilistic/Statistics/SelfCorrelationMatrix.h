@@ -104,10 +104,7 @@ namespace Deltares
             class SelfCorrelationValue
             {
             public:
-                SelfCorrelationValue()
-                {
-                    int k = 1;
-                }
+                SelfCorrelationValue() {}
 
                 std::shared_ptr<Reliability::DesignPoint> designPoint1 = nullptr;
                 std::shared_ptr<Reliability::DesignPoint> designPoint2 = nullptr;
