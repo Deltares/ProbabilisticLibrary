@@ -55,23 +55,42 @@ namespace Deltares
             class Direction
             {
             public:
-                Direction(std::shared_ptr<Models::Sample> sample) { this->sample = sample; }
+                Direction(std::shared_ptr<Models::Sample> sample, int index)
+                {
+                    this->sample = sample;
+                    this->sample->IterationIndex = index;
+                    this->index = index;
+                }
+
                 void AddResult(double distance, double z);
                 double GetDistanceAtZ(double z) const;
                 std::shared_ptr<Models::Sample> CreateNewSampleAt(double z, double maxBeta);
                 bool Valid = true;
+                double lastWeight = 0;
+                double lastDifference = 0;
+                double lastDistance = 0;
+
+                /**
+                 * \brief Performs an operation on a direction resulting in a numeric value for a collection of directions
+                 * \param directions Collection of samples
+                 * \param function Operation on a sample
+                 * \return Resulting numeric values
+                 */
+                static std::vector<double> select(std::vector<std::shared_ptr<Direction>>& directions, std::function<double(std::shared_ptr<Direction>)> function);
+                static std::vector<std::shared_ptr<DirectionalSamplingS::Direction>> where(std::vector<std::shared_ptr<Direction>>& directions, std::function<bool(std::shared_ptr<Direction>)> function);
+
             private:
+                int index = 0;
                 std::shared_ptr<Models::Sample> sample;
                 std::vector<double> distances = std::vector<double>();
                 std::vector<double> zValues = std::vector<double>();
                 std::shared_ptr<Models::Sample> newSample = nullptr;
             };
 
-            double getZForRequiredQ(Models::ModelRunner& modelRunner, double requestedBeta, int nStochasts, double Z0) const;
+            double getZForRequiredQ(std::shared_ptr<Models::ModelRunner> modelRunner, double requestedBeta, int nStochasts, double Z0) const;
             static double predict(double predZi, const std::vector<std::shared_ptr<Direction>>& directions, double probability0, int nStochasts);
             static double calculateProbabilityOfFailure(const std::vector<double>& dValues, double nstochasts);
-            static double getBetaDistance(double betaRequired, int nStochasts);
-            static double calculateError(std::vector<double>& zValues, std::vector<double>& newZValues);
+            static double getBetaDistance(double betaRequired, int nStochasts, ModelType modelType);
         };
     }
 }

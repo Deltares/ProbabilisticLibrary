@@ -77,6 +77,22 @@ namespace Deltares
                     void set(double value) { shared->object->VariationCoefficientFailure = value; }
                 }
 
+                int GetRequiredSamples(int nStochasts)
+                {
+                    return shared->object->getRequiredSamples(nStochasts);
+                }
+
+                static int GetRequiredSamples(double probability, double variationCoefficient, int nStochasts)
+                {
+                    return Sensitivity::DirectionalSamplingSettingsS::getRequiredSamples(probability, variationCoefficient, nStochasts);
+                }
+
+                property bool DeriveSamplesFromVariationCoefficient
+                {
+                    bool get() { return shared->object->DeriveSamplesFromVariationCoefficient; }
+                    void set(bool value) { shared->object->DeriveSamplesFromVariationCoefficient = value; }
+                }
+
                 System::Collections::Generic::List<Statistics::Wrappers::ProbabilityValue^>^ RequestedQuantiles = gcnew System::Collections::Generic::List<Statistics::Wrappers::ProbabilityValue^>();
 
                 Wrappers::RandomSettings^ RandomSettings = gcnew Wrappers::RandomSettings();
@@ -101,7 +117,7 @@ namespace Deltares
                     }
 
                     shared->object->randomSettings = RandomSettings->GetSettings(),
-                    shared->object->RunSettings = RunSettings->GetSettings();
+                        shared->object->RunSettings = RunSettings->GetSettings();
                     return shared->object;
                 }
             };
