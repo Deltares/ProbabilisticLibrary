@@ -82,7 +82,7 @@ namespace Deltares
             /**
              * \brief Initial assumed model
              */
-            ModelType ModelType = ModelType::Plane;
+            ModelType modelType = ModelType::Plane;
 
             /**
              * \brief Quantiles which should be calculated

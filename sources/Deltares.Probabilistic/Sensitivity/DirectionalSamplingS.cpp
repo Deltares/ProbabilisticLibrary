@@ -102,7 +102,7 @@ namespace Deltares
 
             // Calculate the corresponding distance d of the origin using the length of the samples list
 
-            double initialDistance = getBetaDistance(std::abs(betaRequested), nStochasts, this->Settings->ModelType);
+            double initialDistance = getBetaDistance(std::abs(betaRequested), nStochasts, this->Settings->modelType);
             initialDistance = std::max(0.1, initialDistance);
 
             // Normalize the value of Samples via d
