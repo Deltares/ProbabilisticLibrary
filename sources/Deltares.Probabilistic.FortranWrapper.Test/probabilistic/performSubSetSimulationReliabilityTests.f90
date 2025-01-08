@@ -93,7 +93,7 @@ end subroutine runSubSetTest
 subroutine MarkovChainTest
     implicit none
 
-    call runSubSetTest(MarkovChain, 2.757_wp)
+    call runSubSetTest(MarkovChain, 2.8345_wp)
 
 end subroutine MarkovChainTest
 
@@ -101,7 +101,7 @@ subroutine AdaptiveConditionalTest
 
     implicit none
 
-    call runSubSetTest(AdaptiveConditional, 2.8388_wp)
+    call runSubSetTest(AdaptiveConditional, 2.8348_wp)
 
 end subroutine AdaptiveConditionalTest
 

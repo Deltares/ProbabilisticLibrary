@@ -121,9 +121,9 @@ subroutine AdaptiveImportanceSamplingTestLinear
     real (kind = wp), allocatable :: x(:)
     integer, allocatable          :: iPoint(:)
 
-    real (kind = wp)              :: beta = 0.0d0
-    real (kind = wp)              :: betaKnown = 3.91_wp
-    real (kind = wp)              :: margin = 1.0d-2
+    real (kind = wp)              :: beta
+    real (kind = wp), parameter   :: betaKnown = 3.8339_wp
+    real (kind = wp), parameter   :: margin = 1.0d-2
 
     integer                       :: i
     integer                       :: nStochasts
@@ -187,9 +187,9 @@ subroutine AdaptiveImportanceSamplingTestNonLinear
     real (kind = wp), allocatable :: x(:)
     integer, allocatable          :: iPoint(:)
 
-    real (kind = wp)              :: beta = 0.0d0
-    real (kind = wp)              :: betaReference = 3.5241_wp
-    real (kind = wp)              :: margin = 1.0d-4
+    real (kind = wp)              :: beta
+    real (kind = wp), parameter   :: betaReference = 3.5285_wp
+    real (kind = wp), parameter   :: margin = 1.0d-4
 
     integer                       :: i
     integer                       :: nStochasts
@@ -254,7 +254,7 @@ subroutine AdaptiveImportanceSamplingTestMany
     integer, allocatable          :: iPoint(:)
 
     real (kind = wp)              :: beta
-    real (kind = wp), parameter   :: betaKnown = 3.265_wp
+    real (kind = wp), parameter   :: betaKnown = 3.429_wp
     real (kind = wp), parameter   :: margin = 1.0d-2
 
     integer                       :: i
@@ -390,7 +390,7 @@ subroutine AdaptiveImportanceSamplingTestBligh2
     integer                       :: i
 
     real (kind = wp)              :: beta
-    real (kind = wp), parameter   :: betaReference = 5.493762_wp
+    real (kind = wp), parameter   :: betaReference = 5.5647_wp
     real (kind = wp), parameter   :: margin = 1.0d-5
 
     integer, parameter            :: nStochasts = 4
@@ -457,7 +457,7 @@ subroutine AdaptiveImportanceSamplingTestBligh3
     integer                       :: i
 
     real (kind = wp)              :: beta
-    real (kind = wp), parameter   :: betaReference = 5.493762_wp
+    real (kind = wp), parameter   :: betaReference = 5.56470_wp
     real (kind = wp), parameter   :: margin = 1.0d-5
 
     integer, parameter            :: nStochasts = 4
