@@ -1559,8 +1559,8 @@ namespace Deltares
             {
                 std::shared_ptr<Reliability::Evaluation> evaluation = evaluations[id];
 
-                if (property_ == "input_values") return (int)evaluation->InputValues[index];
-                else if (property_ == "output_values") return (int)evaluation->OutputValues[index];
+                if (property_ == "input_values") return evaluation->InputValues[index];
+                else if (property_ == "output_values") return evaluation->OutputValues[index];
             }
 
             return std::nan("");
