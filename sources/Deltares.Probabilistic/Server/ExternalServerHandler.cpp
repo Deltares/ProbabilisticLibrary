@@ -22,6 +22,7 @@
 #include "ExternalServerHandler.h"
 
 #include <string>
+#include <vector>
 #include <cstring>
 #include <chrono>
 #include <thread>
@@ -65,11 +66,11 @@ namespace Deltares
             hints.ai_socktype = SOCK_STREAM;
             hints.ai_protocol = IPPROTO_TCP;
 
-            char* hostname = new char[256];
-            gethostname(hostname, 256);
+            auto hostname = std::vector<char>(256);
+            gethostname(hostname.data(), static_cast<int>(hostname.size()));
 
             // Resolve the server address and port
-            iResult = getaddrinfo(hostname, DEFAULT_PORT, &hints, &address);
+            iResult = getaddrinfo(hostname.data(), DEFAULT_PORT, &hints, &address);
             if (iResult != 0)
             {
                 printf("getaddrinfo failed with error: %d\n", iResult);

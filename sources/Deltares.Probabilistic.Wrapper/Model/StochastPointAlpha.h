@@ -82,10 +82,10 @@ namespace Deltares
                     void set(double value) { shared->object->X = value; }
                 }
 
-                property double Index
+                property int Index
                 {
-                    double get() { return shared->object->Index; }
-                    void set(double value) { shared->object->Index = value; }
+                    int get() { return shared->object->Index; }
+                    void set(int value) { shared->object->Index = value; }
                 }
 
                 property double InfluenceFactor

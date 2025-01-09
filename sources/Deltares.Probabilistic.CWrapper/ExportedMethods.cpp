@@ -137,7 +137,7 @@ extern "C" DLL_PUBLIC void GetStringValue(int id, char* property, char* result_c
     const char* result_b = result.c_str();
 
 #ifdef __GNUC__
-    sprintf(result_c, "%s", result_b);
+    snprintf(result_c, size, "%s", result_b);
 #else
     _snprintf_s(result_c, size, _TRUNCATE, result_b);
 #endif
@@ -237,7 +237,7 @@ extern "C" DLL_PUBLIC void GetIndexedStringValue(int id, char* property, int ind
     const char* result_b = result.c_str();
 
 #ifdef __GNUC__
-    sprintf(result_c, "%s", result_b);
+    snprintf(result_c, size, "%s", result_b);
 #else
     _snprintf_s(result_c, size, _TRUNCATE, result_b);
 #endif
