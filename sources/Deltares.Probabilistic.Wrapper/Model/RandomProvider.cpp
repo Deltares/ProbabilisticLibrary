@@ -21,20 +21,11 @@
 //
 #include "RandomProvider.h"
 
-#include "../../Deltares.Probabilistic/Math/Randomizers/ModifiedKnuthSubtractiveRandomValueGenerator.h"
-
-namespace Deltares
+namespace Deltares::Models::Wrappers
 {
-    namespace Models
+    void RandomProvider::initialize()
     {
-        namespace Wrappers
-        {
-
-            void RandomProvider::initialize()
-            {
-                initialized = true;
-            }
-        }
+        initialized = true;
     }
 }
 
