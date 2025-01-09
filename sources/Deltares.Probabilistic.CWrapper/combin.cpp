@@ -191,9 +191,9 @@ int combinetwoelementspartialcorrelationc2(betaAlphaCF* dp1, betaAlphaCF* dp2, b
     auto alfa2 = vector1D(nStochasts);
     for (int i = 0; i < nStochasts; i++)
     {
-        rho(i) = dp1->rho[i];
-        alfa1(i) = dp1->alpha[i];
-        alfa2(i) = dp2->alpha[i];
+        rho(i) = dp1->rho[i*dp1->stride_duration];
+        alfa1(i) = dp1->alpha[i*dp1->stride_alpha];
+        alfa2(i) = dp2->alpha[i*dp2->stride_alpha];
     }
     auto elm1 = alphaBeta(dp1->beta, alfa1);
     auto elm2 = alphaBeta(dp2->beta, alfa2);
@@ -202,7 +202,7 @@ int combinetwoelementspartialcorrelationc2(betaAlphaCF* dp1, betaAlphaCF* dp2, b
     dpC->beta = elm.ab.getBeta();
     for (int i = 0; i < nStochasts; i++)
     {
-        dpC->alpha[i] = elm.ab.getAlphaI(i);
+        dpC->alpha[i*dpC->stride_alpha] = elm.ab.getAlphaI(i);
     }
     return elm.n;
 }
