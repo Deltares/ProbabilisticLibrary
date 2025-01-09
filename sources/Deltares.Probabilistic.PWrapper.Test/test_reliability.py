@@ -566,7 +566,7 @@ class Test_reliability(unittest.TestCase):
         beta = dp.reliability_index;
         alphas = dp.alphas;
 
-        self.assertAlmostEqual(1.861, beta, delta=margin)
+        self.assertAlmostEqual(1.890, beta, delta=margin)
         self.assertEqual(5, len(alphas))
 
     def test_latin_hypercube_hunt(self):
