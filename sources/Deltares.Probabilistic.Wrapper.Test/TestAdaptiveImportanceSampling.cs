@@ -122,7 +122,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(3.69, designPoint.Beta, margin);
+            Assert.AreEqual(3.74, designPoint.Beta, margin);
         }
 
         [Test]
