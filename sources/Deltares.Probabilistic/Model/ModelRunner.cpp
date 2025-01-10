@@ -83,10 +83,15 @@ namespace Deltares
 
         void ModelRunner::clear()
         {
+            clearLists();
+            this->runDesignPointCounter = 1;
+        }
+
+        void ModelRunner::clearLists()
+        {
             this->reliabilityResults.clear();
             this->evaluations.clear();
             this->messages.clear();
-            this->runDesignPointCounter = 1;
         }
 
         void ModelRunner::releaseCallBacks()

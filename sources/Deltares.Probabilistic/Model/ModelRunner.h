@@ -66,6 +66,7 @@ namespace Deltares
 
             void initializeForRun();
             void clear();
+            void clearLists();
             void releaseCallBacks();
             void updateStochastSettings(std::shared_ptr<Reliability::StochastSettingsSet> settings);
             void setSampleProvider(std::shared_ptr<SampleProvider> sampleProvider);

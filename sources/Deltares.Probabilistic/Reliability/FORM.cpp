@@ -68,7 +68,7 @@ namespace Deltares
             // perform iterations
             for (int relaxationIndex = 0; relaxationIndex < Settings->RelaxationLoops; relaxationIndex++)
             {
-                modelRunner->clear();
+                modelRunner->clearLists();
 
                 designPoint = getDesignPoint(modelRunner, startPoint->clone(), relaxationFactor, relaxationIndex);
 
