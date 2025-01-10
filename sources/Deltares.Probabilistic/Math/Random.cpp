@@ -21,8 +21,6 @@
 //
 #include "Random.h"
 #include "Randomizers/MersenneTwisterRandomValueGenerator.h"
-#include "Randomizers/GeorgeMarsagliaRandomValueGenerator.h"
-#include "Randomizers/ModifiedKnuthSubtractiveRandomValueGenerator.h"
 #include "Randomizers/RandomValueGenerator.h"
 #include "../Utils/probLibException.h"
 
@@ -30,13 +28,8 @@ namespace Deltares::Numeric
 {
     using enum RandomValueGeneratorType;
 
-    void Random::initialize(RandomValueGeneratorType generatorType, bool repeatable, int seed, int seedB)
+    void Random::initialize(RandomValueGeneratorType generatorType, bool repeatable, int seed)
     {
-        if (generatorType == ModifiedKnuthSubtractive && !ModifiedKnuthSubtractiveRandomValueGenerator::isAvailable())
-        {
-            generatorType = MersenneTwister;
-        }
-
         switch (generatorType)
         {
         case MersenneTwister:
@@ -44,24 +37,13 @@ namespace Deltares::Numeric
             randomValueGenerator = std::make_unique<MersenneTwisterRandomValueGenerator>();
             break;
         }
-        case GeorgeMarsaglia:
-        {
-            randomValueGenerator = std::make_unique <GeorgeMarsagliaRandomValueGenerator>();
-            break;
-        }
-        case ModifiedKnuthSubtractive:
-        {
-            randomValueGenerator = std::make_unique <ModifiedKnuthSubtractiveRandomValueGenerator>();
-            break;
-        }
         default: throw Reliability::probLibException("Generator type not supported");
         }
 
         this->repeatable = repeatable;
         this->seed = seed;
-        this->seedB = seedB;
 
-        randomValueGenerator->initialize(repeatable, seed, seedB);
+        randomValueGenerator->initialize(repeatable, seed);
     }
 
     double Random::next() const
@@ -71,26 +53,17 @@ namespace Deltares::Numeric
 
     void Random::restart() const
     {
-        return randomValueGenerator->initialize(repeatable, seed, seedB);
+        return randomValueGenerator->initialize(repeatable, seed);
     }
 
     std::string Random::getRandomGeneratorTypeString(RandomValueGeneratorType method)
     {
-        switch (method)
-        {
-        case GeorgeMarsaglia: return "george_marsaglia";
-        case MersenneTwister: return "mersenne_twister";
-        case ModifiedKnuthSubtractive: return "modified_knuth_subtractive";
-        default: throw Reliability::probLibException("Random generator type");
-        }
+        return "mersenne_twister";
     }
 
     RandomValueGeneratorType Random::getRandomGeneratorType(const std::string& method)
     {
-        if (method == "george_marsaglia") return GeorgeMarsaglia;
-        else if (method == "mersenne_twister") return MersenneTwister;
-        else if (method == "modified_knuth_subtractive") return ModifiedKnuthSubtractive;
-        else throw Reliability::probLibException("Random generator type");
+        return MersenneTwister;
     }
 }
 

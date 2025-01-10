@@ -98,7 +98,7 @@ namespace Deltares
                 default: throw probLibException("Combiner type");
                 }
             }
-            Numeric::RandomValueGeneratorType generator = Numeric::RandomValueGeneratorType::ModifiedKnuthSubtractive;
+            Numeric::RandomValueGeneratorType generator = Numeric::RandomValueGeneratorType::MersenneTwister;
         };
     }
 }

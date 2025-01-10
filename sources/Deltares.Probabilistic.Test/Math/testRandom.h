@@ -28,8 +28,6 @@ namespace Deltares::Probabilistic::Test
     public:
         static void allRandomTests();
     private:
-        static void georgeMarsagliaTest1();
-        static void georgeMarsagliaTest2();
         static void mersenneTwisterTest1();
         static void initializationTest();
         static void twoInstances();

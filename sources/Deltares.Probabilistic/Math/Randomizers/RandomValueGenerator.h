@@ -21,17 +21,13 @@
 //
 #pragma once
 
-namespace Deltares
+namespace Deltares::Numeric
 {
-    namespace Numeric
+    class RandomValueGenerator
     {
-        class RandomValueGenerator
-        {
-        public:
-            virtual void initialize(bool repeatable, int seed, int seedB) {};
-            virtual double next() { return 0; };
-        };
-    }
+    public:
+        virtual void initialize(bool repeatable, int seed) {}
+        virtual double next() { return 0; }
+    };
 }
-
 

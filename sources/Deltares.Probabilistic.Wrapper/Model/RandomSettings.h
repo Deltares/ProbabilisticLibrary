@@ -57,12 +57,6 @@ namespace Deltares
                     void set(int value) { shared->object->Seed = value; }
                 }
 
-                property int SeedB
-                {
-                    int get() { return shared->object->SeedB; }
-                    void set(int value) { shared->object->SeedB = value; }
-                }
-
                 property bool IsRepeatableRandom
                 {
                     bool get() { return shared->object->IsRepeatableRandom; }

@@ -21,7 +21,6 @@
 //
 #include <gtest/gtest.h>
 #include "testRandom.h"
-#include "../../Deltares.Probabilistic/Math/Randomizers/GeorgeMarsagliaRandomValueGenerator.h"
 #include "../../Deltares.Probabilistic/Math/Randomizers/MersenneTwisterRandomValueGenerator.h"
 #include "../../Deltares.Probabilistic/Math/Random.h"
 
@@ -31,47 +30,16 @@ namespace Deltares::Probabilistic::Test
 
     void testRandom::allRandomTests()
     {
-        georgeMarsagliaTest1();
-        georgeMarsagliaTest2();
         mersenneTwisterTest1();
         initializationTest();
         twoInstances();
-    }
-
-    void testRandom::georgeMarsagliaTest1()
-    {
-        constexpr double margin = 1e-12;
-        constexpr int ij = 10000;
-        constexpr int kl = 10000;
-        auto gm = GeorgeMarsagliaRandomValueGenerator();
-        gm.initialize(true, ij, kl);
-
-        auto result = gm.next();
-        ASSERT_NEAR(result, 0.755450129508972, margin);
-    }
-
-    void testRandom::georgeMarsagliaTest2()
-    {
-        constexpr double margin = 1e-12;
-        constexpr int ij = 177;
-        constexpr int kl = 177;
-        constexpr int n = 100000;
-        auto gm = GeorgeMarsagliaRandomValueGenerator();
-        gm.initialize(true, ij, kl);
-
-        double result = 0.0;
-        for (int i = 0; i < n; i++)
-        {
-            result = gm.next();
-        }
-        ASSERT_NEAR(result, 0.7785768508911, margin);
     }
 
     void testRandom::mersenneTwisterTest1()
     {
         constexpr double margin = 1e-12;
         auto mt = MersenneTwisterRandomValueGenerator();
-        mt.initialize(true, 1, 2);
+        mt.initialize(true, 1);
 
         double sum = 0.0;
         for (size_t i = 0; i < 1000; i++)
@@ -83,23 +51,19 @@ namespace Deltares::Probabilistic::Test
 
     void testRandom::initializationTest()
     {
-        auto gm = GeorgeMarsagliaRandomValueGenerator();
-        gm.initialize(false, 0, 0);
         auto mt = MersenneTwisterRandomValueGenerator();
-        mt.initialize(false, 0, 0);
+        mt.initialize(false, 0);
 
-        double val1 = gm.next();
         double val2 = mt.next();
-        ASSERT_TRUE(val1 >= 0.0 && val1 <= 1.0);
         ASSERT_TRUE(val2 >= 0.0 && val2 <= 1.0);
     }
 
     void testRandom::twoInstances()
     {
         auto mt1 = Random();
-        mt1.initialize(RandomValueGeneratorType::MersenneTwister, true, 0, 0);
+        mt1.initialize(RandomValueGeneratorType::MersenneTwister, true, 0);
         auto mt2 = Random();
-        mt2.initialize(RandomValueGeneratorType::MersenneTwister, true, 0, 0);
+        mt2.initialize(RandomValueGeneratorType::MersenneTwister, true, 0);
 
         double val1 = mt1.next();
         double val2 = mt2.next();

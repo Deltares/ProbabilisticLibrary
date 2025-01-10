@@ -53,7 +53,7 @@ namespace Deltares
             /**
              * \brief The random number generator to be used
              */
-            Deltares::Numeric::RandomValueGeneratorType randomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::ModifiedKnuthSubtractive;
+            Numeric::RandomValueGeneratorType randomGeneratorType = Numeric::RandomValueGeneratorType::MersenneTwister;
         private:
             /**
              * \brief Approximates the probability by assuming design points are independent

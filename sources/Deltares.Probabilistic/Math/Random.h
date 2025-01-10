@@ -28,22 +28,19 @@ namespace Deltares::Numeric
 {
     /**
      * MersenneTwister : C++ and Python default
-     * GeorgeMarsaglia: Fortran default
-     * ModifiedKnuthSubtractive: .Net default
      */
-    enum class RandomValueGeneratorType { MersenneTwister, GeorgeMarsaglia, ModifiedKnuthSubtractive };
+    enum class RandomValueGeneratorType { MersenneTwister };
 
     class Random
     {
     private:
         bool repeatable = true;
         int seed = 0;
-        int seedB = 0;
         RandomValueGeneratorType generatorType = RandomValueGeneratorType::MersenneTwister;
         std::unique_ptr<RandomValueGenerator> randomValueGenerator = nullptr;
 
     public:
-        void initialize(RandomValueGeneratorType generatorType, bool repeatable = true, int seed = 0, int seedB = 0);
+        void initialize(RandomValueGeneratorType generatorType, bool repeatable = true, int seed = 0);
         double next() const;
         void restart() const;
 

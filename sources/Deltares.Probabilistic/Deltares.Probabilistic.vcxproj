@@ -309,9 +309,7 @@
     <ClInclude Include="Math\RootFinders\RootFinder.h" />
     <ClInclude Include="Model\Evaluation.h" />
     <ClInclude Include="Math\Random.h" />
-    <ClInclude Include="Math\Randomizers\GeorgeMarsagliaRandomValueGenerator.h" />
     <ClInclude Include="Math\Randomizers\MersenneTwisterRandomValueGenerator.h" />
-    <ClInclude Include="Math\Randomizers\ModifiedKnuthSubtractiveRandomValueGenerator.h" />
     <ClInclude Include="Math\Randomizers\RandomValueGenerator.h" />
     <ClInclude Include="Model\ProgressIndicator.h" />
     <ClInclude Include="Statistics\CorrelationMatrix.h" />
@@ -503,9 +501,7 @@
     <ClCompile Include="Utils\probLibString.cpp" />
     <ClCompile Include="Model\Evaluation.cpp" />
     <ClCompile Include="Math\Random.cpp" />
-    <ClCompile Include="Math\Randomizers\GeorgeMarsagliaRandomValueGenerator.cpp" />
     <ClCompile Include="Math\Randomizers\MersenneTwisterRandomValueGenerator.cpp" />
-    <ClCompile Include="Math\Randomizers\ModifiedKnuthSubtractiveRandomValueGenerator.cpp" />
     <ClCompile Include="Math\Randomizers\RandomValueGenerator.cpp" />
     <ClCompile Include="Model\ProgressIndicator.cpp" />
     <ClCompile Include="Statistics\CorrelationMatrix.cpp" />
