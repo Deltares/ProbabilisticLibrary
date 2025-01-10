@@ -119,31 +119,27 @@ subroutine calculateLimitStateFunction(probDb, fx, dp, convergenceData, CpData, 
         method%tolB          = probDb%method%DS%varcoefffailure
         method%minSamples    = probDb%method%DS%minimumsamples
         method%maxSamples    = probDb%method%DS%maximumsamples
-        method%seed1         = probDb%method%DS%seedPRNG
-        method%seed2         = probDb%method%DS%seedPRNG
+        method%seed          = probDb%method%DS%seedPRNG
         method%isRepeatableRandom = merge(1, 0, probDb%method%DS%isRepeatableRandom)
         method%numExtraReal1 = -2.0_wp ! FDthreshold
     case(methodCrudeMonteCarlo, methodCrudeMonteCarloWithFORMiterations)
         method%tolB       = probDb%method%CMC%varcoefffailure
         method%minSamples = probDb%method%CMC%minimumsamples
         method%maxSamples = probDb%method%CMC%maximumsamples
-        method%seed1      = probDb%method%CMC%seedPRNG
-        method%seed2      = probDb%method%CMC%seedPRNG
+        method%seed       = probDb%method%CMC%seedPRNG
         method%isRepeatableRandom = merge(1, 0, probDb%method%CMC%isRepeatableRandom)
     case(methodImportanceSampling, methodImportanceSamplingWithFORMiterations)
         method%tolB           = probDb%method%IS%varcoefffailure
         method%minSamples     = probDb%method%IS%minimumsamples
         method%maxSamples     = probDb%method%IS%maximumsamples
         method%varianceFactor = probDb%method%IS%varianceFactor
-        method%seed1          = probDb%method%IS%seedPRNG
-        method%seed2          = probDb%method%IS%seedPRNG
+        method%seed           = probDb%method%IS%seedPRNG
         method%isRepeatableRandom = merge(1, 0, probDb%method%IS%isRepeatableRandom)
     case(methodAdaptiveImportanceSampling)
         method%tolB            = probDb%method%adaptiveIS%varcoefffailure
         method%minSamples      = probDb%method%adaptiveIS%minimumsamples
         method%maxSamples      = probDb%method%adaptiveIS%maximumsamples
-        method%seed1           = probDb%method%adaptiveIS%seedPRNG
-        method%seed2           = probDb%method%adaptiveIS%seedPRNG
+        method%seed            = probDb%method%adaptiveIS%seedPRNG
         method%isRepeatableRandom = merge(1, 0, probDb%method%adaptiveIS%isRepeatableRandom)
         method%trialLoops      = probDb%method%adaptiveIS%nAdp
         method%numExtraInt     = merge(1, 0, probDb%method%adaptiveIS%AutoMaximumSamples)
@@ -195,7 +191,6 @@ subroutine calculateLimitStateFunction(probDb, fx, dp, convergenceData, CpData, 
 
     method%designPointOption = probDb%method%dpOption
     method%numThreads        = probDb%method%maxParallelThreads
-    method%rnd = GeorgeMarsaglia
     call realloc_check(xDense, nStochActive, "xDense")
     call realloc_check(cpData%iPoint, nStochActive, "ipoint in cpData" )
     cpData%iPoint = iPoint(1:nStochActive)

@@ -42,7 +42,7 @@ std::shared_ptr<RandomSettings> createReliabilityMethod::getRnd(const basicSetti
 {
     auto rnd = std::make_shared<RandomSettings>();
     rnd->RandomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::MersenneTwister;
-    rnd->Seed = bs.seed1;
+    rnd->Seed = bs.seed;
     rnd->IsRepeatableRandom = bs.isRepeatableRandom != 0;
     return rnd;
 }

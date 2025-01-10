@@ -49,11 +49,6 @@ namespace Deltares {
             FORMSTART = 1234,
         };
 
-        enum class rndTypes {
-            GeorgeMarsaglia = 1,
-            MersenneTwister
-        };
-
         enum class StartMethods
         {
             Zero = 1,
@@ -135,10 +130,8 @@ namespace Deltares {
             int                chunkSize = 200;
             int                minSamples = 10000;
             int                maxSamples = 99000;
-            int                seed1 = 2;
-            int                seed2 = 1;
+            int                seed  = 2;
             int                isRepeatableRandom = 1;
-            rndTypes           rnd = rndTypes::GeorgeMarsaglia;
             StartMethods       startMethod = StartMethods::Zero;
             int                maxStepsSphereSearch = 5;
             int                progressInterval = -1;
