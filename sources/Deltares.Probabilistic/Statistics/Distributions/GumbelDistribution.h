@@ -46,7 +46,7 @@ namespace Deltares
             void fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values) override;
             double getLogLikelihood(std::shared_ptr<StochastProperties> stochast, double x) override;
             std::vector<double> getSpecialPoints(std::shared_ptr<StochastProperties> stochast) override;
-            std::vector<DistributionPropertyType> getParameters() override { return { Shift, Scale, Shape }; }
+            std::vector<DistributionPropertyType> getParameters() override { return { Shift, Scale }; }
         };
     }
 }
