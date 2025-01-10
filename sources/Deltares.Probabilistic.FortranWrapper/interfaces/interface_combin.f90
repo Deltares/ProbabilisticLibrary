@@ -222,6 +222,7 @@ contains
     type(betaAlphaCF) :: dp1, dp2, dpC
 
     dp1%beta = elm1%beta
+    dp2%beta = elm2%beta
     dp1%size = size(elm1%alpha)
     dp2%size = size(elm2%alpha)
     call fill_loc_stride(elm1%rho, dp1%rho, dp1%stride_duration)
