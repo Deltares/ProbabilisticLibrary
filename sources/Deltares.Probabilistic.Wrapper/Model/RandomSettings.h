@@ -33,12 +33,12 @@ namespace Deltares
             using namespace Deltares::Models;
             using namespace Deltares::Utils::Wrappers;
 
-            public enum class RandomGeneratorType { MersenneTwister, GeorgeMarsaglia, ModifiedKnuthSubtractive };
+            public enum class RandomGeneratorType { MersenneTwister };
 
             public ref class RandomSettings
             {
             private:
-                SharedPointerProvider<Deltares::Models::RandomSettings>* shared = new SharedPointerProvider(new Deltares::Models::RandomSettings());
+                SharedPointerProvider<Models::RandomSettings>* shared = new SharedPointerProvider(new Models::RandomSettings());
 
                 bool hasLimitedRandomValues = false;
                 bool isStochastRepeatableRandom = false;
@@ -73,7 +73,7 @@ namespace Deltares
                     void set(bool value) { shared->object->SkipUnvaryingParameters = value; }
                 }
 
-                property Wrappers::RandomGeneratorType RandomGeneratorType
+                property RandomGeneratorType RandomGeneratorType
                 {
                     Wrappers::RandomGeneratorType get()
                     {
@@ -115,7 +115,7 @@ namespace Deltares
 
             public interface class IHasRandomSettings
             {
-                property Wrappers::RandomSettings^ RandomSettings;
+                property RandomSettings^ RandomSettings;
             };
         }
     }
