@@ -27,16 +27,15 @@
 namespace Deltares::Numeric
 {
     /**
-     * MersenneTwister : C++ and Python default
+     * MersenneTwister : default for all languages
      */
     enum class RandomValueGeneratorType { MersenneTwister };
 
     class Random
     {
     private:
-        bool repeatable = true;
-        int seed = 0;
-        RandomValueGeneratorType generatorType = RandomValueGeneratorType::MersenneTwister;
+        bool repeatable_ = true;
+        int seed_ = 0;
         std::unique_ptr<RandomValueGenerator> randomValueGenerator = nullptr;
 
     public:

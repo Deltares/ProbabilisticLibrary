@@ -21,7 +21,6 @@
 //
 #include "Random.h"
 #include "Randomizers/MersenneTwisterRandomValueGenerator.h"
-#include "Randomizers/RandomValueGenerator.h"
 #include "../Utils/probLibException.h"
 
 namespace Deltares::Numeric
@@ -30,18 +29,17 @@ namespace Deltares::Numeric
 
     void Random::initialize(RandomValueGeneratorType generatorType, bool repeatable, int seed)
     {
-        switch (generatorType)
-        {
-        case MersenneTwister:
+        if (generatorType == MersenneTwister)
         {
             randomValueGenerator = std::make_unique<MersenneTwisterRandomValueGenerator>();
-            break;
         }
-        default: throw Reliability::probLibException("Generator type not supported");
+        else
+        {
+            throw Reliability::probLibException("Generator type not supported");
         }
 
-        this->repeatable = repeatable;
-        this->seed = seed;
+        repeatable_ = repeatable;
+        seed_ = seed;
 
         randomValueGenerator->initialize(repeatable, seed);
     }
@@ -53,15 +51,15 @@ namespace Deltares::Numeric
 
     void Random::restart() const
     {
-        return randomValueGenerator->initialize(repeatable, seed);
+        return randomValueGenerator->initialize(repeatable_, seed_);
     }
 
-    std::string Random::getRandomGeneratorTypeString(RandomValueGeneratorType method)
+    std::string Random::getRandomGeneratorTypeString([[maybe_unused]] RandomValueGeneratorType method)
     {
         return "mersenne_twister";
     }
 
-    RandomValueGeneratorType Random::getRandomGeneratorType(const std::string& method)
+    RandomValueGeneratorType Random::getRandomGeneratorType([[maybe_unused]] const std::string& method)
     {
         return MersenneTwister;
     }
