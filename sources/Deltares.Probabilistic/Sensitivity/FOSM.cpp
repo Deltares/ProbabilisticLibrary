@@ -67,8 +67,14 @@ namespace Deltares
             }
 
             std::shared_ptr<Statistics::Stochast> stochast = std::make_shared<Statistics::Stochast>();
-            stochast->setDistributionType(Statistics::DistributionType::Normal);
-            stochast->setMeanAndDeviation(z0, std::abs(z1 - z0));
+
+            double deviation = std::abs(z1 - z0);
+            Statistics::DistributionType distributionType = deviation > 0.0
+                ? Statistics::DistributionType::Normal
+                : Statistics::DistributionType::Deterministic;
+
+            stochast->setDistributionType(distributionType);
+            stochast->setMeanAndDeviation(z0, deviation);
 
             if (this->Settings->CalculateCorrelations)
             {
