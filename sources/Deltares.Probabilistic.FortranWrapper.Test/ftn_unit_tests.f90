@@ -21,7 +21,7 @@
 !
 program ftn_unit_tests
     use ftnunit
-    use testTools
+    use unitTestTools
     use ftn_interface_tests
 
     integer, parameter :: testLevel = 1

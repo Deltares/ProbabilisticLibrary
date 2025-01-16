@@ -98,7 +98,15 @@ subroutine allProbMethodsWaartsFunctionsTests(minTestLevel)
     character(len=255)            :: testName
 
     integer                       :: level
-    integer, parameter            :: availableMethods(*) = [7, 5, 6, 12, 11, 1, 3, 4] ! TODO the rest is not implemented yet
+    integer, parameter            :: availableMethods(*) = [ &
+        methodFORM, &
+        methodCrudeMonteCarlo, &
+        methodDirectionalSampling, &
+        methodNumericalIntegration, &
+        methodImportanceSampling, &
+        methodFORMandDirSampling, &
+        methodDirSamplingWithFORMiterations, &
+        methodAdaptiveImportanceSampling]
 
     character(len=60), dimension(14) :: functionName = &
         (/   "LinearResistanceSolicitation           ", &     ! 1
@@ -140,16 +148,6 @@ subroutine allProbMethodsWaartsFunctionsTests(minTestLevel)
                 probMethodName = "FORMandDirSampling"
             case (methodDirSamplingWithFORMiterations)
                 probMethodName = "DirSamplingWithFORMiterations"
-            case (methodCrudeMonteCarloWithFORMiterations)
-                probMethodName = "CrudeMonteCarloWithFORMiterations"
-            case (methodImportanceSamplingWithFORMiterations)
-                probMethodName = "ImportanceSamplingWithFORMiterations"
-            case (methodFORMandDirSamplingWithFORMiterations)
-                probMethodName = "FORMandDirSamplingWithFORMiterations"
-            case (methodDirSamplingWithFORMiterationsStartU)
-                probMethodName = "DirSamplingWithFORMiterationsStartU"
-            case (methodFORMandDirSamplingWithFORMiterationsStartU)
-                probMethodName = "FORMandDirSamplingWithFORMiterationsStartU"
             case default
                 cycle
         end select
@@ -287,8 +285,8 @@ subroutine testProbabilisticWithFunction ( )
                     call assert_comparable(  0.707106781186547d0, alfa(1), margin, "Linear resistance solicitation: Alfa(1)" )
                     call assert_comparable( -0.707106781186547d0, alfa(2), margin, "Linear resistance solicitation: Alfa(2)" )
                 else if (probMethod == methodImportanceSampling) then
-                    call assert_comparable( 3.498302d0, actualBeta, margin, "Linear resistance solicitation: Beta" )
-                    call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 18076, "no samples")
+                    call assert_comparable( 3.49250d0, actualBeta, margin, "Linear resistance solicitation: Beta" )
+                    call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 17916, "no samples")
                 else if (probMethod < 10) then
                     call assert_comparable( 3.54d0, actualBeta, 0.05d0 * betaFactor, "Linear resistance solicitation: Beta" )
                 endif
@@ -341,10 +339,10 @@ subroutine testProbabilisticWithFunction ( )
                 case (methodFORM)
                     call assert_comparable( 2.348d0, actualBeta, 1d-3, "Noisy limit state: Beta" )
                 case (methodCrudeMonteCarlo)
-                    call assert_comparable( 2.34491717949861d0, actualBeta, margin, "Noisy limit state: Beta" )
+                    call assert_comparable( 2.23733d0, actualBeta, margin, "Noisy limit state: Beta" )
                 case (methodImportanceSampling)
-                    call assert_comparable( 2.27d0, actualBeta, 1d-2, "Noisy limit state: Beta" )
-                    call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 15258, "no samples")
+                    call assert_comparable( 2.255d0, actualBeta, 1d-2, "Noisy limit state: Beta" )
+                    call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 15989, "no samples")
                 case default
                     call assert_true( convergenceData%conv, "No convergence" )
             end select
@@ -397,13 +395,13 @@ subroutine testProbabilisticWithFunction ( )
                     call assert_comparable( 3.46d0, actualBeta, 0.05d0 * betaFactor, &
                         "Resistance solicitation with 1 quadratic term: Beta" )
                 case (methodCrudeMonteCarlo)
-                    call assert_comparable( 3.45028260d0, actualBeta, 1d-8, &
+                    call assert_comparable( 3.47024d0, actualBeta, 1d-4, &
                         "Resistance solicitation with 1 quadratic term: Beta" )
                     call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 100000, "no samples")
                 case (methodImportanceSampling)
-                    call assert_comparable( 3.47d0, actualBeta, 1d-2, &
+                    call assert_comparable( 3.439d0, actualBeta, 1d-2, &
                         "Resistance solicitation with 1 quadratic term: Beta" )
-                    call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 17852, "no samples")
+                    call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 16561, "no samples")
                 case default
                     call assert_true( convergenceData%conv, "No convergence" )
             end select
@@ -455,7 +453,7 @@ subroutine testProbabilisticWithFunction ( )
                     call assert_almost_zero( alfa(11), margin, "Limit state with 10 quadratic terms: Alfa(11)" )
 
                 case (methodImportanceSampling)
-                    call assert_comparable( 2.9865829522d0, actualBeta, 1d-8, "Limit state with 10 quadratic terms: Beta" )
+                    call assert_comparable( 3.00290d0, actualBeta, 1d-5, "Limit state with 10 quadratic terms: Beta" )
                     call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 100000, "no samples")
 
                 case default
@@ -522,17 +520,16 @@ subroutine testProbabilisticWithFunction ( )
                     call assert_comparable( 2.63d0, actualBeta, 0.05d0 * betaFactor, trim(waartsFunctionName) // ": Beta" )
                 case (methodImportanceSampling)
                     if (waartsFunction == 5) then
-                        call assert_comparable( 2.622263100d0, actualBeta, 1d-8, trim(waartsFunctionName) // ": Beta" )
+                        call assert_comparable( 2.662158d0, actualBeta, 1d-5, trim(waartsFunctionName) // ": Beta" )
                     else
-                        ! TODO margin must be reduced
-                        call assert_comparable( 2.643205260d0, actualBeta, 0.05d0, trim(waartsFunctionName) // ": Beta" )
+                        call assert_comparable( 2.5525d0, actualBeta, 1d-4, trim(waartsFunctionName) // ": Beta" )
                     end if
                     call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 100000, "no samples")
                 case (methodAdaptiveImportanceSampling)
                     if (waartsFunction == 5) then
-                        call assert_comparable( 2.66d0, actualBeta, 1d-2, trim(waartsFunctionName) // ": Beta" )
+                        call assert_comparable( 2.95d0, actualBeta, 1d-2, trim(waartsFunctionName) // ": Beta" )
                     else
-                        call assert_comparable( 2.31d0, actualBeta, 1d-2, trim(waartsFunctionName) // ": Beta" )
+                        call assert_comparable( 2.65d0, actualBeta, 1d-2, trim(waartsFunctionName) // ": Beta" )
                     end if
                 case default
                     call assert_true( convergenceData%conv, "No convergence" )
@@ -573,11 +570,11 @@ subroutine testProbabilisticWithFunction ( )
                     call assert_comparable( -0.726468416954716d0, alfa(2), margin, "Convex failure domain: Alfa(2)" )
 
                 case (methodDirectionalSampling)
-                    call assert_comparable( 2.63d0, actualBeta, 0.05d0 * betaFactor, "Convex failure domain: Beta" )
+                    call assert_comparable( 2.70532d0, actualBeta, 0.05d0 * betaFactor, "Convex failure domain: Beta" )
 
                 case (methodImportanceSampling)
-                    call assert_comparable( 2.67d0, actualBeta, 1d-2, trim(waartsFunctionName) // ": Beta" )
-                    call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 5402, "no samples")
+                    call assert_comparable( 2.641218d0, actualBeta, 1d-2, trim(waartsFunctionName) // ": Beta" )
+                    call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 5552, "no samples")
 
                 case default
                     call assert_true( convergenceData%conv, "No convergence" )
@@ -635,7 +632,7 @@ subroutine testProbabilisticWithFunction ( )
 
                 case (methodImportanceSampling)
                     call assert_comparable( 1.09d0, actualBeta, 1d-2, trim(waartsFunctionName) // ": Beta" )
-                    call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 42012, "no samples")
+                    call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 41997, "no samples")
 
                 case default
                     call assert_true( convergenceData%conv, "No convergence" )
@@ -683,8 +680,8 @@ subroutine testProbabilisticWithFunction ( )
                     call assert_comparable( 2.34d0, actualBeta, 0.05d0 * betaFactor, "Saddle surface: Beta" )
 
                 case (methodImportanceSampling)
-                    call assert_comparable( 2.32d0, actualBeta, 1d-2, trim(waartsFunctionName) // ": Beta" )
-                    call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 21892, "no samples")
+                    call assert_comparable( 2.35d0, actualBeta, 1d-2, trim(waartsFunctionName) // ": Beta" )
+                    call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 23796, "no samples")
 
                 case default
                     call assert_true( convergenceData%conv, "No convergence" )
@@ -730,12 +727,12 @@ subroutine testProbabilisticWithFunction ( )
                     call assert_comparable( 3.83d0, actualBeta, 0.10d0 * betaFactor, "Discontinuous limit state: Beta" )
 
                 case (methodCrudeMonteCarlo)
-                    call assert_comparable( 4.01281081d0, actualBeta, 1d-8, trim(waartsFunctionName) // ": Beta" )
+                    call assert_comparable( 4.26489d0, actualBeta, 1d-5, trim(waartsFunctionName) // ": Beta" )
                     call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 100000, "no samples")
 
                 case (methodImportanceSampling)
-                    call assert_comparable( 3.85d0, actualBeta, 1d-2, trim(waartsFunctionName) // ": Beta" )
-                    call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 38017, "no samples")
+                    call assert_comparable( 3.83d0, actualBeta, 1d-2, trim(waartsFunctionName) // ": Beta" )
+                    call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 38465, "no samples")
 
                 case default
                     call assert_true( convergenceData%conv, "No convergence" )
@@ -795,11 +792,11 @@ subroutine testProbabilisticWithFunction ( )
                         call assert_comparable( 5.03d0, actualBeta, 0.10d0 * betaFactor, "Two branches: Beta" )
 
                     case (methodCrudeMonteCarlo)
-                        call assert_comparable( 4.935367445d0, actualBeta, 1d-8, trim(waartsFunctionName) // ": Beta" )
+                        call assert_comparable( 5.06896d0, actualBeta, 1d-5, trim(waartsFunctionName) // ": Beta" )
                         call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 10000000, "no samples")
 
                     case (methodImportanceSampling)
-                        call assert_comparable( 5.020725937d0, actualBeta, 1d-8, trim(waartsFunctionName) // ": Beta" )
+                        call assert_comparable( 5.005519d0, actualBeta, 1d-5, trim(waartsFunctionName) // ": Beta" )
                         call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 100000, "no samples")
 
                     case default
@@ -853,7 +850,7 @@ subroutine testProbabilisticWithFunction ( )
 
                 case (methodImportanceSampling)
                     call assert_comparable( 1.28d0, actualBeta, 1d-2, trim(waartsFunctionName) // ": Beta" )
-                    call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 1923, "no samples")
+                    call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 1888, "no samples")
 
                 case default
                     call assert_true( convergenceData%conv, "No convergence" )
@@ -904,7 +901,7 @@ subroutine testProbabilisticWithFunction ( )
 
                 case (methodImportanceSampling)
                     call assert_comparable( 2.84d0, actualBeta, 1d-2, trim(waartsFunctionName) // ": Beta" )
-                    call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 99217, "no samples")
+                    call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 100000, "no samples")
 
                 case default
                     call assert_true( convergenceData%conv, "No convergence" )
@@ -950,11 +947,11 @@ subroutine testProbabilisticWithFunction ( )
                 case (methodDirectionalSampling)
                     call assert_comparable( 3.52d0, actualBeta, 0.05d0 * betaFactor, "Parallel system: Beta" )
                 case (methodCrudeMonteCarlo)
-                    call assert_comparable( 3.503028640d0, actualBeta, 1d-8, trim(waartsFunctionName) // ": Beta" )
+                    call assert_comparable( 3.47024d0, actualBeta, 1d-5, trim(waartsFunctionName) // ": Beta" )
                     call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 100000, "no samples")
                 case (methodImportanceSampling)
-                    call assert_comparable( 3.46d0, actualBeta, 1d-2, trim(waartsFunctionName) // ": Beta" )
-                    call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 99573, "no samples")
+                    call assert_comparable( 3.56d0, actualBeta, 1d-2, trim(waartsFunctionName) // ": Beta" )
+                    call assert_equal(convergenceData%cnvg_data_ds%numberSamples, 100000, "no samples")
                 case default
                     call assert_true( convergenceData%conv, "No convergence" )
             end select

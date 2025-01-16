@@ -115,8 +115,8 @@ subroutine test_ds
     call assert_equal(results%error%iCode, 0, "return code probCalcF2C <> 0")
 
     if (results%error%iCode == 0) then
-        call assert_comparable(results%beta, -0.22178518912_wp, margin, "diff in beta")
-        call assert_comparable(results%alpha(1:2), [-0.89448_wp, -0.44710_wp], 1d-2, "diff in alpha")
+        call assert_comparable(results%beta, -0.2220993519_wp, margin, "diff in beta")
+        call assert_comparable(results%alpha(1:2), [-0.89448_wp, -0.44106_wp], 1d-2, "diff in alpha")
         call assert_comparable(x(1:2), [0.59998_wp, 0.80005_wp], 1d-2, "diff in x")
         convergence = results%convergence
         call assert_false(convergence, "diff in convergence flag")

@@ -21,45 +21,34 @@
 //
 #pragma once
 
-namespace Deltares
+namespace Deltares::Models::Wrappers
 {
-    namespace Models
+    ref class RandomProvider
     {
-        namespace Wrappers
+    private:
+        static System::Random^ random = gcnew System::Random();
+
+        static bool initialized = false;
+
+        static void initialize(bool repeatable, int seed)
         {
-            public delegate void ManagedInitializeRandomDelegate(bool repeatable, int seed);
-            public delegate double ManagedNextRandomDelegate();
-
-            ref class RandomProvider
+            if (repeatable)
             {
-            private:
-                static System::Random^ random = gcnew System::Random();
-
-                static void initializeInitializeDelegate();
-                static void initializeNextDelegate();
-                static bool initialized = false;
-
-                static void initialize(bool repeatable, int seed)
-                {
-                    if (repeatable)
-                    {
-                        random = gcnew System::Random(seed);
-                    }
-                    else
-                    {
-                        random = gcnew System::Random();
-                    }
-                }
-
-                static double next()
-                {
-                    return random->NextDouble();
-                }
-
-            public:
-                static void initialize();
-            };
+                random = gcnew System::Random(seed);
+            }
+            else
+            {
+                random = gcnew System::Random();
+            }
         }
-    }
+
+        static double next()
+        {
+            return random->NextDouble();
+        }
+
+    public:
+        static void initialize();
+    };
 }
 

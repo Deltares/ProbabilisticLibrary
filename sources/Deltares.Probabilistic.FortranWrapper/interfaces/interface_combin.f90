@@ -222,14 +222,13 @@ contains
     type(betaAlphaCF) :: dp1, dp2, dpC
 
     dp1%beta = elm1%beta
-    dp1%size = size(elm1%alpha)
-    dp1%alpha = c_loc(elm1%alpha)
-    dp1%rho = c_loc( elm1%rho)
     dp2%beta = elm2%beta
+    dp1%size = size(elm1%alpha)
     dp2%size = size(elm2%alpha)
-    dp2%alpha = c_loc(elm2%alpha)
-    dpC%size = size(elmC%alpha)
-    dpC%alpha = c_loc(elmC%alpha)
+    call fill_loc_stride(elm1%rho, dp1%rho, dp1%stride_duration)
+    call fill_loc_stride(elm1%alpha, dp1%alpha, dp1%stride_alpha)
+    call fill_loc_stride(elm2%alpha, dp2%alpha, dp2%stride_alpha)
+    call fill_loc_stride(elmC%alpha, dpC%alpha, dpC%stride_alpha)
     n = combineTwoElementsPartialCorrelationC2(dp1, dp2, dpC, combAndOr)
     elmC%beta = dpC%beta
     call warnHohenbichler(n)

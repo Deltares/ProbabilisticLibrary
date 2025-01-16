@@ -83,23 +83,11 @@ namespace Deltares
                 {
                     Wrappers::RandomGeneratorType get()
                     {
-                        switch (shared->object->RandomGeneratorType)
-                        {
-                        case Numeric::RandomValueGeneratorType::MersenneTwister: return Models::Wrappers::RandomGeneratorType::MersenneTwister;
-                        case Numeric::RandomValueGeneratorType::GeorgeMarsaglia: return Models::Wrappers::RandomGeneratorType::GeorgeMarsaglia;
-                        case Numeric::RandomValueGeneratorType::ModifiedKnuthSubtractive: return Models::Wrappers::RandomGeneratorType::ModifiedKnuthSubtractive;
-                        default: throw gcnew System::NotSupportedException("Random generator type");
-                        }
+                        return Wrappers::RandomGeneratorType::MersenneTwister;
                     }
                     void set(Wrappers::RandomGeneratorType value)
                     {
-                        switch (value)
-                        {
-                        case  Wrappers::RandomGeneratorType::MersenneTwister: shared->object->RandomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::MersenneTwister; break;
-                        case  Wrappers::RandomGeneratorType::GeorgeMarsaglia: shared->object->RandomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::GeorgeMarsaglia; break;
-                        case  Wrappers::RandomGeneratorType::ModifiedKnuthSubtractive: shared->object->RandomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::ModifiedKnuthSubtractive; break;
-                        default: throw gcnew System::NotSupportedException("Design point method");
-                        }
+                        shared->object->RandomGeneratorType = Numeric::RandomValueGeneratorType::MersenneTwister;
                     }
                 }
 

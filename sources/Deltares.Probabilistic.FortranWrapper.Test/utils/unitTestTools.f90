@@ -24,7 +24,7 @@
 !! Library with helpers for the test programs
 !<
 !
-module testTools
+module unitTestTools
 use ftnunit
 use feedback
 use feedback_parameters
@@ -75,4 +75,4 @@ subroutine prepareTests(testName)
 
 end subroutine prepareTests
 
-end module testTools
+end module unitTestTools
