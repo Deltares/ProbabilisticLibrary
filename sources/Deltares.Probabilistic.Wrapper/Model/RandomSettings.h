@@ -22,7 +22,6 @@
 #pragma once
 #include "../../Deltares.Probabilistic/Model/RandomSettings.h"
 #include "../Utils/SharedPointerProvider.h"
-#include "RandomProvider.h"
 
 namespace Deltares
 {
@@ -46,7 +45,6 @@ namespace Deltares
             public:
                 RandomSettings()
                 {
-                    RandomProvider::initialize();
                 }
                 ~RandomSettings() { this->!RandomSettings(); }
                 !RandomSettings() { delete shared; }

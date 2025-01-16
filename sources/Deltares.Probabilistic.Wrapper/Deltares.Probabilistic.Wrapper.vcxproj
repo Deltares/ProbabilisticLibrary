@@ -234,7 +234,6 @@
     <ClInclude Include="Utils\TagRepository.h" />
     <ClInclude Include="Utils\NativeSupport.h" />
     <ClInclude Include="Model\ProgressIndicator.h" />
-    <ClInclude Include="Model\RandomProvider.h" />
     <ClInclude Include="Model\RandomSettings.h" />
     <ClInclude Include="Reliability\ReliabilityMethod.h" />
     <ClInclude Include="Reliability\ReliabilityResult.h" />
@@ -303,7 +302,6 @@
     <ClCompile Include="Utils\TagRepository.cpp" />
     <ClCompile Include="Utils\NativeSupport.cpp" />
     <ClCompile Include="Model\ProgressIndicator.cpp" />
-    <ClCompile Include="Model\RandomProvider.cpp" />
     <ClCompile Include="Reliability\ReliabilityMethod.cpp" />
     <ClCompile Include="Model\StochastPoint.cpp" />
     <ClCompile Include="Statistics\Stochast.cpp" />
