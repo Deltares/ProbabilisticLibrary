@@ -63,8 +63,6 @@ class StartMethod(Enum):
 
 class RandomType(Enum):
 	mersenne_twister = 'mersenne_twister'
-	george_marsaglia = 'george_marsaglia'
-	modified_knuth_subtractive = 'modified_knuth_subtractive'
 	def __str__(self):
 		return str(self.value)
 
