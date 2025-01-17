@@ -96,7 +96,7 @@ namespace Deltares
             /**
              * \brief The type of random number generator to be used.
              */
-            Numeric::RandomValueGeneratorType generatorType = Numeric::RandomValueGeneratorType::ModifiedKnuthSubtractive;
+            Numeric::RandomValueGeneratorType generatorType = Numeric::RandomValueGeneratorType::MersenneTwister;
         };
     }
 }

@@ -22,9 +22,8 @@
 module interface_typedefs
   use, intrinsic :: iso_c_binding, only: c_double, c_bool
   use precision, only : wp
-  use interface_enums, only : GeorgeMarsaglia
   use interface_gen, only : tError
-  private :: wp, GeorgeMarsaglia, tError
+  private :: wp, tError
 
   integer, parameter :: maxActiveStochast = 32
 
@@ -71,10 +70,8 @@ module interface_typedefs
     integer              :: chunkSize  = 200
     integer              :: minSamples = 10000
     integer              :: maxSamples = 99000
-    integer              :: seed1      = 2
-    integer              :: seed2      = 1
+    integer              :: seed       = 2
     integer              :: isRepeatableRandom = 1
-    integer              :: rnd        = GeorgeMarsaglia
     integer              :: startMethod
     integer              :: maxStepsSphereSearch = 5
     integer              :: progressInterval = -1

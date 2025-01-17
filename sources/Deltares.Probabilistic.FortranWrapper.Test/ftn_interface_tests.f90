@@ -98,7 +98,6 @@ subroutine test_ds
     call fillDistribs(distribs)
 
     method%methodId = methodDirectionalSampling
-    method%rnd = GeorgeMarsaglia
     method%startMethod = fORMStartZero
     method%tolB = method%tolA
     method%numThreads = 4

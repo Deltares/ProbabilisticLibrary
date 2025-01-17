@@ -215,10 +215,7 @@ namespace Deltares
             std::vector<std::shared_ptr<Cluster>> clusters;
 
             // select one data item index at random as 1st mean
-            random.initialize(Settings->generatorType, true, randomSeed, 0);
-
-            // TODO: PROBL-42 remove this line 
-            double dummy = random.next();  //  random->Next(0, samples.size()); // [0, N)
+            random.initialize(Settings->generatorType, true, randomSeed);
 
             auto firstCluster = std::make_shared<Cluster>();
 

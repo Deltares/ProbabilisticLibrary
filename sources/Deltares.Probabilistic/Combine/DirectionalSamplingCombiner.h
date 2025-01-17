@@ -53,7 +53,7 @@ namespace Deltares
             /**
              * \brief The random number generator to be used
              */
-            Deltares::Numeric::RandomValueGeneratorType randomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::ModifiedKnuthSubtractive;
+            Numeric::RandomValueGeneratorType randomGeneratorType = Numeric::RandomValueGeneratorType::MersenneTwister;
         private:
             void fillSettings(std::shared_ptr<CombinedDesignPointModel> model, std::shared_ptr<DirectionalSamplingSettings> settings);
         };

@@ -44,9 +44,6 @@ module interface_enums
   integer, parameter :: methodSubSetSimulationReliability                = 21
   integer, parameter :: methodFORMstart                                  = 1234
 
-  integer, parameter :: GeorgeMarsaglia = 1
-  integer, parameter :: MersenneTwister = 2
-
   integer, parameter :: MarkovChain = 0
   integer, parameter :: AdaptiveConditional = 1
 

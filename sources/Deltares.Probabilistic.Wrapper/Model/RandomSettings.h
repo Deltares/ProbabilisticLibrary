@@ -22,7 +22,6 @@
 #pragma once
 #include "../../Deltares.Probabilistic/Model/RandomSettings.h"
 #include "../Utils/SharedPointerProvider.h"
-#include "RandomProvider.h"
 
 namespace Deltares
 {
@@ -33,12 +32,12 @@ namespace Deltares
             using namespace Deltares::Models;
             using namespace Deltares::Utils::Wrappers;
 
-            public enum class RandomGeneratorType { MersenneTwister, GeorgeMarsaglia, ModifiedKnuthSubtractive };
+            public enum class RandomGeneratorType { MersenneTwister };
 
             public ref class RandomSettings
             {
             private:
-                SharedPointerProvider<Deltares::Models::RandomSettings>* shared = new SharedPointerProvider(new Deltares::Models::RandomSettings());
+                SharedPointerProvider<Models::RandomSettings>* shared = new SharedPointerProvider(new Models::RandomSettings());
 
                 bool hasLimitedRandomValues = false;
                 bool isStochastRepeatableRandom = false;
@@ -46,7 +45,6 @@ namespace Deltares
             public:
                 RandomSettings()
                 {
-                    RandomProvider::initialize();
                 }
                 ~RandomSettings() { this->!RandomSettings(); }
                 !RandomSettings() { delete shared; }
@@ -55,12 +53,6 @@ namespace Deltares
                 {
                     int get() { return shared->object->Seed; }
                     void set(int value) { shared->object->Seed = value; }
-                }
-
-                property int SeedB
-                {
-                    int get() { return shared->object->SeedB; }
-                    void set(int value) { shared->object->SeedB = value; }
                 }
 
                 property bool IsRepeatableRandom
@@ -79,7 +71,7 @@ namespace Deltares
                     void set(bool value) { shared->object->SkipUnvaryingParameters = value; }
                 }
 
-                property Wrappers::RandomGeneratorType RandomGeneratorType
+                property RandomGeneratorType RandomGeneratorType
                 {
                     Wrappers::RandomGeneratorType get()
                     {
@@ -121,7 +113,7 @@ namespace Deltares
 
             public interface class IHasRandomSettings
             {
-                property Wrappers::RandomSettings^ RandomSettings;
+                property RandomSettings^ RandomSettings;
             };
         }
     }

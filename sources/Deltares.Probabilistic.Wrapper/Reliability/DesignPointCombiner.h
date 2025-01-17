@@ -26,7 +26,6 @@
 #include "../Model/StochastPointAlpha.h"
 #include "../Model/Message.h"
 #include "../Model/ProgressIndicator.h"
-#include "../Model/RandomProvider.h"
 #include "../Statistics/Stochast.h"
 #include "../Statistics/CorrelationMatrix.h"
 #include "../Statistics/SelfCorrelationMatrix.h"
@@ -99,8 +98,6 @@ namespace Deltares
 
                 DesignPoint^ Combine(CombinationType combination, System::Collections::Generic::IList<Reliability::Wrappers::DesignPoint^>^ designPoints, Deltares::Statistics::Wrappers::SelfCorrelationMatrix^ selfCorrelationMatrix, Wrappers::ProgressIndicator^ progressIndicator)
                 {
-                    RandomProvider::initialize();
-
                     std::vector<std::shared_ptr<Reliability::DesignPoint>> nativeDesignPoints;
 
                     System::Collections::Generic::List<Statistics::Wrappers::Stochast^>^ stochasts = gcnew System::Collections::Generic::List<Statistics::Wrappers::Stochast^>();

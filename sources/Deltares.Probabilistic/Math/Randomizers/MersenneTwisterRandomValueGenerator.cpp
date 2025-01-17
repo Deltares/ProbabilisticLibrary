@@ -27,7 +27,7 @@ namespace Deltares
 {
     namespace Numeric
     {
-        void MersenneTwisterRandomValueGenerator::initialize(bool repeatable, int seed, int seedB)
+        void MersenneTwisterRandomValueGenerator::initialize(bool repeatable, int seed)
         {
             if (repeatable)
             {

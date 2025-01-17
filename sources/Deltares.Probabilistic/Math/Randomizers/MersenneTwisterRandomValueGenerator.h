@@ -30,7 +30,7 @@ namespace Deltares
         class MersenneTwisterRandomValueGenerator : public RandomValueGenerator
         {
         public:
-            void initialize(bool repeatable, int seed, int seedB) override;
+            void initialize(bool repeatable, int seed) override;
             double next() override;
         private:
             std::mt19937_64 generator;

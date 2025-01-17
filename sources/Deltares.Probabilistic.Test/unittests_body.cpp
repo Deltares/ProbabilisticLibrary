@@ -185,10 +185,15 @@ namespace Deltares
             {
                 testReliabilityMethods::testFragilityCurveIntegration();
             }
-    
+
             TEST(reliability_method_test, testNumericalIntegrationReliability)
             {
                 testReliabilityMethods::testNumericalIntegrationReliability();
+            }
+
+            TEST(reliability_method_test, testCrudeMCReliability)
+            {
+                testReliabilityMethods::testCrudeMonteCarloReliability();
             }
 
             TEST(unittst, testDistributions)
