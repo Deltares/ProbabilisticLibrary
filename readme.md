@@ -18,7 +18,7 @@ Request the wheel of the Probabilistic Library from Deltares.
 
 Install the wheel as follows:
 ```
-pip install probabilistic_library-24.1.1-py3-none-any.whl --force-reinstall
+pip install probabilistic_library-25.1.1-py3-none-any.whl --force-reinstall
 ```
 
 ## Jupyter notebooks
