@@ -77,7 +77,7 @@ namespace Deltares
                 {
                     inputValues[i] = samples[i]->Values.data();
                     outputValues[i] = new double[this->outputParametersCount];
-                    for (size_t j = 0; j < this->outputParametersCount; j++)
+                    for (int j = 0; j < this->outputParametersCount; j++)
                     {
                         outputValues[i][j] = std::nan("");
                     }
@@ -87,7 +87,7 @@ namespace Deltares
                 {
                     (*zValuesMultipleLambda)(static_cast<int>(samples.size()), inputValues, this->inputParametersCount, outputValues);
                 }
-                catch (const std::exception e)
+                catch (const std::exception&)
                 {
                     // empty on purpose
                 }
@@ -95,7 +95,7 @@ namespace Deltares
                 for (size_t i = 0; i < samples.size(); i++)
                 {
                     samples[i]->OutputValues.clear();
-                    for (size_t j = 0; j < this->outputParametersCount; j++)
+                    for (int j = 0; j < this->outputParametersCount; j++)
                     {
                         samples[i]->OutputValues.push_back(outputValues[i][j]);
                     }
