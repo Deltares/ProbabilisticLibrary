@@ -53,6 +53,9 @@ subroutine initProbabilisticCalculation( probDb, maxStochasts, databaseFlag, exp
 
     integer :: i
 
+    probDb%databaseConvergence         = databaseFlag
+    probDb%databaseConvergenceDetailed = expertFlag
+
     ! Allocate memory for stochasts
     probDb%stoVar%maxStochasts = maxStochasts
     call realloc_check( probDb%stoVar%activeX, maxStochasts, "activeX" )
