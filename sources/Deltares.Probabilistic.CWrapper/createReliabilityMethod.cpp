@@ -1,18 +1,18 @@
 // Copyright (C) Stichting Deltares. All rights reserved.
 //
-// This file is part of Streams.
+// This file is part of the Probabilistic Library.
 //
-// Streams is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Affero General Public License as published by
+// The Probabilistic Library is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Affero General Public License for more details.
+// GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Affero General Public License
+// You should have received a copy of the GNU Lesser General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 //
 // All names, logos, and references to "Deltares" are registered trademarks of
@@ -41,22 +41,9 @@ using namespace Deltares::Statistics;
 std::shared_ptr<RandomSettings> createReliabilityMethod::getRnd(const basicSettings& bs)
 {
     auto rnd = std::make_shared<RandomSettings>();
-    switch (bs.rnd)
-    {
-    case rndTypes::GeorgeMarsaglia:
-        rnd->RandomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::GeorgeMarsaglia;
-        break;
-    case rndTypes::MersenneTwister:
-        rnd->RandomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::MersenneTwister;
-        break;
-    default:
-        throw probLibException("Random generator type is not implemented in C wrapper");
-        break;
-    }
-    rnd->Seed = bs.seed1;
-    rnd->SeedB = bs.seed2;
+    rnd->RandomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::MersenneTwister;
+    rnd->Seed = bs.seed;
     rnd->IsRepeatableRandom = bs.isRepeatableRandom != 0;
-
     return rnd;
 }
 
@@ -79,7 +66,6 @@ std::shared_ptr<ReliabilityMethod> createReliabilityMethod::selectMethod(const b
             ni->Settings.StochastSet->stochastSettings.push_back(s);
         }
         return ni; }
-        break;
     case (ProbMethod::CM): {
         auto cm = std::make_shared<CrudeMonteCarlo>();
         std::shared_ptr<RandomSettings> r(getRnd(bs));
@@ -88,35 +74,29 @@ std::shared_ptr<ReliabilityMethod> createReliabilityMethod::selectMethod(const b
         cm->Settings->MinimumSamples = bs.minSamples;
         cm->Settings->MaximumSamples = bs.maxSamples;
         return cm; }
-        break;
     case (ProbMethod::DS): {
         auto ds = std::make_shared<DirectionalSampling>();
         fillDsSettings(ds->Settings, bs);
         return ds; }
-        break;
     case (ProbMethod::FORM): {
         auto form = std::make_shared<FORM>();
         fillFormSettings(form->Settings, bs, nStoch);
         return form; }
-        break;
     case (ProbMethod::FDIR): {
         auto fdir = std::make_shared<FORMThenDirectionalSampling>(bs.numExtraReal1);
         fillDsSettings(fdir->DsSettings, bs);
         fillFormSettings(fdir->formSettings, bs, nStoch);
         return fdir; }
-        break;
     case (ProbMethod::DSFIHR):
     case (ProbMethod::DSFI): {
         auto dsfi = std::make_shared<DirectionalSamplingThenFORM>();
         fillDsSettings(dsfi->DsSettings, bs);
         fillFormSettings(dsfi->formSettings, bs, nStoch);
         return dsfi; }
-        break;
     case (ProbMethod::IM): {
         auto impSampling = std::make_shared<ImportanceSampling>();
         fillImportanceSamplingSettings(impSampling->Settings, bs, stochasts);
         return impSampling; }
-        break;
     case (ProbMethod::AdaptiveIM): {
         auto AdaptImpSampling = std::make_shared<AdaptiveImportanceSampling>();
         fillImportanceSamplingSettings(AdaptImpSampling->Settings->importanceSamplingSettings, bs, stochasts);
@@ -126,14 +106,12 @@ std::shared_ptr<ReliabilityMethod> createReliabilityMethod::selectMethod(const b
         AdaptImpSampling->Settings->MinimumFailedSamples = bs.numExtraInt2;
         fillStartVector(AdaptImpSampling->Settings->startPointSettings, bs, nStoch);
         return AdaptImpSampling; }
-        break;
     case (ProbMethod::LatinHyperCube):
         {
             auto latinHyperCube = std::make_shared<LatinHyperCube>();
             latinHyperCube->Settings->MinimumSamples = bs.latin_hypercube_settings.MinimumSamples;
             return latinHyperCube;
         }
-        break;
     case (ProbMethod::NumericalBisection):
         {
             auto numerical_bisection = std::make_shared<NumericalBisection>();
@@ -147,7 +125,6 @@ std::shared_ptr<ReliabilityMethod> createReliabilityMethod::selectMethod(const b
         cobyla_reliability->Settings->EpsilonBeta = bs.cobyla_reliability_settings.EpsilonBeta;
         cobyla_reliability->Settings->MaximumIterations = bs.cobyla_reliability_settings.MaximumIterations;
         return cobyla_reliability; }
-        break;
     case (ProbMethod::SubSetSimulation): {
         auto subSetSimulation = std::make_shared<SubsetSimulation>();
         subSetSimulation->Settings->VariationCoefficient = bs.sub_set_simulation_reliability_settings.VariationCoefficient;
@@ -160,10 +137,8 @@ std::shared_ptr<ReliabilityMethod> createReliabilityMethod::selectMethod(const b
         subSetSimulation->Settings->RunSettings->MaxParallelProcesses = bs.numThreads;
         subSetSimulation->Settings->designPointMethod = convertDp(bs.designPointOptions);
         return subSetSimulation; }
-        break;
     default:
         throw probLibException("method not implemented yet: ", static_cast<int>(bs.methodId));
-        break;
     }
 }
 
@@ -180,7 +155,7 @@ DesignPointMethod createReliabilityMethod::convertDp(const DPoptions dp)
     }
 }
 
-void createReliabilityMethod::fillStartVector(std::shared_ptr<StartPointCalculatorSettings> startPoint, const basicSettings& bs, const size_t nStoch)
+void createReliabilityMethod::fillStartVector(std::shared_ptr<StartPointCalculatorSettings>& startPoint, const basicSettings& bs, const size_t nStoch)
 {
     switch (bs.startMethod)
     {
@@ -227,7 +202,6 @@ void createReliabilityMethod::fillStartVector(std::shared_ptr<StartPointCalculat
         break;
     default:
         throw probLibException("not implemented: start method: ", (int)bs.startMethod);
-        break;
     }
 }
 

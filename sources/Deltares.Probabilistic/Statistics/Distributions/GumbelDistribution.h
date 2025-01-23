@@ -1,18 +1,18 @@
 // Copyright (C) Stichting Deltares. All rights reserved.
 //
-// This file is part of Streams.
+// This file is part of the Probabilistic Library.
 //
-// Streams is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Affero General Public License as published by
+// The Probabilistic Library is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Affero General Public License for more details.
+// GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Affero General Public License
+// You should have received a copy of the GNU Lesser General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 //
 // All names, logos, and references to "Deltares" are registered trademarks of
@@ -46,7 +46,7 @@ namespace Deltares
             void fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values) override;
             double getLogLikelihood(std::shared_ptr<StochastProperties> stochast, double x) override;
             std::vector<double> getSpecialPoints(std::shared_ptr<StochastProperties> stochast) override;
-            std::vector<DistributionPropertyType> getParameters() override { return { Shift, Scale, Shape }; }
+            std::vector<DistributionPropertyType> getParameters() override { return { Shift, Scale }; }
         };
     }
 }

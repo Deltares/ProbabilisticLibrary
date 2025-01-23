@@ -1,18 +1,18 @@
-! Copyright (C) Stichting Deltares and State of the Netherlands 2023. All rights reserved.
+! Copyright (C) Stichting Deltares. All rights reserved.
 !
-! This file is part of Streams.
+! This file is part of the Probabilistic Library.
 !
-! Streams is free software: you can redistribute it and/or modify
-! it under the terms of the GNU Affero General Public License as published by
+! The Probabilistic Library is free software: you can redistribute it and/or modify
+! it under the terms of the GNU Lesser General Public License as published by
 ! the Free Software Foundation, either version 3 of the License, or
 ! (at your option) any later version.
 !
 ! This program is distributed in the hope that it will be useful,
 ! but WITHOUT ANY WARRANTY; without even the implied warranty of
 ! MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-! GNU Affero General Public License for more details.
+! GNU Lesser General Public License for more details.
 !
-! You should have received a copy of the GNU Affero General Public License
+! You should have received a copy of the GNU Lesser General Public License
 ! along with this program. If not, see <http://www.gnu.org/licenses/>.
 !
 ! All names, logos, and references to "Deltares" are registered trademarks of
@@ -121,9 +121,9 @@ subroutine AdaptiveImportanceSamplingTestLinear
     real (kind = wp), allocatable :: x(:)
     integer, allocatable          :: iPoint(:)
 
-    real (kind = wp)              :: beta = 0.0d0
-    real (kind = wp)              :: betaKnown = 3.91_wp
-    real (kind = wp)              :: margin = 1.0d-2
+    real (kind = wp)              :: beta
+    real (kind = wp), parameter   :: betaKnown = 3.8339_wp
+    real (kind = wp), parameter   :: margin = 1.0d-2
 
     integer                       :: i
     integer                       :: nStochasts
@@ -187,9 +187,9 @@ subroutine AdaptiveImportanceSamplingTestNonLinear
     real (kind = wp), allocatable :: x(:)
     integer, allocatable          :: iPoint(:)
 
-    real (kind = wp)              :: beta = 0.0d0
-    real (kind = wp)              :: betaReference = 3.5241_wp
-    real (kind = wp)              :: margin = 1.0d-4
+    real (kind = wp)              :: beta
+    real (kind = wp), parameter   :: betaReference = 3.5285_wp
+    real (kind = wp), parameter   :: margin = 1.0d-4
 
     integer                       :: i
     integer                       :: nStochasts
@@ -254,7 +254,7 @@ subroutine AdaptiveImportanceSamplingTestMany
     integer, allocatable          :: iPoint(:)
 
     real (kind = wp)              :: beta
-    real (kind = wp), parameter   :: betaKnown = 3.265_wp
+    real (kind = wp), parameter   :: betaKnown = 3.429_wp
     real (kind = wp), parameter   :: margin = 1.0d-2
 
     integer                       :: i
@@ -390,7 +390,7 @@ subroutine AdaptiveImportanceSamplingTestBligh2
     integer                       :: i
 
     real (kind = wp)              :: beta
-    real (kind = wp), parameter   :: betaReference = 5.493762_wp
+    real (kind = wp), parameter   :: betaReference = 5.5647_wp
     real (kind = wp), parameter   :: margin = 1.0d-5
 
     integer, parameter            :: nStochasts = 4
@@ -457,7 +457,7 @@ subroutine AdaptiveImportanceSamplingTestBligh3
     integer                       :: i
 
     real (kind = wp)              :: beta
-    real (kind = wp), parameter   :: betaReference = 5.493762_wp
+    real (kind = wp), parameter   :: betaReference = 5.56470_wp
     real (kind = wp), parameter   :: margin = 1.0d-5
 
     integer, parameter            :: nStochasts = 4

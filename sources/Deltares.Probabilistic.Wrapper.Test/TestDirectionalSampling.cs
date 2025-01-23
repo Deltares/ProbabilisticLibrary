@@ -1,18 +1,18 @@
 // Copyright (C) Stichting Deltares. All rights reserved.
 //
-// This file is part of Streams.
+// This file is part of the Probabilistic Library.
 //
-// Streams is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Affero General Public License as published by
+// The Probabilistic Library is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Affero General Public License for more details.
+// GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Affero General Public License
+// You should have received a copy of the GNU Lesser General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 //
 // All names, logos, and references to "Deltares" are registered trademarks of
@@ -38,7 +38,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
             project.ReliabilityMethod = new DirectionalSampling();
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(2.58, designPoint.Beta, margin);
+            Assert.AreEqual(2.56, designPoint.Beta, margin);
         }
 
         [Test]
@@ -49,11 +49,11 @@ namespace Deltares.Probabilistic.Wrapper.Test
             project.ReliabilityMethod = new DirectionalSampling();
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(2.58, designPoint.Beta, margin);
+            Assert.AreEqual(2.56, designPoint.Beta, margin);
 
             DesignPoint designPoint2 = project.GetDesignPoint();
 
-            Assert.AreEqual(2.58, designPoint2.Beta, margin);
+            Assert.AreEqual(2.56, designPoint2.Beta, margin);
 
             Assert.AreNotSame(designPoint, designPoint2);
             Assert.AreNotSame(designPoint.Alphas[0], designPoint2.Alphas[0]);
@@ -68,7 +68,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
             project.ReliabilityMethod = new DirectionalSampling();
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(-2.58, designPoint.Beta, margin);
+            Assert.AreEqual(-2.56, designPoint.Beta, margin);
         }
 
         [Test]
@@ -82,7 +82,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(2.58, designPoint.Beta, margin);
+            Assert.AreEqual(2.56, designPoint.Beta, margin);
         }
 
         [Test]
@@ -147,7 +147,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(2.50, designPoint.Beta, margin);
+            Assert.AreEqual(2.47, designPoint.Beta, margin);
         }
 
         [Test]
@@ -171,7 +171,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(3.13, designPoint.Beta, margin);
+            Assert.AreEqual(3.04, designPoint.Beta, margin);
         }
 
         [Test]
@@ -195,7 +195,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(5.01, designPoint.Beta, margin);
+            Assert.AreEqual(5.04, designPoint.Beta, margin);
         }
 
         [Test] 
@@ -207,7 +207,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(1.66, designPoint.Beta, margin);
+            Assert.AreEqual(1.68, designPoint.Beta, margin);
             Assert.AreEqual(project.Stochasts.Count, designPoint.Alphas.Count, margin);
         }
     }

@@ -1,18 +1,18 @@
 // Copyright (C) Stichting Deltares. All rights reserved.
 //
-// This file is part of Streams.
+// This file is part of the Probabilistic Library.
 //
-// Streams is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Affero General Public License as published by
+// The Probabilistic Library is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Affero General Public License for more details.
+// GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Affero General Public License
+// You should have received a copy of the GNU Lesser General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 //
 // All names, logos, and references to "Deltares" are registered trademarks of
@@ -72,10 +72,10 @@ namespace Deltares
                 kmean.Settings->OptimizeNumberOfClusters = true;
                 kmean.Settings->generatorType = Numeric::RandomValueGeneratorType::MersenneTwister;
                 auto result = kmean.getClusterCenters(samples);
-                EXPECT_NEAR(result[1]->Values[0], 0.675, margin);
-                EXPECT_NEAR(result[1]->Values[1], 0.2212, margin);
-                EXPECT_NEAR(result[0]->Values[0], 0.748, margin);
-                EXPECT_NEAR(result[0]->Values[1], 0.17, margin);
+                EXPECT_NEAR(result[0]->Values[0], 0.675, margin);
+                EXPECT_NEAR(result[0]->Values[1], 0.2212, margin);
+                EXPECT_NEAR(result[1]->Values[0], 0.748, margin);
+                EXPECT_NEAR(result[1]->Values[1], 0.17, margin);
                 EXPECT_NEAR(result[2]->Values[0], 0.6014, margin);
                 EXPECT_NEAR(result[2]->Values[1], 0.1171, margin);
             }

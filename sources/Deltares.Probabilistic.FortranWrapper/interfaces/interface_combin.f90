@@ -1,18 +1,18 @@
 ! Copyright (C) Stichting Deltares. All rights reserved.
 !
-! This file is part of Streams.
+! This file is part of the Probabilistic Library.
 !
-! Streams is free software: you can redistribute it and/or modify
-! it under the terms of the GNU Affero General Public License as published by
+! The Probabilistic Library is free software: you can redistribute it and/or modify
+! it under the terms of the GNU Lesser General Public License as published by
 ! the Free Software Foundation, either version 3 of the License, or
 ! (at your option) any later version.
 !
 ! This program is distributed in the hope that it will be useful,
 ! but WITHOUT ANY WARRANTY; without even the implied warranty of
 ! MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-! GNU Affero General Public License for more details.
+! GNU Lesser General Public License for more details.
 !
-! You should have received a copy of the GNU Affero General Public License
+! You should have received a copy of the GNU Lesser General Public License
 ! along with this program. If not, see <http://www.gnu.org/licenses/>.
 !
 ! All names, logos, and references to "Deltares" are registered trademarks of
@@ -222,14 +222,13 @@ contains
     type(betaAlphaCF) :: dp1, dp2, dpC
 
     dp1%beta = elm1%beta
-    dp1%size = size(elm1%alpha)
-    dp1%alpha = c_loc(elm1%alpha)
-    dp1%rho = c_loc( elm1%rho)
     dp2%beta = elm2%beta
+    dp1%size = size(elm1%alpha)
     dp2%size = size(elm2%alpha)
-    dp2%alpha = c_loc(elm2%alpha)
-    dpC%size = size(elmC%alpha)
-    dpC%alpha = c_loc(elmC%alpha)
+    call fill_loc_stride(elm1%rho, dp1%rho, dp1%stride_duration)
+    call fill_loc_stride(elm1%alpha, dp1%alpha, dp1%stride_alpha)
+    call fill_loc_stride(elm2%alpha, dp2%alpha, dp2%stride_alpha)
+    call fill_loc_stride(elmC%alpha, dpC%alpha, dpC%stride_alpha)
     n = combineTwoElementsPartialCorrelationC2(dp1, dp2, dpC, combAndOr)
     elmC%beta = dpC%beta
     call warnHohenbichler(n)

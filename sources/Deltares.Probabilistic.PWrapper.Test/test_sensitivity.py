@@ -1,18 +1,18 @@
 # Copyright (C) Stichting Deltares. All rights reserved.
 #
-# This file is part of Streams.
+# This file is part of the Probabilistic Library.
 #
-# Streams is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as published by
+# The Probabilistic Library is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-# GNU Affero General Public License for more details.
+# GNU Lesser General Public License for more details.
 #
-# You should have received a copy of the GNU Affero General Public License
+# You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 # All names, logos, and references to "Deltares" are registered trademarks of
@@ -22,7 +22,7 @@
 import unittest
 import sys
 
-from streams import *
+from probabilistic_library import *
 
 import project_builder
 
@@ -226,6 +226,67 @@ class Test_sensitivity(unittest.TestCase):
         self.assertEqual(1, len(sens.fragility_values))
         self.assertAlmostEqual(2.89, sens.fragility_values[0].x, delta=margin)
         self.assertAlmostEqual(0.9, sens.fragility_values[0].probability_of_non_failure, delta=margin)
+
+    def test_mc_pile(self):
+        project = project_builder.get_sensitivity_pile_project()
+
+        project.settings.sensitivity_method = SensitivityMethod.crude_monte_carlo
+        project.run();
+        mc = project.stochast;
+
+        self.assertAlmostEqual(0.85, mc.get_quantile(StandardNormal.get_p_from_u(1.8)), delta=margin)
+        self.assertAlmostEqual(1.09, mc.get_quantile(StandardNormal.get_p_from_u(2.5)), delta=margin)
+        self.assertAlmostEqual(1.69, mc.get_quantile(StandardNormal.get_p_from_u(3.3)), delta=margin)
+
+    def test_is_pile(self):
+        project = project_builder.get_sensitivity_pile_project()
+
+        project.settings.sensitivity_method = SensitivityMethod.importance_sampling
+        project.settings.maximum_samples = 1000
+        project.settings.variance_factor = 1
+        project.settings.stochast_settings['D'].start_value = -0.5
+        project.settings.stochast_settings['Load'].start_value = 0.5
+        project.run();
+        mc = project.stochast;
+
+        self.assertAlmostEqual(0.85, mc.get_quantile(StandardNormal.get_p_from_u(1.8)), delta=margin)
+        self.assertAlmostEqual(1.09, mc.get_quantile(StandardNormal.get_p_from_u(2.5)), delta=margin)
+        self.assertAlmostEqual(1.53, mc.get_quantile(StandardNormal.get_p_from_u(3.3)), delta=margin)
+
+    def test_form_pile(self):
+        project = project_builder.get_sensitivity_pile_project()
+
+        project.settings.sensitivity_method = SensitivityMethod.form
+        project.run();
+        mc = project.stochast;
+
+        self.assertAlmostEqual(0.85, mc.get_quantile(StandardNormal.get_p_from_u(1.8)), delta=margin)
+        self.assertAlmostEqual(1.09, mc.get_quantile(StandardNormal.get_p_from_u(2.5)), delta=margin)
+        self.assertAlmostEqual(1.57, mc.get_quantile(StandardNormal.get_p_from_u(3.3)), delta=margin)
+
+
+    def test_directional_sampling_pile(self):
+        project = project_builder.get_sensitivity_pile_project()
+
+        project.settings.sensitivity_method = SensitivityMethod.directional_sampling
+        project.settings.maximum_samples = 10000
+        project.settings.variation_coefficient = 0.01
+        project.settings.quantiles.append(StandardNormal.get_p_from_u(1.8))
+        project.settings.quantiles.append(StandardNormal.get_p_from_u(2.5))
+        project.settings.quantiles.append(StandardNormal.get_p_from_u(3.3))
+
+        self.assertAlmostEqual(84276, project.variables['Load'].mean, delta=margin*100)
+
+        project.run();
+
+        sens = project.stochast;
+
+        self.assertEqual('UC' , sens.name)
+        self.assertEqual(DistributionType.cdf_curve, sens.distribution)
+        self.assertEqual(3, len(sens.fragility_values))
+        self.assertAlmostEqual(0.85, sens.fragility_values[0].x, delta=margin)
+        self.assertAlmostEqual(1.08, sens.fragility_values[1].x, delta=margin)
+        self.assertAlmostEqual(0.96, sens.fragility_values[2].x, delta=margin)
 
 
 if __name__ == '__main__':

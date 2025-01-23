@@ -1,18 +1,18 @@
 # Copyright (C) Stichting Deltares. All rights reserved.
 #
-# This file is part of Streams.
+# This file is part of the Probabilistic Library.
 #
-# Streams is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as published by
+# The Probabilistic Library is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-# GNU Affero General Public License for more details.
+# GNU Lesser General Public License for more details.
 #
-# You should have received a copy of the GNU Affero General Public License
+# You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 # All names, logos, and references to "Deltares" are registered trademarks of
@@ -23,7 +23,7 @@ import sys
 import math
 import numpy as np
 
-from streams import *
+from probabilistic_library import *
 
 def sum_ab(a, b):
     return a+b;
@@ -79,6 +79,23 @@ def hunt(T_p, tan_alpha, H_s, h_crest, h):
     R_u = xi * H_s
 
     return h_crest - (h + R_u)
+
+def pile(Load, z, q_clay, q_sand, D, L):
+    A = 0.25 * math.pi * D * D
+    L_clay = min(L, z)
+    L_sand = max(0, L - z)
+
+    q_i = q_sand if L > z else q_sand * ((z-L) / 0.7 * A) + q_clay * (1 - (z-L)/0.7 * A)
+    q_ii = q_i
+    q_iii = q_sand if L_sand > 8 * A else q_sand * (L_sand/8*A) + q_clay * (1 - L_sand/(8*A))
+    q_tip = 0.25 * q_i + 0.25 * q_ii + 0.5 * q_iii
+    p_tip = A * q_tip
+    p_shaft = math.pi * D * (q_clay * L_clay + q_sand * L_sand)
+    p = p_tip + p_shaft
+
+    UC = Load / p
+
+    return UC
 
 def get_linear_project():
 
@@ -170,6 +187,51 @@ def get_sensitivity_linear_project():
     stochast2.distribution =  DistributionType.uniform
     stochast2.minimum = -1
     stochast2.maximum = 1;
+
+    return project
+
+def get_sensitivity_pile_project():
+
+    project = SensitivityProject()
+
+    project.model = pile
+
+    load = project.variables['Load']
+    load.distribution =  DistributionType.gumbel
+    load.design_quantile = 0.95
+    load.mean = 1
+    load.variation = 0.1
+    load.design_value = 1E5;
+
+
+
+    z = project.variables['z']
+    z.distribution =  DistributionType.normal
+    z.mean = 10
+    z.deviation = 0.2
+
+    d = project.variables['D']
+    d.distribution =  DistributionType.normal
+    d.mean = 0.2
+    d.deviation = 0.04
+    d.truncated = True
+    d.minimum = 0
+    d.maximum = 1
+
+    l = project.variables['L']
+    l.distribution =  DistributionType.normal
+    l.mean = 12
+    l.deviation = 0.8
+
+    s = project.variables['q_sand']
+    s.distribution =  DistributionType.log_normal
+    s.mean = 500
+    s.deviation = 50
+
+    c = project.variables['q_clay']
+    c.distribution =  DistributionType.log_normal
+    c.mean = 25000
+    c.deviation = 400
 
     return project
 

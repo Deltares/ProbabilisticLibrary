@@ -1,18 +1,18 @@
 // Copyright (C) Stichting Deltares. All rights reserved.
 //
-// This file is part of Streams.
+// This file is part of the Probabilistic Library.
 //
-// Streams is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Affero General Public License as published by
+// The Probabilistic Library is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Affero General Public License for more details.
+// GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Affero General Public License
+// You should have received a copy of the GNU Lesser General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 //
 // All names, logos, and references to "Deltares" are registered trademarks of
@@ -20,26 +20,17 @@
 // All rights reserved.
 //
 #pragma once
-#include <gtest/gtest.h>
 
-namespace Deltares
+namespace Deltares::Probabilistic::Test
 {
-    namespace Probabilistic
+    class testRandom
     {
-        namespace Test
-        {
-            class testRandom
-            {
-            public:
-                void allRandomTests();
-            private:
-                void georgeMarsagliaTest1();
-                void georgeMarsagliaTest2();
-                void mersenneTwisterTest1();
-                void initializationTest();
-                const double margin = 1e-12;
-            };
-        }
-    }
+    public:
+        static void allRandomTests();
+    private:
+        static void mersenneTwisterTest1();
+        static void initializationTest();
+        static void twoInstances();
+    };
 }
 

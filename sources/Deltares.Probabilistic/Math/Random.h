@@ -1,18 +1,18 @@
 // Copyright (C) Stichting Deltares. All rights reserved.
 //
-// This file is part of Streams.
+// This file is part of the Probabilistic Library.
 //
-// Streams is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Affero General Public License as published by
+// The Probabilistic Library is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Affero General Public License for more details.
+// GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Affero General Public License
+// You should have received a copy of the GNU Lesser General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 //
 // All names, logos, and references to "Deltares" are registered trademarks of
@@ -22,36 +22,29 @@
 #pragma once
 #include "Randomizers/RandomValueGenerator.h"
 #include <string>
+#include <memory>
 
-namespace Deltares
+namespace Deltares::Numeric
 {
-    namespace Numeric
+    /**
+     * MersenneTwister : default for all languages
+     */
+    enum class RandomValueGeneratorType { MersenneTwister };
+
+    class Random
     {
-        /**
-         * MersenneTwister : C++ and Python default
-         * GeorgeMarsaglia: Fortran default
-         * ModifiedKnuthSubtractive: .Net default
-         */
-        enum RandomValueGeneratorType { MersenneTwister, GeorgeMarsaglia, ModifiedKnuthSubtractive };
-        
+    private:
+        bool repeatable_ = true;
+        int seed_ = 0;
+        std::unique_ptr<RandomValueGenerator> randomValueGenerator = nullptr;
 
-        class Random
-        {
-        private:
-            inline static bool repeatable = true;
-            inline static int seed = 0;
-            inline static int seedB = 0;
-            inline static RandomValueGeneratorType generatorType = RandomValueGeneratorType::MersenneTwister;
-            inline static RandomValueGenerator* randomValueGenerator = nullptr;
+    public:
+        void initialize(RandomValueGeneratorType generatorType, bool repeatable = true, int seed = 0);
+        double next() const;
+        void restart() const;
 
-        public:
-            static void initialize(RandomValueGeneratorType generatorType, bool repeatable = true, int seed = 0, int seedB = 0);
-            static double next();
-            static void restart();
-
-            static std::string getRandomGeneratorTypeString(Deltares::Numeric::RandomValueGeneratorType method);
-            static Deltares::Numeric::RandomValueGeneratorType getRandomGeneratorType(std::string method);
-        };
-    }
+        static std::string getRandomGeneratorTypeString(RandomValueGeneratorType method);
+        static RandomValueGeneratorType getRandomGeneratorType(const std::string& method);
+    };
 }
 

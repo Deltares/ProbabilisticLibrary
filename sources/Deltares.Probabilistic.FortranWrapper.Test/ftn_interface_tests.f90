@@ -1,18 +1,18 @@
 ! Copyright (C) Stichting Deltares. All rights reserved.
 !
-! This file is part of Streams.
+! This file is part of the Probabilistic Library.
 !
-! Streams is free software: you can redistribute it and/or modify
-! it under the terms of the GNU Affero General Public License as published by
+! The Probabilistic Library is free software: you can redistribute it and/or modify
+! it under the terms of the GNU Lesser General Public License as published by
 ! the Free Software Foundation, either version 3 of the License, or
 ! (at your option) any later version.
 !
 ! This program is distributed in the hope that it will be useful,
 ! but WITHOUT ANY WARRANTY; without even the implied warranty of
 ! MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-! GNU Affero General Public License for more details.
+! GNU Lesser General Public License for more details.
 !
-! You should have received a copy of the GNU Affero General Public License
+! You should have received a copy of the GNU Lesser General Public License
 ! along with this program. If not, see <http://www.gnu.org/licenses/>.
 !
 ! All names, logos, and references to "Deltares" are registered trademarks of
@@ -98,7 +98,6 @@ subroutine test_ds
     call fillDistribs(distribs)
 
     method%methodId = methodDirectionalSampling
-    method%rnd = GeorgeMarsaglia
     method%startMethod = fORMStartZero
     method%tolB = method%tolA
     method%numThreads = 4
@@ -115,8 +114,8 @@ subroutine test_ds
     call assert_equal(results%error%iCode, 0, "return code probCalcF2C <> 0")
 
     if (results%error%iCode == 0) then
-        call assert_comparable(results%beta, -0.22178518912_wp, margin, "diff in beta")
-        call assert_comparable(results%alpha(1:2), [-0.89448_wp, -0.44710_wp], 1d-2, "diff in alpha")
+        call assert_comparable(results%beta, -0.2220993519_wp, margin, "diff in beta")
+        call assert_comparable(results%alpha(1:2), [-0.89448_wp, -0.44106_wp], 1d-2, "diff in alpha")
         call assert_comparable(x(1:2), [0.59998_wp, 0.80005_wp], 1d-2, "diff in x")
         convergence = results%convergence
         call assert_false(convergence, "diff in convergence flag")

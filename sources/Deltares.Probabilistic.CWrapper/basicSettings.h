@@ -1,18 +1,18 @@
 // Copyright (C) Stichting Deltares. All rights reserved.
 //
-// This file is part of Streams.
+// This file is part of the Probabilistic Library.
 //
-// Streams is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Affero General Public License as published by
+// The Probabilistic Library is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Affero General Public License for more details.
+// GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Affero General Public License
+// You should have received a copy of the GNU Lesser General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 //
 // All names, logos, and references to "Deltares" are registered trademarks of
@@ -47,11 +47,6 @@ namespace Deltares {
             CobylaReliability,
             SubSetSimulation,
             FORMSTART = 1234,
-        };
-
-        enum class rndTypes {
-            GeorgeMarsaglia = 1,
-            MersenneTwister
         };
 
         enum class StartMethods
@@ -135,10 +130,8 @@ namespace Deltares {
             int                chunkSize = 200;
             int                minSamples = 10000;
             int                maxSamples = 99000;
-            int                seed1 = 2;
-            int                seed2 = 1;
+            int                seed  = 2;
             int                isRepeatableRandom = 1;
-            rndTypes           rnd = rndTypes::GeorgeMarsaglia;
             StartMethods       startMethod = StartMethods::Zero;
             int                maxStepsSphereSearch = 5;
             int                progressInterval = -1;

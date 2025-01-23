@@ -1,2 +1,2 @@
 python setup.py bdist_wheel
-pip install dist/streams-0.0.1-py3-none-any.whl --force-reinstall
+pip install dist/probabilistic_library-24.1.1-py3-none-any.whl --force-reinstall

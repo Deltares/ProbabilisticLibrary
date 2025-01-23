@@ -1,18 +1,18 @@
 // Copyright (C) Stichting Deltares. All rights reserved.
 //
-// This file is part of Streams.
+// This file is part of the Probabilistic Library.
 //
-// Streams is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Affero General Public License as published by
+// The Probabilistic Library is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Affero General Public License for more details.
+// GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Affero General Public License
+// You should have received a copy of the GNU Lesser General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 //
 // All names, logos, and references to "Deltares" are registered trademarks of
@@ -77,7 +77,7 @@ void combineMultipleElementsGeneral(multipleElements* elements, betaAlphaCF* dpO
         auto s = std::make_shared<Deltares::Statistics::Stochast>();
         stochasts.push_back(s);
     }
-    auto dpCombiner = DesignPointCombiner(settings->combinerType, Deltares::Numeric::MersenneTwister);
+    auto dpCombiner = DesignPointCombiner(settings->combinerType, Deltares::Numeric::RandomValueGeneratorType::MersenneTwister);
     auto designPoints = std::vector<std::shared_ptr<DesignPoint>>();
     for (int i = 0; i < elements->size; i++)
     {
@@ -191,9 +191,9 @@ int combinetwoelementspartialcorrelationc2(betaAlphaCF* dp1, betaAlphaCF* dp2, b
     auto alfa2 = vector1D(nStochasts);
     for (int i = 0; i < nStochasts; i++)
     {
-        rho(i) = dp1->rho[i];
-        alfa1(i) = dp1->alpha[i];
-        alfa2(i) = dp2->alpha[i];
+        rho(i) = dp1->rho[i*dp1->stride_duration];
+        alfa1(i) = dp1->alpha[i*dp1->stride_alpha];
+        alfa2(i) = dp2->alpha[i*dp2->stride_alpha];
     }
     auto elm1 = alphaBeta(dp1->beta, alfa1);
     auto elm2 = alphaBeta(dp2->beta, alfa2);
@@ -202,7 +202,7 @@ int combinetwoelementspartialcorrelationc2(betaAlphaCF* dp1, betaAlphaCF* dp2, b
     dpC->beta = elm.ab.getBeta();
     for (int i = 0; i < nStochasts; i++)
     {
-        dpC->alpha[i] = elm.ab.getAlphaI(i);
+        dpC->alpha[i*dpC->stride_alpha] = elm.ab.getAlphaI(i);
     }
     return elm.n;
 }

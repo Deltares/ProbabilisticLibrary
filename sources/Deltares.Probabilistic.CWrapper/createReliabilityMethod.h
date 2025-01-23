@@ -1,18 +1,18 @@
 // Copyright (C) Stichting Deltares. All rights reserved.
 //
-// This file is part of Streams.
+// This file is part of the Probabilistic Library.
 //
-// Streams is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Affero General Public License as published by
+// The Probabilistic Library is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Affero General Public License for more details.
+// GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Affero General Public License
+// You should have received a copy of the GNU Lesser General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 //
 // All names, logos, and references to "Deltares" are registered trademarks of
@@ -36,14 +36,14 @@ public:
                                                                            std::vector<std::shared_ptr<Deltares::Statistics::Stochast>>& stochasts);
 
 private:
-    std::shared_ptr<Deltares::Models::RandomSettings> getRnd(const Deltares::ProbLibCore::basicSettings& bs);
-    std::vector<double> copyStartVector(const double startVector[], const size_t nStoch);
+    static std::shared_ptr<Deltares::Models::RandomSettings> getRnd(const Deltares::ProbLibCore::basicSettings& bs);
+    static std::vector<double> copyStartVector(const double startVector[], const size_t nStoch);
     void fillFormSettings(std::shared_ptr<Deltares::Reliability::FORMSettings>& Settings, const Deltares::ProbLibCore::basicSettings& bs, const size_t nStoch);
     void fillDsSettings(std::shared_ptr<Deltares::Reliability::DirectionalSamplingSettings>& Settings, const Deltares::ProbLibCore::basicSettings& bs);
-    Deltares::Reliability::DesignPointMethod convertDp(const Deltares::ProbLibCore::DPoptions dp);
+    static Deltares::Reliability::DesignPointMethod convertDp(const Deltares::ProbLibCore::DPoptions dp);
     void fillImportanceSamplingSettings(std::shared_ptr<Deltares::Reliability::ImportanceSamplingSettings> settings, const Deltares::ProbLibCore::basicSettings& bs,
         std::vector<std::shared_ptr<Deltares::Statistics::Stochast>>& stochasts);
-    void fillStartVector(std::shared_ptr<Deltares::Reliability::StartPointCalculatorSettings> startPoint,
+    static void fillStartVector(std::shared_ptr<Deltares::Reliability::StartPointCalculatorSettings>& startPoint,
         const Deltares::ProbLibCore::basicSettings& bs, const size_t nStoch);
 };
 

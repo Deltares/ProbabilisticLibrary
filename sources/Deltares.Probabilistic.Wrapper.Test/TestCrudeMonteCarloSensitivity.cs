@@ -1,18 +1,18 @@
 // Copyright (C) Stichting Deltares. All rights reserved.
 //
-// This file is part of Streams.
+// This file is part of the Probabilistic Library.
 //
-// Streams is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Affero General Public License as published by
+// The Probabilistic Library is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Affero General Public License for more details.
+// GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Affero General Public License
+// You should have received a copy of the GNU Lesser General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 //
 // All names, logos, and references to "Deltares" are registered trademarks of
@@ -61,7 +61,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             Stochast stochast = project.GetStochast();
 
-            Assert.AreEqual(DistributionType.Table, stochast.DistributionType);
+            Assert.AreEqual(DistributionType.Histogram, stochast.DistributionType);
             Assert.AreEqual(84, stochast.HistogramValues.Count);
 
             Assert.AreEqual(1.8, stochast.Mean, margin);
@@ -137,7 +137,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
             ((CrudeMonteCarloS)project.SensitivityMethod).Settings.RandomSettings.RandomGeneratorType = RandomGeneratorType.MersenneTwister;
             ((CrudeMonteCarloS)project.SensitivityMethod).Settings.DeriveSamplesFromVariationCoefficient = true;
 
-            Assert.AreEqual(7600, ((CrudeMonteCarloS)project.SensitivityMethod).Settings.RequiredSamples);
+            Assert.AreEqual(7600, ((CrudeMonteCarloS)project.SensitivityMethod).Settings.GetRequiredSamples());
 
             Stochast stochast = project.GetStochast();
 

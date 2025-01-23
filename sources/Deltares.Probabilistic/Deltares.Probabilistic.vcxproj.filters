@@ -213,6 +213,7 @@
     <ClCompile Include="Reliability\FragilityCurveProject.cpp" />
     <ClCompile Include="Model\ModelProject.cpp" />
     <ClCompile Include="Model\ComputationalStochast.cpp" />
+    <ClCompile Include="Sensitivity\DirectionalSamplingSettingsS.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />

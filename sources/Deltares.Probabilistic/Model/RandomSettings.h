@@ -1,18 +1,18 @@
 // Copyright (C) Stichting Deltares. All rights reserved.
 //
-// This file is part of Streams.
+// This file is part of the Probabilistic Library.
 //
-// Streams is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Affero General Public License as published by
+// The Probabilistic Library is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Affero General Public License for more details.
+// GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Affero General Public License
+// You should have received a copy of the GNU Lesser General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 //
 // All names, logos, and references to "Deltares" are registered trademarks of
@@ -47,7 +47,7 @@ namespace Deltares
             /**
              * \brief Type of random generator algorithm
              */
-            Deltares::Numeric::RandomValueGeneratorType RandomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::ModifiedKnuthSubtractive;
+            Numeric::RandomValueGeneratorType RandomGeneratorType = Numeric::RandomValueGeneratorType::MersenneTwister;
 
             /**
              * \brief Seed for random generator
@@ -55,17 +55,12 @@ namespace Deltares
             int Seed = 0;
 
             /**
-             * \brief Additional seed for random generator
-             */
-            int SeedB = 0;
-
-            /**
              * \brief Indicates whether a dummy random value is generated for non varying variables (true) or not (false)
              * \remark Skipping unvarying parameters is useful when changing a variable from varying to non varying. Then the same random values are generated for other (varying) variables.
              */
             bool SkipUnvaryingParameters = true;
 
-            std::shared_ptr<Deltares::Reliability::StochastSettingsSet> StochastSet = std::make_shared<Deltares::Reliability::StochastSettingsSet>();
+            std::shared_ptr<Reliability::StochastSettingsSet> StochastSet = std::make_shared<Reliability::StochastSettingsSet>();
 
             /**
              * \brief Gets a copy of these settings
@@ -79,7 +74,6 @@ namespace Deltares
                 copy->IsStochastRepeatableRandom = this->IsStochastRepeatableRandom;
                 copy->RandomGeneratorType = this->RandomGeneratorType;
                 copy->Seed = this->Seed;
-                copy->SeedB = this->SeedB;
                 copy->StochastSet = this->StochastSet;
 
                 return copy;

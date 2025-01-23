@@ -1,18 +1,18 @@
 // Copyright (C) Stichting Deltares. All rights reserved.
 //
-// This file is part of Streams.
+// This file is part of the Probabilistic Library.
 //
-// Streams is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Affero General Public License as published by
+// The Probabilistic Library is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Affero General Public License for more details.
+// GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Affero General Public License
+// You should have received a copy of the GNU Lesser General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 //
 // All names, logos, and references to "Deltares" are registered trademarks of
@@ -128,6 +128,10 @@ namespace Deltares
             return handlersTable[id]->GetIndexedStringValue(id, property_, index);
         }
 
+        void ProjectServer::GetArrayValue(int id, std::string property_, double* values, int size)
+        {
+            return handlersTable[id]->GetArrayValue(id, property_, values, size);
+        }
 
         void ProjectServer::SetArrayValue(int id, std::string property_, double* values, int size)
         {
@@ -213,6 +217,16 @@ namespace Deltares
         void ProjectServer::SetCallBack(int id, std::string property_, ZValuesCallBack callBack)
         {
             handlersTable[id]->SetCallBack(id, property_, callBack);
+        }
+
+        void ProjectServer::SetMultipleCallBack(int id, std::string property_, ZValuesMultipleCallBack callBack)
+        {
+            handlersTable[id]->SetMultipleCallBack(id, property_, callBack);
+        }
+
+        void ProjectServer::SetEmptyCallBack(int id, std::string property_, EmptyCallBack callBack)
+        {
+            handlersTable[id]->SetEmptyCallBack(id, property_, callBack);
         }
 
         void ProjectServer::Execute(int id, std::string method_)

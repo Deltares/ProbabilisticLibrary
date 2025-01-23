@@ -1,18 +1,18 @@
 // Copyright (C) Stichting Deltares. All rights reserved.
 //
-// This file is part of Streams.
+// This file is part of the Probabilistic Library.
 //
-// Streams is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Affero General Public License as published by
+// The Probabilistic Library is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Affero General Public License for more details.
+// GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Affero General Public License
+// You should have received a copy of the GNU Lesser General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 //
 // All names, logos, and references to "Deltares" are registered trademarks of
@@ -24,7 +24,6 @@
 #include <map>
 
 #include "../Utils/probLibException.h"
-#include "../Math/Random.h"
 #include "../Math/NumericSupport.h"
 
 namespace Deltares
@@ -216,10 +215,7 @@ namespace Deltares
             std::vector<std::shared_ptr<Cluster>> clusters;
 
             // select one data item index at random as 1st mean
-            Numeric::Random::initialize(Settings->generatorType, true, randomSeed, 0);
-
-            // TODO: PROBL-42 remove this line 
-            double dummy = Numeric::Random::next();  //  random->Next(0, samples.size()); // [0, N)
+            random.initialize(Settings->generatorType, true, randomSeed);
 
             auto firstCluster = std::make_shared<Cluster>();
 
@@ -276,7 +272,7 @@ namespace Deltares
 
             double cumP = 0.0; // cumulative prob
 
-            double p = Numeric::Random::next();
+            double p = random.next();
 
             for (int i = 0; i < n; ++i)
             {

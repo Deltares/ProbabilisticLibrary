@@ -1,18 +1,18 @@
 // Copyright (C) Stichting Deltares. All rights reserved.
 //
-// This file is part of Streams.
+// This file is part of the Probabilistic Library.
 //
-// Streams is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Affero General Public License as published by
+// The Probabilistic Library is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Affero General Public License for more details.
+// GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Affero General Public License
+// You should have received a copy of the GNU Lesser General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 //
 // All names, logos, and references to "Deltares" are registered trademarks of
@@ -75,11 +75,11 @@ namespace Deltares.Probabilistic.Wrapper.Test
             project.ReliabilityMethod = new CrudeMonteCarlo();
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(2.54, designPoint.Beta, margin);
+            Assert.AreEqual(2.58, designPoint.Beta, margin);
 
             DesignPoint designPoint2 = project.GetDesignPoint();
 
-            Assert.AreEqual(2.54, designPoint2.Beta, margin);
+            Assert.AreEqual(2.58, designPoint2.Beta, margin);
 
             Assert.AreNotSame(designPoint, designPoint2);
             Assert.AreNotSame(designPoint.Alphas[0], designPoint2.Alphas[0]);
@@ -94,12 +94,12 @@ namespace Deltares.Probabilistic.Wrapper.Test
             project.ReliabilityMethod = new CrudeMonteCarlo();
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(-2.54, designPoint.Beta, margin);
+            Assert.AreEqual(-2.58, designPoint.Beta, margin);
 
-            Assert.AreEqual(0.69, designPoint.Alphas[0].Alpha, margin);
-            Assert.AreEqual(0.73, designPoint.Alphas[1].Alpha, margin);
+            Assert.AreEqual(0.70, designPoint.Alphas[0].Alpha, margin);
+            Assert.AreEqual(0.71, designPoint.Alphas[1].Alpha, margin);
 
-            Assert.AreEqual(0.92, designPoint.Alphas[0].X, margin);
+            Assert.AreEqual(0.93, designPoint.Alphas[0].X, margin);
             Assert.AreEqual(0.93, designPoint.Alphas[1].X, margin);
 
             DirectionReliability direction = new DirectionReliability();
@@ -127,7 +127,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(2.54, designPoint.Beta, margin);
+            Assert.AreEqual(2.58, designPoint.Beta, margin);
 
             Assert.AreEqual(0, designPoint.ReliabilityResults.Count);
             Assert.AreEqual(0, designPoint.Evaluations.Count);
@@ -149,9 +149,9 @@ namespace Deltares.Probabilistic.Wrapper.Test
             GC.Collect();
             Thread.Sleep(10);
 
-            Assert.AreEqual(2.54, designPoint.Beta, margin);
+            Assert.AreEqual(2.58, designPoint.Beta, margin);
 
-            Assert.AreEqual(1106, designPoint.ReliabilityResults.Count);
+            Assert.AreEqual(1412, designPoint.ReliabilityResults.Count);
             Assert.AreEqual(10001, designPoint.Evaluations.Count);
         }
 
@@ -166,11 +166,11 @@ namespace Deltares.Probabilistic.Wrapper.Test
             project.ReliabilityMethod = new CrudeMonteCarlo();
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(2.54, designPoint.Beta, margin);
+            Assert.AreEqual(2.58, designPoint.Beta, margin);
 
             Assert.AreEqual(10000, progressHolder.Invocations);
             Assert.AreEqual(1, progressHolder.Progress, margin);
-            Assert.AreEqual("10000/10000, Reliability = 2.536, Convergence = 0.133", progressHolder.Text);
+            Assert.AreEqual("10000/10000, Reliability = 2.583, Convergence = 0.143", progressHolder.Text);
         }
 
         [Test]
@@ -189,7 +189,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(2.54, designPoint.Beta, margin);
+            Assert.AreEqual(2.59, designPoint.Beta, margin);
         }
 
         [Test]
@@ -235,23 +235,23 @@ namespace Deltares.Probabilistic.Wrapper.Test
             project.ReliabilityMethod = new CrudeMonteCarlo();
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(2.53, designPoint.Beta, margin);
+            Assert.AreEqual(2.62, designPoint.Beta, margin);
 
-            Assert.AreEqual(1.78, designPoint.Alphas[0].U, margin);
+            Assert.AreEqual(1.89, designPoint.Alphas[0].U, margin);
             Assert.AreEqual(0, designPoint.Alphas[1].U, margin);
-            Assert.AreEqual(1.80, designPoint.Alphas[2].U, margin);
+            Assert.AreEqual(1.81, designPoint.Alphas[2].U, margin);
 
-            Assert.AreEqual(-0.70, designPoint.Alphas[0].Alpha, margin);
+            Assert.AreEqual(-0.72, designPoint.Alphas[0].Alpha, margin);
             Assert.AreEqual(0, designPoint.Alphas[1].Alpha, margin);
-            Assert.AreEqual(-0.71, designPoint.Alphas[2].Alpha, margin);
+            Assert.AreEqual(-0.69, designPoint.Alphas[2].Alpha, margin);
 
-            Assert.AreEqual(-0.70, designPoint.Alphas[0].AlphaCorrelated, margin);
-            Assert.AreEqual(-0.70, designPoint.Alphas[1].AlphaCorrelated, margin);
-            Assert.AreEqual(-0.71, designPoint.Alphas[2].AlphaCorrelated, margin);
+            Assert.AreEqual(-0.72, designPoint.Alphas[0].AlphaCorrelated, margin);
+            Assert.AreEqual(-0.72, designPoint.Alphas[1].AlphaCorrelated, margin);
+            Assert.AreEqual(-0.69, designPoint.Alphas[2].AlphaCorrelated, margin);
 
-            Assert.AreEqual(0.46, designPoint.Alphas[0].X, margin);
-            Assert.AreEqual(0.46, designPoint.Alphas[1].X, margin);
-            Assert.AreEqual(0.92, designPoint.Alphas[2].X, margin);
+            Assert.AreEqual(0.47, designPoint.Alphas[0].X, margin);
+            Assert.AreEqual(0.47, designPoint.Alphas[1].X, margin);
+            Assert.AreEqual(0.93, designPoint.Alphas[2].X, margin);
         }
 
         [Test]
@@ -262,15 +262,15 @@ namespace Deltares.Probabilistic.Wrapper.Test
             project.ReliabilityMethod = new CrudeMonteCarlo();
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(2.07, designPoint.Beta, margin);
+            Assert.AreEqual(2.00, designPoint.Beta, margin);
 
-            Assert.AreEqual(-1.10, designPoint.Alphas[0].U, margin);
+            Assert.AreEqual(-1.07, designPoint.Alphas[0].U, margin);
             Assert.AreEqual(0, designPoint.Alphas[1].U, margin);
-            Assert.AreEqual(1.76, designPoint.Alphas[2].U, margin);
+            Assert.AreEqual(1.70, designPoint.Alphas[2].U, margin);
 
             Assert.AreEqual(0.53, designPoint.Alphas[0].Alpha, margin);
             Assert.AreEqual(0, designPoint.Alphas[1].Alpha, margin);
-            Assert.AreEqual(-0.84, designPoint.Alphas[2].Alpha, margin);
+            Assert.AreEqual(-0.85, designPoint.Alphas[2].Alpha, margin);
 
             Assert.AreEqual(0.53, designPoint.Alphas[0].AlphaCorrelated, margin);
             Assert.AreEqual(-0.53, designPoint.Alphas[1].AlphaCorrelated, margin);
@@ -278,7 +278,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             Assert.AreEqual(-0.36, designPoint.Alphas[0].X, margin);
             Assert.AreEqual(1.29, designPoint.Alphas[1].X, margin);
-            Assert.AreEqual(0.92, designPoint.Alphas[2].X, margin);
+            Assert.AreEqual(0.91, designPoint.Alphas[2].X, margin);
         }
 
         [Test]
@@ -289,23 +289,23 @@ namespace Deltares.Probabilistic.Wrapper.Test
             project.ReliabilityMethod = new CrudeMonteCarlo();
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(2.85, designPoint.Beta, margin);
+            Assert.AreEqual(2.82, designPoint.Beta, margin);
 
-            Assert.AreEqual(1.93, designPoint.Alphas[0].U, margin);
-            Assert.AreEqual(0.96, designPoint.Alphas[1].U, margin);
-            Assert.AreEqual(1.85, designPoint.Alphas[2].U, margin);
+            Assert.AreEqual(1.87, designPoint.Alphas[0].U, margin);
+            Assert.AreEqual(0.86, designPoint.Alphas[1].U, margin);
+            Assert.AreEqual(1.92, designPoint.Alphas[2].U, margin);
 
-            Assert.AreEqual(-0.68, designPoint.Alphas[0].Alpha, margin);
-            Assert.AreEqual(-0.33, designPoint.Alphas[1].Alpha, margin);
-            Assert.AreEqual(-0.65, designPoint.Alphas[2].Alpha, margin);
+            Assert.AreEqual(-0.66, designPoint.Alphas[0].Alpha, margin);
+            Assert.AreEqual(-0.31, designPoint.Alphas[1].Alpha, margin);
+            Assert.AreEqual(-0.68, designPoint.Alphas[2].Alpha, margin);
 
-            Assert.AreEqual(-0.68, designPoint.Alphas[0].AlphaCorrelated, margin);
-            Assert.AreEqual(-0.63, designPoint.Alphas[1].AlphaCorrelated, margin);
-            Assert.AreEqual(-0.65, designPoint.Alphas[2].AlphaCorrelated, margin);
+            Assert.AreEqual(-0.66, designPoint.Alphas[0].AlphaCorrelated, margin);
+            Assert.AreEqual(-0.60, designPoint.Alphas[1].AlphaCorrelated, margin);
+            Assert.AreEqual(-0.68, designPoint.Alphas[2].AlphaCorrelated, margin);
 
             Assert.AreEqual(0.47, designPoint.Alphas[0].X, margin);
-            Assert.AreEqual(0.46, designPoint.Alphas[1].X, margin);
-            Assert.AreEqual(0.93, designPoint.Alphas[2].X, margin);
+            Assert.AreEqual(0.45, designPoint.Alphas[1].X, margin);
+            Assert.AreEqual(0.95, designPoint.Alphas[2].X, margin);
         }
 
         [Test]
@@ -328,7 +328,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
             project.ReliabilityMethod = new CrudeMonteCarlo();
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(3.72, designPoint.Beta, margin);
+            Assert.AreEqual(3.54, designPoint.Beta, margin);
 
             DirectionReliability direction = new DirectionReliability();
             direction.Settings.SetStartPoint(designPoint);
@@ -349,7 +349,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
             project.ReliabilityMethod = new CrudeMonteCarlo();
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(1.63, designPoint.Beta, margin);
+            Assert.AreEqual(1.61, designPoint.Beta, margin);
             Assert.AreEqual(project.Stochasts.Count, designPoint.Alphas.Count, margin);
         }
 
@@ -361,7 +361,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
             project.ReliabilityMethod = new CrudeMonteCarlo();
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(1.38, designPoint.Beta, margin);
+            Assert.AreEqual(1.41, designPoint.Beta, margin);
         }
 
         [Test]
@@ -372,7 +372,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
             project.ReliabilityMethod = new CrudeMonteCarlo();
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(1.87, designPoint.Beta, margin);
+            Assert.AreEqual(1.83, designPoint.Beta, margin);
         }
 
         [Test]
@@ -383,7 +383,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
             project.ReliabilityMethod = new CrudeMonteCarlo();
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(2.64, designPoint.Beta, margin);
+            Assert.AreEqual(2.67, designPoint.Beta, margin);
         }
 
         [Test]
@@ -395,7 +395,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(3.16, designPoint.Beta, margin);
+            Assert.AreEqual(2.99, designPoint.Beta, margin);
         }
 
         [Test]
@@ -407,7 +407,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(2.51, designPoint.Beta, margin);
+            Assert.AreEqual(2.50, designPoint.Beta, margin);
         }
 
         [Test]
@@ -422,7 +422,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(2.84, designPoint.Beta, margin);
+            Assert.AreEqual(2.85, designPoint.Beta, margin);
         }
 
         [Test]
@@ -437,14 +437,14 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(1.43, designPoint.Beta, margin);
+            Assert.AreEqual(1.40, designPoint.Beta, margin);
 
-            Assert.AreEqual(0.69, designPoint.Alphas[0].Alpha, margin);
-            Assert.AreEqual(0.72, designPoint.Alphas[1].Alpha, margin);
-            Assert.AreEqual(0.02, designPoint.Alphas[2].Alpha, margin);
+            Assert.AreEqual(0.71, designPoint.Alphas[0].Alpha, margin);
+            Assert.AreEqual(0.70, designPoint.Alphas[1].Alpha, margin);
+            Assert.AreEqual(0.013, designPoint.Alphas[2].Alpha, margin);
 
             Assert.AreEqual(0.16, designPoint.Alphas[0].X, margin);
-            Assert.AreEqual(0.15, designPoint.Alphas[1].X, margin);
+            Assert.AreEqual(0.16, designPoint.Alphas[1].X, margin);
             Assert.AreEqual(6, designPoint.Alphas[2].X, margin);
         }
 
@@ -460,14 +460,14 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(1.43, designPoint.Beta, margin);
+            Assert.AreEqual(1.40, designPoint.Beta, margin);
 
-            Assert.AreEqual(0.69, designPoint.Alphas[0].Alpha, margin);
-            Assert.AreEqual(0.72, designPoint.Alphas[1].Alpha, margin);
+            Assert.AreEqual(0.71, designPoint.Alphas[0].Alpha, margin);
+            Assert.AreEqual(0.70, designPoint.Alphas[1].Alpha, margin);
             Assert.AreEqual(0, designPoint.Alphas[2].Alpha, margin);
 
             Assert.AreEqual(0.16, designPoint.Alphas[0].X, margin);
-            Assert.AreEqual(0.15, designPoint.Alphas[1].X, margin);
+            Assert.AreEqual(0.16, designPoint.Alphas[1].X, margin);
             Assert.AreEqual(7, designPoint.Alphas[2].X, margin);
         }
 
@@ -480,15 +480,15 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(1.71, designPoint.Beta, margin);
+            Assert.AreEqual(1.68, designPoint.Beta, margin);
 
-            Assert.AreEqual(-0.04, designPoint.Alphas[0].Alpha, margin);
-            Assert.AreEqual(-0.68, designPoint.Alphas[1].Alpha, margin);
-            Assert.AreEqual(-0.73, designPoint.Alphas[2].Alpha, margin);
+            Assert.AreEqual(-0.0011, designPoint.Alphas[0].Alpha, margin);
+            Assert.AreEqual(-0.64, designPoint.Alphas[1].Alpha, margin);
+            Assert.AreEqual(-0.76, designPoint.Alphas[2].Alpha, margin);
 
-            Assert.AreEqual(8.51, designPoint.Alphas[0].X, margin);
-            Assert.AreEqual(8.50, designPoint.Alphas[1].X, margin);
-            Assert.AreEqual(2.37, designPoint.Alphas[2].X, margin);
+            Assert.AreEqual(8.25, designPoint.Alphas[0].X, margin);
+            Assert.AreEqual(8.25, designPoint.Alphas[1].X, margin);
+            Assert.AreEqual(2.42, designPoint.Alphas[2].X, margin);
         }
 
         [Test]
@@ -508,7 +508,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(2.51, designPoint.Beta, margin);
+            Assert.AreEqual(2.50, designPoint.Beta, margin);
         }
 
         [Test]
@@ -523,10 +523,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(2.51, designPoint.Beta, margin);
+            Assert.AreEqual(2.50, designPoint.Beta, margin);
 
             Assert.AreEqual(10000, progress.Count);
-            Assert.AreEqual("10000/10000, Reliability = 2.506, Convergence = 0.128", progress.LastText);
+            Assert.AreEqual("10000/10000, Reliability = 2.495, Convergence = 0.126", progress.LastText);
         }
 
         [Test]
@@ -545,9 +545,9 @@ namespace Deltares.Probabilistic.Wrapper.Test
             GC.Collect();
             Thread.Sleep(10);
 
-            Assert.AreEqual(2.51, designPoint.Beta, margin);
+            Assert.AreEqual(2.50, designPoint.Beta, margin);
 
-            Assert.AreEqual(1157, designPoint.ReliabilityResults.Count);
+            Assert.AreEqual(1485, designPoint.ReliabilityResults.Count);
             Assert.AreEqual(10001, designPoint.Evaluations.Count);
 
             Assert.IsTrue(designPoint.Evaluations[0].Tag is ZFunctionOutput);

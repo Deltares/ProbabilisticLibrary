@@ -1,18 +1,18 @@
 // Copyright (C) Stichting Deltares. All rights reserved.
 //
-// This file is part of Streams.
+// This file is part of the Probabilistic Library.
 //
-// Streams is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Affero General Public License as published by
+// The Probabilistic Library is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Affero General Public License for more details.
+// GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Affero General Public License
+// You should have received a copy of the GNU Lesser General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 //
 // All names, logos, and references to "Deltares" are registered trademarks of
@@ -22,7 +22,6 @@
 #pragma once
 #include "../../Deltares.Probabilistic/Model/RandomSettings.h"
 #include "../Utils/SharedPointerProvider.h"
-#include "RandomProvider.h"
 
 namespace Deltares
 {
@@ -33,12 +32,12 @@ namespace Deltares
             using namespace Deltares::Models;
             using namespace Deltares::Utils::Wrappers;
 
-            public enum class RandomGeneratorType { MersenneTwister, GeorgeMarsaglia, ModifiedKnuthSubtractive };
+            public enum class RandomGeneratorType { MersenneTwister };
 
             public ref class RandomSettings
             {
             private:
-                SharedPointerProvider<Deltares::Models::RandomSettings>* shared = new SharedPointerProvider(new Deltares::Models::RandomSettings());
+                SharedPointerProvider<Models::RandomSettings>* shared = new SharedPointerProvider(new Models::RandomSettings());
 
                 bool hasLimitedRandomValues = false;
                 bool isStochastRepeatableRandom = false;
@@ -46,7 +45,6 @@ namespace Deltares
             public:
                 RandomSettings()
                 {
-                    RandomProvider::initialize();
                 }
                 ~RandomSettings() { this->!RandomSettings(); }
                 !RandomSettings() { delete shared; }
@@ -55,12 +53,6 @@ namespace Deltares
                 {
                     int get() { return shared->object->Seed; }
                     void set(int value) { shared->object->Seed = value; }
-                }
-
-                property int SeedB
-                {
-                    int get() { return shared->object->SeedB; }
-                    void set(int value) { shared->object->SeedB = value; }
                 }
 
                 property bool IsRepeatableRandom
@@ -79,27 +71,15 @@ namespace Deltares
                     void set(bool value) { shared->object->SkipUnvaryingParameters = value; }
                 }
 
-                property Wrappers::RandomGeneratorType RandomGeneratorType
+                property RandomGeneratorType RandomGeneratorType
                 {
                     Wrappers::RandomGeneratorType get()
                     {
-                        switch (shared->object->RandomGeneratorType)
-                        {
-                        case Numeric::RandomValueGeneratorType::MersenneTwister: return Models::Wrappers::RandomGeneratorType::MersenneTwister;
-                        case Numeric::RandomValueGeneratorType::GeorgeMarsaglia: return Models::Wrappers::RandomGeneratorType::GeorgeMarsaglia;
-                        case Numeric::RandomValueGeneratorType::ModifiedKnuthSubtractive: return Models::Wrappers::RandomGeneratorType::ModifiedKnuthSubtractive;
-                        default: throw gcnew System::NotSupportedException("Random generator type");
-                        }
+                        return Wrappers::RandomGeneratorType::MersenneTwister;
                     }
                     void set(Wrappers::RandomGeneratorType value)
                     {
-                        switch (value)
-                        {
-                        case  Wrappers::RandomGeneratorType::MersenneTwister: shared->object->RandomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::MersenneTwister; break;
-                        case  Wrappers::RandomGeneratorType::GeorgeMarsaglia: shared->object->RandomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::GeorgeMarsaglia; break;
-                        case  Wrappers::RandomGeneratorType::ModifiedKnuthSubtractive: shared->object->RandomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::ModifiedKnuthSubtractive; break;
-                        default: throw gcnew System::NotSupportedException("Design point method");
-                        }
+                        shared->object->RandomGeneratorType = Numeric::RandomValueGeneratorType::MersenneTwister;
                     }
                 }
 
@@ -133,7 +113,7 @@ namespace Deltares
 
             public interface class IHasRandomSettings
             {
-                property Wrappers::RandomSettings^ RandomSettings;
+                property RandomSettings^ RandomSettings;
             };
         }
     }

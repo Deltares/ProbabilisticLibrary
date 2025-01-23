@@ -1,18 +1,18 @@
 // Copyright (C) Stichting Deltares. All rights reserved.
 //
-// This file is part of Streams.
+// This file is part of the Probabilistic Library.
 //
-// Streams is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Affero General Public License as published by
+// The Probabilistic Library is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Affero General Public License for more details.
+// GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Affero General Public License
+// You should have received a copy of the GNU Lesser General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 //
 // All names, logos, and references to "Deltares" are registered trademarks of
@@ -57,6 +57,7 @@ namespace Deltares
             std::string GetStringValue(int id, std::string property_);
             std::string GetIndexedStringValue(int id, const std::string property_, int index);
             void SetStringValue(int id, std::string property_, std::string value);
+            void GetArrayValue(int id, std::string property_, double* values, int size);
             void SetArrayValue(int id, std::string property_, double* values, int size);
             std::vector<int> GetArrayIntValue(int id, std::string property_);
             void SetArrayIntValue(int id, std::string property_, int* values, int size);
@@ -71,6 +72,8 @@ namespace Deltares
             int GetIdValue(int id, std::string property_);
             int GetIndexedIdValue(int id, std::string property_, int index);
             void SetCallBack(int id, std::string property_, Models::ZValuesCallBack callBack);
+            void SetMultipleCallBack(int id, std::string property_, Models::ZValuesMultipleCallBack callBack);
+            void SetEmptyCallBack(int id, std::string property_, Models::EmptyCallBack callBack);
             void Execute(int id, std::string method_);
             void AddHandler(std::shared_ptr<BaseHandler> handler);
             void Exit();

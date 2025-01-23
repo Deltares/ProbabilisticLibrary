@@ -1,18 +1,18 @@
 // Copyright (C) Stichting Deltares. All rights reserved.
 //
-// This file is part of Streams.
+// This file is part of the Probabilistic Library.
 //
-// Streams is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Affero General Public License as published by
+// The Probabilistic Library is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Affero General Public License for more details.
+// GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Affero General Public License
+// You should have received a copy of the GNU Lesser General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 //
 // All names, logos, and references to "Deltares" are registered trademarks of
@@ -55,6 +55,11 @@ namespace Deltares
                 }
 
                 values[u] += weight;
+            }
+
+            void clear()
+            {
+                values.clear();
             }
 
             double getMode()
@@ -115,14 +120,25 @@ namespace Deltares
             this->count = count;
             this->method = method;
 
+            this->qualitativeIndices.clear();
+            this->modeFinders.clear();
+
+            this->initializeTotals();
+        }
+
+        void DesignPointBuilder::initializeTotals()
+        {
             defaultSample = std::make_shared<Sample>(count);
             meanSample = std::make_shared<Sample>(count);
             sinSample = std::make_shared<Sample>(count);
             cosSample = std::make_shared<Sample>(count);
 
-            this->qualitativeIndices.clear();
-            this->modeFinders.clear();
+            for (const auto& modeFinder : this->modeFinders)
+            {
+                modeFinder->clear();
+            }
 
+            sumWeights = 0;
         }
 
         void DesignPointBuilder::initialize(double beta)
@@ -139,14 +155,30 @@ namespace Deltares
         {
             sampleAdded = true;
 
+            double weight = std::isnan(sample->Weight) ? 1 : sample->Weight;
+
+            if (!weightedSampleAdded && method != DesignPointMethod::NearestToMean)
+            {
+                // assign a preliminary weight when weight is zero, restart counting when a real weight arrives
+                if (weight > 0)
+                {
+                    this->initializeTotals();
+                    weightedSampleAdded = true;
+                }
+                else
+                {
+                    weight = 1;
+                }
+            }
+
             switch (method)
             {
             case DesignPointMethod::NearestToMean:
             {
-                double rbeta = sample->getBeta();
-                if (rbeta < rmin)
+                double beta = sample->getBeta();
+                if (beta < minimumBeta)
                 {
-                    rmin = rbeta;
+                    minimumBeta = beta;
 
                     meanSample = sample->clone();
                 }
@@ -154,8 +186,6 @@ namespace Deltares
             }
             case DesignPointMethod::CenterOfGravity:
             {
-                const double weight = std::isnan(sample->Weight) ? 1 : sample->Weight;
-
                 for (int j = 0; j < this->qualitativeCount; j++)
                 {
                     int qIndex = qualitativeIndices[j];
@@ -172,8 +202,6 @@ namespace Deltares
             }
             case DesignPointMethod::CenterOfAngles:
             {
-                const double weight = std::isnan(sample->Weight) ? 1 : sample->Weight;
-
                 for (int j = 0; j < this->qualitativeCount; j++)
                 {
                     int qIndex = qualitativeIndices[j];

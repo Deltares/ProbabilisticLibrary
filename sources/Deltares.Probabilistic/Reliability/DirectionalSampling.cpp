@@ -1,18 +1,18 @@
 // Copyright (C) Stichting Deltares. All rights reserved.
 //
-// This file is part of Streams.
+// This file is part of the Probabilistic Library.
 //
-// Streams is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Affero General Public License as published by
+// The Probabilistic Library is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Affero General Public License for more details.
+// GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Affero General Public License
+// You should have received a copy of the GNU Lesser General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 //
 // All names, logos, and references to "Deltares" are registered trademarks of
@@ -25,17 +25,19 @@
 #include "../Math/SpecialFunctions.h"
 #include <omp.h>
 
+#include <algorithm>
+
 namespace Deltares
 {
     namespace Reliability
     {
         std::shared_ptr<DesignPoint> DirectionalSampling::getDesignPoint(std::shared_ptr<ModelRunner> modelRunner)
         {
-            int nstochasts = modelRunner->getVaryingStochastCount();
+            int nStochasts = modelRunner->getVaryingStochastCount();
             double pf = 0;
             double qtot = 0;
-            double rmin = 200; // initialise convergence indicator and loops
-            std::shared_ptr<DesignPointBuilder> designPointBuilder = std::make_shared<DesignPointBuilder> (nstochasts, this->Settings->designPointMethod, this->Settings->StochastSet);
+            double minBetaDirection = 200; // initialize convergence indicator and loops
+            std::shared_ptr<DesignPointBuilder> designPointBuilder = std::make_shared<DesignPointBuilder> (nStochasts, this->Settings->designPointMethod, this->Settings->StochastSet);
             int parSamples = 0;
 
             std::vector<double> betaValues;
@@ -50,7 +52,7 @@ namespace Deltares
             randomSampleGenerator->Settings->StochastSet = this->Settings->StochastSet;
             randomSampleGenerator->initialize();
 
-            std::shared_ptr<Sample> zeroSample = std::make_shared<Sample>(nstochasts);
+            std::shared_ptr<Sample> zeroSample = std::make_shared<Sample>(nStochasts);
             double z0 = modelRunner->getZValue(zeroSample);
             double z0Fac = this->getZFactor(z0);
 
@@ -67,9 +69,9 @@ namespace Deltares
             }
 
             // loop for all directions
-            for (int nmaal = 0; nmaal < Settings->MaximumDirections && !isStopped(); nmaal++)
+            for (int directionIndex = 0; directionIndex < Settings->MaximumDirections && !isStopped(); directionIndex++)
             {
-                if (nmaal % chunkSize == 0)
+                if (directionIndex % chunkSize == 0)
                 {
                     samples.clear();
 
@@ -79,11 +81,11 @@ namespace Deltares
                     for (int i = 0; i < runs; i++)
                     {
                         std::shared_ptr<Sample> sample = randomSampleGenerator->getRandomSample();
-                        sample->IterationIndex = nmaal + i;
+                        sample->IterationIndex = directionIndex + i;
                         samples.push_back(sample);
                     }
 
-                    betaValues = getDirectionBetas(modelRunner, samples, z0Fac, rmin);
+                    betaValues = getDirectionBetas(modelRunner, samples, z0Fac, minBetaDirection);
 
                     // check whether restart is needed
                     if (modelRunner->shouldExitPrematurely(samples))
@@ -95,22 +97,22 @@ namespace Deltares
                     parSamples = parSamples + 1;
                 }
 
-                if (betaValues[nmaal % chunkSize] * z0 < 0 || std::isnan(betaValues[nmaal % chunkSize]))
+                if (betaValues[directionIndex % chunkSize] * z0 < 0 || std::isnan(betaValues[directionIndex % chunkSize]))
                 {
                     continue;
                 }
 
-                std::shared_ptr<Sample> u = samples[nmaal % chunkSize];
+                std::shared_ptr<Sample> u = samples[directionIndex % chunkSize];
 
-                double betaDirection = std::abs(betaValues[nmaal % chunkSize]);
+                double betaDirection = std::abs(betaValues[directionIndex % chunkSize]);
 
                 // get the sample at the limit state
                 std::shared_ptr<Sample> uSurface = u->getSampleAtBeta(betaDirection);
 
                 // calculate failure probability
-                if (betaDirection >= 0 && betaDirection < Statistics::StandardNormal::BetaMax * nstochasts)
+                if (betaDirection >= 0 && betaDirection < Statistics::StandardNormal::BetaMax * nStochasts)
                 {
-                    uSurface->Weight = Deltares::Numeric::SpecialFunctions::getGammaUpperRegularized(0.5 * nstochasts, 0.5 * betaDirection * betaDirection);
+                    uSurface->Weight = Deltares::Numeric::SpecialFunctions::getGammaUpperRegularized(0.5 * nStochasts, 0.5 * betaDirection * betaDirection);
 
                     qtot += uSurface->Weight;
 
@@ -123,17 +125,14 @@ namespace Deltares
 
                 validSamples++;
 
-                pf = qtot / (double)validSamples;
+                pf = qtot / static_cast<double>(validSamples);
 
                 // store minimum value of r and alpha
-                if (betaDirection < rmin)
-                {
-                    rmin = betaDirection;
-                }
+                minBetaDirection = std::min(betaDirection, minBetaDirection);
 
-                // check on convergence criterium
-                bool enoughSamples = nmaal >= Settings->MinimumDirections;
-                convergenceReport->TotalDirections = nmaal+1;
+                // check on convergence criterion
+                bool enoughSamples = directionIndex >= Settings->MinimumDirections;
+                convergenceReport->TotalDirections = directionIndex+1;
 
                 sumWeights += uSurface->Weight;
                 sumWeights2 += uSurface->Weight * uSurface->Weight;
@@ -142,7 +141,7 @@ namespace Deltares
                 {
                     // determine accuracy
 
-                    double convergence = getConvergence(pf, sumWeights, sumWeights2, (double)validSamples);
+                    double convergence = getConvergence(pf, sumWeights, sumWeights2, validSamples);
 
                     double beta = z0Fac * Statistics::StandardNormal::getUFromQ(pf);
 
@@ -169,7 +168,7 @@ namespace Deltares
                 }
             }
 
-            convergenceReport->Convergence = getConvergence(pf, sumWeights, sumWeights2, (double)validSamples);
+            convergenceReport->Convergence = getConvergence(pf, sumWeights, sumWeights2, validSamples);
             convergenceReport->IsConverged = (convergenceReport->Convergence <= Settings->VariationCoefficient);
 
             std::shared_ptr<Sample> uDesign = designPointBuilder->getSample();
@@ -184,14 +183,14 @@ namespace Deltares
             return modelRunner->getDesignPoint(uDesign, Statistics::StandardNormal::getUFromQ(pf), convergenceReport, "Directional Sampling");
         }
 
-        double DirectionalSampling::getConvergence(const double pf, const double sumWeights, const double sumWeights2, const double dTimes)
+        double DirectionalSampling::getConvergence(const double pf, const double sumWeights, const double sumWeights2, const int nDirections)
         {
-            double covar = sumWeights2 - 2.0 * pf * sumWeights + dTimes * pow(pf, 2);
-            covar = std::sqrt(covar / dTimes / (dTimes - 1.0));
-            double covarpf = covar / pf;
-            double covarnpf = covar / (1 - pf);
+            double covariance = sumWeights2 - 2.0 * pf * sumWeights + nDirections * pf * pf;
+            covariance = std::sqrt(covariance / nDirections / (nDirections - 1.0));
+            double qConvergence = covariance / pf;
+            double pConvergence = covariance / (1 - pf);
 
-            double convergence = std::max(covarpf, covarnpf);
+            double convergence = std::max(qConvergence, pConvergence);
 
             return convergence;
         }

@@ -1,18 +1,18 @@
 // Copyright (C) Stichting Deltares. All rights reserved.
 //
-// This file is part of Streams.
+// This file is part of the Probabilistic Library.
 //
-// Streams is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Affero General Public License as published by
+// The Probabilistic Library is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Affero General Public License for more details.
+// GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Affero General Public License
+// You should have received a copy of the GNU Lesser General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 //
 // All names, logos, and references to "Deltares" are registered trademarks of
@@ -59,33 +59,29 @@ namespace Deltares
             auto stochast = std::make_shared<Statistics::Stochast>();
             stochast->setDistributionType(Statistics::CDFCurve);
 
-            for (const auto& RequestedQuantile : this->Settings->RequestedQuantiles)
+            for (const std::shared_ptr<Statistics::ProbabilityValue> requestedQuantile : this->Settings->RequestedQuantiles)
             {
                 auto fragilityValue = std::make_shared<Statistics::FragilityValue>();
-                fragilityValue->X = getZForRequiredQ(*modelRunner, RequestedQuantile->Reliability, nStochasts, Z0);
-                fragilityValue->Reliability = RequestedQuantile->Reliability;
+                fragilityValue->X = getZForRequiredQ(modelRunner, requestedQuantile->Reliability, nStochasts, Z0);
+                fragilityValue->Reliability = requestedQuantile->Reliability;
                 stochast->getProperties()->FragilityValues.push_back(fragilityValue);
             }
 
             std::sort(stochast->getProperties()->FragilityValues.begin(), stochast->getProperties()->FragilityValues.end(),
                 [](const std::shared_ptr<Statistics::FragilityValue>& val1, const std::shared_ptr<Statistics::FragilityValue>& val2)
-                {return val1->X < val2->X; });
+                {return val1->Reliability < val2->Reliability; });
 
             return stochast;
         }
 
-        double DirectionalSamplingS::getZForRequiredQ(ModelRunner& modelRunner, double betaRequested, int nStochasts, double Z0) const
+        double DirectionalSamplingS::getZForRequiredQ(std::shared_ptr<ModelRunner> modelRunner, double betaRequested, int nStochasts, double Z0) const
         {
             int performedIterations = 0;
 
             // Step 3: Calculate n samples in random directions, all at the same distance d of the origin
 
-            int maxIterations = this->Settings->MaximumIterations;
-            int directionNumber = this->Settings->NumberDirections;
-            double tolerance = this->Settings->VariationCoefficientFailure;
-
             auto sampleProvider = std::make_shared<SampleProvider>(this->Settings->StochastSet, false);
-            modelRunner.setSampleProvider(sampleProvider);
+            modelRunner->setSampleProvider(sampleProvider);
 
             auto randomSampleGenerator = RandomSampleGenerator();
             randomSampleGenerator.Settings = this->Settings->randomSettings;
@@ -95,7 +91,10 @@ namespace Deltares
 
             std::vector<std::shared_ptr<Sample>> samples;
 
-            for (int i = 0; i < directionNumber; i++)
+            int nDirections = this->Settings->getRequiredSamples(modelRunner->getVaryingStochastCount());
+            nDirections = std::min(nDirections, this->Settings->NumberDirections);
+
+            for (int i = 0; i < nDirections; i++)
             {
                 std::shared_ptr<Sample> randomSample = randomSampleGenerator.getRandomSample();
                 samples.push_back(randomSample);
@@ -103,7 +102,7 @@ namespace Deltares
 
             // Calculate the corresponding distance d of the origin using the length of the samples list
 
-            double initialDistance = getBetaDistance(std::abs(betaRequested), nStochasts);
+            double initialDistance = getBetaDistance(std::abs(betaRequested), nStochasts, this->Settings->modelType);
             initialDistance = std::max(0.1, initialDistance);
 
             // Normalize the value of Samples via d
@@ -113,9 +112,9 @@ namespace Deltares
                 samples[i]->IterationIndex = static_cast<int>(i);
             }
 
-            auto zValues = modelRunner.getZValues(samples);
+            std::vector<double> zValues = modelRunner->getZValues(samples);
 
-            modelRunner.reportProgress(++performedIterations, maxIterations + 1);
+            modelRunner->reportProgress(++performedIterations, this->Settings->MaximumIterations + 1);
 
             int nZValuesGreaterZero = 0;
             for (const double z : zValues)
@@ -133,7 +132,7 @@ namespace Deltares
             std::vector<std::shared_ptr<Direction>> directions;
             for (size_t i = 0; i < samples.size(); i++)
             {
-                std::shared_ptr<Direction> direction = std::make_shared<Direction>(samples[i]);
+                std::shared_ptr<Direction> direction = std::make_shared<Direction>(samples[i], i);
                 direction->AddResult(0, Z0);
                 direction->AddResult(initialDistance, zValues[i]);
                 direction->Valid = betaRequested > beta0 ? zValues[i] > Z0 : zValues[i] < Z0; // If the direction is invalid, the direction will not be used in the calculation
@@ -148,9 +147,10 @@ namespace Deltares
             double zPred = 0;
 
             double error = std::numeric_limits<double>::max();
+            double quantile95 = Statistics::StandardNormal::getUFromP(0.95);
 
             int j = 0; //iteration over N
-            while (j < maxIterations && error > tolerance)
+            while (j < this->Settings->MaximumIterations && error > this->Settings->VariationCoefficientFailure)
             {
                 double zMin = Z0;
                 double zMax = betaRequested > beta0 ? NumericSupport::getMaximum(zValues) : NumericSupport::getMinimum(zValues);
@@ -174,7 +174,7 @@ namespace Deltares
                     }
                 }
 
-                modelRunner.getZValues(calculateSamples);
+                modelRunner->getZValues(calculateSamples);
 
                 std::vector<double> newZValues = Sample::select(newSamples, [](std::shared_ptr<Sample> p) {return p->Z; });
 
@@ -187,13 +187,19 @@ namespace Deltares
                     }
                 }
 
-                //double Pf = CalculateProbabilityOfFailure(NewdValues, nstochasts);
-                error = calculateError(zValues, newZValues);
+                Statistics::Stochast stochast = Statistics::Stochast(Statistics::DistributionType::Normal, std::vector{ 0.0, 1.0 });
+
+                std::vector<std::shared_ptr<Direction>> validDirections = Direction::where(directions, [](std::shared_ptr<Direction> d) {return d->Valid;});
+                std::vector<double> diff = Direction::select(validDirections, [](std::shared_ptr<Direction> d) {return d->lastDifference; });
+                std::vector<double> weights = Direction::select(validDirections, [](std::shared_ptr<Direction> d) {return d->lastWeight; });
+                stochast.fitWeighted(diff, weights);
+
+                error = std::abs(stochast.getXFromU(quantile95));
 
                 j++;
                 zValues = newZValues;
 
-                modelRunner.reportProgress(++performedIterations, maxIterations + 1);
+                modelRunner->reportProgress(++performedIterations, this->Settings->MaximumIterations + 1);
             }
 
             return zPred;
@@ -246,18 +252,19 @@ namespace Deltares
             return qTotal / static_cast<double>(dValues.size()); // Here, the number of directions is used in the calculations (valid+invalid directions)
         }
 
-        double DirectionalSamplingS::getBetaDistance(double betaRequired, int nStochasts)
+        double DirectionalSamplingS::getBetaDistance(double betaRequired, int nStochasts, ModelType modelType)
         {
             if (betaRequired == 0.0)
             {
                 return 0.0;
             }
-            else
+            else if (modelType == ModelType::Sphere)
             {
                 const double par_a = 0.5 * static_cast<double>(nStochasts);
                 RootFinderMethod method = [par_a](double beta)
                 {
-                    return SpecialFunctions::getGammaUpperRegularized(par_a, 0.5 * beta * beta); //here no division by number of direction is needed as the same d applied for every direction.
+                    //here no division by number of direction is needed as the same d applied for every direction.
+                    return SpecialFunctions::getGammaUpperRegularized(par_a, 0.5 * beta * beta); 
                 };
 
                 const double qRequired = Statistics::StandardNormal::getQFromU(betaRequired);
@@ -267,28 +274,24 @@ namespace Deltares
                 double distance = bisection.CalculateValue(0.0, 2.0 * betaRequired, qRequired, method);
                 return distance;
             }
-        }
-
-        double DirectionalSamplingS::calculateError(std::vector<double>& zValues, std::vector<double>& newZValues)
-        {
-            if (zValues.size() != newZValues.size())
+            else if (modelType == ModelType::Plane)
             {
-                throw Reliability::probLibException("Arrays must be of the same length.");
+                return std::abs(betaRequired);
             }
-
-            double error = 0;
-
-            for (size_t i = 0; i < zValues.size(); i++)
+            else
             {
-                error += std::fabs(zValues[i] - newZValues[i]);
+                throw probLibException("modelType");
             }
-            return error / static_cast<double>(zValues.size());
         }
 
         void DirectionalSamplingS::Direction::AddResult(double distance, double z)
         {
             distances.push_back(distance);
             zValues.push_back(z);
+
+            lastDifference = distance - lastDistance;
+            lastDistance = distance;
+            lastWeight = Statistics::StandardNormal::getQFromU(std::abs(distance));
 
             // Create a list of Result objects
             std::vector<std::shared_ptr<Result>> results;
@@ -341,10 +344,34 @@ namespace Deltares
             }
             else
             {
-                return newSample = sample->getSampleAtBeta(distance);
+                std::shared_ptr<Sample> newSample = sample->getSampleAtBeta(distance);
+                newSample->IterationIndex = this->index;
+                return newSample;
             }
         }
 
+        std::vector<double> DirectionalSamplingS::Direction::select(std::vector<std::shared_ptr<Direction>>& directions, std::function<double(std::shared_ptr<Direction>)> function)
+        {
+            std::vector<double> result(directions.size());
+            for (size_t i = 0; i < directions.size(); i++)
+            {
+                result[i] = function(directions[i]);
+            }
+            return result;
+        }
+
+        std::vector<std::shared_ptr<DirectionalSamplingS::Direction>> DirectionalSamplingS::Direction::where(std::vector<std::shared_ptr<Direction>>& directions, std::function<bool(std::shared_ptr<Direction>)> function)
+        {
+            std::vector< std::shared_ptr<DirectionalSamplingS::Direction>> results;
+            for (std::shared_ptr<Direction> direction : directions)
+            {
+                if (function(direction))
+                {
+                    results.push_back(direction);
+                }
+            }
+            return results;
+        }
     }
 }
 

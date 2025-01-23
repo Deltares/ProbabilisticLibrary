@@ -1,18 +1,18 @@
 // Copyright (C) Stichting Deltares. All rights reserved.
 //
-// This file is part of Streams.
+// This file is part of the Probabilistic Library.
 //
-// Streams is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Affero General Public License as published by
+// The Probabilistic Library is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Affero General Public License for more details.
+// GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Affero General Public License
+// You should have received a copy of the GNU Lesser General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 //
 // All names, logos, and references to "Deltares" are registered trademarks of
@@ -112,6 +112,18 @@ namespace Deltares
         {
             stochast->Location = Numeric::NumericSupport::getMean(values);
             stochast->Scale = Numeric::NumericSupport::getStandardDeviation(stochast->Location, values);
+        }
+
+        void NormalDistribution::fitWeighted(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, std::vector<double>& weights)
+        {
+            double location = Numeric::NumericSupport::getWeightedMean(values, weights);
+            stochast->Location = location;
+
+            std::vector<double> variances = Numeric::NumericSupport::zip(values, weights, [location](double value, double weight) { return weight * (value - location) * (value - location); });
+            double sumVariances = Numeric::NumericSupport::sum(variances);
+            double sumWeights = Numeric::NumericSupport::sum(weights);
+
+            stochast->Scale = std::sqrt(sumVariances / sumWeights);
         }
     }
 }
