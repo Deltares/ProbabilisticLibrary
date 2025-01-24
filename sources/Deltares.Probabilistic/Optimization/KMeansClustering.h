@@ -64,10 +64,10 @@ namespace Deltares
             };
 
             std::vector<std::shared_ptr<Cluster>> FixedCluster(std::vector<std::shared_ptr<Models::Sample>>& samples, const ClusterSettings& options);
-            std::vector<std::shared_ptr<Cluster>> DoClustering(std::vector<std::shared_ptr<Models::Sample>>& samples, const ClusterSettings& options, int randomSeed);
-            std::vector<std::shared_ptr<Cluster>> InitializeClusters(std::vector<std::shared_ptr<Models::Sample>>& samples, const ClusterSettings& options, int randomSeed);
-            std::vector<std::shared_ptr<Cluster>> InitPlusPlus(int numberClusters, std::vector<std::shared_ptr<Models::Sample>>& samples, int randomSeed, bool sampleHasWeighting);
-            int ProporSelect(std::vector<double>& values);
+            std::vector<std::shared_ptr<Cluster>> DoClustering(std::vector<std::shared_ptr<Models::Sample>>& samples, const ClusterSettings& options, Numeric::Random& randomGenerator);
+            std::vector<std::shared_ptr<Cluster>> InitializeClusters(std::vector<std::shared_ptr<Models::Sample>>& samples, const ClusterSettings& options, Numeric::Random& randomGenerator);
+            std::vector<std::shared_ptr<Cluster>> InitPlusPlus(int numberClusters, std::vector<std::shared_ptr<Models::Sample>>& samples, Numeric::Random& randomGenerator, bool sampleHasWeighting);
+            int ProporSelect(std::vector<double>& values, Numeric::Random& randomGenerator);
             bool updateClustering(const std::vector<std::shared_ptr<Cluster>>& clusters);
             static std::shared_ptr<Cluster> getNearestCluster(const std::shared_ptr<Models::Sample>& sample, const std::vector<std::shared_ptr<Cluster>>& clusters);
             static double SilhouetteCoefficient(const std::vector<std::shared_ptr<Cluster>>& clusters);
@@ -75,7 +75,6 @@ namespace Deltares
             static double InterClusterDistance(const std::shared_ptr<Cluster>& cluster,
                 const std::shared_ptr<Models::Sample>& sample, const std::vector<std::shared_ptr<Cluster>>& clusters);
             static std::vector<std::shared_ptr<Models::Sample>> getCentersFromClusters(const std::vector<std::shared_ptr<Cluster>>& clusters);
-            Numeric::Random random;
         };
     }
 }

@@ -114,6 +114,14 @@ namespace Deltares
                     if (this->Settings->Clustering)
                     {
                         hasChanged = this->updateClusters(loopCounter);
+
+#ifdef __cpp_lib_format
+                        for (std::shared_ptr<Sample> center : this->getClusterCenters(this->clusterSamples))
+                        {
+                            modelRunner->reportMessage(Models::MessageType::Info, std::format("Cluster = {0:.5G}", center->Values[0]));
+                        }
+#endif
+
                     }
                     else
                     {

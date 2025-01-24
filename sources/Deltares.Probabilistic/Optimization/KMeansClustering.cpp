@@ -153,9 +153,12 @@ namespace Deltares
             int unchangedClusters = 0;
             constexpr int maxUnchangedClusters = 10;
 
+            Numeric::Random random;
+            random.initialize(Settings->generatorType, true, 0);
+
             for (int trial = 0; trial < options.Trials; trial++)
             {
-                std::vector<std::shared_ptr<Cluster>> newClusters = DoClustering(samples, options, trial); // find a clustering and update bests
+                std::vector<std::shared_ptr<Cluster>> newClusters = DoClustering(samples, options, random); // find a clustering and update bests
 
                 double newSumSquared = 0;
                 for (const auto& cluster : newClusters)
@@ -183,9 +186,9 @@ namespace Deltares
             return clusters;
         }
 
-        std::vector<std::shared_ptr<KMeansClustering::Cluster>> KMeansClustering::DoClustering(std::vector<std::shared_ptr<Models::Sample>>& samples, const ClusterSettings& options, int randomSeed)
+        std::vector<std::shared_ptr<KMeansClustering::Cluster>> KMeansClustering::DoClustering(std::vector<std::shared_ptr<Models::Sample>>& samples, const ClusterSettings& options, Numeric::Random & randomGenerator)
         {
-            std::vector<std::shared_ptr<Cluster>> newClusters = InitializeClusters(samples, options, randomSeed);
+            std::vector<std::shared_ptr<Cluster>> newClusters = InitializeClusters(samples, options, randomGenerator);
 
             bool modified = true; //  result from UpdateClustering (to exit loop)
             int iteration = 0;
@@ -199,23 +202,20 @@ namespace Deltares
             return newClusters;
         }
 
-        std::vector<std::shared_ptr<KMeansClustering::Cluster>> KMeansClustering::InitializeClusters(std::vector<std::shared_ptr<Models::Sample>>& samples, const ClusterSettings& options, int randomSeed)
+        std::vector<std::shared_ptr<KMeansClustering::Cluster>> KMeansClustering::InitializeClusters(std::vector<std::shared_ptr<Models::Sample>>& samples, const ClusterSettings& options, Numeric::Random& randomGenerator)
         {
             switch (options.clusterInitializationMethod)
             {
             case ClusterInitializationMethod::PlusPlus:
-                return InitPlusPlus(options.NumberClusters, samples, randomSeed, options.SampleHasWeighting);
+                return InitPlusPlus(options.NumberClusters, samples, randomGenerator, options.SampleHasWeighting);
             default:
                 throw Reliability::probLibException("Cluster initialization method");
             }
         }
 
-        std::vector<std::shared_ptr<KMeansClustering::Cluster>> KMeansClustering::InitPlusPlus(int numberClusters, std::vector<std::shared_ptr<Models::Sample>>& samples, int randomSeed, bool sampleHasWeighting)
+        std::vector<std::shared_ptr<KMeansClustering::Cluster>> KMeansClustering::InitPlusPlus(int numberClusters, std::vector<std::shared_ptr<Models::Sample>>& samples, Numeric::Random& randomGenerator, bool sampleHasWeighting)
         {
             std::vector<std::shared_ptr<Cluster>> clusters;
-
-            // select one data item index at random as 1st mean
-            random.initialize(Settings->generatorType, true, randomSeed);
 
             auto firstCluster = std::make_shared<Cluster>();
 
@@ -250,7 +250,7 @@ namespace Deltares
 
                 // select an item far from its mean using roulette wheel
                 // if a sample has been used as a mean its distance will become 0 so it will not be selected
-                int newMeanIndex = ProporSelect(squaredDistances);
+                int newMeanIndex = ProporSelect(squaredDistances, randomGenerator);
 
                 auto nextCluster = std::make_shared<Cluster>(samples[newMeanIndex]->clone());
 
@@ -262,7 +262,7 @@ namespace Deltares
             return clusters;
         }
 
-        int KMeansClustering::ProporSelect(std::vector<double>& values)
+        int KMeansClustering::ProporSelect(std::vector<double>& values, Numeric::Random& randomGenerator)
         {
             // on the fly technique
             // values[] can't be all 0.0s
@@ -272,7 +272,7 @@ namespace Deltares
 
             double cumP = 0.0; // cumulative prob
 
-            double p = random.next();
+            double p = randomGenerator.next();
 
             for (int i = 0; i < n; ++i)
             {
