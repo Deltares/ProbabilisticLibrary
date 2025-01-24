@@ -24,6 +24,8 @@
 #include <cmath>
 #include <functional>
 #include <memory>
+#include <format>
+#include <sstream>
 
 #include "Constants.h"
 #include "../Utils/probLibException.h"
@@ -772,8 +774,29 @@ namespace Deltares
             }
         }
 
-
-
+        std::string NumericSupport::ConvertToString(std::vector<double>& values, std::string separator)
+        {
+            std::stringstream ss;
+            for (size_t i = 0; i <values.size(); i++)
+            {
+#ifdef __cpp_lib_format
+                double value = values[i];
+                std::string valueStr = std::format("{0:.5G}", value);
+#else
+                auto pl = Deltares::Reliability::probLibString();
+                valueStr = sep + pl.double2str(reliabilityIndex);
+#endif
+                if (i == 0)
+                {
+                    ss << valueStr;
+                }
+                else
+                {
+                    ss << separator << valueStr;
+                }
+            }
+            return ss.str();
+        }
     }
 }
 

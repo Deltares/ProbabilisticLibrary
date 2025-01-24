@@ -39,6 +39,7 @@
 #include "ImportanceSampling.h"
 #include "StochastSettings.h"
 #include "StartPointCalculator.h"
+#include "../Math/NumericSupport.h"
 
 using namespace Deltares::Models;
 
@@ -114,14 +115,6 @@ namespace Deltares
                     if (this->Settings->Clustering)
                     {
                         hasChanged = this->updateClusters(loopCounter);
-
-#ifdef __cpp_lib_format
-                        for (std::shared_ptr<Sample> center : this->getClusterCenters(this->clusterSamples))
-                        {
-                            modelRunner->reportMessage(Models::MessageType::Info, std::format("Cluster = {0:.5G}", center->Values[0]));
-                        }
-#endif
-
                     }
                     else
                     {
@@ -148,6 +141,10 @@ namespace Deltares
                         modelRunner->clear();
                         clusterSamples.clear();
 
+                        for (std::shared_ptr<Sample> center : this->importanceSampling->Settings->Clusters)
+                        {
+                            modelRunner->reportMessage(Models::MessageType::Info,  "Cluster = (" + Numeric::NumericSupport::ConvertToString(center->Values, ", ") + ")");
+                        }
 #ifdef __cpp_lib_format
                         auto text = std::format("Calculating variance loop #{0:}.", loopCounter);
 #else
