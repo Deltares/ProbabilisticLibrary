@@ -30,6 +30,8 @@ namespace Deltares
 {
     namespace Reliability
     {
+        using namespace Deltares::Models;
+
         bool FragilityCurve::isGloballyDescending()
         {
             if (this->getProperties()->FragilityValues.size() > 1)

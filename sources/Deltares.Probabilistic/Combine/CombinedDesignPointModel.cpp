@@ -40,6 +40,7 @@ namespace Deltares
     namespace Reliability
     {
         using namespace Deltares::Statistics;
+        using namespace Deltares::Models;
 
         void CombinedDesignPointModel::addDesignPointModel(std::shared_ptr<DesignPoint> designPoint, bool ignore, bool invert)
         {

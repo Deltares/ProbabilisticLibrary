@@ -32,6 +32,8 @@ using namespace Deltares::Numeric;
 namespace Deltares {
     namespace Reliability {
 
+        using namespace Deltares::Models;
+
         std::shared_ptr<DesignPoint> HohenbichlerNumInt::AlphaHohenbichler(const std::shared_ptr<DesignPoint>& designPoint1, const std::shared_ptr<DesignPoint>& designPoint2,
             const std::vector<std::shared_ptr<Stochast>>& stochasts,
             const std::shared_ptr<SelfCorrelationMatrix>& selfCorrelation, const combineAndOr system)
