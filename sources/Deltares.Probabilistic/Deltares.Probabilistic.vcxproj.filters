@@ -43,8 +43,6 @@
     <ClCompile Include="Model\RandomSampleGenerator.cpp" />
     <ClCompile Include="Statistics\CorrelationMatrix.cpp" />
     <ClCompile Include="Math\Random.cpp" />
-    <ClCompile Include="Math\Randomizers\ModifiedKnuthSubtractiveRandomValueGenerator.cpp" />
-    <ClCompile Include="Math\Randomizers\GeorgeMarsagliaRandomValueGenerator.cpp" />
     <ClCompile Include="Math\Randomizers\MersenneTwisterRandomValueGenerator.cpp" />
     <ClCompile Include="Math\Randomizers\RandomValueGenerator.cpp" />
     <ClCompile Include="Model\ProgressIndicator.cpp" />
@@ -214,6 +212,8 @@
     <ClCompile Include="Model\ModelProject.cpp" />
     <ClCompile Include="Model\ComputationalStochast.cpp" />
     <ClCompile Include="Sensitivity\DirectionalSamplingSettingsS.cpp" />
+    <ClCompile Include="Combine\ExcludingCombiner.cpp" />
+    <ClCompile Include="Statistics\Scenario.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -267,8 +267,6 @@
     <ClInclude Include="Model\RandomSampleGenerator.h" />
     <ClInclude Include="Statistics\CorrelationMatrix.h" />
     <ClInclude Include="Math\Random.h" />
-    <ClInclude Include="Math\Randomizers\ModifiedKnuthSubtractiveRandomValueGenerator.h" />
-    <ClInclude Include="Math\Randomizers\GeorgeMarsagliaRandomValueGenerator.h" />
     <ClInclude Include="Math\Randomizers\MersenneTwisterRandomValueGenerator.h" />
     <ClInclude Include="Math\Randomizers\RandomValueGenerator.h" />
     <ClInclude Include="Model\ProgressIndicator.h" />
@@ -446,6 +444,8 @@
     <ClInclude Include="Reliability\FragilityCurveProject.h" />
     <ClInclude Include="Model\ModelProject.h" />
     <ClInclude Include="Model\ComputationalStochast.h" />
+    <ClInclude Include="Combine\ExcludingCombiner.h" />
+    <ClInclude Include="Statistics\Scenario.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">
