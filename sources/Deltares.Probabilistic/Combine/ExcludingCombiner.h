@@ -50,14 +50,13 @@ namespace Deltares
 
             /**
              * \brief Combines a number of design points
-             * \param scenarios Design points to be combined
-             * \param selfCorrelationMatrix Administration of correlations between different design points
+             * \param scenarios Scenarios
+             * \param designPoints Design points to be combined
              * \return Design point resembling the combined reliability and alpha values
              */
-            std::shared_ptr<DesignPoint> combineDesignPoints(
+            std::unique_ptr<DesignPoint> combineDesignPoints(
                 std::vector<std::shared_ptr<Statistics::Scenario>>& scenarios,
-                std::vector<std::shared_ptr<Reliability::DesignPoint>>& designPoints,
-                std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix);
+                std::vector<std::shared_ptr<Reliability::DesignPoint>>& designPoints);
         };
     }
 } 

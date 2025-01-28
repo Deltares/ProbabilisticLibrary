@@ -36,7 +36,7 @@ namespace Deltares
             {
             private:
                 Utils::Wrappers::SharedPointerProvider<Statistics::Scenario>* shared = new Utils::Wrappers::SharedPointerProvider(new Statistics::Scenario());
-                Stochast^ parameter = gcnew Stochast();
+                Stochast^ parameter = nullptr;
             public:
                 virtual property System::String^ Name
                 {
@@ -62,19 +62,11 @@ namespace Deltares
                     void set(double value) { shared->object->parameterValue = value; }
                 }
 
-                virtual Stochast^ GetStochast()
-                {
-                    return this->Parameter;
-                }
-
                 std::shared_ptr<Statistics::Scenario> GetNativeScenario()
                 {
-                    shared->object->parameter = this->Parameter != nullptr ? this->Parameter->GetStochast() : nullptr;
                     shared->object->probability = this->Probability;
                     shared->object->parameterValue = this->PhysicalValue;
-
-                    Stochast^ stochast = this->GetStochast();
-                    shared->object->parameter = stochast != nullptr ? stochast->GetStochast() : nullptr;
+                    shared->object->parameter = this->Parameter != nullptr ? this->Parameter->GetStochast() : nullptr;
 
                     return shared->object;
                 }

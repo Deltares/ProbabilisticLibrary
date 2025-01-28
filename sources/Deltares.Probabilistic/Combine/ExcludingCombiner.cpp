@@ -28,10 +28,13 @@ namespace Deltares
 {
     namespace Reliability
     {
-        std::shared_ptr<DesignPoint> ExcludingCombiner::combineDesignPoints(std::vector<std::shared_ptr<Statistics::Scenario>>& scenarios,
-            std::vector<std::shared_ptr<Reliability::DesignPoint>>& designPoints,
-            std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix)
+        std::unique_ptr<DesignPoint> ExcludingCombiner::combineDesignPoints(std::vector<std::shared_ptr<Statistics::Scenario>>& scenarios, std::vector<std::shared_ptr<Reliability::DesignPoint>>& designPoints)
         {
+            if (scenarios.size() != designPoints.size())
+            {
+                throw probLibException("Scenarios and design points must be of same length");
+            }
+
             std::vector<std::shared_ptr<Statistics::Stochast>> parameters = this->getUniqueStochasts(designPoints);
 
             std::shared_ptr<DesignPointBuilder> designPointBuilder = std::make_shared<DesignPointBuilder>(parameters.size(), DesignPointMethod::CenterOfGravity);
@@ -72,26 +75,8 @@ namespace Deltares
             std::shared_ptr<Sample> combinedSample = designPointBuilder->getSample();
             combinedSample = combinedSample->getSampleAtBeta(combinedBeta);
 
-            //std::shared_ptr<Deltares::Statistics::CorrelationMatrix> correlationMatrix = project->StatisticsProject.CorrelationMatrix.GetCorrelationMatrix();
-            //correlationMatrix->Stochasts->Clear();
-            //correlationMatrix->Stochasts->AddRange(parameters);
-            //correlationMatrix->UpdateFullMatrix();
-
-            //std::shared_ptr<UConverter> uConverter = std::make_shared<UConverter>(parameters, correlationMatrix);
-
-            //std::vector<double> alphas = combinedSample->Values->Select([&](std::any p)
-            //{
-            //    return -p / combinedBeta;
-            //})->ToArray();
-
-            //std::shared_ptr<Deltares::Statistics::StochastPoint> combinedStochastPoint = uConverter->GetStochastPoint(combinedBeta, alphas);
-            //std::shared_ptr<Reliability::DesignPoint> calculatedStochastPoint = std::make_shared<Reliability::DesignPoint>(combinedStochastPoint);
-
-            //std::shared_ptr<DesignPoint> combinedDesignPoint = uConverter->GetDesignPoint(calculatedStochastPoint);
-
-
             // create final design point
-            std::shared_ptr<DesignPoint> combinedDesignPoint = std::make_shared<DesignPoint>();
+            std::unique_ptr<DesignPoint> combinedDesignPoint = std::make_unique<DesignPoint>();
             combinedDesignPoint->Beta = combinedBeta;
 
             // create alpha values for final design point

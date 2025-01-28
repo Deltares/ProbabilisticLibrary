@@ -32,7 +32,7 @@ namespace Deltares
 
             generic <typename U> delegate void ListCallBack(ListOperationType listOperationType, U item);
 
-            generic <typename T> ref class CallBackList : System::Collections::Generic::IList<T>
+            generic <typename T> ref class CallBackList : System::Collections::Generic::IList<T>, System::Collections::IList
             {
             public:
                 CallBackList()
@@ -54,12 +54,12 @@ namespace Deltares
                     return list.GetEnumerator();
                 }
 
-                virtual System::Collections::Generic::IEnumerator<T>^ GetEnumeratorGeneric() = System::Collections::Generic::IEnumerable<T>::GetEnumerator
+                    virtual System::Collections::Generic::IEnumerator<T>^ GetEnumeratorGeneric() = System::Collections::Generic::IEnumerable<T>::GetEnumerator
                 {
                     return list.GetEnumerator();
                 }
 
-                virtual void Add(T item)
+                    virtual void Add(T item)
                 {
                     list.Add(item);
                     callBack(ListOperationType::Add, item);
@@ -95,12 +95,12 @@ namespace Deltares
                     virtual int get() { return list.Count; }
                 }
 
-                property bool IsReadOnly
+                    property bool IsReadOnly
                 {
                     virtual bool get() { return false; }
                 }
 
-                virtual int IndexOf(T item)
+                    virtual int IndexOf(T item)
                 {
                     return list.IndexOf(item);
                 };
@@ -115,7 +115,7 @@ namespace Deltares
                 {
                     callBack(ListOperationType::Remove, list[index]);
                     list.RemoveAt(index);
-                };
+                }
 
                 property T default[int]
                 {
@@ -130,6 +130,61 @@ namespace Deltares
                         callBack(ListOperationType::Add, item);
                     };
                 }
+
+                    // IList implementation
+
+                property Object^ IListItems[int]
+                {
+                    virtual Object ^ get(int index) = System::Collections::IList::default::get { return this[index]; };
+                    virtual void set(int index, Object^ item) = System::Collections::IList::default::set{ this[index] = static_cast<T>(item); };
+                }
+
+                virtual void CopyTo(System::Array^ array, int index)
+                {
+                    System::Array::Copy(this->list.ToArray(), 0, array, index, this->Count);
+                }
+
+                property Object^ SyncRoot
+                {
+                    virtual Object^ get() { return nullptr; }
+                }
+
+                property bool IsSynchronized
+                {
+                    virtual bool get() { return false; }
+                }
+
+                virtual int Add(Object^ value)
+                {
+                    this->Add(static_cast<T>(value));
+                    return this->Count;
+                }
+
+                virtual bool Contains(Object^ value)
+                {
+                    return this->Contains(static_cast<T>(value));
+                }
+
+                virtual int IndexOf(Object^ value)
+                {
+                    return this->IndexOf(static_cast<T>(value));
+                }
+
+                virtual void Insert(int index, Object^ value)
+                {
+                    this->Insert(index, static_cast<T>(value));
+                }
+
+                virtual void Remove(Object^ value)
+                {
+                    this->list.Remove(static_cast<T>(value));
+                }
+
+                property bool IsFixedSize
+                {
+                    virtual bool get() { return false; }
+                }
+
             private:
                 System::Collections::Generic::List<T> list = gcnew System::Collections::Generic::List<T>();
                 ListCallBack<T>^ callBack;
