@@ -150,28 +150,7 @@ namespace Deltares
                 auto Elements = std::vector<std::shared_ptr<DesignPoint>>();
                 for (size_t i = 0; i < nElements; i++)
                 {
-                    auto dp = std::make_shared<DesignPoint>();
-                    dp->Beta = beta;
-                    for (size_t j = 0; j < nStochasts; j++)
-                    {
-                        // swap order stochasts for 2nd element:
-                        auto jj = (i == 0 ? j : nStochasts - 1 - j);
-                        auto alpha = std::make_shared<StochastPointAlpha>();
-                        alpha->Alpha = alphaInput[jj];
-                        alpha->Stochast = stochasts[jj];
-                        alpha->U = -dp->Beta * alpha->Alpha;
-                        dp->Alphas.push_back(alpha);
-                    }
-                    if (i == 1)
-                    {
-                        // add stochasts with alpha = 0 to have different sized sets of design points
-                        auto alpha = std::make_shared<StochastPointAlpha>();
-                        alpha->Alpha = 0.0;
-                        alpha->Stochast = stochasts[nStochasts];
-                        alpha->U = 0.0;
-                        dp->Alphas.push_back(alpha);
-                    }
-                    Elements.push_back(dp);
+                    addDesignPoint(beta, nStochasts, i, alphaInput, stochasts, Elements);
                 }
 
                 auto rho = std::make_shared<SelfCorrelationMatrix>();
@@ -209,30 +188,10 @@ namespace Deltares
 
                 auto designPoints = std::vector<std::shared_ptr<DesignPoint>>();
                 auto scenarios = std::vector<std::shared_ptr<Scenario>>();
+
                 for (size_t i = 0; i < nDesignPoints; i++)
                 {
-                    auto dp = std::make_shared<DesignPoint>();
-                    dp->Beta = beta;
-                    for (size_t j = 0; j < nStochasts; j++)
-                    {
-                        // swap order stochasts for 2nd element:
-                        auto jj = (i == 0 ? j : nStochasts - 1 - j);
-                        auto alpha = std::make_shared<StochastPointAlpha>();
-                        alpha->Alpha = alphaInput[jj];
-                        alpha->Stochast = stochasts[jj];
-                        alpha->U = -dp->Beta * alpha->Alpha;
-                        dp->Alphas.push_back(alpha);
-                    }
-                    if (i == 1)
-                    {
-                        // add stochasts with alpha = 0 to have different sized sets of design points
-                        auto alpha = std::make_shared<StochastPointAlpha>();
-                        alpha->Alpha = 0.0;
-                        alpha->Stochast = stochasts[nStochasts];
-                        alpha->U = 0.0;
-                        dp->Alphas.push_back(alpha);
-                    }
-                    designPoints.push_back(dp);
+                    addDesignPoint(beta, nStochasts, i, alphaInput, stochasts, designPoints);
 
                     std::shared_ptr<Scenario> scenario = std::make_shared<Scenario>();
                     scenario->probability = scenarioInput[i];
@@ -248,6 +207,33 @@ namespace Deltares
                 auto combinedDesignPoint = comb->combineDesignPoints(scenarios, designPoints);
 
                 EXPECT_NEAR(combinedDesignPoint->Beta, beta, margin);
+            }
+
+            void CombinerTest::addDesignPoint(const double beta, const size_t nStochasts, size_t i, std::vector<double>& alphaInput, std::vector<std::shared_ptr<Deltares::Statistics::Stochast>>& stochasts, std::vector<std::shared_ptr<Deltares::Reliability::DesignPoint>>& designPoints) const
+            {
+                auto dp = std::make_shared<DesignPoint>();
+                dp->Beta = beta;
+                for (size_t j = 0; j < nStochasts; j++)
+                {
+                    // swap order stochasts for 2nd element:
+                    auto jj = (i == 0 ? j : nStochasts - 1 - j);
+                    auto alpha = std::make_shared<StochastPointAlpha>();
+                    alpha->Alpha = alphaInput[jj];
+                    alpha->Stochast = stochasts[jj];
+                    alpha->U = -dp->Beta * alpha->Alpha;
+                    dp->Alphas.push_back(alpha);
+                }
+
+                if (i == 1)
+                {
+                    // add stochasts with alpha = 0 to have different sized sets of design points
+                    auto alpha = std::make_shared<StochastPointAlpha>();
+                    alpha->Alpha = 0.0;
+                    alpha->Stochast = stochasts[nStochasts];
+                    alpha->U = 0.0;
+                    dp->Alphas.push_back(alpha);
+                }
+                designPoints.push_back(dp);
             }
 
             void CombinerTest::tester1stoch(Combiner* comb, const double rho, const double beta, const alphaBeta& ref, const combineAndOr AndOr) const
