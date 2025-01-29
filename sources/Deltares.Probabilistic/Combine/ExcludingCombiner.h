@@ -30,7 +30,7 @@ namespace Deltares
     namespace Reliability
     {
         /**
-         * \brief Combines design points which have bno overlap
+         * \brief Combines design points which have no overlap
          */
         class ExcludingCombiner : public Combiner
         {

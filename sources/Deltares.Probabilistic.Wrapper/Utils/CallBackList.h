@@ -54,12 +54,12 @@ namespace Deltares
                     return list.GetEnumerator();
                 }
 
-                    virtual System::Collections::Generic::IEnumerator<T>^ GetEnumeratorGeneric() = System::Collections::Generic::IEnumerable<T>::GetEnumerator
+                virtual System::Collections::Generic::IEnumerator<T>^ GetEnumeratorGeneric() = System::Collections::Generic::IEnumerable<T>::GetEnumerator
                 {
                     return list.GetEnumerator();
                 }
 
-                    virtual void Add(T item)
+                virtual void Add(T item)
                 {
                     list.Add(item);
                     callBack(ListOperationType::Add, item);
@@ -95,12 +95,12 @@ namespace Deltares
                     virtual int get() { return list.Count; }
                 }
 
-                    property bool IsReadOnly
+                property bool IsReadOnly
                 {
                     virtual bool get() { return false; }
                 }
 
-                    virtual int IndexOf(T item)
+                virtual int IndexOf(T item)
                 {
                     return list.IndexOf(item);
                 };
@@ -131,7 +131,7 @@ namespace Deltares
                     };
                 }
 
-                    // IList implementation
+                // IList implementation
 
                 property Object^ IListItems[int]
                 {

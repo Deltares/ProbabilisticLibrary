@@ -37,7 +37,7 @@ namespace Deltares
 
             std::vector<std::shared_ptr<Statistics::Stochast>> parameters = this->getUniqueStochasts(designPoints);
 
-            std::shared_ptr<DesignPointBuilder> designPointBuilder = std::make_shared<DesignPointBuilder>(parameters.size(), DesignPointMethod::CenterOfGravity);
+            DesignPointBuilder designPointBuilder = DesignPointBuilder(parameters.size(), DesignPointMethod::CenterOfGravity);
 
             double failure = 0;
             for (size_t i = 0; i < designPoints.size(); i++)
@@ -46,14 +46,14 @@ namespace Deltares
             }
 
             double combinedBeta = Statistics::StandardNormal::getUFromQ(failure);
-            designPointBuilder->initialize(combinedBeta);
+            designPointBuilder.initialize(combinedBeta);
 
-            for (int i = 0; i < designPoints.size(); i++)
+            for (size_t i = 0; i < designPoints.size(); i++)
             {
                 designPoints[i]->Identifier = scenarios[i]->name;
 
                 std::vector<double> u(parameters.size());
-                for (int j = 0; j < u.size(); j++)
+                for (size_t j = 0; j < u.size(); j++)
                 {
                     if (parameters[j] == scenarios[i]->parameter)
                     {
@@ -69,10 +69,10 @@ namespace Deltares
                 std::shared_ptr<Sample> sample = std::make_shared<Sample>(u);
                 sample->Weight = scenarios[i]->probability * designPoints[i]->getFailureProbability();
 
-                designPointBuilder->addSample(sample);
+                designPointBuilder.addSample(sample);
             }
 
-            std::shared_ptr<Sample> combinedSample = designPointBuilder->getSample();
+            std::shared_ptr<Sample> combinedSample = designPointBuilder.getSample();
             combinedSample = combinedSample->getSampleAtBeta(combinedBeta);
 
             // create final design point
