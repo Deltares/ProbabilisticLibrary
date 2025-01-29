@@ -58,7 +58,7 @@ Several Jupyter notebooks are available to demonstrate how to use the Probabilis
 
 7. [Sensitivity analysis]:
 
-    * [Simple exmaple](sources/Deltares.Probabilistic.PWrapper.Notebooks/sensitivity_analysis.ipynb)
+    * [Simple example](sources/Deltares.Probabilistic.PWrapper.Notebooks/sensitivity_analysis.ipynb)
 
     * [Safety levels](sources/Deltares.Probabilistic.PWrapper.Notebooks/safety_levels.ipynb)
 
