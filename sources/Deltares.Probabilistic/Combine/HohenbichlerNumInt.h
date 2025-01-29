@@ -25,6 +25,7 @@
 #include "CombineType.h"
 #include "../Reliability/DesignPoint.h"
 #include "../Statistics/SelfCorrelationMatrix.h"
+#include "../Statistics/Scenario.h"
 
 namespace Deltares {
     namespace Reliability {
@@ -35,6 +36,7 @@ namespace Deltares {
             std::shared_ptr<DesignPoint> AlphaHohenbichler(const std::shared_ptr<DesignPoint>& designPoint1, const std::shared_ptr<DesignPoint>& designPoint2,
                 const std::vector<std::shared_ptr<Statistics::Stochast>>& stochasts,
                 const std::shared_ptr<Statistics::SelfCorrelationMatrix>& selfCorrelation, const combineAndOr system);
+
         private:
             static double BetaHohenbichler(double dp1, double dp2, const double rho, const combineAndOr system);
             static double Hohenbichler(const double dp1, const double dp2, const double rho, const combineAndOr system);

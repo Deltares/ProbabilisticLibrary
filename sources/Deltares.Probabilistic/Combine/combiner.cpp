@@ -27,38 +27,6 @@ namespace Deltares
 {
     namespace Reliability
     {
-        std::vector<std::shared_ptr<Statistics::Stochast>> Combiner::getUniqueStochasts(const std::vector<std::shared_ptr<DesignPoint>>& designPoints)
-        {
-            std::vector<std::shared_ptr<Statistics::Stochast>> uniqueStochasts;
-
-            std::unordered_set<std::shared_ptr<Statistics::Stochast>> addedStochasts;
-
-            // when multiple identical stochasts are present in one design point, they should all be added to the unique design points
-
-            for (const std::shared_ptr<DesignPoint>& designPoint : designPoints)
-            {
-                for (std::shared_ptr<StochastPointAlpha>& alpha : designPoint->Alphas)
-                {
-                    if (!addedStochasts.contains(alpha->Stochast))
-                    {
-                        uniqueStochasts.push_back(alpha->Stochast);
-                    }
-                }
-
-                for (std::shared_ptr<StochastPointAlpha>& alpha : designPoint->Alphas)
-                {
-                    if (!addedStochasts.contains(alpha->Stochast))
-                    {
-                        addedStochasts.insert(alpha->Stochast);
-                    }
-                }
-            }
-
-            return uniqueStochasts;
-        }
-
-
-
         std::shared_ptr<Reliability::CombinedDesignPointModel> Combiner::getModel(combineAndOr combineMethodType, std::shared_ptr<Reliability::DesignPoint> currentDesignPoint, std::vector<std::shared_ptr<DesignPoint>>& previousDesignPoints, std::vector<std::shared_ptr<Statistics::Stochast>>& stochasts, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix)
         {
             // create the model from design points

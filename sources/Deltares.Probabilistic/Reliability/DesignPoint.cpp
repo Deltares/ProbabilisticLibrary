@@ -22,6 +22,9 @@
 
 #include "FragilityCurve.h"
 #include "DesignPoint.h"
+
+#include <unordered_set>
+
 #include "../Math/NumericSupport.h"
 
 namespace Deltares
@@ -133,6 +136,36 @@ namespace Deltares
                     }
                 }
             }
+        }
+
+        std::vector<std::shared_ptr<Statistics::Stochast>> DesignPoint::getUniqueStochasts(const std::vector<std::shared_ptr<DesignPoint>>& designPoints)
+        {
+            std::vector<std::shared_ptr<Statistics::Stochast>> uniqueStochasts;
+
+            std::unordered_set<std::shared_ptr<Statistics::Stochast>> addedStochasts;
+
+            // when multiple identical stochasts are present in one design point, they should all be added to the unique design points
+
+            for (const std::shared_ptr<DesignPoint>& designPoint : designPoints)
+            {
+                for (std::shared_ptr<StochastPointAlpha>& alpha : designPoint->Alphas)
+                {
+                    if (!addedStochasts.contains(alpha->Stochast))
+                    {
+                        uniqueStochasts.push_back(alpha->Stochast);
+                    }
+                }
+
+                for (std::shared_ptr<StochastPointAlpha>& alpha : designPoint->Alphas)
+                {
+                    if (!addedStochasts.contains(alpha->Stochast))
+                    {
+                        addedStochasts.insert(alpha->Stochast);
+                    }
+                }
+            }
+
+            return uniqueStochasts;
         }
     }
 }

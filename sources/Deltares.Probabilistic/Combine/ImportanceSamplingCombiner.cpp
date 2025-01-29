@@ -129,7 +129,7 @@ namespace Deltares
         {
             constexpr double deltaReliabilityIndex = 0.01;
 
-            std::vector<std::shared_ptr<Stochast>> stochasts = getUniqueStochasts(designPoints);
+            std::vector<std::shared_ptr<Stochast>> stochasts = DesignPoint::getUniqueStochasts(designPoints);
 
             if (combineMethodType == combineAndOr::combOr)
             {

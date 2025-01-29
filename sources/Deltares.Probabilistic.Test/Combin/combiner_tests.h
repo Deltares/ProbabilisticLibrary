@@ -43,9 +43,10 @@ namespace Deltares
                 void ImportanceSamplingCombinerTest() const;
                 void ImportanceSamplingCombinerAndTest() const;
                 void ImportanceSamplingCombinerInvertedTest() const;
-                void ExcludingCombinerTest() const;
+                void WeightedSumCombinerTest() const;
+                void HohenbichlerExcludingCombinerTest() const;
                 void tester(Reliability::Combiner* comb, const double beta, const Reliability::alphaBeta& ref, const Reliability::combineAndOr AndOr) const;
-                void excluding_tester(Reliability::ExcludingCombiner* comb, const double beta) const;
+                void excluding_tester(Reliability::ExcludingCombiner* combiner, const double beta, const double expectedBeta) const;
                 void addDesignPoint(const double beta, const size_t nStochasts, size_t i, std::vector<double>& alphaInput, std::vector<std::shared_ptr<Deltares::Statistics::Stochast>>& stochasts, std::vector<std::shared_ptr<Deltares::Reliability::DesignPoint>>& designPoints) const;
                 void tester1stoch(Reliability::Combiner* comb, const double rho, const double beta, const Reliability::alphaBeta& ref, const Reliability::combineAndOr AndOr) const;
                 const double margin = 1.0e-4;
