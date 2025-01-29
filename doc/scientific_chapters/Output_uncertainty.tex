@@ -50,7 +50,7 @@ $n$ points are drawn randomly in the variable space according to an uniform dist
 Now the value of model $Z_{i,1}$ at each sample point ($d_{i,0}$ distance from the origin on each direction) is evaluated. Subsequently, the related $\beta$ value to each samples (i.e. directions) is calculated. If the $\beta_{q}$ is bigger than $\beta_0$, every direction with $Z_{i,1} < Z0$ is disregarded in the future probability calculations (i.e., they are proceeding in undesired direction), otherwise it is valid to be considered. Note that the number of samples $n$ is independent of their validity status. To calculate the probability of failure, equation \autoref{eq:DirectionalSamplingWeight} shall be used, in this stage, the assumption of $\beta_{dir} = d_{i,0}$ for all directions is applied. See \ref{fig:DS-first} as the first step for generating the directions and samples are shown for the model $Z=X1_X2$, with $X1$ and $X2=N(0,1)$.
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.8\textwidth]{pictures/DS-first.png}
+	\includegraphics[width=0.8\textwidth]{\pathProbLibPictures DS-first.png}
 	\caption{Generation of first samples in random directions}
 	\label{fig:DS-first}
 \end{figure}
@@ -70,7 +70,7 @@ The final steps will be repeated to reach $Z_{i}$, either up to a maximum of $ð
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.8\textwidth]{pictures/DS-last.png}
+	\includegraphics[width=0.8\textwidth]{\pathProbLibPictures DS-last.png}
 	\caption{The second/final step of iterations for the valid directions}
 	\label{fig:DS-last}
 \end{figure}
