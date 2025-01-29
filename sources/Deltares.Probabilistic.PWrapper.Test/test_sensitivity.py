@@ -288,6 +288,20 @@ class Test_sensitivity(unittest.TestCase):
         self.assertAlmostEqual(1.08, sens.fragility_values[1].x, delta=margin)
         self.assertAlmostEqual(0.96, sens.fragility_values[2].x, delta=margin)
 
+        project.settings.quantiles.append(StandardNormal.get_p_from_u(2.8))
+
+        project.run();
+
+        sens2 = project.stochast;
+
+        self.assertEqual('UC' , sens2.name)
+        self.assertEqual(4, len(sens2.fragility_values))
+
+        self.assertAlmostEqual(0.85, sens2.fragility_values[0].x, delta=margin)
+        self.assertAlmostEqual(1.08, sens2.fragility_values[1].x, delta=margin)
+        self.assertAlmostEqual(1.19, sens2.fragility_values[2].x, delta=margin)
+        self.assertAlmostEqual(0.96, sens2.fragility_values[3].x, delta=margin)
+
 
 if __name__ == '__main__':
     unittest.main()
