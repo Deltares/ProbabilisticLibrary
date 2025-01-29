@@ -23,11 +23,12 @@
 
 #include "../Utils/probLibException.h"
 #include "../Reliability/DesignPoint.h"
+#include "../Statistics/Scenario.h"
 #include "combiner.h"
 #include "DirectionalSamplingCombiner.h"
+#include "ExcludingCombiner.h"
 #include "HohenbichlerNumIntCombiner.h"
 #include "ImportanceSamplingCombiner.h"
-#include "../Math/Randomizers/RandomValueGenerator.h"
 
 namespace Deltares
 {
@@ -69,6 +70,12 @@ namespace Deltares
             {
                 const std::shared_ptr<Combiner> combiner = getCombiner();
                 return combiner->combineDesignPoints(combineMethodType, designPoints, selfCorrelationMatrix, progress);
+            }
+
+            std::unique_ptr<DesignPoint> combineDesignPointsExcluding(std::vector<std::shared_ptr<Statistics::Scenario>>& scenarios, std::vector<std::shared_ptr<DesignPoint>>& designPoints, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix = nullptr, std::shared_ptr<ProgressIndicator> progress = nullptr)
+            {
+                ExcludingCombiner combiner = ExcludingCombiner();
+                return combiner.combineDesignPoints(scenarios, designPoints);
             }
 
             static std::string getCombineTypeString(combineAndOr type);
