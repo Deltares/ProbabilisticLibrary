@@ -216,6 +216,7 @@ namespace Deltares
                 auto combinedDesignPoint = combiner->combineExcludingDesignPoints(scenarios, designPoints);
 
                 EXPECT_NEAR(combinedDesignPoint->Beta, expectedBeta, margin);
+                ASSERT_EQ(combinedDesignPoint->ContributingDesignPoints.size(), nDesignPoints);
             }
 
             void CombinerTest::addDesignPoint(const double beta, const size_t nStochasts, size_t i, std::vector<double>& alphaInput, std::vector<std::shared_ptr<Deltares::Statistics::Stochast>>& stochasts, std::vector<std::shared_ptr<Deltares::Reliability::DesignPoint>>& designPoints) const

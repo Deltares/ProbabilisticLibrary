@@ -69,6 +69,12 @@ namespace Deltares
                 alpha->Alpha = result.ab.getAlphaI(i);
                 combinedDesignPoint->Alphas.push_back(alpha);
             }
+
+            for (std::shared_ptr<DesignPoint> designPoint : designPoints)
+            {
+                combinedDesignPoint->ContributingDesignPoints.push_back(designPoint);
+            }
+
             return combinedDesignPoint;
         }
     }
