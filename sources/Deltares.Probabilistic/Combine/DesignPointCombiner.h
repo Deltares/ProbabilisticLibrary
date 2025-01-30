@@ -21,7 +21,6 @@
 //
 #pragma once
 
-#include "../Utils/probLibException.h"
 #include "../Reliability/DesignPoint.h"
 #include "../Statistics/Scenario.h"
 #include "combiner.h"
@@ -85,15 +84,15 @@ namespace Deltares
             }
 
             static std::string getCombineTypeString(combineAndOr type);
-            static combineAndOr getCombineType(std::string method);
+            static combineAndOr getCombineType(const std::string& method);
             static std::string getCombinerMethodString(CombinerType type);
-            static CombinerType getCombinerMethod(std::string method);
+            static CombinerType getCombinerMethod(const std::string& method);
             static std::string getExcludingCombinerMethodString(ExcludingCombinerType type);
-            static ExcludingCombinerType getExcludingCombinerMethod(std::string method);
+            static ExcludingCombinerType getExcludingCombinerMethod(const std::string& method);
 
         private:
-            std::shared_ptr<Combiner> getCombiner();
-            std::unique_ptr<ExcludingCombiner> getExcludingCombiner();
+            std::shared_ptr<Combiner> getCombiner() const;
+            std::unique_ptr<ExcludingCombiner> getExcludingCombiner() const;
             Numeric::RandomValueGeneratorType generator = Numeric::RandomValueGeneratorType::MersenneTwister;
         };
     }
