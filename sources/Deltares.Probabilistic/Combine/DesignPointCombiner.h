@@ -77,7 +77,7 @@ namespace Deltares
                 return combiner->combineDesignPoints(combineMethodType, designPoints, selfCorrelationMatrix, progress);
             }
 
-            std::unique_ptr<DesignPoint> combineDesignPointsExcluding(std::vector<std::shared_ptr<Statistics::Scenario>>& scenarios, std::vector<std::shared_ptr<DesignPoint>>& designPoints, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix = nullptr, std::shared_ptr<ProgressIndicator> progress = nullptr)
+            std::unique_ptr<DesignPoint> combineDesignPointsExcluding(std::vector<std::shared_ptr<Statistics::Scenario>>& scenarios, std::vector<std::shared_ptr<DesignPoint>>& designPoints) const
             {
                 const std::unique_ptr<ExcludingCombiner> combiner = getExcludingCombiner();
                 return combiner->combineExcludingDesignPoints(scenarios, designPoints);

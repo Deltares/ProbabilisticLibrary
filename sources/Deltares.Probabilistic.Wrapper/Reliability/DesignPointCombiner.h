@@ -117,7 +117,7 @@ namespace Deltares
                     return designPoint;
                 }
 
-                DesignPoint^ CombineExcluding(System::Collections::Generic::IList<Statistics::Wrappers::Scenario^>^ scenarios, System::Collections::Generic::IList<Reliability::Wrappers::DesignPoint^>^ designPoints, Deltares::Statistics::Wrappers::SelfCorrelationMatrix^ selfCorrelationMatrix)
+                DesignPoint^ CombineExcluding(System::Collections::Generic::IList<Statistics::Wrappers::Scenario^>^ scenarios, System::Collections::Generic::IList<Reliability::Wrappers::DesignPoint^>^ designPoints)
                 {
                     std::vector<std::shared_ptr<Statistics::Scenario>> nativeScenarios;
                     for (int i = 0; i < scenarios->Count; i++)
@@ -131,9 +131,7 @@ namespace Deltares
                         nativeDesignPoints.push_back(designPoints[i]->getDesignPoint());
                     }
 
-                    const std::shared_ptr<Statistics::SelfCorrelationMatrix> nativeSelfCorrelationMatrix = selfCorrelationMatrix != nullptr ? selfCorrelationMatrix->GetNativeSelfCorrelationMatrix() : nullptr;
-
-                    std::unique_ptr<Reliability::DesignPoint> nativeDesignPoint = shared->object->combineDesignPointsExcluding(nativeScenarios, nativeDesignPoints, nativeSelfCorrelationMatrix);
+                    std::unique_ptr<Reliability::DesignPoint> nativeDesignPoint = shared->object->combineDesignPointsExcluding(nativeScenarios, nativeDesignPoints);
 
                     Wrappers::DesignPoint^ designPoint = gcnew Wrappers::DesignPoint(std::move(nativeDesignPoint), designPoints);
 
