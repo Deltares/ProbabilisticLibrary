@@ -71,7 +71,7 @@ namespace Deltares
              * \param modelRunner Performs execution of model, also registers reports
              * \param loopCounter Counter of the variance loops
              */
-            void reportVarianceLoop(std::shared_ptr<Models::ModelRunner> modelRunner, const int loopCounter);
+            void reportVarianceLoop(std::shared_ptr<Models::ModelRunner> modelRunner, const int loopCounter) const;
 
             /**
              * \brief Previous start point 

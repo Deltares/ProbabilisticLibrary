@@ -380,7 +380,7 @@ namespace Deltares
             }
         }
 
-        void AdaptiveImportanceSampling::reportVarianceLoop(std::shared_ptr<Models::ModelRunner> modelRunner, const int loopCounter)
+        void AdaptiveImportanceSampling::reportVarianceLoop(std::shared_ptr<Models::ModelRunner> modelRunner, const int loopCounter) const
         {
             for (std::shared_ptr<Sample> center : this->importanceSampling->Settings->Clusters)
             {

@@ -186,7 +186,7 @@ namespace Deltares
             return clusters;
         }
 
-        std::vector<std::shared_ptr<KMeansClustering::Cluster>> KMeansClustering::DoClustering(std::vector<std::shared_ptr<Models::Sample>>& samples, const ClusterSettings& options, Numeric::Random & randomGenerator)
+        std::vector<std::shared_ptr<KMeansClustering::Cluster>> KMeansClustering::DoClustering(std::vector<std::shared_ptr<Models::Sample>>& samples, const ClusterSettings& options, const Numeric::Random & randomGenerator)
         {
             std::vector<std::shared_ptr<Cluster>> newClusters = InitializeClusters(samples, options, randomGenerator);
 
@@ -202,7 +202,7 @@ namespace Deltares
             return newClusters;
         }
 
-        std::vector<std::shared_ptr<KMeansClustering::Cluster>> KMeansClustering::InitializeClusters(std::vector<std::shared_ptr<Models::Sample>>& samples, const ClusterSettings& options, Numeric::Random& randomGenerator)
+        std::vector<std::shared_ptr<KMeansClustering::Cluster>> KMeansClustering::InitializeClusters(std::vector<std::shared_ptr<Models::Sample>>& samples, const ClusterSettings& options, const Numeric::Random& randomGenerator)
         {
             switch (options.clusterInitializationMethod)
             {
@@ -266,7 +266,7 @@ namespace Deltares
         {
             // on the fly technique
             // values[] can't be all 0.0s
-            int n = values.size();
+            int n = static_cast<int>(values.size());
 
             double sum = Numeric::NumericSupport::sum(values, [](double p) {return p; });
 

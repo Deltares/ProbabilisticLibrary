@@ -774,7 +774,7 @@ namespace Deltares
             }
         }
 
-        std::string NumericSupport::ConvertToString(std::vector<double>& values, const std::string separator)
+        std::string NumericSupport::ConvertToString(std::vector<double>& values, const std::string& separator)
         {
             std::stringstream ss;
             for (size_t i = 0; i <values.size(); i++)
