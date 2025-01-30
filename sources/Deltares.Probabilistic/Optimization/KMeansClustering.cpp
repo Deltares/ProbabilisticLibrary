@@ -213,7 +213,7 @@ namespace Deltares
             }
         }
 
-        std::vector<std::shared_ptr<KMeansClustering::Cluster>> KMeansClustering::InitPlusPlus(int numberClusters, std::vector<std::shared_ptr<Models::Sample>>& samples, Numeric::Random& randomGenerator, bool sampleHasWeighting)
+        std::vector<std::shared_ptr<KMeansClustering::Cluster>> KMeansClustering::InitPlusPlus(int numberClusters, std::vector<std::shared_ptr<Models::Sample>>& samples, const Numeric::Random& randomGenerator, bool sampleHasWeighting)
         {
             std::vector<std::shared_ptr<Cluster>> clusters;
 
@@ -262,7 +262,7 @@ namespace Deltares
             return clusters;
         }
 
-        int KMeansClustering::ProporSelect(std::vector<double>& values, Numeric::Random& randomGenerator)
+        int KMeansClustering::ProporSelect(std::vector<double>& values, const Numeric::Random& randomGenerator)
         {
             // on the fly technique
             // values[] can't be all 0.0s
