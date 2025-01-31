@@ -160,6 +160,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Combine\ExcludingCombiner.h" />
+    <ClInclude Include="Combine\WeightedSumCombiner.h" />
+    <ClInclude Include="Combine\HohenbichlerExcludingCombiner.h" />
     <ClInclude Include="Model\ComputationalStochast.h" />
     <ClInclude Include="Model\ModelProject.h" />
     <ClInclude Include="Reliability\FragilityCurveProject.h" />
@@ -357,6 +359,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Combine\ExcludingCombiner.cpp" />
+    <ClCompile Include="Combine\WeightedSumCombiner.cpp" />
+    <ClCompile Include="Combine\HohenbichlerExcludingCombiner.cpp" />
     <ClCompile Include="Model\ComputationalStochast.cpp" />
     <ClCompile Include="Model\ModelProject.cpp" />
     <ClCompile Include="Reliability\FragilityCurveProject.cpp" />

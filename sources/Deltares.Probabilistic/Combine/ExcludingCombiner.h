@@ -20,9 +20,9 @@
 // All rights reserved.
 //
 #pragma once
+#include <vector>
 #include <memory>
-
-#include "combiner.h"
+#include "../Reliability/DesignPoint.h"
 #include "../Statistics/Scenario.h"
 
 namespace Deltares
@@ -30,35 +30,20 @@ namespace Deltares
     namespace Reliability
     {
         /**
-         * \brief Combines design points which have no overlap
+         * \brief Super class for all excluding design point combination algorithms
          */
-        class ExcludingCombiner : public Combiner
+        class ExcludingCombiner
         {
         public:
-            /**
-             * \brief Combines a number of design points
-             * \param combineMethodType Series (or-combination) or Parallel (and-combination) combination type
-             * \param designPoints Design points to be combined
-             * \param selfCorrelationMatrix Administration of correlations between different design points
-             * \param progress Progress indicator (optional)
-             * \return Design point resembling the combined reliability and alpha values
-             */
-            std::shared_ptr<DesignPoint> combineDesignPoints(combineAndOr combineMethodType, std::vector<std::shared_ptr<DesignPoint>>& designPoints, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix = nullptr, std::shared_ptr<ProgressIndicator> progress = nullptr) override
-            {
-                throw probLibException("combineDesignPoints with scenarios should be called");
-            }
-
             /**
              * \brief Combines a number of design points
              * \param scenarios Scenarios
              * \param designPoints Design points to be combined
              * \return Design point resembling the combined reliability and alpha values
              */
-            std::unique_ptr<DesignPoint> combineDesignPoints(
+            virtual std::unique_ptr<DesignPoint> combineExcludingDesignPoints(
                 std::vector<std::shared_ptr<Statistics::Scenario>>& scenarios,
-                std::vector<std::shared_ptr<Reliability::DesignPoint>>& designPoints);
+                std::vector<std::shared_ptr<Reliability::DesignPoint>>& designPoints) = 0;
         };
-    }
-} 
-
-
+    };
+}

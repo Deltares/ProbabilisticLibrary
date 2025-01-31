@@ -26,8 +26,10 @@
 #include "../../Deltares.Probabilistic/Combine/HohenbichlerFormCombiner.h"
 #include "../../Deltares.Probabilistic/Combine/HohenbichlerNumIntCombiner.h"
 #include "../../Deltares.Probabilistic/Combine/DirectionalSamplingCombiner.h"
-#include "../../Deltares.Probabilistic/Combine/ExcludingCombiner.h"
 #include "../../Deltares.Probabilistic/Combine/ImportanceSamplingCombiner.h"
+#include "../../Deltares.Probabilistic/Combine/ExcludingCombiner.h"
+#include "../../Deltares.Probabilistic/Combine/HohenbichlerExcludingCombiner.h"
+#include "../../Deltares.Probabilistic/Combine/WeightedSumCombiner.h"
 
 using namespace Deltares::Reliability;
 using namespace Deltares::Statistics;
@@ -48,7 +50,8 @@ namespace Deltares
                 ImportanceSamplingCombinerTest();
                 ImportanceSamplingCombinerAndTest();
                 ImportanceSamplingCombinerInvertedTest();
-                ExcludingCombinerTest();
+                WeightedSumCombinerTest();
+                HohenbichlerExcludingCombinerTest();
             }
 
             void CombinerTest::HohenbichlerCombinerTest() const
@@ -124,10 +127,16 @@ namespace Deltares
                 tester(importance_sampling_combiner.get(), 1.0, ref, combineAndOr::combOr);
             }
 
-            void CombinerTest::ExcludingCombinerTest() const
+            void CombinerTest::WeightedSumCombinerTest() const
             {
-                auto excluding_combiner = std::make_unique<ExcludingCombiner>();
-                excluding_tester(excluding_combiner.get(), 1.0);
+                auto excluding_combiner = std::make_unique<WeightedSumCombiner>();
+                excluding_tester(excluding_combiner.get(), 1.0, 1.0);
+            }
+
+            void CombinerTest::HohenbichlerExcludingCombinerTest() const
+            {
+                auto excluding_combiner = std::make_unique<HohenbichlerExcludingCombiner>();
+                excluding_tester(excluding_combiner.get(), 1.0, 1.025286);
             }
 
             void CombinerTest::tester(Combiner* comb, const double beta, const alphaBeta& ref, const combineAndOr AndOr ) const
@@ -168,7 +177,7 @@ namespace Deltares
                 }
             }
 
-            void CombinerTest::excluding_tester(Reliability::ExcludingCombiner* comb, const double beta) const
+            void CombinerTest::excluding_tester(Reliability::ExcludingCombiner* combiner, const double beta, const double expectedBeta) const
             {
                 constexpr int nDesignPoints = 2; // Number of elements
                 constexpr size_t nStochasts = 4;
@@ -204,9 +213,10 @@ namespace Deltares
                     rho->setSelfCorrelation(designPoints[0]->Alphas[i]->Stochast, rhoXK[i]);
                 }
 
-                auto combinedDesignPoint = comb->combineDesignPoints(scenarios, designPoints);
+                auto combinedDesignPoint = combiner->combineExcludingDesignPoints(scenarios, designPoints);
 
-                EXPECT_NEAR(combinedDesignPoint->Beta, beta, margin);
+                EXPECT_NEAR(combinedDesignPoint->Beta, expectedBeta, margin);
+                ASSERT_EQ(combinedDesignPoint->ContributingDesignPoints.size(), nDesignPoints);
             }
 
             void CombinerTest::addDesignPoint(const double beta, const size_t nStochasts, size_t i, std::vector<double>& alphaInput, std::vector<std::shared_ptr<Deltares::Statistics::Stochast>>& stochasts, std::vector<std::shared_ptr<Deltares::Reliability::DesignPoint>>& designPoints) const
