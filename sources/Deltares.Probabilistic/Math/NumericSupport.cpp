@@ -24,7 +24,11 @@
 #include <cmath>
 #include <functional>
 #include <memory>
+#if __has_include(<format>)
 #include <format>
+#else
+#include "../Utils/probLibString.h"
+#endif
 #include <sstream>
 
 #include "Constants.h"
@@ -779,12 +783,11 @@ namespace Deltares
             std::stringstream ss;
             for (size_t i = 0; i <values.size(); i++)
             {
-#ifdef __cpp_lib_format
                 double value = values[i];
+#ifdef __cpp_lib_format
                 std::string valueStr = std::format("{:.5G}", value);
 #else
-                auto pl = Deltares::Reliability::probLibString();
-                valueStr = sep + pl.double2str(reliabilityIndex);
+                std::string valueStr = Reliability::probLibString::double2str(value);
 #endif
                 if (i == 0)
                 {
