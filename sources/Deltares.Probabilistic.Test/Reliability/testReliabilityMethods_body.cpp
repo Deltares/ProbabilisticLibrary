@@ -258,6 +258,32 @@ namespace Deltares
                 EXPECT_NEAR(designPoint->Beta, -0.01153, 1e-5);
             }
 
+            void testReliabilityMethods::testClustersAdpImpSampling()
+            {
+                for (int j = 0; j < 5; j++)
+                {
+                    auto calculator = AdaptiveImportanceSampling();
+                    auto modelRunner = projectBuilder().BuildQuadraticProject();
+                    calculator.Settings->importanceSamplingSettings->MinimumSamples = 50000;
+                    calculator.Settings->importanceSamplingSettings->MaximumSamples = 50000;
+                    calculator.Settings->MinVarianceLoops = 2;
+                    calculator.Settings->MaxVarianceLoops = 8;
+                    calculator.Settings->importanceSamplingSettings->randomSettings->Seed = j;
+                    calculator.Settings->Clustering = true;
+                    calculator.Settings->clusterSettings->MaxClusters = 4;
+                    calculator.Settings->clusterSettings->clusterInitializationMethod = Optimization::ClusterInitializationMethod::PlusPlus;
+                    auto designPoint = calculator.getDesignPoint(modelRunner);
+                    ASSERT_EQ(designPoint->Alphas.size(), 2);
+                    //EXPECT_NEAR(designPoint->Beta, 0.8121, 1e-4);
+                    std::cout << "Beta = " << designPoint->Beta << std::endl;
+                    for (int i = 0; i < 4; i++)
+                    {
+                        auto alpha = designPoint->ContributingDesignPoints[i]->Alphas;
+                        std::cout << alpha[0]->Alpha << " , " << alpha[1]->Alpha << std::endl;
+                    }
+                }
+            }
+
         }
 
     }

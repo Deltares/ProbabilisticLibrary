@@ -41,16 +41,12 @@
 #include "Optimization/testCobyla.h"
 
 using namespace Deltares::Probabilistic;
+using namespace Deltares::Probabilistic::Test;
 
-namespace Deltares
-{
-    namespace Probabilistic
-    {
-        namespace Test
-        {
             int main(int argc, char** argv)
             {
                 ::testing::InitGoogleTest(&argc, argv);
+                ::testing::GTEST_FLAG(filter) = "reliability_method_test.testClustersAdpImpSampling";
                 return RUN_ALL_TESTS();
             }
 
@@ -196,6 +192,11 @@ namespace Deltares
                 testReliabilityMethods::testCrudeMonteCarloReliability();
             }
 
+            TEST(reliability_method_test, testClustersAdpImpSampling)
+            {
+                testReliabilityMethods::testClustersAdpImpSampling();
+            }
+
             TEST(unittst, testDistributions)
             {
                 testDistributions::allDistributionsTests();
@@ -237,7 +238,4 @@ namespace Deltares
                 tstCobylaOpt.allCobylaTests();
             }
 
-        }
-    }
-}
 

@@ -39,6 +39,7 @@ namespace Deltares
                 std::shared_ptr<Deltares::Models::ModelRunner> BuildProject();
                 std::shared_ptr<Deltares::Models::ModelRunner> BuildLinearProject();
                 std::shared_ptr<Deltares::Models::ModelRunner> BuildLinearArrayProject();
+                std::shared_ptr<Deltares::Models::ModelRunner> BuildQuadraticProject();
                 std::shared_ptr<Deltares::Models::ModelRunner> BuildProjectWithDeterminist(double valueDeterminist);
                 std::shared_ptr<Reliability::FragilityCurve> BuildFragilityCurve();
 
@@ -53,6 +54,7 @@ namespace Deltares
 
                 static void sum(std::shared_ptr<Models::ModelSample> sample);
                 static void linear(std::shared_ptr<Models::ModelSample> sample);
+                static void quadratic(std::shared_ptr<Models::ModelSample> sample);
 
                 static std::shared_ptr<Statistics::Stochast>  getDeterministicStochast(double mean = 0);
                 static std::shared_ptr<Statistics::Stochast>  getNormalStochast(double mean = 0, double stddev = 1);
