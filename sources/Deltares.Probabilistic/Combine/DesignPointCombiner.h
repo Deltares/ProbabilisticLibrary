@@ -33,7 +33,7 @@ namespace Deltares
 {
     namespace Reliability
     {
-        enum CombinerType { Hohenbichler, ImportanceSampling, DirectionalSampling };
+        enum CombinerType { Hohenbichler, ImportanceSampling, DirectionalSampling, HohenbichlerForm };
         enum ExcludingCombinerType { WeightedSum, HohenbichlerExcluding };
 
         /**
