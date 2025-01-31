@@ -27,6 +27,7 @@
 #include "../Model/Message.h"
 #include "../Model/ProgressIndicator.h"
 #include "../Statistics/Stochast.h"
+#include "../Statistics/Scenario.h"
 #include "../Statistics/CorrelationMatrix.h"
 #include "../Statistics/SelfCorrelationMatrix.h"
 #include "DesignPoint.h"
@@ -96,11 +97,9 @@ namespace Deltares
                     }
                 }
 
-                DesignPoint^ Combine(CombinationType combination, System::Collections::Generic::IList<Reliability::Wrappers::DesignPoint^>^ designPoints, Deltares::Statistics::Wrappers::SelfCorrelationMatrix^ selfCorrelationMatrix, Wrappers::ProgressIndicator^ progressIndicator)
+                    DesignPoint^ Combine(CombinationType combination, System::Collections::Generic::IList<Reliability::Wrappers::DesignPoint^>^ designPoints, Deltares::Statistics::Wrappers::SelfCorrelationMatrix^ selfCorrelationMatrix, Wrappers::ProgressIndicator^ progressIndicator)
                 {
                     std::vector<std::shared_ptr<Reliability::DesignPoint>> nativeDesignPoints;
-
-                    System::Collections::Generic::List<Statistics::Wrappers::Stochast^>^ stochasts = gcnew System::Collections::Generic::List<Statistics::Wrappers::Stochast^>();
 
                     for (int i = 0; i < designPoints->Count; i++)
                     {
@@ -114,6 +113,27 @@ namespace Deltares
                     std::shared_ptr<Reliability::DesignPoint> nativeDesignPoint = shared->object->combineDesignPoints(combineAndOr, nativeDesignPoints, nativeSelfCorrelationMatrix, nativeProgressIndicator);
 
                     Wrappers::DesignPoint^ designPoint = gcnew Wrappers::DesignPoint(nativeDesignPoint, designPoints);
+
+                    return designPoint;
+                }
+
+                DesignPoint^ CombineExcluding(System::Collections::Generic::IList<Statistics::Wrappers::Scenario^>^ scenarios, System::Collections::Generic::IList<Reliability::Wrappers::DesignPoint^>^ designPoints)
+                {
+                    std::vector<std::shared_ptr<Statistics::Scenario>> nativeScenarios;
+                    for (int i = 0; i < scenarios->Count; i++)
+                    {
+                        nativeScenarios.push_back(scenarios[i]->GetNativeScenario());
+                    }
+
+                    std::vector<std::shared_ptr<Reliability::DesignPoint>> nativeDesignPoints;
+                    for (int i = 0; i < designPoints->Count; i++)
+                    {
+                        nativeDesignPoints.push_back(designPoints[i]->getDesignPoint());
+                    }
+
+                    std::unique_ptr<Reliability::DesignPoint> nativeDesignPoint = shared->object->combineDesignPointsExcluding(nativeScenarios, nativeDesignPoints);
+
+                    Wrappers::DesignPoint^ designPoint = gcnew Wrappers::DesignPoint(std::move(nativeDesignPoint), designPoints);
 
                     return designPoint;
                 }

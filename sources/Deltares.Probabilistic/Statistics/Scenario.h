@@ -20,27 +20,25 @@
 // All rights reserved.
 //
 #pragma once
-#include <vector>
+#include <string>
 #include <memory>
-#include "combiner.h"
+
+#include "Stochast.h"
 
 namespace Deltares
 {
-    namespace Reliability
+    namespace Statistics
     {
-        class HohenbichlerNumIntCombiner : public Combiner
+        class Scenario
         {
         public:
-            std::shared_ptr<DesignPoint> combineDesignPoints(combineAndOr combineMethodType,
-                std::vector<std::shared_ptr<DesignPoint>>& designPoints,
-                std::shared_ptr<Statistics::SelfCorrelationMatrix>
-                selfCorrelationMatrix = nullptr,
-                std::shared_ptr<ProgressIndicator> progress =
-                nullptr) override;
+            std::string name = "";
 
-        private:
-            static void findMaxCorrelatedDesignPoints(std::vector<std::shared_ptr<DesignPoint>>& designPoints, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix,
-                const std::vector<std::shared_ptr<Statistics::Stochast>>& stochasts, long long& i1max, long long& i2max);
+            double probability = 0.0;
+
+            std::shared_ptr<Stochast> parameter = nullptr;
+            double parameterValue = std::nan("");
         };
-    };
+    }
 }
+

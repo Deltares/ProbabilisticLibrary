@@ -22,25 +22,28 @@
 #pragma once
 #include <vector>
 #include <memory>
-#include "combiner.h"
+#include "../Reliability/DesignPoint.h"
+#include "../Statistics/Scenario.h"
 
 namespace Deltares
 {
     namespace Reliability
     {
-        class HohenbichlerNumIntCombiner : public Combiner
+        /**
+         * \brief Super class for all excluding design point combination algorithms
+         */
+        class ExcludingCombiner
         {
         public:
-            std::shared_ptr<DesignPoint> combineDesignPoints(combineAndOr combineMethodType,
-                std::vector<std::shared_ptr<DesignPoint>>& designPoints,
-                std::shared_ptr<Statistics::SelfCorrelationMatrix>
-                selfCorrelationMatrix = nullptr,
-                std::shared_ptr<ProgressIndicator> progress =
-                nullptr) override;
-
-        private:
-            static void findMaxCorrelatedDesignPoints(std::vector<std::shared_ptr<DesignPoint>>& designPoints, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix,
-                const std::vector<std::shared_ptr<Statistics::Stochast>>& stochasts, long long& i1max, long long& i2max);
+            /**
+             * \brief Combines a number of design points
+             * \param scenarios Scenarios
+             * \param designPoints Design points to be combined
+             * \return Design point resembling the combined reliability and alpha values
+             */
+            virtual std::unique_ptr<DesignPoint> combineExcludingDesignPoints(
+                std::vector<std::shared_ptr<Statistics::Scenario>>& scenarios,
+                std::vector<std::shared_ptr<Reliability::DesignPoint>>& designPoints) = 0;
         };
     };
 }

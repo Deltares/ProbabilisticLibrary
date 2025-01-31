@@ -21,19 +21,20 @@
 //
 #pragma once
 
-#include "../Utils/probLibException.h"
 #include "../Reliability/DesignPoint.h"
+#include "../Statistics/Scenario.h"
 #include "combiner.h"
 #include "DirectionalSamplingCombiner.h"
+#include "ExcludingCombiner.h"
 #include "HohenbichlerNumIntCombiner.h"
 #include "ImportanceSamplingCombiner.h"
-#include "../Math/Randomizers/RandomValueGenerator.h"
 
 namespace Deltares
 {
     namespace Reliability
     {
-        enum CombinerType {Hohenbichler, ImportanceSampling, DirectionalSampling};
+        enum CombinerType { Hohenbichler, ImportanceSampling, DirectionalSampling };
+        enum ExcludingCombinerType { WeightedSum, HohenbichlerExcluding };
 
         /**
          * \brief Combines design points
@@ -58,6 +59,11 @@ namespace Deltares
             CombinerType combinerType = CombinerType::ImportanceSampling;
 
             /**
+             * \brief Specifies the excluding combiner algorithm
+             */
+            ExcludingCombinerType excludingCombinerType = ExcludingCombinerType::WeightedSum;
+
+            /**
              * \brief Combines a number of design points
              * \param combineMethodType Identifies series (or) or parallel (and) combination
              * \param designPoints Design points to be combined
@@ -71,33 +77,22 @@ namespace Deltares
                 return combiner->combineDesignPoints(combineMethodType, designPoints, selfCorrelationMatrix, progress);
             }
 
+            std::unique_ptr<DesignPoint> combineDesignPointsExcluding(std::vector<std::shared_ptr<Statistics::Scenario>>& scenarios, std::vector<std::shared_ptr<DesignPoint>>& designPoints) const
+            {
+                const std::unique_ptr<ExcludingCombiner> combiner = getExcludingCombiner();
+                return combiner->combineExcludingDesignPoints(scenarios, designPoints);
+            }
+
             static std::string getCombineTypeString(combineAndOr type);
-            static combineAndOr getCombineType(std::string method);
+            static combineAndOr getCombineType(const std::string& method);
             static std::string getCombinerMethodString(CombinerType type);
-            static CombinerType getCombinerMethod(std::string method);
+            static CombinerType getCombinerMethod(const std::string& method);
+            static std::string getExcludingCombinerMethodString(ExcludingCombinerType type);
+            static ExcludingCombinerType getExcludingCombinerMethod(const std::string& method);
 
         private:
-            std::shared_ptr<Combiner> getCombiner()
-            {
-                switch (combinerType)
-                {
-                case CombinerType::ImportanceSampling:
-                {
-                    auto impSamplingCombiner = std::make_shared<ImportanceSamplingCombiner>();
-                    impSamplingCombiner->randomGeneratorType = generator;
-                    return impSamplingCombiner;
-                }
-                case CombinerType::Hohenbichler:
-                    return std::make_shared<HohenbichlerNumIntCombiner>();
-                case CombinerType::DirectionalSampling:
-                {
-                    auto directionalSamplingCombiner = std::make_shared<DirectionalSamplingCombiner>();
-                    directionalSamplingCombiner->randomGeneratorType = generator;
-                    return directionalSamplingCombiner;
-                }
-                default: throw probLibException("Combiner type");
-                }
-            }
+            std::shared_ptr<Combiner> getCombiner() const;
+            std::unique_ptr<ExcludingCombiner> getExcludingCombiner() const;
             Numeric::RandomValueGeneratorType generator = Numeric::RandomValueGeneratorType::MersenneTwister;
         };
     }

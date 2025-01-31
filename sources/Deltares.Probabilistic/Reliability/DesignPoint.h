@@ -59,6 +59,14 @@ namespace Deltares::Reliability
 
         void expandContributions();
         void correctFragilityCurves();
+
+        /**
+         * \brief Gets all stochasts in a number of design points in the design point without duplicates
+         * \param designPoints design points
+         * \return All stochasts without doubling
+         */
+        static std::vector<std::shared_ptr<Statistics::Stochast>> getUniqueStochasts(const std::vector<std::shared_ptr<Reliability::DesignPoint>>& designPoints);
+
     private:
         void expandFragilityCurves();
         void expandStochastRealization(std::shared_ptr<Models::StochastPointAlpha> stochastRealization);
@@ -66,5 +74,4 @@ namespace Deltares::Reliability
         void updateVariableStochasts(std::shared_ptr<StochastPoint> fragilityCurveAlpha);
     };
 }
-
 

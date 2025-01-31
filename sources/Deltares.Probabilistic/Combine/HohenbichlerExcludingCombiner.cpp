@@ -19,17 +19,23 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include "HohenbichlerFormCombiner.h"
+#include <vector>
+#include <memory>
+
+#include "ExcludingCombiner.h"
+#include "HohenbichlerExcludingCombiner.h"
+
 #include "combineElements.h"
-#include "alphaBeta.h"
 
 namespace Deltares
 {
     namespace Reliability
     {
-        std::shared_ptr<DesignPoint> HohenbichlerFormCombiner::combineDesignPoints(combineAndOr combineMethodType, std::vector<std::shared_ptr<DesignPoint>>& designPoints, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix, std::shared_ptr<ProgressIndicator> progress)
+        std::unique_ptr<DesignPoint> HohenbichlerExcludingCombiner::combineExcludingDesignPoints(
+            std::vector<std::shared_ptr<Statistics::Scenario>>& scenarios,
+            std::vector<std::shared_ptr<Reliability::DesignPoint>>& designPoints)
         {
-            elements elm;
+            elements designPointElements;
             const std::vector<std::shared_ptr<Statistics::Stochast>> stochasts = DesignPoint::getUniqueStochasts(designPoints);
             const auto nStochasts = stochasts.size();
 
@@ -41,32 +47,36 @@ namespace Deltares
                 {
                     alpha(i) = -(reorderedDesignPoint->Values[i] / designPoint->Beta);
                 }
-                auto dp = alphaBeta(designPoint->Beta, alpha);
-                elm.push_back(dp);
+                auto designPointElement = alphaBeta(designPoint->Beta, alpha);
+                designPointElements.push_back(designPointElement);
             }
 
-            auto cmb = combineElements();
-            auto rho = vector1D(nStochasts);
-            for (size_t i = 0; i < nStochasts; i++)
+            combineElements combiner = combineElements();
+            std::vector<double> percentages = std::vector<double>(nStochasts);
+            for (size_t i = 0; i < scenarios.size(); i++)
             {
-                rho(i) = selfCorrelationMatrix->getSelfCorrelation(stochasts[i]);
+                percentages[i] = scenarios[i]->probability * 100.0;
             }
 
-            auto result = cmb.combineMultipleElements(elm, rho, combineMethodType);
-            nonConvergedForm += result.n;
+            auto result = combiner.combineMultipleElementsProb(designPointElements, percentages, combineAndOr::combOr);
 
-            auto dp = std::make_shared<DesignPoint>();
-            dp->Beta = result.ab.getBeta();
+            std::unique_ptr<DesignPoint> combinedDesignPoint = std::make_unique<DesignPoint>();
+            combinedDesignPoint->Beta = result.ab.getBeta();
             for (size_t i = 0; i < nStochasts; i++)
             {
                 auto alpha = std::make_shared<StochastPointAlpha>();
                 alpha->Stochast = stochasts[i];
                 alpha->Alpha = result.ab.getAlphaI(i);
-                dp->Alphas.push_back(alpha);
+                combinedDesignPoint->Alphas.push_back(alpha);
             }
-            return dp;
-        }
 
-    };
+            for (std::shared_ptr<DesignPoint> designPoint : designPoints)
+            {
+                combinedDesignPoint->ContributingDesignPoints.push_back(designPoint);
+            }
+
+            return combinedDesignPoint;
+        }
+    }
 }
 
