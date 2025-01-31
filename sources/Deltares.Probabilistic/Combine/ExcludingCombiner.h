@@ -23,7 +23,6 @@
 #include <vector>
 #include <memory>
 #include "../Reliability/DesignPoint.h"
-#include "../Statistics/CorrelationMatrix.h"
 #include "../Statistics/Scenario.h"
 
 namespace Deltares
