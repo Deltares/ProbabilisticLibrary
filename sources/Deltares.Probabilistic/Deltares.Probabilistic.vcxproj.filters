@@ -216,6 +216,8 @@
     <ClCompile Include="Statistics\Scenario.cpp" />
     <ClCompile Include="Combine\ExcludingCombiner.cpp" />
     <ClCompile Include="Combine\HohenbichlerExcludingCombiner.cpp" />
+    <ClCompile Include="Combine\ExcludingCombineProject.cpp" />
+    <ClCompile Include="Combine\ExcludingCombineSettings.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -450,6 +452,8 @@
     <ClInclude Include="Statistics\Scenario.h" />
     <ClInclude Include="Combine\ExcludingCombiner.h" />
     <ClInclude Include="Combine\HohenbichlerExcludingCombiner.h" />
+    <ClInclude Include="Combine\ExcludingCombineProject.h" />
+    <ClInclude Include="Combine\ExcludingCombineSettings.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

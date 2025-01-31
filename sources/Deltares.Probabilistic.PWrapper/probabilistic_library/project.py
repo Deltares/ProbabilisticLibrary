@@ -601,6 +601,72 @@ class CombineProject:
 				self._design_point = DesignPoint(designPointId, variables, self._design_points)
 		return self._design_point
 
+class ExcludingCombineProject:
+
+	def __init__(self):
+		self._id = interface.Create('excluding_combine_project')
+
+		self._design_points = CallbackList(self._design_points_changed)
+		self._scenarios = CallbackList(self._scenarios_changed)
+		self._settings = ExcludingCombineSettings()
+		self._design_point = None
+		self._synchronizing = False
+
+	def __del__(self):
+		interface.Destroy(self._id)
+
+	def __dir__(self):
+		return ['design_points',
+				'scenarios',
+				'settings',
+				'design_point']
+
+	def _design_points_changed(self):
+		variables = []
+		for design_point in self._design_points:
+			variables.extend(design_point.get_variables())
+
+	def _scenarios_changed(self):
+		if not self._synchronizing:
+			# replace floats by Scenario
+			self._synchronizing = True
+			for i in range(len(self._scenarios)):
+				if type(self._scenarios[i]) == int or type(self._scenarios[i]) == float:
+					val = self._scenarios[i]
+					self._scenarios[i] = Scenario()
+					self._scenarios[i].probability = val
+			self._synchronizing = False
+
+	@property
+	def design_points(self):
+		return self._design_points
+
+	@property
+	def scenarios(self):
+		return self._scenarios
+
+	@property
+	def settings(self):
+		return self._settings
+
+	def run(self):
+		self._design_point = None
+		interface.SetArrayIntValue(self._id, 'design_points', [design_point._id for design_point in self._design_points])
+		interface.SetArrayIntValue(self._id, 'scenarios', [scenario._id for scenario in self._scenarios])
+		interface.SetIntValue(self._id, 'settings', self._settings._id)
+		interface.Execute(self._id, 'run')
+
+	@property
+	def design_point(self):
+		if self._design_point is None:
+			designPointId = interface.GetIdValue(self._id, 'design_point')
+			if designPointId > 0:
+				variables = []
+				for design_point in self._design_points:
+					variables.extend(design_point.get_variables())
+				self._design_point = DesignPoint(designPointId, variables, self._design_points)
+		return self._design_point
+
 class LengthEffectProject:
 	def __init__(self):
 		self._id = interface.Create('length_effect_project')
