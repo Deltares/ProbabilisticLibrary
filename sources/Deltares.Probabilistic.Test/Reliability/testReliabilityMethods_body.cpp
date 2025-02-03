@@ -260,26 +260,41 @@ namespace Deltares
 
             void testReliabilityMethods::testClustersAdpImpSampling()
             {
-                for (int j = 0; j < 5; j++)
+                auto expectedBetas = std::vector<double>({ 0.790941 , 0.753699 , 0.775241 , 0.795621,  0.777854 });
+                auto expectedCentersA = std::vector<double>( { -0.708875, -0.705334, 0.712582, 0.701588, 0.707038, -0.707175, -0.716868, 0.697209 });
+                auto expectedCentersB = std::vector<double>({ -0.716727 , 0.697354, 0.718175 , 0.695863, -0.712197 , -0.70198, 0.714321 , -0.699818 });
+                auto expectedCentersC = std::vector<double>({ 0.706558 , 0.707655, -0.678015 , -0.735048, 0.683729 , -0.729736, -0.720587 , 0.693365 });
+                auto expectedCentersD = std::vector<double>({ -0.70989 , -0.704313, 0.708422 , 0.705789, -0.693545 , 0.720413, 0.688054 , -0.72566 });
+                auto expectedCentersE = std::vector<double>({ -0.697022 , 0.717049, 0.694748 , -0.719253, 0.709318 , 0.704889, -0.731142 , -0.682225 });
+                auto expectedCenters = std::vector({ expectedCentersA, expectedCentersB, expectedCentersC, expectedCentersD, expectedCentersE });
+
+                for (int seed = 0; seed < 5; seed++)
                 {
                     auto calculator = AdaptiveImportanceSampling();
                     auto modelRunner = projectBuilder().BuildQuadraticProject();
-                    calculator.Settings->importanceSamplingSettings->MinimumSamples = 50000;
-                    calculator.Settings->importanceSamplingSettings->MaximumSamples = 50000;
+                    calculator.Settings->importanceSamplingSettings->MinimumSamples = 5000;
+                    calculator.Settings->importanceSamplingSettings->MaximumSamples = 10000;
                     calculator.Settings->MinVarianceLoops = 2;
                     calculator.Settings->MaxVarianceLoops = 8;
-                    calculator.Settings->importanceSamplingSettings->randomSettings->Seed = j;
+                    calculator.Settings->importanceSamplingSettings->randomSettings->Seed = seed;
                     calculator.Settings->Clustering = true;
                     calculator.Settings->clusterSettings->MaxClusters = 4;
                     calculator.Settings->clusterSettings->clusterInitializationMethod = Optimization::ClusterInitializationMethod::PlusPlus;
                     auto designPoint = calculator.getDesignPoint(modelRunner);
                     ASSERT_EQ(designPoint->Alphas.size(), 2);
-                    //EXPECT_NEAR(designPoint->Beta, 0.8121, 1e-4);
-                    std::cout << "Beta = " << designPoint->Beta << std::endl;
+                    EXPECT_NEAR(designPoint->Beta, expectedBetas[seed], 1e-4);
+                    //std::cout << "Beta = " << designPoint->Beta << std::endl;
+                    auto ii = 0;
                     for (int i = 0; i < 4; i++)
                     {
                         auto alpha = designPoint->ContributingDesignPoints[i]->Alphas;
-                        std::cout << alpha[0]->Alpha << " , " << alpha[1]->Alpha << std::endl;
+                        auto expectedAlpha0 = expectedCenters[seed][ii];
+                        ii++;
+                        auto expectedAlpha1 = expectedCenters[seed][ii];
+                        ii++;
+                        EXPECT_NEAR(alpha[0]->Alpha, expectedAlpha0, 1e-4);
+                        EXPECT_NEAR(alpha[1]->Alpha, expectedAlpha1, 1e-4);
+                        //std::cout << alpha[0]->Alpha << " , " << alpha[1]->Alpha << std::endl;
                     }
                 }
             }
