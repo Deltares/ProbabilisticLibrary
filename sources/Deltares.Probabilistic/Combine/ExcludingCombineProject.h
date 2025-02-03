@@ -26,6 +26,9 @@
 
 namespace Deltares::Reliability
 {
+    /**
+     * \brief Project for combining excluding design points
+     */
     class ExcludingCombineProject
     {
     public:
@@ -35,7 +38,8 @@ namespace Deltares::Reliability
         std::vector<std::shared_ptr<Deltares::Reliability::DesignPoint>> designPoints;
 
         /**
-         * \brief Collection of all design points to be combined
+         * \brief Collection of all scenarios. The number of scenarios and design points should be equal.
+         * \remarks The first scenario applies to the first design point, the second scenario to the second design point, etc.
          */
         std::vector<std::shared_ptr<Deltares::Statistics::Scenario>> scenarios;
 
