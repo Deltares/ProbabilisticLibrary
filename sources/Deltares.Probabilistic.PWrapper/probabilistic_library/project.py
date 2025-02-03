@@ -636,7 +636,7 @@ class ExcludingCombineProject:
 			# replace floats by Scenario
 			self._synchronizing = True
 			for i in range(len(self._scenarios)):
-				if type(self._scenarios[i]) == int or type(self._scenarios[i]) == float:
+				if isinstance(self._scenarios[i], int) or isinstance(self._scenarios[i], float):
 					val = self._scenarios[i]
 					self._scenarios[i] = Scenario()
 					self._scenarios[i].probability = val
@@ -683,12 +683,12 @@ class ExcludingCombineProject:
 	@property
 	def design_point(self):
 		if self._design_point is None:
-			designPointId = interface.GetIdValue(self._id, 'design_point')
-			if designPointId > 0:
+			design_point_id = interface.GetIdValue(self._id, 'design_point')
+			if design_point_id > 0:
 				variables = []
 				for design_point in self._design_points:
 					variables.extend(design_point.get_variables())
-				self._design_point = DesignPoint(designPointId, variables, self._design_points)
+				self._design_point = DesignPoint(design_point_id, variables, self._design_points)
 		return self._design_point
 
 class LengthEffectProject:

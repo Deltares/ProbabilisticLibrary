@@ -24,48 +24,45 @@
 #include "ExcludingCombineSettings.h"
 #include "../Reliability/DesignPoint.h"
 
-namespace Deltares
+namespace Deltares::Reliability
 {
-    namespace Reliability
+    class ExcludingCombineProject
     {
-        class ExcludingCombineProject
-        {
-        public:
-            /**
-             * \brief Collection of all design points to be combined
-             */
-            std::vector<std::shared_ptr<Deltares::Reliability::DesignPoint>> designPoints;
+    public:
+        /**
+         * \brief Collection of all design points to be combined
+         */
+        std::vector<std::shared_ptr<Deltares::Reliability::DesignPoint>> designPoints;
 
-            /**
-             * \brief Collection of all design points to be combined
-             */
-            std::vector<std::shared_ptr<Deltares::Statistics::Scenario>> scenarios;
+        /**
+         * \brief Collection of all design points to be combined
+         */
+        std::vector<std::shared_ptr<Deltares::Statistics::Scenario>> scenarios;
 
-            /**
-             * \brief Gets an array of validation messages
-             */
-            std::vector<std::shared_ptr<Models::Message>> validate();
+        /**
+         * \brief Gets an array of validation messages
+         */
+        std::vector<std::shared_ptr<Models::Message>> validate() const;
 
-            /**
-             * \brief Indicates whether the settings are valid
-             */
-            bool is_valid();
+        /**
+         * \brief Indicates whether the settings are valid
+         */
+        bool is_valid() const;
 
-            /**
-             * \brief Calculation settings
-             */
-            std::shared_ptr<ExcludingCombineSettings> settings = std::make_shared<ExcludingCombineSettings>();
+        /**
+         * \brief Calculation settings
+         */
+        std::shared_ptr<ExcludingCombineSettings> settings = std::make_shared<ExcludingCombineSettings>();
 
-            /**
-             * \brief Results of the combination
-             */
-            std::shared_ptr<Reliability::DesignPoint> designPoint = nullptr;
+        /**
+         * \brief Results of the combination
+         */
+        std::shared_ptr<Reliability::DesignPoint> designPoint = nullptr;
 
-            /**
-             * \brief Executes the combination
-             */
-            void run();
-        };
-    }
+        /**
+         * \brief Executes the combination
+         */
+        void run();
+    };
 }
 

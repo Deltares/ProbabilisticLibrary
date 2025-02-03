@@ -143,7 +143,7 @@ namespace Deltares
 
             std::unordered_map <std::string, std::vector<double>> tempValues;
 
-            void UpdateValidationMessages(const std::vector<std::shared_ptr<Models::Message>>& messages);
+            void UpdateValidationMessages(const std::vector<std::shared_ptr<Models::Message>>& newMessages);
             std::vector<std::shared_ptr<Models::Message>> validationMessages;
         };
     }
