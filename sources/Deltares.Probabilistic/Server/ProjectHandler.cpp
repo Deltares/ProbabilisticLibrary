@@ -2083,10 +2083,10 @@ namespace Deltares
             return messageIds[message];
         }
 
-        void ProjectHandler::UpdateValidationMessages(const std::vector<std::shared_ptr<Models::Message>>& messages)
+        void ProjectHandler::UpdateValidationMessages(const std::vector<std::shared_ptr<Models::Message>>& newMessages)
         {
             this->validationMessages.clear();
-            for (std::shared_ptr<Models::Message> message : messages)
+            for (std::shared_ptr<Models::Message> message : newMessages)
             {
                 this->validationMessages.push_back(message);
             }
