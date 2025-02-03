@@ -26,23 +26,20 @@
 #include "Stochast.h"
 #include "../Model/Message.h"
 
-namespace Deltares
+namespace Deltares::Statistics
 {
-    namespace Statistics
+    class Scenario
     {
-        class Scenario
-        {
-        public:
-            std::string name = "";
+    public:
+        std::string name = "";
 
-            double probability = 0.0;
+        double probability = 0.0;
 
-            std::shared_ptr<Stochast> parameter = nullptr;
-            double parameterValue = std::nan("");
+        std::shared_ptr<Stochast> parameter = nullptr;
+        double parameterValue = std::nan("");
 
-            std::vector<std::shared_ptr<Models::Message>> validate() const;
+        std::vector<std::shared_ptr<Models::Message>> validate() const;
 
-        };
-    }
+    };
 }
 

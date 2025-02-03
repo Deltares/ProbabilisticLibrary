@@ -22,15 +22,12 @@
 #pragma once
 #include "DesignPointCombiner.h"
 
-namespace Deltares
+namespace Deltares::Reliability
 {
-    namespace Reliability
+    class ExcludingCombineSettings
     {
-        class ExcludingCombineSettings
-        {
-        public:
-            ExcludingCombinerType combinerMethod = ExcludingCombinerType::WeightedSum;
-        };
-    }
+    public:
+        ExcludingCombinerType combinerMethod = ExcludingCombinerType::WeightedSum;
+    };
 }
 
