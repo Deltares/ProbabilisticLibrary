@@ -86,7 +86,7 @@ class CombinerMethod(Enum):
 		return str(self.value)
 
 class ExcludingCombinerMethod(Enum):
-	weighted_sum = 'weigthed_sum'
+	weighted_sum = 'weighted_sum'
 	hohenbichler = 'hohenbichler'
 	def __str__(self):
 		return str(self.value)
@@ -936,7 +936,7 @@ class CombineSettings:
 class ExcludingCombineSettings:
 
 	def __init__(self):
-		self._id = interface.Create('combine_excluding_settings')
+		self._id = interface.Create('excluding_combine_settings')
 		
 	def __del__(self):
 		interface.Destroy(self._id)

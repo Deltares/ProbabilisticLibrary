@@ -1837,6 +1837,12 @@ namespace Deltares
 
                 if (method_ == "run") project->run();
             }
+            else if (objectType == ObjectType::ExcludingCombineProject)
+            {
+                std::shared_ptr<Reliability::ExcludingCombineProject> project = excludingCombineProjects[id];
+
+                if (method_ == "run") project->run();
+            }
             else if (objectType == ObjectType::LengthEffectProject)
             {
                 std::shared_ptr<Reliability::LengthEffectProject> project = lengthEffectProjects[id];
