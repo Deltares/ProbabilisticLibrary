@@ -56,7 +56,7 @@ namespace Deltares::Reliability
 
         if (std::abs(1 - sumProbabilities) > margin)
         {
-            messages.push_back(std::make_shared<Message>(MessageType::Error, "Scenario probabilities should add up to 1."));
+            messages.push_back(std::make_shared<Message>(MessageType::Error, "Scenario probabilities should add upp to 1."));
         }
 
         return messages;
