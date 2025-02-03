@@ -611,6 +611,9 @@ class ExcludingCombineProject:
 		self._settings = ExcludingCombineSettings()
 		self._design_point = None
 		self._synchronizing = False
+		self._dirty = True
+
+		interface.SetIntValue(self._id, 'settings', self._settings._id)
 
 	def __del__(self):
 		interface.Destroy(self._id)
@@ -619,12 +622,14 @@ class ExcludingCombineProject:
 		return ['design_points',
 				'scenarios',
 				'settings',
+				'is_valid',
+				'validate',
+				'run',
 				'design_point']
 
 	def _design_points_changed(self):
-		variables = []
-		for design_point in self._design_points:
-			variables.extend(design_point.get_variables())
+		if not self._synchronizing:
+			self._dirty = True
 
 	def _scenarios_changed(self):
 		if not self._synchronizing:
@@ -636,6 +641,13 @@ class ExcludingCombineProject:
 					self._scenarios[i] = Scenario()
 					self._scenarios[i].probability = val
 			self._synchronizing = False
+			self._dirty = True
+
+	def _update(self):
+		if self._dirty:
+			interface.SetArrayIntValue(self._id, 'design_points', [design_point._id for design_point in self._design_points])
+			interface.SetArrayIntValue(self._id, 'scenarios', [scenario._id for scenario in self._scenarios])
+			self._dirty = False
 
 	@property
 	def design_points(self):
@@ -649,11 +661,23 @@ class ExcludingCombineProject:
 	def settings(self):
 		return self._settings
 
+	def is_valid(self):
+		self._update()
+		return interface.GetBoolValue(self._id, 'is_valid')
+
+	def validate(self):
+		self._update()
+		interface.Execute(self._id, 'validate')
+		messages = []
+		message_ids = interface.GetArrayIdValue(self._id, 'validation_messages')
+		for message_id in message_ids:
+			messages.append(Message(message_id))
+		interface.Execute(self._id, 'clear_validate')
+		return FrozenList(messages) 
+
 	def run(self):
+		self._update()
 		self._design_point = None
-		interface.SetArrayIntValue(self._id, 'design_points', [design_point._id for design_point in self._design_points])
-		interface.SetArrayIntValue(self._id, 'scenarios', [scenario._id for scenario in self._scenarios])
-		interface.SetIntValue(self._id, 'settings', self._settings._id)
 		interface.Execute(self._id, 'run')
 
 	@property

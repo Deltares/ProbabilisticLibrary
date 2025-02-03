@@ -192,7 +192,16 @@ class Test_combine(unittest.TestCase):
         beta2 = StandardNormal.get_u_from_q(q2)
         dp2 = project_builder.get_design_point(beta2, 2)
         project.design_points.append(dp2)
-        project.scenarios.append(0.75)
+        project.scenarios.append(0.55)
+
+        self.assertFalse(project.is_valid());
+
+        for message in project.validate():
+            print(str(message))
+
+        project.scenarios[1] = 0.75
+
+        self.assertTrue(project.is_valid());
 
         project.settings.combiner_method =  ExcludingCombinerMethod.weighted_sum
 

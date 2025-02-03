@@ -24,6 +24,7 @@
 #include <memory>
 
 #include "Stochast.h"
+#include "../Model/Message.h"
 
 namespace Deltares
 {
@@ -38,6 +39,9 @@ namespace Deltares
 
             std::shared_ptr<Stochast> parameter = nullptr;
             double parameterValue = std::nan("");
+
+            std::vector<std::shared_ptr<Models::Message>> validate() const;
+
         };
     }
 }

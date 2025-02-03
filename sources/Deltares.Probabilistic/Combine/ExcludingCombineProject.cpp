@@ -34,6 +34,40 @@ namespace Deltares
             std::unique_ptr<DesignPoint> designPointPtr = combiner->combineDesignPointsExcluding(this->scenarios, this->designPoints);
             this->designPoint = std::move(designPointPtr);
         }
+
+        std::vector<std::shared_ptr<Models::Message>> ExcludingCombineProject::validate()
+        {
+            const double margin = 1E-10;
+
+            std::vector<std::shared_ptr<Models::Message>> messages;
+
+            if (this->designPoints.size() != this->scenarios.size())
+            {
+                messages.push_back(std::make_shared<Message>(MessageType::Error, "Number of scenarios should be equal to number of design points."));
+            }
+
+            double sumProbabilities = 0;
+            for (std::shared_ptr<Statistics::Scenario> scenario : this->scenarios)
+            {
+                sumProbabilities += scenario->probability;
+                for (std::shared_ptr<Message> scenarioMessage : scenario->validate())
+                {
+                    messages.push_back(scenarioMessage);
+                }
+            }
+
+            if (std::abs(1 - sumProbabilities) > margin)
+            {
+                messages.push_back(std::make_shared<Message>(MessageType::Error, "Scenario probabilities should add upp to 1."));
+            }
+
+            return messages;
+        }
+
+        bool ExcludingCombineProject::is_valid()
+        {
+            return this->validate().empty();
+        }
     }
 }
 

@@ -694,27 +694,31 @@ namespace Deltares
                     else if (property_ == "total_directions") return designPoint->convergenceReport->TotalDirections;
                     else if (property_ == "total_model_runs") return designPoint->convergenceReport->TotalModelRuns;
                 }
-                if (property_ == "contributing_design_points_count") return (int)designPoint->ContributingDesignPoints.size();
-                else if (property_ == "alphas_count") return (int)designPoint->Alphas.size();
+                if (property_ == "contributing_design_points_count") return static_cast<int>(designPoint->ContributingDesignPoints.size());
+                else if (property_ == "alphas_count") return static_cast<int>(designPoint->Alphas.size());
                 else if (property_ == "total_iterations") return designPoint->convergenceReport->TotalIterations;
                 else if (property_ == "total_directions") return designPoint->convergenceReport->TotalDirections;
                 else if (property_ == "total_model_runs") return designPoint->convergenceReport->TotalModelRuns;
-                else if (property_ == "evaluations_count") return (int)designPoint->Evaluations.size();
-                else if (property_ == "messages_count") return (int)designPoint->Messages.size();
+                else if (property_ == "evaluations_count") return static_cast<int>(designPoint->Evaluations.size());
+                else if (property_ == "messages_count") return static_cast<int>(designPoint->Messages.size());
             }
             else if (objectType == ObjectType::Evaluation)
             {
                 std::shared_ptr<Reliability::Evaluation> evaluation = evaluations[id];
 
                 if (property_ == "iteration") return evaluation->Iteration;
-                else if (property_ == "input_values_count") return (int)evaluation->InputValues.size();
-                else if (property_ == "output_values_count") return (int)evaluation->OutputValues.size();
+                else if (property_ == "input_values_count") return static_cast<int>(evaluation->InputValues.size());
+                else if (property_ == "output_values_count") return static_cast<int>(evaluation->OutputValues.size());
+            }
+            else if (objectType == ObjectType::ExcludingCombineProject)
+            {
+                if (property_ == "validation_messages_count") return static_cast<int>(this->validationMessages.size());
             }
             else if (objectType == ObjectType::LengthEffectProject)
             {
                 std::shared_ptr<Reliability::LengthEffectProject> project = lengthEffectProjects[id];
 
-                if (property_ == "correlation_lengths_count") return (int)project->correlationLengths.size();
+                if (property_ == "correlation_lengths_count") return static_cast<int>(project->correlationLengths.size());
             }
 
             return 0;
@@ -1025,6 +1029,12 @@ namespace Deltares
                 else if (property_ == "save_realizations") return setting->RunSettings->SaveEvaluations;
                 else if (property_ == "save_convergence") return setting->RunSettings->SaveConvergence;
                 else if (property_ == "save_messages") return setting->RunSettings->SaveMessages;
+            }
+            else if (objectType == ObjectType::ExcludingCombineProject)
+            {
+                std::shared_ptr<Reliability::ExcludingCombineProject> project = excludingCombineProjects[id];
+
+                if (property_ == "is_valid") return project->is_valid();
             }
 
             return false;
@@ -1750,6 +1760,10 @@ namespace Deltares
 
                 if (property_ == "quantiles") return this->GetProbabilityValueId(settings->RequestedQuantiles[index], newId);
             }
+            else if (objectType == ObjectType::ExcludingCombineProject)
+            {
+                if (property_ == "validation_messages") return this->GetMessageId(this->validationMessages[index], newId);
+            }
 
             return 0;
         }
@@ -1842,6 +1856,8 @@ namespace Deltares
                 std::shared_ptr<Reliability::ExcludingCombineProject> project = excludingCombineProjects[id];
 
                 if (method_ == "run") project->run();
+                else if (method_ == "validate") this->UpdateValidationMessages(project->validate());
+                else if (method_ == "clear_validate") this->validationMessages.clear();
             }
             else if (objectType == ObjectType::LengthEffectProject)
             {
@@ -2067,6 +2083,14 @@ namespace Deltares
             return messageIds[message];
         }
 
+        void ProjectHandler::UpdateValidationMessages(const std::vector<std::shared_ptr<Models::Message>>& messages)
+        {
+            this->validationMessages.clear();
+            for (std::shared_ptr<Models::Message> message : messages)
+            {
+                this->validationMessages.push_back(message);
+            }
+        }
     }
 }
 

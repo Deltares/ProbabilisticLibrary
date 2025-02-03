@@ -42,6 +42,16 @@ namespace Deltares
             std::vector<std::shared_ptr<Deltares::Statistics::Scenario>> scenarios;
 
             /**
+             * \brief Gets an array of validation messages
+             */
+            std::vector<std::shared_ptr<Models::Message>> validate();
+
+            /**
+             * \brief Indicates whether the settings are valid
+             */
+            bool is_valid();
+
+            /**
              * \brief Calculation settings
              */
             std::shared_ptr<ExcludingCombineSettings> settings = std::make_shared<ExcludingCombineSettings>();
