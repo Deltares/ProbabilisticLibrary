@@ -177,7 +177,68 @@ class Test_combine(unittest.TestCase):
         # uncorrelated result
         beta_expected = StandardNormal.get_u_from_q(0.01)
         self.assertAlmostEqual(beta_expected, dp_uncorrelated.reliability_index, delta=margin)
-        
+
+    def test_excluding_weighted_sum(self):
+
+        project = ExcludingCombineProject()
+
+        q1 = 0.01;
+        beta1 = StandardNormal.get_u_from_q(q1)
+        dp1 = project_builder.get_design_point(beta1, 2)
+        project.design_points.append(dp1)
+        project.scenarios.append(0.25)
+
+        q2= 0.04;
+        beta2 = StandardNormal.get_u_from_q(q2)
+        dp2 = project_builder.get_design_point(beta2, 2)
+        project.design_points.append(dp2)
+        project.scenarios.append(0.55)
+
+        self.assertFalse(project.is_valid());
+
+        for message in project.validate():
+            print(str(message))
+
+        project.scenarios[1] = 0.75
+
+        self.assertTrue(project.is_valid());
+
+        project.settings.combiner_method =  ExcludingCombinerMethod.weighted_sum
+
+        project.run()
+
+        self.assertAlmostEqual(StandardNormal.get_u_from_q(0.25 * q1 + 0.75 * q2), project.design_point.reliability_index, delta=margin)
+
+        self.assertEqual(len(project.design_points), len(project.design_point.contributing_design_points))
+        self.assertEqual(project.design_points[0], project.design_point.contributing_design_points[0])
+        self.assertEqual(len(dp1.alphas) + len(dp2.alphas), len(project.design_point.alphas))
+
+    def test_excluding_hohenbichler(self):
+
+        project = ExcludingCombineProject()
+
+        q1 = 0.01;
+        beta1 = StandardNormal.get_u_from_q(q1)
+        dp1 = project_builder.get_design_point(beta1, 2)
+        project.design_points.append(dp1)
+        project.scenarios.append(0.25)
+
+        q2= 0.04;
+        beta2 = StandardNormal.get_u_from_q(q2)
+        dp2 = project_builder.get_design_point(beta2, 2)
+        project.design_points.append(dp2)
+        project.scenarios.append(0.75)
+
+        project.settings.combiner_method =  ExcludingCombinerMethod.hohenbichler
+
+        project.run()
+
+        self.assertAlmostEqual(StandardNormal.get_u_from_q(0.25 * q1 + 0.75 * q2), project.design_point.reliability_index, delta=margin)
+
+        self.assertEqual(len(project.design_points), len(project.design_point.contributing_design_points))
+        self.assertEqual(project.design_points[0], project.design_point.contributing_design_points[0])
+        self.assertEqual(len(dp1.alphas) + len(dp2.alphas), len(project.design_point.alphas))
+
         
 if __name__ == '__main__':
     unittest.main()

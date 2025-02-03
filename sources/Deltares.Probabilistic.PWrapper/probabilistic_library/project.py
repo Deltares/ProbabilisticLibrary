@@ -601,6 +601,96 @@ class CombineProject:
 				self._design_point = DesignPoint(designPointId, variables, self._design_points)
 		return self._design_point
 
+class ExcludingCombineProject:
+
+	def __init__(self):
+		self._id = interface.Create('excluding_combine_project')
+
+		self._design_points = CallbackList(self._design_points_changed)
+		self._scenarios = CallbackList(self._scenarios_changed)
+		self._settings = ExcludingCombineSettings()
+		self._design_point = None
+		self._synchronizing = False
+		self._dirty = True
+
+		interface.SetIntValue(self._id, 'settings', self._settings._id)
+
+	def __del__(self):
+		interface.Destroy(self._id)
+
+	def __dir__(self):
+		return ['design_points',
+				'scenarios',
+				'settings',
+				'is_valid',
+				'validate',
+				'run',
+				'design_point']
+
+	def _design_points_changed(self):
+		if not self._synchronizing:
+			self._dirty = True
+
+	def _scenarios_changed(self):
+		if not self._synchronizing:
+			# replace floats by Scenario
+			self._synchronizing = True
+			for i in range(len(self._scenarios)):
+				if isinstance(self._scenarios[i], int) or isinstance(self._scenarios[i], float):
+					val = self._scenarios[i]
+					self._scenarios[i] = Scenario()
+					self._scenarios[i].probability = val
+			self._synchronizing = False
+			self._dirty = True
+
+	def _update(self):
+		if self._dirty:
+			interface.SetArrayIntValue(self._id, 'design_points', [design_point._id for design_point in self._design_points])
+			interface.SetArrayIntValue(self._id, 'scenarios', [scenario._id for scenario in self._scenarios])
+			self._dirty = False
+
+	@property
+	def design_points(self):
+		return self._design_points
+
+	@property
+	def scenarios(self):
+		return self._scenarios
+
+	@property
+	def settings(self):
+		return self._settings
+
+	def is_valid(self):
+		self._update()
+		return interface.GetBoolValue(self._id, 'is_valid')
+
+	def validate(self):
+		self._update()
+		interface.Execute(self._id, 'validate')
+		messages = []
+		message_ids = interface.GetArrayIdValue(self._id, 'validation_messages')
+		for message_id in message_ids:
+			messages.append(Message(message_id))
+		interface.Execute(self._id, 'clear_validate')
+		return FrozenList(messages) 
+
+	def run(self):
+		self._update()
+		self._design_point = None
+		interface.Execute(self._id, 'run')
+
+	@property
+	def design_point(self):
+		if self._design_point is None:
+			design_point_id = interface.GetIdValue(self._id, 'design_point')
+			if design_point_id > 0:
+				variables = []
+				for design_point in self._design_points:
+					variables.extend(design_point.get_variables())
+				self._design_point = DesignPoint(design_point_id, variables, self._design_points)
+		return self._design_point
+
 class LengthEffectProject:
 	def __init__(self):
 		self._id = interface.Create('length_effect_project')

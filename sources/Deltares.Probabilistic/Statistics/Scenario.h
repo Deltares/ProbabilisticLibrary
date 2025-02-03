@@ -24,21 +24,44 @@
 #include <memory>
 
 #include "Stochast.h"
+#include "../Model/Message.h"
 
-namespace Deltares
+namespace Deltares::Statistics
 {
-    namespace Statistics
+    /**
+     * \brief Defines the contribution of a design point, when it is combined with other design point points in an exclusive way
+     * \remarks The class ExcludingCombineProject connects design points and scenarios
+     */
+    class Scenario
     {
-        class Scenario
-        {
-        public:
-            std::string name = "";
+    public:
+        /**
+         * \brief Name of the scenario 
+         */
+        std::string name = "";
 
-            double probability = 0.0;
+        /**
+         * \brief Contribution of a design point in ExcludingCombineProject, defined as fraction between 0 and 1
+         */
+        double probability = 0.0;
 
-            std::shared_ptr<Stochast> parameter = nullptr;
-            double parameterValue = std::nan("");
-        };
-    }
+        /**
+         * \brief Parameter from which the probability originates, usually a stochastic variable with a discrete distribution
+         * \remarks When this parameter is set, it will appear in the alpha values of a combined design point
+         */
+        std::shared_ptr<Stochast> parameter = nullptr;
+
+        /**
+         * \brief X-Value of a discrete value if the parameter in this scenario refers to a stochastic variable with discrete distribution
+         */
+        double parameterValue = std::nan("");
+
+        /**
+         * \brief Validates this scenario
+         * @return validation messages
+         */
+        std::vector<std::shared_ptr<Models::Message>> validate() const;
+
+    };
 }
 

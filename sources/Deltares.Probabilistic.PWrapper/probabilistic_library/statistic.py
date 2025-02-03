@@ -979,5 +979,38 @@ class SelfCorrelationMatrix:
 
 		interface.SetIntArgValue(self._id, stochast_obj._id, 'rho', value)
 
+class Scenario:
+
+	def __init__(self, id = None):
+		if id is None:
+			self._id = interface.Create('scenario')
+		else:
+			self._id = id
+
+	def __del__(self):
+		interface.Destroy(self._id)
+
+	def __dir__(self):
+		return ['name',
+		        'probability']
+
+	def __str__(self):
+		return str(self.name)
+
+	@property
+	def name(self):
+		return interface.GetStringValue(self._id, 'name')
+
+	@name.setter
+	def name(self, value : str):
+		interface.SetStringValue(self._id, 'name', value)
+
+	@property
+	def probability(self):
+		return interface.GetValue(self._id, 'probability')
+
+	@probability.setter
+	def probability(self, value : float):
+		interface.SetValue(self._id, 'probability',  value)
 
 
