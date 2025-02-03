@@ -19,26 +19,6 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include "LengthEffectProject.h"
-#include "LengthEffect.h"
-#include <iostream>
 
-namespace Deltares
-{
-    namespace Reliability
-    {
-        void LengthEffectProject::run()
-        {
-            if (correlationLengths.size() != designPointCrossSection->Alphas.size())
-            {
-                std::cout << "mismatch in dimensions in running length effect." << std::endl;
-            }
-            else
-            {
-                designPoint = std::make_shared<DesignPoint>(LengthEffect::UpscaleLength(designPointCrossSection, selfCorrelationMatrix,
-                    correlationLengths, length));
-            }
-        }
-    }
-}
+#include "DesignPointIds.h"
 

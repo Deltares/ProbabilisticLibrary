@@ -335,6 +335,7 @@
     <ClInclude Include="Reliability\CrudeMonteCarlo.h" />
     <ClInclude Include="Reliability\CrudeMonteCarloSettings.h" />
     <ClInclude Include="Reliability\DesignPoint.h" />
+    <ClInclude Include="Reliability\DesignPointIds.h" />
     <ClInclude Include="Reliability\DesignPointBuilder.h" />
     <ClInclude Include="Reliability\ReliabilityMethod.h" />
     <ClInclude Include="Reliability\ReliabilityResult.h" />
@@ -532,6 +533,7 @@
     <ClCompile Include="Reliability\CrudeMonteCarlo.cpp" />
     <ClCompile Include="Reliability\CrudeMonteCarloSettings.cpp" />
     <ClCompile Include="Reliability\DesignPoint.cpp" />
+    <ClCompile Include="Reliability\DesignPointIds.cpp" />
     <ClCompile Include="Reliability\DesignPointBuilder.cpp" />
     <ClCompile Include="Reliability\ReliabilityMethod.cpp" />
     <ClCompile Include="Reliability\ReliabilityResult.cpp" />

@@ -31,6 +31,8 @@ namespace Deltares
 {
     namespace Reliability
     {
+        using namespace Deltares::Models;
+
         void DesignPoint::expandContributions()
         {
             this->expandFragilityCurves();
