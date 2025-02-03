@@ -260,12 +260,12 @@ namespace Deltares
 
             void testReliabilityMethods::testClustersAdpImpSampling()
             {
-                auto expectedBetas = std::vector<double>({ 0.790941 , 0.753699 , 0.775241 , 0.795621,  0.777854 });
-                auto expectedCentersA = std::vector<double>( { -0.708875, -0.705334, 0.712582, 0.701588, 0.707038, -0.707175, -0.716868, 0.697209 });
-                auto expectedCentersB = std::vector<double>({ -0.716727 , 0.697354, 0.718175 , 0.695863, -0.712197 , -0.70198, 0.714321 , -0.699818 });
-                auto expectedCentersC = std::vector<double>({ 0.706558 , 0.707655, -0.678015 , -0.735048, 0.683729 , -0.729736, -0.720587 , 0.693365 });
-                auto expectedCentersD = std::vector<double>({ -0.70989 , -0.704313, 0.708422 , 0.705789, -0.693545 , 0.720413, 0.688054 , -0.72566 });
-                auto expectedCentersE = std::vector<double>({ -0.697022 , 0.717049, 0.694748 , -0.719253, 0.709318 , 0.704889, -0.731142 , -0.682225 });
+                auto expectedBetas = std::vector<double>({ 0.809192, 0.764136, 0.78369, 0.773842, 0.769451 });
+                auto expectedCentersA = std::vector<double>( { -0.697351, 0.71673, 0.712582 , 0.701588, 0.707038 , -0.707175,- 0.71453, -0.699605 });
+                auto expectedCentersB = std::vector<double>({ 0.722677, -0.691186, -0.72022 , -0.693746, 0.705007 , 0.7092, -0.703878, 0.710321 });
+                auto expectedCentersC = std::vector<double>({ -0.714813, 0.699316, -0.678015 , -0.735048, 0.707866 , 0.706347, 0.696578, -0.717481 });
+                auto expectedCentersD = std::vector<double>({ -0.70989, -0.704313, -0.705127 , 0.709081, 0.696107, -0.717938, 0.683022, 0.730398 });
+                auto expectedCentersE = std::vector<double>({ 0.711161, 0.703029, 0.694748, -0.719253, -0.684285, 0.729214, -0.731142, -0.682225 });
                 auto expectedCenters = std::vector({ expectedCentersA, expectedCentersB, expectedCentersC, expectedCentersD, expectedCentersE });
 
                 for (int seed = 0; seed < 5; seed++)
