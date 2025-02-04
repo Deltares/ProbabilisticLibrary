@@ -177,18 +177,21 @@ namespace Deltares
                     newSumSquared += cluster->getSumSquared();
                 }
 
-                std::cout << std::format("Trial = {}, Sum Squared = {}", trial, newSumSquared) << "\n";
+                std::cout << std::format("Trial = {}, Sum Squared = {}", trial, newSumSquared);
 
                 if (clusters.empty() || newSumSquared < sumSquared) // new best clustering found
                 {
                     unchangedClusters = 0;
                     clusters = newClusters;
                     sumSquared = newSumSquared;
+                    std::cout << ", Selected";
                 }
                 else
                 {
                     unchangedClusters++;
                 }
+
+                std::cout << "\n";
 
                 if (unchangedClusters >= maxUnchangedClusters)
                 {
