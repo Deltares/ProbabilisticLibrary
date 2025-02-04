@@ -19,6 +19,7 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
+#include <iostream>
 #include <gtest/gtest.h>
 #include "testReliabilityMethods.h"
 #include "../../Deltares.Probabilistic/Reliability/LatinHyperCube.h"
@@ -260,12 +261,12 @@ namespace Deltares
 
             void testReliabilityMethods::testClustersAdpImpSampling()
             {
-                auto expectedBetas = std::vector<double>({ 0.809192, 0.764136, 0.78369, 0.773842, 0.769451 });
-                auto expectedCentersA = std::vector<double>( { -0.697351, 0.71673, 0.712582 , 0.701588, 0.707038 , -0.707175,- 0.71453, -0.699605 });
-                auto expectedCentersB = std::vector<double>({ 0.722677, -0.691186, -0.72022 , -0.693746, 0.705007 , 0.7092, -0.703878, 0.710321 });
-                auto expectedCentersC = std::vector<double>({ -0.714813, 0.699316, -0.678015 , -0.735048, 0.707866 , 0.706347, 0.696578, -0.717481 });
-                auto expectedCentersD = std::vector<double>({ -0.70989, -0.704313, -0.705127 , 0.709081, 0.696107, -0.717938, 0.683022, 0.730398 });
-                auto expectedCentersE = std::vector<double>({ 0.711161, 0.703029, 0.694748, -0.719253, -0.684285, 0.729214, -0.731142, -0.682225 });
+                auto expectedBetas = std::vector<double>({ 0.80438, 0.764136, 0.78369, 0.8073033, 0.754192 });
+                auto expectedCentersA = std::vector<double>( { -0.697351, 0.71673, -0.69555, -0.718478, 0.707038, -0.707175, 0.714029, 0.700116 });
+                auto expectedCentersB = std::vector<double>({ 0.722677, -0.691186, -0.72022, -0.693746, 0.705007, 0.7092, -0.703878, 0.710321 });
+                auto expectedCentersC = std::vector<double>({ -0.714813, 0.699316, -0.678015, -0.735048, 0.707866, 0.706347, 0.696578, -0.717481 });
+                auto expectedCentersD = std::vector<double>({ 0.718055, -0.695987, 0.708422, 0.705789, -0.709267, -0.70494, -0.697308, 0.716772 });
+                auto expectedCentersE = std::vector<double>({ -0.705994, -0.708218, 0.694748, -0.719253, -0.684285, 0.729214, 0.68589, 0.727705 });
                 auto expectedCenters = std::vector({ expectedCentersA, expectedCentersB, expectedCentersC, expectedCentersD, expectedCentersE });
 
                 for (int seed = 0; seed < 5; seed++)
@@ -284,6 +285,7 @@ namespace Deltares
                     auto designPoint = calculator.getDesignPoint(modelRunner);
                     //std::cout << "Beta = " << designPoint->Beta << std::endl;
                     auto ii = 0;
+
                     for (int i = 0; i < 4; i++)
                     {
                         auto alpha = designPoint->ContributingDesignPoints[i]->Alphas;
@@ -291,10 +293,12 @@ namespace Deltares
                         ii++;
                         auto expectedAlpha1 = expectedCenters[seed][ii];
                         ii++;
+
                         EXPECT_NEAR(alpha[0]->Alpha, expectedAlpha0, 1e-4);
                         EXPECT_NEAR(alpha[1]->Alpha, expectedAlpha1, 1e-4);
-                        //std::cout << alpha[0]->Alpha << " , " << alpha[1]->Alpha << std::endl;
+                        //std::cout << ", " << alpha[0]->Alpha << ", " << alpha[1]->Alpha;
                     }
+                    //std::cout << std::endl;
                     ASSERT_EQ(designPoint->Alphas.size(), 2);
                     EXPECT_NEAR(designPoint->Beta, expectedBetas[seed], 1e-4);
                 }

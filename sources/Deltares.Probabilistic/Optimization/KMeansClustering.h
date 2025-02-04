@@ -76,6 +76,8 @@ namespace Deltares
                 const std::shared_ptr<Models::Sample>& sample, const std::vector<std::shared_ptr<Cluster>>& clusters);
             static std::vector<std::shared_ptr<Models::Sample>> getCentersFromClusters(const std::vector<std::shared_ptr<Cluster>>& clusters);
             Numeric::Random random;
+
+            const double margin = 1E-8;
         };
     }
 }
