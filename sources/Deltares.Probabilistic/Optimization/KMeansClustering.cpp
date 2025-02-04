@@ -21,6 +21,8 @@
 //
 #include "KMeansClustering.h"
 
+#include <format>
+#include <iostream>
 #include <map>
 
 #include "../Utils/probLibException.h"
@@ -51,6 +53,7 @@ namespace Deltares
 
             this->Center = std::make_shared<Models::Sample>(this->Samples[0]->Values.size());
 
+            std::cout << "Mean = ";
             for (int i = 0; i < this->Center->Values.size(); i++)
             {
                 double sumValues = 0;
@@ -60,7 +63,9 @@ namespace Deltares
                 }
 
                 this->Center->Values[i] = sumValues / this->Samples.size();
+                std::cout << std::format("{}, ", this->Center->Values[i]);
             }
+            std::cout << "\n";
         }
 
         std::vector<std::shared_ptr<Models::Sample>> KMeansClustering::getCentersFromClusters(const std::vector<std::shared_ptr<Cluster>>& clusters)
@@ -69,6 +74,13 @@ namespace Deltares
             for (const auto& cluster : clusters)
             {
                 centers.push_back(cluster->Center);
+
+                std::cout << "Center = ";
+                for (size_t i = 0; i <cluster->Center->Values.size(); i++)
+                {
+                    std::cout << std::format("{}, ", cluster->Center->Values[i]);
+                }
+                std::cout << "\n";
             }
 
             return centers;
@@ -97,6 +109,8 @@ namespace Deltares
                     std::vector<std::shared_ptr<Cluster>> newClusters = FixedCluster(samples, fixedClusterOptions);
 
                     double score2 = SilhouetteCoefficient(newClusters);
+
+                    std::cout << std::format("Number of clusters = {}, Silhouette coefficient = {}", k, score2) << "\n";
 
                     if (!clusters.empty() && (score0 > score1 && score1 > score2))
                     {
@@ -162,6 +176,8 @@ namespace Deltares
                 {
                     newSumSquared += cluster->getSumSquared();
                 }
+
+                std::cout << std::format("Trial = {}, Sum Squared = {}", trial, newSumSquared) << "\n";
 
                 if (clusters.empty() || newSumSquared < sumSquared) // new best clustering found
                 {

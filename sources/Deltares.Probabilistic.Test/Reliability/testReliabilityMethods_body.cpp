@@ -277,12 +277,11 @@ namespace Deltares
                     calculator.Settings->MinVarianceLoops = 2;
                     calculator.Settings->MaxVarianceLoops = 8;
                     calculator.Settings->importanceSamplingSettings->randomSettings->Seed = seed;
+                    calculator.Settings->importanceSamplingSettings->runSettings->MaxParallelProcesses = 1;
                     calculator.Settings->Clustering = true;
                     calculator.Settings->clusterSettings->MaxClusters = 4;
                     calculator.Settings->clusterSettings->clusterInitializationMethod = Optimization::ClusterInitializationMethod::PlusPlus;
                     auto designPoint = calculator.getDesignPoint(modelRunner);
-                    ASSERT_EQ(designPoint->Alphas.size(), 2);
-                    EXPECT_NEAR(designPoint->Beta, expectedBetas[seed], 1e-4);
                     //std::cout << "Beta = " << designPoint->Beta << std::endl;
                     auto ii = 0;
                     for (int i = 0; i < 4; i++)
@@ -296,6 +295,8 @@ namespace Deltares
                         EXPECT_NEAR(alpha[1]->Alpha, expectedAlpha1, 1e-4);
                         //std::cout << alpha[0]->Alpha << " , " << alpha[1]->Alpha << std::endl;
                     }
+                    ASSERT_EQ(designPoint->Alphas.size(), 2);
+                    EXPECT_NEAR(designPoint->Beta, expectedBetas[seed], 1e-4);
                 }
             }
 
