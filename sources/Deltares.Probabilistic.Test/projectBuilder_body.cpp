@@ -85,6 +85,24 @@ namespace Deltares
                 return m;
             }
 
+            std::shared_ptr<ModelRunner> projectBuilder::BuildQuadraticProject()
+            {
+                std::shared_ptr<ZModel> z(new ZModel(ZModel([this](std::shared_ptr<ModelSample> v) { return quadratic(v); })));
+                auto stochast = std::vector<std::shared_ptr<Stochast>>();
+                auto dist = DistributionType::Uniform;
+                std::vector<double> params{ -1.0, 1.0 };
+                std::shared_ptr<Stochast> s(new Stochast(dist, params));
+                s->modelParameter->isArray = false;
+                s->modelParameter->arraySize = 1;
+                stochast.push_back(s);
+                stochast.push_back(s);
+                std::shared_ptr<CorrelationMatrix> corr(new CorrelationMatrix());
+                std::shared_ptr<UConverter> uConverter(new UConverter(stochast, corr));
+                uConverter->initializeForRun();
+                std::shared_ptr<ModelRunner> m(new ModelRunner(z, uConverter));
+                return m;
+            }
+
             std::shared_ptr<ModelRunner> projectBuilder::BuildProjectWithDeterminist(double valueDeterminist)
             {
                 std::shared_ptr<ZModel> z(new ZModel(ZModel([this](std::shared_ptr<ModelSample> v) { return zfuncWithDeterminist(v); })));
@@ -137,6 +155,15 @@ namespace Deltares
                 for (double value : sample->Values)
                 {
                     sample->Z -= value;
+                }
+            }
+
+            void projectBuilder::quadratic(std::shared_ptr<ModelSample> sample)
+            {
+                sample->Z = 1.0;
+                for (double value : sample->Values)
+                {
+                    sample->Z -= value * value;
                 }
             }
 

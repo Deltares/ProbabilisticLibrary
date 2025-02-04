@@ -24,6 +24,7 @@
 #include <cmath>
 #include <memory>
 #include <algorithm>
+#include <set>
 
 #include "../Math/NumericSupport.h"
 #include "../Math/SpecialFunctions.h"
@@ -59,12 +60,19 @@ namespace Deltares
             auto stochast = std::make_shared<Statistics::Stochast>();
             stochast->setDistributionType(Statistics::CDFCurve);
 
+            std::set<double> handledReliabilities;
+
             for (const std::shared_ptr<Statistics::ProbabilityValue> requestedQuantile : this->Settings->RequestedQuantiles)
             {
-                auto fragilityValue = std::make_shared<Statistics::FragilityValue>();
-                fragilityValue->X = getZForRequiredQ(modelRunner, requestedQuantile->Reliability, nStochasts, Z0);
-                fragilityValue->Reliability = requestedQuantile->Reliability;
-                stochast->getProperties()->FragilityValues.push_back(fragilityValue);
+                if (!handledReliabilities.contains(requestedQuantile->Reliability))
+                {
+                    auto fragilityValue = std::make_shared<Statistics::FragilityValue>();
+                    fragilityValue->X = getZForRequiredQ(modelRunner, requestedQuantile->Reliability, nStochasts, Z0);
+                    fragilityValue->Reliability = requestedQuantile->Reliability;
+                    stochast->getProperties()->FragilityValues.push_back(fragilityValue);
+
+                    handledReliabilities.insert(requestedQuantile->Reliability);
+                }
             }
 
             std::sort(stochast->getProperties()->FragilityValues.begin(), stochast->getProperties()->FragilityValues.end(),

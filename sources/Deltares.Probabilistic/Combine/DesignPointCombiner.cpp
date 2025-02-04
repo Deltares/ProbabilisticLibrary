@@ -21,10 +21,47 @@
 //
 #include "DesignPointCombiner.h"
 
+#include "HohenbichlerExcludingCombiner.h"
+#include "WeightedSumCombiner.h"
+
 namespace Deltares
 {
     namespace Reliability
     {
+        std::shared_ptr<Combiner> DesignPointCombiner::getCombiner() const
+        {
+            switch (combinerType)
+            {
+            case CombinerType::ImportanceSampling:
+            {
+                auto impSamplingCombiner = std::make_shared<ImportanceSamplingCombiner>();
+                impSamplingCombiner->randomGeneratorType = generator;
+                return impSamplingCombiner;
+            }
+            case CombinerType::Hohenbichler:
+                return std::make_shared<HohenbichlerNumIntCombiner>();
+            case CombinerType::DirectionalSampling:
+            {
+                auto directionalSamplingCombiner = std::make_shared<DirectionalSamplingCombiner>();
+                directionalSamplingCombiner->randomGeneratorType = generator;
+                return directionalSamplingCombiner;
+            }
+            default: throw probLibException("Combiner type");
+            }
+        }
+
+        std::unique_ptr<ExcludingCombiner> DesignPointCombiner::getExcludingCombiner() const
+        {
+            switch (excludingCombinerType)
+            {
+            case ExcludingCombinerType::WeightedSum:
+                return std::make_unique<WeightedSumCombiner>();
+            case ExcludingCombinerType::HohenbichlerExcluding:
+                return std::make_unique<HohenbichlerExcludingCombiner>();
+            default: throw probLibException("Excluding combiner type");
+            }
+        }
+
         std::string DesignPointCombiner::getCombineTypeString(combineAndOr type)
         {
             switch (type)
@@ -35,7 +72,7 @@ namespace Deltares
             }
         }
 
-        combineAndOr DesignPointCombiner::getCombineType(std::string method)
+        combineAndOr DesignPointCombiner::getCombineType(const std::string& method)
         {
             if (method == "series") return combineAndOr::combOr;
             else if (method == "parallel") return combineAndOr::combAnd;
@@ -53,13 +90,29 @@ namespace Deltares
             }
         }
 
-        CombinerType DesignPointCombiner::getCombinerMethod(std::string method)
+        CombinerType DesignPointCombiner::getCombinerMethod(const std::string& method)
         {
             if (method == "hohenbichler") return CombinerType::Hohenbichler;
             else if (method == "importance_sampling") return CombinerType::ImportanceSampling;
             else if (method == "directional_sampling") return CombinerType::DirectionalSampling;
             else throw probLibException("Combiner method type");
+        }
 
+        std::string DesignPointCombiner::getExcludingCombinerMethodString(ExcludingCombinerType type)
+        {
+            switch (type)
+            {
+            case ExcludingCombinerType::HohenbichlerExcluding: return "hohenbichler";
+            case ExcludingCombinerType::WeightedSum: return "weighted_sum";
+            default: throw probLibException("Excluding combiner method");
+            }
+        }
+
+        ExcludingCombinerType DesignPointCombiner::getExcludingCombinerMethod(const std::string& method)
+        {
+            if (method == "hohenbichler") return ExcludingCombinerType::HohenbichlerExcluding;
+            else if (method == "weighted_sum") return ExcludingCombinerType::WeightedSum;
+            else throw probLibException("Excluding combiner method type");
         }
 
     }

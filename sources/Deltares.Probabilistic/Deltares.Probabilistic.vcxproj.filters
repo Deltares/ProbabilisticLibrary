@@ -212,8 +212,10 @@
     <ClCompile Include="Model\ModelProject.cpp" />
     <ClCompile Include="Model\ComputationalStochast.cpp" />
     <ClCompile Include="Sensitivity\DirectionalSamplingSettingsS.cpp" />
-    <ClCompile Include="Combine\ExcludingCombiner.cpp" />
+    <ClCompile Include="Combine\WeightedSumCombiner.cpp" />
     <ClCompile Include="Statistics\Scenario.cpp" />
+    <ClCompile Include="Combine\ExcludingCombiner.cpp" />
+    <ClCompile Include="Combine\HohenbichlerExcludingCombiner.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -444,8 +446,10 @@
     <ClInclude Include="Reliability\FragilityCurveProject.h" />
     <ClInclude Include="Model\ModelProject.h" />
     <ClInclude Include="Model\ComputationalStochast.h" />
-    <ClInclude Include="Combine\ExcludingCombiner.h" />
+    <ClInclude Include="Combine\WeightedSumCombiner.h" />
     <ClInclude Include="Statistics\Scenario.h" />
+    <ClInclude Include="Combine\ExcludingCombiner.h" />
+    <ClInclude Include="Combine\HohenbichlerExcludingCombiner.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

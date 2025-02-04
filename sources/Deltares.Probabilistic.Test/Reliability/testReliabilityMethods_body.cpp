@@ -19,6 +19,7 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
+#include <iostream>
 #include <gtest/gtest.h>
 #include "testReliabilityMethods.h"
 #include "../../Deltares.Probabilistic/Reliability/LatinHyperCube.h"
@@ -256,6 +257,51 @@ namespace Deltares
                 auto designPoint = calculator.getDesignPoint(modelRunner);
                 ASSERT_EQ(designPoint->Alphas.size(), 3);
                 EXPECT_NEAR(designPoint->Beta, -0.01153, 1e-5);
+            }
+
+            void testReliabilityMethods::testClustersAdpImpSampling()
+            {
+                auto expectedBetas = std::vector<double>({ 0.80438, 0.764136, 0.78369, 0.8073033, 0.754192 });
+                auto expectedCentersA = std::vector<double>( { -0.697351, 0.71673, -0.69555, -0.718478, 0.707038, -0.707175, 0.714029, 0.700116 });
+                auto expectedCentersB = std::vector<double>({ 0.722677, -0.691186, -0.72022, -0.693746, 0.705007, 0.7092, -0.703878, 0.710321 });
+                auto expectedCentersC = std::vector<double>({ -0.714813, 0.699316, -0.678015, -0.735048, 0.707866, 0.706347, 0.696578, -0.717481 });
+                auto expectedCentersD = std::vector<double>({ 0.718055, -0.695987, 0.708422, 0.705789, -0.709267, -0.70494, -0.697308, 0.716772 });
+                auto expectedCentersE = std::vector<double>({ -0.705994, -0.708218, 0.694748, -0.719253, -0.684285, 0.729214, 0.68589, 0.727705 });
+                auto expectedCenters = std::vector({ expectedCentersA, expectedCentersB, expectedCentersC, expectedCentersD, expectedCentersE });
+
+                for (int seed = 0; seed < 5; seed++)
+                {
+                    auto calculator = AdaptiveImportanceSampling();
+                    auto modelRunner = projectBuilder().BuildQuadraticProject();
+                    calculator.Settings->importanceSamplingSettings->MinimumSamples = 5000;
+                    calculator.Settings->importanceSamplingSettings->MaximumSamples = 10000;
+                    calculator.Settings->MinVarianceLoops = 2;
+                    calculator.Settings->MaxVarianceLoops = 8;
+                    calculator.Settings->importanceSamplingSettings->randomSettings->Seed = seed;
+                    calculator.Settings->importanceSamplingSettings->runSettings->MaxParallelProcesses = 1;
+                    calculator.Settings->Clustering = true;
+                    calculator.Settings->clusterSettings->MaxClusters = 4;
+                    calculator.Settings->clusterSettings->clusterInitializationMethod = Optimization::ClusterInitializationMethod::PlusPlus;
+                    auto designPoint = calculator.getDesignPoint(modelRunner);
+                    //std::cout << "Beta = " << designPoint->Beta << std::endl;
+                    auto ii = 0;
+
+                    for (int i = 0; i < 4; i++)
+                    {
+                        auto alpha = designPoint->ContributingDesignPoints[i]->Alphas;
+                        auto expectedAlpha0 = expectedCenters[seed][ii];
+                        ii++;
+                        auto expectedAlpha1 = expectedCenters[seed][ii];
+                        ii++;
+
+                        EXPECT_NEAR(alpha[0]->Alpha, expectedAlpha0, 1e-4);
+                        EXPECT_NEAR(alpha[1]->Alpha, expectedAlpha1, 1e-4);
+                        //std::cout << ", " << alpha[0]->Alpha << ", " << alpha[1]->Alpha;
+                    }
+                    //std::cout << std::endl;
+                    ASSERT_EQ(designPoint->Alphas.size(), 2);
+                    EXPECT_NEAR(designPoint->Beta, expectedBetas[seed], 1e-4);
+                }
             }
 
         }

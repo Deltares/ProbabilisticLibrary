@@ -160,6 +160,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Combine\ExcludingCombiner.h" />
+    <ClInclude Include="Combine\WeightedSumCombiner.h" />
+    <ClInclude Include="Combine\HohenbichlerExcludingCombiner.h" />
     <ClInclude Include="Model\ComputationalStochast.h" />
     <ClInclude Include="Model\ModelProject.h" />
     <ClInclude Include="Reliability\FragilityCurveProject.h" />
@@ -331,6 +333,7 @@
     <ClInclude Include="Reliability\CrudeMonteCarlo.h" />
     <ClInclude Include="Reliability\CrudeMonteCarloSettings.h" />
     <ClInclude Include="Reliability\DesignPoint.h" />
+    <ClInclude Include="Reliability\DesignPointIds.h" />
     <ClInclude Include="Reliability\DesignPointBuilder.h" />
     <ClInclude Include="Reliability\ReliabilityMethod.h" />
     <ClInclude Include="Reliability\ReliabilityResult.h" />
@@ -357,6 +360,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Combine\ExcludingCombiner.cpp" />
+    <ClCompile Include="Combine\WeightedSumCombiner.cpp" />
+    <ClCompile Include="Combine\HohenbichlerExcludingCombiner.cpp" />
     <ClCompile Include="Model\ComputationalStochast.cpp" />
     <ClCompile Include="Model\ModelProject.cpp" />
     <ClCompile Include="Reliability\FragilityCurveProject.cpp" />
@@ -524,6 +529,7 @@
     <ClCompile Include="Reliability\CrudeMonteCarlo.cpp" />
     <ClCompile Include="Reliability\CrudeMonteCarloSettings.cpp" />
     <ClCompile Include="Reliability\DesignPoint.cpp" />
+    <ClCompile Include="Reliability\DesignPointIds.cpp" />
     <ClCompile Include="Reliability\DesignPointBuilder.cpp" />
     <ClCompile Include="Reliability\ReliabilityMethod.cpp" />
     <ClCompile Include="Reliability\ReliabilityResult.cpp" />

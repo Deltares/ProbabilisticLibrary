@@ -19,28 +19,19 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
+
 #pragma once
-#include <vector>
-#include <memory>
-#include "combiner.h"
 
-namespace Deltares
+namespace Deltares::Reliability
 {
-    namespace Reliability
+    /*
+     * placeholder user defined identifier for a design point
+     */
+    class DesignPointIds
     {
-        class HohenbichlerNumIntCombiner : public Combiner
-        {
-        public:
-            std::shared_ptr<DesignPoint> combineDesignPoints(combineAndOr combineMethodType,
-                std::vector<std::shared_ptr<DesignPoint>>& designPoints,
-                std::shared_ptr<Statistics::SelfCorrelationMatrix>
-                selfCorrelationMatrix = nullptr,
-                std::shared_ptr<ProgressIndicator> progress =
-                nullptr) override;
-
-        private:
-            static void findMaxCorrelatedDesignPoints(std::vector<std::shared_ptr<DesignPoint>>& designPoints, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix,
-                const std::vector<std::shared_ptr<Statistics::Stochast>>& stochasts, long long& i1max, long long& i2max);
-        };
+    public:
+        DesignPointIds() = default;
+        ~DesignPointIds() = default;
     };
 }
+

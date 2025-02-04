@@ -98,12 +98,12 @@ namespace Deltares
 
                     double score2 = SilhouetteCoefficient(newClusters);
 
-                    if (!clusters.empty() && (score0 > score1 && score1 > score2))
+                    if (!clusters.empty() && (score0 > score1 + margin && score1 > score2 + margin))
                     {
                         break;
                     }
 
-                    if (score2 > bestScore)
+                    if (score2 > bestScore + margin)
                     {
                         clusters = newClusters;
                         bestScore = score2;
@@ -166,7 +166,7 @@ namespace Deltares
                     newSumSquared += cluster->getSumSquared();
                 }
 
-                if (clusters.empty() || newSumSquared < sumSquared) // new best clustering found
+                if (clusters.empty() || newSumSquared < sumSquared - margin) // new best clustering found
                 {
                     unchangedClusters = 0;
                     clusters = newClusters;

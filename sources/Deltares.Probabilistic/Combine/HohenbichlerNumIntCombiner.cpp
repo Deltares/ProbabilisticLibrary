@@ -20,6 +20,8 @@
 // All rights reserved.
 //
 #include "HohenbichlerNumIntCombiner.h"
+
+#include "combineElements.h"
 #include "HohenbichlerNumInt.h"
 #include "../Utils/probLibException.h"
 
@@ -33,7 +35,7 @@ namespace Deltares
             if (designPoints.empty()) throw probLibException("no design point in combiner");
             if (designPoints.size() == 1) return designPoints[0];
 
-            const std::vector<std::shared_ptr<Statistics::Stochast>> stochasts = getUniqueStochasts(designPoints);
+            const std::vector<std::shared_ptr<Statistics::Stochast>> stochasts = DesignPoint::getUniqueStochasts(designPoints);
 
             std::vector<std::shared_ptr<DesignPoint>> workDesignPoints;
             for (size_t i = 0; i < designPoints.size(); i++)

@@ -35,9 +35,8 @@ namespace Deltares
             }
             else
             {
-                auto result = LengthEffect::UpscaleLength(designPointCrossSection, selfCorrelationMatrix,
-                    correlationLengths, length);
-                designPoint = std::make_shared<DesignPoint>(result);
+                designPoint = std::make_shared<DesignPoint>(LengthEffect::UpscaleLength(designPointCrossSection, selfCorrelationMatrix,
+                    correlationLengths, length));
             }
         }
     }

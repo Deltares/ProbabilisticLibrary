@@ -49,14 +49,8 @@ namespace Deltares
              * \return Design point resembling the combined reliability and alpha values
              */
             virtual std::shared_ptr<DesignPoint> combineDesignPoints(combineAndOr combineMethodType, std::vector<std::shared_ptr<DesignPoint>>& designPoints, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix, std::shared_ptr<ProgressIndicator> progress) = 0;
-        protected:
-            /**
-             * \brief Gets all stochasts in a number of design points in the design point without doubling
-             * \param designPoints design points
-             * \return All stochasts without doubling
-             */
-            std::vector<std::shared_ptr<Statistics::Stochast>> getUniqueStochasts(const std::vector<std::shared_ptr<Reliability::DesignPoint>>& designPoints);
 
+        protected:
             /**
              * \brief Gets the linearized model representing the design points to be combined
              * \param combineMethodType Combination type

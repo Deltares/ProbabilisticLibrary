@@ -30,6 +30,8 @@ namespace Deltares
 {
     namespace Reliability
     {
+        using namespace Deltares::Models;
+
         void DesignPointModel::calculate(std::shared_ptr<ModelSample> sample)
         {
             // construct the tangent line of the circle with radius beta and in coordinates (- alfa1 * beta, -alfa2 * beta, ...)

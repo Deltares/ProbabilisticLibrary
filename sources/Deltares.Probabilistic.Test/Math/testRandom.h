@@ -30,6 +30,7 @@ namespace Deltares::Probabilistic::Test
     private:
         static void mersenneTwisterTest1();
         static void initializationTest();
+        static void repetitiveTest();
         static void twoInstances();
     };
 }

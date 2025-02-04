@@ -56,14 +56,14 @@ namespace Deltares
              * \param sample Sample providing values for the calculation and in which the calculation result is stored
              * \remark The sample must be defined in u-space
              */
-            void calculate(std::shared_ptr<ModelSample> sample);
+            void calculate(std::shared_ptr<Models::ModelSample> sample);
 
             /**
              * \brief Gets the length in the direction of a sample where the calculation result would be 0
              * \param sample Sample indicating direction
              * \return Length
              */
-            double getDirectionBeta(std::shared_ptr<ModelSample> sample);
+            double getDirectionBeta(std::shared_ptr<Models::ModelSample> sample);
 
             /**
              * \brief Assigns a number of stochasts

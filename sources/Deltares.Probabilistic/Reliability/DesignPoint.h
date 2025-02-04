@@ -30,40 +30,48 @@
 #include "../Statistics/StandardNormal.h"
 #include "ReliabilityResult.h"
 #include "ConvergenceReport.h"
-#include "FragilityCurve.h"
+#include "DesignPointIds.h"
 
-namespace Deltares
+namespace Deltares::Reliability
 {
-    namespace Reliability
+    /**
+     * \brief Design point, result of a reliability calculation
+     */
+    class DesignPoint : public Models::StochastPoint
     {
-        using namespace Deltares::Models;
+    public:
+        std::string Identifier;
 
         /**
-         * \brief Design point, result of a reliability calculation
+         * user defined identifier
          */
-        class DesignPoint : public StochastPoint
-        {
-        public:
-            std::string Identifier = "";
+        std::unique_ptr<DesignPointIds> Ids;
 
-            std::vector<std::shared_ptr<DesignPoint>> ContributingDesignPoints;
-            std::vector<std::shared_ptr<ReliabilityResult>> ReliabililityResults;
-            std::vector<std::shared_ptr<Evaluation>> Evaluations;
-            std::vector<std::shared_ptr<Deltares::Models::Message>> Messages;
+        std::vector<std::shared_ptr<DesignPoint>> ContributingDesignPoints;
+        std::vector<std::shared_ptr<ReliabilityResult>> ReliabililityResults;
+        std::vector<std::shared_ptr<Models::Evaluation>> Evaluations;
+        std::vector<std::shared_ptr<Models::Message>> Messages;
 
-            std::shared_ptr<ConvergenceReport> convergenceReport = std::make_shared<ConvergenceReport>();
+        std::shared_ptr<ConvergenceReport> convergenceReport = std::make_shared<ConvergenceReport>();
 
-            double getFailureProbability() { return Statistics::StandardNormal::getQFromU(this->Beta); }
-            double getNonFailureProbability() { return Statistics::StandardNormal::getPFromU(this->Beta); }
+        double getFailureProbability() { return Statistics::StandardNormal::getQFromU(this->Beta); }
+        double getNonFailureProbability() { return Statistics::StandardNormal::getPFromU(this->Beta); }
 
-            void expandContributions();
-            void correctFragilityCurves();
-        private:
-            void expandFragilityCurves();
-            void expandStochastRealization(std::shared_ptr<StochastPointAlpha> stochastRealization);
-            std::shared_ptr<StochastPointAlpha> getStochastPoint(std::shared_ptr<StochastPointAlpha> alphaRealization);
-            void updateVariableStochasts(std::shared_ptr<StochastPoint> fragilityCurveAlpha);
-        };
-    }
+        void expandContributions();
+        void correctFragilityCurves();
+
+        /**
+         * \brief Gets all stochasts in a number of design points in the design point without duplicates
+         * \param designPoints design points
+         * \return All stochasts without doubling
+         */
+        static std::vector<std::shared_ptr<Statistics::Stochast>> getUniqueStochasts(const std::vector<std::shared_ptr<Reliability::DesignPoint>>& designPoints);
+
+    private:
+        void expandFragilityCurves();
+        void expandStochastRealization(std::shared_ptr<Models::StochastPointAlpha> stochastRealization);
+        std::shared_ptr<Models::StochastPointAlpha> getStochastPoint(std::shared_ptr<Models::StochastPointAlpha> alphaRealization);
+        void updateVariableStochasts(std::shared_ptr<StochastPoint> fragilityCurveAlpha);
+    };
 }
 
