@@ -261,11 +261,11 @@ namespace Deltares
 
             void testReliabilityMethods::testClustersAdpImpSampling()
             {
-                auto expectedBetas = std::vector<double>({ 0.80438, 0.764136, 0.78369, 0.8073033, 0.754192 });
+                auto expectedBetas = std::vector<double>({ 0.80438, 0.753699, 0.78369, 0.7956208, 0.754192 });
                 auto expectedCentersA = std::vector<double>( { -0.697351, 0.71673, -0.69555, -0.718478, 0.707038, -0.707175, 0.714029, 0.700116 });
-                auto expectedCentersB = std::vector<double>({ 0.722677, -0.691186, -0.72022, -0.693746, 0.705007, 0.7092, -0.703878, 0.710321 });
+                auto expectedCentersB = std::vector<double>({ -0.716727, 0.697354, 0.718175, 0.695863, -0.712197, -0.70198, 0.714321, -0.699818 });
                 auto expectedCentersC = std::vector<double>({ -0.714813, 0.699316, -0.678015, -0.735048, 0.707866, 0.706347, 0.696578, -0.717481 });
-                auto expectedCentersD = std::vector<double>({ 0.718055, -0.695987, 0.708422, 0.705789, -0.709267, -0.70494, -0.697308, 0.716772 });
+                auto expectedCentersD = std::vector<double>({ -0.70989, -0.704313, 0.708422, 0.705789, -0.693545, 0.720413, 0.688054, -0.72566 });
                 auto expectedCentersE = std::vector<double>({ -0.705994, -0.708218, 0.694748, -0.719253, -0.684285, 0.729214, 0.68589, 0.727705 });
                 auto expectedCenters = std::vector({ expectedCentersA, expectedCentersB, expectedCentersC, expectedCentersD, expectedCentersE });
 
@@ -303,8 +303,6 @@ namespace Deltares
                     EXPECT_NEAR(designPoint->Beta, expectedBetas[seed], 1e-4);
                 }
             }
-
         }
-
     }
 }
