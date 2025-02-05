@@ -509,11 +509,12 @@ class LimitStateFunction:
 		else:
 			interface.SetBoolValue(self._id, 'use_compare_parameter', True)
 			interface.SetStringValue(self._id, 'compare_parameter', str(value))
-		
+
+# abstract class for design point ids
 class DesignPointIds:
 	
 	def __init__(self):
-		raise NotImplementedError("Please use derived class")
+		pass
 
 class DesignPoint:
 
@@ -527,6 +528,7 @@ class DesignPoint:
 		self._contributing_design_points = None
 		self._messages = None
 		self._realizations = None
+		self._ids = None
 		self._known_variables = known_variables
 		self._known_design_points = known_design_points
 		
