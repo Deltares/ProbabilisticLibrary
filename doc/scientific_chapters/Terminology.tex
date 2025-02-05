@@ -175,21 +175,7 @@ Or inversely:
 \caption{Schematic view of the relation between the reliability index $\beta$ and the probability of failure, $P[Z<0]$. Z is normally distributed with mean $\beta$ and standard deviation 1}\label{fig:2.6}
 \end{figure}
 
-This shows why the reliability index $\beta$ is a measure for reliability. Note that if the $Z$-function is not normally distributed, equation \eqref{eq:2-15} does not necessarily hold if $\beta$ is defined as in equation \eqref{eq:2-14}. This is why $\beta$ is a measure for reliability, not an exact representative of the probability of failure. However, often $\beta$ is computed directly from equation \eqref{eq:2-16} in which case it is an exact representative of the probability of failure by definition. \Tref{tab:2.1} shows a range of $\beta$-values and associated probabilities of exceedance.
-
-\begin{longtable}{|p{1.0in}|p{1.0in}|}
-\caption{Values of reliability index $\beta$ and associated probability of failure.} \label{tab:2.1} \\ \hline
-$\beta $ & $P$ \\ \hline 
-$1.0$ & $1.59\cdot 10^{-1}$ \\ \hline 
-$1.5$ & $6.68\cdot 10^{-2}$ \\ \hline 
-$2.0$ & $2.28\cdot 10^{-2}$ \\ \hline 
-$2.5$ & $6.21\cdot 10^{-3}$ \\ \hline 
-$3.0$ & $1.35\cdot 10^{-3}$ \\ \hline 
-$3.5$ & $2.33\cdot 10^{-4}$ \\ \hline 
-$4.0$ & $3.17\cdot 10^{-5}$ \\ \hline 
-$4.5$ & $3.40\cdot 10^{-6}$ \\ \hline 
-$5.0$ & $2.87\cdot 10^{-7}$ \\ \hline 
-\end{longtable}
+This shows why the reliability index $\beta$ is a measure for reliability. Note that if the $Z$-function is not normally distributed, equation \eqref{eq:2-15} does not necessarily hold if $\beta$ is defined as in equation \eqref{eq:2-14}. This is why $\beta$ is a measure for reliability, not an exact representative of the probability of failure. However, often $\beta$ is computed directly from equation \eqref{eq:2-16} in which case it is an exact representative of the probability of failure by definition. 
 
 Small values of $\beta$ indicate large probabilities of failure, large values of $\beta$ indicate small probabilities of failure. This can be easily explained with some examples in which, for the sake of simplicity, $Z$ is assumed to be normally distributed. If $\beta=1$, failure occurs if a random sample of $Z$ is more than $1\cdot\sigma_Z$ lower than the mean. The probability for this to happen is equal to $\Phi(-1)\approx0.16$. On the other hand, if $\beta=4$, failure occurs if a random sample of $Z$ is more than $4 \cdot \sigma_Z$ lower than the mean. The probability for this to happen is equal to $\Phi(-4)\approx3.2 \cdot 10^{-5}$. In other words: larger values of $\beta$ indicate that more extreme events are required for failure to occur, hence a lower probability of failure, hence a larger reliability of the system.
 
