@@ -87,7 +87,7 @@ namespace Deltares
 
             std::shared_ptr<ModelRunner> projectBuilder::BuildQuadraticProject()
             {
-                std::shared_ptr<ZModel> z(new ZModel(ZModel([this](std::shared_ptr<ModelSample> v) { return quadratic(v); })));
+                std::shared_ptr<ZModel> z = std::make_shared<ZModel>(ZModel([](std::shared_ptr<ModelSample> v) { return quadratic(v); }));
                 auto stochast = std::vector<std::shared_ptr<Stochast>>();
                 auto dist = DistributionType::Uniform;
                 std::vector<double> params{ -1.0, 1.0 };
@@ -105,19 +105,19 @@ namespace Deltares
 
             std::shared_ptr<ModelRunner> projectBuilder::BuildProjectWithDeterminist(double valueDeterminist)
             {
-                std::shared_ptr<ZModel> z(new ZModel(ZModel([this](std::shared_ptr<ModelSample> v) { return zfuncWithDeterminist(v); })));
+                std::shared_ptr<ZModel> z = std::make_shared<ZModel>(ZModel([this](std::shared_ptr<ModelSample> v) { return zfuncWithDeterminist(v); }));
                 auto stochast = std::vector<std::shared_ptr<Stochast>>();
                 auto dist = DistributionType::Normal;
                 std::vector<double> params{ 0.0, 1.0 };
-                std::shared_ptr<Stochast> s(new Stochast(dist, params));
+                std::shared_ptr<Stochast> s = std::make_shared<Stochast>(dist, params);
                 std::shared_ptr<Stochast> determinist(new Stochast(DistributionType::Deterministic, { valueDeterminist }));
                 stochast.push_back(s);
                 stochast.push_back(determinist);
                 stochast.push_back(s);
-                std::shared_ptr<CorrelationMatrix> corr(new CorrelationMatrix());
-                std::shared_ptr<UConverter> uConverter(new UConverter(stochast, corr));
+                std::shared_ptr<CorrelationMatrix> corr = std::make_shared<CorrelationMatrix>();
+                std::shared_ptr<UConverter> uConverter = std::make_shared<UConverter>(stochast, corr);
                 uConverter->initializeForRun();
-                std::shared_ptr<ModelRunner> m(new ModelRunner(z, uConverter));
+                std::shared_ptr<ModelRunner> m = std::make_shared<ModelRunner>(z, uConverter);
                 return m;
             }
 
