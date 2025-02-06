@@ -72,12 +72,12 @@ namespace Deltares
                 kmean.Settings->OptimizeNumberOfClusters = true;
                 kmean.Settings->generatorType = Numeric::RandomValueGeneratorType::MersenneTwister;
                 auto result = kmean.getClusterCenters(samples);
-                EXPECT_NEAR(result[0]->Values[0], 0.675, margin);
-                EXPECT_NEAR(result[0]->Values[1], 0.2212, margin);
-                EXPECT_NEAR(result[1]->Values[0], 0.748, margin);
-                EXPECT_NEAR(result[1]->Values[1], 0.17, margin);
-                EXPECT_NEAR(result[2]->Values[0], 0.6014, margin);
-                EXPECT_NEAR(result[2]->Values[1], 0.1171, margin);
+                EXPECT_NEAR(result[0]->Values[0], 0.748, margin);
+                EXPECT_NEAR(result[0]->Values[1], 0.170, margin);
+                EXPECT_NEAR(result[1]->Values[0], 0.601, margin);
+                EXPECT_NEAR(result[1]->Values[1], 0.117, margin);
+                EXPECT_NEAR(result[2]->Values[0], 0.675, margin);
+                EXPECT_NEAR(result[2]->Values[1], 0.222, margin);
             }
 
         }

@@ -158,7 +158,7 @@ namespace Deltares
 
             for (int trial = 0; trial < options.Trials; trial++)
             {
-                std::vector<std::shared_ptr<Cluster>> newClusters = DoClustering(samples, options, random); // find a clustering and update bests
+                std::vector<std::shared_ptr<Cluster>> newClusters = DoClustering(samples, options, random); // find a clustering and update best cluster
 
                 double newSumSquared = 0;
                 for (const auto& cluster : newClusters)
