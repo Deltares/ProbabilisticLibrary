@@ -880,12 +880,18 @@ namespace Deltares
                 if (property_ == "settings") combineProject->settings = combineSettingsValues[value];
                 else if (property_ == "correlation_matrix") combineProject->selfCorrelationMatrix = selfCorrelationMatrices[value];
             }
+            else if (objectType == ObjectType::DesignPoint)
+            {
+                std::shared_ptr<Reliability::DesignPoint> designPoint = designPoints[id];
+
+                if (property_ == "ids") designPoint->Ids = GetDesignPointIds(value);
+            }
             else if (objectType == ObjectType::Alpha)
             {
                 std::shared_ptr<Reliability::StochastPointAlpha> alpha = alphas[id];
 
                 if (property_ == "variable") alpha->Stochast = stochasts[value];
-            }
+                }
             else if (objectType == ObjectType::LengthEffectProject)
             {
                 std::shared_ptr<Reliability::LengthEffectProject> project = lengthEffectProjects[id];
@@ -1973,6 +1979,10 @@ namespace Deltares
             return messageIds[message];
         }
 
+        std::shared_ptr<Reliability::DesignPointIds> ProjectHandler::GetDesignPointIds(int id)
+        {
+            return nullptr;
+        }
     }
 }
 

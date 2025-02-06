@@ -45,7 +45,7 @@ namespace Deltares::Reliability
         /**
          * user defined identifier
          */
-        std::unique_ptr<DesignPointIds> Ids;
+        std::shared_ptr<DesignPointIds> Ids = nullptr;
 
         std::vector<std::shared_ptr<DesignPoint>> ContributingDesignPoints;
         std::vector<std::shared_ptr<ReliabilityResult>> ReliabililityResults;

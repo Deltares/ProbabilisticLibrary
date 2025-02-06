@@ -509,7 +509,12 @@ class LimitStateFunction:
 		else:
 			interface.SetBoolValue(self._id, 'use_compare_parameter', True)
 			interface.SetStringValue(self._id, 'compare_parameter', str(value))
-		
+
+# abstract class for design point ids
+class DesignPointIds:
+	
+	def __init__(self):
+		pass
 
 class DesignPoint:
 
@@ -523,6 +528,7 @@ class DesignPoint:
 		self._contributing_design_points = None
 		self._messages = None
 		self._realizations = None
+		self._ids = None
 		self._known_variables = known_variables
 		self._known_design_points = known_design_points
 		
@@ -531,6 +537,7 @@ class DesignPoint:
 
 	def __dir__(self):
 		return ['identifier',
+				'ids',
 				'reliability_index',
 				'probability_failure',
 				'alphas',
@@ -553,6 +560,15 @@ class DesignPoint:
 	@identifier.setter
 	def identifier(self, value : str):
 		interface.SetStringValue(self._id, 'identifier', value)
+
+	@property
+	def ids(self):
+		return self._ids
+		
+	@ids.setter
+	def ids(self, value : DesignPointIds):
+		self._ids = value
+		interface.SetIntValue(self._id, 'ids', value._id)
 
 	@property
 	def reliability_index(self):
@@ -658,7 +674,7 @@ class DesignPoint:
 		for contributing_design_point in self.contributing_design_points:
 			variables.extend(contributing_design_point.get_variables())
 		return frozenset(variables)
-		
+
 class Alpha:
 
 	def __init__(self, id = None, known_variables = None):
