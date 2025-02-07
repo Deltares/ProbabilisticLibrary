@@ -43,6 +43,7 @@ namespace Deltares
                 static void testFragilityCurveIntegration();
                 static void testNumericalIntegrationReliability();
                 static void testCrudeMonteCarloReliability();
+                static void testClustersAdpImpSampling();
             };
         }
     }
