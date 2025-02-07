@@ -5,7 +5,7 @@ The model for which a reliability calculation is performed, often falls into a s
 of multiple components which describes it certain physical phenomenon.
 Such a system is called a fault tree.
 We first describe how to solve a single component in this fault tree.
-The components are combined with methods given in \autoref{chp:CombiningDesignPoints}.
+The components are combined with methods given in \autoref{chp:CombiningFailureProbabilities}.
 
 \section{Formulation of the probability of failure of a single component}\label{Section_2.2.2}
 The probability of failure for a single component can be written formally as follows:
@@ -52,7 +52,7 @@ While an analytical solution to equation \eqref{eq:2-4} would be ideal,
 it is typically not available because the $Z$-function is too complex.
 Therefore, the probability of failure needs to be estimated with probabilistic computation techniques.
 Different techniques are available for this purpose.
-These techniques will be described in detail in the \autoref{chp:Reliability}.
+These techniques will be described in detail in the \autoref{chp:ReliabilityAnalysis}.
 
 \section{Conversion between standard normal variables ($U$-domain) and real variables ($X$-domain)}\label{Section_2.2.3}
 In practice, it is often advantageous to carry out probabilistic analyses in a standardized space, in which each of the variables are independent.
@@ -295,7 +295,6 @@ This means:
 
 In other words: $\alpha_i$ is a measure of the sensitivity of reliability index $\beta$ to changes in the mean value of variable $U_i$.
 This also means $\alpha_i$ is a measure of the sensitivity of the probability of failure to changes in the mean value of variable $U_i$.
-This information is used in the Hohenbichler method for combining probabilities of components in a system (see \Aref{chp:CombiningDesignPoints}).
 
 \Note{as stated before, linearized $Z$-functions are the basis for various computation techniques that are explained in the following sections.
 A full understanding of this linearisation process and the meaning of $\alpha$-values and $\beta$ is therefore essential for further reading of this document.}

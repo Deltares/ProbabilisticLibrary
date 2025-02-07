@@ -41,7 +41,7 @@ Furthermore, it was shown that the sum of the product of $\alpha$-values and sta
 Z_{i} =\beta -U_{i} \quad ;i=1...n_{e} \label{ZEqnNum310338} 
 \end{align}
 where $U_i$ is a standard normally distributed variable and $\beta$ is the reliability index of each individual $Z$-function.
-The value of $\beta$ is considered to be known, i.e.\ it is determined by the probabilistic computation techniques as described in \Aref{sec:ReliabilityTechniques}.
+The value of $\beta$ is considered to be known, i.e.\ it is determined by the probabilistic computation techniques as described in \Aref{chp:ReliabilityAnalysis}.
 This means $\beta$ is a constant in equation \eqref{ZEqnNum310338} and the mutual correlation of the $Z$-functions is therefore entirely determined by the mutual correlation of the $U$-variables:
 \begin{align}
 \rho \left(Z_{i} ,Z_{j} \right)=\rho \left(U_{i} ,U_{j} \right)=\rho \quad ;i\ne j\label{ZEqnNum614884} 
@@ -443,7 +443,7 @@ The equations above can also be used if $Z$ is a function of space.
 In that case, $t$ and $T$ need to be replaced by $x$ and $X$, where $x$ represents distance, e.g. the longitudinal distance along a dike section. 
 
 \Note{in \probLib, the outcrossing method is applied in time as well as in space.
-First, the probabilities of failure of the smallest ''components'' are computed with the probabilistic techniques for single components as described in \Aref{sec:ReliabilityTechniques}.
+First, the probabilities of failure of the smallest ''components'' are computed with the probabilistic techniques for single components as described in \Aref{chp:ReliabilitAnalysis}.
 The smallest component is e.g. a cross section of a flood defense (space) during a tidal period (time) for a single failure mechanism.
 So, the initial result of the probabilistic procedure is the probability that failure occurs at a certain cross section within the time-span of a tidal period for a single mechanism.
 This result will be used as  $P_F(0)$ in the equations above, i.e. the initial failure probability.
@@ -512,14 +512,14 @@ The parameters $d_Z$ and $\rho_Z$ can be derived as follows:
 
 In which: 
 
-\begin{tabular}{p{\textwidth-36pt-125mm}p{5mm}p{120mm}}
-$d_i$ & = &correlation length of random variable $i$ \\
-$\rho_i$& = &residual correlation length of random variable $i$ \\
-$\alpha_i$& = &influence coefficient of random variable $i$ \\
+\begin{tabular}{p{\textwidth-36pt-125mm}p{120mm}}
+$d_i$ & is the correlation length of random variable $i$ \\
+$\rho_i$& is the residual correlation length of random variable $i$ \\
+$\alpha_i$& is the influence coefficient of random variable $i$ \\
 \end{tabular}
 
 Note that coefficients $\alpha_1$, \dots ,$\alpha_n$ are determined in the probabilistic computation for a ''representative'' cross-section within the flood defence segment.
-For this purpose the probabilistic techniques for a single component are used (see \Aref{sec:ReliabilityTechniques}).
+For this purpose the probabilistic techniques for a single component are used (see \autoref{chp:ReliabilityAnalysis}).
 
 To derive the probability of failure of a dike segment, the segment is divided into components of equal length $\Delta L$.
 The number of components is equal to:
@@ -538,7 +538,7 @@ If we assume that the spatial variation of $Z$ is a Gaussian ergodic process (i.
 \begin{align}
 \Delta L=d_{Z} \sqrt{\pi } /\beta \quad ;{\rm if} ~ \rho _{Z} =0\label{ZEqnNum979631} 
 \end{align}
-where $\beta$ is the reliability index as derived in the probabilistic computation for a cross-section (see \Aref{sec:ReliabilityTechniques}).
+where $\beta$ is the reliability index as derived in the probabilistic computation for a cross-section (see \autoref{chp:ReliabilityAnalysis}).
 The value of $\Delta L$ is a result of the outcrossing approach (see \Aref{Section_2.4.5.3}) in which the spatial variation of $Z$ is assumed to be a Gaussian ergodic process.
 The derivation of $\Delta L$, as described in equation \eqref{ZEqnNum979631}, is described in \cite{Jongejan2012}.
 

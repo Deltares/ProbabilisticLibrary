@@ -1,83 +1,87 @@
 \chapter{Distributions}\label{chp:distributions}
 
-\section{Standard normal distribution}
+\section{Generic description of distribution functions}
+\label{sec:GenericDescriptionDistributionFunctions}
 
-The standard normal distribution is a normal distribution with mean $\mu$ = 0 and deviation $\sigma$ = 1. The standard normal distribution is unlikely to occur in the real world, but is used internally in probabilistic calculations.
+The following three types of functions can be used to describe the statistical properties of random variables: 
+\begin{enumerate}
+\item Cumulative distribution function (CDF)
+\item Inverse cumulative distribution function (inverse CDF)
+\item Probability density function (PDF)
+\end{enumerate}
 
-The probability density function is
+The CDF, $F(x)$, provides the probability of non-exceedance, $p$, of each potential realisation, $x$, of random variable $X$. The inverse CDF, $F^{-1}(p)$, provides the realisation $x$ that has a probability of non-exceedance $p$. The relation between the CDF and the inverse CDF is thus as follows: 
+\begin{equation}
+F\left(x\right)=p\Leftrightarrow x=F^{-1} \left(p\right) \label{3.1)}
+\end{equation}
 
-\begin{align}
-\label{eq:StandardNormalPDF}
-\varphi\left(u\right)= \frac{1}{\sqrt{2\pi}} e^{-u^{2} / 2} 
-\end{align} 
+The PDF, $f(x)$, is the derivative of the CDF:
+\begin{equation}
+F\left(x\right)=\int _{-\infty }^{x}f\left(\tau \right)d \tau \Leftrightarrow f\left(x\right)=\frac{dF}{dx} (x) \label{3.2)}
+\end{equation}
 
-and the cumulative density function, or in other words the non exceeding probability, is
+The PDF provides the probability density for any given value of $x$. The probability density is the probability per unit value. 
 
-\begin{align}
-\label{eq:StandardNormalCDF}
-\Phi\left(u\right) = \int_{-\infty}^{u} \varphi\left(v\right)dv 
-\end{align}
+The CDF, $F(x)$, has the flowing properties:
+\begin{enumerate}
+\item $F(x)$ is non-decreasing
+\item $\lim_{x\rightarrow -\infty}F(x)=0$
+\item $\lim_{x\rightarrow \infty}F(x)=1$
+\end{enumerate}
 
-Since there is no closed form to express $\Phi$, it is approximated by approximation formula 26.2.17 for Normal Probability Function, Handbook of Mathematical Functions, Abramowitz \& Stegun.
-In \probLib this is done using the methods of \cite{Wichura1988} and \cite{Hall_etall_1968}. Both methods are in double precision.
+In the \probLib, random variables are represented by standardised $U$-variables in the probabilistic computations, and the function $Z(U)$ is explored to derive an estimate of the failure probability. In order to evaluate function $Z(U)$, the realisations of the $U$-variables are first translated to the corresponding realisations of the $X$-variables and subsequently the $Z$-value is determined. Assume for the sake of simplicity that the $X$-variables are mutually independent. As explained in \Aref{Section_2.2.3}, the transformation from a realization, $u$, of variable $U$, to realization $x$, of variable $X$, is done in such a away that the (non-)exceedance probabilities of $u$ and $x$ are equal. This transformation, as depicted in \Fref{fig:Figure_3.3}, can be formulated as follows:
+\begin{equation}
+u \; \quad \Rightarrow \; \Phi \left(u\right)=F\left(x\right)\; \quad \Rightarrow \; \quad x=F^{-1} \left(\Phi \left(u\right)\right) \label{ZEqnNum694082}
+\end{equation}
+where:
 
-Other distribution types are converted to the standard normal distribution. The physical value in another distribution type, called $x$, is converted to a value $u$ in the standard normal distribution, in such a way that the non exceeding probability of $x$ is equal to the exceeding probability of $u$. With $\Phi$ the cumulative density function of the standard normal distribution, the converted value $u$ is
+\begin{tabular}{ll}
+$\Phi$ & is the standard normal distribution function\\
+$F$ & is the CDF of variable $X$\\
+$F^{-1}$ & is the inverse CDF of $X$\\
+$x$ & is the realisation of $X$\\
+$u$ & is the realisation of $U$\\
+\end{tabular}
 
-\begin{align}
-\label{eq:XUConversion}
-u\left(x\right) = \Phi^{-1}\left(F\left(x\right)\right)
-\end{align} 
-
-The probabilities of the standard normal distribution are displayed in the following figure.
-
-\begin{figure}[H]
-	\label{fig:StandardNormal}
-	\centering
-	\includegraphics[width=1.0\textwidth]{\pathProbLibPictures standardnormal.png}
-	\caption{Standard normal distribution}
+\begin{figure}[H]\centering
+\includegraphics*[width=3.95in, height=2.59in, keepaspectratio=false]{\pathProbLibPictures from_u_to_x.png}
+\caption{Procedure for determining an $x$-value associated with a randomly selected standard normally distributed variable ($u$-value), for the case of uncorrelated variables.}\label{fig:Figure_3.3}
 \end{figure}
 
-\section{Distribution properties}
-\label{sec:DistributionProperties}
+This procedure automatically guarantees that variable $x$ is a realization from distribution function $F(x)$ and therefore correctly represents the statistical properties of variable $X$. 
 
-This paragraph lists all distribution types supported by \probLib.
-In theory, endless distribution types exist. All distributions have the following properties:
+%\section{Distribution properties}
+%\label{sec:DistributionProperties}
 
-Each distribution reflects actual values. From these values $x_i$ the following properties can be derived
+%In theory, endless distribution types exist. Each distribution reflects actual values. From these values $x_i$ the following properties can be derived:
 
-\begin{itemize}
-	\item Mean or expectation value $\mu$: The long run average of randomly chosen values, calculated as follows:
-	\begin{align}
-	\label{eq:Mean}
-	\mu =\frac{1}{N}\sum_{i=1}^{N}x_{i}
-	\end{align}	
-	\item Mode: The value with the highest probability density;
-	\item Median: The value for which half of the randomly chosen values is less than this value and half of the randomly chosen values is more than this value;
-	\item Standard deviation $\sigma$: A measure how much randomly chosen values differ from the mean, calculated as follows:
-	\begin{align}
-	\label{eq:StandardDeviation}
-	\sigma^2 =\frac{1}{N}\sum_{i=1}^{N}\left(x_{i}-\mu\right)^2
-	\end{align}	
-	\item Variation coefficient $V$: Relative deviation with respect to the mean, so
-	\begin{align}
-	\label{eq:Variation}
-	V =\frac{\sigma}{\mu}
-	\end{align}	
-	\item Quantile value $Q$: Generalization of the median. From all randomly chosen values, a user provided fraction is less than this value and the remainder is more than this value;
-\end{itemize}
+%\begin{itemize}
+%	\item Mean or expectation value $\mu$: The long run average of randomly chosen values, calculated as follows:
+%	\begin{align}
+%	\label{eq:Mean}
+%	\mu =\frac{1}{N}\sum_{i=1}^{N}x_{i}
+%	\end{align}	
+%	\item Mode: The value with the highest probability density;
+%	\item Median: The value for which half of the randomly chosen values is less than this value and half of the randomly chosen values is more than this value;
+%	\item Standard deviation $\sigma$: A measure how much randomly chosen values differ from the mean, calculated as follows:
+%	\begin{align}
+%	\label{eq:StandardDeviation}
+%	\sigma^2 =\frac{1}{N}\sum_{i=1}^{N}\left(x_{i}-\mu\right)^2
+%	\end{align}	
+%	\item Variation coefficient $V$: Relative deviation with respect to the mean:
+%	\begin{align}
+%	\label{eq:Variation}
+%	V =\frac{\sigma}{\mu}
+%	\end{align}	
+%	\item Quantile value $Q$: Generalization of the median. From all randomly chosen values, a user provided fraction is less than this value and the remainder is more than this value.
+%\end{itemize}
 
-The distribution defines the following functions and predicts the values derived from measurements listed ($\mu$, $\sigma$, etc.)
 
-\begin{itemize}
-	\item Probability density function (PDF) $f(x)$: This is a function which indicates the likelihood of occurrence of a random chosen value $x$, relative to other values;
-	\item Cumulative density function (CDF) $F(x)$: This is a function which indicates the probability that a random chosen value $y$ is less or equal than $x$. It is related to $f(x)$ as
-	\begin{align}
-	\label{eq:CDF}
-	F\left(x\right) = P\left(y < x\right) = \int_{-\infty}^{x} f\left(y\right)dy
-	\end{align}
-\end{itemize}
 
-Therefore the distribution needs one or more of the following parameters (depending on the distribution type). 
+\section{Distribution types}
+\label{sec:DistributionTypes}
+
+This paragraph lists all distribution types supported by \probLib. The distribution functions often require the following parameters as inputs (depending on the distribution type):
 
 \begin{itemize}
 	\item Location $m$: An indication where the distribution is located. For some distributions the mean $\mu$ is equal to the location $m$.
@@ -87,15 +91,12 @@ Therefore the distribution needs one or more of the following parameters (depend
 	\item Minimum and Maximum $a$ and $b$: Minimum and maximum possible values of randomly chosen values. Not present in all distributions;
 \end{itemize}
 
-\section{Distribution types}
-\label{sec:DistributionTypes}
 
-This section lists all distribution types and their implementation of the distribution properties
 
 \subsection{Deterministic distribution}
 \label{sec:DeterministicDistribution}
 
-The properties of the deterministic distribution are
+The deterministic distribution function is defined as follows:
 
 \begin{tabular}{p{20mm}p{\textwidth-24pt-20mm}}  
 
@@ -117,7 +118,7 @@ Fit & $ \displaystyle{m = \frac{1}{N} \sum\limits_{i=1}^N x_i} $
 
 \subsection{Normal distribution}
 
-The properties of the normal distribution are
+The normal distribution function is defined as follows:
 
 \begin{tabular}{p{20mm}p{\textwidth-24pt-20mm}}  
 	
@@ -144,10 +145,47 @@ The properties of the normal distribution are
 	\caption{Illustration of the effect of parameters $\mu $ and $\sigma $}\label{fig:A.4}
 \end{figure}
 
+\subsection{Standard normal distribution}
+
+The standard normal distribution is a normal distribution with mean $\mu = 0$ and deviation $\sigma = 1$. The standard normal distribution is unlikely to occur in the real world, but is used internally in probabilistic calculations.
+
+The probability density function is:
+
+\begin{align}
+\label{eq:StandardNormalPDF}
+\varphi\left(u\right)= \frac{1}{\sqrt{2\pi}} e^{-u^{2} / 2} 
+\end{align} 
+
+and the cumulative density function, or in other words the non exceeding probability, is:
+
+\begin{align}
+\label{eq:StandardNormalCDF}
+\Phi\left(u\right) = \int_{-\infty}^{u} \varphi\left(v\right)dv 
+\end{align}
+
+Since there is no closed form to express $\Phi$, it is approximated by approximation formula 26.2.17 for Normal Probability Function, Handbook of Mathematical Functions, Abramowitz \& Stegun. In \probLib this is done using the methods of \cite{Wichura1988} and \cite{Hall_etall_1968}. Both methods are in double precision.
+
+Other distribution types are converted to the standard normal distribution. The physical value in another distribution type, called $x$, is converted to a value $u$ in the standard normal distribution, in such a way that the non exceeding probability of $x$ is equal to the exceeding probability of $u$. With $\Phi$ the cumulative density function of the standard normal distribution, the converted value $u$ is:
+
+\begin{align}
+\label{eq:XUConversion}
+u\left(x\right) = \Phi^{-1}\left(F\left(x\right)\right)
+\end{align} 
+
+The probabilities of the standard normal distribution are displayed in the following figure.
+
+\begin{figure}[H]
+	\label{fig:StandardNormal}
+	\centering
+	\includegraphics[width=1.0\textwidth]{\pathProbLibPictures standardnormal.png}
+	\caption{Standard normal distribution}
+\end{figure}
+
 \subsection{Log normal distribution}
 
-If parameter $y=\ln(x)$ has a normal distribution, then parameter $x$ has a log-normal distribution. A log-normal distribution always yields values higher than a given shift (usually 0). The normal and log-normal distributions are similar for small ratios between the standard deviation and the mean. 
-The properties of the log normal distribution are
+If parameter $y=\ln(x)$ has a normal distribution, then parameter $x$ has a log-normal distribution. A log-normal distribution always yields values higher than a given shift (usually $0$). The normal and log-normal distributions are similar for small ratios between the standard deviation and the mean. 
+
+The log normal distribution function is defined as follows:
 
 \begin{tabular}{p{20mm}p{\textwidth-24pt-20mm}}  
 
@@ -162,16 +200,16 @@ The properties of the log normal distribution are
 
 \end{tabular}
 
-\Fref{fig:A.5} shows the effect of different choices of the parameters.
+%\Fref{fig:A.5} shows the effect of different choices of the parameters.
 
-\begin{figure}[H]\centering
-	\includegraphics*[width=4.10in, height=3.22in, keepaspectratio=false]{\pathProbLibPictures lognomal_mu_sigma}
-	\caption{Illustration of the effect of parameters $\mu $, $\sigma $, and $\varepsilon $ on the lognormal density function}\label{fig:A.5}
-\end{figure}
+%\begin{figure}[H]\centering
+%	\includegraphics*[width=4.10in, height=3.22in, keepaspectratio=false]{\pathProbLibPictures lognomal_mu_sigma}
+%	\caption{Illustration of the effect of parameters $\mu $, $\sigma $, and $\varepsilon $ on the lognormal density function}\label{fig:A.5}
+%\end{figure}
 
 \subsection{Uniform distribution}
 
-The properties of the uniform distribution are
+The uniform distribution function is defined as follows:
 
 \begin{tabular}{p{20mm}p{\textwidth-24pt-20mm}}  
 	
@@ -194,8 +232,7 @@ The properties of the uniform distribution are
 	
 \end{tabular}
 
-The distribution parameters a and $B$ indicate the range over which the probability density function is non-zero, with a indicating the starting point and $b$ indicating the ending point.
-\Fref{fig:A.1} and \Fref{fig:A.2} show the uniform probability density and cumulative probability distribution, respectively, as a function of a and b. 
+The distribution parameters $a$ and $b$ indicate the range over which the probability density function is non-zero, with $a$ indicating the starting point and $b$ indicating the ending point. \Fref{fig:A.1} and \Fref{fig:A.2} show the uniform probability density and cumulative probability distribution, respectively, as a function of $a$ and $b$. 
 
 \begin{figure}[H]\centering
 	\includegraphics*[width=3.04in, height=2.33in, keepaspectratio=false]{\pathProbLibPictures uniform_pdf}
@@ -238,7 +275,7 @@ The properties of the triangular distribution are defined by a minimum $a$, a ma
 
 \subsection{Trapezoidal distribution}
 
-The properties of the trapezoidal distribution are defined by a minimum $a$, a maximum $b$, lower shift $c$ and upper shift $d$. The mode of the distribution is equal between $c$ and $d$. It is required that $a < c < d < b$. The effective length $L$ is the mean of the difference between the maximum and minimum and the difference between the upper shift and lower shift.
+The properties of the trapezoidal distribution are defined by a minimum $a$, a maximum $b$, lower shift $c$ and upper shift $d$. The mode of the distribution is between $c$ and $d$. It is required that $a < c < d < b$. The effective length $L$ is the mean of the difference between the maximum and minimum and the difference between the upper shift and lower shift.
 
 \begin{tabular}{p{20mm}p{\textwidth-24pt-20mm}}  
 	
@@ -264,7 +301,7 @@ The properties of the trapezoidal distribution are defined by a minimum $a$, a m
 
 \subsection{Exponential distribution}
 
-The exponential distribution is also defined with the rate $\lambda$. The properties are defined by: 
+The exponential distribution is defined as follows: 
 
 \begin{tabular}{p{20mm}p{\textwidth-24pt-20mm}}  
 	
@@ -278,16 +315,16 @@ The exponential distribution is also defined with the rate $\lambda$. The proper
 	
 \end{tabular}
 
-The parameter of the exponential distribution, $\lambda $, is referred to as a rate parameter, and determines how quickly the density function goes to zero. The parameter $\varepsilon $ is the shift parameter and serves to horizontally translate the density. \Fref{fig:A.5} shows the effect of different choices of the parameters.
+The parameter of the exponential distribution, $\lambda $, is referred to as the rate parameter, and determines how quickly the density function goes to zero. The parameter $c $ is the shift parameter and serves to horizontally shift the density. %\Fref{fig:A.5} shows the effect of different choices of the parameters.
 
-\begin{figure}[H]\centering
-	\includegraphics*[width=4.17in, height=3.27in, keepaspectratio=false]{\pathProbLibPictures exp_dist}
-	\caption{Illustration of the effect of parameters $\lambda $ and $\varepsilon $ on the exponential density function}\label{fig:A.6}
-\end{figure}
+%\begin{figure}[H]\centering
+%	\includegraphics*[width=4.17in, height=3.27in, keepaspectratio=false]{\pathProbLibPictures exp_dist}
+%	\caption{Illustration of the effect of parameters $\lambda $ and $\varepsilon $ on the exponential density function}\label{fig:A.6}
+%\end{figure}
 
 \subsection{Gumbel distribution}
 
-The Gumbel distribution is defined by the scale parameter $s$ and the shift parameter $c$. The shift parameter is also called the location parameter. The Gumbel properties are
+The Gumbel distribution function is defined as follows, where $s$ is the scale parameter and $c$ is the shift parameter. The shift parameter is also called the location parameter.
 
 \begin{tabular}{p{20mm}p{\textwidth-24pt-20mm}}  
 	
@@ -300,38 +337,37 @@ The Gumbel distribution is defined by the scale parameter $s$ and the shift para
 	& $ \displaystyle{c = -s \cdot \text{ln} \left(\frac{1}{N} \sum\limits_{i=1}^N \exp\left({-\frac{x_i}{s}}\right)  \right)}$
 \end{tabular}
 
-where
+where:
 \begin{longtable*}{p{20mm}p{\textwidth-24pt-20mm}}  
-	$\gamma$ & is the Euler-Mascheroni constant (0.5772156649...); \\
+	$\gamma$ & is the Euler-Mascheroni constant (0.5772156649...) \\
 \end{longtable*}
 
-The expression for the fit is from: \citep{Forbes2010} .
+The expression for the fit originates from \citep{Forbes2010}. 
 
-The two parameters that should be input into \probLib are therefore the rate parameter and the location parameter.
-\Fref{fig:A.7} shows the effect of different choices of the parameters.
+%The two parameters that should be input into \probLib are therefore the rate parameter and the location parameter. \Fref{fig:A.7} shows the effect of different choices of the parameters.
 
-\begin{figure}[H]\centering
-	\includegraphics*[width=4.17in, height=3.27in, keepaspectratio=false]{\pathProbLibPictures gumbel_dist}
-	\caption{Effect of the scale and location parameters, $\alpha $ and $\xi $, on the Gumbel density function}\label{fig:A.7}
-\end{figure}
+%\begin{figure}[H]\centering
+%	\includegraphics*[width=4.17in, height=3.27in, keepaspectratio=false]{\pathProbLibPictures gumbel_dist}
+%	\caption{Effect of the scale and location parameters, $\alpha $ and $\xi $, on the Gumbel density function}\label{fig:A.7}
+%\end{figure}
 
 \subsubsection{Decimation value}
 
-Alternatively, the location and scale can be derived from a decimation value $D$ and a known exceeding probability for a certain $x_\text{exc}$. The decimation value $D$ is the difference in the $x$-value, which reduces the exceeding probability $F_\text{exc}$ with a factor 10. This leads to
+Alternatively, the location and scale can be derived from a decimation value $D$ and a known exceeding probability for a certain $x_\text{exc}$. The decimation value $D$ is the difference in the $x$-value, which reduces the exceeding probability $F_\text{exc}$ with a factor 10. This leads to:
 
 \begin{align}
 \label{eq:GumbelDecimation}
 F_{\text{exc}}\left(x_\text{exc} + D\right) = \tfrac{1}{10} F_{\text{exc}}\left(x_\text{exc}\right)
 \end{align}
 
-with
+with:
 
 \begin{align}
 \label{eq:GumbelExceed}
 F_{\text{exc}}\left(x\right) = 1 - F\left(x\right)
 \end{align}
 
-The distribution properties can be derived as follows from the decimation height
+The distribution properties can be derived as follows from the decimation height:
 
 \begin{tabular}{p{20mm}p{\textwidth-24pt-20mm}}  
 	
@@ -343,7 +379,7 @@ The distribution properties can be derived as follows from the decimation height
 
 \subsection{Weibull distribution}
 
-The Weibull distribution is defined by the scale parameter $s$, the shape parameter $k$ and the shift parameter $c$. The shift parameter is also called the location parameter. The Weibull properties are
+The Weibull distribution is defined by the scale parameter $s$, the shape parameter $k$ and the shift parameter $c$. The shift parameter is also called the location parameter. The Weibull distribution is described as follows:
 
 \begin{tabular}{p{20mm}p{\textwidth-24pt-20mm}}  
 	
@@ -357,16 +393,18 @@ The Weibull distribution is defined by the scale parameter $s$, the shape parame
 	
 \end{tabular}
 
-where
+where:
 \begin{longtable*}{p{20mm}p{\textwidth-24pt-20mm}}  
 	$\Gamma$ & is the gamma function; \\  
 \end{longtable*}
 
-The expression for the fit is from: \citep{Garcia1981} .
+The expression for the fit originates from \citep{Garcia1981} .
 
-\subsection{Conditional Weibull distribution\label{sec:conditionalweibulldistribution}} 
+\subsection{Conditional Weibull distribution}
+\label{sec:conditionalweibulldistribution}
 
 The conditional Weibull distribution gives the probability that $X=x$ conditionally on the event that $X>\omega $, where $\omega $ represents a threshold. It is used in when considering a peaks-over-threshold (POT) method. The distribution function of the conditional Weibull is given as follows:
+
 \begin{align}
 	P\left(X\le x|X>\omega \right)=1-\exp \left[\left({\omega \mathord{\left/ {\vphantom {\omega  \sigma }} \right. \kern-\nulldelimiterspace} \sigma } \right)^{\xi } -\left({x\mathord{\left/ {\vphantom {x \sigma }} \right. \kern-\nulldelimiterspace} \sigma } \right)^{\xi } \right]\label{ZEqnNum182046} 
 \end{align}
@@ -390,7 +428,7 @@ Expanding equation \eqref{ZEqnNum277845} so that the probability is full written
 
 \subsection{Frechet distribution}
 
-The Frechet distribution is defined by the scale parameter $s$, the shape parameter $k$ and the shift parameter $c$. The shift parameter is also called the location parameter. The Frechet properties are
+The Frechet distribution is defined by the scale parameter $s$, the shape parameter $k$ and the shift parameter $c$. The shift parameter is also called the location parameter. The Frechet properties are:
 
 \begin{tabular}{p{20mm}p{\textwidth-24pt-20mm}}  
 	
@@ -402,16 +440,16 @@ The Frechet distribution is defined by the scale parameter $s$, the shape parame
 	
 \end{tabular}
 
-where
+where:
 \begin{longtable*}{p{20mm}p{\textwidth-24pt-20mm}}  
-	$\Gamma$ & is the gamma function; \\  
+	$\Gamma$ & is the gamma function\\  
 \end{longtable*}
 
 \subsection{Generalized Extreme Value distribution}
 
 The Generalized Extreme Value distribution is a combination of the Gumbel, Frechet and inverted Weibull distribution. Depending on the sign of the shape parameter $k$, one of these distribution is used.
 
-The Generalized Extreme Value distribution $D_\text{GEV}$ is defined as follows
+The Generalized Extreme Value distribution $D_\text{GEV}$ is defined as follows:
 
 \begin{align}
 D_\text{GEV}\left(s, k, c\right) = \left\{\begin{array}{ll}	k = 0 & D_\text{Gumbel}\left(s, c\right) \\
@@ -420,9 +458,10 @@ D_\text{GEV}\left(s, k, c\right) = \left\{\begin{array}{ll}	k = 0 & D_\text{Gumb
 	\end{array}\right. 
 \end{align}
 
-\subsection{Rayleigh distribution\label{sec:rayleighdistribution}}
+\subsection{Rayleigh distribution}
+\label{sec:rayleighdistribution}
 
-The properties of the Rayleigh distribution are
+The Rayleigh distribution is defined as follows:
 
 \begin{tabular}{p{20mm}p{\textwidth-24pt-20mm}}  
 	
@@ -438,24 +477,24 @@ The properties of the Rayleigh distribution are
 	
 \end{tabular}
 
-\subsection{Rayleigh-$N$ distribution\label{sec:rayleighNdistribution}}
-The Rayleigh-$N$ distribution is a special distribution implemented in \probLib.
-This distribution is based on the Rayleigh distribution
+\subsection{Rayleigh-$N$ distribution}
+\label{sec:rayleighNdistribution}
+
+The Rayleigh-$N$ distribution is a special distribution implemented in \probLib. This distribution is based on the Rayleigh distribution
 (see \Aref{sec:rayleighdistribution}) and it is defined as follows:
 \begin{equation}
 	F(x;\sigma,N) = \left(1-e^{-x^2/(2 \sigma^2)}\right)^N\mbox{ for $x\geq 0$}
 \end{equation}
 where $\sigma>0$ is the scale parameter and $N>0$.
-The Rayleigh-$N$ distribution is in fact the Rayleigh distribution taken to the power $N$.
-When $N=1$, the Rayleigh-$N$ distribution is exactly equal to the Rayleigh distribution.
-The corresponding probability density function is:
+
+The Rayleigh-$N$ distribution is in fact the Rayleigh distribution taken to the power $N$. When $N=1$, the Rayleigh-$N$ distribution is exactly equal to the Rayleigh distribution. The corresponding probability density function is:
 \begin{equation}
 	f(x;\sigma,N) = \frac{N x}{\sigma^2}\left(1-e^{-x^2/(2 \sigma^2)}\right)^{N-1} e^{-x^2/(2 \sigma^2)}\mbox{ for $x\geq 0$}
 \end{equation}
 
 \subsection{Pareto distribution}
 
-The properties of the Pareto distribution are
+The Pareto distribution is defined as follows:
 
 \begin{tabular}{p{20mm}p{\textwidth-24pt-20mm}}  
 	
@@ -471,7 +510,7 @@ The properties of the Pareto distribution are
 
 \subsection{Generalized Pareto distribution}
 
-The properties of the Generalized Pareto distribution are
+The Generalized Pareto distribution is defined as follows:
 
 \begin{tabular}{p{20mm}p{\textwidth-24pt-20mm}}  
 	
@@ -485,7 +524,7 @@ The properties of the Generalized Pareto distribution are
 
 \subsection{Student's T distribution}
 
-The properties of the student's T is based on the degrees of freedom $\nu$, which is equal to $N-1$.
+The student's T distribution is defined as follows. It is based on the degrees of freedom $\nu$, which is equal to $N-1$.
 
 \begin{tabular}{p{20mm}p{\textwidth-24pt-20mm}}  
 	
@@ -504,12 +543,11 @@ The properties of the student's T is based on the degrees of freedom $\nu$, whic
 
 \end{tabular}
 
-The expression for the fit is from: \\
-\citep{stackexchange} .
+The expression for the fit originates from \\ \citep{stackexchange}.
 
 \subsection{Gamma distribution}
 
-The properties of the Gamma distribution are
+The Gamma distribution function is described as follows:
 
 \begin{tabular}{p{20mm}p{\textwidth-24pt-20mm}}  
 	
@@ -525,9 +563,9 @@ The properties of the Gamma distribution are
 	
 \end{tabular}
 
-where
+where:
 \begin{longtable*}{p{20mm}p{\textwidth-24pt-20mm}}  
-	$\Gamma\left(\alpha\right)$ & is the gamma function; \\  
+	$\Gamma\left(\alpha\right)$ & is the gamma function \\  
 	$\gamma\left(\alpha, \beta\right)$ & is the lower incomplete gamma function
 \end{longtable*}
 
@@ -550,25 +588,24 @@ The Beta distribution is defined with two shape parameters, $k_1$ and $k_2$, as 
 	
 \end{tabular}
 
-where
+where:
 \begin{longtable*}{p{20mm}p{\textwidth-24pt-20mm}}  
-	$\Gamma\left(\alpha\right)$ & is the gamma function; \\  
 	$B\left(\alpha, \beta\right)$ & is the beta function; \\
 	$I_x\left(\alpha, \beta\right)$ & is the regularized incomplete beta function;
 \end{longtable*}
 
-The class of Beta distributions includes a wide variety of shapes and other well-known distributions as special cases (see \Fref{fig:4parbetadist}).
+%The class of Beta distributions includes a wide variety of shapes and other well-known distributions as special cases (see \Fref{fig:4parbetadist}).
 
-\begin{figure}[H]\centering
-	\includegraphics*[width=3.90in, height=3.04in, keepaspectratio=false]{\pathProbLibPictures parbetadist.png}
-	\caption{Probability density function of the four-parameter Beta distribution for different values of $\alpha$ and $\beta$.}\label{fig:4parbetadist}
-\end{figure}
+%\begin{figure}[H]\centering
+%	\includegraphics*[width=3.90in, height=3.04in, keepaspectratio=false]{\pathProbLibPictures parbetadist.png}
+%	\caption{Probability density function of the four-parameter Beta distribution for different values of $\alpha$ and $\beta$.}\label{fig:4parbetadist}
+%\end{figure}
 
-For example, the Beta distribution is equal to the uniform distribution for $\alpha=\beta=1$. A parabolic shaped distribution is obtained for $\alpha=\beta=2$. It also supports high skewness (influenced by the extent to which $\alpha$ and $\beta$ differ), heavy tails ($\alpha$ and $\beta$ smaller than one) and approximate normality for large $\alpha=\beta$ and a range $[a,b]$ expanding towards infinity. In probabilistic computations not only $F_4$, but also its inverse must be available. For this inverse no analytical expressions are available and one must rely on numerical approximations.
+%For example, the Beta distribution is equal to the uniform distribution for $\alpha=\beta=1$. A parabolic shaped distribution is obtained for $\alpha=\beta=2$. It also supports high skewness (influenced by the extent to which $\alpha$ and $\beta$ differ), heavy tails ($\alpha$ and $\beta$ smaller than one) and approximate normality for large $\alpha=\beta$ and a range $[a,b]$ expanding towards infinity. In probabilistic computations not only $F_4$, but also its inverse must be available. For this inverse no analytical expressions are available and one must rely on numerical approximations.
 
 \subsection{Poisson distribution}
 
-The properties of the Poisson distribution are (where $\lfloor x \rfloor$ is the floor function of $x$)
+The Poisson distribution is defined as follows (where $\lfloor x \rfloor$ is the floor function of $x$):
 
 \begin{tabular}{p{20mm}p{\textwidth-24pt-20mm}}  
 	
@@ -585,7 +622,7 @@ The properties of the Poisson distribution are (where $\lfloor x \rfloor$ is the
 
 \subsection{Discrete distribution}
 
-The properties of the discrete distribution are based on a set of x values $X = \{x_1, x_2, ...,  x_N\}$ and their weights $w_i$
+The properties of the discrete distribution are based on a set of values $\{x_1, x_2, ...,  x_N\}$ and their probabilities of occurrence $w_i$:
 
 \begin{tabular}{p{20mm}p{\textwidth-24pt-20mm}}  
 
@@ -603,7 +640,7 @@ The properties of the discrete distribution are based on a set of x values $X = 
 
 \subsection{Bernoulli distribution}
 
-The Bernoulli distribution is a special case of a discrete distribution. It consists of two discrete values, one at 0 with weight $1 - \mu$  and one at 1 with weight $\mu$.
+The Bernoulli distribution is a special case of a discrete distribution. It consists of two discrete values, one at $0$ with probability $1 - \mu$  and one at $1$ with probability $\mu$.
 
 \begin{tabular}{p{20mm}p{\textwidth-24pt-20mm}}  
 
@@ -634,7 +671,7 @@ The CDF curve distribution consists of a number of reliability indices for which
 
 The histogram distribution consists of a number of bins. Within each bin, which is defined with a lower bound and an upper bound, each value is assumed to have the same probability of occurrence.
 
-When fitted, the aim is to generate 100 non empty bins, all with the same width. The lowest bin has a lower boundary $a$ and the highest bin has an upper boundary $b$.
+When fitted, the aim is to generate $100$ non empty bins, all with the same width. The lowest bin has a lower boundary $a$ and the highest bin has an upper boundary $b$.
 
 If the lowest fitted value appears multiple times (unrounded), it is assumed that this value is a lower limit and no values lower than this value are possible. A bin with width zero and boundaries equal to the lowest value is added to the histogram. The same is applied for the highest model result.
 
@@ -648,18 +685,18 @@ Fit & $ \displaystyle{a = \left\{\begin{array}{ll} N \left(x_{\text{min}}\right)
 	N\left(x_{\text{max}}\right) > 1 & x_{\text{max}}
 	\end{array}	
 	\right.}$  \\
-where \\
-$N\left(x_{\text{min}}\right)$ & = the number of appearances of value $x_{\text{min}} $ \\
-$N\left(x_{\text{max}}\right)$ & = the number of appearances of value $x_{\text{max}} $ \\
+where: \\
+$N\left(x_{\text{min}}\right)$ & is the number of appearances of value $x_{\text{min}} $ \\
+$N\left(x_{\text{max}}\right)$ & is the number of appearances of value $x_{\text{max}} $ \\
 $\delta$ & $= \displaystyle { \frac{x_{\text{max}} - x_{\text{min}}}{N}  }$
 
 \end{tabular}
 
 \subsection{Inverted distribution}
 
-The inverted distribution is a distribution on top of another base distribution. The inverted distribution is "mirrored" in the x-direction around the shift value $c_\text{base}$ of the base distribution, or 0 if the base distribution does not have a shift.
+The inverted distribution is a distribution on top of another base distribution. The inverted distribution is "mirrored" in the x-direction around the shift value $c_\text{base}$ of the base distribution, or $0$ if the base distribution does not have a shift.
 
-The properties of the inverted distribution are 
+The inverted distribution is defined as follows: 
 
 \begin{tabular}{p{20mm}p{\textwidth-24pt-20mm}}  
 
@@ -672,7 +709,7 @@ The properties of the inverted distribution are
 
 \subsection{Truncated distribution}
 
-The inverted distribution is a distribution on top of another base distribution and is truncated below a minimum vale $a$ and maximum value $b$. The mean and standard deviation displayed are the properties of the base distribution, although not being the correct mean and standard deviation. The properties of the truncated distribution are 
+The inverted distribution is a distribution on top of another base distribution and is truncated below a minimum vale $a$ and maximum value $b$. The mean and standard deviation displayed are the properties of the base distribution, although not being the correct mean and standard deviation. The truncated distribution i
 
 \begin{tabular}{p{20mm}p{\textwidth-24pt-20mm}}  
 
@@ -694,30 +731,29 @@ Deviation & $ \displaystyle{\sigma = \sigma_\text{base}}$ \\
 \section{Goodness of fit}
 \label{sec:GoodnessOfFit}
 
-The goodness of fit is an indication how well data fit into the distribution. The goodness of fit is the Kolmogorov-Smirnov statistic, which is defined as the maximum difference between the CDF values of the derived distribution and the CDF values of the data. The Kolmogorov-Smirnov statistic is calculated as follows:
+The goodness of fit is an indication how well data fit into the distribution. The Kolmogorov-Smirnov statistic is a goodness of fit test, which is defined as the maximum difference between the CDF values of the derived distribution and the CDF values of the data. The Kolmogorov-Smirnov statistic is calculated as follows:
 
 \begin{align}
 \label{eq:GoodnessOfFit}
 k = \max_{i, \delta \in \{0, 1\} } \mid F\left(x_i\right) - \frac{i - \delta}{N} \mid
 \end{align}
 
-The p-value is calculated as follows for high values of $N$:
+The $p$-value is calculated as follows for high values of $N$:
 
 \begin{align}
 \label{eq:PValue}
 \lim_{N\to\infty}  p = 1 - \frac{k}{\sqrt{N}}
 \end{align}
 
-where
+where:
 \begin{longtable*}{p{20mm}p{\textwidth-24pt-20mm}}  
-	$i$ & is the index number of the data value ($1 \leq i \leq N$); \\  
-	$N$ & is the number of data values; \\
-	$x_i$ & is the $i^\text{th}$ sorted data value; \\  
-	$F\left(x_i\right)$ & is the CDF value corresponding with $x_i$ (see \autoref{eq:CDF}); \\  
+	$i$ & is the index number of the data value ($1 \leq i \leq N$) \\  
+	$N$ & is the number of data values\\
+	$x_i$ & is the $i^\text{th}$ sorted data value \\  
+	$F\left(x_i\right)$ & is the CDF value corresponding with $x_i$ (see \autoref{eq:CDF})\\  
 \end{longtable*}
 
-The goodness of fit is also applied to observation sets in the tab "Source" (in PTK).
-This is an indication whether two series of observations originate from the same measurements.
+The Kolmogorov-Smirnov statistic is applied to observation sets. This is an indication whether two series of observations originate from the same measurements.
 
 \section{Prior distribution}
 \label{sec:PriorDistribution}
@@ -738,13 +774,13 @@ and
 \sigma_\text{post}^2 = \frac{\sigma_\text{data}^2 \cdot \sigma_\text{prior}^2}{n \cdot \sigma_\text{prior}^2 + \sigma_\text{data}^2 }
 \end{align}
 
-where 
+where:
 
 \begin{longtable*}{p{20mm}p{\textwidth-24pt-20mm}}  
-	$\mu_\text{post}, \sigma_\text{post}$ & are the mean and standard deviation of the updated (or posterior) distribution; \\  
-	$\mu_\text{prior}, \sigma_\text{prior}$ & are the mean and standard deviation of the prior distribution; \\  
-	$\mu_\text{data}, \sigma_\text{data}$ & are the mean and standard deviation of the distribution fitted from the data only; \\  
-	$n$ & is the number of data values; \\  
+	$\mu_\text{post}, \sigma_\text{post}$ & are the mean and standard deviation of the updated (or posterior) distribution \\  
+	$\mu_\text{prior}, \sigma_\text{prior}$ & are the mean and standard deviation of the prior distribution \\  
+	$\mu_\text{data}, \sigma_\text{data}$ & are the mean and standard deviation of the distribution fitted from the data only \\  
+	$n$ & is the number of data values \\  
 \end{longtable*}
 
 \section{Design values}
@@ -758,11 +794,11 @@ Design values are values derived from the stochastic definition as follows:
 V_{design} =\frac{Q\left(q\right)}{\gamma}
 \end{align}
 
-where
+where:
 \begin{longtable*}{p{20mm}p{\textwidth-24pt-20mm}}  
-	$V_{design}$ & is the design value; \\  
-	$Q$ & is the function, which calculates the quantile value; \\  
-	$q$ & is the user given design quantile value; \\  
-	$\gamma$ & is the user given design factor; \\  
+	$V_{design}$ & is the design value \\  
+	$Q$ & is the function, which calculates the quantile value\\  
+	$q$ & is the user given design quantile value \\  
+	$\gamma$ & is the user given design factor \\  
 \end{longtable*}
 

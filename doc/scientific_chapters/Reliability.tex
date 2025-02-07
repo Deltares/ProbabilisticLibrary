@@ -21,11 +21,11 @@ Numerical integration solves equation \eqref{eq:2-4} by discretizing the random 
 where:
 
 \begin{tabular}{p{0.4in}p{4in}} 
-$\hat{P}_{f} $ & is the estimated probability of failure; \\
-$1_{\left[Z<0\right]} $ & is the indicator function, equal to $1$ for $Z$ $<$ $0$, equal to $0$ for $Z$ $\geq$ $0$; \\
-$x_{0,k}$ & is the lower range limit for the $k^{th}$ variable; \\
-$\Delta$$x_k$ & is the interval width of the $k^{th}$ variable; \\
-$m_k$ & is the upper bound of $k$ such that $x_{0,k}$+ $m_k$$\Delta$$x_k$ is the upper bound of the $k^{th}$ variable.  \\
+$\hat{P}_{f} $ & is the estimated probability of failure \\
+$1_{\left[Z<0\right]} $ & is the indicator function, equal to $1$ for $Z$ $<$ $0$, equal to $0$ for $Z$ $\geq$ $0$ \\
+$x_{0,k}$ & is the lower range limit for the $k^{th}$ variable \\
+$\Delta$$x_k$ & is the interval width of the $k^{th}$ variable \\
+$m_k$ & is the upper bound of $k$ such that $x_{0,k}$+ $m_k$$\Delta$$x_k$ is the upper bound of the $k^{th}$ variable \\
 \end{tabular}
 
 In equation \eqref{eq:2-30}, for each variable $X_k$ an equidistant grid with step size $\Delta$$x_k$ is used, but non-equidistant grids can also be used in numerical integration. \Fref{fig:NumIntegr} presents a schematic view of the method, for an example of two random variables $X_1$ and $X_2$. A 2-dimensional grid is defined and the $Z$-function is evaluated at the centre of the grid cells. Red grid points indicate failure $(Z<0)$, green grid points indicate no failure ($Z\geq0$). The total probability of failure (see equation \eqref{eq:2-30}) is estimated as follows: multiply the probability density of the grid cells in the failure domain (red dots) with the size of the grid cells ($\Delta$$x_1$ $\times$ $\Delta$$x_2$) and take the sum of these probabilities.
@@ -50,11 +50,11 @@ The probability density is assumed to be constant over the entire grid cell. The
 where:
 
 \begin{tabular}{p{\textwidth-36pt-129mm}p{125mm}}  
-	$\hat{P}_{f} $ & is the estimated probability of failure; \\ 
-	$\phi $ & is the standard normal density function; \\ 
-	$u_{0,k} $ & is the lower range limit for the $k^{th}$ variable, in the $U$-space; \\  
-	$\Delta u_{k} $ & is the interval width of the $k^{th}$ variable, in the $U$-space; \\  
-	$m_{k} $ & is the upper bound of $k$ such that $u_{0,k} +m_{k} \cdot \Delta u_{k}$ is the upper bound of the $k^{th}$ variable.\\  
+	$\hat{P}_{f} $ & is the estimated probability of failure \\ 
+	$\phi $ & is the standard normal density function \\ 
+	$u_{0,k} $ & is the lower range limit for the $k^{th}$ variable, in the $U$-space \\  
+	$\Delta u_{k} $ & is the interval width of the $k^{th}$ variable, in the $U$-space \\  
+	$m_{k} $ & is the upper bound of $k$ such that $u_{0,k} +m_{k} \cdot \Delta u_{k}$ is the upper bound of the $k^{th}$ variable\\  
 \end{tabular}
 
 
@@ -95,9 +95,9 @@ p_{\text{failure}} = \frac{N_{\text{failure}}}{N}
 
 where:
 \begin{longtable}{p{16mm}p{\textwidth-24pt-16mm}}  
-	$p_{\text{failure}}$ & is the probability of failure; \\  
-	$N_{\text{failure}}$ & is the number of realizations which were interpreted as failing; \\ 
-	$N$ & is the total number of realizations.
+	$p_{\text{failure}}$ & is the probability of failure \\  
+	$N_{\text{failure}}$ & is the number of realizations which were interpreted as failing \\ 
+	$N$ & is the total number of realizations
 \end{longtable}
 
 \begin{figure}[H]
@@ -127,13 +127,13 @@ z = \Phi^{-1}\left(1 - \frac{\alpha}{2}\right)
 where:
 
 \begin{longtable}{p{16mm}p{\textwidth-24pt-16mm}}  
-	$\sigma_p$ & is the standard deviation of the probability of failure; \\  
-	$p$ & is the probability of failure $p_{\text{failure}}$; \\
-	$N$ & is the total number of realizations; \\
+	$\sigma_p$ & is the standard deviation of the probability of failure \\  
+	$p$ & is the probability of failure $p_{\text{failure}}$ \\
+	$N$ & is the total number of realizations \\
 	$z$ & is the quantile of the standard normal distribution corresponding with $\alpha$.
-	$z$ is equal to $1$ in the \probLib; \\
-	$\Phi$ & is the CDF of the standard normal distribution (see \autoref{eq:StandardNormalCDF}); \\
-	$\alpha$ & is the confidence level.
+	$z$ is equal to $1$ in the \probLib \\
+	$\Phi$ & is the CDF of the standard normal distribution (see \autoref{eq:StandardNormalCDF}) \\
+	$\alpha$ & is the confidence level
 \end{longtable}
 
 The standard deviation $\sigma_p$ can be expressed as a variation coefficient $\varepsilon$:
@@ -198,9 +198,9 @@ W_{\text{realization}} = \prod_{\text{variables}} w_{\text{var}}
 where:
 
 \begin{longtable}{p{16mm}p{\textwidth-24pt-16mm}}  
-	$\varphi$ & is the standard normal probability density function, see \autoref{eq:StandardNormalPDF}; \\  
-	$w_{\text{var}}$ & is the weight factor per variable per realization; \\
-	$W_{\text{realization}}$ & is the weight factor of the realization. \\
+	$\varphi$ & is the standard normal probability density function, see \autoref{eq:StandardNormalPDF} \\  
+	$w_{\text{var}}$ & is the weight factor per variable per realization \\
+	$W_{\text{realization}}$ & is the weight factor of the realization \\
 \end{longtable}
 
 Corresponding to \autoref{eq:MonteCarlo}, the probability of failure is equal to:
@@ -246,9 +246,9 @@ p \geq\tfrac{1}{2} & \tfrac{\sigma_p}{\left(1-p\right)} = z \sqrt{\frac{W_{\text
 where:
 
 \begin{longtable}{p{16mm}p{\textwidth-24pt-16mm}}  
-	$z$ & is a value related to the confidence level (see \autoref{eq:MonteCarloStandardConfidence}). In the \probLib, $z$ is $1$; \\
-	$W_{\text{design point}}$ & is the weight of the realization of the design point; \\  
-	$N$ & is the total number of realizations. \\  
+	$z$ & is a value related to the confidence level (see \autoref{eq:MonteCarloStandardConfidence}). In the \probLib, $z$ is $1$ \\
+	$W_{\text{design point}}$ & is the weight of the realization of the design point \\  
+	$N$ & is the total number of realizations \\  
 \end{longtable}
 
 When the underlying model does not succeed for a certain realization, its results will be ignored. The user should decide whether the number of non succeeded realizations is acceptable.
@@ -266,10 +266,10 @@ When the underlying model does not succeed for a certain realization, its result
 The mean realization (see {\autoref{eq:ImportanceSamplingVariance}) is essential for the successful behaviour of the Importance Sampling algorithm. The mean realization can be user defined or derived automatically. The following options are available:
 	
 \begin{longtable}{p{16mm}p{\textwidth-24pt-16mm}}  
-	None & The mean realization is user defined. \\
-	Direction & Along a user defined direction is searched until the limit state is found, limited by a maximum distance from the origin. This option still requires some knowledge where to find the mean realization.  \\
-	Sphere & Over a sphere is searched until the limit state is found. Only at angles $0^\circ$, $90^\circ$, $180^\circ$ and $270^\circ$ is searched. If the limit state is not found, the radius of the sphere is increased. This is a time consuming option. \\  
-	Sensitivity & Along the direction of the steepest gradient is searched until the limit state is found, limited by a maximum distance from the origin. The steepest gradient is found by taking the gradient for each variable individually and then combining them. This is the preferred option. \\  
+	\textbf{None} & The mean realization is user defined. \\
+	\textbf{Direction} & Along a user defined direction is searched until the limit state is found, limited by a maximum distance from the origin. This option still requires some knowledge where to find the mean realization.  \\
+	\textbf{Sphere} & Over a sphere is searched until the limit state is found. Only at angles $0^\circ$, $90^\circ$, $180^\circ$ and $270^\circ$ is searched. If the limit state is not found, the radius of the sphere is increased. This is a time consuming option. \\  
+	\textbf{Sensitivity} & Along the direction of the steepest gradient is searched until the limit state is found, limited by a maximum distance from the origin. The steepest gradient is found by taking the gradient for each variable individually and then combining them. This is the preferred option. \\  
 \end{longtable}
 
 \subsection{Adaptive Importance Sampling}
@@ -322,8 +322,8 @@ These loops are executed until a required fraction of failed realizations $\vare
 
 where:
 \begin{longtable}{p{16mm}p{\textwidth-24pt-16mm}}  
-	$N$ & is the total number of failed realizations; \\
-	$N_\text{failed}$ & is the number of failed realizations.
+	$N$ & is the total number of failed realizations \\
+	$N_\text{failed}$ & is the number of failed realizations
 \end{longtable}
 
 The following is performed in each step:
@@ -377,12 +377,12 @@ n_\text{expected} = \frac{2 \left(\beta_\text{current} + 1\right)}{\varepsilon_\
 where:
 
 \begin{longtable}{p{16mm}p{\textwidth-24pt-16mm}}  
-	$n_\text{current}$ & the number of samples already made in the current loop; \\
-	$W_\text{max}$ & the maximum weight of a failed sample in the current loop; \\
-	$W_\text{total}$ & the total weight of the failed samples in the current loop; \\
-	$\beta_\text{current}$ & the reliability index based on the samples in the current loop; \\
+	$n_\text{current}$ & the number of samples already made in the current loop \\
+	$W_\text{max}$ & the maximum weight of a failed sample in the current loop \\
+	$W_\text{total}$ & the total weight of the failed samples in the current loop \\
+	$\beta_\text{current}$ & the reliability index based on the samples in the current loop \\
 	$\varepsilon_\text{weight}$ & convergence criterion,
-	which specifies the maximum relative weight of all failing samples. Default is $0.1$.
+	which specifies the maximum relative weight of all failing samples, default is $0.1$
 \end{longtable}
 
 
@@ -420,16 +420,16 @@ u_{\text{var, prop}} = u_{\text{var, prev}} + R_{\text{[-1, 1]}} \cdot \Delta \s
 where:
 
 \begin{longtable}{p{16mm}p{\textwidth-24pt-16mm}}  
-	$u_{\text{var, prev}}$ & is the $u$-value per variable of the previous realization; \\
-	$u_{\text{var, prop}}$ & is a proposed new $u$-value per variable; \\
-	$u_{\text{var, new}}$ & is the new $u$-value per variable; \\
-	$R_{\text{[0, 1]}}$ & is a random value between $0$ and $1$; \\  
-	$R_{\text{[-1, 1]}}$ & is a random value between $-1$ and $1$; \\  
-	$r_{\text{var}}$ & is the ratio of probability density between $u_{\text{var, prop}}$ and $u_{\text{var, prev}}$; \\  
-	$\varphi$ & is the probability density function of a standard normal distribution (see \autoref{eq:StandardNormalPDF}); \\  
+	$u_{\text{var, prev}}$ & is the $u$-value per variable of the previous realization \\
+	$u_{\text{var, prop}}$ & is a proposed new $u$-value per variable \\
+	$u_{\text{var, new}}$ & is the new $u$-value per variable \\
+	$R_{\text{[0, 1]}}$ & is a random value between $0$ and $1$ \\  
+	$R_{\text{[-1, 1]}}$ & is a random value between $-1$ and $1$ \\  
+	$r_{\text{var}}$ & is the ratio of probability density between $u_{\text{var, prop}}$ and $u_{\text{var, prev}}$ \\  
+	$\varphi$ & is the probability density function of a standard normal distribution (see \autoref{eq:StandardNormalPDF}) \\  
 	$\Delta \sigma$ & is the user given maximum deviation from the previous $u$-value.
 	In case the option 'Adaptive Conditional' is used,
-	this value is derived automatically and updated during the process.
+	this value is derived automatically and updated during the process
 \end{longtable}
 
 The proposed sample $u_{\text{prop}}$ is used if the corresponding $z$-value is less than the $z_{\text{k}}$, which is the highest $z$-value in the subset used to generate new realizations, otherwise the original sample is used.
@@ -444,9 +444,9 @@ p = k^{\text{i}} \cdot p_{\text{i, MC}}
 where:
 
 \begin{longtable}{p{16mm}p{\textwidth-24pt-16mm}}  
-	$i$ & is the iteration index, the first being $0$; \\
-	$k$ & is the fraction taken from the realizations (recommended value $0.1$); \\  
-	$p_{\text{i, MC}}$ & is the probability of failure calculated with Crude Monte Carlo using the realizations of the $i^{\text{th}}$ iteration.
+	$i$ & is the iteration index, the first being $0$ \\
+	$k$ & is the fraction taken from the realizations (recommended value $0.1$) \\  
+	$p_{\text{i, MC}}$ & is the probability of failure calculated with Crude Monte Carlo using the realizations of the $i^{\text{th}}$ iteration
 \end{longtable}
 
 \newpage
@@ -471,9 +471,9 @@ w_{\text{dir}} = \Gamma \left(\frac{N_{\text{variables}}}{2} , \frac{{\beta_{\te
 where:
 
 \begin{longtable}{p{16mm}p{\textwidth-24pt-16mm}}  
-	$w_{\text{dir}}$ & is the weight of a direction or the failure probability in this direction; \\
-	$\beta_{\text{dir}}$ & is the distance along a direction where the first point of failure is found; \\
-	$\Gamma$ & is the upper incomplete regularized gamma function.
+	$w_{\text{dir}}$ & is the weight of a direction or the failure probability in this direction \\
+	$\beta_{\text{dir}}$ & is the distance along a direction where the first point of failure is found \\
+	$\Gamma$ & is the upper incomplete regularized gamma function
 \end{longtable}
 
 \subsubsection{Convergence}
@@ -574,11 +574,11 @@ u_\text{pred} = u_i - \frac{z_i}{\lvert \frac{\partial z}{\partial u} \rvert }
 where:
 \begin{longtable}{p{16mm}p{\textwidth-24pt-16mm}}  
 	$i$ & is the iteration index number; \\  
-	$\lvert \frac{\partial z}{\partial u} \rvert$ & is the calculated vector length of the derivative to all variables; \\ 
-	$z_\text{pred}$ & is the limit state value at the design point, which is by definition equal to zero; \\  
-	$z_i$ & is the calculated limit state value at iteration $i$; \\  
-	$u_\text{pred}$ & is the predicted vector of the design point; \\  
-	$u_i$ & is the iteration vector of $u$ at iteration $i$. \\  
+	$\lvert \frac{\partial z}{\partial u} \rvert$ & is the calculated vector length of the derivative to all variables \\ 
+	$z_\text{pred}$ & is the limit state value at the design point, which is by definition equal to zero\\  
+	$z_i$ & is the calculated limit state value at iteration $i$ \\  
+	$u_\text{pred}$ & is the predicted vector of the design point \\  
+	$u_i$ & is the iteration vector of $u$ at iteration $i$ \\  
 \end{longtable}
 
 The step from the current point to the next point is a step into the direction of $u_{\text{pred}}$. The step is not taken completely, but partially with a relaxation factor $f_{\text{relax}}$, in order to prevent numerical instabilities.
@@ -595,9 +595,9 @@ with the $\alpha$ value per variable:
 
 where:
 \begin{longtable}{p{16mm}p{\textwidth-24pt-16mm}}  
-	$j$ & is the index of a variable; \\  
-	$\lvert u \rvert$ & is the vector length of the current point; \\  
-	$f_\text{relax}$ & is the given relaxation factor. The relaxation factor prevents the algorithm from too big steps, which may cause divergence. \\  	
+	$j$ & is the index of a variable \\  
+	$\lvert u \rvert$ & is the vector length of the current point \\  
+	$f_\text{relax}$ & is the given relaxation factor. The relaxation factor prevents the algorithm from too big steps, which may cause divergence \\  	
 \end{longtable}
 
 and finally leads to the reliability index $\beta$ as:
@@ -622,9 +622,9 @@ Convergence is reached when the $u_i$, the value of the last iteration $i$, is c
 
 where:
 \begin{longtable}{p{16mm}p{\textwidth-24pt-16mm}}  
-	$u_i$ & is the point at iteration $i$; \\
-	$u_\text{pred}$ & is the predicted final value of $u$, see \autoref{eq:UZLinear} ; \\
-	$\varepsilon$ & is a user given value maximum allowed difference in reliability. \\  
+	$u_i$ & is the point at iteration $i$ \\
+	$u_\text{pred}$ & is the predicted final value of $u$, see \autoref{eq:UZLinear} \\
+	$\varepsilon$ & is a user given value maximum allowed difference in reliability \\  
 \end{longtable}
 
 and, together with \autoref{eq:FORMConvergence}, the convergence criterion:
@@ -727,11 +727,11 @@ The "Center of gravity" method calculates the weighted mean of all failing reali
 
 where:
 \begin{longtable*}{p{20mm}p{\textwidth-24pt-20mm}}  
-	$i$ & indicates a realization in the applied technique; \\
-	$j$ & indicates a variable; \\
-	$u$ & is a realization in the applied technique; \\
-	$W_{\text{i}}$ & is the weight of the realization (for Crude Monte Carlo: $1$); \\
-	$f_{\text{normal}}$ & is a normalizing factor so that $\sum \alpha^2_{\text{j}} = 1$.
+	$i$ & indicates a realization in the applied technique \\
+	$j$ & indicates a variable \\
+	$u$ & is a realization in the applied technique \\
+	$W_{\text{i}}$ & is the weight of the realization (for Crude Monte Carlo: $1$) \\
+	$f_{\text{normal}}$ & is a normalizing factor so that $\sum \alpha^2_{\text{j}} = 1$
 \end{longtable*}
 
 \subsection{Center of angles}
