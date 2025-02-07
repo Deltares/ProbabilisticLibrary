@@ -2,29 +2,64 @@
 \label{chp:ReliabilityAnalysis}
 
 
-\section{Reliability algorithms}
-\label{sec:ReliabilityAlgorithms}
+\section{Reliability methods}
+\label{sec:ReliabilityMethods}
 
-There are several methods for calculating the reliability index ($\beta$), each with its own advantages and disadvantages. The methods available in the \probLib will be explained as follows.
+Equation \eqref{eq:2-4} describes the general formulation of the probability of failure of a single component. While an analytical solution to equation \eqref{eq:2-4} would be ideal, it is typically not possible because the $Z$-function is too complex. Therefore, the probability of failure needs to be estimated with probabilistic computation techniques. The computation techniques available within the \probLib are summarized in this chapter. 
+
+The reason to implement a set of probabilistic computation techniques in the \probLib is that each technique has its (dis)advantages with respect to criteria such as robustness, accuracy and required computation time. The ''best'' technique to be applied therefore depends on the problem under consideration.
 
 \subsection{Numerical Integration}
 \label{sec:NumericalIntegration}
 
-Numerical Integration is the most time-consuming but also the most precise method for calculating failure probability. To use the method, a step size and the minimum and maximum values of the input variables must be specified.
+Numerical integration solves equation \eqref{eq:2-4} by discretizing the random variables $X_1$\dots $X_n$. Each variable is discretized over a range that is relevant for failure, and subsequently each combination of discretized values of the $X$-variables is used to compute the limit state function. The probabilities of all the combinations that lead to $Z<0$ are summed, which provides the estimate of the overall probability of failure. This summation can be written as follows:
 
-If the underlying model fails for a particular realization, its results are ignored.
-The user must determine whether the number of failed realizations is acceptable.
+\begin{align}
+\hat{P}_{f} =&\sum _{i_{1} =1}^{m_{1} }\sum _{i_{2} =1}^{m_{2} }\dots\sum _{i_{n} =1}^{m_{n} }1_{\left[Z<0\right]}    f_{X} (x_{0,1} +(i_{1} -0.5)\Delta x_{1} ,x_{0,2}\label{eq:2-30} \\ \nonumber
+ &+(i_{2} -0.5)\Delta x_{2} ,\dots,x_{0,n} +(i_{n} -0.5)\Delta x_{n} )\Delta x_{1} \Delta x_{2} \dots\Delta x_{n} 
+\end{align}
+where:
 
-The minimum and maximum values for which the Numerical Integration runs are defined in $u$-space. Numerical Integration fills the remaining space between these values and $-8$ to $8$ using additional cells, ensuring full coverage of the integration domain.
+\begin{tabular}{p{0.4in}p{4in}} 
+$\hat{P}_{f} $ & is the estimated probability of failure; \\
+$1_{\left[Z<0\right]} $ & is the indicator function, equal to $1$ for $Z$ $<$ $0$, equal to $0$ for $Z$ $\geq$ $0$; \\
+$x_{0,k}$ & is the lower range limit for the $k^{th}$ variable; \\
+$\Delta$$x_k$ & is the interval width of the $k^{th}$ variable; \\
+$m_k$ & is the upper bound of $k$ such that $x_{0,k}$+ $m_k$$\Delta$$x_k$ is the upper bound of the $k^{th}$ variable.  \\
+\end{tabular}
 
-(Note that $u=8$ corresponds to a probability of approximately $6 \times 10^{-16}$, which is orders of magnitude smaller than the probabilities encountered in typical scenarios.)
+In equation \eqref{eq:2-30}, for each variable $X_k$ an equidistant grid with step size $\Delta$$x_k$ is used, but non-equidistant grids can also be used in numerical integration. \Fref{fig:NumIntegr} presents a schematic view of the method, for an example of two random variables $X_1$ and $X_2$. A 2-dimensional grid is defined and the $Z$-function is evaluated at the centre of the grid cells. Red grid points indicate failure $(Z<0)$, green grid points indicate no failure ($Z\geq0$). The total probability of failure (see equation \eqref{eq:2-30}) is estimated as follows: multiply the probability density of the grid cells in the failure domain (red dots) with the size of the grid cells ($\Delta$$x_1$ $\times$ $\Delta$$x_2$) and take the sum of these probabilities.
 
 \begin{figure}[H]
 	\label{fig:NumericalIntegration}
 	\centering
 	\includegraphics[width=1.0\textwidth]{\pathProbLibPictures numericalintegration.jpg}
-	\caption{Numerical Integration: realizations for two random variables}
+	\caption{Numerical Integration: realizations for two random variables}\label{fig:NumIntegr}
 \end{figure}
+
+
+Like every probabilistic estimation technique, the result of the numerical integration procedure will be an approximation of the actual probability of failure. The errors that are introduced in this method are caused by the following assumptions and approximations:
+
+Each grid cell is assumed to be entirely situated in the failure domain or entirely situated outside the domain of failure domain. In reality, grid cells can be partly in the failure domain as can be seen in \Fref{fig:NumIntegr}.
+
+The probability density is assumed to be constant over the entire grid cell. The domain of potential outcomes of the random variables may not be entirely covered. In the implementation of the procedure, it may be beneficial to transform the $X$-variables to standard normally distributed $U$-variables (see \Aref{Section_2.2.3}). One of the benefits of working in the $U$-space is that the $U$-variables are independent, which simplifies equation \eqref{eq:2-30} as follows:
+
+{\footnotesize{\begin{equation} 
+\hat{P}_{f} =\sum _{i_{1} =1}^{m_{1} }\dots \sum _{i_{n} =1}^{m_{n} }1_{\left[Z<0\right]}  \phi \left(u_{0,1} +\left(i_{1} -0.5\right)\Delta u_{1} \right)\cdot \dots\cdot \phi \left(u_{0,n} +\left(i_{n} -0.5\right)\Delta u_{n} \right)\Delta u_{1} ...\Delta u_{n} \label{eq:2-31} 
+\end{equation}}}
+where:
+
+\begin{tabular}{p{\textwidth-36pt-129mm}p{125mm}}  
+	$\hat{P}_{f} $ & is the estimated probability of failure; \\ 
+	$\phi $ & is the standard normal density function; \\ 
+	$u_{0,k} $ & is the lower range limit for the $k^{th}$ variable, in the $U$-space; \\  
+	$\Delta u_{k} $ & is the interval width of the $k^{th}$ variable, in the $U$-space; \\  
+	$m_{k} $ & is the upper bound of $k$ such that $u_{0,k} +m_{k} \cdot \Delta u_{k}$ is the upper bound of the $k^{th}$ variable.\\  
+\end{tabular}
+
+
+\Note{The minimum and maximum values for which the Numerical Integration runs are defined in $U$-space. Numerical Integration fills the remaining space between these values and $-8$ to $8$ using additional cells, ensuring full coverage of the integration domain. Note that $U=8$ corresponds to a probability of approximately $6 \times 10^{-16}$, which is orders of magnitude smaller than the probabilities encountered in typical scenarios.}
+
 
 \newpage
 \subsection{Numerical Bisection}
@@ -65,6 +100,13 @@ where:
 	$N$ & is the total number of realizations.
 \end{longtable}
 
+\begin{figure}[H]
+	\label{fig:MonteCarlo}
+	\centering
+	\includegraphics[width=1.0\textwidth]{\pathProbLibPictures montecarlo.jpg}
+	\caption{Crude Monte Carlo: realizations for two random variables}
+\end{figure}
+
 \subsubsection{Convergence}
 \label{sec:MCConvergence}
 
@@ -104,7 +146,7 @@ p \geq\tfrac{1}{2} & \tfrac{\sigma_p}{\left(1-p\right)} = z \sqrt{\frac{p}{N \le
 \right.
 \end{align}
 
-The user can set the maximum variation coefficient $\varepsilon_{\text{max}}$. The Monte Carlo simulation will stop when $\varepsilon \leq \varepsilon_{\text{max}}$ (and limited to the minimum and maximum number of realizations). The confidence level $\alpha$ can not be set by the user. Its value is such that $z$ is $1$.
+The user can set the maximum variation coefficient $\varepsilon_{\text{max}}$. The Monte Carlo simulation will stop when $\varepsilon \leq \varepsilon_{\text{max}}$ (and limited to the minimum and maximum number of realizations). The confidence level $\alpha$ cannot be set by the user. Its value is such that $z$ is $1$.
 
 \begin{figure}[H]
 	\label{fig:MonteCarloConvergence}
@@ -117,24 +159,15 @@ When the underlying model fails for a certain realization, its results are ignor
 
 The minimum and maximum values for which the integration will run are defined in the $u$-space. The Monte Carlo analysis will then check whether the remaining area leads to failure or not.
 
-\begin{figure}[H]
-	\label{fig:MonteCarlo}
-	\centering
-	\includegraphics[width=1.0\textwidth]{\pathProbLibPictures montecarlo.jpg}
-	\caption{Crude Monte Carlo: realizations for two random variables}
-\end{figure}
-
 \subsection{Importance Sampling}
 \label{sec:ImportanceSampling}
 
 \subsubsection{Algorithm}
 \label{sec:ImportanceSamplingAlgorithm}
 
-Importance Sampling is a variation of Crude Monte Carlo (see \Autoref{sec:CrudeMonteCarlo}). The key difference is that realizations are selected more efficiently, with a preference for the area near the limit state.
+Importance sampling is a method to increase the efficiency of the Crude Monte Carlo method; that is, to decrease the number of samples and $Z$-function evaluations required to produce a reliable estimate of the failure probability. This is done by replacing the initial probability density of the input variables by a more efficient one, in which ''efficient'' refers to the proportion of the samples which will result in failure. An increasing percentage of samples in the failure domain results in a reduction in the variance of the estimator of the failure probability, hence a smaller number of samples is required for a reliable estimate. 
 
-In Crude Monte Carlo, realizations are drawn proportionally to their probability density $\varphi\left(u_i\right)$, since the \probLib uses the standard normal space.
-
-With Importance Sampling, each realization $u$ is mapped to $u_{\text{imp}}$. The \probLib supports the following translation for each variable individually:
+In Crude Monte Carlo, realizations are drawn proportionally to their probability density $\varphi\left(u_i\right)$, since the \probLib uses the standard normal space. With Importance Sampling, each realization $u$ is mapped to $u_{\text{imp}}$. The \probLib supports the following translation for each variable individually:
 
 \begin{align} 
 \label{eq:ImportanceSamplingVariance}
@@ -144,8 +177,8 @@ u_{\text{imp}} = \mu_{\text{var}} + \sigma_{\text{var}} \cdot u_{\text{var}}
 where:
 
 \begin{longtable}{p{16mm}p{\textwidth-24pt-16mm}}  
-	$\mu_{\text{var}}$ & The user defined mean value per variable. The combination of all variables is the mean realization of the Importance Sampling algorithm; \\
-	$\sigma_{\text{var}}$ & The user defined standard deviation per variable.
+	$\mu_{\text{var}}$ & is the user defined mean value per variable. The combination of all variables is the mean realization of the Importance Sampling algorithm; \\
+	$\sigma_{\text{var}}$ & is the user defined standard deviation per variable.
 \end{longtable}
 
 A correction is applied in the calculation of failure to compensate for this translation. This is done by giving each realization a weight, which is calculated as follows (the multiplication with $\sigma_{\text{var}}$ is performed to compensate for the dimensionality):
@@ -215,7 +248,7 @@ where:
 \begin{longtable}{p{16mm}p{\textwidth-24pt-16mm}}  
 	$z$ & is a value related to the confidence level (see \autoref{eq:MonteCarloStandardConfidence}). In the \probLib, $z$ is $1$; \\
 	$W_{\text{design point}}$ & is the weight of the realization of the design point; \\  
-	$N$ & is the total number of realizations; \\  
+	$N$ & is the total number of realizations. \\  
 \end{longtable}
 
 When the underlying model does not succeed for a certain realization, its results will be ignored. The user should decide whether the number of non succeeded realizations is acceptable.
@@ -244,17 +277,15 @@ The mean realization (see {\autoref{eq:ImportanceSamplingVariance}) is essential
 
 \subsubsection{Algorithm}
 
-The Importance Sampling method is sensitive to the user-provided starting point. If the starting point is not chosen carefully, the method may not yield satisfactory results. If selecting a good starting point is challenging, loops can be employed, with each iteration improving the start point. 
+Adaptive Importance Sampling is an improvement on the Importance Sampling method. In general, Importance Sampling is sensitive to the user-provided starting point. If the starting point is not chosen carefully, the method may yield unsatisfactory results. In Adaptive Importance Sampling, iterative loops are used to refine the starting point. To achieve this, the K-Means algorithm is applied to identify multiple starting points based on the samples that led to failure in the previous iteration.
 
-Multiple starting points can be used to enhance the method. In this case, the number of clusters should be set to the desired number. The K-Means algorithm is used to identify multiple start points from the samples that led to failure in the previous iteration.
-
-This algorithm is displayed in {\autoref{fig:ImportanceSamplingLoops}}.
+The Adaptive Importance Sampling algorithm is displayed in \autoref{fig:ImportanceSamplingLoops}.
 
 \begin{figure}[H]
 	\centering
 	\begin{tikzpicture}[auto, scale=0.5]
 	\node [round] (Start) {Start};
-	\node [block, right=of Start] (Initialize) {Initialize start point};
+	\node [block, right=of Start] (Initialize) {Initialize starting point};
 	\node [block, below=of Initialize] (ImportanceSampling) {Importance Sampling};
 	\node [block, below=of ImportanceSampling] (IfConverged) {Converged?};
 	\node [block, below=of IfConverged] (IfFinalRound) {Final round?};
@@ -278,7 +309,7 @@ This algorithm is displayed in {\autoref{fig:ImportanceSamplingLoops}}.
 	\draw [->] (Move) |- (ImportanceSampling);
 	
 	\end{tikzpicture}
-	\caption{Importance Sampling loops}
+	\caption{Adaptive Importance Sampling}
 	\label{fig:ImportanceSamplingLoops}
 \end{figure}
 
@@ -292,28 +323,29 @@ These loops are executed until a required fraction of failed realizations $\vare
 where:
 \begin{longtable}{p{16mm}p{\textwidth-24pt-16mm}}  
 	$N$ & is the total number of failed realizations; \\
-	$N_\text{failed}$ & is the number of failed realizations;
+	$N_\text{failed}$ & is the number of failed realizations.
 \end{longtable}
 
 The following is performed in each step:
 
 \begin{longtable}{p{40mm}p{\textwidth-24pt-40mm}}  
-	Initialize start point & Find the start point with one of the start point algorithms (see \autoref{sec:StartPoint}). \\
-	Importance Sampling & The Importance Sampling algorithm (see \autoref{sec:ImportanceSamplingAlgorithm}). The number of samples in each Importance Sampling can be set to a maximum. When the auto break option is used, the algorithm decides when to break a loop and continue with the next loop (see \autoref{sec:AutoBreakLoops}). \\
-	Converged? & Checks whether there is convergence (see \autoref{eq:ISFractionFailed}).  \\
-	Final round? & Checks whether the last allowed round is reached, in order to prevent endless loops. \\
-	Recalculate & Recalculates the last round with a possibly higher number of realizations. \\
-	Enough failures? & Checks whether enough failures are found. Depending on this value, the kind of modification of Importance Sampling settings is determined. \\
-	Increase variance & Increases the variance (see \autoref{sec:ImportanceSamplingAlgorithm}) for the next loop. \\
-	Use design point & Uses the design point found in the last loop as start point in the next loop. In case no design point was found, the realization closest to the limit state is used. \\
+	\textbf{Initialize starting point} & Find the starting point with one of the starting point algorithms (see \autoref{sec:StartPoint}). \\
+	\textbf{Importance Sampling} & The Importance Sampling algorithm (see \autoref{sec:ImportanceSamplingAlgorithm}). The number of samples in each Importance Sampling can be set to a maximum. When the auto break option is used, the algorithm decides when to break a loop and continue with the next loop (see \autoref{sec:AutoBreakLoops}). \\
+	\textbf{Converged?} & Checks whether there is convergence (see \autoref{eq:ISFractionFailed}).  \\
+	\textbf{Final round?} & Checks whether the last allowed round is reached, in order to prevent endless loops. \\
+	\textbf{Recalculate} & Recalculates the last round with a possibly higher number of realizations. \\
+	\textbf{Enough failures?} & Checks whether enough failures are found. Depending on this value, the kind of modification of Importance Sampling settings is determined. \\
+	\textbf{Increase variance} & Increases the variance (see \autoref{sec:ImportanceSamplingAlgorithm}) for the next loop. \\
+	\textbf{Use design point} & Uses the design point found in the last loop as starting point in the next loop. In case no design point was found, the realization closest to the limit state is used. \\
 \end{longtable}
 
 The following features are available to reduce calculation time:
 
 \begin{itemize}
-\item The maximum number of realizations for non-final loops can be specified, and it can differ from the maximum number of realizations in the final loop.
-\item Subsequent loops can be suppressed if the reliability index exceeds a certain value determined in the first loop.
-\item When the design point is carried over to the next loop, it will be rounded to a specified value. \item When using scenario tables, previous calculation results can be reused. Specify 0 if no rounding is desired.
+\item The maximum number of realizations for non-final loops can be specified separately from the maximum number of realizations in the final loop.
+\item Subsequent loops can be skipped if the reliability index exceeds a predefined threshold determined in the first loop.
+\item When the design point is carried over to the next loop, it will be rounded to a specified value. Specify $0$ if no rounding is desired.
+\item When using scenario tables, previous calculation results can be reused.
 \end{itemize}
 
 \subsubsection{Auto break loops}
@@ -321,7 +353,7 @@ The following features are available to reduce calculation time:
 
 The number of realizations in the loops in Adaptive Importance Sampling can be determined automatically. This algorithm is based on the convergence criterion $\varepsilon_\text{weight}$, which specifies the maximum relative weight of all failing samples. Usually this value is $0.1$.
 
-The loop is broken when the required number of runs with the current start point ($n_\text{additional}$) is more than the expected number of runs with an improved start point ($n_\text{expected}$):
+The loop is broken when the required number of runs with the current starting point ($n_\text{additional}$) is more than the expected number of runs with an improved starting point ($n_\text{expected}$):
 
 \begin{align}
 \label{eq:ISAutoBreak}
@@ -417,12 +449,12 @@ where:
 	$p_{\text{i, MC}}$ & is the probability of failure calculated with Crude Monte Carlo using the realizations of the $i^{\text{th}}$ iteration.
 \end{longtable}
 
+\newpage
 \subsection{Directional Sampling}
 \label{sec:DirectionalSampling}
 
 \subsubsection{Algorithm}
-
-Directional Sampling is a type of Monte Carlo simulation where realizations are represented as directions, rather than points in the parameter space. Each direction corresponds to a vector in the parameter space. Along this direction, the point of failure is identified, and the corresponding distance, $\beta$, to the origin is determined. The remaining probability of failure beyond this point is calculated and added to the total probability of failure as follows:
+Directional Sampling is a type of Monte Carlo method which aims to (strongly) reduce the number of samples in comparison with the Crude Monte Carlo method. In Directional Sampling, realizations are represented as directions, rather than points in the parameter space. Along this direction/vector, the point of failure is identified, and the corresponding distance, $\beta$, to the origin is determined. The remaining probability of failure beyond this point is calculated and added to the total probability of failure as follows:
 
 \begin{align} 
 \label{eq:DirectionalSampling}
@@ -477,15 +509,9 @@ The minimum and maximum number of iterations refer to an internal procedure to d
 \subsection{Latin Hypercube}
 \label{sec:LatinHypercube}
 
-The Latin Hypercube algorithm is a type of Monte Carlo sampling method.
+The Latin Hypercube algorithm is a type of Monte Carlo sampling method. It uses a fixed number of realizations, $N$. The algorithm divides the $u$-space into $N$ equal sections, starting from $u_\text{min}$ and ending at $u_\text{max}$. It ensures that each section is represented in the realizations, guaranteeing that extreme values are included. However, note that the weights of the realizations may vary. If $u_\text{min}$ and $u_\text{max}$ differ from $-8$ and $8$ -- beyond which calculations are numerically infeasible -- the remaining space is treated as a single cell and included in the failure analysis.
 
-It uses a fixed number of realizations, $N$. The algorithm divides the $u$-space into $N$ equal sections, starting from $u_\text{min}$ and ending at $u_\text{max}$. It ensures that each section is represented in the realizations, guaranteeing that extreme values are included. However, note that the weights of the realizations may vary.
-
-If $u_\text{min}$ and $u_\text{max}$ differ from $-8$ and $8$ -- beyond which calculations are numerically infeasible -- the remaining space is treated as a single cell and included in the failure analysis.
-
-Latin Hypercube uses the same convergence definition as Crude Monte Carlo (see \Autoref{sec:MCConvergence}). However, since a fixed number of realizations is used, convergence is calculated only for informational purposes.
-
-The main advantage of Latin Hypercube is its computational efficiency. However, it provides only a rough approximation of the probability of failure.
+Latin Hypercube uses the same convergence definition as Crude Monte Carlo (see \Autoref{sec:MCConvergence}). However, since a fixed number of realizations is used, convergence is calculated only for informational purposes. The main advantage of Latin Hypercube is its computational efficiency. However, it provides only a rough approximation of the probability of failure.
 
 \subsection{Cobyla}
 \label{sec:Cobyla}
@@ -496,6 +522,7 @@ The Cobyla algorithm is an implementation of Powell's nonlinear derivative-free 
 
 Because the Cobyla algorithm provides a rough estimation of the reliability and design point, it should be used primarily as an initial method in a reliability study.
 
+\newpage
 \subsection{FORM}
 \label{sec:FORM}
 
@@ -507,7 +534,7 @@ FORM stands for First Order Reliability Method. The FORM procedure is not a Mont
 p_\text{failure} = 1 - \Phi \left(\beta\right)
 \end{align}
 
-The FORM procedure start from a certain user defined start point in the parameter space. From there it tries to find a point which is closer to the design point by taking the gradient of the $z$-value in the $u$-space of the parameters. The $z$-value is an indication whether failure occurs and is derived from the failure definition. After a number of steps, the point is close enough to the design point and the calculation stops. 
+The FORM procedure starts from a certain user defined starting point in the parameter space. From there it tries to find a point which is closer to the design point by taking the gradient of the $z$-value in the $u$-space of the parameters. The $z$-value is an indication whether failure occurs and is derived from the failure definition. After a number of steps, the point is close enough to the design point and the calculation stops. 
 
 The FORM analysis searches for the design point: When the design point is found, the reliability index $\beta$ can be evaluated as the distance between the origin and the design point (see \autoref{fig:FORMDesignPoint}). The corresponding probability of failure is:
 
@@ -526,7 +553,7 @@ The probability of failure found in this way is regarded to be a good approximat
 	\label{fig:FORMDesignPoint}
 \end{figure}
 
-To find the design point, the FORM analysis starts at a given start point, usually the origin, in the standard normal space and iterates to the design point.
+To find the design point, the FORM analysis starts at a given starting point, usually the origin, in the standard normal space and iterates to the design point.
 
 In each iteration step, the current point is moved closer to the design point. Using the steepest descend, the next point is found, until a convergence criterion is fulfilled. To get from the current point $u_{\text{i}}$ to the next point $u_{\text{i+1}}$, the predicted point $u_{\text{pred}}$ is determined. 
 
@@ -551,7 +578,7 @@ where:
 	$z_\text{pred}$ & is the limit state value at the design point, which is by definition equal to zero; \\  
 	$z_i$ & is the calculated limit state value at iteration $i$; \\  
 	$u_\text{pred}$ & is the predicted vector of the design point; \\  
-	$u_i$ & is the iteration vector of $u$ at iteration $i$; \\  
+	$u_i$ & is the iteration vector of $u$ at iteration $i$. \\  
 \end{longtable}
 
 The step from the current point to the next point is a step into the direction of $u_{\text{pred}}$. The step is not taken completely, but partially with a relaxation factor $f_{\text{relax}}$, in order to prevent numerical instabilities.
@@ -570,7 +597,7 @@ where:
 \begin{longtable}{p{16mm}p{\textwidth-24pt-16mm}}  
 	$j$ & is the index of a variable; \\  
 	$\lvert u \rvert$ & is the vector length of the current point; \\  
-	$f_\text{relax}$ & is the given relaxation factor. The relaxation factor prevents the algorithm from too big steps, which may cause divergence; \\  	
+	$f_\text{relax}$ & is the given relaxation factor. The relaxation factor prevents the algorithm from too big steps, which may cause divergence. \\  	
 \end{longtable}
 
 and finally leads to the reliability index $\beta$ as:
@@ -597,7 +624,7 @@ where:
 \begin{longtable}{p{16mm}p{\textwidth-24pt-16mm}}  
 	$u_i$ & is the point at iteration $i$; \\
 	$u_\text{pred}$ & is the predicted final value of $u$, see \autoref{eq:UZLinear} ; \\
-	$\varepsilon$ & is a user given value maximum allowed difference in reliability; \\  
+	$\varepsilon$ & is a user given value maximum allowed difference in reliability. \\  
 \end{longtable}
 
 and, together with \autoref{eq:FORMConvergence}, the convergence criterion:
@@ -681,14 +708,12 @@ The method begins with a Directional Sampling reliability calculation, followed 
 
 The rationale behind this approach is that Directional Sampling quickly estimates the $\beta$ value but requires many samples to accurately determine all $\alpha$-values. In contrast, FORM efficiently refines the $\alpha$-values when initialized close to the design point.
 
-Note that the start point of FORM depends on the method for "Contribution per variable" (see \autoref{sec:Contribution per variable}).
+Note that the starting point of FORM depends on the method for "Contribution per variable" (see \autoref{sec:Contribution per variable}).
 
 \section{Contribution per variable}
 \label{sec:Contribution per variable}
 
-For all numerical integration-based methods (Numerical Integration and Numerical Bisection) and Monte Carlo-based methods (Crude Monte Carlo, Importance Sampling, Directional Sampling, and Subset Simulation), the contribution per variable is calculated after determining the reliability index ($\beta$).
-
-The following subsections will explain the various methods in detail.
+For all numerical integration-based methods (Numerical Integration and Numerical Bisection) and Monte Carlo-based methods (Crude Monte Carlo, Importance Sampling, Directional Sampling, and Subset Simulation), the contribution per variable is calculated after determining the reliability index ($\beta$). The appliaed methods are explained in the following sections.
 
 \subsection{Center of gravity}
 \label{sec:CenterOfGravity}
@@ -706,7 +731,7 @@ where:
 	$j$ & indicates a variable; \\
 	$u$ & is a realization in the applied technique; \\
 	$W_{\text{i}}$ & is the weight of the realization (for Crude Monte Carlo: $1$); \\
-	$f_{\text{normal}}$ & is a normalizing factor so that $\sum \alpha^2_{\text{j}} = 1$;
+	$f_{\text{normal}}$ & is a normalizing factor so that $\sum \alpha^2_{\text{j}} = 1$.
 \end{longtable*}
 
 \subsection{Center of angles}

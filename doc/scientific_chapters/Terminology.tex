@@ -14,21 +14,21 @@ P_{f} = P(Z(X_1, X_2, \dots, X_n)<0) \label{eq:2-1}
 \end{equation}
 where:
 
-\begin{tabular}{p{0.2in}p{0.2in}p{2.3in}}  
-$P_{f} $ & = & failure probability \\  
-$Z$ & = & limit state function \\  
-$X$ & = & vector of random variables \\  
+\begin{tabular}{p{0.2in}p{2.3in}}  
+$P_{f} $ & is the failure probability \\  
+$Z$ & is the limit state function \\  
+$X$ & is the vector of random variables \\  
 \end{tabular}
 
 The limit state function, $Z$, defines failure in terms of load and strength variables such that $Z<0$ represents failure. Function $Z$ is often denoted:
 \begin{equation}
-Z=R-S,\label{eq:2-2}
+Z=R-S\label{eq:2-2}
 \end{equation}
 where:
 
-\begin{tabular}{p{0.1in}p{0.2in}p{2.1in}}  
-$R$ & = & strength, or resistance \\  
-$S$ & = & load \\  
+\begin{tabular}{p{0.1in}p{2.1in}}  
+$R$ & is the strength, or resistance \\  
+$S$ & is the load \\  
 \end{tabular}
 
 \Note{in case of a flood defense, the load typically consists of the combination of water levels and waves and in some cases currents. The strength is a combination of dike characteristics that reflect the ability of the dike to resist high loads. A simple example is overflow of a river levee in a river (see \Fref{fig:2.2}). The load in this simple example is the water level in the river, $h_{river}$, and the strength of the levee is captured by its height, $h_{levee}$. The limit state function for this example is simply:}
@@ -52,7 +52,7 @@ While an analytical solution to equation \eqref{eq:2-4} would be ideal,
 it is typically not available because the $Z$-function is too complex.
 Therefore, the probability of failure needs to be estimated with probabilistic computation techniques.
 Different techniques are available for this purpose.
-These techniques will be described in detail in the \Aref{sec:Reliability}.
+These techniques will be described in detail in the \autoref{chp:Reliability}.
 
 \section{Conversion between standard normal variables ($U$-domain) and real variables ($X$-domain)}\label{Section_2.2.3}
 In practice, it is often advantageous to carry out probabilistic analyses in a standardized space, in which each of the variables are independent.
@@ -67,13 +67,13 @@ If all the $X$-variables are mutually independent, this transformation can be de
 \end{equation}
 where:
 
-\begin{tabular}{p{0.2in}p{0.2in}p{5.1in}}  
-$\Phi $ & = & Standard normal distribution function \\ 
-$F_{i} $ & = & Distribution function (cdf) of $X_i$, the $i^{th}$ variable in $X$ \\  
-$\Phi ^{-1} $ & = & Inverse standard normal distribution function  \\  
-$F_{i}^{-1} $ & = & Inverse distribution function of $X_i$, the $i^{th}$ variable in $X$ \\  
-$x_{i} $ & = & Realisation of the $i^{th}$ variable in $X$ \\  
-$u_{i} $ & = & Realisation of the $i^{th}$ variable in $U$ corresponding to the $i^{th}$ variable in $X$  \\  
+\begin{tabular}{p{0.2in}p{5.1in}}  
+$\Phi $ & is the standard normal distribution function \\ 
+$F_{i} $ & is the distribution function (cdf) of $X_i$, the $i^{th}$ variable in $X$ \\  
+$\Phi ^{-1} $ & is the inverse standard normal distribution function  \\  
+$F_{i}^{-1} $ & is the inverse distribution function of $X_i$, the $i^{th}$ variable in $X$ \\  
+$x_{i} $ & is the realisation of the $i^{th}$ variable in $X$ \\  
+$u_{i} $ & is the realisation of the $i^{th}$ variable in $U$ corresponding to the $i^{th}$ variable in $X$  \\  
 \end{tabular}
 
 In this simple case (mutually independent $X$-variables) the transformation is done such that the non-exceedance probabilities of $x_i$ and $u_i$ are equal:
@@ -179,3 +179,123 @@ This shows why the reliability index $\beta$ is a measure for reliability. Note 
 
 Small values of $\beta$ indicate large probabilities of failure, large values of $\beta$ indicate small probabilities of failure. This can be easily explained with some examples in which, for the sake of simplicity, $Z$ is assumed to be normally distributed. If $\beta=1$, failure occurs if a random sample of $Z$ is more than $1\cdot\sigma_Z$ lower than the mean. The probability for this to happen is equal to $\Phi(-1)\approx0.16$. On the other hand, if $\beta=4$, failure occurs if a random sample of $Z$ is more than $4 \cdot \sigma_Z$ lower than the mean. The probability for this to happen is equal to $\Phi(-4)\approx3.2 \cdot 10^{-5}$. In other words: larger values of $\beta$ indicate that more extreme events are required for failure to occur, hence a lower probability of failure, hence a larger reliability of the system.
 
+
+\section{Linearisation of $Z$-functions}\label{Section_2.2.5}
+$Z$-functions in e.g. flood risk analysis generally describe a combination of hydrodynamics and geotechnical processes.
+Due to the complexity of the $Z$-function it is sometimes practical to use linear approximations.
+The linearisation can result in significant reductions of the computation time.
+This is for instance the case with the probabilistic computation method FORM,
+(see \Aref{sec:FORM}) which is generally much faster than other probabilistic computation techniques such as Monte Carlo (see \Aref{sec:CrudeMonteCarlo}). 
+
+Another advantage of the linearisation is that it enables (semi-)analytical approaches to complex system analysis,
+that otherwise would not have been possible.
+Such an approach is for instance used in the `Hohenbichler method' (see \Aref{sec:Hohenbichler}) which is applied to compute the total probability of failure of a system of components.
+
+The disadvantage of the linearisation is of course the fact that it is an approximation of the $Z$-function,
+which means an error is likely to be introduced in the estimate of the failure probability.
+As long as this error is small compared to other modeling errors and uncertainties this poses no real problem,
+but this needs to be verified as much as possible.
+
+The linearisation of the $Z$-function is generally applied in the $U$-space,
+in which the $U$-variables are independent standard normally distributed random variables.
+In other words: the function $Z(u)$ is linearized,
+where $U$ is the vector of standard normally distributed variables $U_1$, \dots  $U_n$.
+The linear approximation of the $Z$-function has the following form:
+\begin{equation}
+Z_L =B+A_{{\rm 1}} U_{{\rm 1}} +{\rm  }\ldots + A_{{\rm n}} U_{{\rm n}} \label{eq:2-17}  
+\end{equation}
+
+The linearisation is done by taking the tangent of the $Z$-function in a selected location $U=u_d$.
+This means the $A$-values are chosen as follows: 
+\begin{equation}
+A_{i} =\frac{\partial {Z}}{\partial u_{{\rm i}} } \left(u_{d} \right)\quad ;i=1...n  \label{eq:2-18}  
+\end{equation}
+
+This linearisation process is depicted in \Fref{fig:2.7} and \Fref{fig:2.8}.
+
+\begin{figure}[H]\centering
+\includegraphics*[width=5.42in, height=4.06in, keepaspectratio=false]{\pathProbLibPictures linearisationA}
+\caption{Example of function $Z(U_1, U_2)$}\label{fig:2.7}
+\end{figure}
+
+\begin{figure}[H]\centering
+\includegraphics*[width=5.25in, height=3.94in, keepaspectratio=false]{\pathProbLibPictures linearisationB}
+\caption{Linearisation of the $Z$-function (dark red plane) of the $Z$-function of \Fref{fig:2.7} in a selected location (white dot). }\label{fig:2.8}
+\end{figure}
+
+Clearly, the linearised $Z$-function is different from the actual $Z$-function.
+This means an error will be introduced in the estimation of the probability of failure, $P(Z<0)$.
+To reduce this error as much as possible, the linearisation is generally done in the design point, $u_d$.
+This is the location on the hyperplane $Z=0$ with the highest probability density.
+The method FORM, as described in \Aref{sec:FORM} is based on this principle.
+
+Generally, the main objective is to compute the probability of failure, i.e.\ $P(Z<0)$ $\approx$ $P(Z_L<0)$.
+In that case, the right hand side of equation \eqref{eq:2-17} can be multiplied or divided by a constant.
+If this constant is taken to be the norm of vector $A$ = ($A_1$, \dots  ,$A_n$) the linear $Z$-function has the following form: 
+\begin{equation}
+Z_L =\beta +\alpha _{1} U_{1} +...+\alpha _{n} U_{n} =\beta +\sum _{i=1}^{n}\alpha _{i} U_{i} \label{eq:2-19}
+\end{equation}
+
+In which:
+\begin{equation} 
+\beta =\frac{B}{\left\| A\right\| } ;\quad \alpha _{i} =\frac{A_{i} }{\left\| A\right\| } ,i=1...n;\quad \left\| A\right\| =\sqrt{\sum _{i=1}^{n}A_{i} ^{2}  } \label{eq:2-20}  
+\end{equation}
+
+The norm of vector $\alpha$=($\alpha_1$, \dots  ,$\alpha_n$) is then equal to 1:
+\begin{equation} 
+\sqrt{\sum _{i=1}^{n}\alpha _{i}^{2}  } =1 \label{eq:2-21}  
+\end{equation}
+
+This means the linearised $Z$-function has been normalised.
+Since the $U$-variables are independent standard normally distributed values, this means: 
+\begin{equation}
+\sum _{i=1}^{n}\alpha _{i} U_{i}  \sim N(0,1) \label{eq:2-22}  
+\end{equation}
+
+In other words: the sum of the product of $\alpha$-values and $U$-variables, $\Sigma$$\alpha_i U_i$, is standard normally distributed.
+This means that in order to compute $P(Z_L<0)$, $\Sigma$$\alpha_i U_i$ can be replaced by a single standard normally distributed variable $U^{*}$:
+\begin{equation}
+Z_{L} =\beta +U^{*} \label{eq:2-23}  
+\end{equation}
+
+Note that, since the density function of $U^{*}$ is symmetric around $U^{*}=0$, $Z_L$ can also be described as follows: 
+\begin{equation}
+Z_{L} =\beta -U^{*} \label{eq:2-24}  
+\end{equation}
+
+In equation \eqref{eq:2-23}, failure occurs if $Z_L$$<$0, i.e.\ if $U^{*}$$<$-$\beta$.
+The probability that this occurs is equal to $\Phi$(-$\beta$), where $\Phi$ is the standard normal distribution function and $\beta$ is the reliability index which was introduced in \Aref{Section_2.2.4}.
+While $\beta$ is an indicator for the probability of failure, the $\alpha$-values are indicators for the relative importance of the associated random variables, as will be shown below. From equation \eqref{eq:2-19} it can be seen that:
+\begin{equation}
+P\left(Z_{L} <0\right)=P\left(\beta +\sum _{i=1}^{n}\alpha _{i} U_{i}  <0\right) \label{eq:2-25}  
+\end{equation}
+
+If we increase the mean of variable $U_i$ ($\overline{u}_i$) with a small value $\varepsilon_i$ this will have an effect on the probability of failure.
+The magnitude of this effect is an indicator of the relative importance of variable $U_i$.
+For this purpose, define the random variable $U_i$' as follows: 
+\begin{equation}
+U_{i}^{'} =U_{i} +\varepsilon _{i}  \label{eq:2-26}  
+\end{equation}
+
+Since $U_i$ is standard normally distributed, $U_i$' is normally distributed with mean $\varepsilon_i$ and standard deviation $1$.
+Subsequently, $U_i$ in equation \eqref{eq:2-19} is replaced by $U_i$', resulting in a new $Z$-function $Z_L$':
+\begin{equation}
+\begin{array}{l} {Z_{L}^{'} =\beta +\alpha _{1} U_{1} +...+\alpha _{i} U_{i}^{'} +...+\alpha _{n} U_{n} } \\ {\quad  =\beta +\alpha _{1} U_{1} +...+\alpha _{i} \left(U_{i} +\varepsilon _{i} \right)+...+\alpha _{n} U_{n} } \\ {\quad  =\left(\beta +\alpha _{i} \varepsilon _{i} \right)+\alpha _{1} U_{1} +...+\alpha _{i} U_{i} +...+\alpha _{n} U_{n} } \end{array} \label{eq:2-27}  
+\end{equation}
+
+So the perturbation of the mean of variable $U_i$ results in a new $Z$-function with reliability index $\beta$' instead of $\beta$, with:
+\begin{equation}
+\beta ^{'} =\beta +\alpha _{i} \varepsilon _{i}  \label{eq:2-28}  
+\end{equation}
+
+This means:
+\begin{equation} 
+\frac{\partial \beta }{\partial \bar{u}_{i} } =\frac{\partial \beta }{\partial \varepsilon _{i} } =\frac{\beta '-\beta }{\varepsilon _{i} } =\frac{\left(\beta +\alpha _{i} \varepsilon _{i} \right)-\beta }{\varepsilon _{i} } =\frac{\alpha _{i} \varepsilon _{i} }{\varepsilon _{i} } =\alpha _{i}  \label{eq:2-29}  
+\end{equation}
+
+In other words: $\alpha_i$ is a measure of the sensitivity of reliability index $\beta$ to changes in the mean value of variable $U_i$.
+This also means $\alpha_i$ is a measure of the sensitivity of the probability of failure to changes in the mean value of variable $U_i$.
+This information is used in the Hohenbichler method for combining probabilities of components in a system (see \Aref{chp:CombiningDesignPoints}).
+
+\Note{as stated before, linearized $Z$-functions are the basis for various computation techniques that are explained in the following sections.
+A full understanding of this linearisation process and the meaning of $\alpha$-values and $\beta$ is therefore essential for further reading of this document.}

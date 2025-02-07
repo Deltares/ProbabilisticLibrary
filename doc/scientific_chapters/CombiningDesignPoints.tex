@@ -1,26 +1,28 @@
-\chapter{Combining design points}
-\label{chp:CombiningDesignPoints}
+\chapter{Combining failure probabilities}
+\label{chp:CombiningFailureProbabilities}
 
-Design points can be combined.
-This is most of the times desired when multiple failure definitions are applied.
+The probabilities of failure of the components are combined to derive the probability of failure of the whole system. This is being referred to as system analysis. System analysis generally deals with parallel systems, series systems or combinations of both. A parallel system refers to a system in which failure only occurs if all components fail. A series system refers to a system where failure occurs if at least one of the components fails. This concept is schematically depicted in \Fref{fig:SystemAnalysis}.
 
-Design points can currently only be combined afterwards.
-When combining afterwards, the design points are simulated by equivalent planes.
-A number of methods exist how to derive the combined design point from the equivalent planes
-(see \autoref{sec:EquivalentPlanes}).
+\begin{figure}[H]\centering
+\includegraphics*[width=5.96in, height=1.31in, keepaspectratio=false]{\pathProbLibPictures systemanalysis.png}
+\caption{Schematic view of a parallel system, series system and a combination of both. Components $1$, $2$ and $3$ can be viewed as bridges. The systems fails if a passenger can not walk from left to right over the bridges.}\label{fig:SystemAnalysis}
+\end{figure}
 
-% TODO not yet in Prob. Library:
-% \section{Integrated in reliability calculation}
-% \label{sec:CombiningDesignPointsIntegrated}
-%
-%When combining the design points integrated during the reliability calculation for a single component,
-%the failure definitions are merged to one failure definition.
-%This combined failure definition is used in one of the reliability techniques
-%(see \autoref{sec:ReliabilityTechniques}).
+The general formulations of failure probabilities for parallel and series systems of $k$ components are as follows:
+\begin{align}
+&\text{Series:}  P_{f} =P\left[Z_{1} <0\cup ...\cup Z_{k} <0\right]=P\left[\bigcup _{i=1}^{k}Z_{i} <0 \right]=1-P\left[\bigcap _{i=1}^{k}Z_{i} \ge 0 \right] \label{eq:2-63} \\
+&\text{Parallel:} P_{f} =P\left[Z_{1} <0\cap ...\cap Z_{k} <0\right]=P\left[\bigcap _{i=1}^{k}Z_{i} <0 \right]=1-P\left[\bigcup _{i=1}^{k}Z_{i} \ge 0 \right] \label{eq2-64} 
+\end{align}
 
-%When using FORM with integrated combining of design points,
-%results are not reliable.
-%Therefore \probLib prevents this combination.
+If the events $[Z_i<0]$, $i=1...k$ are mutually independent, this can be simplified to:
+\begin{align}
+&\text{Series:}  P_{f} =1-\prod _{i=1}^{k}\left\{1-P\left[Z_{i} <0\right]\right\}  \label{eq:2-65} \\
+&\text{Parallel:} P_{f} =\prod _{i=1}^{k}P\left[Z_{i} <0\right]  \label{eq:2-66} 
+\end{align}
+
+The failure probabilities, $P[Z_i<0]$, for the individual components are determined by the probabilistic computation techniques as described in \autoref{chp:ReliabilityAnalysis}. System analysis for mutually independent components is therefore a relatively straightforward procedure. If the components are mutually correlated, the complexity of the system analysis increases. The correlations need to be taken into account as it increases the probability of failure of parallel systems and decreases the probability of failure of series systems. 
+
+In the \probLib, failure probabilities of components are combined using the equivalent planes method, which is described in the following section.
 
 \section{Equivalent planes}
 \label{sec:EquivalentPlanes}
@@ -44,7 +46,7 @@ M_{\text{combined}}\left(u\right) = \left\{\begin{array}{ll}{\text{series}} & \m
 \right.
 \end{align}
 
-where
+where:
 
 \begin{longtable*}{p{20mm}p{\textwidth-24pt-20mm}}  
 	$M_{\text{i}}$ & is the result of the equivalent plane of design point $i$; \\
@@ -120,7 +122,7 @@ where
 	$k$ & is the index of the design point; \\
 	$u_{\text{min}}$ & is the computationally minimum possible value of $u$ (-8); \\
 	$u_{\text{max}}$ & is the computationally maximum possible value of $u$ (8); \\
-	$M_{\text{k}}\left(u\right)$ & is the equivalent plane of the $i^{\text{th}}$ design point (see \autoref{eq:EquivalentPlane});
+	$M_{\text{k}}\left(u\right)$ & is the equivalent plane of the $i^{\text{th}}$ design point (see \autoref{eq:EquivalentPlane}).
 \end{longtable*}
 
 \subsection{Hohenbichler}\label{sec:Hohenbichler}
