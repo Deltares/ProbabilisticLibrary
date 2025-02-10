@@ -189,6 +189,12 @@ namespace Deltares
             {
                 return NativeSupport::toManaged(shared->object->getOnlyVaryingValues(NativeSupport::toNative(values)));
             }
+
+            void ModelRunner::updateVariableSample(ModelSample^ sample)
+            {
+                shared->object->updateVariableSample(sample->GetModelSample());
+            }
+
         }
     }
 }

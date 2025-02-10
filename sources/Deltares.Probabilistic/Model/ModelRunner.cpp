@@ -453,6 +453,11 @@ namespace Deltares
         {
             return this->uConverter->getVaryingValues(values);
         }
+
+        void ModelRunner::updateVariableSample(std::shared_ptr<ModelSample> sample)
+        {
+            this->uConverter->updateVariableSample(sample);
+        }
     }
 }
 

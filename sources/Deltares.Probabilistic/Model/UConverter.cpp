@@ -392,6 +392,24 @@ namespace Deltares
             return xValues;
         }
 
+        void UConverter::updateVariableSample(std::shared_ptr<ModelSample> sample)
+        {
+            if (this->hasVariableStochasts)
+            {
+                for (size_t i = 0; i < variableStochastList.size(); i++)
+                {
+                    int stochastIndex = variableStochastList[i];
+                    double xStochast = sample->Values[stochastIndex];
+                    double uStochast = varyingStochasts[stochastIndex]->definition->getUFromX(xStochast);
+
+                    int sourceIndex = variableStochastIndex[stochastIndex];
+                    double xSource = sample->Values[sourceIndex];
+
+                    sample->Values[stochastIndex] = stochasts[stochastIndex]->definition->getXFromUAndSource(xSource, uStochast);
+                }
+            }
+        }
+
         std::shared_ptr<Sample> UConverter::getQualitativeExcludedSample(std::shared_ptr<Sample> sample)
         {
             std::shared_ptr<Sample> qualitativeExcludedSample = sample->clone();

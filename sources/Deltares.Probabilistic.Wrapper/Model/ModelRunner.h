@@ -163,6 +163,8 @@ namespace Deltares
 
                 array<double>^ GetOnlyVaryingValues(array<double>^ values);
 
+                void updateVariableSample(ModelSample^ sample);
+
                 int SetTag(System::Object^ object)
                 {
                     return tagRepository->RegisterTag(object);
