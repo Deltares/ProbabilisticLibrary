@@ -5,60 +5,29 @@
 \section{Reliability methods}
 \label{sec:ReliabilityMethods}
 
-Equation \eqref{eq:2-4} describes the general formulation of the probability of failure of a single component. While an analytical solution to equation \eqref{eq:2-4} would be ideal, it is typically not possible because the $Z$-function is too complex. Therefore, the probability of failure needs to be estimated with probabilistic computation techniques. The computation techniques available within the \probLib are summarized in this chapter. 
+Equation \eqref{eq:2-4} describes the general formulation of the probability of failure of a single component. While an analytical solution to equation \eqref{eq:2-4} would be ideal, it is typically not possible because the $Z$-function is too complex. Therefore, the probability of failure needs to be estimated with probabilistic computational techniques. The computational techniques available within the \probLib are summarized in this chapter. 
 
-The reason to implement a set of probabilistic computation techniques in the \probLib is that each technique has its (dis)advantages with respect to criteria such as robustness, accuracy and required computation time. The ''best'' technique to be applied therefore depends on the problem under consideration.
+The reason to implement a set of probabilistic computational techniques in the \probLib is that each technique has its (dis)advantages with respect to criteria such as robustness, accuracy and required computation time. The ''best'' technique to be applied therefore depends on the problem under consideration.
+
+A theoretical background of the most well-known computation techniques is presented in \Aref{Section_2.3}.
 
 \subsection{Numerical Integration}
 \label{sec:NumericalIntegration}
 
-Numerical integration solves equation \eqref{eq:2-4} by discretizing the random variables $X_1$\dots $X_n$. Each variable is discretized over a range that is relevant for failure, and subsequently each combination of discretized values of the $X$-variables is used to compute the limit state function. The probabilities of all the combinations that lead to $Z<0$ are summed, which provides the estimate of the overall probability of failure. This summation can be written as follows:
+Numerical integration is the most time-consuming but most accurate method for calculating failure probability. A step size, along with the minimum and maximum values of the input variables, is required for the evaluation.
 
-\begin{align}
-\hat{P}_{f} =&\sum _{i_{1} =1}^{m_{1} }\sum _{i_{2} =1}^{m_{2} }\dots\sum _{i_{n} =1}^{m_{n} }1_{\left[Z<0\right]}    f_{X} (x_{0,1} +(i_{1} -0.5)\Delta x_{1} ,x_{0,2}\label{eq:2-30} \\ \nonumber
- &+(i_{2} -0.5)\Delta x_{2} ,\dots,x_{0,n} +(i_{n} -0.5)\Delta x_{n} )\Delta x_{1} \Delta x_{2} \dots\Delta x_{n} 
-\end{align}
-where:
+If the underlying model fails for a certain realization, its results will be ignored. The user must determine whether the number of failed realizations is acceptable.
 
-\begin{tabular}{p{0.4in}p{4in}} 
-$\hat{P}_{f} $ & is the estimated probability of failure \\
-$1_{\left[Z<0\right]} $ & is the indicator function, equal to $1$ for $Z$ $<$ $0$, equal to $0$ for $Z$ $\geq$ $0$ \\
-$x_{0,k}$ & is the lower range limit for the $k^{th}$ variable \\
-$\Delta$$x_k$ & is the interval width of the $k^{th}$ variable \\
-$m_k$ & is the upper bound of $k$ such that $x_{0,k}$+ $m_k$$\Delta$$x_k$ is the upper bound of the $k^{th}$ variable \\
-\end{tabular}
+The minimum and maximum values for which the integration runs are defined in the $u$-space. Numerical integration fills the remaining space between these values and $-8$ and $8$ with additional cells to ensure complete coverage of the integration domain.
 
-In equation \eqref{eq:2-30}, for each variable $X_k$ an equidistant grid with step size $\Delta$$x_k$ is used, but non-equidistant grids can also be used in numerical integration. \Fref{fig:NumIntegr} presents a schematic view of the method, for an example of two random variables $X_1$ and $X_2$. A 2-dimensional grid is defined and the $Z$-function is evaluated at the centre of the grid cells. Red grid points indicate failure $(Z<0)$, green grid points indicate no failure ($Z\geq0$). The total probability of failure (see equation \eqref{eq:2-30}) is estimated as follows: multiply the probability density of the grid cells in the failure domain (red dots) with the size of the grid cells ($\Delta$$x_1$ $\times$ $\Delta$$x_2$) and take the sum of these probabilities.
+\Note{$u=8$ corresponds to a probability of approximately $6\times10^{−16}$, which is orders of magnitude smaller than the probabilities of typical scenarios.}
 
 \begin{figure}[H]
 	\label{fig:NumericalIntegration}
 	\centering
 	\includegraphics[width=1.0\textwidth]{\pathProbLibPictures numericalintegration.jpg}
-	\caption{Numerical Integration: realizations for two random variables}\label{fig:NumIntegr}
+	\caption{Numerical integration: realizations for two stochasts}
 \end{figure}
-
-
-Like every probabilistic estimation technique, the result of the numerical integration procedure will be an approximation of the actual probability of failure. The errors that are introduced in this method are caused by the following assumptions and approximations:
-
-Each grid cell is assumed to be entirely situated in the failure domain or entirely situated outside the domain of failure domain. In reality, grid cells can be partly in the failure domain as can be seen in \Fref{fig:NumIntegr}.
-
-The probability density is assumed to be constant over the entire grid cell. The domain of potential outcomes of the random variables may not be entirely covered. In the implementation of the procedure, it may be beneficial to transform the $X$-variables to standard normally distributed $U$-variables (see \Aref{Section_2.2.3}). One of the benefits of working in the $U$-space is that the $U$-variables are independent, which simplifies equation \eqref{eq:2-30} as follows:
-
-{\footnotesize{\begin{equation} 
-\hat{P}_{f} =\sum _{i_{1} =1}^{m_{1} }\dots \sum _{i_{n} =1}^{m_{n} }1_{\left[Z<0\right]}  \phi \left(u_{0,1} +\left(i_{1} -0.5\right)\Delta u_{1} \right)\cdot \dots\cdot \phi \left(u_{0,n} +\left(i_{n} -0.5\right)\Delta u_{n} \right)\Delta u_{1} ...\Delta u_{n} \label{eq:2-31} 
-\end{equation}}}
-where:
-
-\begin{tabular}{p{\textwidth-36pt-129mm}p{125mm}}  
-	$\hat{P}_{f} $ & is the estimated probability of failure \\ 
-	$\phi $ & is the standard normal density function \\ 
-	$u_{0,k} $ & is the lower range limit for the $k^{th}$ variable, in the $U$-space \\  
-	$\Delta u_{k} $ & is the interval width of the $k^{th}$ variable, in the $U$-space \\  
-	$m_{k} $ & is the upper bound of $k$ such that $u_{0,k} +m_{k} \cdot \Delta u_{k}$ is the upper bound of the $k^{th}$ variable\\  
-\end{tabular}
-
-
-\Note{The minimum and maximum values for which the Numerical Integration runs are defined in $U$-space. Numerical Integration fills the remaining space between these values and $-8$ to $8$ using additional cells, ensuring full coverage of the integration domain. Note that $U=8$ corresponds to a probability of approximately $6 \times 10^{-16}$, which is orders of magnitude smaller than the probabilities encountered in typical scenarios.}
 
 
 \newpage
@@ -528,15 +497,9 @@ Because the Cobyla algorithm provides a rough estimation of the reliability and 
 
 \subsubsection{Algorithm}
 
-FORM stands for First Order Reliability Method. The FORM procedure is not a Monte Carlo simulation. Instead, it directly searches for the design point. This design point is considered representative of the total failure probability, which is calculated as follows:
-
-\begin{align}
-p_\text{failure} = 1 - \Phi \left(\beta\right)
-\end{align}
-
 The FORM procedure starts from a certain user defined starting point in the parameter space. From there it tries to find a point which is closer to the design point by taking the gradient of the $z$-value in the $u$-space of the parameters. The $z$-value is an indication whether failure occurs and is derived from the failure definition. After a number of steps, the point is close enough to the design point and the calculation stops. 
 
-The FORM analysis searches for the design point: When the design point is found, the reliability index $\beta$ can be evaluated as the distance between the origin and the design point (see \autoref{fig:FORMDesignPoint}). The corresponding probability of failure is:
+The FORM analysis searches for the design point: when the design point is found, the reliability index $\beta$ can be evaluated as the distance between the origin and the design point (see \autoref{fig:FORMDesignPoint}). The corresponding probability of failure is:
 
 \begin{align}
 p_\text{failure} = 1 - \Phi \left(\beta\right)

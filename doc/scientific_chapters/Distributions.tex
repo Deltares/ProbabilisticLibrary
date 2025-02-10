@@ -1,16 +1,16 @@
 \chapter{Distributions}\label{chp:distributions}
 
-\section{Generic description of distribution functions}
+\section{Generic description of the application of distribution functions}
 \label{sec:GenericDescriptionDistributionFunctions}
 
 The following three types of functions can be used to describe the statistical properties of random variables: 
 \begin{enumerate}
-\item Cumulative distribution function (CDF)
-\item Inverse cumulative distribution function (inverse CDF)
-\item Probability density function (PDF)
+\item Cumulative distribution function (CDF);
+\item Inverse cumulative distribution function (inverse CDF);
+\item Probability density function (PDF).
 \end{enumerate}
 
-The CDF, $F(x)$, provides the probability of non-exceedance, $p$, of each potential realisation, $x$, of random variable $X$. The inverse CDF, $F^{-1}(p)$, provides the realisation $x$ that has a probability of non-exceedance $p$. The relation between the CDF and the inverse CDF is thus as follows: 
+The CDF, $F(x)$, provides the probability of non-exceedance, p, of each potential realisation, $x$, of random variable $X$. The inverse CDF, $F^{-1}(p)$, provides the realisation $x$ that has a probability of non-exceedance $p$. The relation between the CDF and the inverse CDF is thus as follows: 
 \begin{equation}
 F\left(x\right)=p\Leftrightarrow x=F^{-1} \left(p\right) \label{3.1)}
 \end{equation}
@@ -20,61 +20,127 @@ The PDF, $f(x)$, is the derivative of the CDF:
 F\left(x\right)=\int _{-\infty }^{x}f\left(\tau \right)d \tau \Leftrightarrow f\left(x\right)=\frac{dF}{dx} (x) \label{3.2)}
 \end{equation}
 
-The PDF provides the probability density for any given value of $x$. The probability density is the probability per unit value. 
+The PDF provides the probability density for any given value of $x$. The probability density is the probability per unit value. For the normal distribution function, the pdf is the ''famous'' bell-shaped curve. As an example, \Fref{fig:Figure_3.2} shows the CDF, inverse CDF and PDF of the standard normal distribution function. 
+
+\begin{figure}[H]\centering
+\includegraphics[width=0.55\columnwidth]{\pathProbLibPictures normalPDF.png}
+\includegraphics[width=0.55\columnwidth]{\pathProbLibPictures normalCDF.png}
+\includegraphics[width=0.55\columnwidth]{\pathProbLibPictures normalINV.png}
+\caption{PDF (top), CDF (middle) and inverse CDF (bottom) of the standard normal distribution function.}\label{fig:Figure_3.2}
+\end{figure}
 
 The CDF, $F(x)$, has the flowing properties:
 \begin{enumerate}
-\item $F(x)$ is non-decreasing
-\item $\lim_{x\rightarrow -\infty}F(x)=0$
-\item $\lim_{x\rightarrow \infty}F(x)=1$
+\item $F(x)$ is non-decreasing;
+\item $\lim_{x\rightarrow -\infty}F(x)=0$;
+\item $\lim_{x\rightarrow \infty}F(x)=1$.
 \end{enumerate}
 
-In the \probLib, random variables are represented by standardised $U$-variables in the probabilistic computations, and the function $Z(U)$ is explored to derive an estimate of the failure probability. In order to evaluate function $Z(U)$, the realisations of the $U$-variables are first translated to the corresponding realisations of the $X$-variables and subsequently the $Z$-value is determined. Assume for the sake of simplicity that the $X$-variables are mutually independent. As explained in \Aref{Section_2.2.3}, the transformation from a realization, $u$, of variable $U$, to realization $x$, of variable $X$, is done in such a away that the (non-)exceedance probabilities of $u$ and $x$ are equal. This transformation, as depicted in \Fref{fig:Figure_3.3}, can be formulated as follows:
-\begin{equation}
-u \; \quad \Rightarrow \; \Phi \left(u\right)=F\left(x\right)\; \quad \Rightarrow \; \quad x=F^{-1} \left(\Phi \left(u\right)\right) \label{ZEqnNum694082}
-\end{equation}
-where:
+Property 1 can be easily proven: if $x_1<x_2$, then $P[X\leq x_1] \leq P[X\leq x_2]$ and thus $F(x_1) \leq F(x_2)$. For a formal proof of properties 2 and 3, the reader is referred to \cite{GrimmettStirzaker1983}. But even without a proof it is intuitively clear that a realization from a probability function will be lower than $\infty$ and higher than -$\infty$.
 
-\begin{tabular}{ll}
-$\Phi$ & is the standard normal distribution function\\
-$F$ & is the CDF of variable $X$\\
-$F^{-1}$ & is the inverse CDF of $X$\\
-$x$ & is the realisation of $X$\\
-$u$ & is the realisation of $U$\\
-\end{tabular}
+Since $F(x)$ is non-decreasing, the inverse CDF, $F^{-1}(p)$, is also a non-decreasing function. In probabilistic computations, mainly the inverse CDF, $F^{-1}(x)$, of a variable $X$ is applied, as schematically depicted in \Fref{fig:Figure_3.3}. The library of distribution functions therefore mostly consists of inverse CDF's. The procedure of \Fref{fig:Figure_3.3} is explained below.
 
 \begin{figure}[H]\centering
 \includegraphics*[width=3.95in, height=2.59in, keepaspectratio=false]{\pathProbLibPictures from_u_to_x.png}
-\caption{Procedure for determining an $x$-value associated with a randomly selected standard normally distributed variable ($u$-value), for the case of uncorrelated variables.}\label{fig:Figure_3.3}
+\caption{Procedure for determining a load variable associated with a randomly selected standard normally distributed variable ($u$-value), for the case of uncorrelated variables.}\label{fig:Figure_3.3}
 \end{figure}
 
-This procedure automatically guarantees that variable $x$ is a realization from distribution function $F(x)$ and therefore correctly represents the statistical properties of variable $X$. 
+As described in section \Aref{Section_2.3}, random variables are represented by standardised $U$-variables in the probabilistic computations in the \probLib, and the function $Z(U)$ is explored to derive an estimate of the failure probability. In order to evaluate function $Z(U)$, the realisations of the $U$-variables are first translated to the corresponding realisations of the $X$-variables and subsequently the $Z$-value is determined. Assume for the sake of simplicity that the $X$-variables are mutually independent (correlations will be dealt with in \Aref{Section_3.4}). As explained in \Aref{Section_2.2.3}, the transformation from a realization, $u$, of variable $U$, to realization $x$, of variable $X$, is done in such a away that the (non-)exceedance probabilities of $u$ and $x$ are equal. This transformation, as depicted in \Fref{fig:Figure_3.3}, can be formulated as follows:
+\begin{equation}
+\Phi \left(u\right)=F\left(x\right)\; \quad \Rightarrow \; \quad x=F^{-1} \left(\Phi \left(u\right)\right) \label{ZEqnNum694082}
+\end{equation}
+where:
 
-%\section{Distribution properties}
-%\label{sec:DistributionProperties}
+\begin{tabular}{lll}
+$\Phi$ &=& standard normal distribution function\\
+$F$ &=& CDF of variable $X$\\
+$F^{-1}$ &=& inverse CDF of $X$\\
+$x$ &=& realisation of $X$\\
+$u$ &=& realisation of $U$\\
+\end{tabular}
 
-%In theory, endless distribution types exist. Each distribution reflects actual values. From these values $x_i$ the following properties can be derived:
+This procedure automatically guarantees that variable $x$ is a realization from distribution function $F(x)$ and therefore correctly represents the statistical properties of variable $X$. This is demonstrated below.
 
-%\begin{itemize}
-%	\item Mean or expectation value $\mu$: The long run average of randomly chosen values, calculated as follows:
-%	\begin{align}
-%	\label{eq:Mean}
-%	\mu =\frac{1}{N}\sum_{i=1}^{N}x_{i}
-%	\end{align}	
-%	\item Mode: The value with the highest probability density;
-%	\item Median: The value for which half of the randomly chosen values is less than this value and half of the randomly chosen values is more than this value;
-%	\item Standard deviation $\sigma$: A measure how much randomly chosen values differ from the mean, calculated as follows:
-%	\begin{align}
-%	\label{eq:StandardDeviation}
-%	\sigma^2 =\frac{1}{N}\sum_{i=1}^{N}\left(x_{i}-\mu\right)^2
-%	\end{align}	
-%	\item Variation coefficient $V$: Relative deviation with respect to the mean:
-%	\begin{align}
-%	\label{eq:Variation}
-%	V =\frac{\sigma}{\mu}
-%	\end{align}	
-%	\item Quantile value $Q$: Generalization of the median. From all randomly chosen values, a user provided fraction is less than this value and the remainder is more than this value.
-%\end{itemize}
+First it needs to be shown that the value $p = \Phi(u)$ is a realization from a standard uniform distribution function. The standard uniform distribution function is the CDF in which each value in the range $[0,1]$ has equal probability density. The CDF of this function is as follows (see also \Fref{fig:Figure_3.4}):
+\begin{equation}
+F\left(x\right)\; =\left\{\begin{array}{l} {0\quad ;x\le 0\quad } \\ {\; x\quad ;0<x<1} \\ {1\quad ;x\ge 1\quad } \end{array}\right. \quad \label{ZEqnNum892201}
+\end{equation}
+
+Consider a realization, $u^*$, of the standard normal distribution function with a probability of non-exceedance equal to $p^* = \Phi(u^*)$. By definition this means that the probability that a random sample $u$ from the standard normal distribution function does not exceed $u^*$ is equal to $p^*$. In formula:
+\begin{equation}
+P\left[u\le u^*\right]=p^* \label{ZEqnNum312921}
+\end{equation}
+
+Since $\Phi$ is a CDF, it is a non-decreasing function. Therefore it follows from equation \eqref{ZEqnNum312921} that:
+\begin{equation}
+P\left[\Phi \left(u\right)\le \Phi \left(u^*\right)\right]=p^*\label{3.6)}
+\end{equation}
+
+And since by definition $p^*= \Phi(u^*)$, this simplifies to:
+\begin{equation}
+P\left[\Phi \left(u\right)\le p^*\right]=p^* \label{3.7)}
+\end{equation}
+
+So the probability that $\Phi(u)$ does not exceed a given value $p^*$ ($0\leq p^* \leq 1$) is equal to $p^*$. This shows that $\Phi(u)$ is a realization from a standard uniform distribution function, as described by equation \eqref{ZEqnNum892201} and depicted in \Fref{fig:Figure_3.4}.
+
+\begin{figure}[H]\centering
+\includegraphics*[width=4.28in, height=3.21in, keepaspectratio=false]{\pathProbLibPictures uniformCDF.png}
+\caption{Standard uniform distribution function (CDF).}\label{fig:Figure_3.4}
+\end{figure}
+
+It has been demonstrated that the value $p$ in \Fref{fig:Figure_3.3} is a realization from the standard uniform distribution function. The next step is to show that the value $x = F^{-1}(p)$ in \Fref{fig:Figure_3.3} is a realization from distribution function $F(x)$. For this purpose, consider a value $x^*$ with probability of non-exceedance $p^*$. This means: $F(x^*) = p^*$ and $x^* = F^{-1}(p^*)$. The value $p$ in \Fref{fig:Figure_3.3} is taken from a standard uniform distribution function (as proven above), which means:
+\begin{equation}
+P\left[p\le p^*\right]=p^*\label{ZEqnNum788001}
+\end{equation}
+
+Since $F$ is an inverse CDF, it is a non-decreasing function and therefore it follows from equation \eqref{ZEqnNum788001} that:
+\begin{equation}
+P\left[F^{-1} \left(p\right)\le F^{-1} \left(p^*\right)\right]=p^*\label{ZEqnNum178723} 
+\end{equation}
+
+By definition $x^* = F^{-1}(p^*)$ and $x = F^{-1}(p)$, which means equation \eqref{ZEqnNum178723} simplifies to:
+\begin{equation}
+P\left[x\le x^*\right]=p^*\label{3.10)} 
+\end{equation}
+
+Since $p^*= F(x)$, this means: 
+\begin{equation} 
+P\left[x\le x^*\right]=F\left(x^*\right)\label{3.11)} 
+\end{equation}
+
+This shows that value $x$ in \Fref{fig:Figure_3.3} is a realization from distribution function $F(x)$. 
+
+\Note{the \probLib works with standard normalized $U$-variables. The limit state function $Z(U)$ is explored to derive an estimate of the failure probability. In order to evaluate function $Z(U)$, the realisations of the $U$-variables are first translated to the corresponding realisations of the $X$-variables to be able to determine the $Z$-value. In this transformation, the inverse CDF of variable $X$ is applied, to provide variable $X$ with the correct statistical properties.}
+
+%\Note{\Aref{app:distributionfunctions} presents distribution functions available in the \probLib.The library contains the ''inverse cumulative distribution functions'' which means the input consists of a probability, $p$, of non-exceedance and the output consist of the associated realization, $x$, of the variable that is described with this distribution function.} 
+
+%Besides $p$, the input of the inverse CDF's also consists of a set of parameter values $\theta = (\theta_1, \dots ,\theta_n)$. These parameter values quantify the relation between $p$ and $x$. Note that the value of $n$ can be different for different distribution functions, as shown in the second column of \Tref{Table_3.1}. Each distribution function as mentioned in \Tref{Table_3.1} has a fixed number, $n$, of parameters but the values of these parameters will be different for different variables. So, for instance, it is possible to describe both river discharge and sea water level with the lognormal distribution, but the values of the two parameters of this distribution function for river discharge will be different from the values that are used for sea water level. In other words: the same module can be used to describe probabilities of different random variables and differences between the variables are characterized by differences in parameter values. 
+
+\section{Distribution properties}
+\label{sec:DistributionProperties}
+
+In theory, endless distribution types exist. Each distribution reflects actual values. From these values, $x_i$, the following properties can be derived:
+
+\begin{itemize}
+	\item Mean or expectation value $\mu$: The long run average of randomly chosen values, calculated as follows:
+	\begin{align}
+	\label{eq:Mean}
+	\mu =\frac{1}{N}\sum_{i=1}^{N}x_{i}
+	\end{align}	
+	\item Mode: The value with the highest probability density;
+	\item Median: The value for which half of the randomly chosen values is less than this value and half of the randomly chosen values is more than this value;
+	\item Standard deviation $\sigma$: A measure how much randomly chosen values differ from the mean, calculated as follows:
+	\begin{align}
+	\label{eq:StandardDeviation}
+	\sigma^2 =\frac{1}{N}\sum_{i=1}^{N}\left(x_{i}-\mu\right)^2
+	\end{align}	
+	\item Variation coefficient $V$: Relative deviation with respect to the mean:
+	\begin{align}
+	\label{eq:Variation}
+	V =\frac{\sigma}{\mu}
+	\end{align}	
+	\item Quantile value $Q$: Generalization of the median. From all randomly chosen values, a user provided fraction is less than this value and the remainder is more than this value.
+\end{itemize}
 
 
 
@@ -750,7 +816,7 @@ where:
 	$i$ & is the index number of the data value ($1 \leq i \leq N$) \\  
 	$N$ & is the number of data values\\
 	$x_i$ & is the $i^\text{th}$ sorted data value \\  
-	$F\left(x_i\right)$ & is the CDF value corresponding with $x_i$ (see \autoref{eq:CDF})\\  
+	$F\left(x_i\right)$ & is the CDF value corresponding with $x_i$\\  
 \end{longtable*}
 
 The Kolmogorov-Smirnov statistic is applied to observation sets. This is an indication whether two series of observations originate from the same measurements.
@@ -758,7 +824,7 @@ The Kolmogorov-Smirnov statistic is applied to observation sets. This is an indi
 \section{Prior distribution}
 \label{sec:PriorDistribution}
 
-A prior distribution is used to update another distribution, resulting in a posterior distribution. The prior distribution should be a general distribution of a parameter, such as a world wide distribution or a long term distribution. This distribution can be updated with local data or data which are only applicable in a certain situation. The resulting updated distribution is applicable in that situation. The advantage is that even with a limited number of measurements a meaningful distribution can be derived.
+A prior distribution is used to update another distribution, resulting in a posterior distribution. The prior distribution should represent a general distribution of a parameter, such as a worldwide distribution or a long-term distribution. This distribution can be updated using local data or data that is only applicable to a specific situation. The resulting updated distribution is then applicable to that situation. The advantage of this approach is that a meaningful distribution can be derived even with a limited number of measurements.
 
 Fitting from a posterior distribution is only possible for normal distributions. The updated posterior distribution is calculated as follows [\cite{Lynch2007}]:
 
@@ -785,9 +851,9 @@ where:
 
 \section{Design values}
 
-When the option run model is selected, the user has the possibility to run the model with design values. Design values are used when one wants to calculate "safe" results. This means that results, like a safety factor or a required strength of a construction, should be based on unfavorable conditions, which means unfavorable input values. Often designs are based on results based on these conditions.
+Design values are used when one aims to calculate 'safe' results. This means that outputs, such as a safety factor or the required strength of a construction, should be based on unfavorable conditions -- meaning unfavorable input values. In many cases, designs are based on results obtained under these conditions.
 
-Design values are values derived from the stochastic definition as follows:
+Design values are derived from the stochastic definition as follows:
 
 \begin{align}
 \label{eq:Design}

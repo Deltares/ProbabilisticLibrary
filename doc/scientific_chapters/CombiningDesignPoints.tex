@@ -11,21 +11,9 @@ The probabilities of failure of the components are combined to derive the probab
 \caption{Schematic view of a parallel system, series system and a combination of both. Components $1$, $2$ and $3$ can be viewed as bridges. The systems fails if a passenger can not walk from left to right over the bridges.}\label{fig:SystemAnalysis}
 \end{figure}
 
-The general formulations of failure probabilities for parallel and series systems of $k$ components are as follows:
-\begin{align}
-&\text{Series:}  P_{f} =P\left[Z_{1} <0\cup ...\cup Z_{k} <0\right]=P\left[\bigcup _{i=1}^{k}Z_{i} <0 \right]=1-P\left[\bigcap _{i=1}^{k}Z_{i} \ge 0 \right] \label{eq:2-63} \\
-&\text{Parallel:} P_{f} =P\left[Z_{1} <0\cap ...\cap Z_{k} <0\right]=P\left[\bigcap _{i=1}^{k}Z_{i} <0 \right]=1-P\left[\bigcup _{i=1}^{k}Z_{i} \ge 0 \right] \label{eq2-64} 
-\end{align}
-
-If the events $[Z_i<0]$, $i=1...k$ are mutually independent, this can be simplified to:
-\begin{align}
-&\text{Series:}  P_{f} =1-\prod _{i=1}^{k}\left\{1-P\left[Z_{i} <0\right]\right\}  \label{eq:2-65} \\
-&\text{Parallel:} P_{f} =\prod _{i=1}^{k}P\left[Z_{i} <0\right]  \label{eq:2-66} 
-\end{align}
-
-The failure probabilities, $P[Z_i<0]$, for the individual components are determined by the probabilistic computation techniques as described in \autoref{chp:ReliabilityAnalysis}. System analysis for mutually independent components is therefore a relatively straightforward procedure. If the components are mutually correlated, the complexity of the system analysis increases. The correlations need to be taken into account as it increases the probability of failure of parallel systems and decreases the probability of failure of series systems. 
-
 In the \probLib, failure probabilities of components are combined using the equivalent planes method, which is described in the following section.
+
+A theoretical description of the method, with a focus on the Hohenbichler method, is presented in \Aref{Section_2.4.2}.
 
 \section{Equivalent planes}
 \label{sec:EquivalentPlanes}

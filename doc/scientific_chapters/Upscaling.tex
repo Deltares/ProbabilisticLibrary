@@ -1,4 +1,4 @@
-\chapter{Upscaling for systems with identical components}\label{chp:upscaling}
+\chapter{Upscaling for systems with identical components: numerical integration with constant correlation}\label{chp:upscaling}
 
 Upscaling refers to combining failure probabilities over ''identical components''.
 Upscaling is distinguished from the more generic Hohenbichler combination techniques because the components being identical allows for a more convenient and efficient combination procedure.
@@ -153,7 +153,7 @@ Since $V$ is the only variable, the grid size of $V$ can be chosen small without
 The error from the numerical integration of equation \eqref{ZEqnNum147042} can therefore be made as small as desired.
 This means the only potentially significant error that is introduced in this method is related to the linearisation of the $Z$-function, which was necessary to derive equation \eqref{ZEqnNum147042}.
 
-\subsection{Equivalent alpha-values}\label{Section_2.4.3.3}
+\subsection{Equivalent $\alpha$-values}\label{Section_2.4.3.3}
 
 As with the Hohenbichler method, equivalent $\alpha$-values can be computed for the component that represents the combination of $n_{e}$ identical components.
 This is necessary in case the resulting component is used in subsequent combining procedures where $\alpha$-values are required.
@@ -326,7 +326,7 @@ In that case, they have to be normalized as follows:}
 \alpha _{k}^{e} =\frac{\alpha _{k}^{e} }{\sqrt{\sum _{j=1}^{n}\left(\alpha _{j}^{e} \right)^{2}  } } ;k=1...n\label{0.165)} 
 \end{align}
 
-\subsection{Techniques for time and space dependent processes}\label{Section_2.4.5}
+\section{Techniques for time and space dependent processes}\label{Section_2.4.5}
 In this section, aspects of upscaling in time and space are addressed.
 
 The techniques described in the previous sections all deal with system analysis of a discrete number of components which may represent dike sections, wind directions, etc.
@@ -443,7 +443,7 @@ The equations above can also be used if $Z$ is a function of space.
 In that case, $t$ and $T$ need to be replaced by $x$ and $X$, where $x$ represents distance, e.g. the longitudinal distance along a dike section. 
 
 \Note{in \probLib, the outcrossing method is applied in time as well as in space.
-First, the probabilities of failure of the smallest ''components'' are computed with the probabilistic techniques for single components as described in \Aref{chp:ReliabilitAnalysis}.
+First, the probabilities of failure of the smallest ''components'' are computed with the probabilistic techniques for single components as described in \Aref{chp:ReliabilityAnalysis}.
 The smallest component is e.g. a cross section of a flood defense (space) during a tidal period (time) for a single failure mechanism.
 So, the initial result of the probabilistic procedure is the probability that failure occurs at a certain cross section within the time-span of a tidal period for a single mechanism.
 This result will be used as  $P_F(0)$ in the equations above, i.e. the initial failure probability.
