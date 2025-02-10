@@ -1,10 +1,12 @@
 \chapter{Correlations}
 \label{chp:Correlations}
 
+This chapter describes how correlations are handled in the \probLib. A theoretical background on the available correlation models can be found in \Aref{chp:CorrelationModels}.
+
 \section{Correlation factor}
 \label{sec:CorrelationFactor}
 
-The correlation factor $\rho_{\text{pq}}$ between two variables $p$ and $q$ is an indication how much they are related to each other. The correlation can vary from -1 (fully anti-correlated) to 0 (uncorrelated) to 1 (fully correlated). Values in between indicate a partial correlation.
+The correlation factor $\rho_{\text{pq}}$ between two random variables, $p$ and $q$, indicates the degree to which they are related. The correlation can range from $-1$ (fully anti-correlated) to $0$ (uncorrelated) to $1$ (fully correlated). Values between these extremes represent partial correlation.
 
 The Pearson correlation factor, which is used in \probLib, is calculated as follows:
 
@@ -13,43 +15,39 @@ The Pearson correlation factor, which is used in \probLib, is calculated as foll
 \rho_{\text{p,q}} = \frac{\sum_i u_{\text{p,i}} u_{\text{q,i}}}{\sum_i u_{\text{p,i}} \sum_i u_{\text{q,i}}}
 \end{align}
 
-where
+where:
 \begin{longtable*}{p{20mm}p{\textwidth-24pt-20mm}}  
-	$i$ & is the index number of the observed value; \\  
-	$p$, $q$ & indicate variables; \\
-	$u_{\text{p,i}}$ & is the u-value corresponding with observed value $x_i$ (see \autoref{eq:XUConversion}, note that the distribution of variable p is derived already); \\  
+	$i$ & is the index number of the observed value \\  
+	$p$, $q$ & indicate random variables \\
+	$u_{\text{p,i}}$ & is the $u$-value corresponding with observed value $x_i$ (see \autoref{eq:XUConversion}, note that the distribution of variable $p$ is derived already) \\  
 \end{longtable*}
 
 \subsection{Distance based correlation factor}
 \label{sec:DistanceBasedCorrelationFactor}
 
-If components with the same variables have a location, the correlation between these variables can be calculated by their rest calculation and their distance, instead of using \autoref{eq:CorrelationCoefficient}. The correlation factor is calculated as follows:
+If two components with the same variables have a location, the correlation between these variables can be determined based on their residual correlation and their distance, rather than using \autoref{eq:CorrelationCoefficient}. The correlation factor is then calculated as follows:
 
 \begin{align}
 \label{eq:DistanceCorrelationCoefficient}
 \rho_{\text{t,p,q}} = \rho_{\text{t, rest}} + \left(1 -\rho_{\text{t, rest}}\right) \cdot \exp\left(  {-\frac{D_{\text{p, q}}^2}{d_{\text{t}}^2}}\right)
 \end{align}
 
-where
+where:
 \begin{longtable*}{p{20mm}p{\textwidth-24pt-20mm}}  
-	$t$ & indicates a variable type; \\  
-	$p$, $q$ & indicate components; \\
-	$\rho_{\text{t, rest}}$ & is the user provided rest correlation for a certain variable type $t$; \\  
-	$D_{\text{p, q}}$ & is the distance between components $p$ and $q$; \\  
-	$d_{\text{t}}$ & is the correlation length of variable type $t$; \\  
+	$t$ & indicates a variable type\\  
+	$p$, $q$ & indicate components \\
+	$\rho_{\text{t, rest}}$ & is the user provided rest correlation for a certain variable type $t$ \\  
+	$D_{\text{p, q}}$ & is the distance between components $p$ and $q$\\  
+	$d_{\text{t}}$ & is the correlation length of variable type $t$ \\  
 \end{longtable*}
 
 
 \section{Processing of correlation factors}
 
-Several probabilistic techniques are based on uncorrelated $u$-values. To take into account the effect of correlations, the model evaluations should not use the $x$-values directly converted from $u$, but from a counterpart of $u$ which comprises the correlations. 
-
-In other words, before a model evaluation is carried out, $u_\text{uncorrelated}$ is converted to $u_\text{correlated}$. This is done as follows:
+Several probabilistic techniques are based on uncorrelated $u$-values. To account for the effect of correlations, model evaluations should not use the $x$-values directly converted from $u$, but rather a transformed counterpart of $u$ that incorporates the correlations. In other words, before a model evaluation is carried out, $u_\text{uncorrelated}$ is converted to $u_\text{correlated}$. This is done as follows:
 
 \begin{align}
 u_\text{correlated} = L\left(u_\text{uncorrelated}\right)
 \end{align}
 
-where L denotes the lower triangle matrix originating in the Cholesky
-decomposition of the correlation matrix $\left[\rho\right] = LL^\top$.
-
+where $L$ denotes the lower triangular matrix obtained from the Cholesky decomposition of the correlation matrix $\left[\rho\right] = LL^\top$.

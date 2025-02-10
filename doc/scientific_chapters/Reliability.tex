@@ -570,9 +570,9 @@ and finally leads to the reliability index $\beta$ as:
 \beta = \lvert u_i \rvert
 \end{align}
 
-The benefit of this method is that it is quick. The disadvantages are that a local design point can be found, which then corresponds to a non representative failure probability. Another disadvantage is that numerical problems may occur, since the $z$-value must be continuous.
+The benefit of this method is that it is quick. The disadvantages include the possibility of finding a local design point, which may correspond to a non-representative failure probability. Another disadvantage is that numerical problems may occur since the $z$-value must be continuous.
 
-One cannot determine whether a design point is a local design point, so the user must use this method with care and after analysis whether this method is suitable for the kind of models he uses. Numerical problems can be detected in the convergence chart. If this occurs, one can decrease the relaxation factor or modify the gradient step size (both directions could improve or decrease results).
+It is not always possible to determine whether a design point is a local design point, so the user must apply this method with care and evaluate whether it is suitable for the type of models they are using. Numerical problems can be detected in the convergence chart. If this occurs, one can decrease the relaxation factor or modify the gradient step size (both adjustments may either improve or worsen the results).
 
 \subsubsection{Convergence}
 

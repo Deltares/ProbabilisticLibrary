@@ -94,7 +94,8 @@ In other words: $\alpha_i$ is a measure of the sensitivity of reliability index 
 In this section, aspects of computing the failure probability for a single component are addressed.
 
 \subsection{Introduction}\label{Section_2.3.1}
-Equation \eqref{eq:2-4} describes the general formulation of the probability of failure of a single component. While an analytical solution to equation \eqref{eq:2-4} would be ideal, it is typically not possible because the $Z$-function is too complex. Therefore, the probability of failure needs to be estimated with probabilistic computation techniques. The computation techniques available within the \probLib are summarized in \Tref{tab:2.2}. Each of these techniques will be described in detail in the current section. The reason to implement a set of probabilistic computation techniques in the \probLib is that each technique has its (dis)advantages with respect to criteria such as robustness, accuracy and required computation time. The ''best'' technique to be applied therefore depends on the problem under consideration. \Aref{Section_2.3.8} discusses the (dis)advantages of each of these techniques. First, the techniques are explained individually.
+
+This section describes in detail the computation techniques presented in \Tref{tab:2.2}. 
 
 
 \pagebreak
@@ -103,11 +104,11 @@ Equation \eqref{eq:2-4} describes the general formulation of the probability of 
 \textbf{Method} & \textbf{Variant} \\ \hline 
 Numerical integration & -- \\ \hline 
 Monte Carlo & Crude\newline Importance sampling\newline Directional sampling \\ \hline 
-FORM (First order reliability method) & -- \\ \hline 
+FORM (First Order Reliability Method) & -- \\ \hline 
 \end{longtable}
 
 
-\subsection{Numerical Integration\label{sec:numericalintegration}}%\label{Section_2.3.2}
+\subsection{Numerical Integration\label{sec:numericalintegration}}
 Numerical integration solves equation \eqref{eq:2-4} by discretizing the random variables $X_1$\dots $X_n$. Each variable is discretized over a range that is relevant for failure, and subsequently each combination of discretized values of the $X$-variables is used to compute the limit state function. The probabilities of all the combinations that lead to $Z<0$ are summed, which provides the estimate of the overall probability of failure. This summation can be written as follows:
 
 \begin{align}
@@ -151,7 +152,7 @@ $m_{k} $ & = & Upper bound of $k$ such that $u_{0,k} +m_{k} \cdot \Delta u_{k}$ 
 \end{tabular}
 
 
-\subsection{Crude Monte Carlo\label{sec:crudemontecarlo}}%\label{Section_2.3.3}
+\subsection{Crude Monte Carlo\label{sec:crudemontecarlo}}
 Crude Monte Carlo sampling refers to the repeated sampling of the variables from the multivariate probability distribution function $f_X (x)$ (or, if the variables are mutually independent, sampling from the respective distribution functions $f_{X_i}$($x_1$),\dots , $f_{X_n}$($x_n$)). A single sample $x_i$ refers to a vector of length $n$, where $n$ is the number of random variables. For each sample $x_i$, the resulting value of limit state function $Z(x_i)$ is computed. The probability of failure is estimated as the ratio of samples for which $Z(x_i)$ $<$ $0$, $N_f$, to the total number of samples, $N$:
 \begin{equation}
 \hat{P}_{f} =\frac{N_{f} }{N} =\frac{\sum _{i=1}^{N}{\rm I}\left(Z\left(x_{i} \right)\right) }{N}  \label{eq:2-32}
@@ -253,7 +254,7 @@ Note that the one-variable example can easily be expanded to more variables, usi
 \end{equation}
 where $k$ runs over the total number of random variables. Equation \eqref{eq:2-44} is the form in which the ratio is programmed in the \probLib.
 
-\subsection{Monte Carlo Directional Sampling\label{sec:directionalsampling}}%\label{Section_2.3.5}
+\subsection{Monte Carlo Directional Sampling\label{sec:directionalsampling}}
 Directional Sampling (see, e.g. \cite{Bjerager1988}), also referred to as Directional Simulation is a type of Monte Carlo method which aims to (strongly) reduce the number of samples in comparison with the Crude Monte Carlo method.
 
 Directional sampling is depicted in Figure \ref{fig:2.13}. The first step in the method is to sample a direction in the standard-Normal space. This is done by sampling ${\mathbf{u}} = \left( {{u_1},{u_2},...,{u_n}} \right)$. For the $i^{th}$ sample, ${{\mathbf{u}}_i} = \left( {{u_{{1_i}}},{u_{{2_i}}},...,{u_{{n_i}}}} \right)$, the directional unit vector ${\boldsymbol{\theta}_i}$ is obtained by normalizing $\bf u_i$ as described in Eq. \ref{eq:theta}. The next step in the method is to determine, for the given direction $\theta_i$, the value (or length) $\lambda_i$ such that the limit state function evaluated at $\lambda_i \cdot \theta_i$ equals zero. The procedure to determine the length $\lambda$ is described in the following subsection. The conditional failure probability for the $i^{th}$ sample, $P_{i}$,  is then calculated using the Chi-square ($\chi^2$) distribution (see Eq. \ref{eq:DS_Pfcond}). The $\chi_n^2$ distribution with $n$ degrees of freedom is the distribution function of the sum of the squares of $n$ independent standard normal random variables. Because we work in the standard normal space, the probability that $\left\| {{{\mathbf{u}}_i}} \right\| \leq \lambda_{i}$ is described by this distribution function. The final step is to estimate the failure probability as the mean of the conditional probabilities over all $N$ sampled directions (Equation \ref{eq:Pfhat}). 

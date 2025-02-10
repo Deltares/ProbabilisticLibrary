@@ -45,18 +45,18 @@ Since $F(x)$ is non-decreasing, the inverse CDF, $F^{-1}(p)$, is also a non-decr
 \caption{Procedure for determining a load variable associated with a randomly selected standard normally distributed variable ($u$-value), for the case of uncorrelated variables.}\label{fig:Figure_3.3}
 \end{figure}
 
-As described in section \Aref{Section_2.3}, random variables are represented by standardised $U$-variables in the probabilistic computations in the \probLib, and the function $Z(U)$ is explored to derive an estimate of the failure probability. In order to evaluate function $Z(U)$, the realisations of the $U$-variables are first translated to the corresponding realisations of the $X$-variables and subsequently the $Z$-value is determined. Assume for the sake of simplicity that the $X$-variables are mutually independent (correlations will be dealt with in \Aref{Section_3.4}). As explained in \Aref{Section_2.2.3}, the transformation from a realization, $u$, of variable $U$, to realization $x$, of variable $X$, is done in such a away that the (non-)exceedance probabilities of $u$ and $x$ are equal. This transformation, as depicted in \Fref{fig:Figure_3.3}, can be formulated as follows:
+As described in section \Aref{Section_2.3}, random variables are represented by standardised $U$-variables in the probabilistic computations in the \probLib, and the function $Z(U)$ is explored to derive an estimate of the failure probability. In order to evaluate function $Z(U)$, the realisations of the $U$-variables are first translated to the corresponding realisations of the $X$-variables and subsequently the $Z$-value is determined. Assume for the sake of simplicity that the $X$-variables are mutually independent (correlations will be dealt with in \Aref{chp:Correlations}). As explained in \Aref{Section_2.2.3}, the transformation from a realization, $u$, of variable $U$, to realization $x$, of variable $X$, is done in such a away that the (non-)exceedance probabilities of $u$ and $x$ are equal. This transformation, as depicted in \Fref{fig:Figure_3.3}, can be formulated as follows:
 \begin{equation}
 \Phi \left(u\right)=F\left(x\right)\; \quad \Rightarrow \; \quad x=F^{-1} \left(\Phi \left(u\right)\right) \label{ZEqnNum694082}
 \end{equation}
 where:
 
-\begin{tabular}{lll}
-$\Phi$ &=& standard normal distribution function\\
-$F$ &=& CDF of variable $X$\\
-$F^{-1}$ &=& inverse CDF of $X$\\
-$x$ &=& realisation of $X$\\
-$u$ &=& realisation of $U$\\
+\begin{tabular}{ll}
+$\Phi$ & is the standard normal distribution function\\
+$F$ & is the CDF of variable $X$\\
+$F^{-1}$ & is the inverse CDF of $X$\\
+$x$ & is a realisation of $X$\\
+$u$ & is a realisation of $U$\\
 \end{tabular}
 
 This procedure automatically guarantees that variable $x$ is a realization from distribution function $F(x)$ and therefore correctly represents the statistical properties of variable $X$. This is demonstrated below.
@@ -213,23 +213,23 @@ The normal distribution function is defined as follows:
 
 \subsection{Standard normal distribution}
 
-The standard normal distribution is a normal distribution with mean $\mu = 0$ and deviation $\sigma = 1$. The standard normal distribution is unlikely to occur in the real world, but is used internally in probabilistic calculations.
+The standard normal distribution is a normal distribution with mean $\mu = 0$ and deviation $\sigma = 1$. The standard normal distribution is unlikely to occur in the real world, but is used internally in the \probLib.
 
-The probability density function is:
+The corresponding probability density function is:
 
 \begin{align}
 \label{eq:StandardNormalPDF}
 \varphi\left(u\right)= \frac{1}{\sqrt{2\pi}} e^{-u^{2} / 2} 
 \end{align} 
 
-and the cumulative density function, or in other words the non exceeding probability, is:
+and the cumulative distribution function, or in other words the non exceeding probability, is:
 
 \begin{align}
 \label{eq:StandardNormalCDF}
 \Phi\left(u\right) = \int_{-\infty}^{u} \varphi\left(v\right)dv 
 \end{align}
 
-Since there is no closed form to express $\Phi$, it is approximated by approximation formula 26.2.17 for Normal Probability Function, Handbook of Mathematical Functions, Abramowitz \& Stegun. In \probLib this is done using the methods of \cite{Wichura1988} and \cite{Hall_etall_1968}. Both methods are in double precision.
+Since there is no closed form to express $\Phi$, it is approximated by approximation formula 26.2.17 for Normal Probability Function, Handbook of Mathematical Functions, Abramowitz \& Stegun. In \probLib this is done using the methods of \cite{Wichura1988} and \cite{Hall_etall_1968}. See \Aref{chp:Conversions} for more details.
 
 Other distribution types are converted to the standard normal distribution. The physical value in another distribution type, called $x$, is converted to a value $u$ in the standard normal distribution, in such a way that the non exceeding probability of $x$ is equal to the exceeding probability of $u$. With $\Phi$ the cumulative density function of the standard normal distribution, the converted value $u$ is:
 
