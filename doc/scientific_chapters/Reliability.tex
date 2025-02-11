@@ -9,7 +9,7 @@ Equation \eqref{eq:2-4} describes the general formulation of the probability of 
 
 The reason to implement a set of probabilistic computational techniques in the \probLib is that each technique has its (dis)advantages with respect to criteria such as robustness, accuracy and required computation time. The ''best'' technique to be applied therefore depends on the problem under consideration.
 
-A theoretical background of the most well-known computation techniques is presented in \Aref{Section_2.3}.
+A theoretical background of the most well-known computation techniques is presented in \Aref{chp:systemreliability}.
 
 \subsection{Numerical Integration}
 \label{sec:NumericalIntegration}
@@ -99,8 +99,7 @@ where:
 	$\sigma_p$ & is the standard deviation of the probability of failure \\  
 	$p$ & is the probability of failure $p_{\text{failure}}$ \\
 	$N$ & is the total number of realizations \\
-	$z$ & is the quantile of the standard normal distribution corresponding with $\alpha$.
-	$z$ is equal to $1$ in the \probLib \\
+	$z$ & is the quantile of the standard normal distribution corresponding with $\alpha$ ($z$ is equal to $1$ in the \probLib) \\
 	$\Phi$ & is the CDF of the standard normal distribution (see \autoref{eq:StandardNormalCDF}) \\
 	$\alpha$ & is the confidence level
 \end{longtable}
