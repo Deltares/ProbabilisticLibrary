@@ -392,20 +392,26 @@ namespace Deltares
             return xValues;
         }
 
-        void UConverter::updateVariableSample(std::shared_ptr<ModelSample> sample)
+        void UConverter::updateVariableSample(std::vector<double>& xValues, std::vector<double>& originalValues)
         {
             if (this->hasVariableStochasts)
             {
                 for (size_t i = 0; i < variableStochastList.size(); i++)
                 {
                     int stochastIndex = variableStochastList[i];
-                    double xStochast = sample->Values[stochastIndex];
-                    double uStochast = stochasts[stochastIndex]->definition->getUFromX(xStochast);
+                    double xStochast = xValues[stochastIndex];
 
                     int sourceIndex = variableStochastIndex[stochastIndex];
-                    double xSource = sample->Values[sourceIndex];
 
-                    sample->Values[stochastIndex] = stochasts[stochastIndex]->definition->getXFromUAndSource(xSource, uStochast);
+                    if (originalValues[sourceIndex] != xValues[sourceIndex])
+                    {
+                        double xOriginalSource = originalValues[sourceIndex];
+
+                        double uStochast = stochasts[stochastIndex]->definition->getUFromXAndSource(xOriginalSource, xStochast);
+
+                        double xSource = xValues[sourceIndex];
+                        xValues[stochastIndex] = stochasts[stochastIndex]->definition->getXFromUAndSource(xSource, uStochast);
+                    }
                 }
             }
         }

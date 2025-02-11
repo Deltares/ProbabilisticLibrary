@@ -163,7 +163,7 @@ namespace Deltares
 
                 array<double>^ GetOnlyVaryingValues(array<double>^ values);
 
-                void UpdateVariableSample(ModelSample^ sample);
+                void UpdateVariableSample(array<double>^ values, array<double>^ originalValues);
 
                 int SetTag(System::Object^ object)
                 {

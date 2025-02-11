@@ -108,7 +108,7 @@ namespace Deltares
 
             /**
              * \brief Callback method for calculating samples in .net invoked by a native algorithm
-             * \param samples 
+             * \param samples
              */
             void ModelRunner::invokeMultipleSamples(std::vector<std::shared_ptr<Models::ModelSample>> samples)
             {
@@ -190,11 +190,16 @@ namespace Deltares
                 return NativeSupport::toManaged(shared->object->getOnlyVaryingValues(NativeSupport::toNative(values)));
             }
 
-            void ModelRunner::UpdateVariableSample(ModelSample^ sample)
+            void ModelRunner::UpdateVariableSample(array<double>^ values, array<double>^ originalValues)
             {
-                shared->object->updateVariableSample(sample->GetModelSample());
+                std::vector<double> nativeValues = NativeSupport::toNative(values);
+                std::vector<double> nativeOriginalValues = NativeSupport::toNative(originalValues);
+                shared->object->updateVariableSample(nativeValues, nativeOriginalValues);
+                for (size_t i = 0; i < values->Length; i++)
+                {
+                    values[i] = nativeValues[i];
+                }
             }
-
         }
     }
 }

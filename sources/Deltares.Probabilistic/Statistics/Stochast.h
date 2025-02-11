@@ -134,6 +134,14 @@ namespace Deltares
             double getXFromUAndSource(double source, double u);
 
             /**
+             * \brief Gets the u-value for a given x-value for variable stochasts, i.e. stochasts where the stochastic parameters depend on the value of another stochast
+             * \param source Other stochast
+             * \param u Given u-value
+             * \return x-value
+             */
+            double getUFromXAndSource(double source, double u);
+
+            /**
              * \brief Modifies the stochast so that a given x-value is returned for a given u-value
              * \param x Given x-value
              * \param u Given u-value
