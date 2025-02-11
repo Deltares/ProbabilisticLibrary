@@ -400,7 +400,7 @@ namespace Deltares
                 {
                     int stochastIndex = variableStochastList[i];
                     double xStochast = sample->Values[stochastIndex];
-                    double uStochast = varyingStochasts[stochastIndex]->definition->getUFromX(xStochast);
+                    double uStochast = stochasts[stochastIndex]->definition->getUFromX(xStochast);
 
                     int sourceIndex = variableStochastIndex[stochastIndex];
                     double xSource = sample->Values[sourceIndex];
