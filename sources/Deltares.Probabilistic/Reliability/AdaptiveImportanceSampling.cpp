@@ -39,6 +39,7 @@
 #include "ImportanceSampling.h"
 #include "StochastSettings.h"
 #include "StartPointCalculator.h"
+#include "../Math/NumericSupport.h"
 
 using namespace Deltares::Models;
 
@@ -140,12 +141,8 @@ namespace Deltares
                         modelRunner->clear();
                         clusterSamples.clear();
 
-#ifdef __cpp_lib_format
-                        auto text = std::format("Calculating variance loop #{0:}.", loopCounter);
-#else
-                        auto text = "Calculating variance loop " + std::to_string(loopCounter) + ".";
-#endif
-                        modelRunner->doTextualProgress(ProgressType::Global, text);
+                        reportVarianceLoop(modelRunner, loopCounter);
+
                         designPoint = importanceSampling->getDesignPoint(modelRunner);
 
                         designPoint->convergenceReport->VarianceFactor = Settings->VarianceFactor;
@@ -381,6 +378,20 @@ namespace Deltares
 
                 return clusterMethod->getClusterCenters(samples);
             }
+        }
+
+        void AdaptiveImportanceSampling::reportVarianceLoop(std::shared_ptr<Models::ModelRunner> modelRunner, const int loopCounter) const
+        {
+            for (std::shared_ptr<Sample> center : this->importanceSampling->Settings->Clusters)
+            {
+                modelRunner->reportMessage(Models::MessageType::Info, "Cluster = (" + Numeric::NumericSupport::ConvertToString(center->Values, ", ") + ")");
+            }
+#ifdef __cpp_lib_format
+            auto text = std::format("Calculating variance loop #{0:}.", loopCounter);
+#else
+            auto text = "Calculating variance loop " + std::to_string(loopCounter) + ".";
+#endif
+            modelRunner->doTextualProgress(ProgressType::Global, text);
         }
 
         void AdaptiveImportanceSampling::setCallbacks(std::shared_ptr<ImportanceSampling> importanceSampling, int loopCounter)

@@ -85,6 +85,12 @@ class CombinerMethod(Enum):
 	def __str__(self):
 		return str(self.value)
 
+class ExcludingCombinerMethod(Enum):
+	weighted_sum = 'weighted_sum'
+	hohenbichler = 'hohenbichler'
+	def __str__(self):
+		return str(self.value)
+
 class CombineType(Enum):
 	series = 'series'
 	parallel = 'parallel'
@@ -943,6 +949,24 @@ class CombineSettings:
 	def combine_type(self, value : CombineType):
 		interface.SetStringValue(self._id, 'combine_type', str(value))
 
+class ExcludingCombineSettings:
+
+	def __init__(self):
+		self._id = interface.Create('excluding_combine_settings')
+		
+	def __del__(self):
+		interface.Destroy(self._id)
+
+	def __dir__(self):
+		return ['combiner_method']
+
+	@property
+	def combiner_method(self):
+		return ExcludingCombinerMethod[interface.GetStringValue(self._id, 'combiner_method')]
+		
+	@combiner_method.setter
+	def combiner_method(self, value : ExcludingCombinerMethod):
+		interface.SetStringValue(self._id, 'combiner_method', str(value))
 
 class Message:
 

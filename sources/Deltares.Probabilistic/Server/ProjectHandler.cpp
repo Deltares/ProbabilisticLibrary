@@ -48,6 +48,7 @@ namespace Deltares
                     object_type == "contributing_stochast" ||
                     object_type == "conditional_value" ||
                     object_type == "correlation_matrix" ||
+                    object_type == "scenario" ||
                     object_type == "settings" ||
                     object_type == "stochast_settings" ||
                     object_type == "design_point" ||
@@ -57,6 +58,8 @@ namespace Deltares
                     object_type == "evaluation" ||
                     object_type == "combine_project" ||
                     object_type == "combine_settings" ||
+                    object_type == "excluding_combine_project" ||
+                    object_type == "excluding_combine_settings" ||
                     object_type == "self_correlation_matrix" ||
                     object_type == "sensitivity_project" ||
                     object_type == "sensitivity_settings" ||
@@ -78,6 +81,7 @@ namespace Deltares
             else if (object_type == "contributing_stochast") return ObjectType::ContributingStochast;
             else if (object_type == "conditional_value") return ObjectType::ConditionalValue;
             else if (object_type == "correlation_matrix") return ObjectType::CorrelationMatrix;
+            else if (object_type == "scenario") return ObjectType::Scenario;
             else if (object_type == "settings") return ObjectType::Settings;
             else if (object_type == "stochast_settings") return  ObjectType::StochastSettings;
             else if (object_type == "design_point") return  ObjectType::DesignPoint;
@@ -87,6 +91,8 @@ namespace Deltares
             else if (object_type == "evaluation") return  ObjectType::Evaluation;
             else if (object_type == "combine_project") return ObjectType::CombineProject;
             else if (object_type == "combine_settings") return ObjectType::CombineSettings;
+            else if (object_type == "excluding_combine_project") return ObjectType::ExcludingCombineProject;
+            else if (object_type == "excluding_combine_settings") return ObjectType::ExcludingCombineSettings;
             else if (object_type == "self_correlation_matrix") return ObjectType::SelfCorrelationMatrix;
             else if (object_type == "sensitivity_project") return ObjectType::SensitivityProject;
             else if (object_type == "sensitivity_settings") return ObjectType::SensitivitySettings;
@@ -147,6 +153,9 @@ namespace Deltares
                 correlationMatrices[id] = std::make_shared<Deltares::Statistics::CorrelationMatrix>();
                 correlationMatrixIds[correlationMatrices[id]] = id;
                 break;
+            case ObjectType::Scenario:
+                scenarios[id] = std::make_shared<Deltares::Statistics::Scenario>();
+                break;
             case ObjectType::Settings:
                 settingsValues[id] = std::make_shared<Deltares::Reliability::Settings>();
                 settingsValuesIds[settingsValues[id]] = id;
@@ -178,6 +187,12 @@ namespace Deltares
                 break;
             case ObjectType::CombineSettings:
                 combineSettingsValues[id] = std::make_shared<Deltares::Reliability::CombineSettings>();
+                break;
+            case ObjectType::ExcludingCombineProject:
+                excludingCombineProjects[id] = std::make_shared<Deltares::Reliability::ExcludingCombineProject>();
+                break;
+            case ObjectType::ExcludingCombineSettings:
+                excludingCombineSettings[id] = std::make_shared<Deltares::Reliability::ExcludingCombineSettings>();
                 break;
             case ObjectType::SelfCorrelationMatrix:
                 selfCorrelationMatrices[id] = std::make_shared<Deltares::Statistics::SelfCorrelationMatrix>();
@@ -212,6 +227,7 @@ namespace Deltares
             case ObjectType::ContributingStochast: contributingStochasts.erase(id); break;
             case ObjectType::ConditionalValue: conditionalValues.erase(id); break;
             case ObjectType::CorrelationMatrix: correlationMatrices.erase(id); break;
+            case ObjectType::Scenario: scenarios.erase(id); break;
             case ObjectType::Settings: settingsValues.erase(id); break;
             case ObjectType::StochastSettings: stochastSettingsValues.erase(id); break;
             case ObjectType::DesignPoint: designPoints.erase(id); break;
@@ -221,6 +237,8 @@ namespace Deltares
             case ObjectType::Evaluation: evaluations.erase(id); break;
             case ObjectType::CombineProject: combineProjects.erase(id); break;
             case ObjectType::CombineSettings: combineSettingsValues.erase(id); break;
+            case ObjectType::ExcludingCombineProject: excludingCombineProjects.erase(id); break;
+            case ObjectType::ExcludingCombineSettings: excludingCombineSettings.erase(id); break;
             case ObjectType::SelfCorrelationMatrix: selfCorrelationMatrices.erase(id); break;
             case ObjectType::SensitivityProject: sensitivityProjects.erase(id); break;
             case ObjectType::SensitivitySettings: sensitivitySettingsValues.erase(id); break;
@@ -329,6 +347,12 @@ namespace Deltares
                 else if (property_ == "mean") return conditionalValue->mean;
                 else if (property_ == "deviation") return conditionalValue->deviation;
                 else return std::nan("");
+            }
+            else if (objectType == ObjectType::Scenario)
+            {
+                std::shared_ptr<Statistics::Scenario> scenario = scenarios[id];
+
+                if (property_ == "probability") return scenario->probability;
             }
             else if (objectType == ObjectType::Settings)
             {
@@ -504,6 +528,12 @@ namespace Deltares
                 else if (property_ == "mean") conditionalValue->mean = value;
                 else if (property_ == "deviation") conditionalValue->deviation = value;
             }
+            else if (objectType == ObjectType::Scenario)
+            {
+                std::shared_ptr<Statistics::Scenario> scenario = scenarios[id];
+
+                if (property_ == "probability") scenario->probability = value;
+            }
             else if (objectType == ObjectType::Settings)
             {
                 std::shared_ptr<Reliability::Settings> settings = settingsValues[id];
@@ -664,27 +694,31 @@ namespace Deltares
                     else if (property_ == "total_directions") return designPoint->convergenceReport->TotalDirections;
                     else if (property_ == "total_model_runs") return designPoint->convergenceReport->TotalModelRuns;
                 }
-                if (property_ == "contributing_design_points_count") return (int)designPoint->ContributingDesignPoints.size();
-                else if (property_ == "alphas_count") return (int)designPoint->Alphas.size();
+                if (property_ == "contributing_design_points_count") return static_cast<int>(designPoint->ContributingDesignPoints.size());
+                else if (property_ == "alphas_count") return static_cast<int>(designPoint->Alphas.size());
                 else if (property_ == "total_iterations") return designPoint->convergenceReport->TotalIterations;
                 else if (property_ == "total_directions") return designPoint->convergenceReport->TotalDirections;
                 else if (property_ == "total_model_runs") return designPoint->convergenceReport->TotalModelRuns;
-                else if (property_ == "evaluations_count") return (int)designPoint->Evaluations.size();
-                else if (property_ == "messages_count") return (int)designPoint->Messages.size();
+                else if (property_ == "evaluations_count") return static_cast<int>(designPoint->Evaluations.size());
+                else if (property_ == "messages_count") return static_cast<int>(designPoint->Messages.size());
             }
             else if (objectType == ObjectType::Evaluation)
             {
                 std::shared_ptr<Reliability::Evaluation> evaluation = evaluations[id];
 
                 if (property_ == "iteration") return evaluation->Iteration;
-                else if (property_ == "input_values_count") return (int)evaluation->InputValues.size();
-                else if (property_ == "output_values_count") return (int)evaluation->OutputValues.size();
+                else if (property_ == "input_values_count") return static_cast<int>(evaluation->InputValues.size());
+                else if (property_ == "output_values_count") return static_cast<int>(evaluation->OutputValues.size());
+            }
+            else if (objectType == ObjectType::ExcludingCombineProject)
+            {
+                if (property_ == "validation_messages_count") return static_cast<int>(this->validationMessages.size());
             }
             else if (objectType == ObjectType::LengthEffectProject)
             {
                 std::shared_ptr<Reliability::LengthEffectProject> project = lengthEffectProjects[id];
 
-                if (property_ == "correlation_lengths_count") return (int)project->correlationLengths.size();
+                if (property_ == "correlation_lengths_count") return static_cast<int>(project->correlationLengths.size());
             }
 
             return 0;
@@ -754,6 +788,12 @@ namespace Deltares
             else if (objectType == ObjectType::CombineProject)
             {
                 std::shared_ptr<Reliability::CombineProject> combineProject = combineProjects[id];
+
+                if (property_ == "design_point") return GetDesignPointId(combineProject->designPoint, newId);
+            }
+            else if (objectType == ObjectType::ExcludingCombineProject)
+            {
+                std::shared_ptr<Reliability::ExcludingCombineProject> combineProject = excludingCombineProjects[id];
 
                 if (property_ == "design_point") return GetDesignPointId(combineProject->designPoint, newId);
             }
@@ -880,6 +920,12 @@ namespace Deltares
                 if (property_ == "settings") combineProject->settings = combineSettingsValues[value];
                 else if (property_ == "correlation_matrix") combineProject->selfCorrelationMatrix = selfCorrelationMatrices[value];
             }
+            else if (objectType == ObjectType::ExcludingCombineProject)
+            {
+                std::shared_ptr<Reliability::ExcludingCombineProject> combineProject = excludingCombineProjects[id];
+
+                if (property_ == "settings") combineProject->settings = excludingCombineSettings[value];
+            }
             else if (objectType == ObjectType::DesignPoint)
             {
                 std::shared_ptr<Reliability::DesignPoint> designPoint = designPoints[id];
@@ -990,6 +1036,12 @@ namespace Deltares
                 else if (property_ == "save_convergence") return setting->RunSettings->SaveConvergence;
                 else if (property_ == "save_messages") return setting->RunSettings->SaveMessages;
             }
+            else if (objectType == ObjectType::ExcludingCombineProject)
+            {
+                std::shared_ptr<Reliability::ExcludingCombineProject> project = excludingCombineProjects[id];
+
+                if (property_ == "is_valid") return project->is_valid();
+            }
 
             return false;
         }
@@ -1091,6 +1143,12 @@ namespace Deltares
                 else if (property_ == "compare_parameter") return limitStateFunction->compareParameter;
                 else if (property_ == "compare_type") return LimitStateFunction::GetCompareTypeString(limitStateFunction->compareType);
             }
+            else if (objectType == ObjectType::Scenario)
+            {
+                std::shared_ptr<Statistics::Scenario> scenario = scenarios[id];
+
+                if (property_ == "name") return scenario->name;
+            }
             else if (objectType == ObjectType::Settings)
             {
                 std::shared_ptr<Reliability::Settings> settings = settingsValues[id];
@@ -1116,6 +1174,12 @@ namespace Deltares
 
                 if (property_ == "combiner_method") return DesignPointCombiner::getCombinerMethodString(settings->combinerMethod);
                 else if (property_ == "combine_type") return DesignPointCombiner::getCombineTypeString(settings->combineType);
+            }
+            else if (objectType == ObjectType::ExcludingCombineSettings)
+            {
+                std::shared_ptr<Reliability::ExcludingCombineSettings> settings = excludingCombineSettings[id];
+
+                if (property_ == "combiner_method") return DesignPointCombiner::getExcludingCombinerMethodString(settings->combinerMethod);
             }
             else if (objectType == ObjectType::DesignPoint)
             {
@@ -1172,6 +1236,12 @@ namespace Deltares
                 else if (property_ == "compare_parameter") limitStateFunction->compareParameter = value;
                 else if (property_ == "compare_type") limitStateFunction->compareType = LimitStateFunction::GetCompareType(value);
             }
+            else if (objectType == ObjectType::Scenario)
+            {
+                std::shared_ptr<Statistics::Scenario> scenario = scenarios[id];
+
+                if (property_ == "name") scenario->name = value;
+            }
             else if (objectType == ObjectType::Settings)
             {
                 std::shared_ptr<Reliability::Settings> settings = settingsValues[id];
@@ -1197,6 +1267,12 @@ namespace Deltares
 
                 if (property_ == "combiner_method") settings->combinerMethod = DesignPointCombiner::getCombinerMethod(value);
                 else if (property_ == "combine_type") settings->combineType = DesignPointCombiner::getCombineType(value);
+            }
+            else if (objectType == ObjectType::ExcludingCombineSettings)
+            {
+                std::shared_ptr<Reliability::ExcludingCombineSettings> settings = excludingCombineSettings[id];
+
+                if (property_ == "combiner_method") settings->combinerMethod = DesignPointCombiner::getExcludingCombinerMethod(value);
             }
             else if (objectType == ObjectType::DesignPoint)
             {
@@ -1481,8 +1557,30 @@ namespace Deltares
                     }
                 }
             }
-        }
+            else if (objectType == ObjectType::ExcludingCombineProject)
+            {
+                std::shared_ptr<Reliability::ExcludingCombineProject> project = excludingCombineProjects[id];
 
+                if (property_ == "design_points")
+                {
+                    project->designPoints.clear();
+
+                    for (int i = 0; i < size; i++)
+                    {
+                        project->designPoints.push_back(designPoints[values[i]]);
+                    }
+                }
+                else if (property_ == "scenarios")
+                {
+                    project->scenarios.clear();
+
+                    for (int i = 0; i < size; i++)
+                    {
+                        project->scenarios.push_back(scenarios[values[i]]);
+                    }
+                }
+            }
+        }
 
         double ProjectHandler::GetArgValue(int id, std::string property_, double argument)
         {
@@ -1668,6 +1766,10 @@ namespace Deltares
 
                 if (property_ == "quantiles") return this->GetProbabilityValueId(settings->RequestedQuantiles[index], newId);
             }
+            else if (objectType == ObjectType::ExcludingCombineProject)
+            {
+                if (property_ == "validation_messages") return this->GetMessageId(this->validationMessages[index], newId);
+            }
 
             return 0;
         }
@@ -1754,6 +1856,14 @@ namespace Deltares
                 std::shared_ptr<Reliability::CombineProject> project = combineProjects[id];
 
                 if (method_ == "run") project->run();
+            }
+            else if (objectType == ObjectType::ExcludingCombineProject)
+            {
+                std::shared_ptr<Reliability::ExcludingCombineProject> project = excludingCombineProjects[id];
+
+                if (method_ == "run") project->run();
+                else if (method_ == "validate") this->UpdateValidationMessages(project->validate());
+                else if (method_ == "clear_validate") this->validationMessages.clear();
             }
             else if (objectType == ObjectType::LengthEffectProject)
             {
@@ -1982,6 +2092,15 @@ namespace Deltares
         std::shared_ptr<Reliability::DesignPointIds> ProjectHandler::GetDesignPointIds(int id)
         {
             return nullptr;
+        }
+        
+        void ProjectHandler::UpdateValidationMessages(const std::vector<std::shared_ptr<Models::Message>>& newMessages)
+        {
+            this->validationMessages.clear();
+            for (std::shared_ptr<Models::Message> message : newMessages)
+            {
+                this->validationMessages.push_back(message);
+            }
         }
     }
 }

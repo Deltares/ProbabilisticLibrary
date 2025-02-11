@@ -32,6 +32,7 @@ namespace Deltares::Probabilistic::Test
     {
         mersenneTwisterTest1();
         initializationTest();
+        repetitiveTest();
         twoInstances();
     }
 
@@ -56,6 +57,53 @@ namespace Deltares::Probabilistic::Test
 
         double val2 = mt.next();
         ASSERT_TRUE(val2 >= 0.0 && val2 <= 1.0);
+    }
+
+    void testRandom::repetitiveTest()
+    {
+        auto mt = MersenneTwisterRandomValueGenerator();
+
+        size_t size1 = 1000;
+        size_t size2 = 1500;
+
+        std::vector<double> values1;
+        std::vector<double> values2;
+        std::vector<double> values3;
+        std::vector<double> values4;
+
+        mt.initialize(true, 0);
+        for (size_t i = 0; i < size1; i++)
+        {
+            values1.push_back(mt.next());
+        }
+
+        mt.initialize(true, 1);
+        for (size_t i = 0; i < size2; i++)
+        {
+            values2.push_back(mt.next());
+        }
+
+        mt.initialize(true, 0);
+        for (size_t i = 0; i < size1; i++)
+        {
+            values3.push_back(mt.next());
+        }
+
+        mt.initialize(true, 1);
+        for (size_t i = 0; i < size2; i++)
+        {
+            values4.push_back(mt.next());
+        }
+
+        for (size_t i = 0; i < size1; i++)
+        {
+            ASSERT_EQ(values1[i], values3[i]);
+        }
+
+        for (size_t i = 0; i < size2; i++)
+        {
+            ASSERT_EQ(values2[i], values4[i]);
+        }
     }
 
     void testRandom::twoInstances()

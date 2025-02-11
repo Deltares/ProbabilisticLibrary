@@ -20,31 +20,14 @@
 // All rights reserved.
 //
 #pragma once
+#include "DesignPointCombiner.h"
 
-namespace Deltares
+namespace Deltares::Reliability
 {
-    namespace Probabilistic
+    class ExcludingCombineSettings
     {
-        namespace Test
-        {
-            class testReliabilityMethods
-            {
-            public:
-                static void testFORM();
-                static void testFORMArray();
-                static void testLatinHyperCube();
-                static void testNumericalBisection();
-                static void testNumericalBisectionLinear();
-                static void testCobylaReliability();
-                static void testSubSetSimulationReliabilityNearestToMean();
-                static void testSubSetSimulationReliabilityCenterOfGravity();
-                static void testFDIRReliability();
-                static void testDSFIReliability();
-                static void testFragilityCurveIntegration();
-                static void testNumericalIntegrationReliability();
-                static void testCrudeMonteCarloReliability();
-                static void testClustersAdpImpSampling();
-            };
-        }
-    }
+    public:
+        ExcludingCombinerType combinerMethod = ExcludingCombinerType::WeightedSum;
+    };
 }
+

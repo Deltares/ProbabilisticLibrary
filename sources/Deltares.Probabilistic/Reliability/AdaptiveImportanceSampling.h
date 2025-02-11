@@ -63,7 +63,15 @@ namespace Deltares
             bool updateStartPoint(std::shared_ptr<DesignPoint> designPoint, std::shared_ptr<Models::ModelRunner> modelRunner, int loopCounter);
             std::shared_ptr<Sample> getStartPoint(std::shared_ptr<ModelRunner> modelRunner, std::shared_ptr<DesignPoint> designPoint);
             std::vector<std::shared_ptr<Sample>> getClusterCenters(std::vector<std::shared_ptr<Sample>>& samples);
+
             void setCallbacks(std::shared_ptr<ImportanceSampling> importanceSampling, int loopCounter);
+
+            /**
+             * \brief Reports information about the variance lop and clusters
+             * \param modelRunner Performs execution of model, also registers reports
+             * \param loopCounter Counter of the variance loops
+             */
+            void reportVarianceLoop(std::shared_ptr<Models::ModelRunner> modelRunner, const int loopCounter) const;
 
             /**
              * \brief Previous start point 

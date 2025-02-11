@@ -30,6 +30,8 @@
 #include "../Sensitivity/SettingsS.h"
 #include "../Combine/CombineProject.h"
 #include "../Combine/CombineSettings.h"
+#include "../Combine/ExcludingCombineProject.h"
+#include "../Combine/ExcludingCombineSettings.h"
 #include "../Combine/LengthEffectProject.h"
 #include "../Statistics/Stochast.h"
 #include "../Statistics/DiscreteValue.h"
@@ -90,8 +92,8 @@ namespace Deltares
             virtual std::shared_ptr<Reliability::DesignPointIds> GetDesignPointIds(int id);
         private:
             enum ObjectType {StandardNormal, Message, ProbabilityValue, Project, ModelParameter, LimitStateFunction, Stochast, DiscreteValue, HistogramValue, FragilityValue,
-                ContributingStochast, ConditionalValue, CorrelationMatrix, Settings, StochastSettings, DesignPoint, Alpha, FragilityCurve, FragilityCurveProject, Evaluation,
-                CombineProject, CombineSettings, SelfCorrelationMatrix, SensitivityProject, SensitivitySettings,
+                ContributingStochast, ConditionalValue, CorrelationMatrix, Scenario, Settings, StochastSettings, DesignPoint, Alpha, FragilityCurve, FragilityCurveProject, Evaluation,
+                CombineProject, CombineSettings, ExcludingCombineProject, ExcludingCombineSettings, SelfCorrelationMatrix, SensitivityProject, SensitivitySettings,
                 LengthEffectProject};
             ObjectType GetType(std::string object_type);
             std::unordered_map<int, Deltares::Server::ProjectHandler::ObjectType> types;
@@ -108,6 +110,7 @@ namespace Deltares
             std::unordered_map<int, std::shared_ptr<Statistics::ContributingStochast>> contributingStochasts;
             std::unordered_map<int, std::shared_ptr<Statistics::VariableStochastValue>> conditionalValues;
             std::unordered_map<int, std::shared_ptr<Statistics::CorrelationMatrix>> correlationMatrices;
+            std::unordered_map<int, std::shared_ptr<Statistics::Scenario>> scenarios;
             std::unordered_map<int, std::shared_ptr<Reliability::Settings>> settingsValues;
             std::unordered_map<int, std::shared_ptr<Reliability::StochastSettings>> stochastSettingsValues;
             std::unordered_map<int, std::shared_ptr<Reliability::DesignPoint>> designPoints;
@@ -117,6 +120,8 @@ namespace Deltares
             std::unordered_map<int, std::shared_ptr<Reliability::Evaluation>> evaluations;
             std::unordered_map<int, std::shared_ptr<Reliability::CombineProject>> combineProjects;
             std::unordered_map<int, std::shared_ptr<Reliability::CombineSettings>> combineSettingsValues;
+            std::unordered_map<int, std::shared_ptr<Reliability::ExcludingCombineProject>> excludingCombineProjects;
+            std::unordered_map<int, std::shared_ptr<Reliability::ExcludingCombineSettings>> excludingCombineSettings;
             std::unordered_map<int, std::shared_ptr<Reliability::LengthEffectProject>> lengthEffectProjects;
             std::unordered_map<int, std::shared_ptr<Statistics::SelfCorrelationMatrix>> selfCorrelationMatrices;
             std::unordered_map<int, std::shared_ptr<Sensitivity::SensitivityProject>> sensitivityProjects;
@@ -139,6 +144,9 @@ namespace Deltares
             std::unordered_map<std::shared_ptr<Models::Message>, int> messageIds;
 
             std::unordered_map <std::string, std::vector<double>> tempValues;
+
+            void UpdateValidationMessages(const std::vector<std::shared_ptr<Models::Message>>& newMessages);
+            std::vector<std::shared_ptr<Models::Message>> validationMessages;
         };
     }
 }

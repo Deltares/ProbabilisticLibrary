@@ -40,204 +40,200 @@
 #include "Sensitivity/TestSensitivity.h"
 #include "Optimization/testCobyla.h"
 
-using namespace Deltares::Probabilistic;
+using namespace Deltares::Probabilistic::Test;
 
-namespace Deltares
+int main(int argc, char** argv)
 {
-    namespace Probabilistic
-    {
-        namespace Test
-        {
-            int main(int argc, char** argv)
-            {
-                ::testing::InitGoogleTest(&argc, argv);
-                return RUN_ALL_TESTS();
-            }
+    ::testing::InitGoogleTest(&argc, argv);
+    //::testing::GTEST_FLAG(filter) = "reliability_method_test.testClustersAdpImpSampling";
+    return RUN_ALL_TESTS();
+}
 
-            TEST(unittst, testCombiner)
-            {
-                auto h = CombinerTest();
-                h.allCombinerTests();
-            }
+TEST(unittst, testCombiner)
+{
+    auto h = CombinerTest();
+    h.allCombinerTests();
+}
 
-            TEST(unittst, testCombinElements)
-            {
-                auto h = combinElementsTests();
-                h.runAllCombineTwoElementsTests();
-            }
+TEST(unittst, testCombinElements)
+{
+    auto h = combinElementsTests();
+    h.runAllCombineTwoElementsTests();
+}
 
-            TEST(unittst, testLengthEffect)
-            {
-                auto h = combinElementsTests();
-                h.runAllLengthEffectTests();
-            }
+TEST(unittst, testLengthEffect)
+{
+    auto h = combinElementsTests();
+    h.runAllLengthEffectTests();
+}
 
-            TEST(unittst, testUpscaling)
-            {
-                auto h = upscale_tests();
-                h.runAll();
-            }
+TEST(unittst, testUpscaling)
+{
+    auto h = upscale_tests();
+    h.runAll();
+}
 
-            TEST(unittst, testIntEqualElements)
-            {
-                auto h = intEqualElements_tests();
-                h.allIntegrateEqualElementsTests();
-            }
+TEST(unittst, testIntEqualElements)
+{
+    auto h = intEqualElements_tests();
+    h.allIntegrateEqualElementsTests();
+}
 
-            TEST(unittst, testHohenbichler)
-            {
-                auto h = HohenbichlerTest();
-                h.allHohenbichlerTests();
-            }
+TEST(unittst, testHohenbichler)
+{
+    auto h = HohenbichlerTest();
+    h.allHohenbichlerTests();
+}
 
-            TEST(unittst, testCholeskiDecomp)
-            {
-                auto tstCholeskiDecomp = choleski_decomp_tests();
-                tstCholeskiDecomp.allCholeskyDecompositionTests();
-            }
+TEST(unittst, testCholeskiDecomp)
+{
+    auto tstCholeskiDecomp = choleski_decomp_tests();
+    tstCholeskiDecomp.allCholeskyDecompositionTests();
+}
 
-            TEST(unittst, testMatinv)
-            {
-                auto tstMatInv = matinv_tests();
-                tstMatInv.all_matinv_tests();
-            }
+TEST(unittst, testMatinv)
+{
+    auto tstMatInv = matinv_tests();
+    tstMatInv.all_matinv_tests();
+}
 
-            TEST(unittst, testMatmul)
-            {
-                auto tstMatMul = matmul_tests();
-                tstMatMul.all_matmul_tests();
-            }
+TEST(unittst, testMatmul)
+{
+    auto tstMatMul = matmul_tests();
+    tstMatMul.all_matmul_tests();
+}
 
-            TEST(unittst, testNumericalSupport)
-            {
-                testNumericSupport::allNumericSupportTests();
-            }
+TEST(unittst, testNumericalSupport)
+{
+    testNumericSupport::allNumericSupportTests();
+}
 
-            TEST(unittst, testKMeanClustering)
-            {
-                auto h = testKMean();
-                h.allKMeanTests();
-            }
+TEST(unittst, testKMeanClustering)
+{
+    auto h = testKMean();
+    h.allKMeanTests();
+}
 
-            TEST(unittst, testStartPointCalculator)
-            {
-                auto tstStartPoint = testStartPointCalculator();
-                tstStartPoint.allStartPointTests();
-            }
+TEST(unittst, testStartPointCalculator)
+{
+    auto tstStartPoint = testStartPointCalculator();
+    tstStartPoint.allStartPointTests();
+}
 
-            TEST(reliability_method_test, testFORM)
-            {
-                auto tstRelMethods = testReliabilityMethods();
-                tstRelMethods.testFORM();
-            }
+TEST(reliability_method_test, testFORM)
+{
+    auto tstRelMethods = testReliabilityMethods();
+    tstRelMethods.testFORM();
+}
 
-            TEST(reliability_method_test, testFORMArray)
-            {
-                auto tstRelMethods = testReliabilityMethods();
-                tstRelMethods.testFORMArray();
-            }
+TEST(reliability_method_test, testFORMArray)
+{
+    auto tstRelMethods = testReliabilityMethods();
+    tstRelMethods.testFORMArray();
+}
 
-            TEST(reliability_method_test, testLatinHyperCube)
-            {
-                auto tstRelMethods = testReliabilityMethods();
-                tstRelMethods.testLatinHyperCube();
-            }
+TEST(reliability_method_test, testLatinHyperCube)
+{
+    auto tstRelMethods = testReliabilityMethods();
+    tstRelMethods.testLatinHyperCube();
+}
 
-            TEST(reliability_method_test, testCobylaReliability)
-            {
-                auto tstRelMethods = testReliabilityMethods();
-                tstRelMethods.testCobylaReliability();
-            }
+TEST(reliability_method_test, testCobylaReliability)
+{
+    auto tstRelMethods = testReliabilityMethods();
+    tstRelMethods.testCobylaReliability();
+}
 
-            TEST(reliability_method_test, testNumBisection1)
-            {
-                auto tstRelMethods = testReliabilityMethods();
-                tstRelMethods.testNumericalBisection();
-            }
+TEST(reliability_method_test, testNumBisection1)
+{
+    auto tstRelMethods = testReliabilityMethods();
+    tstRelMethods.testNumericalBisection();
+}
 
-            TEST(reliability_method_test, testNumBisection2)
-            {
-                auto tstRelMethods = testReliabilityMethods();
-                tstRelMethods.testNumericalBisectionLinear();
-            }
+TEST(reliability_method_test, testNumBisection2)
+{
+    auto tstRelMethods = testReliabilityMethods();
+    tstRelMethods.testNumericalBisectionLinear();
+}
 
-            TEST(reliability_method_test, testSubSetSimulationReliabilityNearestToMean)
-            {
-                testReliabilityMethods::testSubSetSimulationReliabilityNearestToMean();
-            }
+TEST(reliability_method_test, testSubSetSimulationReliabilityNearestToMean)
+{
+    testReliabilityMethods::testSubSetSimulationReliabilityNearestToMean();
+}
 
-            TEST(reliability_method_test, testSubSetSimulationReliabilityCenterOfGravity)
-            {
-                testReliabilityMethods::testSubSetSimulationReliabilityCenterOfGravity();
-            }
+TEST(reliability_method_test, testSubSetSimulationReliabilityCenterOfGravity)
+{
+    testReliabilityMethods::testSubSetSimulationReliabilityCenterOfGravity();
+}
 
-            TEST(reliability_method_test, testFDIRReliability)
-            {
-                testReliabilityMethods::testFDIRReliability();
-            }
+TEST(reliability_method_test, testFDIRReliability)
+{
+    testReliabilityMethods::testFDIRReliability();
+}
 
-            TEST(reliability_method_test, testDSFIReliability)
-            {
-                testReliabilityMethods::testDSFIReliability();
-            }
+TEST(reliability_method_test, testDSFIReliability)
+{
+    testReliabilityMethods::testDSFIReliability();
+}
 
-            TEST(reliability_method_test, testFragilityCurveIntegration)
-            {
-                testReliabilityMethods::testFragilityCurveIntegration();
-            }
+TEST(reliability_method_test, testFragilityCurveIntegration)
+{
+    testReliabilityMethods::testFragilityCurveIntegration();
+}
 
-            TEST(reliability_method_test, testNumericalIntegrationReliability)
-            {
-                testReliabilityMethods::testNumericalIntegrationReliability();
-            }
+TEST(reliability_method_test, testNumericalIntegrationReliability)
+{
+    testReliabilityMethods::testNumericalIntegrationReliability();
+}
 
-            TEST(reliability_method_test, testCrudeMCReliability)
-            {
-                testReliabilityMethods::testCrudeMonteCarloReliability();
-            }
+TEST(reliability_method_test, testCrudeMCReliability)
+{
+    testReliabilityMethods::testCrudeMonteCarloReliability();
+}
 
-            TEST(unittst, testDistributions)
-            {
-                testDistributions::allDistributionsTests();
-            }
+TEST(reliability_method_test, testClustersAdpImpSampling)
+{
+    testReliabilityMethods::testClustersAdpImpSampling();
+}
 
-            TEST(unittst, testStandardNormal)
-            {
-                auto tstStdNormal = testStandardNormal();
-                tstStdNormal.allStandardNormalTests();
-            }
+TEST(unittst, testDistributions)
+{
+    testDistributions::allDistributionsTests();
+}
 
-            TEST(unittst, testSensitivity)
-            {
-                auto tstSensitivity = TestSensitivity();
-                tstSensitivity.allSensitivityTests();
-            }
+TEST(unittst, testStandardNormal)
+{
+    auto tstStdNormal = testStandardNormal();
+    tstStdNormal.allStandardNormalTests();
+}
 
-            TEST(unittst, testRandom)
-            {
-                auto tstRnd = testRandom();
-                tstRnd.allRandomTests();
-            }
+TEST(unittst, testSensitivity)
+{
+    auto tstSensitivity = TestSensitivity();
+    tstSensitivity.allSensitivityTests();
+}
 
-            TEST(unittst, testRootfinder)
-            {
-                auto tstRF = rootfinder_tests();
-                tstRF.all_rootfinder_tests();
-            }
+TEST(unittst, testRandom)
+{
+    auto tstRnd = testRandom();
+    tstRnd.allRandomTests();
+}
 
-            TEST(unittst, testVector1D)
-            {
-                auto tstVector1D = vector1D_tests();
-                tstVector1D.allVector1Dtests();
-            }
+TEST(unittst, testRootfinder)
+{
+    auto tstRF = rootfinder_tests();
+    tstRF.all_rootfinder_tests();
+}
 
-            TEST(unittst, testCobylaOptimization)
-            {
-                auto tstCobylaOpt = testCobyla();
-                tstCobylaOpt.allCobylaTests();
-            }
+TEST(unittst, testVector1D)
+{
+    auto tstVector1D = vector1D_tests();
+    tstVector1D.allVector1Dtests();
+}
 
-        }
-    }
+TEST(unittst, testCobylaOptimization)
+{
+    auto tstCobylaOpt = testCobyla();
+    tstCobylaOpt.allCobylaTests();
 }
 
