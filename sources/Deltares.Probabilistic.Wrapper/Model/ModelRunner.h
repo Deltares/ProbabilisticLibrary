@@ -68,7 +68,6 @@ namespace Deltares
                 Deltares::Utils::Wrappers::TagRepository^ tagRepository = gcnew TagRepository();
 
                 System::Collections::Generic::List<System::Runtime::InteropServices::GCHandle>^ handles = gcnew System::Collections::Generic::List<System::Runtime::InteropServices::GCHandle>();
-
             public:
                 /**
                  * \brief Constructor

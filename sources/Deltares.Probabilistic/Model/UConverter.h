@@ -59,6 +59,8 @@ namespace Deltares
             std::shared_ptr<Sample> getQualitativeExcludedSample(std::shared_ptr<Sample> sample);
             std::vector<int> getVariableStochastIndex();
 
+            bool sampleValuesChanged = false;
+
         public:
 
             UConverter(std::vector<std::shared_ptr<Deltares::Statistics::Stochast>> stochasts, std::shared_ptr<Statistics::CorrelationMatrix> stochastCorrelationMatrix);
@@ -75,6 +77,7 @@ namespace Deltares
             void updateStochastSettings(std::shared_ptr<Deltares::Reliability::StochastSettingsSet> settings);
             void updateVariableSample(std::vector<double>& xValues, std::vector<double>& originalValues);
             void registerSample(std::shared_ptr<Sensitivity::CorrelationMatrixBuilder> correlationMatrixBuilder, std::shared_ptr<Sample> sample);
+            bool haveSampleValuesChanged() const { return sampleValuesChanged; }
         };
     }
 }

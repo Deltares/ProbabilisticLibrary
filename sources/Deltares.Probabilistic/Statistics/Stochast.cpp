@@ -91,16 +91,16 @@ namespace Deltares
             }
         }
 
-        double Stochast::getUFromXAndSource(double xSource, double u)
+        double Stochast::getUFromXAndSource(double xSource, double x)
         {
             if (this->IsVariableStochast)
             {
                 std::shared_ptr<StochastProperties> valueSetProperties = this->ValueSet->getInterpolatedStochast(xSource);
-                return this->distribution->getUFromX(valueSetProperties, u);
+                return this->distribution->getUFromX(valueSetProperties, x);
             }
             else
             {
-                return this->getUFromX(u);
+                return this->getUFromX(x);
             }
         }
 

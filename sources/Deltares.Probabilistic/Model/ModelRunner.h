@@ -72,6 +72,7 @@ namespace Deltares
             void setSampleProvider(std::shared_ptr<SampleProvider> sampleProvider);
             double getZValue(std::shared_ptr<Sample> sample);
             std::vector<double> getZValues(std::vector<std::shared_ptr<Sample>> samples);
+            std::shared_ptr<Evaluation> getEvaluation(std::shared_ptr<Sample> sample);
             double getBeta(std::shared_ptr<Sample> sample);
             bool canCalculateBeta() const;
             int getStochastCount();
@@ -96,6 +97,8 @@ namespace Deltares
             void runDesignPoint(std::shared_ptr<Reliability::DesignPoint> designPoint);
             void registerSample(std::shared_ptr<Sensitivity::CorrelationMatrixBuilder> correlationMatrixBuilder, std::shared_ptr<Sample> sample);
             void updateVariableSample(std::vector<double>& xValues, std::vector<double>& originalValues);
+
+            bool haveSampleValuesChanged() const { return uConverter->haveSampleValuesChanged(); }
         private:
             std::shared_ptr<ZModel> zModel;
             std::shared_ptr<UConverter> uConverter;
@@ -104,6 +107,7 @@ namespace Deltares
             std::vector<std::shared_ptr<Evaluation>> evaluations;
             std::vector< std::shared_ptr<Message>> messages;
             std::shared_ptr<ProgressIndicator> progressIndicator = nullptr;
+            std::shared_ptr<Evaluation> getEvaluationFromSample(std::shared_ptr<ModelSample> sample);
 
             void registerEvaluation(std::shared_ptr<ModelSample> sample);
 

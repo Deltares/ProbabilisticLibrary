@@ -104,6 +104,11 @@ namespace Deltares
             {
                 ModelSample^ sampleWrapper = gcnew ModelSample(sample);
                 this->CalcZValue(sampleWrapper);
+
+                if (shared->object->haveSampleValuesChanged())
+                {
+                    sampleWrapper->SynchronizeInputValues();
+                }
             }
 
             /**
@@ -120,6 +125,14 @@ namespace Deltares
                 }
 
                 this->CalcZValues(sampleWrappers);
+
+                if (shared->object->haveSampleValuesChanged())
+                {
+                    for (int i = 0; i < sampleWrappers->Count; i++)
+                    {
+                        sampleWrappers[i]->SynchronizeInputValues();
+                    }
+                }
             }
 
             void ModelRunner::SetShouldInvertDelegate(ShouldInvertDelegate^ shouldInvertDelegate)
@@ -195,6 +208,7 @@ namespace Deltares
                 std::vector<double> nativeValues = NativeSupport::toNative(values);
                 std::vector<double> nativeOriginalValues = NativeSupport::toNative(originalValues);
                 shared->object->updateVariableSample(nativeValues, nativeOriginalValues);
+
                 for (size_t i = 0; i < values->Length; i++)
                 {
                     values[i] = nativeValues[i];

@@ -104,6 +104,7 @@ namespace Deltares
 
             this->hasQualitiveStochasts = false;
             this->hasVariableStochasts = false;
+            this->sampleValuesChanged = false;
 
             for (std::shared_ptr<ComputationalStochast> stochast : this->stochasts)
             {
@@ -398,19 +399,20 @@ namespace Deltares
             {
                 for (size_t i = 0; i < variableStochastList.size(); i++)
                 {
-                    int stochastIndex = variableStochastList[i];
-                    double xStochast = xValues[stochastIndex];
+                    const int stochastIndex = variableStochastList[i];
+                    const double xStochast = xValues[stochastIndex];
 
-                    int sourceIndex = variableStochastIndex[stochastIndex];
+                    const int sourceIndex = variableStochastIndex[stochastIndex];
 
                     if (originalValues[sourceIndex] != xValues[sourceIndex])
                     {
-                        double xOriginalSource = originalValues[sourceIndex];
+                        const double xOriginalSource = originalValues[sourceIndex];
+                        const double uStochast = stochasts[stochastIndex]->definition->getUFromXAndSource(xOriginalSource, xStochast);
 
-                        double uStochast = stochasts[stochastIndex]->definition->getUFromXAndSource(xOriginalSource, xStochast);
-
-                        double xSource = xValues[sourceIndex];
+                        const double xSource = xValues[sourceIndex];
                         xValues[stochastIndex] = stochasts[stochastIndex]->definition->getXFromUAndSource(xSource, uStochast);
+
+                        this->sampleValuesChanged = true;
                     }
                 }
             }
