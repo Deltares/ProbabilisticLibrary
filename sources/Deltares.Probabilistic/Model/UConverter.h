@@ -44,6 +44,7 @@ namespace Deltares
             std::vector<std::shared_ptr<ComputationalStochast>> stochasts;
             std::vector<std::shared_ptr<ComputationalStochast>> varyingStochasts;
             std::vector<int> varyingStochastIndex;
+            std::vector<int> pureVaryingStochastIndex;
 
             std::vector<int> variableStochastIndex; // reference of the stochast index to the variable source index
             std::vector<int> variableStochastList; // list of all stochast indices in order how they should be assigned

@@ -49,18 +49,18 @@ namespace Deltares
             {
                 if (stochasts[i]->modelParameter->isArray)
                 {
-                    for (size_t j = 0; j < stochasts[i]->modelParameter->arraySize; j++)
+                    for (int j = 0; j < stochasts[i]->modelParameter->arraySize; j++)
                     {
                         hasArrayStochasts = true;
                         this->stochasts.push_back(std::make_shared<ComputationalStochast>(stochasts[i], j));
-                        mapping[k++] = i;
+                        mapping[k++] = static_cast<int>(i);
                         k++;
                     }
                 }
                 else
                 {
                     this->stochasts.push_back(std::make_shared<ComputationalStochast>(stochasts[i]));
-                    mapping[k++] = i;
+                    mapping[k++] = static_cast<int>(i);
                 }
             }
 
@@ -71,14 +71,14 @@ namespace Deltares
             else if (stochastCorrelationMatrix->IsIdentity())
             {
                 this->correlationMatrix = std::make_shared<Statistics::CorrelationMatrix>();
-                this->correlationMatrix->init(this->stochasts.size());
+                this->correlationMatrix->init(static_cast<int>(this->stochasts.size()));
             }
             else
             {
                 this->correlationMatrix = std::make_shared<Statistics::CorrelationMatrix>();
-                this->correlationMatrix->init(this->stochasts.size());
+                this->correlationMatrix->init(static_cast<int>(this->stochasts.size()));
 
-                for (int i = 0; i < this->stochasts.size(); i++)
+                for (int i = 0; i < static_cast<int>(this->stochasts.size()); i++)
                 {
                     for (int j = 0; j < i; j++)
                     {
@@ -100,6 +100,7 @@ namespace Deltares
         {
             this->varyingStochasts.clear();
             this->varyingStochastIndex.clear();
+            this->pureVaryingStochastIndex.clear();
             this->variableStochastIndex.clear();
 
             this->hasQualitiveStochasts = false;
@@ -119,6 +120,7 @@ namespace Deltares
                 if (this->stochasts[i]->definition->isVarying() && !isFullyCorrelated(i, this->varyingStochastIndex))
                 {
                     this->varyingStochastIndex.push_back(i);
+                    this->pureVaryingStochastIndex.push_back(i);
                     this->varyingStochasts.push_back(this->stochasts[i]);
                     this->hasQualitiveStochasts |= this->stochasts[i]->definition->isQualitative();
                 }
@@ -507,7 +509,7 @@ namespace Deltares
                 betaSample = getQualitativeExcludedSample(betaSample);
             }
 
-            const int count = sample->getSize();
+            int count = sample->getSize();
 
             const double defaultAlpha = -1 / sqrt(count);
 
@@ -528,6 +530,18 @@ namespace Deltares
                         uValues[i] = betaSample->Values[i]; // - beta * alphas[i];
                         alphas[i] = -uValues[i] / beta;
                     }
+                }
+
+                if (this->varyingStochasts.size() < this->stochasts.size() && uValues.size() == this->stochasts.size())
+                {
+                    std::vector<double> uValuesNew = std::vector<double>(this->varyingStochasts.size());
+                    for (size_t i = 0; i < this->varyingStochasts.size(); i++)
+                    {
+                        uValuesNew[i] = uValues[pureVaryingStochastIndex[i]];
+                    }
+
+                    uValues = uValuesNew;
+                    count = static_cast<int>(uValuesNew.size());
                 }
 
                 auto uCorrelated = varyingCorrelationMatrix->Cholesky(uValues);

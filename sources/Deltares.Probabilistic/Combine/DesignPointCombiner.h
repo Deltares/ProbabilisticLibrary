@@ -24,10 +24,7 @@
 #include "../Reliability/DesignPoint.h"
 #include "../Statistics/Scenario.h"
 #include "combiner.h"
-#include "DirectionalSamplingCombiner.h"
 #include "ExcludingCombiner.h"
-#include "HohenbichlerNumIntCombiner.h"
-#include "ImportanceSamplingCombiner.h"
 
 namespace Deltares
 {
@@ -63,24 +60,43 @@ namespace Deltares
              */
             ExcludingCombinerType excludingCombinerType = ExcludingCombinerType::WeightedSum;
 
+
             /**
              * \brief Combines a number of design points
              * \param combineMethodType Identifies series (or) or parallel (and) combination
              * \param designPoints Design points to be combined
              * \param selfCorrelationMatrix Defines auto correlations (optional)
+             * \param correlationMatrix Correlation matrix applied to the original design points, used for calculating physical values in the design point
              * \param progress Progress indicator (optional)
              * \return Combined design point
              */
-            std::shared_ptr<DesignPoint> combineDesignPoints(combineAndOr combineMethodType, std::vector<std::shared_ptr<DesignPoint>>& designPoints, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix = nullptr, std::shared_ptr<ProgressIndicator> progress = nullptr)
+            std::shared_ptr<DesignPoint> combineDesignPoints(combineAndOr combineMethodType,
+                                                             std::vector<std::shared_ptr<DesignPoint>>& designPoints,
+                                                             std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix = nullptr,
+                                                             std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix = nullptr,
+                                                             std::shared_ptr<ProgressIndicator> progress = nullptr)
             {
                 const std::shared_ptr<Combiner> combiner = getCombiner();
-                return combiner->combineDesignPoints(combineMethodType, designPoints, selfCorrelationMatrix, progress);
+                std::shared_ptr<DesignPoint> combinedDesignPoint = combiner->combineDesignPoints(combineMethodType, designPoints, selfCorrelationMatrix, progress);
+
+                applyCorrelation(designPoints, correlationMatrix, combinedDesignPoint);
+
+                return combinedDesignPoint;
             }
 
-            std::unique_ptr<DesignPoint> combineDesignPointsExcluding(std::vector<std::shared_ptr<Statistics::Scenario>>& scenarios, std::vector<std::shared_ptr<DesignPoint>>& designPoints) const
+            std::unique_ptr<DesignPoint> combineDesignPointsExcluding(
+                std::vector<std::shared_ptr<Statistics::Scenario>>& scenarios,
+                std::vector<std::shared_ptr<DesignPoint>>& designPoints,
+                std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix = nullptr)
             {
                 const std::unique_ptr<ExcludingCombiner> combiner = getExcludingCombiner();
-                return combiner->combineExcludingDesignPoints(scenarios, designPoints);
+                std::unique_ptr<DesignPoint> combinedDesignPoint = combiner->combineExcludingDesignPoints(scenarios, designPoints);
+
+                std::shared_ptr<DesignPoint> combinedDesignPointShr = std::move(combinedDesignPoint);
+
+                applyCorrelation(designPoints, correlationMatrix, combinedDesignPointShr);
+
+                return combinedDesignPoint;
             }
 
             static std::string getCombineTypeString(combineAndOr type);
@@ -94,6 +110,10 @@ namespace Deltares
             std::shared_ptr<Combiner> getCombiner() const;
             std::unique_ptr<ExcludingCombiner> getExcludingCombiner() const;
             Numeric::RandomValueGeneratorType generator = Numeric::RandomValueGeneratorType::MersenneTwister;
+
+            void applyCorrelation(std::vector<std::shared_ptr<DesignPoint>>& designPoints,
+                                  std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix,
+                                  std::shared_ptr<DesignPoint> combinedDesignPoint);
         };
     }
 }

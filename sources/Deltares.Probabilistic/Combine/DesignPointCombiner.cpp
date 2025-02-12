@@ -23,6 +23,9 @@
 
 #include "HohenbichlerExcludingCombiner.h"
 #include "WeightedSumCombiner.h"
+#include "ImportanceSamplingCombiner.h"
+#include "HohenbichlerNumIntCombiner.h"
+#include "DirectionalSamplingCombiner.h"
 
 namespace Deltares
 {
@@ -50,14 +53,33 @@ namespace Deltares
             }
         }
 
+        void DesignPointCombiner::applyCorrelation(std::vector<std::shared_ptr<DesignPoint>>& designPoints,
+                                                   std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix,
+                                                   std::shared_ptr<DesignPoint> combinedDesignPoint)
+        {
+            if (correlationMatrix != nullptr && !correlationMatrix->IsIdentity())
+            {
+                std::vector<std::shared_ptr<Statistics::Stochast>> stochasts = DesignPoint::getUniqueStochasts(designPoints);
+                Models::UConverter uConverter = UConverter(stochasts, correlationMatrix);
+                uConverter.initializeForRun();
+
+                std::shared_ptr<Sample> sample = combinedDesignPoint->getSample();
+                std::shared_ptr<StochastPoint> stochastPoint = uConverter.GetStochastPoint(sample, combinedDesignPoint->Beta);
+
+                for (size_t i = 0; i < combinedDesignPoint->Alphas.size(); i++)
+                {
+                    combinedDesignPoint->Alphas[i]->AlphaCorrelated = stochastPoint->Alphas[i]->AlphaCorrelated;
+                    combinedDesignPoint->Alphas[i]->X = stochastPoint->Alphas[i]->X;
+                }
+            }
+        }
+
         std::unique_ptr<ExcludingCombiner> DesignPointCombiner::getExcludingCombiner() const
         {
             switch (excludingCombinerType)
             {
-            case ExcludingCombinerType::WeightedSum:
-                return std::make_unique<WeightedSumCombiner>();
-            case ExcludingCombinerType::HohenbichlerExcluding:
-                return std::make_unique<HohenbichlerExcludingCombiner>();
+            case ExcludingCombinerType::WeightedSum: return std::make_unique<WeightedSumCombiner>();
+            case ExcludingCombinerType::HohenbichlerExcluding: return std::make_unique<HohenbichlerExcludingCombiner>();
             default: throw probLibException("Excluding combiner type");
             }
         }
