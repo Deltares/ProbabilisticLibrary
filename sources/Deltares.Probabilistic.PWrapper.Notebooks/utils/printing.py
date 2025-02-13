@@ -50,3 +50,14 @@ def print_hybrid(dp, project):
         print_statistics(dp.contributing_design_points[1], project)
     else:
         print_statistics(dp, project)
+
+def print_input_output_var(project):
+
+    print("Input parameters")
+    for input_parameter in project.model.input_parameters:
+        print (input_parameter)
+            
+    print("")
+    print("Output parameters")
+    for output_parameter in project.model.output_parameters:
+        print (output_parameter)
