@@ -146,9 +146,9 @@ namespace Deltares
 
                     const std::shared_ptr<Statistics::CorrelationMatrix> nativeCorrelationMatrix = correlationMatrix != nullptr ? correlationMatrix->GetCorrelationMatrix() : nullptr;
 
-                    std::unique_ptr<Reliability::DesignPoint> nativeDesignPoint = shared->object->combineDesignPointsExcluding(nativeScenarios, nativeDesignPoints, nativeCorrelationMatrix);
+                    std::shared_ptr<Reliability::DesignPoint> nativeDesignPoint = shared->object->combineDesignPointsExcluding(nativeScenarios, nativeDesignPoints, nativeCorrelationMatrix);
 
-                    Wrappers::DesignPoint^ designPoint = gcnew Wrappers::DesignPoint(std::move(nativeDesignPoint), designPoints);
+                    Wrappers::DesignPoint^ designPoint = gcnew Wrappers::DesignPoint(nativeDesignPoint, designPoints);
 
                     return designPoint;
                 }
