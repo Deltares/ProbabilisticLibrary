@@ -53,11 +53,11 @@ def print_hybrid(dp, project):
 
 def print_input_output_var(project):
 
-    print("Input parameters")
+    print("Input parameters:")
     for input_parameter in project.model.input_parameters:
         print (input_parameter)
             
     print("")
-    print("Output parameters")
+    print("Output parameters:")
     for output_parameter in project.model.output_parameters:
         print (output_parameter)

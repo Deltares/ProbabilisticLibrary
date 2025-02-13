@@ -3,7 +3,8 @@ import numpy as np
 
 # Z-function Bligh
 def bligh(m, L, c_creep, delta_H):
-    return m * L / c_creep - delta_H
+    Z = m * L / c_creep - delta_H
+    return Z
 
 # Z-fuction Hunt
 def hunt(t_p, tan_alpha, h_s, h_crest, h):
@@ -12,7 +13,8 @@ def hunt(t_p, tan_alpha, h_s, h_crest, h):
     xi = tan_alpha / np.sqrt(2 * np.pi * h_s / l_0)
     r_u = xi * h_s
 
-    return h_crest - (h + r_u)
+    Z = h_crest - (h + r_u)
+    return Z
 
 # overtopping calculation
 def overtopping(h, hm0, tm10, wave_direction, dike_normal, y_crest):
@@ -77,9 +79,11 @@ def overtopping(h, hm0, tm10, wave_direction, dike_normal, y_crest):
 def z_func_overtopping(h, hm0, tm10, wave_direction, dike_normal, y_crest, q_crit):
 
     if h>y_crest:
-        return y_crest - h
+        Z = y_crest - h
     else:  
-        return q_crit - overtopping(h, hm0, tm10, wave_direction, dike_normal, y_crest)
+        Z = q_crit - overtopping(h, hm0, tm10, wave_direction, dike_normal, y_crest)
+    
+    return Z
     
 # critical head difference calculation according to Sellmeijer
 def model_sellmeijer(k, L, d70, D):
@@ -104,15 +108,18 @@ def model_sellmeijer(k, L, d70, D):
 
 # simple Z-function
 def linear_a_b(a, b):
-    return 1.9 - (a+b)
+    Z = 1.9 - (a+b)
+    return Z
 
 # simple Z-function
 def linear_b_c(b, c):
-    return 1.85 - (1.5 * b + 0.5 * c)
+    Z = 1.85 - (1.5 * b + 0.5 * c)
+    return Z
 
 # Z-function with arrays
 def linear_arrays(const_val: float, a: list[float], b:list[float]):
-    return const_val + sum(a) + sum(b)
+    Z = const_val + sum(a) + sum(b)
+    return Z
 
 # Koppejan method
 def get_bearing_capacity(z, q_clay, q_sand, D, L):
