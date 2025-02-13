@@ -111,7 +111,7 @@ def linear_b_c(b, c):
     return 1.85 - (1.5 * b + 0.5 * c)
 
 # Z-function with arrays
-def linear(const_val: float, a: list[float], b:list[float]):
+def linear_arrays(const_val: float, a: list[float], b:list[float]):
     return const_val + sum(a) + sum(b)
 
 # Koppejan method
