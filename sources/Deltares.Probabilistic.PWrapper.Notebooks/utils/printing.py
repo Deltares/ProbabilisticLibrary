@@ -51,6 +51,7 @@ def print_hybrid(dp, project):
     else:
         print_statistics(dp, project)
 
+# print input and output variables
 def print_input_output_var(project):
 
     print("Input parameters:")
