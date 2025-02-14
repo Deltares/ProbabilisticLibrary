@@ -56,6 +56,29 @@ def plot_realizations_3d(project):
     ax.set_zlabel(project.model.input_parameters[int(index_last_three[2])].name)
     ax.set_title("Realizations: Red = Failure, Green = No Failure", fontsize=14, fontweight='bold')
 
+# plot realizations when at least 2 random variables
+def plot_realizations_2d(project):
+
+    n = len(project.design_point.realizations)
+    z = [project.design_point.realizations[id].z for id in range(n)]
+
+    # 2 variables with the highest alpha
+    alphas = [project.design_point.alphas[val.name].alpha for val in project.model.input_parameters]
+    index_last_two = np.argsort(np.abs(alphas))[-2:]
+
+    r_1 = [realization.input_values[int(index_last_two[0])] for realization in project.design_point.realizations]
+    r_2 = [realization.input_values[int(index_last_two[1])] for realization in project.design_point.realizations]
+    
+    # plot realizations
+    fig = plt.figure()
+    ax = fig.add_subplot()
+    colors = ["r" if val < 0 else "g" for val in z]
+    ax.scatter(r_1, r_2, color=colors)
+
+    ax.set_xlabel(project.model.input_parameters[int(index_last_two[0])].name)
+    ax.set_ylabel(project.model.input_parameters[int(index_last_two[1])].name)
+    ax.set_title("Realizations: Red = Failure, Green = No Failure", fontsize=14, fontweight='bold')
+
 # plot results for the linear a, b function
 def plot_linear_a_b(project):
 
