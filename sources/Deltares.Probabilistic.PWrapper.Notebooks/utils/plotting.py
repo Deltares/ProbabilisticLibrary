@@ -1,6 +1,7 @@
 
 import matplotlib.pyplot as plt
 import numpy as np
+from probabilistic_library import StandardNormal
 
 # plot distribution
 def plot_dist(val_grid, stochast):
@@ -25,11 +26,37 @@ def piechart_alphas(project):
 
     alphas = [project.design_point.alphas[val.name].alpha**2 for val in project.model.input_parameters]
     names = [val.name for val in project.model.input_parameters]
-    names_short = [name if alpha > 0.025 else "" for name, alpha in zip(names, alphas)]
+    
+    plt.figure()
+    plt.pie(alphas, labels=names, autopct='%1.2f%%')
+    plt.title("alpha^2", fontsize=14, fontweight='bold')
 
-    fig, ax = plt.subplots()
-    ax.pie(alphas, labels=names_short)
-    ax.set_title("alpha^2", fontsize=14, fontweight='bold')
+# plot realizations when at least 2 random variables
+def plot_realizations_2d(project):
+
+    n = len(project.design_point.realizations)
+    z = [project.design_point.realizations[id].z for id in range(n)]
+
+    # 2 variables with the highest alpha
+    alphas = [project.design_point.alphas[val.name].alpha for val in project.model.input_parameters]
+    index_last_two = np.argsort(np.abs(alphas))[-2:]
+
+    r_1 = [realization.input_values[int(index_last_two[0])] for realization in project.design_point.realizations]
+    r_2 = [realization.input_values[int(index_last_two[1])] for realization in project.design_point.realizations]
+    colors = ["r" if val < 0 else "g" for val in z]
+
+    # plot realizations
+    plt.figure()
+    plt.grid(True)    
+    plt.scatter(r_1, r_2, color=colors, alpha=0.5)
+    plt.scatter(project.design_point.alphas[int(index_last_two[0])].x, 
+                project.design_point.alphas[int(index_last_two[1])].x, 
+                label="design point", 
+                color="black")
+    plt.xlabel(project.model.input_parameters[int(index_last_two[0])].name)
+    plt.ylabel(project.model.input_parameters[int(index_last_two[1])].name)
+    plt.legend()
+    plt.title("Realizations: Red = Failure, Green = No Failure", fontsize=14, fontweight='bold')
 
 # plot realizations when at least 3 random variables
 def plot_realizations_3d(project):
@@ -44,40 +71,46 @@ def plot_realizations_3d(project):
     r_1 = [realization.input_values[int(index_last_three[0])] for realization in project.design_point.realizations]
     r_2 = [realization.input_values[int(index_last_three[1])] for realization in project.design_point.realizations]
     r_3 = [realization.input_values[int(index_last_three[2])] for realization in project.design_point.realizations]
+    colors = ["r" if val < 0 else "g" for val in z]
 
     # plot realizations
     fig = plt.figure()
-    ax = fig.add_subplot(111, projection="3d")
-    colors = ["r" if val < 0 else "g" for val in z]
-    ax.scatter(r_1, r_2, r_3, color=colors)
-
+    ax = fig.add_subplot(projection='3d')
+    ax.grid(True)    
+    ax.scatter(r_1, r_2, color=colors, alpha=0.5)
+    ax.scatter(project.design_point.alphas[int(index_last_three[0])].x, 
+                project.design_point.alphas[int(index_last_three[1])].x, 
+                project.design_point.alphas[int(index_last_three[2])].x,
+                label="design point", 
+                color="black")
     ax.set_xlabel(project.model.input_parameters[int(index_last_three[0])].name)
     ax.set_ylabel(project.model.input_parameters[int(index_last_three[1])].name)
     ax.set_zlabel(project.model.input_parameters[int(index_last_three[2])].name)
+    #ax.set_legend()
     ax.set_title("Realizations: Red = Failure, Green = No Failure", fontsize=14, fontweight='bold')
 
-# plot realizations when at least 2 random variables
-def plot_realizations_2d(project):
+# plot beta and failure probability
+def plot_beta_prob(project):
 
     n = len(project.design_point.realizations)
     z = [project.design_point.realizations[id].z for id in range(n)]
+    beta = [project.design_point.realizations[id].beta for id in range(n)]
 
-    # 2 variables with the highest alpha
-    alphas = [project.design_point.alphas[val.name].alpha for val in project.model.input_parameters]
-    index_last_two = np.argsort(np.abs(alphas))[-2:]
+    prob = [1-StandardNormal.get_p_from_u(val) for val in beta]
 
-    r_1 = [realization.input_values[int(index_last_two[0])] for realization in project.design_point.realizations]
-    r_2 = [realization.input_values[int(index_last_two[1])] for realization in project.design_point.realizations]
-    
-    # plot realizations
-    fig = plt.figure()
-    ax = fig.add_subplot()
-    colors = ["r" if val < 0 else "g" for val in z]
-    ax.scatter(r_1, r_2, color=colors)
+    plt.figure()
+    plt.plot(beta)
+    plt.xlabel("model run (-)")
+    plt.ylabel("beta (-)")
+    plt.grid()
+    plt.title("beta values", fontsize=14, fontweight='bold')
 
-    ax.set_xlabel(project.model.input_parameters[int(index_last_two[0])].name)
-    ax.set_ylabel(project.model.input_parameters[int(index_last_two[1])].name)
-    ax.set_title("Realizations: Red = Failure, Green = No Failure", fontsize=14, fontweight='bold')
+    plt.figure()
+    plt.plot(prob)
+    plt.xlabel("model run (-)")
+    plt.ylabel("failure probability (-)")
+    plt.grid()
+    plt.title("failure probability", fontsize=14, fontweight='bold')
 
 # plot results for the linear a, b function
 def plot_linear_a_b(project):
@@ -97,8 +130,8 @@ def plot_linear_a_b(project):
     plt.contourf(a, b, z, levels=50)
     plt.colorbar()
 
-    plt.scatter(r_1, r_2, label="realizations")
-    plt.scatter(project.design_point.alphas["a"].x, project.design_point.alphas["b"].x, label="design point", color="red")
+    plt.scatter(r_1, r_2, label="realizations", color="gray")
+    plt.scatter(project.design_point.alphas["a"].x, project.design_point.alphas["b"].x, label="design point", color="black")
     plt.xlim([min(r_1)-0.1, max(r_1)+0.1])
     plt.ylim([min(r_2)-0.1, max(r_2)+0.1])
     plt.xlabel("a")
