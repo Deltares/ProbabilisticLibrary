@@ -48,6 +48,11 @@ namespace Deltares
             std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix = std::make_shared<Statistics::SelfCorrelationMatrix>();
 
             /**
+             * \brief Correlations on which the input design points were based
+             */
+            std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix = std::make_shared<Statistics::CorrelationMatrix>();
+
+            /**
              * \brief Results of the combination
              */
             std::shared_ptr<Reliability::DesignPoint> designPoint = nullptr;

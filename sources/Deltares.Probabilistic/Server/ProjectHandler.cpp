@@ -919,6 +919,7 @@ namespace Deltares
 
                 if (property_ == "settings") combineProject->settings = combineSettingsValues[value];
                 else if (property_ == "correlation_matrix") combineProject->selfCorrelationMatrix = selfCorrelationMatrices[value];
+                else if (property_ == "design_point_correlation_matrix") combineProject->correlationMatrix = correlationMatrices[value];
             }
             else if (objectType == ObjectType::ExcludingCombineProject)
             {
