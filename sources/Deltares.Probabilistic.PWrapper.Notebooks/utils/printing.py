@@ -2,19 +2,18 @@
 from probabilistic_library import StandardNormal, ReliabilityMethod
 
 # print convergence information and model runs
-def print_conv(dp, project):
+def print_conv(dp, ps):
 
     if dp.is_converged:
-        print(f"Converged (convergence = {dp.convergence} < {project.settings.variation_coefficient})")
+        print(f"Converged (convergence = {dp.convergence} < {ps.variation_coefficient})")
     else:
-        print(f"Not converged (convergence = {dp.convergence} > {project.settings.variation_coefficient})")
+        print(f"Not converged (convergence = {dp.convergence} > {ps.variation_coefficient})")
     
     print(f"Model runs = {dp.total_model_runs}")
 
 # print design point
-def print_results(project):
+def print_results(dp, ps):
 
-    dp = project.design_point
     beta = dp.reliability_index
 
     print(f"Beta = {beta}")
@@ -25,12 +24,11 @@ def print_results(project):
     for alpha in dp.alphas:
         print(f"{alpha.variable.name}: alpha = {alpha.alpha}, x = {alpha.x}")
 
-    print_conv(dp, project)
+    print_conv(dp, ps)
 
 # print for hybrid methods
-def print_hybrid(project):
+def print_hybrid(dp, ps):
 
-    dp = project.design_point
     beta = dp.reliability_index
 
     print(f"Beta = {beta}")
@@ -41,22 +39,22 @@ def print_hybrid(project):
     for alpha in dp.alphas:
         print(f"{alpha.variable.name}: alpha = {alpha.alpha}, x = {alpha.x}")
 
-    if project.settings.reliability_method == ReliabilityMethod.directional_sampling_then_form:
+    if ps.reliability_method == ReliabilityMethod.directional_sampling_then_form:
         print("Direction sampling step:")
-        print_conv(dp.contributing_design_points[0], project)
+        print_conv(dp.contributing_design_points[0], ps)
         print("FORM step:")
-        print_conv(dp.contributing_design_points[1], project)
+        print_conv(dp.contributing_design_points[1], ps)
     else:
-        print_conv(dp, project)
+        print_conv(dp, ps)
 
 # print input and output variables
-def print_input_output_var(project):
+def print_input_output_var(pm):
 
     print("Input parameters:")
-    for input_parameter in project.model.input_parameters:
+    for input_parameter in pm.input_parameters:
         print(input_parameter)
             
     print("")
     print("Output parameters:")
-    for output_parameter in project.model.output_parameters:
+    for output_parameter in pm.output_parameters:
         print(output_parameter)
