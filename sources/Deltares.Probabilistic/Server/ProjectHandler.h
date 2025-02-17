@@ -54,6 +54,7 @@ namespace Deltares
             int GetIdValue(int id, std::string property_, int newId) override;
             double GetIntArgValue(int id1, int id2, std::string property_) override;
             void SetIntArgValue(int id1, int id2, std::string property_, double value) override;
+            void SetIntArgValue(int id1, int id2, std::string property_, double value, BaseHandler* server2) override {}
             bool GetBoolValue(int id, std::string property_) override;
             void SetBoolValue(int id, std::string property_, bool value) override;
             std::string GetStringValue(int id, std::string property_) override;
@@ -88,13 +89,13 @@ namespace Deltares
             int GetConditionalValueId(std::shared_ptr<Statistics::VariableStochastValue> conditionalValue, int newId);
             int GetEvaluationId(std::shared_ptr<Deltares::Reliability::Evaluation> evaluation, int newId);
             int GetMessageId(std::shared_ptr<Deltares::Models::Message> message, int newId);
-        protected:
-            std::unordered_map<int, std::shared_ptr<Reliability::DesignPoint>> designPoints;
-            virtual std::shared_ptr<Reliability::DesignPointIds> GetDesignPointIds(int id);
-            virtual std::shared_ptr <Reliability::DesignPoint> GetDesignPoint(int id)
+            std::shared_ptr <Reliability::DesignPoint> GetDesignPoint(int id) override
             {
                 return designPoints[id];
             }
+        protected:
+            std::unordered_map<int, std::shared_ptr<Reliability::DesignPoint>> designPoints;
+            virtual std::shared_ptr<Reliability::DesignPointIds> GetDesignPointIds(int id);
         private:
             enum ObjectType {StandardNormal, Message, ProbabilityValue, Project, ModelParameter, LimitStateFunction, Stochast, DiscreteValue, HistogramValue, FragilityValue,
                 ContributingStochast, ConditionalValue, CorrelationMatrix, Scenario, Settings, StochastSettings, DesignPoint, Alpha, FragilityCurve, FragilityCurveProject, Evaluation,
