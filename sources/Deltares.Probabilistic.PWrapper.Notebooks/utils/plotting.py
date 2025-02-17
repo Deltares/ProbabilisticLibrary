@@ -1,7 +1,7 @@
 
 import matplotlib.pyplot as plt
 import numpy as np
-from probabilistic_library import StandardNormal
+from probabilistic_library import StandardNormal, SensitivityProject, SensitivityMethod, DistributionType
 
 # plot distribution
 def plot_dist(val_grid, stochast):
@@ -112,29 +112,66 @@ def plot_beta_prob(project):
     plt.grid()
     plt.title("failure probability", fontsize=14, fontweight='bold')
 
-# plot results for the linear a, b function
-def plot_linear_a_b(project):
+def evaluate_one_value(sens, key_var, val):
 
-    from utils.models import linear_a_b
+    sens.variables[key_var].distribution = DistributionType.deterministic
+    sens.variables[key_var].mean = val
+    sens.run()
+    return sens.stochast.mean
 
-    r_1 = [realization.input_values[0] for realization in project.design_point.realizations]
-    r_2 = [realization.input_values[1] for realization in project.design_point.realizations]
-    
-    a = np.arange(0.8, 1.1, 0.001)
-    b = np.arange(0.8, 1.1, 0.001)
-    z = [linear_a_b(val_a, val_b) for val_a in a for val_b in b]
-    z = np.array(z).reshape(len(a), len(b))
-    a, b = np.meshgrid(a, b)
+def find_Z_0(project, f, given_var, given_val, find_var, start_int, end_int, tol=1e-5, max_iter=100):
+
+    sens = SensitivityProject()
+    sens.model = f
+
+    sens.settings.sensitivity_method = SensitivityMethod.crude_monte_carlo
+    sens.settings.minimum_samples = 1
+    sens.settings.maximum_samples = 1
+
+    for key in project.model.input_parameters:
+        if key.name not in [project.model.input_parameters[given_var].name, project.model.input_parameters[find_var].name]:
+            sens.variables[key.name].distribution = DistributionType.deterministic
+            sens.variables[key.name].mean = project.design_point.alphas[key.name].x
+        elif key.name==project.model.input_parameters[given_var].name:
+            sens.variables[key.name].distribution = DistributionType.deterministic
+            sens.variables[key.name].mean = given_val
+
+    f_start_int = evaluate_one_value(sens, find_var, start_int)
+    f_end_int = evaluate_one_value(sens, find_var, end_int)
+
+    if f_start_int * f_end_int >= 0:
+        print("The function must have different signs at the endpoints a and b.")
+        return np.nan
+
+    for _ in range(max_iter):
+        c = (start_int + end_int) / 2
+        f_c = evaluate_one_value(sens, find_var, c)
+        if f_c == 0 or (end_int - start_int) / 2 < tol:
+            return c
+        if f_c * f_start_int < 0:
+            end_int = c
+        else:
+            start_int = c
+
+    return (start_int + end_int) / 2
+
+def plot_Z_0(project, f, given_var, given_val_range, find_var, start_int, end_int):
+
+    find_val = [find_Z_0(project, f, given_var, val, find_var, start_int, end_int, tol=1e-5, max_iter=100) for val in given_val_range]
+
+    x_given_var = project.design_point.alphas[given_var].x
+    x_find_var = project.design_point.alphas[find_var].x
+
+    other_dp = []
+    for key in project.model.input_parameters:
+        if key.name not in [given_var, find_var]:
+            other_dp.append(f"{key.name} = {round(project.design_point.alphas[key.name].x, 2)}")
 
     plt.figure()
-    plt.contourf(a, b, z, levels=50)
-    plt.colorbar()
-
-    plt.scatter(r_1, r_2, label="realizations", color="gray")
-    plt.scatter(project.design_point.alphas["a"].x, project.design_point.alphas["b"].x, label="design point", color="black")
-    plt.xlim([min(r_1)-0.1, max(r_1)+0.1])
-    plt.ylim([min(r_2)-0.1, max(r_2)+0.1])
-    plt.xlabel("a")
-    plt.ylabel("b")
+    plt.plot(given_val_range, find_val, label="Z=0")
+    plt.scatter(x_given_var, x_find_var, label="design point", color="black")
+    plt.xlabel(given_var)
+    plt.ylabel(find_var)
     plt.legend()
-    plt.title("Z-function values", fontsize=14, fontweight='bold')
+    plt.title(other_dp)
+    plt.grid()
