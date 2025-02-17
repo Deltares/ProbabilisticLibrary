@@ -54,7 +54,7 @@ namespace Deltares
             int GetIdValue(int id, std::string property_, int newId) override;
             double GetIntArgValue(int id1, int id2, std::string property_) override;
             void SetIntArgValue(int id1, int id2, std::string property_, double value) override;
-            void SetIntArgValue(int id1, int id2, std::string property_, double value, BaseHandler* server2) override {}
+            void SetIntArgValue(int id1, int id2, std::string property_, double value, BaseHandler& server2) override {}
             bool GetBoolValue(int id, std::string property_) override;
             void SetBoolValue(int id, std::string property_, bool value) override;
             std::string GetStringValue(int id, std::string property_) override;

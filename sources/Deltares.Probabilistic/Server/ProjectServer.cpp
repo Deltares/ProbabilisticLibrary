@@ -106,8 +106,7 @@ namespace Deltares
             }
             else
             {
-                BaseHandler& server2 = *handlersTable[id2];
-                handlersTable[id1]->SetIntArgValue(id1, id2, property_, value, &server2);
+                handlersTable[id1]->SetIntArgValue(id1, id2, property_, value, *handlersTable[id2]);
             }
         }
 
