@@ -97,54 +97,21 @@ namespace Deltares
                     }
                 }
 
-                    DesignPoint^ Combine(CombinationType combination, System::Collections::Generic::IList<Reliability::Wrappers::DesignPoint^>^ designPoints, Deltares::Statistics::Wrappers::SelfCorrelationMatrix^ selfCorrelationMatrix, Wrappers::ProgressIndicator^ progressIndicator)
-                {
-                    std::vector<std::shared_ptr<Reliability::DesignPoint>> nativeDesignPoints;
+                DesignPoint^ Combine(CombinationType combination, System::Collections::Generic::IList<Reliability::Wrappers::DesignPoint^>^ designPoints);
 
-                    for (int i = 0; i < designPoints->Count; i++)
-                    {
-                        nativeDesignPoints.push_back(designPoints[i]->getDesignPoint());
-                    }
+                DesignPoint^ Combine(CombinationType combination,
+                    System::Collections::Generic::IList<Reliability::Wrappers::DesignPoint^>^ designPoints,
+                    Deltares::Statistics::Wrappers::SelfCorrelationMatrix^ selfCorrelationMatrix,
+                    Deltares::Statistics::Wrappers::CorrelationMatrix^ correlationMatrix,
+                    Wrappers::ProgressIndicator^ progressIndicator);
 
-                    const std::shared_ptr<Statistics::SelfCorrelationMatrix> nativeSelfCorrelationMatrix = selfCorrelationMatrix != nullptr ? selfCorrelationMatrix->GetNativeSelfCorrelationMatrix() : nullptr;
-                    const std::shared_ptr<Models::ProgressIndicator> nativeProgressIndicator = progressIndicator != nullptr ? progressIndicator->GetProgressIndicator() : nullptr;
-                    const combineAndOr combineAndOr = GetCombinationType(combination);
-
-                    std::shared_ptr<Reliability::DesignPoint> nativeDesignPoint = shared->object->combineDesignPoints(combineAndOr, nativeDesignPoints, nativeSelfCorrelationMatrix, nativeProgressIndicator);
-
-                    Wrappers::DesignPoint^ designPoint = gcnew Wrappers::DesignPoint(nativeDesignPoint, designPoints);
-
-                    return designPoint;
-                }
-
-                DesignPoint^ CombineExcluding(System::Collections::Generic::IList<Statistics::Wrappers::Scenario^>^ scenarios, System::Collections::Generic::IList<Reliability::Wrappers::DesignPoint^>^ designPoints)
-                {
-                    std::vector<std::shared_ptr<Statistics::Scenario>> nativeScenarios;
-                    for (int i = 0; i < scenarios->Count; i++)
-                    {
-                        nativeScenarios.push_back(scenarios[i]->GetNativeScenario());
-                    }
-
-                    std::vector<std::shared_ptr<Reliability::DesignPoint>> nativeDesignPoints;
-                    for (int i = 0; i < designPoints->Count; i++)
-                    {
-                        nativeDesignPoints.push_back(designPoints[i]->getDesignPoint());
-                    }
-
-                    std::unique_ptr<Reliability::DesignPoint> nativeDesignPoint = shared->object->combineDesignPointsExcluding(nativeScenarios, nativeDesignPoints);
-
-                    Wrappers::DesignPoint^ designPoint = gcnew Wrappers::DesignPoint(std::move(nativeDesignPoint), designPoints);
-
-                    return designPoint;
-                }
-
-                DesignPoint^ Combine(CombinationType combination, System::Collections::Generic::IList<Reliability::Wrappers::DesignPoint^>^ designPoints)
-                {
-                    return Combine(combination, designPoints, nullptr, nullptr);
-                }
+                DesignPoint^ CombineExcluding(
+                    System::Collections::Generic::IList<Statistics::Wrappers::Scenario^>^ scenarios,
+                    System::Collections::Generic::IList<Reliability::Wrappers::DesignPoint^>^ designPoints,
+                    Deltares::Statistics::Wrappers::CorrelationMatrix^ correlationMatrix);
             };
         }
     }
 }
-            
+
 

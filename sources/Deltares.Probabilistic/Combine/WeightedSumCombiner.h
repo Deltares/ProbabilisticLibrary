@@ -40,7 +40,7 @@ namespace Deltares
              * \param designPoints Design points to be combined
              * \return Design point resembling the combined reliability and alpha values
              */
-            std::unique_ptr<DesignPoint> combineExcludingDesignPoints(
+            std::shared_ptr<DesignPoint> combineExcludingDesignPoints(
                 std::vector<std::shared_ptr<Statistics::Scenario>>& scenarios,
                 std::vector<std::shared_ptr<Reliability::DesignPoint>>& designPoints) override;
         };

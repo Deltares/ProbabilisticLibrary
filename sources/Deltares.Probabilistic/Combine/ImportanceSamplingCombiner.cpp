@@ -210,7 +210,8 @@ namespace Deltares
                 combinedRealization->Beta = Statistics::StandardNormal::getUFromQ(probability);
 
                 // create alpha values for final design point
-                const std::shared_ptr<Sample> combinedSample = builder->getSample();
+                const std::shared_ptr<Sample> designPointSample = builder->getSample();
+                const std::shared_ptr<Sample> combinedSample = designPointSample->getSampleAtBeta(combinedRealization->Beta);
 
                 for (size_t i = 0; i < stochasts.size(); i++)
                 {

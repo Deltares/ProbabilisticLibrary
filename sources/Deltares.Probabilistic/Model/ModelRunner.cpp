@@ -138,6 +138,22 @@ namespace Deltares
         }
 
         /**
+         * \brief Calculates a sample
+         * \param sample Sample to be calculated
+         * \return Evaluation report of the sample calculation 
+         */
+        Evaluation* ModelRunner::getEvaluation(std::shared_ptr<Sample> sample)
+        {
+            std::shared_ptr<ModelSample> xSample = getModelSample(sample);
+
+            this->zModel->invoke(xSample);
+
+            Evaluation* evaluation = getEvaluationFromSample(xSample);
+
+            return evaluation;
+        }
+
+        /**
          * \brief Runs the model in the design point
          * \param designPoint design point to be calculated
          * \return Z-value of the sample
@@ -221,6 +237,20 @@ namespace Deltares
             return this->zModel->getBeta(xSample, sample->getBeta());
         }
 
+        Evaluation* ModelRunner::getEvaluationFromSample(std::shared_ptr<ModelSample> sample)
+        {
+            Evaluation* evaluation = new Evaluation();
+
+            evaluation->Z = sample->Z;
+            evaluation->Beta = sample->Beta;
+            evaluation->Iteration = sample->IterationIndex;
+            evaluation->InputValues = sample->Values;
+            evaluation->OutputValues = sample->OutputValues;
+            evaluation->Tag = sample->Tag;
+
+            return evaluation;
+        }
+
         /**
          * \brief Registers an evaluation for a calculated sample
          * \param sample Calculated sample
@@ -229,14 +259,7 @@ namespace Deltares
         {
             if (this->Settings->SaveEvaluations)
             {
-                std::shared_ptr<Evaluation> evaluation = std::make_shared<Evaluation>();
-
-                evaluation->Z = sample->Z;
-                evaluation->Beta = sample->Beta;
-                evaluation->Iteration = sample->IterationIndex;
-                evaluation->InputValues = sample->Values;
-                evaluation->OutputValues = sample->OutputValues;
-                evaluation->Tag = sample->Tag;
+                std::shared_ptr<Evaluation> evaluation = std::shared_ptr<Evaluation>(getEvaluationFromSample(sample));
 
                 if (this->Settings->MaxParallelProcesses > 1) 
                 {
@@ -248,7 +271,6 @@ namespace Deltares
                 {
                     this->evaluations.push_back(evaluation);
                 }
-
             }
         }
 
@@ -395,6 +417,12 @@ namespace Deltares
          */
         std::shared_ptr<Reliability::DesignPoint> ModelRunner::getDesignPoint(std::shared_ptr<Sample> sample, double beta, std::shared_ptr<Reliability::ConvergenceReport> convergenceReport, std::string identifier)
         {
+            std::unique_ptr<Evaluation> evaluation = nullptr;
+            if (this->uConverter->haveSampleValuesChanged())
+            {
+                evaluation = std::unique_ptr<Evaluation>(this->getEvaluation(sample->getSampleAtBeta(beta)));
+            }
+
             std::shared_ptr<StochastPoint> stochastPoint = uConverter->GetStochastPoint(sample, beta);
 
             if (this->shouldInvertFunction != nullptr)
@@ -414,6 +442,10 @@ namespace Deltares
 
             for (size_t i = 0; i < stochastPoint->Alphas.size(); i++)
             {
+                if (evaluation != nullptr)
+                {
+                    stochastPoint->Alphas[i]->X = evaluation->InputValues[i];
+                }
                 designPoint->Alphas.push_back(stochastPoint->Alphas[i]);
             }
 
@@ -452,6 +484,11 @@ namespace Deltares
         std::vector<double> ModelRunner::getOnlyVaryingValues(std::vector<double> values)
         {
             return this->uConverter->getVaryingValues(values);
+        }
+
+        void ModelRunner::updateVariableSample(std::vector<double>& xValues, std::vector<double>& originalValues)
+        {
+            this->uConverter->updateVariableSample(xValues, originalValues);
         }
     }
 }

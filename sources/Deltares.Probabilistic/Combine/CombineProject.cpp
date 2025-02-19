@@ -30,7 +30,7 @@ namespace Deltares
         {
             std::shared_ptr<DesignPointCombiner> combiner = std::make_shared<DesignPointCombiner>(this->settings->combinerMethod);
 
-            this->designPoint = combiner->combineDesignPoints(this->settings->combineType, this->designPoints, this->selfCorrelationMatrix);
+            this->designPoint = combiner->combineDesignPoints(this->settings->combineType, this->designPoints, this->selfCorrelationMatrix, this->correlationMatrix);
         }
     }
 }

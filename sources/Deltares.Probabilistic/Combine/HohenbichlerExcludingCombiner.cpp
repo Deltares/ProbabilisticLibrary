@@ -31,7 +31,7 @@ namespace Deltares
 {
     namespace Reliability
     {
-        std::unique_ptr<DesignPoint> HohenbichlerExcludingCombiner::combineExcludingDesignPoints(
+        std::shared_ptr<DesignPoint> HohenbichlerExcludingCombiner::combineExcludingDesignPoints(
             std::vector<std::shared_ptr<Statistics::Scenario>>& scenarios,
             std::vector<std::shared_ptr<Reliability::DesignPoint>>& designPoints)
         {
@@ -60,7 +60,7 @@ namespace Deltares
 
             auto result = combiner.combineMultipleElementsProb(designPointElements, percentages, combineAndOr::combOr);
 
-            std::unique_ptr<DesignPoint> combinedDesignPoint = std::make_unique<DesignPoint>();
+            std::shared_ptr<DesignPoint> combinedDesignPoint = std::make_shared<DesignPoint>();
             combinedDesignPoint->Beta = result.ab.getBeta();
             for (size_t i = 0; i < nStochasts; i++)
             {

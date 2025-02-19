@@ -107,7 +107,7 @@ namespace Deltares
             {
                 auto importance_sampling_combiner = std::make_unique<ImportanceSamplingCombiner>();
                 importance_sampling_combiner->randomGeneratorType = Numeric::RandomValueGeneratorType::MersenneTwister;
-                auto ref = alphaBeta(2.78826, { 0.64757, 0.39934, 0.64757, 0.39934 }); // pre-computed
+                auto ref = alphaBeta(2.78826, { 0.60186, 0.371152, 0.60186, 0.371152 }); // pre-computed
                 tester(importance_sampling_combiner.get(), 3.0, ref, combineAndOr::combOr);
             }
 
