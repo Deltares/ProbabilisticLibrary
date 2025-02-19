@@ -45,7 +45,7 @@ namespace Deltares::Reliability
         /**
          * user defined identifier
          */
-        std::unique_ptr<DesignPointIds> Ids;
+        std::shared_ptr<DesignPointIds> Ids = nullptr;
 
         std::vector<std::shared_ptr<DesignPoint>> ContributingDesignPoints;
         std::vector<std::shared_ptr<ReliabilityResult>> ReliabililityResults;
@@ -67,11 +67,11 @@ namespace Deltares::Reliability
          */
         static std::vector<std::shared_ptr<Statistics::Stochast>> getUniqueStochasts(const std::vector<std::shared_ptr<Reliability::DesignPoint>>& designPoints);
 
-    private:
-        void expandFragilityCurves();
-        void expandStochastRealization(std::shared_ptr<Models::StochastPointAlpha> stochastRealization);
-        std::shared_ptr<Models::StochastPointAlpha> getStochastPoint(std::shared_ptr<Models::StochastPointAlpha> alphaRealization);
-        void updateVariableStochasts(std::shared_ptr<StochastPoint> fragilityCurveAlpha);
+        private:
+            void expandFragilityCurves();
+            void expandStochastRealization(std::shared_ptr<Models::StochastPointAlpha> stochastRealization);
+            std::shared_ptr<Models::StochastPointAlpha> getStochastPoint(std::shared_ptr<Models::StochastPointAlpha> alphaRealization);
+            void updateVariableStochasts(std::shared_ptr<StochastPoint> fragilityCurveAlpha);
     };
 }
 
