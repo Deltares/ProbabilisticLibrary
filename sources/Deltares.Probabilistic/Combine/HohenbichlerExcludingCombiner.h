@@ -31,6 +31,7 @@ namespace Deltares
     {
         class HohenbichlerExcludingCombiner : public ExcludingCombiner
         {
+        public:
             std::unique_ptr<DesignPoint> combineExcludingDesignPoints(
                 std::vector<std::shared_ptr<Statistics::Scenario>>& scenarios,
                 std::vector<std::shared_ptr<Reliability::DesignPoint>>& designPoints) override;

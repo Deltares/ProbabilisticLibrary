@@ -86,6 +86,7 @@ namespace Deltares
             case CombinerType::Hohenbichler: return "hohenbichler";
             case CombinerType::ImportanceSampling: return "importance_sampling";
             case CombinerType::DirectionalSampling: return "directional_sampling";
+            case CombinerType::HohenbichlerForm: return "hohenbichler_form";
             default: throw probLibException("Combiner method");
             }
         }
@@ -95,6 +96,7 @@ namespace Deltares
             if (method == "hohenbichler") return CombinerType::Hohenbichler;
             else if (method == "importance_sampling") return CombinerType::ImportanceSampling;
             else if (method == "directional_sampling") return CombinerType::DirectionalSampling;
+            else if (method == "hohenbichler_form") return CombinerType::HohenbichlerForm;
             else throw probLibException("Combiner method type");
         }
 
