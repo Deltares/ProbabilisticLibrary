@@ -94,7 +94,6 @@ namespace Deltares
                 return designPoints[id];
             }
         protected:
-            std::unordered_map<int, std::shared_ptr<Reliability::DesignPoint>> designPoints;
             virtual std::shared_ptr<Reliability::DesignPointIds> GetDesignPointIds(int id);
         private:
             enum ObjectType {StandardNormal, Message, ProbabilityValue, Project, ModelParameter, LimitStateFunction, Stochast, DiscreteValue, HistogramValue, FragilityValue,
@@ -119,6 +118,7 @@ namespace Deltares
             std::unordered_map<int, std::shared_ptr<Statistics::Scenario>> scenarios;
             std::unordered_map<int, std::shared_ptr<Reliability::Settings>> settingsValues;
             std::unordered_map<int, std::shared_ptr<Reliability::StochastSettings>> stochastSettingsValues;
+            std::unordered_map<int, std::shared_ptr<Reliability::DesignPoint>> designPoints;
             std::unordered_map<int, std::shared_ptr<Reliability::StochastPointAlpha>> alphas;
             std::unordered_map<int, std::shared_ptr<Reliability::FragilityCurve>> fragilityCurves;
             std::unordered_map<int, std::shared_ptr<Reliability::FragilityCurveProject>> fragilityCurveProjects;

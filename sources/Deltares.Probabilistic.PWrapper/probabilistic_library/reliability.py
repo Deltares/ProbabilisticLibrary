@@ -518,9 +518,9 @@ class LimitStateFunction:
 
 # abstract class for design point ids
 class DesignPointIds:
-	
+
 	def __init__(self):
-		pass
+		pass # empty method as it is in a abstract class
 
 class DesignPoint:
 
