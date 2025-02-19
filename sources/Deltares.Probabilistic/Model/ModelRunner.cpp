@@ -140,15 +140,15 @@ namespace Deltares
         /**
          * \brief Calculates a sample
          * \param sample Sample to be calculated
-         * \return Z-value of the sample
+         * \return Evaluation report of the sample calculation 
          */
-        std::shared_ptr<Evaluation> ModelRunner::getEvaluation(std::shared_ptr<Sample> sample)
+        Evaluation* ModelRunner::getEvaluation(std::shared_ptr<Sample> sample)
         {
             std::shared_ptr<ModelSample> xSample = getModelSample(sample);
 
             this->zModel->invoke(xSample);
 
-            std::shared_ptr<Evaluation> evaluation = getEvaluationFromSample(xSample);
+            Evaluation* evaluation = getEvaluationFromSample(xSample);
 
             return evaluation;
         }
@@ -237,9 +237,9 @@ namespace Deltares
             return this->zModel->getBeta(xSample, sample->getBeta());
         }
 
-        std::shared_ptr<Evaluation> ModelRunner::getEvaluationFromSample(std::shared_ptr<ModelSample> sample)
+        Evaluation* ModelRunner::getEvaluationFromSample(std::shared_ptr<ModelSample> sample)
         {
-            std::shared_ptr<Evaluation> evaluation = std::make_shared<Evaluation>();
+            Evaluation* evaluation = new Evaluation();
 
             evaluation->Z = sample->Z;
             evaluation->Beta = sample->Beta;
@@ -259,7 +259,7 @@ namespace Deltares
         {
             if (this->Settings->SaveEvaluations)
             {
-                std::shared_ptr<Evaluation> evaluation = getEvaluationFromSample(sample);
+                std::shared_ptr<Evaluation> evaluation = std::shared_ptr<Evaluation>(getEvaluationFromSample(sample));
 
                 if (this->Settings->MaxParallelProcesses > 1) 
                 {
@@ -417,10 +417,10 @@ namespace Deltares
          */
         std::shared_ptr<Reliability::DesignPoint> ModelRunner::getDesignPoint(std::shared_ptr<Sample> sample, double beta, std::shared_ptr<Reliability::ConvergenceReport> convergenceReport, std::string identifier)
         {
-            std::shared_ptr<Evaluation> evaluation = nullptr;
+            std::unique_ptr<Evaluation> evaluation = nullptr;
             if (this->uConverter->haveSampleValuesChanged())
             {
-                evaluation = this->getEvaluation(sample->getSampleAtBeta(beta));
+                evaluation = std::unique_ptr<Evaluation>(this->getEvaluation(sample->getSampleAtBeta(beta)));
             }
 
             std::shared_ptr<StochastPoint> stochastPoint = uConverter->GetStochastPoint(sample, beta);

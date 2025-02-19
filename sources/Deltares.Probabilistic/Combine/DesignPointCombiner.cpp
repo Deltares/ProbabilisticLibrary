@@ -53,9 +53,36 @@ namespace Deltares
             }
         }
 
+        std::shared_ptr<DesignPoint> DesignPointCombiner::combineDesignPoints(combineAndOr combineMethodType,
+            std::vector<std::shared_ptr<DesignPoint>>& designPoints,
+            std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix,
+            std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix,
+            std::shared_ptr<ProgressIndicator> progress)
+        {
+            const std::shared_ptr<Combiner> combiner = getCombiner();
+            std::shared_ptr<DesignPoint> combinedDesignPoint = combiner->combineDesignPoints(combineMethodType, designPoints, selfCorrelationMatrix, progress);
+
+            applyCorrelation(designPoints, correlationMatrix, combinedDesignPoint.get());
+
+            return combinedDesignPoint;
+        }
+
+        std::shared_ptr<DesignPoint> DesignPointCombiner::combineDesignPointsExcluding(
+            std::vector<std::shared_ptr<Statistics::Scenario>>& scenarios,
+            std::vector<std::shared_ptr<DesignPoint>>& designPoints,
+            std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix)
+        {
+            const std::unique_ptr<ExcludingCombiner> combiner = getExcludingCombiner();
+            std::shared_ptr<DesignPoint> combinedDesignPoint = combiner->combineExcludingDesignPoints(scenarios, designPoints);
+
+            applyCorrelation(designPoints, correlationMatrix, combinedDesignPoint.get());
+
+            return combinedDesignPoint;
+        }
+
         void DesignPointCombiner::applyCorrelation(std::vector<std::shared_ptr<DesignPoint>>& designPoints,
                                                    std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix,
-                                                   std::shared_ptr<DesignPoint> combinedDesignPoint)
+                                                   DesignPoint* combinedDesignPoint)
         {
             if (correlationMatrix != nullptr && !correlationMatrix->IsIdentity())
             {

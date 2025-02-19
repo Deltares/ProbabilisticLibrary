@@ -71,31 +71,22 @@ namespace Deltares
              * \return Combined design point
              */
             std::shared_ptr<DesignPoint> combineDesignPoints(combineAndOr combineMethodType,
-                                                             std::vector<std::shared_ptr<DesignPoint>>& designPoints,
-                                                             std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix = nullptr,
-                                                             std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix = nullptr,
-                                                             std::shared_ptr<ProgressIndicator> progress = nullptr)
-            {
-                const std::shared_ptr<Combiner> combiner = getCombiner();
-                std::shared_ptr<DesignPoint> combinedDesignPoint = combiner->combineDesignPoints(combineMethodType, designPoints, selfCorrelationMatrix, progress);
+                std::vector<std::shared_ptr<DesignPoint>>& designPoints,
+                std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix = nullptr,
+                std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix = nullptr,
+                std::shared_ptr<ProgressIndicator> progress = nullptr);
 
-                applyCorrelation(designPoints, correlationMatrix, combinedDesignPoint);
-
-                return combinedDesignPoint;
-            }
-
+            /**
+             * \brief Combines a number of design points, where each design point contributes for a certain fraction
+             * \param scenarios Defines the contributing fractions of each design point
+             * \param designPoints Design points to be combined
+             * \param correlationMatrix Correlation matrix applied to the original design points, used for calculating physical values in the design point
+             * \return Combined design point
+             */
             std::shared_ptr<DesignPoint> combineDesignPointsExcluding(
                 std::vector<std::shared_ptr<Statistics::Scenario>>& scenarios,
                 std::vector<std::shared_ptr<DesignPoint>>& designPoints,
-                std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix = nullptr)
-            {
-                const std::unique_ptr<ExcludingCombiner> combiner = getExcludingCombiner();
-                std::shared_ptr<DesignPoint> combinedDesignPoint = combiner->combineExcludingDesignPoints(scenarios, designPoints);
-
-                applyCorrelation(designPoints, correlationMatrix, combinedDesignPoint);
-
-                return combinedDesignPoint;
-            }
+                std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix = nullptr);
 
             static std::string getCombineTypeString(combineAndOr type);
             static combineAndOr getCombineType(const std::string& method);
@@ -111,7 +102,7 @@ namespace Deltares
 
             void applyCorrelation(std::vector<std::shared_ptr<DesignPoint>>& designPoints,
                                   std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix,
-                                  std::shared_ptr<DesignPoint> combinedDesignPoint);
+                                  DesignPoint* combinedDesignPoint);
         };
     }
 }

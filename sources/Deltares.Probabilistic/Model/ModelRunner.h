@@ -72,7 +72,6 @@ namespace Deltares
             void setSampleProvider(std::shared_ptr<SampleProvider> sampleProvider);
             double getZValue(std::shared_ptr<Sample> sample);
             std::vector<double> getZValues(std::vector<std::shared_ptr<Sample>> samples);
-            std::shared_ptr<Evaluation> getEvaluation(std::shared_ptr<Sample> sample);
             double getBeta(std::shared_ptr<Sample> sample);
             bool canCalculateBeta() const;
             int getStochastCount();
@@ -107,7 +106,9 @@ namespace Deltares
             std::vector<std::shared_ptr<Evaluation>> evaluations;
             std::vector< std::shared_ptr<Message>> messages;
             std::shared_ptr<ProgressIndicator> progressIndicator = nullptr;
-            std::shared_ptr<Evaluation> getEvaluationFromSample(std::shared_ptr<ModelSample> sample);
+
+            Evaluation* getEvaluation(std::shared_ptr<Sample> sample);
+            Evaluation* getEvaluationFromSample(std::shared_ptr<ModelSample> sample);
 
             void registerEvaluation(std::shared_ptr<ModelSample> sample);
 
