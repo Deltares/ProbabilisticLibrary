@@ -81,6 +81,7 @@ namespace Deltares
             int GetCorrelationMatrixId(std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix, int newid);
             int GetLimitStateFunctionId(std::shared_ptr<Reliability::LimitStateFunction> limitStateFunction, int newid);
             int GetDesignPointId(std::shared_ptr<Reliability::DesignPoint> designPoint, int newId);
+            int GetDesignPointIdsId(std::shared_ptr<Reliability::DesignPointIds> design_point_ids, int newId);
             int GetAlphaId(std::shared_ptr<Models::StochastPointAlpha> alpha, int newId);
             int GetHistogramValueId(std::shared_ptr<Statistics::HistogramValue> histogramValue, int newId);
             int GetDiscreteValueId(std::shared_ptr<Statistics::DiscreteValue> discreteValue, int newId);
@@ -99,7 +100,7 @@ namespace Deltares
             enum ObjectType {StandardNormal, Message, ProbabilityValue, Project, ModelParameter, LimitStateFunction, Stochast, DiscreteValue, HistogramValue, FragilityValue,
                 ContributingStochast, ConditionalValue, CorrelationMatrix, Scenario, Settings, StochastSettings, DesignPoint, Alpha, FragilityCurve, FragilityCurveProject, Evaluation,
                 CombineProject, CombineSettings, ExcludingCombineProject, ExcludingCombineSettings, SelfCorrelationMatrix, SensitivityProject, SensitivitySettings,
-                LengthEffectProject};
+                LengthEffectProject, CombinIds};
             ObjectType GetType(std::string object_type);
             std::unordered_map<int, Deltares::Server::ProjectHandler::ObjectType> types;
 
@@ -119,6 +120,7 @@ namespace Deltares
             std::unordered_map<int, std::shared_ptr<Reliability::Settings>> settingsValues;
             std::unordered_map<int, std::shared_ptr<Reliability::StochastSettings>> stochastSettingsValues;
             std::unordered_map<int, std::shared_ptr<Reliability::DesignPoint>> designPoints;
+            std::unordered_map<int, std::shared_ptr<Reliability::DesignPointIds>> designPoint_Ids;
             std::unordered_map<int, std::shared_ptr<Reliability::StochastPointAlpha>> alphas;
             std::unordered_map<int, std::shared_ptr<Reliability::FragilityCurve>> fragilityCurves;
             std::unordered_map<int, std::shared_ptr<Reliability::FragilityCurveProject>> fragilityCurveProjects;
@@ -135,6 +137,7 @@ namespace Deltares
             std::unordered_map<std::shared_ptr<Reliability::LimitStateFunction>, int> limitStateFunctionIds;
             std::unordered_map<std::shared_ptr<Reliability::Settings>, int> settingsValuesIds;
             std::unordered_map<std::shared_ptr<Reliability::DesignPoint>, int> designPointIds;
+            std::unordered_map<std::shared_ptr<Reliability::DesignPointIds>, int> designPointIdsIds;
             std::unordered_map<std::shared_ptr<Reliability::StochastPointAlpha>, int> alphaIds;
             std::unordered_map<std::shared_ptr<Reliability::FragilityCurve>, int> fragilityCurveIds;
             std::unordered_map<std::shared_ptr<Statistics::Stochast>, int> stochastIds;

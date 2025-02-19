@@ -1993,6 +1993,26 @@ namespace Deltares
             }
         }
 
+        int ProjectHandler::GetDesignPointIdsId(std::shared_ptr<Reliability::DesignPointIds> design_point_ids, int newId)
+        {
+            if (design_point_ids == nullptr)
+            {
+                return 0;
+            }
+            else
+            {
+                if (!designPointIdsIds.contains(design_point_ids))
+                {
+                    designPoint_Ids[newId] = design_point_ids;
+                    types[newId] = ObjectType::CombinIds;
+                    designPointIdsIds[design_point_ids] = newId;
+                }
+
+                return designPointIdsIds[design_point_ids];
+            }
+        }
+
+
         int ProjectHandler::GetAlphaId(std::shared_ptr<StochastPointAlpha> alpha, int newId)
         {
             if (!alphaIds.contains(alpha))
