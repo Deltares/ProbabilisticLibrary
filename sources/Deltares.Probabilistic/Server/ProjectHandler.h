@@ -100,7 +100,7 @@ namespace Deltares
             enum ObjectType {StandardNormal, Message, ProbabilityValue, Project, ModelParameter, LimitStateFunction, Stochast, DiscreteValue, HistogramValue, FragilityValue,
                 ContributingStochast, ConditionalValue, CorrelationMatrix, Scenario, Settings, StochastSettings, DesignPoint, Alpha, FragilityCurve, FragilityCurveProject, Evaluation,
                 CombineProject, CombineSettings, ExcludingCombineProject, ExcludingCombineSettings, SelfCorrelationMatrix, SensitivityProject, SensitivitySettings,
-                LengthEffectProject, CombinIds};
+                LengthEffectProject, CombinIds=100};
             ObjectType GetType(std::string object_type);
             std::unordered_map<int, Deltares::Server::ProjectHandler::ObjectType> types;
 
@@ -119,8 +119,10 @@ namespace Deltares
             std::unordered_map<int, std::shared_ptr<Statistics::Scenario>> scenarios;
             std::unordered_map<int, std::shared_ptr<Reliability::Settings>> settingsValues;
             std::unordered_map<int, std::shared_ptr<Reliability::StochastSettings>> stochastSettingsValues;
+        protected:
             std::unordered_map<int, std::shared_ptr<Reliability::DesignPoint>> designPoints;
             std::unordered_map<int, std::shared_ptr<Reliability::DesignPointIds>> designPoint_Ids;
+        private:
             std::unordered_map<int, std::shared_ptr<Reliability::StochastPointAlpha>> alphas;
             std::unordered_map<int, std::shared_ptr<Reliability::FragilityCurve>> fragilityCurves;
             std::unordered_map<int, std::shared_ptr<Reliability::FragilityCurveProject>> fragilityCurveProjects;
