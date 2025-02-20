@@ -803,6 +803,10 @@ namespace Deltares
 
                 if (property_ == "design_point") return GetDesignPointId(project->designPoint, newId);
             }
+            else if (objectType == ObjectType::DesignPoint)
+            {
+                if (property_ == "design_point_ids") return GetDesignPointIdsId(designPoints[id]->Ids, newId);
+            }
 
             return 0;
         }
