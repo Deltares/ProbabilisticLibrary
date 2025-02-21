@@ -1,6 +1,14 @@
-\chapter{Distributions}\label{chp:distributions}
+\chapter{Statistics}\label{chp:Statistics}
 
-\section{Generic description of the application of distribution functions}
+Understanding probability distributions and their relationships is essential for statistical modeling and uncertainty analysis. This chapter covers distribution functions, which describe how values of a random variable are distributed, and correlations, which measure dependencies between variables.
+
+To ensure that chosen distributions accurately represent data, we introduce a goodness-of-fit test, which assesses how well a theoretical distribution aligns with observed data. Additionally, we explore prior distributions, which play a crucial role in Bayesian analysis by incorporating prior knowledge into probabilistic models.
+
+Together, these concepts provide a foundation for reliable statistical inference and risk assessment.
+
+\section{Distributions}\label{sec:distributions}
+
+\subsection{Generic description of the application of distribution functions}
 \label{sec:GenericDescriptionDistributionFunctions}
 
 The following three types of functions can be used to describe the statistical properties of random variables: 
@@ -45,7 +53,7 @@ Since $F(x)$ is non-decreasing, the inverse CDF, $F^{-1}(p)$, is also a non-decr
 \caption{Procedure for determining a load variable associated with a randomly selected standard normally distributed variable ($u$-value), for the case of uncorrelated variables.}\label{fig:Figure_3.3}
 \end{figure}
 
-As described in section \Aref{Section_2.3}, random variables are represented by standardised $U$-variables in the probabilistic computations in the \probLib, and the function $Z(U)$ is explored to derive an estimate of the failure probability. In order to evaluate function $Z(U)$, the realisations of the $U$-variables are first translated to the corresponding realisations of the $X$-variables and subsequently the $Z$-value is determined. Assume for the sake of simplicity that the $X$-variables are mutually independent (correlations will be dealt with in \Aref{chp:Correlations}). As explained in \Aref{Section_2.2.3}, the transformation from a realization, $u$, of variable $U$, to realization $x$, of variable $X$, is done in such a away that the (non-)exceedance probabilities of $u$ and $x$ are equal. This transformation, as depicted in \Fref{fig:Figure_3.3}, can be formulated as follows:
+As described in section \Aref{Section_2.3}, random variables are represented by standardised $U$-variables in the probabilistic computations in the \probLib, and the function $Z(U)$ is explored to derive an estimate of the failure probability. In order to evaluate function $Z(U)$, the realisations of the $U$-variables are first translated to the corresponding realisations of the $X$-variables and subsequently the $Z$-value is determined. Assume for the sake of simplicity that the $X$-variables are mutually independent (correlations will be dealt with in \Aref{sec:Correlations}). As explained in \Aref{Section_2.2.3}, the transformation from a realization, $u$, of variable $U$, to realization $x$, of variable $X$, is done in such a away that the (non-)exceedance probabilities of $u$ and $x$ are equal. This transformation, as depicted in \Fref{fig:Figure_3.3}, can be formulated as follows:
 \begin{equation}
 \Phi \left(u\right)=F\left(x\right)\; \quad \Rightarrow \; \quad x=F^{-1} \left(\Phi \left(u\right)\right) \label{ZEqnNum694082}
 \end{equation}
@@ -110,13 +118,13 @@ P\left[x\le x^*\right]=F\left(x^*\right)\label{3.11)}
 
 This shows that value $x$ in \Fref{fig:Figure_3.3} is a realization from distribution function $F(x)$. 
 
-\Note{the \probLib works with standard normalized $U$-variables. The limit state function $Z(U)$ is explored to derive an estimate of the failure probability. In order to evaluate function $Z(U)$, the realisations of the $U$-variables are first translated to the corresponding realisations of the $X$-variables to be able to determine the $Z$-value. In this transformation, the inverse CDF of variable $X$ is applied, to provide variable $X$ with the correct statistical properties.}
+\Note{the \probLib works with standard normalized $U$-variables (see \autoref{Section_2.2.3}). The limit state function $Z(U)$ is explored to derive an estimate of the failure probability. In order to evaluate function $Z(U)$, the realisations of the $U$-variables are first translated to the corresponding realisations of the $X$-variables to be able to determine the $Z$-value. In this transformation, the inverse CDF of variable $X$ is applied, to provide variable $X$ with the correct statistical properties.}
 
 %\Note{\Aref{app:distributionfunctions} presents distribution functions available in the \probLib.The library contains the ''inverse cumulative distribution functions'' which means the input consists of a probability, $p$, of non-exceedance and the output consist of the associated realization, $x$, of the variable that is described with this distribution function.} 
 
 %Besides $p$, the input of the inverse CDF's also consists of a set of parameter values $\theta = (\theta_1, \dots ,\theta_n)$. These parameter values quantify the relation between $p$ and $x$. Note that the value of $n$ can be different for different distribution functions, as shown in the second column of \Tref{Table_3.1}. Each distribution function as mentioned in \Tref{Table_3.1} has a fixed number, $n$, of parameters but the values of these parameters will be different for different variables. So, for instance, it is possible to describe both river discharge and sea water level with the lognormal distribution, but the values of the two parameters of this distribution function for river discharge will be different from the values that are used for sea water level. In other words: the same module can be used to describe probabilities of different random variables and differences between the variables are characterized by differences in parameter values. 
 
-\section{Distribution properties}
+\subsection{Distribution properties}
 \label{sec:DistributionProperties}
 
 In theory, endless distribution types exist. Each distribution reflects actual values. From these values, $x_i$, the following properties can be derived:
@@ -144,7 +152,7 @@ In theory, endless distribution types exist. Each distribution reflects actual v
 
 
 
-\section{Distribution types}
+\subsection{Distribution types}
 \label{sec:DistributionTypes}
 
 This paragraph lists all distribution types supported by \probLib. The distribution functions often require the following parameters as inputs (depending on the distribution type):
@@ -159,7 +167,7 @@ This paragraph lists all distribution types supported by \probLib. The distribut
 
 
 
-\subsection{Deterministic distribution}
+\subsubsection{Deterministic distribution}
 \label{sec:DeterministicDistribution}
 
 The deterministic distribution function is defined as follows:
@@ -182,7 +190,7 @@ Fit & $ \displaystyle{m = \frac{1}{N} \sum\limits_{i=1}^N x_i} $
 
 \end{tabular}
 
-\subsection{Normal distribution}
+\subsubsection{Normal distribution}
 
 The normal distribution function is defined as follows:
 
@@ -211,7 +219,7 @@ The normal distribution function is defined as follows:
 	\caption{Illustration of the effect of parameters $\mu $ and $\sigma $}\label{fig:A.4}
 \end{figure}
 
-\subsection{Standard normal distribution}
+\subsubsection{Standard normal distribution}
 
 The standard normal distribution is a normal distribution with mean $\mu = 0$ and deviation $\sigma = 1$. The standard normal distribution is unlikely to occur in the real world, but is used internally in the \probLib.
 
@@ -247,7 +255,7 @@ The probabilities of the standard normal distribution are displayed in the follo
 	\caption{Standard normal distribution}
 \end{figure}
 
-\subsection{Log normal distribution}
+\subsubsection{Log normal distribution}
 
 If parameter $y=\ln(x)$ has a normal distribution, then parameter $x$ has a log-normal distribution. A log-normal distribution always yields values higher than a given shift (usually $0$). The normal and log-normal distributions are similar for small ratios between the standard deviation and the mean. 
 
@@ -273,7 +281,7 @@ The log normal distribution function is defined as follows:
 %	\caption{Illustration of the effect of parameters $\mu $, $\sigma $, and $\varepsilon $ on the lognormal density function}\label{fig:A.5}
 %\end{figure}
 
-\subsection{Uniform distribution}
+\subsubsection{Uniform distribution}
 
 The uniform distribution function is defined as follows:
 
@@ -310,7 +318,7 @@ The distribution parameters $a$ and $b$ indicate the range over which the probab
 	\caption{Uniform cumulative distribution function, with parameters $a$ and $b$ indicated}\label{fig:A.2}
 \end{figure}
 
-\subsection{Triangular distribution}
+\subsubsection{Triangular distribution}
 
 The properties of the triangular distribution are defined by a minimum $a$, a maximum $b$ and a shift $c$. The mode of the distribution is equal to $c$. It is required that $a < c < b$.
 
@@ -339,7 +347,7 @@ The properties of the triangular distribution are defined by a minimum $a$, a ma
 	
 \end{tabular}
 
-\subsection{Trapezoidal distribution}
+\subsubsection{Trapezoidal distribution}
 
 The properties of the trapezoidal distribution are defined by a minimum $a$, a maximum $b$, lower shift $c$ and upper shift $d$. The mode of the distribution is between $c$ and $d$. It is required that $a < c < d < b$. The effective length $L$ is the mean of the difference between the maximum and minimum and the difference between the upper shift and lower shift.
 
@@ -365,7 +373,7 @@ The properties of the trapezoidal distribution are defined by a minimum $a$, a m
 	
 \end{tabular}
 
-\subsection{Exponential distribution}
+\subsubsection{Exponential distribution}
 
 The exponential distribution is defined as follows: 
 
@@ -388,7 +396,7 @@ The parameter of the exponential distribution, $\lambda $, is referred to as the
 %	\caption{Illustration of the effect of parameters $\lambda $ and $\varepsilon $ on the exponential density function}\label{fig:A.6}
 %\end{figure}
 
-\subsection{Gumbel distribution}
+\subsubsection{Gumbel distribution}
 
 The Gumbel distribution function is defined as follows, where $s$ is the scale parameter and $c$ is the shift parameter. The shift parameter is also called the location parameter.
 
@@ -417,7 +425,7 @@ The expression for the fit originates from \citep{Forbes2010}.
 %	\caption{Effect of the scale and location parameters, $\alpha $ and $\xi $, on the Gumbel density function}\label{fig:A.7}
 %\end{figure}
 
-\subsubsection{Decimation value}
+\paragraph*{Decimation value}
 
 Alternatively, the location and scale can be derived from a decimation value $D$ and a known exceeding probability for a certain $x_\text{exc}$. The decimation value $D$ is the difference in the $x$-value, which reduces the exceeding probability $F_\text{exc}$ with a factor 10. This leads to:
 
@@ -443,7 +451,7 @@ The distribution properties can be derived as follows from the decimation height
 	& $ \displaystyle{z \left(F\right) = \text{ln} \left(- \text{ln} \left(1 - F\right) \right)}$ \\
 \end{tabular}
 
-\subsection{Weibull distribution}
+\subsubsection{Weibull distribution}
 
 The Weibull distribution is defined by the scale parameter $s$, the shape parameter $k$ and the shift parameter $c$. The shift parameter is also called the location parameter. The Weibull distribution is described as follows:
 
@@ -466,7 +474,7 @@ where:
 
 The expression for the fit originates from \citep{Garcia1981} .
 
-\subsection{Conditional Weibull distribution}
+\subsubsection{Conditional Weibull distribution}
 \label{sec:conditionalweibulldistribution}
 
 The conditional Weibull distribution gives the probability that $X=x$ conditionally on the event that $X>\omega $, where $\omega $ represents a threshold. It is used in when considering a peaks-over-threshold (POT) method. The distribution function of the conditional Weibull is given as follows:
@@ -492,7 +500,7 @@ Expanding equation \eqref{ZEqnNum277845} so that the probability is full written
 	Fr\left(X>x\right)=\lambda \exp \left[\left({\omega \mathord{\left/ {\vphantom {\omega  \sigma }} \right. \kern-\nulldelimiterspace} \sigma } \right)^{\xi } -\left({x\mathord{\left/ {\vphantom {x \sigma }} \right. \kern-\nulldelimiterspace} \sigma } \right)^{\xi } \right]\label{4.99)} 
 \end{align}
 
-\subsection{Frechet distribution}
+\subsubsection{Frechet distribution}
 
 The Frechet distribution is defined by the scale parameter $s$, the shape parameter $k$ and the shift parameter $c$. The shift parameter is also called the location parameter. The Frechet properties are:
 
@@ -511,7 +519,7 @@ where:
 	$\Gamma$ & is the gamma function\\  
 \end{longtable*}
 
-\subsection{Generalized Extreme Value distribution}
+\subsubsection{Generalized Extreme Value distribution}
 
 The Generalized Extreme Value distribution is a combination of the Gumbel, Frechet and inverted Weibull distribution. Depending on the sign of the shape parameter $k$, one of these distribution is used.
 
@@ -524,7 +532,7 @@ D_\text{GEV}\left(s, k, c\right) = \left\{\begin{array}{ll}	k = 0 & D_\text{Gumb
 	\end{array}\right. 
 \end{align}
 
-\subsection{Rayleigh distribution}
+\subsubsection{Rayleigh distribution}
 \label{sec:rayleighdistribution}
 
 The Rayleigh distribution is defined as follows:
@@ -543,7 +551,7 @@ The Rayleigh distribution is defined as follows:
 	
 \end{tabular}
 
-\subsection{Rayleigh-$N$ distribution}
+\subsubsection{Rayleigh-$N$ distribution}
 \label{sec:rayleighNdistribution}
 
 The Rayleigh-$N$ distribution is a special distribution implemented in \probLib. This distribution is based on the Rayleigh distribution
@@ -558,7 +566,7 @@ The Rayleigh-$N$ distribution is in fact the Rayleigh distribution taken to the 
 	f(x;\sigma,N) = \frac{N x}{\sigma^2}\left(1-e^{-x^2/(2 \sigma^2)}\right)^{N-1} e^{-x^2/(2 \sigma^2)}\mbox{ for $x\geq 0$}
 \end{equation}
 
-\subsection{Pareto distribution}
+\subsubsection{Pareto distribution}
 
 The Pareto distribution is defined as follows:
 
@@ -574,7 +582,7 @@ The Pareto distribution is defined as follows:
 	
 \end{tabular}
 
-\subsection{Generalized Pareto distribution}
+\subsubsection{Generalized Pareto distribution}
 
 The Generalized Pareto distribution is defined as follows:
 
@@ -588,7 +596,7 @@ The Generalized Pareto distribution is defined as follows:
 	
 \end{tabular}
 
-\subsection{Student's T distribution}
+\subsubsection{Student's T distribution}
 
 The student's T distribution is defined as follows. It is based on the degrees of freedom $\nu$, which is equal to $N-1$.
 
@@ -611,7 +619,7 @@ The student's T distribution is defined as follows. It is based on the degrees o
 
 The expression for the fit originates from \\ \citep{stackexchange}.
 
-\subsection{Gamma distribution}
+\subsubsection{Gamma distribution}
 
 The Gamma distribution function is described as follows:
 
@@ -635,7 +643,7 @@ where:
 	$\gamma\left(\alpha, \beta\right)$ & is the lower incomplete gamma function
 \end{longtable*}
 
-\subsection{Beta distribution}
+\subsubsection{Beta distribution}
 
 The Beta distribution is defined with two shape parameters, $k_1$ and $k_2$, as follows:
 
@@ -669,7 +677,7 @@ where:
 
 %For example, the Beta distribution is equal to the uniform distribution for $\alpha=\beta=1$. A parabolic shaped distribution is obtained for $\alpha=\beta=2$. It also supports high skewness (influenced by the extent to which $\alpha$ and $\beta$ differ), heavy tails ($\alpha$ and $\beta$ smaller than one) and approximate normality for large $\alpha=\beta$ and a range $[a,b]$ expanding towards infinity. In probabilistic computations not only $F_4$, but also its inverse must be available. For this inverse no analytical expressions are available and one must rely on numerical approximations.
 
-\subsection{Poisson distribution}
+\subsubsection{Poisson distribution}
 
 The Poisson distribution is defined as follows (where $\lfloor x \rfloor$ is the floor function of $x$):
 
@@ -686,7 +694,7 @@ The Poisson distribution is defined as follows (where $\lfloor x \rfloor$ is the
 	
 \end{tabular}
 
-\subsection{Discrete distribution}
+\subsubsection{Discrete distribution}
 
 The properties of the discrete distribution are based on a set of values $\{x_1, x_2, ...,  x_N\}$ and their probabilities of occurrence $w_i$:
 
@@ -704,7 +712,7 @@ The properties of the discrete distribution are based on a set of values $\{x_1,
 
 \end{tabular}
 
-\subsection{Bernoulli distribution}
+\subsubsection{Bernoulli distribution}
 
 The Bernoulli distribution is a special case of a discrete distribution. It consists of two discrete values, one at $0$ with probability $1 - \mu$  and one at $1$ with probability $\mu$.
 
@@ -727,12 +735,12 @@ The Bernoulli distribution is a special case of a discrete distribution. It cons
 
 \end{tabular}
 
-\subsection{CDF curve distribution}
+\subsubsection{CDF curve distribution}
 \label{sec:CDFCurveDistribution}
 
 The CDF curve distribution consists of a number of reliability indices for which the physical value is defined. The CDF curve is very much like a fragility curve, only the CDF curve requires that it is strictly monotone ascending or descending.
 
-\subsection{Histogram distribution}
+\subsubsection{Histogram distribution}
 \label{sec:HistogramDistribution}
 
 The histogram distribution consists of a number of bins. Within each bin, which is defined with a lower bound and an upper bound, each value is assumed to have the same probability of occurrence.
@@ -758,7 +766,7 @@ $\delta$ & $= \displaystyle { \frac{x_{\text{max}} - x_{\text{min}}}{N}  }$
 
 \end{tabular}
 
-\subsection{Inverted distribution}
+\subsubsection{Inverted distribution}
 
 The inverted distribution is a distribution on top of another base distribution. The inverted distribution is "mirrored" in the x-direction around the shift value $c_\text{base}$ of the base distribution, or $0$ if the base distribution does not have a shift.
 
@@ -773,7 +781,7 @@ The inverted distribution is defined as follows:
 
 \end{tabular}
 
-\subsection{Truncated distribution}
+\subsubsection{Truncated distribution}
 
 The inverted distribution is a distribution on top of another base distribution and is truncated below a minimum vale $a$ and maximum value $b$. The mean and standard deviation displayed are the properties of the base distribution, although not being the correct mean and standard deviation. The truncated distribution i
 
@@ -794,34 +802,7 @@ Deviation & $ \displaystyle{\sigma = \sigma_\text{base}}$ \\
 
 \end{tabular}
 
-\section{Goodness of fit}
-\label{sec:GoodnessOfFit}
-
-The goodness of fit is an indication how well data fit into the distribution. The Kolmogorov-Smirnov statistic is a goodness of fit test, which is defined as the maximum difference between the CDF values of the derived distribution and the CDF values of the data. The Kolmogorov-Smirnov statistic is calculated as follows:
-
-\begin{align}
-\label{eq:GoodnessOfFit}
-k = \max_{i, \delta \in \{0, 1\} } \mid F\left(x_i\right) - \frac{i - \delta}{N} \mid
-\end{align}
-
-The $p$-value is calculated as follows for high values of $N$:
-
-\begin{align}
-\label{eq:PValue}
-\lim_{N\to\infty}  p = 1 - \frac{k}{\sqrt{N}}
-\end{align}
-
-where:
-\begin{longtable*}{p{20mm}p{\textwidth-24pt-20mm}}  
-	$i$ & is the index number of the data value ($1 \leq i \leq N$) \\  
-	$N$ & is the number of data values\\
-	$x_i$ & is the $i^\text{th}$ sorted data value \\  
-	$F\left(x_i\right)$ & is the CDF value corresponding with $x_i$\\  
-\end{longtable*}
-
-The Kolmogorov-Smirnov statistic is applied to observation sets. This is an indication whether two series of observations originate from the same measurements.
-
-\section{Prior distribution}
+\subsection{Prior distribution}
 \label{sec:PriorDistribution}
 
 A prior distribution is used to update another distribution, resulting in a posterior distribution. The prior distribution should represent a general distribution of a parameter, such as a worldwide distribution or a long-term distribution. This distribution can be updated using local data or data that is only applicable to a specific situation. The resulting updated distribution is then applicable to that situation. The advantage of this approach is that a meaningful distribution can be derived even with a limited number of measurements.
@@ -849,11 +830,11 @@ where:
 	$n$ & is the number of data values \\  
 \end{longtable*}
 
-\section{Design values}
+\subsection{Design values}
 
 Design values are used when one aims to calculate 'safe' results. This means that outputs, such as a safety factor or the required strength of a construction, should be based on unfavorable conditions -- meaning unfavorable input values. In many cases, designs are based on results obtained under these conditions.
 
-Design values are derived from the stochastic definition as follows:
+Design values in the \probLib are derived from the stochastic definition as follows:
 
 \begin{align}
 \label{eq:Design}
@@ -868,3 +849,160 @@ where:
 	$\gamma$ & is the user given design factor \\  
 \end{longtable*}
 
+\subsection{Goodness of fit}
+\label{sec:GoodnessOfFit}
+
+The goodness of fit is an indication how well data fit into the distribution. The Kolmogorov-Smirnov statistic is a goodness of fit test, which is defined as the maximum difference between the CDF values of the derived distribution and the CDF values of the data. The Kolmogorov-Smirnov statistic is calculated as follows:
+
+\begin{align}
+\label{eq:GoodnessOfFit}
+k = \max_{i, \delta \in \{0, 1\} } \mid F\left(x_i\right) - \frac{i - \delta}{N} \mid
+\end{align}
+
+The $p$-value is calculated as follows for high values of $N$:
+
+\begin{align}
+\label{eq:PValue}
+\lim_{N\to\infty}  p = 1 - \frac{k}{\sqrt{N}}
+\end{align}
+
+where:
+\begin{longtable*}{p{20mm}p{\textwidth-24pt-20mm}}  
+	$i$ & is the index number of the data value ($1 \leq i \leq N$) \\  
+	$N$ & is the number of data values\\
+	$x_i$ & is the $i^\text{th}$ sorted data value \\  
+	$F\left(x_i\right)$ & is the CDF value corresponding with $x_i$\\  
+\end{longtable*}
+
+The Kolmogorov-Smirnov statistic is applied to observation sets. This is an indication whether two series of observations originate from the same measurements.
+
+
+\section{Correlations}
+\label{sec:Correlations}
+
+This section describes how correlations are handled in the \probLib. A theoretical background on the available correlation models can be found in \Aref{chp:CorrelationModels}.
+
+\subsection{Correlation factor}
+\label{sec:CorrelationFactor}
+
+The correlation factor $\rho_{\text{pq}}$ between two random variables, $p$ and $q$, indicates the degree to which they are related. The correlation can range from $-1$ (fully anti-correlated) to $0$ (uncorrelated) to $1$ (fully correlated). Values between these extremes represent partial correlation.
+
+The Pearson correlation factor, which is used in \probLib, is calculated as follows:
+
+\begin{align}
+\label{eq:CorrelationCoefficient}
+\rho_{\text{p,q}} = \frac{\sum_i u_{\text{p,i}} u_{\text{q,i}}}{\sum_i u_{\text{p,i}} \sum_i u_{\text{q,i}}}
+\end{align}
+
+where:
+\begin{longtable*}{p{20mm}p{\textwidth-24pt-20mm}}  
+	$i$ & is the index number of the observed value \\  
+	$p$, $q$ & indicate random variables \\
+	$u_{\text{p,i}}$ & is the $u$-value corresponding with observed value $x_i$ (see \autoref{eq:XUConversion}, note that the distribution of variable $p$ is already derived) \\  
+\end{longtable*}
+
+\subsubsection{Distance based correlation factor}
+\label{sec:DistanceBasedCorrelationFactor}
+
+If two components with the same variables have a location, the correlation between these variables can be determined based on their residual correlation and their distance, rather than using \autoref{eq:CorrelationCoefficient}. The correlation factor is then calculated as follows:
+
+\begin{align}
+\label{eq:DistanceCorrelationCoefficient}
+\rho_{\text{t,p,q}} = \rho_{\text{t, rest}} + \left(1 -\rho_{\text{t, rest}}\right) \cdot \exp\left(  {-\frac{D_{\text{p, q}}^2}{d_{\text{t}}^2}}\right)
+\end{align}
+
+where:
+\begin{longtable*}{p{20mm}p{\textwidth-24pt-20mm}}  
+	$t$ & indicates a variable type\\  
+	$p$, $q$ & indicate components \\
+	$\rho_{\text{t, rest}}$ & is the user provided rest correlation for a certain variable type $t$ \\  
+	$D_{\text{p, q}}$ & is the distance between components $p$ and $q$\\  
+	$d_{\text{t}}$ & is the correlation length of variable type $t$ \\  
+\end{longtable*}
+
+
+\subsection{Processing of correlation factors}
+
+Several probabilistic techniques are based on uncorrelated $u$-values. To account for the effect of correlations, model evaluations should not use the $x$-values directly converted from $u$, but rather a transformed counterpart of $u$ that incorporates the correlations. In other words, before a model evaluation is carried out, $u_\text{uncorrelated}$ is converted to $u_\text{correlated}$. This is done as follows:
+
+\begin{align}
+u_\text{correlated} = L\left(u_\text{uncorrelated}\right)
+\end{align}
+
+where $L$ denotes the lower triangular matrix obtained from the Cholesky decomposition of the correlation matrix $\left[\rho\right] = LL^\top$.
+
+
+\section{Conversion between standard normal variables ($U$-domain) and real variables ($X$-domain)}\label{Section_2.2.3}
+
+In practice, it is often advantageous to carry out probabilistic analyses in a standardized space, in which each of the variables are independent.
+This independence can help simplify the probabilistic techniques.
+The dependence between variables is reintroduced when the standardized variables are transformed back to the real variables.
+In \probLib the standardized space that is used is the standard normal space.
+This means each of the transformed random variables are normally distributed with mean $0$, and standard deviation $1$.
+Each of the random variables in $X$ can be transformed to independent standard normal variables $U = (U_1,\dots U_n)$.
+If all the $X$-variables are mutually independent, this transformation can be described as follows:
+\begin{equation}
+\Phi \left(u_{i} \right)=F_{i} \left(x_{i} \right) \quad \Rightarrow  \quad u_{i} =\Phi ^{-1} \left[F_{i} \left(x_{i} \right)\right]\quad \Rightarrow \quad x_{i} =F_{i}^{-1} \left(\Phi \left(u_{i} \right)\right) \label{eq:2-5} 
+\end{equation}
+where:
+
+\begin{tabular}{p{0.2in}p{5.1in}}  
+$\Phi $ & is the standard normal distribution function \\ 
+$F_{i} $ & is the distribution function (cdf) of $X_i$, the $i^{th}$ variable in $X$ \\  
+$\Phi ^{-1} $ & is the inverse standard normal distribution function  \\  
+$F_{i}^{-1} $ & is the inverse distribution function of $X_i$, the $i^{th}$ variable in $X$ \\  
+$x_{i} $ & is the realisation of the $i^{th}$ variable in $X$ \\  
+$u_{i} $ & is the realisation of the $i^{th}$ variable in $U$ corresponding to the $i^{th}$ variable in $X$  \\  
+\end{tabular}
+
+In this simple case (mutually independent $X$-variables) the transformation is done such that the non-exceedance probabilities of $x_i$ and $u_i$ are equal:
+\begin{equation}
+P\left(U_{i} \le u_{i} \right)=P\left(X\le x_{i} \right)  \label{eq:2-6} 
+\end{equation}
+
+The concept of this transformation is schematically depicted in \Fref{fig:2.3}. 
+
+\begin{figure}[H]\centering
+\includegraphics[width=0.6\columnwidth]{\pathProbLibPictures x_vs_u}
+\caption{Schematic view of the transformation between standard normal variable $u_i$ and real world variable $X$ by means of equal probability of (non-)exceedance.}\label{fig:2.3}
+\end{figure}
+
+If the $X$-variables are not mutually independent, the transformation becomes more complex. In that case the transformation is done with the following conditional probability functions:
+\begin{equation}
+\begin{array}{l} {\Phi \left(u_{1} \right)=F_{1} \left(x_{1} \right)} \\ {\Phi \left(u_{2} \right)=F_{2} \left(x_{2} |x_{1} \right)} \\ {\quad \begin{array}{c} {\cdot } \\ {\cdot } \\ {\cdot } \end{array}} \\ {\Phi \left(u_{n} \right)=F_{n} \left(x_{n} |x_{1} ,...,x_{n-1} \right)} \end{array}  \label{eq:2-7} 
+\end{equation}
+
+This transformation is referred to as the Rosenblatt transformation (cf. \cite{Rosenblatt1952}). The conditional probabilities need to be derived from: 
+\begin{equation}
+f_{i} \left(x_{i} |x_{1} ,...,x_{i-1} \right)=\frac{f_{X_{1} ,...,X_{i} } \left(x_{1} ,...,x_{i} \right)}{f_{X_{1} ,...,X_{i-1} } \left(x_{1} ,...,x_{i-1} \right)}   \label{eq:2-8}  
+\end{equation}
+
+In which $f_{X_i}$ ($x_1$,\dots $x_i$) is a probability density function that is obtained from:
+\begin{equation}
+f_{X_{i} } \left(x_{1} ,...,x_{i} \right)=\int _{}... \int _{}f_{X} \left(x_{1} ,...,x_{n} \right)dx_{i+1} ...dx_{n}   \label{eq:2-9}  
+\end{equation}
+
+The combination of equations \eqref{eq:2-8} and \eqref{eq:2-9} potentially requires a cumbersome (numerical) integration procedure. 
+
+\Note{in practice, this process is far less complex as correlation is usually limited to pairs of variables.
+Generally, the pairs are split into a dependent variable and an independent variable, and the dependent variable is written as a function of the independent variable.
+The function consists of a fully deterministic dependent part and a probabilistic independent part:}
+\begin{equation}
+F_{X_{2} } \left(x_{2} |x_{1} \right)=G\left(x_{1} \right)+F_{2} \left(x_{2}^{*} \right) \label{eq:2-10}  
+\end{equation}
+where $G$ is a deterministic function, $F_2$ a probability distribution function and $x_2^{*}$ a newly introduced random variable that represents the part of variable $x_2$ that is independent of $x_1$.
+This type of correlation models is schematically depicted in \Fref{fig:2.4}.
+For now, it is important to note that with a correlation model as described by the general form of equation \eqref{eq:2-10}, the transformation from and to the $U$-space for variable $X_2$ is done for the independent part: 
+\begin{equation}
+\Phi \left(u_{2} \right)=F_{2} \left(x_{2}^{*} \right)  \label{eq:2-11)} 
+\end{equation}
+
+\begin{figure}[H]\centering
+\includegraphics*[width=3.56in, height=2.83in, keepaspectratio=false]{\pathProbLibPictures schematic_correlations}
+\caption{Schematic view of correlated variables $x_1$ and $x_2$}\label{fig:2.4}
+\end{figure}
+
+\Note{not all random variables can be represented in a meaningful way by $U$-variables.
+This is for instance the case for cyclic variables like wind direction. The reason is that transformation \eqref{eq:2-5} only makes sense if large (extreme) $u$-values are associated with large (extreme) $x$-values. Potential outcomes of cyclic variables are not ordered from small to large.
+The domain for these variables is $1-360$ degrees, but $360$ degrees is not larger than $1$ degree.
+Actually, $1$ degree is almost the same as $360$ degrees. \cite{TechRef} describes how such cyclic variables are treated.}
