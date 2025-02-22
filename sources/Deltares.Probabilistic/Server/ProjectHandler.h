@@ -35,6 +35,7 @@
 #include "../Combine/LengthEffectProject.h"
 #include "../Statistics/Stochast.h"
 #include "../Statistics/DiscreteValue.h"
+#include "SharedDataBetweenHandles.h"
 
 namespace Deltares
 {
@@ -43,6 +44,8 @@ namespace Deltares
         class ProjectHandler : public BaseHandler
         {
         public:
+            ProjectHandler();
+            ProjectHandler(SharedDataBetweenHandles* sd);
             bool CanHandle(std::string object_type) override;
             void Create(std::string object_type, int id) override;
             void Destroy(int id) override;
@@ -92,10 +95,11 @@ namespace Deltares
             int GetMessageId(std::shared_ptr<Deltares::Models::Message> message, int newId);
             std::shared_ptr <Reliability::DesignPoint> GetDesignPoint(int id) override
             {
-                return designPoints[id];
+                return shared_data->designPoints[id];
             }
         protected:
             virtual std::shared_ptr<Reliability::DesignPointIds> GetDesignPointIds(int id);
+            SharedDataBetweenHandles* shared_data;
         private:
             enum ObjectType {StandardNormal, Message, ProbabilityValue, Project, ModelParameter, LimitStateFunction, Stochast, DiscreteValue, HistogramValue, FragilityValue,
                 ContributingStochast, ConditionalValue, CorrelationMatrix, Scenario, Settings, StochastSettings, DesignPoint, Alpha, FragilityCurve, FragilityCurveProject, Evaluation,
@@ -119,10 +123,6 @@ namespace Deltares
             std::unordered_map<int, std::shared_ptr<Statistics::Scenario>> scenarios;
             std::unordered_map<int, std::shared_ptr<Reliability::Settings>> settingsValues;
             std::unordered_map<int, std::shared_ptr<Reliability::StochastSettings>> stochastSettingsValues;
-        protected:
-            std::unordered_map<int, std::shared_ptr<Reliability::DesignPoint>> designPoints;
-            std::unordered_map<int, std::shared_ptr<Reliability::DesignPointIds>> designPoint_Ids;
-        private:
             std::unordered_map<int, std::shared_ptr<Reliability::StochastPointAlpha>> alphas;
             std::unordered_map<int, std::shared_ptr<Reliability::FragilityCurve>> fragilityCurves;
             std::unordered_map<int, std::shared_ptr<Reliability::FragilityCurveProject>> fragilityCurveProjects;

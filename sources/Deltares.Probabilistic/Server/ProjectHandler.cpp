@@ -32,6 +32,13 @@ namespace Deltares
         using namespace Deltares::Statistics;
         using namespace Deltares::Reliability;
 
+        ProjectHandler::ProjectHandler()
+        {
+            shared_data = new SharedDataBetweenHandles(); // TODO unique / shared ptr
+        }
+
+        ProjectHandler::ProjectHandler(SharedDataBetweenHandles* sd) : shared_data(sd) {}
+
         bool ProjectHandler::CanHandle(std::string object_type)
         {
             return
@@ -164,8 +171,8 @@ namespace Deltares
                 stochastSettingsValues[id] = std::make_shared<Deltares::Reliability::StochastSettings>();
                 break;
             case ObjectType::DesignPoint:
-                designPoints[id] = std::make_shared<Deltares::Reliability::DesignPoint>();
-                designPointIds[designPoints[id]] = id;
+                shared_data->designPoints[id] = std::make_shared<Deltares::Reliability::DesignPoint>();
+                designPointIds[shared_data->designPoints[id]] = id;
                 break;
             case ObjectType::Alpha:
                 alphas[id] = std::make_shared<Deltares::Reliability::StochastPointAlpha>();
@@ -230,7 +237,7 @@ namespace Deltares
             case ObjectType::Scenario: scenarios.erase(id); break;
             case ObjectType::Settings: settingsValues.erase(id); break;
             case ObjectType::StochastSettings: stochastSettingsValues.erase(id); break;
-            case ObjectType::DesignPoint: designPoints.erase(id); break;
+            case ObjectType::DesignPoint: shared_data->designPoints.erase(id); break;
             case ObjectType::Alpha: alphas.erase(id); break;
             case ObjectType::FragilityCurve: fragilityCurves.erase(id); break;
             case ObjectType::FragilityCurveProject: fragilityCurveProjects.erase(id); break;
@@ -386,7 +393,7 @@ namespace Deltares
             }
             else if (objectType == ObjectType::DesignPoint)
             {
-                std::shared_ptr<Reliability::DesignPoint> designPoint = designPoints[id];
+                std::shared_ptr<Reliability::DesignPoint> designPoint = shared_data->designPoints[id];
 
                 if (property_ == "reliability_index") return designPoint->Beta;
                 else if (property_ == "probability_failure") return designPoint->getFailureProbability();
@@ -566,7 +573,7 @@ namespace Deltares
             }
             else if (objectType == ObjectType::DesignPoint)
             {
-                std::shared_ptr<Reliability::DesignPoint> designPoint = designPoints[id];
+                std::shared_ptr<Reliability::DesignPoint> designPoint = shared_data->designPoints[id];
 
                 if (property_ == "reliability_index") designPoint->Beta = value;
             }
@@ -686,7 +693,7 @@ namespace Deltares
             }
             else if (objectType == ObjectType::DesignPoint)
             {
-                std::shared_ptr<Reliability::DesignPoint> designPoint = designPoints[id];
+                std::shared_ptr<Reliability::DesignPoint> designPoint = shared_data->designPoints[id];
 
                 if (designPoint->convergenceReport != nullptr)
                 {
@@ -805,7 +812,8 @@ namespace Deltares
             }
             else if (objectType == ObjectType::DesignPoint)
             {
-                if (property_ == "design_point_ids") return GetDesignPointIdsId(designPoints[id]->Ids, newId);
+                if (property_ == "design_point_ids")
+                    return GetDesignPointIdsId(shared_data->designPoints[id]->Ids, newId);
             }
 
             return 0;
@@ -858,7 +866,8 @@ namespace Deltares
 
                 if (property_ == "design_point")
                 {
-                    fragilityValue->designPoint = designPoints.contains(value) ? designPoints[value] : nullptr;
+                    fragilityValue->designPoint = shared_data->designPoints.contains(value)
+                    ? shared_data->designPoints[value] : nullptr;
                     if (fragilityValue->designPoint != nullptr)
                     {
                         fragilityValue->Reliability = fragilityValue->designPoint->Beta;
@@ -932,7 +941,7 @@ namespace Deltares
             }
             else if (objectType == ObjectType::DesignPoint)
             {
-                std::shared_ptr<Reliability::DesignPoint> designPoint = designPoints[id];
+                std::shared_ptr<Reliability::DesignPoint> designPoint = shared_data->designPoints[id];
 
                 if (property_ == "ids") designPoint->Ids = GetDesignPointIds(value);
             }
@@ -947,7 +956,8 @@ namespace Deltares
                 std::shared_ptr<Reliability::LengthEffectProject> project = lengthEffectProjects[id];
 
                 if (property_ == "correlation_matrix") project->selfCorrelationMatrix = selfCorrelationMatrices[value];
-                else if (property_ == "design_point_cross_section") project->designPointCrossSection = designPoints[value];
+                else if (property_ == "design_point_cross_section")
+                    project->designPointCrossSection = shared_data->designPoints[value];
             }
         }
 
@@ -1013,7 +1023,7 @@ namespace Deltares
             }
             else if (objectType == ObjectType::DesignPoint)
             {
-                std::shared_ptr<Reliability::DesignPoint> designPoint = designPoints[id];
+                std::shared_ptr<Reliability::DesignPoint> designPoint = shared_data->designPoints[id];
 
                 if (property_ == "is_converged" && designPoint->convergenceReport != nullptr)
                 {
@@ -1187,7 +1197,7 @@ namespace Deltares
             }
             else if (objectType == ObjectType::DesignPoint)
             {
-                std::shared_ptr<Reliability::DesignPoint> designPoint = designPoints[id];
+                std::shared_ptr<Reliability::DesignPoint> designPoint = shared_data->designPoints[id];
 
                 if (property_ == "identifier") return designPoint->Identifier;
             }
@@ -1280,7 +1290,7 @@ namespace Deltares
             }
             else if (objectType == ObjectType::DesignPoint)
             {
-                std::shared_ptr<Reliability::DesignPoint> designPoint = designPoints[id];
+                std::shared_ptr<Reliability::DesignPoint> designPoint = shared_data->designPoints[id];
 
                 if (property_ == "identifier") designPoint->Identifier = value;
             }
@@ -1473,7 +1483,7 @@ namespace Deltares
             }
             else if (objectType == ObjectType::DesignPoint)
             {
-                std::shared_ptr<Reliability::DesignPoint> designPoint = designPoints[id];
+                std::shared_ptr<Reliability::DesignPoint> designPoint = shared_data->designPoints[id];
 
                 if (property_ == "alphas")
                 {
@@ -1557,7 +1567,7 @@ namespace Deltares
 
                     for (int i = 0; i < size; i++)
                     {
-                        project->designPoints.push_back(designPoints[values[i]]);
+                        project->designPoints.push_back(shared_data->designPoints[values[i]]);
                     }
                 }
             }
@@ -1571,7 +1581,7 @@ namespace Deltares
 
                     for (int i = 0; i < size; i++)
                     {
-                        project->designPoints.push_back(designPoints[values[i]]);
+                        project->designPoints.push_back(shared_data->designPoints[values[i]]);
                     }
                 }
                 else if (property_ == "scenarios")
@@ -1757,7 +1767,7 @@ namespace Deltares
             }
             else if (objectType == ObjectType::DesignPoint)
             {
-                std::shared_ptr<Reliability::DesignPoint> designPoint = designPoints[id];
+                std::shared_ptr<Reliability::DesignPoint> designPoint = shared_data->designPoints[id];
 
                 if (property_ == "contributing_design_points") return this->GetDesignPointId(designPoint->ContributingDesignPoints[index], newId);
                 else if (property_ == "alphas") return this->GetAlphaId(designPoint->Alphas[index], newId);
@@ -1988,7 +1998,7 @@ namespace Deltares
             {
                 if (!designPointIds.contains(designPoint))
                 {
-                    designPoints[newId] = designPoint;
+                    shared_data->designPoints[newId] = designPoint;
                     types[newId] = ObjectType::DesignPoint;
                     designPointIds[designPoint] = newId;
                 }
@@ -2007,7 +2017,7 @@ namespace Deltares
             {
                 if (!designPointIdsIds.contains(design_point_ids))
                 {
-                    designPoint_Ids[newId] = design_point_ids;
+                    shared_data->designPoint_Ids[newId] = design_point_ids;
                     types[newId] = ObjectType::CombinIds;
                     designPointIdsIds[design_point_ids] = newId;
                 }

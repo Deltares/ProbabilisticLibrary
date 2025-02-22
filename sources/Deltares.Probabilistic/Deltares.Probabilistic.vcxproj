@@ -189,6 +189,7 @@
     <ClInclude Include="Server\ProjectServer.h" />
     <ClInclude Include="Server\ProjectHandler.h" />
     <ClInclude Include="Server\BaseHandler.h" />
+    <ClInclude Include="Server\SharedDataBetweenHandles.h" />
     <ClInclude Include="Model\ModelInputParameter.h" />
     <ClInclude Include="Reliability\ReliabilityProject.h" />
     <ClInclude Include="Sensitivity\CorrelationMatrixBuilder.h" />
@@ -386,6 +387,7 @@
     <ClCompile Include="Server\ProjectHandler.cpp" />
     <ClCompile Include="Server\ExternalLibraryHandler.cpp" />
     <ClCompile Include="Server\ExternalServerHandler.cpp" />
+    <ClCompile Include="Server\SharedDataBetweenHandles.cpp" />
     <ClCompile Include="Model\ModelInputParameter.cpp" />
     <ClCompile Include="Reliability\LimitStateFunction.cpp" />
     <ClCompile Include="Reliability\ReliabilityProject.cpp" />
