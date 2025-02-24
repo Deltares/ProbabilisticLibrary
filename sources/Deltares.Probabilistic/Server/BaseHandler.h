@@ -25,11 +25,6 @@
 
 #include "../Model/ZModel.h"
 
-namespace Deltares::Reliability
-{
-    class DesignPoint;
-}
-
 namespace Deltares
 {
     namespace Server
@@ -72,7 +67,6 @@ namespace Deltares
             virtual void SetMultipleCallBack(int id, std::string property_, Models::ZValuesMultipleCallBack callBack) {}
             virtual void SetEmptyCallBack(int id, std::string property_, Models::EmptyCallBack callBack) {}
             virtual void Execute(int id, std::string method_) {}
-            virtual std::shared_ptr <Reliability::DesignPoint> GetDesignPoint(int id) { return nullptr; }
         };
     }
 }
