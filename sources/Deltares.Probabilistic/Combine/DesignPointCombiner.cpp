@@ -112,7 +112,7 @@ namespace Deltares
 
         ExcludingCombinerType DesignPointCombiner::getExcludingCombinerMethod(const std::string& method)
         {
-            if (method == "hohenbichler") return ExcludingCombinerType::HohenbichlerExcluding;
+            if (method == "hohenbichler_excluding") return ExcludingCombinerType::HohenbichlerExcluding;
             else if (method == "weighted_sum") return ExcludingCombinerType::WeightedSum;
             else throw probLibException("Excluding combiner method type");
         }
