@@ -43,7 +43,6 @@ namespace Deltares
             virtual void SetIntValue(int id, std::string property_, int value) {}
             virtual double GetIntArgValue(int id1, int id2, std::string property_) { return 0; }
             virtual void SetIntArgValue(int id1, int id2, std::string property_, double value) {}
-            virtual void SetIntArgValue(int id1, int id2, std::string property_, double value, BaseHandler& server2) {}
             virtual bool GetBoolValue(int id, std::string property_) { return false; }
             virtual void SetBoolValue(int id, std::string property_, bool value) {}
             virtual std::string GetStringValue(int id, std::string property_) { return ""; }

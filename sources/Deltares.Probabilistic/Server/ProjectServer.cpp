@@ -100,14 +100,7 @@ namespace Deltares
 
         void ProjectServer::SetIntArgValue(int id1, int id2, std::string property_, double value)
         {
-            if (handlersTable[id1] == handlersTable[id2])
-            {
-                handlersTable[id1]->SetIntArgValue(id1, id2, property_, value);
-            }
-            else
-            {
-                handlersTable[id1]->SetIntArgValue(id1, id2, property_, value, *handlersTable[id2]);
-            }
+            handlersTable[id1]->SetIntArgValue(id1, id2, property_, value);
         }
 
         bool ProjectServer::GetBoolValue(int id, std::string property_)
