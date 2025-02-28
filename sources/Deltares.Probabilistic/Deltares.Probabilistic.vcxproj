@@ -242,6 +242,7 @@
     <ClInclude Include="Reliability\IntegrationGrid.h" />
     <ClInclude Include="Statistics\SparseCorrelationMatrix.h" />
     <ClInclude Include="Statistics\SelfCorrelationMatrix.h" />
+    <ClInclude Include="Utils\FileUtils.h" />
     <ClInclude Include="Utils\Locker.h" />
     <ClInclude Include="Math\MatrixSupport.h" />
     <ClInclude Include="Optimization\KMeansClustering.h" />
@@ -440,6 +441,7 @@
     <ClCompile Include="Reliability\IntegrationGrid.cpp" />
     <ClCompile Include="Statistics\SparseCorrelationMatrix.cpp" />
     <ClCompile Include="Statistics\SelfCorrelationMatrix.cpp" />
+    <ClCompile Include="Utils\FileUtils.cpp" />
     <ClCompile Include="Utils\Locker.cpp" />
     <ClCompile Include="Math\MatrixSupport.cpp" />
     <ClCompile Include="Optimization\KMeansClustering.cpp" />
