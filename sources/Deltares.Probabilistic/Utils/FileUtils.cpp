@@ -30,7 +30,11 @@ namespace Deltares::Reliability
     {
         constexpr size_t bufSize = 1024;
         char buffer[bufSize];
+#ifdef __GNUC__
+        if (tmpnam_r(buffer) != 0)
+#else
         if (tmpnam_s(buffer, bufSize) != 0)
+#endif
         {
             throw probLibException("generating a temp name fails");
         }
