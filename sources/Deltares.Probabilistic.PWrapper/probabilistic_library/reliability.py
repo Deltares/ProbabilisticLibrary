@@ -87,7 +87,7 @@ class CombinerMethod(Enum):
 
 class ExcludingCombinerMethod(Enum):
 	weighted_sum = 'weighted_sum'
-	hohenbichler = 'hohenbichler'
+	hohenbichler = 'hohenbichler_excluding'
 	def __str__(self):
 		return str(self.value)
 
