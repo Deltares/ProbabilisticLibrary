@@ -59,7 +59,7 @@ namespace Deltares {
         {
             constexpr size_t buffer_size = 32;
             char buffer[buffer_size];
-            if (x == 0.0 || (fabs(x) > 1e-10 && fabs(x) < 1e10))
+            if (x == 0.0 || (fabs(x) > 1e-5 && fabs(x) < 1e10))
             {
                 snprintf(buffer, buffer_size, "%15.6f", x);
             }
