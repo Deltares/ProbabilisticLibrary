@@ -21,6 +21,7 @@
 //
 #include "probLibString.h"
 #include <string.h> //For strcasecmp(). Also could be found in <mem.h>
+#include <cmath>
 #include <algorithm>
 #include <cctype>
 
@@ -56,7 +57,7 @@ namespace Deltares {
 
         std::string probLibString::double2str(const double x)
         {
-            constexpr int buffer_size = 32;
+            constexpr size_t buffer_size = 32;
             char buffer[buffer_size];
             if (x == 0.0 || (fabs(x) > 1e-10 && fabs(x) < 1e10))
             {
