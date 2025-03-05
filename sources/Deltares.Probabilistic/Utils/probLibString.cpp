@@ -24,6 +24,8 @@
 #include <algorithm>
 #include <cctype>
 
+#include "probLibException.h"
+
 namespace Deltares {
     namespace Reliability {
 
@@ -54,14 +56,18 @@ namespace Deltares {
 
         std::string probLibString::double2str(const double x)
         {
-            char buffer[32];
-#ifdef _WIN32
-            sprintf_s(buffer, "%15.6f", x);
-#else
-            snprintf(buffer, 32, "%15.6f", x);
-#endif // _WIN32
-            std::string retval = buffer;
-            return retval;
+            constexpr int buffer_size = 32;
+            char buffer[buffer_size];
+            if (x == 0.0 || (fabs(x) > 1e-10 && fabs(x) < 1e10))
+            {
+                snprintf(buffer, buffer_size, "%15.6f", x);
+            }
+            else
+            {
+                snprintf(buffer, buffer_size, "%15.6e", x);
+            }
+            std::string return_value = buffer;
+            return return_value;
         }
 
         std::string probLibString::double2strTrimmed(const double x)
