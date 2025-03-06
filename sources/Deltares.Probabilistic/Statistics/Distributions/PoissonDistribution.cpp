@@ -113,10 +113,10 @@ namespace Deltares
         {
             int k = static_cast<int>(std::floor(x));
 
-            double cdf = 0;
+            double cdf = 0.0;
             for (int i = 0; i <= k; i++)
             {
-                cdf += getPDF(stochast, x);
+                cdf += getPDF(stochast, i);
             }
 
             return cdf;
