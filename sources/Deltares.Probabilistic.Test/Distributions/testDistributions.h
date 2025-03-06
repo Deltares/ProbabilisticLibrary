@@ -37,6 +37,7 @@ namespace Deltares::Probabilistic::Test
         static void testConditionalStochast();
         static void testDesignValue();
         static void testVariationCoefficient();
+        static void testPoisson();
         static double getPdfNumerical(Statistics::Stochast& s, const double x);
     };
 }
