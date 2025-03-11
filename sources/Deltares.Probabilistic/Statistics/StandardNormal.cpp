@@ -265,8 +265,8 @@ namespace Deltares
         /// <summary>
         /// Gets the probability of failure from the return period
         /// </summary>
-        /// <param name="r">return period</param>
-        /// <returns></returns>
+        /// <param name="t"> the return period </param>
+        /// <returns> the corresponding probability of failure </returns>
         double StandardNormal::getPFromT(double t)
         {
             return 1.0 - exp(-1.0 / fabs(t));
@@ -279,8 +279,8 @@ namespace Deltares
 
         double StandardNormal::getUFromT(const double t)
         {
-            const double return_time_limit = 93304555.446497560; // this return time gives beta = uLimit = 5.6, see FreqFromBeta
-            double freq = 1.0 / t;
+            constexpr double return_time_limit = 93304555.446497560; // this return time gives beta = uLimit = 5.6, see FreqFromBeta
+            const double freq = 1.0 / t;
             if (t > return_time_limit)
             {
                 return getUFromQ(freq);
