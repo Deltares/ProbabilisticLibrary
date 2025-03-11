@@ -39,6 +39,7 @@
 #include "Distributions/testDistributions.h"
 #include "Sensitivity/TestSensitivity.h"
 #include "Optimization/testCobyla.h"
+#include "Math/testToString.h"
 
 using namespace Deltares::Probabilistic::Test;
 
@@ -235,5 +236,10 @@ TEST(unittst, testCobylaOptimization)
 {
     auto tstCobylaOpt = testCobyla();
     tstCobylaOpt.allCobylaTests();
+}
+
+TEST(unittst, testToString)
+{
+    to_string_tests::all_to_string_tests();
 }
 

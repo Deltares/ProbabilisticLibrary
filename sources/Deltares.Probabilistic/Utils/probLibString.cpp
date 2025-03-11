@@ -24,6 +24,8 @@
 #include <algorithm>
 #include <cctype>
 
+#include "probLibException.h"
+
 namespace Deltares {
     namespace Reliability {
 
@@ -52,16 +54,24 @@ namespace Deltares {
             return s;
         }
 
+        /// <summary>
+        /// converts a double to a string with 6 decimals
+        /// large numbers (numbers that do not fit in 16 characters) will be returned in scientific notation
+        /// </summary>
+        /// <param name="x"> input x value </param>
+        /// <returns> string value for x </returns>
         std::string probLibString::double2str(const double x)
         {
-            char buffer[32];
-#ifdef _WIN32
-            sprintf_s(buffer, "%15.6f", x);
-#else
-            snprintf(buffer, 32, "%15.6f", x);
-#endif // _WIN32
-            std::string retval = buffer;
-            return retval;
+            constexpr int buffer_size = 16;
+            char buffer[buffer_size];
+            int i = snprintf(buffer, buffer_size, "%15.6f", x);
+            if (i > buffer_size)
+            {
+                int j = snprintf(buffer, buffer_size, "%.6g", x);
+                if (j > buffer_size) throw probLibException("error in double2str");
+            }
+            std::string return_value = buffer;
+            return return_value;
         }
 
         std::string probLibString::double2strTrimmed(const double x)
