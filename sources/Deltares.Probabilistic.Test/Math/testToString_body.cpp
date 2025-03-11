@@ -21,6 +21,7 @@
 //
 #include <gtest/gtest.h>
 #include <limits>
+#include <cmath>
 #include "../../Deltares.Probabilistic/Utils/probLibString.h"
 #include "testToString.h"
 
