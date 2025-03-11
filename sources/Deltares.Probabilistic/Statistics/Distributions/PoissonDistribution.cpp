@@ -84,11 +84,11 @@ namespace Deltares
 
         double PoissonDistribution::getPowerFactorial(double rate, int power)
         {
-            double value = 1;
+            double value = 1.0;
 
             for (int k = 1; k <= power; k++)
             {
-                value = value * rate / k;
+                value *= rate / k;
             }
 
             return value;
@@ -105,7 +105,7 @@ namespace Deltares
             }
             else
             {
-                return 0;
+                return 0.0;
             }
         }
 
@@ -113,10 +113,10 @@ namespace Deltares
         {
             int k = static_cast<int>(std::floor(x));
 
-            double cdf = 0;
+            double cdf = 0.0;
             for (int i = 0; i <= k; i++)
             {
-                cdf += getPDF(stochast, x);
+                cdf += getPDF(stochast, i);
             }
 
             return cdf;
