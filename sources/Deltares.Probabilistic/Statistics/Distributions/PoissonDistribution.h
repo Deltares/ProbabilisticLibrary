@@ -47,7 +47,7 @@ namespace Deltares
         private:
             const double kMax = 1000.0;
             const double delta = 0.0000001;
-            double getPowerFactorial(double rate, int power);
+            static double getPowerFactorial(double rate, int power);
         };
     }
 }

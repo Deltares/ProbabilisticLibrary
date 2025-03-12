@@ -95,6 +95,9 @@ namespace Deltares
             void setRemoveTaskFunction(RemoveTaskLambda removeTaskFunction) { this->removeTaskFunction = removeTaskFunction; }
             void runDesignPoint(std::shared_ptr<Reliability::DesignPoint> designPoint);
             void registerSample(std::shared_ptr<Sensitivity::CorrelationMatrixBuilder> correlationMatrixBuilder, std::shared_ptr<Sample> sample);
+            void updateVariableSample(std::vector<double>& xValues, std::vector<double>& originalValues);
+
+            bool haveSampleValuesChanged() const { return uConverter->haveSampleValuesChanged(); }
         private:
             std::shared_ptr<ZModel> zModel;
             std::shared_ptr<UConverter> uConverter;
@@ -103,6 +106,9 @@ namespace Deltares
             std::vector<std::shared_ptr<Evaluation>> evaluations;
             std::vector< std::shared_ptr<Message>> messages;
             std::shared_ptr<ProgressIndicator> progressIndicator = nullptr;
+
+            Evaluation* getEvaluation(std::shared_ptr<Sample> sample);
+            Evaluation* getEvaluationFromSample(std::shared_ptr<ModelSample> sample);
 
             void registerEvaluation(std::shared_ptr<ModelSample> sample);
 

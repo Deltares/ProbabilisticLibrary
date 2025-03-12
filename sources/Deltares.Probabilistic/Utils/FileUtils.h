@@ -19,26 +19,15 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#pragma once
-#include "../../Deltares.Probabilistic/Statistics/Stochast.h"
 
-namespace Deltares::Probabilistic::Test
+#pragma once
+#include <string>
+
+namespace Deltares::Reliability
 {
-    class testDistributions
+    class FileUtils
     {
     public:
-        static void allDistributionsTests();
-    private:
-        static void testConditionalWeibull();
-        static void testConditionalWeibullNonIntegerShape();
-        static void testConditionalWeibullMeanDeviation();
-        static void testConditionalWeibullCdfPdf();
-        static void testConditionalWeibullCdfPdf2();
-        static void testConditionalStochast();
-        static void testDesignValue();
-        static void testVariationCoefficient();
-        static void testPoisson();
-        static double getPdfNumerical(Statistics::Stochast& s, const double x);
+        static std::string getTempFilename();
     };
 }
-

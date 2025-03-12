@@ -43,6 +43,16 @@ namespace Deltares
                 this->AddHandler(handler);
             }
 
+            ProjectServer(std::shared_ptr<BaseHandler> handler, bool useDefaultServer)
+            {
+                if (useDefaultServer)
+                {
+                    std::shared_ptr<BaseHandler> defaultHandler = std::make_shared<ProjectHandler>();
+                    this->AddHandler(defaultHandler);
+                }
+                this->AddHandler(handler);
+            }
+
             int GetNewObjectId(int handlerIndex) override;
             int Create(std::string object_type);
             void Destroy(int id);

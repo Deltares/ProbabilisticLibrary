@@ -19,26 +19,27 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#pragma once
-#include "../../Deltares.Probabilistic/Statistics/Stochast.h"
 
-namespace Deltares::Probabilistic::Test
+#include "FileUtils.h"
+#include "probLibException.h"
+#include <cstdio>
+
+namespace Deltares::Reliability
 {
-    class testDistributions
+    std::string FileUtils::getTempFilename()
     {
-    public:
-        static void allDistributionsTests();
-    private:
-        static void testConditionalWeibull();
-        static void testConditionalWeibullNonIntegerShape();
-        static void testConditionalWeibullMeanDeviation();
-        static void testConditionalWeibullCdfPdf();
-        static void testConditionalWeibullCdfPdf2();
-        static void testConditionalStochast();
-        static void testDesignValue();
-        static void testVariationCoefficient();
-        static void testPoisson();
-        static double getPdfNumerical(Statistics::Stochast& s, const double x);
-    };
+        constexpr size_t bufSize = 1024;
+        char buffer[bufSize];
+#ifdef __GNUC__
+        if (tmpnam_r(buffer) != 0)
+#else
+        if (tmpnam_s(buffer, bufSize) != 0)
+#endif
+        {
+            throw probLibException("generating a temp name fails");
+        }
+        std::string tempFilename = buffer;
+        return tempFilename;
+    }
 }
 

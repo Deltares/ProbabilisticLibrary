@@ -29,8 +29,7 @@ namespace Deltares::Reliability
         std::shared_ptr<DesignPointCombiner> combiner = std::make_shared<DesignPointCombiner>();
         combiner->excludingCombinerType = this->settings->combinerMethod;
 
-        std::unique_ptr<DesignPoint> designPointPtr = combiner->combineDesignPointsExcluding(this->scenarios, this->designPoints);
-        this->designPoint = std::move(designPointPtr);
+        this->designPoint = combiner->combineDesignPointsExcluding(this->scenarios, this->designPoints);
     }
 
     std::vector<std::shared_ptr<Models::Message>> ExcludingCombineProject::validate() const

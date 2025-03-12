@@ -36,6 +36,7 @@ namespace Deltares::Probabilistic::Test
         testConditionalStochast();
         testDesignValue();
         testVariationCoefficient();
+        testPoisson();
     }
 
     void testDistributions::testConditionalWeibull()
@@ -222,5 +223,25 @@ namespace Deltares::Probabilistic::Test
         auto sd2 = dist.getDeviation();
         EXPECT_NEAR(sd2, mean2*var, 1e-9);
     }
+
+    void testDistributions::testPoisson()
+    {
+        auto dist = Stochast(DistributionType::Poisson, { 4.0 });
+
+        double pdf4 = dist.getPDF(4.0);
+        EXPECT_NEAR(pdf4, 0.19537, 0.0001);
+        double cdf4p1 = dist.getCDF(4.1);
+        double cdf4p2 = dist.getCDF(4.2);
+        EXPECT_NEAR(cdf4p1, 0.62884, 0.0001);
+        EXPECT_EQ(cdf4p1, cdf4p2) << "x from 4.0001... 4.9999 gives the same cdf";
+
+        double pdf10 = dist.getPDF(10.0);
+        EXPECT_NEAR(pdf10, 0.00529, 0.0001);
+        double cdf10p1 = dist.getCDF(10.1);
+        double cdf10p2 = dist.getCDF(10.2);
+        EXPECT_NEAR(cdf10p2, 0.99716, 0.0001);
+        EXPECT_EQ(cdf10p1, cdf10p2) << "x from 10.0001... 10.9999 gives the same cdf";
+    }
+
 }
 
