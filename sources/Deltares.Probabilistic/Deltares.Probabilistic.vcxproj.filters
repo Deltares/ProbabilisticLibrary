@@ -51,7 +51,6 @@
     <ClCompile Include="Reliability\StochastSettingsSet.cpp" />
     <ClCompile Include="Math\ASA\asa241.cpp" />
     <ClCompile Include="Math\vector1D.cpp" />
-    <ClCompile Include="Utils\probLibString.cpp" />
     <ClCompile Include="Reliability\DirectionReliabilitySettings.cpp" />
     <ClCompile Include="Math\cholesky_decomp.cpp" />
     <ClCompile Include="Math\matrix.cpp" />
@@ -121,7 +120,6 @@
     <ClCompile Include="Optimization\ClusterSettings.cpp" />
     <ClCompile Include="Optimization\KMeansClustering.cpp" />
     <ClCompile Include="Math\MatrixSupport.cpp" />
-    <ClCompile Include="Utils\Locker.cpp" />
     <ClCompile Include="Model\ProxySettings.cpp" />
     <ClCompile Include="Reliability\NumericalIntegration.cpp" />
     <ClCompile Include="Reliability\NumericalIntegrationSettings.cpp" />
@@ -139,7 +137,6 @@
     <ClCompile Include="Statistics\SparseCorrelationMatrix.cpp" />
     <ClCompile Include="Combine\CombineSettings.cpp" />
     <ClCompile Include="Combine\CombineProject.cpp" />
-    <ClCompile Include="Utils\DirtySupport.cpp" />
     <ClCompile Include="Statistics\Distributions\FragilityCurveDistribution.cpp" />
     <ClCompile Include="Combine\HohenbichlerFORM.cpp" />
     <ClCompile Include="Combine\HohenbichlerNumInt.cpp" />
@@ -218,6 +215,19 @@
     <ClCompile Include="Combine\HohenbichlerExcludingCombiner.cpp" />
     <ClCompile Include="Combine\ExcludingCombineProject.cpp" />
     <ClCompile Include="Combine\ExcludingCombineSettings.cpp" />
+    <ClCompile Include="Reliability\DesignPointIds.cpp" />
+    <ClCompile Include="Utils\FileUtils.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\probLibString.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\DirtySupport.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\Locker.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -307,8 +317,6 @@
     <ClInclude Include="Statistics\HistogramValue.h" />
     <ClInclude Include="Statistics\FragilityValue.h" />
     <ClInclude Include="Statistics\Distributions\DiscreteDistribution.h" />
-    <ClInclude Include="Utils\probLibString.h" />
-    <ClInclude Include="Utils\probLibException.h" />
     <ClInclude Include="Statistics\Distributions\QualitativeDistribution.h" />
     <ClInclude Include="Statistics\VariableStochastValue.h" />
     <ClInclude Include="Statistics\VariableStochastValueSet.h" />
@@ -358,7 +366,6 @@
     <ClInclude Include="Optimization\ClusterSettings.h" />
     <ClInclude Include="Optimization\KMeansClustering.h" />
     <ClInclude Include="Math\MatrixSupport.h" />
-    <ClInclude Include="Utils\Locker.h" />
     <ClInclude Include="Model\ProxySettings.h" />
     <ClInclude Include="Reliability\NumericalIntegration.h" />
     <ClInclude Include="Reliability\NumericalIntegrationSettings.h" />
@@ -376,7 +383,6 @@
     <ClInclude Include="Statistics\SparseCorrelationMatrix.h" />
     <ClInclude Include="Combine\CombineSettings.h" />
     <ClInclude Include="Combine\CombineProject.h" />
-    <ClInclude Include="Utils\DirtySupport.h" />
     <ClInclude Include="Statistics\Distributions\FragilityCurveDistribution.h" />
     <ClInclude Include="Combine\HohenbichlerFORM.h" />
     <ClInclude Include="Combine\HohenbichlerNumInt.h" />
@@ -454,6 +460,22 @@
     <ClInclude Include="Combine\HohenbichlerExcludingCombiner.h" />
     <ClInclude Include="Combine\ExcludingCombineProject.h" />
     <ClInclude Include="Combine\ExcludingCombineSettings.h" />
+    <ClInclude Include="Reliability\DesignPointIds.h" />
+    <ClInclude Include="Utils\FileUtils.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\probLibException.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\probLibString.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\DirtySupport.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\Locker.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">
@@ -467,6 +489,9 @@
     </Filter>
     <Filter Include="Combine">
       <UniqueIdentifier>{a3e0f7dc-9186-4b26-bf15-3e0f227ca8ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils">
+      <UniqueIdentifier>{9a15c781-7ae5-43dc-a1aa-500046f2606d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

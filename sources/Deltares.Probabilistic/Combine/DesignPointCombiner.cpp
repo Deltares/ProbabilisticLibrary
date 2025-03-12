@@ -23,6 +23,9 @@
 
 #include "HohenbichlerExcludingCombiner.h"
 #include "WeightedSumCombiner.h"
+#include "ImportanceSamplingCombiner.h"
+#include "HohenbichlerNumIntCombiner.h"
+#include "DirectionalSamplingCombiner.h"
 
 namespace Deltares
 {
@@ -50,14 +53,60 @@ namespace Deltares
             }
         }
 
+        std::shared_ptr<DesignPoint> DesignPointCombiner::combineDesignPoints(combineAndOr combineMethodType,
+            std::vector<std::shared_ptr<DesignPoint>>& designPoints,
+            std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix,
+            std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix,
+            std::shared_ptr<ProgressIndicator> progress)
+        {
+            const std::shared_ptr<Combiner> combiner = getCombiner();
+            std::shared_ptr<DesignPoint> combinedDesignPoint = combiner->combineDesignPoints(combineMethodType, designPoints, selfCorrelationMatrix, progress);
+
+            applyCorrelation(designPoints, correlationMatrix, combinedDesignPoint.get());
+
+            return combinedDesignPoint;
+        }
+
+        std::shared_ptr<DesignPoint> DesignPointCombiner::combineDesignPointsExcluding(
+            std::vector<std::shared_ptr<Statistics::Scenario>>& scenarios,
+            std::vector<std::shared_ptr<DesignPoint>>& designPoints,
+            std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix)
+        {
+            const std::unique_ptr<ExcludingCombiner> combiner = getExcludingCombiner();
+            std::shared_ptr<DesignPoint> combinedDesignPoint = combiner->combineExcludingDesignPoints(scenarios, designPoints);
+
+            applyCorrelation(designPoints, correlationMatrix, combinedDesignPoint.get());
+
+            return combinedDesignPoint;
+        }
+
+        void DesignPointCombiner::applyCorrelation(std::vector<std::shared_ptr<DesignPoint>>& designPoints,
+                                                   std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix,
+                                                   DesignPoint* combinedDesignPoint)
+        {
+            if (correlationMatrix != nullptr && !correlationMatrix->IsIdentity())
+            {
+                std::vector<std::shared_ptr<Statistics::Stochast>> stochasts = DesignPoint::getUniqueStochasts(designPoints);
+                Models::UConverter uConverter = UConverter(stochasts, correlationMatrix);
+                uConverter.initializeForRun();
+
+                std::shared_ptr<Sample> sample = combinedDesignPoint->getSample();
+                std::shared_ptr<StochastPoint> stochastPoint = uConverter.GetStochastPoint(sample, combinedDesignPoint->Beta);
+
+                for (size_t i = 0; i < combinedDesignPoint->Alphas.size(); i++)
+                {
+                    combinedDesignPoint->Alphas[i]->AlphaCorrelated = stochastPoint->Alphas[i]->AlphaCorrelated;
+                    combinedDesignPoint->Alphas[i]->X = stochastPoint->Alphas[i]->X;
+                }
+            }
+        }
+
         std::unique_ptr<ExcludingCombiner> DesignPointCombiner::getExcludingCombiner() const
         {
             switch (excludingCombinerType)
             {
-            case ExcludingCombinerType::WeightedSum:
-                return std::make_unique<WeightedSumCombiner>();
-            case ExcludingCombinerType::HohenbichlerExcluding:
-                return std::make_unique<HohenbichlerExcludingCombiner>();
+            case ExcludingCombinerType::WeightedSum: return std::make_unique<WeightedSumCombiner>();
+            case ExcludingCombinerType::HohenbichlerExcluding: return std::make_unique<HohenbichlerExcludingCombiner>();
             default: throw probLibException("Excluding combiner type");
             }
         }
@@ -86,6 +135,7 @@ namespace Deltares
             case CombinerType::Hohenbichler: return "hohenbichler";
             case CombinerType::ImportanceSampling: return "importance_sampling";
             case CombinerType::DirectionalSampling: return "directional_sampling";
+            case CombinerType::HohenbichlerForm: return "hohenbichler_form";
             default: throw probLibException("Combiner method");
             }
         }
@@ -95,6 +145,7 @@ namespace Deltares
             if (method == "hohenbichler") return CombinerType::Hohenbichler;
             else if (method == "importance_sampling") return CombinerType::ImportanceSampling;
             else if (method == "directional_sampling") return CombinerType::DirectionalSampling;
+            else if (method == "hohenbichler_form") return CombinerType::HohenbichlerForm;
             else throw probLibException("Combiner method type");
         }
 
@@ -110,7 +161,7 @@ namespace Deltares
 
         ExcludingCombinerType DesignPointCombiner::getExcludingCombinerMethod(const std::string& method)
         {
-            if (method == "hohenbichler") return ExcludingCombinerType::HohenbichlerExcluding;
+            if (method == "hohenbichler_excluding") return ExcludingCombinerType::HohenbichlerExcluding;
             else if (method == "weighted_sum") return ExcludingCombinerType::WeightedSum;
             else throw probLibException("Excluding combiner method type");
         }

@@ -104,11 +104,16 @@ namespace Deltares
             {
                 ModelSample^ sampleWrapper = gcnew ModelSample(sample);
                 this->CalcZValue(sampleWrapper);
+
+                if (shared->object->haveSampleValuesChanged())
+                {
+                    sampleWrapper->SynchronizeInputValues();
+                }
             }
 
             /**
              * \brief Callback method for calculating samples in .net invoked by a native algorithm
-             * \param samples 
+             * \param samples
              */
             void ModelRunner::invokeMultipleSamples(std::vector<std::shared_ptr<Models::ModelSample>> samples)
             {
@@ -120,6 +125,14 @@ namespace Deltares
                 }
 
                 this->CalcZValues(sampleWrappers);
+
+                if (shared->object->haveSampleValuesChanged())
+                {
+                    for (int i = 0; i < sampleWrappers->Count; i++)
+                    {
+                        sampleWrappers[i]->SynchronizeInputValues();
+                    }
+                }
             }
 
             void ModelRunner::SetShouldInvertDelegate(ShouldInvertDelegate^ shouldInvertDelegate)
@@ -188,6 +201,18 @@ namespace Deltares
             array<double>^ ModelRunner::GetOnlyVaryingValues(array<double>^ values)
             {
                 return NativeSupport::toManaged(shared->object->getOnlyVaryingValues(NativeSupport::toNative(values)));
+            }
+
+            void ModelRunner::UpdateVariableSample(array<double>^ values, array<double>^ originalValues)
+            {
+                std::vector<double> nativeValues = NativeSupport::toNative(values);
+                std::vector<double> nativeOriginalValues = NativeSupport::toNative(originalValues);
+                shared->object->updateVariableSample(nativeValues, nativeOriginalValues);
+
+                for (size_t i = 0; i < values->Length; i++)
+                {
+                    values[i] = nativeValues[i];
+                }
             }
         }
     }

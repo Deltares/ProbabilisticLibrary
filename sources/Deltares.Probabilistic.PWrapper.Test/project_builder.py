@@ -60,6 +60,10 @@ def linear_bc(b, c):
     L = 1.8
     return L - (b + c)
 
+def linear_cd(c, d):
+    L = 1.8
+    return L - (c + d)
+
 def linear_abc(a, b, c):
     return 1.8 - (a+b+c)
 

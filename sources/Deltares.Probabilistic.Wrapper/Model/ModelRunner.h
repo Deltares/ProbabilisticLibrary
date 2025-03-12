@@ -68,7 +68,6 @@ namespace Deltares
                 Deltares::Utils::Wrappers::TagRepository^ tagRepository = gcnew TagRepository();
 
                 System::Collections::Generic::List<System::Runtime::InteropServices::GCHandle>^ handles = gcnew System::Collections::Generic::List<System::Runtime::InteropServices::GCHandle>();
-
             public:
                 /**
                  * \brief Constructor
@@ -162,6 +161,8 @@ namespace Deltares
                 ModelSample^ GetModelSample(Sample^ sample);
 
                 array<double>^ GetOnlyVaryingValues(array<double>^ values);
+
+                void UpdateVariableSample(array<double>^ values, array<double>^ originalValues);
 
                 int SetTag(System::Object^ object)
                 {

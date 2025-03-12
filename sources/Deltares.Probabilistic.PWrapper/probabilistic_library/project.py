@@ -555,6 +555,7 @@ class CombineProject:
 		self._design_points = CallbackList(self._design_points_changed)
 		self._settings = CombineSettings()
 		self._correlation_matrix = SelfCorrelationMatrix()
+		self._design_point_correlation_matrix = CorrelationMatrix()
 		self._design_point = None
 
 	def __del__(self):
@@ -563,6 +564,8 @@ class CombineProject:
 	def __dir__(self):
 		return ['design_points',
 				'settings',
+				'correlation_matrix',
+				'design_point_correlation_matrix',
 				'design_point']
 
 	def _design_points_changed(self):
@@ -570,6 +573,7 @@ class CombineProject:
 		for design_point in self._design_points:
 			variables.extend(design_point.get_variables())
 		self._correlation_matrix._set_variables(variables)
+		self._design_point_correlation_matrix._set_variables(variables)
 
 	@property
 	def design_points(self):
@@ -588,6 +592,7 @@ class CombineProject:
 		interface.SetArrayIntValue(self._id, 'design_points', [design_point._id for design_point in self._design_points])
 		interface.SetIntValue(self._id, 'settings', self._settings._id)
 		interface.SetIntValue(self._id, 'correlation_matrix', self._correlation_matrix._id)
+		interface.SetIntValue(self._id, 'design_point_correlation_matrix', self._design_point_correlation_matrix._id)
 		interface.Execute(self._id, 'run')
 
 	@property

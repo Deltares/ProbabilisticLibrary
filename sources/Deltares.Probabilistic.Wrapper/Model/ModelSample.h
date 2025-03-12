@@ -118,9 +118,17 @@ namespace Deltares
                     void set(double value) { shared->object->Z = value; }
                 }
 
-                void SetOutputValues(array<double>^ outputValues)
+                    void SetOutputValues(array<double>^ outputValues)
                 {
                     shared->object->OutputValues = NativeSupport::toNative(outputValues);
+                }
+
+                void SynchronizeInputValues()
+                {
+                    for (size_t i = 0; i < shared->object->Values.size(); i++)
+                    {
+                        shared->object->Values[i] = this->Values[i];
+                    }
                 }
 
                 bool AreValuesEqual(ModelSample^ other)

@@ -29,7 +29,7 @@ namespace Deltares
 {
     namespace Reliability
     {
-        std::unique_ptr<DesignPoint> WeightedSumCombiner::combineExcludingDesignPoints(std::vector<std::shared_ptr<Statistics::Scenario>>& scenarios, std::vector<std::shared_ptr<Reliability::DesignPoint>>& designPoints)
+        std::shared_ptr<DesignPoint> WeightedSumCombiner::combineExcludingDesignPoints(std::vector<std::shared_ptr<Statistics::Scenario>>& scenarios, std::vector<std::shared_ptr<Reliability::DesignPoint>>& designPoints)
         {
             if (scenarios.size() != designPoints.size())
             {
@@ -77,7 +77,7 @@ namespace Deltares
             combinedSample = combinedSample->getSampleAtBeta(combinedBeta);
 
             // create final design point
-            std::unique_ptr<DesignPoint> combinedDesignPoint = std::make_unique<DesignPoint>();
+            std::shared_ptr<DesignPoint> combinedDesignPoint = std::make_shared<DesignPoint>();
             combinedDesignPoint->Beta = combinedBeta;
 
             // create alpha values for final design point
