@@ -119,7 +119,7 @@ def evaluate_one_value(sens, key_var, val):
     sens.run()
     return sens.stochast.mean
 
-def find_Z_0(project, f, given_var, given_val, find_var, start_int, end_int, tol=1e-5, max_iter=100):
+def find_z_zero(project, f, given_var, given_val, find_var, start_int, end_int, tol=1e-5, max_iter=100):
 
     sens = SensitivityProject()
     sens.model = f
@@ -155,9 +155,9 @@ def find_Z_0(project, f, given_var, given_val, find_var, start_int, end_int, tol
 
     return (start_int + end_int) / 2
 
-def plot_Z_0(project, f, given_var, given_var_range, find_var, start_int, end_int):
+def plot_z_zero(project, f, given_var, given_var_range, find_var, start_int, end_int):
 
-    find_val = [find_Z_0(project, f, given_var, val, find_var, start_int, end_int, tol=1e-5, max_iter=100) for val in given_var_range]
+    find_val = [find_z_zero(project, f, given_var, val, find_var, start_int, end_int, tol=1e-5, max_iter=100) for val in given_var_range]
 
     x_given_var = project.design_point.alphas[given_var].x
     x_find_var = project.design_point.alphas[find_var].x
