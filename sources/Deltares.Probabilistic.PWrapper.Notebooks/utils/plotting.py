@@ -70,7 +70,6 @@ def plot_realizations_3d(dp, pm):
 
     r_1 = [realization.input_values[int(index_last_three[0])] for realization in dp.realizations]
     r_2 = [realization.input_values[int(index_last_three[1])] for realization in dp.realizations]
-    r_3 = [realization.input_values[int(index_last_three[2])] for realization in dp.realizations]
     colors = ["r" if val < 0 else "g" for val in z]
 
     # plot realizations
@@ -93,7 +92,6 @@ def plot_realizations_3d(dp, pm):
 def plot_beta_prob(dp):
 
     n = len(dp.realizations)
-    z = [dp.realizations[id].z for id in range(n)]
     beta = [dp.realizations[id].beta for id in range(n)]
 
     prob = [1-StandardNormal.get_p_from_u(val) for val in beta]

@@ -6,7 +6,7 @@ def bligh(m, L, c_creep, delta_H):
     Z = m * L / c_creep - delta_H
     return Z
 
-# Z-fuction Hunt
+# Z-function Hunt
 def hunt(t_p, tan_alpha, h_s, h_crest, h):
     g = 9.81
     l_0 = g  * t_p * t_p
