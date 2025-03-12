@@ -3,6 +3,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from probabilistic_library import StandardNormal, SensitivityProject, SensitivityMethod, DistributionType
 
+design_point_label = "design point"
+
 # plot distribution
 def plot_dist(val_grid, stochast):
 
@@ -51,7 +53,7 @@ def plot_realizations_2d(dp, pm):
     plt.scatter(r_1, r_2, color=colors, alpha=0.5)
     plt.scatter(dp.alphas[int(index_last_two[0])].x, 
                 dp.alphas[int(index_last_two[1])].x, 
-                label="design point", 
+                label=design_point_label, 
                 color="black")
     plt.xlabel(pm.input_parameters[int(index_last_two[0])].name)
     plt.ylabel(pm.input_parameters[int(index_last_two[1])].name)
@@ -80,7 +82,7 @@ def plot_realizations_3d(dp, pm):
     ax.scatter(dp.alphas[int(index_last_three[0])].x, 
                 dp.alphas[int(index_last_three[1])].x, 
                 dp.alphas[int(index_last_three[2])].x,
-                label="design point", 
+                label=design_point_label, 
                 color="black")
     ax.set_xlabel(pm.input_parameters[int(index_last_three[0])].name)
     ax.set_ylabel(pm.input_parameters[int(index_last_three[1])].name)
