@@ -169,7 +169,7 @@ def plot_Z_0(project, f, given_var, given_var_range, find_var, start_int, end_in
 
     plt.figure()
     plt.plot(given_var_range, find_val, label="Z=0")
-    plt.scatter(x_given_var, x_find_var, label="design point", color="black")
+    plt.scatter(x_given_var, x_find_var, label=design_point_label, color="black")
     plt.xlabel(given_var)
     plt.ylabel(find_var)
     plt.legend()
