@@ -32,6 +32,12 @@ def linear_ab(a, b):
     L = 1.8
     return L - (a+b)
 
+class InitializedLinearModel:
+    def __init__(self, L):
+        self._L = L
+    def calculate(self, a, b):
+        return self._L - (a+b)
+
 def linear_ab_array(L:float, a:list[float], b:list[float]):
     z = L
     for i in range(len(a)):
@@ -106,6 +112,25 @@ def get_linear_project():
     project = ReliabilityProject()
 
     project.model = linear_ab
+
+    stochast1 = project.variables['a']
+    stochast1.distribution = DistributionType.uniform
+    stochast1.minimum = -1
+    stochast1.maximum = 1;
+
+    stochast2 = project.variables['b']
+    stochast2.distribution =  DistributionType.uniform
+    stochast2.minimum = -1
+    stochast2.maximum = 1;
+
+    return project
+
+def get_linear_initialized_project():
+
+    project = ReliabilityProject()
+    initialized = InitializedLinearModel(1.8)
+
+    project.model = initialized.calculate
 
     stochast1 = project.variables['a']
     stochast1.distribution = DistributionType.uniform

@@ -62,7 +62,7 @@ class ZModel:
 		ZModel._index = 0;
 		ZModel._callback = callback
 		self._model = None
-		self._is_function = inspect.isfunction(callback)
+		self._is_function = inspect.isfunction(callback) or inspect.ismethod(callback)
 		self._is_dirty = False
 		self._has_arrays = False
 		self._array_sizes = None
@@ -357,7 +357,7 @@ class ModelProject:
 
 	@model.setter
 	def model(self, value):
-		if inspect.isfunction(value):
+		if inspect.isfunction(value) or inspect.ismethod(value):
 			ModelProject._zmodel = ZModel(value)
 			self._update_model()
 		elif isinstance(value, ZModelContainer):
