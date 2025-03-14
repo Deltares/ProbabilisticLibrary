@@ -56,11 +56,11 @@ namespace Deltares
                         if (static_cast<int>(stochasts[i]->ArrayValues.size()) > j)
                         {
                             stochasts[i]->ArrayValues[j]->name = stochasts[i]->getIndexedStochastName(j);
-                            this->stochasts.push_back(std::make_shared<ComputationalStochast>(stochasts[i]->ArrayValues[j], j));
+                            this->stochasts.push_back(std::make_shared<ComputationalStochast>(stochasts[i], stochasts[i]->ArrayValues[j], j));
                         }
                         else
                         {
-                            this->stochasts.push_back(std::make_shared<ComputationalStochast>(stochasts[i], j));
+                            this->stochasts.push_back(std::make_shared<ComputationalStochast>(stochasts[i], stochasts[i], j));
                         }
                         mapping[k++] = static_cast<int>(i);
                         k++;
@@ -68,7 +68,7 @@ namespace Deltares
                 }
                 else
                 {
-                    this->stochasts.push_back(std::make_shared<ComputationalStochast>(stochasts[i]));
+                    this->stochasts.push_back(std::make_shared<ComputationalStochast>(stochasts[i], stochasts[i]));
                     mapping[k++] = static_cast<int>(i);
                 }
             }
@@ -150,18 +150,18 @@ namespace Deltares
                     bool variableStochastIndexFound = false;
                     for (size_t j = 0; j < this->stochasts.size(); j++)
                     {
-                        if (stochasts[j]->definition == this->stochasts[i]->definition->VariableSource)
+                        if (stochasts[j]->source == this->stochasts[i]->definition->VariableSource)
                         {
-                            bool valid = !stochasts[j]->definition->modelParameter->isArray ||
+                            bool valid = !stochasts[j]->source->modelParameter->isArray ||
                                          (this->stochasts[i]->definition->modelParameter->isArray &&
-                                          this->stochasts[i]->definition->modelParameter->arraySize == this->stochasts[j]->definition->modelParameter->arraySize);
+                                          this->stochasts[i]->definition->modelParameter->arraySize == this->stochasts[j]->source->modelParameter->arraySize);
 
                             if (!valid)
                             {
                                 throw Reliability::probLibException("When using array variable stochasts, the size of the arrays must match");
                             }
 
-                            if (!stochasts[j]->definition->modelParameter->isArray ||
+                            if (!stochasts[j]->source->modelParameter->isArray ||
                                 this->stochasts[i]->index == this->stochasts[j]->index)
                             {
                                 variableStochastIndex[i] = static_cast<int>(j);
