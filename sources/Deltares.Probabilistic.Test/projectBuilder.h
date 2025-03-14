@@ -39,6 +39,7 @@ namespace Deltares
                 std::shared_ptr<Deltares::Models::ModelRunner> BuildProject();
                 std::shared_ptr<Deltares::Models::ModelRunner> BuildLinearProject();
                 std::shared_ptr<Deltares::Models::ModelRunner> BuildLinearArrayProject();
+                std::shared_ptr<Deltares::Models::ModelRunner> BuildLinearVaryingArrayProject();
                 std::shared_ptr<Deltares::Models::ModelRunner> BuildQuadraticProject();
                 std::shared_ptr<Deltares::Models::ModelRunner> BuildProjectWithDeterminist(double valueDeterminist);
                 std::shared_ptr<Reliability::FragilityCurve> BuildFragilityCurve();

@@ -52,6 +52,11 @@ namespace Deltares
             this->properties->dirty = true;
         }
 
+        std::string Stochast::getIndexedStochastName(int index)
+        {
+            return this->name + "[" + std::to_string(index) + "]";
+        }
+
         double Stochast::getPDF(double x)
         {
             return this->distribution->getPDF(properties, x);
@@ -225,6 +230,18 @@ namespace Deltares
             if (this->IsVariableStochast)
             {
                 return this->ValueSet->isVarying(this->distributionType, this->properties);
+            }
+            else if (this->modelParameter->isArray && !this->ArrayValues.empty())
+            {
+                for (std::shared_ptr<Stochast> arrayValue : this->ArrayValues)
+                {
+                    if (arrayValue->isVarying())
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
             }
             else
             {

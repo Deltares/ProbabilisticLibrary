@@ -147,6 +147,62 @@ class Test_reliability(unittest.TestCase):
         self.assertEqual(0, alphas[6].index)
         self.assertEqual(project.variables['b'], alphas[6].variable)
 
+    def test_form_linear_varying_array(self):
+        project = project_builder.get_linear_array_project()
+
+        self.assertEqual(False, project.variables['L'].is_array)
+        self.assertEqual(True, project.variables['a'].is_array)
+        self.assertEqual(True, project.variables['b'].is_array)
+
+        project.variables['a'].distribution = DistributionType.deterministic
+        project.variables['b'].distribution = DistributionType.deterministic
+
+        project.variables['a'].array_size = 5
+        project.variables['b'].array_size = 5
+
+        for i in range(project.variables['a'].array_size):
+            a_array = Stochast()
+            a_array.distribution = DistributionType.uniform
+            a_array.minimum = i-3
+            a_array.maximum = i-1
+            project.variables['a'].array_values.append(a_array)
+
+        for i in range(project.variables['b'].array_size):
+            b_array = Stochast()
+            b_array.distribution = DistributionType.uniform
+            b_array.minimum = i-3
+            b_array.maximum = i-1
+            project.variables['b'].array_values.append(b_array)
+
+        project.settings.reliability_method = ReliabilityMethod.form
+
+        project.run();
+
+        dp = project.design_point;
+
+        beta = dp.reliability_index;
+        alphas = dp.alphas;
+
+        self.assertAlmostEqual(0.71, beta, delta=margin)
+        self.assertEqual(11, len(alphas))
+
+        self.assertAlmostEqual(0, alphas[0].alpha, delta=margin)
+        self.assertAlmostEqual(1.8, alphas[0].x, delta=margin)
+        self.assertEqual(project.variables['L'], alphas[0].variable)
+
+        self.assertAlmostEqual(-0.31, alphas[1].alpha, delta=margin)
+        self.assertAlmostEqual(-1.82, alphas[1].x, delta=margin)
+        self.assertAlmostEqual(2.18, alphas[5].x, delta=margin)
+        self.assertEqual(0, alphas[1].index)
+        self.assertEqual(4, alphas[5].index)
+        self.assertEqual(project.variables['a'].array_values[0], alphas[1].variable)
+        self.assertEqual('a[0]', str(alphas[1]))
+
+        self.assertAlmostEqual(-0.31, alphas[6].alpha, delta=margin)
+        self.assertAlmostEqual(-1.82, alphas[6].x, delta=margin)
+        self.assertEqual(0, alphas[6].index)
+        self.assertEqual(project.variables['b'].array_values[0], alphas[6].variable)
+
     def test_form_linear_conditional_array(self):
         project = project_builder.get_linear_array_project()
 

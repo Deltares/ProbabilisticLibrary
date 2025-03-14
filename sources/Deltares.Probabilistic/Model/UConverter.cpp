@@ -30,6 +30,7 @@
 #include "../Utils/probLibException.h"
 
 #include <memory>
+#include <ostream>
 #include <set>
 
 namespace Deltares
@@ -52,7 +53,15 @@ namespace Deltares
                     for (int j = 0; j < stochasts[i]->modelParameter->arraySize; j++)
                     {
                         hasArrayStochasts = true;
-                        this->stochasts.push_back(std::make_shared<ComputationalStochast>(stochasts[i], j));
+                        if (static_cast<int>(stochasts[i]->ArrayValues.size()) > j)
+                        {
+                            stochasts[i]->ArrayValues[j]->name = stochasts[i]->getIndexedStochastName(j);
+                            this->stochasts.push_back(std::make_shared<ComputationalStochast>(stochasts[i]->ArrayValues[j], j));
+                        }
+                        else
+                        {
+                            this->stochasts.push_back(std::make_shared<ComputationalStochast>(stochasts[i], j));
+                        }
                         mapping[k++] = static_cast<int>(i);
                         k++;
                     }
@@ -107,20 +116,23 @@ namespace Deltares
             this->hasVariableStochasts = false;
             this->sampleValuesChanged = false;
 
+            std::set<std::shared_ptr<Statistics::Stochast>> initializedStochasts;
+
             for (std::shared_ptr<ComputationalStochast> stochast : this->stochasts)
             {
-                if (stochast->index == 0)
+                if (!initializedStochasts.contains(stochast->definition))
                 {
                     stochast->definition->initializeForRun();
+                    initializedStochasts.insert(stochast->definition);
                 }
             }
 
             for (size_t i = 0; i < this->stochasts.size(); i++)
             {
-                if (this->stochasts[i]->definition->isVarying() && !isFullyCorrelated(i, this->varyingStochastIndex))
+                if (this->stochasts[i]->definition->isVarying() && !isFullyCorrelated(static_cast<int>(i), this->varyingStochastIndex))
                 {
-                    this->varyingStochastIndex.push_back(i);
-                    this->pureVaryingStochastIndex.push_back(i);
+                    this->varyingStochastIndex.push_back(static_cast<int>(i));
+                    this->pureVaryingStochastIndex.push_back(static_cast<int>(i));
                     this->varyingStochasts.push_back(this->stochasts[i]);
                     this->hasQualitiveStochasts |= this->stochasts[i]->definition->isQualitative();
                 }
@@ -152,7 +164,7 @@ namespace Deltares
                             if (!stochasts[j]->definition->modelParameter->isArray ||
                                 this->stochasts[i]->index == this->stochasts[j]->index)
                             {
-                                variableStochastIndex[i] = j;
+                                variableStochastIndex[i] = static_cast<int>(j);
                                 variableStochastIndexFound = true;
                                 break;
                             }

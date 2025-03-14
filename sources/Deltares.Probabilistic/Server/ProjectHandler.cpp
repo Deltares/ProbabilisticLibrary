@@ -20,10 +20,9 @@
 // All rights reserved.
 //
 # include "ProjectHandler.h"
+
 #include <string>
 #include <memory>
-
-#include "ProjectServer.h"
 
 namespace Deltares
 {
@@ -629,6 +628,7 @@ namespace Deltares
                 else if (property_ == "fragility_values_count") return static_cast<int>(stochast->getProperties()->FragilityValues.size());
                 else if (property_ == "contributing_stochasts_count") return static_cast<int>(stochast->getProperties()->ContributingStochasts.size());
                 else if (property_ == "conditional_values_count") return static_cast<int>(stochast->ValueSet->StochastValues.size());
+                else if (property_ == "array_values_count") return static_cast<int>(stochast->ArrayValues.size());
                 else if (property_ == "special_values_count") tempValues["special_values"] = stochast->getSpecialXValues(); return static_cast<int>(tempValues["special_values"].size());
             }
             else if (objectType == ObjectType::ConditionalValue)
@@ -1467,6 +1467,14 @@ namespace Deltares
                         stochast->ValueSet->StochastValues.push_back(conditionalValues[values[i]]);
                     }
                 }
+                else if (property_ == "array_values")
+                {
+                    stochast->ArrayValues.clear();
+                    for (int i = 0; i < size; i++)
+                    {
+                        stochast->ArrayValues.push_back(stochasts[values[i]]);
+                    }
+                }
             }
             else if (objectType == ObjectType::DesignPoint)
             {
@@ -1726,6 +1734,7 @@ namespace Deltares
                 else if (property_ == "fragility_values") return this->GetFragilityValueId(stochast->getProperties()->FragilityValues[index], newId);
                 else if (property_ == "contributing_stochasts") return this->GetContributingStochastId(stochast->getProperties()->ContributingStochasts[index], newId);
                 else if (property_ == "conditional_values") return this->GetConditionalValueId(stochast->ValueSet->StochastValues[index], newId);
+                else if (property_ == "array_values") return this->GetStochastId(stochast->ArrayValues[index], newId);
             }
             else if (objectType == ObjectType::FragilityCurve)
             {

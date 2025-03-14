@@ -525,9 +525,18 @@ class ReliabilityProject(ModelProject):
 		if self._design_point is None:
 			designPointId = interface.GetIdValue(self._id, 'design_point')
 			if designPointId > 0:
-				self._design_point = DesignPoint(designPointId, self.variables)
+				self._design_point = DesignPoint(designPointId, self._get_variables())
 
 		return self._design_point
+
+	def _get_variables(self):
+		variables = []
+		variables.extend(self.variables)
+		for variable in variables:
+			for array_value in variable.array_values:
+				if array_value not in variables:
+					variables.append(array_value)
+		return variables
 
 	@property
 	def fragility_curve(self):

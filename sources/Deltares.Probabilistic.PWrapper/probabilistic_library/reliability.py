@@ -918,6 +918,9 @@ class FragilityCurveProject:
 				for alpha in fragility_value.design_point.alphas:
 					if alpha.variable is not None and alpha.variable not in variables:
 						variables.append(alpha.variable)
+						for array_value in alpha.variable.array_values:
+							if array_value not in variables:
+								variables.append(array_value)
 		return variables
 
 

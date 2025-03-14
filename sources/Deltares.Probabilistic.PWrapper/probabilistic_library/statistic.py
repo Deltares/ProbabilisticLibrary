@@ -187,6 +187,7 @@ class Stochast:
 		self._contributing_stochasts = None
 		self._conditional_values = None
 		self._conditional_source = None
+		self._array_values = None
 		self._variables = FrozenList() # other known variables, to which a reference can exist
 		self._synchronizing = False
 
@@ -231,7 +232,8 @@ class Stochast:
 				'design_fraction',
 				'design_value',
 				'is_array',
-				'array_size']
+				'array_size',
+                'array_values']
 
 	def _set_variables(self, variables):
 		self._variables = variables
@@ -483,6 +485,22 @@ class Stochast:
 	def _conditional_values_changed(self):
 		if not self._synchronizing:
 			interface.SetArrayIntValue(self._id, 'conditional_values', [conditional_value._id for conditional_value in self._conditional_values])
+
+	@property
+	def array_values(self):
+		if self._array_values is None:
+			self._synchronizing = True
+			self._array_values = CallbackList(self._array_values_changed)
+			array_value_ids = interface.GetArrayIdValue(self._id, 'array_values')
+			for array_value_id in array_value_ids:
+				self._array_values.append(Stochast(array_value_id))
+			self._synchronizing = False
+
+		return self._array_values
+
+	def _array_values_changed(self):
+		if not self._synchronizing:
+			interface.SetArrayIntValue(self._id, 'array_values', [array_value._id for array_value in self._array_values])
 
 	@property
 	def design_quantile(self):

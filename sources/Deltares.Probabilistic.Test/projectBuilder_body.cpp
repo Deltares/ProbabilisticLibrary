@@ -85,6 +85,31 @@ namespace Deltares
                 return m;
             }
 
+            std::shared_ptr<ModelRunner> projectBuilder::BuildLinearVaryingArrayProject()
+            {
+                std::shared_ptr<ZModel> z(new ZModel(ZModel([this](std::shared_ptr<ModelSample> v) { return linear(v); })));
+                auto stochasts = std::vector<std::shared_ptr<Stochast>>();
+                std::shared_ptr<Stochast> s = std::make_shared<Stochast>();
+                s->modelParameter->isArray = true;
+                s->modelParameter->arraySize = 5;
+                s->name = "s";
+                for (int i = 0; i < s->modelParameter->arraySize; i++)
+                {
+                    std::shared_ptr<Stochast> s1(new Stochast());
+                    s1->setDistributionType(DistributionType::Uniform);
+                    s1->getProperties()->Minimum = i - 3;
+                    s1->getProperties()->Maximum = i - 1;
+                    s->ArrayValues.push_back(s1);
+                }
+                stochasts.push_back(s);
+                stochasts.push_back(s);
+                std::shared_ptr<CorrelationMatrix> corr(new CorrelationMatrix());
+                std::shared_ptr<UConverter> uConverter(new UConverter(stochasts, corr));
+                uConverter->initializeForRun();
+                std::shared_ptr<ModelRunner> m(new ModelRunner(z, uConverter));
+                return m;
+            }
+
             std::shared_ptr<ModelRunner> projectBuilder::BuildQuadraticProject()
             {
                 std::shared_ptr<ZModel> z = std::make_shared<ZModel>(ZModel([](std::shared_ptr<ModelSample> v) { return quadratic(v); }));

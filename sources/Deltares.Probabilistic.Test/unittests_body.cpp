@@ -132,6 +132,12 @@ TEST(reliability_method_test, testFORMArray)
     tstRelMethods.testFORMArray();
 }
 
+TEST(reliability_method_test, testFORMVaryingArray)
+{
+    auto tstRelMethods = testReliabilityMethods();
+    tstRelMethods.testFORMVaryingArray();
+}
+
 TEST(reliability_method_test, testLatinHyperCube)
 {
     auto tstRelMethods = testReliabilityMethods();
