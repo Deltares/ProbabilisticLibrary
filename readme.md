@@ -6,7 +6,9 @@ The library provides a set of routines that enable reliability analysis of a com
 
 ## Scientific background
 
-Contact Deltares to obtain the scientific background document.
+The scientific background document is part of the release,
+and can be found here:
+[scientific_background.pdf](https://github.com/Deltares/ProbabilisticLibrary/releases/download/25.1.1/scientific_background.pdf)
 
 ## Python wrapper
 
