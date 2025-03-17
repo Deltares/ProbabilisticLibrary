@@ -53,6 +53,18 @@ namespace Deltares
                 Tag = 0;
             }
 
+            /**
+             * \brief Copies the results from another sample
+             */
+            void copyFrom(const std::shared_ptr<ModelSample>& source)
+            {
+                this->OutputValues = std::vector<double>(source->OutputValues.size());
+                for (size_t i = 0; i < this->OutputValues.size(); i++)
+                {
+                    this->OutputValues[i] = source->OutputValues[i];
+                }
+            }
+
             std::vector<double> Values;
             std::vector<double> OutputValues;
 

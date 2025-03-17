@@ -150,8 +150,22 @@ namespace Deltares
                 throw Reliability::probLibException("callback function not set or released");
             }
 
-            sample->threadId = omp_get_thread_num();
-            this->zLambda(sample);
+            std::shared_ptr<ModelSample> alreadyExecutedSample = countRunsLambda ? repository.retrieveSample(sample) : nullptr;
+
+            if (alreadyExecutedSample == nullptr)
+            {
+                sample->threadId = omp_get_thread_num();
+                this->zLambda(sample);
+
+                if (countRunsLambda)
+                {
+                    repository.registerSample(sample);
+                }
+            }
+            else
+            {
+                sample->copyFrom(alreadyExecutedSample);
+            }
 
             this->zValueConverter->updateZValue(sample);
 
@@ -163,29 +177,50 @@ namespace Deltares
 
         void ZModel::invoke(std::vector<std::shared_ptr<ModelSample>> samples)
         {
+            std::vector<std::shared_ptr<ModelSample>> executeSamples;
+            for (std::shared_ptr<ModelSample> sample : samples)
+            {
+                std::shared_ptr<ModelSample> alreadyExecutedSample = repository.retrieveSample(sample);
+
+                if (alreadyExecutedSample == nullptr)
+                {
+                    executeSamples.push_back(sample);
+                }
+                else
+                {
+                    sample->copyFrom(alreadyExecutedSample);
+                    this->zValueConverter->updateZValue(sample);
+                }
+            }
+
             if (zMultipleLambda == nullptr)
             {
                 this->countRunsLambda = false;
 
 #pragma omp parallel for
-                for (int i = 0; i < (int)samples.size(); i++)
+                for (int i = 0; i < (int)executeSamples.size(); i++)
                 {
-                    invoke(samples[i]);
+                    invoke(executeSamples[i]);
                 }
 
-                this->modelRuns += (int)samples.size();
+                this->modelRuns += (int)executeSamples.size();
                 this->countRunsLambda = true;
             }
             else
             {
-                this->zMultipleLambda(samples);
+                this->zMultipleLambda(executeSamples);
 
                 for (int i = 0; i < (int)samples.size(); i++)
                 {
                     this->zValueConverter->updateZValue(samples[i]);
                 }
 
-                this->modelRuns += (int)samples.size();
+                this->modelRuns += (int)executeSamples.size();
+            }
+
+            for (std::shared_ptr<ModelSample> sample : executeSamples)
+            {
+                repository.registerSample(sample);
             }
         }
 

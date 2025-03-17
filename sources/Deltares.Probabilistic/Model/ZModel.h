@@ -28,6 +28,7 @@
 #include "ModelSample.h"
 #include "RunSettings.h"
 #include "ZValueConverter.h"
+#include "SampleRepository.h"
 
 namespace Deltares
 {
@@ -151,6 +152,7 @@ namespace Deltares
             bool countRunsLambda = true;
             ZLambda getLambdaFromZValuesCallBack(ZValuesCallBack zValuesLambda);
             ZMultipleLambda getLambdaFromZValuesMultipleCallBack(ZValuesMultipleCallBack zValuesMultipleLambda);
+            SampleRepository repository = SampleRepository();
         };
     }
 }
