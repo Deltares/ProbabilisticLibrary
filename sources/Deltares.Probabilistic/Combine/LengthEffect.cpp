@@ -66,11 +66,14 @@ namespace Deltares
                 rho2(i) = correlationLengths[i];
             }
 
-            auto dpLength = up.upscaleLength(dp, rho1, rho2, length);
+            auto message = std::make_shared<Message>();
+            message->Type = MessageType::Debug;
+            auto dpLength = up.upscaleLength(dp, rho1, rho2, length, message->Text);
 
             auto dpL = DesignPoint();
             dpL.Identifier = "Length Effect";
             dpL.Beta = dpLength.first.getBeta();
+            dpL.Messages.push_back(message);
             for (size_t i = 0; i < nStochasts; i++)
             {
                 auto alphaValue = dpLength.first.getAlphaI(i);

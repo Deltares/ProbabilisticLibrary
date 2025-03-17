@@ -35,7 +35,7 @@ namespace Deltares {
         public:
             int upscaleInTime(const double nrTimes, alphaBeta& element, const vector1D& inRhoT);
             std::pair<alphaBeta, int> upscaleLength(alphaBeta& crossSectionElement, const vector1D& rhoXK,
-                const vector1D& dXK, const double sectionLength);
+                const vector1D& dXK, const double sectionLength, std::string& message);
             void upscaleToLargestBlock(const alphaBeta& smallBlock,
                 const vector1D& rhoTSmallBlock, const vector1D& blockDurations, const double largestBlockDuration,
                 alphaBeta& largestBlock, vector1D& durationsLargestBlock);
@@ -47,6 +47,7 @@ namespace Deltares {
             const double rhoLowLim = 0.001;          // Lower limit of correlation coefficient before Hohenbichler method must be called
             HohenbichlerFORM hhb = HohenbichlerFORM();
             double upscaleBeta(double elm, const double rhoT, const double nrTimes, int& failures);
+            static std::string createMessage(const double deltaL, const double rhoZ, const double dZ);
         };
     }
 }

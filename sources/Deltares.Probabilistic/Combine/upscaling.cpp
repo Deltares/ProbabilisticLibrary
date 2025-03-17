@@ -143,6 +143,16 @@ namespace Deltares {
             }
         }
 
+        std::string upscaling::createMessage(const double deltaL, const double rhoZ, const double dZ)
+        {
+            std::string message = "Intermediate results: ";
+            const auto number1 = probLibString::double2str(deltaL);
+            const auto number2 = probLibString::double2str(rhoZ);
+            const auto number3 = probLibString::double2str(dZ);
+            message += "Delta L = " + number1 + "; rhoZ = " + number2 + "; dZ = " + number3;
+            return message;
+        }
+
         // \brief This method upscales from a cross section to a given section length
         // \param crossSectionElement : Reliability index and alpha cross section
         // \param rhoXK(:) : Correlation variables
@@ -150,13 +160,13 @@ namespace Deltares {
         // \param sectionLength : Section length
         // \return Reliability index, alpha for section and indication of non-converged Hohenbichler calculations
         std::pair<alphaBeta, int> upscaling::upscaleLength(alphaBeta& crossSectionElement,
-            const vector1D& rhoXK, const vector1D& dXK, const double sectionLength)
+            const vector1D& rhoXK, const vector1D& dXK, const double sectionLength, std::string& message)
         {
             const double deltaBeta = 0.01; // perturbation of beta in computation alpha in the upscaling from cross section to segment
             //
             // Get number of variables
             //
-            size_t nrVar = crossSectionElement.size();
+            const size_t nrVar = crossSectionElement.size();
             //
             // Calculate correlation
             //
@@ -184,12 +194,14 @@ namespace Deltares {
                     sumAlphaDxk += (1.0 - rhoXK(i)) * pow(crossSectionElement.getAlphaI(i) / dXK(i), 2);
                 }
             }
-            double dz = sqrt((1.0 - rhoZ) / sumAlphaDxk);
+            const double dz = sqrt((1.0 - rhoZ) / sumAlphaDxk);
             //
             // Calculate delta L
             //
             double deltaL = dz / crossSectionElement.getBeta() * sqrt(M_PI) / sqrt(1.0 - rhoZ);
             deltaL = std::max(deltaL, 0.01);
+
+            message = createMessage(deltaL, rhoZ, dz);
 
             if (deltaL < sectionLength)
             {
@@ -197,7 +209,7 @@ namespace Deltares {
                 alphaBeta element;
                 element.setAlpha(vector1D(nrVar));
                 //
-                // Calculate beta for section from the beta of the cross section
+                // Calculate beta for section from the beta of the cross-section
                 auto betaSection = ComputeBetaSection(crossSectionElement.getBeta(), sectionLength, rhoZ, dz, deltaL);
                 if (betaSection.second != 0) failures++;
                 element.setBeta(betaSection.first);
@@ -206,7 +218,7 @@ namespace Deltares {
                 //
                 // Correlated part. Perturbation of the betaCrossSection
                 double betaK = crossSectionElement.getBeta() - sqrt(rhoZ) * deltaBeta;
-                // Calculate beta for section from the beta of the cross section
+                // Calculate beta for section from the beta of the cross-section
                 auto betaKX = ComputeBetaSection(betaK, sectionLength, rhoZ, dz, deltaL);
                 if (betaKX.second != 0) failures++;
 
@@ -251,8 +263,8 @@ namespace Deltares {
             }
         }
 
-        // \brief Method used in upscaling for computing the beta of a section from the beta of a cross section.
-        // \param betaCrossSection : Reliability index of the cross section
+        // \brief Method used in upscaling for computing the beta of a section from the beta of a cross-section.
+        // \param betaCrossSection : Reliability index of the cross-section
         // \param sectionLength : Length of the section
         // \param rhoZ : Correlation Z-function
         // \param dz : Correlation length
