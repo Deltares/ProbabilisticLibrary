@@ -663,6 +663,7 @@ namespace Deltares
                 else if (property_ == "maximum_directions") return settings->MaximumDirections;
                 else if (property_ == "minimum_variance_loops") return settings->MinimumVarianceLoops;
                 else if (property_ == "maximum_variance_loops") return settings->MaximumVarianceLoops;
+                else if (property_ == "random_seed") return settings->RandomSettings->Seed;
                 else if (property_ == "relaxation_loops") return settings->RelaxationLoops;
                 else if (property_ == "max_steps_sphere_search") return settings->StartPointSettings->maxStepsSphereSearch;
             }
@@ -676,7 +677,8 @@ namespace Deltares
                 else if (property_ == "maximum_iterations") return settings->MaximumIterations;
                 else if (property_ == "minimum_directions") return settings->MinimumDirections;
                 else if (property_ == "maximum_directions") return settings->MaximumDirections;
-                else if (property_ == "quantiles_count") return (int)settings->RequestedQuantiles.size();
+                else if (property_ == "random_seed") return settings->RandomSettings->Seed;
+                else if (property_ == "quantiles_count") return static_cast<int>(settings->RequestedQuantiles.size());
             }
             else if (objectType == ObjectType::StochastSettings)
             {
@@ -892,6 +894,7 @@ namespace Deltares
                 else if (property_ == "maximum_directions") settings->MaximumDirections = value;
                 else if (property_ == "minimum_variance_loops") settings->MinimumVarianceLoops = value;
                 else if (property_ == "maximum_variance_loops") settings->MaximumVarianceLoops = value;
+                else if (property_ == "random_seed") settings->RandomSettings->Seed = value;
                 else if (property_ == "relaxation_loops") settings->RelaxationLoops = value;
                 else if (property_ == "max_steps_sphere_search") settings->StartPointSettings->maxStepsSphereSearch = value;
             }
@@ -905,6 +908,7 @@ namespace Deltares
                 else if (property_ == "maximum_iterations") settings->MaximumIterations = value;
                 else if (property_ == "minimum_directions") settings->MinimumDirections = value;
                 else if (property_ == "maximum_directions") settings->MaximumDirections = value;
+                else if (property_ == "random_seed") settings->RandomSettings->Seed = value;
             }
             else if (objectType == ObjectType::StochastSettings)
             {
@@ -1024,6 +1028,7 @@ namespace Deltares
                 if (property_ == "derive_samples_from_variation_coefficient") return settings->DeriveSamplesFromVariationCoefficient;
                 else if (property_ == "calculate_correlations") return settings->CalculateCorrelations;
                 else if (property_ == "calculate_input_correlations") return settings->CalculateInputCorrelations;
+                else if (property_ == "is_repeatable_random") return settings->RandomSettings->IsRepeatableRandom;
                 else if (property_ == "save_realizations") return settings->RunSettings->SaveEvaluations;
                 else if (property_ == "save_convergence") return settings->RunSettings->SaveConvergence;
                 else if (property_ == "save_messages") return settings->RunSettings->SaveMessages;
@@ -1033,6 +1038,7 @@ namespace Deltares
                 std::shared_ptr<Reliability::Settings> setting = settingsValues[id];
 
                 if (property_ == "all_quadrants") return setting->StartPointSettings->allQuadrants;
+                else if (property_ == "is_repeatable_random") return setting->RandomSettings->IsRepeatableRandom;
                 else if (property_ == "save_realizations") return setting->RunSettings->SaveEvaluations;
                 else if (property_ == "save_convergence") return setting->RunSettings->SaveConvergence;
                 else if (property_ == "save_messages") return setting->RunSettings->SaveMessages;
@@ -1086,6 +1092,7 @@ namespace Deltares
                 if (property_ == "derive_samples_from_variation_coefficient") settings->DeriveSamplesFromVariationCoefficient = value;
                 else if (property_ == "calculate_correlations") settings->CalculateCorrelations = value;
                 else if (property_ == "calculate_input_correlations") settings->CalculateInputCorrelations = value;
+                else if (property_ == "is_repeatable_random") settings->RandomSettings->IsRepeatableRandom = value;
                 else if (property_ == "save_realizations") settings->RunSettings->SaveEvaluations = value;
                 else if (property_ == "save_convergence") settings->RunSettings->SaveConvergence = value;
                 else if (property_ == "save_messages") settings->RunSettings->SaveMessages = value;
@@ -1095,6 +1102,7 @@ namespace Deltares
                 std::shared_ptr<Reliability::Settings> setting = settingsValues[id];
 
                 if (property_ == "all_quadrants") setting->StartPointSettings->allQuadrants = value;
+                else if (property_ == "is_repeatable_random") setting->RandomSettings->IsRepeatableRandom = value;
                 else if (property_ == "save_realizations") setting->RunSettings->SaveEvaluations = value;
                 else if (property_ == "save_convergence") setting->RunSettings->SaveConvergence = value;
                 else if (property_ == "save_messages") setting->RunSettings->SaveMessages = value;

@@ -58,7 +58,7 @@ class ZModel:
 	_callback = None
 	_multiple_callback = None
 	
-	def __init__(self, callback = None):
+	def __init__(self, callback = None, output_parameter_size = 1):
 		ZModel._index = 0;
 		ZModel._callback = callback
 		self._model = None
@@ -69,7 +69,7 @@ class ZModel:
 
 		if self._is_function:
 			self._input_parameters = self._get_input_parameters(callback)
-			self._output_parameters = self._get_output_parameters(callback)
+			self._output_parameters = self._get_output_parameters(callback, output_parameter_size)
 			self._model_name = callback.__name__
 		else:
 			self._input_parameters = []
@@ -105,7 +105,7 @@ class ZModel:
 
 		return FrozenList(parameters)
 
-	def _get_output_parameters(self, function):
+	def _get_output_parameters(self, function, output_parameter_size = 1):
 		parameters = []
 		source = inspect.getsource(function)
 		lines = source.splitlines()
@@ -122,6 +122,9 @@ class ZModel:
 			modelParameter.name = parameters[i]
 			modelParameter.index = i
 			parameters[i] = modelParameter
+			if (len(parameters) == 1 and output_parameter_size > 1):
+				parameters[i].is_array = True
+				parameters[i].array_size = output_parameter_size
 
 		return FrozenList(parameters)
 
@@ -176,6 +179,13 @@ class ZModel:
 				else:
 					self._array_sizes.append(-1)
 
+		self._z_values_size = 0
+		for parameter in self.output_parameters:
+			if parameter.is_array:
+				self._z_values_size += parameter.array_size
+			else:
+				self._z_values_size += 1
+
 		if not self._model is None:
 			self._model.initialize_for_run()
 	
@@ -217,7 +227,7 @@ class ZModel:
 			else:
 				z = ZModel._callback(*sample.input_values)
 			if type(z) is list or type(z) is tuple:
-				for i in range(len(z)):
+				for i in range(self._z_values_size):
 					sample.output_values[i] = z[i]
 			else:
 				sample.output_values[0] = z
@@ -357,8 +367,14 @@ class ModelProject:
 
 	@model.setter
 	def model(self, value):
+		if isinstance(value, tuple):
+			output_parameter_size = value[1]
+			value = value[0]
+		else:
+			output_parameter_size = 1
+
 		if inspect.isfunction(value) or inspect.ismethod(value):
-			ModelProject._zmodel = ZModel(value)
+			ModelProject._zmodel = ZModel(value, output_parameter_size)
 			self._update_model()
 		elif isinstance(value, ZModelContainer):
 			ModelProject._zmodel = value.get_model()

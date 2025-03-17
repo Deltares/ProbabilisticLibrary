@@ -38,14 +38,28 @@ namespace Deltares
                 for (std::shared_ptr<Models::ModelInputParameter> modelParameter : this->model->outputParameters)
                 {
                     this->parameterSelector->parameter = modelParameter->name;
+                    if (modelParameter->isArray)
+                    {
+                        for (int arrayIndex = 0; arrayIndex < modelParameter->arraySize; arrayIndex++)
+                        {
+                            this->parameterSelector->arrayIndex = arrayIndex;
 
-                    std::shared_ptr<Statistics::Stochast> stochast = this->getStochast();
-                    this->sensitivityStochasts.push_back(stochast);
+                            std::shared_ptr<Statistics::Stochast> stochast = this->getStochast();
+                            stochast->name += "[" + std::to_string(arrayIndex) + "]";
+                            this->sensitivityStochasts.push_back(stochast);
+                        }
+                    }
+                    else
+                    {
+                        std::shared_ptr<Statistics::Stochast> stochast = this->getStochast();
+                        this->sensitivityStochasts.push_back(stochast);
+                    }
                 }
             }
             else
             {
                 this->parameterSelector->parameter = this->parameter;
+                this->parameterSelector->arrayIndex = this->arrayIndex;
 
                 std::shared_ptr<Statistics::Stochast> stochast = this->getStochast();
                 this->sensitivityStochasts.push_back(stochast);

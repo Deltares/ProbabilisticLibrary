@@ -70,6 +70,20 @@ class Test_reliability(unittest.TestCase):
         self.assertAlmostEqual(2.33, beta, delta=margin)
         self.assertEqual(2, len(alphas))
 
+    def test_form_array_result_linear(self):
+        project = project_builder.get_linear_array_result_project()
+
+        project.settings.reliability_method = ReliabilityMethod.form
+
+        project.run();
+
+        dp = project.design_point;
+        beta = dp.reliability_index;
+        alphas = dp.alphas;
+
+        self.assertAlmostEqual(2.33, beta, delta=margin)
+        self.assertEqual(2, len(alphas))
+
     def test_form_linear_conditional(self):
         project = project_builder.get_linear_project()
 

@@ -32,6 +32,11 @@ def linear_ab(a, b):
     L = 1.8
     return L - (a+b)
 
+def linear_ab_array_result(a, b):
+    L = [1.8, 1.9, 1.95]
+
+    return [x - (a+b) for x in L]
+
 class InitializedLinearModel:
     def __init__(self, L):
         self._L = L
@@ -144,6 +149,23 @@ def get_linear_initialized_project():
 
     return project
 
+def get_linear_array_result_project():
+
+    project = ReliabilityProject()
+
+    project.model = linear_ab_array_result, 3
+
+    stochast1 = project.variables['a']
+    stochast1.distribution = DistributionType.uniform
+    stochast1.minimum = -1
+    stochast1.maximum = 1;
+
+    stochast2 = project.variables['b']
+    stochast2.distribution =  DistributionType.uniform
+    stochast2.minimum = -1
+    stochast2.maximum = 1;
+
+    return project
 def get_linear_array_project():
 
     project = ReliabilityProject()
@@ -219,6 +241,24 @@ def get_sensitivity_linear_project():
 
     return project
 
+def get_sensitivity_linear_array_result_project():
+
+    project = SensitivityProject()
+
+    project.model = (linear_ab_array_result, 3)
+
+    stochast1 = project.variables['a']
+    stochast1.distribution =  DistributionType.uniform
+    stochast1.minimum = -1
+    stochast1.maximum = 1;
+
+    stochast2 = project.variables['b']
+    stochast2.distribution =  DistributionType.uniform
+    stochast2.minimum = -1
+    stochast2.maximum = 1;
+
+    return project
+
 def get_sensitivity_pile_project():
 
     project = SensitivityProject()
@@ -231,8 +271,6 @@ def get_sensitivity_pile_project():
     load.mean = 1
     load.variation = 0.1
     load.design_value = 1E5;
-
-
 
     z = project.variables['z']
     z.distribution =  DistributionType.normal

@@ -50,6 +50,11 @@ namespace Deltares
             std::string parameter = "";
 
             /**
+             * \brief Array index of the output parameter if the parameter is an array
+             */
+            int arrayIndex = 0;
+
+            /**
              * \brief Calculation settings
              */
             std::shared_ptr<Sensitivity::SettingsS> settings = std::make_shared<Sensitivity::SettingsS>();

@@ -130,7 +130,14 @@ namespace Deltares
             for (std::shared_ptr<ModelInputParameter> parameter : this->outputParameters)
             {
                 parameter->computationalIndex = this->outputParametersCount;
-                this->outputParametersCount++;
+                if (parameter->isArray)
+                {
+                    this->outputParametersCount += parameter->arraySize;
+                }
+                else
+                {
+                    this->outputParametersCount++;
+                }
             }
 
             this->zValueConverter->initialize(this->inputParameters, this->outputParameters);
