@@ -20,7 +20,6 @@
 // All rights reserved.
 //
 #pragma once
-#include <limits>
 #include <vector>
 #include <functional>
 
@@ -149,9 +148,22 @@ namespace Deltares
             int modelRuns = 0;
             int inputParametersCount = 0;
             int outputParametersCount = 0;
-            bool countRunsLambda = true;
             ZLambda getLambdaFromZValuesCallBack(ZValuesCallBack zValuesLambda);
             ZMultipleLambda getLambdaFromZValuesMultipleCallBack(ZValuesMultipleCallBack zValuesMultipleLambda);
+
+            /**
+             * \brief Calculates a sample
+             */
+            void invokeLambda(std::shared_ptr<ModelSample> sample);
+
+            /**
+             * \brief The minimum calculation time for storing it in the repository
+             */
+            long minRepoCalculationTime = 1;
+
+            /**
+             * \brief Holds calculated samples
+             */
             SampleRepository repository = SampleRepository();
         };
     }

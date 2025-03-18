@@ -28,23 +28,33 @@
 
 namespace Deltares::Models
 {
-        /**
-         * \brief Stores samples for reuse
-         */
-        class SampleRepository
+    /**
+     * \brief Stores samples for reuse
+     */
+    class SampleRepository
+    {
+    public:
+        SampleRepository()
+        {
+        }
+
+        void registerSample(std::shared_ptr<ModelSample> sample);
+
+        std::shared_ptr<ModelSample> retrieveSample(std::shared_ptr<ModelSample> sample);
+
+    private:
+        class SampleCollection
         {
         public:
-            SampleRepository()
-            {
-            }
-
             void registerSample(std::shared_ptr<ModelSample> sample);
-
-            std::shared_ptr<ModelSample> retrieveSample(std::shared_ptr<ModelSample> sample);
-
+            std::shared_ptr<ModelSample> retrieveSample(std::shared_ptr<ModelSample> sample) const;
+            int size() { return static_cast<int>(samples.size()); }
         private:
-            std::unordered_map<double, std::vector<std::shared_ptr<ModelSample>>> samples;
-            double getKey(std::shared_ptr<ModelSample> sample);
+            std::vector<std::shared_ptr<ModelSample>> samples;
         };
+
+        std::unordered_map<double, std::unique_ptr<SampleCollection>> sampleCollections;
+        double getKey(std::shared_ptr<ModelSample> sample);
+    };
 }
 

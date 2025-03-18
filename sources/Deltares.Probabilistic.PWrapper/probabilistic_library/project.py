@@ -446,8 +446,9 @@ class SensitivityProject(ModelProject):
 				'run',
 				'stochast',
 				'output_correlation_matrix',
-                'validate',
-                'is_valid']
+				'validate',
+				'is_valid',
+				'total_model_runs']
 
 	@property
 	def parameter(self):
@@ -494,6 +495,10 @@ class SensitivityProject(ModelProject):
 				
 		return self._output_correlation_matrix
 
+	@property
+	def total_model_runs(self):
+		return interface.GetIntValue(self._id, 'total_model_runs')
+
 class ReliabilityProject(ModelProject):
 
 	def __init__(self):
@@ -518,8 +523,9 @@ class ReliabilityProject(ModelProject):
 				'model',
 				'run',
 				'design_point',
-                'validate',
-                'is_valid']
+				'validate',
+				'is_valid',
+				'total_model_runs']
 
 	@property
 	def limit_state_function(self):
@@ -571,6 +577,9 @@ class ReliabilityProject(ModelProject):
 				if id_ > 0:
 					fragility_value.design_point = DesignPoint(id_, variables)
 
+	@property
+	def total_model_runs(self):
+		return interface.GetIntValue(self._id, 'total_model_runs')
 
 class CombineProject:
 

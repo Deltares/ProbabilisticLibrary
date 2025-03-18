@@ -595,6 +595,7 @@ namespace Deltares
 
                 if (property_ == "index") return project->model->Index;
                 else if (property_ == "stochasts_count") return static_cast<int>(project->stochasts.size());
+                else if (property_ == "total_model_runs") return project->modelRuns;
             }
             else if (objectType == ObjectType::ModelParameter)
             {
@@ -616,6 +617,7 @@ namespace Deltares
                 if (property_ == "sensitivity_stochasts_count") return static_cast<int>(project->sensitivityStochasts.size());
                 else if (property_ == "stochasts_count") return static_cast<int>(project->stochasts.size());
                 else if (property_ == "index") return project->model->Index;
+                else if (property_ == "total_model_runs") return project->modelRuns;
             }
             else if (objectType == ObjectType::Stochast)
             {

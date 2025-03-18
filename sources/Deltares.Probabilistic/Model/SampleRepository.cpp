@@ -25,6 +25,24 @@
 
 namespace Deltares::Models
 {
+    void SampleRepository::SampleCollection::registerSample(std::shared_ptr<ModelSample> sample)
+    {
+        this->samples.push_back(sample);
+    }
+
+    std::shared_ptr<ModelSample> SampleRepository::SampleCollection::retrieveSample(std::shared_ptr<ModelSample> sample) const
+    {
+        for (std::shared_ptr<ModelSample> existingSample : samples)
+        {
+            if (existingSample->hasSameValues(sample))
+            {
+                return existingSample;
+            }
+        }
+
+        return nullptr;
+    }
+
     double SampleRepository::getKey(std::shared_ptr<ModelSample> sample)
     {
         // calculate value from sample
@@ -42,36 +60,24 @@ namespace Deltares::Models
     {
         double key = this->getKey(sample);
 
-        if (!this->samples.contains(key))
+        if (!this->sampleCollections.contains(key))
         {
-            std::vector<std::shared_ptr<ModelSample>> newCollection;
-            samples[key] = newCollection;
+            sampleCollections[key] = std::make_unique<SampleCollection>();
         }
 
-        std::vector<std::shared_ptr<ModelSample>> sampleCollection = samples[key];
-        sampleCollection.push_back(sample);
+        sampleCollections[key]->registerSample(sample);
     }
 
     std::shared_ptr<ModelSample> SampleRepository::retrieveSample(std::shared_ptr<ModelSample> sample)
     {
         double key = this->getKey(sample);
 
-        if (!this->samples.contains(key))
+        if (!this->sampleCollections.contains(key))
         {
             return nullptr;
         }
 
-        std::vector<std::shared_ptr<ModelSample>> sampleCollection = samples[key];
-
-        for (std::shared_ptr<ModelSample> existingSample : sampleCollection)
-        {
-            if (existingSample->hasSameValues(sample))
-            {
-                return existingSample;
-            }
-        }
-
-        return nullptr;
+        return this->sampleCollections[key]->retrieveSample(sample);
     }
 }
 

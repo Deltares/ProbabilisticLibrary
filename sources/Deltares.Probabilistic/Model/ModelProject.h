@@ -56,6 +56,11 @@ namespace Deltares
              * \brief Updates the stochasts with the parameters of the model
              */
             void updateStochasts();
+
+            /**
+             * \brief Gets the total number of model runs
+             */
+            int modelRuns = 0;
         private:
             std::unordered_map<std::string, std::shared_ptr<Statistics::Stochast>> existingStochasts;
         };

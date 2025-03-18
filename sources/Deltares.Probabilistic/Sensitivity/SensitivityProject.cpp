@@ -27,6 +27,8 @@ namespace Deltares
     {
         void SensitivityProject::run()
         {
+            this->modelRuns = 0;
+
             this->sensitivityStochast = nullptr;
             this->sensitivityStochasts.clear();
 
@@ -91,6 +93,8 @@ namespace Deltares
 
             std::shared_ptr<Statistics::Stochast> sensitivityStochast = this->sensitivityMethod->getSensitivityStochast(modelRunner);
             sensitivityStochast->name = this->parameterSelector->parameter;
+
+            this->modelRuns += this->model->getModelRuns();
 
             return sensitivityStochast;
         }

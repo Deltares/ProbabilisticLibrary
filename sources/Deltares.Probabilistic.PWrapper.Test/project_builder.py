@@ -24,6 +24,7 @@ import math
 import numpy as np
 
 from probabilistic_library import *
+from time import sleep
 
 def sum_ab(a, b):
     return a+b;
@@ -34,6 +35,13 @@ def linear_ab(a, b):
 
 def linear_ab_array_result(a, b):
     L = [1.8, 1.9, 1.95]
+
+    return [x - (a+b) for x in L]
+
+def linear_delayed_ab_array_result(a, b):
+    L = [1.8, 1.9, 1.95]
+
+    sleep(0.001)
 
     return [x - (a+b) for x in L]
 
@@ -246,6 +254,24 @@ def get_sensitivity_linear_array_result_project():
     project = SensitivityProject()
 
     project.model = (linear_ab_array_result, 3)
+
+    stochast1 = project.variables['a']
+    stochast1.distribution =  DistributionType.uniform
+    stochast1.minimum = -1
+    stochast1.maximum = 1;
+
+    stochast2 = project.variables['b']
+    stochast2.distribution =  DistributionType.uniform
+    stochast2.minimum = -1
+    stochast2.maximum = 1;
+
+    return project
+
+def get_sensitivity_linear_delayed_array_result_project():
+
+    project = SensitivityProject()
+
+    project.model = (linear_delayed_ab_array_result, 3)
 
     stochast1 = project.variables['a']
     stochast1.distribution =  DistributionType.uniform
