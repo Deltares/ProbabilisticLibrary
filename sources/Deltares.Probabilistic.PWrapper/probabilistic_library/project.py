@@ -21,6 +21,7 @@
 #
 import sys
 from ctypes import *
+from multiprocessing import Pool, cpu_count
 from typing import FrozenSet
 
 from .statistic import *
@@ -66,6 +67,8 @@ class ZModel:
 		self._is_dirty = False
 		self._has_arrays = False
 		self._array_sizes = None
+		self._pool = None
+		self._max_processes = 1
 
 		if self._is_function:
 			self._input_parameters = self._get_input_parameters(callback)
@@ -80,6 +83,10 @@ class ZModel:
 		return ['name',
 				'input_parameters',
 				'output_parameters']
+
+	def __del__(self):
+		if not self._pool is None:
+			self._pool.close()
 
 	def __str__(self):
 		return self.name
@@ -162,6 +169,7 @@ class ZModel:
 		self._model = value
 		
 	def set_max_processes(self, value):
+		self._max_processes = value
 		if not self._model is None:
 			self._model.set_max_processes(value)
 
@@ -188,6 +196,14 @@ class ZModel:
 
 		if not self._model is None:
 			self._model.initialize_for_run()
+
+		if self._is_function:
+			if self._max_processes > 1:
+				self._pool = Pool(self._max_processes)
+			elif self._max_processes < 1:
+				self._pool = Pool()
+			else:
+				self._pool = None
 	
 	def update(self):
 		if not self._model is None:
@@ -213,26 +229,43 @@ class ZModel:
 		return args
 
 	def run_multiple(self, samples):
-		if self._is_function:
+		if self._is_function and self._pool is None:
 			for sample in samples:
 				self.run(sample)
+		elif self._is_function and not self._pool is None:
+			results = {}
+			for sample in samples:
+				sample_input = self._get_input(sample)
+				results[sample] = self._pool.apply_async(func=ZModel._callback, args=(*sample_input,))
+			for sample in samples:
+				z = results[sample].get()
+				self._assign_output(sample, z)
 		else:
 			ZModel._multiple_callback(samples)
 
 	def run(self, sample):
 		if self._is_function:
-			if self._has_arrays:
-				args = self._get_args(sample.input_values)
-				z = ZModel._callback(*args)
-			else:
-				z = ZModel._callback(*sample.input_values)
-			if type(z) is list or type(z) is tuple:
-				for i in range(self._z_values_size):
-					sample.output_values[i] = z[i]
-			else:
-				sample.output_values[0] = z
+			sample_input = self._get_input(sample)
+			z = ZModel._callback(*sample_input)
+			self._assign_output(sample, z)
 		else:
 			z = ZModel._callback(sample);
+
+	def _get_input(self, sample):
+		if self._has_arrays:
+			return self._get_args(sample.input_values)
+		else:
+			return sample.input_values
+
+	def _assign_output(self, sample, z):
+		if type(z) is list or type(z) is tuple:
+			for i in range(self._z_values_size):
+				sample.output_values[i] = z[i]
+		else:
+			sample.output_values[0] = z
+
+	def _run_callback(sample_input):
+		return ZModel._callback(*sample_input)
 
 class ModelParameter:
 
@@ -417,8 +450,8 @@ class ModelProject:
 		interface.SetIntValue(self._project_id, 'correlation_matrix', self._correlation_matrix._id)
 		interface.SetIntValue(self._project_id, 'settings', self._settings._id)
 		interface.SetArrayIntValue(self.settings._id, 'stochast_settings', [stochast_setting._id for stochast_setting in self.settings.stochast_settings])
-		ModelProject._zmodel.initialize_for_run()
 		ModelProject._zmodel.set_max_processes(self.settings.max_parallel_processes)
+		ModelProject._zmodel.initialize_for_run()
 
 		interface.Execute(self._project_id, 'run')
 

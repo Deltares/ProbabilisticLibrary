@@ -70,6 +70,21 @@ class Test_reliability(unittest.TestCase):
         self.assertAlmostEqual(2.33, beta, delta=margin)
         self.assertEqual(2, len(alphas))
 
+    def test_form_initialized_linear_parallel(self):
+        project = project_builder.get_linear_initialized_project()
+
+        project.settings.reliability_method = ReliabilityMethod.form
+        project.settings.max_parallel_process = 4
+
+        project.run();
+
+        dp = project.design_point;
+        beta = dp.reliability_index;
+        alphas = dp.alphas;
+
+        self.assertAlmostEqual(2.33, beta, delta=margin)
+        self.assertEqual(2, len(alphas))
+
     def test_form_array_result_linear(self):
         project = project_builder.get_linear_array_result_project()
 
