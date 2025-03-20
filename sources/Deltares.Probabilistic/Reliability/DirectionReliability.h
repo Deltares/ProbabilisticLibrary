@@ -21,6 +21,7 @@
 //
 #pragma once
 #include "DirectionReliabilitySettings.h"
+#include "DirectionSection.h"
 #include "ReliabilityMethod.h"
 
 namespace Deltares
@@ -40,9 +41,7 @@ namespace Deltares
             bool IsModelResult = false;
         };
 
-        class DirectionSection;
-
-        class DirectionReliability : public Deltares::Reliability::ReliabilityMethod
+        class DirectionReliability : public ReliabilityMethod
         {
         public:
             std::shared_ptr<DirectionReliabilitySettings> Settings = std::make_shared<DirectionReliabilitySettings>();

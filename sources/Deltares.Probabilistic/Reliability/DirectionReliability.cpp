@@ -21,6 +21,8 @@
 //
 #include "DirectionReliability.h"
 #include "DirectionReliabilitySettings.h"
+#include "ZGetter.h"
+#include "DirectionCalculation.h"
 #include "../Model/ModelRunner.h"
 #include "../Math/NumericSupport.h"
 #include "../Math/RootFinders/LinearRootFinder.h"
@@ -32,114 +34,6 @@ namespace Deltares
     namespace Reliability
     {
         using namespace Deltares::Numeric;
-
-        class DirectionSection
-        {
-        public:
-            DirectionSection(DoubleType type, double uLow, double uHigh)
-            {
-                this->Type = type;
-                this->ULow = uLow;
-                this->UHigh = uHigh;
-            }
-
-            DirectionSection(DoubleType type, double uLow, double uHigh, double zLow, double zHigh)
-            {
-                this->Type = type;
-                this->ULow = uLow;
-                this->UHigh = uHigh;
-                this->ZLow = zLow;
-                this->ZHigh = zHigh;
-            }
-
-            DoubleType Type;
-            double ULow = 0.0;
-            double UHigh = 0.0;
-            double ZLow = 0.0;
-            double ZHigh = 0.0;
-
-            double getProbability()
-            {
-                double pHigh = Statistics::StandardNormal::getQFromU(UHigh);
-                double pLow = Statistics::StandardNormal::getQFromU(ULow);
-                return pLow - pHigh;
-            }
-        };
-
-        class ZGetter
-        {
-        private:
-            std::shared_ptr<Models::ModelRunner> modelRunner;
-            std::shared_ptr<DirectionReliabilitySettings> settings;
-        public:
-            ZGetter(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<DirectionReliabilitySettings> settings = nullptr)
-            {
-                this->modelRunner = modelRunner;
-                this->settings = settings;
-            }
-
-            double GetZ(std::shared_ptr<Sample> uDirection, double factor, bool inverted, bool allowProxy = true)
-            {
-                std::shared_ptr<Sample> u = uDirection->getMultipliedSample(factor);
-                u->AllowProxy = allowProxy;
-
-                if (settings != nullptr && settings->UseInitialValues)
-                {
-                    for (size_t i = 0; i < u->Values.size(); i++)
-                    {
-                        if (!settings->StochastSet->VaryingStochastSettings[i]->IsInitializationAllowed)
-                        {
-                            u->Values[i] = settings->StochastSet->VaryingStochastSettings[i]->StartValue;
-                        }
-                    }
-                }
-
-                return GetZValueCorrected(u, inverted);
-            }
-
-            double GetZValueCorrected(std::shared_ptr<Sample> u, bool invertZ)
-            {
-                double z = modelRunner->getZValue(u);
-                if (invertZ)
-                {
-                    z = -z;
-                }
-                return z;
-            }
-        };
-
-        class DirectionCalculation
-        {
-        private:
-            std::shared_ptr<Models::ModelRunner> modelRunner;
-            std::shared_ptr<Sample> uDirection;
-            bool inverted;
-            ZGetter model;
-
-        public:
-            DirectionCalculation(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<Sample> uDirection, bool inverted)
-                : model(ZGetter(modelRunner))
-            {
-                this->modelRunner = modelRunner;
-                this->uDirection = uDirection;
-                this->inverted = inverted;
-            }
-
-            double GetZProxy(double u, bool allowProxy)
-            {
-                return model.GetZ(uDirection, u, inverted, allowProxy);
-            }
-
-            double GetZ(double u)
-            {
-                return model.GetZ(uDirection, u, inverted, true);
-            }
-
-            double GetZNoProxy(double u)
-            {
-                return model.GetZ(uDirection, u, inverted, false);
-            }
-        };
 
         std::shared_ptr<DesignPoint> DirectionReliability::getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner)
         {
