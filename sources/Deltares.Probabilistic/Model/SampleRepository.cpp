@@ -45,7 +45,7 @@ namespace Deltares::Models
 
     double SampleRepository::getKey(std::shared_ptr<ModelSample> sample)
     {
-        // calculate value from sample
+        // calculates a sample key for the sample sample
         double sum = 0;
         for (size_t i = 0; i < sample->Values.size(); i++)
         {

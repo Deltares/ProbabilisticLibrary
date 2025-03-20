@@ -588,9 +588,9 @@ class ReliabilityProject(ModelProject):
 		variables = []
 		variables.extend(self.variables)
 		for variable in variables:
-			for array_value in variable.array_values:
-				if array_value not in variables:
-					variables.append(array_value)
+			for array_variable in variable.array_variables:
+				if array_variable not in variables:
+					variables.append(array_variable)
 		return variables
 
 	@property

@@ -53,10 +53,10 @@ namespace Deltares
                     for (int j = 0; j < stochasts[i]->modelParameter->arraySize; j++)
                     {
                         hasArrayStochasts = true;
-                        if (static_cast<int>(stochasts[i]->ArrayValues.size()) > j)
+                        if (static_cast<int>(stochasts[i]->ArrayVariables.size()) > j)
                         {
-                            stochasts[i]->ArrayValues[j]->name = stochasts[i]->getIndexedStochastName(j);
-                            this->stochasts.push_back(std::make_shared<ComputationalStochast>(stochasts[i], stochasts[i]->ArrayValues[j], j));
+                            stochasts[i]->ArrayVariables[j]->name = stochasts[i]->getIndexedStochastName(j);
+                            this->stochasts.push_back(std::make_shared<ComputationalStochast>(stochasts[i], stochasts[i]->ArrayVariables[j], j));
                         }
                         else
                         {

@@ -116,6 +116,10 @@ namespace Deltares
             this->inputParametersCount = 0;
             this->outputParametersCount = 0;
 
+            this->measureCalculationTime = true;
+            this->useSampleRepository = false;
+            this->measuredCalculationTimes = 0;
+
             for (std::shared_ptr<ModelInputParameter> parameter : this->inputParameters)
             {
                 parameter->computationalIndex = this->inputParametersCount;
@@ -151,13 +155,31 @@ namespace Deltares
 
             if (alreadyExecutedSample == nullptr)
             {
-                std::chrono::time_point started = std::chrono::high_resolution_clock::now();
-                invokeLambda(sample);
-                std::chrono::time_point  done = std::chrono::high_resolution_clock::now();
+                if (measureCalculationTime)
+                {
+                    std::chrono::time_point started = std::chrono::high_resolution_clock::now();
+                    invokeLambda(sample);
+                    std::chrono::time_point done = std::chrono::high_resolution_clock::now();
 
-                long elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(done - started).count();
+                    long elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(done - started).count();
+                    if (elapsedTime > minRepoCalculationTime)
+                    {
+                        measureCalculationTime = false;
+                        useSampleRepository = true;
+                    }
 
-                if (elapsedTime >= minRepoCalculationTime)
+                    this->measuredCalculationTimes++;
+                    if (this->measuredCalculationTimes > this->maxMeasuredCalculationTimes)
+                    {
+                        measureCalculationTime = false;
+                    }
+                }
+                else
+                {
+                    invokeLambda(sample);
+                }
+
+                if (useSampleRepository)
                 {
                     repository.registerSample(sample);
                 }
@@ -183,6 +205,22 @@ namespace Deltares
             this->zLambda(sample);
         }
 
+        void ZModel::invokeMultipleLambda(std::vector<std::shared_ptr<ModelSample>>& samples)
+        {
+            if (zMultipleLambda == nullptr)
+            {
+#pragma omp parallel for
+                for (int i = 0; i < static_cast<int>(samples.size()); i++)
+                {
+                    invokeLambda(samples[i]);
+                }
+            }
+            else
+            {
+                this->zMultipleLambda(samples);
+            }
+        }
+
         void ZModel::invoke(std::vector<std::shared_ptr<ModelSample>> samples)
         {
             std::vector<std::shared_ptr<ModelSample>> executeSamples;
@@ -202,27 +240,34 @@ namespace Deltares
 
             if (!executeSamples.empty()) {
 
-                std::chrono::time_point started = std::chrono::high_resolution_clock::now();
-
-                if (zMultipleLambda == nullptr)
+                if (this->measureCalculationTime)
                 {
-#pragma omp parallel for
-                    for (int i = 0; i < static_cast<int>(executeSamples.size()); i++)
+                    std::chrono::time_point started = std::chrono::high_resolution_clock::now();
+                    invokeMultipleLambda(executeSamples);
+                    std::chrono::time_point  done = std::chrono::high_resolution_clock::now();
+
+                    long long elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(done - started).count();
+
+                    if (elapsedTime >= static_cast<long long>(minRepoCalculationTime * executeSamples.size()))
                     {
-                        invokeLambda(executeSamples[i]);
+                        useSampleRepository = true;
+                        measureCalculationTime = false;
+                    }
+
+                    this->measuredCalculationTimes += static_cast<int>(executeSamples.size());
+                    if (this->measuredCalculationTimes > this->maxMeasuredCalculationTimes)
+                    {
+                        measureCalculationTime = false;
                     }
                 }
                 else
                 {
-                    this->zMultipleLambda(executeSamples);
+                    invokeMultipleLambda(executeSamples);
                 }
-
-                std::chrono::time_point  done = std::chrono::high_resolution_clock::now();
-                long elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(done - started).count();
 
                 this->modelRuns += static_cast<int>(executeSamples.size());
 
-                if (elapsedTime / executeSamples.size() >= minRepoCalculationTime)
+                if (useSampleRepository)
                 {
                     for (std::shared_ptr<ModelSample> sample : executeSamples)
                     {

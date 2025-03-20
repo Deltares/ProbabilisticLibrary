@@ -231,11 +231,11 @@ namespace Deltares
             {
                 return this->ValueSet->isVarying(this->distributionType, this->properties);
             }
-            else if (this->modelParameter->isArray && !this->ArrayValues.empty())
+            else if (this->modelParameter->isArray && !this->ArrayVariables.empty())
             {
-                for (std::shared_ptr<Stochast> arrayValue : this->ArrayValues)
+                for (std::shared_ptr<Stochast> arrayVariable : this->ArrayVariables)
                 {
-                    if (arrayValue->isVarying())
+                    if (arrayVariable->isVarying())
                     {
                         return true;
                     }

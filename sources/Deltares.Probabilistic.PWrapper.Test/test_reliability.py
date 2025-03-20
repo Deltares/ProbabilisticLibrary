@@ -194,14 +194,14 @@ class Test_reliability(unittest.TestCase):
             a_array.distribution = DistributionType.uniform
             a_array.minimum = i-3
             a_array.maximum = i-1
-            project.variables['a'].array_values.append(a_array)
+            project.variables['a'].array_variables.append(a_array)
 
         for i in range(project.variables['b'].array_size):
             b_array = Stochast()
             b_array.distribution = DistributionType.uniform
             b_array.minimum = i-3
             b_array.maximum = i-1
-            project.variables['b'].array_values.append(b_array)
+            project.variables['b'].array_variables.append(b_array)
 
         project.settings.reliability_method = ReliabilityMethod.form
 
@@ -224,13 +224,13 @@ class Test_reliability(unittest.TestCase):
         self.assertAlmostEqual(2.18, alphas[5].x, delta=margin)
         self.assertEqual(0, alphas[1].index)
         self.assertEqual(4, alphas[5].index)
-        self.assertEqual(project.variables['a'].array_values[0], alphas[1].variable)
+        self.assertEqual(project.variables['a'].array_variables[0], alphas[1].variable)
         self.assertEqual('a[0]', str(alphas[1]))
 
         self.assertAlmostEqual(-0.31, alphas[6].alpha, delta=margin)
         self.assertAlmostEqual(-1.82, alphas[6].x, delta=margin)
         self.assertEqual(0, alphas[6].index)
-        self.assertEqual(project.variables['b'].array_values[0], alphas[6].variable)
+        self.assertEqual(project.variables['b'].array_variables[0], alphas[6].variable)
 
     def test_form_linear_conditional_array(self):
         project = project_builder.get_linear_array_project()
@@ -294,7 +294,7 @@ class Test_reliability(unittest.TestCase):
             a_array.distribution = DistributionType.uniform
             a_array.minimum = -1 + 0.4 * i
             a_array.maximum = -0.6 + 0.4 * i
-            project.variables['a'].array_values.append(a_array)
+            project.variables['a'].array_variables.append(a_array)
 
         project.variables['b'].array_size = 5
         project.variables['b'].conditional = True
@@ -336,8 +336,8 @@ class Test_reliability(unittest.TestCase):
         self.assertEqual(0, alphas[6].index)
 
         self.assertEqual(project.variables['L'], alphas[0].variable)
-        self.assertEqual(project.variables['a'].array_values[0], alphas[1].variable)
-        self.assertEqual(project.variables['a'].array_values[4], alphas[5].variable)
+        self.assertEqual(project.variables['a'].array_variables[0], alphas[1].variable)
+        self.assertEqual(project.variables['a'].array_variables[4], alphas[5].variable)
         self.assertEqual(project.variables['b'], alphas[6].variable)
 
         self.assertAlmostEqual(1.8, alphas[0].x, delta=margin)

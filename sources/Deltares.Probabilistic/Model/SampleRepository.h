@@ -54,6 +54,13 @@ namespace Deltares::Models
         };
 
         std::unordered_map<double, std::unique_ptr<SampleCollection>> sampleCollections;
+
+        /**
+         * \brief Gets a simple key for a sample, the key is meant for grouping and quick access to the sample
+         * \param sample sample
+         * \return the key for the sample
+         * \remarks The key is not unique 
+         */
         double getKey(std::shared_ptr<ModelSample> sample);
     };
 }

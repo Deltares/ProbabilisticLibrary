@@ -172,8 +172,8 @@ namespace Deltares
 
         int DesignPoint::getTotalModelRuns() const
         {
-            int totalModelRuns = this->convergenceReport->TotalModelRuns;
-            for (std::shared_ptr<DesignPoint> contributingDesignPoint : this->ContributingDesignPoints)
+            int totalModelRuns = this->convergenceReport != nullptr ?  this->convergenceReport->TotalModelRuns : 0;
+            for (const std::shared_ptr<DesignPoint>& contributingDesignPoint : ContributingDesignPoints)
             {
                 totalModelRuns += contributingDesignPoint->getTotalModelRuns();
             }

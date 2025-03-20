@@ -99,7 +99,7 @@ namespace Deltares
                     s1->setDistributionType(DistributionType::Uniform);
                     s1->getProperties()->Minimum = i - 3;
                     s1->getProperties()->Maximum = i - 1;
-                    s->ArrayValues.push_back(s1);
+                    s->ArrayVariables.push_back(s1);
                 }
                 stochasts.push_back(s);
                 stochasts.push_back(s);

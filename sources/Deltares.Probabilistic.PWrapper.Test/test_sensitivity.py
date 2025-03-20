@@ -19,7 +19,6 @@
 # Stichting Deltares and remain full property of Stichting Deltares at all times.
 # All rights reserved.
 #
-from tkinter import PROJECTING
 import unittest
 import sys
 

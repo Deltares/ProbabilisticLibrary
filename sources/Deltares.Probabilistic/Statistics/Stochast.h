@@ -279,7 +279,7 @@ namespace Deltares
             virtual bool isFragilityCurve() { return false; }
 
             /**
-             * \brief Gets the name of the post fixed with an index
+             * \brief Gets the name of the stochast followed by an index
              * \return Indexed stochast name
              */
             std::string getIndexedStochastName(int index);
@@ -380,7 +380,7 @@ namespace Deltares
             /**
              * \brief In case of an array, the stochasts in the array
              */
-            std::vector<std::shared_ptr<Stochast>> ArrayValues;
+            std::vector<std::shared_ptr<Stochast>> ArrayVariables;
 
             /**
              * \brief Gets a realization of a variable stochast
