@@ -793,7 +793,7 @@ Note that the starting point of FORM depends on the method for "Contribution per
 
 For all numerical integration-based methods (Numerical Integration and Numerical Bisection) and Monte Carlo-based methods (Crude Monte Carlo, Importance Sampling, Directional Sampling, and Subset Simulation), the contribution per variable is calculated after determining the reliability index ($\beta$). The applied methods are explained in the following sections.
 
-\subsubsection{Center of gravity}
+\subsection{Center of gravity}
 \label{sec:CenterOfGravity}
 
 The "Center of gravity" method calculates the weighted mean of all failing realizations. This is done as follows:
@@ -812,12 +812,12 @@ where:
 	$f_{\text{normal}}$ & is a normalizing factor so that $\sum \alpha^2_{\text{j}} = 1$
 \end{longtable*}
 
-\subsubsection{Center of angles}
+\subsection{Center of angles}
 \label{sec:CenterOfAngles}
 
 In the "Center of angles" method, all realizations are defined using spherical coordinates instead of Cartesian coordinates. The weighted mean of the angles in the spherical coordinates is then calculated and converted back into Cartesian coordinates.
 
-\subsubsection{Nearest to mean}
+\subsection{Nearest to mean}
 \label{sec:NearestToMean}
 
 The "Nearest to mean" method selects the realization with the highest probability density from all realizations that are considered failing according to the failure definition.
@@ -867,6 +867,8 @@ where:
 	$\beta_{\text{i}}$ & is the reliability index of design point $i$ \\
 	$\alpha_{i,j}$ & is the alpha factor of variable $j$ in design point $i$
 \end{longtable*}
+
+\subsection{Combine methods}
 
 \subsubsection{Directional sampling}
 \label{sec:CombiningDesignPointsDS}
