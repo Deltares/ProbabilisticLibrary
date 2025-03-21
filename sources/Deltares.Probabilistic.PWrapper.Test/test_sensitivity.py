@@ -60,6 +60,98 @@ class Test_sensitivity(unittest.TestCase):
         self.assertAlmostEqual(1.8, sens.mean, delta=margin)
         self.assertAlmostEqual(0.83, sens.deviation, delta=margin)
 
+    def test_crude_monte_carlo_array_result_linear(self):
+
+        project = project_builder.get_sensitivity_linear_array_result_project()
+
+        project.settings.sensitivity_method = SensitivityMethod.crude_monte_carlo
+        project.settings.variation_coefficient = 0
+        project.settings.minimum_samples = 1000
+        project.settings.maximum_samples = 1000
+
+        project.run();
+
+        self.assertEqual(3, len(project.stochasts))
+
+        stochast1 = project.stochasts[0];
+        self.assertEqual('x - (a+b) for x in L[0]' , stochast1.name)
+        self.assertAlmostEqual(1.8, stochast1.mean, delta=margin)
+        self.assertAlmostEqual(0.83, stochast1.deviation, delta=margin)
+
+        stochast2 = project.stochasts[1];
+        self.assertEqual('x - (a+b) for x in L[1]' , stochast2.name)
+        self.assertAlmostEqual(1.9, stochast2.mean, delta=margin)
+        self.assertAlmostEqual(0.83, stochast2.deviation, delta=margin)
+
+        stochast3 = project.stochasts[2];
+        self.assertEqual('x - (a+b) for x in L[2]' , stochast3.name)
+        self.assertAlmostEqual(1.95, stochast3.mean, delta=margin)
+        self.assertAlmostEqual(0.83, stochast3.deviation, delta=margin)
+
+        self.assertLessEqual(2.5 * project.settings.maximum_samples, project.total_model_runs)
+
+    def test_crude_monte_carlo_array_result_linear_delayed(self):
+
+        project = project_builder.get_sensitivity_linear_delayed_array_result_project()
+
+        project.settings.sensitivity_method = SensitivityMethod.crude_monte_carlo
+        project.settings.variation_coefficient = 0
+        project.settings.minimum_samples = 1000
+        project.settings.maximum_samples = 1000
+        project.settings.max_parallel_processes = 1
+
+        project.run();
+
+        self.assertEqual(3, len(project.stochasts))
+
+        sens1 = project.stochasts[0];
+        self.assertEqual('x - (a+b) for x in L[0]' , sens1.name)
+        self.assertAlmostEqual(1.8, sens1.mean, delta=margin)
+        self.assertAlmostEqual(0.83, sens1.deviation, delta=margin)
+
+        sens2 = project.stochasts[1];
+        self.assertEqual('x - (a+b) for x in L[1]' , sens2.name)
+        self.assertAlmostEqual(1.9, sens2.mean, delta=margin)
+        self.assertAlmostEqual(0.83, sens2.deviation, delta=margin)
+
+        sens3 = project.stochasts[2];
+        self.assertEqual('x - (a+b) for x in L[2]' , sens3.name)
+        self.assertAlmostEqual(1.95, sens3.mean, delta=margin)
+        self.assertAlmostEqual(0.83, sens3.deviation, delta=margin)
+
+        self.assertEqual(project.settings.maximum_samples, project.total_model_runs)
+
+    def test_crude_monte_carlo_array_result_linear_delayed_parallel(self):
+
+        project = project_builder.get_sensitivity_linear_delayed_array_result_project()
+
+        project.settings.sensitivity_method = SensitivityMethod.crude_monte_carlo
+        project.settings.variation_coefficient = 0
+        project.settings.minimum_samples = 1000
+        project.settings.maximum_samples = 1000
+        project.settings.max_parallel_processes = 4
+
+        project.run();
+
+        self.assertEqual(3, len(project.stochasts))
+
+        s1 = project.stochasts[0];
+        self.assertEqual('x - (a+b) for x in L[0]' , s1.name)
+        self.assertAlmostEqual(1.8, s1.mean, delta=margin)
+        self.assertAlmostEqual(0.83, s1.deviation, delta=margin)
+
+        s2 = project.stochasts[1];
+        self.assertEqual('x - (a+b) for x in L[1]' , s2.name)
+        self.assertAlmostEqual(1.9, s2.mean, delta=margin)
+        self.assertAlmostEqual(0.83, s2.deviation, delta=margin)
+
+        s3 = project.stochasts[2];
+        self.assertEqual('x - (a+b) for x in L[2]' , s3.name)
+        self.assertAlmostEqual(1.95, s3.mean, delta=margin)
+        self.assertAlmostEqual(0.83, s3.deviation, delta=margin)
+
+        self.assertLessEqual(project.settings.maximum_samples, project.total_model_runs)
+
     def test_crude_monte_carlo_multiple_identical_linear(self):
         project = project_builder.get_sensitivity_multiple_identical_linear_project()
 

@@ -61,6 +61,12 @@ namespace Deltares::Reliability
         void correctFragilityCurves();
 
         /**
+         * \brief Gets the total model runs including contributing design points
+         * \return Total model runs
+         */
+        int getTotalModelRuns() const;
+
+        /**
          * \brief Gets all stochasts in a number of design points in the design point without duplicates
          * \param designPoints design points
          * \return All stochasts without doubling

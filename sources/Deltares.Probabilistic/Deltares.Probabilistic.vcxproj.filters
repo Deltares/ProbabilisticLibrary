@@ -228,6 +228,7 @@
     <ClCompile Include="Utils\Locker.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
+    <ClCompile Include="Model\SampleRepository.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -476,6 +477,7 @@
     <ClInclude Include="Utils\Locker.h">
       <Filter>Utils</Filter>
     </ClInclude>
+    <ClInclude Include="Model\SampleRepository.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

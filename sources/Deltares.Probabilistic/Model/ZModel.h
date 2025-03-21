@@ -20,7 +20,6 @@
 // All rights reserved.
 //
 #pragma once
-#include <limits>
 #include <vector>
 #include <functional>
 
@@ -28,6 +27,7 @@
 #include "ModelSample.h"
 #include "RunSettings.h"
 #include "ZValueConverter.h"
+#include "SampleRepository.h"
 
 namespace Deltares
 {
@@ -148,9 +148,48 @@ namespace Deltares
             int modelRuns = 0;
             int inputParametersCount = 0;
             int outputParametersCount = 0;
-            bool countRunsLambda = true;
             ZLambda getLambdaFromZValuesCallBack(ZValuesCallBack zValuesLambda);
             ZMultipleLambda getLambdaFromZValuesMultipleCallBack(ZValuesMultipleCallBack zValuesMultipleLambda);
+
+            /**
+             * \brief Calculates a sample
+             */
+            void invokeLambda(std::shared_ptr<ModelSample> sample);
+
+            /**
+             * \brief Calculates a number of samples
+             */
+            void invokeMultipleLambda(std::vector<std::shared_ptr<ModelSample>>& samples);
+
+            /**
+             * \brief The minimum calculation time in ms for storing it in the repository
+             */
+            long long minRepoCalculationTime = 1;
+
+            /**
+             * \brief Indicates whether calculation time should be measured
+             */
+            bool measureCalculationTime = true;
+
+            /**
+             * \brief Indicates the number of samples from which the calculation time is measured
+             */
+            int measuredCalculationTimes = 0;
+
+            /**
+             * \brief Indicates the maximum number of samples from which the calculation time will be measured
+             */
+            int maxMeasuredCalculationTimes = 100;
+
+            /**
+             * \brief Indicates whether samples should be saved in repository
+             */
+            bool useSampleRepository = false;
+
+            /**
+             * \brief Holds calculated samples
+             */
+            SampleRepository repository = SampleRepository();
         };
     }
 }

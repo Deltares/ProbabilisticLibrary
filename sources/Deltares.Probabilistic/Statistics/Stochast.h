@@ -279,6 +279,12 @@ namespace Deltares
             virtual bool isFragilityCurve() { return false; }
 
             /**
+             * \brief Gets the name of the stochast followed by an index
+             * \return Indexed stochast name
+             */
+            std::string getIndexedStochastName(int index);
+
+            /**
              * \brief Indicates which parameter should be kept constant when the mean value is changed (by setMean())
              * \return Constant parameter type
              */
@@ -370,6 +376,11 @@ namespace Deltares
              * \brief In case of a variable stochast, the interpolation table to convert from x-value of the other stochast to the stochastic parameters of this stochast
              */
             std::shared_ptr<VariableStochastValuesSet> ValueSet = std::make_shared<VariableStochastValuesSet>();
+
+            /**
+             * \brief In case of an array, the stochasts in the array
+             */
+            std::vector<std::shared_ptr<Stochast>> ArrayVariables;
 
             /**
              * \brief Gets a realization of a variable stochast

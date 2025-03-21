@@ -58,6 +58,8 @@ class SensitivitySettings:
 		        'save_messages',
 		        'sensitivity_method',
 	            'random_type',
+				'is_repeatable_random',
+				'random_seed',
 	            'minimum_samples',
 	            'maximum_samples',
 	            'maximum_iterations',
@@ -124,6 +126,22 @@ class SensitivitySettings:
 	@random_type.setter
 	def random_type(self, value : RandomType):
 		interface.SetStringValue(self._id, 'random_type', str(value))
+
+	@property
+	def is_repeatable_random(self):
+		return interface.GetBoolValue(self._id, 'is_repeatable_random')
+		
+	@is_repeatable_random.setter
+	def is_repeatable_random(self, value : bool):
+		interface.SetBoolValue(self._id, 'is_repeatable_random', value)
+
+	@property
+	def random_seed(self):
+		return interface.GetIntValue(self._id, 'random_seed')
+		
+	@random_seed.setter
+	def random_seed(self, value : int):
+		interface.SetIntValue(self._id, 'random_seed', value)
 
 	@property
 	def minimum_samples(self):

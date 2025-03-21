@@ -170,6 +170,7 @@
     <ClInclude Include="Reliability\FragilityCurve.h" />
     <ClInclude Include="Reliability\FragilityCurveIntegrationSettings.h" />
     <ClInclude Include="Reliability\FragilityCurveIntegration.h" />
+    <ClInclude Include="Model\SampleRepository.h" />
     <ClInclude Include="Statistics\Scenario.h" />
     <ClInclude Include="Statistics\ProbabilityIterator.h" />
     <ClInclude Include="Statistics\ProbabilityValue.h" />
@@ -373,6 +374,7 @@
     <ClCompile Include="Reliability\FragilityCurve.cpp" />
     <ClCompile Include="Reliability\FragilityCurveIntegration.cpp" />
     <ClCompile Include="Model\GradientSettings.cpp" />
+    <ClCompile Include="Model\SampleRepository.cpp" />
     <ClCompile Include="Statistics\Scenario.cpp" />
     <ClCompile Include="Sensitivity\DirectionalSamplingSettingsS.cpp" />
     <ClCompile Include="Statistics\ProbabilityValue.cpp" />

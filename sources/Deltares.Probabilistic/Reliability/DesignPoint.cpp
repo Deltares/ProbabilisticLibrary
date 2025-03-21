@@ -169,6 +169,17 @@ namespace Deltares
 
             return uniqueStochasts;
         }
+
+        int DesignPoint::getTotalModelRuns() const
+        {
+            int totalModelRuns = this->convergenceReport != nullptr ?  this->convergenceReport->TotalModelRuns : 0;
+            for (const std::shared_ptr<DesignPoint>& contributingDesignPoint : ContributingDesignPoints)
+            {
+                totalModelRuns += contributingDesignPoint->getTotalModelRuns();
+            }
+
+            return totalModelRuns;
+        }
     }
 }
 

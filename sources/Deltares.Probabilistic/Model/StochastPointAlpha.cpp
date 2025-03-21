@@ -53,7 +53,7 @@ namespace Deltares
             }
             else if (this->Stochast->modelParameter->isArray)
             {
-                return this->Stochast->name + "[" + std::to_string(this->Index) + "]";
+                return this->Stochast->getIndexedStochastName(this->Index);
             }
             else
             {
