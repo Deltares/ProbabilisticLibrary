@@ -73,20 +73,20 @@ class Test_sensitivity(unittest.TestCase):
 
         self.assertEqual(3, len(project.stochasts))
 
-        sens1 = project.stochasts[0];
-        self.assertEqual('x - (a+b) for x in L[0]' , sens1.name)
-        self.assertAlmostEqual(1.8, sens1.mean, delta=margin)
-        self.assertAlmostEqual(0.83, sens1.deviation, delta=margin)
+        stochast1 = project.stochasts[0];
+        self.assertEqual('x - (a+b) for x in L[0]' , stochast1.name)
+        self.assertAlmostEqual(1.8, stochast1.mean, delta=margin)
+        self.assertAlmostEqual(0.83, stochast1.deviation, delta=margin)
 
-        sens2 = project.stochasts[1];
-        self.assertEqual('x - (a+b) for x in L[1]' , sens2.name)
-        self.assertAlmostEqual(1.9, sens2.mean, delta=margin)
-        self.assertAlmostEqual(0.83, sens2.deviation, delta=margin)
+        stochast2 = project.stochasts[1];
+        self.assertEqual('x - (a+b) for x in L[1]' , stochast2.name)
+        self.assertAlmostEqual(1.9, stochast2.mean, delta=margin)
+        self.assertAlmostEqual(0.83, stochast2.deviation, delta=margin)
 
-        sens3 = project.stochasts[2];
-        self.assertEqual('x - (a+b) for x in L[2]' , sens3.name)
-        self.assertAlmostEqual(1.95, sens3.mean, delta=margin)
-        self.assertAlmostEqual(0.83, sens3.deviation, delta=margin)
+        stochast3 = project.stochasts[2];
+        self.assertEqual('x - (a+b) for x in L[2]' , stochast3.name)
+        self.assertAlmostEqual(1.95, stochast3.mean, delta=margin)
+        self.assertAlmostEqual(0.83, stochast3.deviation, delta=margin)
 
         self.assertLessEqual(2.5 * project.settings.maximum_samples, project.total_model_runs)
 
@@ -135,20 +135,20 @@ class Test_sensitivity(unittest.TestCase):
 
         self.assertEqual(3, len(project.stochasts))
 
-        sens1 = project.stochasts[0];
-        self.assertEqual('x - (a+b) for x in L[0]' , sens1.name)
-        self.assertAlmostEqual(1.8, sens1.mean, delta=margin)
-        self.assertAlmostEqual(0.83, sens1.deviation, delta=margin)
+        s1 = project.stochasts[0];
+        self.assertEqual('x - (a+b) for x in L[0]' , s1.name)
+        self.assertAlmostEqual(1.8, s1.mean, delta=margin)
+        self.assertAlmostEqual(0.83, s1.deviation, delta=margin)
 
-        sens2 = project.stochasts[1];
-        self.assertEqual('x - (a+b) for x in L[1]' , sens2.name)
-        self.assertAlmostEqual(1.9, sens2.mean, delta=margin)
-        self.assertAlmostEqual(0.83, sens2.deviation, delta=margin)
+        s2 = project.stochasts[1];
+        self.assertEqual('x - (a+b) for x in L[1]' , s2.name)
+        self.assertAlmostEqual(1.9, s2.mean, delta=margin)
+        self.assertAlmostEqual(0.83, s2.deviation, delta=margin)
 
-        sens3 = project.stochasts[2];
-        self.assertEqual('x - (a+b) for x in L[2]' , sens3.name)
-        self.assertAlmostEqual(1.95, sens3.mean, delta=margin)
-        self.assertAlmostEqual(0.83, sens3.deviation, delta=margin)
+        s3 = project.stochasts[2];
+        self.assertEqual('x - (a+b) for x in L[2]' , s3.name)
+        self.assertAlmostEqual(1.95, s3.mean, delta=margin)
+        self.assertAlmostEqual(0.83, s3.deviation, delta=margin)
 
         self.assertLessEqual(project.settings.maximum_samples, project.total_model_runs)
 
