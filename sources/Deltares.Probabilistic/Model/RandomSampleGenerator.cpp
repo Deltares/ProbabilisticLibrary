@@ -70,5 +70,17 @@ namespace Deltares
 
             return sample;
         }
+
+        void RandomSampleGenerator::proceed(int nSamples)
+        {
+            const int size = this->Settings->SkipUnvaryingParameters ? this->Settings->StochastSet->getStochastCount() : this->Settings->StochastSet->getVaryingStochastCount();
+            for (int i = 0; i < nSamples; i++)
+            {
+                for (int j = 0; j < size; j++)
+                {
+                    random.next();
+                }
+            }
+        }
     }
 }

@@ -29,8 +29,8 @@ namespace Deltares
         {
             this->modelRuns = 0;
 
-            this->sensitivityStochast = nullptr;
-            this->sensitivityStochasts.clear();
+            this->sensitivityResult = nullptr;
+            this->sensitivityResults.clear();
 
             this->sensitivityMethod = this->settings->GetSensitivityMethod();
             this->runSettings = this->settings->RunSettings;
@@ -46,15 +46,15 @@ namespace Deltares
                         {
                             this->parameterSelector->arrayIndex = arrayIndex;
 
-                            std::shared_ptr<Statistics::Stochast> stochast = this->getStochast();
-                            stochast->name += "[" + std::to_string(arrayIndex) + "]";
-                            this->sensitivityStochasts.push_back(stochast);
+                            std::shared_ptr<Sensitivity::SensitivityResult> result = this->getSensitivityResult();
+                            result->stochast->name += "[" + std::to_string(arrayIndex) + "]";
+                            this->sensitivityResults.push_back(result);
                         }
                     }
                     else
                     {
-                        std::shared_ptr<Statistics::Stochast> stochast = this->getStochast();
-                        this->sensitivityStochasts.push_back(stochast);
+                        std::shared_ptr<Sensitivity::SensitivityResult> result = this->getSensitivityResult();
+                        this->sensitivityResults.push_back(result);
                     }
                 }
             }
@@ -63,13 +63,13 @@ namespace Deltares
                 this->parameterSelector->parameter = this->parameter;
                 this->parameterSelector->arrayIndex = this->arrayIndex;
 
-                std::shared_ptr<Statistics::Stochast> stochast = this->getStochast();
-                this->sensitivityStochasts.push_back(stochast);
+                std::shared_ptr<Sensitivity::SensitivityResult> result = this->getSensitivityResult();
+                this->sensitivityResults.push_back(result);
             }
 
-            if (this->sensitivityStochasts.size() > 0)
+            if (this->sensitivityResults.size() > 0)
             {
-                this->sensitivityStochast = this->sensitivityStochasts[0];
+                this->sensitivityResult = this->sensitivityResults[0];
             }
 
             // reset the index
@@ -82,7 +82,7 @@ namespace Deltares
             }
         }
 
-        std::shared_ptr<Statistics::Stochast> SensitivityProject::getStochast()
+        std::shared_ptr<Sensitivity::SensitivityResult> SensitivityProject::getSensitivityResult()
         {
             this->model->zValueConverter = this->parameterSelector;
 
@@ -96,7 +96,7 @@ namespace Deltares
 
             this->modelRuns += this->model->getModelRuns();
 
-            return result->stochast;
+            return result;
         }
 
         bool SensitivityProject::isValid() const

@@ -50,6 +50,7 @@ namespace Deltares
             double getWeight(std::shared_ptr<Models::Sample> modifiedSample, std::shared_ptr<Models::Sample> sample, double dimensionality);
             std::vector<double> getFactors(std::shared_ptr<Reliability::StochastSettingsSet> stochastSettings);
             double getConvergence(int samples, double weightedSum);
+            std::shared_ptr<Models::Sample> getModifiedSample(const std::shared_ptr<Models::Sample> sample, std::vector<double>& factors, std::shared_ptr<Models::Sample> center, double dimensionality);
         };
     }
 }

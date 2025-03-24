@@ -33,6 +33,21 @@ namespace Deltares
         class ProbabilityValue 
         {
         public:
+
+            /**
+             * \brief Default constructor, has Reliability = 0 and quantile 0.5
+             */
+            ProbabilityValue() = default;
+
+            /**
+             * \brief Constructor accepting quantile
+             * \param p Quantile, same as non-exceeding probability
+             */
+            ProbabilityValue(double p)
+            {
+                this->setProbabilityOfNonFailure(p);
+            }
+
             /**
              * \brief Reliability of the fragility point
              */

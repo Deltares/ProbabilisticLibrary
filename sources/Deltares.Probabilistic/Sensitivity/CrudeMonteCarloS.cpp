@@ -114,7 +114,21 @@ namespace Deltares
 
                 if (quantileIndex >= 0 && quantileIndex < static_cast<int>(result->evaluations.size()))
                 {
-                    result->setQuantileResult(p, result->evaluations[quantileIndex]);
+                    result->quantileEvaluations.push_back(result->evaluations[quantileIndex]);
+                }
+                else if (quantileIndex >= 0)
+                {
+                    // perform the sampling again and recalculate
+                    randomSampleGenerator->restart();
+                    randomSampleGenerator->proceed(quantileIndex);
+
+                    std::shared_ptr<Sample> sample = randomSampleGenerator->getRandomSample();
+                    std::shared_ptr<Models::Evaluation> evaluation = std::shared_ptr<Models::Evaluation>(modelRunner->getEvaluation(sample));
+                    result->quantileEvaluations.push_back(evaluation);
+                }
+                else
+                {
+                    result->quantileEvaluations.push_back(nullptr);
                 }
             }
 

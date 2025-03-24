@@ -24,7 +24,7 @@ from enum import Enum
 
 from .utils import *
 from .statistic import Stochast, ProbabilityValue
-from .reliability import StochastSettings, RandomType, GradientType
+from .reliability import StochastSettings, RandomType, GradientType, Evaluation, Message
 from . import interface
 
 if not interface.IsLibraryLoaded():
@@ -309,3 +309,71 @@ class SensitivitySettings:
 			new_stochast_settings.append(stochast_setting)
 		self._stochast_settings = FrozenList(new_stochast_settings)
 		interface.SetArrayIntValue(self._id, 'stochast_settings', [stochast_setting._id for stochast_setting in self._stochast_settings])
+
+class SensitivityResult:
+
+	def __init__(self, id):
+		self._id = id
+		self._stochast = None
+		self._messages = None
+		self._realizations = None
+		self._quantile_realizations = None
+		
+	def __del__(self):
+		interface.Destroy(self._id)
+
+	def __dir__(self):
+		return ['identifier',
+				'variable',
+				'quantile_realizations',
+				'realizations',
+				'messages']
+		
+	def __str__(self):
+		return self.identifier
+
+	@property
+	def identifier(self) -> str:
+		return interface.GetStringValue(self._id, 'identifier')
+
+	@property
+	def variable(self) -> Stochast:
+		if self._variable is None:
+			variable_id = interface.GetIdValue(self._id, 'variable')
+			if variable_id > 0:
+				self._variable = Stochast(variable_id);
+				
+		return self._variable
+
+	@property
+	def realizations(self) -> list[Evaluation]:
+		if self._realizations is None:
+			realizations = []
+			realization_ids = interface.GetArrayIdValue(self._id, 'evaluations')
+			for realization_id in realization_ids:
+				realizations.append(Evaluation(realization_id))
+			self._realizations = FrozenList(realizations)
+				
+		return self._realizations
+	
+	@property
+	def quantile_realizations(self) -> list[Evaluation]:
+		if self._quantile_realizations is None:
+			quantile_realizations = []
+			quantile_realization_ids = interface.GetArrayIdValue(self._id, 'quantile_evaluations')
+			for realization_id in quantile_realization_ids:
+				quantile_realizations.append(Evaluation(realization_id))
+			self._quantile_realizations = FrozenList(quantile_realizations)
+				
+		return self._quantile_realizations
+	
+	@property
+	def messages(self) -> list[Message]:
+		if self._messages is None:
+			messages = []
+			message_ids = interface.GetArrayIdValue(self._id, 'messages')
+			for message_id in message_ids:
+				messages.append(Message(message_id))
+			self._messages = FrozenList(messages)
+				
+		return self._messages	

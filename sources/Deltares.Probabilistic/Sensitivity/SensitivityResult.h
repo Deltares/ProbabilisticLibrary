@@ -40,29 +40,17 @@ namespace Deltares::Sensitivity
         std::shared_ptr<Statistics::Stochast> stochast = nullptr;
 
         /**
-         * \brief Registers the evaluation belonging to a quantile (non-exceeding probability)
-         * \param value Non-exceeding probability of quantile
-         * \param evaluation The evaluation to be registered
+         * \brief Gets the identifier of the result
          */
-        void setQuantileResult(double value, std::shared_ptr<Models::Evaluation> evaluation)
+        std::string getIdentifier() const
         {
-            quantileResults[value] = evaluation;
+            return stochast != nullptr ? stochast->name : "";
         }
 
         /**
-         * \brief Retrieves the evaluation belonging to a quantile (non-exceeding probability)
-         * \param value Non-exceeding probability of quantile
-         * \returns The evaluation
+         * \brief List of evaluations corresponding with the requested quantiles
          */
-        std::shared_ptr<Models::Evaluation> getQuantileResult(double value)
-        {
-            if (quantileResults.contains(value))
-            {
-                return quantileResults[value];
-            }
-
-            return nullptr;
-        }
+        std::vector<std::shared_ptr<Models::Evaluation>> quantileEvaluations;
 
         /**
          * \brief List of evaluations calculated during sensitivity analysis
@@ -73,9 +61,6 @@ namespace Deltares::Sensitivity
          * \brief List of messages raised during sensitivity analysis
          */
         std::vector<std::shared_ptr<Models::Message>> messages;
-    private:
-
-        std::unordered_map<double, std::shared_ptr<Models::Evaluation>> quantileResults;
     };
 }
 

@@ -86,15 +86,7 @@ namespace Deltares
                     for (int i = 0; i < runs; i++)
                     {
                         std::shared_ptr<Sample> sample = randomSampleGenerator->getRandomSample();
-                        std::shared_ptr<Sample> modifiedSample = sample->clone();
-
-                        for (int k = 0; k < nParameters; k++)
-                        {
-                            modifiedSample->Values[k] = factors[k] * sample->Values[k] + center->Values[k];
-                        }
-
-                        modifiedSample->Weight = getWeight(modifiedSample, sample, dimensionality);
-
+                        std::shared_ptr<Sample> modifiedSample = getModifiedSample(sample, factors, center, dimensionality);  
                         samples.push_back(modifiedSample);
                     }
 
@@ -155,13 +147,42 @@ namespace Deltares
 
             std::shared_ptr<Statistics::Stochast> stochast = this->getStochastFromSamples(zSamples, zWeights);
 
+            std::shared_ptr<SensitivityResult> result = modelRunner->getSensitivityResult(stochast);
+
+            for (std::shared_ptr<Statistics::ProbabilityValue> quantile : this->Settings->RequestedQuantiles)
+            {
+                double p = quantile->getProbabilityOfNonFailure();
+                int quantileIndex = this->getQuantileIndex(zSamples, zWeights, p);
+
+                if (quantileIndex >= 0 && quantileIndex < static_cast<int>(result->evaluations.size()))
+                {
+                    result->quantileEvaluations.push_back(result->evaluations[quantileIndex]);
+                }
+                else if (quantileIndex >= 0)
+                {
+                    // perform the sampling again and recalculate
+                    randomSampleGenerator->restart();
+                    randomSampleGenerator->proceed(quantileIndex);
+
+                    std::shared_ptr<Sample> sample = randomSampleGenerator->getRandomSample();
+                    std::shared_ptr<Sample> modifiedSample = getModifiedSample(sample, factors, center, dimensionality);
+                    std::shared_ptr<Models::Evaluation> evaluation = std::shared_ptr<Models::Evaluation>(modelRunner->getEvaluation(modifiedSample));
+                    result->quantileEvaluations.push_back(evaluation);
+                }
+                else
+                {
+                    result->quantileEvaluations.push_back(nullptr);
+                }
+            }
+
             if (this->correlationMatrixBuilder != nullptr)
             {
                 this->correlationMatrixBuilder->registerWeights(zWeights);
                 this->correlationMatrixBuilder->registerSamples(stochast, zSamples);
             }
 
-            return modelRunner->getSensitivityResult(stochast);
+            return result;
+
         }
 
         /// <summary>
@@ -203,6 +224,20 @@ namespace Deltares
             }
 
             return factors;
+        }
+
+        std::shared_ptr<Models::Sample> ImportanceSamplingS::getModifiedSample(const std::shared_ptr<Models::Sample> sample, std::vector<double>& factors, std::shared_ptr<Models::Sample> center, double dimensionality)
+        {
+            std::shared_ptr<Sample> modifiedSample = sample->clone();
+
+            for (int k = 0; k < sample->getSize(); k++)
+            {
+                modifiedSample->Values[k] = factors[k] * sample->Values[k] + center->Values[k];
+            }
+
+            modifiedSample->Weight = getWeight(modifiedSample, sample, dimensionality);
+
+            return modifiedSample;
         }
 
         double ImportanceSamplingS::getConvergence(int samples, double weightedSum)
