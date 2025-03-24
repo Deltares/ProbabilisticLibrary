@@ -8,15 +8,15 @@ import time
 
 # We consider the limit state function for wave overtopping, which was artificially slowed down:
 
-from utils.models import z_func_overtopping_sleep
+from utils.models import ZFunctionOvertopping
 
 # And the following reliability project:
 
 def define_project():
 
     project = ReliabilityProject()
-    project.model = z_func_overtopping_sleep
-
+    project.model = ZFunctionOvertopping.z_sleep
+    
     project.variables["h"].distribution = DistributionType.log_normal
     project.variables["h"].mean = 1.5
     project.variables["h"].deviation = 0.05
@@ -43,8 +43,8 @@ def define_project():
     project.variables["q_crit"].deviation = 0.01
 
     project.settings.reliability_method = ReliabilityMethod.crude_monte_carlo
-    project.settings.minimum_samples = 1000
-    project.settings.maximum_samples = 1000
+    project.settings.minimum_samples = 100
+    project.settings.maximum_samples = 100
     project.settings.variation_coefficient = 0.02
 
     return project
