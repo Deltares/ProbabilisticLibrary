@@ -1,5 +1,5 @@
-
 import numpy as np
+import time
 
 # Z-function Bligh
 def bligh(m, L, c_creep, delta_H):
@@ -83,6 +83,14 @@ def z_func_overtopping(h, hm0, tm10, wave_direction, dike_normal, y_crest, q_cri
     else:  
         Z = q_crit - overtopping(h, hm0, tm10, wave_direction, dike_normal, y_crest)
     
+    return Z
+
+# Z-function for overtopping with sleep for max_parallel_process
+def z_func_overtopping_sleep(h, hm0, tm10, wave_direction, dike_normal, y_crest, q_crit):
+
+    for i in range(10000):
+        Z = z_func_overtopping(h, hm0, tm10, wave_direction, dike_normal, y_crest, q_crit)
+
     return Z
     
 # critical head difference calculation according to Sellmeijer
