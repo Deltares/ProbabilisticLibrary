@@ -97,6 +97,7 @@ namespace Deltares
             crudeMonteCarlo->Settings->DeriveSamplesFromVariationCoefficient = this->DeriveSamplesFromVariationCoefficient;
             crudeMonteCarlo->Settings->RunSettings = this->RunSettings;
             crudeMonteCarlo->Settings->randomSettings = this->RandomSettings;
+            crudeMonteCarlo->Settings->RequestedQuantiles = this->RequestedQuantiles;
             crudeMonteCarlo->Settings->StochastSet = this->StochastSet;
             crudeMonteCarlo->Settings->CalculateCorrelations = this->CalculateCorrelations;
             crudeMonteCarlo->Settings->CalculateInputCorrelations = this->CalculateInputCorrelations;
@@ -113,6 +114,7 @@ namespace Deltares
             importanceSampling->Settings->VariationCoefficient = this->VariationCoefficient;
             importanceSampling->Settings->ProbabilityForConvergence = this->ProbabilityForConvergence;
             importanceSampling->Settings->DeriveSamplesFromVariationCoefficient = this->DeriveSamplesFromVariationCoefficient;
+            importanceSampling->Settings->RequestedQuantiles = this->RequestedQuantiles;
             importanceSampling->Settings->RunSettings = this->RunSettings;
             importanceSampling->Settings->randomSettings = this->RandomSettings;
             importanceSampling->Settings->StochastSet = this->StochastSet;

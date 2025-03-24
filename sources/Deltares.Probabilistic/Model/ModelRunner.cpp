@@ -476,6 +476,30 @@ namespace Deltares
             return designPoint;
         }
 
+        /**
+         * \brief Gets the result of a sensitivity calculation
+         * \param stochast Stochast in the sensitivity result
+         * \return Sensitivity result
+         */
+        std::shared_ptr<Sensitivity::SensitivityResult> ModelRunner::getSensitivityResult(std::shared_ptr<Statistics::Stochast> stochast)
+        {
+            std::shared_ptr<Sensitivity::SensitivityResult> result = std::make_shared<Sensitivity::SensitivityResult>();
+
+            result->stochast = stochast;
+
+            for (size_t i = 0; i < this->evaluations.size(); i++)
+            {
+                result->evaluations.push_back(this->evaluations[i]);
+            }
+
+            for (size_t i = 0; i < this->messages.size(); i++)
+            {
+                result->messages.push_back(this->messages[i]);
+            }
+
+            return result;
+        }
+
         void  ModelRunner::registerSample(std::shared_ptr<Sensitivity::CorrelationMatrixBuilder> correlationMatrixBuilder, std::shared_ptr<Sample> sample)
         {
             this->uConverter->registerSample(correlationMatrixBuilder, sample);

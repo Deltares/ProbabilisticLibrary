@@ -91,12 +91,12 @@ namespace Deltares
             modelRunner->Settings = this->runSettings;
             modelRunner->initializeForRun();
 
-            std::shared_ptr<Statistics::Stochast> sensitivityStochast = this->sensitivityMethod->getSensitivityStochast(modelRunner);
-            sensitivityStochast->name = this->parameterSelector->parameter;
+            std::shared_ptr<Sensitivity::SensitivityResult> result = this->sensitivityMethod->getSensitivityStochast(modelRunner);
+            result->stochast->name = this->parameterSelector->parameter;
 
             this->modelRuns += this->model->getModelRuns();
 
-            return sensitivityStochast;
+            return result->stochast;
         }
 
         bool SensitivityProject::isValid() const

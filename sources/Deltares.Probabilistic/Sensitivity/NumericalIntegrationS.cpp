@@ -40,7 +40,7 @@ namespace Deltares
 {
     namespace Sensitivity
     {
-        std::shared_ptr<Statistics::Stochast> NumericalIntegrationS::getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner)
+        std::shared_ptr<Sensitivity::SensitivityResult> NumericalIntegrationS::getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner)
         {
             modelRunner->updateStochastSettings(Settings->StochastSet);
 
@@ -76,7 +76,7 @@ namespace Deltares
                 this->correlationMatrixBuilder->registerWeightedValues(stochast, samples);
             }
 
-            return stochast;
+            return modelRunner->getSensitivityResult(stochast);
         }
 
         std::vector<std::shared_ptr<Numeric::WeightedValue>> NumericalIntegrationS::collectSamples(std::shared_ptr<ModelRunner> modelRunner, int stochastIndex, std::shared_ptr<Sample> parentSample, double density, int nSamples, bool registerSamplesForCorrelation)

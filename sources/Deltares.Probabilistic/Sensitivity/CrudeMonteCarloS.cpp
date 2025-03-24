@@ -28,6 +28,7 @@
 #include "../Model/Sample.h"
 #include "../Model/RandomSampleGenerator.h"
 #include "CrudeMonteCarloSettingsS.h"
+#include "SensitivityResult.h"
 
 using namespace Deltares::Models;
 
@@ -35,7 +36,7 @@ namespace Deltares
 {
     namespace Sensitivity
     {
-        std::shared_ptr<Statistics::Stochast> CrudeMonteCarloS::getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner)
+        std::shared_ptr<Sensitivity::SensitivityResult> CrudeMonteCarloS::getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner)
         {
             modelRunner->updateStochastSettings(this->Settings->StochastSet);
 
@@ -104,12 +105,25 @@ namespace Deltares
 
             std::shared_ptr<Statistics::Stochast> stochast = this->getStochastFromSamples(zSamples, zWeights);
 
+            std::shared_ptr<SensitivityResult> result = modelRunner->getSensitivityResult(stochast);
+
+            for (std::shared_ptr<Statistics::ProbabilityValue> quantile : this->Settings->RequestedQuantiles)
+            {
+                double p = quantile->getProbabilityOfNonFailure();
+                int quantileIndex = this->getQuantileIndex(zSamples, zWeights, p);
+
+                if (quantileIndex >= 0 && quantileIndex < static_cast<int>(result->evaluations.size()))
+                {
+                    result->setQuantileResult(p, result->evaluations[quantileIndex]);
+                }
+            }
+
             if (this->Settings->CalculateCorrelations)
             {
                 this->correlationMatrixBuilder->registerSamples(stochast, zSamples);
             }
 
-            return stochast;
+            return result;
         }
     }
 }

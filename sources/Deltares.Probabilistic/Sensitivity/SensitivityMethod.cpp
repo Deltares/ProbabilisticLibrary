@@ -19,6 +19,9 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
+
+#include <memory>
+#include <algorithm>
 #include "SensitivityMethod.h"
 #include "../Math/NumericSupport.h"
 
@@ -41,22 +44,7 @@ namespace Deltares
             setStopped();
         }
 
-        std::shared_ptr<Statistics::Stochast> SensitivityMethod::getStochastFromSamples(std::vector<std::shared_ptr<Numeric::WeightedValue>>& weightedValues)
-        {
-            std::vector<double> values;
-            std::vector<double> weights;
-
-            for (std::shared_ptr<Numeric::WeightedValue> weightedValue : weightedValues)
-            {
-                values.push_back(weightedValue->value);
-                weights.push_back(weightedValue->weight);
-            }
-
-            return getStochastFromSamples(values, weights);
-        }
-
-
-        std::shared_ptr<Statistics::Stochast> SensitivityMethod::getStochastFromSamples(std::vector<double>& samples, std::vector<double>& weights)
+        void SensitivityMethod::filterSamples(std::vector<double>& samples, std::vector<double>& weights)
         {
             bool hasInvalidValues = false;
 
@@ -83,9 +71,34 @@ namespace Deltares
                     }
                 }
 
-                samples = newSamples;
-                weights = newWeights;
+                samples.clear();
+                weights.clear();
+
+                for (size_t i = 0; i < newSamples.size(); i++)
+                {
+                    samples.push_back(newSamples[i]);
+                    weights.push_back(newWeights[i]);
+                }
             }
+        }
+
+        std::shared_ptr<Statistics::Stochast> SensitivityMethod::getStochastFromSamples(std::vector<std::shared_ptr<Numeric::WeightedValue>>& weightedValues)
+        {
+            std::vector<double> values;
+            std::vector<double> weights;
+
+            for (std::shared_ptr<Numeric::WeightedValue> weightedValue : weightedValues)
+            {
+                values.push_back(weightedValue->value);
+                weights.push_back(weightedValue->weight);
+            }
+
+            return getStochastFromSamples(values, weights);
+        }
+
+        std::shared_ptr<Statistics::Stochast> SensitivityMethod::getStochastFromSamples(std::vector<double>& samples, std::vector<double>& weights)
+        {
+            filterSamples(samples, weights);
 
             std::shared_ptr<Statistics::Stochast> stochast = std::make_shared<Statistics::Stochast>();
 
@@ -113,6 +126,51 @@ namespace Deltares
             }
 
             return stochast;
+        }
+
+        int SensitivityMethod::getQuantileIndex(std::vector<double>& samples, std::vector<double>& weights, double quantile)
+        {
+            if (samples.empty())
+            {
+                return -1;
+            }
+
+            std::vector<std::shared_ptr<Numeric::WeightedValue>> values;
+            std::unordered_map<std::shared_ptr<Numeric::WeightedValue>, size_t> index;
+            double sumWeights = 0;
+            for (size_t i = 0; i < samples.size(); i++)
+            {
+                std::shared_ptr<Numeric::WeightedValue> value = std::make_shared<Numeric::WeightedValue>(samples[i], weights[i]);
+                index[value] = i;
+                values.push_back(value);
+                if (!std::isnan(weights[i]))
+                {
+                    sumWeights += weights[i];
+                }
+            }
+
+            std::sort(values.begin(), values.end(), [](const std::shared_ptr<Numeric::WeightedValue> lhs, const std::shared_ptr<Numeric::WeightedValue> rhs)
+            {
+                return lhs->value < rhs->value;
+            });
+
+            double cumulativeWeight = 0;
+            double requestedCumulativeWeight = sumWeights * quantile;
+
+            for (size_t i = 0; i < values.size(); i++)
+            {
+                if (!std::isnan(values[i]->weight))
+                {
+                    cumulativeWeight += values[i]->weight;
+                    if (cumulativeWeight >= requestedCumulativeWeight)
+                    {
+                        return static_cast<int>(index[values[i]]);
+                    }
+                }
+            }
+
+            // should not come here
+            return static_cast<int>(index[values.back()]);
         }
     }
 }

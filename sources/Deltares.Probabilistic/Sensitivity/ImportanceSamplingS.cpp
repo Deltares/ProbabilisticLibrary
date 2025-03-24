@@ -35,7 +35,7 @@ namespace Deltares
 {
     namespace Sensitivity
     {
-        std::shared_ptr<Statistics::Stochast> ImportanceSamplingS::getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner)
+        std::shared_ptr<Sensitivity::SensitivityResult> ImportanceSamplingS::getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner)
         {
             modelRunner->updateStochastSettings(this->Settings->StochastSet);
 
@@ -161,7 +161,7 @@ namespace Deltares
                 this->correlationMatrixBuilder->registerSamples(stochast, zSamples);
             }
 
-            return stochast;
+            return modelRunner->getSensitivityResult(stochast);
         }
 
         /// <summary>

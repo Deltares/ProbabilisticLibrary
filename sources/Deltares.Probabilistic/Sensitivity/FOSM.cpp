@@ -35,7 +35,7 @@ namespace Deltares
 {
     namespace Sensitivity
     {
-        std::shared_ptr<Statistics::Stochast> FOSM::getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner)
+        std::shared_ptr<Sensitivity::SensitivityResult> FOSM::getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner)
         {
             int nStochasts = modelRunner->getVaryingStochastCount();
 
@@ -81,7 +81,7 @@ namespace Deltares
                 this->correlationMatrixBuilder->registerSamples(stochast, std::vector<double> {z1});
             }
 
-            return stochast;
+            return modelRunner->getSensitivityResult(stochast);
         }
     }
 }
