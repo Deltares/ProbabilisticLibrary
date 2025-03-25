@@ -85,15 +85,15 @@ def z_func_overtopping(h, hm0, tm10, wave_direction, dike_normal, y_crest, q_cri
     
     return Z
 
-# Z-function for overtopping with sleep for max_parallel_process
+# Z-function for overtopping with sleep for max_parallel_processes
 class ZFunctionOvertopping():
 
     def __init__(self):
         pass
     def z_sleep(self, h, hm0, tm10, wave_direction, dike_normal, y_crest, q_crit):
 
-        for i in range(10000):
-            Z = z_func_overtopping(h, hm0, tm10, wave_direction, dike_normal, y_crest, q_crit)
+        time.sleep(0.1)
+        Z = z_func_overtopping(h, hm0, tm10, wave_direction, dike_normal, y_crest, q_crit)
 
         return Z
 
