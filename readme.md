@@ -56,7 +56,7 @@ Several Jupyter notebooks are available to demonstrate how to use the Probabilis
 
     * [Integration of a fragility curve](sources/Deltares.Probabilistic.PWrapper.Notebooks/failure_probability_fragility_curve.ipynb)
 
-7. [Sensitivity analysis]:
+7. Sensitivity analysis:
 
     * [Simple example](sources/Deltares.Probabilistic.PWrapper.Notebooks/sensitivity_analysis.ipynb)
 
@@ -65,6 +65,8 @@ Several Jupyter notebooks are available to demonstrate how to use the Probabilis
 8. [Including spatial correlations (length-effect)](sources/Deltares.Probabilistic.PWrapper.Notebooks/length_effect.ipynb)
 
 9. [Including statistical uncertainty](sources/Deltares.Probabilistic.PWrapper.Notebooks/statistical_uncertainty.ipynb)
+
+10. [Parallel computing](sources/Deltares.Probabilistic.PWrapper.Notebooks/parallel_overtopping.ipynb)
 
 ## License
 
