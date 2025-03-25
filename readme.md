@@ -66,7 +66,7 @@ Several Jupyter notebooks are available to demonstrate how to use the Probabilis
 
 9. [Including statistical uncertainty](sources/Deltares.Probabilistic.PWrapper.Notebooks/statistical_uncertainty.ipynb)
 
-10. [Parallel computing](sources/Deltares.Probabilistic.PWrapper.Notebooks/parallel_overtopping.ipynb)
+10. [Parallel computing and reusing realizations](sources/Deltares.Probabilistic.PWrapper.Notebooks/parallel_overtopping.ipynb)
 
 ## License
 
