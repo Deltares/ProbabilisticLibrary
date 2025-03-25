@@ -112,11 +112,7 @@ namespace Deltares
                 double p = quantile->getProbabilityOfNonFailure();
                 int quantileIndex = this->getQuantileIndex(zSamples, zWeights, p);
 
-                if (quantileIndex >= 0 && quantileIndex < static_cast<int>(result->evaluations.size()))
-                {
-                    result->quantileEvaluations.push_back(result->evaluations[quantileIndex]);
-                }
-                else if (quantileIndex >= 0)
+                if (quantileIndex >= 0)
                 {
                     // perform the sampling again and recalculate
                     randomSampleGenerator->restart();

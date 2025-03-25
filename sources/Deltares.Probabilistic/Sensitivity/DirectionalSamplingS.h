@@ -87,7 +87,9 @@ namespace Deltares
                 std::shared_ptr<Models::Sample> newSample = nullptr;
             };
 
-            double getZForRequiredQ(std::shared_ptr<Models::ModelRunner> modelRunner, double requestedBeta, int nStochasts, double Z0) const;
+            double getZForRequiredQ(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<Statistics::ProbabilityValue> quantile, int nStochasts, double Z0);
+            std::unordered_map<std::shared_ptr<Statistics::ProbabilityValue>, std::shared_ptr<Models::Evaluation>> evaluations;
+
             static double predict(double predZi, const std::vector<std::shared_ptr<Direction>>& directions, double probability0, int nStochasts);
             static double calculateProbabilityOfFailure(const std::vector<double>& dValues, double nstochasts);
             static double getBetaDistance(double betaRequired, int nStochasts, ModelType modelType);

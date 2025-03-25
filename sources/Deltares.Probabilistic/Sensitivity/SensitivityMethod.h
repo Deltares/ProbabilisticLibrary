@@ -78,6 +78,11 @@ namespace Deltares
             /**
              * \brief Gets the index in a list of samples corresponding with a quantile
              */
+            int getQuantileIndex(std::vector<std::shared_ptr<Numeric::WeightedValue>>& weightedValues, double quantile);
+
+            /**
+             * \brief Gets the index in a list of samples corresponding with a quantile
+             */
             int getQuantileIndex(std::vector<double>& samples, std::vector<double>& weights, double quantile);
 
         private:

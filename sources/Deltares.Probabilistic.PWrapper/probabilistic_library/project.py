@@ -509,25 +509,25 @@ class SensitivityProject(ModelProject):
 	@property
 	def stochast(self) -> Stochast:
 		if self._stochast is None:
-			stochastId = interface.GetIdValue(self._id, 'sensitivity_stochast')
-			if stochastId > 0:
-				self._stochast = Stochast(stochastId)
-
+			if not self.result is None:
+				self._stochast = self.result.variable
 		return self._stochast
 
 	@property
 	def stochasts(self) -> list[Stochast]:
 		if self._stochasts is None:
 			stochasts = []
-			stochast_ids = interface.GetArrayIdValue(self._id, 'sensitivity_stochasts')
-			for stochast_id in stochast_ids:
-				stochasts.append(Stochast(stochast_id))
+			for result in self.results:
+				if not result is None:
+					stochasts.append(result.variable)
+				else:
+					stochasts.append(None)
 			self._stochasts = FrozenList(stochasts)
 				
 		return self._stochasts
 
 	@property
-	def result(self) ->SensitivityResult:
+	def result(self) -> SensitivityResult:
 		if self._result is None:
 			resultId = interface.GetIdValue(self._id, 'sensitivity_result')
 			if resultId > 0:

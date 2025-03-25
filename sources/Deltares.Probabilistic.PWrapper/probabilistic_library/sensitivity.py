@@ -314,7 +314,7 @@ class SensitivityResult:
 
 	def __init__(self, id):
 		self._id = id
-		self._stochast = None
+		self._variable = None
 		self._messages = None
 		self._realizations = None
 		self._quantile_realizations = None

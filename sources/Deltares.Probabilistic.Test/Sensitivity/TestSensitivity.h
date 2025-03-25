@@ -35,7 +35,6 @@ namespace Deltares
             private:
                 void testCrudeMonteCarloAddOne();
                 void testCrudeMonteCarloLinear();
-                void testCrudeMonteCarloLinearSaveEvaluations();
                 void testCrudeMonteCarloLinearManySamples();
                 void testCrudeMonteCarloLinearAutoSamples();
 

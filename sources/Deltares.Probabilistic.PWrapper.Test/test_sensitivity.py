@@ -97,6 +97,7 @@ class Test_sensitivity(unittest.TestCase):
         self.assertEqual(2, len(result1.quantile_realizations))
         self.assertAlmostEqual(1.82, result1.quantile_realizations[0].output_values[0], delta=margin)
         self.assertAlmostEqual(3.14, result1.quantile_realizations[1].output_values[0], delta=margin)
+        self.assertEqual(project.stochast, project.result.variable)
 
 
     def test_crude_monte_carlo_array_result_linear_delayed(self):

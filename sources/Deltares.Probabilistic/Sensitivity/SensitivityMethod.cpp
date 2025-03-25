@@ -128,6 +128,20 @@ namespace Deltares
             return stochast;
         }
 
+        int SensitivityMethod::getQuantileIndex(std::vector<std::shared_ptr<Numeric::WeightedValue>>& weightedValues, double quantile)
+        {
+            std::vector<double> values;
+            std::vector<double> weights;
+
+            for (std::shared_ptr<Numeric::WeightedValue> weightedValue : weightedValues)
+            {
+                values.push_back(weightedValue->value);
+                weights.push_back(weightedValue->weight);
+            }
+
+            return getQuantileIndex(values, weights, quantile);
+        }
+
         int SensitivityMethod::getQuantileIndex(std::vector<double>& samples, std::vector<double>& weights, double quantile)
         {
             if (samples.empty())

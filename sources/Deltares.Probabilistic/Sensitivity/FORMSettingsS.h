@@ -24,7 +24,9 @@
 #include "../Model/RunSettings.h"
 #include "../Model/GradientSettings.h"
 #include "../Statistics/StandardNormal.h"
+#include "../Statistics/ProbabilityValue.h"
 #include <memory>
+#include <vector>
 
 namespace Deltares
 {
@@ -62,6 +64,11 @@ namespace Deltares
               * \brief Settings for calculating the gradient at a stochast point
               */
             std::shared_ptr<Models::GradientSettings> GradientSettings = std::make_shared<Models::GradientSettings>();
+
+            /**
+             * \brief Quantiles which should be calculated
+             */
+            std::vector<std::shared_ptr<Statistics::ProbabilityValue>> RequestedQuantiles;
 
             /**
              * \brief Settings for performing model runs

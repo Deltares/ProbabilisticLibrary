@@ -59,20 +59,22 @@ namespace Deltares
             form->Settings->RunSettings = this->RunSettings;
             form->Settings->CalculateCorrelations = this->CalculateCorrelations;
             form->Settings->CalculateInputCorrelations = this->CalculateInputCorrelations;
+            form->Settings->RequestedQuantiles = this->RequestedQuantiles;
 
             return form;
         }
 
         const std::shared_ptr<Sensitivity::SensitivityMethod> SettingsS::GetFOSMMethod()
         {
-            std::shared_ptr<FOSM> form = std::make_shared<FOSM>();
+            std::shared_ptr<FOSM> fosm = std::make_shared<FOSM>();
 
-            form->Settings->StepSize = this->GlobalStepSize;
-            form->Settings->RunSettings = this->RunSettings;
-            form->Settings->CalculateCorrelations = this->CalculateCorrelations;
-            form->Settings->CalculateInputCorrelations = this->CalculateInputCorrelations;
+            fosm->Settings->StepSize = this->GlobalStepSize;
+            fosm->Settings->RunSettings = this->RunSettings;
+            fosm->Settings->CalculateCorrelations = this->CalculateCorrelations;
+            fosm->Settings->CalculateInputCorrelations = this->CalculateInputCorrelations;
+            fosm->Settings->RequestedQuantiles = this->RequestedQuantiles;
 
-            return form;
+            return fosm;
         }
 
         const std::shared_ptr<Sensitivity::SensitivityMethod> SettingsS::GetNumericalIntegrationMethod()
@@ -83,6 +85,7 @@ namespace Deltares
             numericalIntegration->Settings->StochastSet = this->StochastSet;
             numericalIntegration->Settings->CalculateCorrelations = this->CalculateCorrelations;
             numericalIntegration->Settings->CalculateInputCorrelations = this->CalculateInputCorrelations;
+            numericalIntegration->Settings->RequestedQuantiles = this->RequestedQuantiles;
 
             return numericalIntegration;
         }
