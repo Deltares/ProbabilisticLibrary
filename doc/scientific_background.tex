@@ -1,4 +1,4 @@
-\documentclass[subfooter]{deltares_manual}
+\documentclass[git,subfooter]{deltares_manual}
 
 \usepackage[english]{babel}
 \usepackage{amssymb}
@@ -64,9 +64,9 @@ minimum height=1em, minimum width=1em, node distance=6em]
 \lstset{style=mystyle}
 
 \newcommand{\hr}{Hydra-Ring\xspace}
-\newcommand{\probLib}{the Probabilistic Library\xspace}
+\newcommand{\probLib}{Probabilistic Library\xspace}
 \newcommand{\probLibVersion} {25.1.1}
-\newcommand{\pathProbLibPictures}{Pictures/}
+\newcommand{\pathProbLibPictures}{pictures/}
 
 \classification{--}
 \references{--}
@@ -75,7 +75,7 @@ minimum height=1em, minimum width=1em, node distance=6em]
 \title{Probabilistic Library}
 \subtitle{}
 \manualtype{Scientific background}
-\version{25.1}
+\version{\probLibVersion}
 \setgitdirectory{../.git}
 \deltarestitle
 
@@ -83,31 +83,21 @@ minimum height=1em, minimum width=1em, node distance=6em]
 
 \include{scientific_chapters/Introduction}
 
-\include{scientific_chapters/Terminology}
-
-\include{scientific_chapters/Reliability}
-
-\include{scientific_chapters/CombiningDesignPoints}
-
-\include{scientific_chapters/Upscaling}
-
-\include{scientific_chapters/Distributions}
-
-\include{scientific_chapters/Correlations}
+\include{scientific_chapters/Statistics}
 
 \include{scientific_chapters/Sensitivity}
 
 \include{scientific_chapters/Output_uncertainty}
 
-% TODO these chapters currently fall out of the scope of Prob. Library:
-%\include{scientific_chapters/ResponseSurfaces}
-%\include{scientific_chapters/Calibration}
+\include{scientific_chapters/Reliability}
 
 \appendix
 
-\include{scientific_chapters/Linearisation}
+\include{scientific_chapters/SystemReliability}
 
-\include{scientific_chapters/Glossary}
+\include{scientific_chapters/CorrelationModels}
+
+\include{scientific_chapters/Conversions}
 
 \nonumchapter{References}
 
