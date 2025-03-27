@@ -36,6 +36,8 @@ namespace Deltares
 {
     namespace Statistics
     {
+        enum RunValuesType { MeanValues, MedianValues, DesignValues };
+
         /**
          * \brief Defines a stochastic variable
          * \remark Contains parameters and a distribution type which describe the stochastic behaviour
@@ -112,6 +114,13 @@ namespace Deltares
             double getQuantile(double quantile);
 
             /**
+             * \brief Gets the x-value corresponding to a certain type
+             * \param type the kind of x-value to be returned
+             * \return x-value
+             */
+            double getXFromType(RunValuesType type);
+
+            /**
              * \brief Gets the x-value corresponding to a given u-value
              * \param u Given u-value
              * \return x-value
@@ -132,6 +141,14 @@ namespace Deltares
              * \return x-value
              */
             double getXFromUAndSource(double xSource, double u);
+
+            /**
+             * \brief Gets the x-value for a given type for variable stochasts, i.e. stochasts where the stochastic parameters depend on the value of another stochast
+             * \param xSource Other stochast
+             * \param type The kind of type
+             * \return x-value
+             */
+            double getXFromTypeAndSource(double xSource, RunValuesType type);
 
             /**
              * \brief Gets the u-value for a given x-value for variable stochasts, i.e. stochasts where the stochastic parameters depend on the value of another stochast

@@ -21,6 +21,7 @@
 //
 #include "ModelRunner.h"
 #include "../Math/NumericSupport.h"
+#include "../Statistics/Stochast.h"
 #include <cmath>
 
 #include "ModelSample.h"
@@ -119,6 +120,16 @@ namespace Deltares
             return xSample;
         }
 
+        std::shared_ptr<ModelSample> ModelRunner::getModelSampleFromType(Statistics::RunValuesType type)
+        {
+            std::vector<double> xValues = this->uConverter->getValuesFromType(type);
+
+            // create a sample with values in x-space
+            std::shared_ptr<ModelSample> xSample = sampleProvider->getModelSample(xValues);
+
+            return xSample;
+        }
+
         /**
          * \brief Calculates a sample
          * \param sample Sample to be calculated
@@ -140,11 +151,27 @@ namespace Deltares
         /**
          * \brief Calculates a sample
          * \param sample Sample to be calculated
-         * \return Evaluation report of the sample calculation 
+         * \return Evaluation report of the sample calculation
          */
         Evaluation* ModelRunner::getEvaluation(std::shared_ptr<Sample> sample)
         {
             std::shared_ptr<ModelSample> xSample = getModelSample(sample);
+
+            this->zModel->invoke(xSample);
+
+            Evaluation* evaluation = getEvaluationFromSample(xSample);
+
+            return evaluation;
+        }
+
+        /**
+         * \brief Calculates a sample
+         * \param type Run values type
+         * \return Evaluation report of the sample calculation
+         */
+        Evaluation* ModelRunner::getEvaluationFromType(Statistics::RunValuesType type)
+        {
+            std::shared_ptr<ModelSample> xSample = getModelSampleFromType(type);
 
             this->zModel->invoke(xSample);
 

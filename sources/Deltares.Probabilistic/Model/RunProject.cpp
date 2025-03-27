@@ -33,9 +33,7 @@ namespace Deltares::Models
         const std::shared_ptr<ModelRunner> modelRunner = std::make_shared<ModelRunner>(this->model, uConverter, nullptr);
         modelRunner->initializeForRun();
 
-        std::shared_ptr<Sample> sample = std::make_shared<Sample>(modelRunner->getVaryingStochastCount());
-
-        this->evaluation = std::shared_ptr<Evaluation>(modelRunner->getEvaluation(sample));
+            this->evaluation = std::shared_ptr<Evaluation>(modelRunner->getEvaluation());
     }
 }
 

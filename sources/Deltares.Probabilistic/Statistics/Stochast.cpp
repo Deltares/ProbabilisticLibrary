@@ -114,6 +114,36 @@ namespace Deltares
             this->distribution->setXAtU(properties, x, u, constantType);
         }
 
+        double Stochast::getXFromType(RunValuesType type)
+        {
+            switch (type)
+            {
+            case RunValuesType::MedianValues: return getXFromU(0);
+            case RunValuesType::MeanValues: return getMean();
+            case RunValuesType::DesignValues: return getDesignValue();
+            default: throw Reliability::probLibException("Value type not supported");
+            }
+        }
+
+        double Stochast::getXFromTypeAndSource(double xSource, RunValuesType type)
+        {
+            if (this->IsVariableStochast)
+            {
+                std::shared_ptr<StochastProperties> valueSetProperties = this->ValueSet->getInterpolatedStochast(xSource);
+                switch (type)
+                {
+                case RunValuesType::MedianValues: return this->distribution->getXFromU(valueSetProperties, 0);
+                case RunValuesType::MeanValues: return this->distribution->getMean(valueSetProperties);
+                case RunValuesType::DesignValues: return this->distribution->getXFromU(valueSetProperties, StandardNormal::getUFromP(this->designQuantile)) / this->designFactor;
+                default: throw Reliability::probLibException("Value type not supported");
+                }
+            }
+            else
+            {
+                return this->getXFromType(type);
+            }
+        }
+
         void Stochast::setDistributionType(DistributionType distributionType)
         {
             if (this->distributionType != distributionType)

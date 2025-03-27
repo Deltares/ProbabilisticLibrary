@@ -20,30 +20,14 @@
 // All rights reserved.
 //
 #pragma once
-
-#include <memory>
-
-#include "Evaluation.h"
-#include "ModelProject.h"
-#include "RunProjectSettings.h"
+#include "../Statistics/Stochast.h"
 
 namespace Deltares::Models
 {
-    /**
-     * \brief Project which runs a model
-     */
-#pragma once
-    class RunProject : ModelProject
+    class RunProjectSettings
     {
     public:
-        /**
-         * \brief Runs the model
-         */
-        void run();
-
-        std::shared_ptr<RunProjectSettings> settings = std::make_shared<RunProjectSettings>();
-
-        std::shared_ptr<Evaluation> evaluation = nullptr;
+        Statistics::RunValuesType runValuesType = Statistics::RunValuesType::MeanValues;
     };
 }
 

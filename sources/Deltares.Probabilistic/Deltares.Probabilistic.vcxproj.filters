@@ -230,6 +230,7 @@
     </ClCompile>
     <ClCompile Include="Model\SampleRepository.cpp" />
     <ClCompile Include="Model\RunProject.cpp" />
+    <ClCompile Include="Model\RunProjectSettings.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -480,6 +481,7 @@
     </ClInclude>
     <ClInclude Include="Model\SampleRepository.h" />
     <ClInclude Include="Model\RunProject.h" />
+    <ClInclude Include="Model\RunProjectSettings.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

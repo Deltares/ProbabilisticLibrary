@@ -19,31 +19,5 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#pragma once
 
-#include <memory>
-
-#include "Evaluation.h"
-#include "ModelProject.h"
 #include "RunProjectSettings.h"
-
-namespace Deltares::Models
-{
-    /**
-     * \brief Project which runs a model
-     */
-#pragma once
-    class RunProject : ModelProject
-    {
-    public:
-        /**
-         * \brief Runs the model
-         */
-        void run();
-
-        std::shared_ptr<RunProjectSettings> settings = std::make_shared<RunProjectSettings>();
-
-        std::shared_ptr<Evaluation> evaluation = nullptr;
-    };
-}
-
