@@ -23,6 +23,7 @@
 
 #include <memory>
 #include "../Deltares.Probabilistic/Model/ModelRunner.h"
+#include "../Deltares.Probabilistic/Model/RunProject.h"
 #include "../Deltares.Probabilistic/Reliability/ReliabilityProject.h"
 #include "../Deltares.Probabilistic/Sensitivity/SensitivityProject.h"
 #include "../Deltares.Probabilistic/Reliability/FragilityCurve.h"
@@ -45,8 +46,10 @@ namespace Deltares
                 std::shared_ptr<Reliability::FragilityCurve> BuildFragilityCurve();
 
                 static std::shared_ptr<Sensitivity::SensitivityProject> getSensitivityProject(std::shared_ptr<Deltares::Reliability::ReliabilityProject> project);
+                static std::shared_ptr<Models::RunProject> getRunProject(std::shared_ptr<Deltares::Reliability::ReliabilityProject> project);
                 static std::shared_ptr<Deltares::Reliability::ReliabilityProject> getAddOneProject();
                 static std::shared_ptr<Deltares::Reliability::ReliabilityProject> getLinearProject();
+                static std::shared_ptr<Deltares::Reliability::ReliabilityProject> getTriangularLinearProject();
 
                 static const bool logZtoScreen = false;
             private:
@@ -61,6 +64,7 @@ namespace Deltares
                 static std::shared_ptr<Statistics::Stochast>  getNormalStochast(double mean = 0, double stddev = 1);
                 static std::shared_ptr<Statistics::Stochast>  getLogNormalStochast(double mean = 0, double stddev = 1, double shift = 0);
                 static std::shared_ptr<Statistics::Stochast>  getUniformStochast(double min = 0, double max = 1);
+                static std::shared_ptr<Statistics::Stochast>  getTriangularStochast(double min = 0, double top = 0, double max = 1);
                 static std::shared_ptr<Statistics::Stochast>  getGumbelStochast(double mean = 0, double stddev = 1);
             };
         }

@@ -33,7 +33,7 @@ namespace Deltares::Models
         const std::shared_ptr<ModelRunner> modelRunner = std::make_shared<ModelRunner>(this->model, uConverter, nullptr);
         modelRunner->initializeForRun();
 
-            this->evaluation = std::shared_ptr<Evaluation>(modelRunner->getEvaluation());
+        this->evaluation = std::shared_ptr<Evaluation>(modelRunner->getEvaluationFromType(this->settings->runValuesType));
     }
 }
 

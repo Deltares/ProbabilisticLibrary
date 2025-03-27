@@ -225,6 +225,21 @@ namespace Deltares
                 return sensitivityProject;
             }
 
+            std::shared_ptr<RunProject> projectBuilder::getRunProject(std::shared_ptr<ReliabilityProject> project)
+            {
+                std::shared_ptr<RunProject> runProject = std::make_shared<RunProject>();
+
+                for (std::shared_ptr<Stochast> stochast : project->stochasts)
+                {
+                    runProject->stochasts.push_back(stochast);
+                }
+
+                runProject->correlationMatrix = project->correlationMatrix;
+                runProject->model = project->model;
+
+                return runProject;
+            }
+
             std::shared_ptr<ReliabilityProject> projectBuilder::getAddOneProject()
             {
                 std::shared_ptr<ReliabilityProject> project = std::make_shared<ReliabilityProject>();
@@ -255,6 +270,21 @@ namespace Deltares
                 return project;
             }
 
+            std::shared_ptr<ReliabilityProject> projectBuilder::getTriangularLinearProject()
+            {
+                std::shared_ptr<ReliabilityProject> project = std::make_shared<ReliabilityProject>();
+
+                project->stochasts.push_back(getTriangularStochast(0,0, 1));
+                project->stochasts.push_back(getTriangularStochast(0, 0, 1));
+
+                project->correlationMatrix = std::make_shared<CorrelationMatrix>();
+                project->correlationMatrix->init(project->stochasts);
+
+                project->model = std::make_shared<ZModel>(projectBuilder::linear);
+
+                return project;
+            }
+
             std::shared_ptr<Stochast> projectBuilder::getDeterministicStochast(double mean)
             {
                 std::vector<double> values = {mean};
@@ -271,6 +301,12 @@ namespace Deltares
             {
                 std::vector<double> values = { min, max };
                 return std::make_shared<Stochast>(DistributionType::Uniform, values);
+            }
+
+            std::shared_ptr<Stochast>  projectBuilder::getTriangularStochast(double min, double top, double max)
+            {
+                std::vector<double> values = { min, top, max };
+                return std::make_shared<Stochast>(DistributionType::Triangular, values);
             }
 
             std::shared_ptr<Stochast> projectBuilder::getLogNormalStochast(double mean, double stddev, double shift)

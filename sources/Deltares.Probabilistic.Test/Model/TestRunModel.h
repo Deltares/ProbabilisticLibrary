@@ -20,30 +20,26 @@
 // All rights reserved.
 //
 #pragma once
+#include <gtest/gtest.h>
 
-#include <memory>
-
-#include "Evaluation.h"
-#include "ModelProject.h"
-#include "RunProjectSettings.h"
-
-namespace Deltares::Models
+namespace Deltares
 {
-    /**
-     * \brief Project which runs a model
-     */
-#pragma once
-    class RunProject : public ModelProject
+    namespace Probabilistic
     {
-    public:
-        /**
-         * \brief Runs the model
-         */
-        void run();
+        namespace Test
+        {
+            class TestRunModel
+            {
+            public:
+                void allModelTests();
+            private:
+                void testRunModelMedianValues();
+                void testRunModelMeanValues();
+                void testRunModelDesignValues();
 
-        std::shared_ptr<RunProjectSettings> settings = std::make_shared<RunProjectSettings>();
-
-        std::shared_ptr<Evaluation> evaluation = nullptr;
-    };
+                const double margin = 0.02;
+            };
+        };
+    }
 }
 
