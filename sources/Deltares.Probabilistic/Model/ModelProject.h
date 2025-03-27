@@ -37,6 +37,7 @@ namespace Deltares
         class ModelProject
         {
         public:
+
             /**
              * \brief Collection of all stochastic variables
              */
@@ -56,6 +57,11 @@ namespace Deltares
              * \brief Updates the stochasts with the parameters of the model
              */
             void updateStochasts();
+
+            /**
+             * \brief Copies all values from another project
+             */
+            void copyFrom(std::shared_ptr<ModelProject> source);
 
             /**
              * \brief Gets the total number of model runs

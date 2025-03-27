@@ -229,6 +229,7 @@
       <Filter>Utils</Filter>
     </ClCompile>
     <ClCompile Include="Model\SampleRepository.cpp" />
+    <ClCompile Include="Model\RunProject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -478,6 +479,7 @@
       <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="Model\SampleRepository.h" />
+    <ClInclude Include="Model\RunProject.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">
