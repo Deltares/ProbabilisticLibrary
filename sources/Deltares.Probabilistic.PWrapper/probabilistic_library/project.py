@@ -449,11 +449,77 @@ class ModelProject:
 
 		interface.SetIntValue(self._project_id, 'correlation_matrix', self._correlation_matrix._id)
 		interface.SetIntValue(self._project_id, 'settings', self._settings._id)
-		interface.SetArrayIntValue(self.settings._id, 'stochast_settings', [stochast_setting._id for stochast_setting in self.settings.stochast_settings])
-		ModelProject._zmodel.set_max_processes(self.settings.max_parallel_processes)
+		if hasattr(self.settings, 'stochast_settings'):
+			interface.SetArrayIntValue(self.settings._id, 'stochast_settings', [stochast_setting._id for stochast_setting in self.settings.stochast_settings])
+		if hasattr(self.settings, 'stochast_settings'):
+			ModelProject._zmodel.set_max_processes(self.settings.max_parallel_processes)
 		ModelProject._zmodel.initialize_for_run()
 
 		interface.Execute(self._project_id, 'run')
+
+class RunValuesType(Enum):
+	median_values = 'median_values'
+	mean_values = 'mean_values'
+	design_values = 'design_values'
+	def __str__(self):
+		return str(self.value)
+
+class RunProjectSettings:
+
+	def __init__(self):
+		self._id = interface.Create('run_project_settings')
+
+	def __del__(self):
+		interface.Destroy(self._id)
+
+	def __dir__(self):
+		return ['run_values_type']
+		
+	@property
+	def run_values_type(self) -> RunValuesType:
+		return RunValuesType[interface.GetStringValue(self._id, 'run_values_type')]
+
+	@run_values_type.setter
+	def run_values_type(self, value : RunValuesType):
+		interface.SetStringValue(self._id, 'run_values_type', str(value))
+
+	def _set_variables(self, variables):
+		pass
+
+class RunProject(ModelProject):
+
+	def __init__(self):
+		super().__init__()
+		self._id = interface.Create('run_project')
+		self._realization = None
+		self._initialize_callbacks(self._id)
+		self._set_settings(RunProjectSettings())
+
+	def __del__(self):
+		interface.Destroy(self._id)
+
+	def __dir__(self):
+		return ['variables',
+				'correlation_matrix',
+				'settings',
+				'model',
+				'run',
+				'realization',
+				'validate',
+				'is_valid']
+
+	def run(self):
+		self._realization = None
+		self._run()
+
+	@property
+	def realization(self):
+		if self._realization is None:
+			realizationId = interface.GetIdValue(self._id, 'realization')
+			if realizationId > 0:
+				self._realization = Evaluation(realizationId)
+
+		return self._realization
 
 class SensitivityProject(ModelProject):
 
@@ -488,7 +554,7 @@ class SensitivityProject(ModelProject):
 		return interface.GetStringValue(self._id, 'parameter')
 		
 	@parameter.setter
-	def parameter(self, value : int):
+	def parameter(self, value : str):
 		interface.SetStringValue(self._id, 'parameter', str(value))
 
 	def run(self):

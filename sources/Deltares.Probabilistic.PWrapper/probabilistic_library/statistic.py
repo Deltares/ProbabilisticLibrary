@@ -229,7 +229,7 @@ class Stochast:
 				'conditional_source',
 				'conditional_values'
 				'design_factor',
-				'design_fraction',
+				'design_quantile',
 				'design_value',
 				'is_array',
 				'array_size',

@@ -28,6 +28,9 @@ namespace Deltares::Models
     {
     public:
         Statistics::RunValuesType runValuesType = Statistics::RunValuesType::MeanValues;
+
+        static Statistics::RunValuesType getRunValuesType(const std::string& value);
+        static std::string getRunValuesTypeString(Statistics::RunValuesType run_values);
     };
 }
 

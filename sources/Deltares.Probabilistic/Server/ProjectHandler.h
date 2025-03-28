@@ -26,6 +26,8 @@
 #include "../Reliability/FragilityCurveProject.h"
 #include "../Reliability/LimitStateFunction.h"
 #include "../Reliability/Settings.h"
+#include "../Model/RunProject.h"
+#include "../Model/RunProjectSettings.h"
 #include "../Sensitivity/SensitivityProject.h"
 #include "../Sensitivity/SettingsS.h"
 #include "../Combine/CombineProject.h"
@@ -97,8 +99,8 @@ namespace Deltares
         private:
             enum ObjectType {StandardNormal, Message, ProbabilityValue, Project, ModelParameter, LimitStateFunction, Stochast, DiscreteValue, HistogramValue, FragilityValue,
                 ContributingStochast, ConditionalValue, CorrelationMatrix, Scenario, Settings, StochastSettings, DesignPoint, Alpha, FragilityCurve, FragilityCurveProject, Evaluation,
-                CombineProject, CombineSettings, ExcludingCombineProject, ExcludingCombineSettings, SelfCorrelationMatrix, SensitivityProject, SensitivitySettings,
-                LengthEffectProject};
+                CombineProject, CombineSettings, ExcludingCombineProject, ExcludingCombineSettings, SelfCorrelationMatrix, RunProject, RunProjectSettings,
+                SensitivityProject, SensitivitySettings, LengthEffectProject};
             ObjectType GetType(std::string object_type);
             std::unordered_map<int, Deltares::Server::ProjectHandler::ObjectType> types;
 
@@ -128,6 +130,8 @@ namespace Deltares
             std::unordered_map<int, std::shared_ptr<Reliability::ExcludingCombineSettings>> excludingCombineSettings;
             std::unordered_map<int, std::shared_ptr<Reliability::LengthEffectProject>> lengthEffectProjects;
             std::unordered_map<int, std::shared_ptr<Statistics::SelfCorrelationMatrix>> selfCorrelationMatrices;
+            std::unordered_map<int, std::shared_ptr<Models::RunProject>> runProjects;
+            std::unordered_map<int, std::shared_ptr<Models::RunProjectSettings>> runProjectSettings;
             std::unordered_map<int, std::shared_ptr<Sensitivity::SensitivityProject>> sensitivityProjects;
             std::unordered_map<int, std::shared_ptr<Sensitivity::SettingsS>> sensitivitySettingsValues;
 
