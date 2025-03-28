@@ -56,5 +56,19 @@ class Test_run_project(unittest.TestCase):
 
         self.assertAlmostEqual(0.75, project.realization.output_values[0], delta=margin)
 
+    def test_run_from_reliability_project(self):
+        reliability_project = project_builder.get_linear_project()
+
+        project = RunProject()
+        project.model = reliability_project.model
+
+        project.settings.run_values_type = RunValuesType.mean_values
+
+        project.run();
+
+        self.assertAlmostEqual(1.13, project.realization.output_values[0], delta=margin)
+
+
+
 if __name__ == '__main__':
     unittest.main()

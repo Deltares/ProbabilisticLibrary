@@ -845,6 +845,7 @@ namespace Deltares
 
                 if (property_ == "settings") project->settings = settingsValues[value];
                 else if (property_ == "correlation_matrix") project->correlationMatrix = correlationMatrices[value];
+                else if (property_ == "share_project") project->shareStochasts(this->GetProject(value));
             }
             else if (objectType == ObjectType::RunProject)
             {
@@ -852,6 +853,7 @@ namespace Deltares
 
                 if (property_ == "settings") project->settings = runProjectSettings[value];
                 else if (property_ == "correlation_matrix") project->correlationMatrix = correlationMatrices[value];
+                else if (property_ == "share_project") project->shareStochasts(this->GetProject(value));
             }
             else if (objectType == ObjectType::SensitivityProject)
             {
@@ -859,6 +861,7 @@ namespace Deltares
 
                 if (property_ == "settings") project->settings = sensitivitySettingsValues[value];
                 else if (property_ == "correlation_matrix") project->correlationMatrix = correlationMatrices[value];
+                else if (property_ == "share_project") project->shareStochasts(this->GetProject(value));
             }
             else if (objectType == ObjectType::FragilityCurveProject)
             {
@@ -2221,6 +2224,26 @@ namespace Deltares
         std::shared_ptr<Reliability::DesignPointIds> ProjectHandler::GetDesignPointIds(int id)
         {
             return nullptr;
+        }
+
+        std::shared_ptr<Models::ModelProject> ProjectHandler::GetProject(int id)
+        {
+            if (this->projects.contains(id))
+            {
+                return this->projects[id];
+            }
+            else if (this->runProjects.contains(id))
+            {
+                return this->runProjects[id];
+            }
+            else if (this->sensitivityProjects.contains(id))
+            {
+                return this->sensitivityProjects[id];
+            }
+            else
+            {
+                return nullptr;
+            }
         }
         
         void ProjectHandler::UpdateValidationMessages(const std::vector<std::shared_ptr<Models::Message>>& newMessages)

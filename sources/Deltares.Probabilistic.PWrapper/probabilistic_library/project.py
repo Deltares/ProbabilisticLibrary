@@ -69,6 +69,7 @@ class ZModel:
 		self._array_sizes = None
 		self._pool = None
 		self._max_processes = 1
+		self._project_id = 0
 
 		if self._is_function:
 			self._input_parameters = self._get_input_parameters(callback)
@@ -339,8 +340,7 @@ class ModelProject:
 		self._correlation_matrix = CorrelationMatrix()
 		self._output_parameters = FrozenList()
 		self._settings = None
-
-		ModelProject._zmodel = None
+		self._model = None
 
 	def _initialize_callbacks(self, project_id):
 
@@ -368,14 +368,14 @@ class ModelProject:
 		ModelProject._zmodel.run_multiple(samples)
 
 	def validate(self):
-		if not ModelProject._zmodel is None:
-			return ModelProject._zmodel.validate()
+		if not self._model is None:
+			return self._model.validate()
 		else:
 			return FrozenList([Message.from_message(MessageType.error, 'No model provided')])
 
 	def is_valid(self):
-		if not ModelProject._zmodel is None:
-			return ModelProject._zmodel.is_valid()
+		if not self._model is None:
+			return self._model.is_valid()
 		else:
 			return False
 
@@ -396,7 +396,9 @@ class ModelProject:
 
 	@property
 	def model(self):
-		return ModelProject._zmodel
+		if not self._model is None:
+			self._model._project = self
+		return self._model
 
 	@model.setter
 	def model(self, value):
@@ -407,22 +409,30 @@ class ModelProject:
 			output_parameter_size = 1
 
 		if inspect.isfunction(value) or inspect.ismethod(value):
-			ModelProject._zmodel = ZModel(value, output_parameter_size)
+			self._model = ZModel(value, output_parameter_size)
+			self._update_model()
+		elif isinstance(value, ZModel):
+			self._model = value
+			self._share(value._project)
 			self._update_model()
 		elif isinstance(value, ZModelContainer):
-			ModelProject._zmodel = value.get_model()
+			self._model = value.get_model()
 		else:
 			raise ValueError('ZModel container expected')
 		
 	def _check_model(self):
-		if not ModelProject._zmodel is None:
-			if ModelProject._zmodel.update():
+		if not self._model is None:
+			if self._model.update():
 				self._update_model()
 	
+	def _share(self, shared_project):
+		self._known_variables.extend(shared_project.variables)
+		interface.SetIntValue(self._project_id, 'share_project', shared_project._id)
+
 	def _update_model(self):
-		interface.SetArrayIntValue(self._project_id, 'input_parameters', [input_parameter._id for input_parameter in ModelProject._zmodel.input_parameters])
-		interface.SetArrayIntValue(self._project_id, 'output_parameters', [output_parameter._id for output_parameter in ModelProject._zmodel.output_parameters])
-		interface.SetStringValue(self._project_id, 'model_name', ModelProject._zmodel.name)
+		interface.SetArrayIntValue(self._project_id, 'input_parameters', [input_parameter._id for input_parameter in self._model.input_parameters])
+		interface.SetArrayIntValue(self._project_id, 'output_parameters', [output_parameter._id for output_parameter in self._model.output_parameters])
+		interface.SetStringValue(self._project_id, 'model_name', self._model.name)
 
 		variables = []
 		variable_ids = interface.GetArrayIdValue(self._project_id, 'stochasts')
@@ -442,7 +452,7 @@ class ModelProject:
 		for var in self._variables:
 			var._set_variables(self._variables)
 
-		self._output_parameters = ModelProject._zmodel.output_parameters
+		self._output_parameters = self._model.output_parameters
 
 	def _run(self):
 		self._check_model()
@@ -452,9 +462,9 @@ class ModelProject:
 		if hasattr(self.settings, 'stochast_settings'):
 			interface.SetArrayIntValue(self.settings._id, 'stochast_settings', [stochast_setting._id for stochast_setting in self.settings.stochast_settings])
 		if hasattr(self.settings, 'stochast_settings'):
-			ModelProject._zmodel.set_max_processes(self.settings.max_parallel_processes)
-		ModelProject._zmodel.initialize_for_run()
-
+			self._model.set_max_processes(self.settings.max_parallel_processes)
+		self._model.initialize_for_run()
+		ModelProject._zmodel = self._model
 		interface.Execute(self._project_id, 'run')
 
 class RunValuesType(Enum):

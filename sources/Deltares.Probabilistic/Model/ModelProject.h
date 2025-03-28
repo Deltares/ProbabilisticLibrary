@@ -59,9 +59,9 @@ namespace Deltares
             void updateStochasts();
 
             /**
-             * \brief Copies all values from another project
+             * \brief Shares the stochasts and correlation matrix with another project
              */
-            void copyFrom(std::shared_ptr<ModelProject> source);
+            void shareStochasts(std::shared_ptr<ModelProject> source);
 
             /**
              * \brief Gets the total number of model runs

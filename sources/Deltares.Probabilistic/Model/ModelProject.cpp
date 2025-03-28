@@ -58,18 +58,15 @@ namespace Deltares
             }
         }
 
-        void ModelProject::copyFrom(std::shared_ptr<ModelProject> source)
+        void ModelProject::shareStochasts(std::shared_ptr<ModelProject> source)
         {
-            this->model = source->model;
-
             for (size_t i = 0; i < source->stochasts.size(); i++)
             {
-                stochasts.push_back(source->stochasts[i]);
+                this->stochasts.push_back(source->stochasts[i]);
             }
 
             this->correlationMatrix = source->correlationMatrix;
         }
-
     }
 }
 
