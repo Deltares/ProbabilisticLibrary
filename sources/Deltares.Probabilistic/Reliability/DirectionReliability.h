@@ -22,6 +22,7 @@
 #pragma once
 #include "DirectionReliabilitySettings.h"
 #include "DirectionSection.h"
+#include "PrecomputeValues.h"
 #include "ReliabilityMethod.h"
 
 namespace Deltares
@@ -46,14 +47,15 @@ namespace Deltares
         public:
             std::shared_ptr<DirectionReliabilitySettings> Settings = std::make_shared<DirectionReliabilitySettings>();
             std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
-            double getBeta(std::shared_ptr<Deltares::Models::ModelRunner> modelRunner, std::shared_ptr<Sample> directionSample, double z0);
+            double getBeta(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<Sample> directionSample, double z0, PrecomputeValues& zValues);
+            double getBeta(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<Sample> directionSample, double z0);
             static double GetZTolerance(std::shared_ptr<DirectionReliabilitySettings> settings, double uLow, double uHigh, double zLow, double zHigh);
         protected:
             double findBetaBetweenBoundariesAllowNaN(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<DirectionReliabilitySettings> settings, std::shared_ptr<Sample> uDirection, bool invertZ, double uLow, double uHigh, double zLow, double zHigh, double& z);
             virtual double findBetaBetweenBoundaries(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<DirectionReliabilitySettings> settings, std::shared_ptr<Sample> uDirection, bool invertZ, double uLow, double uHigh, double zLow, double zHigh, double& z);
         private:
-            double getDirectionBeta(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr <BetaValueTask> directionTask);
-            std::vector<std::shared_ptr< DirectionSection>> getDirectionSections(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<DirectionReliabilitySettings> settings, std::shared_ptr<Sample> uDirection, bool invertZ);
+            double getDirectionBeta(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr <BetaValueTask> directionTask, PrecomputeValues& zValues);
+            std::vector<std::shared_ptr< DirectionSection>> getDirectionSections(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<DirectionReliabilitySettings> settings, std::shared_ptr<Sample> uDirection, bool invertZ, PrecomputeValues& zValues);
             double getBetaFromSections(std::vector<std::shared_ptr<DirectionSection>> sections);
         };
 

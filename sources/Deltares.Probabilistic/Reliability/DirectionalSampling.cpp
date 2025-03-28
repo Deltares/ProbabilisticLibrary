@@ -54,7 +54,7 @@ namespace Deltares
 
             std::shared_ptr<Sample> zeroSample = std::make_shared<Sample>(nStochasts);
             double z0 = modelRunner->getZValue(zeroSample);
-            double z0Fac = this->getZFactor(z0);
+            double z0Fac = getZFactor(z0);
 
             int chunkSize = modelRunner->Settings->MaxChunkSize;
 
@@ -85,7 +85,7 @@ namespace Deltares
                         samples.push_back(sample);
                     }
 
-                    betaValues = getDirectionBetas(modelRunner, samples, z0Fac, minBetaDirection);
+                    betaValues = getDirectionBetas(modelRunner, samples, z0, minBetaDirection);
 
                     // check whether restart is needed
                     if (modelRunner->shouldExitPrematurely(samples))
@@ -197,11 +197,21 @@ namespace Deltares
 
         std::vector<double> DirectionalSampling::getDirectionBetas(std::shared_ptr<Models::ModelRunner> modelRunner, std::vector<std::shared_ptr<Sample>> samples, double z0, double threshold)
         {
+            const size_t nSamples = samples.size();
+
             auto betaValues = std::vector<double>(samples.size());
 
             std::unique_ptr<DirectionReliabilityForDirectionalSampling> directionReliability = std::make_unique<DirectionReliabilityForDirectionalSampling>();
             directionReliability->Settings = this->Settings->DirectionSettings;
             directionReliability->Threshold = threshold;
+
+            // precompute Z-values
+            auto precomputed = PrecomputeValues();
+            auto z0pv = PrecomputeValue(0.0, std::abs(z0));
+            precomputed.values.emplace_back(z0pv);
+            auto zValues = std::vector(nSamples, precomputed);
+
+            double z0Fac = getZFactor(z0);
 
             #pragma omp parallel for
             for (int i = 0; i < static_cast<int>(samples.size()); i++)
@@ -214,11 +224,11 @@ namespace Deltares
                 }
                 else 
                 {
-                    betaValues[i] = directionReliability->getBeta(modelRunner, samples[i], z0);
+                    betaValues[i] = directionReliability->getBeta(modelRunner, samples[i], z0Fac, zValues[i]);
                 }
             }
 
-            // keep results from non proxy runs when proxies are used for a next run
+            // keep results from non-proxy runs when proxies are used for a next run
             if (modelRunner->Settings->IsProxyModel())
             {
                 for (size_t i = 0; i < samples.size(); i++)
