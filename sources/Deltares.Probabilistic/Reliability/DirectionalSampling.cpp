@@ -20,7 +20,6 @@
 // All rights reserved.
 //
 #include "DirectionalSampling.h"
-#include "DirectionReliability.h"
 #include "../Model/RandomSampleGenerator.h"
 #include "../Math/SpecialFunctions.h"
 #include <omp.h>
@@ -197,25 +196,22 @@ namespace Deltares
             return convergence;
         }
 
-        std::vector<double> DirectionalSampling::getDirectionBetas(std::shared_ptr<Models::ModelRunner> modelRunner, std::vector<std::shared_ptr<Sample>> samples, double z0, double threshold)
+        // precompute Z-values
+        std::vector<PrecomputeValues> DirectionalSampling::precompute(const std::shared_ptr<Models::ModelRunner>& modelRunner,
+            const std::vector<std::shared_ptr<Sample>>& samples, double z0, const DirectionReliabilityForDirectionalSampling& directionReliability)
         {
             const size_t nSamples = samples.size();
 
-            auto betaValues = std::vector<double>(samples.size());
-
-            std::unique_ptr<DirectionReliabilityForDirectionalSampling> directionReliability = std::make_unique<DirectionReliabilityForDirectionalSampling>();
-            directionReliability->Settings = this->Settings->DirectionSettings;
-            directionReliability->Threshold = threshold;
-
-            // precompute Z-values
+            // copy z-value zero sample
             auto precomputed = PrecomputeValues();
             auto z0pv = PrecomputeValue(0.0, std::abs(z0));
             precomputed.values.emplace_back(z0pv);
             auto zValues = std::vector(nSamples, precomputed);
 
-            const auto model = ZGetter(modelRunner, directionReliability->Settings);
+            // precompute Z-values multiples of Dsdu
+            const auto model = ZGetter(modelRunner, directionReliability.Settings);
             const auto invertZ = z0 < 0.0;
-            const auto u1 = directionReliability->Settings->Dsdu;
+            const auto u1 = directionReliability.Settings->Dsdu;
             std::vector<std::shared_ptr<Sample>> uSamples;
             for (size_t i = 0; i < nSamples; i++)
             {
@@ -229,6 +225,18 @@ namespace Deltares
                 auto z1pv = PrecomputeValue(u1, zValues2[i]);
                 zValues[i].values.push_back(z1pv);
             }
+            return zValues;
+        }
+
+        std::vector<double> DirectionalSampling::getDirectionBetas(std::shared_ptr<Models::ModelRunner> modelRunner, std::vector<std::shared_ptr<Sample>> samples, double z0, double threshold)
+        {
+            auto betaValues = std::vector<double>(samples.size());
+
+            std::unique_ptr<DirectionReliabilityForDirectionalSampling> directionReliability = std::make_unique<DirectionReliabilityForDirectionalSampling>();
+            directionReliability->Settings = this->Settings->DirectionSettings;
+            directionReliability->Threshold = threshold;
+
+            auto zValues = precompute(modelRunner, samples, z0, *directionReliability);
 
             double z0Fac = getZFactor(z0);
 
