@@ -27,6 +27,8 @@
 
 #include <algorithm>
 
+#include "ZGetter.h"
+
 namespace Deltares
 {
     namespace Reliability
@@ -211,6 +213,23 @@ namespace Deltares
             precomputed.values.emplace_back(z0pv);
             auto zValues = std::vector(nSamples, precomputed);
 
+            const auto model = ZGetter(modelRunner, directionReliability->Settings);
+            const auto invertZ = z0 < 0.0;
+            const auto u1 = directionReliability->Settings->Dsdu;
+            std::vector<std::shared_ptr<Sample>> uSamples;
+            for (size_t i = 0; i < nSamples; i++)
+            {
+                auto uDirection = samples[i]->getNormalizedSample();
+                auto z1 = model.GetU(uDirection, u1, invertZ);
+                uSamples.push_back(z1);
+            }
+            auto zValues2 = modelRunner->getZValues(uSamples);
+            for (size_t i = 0; i < nSamples; i++)
+            {
+                auto z1pv = PrecomputeValue(u1, zValues2[i]);
+                zValues[i].values.push_back(z1pv);
+            }
+
             double z0Fac = getZFactor(z0);
 
             #pragma omp parallel for
@@ -222,7 +241,7 @@ namespace Deltares
                 {
                     betaValues[i] = previousResults[samples[i]->IterationIndex];
                 }
-                else 
+                else
                 {
                     betaValues[i] = directionReliability->getBeta(modelRunner, samples[i], z0Fac, zValues[i]);
                 }

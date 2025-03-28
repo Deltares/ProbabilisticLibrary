@@ -131,7 +131,10 @@ namespace Deltares
                     double uHigh = std::min((k + 1) * settings->Dsdu, settings->MaximumLengthU);
 
                     double zLow = prevzHigh;
-                    double zHigh = model->GetZ(uDirection, uHigh, invertZ);
+                    bool foundZHigh = false;
+                    double zHigh;
+                    zValues.findZ(uHigh, foundZHigh, zHigh);
+                    if ( ! foundZHigh) zHigh = model->GetZ(uDirection, uHigh, invertZ);
 
                     prevzHigh = zHigh;
 

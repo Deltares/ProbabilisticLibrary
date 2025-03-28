@@ -38,7 +38,7 @@ namespace Deltares::Reliability
             this->settings = settings;
         }
 
-        double GetZ(std::shared_ptr<Sample> uDirection, double factor, bool inverted, bool allowProxy = true)
+        std::shared_ptr<Sample> GetU(const std::shared_ptr<Sample>& uDirection, double factor, bool allowProxy = true) const
         {
             std::shared_ptr<Sample> u = uDirection->getMultipliedSample(factor);
             u->AllowProxy = allowProxy;
@@ -53,6 +53,13 @@ namespace Deltares::Reliability
                     }
                 }
             }
+
+            return u;
+        }
+
+        double GetZ(const std::shared_ptr<Sample>& uDirection, double factor, bool inverted, bool allowProxy = true) const
+        {
+            const auto u = GetU(uDirection, factor, allowProxy);
 
             return GetZValueCorrected(u, inverted);
         }
