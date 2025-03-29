@@ -426,8 +426,10 @@ class ModelProject:
 				self._update_model()
 	
 	def _share(self, shared_project):
+		id1 = self._id
+		id2 = shared_project._id
 		self._known_variables.extend(shared_project.variables)
-		interface.SetIntValue(self._project_id, 'share_project', shared_project._id)
+		interface.SetIntValue(self._id, 'share_project', shared_project._id)
 
 	def _update_model(self):
 		interface.SetArrayIntValue(self._project_id, 'input_parameters', [input_parameter._id for input_parameter in self._model.input_parameters])

@@ -60,9 +60,9 @@ namespace Deltares
 
         void ModelProject::shareStochasts(std::shared_ptr<ModelProject> source)
         {
-            for (size_t i = 0; i < source->stochasts.size(); i++)
+            for (std::shared_ptr<Statistics::Stochast> stochast : source->stochasts)
             {
-                this->stochasts.push_back(source->stochasts[i]);
+                existingStochasts[stochast->name] = stochast;
             }
 
             this->correlationMatrix = source->correlationMatrix;

@@ -58,6 +58,10 @@ class Test_run_project(unittest.TestCase):
 
     def test_run_from_reliability_project(self):
         reliability_project = project_builder.get_linear_project()
+        reliability_project.variables['a'].distribution = DistributionType.triangular
+        reliability_project.variables['a'].shift = 1
+        reliability_project.variables['b'].distribution = DistributionType.triangular
+        reliability_project.variables['b'].shift = 1
 
         project = RunProject()
         project.model = reliability_project.model
