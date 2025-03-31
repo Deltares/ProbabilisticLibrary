@@ -189,7 +189,7 @@ namespace Deltares
             double covariance = sumWeights2 - 2.0 * pf * sumWeights + nDirections * pf * pf;
             covariance = std::sqrt(covariance / nDirections / (nDirections - 1.0));
             double qConvergence = covariance / pf;
-            double pConvergence = covariance / (1 - pf);
+            double pConvergence = covariance / (1.0 - pf);
 
             double convergence = std::max(qConvergence, pConvergence);
 
@@ -198,7 +198,8 @@ namespace Deltares
 
         // precompute Z-values
         std::vector<PrecomputeValues> DirectionalSampling::precompute(const std::shared_ptr<Models::ModelRunner>& modelRunner,
-            const std::vector<std::shared_ptr<Sample>>& samples, double z0, const DirectionReliabilityForDirectionalSampling& directionReliability)
+            const std::vector<std::shared_ptr<Sample>>& samples, double z0,
+            const DirectionReliabilityForDirectionalSampling& directionReliability, std::vector<bool>& mask)
         {
             const size_t nSamples = samples.size();
 
@@ -207,41 +208,77 @@ namespace Deltares
             auto z0pv = PrecomputeValue(0.0, std::abs(z0));
             precomputed.values.emplace_back(z0pv);
             auto zValues = std::vector(nSamples, precomputed);
+            double z0Fac = getZFactor(z0);
 
             // precompute Z-values multiples of Dsdu
-            const auto model = ZGetter(modelRunner, directionReliability.Settings);
-            const auto invertZ = z0 < 0.0;
-            const auto u1 = directionReliability.Settings->Dsdu;
-            std::vector<std::shared_ptr<Sample>> uSamples;
-            for (size_t i = 0; i < nSamples; i++)
+            const auto settings = directionReliability.Settings;
+            const int sectionsCount = static_cast<int>(settings->MaximumLengthU / settings->Dsdu);
+            const auto model = ZGetter(modelRunner, settings);
+            for (int k = 1; k < sectionsCount; k++)
             {
-                auto uDirection = samples[i]->getNormalizedSample();
-                auto z1 = model.GetU(uDirection, u1, invertZ);
-                uSamples.push_back(z1);
-            }
-            auto zValues2 = modelRunner->getZValues(uSamples);
-            for (size_t i = 0; i < nSamples; i++)
-            {
-                auto z1pv = PrecomputeValue(u1, zValues2[i]);
-                zValues[i].values.push_back(z1pv);
+                const auto u1 = k * settings->Dsdu;
+                std::vector<std::shared_ptr<Sample>> uSamples;
+                for (size_t i = 0; i < nSamples; i++)
+                {
+                    if ( ! mask[i] )
+                    {
+                        auto uDirection = samples[i]->getNormalizedSample();
+                        auto z1 = model.GetU(uDirection, u1);
+                        uSamples.push_back(z1);
+                    }
+                }
+                auto zValues2 = modelRunner->getZValues(uSamples);
+                int ii = 0;
+                for (size_t i = 0; i < nSamples; i++)
+                {
+                    if ( ! mask[i] )
+                    {
+                        auto z1pv = PrecomputeValue(u1, z0Fac * zValues2[ii]);
+                        zValues[i].values.push_back(z1pv);
+                        if (z0 * zValues2[ii] < 0.0)
+                        {
+                            mask[i] = true;
+                        }
+                        else if (settings->modelVaryingType == ModelVaryingType::Monotone)
+                        {
+                            if (std::abs(zValues2[ii]) > std::abs(z0))
+                            {
+                                mask[i] = true;
+                            }
+                        }
+                        ii++;
+                    }
+                }
+                if (uSamples.size() <= 1) break;
             }
             return zValues;
         }
 
         std::vector<double> DirectionalSampling::getDirectionBetas(std::shared_ptr<Models::ModelRunner> modelRunner, std::vector<std::shared_ptr<Sample>> samples, double z0, double threshold)
         {
-            auto betaValues = std::vector<double>(samples.size());
+            const size_t nSamples = samples.size();
+            auto betaValues = std::vector<double>(nSamples);
 
             std::unique_ptr<DirectionReliabilityForDirectionalSampling> directionReliability = std::make_unique<DirectionReliabilityForDirectionalSampling>();
             directionReliability->Settings = this->Settings->DirectionSettings;
             directionReliability->Threshold = threshold;
 
-            auto zValues = precompute(modelRunner, samples, z0, *directionReliability);
+            auto maskPrecompute = std::vector(nSamples, false);
+            if (modelRunner->Settings->IsProxyModel())
+            {
+                for (size_t i = 0; i < nSamples; i++)
+                {
+                    // retain previous results from model if running in a proxy model environment
+                    maskPrecompute[i] = previousResults.contains(samples[i]->IterationIndex);
+                }
+            }
+
+            auto zValues = precompute(modelRunner, samples, z0, *directionReliability, maskPrecompute);
 
             double z0Fac = getZFactor(z0);
 
             #pragma omp parallel for
-            for (int i = 0; i < static_cast<int>(samples.size()); i++)
+            for (int i = 0; i < static_cast<int>(nSamples); i++)
             {
                 samples[i]->threadId = omp_get_thread_num();
                 // retain previous results from model if running in a proxy model environment
