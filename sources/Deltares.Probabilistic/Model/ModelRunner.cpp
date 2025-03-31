@@ -481,20 +481,20 @@ namespace Deltares
          * \param stochast Stochast in the sensitivity result
          * \return Sensitivity result
          */
-        std::shared_ptr<Sensitivity::SensitivityResult> ModelRunner::getSensitivityResult(std::shared_ptr<Statistics::Stochast> stochast)
+        Sensitivity::SensitivityResult* ModelRunner::getSensitivityResult(std::shared_ptr<Statistics::Stochast> stochast) const
         {
-            std::shared_ptr<Sensitivity::SensitivityResult> result = std::make_shared<Sensitivity::SensitivityResult>();
+            Sensitivity::SensitivityResult* result = new Sensitivity::SensitivityResult();
 
             result->stochast = stochast;
 
-            for (size_t i = 0; i < this->evaluations.size(); i++)
+            for (const auto& evaluation : this->evaluations)
             {
-                result->evaluations.push_back(this->evaluations[i]);
+                result->evaluations.push_back(evaluation);
             }
 
-            for (size_t i = 0; i < this->messages.size(); i++)
+            for (const auto& message : this->messages)
             {
-                result->messages.push_back(this->messages[i]);
+                result->messages.push_back(message);
             }
 
             return result;

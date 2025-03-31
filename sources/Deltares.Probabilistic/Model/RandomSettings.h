@@ -23,6 +23,7 @@
 
 #include "../Math/Random.h"
 #include "../Reliability/StochastSettingsSet.h"
+#include <ctime>
 
 namespace Deltares
 {
@@ -53,6 +54,24 @@ namespace Deltares
              * \brief Seed for random generator
              */
             int Seed = 0;
+
+            /**
+             * \brief Time stamp for random generator
+             * \remark Time stamp 0 means that every time a random generator is initialized, it gets a new time stamp
+             */
+            time_t TimeStamp = 0;
+
+            /**
+             * \brief If true, fixates the random generator so that it produces same random values when restarted or initialized 
+             * \remarks Is used by calculation, do not set
+             */
+            void SetFixed(bool fixed)
+            {
+                if (!this->IsRepeatableRandom)
+                {
+                    this->TimeStamp = fixed ? time(nullptr) : 0;
+                }
+            }
 
             /**
              * \brief Indicates whether a dummy random value is generated for non varying variables (true) or not (false)

@@ -81,7 +81,7 @@ namespace Deltares
 
             Random random;
             random.initialize(Settings->randomSettings->RandomGeneratorType, Settings->randomSettings->IsRepeatableRandom,
-                Settings->randomSettings->Seed);
+                Settings->randomSettings->Seed, Settings->randomSettings->TimeStamp);
 
             std::vector<std::pair<int, std::vector<double>>> list;
             for (int i = 0; i < Settings->MinimumSamples; i++)

@@ -40,7 +40,7 @@ namespace Deltares
 {
     namespace Sensitivity
     {
-        std::shared_ptr<Sensitivity::SensitivityResult> NumericalIntegrationS::getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner)
+        Sensitivity::SensitivityResult* NumericalIntegrationS::getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner)
         {
             this->calculatedSamples.clear();
 
@@ -78,7 +78,7 @@ namespace Deltares
                 this->correlationMatrixBuilder->registerWeightedValues(stochast, samples);
             }
 
-            std::shared_ptr<Sensitivity::SensitivityResult> result = modelRunner->getSensitivityResult(stochast);
+            Sensitivity::SensitivityResult* result = modelRunner->getSensitivityResult(stochast);
 
             for (std::shared_ptr<Statistics::ProbabilityValue> quantile : this->Settings->RequestedQuantiles)
             {

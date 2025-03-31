@@ -41,6 +41,9 @@ namespace Deltares
             {
                 testCrudeMonteCarloAddOne();
                 testCrudeMonteCarloLinear();
+                testCrudeMonteCarloLinearNonRepeatable();
+                testCrudeMonteCarloLinearOutput();
+                testCrudeMonteCarloLinearOutputNonRepeatable();
                 testCrudeMonteCarloLinearManySamples();
                 testCrudeMonteCarloLinearAutoSamples();
 
@@ -96,6 +99,80 @@ namespace Deltares
                 ASSERT_NEAR(1.78, evaluation50->Z, margin);
                 ASSERT_NEAR(0.00, evaluation50->InputValues[0] + evaluation50->InputValues[1], margin);
                 ASSERT_NEAR(3.18, evaluation95->Z, margin);
+            }
+
+            void TestSensitivity::testCrudeMonteCarloLinearNonRepeatable()
+            {
+                std::shared_ptr<Sensitivity::SensitivityProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearProject());
+
+                std::shared_ptr<Sensitivity::CrudeMonteCarloS> sensitivityMethod = std::make_shared<Sensitivity::CrudeMonteCarloS>();
+                sensitivityMethod->Settings->randomSettings->RandomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::MersenneTwister;
+                sensitivityMethod->Settings->randomSettings->IsRepeatableRandom = false;
+                sensitivityMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.05));
+                sensitivityMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.10));
+                sensitivityMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.90));
+                sensitivityMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.95));
+
+                project->sensitivityMethod = sensitivityMethod;
+
+                std::shared_ptr<Sensitivity::SensitivityResult> result = project->getSensitivityResult();
+
+                ASSERT_LE(result->quantileEvaluations[0]->Z, 1.5, margin);
+                ASSERT_LE(result->quantileEvaluations[1]->Z, 1.5, margin);
+                ASSERT_GE(result->quantileEvaluations[2]->Z, 2.1, margin);
+                ASSERT_GE(result->quantileEvaluations[3]->Z, 2.1, margin);
+
+                // do it again, check results are not equal
+
+                std::this_thread::sleep_for(std::chrono::seconds(1));
+                std::shared_ptr<Sensitivity::SensitivityResult> result2 = project->getSensitivityResult();
+
+                const double smallMargin = 1E-10;
+
+                ASSERT_NE(result->stochast, result2->stochast);
+
+                double m1 = result->stochast->getMean();
+                double m2 = result2->stochast->getMean();
+
+                ASSERT_NE(m1, m2, smallMargin);
+            }
+
+            void TestSensitivity::testCrudeMonteCarloLinearOutput()
+            {
+                std::shared_ptr<Sensitivity::SensitivityProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearOutputProject());
+
+                project->settings->SensitivityMethod = Sensitivity::SensitivityCrudeMonteCarlo;
+                project->settings->RandomSettings->IsRepeatableRandom = true;
+                project->settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.95));
+
+                project->run();
+
+                ASSERT_EQ(2, project->sensitivityResults.size());
+
+                const double smallMargin = 1E-10;
+
+                ASSERT_NEAR(project->sensitivityResults[0]->stochast->getMean(), project->sensitivityResults[1]->stochast->getMean(), smallMargin);
+                ASSERT_NEAR(project->sensitivityResults[0]->stochast->getDeviation(), project->sensitivityResults[1]->stochast->getDeviation(), smallMargin);
+                ASSERT_NEAR(project->sensitivityResults[0]->quantileEvaluations[0]->OutputValues[0], project->sensitivityResults[1]->quantileEvaluations[0]->OutputValues[0], smallMargin);
+            }
+
+            void TestSensitivity::testCrudeMonteCarloLinearOutputNonRepeatable()
+            {
+                std::shared_ptr<Sensitivity::SensitivityProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearOutputProject());
+
+                project->settings->SensitivityMethod = Sensitivity::SensitivityCrudeMonteCarlo;
+                project->settings->RandomSettings->IsRepeatableRandom = false;
+                project->settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.95));
+
+                project->run();
+
+                ASSERT_EQ(2, project->sensitivityResults.size());
+
+                const double smallMargin = 1E-10;
+
+                ASSERT_NEAR(project->sensitivityResults[0]->stochast->getMean(), project->sensitivityResults[1]->stochast->getMean(), smallMargin);
+                ASSERT_NEAR(project->sensitivityResults[0]->stochast->getDeviation(), project->sensitivityResults[1]->stochast->getDeviation(), smallMargin);
+                ASSERT_NEAR(project->sensitivityResults[0]->quantileEvaluations[0]->OutputValues[0], project->sensitivityResults[1]->quantileEvaluations[0]->OutputValues[0], smallMargin);
             }
 
             void TestSensitivity::testCrudeMonteCarloLinearManySamples()

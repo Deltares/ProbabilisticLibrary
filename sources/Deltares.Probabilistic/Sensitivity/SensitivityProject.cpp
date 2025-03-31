@@ -32,6 +32,8 @@ namespace Deltares
             this->sensitivityResult = nullptr;
             this->sensitivityResults.clear();
 
+            this->settings->RandomSettings->SetFixed(true);
+
             this->sensitivityMethod = this->settings->GetSensitivityMethod();
             this->runSettings = this->settings->RunSettings;
 
@@ -75,6 +77,8 @@ namespace Deltares
             // reset the index
             this->model->Index = 0;
 
+            this->settings->RandomSettings->SetFixed(false);
+
             this->outputCorrelationMatrix = nullptr;
             if (this->settings->CalculateCorrelations)
             {
@@ -91,7 +95,7 @@ namespace Deltares
             modelRunner->Settings = this->runSettings;
             modelRunner->initializeForRun();
 
-            std::shared_ptr<Sensitivity::SensitivityResult> result = this->sensitivityMethod->getSensitivityStochast(modelRunner);
+            std::shared_ptr<SensitivityResult> result = std::shared_ptr<SensitivityResult>(this->sensitivityMethod->getSensitivityStochast(modelRunner));
             result->stochast->name = this->parameterSelector->parameter;
 
             this->modelRuns += this->model->getModelRuns();
