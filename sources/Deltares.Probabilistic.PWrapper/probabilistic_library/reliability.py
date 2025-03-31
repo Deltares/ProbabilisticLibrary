@@ -113,6 +113,7 @@ class Settings:
 		else:
 			self._id = id_
 		self._stochast_settings = FrozenList()
+		interface.SetBoolValue(self._id, 'use_openmp_in_reliability', False)
 
 	def __del__(self):
 		interface.Destroy(self._id)

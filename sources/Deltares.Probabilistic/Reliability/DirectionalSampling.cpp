@@ -66,7 +66,14 @@ namespace Deltares
 
             if (modelRunner->Settings->MaxParallelProcesses > 0)
             {
-                omp_set_num_threads(modelRunner->Settings->MaxParallelProcesses);
+                if (Settings->runSettings->UseOpenMPinReliability)
+                {
+                    omp_set_num_threads(modelRunner->Settings->MaxParallelProcesses);
+                }
+                else
+                {
+                    omp_set_num_threads(1);
+                }
             }
 
             // loop for all directions

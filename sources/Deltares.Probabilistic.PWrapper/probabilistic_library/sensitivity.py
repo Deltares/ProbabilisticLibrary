@@ -47,6 +47,7 @@ class SensitivitySettings:
 		self._stochast_settings = FrozenList()
 		self._quantiles = None
 		self._synchronizing = False
+		interface.SetBoolValue(self._id, 'use_openmp_in_reliability', False)
 
 	def __del__(self):
 		interface.Destroy(self._id)
