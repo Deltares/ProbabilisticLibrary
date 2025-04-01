@@ -306,6 +306,7 @@
     <ClInclude Include="Statistics\Distributions\TruncatedDistribution.h" />
     <ClInclude Include="Reliability\DirectionalSampling.h" />
     <ClInclude Include="Reliability\PrecomputeValues.h" />
+    <ClInclude Include="Reliability\PrecomputeDirections.h" />
     <ClInclude Include="Reliability\DirectionalSamplingSettings.h" />
     <ClInclude Include="Math\Constants.h" />
     <ClInclude Include="Statistics\Distributions\GumbelDistribution.h" />
@@ -502,6 +503,7 @@
     <ClCompile Include="Statistics\Distributions\TruncatedDistribution.cpp" />
     <ClCompile Include="Reliability\DirectionalSampling.cpp" />
     <ClCompile Include="Reliability\PrecomputeValues.cpp" />
+    <ClCompile Include="Reliability\PrecomputeDirections.cpp" />
     <ClCompile Include="Reliability\DirectionalSamplingSettings.cpp" />
     <ClCompile Include="Math\Constants.cpp" />
     <ClCompile Include="Statistics\Distributions\GumbelDistribution.cpp" />

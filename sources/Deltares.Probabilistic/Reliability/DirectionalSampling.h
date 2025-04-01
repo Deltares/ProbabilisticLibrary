@@ -36,9 +36,6 @@ namespace Deltares
             static double getConvergence(const double pf, const double sumWeights, const double sumWeights2, const int nDirections);
             std::vector<double> getDirectionBetas(std::shared_ptr<Models::ModelRunner> modelRunner, std::vector<std::shared_ptr<Sample>> samples, double z0, double threshold);
             std::unordered_map<int, double> previousResults;
-            static std::vector<PrecomputeValues> precompute(const std::shared_ptr<Models::ModelRunner>& modelRunner,
-                const std::vector<std::shared_ptr<Sample>>& samples, double z0,
-                const DirectionReliabilityForDirectionalSampling& directionReliability, std::vector<bool>& mask);
 
         public:
             std::shared_ptr<DirectionalSamplingSettings> Settings = std::make_shared<DirectionalSamplingSettings>();

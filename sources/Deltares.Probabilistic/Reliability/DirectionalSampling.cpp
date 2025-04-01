@@ -20,13 +20,12 @@
 // All rights reserved.
 //
 #include "DirectionalSampling.h"
+#include "PrecomputeDirections.h"
+#include "ZGetter.h"
 #include "../Model/RandomSampleGenerator.h"
 #include "../Math/SpecialFunctions.h"
 #include <omp.h>
-
 #include <algorithm>
-
-#include "ZGetter.h"
 
 namespace Deltares
 {
@@ -203,64 +202,6 @@ namespace Deltares
             return convergence;
         }
 
-        // precompute Z-values
-        std::vector<PrecomputeValues> DirectionalSampling::precompute(const std::shared_ptr<Models::ModelRunner>& modelRunner,
-            const std::vector<std::shared_ptr<Sample>>& samples, double z0,
-            const DirectionReliabilityForDirectionalSampling& directionReliability, std::vector<bool>& mask)
-        {
-            const size_t nSamples = samples.size();
-
-            // copy z-value zero sample
-            auto precomputed = PrecomputeValues();
-            auto z0pv = PrecomputeValue(0.0, std::abs(z0));
-            precomputed.values.emplace_back(z0pv);
-            auto zValues = std::vector(nSamples, precomputed);
-            double z0Fac = getZFactor(z0);
-
-            // precompute Z-values multiples of Dsdu
-            const auto settings = directionReliability.Settings;
-            const int sectionsCount = static_cast<int>(settings->MaximumLengthU / settings->Dsdu);
-            const auto model = ZGetter(modelRunner, settings);
-            for (int k = 1; k < sectionsCount; k++)
-            {
-                const auto u1 = k * settings->Dsdu;
-                std::vector<std::shared_ptr<Sample>> uSamples;
-                for (size_t i = 0; i < nSamples; i++)
-                {
-                    if ( ! mask[i] )
-                    {
-                        auto uDirection = samples[i]->getNormalizedSample();
-                        auto z1 = model.GetU(uDirection, u1);
-                        uSamples.push_back(z1);
-                    }
-                }
-                auto zValues2 = modelRunner->getZValues(uSamples);
-                int ii = 0;
-                for (size_t i = 0; i < nSamples; i++)
-                {
-                    if ( ! mask[i] )
-                    {
-                        auto z1pv = PrecomputeValue(u1, z0Fac * zValues2[ii]);
-                        zValues[i].values.push_back(z1pv);
-                        if (z0 * zValues2[ii] < 0.0)
-                        {
-                            mask[i] = true;
-                        }
-                        else if (settings->modelVaryingType == ModelVaryingType::Monotone)
-                        {
-                            if (std::abs(zValues2[ii]) > std::abs(z0))
-                            {
-                                mask[i] = true;
-                            }
-                        }
-                        ii++;
-                    }
-                }
-                if (uSamples.size() <= 1) break;
-            }
-            return zValues;
-        }
-
         std::vector<double> DirectionalSampling::getDirectionBetas(std::shared_ptr<Models::ModelRunner> modelRunner, std::vector<std::shared_ptr<Sample>> samples, double z0, double threshold)
         {
             const size_t nSamples = samples.size();
@@ -280,7 +221,7 @@ namespace Deltares
                 }
             }
 
-            auto zValues = precompute(modelRunner, samples, z0, *directionReliability, maskPrecompute);
+            auto zValues = PrecomputeDirections::precompute(modelRunner, samples, z0, *directionReliability, maskPrecompute);
 
             double z0Fac = getZFactor(z0);
 
