@@ -103,10 +103,10 @@ namespace Deltares
             }
         }
 
-        std::vector<std::shared_ptr<DirectionSection>> DirectionReliability::getDirectionSections(std::shared_ptr<Models::ModelRunner> modelRunner,
+        std::vector<DirectionSection> DirectionReliability::getDirectionSections(std::shared_ptr<Models::ModelRunner> modelRunner,
             std::shared_ptr<DirectionReliabilitySettings> settings, std::shared_ptr<Sample> uDirection, bool invertZ, const PrecomputeValues& zValues)
         {
-            std::vector<std::shared_ptr<DirectionSection>> sections;
+            std::vector<DirectionSection> sections;
 
             int sectionsCount = static_cast<int>(settings->MaximumLengthU / settings->Dsdu);
             if (sectionsCount * settings->Dsdu < settings->MaximumLengthU)
@@ -116,12 +116,12 @@ namespace Deltares
 
             bool found = false;
             bool monotone = settings->modelVaryingType == ModelVaryingType::Monotone;
-            std::unique_ptr<ZGetter> model(new ZGetter(modelRunner, settings));
+            auto model = ZGetter(modelRunner, settings);
 
             double z0;
             bool foundZ0 = false;
             zValues.findZ(0.0, foundZ0, z0);
-            if ( ! foundZ0) z0 = model->GetZ(uDirection, 0.0, invertZ);
+            if ( ! foundZ0) z0 = model.GetZ(uDirection, 0.0, invertZ);
 
             double prevzHigh = z0;
 
@@ -136,7 +136,7 @@ namespace Deltares
                     bool foundZHigh = false;
                     double zHigh;
                     zValues.findZ(uHigh, foundZHigh, zHigh);
-                    if ( ! foundZHigh) zHigh = model->GetZ(uDirection, uHigh, invertZ);
+                    if ( ! foundZHigh) zHigh = model.GetZ(uDirection, uHigh, invertZ);
 
                     prevzHigh = zHigh;
 
@@ -152,25 +152,25 @@ namespace Deltares
 
                         if (zLowType == DoubleType::NaN && zChangeType != zHighType)
                         {
-                            sections.push_back(std::make_shared<DirectionSection>(zLowType, uLow, uChange));
+                            sections.emplace_back(zLowType, uLow, uChange);
 
                             double uSubChange = findBetaBetweenBoundaries(modelRunner, settings, uDirection, invertZ, uChange, uHigh, zChange, zHigh, zChange);
 
-                            sections.push_back(std::make_shared<DirectionSection>(zChangeType, uChange, uSubChange));
-                            sections.push_back(std::make_shared<DirectionSection>(zHighType, uSubChange, uHigh));
+                            sections.emplace_back(zChangeType, uChange, uSubChange);
+                            sections.emplace_back(zHighType, uSubChange, uHigh);
                         }
                         else if (zHighType == DoubleType::NaN && zChangeType != zLowType)
                         {
                             double uSubChange = findBetaBetweenBoundaries(modelRunner, settings, uDirection, invertZ, uLow, uChange, zLow, zChange, zChange);
 
-                            sections.push_back(std::make_shared<DirectionSection>(zLowType, uLow, uSubChange));
-                            sections.push_back(std::make_shared<DirectionSection>(zChangeType, uSubChange, uChange));
-                            sections.push_back(std::make_shared<DirectionSection>(zHighType, uChange, uHigh));
+                            sections.emplace_back(zLowType, uLow, uSubChange);
+                            sections.emplace_back(zChangeType, uSubChange, uChange);
+                            sections.emplace_back(zHighType, uChange, uHigh);
                         }
                         else
                         {
-                            sections.push_back(std::make_shared<DirectionSection>(zLowType, uLow, uChange, zLow, zChange));
-                            sections.push_back(std::make_shared<DirectionSection>(zHighType, uChange, uHigh, zHigh, zChange));
+                            sections.emplace_back(zLowType, uLow, uChange, zLow, zChange);
+                            sections.emplace_back(zHighType, uChange, uHigh, zHigh, zChange);
                         }
 
                         if (monotone)
@@ -180,8 +180,7 @@ namespace Deltares
                     }
                     else
                     {
-                        std::shared_ptr<DirectionSection> tempVar9 = std::make_shared<DirectionSection>(zHighType, uLow, uHigh, zLow, zHigh);
-                        sections.push_back(tempVar9);
+                        sections.emplace_back(zHighType, uLow, uHigh, zLow, zHigh);
 
                         if (monotone && zLowType != DoubleType::NaN && zHighType != DoubleType::NaN)
                         {
@@ -194,15 +193,15 @@ namespace Deltares
                 }
             }
 
-            // add the remainder to the last 
-            std::shared_ptr<DirectionSection> lastSection = sections.back();
+            // add the remainder to the last
+            auto lastSection = sections.back();
 
-            DoubleType lastSectionType = lastSection->Type;
+            DoubleType lastSectionType = lastSection.Type;
 
             // when the last type is zero, assume that the line has crossed zero
-            if (lastSection->Type == DoubleType::Zero && sections.size() >= 2)
+            if (lastSection.Type == DoubleType::Zero && sections.size() >= 2)
             {
-                DoubleType prevSectionType = sections[sections.size() - 2]->Type;
+                DoubleType prevSectionType = sections[sections.size() - 2].Type;
                 if (prevSectionType == DoubleType::Positive)
                 {
                     lastSectionType = DoubleType::Negative;
@@ -213,7 +212,7 @@ namespace Deltares
                 }
             }
 
-            sections.push_back(std::make_shared<DirectionSection>(lastSectionType, lastSection->UHigh, Statistics::StandardNormal::BetaMax));
+            sections.emplace_back(lastSectionType, lastSection.UHigh, Statistics::StandardNormal::BetaMax);
 
             return sections;
         }
@@ -308,7 +307,7 @@ namespace Deltares
             }
         }
 
-        double DirectionReliability::getBetaFromSections(std::vector<std::shared_ptr<DirectionSection>> sections)
+        double DirectionReliability::getBetaFromSections(std::vector<DirectionSection> sections)
         {
             // sum the probabilities
             double failingProbability = 0;
@@ -316,13 +315,13 @@ namespace Deltares
 
             for (int i = sections.size() - 1; i >= 0; i--)
             {
-                switch (sections[i]->Type)
+                switch (sections[i].Type)
                 {
                 case DoubleType::Positive:
-                    nonFailingProbability += sections[i]->getProbability();
+                    nonFailingProbability += sections[i].getProbability();
                     break;
                 case DoubleType::Negative:
-                    failingProbability += sections[i]->getProbability();
+                    failingProbability += sections[i].getProbability();
                     break;
                 default:
                     //nothing to do
@@ -340,10 +339,10 @@ namespace Deltares
                 double rmin = 0.0;
                 for (size_t i = 0; i < sections.size(); i++)
                 {
-                    if (sections[i]->ZHigh < zmin && sections[i]->ZHigh != 0.0)
+                    if (sections[i].ZHigh < zmin && sections[i].ZHigh != 0.0)
                     {
-                        rmin = sections[i]->UHigh;
-                        zmin = sections[i]->ZHigh;
+                        rmin = sections[i].UHigh;
+                        zmin = sections[i].ZHigh;
                     }
                 }
                 return rmin;
