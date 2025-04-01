@@ -33,6 +33,7 @@ namespace Deltares::Probabilistic::Test
         static void testHarmonicInterpolate();
         static void testMinMaxFunctions();
         static void testGetFraction();
+        static void testLimit();
     };
 }
 

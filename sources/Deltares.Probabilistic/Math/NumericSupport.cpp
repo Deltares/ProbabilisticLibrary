@@ -524,6 +524,21 @@ namespace Deltares
             }
         }
 
+        /// <summary>
+        /// limit a value to a lower and upper bound value
+        /// </summary>
+        /// <param name="x"> the value to limit </param>
+        /// <param name="minVal"> lower bound </param>
+        /// <param name="maxVal"> upper bound </param>
+        /// <returns> limited value </returns>
+        double NumericSupport::limit(const double x, const double minVal, const double maxVal)
+        {
+            if (minVal > maxVal) throw Reliability::probLibException("lower bound > upper bound in limit function");
+            double y = std::min(x, maxVal);
+            y = std::max(y, minVal);
+            return y;
+        }
+
         std::vector<std::vector<double>> NumericSupport::getFullFactorialCombination(std::vector<std::vector<double>>& sourceLists)
         {
             std::vector<std::vector<double>> combinations = { std::vector<double>() };

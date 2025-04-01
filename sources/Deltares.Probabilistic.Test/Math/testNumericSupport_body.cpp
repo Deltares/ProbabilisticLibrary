@@ -34,6 +34,7 @@ namespace Deltares::Probabilistic::Test
         testHarmonicInterpolate();
         testMinMaxFunctions();
         testGetFraction();
+        testLimit();
     }
 
     void testNumericSupport::testLinearInterpolate()
@@ -109,6 +110,28 @@ namespace Deltares::Probabilistic::Test
     {
         auto q = NumericSupport::getFraction(3.4, 4.3);
         EXPECT_NEAR(q, 3.4 * 4.3, 1e-9);
+    }
+
+    void testNumericSupport::testLimit()
+    {
+        auto y = NumericSupport::limit(0.5, 1.0, 2.0);
+        EXPECT_EQ(y, 1.0) << "expect value equal to lower limit";
+
+        y = NumericSupport::limit(2.5, 1.0, 2.0);
+        EXPECT_EQ(y, 2.0) << "expect value equal to upper limit";
+
+        bool success = true;
+        try
+        {
+            y = NumericSupport::limit(1.0, 2.0, 1.0);
+        }
+        catch (const std::exception& e)
+        {
+            std::string message = e.what();
+            EXPECT_EQ(message, "lower bound > upper bound in limit function");
+            success = false;
+        }
+        EXPECT_FALSE(success) << "mismatch lower / upper bound";
     }
 
 }

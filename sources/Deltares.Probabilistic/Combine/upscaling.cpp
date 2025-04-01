@@ -27,12 +27,15 @@
 #include "upscaling.h"
 #include "HohenbichlerFORM.h"
 #include "intEqualElements.h"
+#include "../Math/NumericSupport.h"
 #include "../Statistics/StandardNormal.h"
 
 using namespace Deltares::Statistics;
 
 namespace Deltares {
     namespace Reliability {
+
+        using namespace Deltares::Numeric;
 
         // \brief Method for combining failure probabilities over equal elements, with exceptions for correlations close to zero
         // \param nrTimes   : Number of time the original time
@@ -210,21 +213,19 @@ namespace Deltares {
                 element.setAlpha(vector1D(nrVar));
                 //
                 // Calculate beta for section from the beta of the cross-section
-                const auto betaSection = ComputeBetaSection(crossSectionElement.getBeta(), sectionLength, rhoZ, dz, deltaL);
-                if (betaSection.second != 0) failures++;
-                element.setBeta(betaSection.first);
+                const auto [betaSection, nFail1] = ComputeBetaSection(crossSectionElement.getBeta(), sectionLength, rhoZ, dz, deltaL);
+                if (nFail1 != 0) failures++;
+                element.setBeta(betaSection);
                 //
                 // Calculate alpha section
                 //
                 // Correlated part. Perturbation of the betaCrossSection
                 const double betaK = crossSectionElement.getBeta() - sqrt(rhoZ) * deltaBeta;
                 // Calculate beta for section from the beta of the cross-section
-                const auto betaKX = ComputeBetaSection(betaK, sectionLength, rhoZ, dz, deltaL);
-                if (betaKX.second != 0) failures++;
+                const auto [betaKX, nFail2] = ComputeBetaSection(betaK, sectionLength, rhoZ, dz, deltaL);
+                if (nFail2 != 0) failures++;
 
-                double alphaC = (element.getBeta() - betaKX.first) / deltaBeta;
-                alphaC = std::min(alphaC, 1.0);
-                alphaC = std::max(alphaC, -1.0);
+                const double alphaC = NumericSupport::limit ((element.getBeta() - betaKX) / deltaBeta, -1.0, 1.0);
                 //
                 // Uncorrelated part
                 //
@@ -232,8 +233,7 @@ namespace Deltares {
                 //
                 // Calculate resulting alpha
                 //
-                rhoZ = std::min(rhoZ, rhoLimit);
-                rhoZ = std::max(rhoZ, 0.00001);
+                rhoZ = NumericSupport::limit(rhoZ, 0.00001, rhoLimit);
                 for (size_t i = 0; i < nrVar; i++)
                 {
                     if (crossSectionElement.getAlphaI(i) == 0.0)
@@ -289,8 +289,8 @@ namespace Deltares {
                 for (size_t i = 0; i < nGridPoints; i++)
                 {
                     const double v = vLower + vDelta * static_cast<double>(i);
-                    const double x = (betaCrossSection - sqrt(rhoZ) * v) / sqrt(1.0 - rhoZ); // x = beta*
-                    const double nf = (sectionLength - deltaL) / (sqrt(2.0) * M_PI) / dz * exp(-x * x / 2.0); // Number of cross-sections
+                    const double x = (betaCrossSection - sqrt(rhoZ) * v) / sqrt(1.0 - rhoZ); // x is: beta*
+                    const double nf = (sectionLength - deltaL) / (std::numbers::sqrt2 * M_PI) / dz * exp(-x * x / 2.0); // Number of cross-sections
                     termI[i] = (1.0 - p * exp(-nf)) * exp(-v * v / 2.0) / sqrt(2.0 * M_PI) * vDelta;
                 }
                 //
@@ -308,9 +308,9 @@ namespace Deltares {
             }
             else
             {
-                auto pfVV = hhb.PerformHohenbichler(betaCrossSection, pf, rhoZ); // Failure probability vv, Hohenbichler
-                conv = pfVV.second;
-                pfX = pf + (sectionLength - deltaL) / deltaL * (pf - pfVV.first * pf);
+                auto [pfVV, nFail] = hhb.PerformHohenbichler(betaCrossSection, pf, rhoZ); // Failure probability vv, Hohenbichler
+                conv = nFail;
+                pfX = pf + (sectionLength - deltaL) / deltaL * (pf - pfVV * pf);
                 pfX = std::min(pfX, 1.0);
             }
 
