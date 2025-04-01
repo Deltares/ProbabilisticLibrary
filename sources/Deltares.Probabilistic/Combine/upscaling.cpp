@@ -146,9 +146,9 @@ namespace Deltares {
         std::string upscaling::createMessage(const double deltaL, const double rhoZ, const double dZ)
         {
             std::string message = "Intermediate results: ";
-            const auto number1 = probLibString::double2str(deltaL);
-            const auto number2 = probLibString::double2str(rhoZ);
-            const auto number3 = probLibString::double2str(dZ);
+            const auto number1 = probLibString::double2strTrimmed(deltaL);
+            const auto number2 = probLibString::double2strTrimmed(rhoZ);
+            const auto number3 = probLibString::double2strTrimmed(dZ);
             message += "Delta L = " + number1 + "; rhoZ = " + number2 + "; dZ = " + number3;
             return message;
         }
