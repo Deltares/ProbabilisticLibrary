@@ -202,7 +202,8 @@ namespace Deltares
             return convergence;
         }
 
-        std::vector<double> DirectionalSampling::getDirectionBetas(std::shared_ptr<Models::ModelRunner> modelRunner, std::vector<std::shared_ptr<Sample>> samples, double z0, double threshold)
+        std::vector<double> DirectionalSampling::getDirectionBetas(const std::shared_ptr<Models::ModelRunner>& modelRunner,
+            const std::vector<std::shared_ptr<Sample>>& samples, double z0, double threshold)
         {
             const size_t nSamples = samples.size();
             auto betaValues = std::vector<double>(nSamples);
@@ -221,7 +222,7 @@ namespace Deltares
                 }
             }
 
-            auto zValues = PrecomputeDirections::precompute(modelRunner, samples, z0, directionReliability, maskPrecompute);
+            const auto zValues = PrecomputeDirections::precompute(modelRunner, samples, z0, directionReliability, maskPrecompute);
 
             const double z0Fac = getZFactor(z0);
 
@@ -247,7 +248,7 @@ namespace Deltares
                 {
                     if (!samples[i]->AllowProxy)
                     {
-                        this->previousResults.insert({ samples[i]->IterationIndex, betaValues[i] });
+                        previousResults.insert({ samples[i]->IterationIndex, betaValues[i] });
                     }
                 }
             }

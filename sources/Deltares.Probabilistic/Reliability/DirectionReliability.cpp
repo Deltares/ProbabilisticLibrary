@@ -58,7 +58,8 @@ namespace Deltares
             return getBeta(modelRunner, directionSample, z0, zValues);
         }
 
-        double DirectionReliability::getBeta(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<Sample> directionSample, double z0, PrecomputeValues& zValues)
+        double DirectionReliability::getBeta(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<Sample> directionSample,
+            double z0, const PrecomputeValues& zValues)
         {
             std::shared_ptr<Sample> normalizedSample = directionSample->getNormalizedSample();
 
@@ -78,7 +79,8 @@ namespace Deltares
             return beta;
         }
 
-        double DirectionReliability::getDirectionBeta(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr <BetaValueTask> directionTask, PrecomputeValues& zValues)
+        double DirectionReliability::getDirectionBeta(std::shared_ptr<Models::ModelRunner> modelRunner,
+            std::shared_ptr <BetaValueTask> directionTask, const PrecomputeValues& zValues)
         {
             std::shared_ptr<Sample> uDirection = directionTask->UValues->getNormalizedSample();
 
@@ -102,7 +104,7 @@ namespace Deltares
         }
 
         std::vector<std::shared_ptr<DirectionSection>> DirectionReliability::getDirectionSections(std::shared_ptr<Models::ModelRunner> modelRunner,
-            std::shared_ptr<DirectionReliabilitySettings> settings, std::shared_ptr<Sample> uDirection, bool invertZ, PrecomputeValues& zValues)
+            std::shared_ptr<DirectionReliabilitySettings> settings, std::shared_ptr<Sample> uDirection, bool invertZ, const PrecomputeValues& zValues)
         {
             std::vector<std::shared_ptr<DirectionSection>> sections;
 
