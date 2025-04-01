@@ -46,7 +46,7 @@ namespace Deltares
         {
             modelRunner->updateStochastSettings(this->Settings->StochastSet);
 
-            std::shared_ptr<SampleProvider> sampleProvider = std::make_shared<SampleProvider>(this->Settings->StochastSet, false);
+            std::shared_ptr<SampleProvider> sampleProvider = std::make_shared<SampleProvider>(this->Settings->StochastSet);
             modelRunner->setSampleProvider(sampleProvider);
 
             double qRange = 1;
@@ -81,8 +81,6 @@ namespace Deltares
                 // perform one run to identify whether the remainder is failing
                 zRemainder = modelRunner->getZValue(remainderSample);
             }
-
-            sampleProvider->reset();
 
             return getReducedDesignPoint(modelRunner, sampleProvider, zRemainder, qRange);
         }
@@ -122,8 +120,6 @@ namespace Deltares
 
                     int chunkSize = modelRunner->Settings->MaxChunkSize;
                     int runs = std::min(chunkSize, Settings->MaximumSamples + 1 - sampleIndex);
-
-                    sampleProvider->reset();
 
                     if (initial)
                     {

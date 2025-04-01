@@ -58,14 +58,9 @@ namespace Deltares
             /**
              * \brief If true, fixates the random generator so that it produces same random values when restarted or initialized
              * \param fixed Indication whether the unrepeatable random generator is fixed
-             * \remarks Is used by calculation, do not set.
+             * \remarks Is used by calculation, do not use elsewhere
              */
             void setFixed(bool fixed);
-
-            /**
-             * \brief Generates a new, yet unused time stamp
-             */
-            void generateTimeStamp();
 
             /**
              * \brief Gets a time stamp for the random generator if needed
@@ -116,7 +111,16 @@ namespace Deltares
              * \brief The last non-zero generated time stamp
              */
             time_t timeStamp = 0;
+
+            /**
+             * \brief Indicates whether the random generator, even if isRepeatableRandom is false, is fixed
+             */
             bool fixed = false;
+
+            /**
+             * \brief Generates a new, yet unused time stamp
+             */
+            void generateTimeStamp();
         };
     }
 }

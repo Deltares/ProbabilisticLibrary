@@ -38,7 +38,7 @@ namespace Deltares
 
             if (sampleProvider == nullptr)
             {
-                sampleProvider = std::make_shared<SampleProvider>(this->Settings->StochastSet, false);
+                sampleProvider = std::make_shared<SampleProvider>(this->Settings->StochastSet);
             }
         }
 
@@ -49,11 +49,6 @@ namespace Deltares
         void RandomSampleGenerator::restart()
         {
             random.restart();
-
-            if (sampleProvider != nullptr)
-            {
-                sampleProvider->reset();
-            }
         }
 
         /**

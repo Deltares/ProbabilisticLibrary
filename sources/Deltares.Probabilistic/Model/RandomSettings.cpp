@@ -37,7 +37,6 @@ namespace Deltares
             }
         }
 
-
         void RandomSettings::generateTimeStamp()
         {
             time_t newTimeStamp = time(nullptr);

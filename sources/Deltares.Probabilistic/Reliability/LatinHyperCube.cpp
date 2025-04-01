@@ -37,7 +37,7 @@ namespace Deltares
         {
             modelRunner->updateStochastSettings(this->Settings->StochastSet);
 
-            auto sampleProvider = std::make_shared<SampleProvider>(this->Settings->StochastSet, false);
+            auto sampleProvider = std::make_shared<SampleProvider>(this->Settings->StochastSet);
             modelRunner->setSampleProvider(sampleProvider);
 
             double qRange = 1.0;
@@ -65,8 +65,6 @@ namespace Deltares
                     }
                 }
             }
-
-            sampleProvider->reset();
 
             return getReducedDesignPoint(modelRunner, qRange);
         };

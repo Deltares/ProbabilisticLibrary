@@ -102,7 +102,7 @@ namespace Deltares
 
             // Step 3: Calculate n samples in random directions, all at the same distance d of the origin
 
-            auto sampleProvider = std::make_shared<SampleProvider>(this->Settings->StochastSet, false);
+            auto sampleProvider = std::make_shared<SampleProvider>(this->Settings->StochastSet);
             modelRunner->setSampleProvider(sampleProvider);
 
             auto randomSampleGenerator = RandomSampleGenerator();
