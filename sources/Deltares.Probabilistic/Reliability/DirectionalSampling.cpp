@@ -207,9 +207,9 @@ namespace Deltares
             const size_t nSamples = samples.size();
             auto betaValues = std::vector<double>(nSamples);
 
-            std::unique_ptr<DirectionReliabilityForDirectionalSampling> directionReliability = std::make_unique<DirectionReliabilityForDirectionalSampling>();
-            directionReliability->Settings = this->Settings->DirectionSettings;
-            directionReliability->Threshold = threshold;
+            auto directionReliability = DirectionReliabilityForDirectionalSampling();
+            directionReliability.Settings = this->Settings->DirectionSettings;
+            directionReliability.Threshold = threshold;
 
             auto maskPrecompute = std::vector(nSamples, false);
             if (modelRunner->Settings->IsProxyModel())
@@ -221,9 +221,9 @@ namespace Deltares
                 }
             }
 
-            auto zValues = PrecomputeDirections::precompute(modelRunner, samples, z0, *directionReliability, maskPrecompute);
+            auto zValues = PrecomputeDirections::precompute(modelRunner, samples, z0, directionReliability, maskPrecompute);
 
-            double z0Fac = getZFactor(z0);
+            const double z0Fac = getZFactor(z0);
 
             #pragma omp parallel for
             for (int i = 0; i < static_cast<int>(nSamples); i++)
@@ -236,7 +236,7 @@ namespace Deltares
                 }
                 else
                 {
-                    betaValues[i] = directionReliability->getBeta(modelRunner, samples[i], z0Fac, zValues[i]);
+                    betaValues[i] = directionReliability.getBeta(modelRunner, samples[i], z0Fac, zValues[i]);
                 }
             }
 
