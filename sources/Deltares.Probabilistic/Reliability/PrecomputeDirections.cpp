@@ -34,10 +34,10 @@ namespace Deltares::Reliability
 
         // copy z-value zero sample
         auto precomputed = PrecomputeValues();
-        auto z0pv = PrecomputeValue(0.0, std::abs(z0));
+        const auto z0pv = PrecomputeValue(0.0, std::abs(z0));
         precomputed.values.emplace_back(z0pv);
         auto zValues = std::vector(nSamples, precomputed);
-        double z0Fac = ReliabilityMethod::getZFactor(z0);
+        const double z0Fac = ReliabilityMethod::getZFactor(z0);
 
         // precompute Z-values multiples of Dsdu
         const auto settings = directionReliability.Settings;

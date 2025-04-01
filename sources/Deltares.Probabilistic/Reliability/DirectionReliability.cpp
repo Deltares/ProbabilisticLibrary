@@ -71,7 +71,7 @@ namespace Deltares
             task->z0 = z0;
 
             double beta = this->getDirectionBeta(modelRunner, task, zValues);
-            beta = beta * z0;
+            beta *= z0;
 
             directionSample->AllowProxy = task->UValues->AllowProxy;
 
