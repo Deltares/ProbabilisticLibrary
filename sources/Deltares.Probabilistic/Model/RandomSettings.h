@@ -56,20 +56,34 @@ namespace Deltares
             int Seed = 0;
 
             /**
-             * \brief Time stamp for random generator
-             * \remark Time stamp 0 means that every time a random generator is initialized, it gets a new time stamp
+             * \brief If true, fixates the random generator so that it produces same random values when restarted or initialized
+             * \param fixed Indication whether the unrepeatable random generator is fixed
+             * \remarks Is used by calculation, do not set.
              */
-            time_t TimeStamp = 0;
+            void setFixed(bool fixed);
 
             /**
-             * \brief If true, fixates the random generator so that it produces same random values when restarted or initialized 
-             * \remarks Is used by calculation, do not set
+             * \brief Generates a new, yet unused time stamp
              */
-            void SetFixed(bool fixed)
+            void generateTimeStamp();
+
+            /**
+             * \brief Gets a time stamp for the random generator if needed
+             */
+            time_t getTimeStamp()
             {
-                if (!this->IsRepeatableRandom)
+                if (!IsRepeatableRandom)
                 {
-                    this->TimeStamp = fixed ? time(nullptr) : 0;
+                    if (!fixed)
+                    {
+                        generateTimeStamp();
+                    }
+
+                    return timeStamp;
+                }
+                else
+                {
+                    return 0;
                 }
             }
 
@@ -97,6 +111,12 @@ namespace Deltares
 
                 return copy;
             }
+        private:
+            /**
+             * \brief The last non-zero generated time stamp
+             */
+            time_t timeStamp = 0;
+            bool fixed = false;
         };
     }
 }

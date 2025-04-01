@@ -42,11 +42,17 @@ namespace Deltares::Numeric
         repeatable_ = repeatable;
         seed_ = seed;
 
-        if (!repeatable && fixedTimeStamp == 0)
+        if (!repeatable)
         {
             if (fixedTimeStamp == 0)
             {
-                this->timeStamp = static_cast<long int>(time(nullptr));
+                this->timeStamp = time(nullptr);
+                if (this->timeStamp <= lastGeneratedTimeStamp)
+                {
+                    this->timeStamp = lastGeneratedTimeStamp + 1;
+                }
+
+                lastGeneratedTimeStamp = this->timeStamp;
             }
             else
             {

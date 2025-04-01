@@ -34,7 +34,7 @@ namespace Deltares
          */
         void RandomSampleGenerator::initialize()
         {
-            random.initialize(this->Settings->RandomGeneratorType, this->Settings->IsRepeatableRandom, this->Settings->Seed, this->Settings->TimeStamp);
+            random.initialize(this->Settings->RandomGeneratorType, this->Settings->IsRepeatableRandom, this->Settings->Seed, this->Settings->getTimeStamp());
 
             if (sampleProvider == nullptr)
             {

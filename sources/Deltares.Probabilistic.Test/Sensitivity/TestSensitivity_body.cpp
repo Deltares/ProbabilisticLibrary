@@ -86,7 +86,7 @@ namespace Deltares
 
                 project->sensitivityMethod = sensitivityMethod;
 
-                std::shared_ptr<Sensitivity::SensitivityResult> result = project->getSensitivityResult();
+                auto result = std::unique_ptr<Sensitivity::SensitivityResult>(project->getSensitivityResult());
 
                 ASSERT_NEAR(1.8, result->stochast->getMean(), margin);
                 ASSERT_NEAR(0.82, result->stochast->getDeviation(), margin);
@@ -115,17 +115,16 @@ namespace Deltares
 
                 project->sensitivityMethod = sensitivityMethod;
 
-                std::shared_ptr<Sensitivity::SensitivityResult> result = project->getSensitivityResult();
+                auto result = std::unique_ptr<Sensitivity::SensitivityResult>(project->getSensitivityResult());
 
-                ASSERT_LE(result->quantileEvaluations[0]->Z, 1.5, margin);
-                ASSERT_LE(result->quantileEvaluations[1]->Z, 1.5, margin);
-                ASSERT_GE(result->quantileEvaluations[2]->Z, 2.1, margin);
-                ASSERT_GE(result->quantileEvaluations[3]->Z, 2.1, margin);
+                ASSERT_LE(result->quantileEvaluations[0]->Z, 1.5);
+                ASSERT_LE(result->quantileEvaluations[1]->Z, 1.5);
+                ASSERT_GE(result->quantileEvaluations[2]->Z, 2.1);
+                ASSERT_GE(result->quantileEvaluations[3]->Z, 2.1);
 
                 // do it again, check results are not equal
 
-                std::this_thread::sleep_for(std::chrono::seconds(1));
-                std::shared_ptr<Sensitivity::SensitivityResult> result2 = project->getSensitivityResult();
+                auto result2 = std::unique_ptr<Sensitivity::SensitivityResult>(project->getSensitivityResult());
 
                 const double smallMargin = 1E-10;
 
@@ -134,7 +133,7 @@ namespace Deltares
                 double m1 = result->stochast->getMean();
                 double m2 = result2->stochast->getMean();
 
-                ASSERT_NE(m1, m2, smallMargin);
+                ASSERT_FALSE(std::abs(m1 - m2) < smallMargin);
             }
 
             void TestSensitivity::testCrudeMonteCarloLinearOutput()
@@ -224,7 +223,7 @@ namespace Deltares
 
                 project->sensitivityMethod = sensitivityMethod;
 
-                std::shared_ptr<Sensitivity::SensitivityResult> result = project->getSensitivityResult();
+                auto result = std::unique_ptr<Sensitivity::SensitivityResult>(project->getSensitivityResult());
 
                 ASSERT_NEAR(result->stochast->getMean(), 1.0, margin);
 
@@ -247,7 +246,7 @@ namespace Deltares
                 sensitivityMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.95));
                 project->sensitivityMethod = sensitivityMethod;
 
-                std::shared_ptr<Sensitivity::SensitivityResult> result = project->getSensitivityResult();
+                auto result = std::unique_ptr<Sensitivity::SensitivityResult>(project->getSensitivityResult());
 
                 ASSERT_NEAR(result->stochast->getMean(), 1.8, margin);
                 ASSERT_NEAR(result->stochast->getDeviation(), 0.81, margin);
@@ -269,7 +268,7 @@ namespace Deltares
                 sensitivityMethod->Settings->RequestedQuantiles.push_back(value1);
                 project->sensitivityMethod = sensitivityMethod;
 
-                std::shared_ptr<Sensitivity::SensitivityResult> result = project->getSensitivityResult();
+                auto result = std::unique_ptr<Sensitivity::SensitivityResult>(project->getSensitivityResult());
 
                 ASSERT_NEAR(result->stochast->getProperties()->FragilityValues[0]->X, 2.9, margin);
                 ASSERT_NEAR(result->stochast->getProperties()->FragilityValues[0]->getProbabilityOfNonFailure(), 0.9, margin);
@@ -287,7 +286,7 @@ namespace Deltares
                 sensitivityMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.95));
                 project->sensitivityMethod = sensitivityMethod;
 
-                std::shared_ptr<Sensitivity::SensitivityResult> result = project->getSensitivityResult();
+                auto result = std::unique_ptr<Sensitivity::SensitivityResult>(project->getSensitivityResult());
 
                 ASSERT_NEAR(result->stochast->getMean(), 1.8, margin);
                 ASSERT_NEAR(result->stochast->getDeviation(), 0.92, margin);
@@ -307,7 +306,7 @@ namespace Deltares
                 sensitivityMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.95));
                 project->sensitivityMethod = sensitivityMethod;
 
-                std::shared_ptr<Sensitivity::SensitivityResult> result = project->getSensitivityResult();
+                auto result = std::unique_ptr<Sensitivity::SensitivityResult>(project->getSensitivityResult());
 
                 ASSERT_NEAR(result->stochast->getMean(), 1.8, margin);
                 ASSERT_NEAR(result->stochast->getDeviation(), 1.04, margin);

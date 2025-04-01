@@ -32,30 +32,30 @@ namespace Deltares
             this->sensitivityResult = nullptr;
             this->sensitivityResults.clear();
 
-            this->settings->RandomSettings->SetFixed(true);
+            this->settings->RandomSettings->setFixed(true);
 
             this->sensitivityMethod = this->settings->GetSensitivityMethod();
             this->runSettings = this->settings->RunSettings;
 
-            if (this->parameter == "")
+            if (this->parameter.empty())
             {
-                for (std::shared_ptr<Models::ModelInputParameter> modelParameter : this->model->outputParameters)
+                for (std::shared_ptr<Models::ModelInputParameter>& modelParameter : this->model->outputParameters)
                 {
                     this->parameterSelector->parameter = modelParameter->name;
                     if (modelParameter->isArray)
                     {
-                        for (int arrayIndex = 0; arrayIndex < modelParameter->arraySize; arrayIndex++)
+                        for (int index = 0; index < modelParameter->arraySize; index++)
                         {
-                            this->parameterSelector->arrayIndex = arrayIndex;
+                            this->parameterSelector->arrayIndex = index;
 
-                            std::shared_ptr<Sensitivity::SensitivityResult> result = this->getSensitivityResult();
-                            result->stochast->name += "[" + std::to_string(arrayIndex) + "]";
+                            auto result = std::shared_ptr<Sensitivity::SensitivityResult>(this->getSensitivityResult());
+                            result->stochast->name += "[" + std::to_string(index) + "]";
                             this->sensitivityResults.push_back(result);
                         }
                     }
                     else
                     {
-                        std::shared_ptr<Sensitivity::SensitivityResult> result = this->getSensitivityResult();
+                        auto result = std::shared_ptr<Sensitivity::SensitivityResult>(this->getSensitivityResult());
                         this->sensitivityResults.push_back(result);
                     }
                 }
@@ -65,11 +65,11 @@ namespace Deltares
                 this->parameterSelector->parameter = this->parameter;
                 this->parameterSelector->arrayIndex = this->arrayIndex;
 
-                std::shared_ptr<Sensitivity::SensitivityResult> result = this->getSensitivityResult();
+                auto result = std::shared_ptr<Sensitivity::SensitivityResult>(this->getSensitivityResult());
                 this->sensitivityResults.push_back(result);
             }
 
-            if (this->sensitivityResults.size() > 0)
+            if (!this->sensitivityResults.empty())
             {
                 this->sensitivityResult = this->sensitivityResults[0];
             }
@@ -77,7 +77,7 @@ namespace Deltares
             // reset the index
             this->model->Index = 0;
 
-            this->settings->RandomSettings->SetFixed(false);
+            this->settings->RandomSettings->setFixed(false);
 
             this->outputCorrelationMatrix = nullptr;
             if (this->settings->CalculateCorrelations)
@@ -86,7 +86,7 @@ namespace Deltares
             }
         }
 
-        std::shared_ptr<Sensitivity::SensitivityResult> SensitivityProject::getSensitivityResult()
+        Sensitivity::SensitivityResult* SensitivityProject::getSensitivityResult()
         {
             this->model->zValueConverter = this->parameterSelector;
 
@@ -95,7 +95,7 @@ namespace Deltares
             modelRunner->Settings = this->runSettings;
             modelRunner->initializeForRun();
 
-            std::shared_ptr<SensitivityResult> result = std::shared_ptr<SensitivityResult>(this->sensitivityMethod->getSensitivityStochast(modelRunner));
+            SensitivityResult* result = this->sensitivityMethod->getSensitivityStochast(modelRunner);
             result->stochast->name = this->parameterSelector->parameter;
 
             this->modelRuns += this->model->getModelRuns();

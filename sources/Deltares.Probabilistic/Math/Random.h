@@ -38,7 +38,7 @@ namespace Deltares::Numeric
         int seed_ = 0;
         time_t timeStamp = 0;
         std::unique_ptr<RandomValueGenerator> randomValueGenerator = nullptr;
-
+        time_t lastGeneratedTimeStamp = 0;
     public:
         /**
          * \brief Initializes the random value generator
@@ -70,4 +70,7 @@ namespace Deltares::Numeric
         static RandomValueGeneratorType getRandomGeneratorType(const std::string& method);
     };
 }
+
+
+
 
