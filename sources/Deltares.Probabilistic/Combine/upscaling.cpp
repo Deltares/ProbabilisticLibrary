@@ -153,7 +153,7 @@ namespace Deltares {
             return message;
         }
 
-        // \brief This method upscales from a cross section to a given section length
+        // \brief This method scales up from a cross-section to a given section length
         // \param crossSectionElement : Reliability index and alpha cross section
         // \param rhoXK(:) : Correlation variables
         // \param dXK(:) : Correlation length variables
@@ -162,7 +162,7 @@ namespace Deltares {
         std::pair<alphaBeta, int> upscaling::upscaleLength(alphaBeta& crossSectionElement,
             const vector1D& rhoXK, const vector1D& dXK, const double sectionLength, std::string& message)
         {
-            const double deltaBeta = 0.01; // perturbation of beta in computation alpha in the upscaling from cross section to segment
+            const double deltaBeta = 0.01; // perturbation of beta in computation alpha in the upscaling from cross-section to segment
             //
             // Get number of variables
             //
@@ -210,16 +210,16 @@ namespace Deltares {
                 element.setAlpha(vector1D(nrVar));
                 //
                 // Calculate beta for section from the beta of the cross-section
-                auto betaSection = ComputeBetaSection(crossSectionElement.getBeta(), sectionLength, rhoZ, dz, deltaL);
+                const auto betaSection = ComputeBetaSection(crossSectionElement.getBeta(), sectionLength, rhoZ, dz, deltaL);
                 if (betaSection.second != 0) failures++;
                 element.setBeta(betaSection.first);
                 //
                 // Calculate alpha section
                 //
                 // Correlated part. Perturbation of the betaCrossSection
-                double betaK = crossSectionElement.getBeta() - sqrt(rhoZ) * deltaBeta;
+                const double betaK = crossSectionElement.getBeta() - sqrt(rhoZ) * deltaBeta;
                 // Calculate beta for section from the beta of the cross-section
-                auto betaKX = ComputeBetaSection(betaK, sectionLength, rhoZ, dz, deltaL);
+                const auto betaKX = ComputeBetaSection(betaK, sectionLength, rhoZ, dz, deltaL);
                 if (betaKX.second != 0) failures++;
 
                 double alphaC = (element.getBeta() - betaKX.first) / deltaBeta;
@@ -228,7 +228,7 @@ namespace Deltares {
                 //
                 // Uncorrelated part
                 //
-                double alphaU = sqrt(1.0 - alphaC * alphaC);
+                const double alphaU = sqrt(1.0 - alphaC * alphaC);
                 //
                 // Calculate resulting alpha
                 //
@@ -242,9 +242,9 @@ namespace Deltares {
                     }
                     else
                     {
-                        double rhoV = rhoXK(i);
-                        double lengthV = dXK(i);
-                        double rhoK = rhoV + (1.0 - rhoV) * exp(-pow(deltaL / lengthV, 2));
+                        const double rhoV = rhoXK(i);
+                        const double lengthV = dXK(i);
+                        const double rhoK = rhoV + (1.0 - rhoV) * exp(-pow(deltaL / lengthV, 2));
                         element.setAlpha(i, alphaC / sqrt(rhoZ) * crossSectionElement.getAlphaI(i) *
                             sqrt(rhoK) +
                             alphaU / sqrt(1.0 - rhoZ) * crossSectionElement.getAlphaI(i) *
@@ -273,12 +273,12 @@ namespace Deltares {
         std::pair<double, int> upscaling::ComputeBetaSection(const double betaCrossSection, const double sectionLength,
             const double rhoZ, const double dz, const double deltaL)
         {
-            const int    nGridPoints = 30001; // Number of grid points for v in numerical integration
-            const double vLower = -30.0;  // Lower bound of v-values in the numerical integration
-            const double vUpper = 30.0;  // Upper bound of v-values in the numerical integration
+            constexpr int    nGridPoints = 30001; // Number of grid points for v in numerical integration
+            constexpr double vLower = -30.0;  // Lower bound of v-values in the numerical integration
+            constexpr double vUpper = 30.0;  // Upper bound of v-values in the numerical integration
 
-            // Compute failure probability cross section from beta
-            double pf = StandardNormal::getQFromU(betaCrossSection); // Failure probability cross section
+            // Compute failure probability cross-section from beta
+            const double pf = StandardNormal::getQFromU(betaCrossSection); // Failure probability cross-section
             double pfX; // Failure probability section
             int conv; // indicator of non-converged Hohenbichler calculation
             if (rhoZ > 0.001)
@@ -288,9 +288,9 @@ namespace Deltares {
                 auto termI = std::vector<double>(nGridPoints); // i-th term to add
                 for (size_t i = 0; i < nGridPoints; i++)
                 {
-                    double v = vLower + vDelta * static_cast<double>(i);
-                    double x = (betaCrossSection - sqrt(rhoZ) * v) / sqrt(1.0 - rhoZ); // x = beta*
-                    double nf = (sectionLength - deltaL) / (sqrt(2.0) * M_PI) / dz * exp(-x * x / 2.0); // Number of cross section
+                    const double v = vLower + vDelta * static_cast<double>(i);
+                    const double x = (betaCrossSection - sqrt(rhoZ) * v) / sqrt(1.0 - rhoZ); // x = beta*
+                    const double nf = (sectionLength - deltaL) / (sqrt(2.0) * M_PI) / dz * exp(-x * x / 2.0); // Number of cross-sections
                     termI[i] = (1.0 - p * exp(-nf)) * exp(-v * v / 2.0) / sqrt(2.0 * M_PI) * vDelta;
                 }
                 //
@@ -314,7 +314,7 @@ namespace Deltares {
                 pfX = std::min(pfX, 1.0);
             }
 
-            double betaSection = StandardNormal::getUFromQ(pfX);
+            const double betaSection = StandardNormal::getUFromQ(pfX);
             return { betaSection, conv };
         }
 
