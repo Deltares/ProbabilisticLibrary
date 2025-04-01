@@ -55,7 +55,7 @@ namespace Deltares
             double findBetaBetweenBoundariesAllowNaN(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<DirectionReliabilitySettings> settings, std::shared_ptr<Sample> uDirection, bool invertZ, double uLow, double uHigh, double zLow, double zHigh, double& z);
             virtual double findBetaBetweenBoundaries(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<DirectionReliabilitySettings> settings, std::shared_ptr<Sample> uDirection, bool invertZ, double uLow, double uHigh, double zLow, double zHigh, double& z);
         private:
-            double getDirectionBeta(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr <BetaValueTask> directionTask,
+            double getDirectionBeta(std::shared_ptr<Models::ModelRunner> modelRunner, const BetaValueTask& directionTask,
                 const PrecomputeValues& zValues);
             std::vector<std::shared_ptr< DirectionSection>> getDirectionSections(std::shared_ptr<Models::ModelRunner> modelRunner,
                 std::shared_ptr<DirectionReliabilitySettings> settings, std::shared_ptr<Sample> uDirection, bool invertZ, const PrecomputeValues& zValues);

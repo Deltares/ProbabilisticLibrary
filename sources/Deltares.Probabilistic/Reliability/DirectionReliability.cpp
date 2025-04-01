@@ -63,41 +63,41 @@ namespace Deltares
         {
             std::shared_ptr<Sample> normalizedSample = directionSample->getNormalizedSample();
 
-            std::shared_ptr <BetaValueTask> task(new BetaValueTask());
-            task->ModelRunner = modelRunner;
-            task->Index = 0;
-            task->Settings = this->Settings;
-            task->UValues = normalizedSample;
-            task->Iteration = 0;
-            task->z0 = z0;
+            auto task = BetaValueTask();
+            task.ModelRunner = modelRunner;
+            task.Index = 0;
+            task.Settings = Settings;
+            task.UValues = normalizedSample;
+            task.Iteration = 0;
+            task.z0 = z0;
 
-            double beta = this->getDirectionBeta(modelRunner, task, zValues);
+            double beta = getDirectionBeta(modelRunner, task, zValues);
             beta *= z0;
 
-            directionSample->AllowProxy = task->UValues->AllowProxy;
+            directionSample->AllowProxy = task.UValues->AllowProxy;
 
             return beta;
         }
 
         double DirectionReliability::getDirectionBeta(std::shared_ptr<Models::ModelRunner> modelRunner,
-            std::shared_ptr <BetaValueTask> directionTask, const PrecomputeValues& zValues)
+            const BetaValueTask& directionTask, const PrecomputeValues& zValues)
         {
-            std::shared_ptr<Sample> uDirection = directionTask->UValues->getNormalizedSample();
+            std::shared_ptr<Sample> uDirection = directionTask.UValues->getNormalizedSample();
 
             if (modelRunner->canCalculateBeta())
             {
-                return modelRunner->getBeta(directionTask->UValues);
+                return modelRunner->getBeta(directionTask.UValues);
             }
             else
             {
-                bool invertZ = directionTask->z0 < 0;
+                bool invertZ = directionTask.z0 < 0.0;
 
-                auto sections = getDirectionSections(modelRunner, directionTask->Settings,
+                auto sections = getDirectionSections(modelRunner, directionTask.Settings,
                     uDirection, invertZ, zValues);
 
                 double beta = getBetaFromSections(sections);
 
-                directionTask->UValues->AllowProxy = uDirection->AllowProxy;
+                directionTask.UValues->AllowProxy = uDirection->AllowProxy;
 
                 return beta;
             }
@@ -297,7 +297,7 @@ namespace Deltares
                 // TODO: PROBL-42 remove linear search , because bisection is more robust
                 if (std::isnan(uResult))
                 {
-                    const double xTolerance = 0.01;
+                    constexpr double xTolerance = 0.01;
                     auto bisectionCalculation = BisectionRootFinder(zTolerance, xTolerance);
                     uResult = bisectionCalculation.CalculateValue(low, high, 0.0, [directionCalculation](double v) { return directionCalculation->GetZ(v); });
                 }
