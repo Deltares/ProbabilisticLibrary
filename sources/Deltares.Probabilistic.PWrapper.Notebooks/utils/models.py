@@ -90,6 +90,7 @@ class ZFunctionOvertopping():
 
     def __init__(self):
         pass
+        # this is a placeholder for any initialization if needed
     def z_sleep(self, h, hm0, tm10, wave_direction, dike_normal, y_crest, q_crit):
 
         time.sleep(0.1)
