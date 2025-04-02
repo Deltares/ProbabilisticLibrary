@@ -35,7 +35,7 @@ namespace Deltares
 {
     namespace Sensitivity
     {
-        Sensitivity::SensitivityResult* FOSM::getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner)
+        Sensitivity::SensitivityResult FOSM::getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner)
         {
             int nStochasts = modelRunner->getVaryingStochastCount();
 
@@ -76,13 +76,13 @@ namespace Deltares
             stochast->setDistributionType(distributionType);
             stochast->setMeanAndDeviation(z0, deviation);
 
-            SensitivityResult* result = modelRunner->getSensitivityResult(stochast);
+            auto result = modelRunner->getSensitivityResult(stochast);
 
             for (std::shared_ptr<Statistics::ProbabilityValue> quantile : this->Settings->RequestedQuantiles)
             {
                 std::shared_ptr<Sample> quantileSample = nextSample->getSampleAtBeta(quantile->Reliability);
                 std::shared_ptr<Models::Evaluation> evaluation = std::shared_ptr<Models::Evaluation>(modelRunner->getEvaluation(quantileSample));
-                result->quantileEvaluations.push_back(evaluation);
+                result.quantileEvaluations.push_back(evaluation);
             }
 
             if (this->Settings->CalculateCorrelations)

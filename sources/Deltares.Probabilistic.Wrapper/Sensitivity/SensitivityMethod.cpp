@@ -38,7 +38,7 @@ namespace Deltares
 
                 nativeModelRunner->initializeForRun();
 
-                const std::shared_ptr<Statistics::Stochast> nativeStochast = sensitivityMethod->getSensitivityStochast(nativeModelRunner)->stochast;
+                const std::shared_ptr<Statistics::Stochast> nativeStochast = sensitivityMethod->getSensitivityStochast(nativeModelRunner).stochast;
 
                 Statistics::Wrappers::Stochast^ stochast = gcnew Statistics::Wrappers::Stochast(nativeStochast);
 

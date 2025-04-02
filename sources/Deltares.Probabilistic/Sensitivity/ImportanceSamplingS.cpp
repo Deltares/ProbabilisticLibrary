@@ -35,7 +35,7 @@ namespace Deltares
 {
     namespace Sensitivity
     {
-        Sensitivity::SensitivityResult* ImportanceSamplingS::getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner)
+        Sensitivity::SensitivityResult ImportanceSamplingS::getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner)
         {
             modelRunner->updateStochastSettings(this->Settings->StochastSet);
 
@@ -145,7 +145,7 @@ namespace Deltares
 
             std::shared_ptr<Statistics::Stochast> stochast = this->getStochastFromSamples(zSamples, zWeights);
 
-            SensitivityResult* result = modelRunner->getSensitivityResult(stochast);
+            auto result = modelRunner->getSensitivityResult(stochast);
 
             for (std::shared_ptr<Statistics::ProbabilityValue> quantile : this->Settings->RequestedQuantiles)
             {
@@ -161,11 +161,11 @@ namespace Deltares
                     std::shared_ptr<Sample> sample = randomSampleGenerator->getRandomSample();
                     std::shared_ptr<Sample> modifiedSample = getModifiedSample(sample, factors, center, dimensionality);
                     std::shared_ptr<Models::Evaluation> evaluation = std::shared_ptr<Models::Evaluation>(modelRunner->getEvaluation(modifiedSample));
-                    result->quantileEvaluations.push_back(evaluation);
+                    result.quantileEvaluations.push_back(evaluation);
                 }
                 else
                 {
-                    result->quantileEvaluations.push_back(nullptr);
+                    result.quantileEvaluations.push_back(nullptr);
                 }
             }
 

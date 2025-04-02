@@ -42,7 +42,7 @@ namespace Deltares
         using namespace Deltares::Models;
         using namespace Deltares::Statistics;
 
-        Sensitivity::SensitivityResult* FORMS::getSensitivityStochast(std::shared_ptr<ModelRunner> modelRunner)
+        Sensitivity::SensitivityResult FORMS::getSensitivityStochast(std::shared_ptr<ModelRunner> modelRunner)
         {
             int nStochasts = modelRunner->getVaryingStochastCount();
 
@@ -234,13 +234,13 @@ namespace Deltares
             if (cdfCurve->getProperties()->FragilityValues.size() <= 1)
             {
                 std::shared_ptr<Statistics::Stochast> stochast = std::make_shared<Stochast>(DistributionType::Deterministic, std::vector<double> { z0 });
-                Sensitivity::SensitivityResult* result = modelRunner->getSensitivityResult(stochast);
+                Sensitivity::SensitivityResult result = modelRunner->getSensitivityResult(stochast);
                 std::shared_ptr<Sample> zeroSample = std::make_shared<Sample>(nStochasts);
                 std::shared_ptr<Models::Evaluation> evaluation = std::shared_ptr<Models::Evaluation>(modelRunner->getEvaluation(zeroSample));
 
                 for (std::shared_ptr<Statistics::ProbabilityValue> quantile : this->Settings->RequestedQuantiles)
                 {
-                    result->quantileEvaluations.push_back(evaluation);
+                    result.quantileEvaluations.push_back(evaluation);
                 }
 
                 return result;
@@ -250,17 +250,17 @@ namespace Deltares
                 std::sort(cdfCurve->getProperties()->FragilityValues.begin(), cdfCurve->getProperties()->FragilityValues.end(),
                     [](std::shared_ptr<FragilityValue> p, std::shared_ptr<FragilityValue> q) {return p->X < q->X; });
 
-                Sensitivity::SensitivityResult* result = modelRunner->getSensitivityResult(cdfCurve);
+                auto result = modelRunner->getSensitivityResult(cdfCurve);
 
                 for (std::shared_ptr<Statistics::ProbabilityValue> quantile : this->Settings->RequestedQuantiles)
                 {
                     if (this->evaluations.contains(quantile))
                     {
-                        result->quantileEvaluations.push_back(evaluations[quantile]);
+                        result.quantileEvaluations.push_back(evaluations[quantile]);
                     }
                     else
                     {
-                        result->quantileEvaluations.push_back(nullptr);
+                        result.quantileEvaluations.push_back(nullptr);
                     }
                 }
 

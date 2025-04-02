@@ -41,7 +41,7 @@ namespace Deltares
 {
     namespace Sensitivity
     {
-        Sensitivity::SensitivityResult* DirectionalSamplingS::getSensitivityStochast(std::shared_ptr<ModelRunner> modelRunner)
+        Sensitivity::SensitivityResult DirectionalSamplingS::getSensitivityStochast(std::shared_ptr<ModelRunner> modelRunner)
         {
             //Step 0: Initialize the algorithm
 
@@ -79,17 +79,17 @@ namespace Deltares
                 [](const std::shared_ptr<Statistics::FragilityValue>& val1, const std::shared_ptr<Statistics::FragilityValue>& val2)
                 {return val1->Reliability < val2->Reliability; });
 
-            SensitivityResult* result = modelRunner->getSensitivityResult(stochast);
+            auto result = modelRunner->getSensitivityResult(stochast);
 
             for (std::shared_ptr<Statistics::ProbabilityValue> quantile : this->Settings->RequestedQuantiles)
             {
                 if (this->evaluations.contains(quantile))
                 {
-                    result->quantileEvaluations.push_back(this->evaluations[quantile]);
+                    result.quantileEvaluations.push_back(this->evaluations[quantile]);
                 }
                 else
                 {
-                    result->quantileEvaluations.push_back(nullptr);
+                    result.quantileEvaluations.push_back(nullptr);
                 }
             }
 

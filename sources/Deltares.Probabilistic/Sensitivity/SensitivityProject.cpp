@@ -48,14 +48,14 @@ namespace Deltares
                         {
                             this->parameterSelector->arrayIndex = index;
 
-                            auto result = std::shared_ptr<Sensitivity::SensitivityResult>(this->getSensitivityResult());
+                            auto result = std::make_shared<SensitivityResult>(getSensitivityResult());
                             result->stochast->name += "[" + std::to_string(index) + "]";
                             this->sensitivityResults.push_back(result);
                         }
                     }
                     else
                     {
-                        auto result = std::shared_ptr<Sensitivity::SensitivityResult>(this->getSensitivityResult());
+                        auto result = std::make_shared<SensitivityResult>(this->getSensitivityResult());
                         this->sensitivityResults.push_back(result);
                     }
                 }
@@ -65,7 +65,7 @@ namespace Deltares
                 this->parameterSelector->parameter = this->parameter;
                 this->parameterSelector->arrayIndex = this->arrayIndex;
 
-                auto result = std::shared_ptr<Sensitivity::SensitivityResult>(this->getSensitivityResult());
+                auto result = std::make_shared<SensitivityResult>(this->getSensitivityResult());
                 this->sensitivityResults.push_back(result);
             }
 
@@ -86,7 +86,7 @@ namespace Deltares
             }
         }
 
-        Sensitivity::SensitivityResult* SensitivityProject::getSensitivityResult()
+        Sensitivity::SensitivityResult SensitivityProject::getSensitivityResult()
         {
             this->model->zValueConverter = this->parameterSelector;
 
@@ -95,8 +95,8 @@ namespace Deltares
             modelRunner->Settings = this->runSettings;
             modelRunner->initializeForRun();
 
-            SensitivityResult* result = this->sensitivityMethod->getSensitivityStochast(modelRunner);
-            result->stochast->name = this->parameterSelector->parameter;
+            auto result = this->sensitivityMethod->getSensitivityStochast(modelRunner);
+            result.stochast->name = this->parameterSelector->parameter;
 
             this->modelRuns += this->model->getModelRuns();
 

@@ -95,7 +95,7 @@ namespace Deltares
              * \brief Performs the sensitivity calculation
              * \return Sensitivity result
              */
-            Sensitivity::SensitivityResult* getSensitivityResult();
+            Sensitivity::SensitivityResult getSensitivityResult();
 
             /**
              * \brief Runs the reliability calculation

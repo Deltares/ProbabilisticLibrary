@@ -40,7 +40,7 @@ namespace Deltares
 {
     namespace Sensitivity
     {
-        Sensitivity::SensitivityResult* NumericalIntegrationS::getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner)
+        Sensitivity::SensitivityResult NumericalIntegrationS::getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner)
         {
             this->calculatedSamples.clear();
 
@@ -53,7 +53,7 @@ namespace Deltares
             if (nStochasts > 11)
             {
                 modelRunner->reportMessage(MessageType::Error, "Numerical integration with more than 11 stochastic parameters. This is practically impossible.");
-                return nullptr;
+                return SensitivityResult();
             }
             else if (nStochasts > 4)
             {
@@ -78,7 +78,7 @@ namespace Deltares
                 this->correlationMatrixBuilder->registerWeightedValues(stochast, samples);
             }
 
-            Sensitivity::SensitivityResult* result = modelRunner->getSensitivityResult(stochast);
+            auto result = modelRunner->getSensitivityResult(stochast);
 
             for (std::shared_ptr<Statistics::ProbabilityValue> quantile : this->Settings->RequestedQuantiles)
             {
@@ -88,11 +88,11 @@ namespace Deltares
                 if (quantileIndex >= 0)
                 {
                     std::shared_ptr<Models::Evaluation> evaluation = std::shared_ptr<Models::Evaluation>(modelRunner->getEvaluation(this->calculatedSamples[quantileIndex]));
-                    result->quantileEvaluations.push_back(evaluation);
+                    result.quantileEvaluations.push_back(evaluation);
                 }
                 else
                 {
-                    result->quantileEvaluations.push_back(nullptr);
+                    result.quantileEvaluations.push_back(nullptr);
                 }
             }
 
