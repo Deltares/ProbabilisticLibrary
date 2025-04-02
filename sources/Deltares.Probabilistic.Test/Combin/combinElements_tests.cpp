@@ -609,7 +609,7 @@ void combinElementsTests::testCombineTwoElementsPartialCorrelation15()
     auto elm2 = alphaBeta(9.5, {0.8, 0.6});
     auto rhoP = vector1D({1.0, 0.0});
 
-    auto ref = elm1; // approx.
+    const auto& ref = elm1; // approx.
 
     auto elm3 = cmb.combineTwoElementsPartialCorrelation(elm1, elm2, rhoP, combineAndOr::combOr);
 
