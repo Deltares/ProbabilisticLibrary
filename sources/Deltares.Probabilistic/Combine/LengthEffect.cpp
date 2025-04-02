@@ -68,15 +68,22 @@ namespace Deltares
 
             auto message = std::make_shared<Message>();
             message->Type = MessageType::Debug;
-            auto dpLength = up.upscaleLength(dp, rho1, rho2, length, message->Text);
-
+            auto [dpLength, nFail] = up.upscaleLength(dp, rho1, rho2, length, message->Text);
             auto dpL = DesignPoint();
             dpL.Identifier = "Length Effect";
-            dpL.Beta = dpLength.first.getBeta();
+            dpL.Beta = dpLength.getBeta();
             dpL.Messages.push_back(message);
+            if (nFail > 0)
+            {
+                auto warning = std::make_shared<Message>();
+                message->Type = MessageType::Warning;
+                message->Text = "non-convergence in Hohenbichler";
+                dpL.Messages.push_back(warning);
+            }
+
             for (size_t i = 0; i < nStochasts; i++)
             {
-                auto alphaValue = dpLength.first.getAlphaI(i);
+                auto alphaValue = dpLength.getAlphaI(i);
                 auto alpha = std::make_shared<StochastPointAlpha>();
                 alpha->Alpha = alphaValue;
                 alpha->Stochast = crossSection->Alphas[i]->Stochast;

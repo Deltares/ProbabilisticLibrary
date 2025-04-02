@@ -144,14 +144,14 @@ int upscalelengthc(betaAlphaCF* dpCrossSection, double* sectionLength, betaAlpha
 
     auto up = upscaling();
     std::string message;
-    auto alphaBeta = up.upscaleLength(crossSectionElement, rhoxk, dxk, *sectionLength, message);
+    const auto [alphaBeta, nFail] = up.upscaleLength(crossSectionElement, rhoxk, dxk, *sectionLength, message);
 
-    dpSection->beta = alphaBeta.first.getBeta();
+    dpSection->beta = alphaBeta.getBeta();
     for (int i = 0; i < nStochasts; i++)
     {
-        dpSection->alpha[i] = alphaBeta.first.getAlphaI(i);
+        dpSection->alpha[i] = alphaBeta.getAlphaI(i);
     }
-    return alphaBeta.second;
+    return nFail;
 }
 
 extern "C"

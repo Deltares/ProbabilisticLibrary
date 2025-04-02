@@ -22,6 +22,7 @@
 #include <gtest/gtest.h>
 #include "testNumericSupport.h"
 #include "../../Deltares.Probabilistic/Math/NumericSupport.h"
+#include "../../Deltares.Probabilistic/Utils/probLibException.h"
 
 using namespace Deltares::Numeric;
 
@@ -124,10 +125,11 @@ namespace Deltares::Probabilistic::Test
         try
         {
             y = NumericSupport::limit(1.0, 2.0, 1.0);
+            EXPECT_EQ(y, 0.0) << "dummy check";
         }
-        catch (const std::exception& e)
+        catch (const Reliability::probLibException& e)
         {
-            std::string message = e.what();
+            const std::string message = e.what();
             EXPECT_EQ(message, "lower bound > upper bound in limit function");
             success = false;
         }
