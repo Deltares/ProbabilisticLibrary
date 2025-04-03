@@ -31,7 +31,7 @@ namespace Deltares
 {
     namespace Statistics
     {
-        Stochast::Stochast() { };
+        Stochast::Stochast() {};
 
         Stochast::Stochast(DistributionType distributionType, std::vector<double> values)
         {
@@ -141,10 +141,7 @@ namespace Deltares
                 {
                     if (distributionChangeType == DistributionChangeType::MaintainMeanAndDeviation)
                     {
-                        if (oldMean != 0 || oldDeviation != 0)
-                        {
-                            this->setMeanAndDeviation(oldMean, oldDeviation);
-                        }
+                        this->setMeanAndDeviation(oldMean, oldDeviation);
                     }
                     else if (distributionChangeType == DistributionChangeType::FitFromHistogramValues)
                     {

@@ -165,8 +165,8 @@ namespace Deltares
             specialPoints.push_back(stochast->Minimum + Numeric::NumericSupport::getFraction(stochast->Minimum, -0.000001));
             specialPoints.push_back(stochast->Minimum);
             specialPoints.push_back(stochast->Maximum);
-            specialPoints.push_back(stochast->Minimum + Numeric::NumericSupport::getFraction(stochast->Maximum, 0.000001));
-            specialPoints.push_back(stochast->Minimum + Numeric::NumericSupport::getFraction(stochast->Maximum, 0.1));
+            specialPoints.push_back(stochast->Maximum + Numeric::NumericSupport::getFraction(stochast->Maximum, 0.000001));
+            specialPoints.push_back(stochast->Maximum + Numeric::NumericSupport::getFraction(stochast->Maximum, 0.1));
 
             return specialPoints;
         }

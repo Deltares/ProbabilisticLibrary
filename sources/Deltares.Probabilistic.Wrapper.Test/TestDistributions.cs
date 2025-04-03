@@ -114,10 +114,14 @@ namespace Deltares.Probabilistic.Wrapper.Test
                 DistributionType = DistributionType.Normal,
                 Truncated = true,
                 Mean = 3,
-                Deviation = 1,
-                Minimum = 0,
-                Maximum = 6
+                Deviation = 1
             };
+
+            Assert.AreEqual(double.NegativeInfinity, stochast.Minimum);
+            Assert.AreEqual(double.PositiveInfinity, stochast.Maximum);
+
+            stochast.Minimum = 0;
+            stochast.Maximum = 6;
 
             // Test bounded stochast
             Assert.AreEqual(3, stochast.GetXFromU(0), margin);
@@ -219,8 +223,8 @@ namespace Deltares.Probabilistic.Wrapper.Test
             stochast.Inverted = false;
             stochast.Truncated = false;
             stochast.Shift = 0;
-            stochast.Minimum = 0;
-            stochast.Maximum = 0;
+            stochast.Minimum = double.NegativeInfinity;
+            stochast.Maximum = double.PositiveInfinity;
             stochast.Mean = 3;
             stochast.Deviation = 1;
             TestFit(stochast);
@@ -471,8 +475,8 @@ namespace Deltares.Probabilistic.Wrapper.Test
             stochast.Truncated = false;
             stochast.Scale = 2;
             stochast.Shift = 3;
-            stochast.Minimum = 0;
-            stochast.Maximum = 0;
+            stochast.Minimum = double.NegativeInfinity;
+            stochast.Maximum = double.PositiveInfinity;
 
             TestFit(stochast);
         }
