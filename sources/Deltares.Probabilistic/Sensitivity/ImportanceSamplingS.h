@@ -44,12 +44,13 @@ namespace Deltares
              * \param modelRunner The model for which the sensitivity is calculated
              * \return The sensitivity in the form of a stochastic variable
              */
-            std::shared_ptr<Statistics::Stochast> getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner) override;
+            Sensitivity::SensitivityResult getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner) override;
         private:
             double getDimensionality(std::vector<double> factors);
             double getWeight(std::shared_ptr<Models::Sample> modifiedSample, std::shared_ptr<Models::Sample> sample, double dimensionality);
             std::vector<double> getFactors(std::shared_ptr<Reliability::StochastSettingsSet> stochastSettings);
             double getConvergence(int samples, double weightedSum);
+            std::shared_ptr<Models::Sample> getModifiedSample(const std::shared_ptr<Models::Sample> sample, std::vector<double>& factors, std::shared_ptr<Models::Sample> center, double dimensionality);
         };
     }
 }

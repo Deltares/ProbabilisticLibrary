@@ -170,6 +170,12 @@ namespace Deltares
             return x1 > x2 - tolerance;
         }
 
+        bool NumericSupport::isBetween(double xLow, double x, double xHigh, double tolerance)
+        {
+            return (isGreater(x, xLow, tolerance) && isLess(x, xHigh, tolerance)) ||
+                   (isLess(x, xLow, tolerance) && isGreater(x, xHigh, tolerance));
+        }
+
         CmpResult NumericSupport::compareDouble(const double x1, const double x2, const double tol)
         {
             if (areEqual(x1, x2, tol))

@@ -54,7 +54,7 @@ namespace Deltares
         void ModelRunner::updateStochastSettings(std::shared_ptr<Reliability::StochastSettingsSet> settings)
         {
             this->uConverter->updateStochastSettings(settings);
-            this->sampleProvider = std::make_shared<SampleProvider>(settings, false);
+            this->sampleProvider = std::make_shared<SampleProvider>(settings);
         }
 
         void ModelRunner::setSampleProvider(std::shared_ptr<SampleProvider> sampleProvider)
@@ -78,7 +78,7 @@ namespace Deltares
 
             if (sampleProvider == nullptr)
             {
-                sampleProvider = std::make_shared<SampleProvider>(this->uConverter->getVaryingStochastCount(), this->uConverter->getStochastCount(), false);
+                sampleProvider = std::make_shared<SampleProvider>(this->uConverter->getVaryingStochastCount(), this->uConverter->getStochastCount());
             }
         }
 
@@ -501,6 +501,30 @@ namespace Deltares
             }
 
             return designPoint;
+        }
+
+        /**
+         * \brief Gets the result of a sensitivity calculation
+         * \param stochast Stochast in the sensitivity result
+         * \return Sensitivity result
+         */
+        Sensitivity::SensitivityResult ModelRunner::getSensitivityResult(std::shared_ptr<Statistics::Stochast> stochast) const
+        {
+            auto result = Sensitivity::SensitivityResult();
+
+            result.stochast = stochast;
+
+            for (const auto& evaluation : evaluations)
+            {
+                result.evaluations.push_back(evaluation);
+            }
+
+            for (const auto& message : messages)
+            {
+                result.messages.push_back(message);
+            }
+
+            return result;
         }
 
         void  ModelRunner::registerSample(std::shared_ptr<Sensitivity::CorrelationMatrixBuilder> correlationMatrixBuilder, std::shared_ptr<Sample> sample)

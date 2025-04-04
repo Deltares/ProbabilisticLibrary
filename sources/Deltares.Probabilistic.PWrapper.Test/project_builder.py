@@ -269,7 +269,7 @@ def get_sensitivity_linear_project():
 
     return project
 
-def get_sensitivity_linear_array_result_project():
+def get_sensitivity_linear_array_result_project() ->SensitivityProject:
 
     project = SensitivityProject()
 

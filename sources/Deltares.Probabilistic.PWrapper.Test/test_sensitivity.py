@@ -68,6 +68,8 @@ class Test_sensitivity(unittest.TestCase):
         project.settings.variation_coefficient = 0
         project.settings.minimum_samples = 1000
         project.settings.maximum_samples = 1000
+        project.settings.quantiles.append(0.5)
+        project.settings.quantiles.append(0.95)
 
         project.run();
 
@@ -89,6 +91,14 @@ class Test_sensitivity(unittest.TestCase):
         self.assertAlmostEqual(0.83, stochast3.deviation, delta=margin)
 
         self.assertLessEqual(2.5 * project.settings.maximum_samples, project.total_model_runs)
+
+        result1 = project.results[0];
+        self.assertEqual('x - (a+b) for x in L[0]' , result1.identifier)
+        self.assertEqual(2, len(result1.quantile_realizations))
+        self.assertAlmostEqual(1.82, result1.quantile_realizations[0].output_values[0], delta=margin)
+        self.assertAlmostEqual(3.14, result1.quantile_realizations[1].output_values[0], delta=margin)
+        self.assertEqual(project.stochast, project.result.variable)
+
 
     def test_crude_monte_carlo_array_result_linear_delayed(self):
 

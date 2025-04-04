@@ -380,17 +380,17 @@ class ModelProject:
 			return False
 
 	@property
-	def variables(self):
+	def variables(self) -> list[Stochast]:
 		self._check_model()
 		return self._variables
 
 	@property
-	def correlation_matrix(self):
+	def correlation_matrix(self) ->CorrelationMatrix:
 		self._check_model()
 		return self._correlation_matrix
 
 	@property
-	def settings(self):
+	def settings(self) ->SensitivitySettings:
 		self._check_model()
 		return self._settings
 
@@ -540,6 +540,9 @@ class SensitivityProject(ModelProject):
 		self._id = interface.Create('sensitivity_project')
 
 		self._stochast = None
+		self._stochasts = None
+		self._result = None
+		self._results = None
 		self._output_correlation_matrix = None
 
 		self._initialize_callbacks(self._id)
@@ -556,13 +559,16 @@ class SensitivityProject(ModelProject):
 				'parameter',
 				'run',
 				'stochast',
+				'stochasts',
+				'result',
+				'results',
 				'output_correlation_matrix',
 				'validate',
 				'is_valid',
 				'total_model_runs']
 
 	@property
-	def parameter(self):
+	def parameter(self) -> str:
 		return interface.GetStringValue(self._id, 'parameter')
 		
 	@parameter.setter
@@ -572,32 +578,54 @@ class SensitivityProject(ModelProject):
 	def run(self):
 		self._stochast = None
 		self._stochasts = None
+		self._result = None
+		self._results = None
 		self._output_correlation_matrix = None
 
 		self._run()
 
 	@property
-	def stochast(self):
+	def stochast(self) -> Stochast:
 		if self._stochast is None:
-			stochastId = interface.GetIdValue(self._id, 'sensitivity_stochast')
-			if stochastId > 0:
-				self._stochast = Stochast(stochastId)
-
+			if not self.result is None:
+				self._stochast = self.result.variable
 		return self._stochast
 
 	@property
-	def stochasts(self):
+	def stochasts(self) -> list[Stochast]:
 		if self._stochasts is None:
 			stochasts = []
-			stochast_ids = interface.GetArrayIdValue(self._id, 'sensitivity_stochasts')
-			for stochast_id in stochast_ids:
-				stochasts.append(Stochast(stochast_id))
+			for result in self.results:
+				if not result is None:
+					stochasts.append(result.variable)
+				else:
+					stochasts.append(None)
 			self._stochasts = FrozenList(stochasts)
 				
 		return self._stochasts
 
 	@property
-	def output_correlation_matrix(self):
+	def result(self) -> SensitivityResult:
+		if self._result is None:
+			resultId = interface.GetIdValue(self._id, 'sensitivity_result')
+			if resultId > 0:
+				self._result = SensitivityResult(resultId)
+
+		return self._result
+
+	@property
+	def results(self) -> list[SensitivityResult]:
+		if self._results is None:
+			results = []
+			result_ids = interface.GetArrayIdValue(self._id, 'sensitivity_results')
+			for result_id in result_ids:
+				results.append(SensitivityResult(result_id))
+			self._results = FrozenList(results)
+				
+		return self._results
+
+	@property
+	def output_correlation_matrix(self) -> CorrelationMatrix:
 		if self._output_correlation_matrix is None:
 			correlationMatrixId = interface.GetIdValue(self._id, 'output_correlation_matrix')
 			if correlationMatrixId > 0:

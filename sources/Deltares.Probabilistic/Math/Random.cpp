@@ -22,12 +22,13 @@
 #include "Random.h"
 #include "Randomizers/MersenneTwisterRandomValueGenerator.h"
 #include "../Utils/probLibException.h"
+#include <ctime>
 
 namespace Deltares::Numeric
 {
     using enum RandomValueGeneratorType;
 
-    void Random::initialize(RandomValueGeneratorType generatorType, bool repeatable, int seed)
+    void Random::initialize(RandomValueGeneratorType generatorType, bool repeatable, int seed, time_t fixedTimeStamp)
     {
         if (generatorType == MersenneTwister)
         {
@@ -41,7 +42,25 @@ namespace Deltares::Numeric
         repeatable_ = repeatable;
         seed_ = seed;
 
-        randomValueGenerator->initialize(repeatable, seed);
+        if (!repeatable)
+        {
+            if (fixedTimeStamp == 0)
+            {
+                this->timeStamp = time(nullptr);
+                if (this->timeStamp <= lastGeneratedTimeStamp)
+                {
+                    this->timeStamp = lastGeneratedTimeStamp + 1;
+                }
+
+                lastGeneratedTimeStamp = this->timeStamp;
+            }
+            else
+            {
+                this->timeStamp = fixedTimeStamp;
+            }
+        }
+
+        randomValueGenerator->initialize(repeatable, seed, timeStamp);
     }
 
     double Random::next() const
@@ -51,7 +70,7 @@ namespace Deltares::Numeric
 
     void Random::restart() const
     {
-        return randomValueGenerator->initialize(repeatable_, seed_);
+        return randomValueGenerator->initialize(repeatable_, seed_, timeStamp);
     }
 
     std::string Random::getRandomGeneratorTypeString([[maybe_unused]] RandomValueGeneratorType method)

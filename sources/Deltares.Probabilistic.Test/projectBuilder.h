@@ -39,6 +39,7 @@ namespace Deltares
             public:
                 std::shared_ptr<Deltares::Models::ModelRunner> BuildProject();
                 std::shared_ptr<Deltares::Models::ModelRunner> BuildLinearProject();
+                std::shared_ptr<Deltares::Models::ModelRunner> BuildLinearOutputProject();
                 std::shared_ptr<Deltares::Models::ModelRunner> BuildLinearArrayProject();
                 std::shared_ptr<Deltares::Models::ModelRunner> BuildLinearVaryingArrayProject();
                 std::shared_ptr<Deltares::Models::ModelRunner> BuildQuadraticProject();
@@ -49,6 +50,7 @@ namespace Deltares
                 static std::shared_ptr<Models::RunProject> getRunProject(std::shared_ptr<Deltares::Reliability::ReliabilityProject> project);
                 static std::shared_ptr<Deltares::Reliability::ReliabilityProject> getAddOneProject();
                 static std::shared_ptr<Deltares::Reliability::ReliabilityProject> getLinearProject();
+                static std::shared_ptr<Deltares::Reliability::ReliabilityProject> getLinearOutputProject();
                 static std::shared_ptr<Deltares::Reliability::ReliabilityProject> getTriangularLinearProject();
 
                 static const bool logZtoScreen = false;
@@ -58,6 +60,7 @@ namespace Deltares
 
                 static void sum(std::shared_ptr<Models::ModelSample> sample);
                 static void linear(std::shared_ptr<Models::ModelSample> sample);
+                static void linearMultiple(std::shared_ptr<Models::ModelSample> sample);
                 static void quadratic(std::shared_ptr<Models::ModelSample> sample);
 
                 static std::shared_ptr<Statistics::Stochast>  getDeterministicStochast(double mean = 0);

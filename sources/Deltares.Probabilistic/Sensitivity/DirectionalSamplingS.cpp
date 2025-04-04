@@ -41,7 +41,7 @@ namespace Deltares
 {
     namespace Sensitivity
     {
-        std::shared_ptr<Statistics::Stochast> DirectionalSamplingS::getSensitivityStochast(std::shared_ptr<ModelRunner> modelRunner)
+        Sensitivity::SensitivityResult DirectionalSamplingS::getSensitivityStochast(std::shared_ptr<ModelRunner> modelRunner)
         {
             //Step 0: Initialize the algorithm
 
@@ -62,16 +62,16 @@ namespace Deltares
 
             std::set<double> handledReliabilities;
 
-            for (const std::shared_ptr<Statistics::ProbabilityValue> requestedQuantile : this->Settings->RequestedQuantiles)
+            for (const std::shared_ptr<Statistics::ProbabilityValue> quantile : this->Settings->RequestedQuantiles)
             {
-                if (!handledReliabilities.contains(requestedQuantile->Reliability))
+                if (!handledReliabilities.contains(quantile->Reliability))
                 {
                     auto fragilityValue = std::make_shared<Statistics::FragilityValue>();
-                    fragilityValue->X = getZForRequiredQ(modelRunner, requestedQuantile->Reliability, nStochasts, Z0);
-                    fragilityValue->Reliability = requestedQuantile->Reliability;
+                    fragilityValue->X = getZForRequiredQ(modelRunner, quantile, nStochasts, Z0);
+                    fragilityValue->Reliability = quantile->Reliability;
                     stochast->getProperties()->FragilityValues.push_back(fragilityValue);
 
-                    handledReliabilities.insert(requestedQuantile->Reliability);
+                    handledReliabilities.insert(quantile->Reliability);
                 }
             }
 
@@ -79,16 +79,30 @@ namespace Deltares
                 [](const std::shared_ptr<Statistics::FragilityValue>& val1, const std::shared_ptr<Statistics::FragilityValue>& val2)
                 {return val1->Reliability < val2->Reliability; });
 
-            return stochast;
+            auto result = modelRunner->getSensitivityResult(stochast);
+
+            for (std::shared_ptr<Statistics::ProbabilityValue> quantile : this->Settings->RequestedQuantiles)
+            {
+                if (this->evaluations.contains(quantile))
+                {
+                    result.quantileEvaluations.push_back(this->evaluations[quantile]);
+                }
+                else
+                {
+                    result.quantileEvaluations.push_back(nullptr);
+                }
+            }
+
+            return result;
         }
 
-        double DirectionalSamplingS::getZForRequiredQ(std::shared_ptr<ModelRunner> modelRunner, double betaRequested, int nStochasts, double Z0) const
+        double DirectionalSamplingS::getZForRequiredQ(std::shared_ptr<ModelRunner> modelRunner, std::shared_ptr<Statistics::ProbabilityValue> quantile, int nStochasts, double Z0)
         {
             int performedIterations = 0;
 
             // Step 3: Calculate n samples in random directions, all at the same distance d of the origin
 
-            auto sampleProvider = std::make_shared<SampleProvider>(this->Settings->StochastSet, false);
+            auto sampleProvider = std::make_shared<SampleProvider>(this->Settings->StochastSet);
             modelRunner->setSampleProvider(sampleProvider);
 
             auto randomSampleGenerator = RandomSampleGenerator();
@@ -110,7 +124,7 @@ namespace Deltares
 
             // Calculate the corresponding distance d of the origin using the length of the samples list
 
-            double initialDistance = getBetaDistance(std::abs(betaRequested), nStochasts, this->Settings->modelType);
+            double initialDistance = getBetaDistance(std::abs(quantile->Reliability), nStochasts, this->Settings->modelType);
             initialDistance = std::max(0.1, initialDistance);
 
             // Normalize the value of Samples via d
@@ -135,7 +149,7 @@ namespace Deltares
 
             double probability0 = NumericSupport::Divide(nZValuesGreaterZero, static_cast<int>(zValues.size()));
             double beta0 = Statistics::StandardNormal::getUFromQ(probability0);
-            double maxBetaDirection = std::abs(betaRequested) + 5; // The maximum beta value for the direction is set to the requested beta value plus 5 to prevent the algorithm from running into extreme values for the distance d
+            double maxBetaDirection = std::abs(quantile->Reliability) + 5; // The maximum beta value for the direction is set to the requested beta value plus 5 to prevent the algorithm from running into extreme values for the distance d
 
             std::vector<std::shared_ptr<Direction>> directions;
             for (size_t i = 0; i < samples.size(); i++)
@@ -143,27 +157,29 @@ namespace Deltares
                 std::shared_ptr<Direction> direction = std::make_shared<Direction>(samples[i], i);
                 direction->AddResult(0, Z0);
                 direction->AddResult(initialDistance, zValues[i]);
-                direction->Valid = betaRequested > beta0 ? zValues[i] > Z0 : zValues[i] < Z0; // If the direction is invalid, the direction will not be used in the calculation
+                direction->Valid = quantile->Reliability > beta0 ? zValues[i] > Z0 : zValues[i] < Z0; // If the direction is invalid, the direction will not be used in the calculation
                 directions.push_back(direction);
             }
 
             // Step 4: Calculate new distances di,2 for each direction so that the combined reliability remains beta_q
-            double qRequired = Statistics::StandardNormal::getQFromU(std::abs(betaRequested));
+            double qRequired = Statistics::StandardNormal::getQFromU(std::abs(quantile->Reliability));
             auto bisection = BisectionRootFinder();
 
             //firstly the zPred is needed.
-            double zPred = 0;
+            double zPredicted = 0;
 
             double error = std::numeric_limits<double>::max();
             double quantile95 = Statistics::StandardNormal::getUFromP(0.95);
+
+            std::shared_ptr<Sample> lowestSample = nullptr;
 
             int j = 0; //iteration over N
             while (j < this->Settings->MaximumIterations && error > this->Settings->VariationCoefficientFailure)
             {
                 double zMin = Z0;
-                double zMax = betaRequested > beta0 ? NumericSupport::getMaximum(zValues) : NumericSupport::getMinimum(zValues);
+                double zMax = quantile->Reliability > beta0 ? NumericSupport::getMaximum(zValues) : NumericSupport::getMinimum(zValues);
 
-                zPred = bisection.CalculateValue(zMin, zMax, qRequired,
+                zPredicted = bisection.CalculateValue(zMin, zMax, qRequired,
                     [directions, nStochasts, probability0](double predZi)
                     { return predict(predZi, directions, probability0, nStochasts); });
 
@@ -173,7 +189,7 @@ namespace Deltares
 
                 for (size_t i = 0; i < directions.size(); i++)
                 {
-                    std::shared_ptr<Sample> newSample = directions[i]->CreateNewSampleAt(zPred, maxBetaDirection);
+                    std::shared_ptr<Sample> newSample = directions[i]->CreateNewSampleAt(zPredicted, maxBetaDirection);
                     newSamples.push_back(newSample);
                     if (directions[i]->Valid)
                     {
@@ -191,7 +207,7 @@ namespace Deltares
                 {
                     if (directions[i]->Valid)
                     {
-                        directions[i]->AddResult(directions[i]->GetDistanceAtZ(zPred), newSamples[i]->Z);
+                        directions[i]->AddResult(directions[i]->GetDistanceAtZ(zPredicted), newSamples[i]->Z);
                     }
                 }
 
@@ -207,10 +223,32 @@ namespace Deltares
                 j++;
                 zValues = newZValues;
 
+                // select the sample with the lowest beta as representative
+                if (!calculateSamples.empty())
+                {
+                    lowestSample = calculateSamples[0];
+                    double lowestBeta = lowestSample->getBeta();
+                    for (size_t i = 0; i < calculateSamples.size(); i++)
+                    {
+                        double calcBeta = calculateSamples[i]->getBeta();
+                        if (calcBeta < lowestBeta)
+                        {
+                            lowestSample = calculateSamples[i];
+                            lowestBeta = calcBeta;
+                        }
+                    }
+                }
+
                 modelRunner->reportProgress(++performedIterations, this->Settings->MaximumIterations + 1);
             }
 
-            return zPred;
+            if (lowestSample != nullptr)
+            {
+                std::shared_ptr<Models::Evaluation> evaluation = std::shared_ptr<Models::Evaluation>(modelRunner->getEvaluation(lowestSample));
+                this->evaluations[quantile] = evaluation;
+            }
+
+            return zPredicted;
         }
 
         double DirectionalSamplingS::predict(double predZi, const std::vector<std::shared_ptr<Direction>>& directions, double probability0, int nStochasts)

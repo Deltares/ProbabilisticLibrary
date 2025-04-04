@@ -26,6 +26,8 @@
 
 #include <memory>
 
+#include "SensitivityResult.h"
+
 namespace Deltares
 {
     namespace Sensitivity
@@ -44,7 +46,7 @@ namespace Deltares
              * \param modelRunner The model for which the sensitivity is calculated
              * \return The sensitivity in the form of a stochastic variable
              */
-            virtual std::shared_ptr<Statistics::Stochast> getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner) { return nullptr; }
+            virtual Sensitivity::SensitivityResult getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner) { return SensitivityResult(); };
 
             /**
              * \brief Gets the correlation matrix
@@ -73,9 +75,20 @@ namespace Deltares
              */
             std::shared_ptr<CorrelationMatrixBuilder> correlationMatrixBuilder = std::make_shared<CorrelationMatrixBuilder>();
 
+            /**
+             * \brief Gets the index in a list of samples corresponding with a quantile
+             */
+            int getQuantileIndex(std::vector<std::shared_ptr<Numeric::WeightedValue>>& weightedValues, double quantile);
+
+            /**
+             * \brief Gets the index in a list of samples corresponding with a quantile
+             */
+            int getQuantileIndex(std::vector<double>& samples, std::vector<double>& weights, double quantile);
+
         private:
             bool stopped = false;
 
+            void filterSamples(std::vector<double>& samples, std::vector<double>& weights);
         };
     }
 }

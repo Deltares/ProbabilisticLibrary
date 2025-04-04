@@ -20,3 +20,33 @@
 // All rights reserved.
 //
 #include "RandomSettings.h"
+
+namespace Deltares
+{
+    namespace Models
+    {
+        void RandomSettings::setFixed(bool fixed)
+        {
+            if (!IsRepeatableRandom)
+            {
+                this->fixed = fixed;
+                if (fixed)
+                {
+                    generateTimeStamp();
+                }
+            }
+        }
+
+        void RandomSettings::generateTimeStamp()
+        {
+            time_t newTimeStamp = time(nullptr);
+            if (newTimeStamp <= timeStamp)
+            {
+                newTimeStamp = timeStamp + 1;
+            }
+
+            timeStamp = newTimeStamp;
+        }
+    }
+}
+
