@@ -26,20 +26,15 @@
 namespace Deltares::Reliability
 {
     PrecomputeDirections::PrecomputeDirections(const std::shared_ptr<DirectionReliabilitySettings>& settings, const double z0) :
-        settings(settings), z0(z0) {}
+        settings(settings), z0(z0), isMonotone(settings->modelVaryingType == ModelVaryingType::Monotone) {}
 
     void PrecomputeDirections::updateMask(std::vector<bool>& mask, const size_t index, const double zValue) const
     {
-        if (z0 * zValue < 0.0)
+        const bool signChanged = z0 * zValue < 0.0;
+        const bool wrongDirection = std::abs(zValue) > std::abs(z0);
+        if (signChanged || (isMonotone && wrongDirection))
         {
             mask[index] = true;
-        }
-        else if (settings->modelVaryingType == ModelVaryingType::Monotone)
-        {
-            if (std::abs(zValue) > std::abs(z0))
-            {
-                mask[index] = true;
-            }
         }
     }
 

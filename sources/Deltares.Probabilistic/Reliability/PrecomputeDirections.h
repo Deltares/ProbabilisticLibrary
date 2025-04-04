@@ -39,5 +39,6 @@ namespace Deltares::Reliability
         void updateMask(std::vector<bool>& mask, const size_t index, const double zValue) const;
         const std::shared_ptr<DirectionReliabilitySettings> settings;
         const double z0;
+        const bool isMonotone;
     };
 }
