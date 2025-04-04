@@ -35,6 +35,9 @@ namespace Deltares
             private:
                 void testCrudeMonteCarloAddOne();
                 void testCrudeMonteCarloLinear();
+                void testCrudeMonteCarloLinearNonRepeatable();
+                void testCrudeMonteCarloLinearOutput();
+                void testCrudeMonteCarloLinearOutputNonRepeatable();
                 void testCrudeMonteCarloLinearManySamples();
                 void testCrudeMonteCarloLinearAutoSamples();
 

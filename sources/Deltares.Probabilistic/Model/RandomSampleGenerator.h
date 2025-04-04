@@ -46,8 +46,29 @@ namespace Deltares
             Numeric::Random random;
 
             void initialize();
+
+            /**
+             * \brief Enforces the sample generator to restart
+             */
             void restart();
-            std::shared_ptr<Sample> getRandomSample();
+
+            /**
+             * \brief Gets a random sample
+             * \returns random sample
+             */
+            std::shared_ptr<Sample> getRandomSample() const;
+
+            /**
+             * \brief Proceeds the random sample generator for an equivalent of a number of samples
+             * \param nSamples Equivalent number of samples
+             */
+            void proceed(int nSamples) const;
+        private:
+            /**
+             * \brief Gets the size of a sample to be generated
+             * \returns Sample size
+             */
+            int getSampleSize() const;
         };
     }
 }

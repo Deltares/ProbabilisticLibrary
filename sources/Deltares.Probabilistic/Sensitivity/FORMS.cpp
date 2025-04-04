@@ -42,7 +42,7 @@ namespace Deltares
         using namespace Deltares::Models;
         using namespace Deltares::Statistics;
 
-        std::shared_ptr<Stochast> FORMS::getSensitivityStochast(std::shared_ptr<ModelRunner> modelRunner)
+        Sensitivity::SensitivityResult FORMS::getSensitivityStochast(std::shared_ptr<ModelRunner> modelRunner)
         {
             int nStochasts = modelRunner->getVaryingStochastCount();
 
@@ -64,6 +64,7 @@ namespace Deltares
             std::shared_ptr<Stochast> cdfCurve = std::make_shared<Stochast>();
             cdfCurve->setDistributionType(DistributionType::CDFCurve);
 
+            std::shared_ptr<Sample> previousPoint = nullptr;
             std::shared_ptr<Sample> startPoint = std::make_shared<Sample>(nStochasts);
             startPoint->IterationIndex = iteration - 1;
 
@@ -117,6 +118,8 @@ namespace Deltares
                                 break;
                             }
                         }
+
+                        checkQuantiles(modelRunner, startPoint, previousPoint, factorBeta);
                     }
 
                     zPrevious = z;
@@ -138,8 +141,9 @@ namespace Deltares
 
                     double factor = stepSize / Numeric::NumericSupport::GetLength(gradient);
 
-                    std::vector<double> nextU = Numeric::NumericSupport::zip(startPoint->Values, gradient,[factor](double p, double q) { return p + q * factor; });
+                    std::vector<double> nextU = Numeric::NumericSupport::zip(startPoint->Values, gradient, [factor](double p, double q) { return p + q * factor; });
 
+                    previousPoint = startPoint;
                     startPoint = std::make_shared<Sample>(nextU);
 
                     if (!isBetaValid(modelRunner, startPoint->getBeta(), betaPrevious, requiredBetaIncrement))
@@ -176,6 +180,8 @@ namespace Deltares
                         gradient = gradientCalculator->getGradient(modelRunner, startPoint);
                         z = startPoint->Z;
 
+                        checkQuantiles(modelRunner, startPoint, previousPoint, factorBeta);
+
                         modelRunner->reportProgress(++performedIterations, maxIterations);
 
                         if (!isZValid(modelRunner, z))
@@ -211,6 +217,8 @@ namespace Deltares
 
                     double factor = stepSize / Numeric::NumericSupport::GetLength(gradient);
 
+                    previousPoint = startPoint;
+
                     std::vector<double> nextU = Numeric::NumericSupport::zip(startPoint->Values, gradient, [factor](double p, double q) { return p - q * factor; });
                     startPoint = std::make_shared<Sample>(nextU);
 
@@ -225,14 +233,38 @@ namespace Deltares
 
             if (cdfCurve->getProperties()->FragilityValues.size() <= 1)
             {
-                return std::make_shared<Stochast>(DistributionType::Deterministic, std::vector<double> { z0 });
+                std::shared_ptr<Statistics::Stochast> stochast = std::make_shared<Stochast>(DistributionType::Deterministic, std::vector<double> { z0 });
+                Sensitivity::SensitivityResult result = modelRunner->getSensitivityResult(stochast);
+                std::shared_ptr<Sample> zeroSample = std::make_shared<Sample>(nStochasts);
+                std::shared_ptr<Models::Evaluation> evaluation = std::shared_ptr<Models::Evaluation>(modelRunner->getEvaluation(zeroSample));
+
+                for (std::shared_ptr<Statistics::ProbabilityValue> quantile : this->Settings->RequestedQuantiles)
+                {
+                    result.quantileEvaluations.push_back(evaluation);
+                }
+
+                return result;
             }
             else
             {
                 std::sort(cdfCurve->getProperties()->FragilityValues.begin(), cdfCurve->getProperties()->FragilityValues.end(),
                     [](std::shared_ptr<FragilityValue> p, std::shared_ptr<FragilityValue> q) {return p->X < q->X; });
 
-                return cdfCurve;
+                auto result = modelRunner->getSensitivityResult(cdfCurve);
+
+                for (std::shared_ptr<Statistics::ProbabilityValue> quantile : this->Settings->RequestedQuantiles)
+                {
+                    if (this->evaluations.contains(quantile))
+                    {
+                        result.quantileEvaluations.push_back(evaluations[quantile]);
+                    }
+                    else
+                    {
+                        result.quantileEvaluations.push_back(nullptr);
+                    }
+                }
+
+                return result;
             }
         }
 
@@ -317,6 +349,46 @@ namespace Deltares
 
             return false;
         }
+
+        void FORMS::checkQuantiles(const std::shared_ptr<Models::ModelRunner>& modelRunner, const std::shared_ptr<Models::Sample>& startPoint, const std::shared_ptr<Models::Sample>& previousPoint, double factor)
+        {
+            const double margin = 0.001;
+
+            for (std::shared_ptr<Statistics::ProbabilityValue> quantile : this->Settings->RequestedQuantiles)
+            {
+                if (!this->evaluations.contains(quantile))
+                {
+                    if (Numeric::NumericSupport::areEqual(factor * startPoint->getBeta(),  quantile->Reliability, margin))
+                    {
+                        std::shared_ptr<Models::Evaluation> evaluation = std::shared_ptr<Models::Evaluation>(modelRunner->getEvaluation(startPoint));
+                        this->evaluations[quantile] = evaluation;
+                    }
+                    else if (Numeric::NumericSupport::areEqual(factor * previousPoint->getBeta(), quantile->Reliability, margin))
+                    {
+                        std::shared_ptr<Models::Evaluation> evaluation = std::shared_ptr<Models::Evaluation>(modelRunner->getEvaluation(previousPoint));
+                        this->evaluations[quantile] = evaluation;
+                    }
+                    else if (Numeric::NumericSupport::isBetween(factor * previousPoint->getBeta(), quantile->Reliability, factor * startPoint->getBeta(), margin))
+                    {
+                        std::vector<double> u = std::vector<double>(startPoint->getSize());
+                        for (int i = 0; i < startPoint->getSize(); i++)
+                        {
+                            u[i] = Numeric::NumericSupport::interpolate(
+                                quantile->Reliability,
+                                factor * startPoint->getBeta(),
+                                startPoint->Values[i],
+                                factor * previousPoint->getBeta(),
+                                previousPoint->Values[i]);
+                        }
+
+                        std::shared_ptr<Sample> betweenSample = std::make_shared<Sample>(u);
+                        std::shared_ptr<Models::Evaluation> evaluation = std::shared_ptr<Models::Evaluation>(modelRunner->getEvaluation(betweenSample));
+                        this->evaluations[quantile] = evaluation;
+                    }
+                }
+            }
+        }
+
     }
 }
 
