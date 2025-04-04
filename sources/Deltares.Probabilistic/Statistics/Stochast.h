@@ -50,6 +50,11 @@ namespace Deltares
             bool truncated = false;
             double lastVariation = 0;
 
+            /**
+             * \brief Indicates whether the stochast is only initialized and nothing has been changed yet
+             */
+            bool isInitial();
+
         protected:
             std::shared_ptr<Distribution> distribution = std::make_shared<DeterministicDistribution>();
 

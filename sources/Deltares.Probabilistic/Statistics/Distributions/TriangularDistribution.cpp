@@ -41,7 +41,10 @@ namespace Deltares
 
         bool TriangularDistribution::isValid(std::shared_ptr<StochastProperties> stochast)
         {
-            return stochast->Minimum <= stochast->Shift && stochast->Shift <= stochast->Maximum;
+            return stochast->Minimum <= stochast->Shift &&
+                stochast->Shift <= stochast->Maximum &&
+                std::isfinite(stochast->Minimum) &&
+                std::isfinite(stochast->Maximum);
         }
 
         void TriangularDistribution::setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation)

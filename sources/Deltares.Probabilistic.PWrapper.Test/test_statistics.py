@@ -21,6 +21,7 @@
 #
 import unittest
 import sys
+import numpy as np
 
 from probabilistic_library import *
 
@@ -239,13 +240,15 @@ class Test_statistics(unittest.TestCase):
         stochast2 = Stochast()
         stochast2.distribution = DistributionType.uniform
 
-        self.assertAlmostEqual(0, stochast2.mean, delta=margin)
-        self.assertAlmostEqual(0, stochast2.deviation, delta=margin)
-        self.assertAlmostEqual(0, stochast2.minimum, delta=margin)
-        self.assertAlmostEqual(0, stochast2.maximum, delta=margin)
+        self.assertTrue(np.isnan(stochast2.mean))
+        self.assertAlmostEqual(np.inf, stochast2.deviation, delta=margin)
+        self.assertAlmostEqual(-np.inf, stochast2.minimum, delta=margin)
+        self.assertAlmostEqual(np.inf, stochast2.maximum, delta=margin)
 
         stochast2.minimum = 0
         stochast2.maximum = 8
+
+        self.assertAlmostEqual(4, stochast2.mean, delta=margin)
 
         stochast2.distribution = DistributionType.normal
         self.assertAlmostEqual(4, stochast2.mean, delta=margin)

@@ -46,7 +46,9 @@ namespace Deltares
 
         bool UniformDistribution::isValid(std::shared_ptr<StochastProperties> stochast)
         {
-            return stochast->Minimum <= stochast->Maximum;
+            return stochast->Minimum <= stochast->Maximum &&
+                std::isfinite(stochast->Minimum) &&
+                std::isfinite(stochast->Maximum);
         }
 
         bool UniformDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)
@@ -123,7 +125,7 @@ namespace Deltares
 
         void UniformDistribution::setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
         {
-            if (constantType == Deviation) 
+            if (constantType == Deviation)
             {
                 if (stochast->Minimum == stochast->Maximum)
                 {
