@@ -30,10 +30,10 @@ namespace Deltares::Models
         this->evaluation = nullptr;
 
         std::shared_ptr<UConverter> uConverter = std::make_shared<UConverter>(this->stochasts, this->correlationMatrix);
-        const std::shared_ptr<ModelRunner> modelRunner = std::make_shared<ModelRunner>(this->model, uConverter, nullptr);
-        modelRunner->initializeForRun();
+        ModelRunner modelRunner = ModelRunner(this->model, uConverter, nullptr);
+        modelRunner.initializeForRun();
 
-        this->evaluation = std::shared_ptr<Evaluation>(modelRunner->getEvaluationFromType(this->settings->runValuesType));
+        this->evaluation = std::shared_ptr<Evaluation>(modelRunner.getEvaluationFromType(this->settings->runValuesType));
     }
 }
 
