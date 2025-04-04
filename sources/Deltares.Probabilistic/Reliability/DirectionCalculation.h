@@ -28,31 +28,27 @@ namespace Deltares::Reliability
 {
     class DirectionCalculation
     {
-        std::shared_ptr<Models::ModelRunner> modelRunner;
-        std::shared_ptr<Sample> uDirection;
-        bool inverted;
-        ZGetter model;
+        const std::shared_ptr<Sample>& uDirection;
+        const bool inverted;
+        const ZGetter model;
 
     public:
-        DirectionCalculation(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<Sample> uDirection, bool inverted)
-            : model(ZGetter(modelRunner))
+        DirectionCalculation(const std::shared_ptr<Models::ModelRunner>& modelRunner, const std::shared_ptr<Sample>& uDirection, bool inverted)
+            : uDirection(uDirection), inverted(inverted), model(ZGetter(modelRunner))
         {
-            this->modelRunner = modelRunner;
-            this->uDirection = uDirection;
-            this->inverted = inverted;
         }
 
-        double GetZProxy(double u, bool allowProxy)
+        double GetZProxy(double u, bool allowProxy) const
         {
             return model.GetZ(uDirection, u, inverted, allowProxy);
         }
 
-        double GetZ(double u)
+        double GetZ(double u) const
         {
             return model.GetZ(uDirection, u, inverted, true);
         }
 
-        double GetZNoProxy(double u)
+        double GetZNoProxy(double u) const
         {
             return model.GetZ(uDirection, u, inverted, false);
         }

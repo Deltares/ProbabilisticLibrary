@@ -307,10 +307,10 @@ namespace Deltares
             }
         }
 
-        double DirectionReliability::getBetaFromSections(std::vector<DirectionSection> sections)
+        double DirectionReliability::getBetaFromSections(const std::vector<DirectionSection>& sections) const
         {
             // sum the probabilities
-            double failingProbability = 0;
+            double failingProbability = 0.0;
             double nonFailingProbability = 0.5; // start counting at u = 0
 
             for (int i = sections.size() - 1; i >= 0; i--)
@@ -337,12 +337,12 @@ namespace Deltares
             {
                 double zmin = 1e99;
                 double rmin = 0.0;
-                for (size_t i = 0; i < sections.size(); i++)
+                for (const auto& section : sections)
                 {
-                    if (sections[i].ZHigh < zmin && sections[i].ZHigh != 0.0)
+                    if (section.ZHigh < zmin && section.ZHigh != 0.0)
                     {
-                        rmin = sections[i].UHigh;
-                        zmin = sections[i].ZHigh;
+                        rmin = section.UHigh;
+                        zmin = section.ZHigh;
                     }
                 }
                 return rmin;

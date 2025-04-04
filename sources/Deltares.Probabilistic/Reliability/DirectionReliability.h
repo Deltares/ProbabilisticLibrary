@@ -59,7 +59,7 @@ namespace Deltares
                 const PrecomputeValues& zValues);
             std::vector<DirectionSection> getDirectionSections(std::shared_ptr<Models::ModelRunner> modelRunner,
                 std::shared_ptr<DirectionReliabilitySettings> settings, std::shared_ptr<Sample> uDirection, bool invertZ, const PrecomputeValues& zValues);
-            double getBetaFromSections(std::vector<DirectionSection> sections);
+            double getBetaFromSections(const std::vector<DirectionSection>& sections) const;
         };
 
         class DirectionReliabilityForDirectionalSampling : public DirectionReliability

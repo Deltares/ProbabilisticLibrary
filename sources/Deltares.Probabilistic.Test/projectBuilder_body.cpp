@@ -33,8 +33,7 @@ namespace Deltares::Probabilistic::Test
 {
     std::shared_ptr<ModelRunner> projectBuilder::BuildProject() const
     {
-        std::shared_ptr<ZModel> z(new ZModel(ZModel([this](std::shared_ptr<ModelSample> v)
-            { return zfunc(v); })));
+        auto z = std::make_shared<ZModel>([this](std::shared_ptr<ModelSample> v){ return zfunc(v); });
         auto stochast = std::vector<std::shared_ptr<Stochast>>();
         auto dist = DistributionType::Normal;
         std::vector<double> params{ 0.0, 1.0 };
@@ -50,8 +49,7 @@ namespace Deltares::Probabilistic::Test
 
     std::shared_ptr<ModelRunner> projectBuilder::BuildLinearProject() const
     {
-        std::shared_ptr<ZModel> z(new ZModel(ZModel([this](std::shared_ptr<ModelSample> v)
-            { return linear(v); })));
+        auto z = std::make_shared<ZModel>([this](std::shared_ptr<ModelSample> v) { return linear(v); });
         auto stochast = std::vector<std::shared_ptr<Stochast>>();
         auto dist = DistributionType::Uniform;
         std::vector<double> params{ -1.0, 1.0 };
@@ -67,8 +65,7 @@ namespace Deltares::Probabilistic::Test
 
     std::shared_ptr<ModelRunner> projectBuilder::BuildLinearArrayProject() const
     {
-        std::shared_ptr<ZModel> z(new ZModel(ZModel([this](std::shared_ptr<ModelSample> v)
-            { return linear(v); })));
+        auto z = std::make_shared<ZModel>([this](std::shared_ptr<ModelSample> v) { return linear(v); });
         auto stochast = std::vector<std::shared_ptr<Stochast>>();
         auto dist = DistributionType::Uniform;
         std::vector<double> params{ -1.0, 1.0 };
@@ -86,8 +83,7 @@ namespace Deltares::Probabilistic::Test
 
     std::shared_ptr<ModelRunner> projectBuilder::BuildQuadraticProject()
     {
-        std::shared_ptr<ZModel> z = std::make_shared<ZModel>(ZModel([](std::shared_ptr<ModelSample> v)
-            { return quadratic(v); }));
+        auto z = std::make_shared<ZModel>([](std::shared_ptr<ModelSample> v) { return quadratic(v); });
         auto stochast = std::vector<std::shared_ptr<Stochast>>();
         auto dist = DistributionType::Uniform;
         std::vector<double> params{ -1.0, 1.0 };
@@ -105,8 +101,8 @@ namespace Deltares::Probabilistic::Test
 
     std::shared_ptr<ModelRunner> projectBuilder::BuildProjectWithDeterminist(double valueDeterminist) const
     {
-        auto z = std::make_shared<ZModel>(ZModel([this](std::shared_ptr<ModelSample> v)
-            { return zfuncWithDeterminist(v); }));
+        auto z = std::make_shared<ZModel>([this](std::shared_ptr<ModelSample> v)
+            { return zfuncWithDeterminist(v); });
         auto stochast = std::vector<std::shared_ptr<Stochast>>();
         stochast.push_back(getNormalStochast(0.0, 1.0));
         stochast.push_back(getDeterministicStochast(valueDeterminist));
@@ -123,13 +119,13 @@ namespace Deltares::Probabilistic::Test
         std::shared_ptr<ZModel> z;
         if (useProxy)
         {
-            z = std::make_shared<ZModel>(ZModel([this](std::shared_ptr<ModelSample> v)
-                { return zfuncTwoBranchesProxy(v); }));
+            z = std::make_shared<ZModel>([this](std::shared_ptr<ModelSample> v)
+                { return zfuncTwoBranchesProxy(v); });
         }
         else
         {
-            z = std::make_shared<ZModel>(ZModel([this](std::shared_ptr<ModelSample> v)
-                { return zfuncTwoBranches(v); }));
+            z = std::make_shared<ZModel>([this](std::shared_ptr<ModelSample> v)
+                { return zfuncTwoBranches(v); });
         }
 
         auto stochast = std::vector<std::shared_ptr<Stochast>>();
