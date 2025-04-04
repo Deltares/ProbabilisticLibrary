@@ -222,8 +222,8 @@ namespace Deltares
                 }
             }
 
-            const auto zValues = PrecomputeDirections::precompute(modelRunner, samples, z0, directionReliability, maskPrecompute);
-
+            const auto preComputeDirs = PrecomputeDirections(directionReliability.Settings, z0);
+            const auto zValues = preComputeDirs.precompute(modelRunner, samples, maskPrecompute);
             const double z0Fac = getZFactor(z0);
 
             #pragma omp parallel for

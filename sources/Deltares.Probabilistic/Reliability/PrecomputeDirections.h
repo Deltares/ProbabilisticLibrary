@@ -32,8 +32,12 @@ namespace Deltares::Reliability
     class PrecomputeDirections
     {
     public:
-        static std::vector<PrecomputeValues> precompute(const std::shared_ptr<Models::ModelRunner>& modelRunner,
-            const std::vector<std::shared_ptr<Sample>>& samples, const double z0,
-            const DirectionReliabilityForDirectionalSampling& directionReliability, std::vector<bool>& mask);
+        PrecomputeDirections(const std::shared_ptr<DirectionReliabilitySettings>& settings, const double z0);
+        std::vector<PrecomputeValues> precompute(const std::shared_ptr<Models::ModelRunner>& modelRunner,
+            const std::vector<std::shared_ptr<Sample>>& samples, std::vector<bool>& mask) const;
+    private:
+        void updateMask(std::vector<bool>& mask, const size_t index, const double zValue) const;
+        const std::shared_ptr<DirectionReliabilitySettings> settings;
+        const double z0;
     };
 }

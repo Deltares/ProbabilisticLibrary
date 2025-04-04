@@ -318,16 +318,18 @@ namespace Deltares
 
                 auto designPoint = calculator.getDesignPoint(modelRunner);
 
-                double refBeta; std::vector<double> refAlpha;
+                int refTotalModelRuns; double refBeta; std::vector<double> refAlpha;
                 if (useProxy)
                 {
                     refBeta = 2.600438;
                     refAlpha = { 0.09106 , -0.98686 , -0.13345 };
+                    refTotalModelRuns = 1330;
                 }
                 else
                 {
                     refBeta = 4.98355;
                     refAlpha = { 0.35676 , -0.92328 , -0.14240 };
+                    refTotalModelRuns = 2620;
                 }
                 constexpr double margin = 1e-5;
                 EXPECT_NEAR(designPoint->Beta, refBeta, margin);
@@ -335,6 +337,7 @@ namespace Deltares
                 {
                     EXPECT_NEAR(designPoint->Alphas[i]->Alpha, refAlpha[i], margin);
                 }
+                EXPECT_EQ(designPoint->convergenceReport->TotalModelRuns, refTotalModelRuns);
             }
 
         }

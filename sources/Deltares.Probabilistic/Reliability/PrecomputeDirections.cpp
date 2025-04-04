@@ -25,10 +25,27 @@
 
 namespace Deltares::Reliability
 {
+    PrecomputeDirections::PrecomputeDirections(const std::shared_ptr<DirectionReliabilitySettings>& settings, const double z0) :
+        settings(settings), z0(z0) {}
+
+    void PrecomputeDirections::updateMask(std::vector<bool>& mask, const size_t index, const double zValue) const
+    {
+        if (z0 * zValue < 0.0)
+        {
+            mask[index] = true;
+        }
+        else if (settings->modelVaryingType == ModelVaryingType::Monotone)
+        {
+            if (std::abs(zValue) > std::abs(z0))
+            {
+                mask[index] = true;
+            }
+        }
+    }
+
     // precompute Z-values
     std::vector<PrecomputeValues> PrecomputeDirections::precompute(const std::shared_ptr<Models::ModelRunner>& modelRunner,
-        const std::vector<std::shared_ptr<Sample>>& samples, const double z0,
-        const DirectionReliabilityForDirectionalSampling& directionReliability, std::vector<bool>& mask)
+        const std::vector<std::shared_ptr<Sample>>& samples, std::vector<bool>& mask) const
     {
         const size_t nSamples = samples.size();
 
@@ -40,7 +57,6 @@ namespace Deltares::Reliability
         const double z0Fac = ReliabilityMethod::getZFactor(z0);
 
         // precompute Z-values multiples of Dsdu
-        const auto settings = directionReliability.Settings;
         const int sectionsCount = static_cast<int>(settings->MaximumLengthU / settings->Dsdu);
         const auto model = ZGetter(modelRunner, settings);
         for (int k = 1; k < sectionsCount; k++)
@@ -64,17 +80,7 @@ namespace Deltares::Reliability
                 {
                     auto z1pv = PrecomputeValue(u1, z0Fac * zValues2[ii]);
                     zValues[i].values.push_back(z1pv);
-                    if (z0 * zValues2[ii] < 0.0)
-                    {
-                        mask[i] = true;
-                    }
-                    else if (settings->modelVaryingType == ModelVaryingType::Monotone)
-                    {
-                        if (std::abs(zValues2[ii]) > std::abs(z0))
-                        {
-                            mask[i] = true;
-                        }
-                    }
+                    updateMask(mask, i, zValues2[ii]);
                     ii++;
                 }
             }
