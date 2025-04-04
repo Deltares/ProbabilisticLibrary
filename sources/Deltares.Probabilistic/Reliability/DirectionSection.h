@@ -29,32 +29,22 @@ namespace Deltares::Reliability
     class DirectionSection
     {
     public:
-        DirectionSection(Numeric::DoubleType type, double uLow, double uHigh)
-        {
-            Type = type;
-            ULow = uLow;
-            UHigh = uHigh;
-        }
+        DirectionSection(Numeric::DoubleType type, double uLow, double uHigh) :
+            Type(type), ULow(uLow), UHigh(uHigh) {}
 
-        DirectionSection(Numeric::DoubleType type, double uLow, double uHigh, double zLow, double zHigh)
-        {
-            Type = type;
-            ULow = uLow;
-            UHigh = uHigh;
-            ZLow = zLow;
-            ZHigh = zHigh;
-        }
+        DirectionSection(Numeric::DoubleType type, double uLow, double uHigh, double zLow, double zHigh) :
+            Type(type), ULow(uLow), UHigh(uHigh), ZLow(zLow), ZHigh(zHigh) {}
 
-        Numeric::DoubleType Type;
-        double ULow = 0.0;
-        double UHigh = 0.0;
-        double ZLow = 0.0;
-        double ZHigh = 0.0;
+        const Numeric::DoubleType Type;
+        const double ULow;
+        const double UHigh;
+        const double ZLow = 0.0;
+        const double ZHigh = 0.0;
 
         double getProbability() const
         {
-            double pHigh = Statistics::StandardNormal::getQFromU(UHigh);
-            double pLow = Statistics::StandardNormal::getQFromU(ULow);
+            const double pHigh = Statistics::StandardNormal::getQFromU(UHigh);
+            const double pLow = Statistics::StandardNormal::getQFromU(ULow);
             return pLow - pHigh;
         }
     };

@@ -28,6 +28,7 @@ namespace Deltares::Reliability
 {
     void PrecomputeValues::findZ(const double u, bool& found, double& z) const
     {
+        constexpr double margin = 1e-12;
         for( const auto& pair : values)
         {
             if (std::abs(pair.u - u) < margin)

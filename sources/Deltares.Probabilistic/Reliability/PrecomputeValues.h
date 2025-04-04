@@ -37,8 +37,6 @@ namespace Deltares::Reliability
     public:
         std::vector<PrecomputeValue> values;
         void findZ(const double u, bool& found, double& z) const;
-    private:
-        const double margin = 1e-12;
     };
 
 }
