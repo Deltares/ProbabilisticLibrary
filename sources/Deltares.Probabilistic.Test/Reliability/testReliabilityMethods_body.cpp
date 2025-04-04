@@ -212,7 +212,7 @@ namespace Deltares
             {
                 auto calculator = FragilityCurveIntegration();
 
-                auto fragilityCurve = projectBuilder().BuildFragilityCurve();
+                auto fragilityCurve = projectBuilder::BuildFragilityCurve();
 
                 std::shared_ptr<Stochast> h = std::make_shared<Stochast>(DistributionType::Normal, std::vector{ 5.0, 1.0 });
 
@@ -272,7 +272,7 @@ namespace Deltares
                 for (int seed = 0; seed < 5; seed++)
                 {
                     auto calculator = AdaptiveImportanceSampling();
-                    auto modelRunner = projectBuilder().BuildQuadraticProject();
+                    auto modelRunner = projectBuilder::BuildQuadraticProject();
                     calculator.Settings->importanceSamplingSettings->MinimumSamples = 5000;
                     calculator.Settings->importanceSamplingSettings->MaximumSamples = 10000;
                     calculator.Settings->MinVarianceLoops = 2;
@@ -304,10 +304,10 @@ namespace Deltares
                 }
             }
 
-            void testReliabilityMethods::testDirSamplingProxyModels(const bool useproxy)
+            void testReliabilityMethods::testDirSamplingProxyModels(const bool useProxy)
             {
                 auto calculator = DirectionalSampling();
-                auto modelRunner = projectBuilder().BuildProjectTwoBranches(useproxy);
+                auto modelRunner = projectBuilder().BuildProjectTwoBranches(useProxy);
                 calculator.Settings->MinimumDirections = 10;
                 calculator.Settings->MaximumDirections = 500;
                 calculator.Settings->VariationCoefficient = 0.1;
@@ -319,7 +319,7 @@ namespace Deltares
                 auto designPoint = calculator.getDesignPoint(modelRunner);
 
                 double refBeta; std::vector<double> refAlpha;
-                if (useproxy)
+                if (useProxy)
                 {
                     refBeta = 2.600438;
                     refAlpha = { 0.09106 , -0.98686 , -0.13345 };

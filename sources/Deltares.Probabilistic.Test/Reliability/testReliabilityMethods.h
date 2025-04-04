@@ -44,7 +44,7 @@ namespace Deltares
                 static void testNumericalIntegrationReliability();
                 static void testCrudeMonteCarloReliability();
                 static void testClustersAdpImpSampling();
-                static void testDirSamplingProxyModels(const bool useproxy);
+                static void testDirSamplingProxyModels(const bool useProxy);
             };
         }
     }
