@@ -303,6 +303,40 @@ namespace Deltares
                     EXPECT_NEAR(designPoint->Beta, expectedBetas[seed], 1e-4);
                 }
             }
+
+            void testReliabilityMethods::testDirSamplingProxyModels(const bool useproxy)
+            {
+                auto calculator = DirectionalSampling();
+                auto modelRunner = projectBuilder().BuildProjectTwoBranches(useproxy);
+                calculator.Settings->MinimumDirections = 10;
+                calculator.Settings->MaximumDirections = 500;
+                calculator.Settings->VariationCoefficient = 0.1;
+                calculator.Settings->randomSettings->Seed = 0;
+                calculator.Settings->runSettings->MaxParallelProcesses = 1;
+                modelRunner->Settings->proxySettings = std::make_shared<ProxySettings>();
+                modelRunner->Settings->proxySettings->IsProxyModel = true;
+
+                auto designPoint = calculator.getDesignPoint(modelRunner);
+
+                double refBeta; std::vector<double> refAlpha;
+                if (useproxy)
+                {
+                    refBeta = 2.600438;
+                    refAlpha = { 0.09106 , -0.98686 , -0.13345 };
+                }
+                else
+                {
+                    refBeta = 4.98355;
+                    refAlpha = { 0.35676 , -0.92328 , -0.14240 };
+                }
+                constexpr double margin = 1e-5;
+                EXPECT_NEAR(designPoint->Beta, refBeta, margin);
+                for (size_t i = 0; i < refAlpha.size(); i++)
+                {
+                    EXPECT_NEAR(designPoint->Alphas[i]->Alpha, refAlpha[i], margin);
+                }
+            }
+
         }
     }
 }

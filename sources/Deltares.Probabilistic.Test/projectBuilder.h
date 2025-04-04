@@ -36,12 +36,13 @@ namespace Deltares
             class projectBuilder
             {
             public:
-                std::shared_ptr<Deltares::Models::ModelRunner> BuildProject();
-                std::shared_ptr<Deltares::Models::ModelRunner> BuildLinearProject();
-                std::shared_ptr<Deltares::Models::ModelRunner> BuildLinearArrayProject();
-                std::shared_ptr<Deltares::Models::ModelRunner> BuildQuadraticProject();
-                std::shared_ptr<Deltares::Models::ModelRunner> BuildProjectWithDeterminist(double valueDeterminist);
+                std::shared_ptr<Models::ModelRunner> BuildProject();
+                std::shared_ptr<Models::ModelRunner> BuildLinearProject();
+                std::shared_ptr<Models::ModelRunner> BuildLinearArrayProject();
+                std::shared_ptr<Models::ModelRunner> BuildQuadraticProject();
+                std::shared_ptr<Models::ModelRunner> BuildProjectWithDeterminist(double valueDeterminist);
                 std::shared_ptr<Reliability::FragilityCurve> BuildFragilityCurve();
+                std::shared_ptr<Models::ModelRunner> BuildProjectTwoBranches(bool useproxy) const;
 
                 static std::shared_ptr<Sensitivity::SensitivityProject> getSensitivityProject(std::shared_ptr<Deltares::Reliability::ReliabilityProject> project);
                 static std::shared_ptr<Deltares::Reliability::ReliabilityProject> getAddOneProject();
@@ -51,6 +52,8 @@ namespace Deltares
             private:
                 void zfunc(std::shared_ptr<Deltares::Models::ModelSample> sample) const;
                 void zfuncWithDeterminist(std::shared_ptr<Deltares::Models::ModelSample> sample) const;
+                void zfuncTwoBranches(std::shared_ptr<Deltares::Models::ModelSample> sample) const;
+                void zfuncTwoBranchesProxy(std::shared_ptr<Deltares::Models::ModelSample> sample) const;
 
                 static void sum(std::shared_ptr<Models::ModelSample> sample);
                 static void linear(std::shared_ptr<Models::ModelSample> sample);

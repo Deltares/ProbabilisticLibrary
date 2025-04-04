@@ -196,6 +196,16 @@ TEST(reliability_method_test, testClustersAdpImpSampling)
     testReliabilityMethods::testClustersAdpImpSampling();
 }
 
+TEST(reliability_method_test, testDirSamplingTwoBranches)
+{
+    testReliabilityMethods::testDirSamplingProxyModels(false);
+}
+
+TEST(reliability_method_test, testDirSamplingProxyModels)
+{
+    testReliabilityMethods::testDirSamplingProxyModels(true);
+}
+
 TEST(unittst, testDistributions)
 {
     testDistributions::allDistributionsTests();

@@ -121,6 +121,31 @@ namespace Deltares
                 return m;
             }
 
+            std::shared_ptr<ModelRunner> projectBuilder::BuildProjectTwoBranches(bool useproxy) const
+            {
+                std::shared_ptr<ZModel> z;
+                if (useproxy)
+                {
+                    z = std::make_shared<ZModel>(ZModel([this](std::shared_ptr<ModelSample> v)
+                        { return zfuncTwoBranchesProxy(v); }));
+                }
+                else
+                {
+                    z = std::make_shared<ZModel>(ZModel([this](std::shared_ptr<ModelSample> v)
+                        { return zfuncTwoBranches(v); }));
+                }
+
+                auto stochast = std::vector<std::shared_ptr<Stochast>>();
+                stochast.push_back(getNormalStochast(10.0, 0.5));
+                stochast.push_back(getNormalStochast(0.0, 1.0));
+                stochast.push_back(getNormalStochast(4.0, 1.0));
+                std::shared_ptr<CorrelationMatrix> corr = std::make_shared<CorrelationMatrix>();
+                std::shared_ptr<UConverter> uConverter = std::make_shared<UConverter>(stochast, corr);
+                uConverter->initializeForRun();
+                std::shared_ptr<ModelRunner> m = std::make_shared<ModelRunner>(z, uConverter);
+                return m;
+            }
+
             std::shared_ptr<FragilityCurve> projectBuilder::BuildFragilityCurve()
             {
                 std::shared_ptr<FragilityCurve> fragilityCurve = std::make_shared<FragilityCurve>();
@@ -167,7 +192,7 @@ namespace Deltares
                 }
             }
 
-            void projectBuilder::zfunc(std::shared_ptr<Deltares::Models::ModelSample> sample) const
+            void projectBuilder::zfunc(std::shared_ptr<ModelSample> sample) const
             {
                 sample->Z = 3.0 + sample->Values[1] - 1.25 * sample->Values[0];
                 if (logZtoScreen)
@@ -176,13 +201,33 @@ namespace Deltares
                 }
             }
 
-            void projectBuilder::zfuncWithDeterminist(std::shared_ptr<Deltares::Models::ModelSample> sample) const
+            void projectBuilder::zfuncWithDeterminist(std::shared_ptr<ModelSample> sample) const
             {
                 sample->Z = sample->Values[1] + sample->Values[0] - 1.25 * sample->Values[2];
                 if (logZtoScreen)
                 {
                     std::cout << "u, z = " << sample->Values[0] << " , " << sample->Values[1] << " , " << sample->Z << std::endl;
                 }
+            }
+
+            void projectBuilder::zfuncTwoBranches(std::shared_ptr<ModelSample> sample) const
+            {
+                double a = sample->Values[0];
+                double b = sample->Values[1];
+                double c = sample->Values[2];
+                sample->Z = c <= 5.0 ? a - b - c : c - b;
+            }
+
+            void projectBuilder::zfuncTwoBranchesProxy(std::shared_ptr<ModelSample> sample) const
+            {
+                std::vector coeff = { 215.49, -41.012, -1.1379, -2.652, 2.0742, -0.53193, 0.23794 };
+                double z = coeff[0];
+                for (size_t i = 0; i < 3; i++)
+                {
+                    auto x = sample->Values[i];
+                    z += coeff[i + 1] * x + coeff[i + 4] * pow(x, 2);
+                }
+                sample->Z = z;
             }
 
             std::shared_ptr<SensitivityProject> projectBuilder::getSensitivityProject(std::shared_ptr<ReliabilityProject> project)
