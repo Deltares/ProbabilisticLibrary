@@ -314,7 +314,7 @@ namespace Deltares
                 calculator.Settings->randomSettings->Seed = 0;
                 calculator.Settings->runSettings->MaxParallelProcesses = 1;
                 modelRunner->Settings->proxySettings = std::make_shared<ProxySettings>();
-                modelRunner->Settings->proxySettings->IsProxyModel = true;
+                modelRunner->Settings->proxySettings->IsProxyModel = useProxy;
 
                 auto designPoint = calculator.getDesignPoint(modelRunner);
 
@@ -323,13 +323,13 @@ namespace Deltares
                 {
                     refBeta = 2.600438;
                     refAlpha = { 0.09106 , -0.98686 , -0.13345 };
-                    refTotalModelRuns = 1330;
+                    refTotalModelRuns = 1222;
                 }
                 else
                 {
                     refBeta = 4.98355;
                     refAlpha = { 0.35676 , -0.92328 , -0.14240 };
-                    refTotalModelRuns = 2620;
+                    refTotalModelRuns = 2261;
                 }
                 constexpr double margin = 1e-5;
                 EXPECT_NEAR(designPoint->Beta, refBeta, margin);

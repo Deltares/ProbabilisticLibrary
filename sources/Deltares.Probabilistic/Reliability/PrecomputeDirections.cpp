@@ -28,10 +28,10 @@ namespace Deltares::Reliability
     PrecomputeDirections::PrecomputeDirections(const std::shared_ptr<DirectionReliabilitySettings>& settings, const double z0) :
         settings(settings), z0(z0), isMonotone(settings->modelVaryingType == ModelVaryingType::Monotone) {}
 
-    void PrecomputeDirections::updateMask(std::vector<bool>& mask, const size_t index, const double zValue) const
+    void PrecomputeDirections::updateMask(std::vector<bool>& mask, const size_t index, const double zValue, const double previous) const
     {
         const bool signChanged = z0 * zValue < 0.0;
-        const bool wrongDirection = std::abs(zValue) > std::abs(z0);
+        const bool wrongDirection = std::abs(zValue) > std::abs(previous);
         if (signChanged || (isMonotone && wrongDirection))
         {
             mask[index] = true;
@@ -50,6 +50,8 @@ namespace Deltares::Reliability
         precomputed.values.emplace_back(z0pv);
         auto zValues = std::vector(nSamples, precomputed);
         const double z0Fac = ReliabilityMethod::getZFactor(z0);
+
+        if (modelRunner->Settings->IsProxyModel()) return zValues;
 
         // precompute Z-values multiples of Dsdu
         const int sectionsCount = static_cast<int>(settings->MaximumLengthU / settings->Dsdu);
@@ -73,9 +75,10 @@ namespace Deltares::Reliability
             {
                 if (!mask[i])
                 {
+                    auto previous = zValues[i].values.back().z;
                     auto z1pv = PrecomputeValue(u1, z0Fac * zValues2[ii]);
                     zValues[i].values.push_back(z1pv);
-                    updateMask(mask, i, zValues2[ii]);
+                    updateMask(mask, i, zValues2[ii], previous);
                     ii++;
                 }
             }
