@@ -72,9 +72,9 @@ namespace Deltares
             /**
              * \brief Constructor with object containing the stochastic parameters
              * \param distributionType Distribution type
-             * \param properties Object containing stochastic parameters
+             * \param newProperties Object containing stochastic parameters
              */
-            Stochast(DistributionType distributionType, std::shared_ptr<StochastProperties> properties);
+            Stochast(DistributionType distributionType, std::shared_ptr<StochastProperties> newProperties);
 
             /**
              * \brief Reference to input parameter of a model
@@ -169,9 +169,9 @@ namespace Deltares
             /**
              * \brief Sets the distribution type
              * \remark Internally, the Distribution field is updated
-             * \param distributionType Distribution type
+             * \param newDistributionType Distribution type
              */
-            virtual void setDistributionType(DistributionType distributionType);
+            virtual void setDistributionType(DistributionType newDistributionType);
 
             /**
              * \brief Gets the distribution type
@@ -199,9 +199,9 @@ namespace Deltares
 
             /**
              * \brief Inverts or non-inverts the distribution
-             * \param inverted Inverts (true) or non-inverts (false) the distribution
+             * \param newInverted Inverts (true) or non-inverts (false) the distribution
              */
-            void setInverted(bool inverted);
+            void setInverted(bool newInverted);
 
             /**
              * \brief Indicates whether the distribution can be truncated
@@ -217,9 +217,9 @@ namespace Deltares
 
             /**
              * \brief Truncates or non-truncates the distribution
-             * \param truncated Truncates (true) or non-truncates (false) the distribution
+             * \param newTruncated Truncates (true) or non-truncates (false) the distribution
              */
-            void setTruncated(bool truncated);
+            void setTruncated(bool newTruncated);
 
             /**
              * \brief Indicates whether different u-values can lead to different x-values

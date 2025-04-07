@@ -25,67 +25,57 @@
 
 #include "../../Deltares.Probabilistic/Model/RunProject.h"
 
-namespace Deltares
+namespace Deltares::Probabilistic::Test
 {
-    namespace Probabilistic
+    void TestRunModel::allModelTests()
     {
-        namespace Test
-        {
-            void TestRunModel::allModelTests()
-            {
-                testRunModelMedianValues();
-                testRunModelMeanValues();
-                testRunModelDesignValues();
-            }
+        testRunModelMedianValues();
+        testRunModelMeanValues();
+        testRunModelDesignValues();
+    }
 
-            void TestRunModel::testRunModelMedianValues()
-            {
-                std::shared_ptr<Models::RunProject> project = projectBuilder::getRunProject(projectBuilder::getTriangularLinearProject());
+    void TestRunModel::testRunModelMedianValues()
+    {
+        std::shared_ptr<Models::RunProject> project = projectBuilder::getRunProject(projectBuilder::getTriangularLinearProject());
 
-                project->settings->runValuesType = Statistics::MedianValues;
+        project->settings->runValuesType = Statistics::MedianValues;
 
-                project->run();
+        project->run();
 
-                ASSERT_NEAR(project->evaluation->Z, 1.21, margin);
-                ASSERT_NEAR(project->evaluation->InputValues[0], project->stochasts[0]->getXFromU(0), margin);
-                ASSERT_NEAR(project->evaluation->InputValues[1], project->stochasts[1]->getXFromU(0), margin);
-                //ASSERT_NEAR(project->evaluation->OutputValues[0], 1.21, margin);
-            }
+        ASSERT_NEAR(project->evaluation->Z, 1.21, margin);
+        ASSERT_NEAR(project->evaluation->InputValues[0], project->stochasts[0]->getXFromU(0), margin);
+        ASSERT_NEAR(project->evaluation->InputValues[1], project->stochasts[1]->getXFromU(0), margin);
+    }
 
-            void TestRunModel::testRunModelMeanValues()
-            {
-                std::shared_ptr<Models::RunProject> project = projectBuilder::getRunProject(projectBuilder::getTriangularLinearProject());
+    void TestRunModel::testRunModelMeanValues()
+    {
+        std::shared_ptr<Models::RunProject> project = projectBuilder::getRunProject(projectBuilder::getTriangularLinearProject());
 
-                project->settings->runValuesType = Statistics::MeanValues;
+        project->settings->runValuesType = Statistics::MeanValues;
 
-                project->run();
+        project->run();
 
-                ASSERT_NEAR(project->evaluation->Z, 1.13, margin);
-                ASSERT_NEAR(project->evaluation->InputValues[0], project->stochasts[0]->getMean(), margin);
-                ASSERT_NEAR(project->evaluation->InputValues[1], project->stochasts[1]->getMean(), margin);
-                //ASSERT_NEAR(project->evaluation->OutputValues[0], 0.8, margin);
-            }
+        ASSERT_NEAR(project->evaluation->Z, 1.13, margin);
+        ASSERT_NEAR(project->evaluation->InputValues[0], project->stochasts[0]->getMean(), margin);
+        ASSERT_NEAR(project->evaluation->InputValues[1], project->stochasts[1]->getMean(), margin);
+    }
 
-            void TestRunModel::testRunModelDesignValues()
-            {
-                std::shared_ptr<Models::RunProject> project = projectBuilder::getRunProject(projectBuilder::getTriangularLinearProject());
+    void TestRunModel::testRunModelDesignValues()
+    {
+        std::shared_ptr<Models::RunProject> project = projectBuilder::getRunProject(projectBuilder::getTriangularLinearProject());
 
-                project->settings->runValuesType = Statistics::DesignValues;
+        project->settings->runValuesType = Statistics::DesignValues;
 
-                project->stochasts[0]->designQuantile = 0.95;
-                project->stochasts[0]->designFactor = 1.5;
+        project->stochasts[0]->designQuantile = 0.95;
+        project->stochasts[0]->designFactor = 1.5;
 
-                double u = Statistics::StandardNormal::getUFromP(0.95);
+        double u = Statistics::StandardNormal::getUFromP(0.95);
 
-                project->run();
+        project->run();
 
-                ASSERT_NEAR(project->evaluation->Z, 0.99, margin);
-                ASSERT_NEAR(project->evaluation->InputValues[0], project->stochasts[0]->getXFromU(u) / 1.5, margin);
-                ASSERT_NEAR(project->evaluation->InputValues[1], project->stochasts[1]->getXFromU(0), margin);
-                //ASSERT_NEAR(project->evaluation->OutputValues[0], 0.70, margin);
-            }
-
-        }
+        ASSERT_NEAR(project->evaluation->Z, 0.99, margin);
+        ASSERT_NEAR(project->evaluation->InputValues[0], project->stochasts[0]->getXFromU(u) / 1.5, margin);
+        ASSERT_NEAR(project->evaluation->InputValues[1], project->stochasts[1]->getXFromU(0), margin);
     }
 }
 

@@ -60,7 +60,7 @@ namespace Deltares
 
         void ModelProject::shareStochasts(std::shared_ptr<ModelProject> source)
         {
-            for (std::shared_ptr<Statistics::Stochast> stochast : source->stochasts)
+            for (const auto& stochast : source->stochasts)
             {
                 existingStochasts[stochast->name] = stochast;
             }

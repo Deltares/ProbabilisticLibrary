@@ -421,9 +421,8 @@ namespace Deltares
 
             if (this->hasVariableStochasts)
             {
-                for (size_t i = 0; i < variableStochastList.size(); i++)
+                for (int stochastIndex : variableStochastList)
                 {
-                    int stochastIndex = variableStochastList[i];
                     int sourceIndex = variableStochastIndex[stochastIndex];
 
                     double xSource = xValues[sourceIndex];

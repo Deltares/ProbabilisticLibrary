@@ -32,7 +32,6 @@ namespace Deltares::Models
     /**
      * \brief Project which runs a model
      */
-#pragma once
     class RunProject : public ModelProject
     {
     public:

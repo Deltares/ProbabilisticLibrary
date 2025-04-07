@@ -22,24 +22,18 @@
 #pragma once
 #include <gtest/gtest.h>
 
-namespace Deltares
+namespace Deltares::Probabilistic::Test
 {
-    namespace Probabilistic
+    class TestRunModel
     {
-        namespace Test
-        {
-            class TestRunModel
-            {
-            public:
-                void allModelTests();
-            private:
-                void testRunModelMedianValues();
-                void testRunModelMeanValues();
-                void testRunModelDesignValues();
+    public:
+        void allModelTests();
+    private:
+        void testRunModelMedianValues();
+        void testRunModelMeanValues();
+        void testRunModelDesignValues();
 
-                const double margin = 0.02;
-            };
-        };
-    }
-}
+        const double margin = 0.02;
+    };
+};
 
