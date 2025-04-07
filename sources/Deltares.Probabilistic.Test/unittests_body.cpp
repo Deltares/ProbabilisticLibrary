@@ -198,12 +198,22 @@ TEST(reliability_method_test, testClustersAdpImpSampling)
 
 TEST(reliability_method_test, testDirSamplingTwoBranches)
 {
-    testReliabilityMethods::testDirSamplingProxyModels(false);
+    testReliabilityMethods::testDirSamplingProxyModels(false, ModelVaryingType::Monotone);
 }
 
 TEST(reliability_method_test, testDirSamplingProxyModels)
 {
-    testReliabilityMethods::testDirSamplingProxyModels(true);
+    testReliabilityMethods::testDirSamplingProxyModels(true, ModelVaryingType::Monotone);
+}
+
+TEST(reliability_method_test, testDirSamplingTwoBranchesNotMonotone)
+{
+    testReliabilityMethods::testDirSamplingProxyModels(false, ModelVaryingType::Varying);
+}
+
+TEST(reliability_method_test, testDirSamplingProxyModelsNotMonotone)
+{
+    testReliabilityMethods::testDirSamplingProxyModels(true, ModelVaryingType::Varying);
 }
 
 TEST(unittst, testDistributions)

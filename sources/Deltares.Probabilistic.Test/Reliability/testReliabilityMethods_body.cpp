@@ -304,7 +304,7 @@ namespace Deltares
                 }
             }
 
-            void testReliabilityMethods::testDirSamplingProxyModels(const bool useProxy)
+            void testReliabilityMethods::testDirSamplingProxyModels(const bool useProxy, const ModelVaryingType varyingType)
             {
                 auto calculator = DirectionalSampling();
                 auto modelRunner = projectBuilder().BuildProjectTwoBranches(useProxy);
@@ -313,6 +313,7 @@ namespace Deltares
                 calculator.Settings->VariationCoefficient = 0.1;
                 calculator.Settings->randomSettings->Seed = 0;
                 calculator.Settings->runSettings->MaxParallelProcesses = 1;
+                calculator.Settings->DirectionSettings->modelVaryingType = varyingType;
                 modelRunner->Settings->proxySettings = std::make_shared<ProxySettings>();
                 modelRunner->Settings->proxySettings->IsProxyModel = useProxy;
 
@@ -321,15 +322,31 @@ namespace Deltares
                 int refTotalModelRuns; double refBeta; std::vector<double> refAlpha;
                 if (useProxy)
                 {
-                    refBeta = 2.600438;
-                    refAlpha = { 0.09106 , -0.98686 , -0.13345 };
-                    refTotalModelRuns = 1222;
+                    if (varyingType == ModelVaryingType::Monotone)
+                    {
+                        refBeta = 2.600438;
+                        refAlpha = { 0.09106 , -0.98686 , -0.13345 };
+                        refTotalModelRuns = 1222;
+                    }
+                    else
+                    {
+                        refBeta = 2.60029;
+                        refAlpha = { 0.09114 , -0.98683 , -0.13365 };
+                        refTotalModelRuns = 10985;
+                    }
                 }
                 else
                 {
                     refBeta = 4.98355;
                     refAlpha = { 0.35676 , -0.92328 , -0.14240 };
-                    refTotalModelRuns = 2261;
+                    if (varyingType == ModelVaryingType::Monotone)
+                    {
+                        refTotalModelRuns = 2261;
+                    }
+                    else
+                    {
+                        refTotalModelRuns = 10723;
+                    }
                 }
                 constexpr double margin = 1e-5;
                 EXPECT_NEAR(designPoint->Beta, refBeta, margin);

@@ -32,7 +32,7 @@ namespace Deltares::Reliability
     {
         const bool signChanged = z0 * zValue < 0.0;
         const bool wrongDirection = std::abs(zValue) > std::abs(previous);
-        if (signChanged || (isMonotone && wrongDirection))
+        if (isMonotone && ( signChanged || wrongDirection))
         {
             mask[index] = true;
         }
