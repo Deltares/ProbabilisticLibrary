@@ -24,6 +24,7 @@
 
 #include "../Model/ModelRunner.h"
 #include "DirectionReliabilitySettings.h"
+#include "PrecomputeValues.h"
 
 namespace Deltares::Reliability
 {
@@ -55,6 +56,17 @@ namespace Deltares::Reliability
         double GetZ(const std::shared_ptr<Sample>& uDirection, double factor, bool inverted, bool allowProxy = true) const
         {
             const auto u = GetU(uDirection, factor, allowProxy);
+
+            return GetZValueCorrected(u, inverted);
+        }
+
+        double GetZ(const std::shared_ptr<Sample>& uDirection, size_t index, bool inverted, const PrecomputeValues& zValues) const
+        {
+            const auto [foundZ0, z0] = zValues.findZ(index);
+            if (foundZ0) return z0;
+
+            double factor = std::min(static_cast<double>(index) * settings->Dsdu, settings->MaximumLengthU);
+            const auto u = GetU(uDirection, factor);
 
             return GetZValueCorrected(u, inverted);
         }

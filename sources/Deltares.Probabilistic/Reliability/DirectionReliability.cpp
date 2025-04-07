@@ -115,12 +115,7 @@ namespace Deltares
             bool monotone = settings->modelVaryingType == ModelVaryingType::Monotone;
             auto model = ZGetter(modelRunner, settings);
 
-            double z0;
-            bool foundZ0 = false;
-            zValues.findZ(0.0, foundZ0, z0);
-            if ( ! foundZ0) z0 = model.GetZ(uDirection, 0.0, invertZ);
-
-            double prevzHigh = z0;
+            double prevzHigh = model.GetZ(uDirection, 0, invertZ, zValues);
 
             for (int k = 0; k <= sectionsCount && !this->isStopped(); k++)
             {
@@ -130,10 +125,7 @@ namespace Deltares
                     double uHigh = std::min((k + 1) * settings->Dsdu, settings->MaximumLengthU);
 
                     double zLow = prevzHigh;
-                    bool foundZHigh = false;
-                    double zHigh;
-                    zValues.findZ(uHigh, foundZHigh, zHigh);
-                    if ( ! foundZHigh) zHigh = model.GetZ(uDirection, uHigh, invertZ);
+                    double zHigh = model.GetZ(uDirection, k+1, invertZ, zValues);
 
                     prevzHigh = zHigh;
 

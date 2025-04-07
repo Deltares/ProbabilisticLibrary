@@ -36,7 +36,7 @@ namespace Deltares::Reliability
     {
     public:
         std::vector<PrecomputeValue> values;
-        void findZ(const double u, bool& found, double& z) const;
+        std::pair<bool, double> findZ(const size_t index) const;
     };
 
 }
