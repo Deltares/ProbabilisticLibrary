@@ -29,34 +29,41 @@ namespace Deltares
 {
     namespace Models
     {
+        /**
+         * \brief Initializes the random sample generator
+         */
         void RandomSampleGenerator::initialize()
         {
-            random.initialize(this->Settings->RandomGeneratorType, this->Settings->IsRepeatableRandom, this->Settings->Seed);
+            random.initialize(this->Settings->RandomGeneratorType, this->Settings->IsRepeatableRandom, this->Settings->Seed, this->Settings->getTimeStamp());
 
             if (sampleProvider == nullptr)
             {
-                sampleProvider = std::make_shared<SampleProvider>(this->Settings->StochastSet, false);
+                sampleProvider = std::make_shared<SampleProvider>(this->Settings->StochastSet);
             }
         }
 
+        /**
+         * \brief Restarts the sample generator and
+         * \remarks This will enforce the random sample generator to produce equal samples, even if repeatable is false
+         */
         void RandomSampleGenerator::restart()
         {
             random.restart();
-
-            if (sampleProvider != nullptr)
-            {
-                sampleProvider->reset();
-            }
         }
 
-        std::shared_ptr<Sample> RandomSampleGenerator::getRandomSample()
+        /**
+         * \brief Gets a random sample
+         * \returns Random sample
+         */
+        std::shared_ptr<Sample> RandomSampleGenerator::getRandomSample() const
         {
-            std::vector<double> randomValues;
+            const int size = this->getSampleSize();
 
-            const int size = this->Settings->SkipUnvaryingParameters ? this->Settings->StochastSet->getStochastCount() : this->Settings->StochastSet->getVaryingStochastCount();
+            std::vector<double> randomValues = std::vector<double>(size);
+
             for (int i = 0; i < size; i++)
             {
-                randomValues.push_back(random.next());
+                randomValues[i] = random.next();
             }
 
             std::shared_ptr<Sample> sample = sampleProvider->getSample();
@@ -69,6 +76,25 @@ namespace Deltares
             }
 
             return sample;
+        }
+
+        void RandomSampleGenerator::proceed(int nSamples) const
+        {
+            const int size = getSampleSize();
+            for (int i = 0; i < nSamples; i++)
+            {
+                for (int j = 0; j < size; j++)
+                {
+                    (void) random.next();
+                }
+            }
+        }
+
+        int RandomSampleGenerator::getSampleSize() const
+        {
+            return this->Settings->SkipUnvaryingParameters
+                ? this->Settings->StochastSet->getStochastCount()
+                : this->Settings->StochastSet->getVaryingStochastCount();
         }
     }
 }

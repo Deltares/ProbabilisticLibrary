@@ -27,7 +27,7 @@ namespace Deltares
 {
     namespace Numeric
     {
-        void MersenneTwisterRandomValueGenerator::initialize(bool repeatable, int seed)
+        void MersenneTwisterRandomValueGenerator::initialize(bool repeatable, int seed, time_t timeStamp)
         {
             if (repeatable)
             {
@@ -35,7 +35,7 @@ namespace Deltares
             }
             else
             {
-                generator.seed(time(nullptr));
+                generator.seed(timeStamp);
             }
         }
 

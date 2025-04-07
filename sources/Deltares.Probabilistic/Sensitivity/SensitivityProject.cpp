@@ -29,32 +29,34 @@ namespace Deltares
         {
             this->modelRuns = 0;
 
-            this->sensitivityStochast = nullptr;
-            this->sensitivityStochasts.clear();
+            this->sensitivityResult = nullptr;
+            this->sensitivityResults.clear();
+
+            this->settings->RandomSettings->setFixed(true);
 
             this->sensitivityMethod = this->settings->GetSensitivityMethod();
             this->runSettings = this->settings->RunSettings;
 
-            if (this->parameter == "")
+            if (this->parameter.empty())
             {
-                for (std::shared_ptr<Models::ModelInputParameter> modelParameter : this->model->outputParameters)
+                for (std::shared_ptr<Models::ModelInputParameter>& modelParameter : this->model->outputParameters)
                 {
                     this->parameterSelector->parameter = modelParameter->name;
                     if (modelParameter->isArray)
                     {
-                        for (int arrayIndex = 0; arrayIndex < modelParameter->arraySize; arrayIndex++)
+                        for (int index = 0; index < modelParameter->arraySize; index++)
                         {
-                            this->parameterSelector->arrayIndex = arrayIndex;
+                            this->parameterSelector->arrayIndex = index;
 
-                            std::shared_ptr<Statistics::Stochast> stochast = this->getStochast();
-                            stochast->name += "[" + std::to_string(arrayIndex) + "]";
-                            this->sensitivityStochasts.push_back(stochast);
+                            auto result = std::make_shared<SensitivityResult>(getSensitivityResult());
+                            result->stochast->name += "[" + std::to_string(index) + "]";
+                            this->sensitivityResults.push_back(result);
                         }
                     }
                     else
                     {
-                        std::shared_ptr<Statistics::Stochast> stochast = this->getStochast();
-                        this->sensitivityStochasts.push_back(stochast);
+                        auto result = std::make_shared<SensitivityResult>(this->getSensitivityResult());
+                        this->sensitivityResults.push_back(result);
                     }
                 }
             }
@@ -63,17 +65,19 @@ namespace Deltares
                 this->parameterSelector->parameter = this->parameter;
                 this->parameterSelector->arrayIndex = this->arrayIndex;
 
-                std::shared_ptr<Statistics::Stochast> stochast = this->getStochast();
-                this->sensitivityStochasts.push_back(stochast);
+                auto result = std::make_shared<SensitivityResult>(this->getSensitivityResult());
+                this->sensitivityResults.push_back(result);
             }
 
-            if (this->sensitivityStochasts.size() > 0)
+            if (!this->sensitivityResults.empty())
             {
-                this->sensitivityStochast = this->sensitivityStochasts[0];
+                this->sensitivityResult = this->sensitivityResults[0];
             }
 
             // reset the index
             this->model->Index = 0;
+
+            this->settings->RandomSettings->setFixed(false);
 
             this->outputCorrelationMatrix = nullptr;
             if (this->settings->CalculateCorrelations)
@@ -82,7 +86,7 @@ namespace Deltares
             }
         }
 
-        std::shared_ptr<Statistics::Stochast> SensitivityProject::getStochast()
+        Sensitivity::SensitivityResult SensitivityProject::getSensitivityResult()
         {
             this->model->zValueConverter = this->parameterSelector;
 
@@ -91,12 +95,12 @@ namespace Deltares
             modelRunner->Settings = this->runSettings;
             modelRunner->initializeForRun();
 
-            std::shared_ptr<Statistics::Stochast> sensitivityStochast = this->sensitivityMethod->getSensitivityStochast(modelRunner);
-            sensitivityStochast->name = this->parameterSelector->parameter;
+            auto result = this->sensitivityMethod->getSensitivityStochast(modelRunner);
+            result.stochast->name = this->parameterSelector->parameter;
 
             this->modelRuns += this->model->getModelRuns();
 
-            return sensitivityStochast;
+            return result;
         }
 
         bool SensitivityProject::isValid() const
