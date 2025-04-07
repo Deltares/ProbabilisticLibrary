@@ -51,7 +51,7 @@ namespace Deltares::Reliability
         auto zValues = std::vector(nSamples, precomputed);
         const double z0Fac = ReliabilityMethod::getZFactor(z0);
 
-        if (modelRunner->Settings->IsProxyModel()) return zValues;
+        if (modelRunner->Settings->IsProxyModel() || modelRunner->canCalculateBeta()) return zValues;
 
         // precompute Z-values multiples of Dsdu
         const int sectionsCount = static_cast<int>(settings->MaximumLengthU / settings->Dsdu);
