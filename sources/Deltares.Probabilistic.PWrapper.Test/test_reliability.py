@@ -74,7 +74,7 @@ class Test_reliability(unittest.TestCase):
         project = project_builder.get_linear_initialized_project()
 
         project.settings.reliability_method = ReliabilityMethod.form
-        project.settings.max_parallel_process = 4
+        project.settings.max_parallel_processes = 4
 
         project.run();
 
