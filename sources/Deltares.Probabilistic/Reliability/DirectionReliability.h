@@ -32,14 +32,9 @@ namespace Deltares
         class BetaValueTask
         {
         public:
-            std::shared_ptr<Models::ModelRunner> ModelRunner;
-            double BetaValue;
-            int Index = 0;
-            int Iteration = 0;
             std::shared_ptr<Sample> UValues;
             std::shared_ptr<DirectionReliabilitySettings> Settings;
             double z0 = 0.0;
-            bool IsModelResult = false;
         };
 
         class DirectionReliability : public ReliabilityMethod

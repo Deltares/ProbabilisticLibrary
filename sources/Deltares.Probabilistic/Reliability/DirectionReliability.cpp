@@ -64,11 +64,8 @@ namespace Deltares
             std::shared_ptr<Sample> normalizedSample = directionSample->getNormalizedSample();
 
             auto task = BetaValueTask();
-            task.ModelRunner = modelRunner;
-            task.Index = 0;
             task.Settings = Settings;
             task.UValues = normalizedSample;
-            task.Iteration = 0;
             task.z0 = z0;
 
             double beta = getDirectionBeta(modelRunner, task, zValues);
