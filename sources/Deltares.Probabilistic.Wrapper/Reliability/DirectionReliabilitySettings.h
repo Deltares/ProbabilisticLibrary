@@ -85,8 +85,8 @@ namespace Deltares
                     {
                         switch (shared->object->modelVaryingType)
                         {
-                        case Reliability::Monotone: return Wrappers::VaryingType::Monotone;
-                        case Reliability::Varying: return Wrappers::VaryingType::Varying;
+                        case Reliability::ModelVaryingType::Monotone: return Wrappers::VaryingType::Monotone;
+                        case Reliability::ModelVaryingType::Varying: return Wrappers::VaryingType::Varying;
                         default: throw gcnew System::NotSupportedException("Model varying type");
                         }
                     }
@@ -94,8 +94,8 @@ namespace Deltares
                     {
                         switch (value)
                         {
-                        case Wrappers::VaryingType::Monotone: shared->object->modelVaryingType = Reliability::Monotone; break;
-                        case Wrappers::VaryingType::Varying: shared->object->modelVaryingType = Reliability::Varying; break;
+                        case Wrappers::VaryingType::Monotone: shared->object->modelVaryingType = Reliability::ModelVaryingType::Monotone; break;
+                        case Wrappers::VaryingType::Varying: shared->object->modelVaryingType = Reliability::ModelVaryingType::Varying; break;
                         default: throw gcnew System::NotSupportedException("Model varying type");
                         }
                     }

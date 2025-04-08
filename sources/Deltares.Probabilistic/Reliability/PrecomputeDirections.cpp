@@ -54,7 +54,7 @@ namespace Deltares::Reliability
         if (modelRunner.Settings->IsProxyModel() || modelRunner.canCalculateBeta()) return zValues;
 
         // precompute Z-values multiples of Dsdu
-        const int sectionsCount = static_cast<int>(settings.MaximumLengthU / settings.Dsdu);
+        const int sectionsCount = settings.SectionCount();
         const auto model = ZGetter(modelRunner, settings);
         for (int k = 1; k < sectionsCount; k++)
         {

@@ -104,8 +104,7 @@ namespace Deltares
         {
             std::vector<DirectionSection> sections;
 
-            int sectionsCount = static_cast<int>(settings.MaximumLengthU / settings.Dsdu);
-            if (sectionsCount * settings.Dsdu < settings.MaximumLengthU) {sectionsCount++;}
+            const int sectionsCount = settings.SectionCount();
 
             bool found = false;
             bool monotone = settings.modelVaryingType == ModelVaryingType::Monotone;
