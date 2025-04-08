@@ -45,7 +45,7 @@ namespace Deltares::Reliability
         const ZGetter model;
         const DirectionCalculationSettings& settings;
 
-        DirectionCalculation(const std::shared_ptr<Models::ModelRunner>& modelRunner,
+        DirectionCalculation(Models::ModelRunner& modelRunner,
             const std::shared_ptr<Sample>& uDirection, const DirectionCalculationSettings& settings)
             : uDirection(uDirection), model(ZGetter(modelRunner)), settings(settings)
         {

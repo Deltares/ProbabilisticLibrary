@@ -21,7 +21,6 @@
 //
 #include "DirectionReliability.h"
 #include "DirectionReliabilitySettings.h"
-#include "ZGetter.h"
 #include "DirectionCalculation.h"
 #include "../Model/ModelRunner.h"
 #include "../Math/NumericSupport.h"
@@ -41,27 +40,27 @@ namespace Deltares
 
             std::shared_ptr<Sample> zeroSample = std::make_shared<Sample>(modelRunner->getVaryingStochastCount());
             double z = modelRunner->getZValue(zeroSample);
-            double z0 = this->getZFactor(z);
+            double z0 = getZFactor(z);
 
             std::shared_ptr<Sample> directionSample = this->Settings->StochastSet->getStartPoint();
 
-            double beta = getBeta(modelRunner, directionSample, z0);
+            double beta = getBeta(*modelRunner, directionSample, z0);
 
             std::shared_ptr<DesignPoint> designPoint = modelRunner->getDesignPoint(directionSample, beta);
 
             return designPoint;
         }
 
-        double DirectionReliability::getBeta(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<Sample> directionSample, double z0)
+        double DirectionReliability::getBeta(Models::ModelRunner& modelRunner, std::shared_ptr<Sample> directionSample, double z0)
         {
             auto zValues = PrecomputeValues();
             return getBeta(modelRunner, directionSample, z0, zValues);
         }
 
-        double DirectionReliability::getBeta(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<Sample> directionSample,
+        double DirectionReliability::getBeta(Models::ModelRunner& modelRunner, std::shared_ptr<Sample> directionSample,
             double z0, const PrecomputeValues& zValues)
         {
-            std::shared_ptr<Sample> normalizedSample = directionSample->getNormalizedSample();
+            auto normalizedSample = directionSample->getNormalizedSample();
 
             auto task = BetaValueTask();
             task.Settings = Settings;
@@ -76,14 +75,14 @@ namespace Deltares
             return beta;
         }
 
-        double DirectionReliability::getDirectionBeta(std::shared_ptr<Models::ModelRunner> modelRunner,
+        double DirectionReliability::getDirectionBeta(Models::ModelRunner& modelRunner,
             const BetaValueTask& directionTask, const PrecomputeValues& zValues)
         {
             std::shared_ptr<Sample> uDirection = directionTask.UValues->getNormalizedSample();
 
-            if (modelRunner->canCalculateBeta())
+            if (modelRunner.canCalculateBeta())
             {
-                return modelRunner->getBeta(directionTask.UValues);
+                return modelRunner.getBeta(directionTask.UValues);
             }
             else
             {
@@ -100,7 +99,7 @@ namespace Deltares
             }
         }
 
-        std::vector<DirectionSection> DirectionReliability::getDirectionSections(std::shared_ptr<Models::ModelRunner> modelRunner,
+        std::vector<DirectionSection> DirectionReliability::getDirectionSections(Models::ModelRunner& modelRunner,
             std::shared_ptr<DirectionReliabilitySettings> settings, std::shared_ptr<Sample> uDirection, bool invertZ, const PrecomputeValues& zValues)
         {
             std::vector<DirectionSection> sections;
@@ -206,7 +205,7 @@ namespace Deltares
             return sections;
         }
 
-        double DirectionReliability::findBetaBetweenBoundaries(const std::shared_ptr<Models::ModelRunner>& modelRunner,
+        double DirectionReliability::findBetaBetweenBoundaries(Models::ModelRunner& modelRunner,
             const DirectionCalculation& directionCalculation,
             double uLow, double uHigh, double zLow, double zHigh, double& z)
         {
@@ -357,7 +356,7 @@ namespace Deltares
             }
         }
 
-        double DirectionReliabilityForDirectionalSampling::findBetaBetweenBoundaries(const std::shared_ptr<Models::ModelRunner>& modelRunner,
+        double DirectionReliabilityForDirectionalSampling::findBetaBetweenBoundaries(Models::ModelRunner& modelRunner,
             const DirectionCalculation& directionCalculation,
             double uLow, double uHigh, double zLow, double zHigh, double& z)
         {
@@ -377,7 +376,7 @@ namespace Deltares
 
                 z = std::isnan(uResult) ? nan("") : directionCalculation.GetZ(uResult);
 
-                if (modelRunner->Settings->IsProxyModel())
+                if (modelRunner.Settings->IsProxyModel())
                 {
                     if (std::isnan(uResult))
                     {
@@ -385,8 +384,8 @@ namespace Deltares
                         uResult = bisectionCalculation.CalculateValue(uLow, uHigh, 0.0, [directionCalculation](double v) { return directionCalculation.GetZ(v); });
                     }
 
-                    const auto ThresholdOffset = modelRunner->Settings->proxySettings->ThresholdOffset;
-                    if (modelRunner->Settings->proxySettings->ShouldUpdateFinalSteps && !isProxyAllowed(ThresholdOffset, uResult, this->Threshold))
+                    const auto ThresholdOffset = modelRunner.Settings->proxySettings->ThresholdOffset;
+                    if (modelRunner.Settings->proxySettings->ShouldUpdateFinalSteps && !isProxyAllowed(ThresholdOffset, uResult, this->Threshold))
                     {
                         directionCalculation.uDirection->AllowProxy = false;
 
@@ -396,13 +395,13 @@ namespace Deltares
                         if (std::isnan(zResult))
                         {
                             z = zResult;
-                            modelRunner->removeTask(directionCalculation.uDirection->IterationIndex);
+                            modelRunner.removeTask(directionCalculation.uDirection->IterationIndex);
                             return Settings->MaximumLengthU;
                         }
                         else if (NumericSupport::GetSign(z0) == NumericSupport::GetSign(zResult) && std::fabs(zResult) >= std::fabs(z0))
                         {
                             z = zResult;
-                            modelRunner->removeTask(directionCalculation.uDirection->IterationIndex);
+                            modelRunner.removeTask(directionCalculation.uDirection->IterationIndex);
                             return Settings->MaximumLengthU;
                         }
                         else

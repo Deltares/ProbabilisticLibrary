@@ -39,7 +39,7 @@ namespace Deltares::Reliability
     }
 
     // precompute Z-values
-    std::vector<PrecomputeValues> PrecomputeDirections::precompute(const std::shared_ptr<Models::ModelRunner>& modelRunner,
+    std::vector<PrecomputeValues> PrecomputeDirections::precompute(Models::ModelRunner& modelRunner,
         const std::vector<std::shared_ptr<Sample>>& samples, std::vector<bool>& mask) const
     {
         const size_t nSamples = samples.size();
@@ -51,7 +51,7 @@ namespace Deltares::Reliability
         auto zValues = std::vector(nSamples, precomputed);
         const double z0Fac = ReliabilityMethod::getZFactor(z0);
 
-        if (modelRunner->Settings->IsProxyModel() || modelRunner->canCalculateBeta()) return zValues;
+        if (modelRunner.Settings->IsProxyModel() || modelRunner.canCalculateBeta()) return zValues;
 
         // precompute Z-values multiples of Dsdu
         const int sectionsCount = static_cast<int>(settings->MaximumLengthU / settings->Dsdu);
@@ -69,7 +69,7 @@ namespace Deltares::Reliability
                     uSamples.push_back(z1);
                 }
             }
-            auto zValues2 = modelRunner->getZValues(uSamples);
+            auto zValues2 = modelRunner.getZValues(uSamples);
             int ii = 0;
             for (size_t i = 0; i < nSamples; i++)
             {

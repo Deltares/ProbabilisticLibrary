@@ -43,20 +43,20 @@ namespace Deltares
         public:
             std::shared_ptr<DirectionReliabilitySettings> Settings = std::make_shared<DirectionReliabilitySettings>();
             std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
-            double getBeta(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<Sample> directionSample, double z0,
+            double getBeta(Models::ModelRunner& modelRunner, std::shared_ptr<Sample> directionSample, double z0,
                 const PrecomputeValues& zValues);
-            double getBeta(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<Sample> directionSample, double z0);
+            double getBeta(Models::ModelRunner& modelRunner, std::shared_ptr<Sample> directionSample, double z0);
             static double GetZTolerance(const DirectionReliabilitySettings& settings, double uLow, double uHigh, double zLow, double zHigh);
         protected:
             double findBetaBetweenBoundariesAllowNaN(const DirectionCalculation& directionCalculation,
                 double uLow, double uHigh, double zLow, double zHigh, double& z);
-            virtual double findBetaBetweenBoundaries(const std::shared_ptr<Models::ModelRunner>& modelRunner,
+            virtual double findBetaBetweenBoundaries(Models::ModelRunner& modelRunner,
                 const DirectionCalculation& directionCalculation,
                 double uLow, double uHigh, double zLow, double zHigh, double& z);
         private:
-            double getDirectionBeta(std::shared_ptr<Models::ModelRunner> modelRunner, const BetaValueTask& directionTask,
+            double getDirectionBeta(Models::ModelRunner& modelRunner, const BetaValueTask& directionTask,
                 const PrecomputeValues& zValues);
-            std::vector<DirectionSection> getDirectionSections(std::shared_ptr<Models::ModelRunner> modelRunner,
+            std::vector<DirectionSection> getDirectionSections(Models::ModelRunner& modelRunner,
                 std::shared_ptr<DirectionReliabilitySettings> settings, std::shared_ptr<Sample> uDirection, bool invertZ, const PrecomputeValues& zValues);
             double getBetaFromSections(const std::vector<DirectionSection>& sections) const;
         };
@@ -66,7 +66,7 @@ namespace Deltares
         public:
             double Threshold = 0;
         protected:
-            double findBetaBetweenBoundaries(const std::shared_ptr<Models::ModelRunner>& modelRunner,
+            double findBetaBetweenBoundaries(Models::ModelRunner& modelRunner,
                 const DirectionCalculation& directionCalculation,
                 double uLow, double uHigh, double zLow, double zHigh, double& z) override;
         private:

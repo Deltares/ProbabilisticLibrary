@@ -130,7 +130,7 @@ namespace Deltares
             directionReliability->Settings->modelVaryingType = Varying;
             directionReliability->Settings->Dsdu = this->Settings->dsdu;
 
-            double beta = directionReliability->getBeta(modelRunner, startPoint, 1);
+            double beta = directionReliability->getBeta(*modelRunner, startPoint, 1);
 
             std::shared_ptr<Sample> directionPoint = std::make_shared<Sample>(startPoint->Values);
 

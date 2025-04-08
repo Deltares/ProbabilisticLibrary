@@ -30,7 +30,7 @@ namespace Deltares::Reliability
     class ZGetter
     {
     public:
-        ZGetter(const std::shared_ptr<Models::ModelRunner>& modelRunner, const std::shared_ptr<DirectionReliabilitySettings>& settings = nullptr) :
+        ZGetter(Models::ModelRunner& modelRunner, const std::shared_ptr<DirectionReliabilitySettings>& settings = nullptr) :
             modelRunner(modelRunner), settings(settings) {}
 
         std::shared_ptr<Sample> GetU(const std::shared_ptr<Sample>& uDirection, double factor, bool allowProxy = true) const
@@ -60,12 +60,12 @@ namespace Deltares::Reliability
         }
 
     private:
-        std::shared_ptr<Models::ModelRunner> modelRunner;
+        Models::ModelRunner& modelRunner;
         std::shared_ptr<DirectionReliabilitySettings> settings;
 
         double GetZValueCorrected(const std::shared_ptr<Sample>& u, bool invertZ) const
         {
-            double z = modelRunner->getZValue(u);
+            double z = modelRunner.getZValue(u);
             if (invertZ)
             {
                 z = -z;

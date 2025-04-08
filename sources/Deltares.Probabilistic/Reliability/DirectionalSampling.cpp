@@ -92,7 +92,7 @@ namespace Deltares
                         samples.push_back(sample);
                     }
 
-                    betaValues = getDirectionBetas(modelRunner, samples, z0, minBetaDirection);
+                    betaValues = getDirectionBetas(*modelRunner, samples, z0, minBetaDirection);
 
                     // check whether restart is needed
                     if (modelRunner->shouldExitPrematurely(samples))
@@ -202,7 +202,7 @@ namespace Deltares
             return convergence;
         }
 
-        std::vector<double> DirectionalSampling::getDirectionBetas(const std::shared_ptr<Models::ModelRunner>& modelRunner,
+        std::vector<double> DirectionalSampling::getDirectionBetas(Models::ModelRunner& modelRunner,
             const std::vector<std::shared_ptr<Sample>>& samples, double z0, double threshold)
         {
             const size_t nSamples = samples.size();
@@ -213,7 +213,7 @@ namespace Deltares
             directionReliability.Threshold = threshold;
 
             auto maskPrecompute = std::vector(nSamples, false);
-            if (modelRunner->Settings->IsProxyModel())
+            if (modelRunner.Settings->IsProxyModel())
             {
                 for (size_t i = 0; i < nSamples; i++)
                 {
@@ -231,7 +231,7 @@ namespace Deltares
             {
                 samples[i]->threadId = omp_get_thread_num();
                 // retain previous results from model if running in a proxy model environment
-                if (modelRunner->Settings->IsProxyModel() && previousResults.contains(samples[i]->IterationIndex))
+                if (modelRunner.Settings->IsProxyModel() && previousResults.contains(samples[i]->IterationIndex))
                 {
                     betaValues[i] = previousResults[samples[i]->IterationIndex];
                 }
@@ -242,7 +242,7 @@ namespace Deltares
             }
 
             // keep results from non-proxy runs when proxies are used for a next run
-            if (modelRunner->Settings->IsProxyModel())
+            if (modelRunner.Settings->IsProxyModel())
             {
                 for (size_t i = 0; i < samples.size(); i++)
                 {
