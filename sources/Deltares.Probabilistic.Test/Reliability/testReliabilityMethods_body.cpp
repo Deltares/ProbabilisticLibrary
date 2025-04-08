@@ -30,6 +30,7 @@
 #include "../../Deltares.Probabilistic/Reliability/DirectionalSamplingThenFORM.h"
 #include "../../Deltares.Probabilistic/Reliability/FragilityCurveIntegration.h"
 #include "../../Deltares.Probabilistic/Reliability/NumericalIntegration.h"
+#include "../../Deltares.Probabilistic/Math/NumericSupport.h"
 #include "../projectBuilder.h"
 
 using namespace Deltares::Reliability;
@@ -304,7 +305,8 @@ namespace Deltares
                 }
             }
 
-            void testReliabilityMethods::testDirSamplingProxyModels(const bool useProxy, const ModelVaryingType varyingType)
+            void testReliabilityMethods::testDirSamplingProxyModels(const bool useProxy, const ModelVaryingType varyingType,
+                const double dsdu)
             {
                 auto calculator = DirectionalSampling();
                 auto modelRunner = projectBuilder().BuildProjectTwoBranches(useProxy);
@@ -314,6 +316,7 @@ namespace Deltares
                 calculator.Settings->randomSettings->Seed = 0;
                 calculator.Settings->runSettings->MaxParallelProcesses = 1;
                 calculator.Settings->DirectionSettings->modelVaryingType = varyingType;
+                calculator.Settings->DirectionSettings->Dsdu = dsdu;
                 modelRunner->Settings->proxySettings = std::make_shared<ProxySettings>();
                 modelRunner->Settings->proxySettings->IsProxyModel = useProxy;
 
@@ -339,7 +342,13 @@ namespace Deltares
                 {
                     refBeta = 4.98355;
                     refAlpha = { 0.35676 , -0.92328 , -0.14240 };
-                    if (varyingType == ModelVaryingType::Monotone)
+                    if (Numeric::NumericSupport::areEqual( dsdu , 3.0, 1e-12))
+                    {
+                        refBeta = 5.08261;
+                        refAlpha = { 0.39910 , -0.910716 , -0.106376 };
+                        refTotalModelRuns = 1227;
+                    }
+                    else if (varyingType == ModelVaryingType::Monotone)
                     {
                         refTotalModelRuns = 2261;
                     }

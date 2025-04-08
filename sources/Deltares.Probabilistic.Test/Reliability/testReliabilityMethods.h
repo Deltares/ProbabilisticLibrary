@@ -42,6 +42,7 @@ namespace Deltares::Probabilistic::Test
         static void testNumericalIntegrationReliability();
         static void testCrudeMonteCarloReliability();
         static void testClustersAdpImpSampling();
-        static void testDirSamplingProxyModels(const bool useProxy, const Reliability::ModelVaryingType varyingType);
+        static void testDirSamplingProxyModels(const bool useProxy,
+            const Reliability::ModelVaryingType varyingType, const double dsdu);
     };
 }
