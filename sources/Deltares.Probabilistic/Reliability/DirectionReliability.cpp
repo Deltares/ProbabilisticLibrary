@@ -88,7 +88,7 @@ namespace Deltares
             {
                 bool invertZ = directionTask.z0 < 0.0;
 
-                auto sections = getDirectionSections(modelRunner, directionTask.Settings,
+                auto sections = getDirectionSections(modelRunner, *directionTask.Settings,
                     uDirection, invertZ, zValues);
 
                 double beta = getBetaFromSections(sections);
@@ -100,28 +100,26 @@ namespace Deltares
         }
 
         std::vector<DirectionSection> DirectionReliability::getDirectionSections(Models::ModelRunner& modelRunner,
-            std::shared_ptr<DirectionReliabilitySettings> settings, std::shared_ptr<Sample> uDirection, bool invertZ, const PrecomputeValues& zValues)
+            const DirectionReliabilitySettings& settings, std::shared_ptr<Sample> uDirection, bool invertZ, const PrecomputeValues& zValues)
         {
             std::vector<DirectionSection> sections;
 
-            int sectionsCount = static_cast<int>(settings->MaximumLengthU / settings->Dsdu);
-            if (sectionsCount * settings->Dsdu < settings->MaximumLengthU)
-            {
-                sectionsCount = sectionsCount + 1;
-            }
+            int sectionsCount = static_cast<int>(settings.MaximumLengthU / settings.Dsdu);
+            if (sectionsCount * settings.Dsdu < settings.MaximumLengthU) {sectionsCount++;}
 
             bool found = false;
-            bool monotone = settings->modelVaryingType == ModelVaryingType::Monotone;
-            auto dirCalcSettings = DirectionCalculationSettings(invertZ, settings->Dsdu, settings->MaximumLengthU);
-            auto directionCalculation = DirectionCalculation(modelRunner, uDirection, dirCalcSettings);
+            bool monotone = settings.modelVaryingType == ModelVaryingType::Monotone;
+            auto dirCalcSettings = DirectionCalculationSettings(invertZ, settings.Dsdu, settings.MaximumLengthU);
+            auto model = ZGetter(modelRunner, settings);
+            auto directionCalculation = DirectionCalculation(model, uDirection, dirCalcSettings);
             double prevzHigh = directionCalculation.GetZ(0, zValues);
 
             for (int k = 0; k <= sectionsCount && !this->isStopped(); k++)
             {
                 if (!found)
                 {
-                    double uLow = k * settings->Dsdu;
-                    double uHigh = std::min((k + 1) * settings->Dsdu, settings->MaximumLengthU);
+                    double uLow = k * settings.Dsdu;
+                    double uHigh = std::min((k + 1) * settings.Dsdu, settings.MaximumLengthU);
 
                     double zLow = prevzHigh;
                     double zHigh = directionCalculation.GetZ(k+1, zValues);

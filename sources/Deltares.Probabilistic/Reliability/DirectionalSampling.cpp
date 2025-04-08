@@ -222,14 +222,13 @@ namespace Deltares
                 }
             }
 
-            const auto preComputeDirs = PrecomputeDirections(directionReliability.Settings, z0);
+            const auto preComputeDirs = PrecomputeDirections(*directionReliability.Settings, z0);
             const auto zValues = preComputeDirs.precompute(modelRunner, samples, maskPrecompute);
             const double z0Fac = getZFactor(z0);
 
             #pragma omp parallel for
             for (int i = 0; i < static_cast<int>(nSamples); i++)
             {
-                samples[i]->threadId = omp_get_thread_num();
                 // retain previous results from model if running in a proxy model environment
                 if (modelRunner.Settings->IsProxyModel() && previousResults.contains(samples[i]->IterationIndex))
                 {
@@ -237,6 +236,7 @@ namespace Deltares
                 }
                 else
                 {
+                    samples[i]->threadId = omp_get_thread_num();
                     betaValues[i] = directionReliability.getBeta(modelRunner, samples[i], z0Fac, zValues[i]);
                 }
             }

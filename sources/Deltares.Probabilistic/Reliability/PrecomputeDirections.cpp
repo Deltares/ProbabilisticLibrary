@@ -25,8 +25,8 @@
 
 namespace Deltares::Reliability
 {
-    PrecomputeDirections::PrecomputeDirections(const std::shared_ptr<DirectionReliabilitySettings>& settings, const double z0) :
-        settings(settings), z0(z0), isMonotone(settings->modelVaryingType == ModelVaryingType::Monotone) {}
+    PrecomputeDirections::PrecomputeDirections(const DirectionReliabilitySettings& settings, const double z0) :
+        settings(settings), z0(z0), isMonotone(settings.modelVaryingType == ModelVaryingType::Monotone) {}
 
     void PrecomputeDirections::updateMask(std::vector<bool>& mask, const size_t index, const double zValue, const double previous) const
     {
@@ -54,11 +54,11 @@ namespace Deltares::Reliability
         if (modelRunner.Settings->IsProxyModel() || modelRunner.canCalculateBeta()) return zValues;
 
         // precompute Z-values multiples of Dsdu
-        const int sectionsCount = static_cast<int>(settings->MaximumLengthU / settings->Dsdu);
+        const int sectionsCount = static_cast<int>(settings.MaximumLengthU / settings.Dsdu);
         const auto model = ZGetter(modelRunner, settings);
         for (int k = 1; k < sectionsCount; k++)
         {
-            const auto u1 = k * settings->Dsdu;
+            const auto u1 = k * settings.Dsdu;
             std::vector<std::shared_ptr<Sample>> uSamples;
             for (size_t i = 0; i < nSamples; i++)
             {
