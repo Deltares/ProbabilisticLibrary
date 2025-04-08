@@ -322,7 +322,7 @@ namespace Deltares
 
                 auto designPoint = calculator.getDesignPoint(modelRunner);
 
-                int refTotalModelRuns; double refBeta; std::vector<double> refAlpha;
+                int refTotalModelRuns; double refBeta; std::vector<double> refAlpha; size_t refPreComputeCounter;
                 if (useProxy)
                 {
                     if (varyingType == ModelVaryingType::Monotone)
@@ -330,12 +330,14 @@ namespace Deltares
                         refBeta = 2.600438;
                         refAlpha = { 0.09106 , -0.98686 , -0.13345 };
                         refTotalModelRuns = 1222;
+                        refPreComputeCounter = 0;
                     }
                     else
                     {
                         refBeta = 2.60029;
                         refAlpha = { 0.09114 , -0.98683 , -0.13365 };
                         refTotalModelRuns = 10985;
+                        refPreComputeCounter = 0;
                     }
                 }
                 else
@@ -347,16 +349,20 @@ namespace Deltares
                         refBeta = 5.08261;
                         refAlpha = { 0.39910 , -0.910716 , -0.106376 };
                         refTotalModelRuns = 1227;
+                        refPreComputeCounter = 937;
                     }
                     else if (varyingType == ModelVaryingType::Monotone)
                     {
                         refTotalModelRuns = 2261;
+                        refPreComputeCounter = 1910;
                     }
                     else
                     {
                         refTotalModelRuns = 10723;
+                        refPreComputeCounter = 9500;
                     }
                 }
+                EXPECT_EQ(calculator.preComputedCounter, refPreComputeCounter);
                 constexpr double margin = 1e-5;
                 EXPECT_NEAR(designPoint->Beta, refBeta, margin);
                 for (size_t i = 0; i < refAlpha.size(); i++)
