@@ -33,9 +33,9 @@ namespace Deltares::Reliability
         ZGetter(Models::ModelRunner& modelRunner, const DirectionReliabilitySettings& settings) :
             modelRunner(modelRunner), settings(settings) {}
 
-        std::shared_ptr<Sample> GetU(const std::shared_ptr<Sample>& uDirection, double factor, bool allowProxy = true) const
+        std::shared_ptr<Sample> GetU(Sample& uDirection, double factor, bool allowProxy = true) const
         {
-            std::shared_ptr<Sample> u = uDirection->getMultipliedSample(factor);
+            std::shared_ptr<Sample> u = uDirection.getMultipliedSample(factor);
             u->AllowProxy = allowProxy;
 
             if (settings.UseInitialValues)
@@ -52,7 +52,7 @@ namespace Deltares::Reliability
             return u;
         }
 
-        double GetZ(const std::shared_ptr<Sample>& uDirection, double factor, bool inverted, bool allowProxy = true) const
+        double GetZ(Sample& uDirection, double factor, bool inverted, bool allowProxy = true) const
         {
             const auto u = GetU(uDirection, factor, allowProxy);
 

@@ -62,9 +62,7 @@ namespace Deltares
         {
             auto normalizedSample = directionSample.getNormalizedSample();
 
-            auto task = BetaValueTask();
-            task.UValues = normalizedSample;
-            task.invertZ = z0 < 0.0;
+            auto task = BetaValueTask(normalizedSample, z0 < 0.0);
 
             double beta = getDirectionBeta(modelRunner, task, zValues);
             beta *= z0;
@@ -104,7 +102,7 @@ namespace Deltares
             const bool monotone = Settings->modelVaryingType == ModelVaryingType::Monotone;
             const auto dirCalcSettings = DirectionCalculationSettings(directionTask.invertZ, Settings->Dsdu, Settings->MaximumLengthU);
             auto model = ZGetter(modelRunner, *Settings);
-            auto directionCalculation = DirectionCalculation(model, directionTask.UValues, dirCalcSettings);
+            auto directionCalculation = DirectionCalculation(model, *directionTask.UValues, dirCalcSettings);
             double prevzHigh = directionCalculation.GetZ(0, zValues);
 
             for (int k = 0; k <= sectionsCount && !this->isStopped(); k++)
@@ -378,7 +376,7 @@ namespace Deltares
                     const auto ThresholdOffset = modelRunner.Settings->proxySettings->ThresholdOffset;
                     if (modelRunner.Settings->proxySettings->ShouldUpdateFinalSteps && !isProxyAllowed(ThresholdOffset, uResult, this->Threshold))
                     {
-                        directionCalculation.uDirection->AllowProxy = false;
+                        directionCalculation.uDirection.AllowProxy = false;
 
                         double z0 = directionCalculation.GetZProxy(0, false);
                         double zResult = directionCalculation.GetZProxy(uResult, false);
@@ -386,13 +384,13 @@ namespace Deltares
                         if (std::isnan(zResult))
                         {
                             z = zResult;
-                            modelRunner.removeTask(directionCalculation.uDirection->IterationIndex);
+                            modelRunner.removeTask(directionCalculation.uDirection.IterationIndex);
                             return Settings->MaximumLengthU;
                         }
                         else if (NumericSupport::GetSign(z0) == NumericSupport::GetSign(zResult) && std::fabs(zResult) >= std::fabs(z0))
                         {
                             z = zResult;
-                            modelRunner.removeTask(directionCalculation.uDirection->IterationIndex);
+                            modelRunner.removeTask(directionCalculation.uDirection.IterationIndex);
                             return Settings->MaximumLengthU;
                         }
                         else

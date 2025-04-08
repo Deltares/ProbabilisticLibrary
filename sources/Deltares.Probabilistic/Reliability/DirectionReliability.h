@@ -33,7 +33,8 @@ namespace Deltares
         class BetaValueTask
         {
         public:
-            std::shared_ptr<Sample> UValues;
+            BetaValueTask(std::shared_ptr<Sample>& UValues, const bool invertZ) : UValues(UValues), invertZ(invertZ) {}
+            std::shared_ptr<Sample>& UValues;
             bool invertZ;
         };
 

@@ -41,12 +41,11 @@ namespace Deltares::Reliability
     class DirectionCalculation
     {
     public:
-        const std::shared_ptr<Sample>& uDirection;
+        Sample& uDirection;
         const ZGetter& model;
         const DirectionCalculationSettings& settings;
 
-        DirectionCalculation(ZGetter& model,
-            const std::shared_ptr<Sample>& uDirection, const DirectionCalculationSettings& settings)
+        DirectionCalculation(ZGetter& model, Sample& uDirection, const DirectionCalculationSettings& settings)
             : uDirection(uDirection), model(model), settings(settings)
         {
         }

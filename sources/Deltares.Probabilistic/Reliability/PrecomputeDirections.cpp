@@ -65,7 +65,7 @@ namespace Deltares::Reliability
                 if (!mask[i])
                 {
                     auto uDirection = samples[i]->getNormalizedSample();
-                    auto z1 = model.GetU(uDirection, u1);
+                    auto z1 = model.GetU(*uDirection, u1);
                     uSamples.push_back(z1);
                 }
             }
