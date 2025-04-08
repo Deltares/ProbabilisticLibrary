@@ -26,31 +26,52 @@
 
 namespace Deltares::Reliability
 {
+    class DirectionCalculationSettings
+    {
+    public:
+        DirectionCalculationSettings(bool inverted) : inverted(inverted) {}
+        DirectionCalculationSettings(bool inverted, double Dsdu, double maxLengthU) :
+            inverted(inverted), Dsdu(Dsdu), MaximumLengthU(maxLengthU) {}
+        const bool inverted;
+        const double Dsdu = std::nan("");
+        const double MaximumLengthU = std::nan("");
+    };
+
     class DirectionCalculation
     {
         const std::shared_ptr<Sample>& uDirection;
-        const bool inverted;
         const ZGetter model;
+        const DirectionCalculationSettings& settings;
 
     public:
-        DirectionCalculation(const std::shared_ptr<Models::ModelRunner>& modelRunner, const std::shared_ptr<Sample>& uDirection, bool inverted)
-            : uDirection(uDirection), inverted(inverted), model(ZGetter(modelRunner))
+        DirectionCalculation(const std::shared_ptr<Models::ModelRunner>& modelRunner,
+            const std::shared_ptr<Sample>& uDirection, const DirectionCalculationSettings& settings)
+            : uDirection(uDirection), model(ZGetter(modelRunner)), settings(settings)
         {
         }
 
         double GetZProxy(double u, bool allowProxy) const
         {
-            return model.GetZ(uDirection, u, inverted, allowProxy);
+            return model.GetZ(uDirection, u, settings.inverted, allowProxy);
         }
 
         double GetZ(double u) const
         {
-            return model.GetZ(uDirection, u, inverted, true);
+            return model.GetZ(uDirection, u, settings.inverted, true);
+        }
+
+        double GetZ(size_t index, const PrecomputeValues& zValues)  const
+        {
+            const auto [foundZ0, z0] = zValues.findZ(index);
+            if (foundZ0) return z0;
+
+            double factor = std::min(static_cast<double>(index) * settings.Dsdu, settings.MaximumLengthU);
+            return model.GetZ(uDirection, factor, settings.inverted, true);
         }
 
         double GetZNoProxy(double u) const
         {
-            return model.GetZ(uDirection, u, inverted, false);
+            return model.GetZ(uDirection, u, settings.inverted, false);
         }
     };
 }

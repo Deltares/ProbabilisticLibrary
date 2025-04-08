@@ -113,9 +113,9 @@ namespace Deltares
 
             bool found = false;
             bool monotone = settings->modelVaryingType == ModelVaryingType::Monotone;
-            auto model = ZGetter(modelRunner, settings);
-
-            double prevzHigh = model.GetZ(uDirection, 0, invertZ, zValues);
+            auto dirCalcSettings = DirectionCalculationSettings(invertZ, settings->Dsdu, settings->MaximumLengthU);
+            auto directionCalculation = DirectionCalculation(modelRunner, uDirection, dirCalcSettings);
+            double prevzHigh = directionCalculation.GetZ(0, zValues);
 
             for (int k = 0; k <= sectionsCount && !this->isStopped(); k++)
             {
@@ -125,7 +125,7 @@ namespace Deltares
                     double uHigh = std::min((k + 1) * settings->Dsdu, settings->MaximumLengthU);
 
                     double zLow = prevzHigh;
-                    double zHigh = model.GetZ(uDirection, k+1, invertZ, zValues);
+                    double zHigh = directionCalculation.GetZ(k+1, zValues);
 
                     prevzHigh = zHigh;
 
@@ -272,7 +272,8 @@ namespace Deltares
             }
             else
             {
-                auto directionCalculation = std::make_shared<DirectionCalculation>(modelRunner, uDirection, invertZ);
+                auto dirCalcSettings = DirectionCalculationSettings(invertZ);
+                auto directionCalculation = DirectionCalculation(modelRunner, uDirection, dirCalcSettings);
 
                 double zTolerance = GetZTolerance(settings, uLow, uHigh, zLow, zHigh);
 
@@ -280,17 +281,17 @@ namespace Deltares
 
                 auto low = XValue(uLow, zLow);
                 auto high = XValue(uHigh, zHigh);
-                double uResult = linearSearchCalculation.CalculateValue(low, high, 0.0, [directionCalculation](double v) { return directionCalculation->GetZ(v); });
+                double uResult = linearSearchCalculation.CalculateValue(low, high, 0.0, [directionCalculation](double v) { return directionCalculation.GetZ(v); });
 
                 // TODO: PROBL-42 remove linear search , because bisection is more robust
                 if (std::isnan(uResult))
                 {
                     constexpr double xTolerance = 0.01;
                     auto bisectionCalculation = BisectionRootFinder(zTolerance, xTolerance);
-                    uResult = bisectionCalculation.CalculateValue(low, high, 0.0, [directionCalculation](double v) { return directionCalculation->GetZ(v); });
+                    uResult = bisectionCalculation.CalculateValue(low, high, 0.0, [directionCalculation](double v) { return directionCalculation.GetZ(v); });
                 }
 
-                z = std::isnan(uResult) ? nan("") : directionCalculation->GetZ(uResult);
+                z = std::isnan(uResult) ? nan("") : directionCalculation.GetZ(uResult);
 
                 return uResult;
             }
@@ -366,7 +367,8 @@ namespace Deltares
             }
             else
             {
-                auto directionCalculation = std::make_shared<DirectionCalculation>(modelRunner, uDirection, invertZ);
+                auto dirCalcSettings = DirectionCalculationSettings(invertZ);
+                auto directionCalculation = DirectionCalculation(modelRunner, uDirection, dirCalcSettings);
 
                 const double zTolerance = GetZTolerance(settings, uLow, uHigh, zLow, zHigh);
 
@@ -374,24 +376,24 @@ namespace Deltares
 
                 auto low = XValue(uLow, zLow);
                 auto high = XValue(uHigh, zHigh);
-                double uResult = linearSearchCalculation.CalculateValue(low, high, 0.0, [directionCalculation](double v) { return directionCalculation->GetZ(v); });
+                double uResult = linearSearchCalculation.CalculateValue(low, high, 0.0, [directionCalculation](double v) { return directionCalculation.GetZ(v); });
 
-                z = std::isnan(uResult) ? nan("") : directionCalculation->GetZ(uResult);
+                z = std::isnan(uResult) ? nan("") : directionCalculation.GetZ(uResult);
 
                 if (modelRunner->Settings->IsProxyModel())
                 {
                     if (std::isnan(uResult))
                     {
                         auto bisectionCalculation = BisectionRootFinder(zTolerance);
-                        uResult = bisectionCalculation.CalculateValue(uLow, uHigh, 0.0, [directionCalculation](double v) { return directionCalculation->GetZ(v); });
+                        uResult = bisectionCalculation.CalculateValue(uLow, uHigh, 0.0, [directionCalculation](double v) { return directionCalculation.GetZ(v); });
                     }
 
                     if (modelRunner->Settings->proxySettings->ShouldUpdateFinalSteps && !isProxyAllowed(modelRunner, uResult, this->Threshold))
                     {
                         uDirection->AllowProxy = false;
 
-                        double z0 = directionCalculation->GetZProxy(0, false);
-                        double zResult = directionCalculation->GetZProxy(uResult, false);
+                        double z0 = directionCalculation.GetZProxy(0, false);
+                        double zResult = directionCalculation.GetZProxy(uResult, false);
 
                         if (std::isnan(zResult))
                         {
@@ -417,7 +419,7 @@ namespace Deltares
 
                         auto lowProxy = XValue(0.0, z0);
                         auto highProxy = XValue(uResult, zResult);
-                        uResult = linearSearchCalculation.CalculateValue(lowProxy, highProxy, 0.0, [directionCalculation](double v) { return directionCalculation->GetZNoProxy(v); });
+                        uResult = linearSearchCalculation.CalculateValue(lowProxy, highProxy, 0.0, [directionCalculation](double v) { return directionCalculation.GetZNoProxy(v); });
                         if (std::isnan(uResult))
                         {
                             z = zResult;
@@ -425,7 +427,7 @@ namespace Deltares
                         }
                         else
                         {
-                            z = directionCalculation->GetZProxy(uResult, false);
+                            z = directionCalculation.GetZProxy(uResult, false);
                         }
                     }
                 }
