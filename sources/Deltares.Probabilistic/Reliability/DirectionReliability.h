@@ -46,7 +46,7 @@ namespace Deltares
             double getBeta(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<Sample> directionSample, double z0,
                 const PrecomputeValues& zValues);
             double getBeta(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<Sample> directionSample, double z0);
-            static double GetZTolerance(std::shared_ptr<DirectionReliabilitySettings> settings, double uLow, double uHigh, double zLow, double zHigh);
+            static double GetZTolerance(const DirectionReliabilitySettings& settings, double uLow, double uHigh, double zLow, double zHigh);
         protected:
             double findBetaBetweenBoundariesAllowNaN(const DirectionCalculation& directionCalculation,
                 double uLow, double uHigh, double zLow, double zHigh, double& z);
@@ -70,7 +70,7 @@ namespace Deltares
                 const DirectionCalculation& directionCalculation,
                 double uLow, double uHigh, double zLow, double zHigh, double& z) override;
         private:
-            bool isProxyAllowed(std::shared_ptr<ModelRunner> modelRunner, double u, double threshold);
+            static bool isProxyAllowed(double ThresholdOffset, double u, double threshold);
         };
     }
 }

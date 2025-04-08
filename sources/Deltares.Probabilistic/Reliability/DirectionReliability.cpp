@@ -273,7 +273,7 @@ namespace Deltares
             }
             else
             {
-                double zTolerance = GetZTolerance(Settings, uLow, uHigh, zLow, zHigh);
+                double zTolerance = GetZTolerance(*Settings, uLow, uHigh, zLow, zHigh);
 
                 auto linearSearchCalculation = LinearRootFinder(zTolerance, Settings->MaximumIterations);
 
@@ -343,17 +343,17 @@ namespace Deltares
         }
 
 
-        double DirectionReliability::GetZTolerance(std::shared_ptr<DirectionReliabilitySettings> settings, double uLow, double uHigh, double zLow, double zHigh)
+        double DirectionReliability::GetZTolerance(const DirectionReliabilitySettings& settings, double uLow, double uHigh, double zLow, double zHigh)
         {
-            double uDiff = std::abs((zHigh - zLow) / (uHigh - uLow)) * settings->EpsilonUStepSize;
+            const double uDiff = std::abs((zHigh - zLow) / (uHigh - uLow)) * settings.EpsilonUStepSize;
 
             if (!std::isnan(uDiff))
             {
-                return std::min(settings->EpsilonZStepSize, uDiff);
+                return std::min(settings.EpsilonZStepSize, uDiff);
             }
             else
             {
-                return settings->EpsilonZStepSize;
+                return settings.EpsilonZStepSize;
             }
         }
 
@@ -367,7 +367,7 @@ namespace Deltares
             }
             else
             {
-                const double zTolerance = GetZTolerance(Settings, uLow, uHigh, zLow, zHigh);
+                const double zTolerance = GetZTolerance(*Settings, uLow, uHigh, zLow, zHigh);
 
                 auto linearSearchCalculation = LinearRootFinder(zTolerance, Settings->MaximumIterations);
 
@@ -385,7 +385,8 @@ namespace Deltares
                         uResult = bisectionCalculation.CalculateValue(uLow, uHigh, 0.0, [directionCalculation](double v) { return directionCalculation.GetZ(v); });
                     }
 
-                    if (modelRunner->Settings->proxySettings->ShouldUpdateFinalSteps && !isProxyAllowed(modelRunner, uResult, this->Threshold))
+                    const auto ThresholdOffset = modelRunner->Settings->proxySettings->ThresholdOffset;
+                    if (modelRunner->Settings->proxySettings->ShouldUpdateFinalSteps && !isProxyAllowed(ThresholdOffset, uResult, this->Threshold))
                     {
                         directionCalculation.uDirection->AllowProxy = false;
 
@@ -407,7 +408,7 @@ namespace Deltares
                         else
                         {
                             double uNew = NumericSupport::interpolate(0, z0, 0, zResult, uResult, true);
-                            if (isProxyAllowed(modelRunner, uNew, this->Threshold))
+                            if (isProxyAllowed(ThresholdOffset, uNew, Threshold))
                             {
                                 z = zResult;
                                 return std::min(uNew, Settings->MaximumLengthU);
@@ -433,9 +434,9 @@ namespace Deltares
             }
         };
 
-        bool DirectionReliabilityForDirectionalSampling::isProxyAllowed(std::shared_ptr<ModelRunner> modelRunner, double u, double threshold)
+        bool DirectionReliabilityForDirectionalSampling::isProxyAllowed(double ThresholdOffset, double u, double threshold)
         {
-            return std::isnan(u) || u > threshold + modelRunner->Settings->proxySettings->ThresholdOffset;
+            return std::isnan(u) || u > threshold + ThresholdOffset;
         }
     }
 }
