@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include "PrecomputeValues.h"
 #include "ZGetter.h"
 
 namespace Deltares::Reliability
@@ -39,11 +40,11 @@ namespace Deltares::Reliability
 
     class DirectionCalculation
     {
+    public:
         const std::shared_ptr<Sample>& uDirection;
         const ZGetter model;
         const DirectionCalculationSettings& settings;
 
-    public:
         DirectionCalculation(const std::shared_ptr<Models::ModelRunner>& modelRunner,
             const std::shared_ptr<Sample>& uDirection, const DirectionCalculationSettings& settings)
             : uDirection(uDirection), model(ZGetter(modelRunner)), settings(settings)

@@ -20,6 +20,7 @@
 // All rights reserved.
 //
 #pragma once
+#include "DirectionCalculation.h"
 #include "DirectionReliabilitySettings.h"
 #include "DirectionSection.h"
 #include "PrecomputeValues.h"
@@ -47,8 +48,11 @@ namespace Deltares
             double getBeta(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<Sample> directionSample, double z0);
             static double GetZTolerance(std::shared_ptr<DirectionReliabilitySettings> settings, double uLow, double uHigh, double zLow, double zHigh);
         protected:
-            double findBetaBetweenBoundariesAllowNaN(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<DirectionReliabilitySettings> settings, std::shared_ptr<Sample> uDirection, bool invertZ, double uLow, double uHigh, double zLow, double zHigh, double& z);
-            virtual double findBetaBetweenBoundaries(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<DirectionReliabilitySettings> settings, std::shared_ptr<Sample> uDirection, bool invertZ, double uLow, double uHigh, double zLow, double zHigh, double& z);
+            double findBetaBetweenBoundariesAllowNaN(const DirectionCalculation& directionCalculation,
+                double uLow, double uHigh, double zLow, double zHigh, double& z);
+            virtual double findBetaBetweenBoundaries(const std::shared_ptr<Models::ModelRunner>& modelRunner,
+                const DirectionCalculation& directionCalculation,
+                double uLow, double uHigh, double zLow, double zHigh, double& z);
         private:
             double getDirectionBeta(std::shared_ptr<Models::ModelRunner> modelRunner, const BetaValueTask& directionTask,
                 const PrecomputeValues& zValues);
@@ -62,7 +66,9 @@ namespace Deltares
         public:
             double Threshold = 0;
         protected:
-            double findBetaBetweenBoundaries(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<DirectionReliabilitySettings> settings, std::shared_ptr<Sample> uDirection, bool invertZ, double uLow, double uHigh, double zLow, double zHigh, double& z) override;
+            double findBetaBetweenBoundaries(const std::shared_ptr<Models::ModelRunner>& modelRunner,
+                const DirectionCalculation& directionCalculation,
+                double uLow, double uHigh, double zLow, double zHigh, double& z) override;
         private:
             bool isProxyAllowed(std::shared_ptr<ModelRunner> modelRunner, double u, double threshold);
         };

@@ -135,7 +135,7 @@ namespace Deltares
                     if (zHighType != zLowType)
                     {
                         double zChange = nan("");
-                        double uChange = findBetaBetweenBoundaries(modelRunner, settings, uDirection, invertZ, uLow, uHigh, zLow, zHigh, zChange);
+                        double uChange = findBetaBetweenBoundaries(modelRunner, directionCalculation, uLow, uHigh, zLow, zHigh, zChange);
 
                         DoubleType zChangeType = NumericSupport::getDoubleType(zChange);
 
@@ -143,14 +143,14 @@ namespace Deltares
                         {
                             sections.emplace_back(zLowType, uLow, uChange);
 
-                            double uSubChange = findBetaBetweenBoundaries(modelRunner, settings, uDirection, invertZ, uChange, uHigh, zChange, zHigh, zChange);
+                            double uSubChange = findBetaBetweenBoundaries(modelRunner, directionCalculation, uChange, uHigh, zChange, zHigh, zChange);
 
                             sections.emplace_back(zChangeType, uChange, uSubChange);
                             sections.emplace_back(zHighType, uSubChange, uHigh);
                         }
                         else if (zHighType == DoubleType::NaN && zChangeType != zLowType)
                         {
-                            double uSubChange = findBetaBetweenBoundaries(modelRunner, settings, uDirection, invertZ, uLow, uChange, zLow, zChange, zChange);
+                            double uSubChange = findBetaBetweenBoundaries(modelRunner, directionCalculation, uLow, uChange, zLow, zChange, zChange);
 
                             sections.emplace_back(zLowType, uLow, uSubChange);
                             sections.emplace_back(zChangeType, uSubChange, uChange);
@@ -206,34 +206,35 @@ namespace Deltares
             return sections;
         }
 
-        double DirectionReliability::findBetaBetweenBoundaries(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<DirectionReliabilitySettings> settings, std::shared_ptr<Sample> uDirection, bool invertZ, double uLow, double uHigh, double zLow, double zHigh, double& z)
+        double DirectionReliability::findBetaBetweenBoundaries(const std::shared_ptr<Models::ModelRunner>& modelRunner,
+            const DirectionCalculation& directionCalculation,
+            double uLow, double uHigh, double zLow, double zHigh, double& z)
         {
-            return findBetaBetweenBoundariesAllowNaN(modelRunner, settings, uDirection, invertZ, uLow, uHigh, zLow, zHigh, z);
+            return findBetaBetweenBoundariesAllowNaN(directionCalculation, uLow, uHigh, zLow, zHigh, z);
         }
 
-        double DirectionReliability::findBetaBetweenBoundariesAllowNaN(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<DirectionReliabilitySettings> settings, std::shared_ptr<Sample> uDirection, bool invertZ, double uLow, double uHigh, double zLow, double zHigh, double& z)
+        double DirectionReliability::findBetaBetweenBoundariesAllowNaN(const DirectionCalculation& directionCalculation,
+            double uLow, double uHigh, double zLow, double zHigh, double& z)
         {
-            std::unique_ptr<ZGetter> model(new ZGetter(modelRunner, settings));
-
             if (std::isnan(zLow) || std::isnan(zHigh))
             {
                 double step = uHigh - uLow;
                 bool lastAdaptedLow = false;
 
-                while (step > settings->EpsilonUStepSize)
+                while (step > Settings->EpsilonUStepSize)
                 {
                     step = step / 2;
 
                     if (std::isnan(zLow))
                     {
                         uLow += step;
-                        zLow = model->GetZ(uDirection, uLow, invertZ);
+                        zLow = directionCalculation.GetZ(uLow);
                         lastAdaptedLow = true;
                     }
                     else if (std::isnan(zHigh))
                     {
                         uHigh -= step;
-                        zHigh = model->GetZ(uDirection, uHigh, invertZ);
+                        zHigh = directionCalculation.GetZ(uHigh);
                         lastAdaptedLow = false;
                     }
                     else if (lastAdaptedLow)
@@ -241,14 +242,14 @@ namespace Deltares
                         uHigh = uLow;
                         zHigh = zLow;
                         uLow -= step;
-                        zLow = model->GetZ(uDirection, uLow, invertZ);
+                        zLow = directionCalculation.GetZ(uLow);
                     }
                     else
                     {
                         uLow = uHigh;
                         zLow = zHigh;
                         uHigh += step;
-                        zHigh = model->GetZ(uDirection, uHigh, invertZ);
+                        zHigh = directionCalculation.GetZ(uHigh);
                     }
                 }
 
@@ -265,19 +266,16 @@ namespace Deltares
                 else
                 {
                     double u = (uLow + uHigh) / 2;
-                    z = model->GetZ(uDirection, u, invertZ);
+                    z = directionCalculation.GetZ(u);
 
                     return u;
                 }
             }
             else
             {
-                auto dirCalcSettings = DirectionCalculationSettings(invertZ);
-                auto directionCalculation = DirectionCalculation(modelRunner, uDirection, dirCalcSettings);
+                double zTolerance = GetZTolerance(Settings, uLow, uHigh, zLow, zHigh);
 
-                double zTolerance = GetZTolerance(settings, uLow, uHigh, zLow, zHigh);
-
-                auto linearSearchCalculation = LinearRootFinder(zTolerance, settings->MaximumIterations);
+                auto linearSearchCalculation = LinearRootFinder(zTolerance, Settings->MaximumIterations);
 
                 auto low = XValue(uLow, zLow);
                 auto high = XValue(uHigh, zHigh);
@@ -359,20 +357,19 @@ namespace Deltares
             }
         }
 
-        double DirectionReliabilityForDirectionalSampling::findBetaBetweenBoundaries(std::shared_ptr<Models::ModelRunner> modelRunner, std::shared_ptr<DirectionReliabilitySettings> settings, std::shared_ptr<Sample> uDirection, bool invertZ, double uLow, double uHigh, double zLow, double zHigh, double& z)
+        double DirectionReliabilityForDirectionalSampling::findBetaBetweenBoundaries(const std::shared_ptr<Models::ModelRunner>& modelRunner,
+            const DirectionCalculation& directionCalculation,
+            double uLow, double uHigh, double zLow, double zHigh, double& z)
         {
             if (std::isnan(zLow) || std::isnan(zHigh))
             {
-                return this->findBetaBetweenBoundariesAllowNaN(modelRunner, settings, uDirection, invertZ, uLow, uHigh, zLow, zHigh, z);
+                return findBetaBetweenBoundariesAllowNaN(directionCalculation, uLow, uHigh, zLow, zHigh, z);
             }
             else
             {
-                auto dirCalcSettings = DirectionCalculationSettings(invertZ);
-                auto directionCalculation = DirectionCalculation(modelRunner, uDirection, dirCalcSettings);
+                const double zTolerance = GetZTolerance(Settings, uLow, uHigh, zLow, zHigh);
 
-                const double zTolerance = GetZTolerance(settings, uLow, uHigh, zLow, zHigh);
-
-                auto linearSearchCalculation = LinearRootFinder(zTolerance, settings->MaximumIterations);
+                auto linearSearchCalculation = LinearRootFinder(zTolerance, Settings->MaximumIterations);
 
                 auto low = XValue(uLow, zLow);
                 auto high = XValue(uHigh, zHigh);
@@ -390,7 +387,7 @@ namespace Deltares
 
                     if (modelRunner->Settings->proxySettings->ShouldUpdateFinalSteps && !isProxyAllowed(modelRunner, uResult, this->Threshold))
                     {
-                        uDirection->AllowProxy = false;
+                        directionCalculation.uDirection->AllowProxy = false;
 
                         double z0 = directionCalculation.GetZProxy(0, false);
                         double zResult = directionCalculation.GetZProxy(uResult, false);
@@ -398,14 +395,14 @@ namespace Deltares
                         if (std::isnan(zResult))
                         {
                             z = zResult;
-                            modelRunner->removeTask(uDirection->IterationIndex);
-                            return settings->MaximumLengthU;
+                            modelRunner->removeTask(directionCalculation.uDirection->IterationIndex);
+                            return Settings->MaximumLengthU;
                         }
                         else if (NumericSupport::GetSign(z0) == NumericSupport::GetSign(zResult) && std::fabs(zResult) >= std::fabs(z0))
                         {
                             z = zResult;
-                            modelRunner->removeTask(uDirection->IterationIndex);
-                            return settings->MaximumLengthU;
+                            modelRunner->removeTask(directionCalculation.uDirection->IterationIndex);
+                            return Settings->MaximumLengthU;
                         }
                         else
                         {
@@ -413,7 +410,7 @@ namespace Deltares
                             if (isProxyAllowed(modelRunner, uNew, this->Threshold))
                             {
                                 z = zResult;
-                                return std::min(uNew, settings->MaximumLengthU);
+                                return std::min(uNew, Settings->MaximumLengthU);
                             }
                         }
 
@@ -423,7 +420,7 @@ namespace Deltares
                         if (std::isnan(uResult))
                         {
                             z = zResult;
-                            uResult = settings->MaximumLengthU;
+                            uResult = Settings->MaximumLengthU;
                         }
                         else
                         {
