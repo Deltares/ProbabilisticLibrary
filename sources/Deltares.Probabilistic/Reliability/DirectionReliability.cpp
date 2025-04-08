@@ -267,19 +267,19 @@ namespace Deltares
 
                 auto low = XValue(uLow, zLow);
                 auto high = XValue(uHigh, zHigh);
-                double uResult = linearSearchCalculation.CalculateValue(low, high, 0.0, [directionCalculation](double v) { return directionCalculation.GetZ(v); });
+                auto resultRootFinder = linearSearchCalculation.CalculateValue(low, high, 0.0, [directionCalculation](double v) { return directionCalculation.GetZ(v); });
 
                 // TODO: PROBL-42 remove linear search , because bisection is more robust
-                if (std::isnan(uResult))
+                if (std::isnan(resultRootFinder.X))
                 {
                     constexpr double xTolerance = 0.01;
                     auto bisectionCalculation = BisectionRootFinder(zTolerance, xTolerance);
-                    uResult = bisectionCalculation.CalculateValue(low, high, 0.0, [directionCalculation](double v) { return directionCalculation.GetZ(v); });
+                    resultRootFinder = bisectionCalculation.CalculateValue(low, high, 0.0, [directionCalculation](double v) { return directionCalculation.GetZ(v); });
                 }
 
-                z = std::isnan(uResult) ? nan("") : directionCalculation.GetZ(uResult);
+                z = std::isnan(resultRootFinder.X) ? nan("") : resultRootFinder.Value;
 
-                return uResult;
+                return resultRootFinder.X;
             }
         }
 
@@ -361,25 +361,25 @@ namespace Deltares
 
                 auto low = XValue(uLow, zLow);
                 auto high = XValue(uHigh, zHigh);
-                double uResult = linearSearchCalculation.CalculateValue(low, high, 0.0, [directionCalculation](double v) { return directionCalculation.GetZ(v); });
+                auto resultRootFinder = linearSearchCalculation.CalculateValue(low, high, 0.0, [directionCalculation](double v) { return directionCalculation.GetZ(v); });
 
-                z = std::isnan(uResult) ? nan("") : directionCalculation.GetZ(uResult);
+                z = std::isnan(resultRootFinder.X) ? nan("") : resultRootFinder.Value;
 
                 if (modelRunner.Settings->IsProxyModel())
                 {
-                    if (std::isnan(uResult))
+                    if (std::isnan(resultRootFinder.X))
                     {
                         auto bisectionCalculation = BisectionRootFinder(zTolerance);
-                        uResult = bisectionCalculation.CalculateValue(uLow, uHigh, 0.0, [directionCalculation](double v) { return directionCalculation.GetZ(v); });
+                        resultRootFinder.X = bisectionCalculation.CalculateValue(uLow, uHigh, 0.0, [directionCalculation](double v) { return directionCalculation.GetZ(v); });
                     }
 
                     const auto ThresholdOffset = modelRunner.Settings->proxySettings->ThresholdOffset;
-                    if (modelRunner.Settings->proxySettings->ShouldUpdateFinalSteps && !isProxyAllowed(ThresholdOffset, uResult, this->Threshold))
+                    if (modelRunner.Settings->proxySettings->ShouldUpdateFinalSteps && !isProxyAllowed(ThresholdOffset, resultRootFinder.X, this->Threshold))
                     {
                         directionCalculation.uDirection.AllowProxy = false;
 
                         double z0 = directionCalculation.GetZProxy(0, false);
-                        double zResult = directionCalculation.GetZProxy(uResult, false);
+                        double zResult = directionCalculation.GetZProxy(resultRootFinder.X, false);
 
                         if (std::isnan(zResult))
                         {
@@ -395,7 +395,7 @@ namespace Deltares
                         }
                         else
                         {
-                            double uNew = NumericSupport::interpolate(0, z0, 0, zResult, uResult, true);
+                            double uNew = NumericSupport::interpolate(0, z0, 0, zResult, resultRootFinder.X, true);
                             if (isProxyAllowed(ThresholdOffset, uNew, Threshold))
                             {
                                 z = zResult;
@@ -404,21 +404,21 @@ namespace Deltares
                         }
 
                         auto lowProxy = XValue(0.0, z0);
-                        auto highProxy = XValue(uResult, zResult);
-                        uResult = linearSearchCalculation.CalculateValue(lowProxy, highProxy, 0.0, [directionCalculation](double v) { return directionCalculation.GetZNoProxy(v); });
-                        if (std::isnan(uResult))
+                        auto highProxy = XValue(resultRootFinder.X, zResult);
+                        resultRootFinder = linearSearchCalculation.CalculateValue(lowProxy, highProxy, 0.0, [directionCalculation](double v) { return directionCalculation.GetZNoProxy(v); });
+                        if (std::isnan(resultRootFinder.X))
                         {
                             z = zResult;
-                            uResult = Settings->MaximumLengthU;
+                            resultRootFinder.X = Settings->MaximumLengthU;
                         }
                         else
                         {
-                            z = directionCalculation.GetZProxy(uResult, false);
+                            z = directionCalculation.GetZProxy(resultRootFinder.X, false);
                         }
                     }
                 }
 
-                return uResult;
+                return resultRootFinder.X;
             }
         };
 

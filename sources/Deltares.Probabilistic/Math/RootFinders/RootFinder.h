@@ -46,9 +46,9 @@ namespace Deltares
             {
                 return nan("");
             }
-            virtual double CalculateValue(XValue low, XValue high, double target, RootFinderMethod function)
+            virtual XValue CalculateValue(XValue low, XValue high, double target, RootFinderMethod function)
             {
-                return nan("");
+                return { nan(""), nan("") };
             }
         };
     }

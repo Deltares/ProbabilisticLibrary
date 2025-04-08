@@ -62,10 +62,11 @@ namespace Deltares::Numeric
         // Initialize search method
         auto low = XValue(minStart, lowValue);
         auto high = XValue(maxStart, highValue);
-        return CalculateValue(low, high, resultValue, function);
+        auto result = CalculateValue(low, high, resultValue, function);
+        return result.X;
     }
 
-    double BisectionRootFinder::CalculateValue(XValue minStart, XValue maxStart, double resultValue, RootFinderMethod function)
+    XValue BisectionRootFinder::CalculateValue(XValue minStart, XValue maxStart, double resultValue, RootFinderMethod function)
     {
         UpdateMinMax(minStart, maxStart, resultValue, function);
 
@@ -119,10 +120,10 @@ namespace Deltares::Numeric
 
         if (xDifference > xTolerance && std::fabs(resultValue - result) > tolerance)
         {
-            return nan("");
+            return { nan(""), nan("") };
         }
 
-        return value;
+        return { value, result };
     }
 
     // Extrapolate until target is between minStart and maxStart

@@ -329,14 +329,14 @@ namespace Deltares
                     {
                         refBeta = 2.600438;
                         refAlpha = { 0.09106 , -0.98686 , -0.13345 };
-                        refTotalModelRuns = 1222;
+                        refTotalModelRuns = 1143; // was 1222;
                         refPreComputeCounter = 0;
                     }
                     else
                     {
                         refBeta = 2.60029;
                         refAlpha = { 0.09114 , -0.98683 , -0.13365 };
-                        refTotalModelRuns = 10985;
+                        refTotalModelRuns = 10812; // was 10985;
                         refPreComputeCounter = 0;
                     }
                 }
@@ -348,17 +348,17 @@ namespace Deltares
                     {
                         refBeta = 5.08261;
                         refAlpha = { 0.39910 , -0.910716 , -0.106376 };
-                        refTotalModelRuns = 1227;
+                        refTotalModelRuns = 1150; // was 1227;
                         refPreComputeCounter = 937;
                     }
                     else if (varyingType == ModelVaryingType::Monotone)
                     {
-                        refTotalModelRuns = 2261;
+                        refTotalModelRuns = 2189; // was 2261;
                         refPreComputeCounter = 1910;
                     }
                     else
                     {
-                        refTotalModelRuns = 10723;
+                        refTotalModelRuns = 10640; // was 10723;
                         refPreComputeCounter = 9500;
                     }
                 }

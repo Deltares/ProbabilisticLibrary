@@ -33,7 +33,7 @@ namespace Deltares::Numeric
         explicit BisectionRootFinder(double ztol, double xtol) : tolerance(ztol), xTolerance(xtol) {}
         explicit BisectionRootFinder(double ztol, double xtol, int maxIter) : tolerance(ztol), xTolerance(xtol), maxIterationsPerLoop(maxIter) {}
         double CalculateValue(double minStart, double maxStart, double resultValue, RootFinderMethod function) override;
-        double CalculateValue(XValue minStart, XValue maxStart, double resultValue, RootFinderMethod function) override;
+        XValue CalculateValue(XValue minStart, XValue maxStart, double resultValue, RootFinderMethod function) override;
     private:
         static DirectionType getDirection(XValue xvalue1, XValue xvalue2);
         static double getRelativeDifference(double minValue, double maxValue);
