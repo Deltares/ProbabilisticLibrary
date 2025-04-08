@@ -44,33 +44,32 @@ namespace Deltares
 
             std::shared_ptr<Sample> directionSample = this->Settings->StochastSet->getStartPoint();
 
-            double beta = getBeta(*modelRunner, directionSample, z0);
+            double beta = getBeta(*modelRunner, *directionSample, z0);
 
             std::shared_ptr<DesignPoint> designPoint = modelRunner->getDesignPoint(directionSample, beta);
 
             return designPoint;
         }
 
-        double DirectionReliability::getBeta(Models::ModelRunner& modelRunner, std::shared_ptr<Sample> directionSample, double z0)
+        double DirectionReliability::getBeta(Models::ModelRunner& modelRunner, Sample& directionSample, double z0)
         {
             auto zValues = PrecomputeValues();
             return getBeta(modelRunner, directionSample, z0, zValues);
         }
 
-        double DirectionReliability::getBeta(Models::ModelRunner& modelRunner, std::shared_ptr<Sample> directionSample,
+        double DirectionReliability::getBeta(Models::ModelRunner& modelRunner, Sample& directionSample,
             double z0, const PrecomputeValues& zValues)
         {
-            auto normalizedSample = directionSample->getNormalizedSample();
+            auto normalizedSample = directionSample.getNormalizedSample();
 
             auto task = BetaValueTask();
-            task.Settings = Settings;
             task.UValues = normalizedSample;
-            task.z0 = z0;
+            task.invertZ = z0 < 0.0;
 
             double beta = getDirectionBeta(modelRunner, task, zValues);
             beta *= z0;
 
-            directionSample->AllowProxy = task.UValues->AllowProxy;
+            directionSample.AllowProxy = task.UValues->AllowProxy;
 
             return beta;
         }
@@ -78,47 +77,42 @@ namespace Deltares
         double DirectionReliability::getDirectionBeta(Models::ModelRunner& modelRunner,
             const BetaValueTask& directionTask, const PrecomputeValues& zValues)
         {
-            std::shared_ptr<Sample> uDirection = directionTask.UValues->getNormalizedSample();
-
             if (modelRunner.canCalculateBeta())
             {
                 return modelRunner.getBeta(directionTask.UValues);
             }
             else
             {
-                bool invertZ = directionTask.z0 < 0.0;
-
-                auto sections = getDirectionSections(modelRunner, *directionTask.Settings,
-                    uDirection, invertZ, zValues);
+                auto sections = getDirectionSections(modelRunner, directionTask, zValues);
 
                 double beta = getBetaFromSections(sections);
 
-                directionTask.UValues->AllowProxy = uDirection->AllowProxy;
+                directionTask.UValues->AllowProxy = directionTask.UValues->AllowProxy;
 
                 return beta;
             }
         }
 
         std::vector<DirectionSection> DirectionReliability::getDirectionSections(Models::ModelRunner& modelRunner,
-            const DirectionReliabilitySettings& settings, std::shared_ptr<Sample> uDirection, bool invertZ, const PrecomputeValues& zValues)
+            const BetaValueTask& directionTask, const PrecomputeValues& zValues)
         {
             std::vector<DirectionSection> sections;
 
-            const int sectionsCount = settings.SectionCount();
+            const int sectionsCount = Settings->SectionCount();
 
             bool found = false;
-            bool monotone = settings.modelVaryingType == ModelVaryingType::Monotone;
-            auto dirCalcSettings = DirectionCalculationSettings(invertZ, settings.Dsdu, settings.MaximumLengthU);
-            auto model = ZGetter(modelRunner, settings);
-            auto directionCalculation = DirectionCalculation(model, uDirection, dirCalcSettings);
+            const bool monotone = Settings->modelVaryingType == ModelVaryingType::Monotone;
+            const auto dirCalcSettings = DirectionCalculationSettings(directionTask.invertZ, Settings->Dsdu, Settings->MaximumLengthU);
+            auto model = ZGetter(modelRunner, *Settings);
+            auto directionCalculation = DirectionCalculation(model, directionTask.UValues, dirCalcSettings);
             double prevzHigh = directionCalculation.GetZ(0, zValues);
 
             for (int k = 0; k <= sectionsCount && !this->isStopped(); k++)
             {
                 if (!found)
                 {
-                    double uLow = k * settings.Dsdu;
-                    double uHigh = std::min((k + 1) * settings.Dsdu, settings.MaximumLengthU);
+                    double uLow = k * Settings->Dsdu;
+                    double uHigh = std::min((k + 1) * Settings->Dsdu, Settings->MaximumLengthU);
 
                     double zLow = prevzHigh;
                     double zHigh = directionCalculation.GetZ(k+1, zValues);

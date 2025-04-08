@@ -237,7 +237,7 @@ namespace Deltares
                 else
                 {
                     samples[i]->threadId = omp_get_thread_num();
-                    betaValues[i] = directionReliability.getBeta(modelRunner, samples[i], z0Fac, zValues[i]);
+                    betaValues[i] = directionReliability.getBeta(modelRunner, *samples[i], z0Fac, zValues[i]);
                 }
             }
 

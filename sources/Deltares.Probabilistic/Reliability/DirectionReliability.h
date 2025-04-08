@@ -34,8 +34,7 @@ namespace Deltares
         {
         public:
             std::shared_ptr<Sample> UValues;
-            std::shared_ptr<DirectionReliabilitySettings> Settings;
-            double z0 = 0.0;
+            bool invertZ;
         };
 
         class DirectionReliability : public ReliabilityMethod
@@ -43,9 +42,9 @@ namespace Deltares
         public:
             std::shared_ptr<DirectionReliabilitySettings> Settings = std::make_shared<DirectionReliabilitySettings>();
             std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
-            double getBeta(Models::ModelRunner& modelRunner, std::shared_ptr<Sample> directionSample, double z0,
+            double getBeta(Models::ModelRunner& modelRunner, Sample& directionSample, double z0,
                 const PrecomputeValues& zValues);
-            double getBeta(Models::ModelRunner& modelRunner, std::shared_ptr<Sample> directionSample, double z0);
+            double getBeta(Models::ModelRunner& modelRunner, Sample& directionSample, double z0);
             static double GetZTolerance(const DirectionReliabilitySettings& settings, double uLow, double uHigh, double zLow, double zHigh);
         protected:
             double findBetaBetweenBoundariesAllowNaN(const DirectionCalculation& directionCalculation,
@@ -57,7 +56,7 @@ namespace Deltares
             double getDirectionBeta(Models::ModelRunner& modelRunner, const BetaValueTask& directionTask,
                 const PrecomputeValues& zValues);
             std::vector<DirectionSection> getDirectionSections(Models::ModelRunner& modelRunner,
-                const DirectionReliabilitySettings& settings, std::shared_ptr<Sample> uDirection, bool invertZ, const PrecomputeValues& zValues);
+                const BetaValueTask& directionTask, const PrecomputeValues& zValues);
             double getBetaFromSections(const std::vector<DirectionSection>& sections) const;
         };
 
