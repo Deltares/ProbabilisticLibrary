@@ -28,16 +28,19 @@ namespace Deltares::Reliability
     class PrecomputeValue
     {
     public:
-        PrecomputeValue(const double u, const double z) : u(u), z(z) {}
+        PrecomputeValue(const double u, const double z, const bool isRestartRequired, const bool allowProxy)
+        : u(u), z(z), IsRestartRequired(isRestartRequired), AllowProxy(allowProxy) {}
         const double u;
         const double z;
+        const bool IsRestartRequired;
+        const bool AllowProxy;
     };
 
     class PrecomputeValues
     {
     public:
         std::vector<PrecomputeValue> values;
-        std::pair<bool, double> findZ(const size_t index) const;
+        std::pair<bool, PrecomputeValue> findZ(const size_t index) const;
     };
 
 }

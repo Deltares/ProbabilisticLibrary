@@ -46,12 +46,12 @@ namespace Deltares::Reliability
 
         // copy z-value zero sample
         auto precomputed = PrecomputeValues();
-        const auto z0pv = PrecomputeValue(0.0, std::abs(z0));
+        const auto z0pv = PrecomputeValue(0.0, std::abs(z0), false, true);
         precomputed.values.emplace_back(z0pv);
         auto zValues = std::vector(nSamples, precomputed);
         const double z0Fac = ReliabilityMethod::getZFactor(z0);
 
-        if (modelRunner.Settings->IsProxyModel() || modelRunner.canCalculateBeta()) return zValues;
+        if (modelRunner.canCalculateBeta()) return zValues;
 
         // precompute Z-values multiples of Dsdu
         const int sectionsCount = settings.SectionCount();
@@ -77,7 +77,11 @@ namespace Deltares::Reliability
                 if (!mask[i])
                 {
                     auto previous = zValues[i].values.back().z;
-                    auto z1pv = PrecomputeValue(u1, z0Fac * zValues2[ii]);
+                    samples[i]->IsRestartRequired = uSamples[ii]->IsRestartRequired;
+                    samples[i]->AllowProxy = uSamples[ii]->AllowProxy;
+                    samples[i]->Z = uSamples[ii]->Z;
+                    auto z1pv = PrecomputeValue(u1, z0Fac * zValues2[ii],
+                        uSamples[ii]->IsRestartRequired, uSamples[ii]->AllowProxy);
                     zValues[i].values.push_back(z1pv);
                     updateMask(mask, i, zValues2[ii], previous);
                     ii++;

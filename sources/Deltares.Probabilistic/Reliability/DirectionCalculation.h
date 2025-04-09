@@ -62,8 +62,13 @@ namespace Deltares::Reliability
 
         double GetZ(size_t index, const PrecomputeValues& zValues)  const
         {
-            const auto [foundZ0, z0] = zValues.findZ(index);
-            if (foundZ0) return z0;
+            const auto [foundZ0, precomputedResult] = zValues.findZ(index);
+            if (foundZ0)
+            {
+                uDirection.AllowProxy = precomputedResult.AllowProxy;
+                uDirection.IsRestartRequired = precomputedResult.IsRestartRequired;
+                return precomputedResult.z;
+            }
 
             double factor = std::min(static_cast<double>(index) * settings.Dsdu, settings.MaximumLengthU);
             return model.GetZ(uDirection, factor, settings.inverted, true);

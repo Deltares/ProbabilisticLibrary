@@ -26,15 +26,16 @@
 
 namespace Deltares::Reliability
 {
-    std::pair<bool, double>  PrecomputeValues::findZ(const size_t index) const
+    std::pair<bool, PrecomputeValue>  PrecomputeValues::findZ(const size_t index) const
     {
         if (index < values.size())
         {
-            return { true, values[index].z };
+            return { true, values[index] };
         }
         else
         {
-            return { false, std::nan("")};
+            auto result = PrecomputeValue(std::nan(""), std::nan(""), false, false);
+            return { false, result};
         }
 
     }
