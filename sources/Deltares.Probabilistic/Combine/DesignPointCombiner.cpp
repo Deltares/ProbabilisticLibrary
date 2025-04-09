@@ -26,6 +26,7 @@
 #include "ImportanceSamplingCombiner.h"
 #include "HohenbichlerNumIntCombiner.h"
 #include "DirectionalSamplingCombiner.h"
+#include "HohenbichlerFormCombiner.h"
 
 namespace Deltares
 {
@@ -48,6 +49,11 @@ namespace Deltares
                 auto directionalSamplingCombiner = std::make_shared<DirectionalSamplingCombiner>();
                 directionalSamplingCombiner->randomGeneratorType = generator;
                 return directionalSamplingCombiner;
+            }
+            case CombinerType::HohenbichlerForm:
+            {
+                auto hhFormCmb = std::make_shared<HohenbichlerFormCombiner>();
+                return hhFormCmb;
             }
             default: throw probLibException("Combiner type");
             }

@@ -82,6 +82,7 @@ class CombinerMethod(Enum):
 	hohenbichler = 'hohenbichler'
 	importance_sampling = 'importance_sampling'
 	directional_sampling = 'directional_sampling'
+	hohenbichler_form = 'hohenbichler_form'
 	def __str__(self):
 		return str(self.value)
 

@@ -243,6 +243,70 @@ class Test_combine(unittest.TestCase):
         self.assertAlmostEqual(0.9, dp_correlated.alphas['a'].x, delta=margin)
         self.assertAlmostEqual(0.9, dp_correlated.alphas['b'].x, delta=margin)
 
+    def test_calculated_correlated_design_points_hohenbichler_form(self):
+
+        project = ReliabilityProject()
+
+        project.model = project_builder.linear_ab;
+
+        project.variables['a'].distribution = DistributionType.uniform
+        project.variables['a'].minimum = -1
+        project.variables['a'].maximum = 1
+
+        project.variables['b'].distribution = DistributionType.uniform
+        project.variables['b'].minimum = -1
+        project.variables['b'].maximum = 1
+
+        project.correlation_matrix['a', 'b'] = 0.9
+
+        project.settings.reliability_method = ReliabilityMethod.crude_monte_carlo
+        project.settings.maximum_samples = 100000
+        project.run()
+        dp1 = project.design_point
+
+        self.assertAlmostEqual(1.74, dp1.reliability_index, delta=margin)
+
+        self.assertAlmostEqual(-0.97, dp1.alphas['a'].alpha, delta=margin)
+        self.assertAlmostEqual(-0.23, dp1.alphas['b'].alpha, delta=margin)
+
+        self.assertAlmostEqual(0.9, dp1.alphas['a'].x, delta=margin)
+        self.assertAlmostEqual(0.9, dp1.alphas['b'].x, delta=margin)
+
+        project.model = project_builder.linear_cd;
+
+        project.variables['c'].distribution = DistributionType.uniform
+        project.variables['c'].minimum = -1
+        project.variables['c'].maximum = 1
+
+        project.variables['d'].distribution = DistributionType.uniform
+        project.variables['d'].minimum = -1
+        project.variables['d'].maximum = 1
+
+        project.run()
+        dp2 = project.design_point
+
+        self.assertAlmostEqual(2.57, dp2.reliability_index, delta=margin)
+
+        combine_project = CombineProject()
+        combine_project.design_points.append(dp1)
+        combine_project.design_points.append(dp2)
+
+        combine_project.settings.combiner_method = CombinerMethod.hohenbichler_form
+        combine_project.settings.combine_type = CombineType.series
+        combine_project.run()
+
+        combine_project._design_point_correlation_matrix['a', 'b'] = 0.9  # copy for the moment
+        combine_project.run()
+
+        dp_correlated = combine_project.design_point
+
+        self.assertAlmostEqual(1.69, dp_correlated.reliability_index, delta=margin)
+
+        self.assertAlmostEqual(-0.97, dp_correlated.alphas['a'].alpha, delta=margin)
+        self.assertAlmostEqual(-0.23, dp_correlated.alphas['b'].alpha, delta=margin)
+
+        self.assertAlmostEqual(0.60, dp_correlated.alphas['a'].x, delta=margin)
+        self.assertAlmostEqual(0.74, dp_correlated.alphas['b'].x, delta=margin)
 
     def test_excluding_weighted_sum(self):
 
