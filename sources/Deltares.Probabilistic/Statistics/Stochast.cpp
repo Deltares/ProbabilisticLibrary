@@ -31,7 +31,7 @@ namespace Deltares
 {
     namespace Statistics
     {
-        Stochast::Stochast() { };
+        Stochast::Stochast() {};
 
         Stochast::Stochast(DistributionType distributionType, std::vector<double> values)
         {
@@ -152,8 +152,13 @@ namespace Deltares
                 double oldMean = 0;
                 double oldDeviation = 0;
 
-                DistributionChangeType distributionChangingType = distributionChangeType;
-                if (distributionType == DistributionType::Table)
+                DistributionChangeType distributionChangingType = this->distributionChangeType;
+
+                if (this->isInitial())
+                {
+                    distributionChangingType = DistributionChangeType::Nothing;
+                }
+                else if (this->distributionType == DistributionType::Table)
                 {
                     distributionChangingType = DistributionChangeType::FitFromHistogramValues;
                 }
@@ -170,12 +175,13 @@ namespace Deltares
 
                 if (distribution->maintainMeanAndDeviation(properties))
                 {
-                    if (distributionChangingType == DistributionChangeType::MaintainMeanAndDeviation)
+                    if (distributionChangingType == DistributionChangeType::Nothing)
                     {
-                        if (oldMean != 0 || oldDeviation != 0)
-                        {
-                            setMeanAndDeviation(oldMean, oldDeviation);
-                        }
+                        // nothing to do
+                    }
+                    else if (distributionChangingType == DistributionChangeType::MaintainMeanAndDeviation)
+                    {
+                        this->setMeanAndDeviation(oldMean, oldDeviation);
                     }
                     else if (distributionChangingType == DistributionChangeType::FitFromHistogramValues)
                     {
@@ -186,6 +192,13 @@ namespace Deltares
                     }
                 }
             }
+        }
+
+        bool Stochast::isInitial()
+        {
+            return this->distributionType == Deterministic &&
+                this->properties->Location == 0 &&
+                this->properties->Scale == 0;
         }
 
         bool Stochast::hasParameter(DistributionPropertyType distributionPropertyType)
@@ -302,7 +315,11 @@ namespace Deltares
 
         void Stochast::setMean(double mean)
         {
-            double deviation = getDistributionType() == Deterministic ? getProperties()->Scale : getDeviation();
+            double deviation = this->getDistributionType() == Deterministic ? this->getProperties()->Scale : this->getDeviation();
+            if (!this->isValid())
+            {
+                deviation = 0;
+            }
 
             if (constantParameterType == ConstantParameterType::Deviation)
             {

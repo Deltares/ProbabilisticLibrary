@@ -21,6 +21,7 @@
 #
 import unittest
 import sys
+import numpy as np
 
 from probabilistic_library import *
 
@@ -210,12 +211,57 @@ class Test_statistics(unittest.TestCase):
         # registered stochasts
         self.assertAlmostEqual(1.5, stochast.histogram_values[0].lower_bound, delta=margin)
 
+    def test_changing_distribution(self):
+
+        stochast1 = Stochast()
+        stochast1.distribution = DistributionType.normal
+        self.assertAlmostEqual(0, stochast1.mean, delta=margin)
+        self.assertAlmostEqual(0, stochast1.deviation, delta=margin)
+
+        stochast1.mean = 5
+        stochast1.deviation = 1
+        stochast1.truncated = True
+
+        self.assertAlmostEqual(5, stochast1.mean, delta=margin)
+        self.assertAlmostEqual(1, stochast1.deviation, delta=margin)
+
+        self.assertLess(stochast1.minimum, -1000)
+        self.assertGreater(stochast1.maximum, 1000)
+
+        stochast1.minimum = 4
+        self.assertAlmostEqual(5, stochast1.mean, delta=margin)
+
+        stochast1.distribution = DistributionType.uniform
+        self.assertAlmostEqual(5, stochast1.mean, delta=margin)
+        self.assertAlmostEqual(1, stochast1.deviation, delta=margin)
+        self.assertAlmostEqual(3.26, stochast1.minimum, delta=margin)
+        self.assertAlmostEqual(6.73, stochast1.maximum, delta=margin)
+
+        stochast2 = Stochast()
+        stochast2.distribution = DistributionType.uniform
+
+        self.assertTrue(np.isnan(stochast2.mean))
+        self.assertAlmostEqual(np.inf, stochast2.deviation, delta=margin)
+        self.assertAlmostEqual(-np.inf, stochast2.minimum, delta=margin)
+        self.assertAlmostEqual(np.inf, stochast2.maximum, delta=margin)
+
+        stochast2.minimum = 0
+        stochast2.maximum = 8
+
+        self.assertAlmostEqual(4, stochast2.mean, delta=margin)
+
+        stochast2.distribution = DistributionType.normal
+        self.assertAlmostEqual(4, stochast2.mean, delta=margin)
+
+        stochast2.truncated = True
+        self.assertAlmostEqual(4, stochast2.mean, delta=margin)
+
     def test_composite(self):
         stochasts = []
 
         stochast1 = Stochast()
         stochast1.distribution = DistributionType.uniform
-        stochast1.minimium = 0
+        stochast1.minimum = 0
         stochast1.maximum = 8
 
         stochast2 = Stochast()
