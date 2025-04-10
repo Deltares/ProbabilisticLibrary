@@ -373,6 +373,7 @@
     <ClCompile Include="Combine\HohenbichlerExcludingCombiner.cpp" />
     <ClCompile Include="Model\ComputationalStochast.cpp" />
     <ClCompile Include="Model\ModelProject.cpp" />
+    <ClCompile Include="Model\ModelSample.cpp" />
     <ClCompile Include="Reliability\FragilityCurveProject.cpp" />
     <ClCompile Include="Reliability\FragilityCurve.cpp" />
     <ClCompile Include="Reliability\FragilityCurveIntegration.cpp" />

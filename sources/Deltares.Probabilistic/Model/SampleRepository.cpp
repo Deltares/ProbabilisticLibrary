@@ -19,22 +19,21 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#pragma once
 
 #include "SampleRepository.h"
 
 namespace Deltares::Models
 {
-    void SampleRepository::SampleCollection::registerSample(std::shared_ptr<ModelSample> sample)
+    void SampleRepository::SampleCollection::registerSample(const std::shared_ptr<ModelSample>& sample)
     {
-        this->samples.push_back(sample);
+        samples.push_back(sample);
     }
 
-    std::shared_ptr<ModelSample> SampleRepository::SampleCollection::retrieveSample(std::shared_ptr<ModelSample> sample) const
+    std::shared_ptr<ModelSample> SampleRepository::SampleCollection::retrieveSample(const std::shared_ptr<ModelSample>& sample) const
     {
-        for (std::shared_ptr<ModelSample> existingSample : samples)
+        for (const auto& existingSample : samples)
         {
-            if (existingSample->hasSameValues(sample))
+            if (existingSample->hasSameValues(*sample))
             {
                 return existingSample;
             }
@@ -43,24 +42,24 @@ namespace Deltares::Models
         return nullptr;
     }
 
-    double SampleRepository::getKey(std::shared_ptr<ModelSample> sample)
+    double SampleRepository::getKey(const ModelSample& sample)
     {
         // calculates a sample key for the sample sample
         double sum = 0;
-        for (size_t i = 0; i < sample->Values.size(); i++)
+        for (size_t i = 0; i < sample.Values.size(); i++)
         {
             int index = static_cast<int>(i) + 1;
-            sum += index * sample->Values[i];
+            sum += index * sample.Values[i];
         }
 
         return sum;
     }
 
-    void SampleRepository::registerSample(std::shared_ptr<ModelSample> sample)
+    void SampleRepository::registerSample(const std::shared_ptr<ModelSample>& sample)
     {
-        double key = this->getKey(sample);
+        double key = getKey(*sample);
 
-        if (!this->sampleCollections.contains(key))
+        if (!sampleCollections.contains(key))
         {
             sampleCollections[key] = std::make_unique<SampleCollection>();
         }
@@ -68,16 +67,16 @@ namespace Deltares::Models
         sampleCollections[key]->registerSample(sample);
     }
 
-    std::shared_ptr<ModelSample> SampleRepository::retrieveSample(std::shared_ptr<ModelSample> sample)
+    std::shared_ptr<ModelSample> SampleRepository::retrieveSample(const std::shared_ptr<ModelSample>& sample)
     {
-        double key = this->getKey(sample);
+        double key = getKey(*sample);
 
-        if (!this->sampleCollections.contains(key))
+        if (!sampleCollections.contains(key))
         {
             return nullptr;
         }
 
-        return this->sampleCollections[key]->retrieveSample(sample);
+        return sampleCollections[key]->retrieveSample(sample);
     }
 }
 

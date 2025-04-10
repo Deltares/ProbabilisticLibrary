@@ -25,85 +25,42 @@
 #include <vector>
 #include <memory>
 
-namespace Deltares
-{
-    namespace Models
-    {
-        class ModelSample
-        {
-        public:
-            ModelSample(std::vector<double> values)
-            {
-                this->Values = values;
-            }
+namespace Deltares::Models
+ {
+     class ModelSample
+     {
+     public:
+         ModelSample(const std::vector<double>& values)
+         {
+             Values = values;
+         }
 
-            /**
-             * \brief Resets all contents of the sample to its default values
-             * \remark Values are not cleared, since they are provided in the constructor
-             */
-            void clear()
-            {
-                IterationIndex = -1;
-                threadId = 0;
-                Weight = std::nan("");
-                AllowProxy = true;
-                IsRestartRequired = false;
-                Z = std::nan("");
-                Beta = 0;
-                Tag = 0;
-            }
+         void clear();
 
-            /**
-             * \brief Copies the results from another sample
-             */
-            void copyFrom(const std::shared_ptr<ModelSample>& source)
-            {
-                this->Z = source->Z;
-                this->OutputValues = std::vector<double>(source->OutputValues.size());
-                for (size_t i = 0; i < this->OutputValues.size(); i++)
-                {
-                    this->OutputValues[i] = source->OutputValues[i];
-                }
-            }
+         void copyFrom(const std::shared_ptr<ModelSample>& source);
 
-            std::vector<double> Values;
-            std::vector<double> OutputValues;
+         bool hasSameValues(const ModelSample& other) const;
 
-            int IterationIndex = -1;
-            int threadId = 0;
-            double Weight = 1;
-            bool AllowProxy = true;
-            bool IsRestartRequired = false;
-            double Beta = 0;
-            double Z = nan("");
+         std::vector<double> Values;
+         std::vector<double> OutputValues;
 
-            bool ExtendedLogging = false;
+         int IterationIndex = -1;
+         int threadId = 0;
+         double Weight = 1;
+         bool AllowProxy = true;
+         bool IsRestartRequired = false;
+         double Beta = 0;
+         double Z = nan("");
 
-            /**
-             * Indication of a logging message
-             */
-            int LoggingCounter = 0;
+         bool ExtendedLogging = false;
 
-            int Tag = 0;
+         /**
+          * Indication of a logging message
+          */
+         int LoggingCounter = 0;
 
-            bool hasSameValues(std::shared_ptr<ModelSample> other)
-            {
-                if (this->Values.size() != other->Values.size())
-                {
-                    return false;
-                }
+         int Tag = 0;
 
-                for (int i = 0; i < this->Values.size(); i++)
-                {
-                    if (this->Values[i] != other->Values[i])
-                    {
-                        return false;
-                    }
-                }
-
-                return true;
-            }
-        };
-    }
+     };
 }
 

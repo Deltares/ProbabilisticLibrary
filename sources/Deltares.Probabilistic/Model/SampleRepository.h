@@ -34,20 +34,18 @@ namespace Deltares::Models
     class SampleRepository
     {
     public:
-        SampleRepository()
-        {
-        }
+        SampleRepository() = default;
 
-        void registerSample(std::shared_ptr<ModelSample> sample);
+        void registerSample(const std::shared_ptr<ModelSample>& sample);
 
-        std::shared_ptr<ModelSample> retrieveSample(std::shared_ptr<ModelSample> sample);
+        std::shared_ptr<ModelSample> retrieveSample(const std::shared_ptr<ModelSample>& sample);
 
     private:
         class SampleCollection
         {
         public:
-            void registerSample(std::shared_ptr<ModelSample> sample);
-            std::shared_ptr<ModelSample> retrieveSample(std::shared_ptr<ModelSample> sample) const;
+            void registerSample(const std::shared_ptr<ModelSample>& sample);
+            std::shared_ptr<ModelSample> retrieveSample(const std::shared_ptr<ModelSample>& sample) const;
             int size() { return static_cast<int>(samples.size()); }
         private:
             std::vector<std::shared_ptr<ModelSample>> samples;
@@ -61,7 +59,7 @@ namespace Deltares::Models
          * \return the key for the sample
          * \remarks The key is not unique 
          */
-        double getKey(std::shared_ptr<ModelSample> sample);
+        static double getKey(const ModelSample& sample);
     };
 }
 
