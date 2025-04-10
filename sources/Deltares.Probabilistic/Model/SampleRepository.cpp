@@ -61,10 +61,10 @@ namespace Deltares::Models
 
         if (!sampleCollections.contains(key))
         {
-            sampleCollections[key] = std::make_unique<SampleCollection>();
+            sampleCollections[key] = SampleCollection();
         }
 
-        sampleCollections[key]->registerSample(sample);
+        sampleCollections[key].registerSample(sample);
     }
 
     std::shared_ptr<ModelSample> SampleRepository::retrieveSample(const std::shared_ptr<ModelSample>& sample)
@@ -76,7 +76,7 @@ namespace Deltares::Models
             return nullptr;
         }
 
-        return sampleCollections[key]->retrieveSample(sample);
+        return sampleCollections[key].retrieveSample(sample);
     }
 }
 

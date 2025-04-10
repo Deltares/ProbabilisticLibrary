@@ -46,12 +46,12 @@ namespace Deltares::Models
         public:
             void registerSample(const std::shared_ptr<ModelSample>& sample);
             std::shared_ptr<ModelSample> retrieveSample(const std::shared_ptr<ModelSample>& sample) const;
-            int size() { return static_cast<int>(samples.size()); }
+            int size() const { return static_cast<int>(samples.size()); }
         private:
             std::vector<std::shared_ptr<ModelSample>> samples;
         };
 
-        std::unordered_map<double, std::unique_ptr<SampleCollection>> sampleCollections;
+        std::unordered_map<double, SampleCollection> sampleCollections;
 
         /**
          * \brief Gets a simple key for a sample, the key is meant for grouping and quick access to the sample
