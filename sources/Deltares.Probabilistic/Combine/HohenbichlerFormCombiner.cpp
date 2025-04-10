@@ -62,6 +62,8 @@ namespace Deltares
                 auto alpha = std::make_shared<StochastPointAlpha>();
                 alpha->Stochast = stochasts[i];
                 alpha->Alpha = result.ab.getAlphaI(i);
+                alpha->U = -dp->Beta * alpha->Alpha;
+                alpha->X = stochasts[i]->getXFromU(alpha->U);
                 dp->Alphas.push_back(alpha);
             }
             return dp;

@@ -305,8 +305,8 @@ class Test_combine(unittest.TestCase):
         self.assertAlmostEqual(-0.97, dp_correlated.alphas['a'].alpha, delta=margin)
         self.assertAlmostEqual(-0.23, dp_correlated.alphas['b'].alpha, delta=margin)
 
-        self.assertAlmostEqual(0.60, dp_correlated.alphas['a'].x, delta=margin)
-        self.assertAlmostEqual(0.74, dp_correlated.alphas['b'].x, delta=margin)
+        self.assertAlmostEqual(0.896, dp_correlated.alphas['a'].x, delta=margin)
+        self.assertAlmostEqual(0.897, dp_correlated.alphas['b'].x, delta=margin)
 
     def test_excluding_weighted_sum(self):
 
