@@ -531,9 +531,10 @@ namespace Deltares
         /// <param name="minVal"> lower bound </param>
         /// <param name="maxVal"> upper bound </param>
         /// <returns> limited value </returns>
-        double NumericSupport::limit(const double x, const double minVal, const double maxVal)
+        double NumericSupport::limit(const double x, double minVal, double maxVal)
         {
-            if (minVal > maxVal) throw Reliability::probLibException("lower bound > upper bound in limit function");
+            if (minVal > maxVal) {std::swap(minVal, maxVal);}
+
             double y = std::min(x, maxVal);
             y = std::max(y, minVal);
             return y;

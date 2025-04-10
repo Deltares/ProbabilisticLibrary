@@ -66,7 +66,7 @@ namespace Deltares
             static double getMaxValidValue(std::function<double(double)> function);
             static double interpolate(double x, double minX, double minY, double maxX, double maxY, bool extrapolate = false, InterpolationType interpolationType = Linear);
             static double interpolate(double x, const std::vector<double>& xValues, const std::vector<double>& yValues, bool extrapolate = false, InterpolationType interpolationType = Linear);
-            static double limit(const double x, const double minVal, const double maxVal);
+            static double limit(const double x, double minVal, double maxVal);
 
             /**
              * \brief Gets the full factorial combination of a number of lists

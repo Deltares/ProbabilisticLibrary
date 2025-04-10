@@ -121,19 +121,8 @@ namespace Deltares::Probabilistic::Test
         y = NumericSupport::limit(2.5, 1.0, 2.0);
         EXPECT_EQ(y, 2.0) << "expect value equal to upper limit";
 
-        bool success = true;
-        try
-        {
-            y = NumericSupport::limit(1.0, 2.0, 1.0);
-            EXPECT_EQ(y, 0.0) << "dummy check";
-        }
-        catch (const Reliability::probLibException& e)
-        {
-            const std::string message = e.what();
-            EXPECT_EQ(message, "lower bound > upper bound in limit function");
-            success = false;
-        }
-        EXPECT_FALSE(success) << "mismatch lower / upper bound";
+        y = NumericSupport::limit(2.5, 2.0, 1.0);
+        EXPECT_EQ(y, 2.0) << "expect value equal to maximum of the boundary values";
     }
 
 }
