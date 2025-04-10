@@ -60,14 +60,14 @@ namespace Deltares::Models
     {
         double key = this->getKey(sample);
 
-        locker.lock();
+        locker->lock();
 
         if (!this->sampleCollections.contains(key))
         {
             sampleCollections[key] = std::make_unique<SampleCollection>();
         }
 
-        locker.unlock();
+        locker->unlock();
 
         sampleCollections[key]->registerSample(sample);
     }

@@ -67,7 +67,7 @@ namespace Deltares::Models
         /**
          * \brief Supporting utility for multi threading
          */
-        Utils::Locker locker = Utils::Locker();
+        Utils::Locker* locker = new Utils::Locker();
     };
 }
 
