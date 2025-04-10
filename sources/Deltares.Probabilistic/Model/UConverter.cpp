@@ -407,6 +407,34 @@ namespace Deltares
             return xValues;
         }
 
+        std::vector<double> UConverter::getValuesFromType(Statistics::RunValuesType type) const
+        {
+            auto xValues = std::vector<double>(this->stochasts.size());
+
+            for (size_t i = 0; i < this->stochasts.size(); i++)
+            {
+                if (!this->hasVariableStochasts || !stochasts[i]->definition->IsVariableStochast)
+                {
+                    xValues[i] = this->stochasts[i]->definition->getXFromType(type);
+                }
+            }
+
+            if (this->hasVariableStochasts)
+            {
+                for (int stochastIndex : variableStochastList)
+                {
+                    int sourceIndex = variableStochastIndex[stochastIndex];
+
+                    double xSource = xValues[sourceIndex];
+                    xValues[stochastIndex] = stochasts[stochastIndex]->definition->getXFromTypeAndSource(xSource, type);
+                }
+            }
+
+            return xValues;
+        }
+
+
+
         void UConverter::updateVariableSample(std::vector<double>& xValues, std::vector<double>& originalValues)
         {
             if (this->hasVariableStochasts)

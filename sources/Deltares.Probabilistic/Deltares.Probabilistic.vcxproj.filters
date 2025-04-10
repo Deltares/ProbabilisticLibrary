@@ -230,6 +230,8 @@
     </ClCompile>
     <ClCompile Include="Model\SampleRepository.cpp" />
     <ClCompile Include="Sensitivity\SensitivityResult.cpp" />
+    <ClCompile Include="Model\RunProject.cpp" />
+    <ClCompile Include="Model\RunProjectSettings.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -479,6 +481,8 @@
       <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="Model\SampleRepository.h" />
+    <ClInclude Include="Model\RunProject.h" />
+    <ClInclude Include="Model\RunProjectSettings.h" />
     <ClInclude Include="Sensitivity\SensitivityResult.h" />
   </ItemGroup>
   <ItemGroup>

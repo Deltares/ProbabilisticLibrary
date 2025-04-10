@@ -89,6 +89,7 @@ namespace Deltares
             std::shared_ptr<Reliability::DesignPoint> getDesignPoint(std::shared_ptr<Sample> sample, double beta, std::shared_ptr<Reliability::ConvergenceReport> convergenceReport = nullptr, std::string identifier = "");
             Sensitivity::SensitivityResult getSensitivityResult(std::shared_ptr<Statistics::Stochast> stochast) const;
             std::shared_ptr<Models::ModelSample> getModelSample(std::shared_ptr<Sample> sample);
+            std::shared_ptr<Models::ModelSample> getModelSampleFromType(Statistics::RunValuesType type);
             std::vector<double> getOnlyVaryingValues(std::vector<double> values);
 
             void setDirectionModel(ZBetaLambda zBetaLambda) const;
@@ -98,9 +99,10 @@ namespace Deltares
             void runDesignPoint(std::shared_ptr<Reliability::DesignPoint> designPoint);
             void registerSample(std::shared_ptr<Sensitivity::CorrelationMatrixBuilder> correlationMatrixBuilder, std::shared_ptr<Sample> sample);
             void updateVariableSample(std::vector<double>& xValues, std::vector<double>& originalValues);
+            Evaluation getEvaluationFromType(Statistics::RunValuesType type);
 
             bool haveSampleValuesChanged() const { return uConverter->haveSampleValuesChanged(); }
-            Evaluation* getEvaluation(std::shared_ptr<Sample> sample);
+            Evaluation getEvaluation(std::shared_ptr<Sample> sample);
         private:
             std::shared_ptr<ZModel> zModel;
             std::shared_ptr<UConverter> uConverter;
@@ -110,7 +112,7 @@ namespace Deltares
             std::vector< std::shared_ptr<Message>> messages;
             std::shared_ptr<ProgressIndicator> progressIndicator = nullptr;
 
-            Evaluation* getEvaluationFromSample(std::shared_ptr<ModelSample> sample);
+            Evaluation getEvaluationFromSample(std::shared_ptr<ModelSample> sample);
 
             void registerEvaluation(std::shared_ptr<ModelSample> sample);
 

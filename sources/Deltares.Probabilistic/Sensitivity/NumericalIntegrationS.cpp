@@ -87,7 +87,7 @@ namespace Deltares
 
                 if (quantileIndex >= 0)
                 {
-                    std::shared_ptr<Models::Evaluation> evaluation = std::shared_ptr<Models::Evaluation>(modelRunner->getEvaluation(this->calculatedSamples[quantileIndex]));
+                    std::shared_ptr<Models::Evaluation> evaluation = std::make_shared<Models::Evaluation>(modelRunner->getEvaluation(this->calculatedSamples[quantileIndex]));
                     result.quantileEvaluations.push_back(evaluation);
                 }
                 else
