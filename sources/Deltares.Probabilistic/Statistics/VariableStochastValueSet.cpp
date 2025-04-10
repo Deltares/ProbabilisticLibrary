@@ -74,7 +74,12 @@ namespace Deltares
         std::shared_ptr<StochastProperties> VariableStochastValuesSet::getInterpolatedStochast(double x)
         {
             std::shared_ptr<StochastProperties> properties = std::make_shared<StochastProperties>();
+            updateProperties(properties, x);
+            return properties;
+        }
 
+        void VariableStochastValuesSet::updateProperties(std::shared_ptr<StochastProperties> properties, double x)
+        {
             properties->Location = NumericSupport::interpolate(x, this->xValues, this->locations);
             properties->Scale = NumericSupport::interpolate(x, this->xValues, this->scales);
             properties->Minimum = NumericSupport::interpolate(x, this->xValues, this->minimums);
@@ -84,8 +89,6 @@ namespace Deltares
             properties->Shift = NumericSupport::interpolate(x, this->xValues, this->shifts);
             properties->ShiftB = NumericSupport::interpolate(x, this->xValues, this->shiftsB);
             properties->Observations = round(NumericSupport::interpolate(x, this->xValues, this->observations));
-
-            return properties;
         }
 
         bool VariableStochastValuesSet::isVarying(DistributionType distributionType, std::shared_ptr<StochastProperties> defaultStochast)

@@ -308,6 +308,11 @@ namespace Deltares
             void initializeConditionalValues();
 
             /**
+             * \brief Updates the stochast properties with conditional values
+             */
+            void updateFromConditionalValues(double xSource);
+
+            /**
              * \brief Indicates whether stochastic parameters can be estimated for a given set of x-values
              * \return Indication
              */

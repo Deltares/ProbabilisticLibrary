@@ -58,6 +58,12 @@ namespace Deltares
             std::shared_ptr<StochastProperties> getInterpolatedStochast(double x);
 
             /**
+              * \brief Updates properties with the interpolated stochast at a given x-value
+              * \param x The value at which the interpolated stochast is generated
+              */
+            void updateProperties(std::shared_ptr<StochastProperties> properties, double x);
+
+            /**
               * \brief Indicates whether an interpolated stochast can lead to different x values
               * \param distributionType distribution type
               * \param defaultStochast default stochast

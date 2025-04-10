@@ -344,37 +344,43 @@ namespace Deltares
                     shared->object->setXAtU(x, u, this->getNativeConstantParameterType(constantType));
                 }
 
+                virtual void UpdateFromValueSet(double xSource)
+                {
+                    shared->object->initializeConditionalValues();
+                    shared->object->updateFromConditionalValues(xSource);
+                }
+
                 virtual property double DesignQuantile
                 {
                     double get() { return shared->object->designQuantile; }
                     void set(double value) { shared->object->designQuantile = value; }
                 }
 
-                virtual property double DesignFactor
+                    virtual property double DesignFactor
                 {
                     double get() { return shared->object->designFactor; }
                     void set(double value) { shared->object->designFactor = value; }
                 }
 
-                virtual property double DesignValue
+                    virtual property double DesignValue
                 {
                     double get() { return shared->object->getDesignValue(); }
                     void set(double value) { shared->object->setDesignValue(value); }
                 }
 
-                property bool IsArray
+                    property bool IsArray
                 {
                     bool get() { return shared->object->modelParameter->isArray; }
                     void set(bool value) { shared->object->modelParameter->isArray = value; }
                 }
 
-                property int ArraySize
+                    property int ArraySize
                 {
                     int get() { return shared->object->modelParameter->arraySize; }
                     void set(int value) { shared->object->modelParameter->arraySize = value; }
                 }
 
-                virtual void InitializeForRun()
+                    virtual void InitializeForRun()
                 {
                     updateStochast();
 
@@ -429,13 +435,13 @@ namespace Deltares
                     void set(VariableStochastValueSet ^ value) { this->valueSet = value; }
                 }
 
-                property Stochast^ VariableSource
+                    property Stochast^ VariableSource
                 {
                     Stochast ^ get() { return this->source; }
                     void set(Stochast ^ value) { this->source = value; }
                 }
 
-                System::String^ ToString() override
+                    System::String^ ToString() override
                 {
                     return this->Name;
                 }

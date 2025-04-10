@@ -349,6 +349,14 @@ namespace Deltares
             this->ValueSet->initializeForRun(this->properties, this->distributionType, this->truncated, this->inverted);
         }
 
+        void Stochast::updateFromConditionalValues(double xSource)
+        {
+            if (this->IsVariableStochast)
+            {
+                this->ValueSet->updateProperties(this->properties, xSource);
+            }
+        }
+
         bool Stochast::canFit()
         {
             return distribution->canFit();
