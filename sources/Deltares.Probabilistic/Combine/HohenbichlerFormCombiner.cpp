@@ -23,52 +23,51 @@
 #include "combineElements.h"
 #include "alphaBeta.h"
 
-namespace Deltares
+namespace Deltares::Reliability
 {
-    namespace Reliability
+    std::shared_ptr<DesignPoint> HohenbichlerFormCombiner::combineDesignPoints(combineAndOr combineMethodType,
+        std::vector<std::shared_ptr<DesignPoint>>& designPoints,
+        std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix, std::shared_ptr<ProgressIndicator> progress)
     {
-        std::shared_ptr<DesignPoint> HohenbichlerFormCombiner::combineDesignPoints(combineAndOr combineMethodType, std::vector<std::shared_ptr<DesignPoint>>& designPoints, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix, std::shared_ptr<ProgressIndicator> progress)
+        elements elm;
+        const auto stochasts = DesignPoint::getUniqueStochasts(designPoints);
+        const auto nStochasts = stochasts.size();
+
+        for (const auto& designPoint : designPoints)
         {
-            elements elm;
-            const std::vector<std::shared_ptr<Statistics::Stochast>> stochasts = DesignPoint::getUniqueStochasts(designPoints);
-            const auto nStochasts = stochasts.size();
-
-            for (const auto& designPoint : designPoints)
-            {
-                const auto reorderedDesignPoint = designPoint->getSampleForStochasts(stochasts);
-                auto alpha = vector1D(nStochasts);
-                for (size_t i = 0; i < nStochasts; i++)
-                {
-                    alpha(i) = -(reorderedDesignPoint->Values[i] / designPoint->Beta);
-                }
-                auto dp = alphaBeta(designPoint->Beta, alpha);
-                elm.push_back(dp);
-            }
-
-            auto cmb = combineElements();
-            auto rho = vector1D(nStochasts);
+            const auto reorderedDesignPoint = designPoint->getSampleForStochasts(stochasts);
+            auto alpha = vector1D(nStochasts);
             for (size_t i = 0; i < nStochasts; i++)
             {
-                rho(i) = selfCorrelationMatrix->getSelfCorrelation(stochasts[i]);
+                alpha(i) = -(reorderedDesignPoint->Values[i] / designPoint->Beta);
             }
-
-            auto result = cmb.combineMultipleElements(elm, rho, combineMethodType);
-            nonConvergedForm += result.n;
-
-            auto dp = std::make_shared<DesignPoint>();
-            dp->Beta = result.ab.getBeta();
-            for (size_t i = 0; i < nStochasts; i++)
-            {
-                auto alpha = std::make_shared<StochastPointAlpha>();
-                alpha->Stochast = stochasts[i];
-                alpha->Alpha = result.ab.getAlphaI(i);
-                alpha->U = -dp->Beta * alpha->Alpha;
-                alpha->X = stochasts[i]->getXFromU(alpha->U);
-                dp->Alphas.push_back(alpha);
-            }
-            return dp;
+            auto dp = alphaBeta(designPoint->Beta, alpha);
+            elm.push_back(dp);
         }
 
-    };
-}
+        auto cmb = combineElements();
+        auto rho = vector1D(nStochasts);
+        for (size_t i = 0; i < nStochasts; i++)
+        {
+            rho(i) = selfCorrelationMatrix->getSelfCorrelation(stochasts[i]);
+        }
+
+        const auto [ab, nFail] = cmb.combineMultipleElements(elm, rho, combineMethodType);
+        nonConvergedForm += nFail;
+
+        auto dp = std::make_shared<DesignPoint>();
+        dp->Beta = ab.getBeta();
+        for (size_t i = 0; i < nStochasts; i++)
+        {
+            auto alpha = std::make_shared<StochastPointAlpha>();
+            alpha->Stochast = stochasts[i];
+            alpha->Alpha = ab.getAlphaI(i);
+            alpha->U = -dp->Beta * alpha->Alpha;
+            alpha->X = stochasts[i]->getXFromU(alpha->U);
+            dp->Alphas.push_back(alpha);
+        }
+        return dp;
+    }
+
+};
 
