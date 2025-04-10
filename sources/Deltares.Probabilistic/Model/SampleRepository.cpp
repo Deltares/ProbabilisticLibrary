@@ -29,11 +29,11 @@ namespace Deltares::Models
         samples.push_back(sample);
     }
 
-    std::shared_ptr<ModelSample> SampleRepository::SampleCollection::retrieveSample(const std::shared_ptr<ModelSample>& sample) const
+    std::shared_ptr<ModelSample> SampleRepository::SampleCollection::retrieveSample(const ModelSample& sample) const
     {
         for (const auto& existingSample : samples)
         {
-            if (existingSample->hasSameValues(*sample))
+            if (existingSample->hasSameValues(sample))
             {
                 return existingSample;
             }
@@ -67,9 +67,9 @@ namespace Deltares::Models
         sampleCollections[key].registerSample(sample);
     }
 
-    std::shared_ptr<ModelSample> SampleRepository::retrieveSample(const std::shared_ptr<ModelSample>& sample)
+    std::shared_ptr<ModelSample> SampleRepository::retrieveSample(const ModelSample& sample)
     {
-        double key = getKey(*sample);
+        double key = getKey(sample);
 
         if (!sampleCollections.contains(key))
         {
