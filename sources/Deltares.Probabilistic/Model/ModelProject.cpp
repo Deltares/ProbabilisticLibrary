@@ -57,6 +57,16 @@ namespace Deltares
                 }
             }
         }
+
+        void ModelProject::shareStochasts(std::shared_ptr<ModelProject> source)
+        {
+            for (const auto& stochast : source->stochasts)
+            {
+                existingStochasts[stochast->name] = stochast;
+            }
+
+            this->correlationMatrix = source->correlationMatrix;
+        }
     }
 }
 

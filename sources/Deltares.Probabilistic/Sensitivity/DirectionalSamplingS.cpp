@@ -244,7 +244,7 @@ namespace Deltares
 
             if (lowestSample != nullptr)
             {
-                std::shared_ptr<Models::Evaluation> evaluation = std::shared_ptr<Models::Evaluation>(modelRunner->getEvaluation(lowestSample));
+                std::shared_ptr<Models::Evaluation> evaluation = std::make_shared<Models::Evaluation>(modelRunner->getEvaluation(lowestSample));
                 this->evaluations[quantile] = evaluation;
             }
 

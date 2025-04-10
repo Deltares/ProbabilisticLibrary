@@ -26,6 +26,8 @@
 #include "../Reliability/FragilityCurveProject.h"
 #include "../Reliability/LimitStateFunction.h"
 #include "../Reliability/Settings.h"
+#include "../Model/RunProject.h"
+#include "../Model/RunProjectSettings.h"
 #include "../Sensitivity/SensitivityProject.h"
 #include "../Sensitivity/SettingsS.h"
 #include "../Combine/CombineProject.h"
@@ -89,6 +91,7 @@ namespace Deltares
             int GetConditionalValueId(std::shared_ptr<Statistics::VariableStochastValue> conditionalValue, int newId);
             int GetEvaluationId(std::shared_ptr<Deltares::Reliability::Evaluation> evaluation, int newId);
             int GetMessageId(std::shared_ptr<Deltares::Models::Message> message, int newId);
+
             std::shared_ptr <Reliability::DesignPoint> GetDesignPoint(int id)
             {
                 return designPoints[id];
@@ -99,7 +102,7 @@ namespace Deltares
             enum ObjectType {StandardNormal, Message, ProbabilityValue, Project, ModelParameter, LimitStateFunction, Stochast, DiscreteValue, HistogramValue, FragilityValue,
                 ContributingStochast, ConditionalValue, CorrelationMatrix, Scenario, Settings, StochastSettings, DesignPoint, Alpha, FragilityCurve, FragilityCurveProject, Evaluation,
                 CombineProject, CombineSettings, ExcludingCombineProject, ExcludingCombineSettings, SelfCorrelationMatrix, SensitivityProject, SensitivitySettings, SensitivityResult,
-                LengthEffectProject};
+                LengthEffectProject, RunProject, RunProjectSettings};
             ObjectType GetType(std::string object_type);
             std::unordered_map<int, Deltares::Server::ProjectHandler::ObjectType> types;
 
@@ -129,6 +132,8 @@ namespace Deltares
             std::unordered_map<int, std::shared_ptr<Reliability::ExcludingCombineSettings>> excludingCombineSettings;
             std::unordered_map<int, std::shared_ptr<Reliability::LengthEffectProject>> lengthEffectProjects;
             std::unordered_map<int, std::shared_ptr<Statistics::SelfCorrelationMatrix>> selfCorrelationMatrices;
+            std::unordered_map<int, std::shared_ptr<Models::RunProject>> runProjects;
+            std::unordered_map<int, std::shared_ptr<Models::RunProjectSettings>> runProjectSettings;
             std::unordered_map<int, std::shared_ptr<Sensitivity::SensitivityProject>> sensitivityProjects;
             std::unordered_map<int, std::shared_ptr<Sensitivity::SettingsS>> sensitivitySettingsValues;
             std::unordered_map<int, std::shared_ptr<Sensitivity::SensitivityResult>> sensitivityResults;
@@ -154,6 +159,7 @@ namespace Deltares
 
             void UpdateValidationMessages(const std::vector<std::shared_ptr<Models::Message>>& newMessages);
             std::vector<std::shared_ptr<Models::Message>> validationMessages;
+            std::shared_ptr<Models::ModelProject> GetProject(int id);
         };
     }
 }

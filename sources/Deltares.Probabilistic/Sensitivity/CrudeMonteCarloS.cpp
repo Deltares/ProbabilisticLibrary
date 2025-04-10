@@ -117,7 +117,7 @@ namespace Deltares
                     randomSampleGenerator.proceed(quantileIndex);
 
                     std::shared_ptr<Sample> sample = randomSampleGenerator.getRandomSample();
-                    std::shared_ptr<Models::Evaluation> evaluation = std::shared_ptr<Models::Evaluation>(modelRunner->getEvaluation(sample));
+                    std::shared_ptr<Models::Evaluation> evaluation = std::make_shared<Models::Evaluation>(modelRunner->getEvaluation(sample));
                     result.quantileEvaluations.push_back(evaluation);
                 }
                 else

@@ -236,7 +236,7 @@ namespace Deltares
                 std::shared_ptr<Statistics::Stochast> stochast = std::make_shared<Stochast>(DistributionType::Deterministic, std::vector<double> { z0 });
                 Sensitivity::SensitivityResult result = modelRunner->getSensitivityResult(stochast);
                 std::shared_ptr<Sample> zeroSample = std::make_shared<Sample>(nStochasts);
-                std::shared_ptr<Models::Evaluation> evaluation = std::shared_ptr<Models::Evaluation>(modelRunner->getEvaluation(zeroSample));
+                std::shared_ptr<Models::Evaluation> evaluation = std::make_shared<Models::Evaluation>(modelRunner->getEvaluation(zeroSample));
 
                 for (std::shared_ptr<Statistics::ProbabilityValue> quantile : this->Settings->RequestedQuantiles)
                 {
@@ -360,12 +360,12 @@ namespace Deltares
                 {
                     if (Numeric::NumericSupport::areEqual(factor * startPoint->getBeta(),  quantile->Reliability, margin))
                     {
-                        std::shared_ptr<Models::Evaluation> evaluation = std::shared_ptr<Models::Evaluation>(modelRunner->getEvaluation(startPoint));
+                        std::shared_ptr<Models::Evaluation> evaluation = std::make_shared<Models::Evaluation>(modelRunner->getEvaluation(startPoint));
                         this->evaluations[quantile] = evaluation;
                     }
                     else if (Numeric::NumericSupport::areEqual(factor * previousPoint->getBeta(), quantile->Reliability, margin))
                     {
-                        std::shared_ptr<Models::Evaluation> evaluation = std::shared_ptr<Models::Evaluation>(modelRunner->getEvaluation(previousPoint));
+                        std::shared_ptr<Models::Evaluation> evaluation = std::make_shared<Models::Evaluation>(modelRunner->getEvaluation(previousPoint));
                         this->evaluations[quantile] = evaluation;
                     }
                     else if (Numeric::NumericSupport::isBetween(factor * previousPoint->getBeta(), quantile->Reliability, factor * startPoint->getBeta(), margin))
@@ -382,7 +382,7 @@ namespace Deltares
                         }
 
                         std::shared_ptr<Sample> betweenSample = std::make_shared<Sample>(u);
-                        std::shared_ptr<Models::Evaluation> evaluation = std::shared_ptr<Models::Evaluation>(modelRunner->getEvaluation(betweenSample));
+                        std::shared_ptr<Models::Evaluation> evaluation = std::make_shared<Models::Evaluation>(modelRunner->getEvaluation(betweenSample));
                         this->evaluations[quantile] = evaluation;
                     }
                 }

@@ -69,6 +69,7 @@ namespace Deltares
             std::vector<double> getUValues(std::shared_ptr<Sample> sample);
             std::vector<double> getExpandedUValues(std::shared_ptr<Sample> sample);
             std::vector<double> getXValues(std::shared_ptr<Sample> sample);
+            std::vector<double> getValuesFromType(Statistics::RunValuesType type) const;
             int getStochastCount();
             int getVaryingStochastCount();
             bool isVaryingStochast(int index);

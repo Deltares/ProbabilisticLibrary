@@ -231,6 +231,26 @@ def get_sensitivity_add_one_project():
 
     return project
 
+def get_run_linear_project():
+
+    project = RunProject()
+
+    project.model = linear_ab
+
+    stochast1 = project.variables['a']
+    stochast1.distribution =  DistributionType.triangular
+    stochast1.minimum = -1
+    stochast1.shift = 1
+    stochast1.maximum = 1
+
+    stochast2 = project.variables['b']
+    stochast2.distribution =  DistributionType.triangular
+    stochast2.minimum = -1
+    stochast2.shift = 1
+    stochast2.maximum = 1
+
+    return project
+
 def get_sensitivity_linear_project():
 
     project = SensitivityProject()
