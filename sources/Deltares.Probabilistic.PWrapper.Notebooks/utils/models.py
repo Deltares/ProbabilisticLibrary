@@ -16,6 +16,16 @@ def hunt(t_p, tan_alpha, h_s, h_crest, h):
     Z = h_crest - (h + r_u)
     return Z
 
+# Z-function Hunt with 3 outputs
+def hunt_3_outputs(t_p, tan_alpha, h_s, h_crest, h):
+    g = 9.81
+    l_0 = g  * t_p * t_p
+    xi = tan_alpha / np.sqrt(2 * np.pi * h_s / l_0)
+    r_u = xi * h_s
+
+    Z = h_crest - (h + r_u)
+    return Z, xi, r_u
+
 # overtopping calculation
 def overtopping(h, hm0, tm10, wave_direction, dike_normal, y_crest):
 
@@ -118,6 +128,31 @@ def model_sellmeijer(k, L, d70, D):
     delta_h_c = f_resistance * f_scale * f_geometry * L
     
     return delta_h_c
+
+# critical head difference calculation according to Sellmeijer
+class Sellmeijer():
+
+    def __init__(self):
+        
+        self.RD = 0.725
+        self.RDm = 0.725
+        self.d70m = 2.08e-4
+        self.nu = 1.33e-6
+        self.eta = 0.25
+        self.theta = 37.0
+
+    def critical_head(self, k, L, d70, D):
+
+        f_resistance = 1.65*self.eta*np.tan(self.theta/180*np.pi)*(self.RD/self.RDm)**0.35
+        f_scale = self.d70m/(self.nu/9.81*k*L)**(1/3)*(d70/self.d70m)**0.39
+        f_geometry = 0.91*(D/L)**(0.28/(((D/L)**2.8)-1)+0.04)
+
+        if D==L:
+            f_geometry = 1.0
+        
+        delta_h_c = f_resistance * f_scale * f_geometry * L
+        
+        return delta_h_c
 
 # simple Z-function
 def linear_a_b(a, b):
