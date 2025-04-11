@@ -158,7 +158,7 @@ namespace Deltares {
             message = std::format("Intermediate results: Delta L = {0:.6F}; rhoZ = {1:.6F}; dZ = {2:.6F}",
                 deltaL, rhoZ, dZ);
 #else
-            std::string message = "Intermediate results: ";
+            message = "Intermediate results: ";
             const auto number1 = probLibString::double2strTrimmed(deltaL);
             const auto number2 = probLibString::double2strTrimmed(rhoZ);
             const auto number3 = probLibString::double2strTrimmed(dZ);
