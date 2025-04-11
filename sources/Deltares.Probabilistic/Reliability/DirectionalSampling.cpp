@@ -21,7 +21,6 @@
 //
 #include "DirectionalSampling.h"
 #include "PrecomputeDirections.h"
-#include "ZGetter.h"
 #include "../Model/RandomSampleGenerator.h"
 #include "../Math/SpecialFunctions.h"
 #include <omp.h>
@@ -31,32 +30,33 @@ namespace Deltares
 {
     namespace Reliability
     {
+        using namespace Statistics;
+        using namespace Numeric;
+
         std::shared_ptr<DesignPoint> DirectionalSampling::getDesignPoint(std::shared_ptr<ModelRunner> modelRunner)
         {
             int nStochasts = modelRunner->getVaryingStochastCount();
             double pf = 0;
             double qtot = 0;
             double minBetaDirection = 200; // initialize convergence indicator and loops
-            std::shared_ptr<DesignPointBuilder> designPointBuilder = std::make_shared<DesignPointBuilder> (nStochasts, this->Settings->designPointMethod, this->Settings->StochastSet);
+            auto designPointBuilder = DesignPointBuilder (nStochasts, Settings->designPointMethod, Settings->StochastSet);
             int parSamples = 0;
 
             std::vector<double> betaValues;
             std::vector<std::shared_ptr<Sample>> samples;
 
-            modelRunner->updateStochastSettings(this->Settings->StochastSet);
+            modelRunner->updateStochastSettings(Settings->StochastSet);
 
             std::shared_ptr<ConvergenceReport> convergenceReport = std::make_shared<ConvergenceReport>();
 
-            std::shared_ptr<RandomSampleGenerator> randomSampleGenerator = std::make_shared<RandomSampleGenerator>();
-            randomSampleGenerator->Settings = this->Settings->randomSettings;
-            randomSampleGenerator->Settings->StochastSet = this->Settings->StochastSet;
-            randomSampleGenerator->initialize();
+            auto randomSampleGenerator = RandomSampleGenerator();
+            randomSampleGenerator.Settings = Settings->randomSettings;
+            randomSampleGenerator.Settings->StochastSet = Settings->StochastSet;
+            randomSampleGenerator.initialize();
 
             std::shared_ptr<Sample> zeroSample = std::make_shared<Sample>(nStochasts);
             double z0 = modelRunner->getZValue(zeroSample);
             double z0Fac = getZFactor(z0);
-
-            int chunkSize = modelRunner->Settings->MaxChunkSize;
 
             double sumWeights = 0.0;
             double sumWeights2 = 0.0;
@@ -75,11 +75,25 @@ namespace Deltares
                 }
             }
 
+            int chunkSize = modelRunner->Settings->MaxChunkSize;
+            if (modelRunner->Settings->IsProxyModel())
+            {
+                chunkSize = std::min(chunkSize, modelRunner->Settings->MaxParallelProcesses);
+            }
+
             // loop for all directions
             for (int directionIndex = 0; directionIndex < Settings->MaximumDirections && !isStopped(); directionIndex++)
             {
                 if (directionIndex % chunkSize == 0)
                 {
+                    // check whether restart is needed
+                    if (modelRunner->shouldExitPrematurely(samples))
+                    {
+                        // return the result so far
+                        return modelRunner->getDesignPoint(designPointBuilder.getSample(),
+                            StandardNormal::getUFromQ(pf), convergenceReport);
+                    }
+
                     samples.clear();
 
                     int runs = std::min(chunkSize, Settings->MaximumDirections - parSamples * chunkSize);
@@ -87,21 +101,14 @@ namespace Deltares
                     // run max par samples times zrfunc in parallel
                     for (int i = 0; i < runs; i++)
                     {
-                        std::shared_ptr<Sample> sample = randomSampleGenerator->getRandomSample();
+                        auto sample = randomSampleGenerator.getRandomSample();
                         sample->IterationIndex = directionIndex + i;
                         samples.push_back(sample);
                     }
 
                     betaValues = getDirectionBetas(*modelRunner, samples, z0, minBetaDirection);
 
-                    // check whether restart is needed
-                    if (modelRunner->shouldExitPrematurely(samples))
-                    {
-                        // return the result so far
-                        return modelRunner->getDesignPoint(designPointBuilder->getSample(), Statistics::StandardNormal::getUFromQ(pf), convergenceReport);
-                    }
-
-                    parSamples = parSamples + 1;
+                    parSamples++;
                 }
 
                 if (betaValues[directionIndex % chunkSize] * z0 < 0 || std::isnan(betaValues[directionIndex % chunkSize]))
@@ -117,13 +124,13 @@ namespace Deltares
                 std::shared_ptr<Sample> uSurface = u->getSampleAtBeta(betaDirection);
 
                 // calculate failure probability
-                if (betaDirection >= 0 && betaDirection < Statistics::StandardNormal::BetaMax * nStochasts)
+                if (betaDirection >= 0 && betaDirection < StandardNormal::BetaMax * nStochasts)
                 {
-                    uSurface->Weight = Deltares::Numeric::SpecialFunctions::getGammaUpperRegularized(0.5 * nStochasts, 0.5 * betaDirection * betaDirection);
+                    uSurface->Weight = SpecialFunctions::getGammaUpperRegularized(0.5 * nStochasts, 0.5 * betaDirection * betaDirection);
 
                     qtot += uSurface->Weight;
 
-                    designPointBuilder->addSample(uSurface);
+                    designPointBuilder.addSample(uSurface);
                 }
                 else
                 {
@@ -150,7 +157,7 @@ namespace Deltares
 
                     double convergence = getConvergence(pf, sumWeights, sumWeights2, validSamples);
 
-                    double beta = z0Fac * Statistics::StandardNormal::getUFromQ(pf);
+                    double beta = z0Fac * StandardNormal::getUFromQ(pf);
 
                     std::shared_ptr<ReliabilityReport> report = std::make_shared<ReliabilityReport>();
                     report->ReportMatchesEvaluation = false;
@@ -178,7 +185,7 @@ namespace Deltares
             convergenceReport->Convergence = getConvergence(pf, sumWeights, sumWeights2, validSamples);
             convergenceReport->IsConverged = (convergenceReport->Convergence <= Settings->VariationCoefficient);
 
-            std::shared_ptr<Sample> uDesign = designPointBuilder->getSample();
+            auto uDesign = designPointBuilder.getSample();
 
             if (z0 < 0)
             {
@@ -187,7 +194,7 @@ namespace Deltares
 
             samples.clear();
 
-            return modelRunner->getDesignPoint(uDesign, Statistics::StandardNormal::getUFromQ(pf), convergenceReport, "Directional Sampling");
+            return modelRunner->getDesignPoint(uDesign, StandardNormal::getUFromQ(pf), convergenceReport, "Directional Sampling");
         }
 
         double DirectionalSampling::getConvergence(const double pf, const double sumWeights, const double sumWeights2, const int nDirections)
