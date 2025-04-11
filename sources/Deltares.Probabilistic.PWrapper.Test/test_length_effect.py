@@ -53,6 +53,10 @@ class Test_Length_Effect(unittest.TestCase):
             self.assertAlmostEqual(alpha.alpha, -0.7071, delta=margin)
             self.assertAlmostEqual(alpha.x, 0.8, delta=margin)
 
+        ref_message = "Intermediate results: Delta L = 132.379987; rhoZ = 0.500000; dZ = 122.859023"
+        self.assertEqual(1, len(design_point_upscaled.messages))
+        self.assertEqual(ref_message, design_point_upscaled.messages[0].text)
+
     def test_length_effect_no_self_correlation(self):
         q = 0.01;
 
