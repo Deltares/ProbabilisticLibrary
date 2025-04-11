@@ -37,6 +37,7 @@
 #include "Combin/combiner_tests.h"
 #include "Statistics/testStandardNormal.h"
 #include "Distributions/testDistributions.h"
+#include "Model/TestRunModel.h"
 #include "Sensitivity/TestSensitivity.h"
 #include "Optimization/testCobyla.h"
 
@@ -132,6 +133,12 @@ TEST(reliability_method_test, testFORMArray)
     tstRelMethods.testFORMArray();
 }
 
+TEST(reliability_method_test, testFORMVaryingArray)
+{
+    auto tstRelMethods = testReliabilityMethods();
+    tstRelMethods.testFORMVaryingArray();
+}
+
 TEST(reliability_method_test, testLatinHyperCube)
 {
     auto tstRelMethods = testReliabilityMethods();
@@ -211,6 +218,12 @@ TEST(unittst, testSensitivity)
 {
     auto tstSensitivity = TestSensitivity();
     tstSensitivity.allSensitivityTests();
+}
+
+TEST(unittst, testRunModel)
+{
+    auto tstModel = TestRunModel();
+    tstModel.allModelTests();
 }
 
 TEST(unittst, testRandom)

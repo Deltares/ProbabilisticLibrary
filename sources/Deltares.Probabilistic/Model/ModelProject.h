@@ -37,6 +37,7 @@ namespace Deltares
         class ModelProject
         {
         public:
+
             /**
              * \brief Collection of all stochastic variables
              */
@@ -56,6 +57,16 @@ namespace Deltares
              * \brief Updates the stochasts with the parameters of the model
              */
             void updateStochasts();
+
+            /**
+             * \brief Shares the stochasts and correlation matrix with another project
+             */
+            void shareStochasts(std::shared_ptr<ModelProject> source);
+
+            /**
+             * \brief Gets the total number of model runs
+             */
+            int modelRuns = 0;
         private:
             std::unordered_map<std::string, std::shared_ptr<Statistics::Stochast>> existingStochasts;
         };

@@ -20,13 +20,14 @@
 // All rights reserved.
 //
 #pragma once
+#include <ctime>
 
 namespace Deltares::Numeric
 {
     class RandomValueGenerator
     {
     public:
-        virtual void initialize(bool repeatable, int seed) = 0;
+        virtual void initialize(bool repeatable, int seed, time_t timeStamp) = 0;
         virtual double next() { return 0; }
     };
 }

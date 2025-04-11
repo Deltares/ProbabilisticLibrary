@@ -23,6 +23,7 @@
 
 #include <memory>
 #include "../Deltares.Probabilistic/Model/ModelRunner.h"
+#include "../Deltares.Probabilistic/Model/RunProject.h"
 #include "../Deltares.Probabilistic/Reliability/ReliabilityProject.h"
 #include "../Deltares.Probabilistic/Sensitivity/SensitivityProject.h"
 #include "../Deltares.Probabilistic/Reliability/FragilityCurve.h"
@@ -38,14 +39,19 @@ namespace Deltares
             public:
                 std::shared_ptr<Deltares::Models::ModelRunner> BuildProject();
                 std::shared_ptr<Deltares::Models::ModelRunner> BuildLinearProject();
+                std::shared_ptr<Deltares::Models::ModelRunner> BuildLinearOutputProject();
                 std::shared_ptr<Deltares::Models::ModelRunner> BuildLinearArrayProject();
+                std::shared_ptr<Deltares::Models::ModelRunner> BuildLinearVaryingArrayProject();
                 std::shared_ptr<Deltares::Models::ModelRunner> BuildQuadraticProject();
                 std::shared_ptr<Deltares::Models::ModelRunner> BuildProjectWithDeterminist(double valueDeterminist);
                 std::shared_ptr<Reliability::FragilityCurve> BuildFragilityCurve();
 
                 static std::shared_ptr<Sensitivity::SensitivityProject> getSensitivityProject(std::shared_ptr<Deltares::Reliability::ReliabilityProject> project);
+                static std::shared_ptr<Models::RunProject> getRunProject(std::shared_ptr<Deltares::Reliability::ReliabilityProject> project);
                 static std::shared_ptr<Deltares::Reliability::ReliabilityProject> getAddOneProject();
                 static std::shared_ptr<Deltares::Reliability::ReliabilityProject> getLinearProject();
+                static std::shared_ptr<Deltares::Reliability::ReliabilityProject> getLinearOutputProject();
+                static std::shared_ptr<Deltares::Reliability::ReliabilityProject> getTriangularLinearProject();
 
                 static const bool logZtoScreen = false;
             private:
@@ -54,12 +60,14 @@ namespace Deltares
 
                 static void sum(std::shared_ptr<Models::ModelSample> sample);
                 static void linear(std::shared_ptr<Models::ModelSample> sample);
+                static void linearMultiple(std::shared_ptr<Models::ModelSample> sample);
                 static void quadratic(std::shared_ptr<Models::ModelSample> sample);
 
                 static std::shared_ptr<Statistics::Stochast>  getDeterministicStochast(double mean = 0);
                 static std::shared_ptr<Statistics::Stochast>  getNormalStochast(double mean = 0, double stddev = 1);
                 static std::shared_ptr<Statistics::Stochast>  getLogNormalStochast(double mean = 0, double stddev = 1, double shift = 0);
                 static std::shared_ptr<Statistics::Stochast>  getUniformStochast(double min = 0, double max = 1);
+                static std::shared_ptr<Statistics::Stochast>  getTriangularStochast(double min = 0, double top = 0, double max = 1);
                 static std::shared_ptr<Statistics::Stochast>  getGumbelStochast(double mean = 0, double stddev = 1);
             };
         }

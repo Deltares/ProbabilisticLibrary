@@ -50,6 +50,11 @@ namespace Deltares
             std::string parameter = "";
 
             /**
+             * \brief Array index of the output parameter if the parameter is an array
+             */
+            int arrayIndex = 0;
+
+            /**
              * \brief Calculation settings
              */
             std::shared_ptr<Sensitivity::SettingsS> settings = std::make_shared<Sensitivity::SettingsS>();
@@ -66,14 +71,14 @@ namespace Deltares
             std::shared_ptr<Models::ProgressIndicator> progressIndicator = nullptr;
 
             /**
-             * \brief Results of the reliability calculation
+             * \brief Results of the sensitivity calculation
              */
-            std::shared_ptr<Statistics::Stochast> sensitivityStochast = nullptr;
+            std::shared_ptr<Sensitivity::SensitivityResult> sensitivityResult = nullptr;
 
             /**
-             * \brief Results of the reliability calculation
+             * \brief Results of the sensitivity calculation
              */
-            std::vector<std::shared_ptr<Statistics::Stochast>> sensitivityStochasts;
+            std::vector<std::shared_ptr<Sensitivity::SensitivityResult>> sensitivityResults;
 
             /**
              * \brief Resulting correlation matrix
@@ -87,10 +92,10 @@ namespace Deltares
             bool isValid() const;
 
             /**
-             * \brief Performs the reliability calculation
-             * \return Design point
+             * \brief Performs the sensitivity calculation
+             * \return Sensitivity result
              */
-            std::shared_ptr<Statistics::Stochast> getStochast();
+            Sensitivity::SensitivityResult getSensitivityResult();
 
             /**
              * \brief Runs the reliability calculation

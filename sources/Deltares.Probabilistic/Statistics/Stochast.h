@@ -36,6 +36,8 @@ namespace Deltares
 {
     namespace Statistics
     {
+        enum RunValuesType { MeanValues, MedianValues, DesignValues };
+
         /**
          * \brief Defines a stochastic variable
          * \remark Contains parameters and a distribution type which describe the stochastic behaviour
@@ -49,6 +51,11 @@ namespace Deltares
             bool inverted = false;
             bool truncated = false;
             double lastVariation = 0;
+
+            /**
+             * \brief Indicates whether the stochast is only initialized and nothing has been changed yet
+             */
+            bool isInitial();
 
         protected:
             std::shared_ptr<Distribution> distribution = std::make_shared<DeterministicDistribution>();
@@ -70,9 +77,9 @@ namespace Deltares
             /**
              * \brief Constructor with object containing the stochastic parameters
              * \param distributionType Distribution type
-             * \param properties Object containing stochastic parameters
+             * \param newProperties Object containing stochastic parameters
              */
-            Stochast(DistributionType distributionType, std::shared_ptr<StochastProperties> properties);
+            Stochast(DistributionType distributionType, std::shared_ptr<StochastProperties> newProperties);
 
             /**
              * \brief Reference to input parameter of a model
@@ -112,6 +119,13 @@ namespace Deltares
             double getQuantile(double quantile);
 
             /**
+             * \brief Gets the x-value corresponding to a certain type
+             * \param type the kind of x-value to be returned
+             * \return x-value
+             */
+            double getXFromType(RunValuesType type);
+
+            /**
              * \brief Gets the x-value corresponding to a given u-value
              * \param u Given u-value
              * \return x-value
@@ -134,6 +148,14 @@ namespace Deltares
             double getXFromUAndSource(double xSource, double u);
 
             /**
+             * \brief Gets the x-value for a given type for variable stochasts, i.e. stochasts where the stochastic parameters depend on the value of another stochast
+             * \param xSource Other stochast
+             * \param type The kind of type
+             * \return x-value
+             */
+            double getXFromTypeAndSource(double xSource, RunValuesType type);
+
+            /**
              * \brief Gets the u-value for a given x-value for variable stochasts, i.e. stochasts where the stochastic parameters depend on the value of another stochast
              * \param xSource Other stochast
              * \param x Given x-value
@@ -152,9 +174,9 @@ namespace Deltares
             /**
              * \brief Sets the distribution type
              * \remark Internally, the Distribution field is updated
-             * \param distributionType Distribution type
+             * \param newDistributionType Distribution type
              */
-            virtual void setDistributionType(DistributionType distributionType);
+            virtual void setDistributionType(DistributionType newDistributionType);
 
             /**
              * \brief Gets the distribution type
@@ -182,9 +204,9 @@ namespace Deltares
 
             /**
              * \brief Inverts or non-inverts the distribution
-             * \param inverted Inverts (true) or non-inverts (false) the distribution
+             * \param newInverted Inverts (true) or non-inverts (false) the distribution
              */
-            void setInverted(bool inverted);
+            void setInverted(bool newInverted);
 
             /**
              * \brief Indicates whether the distribution can be truncated
@@ -200,9 +222,9 @@ namespace Deltares
 
             /**
              * \brief Truncates or non-truncates the distribution
-             * \param truncated Truncates (true) or non-truncates (false) the distribution
+             * \param newTruncated Truncates (true) or non-truncates (false) the distribution
              */
-            void setTruncated(bool truncated);
+            void setTruncated(bool newTruncated);
 
             /**
              * \brief Indicates whether different u-values can lead to different x-values
@@ -277,6 +299,12 @@ namespace Deltares
              * \return Indication
              */
             virtual bool isFragilityCurve() { return false; }
+
+            /**
+             * \brief Gets the name of the stochast followed by an index
+             * \return Indexed stochast name
+             */
+            std::string getIndexedStochastName(int index);
 
             /**
              * \brief Indicates which parameter should be kept constant when the mean value is changed (by setMean())
@@ -370,6 +398,11 @@ namespace Deltares
              * \brief In case of a variable stochast, the interpolation table to convert from x-value of the other stochast to the stochastic parameters of this stochast
              */
             std::shared_ptr<VariableStochastValuesSet> ValueSet = std::make_shared<VariableStochastValuesSet>();
+
+            /**
+             * \brief In case of an array, the stochasts in the array
+             */
+            std::vector<std::shared_ptr<Stochast>> ArrayVariables;
 
             /**
              * \brief Gets a realization of a variable stochast

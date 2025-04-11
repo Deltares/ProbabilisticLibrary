@@ -128,6 +128,8 @@ class Settings:
 				'all_quadrants',
 				'max_steps_sphere_search',
 				'random_type',
+				'is_repeatable_random',
+				'random_seed',
 				'sample_method'
 				'minimum_samples',
 				'maximum_samples',
@@ -225,6 +227,22 @@ class Settings:
 	@random_type.setter
 	def random_type(self, value : RandomType):
 		interface.SetStringValue(self._id, 'random_type', str(value))
+
+	@property
+	def is_repeatable_random(self):
+		return interface.GetBoolValue(self._id, 'is_repeatable_random')
+		
+	@is_repeatable_random.setter
+	def is_repeatable_random(self, value : bool):
+		interface.SetBoolValue(self._id, 'is_repeatable_random', value)
+
+	@property
+	def random_seed(self):
+		return interface.GetIntValue(self._id, 'random_seed')
+		
+	@random_seed.setter
+	def random_seed(self, value : int):
+		interface.SetIntValue(self._id, 'random_seed', value)
 
 	@property
 	def sample_method(self):
@@ -918,6 +936,9 @@ class FragilityCurveProject:
 				for alpha in fragility_value.design_point.alphas:
 					if alpha.variable is not None and alpha.variable not in variables:
 						variables.append(alpha.variable)
+						for array_variable in alpha.variable.array_variables:
+							if array_variable not in variables:
+								variables.append(array_variable)
 		return variables
 
 

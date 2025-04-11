@@ -39,7 +39,7 @@ namespace Deltares
                 return base + relativePath;
             }
 
-            bool testutils::comparefiles(const std::string& refFile, const std::string& newFile) const
+            bool testutils::compareFiles(const std::string& refFile, const std::string& newFile) const
             {
                 auto sref = readWholeFile(refFile);
                 auto snew = readWholeFile(newFile);
@@ -132,12 +132,12 @@ namespace Deltares
                 return s;
             }
 
-            void testutils::checkAlphaBeta(alphaBeta& computed, alphaBeta& ref, const double margin)
+            void testutils::checkAlphaBeta(const alphaBeta& computed, const alphaBeta& ref, const double margin)
             {
                 checkAlphaBeta(computed, ref, margin, margin);
             }
 
-            void testutils::checkAlphaBeta(alphaBeta& computed, alphaBeta& ref, const double m1, const double m2)
+            void testutils::checkAlphaBeta(const alphaBeta& computed, const alphaBeta& ref, const double m1, const double m2)
             {
                 EXPECT_NEAR(computed.getBeta(), ref.getBeta(), m1);
                 EXPECT_EQ(computed.size(), ref.size());

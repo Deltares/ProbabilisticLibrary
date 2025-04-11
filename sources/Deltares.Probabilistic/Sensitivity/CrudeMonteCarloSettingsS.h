@@ -83,6 +83,11 @@ namespace Deltares
             std::shared_ptr<Deltares::Models::RandomSettings> randomSettings = std::make_shared<Deltares::Models::RandomSettings>();
 
             /**
+             * \brief Quantiles which should be calculated
+             */
+            std::vector<std::shared_ptr<Statistics::ProbabilityValue>> RequestedQuantiles;
+
+            /**
              * \brief Settings for performing model runs
              */
             std::shared_ptr<Models::RunSettings> RunSettings = std::make_shared<Models::RunSettings>();

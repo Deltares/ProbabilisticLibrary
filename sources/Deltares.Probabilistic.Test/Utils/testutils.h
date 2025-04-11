@@ -27,27 +27,22 @@
 
 using namespace Deltares::Reliability;
 
-namespace Deltares
+namespace Deltares::Probabilistic::Test
 {
-    namespace Probabilistic
+    class testutils
     {
-        namespace Test
-        {
-            class testutils
-            {
-            public:
-                bool comparefiles(const std::string& refFile, const std::string& newFile) const;
-                std::string refFileWithPath(const std::string& sourceFile, const std::string& relativePath);
-                void checkAlphaBeta(alphaBeta& computed, alphaBeta& ref, const double margin);
-                void checkAlphaBeta(alphaBeta& computed, alphaBeta& ref, const double margin1, const double margin2);
-                static Deltares::Numeric::Matrix convert1dmatrix(const std::initializer_list<double>& m);
-            private:
-                std::vector<std::string> readWholeFile(const std::string& file) const;
-                bool compareLine(const std::string& ref, const std::string& nw) const;
-                std::vector<std::string> mySplit(const std::string& str) const;
-                bool looksLikeAnumber(const std::string& s) const;
-                const double margin = 1e-5;
-            };
-        }
-    }
+    public:
+        bool compareFiles(const std::string& refFile, const std::string& newFile) const;
+        std::string refFileWithPath(const std::string& sourceFile, const std::string& relativePath);
+        void checkAlphaBeta(const alphaBeta& computed, const alphaBeta& ref, const double margin);
+        void checkAlphaBeta(const alphaBeta& computed, const alphaBeta& ref, const double margin1, const double margin2);
+        static Numeric::Matrix convert1dmatrix(const std::initializer_list<double>& m);
+    private:
+        std::vector<std::string> readWholeFile(const std::string& file) const;
+        bool compareLine(const std::string& ref, const std::string& nw) const;
+        std::vector<std::string> mySplit(const std::string& str) const;
+        bool looksLikeAnumber(const std::string& s) const;
+        const double margin = 1e-5;
+    };
 }
+

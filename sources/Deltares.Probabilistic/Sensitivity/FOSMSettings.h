@@ -22,7 +22,9 @@
 #pragma once
 
 #include "../Model/RunSettings.h"
+#include "../Statistics/ProbabilityValue.h"
 #include <memory>
+#include <vector>
 
 namespace Deltares
 {
@@ -45,6 +47,11 @@ namespace Deltares
              * \brief The step size to calculate the gradient
              */
             double StepSize = 0.01;
+
+            /**
+             * \brief Quantiles which should be calculated
+             */
+            std::vector<std::shared_ptr<Statistics::ProbabilityValue>> RequestedQuantiles;
 
             /**
              * \brief Settings for performing model runs

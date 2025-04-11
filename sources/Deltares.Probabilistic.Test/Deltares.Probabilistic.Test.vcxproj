@@ -144,6 +144,8 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="projectBuilder.h" />
     <ClInclude Include="projectBuilder_body.cpp" />
+    <ClInclude Include="Model\TestRunModel.h" />
+    <ClInclude Include="Model\TestRunModel_body.cpp" />
     <ClInclude Include="Reliability\testStartPointCalculator.h" />
     <ClInclude Include="Reliability\testStartPointCalculator_body.cpp" />
     <ClInclude Include="Reliability\testReliabilityMethods.h" />
@@ -174,6 +176,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="projectBuilder.cpp" />
+    <ClCompile Include="Model\TestRunModel.cpp" />
     <ClCompile Include="Reliability\testStartPointCalculator.cpp" />
     <ClCompile Include="Reliability\testReliabilityMethods.cpp" />
     <ClCompile Include="Sensitivity\TestSensitivity.cpp" />

@@ -45,7 +45,8 @@ namespace Deltares
                 {
                     if (inputParameters[i]->name == this->parameter)
                     {
-                        this->parameterIndex = inputParameters[i]->computationalIndex;
+                        int offset = outputParameters[i]->isArray ? this->arrayIndex : 0;
+                        this->parameterIndex = inputParameters[i]->computationalIndex + offset;
                         this->parameterIndexFromInput = true;
                     }
                 }
@@ -54,7 +55,8 @@ namespace Deltares
                 {
                     if (outputParameters[i]->name == this->parameter)
                     {
-                        this->parameterIndex = outputParameters[i]->computationalIndex;
+                        int offset = outputParameters[i]->isArray ? this->arrayIndex : 0;
+                        this->parameterIndex = outputParameters[i]->computationalIndex + offset;
                         this->parameterIndexFromInput = false;
                     }
                 }
