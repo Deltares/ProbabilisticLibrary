@@ -286,7 +286,7 @@ namespace Deltares
 
                 auto tester = testutils();
                 auto refFile = tester.refFileWithPath(__FILE__, "../RefData/Test_RhoLimit.tek.ref");
-                auto result = tester.comparefiles(refFile, filename);
+                auto result = tester.compareFiles(refFile, filename);
                 ASSERT_TRUE(result);
                 remove(filename);
             }

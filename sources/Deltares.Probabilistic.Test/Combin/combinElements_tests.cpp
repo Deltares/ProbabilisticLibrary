@@ -29,8 +29,8 @@
 using namespace Deltares::Reliability;
 using namespace Deltares::Statistics;
 
-namespace Deltares{ namespace Probabilistic { namespace Test {
-
+namespace Deltares::Probabilistic::Test
+{
 
  void combinElementsTests::runAllCombineTwoElementsTests()
 {
@@ -40,52 +40,52 @@ namespace Deltares{ namespace Probabilistic { namespace Test {
     testCombineTwoElementsNoCorrelation4();
     testCombineTwoElementsNoCorrelation5();
     testCombineTwoElementsNoCorrelation6();
-    testcombineTwoElementsPartialCorrelation1();
-    testcombineTwoElementsPartialCorrelation2();
-    testcombineTwoElementsPartialCorrelation3();
-    testcombineTwoElementsPartialCorrelation4();
-    testcombineTwoElementsPartialCorrelation5();
-    testcombineTwoElementsPartialCorrelation6();
-    testcombineTwoElementsPartialCorrelation7();
-    testcombineTwoElementsPartialCorrelation8();
-    testcombineTwoElementsPartialCorrelation9();
-    testcombineTwoElementsPartialCorrelation10();
-    testcombineTwoElementsPartialCorrelation11();
-    testcombineTwoElementsPartialCorrelation12();
-    testcombineTwoElementsPartialCorrelation13();
-    testcombineTwoElementsPartialCorrelation14();
-    testcombineTwoElementsPartialCorrelation15();
-    testcombineTwoElementsPartialCorrelation99();
-    testcombineTwoElementsPCorWithNonContrAlphas();
-    testcombineMultipleElementsProb1();
-    testcombineMultipleElementsProb2();
-    testcombineMultipleElementsProb3();
-    testcombineMultipleElementsProb4();
-    testcombineMultipleElementsProb5();
+    testCombineTwoElementsPartialCorrelation1();
+    testCombineTwoElementsPartialCorrelation2();
+    testCombineTwoElementsPartialCorrelation3();
+    testCombineTwoElementsPartialCorrelation4();
+    testCombineTwoElementsPartialCorrelation5();
+    testCombineTwoElementsPartialCorrelation6();
+    testCombineTwoElementsPartialCorrelation7();
+    testCombineTwoElementsPartialCorrelation8();
+    testCombineTwoElementsPartialCorrelation9();
+    testCombineTwoElementsPartialCorrelation10();
+    testCombineTwoElementsPartialCorrelation11();
+    testCombineTwoElementsPartialCorrelation12();
+    testCombineTwoElementsPartialCorrelation13();
+    testCombineTwoElementsPartialCorrelation14();
+    testCombineTwoElementsPartialCorrelation15();
+    testCombineTwoElementsPartialCorrelation99();
+    testCombineTwoElementsPCorWithNonContrAlphas();
+    testCombineMultipleElementsProb1();
+    testCombineMultipleElementsProb2();
+    testCombineMultipleElementsProb3();
+    testCombineMultipleElementsProb4();
+    testCombineMultipleElementsProb5();
     testCombineElementsFullCorrelation1();
     testCombineElementsFullCorrelation2();
-    testcombineTwoElementsNegativeCorrelation1();
-    testcombineTwoElementsNegativeCorrelation2();
-    testcombineThreeElementsPartialCorrelation1();
-    testcombineThreeElementsPartialCorrelation2();
-    testcombineThreeElementsPartialCorrelation3();
-    testcombineThreeElementsPartialCorrelation4();
-    testcombineTwoElementsPartialCorrelationPiping();
-    testcombineTwoElementsPartialCorrelation9a();
-    testcombineTwoElementsPartialCorrelation10a();
-    testcombineTwoElementsPartialCorrelation11a();
-    testcombineTwoElementsPartialCorrelation12a();
-    testcombineTwoElementsPartialCorrelation13a();
-    testcombineTwoElementsPartialCorrelation14a();
-    testcombineTwoElementsPartialCorrelation99a();
+    testCombineTwoElementsNegativeCorrelation1();
+    testCombineTwoElementsNegativeCorrelation2();
+    testCombineThreeElementsPartialCorrelation1();
+    testCombineThreeElementsPartialCorrelation2();
+    testCombineThreeElementsPartialCorrelation3();
+    testCombineThreeElementsPartialCorrelation4();
+    testCombineTwoElementsPartialCorrelationPiping();
+    testCombineTwoElementsPartialCorrelation9a();
+    testCombineTwoElementsPartialCorrelation10a();
+    testCombineTwoElementsPartialCorrelation11a();
+    testCombineTwoElementsPartialCorrelation12a();
+    testCombineTwoElementsPartialCorrelation13a();
+    testCombineTwoElementsPartialCorrelation14a();
+    testCombineTwoElementsPartialCorrelation99a();
 }
 
 void combinElementsTests::runAllLengthEffectTests()
 {
     testLengthEffectFourStochasts();
-    testcombineMultipleElementsSpatialCorrelated1();
-    testcombineMultipleElementsSpatialCorrelated2();
-    testcombineMultipleElementsSpatialCorrelated3();
+    testCombineMultipleElementsSpatialCorrelated1();
+    testCombineMultipleElementsSpatialCorrelated2();
+    testCombineMultipleElementsSpatialCorrelated3();
 }
 
 // Test of combineTwoElementsPartialCorrelation
@@ -96,7 +96,7 @@ void combinElementsTests::runAllLengthEffectTests()
 // The resulting beta and alphas of the combination should be equal to their expected values
 void combinElementsTests::testCombineTwoElementsNoCorrelation1()
 {
-    const size_t nStochast = 2; // number of stochastic variables
+    constexpr size_t nStochast = 2; // number of stochastic variables
     auto elm1 = alphaBeta(3.0, {1.0, 0.0});
     auto elm2 = alphaBeta(2.5, {0.0, 1.0});
     auto rhoP   = vector1D(nStochast); // defaults to (0.0, 0.0)
@@ -246,7 +246,7 @@ void combinElementsTests::testCombineTwoElementsNoCorrelation6()
 // Element 2 with beta= 2.5, and design point alpha= (0.8, 0.6)
 // RhoP = (0.5, 0.5)
 // The resulting beta and alphas of the combination should be equal to their expected values
-void combinElementsTests::testcombineTwoElementsPartialCorrelation1()
+void combinElementsTests::testCombineTwoElementsPartialCorrelation1()
 {
     auto elm1 = alphaBeta(3.0, {0.6, 0.8});
     auto elm2 = alphaBeta(2.5, {0.8, 0.6});
@@ -267,7 +267,7 @@ void combinElementsTests::testcombineTwoElementsPartialCorrelation1()
 // RhoP = (1.0, 1.0)
 // The resulting beta and alphas of the combination should be equal to their expected values
 // NB. With RhoP=(1, 1) the robustness of the function is tested for full correlation of the stochastic variables.
-void combinElementsTests::testcombineTwoElementsPartialCorrelation2()
+void combinElementsTests::testCombineTwoElementsPartialCorrelation2()
 {
     auto elm1 = alphaBeta(3.0, {0.6, 0.8});
     auto elm2 = alphaBeta(2.5, {0.8, 0.6});
@@ -289,7 +289,7 @@ void combinElementsTests::testcombineTwoElementsPartialCorrelation2()
 // The resulting beta and alphas of the combination should be equal to their expected values
 // NB. Particularly, with this RhoP=(1, 1) the robustness of the function is tested for full correlation of the stochastic variables.
 //     Because of equal beta of the two elements, the alpha(1) and alpha(2) for the combination must have the same value.
-void combinElementsTests::testcombineTwoElementsPartialCorrelation3()
+void combinElementsTests::testCombineTwoElementsPartialCorrelation3()
 {
     auto elm1 = alphaBeta(2.5, {0.6, 0.8});
     auto elm2 = alphaBeta(2.5, {0.8, 0.6});
@@ -312,7 +312,7 @@ void combinElementsTests::testcombineTwoElementsPartialCorrelation3()
 // The resulting beta and alphas of the combination should be equal to their expected values
 // NB. Fully correlated stochastic variables, but uncorrelated elements.
 // NB. A negative value is assigned to alpha1(1) of the first element.
-void combinElementsTests::testcombineTwoElementsPartialCorrelation4()
+void combinElementsTests::testCombineTwoElementsPartialCorrelation4()
 {
     auto elm1 = alphaBeta(2.5, {-0.6, 0.8});
     auto elm2 = alphaBeta(2.5, {0.8, 0.6});
@@ -339,7 +339,7 @@ void combinElementsTests::testcombineTwoElementsPartialCorrelation4()
 // The resulting beta and alphas of the combination should be equal to their expected values
 // NB. Negative values are assigned to alpha1(1) of the first element and alpha2(1) of the second element.
 //     It is verified that the alphaC(1) of the combination is also negative.
-void combinElementsTests::testcombineTwoElementsPartialCorrelation5()
+void combinElementsTests::testCombineTwoElementsPartialCorrelation5()
 {
     auto elm1 = alphaBeta(2.5, {-0.6, 0.8});
     auto elm2 = alphaBeta(2.5, {-0.8, 0.6});
@@ -363,7 +363,7 @@ void combinElementsTests::testcombineTwoElementsPartialCorrelation5()
 // NB. Present number of stochastic variables is 4
 // NB. Correlated stochastic variables, but uncorrelated elements.
 // NB. Positive and negative values in the alpha1() and alpha2().
-void combinElementsTests::testcombineTwoElementsPartialCorrelation6()
+void combinElementsTests::testCombineTwoElementsPartialCorrelation6()
 {
     auto elm1 = alphaBeta(2.5, {-0.5,  0.5, -0.5, 0.5});
     auto elm2 = alphaBeta(2.5, {-0.5, -0.5,  0.5, 0.5});
@@ -388,16 +388,16 @@ void combinElementsTests::testcombineTwoElementsPartialCorrelation6()
 // Element 2 with beta= 2.5, and design point alpha= ( 1.0)
 // RhoP = ( 0.9 )
 // The resulting beta of the combination should be equal to its expected value
-// The alpha of the combination of the these two elements is not well defined and is not verified
+// The alpha of the combination of the these two elements is not well-defined and is not verified
 // NB. Merely one stochastic variable in the elements
 // NB. Negative correlation of the two elements.
-void combinElementsTests::testcombineTwoElementsPartialCorrelation7()
+void combinElementsTests::testCombineTwoElementsPartialCorrelation7()
 {
     auto elm1 = alphaBeta(2.5, {-1.0});
     auto elm2 = alphaBeta(2.5, { 1.0});
     auto rhoP = vector1D({0.9});
 
-    double expectedBeta = 2.24390055691005;
+    constexpr double expectedBeta = 2.24390055691005;
 
     auto elm3 = cmb.combineTwoElementsPartialCorrelation(elm1, elm2, rhoP, combineAndOr::combOr);
 
@@ -411,16 +411,16 @@ void combinElementsTests::testcombineTwoElementsPartialCorrelation7()
 // Element 2 with beta= 2.5, and design point alpha= (-1.0)
 // RhoP = ( 0.9 )
 // The resulting beta of the combination should be equal to its expected value
-// The alpha of the combination of the these two elements is not well defined and is not verified
+// The alpha of the combination of the these two elements is not well-defined and is not verified
 // NB. Merely one stochastic variable in the elements
 // NB. Negative correlation of the two elements.
-void combinElementsTests::testcombineTwoElementsPartialCorrelation8()
+void combinElementsTests::testCombineTwoElementsPartialCorrelation8()
 {
     auto elm1 = alphaBeta(2.5, { 1.0});
     auto elm2 = alphaBeta(2.5, {-1.0});
     auto rhoP = vector1D({0.9});
 
-    const double expectedBeta  = 2.24390055691005;
+    constexpr double expectedBeta  = 2.24390055691005;
 
     auto elm3 = cmb.combineTwoElementsPartialCorrelation(elm1, elm2, rhoP, combineAndOr::combOr);
 
@@ -439,8 +439,8 @@ void combinElementsTests::testcombineTwoElementsPartialCorrelation8()
 //     Section 3. Onnauwkeurigheid alfa-bepaling.
 //     Testcase 3: Standard case with different alpha() values.
 //     A.Vrouwenvelder/H.Steenbergen (TNO), June 2013.
-//     See also the associated test in testcombineTwoElementsPartialCorrelation10
-void combinElementsTests::testcombineTwoElementsPartialCorrelation9()
+//     See also the associated test in testCombineTwoElementsPartialCorrelation10
+void combinElementsTests::testCombineTwoElementsPartialCorrelation9()
 {
     auto elm1 = alphaBeta(3.5, {0.436, 0.900});
     auto elm2 = alphaBeta(3.5, {0.900, 0.436});
@@ -467,8 +467,8 @@ void combinElementsTests::testcombineTwoElementsPartialCorrelation9()
 //     Section 3. Onnauwkeurigheid alfa-bepaling.
 //     Testcase 3: Standard case with different alpha() values.
 //     A.Vrouwenvelder/H.Steenbergen (TNO), June 2013
-//     See also the associated test in testcombineTwoElementsPartialCorrelation9
-void combinElementsTests::testcombineTwoElementsPartialCorrelation10()
+//     See also the associated test in testCombineTwoElementsPartialCorrelation9
+void combinElementsTests::testCombineTwoElementsPartialCorrelation10()
 {
     auto elm1 = alphaBeta(3.5, {0.436, 0.900, 0.000});
     auto elm2 = alphaBeta(3.5, {0.900, 0.000, 0.436});
@@ -496,8 +496,8 @@ void combinElementsTests::testcombineTwoElementsPartialCorrelation10()
 //     Section 3. Onnauwkeurigheid alfa-bepaling.
 //     Testcase 1: Standardcase.
 //     A.Vrouwenvelder/H.Steenbergen (TNO), June 2013
-//     See also the associated test in testcombineTwoElementsPartialCorrelation12
-void combinElementsTests::testcombineTwoElementsPartialCorrelation11()
+//     See also the associated test in testCombineTwoElementsPartialCorrelation12
+void combinElementsTests::testCombineTwoElementsPartialCorrelation11()
 {
     auto elm1 = alphaBeta(3.5, {0.6, 0.8});
     auto elm2 = elm1;
@@ -522,8 +522,8 @@ void combinElementsTests::testcombineTwoElementsPartialCorrelation11()
 //     Section 3. Onnauwkeurigheid alfa-bepaling.
 //     Testcase 1: Standardcase.
 //     A.Vrouwenvelder/H.Steenbergen (TNO), June 2013
-//     See also the associated test in testcombineTwoElementsPartialCorrelation11
-void combinElementsTests::testcombineTwoElementsPartialCorrelation12()
+//     See also the associated test in testCombineTwoElementsPartialCorrelation11
+void combinElementsTests::testCombineTwoElementsPartialCorrelation12()
 {
     auto elm1 = alphaBeta(3.5, {0.6, 0.8, 0.0});
     auto elm2 = alphaBeta(3.5, {0.6, 0.0, 0.8});
@@ -549,8 +549,8 @@ void combinElementsTests::testcombineTwoElementsPartialCorrelation12()
 //     Section 3. Onnauwkeurigheid alfa-bepaling.
 //     Testcase 2: Standardcase with different beta-values.
 //     A.Vrouwenvelder/H.Steenbergen (TNO), June 2013
-//     See also the associated test in testcombineTwoElementsPartialCorrelation14
-void combinElementsTests::testcombineTwoElementsPartialCorrelation13()
+//     See also the associated test in testCombineTwoElementsPartialCorrelation14
+void combinElementsTests::testCombineTwoElementsPartialCorrelation13()
 {
 //  For "old" combineTwoElementsPartialCorrelation, without correction of the alpha_equivalent
     auto elm1 = alphaBeta(3.5, {0.6, 0.8});
@@ -576,8 +576,8 @@ void combinElementsTests::testcombineTwoElementsPartialCorrelation13()
 //     Section 3. Onnauwkeurigheid alfa-bepaling.
 //     Testcase 2: Standardcase with different beta-values.
 //     A.Vrouwenvelder/H.Steenbergen (TNO), June 2013
-//     See also the associated test in testcombineTwoElementsPartialCorrelation13
-void combinElementsTests::testcombineTwoElementsPartialCorrelation14()
+//     See also the associated test in testCombineTwoElementsPartialCorrelation13
+void combinElementsTests::testCombineTwoElementsPartialCorrelation14()
 {
 //  For "old" combineTwoElementsPartialCorrelation, without correction of the alpha_equivalent
     auto elm1 = alphaBeta(3.5, {0.6, 0.8, 0.0});
@@ -603,13 +603,13 @@ void combinElementsTests::testcombineTwoElementsPartialCorrelation14()
 // Element 2 with beta= 9.5, and design point alpha= ( 0.8, 0.6 )
 // RhoP = ( 1.0, 1.0)
 // The resulting beta and alphas of the combination should be equal to their expected values
-void combinElementsTests::testcombineTwoElementsPartialCorrelation15()
+void combinElementsTests::testCombineTwoElementsPartialCorrelation15()
 {
     auto elm1 = alphaBeta(3.5, {0.8, 0.6});
     auto elm2 = alphaBeta(9.5, {0.8, 0.6});
     auto rhoP = vector1D({1.0, 0.0});
 
-    auto ref = elm1; // approx.
+    const auto& ref = elm1; // approx.
 
     auto elm3 = cmb.combineTwoElementsPartialCorrelation(elm1, elm2, rhoP, combineAndOr::combOr);
 
@@ -623,9 +623,9 @@ void combinElementsTests::testcombineTwoElementsPartialCorrelation15()
 // Element 2 with beta= 3.5, and dimension 10 of design point alpha
 // RhoP = ( 1.0, ..., 1.0)
 // The resulting beta and alphas of the combination should be equal to their expected values
-void combinElementsTests::testcombineTwoElementsPartialCorrelation99()
+void combinElementsTests::testCombineTwoElementsPartialCorrelation99()
 {
-    const size_t nStochast = 10;
+    constexpr size_t nStochast = 10;
     auto elm1 = alphaBeta(3.0, {0.6, 0.8, 0.4, 0.0, 0.2, 0.7, 0.3, 0.8, 0.9, 1.0});
     auto elm2 = alphaBeta(3.5, {0.1, 0.0, 0.7, 0.9, 0.8, 0.1, 0.9, 0.5, 0.3, 0.0});
     auto rhoP = vector1D(nStochast);
@@ -657,15 +657,15 @@ void combinElementsTests::testcombineTwoElementsPartialCorrelation99()
 //     Section 3. Onnauwkeurigheid alfa-bepaling. \n
 //     Testcase 2: Standardcase with different beta-values. \n
 //     A.Vrouwenvelder/H.Steenbergen (TNO), June 2013 \n
-//     See also the associated test in testcombineTwoElementsPartialCorrelation13 \n
-void combinElementsTests::testcombineTwoElementsPCorWithNonContrAlphas()
+//     See also the associated test in testCombineTwoElementsPartialCorrelation13 \n
+void combinElementsTests::testCombineTwoElementsPCorWithNonContrAlphas()
 {
     auto elm1 = alphaBeta(3.5, {0.0, 0.6, 0.0, 0.8, 0.0});
     auto elm2 = alphaBeta(3.8, elm1.getAlpha());
     auto rhoP = vector1D({0.0, 1.0, 0.5, 0.0, 1.0});
 
     auto ref = alphaBeta(3.42801564331459,
-    {0.0, 0.631154181145020, 0.0, 0.775657398355201, 0.0}); // pre-computed and based on testcombineTwoElementsPartialCorrelation13
+    {0.0, 0.631154181145020, 0.0, 0.775657398355201, 0.0}); // pre-computed and based on testCombineTwoElementsPartialCorrelation13
 
     auto elm3 = cmb.combineTwoElementsPartialCorrelation(elm1, elm2, rhoP, combineAndOr::combOr);
 
@@ -673,8 +673,8 @@ void combinElementsTests::testcombineTwoElementsPCorWithNonContrAlphas()
     EXPECT_EQ(elm3.n, 0);
 }
 
-// > test testcombineMultipleElementsProb
-void combinElementsTests::testcombineMultipleElementsProb1()
+// > test combineMultipleElementsProb
+void combinElementsTests::testCombineMultipleElementsProb1()
 {
     auto Elements = elements(1);
     Elements[0] = {3.5, {1.0, 0.0, 0.0}};
@@ -688,10 +688,10 @@ void combinElementsTests::testcombineMultipleElementsProb1()
     EXPECT_EQ(ab.n, 0);
 }
 
-// test testcombineMultipleElementsProb
-void combinElementsTests::testcombineMultipleElementsProb2()
+// test combineMultipleElementsProb
+void combinElementsTests::testCombineMultipleElementsProb2()
 {
-    const size_t nElements = 2;
+    constexpr size_t nElements = 2;
 
     auto Elements = elements(nElements);
     auto percentages = std::vector<double>(nElements);
@@ -710,10 +710,10 @@ void combinElementsTests::testcombineMultipleElementsProb2()
     EXPECT_EQ(ab.n, 0);
 }
 
-// test testcombineMultipleElementsProb
-void combinElementsTests::testcombineMultipleElementsProb3()
+// test combineMultipleElementsProb
+void combinElementsTests::testCombineMultipleElementsProb3()
 {
-    const size_t nElements = 10;
+    constexpr size_t nElements = 10;
 
     auto Elements = elements(nElements);
     auto percentages = std::vector<double>(nElements);
@@ -732,10 +732,10 @@ void combinElementsTests::testcombineMultipleElementsProb3()
     EXPECT_EQ(ab.n, 0);
 }
 
-// test testcombineMultipleElementsProb
-void combinElementsTests::testcombineMultipleElementsProb4()
+// test combineMultipleElementsProb
+void combinElementsTests::testCombineMultipleElementsProb4()
 {
-    const size_t nElements = 2;
+    constexpr size_t nElements = 2;
 
     auto Elements = elements(nElements);
     Elements[0] = alphaBeta(3.0, {1.0, 0.0, 0.0});
@@ -750,16 +750,16 @@ void combinElementsTests::testcombineMultipleElementsProb4()
     EXPECT_EQ(ab.n, 0);
 }
 
-// test testcombineMultipleElementsProb
-void combinElementsTests::testcombineMultipleElementsProb5()
+// test combineMultipleElementsProb
+void combinElementsTests::testCombineMultipleElementsProb5()
 {
-    const size_t nElements = 10;
+    constexpr size_t nElements = 10;
 
     auto Elements = elements(nElements);
     auto percentages = std::vector<double>(nElements);
     for (size_t i = 0; i < nElements; i++)
     {
-        Elements[i] = alphaBeta(3.0 + 0.1 * (double)i, {1.0, 0.0, 0.0});
+        Elements[i] = alphaBeta(3.0 + 0.1 * static_cast<double>(i), {1.0, 0.0, 0.0});
         percentages[i] = 10.0;
     }
     
@@ -773,24 +773,25 @@ void combinElementsTests::testcombineMultipleElementsProb5()
 
 // Test of combine multiple elements spatial correlated
 // This test gives the results as calculated with the method residual correlation
-void combinElementsTests::testcombineMultipleElementsSpatialCorrelated1()
+void combinElementsTests::testCombineMultipleElementsSpatialCorrelated1()
 {
-    const int nElements    = 20; // Number of elements
+    constexpr int nElements = 20; // Number of elements
 
     auto CrossSection = alphaBeta(5.0, {0.6, sqrt(0.5 - 0.36), 0.6, sqrt(0.5 - 0.36)});
     auto rhoXK = vector1D({0.5, 0.5, 0.2, 0.2});
     auto dXK   = vector1D({500.0, 300.0, 500.0, 300.0});
-    double sectionLength = 100.0;
+    constexpr double sectionLength = 100.0;
 
     auto ref = alphaBeta(4.38787743765301, // pre-computed
     {0.635285167139092, 0.393519326675495, 0.565059833788674, 0.349660807332817}); // pre-computed
 
-    auto section = up.upscaleLength(CrossSection, rhoXK, dXK, sectionLength);
-    EXPECT_EQ(section.second, 0);
+    std::string message;
+    const auto [section, nFail] = up.upscaleLength(CrossSection, rhoXK, dXK, sectionLength, message);
+    EXPECT_EQ(nFail, 0);
     auto Elements = elements(nElements);
     for (size_t i = 0; i < nElements; i++)
     {
-        Elements[i] = section.first;
+        Elements[i] = section;
     }
 
     auto ab = cmb.combineMultipleElements( Elements, rhoXK, combineAndOr::combOr );
@@ -801,10 +802,10 @@ void combinElementsTests::testcombineMultipleElementsSpatialCorrelated1()
 
 // Test of combine multiple elements spatial correlated
 // This test gives the results as calculated with the method residual correlation
-void combinElementsTests::testcombineMultipleElementsSpatialCorrelated2()
+void combinElementsTests::testCombineMultipleElementsSpatialCorrelated2()
 {
-    const size_t nStochast = 4; // Number of stochastic variables
-    const size_t nElements = 20; // Number of elements
+    constexpr size_t nStochast = 4; // Number of stochastic variables
+    constexpr size_t nElements = 20; // Number of elements
     auto crossSection = alphaBeta(5.0, {0.6, sqrt(0.5 - 0.36), 0.6, sqrt(0.5 - 0.36)});
     auto rhoXK = vector1D({0.5, 0.5, 0.2, 0.2});
     auto dXK   = vector1D({500.0, 300.0, 500.0, 300.0});
@@ -813,12 +814,13 @@ void combinElementsTests::testcombineMultipleElementsSpatialCorrelated2()
     auto ref = alphaBeta(4.61415014812874,
     {0.597708361676096, 0.375385677437277, 0.599181645055476, 0.377904305064187}); // pre-computed
 
-    auto section = up.upscaleLength(crossSection, rhoXK, dXK, sectionLength);
-    EXPECT_EQ(section.second, 0);
+    std::string message;
+    const auto [section, nFail] = up.upscaleLength(crossSection, rhoXK, dXK, sectionLength, message);
+    EXPECT_EQ(nFail, 0);
     auto elms = elements(nElements);
     for (size_t i = 0; i < nElements; i++)
     {
-        elms[i] = section.first;
+        elms[i] = section;
     }
 
     auto rhoXAK = vector1D(nStochast);
@@ -834,21 +836,22 @@ void combinElementsTests::testcombineMultipleElementsSpatialCorrelated2()
 
 // Test of combine multiple elements spatial correlated
 // This test gives the results as calculated with the method residual correlation
-void combinElementsTests::testcombineMultipleElementsSpatialCorrelated3()
+void combinElementsTests::testCombineMultipleElementsSpatialCorrelated3()
 {
-    const size_t nElements = 20; // Number of elements
+    constexpr size_t nElements = 20; // Number of elements
     auto crossSection = alphaBeta(5.0, {0.6, sqrt(0.5 - 0.36), 0.6, sqrt(0.5 - 0.36)});
     auto rhoXK = vector1D({0.5, 0.5, 0.2, 0.2});
     auto dXK   = vector1D({500.0, 300.0, 500.0, 300.0});
-    double sectionLength = 100.0;
+    constexpr double sectionLength = 100.0;
 
     auto ref = alphaBeta(4.5064103581966,
     {0.578741673689891, 0.385418150246354, 0.598199853682860, 0.398331344045516}); // pre-computed
 
-    auto section = up.upscaleLength(crossSection, rhoXK, dXK, nElements * sectionLength);
+    std::string message;
+    const auto [section, nFail] = up.upscaleLength(crossSection, rhoXK, dXK, nElements * sectionLength, message);
 
-    utils.checkAlphaBeta(section.first, ref, 1e-6);
-    EXPECT_EQ(section.second, 0);
+    utils.checkAlphaBeta(section, ref, 1e-6);
+    EXPECT_EQ(nFail, 0);
 }
 
 void combinElementsTests::testLengthEffectFourStochasts()
@@ -902,7 +905,7 @@ void combinElementsTests::testCombineElementsFullCorrelation(const combineAndOr 
     auto Elements = elements(nrElements);
     for (size_t i = 0; i < nrElements; i++)
     {
-        Elements[i] = {3.0 + 0.1 * (double)i, {0.8, 0.6, 0.0, 0.0}};
+        Elements[i] = {3.0 + 0.1 * static_cast<double>(i), {0.8, 0.6, 0.0, 0.0}};
     }
 
     auto ab = cmb.combineMultipleElementsFull(Elements, andOr);
@@ -928,7 +931,7 @@ void combinElementsTests::testCombineElementsFullCorrelation2()
 // Element 2 with beta= 2.5, and design point alpha= (-1.0, 0.0)
 // RhoP = (1.0, 1.0)
 // The resulting beta and alphas of the combination should be equal to their expected values
-void combinElementsTests::testcombineTwoElementsNegativeCorrelation1()
+void combinElementsTests::testCombineTwoElementsNegativeCorrelation1()
 {
     auto elm1 = alphaBeta(3.0, { 1.0, 0.0});
     auto elm2 = alphaBeta(2.5, {-1.0, 0.0});
@@ -954,7 +957,7 @@ void combinElementsTests::testcombineTwoElementsNegativeCorrelation1()
 // Element 2 with beta= 2.5, and design point alpha= (-1.0, 0.0)
 // RhoP = (1.0, 1.0)
 // The resulting beta and alphas of the combination should be equal to their expected values
-void combinElementsTests::testcombineTwoElementsNegativeCorrelation2()
+void combinElementsTests::testCombineTwoElementsNegativeCorrelation2()
 {
     auto elm1 = alphaBeta(3.0, { 1.0, 0.0});
     auto elm2 = alphaBeta(2.5, {-1.0, 0.0});
@@ -977,7 +980,7 @@ void combinElementsTests::testcombineTwoElementsNegativeCorrelation2()
 // Element 3 with beta= 3.5, and design point alpha= Normalised( 0.9  , 0.0, 0.0, 0.436)
 // RhoP = ( 1.0, 1.0, 1.0, 1.0)
 // The resulting beta and alphas of the combination should be equal to their expected values
-void combinElementsTests::testcombineThreeElementsPartialCorrelation1()
+void combinElementsTests::testCombineThreeElementsPartialCorrelation1()
 {
     auto elm1 = alphaBeta(3.5, {0.436, 0.900, 0.000, 0.000});
     auto elm2 = alphaBeta(3.5, {0.900, 0.000, 0.436, 0.000});
@@ -1005,7 +1008,7 @@ void combinElementsTests::testcombineThreeElementsPartialCorrelation1()
 // Element 3 with beta= 3.5, and design point alpha= Normalised( 0.8, 0.0, 0.0, 0.6)
 // RhoP = ( 1.0, 1.0, 1.0, 1.0)
 // The resulting beta and alphas of the combination should be equal to their expected values
-void combinElementsTests::testcombineThreeElementsPartialCorrelation2()
+void combinElementsTests::testCombineThreeElementsPartialCorrelation2()
 {
     auto elm1 = alphaBeta(3.5, {0.8, 0.6, 0.0, 0.0});
     auto elm2 = alphaBeta(3.5, {0.8, 0.0, 0.6, 0.0});
@@ -1033,7 +1036,7 @@ void combinElementsTests::testcombineThreeElementsPartialCorrelation2()
 // Element 3 with beta= 3.5, and design point alpha= Normalised( 0.8, 0.0, 0.0, 0.6)
 // RhoP = ( 1.0, 1.0, 1.0, 1.0)
 // The resulting beta and alphas of the combination should be equal to their expected values
-void combinElementsTests::testcombineThreeElementsPartialCorrelation3()
+void combinElementsTests::testCombineThreeElementsPartialCorrelation3()
 {
     auto elm1 = alphaBeta(3.3, {1.0, 0.0, 0.0});
     auto elm2 = alphaBeta(3.3, {0.0, 1.0, 0.0});
@@ -1066,7 +1069,7 @@ void combinElementsTests::testcombineThreeElementsPartialCorrelation3()
 // Element 3 with beta= 3.5, and design point alpha= Normalised( 0.8, 0.0, 0.0, 0.6)
 // RhoP = ( 1.0, 1.0, 1.0, 1.0)
 // The resulting beta and alphas of the combination should be equal to their expected values
-void combinElementsTests::testcombineThreeElementsPartialCorrelation4()
+void combinElementsTests::testCombineThreeElementsPartialCorrelation4()
 {
     auto elm1 = alphaBeta(3.3, {0.8, 0.5, 0.33});
     auto elm2 = alphaBeta(3.3, {0.6, 0.7, 0.39});
@@ -1100,7 +1103,7 @@ void combinElementsTests::testcombineThreeElementsPartialCorrelation4()
 // test to reproduce behaviour of issue: HRING-1329
 // beta < 0 and rho=1 for most important alpha value
 // condensed alpha's from a crashing piping calculation
-void combinElementsTests::testcombineTwoElementsPartialCorrelationPiping()
+void combinElementsTests::testCombineTwoElementsPartialCorrelationPiping()
 {
     auto elm1 = alphaBeta(-0.672801079367189, {0.955916666381498, 0.269308913244088, 0.117030065288253});
     auto elm2 = alphaBeta(-1.66664947542178, {0.941548934494231, 0.336876242987242, 2.938671066518333e-5});
@@ -1125,8 +1128,8 @@ void combinElementsTests::testcombineTwoElementsPartialCorrelationPiping()
 //     Section 3. Onnauwkeurigheid alfa-bepaling. \n
 //     Testcase 3: Standard case with different alpha() values. \n
 //     A.Vrouwenvelder/H.Steenbergen (TNO), June 2013 \n
-// See also the associated test in testcombineTwoElementsPartialCorrelation9() \n
-void combinElementsTests::testcombineTwoElementsPartialCorrelation9a()
+// See also the associated test in testCombineTwoElementsPartialCorrelation9() \n
+void combinElementsTests::testCombineTwoElementsPartialCorrelation9a()
 {
     auto elm1 = alphaBeta(3.5, {0.436, 0.9, 0.0});
     auto elm2 = alphaBeta(3.5, {0.9, 0.0, 0.436});
@@ -1154,8 +1157,8 @@ void combinElementsTests::testcombineTwoElementsPartialCorrelation9a()
 //     Section 3. Onnauwkeurigheid alfa-bepaling.
 //     Testcase 3: Standard case with different alpha() values.
 //     A.Vrouwenvelder/H.Steenbergen (TNO), June 2013
-// See also the associated test in testcombineTwoElementsPartialCorrelation10()
-void combinElementsTests::testcombineTwoElementsPartialCorrelation10a()
+// See also the associated test in testCombineTwoElementsPartialCorrelation10()
+void combinElementsTests::testCombineTwoElementsPartialCorrelation10a()
 {
     auto elm1 = alphaBeta(3.5, {0.436, 0.9});
     auto elm2 = alphaBeta(3.5, {0.9, 0.436});
@@ -1183,8 +1186,8 @@ void combinElementsTests::testcombineTwoElementsPartialCorrelation10a()
 //     Section 3. Onnauwkeurigheid alfa-bepaling.
 //     Testcase 1: Standardcase.
 //     A.Vrouwenvelder/H.Steenbergen (TNO), June 2013
-// See also testcombineTwoElementsPartialCorrelation11()
-void combinElementsTests::testcombineTwoElementsPartialCorrelation11a()
+// See also testCombineTwoElementsPartialCorrelation11()
+void combinElementsTests::testCombineTwoElementsPartialCorrelation11a()
 {
     auto elm1 = alphaBeta(3.5, {0.6, 0.8});
     auto elm2 = elm1;
@@ -1210,8 +1213,8 @@ void combinElementsTests::testcombineTwoElementsPartialCorrelation11a()
 //     Section 3. Onnauwkeurigheid alfa-bepaling.
 //     Testcase 1: Standardcase.
 //     A.Vrouwenvelder/H.Steenbergen (TNO), June 2013
-// See also testcombineTwoElementsPartialCorrelation12()
-void combinElementsTests::testcombineTwoElementsPartialCorrelation12a()
+// See also testCombineTwoElementsPartialCorrelation12()
+void combinElementsTests::testCombineTwoElementsPartialCorrelation12a()
 {
     auto elm1 = alphaBeta(3.5, {0.6, 0.8, 0.0});
     auto elm2 = alphaBeta(3.5, {0.6, 0.0, 0.8});
@@ -1237,8 +1240,8 @@ void combinElementsTests::testcombineTwoElementsPartialCorrelation12a()
 //     Section 3. Onnauwkeurigheid alfa-bepaling.
 //     Testcase 2: Standardcase with different beta-values.
 //     A.Vrouwenvelder/H.Steenbergen (TNO), June 2013
-//     See also the associated test in testcombineTwoElementsPartialCorrelation13()
-void combinElementsTests::testcombineTwoElementsPartialCorrelation13a()
+//     See also the associated test in testCombineTwoElementsPartialCorrelation13()
+void combinElementsTests::testCombineTwoElementsPartialCorrelation13a()
 {
     auto elm1 = alphaBeta(3.5, {0.6, 0.8});
     auto elm2 = alphaBeta(3.8, {0.6, 0.8});
@@ -1264,8 +1267,8 @@ void combinElementsTests::testcombineTwoElementsPartialCorrelation13a()
 //     Section 3. Onnauwkeurigheid alfa-bepaling.
 //     Testcase 2: Standardcase with different beta-values.
 //     A.Vrouwenvelder/H.Steenbergen (TNO), June 2013
-//     See also the associated test in testcombineTwoElementsPartialCorrelation14
-void combinElementsTests::testcombineTwoElementsPartialCorrelation14a()
+//     See also the associated test in testCombineTwoElementsPartialCorrelation14
+void combinElementsTests::testCombineTwoElementsPartialCorrelation14a()
 {
     auto elm1 = alphaBeta(3.5, {0.6, 0.8, 0.0});
     auto elm2 = alphaBeta(3.8, {0.6, 0.0, 0.8});
@@ -1291,8 +1294,8 @@ void combinElementsTests::testcombineTwoElementsPartialCorrelation14a()
 //     Section 3. Onnauwkeurigheid alfa-bepaling.
 //     Testcase 2: Standardcase with different beta-values.
 //     A.Vrouwenvelder/H.Steenbergen (TNO), June 2013
-//     See also the associated test in testcombineTwoElementsPartialCorrelation99
-void combinElementsTests::testcombineTwoElementsPartialCorrelation99a()
+//     See also the associated test in testCombineTwoElementsPartialCorrelation99
+void combinElementsTests::testCombineTwoElementsPartialCorrelation99a()
 {
     auto elm1 = alphaBeta(3.0, {0.6, 0.8, 0.4, 0.0, 0.2, 0.7, 0.3, 0.8, 0.9, 1.0});
     auto elm2 = alphaBeta(3.5, {0.1, 0.0, 0.7, 0.9, 0.8, 0.1, 0.9, 0.5, 0.3, 0.0});
@@ -1312,4 +1315,6 @@ void combinElementsTests::testcombineTwoElementsPartialCorrelation99a()
 
     utils.checkAlphaBeta(C.ab, ref, 1e-9);
     EXPECT_EQ(C.n, 0);
-}}}}
+}
+}
+
