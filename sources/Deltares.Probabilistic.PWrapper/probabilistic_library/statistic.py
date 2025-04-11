@@ -71,7 +71,7 @@ class DistributionType(Enum):
 	def __str__(self):
 		return str(self.value)
 
-class StandardNormal:
+class StandardNormal(FrozenObject):
 	"""
 	Provides conversions between probabilities (p,q), reliability (u) and return time (t)
 	"""
@@ -79,11 +79,11 @@ class StandardNormal:
 
 	def __dir__(self):
 		return ['get_u_from_q',
-			'get_u_from_p',
-			'get_q_from_u',
-			'get_p_from_u',
-			'get_t_from_u',
-			'get_u_from_t']
+		        'get_u_from_p',
+		        'get_q_from_u',
+		        'get_p_from_u',
+		        'get_t_from_u',
+		        'get_u_from_t']
 
 	def get_u_from_q (q : float) -> float:
 		"""
@@ -121,13 +121,14 @@ class StandardNormal:
 		"""
 		return interface.GetArgValue(StandardNormal._id, 'u_from_t', t)
 
-class ProbabilityValue:
+class ProbabilityValue(FrozenObject):
 
 	def __init__(self, id = None):
 		if id is None:
 			self._id = interface.Create('probability_value')
 		else:
 			self._id = id
+		super()._freeze()
 
 	def __del__(self):
 		interface.Destroy(self._id)
@@ -173,7 +174,7 @@ class ProbabilityValue:
 	def return_period(self, value : float):
 		interface.SetValue(self._id, 'return_period',  value)
 
-class Stochast:
+class Stochast(FrozenObject):
 
 	def __init__(self, id = None):
 		if id is None:
@@ -190,6 +191,7 @@ class Stochast:
 		self._array_variables = None
 		self._variables = FrozenList() # other known variables, to which a reference can exist
 		self._synchronizing = False
+		super()._freeze()
 
 	def __del__(self):
 		interface.Destroy(self._id)
@@ -587,13 +589,14 @@ class Stochast:
 			self._conditional_values = None
 
 
-class DiscreteValue:
+class DiscreteValue(FrozenObject):
 
 	def __init__(self, id = None):
 		if id is None:
 			self._id = interface.Create('discrete_value')
 		else:
 			self._id = id
+		super()._freeze()
 
 	def __del__(self):
 		interface.Destroy(self._id)
@@ -624,7 +627,7 @@ class DiscreteValue:
 	def amount(self, value : float):
 		interface.SetValue(self._id, 'amount',  value)
 
-class FragilityValue:
+class FragilityValue(FrozenObject):
 
 	def __init__(self, id = None):
 		if id is None:
@@ -632,6 +635,7 @@ class FragilityValue:
 		else:
 			self._id = id
 		self._design_point = None
+		super()._freeze()
 
 	def __del__(self):
 		interface.Destroy(self._id)
@@ -700,21 +704,22 @@ class FragilityValue:
 		if self._design_point is not None:
 			interface.SetIntValue(self._id, 'design_point',  self._design_point._id)
 
-class HistogramValue:
+class HistogramValue(FrozenObject):
 
 	def __init__(self, id = None):
 		if id is None:
 			self._id = interface.Create('histogram_value')
 		else:
 			self._id = id
+		super()._freeze()
 
 	def __del__(self):
 		interface.Destroy(self._id)
 
 	def __dir__(self):
 		return ['lower_bound',
-			'upper_bound',
-			'amount']
+		        'upper_bound',
+		        'amount']
 
 	def create(lower_bound : float, upper_bound : float, amount : float):
 		histogramValue = HistogramValue();
@@ -748,7 +753,7 @@ class HistogramValue:
 		interface.SetValue(self._id, 'amount',  value)
 
 
-class ContributingStochast:
+class ContributingStochast(FrozenObject):
 
 	def __init__(self, id = None):
 		if id is None:
@@ -756,13 +761,15 @@ class ContributingStochast:
 		else:
 			self._id = id
 		self._stochast = None
+		self._variable = None
+		super()._freeze()
 
 	def __del__(self):
 		interface.Destroy(self._id)
 
 	def __dir__(self):
 		return ['probability',
-			'variable']
+		        'variable']
 
 	def create(probability : float, variable : Stochast):
 		contributingStochast = ContributingStochast();
@@ -792,13 +799,14 @@ class ContributingStochast:
 		if not self._variable is None:
 			interface.SetIntValue(self._id, 'variable',  self._variable._id)
 
-class ConditionalValue:
+class ConditionalValue(FrozenObject):
 
 	def __init__(self, id = None):
 		if id is None:
 			self._id = interface.Create('conditional_value')
 		else:
 			self._id = id
+		super()._freeze()
 
 	def __del__(self):
 		interface.Destroy(self._id)
@@ -913,7 +921,7 @@ class ConditionalValue:
 	def observations(self, value : int):
 		interface.SetIntValue(self._id, 'observations', value)
 
-class CorrelationMatrix:
+class CorrelationMatrix(FrozenObject):
 
 	def __init__(self, id = None):
 		if id is None:
@@ -921,6 +929,7 @@ class CorrelationMatrix:
 		else:
 			self._id = id
 		self._variables = FrozenList()
+		super()._freeze()
 
 	def __del__(self):
 		interface.Destroy(self._id)
@@ -972,10 +981,11 @@ class CorrelationMatrix:
 
 		interface.SetIndexedIndexedValue(self._id, 'correlation', stochast_list[0]._id, stochast_list[1]._id, value)
 
-class SelfCorrelationMatrix:
+class SelfCorrelationMatrix(FrozenObject):
 
 	def __init__(self):
 		self._id = interface.Create('self_correlation_matrix')
+		super()._freeze()
 
 	def __del__(self):
 		interface.Destroy(self._id)
@@ -997,13 +1007,14 @@ class SelfCorrelationMatrix:
 
 		interface.SetIntArgValue(self._id, stochast_obj._id, 'rho', value)
 
-class Scenario:
+class Scenario(FrozenObject):
 
 	def __init__(self, id = None):
 		if id is None:
 			self._id = interface.Create('scenario')
 		else:
 			self._id = id
+		super()._freeze()
 
 	def __del__(self):
 		interface.Destroy(self._id)
