@@ -40,13 +40,14 @@ class SensitivityMethod(Enum):
 	def __str__(self):
 		return str(self.value)
 
-class SensitivitySettings:
+class SensitivitySettings(FrozenObject):
 
 	def __init__(self):
 		self._id = interface.Create('sensitivity_settings')
 		self._stochast_settings = FrozenList()
 		self._quantiles = None
 		self._synchronizing = False
+		super()._freeze()
 
 	def __del__(self):
 		interface.Destroy(self._id)
@@ -232,6 +233,14 @@ class SensitivitySettings:
 		interface.SetValue(self._id, 'relaxation_factor', value)
 
 	@property
+	def variance_factor(self):
+		return interface.GetValue(self._id, 'variance_factor')
+		
+	@variance_factor.setter
+	def variance_factor(self, value : float):
+		interface.SetValue(self._id, 'variance_factor', value)
+
+	@property
 	def variation_coefficient(self):
 		return interface.GetValue(self._id, 'variation_coefficient')
 		
@@ -310,7 +319,7 @@ class SensitivitySettings:
 		self._stochast_settings = FrozenList(new_stochast_settings)
 		interface.SetArrayIntValue(self._id, 'stochast_settings', [stochast_setting._id for stochast_setting in self._stochast_settings])
 
-class SensitivityResult:
+class SensitivityResult(FrozenObject):
 
 	def __init__(self, id):
 		self._id = id
@@ -318,6 +327,7 @@ class SensitivityResult:
 		self._messages = None
 		self._realizations = None
 		self._quantile_realizations = None
+		super()._freeze()
 		
 	def __del__(self):
 		interface.Destroy(self._id)

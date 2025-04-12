@@ -985,6 +985,7 @@ class SelfCorrelationMatrix(FrozenObject):
 
 	def __init__(self):
 		self._id = interface.Create('self_correlation_matrix')
+		self._variables = None
 		super()._freeze()
 
 	def __del__(self):

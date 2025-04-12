@@ -34,10 +34,11 @@ import inspect
 if not interface.IsLibraryLoaded():
 	interface.LoadDefaultLibrary()
 
-class Sample:
+class Sample(FrozenObject):
 	def __init__(self, input_values, output_values):
 		self.input_values = input_values
 		self.output_values = output_values
+		super()._freeze()
 
 class ZModelContainer:
 	def get_model(self):
@@ -55,7 +56,7 @@ class ZModelContainer:
 	def update_model(self):
 		pass
 
-class ZModel:
+class ZModel(FrozenObject):
 	_callback = None
 	_multiple_callback = None
 	
@@ -69,7 +70,9 @@ class ZModel:
 		self._array_sizes = None
 		self._pool = None
 		self._max_processes = 1
+		self._project = None
 		self._project_id = 0
+		self._z_values_size = 0
 
 		if self._is_function:
 			self._input_parameters = self._get_input_parameters(callback)
@@ -79,6 +82,8 @@ class ZModel:
 			self._input_parameters = []
 			self._output_parameters = []
 			self._model_name = ''
+
+		super()._freeze()
 
 	def __dir__(self):
 		return ['name',
@@ -268,13 +273,14 @@ class ZModel:
 	def _run_callback(sample_input):
 		return ZModel._callback(*sample_input)
 
-class ModelParameter:
+class ModelParameter(FrozenObject):
 
 	def __init__(self, id = None):
 		if id is None:
 			self._id = interface.Create('model_parameter')
 		else:
 			self._id = id
+		super()._freeze()
 
 	def __del__(self):
 		interface.Destroy(self._id)
@@ -329,7 +335,7 @@ class ModelParameter:
 	def __str__(self):
 		return self.name
 
-class ModelProject:
+class ModelProject(FrozenObject):
 	_project_id = 0
 	_zmodel = None
 
@@ -341,6 +347,7 @@ class ModelProject:
 		self._output_parameters = FrozenList()
 		self._settings = None
 		self._model = None
+		# do not freeze, this will be done by inheritors
 
 	def _initialize_callbacks(self, project_id):
 
@@ -476,10 +483,11 @@ class RunValuesType(Enum):
 	def __str__(self):
 		return str(self.value)
 
-class RunProjectSettings:
+class RunProjectSettings(FrozenObject):
 
 	def __init__(self):
 		self._id = interface.Create('run_project_settings')
+		super()._freeze()
 
 	def __del__(self):
 		interface.Destroy(self._id)
@@ -506,6 +514,7 @@ class RunProject(ModelProject):
 		self._realization = None
 		self._initialize_callbacks(self._id)
 		self._set_settings(RunProjectSettings())
+		super()._freeze()
 
 	def __del__(self):
 		interface.Destroy(self._id)
@@ -547,6 +556,7 @@ class SensitivityProject(ModelProject):
 
 		self._initialize_callbacks(self._id)
 		self._set_settings(SensitivitySettings())
+		super()._freeze()
 
 	def __del__(self):
 		interface.Destroy(self._id)
@@ -647,9 +657,11 @@ class ReliabilityProject(ModelProject):
 		self._limit_state_function = None
 		self._design_point = None
 		self._fragility_curve = None
+		self._initialized = False
 
 		self._initialize_callbacks(self._id)
 		self._set_settings(Settings())
+		super()._freeze()
         
 	def __del__(self):
 		interface.Destroy(self._id)
@@ -720,7 +732,7 @@ class ReliabilityProject(ModelProject):
 	def total_model_runs(self):
 		return interface.GetIntValue(self._id, 'total_model_runs')
 
-class CombineProject:
+class CombineProject(FrozenObject):
 
 	def __init__(self):
 		self._id = interface.Create('combine_project')
@@ -730,6 +742,7 @@ class CombineProject:
 		self._correlation_matrix = SelfCorrelationMatrix()
 		self._design_point_correlation_matrix = CorrelationMatrix()
 		self._design_point = None
+		super()._freeze()
 
 	def __del__(self):
 		interface.Destroy(self._id)
@@ -779,7 +792,7 @@ class CombineProject:
 				self._design_point = DesignPoint(designPointId, variables, self._design_points)
 		return self._design_point
 
-class ExcludingCombineProject:
+class ExcludingCombineProject(FrozenObject):
 
 	def __init__(self):
 		self._id = interface.Create('excluding_combine_project')
@@ -792,6 +805,7 @@ class ExcludingCombineProject:
 		self._dirty = True
 
 		interface.SetIntValue(self._id, 'settings', self._settings._id)
+		super()._freeze()
 
 	def __del__(self):
 		interface.Destroy(self._id)
@@ -869,12 +883,13 @@ class ExcludingCombineProject:
 				self._design_point = DesignPoint(design_point_id, variables, self._design_points)
 		return self._design_point
 
-class LengthEffectProject:
+class LengthEffectProject(FrozenObject):
 	def __init__(self):
 		self._id = interface.Create('length_effect_project')
 		self._design_point_cross_section = DesignPoint()
 		self._correlation_matrix = SelfCorrelationMatrix()
 		self._design_point = None
+		super()._freeze()
 
 	def __del__(self):
 		interface.Destroy(self._id)

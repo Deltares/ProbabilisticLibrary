@@ -105,7 +105,7 @@ class MessageType(Enum):
 	def __str__(self):
 		return str(self.value)
 
-class Settings:
+class Settings(FrozenObject):
 
 	def __init__(self, id_ = None):
 		if id_ is None:
@@ -113,6 +113,7 @@ class Settings:
 		else:
 			self._id = id_
 		self._stochast_settings = FrozenList()
+		super()._freeze()
 
 	def __del__(self):
 		interface.Destroy(self._id)
@@ -387,13 +388,14 @@ class Settings:
 		interface.SetArrayIntValue(self._id, 'stochast_settings', [stochast_setting._id for stochast_setting in self._stochast_settings])
 
 	
-class StochastSettings:
+class StochastSettings(FrozenObject):
 		
 	def __init__(self, variable):
 		self._id = interface.Create('stochast_settings')
 		self._variable = variable
 		if not variable is None:
 			interface.SetIntValue(self._id, 'variable', self._variable._id)
+		super()._freeze()
 
 	def __del__(self):
 		interface.Destroy(self._id)
@@ -483,13 +485,14 @@ class CompareType(Enum):
 	def __str__(self):
 		return str(self.value)
 
-class LimitStateFunction:
+class LimitStateFunction(FrozenObject):
 		
 	def __init__(self, id = None):
 		if id is None:
 			self._id = interface.Create('limit_state_function')
 		else:
 			self._id = id
+		super()._freeze()
 
 	def __del__(self):
 		interface.Destroy(self._id)
@@ -520,7 +523,7 @@ class LimitStateFunction:
 
 	@property
 	def critical_value(self):
-		if interface.GetBoolValue('use_compare_parameter'):
+		if interface.GetBoolValue(self._id, 'use_compare_parameter'):
 			return interface.GetStringValue(self._id, 'compare_parameter')
 		else:
 			return interface.GetValue(self._id, 'critical_value')
@@ -535,12 +538,12 @@ class LimitStateFunction:
 			interface.SetStringValue(self._id, 'compare_parameter', str(value))
 
 # abstract class for design point ids
-class DesignPointIds:
+class DesignPointIds(FrozenObject):
 
 	def __init__(self):
 		pass # empty method as it is in a abstract class
 
-class DesignPoint:
+class DesignPoint(FrozenObject):
 
 	def __init__(self, id = None, known_variables = None, known_design_points = None):
 		if id is None:
@@ -555,6 +558,7 @@ class DesignPoint:
 		self._ids = None
 		self._known_variables = known_variables
 		self._known_design_points = known_design_points
+		super()._freeze()
 		
 	def __del__(self):
 		interface.Destroy(self._id)
@@ -699,7 +703,7 @@ class DesignPoint:
 			variables.extend(contributing_design_point.get_variables())
 		return frozenset(variables)
 
-class Alpha:
+class Alpha(FrozenObject):
 
 	def __init__(self, id = None, known_variables = None):
 		if id is None:
@@ -709,6 +713,7 @@ class Alpha:
 			
 		self._variable = None
 		self._known_variables = known_variables
+		super()._freeze()
 
 	def __del__(self):
 		interface.Destroy(self._id)
@@ -784,7 +789,7 @@ class Alpha:
 		return interface.GetValue(self._id, 'x')
 
 
-class FragilityCurve:
+class FragilityCurve(FrozenObject):
 
 	def __init__(self, id = None):
 		if id is None:
@@ -793,6 +798,8 @@ class FragilityCurve:
 			self._id = id
 
 		self._fragility_values = None
+		self._synchronizing = False
+		super()._freeze()
 
 	def __del__(self):
 		interface.Destroy(self._id)
@@ -881,13 +888,14 @@ class FragilityCurve:
 		project.run()
 		return project.design_point
 
-class FragilityCurveProject:
+class FragilityCurveProject(FrozenObject):
 
 	def __init__(self):
 		self._id = interface.Create('fragility_curve_project')
 		self._integrand = None
 		self._fragility_curve = None
 		self._design_point = None
+		super()._freeze()
 
 	def __del__(self):
 		interface.Destroy(self._id)
@@ -942,10 +950,11 @@ class FragilityCurveProject:
 		return variables
 
 
-class CombineSettings:
+class CombineSettings(FrozenObject):
 
 	def __init__(self):
 		self._id = interface.Create('combine_settings')
+		super()._freeze()
 		
 	def __del__(self):
 		interface.Destroy(self._id)
@@ -970,10 +979,11 @@ class CombineSettings:
 	def combine_type(self, value : CombineType):
 		interface.SetStringValue(self._id, 'combine_type', str(value))
 
-class ExcludingCombineSettings:
+class ExcludingCombineSettings(FrozenObject):
 
 	def __init__(self):
 		self._id = interface.Create('excluding_combine_settings')
+		super()._freeze()
 		
 	def __del__(self):
 		interface.Destroy(self._id)
@@ -989,13 +999,14 @@ class ExcludingCombineSettings:
 	def combiner_method(self, value : ExcludingCombinerMethod):
 		interface.SetStringValue(self._id, 'combiner_method', str(value))
 
-class Message:
+class Message(FrozenObject):
 
 	def __init__(self, id = None):
 		if id == None:
 			self._id = interface.Create('message')
 		else:
 			self._id = id
+		super()._freeze()
 
 	@classmethod
 	def from_message(cls, message_type, message_text):
@@ -1019,7 +1030,7 @@ class Message:
 		return interface.GetStringValue(self._id, 'text')
 
 		
-class Evaluation:
+class Evaluation(FrozenObject):
 		
 	def __init__(self, id = None):
 		if id == None:
@@ -1028,6 +1039,7 @@ class Evaluation:
 			self._id = id
 		self._input_values = None	
 		self._output_values = None	
+		super()._freeze()
 
 	def __del__(self):
 		interface.Destroy(self._id)
