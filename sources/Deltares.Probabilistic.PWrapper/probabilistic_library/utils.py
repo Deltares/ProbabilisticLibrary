@@ -98,12 +98,15 @@ class FrozenList():
 class FrozenObject:
 	def __setattr__(self, key, value):
 		if hasattr(self, '_frozen'):
-			if hasattr(self, key):
+			if key in self.__dir__() or hasattr(self, key):
 				super.__setattr__(self, key, value)
 			else:
 				raise ValueError(key + ' does not exist')
 		else:
 			super.__setattr__(self, key, value)
+
+	def __dir__(self):
+		return []
 
 	def _freeze(self):
 		self._frozen = True
