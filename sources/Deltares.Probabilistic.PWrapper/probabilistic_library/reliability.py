@@ -19,6 +19,7 @@
 # Stichting Deltares and remain full property of Stichting Deltares at all times.
 # All rights reserved.
 #
+from __future__ import annotations
 import sys
 from enum import Enum
 
@@ -150,7 +151,7 @@ class Settings(FrozenObject):
 				'stochast_settings']
 
 	@property
-	def max_parallel_processes(self):
+	def max_parallel_processes(self) -> int:
 		return interface.GetIntValue(self._id, 'max_parallel_processes')
 
 	@max_parallel_processes.setter
@@ -158,7 +159,7 @@ class Settings(FrozenObject):
 		interface.SetIntValue(self._id, 'max_parallel_processes', value)
 
 	@property
-	def save_realizations(self):
+	def save_realizations(self) -> bool:
 		return interface.GetBoolValue(self._id, 'save_realizations')
 
 	@save_realizations.setter
@@ -166,7 +167,7 @@ class Settings(FrozenObject):
 		interface.SetBoolValue(self._id, 'save_realizations', value)
 
 	@property
-	def save_convergence(self):
+	def save_convergence(self) -> bool:
 		return interface.GetBoolValue(self._id, 'save_convergence')
 
 	@save_convergence.setter
@@ -174,7 +175,7 @@ class Settings(FrozenObject):
 		interface.SetBoolValue(self._id, 'save_convergence', value)
 
 	@property
-	def save_messages(self):
+	def save_messages(self) -> bool:
 		return interface.GetBoolValue(self._id, 'save_messages')
 
 	@save_messages.setter
@@ -182,7 +183,7 @@ class Settings(FrozenObject):
 		interface.SetBoolValue(self._id, 'save_messages', value)
 
 	@property
-	def reliability_method(self):
+	def reliability_method(self) -> ReliabilityMethod:
 		return ReliabilityMethod[interface.GetStringValue(self._id, 'reliability_method')]
 
 	@reliability_method.setter
@@ -190,7 +191,7 @@ class Settings(FrozenObject):
 		interface.SetStringValue(self._id, 'reliability_method', str(value))
 
 	@property
-	def design_point_method(self):
+	def design_point_method(self) -> DesignPointMethod:
 		return DesignPointMethod[interface.GetStringValue(self._id, 'design_point_method')]
 		
 	@design_point_method.setter
@@ -198,7 +199,7 @@ class Settings(FrozenObject):
 		interface.SetStringValue(self._id, 'design_point_method', str(value))
 
 	@property
-	def start_method(self):
+	def start_method(self) -> StartMethod:
 		return StartMethod[interface.GetStringValue(self._id, 'start_method')]
 
 	@start_method.setter
@@ -206,7 +207,7 @@ class Settings(FrozenObject):
 		interface.SetStringValue(self._id, 'start_method', str(value))
 
 	@property
-	def all_quadrants(self):
+	def all_quadrants(self) -> bool:
 		return interface.GetBoolValue(self._id, 'all_quadrants')
 
 	@all_quadrants.setter
@@ -214,7 +215,7 @@ class Settings(FrozenObject):
 		interface.SetBoolValue(self._id, 'all_quadrants', value)
 
 	@property
-	def max_steps_sphere_search(self):
+	def max_steps_sphere_search(self) -> int:
 		return interface.GetIntValue(self._id, 'max_steps_sphere_search')
 
 	@max_steps_sphere_search.setter
@@ -222,7 +223,7 @@ class Settings(FrozenObject):
 		interface.SetIntValue(self._id, 'max_steps_sphere_search', value)
 
 	@property
-	def random_type(self):
+	def random_type(self) -> RandomType:
 		return RandomType[interface.GetStringValue(self._id, 'random_type')]
 
 	@random_type.setter
@@ -230,7 +231,7 @@ class Settings(FrozenObject):
 		interface.SetStringValue(self._id, 'random_type', str(value))
 
 	@property
-	def is_repeatable_random(self):
+	def is_repeatable_random(self) -> bool:
 		return interface.GetBoolValue(self._id, 'is_repeatable_random')
 		
 	@is_repeatable_random.setter
@@ -238,7 +239,7 @@ class Settings(FrozenObject):
 		interface.SetBoolValue(self._id, 'is_repeatable_random', value)
 
 	@property
-	def random_seed(self):
+	def random_seed(self) -> int:
 		return interface.GetIntValue(self._id, 'random_seed')
 		
 	@random_seed.setter
@@ -246,15 +247,15 @@ class Settings(FrozenObject):
 		interface.SetIntValue(self._id, 'random_seed', value)
 
 	@property
-	def sample_method(self):
-		return interface.GetStringValue(self._id, 'sample_method')
+	def sample_method(self) -> SampleMethod:
+		return SampleMethod[interface.GetStringValue(self._id, 'sample_method')]
 
 	@sample_method.setter
 	def sample_method(self, value : SampleMethod):
 		interface.SetStringValue(self._id, 'sample_method', str(value))
 
 	@property
-	def minimum_samples(self):
+	def minimum_samples(self) -> int:
 		return interface.GetIntValue(self._id, 'minimum_samples')
 		
 	@minimum_samples.setter
@@ -262,7 +263,7 @@ class Settings(FrozenObject):
 		interface.SetIntValue(self._id, 'minimum_samples', value)
 
 	@property
-	def maximum_samples(self):
+	def maximum_samples(self) -> int:
 		return interface.GetIntValue(self._id, 'maximum_samples')
 		
 	@maximum_samples.setter
@@ -270,7 +271,7 @@ class Settings(FrozenObject):
 		interface.SetIntValue(self._id, 'maximum_samples', value)
 
 	@property
-	def minimum_iterations(self):
+	def minimum_iterations(self) -> int:
 		return interface.GetIntValue(self._id, 'minimum_iterations')
 
 	@minimum_iterations.setter
@@ -278,7 +279,7 @@ class Settings(FrozenObject):
 		interface.SetIntValue(self._id, 'minimum_iterations', value)
 
 	@property
-	def maximum_iterations(self):
+	def maximum_iterations(self) -> int:
 		return interface.GetIntValue(self._id, 'maximum_iterations')
 
 	@maximum_iterations.setter
@@ -286,7 +287,7 @@ class Settings(FrozenObject):
 		interface.SetIntValue(self._id, 'maximum_iterations', value)
 
 	@property
-	def minimum_directions(self):
+	def minimum_directions(self) -> int:
 		return interface.GetIntValue(self._id, 'minimum_directions')
 
 	@minimum_directions.setter
@@ -294,7 +295,7 @@ class Settings(FrozenObject):
 		interface.SetIntValue(self._id, 'minimum_directions', value)
 
 	@property
-	def maximum_directions(self):
+	def maximum_directions(self) -> int:
 		return interface.GetIntValue(self._id, 'maximum_directions')
 
 	@maximum_directions.setter
@@ -302,7 +303,7 @@ class Settings(FrozenObject):
 		interface.SetIntValue(self._id, 'maximum_directions', value)
 
 	@property
-	def epsilon_beta(self):
+	def epsilon_beta(self) -> float:
 		return interface.GetValue(self._id, 'epsilon_beta')
 
 	@epsilon_beta.setter
@@ -310,7 +311,7 @@ class Settings(FrozenObject):
 		interface.SetValue(self._id, 'epsilon_beta', value)
 		
 	@property
-	def step_size(self):
+	def step_size(self) -> float:
 		return interface.GetValue(self._id, 'step_size')
 		
 	@step_size.setter
@@ -318,7 +319,7 @@ class Settings(FrozenObject):
 		interface.SetValue(self._id, 'step_size', value)
 
 	@property
-	def gradient_type(self):
+	def gradient_type(self) -> GradientType:
 		return GradientType[interface.GetStringValue(self._id, 'gradient_type')]
 		
 	@gradient_type.setter
@@ -326,7 +327,7 @@ class Settings(FrozenObject):
 		interface.SetStringValue(self._id, 'gradient_type', str(value))
 
 	@property
-	def relaxation_factor(self):
+	def relaxation_factor(self) -> float:
 		return interface.GetValue(self._id, 'relaxation_factor')
 
 	@relaxation_factor.setter
@@ -334,7 +335,7 @@ class Settings(FrozenObject):
 		interface.SetValue(self._id, 'relaxation_factor', value)
 
 	@property
-	def relaxation_loops(self):
+	def relaxation_loops(self) -> int:
 		return interface.GetIntValue(self._id, 'relaxation_loops')
 		
 	@relaxation_loops.setter
@@ -342,7 +343,7 @@ class Settings(FrozenObject):
 		interface.SetIntValue(self._id, 'relaxation_loops', value)
 
 	@property
-	def maximum_variance_loops(self):
+	def maximum_variance_loops(self) -> int:
 		return interface.GetIntValue(self._id, 'maximum_variance_loops')
 		
 	@maximum_variance_loops.setter
@@ -350,7 +351,7 @@ class Settings(FrozenObject):
 		interface.SetIntValue(self._id, 'maximum_variance_loops', value)
 
 	@property
-	def minimum_variance_loops(self):
+	def minimum_variance_loops(self) -> int:
 		return interface.GetIntValue(self._id, 'minimum_variance_loops')
 		
 	@minimum_variance_loops.setter
@@ -358,7 +359,7 @@ class Settings(FrozenObject):
 		interface.SetIntValue(self._id, 'minimum_variance_loops', value)
 
 	@property
-	def variation_coefficient(self):
+	def variation_coefficient(self) -> float:
 		return interface.GetValue(self._id, 'variation_coefficient')
 		
 	@variation_coefficient.setter
@@ -366,7 +367,7 @@ class Settings(FrozenObject):
 		interface.SetValue(self._id, 'variation_coefficient', value)
 
 	@property
-	def fraction_failed(self):
+	def fraction_failed(self) -> float:
 		return interface.GetValue(self._id, 'fraction_failed')
 		
 	@fraction_failed.setter
@@ -374,7 +375,7 @@ class Settings(FrozenObject):
 		interface.SetValue(self._id, 'fraction_failed', value)
 
 	@property
-	def stochast_settings(self):
+	def stochast_settings(self) -> list[StochastSettings]:
 		return self._stochast_settings
 
 	def _set_variables(self, variables):
@@ -416,7 +417,7 @@ class StochastSettings(FrozenObject):
 			return self._variable.name
 
 	@property
-	def variable(self):
+	def variable(self) -> Stochast:
 		if self._variable is None:
 			id_ = interface.GetIdValue(self._id, 'variable')
 			if id_ > 0:
@@ -424,7 +425,7 @@ class StochastSettings(FrozenObject):
 		return self._variable
 
 	@property
-	def min_value(self):
+	def min_value(self) -> float:
 		return interface.GetValue(self._id, 'min_value')
 		
 	@min_value.setter
@@ -432,7 +433,7 @@ class StochastSettings(FrozenObject):
 		interface.SetValue(self._id, 'min_value', value)
 
 	@property
-	def max_value(self):
+	def max_value(self) -> float:
 		return interface.GetValue(self._id, 'max_value')
 		
 	@max_value.setter
@@ -440,7 +441,7 @@ class StochastSettings(FrozenObject):
 		interface.SetValue(self._id, 'max_value', value)
 
 	@property
-	def start_value(self):
+	def start_value(self) -> float:
 		return interface.GetValue(self._id, 'start_value')
 		
 	@start_value.setter
@@ -448,7 +449,7 @@ class StochastSettings(FrozenObject):
 		interface.SetValue(self._id, 'start_value', value)
 
 	@property
-	def intervals(self):
+	def intervals(self) -> int:
 		return interface.GetIntValue(self._id, 'intervals')
 		
 	@intervals.setter
@@ -456,7 +457,7 @@ class StochastSettings(FrozenObject):
 		interface.SetIntValue(self._id, 'intervals', value)
 
 	@property
-	def variance_factor(self):
+	def variance_factor(self) -> float:
 		return interface.GetValue(self._id, 'variance_factor')
 		
 	@variance_factor.setter
@@ -464,7 +465,7 @@ class StochastSettings(FrozenObject):
 		interface.SetValue(self._id, 'variance_factor', value)
 
 	@property
-	def is_initialization_allowed(self):
+	def is_initialization_allowed(self) -> bool:
 		return interface.GetBoolValue(self._id, 'is_initialization_allowed')
 		
 	@is_initialization_allowed.setter
@@ -472,7 +473,7 @@ class StochastSettings(FrozenObject):
 		interface.SetBoolValue(self._id, 'is_initialization_allowed', value)
 
 	@property
-	def is_variance_allowed(self):
+	def is_variance_allowed(self) -> bool:
 		return interface.GetBoolValue(self._id, 'is_variance_allowed')
 		
 	@is_variance_allowed.setter
@@ -506,15 +507,15 @@ class LimitStateFunction(FrozenObject):
 		return self.parameter + ' ' + str(self.compare_type) + ' ' + str(self.critical_value)
 
 	@property
-	def parameter(self):
+	def parameter(self) -> str:
 		return interface.GetStringValue(self._id, 'parameter')
 		
 	@parameter.setter
-	def parameter(self, value):
+	def parameter(self, value : str | ModelParameter):
 		interface.SetStringValue(self._id, 'parameter', str(value))
 
 	@property
-	def compare_type(self):
+	def compare_type(self) -> CompareType:
 		return CompareType[interface.GetStringValue(self._id, 'compare_type')]
 		
 	@compare_type.setter
@@ -522,14 +523,14 @@ class LimitStateFunction(FrozenObject):
 		interface.SetStringValue(self._id, 'compare_type', str(value))
 
 	@property
-	def critical_value(self):
+	def critical_value(self) -> float:
 		if interface.GetBoolValue(self._id, 'use_compare_parameter'):
 			return interface.GetStringValue(self._id, 'compare_parameter')
 		else:
 			return interface.GetValue(self._id, 'critical_value')
 		
 	@critical_value.setter
-	def critical_value(self, value):
+	def critical_value(self, value : float | ModelParameter | str):
 		if type(value) is float or type(value) is int:
 			interface.SetBoolValue(self._id, 'use_compare_parameter', False)
 			interface.SetValue(self._id, 'critical_value', value)
@@ -582,7 +583,7 @@ class DesignPoint(FrozenObject):
 		return self.identifier
 
 	@property
-	def identifier(self):
+	def identifier(self) -> str:
 		return interface.GetStringValue(self._id, 'identifier')
 		
 	@identifier.setter
@@ -590,7 +591,7 @@ class DesignPoint(FrozenObject):
 		interface.SetStringValue(self._id, 'identifier', value)
 
 	@property
-	def ids(self):
+	def ids(self) -> DesignPointIds:
 		return self._ids
 		
 	@ids.setter
@@ -599,7 +600,7 @@ class DesignPoint(FrozenObject):
 		interface.SetIntValue(self._id, 'ids', value._id)
 
 	@property
-	def reliability_index(self):
+	def reliability_index(self) -> float:
 		return interface.GetValue(self._id, 'reliability_index')
 
 	# testing method
@@ -620,31 +621,31 @@ class DesignPoint(FrozenObject):
 		interface.SetArrayIntValue(self._id, 'alphas', values)
 
 	@property
-	def probability_failure(self):
+	def probability_failure(self) -> float:
 		return interface.GetValue(self._id, 'probability_failure')
 		
 	@property
-	def convergence(self):
+	def convergence(self) -> float:
 		return interface.GetValue(self._id, 'convergence')
 		
 	@property
-	def is_converged(self):
+	def is_converged(self) -> bool:
 		return interface.GetBoolValue(self._id, 'is_converged')
 		
 	@property
-	def total_directions(self):
+	def total_directions(self) -> int:
 		return interface.GetIntValue(self._id, 'total_directions')
 		
 	@property
-	def total_iterations(self):
+	def total_iterations(self) -> int:
 		return interface.GetIntValue(self._id, 'total_iterations')
 		
 	@property
-	def total_model_runs(self):
+	def total_model_runs(self) -> int:
 		return interface.GetIntValue(self._id, 'total_model_runs')
 		
 	@property
-	def alphas(self):
+	def alphas(self) -> list[Alpha]:
 		if self._alphas is None:
 			alphas = []
 			alpha_ids = interface.GetArrayIdValue(self._id, 'alphas')
@@ -654,7 +655,7 @@ class DesignPoint(FrozenObject):
 		return self._alphas
 	
 	@property
-	def contributing_design_points(self):
+	def contributing_design_points(self) -> list[DesignPoint]:
 		if self._contributing_design_points is None:
 			contributing_design_points = []
 			design_point_ids = interface.GetArrayIdValue(self._id, 'contributing_design_points')
@@ -674,7 +675,7 @@ class DesignPoint(FrozenObject):
 		return self._contributing_design_points
 
 	@property
-	def realizations(self):
+	def realizations(self) -> list[Evaluation]:
 		if self._realizations is None:
 			realizations = []
 			realization_ids = interface.GetArrayIdValue(self._id, 'evaluations')
@@ -685,7 +686,7 @@ class DesignPoint(FrozenObject):
 		return self._realizations
 	
 	@property
-	def messages(self):
+	def messages(self) -> list[Message]:
 		if self._messages is None:
 			messages = []
 			message_ids = interface.GetArrayIdValue(self._id, 'messages')
@@ -695,7 +696,7 @@ class DesignPoint(FrozenObject):
 				
 		return self._messages
 	
-	def get_variables(self):
+	def get_variables(self) -> list[Stochast]:
 		variables = []
 		for alpha in self.alphas:
 			variables.append(alpha.variable)
@@ -729,7 +730,7 @@ class Alpha(FrozenObject):
 				'u']
 
 	@property
-	def variable(self):
+	def variable(self) -> Stochast:
 		if self._variable is None:
 			variable_id = interface.GetIdValue(self._id, 'variable')
 			if variable_id > 0:
@@ -747,7 +748,7 @@ class Alpha(FrozenObject):
 		return self.identifier
 
 	@property
-	def identifier(self):
+	def identifier(self) -> str:
 		return interface.GetStringValue(self._id, 'identifier')
 
 	# internal method		
@@ -765,27 +766,27 @@ class Alpha(FrozenObject):
 		interface.SetValue(self._id, 'x', variable.get_x_from_u(u))
 
 	@property
-	def alpha(self):
+	def alpha(self) -> float:
 		return interface.GetValue(self._id, 'alpha')
 		
 	@property
-	def alpha_correlated(self):
+	def alpha_correlated(self) -> float:
 		return interface.GetValue(self._id, 'alpha_correlated')
 		
 	@property
-	def influence_factor(self):
+	def influence_factor(self) -> float:
 		return interface.GetValue(self._id, 'influence_factor')
 		
 	@property
-	def index(self):
+	def index(self) -> int:
 		return interface.GetIntValue(self._id, 'index')
 
 	@property
-	def u(self):
+	def u(self) -> float:
 		return interface.GetValue(self._id, 'u')
 
 	@property
-	def x(self):
+	def x(self) -> float:
 		return interface.GetValue(self._id, 'x')
 
 
@@ -820,7 +821,7 @@ class FragilityCurve(FrozenObject):
 				'integrate']
 
 	@property
-	def name(self):
+	def name(self) -> str:
 		return interface.GetStringValue(self._id, 'name')
 
 	@name.setter
@@ -831,19 +832,19 @@ class FragilityCurve(FrozenObject):
 		return self.name
 
 	@property
-	def mean(self):
+	def mean(self) -> float:
 		return interface.GetValue(self._id, 'mean')
 
 	@property
-	def deviation(self):
+	def deviation(self) -> float:
 		return interface.GetValue(self._id, 'deviation')
 
 	@property
-	def variation(self):
+	def variation(self) -> float:
 		return interface.GetValue(self._id, 'variation')
 
 	@property
-	def fragility_values(self):
+	def fragility_values(self) -> list[FragilityValue]:
 		if self._fragility_values is None:
 			self._synchronizing = True
 			self._fragility_values = CallbackList(self._fragility_values_changed)
@@ -858,22 +859,22 @@ class FragilityCurve(FrozenObject):
 		if not self._synchronizing:
 			interface.SetArrayIntValue(self._id, 'fragility_values', [fragility_value._id for fragility_value in self._fragility_values])
 
-	def get_quantile(self, quantile : float):
+	def get_quantile(self, quantile : float) -> float:
 		return interface.GetArgValue(self._id, 'quantile', quantile)
 
-	def get_x_from_u(self, u : float):
+	def get_x_from_u(self, u : float) -> float:
 		return interface.GetArgValue(self._id, 'x_from_u', u)
 
-	def get_u_from_x(self, x : float):
+	def get_u_from_x(self, x : float) -> float:
 		return interface.GetArgValue(self._id, 'u_from_x', x)
 
-	def get_pdf(self, x : float):
+	def get_pdf(self, x : float) -> float:
 		return interface.GetArgValue(self._id, 'pdf', x)
 
-	def get_cdf(self, x : float):
+	def get_cdf(self, x : float) -> float:
 		return interface.GetArgValue(self._id, 'cdf', x)
 
-	def get_special_values(self):
+	def get_special_values(self) -> list[float]:
 		return interface.GetArrayValue(self._id, 'special_values')
 
 	def copy_from(self, source):
@@ -881,7 +882,7 @@ class FragilityCurve(FrozenObject):
 			interface.SetIntValue(self._id, 'copy_from', source._id)
 			self._fragility_values = None
 
-	def integrate(self, integrand : Stochast):
+	def integrate(self, integrand : Stochast) -> DesignPoint:
 		project = FragilityCurveProject()
 		project.integrand = integrand
 		project.fragility_curve = self
@@ -906,7 +907,7 @@ class FragilityCurveProject(FrozenObject):
 				'design_point']
 
 	@property
-	def integrand(self):
+	def integrand(self) -> Stochast:
 		return self._integrand
 
 	@integrand.setter
@@ -915,7 +916,7 @@ class FragilityCurveProject(FrozenObject):
 		interface.SetIntValue(self._id, 'integrand', value._id)
 
 	@property
-	def fragility_curve(self):
+	def fragility_curve(self) -> FragilityCurve:
 		return self._fragility_curve
 
 	@fragility_curve.setter
@@ -924,7 +925,7 @@ class FragilityCurveProject(FrozenObject):
 		interface.SetIntValue(self._id, 'fragility_curve', value._id)
 
 	@property
-	def design_point(self):
+	def design_point(self) -> DesignPoint:
 		return self._design_point
 
 	def run(self):
@@ -964,7 +965,7 @@ class CombineSettings(FrozenObject):
 				'combine_type']
 
 	@property
-	def combiner_method(self):
+	def combiner_method(self) -> CombinerMethod:
 		return CombinerMethod[interface.GetStringValue(self._id, 'combiner_method')]
 		
 	@combiner_method.setter
@@ -972,7 +973,7 @@ class CombineSettings(FrozenObject):
 		interface.SetStringValue(self._id, 'combiner_method', str(value))
 
 	@property
-	def combine_type(self):
+	def combine_type(self) -> CombineType:
 		return CombineType[interface.GetStringValue(self._id, 'combine_type')]
 		
 	@combine_type.setter
@@ -992,7 +993,7 @@ class ExcludingCombineSettings(FrozenObject):
 		return ['combiner_method']
 
 	@property
-	def combiner_method(self):
+	def combiner_method(self) -> ExcludingCombinerMethod:
 		return ExcludingCombinerMethod[interface.GetStringValue(self._id, 'combiner_method')]
 		
 	@combiner_method.setter
@@ -1022,11 +1023,11 @@ class Message(FrozenObject):
 		return str(self.type) + ': ' + self.text
 		
 	@property
-	def type(self):
+	def type(self) -> MessageType:
 		return MessageType[interface.GetStringValue(self._id, 'type')]
 		
 	@property
-	def text(self):
+	def text(self) -> str:
 		return interface.GetStringValue(self._id, 'text')
 
 		
@@ -1053,30 +1054,30 @@ class Evaluation(FrozenObject):
 				'output_values']
 	
 	@property   
-	def iteration(self):
+	def iteration(self) -> int:
 		return interface.GetIntValue(self._id, 'iteration')
 		
 	@property   
-	def z(self):
+	def z(self) -> float:
 		return interface.GetValue(self._id, 'z')
 		
 	@property   
-	def beta(self):
+	def beta(self) -> float:
 		return interface.GetValue(self._id, 'beta')
 		
 	@property   
-	def weight(self):
+	def weight(self) -> float:
 		return interface.GetValue(self._id, 'weight')
 
 	@property   
-	def input_values(self):
+	def input_values(self) -> list[float]:
 		if self._input_values is None:
 			input_values = interface.GetArrayValue(self._id, 'input_values')
 			self._input_values = FrozenList(input_values)
 		return self._input_values
 		
 	@property   
-	def output_values(self):
+	def output_values(self) -> list[float]:
 		if self._output_values is None:
 			output_values = interface.GetArrayValue(self._id, 'output_values')
 			self._output_values = FrozenList(output_values)
