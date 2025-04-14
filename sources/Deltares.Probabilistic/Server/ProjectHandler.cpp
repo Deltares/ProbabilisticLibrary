@@ -1050,6 +1050,15 @@ namespace Deltares
                 else if (property_ == "truncated") return stochast->isTruncated();
                 else if (property_ == "conditional") return stochast->IsVariableStochast;
                 else if (property_ == "is_array") return stochast->modelParameter->isArray;
+                else if (property_ == "is_used_location") return stochast->hasParameter(DistributionPropertyType::Location);
+                else if (property_ == "is_used_scale") return stochast->hasParameter(DistributionPropertyType::Scale);
+                else if (property_ == "is_used_minimum") return stochast->hasParameter(DistributionPropertyType::Minimum);
+                else if (property_ == "is_used_maximum") return stochast->hasParameter(DistributionPropertyType::Maximum);
+                else if (property_ == "is_used_shift") return stochast->hasParameter(DistributionPropertyType::Shift);
+                else if (property_ == "is_used_shift_b") return stochast->hasParameter(DistributionPropertyType::ShiftB);
+                else if (property_ == "is_used_shape") return stochast->hasParameter(DistributionPropertyType::Shape);
+                else if (property_ == "is_used_shape_b") return stochast->hasParameter(DistributionPropertyType::ShapeB);
+                else if (property_ == "is_used_observations") return stochast->hasParameter(DistributionPropertyType::Observations);
             }
             else if (objectType == ObjectType::ModelParameter)
             {

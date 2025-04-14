@@ -589,6 +589,46 @@ class Stochast(FrozenObject):
 			self._contributing_stochasts = None
 			self._conditional_values = None
 
+	def print(self):
+		pre = '  '
+		if self.name == '':
+			print(f'Variable:')
+		else:
+			print(f'Variable {self.name}:')
+		if not self.truncated and not self.inverted:
+			print(pre + f'distribution = {self.distribution}')
+		elif self.truncated and not self.inverted:
+			print(pre + f'distribution = {self.distribution} (truncated)')
+		elif not self.truncated and self.inverted:
+			print(pre + f'distribution = {self.distribution} (inverted)')
+		elif self.truncated and self.inverted:
+			print(pre + f'distribution = {self.distribution} (inverted, truncated')
+		print('Definition:')
+		for prop in ['location', 'scale', 'minimum', 'shift', 'shift_b', 'maximum', 'shape', 'shape_b', 'observations']:
+			if interface.GetBoolValue(self._id, 'is_used_' + prop):
+				if prop == 'observations':
+					print(pre + f'{prop} = {interface.GetIntValue(self._id, prop)}')
+				else:
+					print(pre + f'{prop} = {interface.GetValue(self._id, prop)}')
+		if self.distribution == DistributionType.histogram:
+			for value in self.histogram_values:
+				print(pre + f'amount[{value.lower_bound}, {value.upper_bound}] = {value.amount}')
+		elif self.distribution == DistributionType.cdf_curve:
+			for value in self.fragility_values:
+				print(pre + f'beta[{value.x}] = {value.reliability_index}')
+		elif self.distribution == DistributionType.discrete or self.distribution == DistributionType.qualitative:
+			for value in self.discrete_values:
+				print(pre + f'amount[{value.x}] = {value.amount}')
+		if self.design_quantile != 0.5 or self.design_factor != 1.0:
+			print(pre + f'design_quantile = {self.design_quantile}')
+			print(pre + f'design_factor = {self.design_factor}')
+		print('Derived values:')
+		print(pre + f'mean = {self.mean}')
+		print(pre + f'deviation = {self.deviation}')
+		print(pre + f'variation = {self.variation}')
+		if self.design_quantile != 0.5 or self.design_factor != 1.0:
+			print(pre + f'design_value = {self.design_value}')
+
 class DiscreteValue(FrozenObject):
 
 	def __init__(self, id = None):

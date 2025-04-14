@@ -110,4 +110,11 @@ class FrozenObject:
 
 	def _freeze(self):
 		self._frozen = True
+
+class PrintUtils:
+    def get_space_from_indent(indent : int) -> str:
+        indent_str = ''
+        for i in range(indent):
+            indent_str += '  '
+        return indent_str
 		

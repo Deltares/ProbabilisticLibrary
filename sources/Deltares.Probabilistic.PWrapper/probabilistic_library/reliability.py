@@ -577,7 +577,8 @@ class DesignPoint(FrozenObject):
 				'total_iterations',
 				'total_model_runs',
 				'realizations',
-				'messages']
+				'messages',
+				'print']
 		
 	def __str__(self):
 		return self.identifier
@@ -703,6 +704,34 @@ class DesignPoint(FrozenObject):
 		for contributing_design_point in self.contributing_design_points:
 			variables.extend(contributing_design_point.get_variables())
 		return frozenset(variables)
+
+	def print(self):
+		self._print(0)
+
+	def _print(self, indent : int):
+		pre = PrintUtils.get_space_from_indent(indent)
+		pre_indexed = pre + ' '
+		if self.identifier == '':
+			print(pre + 'Reliability:')
+		else:
+			print(pre + f'Reliability ({self.identifier})')
+		print(pre_indexed + f'Reliability index = {self.reliability_index}')
+		print(pre_indexed + f'Probability of failure = {self.probability_failure}')
+		if self.is_converged:
+			print(pre_indexed + f'Convergence = {self.convergence} (converged)')
+		else:
+			print(pre_indexed + f'Convergence = {self.convergence} (not converged)')
+		print(pre_indexed + f'Model runs = {self.total_model_runs}')
+		print('')
+		print(pre + 'Alpha values:')
+		for alpha in self.alphas:
+			print(pre_indexed + f'{alpha.variable.name}: alpha = {alpha.alpha}, x = {alpha.x}')
+		print('')
+		if len(self.contributing_design_points) > 0:
+			print(pre + 'Contributing design points:')
+			for design_point in self.contributing_design_points:
+				design_point._print(indent + 1)
+
 
 class Alpha(FrozenObject):
 

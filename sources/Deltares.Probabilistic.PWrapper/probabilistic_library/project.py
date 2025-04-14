@@ -89,7 +89,8 @@ class ZModel(FrozenObject):
 	def __dir__(self):
 		return ['name',
 				'input_parameters',
-				'output_parameters']
+				'output_parameters',
+ 				'print']
 
 	def __del__(self):
 		if not self._pool is None:
@@ -273,6 +274,23 @@ class ZModel(FrozenObject):
 
 	def _run_callback(sample_input):
 		return ZModel._callback(*sample_input)
+
+	def print(self):
+		pre = '  '
+		if not self.name == '':
+ 			print(f'Model {self.name}:')
+		print('Input parameters:')
+		for input_parameter in self.input_parameters:
+			if input_parameter.is_array:
+				print(pre + f'{input_parameter.name}[{input_parameter.array_size}]')
+			else: 
+				print(pre + f'{input_parameter.name}')
+		print('Output parameters:')
+		for output_parameter in self.output_parameters:
+			if output_parameter.is_array:
+				print(pre + f'{output_parameter.name}[{output_parameter.array_size}]')
+			else: 
+				print(pre + f'{output_parameter.name}')
 
 class ModelParameter(FrozenObject):
 
