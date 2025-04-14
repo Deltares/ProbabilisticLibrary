@@ -629,6 +629,45 @@ class Stochast(FrozenObject):
 		if self.design_quantile != 0.5 or self.design_factor != 1.0:
 			print(pre + f'design_value = {self.design_value}')
 
+	def plot(self, xmin : float = None, xmax : float = None):
+
+		import numpy as np
+		import matplotlib.pyplot as plt
+
+		limit_special_values = True
+		if xmin is None:
+			xmin = self.get_x_from_u(0) - 4 * (self.get_x_from_u(0) - self.get_x_from_u(-1))
+			limit_special_values = False
+		if xmax is None:
+			xmax = self.get_x_from_u(0) + 4 * (self.get_x_from_u(1) - self.get_x_from_u(0))
+			limit_special_values = False
+
+		values = np.arange(xmin, xmax, (xmax - xmin) / 1000).tolist()
+		add_values = interface.GetArrayValue(self._id, 'special_values')
+		if limit_special_values:
+			add_values = [x for x in add_values if x >= xmin and x <= xmax]
+		values.extend(add_values)
+		values.sort()
+
+		pdf = [self.get_pdf(x) for x in values]
+		cdf = [self.get_cdf(x) for x in values]
+    
+		fig, ax1 = plt.subplots()
+		color = "tab:blue"
+		if self.name == '':
+			ax1.set_xlabel("value [x]")
+		else:
+			ax1.set_xlabel(f"{self.name} [x]")
+		ax1.set_ylabel("pdf [-]", color=color)
+		ax1.plot(values, pdf)
+		ax1.tick_params(axis="y", labelcolor=color)
+		ax2 = ax1.twinx()
+		color = "tab:red"
+		ax2.set_ylabel("cdf [-]", color=color)
+		ax2.plot(values, cdf, "r--", label="pdf")
+		ax2.tick_params(axis="y", labelcolor=color)
+
+
 class DiscreteValue(FrozenObject):
 
 	def __init__(self, id = None):

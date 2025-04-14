@@ -278,7 +278,7 @@ class ZModel(FrozenObject):
 	def print(self):
 		pre = '  '
 		if not self.name == '':
- 			print(f'Model {self.name}:')
+			print(f'Model {self.name}:')
 		print('Input parameters:')
 		for input_parameter in self.input_parameters:
 			if input_parameter.is_array:
