@@ -55,7 +55,7 @@ namespace Deltares
             /**
              * \brief Indicates whether the stochast is only initialized and nothing has been changed yet
              */
-            bool isInitial();
+            bool isInitial() const;
 
         protected:
             std::shared_ptr<Distribution> distribution = std::make_shared<DeterministicDistribution>();
@@ -116,7 +116,7 @@ namespace Deltares
              * \param quantile Given quantile
              * \return x-value
              */
-            double getQuantile(double quantile);
+            double getQuantile(double quantile) const;
 
             /**
              * \brief Gets the x-value corresponding to a certain type
@@ -169,7 +169,7 @@ namespace Deltares
              * \param u Given u-value
              * \param constantType Characteristic value of a stochast, which should be kept constant while applying this value. Can be variation coefficient or standard deviation.
              */
-            void setXAtU(double x, double u, ConstantParameterType constantType);
+            void setXAtU(double x, double u, ConstantParameterType constantType) const;
 
             /**
              * \brief Sets the distribution type
@@ -182,7 +182,7 @@ namespace Deltares
              * \brief Gets the distribution type
              * \return Distribution type
              */
-            DistributionType getDistributionType();
+            DistributionType getDistributionType() const;
 
             /**
              * \brief Sets a function which provides the u->x conversion. Overrules the distribution type
@@ -194,13 +194,13 @@ namespace Deltares
              * \brief Indicates whether the distribution can be inverted
              * \return Indication
              */
-            bool canInvert();
+            bool canInvert() const;
 
             /**
              * \brief Indicates whether the distribution is inverted
              * \return Indication
              */
-            bool isInverted();
+            bool isInverted() const;
 
             /**
              * \brief Inverts or non-inverts the distribution
@@ -212,13 +212,13 @@ namespace Deltares
              * \brief Indicates whether the distribution can be truncated
              * \return Indication
              */
-            bool canTruncate();
+            bool canTruncate() const;
 
             /**
              * \brief Indicates whether the distribution is truncated
              * \return Indication
              */
-            bool isTruncated();
+            bool isTruncated() const;
 
             /**
              * \brief Truncates or non-truncates the distribution
@@ -237,7 +237,7 @@ namespace Deltares
              * \remark When x-values indicate the index of an input file, it is not useful to compare x-values
              * \return Indication
              */
-            bool isQualitative();
+            bool isQualitative() const;
 
             /**
              * \brief Gets the representative u-value for a given u-value
@@ -245,7 +245,7 @@ namespace Deltares
              * \param u Given u-value
              * \return Representative u-value
              */
-            double getRepresentativeU(double u);
+            double getRepresentativeU(double u) const;
 
             /**
              * \brief Gets the mean value of a stochast
@@ -264,7 +264,7 @@ namespace Deltares
              * \brief Gets the standard deviation of a stochast
              * \return Standard deviation
              */
-            double getDeviation();
+            double getDeviation() const;
 
             /**
              * \brief Sets the standard deviation of a stochast
@@ -279,7 +279,7 @@ namespace Deltares
              * \param mean Given mean value
              * \param deviation Given standard deviation
              */
-            void setMeanAndDeviation(double mean, double deviation);
+            void setMeanAndDeviation(double mean, double deviation) const;
 
             /**
              * \brief Gets the variation coefficient of a stochast
@@ -304,7 +304,7 @@ namespace Deltares
              * \brief Gets the name of the stochast followed by an index
              * \return Indexed stochast name
              */
-            std::string getIndexedStochastName(int index);
+            std::string getIndexedStochastName(int index) const;
 
             /**
              * \brief Indicates which parameter should be kept constant when the mean value is changed (by setMean())
@@ -317,7 +317,7 @@ namespace Deltares
              * \remark Keeps mean and standard deviation constant when applying it to a log normal distribution
              * \param shift Shift value
              */
-            void setShift(double shift);
+            void setShift(double shift) const;
 
             /**
              * \brief Prepares the stochast for fast response of u->x conversion
@@ -327,42 +327,42 @@ namespace Deltares
             /**
              * \brief Prepares a conditional stochast for running
              */
-            void initializeConditionalValues();
+            void initializeConditionalValues() const;
 
             /**
              * \brief Updates the stochast properties with conditional values
              */
-            void updateFromConditionalValues(double xSource);
+            void updateFromConditionalValues(double xSource) const;
 
             /**
              * \brief Indicates whether stochastic parameters can be estimated for a given set of x-values
              * \return Indication
              */
-            bool canFit();
+            bool canFit() const;
 
             /**
              * \brief Estimates stochastic parameters for a given set of x-values
              * \param values Given set of x-values
              */
-            void fit(std::vector<double> values);
+            void fit(std::vector<double> values) const;
 
             /**
              * \brief Estimates stochastic parameters for a given set of x-values and their weights
              * \param values Given set of x-values
              * \param weights Given weights
              */
-            void fitWeighted(std::vector<double> values, std::vector<double> weights);
+            void fitWeighted(std::vector<double> values, std::vector<double> weights) const;
 
             /**
              * \brief Fits the distribution properties from the histogram values in the properties
              */
-            void fitFromHistogramValues();
+            void fitFromHistogramValues() const;
 
             /**
              * \brief Calculates the Kolmogorov-Smirnov statistic, which is an indication how well data correspond with the stochast (0 = perfect, 1 = no correspondence at all)
              * \return Kolmogorov-Smirnov statistic
              */
-            double getKSTest(std::vector<double> values);
+            double getKSTest(std::vector<double> values) const;
 
             /**
              * \brief Gets a number of interesting x-values
@@ -382,7 +382,7 @@ namespace Deltares
              * \param distributionPropertyType Given parameter type
              * \return Indication
              */
-            bool hasParameter(DistributionPropertyType distributionPropertyType);
+            bool hasParameter(DistributionPropertyType distributionPropertyType) const;
 
             /**
              * \brief Defines what to do when the distribution type changes
