@@ -43,6 +43,7 @@ namespace Deltares
             public enum class CombinerType
             {
                 Hohenbichler,
+                HohenbichlerForm,
                 ImportanceSampling,
                 DirectionalSampling
             };
@@ -80,6 +81,7 @@ namespace Deltares
                         switch (shared->object->combinerType)
                         {
                         case Reliability::CombinerType::Hohenbichler: return Wrappers::CombinerType::Hohenbichler;
+                        case Reliability::CombinerType::HohenbichlerForm: return Wrappers::CombinerType::HohenbichlerForm;
                         case Reliability::CombinerType::ImportanceSampling: return Wrappers::CombinerType::ImportanceSampling;
                         case Reliability::CombinerType::DirectionalSampling: return Wrappers::CombinerType::DirectionalSampling;
                         default: throw gcnew System::NotSupportedException("Combiner type");
@@ -90,6 +92,7 @@ namespace Deltares
                         switch (value)
                         {
                         case Wrappers::CombinerType::Hohenbichler: shared->object->combinerType = Reliability::CombinerType::Hohenbichler; break;
+                        case Wrappers::CombinerType::HohenbichlerForm: shared->object->combinerType = Reliability::CombinerType::HohenbichlerForm; break;
                         case Wrappers::CombinerType::ImportanceSampling:shared->object->combinerType = Reliability::CombinerType::ImportanceSampling; break;
                         case Wrappers::CombinerType::DirectionalSampling: shared->object->combinerType = Reliability::CombinerType::DirectionalSampling; break;
                         default: throw gcnew System::NotSupportedException("Combiner type");
