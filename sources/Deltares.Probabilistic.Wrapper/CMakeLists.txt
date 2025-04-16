@@ -1,3 +1,6 @@
+# set minimum cmake version
+cmake_minimum_required(VERSION 3.13 FATAL_ERROR)
+
 if(WIN32)
   file(GLOB problibcli_files
       "Model/*.cpp"
