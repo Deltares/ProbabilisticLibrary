@@ -28,14 +28,13 @@
 
 namespace Deltares::Reliability
 {
-    class DirectionReliability : public ReliabilityMethod
+    class DirectionReliabilityDS
     {
     public:
+        double Threshold = 0;
         std::shared_ptr<DirectionReliabilitySettings> Settings = std::make_shared<DirectionReliabilitySettings>();
-        std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
         double getBeta(Models::ModelRunner& modelRunner, Sample& directionSample, double z0,
             const PrecomputeValues& zValues);
-        double getBeta(Models::ModelRunner& modelRunner, Sample& directionSample, double z0);
     private:
         double getDirectionBeta(Models::ModelRunner& modelRunner, const BetaValueTask& directionTask,
             const PrecomputeValues& zValues);

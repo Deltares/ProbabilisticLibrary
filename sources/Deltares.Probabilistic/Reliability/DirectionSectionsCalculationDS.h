@@ -20,28 +20,20 @@
 // All rights reserved.
 //
 #pragma once
-#include "BetaValueTask.h"
-#include "DirectionReliabilitySettings.h"
-#include "DirectionSection.h"
-#include "PrecomputeValues.h"
-#include "ReliabilityMethod.h"
+#include "DirectionSectionsCalculation.h"
 
 namespace Deltares::Reliability
 {
-    class DirectionReliability : public ReliabilityMethod
+    class DirectionSectionsCalculationDS : public DirectionSectionsCalculation
     {
-    public:
-        std::shared_ptr<DirectionReliabilitySettings> Settings = std::make_shared<DirectionReliabilitySettings>();
-        std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
-        double getBeta(Models::ModelRunner& modelRunner, Sample& directionSample, double z0,
-            const PrecomputeValues& zValues);
-        double getBeta(Models::ModelRunner& modelRunner, Sample& directionSample, double z0);
-    private:
-        double getDirectionBeta(Models::ModelRunner& modelRunner, const BetaValueTask& directionTask,
-            const PrecomputeValues& zValues);
-        double getBetaFromSections(const std::vector<DirectionSection>& sections) const;
+        public:
+            double Threshold = 0;
+        protected:
+            double findBetaBetweenBoundaries(Models::ModelRunner & modelRunner,
+                const DirectionCalculation & directionCalculation,
+                double uLow, double uHigh, double zLow, double zHigh, double& z) override;
+        private:
+            static bool isProxyAllowed(double ThresholdOffset, double u, double threshold);
     };
-
 }
-
 

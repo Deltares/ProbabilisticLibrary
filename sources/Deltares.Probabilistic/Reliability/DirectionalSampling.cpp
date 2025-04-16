@@ -20,6 +20,7 @@
 // All rights reserved.
 //
 #include "DirectionalSampling.h"
+#include "DirectionReliabilityDS.h"
 #include "PrecomputeDirections.h"
 #include "../Model/RandomSampleGenerator.h"
 #include "../Math/SpecialFunctions.h"
@@ -215,7 +216,7 @@ namespace Deltares
             const size_t nSamples = samples.size();
             auto betaValues = std::vector<double>(nSamples);
 
-            auto directionReliability = DirectionReliabilityForDirectionalSampling();
+            auto directionReliability = DirectionReliabilityDS();
             directionReliability.Settings = this->Settings->DirectionSettings;
             directionReliability.Threshold = threshold;
 
