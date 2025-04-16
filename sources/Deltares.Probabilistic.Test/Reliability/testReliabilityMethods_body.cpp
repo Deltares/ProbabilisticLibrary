@@ -330,14 +330,14 @@ namespace Deltares
                         refBeta = 2.600438;
                         refAlpha = { 0.09106 , -0.98686 , -0.13345 };
                         refTotalModelRuns = 1143; // was 1222;
-                        refPreComputeCounter = 0;
+                        refPreComputeCounter = 500;
                     }
                     else
                     {
                         refBeta = 2.60029;
                         refAlpha = { 0.09114 , -0.98683 , -0.13365 };
                         refTotalModelRuns = 10812; // was 10985;
-                        refPreComputeCounter = 0;
+                        refPreComputeCounter = 500;
                     }
                 }
                 else
