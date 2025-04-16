@@ -1,8 +1,4 @@
 # set minimum cmake version
-cmake_minimum_required(VERSION 3.28 FATAL_ERROR)
-
-# project name and language
-project(probabilisticLibrary LANGUAGES CXX)
 
 option(ENABLE_Fortran "Enable Fortran" ON)
 if(ENABLE_Fortran)
@@ -12,6 +8,14 @@ else()
 endif()
 
 option(CODECOV "CodeCoverage on/off" OFF)
+if (CODECOV)
+    cmake_minimum_required(VERSION 3.13 FATAL_ERROR)
+else()
+    cmake_minimum_required(VERSION 3.28 FATAL_ERROR)
+endif()
+
+# project name and language
+project(probabilisticLibrary LANGUAGES CXX)
 
 if ( NOT TARGET tools)
     set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/lib)
