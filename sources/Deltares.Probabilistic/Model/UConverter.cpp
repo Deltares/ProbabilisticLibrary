@@ -643,6 +643,8 @@ namespace Deltares
                 }
             }
 
+            realization->updateInfluenceFactors();
+
             return realization;
         }
 

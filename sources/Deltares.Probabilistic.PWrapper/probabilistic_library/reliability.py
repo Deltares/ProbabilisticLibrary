@@ -578,7 +578,9 @@ class DesignPoint(FrozenObject):
 				'total_model_runs',
 				'realizations',
 				'messages',
-				'print']
+				'print',
+		        'plot_alphas',
+		        'plot_realizations']
 		
 	def __str__(self):
 		return self.identifier
@@ -731,6 +733,45 @@ class DesignPoint(FrozenObject):
 			print(pre + 'Contributing design points:')
 			for design_point in self.contributing_design_points:
 				design_point._print(indent + 1)
+
+	def plot_alphas(self):
+
+		import numpy as np
+		import matplotlib.pyplot as plt
+
+		alphas = [alpha.influence_factor for alpha in self.alphas if alpha.influence_factor > 0.0001]
+		names = [f'{alpha.identifier} ({round(100*alpha.influence_factor)})' for alpha in self.alphas if alpha.influence_factor > 0.0001]
+
+		plt.figure()
+		plt.pie(alphas, labels=names)
+		plt.title("Alpha values", fontsize=14, fontweight='bold')
+
+	def plot_realizations(self):
+
+		import numpy as np
+		import matplotlib.pyplot as plt
+
+		# 2 variables with the highest alpha
+		alphas = [alpha.influence_factor for alpha in self.alphas]
+		index_last_two = np.argsort(np.abs(alphas))[-2:]
+
+		r_1 = [realization.input_values[int(index_last_two[0])] for realization in self.realizations]
+		r_2 = [realization.input_values[int(index_last_two[1])] for realization in self.realizations]
+		z = [realization.z for realization in self.realizations]
+		colors = ["r" if val < 0 else "g" for val in z]
+
+		# plot realizations
+		plt.figure()
+		plt.grid(True)    
+		plt.scatter(r_1, r_2, color=colors, alpha=0.5)
+		plt.scatter(self.alphas[int(index_last_two[0])].x, 
+                    self.alphas[int(index_last_two[1])].x, 
+                    label='design point' if self.identifier == '' else self.identifier, 
+                    color="black")
+		plt.xlabel(self.alphas[int(index_last_two[0])].identifier)
+		plt.ylabel(self.alphas[int(index_last_two[1])].identifier)
+		plt.legend()
+		plt.title('Realizations: Red = Failure, Green = No Failure', fontsize=14, fontweight='bold')
 
 
 class Alpha(FrozenObject):
