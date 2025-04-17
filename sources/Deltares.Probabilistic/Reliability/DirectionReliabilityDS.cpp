@@ -54,6 +54,7 @@ namespace Deltares::Reliability
         else
         {
             auto sectionsCalc = DirectionSectionsCalculationDS();
+            sectionsCalc.Settings = Settings;
             auto sections = sectionsCalc.getDirectionSections(modelRunner, directionTask, zValues);
 
             double beta = getBetaFromSections(sections);
