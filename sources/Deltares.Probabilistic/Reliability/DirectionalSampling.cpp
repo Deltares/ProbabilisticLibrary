@@ -222,19 +222,23 @@ namespace Deltares
                 directions.emplace_back(threshold, z0, *Settings->DirectionSettings, *sample);
             }
 
-            auto maskPrecompute = std::vector(nSamples, false);
-            if (modelRunner.Settings->IsProxyModel())
+            if ( ! modelRunner.canCalculateBeta())
             {
-                for (size_t i = 0; i < nSamples; i++)
+                auto maskPrecompute = std::vector(nSamples, true);
+                if (modelRunner.Settings->IsProxyModel())
                 {
-                    // retain previous results from model if running in a proxy model environment
-                    maskPrecompute[i] = previousResults.contains(samples[i]->IterationIndex);
+                    for (size_t i = 0; i < nSamples; i++)
+                    {
+                        // retain previous results from model if running in a proxy model environment
+                        maskPrecompute[i] = !previousResults.contains(samples[i]->IterationIndex);
+                    }
                 }
+
+                auto preComputeDirs = PrecomputeDirections(*Settings->DirectionSettings, z0);
+                preComputeDirs.precompute(modelRunner, directions, maskPrecompute);
+                preComputedCounter += preComputeDirs.Counter;
             }
 
-            auto preComputeDirs = PrecomputeDirections(*Settings->DirectionSettings, z0);
-            preComputeDirs.precompute(modelRunner, directions, maskPrecompute);
-            preComputedCounter += preComputeDirs.Counter;
             const double z0Fac = getZFactor(z0);
 
             #pragma omp parallel for

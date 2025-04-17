@@ -39,32 +39,44 @@ namespace Deltares::Reliability
         // copy z-value zero sample
         const auto z0pv = PrecomputeValue(0.0, std::abs(z0), false, true);
         const double z0Fac = ReliabilityMethod::getZFactor(z0);
-
-        if (modelRunner.canCalculateBeta()) return;
+        for (auto& direction : directions)
+        {
+            direction.ProvidePrecomputeValue(z0pv);
+        }
 
         // precompute Z-values multiples of Dsdu
         const int sectionsCount = settings.SectionCount();
         const auto model = ZGetter(modelRunner, settings);
         for (int k = 1; k <= sectionsCount; k++)
         {
+            //
+            // collect samples
+            //
             std::vector<std::shared_ptr<Sample>> uSamples;
             for (size_t i = 0; i < nSamples; i++)
             {
-                if (!mask[i])
+                if (mask[i])
                 {
-                    if (k == 1) directions[i].ProvidePrecomputeValue(z0pv);
                     const auto uk = directions[i].GetPrecomputeUvalue();
                     auto uDirection = directions[i].directionSample.getNormalizedSample();
                     auto sample_at_uk = model.GetU(*uDirection, uk);
                     uSamples.push_back(sample_at_uk);
                 }
             }
+
+            //
+            // get z-values for all samples in parallel
+            //
             auto zValues = modelRunner.getZValues(uSamples);
             Counter += zValues.size();
+
+            //
+            // process z-values
+            //
             int ii = 0;
             for (size_t i = 0; i < nSamples; i++)
             {
-                if (!mask[i])
+                if (mask[i])
                 {
                     const auto uk = directions[i].GetPrecomputeUvalue();
                     directions[i].directionSample.IsRestartRequired = uSamples[ii]->IsRestartRequired;
@@ -77,6 +89,10 @@ namespace Deltares::Reliability
                     ii++;
                 }
             }
+
+            //
+            // early return: not enough samples left to benefit from parallelization
+            //
             if (uSamples.size() <= 1) break;
         }
     }

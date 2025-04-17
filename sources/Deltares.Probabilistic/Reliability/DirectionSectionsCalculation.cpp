@@ -86,7 +86,7 @@ namespace Deltares::Reliability
         const bool signChanged = z0 * last < 0.0;
         const bool wrongDirection = std::abs(last) > std::abs(previous);
         const bool done = (isMonotone && (signChanged || wrongDirection));
-        return done;
+        return !done;
     }
 
     double DirectionSectionsCalculation::GetPrecomputeUvalue() const
