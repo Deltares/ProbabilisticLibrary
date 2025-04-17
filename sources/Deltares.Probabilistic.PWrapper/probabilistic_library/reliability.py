@@ -556,6 +556,7 @@ class DesignPoint(FrozenObject):
 		self._contributing_design_points = None
 		self._messages = None
 		self._realizations = None
+		self._reliability_results = None
 		self._ids = None
 		self._known_variables = known_variables
 		self._known_design_points = known_design_points
@@ -577,10 +578,12 @@ class DesignPoint(FrozenObject):
 				'total_iterations',
 				'total_model_runs',
 				'realizations',
+				'reliability_results',
 				'messages',
 				'print',
 		        'plot_alphas',
-		        'plot_realizations']
+		        'plot_realizations',
+ 		        'plot_convergence']
 		
 	def __str__(self):
 		return self.identifier
@@ -689,6 +692,17 @@ class DesignPoint(FrozenObject):
 		return self._realizations
 	
 	@property
+	def reliability_results(self) -> list[ReliabilityResult]:
+		if self._reliability_results is None:
+			reliability_results = []
+			reliability_result_ids = interface.GetArrayIdValue(self._id, 'reliability_results')
+			for reliability_result_id in reliability_result_ids:
+				reliability_results.append(ReliabilityResult(reliability_result_id))
+			self._reliability_results = FrozenList(reliability_results)
+				
+		return self._reliability_results
+	
+	@property
 	def messages(self) -> list[Message]:
 		if self._messages is None:
 			messages = []
@@ -724,7 +738,6 @@ class DesignPoint(FrozenObject):
 		else:
 			print(pre_indexed + f'Convergence = {self.convergence} (not converged)')
 		print(pre_indexed + f'Model runs = {self.total_model_runs}')
-		print('')
 		print(pre + 'Alpha values:')
 		for alpha in self.alphas:
 			print(pre_indexed + f'{alpha.variable.name}: alpha = {alpha.alpha}, x = {alpha.x}')
@@ -772,6 +785,28 @@ class DesignPoint(FrozenObject):
 		plt.ylabel(self.alphas[int(index_last_two[1])].identifier)
 		plt.legend()
 		plt.title('Realizations: Red = Failure, Green = No Failure', fontsize=14, fontweight='bold')
+
+	def plot_convergence(self, xmin : float = None, xmax : float = None):
+
+		import numpy as np
+		import matplotlib.pyplot as plt
+
+		index = [x.index for x in self.reliability_results]
+		beta = [x.reliability_index for x in self.reliability_results]
+		conv = [x.convergence for x in self.reliability_results]
+    
+		fig, ax1 = plt.subplots()
+		color = "tab:blue"
+		ax1.set_xlabel("index [-]")
+		ax1.set_ylabel("reliability index [-]", color=color)
+		ax1.plot(index, beta)
+		ax1.tick_params(axis="y", labelcolor=color)
+		ax2 = ax1.twinx()
+		color = "tab:red"
+		ax2.set_ylabel("convergence [-]", color=color)
+		ax2.plot(index, conv, "r--", label="convergence")
+		ax2.tick_params(axis="y", labelcolor=color)
+		plt.title('Convergence', fontsize=14, fontweight='bold')
 
 
 class Alpha(FrozenObject):
@@ -1153,5 +1188,31 @@ class Evaluation(FrozenObject):
 			self._output_values = FrozenList(output_values)
 		return self._output_values
 		
+class ReliabilityResult(FrozenObject):
+		
+	def __init__(self, id = None):
+		if id == None:
+			self._id = interface.Create('reliability_result')
+		else:
+			self._id = id
+		super()._freeze()
 
-				
+	def __del__(self):
+		interface.Destroy(self._id)
+
+	def __dir__(self):
+		return ['index',
+				'reliability_index',
+				'convergence']
+	
+	@property   
+	def index(self) -> int:
+		return interface.GetIntValue(self._id, 'index')
+		
+	@property   
+	def reliability_index(self) -> float:
+		return interface.GetValue(self._id, 'reliability_index')
+		
+	@property   
+	def convergence(self) -> float:
+		return interface.GetValue(self._id, 'convergence')
