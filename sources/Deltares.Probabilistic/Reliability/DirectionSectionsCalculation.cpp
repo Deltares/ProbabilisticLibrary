@@ -91,8 +91,8 @@ namespace Deltares::Reliability
 
     double DirectionSectionsCalculation::GetPrecomputeUvalue() const
     {
-        double k = static_cast<double>(zValues.values.size());
-        return k * Settings.Dsdu;
+        double uDivDsdu = static_cast<double>(zValues.values.size());
+        return std::min(uDivDsdu * Settings.Dsdu, Settings.MaximumLengthU);
     }
 
     void DirectionSectionsCalculation::ProvidePrecomputeValue(const PrecomputeValue& zValue)

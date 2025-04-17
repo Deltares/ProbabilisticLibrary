@@ -37,9 +37,7 @@ namespace Deltares::Reliability
         const size_t nSamples = directions.size();
 
         // copy z-value zero sample
-        auto precomputed = PrecomputeValues();
         const auto z0pv = PrecomputeValue(0.0, std::abs(z0), false, true);
-        precomputed.values.emplace_back(z0pv);
         const double z0Fac = ReliabilityMethod::getZFactor(z0);
 
         if (modelRunner.canCalculateBeta()) return;
@@ -47,23 +45,22 @@ namespace Deltares::Reliability
         // precompute Z-values multiples of Dsdu
         const int sectionsCount = settings.SectionCount();
         const auto model = ZGetter(modelRunner, settings);
-        for (int k = 1; k < sectionsCount; k++)
+        for (int k = 1; k <= sectionsCount; k++)
         {
-            
             std::vector<std::shared_ptr<Sample>> uSamples;
             for (size_t i = 0; i < nSamples; i++)
             {
-                if (k == 1) directions[i].ProvidePrecomputeValue(z0pv);
                 if (!mask[i])
                 {
+                    if (k == 1) directions[i].ProvidePrecomputeValue(z0pv);
                     const auto uk = directions[i].GetPrecomputeUvalue();
                     auto uDirection = directions[i].directionSample.getNormalizedSample();
                     auto sample_at_uk = model.GetU(*uDirection, uk);
                     uSamples.push_back(sample_at_uk);
                 }
             }
-            auto zValues2 = modelRunner.getZValues(uSamples);
-            Counter += zValues2.size();
+            auto zValues = modelRunner.getZValues(uSamples);
+            Counter += zValues.size();
             int ii = 0;
             for (size_t i = 0; i < nSamples; i++)
             {
@@ -73,7 +70,7 @@ namespace Deltares::Reliability
                     directions[i].directionSample.IsRestartRequired = uSamples[ii]->IsRestartRequired;
                     directions[i].directionSample.AllowProxy = uSamples[ii]->AllowProxy;
                     directions[i].directionSample.Z = uSamples[ii]->Z;
-                    auto z1pv = PrecomputeValue(uk, z0Fac * zValues2[ii],
+                    auto z1pv = PrecomputeValue(uk, z0Fac * zValues[ii],
                         uSamples[ii]->IsRestartRequired, uSamples[ii]->AllowProxy);
                     directions[i].ProvidePrecomputeValue(z1pv);
                     mask[i] = directions[i].CanPrecomputeSample();
