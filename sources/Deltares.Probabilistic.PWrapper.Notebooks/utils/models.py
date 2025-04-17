@@ -16,6 +16,16 @@ def hunt(t_p, tan_alpha, h_s, h_crest, h):
     Z = h_crest - (h + r_u)
     return Z
 
+# Z-function Hunt with 3 outputs
+def hunt_3_outputs(t_p, tan_alpha, h_s, h_crest, h):
+    g = 9.81
+    l_0 = g  * t_p * t_p
+    xi = tan_alpha / np.sqrt(2 * np.pi * h_s / l_0)
+    r_u = xi * h_s
+
+    Z = h_crest - (h + r_u)
+    return Z, xi, r_u
+
 # overtopping calculation
 def overtopping(h, hm0, tm10, wave_direction, dike_normal, y_crest):
 
