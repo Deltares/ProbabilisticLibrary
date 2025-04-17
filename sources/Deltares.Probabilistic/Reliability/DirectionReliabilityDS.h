@@ -22,6 +22,7 @@
 #pragma once
 #include "BetaValueTask.h"
 #include "DirectionReliabilitySettings.h"
+#include "DirectionSectionsCalculationDS.h"
 #include "PrecomputeValues.h"
 #include "../Model/ModelRunner.h"
 
@@ -30,15 +31,21 @@ namespace Deltares::Reliability
     class DirectionReliabilityDS
     {
     public:
-        DirectionReliabilityDS(const double Threshold, const DirectionReliabilitySettings& settings, Sample& directionSample) :
-            directionSample(directionSample), Threshold(Threshold), Settings(settings) {}
-        double getBeta(Models::ModelRunner& modelRunner, double z0, const PrecomputeValues& zValues) const;
+        DirectionReliabilityDS(const double Threshold, const double z0,
+            const DirectionReliabilitySettings& settings, Sample& directionSample) :
+            directionSample(directionSample), Threshold(Threshold), Settings(settings),
+            sectionsCalc(DirectionSectionsCalculationDS(Threshold, z0, Settings)) {}
+        double getBeta(Models::ModelRunner& modelRunner, double z0, const PrecomputeValues& zValues);
         Sample& directionSample;
+        bool CanPrecomputeSample() const;
+        double GetPrecomputeUvalue() const;
+        void ProvidePrecomputeValue(const PrecomputeValue& zValue);
     private:
         const double Threshold;
         const DirectionReliabilitySettings& Settings;
+        DirectionSectionsCalculationDS sectionsCalc;
         double getDirectionBeta(Models::ModelRunner& modelRunner, const BetaValueTask& directionTask,
-            const PrecomputeValues& zValues) const;
+            const PrecomputeValues& zValues);
     };
 
 }

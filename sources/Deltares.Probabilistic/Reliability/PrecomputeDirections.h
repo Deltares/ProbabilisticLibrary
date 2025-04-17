@@ -32,12 +32,10 @@ namespace Deltares::Reliability
     public:
         PrecomputeDirections(const DirectionReliabilitySettings& settings, const double z0);
         std::vector<PrecomputeValues> precompute(Models::ModelRunner& modelRunner,
-            const std::vector<DirectionReliabilityDS>& directions, std::vector<bool>& mask);
+            std::vector<DirectionReliabilityDS>& directions, std::vector<bool>& mask);
         size_t Counter = 0;
     private:
-        void updateMask(std::vector<bool>& mask, const size_t index, const double zValue, const double previous) const;
         const DirectionReliabilitySettings& settings;
         const double z0;
-        const bool isMonotone;
     };
 }

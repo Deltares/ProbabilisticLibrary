@@ -24,9 +24,7 @@
 
 namespace Deltares::Reliability
 {
-    using namespace Deltares::Numeric;
-
-    double DirectionReliabilityDS::getBeta(Models::ModelRunner& modelRunner, double z0, const PrecomputeValues& zValues) const
+    double DirectionReliabilityDS::getBeta(Models::ModelRunner& modelRunner, double z0, const PrecomputeValues& zValues)
     {
         auto normalizedSample = directionSample.getNormalizedSample();
 
@@ -41,7 +39,7 @@ namespace Deltares::Reliability
     }
 
     double DirectionReliabilityDS::getDirectionBeta(Models::ModelRunner& modelRunner,
-        const BetaValueTask& directionTask, const PrecomputeValues& zValues) const
+        const BetaValueTask& directionTask, const PrecomputeValues& zValues)
     {
         if (modelRunner.canCalculateBeta())
         {
@@ -49,7 +47,6 @@ namespace Deltares::Reliability
         }
         else
         {
-            auto sectionsCalc = DirectionSectionsCalculationDS(Threshold, Settings);
             auto sections = sectionsCalc.getDirectionSections(modelRunner, directionTask, zValues);
 
             double beta = DirectionSectionsCalculation::getBetaFromSections(sections, Settings.FindMinimalValue);
@@ -58,6 +55,21 @@ namespace Deltares::Reliability
 
             return beta;
         }
+    }
+
+    bool DirectionReliabilityDS::CanPrecomputeSample() const
+    {
+        return sectionsCalc.CanPrecomputeSample();
+    }
+
+    double DirectionReliabilityDS::GetPrecomputeUvalue() const
+    {
+        return sectionsCalc.GetPrecomputeUvalue();
+    }
+
+    void DirectionReliabilityDS::ProvidePrecomputeValue(const PrecomputeValue& zValue)
+    {
+        sectionsCalc.ProvidePrecomputeValue(zValue);
     }
 
 }

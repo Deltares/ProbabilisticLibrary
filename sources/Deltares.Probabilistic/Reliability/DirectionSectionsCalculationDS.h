@@ -27,8 +27,8 @@ namespace Deltares::Reliability
     class DirectionSectionsCalculationDS : public DirectionSectionsCalculation
     {
     public:
-        DirectionSectionsCalculationDS(const double Threshold, const DirectionReliabilitySettings& settings) :
-            DirectionSectionsCalculation(settings) , Threshold(Threshold) {}
+        DirectionSectionsCalculationDS(const double Threshold, const double z0, const DirectionReliabilitySettings& settings) :
+            DirectionSectionsCalculation(settings, z0) , Threshold(Threshold) {}
         protected:
             double findBetaBetweenBoundaries(Models::ModelRunner & modelRunner,
                 const DirectionCalculation & directionCalculation,

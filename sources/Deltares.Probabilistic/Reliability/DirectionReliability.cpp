@@ -59,7 +59,7 @@ namespace Deltares::Reliability
     {
         auto normalizedSample = directionSample.getNormalizedSample();
 
-        auto task = BetaValueTask(normalizedSample, z0 < 0.0);
+        auto task = BetaValueTask(normalizedSample, z0);
 
         double beta = getDirectionBeta(modelRunner, task, zValues);
         beta *= z0;
@@ -78,7 +78,7 @@ namespace Deltares::Reliability
         }
         else
         {
-            auto sectionsCalc = DirectionSectionsCalculation(*Settings);
+            auto sectionsCalc = DirectionSectionsCalculation(*Settings, directionTask.z0);
             auto sections = sectionsCalc.getDirectionSections(modelRunner, directionTask, zValues);
 
             double beta = DirectionSectionsCalculation::getBetaFromSections(sections, Settings->FindMinimalValue);

@@ -76,6 +76,30 @@ namespace Deltares::Reliability
         }
     }
 
+    bool DirectionSectionsCalculation::CanPrecomputeSample() const
+    {
+        const auto nValues = zValues.values.size();
+        const auto isMonotone = (Settings.modelVaryingType == ModelVaryingType::Monotone);
+        const auto last = zValues.values.back().z;
+        double previous = -999.0;
+        if (nValues > 1) previous = zValues.values[nValues - 2].z;
+        const bool signChanged = z0 * last < 0.0;
+        const bool wrongDirection = std::abs(last) > std::abs(previous);
+        const bool done = (isMonotone && (signChanged || wrongDirection));
+        return done;
+    }
+
+    double DirectionSectionsCalculation::GetPrecomputeUvalue() const
+    {
+        double k = static_cast<double>(zValues.values.size());
+        return k * Settings.Dsdu;
+    }
+
+    void DirectionSectionsCalculation::ProvidePrecomputeValue(const PrecomputeValue& zValue)
+    {
+        zValues.values.push_back(zValue);
+    }
+
     std::vector<DirectionSection> DirectionSectionsCalculation::getDirectionSections(Models::ModelRunner& modelRunner,
         const BetaValueTask& directionTask, const PrecomputeValues& zValues)
     {

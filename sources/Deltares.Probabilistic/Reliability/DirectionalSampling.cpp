@@ -219,7 +219,7 @@ namespace Deltares
             std::vector<DirectionReliabilityDS> directions;
             for (auto& sample : samples)
             {
-                directions.emplace_back(threshold, *Settings->DirectionSettings, *sample);
+                directions.emplace_back(threshold, z0, *Settings->DirectionSettings, *sample);
             }
 
             auto maskPrecompute = std::vector(nSamples, false);

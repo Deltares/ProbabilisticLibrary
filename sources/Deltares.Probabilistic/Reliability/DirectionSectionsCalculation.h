@@ -32,11 +32,18 @@ namespace Deltares::Reliability
     class DirectionSectionsCalculation
     {
     public:
-        DirectionSectionsCalculation(const DirectionReliabilitySettings& settings) : Settings(settings) {}
+        DirectionSectionsCalculation(const DirectionReliabilitySettings& settings, const double z0) :
+            z0(z0), Settings(settings) {}
         static double GetZTolerance(const DirectionReliabilitySettings& settings, double uLow, double uHigh, double zLow, double zHigh);
         std::vector<DirectionSection> getDirectionSections(Models::ModelRunner& modelRunner,
             const BetaValueTask& directionTask, const PrecomputeValues& zValues);
         static double getBetaFromSections(const std::vector<DirectionSection>& sections, const bool FindMinimalValue);
+        bool CanPrecomputeSample() const;
+        double GetPrecomputeUvalue() const;
+        void ProvidePrecomputeValue(const PrecomputeValue& zValue);
+    private:
+        PrecomputeValues zValues;
+        double z0;
     protected:
         double findBetaBetweenBoundariesAllowNaN(const DirectionCalculation& directionCalculation,
             double uLow, double uHigh, double zLow, double zHigh, double& z);
