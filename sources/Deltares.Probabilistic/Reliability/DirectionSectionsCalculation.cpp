@@ -20,6 +20,9 @@
 // All rights reserved.
 //
 #include "DirectionSectionsCalculation.h"
+
+#include <iostream>
+
 #include "../Math/NumericSupport.h"
 #include "../Math/RootFinders/LinearRootFinder.h"
 #include "../Math/RootFinders/BisectionRootFinder.h"
@@ -78,14 +81,16 @@ namespace Deltares::Reliability
 
     bool DirectionSectionsCalculation::CanPrecomputeSample() const
     {
+        if (Settings.modelVaryingType == ModelVaryingType::Varying) return true;
+
         const auto nValues = zValues.values.size();
-        const auto isMonotone = (Settings.modelVaryingType == ModelVaryingType::Monotone);
         const auto last = zValues.values.back().z;
         double previous = -999.0;
         if (nValues > 1) previous = zValues.values[nValues - 2].z;
+
         const bool signChanged = z0 * last < 0.0;
         const bool wrongDirection = std::abs(last) > std::abs(previous);
-        const bool done = (isMonotone && (signChanged || wrongDirection));
+        const bool done = (signChanged || wrongDirection);
         return !done;
     }
 
