@@ -233,7 +233,7 @@ namespace Deltares
             }
 
             auto preComputeDirs = PrecomputeDirections(*Settings->DirectionSettings, z0);
-            const auto zValues = preComputeDirs.precompute(modelRunner, directions, maskPrecompute);
+            preComputeDirs.precompute(modelRunner, directions, maskPrecompute);
             preComputedCounter += preComputeDirs.Counter;
             const double z0Fac = getZFactor(z0);
 
@@ -248,7 +248,7 @@ namespace Deltares
                 else
                 {
                     samples[i]->threadId = omp_get_thread_num();
-                    betaValues[i] = directions[i].getBeta(modelRunner, z0Fac, zValues[i]);
+                    betaValues[i] = directions[i].getBeta(modelRunner, z0Fac);
                 }
             }
 

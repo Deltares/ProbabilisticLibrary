@@ -101,7 +101,7 @@ namespace Deltares::Reliability
     }
 
     std::vector<DirectionSection> DirectionSectionsCalculation::getDirectionSections(Models::ModelRunner& modelRunner,
-        const BetaValueTask& directionTask, const PrecomputeValues& zValues)
+        const BetaValueTask& directionTask)
     {
         std::vector<DirectionSection> sections;
 

@@ -23,7 +23,6 @@
 #include "BetaValueTask.h"
 #include "DirectionReliabilitySettings.h"
 #include "DirectionSection.h"
-#include "PrecomputeValues.h"
 #include "ReliabilityMethod.h"
 
 namespace Deltares::Reliability
@@ -33,12 +32,9 @@ namespace Deltares::Reliability
     public:
         std::shared_ptr<DirectionReliabilitySettings> Settings = std::make_shared<DirectionReliabilitySettings>();
         std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
-        double getBeta(Models::ModelRunner& modelRunner, Sample& directionSample, double z0,
-            const PrecomputeValues& zValues) const;
         double getBeta(Models::ModelRunner& modelRunner, Sample& directionSample, double z0) const;
     private:
-        double getDirectionBeta(Models::ModelRunner& modelRunner, const BetaValueTask& directionTask,
-            const PrecomputeValues& zValues) const;
+        double getDirectionBeta(Models::ModelRunner& modelRunner, const BetaValueTask& directionTask) const;
     };
 
 }

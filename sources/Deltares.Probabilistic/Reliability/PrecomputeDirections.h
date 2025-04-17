@@ -22,7 +22,6 @@
 
 #pragma once
 #include <vector>
-#include "PrecomputeValues.h"
 #include "DirectionReliabilityDS.h"
 
 namespace Deltares::Reliability
@@ -31,7 +30,7 @@ namespace Deltares::Reliability
     {
     public:
         PrecomputeDirections(const DirectionReliabilitySettings& settings, const double z0);
-        std::vector<PrecomputeValues> precompute(Models::ModelRunner& modelRunner,
+        void precompute(Models::ModelRunner& modelRunner,
             std::vector<DirectionReliabilityDS>& directions, std::vector<bool>& mask);
         size_t Counter = 0;
     private:

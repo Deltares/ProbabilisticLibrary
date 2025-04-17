@@ -31,7 +31,7 @@ namespace Deltares::Reliability
         settings(settings), z0(z0) {}
 
     // precompute Z-values
-    std::vector<PrecomputeValues> PrecomputeDirections::precompute(Models::ModelRunner& modelRunner,
+    void PrecomputeDirections::precompute(Models::ModelRunner& modelRunner,
         std::vector<DirectionReliabilityDS>& directions, std::vector<bool>& mask)
     {
         const size_t nSamples = directions.size();
@@ -40,10 +40,9 @@ namespace Deltares::Reliability
         auto precomputed = PrecomputeValues();
         const auto z0pv = PrecomputeValue(0.0, std::abs(z0), false, true);
         precomputed.values.emplace_back(z0pv);
-        auto zValues = std::vector(nSamples, precomputed);
         const double z0Fac = ReliabilityMethod::getZFactor(z0);
 
-        if (modelRunner.canCalculateBeta()) return zValues;
+        if (modelRunner.canCalculateBeta()) return;
 
         // precompute Z-values multiples of Dsdu
         const int sectionsCount = settings.SectionCount();
@@ -76,7 +75,6 @@ namespace Deltares::Reliability
                     directions[i].directionSample.Z = uSamples[ii]->Z;
                     auto z1pv = PrecomputeValue(uk, z0Fac * zValues2[ii],
                         uSamples[ii]->IsRestartRequired, uSamples[ii]->AllowProxy);
-                    zValues[i].values.push_back(z1pv);
                     directions[i].ProvidePrecomputeValue(z1pv);
                     mask[i] = directions[i].CanPrecomputeSample();
                     ii++;
@@ -84,7 +82,6 @@ namespace Deltares::Reliability
             }
             if (uSamples.size() <= 1) break;
         }
-        return zValues;
     }
 
 }

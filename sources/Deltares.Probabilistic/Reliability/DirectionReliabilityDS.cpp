@@ -24,13 +24,13 @@
 
 namespace Deltares::Reliability
 {
-    double DirectionReliabilityDS::getBeta(Models::ModelRunner& modelRunner, double z0, const PrecomputeValues& zValues)
+    double DirectionReliabilityDS::getBeta(Models::ModelRunner& modelRunner, double z0)
     {
         auto normalizedSample = directionSample.getNormalizedSample();
 
         auto task = BetaValueTask(normalizedSample, z0 < 0.0);
 
-        double beta = getDirectionBeta(modelRunner, task, zValues);
+        double beta = getDirectionBeta(modelRunner, task);
         beta *= z0;
 
         directionSample.AllowProxy = task.UValues->AllowProxy;
@@ -38,8 +38,7 @@ namespace Deltares::Reliability
         return beta;
     }
 
-    double DirectionReliabilityDS::getDirectionBeta(Models::ModelRunner& modelRunner,
-        const BetaValueTask& directionTask, const PrecomputeValues& zValues)
+    double DirectionReliabilityDS::getDirectionBeta(Models::ModelRunner& modelRunner, const BetaValueTask& directionTask)
     {
         if (modelRunner.canCalculateBeta())
         {
@@ -47,7 +46,7 @@ namespace Deltares::Reliability
         }
         else
         {
-            auto sections = sectionsCalc.getDirectionSections(modelRunner, directionTask, zValues);
+            auto sections = sectionsCalc.getDirectionSections(modelRunner, directionTask);
 
             double beta = DirectionSectionsCalculation::getBetaFromSections(sections, Settings.FindMinimalValue);
 

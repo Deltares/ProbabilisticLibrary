@@ -35,8 +35,7 @@ namespace Deltares::Reliability
         DirectionSectionsCalculation(const DirectionReliabilitySettings& settings, const double z0) :
             z0(z0), Settings(settings) {}
         static double GetZTolerance(const DirectionReliabilitySettings& settings, double uLow, double uHigh, double zLow, double zHigh);
-        std::vector<DirectionSection> getDirectionSections(Models::ModelRunner& modelRunner,
-            const BetaValueTask& directionTask, const PrecomputeValues& zValues);
+        std::vector<DirectionSection> getDirectionSections(Models::ModelRunner& modelRunner, const BetaValueTask& directionTask);
         static double getBetaFromSections(const std::vector<DirectionSection>& sections, const bool FindMinimalValue);
         bool CanPrecomputeSample() const;
         double GetPrecomputeUvalue() const;
