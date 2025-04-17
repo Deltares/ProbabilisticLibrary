@@ -28,7 +28,7 @@ namespace Deltares::Reliability
     {
         auto normalizedSample = directionSample.getNormalizedSample();
 
-        auto task = BetaValueTask(normalizedSample, z0 < 0.0);
+        auto task = BetaValueTask(normalizedSample, z0);
 
         double beta = getDirectionBeta(modelRunner, task);
         beta *= z0;

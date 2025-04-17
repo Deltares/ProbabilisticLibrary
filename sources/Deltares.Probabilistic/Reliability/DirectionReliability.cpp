@@ -21,7 +21,6 @@
 //
 #include "DirectionReliability.h"
 #include "DirectionReliabilitySettings.h"
-#include "DirectionCalculation.h"
 #include "../Model/ModelRunner.h"
 #include "../Math/NumericSupport.h"
 #include "DirectionSectionsCalculation.h"

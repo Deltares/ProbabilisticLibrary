@@ -29,7 +29,7 @@ namespace Deltares::Reliability
     {
     public:
         BetaValueTask(std::shared_ptr<Models::Sample>& UValues, const double z0) :
-            UValues(UValues), invertZ(z0 > 0.0), z0(z0) {}
+            UValues(UValues), invertZ(z0 < 0.0), z0(z0) {}
         std::shared_ptr<Models::Sample>& UValues;
         bool invertZ;
         double z0;
