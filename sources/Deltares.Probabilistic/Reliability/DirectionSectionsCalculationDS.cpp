@@ -39,9 +39,9 @@ namespace Deltares::Reliability
         }
         else
         {
-            const double zTolerance = GetZTolerance(*Settings, uLow, uHigh, zLow, zHigh);
+            const double zTolerance = GetZTolerance(Settings, uLow, uHigh, zLow, zHigh);
 
-            auto linearSearchCalculation = LinearRootFinder(zTolerance, Settings->MaximumIterations);
+            auto linearSearchCalculation = LinearRootFinder(zTolerance, Settings.MaximumIterations);
 
             auto low = XValue(uLow, zLow);
             auto high = XValue(uHigh, zHigh);
@@ -69,13 +69,13 @@ namespace Deltares::Reliability
                     {
                         z = zResult;
                         modelRunner.removeTask(directionCalculation.uDirection.IterationIndex);
-                        return Settings->MaximumLengthU;
+                        return Settings.MaximumLengthU;
                     }
                     else if (NumericSupport::GetSign(z0) == NumericSupport::GetSign(zResult) && std::fabs(zResult) >= std::fabs(z0))
                     {
                         z = zResult;
                         modelRunner.removeTask(directionCalculation.uDirection.IterationIndex);
-                        return Settings->MaximumLengthU;
+                        return Settings.MaximumLengthU;
                     }
                     else
                     {
@@ -83,7 +83,7 @@ namespace Deltares::Reliability
                         if (isProxyAllowed(ThresholdOffset, uNew, Threshold))
                         {
                             z = zResult;
-                            return std::min(uNew, Settings->MaximumLengthU);
+                            return std::min(uNew, Settings.MaximumLengthU);
                         }
                     }
 
@@ -93,7 +93,7 @@ namespace Deltares::Reliability
                     if (std::isnan(resultRootFinder.X))
                     {
                         z = zResult;
-                        resultRootFinder.X = Settings->MaximumLengthU;
+                        resultRootFinder.X = Settings.MaximumLengthU;
                     }
                     else
                     {

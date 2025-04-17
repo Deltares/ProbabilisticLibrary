@@ -81,12 +81,12 @@ namespace Deltares::Reliability
     {
         std::vector<DirectionSection> sections;
 
-        const int sectionsCount = Settings->SectionCount();
+        const int sectionsCount = Settings.SectionCount();
 
         bool found = false;
-        const bool monotone = Settings->modelVaryingType == ModelVaryingType::Monotone;
-        const auto dirCalcSettings = DirectionCalculationSettings(directionTask.invertZ, Settings->Dsdu, Settings->MaximumLengthU);
-        auto model = ZGetter(modelRunner, *Settings);
+        const bool monotone = Settings.modelVaryingType == ModelVaryingType::Monotone;
+        const auto dirCalcSettings = DirectionCalculationSettings(directionTask.invertZ, Settings.Dsdu, Settings.MaximumLengthU);
+        auto model = ZGetter(modelRunner, Settings);
         auto directionCalculation = DirectionCalculation(model, *directionTask.UValues, dirCalcSettings);
         double prevzHigh = directionCalculation.GetZ(0, zValues);
 
@@ -94,8 +94,8 @@ namespace Deltares::Reliability
         {
             if (!found)
             {
-                double uLow = k * Settings->Dsdu;
-                double uHigh = std::min((k + 1) * Settings->Dsdu, Settings->MaximumLengthU);
+                double uLow = k * Settings.Dsdu;
+                double uHigh = std::min((k + 1) * Settings.Dsdu, Settings.MaximumLengthU);
 
                 double zLow = prevzHigh;
                 double zHigh = directionCalculation.GetZ(k+1, zValues);
@@ -194,7 +194,7 @@ namespace Deltares::Reliability
             double step = uHigh - uLow;
             bool lastAdaptedLow = false;
 
-            while (step > Settings->EpsilonUStepSize)
+            while (step > Settings.EpsilonUStepSize)
             {
                 step = step / 2;
 
@@ -246,9 +246,9 @@ namespace Deltares::Reliability
         }
         else
         {
-            double zTolerance = GetZTolerance(*Settings, uLow, uHigh, zLow, zHigh);
+            double zTolerance = GetZTolerance(Settings, uLow, uHigh, zLow, zHigh);
 
-            auto linearSearchCalculation = LinearRootFinder(zTolerance, Settings->MaximumIterations);
+            auto linearSearchCalculation = LinearRootFinder(zTolerance, Settings.MaximumIterations);
 
             auto low = XValue(uLow, zLow);
             auto high = XValue(uHigh, zHigh);

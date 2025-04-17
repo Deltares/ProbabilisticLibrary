@@ -32,7 +32,7 @@ namespace Deltares::Reliability
     class DirectionSectionsCalculation
     {
     public:
-        std::shared_ptr<DirectionReliabilitySettings> Settings = std::make_shared<DirectionReliabilitySettings>();
+        DirectionSectionsCalculation(const DirectionReliabilitySettings& settings) : Settings(settings) {}
         static double GetZTolerance(const DirectionReliabilitySettings& settings, double uLow, double uHigh, double zLow, double zHigh);
         std::vector<DirectionSection> getDirectionSections(Models::ModelRunner& modelRunner,
             const BetaValueTask& directionTask, const PrecomputeValues& zValues);
@@ -44,6 +44,7 @@ namespace Deltares::Reliability
             const DirectionCalculation& directionCalculation,
             double uLow, double uHigh, double zLow, double zHigh, double& z);
         bool isStopped() const { return false; }
+        const DirectionReliabilitySettings& Settings;
     };
 
 }

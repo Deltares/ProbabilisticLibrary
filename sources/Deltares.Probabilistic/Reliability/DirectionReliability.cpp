@@ -78,7 +78,7 @@ namespace Deltares::Reliability
         }
         else
         {
-            auto sectionsCalc = DirectionSectionsCalculation();
+            auto sectionsCalc = DirectionSectionsCalculation(*Settings);
             auto sections = sectionsCalc.getDirectionSections(modelRunner, directionTask, zValues);
 
             double beta = DirectionSectionsCalculation::getBetaFromSections(sections, Settings->FindMinimalValue);

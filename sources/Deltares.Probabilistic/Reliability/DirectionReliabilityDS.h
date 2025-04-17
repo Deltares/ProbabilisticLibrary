@@ -30,11 +30,13 @@ namespace Deltares::Reliability
     class DirectionReliabilityDS
     {
     public:
-        double Threshold = 0;
-        std::shared_ptr<DirectionReliabilitySettings> Settings = std::make_shared<DirectionReliabilitySettings>();
-        double getBeta(Models::ModelRunner& modelRunner, Sample& directionSample, double z0,
-            const PrecomputeValues& zValues) const;
+        DirectionReliabilityDS(const double Threshold, const DirectionReliabilitySettings& settings, Sample& directionSample) :
+            Threshold(Threshold), Settings(settings), directionSample(directionSample) {}
+        double getBeta(Models::ModelRunner& modelRunner, double z0, const PrecomputeValues& zValues) const;
     private:
+        const double Threshold;
+        const DirectionReliabilitySettings& Settings;
+        Sample& directionSample;
         double getDirectionBeta(Models::ModelRunner& modelRunner, const BetaValueTask& directionTask,
             const PrecomputeValues& zValues) const;
     };

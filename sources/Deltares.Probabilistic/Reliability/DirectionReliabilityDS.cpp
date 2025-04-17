@@ -26,8 +26,7 @@ namespace Deltares::Reliability
 {
     using namespace Deltares::Numeric;
 
-    double DirectionReliabilityDS::getBeta(Models::ModelRunner& modelRunner, Sample& directionSample,
-        double z0, const PrecomputeValues& zValues) const
+    double DirectionReliabilityDS::getBeta(Models::ModelRunner& modelRunner, double z0, const PrecomputeValues& zValues) const
     {
         auto normalizedSample = directionSample.getNormalizedSample();
 
@@ -50,11 +49,10 @@ namespace Deltares::Reliability
         }
         else
         {
-            auto sectionsCalc = DirectionSectionsCalculationDS();
-            sectionsCalc.Settings = Settings;
+            auto sectionsCalc = DirectionSectionsCalculationDS(Threshold, Settings);
             auto sections = sectionsCalc.getDirectionSections(modelRunner, directionTask, zValues);
 
-            double beta = DirectionSectionsCalculation::getBetaFromSections(sections, Settings->FindMinimalValue);
+            double beta = DirectionSectionsCalculation::getBetaFromSections(sections, Settings.FindMinimalValue);
 
             directionTask.UValues->AllowProxy = directionTask.UValues->AllowProxy;
 

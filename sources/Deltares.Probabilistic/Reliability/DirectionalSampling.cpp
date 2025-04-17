@@ -216,9 +216,11 @@ namespace Deltares
             const size_t nSamples = samples.size();
             auto betaValues = std::vector<double>(nSamples);
 
-            auto directionReliability = DirectionReliabilityDS();
-            directionReliability.Settings = this->Settings->DirectionSettings;
-            directionReliability.Threshold = threshold;
+            std::vector<DirectionReliabilityDS> directions;
+            for (auto& sample : samples)
+            {
+                directions.emplace_back(threshold, *Settings->DirectionSettings, *sample);
+            }
 
             auto maskPrecompute = std::vector(nSamples, false);
             if (modelRunner.Settings->IsProxyModel())
@@ -230,7 +232,7 @@ namespace Deltares
                 }
             }
 
-            auto preComputeDirs = PrecomputeDirections(*directionReliability.Settings, z0);
+            auto preComputeDirs = PrecomputeDirections(*Settings->DirectionSettings, z0);
             const auto zValues = preComputeDirs.precompute(modelRunner, samples, maskPrecompute);
             preComputedCounter += preComputeDirs.Counter;
             const double z0Fac = getZFactor(z0);
@@ -246,7 +248,7 @@ namespace Deltares
                 else
                 {
                     samples[i]->threadId = omp_get_thread_num();
-                    betaValues[i] = directionReliability.getBeta(modelRunner, *samples[i], z0Fac, zValues[i]);
+                    betaValues[i] = directions[i].getBeta(modelRunner, z0Fac, zValues[i]);
                 }
             }
 
