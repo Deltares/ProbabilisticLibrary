@@ -20,17 +20,14 @@
 // All rights reserved.
 //
 #include "DirectionReliabilityDS.h"
-#include "DirectionReliabilitySettings.h"
 #include "DirectionSectionsCalculationDS.h"
-#include "../Model/ModelRunner.h"
-#include "../Math/NumericSupport.h"
 
 namespace Deltares::Reliability
 {
     using namespace Deltares::Numeric;
 
     double DirectionReliabilityDS::getBeta(Models::ModelRunner& modelRunner, Sample& directionSample,
-        double z0, const PrecomputeValues& zValues)
+        double z0, const PrecomputeValues& zValues) const
     {
         auto normalizedSample = directionSample.getNormalizedSample();
 
@@ -45,7 +42,7 @@ namespace Deltares::Reliability
     }
 
     double DirectionReliabilityDS::getDirectionBeta(Models::ModelRunner& modelRunner,
-        const BetaValueTask& directionTask, const PrecomputeValues& zValues)
+        const BetaValueTask& directionTask, const PrecomputeValues& zValues) const
     {
         if (modelRunner.canCalculateBeta())
         {
@@ -57,58 +54,11 @@ namespace Deltares::Reliability
             sectionsCalc.Settings = Settings;
             auto sections = sectionsCalc.getDirectionSections(modelRunner, directionTask, zValues);
 
-            double beta = getBetaFromSections(sections);
+            double beta = DirectionSectionsCalculation::getBetaFromSections(sections, Settings->FindMinimalValue);
 
             directionTask.UValues->AllowProxy = directionTask.UValues->AllowProxy;
 
             return beta;
-        }
-    }
-
-    double DirectionReliabilityDS::getBetaFromSections(const std::vector<DirectionSection>& sections) const
-    {
-        // sum the probabilities
-        double failingProbability = 0.0;
-        double nonFailingProbability = 0.5; // start counting at u = 0
-
-        for (int i = sections.size() - 1; i >= 0; i--)
-        {
-            switch (sections[i].Type)
-            {
-            case DoubleType::Positive:
-                nonFailingProbability += sections[i].getProbability();
-                break;
-            case DoubleType::Negative:
-                failingProbability += sections[i].getProbability();
-                break;
-            default:
-                //nothing to do
-                break;
-            }
-        }
-
-        if (failingProbability == 0 && nonFailingProbability == 0.5)
-        {
-            return nan("");
-        }
-        else if (nonFailingProbability == 0.5 && this->Settings->FindMinimalValue)
-        {
-            double zmin = 1e99;
-            double rmin = 0.0;
-            for (const auto& section : sections)
-            {
-                if (section.ZHigh < zmin && section.ZHigh != 0.0)
-                {
-                    rmin = section.UHigh;
-                    zmin = section.ZHigh;
-                }
-            }
-            return rmin;
-        }
-        else
-        {
-            double probFailure = failingProbability / (failingProbability + nonFailingProbability);
-            return Statistics::StandardNormal::getUFromQ(probFailure);
         }
     }
 

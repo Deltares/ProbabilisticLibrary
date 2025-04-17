@@ -22,9 +22,8 @@
 #pragma once
 #include "BetaValueTask.h"
 #include "DirectionReliabilitySettings.h"
-#include "DirectionSection.h"
 #include "PrecomputeValues.h"
-#include "ReliabilityMethod.h"
+#include "../Model/ModelRunner.h"
 
 namespace Deltares::Reliability
 {
@@ -34,11 +33,10 @@ namespace Deltares::Reliability
         double Threshold = 0;
         std::shared_ptr<DirectionReliabilitySettings> Settings = std::make_shared<DirectionReliabilitySettings>();
         double getBeta(Models::ModelRunner& modelRunner, Sample& directionSample, double z0,
-            const PrecomputeValues& zValues);
+            const PrecomputeValues& zValues) const;
     private:
         double getDirectionBeta(Models::ModelRunner& modelRunner, const BetaValueTask& directionTask,
-            const PrecomputeValues& zValues);
-        double getBetaFromSections(const std::vector<DirectionSection>& sections) const;
+            const PrecomputeValues& zValues) const;
     };
 
 }

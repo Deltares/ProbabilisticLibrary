@@ -27,118 +27,67 @@
 #include "DirectionSectionsCalculation.h"
 #include <memory>
 
-namespace Deltares
+namespace Deltares::Reliability
 {
-    namespace Reliability
+    using namespace Deltares::Numeric;
+
+    std::shared_ptr<DesignPoint> DirectionReliability::getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner)
     {
-        using namespace Deltares::Numeric;
+        modelRunner->updateStochastSettings(this->Settings->StochastSet);
 
-        std::shared_ptr<DesignPoint> DirectionReliability::getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner)
+        std::shared_ptr<Sample> zeroSample = std::make_shared<Sample>(modelRunner->getVaryingStochastCount());
+        double z = modelRunner->getZValue(zeroSample);
+        double z0 = getZFactor(z);
+
+        std::shared_ptr<Sample> directionSample = this->Settings->StochastSet->getStartPoint();
+
+        double beta = getBeta(*modelRunner, *directionSample, z0);
+
+        std::shared_ptr<DesignPoint> designPoint = modelRunner->getDesignPoint(directionSample, beta);
+
+        return designPoint;
+    }
+
+    double DirectionReliability::getBeta(Models::ModelRunner& modelRunner, Sample& directionSample, double z0) const
+    {
+        auto zValues = PrecomputeValues();
+        return getBeta(modelRunner, directionSample, z0, zValues);
+    }
+
+    double DirectionReliability::getBeta(Models::ModelRunner& modelRunner, Sample& directionSample,
+        double z0, const PrecomputeValues& zValues) const
+    {
+        auto normalizedSample = directionSample.getNormalizedSample();
+
+        auto task = BetaValueTask(normalizedSample, z0 < 0.0);
+
+        double beta = getDirectionBeta(modelRunner, task, zValues);
+        beta *= z0;
+
+        directionSample.AllowProxy = task.UValues->AllowProxy;
+
+        return beta;
+    }
+
+    double DirectionReliability::getDirectionBeta(Models::ModelRunner& modelRunner,
+        const BetaValueTask& directionTask, const PrecomputeValues& zValues) const
+    {
+        if (modelRunner.canCalculateBeta())
         {
-            modelRunner->updateStochastSettings(this->Settings->StochastSet);
-
-            std::shared_ptr<Sample> zeroSample = std::make_shared<Sample>(modelRunner->getVaryingStochastCount());
-            double z = modelRunner->getZValue(zeroSample);
-            double z0 = getZFactor(z);
-
-            std::shared_ptr<Sample> directionSample = this->Settings->StochastSet->getStartPoint();
-
-            double beta = getBeta(*modelRunner, *directionSample, z0);
-
-            std::shared_ptr<DesignPoint> designPoint = modelRunner->getDesignPoint(directionSample, beta);
-
-            return designPoint;
+            return modelRunner.getBeta(directionTask.UValues);
         }
-
-        double DirectionReliability::getBeta(Models::ModelRunner& modelRunner, Sample& directionSample, double z0)
+        else
         {
-            auto zValues = PrecomputeValues();
-            return getBeta(modelRunner, directionSample, z0, zValues);
-        }
+            auto sectionsCalc = DirectionSectionsCalculation();
+            auto sections = sectionsCalc.getDirectionSections(modelRunner, directionTask, zValues);
 
-        double DirectionReliability::getBeta(Models::ModelRunner& modelRunner, Sample& directionSample,
-            double z0, const PrecomputeValues& zValues)
-        {
-            auto normalizedSample = directionSample.getNormalizedSample();
+            double beta = DirectionSectionsCalculation::getBetaFromSections(sections, Settings->FindMinimalValue);
 
-            auto task = BetaValueTask(normalizedSample, z0 < 0.0);
-
-            double beta = getDirectionBeta(modelRunner, task, zValues);
-            beta *= z0;
-
-            directionSample.AllowProxy = task.UValues->AllowProxy;
+            directionTask.UValues->AllowProxy = directionTask.UValues->AllowProxy;
 
             return beta;
         }
-
-        double DirectionReliability::getDirectionBeta(Models::ModelRunner& modelRunner,
-            const BetaValueTask& directionTask, const PrecomputeValues& zValues)
-        {
-            if (modelRunner.canCalculateBeta())
-            {
-                return modelRunner.getBeta(directionTask.UValues);
-            }
-            else
-            {
-                auto sectionsCalc = DirectionSectionsCalculation();
-                auto sections = sectionsCalc.getDirectionSections(modelRunner, directionTask, zValues);
-
-                double beta = getBetaFromSections(sections);
-
-                directionTask.UValues->AllowProxy = directionTask.UValues->AllowProxy;
-
-                return beta;
-            }
-        }
-
-        double DirectionReliability::getBetaFromSections(const std::vector<DirectionSection>& sections) const
-        {
-            // sum the probabilities
-            double failingProbability = 0.0;
-            double nonFailingProbability = 0.5; // start counting at u = 0
-
-            for (int i = sections.size() - 1; i >= 0; i--)
-            {
-                switch (sections[i].Type)
-                {
-                case DoubleType::Positive:
-                    nonFailingProbability += sections[i].getProbability();
-                    break;
-                case DoubleType::Negative:
-                    failingProbability += sections[i].getProbability();
-                    break;
-                default:
-                    //nothing to do
-                    break;
-                }
-            }
-
-            if (failingProbability == 0 && nonFailingProbability == 0.5)
-            {
-                return nan("");
-            }
-            else if (nonFailingProbability == 0.5 && this->Settings->FindMinimalValue)
-            {
-                double zmin = 1e99;
-                double rmin = 0.0;
-                for (const auto& section : sections)
-                {
-                    if (section.ZHigh < zmin && section.ZHigh != 0.0)
-                    {
-                        rmin = section.UHigh;
-                        zmin = section.ZHigh;
-                    }
-                }
-                return rmin;
-            }
-            else
-            {
-                double probFailure = failingProbability / (failingProbability + nonFailingProbability);
-                return Statistics::StandardNormal::getUFromQ(probFailure);
-            }
-        }
-
     }
-}
 
+}
 

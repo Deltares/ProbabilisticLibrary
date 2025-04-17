@@ -21,13 +21,9 @@
 //
 
 #include "DirectionSectionsCalculationDS.h"
-#include "DirectionReliabilitySettings.h"
-#include "DirectionCalculation.h"
-#include "../Model/ModelRunner.h"
 #include "../Math/NumericSupport.h"
 #include "../Math/RootFinders/LinearRootFinder.h"
 #include "../Math/RootFinders/BisectionRootFinder.h"
-#include <memory>
 
 namespace Deltares::Reliability
 {

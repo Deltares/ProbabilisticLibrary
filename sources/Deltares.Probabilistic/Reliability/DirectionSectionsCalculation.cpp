@@ -20,17 +20,61 @@
 // All rights reserved.
 //
 #include "DirectionSectionsCalculation.h"
-#include "DirectionReliabilitySettings.h"
-#include "DirectionCalculation.h"
-#include "../Model/ModelRunner.h"
 #include "../Math/NumericSupport.h"
 #include "../Math/RootFinders/LinearRootFinder.h"
 #include "../Math/RootFinders/BisectionRootFinder.h"
-#include <memory>
 
 namespace Deltares::Reliability
 {
     using namespace Deltares::Numeric;
+
+    double DirectionSectionsCalculation::getBetaFromSections(const std::vector<DirectionSection>& sections,
+        const bool FindMinimalValue)
+    {
+        // sum the probabilities
+        double failingProbability = 0.0;
+        double nonFailingProbability = 0.5; // start counting at u = 0
+
+        for (int i = sections.size() - 1; i >= 0; i--)
+        {
+            switch (sections[i].Type)
+            {
+            case DoubleType::Positive:
+                nonFailingProbability += sections[i].getProbability();
+                break;
+            case DoubleType::Negative:
+                failingProbability += sections[i].getProbability();
+                break;
+            default:
+                //nothing to do
+                break;
+            }
+        }
+
+        if (failingProbability == 0 && nonFailingProbability == 0.5)
+        {
+            return nan("");
+        }
+        else if (nonFailingProbability == 0.5 && FindMinimalValue)
+        {
+            double zmin = 1e99;
+            double rmin = 0.0;
+            for (const auto& section : sections)
+            {
+                if (section.ZHigh < zmin && section.ZHigh != 0.0)
+                {
+                    rmin = section.UHigh;
+                    zmin = section.ZHigh;
+                }
+            }
+            return rmin;
+        }
+        else
+        {
+            double probFailure = failingProbability / (failingProbability + nonFailingProbability);
+            return Statistics::StandardNormal::getUFromQ(probFailure);
+        }
+    }
 
     std::vector<DirectionSection> DirectionSectionsCalculation::getDirectionSections(Models::ModelRunner& modelRunner,
         const BetaValueTask& directionTask, const PrecomputeValues& zValues)
@@ -223,7 +267,6 @@ namespace Deltares::Reliability
             return resultRootFinder.X;
         }
     }
-
 
     double DirectionSectionsCalculation::GetZTolerance(const DirectionReliabilitySettings& settings, double uLow, double uHigh, double zLow, double zHigh)
     {
