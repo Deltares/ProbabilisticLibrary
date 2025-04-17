@@ -19,6 +19,7 @@
 # Stichting Deltares and remain full property of Stichting Deltares at all times.
 # All rights reserved.
 #
+from importlib.metadata import Distribution
 import unittest
 import sys
 
@@ -29,6 +30,25 @@ import project_builder
 margin = 0.01
 
 class Test_reliability(unittest.TestCase):
+
+    def test_invalid_project(self):
+        project = project_builder.get_linear_project()
+
+        project.settings.reliability_method = ReliabilityMethod.form
+        self.assertTrue(project.is_valid())
+
+        # change an unused property to an invalid value
+        project.variables['a'].scale = -1
+        self.assertTrue(project.is_valid())
+
+        # now use the property, reassign the invalid property, because by changging the directibution it is reset
+        project.variables['a'].distribution = DistributionType.normal
+        project.variables['a'].scale = -1
+        self.assertFalse(project.is_valid())
+
+        # run an invalid prohect
+        project.run();
+        self.assertIsNone(project.design_point)
 
     def test_form_linear(self):
         project = project_builder.get_linear_project()

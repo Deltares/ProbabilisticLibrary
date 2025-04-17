@@ -22,7 +22,6 @@
 from __future__ import annotations
 from ctypes import ArgumentError
 from enum import Enum
-
 from .utils import *
 from . import interface
 
@@ -641,6 +640,18 @@ class Stochast(FrozenObject):
 		if xmax is None:
 			xmax = self.get_x_from_u(0) + 4 * (self.get_x_from_u(1) - self.get_x_from_u(0))
 			limit_special_values = False
+
+		if xmin > xmax:
+			temp = xmin
+			xmin = xmax
+			xmax = temp
+
+		if xmin == xmax:
+			diff = abs(xmin) / 10
+			if diff == 0:
+				diff = 1
+			xmin = xmin - diff
+			xmax = xmin + diff
 
 		values = np.arange(xmin, xmax, (xmax - xmin) / 1000).tolist()
 		add_values = interface.GetArrayValue(self._id, 'special_values')

@@ -400,8 +400,9 @@ class ModelProject(FrozenObject):
 			return FrozenList([Message.from_message(MessageType.error, 'No model provided')])
 
 	def is_valid(self) -> bool:
+		self._update()
 		if not self._model is None:
-			return self._model.is_valid()
+			return self._model.is_valid() and interface.GetBoolValue(self._id, 'is_valid')
 		else:
 			return False
 
@@ -477,7 +478,7 @@ class ModelProject(FrozenObject):
 
 		self._output_parameters = self._model.output_parameters
 
-	def _run(self):
+	def _update(self):
 		self._check_model()
 
 		interface.SetIntValue(self._project_id, 'correlation_matrix', self._correlation_matrix._id)
@@ -488,7 +489,12 @@ class ModelProject(FrozenObject):
 			self._model.set_max_processes(self.settings.max_parallel_processes)
 		self._model.initialize_for_run()
 		ModelProject._zmodel = self._model
-		interface.Execute(self._project_id, 'run')
+
+	def _run(self):
+		if (self.is_valid()):
+			interface.Execute(self._project_id, 'run')
+		else:
+			print('run not executed, input is not valid')
 
 class RunValuesType(Enum):
 	median_values = 'median_values'
@@ -719,8 +725,10 @@ class ReliabilityProject(ModelProject):
 		self._design_point = None
 		self._fragility_curve = None
 		self._initialized = False
-
-		self._run()
+		if (self.is_valid()):
+			self._run()
+		else:
+			print('run not executed, input is not valid')
 
 	@property
 	def design_point(self) -> DesignPoint:
@@ -780,6 +788,7 @@ class CombineProject(FrozenObject):
 		return ['design_points',
 				'settings',
 				'correlation_matrix',
+				'run',
 				'design_point_correlation_matrix',
 				'design_point']
 
@@ -802,13 +811,23 @@ class CombineProject(FrozenObject):
 	def correlation_matrix(self) -> SelfCorrelationMatrix:
 		return self._correlation_matrix
 
-	def run(self):
-		self._design_point = None
+	def _update(self):
 		interface.SetArrayIntValue(self._id, 'design_points', [design_point._id for design_point in self._design_points])
 		interface.SetIntValue(self._id, 'settings', self._settings._id)
 		interface.SetIntValue(self._id, 'correlation_matrix', self._correlation_matrix._id)
 		interface.SetIntValue(self._id, 'design_point_correlation_matrix', self._design_point_correlation_matrix._id)
-		interface.Execute(self._id, 'run')
+
+	def is_valid(self) -> bool:
+		self._update()
+		return interface.GetBoolValue(self._id, 'is_valid')
+
+	def run(self):
+		self._design_point = None
+		# update performed by is_valid
+		if (self.is_valid()):
+			interface.Execute(self._id, 'run')
+		else:
+			print('run not executed, input is not valid')
 
 	@property
 	def design_point(self) -> DesignPoint:
@@ -899,7 +918,10 @@ class ExcludingCombineProject(FrozenObject):
 	def run(self):
 		self._update()
 		self._design_point = None
-		interface.Execute(self._id, 'run')
+		if (self.is_valid()):
+			interface.Execute(self._id, 'run')
+		else:
+			print('run not executed, input is not valid')
 
 	@property
 	def design_point(self):
@@ -928,6 +950,7 @@ class LengthEffectProject(FrozenObject):
 				'correlation_lengths'
 				'length',
 				'correlation_matrix',
+				'run',
 				'design_point']
 
 	@property

@@ -21,6 +21,8 @@
 //
 #include "ReliabilityProject.h"
 
+#include <iostream>
+
 namespace Deltares
 {
     namespace Reliability
@@ -80,10 +82,11 @@ namespace Deltares
             return this->fragilityCurve;
         }
 
-        bool ReliabilityProject::isValid() const
+        bool ReliabilityProject::isValid()
         {
-            return  this->model != nullptr && 
-                    this->runSettings != nullptr && this->runSettings->isValid();
+            return  ModelProject::isValid() &&
+                runSettings != nullptr && runSettings->isValid() &&
+                settings->isValid();
         }
     }
 }

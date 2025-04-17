@@ -21,6 +21,8 @@
 //
 #include "ModelProject.h"
 
+#include <iostream>
+
 namespace Deltares
 {
     namespace Models
@@ -66,6 +68,19 @@ namespace Deltares
             }
 
             this->correlationMatrix = source->correlationMatrix;
+        }
+
+        bool ModelProject::isValid()
+        {
+            for (std::shared_ptr<Statistics::Stochast> stochast : stochasts)
+            {
+                if (stochast == nullptr || !stochast->isValid())
+                {
+                    return false;
+                }
+            }
+
+            return  this->model != nullptr;
         }
     }
 }

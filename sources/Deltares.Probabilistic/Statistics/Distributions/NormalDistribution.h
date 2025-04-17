@@ -32,6 +32,7 @@ namespace Deltares
             void initialize(std::shared_ptr<StochastProperties> stochast, std::vector<double> values) override;
             double getXFromU(std::shared_ptr<StochastProperties> stochast, double u) override;
             double getUFromX(std::shared_ptr<StochastProperties> stochast, double x) override;
+            bool isValid(std::shared_ptr<StochastProperties> stochast) override;
             bool isVarying(std::shared_ptr<StochastProperties> stochast) override;
             bool canTruncate() override { return true; }
             bool canFit() override { return true; }

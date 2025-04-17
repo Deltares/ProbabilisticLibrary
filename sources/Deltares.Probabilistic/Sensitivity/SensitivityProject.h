@@ -89,7 +89,7 @@ namespace Deltares
              * \brief Indicates whether the input is valid
              * \return Indication
              */
-            bool isValid() const;
+            bool isValid() override;
 
             /**
              * \brief Performs the sensitivity calculation

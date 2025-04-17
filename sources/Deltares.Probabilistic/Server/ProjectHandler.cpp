@@ -21,6 +21,7 @@
 //
 # include "ProjectHandler.h"
 
+#include <iostream>
 #include <string>
 #include <memory>
 
@@ -1050,6 +1051,7 @@ namespace Deltares
                 else if (property_ == "truncated") return stochast->isTruncated();
                 else if (property_ == "conditional") return stochast->IsVariableStochast;
                 else if (property_ == "is_array") return stochast->modelParameter->isArray;
+                else if (property_ == "is_valid") return stochast->isValid();
                 else if (property_ == "is_used_location") return stochast->hasParameter(DistributionPropertyType::Location);
                 else if (property_ == "is_used_scale") return stochast->hasParameter(DistributionPropertyType::Scale);
                 else if (property_ == "is_used_minimum") return stochast->hasParameter(DistributionPropertyType::Minimum);
@@ -1080,6 +1082,13 @@ namespace Deltares
                 else if (property_ == "is_variance_allowed") return stochastSettings->IsVarianceAllowed;
 
             }
+            else if (objectType == ObjectType::Project)
+            {
+                std::cout << "reliability project is valid" << std::endl;
+                std::shared_ptr<Reliability::ReliabilityProject> project = projects[id];
+
+                if (property_ == "is_valid") return project->isValid();
+            }
             else if (objectType == ObjectType::DesignPoint)
             {
                 std::shared_ptr<Reliability::DesignPoint> designPoint = designPoints[id];
@@ -1088,6 +1097,18 @@ namespace Deltares
                 {
                     return designPoint->convergenceReport->IsConverged;
                 }
+            }
+            else if (objectType == ObjectType::RunProject)
+            {
+                std::shared_ptr<Models::RunProject> project = runProjects[id];
+
+                if (property_ == "is_valid") return project->isValid();
+            }
+            else if (objectType == ObjectType::SensitivityProject)
+            {
+                std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
+
+                if (property_ == "is_valid") return project->isValid();
             }
             else if (objectType == ObjectType::SensitivitySettings)
             {
@@ -1110,6 +1131,12 @@ namespace Deltares
                 else if (property_ == "save_realizations") return setting->RunSettings->SaveEvaluations;
                 else if (property_ == "save_convergence") return setting->RunSettings->SaveConvergence;
                 else if (property_ == "save_messages") return setting->RunSettings->SaveMessages;
+            }
+            else if (objectType == ObjectType::CombineProject)
+            {
+                std::shared_ptr<Reliability::CombineProject> project = combineProjects[id];
+
+                if (property_ == "is_valid") return project->isValid();
             }
             else if (objectType == ObjectType::ExcludingCombineProject)
             {
