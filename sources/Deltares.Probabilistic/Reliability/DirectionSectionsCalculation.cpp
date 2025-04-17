@@ -20,9 +20,6 @@
 // All rights reserved.
 //
 #include "DirectionSectionsCalculation.h"
-
-#include <iostream>
-
 #include "../Math/NumericSupport.h"
 #include "../Math/RootFinders/LinearRootFinder.h"
 #include "../Math/RootFinders/BisectionRootFinder.h"
