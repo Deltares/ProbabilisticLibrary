@@ -21,6 +21,8 @@
 //
 
 #include "PrecomputeDirections.h"
+
+#include "ReliabilityMethod.h"
 #include "ZGetter.h"
 
 namespace Deltares::Reliability
@@ -40,9 +42,9 @@ namespace Deltares::Reliability
 
     // precompute Z-values
     std::vector<PrecomputeValues> PrecomputeDirections::precompute(Models::ModelRunner& modelRunner,
-        const std::vector<std::shared_ptr<Sample>>& samples, std::vector<bool>& mask)
+        const std::vector<DirectionReliabilityDS>& directions, std::vector<bool>& mask)
     {
-        const size_t nSamples = samples.size();
+        const size_t nSamples = directions.size();
 
         // copy z-value zero sample
         auto precomputed = PrecomputeValues();
@@ -58,15 +60,15 @@ namespace Deltares::Reliability
         const auto model = ZGetter(modelRunner, settings);
         for (int k = 1; k < sectionsCount; k++)
         {
-            const auto u1 = k * settings.Dsdu;
+            const auto uk = k * settings.Dsdu;
             std::vector<std::shared_ptr<Sample>> uSamples;
             for (size_t i = 0; i < nSamples; i++)
             {
                 if (!mask[i])
                 {
-                    auto uDirection = samples[i]->getNormalizedSample();
-                    auto z1 = model.GetU(*uDirection, u1);
-                    uSamples.push_back(z1);
+                    auto uDirection = directions[i].directionSample.getNormalizedSample();
+                    auto sample_at_uk = model.GetU(*uDirection, uk);
+                    uSamples.push_back(sample_at_uk);
                 }
             }
             auto zValues2 = modelRunner.getZValues(uSamples);
@@ -77,10 +79,10 @@ namespace Deltares::Reliability
                 if (!mask[i])
                 {
                     auto previous = zValues[i].values.back().z;
-                    samples[i]->IsRestartRequired = uSamples[ii]->IsRestartRequired;
-                    samples[i]->AllowProxy = uSamples[ii]->AllowProxy;
-                    samples[i]->Z = uSamples[ii]->Z;
-                    auto z1pv = PrecomputeValue(u1, z0Fac * zValues2[ii],
+                    directions[i].directionSample.IsRestartRequired = uSamples[ii]->IsRestartRequired;
+                    directions[i].directionSample.AllowProxy = uSamples[ii]->AllowProxy;
+                    directions[i].directionSample.Z = uSamples[ii]->Z;
+                    auto z1pv = PrecomputeValue(uk, z0Fac * zValues2[ii],
                         uSamples[ii]->IsRestartRequired, uSamples[ii]->AllowProxy);
                     zValues[i].values.push_back(z1pv);
                     updateMask(mask, i, zValues2[ii], previous);

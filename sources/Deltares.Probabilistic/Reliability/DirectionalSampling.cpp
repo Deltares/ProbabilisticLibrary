@@ -233,7 +233,7 @@ namespace Deltares
             }
 
             auto preComputeDirs = PrecomputeDirections(*Settings->DirectionSettings, z0);
-            const auto zValues = preComputeDirs.precompute(modelRunner, samples, maskPrecompute);
+            const auto zValues = preComputeDirs.precompute(modelRunner, directions, maskPrecompute);
             preComputedCounter += preComputeDirs.Counter;
             const double z0Fac = getZFactor(z0);
 

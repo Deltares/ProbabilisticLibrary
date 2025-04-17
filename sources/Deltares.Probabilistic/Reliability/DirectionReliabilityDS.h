@@ -31,12 +31,12 @@ namespace Deltares::Reliability
     {
     public:
         DirectionReliabilityDS(const double Threshold, const DirectionReliabilitySettings& settings, Sample& directionSample) :
-            Threshold(Threshold), Settings(settings), directionSample(directionSample) {}
+            directionSample(directionSample), Threshold(Threshold), Settings(settings) {}
         double getBeta(Models::ModelRunner& modelRunner, double z0, const PrecomputeValues& zValues) const;
+        Sample& directionSample;
     private:
         const double Threshold;
         const DirectionReliabilitySettings& Settings;
-        Sample& directionSample;
         double getDirectionBeta(Models::ModelRunner& modelRunner, const BetaValueTask& directionTask,
             const PrecomputeValues& zValues) const;
     };
