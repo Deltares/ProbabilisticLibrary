@@ -38,6 +38,7 @@ namespace Deltares::Probabilistic::Test
         static void testDesignValue();
         static void testVariationCoefficient();
         static void testPoisson();
+        static void testGamma();
         static double getPdfNumerical(Statistics::Stochast& s, const double x);
     };
 }
