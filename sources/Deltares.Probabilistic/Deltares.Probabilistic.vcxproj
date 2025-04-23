@@ -311,7 +311,11 @@
     <ClInclude Include="Math\Constants.h" />
     <ClInclude Include="Statistics\Distributions\GumbelDistribution.h" />
     <ClInclude Include="Math\RootFinders\LinearRootFinder.h" />
+    <ClInclude Include="Reliability\BetaValueTask.h" />
     <ClInclude Include="Reliability\DirectionReliability.h" />
+    <ClInclude Include="Reliability\DirectionSectionsCalculation.h" />
+    <ClInclude Include="Reliability\DirectionSectionsCalculationDS.h" />
+    <ClInclude Include="Reliability\DirectionReliabilityDS.h" />
     <ClInclude Include="Reliability\DirectionReliabilitySettings.h" />
     <ClInclude Include="Reliability\StochastSettings.h" />
     <ClInclude Include="Reliability\StochastSettingsSet.h" />
@@ -509,6 +513,9 @@
     <ClCompile Include="Statistics\Distributions\GumbelDistribution.cpp" />
     <ClCompile Include="Math\RootFinders\LinearRootFinder.cpp" />
     <ClCompile Include="Reliability\DirectionReliability.cpp" />
+    <ClCompile Include="Reliability\DirectionSectionsCalculation.cpp" />
+    <ClCompile Include="Reliability\DirectionSectionsCalculationDS.cpp" />
+    <ClCompile Include="Reliability\DirectionReliabilityDS.cpp" />
     <ClCompile Include="Reliability\DirectionReliabilitySettings.cpp" />
     <ClCompile Include="Math\ASA\asa241.cpp" />
     <ClCompile Include="Math\vector1D.cpp" />

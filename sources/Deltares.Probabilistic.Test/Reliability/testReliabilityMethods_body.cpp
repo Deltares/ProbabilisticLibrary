@@ -349,17 +349,17 @@ namespace Deltares
                         refBeta = 5.08261;
                         refAlpha = { 0.39910 , -0.910716 , -0.106376 };
                         refTotalModelRuns = 1150; // was 1227;
-                        refPreComputeCounter = 937;
+                        refPreComputeCounter = 970;
                     }
                     else if (varyingType == ModelVaryingType::Monotone)
                     {
                         refTotalModelRuns = 2189; // was 2261;
-                        refPreComputeCounter = 1910;
+                        refPreComputeCounter = 1935;
                     }
                     else
                     {
                         refTotalModelRuns = 10640; // was 10723;
-                        refPreComputeCounter = 9500;
+                        refPreComputeCounter = 10000;
                     }
                 }
                 EXPECT_EQ(calculator.preComputedCounter, refPreComputeCounter);

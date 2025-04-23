@@ -19,35 +19,12 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include "DirectionReliability.h"
-#include "DirectionReliabilitySettings.h"
-#include "../Model/ModelRunner.h"
-#include "../Math/NumericSupport.h"
-#include "DirectionSectionsCalculation.h"
-#include <memory>
+#include "DirectionReliabilityDS.h"
+#include "DirectionSectionsCalculationDS.h"
 
 namespace Deltares::Reliability
 {
-    using namespace Deltares::Numeric;
-
-    std::shared_ptr<DesignPoint> DirectionReliability::getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner)
-    {
-        modelRunner->updateStochastSettings(this->Settings->StochastSet);
-
-        std::shared_ptr<Sample> zeroSample = std::make_shared<Sample>(modelRunner->getVaryingStochastCount());
-        double z = modelRunner->getZValue(zeroSample);
-        double z0 = getZFactor(z);
-
-        std::shared_ptr<Sample> directionSample = this->Settings->StochastSet->getStartPoint();
-
-        double beta = getBeta(*modelRunner, *directionSample, z0);
-
-        std::shared_ptr<DesignPoint> designPoint = modelRunner->getDesignPoint(directionSample, beta);
-
-        return designPoint;
-    }
-
-    double DirectionReliability::getBeta(Models::ModelRunner& modelRunner, Sample& directionSample, double z0) const
+    double DirectionReliabilityDS::getBeta(Models::ModelRunner& modelRunner, double z0)
     {
         auto normalizedSample = directionSample.getNormalizedSample();
 
@@ -61,7 +38,7 @@ namespace Deltares::Reliability
         return beta;
     }
 
-    double DirectionReliability::getDirectionBeta(Models::ModelRunner& modelRunner, const BetaValueTask& directionTask) const
+    double DirectionReliabilityDS::getDirectionBeta(Models::ModelRunner& modelRunner, const BetaValueTask& directionTask)
     {
         if (modelRunner.canCalculateBeta())
         {
@@ -69,15 +46,29 @@ namespace Deltares::Reliability
         }
         else
         {
-            auto sectionsCalc = DirectionSectionsCalculation(*Settings, directionTask.z0);
             auto sections = sectionsCalc.getDirectionSections(modelRunner, directionTask);
 
-            double beta = DirectionSectionsCalculation::getBetaFromSections(sections, Settings->FindMinimalValue);
+            double beta = DirectionSectionsCalculation::getBetaFromSections(sections, Settings.FindMinimalValue);
 
             directionTask.UValues->AllowProxy = directionTask.UValues->AllowProxy;
 
             return beta;
         }
+    }
+
+    bool DirectionReliabilityDS::CanPrecomputeSample() const
+    {
+        return sectionsCalc.CanPrecomputeSample();
+    }
+
+    double DirectionReliabilityDS::GetPrecomputeUvalue() const
+    {
+        return sectionsCalc.GetPrecomputeUvalue();
+    }
+
+    void DirectionReliabilityDS::ProvidePrecomputeValue(const PrecomputeValue& zValue)
+    {
+        sectionsCalc.ProvidePrecomputeValue(zValue);
     }
 
 }

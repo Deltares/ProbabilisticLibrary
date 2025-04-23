@@ -20,6 +20,7 @@
 // All rights reserved.
 //
 #include "DirectionalSampling.h"
+#include "DirectionReliabilityDS.h"
 #include "PrecomputeDirections.h"
 #include "../Model/RandomSampleGenerator.h"
 #include "../Math/SpecialFunctions.h"
@@ -215,23 +216,29 @@ namespace Deltares
             const size_t nSamples = samples.size();
             auto betaValues = std::vector<double>(nSamples);
 
-            auto directionReliability = DirectionReliabilityForDirectionalSampling();
-            directionReliability.Settings = this->Settings->DirectionSettings;
-            directionReliability.Threshold = threshold;
-
-            auto maskPrecompute = std::vector(nSamples, false);
-            if (modelRunner.Settings->IsProxyModel())
+            std::vector<DirectionReliabilityDS> directions;
+            for (auto& sample : samples)
             {
-                for (size_t i = 0; i < nSamples; i++)
-                {
-                    // retain previous results from model if running in a proxy model environment
-                    maskPrecompute[i] = previousResults.contains(samples[i]->IterationIndex);
-                }
+                directions.emplace_back(threshold, z0, *Settings->DirectionSettings, *sample);
             }
 
-            auto preComputeDirs = PrecomputeDirections(*directionReliability.Settings, z0);
-            const auto zValues = preComputeDirs.precompute(modelRunner, samples, maskPrecompute);
-            preComputedCounter += preComputeDirs.Counter;
+            if ( ! modelRunner.canCalculateBeta())
+            {
+                auto maskPrecompute = std::vector(nSamples, true);
+                if (modelRunner.Settings->IsProxyModel())
+                {
+                    for (size_t i = 0; i < nSamples; i++)
+                    {
+                        // retain previous results from model if running in a proxy model environment
+                        maskPrecompute[i] = !previousResults.contains(samples[i]->IterationIndex);
+                    }
+                }
+
+                auto preComputeDirs = PrecomputeDirections(*Settings->DirectionSettings, z0);
+                preComputeDirs.precompute(modelRunner, directions, maskPrecompute);
+                preComputedCounter += preComputeDirs.Counter;
+            }
+
             const double z0Fac = getZFactor(z0);
 
             #pragma omp parallel for
@@ -245,7 +252,7 @@ namespace Deltares
                 else
                 {
                     samples[i]->threadId = omp_get_thread_num();
-                    betaValues[i] = directionReliability.getBeta(modelRunner, *samples[i], z0Fac, zValues[i]);
+                    betaValues[i] = directions[i].getBeta(modelRunner, z0Fac);
                 }
             }
 

@@ -20,21 +20,19 @@
 // All rights reserved.
 //
 #pragma once
-#include "BetaValueTask.h"
-#include "DirectionReliabilitySettings.h"
-#include "DirectionSection.h"
-#include "ReliabilityMethod.h"
+#include <memory>
+#include "../Model/Sample.h"
 
 namespace Deltares::Reliability
 {
-    class DirectionReliability : public ReliabilityMethod
+    class BetaValueTask
     {
     public:
-        std::shared_ptr<DirectionReliabilitySettings> Settings = std::make_shared<DirectionReliabilitySettings>();
-        std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
-        double getBeta(Models::ModelRunner& modelRunner, Sample& directionSample, double z0) const;
-    private:
-        double getDirectionBeta(Models::ModelRunner& modelRunner, const BetaValueTask& directionTask) const;
+        BetaValueTask(std::shared_ptr<Models::Sample>& UValues, const double z0) :
+            UValues(UValues), invertZ(z0 < 0.0), z0(z0) {}
+        std::shared_ptr<Models::Sample>& UValues;
+        bool invertZ;
+        double z0;
     };
 
 }

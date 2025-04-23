@@ -22,19 +22,30 @@
 #pragma once
 #include "BetaValueTask.h"
 #include "DirectionReliabilitySettings.h"
-#include "DirectionSection.h"
-#include "ReliabilityMethod.h"
+#include "DirectionSectionsCalculationDS.h"
+#include "PrecomputeValues.h"
+#include "../Model/ModelRunner.h"
 
 namespace Deltares::Reliability
 {
-    class DirectionReliability : public ReliabilityMethod
+    class DirectionReliabilityDS
     {
     public:
-        std::shared_ptr<DirectionReliabilitySettings> Settings = std::make_shared<DirectionReliabilitySettings>();
-        std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
-        double getBeta(Models::ModelRunner& modelRunner, Sample& directionSample, double z0) const;
+        DirectionReliabilityDS(const double Threshold, const double z0,
+            const DirectionReliabilitySettings& settings, Sample& directionSample) :
+            directionSample(directionSample), Threshold(Threshold), Settings(settings),
+            sectionsCalc(DirectionSectionsCalculationDS(Threshold, z0, Settings)) {}
+        double getBeta(Models::ModelRunner& modelRunner, double z0);
+        Sample& getDirection() const { return directionSample; }
+        bool CanPrecomputeSample() const;
+        double GetPrecomputeUvalue() const;
+        void ProvidePrecomputeValue(const PrecomputeValue& zValue);
     private:
-        double getDirectionBeta(Models::ModelRunner& modelRunner, const BetaValueTask& directionTask) const;
+        Sample& directionSample;
+        const double Threshold;
+        const DirectionReliabilitySettings& Settings;
+        DirectionSectionsCalculationDS sectionsCalc;
+        double getDirectionBeta(Models::ModelRunner& modelRunner, const BetaValueTask& directionTask);
     };
 
 }
