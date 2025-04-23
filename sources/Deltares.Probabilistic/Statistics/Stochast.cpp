@@ -31,7 +31,7 @@ namespace Deltares
 {
     namespace Statistics
     {
-        Stochast::Stochast() {};
+        Stochast::Stochast() = default;
 
         Stochast::Stochast(DistributionType distributionType, std::vector<double> values)
         {
@@ -52,7 +52,7 @@ namespace Deltares
             properties->dirty = true;
         }
 
-        std::string Stochast::getIndexedStochastName(int index)
+        std::string Stochast::getIndexedStochastName(int index) const
         {
             return name + "[" + std::to_string(index) + "]";
         }
@@ -67,7 +67,7 @@ namespace Deltares
             return distribution->getCDF(properties, x);
         }
 
-        double Stochast::getQuantile(double quantile)
+        double Stochast::getQuantile(double quantile) const
         {
             double u = StandardNormal::getUFromP(quantile);
             return distribution->getXFromU(properties, u);
@@ -109,7 +109,7 @@ namespace Deltares
             }
         }
 
-        void Stochast::setXAtU(double x, double u, ConstantParameterType constantType)
+        void Stochast::setXAtU(double x, double u, ConstantParameterType constantType) const
         {
             distribution->setXAtU(properties, x, u, constantType);
         }
@@ -152,13 +152,13 @@ namespace Deltares
                 double oldMean = 0;
                 double oldDeviation = 0;
 
-                DistributionChangeType distributionChangingType = this->distributionChangeType;
+                DistributionChangeType distributionChangingType = distributionChangeType;
 
-                if (this->isInitial())
+                if (isInitial())
                 {
                     distributionChangingType = DistributionChangeType::Nothing;
                 }
-                else if (this->distributionType == DistributionType::Table)
+                else if (distributionType == DistributionType::Table)
                 {
                     distributionChangingType = DistributionChangeType::FitFromHistogramValues;
                 }
@@ -181,7 +181,7 @@ namespace Deltares
                     }
                     else if (distributionChangingType == DistributionChangeType::MaintainMeanAndDeviation)
                     {
-                        this->setMeanAndDeviation(oldMean, oldDeviation);
+                        setMeanAndDeviation(oldMean, oldDeviation);
                     }
                     else if (distributionChangingType == DistributionChangeType::FitFromHistogramValues)
                     {
@@ -194,14 +194,12 @@ namespace Deltares
             }
         }
 
-        bool Stochast::isInitial()
+        bool Stochast::isInitial() const
         {
-            return this->distributionType == Deterministic &&
-                this->properties->Location == 0 &&
-                this->properties->Scale == 0;
+            return distributionType == Deterministic && properties->Location == 0.0 && properties->Scale == 0.0;
         }
 
-        bool Stochast::hasParameter(DistributionPropertyType distributionPropertyType)
+        bool Stochast::hasParameter(DistributionPropertyType distributionPropertyType) const
         {
             for (DistributionPropertyType availableDistributionPropertyType : distribution->getParameters())
             {
@@ -224,17 +222,17 @@ namespace Deltares
             distribution = externalDistribution;
         }
 
-        DistributionType Stochast::getDistributionType()
+        DistributionType Stochast::getDistributionType() const
         {
             return distributionType;
         }
 
-        bool Stochast::canInvert()
+        bool Stochast::canInvert() const
         {
             return distribution->canInvert();
         }
 
-        bool Stochast::isInverted()
+        bool Stochast::isInverted() const
         {
             return inverted;
         }
@@ -249,12 +247,12 @@ namespace Deltares
             }
         }
 
-        bool Stochast::canTruncate()
+        bool Stochast::canTruncate() const
         {
             return distribution->canTruncate();
         }
 
-        bool Stochast::isTruncated()
+        bool Stochast::isTruncated() const
         {
             return truncated;
         }
@@ -298,12 +296,12 @@ namespace Deltares
             return distribution->isValid(properties);
         }
 
-        bool Stochast::isQualitative()
+        bool Stochast::isQualitative() const
         {
             return distribution->isQualitative();
         }
 
-        double Stochast::getRepresentativeU(double u)
+        double Stochast::getRepresentativeU(double u) const
         {
             return distribution->getRepresentativeU(properties, u);
         }
@@ -315,8 +313,8 @@ namespace Deltares
 
         void Stochast::setMean(double mean)
         {
-            double deviation = this->getDistributionType() == Deterministic ? this->getProperties()->Scale : this->getDeviation();
-            if (!this->isValid())
+            double deviation = getDistributionType() == Deterministic ? getProperties()->Scale : getDeviation();
+            if (!isValid())
             {
                 deviation = 0;
             }
@@ -340,7 +338,7 @@ namespace Deltares
             }
         }
 
-        double Stochast::getDeviation()
+        double Stochast::getDeviation() const
         {
             return distribution->getDeviation(properties);
         }
@@ -372,12 +370,12 @@ namespace Deltares
             lastVariation = variation;
         }
 
-        void Stochast::setMeanAndDeviation(double mean, double deviation)
+        void Stochast::setMeanAndDeviation(double mean, double deviation) const
         {
             distribution->setMeanAndDeviation(properties, mean, deviation);
         }
 
-        void Stochast::setShift(double shift)
+        void Stochast::setShift(double shift) const
         {
             distribution->setShift(properties, shift, false);
         }
@@ -392,27 +390,35 @@ namespace Deltares
             }
         }
 
-        void Stochast::initializeConditionalValues()
+        void Stochast::initializeConditionalValues() const
         {
             ValueSet->initializeForRun(properties, distributionType, truncated, inverted);
         }
 
-        bool Stochast::canFit()
+        void Stochast::updateFromConditionalValues(double xSource) const
+        {
+            if (IsVariableStochast)
+            {
+                ValueSet->updateProperties(properties, xSource);
+            }
+        }
+
+        bool Stochast::canFit() const
         {
             return distribution->canFit();
         }
 
-        void Stochast::fit(std::vector<double> values)
+        void Stochast::fit(std::vector<double> values) const
         {
             distribution->fit(properties, values);
         }
 
-        void Stochast::fitWeighted(std::vector<double> values, std::vector<double> weights)
+        void Stochast::fitWeighted(std::vector<double> values, std::vector<double> weights) const
         {
             distribution->fitWeighted(properties, values, weights);
         }
 
-        void Stochast::fitFromHistogramValues()
+        void Stochast::fitFromHistogramValues() const
         {
             const int maxValues = 1000;
 
@@ -453,7 +459,7 @@ namespace Deltares
             distribution->fit(properties, values);
         }
 
-        double Stochast::getKSTest(std::vector<double> values)
+        double Stochast::getKSTest(std::vector<double> values) const
         {
             return KSCalculator::getGoodnessOfFit(values, distribution, properties);
         }
@@ -477,7 +483,7 @@ namespace Deltares
             {
                 if (getMean() == 0.0 && lastVariation > 0)
                 {
-                    const double disturbedMeanValue = 0.1;
+                    constexpr double disturbedMeanValue = 0.1;
                     setMeanAndDeviation(disturbedMeanValue, lastVariation * disturbedMeanValue);
                 }
                 setXAtU(designValue * designFactor, StandardNormal::getUFromP(designQuantile), ConstantParameterType::VariationCoefficient);

@@ -40,6 +40,8 @@ namespace Deltares
 
                 this->stochastSettings.push_back(settings);
             }
+
+            this->AreStartValuesCorrelated = false;
         }
 
         std::shared_ptr<Sample> StochastSettingsSet::getStartPoint()

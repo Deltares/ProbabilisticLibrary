@@ -59,31 +59,6 @@ namespace Deltares.Probabilistic.Wrapper.Test
             Assert.IsFalse(matrix.IsIdentity());
 
             Assert.AreEqual(2, matrix.CountCorrelations());
-
-            /*
-            matrix.Stochasts.Remove(c);
-
-            Assert.AreEqual(0.1, matrix.GetCorrelation(b, c));
-            Assert.AreEqual(1, matrix.GetCorrelation(c, c));
-
-            Assert.AreEqual(2, matrix.Correlations.Count);
-
-            SparseMatrix corr = matrix.GetCorrelationMatrix(new List<IHasStochast> {b, c});
-
-            Assert.AreEqual(2, corr.RowCount);
-            Assert.AreEqual(2, corr.ColumnCount);
-            Assert.AreEqual(1, corr[0, 0]);
-            Assert.AreEqual(0.1, corr[0, 1]);
-            Assert.AreEqual(0.1, corr[1, 0]);
-            Assert.AreEqual(1, corr[0, 0]);
-
-            matrix.Stochasts.Add(c);
-
-            Assert.AreEqual(0.1, matrix.GetCorrelation(b, c));
-            Assert.AreEqual(1, matrix.GetCorrelation(c, c));
-
-            Assert.AreEqual(2, matrix.Correlations.Count);
-            */
         }
 
         [Test]
