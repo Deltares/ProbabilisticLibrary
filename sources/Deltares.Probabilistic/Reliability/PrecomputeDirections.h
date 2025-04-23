@@ -32,8 +32,9 @@ namespace Deltares::Reliability
         PrecomputeDirections(const DirectionReliabilitySettings& settings, const double z0);
         void precompute(Models::ModelRunner& modelRunner,
             std::vector<DirectionReliabilityDS>& directions, std::vector<bool>& mask);
-        size_t Counter = 0;
+        size_t GetCounter() const {return Counter;}
     private:
+        size_t Counter = 0;
         const DirectionReliabilitySettings& settings;
         const double z0;
     };

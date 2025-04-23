@@ -38,7 +38,7 @@ namespace Deltares::Reliability
         return beta;
     }
 
-    double DirectionReliabilityDS::getDirectionBeta(Models::ModelRunner& modelRunner, const BetaValueTask& directionTask)
+    double DirectionReliabilityDS::getDirectionBeta(Models::ModelRunner& modelRunner, const BetaValueTask& directionTask) const
     {
         if (modelRunner.canCalculateBeta())
         {

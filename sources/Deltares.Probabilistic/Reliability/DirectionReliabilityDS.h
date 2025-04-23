@@ -45,9 +45,8 @@ namespace Deltares::Reliability
         const double Threshold;
         const DirectionReliabilitySettings& Settings;
         DirectionSectionsCalculationDS sectionsCalc;
-        double getDirectionBeta(Models::ModelRunner& modelRunner, const BetaValueTask& directionTask);
+        double getDirectionBeta(Models::ModelRunner& modelRunner, const BetaValueTask& directionTask) const;
     };
 
 }
-
 
