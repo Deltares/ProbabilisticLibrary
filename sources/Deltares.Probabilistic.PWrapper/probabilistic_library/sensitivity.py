@@ -50,7 +50,10 @@ class SensitivitySettings(FrozenObject):
 		super()._freeze()
 
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 
 	def __dir__(self):
 		return ['max_parallel_processes',
@@ -330,7 +333,10 @@ class SensitivityResult(FrozenObject):
 		super()._freeze()
 		
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 
 	def __dir__(self):
 		return ['identifier',

@@ -118,7 +118,10 @@ class Settings(FrozenObject):
 		super()._freeze()
 
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 
 	def __dir__(self):
 		return ['max_parallel_processes',
@@ -400,7 +403,10 @@ class StochastSettings(FrozenObject):
 		super()._freeze()
 
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 
 	def __dir__(self):
 		return ['min_value',
@@ -497,7 +503,10 @@ class LimitStateFunction(FrozenObject):
 		super()._freeze()
 
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 
 	def __dir__(self):
 		return ['parameter',
@@ -564,7 +573,10 @@ class DesignPoint(FrozenObject):
 		super()._freeze()
 		
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 
 	def __dir__(self):
 		return ['identifier',
@@ -823,7 +835,10 @@ class Alpha(FrozenObject):
 		super()._freeze()
 
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 
 	def __dir__(self):
 		return ['variable',
@@ -909,7 +924,10 @@ class FragilityCurve(FrozenObject):
 		super()._freeze()
 
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 
 	def __dir__(self):
 		return ['name',
@@ -1005,7 +1023,10 @@ class FragilityCurveProject(FrozenObject):
 		super()._freeze()
 
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 
 	def __dir__(self):
 		return ['integrand',
@@ -1064,7 +1085,10 @@ class CombineSettings(FrozenObject):
 		super()._freeze()
 		
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 
 	def __dir__(self):
 		return ['combiner_method',
@@ -1093,7 +1117,10 @@ class ExcludingCombineSettings(FrozenObject):
 		super()._freeze()
 		
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 
 	def __dir__(self):
 		return ['combiner_method']
@@ -1123,7 +1150,10 @@ class Message(FrozenObject):
 		return message
 
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 		
 	def __str__(self):
 		return str(self.type) + ': ' + self.text
@@ -1149,7 +1179,10 @@ class Evaluation(FrozenObject):
 		super()._freeze()
 
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 
 	def __dir__(self):
 		return ['iteration',
@@ -1199,7 +1232,10 @@ class ReliabilityResult(FrozenObject):
 		super()._freeze()
 
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 
 	def __dir__(self):
 		return ['index',

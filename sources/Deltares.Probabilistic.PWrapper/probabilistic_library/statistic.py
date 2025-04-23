@@ -131,7 +131,10 @@ class ProbabilityValue(FrozenObject):
 		super()._freeze()
 
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 
 	def __dir__(self):
 		return ['reliability_index',
@@ -194,7 +197,10 @@ class Stochast(FrozenObject):
 		super()._freeze()
 
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 
 	def __dir__(self):
 		return ['name',
@@ -689,7 +695,10 @@ class DiscreteValue(FrozenObject):
 		super()._freeze()
 
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 
 	def __dir__(self):
 		return ['x',
@@ -728,7 +737,10 @@ class FragilityValue(FrozenObject):
 		super()._freeze()
 
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 
 	def __dir__(self):
 		return ['x',
@@ -804,7 +816,10 @@ class HistogramValue(FrozenObject):
 		super()._freeze()
 
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 
 	def __dir__(self):
 		return ['lower_bound',
@@ -854,7 +869,10 @@ class ContributingStochast(FrozenObject):
 		super()._freeze()
 
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 
 	def __dir__(self):
 		return ['probability',
@@ -898,7 +916,10 @@ class ConditionalValue(FrozenObject):
 		super()._freeze()
 
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 
 	def __dir__(self):
 		return ['x',
@@ -1021,7 +1042,10 @@ class CorrelationMatrix(FrozenObject):
 		super()._freeze()
 
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 
 	@property
 	def variables(self) -> list[Stochast]:
@@ -1078,7 +1102,10 @@ class SelfCorrelationMatrix(FrozenObject):
 		super()._freeze()
 
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 
 	def _set_variables(self, variables):
 		self._variables = FrozenList(variables)
@@ -1107,7 +1134,10 @@ class Scenario(FrozenObject):
 		super()._freeze()
 
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 
 	def __dir__(self):
 		return ['name',

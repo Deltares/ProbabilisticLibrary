@@ -93,8 +93,11 @@ class ZModel(FrozenObject):
  				'print']
 
 	def __del__(self):
-		if not self._pool is None:
-			self._pool.close()
+		try:
+			if not self._pool is None:
+				self._pool.close()
+		except:
+			pass
 
 	def __str__(self):
 		return self.name
@@ -302,7 +305,10 @@ class ModelParameter(FrozenObject):
 		super()._freeze()
 
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 
 	def __dir__(self):
 		return ['name',
@@ -510,7 +516,10 @@ class RunProjectSettings(FrozenObject):
 		super()._freeze()
 
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 
 	def __dir__(self):
 		return ['run_values_type']
@@ -537,7 +546,10 @@ class RunProject(ModelProject):
 		super()._freeze()
 
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 
 	def __dir__(self):
 		return ['variables',
@@ -584,7 +596,10 @@ class SensitivityProject(ModelProject):
 		super()._freeze()
 
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 
 	def __dir__(self):
 		return ['variables',
@@ -694,7 +709,10 @@ class ReliabilityProject(ModelProject):
 		super()._freeze()
         
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 
 	def __dir__(self):
 		return ['variables',
@@ -782,7 +800,10 @@ class CombineProject(FrozenObject):
 		super()._freeze()
 
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 
 	def __dir__(self):
 		return ['design_points',
@@ -856,7 +877,10 @@ class ExcludingCombineProject(FrozenObject):
 		super()._freeze()
 
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 
 	def __dir__(self):
 		return ['design_points',
@@ -943,7 +967,10 @@ class LengthEffectProject(FrozenObject):
 		super()._freeze()
 
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 
 	def __dir__(self):
 		return ['design_point_cross_section',
