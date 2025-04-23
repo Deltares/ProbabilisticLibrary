@@ -65,8 +65,10 @@ class FrozenList():
 				self._dict[str(item)] = item
 
 	def __getitem__(self, index):
-		if isinstance(index, int) or isinstance(index, slice):
+		if isinstance(index, int):
 			return self._list[index]
+		elif isinstance(index, slice):
+			return FrozenList(self._list[index])
 		else:
 			if not isinstance(index, str):
 				index = str(index)

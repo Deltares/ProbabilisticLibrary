@@ -47,10 +47,13 @@ class Test_utils(unittest.TestCase):
 
         self.assertEqual(2, fl[1].value)
         self.assertEqual(3, fl['c'].value)
+        self.assertEqual(None, fl['f'])
 
         slc = fl[2:4]
         self.assertEqual(2, len(slc))
         self.assertEqual(3, slc[0].value)
+        self.assertEqual(4, slc['d'].value)
+        self.assertEqual(None, slc['e'])
 
 if __name__ == '__main__':
     unittest.main()
