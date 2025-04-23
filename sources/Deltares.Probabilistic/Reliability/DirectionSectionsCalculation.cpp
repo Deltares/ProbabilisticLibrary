@@ -23,6 +23,7 @@
 #include "../Math/NumericSupport.h"
 #include "../Math/RootFinders/LinearRootFinder.h"
 #include "../Math/RootFinders/BisectionRootFinder.h"
+#include <numeric>
 
 namespace Deltares::Reliability
 {
@@ -103,7 +104,7 @@ namespace Deltares::Reliability
     }
 
     std::vector<DirectionSection> DirectionSectionsCalculation::getDirectionSections(Models::ModelRunner& modelRunner,
-        const BetaValueTask& directionTask)
+        const BetaValueTask& directionTask) const
     {
         std::vector<DirectionSection> sections;
 
@@ -262,7 +263,7 @@ namespace Deltares::Reliability
             }
             else
             {
-                double u = (uLow + uHigh) / 2;
+                double u = std::midpoint (uLow, uHigh);
                 z = directionCalculation.GetZ(u);
 
                 return u;
