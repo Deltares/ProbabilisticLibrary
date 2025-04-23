@@ -36,11 +36,12 @@ namespace Deltares::Reliability
             directionSample(directionSample), Threshold(Threshold), Settings(settings),
             sectionsCalc(DirectionSectionsCalculationDS(Threshold, z0, Settings)) {}
         double getBeta(Models::ModelRunner& modelRunner, double z0);
-        Sample& directionSample;
+        Sample& getDirection() const { return directionSample; }
         bool CanPrecomputeSample() const;
         double GetPrecomputeUvalue() const;
         void ProvidePrecomputeValue(const PrecomputeValue& zValue);
     private:
+        Sample& directionSample;
         const double Threshold;
         const DirectionReliabilitySettings& Settings;
         DirectionSectionsCalculationDS sectionsCalc;

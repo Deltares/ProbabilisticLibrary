@@ -170,12 +170,10 @@ namespace Deltares::Reliability
                 {
                     sections.emplace_back(zHighType, uLow, uHigh, zLow, zHigh);
 
-                    if (monotone && zLowType != DoubleType::NaN && zHighType != DoubleType::NaN)
+                    if (monotone && zLowType != DoubleType::NaN && zHighType != DoubleType::NaN &&
+                        NumericSupport::compareDouble(std::fabs(zHigh), std::fabs(zLow)) == CmpResult::Greater)
                     {
-                        if (NumericSupport::compareDouble(std::fabs(zHigh), std::fabs(zLow)) == CmpResult::Greater)
-                        {
-                            found = true;
-                        }
+                        found = true;
                     }
                 }
             }
@@ -207,13 +205,13 @@ namespace Deltares::Reliability
 
     double DirectionSectionsCalculation::findBetaBetweenBoundaries(Models::ModelRunner& modelRunner,
         const DirectionCalculation& directionCalculation,
-        double uLow, double uHigh, double zLow, double zHigh, double& z)
+        double uLow, double uHigh, double zLow, double zHigh, double& z) const
     {
         return findBetaBetweenBoundariesAllowNaN(directionCalculation, uLow, uHigh, zLow, zHigh, z);
     }
 
     double DirectionSectionsCalculation::findBetaBetweenBoundariesAllowNaN(const DirectionCalculation& directionCalculation,
-        double uLow, double uHigh, double zLow, double zHigh, double& z)
+        double uLow, double uHigh, double zLow, double zHigh, double& z) const
     {
         if (std::isnan(zLow) || std::isnan(zHigh))
         {

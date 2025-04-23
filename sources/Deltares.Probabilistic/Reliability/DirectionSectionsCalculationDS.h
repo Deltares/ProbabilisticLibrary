@@ -32,7 +32,7 @@ namespace Deltares::Reliability
         protected:
             double findBetaBetweenBoundaries(Models::ModelRunner & modelRunner,
                 const DirectionCalculation & directionCalculation,
-                double uLow, double uHigh, double zLow, double zHigh, double& z) override;
+                double uLow, double uHigh, double zLow, double zHigh, double& z) const override;
         private:
             double Threshold = 0.0;
             static bool isProxyAllowed(double ThresholdOffset, double u, double threshold);

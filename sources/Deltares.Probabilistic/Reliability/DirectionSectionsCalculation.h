@@ -45,10 +45,10 @@ namespace Deltares::Reliability
         double z0;
     protected:
         double findBetaBetweenBoundariesAllowNaN(const DirectionCalculation& directionCalculation,
-            double uLow, double uHigh, double zLow, double zHigh, double& z);
+            double uLow, double uHigh, double zLow, double zHigh, double& z) const;
         virtual double findBetaBetweenBoundaries(Models::ModelRunner& modelRunner,
             const DirectionCalculation& directionCalculation,
-            double uLow, double uHigh, double zLow, double zHigh, double& z);
+            double uLow, double uHigh, double zLow, double zHigh, double& z) const;
         bool isStopped() const { return false; }
         const DirectionReliabilitySettings& Settings;
     };

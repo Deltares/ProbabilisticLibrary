@@ -58,7 +58,7 @@ namespace Deltares::Reliability
                 if (mask[i])
                 {
                     const auto uk = directions[i].GetPrecomputeUvalue();
-                    auto uDirection = directions[i].directionSample.getNormalizedSample();
+                    auto uDirection = directions[i].getDirection().getNormalizedSample();
                     auto sample_at_uk = model.GetU(*uDirection, uk);
                     uSamples.push_back(sample_at_uk);
                 }
@@ -79,9 +79,9 @@ namespace Deltares::Reliability
                 if (mask[i])
                 {
                     const auto uk = directions[i].GetPrecomputeUvalue();
-                    directions[i].directionSample.IsRestartRequired = uSamples[ii]->IsRestartRequired;
-                    directions[i].directionSample.AllowProxy = uSamples[ii]->AllowProxy;
-                    directions[i].directionSample.Z = uSamples[ii]->Z;
+                    directions[i].getDirection().IsRestartRequired = uSamples[ii]->IsRestartRequired;
+                    directions[i].getDirection().AllowProxy = uSamples[ii]->AllowProxy;
+                    directions[i].getDirection().Z = uSamples[ii]->Z;
                     auto z1pv = PrecomputeValue(uk, z0Fac * zValues[ii],
                         uSamples[ii]->IsRestartRequired, uSamples[ii]->AllowProxy);
                     directions[i].ProvidePrecomputeValue(z1pv);

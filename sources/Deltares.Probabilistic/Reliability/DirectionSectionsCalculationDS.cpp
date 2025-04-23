@@ -31,7 +31,7 @@ namespace Deltares::Reliability
 
     double DirectionSectionsCalculationDS::findBetaBetweenBoundaries(Models::ModelRunner& modelRunner,
         const DirectionCalculation& directionCalculation,
-        double uLow, double uHigh, double zLow, double zHigh, double& z)
+        double uLow, double uHigh, double zLow, double zHigh, double& z) const
     {
         if (std::isnan(zLow) || std::isnan(zHigh))
         {
@@ -65,13 +65,8 @@ namespace Deltares::Reliability
                     double z0 = directionCalculation.GetZProxy(0, false);
                     double zResult = directionCalculation.GetZProxy(resultRootFinder.X, false);
 
-                    if (std::isnan(zResult))
-                    {
-                        z = zResult;
-                        modelRunner.removeTask(directionCalculation.uDirection.IterationIndex);
-                        return Settings.MaximumLengthU;
-                    }
-                    else if (NumericSupport::GetSign(z0) == NumericSupport::GetSign(zResult) && std::fabs(zResult) >= std::fabs(z0))
+                    if (std::isnan(zResult) ||
+                        (NumericSupport::GetSign(z0) == NumericSupport::GetSign(zResult) && std::fabs(zResult) >= std::fabs(z0)))
                     {
                         z = zResult;
                         modelRunner.removeTask(directionCalculation.uDirection.IterationIndex);
