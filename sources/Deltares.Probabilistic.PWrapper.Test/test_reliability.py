@@ -99,6 +99,96 @@ class Test_reliability(unittest.TestCase):
         self.assertAlmostEqual(2.33, beta, delta=margin)
         self.assertEqual(2, len(alphas))
 
+    def test_crude_monte_carlo_linear_composite(self):
+        project = project_builder.get_linear_project()
+
+        project.variables['b'].distribution = DistributionType.composite
+
+        composite1 = Stochast()
+        composite1.distribution = DistributionType.uniform
+        composite1.minimum = -1
+        composite1.maximum = -1.5
+        project.variables['b'].contributing_stochasts.append(ContributingStochast.create(0.4, composite1))
+
+        composite2 = Stochast()
+        composite2.distribution = DistributionType.uniform
+        composite2.minimum = 0.5
+        composite2.maximum = 1
+        project.variables['b'].contributing_stochasts.append(ContributingStochast.create(0.6, composite2))
+
+        project.settings.reliability_method = ReliabilityMethod.crude_monte_carlo
+
+        project.run();
+
+        dp = project.design_point;
+
+        beta = dp.reliability_index;
+        alphas = dp.alphas;
+
+        self.assertAlmostEqual(2.32, beta, delta=margin)
+        self.assertEqual(2, len(alphas))
+
+        self.assertAlmostEqual(-0.78, alphas[0].alpha, delta=margin)
+        self.assertAlmostEqual(0.93, alphas[0].x, delta=margin)
+
+        self.assertAlmostEqual(-0.62, alphas[1].alpha, delta=margin)
+        self.assertAlmostEqual(0.93, alphas[1].x, delta=margin)
+
+    def test_crude_monte_carlo_linear_composite_conditional(self):
+        project = project_builder.get_linear_project()
+        project.settings.save_realizations = True
+
+        project.variables['b'].distribution = DistributionType.composite
+
+        composite1 = Stochast()
+        composite1.distribution = DistributionType.uniform
+        composite1.minimum = -5
+        composite1.maximum = -4
+        project.variables['b'].contributing_stochasts.append(ContributingStochast.create(0.4, composite1))
+
+        composite2 = Stochast()
+        composite2.distribution = DistributionType.uniform
+        composite2.conditional = True
+
+        conditional1 = ConditionalValue()
+        conditional1.x = -1
+        conditional1.minimum = -1.2
+        conditional1.maximum = -0.8
+        composite2.conditional_values.append(conditional1)
+
+        conditional2 = ConditionalValue()
+        conditional2.x = 1
+        conditional2.minimum = 0.8
+        conditional2.maximum = 1.2
+        composite2.conditional_values.append(conditional2)
+
+        composite2.conditional_source = 'a'
+
+        project.variables['b'].contributing_stochasts.append(ContributingStochast.create(0.6, composite2))
+
+        project.settings.reliability_method = ReliabilityMethod.crude_monte_carlo
+
+        project.run();
+
+        dp = project.design_point;
+
+        for real in dp.realizations:
+            first = real.input_values[1] >= -5 and real.input_values[1] <= -4
+            second = abs(real.input_values[1] - real.input_values[0]) <= 0.2
+            self.assertTrue(first or second)
+
+        beta = dp.reliability_index;
+        alphas = dp.alphas;
+
+        self.assertAlmostEqual(1.91, beta, delta=margin)
+        self.assertEqual(2, len(alphas))
+
+        self.assertAlmostEqual(-0.89, alphas[0].alpha, delta=margin)
+        self.assertAlmostEqual(0.91, alphas[0].x, delta=margin)
+
+        self.assertAlmostEqual(-0.45, alphas[1].alpha, delta=margin)
+        self.assertAlmostEqual(0.98, alphas[1].x, delta=margin)
+
     def test_form_linear_conditional(self):
         project = project_builder.get_linear_project()
 

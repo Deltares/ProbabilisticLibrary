@@ -34,6 +34,8 @@ namespace Deltares::Probabilistic::Test
         testConditionalWeibullCdfPdf();
         testConditionalWeibullCdfPdf2();
         testConditionalStochast();
+        testCompositeStochast();
+        testCompositeConditionalStochast();
         testDesignValue();
         testVariationCoefficient();
         testPoisson();
@@ -191,6 +193,67 @@ namespace Deltares::Probabilistic::Test
         // extrapolated
         EXPECT_NEAR(0.5, realizedStochast->getXFromUAndSource(-1, 0), margin);
         EXPECT_NEAR(11.5, realizedStochast->getXFromUAndSource(3, 0), margin);
+    }
+
+    void testDistributions::testCompositeStochast()
+    {
+        constexpr double margin = 1e-9;
+
+        std::shared_ptr<Stochast> stochast = std::make_shared<Stochast>();
+        stochast->setDistributionType(DistributionType::Composite);
+
+        std::shared_ptr<Stochast> subStochast1 = std::make_shared<Stochast>(DistributionType::Uniform, std::vector<double>{0.0, 1.0});
+        stochast->getProperties()->ContributingStochasts.push_back(std::make_shared<ContributingStochast>(0.4, subStochast1));
+
+        std::shared_ptr<Stochast> subStochast2 = std::make_shared<Stochast>(DistributionType::Uniform, std::vector<double>{5.0, 6.0});
+        stochast->getProperties()->ContributingStochasts.push_back(std::make_shared<ContributingStochast>(0.6, subStochast2));
+
+        EXPECT_NEAR(stochast->getPDF(0.5), 0.4, margin);
+        EXPECT_NEAR(stochast->getPDF(2.0), 0.0, margin);
+
+        EXPECT_NEAR(stochast->getMean(), 0.4 * 0.5 + 0.6 * 5.5, margin);
+
+        double u = StandardNormal::getUFromP(0.7);
+        EXPECT_NEAR(stochast->getXFromU(u), 5.5, margin);
+    }
+
+    void testDistributions::testCompositeConditionalStochast()
+    {
+        constexpr double margin = 1e-5;
+
+        std::shared_ptr<Stochast> stochast = std::make_shared<Stochast>();
+        stochast->setDistributionType(DistributionType::Composite);
+
+        std::shared_ptr<Stochast> subStochast1 = std::make_shared<Stochast>(DistributionType::Uniform, std::vector<double>{0.0, 1.0});
+        stochast->getProperties()->ContributingStochasts.push_back(std::make_shared<ContributingStochast>(0.4, subStochast1));
+
+        std::shared_ptr<Stochast> subConditional = std::make_shared<Stochast>(DistributionType::Uniform, std::vector<double>{5.0, 6.0});
+        subConditional->IsVariableStochast = true;
+
+        std::shared_ptr<Stochast> variableDefinition1 = std::make_shared<Stochast>(DistributionType::Uniform, std::vector<double> {0.0, 1.0 });
+        subConditional->ValueSet->StochastValues.push_back(std::make_shared<VariableStochastValue>(0.0, variableDefinition1->getProperties()));
+
+        std::shared_ptr<Stochast> variableDefinition2 = std::make_shared<Stochast>(DistributionType::Uniform, std::vector<double> {11.0, 12.0 });
+        subConditional->ValueSet->StochastValues.push_back(std::make_shared<VariableStochastValue>(2.0, variableDefinition2->getProperties()));
+
+        std::shared_ptr<Stochast> variableDefinition3 = std::make_shared<Stochast>(DistributionType::Uniform, std::vector<double> {1.0, 2.0 });
+        subConditional->ValueSet->StochastValues.push_back(std::make_shared<VariableStochastValue>(1.0, variableDefinition3->getProperties()));
+
+        stochast->getProperties()->ContributingStochasts.push_back(std::make_shared<ContributingStochast>(0.6, subConditional));
+
+        stochast->initializeForRun();
+
+        EXPECT_NEAR(stochast->getPDF(0.5), 0.4, margin);
+        EXPECT_NEAR(stochast->getPDF(2.0), 0.0, margin);
+
+        EXPECT_NEAR(stochast->getMean(), 0.4 * 0.5 + 0.6 * 5.5, margin);
+
+        double u1 = StandardNormal::getUFromP(0.2);
+        EXPECT_NEAR(stochast->getXFromUAndSource(3, u1), 0.5, margin);
+
+        double u2 = StandardNormal::getUFromP(0.7);
+        EXPECT_NEAR(stochast->getXFromUAndSource(0.5, u2), 1.0, margin);
+        EXPECT_NEAR(stochast->getXFromUAndSource(1, u2), 1.5, margin);
     }
 
     void testDistributions::testDesignValue()

@@ -188,6 +188,7 @@ class Stochast:
 		self._conditional_values = None
 		self._conditional_source = None
 		self._array_variables = None
+		self._temp_source_str = None
 		self._variables = FrozenList() # other known variables, to which a reference can exist
 		self._synchronizing = False
 
@@ -237,6 +238,8 @@ class Stochast:
 
 	def _set_variables(self, variables):
 		self._variables = variables
+		if not self._temp_source_str == None:
+			self.conditional_source = self._temp_source_str
 		
 	@property
 	def name(self):
@@ -441,6 +444,9 @@ class Stochast:
 
 	def _contributing_stochasts_changed(self):
 		if not self._synchronizing:
+			for contributing_stochast in self._contributing_stochasts:
+				if contributing_stochast.variable != None and len(contributing_stochast.variable._variables) == 0:
+					contributing_stochast.variable._set_variables(self._variables)
 			interface.SetArrayIntValue(self._id, 'contributing_stochasts', [contributing_stochast._id for contributing_stochast in self._contributing_stochasts])
 
 	@property
@@ -466,9 +472,11 @@ class Stochast:
 	@conditional_source.setter
 	def conditional_source(self, value):
 		if type(value) == str:
+			self._temp_source_str = value
 			value = self._variables[value]
 		if isinstance(value, Stochast):
 			interface.SetIntValue(self._id, 'conditional_source', value._id)
+			self._temp_source_str = None
 
 	@property
 	def conditional_values(self):

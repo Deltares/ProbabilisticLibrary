@@ -94,11 +94,12 @@ namespace Deltares
         {
             for (std::shared_ptr<StochastPointAlpha> alpha : fragilityCurveAlpha->Alphas)
             {
-                if (alpha->Stochast->IsVariableStochast)
+                if (alpha->Stochast->isVariable())
                 {
+                    std::shared_ptr<Statistics::Stochast> alphaSource = alpha->Stochast->getVariableSource();
                     for (std::shared_ptr<StochastPointAlpha> alpha2 : fragilityCurveAlpha->Alphas)
                     {
-                        if (alpha2->Stochast == alpha->Stochast->VariableSource)
+                        if (alpha2->Stochast == alphaSource)
                         {
                             alpha->X = alpha->Stochast->getXFromUAndSource(alpha2->X, alpha->U);
                         }

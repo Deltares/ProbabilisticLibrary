@@ -36,6 +36,16 @@ namespace Deltares
         {
         public:
             /**
+             * \brief Prepares the stochast for fast response of u->x conversion
+             */
+            virtual void initializeForRun() {}
+
+            /**
+             * \brief Prepares a conditional stochast for running
+             */
+            virtual void initializeConditionalValues() {}
+
+            /**
              * \brief Gets the Cumulative Density Function (CDF) for a given x-value
              * \param x Given x-value
              * \return CDF
@@ -80,6 +90,7 @@ namespace Deltares
 
             virtual bool isVarying() { return false; }
 
+            virtual bool isVariable() { return false; }
         };
     }
 }

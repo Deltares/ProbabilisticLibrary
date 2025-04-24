@@ -144,13 +144,15 @@ namespace Deltares
 
                 variableStochastIndex.push_back(-1);
 
-                if (this->stochasts[i]->definition->IsVariableStochast)
+                if (this->stochasts[i]->definition->isVariable())
                 {
                     this->hasVariableStochasts = true;
                     bool variableStochastIndexFound = false;
+                    std::shared_ptr<Statistics::Stochast> requiredSource = this->stochasts[i]->definition->getVariableSource();
+
                     for (size_t j = 0; j < this->stochasts.size(); j++)
                     {
-                        if (stochasts[j]->source == this->stochasts[i]->definition->VariableSource)
+                        if (stochasts[j]->source == requiredSource)
                         {
                             bool valid = !stochasts[j]->source->modelParameter->isArray ||
                                          (this->stochasts[i]->definition->modelParameter->isArray &&
@@ -403,7 +405,7 @@ namespace Deltares
 
             for (size_t i = 0; i < this->stochasts.size(); i++)
             {
-                if (!this->hasVariableStochasts || !stochasts[i]->definition->IsVariableStochast)
+                if (!this->hasVariableStochasts || !stochasts[i]->definition->isVariable())
                 {
                     xValues[i] = this->stochasts[i]->definition->getXFromU(expandedUValues[i]);
                 }
@@ -430,7 +432,7 @@ namespace Deltares
 
             for (size_t i = 0; i < this->stochasts.size(); i++)
             {
-                if (!this->hasVariableStochasts || !stochasts[i]->definition->IsVariableStochast)
+                if (!this->hasVariableStochasts || !stochasts[i]->definition->isVariable())
                 {
                     xValues[i] = this->stochasts[i]->definition->getXFromType(type);
                 }
@@ -505,7 +507,7 @@ namespace Deltares
             // build up initial administration which stochasts have been assigned and which not
             for (size_t i = 0; i < this->stochasts.size(); i++)
             {
-                if (!this->stochasts[i]->definition->IsVariableStochast)
+                if (!this->stochasts[i]->definition->isVariable())
                 {
                     assignedAlphas.insert(i);
                 }
@@ -638,7 +640,7 @@ namespace Deltares
                         const int varyingIndex = this->varyingStochastIndex[i];
                         alpha->X = stochasts[i]->definition->getXFromU(sample->Values[varyingIndex]);
                     }
-                    else if (!this->hasVariableStochasts || !stochasts[i]->definition->IsVariableStochast)
+                    else if (!this->hasVariableStochasts || !stochasts[i]->definition->isVariable())
                     {
                         alpha->X = stochasts[i]->definition->getXFromU(uCorrelated[i]);
                     }
