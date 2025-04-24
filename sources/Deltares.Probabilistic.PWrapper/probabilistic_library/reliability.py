@@ -20,6 +20,7 @@
 # All rights reserved.
 #
 from __future__ import annotations
+from math import isnan
 import sys
 from enum import Enum
 
@@ -580,20 +581,20 @@ class DesignPoint(FrozenObject):
 
 	def __dir__(self):
 		return ['identifier',
-				'ids',
-				'reliability_index',
-				'probability_failure',
-				'alphas',
-				'contributing_design_points',
-				'convergence',
-				'is_converged',
-				'total_directions',
-				'total_iterations',
-				'total_model_runs',
-				'realizations',
-				'reliability_results',
-				'messages',
-				'print',
+		        'ids',
+		        'reliability_index',
+		        'probability_failure',
+		        'alphas',
+		        'contributing_design_points',
+		        'convergence',
+		        'is_converged',
+		        'total_directions',
+		        'total_iterations',
+		        'total_model_runs',
+		        'realizations',
+		        'reliability_results',
+		        'messages',
+		        'print',
 		        'plot_alphas',
 		        'plot_realizations',
  		        'plot_convergence']
@@ -746,10 +747,11 @@ class DesignPoint(FrozenObject):
 			print(pre + f'Reliability ({self.identifier})')
 		print(pre_indexed + f'Reliability index = {self.reliability_index}')
 		print(pre_indexed + f'Probability of failure = {self.probability_failure}')
-		if self.is_converged:
-			print(pre_indexed + f'Convergence = {self.convergence} (converged)')
-		else:
-			print(pre_indexed + f'Convergence = {self.convergence} (not converged)')
+		if not isnan(self.convergence):
+			if self.is_converged:
+				print(pre_indexed + f'Convergence = {self.convergence} (converged)')
+			else:
+				print(pre_indexed + f'Convergence = {self.convergence} (not converged)')
 		print(pre_indexed + f'Model runs = {self.total_model_runs}')
 		print(pre + 'Alpha values:')
 		for alpha in self.alphas:
@@ -766,7 +768,7 @@ class DesignPoint(FrozenObject):
 		import matplotlib.pyplot as plt
 
 		alphas = [alpha.influence_factor for alpha in self.alphas if alpha.influence_factor > 0.0001]
-		names = [f'{alpha.identifier} ({round(100*alpha.influence_factor)})' for alpha in self.alphas if alpha.influence_factor > 0.0001]
+		names = [f'{alpha.identifier} ({round(100*alpha.influence_factor)} %)' for alpha in self.alphas if alpha.influence_factor > 0.0001]
 
 		plt.figure()
 		plt.pie(alphas, labels=names)
@@ -1158,6 +1160,11 @@ class Message(FrozenObject):
 	def __str__(self):
 		return str(self.type) + ': ' + self.text
 		
+	def __dir__(self):
+		return ['type',
+				'text',
+				'print']
+
 	@property
 	def type(self) -> MessageType:
 		return MessageType[interface.GetStringValue(self._id, 'type')]
@@ -1166,6 +1173,15 @@ class Message(FrozenObject):
 	def text(self) -> str:
 		return interface.GetStringValue(self._id, 'text')
 
+	def print(self):
+		if self.type == MessageType.error:
+			print(f'Error: {self.text}')
+		elif self.type == MessageType.warning:
+			print(f'Warning: {self.text}')
+		elif self.type == MessageType.info:
+			print(f'Info: {self.text}')
+		elif self.type == MessageType.debug:
+			print(f'Debug: {self.text}')
 		
 class Evaluation(FrozenObject):
 		
@@ -1190,7 +1206,8 @@ class Evaluation(FrozenObject):
 				'beta',
 				'weight',
 				'input_values',
-				'output_values']
+				'output_values',
+				'print']
 	
 	@property   
 	def iteration(self) -> int:
@@ -1221,6 +1238,20 @@ class Evaluation(FrozenObject):
 			output_values = interface.GetArrayValue(self._id, 'output_values')
 			self._output_values = FrozenList(output_values)
 		return self._output_values
+
+	def print(self):
+		self._print(0)
+
+	def _print(self, indent):
+		pre = PrintUtils.get_space_from_indent(indent)
+		if isnan(self.z) and len(self.output_values) == 0:
+			print(pre + self.input_values)
+		elif isnan(self.z) and len(self.output_values) > 0:
+			print(pre + f'{self.input_values} -> {self.output_values}')
+		elif not isnan(self.z) and len(self.output_values) == 0:
+			print(pre + f'{self.input_values} -> {self.z}')
+		elif not isnan(self.z) and len(self.output_values) > 0:
+			print(pre + f'{self.input_values} -> {self.output_values} -> {self.z}')
 		
 class ReliabilityResult(FrozenObject):
 		

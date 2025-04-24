@@ -20,6 +20,7 @@
 # All rights reserved.
 #
 import sys
+from math import isnan
 from enum import Enum
 
 from .utils import *
@@ -343,7 +344,9 @@ class SensitivityResult(FrozenObject):
 				'variable',
 				'quantile_realizations',
 				'realizations',
-				'messages']
+				'messages',
+				'print',
+				'plot']
 		
 	def __str__(self):
 		return self.identifier
@@ -392,4 +395,14 @@ class SensitivityResult(FrozenObject):
 				messages.append(Message(message_id))
 			self._messages = FrozenList(messages)
 				
-		return self._messages	
+		return self._messages
+
+	def print(self):
+		self.variable.print()
+		if len(self.quantile_realizations) > 0:
+			print('Quantiles:')
+			for quantile in self.quantile_realizations:
+				quantile._print(1)
+
+	def plot(self):
+		self.variable.plot()

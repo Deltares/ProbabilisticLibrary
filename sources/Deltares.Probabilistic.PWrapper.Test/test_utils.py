@@ -24,8 +24,6 @@ import sys
 
 from probabilistic_library import *
 
-margin = 0.02
-
 class test_object (FrozenObject):
 	def __init__(self, name, value):
 		self.name = name

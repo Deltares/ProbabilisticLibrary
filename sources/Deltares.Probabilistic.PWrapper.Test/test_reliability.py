@@ -19,7 +19,6 @@
 # Stichting Deltares and remain full property of Stichting Deltares at all times.
 # All rights reserved.
 #
-from importlib.metadata import Distribution
 import unittest
 import sys
 
@@ -41,7 +40,7 @@ class Test_reliability(unittest.TestCase):
         project.variables['a'].scale = -1
         self.assertTrue(project.is_valid())
 
-        # now use the property, reassign the invalid property, because by changging the directibution it is reset
+        # now use the property, reassign the invalid property, because by changing the scale is reset
         project.variables['a'].distribution = DistributionType.normal
         project.variables['a'].scale = -1
         self.assertFalse(project.is_valid())
