@@ -249,8 +249,8 @@ namespace Deltares::Probabilistic::Test
         constexpr double margin = 1e-12;
         auto dist = Stochast(DistributionType::Gamma, {8.0, 4.0});
         EXPECT_NEAR(4.0, dist.getProperties()->Shape, margin); // if shape is integer, first term in pdf is < 0 for x < 0
-        EXPECT_TRUE(std::isnan(dist.getPDF(-1.0))) << "x < 0 should give NaN";
-        EXPECT_NEAR(0.0, dist.getPDF(0.0), margin) << "x = 0 should give 0";
+        EXPECT_NEAR(0.0, dist.getPDF(-1.0), margin) << "x <= 0 should give 0";
+        EXPECT_NEAR(0.0, dist.getPDF(0.0), margin) << "x <= 0 should give 0";
         EXPECT_NEAR(0.0063180277053, dist.getPDF(1.0), margin);
 
         EXPECT_NEAR(0.0, dist.getCDF(-1.0), margin) << "x <= 0 should give 0";
