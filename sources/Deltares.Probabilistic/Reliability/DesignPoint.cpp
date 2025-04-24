@@ -90,7 +90,7 @@ namespace Deltares
             }
         }
 
-        void DesignPoint::updateVariableStochasts(std::shared_ptr<StochastPoint> fragilityCurveAlpha)
+        void DesignPoint::updateVariableStochasts(std::shared_ptr<StochastPoint> fragilityCurveAlpha) const
         {
             for (std::shared_ptr<StochastPointAlpha> alpha : fragilityCurveAlpha->Alphas)
             {
@@ -119,7 +119,7 @@ namespace Deltares
             return subAlpha;
         }
 
-        void DesignPoint::updateVariableStochast(std::shared_ptr<StochastPoint> fragilityCurveAlpha, std::shared_ptr<StochastPointAlpha> alpha)
+        void DesignPoint::updateVariableStochast(std::shared_ptr<StochastPoint> fragilityCurveAlpha, std::shared_ptr<StochastPointAlpha> alpha) const
         {
             std::shared_ptr<Statistics::Stochast> alphaSource = alpha->Stochast->getVariableSource();
             for (std::shared_ptr<StochastPointAlpha> alpha2 : fragilityCurveAlpha->Alphas)
@@ -131,7 +131,7 @@ namespace Deltares
             }
         }
 
-        void DesignPoint::correctFragilityCurves()
+        void DesignPoint::correctFragilityCurves() const
         {
             if (this->Beta < 0)
             {

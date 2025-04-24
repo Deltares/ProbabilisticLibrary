@@ -58,7 +58,7 @@ namespace Deltares::Reliability
         double getNonFailureProbability() { return Statistics::StandardNormal::getPFromU(this->Beta); }
 
         void expandContributions();
-        void correctFragilityCurves();
+        void correctFragilityCurves() const;
 
         /**
          * \brief Gets the total model runs including contributing design points
@@ -77,9 +77,9 @@ namespace Deltares::Reliability
             void expandFragilityCurves();
             void expandStochastRealization(std::shared_ptr<Models::StochastPointAlpha> stochastRealization);
             std::shared_ptr<Models::StochastPointAlpha> getStochastPoint(std::shared_ptr<Models::StochastPointAlpha> alphaRealization);
-            void updateVariableStochasts(std::shared_ptr<StochastPoint> fragilityCurveAlpha);
+            void updateVariableStochasts(std::shared_ptr<StochastPoint> fragilityCurveAlpha) const;
             void updateVariableStochast(std::shared_ptr<StochastPoint> fragilityCurveAlpha,
-                std::shared_ptr<Models::StochastPointAlpha> alpha);
+                std::shared_ptr<Models::StochastPointAlpha> alpha) const;
     };
 }
 
