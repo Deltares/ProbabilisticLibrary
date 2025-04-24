@@ -55,6 +55,7 @@ namespace Deltares
             std::vector<double> getExpandedValues(const std::vector<double>& values);
             std::vector<double> getExpandedValues(const std::vector<double>& values, double defaultValue);
 
+            void initializeStochastForRun(size_t index);
             bool isFullyCorrelated(const int index, std::vector<int> varyingIndices);
             void updateDependentParameter(std::vector<double>& uValues, const int i);
             std::shared_ptr<Sample> getQualitativeExcludedSample(std::shared_ptr<Sample> sample);

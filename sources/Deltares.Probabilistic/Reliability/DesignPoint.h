@@ -78,6 +78,8 @@ namespace Deltares::Reliability
             void expandStochastRealization(std::shared_ptr<Models::StochastPointAlpha> stochastRealization);
             std::shared_ptr<Models::StochastPointAlpha> getStochastPoint(std::shared_ptr<Models::StochastPointAlpha> alphaRealization);
             void updateVariableStochasts(std::shared_ptr<StochastPoint> fragilityCurveAlpha);
+            void updateVariableStochast(std::shared_ptr<StochastPoint> fragilityCurveAlpha,
+                std::shared_ptr<Models::StochastPointAlpha> alpha);
     };
 }
 

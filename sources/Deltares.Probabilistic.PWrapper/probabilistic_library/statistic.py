@@ -238,7 +238,7 @@ class Stochast:
 
 	def _set_variables(self, variables):
 		self._variables = variables
-		if not self._temp_source_str == None:
+		if self._temp_source_str != None:
 			self.conditional_source = self._temp_source_str
 		
 	@property

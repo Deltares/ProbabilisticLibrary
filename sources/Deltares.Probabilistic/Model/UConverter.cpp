@@ -129,55 +129,7 @@ namespace Deltares
 
             for (size_t i = 0; i < this->stochasts.size(); i++)
             {
-                if (this->stochasts[i]->definition->isVarying() && !isFullyCorrelated(static_cast<int>(i), this->varyingStochastIndex))
-                {
-                    this->varyingStochastIndex.push_back(static_cast<int>(i));
-                    this->pureVaryingStochastIndex.push_back(static_cast<int>(i));
-                    this->varyingStochasts.push_back(this->stochasts[i]);
-                    this->hasQualitiveStochasts |= this->stochasts[i]->definition->isQualitative();
-                }
-                else
-                {
-                    int type = (this->stochasts[i]->definition->isVarying() ? -1 : -2);
-                    this->varyingStochastIndex.push_back(type);
-                }
-
-                variableStochastIndex.push_back(-1);
-
-                if (this->stochasts[i]->definition->isVariable())
-                {
-                    this->hasVariableStochasts = true;
-                    bool variableStochastIndexFound = false;
-                    std::shared_ptr<Statistics::Stochast> requiredSource = this->stochasts[i]->definition->getVariableSource();
-
-                    for (size_t j = 0; j < this->stochasts.size(); j++)
-                    {
-                        if (stochasts[j]->source == requiredSource)
-                        {
-                            bool valid = !stochasts[j]->source->modelParameter->isArray ||
-                                         (this->stochasts[i]->definition->modelParameter->isArray &&
-                                          this->stochasts[i]->definition->modelParameter->arraySize == this->stochasts[j]->source->modelParameter->arraySize);
-
-                            if (!valid)
-                            {
-                                throw Reliability::probLibException("When using array variable stochasts, the size of the arrays must match");
-                            }
-
-                            if (!stochasts[j]->source->modelParameter->isArray ||
-                                this->stochasts[i]->index == this->stochasts[j]->index)
-                            {
-                                variableStochastIndex[i] = static_cast<int>(j);
-                                variableStochastIndexFound = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (!variableStochastIndexFound)
-                    {
-                        throw Reliability::probLibException("Variable stochast source has not been set");
-                    }
-                }
+                initializeStochastForRun(i);
             }
 
             if (this->hasVariableStochasts)
@@ -198,6 +150,59 @@ namespace Deltares
 
             varyingCorrelationMatrix->CholeskyDecomposition();
             varyingCorrelationMatrix->InverseCholeskyDecomposition();
+        }
+
+        void UConverter::initializeStochastForRun(size_t index)
+        {
+            if (this->stochasts[index]->definition->isVarying() && !isFullyCorrelated(static_cast<int>(index), this->varyingStochastIndex))
+            {
+                this->varyingStochastIndex.push_back(static_cast<int>(index));
+                this->pureVaryingStochastIndex.push_back(static_cast<int>(index));
+                this->varyingStochasts.push_back(this->stochasts[index]);
+                this->hasQualitiveStochasts |= this->stochasts[index]->definition->isQualitative();
+            }
+            else
+            {
+                int type = (this->stochasts[index]->definition->isVarying() ? -1 : -2);
+                this->varyingStochastIndex.push_back(type);
+            }
+
+            variableStochastIndex.push_back(-1);
+
+            if (this->stochasts[index]->definition->isVariable())
+            {
+                this->hasVariableStochasts = true;
+                bool variableStochastIndexFound = false;
+                std::shared_ptr<Statistics::Stochast> requiredSource = this->stochasts[index]->definition->getVariableSource();
+
+                for (size_t j = 0; j < this->stochasts.size(); j++)
+                {
+                    if (stochasts[j]->source == requiredSource)
+                    {
+                        bool valid = !stochasts[j]->source->modelParameter->isArray ||
+                            (this->stochasts[index]->definition->modelParameter->isArray &&
+                                this->stochasts[index]->definition->modelParameter->arraySize == this->stochasts[j]->source->modelParameter->arraySize);
+
+                        if (!valid)
+                        {
+                            throw Reliability::probLibException("When using array variable stochasts, the size of the arrays must match");
+                        }
+
+                        if (!stochasts[j]->source->modelParameter->isArray ||
+                            this->stochasts[index]->index == this->stochasts[j]->index)
+                        {
+                            variableStochastIndex[index] = static_cast<int>(j);
+                            variableStochastIndexFound = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!variableStochastIndexFound)
+                {
+                    throw Reliability::probLibException("Variable stochast source has not been set");
+                }
+            }
         }
 
         bool UConverter::isVaryingStochast(int index)

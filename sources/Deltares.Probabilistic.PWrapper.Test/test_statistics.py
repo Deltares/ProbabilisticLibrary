@@ -304,8 +304,6 @@ class Test_statistics(unittest.TestCase):
         self.assertAlmostEqual(2.0, stochast.get_x_from_u_and_source(1.0, 0.5), delta=margin)
 
     def test_composite_conditional(self):
-        stochasts = []
-
         stochast1 = Stochast()
         stochast1.distribution = DistributionType.deterministic
         stochast1.location = 0
