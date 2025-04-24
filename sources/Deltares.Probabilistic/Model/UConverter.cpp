@@ -152,7 +152,7 @@ namespace Deltares
             varyingCorrelationMatrix->InverseCholeskyDecomposition();
         }
 
-        void UConverter::checkArraysMatch(std::shared_ptr<ComputationalStochast> stochast, std::shared_ptr<ComputationalStochast> otherStochast)
+        void UConverter::checkArraysMatch(std::shared_ptr<ComputationalStochast> stochast, std::shared_ptr<ComputationalStochast> otherStochast) const
         {
             bool valid = !otherStochast->source->modelParameter->isArray ||
             (stochast->definition->modelParameter->isArray &&

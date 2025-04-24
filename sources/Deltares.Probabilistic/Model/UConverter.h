@@ -57,7 +57,7 @@ namespace Deltares
 
             void initializeStochastForRun(size_t index);
             void initializeVariableStochastForRun(std::shared_ptr<ComputationalStochast> stochast, size_t index);
-            void checkArraysMatch(std::shared_ptr<ComputationalStochast> stochast, std::shared_ptr<ComputationalStochast> otherStochast);
+            void checkArraysMatch(std::shared_ptr<ComputationalStochast> stochast, std::shared_ptr<ComputationalStochast> otherStochast) const;
             bool isFullyCorrelated(const int index, std::vector<int> varyingIndices);
             void updateDependentParameter(std::vector<double>& uValues, const int i);
             std::shared_ptr<Sample> getQualitativeExcludedSample(std::shared_ptr<Sample> sample);
