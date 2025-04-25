@@ -65,21 +65,20 @@ namespace Deltares
 
         double GammaDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)
         {
-            if (stochast->Shape <= 0 || stochast->Scale <= 0)
+            if (stochast->Shape <= 0.0 || stochast->Scale <= 0.0)
             {
-                return x == 0 ? 1 : 0;
+                return x == 0.0 ? 1.0 : 0.0;
             }
-            else
+
+            if (x >= 0.0)
             {
-                try
-                {
-                    return std::pow(x, stochast->Shape - 1) * std::exp(-x / stochast->Scale) / (std::pow(stochast->Scale, stochast->Shape) * Numeric::SpecialFunctions::getGamma(stochast->Shape));
-                }
-                catch (const std::exception&)
-                {
-                    return std::nan("");
-                }
+                const double denominator = std::pow(stochast->Scale, stochast->Shape) *
+                    Numeric::SpecialFunctions::getGamma(stochast->Shape);
+                const double pdf = std::pow(x, stochast->Shape - 1.0) * std::exp(-x / stochast->Scale) / denominator;
+                return std::max(0.0, pdf);
             }
+
+            return 0.0;
         }
 
         double GammaDistribution::getCDF(std::shared_ptr<StochastProperties> stochast, double x)
