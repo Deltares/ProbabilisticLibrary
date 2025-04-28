@@ -112,7 +112,7 @@ namespace Deltares
             return true;
         }
 
-        bool VariableStochastValuesSet::isVarying(DistributionType distributionType, std::shared_ptr<StochastProperties> defaultStochast)
+        bool VariableStochastValuesSet::isVarying(DistributionType distributionType, std::shared_ptr<StochastProperties> defaultStochast) const
         {
             std::shared_ptr<Distribution> distribution = DistributionLibrary::getDistribution(distributionType, false, false);
 
