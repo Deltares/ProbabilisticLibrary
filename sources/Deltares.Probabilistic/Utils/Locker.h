@@ -29,7 +29,8 @@ namespace Deltares
     {
         /**
          * \brief Facilitates locking of a thread to avoid synchronization problems
-         * \remark By implementing this in a separate class, problems are avoid when mutex were defined in a class which is used in a shared pointer
+         * \remark By implementing this in a separate class, problems are avoided when mutex were defined in a class which is used in a shared pointer.
+         * \remark Instantiate this class into a raw pointer, otherwise compilation errors.
          */
         class Locker
         {

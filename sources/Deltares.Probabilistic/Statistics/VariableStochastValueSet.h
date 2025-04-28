@@ -41,10 +41,6 @@ namespace Deltares
               */
             std::vector<std::shared_ptr<VariableStochastValue>> StochastValues;
 
-            void getMergedStochast(std::shared_ptr<StochastProperties> defaultStochast,
-                                   std::shared_ptr<Distribution> distribution,
-                                   std::shared_ptr<VariableStochastValue> value,
-                                   std::shared_ptr<StochastProperties>& source);
             /**
               * \brief Prepares this class for running
               */
@@ -55,7 +51,13 @@ namespace Deltares
               * \param x The value at which the interpolated stochast is generated
               * \return Interpolated stochast
               */
-            std::shared_ptr<StochastProperties> getInterpolatedStochast(double x);
+            std::shared_ptr<StochastProperties> getInterpolatedStochast(double x) const;
+
+            /**
+              * \brief Updates properties with the interpolated stochast at a given x-value
+              * \param x The value at which the interpolated stochast is generated
+              */
+            void updateProperties(std::shared_ptr<StochastProperties> properties, double x) const;
 
             /**
               * \brief Indicates whether an interpolated stochast can lead to different x values
@@ -63,7 +65,7 @@ namespace Deltares
               * \param defaultStochast default stochast
               * \return Indication
               */
-            bool isVarying(DistributionType distributionType, std::shared_ptr<StochastProperties> defaultStochast = nullptr);
+            bool isVarying(DistributionType distributionType, std::shared_ptr<StochastProperties> defaultStochast = nullptr) const;
 
             /**
               * \brief Indicates whether the stochast value set is valid

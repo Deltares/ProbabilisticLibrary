@@ -236,11 +236,20 @@ namespace Deltares
 
         void UConverter::updateStochastSettings(std::shared_ptr<Deltares::Reliability::StochastSettingsSet> settings)
         {
-            std::map<std::shared_ptr<Statistics::Stochast>, std::shared_ptr<Deltares::Reliability::StochastSettings>> stochastSettingsMap;
+            std::map<std::shared_ptr<Statistics::Stochast>, std::vector<std::shared_ptr<Deltares::Reliability::StochastSettings>>> stochastSettingsMap;
+            std::map<std::shared_ptr<Statistics::Stochast>, size_t> stochastSettingsCount;
 
+            // stochasts are not unique, therefore register all settings and use them one by one
             for (size_t i = 0; i < settings->stochastSettings.size(); i++)
             {
-                stochastSettingsMap[settings->stochastSettings[i]->stochast] = settings->stochastSettings[i];
+                std::shared_ptr<Statistics::Stochast> stochast = settings->stochastSettings[i]->stochast;
+
+                if (!stochastSettingsMap.contains(stochast))
+                {
+                    stochastSettingsMap[stochast] = std::vector<std::shared_ptr<Deltares::Reliability::StochastSettings>>();
+                    stochastSettingsCount[stochast] = 0;
+                }
+                stochastSettingsMap[stochast].push_back(settings->stochastSettings[i]);
             }
 
             settings->stochastSettings.clear();
@@ -251,9 +260,17 @@ namespace Deltares
 
             for (size_t i = 0; i < stochasts.size(); i++)
             {
-                if (stochastSettingsMap.contains(stochasts[i]->definition))
+                std::shared_ptr<Statistics::Stochast> stochast = stochasts[i]->definition;
+
+                if (stochastSettingsMap.contains(stochast))
                 {
-                    settings->stochastSettings.push_back(stochastSettingsMap[stochasts[i]->definition]->clone());
+                    std::shared_ptr<Deltares::Reliability::StochastSettings> stochastSettings = stochastSettingsMap[stochast][stochastSettingsCount[stochast]];
+                    settings->stochastSettings.push_back(stochastSettings->clone());
+
+                    if (stochastSettingsCount[stochast] < stochastSettingsMap[stochast].size() - 1)
+                    {
+                        stochastSettingsCount[stochast]++;
+                    }
                 }
                 else
                 {
