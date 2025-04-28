@@ -85,9 +85,9 @@ namespace Deltares
 
         double Stochast::getXFromUAndSource(double xSource, double u)
         {
-            if (IsVariableStochast)
+            if (isVariable())
             {
-                std::shared_ptr<StochastProperties> valueSetProperties = ValueSet->getInterpolatedStochast(xSource);
+                std::shared_ptr<StochastProperties> valueSetProperties = getInterpolatedProperties(xSource);
                 return distribution->getXFromU(valueSetProperties, u);
             }
             else
@@ -98,9 +98,9 @@ namespace Deltares
 
         double Stochast::getUFromXAndSource(double xSource, double x)
         {
-            if (IsVariableStochast)
+            if (isVariable())
             {
-                std::shared_ptr<StochastProperties> valueSetProperties = ValueSet->getInterpolatedStochast(xSource);
+                std::shared_ptr<StochastProperties> valueSetProperties = getInterpolatedProperties(xSource);
                 return distribution->getUFromX(valueSetProperties, x);
             }
             else
@@ -127,9 +127,9 @@ namespace Deltares
 
         double Stochast::getXFromTypeAndSource(double xSource, RunValuesType type)
         {
-            if (IsVariableStochast)
+            if (isVariable())
             {
-                std::shared_ptr<StochastProperties> valueSetProperties = ValueSet->getInterpolatedStochast(xSource);
+                std::shared_ptr<StochastProperties> valueSetProperties = getInterpolatedProperties(xSource);
                 switch (type)
                 {
                 case RunValuesType::MedianValues: return distribution->getXFromU(valueSetProperties, 0);
@@ -142,6 +142,86 @@ namespace Deltares
             else
             {
                 return getXFromType(type);
+            }
+        }
+
+        bool Stochast::isVariable()
+        {
+            if (distributionType == DistributionType::Composite)
+            {
+                for (auto contributingStochast : properties->ContributingStochasts)
+                {
+                    if (contributingStochast->Probability > 0 && contributingStochast->Stochast->isVariable())
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+            else
+            {
+                return IsVariableStochast;
+            }
+        }
+
+        std::shared_ptr<Stochast> Stochast::getVariableSource()
+        {
+            if (distributionType == DistributionType::Composite)
+            {
+                for (auto contributingStochast : properties->ContributingStochasts)
+                {
+                    if (contributingStochast->Probability > 0 && contributingStochast->Stochast->isVariable())
+                    {
+                        std::shared_ptr<Stochast> stochast = std::static_pointer_cast<Stochast>(contributingStochast->Stochast);
+                        return stochast->VariableSource;
+                    }
+                }
+
+                return nullptr;
+            }
+            else
+            {
+                return VariableSource;
+            }
+        }
+
+        std::shared_ptr<StochastProperties> Stochast::getInterpolatedProperties(double xSource)
+        {
+            if (distributionType == DistributionType::Composite)
+            {
+                std::shared_ptr<StochastProperties> compositeProperties = std::make_shared<StochastProperties>();
+                for (auto compositeStochast : properties->ContributingStochasts)
+                {
+                    if (compositeStochast->Stochast->isVariable())
+                    {
+                        std::shared_ptr<Stochast> stochast = std::static_pointer_cast<Stochast>(compositeStochast->Stochast);
+
+                        std::shared_ptr<StochastProperties> interpolatedProperties = stochast->getInterpolatedProperties(xSource);
+
+                        std::shared_ptr<Stochast> interpolatedStochast =
+                            std::make_shared<Stochast>(stochast->distributionType, interpolatedProperties);
+
+                        std::shared_ptr<ContributingStochast> interpolatedContributingStochast =
+                            std::make_shared<ContributingStochast>(compositeStochast->Probability, interpolatedStochast);
+                        
+                        compositeProperties->ContributingStochasts.push_back(interpolatedContributingStochast);
+                    }
+                    else
+                    {
+                        compositeProperties->ContributingStochasts.push_back(compositeStochast);
+                    }
+                }
+
+                return compositeProperties;
+            }
+            else if (IsVariableStochast)
+            {
+                return ValueSet->getInterpolatedStochast(xSource);
+            }
+            else
+            {
+                return properties;
             }
         }
 
@@ -269,7 +349,7 @@ namespace Deltares
 
         bool Stochast::isVarying()
         {
-            if (IsVariableStochast)
+            if (IsVariableStochast && distributionType != DistributionType::Composite)
             {
                 return ValueSet->isVarying(distributionType, properties);
             }
@@ -396,11 +476,32 @@ namespace Deltares
             {
                 initializeConditionalValues();
             }
+
+            if (distributionType == DistributionType::Composite)
+            {
+                for (auto contributingStochast : properties->ContributingStochasts)
+                {
+                    contributingStochast->Stochast->initializeForRun();
+                }
+            }
         }
 
-        void Stochast::initializeConditionalValues() const
+        void Stochast::initializeConditionalValues()
         {
-            ValueSet->initializeForRun(properties, distributionType, truncated, inverted);
+            if (distributionType == DistributionType::Composite)
+            {
+                for (auto contributingStochast : properties->ContributingStochasts)
+                {
+                    if (contributingStochast->Stochast->isVariable())
+                    {
+                        contributingStochast->Stochast->initializeConditionalValues();
+                    }
+                }
+            }
+            else
+            {
+                ValueSet->initializeForRun(properties, distributionType, truncated, inverted);
+            }
         }
 
         void Stochast::updateFromConditionalValues(double xSource) const
@@ -507,7 +608,7 @@ namespace Deltares
         {
             distributionChangeType = DistributionChangeType::Nothing;
 
-            getProperties()->copyFrom(source->getProperties());
+            properties->copyFrom(source->getProperties());
             inverted = source->inverted;
             truncated = source->truncated;
 

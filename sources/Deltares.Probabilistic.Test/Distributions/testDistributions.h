@@ -35,6 +35,8 @@ namespace Deltares::Probabilistic::Test
         static void testConditionalWeibullCdfPdf();
         static void testConditionalWeibullCdfPdf2();
         static void testConditionalStochast();
+        static void testCompositeStochast();
+        static void testCompositeConditionalStochast();
         static void testDesignValue();
         static void testVariationCoefficient();
         static void testPoisson();

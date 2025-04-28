@@ -303,6 +303,52 @@ class Test_statistics(unittest.TestCase):
 
         self.assertAlmostEqual(2.0, stochast.get_x_from_u_and_source(1.0, 0.5), delta=margin)
 
+    def test_composite_conditional(self):
+        stochast1 = Stochast()
+        stochast1.distribution = DistributionType.deterministic
+        stochast1.location = 0
+
+        stochast2 = Stochast()
+        stochast2.distribution = DistributionType.normal
+
+        stochast2.conditional = True
+
+        conditional1 = ConditionalValue()
+        conditional1.x = 0
+        conditional1.location = 0
+        conditional1.scale = 0
+        stochast2.conditional_values.append(conditional1)
+
+        conditional2 = ConditionalValue()
+        conditional2.x = 10
+        conditional2.location = 10
+        conditional2.scale = 1
+        stochast2.conditional_values.append(conditional2)
+
+        conditional3 = ConditionalValue()
+        conditional3.x = 20
+        conditional3.location = 20
+        conditional3.scale = 0
+        stochast2.conditional_values.append(conditional3)
+
+        stochast = Stochast()
+        stochast.distribution = DistributionType.composite
+        stochast.contributing_stochasts.append(ContributingStochast.create(0.4, stochast1))
+        stochast.contributing_stochasts.append(ContributingStochast.create(0.6, stochast2))
+
+        u1 = StandardNormal.get_u_from_p(0.2)
+        u2 = StandardNormal.get_u_from_p(0.7)
+        u22 = StandardNormal.get_u_from_p(0.4 + StandardNormal.get_p_from_u(1) * 0.6)
+
+        self.assertAlmostEqual(0.0, stochast.get_x_from_u_and_source(u1, 0.0), delta=margin)
+        self.assertAlmostEqual(0.0, stochast.get_x_from_u_and_source(u1, 10.0), delta=margin)
+        self.assertAlmostEqual(0.0, stochast.get_x_from_u_and_source(u2, 0.0), delta=margin)
+        self.assertAlmostEqual(10.0, stochast.get_x_from_u_and_source(u2, 10.0), delta=margin)
+        self.assertAlmostEqual(20.0, stochast.get_x_from_u_and_source(u2, 20.0), delta=margin)
+        self.assertAlmostEqual(0.0, stochast.get_x_from_u_and_source(u22, 0.0), delta=margin)
+        self.assertAlmostEqual(11.0, stochast.get_x_from_u_and_source(u22, 10.0), delta=margin)
+        self.assertAlmostEqual(20.0, stochast.get_x_from_u_and_source(u22, 20.0), delta=margin)
+
     def test_design_value(self):
 
         stochast = Stochast()

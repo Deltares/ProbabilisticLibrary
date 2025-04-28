@@ -57,6 +57,11 @@ namespace Deltares
              */
             bool isInitial() const;
 
+            /**
+             * \brief Gets the interpolated properties in case of a variable stochast
+             */
+            std::shared_ptr<StochastProperties> getInterpolatedProperties(double xSource);
+
         protected:
             std::shared_ptr<Distribution> distribution = std::make_shared<DeterministicDistribution>();
 
@@ -322,12 +327,12 @@ namespace Deltares
             /**
              * \brief Prepares the stochast for fast response of u->x conversion
              */
-            void initializeForRun();
+            void initializeForRun() override;
 
             /**
              * \brief Prepares a conditional stochast for running
              */
-            void initializeConditionalValues() const;
+            void initializeConditionalValues() override;
 
             /**
              * \brief Updates the stochast properties with conditional values
@@ -400,9 +405,20 @@ namespace Deltares
             std::shared_ptr<Stochast> VariableSource = nullptr;
 
             /**
+             * \brief In case of a variable stochast, the stochast of which the x-value is used to define the stochastic parameters of this stochast
+             * \returns Variable source
+             */
+            std::shared_ptr<Stochast> getVariableSource();
+
+            /**
              * \brief In case of a variable stochast, the interpolation table to convert from x-value of the other stochast to the stochastic parameters of this stochast
              */
             std::shared_ptr<VariableStochastValuesSet> ValueSet = std::make_shared<VariableStochastValuesSet>();
+
+            /**
+             * \brief Indicates whether this stochast or, in case of a composite stochast, one of its contributing stochasts is a variable stochast
+             */
+            bool isVariable() override;
 
             /**
              * \brief In case of an array, the stochasts in the array
