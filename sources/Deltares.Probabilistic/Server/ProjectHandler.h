@@ -90,6 +90,7 @@ namespace Deltares
             int GetContributingStochastId(std::shared_ptr<Statistics::ContributingStochast> contributingStochast, int newId);
             int GetConditionalValueId(std::shared_ptr<Statistics::VariableStochastValue> conditionalValue, int newId);
             int GetEvaluationId(std::shared_ptr<Deltares::Reliability::Evaluation> evaluation, int newId);
+            int GetReliabilityResultId(std::shared_ptr<Deltares::Reliability::ReliabilityResult> result, int newId);
             int GetMessageId(std::shared_ptr<Deltares::Models::Message> message, int newId);
 
             std::shared_ptr <Reliability::DesignPoint> GetDesignPoint(int id)
@@ -102,7 +103,7 @@ namespace Deltares
             enum ObjectType {StandardNormal, Message, ProbabilityValue, Project, ModelParameter, LimitStateFunction, Stochast, DiscreteValue, HistogramValue, FragilityValue,
                 ContributingStochast, ConditionalValue, CorrelationMatrix, Scenario, Settings, StochastSettings, DesignPoint, Alpha, FragilityCurve, FragilityCurveProject, Evaluation,
                 CombineProject, CombineSettings, ExcludingCombineProject, ExcludingCombineSettings, SelfCorrelationMatrix, SensitivityProject, SensitivitySettings, SensitivityResult,
-                LengthEffectProject, RunProject, RunProjectSettings};
+                LengthEffectProject, RunProject, RunProjectSettings, ReliabilityResult};
             ObjectType GetType(std::string object_type);
             std::unordered_map<int, Deltares::Server::ProjectHandler::ObjectType> types;
 
@@ -126,6 +127,7 @@ namespace Deltares
             std::unordered_map<int, std::shared_ptr<Reliability::FragilityCurve>> fragilityCurves;
             std::unordered_map<int, std::shared_ptr<Reliability::FragilityCurveProject>> fragilityCurveProjects;
             std::unordered_map<int, std::shared_ptr<Reliability::Evaluation>> evaluations;
+            std::unordered_map<int, std::shared_ptr<Reliability::ReliabilityResult>> reliabilityResults;
             std::unordered_map<int, std::shared_ptr<Reliability::CombineProject>> combineProjects;
             std::unordered_map<int, std::shared_ptr<Reliability::CombineSettings>> combineSettingsValues;
             std::unordered_map<int, std::shared_ptr<Reliability::ExcludingCombineProject>> excludingCombineProjects;
@@ -153,6 +155,7 @@ namespace Deltares
             std::unordered_map<std::shared_ptr<Statistics::ContributingStochast>, int> contributingStochastIds;
             std::unordered_map<std::shared_ptr<Statistics::VariableStochastValue>, int> conditionalValueIds;
             std::unordered_map<std::shared_ptr<Reliability::Evaluation>, int> evaluationIds;
+            std::unordered_map<std::shared_ptr<Reliability::ReliabilityResult>, int> reliabilityResultIds;
             std::unordered_map<std::shared_ptr<Models::Message>, int> messageIds;
 
             std::unordered_map <std::string, std::vector<double>> tempValues;

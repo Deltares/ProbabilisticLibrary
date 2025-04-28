@@ -86,7 +86,7 @@ namespace Deltares
             }
         }
 
-        Sensitivity::SensitivityResult SensitivityProject::getSensitivityResult()
+        SensitivityResult SensitivityProject::getSensitivityResult()
         {
             this->model->zValueConverter = this->parameterSelector;
 
@@ -103,9 +103,11 @@ namespace Deltares
             return result;
         }
 
-        bool SensitivityProject::isValid() const
+        bool SensitivityProject::isValid()
         {
-            return this->model != nullptr && this->runSettings != nullptr && this->runSettings->isValid();
+            return ModelProject::isValid() &&
+                runSettings != nullptr && runSettings->isValid() &&
+                settings->isValid();
         }
     }
 }

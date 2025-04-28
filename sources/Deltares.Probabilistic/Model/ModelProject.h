@@ -67,6 +67,12 @@ namespace Deltares
              * \brief Gets the total number of model runs
              */
             int modelRuns = 0;
+
+            /**
+             * \brief Indicates whether a run can be performed
+             */
+            virtual bool isValid();
+
         private:
             std::unordered_map<std::string, std::shared_ptr<Statistics::Stochast>> existingStochasts;
         };

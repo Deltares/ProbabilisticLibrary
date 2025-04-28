@@ -262,6 +262,7 @@ namespace Deltares
             case ReliabilityMethodType::ReliabilityNumericalBisection: return GetNumericalBisectionMethod()->Settings->isValid();
             case ReliabilityMethodType::ReliabilityLatinHyperCube: return GetLatinHypercubeMethod()->Settings->isValid();
             case ReliabilityMethodType::ReliabilitySubsetSimulation: return GetSubsetSimulationMethod()->Settings->isValid();
+            case ReliabilityMethodType::ReliabilityCobyla: return GetCobylaReliabilityMethod()->Settings->isValid();
             case ReliabilityMethodType::ReliabilityFORMthenDirectionalSampling:
             {
                 auto fdir = GetFormThenDsReliabilityMethod();

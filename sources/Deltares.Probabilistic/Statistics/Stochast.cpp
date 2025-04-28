@@ -293,7 +293,15 @@ namespace Deltares
 
         bool Stochast::isValid()
         {
-            return distribution->isValid(properties);
+            if (IsVariableStochast)
+            {
+                initializeConditionalValues();
+                return ValueSet->isValid(distributionType, truncated, inverted);
+            }
+            else
+            {
+                return distribution->isValid(properties);
+            }
         }
 
         bool Stochast::isQualitative() const

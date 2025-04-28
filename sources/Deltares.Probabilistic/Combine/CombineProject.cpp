@@ -26,6 +26,11 @@ namespace Deltares
 {
     namespace Reliability
     {
+        bool CombineProject::isValid() const
+        {
+            return !designPoints.empty();
+        }
+
         void CombineProject::run()
         {
             std::shared_ptr<DesignPointCombiner> combiner = std::make_shared<DesignPointCombiner>(this->settings->combinerMethod);

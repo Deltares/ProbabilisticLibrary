@@ -40,7 +40,7 @@ namespace Deltares
 
         bool LogNormalDistribution::isValid(std::shared_ptr<StochastProperties> stochast)
         {
-            return !std::isinf(stochast->Location) && stochast->Scale >= 0;
+            return !(stochast->Location > 0 && std::isinf(stochast->Location)) && stochast->Scale >= 0;
         }
 
         bool LogNormalDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)

@@ -91,6 +91,27 @@ namespace Deltares
             properties->Observations = round(NumericSupport::interpolate(x, this->xValues, this->observations));
         }
 
+        bool VariableStochastValuesSet::isValid(DistributionType distributionType, bool truncated, bool inverted)
+        {
+            if (StochastValues.empty())
+            {
+                return false;
+            }
+
+            std::shared_ptr<Distribution> distribution = DistributionLibrary::getDistribution(distributionType, truncated, inverted);
+
+            for (auto stochastValue : StochastValues)
+            {
+                std::shared_ptr<StochastProperties> properties = this->getInterpolatedStochast(stochastValue->X);
+                if (!distribution->isValid(properties))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         bool VariableStochastValuesSet::isVarying(DistributionType distributionType, std::shared_ptr<StochastProperties> defaultStochast) const
         {
             std::shared_ptr<Distribution> distribution = DistributionLibrary::getDistribution(distributionType, false, false);

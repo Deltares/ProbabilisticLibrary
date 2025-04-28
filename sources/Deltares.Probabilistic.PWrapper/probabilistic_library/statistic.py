@@ -19,9 +19,9 @@
 # Stichting Deltares and remain full property of Stichting Deltares at all times.
 # All rights reserved.
 #
+from __future__ import annotations
 from ctypes import ArgumentError
 from enum import Enum
-
 from .utils import *
 from . import interface
 
@@ -71,7 +71,7 @@ class DistributionType(Enum):
 	def __str__(self):
 		return str(self.value)
 
-class StandardNormal:
+class StandardNormal(FrozenObject):
 	"""
 	Provides conversions between probabilities (p,q), reliability (u) and return time (t)
 	"""
@@ -79,11 +79,11 @@ class StandardNormal:
 
 	def __dir__(self):
 		return ['get_u_from_q',
-			'get_u_from_p',
-			'get_q_from_u',
-			'get_p_from_u',
-			'get_t_from_u',
-			'get_u_from_t']
+		        'get_u_from_p',
+		        'get_q_from_u',
+		        'get_p_from_u',
+		        'get_t_from_u',
+		        'get_u_from_t']
 
 	def get_u_from_q (q : float) -> float:
 		"""
@@ -121,16 +121,20 @@ class StandardNormal:
 		"""
 		return interface.GetArgValue(StandardNormal._id, 'u_from_t', t)
 
-class ProbabilityValue:
+class ProbabilityValue(FrozenObject):
 
 	def __init__(self, id = None):
 		if id is None:
 			self._id = interface.Create('probability_value')
 		else:
 			self._id = id
+		super()._freeze()
 
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 
 	def __dir__(self):
 		return ['reliability_index',
@@ -142,7 +146,7 @@ class ProbabilityValue:
 		return str(self.probability_of_non_failure)
 
 	@property
-	def reliability_index(self):
+	def reliability_index(self) -> float:
 		return interface.GetValue(self._id, 'reliability_index')
 
 	@reliability_index.setter
@@ -150,7 +154,7 @@ class ProbabilityValue:
 		interface.SetValue(self._id, 'reliability_index',  value)
 
 	@property
-	def probability_of_failure(self):
+	def probability_of_failure(self) -> float:
 		return interface.GetValue(self._id, 'probability_of_failure')
 
 	@probability_of_failure.setter
@@ -158,7 +162,7 @@ class ProbabilityValue:
 		interface.SetValue(self._id, 'probability_of_failure',  value)
 
 	@property
-	def probability_of_non_failure(self):
+	def probability_of_non_failure(self) -> float:
 		return interface.GetValue(self._id, 'probability_of_non_failure')
 
 	@probability_of_non_failure.setter
@@ -166,14 +170,14 @@ class ProbabilityValue:
 		interface.SetValue(self._id, 'probability_of_non_failure',  value)
 
 	@property
-	def return_period(self):
+	def return_period(self) -> float:
 		return interface.GetValue(self._id, 'return_period')
 
 	@return_period.setter
 	def return_period(self, value : float):
 		interface.SetValue(self._id, 'return_period',  value)
 
-class Stochast:
+class Stochast(FrozenObject):
 
 	def __init__(self, id = None):
 		if id is None:
@@ -190,9 +194,13 @@ class Stochast:
 		self._array_variables = None
 		self._variables = FrozenList() # other known variables, to which a reference can exist
 		self._synchronizing = False
+		super()._freeze()
 
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 
 	def __dir__(self):
 		return ['name',
@@ -239,7 +247,7 @@ class Stochast:
 		self._variables = variables
 		
 	@property
-	def name(self):
+	def name(self) -> str:
 		return interface.GetStringValue(self._id, 'name')
 
 	@name.setter
@@ -250,7 +258,7 @@ class Stochast:
 		return self.name
 
 	@property
-	def distribution(self):
+	def distribution(self) -> DistributionType:
 		return DistributionType[interface.GetStringValue(self._id, 'distribution')]
 
 	@distribution.setter
@@ -258,7 +266,7 @@ class Stochast:
 		interface.SetStringValue(self._id, 'distribution', str(value))
 
 	@property
-	def inverted(self):
+	def inverted(self) -> bool:
 		return interface.GetBoolValue(self._id, 'inverted')
 
 	@inverted.setter
@@ -266,7 +274,7 @@ class Stochast:
 		interface.SetBoolValue(self._id, 'inverted', value)
 
 	@property
-	def truncated(self):
+	def truncated(self) -> bool:
 		return interface.GetBoolValue(self._id, 'truncated')
 
 	@truncated.setter
@@ -274,7 +282,7 @@ class Stochast:
 		interface.SetBoolValue(self._id, 'truncated', value)
 
 	@property
-	def mean(self):
+	def mean(self) -> float:
 		return interface.GetValue(self._id, 'mean')
 
 	@mean.setter
@@ -282,7 +290,7 @@ class Stochast:
 		interface.SetValue(self._id, 'mean', value)
 
 	@property
-	def deviation(self):
+	def deviation(self) -> float:
 		return interface.GetValue(self._id, 'deviation')
 
 	@deviation.setter
@@ -291,7 +299,7 @@ class Stochast:
 		interface.SetValue(self._id, 'deviation', value)
 
 	@property
-	def variation(self):
+	def variation(self) -> float:
 		return interface.GetValue(self._id, 'variation')
 
 	@variation.setter
@@ -300,7 +308,7 @@ class Stochast:
 		interface.SetValue(self._id, 'variation', value)
 
 	@property
-	def location(self):
+	def location(self) -> float:
 		return interface.GetValue(self._id, 'location')
 
 	@location.setter
@@ -308,7 +316,7 @@ class Stochast:
 		interface.SetValue(self._id, 'location', value)
 
 	@property
-	def scale(self):
+	def scale(self) -> float:
 		return interface.GetValue(self._id, 'scale')
 
 	@scale.setter
@@ -316,7 +324,7 @@ class Stochast:
 		interface.SetValue(self._id, 'scale', value)
 
 	@property
-	def shift(self):
+	def shift(self) -> float:
 		return interface.GetValue(self._id, 'shift')
 
 	@shift.setter
@@ -324,7 +332,7 @@ class Stochast:
 		interface.SetValue(self._id, 'shift', value)
 
 	@property
-	def shift_b(self):
+	def shift_b(self) -> float:
 		return interface.GetValue(self._id, 'shift_b')
 
 	@shift_b.setter
@@ -332,7 +340,7 @@ class Stochast:
 		interface.SetValue(self._id, 'shift_b', value)
 
 	@property
-	def minimum(self):
+	def minimum(self) -> float:
 		return interface.GetValue(self._id, 'minimum')
 
 	@minimum.setter
@@ -340,7 +348,7 @@ class Stochast:
 		interface.SetValue(self._id, 'minimum', value)
 
 	@property
-	def maximum(self):
+	def maximum(self) -> float:
 		return interface.GetValue(self._id, 'maximum')
 
 	@maximum.setter
@@ -348,7 +356,7 @@ class Stochast:
 		interface.SetValue(self._id, 'maximum', value)
 
 	@property
-	def shape(self):
+	def shape(self) -> float:
 		return interface.GetValue(self._id, 'shape')
 
 	@shape.setter
@@ -356,7 +364,7 @@ class Stochast:
 		interface.SetValue(self._id, 'shape', value)
 
 	@property
-	def shape_b(self):
+	def shape_b(self) -> float:
 		return interface.GetValue(self._id, 'shape_b')
 
 	@shape_b.setter
@@ -364,7 +372,7 @@ class Stochast:
 		interface.SetValue(self._id, 'shape_b', value)
 
 	@property
-	def rate(self):
+	def rate(self) -> float:
 		return interface.GetValue(self._id, 'rate')
 
 	@rate.setter
@@ -372,7 +380,7 @@ class Stochast:
 		interface.SetValue(self._id, 'rate', value)
 
 	@property
-	def observations(self):
+	def observations(self) -> int:
 		return interface.GetIntValue(self._id, 'observations')
 
 	@observations.setter
@@ -380,7 +388,7 @@ class Stochast:
 		interface.SetIntValue(self._id, 'observations', value)
 
 	@property
-	def discrete_values(self):
+	def discrete_values(self) -> list[DiscreteValue]:
 		if self._discrete_values is None:
 			self._synchronizing = True
 			self._discrete_values = CallbackList(self._discrete_values_changed)
@@ -396,7 +404,7 @@ class Stochast:
 			interface.SetArrayIntValue(self._id, 'discrete_values', [discrete_value._id for discrete_value in self._discrete_values])
 
 	@property
-	def histogram_values(self):
+	def histogram_values(self) -> list[HistogramValue]:
 		if self._histogram_values is None:
 			self._synchronizing = True
 			self._histogram_values = CallbackList(self._histogram_values_changed)
@@ -412,7 +420,7 @@ class Stochast:
 			interface.SetArrayIntValue(self._id, 'histogram_values', [histogram_value._id for histogram_value in self._histogram_values])
 
 	@property
-	def fragility_values(self):
+	def fragility_values(self) -> list[FragilityValue]:
 		if self._fragility_values is None:
 			self._synchronizing = True
 			self._fragility_values = CallbackList(self._fragility_values_changed)
@@ -428,7 +436,7 @@ class Stochast:
 			interface.SetArrayIntValue(self._id, 'fragility_values', [fragility_value._id for fragility_value in self._fragility_values])
 
 	@property
-	def contributing_stochasts(self):
+	def contributing_stochasts(self) -> list[ContributingStochast]:
 		if self._contributing_stochasts is None:
 			self._synchronizing = True
 			self._contributing_stochasts = CallbackList(self._contributing_stochasts_changed)
@@ -444,7 +452,7 @@ class Stochast:
 			interface.SetArrayIntValue(self._id, 'contributing_stochasts', [contributing_stochast._id for contributing_stochast in self._contributing_stochasts])
 
 	@property
-	def conditional(self):
+	def conditional(self) -> bool:
 		return interface.GetBoolValue(self._id, 'conditional')
 
 	@conditional.setter
@@ -452,7 +460,7 @@ class Stochast:
 		interface.SetBoolValue(self._id, 'conditional', value)
 
 	@property
-	def conditional_source(self):
+	def conditional_source(self) -> Stochast:
 		cs_id = interface.GetIdValue(self._id, 'conditional_source')
 		if cs_id > 0:
 			if self._conditional_source is None or not self._conditional_source._id == cs_id:
@@ -464,14 +472,14 @@ class Stochast:
 			return None
 
 	@conditional_source.setter
-	def conditional_source(self, value):
+	def conditional_source(self, value : str | Stochast):
 		if type(value) == str:
 			value = self._variables[value]
 		if isinstance(value, Stochast):
 			interface.SetIntValue(self._id, 'conditional_source', value._id)
 
 	@property
-	def conditional_values(self):
+	def conditional_values(self) -> list[ConditionalValue]:
 		if self._conditional_values is None:
 			self._synchronizing = True
 			self._conditional_values = CallbackList(self._conditional_values_changed)
@@ -487,7 +495,7 @@ class Stochast:
 			interface.SetArrayIntValue(self._id, 'conditional_values', [conditional_value._id for conditional_value in self._conditional_values])
 
 	@property
-	def array_variables(self):
+	def array_variables(self) -> list[Stochast]:
 		if self._array_variables is None:
 			self._synchronizing = True
 			self._array_variables = CallbackList(self._array_variables_changed)
@@ -503,66 +511,66 @@ class Stochast:
 			interface.SetArrayIntValue(self._id, 'array_variables', [array_variable._id for array_variable in self._array_variables])
 
 	@property
-	def design_quantile(self):
+	def design_quantile(self) -> float:
 		return interface.GetValue(self._id, 'design_quantile')
 
 	@design_quantile.setter
-	def design_quantile(self, value):
+	def design_quantile(self, value : float):
 		interface.SetValue(self._id, 'design_quantile', value)
 
 	@property
-	def design_factor(self):
+	def design_factor(self) -> float:
 		return interface.GetValue(self._id, 'design_factor')
 
 	@design_factor.setter
-	def design_factor(self, value):
+	def design_factor(self, value : float):
 		interface.SetValue(self._id, 'design_factor',  value)
 
 	@property
-	def design_value(self):
+	def design_value(self) -> float:
 		return interface.GetValue(self._id, 'design_value')
 
 	@design_value.setter
-	def design_value(self, value):
+	def design_value(self, value : float):
 		interface.SetValue(self._id, 'design_value', value)
 
 	@property
-	def is_array(self):
+	def is_array(self) -> bool:
 		return interface.GetBoolValue(self._id, 'is_array')
 		
 	@is_array.setter
-	def is_array(self, value):
+	def is_array(self, value : bool):
 		interface.SetBoolValue(self._id, 'is_array', value)
 
 	@property
-	def array_size(self):
+	def array_size(self) -> int:
 		return interface.GetIntValue(self._id, 'array_size')
 		
 	@array_size.setter
-	def array_size(self, value):
+	def array_size(self, value : int):
 		interface.SetIntValue(self._id, 'array_size', value)
 
-	def get_quantile(self, quantile : float):
+	def get_quantile(self, quantile : float) -> float:
 		return interface.GetArgValue(self._id, 'quantile', quantile)
 
-	def get_x_from_u(self, u : float):
+	def get_x_from_u(self, u : float) -> float:
 		return interface.GetArgValue(self._id, 'x_from_u', u)
 
-	def get_u_from_x(self, x : float):
+	def get_u_from_x(self, x : float) -> float:
 		return interface.GetArgValue(self._id, 'u_from_x', x)
 
-	def get_pdf(self, x : float):
+	def get_pdf(self, x : float) -> float:
 		return interface.GetArgValue(self._id, 'pdf', x)
 
-	def get_cdf(self, x : float):
+	def get_cdf(self, x : float) -> float:
 		return interface.GetArgValue(self._id, 'cdf', x)
 
-	def get_x_from_u_and_source(self, u : float, x: float):
+	def get_x_from_u_and_source(self, u : float, x: float) -> float:
 		interface.SetArrayValue(self._id, 'u_and_x', [u, x])
 		interface.Execute(self._id, 'initialize_conditional_values');
 		return interface.GetValue(self._id, 'x_from_u_and_source')
 
-	def get_special_values(self):
+	def get_special_values(self) -> list[float]:
 		return interface.GetArrayValue(self._id, 'special_values')
 
 	def fit(self, values):
@@ -571,7 +579,7 @@ class Stochast:
 		self._discrete_values = None
 		self._fragility_values = None
 
-	def get_ks_test(self, values):
+	def get_ks_test(self, values) -> float:
 		interface.SetArrayValue(self._id, 'data', values)
 		return interface.GetValue(self._id, 'ks_test')
 
@@ -586,17 +594,111 @@ class Stochast:
 			self._contributing_stochasts = None
 			self._conditional_values = None
 
+	def print(self):
+		pre = '  '
+		if self.name == '':
+			print(f'Variable:')
+		else:
+			print(f'Variable {self.name}:')
+		if not self.truncated and not self.inverted:
+			print(pre + f'distribution = {self.distribution}')
+		elif self.truncated and not self.inverted:
+			print(pre + f'distribution = {self.distribution} (truncated)')
+		elif not self.truncated and self.inverted:
+			print(pre + f'distribution = {self.distribution} (inverted)')
+		elif self.truncated and self.inverted:
+			print(pre + f'distribution = {self.distribution} (inverted, truncated')
+		print('Definition:')
+		for prop in ['location', 'scale', 'minimum', 'shift', 'shift_b', 'maximum', 'shape', 'shape_b', 'observations']:
+			if interface.GetBoolValue(self._id, 'is_used_' + prop):
+				if prop == 'observations':
+					print(pre + f'{prop} = {interface.GetIntValue(self._id, prop)}')
+				else:
+					print(pre + f'{prop} = {interface.GetValue(self._id, prop)}')
+		if self.distribution == DistributionType.histogram:
+			for value in self.histogram_values:
+				print(pre + f'amount[{value.lower_bound}, {value.upper_bound}] = {value.amount}')
+		elif self.distribution == DistributionType.cdf_curve:
+			for value in self.fragility_values:
+				print(pre + f'beta[{value.x}] = {value.reliability_index}')
+		elif self.distribution == DistributionType.discrete or self.distribution == DistributionType.qualitative:
+			for value in self.discrete_values:
+				print(pre + f'amount[{value.x}] = {value.amount}')
+		if self.design_quantile != 0.5 or self.design_factor != 1.0:
+			print(pre + f'design_quantile = {self.design_quantile}')
+			print(pre + f'design_factor = {self.design_factor}')
+		print('Derived values:')
+		print(pre + f'mean = {self.mean}')
+		print(pre + f'deviation = {self.deviation}')
+		print(pre + f'variation = {self.variation}')
+		if self.design_quantile != 0.5 or self.design_factor != 1.0:
+			print(pre + f'design_value = {self.design_value}')
 
-class DiscreteValue:
+	def plot(self, xmin : float = None, xmax : float = None):
+
+		import numpy as np
+		import matplotlib.pyplot as plt
+
+		limit_special_values = True
+		if xmin is None:
+			xmin = self.get_x_from_u(0) - 4 * (self.get_x_from_u(0) - self.get_x_from_u(-1))
+			limit_special_values = False
+		if xmax is None:
+			xmax = self.get_x_from_u(0) + 4 * (self.get_x_from_u(1) - self.get_x_from_u(0))
+			limit_special_values = False
+
+		if xmin > xmax:
+			temp = xmin
+			xmin = xmax
+			xmax = temp
+
+		if xmin == xmax:
+			diff = abs(xmin) / 10
+			if diff == 0:
+				diff = 1
+			xmin = xmin - diff
+			xmax = xmin + diff
+
+		values = np.arange(xmin, xmax, (xmax - xmin) / 1000).tolist()
+		add_values = interface.GetArrayValue(self._id, 'special_values')
+		if limit_special_values:
+			add_values = [x for x in add_values if x >= xmin and x <= xmax]
+		values.extend(add_values)
+		values.sort()
+
+		pdf = [self.get_pdf(x) for x in values]
+		cdf = [self.get_cdf(x) for x in values]
+    
+		fig, ax1 = plt.subplots()
+		color = "tab:blue"
+		if self.name == '':
+			ax1.set_xlabel("value [x]")
+		else:
+			ax1.set_xlabel(f"{self.name} [x]")
+		ax1.set_ylabel("pdf [-]", color=color)
+		ax1.plot(values, pdf)
+		ax1.tick_params(axis="y", labelcolor=color)
+		ax2 = ax1.twinx()
+		color = "tab:red"
+		ax2.set_ylabel("cdf [-]", color=color)
+		ax2.plot(values, cdf, "r--", label="pdf")
+		ax2.tick_params(axis="y", labelcolor=color)
+
+
+class DiscreteValue(FrozenObject):
 
 	def __init__(self, id = None):
 		if id is None:
 			self._id = interface.Create('discrete_value')
 		else:
 			self._id = id
+		super()._freeze()
 
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 
 	def __dir__(self):
 		return ['x',
@@ -609,7 +711,7 @@ class DiscreteValue:
 		return discreteValue
 
 	@property
-	def x(self):
+	def x(self) -> float:
 		return interface.GetValue(self._id, 'x')
 
 	@x.setter
@@ -617,14 +719,14 @@ class DiscreteValue:
 		interface.SetValue(self._id, 'x',  value)
 
 	@property
-	def amount(self):
+	def amount(self) -> float:
 		return interface.GetValue(self._id, 'amount')
 
 	@amount.setter
 	def amount(self, value : float):
 		interface.SetValue(self._id, 'amount',  value)
 
-class FragilityValue:
+class FragilityValue(FrozenObject):
 
 	def __init__(self, id = None):
 		if id is None:
@@ -632,9 +734,13 @@ class FragilityValue:
 		else:
 			self._id = id
 		self._design_point = None
+		super()._freeze()
 
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 
 	def __dir__(self):
 		return ['x',
@@ -651,7 +757,7 @@ class FragilityValue:
 		return fragilityValue
 
 	@property
-	def x(self):
+	def x(self) -> float:
 		return interface.GetValue(self._id, 'x')
 
 	@x.setter
@@ -659,7 +765,7 @@ class FragilityValue:
 		interface.SetValue(self._id, 'x',  value)
 
 	@property
-	def reliability_index(self):
+	def reliability_index(self) -> float:
 		return interface.GetValue(self._id, 'reliability_index')
 
 	@reliability_index.setter
@@ -667,7 +773,7 @@ class FragilityValue:
 		interface.SetValue(self._id, 'reliability_index',  value)
 
 	@property
-	def probability_of_failure(self):
+	def probability_of_failure(self) -> float:
 		return interface.GetValue(self._id, 'probability_of_failure')
 
 	@probability_of_failure.setter
@@ -675,7 +781,7 @@ class FragilityValue:
 		interface.SetValue(self._id, 'probability_of_failure',  value)
 
 	@property
-	def probability_of_non_failure(self):
+	def probability_of_non_failure(self) -> float:
 		return interface.GetValue(self._id, 'probability_of_non_failure')
 
 	@probability_of_non_failure.setter
@@ -683,7 +789,7 @@ class FragilityValue:
 		interface.SetValue(self._id, 'probability_of_non_failure',  value)
 
 	@property
-	def return_period(self):
+	def return_period(self) -> float:
 		return interface.GetValue(self._id, 'return_period')
 
 	@return_period.setter
@@ -691,7 +797,7 @@ class FragilityValue:
 		interface.SetValue(self._id, 'return_period',  value)
 
 	@property
-	def design_point(self):
+	def design_point(self) -> DesignPoint:
 		return self._design_point
 
 	@design_point.setter
@@ -700,21 +806,25 @@ class FragilityValue:
 		if self._design_point is not None:
 			interface.SetIntValue(self._id, 'design_point',  self._design_point._id)
 
-class HistogramValue:
+class HistogramValue(FrozenObject):
 
 	def __init__(self, id = None):
 		if id is None:
 			self._id = interface.Create('histogram_value')
 		else:
 			self._id = id
+		super()._freeze()
 
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 
 	def __dir__(self):
 		return ['lower_bound',
-			'upper_bound',
-			'amount']
+		        'upper_bound',
+		        'amount']
 
 	def create(lower_bound : float, upper_bound : float, amount : float):
 		histogramValue = HistogramValue();
@@ -724,31 +834,30 @@ class HistogramValue:
 		return histogramValue
 
 	@property
-	def lower_bound(self):
+	def lower_bound(self) -> float:
 		return interface.GetValue(self._id, 'lower_bound')
 
 	@lower_bound.setter
-	def lower_bound(self, value):
+	def lower_bound(self, value : float):
 		interface.SetValue(self._id, 'lower_bound',  value)
 
 	@property
-	def upper_bound(self):
+	def upper_bound(self) -> float:
 		return interface.GetValue(self._id, 'upper_bound')
 
 	@upper_bound.setter
-	def upper_bound(self, value):
+	def upper_bound(self, value : float):
 		interface.SetValue(self._id, 'upper_bound',  value)
 
 	@property
-	def amount(self):
+	def amount(self) -> float:
 		return interface.GetValue(self._id, 'amount')
 
 	@amount.setter
-	def amount(self, value):
+	def amount(self, value : float):
 		interface.SetValue(self._id, 'amount',  value)
 
-
-class ContributingStochast:
+class ContributingStochast(FrozenObject):
 
 	def __init__(self, id = None):
 		if id is None:
@@ -756,13 +865,18 @@ class ContributingStochast:
 		else:
 			self._id = id
 		self._stochast = None
+		self._variable = None
+		super()._freeze()
 
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 
 	def __dir__(self):
 		return ['probability',
-			'variable']
+		        'variable']
 
 	def create(probability : float, variable : Stochast):
 		contributingStochast = ContributingStochast();
@@ -771,7 +885,7 @@ class ContributingStochast:
 		return contributingStochast
 
 	@property
-	def probability(self):
+	def probability(self) -> float:
 		return interface.GetValue(self._id, 'probability')
 
 	@probability.setter
@@ -779,7 +893,7 @@ class ContributingStochast:
 		interface.SetValue(self._id, 'probability',  value)
 
 	@property
-	def variable(self):
+	def variable(self) -> Stochast:
 		if self._variable is None:
 			id_ = interface.GetIdValue(self._id, 'variable')
 			if id_ > 0:
@@ -787,21 +901,25 @@ class ContributingStochast:
 		return self._variable
 
 	@variable.setter
-	def variable(self, value):
+	def variable(self, value : Stochast):
 		self._variable = value
 		if not self._variable is None:
 			interface.SetIntValue(self._id, 'variable',  self._variable._id)
 
-class ConditionalValue:
+class ConditionalValue(FrozenObject):
 
 	def __init__(self, id = None):
 		if id is None:
 			self._id = interface.Create('conditional_value')
 		else:
 			self._id = id
+		super()._freeze()
 
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 
 	def __dir__(self):
 		return ['x',
@@ -818,7 +936,7 @@ class ConditionalValue:
 				'maximum']
 
 	@property
-	def x(self):
+	def x(self) -> float:
 		return interface.GetValue(self._id, 'x')
 
 	@x.setter
@@ -826,7 +944,7 @@ class ConditionalValue:
 		interface.SetValue(self._id, 'x',  value)
 
 	@property
-	def mean(self):
+	def mean(self) -> float:
 		return interface.GetValue(self._id, 'mean')
 
 	@mean.setter
@@ -834,7 +952,7 @@ class ConditionalValue:
 		interface.SetValue(self._id, 'mean', value)
 
 	@property
-	def deviation(self):
+	def deviation(self) -> float:
 		return interface.GetValue(self._id, 'deviation')
 
 	@deviation.setter
@@ -842,7 +960,7 @@ class ConditionalValue:
 		interface.SetValue(self._id, 'deviation', value)
 
 	@property
-	def location(self):
+	def location(self) -> float:
 		return interface.GetValue(self._id, 'location')
 
 	@location.setter
@@ -850,7 +968,7 @@ class ConditionalValue:
 		interface.SetValue(self._id, 'location', value)
 
 	@property
-	def scale(self):
+	def scale(self) -> float:
 		return interface.GetValue(self._id, 'scale')
 
 	@scale.setter
@@ -858,7 +976,7 @@ class ConditionalValue:
 		interface.SetValue(self._id, 'scale', value)
 
 	@property
-	def shift(self):
+	def shift(self) -> float:
 		return interface.GetValue(self._id, 'shift')
 
 	@shift.setter
@@ -866,7 +984,7 @@ class ConditionalValue:
 		interface.SetValue(self._id, 'shift', value)
 
 	@property
-	def shift_b(self):
+	def shift_b(self) -> float:
 		return interface.GetValue(self._id, 'shift_b')
 
 	@shift_b.setter
@@ -874,7 +992,7 @@ class ConditionalValue:
 		interface.SetValue(self._id, 'shift_b', value)
 
 	@property
-	def minimum(self):
+	def minimum(self) -> float:
 		return interface.GetValue(self._id, 'minimum')
 
 	@minimum.setter
@@ -882,7 +1000,7 @@ class ConditionalValue:
 		interface.SetValue(self._id, 'minimum', value)
 
 	@property
-	def maximum(self):
+	def maximum(self) -> float:
 		return interface.GetValue(self._id, 'maximum')
 
 	@maximum.setter
@@ -890,7 +1008,7 @@ class ConditionalValue:
 		interface.SetValue(self._id, 'maximum', value)
 
 	@property
-	def shape(self):
+	def shape(self) -> float:
 		return interface.GetValue(self._id, 'shape')
 
 	@shape.setter
@@ -898,7 +1016,7 @@ class ConditionalValue:
 		interface.SetValue(self._id, 'shape', value)
 
 	@property
-	def shape_b(self):
+	def shape_b(self) -> float:
 		return interface.GetValue(self._id, 'shape_b')
 
 	@shape_b.setter
@@ -906,14 +1024,14 @@ class ConditionalValue:
 		interface.SetValue(self._id, 'shape_b', value)
 
 	@property
-	def observations(self):
+	def observations(self) -> int:
 		return interface.GetIntValue(self._id, 'observations')
 
 	@observations.setter
 	def observations(self, value : int):
 		interface.SetIntValue(self._id, 'observations', value)
 
-class CorrelationMatrix:
+class CorrelationMatrix(FrozenObject):
 
 	def __init__(self, id = None):
 		if id is None:
@@ -921,12 +1039,16 @@ class CorrelationMatrix:
 		else:
 			self._id = id
 		self._variables = FrozenList()
+		super()._freeze()
 
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 
 	@property
-	def variables(self):
+	def variables(self) -> list[Stochast]:
 		return self._variables
 
 	def _set_variables(self, variables):
@@ -946,7 +1068,7 @@ class CorrelationMatrix:
 				update_variables.append(Stochast(stochast_id))
 		self._variables = FrozenList(update_variables)
 
-	def __getitem__(self, stochasts):
+	def __getitem__(self, stochasts) -> float:
 		if not isinstance(stochasts, tuple) or not len(stochasts) == 2:
 			raise ArgumentError('Expected 2 arguments')
 
@@ -972,41 +1094,50 @@ class CorrelationMatrix:
 
 		interface.SetIndexedIndexedValue(self._id, 'correlation', stochast_list[0]._id, stochast_list[1]._id, value)
 
-class SelfCorrelationMatrix:
+class SelfCorrelationMatrix(FrozenObject):
 
 	def __init__(self):
 		self._id = interface.Create('self_correlation_matrix')
+		self._variables = None
+		super()._freeze()
 
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 
 	def _set_variables(self, variables):
 		self._variables = FrozenList(variables)
 
-	def __getitem__(self, stochast):
+	def __getitem__(self, stochast : str | Stochast) -> float:
 		stochast_obj = stochast
 		if isinstance(stochast_obj, str):
 			stochast_obj = self._variables[str(stochast_obj)]
 
 		return interface.GetIntArgValue(self._id, stochast_obj._id, 'rho')
 
-	def __setitem__(self, stochast, value):
+	def __setitem__(self, stochast : str | Stochast, value : float):
 		stochast_obj = stochast
 		if isinstance(stochast_obj, str):
 			stochast_obj = self._variables[str(stochast_obj)]
 
 		interface.SetIntArgValue(self._id, stochast_obj._id, 'rho', value)
 
-class Scenario:
+class Scenario(FrozenObject):
 
 	def __init__(self, id = None):
 		if id is None:
 			self._id = interface.Create('scenario')
 		else:
 			self._id = id
+		super()._freeze()
 
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 
 	def __dir__(self):
 		return ['name',
@@ -1016,7 +1147,7 @@ class Scenario:
 		return str(self.name)
 
 	@property
-	def name(self):
+	def name(self) -> str:
 		return interface.GetStringValue(self._id, 'name')
 
 	@name.setter
@@ -1024,7 +1155,7 @@ class Scenario:
 		interface.SetStringValue(self._id, 'name', value)
 
 	@property
-	def probability(self):
+	def probability(self) -> float:
 		return interface.GetValue(self._id, 'probability')
 
 	@probability.setter

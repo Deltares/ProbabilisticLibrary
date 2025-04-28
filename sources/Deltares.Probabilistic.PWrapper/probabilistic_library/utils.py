@@ -67,6 +67,8 @@ class FrozenList():
 	def __getitem__(self, index):
 		if isinstance(index, int):
 			return self._list[index]
+		elif isinstance(index, slice):
+			return FrozenList(self._list[index])
 		else:
 			if not isinstance(index, str):
 				index = str(index)
@@ -95,5 +97,26 @@ class FrozenList():
 		getlist.extend(self._list)
 		return getlist
 
+class FrozenObject:
+	def __setattr__(self, key, value):
+		if hasattr(self, '_frozen'):
+			if key in self.__dir__() or hasattr(self, key):
+				super.__setattr__(self, key, value)
+			else:
+				raise ValueError(key + ' does not exist')
+		else:
+			super.__setattr__(self, key, value)
 
+	def __dir__(self):
+		return []
+
+	def _freeze(self):
+		self._frozen = True
+
+class PrintUtils:
+    def get_space_from_indent(indent : int) -> str:
+        indent_str = ''
+        for i in range(indent):
+            indent_str += '  '
+        return indent_str
 		

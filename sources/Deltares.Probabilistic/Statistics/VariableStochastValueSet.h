@@ -68,6 +68,12 @@ namespace Deltares
             bool isVarying(DistributionType distributionType, std::shared_ptr<StochastProperties> defaultStochast = nullptr) const;
 
             /**
+              * \brief Indicates whether the stochast value set is valid
+              * \return Indication
+              */
+            bool isValid(DistributionType distributionType, bool truncated, bool inverted);
+
+            /**
               * \brief Makes a deep copy of a source
               * \param source Source
               * \return Copy
