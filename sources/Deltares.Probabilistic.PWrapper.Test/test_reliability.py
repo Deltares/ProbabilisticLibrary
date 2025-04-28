@@ -125,8 +125,8 @@ class Test_reliability(unittest.TestCase):
 
         composite1 = Stochast()
         composite1.distribution = DistributionType.uniform
-        composite1.minimum = -1
-        composite1.maximum = -1.5
+        composite1.minimum = -1.5
+        composite1.maximum = -1
         project.variables['b'].contributing_stochasts.append(ContributingStochast.create(0.4, composite1))
 
         composite2 = Stochast()

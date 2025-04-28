@@ -491,9 +491,10 @@ class ModelProject(FrozenObject):
 		interface.SetIntValue(self._project_id, 'settings', self._settings._id)
 		if hasattr(self.settings, 'stochast_settings'):
 			interface.SetArrayIntValue(self.settings._id, 'stochast_settings', [stochast_setting._id for stochast_setting in self.settings.stochast_settings])
-		if self._model != None and hasattr(self.settings, 'max_parallel_processes'):
-			self._model.set_max_processes(self.settings.max_parallel_processes)
-		self._model.initialize_for_run()
+		if self._model != None:
+			if hasattr(self.settings, 'max_parallel_processes'):
+				self._model.set_max_processes(self.settings.max_parallel_processes)
+			self._model.initialize_for_run()
 		ModelProject._zmodel = self._model
 
 	def _run(self):

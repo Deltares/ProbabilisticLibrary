@@ -21,7 +21,6 @@
 //
 # include "ProjectHandler.h"
 
-#include <iostream>
 #include <string>
 #include <memory>
 
@@ -1105,7 +1104,6 @@ namespace Deltares
             }
             else if (objectType == ObjectType::Project)
             {
-                std::cout << "reliability project is valid" << std::endl;
                 std::shared_ptr<Reliability::ReliabilityProject> project = projects[id];
 
                 if (property_ == "is_valid") return project->isValid();
