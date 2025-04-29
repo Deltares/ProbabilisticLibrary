@@ -19,7 +19,7 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include <iostream>
+
 #include <gtest/gtest.h>
 #include "testReliabilityMethods.h"
 #include "../../Deltares.Probabilistic/Reliability/LatinHyperCube.h"
@@ -47,7 +47,7 @@ namespace Deltares
             {
                 auto calculator = FORM();
 
-                auto modelRunner = projectBuilder().BuildLinearProject();
+                auto modelRunner = projectBuilder::BuildLinearProject();
 
                 auto designPoint = calculator.getDesignPoint(modelRunner);
 
@@ -65,7 +65,7 @@ namespace Deltares
             {
                 auto calculator = FORM();
 
-                auto modelRunner = projectBuilder().BuildLinearArrayProject();
+                auto modelRunner = projectBuilder::BuildLinearArrayProject();
 
                 auto designPoint = calculator.getDesignPoint(modelRunner);
 
@@ -81,7 +81,7 @@ namespace Deltares
             {
                 auto calculator = FORM();
 
-                auto modelRunner = projectBuilder().BuildLinearVaryingArrayProject();
+                auto modelRunner = projectBuilder::BuildLinearVaryingArrayProject();
 
                 auto designPoint = calculator.getDesignPoint(modelRunner);
 
