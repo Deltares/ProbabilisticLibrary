@@ -21,7 +21,7 @@ Install the wheel as follows:
 pip install probabilistic_library-25.1.1-py3-none-any.whl --force-reinstall
 ```
 
-## Jupyter notebooks
+### Jupyter notebooks
 Several Jupyter notebooks are available to demonstrate how to use the Probabilistic Library through the Python wrapper:
 
 1. [Overview of the available distribution functions](sources/Deltares.Probabilistic.PWrapper.Notebooks/overview_distribution_functions.ipynb)
@@ -56,7 +56,7 @@ Several Jupyter notebooks are available to demonstrate how to use the Probabilis
 
     * [Integration of a fragility curve](sources/Deltares.Probabilistic.PWrapper.Notebooks/failure_probability_fragility_curve.ipynb)
 
-7. [Sensitivity analysis]:
+7. Sensitivity analysis:
 
     * [Simple example](sources/Deltares.Probabilistic.PWrapper.Notebooks/sensitivity_analysis.ipynb)
 
@@ -66,9 +66,16 @@ Several Jupyter notebooks are available to demonstrate how to use the Probabilis
 
 9. [Including statistical uncertainty](sources/Deltares.Probabilistic.PWrapper.Notebooks/statistical_uncertainty.ipynb)
 
+10. [Single model run](sources/Deltares.Probabilistic.PWrapper.Notebooks/run_model.ipynb)
+
+11. [Parallel computing and reusing realizations](sources/Deltares.Probabilistic.PWrapper.Notebooks/parallel_overtopping.ipynb)
+
 ## License
 
 This library is released under the LGPL license. For full text of this license, refer to the [LICENSE](LICENSE) file.
+
+## Developers section
+Please check our [Wiki](https://github.com/Deltares/ProbabilisticLibrary/wiki) for a more details.
 
 ## Contact
 For the wheel or additional information, contact:

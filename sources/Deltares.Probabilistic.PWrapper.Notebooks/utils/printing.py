@@ -58,3 +58,10 @@ def print_input_output_var(pm):
     print("Output parameters:")
     for output_parameter in pm.output_parameters:
         print(output_parameter)
+
+# print result of a single model run
+def print_model_results(pm, pr):
+
+    print("Results of the model run:")
+    for id, par in enumerate(pm.output_parameters):
+        print(f"{par}: {pr.output_values[id]}")

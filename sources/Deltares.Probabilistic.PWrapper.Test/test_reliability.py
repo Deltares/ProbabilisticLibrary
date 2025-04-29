@@ -30,6 +30,25 @@ margin = 0.01
 
 class Test_reliability(unittest.TestCase):
 
+    def test_invalid_project(self):
+        project = project_builder.get_linear_project()
+
+        project.settings.reliability_method = ReliabilityMethod.form
+        self.assertTrue(project.is_valid())
+
+        # change an unused property to an invalid value
+        project.variables['a'].scale = -1
+        self.assertTrue(project.is_valid())
+
+        # now use the property, reassign the invalid property, because by changing the scale is reset
+        project.variables['a'].distribution = DistributionType.normal
+        project.variables['a'].scale = -1
+        self.assertFalse(project.is_valid())
+
+        # run an invalid prohect
+        project.run();
+        self.assertIsNone(project.design_point)
+
     def test_form_linear(self):
         project = project_builder.get_linear_project()
 
@@ -55,6 +74,139 @@ class Test_reliability(unittest.TestCase):
         self.assertEqual('a', project.design_point.alphas[0].variable.name)
 
         self.assertEqual(0, len(dp.messages))
+
+    def test_form_initialized_linear(self):
+        project = project_builder.get_linear_initialized_project()
+
+        project.settings.reliability_method = ReliabilityMethod.form
+
+        project.run();
+
+        dp = project.design_point;
+        beta = dp.reliability_index;
+        alphas = dp.alphas;
+
+        self.assertAlmostEqual(2.33, beta, delta=margin)
+        self.assertEqual(2, len(alphas))
+
+    def test_form_initialized_linear_parallel(self):
+        project = project_builder.get_linear_initialized_project()
+
+        project.settings.reliability_method = ReliabilityMethod.form
+        project.settings.max_parallel_processes = 4
+
+        project.run();
+
+        dp = project.design_point;
+        beta = dp.reliability_index;
+        alphas = dp.alphas;
+
+        self.assertAlmostEqual(2.33, beta, delta=margin)
+        self.assertEqual(2, len(alphas))
+
+    def test_form_array_result_linear(self):
+        project = project_builder.get_linear_array_result_project()
+
+        project.settings.reliability_method = ReliabilityMethod.form
+
+        project.run();
+
+        dp = project.design_point;
+        beta = dp.reliability_index;
+        alphas = dp.alphas;
+
+        self.assertAlmostEqual(2.33, beta, delta=margin)
+        self.assertEqual(2, len(alphas))
+
+    def test_crude_monte_carlo_linear_composite(self):
+        project = project_builder.get_linear_project()
+
+        project.variables['b'].distribution = DistributionType.composite
+
+        composite1 = Stochast()
+        composite1.distribution = DistributionType.uniform
+        composite1.minimum = -1.5
+        composite1.maximum = -1
+        project.variables['b'].contributing_stochasts.append(ContributingStochast.create(0.4, composite1))
+
+        composite2 = Stochast()
+        composite2.distribution = DistributionType.uniform
+        composite2.minimum = 0.5
+        composite2.maximum = 1
+        project.variables['b'].contributing_stochasts.append(ContributingStochast.create(0.6, composite2))
+
+        project.settings.reliability_method = ReliabilityMethod.crude_monte_carlo
+
+        project.run();
+
+        dp = project.design_point;
+
+        beta = dp.reliability_index;
+        alphas = dp.alphas;
+
+        self.assertAlmostEqual(2.32, beta, delta=margin)
+        self.assertEqual(2, len(alphas))
+
+        self.assertAlmostEqual(-0.78, alphas[0].alpha, delta=margin)
+        self.assertAlmostEqual(0.93, alphas[0].x, delta=margin)
+
+        self.assertAlmostEqual(-0.62, alphas[1].alpha, delta=margin)
+        self.assertAlmostEqual(0.93, alphas[1].x, delta=margin)
+
+    def test_crude_monte_carlo_linear_composite_conditional(self):
+        project = project_builder.get_linear_project()
+        project.settings.save_realizations = True
+
+        project.variables['b'].distribution = DistributionType.composite
+
+        composite1 = Stochast()
+        composite1.distribution = DistributionType.uniform
+        composite1.minimum = -5
+        composite1.maximum = -4
+        project.variables['b'].contributing_stochasts.append(ContributingStochast.create(0.4, composite1))
+
+        composite2 = Stochast()
+        composite2.distribution = DistributionType.uniform
+        composite2.conditional = True
+
+        conditional1 = ConditionalValue()
+        conditional1.x = -1
+        conditional1.minimum = -1.2
+        conditional1.maximum = -0.8
+        composite2.conditional_values.append(conditional1)
+
+        conditional2 = ConditionalValue()
+        conditional2.x = 1
+        conditional2.minimum = 0.8
+        conditional2.maximum = 1.2
+        composite2.conditional_values.append(conditional2)
+
+        composite2.conditional_source = 'a'
+
+        project.variables['b'].contributing_stochasts.append(ContributingStochast.create(0.6, composite2))
+
+        project.settings.reliability_method = ReliabilityMethod.crude_monte_carlo
+
+        project.run();
+
+        dp = project.design_point;
+
+        for real in dp.realizations:
+            first = real.input_values[1] >= -5 and real.input_values[1] <= -4
+            second = abs(real.input_values[1] - real.input_values[0]) <= 0.2
+            self.assertTrue(first or second)
+
+        beta = dp.reliability_index;
+        alphas = dp.alphas;
+
+        self.assertAlmostEqual(1.91, beta, delta=margin)
+        self.assertEqual(2, len(alphas))
+
+        self.assertAlmostEqual(-0.89, alphas[0].alpha, delta=margin)
+        self.assertAlmostEqual(0.91, alphas[0].x, delta=margin)
+
+        self.assertAlmostEqual(-0.45, alphas[1].alpha, delta=margin)
+        self.assertAlmostEqual(0.98, alphas[1].x, delta=margin)
 
     def test_form_linear_conditional(self):
         project = project_builder.get_linear_project()
@@ -133,6 +285,62 @@ class Test_reliability(unittest.TestCase):
         self.assertEqual(0, alphas[6].index)
         self.assertEqual(project.variables['b'], alphas[6].variable)
 
+    def test_form_linear_varying_array(self):
+        project = project_builder.get_linear_array_project()
+
+        self.assertEqual(False, project.variables['L'].is_array)
+        self.assertEqual(True, project.variables['a'].is_array)
+        self.assertEqual(True, project.variables['b'].is_array)
+
+        project.variables['a'].distribution = DistributionType.deterministic
+        project.variables['b'].distribution = DistributionType.deterministic
+
+        project.variables['a'].array_size = 5
+        project.variables['b'].array_size = 5
+
+        for i in range(project.variables['a'].array_size):
+            a_array = Stochast()
+            a_array.distribution = DistributionType.uniform
+            a_array.minimum = i-3
+            a_array.maximum = i-1
+            project.variables['a'].array_variables.append(a_array)
+
+        for i in range(project.variables['b'].array_size):
+            b_array = Stochast()
+            b_array.distribution = DistributionType.uniform
+            b_array.minimum = i-3
+            b_array.maximum = i-1
+            project.variables['b'].array_variables.append(b_array)
+
+        project.settings.reliability_method = ReliabilityMethod.form
+
+        project.run();
+
+        dp = project.design_point;
+
+        beta = dp.reliability_index;
+        alphas = dp.alphas;
+
+        self.assertAlmostEqual(0.71, beta, delta=margin)
+        self.assertEqual(11, len(alphas))
+
+        self.assertAlmostEqual(0, alphas[0].alpha, delta=margin)
+        self.assertAlmostEqual(1.8, alphas[0].x, delta=margin)
+        self.assertEqual(project.variables['L'], alphas[0].variable)
+
+        self.assertAlmostEqual(-0.31, alphas[1].alpha, delta=margin)
+        self.assertAlmostEqual(-1.82, alphas[1].x, delta=margin)
+        self.assertAlmostEqual(2.18, alphas[5].x, delta=margin)
+        self.assertEqual(0, alphas[1].index)
+        self.assertEqual(4, alphas[5].index)
+        self.assertEqual(project.variables['a'].array_variables[0], alphas[1].variable)
+        self.assertEqual('a[0]', str(alphas[1]))
+
+        self.assertAlmostEqual(-0.31, alphas[6].alpha, delta=margin)
+        self.assertAlmostEqual(-1.82, alphas[6].x, delta=margin)
+        self.assertEqual(0, alphas[6].index)
+        self.assertEqual(project.variables['b'].array_variables[0], alphas[6].variable)
+
     def test_form_linear_conditional_array(self):
         project = project_builder.get_linear_array_project()
 
@@ -185,6 +393,65 @@ class Test_reliability(unittest.TestCase):
         self.assertAlmostEqual(1.8, alphas[0].x, delta=margin)
         self.assertAlmostEqual(0.18, alphas[1].x, delta=margin)
         self.assertAlmostEqual(0.18, alphas[6].x, delta=margin)
+
+    def test_form_linear_conditional_varying_array(self):
+        project = project_builder.get_linear_array_project()
+
+        project.variables['a'].array_size = 5
+        for i in range(project.variables['a'].array_size):
+            a_array = Stochast()
+            a_array.distribution = DistributionType.uniform
+            a_array.minimum = -1 + 0.4 * i
+            a_array.maximum = -0.6 + 0.4 * i
+            project.variables['a'].array_variables.append(a_array)
+
+        project.variables['b'].array_size = 5
+        project.variables['b'].conditional = True
+
+        conditional1 = ConditionalValue()
+        conditional1.x = -1
+        conditional1.minimum = -1.2
+        conditional1.maximum = -0.8
+        conditional1.scale = 1
+        project.variables['b'].conditional_values.append(conditional1)
+
+        conditional2 = ConditionalValue()
+        conditional2.x = 1
+        conditional2.minimum = 0.8
+        conditional2.maximum = 1.2
+        project.variables['b'].conditional_values.append(conditional2)
+
+        project.variables['b'].conditional_source = 'a'
+
+        project.settings.reliability_method = ReliabilityMethod.form
+
+        project.run();
+
+        dp = project.design_point;
+
+        beta = dp.reliability_index;
+        alphas = dp.alphas;
+
+        self.assertAlmostEqual(2.57, beta, delta=margin)
+        self.assertEqual(11, len(alphas))
+
+        self.assertAlmostEqual(0, alphas[0].alpha, delta=margin)
+        self.assertAlmostEqual(-0.37, alphas[1].alpha, delta=margin)
+        self.assertAlmostEqual(-0.25, alphas[6].alpha, delta=margin)
+
+        self.assertEqual(0, alphas[0].index)
+        self.assertEqual(0, alphas[1].index)
+        self.assertEqual(4, alphas[5].index)
+        self.assertEqual(0, alphas[6].index)
+
+        self.assertEqual(project.variables['L'], alphas[0].variable)
+        self.assertEqual(project.variables['a'].array_variables[0], alphas[1].variable)
+        self.assertEqual(project.variables['a'].array_variables[4], alphas[5].variable)
+        self.assertEqual(project.variables['b'], alphas[6].variable)
+
+        self.assertAlmostEqual(1.8, alphas[0].x, delta=margin)
+        self.assertAlmostEqual(-0.67, alphas[1].x, delta=margin)
+        self.assertAlmostEqual(-0.57, alphas[6].x, delta=margin)
 
     def test_form_limit_state_functions(self):
         project = project_builder.get_multiple_unbalanced_linear_project()

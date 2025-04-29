@@ -59,12 +59,12 @@ namespace Deltares
             /**
              * \brief Minimum allowed value
              */
-            double Minimum = 0;
+            double Minimum = - std::numeric_limits<double>::infinity();
 
             /**
              * \brief Maximum allowed value
              */
-            double Maximum = 0;
+            double Maximum = std::numeric_limits<double>::infinity();
 
             /**
              * \brief Value by which the stochast is shifted
@@ -128,7 +128,7 @@ namespace Deltares
                     case DistributionPropertyType::ShiftB: this->ShiftB = value; break;
                     case DistributionPropertyType::Shape: this->Shape = value; break;
                     case DistributionPropertyType::ShapeB: this->ShapeB = value; break;
-                    case DistributionPropertyType::Observations: this->Observations = (int)value; break;
+                    case DistributionPropertyType::Observations: this->Observations = static_cast<int>(value); break;
                     default: throw Reliability::probLibException("Property not supported");
                 }
             }

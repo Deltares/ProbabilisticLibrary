@@ -21,6 +21,7 @@
 //
 #include "ModelRunner.h"
 #include "../Math/NumericSupport.h"
+#include "../Statistics/Stochast.h"
 #include <cmath>
 
 #include "ModelSample.h"
@@ -53,7 +54,7 @@ namespace Deltares
         void ModelRunner::updateStochastSettings(std::shared_ptr<Reliability::StochastSettingsSet> settings)
         {
             this->uConverter->updateStochastSettings(settings);
-            this->sampleProvider = std::make_shared<SampleProvider>(settings, false);
+            this->sampleProvider = std::make_shared<SampleProvider>(settings);
         }
 
         void ModelRunner::setSampleProvider(std::shared_ptr<SampleProvider> sampleProvider)
@@ -77,7 +78,7 @@ namespace Deltares
 
             if (sampleProvider == nullptr)
             {
-                sampleProvider = std::make_shared<SampleProvider>(this->uConverter->getVaryingStochastCount(), this->uConverter->getStochastCount(), false);
+                sampleProvider = std::make_shared<SampleProvider>(this->uConverter->getVaryingStochastCount(), this->uConverter->getStochastCount());
             }
         }
 
@@ -119,6 +120,16 @@ namespace Deltares
             return xSample;
         }
 
+        std::shared_ptr<ModelSample> ModelRunner::getModelSampleFromType(Statistics::RunValuesType type)
+        {
+            std::vector<double> xValues = this->uConverter->getValuesFromType(type);
+
+            // create a sample with values in x-space
+            std::shared_ptr<ModelSample> xSample = sampleProvider->getModelSample(xValues);
+
+            return xSample;
+        }
+
         /**
          * \brief Calculates a sample
          * \param sample Sample to be calculated
@@ -140,15 +151,31 @@ namespace Deltares
         /**
          * \brief Calculates a sample
          * \param sample Sample to be calculated
-         * \return Evaluation report of the sample calculation 
+         * \return Evaluation report of the sample calculation
          */
-        Evaluation* ModelRunner::getEvaluation(std::shared_ptr<Sample> sample)
+        Evaluation ModelRunner::getEvaluation(std::shared_ptr<Sample> sample)
         {
             std::shared_ptr<ModelSample> xSample = getModelSample(sample);
 
             this->zModel->invoke(xSample);
 
-            Evaluation* evaluation = getEvaluationFromSample(xSample);
+            Evaluation evaluation = getEvaluationFromSample(xSample);
+
+            return evaluation;
+        }
+
+        /**
+         * \brief Calculates a sample
+         * \param type Run values type
+         * \return Evaluation report of the sample calculation
+         */
+        Evaluation ModelRunner::getEvaluationFromType(Statistics::RunValuesType type)
+        {
+            std::shared_ptr<ModelSample> xSample = getModelSampleFromType(type);
+
+            this->zModel->invoke(xSample);
+
+            Evaluation evaluation = getEvaluationFromSample(xSample);
 
             return evaluation;
         }
@@ -237,16 +264,16 @@ namespace Deltares
             return this->zModel->getBeta(xSample, sample->getBeta());
         }
 
-        Evaluation* ModelRunner::getEvaluationFromSample(std::shared_ptr<ModelSample> sample)
+        Evaluation ModelRunner::getEvaluationFromSample(std::shared_ptr<ModelSample> sample)
         {
-            Evaluation* evaluation = new Evaluation();
+            Evaluation evaluation = Evaluation();
 
-            evaluation->Z = sample->Z;
-            evaluation->Beta = sample->Beta;
-            evaluation->Iteration = sample->IterationIndex;
-            evaluation->InputValues = sample->Values;
-            evaluation->OutputValues = sample->OutputValues;
-            evaluation->Tag = sample->Tag;
+            evaluation.Z = sample->Z;
+            evaluation.Beta = sample->Beta;
+            evaluation.Iteration = sample->IterationIndex;
+            evaluation.InputValues = sample->Values;
+            evaluation.OutputValues = sample->OutputValues;
+            evaluation.Tag = sample->Tag;
 
             return evaluation;
         }
@@ -259,7 +286,7 @@ namespace Deltares
         {
             if (this->Settings->SaveEvaluations)
             {
-                std::shared_ptr<Evaluation> evaluation = std::shared_ptr<Evaluation>(getEvaluationFromSample(sample));
+                std::shared_ptr<Evaluation> evaluation = std::make_shared<Evaluation>(getEvaluationFromSample(sample));
 
                 if (this->Settings->MaxParallelProcesses > 1) 
                 {
@@ -417,10 +444,13 @@ namespace Deltares
          */
         std::shared_ptr<Reliability::DesignPoint> ModelRunner::getDesignPoint(std::shared_ptr<Sample> sample, double beta, std::shared_ptr<Reliability::ConvergenceReport> convergenceReport, std::string identifier)
         {
-            std::unique_ptr<Evaluation> evaluation = nullptr;
+            Evaluation evaluation;
+            bool evaluationAssigned = false;
+
             if (this->uConverter->haveSampleValuesChanged())
             {
-                evaluation = std::unique_ptr<Evaluation>(this->getEvaluation(sample->getSampleAtBeta(beta)));
+                evaluation = this->getEvaluation(sample->getSampleAtBeta(beta));
+                evaluationAssigned = true;
             }
 
             std::shared_ptr<StochastPoint> stochastPoint = uConverter->GetStochastPoint(sample, beta);
@@ -442,9 +472,9 @@ namespace Deltares
 
             for (size_t i = 0; i < stochastPoint->Alphas.size(); i++)
             {
-                if (evaluation != nullptr)
+                if (evaluationAssigned)
                 {
-                    stochastPoint->Alphas[i]->X = evaluation->InputValues[i];
+                    stochastPoint->Alphas[i]->X = evaluation.InputValues[i];
                 }
                 designPoint->Alphas.push_back(stochastPoint->Alphas[i]);
             }
@@ -474,6 +504,30 @@ namespace Deltares
             }
 
             return designPoint;
+        }
+
+        /**
+         * \brief Gets the result of a sensitivity calculation
+         * \param stochast Stochast in the sensitivity result
+         * \return Sensitivity result
+         */
+        Sensitivity::SensitivityResult ModelRunner::getSensitivityResult(std::shared_ptr<Statistics::Stochast> stochast) const
+        {
+            auto result = Sensitivity::SensitivityResult();
+
+            result.stochast = stochast;
+
+            for (const auto& evaluation : evaluations)
+            {
+                result.evaluations.push_back(evaluation);
+            }
+
+            for (const auto& message : messages)
+            {
+                result.messages.push_back(message);
+            }
+
+            return result;
         }
 
         void  ModelRunner::registerSample(std::shared_ptr<Sensitivity::CorrelationMatrixBuilder> correlationMatrixBuilder, std::shared_ptr<Sample> sample)

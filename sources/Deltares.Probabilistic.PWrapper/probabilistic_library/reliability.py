@@ -19,6 +19,8 @@
 # Stichting Deltares and remain full property of Stichting Deltares at all times.
 # All rights reserved.
 #
+from __future__ import annotations
+from math import isnan
 import sys
 from enum import Enum
 
@@ -82,6 +84,7 @@ class CombinerMethod(Enum):
 	hohenbichler = 'hohenbichler'
 	importance_sampling = 'importance_sampling'
 	directional_sampling = 'directional_sampling'
+	hohenbichler_form = 'hohenbichler_form'
 	def __str__(self):
 		return str(self.value)
 
@@ -105,7 +108,7 @@ class MessageType(Enum):
 	def __str__(self):
 		return str(self.value)
 
-class Settings:
+class Settings(FrozenObject):
 
 	def __init__(self, id_ = None):
 		if id_ is None:
@@ -113,10 +116,14 @@ class Settings:
 		else:
 			self._id = id_
 		self._stochast_settings = FrozenList()
+		super()._freeze()
 		interface.SetBoolValue(self._id, 'use_openmp_in_reliability', False)
 
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 
 	def __dir__(self):
 		return ['max_parallel_processes',
@@ -129,6 +136,8 @@ class Settings:
 				'all_quadrants',
 				'max_steps_sphere_search',
 				'random_type',
+				'is_repeatable_random',
+				'random_seed',
 				'sample_method'
 				'minimum_samples',
 				'maximum_samples',
@@ -148,7 +157,7 @@ class Settings:
 				'stochast_settings']
 
 	@property
-	def max_parallel_processes(self):
+	def max_parallel_processes(self) -> int:
 		return interface.GetIntValue(self._id, 'max_parallel_processes')
 
 	@max_parallel_processes.setter
@@ -156,7 +165,7 @@ class Settings:
 		interface.SetIntValue(self._id, 'max_parallel_processes', value)
 
 	@property
-	def save_realizations(self):
+	def save_realizations(self) -> bool:
 		return interface.GetBoolValue(self._id, 'save_realizations')
 
 	@save_realizations.setter
@@ -164,7 +173,7 @@ class Settings:
 		interface.SetBoolValue(self._id, 'save_realizations', value)
 
 	@property
-	def save_convergence(self):
+	def save_convergence(self) -> bool:
 		return interface.GetBoolValue(self._id, 'save_convergence')
 
 	@save_convergence.setter
@@ -172,7 +181,7 @@ class Settings:
 		interface.SetBoolValue(self._id, 'save_convergence', value)
 
 	@property
-	def save_messages(self):
+	def save_messages(self) -> bool:
 		return interface.GetBoolValue(self._id, 'save_messages')
 
 	@save_messages.setter
@@ -180,7 +189,7 @@ class Settings:
 		interface.SetBoolValue(self._id, 'save_messages', value)
 
 	@property
-	def reliability_method(self):
+	def reliability_method(self) -> ReliabilityMethod:
 		return ReliabilityMethod[interface.GetStringValue(self._id, 'reliability_method')]
 
 	@reliability_method.setter
@@ -188,7 +197,7 @@ class Settings:
 		interface.SetStringValue(self._id, 'reliability_method', str(value))
 
 	@property
-	def design_point_method(self):
+	def design_point_method(self) -> DesignPointMethod:
 		return DesignPointMethod[interface.GetStringValue(self._id, 'design_point_method')]
 		
 	@design_point_method.setter
@@ -196,7 +205,7 @@ class Settings:
 		interface.SetStringValue(self._id, 'design_point_method', str(value))
 
 	@property
-	def start_method(self):
+	def start_method(self) -> StartMethod:
 		return StartMethod[interface.GetStringValue(self._id, 'start_method')]
 
 	@start_method.setter
@@ -204,7 +213,7 @@ class Settings:
 		interface.SetStringValue(self._id, 'start_method', str(value))
 
 	@property
-	def all_quadrants(self):
+	def all_quadrants(self) -> bool:
 		return interface.GetBoolValue(self._id, 'all_quadrants')
 
 	@all_quadrants.setter
@@ -212,7 +221,7 @@ class Settings:
 		interface.SetBoolValue(self._id, 'all_quadrants', value)
 
 	@property
-	def max_steps_sphere_search(self):
+	def max_steps_sphere_search(self) -> int:
 		return interface.GetIntValue(self._id, 'max_steps_sphere_search')
 
 	@max_steps_sphere_search.setter
@@ -220,7 +229,7 @@ class Settings:
 		interface.SetIntValue(self._id, 'max_steps_sphere_search', value)
 
 	@property
-	def random_type(self):
+	def random_type(self) -> RandomType:
 		return RandomType[interface.GetStringValue(self._id, 'random_type')]
 
 	@random_type.setter
@@ -228,15 +237,31 @@ class Settings:
 		interface.SetStringValue(self._id, 'random_type', str(value))
 
 	@property
-	def sample_method(self):
-		return interface.GetStringValue(self._id, 'sample_method')
+	def is_repeatable_random(self) -> bool:
+		return interface.GetBoolValue(self._id, 'is_repeatable_random')
+		
+	@is_repeatable_random.setter
+	def is_repeatable_random(self, value : bool):
+		interface.SetBoolValue(self._id, 'is_repeatable_random', value)
+
+	@property
+	def random_seed(self) -> int:
+		return interface.GetIntValue(self._id, 'random_seed')
+		
+	@random_seed.setter
+	def random_seed(self, value : int):
+		interface.SetIntValue(self._id, 'random_seed', value)
+
+	@property
+	def sample_method(self) -> SampleMethod:
+		return SampleMethod[interface.GetStringValue(self._id, 'sample_method')]
 
 	@sample_method.setter
 	def sample_method(self, value : SampleMethod):
 		interface.SetStringValue(self._id, 'sample_method', str(value))
 
 	@property
-	def minimum_samples(self):
+	def minimum_samples(self) -> int:
 		return interface.GetIntValue(self._id, 'minimum_samples')
 		
 	@minimum_samples.setter
@@ -244,7 +269,7 @@ class Settings:
 		interface.SetIntValue(self._id, 'minimum_samples', value)
 
 	@property
-	def maximum_samples(self):
+	def maximum_samples(self) -> int:
 		return interface.GetIntValue(self._id, 'maximum_samples')
 		
 	@maximum_samples.setter
@@ -252,7 +277,7 @@ class Settings:
 		interface.SetIntValue(self._id, 'maximum_samples', value)
 
 	@property
-	def minimum_iterations(self):
+	def minimum_iterations(self) -> int:
 		return interface.GetIntValue(self._id, 'minimum_iterations')
 
 	@minimum_iterations.setter
@@ -260,7 +285,7 @@ class Settings:
 		interface.SetIntValue(self._id, 'minimum_iterations', value)
 
 	@property
-	def maximum_iterations(self):
+	def maximum_iterations(self) -> int:
 		return interface.GetIntValue(self._id, 'maximum_iterations')
 
 	@maximum_iterations.setter
@@ -268,7 +293,7 @@ class Settings:
 		interface.SetIntValue(self._id, 'maximum_iterations', value)
 
 	@property
-	def minimum_directions(self):
+	def minimum_directions(self) -> int:
 		return interface.GetIntValue(self._id, 'minimum_directions')
 
 	@minimum_directions.setter
@@ -276,7 +301,7 @@ class Settings:
 		interface.SetIntValue(self._id, 'minimum_directions', value)
 
 	@property
-	def maximum_directions(self):
+	def maximum_directions(self) -> int:
 		return interface.GetIntValue(self._id, 'maximum_directions')
 
 	@maximum_directions.setter
@@ -284,7 +309,7 @@ class Settings:
 		interface.SetIntValue(self._id, 'maximum_directions', value)
 
 	@property
-	def epsilon_beta(self):
+	def epsilon_beta(self) -> float:
 		return interface.GetValue(self._id, 'epsilon_beta')
 
 	@epsilon_beta.setter
@@ -292,7 +317,7 @@ class Settings:
 		interface.SetValue(self._id, 'epsilon_beta', value)
 		
 	@property
-	def step_size(self):
+	def step_size(self) -> float:
 		return interface.GetValue(self._id, 'step_size')
 		
 	@step_size.setter
@@ -300,7 +325,7 @@ class Settings:
 		interface.SetValue(self._id, 'step_size', value)
 
 	@property
-	def gradient_type(self):
+	def gradient_type(self) -> GradientType:
 		return GradientType[interface.GetStringValue(self._id, 'gradient_type')]
 		
 	@gradient_type.setter
@@ -308,7 +333,7 @@ class Settings:
 		interface.SetStringValue(self._id, 'gradient_type', str(value))
 
 	@property
-	def relaxation_factor(self):
+	def relaxation_factor(self) -> float:
 		return interface.GetValue(self._id, 'relaxation_factor')
 
 	@relaxation_factor.setter
@@ -316,7 +341,7 @@ class Settings:
 		interface.SetValue(self._id, 'relaxation_factor', value)
 
 	@property
-	def relaxation_loops(self):
+	def relaxation_loops(self) -> int:
 		return interface.GetIntValue(self._id, 'relaxation_loops')
 		
 	@relaxation_loops.setter
@@ -324,7 +349,7 @@ class Settings:
 		interface.SetIntValue(self._id, 'relaxation_loops', value)
 
 	@property
-	def maximum_variance_loops(self):
+	def maximum_variance_loops(self) -> int:
 		return interface.GetIntValue(self._id, 'maximum_variance_loops')
 		
 	@maximum_variance_loops.setter
@@ -332,7 +357,7 @@ class Settings:
 		interface.SetIntValue(self._id, 'maximum_variance_loops', value)
 
 	@property
-	def minimum_variance_loops(self):
+	def minimum_variance_loops(self) -> int:
 		return interface.GetIntValue(self._id, 'minimum_variance_loops')
 		
 	@minimum_variance_loops.setter
@@ -340,7 +365,7 @@ class Settings:
 		interface.SetIntValue(self._id, 'minimum_variance_loops', value)
 
 	@property
-	def variation_coefficient(self):
+	def variation_coefficient(self) -> float:
 		return interface.GetValue(self._id, 'variation_coefficient')
 		
 	@variation_coefficient.setter
@@ -348,7 +373,7 @@ class Settings:
 		interface.SetValue(self._id, 'variation_coefficient', value)
 
 	@property
-	def fraction_failed(self):
+	def fraction_failed(self) -> float:
 		return interface.GetValue(self._id, 'fraction_failed')
 		
 	@fraction_failed.setter
@@ -356,7 +381,7 @@ class Settings:
 		interface.SetValue(self._id, 'fraction_failed', value)
 
 	@property
-	def stochast_settings(self):
+	def stochast_settings(self) -> list[StochastSettings]:
 		return self._stochast_settings
 
 	def _set_variables(self, variables):
@@ -370,16 +395,20 @@ class Settings:
 		interface.SetArrayIntValue(self._id, 'stochast_settings', [stochast_setting._id for stochast_setting in self._stochast_settings])
 
 	
-class StochastSettings:
+class StochastSettings(FrozenObject):
 		
 	def __init__(self, variable):
 		self._id = interface.Create('stochast_settings')
 		self._variable = variable
 		if not variable is None:
 			interface.SetIntValue(self._id, 'variable', self._variable._id)
+		super()._freeze()
 
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 
 	def __dir__(self):
 		return ['min_value',
@@ -397,7 +426,7 @@ class StochastSettings:
 			return self._variable.name
 
 	@property
-	def variable(self):
+	def variable(self) -> Stochast:
 		if self._variable is None:
 			id_ = interface.GetIdValue(self._id, 'variable')
 			if id_ > 0:
@@ -405,7 +434,7 @@ class StochastSettings:
 		return self._variable
 
 	@property
-	def min_value(self):
+	def min_value(self) -> float:
 		return interface.GetValue(self._id, 'min_value')
 		
 	@min_value.setter
@@ -413,7 +442,7 @@ class StochastSettings:
 		interface.SetValue(self._id, 'min_value', value)
 
 	@property
-	def max_value(self):
+	def max_value(self) -> float:
 		return interface.GetValue(self._id, 'max_value')
 		
 	@max_value.setter
@@ -421,7 +450,7 @@ class StochastSettings:
 		interface.SetValue(self._id, 'max_value', value)
 
 	@property
-	def start_value(self):
+	def start_value(self) -> float:
 		return interface.GetValue(self._id, 'start_value')
 		
 	@start_value.setter
@@ -429,7 +458,7 @@ class StochastSettings:
 		interface.SetValue(self._id, 'start_value', value)
 
 	@property
-	def intervals(self):
+	def intervals(self) -> int:
 		return interface.GetIntValue(self._id, 'intervals')
 		
 	@intervals.setter
@@ -437,7 +466,7 @@ class StochastSettings:
 		interface.SetIntValue(self._id, 'intervals', value)
 
 	@property
-	def variance_factor(self):
+	def variance_factor(self) -> float:
 		return interface.GetValue(self._id, 'variance_factor')
 		
 	@variance_factor.setter
@@ -445,7 +474,7 @@ class StochastSettings:
 		interface.SetValue(self._id, 'variance_factor', value)
 
 	@property
-	def is_initialization_allowed(self):
+	def is_initialization_allowed(self) -> bool:
 		return interface.GetBoolValue(self._id, 'is_initialization_allowed')
 		
 	@is_initialization_allowed.setter
@@ -453,7 +482,7 @@ class StochastSettings:
 		interface.SetBoolValue(self._id, 'is_initialization_allowed', value)
 
 	@property
-	def is_variance_allowed(self):
+	def is_variance_allowed(self) -> bool:
 		return interface.GetBoolValue(self._id, 'is_variance_allowed')
 		
 	@is_variance_allowed.setter
@@ -466,16 +495,20 @@ class CompareType(Enum):
 	def __str__(self):
 		return str(self.value)
 
-class LimitStateFunction:
+class LimitStateFunction(FrozenObject):
 		
 	def __init__(self, id = None):
 		if id is None:
 			self._id = interface.Create('limit_state_function')
 		else:
 			self._id = id
+		super()._freeze()
 
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 
 	def __dir__(self):
 		return ['parameter',
@@ -486,15 +519,15 @@ class LimitStateFunction:
 		return self.parameter + ' ' + str(self.compare_type) + ' ' + str(self.critical_value)
 
 	@property
-	def parameter(self):
+	def parameter(self) -> str:
 		return interface.GetStringValue(self._id, 'parameter')
 		
 	@parameter.setter
-	def parameter(self, value):
+	def parameter(self, value : str | ModelParameter):
 		interface.SetStringValue(self._id, 'parameter', str(value))
 
 	@property
-	def compare_type(self):
+	def compare_type(self) -> CompareType:
 		return CompareType[interface.GetStringValue(self._id, 'compare_type')]
 		
 	@compare_type.setter
@@ -502,14 +535,14 @@ class LimitStateFunction:
 		interface.SetStringValue(self._id, 'compare_type', str(value))
 
 	@property
-	def critical_value(self):
-		if interface.GetBoolValue('use_compare_parameter'):
+	def critical_value(self) -> float:
+		if interface.GetBoolValue(self._id, 'use_compare_parameter'):
 			return interface.GetStringValue(self._id, 'compare_parameter')
 		else:
 			return interface.GetValue(self._id, 'critical_value')
 		
 	@critical_value.setter
-	def critical_value(self, value):
+	def critical_value(self, value : float | ModelParameter | str):
 		if type(value) is float or type(value) is int:
 			interface.SetBoolValue(self._id, 'use_compare_parameter', False)
 			interface.SetValue(self._id, 'critical_value', value)
@@ -518,12 +551,12 @@ class LimitStateFunction:
 			interface.SetStringValue(self._id, 'compare_parameter', str(value))
 
 # abstract class for design point ids
-class DesignPointIds:
+class DesignPointIds(FrozenObject):
 
 	def __init__(self):
 		pass # empty method as it is in a abstract class
 
-class DesignPoint:
+class DesignPoint(FrozenObject):
 
 	def __init__(self, id = None, known_variables = None, known_design_points = None):
 		if id is None:
@@ -535,33 +568,43 @@ class DesignPoint:
 		self._contributing_design_points = None
 		self._messages = None
 		self._realizations = None
+		self._reliability_results = None
 		self._ids = None
 		self._known_variables = known_variables
 		self._known_design_points = known_design_points
+		super()._freeze()
 		
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 
 	def __dir__(self):
 		return ['identifier',
-				'ids',
-				'reliability_index',
-				'probability_failure',
-				'alphas',
-				'contributing_design_points',
-				'convergence',
-				'is_converged',
-				'total_directions',
-				'total_iterations',
-				'total_model_runs',
-				'realizations',
-				'messages']
+		        'ids',
+		        'reliability_index',
+		        'probability_failure',
+		        'alphas',
+		        'contributing_design_points',
+		        'convergence',
+		        'is_converged',
+		        'total_directions',
+		        'total_iterations',
+		        'total_model_runs',
+		        'realizations',
+		        'reliability_results',
+		        'messages',
+		        'print',
+		        'plot_alphas',
+		        'plot_realizations',
+ 		        'plot_convergence']
 		
 	def __str__(self):
 		return self.identifier
 
 	@property
-	def identifier(self):
+	def identifier(self) -> str:
 		return interface.GetStringValue(self._id, 'identifier')
 		
 	@identifier.setter
@@ -569,7 +612,7 @@ class DesignPoint:
 		interface.SetStringValue(self._id, 'identifier', value)
 
 	@property
-	def ids(self):
+	def ids(self) -> DesignPointIds:
 		return self._ids
 		
 	@ids.setter
@@ -578,7 +621,7 @@ class DesignPoint:
 		interface.SetIntValue(self._id, 'ids', value._id)
 
 	@property
-	def reliability_index(self):
+	def reliability_index(self) -> float:
 		return interface.GetValue(self._id, 'reliability_index')
 
 	# testing method
@@ -599,31 +642,31 @@ class DesignPoint:
 		interface.SetArrayIntValue(self._id, 'alphas', values)
 
 	@property
-	def probability_failure(self):
+	def probability_failure(self) -> float:
 		return interface.GetValue(self._id, 'probability_failure')
 		
 	@property
-	def convergence(self):
+	def convergence(self) -> float:
 		return interface.GetValue(self._id, 'convergence')
 		
 	@property
-	def is_converged(self):
+	def is_converged(self) -> bool:
 		return interface.GetBoolValue(self._id, 'is_converged')
 		
 	@property
-	def total_directions(self):
+	def total_directions(self) -> int:
 		return interface.GetIntValue(self._id, 'total_directions')
 		
 	@property
-	def total_iterations(self):
+	def total_iterations(self) -> int:
 		return interface.GetIntValue(self._id, 'total_iterations')
 		
 	@property
-	def total_model_runs(self):
+	def total_model_runs(self) -> int:
 		return interface.GetIntValue(self._id, 'total_model_runs')
 		
 	@property
-	def alphas(self):
+	def alphas(self) -> list[Alpha]:
 		if self._alphas is None:
 			alphas = []
 			alpha_ids = interface.GetArrayIdValue(self._id, 'alphas')
@@ -633,7 +676,7 @@ class DesignPoint:
 		return self._alphas
 	
 	@property
-	def contributing_design_points(self):
+	def contributing_design_points(self) -> list[DesignPoint]:
 		if self._contributing_design_points is None:
 			contributing_design_points = []
 			design_point_ids = interface.GetArrayIdValue(self._id, 'contributing_design_points')
@@ -653,7 +696,7 @@ class DesignPoint:
 		return self._contributing_design_points
 
 	@property
-	def realizations(self):
+	def realizations(self) -> list[Evaluation]:
 		if self._realizations is None:
 			realizations = []
 			realization_ids = interface.GetArrayIdValue(self._id, 'evaluations')
@@ -664,7 +707,18 @@ class DesignPoint:
 		return self._realizations
 	
 	@property
-	def messages(self):
+	def reliability_results(self) -> list[ReliabilityResult]:
+		if self._reliability_results is None:
+			reliability_results = []
+			reliability_result_ids = interface.GetArrayIdValue(self._id, 'reliability_results')
+			for reliability_result_id in reliability_result_ids:
+				reliability_results.append(ReliabilityResult(reliability_result_id))
+			self._reliability_results = FrozenList(reliability_results)
+				
+		return self._reliability_results
+	
+	@property
+	def messages(self) -> list[Message]:
 		if self._messages is None:
 			messages = []
 			message_ids = interface.GetArrayIdValue(self._id, 'messages')
@@ -674,7 +728,7 @@ class DesignPoint:
 				
 		return self._messages
 	
-	def get_variables(self):
+	def get_variables(self) -> list[Stochast]:
 		variables = []
 		for alpha in self.alphas:
 			variables.append(alpha.variable)
@@ -682,7 +736,96 @@ class DesignPoint:
 			variables.extend(contributing_design_point.get_variables())
 		return frozenset(variables)
 
-class Alpha:
+	def print(self):
+		self._print(0)
+
+	def _print(self, indent : int):
+		pre = PrintUtils.get_space_from_indent(indent)
+		pre_indexed = pre + ' '
+		if self.identifier == '':
+			print(pre + 'Reliability:')
+		else:
+			print(pre + f'Reliability ({self.identifier})')
+		print(pre_indexed + f'Reliability index = {self.reliability_index}')
+		print(pre_indexed + f'Probability of failure = {self.probability_failure}')
+		if not isnan(self.convergence):
+			if self.is_converged:
+				print(pre_indexed + f'Convergence = {self.convergence} (converged)')
+			else:
+				print(pre_indexed + f'Convergence = {self.convergence} (not converged)')
+		print(pre_indexed + f'Model runs = {self.total_model_runs}')
+		print(pre + 'Alpha values:')
+		for alpha in self.alphas:
+			print(pre_indexed + f'{alpha.variable.name}: alpha = {alpha.alpha}, x = {alpha.x}')
+		print('')
+		if len(self.contributing_design_points) > 0:
+			print(pre + 'Contributing design points:')
+			for design_point in self.contributing_design_points:
+				design_point._print(indent + 1)
+
+	def plot_alphas(self):
+
+		import numpy as np
+		import matplotlib.pyplot as plt
+
+		alphas = [alpha.influence_factor for alpha in self.alphas if alpha.influence_factor > 0.0001]
+		names = [f'{alpha.identifier} ({round(100*alpha.influence_factor)} %)' for alpha in self.alphas if alpha.influence_factor > 0.0001]
+
+		plt.figure()
+		plt.pie(alphas, labels=names)
+		plt.title("Alpha values", fontsize=14, fontweight='bold')
+
+	def plot_realizations(self):
+
+		import numpy as np
+		import matplotlib.pyplot as plt
+
+		# 2 variables with the highest alpha
+		alphas = [alpha.influence_factor for alpha in self.alphas]
+		index_last_two = np.argsort(np.abs(alphas))[-2:]
+
+		r_1 = [realization.input_values[int(index_last_two[0])] for realization in self.realizations]
+		r_2 = [realization.input_values[int(index_last_two[1])] for realization in self.realizations]
+		z = [realization.z for realization in self.realizations]
+		colors = ["r" if val < 0 else "g" for val in z]
+
+		# plot realizations
+		plt.figure()
+		plt.grid(True)    
+		plt.scatter(r_1, r_2, color=colors, alpha=0.5)
+		plt.scatter(self.alphas[int(index_last_two[0])].x, 
+                    self.alphas[int(index_last_two[1])].x, 
+                    label='design point' if self.identifier == '' else self.identifier, 
+                    color="black")
+		plt.xlabel(self.alphas[int(index_last_two[0])].identifier)
+		plt.ylabel(self.alphas[int(index_last_two[1])].identifier)
+		plt.legend()
+		plt.title('Realizations: Red = Failure, Green = No Failure', fontsize=14, fontweight='bold')
+
+	def plot_convergence(self, xmin : float = None, xmax : float = None):
+
+		import numpy as np
+		import matplotlib.pyplot as plt
+
+		index = [x.index for x in self.reliability_results]
+		beta = [x.reliability_index for x in self.reliability_results]
+		conv = [x.convergence for x in self.reliability_results]
+    
+		fig, ax1 = plt.subplots()
+		color = "tab:blue"
+		ax1.set_xlabel("index [-]")
+		ax1.set_ylabel("reliability index [-]", color=color)
+		ax1.plot(index, beta)
+		ax1.tick_params(axis="y", labelcolor=color)
+		ax2 = ax1.twinx()
+		color = "tab:red"
+		ax2.set_ylabel("convergence [-]", color=color)
+		ax2.plot(index, conv, "r--", label="convergence")
+		ax2.tick_params(axis="y", labelcolor=color)
+		plt.title('Convergence', fontsize=14, fontweight='bold')
+
+
+class Alpha(FrozenObject):
 
 	def __init__(self, id = None, known_variables = None):
 		if id is None:
@@ -692,9 +835,13 @@ class Alpha:
 			
 		self._variable = None
 		self._known_variables = known_variables
+		super()._freeze()
 
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 
 	def __dir__(self):
 		return ['variable',
@@ -707,7 +854,7 @@ class Alpha:
 				'u']
 
 	@property
-	def variable(self):
+	def variable(self) -> Stochast:
 		if self._variable is None:
 			variable_id = interface.GetIdValue(self._id, 'variable')
 			if variable_id > 0:
@@ -725,7 +872,7 @@ class Alpha:
 		return self.identifier
 
 	@property
-	def identifier(self):
+	def identifier(self) -> str:
 		return interface.GetStringValue(self._id, 'identifier')
 
 	# internal method		
@@ -743,31 +890,31 @@ class Alpha:
 		interface.SetValue(self._id, 'x', variable.get_x_from_u(u))
 
 	@property
-	def alpha(self):
+	def alpha(self) -> float:
 		return interface.GetValue(self._id, 'alpha')
 		
 	@property
-	def alpha_correlated(self):
+	def alpha_correlated(self) -> float:
 		return interface.GetValue(self._id, 'alpha_correlated')
 		
 	@property
-	def influence_factor(self):
+	def influence_factor(self) -> float:
 		return interface.GetValue(self._id, 'influence_factor')
 		
 	@property
-	def index(self):
+	def index(self) -> int:
 		return interface.GetIntValue(self._id, 'index')
 
 	@property
-	def u(self):
+	def u(self) -> float:
 		return interface.GetValue(self._id, 'u')
 
 	@property
-	def x(self):
+	def x(self) -> float:
 		return interface.GetValue(self._id, 'x')
 
 
-class FragilityCurve:
+class FragilityCurve(FrozenObject):
 
 	def __init__(self, id = None):
 		if id is None:
@@ -776,9 +923,14 @@ class FragilityCurve:
 			self._id = id
 
 		self._fragility_values = None
+		self._synchronizing = False
+		super()._freeze()
 
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 
 	def __dir__(self):
 		return ['name',
@@ -796,7 +948,7 @@ class FragilityCurve:
 				'integrate']
 
 	@property
-	def name(self):
+	def name(self) -> str:
 		return interface.GetStringValue(self._id, 'name')
 
 	@name.setter
@@ -807,19 +959,19 @@ class FragilityCurve:
 		return self.name
 
 	@property
-	def mean(self):
+	def mean(self) -> float:
 		return interface.GetValue(self._id, 'mean')
 
 	@property
-	def deviation(self):
+	def deviation(self) -> float:
 		return interface.GetValue(self._id, 'deviation')
 
 	@property
-	def variation(self):
+	def variation(self) -> float:
 		return interface.GetValue(self._id, 'variation')
 
 	@property
-	def fragility_values(self):
+	def fragility_values(self) -> list[FragilityValue]:
 		if self._fragility_values is None:
 			self._synchronizing = True
 			self._fragility_values = CallbackList(self._fragility_values_changed)
@@ -834,22 +986,22 @@ class FragilityCurve:
 		if not self._synchronizing:
 			interface.SetArrayIntValue(self._id, 'fragility_values', [fragility_value._id for fragility_value in self._fragility_values])
 
-	def get_quantile(self, quantile : float):
+	def get_quantile(self, quantile : float) -> float:
 		return interface.GetArgValue(self._id, 'quantile', quantile)
 
-	def get_x_from_u(self, u : float):
+	def get_x_from_u(self, u : float) -> float:
 		return interface.GetArgValue(self._id, 'x_from_u', u)
 
-	def get_u_from_x(self, x : float):
+	def get_u_from_x(self, x : float) -> float:
 		return interface.GetArgValue(self._id, 'u_from_x', x)
 
-	def get_pdf(self, x : float):
+	def get_pdf(self, x : float) -> float:
 		return interface.GetArgValue(self._id, 'pdf', x)
 
-	def get_cdf(self, x : float):
+	def get_cdf(self, x : float) -> float:
 		return interface.GetArgValue(self._id, 'cdf', x)
 
-	def get_special_values(self):
+	def get_special_values(self) -> list[float]:
 		return interface.GetArrayValue(self._id, 'special_values')
 
 	def copy_from(self, source):
@@ -857,23 +1009,27 @@ class FragilityCurve:
 			interface.SetIntValue(self._id, 'copy_from', source._id)
 			self._fragility_values = None
 
-	def integrate(self, integrand : Stochast):
+	def integrate(self, integrand : Stochast) -> DesignPoint:
 		project = FragilityCurveProject()
 		project.integrand = integrand
 		project.fragility_curve = self
 		project.run()
 		return project.design_point
 
-class FragilityCurveProject:
+class FragilityCurveProject(FrozenObject):
 
 	def __init__(self):
 		self._id = interface.Create('fragility_curve_project')
 		self._integrand = None
 		self._fragility_curve = None
 		self._design_point = None
+		super()._freeze()
 
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 
 	def __dir__(self):
 		return ['integrand',
@@ -881,7 +1037,7 @@ class FragilityCurveProject:
 				'design_point']
 
 	@property
-	def integrand(self):
+	def integrand(self) -> Stochast:
 		return self._integrand
 
 	@integrand.setter
@@ -890,7 +1046,7 @@ class FragilityCurveProject:
 		interface.SetIntValue(self._id, 'integrand', value._id)
 
 	@property
-	def fragility_curve(self):
+	def fragility_curve(self) -> FragilityCurve:
 		return self._fragility_curve
 
 	@fragility_curve.setter
@@ -899,7 +1055,7 @@ class FragilityCurveProject:
 		interface.SetIntValue(self._id, 'fragility_curve', value._id)
 
 	@property
-	def design_point(self):
+	def design_point(self) -> DesignPoint:
 		return self._design_point
 
 	def run(self):
@@ -919,23 +1075,30 @@ class FragilityCurveProject:
 				for alpha in fragility_value.design_point.alphas:
 					if alpha.variable is not None and alpha.variable not in variables:
 						variables.append(alpha.variable)
+						for array_variable in alpha.variable.array_variables:
+							if array_variable not in variables:
+								variables.append(array_variable)
 		return variables
 
 
-class CombineSettings:
+class CombineSettings(FrozenObject):
 
 	def __init__(self):
 		self._id = interface.Create('combine_settings')
+		super()._freeze()
 		
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 
 	def __dir__(self):
 		return ['combiner_method',
 				'combine_type']
 
 	@property
-	def combiner_method(self):
+	def combiner_method(self) -> CombinerMethod:
 		return CombinerMethod[interface.GetStringValue(self._id, 'combiner_method')]
 		
 	@combiner_method.setter
@@ -943,39 +1106,44 @@ class CombineSettings:
 		interface.SetStringValue(self._id, 'combiner_method', str(value))
 
 	@property
-	def combine_type(self):
+	def combine_type(self) -> CombineType:
 		return CombineType[interface.GetStringValue(self._id, 'combine_type')]
 		
 	@combine_type.setter
 	def combine_type(self, value : CombineType):
 		interface.SetStringValue(self._id, 'combine_type', str(value))
 
-class ExcludingCombineSettings:
+class ExcludingCombineSettings(FrozenObject):
 
 	def __init__(self):
 		self._id = interface.Create('excluding_combine_settings')
+		super()._freeze()
 		
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 
 	def __dir__(self):
 		return ['combiner_method']
 
 	@property
-	def combiner_method(self):
+	def combiner_method(self) -> ExcludingCombinerMethod:
 		return ExcludingCombinerMethod[interface.GetStringValue(self._id, 'combiner_method')]
 		
 	@combiner_method.setter
 	def combiner_method(self, value : ExcludingCombinerMethod):
 		interface.SetStringValue(self._id, 'combiner_method', str(value))
 
-class Message:
+class Message(FrozenObject):
 
 	def __init__(self, id = None):
 		if id == None:
 			self._id = interface.Create('message')
 		else:
 			self._id = id
+		super()._freeze()
 
 	@classmethod
 	def from_message(cls, message_type, message_text):
@@ -985,21 +1153,38 @@ class Message:
 		return message
 
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 		
 	def __str__(self):
 		return str(self.type) + ': ' + self.text
 		
+	def __dir__(self):
+		return ['type',
+				'text',
+				'print']
+
 	@property
-	def type(self):
+	def type(self) -> MessageType:
 		return MessageType[interface.GetStringValue(self._id, 'type')]
 		
 	@property
-	def text(self):
+	def text(self) -> str:
 		return interface.GetStringValue(self._id, 'text')
 
+	def print(self):
+		if self.type == MessageType.error:
+			print(f'Error: {self.text}')
+		elif self.type == MessageType.warning:
+			print(f'Warning: {self.text}')
+		elif self.type == MessageType.info:
+			print(f'Info: {self.text}')
+		elif self.type == MessageType.debug:
+			print(f'Debug: {self.text}')
 		
-class Evaluation:
+class Evaluation(FrozenObject):
 		
 	def __init__(self, id = None):
 		if id == None:
@@ -1008,9 +1193,13 @@ class Evaluation:
 			self._id = id
 		self._input_values = None	
 		self._output_values = None	
+		super()._freeze()
 
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 
 	def __dir__(self):
 		return ['iteration',
@@ -1018,37 +1207,81 @@ class Evaluation:
 				'beta',
 				'weight',
 				'input_values',
-				'output_values']
+				'output_values',
+				'print']
 	
 	@property   
-	def iteration(self):
+	def iteration(self) -> int:
 		return interface.GetIntValue(self._id, 'iteration')
 		
 	@property   
-	def z(self):
+	def z(self) -> float:
 		return interface.GetValue(self._id, 'z')
 		
 	@property   
-	def beta(self):
+	def beta(self) -> float:
 		return interface.GetValue(self._id, 'beta')
 		
 	@property   
-	def weight(self):
+	def weight(self) -> float:
 		return interface.GetValue(self._id, 'weight')
 
 	@property   
-	def input_values(self):
+	def input_values(self) -> list[float]:
 		if self._input_values is None:
 			input_values = interface.GetArrayValue(self._id, 'input_values')
 			self._input_values = FrozenList(input_values)
 		return self._input_values
 		
 	@property   
-	def output_values(self):
+	def output_values(self) -> list[float]:
 		if self._output_values is None:
 			output_values = interface.GetArrayValue(self._id, 'output_values')
 			self._output_values = FrozenList(output_values)
 		return self._output_values
-		
 
-				
+	def print(self):
+		self._print(0)
+
+	def _print(self, indent):
+		pre = PrintUtils.get_space_from_indent(indent)
+		if isnan(self.z) and len(self.output_values) == 0:
+			print(pre + self.input_values)
+		elif isnan(self.z) and len(self.output_values) > 0:
+			print(pre + f'{self.input_values} -> {self.output_values}')
+		elif not isnan(self.z) and len(self.output_values) == 0:
+			print(pre + f'{self.input_values} -> {self.z}')
+		elif not isnan(self.z) and len(self.output_values) > 0:
+			print(pre + f'{self.input_values} -> {self.output_values} -> {self.z}')
+		
+class ReliabilityResult(FrozenObject):
+		
+	def __init__(self, id = None):
+		if id == None:
+			self._id = interface.Create('reliability_result')
+		else:
+			self._id = id
+		super()._freeze()
+
+	def __del__(self):
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
+
+	def __dir__(self):
+		return ['index',
+				'reliability_index',
+				'convergence']
+	
+	@property   
+	def index(self) -> int:
+		return interface.GetIntValue(self._id, 'index')
+		
+	@property   
+	def reliability_index(self) -> float:
+		return interface.GetValue(self._id, 'reliability_index')
+		
+	@property   
+	def convergence(self) -> float:
+		return interface.GetValue(self._id, 'convergence')

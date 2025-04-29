@@ -55,6 +55,8 @@ namespace Deltares
                 EXPECT_NEAR(designPoint->Beta, 2.33, 1e-2);
                 EXPECT_NEAR(designPoint->Alphas[0]->Alpha, -0.71, 1e-2);
                 EXPECT_NEAR(designPoint->Alphas[1]->Alpha, -0.71, 1e-2);
+                EXPECT_NEAR(designPoint->Alphas[0]->InfluenceFactor, 0.5, 1e-2);
+                EXPECT_NEAR(designPoint->Alphas[1]->InfluenceFactor, 0.5, 1e-2);
                 EXPECT_NEAR(designPoint->Alphas[0]->X, 0.9, 1e-2);
                 EXPECT_NEAR(designPoint->Alphas[1]->X, 0.9, 1e-2);
             }
@@ -73,6 +75,24 @@ namespace Deltares
                 EXPECT_NEAR(designPoint->Alphas[5]->Alpha, -0.31, 1e-2);
                 EXPECT_NEAR(designPoint->Alphas[0]->X, 0.18, 1e-2);
                 EXPECT_NEAR(designPoint->Alphas[5]->X, 0.18, 1e-2);
+            }
+
+            void testReliabilityMethods::testFORMVaryingArray()
+            {
+                auto calculator = FORM();
+
+                auto modelRunner = projectBuilder().BuildLinearVaryingArrayProject();
+
+                auto designPoint = calculator.getDesignPoint(modelRunner);
+
+                ASSERT_EQ(designPoint->Alphas.size(), 10);
+                EXPECT_NEAR(designPoint->Beta, 0.72, 1e-2);
+                EXPECT_NEAR(designPoint->Alphas[0]->Alpha, -0.31, 1e-2);
+                EXPECT_NEAR(designPoint->Alphas[5]->Alpha, -0.31, 1e-2);
+                EXPECT_NEAR(designPoint->Alphas[0]->X, -1.82, 1e-2);
+                EXPECT_NEAR(designPoint->Alphas[4]->X, 2.18, 1e-2);
+                EXPECT_NEAR(designPoint->Alphas[5]->X, -1.82, 1e-2);
+                ASSERT_EQ(designPoint->Alphas[0]->getIdentifier(), "s[0]");
             }
 
             void testReliabilityMethods::testLatinHyperCube()

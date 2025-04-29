@@ -63,7 +63,7 @@ namespace Deltares
 		{
 			modelRunner->updateStochastSettings(this->Settings->StochastSet);
 
-            std::shared_ptr<SampleProvider> sampleProvider = std::make_shared<SampleProvider>(this->Settings->StochastSet, false);
+            std::shared_ptr<SampleProvider> sampleProvider = std::make_shared<SampleProvider>(this->Settings->StochastSet);
             modelRunner->setSampleProvider(sampleProvider);
 
 			std::shared_ptr<RandomSampleGenerator> sampleCreator = std::make_shared<RandomSampleGenerator>();
@@ -119,8 +119,6 @@ namespace Deltares
 					int chunkSize = modelRunner->Settings->MaxChunkSize;
 
 					int runs = std::min(chunkSize, Settings->MaximumSamples + 1 - sampleIndex);
-
-                    sampleProvider->reset();
 
 					if (initial)
 					{

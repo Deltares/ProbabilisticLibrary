@@ -4,7 +4,7 @@ if (ENABLE_UNIT_TESTS)
   FetchContent_Declare(
     googletest
     GIT_REPOSITORY https://github.com/google/googletest.git
-    GIT_TAG release-1.11.0
+    GIT_TAG v1.16.0
   )
   FetchContent_GetProperties(googletest)
   if(NOT googletest_POPULATED)
@@ -72,6 +72,8 @@ add_executable(Deltares.Probabilistic.Test
     Distributions/testDistributions_body.cpp
     Optimization/testCobyla.h
     Optimization/testCobyla_body.cpp
+    Model/TestRunModel.h
+    Model/TestRunModel_body.cpp
     Statistics/testStandardNormal.h
     Statistics/testStandardNormal_body.cpp
     Sensitivity/TestSensitivity.h

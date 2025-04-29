@@ -58,6 +58,12 @@ namespace Deltares
             std::shared_ptr<Reliability::DesignPoint> designPoint = nullptr;
 
             /**
+             * \brief Indicates whether the calculation can be run
+             * \return Valid indication
+             */
+            bool isValid() const;
+
+            /**
              * \brief Executes the combination
              */
             void run();

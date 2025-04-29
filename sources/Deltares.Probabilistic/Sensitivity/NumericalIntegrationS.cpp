@@ -40,8 +40,10 @@ namespace Deltares
 {
     namespace Sensitivity
     {
-        std::shared_ptr<Statistics::Stochast> NumericalIntegrationS::getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner)
+        Sensitivity::SensitivityResult NumericalIntegrationS::getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner)
         {
+            this->calculatedSamples.clear();
+
             modelRunner->updateStochastSettings(Settings->StochastSet);
 
             int nStochasts = modelRunner->getVaryingStochastCount();
@@ -51,7 +53,7 @@ namespace Deltares
             if (nStochasts > 11)
             {
                 modelRunner->reportMessage(MessageType::Error, "Numerical integration with more than 11 stochastic parameters. This is practically impossible.");
-                return nullptr;
+                return SensitivityResult();
             }
             else if (nStochasts > 4)
             {
@@ -76,7 +78,25 @@ namespace Deltares
                 this->correlationMatrixBuilder->registerWeightedValues(stochast, samples);
             }
 
-            return stochast;
+            auto result = modelRunner->getSensitivityResult(stochast);
+
+            for (std::shared_ptr<Statistics::ProbabilityValue> quantile : this->Settings->RequestedQuantiles)
+            {
+                double p = quantile->getProbabilityOfNonFailure();
+                int quantileIndex = this->getQuantileIndex(samples, p);
+
+                if (quantileIndex >= 0)
+                {
+                    std::shared_ptr<Models::Evaluation> evaluation = std::make_shared<Models::Evaluation>(modelRunner->getEvaluation(this->calculatedSamples[quantileIndex]));
+                    result.quantileEvaluations.push_back(evaluation);
+                }
+                else
+                {
+                    result.quantileEvaluations.push_back(nullptr);
+                }
+            }
+
+            return result;
         }
 
         std::vector<std::shared_ptr<Numeric::WeightedValue>> NumericalIntegrationS::collectSamples(std::shared_ptr<ModelRunner> modelRunner, int stochastIndex, std::shared_ptr<Sample> parentSample, double density, int nSamples, bool registerSamplesForCorrelation)
@@ -162,6 +182,11 @@ namespace Deltares
                         {
                             modelRunner->registerSample(this->correlationMatrixBuilder, sample);
                         }
+                    }
+
+                    if (!this->Settings->RequestedQuantiles.empty())
+                    {
+                        this->calculatedSamples.push_back(sample);
                     }
                 }
 

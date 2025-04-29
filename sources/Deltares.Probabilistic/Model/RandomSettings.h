@@ -23,6 +23,7 @@
 
 #include "../Math/Random.h"
 #include "../Reliability/StochastSettingsSet.h"
+#include <ctime>
 
 namespace Deltares
 {
@@ -55,6 +56,33 @@ namespace Deltares
             int Seed = 0;
 
             /**
+             * \brief If true, fixates the random generator so that it produces same random values when restarted or initialized
+             * \param fixed Indication whether the unrepeatable random generator is fixed
+             * \remarks Is used by calculation, do not use elsewhere
+             */
+            void setFixed(bool fixed);
+
+            /**
+             * \brief Gets a time stamp for the random generator if needed
+             */
+            time_t getTimeStamp()
+            {
+                if (!IsRepeatableRandom)
+                {
+                    if (!fixed)
+                    {
+                        generateTimeStamp();
+                    }
+
+                    return timeStamp;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+
+            /**
              * \brief Indicates whether a dummy random value is generated for non varying variables (true) or not (false)
              * \remark Skipping unvarying parameters is useful when changing a variable from varying to non varying. Then the same random values are generated for other (varying) variables.
              */
@@ -78,6 +106,21 @@ namespace Deltares
 
                 return copy;
             }
+        private:
+            /**
+             * \brief The last non-zero generated time stamp
+             */
+            time_t timeStamp = 0;
+
+            /**
+             * \brief Indicates whether the random generator, even if isRepeatableRandom is false, is fixed
+             */
+            bool fixed = false;
+
+            /**
+             * \brief Generates a new, yet unused time stamp
+             */
+            void generateTimeStamp();
         };
     }
 }

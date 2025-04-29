@@ -170,6 +170,12 @@ namespace Deltares
             return x1 > x2 - tolerance;
         }
 
+        bool NumericSupport::isBetween(double xLow, double x, double xHigh, double tolerance)
+        {
+            return (isGreater(x, xLow, tolerance) && isLess(x, xHigh, tolerance)) ||
+                   (isLess(x, xLow, tolerance) && isGreater(x, xHigh, tolerance));
+        }
+
         CmpResult NumericSupport::compareDouble(const double x1, const double x2, const double tol)
         {
             if (areEqual(x1, x2, tol))
@@ -522,6 +528,22 @@ namespace Deltares
 
                 return std::nan("");
             }
+        }
+
+        /// <summary>
+        /// limit a value to a lower and upper bound value
+        /// </summary>
+        /// <param name="x"> the value to limit </param>
+        /// <param name="minVal"> lower bound </param>
+        /// <param name="maxVal"> upper bound </param>
+        /// <returns> limited value </returns>
+        double NumericSupport::limit(const double x, double minVal, double maxVal)
+        {
+            if (minVal > maxVal) {std::swap(minVal, maxVal);}
+
+            double y = std::min(x, maxVal);
+            y = std::max(y, minVal);
+            return y;
         }
 
         std::vector<std::vector<double>> NumericSupport::getFullFactorialCombination(std::vector<std::vector<double>>& sourceLists)

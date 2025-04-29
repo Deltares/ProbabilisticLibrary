@@ -21,12 +21,15 @@
 //
 #include "ReliabilityProject.h"
 
+#include <iostream>
+
 namespace Deltares
 {
     namespace Reliability
     {
         void ReliabilityProject::run()
         {
+            this->modelRuns = 0;
             this->reliabilityMethod = this->settings->GetReliabilityMethod();
             this->runSettings = this->settings->RunSettings;
 
@@ -51,6 +54,11 @@ namespace Deltares
 
             this->designPoint = this->reliabilityMethod->getDesignPoint(modelRunner);
 
+            if (this->designPoint != nullptr)
+            {
+                this->modelRuns += this->designPoint->getTotalModelRuns();
+            }
+
             return this->designPoint;
         }
 
@@ -66,13 +74,19 @@ namespace Deltares
 
             this->designPoint = this->reliabilityMethod->getDesignPoint(modelRunner);
 
+            if (this->designPoint != nullptr)
+            {
+                this->modelRuns += this->designPoint->getTotalModelRuns();
+            }
+
             return this->fragilityCurve;
         }
 
-        bool ReliabilityProject::isValid() const
+        bool ReliabilityProject::isValid()
         {
-            return  this->model != nullptr && 
-                    this->runSettings != nullptr && this->runSettings->isValid();
+            return  ModelProject::isValid() &&
+                runSettings != nullptr && runSettings->isValid() &&
+                settings->isValid();
         }
     }
 }

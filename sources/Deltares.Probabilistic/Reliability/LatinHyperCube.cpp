@@ -37,7 +37,7 @@ namespace Deltares
         {
             modelRunner->updateStochastSettings(this->Settings->StochastSet);
 
-            auto sampleProvider = std::make_shared<SampleProvider>(this->Settings->StochastSet, false);
+            auto sampleProvider = std::make_shared<SampleProvider>(this->Settings->StochastSet);
             modelRunner->setSampleProvider(sampleProvider);
 
             double qRange = 1.0;
@@ -66,8 +66,6 @@ namespace Deltares
                 }
             }
 
-            sampleProvider->reset();
-
             return getReducedDesignPoint(modelRunner, qRange);
         };
 
@@ -81,7 +79,7 @@ namespace Deltares
 
             Random random;
             random.initialize(Settings->randomSettings->RandomGeneratorType, Settings->randomSettings->IsRepeatableRandom,
-                Settings->randomSettings->Seed);
+                Settings->randomSettings->Seed, Settings->randomSettings->getTimeStamp());
 
             std::vector<std::pair<int, std::vector<double>>> list;
             for (int i = 0; i < Settings->MinimumSamples; i++)

@@ -44,7 +44,11 @@ namespace Deltares
 
         bool TrapezoidalDistribution::isValid(std::shared_ptr<StochastProperties> stochast)
         {
-            return stochast->Minimum <= stochast->Shift && stochast->Shift <= stochast->ShiftB && stochast->ShiftB <= stochast->Maximum;
+            return stochast->Minimum <= stochast->Shift &&
+                stochast->Shift <= stochast->ShiftB &&
+                stochast->ShiftB <= stochast->Maximum &&
+                std::isfinite(stochast->Minimum) &&
+                std::isfinite(stochast->Maximum);
         }
 
         bool TrapezoidalDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)

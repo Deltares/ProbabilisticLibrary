@@ -20,11 +20,12 @@
 # All rights reserved.
 #
 import sys
+from math import isnan
 from enum import Enum
 
 from .utils import *
 from .statistic import Stochast, ProbabilityValue
-from .reliability import StochastSettings, RandomType, GradientType
+from .reliability import StochastSettings, RandomType, GradientType, Evaluation, Message
 from . import interface
 
 if not interface.IsLibraryLoaded():
@@ -40,17 +41,21 @@ class SensitivityMethod(Enum):
 	def __str__(self):
 		return str(self.value)
 
-class SensitivitySettings:
+class SensitivitySettings(FrozenObject):
 
 	def __init__(self):
 		self._id = interface.Create('sensitivity_settings')
 		self._stochast_settings = FrozenList()
 		self._quantiles = None
 		self._synchronizing = False
+		super()._freeze()
 		interface.SetBoolValue(self._id, 'use_openmp_in_reliability', False)
 
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 
 	def __dir__(self):
 		return ['max_parallel_processes',
@@ -59,6 +64,8 @@ class SensitivitySettings:
 		        'save_messages',
 		        'sensitivity_method',
 	            'random_type',
+				'is_repeatable_random',
+				'random_seed',
 	            'minimum_samples',
 	            'maximum_samples',
 	            'maximum_iterations',
@@ -79,7 +86,7 @@ class SensitivitySettings:
 
 		
 	@property
-	def max_parallel_processes(self):
+	def max_parallel_processes(self) -> int:
 		return interface.GetIntValue(self._id, 'max_parallel_processes')
 
 	@max_parallel_processes.setter
@@ -87,7 +94,7 @@ class SensitivitySettings:
 		interface.SetIntValue(self._id, 'max_parallel_processes', value)
 
 	@property
-	def save_realizations(self):
+	def save_realizations(self) -> bool:
 		return interface.GetBoolValue(self._id, 'save_realizations')
 
 	@save_realizations.setter
@@ -95,7 +102,7 @@ class SensitivitySettings:
 		interface.SetBoolValue(self._id, 'save_realizations', value)
 
 	@property
-	def save_convergence(self):
+	def save_convergence(self) -> bool:
 		return interface.GetBoolValue(self._id, 'save_convergence')
 
 	@save_convergence.setter
@@ -103,7 +110,7 @@ class SensitivitySettings:
 		interface.SetBoolValue(self._id, 'save_convergence', value)
 
 	@property
-	def save_messages(self):
+	def save_messages(self) -> bool:
 		return interface.GetBoolValue(self._id, 'save_messages')
 
 	@save_messages.setter
@@ -111,7 +118,7 @@ class SensitivitySettings:
 		interface.SetBoolValue(self._id, 'save_messages', value)
 
 	@property
-	def sensitivity_method(self):
+	def sensitivity_method(self) -> SensitivityMethod:
 		return SensitivityMethod[interface.GetStringValue(self._id, 'sensitivity_method')]
 		
 	@sensitivity_method.setter
@@ -119,7 +126,7 @@ class SensitivitySettings:
 		interface.SetStringValue(self._id, 'sensitivity_method', str(value))
 
 	@property
-	def random_type(self):
+	def random_type(self) -> RandomType:
 		return RandomType[interface.GetStringValue(self._id, 'random_type')]
 		
 	@random_type.setter
@@ -127,7 +134,23 @@ class SensitivitySettings:
 		interface.SetStringValue(self._id, 'random_type', str(value))
 
 	@property
-	def minimum_samples(self):
+	def is_repeatable_random(self) -> bool:
+		return interface.GetBoolValue(self._id, 'is_repeatable_random')
+		
+	@is_repeatable_random.setter
+	def is_repeatable_random(self, value : bool):
+		interface.SetBoolValue(self._id, 'is_repeatable_random', value)
+
+	@property
+	def random_seed(self) -> int:
+		return interface.GetIntValue(self._id, 'random_seed')
+		
+	@random_seed.setter
+	def random_seed(self, value : int):
+		interface.SetIntValue(self._id, 'random_seed', value)
+
+	@property
+	def minimum_samples(self) -> int:
 		return interface.GetIntValue(self._id, 'minimum_samples')
 		
 	@minimum_samples.setter
@@ -135,7 +158,7 @@ class SensitivitySettings:
 		interface.SetIntValue(self._id, 'minimum_samples', value)
 
 	@property
-	def maximum_samples(self):
+	def maximum_samples(self) -> int:
 		return interface.GetIntValue(self._id, 'maximum_samples')
 		
 	@maximum_samples.setter
@@ -143,7 +166,7 @@ class SensitivitySettings:
 		interface.SetIntValue(self._id, 'maximum_samples', value)
 
 	@property
-	def maximum_iterations(self):
+	def maximum_iterations(self) -> int:
 		return interface.GetIntValue(self._id, 'maximum_iterations')
 		
 	@maximum_iterations.setter
@@ -151,7 +174,7 @@ class SensitivitySettings:
 		interface.SetIntValue(self._id, 'maximum_iterations', value)
 
 	@property
-	def minimum_directions(self):
+	def minimum_directions(self) -> int:
 		return interface.GetIntValue(self._id, 'minimum_directions')
 		
 	@minimum_directions.setter
@@ -159,7 +182,7 @@ class SensitivitySettings:
 		interface.SetIntValue(self._id, 'minimum_directions', value)
 
 	@property
-	def maximum_directions(self):
+	def maximum_directions(self) -> int:
 		return interface.GetIntValue(self._id, 'maximum_directions')
 		
 	@maximum_directions.setter
@@ -167,7 +190,7 @@ class SensitivitySettings:
 		interface.SetIntValue(self._id, 'maximum_directions', value)
 
 	@property
-	def minimum_u(self):
+	def minimum_u(self) -> float:
 		return interface.GetValue(self._id, 'minimum_u')
 		
 	@minimum_u.setter
@@ -175,7 +198,7 @@ class SensitivitySettings:
 		interface.SetValue(self._id, 'minimum_u', value)
 
 	@property
-	def maximum_u(self):
+	def maximum_u(self) -> float:
 		return interface.GetValue(self._id, 'maximum_u')
 		
 	@maximum_u.setter
@@ -183,7 +206,7 @@ class SensitivitySettings:
 		interface.SetValue(self._id, 'maximum_u', value)
 
 	@property
-	def global_step_size(self):
+	def global_step_size(self) -> float:
 		return interface.GetValue(self._id, 'global_step_size')
 		
 	@global_step_size.setter
@@ -191,7 +214,7 @@ class SensitivitySettings:
 		interface.SetValue(self._id, 'global_step_size', value)
 
 	@property
-	def step_size(self):
+	def step_size(self) -> float:
 		return interface.GetValue(self._id, 'step_size')
 		
 	@step_size.setter
@@ -199,7 +222,7 @@ class SensitivitySettings:
 		interface.SetValue(self._id, 'step_size', value)
 
 	@property
-	def gradient_type(self):
+	def gradient_type(self) -> GradientType:
 		return GradientType[interface.GetStringValue(self._id, 'gradient_type')]
 		
 	@gradient_type.setter
@@ -207,7 +230,7 @@ class SensitivitySettings:
 		interface.SetStringValue(self._id, 'gradient_type', str(value))
 
 	@property
-	def relaxation_factor(self):
+	def relaxation_factor(self) -> float:
 		return interface.GetValue(self._id, 'relaxation_factor')
 		
 	@relaxation_factor.setter
@@ -215,7 +238,15 @@ class SensitivitySettings:
 		interface.SetValue(self._id, 'relaxation_factor', value)
 
 	@property
-	def variation_coefficient(self):
+	def variance_factor(self) -> float:
+		return interface.GetValue(self._id, 'variance_factor')
+		
+	@variance_factor.setter
+	def variance_factor(self, value : float):
+		interface.SetValue(self._id, 'variance_factor', value)
+
+	@property
+	def variation_coefficient(self) -> float:
 		return interface.GetValue(self._id, 'variation_coefficient')
 		
 	@variation_coefficient.setter
@@ -223,7 +254,7 @@ class SensitivitySettings:
 		interface.SetValue(self._id, 'variation_coefficient', value)
 
 	@property
-	def probability_for_convergence(self):
+	def probability_for_convergence(self) -> float:
 		return interface.GetValue(self._id, 'probability_for_convergence')
 		
 	@probability_for_convergence.setter
@@ -231,7 +262,7 @@ class SensitivitySettings:
 		interface.SetValue(self._id, 'probability_for_convergence', value)
 
 	@property
-	def derive_samples_from_variation_coefficient(self):
+	def derive_samples_from_variation_coefficient(self) -> bool:
 		return interface.GetBoolValue(self._id, 'derive_samples_from_variation_coefficient')
 		
 	@derive_samples_from_variation_coefficient.setter
@@ -239,7 +270,7 @@ class SensitivitySettings:
 		interface.SetBoolValue(self._id, 'derive_samples_from_variation_coefficient', value)
 
 	@property   
-	def calculate_correlations(self):
+	def calculate_correlations(self) -> bool:
 		return interface.GetBoolValue(self._id, 'calculate_correlations')
 		
 	@calculate_correlations.setter
@@ -247,7 +278,7 @@ class SensitivitySettings:
 		interface.SetBoolValue(self._id, 'calculate_correlations', value) 
 
 	@property   
-	def calculate_input_correlations(self):
+	def calculate_input_correlations(self) -> bool:
 		return interface.GetBoolValue(self._id, 'calculate_input_correlations')
 		
 	@calculate_input_correlations.setter
@@ -255,11 +286,11 @@ class SensitivitySettings:
 		interface.SetBoolValue(self._id, 'calculate_input_correlations', value) 
 
 	@property   
-	def stochast_settings(self):
+	def stochast_settings(self) -> list[StochastSettings]:
 		return self._stochast_settings
 
 	@property
-	def quantiles(self):
+	def quantiles(self) -> list[ProbabilityValue]:
 		if self._quantiles is None:
 			self._synchronizing = True
 			self._quantiles = CallbackList(self._quantiles_changed)
@@ -292,3 +323,87 @@ class SensitivitySettings:
 			new_stochast_settings.append(stochast_setting)
 		self._stochast_settings = FrozenList(new_stochast_settings)
 		interface.SetArrayIntValue(self._id, 'stochast_settings', [stochast_setting._id for stochast_setting in self._stochast_settings])
+
+class SensitivityResult(FrozenObject):
+
+	def __init__(self, id):
+		self._id = id
+		self._variable = None
+		self._messages = None
+		self._realizations = None
+		self._quantile_realizations = None
+		super()._freeze()
+		
+	def __del__(self):
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
+
+	def __dir__(self):
+		return ['identifier',
+				'variable',
+				'quantile_realizations',
+				'realizations',
+				'messages',
+				'print',
+				'plot']
+		
+	def __str__(self):
+		return self.identifier
+
+	@property
+	def identifier(self) -> str:
+		return interface.GetStringValue(self._id, 'identifier')
+
+	@property
+	def variable(self) -> Stochast:
+		if self._variable is None:
+			variable_id = interface.GetIdValue(self._id, 'variable')
+			if variable_id > 0:
+				self._variable = Stochast(variable_id);
+				
+		return self._variable
+
+	@property
+	def realizations(self) -> list[Evaluation]:
+		if self._realizations is None:
+			realizations = []
+			realization_ids = interface.GetArrayIdValue(self._id, 'evaluations')
+			for realization_id in realization_ids:
+				realizations.append(Evaluation(realization_id))
+			self._realizations = FrozenList(realizations)
+				
+		return self._realizations
+	
+	@property
+	def quantile_realizations(self) -> list[Evaluation]:
+		if self._quantile_realizations is None:
+			quantile_realizations = []
+			quantile_realization_ids = interface.GetArrayIdValue(self._id, 'quantile_evaluations')
+			for realization_id in quantile_realization_ids:
+				quantile_realizations.append(Evaluation(realization_id))
+			self._quantile_realizations = FrozenList(quantile_realizations)
+				
+		return self._quantile_realizations
+	
+	@property
+	def messages(self) -> list[Message]:
+		if self._messages is None:
+			messages = []
+			message_ids = interface.GetArrayIdValue(self._id, 'messages')
+			for message_id in message_ids:
+				messages.append(Message(message_id))
+			self._messages = FrozenList(messages)
+				
+		return self._messages
+
+	def print(self):
+		self.variable.print()
+		if len(self.quantile_realizations) > 0:
+			print('Quantiles:')
+			for quantile in self.quantile_realizations:
+				quantile._print(1)
+
+	def plot(self):
+		self.variable.plot()

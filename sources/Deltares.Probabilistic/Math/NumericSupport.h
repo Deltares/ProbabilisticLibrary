@@ -49,6 +49,7 @@ namespace Deltares
             static bool areEqual(double x1, double x2, double tolerance);
             static bool isLess(double x1, double x2, double tolerance);
             static bool isGreater(double x1, double x2, double tolerance);
+            static bool isBetween(double xLow, double x, double xHigh, double tolerance);
             static CmpResult compareDouble(const double x1, const double x2, const double tol = 1e-14);
             static bool doublesAreEqual(const std::vector<double>& p1, const std::vector<double>& p2, const double tol = 1e-14);
             static double* getCopy(double* values, int count);
@@ -66,6 +67,7 @@ namespace Deltares
             static double getMaxValidValue(std::function<double(double)> function);
             static double interpolate(double x, double minX, double minY, double maxX, double maxY, bool extrapolate = false, InterpolationType interpolationType = Linear);
             static double interpolate(double x, const std::vector<double>& xValues, const std::vector<double>& yValues, bool extrapolate = false, InterpolationType interpolationType = Linear);
+            static double limit(const double x, double minVal, double maxVal);
 
             /**
              * \brief Gets the full factorial combination of a number of lists

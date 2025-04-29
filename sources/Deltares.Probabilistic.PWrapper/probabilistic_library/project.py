@@ -19,8 +19,10 @@
 # Stichting Deltares and remain full property of Stichting Deltares at all times.
 # All rights reserved.
 #
+from __future__ import annotations
 import sys
 from ctypes import *
+from multiprocessing import Pool, cpu_count
 from typing import FrozenSet
 
 from .statistic import *
@@ -33,19 +35,20 @@ import inspect
 if not interface.IsLibraryLoaded():
 	interface.LoadDefaultLibrary()
 
-class Sample:
+class Sample(FrozenObject):
 	def __init__(self, input_values, output_values):
 		self.input_values = input_values
 		self.output_values = output_values
+		super()._freeze()
 
 class ZModelContainer:
 	def get_model(self):
 		return None
 
-	def is_valid(self):
+	def is_valid(self) -> bool:
 		return True
 
-	def validate(self):
+	def validate(self) -> list[Message]:
 		return FrozenList() 
 
 	def is_dirty(self):
@@ -54,38 +57,53 @@ class ZModelContainer:
 	def update_model(self):
 		pass
 
-class ZModel:
+class ZModel(FrozenObject):
 	_callback = None
 	_multiple_callback = None
 	
-	def __init__(self, callback = None):
+	def __init__(self, callback = None, output_parameter_size = 1):
 		ZModel._index = 0;
 		ZModel._callback = callback
 		self._model = None
-		self._is_function = inspect.isfunction(callback)
+		self._is_function = inspect.isfunction(callback) or inspect.ismethod(callback)
 		self._is_dirty = False
 		self._has_arrays = False
 		self._array_sizes = None
+		self._pool = None
+		self._max_processes = 1
+		self._project = None
+		self._project_id = 0
+		self._z_values_size = 0
 
 		if self._is_function:
 			self._input_parameters = self._get_input_parameters(callback)
-			self._output_parameters = self._get_output_parameters(callback)
+			self._output_parameters = self._get_output_parameters(callback, output_parameter_size)
 			self._model_name = callback.__name__
 		else:
 			self._input_parameters = []
 			self._output_parameters = []
 			self._model_name = ''
 
+		super()._freeze()
+
 	def __dir__(self):
 		return ['name',
 				'input_parameters',
-				'output_parameters']
+				'output_parameters',
+ 				'print']
+
+	def __del__(self):
+		try:
+			if not self._pool is None:
+				self._pool.close()
+		except:
+			pass
 
 	def __str__(self):
 		return self.name
 
 	@property
-	def name(self):
+	def name(self) -> str:
 		return self._model_name
 
 	def _get_input_parameters(self, function):
@@ -105,7 +123,7 @@ class ZModel:
 
 		return FrozenList(parameters)
 
-	def _get_output_parameters(self, function):
+	def _get_output_parameters(self, function, output_parameter_size = 1):
 		parameters = []
 		source = inspect.getsource(function)
 		lines = source.splitlines()
@@ -122,10 +140,13 @@ class ZModel:
 			modelParameter.name = parameters[i]
 			modelParameter.index = i
 			parameters[i] = modelParameter
+			if (len(parameters) == 1 and output_parameter_size > 1):
+				parameters[i].is_array = True
+				parameters[i].array_size = output_parameter_size
 
 		return FrozenList(parameters)
 
-	def validate(self):
+	def validate(self) -> list[Message]:
 		if self._is_function:
 			return FrozenList()
 		elif not self._model is None:
@@ -133,7 +154,7 @@ class ZModel:
 		else:
 			return FrozenList([Message.from_message(MessageType.error, 'No model provided')])
 
-	def is_valid(self):
+	def is_valid(self) -> bool:
 		if self._is_function:
 			return True
 		elif not self._model is None:
@@ -142,11 +163,11 @@ class ZModel:
 			return False
 
 	@property
-	def input_parameters(self):
+	def input_parameters(self) -> list[ModelParameter]:
 		return self._input_parameters
 
 	@property
-	def output_parameters(self):
+	def output_parameters(self) -> list[ModelParameter]:
 		return self._output_parameters
 
 	def _set_callback(self, callback):
@@ -158,7 +179,8 @@ class ZModel:
 	def _set_model(self, value):
 		self._model = value
 		
-	def set_max_processes(self, value):
+	def set_max_processes(self, value : int):
+		self._max_processes = value
 		if not self._model is None:
 			self._model.set_max_processes(value)
 
@@ -176,8 +198,23 @@ class ZModel:
 				else:
 					self._array_sizes.append(-1)
 
+		self._z_values_size = 0
+		for parameter in self.output_parameters:
+			if parameter.is_array:
+				self._z_values_size += parameter.array_size
+			else:
+				self._z_values_size += 1
+
 		if not self._model is None:
 			self._model.initialize_for_run()
+
+		if self._is_function:
+			if self._max_processes > 1:
+				self._pool = Pool(self._max_processes)
+			elif self._max_processes < 1:
+				self._pool = Pool()
+			else:
+				self._pool = None
 	
 	def update(self):
 		if not self._model is None:
@@ -203,37 +240,75 @@ class ZModel:
 		return args
 
 	def run_multiple(self, samples):
-		if self._is_function:
+		if self._is_function and self._pool is None:
 			for sample in samples:
 				self.run(sample)
+		elif self._is_function and not self._pool is None:
+			results = {}
+			for sample in samples:
+				sample_input = self._get_input(sample)
+				results[sample] = self._pool.apply_async(func=ZModel._callback, args=(*sample_input,))
+			for sample in samples:
+				z = results[sample].get()
+				self._assign_output(sample, z)
 		else:
 			ZModel._multiple_callback(samples)
 
 	def run(self, sample):
 		if self._is_function:
-			if self._has_arrays:
-				args = self._get_args(sample.input_values)
-				z = ZModel._callback(*args)
-			else:
-				z = ZModel._callback(*sample.input_values)
-			if type(z) is list or type(z) is tuple:
-				for i in range(len(z)):
-					sample.output_values[i] = z[i]
-			else:
-				sample.output_values[0] = z
+			sample_input = self._get_input(sample)
+			z = ZModel._callback(*sample_input)
+			self._assign_output(sample, z)
 		else:
 			z = ZModel._callback(sample);
 
-class ModelParameter:
+	def _get_input(self, sample):
+		if self._has_arrays:
+			return self._get_args(sample.input_values)
+		else:
+			return sample.input_values
+
+	def _assign_output(self, sample, z):
+		if type(z) is list or type(z) is tuple:
+			for i in range(self._z_values_size):
+				sample.output_values[i] = z[i]
+		else:
+			sample.output_values[0] = z
+
+	def _run_callback(sample_input):
+		return ZModel._callback(*sample_input)
+
+	def print(self):
+		pre = '  '
+		if not self.name == '':
+			print(f'Model {self.name}:')
+		print('Input parameters:')
+		for input_parameter in self.input_parameters:
+			if input_parameter.is_array:
+				print(pre + f'{input_parameter.name}[{input_parameter.array_size}]')
+			else: 
+				print(pre + f'{input_parameter.name}')
+		print('Output parameters:')
+		for output_parameter in self.output_parameters:
+			if output_parameter.is_array:
+				print(pre + f'{output_parameter.name}[{output_parameter.array_size}]')
+			else: 
+				print(pre + f'{output_parameter.name}')
+
+class ModelParameter(FrozenObject):
 
 	def __init__(self, id = None):
 		if id is None:
 			self._id = interface.Create('model_parameter')
 		else:
 			self._id = id
+		super()._freeze()
 
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 
 	def __dir__(self):
 		return ['name',
@@ -243,7 +318,7 @@ class ModelParameter:
 				'array_size']
 	
 	@property
-	def name(self):
+	def name(self) -> str:
 		return interface.GetStringValue(self._id, 'name')
 		
 	@name.setter
@@ -251,41 +326,41 @@ class ModelParameter:
 		interface.SetStringValue(self._id, 'name', value)
 
 	@property
-	def index(self):
+	def index(self) -> int:
 		return interface.GetIntValue(self._id, 'index')
 		
 	@name.setter
-	def index(self, value):
+	def index(self, value : int):
 		interface.SetIntValue(self._id, 'index', value)
 
 	@property
-	def default_value(self):
+	def default_value(self) -> float:
 		return interface.GetValue(self._id, 'default_value')
 		
 	@default_value.setter
-	def default_value(self, value):
+	def default_value(self, value : float):
 		interface.SetValue(self._id, 'default_value', value)
 
 	@property
-	def is_array(self):
+	def is_array(self) -> bool:
 		return interface.GetBoolValue(self._id, 'is_array')
 		
 	@is_array.setter
-	def is_array(self, value):
+	def is_array(self, value : bool):
 		interface.SetBoolValue(self._id, 'is_array', value)
 
 	@property
-	def array_size(self):
+	def array_size(self) -> int:
 		return interface.GetIntValue(self._id, 'array_size')
 
 	@array_size.setter
-	def array_size(self, value):
+	def array_size(self, value : int):
 		interface.SetIntValue(self._id, 'array_size', value)
 
 	def __str__(self):
 		return self.name
 
-class ModelProject:
+class ModelProject(FrozenObject):
 	_project_id = 0
 	_zmodel = None
 
@@ -296,8 +371,8 @@ class ModelProject:
 		self._correlation_matrix = CorrelationMatrix()
 		self._output_parameters = FrozenList()
 		self._settings = None
-
-		ModelProject._zmodel = None
+		self._model = None
+		# do not freeze, this will be done by inheritors
 
 	def _initialize_callbacks(self, project_id):
 
@@ -324,56 +399,70 @@ class ModelProject:
 			samples.append(Sample(values[i][:input_size], output_values[i]))
 		ModelProject._zmodel.run_multiple(samples)
 
-	def validate(self):
-		if not ModelProject._zmodel is None:
-			return ModelProject._zmodel.validate()
+	def validate(self) -> list[Message]:
+		if not self._model is None:
+			return self._model.validate()
 		else:
 			return FrozenList([Message.from_message(MessageType.error, 'No model provided')])
 
-	def is_valid(self):
-		if not ModelProject._zmodel is None:
-			return ModelProject._zmodel.is_valid()
+	def is_valid(self) -> bool:
+		self._update()
+		if not self._model is None:
+			return self._model.is_valid() and interface.GetBoolValue(self._id, 'is_valid')
 		else:
 			return False
 
 	@property
-	def variables(self):
+	def variables(self) -> list[Stochast]:
 		self._check_model()
 		return self._variables
 
 	@property
-	def correlation_matrix(self):
+	def correlation_matrix(self) -> CorrelationMatrix:
 		self._check_model()
 		return self._correlation_matrix
 
 	@property
-	def settings(self):
-		self._check_model()
-		return self._settings
-
-	@property
-	def model(self):
-		return ModelProject._zmodel
+	def model(self) -> ZModel:
+		if not self._model is None:
+			self._model._project = self
+		return self._model
 
 	@model.setter
 	def model(self, value):
-		if inspect.isfunction(value):
-			ModelProject._zmodel = ZModel(value)
+		if isinstance(value, tuple):
+			output_parameter_size = value[1]
+			value = value[0]
+		else:
+			output_parameter_size = 1
+
+		if inspect.isfunction(value) or inspect.ismethod(value):
+			self._model = ZModel(value, output_parameter_size)
+			self._update_model()
+		elif isinstance(value, ZModel):
+			self._model = value
+			self._share(value._project)
 			self._update_model()
 		elif isinstance(value, ZModelContainer):
-			ModelProject._zmodel = value.get_model()
+			self._model = value.get_model()
 		else:
 			raise ValueError('ZModel container expected')
 		
 	def _check_model(self):
-		if not ModelProject._zmodel is None:
-			if ModelProject._zmodel.update():
+		if not self._model is None:
+			if self._model.update():
 				self._update_model()
 	
+	def _share(self, shared_project):
+		id1 = self._id
+		id2 = shared_project._id
+		self._known_variables.extend(shared_project.variables)
+		interface.SetIntValue(self._id, 'share_project', shared_project._id)
+
 	def _update_model(self):
-		interface.SetArrayIntValue(self._project_id, 'input_parameters', [input_parameter._id for input_parameter in ModelProject._zmodel.input_parameters])
-		interface.SetArrayIntValue(self._project_id, 'output_parameters', [output_parameter._id for output_parameter in ModelProject._zmodel.output_parameters])
-		interface.SetStringValue(self._project_id, 'model_name', ModelProject._zmodel.name)
+		interface.SetArrayIntValue(self._project_id, 'input_parameters', [input_parameter._id for input_parameter in self._model.input_parameters])
+		interface.SetArrayIntValue(self._project_id, 'output_parameters', [output_parameter._id for output_parameter in self._model.output_parameters])
+		interface.SetStringValue(self._project_id, 'model_name', self._model.name)
 
 		variables = []
 		variable_ids = interface.GetArrayIdValue(self._project_id, 'stochasts')
@@ -393,18 +482,103 @@ class ModelProject:
 		for var in self._variables:
 			var._set_variables(self._variables)
 
-		self._output_parameters = ModelProject._zmodel.output_parameters
+		self._output_parameters = self._model.output_parameters
 
-	def _run(self):
+	def _update(self):
 		self._check_model()
 
 		interface.SetIntValue(self._project_id, 'correlation_matrix', self._correlation_matrix._id)
 		interface.SetIntValue(self._project_id, 'settings', self._settings._id)
-		interface.SetArrayIntValue(self.settings._id, 'stochast_settings', [stochast_setting._id for stochast_setting in self.settings.stochast_settings])
-		ModelProject._zmodel.initialize_for_run()
-		ModelProject._zmodel.set_max_processes(self.settings.max_parallel_processes)
+		if hasattr(self.settings, 'stochast_settings'):
+			interface.SetArrayIntValue(self.settings._id, 'stochast_settings', [stochast_setting._id for stochast_setting in self.settings.stochast_settings])
+		if self._model != None:
+			if hasattr(self.settings, 'max_parallel_processes'):
+				self._model.set_max_processes(self.settings.max_parallel_processes)
+			self._model.initialize_for_run()
+		ModelProject._zmodel = self._model
 
-		interface.Execute(self._project_id, 'run')
+	def _run(self):
+		if (self.is_valid()):
+			interface.Execute(self._project_id, 'run')
+		else:
+			print('run not executed, input is not valid')
+
+class RunValuesType(Enum):
+	median_values = 'median_values'
+	mean_values = 'mean_values'
+	design_values = 'design_values'
+	def __str__(self):
+		return str(self.value)
+
+class RunProjectSettings(FrozenObject):
+
+	def __init__(self):
+		self._id = interface.Create('run_project_settings')
+		super()._freeze()
+
+	def __del__(self):
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
+
+	def __dir__(self):
+		return ['run_values_type']
+		
+	@property
+	def run_values_type(self) -> RunValuesType:
+		return RunValuesType[interface.GetStringValue(self._id, 'run_values_type')]
+
+	@run_values_type.setter
+	def run_values_type(self, value : RunValuesType):
+		interface.SetStringValue(self._id, 'run_values_type', str(value))
+
+	def _set_variables(self, variables):
+		pass
+
+class RunProject(ModelProject):
+
+	def __init__(self):
+		super().__init__()
+		self._id = interface.Create('run_project')
+		self._realization = None
+		self._initialize_callbacks(self._id)
+		self._set_settings(RunProjectSettings())
+		super()._freeze()
+
+	def __del__(self):
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
+
+	def __dir__(self):
+		return ['variables',
+				'correlation_matrix',
+				'settings',
+				'model',
+				'run',
+				'realization',
+				'validate',
+				'is_valid']
+
+	@property
+	def settings(self) -> RunProjectSettings:
+		self._check_model()
+		return self._settings
+
+	def run(self):
+		self._realization = None
+		self._run()
+
+	@property
+	def realization(self) -> Evaluation:
+		if self._realization is None:
+			realizationId = interface.GetIdValue(self._id, 'realization')
+			if realizationId > 0:
+				self._realization = Evaluation(realizationId)
+
+		return self._realization
 
 class SensitivityProject(ModelProject):
 
@@ -413,13 +587,20 @@ class SensitivityProject(ModelProject):
 		self._id = interface.Create('sensitivity_project')
 
 		self._stochast = None
+		self._stochasts = None
+		self._result = None
+		self._results = None
 		self._output_correlation_matrix = None
 
 		self._initialize_callbacks(self._id)
 		self._set_settings(SensitivitySettings())
+		super()._freeze()
 
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 
 	def __dir__(self):
 		return ['variables',
@@ -429,47 +610,78 @@ class SensitivityProject(ModelProject):
 				'parameter',
 				'run',
 				'stochast',
+				'stochasts',
+				'result',
+				'results',
 				'output_correlation_matrix',
-                'validate',
-                'is_valid']
+				'validate',
+				'is_valid',
+				'total_model_runs']
 
 	@property
-	def parameter(self):
+	def parameter(self) -> str:
 		return interface.GetStringValue(self._id, 'parameter')
 		
 	@parameter.setter
-	def parameter(self, value : int):
+	def parameter(self, value : str | ModelParameter):
 		interface.SetStringValue(self._id, 'parameter', str(value))
+
+	@property
+	def settings(self) -> SensitivitySettings:
+		self._check_model()
+		return self._settings
 
 	def run(self):
 		self._stochast = None
 		self._stochasts = None
+		self._result = None
+		self._results = None
 		self._output_correlation_matrix = None
 
 		self._run()
 
 	@property
-	def stochast(self):
+	def stochast(self) -> Stochast:
 		if self._stochast is None:
-			stochastId = interface.GetIdValue(self._id, 'sensitivity_stochast')
-			if stochastId > 0:
-				self._stochast = Stochast(stochastId)
-
+			if not self.result is None:
+				self._stochast = self.result.variable
 		return self._stochast
 
 	@property
-	def stochasts(self):
+	def stochasts(self) -> list[Stochast]:
 		if self._stochasts is None:
 			stochasts = []
-			stochast_ids = interface.GetArrayIdValue(self._id, 'sensitivity_stochasts')
-			for stochast_id in stochast_ids:
-				stochasts.append(Stochast(stochast_id))
+			for result in self.results:
+				if not result is None:
+					stochasts.append(result.variable)
+				else:
+					stochasts.append(None)
 			self._stochasts = FrozenList(stochasts)
 				
 		return self._stochasts
 
 	@property
-	def output_correlation_matrix(self):
+	def result(self) -> SensitivityResult:
+		if self._result is None:
+			resultId = interface.GetIdValue(self._id, 'sensitivity_result')
+			if resultId > 0:
+				self._result = SensitivityResult(resultId)
+
+		return self._result
+
+	@property
+	def results(self) -> list[SensitivityResult]:
+		if self._results is None:
+			results = []
+			result_ids = interface.GetArrayIdValue(self._id, 'sensitivity_results')
+			for result_id in result_ids:
+				results.append(SensitivityResult(result_id))
+			self._results = FrozenList(results)
+				
+		return self._results
+
+	@property
+	def output_correlation_matrix(self) -> CorrelationMatrix:
 		if self._output_correlation_matrix is None:
 			correlationMatrixId = interface.GetIdValue(self._id, 'output_correlation_matrix')
 			if correlationMatrixId > 0:
@@ -477,6 +689,10 @@ class SensitivityProject(ModelProject):
 				self._output_correlation_matrix._update_variables(self.variables.get_list() + self.stochasts.get_list())
 				
 		return self._output_correlation_matrix
+
+	@property
+	def total_model_runs(self) -> int:
+		return interface.GetIntValue(self._id, 'total_model_runs')
 
 class ReliabilityProject(ModelProject):
 
@@ -487,12 +703,17 @@ class ReliabilityProject(ModelProject):
 		self._limit_state_function = None
 		self._design_point = None
 		self._fragility_curve = None
+		self._initialized = False
 
 		self._initialize_callbacks(self._id)
 		self._set_settings(Settings())
+		super()._freeze()
         
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 
 	def __dir__(self):
 		return ['variables',
@@ -502,11 +723,17 @@ class ReliabilityProject(ModelProject):
 				'model',
 				'run',
 				'design_point',
-                'validate',
-                'is_valid']
+				'validate',
+				'is_valid',
+				'total_model_runs']
 
 	@property
-	def limit_state_function(self):
+	def settings(self) -> Settings:
+		self._check_model()
+		return self._settings
+
+	@property
+	def limit_state_function(self) -> LimitStateFunction:
 		if self._limit_state_function is None:
 			lsf_id = interface.GetIdValue(self._id, 'limit_state_function')
 			if lsf_id > 0:
@@ -517,20 +744,31 @@ class ReliabilityProject(ModelProject):
 		self._design_point = None
 		self._fragility_curve = None
 		self._initialized = False
-
-		self._run()
+		if (self.is_valid()):
+			self._run()
+		else:
+			print('run not executed, input is not valid')
 
 	@property
-	def design_point(self):
+	def design_point(self) -> DesignPoint:
 		if self._design_point is None:
 			designPointId = interface.GetIdValue(self._id, 'design_point')
 			if designPointId > 0:
-				self._design_point = DesignPoint(designPointId, self.variables)
+				self._design_point = DesignPoint(designPointId, self._get_variables())
 
 		return self._design_point
 
+	def _get_variables(self):
+		variables = []
+		variables.extend(self.variables)
+		for variable in variables:
+			for array_variable in variable.array_variables:
+				if array_variable not in variables:
+					variables.append(array_variable)
+		return variables
+
 	@property
-	def fragility_curve(self):
+	def fragility_curve(self) -> FragilityCurve:
 		if self._fragility_curve is None:
 			fragilityCurveId = interface.GetIntValue(self._id, 'fragility_curve')
 			if fragilityCurveId > 0:
@@ -546,8 +784,11 @@ class ReliabilityProject(ModelProject):
 				if id_ > 0:
 					fragility_value.design_point = DesignPoint(id_, variables)
 
+	@property
+	def total_model_runs(self) -> int:
+		return interface.GetIntValue(self._id, 'total_model_runs')
 
-class CombineProject:
+class CombineProject(FrozenObject):
 
 	def __init__(self):
 		self._id = interface.Create('combine_project')
@@ -557,14 +798,19 @@ class CombineProject:
 		self._correlation_matrix = SelfCorrelationMatrix()
 		self._design_point_correlation_matrix = CorrelationMatrix()
 		self._design_point = None
+		super()._freeze()
 
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 
 	def __dir__(self):
 		return ['design_points',
 				'settings',
 				'correlation_matrix',
+				'run',
 				'design_point_correlation_matrix',
 				'design_point']
 
@@ -576,27 +822,37 @@ class CombineProject:
 		self._design_point_correlation_matrix._set_variables(variables)
 
 	@property
-	def design_points(self):
+	def design_points(self) -> list[DesignPoint]:
 		return self._design_points
 
 	@property
-	def settings(self):
+	def settings(self) -> CombineSettings:
 		return self._settings
 
 	@property
-	def correlation_matrix(self):
+	def correlation_matrix(self) -> SelfCorrelationMatrix:
 		return self._correlation_matrix
 
-	def run(self):
-		self._design_point = None
+	def _update(self):
 		interface.SetArrayIntValue(self._id, 'design_points', [design_point._id for design_point in self._design_points])
 		interface.SetIntValue(self._id, 'settings', self._settings._id)
 		interface.SetIntValue(self._id, 'correlation_matrix', self._correlation_matrix._id)
 		interface.SetIntValue(self._id, 'design_point_correlation_matrix', self._design_point_correlation_matrix._id)
-		interface.Execute(self._id, 'run')
+
+	def is_valid(self) -> bool:
+		self._update()
+		return interface.GetBoolValue(self._id, 'is_valid')
+
+	def run(self):
+		self._design_point = None
+		# update performed by is_valid
+		if (self.is_valid()):
+			interface.Execute(self._id, 'run')
+		else:
+			print('run not executed, input is not valid')
 
 	@property
-	def design_point(self):
+	def design_point(self) -> DesignPoint:
 		if self._design_point is None:
 			designPointId = interface.GetIdValue(self._id, 'design_point')
 			if designPointId > 0:
@@ -606,7 +862,7 @@ class CombineProject:
 				self._design_point = DesignPoint(designPointId, variables, self._design_points)
 		return self._design_point
 
-class ExcludingCombineProject:
+class ExcludingCombineProject(FrozenObject):
 
 	def __init__(self):
 		self._id = interface.Create('excluding_combine_project')
@@ -619,9 +875,13 @@ class ExcludingCombineProject:
 		self._dirty = True
 
 		interface.SetIntValue(self._id, 'settings', self._settings._id)
+		super()._freeze()
 
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 
 	def __dir__(self):
 		return ['design_points',
@@ -655,22 +915,22 @@ class ExcludingCombineProject:
 			self._dirty = False
 
 	@property
-	def design_points(self):
+	def design_points(self) -> list[DesignPoint]:
 		return self._design_points
 
 	@property
-	def scenarios(self):
+	def scenarios(self) -> list[Scenario]:
 		return self._scenarios
 
 	@property
-	def settings(self):
+	def settings(self) -> ExcludingCombineSettings:
 		return self._settings
 
-	def is_valid(self):
+	def is_valid(self) -> bool:
 		self._update()
 		return interface.GetBoolValue(self._id, 'is_valid')
 
-	def validate(self):
+	def validate(self) -> list[Message]:
 		self._update()
 		interface.Execute(self._id, 'validate')
 		messages = []
@@ -683,7 +943,10 @@ class ExcludingCombineProject:
 	def run(self):
 		self._update()
 		self._design_point = None
-		interface.Execute(self._id, 'run')
+		if (self.is_valid()):
+			interface.Execute(self._id, 'run')
+		else:
+			print('run not executed, input is not valid')
 
 	@property
 	def design_point(self):
@@ -696,25 +959,30 @@ class ExcludingCombineProject:
 				self._design_point = DesignPoint(design_point_id, variables, self._design_points)
 		return self._design_point
 
-class LengthEffectProject:
+class LengthEffectProject(FrozenObject):
 	def __init__(self):
 		self._id = interface.Create('length_effect_project')
 		self._design_point_cross_section = DesignPoint()
 		self._correlation_matrix = SelfCorrelationMatrix()
 		self._design_point = None
+		super()._freeze()
 
 	def __del__(self):
-		interface.Destroy(self._id)
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
 
 	def __dir__(self):
 		return ['design_point_cross_section',
 				'correlation_lengths'
 				'length',
 				'correlation_matrix',
+				'run',
 				'design_point']
 
 	@property
-	def design_point_cross_section(self):
+	def design_point_cross_section(self) -> DesignPoint:
 		return self._design_point_cross_section
 
 	@design_point_cross_section.setter
@@ -724,19 +992,19 @@ class LengthEffectProject:
 		self._correlation_matrix._set_variables(variables)
 
 	@property
-	def correlation_matrix(self):
+	def correlation_matrix(self) -> SelfCorrelationMatrix:
 		return self._correlation_matrix
 
 	@property
-	def correlation_lengths(self):
+	def correlation_lengths(self) -> list[float]:
 		return interface.GetArrayValue(self._id, 'correlation_lengths')
 
 	@correlation_lengths.setter
-	def correlation_lengths(self, values):
+	def correlation_lengths(self, values : list[float]):
 		interface.SetArrayValue(self._id, 'correlation_lengths', values)
 
 	@property
-	def length(self):
+	def length(self) -> float:
 		return interface.GetValue(self._id, 'length')
 
 	@length.setter
@@ -750,7 +1018,7 @@ class LengthEffectProject:
 		interface.Execute(self._id, 'run')
 
 	@property
-	def design_point(self):
+	def design_point(self) -> DesignPoint:
 		if self._design_point is None:
 			designPointId = interface.GetIdValue(self._id, 'design_point')
 			if designPointId > 0:

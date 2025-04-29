@@ -28,6 +28,7 @@
 #include "../Model/Sample.h"
 #include "../Model/RandomSampleGenerator.h"
 #include "CrudeMonteCarloSettingsS.h"
+#include "SensitivityResult.h"
 
 using namespace Deltares::Models;
 
@@ -35,18 +36,18 @@ namespace Deltares
 {
     namespace Sensitivity
     {
-        std::shared_ptr<Statistics::Stochast> CrudeMonteCarloS::getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner)
+        Sensitivity::SensitivityResult CrudeMonteCarloS::getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner)
         {
             modelRunner->updateStochastSettings(this->Settings->StochastSet);
 
-            std::shared_ptr<SampleProvider> sampleProvider = std::make_shared<SampleProvider>(this->Settings->StochastSet, false);
+            std::shared_ptr<SampleProvider> sampleProvider = std::make_shared<SampleProvider>(this->Settings->StochastSet);
             modelRunner->setSampleProvider(sampleProvider);
 
-            const std::shared_ptr<RandomSampleGenerator> randomSampleGenerator = std::make_shared<RandomSampleGenerator>();
-            randomSampleGenerator->Settings = this->Settings->randomSettings;
-            randomSampleGenerator->Settings->StochastSet = this->Settings->StochastSet;
-            randomSampleGenerator->sampleProvider = sampleProvider;
-            randomSampleGenerator->initialize();
+            RandomSampleGenerator randomSampleGenerator = RandomSampleGenerator();
+            randomSampleGenerator.Settings = this->Settings->randomSettings;
+            randomSampleGenerator.Settings->StochastSet = this->Settings->StochastSet;
+            randomSampleGenerator.sampleProvider = sampleProvider;
+            randomSampleGenerator.initialize();
 
             std::vector<double> zValues; // copy of z for all parallel threads as double
 
@@ -70,11 +71,9 @@ namespace Deltares
                     int chunkSize = modelRunner->Settings->MaxChunkSize;
                     int runs = std::min(chunkSize, Settings->MaximumSamples - sampleIndex);
 
-                    sampleProvider->reset();
-
                     for (int i = 0; i < runs; i++)
                     {
-                        std::shared_ptr<Sample> sample = randomSampleGenerator->getRandomSample();
+                        std::shared_ptr<Sample> sample = randomSampleGenerator.getRandomSample();
                         samples.push_back(sample);
                     }
 
@@ -104,12 +103,35 @@ namespace Deltares
 
             std::shared_ptr<Statistics::Stochast> stochast = this->getStochastFromSamples(zSamples, zWeights);
 
+            auto result = modelRunner->getSensitivityResult(stochast);
+
+            for (std::shared_ptr<Statistics::ProbabilityValue> quantile : this->Settings->RequestedQuantiles)
+            {
+                double p = quantile->getProbabilityOfNonFailure();
+                int quantileIndex = this->getQuantileIndex(zSamples, zWeights, p);
+
+                if (quantileIndex >= 0)
+                {
+                    // perform the sampling again and recalculate
+                    randomSampleGenerator.restart();
+                    randomSampleGenerator.proceed(quantileIndex);
+
+                    std::shared_ptr<Sample> sample = randomSampleGenerator.getRandomSample();
+                    std::shared_ptr<Models::Evaluation> evaluation = std::make_shared<Models::Evaluation>(modelRunner->getEvaluation(sample));
+                    result.quantileEvaluations.push_back(evaluation);
+                }
+                else
+                {
+                    result.quantileEvaluations.push_back(nullptr);
+                }
+            }
+
             if (this->Settings->CalculateCorrelations)
             {
                 this->correlationMatrixBuilder->registerSamples(stochast, zSamples);
             }
 
-            return stochast;
+            return result;
         }
     }
 }

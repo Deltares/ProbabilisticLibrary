@@ -36,6 +36,16 @@ namespace Deltares
         {
         public:
             /**
+             * \brief Prepares the stochast for fast response of u->x conversion
+             */
+            virtual void initializeForRun() { /* nothing to do */ }
+
+            /**
+             * \brief Prepares a conditional stochast for running
+             */
+            virtual void initializeConditionalValues() { /* nothing to do */  }
+
+            /**
              * \brief Gets the Cumulative Density Function (CDF) for a given x-value
              * \param x Given x-value
              * \return CDF
@@ -74,12 +84,13 @@ namespace Deltares
              * \remark This method is used when plotting PDF and CDF
              * \return Interesting x-values
              */
-            virtual std::vector<double> getSpecialXValues() { return std::vector<double>(); }
+            virtual std::vector<double> getSpecialXValues() { return {}; }
 
             virtual bool isValid() { return false; }
 
             virtual bool isVarying() { return false; }
 
+            virtual bool isVariable() { return false; }
         };
     }
 }

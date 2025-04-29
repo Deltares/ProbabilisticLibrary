@@ -55,6 +55,9 @@ namespace Deltares
             std::vector<double> getExpandedValues(const std::vector<double>& values);
             std::vector<double> getExpandedValues(const std::vector<double>& values, double defaultValue);
 
+            void initializeStochastForRun(size_t index);
+            void initializeVariableStochastForRun(std::shared_ptr<ComputationalStochast> stochast, size_t index);
+            void checkArraysMatch(std::shared_ptr<ComputationalStochast> stochast, std::shared_ptr<ComputationalStochast> otherStochast) const;
             bool isFullyCorrelated(const int index, std::vector<int> varyingIndices);
             void updateDependentParameter(std::vector<double>& uValues, const int i);
             std::shared_ptr<Sample> getQualitativeExcludedSample(std::shared_ptr<Sample> sample);
@@ -69,6 +72,7 @@ namespace Deltares
             std::vector<double> getUValues(std::shared_ptr<Sample> sample);
             std::vector<double> getExpandedUValues(std::shared_ptr<Sample> sample);
             std::vector<double> getXValues(std::shared_ptr<Sample> sample);
+            std::vector<double> getValuesFromType(Statistics::RunValuesType type) const;
             int getStochastCount();
             int getVaryingStochastCount();
             bool isVaryingStochast(int index);

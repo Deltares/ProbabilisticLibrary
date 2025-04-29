@@ -1,0 +1,151 @@
+\chapter{Correlations between random variables}\label{chp:CorrelationModels}
+
+\section{General description}\label{Section_3.4.2.1}
+In \autoref{sec:GenericDescriptionDistributionFunctions} the procedure for applying statistical distribution functions of random variables was explained. In the explanation, the $X$-variables were assumed to be mutually independent for the sake of simplicity. In many cases, however, random variables of hydraulic load models are not mutually independent. For instance, wind speed and sea water level are correlated and the same generally can be stated for river discharges of adjacent rivers (such as the Rhine and Meuse in the Netherlands). Correlation between two random variables $X_1$ and $X_2$ needs to be taken into account in probabilistic analysis because they influence the probability of failure of the component or system under consideration.
+
+The general approach for modeling correlation between two random variables $X_1$ and $X_2$ is to first generate correlated samples $u_{1,cor}$ and $u_{2,cor}$ from standard normally distributed variables $U_{1,cor}$ and $U_{2,cor}$.\footnote{ Note that $u_1$ and $u_2$ are strictly speaking only ''realizations'' if a Monte Carlo procedure is applied, see \Aref{Section_2.3}. For methods like FORM and numerical integration, $u_1$ and $u_2$ are strategically selected values, not samples from a simulation of a distribution function. However, this fundamental difference in interpretation of $u_1$ and $u_2$ has no influence on the applied methods as described in the current section.} The correlated samples, or realizations, are subsequently translated into realizations $x_1$ and $x_2$ of ''real world'' variables $X_1$ and $X_2$ through application of the procedure of \autoref{sec:GenericDescriptionDistributionFunctions} (i.e. through application of the inverse CDF's of variables $X_1$ and $X_2$). The procedure is depicted in the figure below. The horizontal part of this figure is the exact same procedure as depicted in \Fref{fig:Figure_3.3}. The correlation model can therefore be considered as a pre-processing of the procedure in which the distribution functions are applied.
+
+\begin{figure}[H]\centering
+\includegraphics[width=1.0\columnwidth]{\pathProbLibPictures sampling_correlated_variables.png}
+\caption{Procedure for determining a load variable associated with randomly selected standard normally distributed variables for the case of correlated variables.}\label{fig:Figure_3.8}
+\end{figure}
+
+Since $U_{1,cor}$ and $U_{2,cor}$ are correlated variables, $X_1$ and $X_2$ are also correlated. Furthermore, since $U_{1,cor}$ and $U_{2,cor}$ are standard normally distributed and the translation from $U_{1,cor}$ and $U_{2,cor}$ to $X_1$ and $X_2$ is done in the exact same way as described in \Aref{sec:GenericDescriptionDistributionFunctions}, it is automatically taken care of that $X_1$ and $X_2$ are distributed according to their prescribed distribution functions $F_{X_1}$ and $F_{X_2}$. The remainder of this section therefore focuses on the first part of the procedure: the generation of samples $u_{1,cor}$ and $u_{2,cor}$ of correlated variables $U_{1,cor}$ and $U_{2,cor}$.
+
+The generation of $U_{1,cor}$ and $U_{2,cor}$ starts with the generation of realizations $u_1$ and $u_2$ of independent standard normally distributed random variables $U_1$ and $U_2$. Subsequently, $u_1$ is transformed into a sample $v$ of variable $V$ with distribution function $F_V(v)$. The transformation is done in similar style as explained in \autoref{sec:GenericDescriptionDistributionFunctions}, i.e. by making sure the probability of (non-)exceedance of $u_1$ and $v$ are equal: 
+
+\begin{equation}
+\Phi \left(u_{1} \right)=F_{V} \left(v\right)\Rightarrow v=F_{V} ^{-1} \left(\Phi \left(u_{1} \right)\right)\label{3.16)} 
+\end{equation}
+
+The $\Phi$ in this equation is the standard normal cumulative distribution function and $F_V(v)$ can be any cumulative distribution function, such as the normal, uniform or exponential distribution distribution. Subsequently, a sample $w$ is introduced that is dependent on $v$ and on a sample $u_2$ from a second standard normally distributed variable $U_2$:
+
+\begin{equation} 
+w=G\left(v,u_{2} \right)\label{ZEqnNum327839}
+\end{equation}
+
+The $G$ in this equation is a function that determines the correlation between $v$ and $w$. Subsequently, $v$ and $w$ are transformed back into samples $u_{1,cor}$ and $u_{2,cor}$ of standard normally distributed variables $U_{1,cor}$ and $U_{2,cor}$ by using the inverse CDFs or probabilities of (non-)exceedance. This leads to a $u_{1,cor}$ that identical to $u_1$, but $u_{2,cor}$ will be different from $u_2$ because of the use of the correlation function $G$. 
+
+\begin{figure}[H]\centering
+\includegraphics[width=1.0\columnwidth]{\pathProbLibPictures correlated_uniform.png}
+\caption{Procedure for samples $u_{1,cor}$ and $u_{2,cor}$ of correlated standard uniform random variables $U_{1,cor}$ and $U_{2,cor}$.}\label{fig:Figure_3.9}
+\end{figure}
+
+The function $G$ is essentially the correlation model for variables $X_1$ and $X_2$. Many different functions $G$ can be used (note: $G$ is not a distribution function), also because the subsequent transformations $F_{V}^{-1}$ guarantee that $X_1$ and $X_2$ are distributed according to the pre-defined distribution functions $F_{X_1}$ and $F_{X_2}$. 
+Naturally, function $G$ should be chosen such that it reproduces the observed correlation between variables $X_1$ and $X_2$ as well as possible. For a more detailed background on the derivation and application of correlation models in flood risk analysis, the interested reader is referred to the paper of \cite{Diermanse_Geerse_2012}. 
+
+\section{Correlation models}\label{Section_3.4.2}
+
+In this section the bi-variate Gaussian correlation model and its generalization, the Gaussian copula model, are described.
+
+The bi-variate Gaussian correlation model has been implemented for practical purposes and it is described in \Aref{Gaussian_correlation_model}. The correlation model is a special case of the Gaussian copula model: the Gaussian copula model with $2$ variables gives the same results as the bi-variate Gaussian correlation model. The Gaussian copula model for $\geq 2$ random variables is described in \Aref{Gaussian_copula_model}. 
+
+
+
+\subsection{Gaussian correlation model}\label{Gaussian_correlation_model}
+This section describes the bi-variate Gaussian correlation model that can be used to describe a simple correlation between standard normal random variables.
+Given is the following correlation matrix $C$ with correlation coefficient $\rho\in[-1,1]$:
+\begin{equation} 
+C = \begin{bmatrix}
+1.0 & \rho\\
+\rho & 1.0\\
+\end{bmatrix}
+\end{equation} 
+
+The 'lower' Cholesky decomposition of this matrix is (i.e. $P\times P^{T}=C$):
+\begin{equation} 
+P = \begin{bmatrix}
+1.0 & 0.0\\
+\rho & \sqrt{1-\rho^2}\\
+\end{bmatrix}
+\end{equation} 
+
+Given an uncorrelated sample of standard normal random variables $u_1$ and $u_2$, the correlated sample $u_{1,cor}$ and $u_{2,cor}$ is derived as follows:
+\begin{equation} 
+[u_{1,cor},u_{2,cor}]=[u_1,u_2]\times P^{T} = [u_1,u_2]\times
+\begin{bmatrix}
+1.0 & \rho\\
+0.0 & \sqrt{1-\rho^2}\\
+\end{bmatrix}
+\end{equation} 
+
+This simplifies to:
+\begin{equation} 
+u_{1,cor}=u_1
+\end{equation} 
+and
+\begin{equation} 
+u_{2,cor}=u_1\rho+u_2\sqrt{1-\rho^2}
+\end{equation}
+
+The following figure pictures the uncorrelated and correlated samples for $\rho=0.5$.
+
+\begin{figure}[H]\centering
+\includegraphics*[width=4.16in, height=3.27in, keepaspectratio=false]{\pathProbLibPictures fig_gaussian_model.png}
+\caption{Uncorrelated (left) and correlated (right) samples according to the Gaussian correlation model assuming $\rho=0.5$.}
+\end{figure}
+
+Furthermore, the following holds:
+\begin{itemize}
+\item When $\rho=0.0$ then the correlated sample is equal to the uncorrelated sample.
+\item When $\rho=1.0$ then $u_{2,cor} = u_1$ (complete correlation).
+\item When $\rho=-1.0$ then $u_{2,cor} = -u_1$ (reverse complete correlation).
+\end{itemize}
+
+\subsection{Gaussian copula model}\label{Gaussian_copula_model}
+This section presents a Gaussian copula model, which can be used to describe correlation between $\geq 2$ variables in the $U$-space. The correlation coefficients are in this case stored in a correlation matrix.
+
+A correlation matrix is a table showing correlation coefficients (i.e. product moment correlations) between variables. The diagonal of the table is always a set of ones, because the correlation between a variable and itself is always $1.0$. The matrix is also symmetric -- the correlation coefficient between variables $X$ and $Y$ is equal to the correlation coefficient between variables $Y$ and $X$. Moreover, the matrix must be positive definite, that is:
+\begin{equation}
+x^T\cdot C\cdot x>0 \mbox{ for all $x\in\Re^{n}\setminus\{0\}$ }
+\end{equation}
+where $C$ is a correlation matrix with size $n\times n$ and $T$ denotes the transpose.
+
+In the \probLib, it is possible to describe correlations between random variables in a correlation matrix. The procedure to generate correlated samples $u_{cor}$ is as follows (see \cite{Diermanse_etal_2014}):
+\begin{enumerate}
+\item Derive a matrix $P$ for which $P\cdot P^{T}=C$ through Cholesky decomposition of correlation matrix $C$ with size $n\times n$ (see \cite{Strang_1982}).
+\item Sample values $u_1,...,u_n$ from the standard normal distribution function and store the values in a $1\times n$ vector $u$.
+\item The sample of the correlated standard normally distributed random variables $u_{cor}$ is then defined as follows: $u_{cor}=u\cdot P^{T}$.
+\end{enumerate}
+
+In the \probLib a special care is taken of correlation matrices with off-diagonal $\pm1.0$ elements. Such matrices usually do not satisfy the positive definite requirement. In order to perform calculations with such matrices, a two-step procedure is applied, during which the original matrix is decomposed into two matrices: (1) a matrix without the off-diagonal $\pm1.0$ elements and (2) a matrix with $0.0$ and $\pm1.0$ entries that indicate the positions of the off-diagonal $\pm1.0$ elements in the original matrix. The Cholesky decomposition is performed on the first matrix, highly increasing the chance that the positive definite requirement will be satisfied. The vector $u$ is first multiplied with the Cholesky decomposition matrix entailing a correlated sample without the full correlation cases. The resulting sample vector is then multiplied by the second matrix assuring that the same values are assigned to the fully correlated variables. The procedure is explained in more detail in the following example.
+
+Consider the following correlation matrix $C$ with $\rho_{1,2}=\rho_{2,1}=1.0$:
+\begin{equation} 
+C = \begin{bmatrix}
+1.0 & \rho_{1,2} & ... & \rho_{1,j} & ... & \rho_{1,n}\\
+\rho_{2,1} & 1.0 & ... & \rho_{2,j} & ... &  \rho_{2,n}\\
+... & ... & ... & ... & ...  & ...\\
+\rho_{i,1} & \rho_{i,2} & ... & 1.0 & ... & \rho_{i,n}\\
+... & ... & ... & ... & ...  & ...\\
+\rho_{n,1} & \rho_{n,2} & ... & \rho_{n,j} & ... & 1.0\\
+\end{bmatrix}
+\end{equation} 
+
+Matrix $C$ is decomposed into matrix $C_1$ and $C_2$. Matrix $C=C_1$ except for off-diagonal values found in the second row and column. These values are all equal to $0.0$. Matrix $C_2$ is an identity matrix except for the second row and column where $\rho_{2,1}=1.0$, $\rho_{i,2}=0.0$ for $i=1...n$ and $\rho_{2,j}=0.0$ for $j=2...n$. 
+\begin{equation} 
+C_1 = \begin{bmatrix}
+1.0 & \mathbf{0.0} & ... & \rho_{1,j} & ... & \rho_{1,n}\\
+\mathbf{0.0} & \mathbf{1.0} & ... & \mathbf{0.0} & ... &  \mathbf{0.0}\\
+... & ... & ... & ... & ...  & ...\\
+\rho_{i,1} & \mathbf{0.0} & ... & 1.0 & ... & \rho_{i,n}\\
+... & ... & ... & ... & ...  & ...\\
+\rho_{n,1} & \mathbf{0.0} & ... & \rho_{n,j} & ... & 1.0\\
+\end{bmatrix}
+\end{equation} 
+
+\begin{equation} 
+C_2 = \begin{bmatrix}
+1.0 & \mathbf{0.0} & ... & 0.0 & ... & 0.0\\
+\mathbf{1.0} & \mathbf{0.0} & ... & \mathbf{0.0} & ... &  \mathbf{0.0}\\
+... & ... & ... & ... & ...  & ...\\
+0.0 & \mathbf{0.0} & ... & 1.0 & ... & 0.0\\
+... & ... & ... & ... & ...  & ...\\
+0.0 & \mathbf{0.0} & ... & 0.0 & ... & 1.0\\
+\end{bmatrix}
+\end{equation} 
+
+Assuming that $P$ is the Cholesky decomposition of matrix $C_1$, then the correlated sample $u_{cor}$ is derived as follows: 
+\begin{equation} 
+u_{cor}=u\cdot P^{T}\cdot C_2^{T}
+\end{equation} 

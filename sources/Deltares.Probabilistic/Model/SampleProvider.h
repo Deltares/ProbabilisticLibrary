@@ -35,77 +35,29 @@ namespace Deltares
         class SampleProvider
         {
         public:
-            SampleProvider(int varyingStochastCount, int stochastCount, bool reuseSamples)
+            SampleProvider(int varyingStochastCount, int stochastCount)
             {
                 this->sampleSize = varyingStochastCount;
                 this->modelSampleSize = stochastCount;
-                this->reuseSamples = reuseSamples;
             }
 
-            SampleProvider(std::shared_ptr<Reliability::StochastSettingsSet> stochastSettings, bool reuseSamples)
+            SampleProvider(std::shared_ptr<Reliability::StochastSettingsSet> stochastSettings)
             {
                 this->sampleSize = stochastSettings->getVaryingStochastCount();
                 this->modelSampleSize = stochastSettings->getStochastCount();
-                this->reuseSamples = reuseSamples;
             }
 
             std::shared_ptr<Sample> getSample()
             {
-                if (!reuseSamples)
-                {
-                    return std::make_shared<Sample>(sampleSize);
-                }
-                else if (nextSampleIndex < samples.size())
-                {
-                    std::shared_ptr<Sample> sample = samples[nextSampleIndex++];
-                    sample->clear();
-                    return sample;
-                }
-                else
-                {
-                    nextSampleIndex++;
-                    std::shared_ptr<Sample> sample = std::make_shared<Sample>(sampleSize);
-                    samples.push_back(sample);
-                    return sample;
-                }
+                return std::make_shared<Sample>(sampleSize);
             }
 
             std::shared_ptr<ModelSample> getModelSample(std::vector<double>& values)
             {
-                if (!reuseSamples)
-                {
-                    return std::make_shared<ModelSample>(values);
-                }
-                else if (nextModelSampleIndex < modelSamples.size())
-                {
-                    std::shared_ptr<ModelSample> sample = modelSamples[nextModelSampleIndex++];
-                    sample->clear();
-                    sample->Values = values;
-                    return sample;
-                }
-                else
-                {
-                    nextModelSampleIndex++;
-                    std::shared_ptr<ModelSample> sample = std::make_shared<ModelSample>(values);
-                    modelSamples.push_back(sample);
-                    return sample;
-                }
-            }
-
-            void reset()
-            {
-                nextSampleIndex = 0;
-                nextModelSampleIndex = 0;
+                return std::make_shared<ModelSample>(values);
             }
 
         private:
-            std::vector < std::shared_ptr<Sample>> samples;
-            std::vector < std::shared_ptr<ModelSample>> modelSamples;
-
-            int nextSampleIndex = 0;
-            int nextModelSampleIndex = 0;
-            bool reuseSamples = false;
-
             int sampleSize;
             int modelSampleSize;
         };

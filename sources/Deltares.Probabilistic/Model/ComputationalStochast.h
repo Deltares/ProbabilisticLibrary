@@ -36,14 +36,21 @@ namespace Deltares
         public:
             ComputationalStochast() {}
 
-            ComputationalStochast(std::shared_ptr<Statistics::Stochast> definition, int index = 0)
+            ComputationalStochast(std::shared_ptr<Statistics::Stochast> source, std::shared_ptr<Statistics::Stochast> definition, int index = 0)
             {
+                this->source = source;
                 this->definition = definition;
                 this->index = index;
             }
 
             /**
              * \brief Defines the reference to a stochast
+             * \remark Multiple computational stochasts can reference the same stochast
+             */
+            std::shared_ptr<Statistics::Stochast> source = nullptr;
+
+            /**
+             * \brief Defines the stochast from which u->x conversions will be used
              * \remark Multiple computational stochasts can reference the same stochast
              */
             std::shared_ptr<Statistics::Stochast> definition = nullptr;

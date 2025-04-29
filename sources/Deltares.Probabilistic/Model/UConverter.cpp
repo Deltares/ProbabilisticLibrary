@@ -30,6 +30,7 @@
 #include "../Utils/probLibException.h"
 
 #include <memory>
+#include <ostream>
 #include <set>
 
 namespace Deltares
@@ -52,14 +53,22 @@ namespace Deltares
                     for (int j = 0; j < stochasts[i]->modelParameter->arraySize; j++)
                     {
                         hasArrayStochasts = true;
-                        this->stochasts.push_back(std::make_shared<ComputationalStochast>(stochasts[i], j));
+                        if (static_cast<int>(stochasts[i]->ArrayVariables.size()) > j)
+                        {
+                            stochasts[i]->ArrayVariables[j]->name = stochasts[i]->getIndexedStochastName(j);
+                            this->stochasts.push_back(std::make_shared<ComputationalStochast>(stochasts[i], stochasts[i]->ArrayVariables[j], j));
+                        }
+                        else
+                        {
+                            this->stochasts.push_back(std::make_shared<ComputationalStochast>(stochasts[i], stochasts[i], j));
+                        }
                         mapping[k++] = static_cast<int>(i);
                         k++;
                     }
                 }
                 else
                 {
-                    this->stochasts.push_back(std::make_shared<ComputationalStochast>(stochasts[i]));
+                    this->stochasts.push_back(std::make_shared<ComputationalStochast>(stochasts[i], stochasts[i]));
                     mapping[k++] = static_cast<int>(i);
                 }
             }
@@ -107,63 +116,20 @@ namespace Deltares
             this->hasVariableStochasts = false;
             this->sampleValuesChanged = false;
 
+            std::set<std::shared_ptr<Statistics::Stochast>> initializedStochasts;
+
             for (std::shared_ptr<ComputationalStochast> stochast : this->stochasts)
             {
-                if (stochast->index == 0)
+                if (!initializedStochasts.contains(stochast->definition))
                 {
                     stochast->definition->initializeForRun();
+                    initializedStochasts.insert(stochast->definition);
                 }
             }
 
             for (size_t i = 0; i < this->stochasts.size(); i++)
             {
-                if (this->stochasts[i]->definition->isVarying() && !isFullyCorrelated(i, this->varyingStochastIndex))
-                {
-                    this->varyingStochastIndex.push_back(i);
-                    this->pureVaryingStochastIndex.push_back(i);
-                    this->varyingStochasts.push_back(this->stochasts[i]);
-                    this->hasQualitiveStochasts |= this->stochasts[i]->definition->isQualitative();
-                }
-                else
-                {
-                    int type = (this->stochasts[i]->definition->isVarying() ? -1 : -2);
-                    this->varyingStochastIndex.push_back(type);
-                }
-
-                variableStochastIndex.push_back(-1);
-
-                if (this->stochasts[i]->definition->IsVariableStochast)
-                {
-                    this->hasVariableStochasts = true;
-                    bool variableStochastIndexFound = false;
-                    for (size_t j = 0; j < this->stochasts.size(); j++)
-                    {
-                        if (stochasts[j]->definition == this->stochasts[i]->definition->VariableSource)
-                        {
-                            bool valid = !stochasts[j]->definition->modelParameter->isArray ||
-                                         (this->stochasts[i]->definition->modelParameter->isArray &&
-                                          this->stochasts[i]->definition->modelParameter->arraySize == this->stochasts[j]->definition->modelParameter->arraySize);
-
-                            if (!valid)
-                            {
-                                throw Reliability::probLibException("When using array variable stochasts, the size of the arrays must match");
-                            }
-
-                            if (!stochasts[j]->definition->modelParameter->isArray ||
-                                this->stochasts[i]->index == this->stochasts[j]->index)
-                            {
-                                variableStochastIndex[i] = j;
-                                variableStochastIndexFound = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (!variableStochastIndexFound)
-                    {
-                        throw Reliability::probLibException("Variable stochast source has not been set");
-                    }
-                }
+                initializeStochastForRun(i);
             }
 
             if (this->hasVariableStochasts)
@@ -178,12 +144,79 @@ namespace Deltares
             else
             {
                 varyingCorrelationMatrix = std::make_shared<Statistics::CorrelationMatrix>();
-                varyingCorrelationMatrix->init(varyingStochasts.size());
+                varyingCorrelationMatrix->init(static_cast<int>(varyingStochasts.size()));
                 varyingCorrelationMatrix->filter(correlationMatrix, varyingStochastIndex);
             }
 
             varyingCorrelationMatrix->CholeskyDecomposition();
             varyingCorrelationMatrix->InverseCholeskyDecomposition();
+        }
+
+        void UConverter::checkArraysMatch(std::shared_ptr<ComputationalStochast> stochast, std::shared_ptr<ComputationalStochast> otherStochast) const
+        {
+            bool valid = !otherStochast->source->modelParameter->isArray ||
+            (stochast->definition->modelParameter->isArray &&
+                stochast->definition->modelParameter->arraySize == otherStochast->source->modelParameter->arraySize);
+
+            if (!valid)
+            {
+                throw Reliability::probLibException("When using array variable stochasts, the size of the arrays must match");
+            }
+        }
+
+        void UConverter::initializeStochastForRun(size_t index)
+        {
+            std::shared_ptr<ComputationalStochast> stochast = this->stochasts[index];
+
+            if (stochast->definition->isVarying() && !isFullyCorrelated(static_cast<int>(index), this->varyingStochastIndex))
+            {
+                this->varyingStochastIndex.push_back(static_cast<int>(index));
+                this->pureVaryingStochastIndex.push_back(static_cast<int>(index));
+                this->varyingStochasts.push_back(stochast);
+                this->hasQualitiveStochasts |= stochast->definition->isQualitative();
+            }
+            else
+            {
+                int type = stochast->definition->isVarying() ? -1 : -2;
+                this->varyingStochastIndex.push_back(type);
+            }
+
+            variableStochastIndex.push_back(-1);
+
+            if (stochast->definition->isVariable())
+            {
+                this->hasVariableStochasts = true;
+                initializeVariableStochastForRun(stochast, index);
+            }
+        }
+
+        void UConverter::initializeVariableStochastForRun(std::shared_ptr<ComputationalStochast> stochast, size_t index)
+        {
+            bool variableStochastIndexFound = false;
+
+            std::shared_ptr<Statistics::Stochast> requiredSource = stochast->definition->getVariableSource();
+
+            for (size_t j = 0; j < this->stochasts.size(); j++)
+            {
+                std::shared_ptr<ComputationalStochast> otherStochast = stochasts[j];
+
+                if (otherStochast->source == requiredSource)
+                {
+                    checkArraysMatch(stochast, otherStochast);
+
+                    if (!otherStochast->source->modelParameter->isArray || stochast->index == otherStochast->index)
+                    {
+                        variableStochastIndex[index] = static_cast<int>(j);
+                        variableStochastIndexFound = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!variableStochastIndexFound)
+            {
+                throw Reliability::probLibException("Variable stochast source has not been set");
+            }
         }
 
         bool UConverter::isVaryingStochast(int index)
@@ -224,11 +257,20 @@ namespace Deltares
 
         void UConverter::updateStochastSettings(std::shared_ptr<Deltares::Reliability::StochastSettingsSet> settings)
         {
-            std::map<std::shared_ptr<Statistics::Stochast>, std::shared_ptr<Deltares::Reliability::StochastSettings>> stochastSettingsMap;
+            std::map<std::shared_ptr<Statistics::Stochast>, std::vector<std::shared_ptr<Deltares::Reliability::StochastSettings>>> stochastSettingsMap;
+            std::map<std::shared_ptr<Statistics::Stochast>, size_t> stochastSettingsCount;
 
+            // stochasts are not unique, therefore register all settings and use them one by one
             for (size_t i = 0; i < settings->stochastSettings.size(); i++)
             {
-                stochastSettingsMap[settings->stochastSettings[i]->stochast] = settings->stochastSettings[i];
+                std::shared_ptr<Statistics::Stochast> stochast = settings->stochastSettings[i]->stochast;
+
+                if (!stochastSettingsMap.contains(stochast))
+                {
+                    stochastSettingsMap[stochast] = std::vector<std::shared_ptr<Deltares::Reliability::StochastSettings>>();
+                    stochastSettingsCount[stochast] = 0;
+                }
+                stochastSettingsMap[stochast].push_back(settings->stochastSettings[i]);
             }
 
             settings->stochastSettings.clear();
@@ -239,9 +281,17 @@ namespace Deltares
 
             for (size_t i = 0; i < stochasts.size(); i++)
             {
-                if (stochastSettingsMap.contains(stochasts[i]->definition))
+                std::shared_ptr<Statistics::Stochast> stochast = stochasts[i]->definition;
+
+                if (stochastSettingsMap.contains(stochast))
                 {
-                    settings->stochastSettings.push_back(stochastSettingsMap[stochasts[i]->definition]->clone());
+                    std::shared_ptr<Deltares::Reliability::StochastSettings> stochastSettings = stochastSettingsMap[stochast][stochastSettingsCount[stochast]];
+                    settings->stochastSettings.push_back(stochastSettings->clone());
+
+                    if (stochastSettingsCount[stochast] < stochastSettingsMap[stochast].size() - 1)
+                    {
+                        stochastSettingsCount[stochast]++;
+                    }
                 }
                 else
                 {
@@ -374,7 +424,7 @@ namespace Deltares
 
             for (size_t i = 0; i < this->stochasts.size(); i++)
             {
-                if (!this->hasVariableStochasts || !stochasts[i]->definition->IsVariableStochast)
+                if (!this->hasVariableStochasts || !stochasts[i]->definition->isVariable())
                 {
                     xValues[i] = this->stochasts[i]->definition->getXFromU(expandedUValues[i]);
                 }
@@ -394,6 +444,34 @@ namespace Deltares
 
             return xValues;
         }
+
+        std::vector<double> UConverter::getValuesFromType(Statistics::RunValuesType type) const
+        {
+            auto xValues = std::vector<double>(this->stochasts.size());
+
+            for (size_t i = 0; i < this->stochasts.size(); i++)
+            {
+                if (!this->hasVariableStochasts || !stochasts[i]->definition->isVariable())
+                {
+                    xValues[i] = this->stochasts[i]->definition->getXFromType(type);
+                }
+            }
+
+            if (this->hasVariableStochasts)
+            {
+                for (int stochastIndex : variableStochastList)
+                {
+                    int sourceIndex = variableStochastIndex[stochastIndex];
+
+                    double xSource = xValues[sourceIndex];
+                    xValues[stochastIndex] = stochasts[stochastIndex]->definition->getXFromTypeAndSource(xSource, type);
+                }
+            }
+
+            return xValues;
+        }
+
+
 
         void UConverter::updateVariableSample(std::vector<double>& xValues, std::vector<double>& originalValues)
         {
@@ -448,7 +526,7 @@ namespace Deltares
             // build up initial administration which stochasts have been assigned and which not
             for (size_t i = 0; i < this->stochasts.size(); i++)
             {
-                if (!this->stochasts[i]->definition->IsVariableStochast)
+                if (!this->stochasts[i]->definition->isVariable())
                 {
                     assignedAlphas.insert(i);
                 }
@@ -581,7 +659,7 @@ namespace Deltares
                         const int varyingIndex = this->varyingStochastIndex[i];
                         alpha->X = stochasts[i]->definition->getXFromU(sample->Values[varyingIndex]);
                     }
-                    else if (!this->hasVariableStochasts || !stochasts[i]->definition->IsVariableStochast)
+                    else if (!this->hasVariableStochasts || !stochasts[i]->definition->isVariable())
                     {
                         alpha->X = stochasts[i]->definition->getXFromU(uCorrelated[i]);
                     }
@@ -602,6 +680,8 @@ namespace Deltares
                     }
                 }
             }
+
+            realization->updateInfluenceFactors();
 
             return realization;
         }

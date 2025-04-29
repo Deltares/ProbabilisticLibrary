@@ -24,6 +24,7 @@ import math
 import numpy as np
 
 from probabilistic_library import *
+from time import sleep
 
 def sum_ab(a, b):
     return a+b;
@@ -31,6 +32,24 @@ def sum_ab(a, b):
 def linear_ab(a, b):
     L = 1.8
     return L - (a+b)
+
+def linear_ab_array_result(a, b):
+    L = [1.8, 1.9, 1.95]
+
+    return [x - (a+b) for x in L]
+
+def linear_delayed_ab_array_result(a, b):
+    L = [1.8, 1.9, 1.95]
+
+    sleep(0.001)
+
+    return [x - (a+b) for x in L]
+
+class InitializedLinearModel:
+    def __init__(self, L):
+        self._L = L
+    def calculate(self, a, b):
+        return self._L - (a+b)
 
 def linear_ab_array(L:float, a:list[float], b:list[float]):
     z = L
@@ -119,6 +138,42 @@ def get_linear_project():
 
     return project
 
+def get_linear_initialized_project():
+
+    project = ReliabilityProject()
+    initialized = InitializedLinearModel(1.8)
+
+    project.model = initialized.calculate
+
+    stochast1 = project.variables['a']
+    stochast1.distribution = DistributionType.uniform
+    stochast1.minimum = -1
+    stochast1.maximum = 1;
+
+    stochast2 = project.variables['b']
+    stochast2.distribution =  DistributionType.uniform
+    stochast2.minimum = -1
+    stochast2.maximum = 1;
+
+    return project
+
+def get_linear_array_result_project():
+
+    project = ReliabilityProject()
+
+    project.model = linear_ab_array_result, 3
+
+    stochast1 = project.variables['a']
+    stochast1.distribution = DistributionType.uniform
+    stochast1.minimum = -1
+    stochast1.maximum = 1;
+
+    stochast2 = project.variables['b']
+    stochast2.distribution =  DistributionType.uniform
+    stochast2.minimum = -1
+    stochast2.maximum = 1;
+
+    return project
 def get_linear_array_project():
 
     project = ReliabilityProject()
@@ -176,11 +231,67 @@ def get_sensitivity_add_one_project():
 
     return project
 
+def get_run_linear_project():
+
+    project = RunProject()
+
+    project.model = linear_ab
+
+    stochast1 = project.variables['a']
+    stochast1.distribution =  DistributionType.triangular
+    stochast1.minimum = -1
+    stochast1.shift = 1
+    stochast1.maximum = 1
+
+    stochast2 = project.variables['b']
+    stochast2.distribution =  DistributionType.triangular
+    stochast2.minimum = -1
+    stochast2.shift = 1
+    stochast2.maximum = 1
+
+    return project
+
 def get_sensitivity_linear_project():
 
     project = SensitivityProject()
 
     project.model = linear_ab
+
+    stochast1 = project.variables['a']
+    stochast1.distribution =  DistributionType.uniform
+    stochast1.minimum = -1
+    stochast1.maximum = 1;
+
+    stochast2 = project.variables['b']
+    stochast2.distribution =  DistributionType.uniform
+    stochast2.minimum = -1
+    stochast2.maximum = 1;
+
+    return project
+
+def get_sensitivity_linear_array_result_project() ->SensitivityProject:
+
+    project = SensitivityProject()
+
+    project.model = (linear_ab_array_result, 3)
+
+    stochast1 = project.variables['a']
+    stochast1.distribution =  DistributionType.uniform
+    stochast1.minimum = -1
+    stochast1.maximum = 1;
+
+    stochast2 = project.variables['b']
+    stochast2.distribution =  DistributionType.uniform
+    stochast2.minimum = -1
+    stochast2.maximum = 1;
+
+    return project
+
+def get_sensitivity_linear_delayed_array_result_project():
+
+    project = SensitivityProject()
+
+    project.model = (linear_delayed_ab_array_result, 3)
 
     stochast1 = project.variables['a']
     stochast1.distribution =  DistributionType.uniform
@@ -206,8 +317,6 @@ def get_sensitivity_pile_project():
     load.mean = 1
     load.variation = 0.1
     load.design_value = 1E5;
-
-
 
     z = project.variables['z']
     z.distribution =  DistributionType.normal

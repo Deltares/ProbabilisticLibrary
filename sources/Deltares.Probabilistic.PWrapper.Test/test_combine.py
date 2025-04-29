@@ -178,8 +178,7 @@ class Test_combine(unittest.TestCase):
         beta_expected = StandardNormal.get_u_from_q(0.01)
         self.assertAlmostEqual(beta_expected, dp_uncorrelated.reliability_index, delta=margin)
 
-    def test_calculated_correlated_design_points(self):
-
+    def run_calculated_correlated_design_points(self, combiner_method):
         project = ReliabilityProject()
 
         project.model = project_builder.linear_ab;
@@ -240,9 +239,14 @@ class Test_combine(unittest.TestCase):
         self.assertAlmostEqual(-0.97, dp_correlated.alphas['a'].alpha, delta=margin)
         self.assertAlmostEqual(-0.23, dp_correlated.alphas['b'].alpha, delta=margin)
 
-        self.assertAlmostEqual(0.9, dp_correlated.alphas['a'].x, delta=margin)
-        self.assertAlmostEqual(0.9, dp_correlated.alphas['b'].x, delta=margin)
+        self.assertAlmostEqual(0.896, dp_correlated.alphas['a'].x, delta=margin)
+        self.assertAlmostEqual(0.897, dp_correlated.alphas['b'].x, delta=margin)
 
+    def test_calculated_correlated_design_points(self):
+        self.run_calculated_correlated_design_points(CombinerMethod.hohenbichler)
+
+    def test_calculated_correlated_design_points_hohenbichler_form(self):
+        self.run_calculated_correlated_design_points(CombinerMethod.hohenbichler_form)
 
     def test_excluding_weighted_sum(self):
 

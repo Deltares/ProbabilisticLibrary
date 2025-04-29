@@ -20,6 +20,8 @@
 // All rights reserved.
 //
 #include "ZModel.h"
+
+#include <chrono>
 #include <omp.h>
 
 #include "ModelSample.h"
@@ -114,6 +116,10 @@ namespace Deltares
             this->inputParametersCount = 0;
             this->outputParametersCount = 0;
 
+            this->measureCalculationTime = true;
+            this->useSampleRepository = false;
+            this->measuredCalculationTimes = 0;
+
             for (std::shared_ptr<ModelInputParameter> parameter : this->inputParameters)
             {
                 parameter->computationalIndex = this->inputParametersCount;
@@ -130,13 +136,65 @@ namespace Deltares
             for (std::shared_ptr<ModelInputParameter> parameter : this->outputParameters)
             {
                 parameter->computationalIndex = this->outputParametersCount;
-                this->outputParametersCount++;
+                if (parameter->isArray)
+                {
+                    this->outputParametersCount += parameter->arraySize;
+                }
+                else
+                {
+                    this->outputParametersCount++;
+                }
             }
 
             this->zValueConverter->initialize(this->inputParameters, this->outputParameters);
         }
 
         void ZModel::invoke(std::shared_ptr<ModelSample> sample)
+        {
+            std::shared_ptr<ModelSample> alreadyExecutedSample = repository.retrieveSample(sample);
+
+            if (alreadyExecutedSample == nullptr)
+            {
+                if (measureCalculationTime)
+                {
+                    std::chrono::time_point started = std::chrono::high_resolution_clock::now();
+                    invokeLambda(sample);
+                    std::chrono::time_point done = std::chrono::high_resolution_clock::now();
+
+                    long elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(done - started).count();
+                    if (elapsedTime > minRepoCalculationTime)
+                    {
+                        measureCalculationTime = false;
+                        useSampleRepository = true;
+                    }
+
+                    this->measuredCalculationTimes++;
+                    if (this->measuredCalculationTimes > this->maxMeasuredCalculationTimes)
+                    {
+                        measureCalculationTime = false;
+                    }
+                }
+                else
+                {
+                    invokeLambda(sample);
+                }
+
+                if (useSampleRepository)
+                {
+                    repository.registerSample(sample);
+                }
+            }
+            else
+            {
+                sample->copyFrom(alreadyExecutedSample);
+            }
+
+            this->zValueConverter->updateZValue(sample);
+
+            this->modelRuns++;
+        }
+
+        void ZModel::invokeLambda(std::shared_ptr<ModelSample> sample)
         {
             if (this->zLambda == nullptr)
             {
@@ -145,40 +203,82 @@ namespace Deltares
 
             sample->threadId = omp_get_thread_num();
             this->zLambda(sample);
+        }
 
-            this->zValueConverter->updateZValue(sample);
-
-            if (countRunsLambda)
+        void ZModel::invokeMultipleLambda(std::vector<std::shared_ptr<ModelSample>>& samples)
+        {
+            if (zMultipleLambda == nullptr)
             {
-                this->modelRuns++;
+#pragma omp parallel for
+                for (int i = 0; i < static_cast<int>(samples.size()); i++)
+                {
+                    invokeLambda(samples[i]);
+                }
+            }
+            else
+            {
+                this->zMultipleLambda(samples);
             }
         }
 
         void ZModel::invoke(std::vector<std::shared_ptr<ModelSample>> samples)
         {
-            if (zMultipleLambda == nullptr)
+            std::vector<std::shared_ptr<ModelSample>> executeSamples;
+            for (std::shared_ptr<ModelSample> sample : samples)
             {
-                this->countRunsLambda = false;
+                std::shared_ptr<ModelSample> alreadyExecutedSample = repository.retrieveSample(sample);
 
-#pragma omp parallel for
-                for (int i = 0; i < (int)samples.size(); i++)
+                if (alreadyExecutedSample == nullptr)
                 {
-                    invoke(samples[i]);
+                    executeSamples.push_back(sample);
                 }
-
-                this->modelRuns += (int)samples.size();
-                this->countRunsLambda = true;
+                else
+                {
+                    sample->copyFrom(alreadyExecutedSample);
+                }
             }
-            else
-            {
-                this->zMultipleLambda(samples);
 
-                for (int i = 0; i < (int)samples.size(); i++)
+            if (!executeSamples.empty()) {
+
+                if (this->measureCalculationTime)
                 {
-                    this->zValueConverter->updateZValue(samples[i]);
+                    std::chrono::time_point started = std::chrono::high_resolution_clock::now();
+                    invokeMultipleLambda(executeSamples);
+                    std::chrono::time_point  done = std::chrono::high_resolution_clock::now();
+
+                    long long elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(done - started).count();
+
+                    if (elapsedTime >= static_cast<long long>(minRepoCalculationTime * executeSamples.size()))
+                    {
+                        useSampleRepository = true;
+                        measureCalculationTime = false;
+                    }
+
+                    this->measuredCalculationTimes += static_cast<int>(executeSamples.size());
+                    if (this->measuredCalculationTimes > this->maxMeasuredCalculationTimes)
+                    {
+                        measureCalculationTime = false;
+                    }
+                }
+                else
+                {
+                    invokeMultipleLambda(executeSamples);
                 }
 
-                this->modelRuns += (int)samples.size();
+                this->modelRuns += static_cast<int>(executeSamples.size());
+
+                if (useSampleRepository)
+                {
+                    for (std::shared_ptr<ModelSample> sample : executeSamples)
+                    {
+                        repository.registerSample(sample);
+                    }
+                }
+            }
+
+            for (size_t i = 0; i < samples.size(); i++)
+            {
+                this->zValueConverter->updateZValue(samples[i]);
             }
         }
 
