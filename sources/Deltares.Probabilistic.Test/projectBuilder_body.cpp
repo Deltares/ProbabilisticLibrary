@@ -23,7 +23,6 @@
 #include "projectBuilder.h"
 #include <iostream>
 
-
 using namespace Deltares::Reliability;
 using namespace Deltares::Statistics;
 using namespace Deltares::Models;
@@ -47,9 +46,9 @@ namespace Deltares::Probabilistic::Test
         return m;
     }
 
-    std::shared_ptr<ModelRunner> projectBuilder::BuildLinearProject() const
+    std::shared_ptr<ModelRunner> projectBuilder::BuildLinearProject()
     {
-        auto z = std::make_shared<ZModel>([this](std::shared_ptr<ModelSample> v) { return linear(v); });
+        auto z = std::make_shared<ZModel>([](std::shared_ptr<ModelSample> v) { return linear(v); });
         auto stochast = std::vector<std::shared_ptr<Stochast>>();
         auto dist = DistributionType::Uniform;
         std::vector<double> params{ -1.0, 1.0 };
@@ -63,9 +62,9 @@ namespace Deltares::Probabilistic::Test
         return m;
     }
 
-    std::shared_ptr<ModelRunner> projectBuilder::BuildLinearOutputProject() const
+    std::shared_ptr<ModelRunner> projectBuilder::BuildLinearOutputProject()
     {
-        std::shared_ptr<ZModel> z(new ZModel(ZModel([this](std::shared_ptr<ModelSample> v) { return linearMultiple(v); })));
+        std::shared_ptr<ZModel> z(new ZModel(ZModel([](std::shared_ptr<ModelSample> v) { return linearMultiple(v); })));
         auto stochast = std::vector<std::shared_ptr<Stochast>>();
         auto dist = DistributionType::Uniform;
         std::vector<double> params{ -1.0, 1.0 };
@@ -79,9 +78,9 @@ namespace Deltares::Probabilistic::Test
         return m;
     }
 
-    std::shared_ptr<ModelRunner> projectBuilder::BuildLinearArrayProject() const
+    std::shared_ptr<ModelRunner> projectBuilder::BuildLinearArrayProject()
     {
-        auto z = std::make_shared<ZModel>([this](std::shared_ptr<ModelSample> v) { return linear(v); });
+        auto z = std::make_shared<ZModel>([](std::shared_ptr<ModelSample> v) { return linear(v); });
         auto stochast = std::vector<std::shared_ptr<Stochast>>();
         auto dist = DistributionType::Uniform;
         std::vector<double> params{ -1.0, 1.0 };
@@ -97,9 +96,9 @@ namespace Deltares::Probabilistic::Test
         return m;
     }
 
-    std::shared_ptr<ModelRunner> projectBuilder::BuildLinearVaryingArrayProject() const
+    std::shared_ptr<ModelRunner> projectBuilder::BuildLinearVaryingArrayProject()
     {
-        std::shared_ptr<ZModel> z(new ZModel(ZModel([this](std::shared_ptr<ModelSample> v) { return linear(v); })));
+        std::shared_ptr<ZModel> z(new ZModel(ZModel([](std::shared_ptr<ModelSample> v) { return linear(v); })));
         auto stochasts = std::vector<std::shared_ptr<Stochast>>();
         std::shared_ptr<Stochast> s = std::make_shared<Stochast>();
         s->modelParameter->isArray = true;

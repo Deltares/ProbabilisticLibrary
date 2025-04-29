@@ -34,10 +34,10 @@ namespace Deltares::Probabilistic::Test
     {
     public:
         std::shared_ptr<Models::ModelRunner> BuildProject() const;
-        std::shared_ptr<Models::ModelRunner> BuildLinearProject() const;
-        std::shared_ptr<Models::ModelRunner> BuildLinearOutputProject() const;
-        std::shared_ptr<Models::ModelRunner> BuildLinearArrayProject() const;
-        std::shared_ptr<Models::ModelRunner> BuildLinearVaryingArrayProject() const;
+        static std::shared_ptr<Models::ModelRunner> BuildLinearProject();
+        static std::shared_ptr<Models::ModelRunner> BuildLinearOutputProject();
+        static std::shared_ptr<Models::ModelRunner> BuildLinearArrayProject();
+        static std::shared_ptr<Models::ModelRunner> BuildLinearVaryingArrayProject();
         static std::shared_ptr<Models::ModelRunner> BuildQuadraticProject();
         std::shared_ptr<Models::ModelRunner> BuildProjectWithDeterminist(double valueDeterminist) const;
         static std::shared_ptr<Reliability::FragilityCurve> BuildFragilityCurve();
