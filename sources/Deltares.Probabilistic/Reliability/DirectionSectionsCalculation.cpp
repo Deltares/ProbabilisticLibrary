@@ -98,7 +98,7 @@ namespace Deltares::Reliability
         return std::min(uDivDsdu * Settings.Dsdu, Settings.MaximumLengthU);
     }
 
-    void DirectionSectionsCalculation::ProvidePrecomputeValue(const PrecomputeValue& zValue)
+    void DirectionSectionsCalculation::ProvidePrecomputeValue(const PrecomputedDirectionValue& zValue)
     {
         zValues.values.push_back(zValue);
     }

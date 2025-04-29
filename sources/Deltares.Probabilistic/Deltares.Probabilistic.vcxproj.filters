@@ -232,6 +232,11 @@
     <ClCompile Include="Sensitivity\SensitivityResult.cpp" />
     <ClCompile Include="Model\RunProject.cpp" />
     <ClCompile Include="Model\RunProjectSettings.cpp" />
+    <ClCompile Include="Reliability\PrecomputedDirectionValues.cpp" />
+    <ClCompile Include="Reliability\PrecomputeDirections.cpp" />
+    <ClCompile Include="Reliability\DirectionSectionsCalculation.cpp" />
+    <ClCompile Include="Reliability\DirectionSectionsCalculationDS.cpp" />
+    <ClCompile Include="Reliability\DirectionReliabilityDS.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -484,6 +489,12 @@
     <ClInclude Include="Model\RunProject.h" />
     <ClInclude Include="Model\RunProjectSettings.h" />
     <ClInclude Include="Sensitivity\SensitivityResult.h" />
+    <ClInclude Include="Reliability\PrecomputedDirectionValues.h" />
+    <ClInclude Include="Reliability\PrecomputeDirections.h" />
+    <ClInclude Include="Reliability\BetaValueTask.h" />
+    <ClInclude Include="Reliability\DirectionSectionsCalculation.h" />
+    <ClInclude Include="Reliability\DirectionSectionsCalculationDS.h" />
+    <ClInclude Include="Reliability\DirectionReliabilityDS.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

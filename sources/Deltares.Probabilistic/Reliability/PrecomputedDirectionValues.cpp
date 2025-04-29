@@ -19,29 +19,27 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#pragma once
-#include <vector>
-#include <cstddef>
+
+#include "PrecomputedDirectionValues.h"
+#include "ReliabilityMethod.h"
+#include <cmath>
 
 namespace Deltares::Reliability
 {
-    class PrecomputeValue
+    std::pair<bool, PrecomputedDirectionValue>  PrecomputedDirectionValues::findZ(const size_t index) const
     {
-    public:
-        PrecomputeValue(const double u, const double z, const bool isRestartRequired, const bool allowProxy)
-        : u(u), z(z), IsRestartRequired(isRestartRequired), AllowProxy(allowProxy) {}
-        const double u;
-        const double z;
-        const bool IsRestartRequired;
-        const bool AllowProxy;
-    };
+        if (index < values.size())
+        {
+            return { true, values[index] };
+        }
+        else
+        {
+            auto result = PrecomputedDirectionValue(std::nan(""), std::nan(""), false, false);
+            return { false, result};
+        }
 
-    class PrecomputeValues
-    {
-    public:
-        std::vector<PrecomputeValue> values;
-        std::pair<bool, PrecomputeValue> findZ(const size_t index) const;
-    };
+    }
 
-}
+};
+
 

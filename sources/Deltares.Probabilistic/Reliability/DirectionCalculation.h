@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "PrecomputeValues.h"
+#include "PrecomputedDirectionValues.h"
 #include "ZGetter.h"
 
 namespace Deltares::Reliability
@@ -60,7 +60,7 @@ namespace Deltares::Reliability
             return model.GetZ(uDirection, u, settings.inverted, true);
         }
 
-        double GetZ(size_t index, const PrecomputeValues& zValues)  const
+        double GetZ(size_t index, const PrecomputedDirectionValues& zValues)  const
         {
             const auto [foundZ0, precomputedResult] = zValues.findZ(index);
             if (foundZ0)

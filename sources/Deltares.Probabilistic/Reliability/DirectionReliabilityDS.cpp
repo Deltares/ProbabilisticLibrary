@@ -24,7 +24,7 @@
 
 namespace Deltares::Reliability
 {
-    double DirectionReliabilityDS::getBeta(Models::ModelRunner& modelRunner, double z0)
+    double DirectionReliabilityDS::getBeta(Models::ModelRunner& modelRunner, double z0) const
     {
         auto normalizedSample = directionSample.getNormalizedSample();
 
@@ -66,7 +66,7 @@ namespace Deltares::Reliability
         return sectionsCalc.GetPrecomputeUvalue();
     }
 
-    void DirectionReliabilityDS::ProvidePrecomputeValue(const PrecomputeValue& zValue)
+    void DirectionReliabilityDS::ProvidePrecomputeValue(const PrecomputedDirectionValue& zValue)
     {
         sectionsCalc.ProvidePrecomputeValue(zValue);
     }

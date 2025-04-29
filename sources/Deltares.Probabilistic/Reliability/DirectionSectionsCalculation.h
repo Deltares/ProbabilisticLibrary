@@ -24,7 +24,7 @@
 #include "DirectionCalculation.h"
 #include "DirectionReliabilitySettings.h"
 #include "DirectionSection.h"
-#include "PrecomputeValues.h"
+#include "PrecomputedDirectionValues.h"
 #include "ReliabilityMethod.h"
 
 namespace Deltares::Reliability
@@ -39,9 +39,9 @@ namespace Deltares::Reliability
         static double getBetaFromSections(const std::vector<DirectionSection>& sections, const bool FindMinimalValue);
         bool CanPrecomputeSample() const;
         double GetPrecomputeUvalue() const;
-        void ProvidePrecomputeValue(const PrecomputeValue& zValue);
+        void ProvidePrecomputeValue(const PrecomputedDirectionValue& zValue);
     private:
-        PrecomputeValues zValues;
+        PrecomputedDirectionValues zValues;
         double z0;
     protected:
         double findBetaBetweenBoundariesAllowNaN(const DirectionCalculation& directionCalculation,

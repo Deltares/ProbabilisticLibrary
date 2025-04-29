@@ -32,12 +32,12 @@ namespace Deltares::Reliability
 
     // precompute Z-values
     void PrecomputeDirections::precompute(Models::ModelRunner& modelRunner,
-        std::vector<DirectionReliabilityDS>& directions, std::vector<bool>& mask)
+        std::vector<DirectionReliabilityDS>& directions, std::vector<bool>& shouldCompute)
     {
         const size_t nSamples = directions.size();
 
         // copy z-value zero sample
-        const auto z0pv = PrecomputeValue(0.0, std::abs(z0), false, true);
+        const auto z0pv = PrecomputedDirectionValue(0.0, std::abs(z0), false, true);
         const double z0Fac = ReliabilityMethod::getZFactor(z0);
         for (auto& direction : directions)
         {
@@ -47,6 +47,18 @@ namespace Deltares::Reliability
         // precompute Z-values multiples of Dsdu
         const int sectionsCount = settings.SectionCount();
         const auto model = ZGetter(modelRunner, settings);
+
+        // store intermediate values
+        std::vector<double> uValues(nSamples);
+        std::vector<std::shared_ptr<Sample>> uDirections(nSamples);
+        for (size_t i = 0; i < nSamples; i++)
+        {
+            if (shouldCompute[i])
+            {
+                uDirections[i] = directions[i].getDirection().getNormalizedSample();
+            }
+        }
+
         for (int k = 1; k <= sectionsCount; k++)
         {
             //
@@ -55,12 +67,10 @@ namespace Deltares::Reliability
             std::vector<std::shared_ptr<Sample>> uSamples;
             for (size_t i = 0; i < nSamples; i++)
             {
-                if (mask[i])
+                if (shouldCompute[i])
                 {
-                    const auto uk = directions[i].GetPrecomputeUvalue();
-                    auto uDirection = directions[i].getDirection().getNormalizedSample();
-                    auto sample_at_uk = model.GetU(*uDirection, uk);
-                    uSamples.push_back(sample_at_uk);
+                    uValues[i] = directions[i].GetPrecomputeUvalue();
+                    uSamples.push_back(model.GetSample(*uDirections[i], uValues[i]));
                 }
             }
 
@@ -76,16 +86,15 @@ namespace Deltares::Reliability
             int ii = 0;
             for (size_t i = 0; i < nSamples; i++)
             {
-                if (mask[i])
+                if (shouldCompute[i])
                 {
-                    const auto uk = directions[i].GetPrecomputeUvalue();
                     directions[i].getDirection().IsRestartRequired = uSamples[ii]->IsRestartRequired;
                     directions[i].getDirection().AllowProxy = uSamples[ii]->AllowProxy;
                     directions[i].getDirection().Z = uSamples[ii]->Z;
-                    auto z1pv = PrecomputeValue(uk, z0Fac * zValues[ii],
+                    auto z1pv = PrecomputedDirectionValue(uValues[i], z0Fac * zValues[ii],
                         uSamples[ii]->IsRestartRequired, uSamples[ii]->AllowProxy);
                     directions[i].ProvidePrecomputeValue(z1pv);
-                    mask[i] = directions[i].CanPrecomputeSample();
+                    shouldCompute[i] = directions[i].CanPrecomputeSample();
                     ii++;
                 }
             }

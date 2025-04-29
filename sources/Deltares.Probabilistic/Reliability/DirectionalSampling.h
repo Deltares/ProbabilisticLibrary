@@ -22,7 +22,7 @@
 #pragma once
 
 #include "DirectionalSamplingSettings.h"
-#include "PrecomputeValues.h"
+#include "PrecomputedDirectionValues.h"
 #include "ReliabilityMethod.h"
 
 namespace Deltares::Reliability
