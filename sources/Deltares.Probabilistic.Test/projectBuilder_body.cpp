@@ -63,6 +63,22 @@ namespace Deltares::Probabilistic::Test
         return m;
     }
 
+    std::shared_ptr<ModelRunner> projectBuilder::BuildLinearOutputProject() const
+    {
+        std::shared_ptr<ZModel> z(new ZModel(ZModel([this](std::shared_ptr<ModelSample> v) { return linearMultiple(v); })));
+        auto stochast = std::vector<std::shared_ptr<Stochast>>();
+        auto dist = DistributionType::Uniform;
+        std::vector<double> params{ -1.0, 1.0 };
+        std::shared_ptr<Stochast> s(new Stochast(dist, params));
+        stochast.push_back(s);
+        stochast.push_back(s);
+        std::shared_ptr<CorrelationMatrix> corr(new CorrelationMatrix());
+        std::shared_ptr<UConverter> uConverter(new UConverter(stochast, corr));
+        uConverter->initializeForRun();
+        std::shared_ptr<ModelRunner> m(new ModelRunner(z, uConverter));
+        return m;
+    }
+
     std::shared_ptr<ModelRunner> projectBuilder::BuildLinearArrayProject() const
     {
         auto z = std::make_shared<ZModel>([this](std::shared_ptr<ModelSample> v) { return linear(v); });
@@ -76,6 +92,31 @@ namespace Deltares::Probabilistic::Test
         stochast.push_back(s);
         std::shared_ptr<CorrelationMatrix> corr(new CorrelationMatrix());
         std::shared_ptr<UConverter> uConverter(new UConverter(stochast, corr));
+        uConverter->initializeForRun();
+        std::shared_ptr<ModelRunner> m(new ModelRunner(z, uConverter));
+        return m;
+    }
+
+    std::shared_ptr<ModelRunner> projectBuilder::BuildLinearVaryingArrayProject() const
+    {
+        std::shared_ptr<ZModel> z(new ZModel(ZModel([this](std::shared_ptr<ModelSample> v) { return linear(v); })));
+        auto stochasts = std::vector<std::shared_ptr<Stochast>>();
+        std::shared_ptr<Stochast> s = std::make_shared<Stochast>();
+        s->modelParameter->isArray = true;
+        s->modelParameter->arraySize = 5;
+        s->name = "s";
+        for (int i = 0; i < s->modelParameter->arraySize; i++)
+        {
+            std::shared_ptr<Stochast> s1(new Stochast());
+            s1->setDistributionType(DistributionType::Uniform);
+            s1->getProperties()->Minimum = i - 3;
+            s1->getProperties()->Maximum = i - 1;
+            s->ArrayVariables.push_back(s1);
+        }
+        stochasts.push_back(s);
+        stochasts.push_back(s);
+        std::shared_ptr<CorrelationMatrix> corr(new CorrelationMatrix());
+        std::shared_ptr<UConverter> uConverter(new UConverter(stochasts, corr));
         uConverter->initializeForRun();
         std::shared_ptr<ModelRunner> m(new ModelRunner(z, uConverter));
         return m;
@@ -176,6 +217,19 @@ namespace Deltares::Probabilistic::Test
         }
     }
 
+    void projectBuilder::linearMultiple(std::shared_ptr<ModelSample> sample)
+    {
+        sample->Z = 1.8;
+        for (double value : sample->Values)
+        {
+            sample->Z -= value;
+        }
+
+        // register twice in output values
+        sample->OutputValues.push_back(sample->Z);
+        sample->OutputValues.push_back(sample->Z);
+    }
+
     void projectBuilder::quadratic(std::shared_ptr<ModelSample> sample)
     {
         sample->Z = 1.0;
@@ -238,6 +292,21 @@ namespace Deltares::Probabilistic::Test
         return sensitivityProject;
     }
 
+    std::shared_ptr<RunProject> projectBuilder::getRunProject(std::shared_ptr<ReliabilityProject> project)
+    {
+        std::shared_ptr<RunProject> runProject = std::make_shared<RunProject>();
+
+        for (std::shared_ptr<Stochast> stochast : project->stochasts)
+        {
+            runProject->stochasts.push_back(stochast);
+        }
+
+        runProject->correlationMatrix = project->correlationMatrix;
+        runProject->model = project->model;
+
+        return runProject;
+    }
+
     std::shared_ptr<ReliabilityProject> projectBuilder::getAddOneProject()
     {
         std::shared_ptr<ReliabilityProject> project = std::make_shared<ReliabilityProject>();
@@ -268,6 +337,38 @@ namespace Deltares::Probabilistic::Test
         return project;
     }
 
+    std::shared_ptr<ReliabilityProject> projectBuilder::getLinearOutputProject()
+    {
+        std::shared_ptr<ReliabilityProject> project = std::make_shared<ReliabilityProject>();
+
+        project->stochasts.push_back(getUniformStochast(-1));
+        project->stochasts.push_back(getUniformStochast(-1));
+
+        project->correlationMatrix = std::make_shared<CorrelationMatrix>();
+        project->correlationMatrix->init(project->stochasts);
+
+        project->model = std::make_shared<ZModel>(projectBuilder::linearMultiple);
+        project->model->outputParameters.push_back(std::make_shared<ModelInputParameter>("Result1"));
+        project->model->outputParameters.push_back(std::make_shared<ModelInputParameter>("Result2"));
+
+        return project;
+    }
+
+    std::shared_ptr<ReliabilityProject> projectBuilder::getTriangularLinearProject()
+    {
+        std::shared_ptr<ReliabilityProject> project = std::make_shared<ReliabilityProject>();
+
+        project->stochasts.push_back(getTriangularStochast(0, 0, 1));
+        project->stochasts.push_back(getTriangularStochast(0, 0, 1));
+
+        project->correlationMatrix = std::make_shared<CorrelationMatrix>();
+        project->correlationMatrix->init(project->stochasts);
+
+        project->model = std::make_shared<ZModel>(projectBuilder::linear);
+
+        return project;
+    }
+
     std::shared_ptr<Stochast> projectBuilder::getDeterministicStochast(double mean)
     {
         std::vector<double> values = {mean};
@@ -284,6 +385,12 @@ namespace Deltares::Probabilistic::Test
     {
         std::vector<double> values = { min, max };
         return std::make_shared<Stochast>(DistributionType::Uniform, values);
+    }
+
+    std::shared_ptr<Stochast>  projectBuilder::getTriangularStochast(double min, double top, double max)
+    {
+        std::vector<double> values = { min, top, max };
+        return std::make_shared<Stochast>(DistributionType::Triangular, values);
     }
 
     std::shared_ptr<Stochast> projectBuilder::getLogNormalStochast(double mean, double stddev, double shift)
