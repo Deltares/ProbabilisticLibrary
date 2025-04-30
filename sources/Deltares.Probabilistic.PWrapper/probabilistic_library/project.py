@@ -24,6 +24,7 @@ import sys
 from ctypes import *
 from multiprocessing import Pool, cpu_count
 from typing import FrozenSet
+from types import FunctionType
 
 from .statistic import *
 from .reliability import *
@@ -62,9 +63,13 @@ class ZModel(FrozenObject):
 	_multiple_callback = None
 	
 	def __init__(self, callback = None, output_parameter_size = 1):
-		ZModel._index = 0;
-		ZModel._callback = callback
 		self._model = None
+		source_code = None
+		if isinstance(callback, str):
+			source_code = callback
+			dynamic_code = compile(callback, '<string>', 'exec')
+			code_object = dynamic_code.co_consts[0]
+			callback = FunctionType(code_object, globals(), code_object.co_name)
 		self._is_function = inspect.isfunction(callback) or inspect.ismethod(callback)
 		self._is_dirty = False
 		self._has_arrays = False
@@ -74,15 +79,20 @@ class ZModel(FrozenObject):
 		self._project = None
 		self._project_id = 0
 		self._z_values_size = 0
+		ZModel._index = 0;
+		ZModel._callback = callback
 
 		if self._is_function:
-			self._input_parameters = self._get_input_parameters(callback)
-			self._output_parameters = self._get_output_parameters(callback, output_parameter_size)
 			self._model_name = callback.__name__
+			self._input_parameters = self._get_input_parameters(callback)
+			if source_code != None:
+				self._output_parameters = self._get_output_parameters(source_code, output_parameter_size)
+			else:
+				self._output_parameters = self._get_output_parameters(callback, output_parameter_size)
 		else:
+			self._model_name = ''
 			self._input_parameters = []
 			self._output_parameters = []
-			self._model_name = ''
 
 		super()._freeze()
 
@@ -125,7 +135,10 @@ class ZModel(FrozenObject):
 
 	def _get_output_parameters(self, function, output_parameter_size = 1):
 		parameters = []
-		source = inspect.getsource(function)
+		if isinstance(function, str):
+			source = function
+		else:
+			source = inspect.getsource(function)
 		lines = source.splitlines()
 		for line in lines:
 			if line.strip().startswith('return'):
@@ -429,7 +442,7 @@ class ModelProject(FrozenObject):
 		return self._model
 
 	@model.setter
-	def model(self, value):
+	def model(self, value : FunctionType | MethodType | str | ZModel | ZModelContainer):
 		if isinstance(value, tuple):
 			output_parameter_size = value[1]
 			value = value[0]
@@ -437,6 +450,9 @@ class ModelProject(FrozenObject):
 			output_parameter_size = 1
 
 		if inspect.isfunction(value) or inspect.ismethod(value):
+			self._model = ZModel(value, output_parameter_size)
+			self._update_model()
+		elif isinstance(value, str):
 			self._model = ZModel(value, output_parameter_size)
 			self._update_model()
 		elif isinstance(value, ZModel):

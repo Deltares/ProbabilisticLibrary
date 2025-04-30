@@ -21,10 +21,12 @@
 #
 import sys
 import math
+from typing import TypedDict
 import numpy as np
 
 from probabilistic_library import *
 from time import sleep
+from typing import TypedDict, Unpack
 
 def sum_ab(a, b):
     return a+b;
@@ -32,6 +34,14 @@ def sum_ab(a, b):
 def linear_ab(a, b):
     L = 1.8
     return L - (a+b)
+
+class LinearKwargs (TypedDict):
+    a : float
+    b : float
+
+# def linear_kwargs(**kwargs = {a : 0, b : 0}):
+#     L = 1.8
+#     return L - (kwargs['a'] + kwargs['b'])
 
 def linear_ab_array_result(a, b):
     L = [1.8, 1.9, 1.95]
@@ -120,21 +130,21 @@ def pile(Load, z, q_clay, q_sand, D, L):
 
     return UC
 
+def assign_distributions(project : ModelProject, distribution : DistributionType):
+    for var in project.variables:
+        var.distribution = distribution
+        var.location = 0
+        var.scale = 1
+        var.minimum = -1
+        var.maximum = 1;
+
 def get_linear_project():
 
     project = ReliabilityProject()
 
     project.model = linear_ab
 
-    stochast1 = project.variables['a']
-    stochast1.distribution = DistributionType.uniform
-    stochast1.minimum = -1
-    stochast1.maximum = 1;
-
-    stochast2 = project.variables['b']
-    stochast2.distribution =  DistributionType.uniform
-    stochast2.minimum = -1
-    stochast2.maximum = 1;
+    assign_distributions(project, DistributionType.uniform)
 
     return project
 
@@ -144,16 +154,21 @@ def get_linear_initialized_project():
     initialized = InitializedLinearModel(1.8)
 
     project.model = initialized.calculate
+    assign_distributions(project, DistributionType.uniform)
 
-    stochast1 = project.variables['a']
-    stochast1.distribution = DistributionType.uniform
-    stochast1.minimum = -1
-    stochast1.maximum = 1;
+    return project
 
-    stochast2 = project.variables['b']
-    stochast2.distribution =  DistributionType.uniform
-    stochast2.minimum = -1
-    stochast2.maximum = 1;
+def get_generated_model_project():
+
+    project = ReliabilityProject()
+
+    func_code = """
+def f(a,b):
+    z = 1.8 - (a+b)
+    return z
+"""
+    project.model = func_code
+    assign_distributions(project, DistributionType.uniform)
 
     return project
 
@@ -162,37 +177,20 @@ def get_linear_array_result_project():
     project = ReliabilityProject()
 
     project.model = linear_ab_array_result, 3
-
-    stochast1 = project.variables['a']
-    stochast1.distribution = DistributionType.uniform
-    stochast1.minimum = -1
-    stochast1.maximum = 1;
-
-    stochast2 = project.variables['b']
-    stochast2.distribution =  DistributionType.uniform
-    stochast2.minimum = -1
-    stochast2.maximum = 1;
+    assign_distributions(project, DistributionType.uniform)
 
     return project
+
 def get_linear_array_project():
 
     project = ReliabilityProject()
 
     project.model = linear_ab_array
+    assign_distributions(project, DistributionType.uniform)
 
     stochast1 = project.variables['L']
     stochast1.distribution = DistributionType.deterministic
     stochast1.mean = 1.8
-
-    stochast1 = project.variables['a']
-    stochast1.distribution = DistributionType.uniform
-    stochast1.minimum = -1
-    stochast1.maximum = 1;
-
-    stochast2 = project.variables['b']
-    stochast2.distribution =  DistributionType.uniform
-    stochast2.minimum = -1
-    stochast2.maximum = 1;
 
     return project
 
@@ -201,16 +199,7 @@ def get_multiple_linear_project():
     project = ReliabilityProject()
 
     project.model = multiple_linear_ab
-
-    stochast1 = project.variables['a']
-    stochast1.distribution = DistributionType.uniform
-    stochast1.minimum = -1
-    stochast1.maximum = 1;
-
-    stochast2 = project.variables['b']
-    stochast2.distribution =  DistributionType.uniform
-    stochast2.minimum = -1
-    stochast2.maximum = 1;
+    assign_distributions(project, DistributionType.uniform)
 
     return project
 
@@ -219,15 +208,11 @@ def get_sensitivity_add_one_project():
     project = SensitivityProject()
 
     project.model = sum_ab
+    assign_distributions(project, DistributionType.uniform)
 
     stochast1 = project.variables['a']
     stochast1.distribution = DistributionType.deterministic
     stochast1.mean = 1
-
-    stochast2 = project.variables['b']
-    stochast2.distribution =  DistributionType.uniform
-    stochast2.minimum = -1
-    stochast2.maximum = 1;
 
     return project
 
@@ -256,16 +241,7 @@ def get_sensitivity_linear_project():
     project = SensitivityProject()
 
     project.model = linear_ab
-
-    stochast1 = project.variables['a']
-    stochast1.distribution =  DistributionType.uniform
-    stochast1.minimum = -1
-    stochast1.maximum = 1;
-
-    stochast2 = project.variables['b']
-    stochast2.distribution =  DistributionType.uniform
-    stochast2.minimum = -1
-    stochast2.maximum = 1;
+    assign_distributions(project, DistributionType.uniform)
 
     return project
 
@@ -274,16 +250,7 @@ def get_sensitivity_linear_array_result_project() ->SensitivityProject:
     project = SensitivityProject()
 
     project.model = (linear_ab_array_result, 3)
-
-    stochast1 = project.variables['a']
-    stochast1.distribution =  DistributionType.uniform
-    stochast1.minimum = -1
-    stochast1.maximum = 1;
-
-    stochast2 = project.variables['b']
-    stochast2.distribution =  DistributionType.uniform
-    stochast2.minimum = -1
-    stochast2.maximum = 1;
+    assign_distributions(project, DistributionType.uniform)
 
     return project
 
@@ -292,16 +259,7 @@ def get_sensitivity_linear_delayed_array_result_project():
     project = SensitivityProject()
 
     project.model = (linear_delayed_ab_array_result, 3)
-
-    stochast1 = project.variables['a']
-    stochast1.distribution =  DistributionType.uniform
-    stochast1.minimum = -1
-    stochast1.maximum = 1;
-
-    stochast2 = project.variables['b']
-    stochast2.distribution =  DistributionType.uniform
-    stochast2.minimum = -1
-    stochast2.maximum = 1;
+    assign_distributions(project, DistributionType.uniform)
 
     return project
 
@@ -353,16 +311,7 @@ def get_sensitivity_multiple_identical_linear_project():
     project = SensitivityProject()
 
     project.model = multiple_identical_linear_ab
-
-    stochast1 = project.variables['a']
-    stochast1.distribution =  DistributionType.uniform
-    stochast1.minimum = -1
-    stochast1.maximum = 1;
-
-    stochast2 = project.variables['b']
-    stochast2.distribution =  DistributionType.uniform
-    stochast2.minimum = -1
-    stochast2.maximum = 1;
+    assign_distributions(project, DistributionType.uniform)
 
     return project
 
@@ -371,16 +320,7 @@ def get_multiple_unbalanced_linear_project():
     project = ReliabilityProject()
 
     project.model = multiple_unbalanced_linear_ab
-
-    stochast1 = project.variables['a']
-    stochast1.distribution =  DistributionType.uniform
-    stochast1.minimum = -1
-    stochast1.maximum = 1;
-
-    stochast2 = project.variables['b']
-    stochast2.distribution =  DistributionType.uniform
-    stochast2.minimum = -1
-    stochast2.maximum = 1;
+    assign_distributions(project, DistributionType.uniform)
 
     return project
 
@@ -389,16 +329,7 @@ def get_sensitivity_multiple_unbalanced_linear_project():
     project = SensitivityProject()
 
     project.model = multiple_unbalanced_linear_ab
-
-    stochast1 = project.variables['a']
-    stochast1.distribution =  DistributionType.uniform
-    stochast1.minimum = -1
-    stochast1.maximum = 1;
-
-    stochast2 = project.variables['b']
-    stochast2.distribution =  DistributionType.uniform
-    stochast2.minimum = -1
-    stochast2.maximum = 1;
+    assign_distributions(project, DistributionType.uniform)
 
     return project
 
@@ -407,16 +338,7 @@ def get_linear_small_project():
     project = ReliabilityProject()
 
     project.model = linear_small_ab
-
-    stochast1 = project.variables['a']
-    stochast1.distribution =  DistributionType.uniform
-    stochast1.minimum = -1
-    stochast1.maximum = 1;
-
-    stochast2 = project.variables['b']
-    stochast2.distribution = DistributionType.uniform
-    stochast2.minimum = -1
-    stochast2.maximum = 1;
+    assign_distributions(project, DistributionType.uniform)
 
     return project
 

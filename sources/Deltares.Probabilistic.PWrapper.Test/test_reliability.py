@@ -89,6 +89,26 @@ class Test_reliability(unittest.TestCase):
         self.assertAlmostEqual(2.33, beta, delta=margin)
         self.assertEqual(2, len(alphas))
 
+    def test_form_generated_model(self):
+
+        project = project_builder.get_generated_model_project()
+
+        self.assertEqual('a', project.model.input_parameters[0].name)
+        self.assertEqual('z', project.model.output_parameters[0].name)
+        self.assertEqual('a', project.variables[0].name)
+        self.assertEqual('f', project.model.name)
+
+        project.settings.reliability_method = ReliabilityMethod.form
+
+        project.run();
+
+        dp = project.design_point;
+        beta = dp.reliability_index;
+        alphas = dp.alphas;
+
+        self.assertAlmostEqual(2.33, beta, delta=margin)
+        self.assertEqual(2, len(alphas))
+
     def test_form_initialized_linear_parallel(self):
         project = project_builder.get_linear_initialized_project()
 
