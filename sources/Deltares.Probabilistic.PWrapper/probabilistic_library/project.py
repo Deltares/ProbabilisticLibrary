@@ -71,7 +71,7 @@ class ZModel(FrozenObject):
 				dynamic_code = compile(callback, '<string>', 'exec')
 				code_object = dynamic_code.co_consts[0]
 				callback = FunctionType(code_object, globals(), code_object.co_name)
-			except:
+			except Exception:
 				callback = source_code # so that _is_function will be False
 		self._is_function = inspect.isfunction(callback) or inspect.ismethod(callback)
 		self._is_dirty = False
@@ -452,10 +452,7 @@ class ModelProject(FrozenObject):
 		else:
 			output_parameter_size = 1
 
-		if inspect.isfunction(value) or inspect.ismethod(value):
-			self._model = ZModel(value, output_parameter_size)
-			self._update_model()
-		elif isinstance(value, str):
+		if inspect.isfunction(value) or inspect.ismethod(value) or isinstance(value, str):
 			self._model = ZModel(value, output_parameter_size)
 			self._update_model()
 		elif isinstance(value, ZModel):
