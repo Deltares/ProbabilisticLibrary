@@ -67,9 +67,12 @@ class ZModel(FrozenObject):
 		source_code = None
 		if isinstance(callback, str):
 			source_code = callback
-			dynamic_code = compile(callback, '<string>', 'exec')
-			code_object = dynamic_code.co_consts[0]
-			callback = FunctionType(code_object, globals(), code_object.co_name)
+			try:
+				dynamic_code = compile(callback, '<string>', 'exec')
+				code_object = dynamic_code.co_consts[0]
+				callback = FunctionType(code_object, globals(), code_object.co_name)
+			except:
+				callback = source_code # so that _is_function will be False
 		self._is_function = inspect.isfunction(callback) or inspect.ismethod(callback)
 		self._is_dirty = False
 		self._has_arrays = False
