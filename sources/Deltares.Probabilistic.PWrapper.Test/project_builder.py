@@ -520,6 +520,22 @@ def get_hunt_project():
 
     return project
 
+def assign_conditional_values(stochast : Stochast):
+    stochast.conditional = True
+
+    conditional1 = ConditionalValue()
+    conditional1.x = -1
+    conditional1.minimum = -1.2
+    conditional1.maximum = -0.8
+    conditional1.scale = 1
+    stochast.conditional_values.append(conditional1)
+
+    conditional2 = ConditionalValue()
+    conditional2.x = 1
+    conditional2.minimum = 0.8
+    conditional2.maximum = 1.2
+    stochast.conditional_values.append(conditional2)
+
 def get_design_point(beta : float, count : int):
     design_point = DesignPoint()
     design_point._set_reliability_index(beta)

@@ -167,20 +167,8 @@ class Test_reliability(unittest.TestCase):
 
         composite2 = Stochast()
         composite2.distribution = DistributionType.uniform
-        composite2.conditional = True
 
-        conditional1 = ConditionalValue()
-        conditional1.x = -1
-        conditional1.minimum = -1.2
-        conditional1.maximum = -0.8
-        composite2.conditional_values.append(conditional1)
-
-        conditional2 = ConditionalValue()
-        conditional2.x = 1
-        conditional2.minimum = 0.8
-        conditional2.maximum = 1.2
-        composite2.conditional_values.append(conditional2)
-
+        project_builder.assign_conditional_values(composite2)
         composite2.conditional_source = 'a'
 
         project.variables['b'].contributing_stochasts.append(ContributingStochast.create(0.6, composite2))
@@ -228,20 +216,8 @@ class Test_reliability(unittest.TestCase):
 
         composite2 = Stochast()
         composite2.distribution = DistributionType.uniform
-        composite2.conditional = True
 
-        conditional1 = ConditionalValue()
-        conditional1.x = -1
-        conditional1.minimum = -1.2
-        conditional1.maximum = -0.8
-        composite2.conditional_values.append(conditional1)
-
-        conditional2 = ConditionalValue()
-        conditional2.x = 1
-        conditional2.minimum = 0.8
-        conditional2.maximum = 1.2
-        composite2.conditional_values.append(conditional2)
-
+        project_builder.assign_conditional_values(composite2)
         composite2.conditional_source = 'a'
 
         project.variables['b'].contributing_stochasts.append(ContributingStochast.create(0.6, composite2))
@@ -338,21 +314,7 @@ class Test_reliability(unittest.TestCase):
     def test_form_linear_conditional(self):
         project = project_builder.get_linear_project()
 
-        project.variables['b'].conditional = True
-
-        conditional1 = ConditionalValue()
-        conditional1.x = -1
-        conditional1.minimum = -1.2
-        conditional1.maximum = -0.8
-        conditional1.scale = 1
-        project.variables['b'].conditional_values.append(conditional1)
-
-        conditional2 = ConditionalValue()
-        conditional2.x = 1
-        conditional2.minimum = 0.8
-        conditional2.maximum = 1.2
-        project.variables['b'].conditional_values.append(conditional2)
-
+        project_builder.assign_conditional_values(project.variables['b'])
         project.variables['b'].conditional_source = 'a'
 
         project.settings.reliability_method = ReliabilityMethod.form
@@ -474,20 +436,7 @@ class Test_reliability(unittest.TestCase):
         project.variables['a'].array_size = 5
         project.variables['b'].array_size = 5
 
-        project.variables['b'].conditional = True
-
-        conditional1 = ConditionalValue()
-        conditional1.x = -1
-        conditional1.minimum = -1.2
-        conditional1.maximum = -0.8
-        conditional1.scale = 1
-        project.variables['b'].conditional_values.append(conditional1)
-
-        conditional2 = ConditionalValue()
-        conditional2.x = 1
-        conditional2.minimum = 0.8
-        conditional2.maximum = 1.2
-        project.variables['b'].conditional_values.append(conditional2)
+        project_builder.assign_conditional_values(project.variables['b'])
 
         project.variables['b'].conditional_source = 'a'
 
@@ -579,21 +528,8 @@ class Test_reliability(unittest.TestCase):
             project.variables['a'].array_variables.append(a_array)
 
         project.variables['b'].array_size = 5
-        project.variables['b'].conditional = True
 
-        conditional1 = ConditionalValue()
-        conditional1.x = -1
-        conditional1.minimum = -1.2
-        conditional1.maximum = -0.8
-        conditional1.scale = 1
-        project.variables['b'].conditional_values.append(conditional1)
-
-        conditional2 = ConditionalValue()
-        conditional2.x = 1
-        conditional2.minimum = 0.8
-        conditional2.maximum = 1.2
-        project.variables['b'].conditional_values.append(conditional2)
-
+        project_builder.assign_conditional_values(project.variables['b'])
         project.variables['b'].conditional_source = 'a'
 
         project.settings.reliability_method = ReliabilityMethod.form
