@@ -30,8 +30,8 @@ namespace Deltares::Reliability
     class DirectionCalculationSettings
     {
     public:
-        DirectionCalculationSettings(bool inverted) : inverted(inverted) {}
-        DirectionCalculationSettings(bool inverted, double Dsdu, double maxLengthU) :
+        explicit DirectionCalculationSettings(bool inverted) : inverted(inverted) {}
+        explicit DirectionCalculationSettings(bool inverted, double Dsdu, double maxLengthU) :
             inverted(inverted), Dsdu(Dsdu), MaximumLengthU(maxLengthU) {}
         const bool inverted;
         const double Dsdu = std::nan("");

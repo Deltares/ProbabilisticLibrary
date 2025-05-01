@@ -110,7 +110,6 @@ namespace Deltares::Reliability
 
         const int sectionsCount = Settings.SectionCount();
 
-        bool found = false;
         const bool monotone = Settings.modelVaryingType == ModelVaryingType::Monotone;
         const auto dirCalcSettings = DirectionCalculationSettings(directionTask.invertZ, Settings.Dsdu, Settings.MaximumLengthU);
         auto model = ZGetter(modelRunner, Settings);
@@ -119,68 +118,71 @@ namespace Deltares::Reliability
 
         for (int k = 0; k <= sectionsCount && !this->isStopped(); k++)
         {
-            if (!found)
+            double uLow = k * Settings.Dsdu;
+            double uHigh = std::min((k + 1) * Settings.Dsdu, Settings.MaximumLengthU);
+
+            double zLow = prevzHigh;
+            double zHigh = directionCalculation.GetZ(k+1, zValues);
+
+            prevzHigh = zHigh;
+
+            DoubleType zHighType = NumericSupport::getDoubleType(zHigh);
+            DoubleType zLowType = NumericSupport::getDoubleType(zLow);
+
+            if (zHighType != zLowType)
             {
-                double uLow = k * Settings.Dsdu;
-                double uHigh = std::min((k + 1) * Settings.Dsdu, Settings.MaximumLengthU);
+                double zChange = nan("");
+                double uChange = findBetaBetweenBoundaries(modelRunner, directionCalculation, uLow, uHigh, zLow, zHigh, zChange);
 
-                double zLow = prevzHigh;
-                double zHigh = directionCalculation.GetZ(k+1, zValues);
+                DoubleType zChangeType = NumericSupport::getDoubleType(zChange);
 
-                prevzHigh = zHigh;
-
-                DoubleType zHighType = NumericSupport::getDoubleType(zHigh);
-                DoubleType zLowType = NumericSupport::getDoubleType(zLow);
-
-                if (zHighType != zLowType)
+                if (zLowType == DoubleType::NaN && zChangeType != zHighType)
                 {
-                    double zChange = nan("");
-                    double uChange = findBetaBetweenBoundaries(modelRunner, directionCalculation, uLow, uHigh, zLow, zHigh, zChange);
+                    sections.emplace_back(zLowType, uLow, uChange);
 
-                    DoubleType zChangeType = NumericSupport::getDoubleType(zChange);
+                    double uSubChange = findBetaBetweenBoundaries(modelRunner, directionCalculation, uChange, uHigh, zChange, zHigh, zChange);
 
-                    if (zLowType == DoubleType::NaN && zChangeType != zHighType)
-                    {
-                        sections.emplace_back(zLowType, uLow, uChange);
+                    sections.emplace_back(zChangeType, uChange, uSubChange);
+                    sections.emplace_back(zHighType, uSubChange, uHigh);
+                }
+                else if (zHighType == DoubleType::NaN && zChangeType != zLowType)
+                {
+                    double uSubChange = findBetaBetweenBoundaries(modelRunner, directionCalculation, uLow, uChange, zLow, zChange, zChange);
 
-                        double uSubChange = findBetaBetweenBoundaries(modelRunner, directionCalculation, uChange, uHigh, zChange, zHigh, zChange);
-
-                        sections.emplace_back(zChangeType, uChange, uSubChange);
-                        sections.emplace_back(zHighType, uSubChange, uHigh);
-                    }
-                    else if (zHighType == DoubleType::NaN && zChangeType != zLowType)
-                    {
-                        double uSubChange = findBetaBetweenBoundaries(modelRunner, directionCalculation, uLow, uChange, zLow, zChange, zChange);
-
-                        sections.emplace_back(zLowType, uLow, uSubChange);
-                        sections.emplace_back(zChangeType, uSubChange, uChange);
-                        sections.emplace_back(zHighType, uChange, uHigh);
-                    }
-                    else
-                    {
-                        sections.emplace_back(zLowType, uLow, uChange, zLow, zChange);
-                        sections.emplace_back(zHighType, uChange, uHigh, zHigh, zChange);
-                    }
-
-                    if (monotone)
-                    {
-                        found = true;
-                    }
+                    sections.emplace_back(zLowType, uLow, uSubChange);
+                    sections.emplace_back(zChangeType, uSubChange, uChange);
+                    sections.emplace_back(zHighType, uChange, uHigh);
                 }
                 else
                 {
-                    sections.emplace_back(zHighType, uLow, uHigh, zLow, zHigh);
+                    sections.emplace_back(zLowType, uLow, uChange, zLow, zChange);
+                    sections.emplace_back(zHighType, uChange, uHigh, zHigh, zChange);
+                }
 
-                    if (monotone && zLowType != DoubleType::NaN && zHighType != DoubleType::NaN &&
-                        NumericSupport::compareDouble(std::fabs(zHigh), std::fabs(zLow)) == CmpResult::Greater)
-                    {
-                        found = true;
-                    }
+                if (monotone)
+                {
+                    break;
+                }
+            }
+            else
+            {
+                sections.emplace_back(zHighType, uLow, uHigh, zLow, zHigh);
+
+                if (monotone && zLowType != DoubleType::NaN && zHighType != DoubleType::NaN &&
+                    NumericSupport::compareDouble(std::fabs(zHigh), std::fabs(zLow)) == CmpResult::Greater)
+                {
+                    break;
                 }
             }
         }
 
-        // add the remainder to the last
+        addRemainderToTheLast(sections);
+
+        return sections;
+    }
+
+    void DirectionSectionsCalculation::addRemainderToTheLast(std::vector<DirectionSection>& sections)
+    {
         auto lastSection = sections.back();
 
         DoubleType lastSectionType = lastSection.Type;
@@ -200,8 +202,6 @@ namespace Deltares::Reliability
         }
 
         sections.emplace_back(lastSectionType, lastSection.UHigh, Statistics::StandardNormal::BetaMax);
-
-        return sections;
     }
 
     double DirectionSectionsCalculation::findBetaBetweenBoundaries(Models::ModelRunner& modelRunner,
