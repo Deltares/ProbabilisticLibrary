@@ -230,6 +230,7 @@ class Stochast(FrozenObject):
 				'get_ks_test',
 				'get_quantile',
 				'get_x_from_u',
+				'get_x_from_u_and_source',
 				'get_u_from_x',
 				'get_pdf',
 				'get_cdf',
@@ -240,9 +241,13 @@ class Stochast(FrozenObject):
 				'design_factor',
 				'design_quantile',
 				'design_value',
+				'is_valid',
 				'is_array',
 				'array_size',
-				'array_variables']
+				'array_variables',
+				'print',
+				'plot',
+				'plot_conditional']
 
 	def _set_variables(self, variables):
 		self._variables = variables
@@ -602,6 +607,9 @@ class Stochast(FrozenObject):
 			self._contributing_stochasts = None
 			self._conditional_values = None
 
+	def is_valid(self) -> bool:
+		return interface.GetBoolValue(self._id, 'is_valid')
+
 	def print(self):
 		pre = '  '
 		if self.name == '':
@@ -643,6 +651,10 @@ class Stochast(FrozenObject):
 			print(pre + f'design_value = {self.design_value}')
 
 	def plot(self, xmin : float = None, xmax : float = None):
+
+		if not self.is_valid():
+			print('Variable definition is not valid, plot can not be made.')
+			return
 
 		import numpy as np
 		import matplotlib.pyplot as plt
@@ -692,6 +704,65 @@ class Stochast(FrozenObject):
 		ax2.plot(values, cdf, "r--", label="pdf")
 		ax2.tick_params(axis="y", labelcolor=color)
 
+	def plot_conditional(self, xmin : float = None, xmax : float = None):
+
+		if not self.is_valid():
+			print('Variable definition is not valid, plot can not be made.')
+			return
+
+		if not self.conditional:
+			print('Variable is not conditional, plot can not be made.')
+			return
+
+		import numpy as np
+		import matplotlib.pyplot as plt
+
+		if xmin is None:
+			xmin = min([value.x for value in self.conditional_values])
+
+		if xmax is None:
+			xmax = max([value.x for value in self.conditional_values])
+
+		if xmin > xmax:
+			temp = xmin
+			xmin = xmax
+			xmax = temp
+
+		if xmin == xmax:
+			diff = abs(xmin) / 10
+			if diff == 0:
+				diff = 1
+			xmin = xmin - diff
+			xmax = xmin + diff
+
+		values = np.arange(xmin, xmax, (xmax - xmin) / 100).tolist()
+		for value in self.conditional_values:
+			values.append(value.x)
+		values.sort()
+
+		u_low = StandardNormal.get_u_from_p(0.05)
+		u_high = StandardNormal.get_u_from_p(0.95)
+		median_values = [self.get_x_from_u_and_source(0, x) for x in values]
+		low_values = [self.get_x_from_u_and_source(u_low, x) for x in values]
+		high_values = [self.get_x_from_u_and_source(u_high, x) for x in values]
+    
+		fig, ax1 = plt.subplots()
+		color = "tab:blue"
+		if self.conditional_source == None:
+			ax1.set_xlabel("source [x]")
+		else:
+			ax1.set_xlabel(f"{self.conditional_source.name} [x]")
+		if self.name == '':
+			ax1.set_ylabel("value [x]")
+		else:
+			ax1.set_ylabel(f"{self.name} [x]")
+		ax1.plot(values, median_values, label="50 %")
+		ax1.plot(values, low_values, "b--", label="5 %")
+		ax1.plot(values, high_values, "b--", label="95 %")
+		ax1.tick_params(axis="y", labelcolor=color)
+
+		plt.grid()
+		plt.legend()
 
 class DiscreteValue(FrozenObject):
 

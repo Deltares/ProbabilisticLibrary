@@ -776,6 +776,10 @@ class DesignPoint(FrozenObject):
 
 	def plot_realizations(self):
 
+		if len(self.realizations) == 0:
+			print ("No realizations were saved, run again with settings.save_realizations = True")
+			return
+
 		import numpy as np
 		import matplotlib.pyplot as plt
 
@@ -801,7 +805,11 @@ class DesignPoint(FrozenObject):
 		plt.legend()
 		plt.title('Realizations: Red = Failure, Green = No Failure', fontsize=14, fontweight='bold')
 
-	def plot_convergence(self, xmin : float = None, xmax : float = None):
+	def plot_convergence(self):
+
+		if len(self.reliability_results) == 0:
+			print ("No convergence data were saved, run again with settings.save_convergence = True")
+			return
 
 		import numpy as np
 		import matplotlib.pyplot as plt
