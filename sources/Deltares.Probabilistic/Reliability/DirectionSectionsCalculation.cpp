@@ -116,8 +116,9 @@ namespace Deltares::Reliability
         auto directionCalculation = DirectionCalculation(model, *directionTask.UValues, dirCalcSettings);
         double prevzHigh = directionCalculation.GetZ(0, zValues);
 
-        for (int k = 0; k <= sectionsCount && !this->isStopped(); k++)
+        for (int k = 0; k <= sectionsCount; k++)
         {
+            bool found;
             double uLow = k * Settings.Dsdu;
             double uHigh = std::min((k + 1) * Settings.Dsdu, Settings.MaximumLengthU);
 
@@ -159,21 +160,16 @@ namespace Deltares::Reliability
                     sections.emplace_back(zHighType, uChange, uHigh, zHigh, zChange);
                 }
 
-                if (monotone)
-                {
-                    break;
-                }
+                found = monotone;
             }
             else
             {
                 sections.emplace_back(zHighType, uLow, uHigh, zLow, zHigh);
 
-                if (monotone && zLowType != DoubleType::NaN && zHighType != DoubleType::NaN &&
-                    NumericSupport::compareDouble(std::fabs(zHigh), std::fabs(zLow)) == CmpResult::Greater)
-                {
-                    break;
-                }
+                found = (monotone && zLowType != DoubleType::NaN && zHighType != DoubleType::NaN &&
+                    NumericSupport::compareDouble(std::fabs(zHigh), std::fabs(zLow)) == CmpResult::Greater);
             }
+            if (found) break;
         }
 
         addRemainderToTheLast(sections);

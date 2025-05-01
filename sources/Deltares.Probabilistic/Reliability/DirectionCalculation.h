@@ -45,7 +45,7 @@ namespace Deltares::Reliability
         const ZGetter& model;
         const DirectionCalculationSettings& settings;
 
-        DirectionCalculation(ZGetter& model, Sample& uDirection, const DirectionCalculationSettings& settings)
+        DirectionCalculation(const ZGetter& model, Sample& uDirection, const DirectionCalculationSettings& settings)
             : uDirection(uDirection), model(model), settings(settings)
         {
         }
