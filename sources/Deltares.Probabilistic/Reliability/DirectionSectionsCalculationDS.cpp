@@ -37,68 +37,72 @@ namespace Deltares::Reliability
         {
             return findBetaBetweenBoundariesAllowNaN(directionCalculation, uLow, uHigh, zLow, zHigh, z);
         }
-        else
+
+        const double zTolerance = GetZTolerance(Settings, uLow, uHigh, zLow, zHigh);
+
+        auto linearSearchCalculation = LinearRootFinder(zTolerance, Settings.MaximumIterations);
+
+        auto low = XValue(uLow, zLow);
+        auto high = XValue(uHigh, zHigh);
+        auto resultRootFinder = linearSearchCalculation.CalculateValue(low, high, 0.0,
+            [directionCalculation](double v) { return directionCalculation.GetZ(v); });
+
+        z = std::isnan(resultRootFinder.X) ? nan("") : resultRootFinder.Value;
+
+        if ( ! modelRunner.Settings->IsProxyModel())
         {
-            const double zTolerance = GetZTolerance(Settings, uLow, uHigh, zLow, zHigh);
+            // non-proxy models are ready now
+            return resultRootFinder.X;
+        }
 
-            auto linearSearchCalculation = LinearRootFinder(zTolerance, Settings.MaximumIterations);
+        if (std::isnan(resultRootFinder.X))
+        {
+            auto bisectionCalculation = BisectionRootFinder(zTolerance);
+            resultRootFinder.X = bisectionCalculation.CalculateValue(uLow, uHigh, 0.0,
+                [directionCalculation](double v) { return directionCalculation.GetZ(v); });
+        }
 
-            auto low = XValue(uLow, zLow);
-            auto high = XValue(uHigh, zHigh);
-            auto resultRootFinder = linearSearchCalculation.CalculateValue(low, high, 0.0, [directionCalculation](double v) { return directionCalculation.GetZ(v); });
+        const auto ThresholdOffset = modelRunner.Settings->proxySettings->ThresholdOffset;
+        if (modelRunner.Settings->proxySettings->ShouldUpdateFinalSteps && !isProxyAllowed(ThresholdOffset, resultRootFinder.X, this->Threshold))
+        {
+            directionCalculation.uDirection.AllowProxy = false;
 
-            z = std::isnan(resultRootFinder.X) ? nan("") : resultRootFinder.Value;
+            double z0 = directionCalculation.GetZProxy(0, false);
+            double zResult = directionCalculation.GetZProxy(resultRootFinder.X, false);
 
-            if (modelRunner.Settings->IsProxyModel())
+            if (std::isnan(zResult) ||
+                (NumericSupport::GetSign(z0) == NumericSupport::GetSign(zResult) && std::fabs(zResult) >= std::fabs(z0)))
             {
-                if (std::isnan(resultRootFinder.X))
+                z = zResult;
+                modelRunner.removeTask(directionCalculation.uDirection.IterationIndex);
+                return Settings.MaximumLengthU;
+            }
+            else
+            {
+                double uNew = NumericSupport::interpolate(0, z0, 0, zResult, resultRootFinder.X, true);
+                if (isProxyAllowed(ThresholdOffset, uNew, Threshold))
                 {
-                    auto bisectionCalculation = BisectionRootFinder(zTolerance);
-                    resultRootFinder.X = bisectionCalculation.CalculateValue(uLow, uHigh, 0.0, [directionCalculation](double v) { return directionCalculation.GetZ(v); });
-                }
-
-                const auto ThresholdOffset = modelRunner.Settings->proxySettings->ThresholdOffset;
-                if (modelRunner.Settings->proxySettings->ShouldUpdateFinalSteps && !isProxyAllowed(ThresholdOffset, resultRootFinder.X, this->Threshold))
-                {
-                    directionCalculation.uDirection.AllowProxy = false;
-
-                    double z0 = directionCalculation.GetZProxy(0, false);
-                    double zResult = directionCalculation.GetZProxy(resultRootFinder.X, false);
-
-                    if (std::isnan(zResult) ||
-                        (NumericSupport::GetSign(z0) == NumericSupport::GetSign(zResult) && std::fabs(zResult) >= std::fabs(z0)))
-                    {
-                        z = zResult;
-                        modelRunner.removeTask(directionCalculation.uDirection.IterationIndex);
-                        return Settings.MaximumLengthU;
-                    }
-                    else
-                    {
-                        double uNew = NumericSupport::interpolate(0, z0, 0, zResult, resultRootFinder.X, true);
-                        if (isProxyAllowed(ThresholdOffset, uNew, Threshold))
-                        {
-                            z = zResult;
-                            return std::min(uNew, Settings.MaximumLengthU);
-                        }
-                    }
-
-                    auto lowProxy = XValue(0.0, z0);
-                    auto highProxy = XValue(resultRootFinder.X, zResult);
-                    resultRootFinder = linearSearchCalculation.CalculateValue(lowProxy, highProxy, 0.0, [directionCalculation](double v) { return directionCalculation.GetZNoProxy(v); });
-                    if (std::isnan(resultRootFinder.X))
-                    {
-                        z = zResult;
-                        resultRootFinder.X = Settings.MaximumLengthU;
-                    }
-                    else
-                    {
-                        z = directionCalculation.GetZProxy(resultRootFinder.X, false);
-                    }
+                    z = zResult;
+                    return std::min(uNew, Settings.MaximumLengthU);
                 }
             }
 
-            return resultRootFinder.X;
+            auto lowProxy = XValue(0.0, z0);
+            auto highProxy = XValue(resultRootFinder.X, zResult);
+            resultRootFinder = linearSearchCalculation.CalculateValue(lowProxy, highProxy, 0.0,
+                [directionCalculation](double v) { return directionCalculation.GetZNoProxy(v); });
+            if (std::isnan(resultRootFinder.X))
+            {
+                z = zResult;
+                resultRootFinder.X = Settings.MaximumLengthU;
+            }
+            else
+            {
+                z = directionCalculation.GetZProxy(resultRootFinder.X, false);
+            }
         }
+
+        return resultRootFinder.X;
     }
 
     bool DirectionSectionsCalculationDS::isProxyAllowed(double ThresholdOffset, double u, double threshold)
