@@ -42,11 +42,11 @@ namespace Deltares
         {
 
         public:
-            virtual double CalculateValue(double xLow, double xHigh, double target, RootFinderMethod function)
+            virtual double CalculateValue(double xLow, double xHigh, double target, const RootFinderMethod& function)
             {
                 return nan("");
             }
-            virtual XValue CalculateValue(XValue low, XValue high, double target, RootFinderMethod function)
+            virtual XValue CalculateValue(XValue low, XValue high, double target, const RootFinderMethod& function)
             {
                 return { nan(""), nan("") };
             }

@@ -54,7 +54,7 @@ namespace Deltares::Numeric
         return std::fabs(maxValue - minValue) / std::max(std::fabs(maxValue), std::fabs(minValue));
     }
 
-    double BisectionRootFinder::CalculateValue(double minStart, double maxStart, double resultValue, RootFinderMethod function)
+    double BisectionRootFinder::CalculateValue(double minStart, double maxStart, double resultValue, const RootFinderMethod& function)
     {
         double lowValue = function(minStart);
         double highValue = function(maxStart);
@@ -66,7 +66,7 @@ namespace Deltares::Numeric
         return result.X;
     }
 
-    XValue BisectionRootFinder::CalculateValue(XValue minStart, XValue maxStart, double resultValue, RootFinderMethod function)
+    XValue BisectionRootFinder::CalculateValue(XValue minStart, XValue maxStart, double resultValue, const RootFinderMethod& function)
     {
         UpdateMinMax(minStart, maxStart, resultValue, function);
 

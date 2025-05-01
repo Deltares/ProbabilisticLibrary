@@ -27,7 +27,7 @@ namespace Deltares
 {
     namespace Numeric
     {
-        double LinearRootFinder::CalculateValue(double xLow, double xHigh, double target, RootFinderMethod function)
+        double LinearRootFinder::CalculateValue(double xLow, double xHigh, double target, const RootFinderMethod& function)
         {
             double lowValue = function(xLow);
             double highValue = function(xHigh);
@@ -39,7 +39,7 @@ namespace Deltares
             return result.X;
         }
 
-        XValue LinearRootFinder::CalculateValue(XValue low, XValue high, double target, RootFinderMethod function)
+        XValue LinearRootFinder::CalculateValue(XValue low, XValue high, double target, const RootFinderMethod& function)
         {
             constexpr double windowLimit = 0.05;
             constexpr double solutionLimit = 0.2;
