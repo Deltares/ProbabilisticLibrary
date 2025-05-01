@@ -377,6 +377,12 @@ namespace Deltares
             std::vector<double> getSpecialXValues() override;
 
             /**
+             * \brief Gets a list of x-values where the CDF-function is discontinuous
+             * \return List of x-values
+             */
+            std::vector<double> getDiscontinuityPoints() override;
+            
+            /**
              * \brief Indicates whether the stochastic parameter have valid values for the current distribution type
              * \return Indication
              */

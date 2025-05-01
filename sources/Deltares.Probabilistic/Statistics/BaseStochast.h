@@ -91,6 +91,8 @@ namespace Deltares
             virtual bool isVarying() { return false; }
 
             virtual bool isVariable() { return false; }
+
+            virtual std::vector<double> getDiscontinuityPoints() { return {}; }
         };
     }
 }

@@ -146,6 +146,24 @@ namespace Deltares
             return sum / sumWeights;
         }
 
+        std::vector<double> CompositeDistribution::getDiscontinuityPoints(std::shared_ptr<StochastProperties> stochast)
+        {
+            std::vector<double> discontinuityPoints;
+            for (const std::shared_ptr<ContributingStochast> contribution : stochast->ContributingStochasts)
+            {
+                if (contribution->Probability > 0)
+                {
+                    std::vector<double> contributions = contribution->Stochast->getDiscontinuityPoints();
+                    for (double x : contributions)
+                    {
+                        discontinuityPoints.push_back(x);
+                    }
+                }
+            }
+
+            return discontinuityPoints;
+        }
+
         std::vector<double> CompositeDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)
         {
             std::vector<double> specialPoints;

@@ -217,6 +217,13 @@ namespace Deltares
             virtual double getLogLikelihood(std::shared_ptr<StochastProperties> stochast, double x);
 
             /**
+             * \brief Gets a list of x values where the CDF-value is discontinuous
+             * \param stochast Stochast in use
+             * \return List of x-values
+             */
+            virtual std::vector<double> getDiscontinuityPoints(std::shared_ptr<StochastProperties> stochast);
+
+            /**
              * \brief Gets interesting x-values of a stochast
              * \remark Used when plotting PDF or CDF of the stochast
              * \param stochast Stochast in use

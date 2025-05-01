@@ -127,6 +127,28 @@ namespace Deltares
             stochast->Location = Numeric::NumericSupport::getMean(values);
         }
 
+        std::vector<double> PoissonDistribution::getDiscontinuityPoints(std::shared_ptr<StochastProperties> stochast)
+        {
+            std::vector<double> discontinuityPoints;
+
+            double maxP = StandardNormal::getPFromU(StandardNormal::UMax);
+
+            int k = 0;
+            double cdf = 0;
+
+            while (cdf < maxP && k < kMax)
+            {
+                discontinuityPoints.push_back(k);
+
+                double pdf = getPDF(stochast, k);
+                cdf += pdf;
+
+                k++;
+            }
+
+            return discontinuityPoints;
+        }
+
         std::vector<double> PoissonDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)
         {
             double offset = 10 * delta;

@@ -35,7 +35,9 @@ namespace Deltares::Probabilistic::Test
         testConditionalWeibullCdfPdf2();
         testConditionalStochast();
         testCompositeStochast();
+        testCompositeTruncatedStochast();
         testCompositeConditionalStochast();
+        testCompositeConditionalTruncatedStochast();
         testDesignValue();
         testVariationCoefficient();
         testPoisson();
@@ -51,7 +53,7 @@ namespace Deltares::Probabilistic::Test
         params->Shift = 1.0;
         auto distCondWeibull = Stochast(DistributionType::ConditionalWeibull, params);
 
-        std::vector<double> expectedValues = 
+        std::vector<double> expectedValues =
         {
             1.36651292058166,
             2.75588794089519,
@@ -69,7 +71,7 @@ namespace Deltares::Probabilistic::Test
             auto x = distCondWeibull.getXFromU(u);
             EXPECT_NEAR(x, expectedValues[i], margin);
             auto uCalculated = distCondWeibull.getUFromX(x);
-            EXPECT_NEAR(u, uCalculated, 5.0*margin);
+            EXPECT_NEAR(u, uCalculated, 5.0 * margin);
         }
 
     }
@@ -105,7 +107,7 @@ namespace Deltares::Probabilistic::Test
         EXPECT_NEAR(deviation, 1.2539175933, margin);
     }
 
-    double testDistributions::getPdfNumerical(Stochast & s, const double x)
+    double testDistributions::getPdfNumerical(Stochast& s, const double x)
     {
         const double dx = 1e-4;
         double p2 = s.getCDF(x + dx);
@@ -132,7 +134,7 @@ namespace Deltares::Probabilistic::Test
         {
             double x = (double)(i * 5);
             double cdf = distCondWeibull.getCDF(x);
-            EXPECT_NEAR(cdf, expectedValues[i-1], 1e-4);
+            EXPECT_NEAR(cdf, expectedValues[i - 1], 1e-4);
         }
 
         for (int i = 1; i < 10; i++)
@@ -171,14 +173,14 @@ namespace Deltares::Probabilistic::Test
 
         realizedStochast->IsVariableStochast = true;
 
-        std::shared_ptr<Stochast> variableDefinition1 = std::make_shared<Stochast> (DistributionType::Uniform, std::vector({0.0, 1.0 }));
-        realizedStochast->ValueSet->StochastValues.push_back(std::make_shared<VariableStochastValue> (0.0, variableDefinition1->getProperties()));
+        std::shared_ptr<Stochast> variableDefinition1 = std::make_shared<Stochast>(DistributionType::Uniform, std::vector({ 0.0, 1.0 }));
+        realizedStochast->ValueSet->StochastValues.push_back(std::make_shared<VariableStochastValue>(0.0, variableDefinition1->getProperties()));
 
         std::shared_ptr<Stochast> variableDefinition2 = std::make_shared<Stochast>(DistributionType::Uniform, std::vector({ 11.0, 12.0 }));
-        realizedStochast->ValueSet->StochastValues.push_back(std::make_shared<VariableStochastValue> (2.0, variableDefinition2->getProperties()));
+        realizedStochast->ValueSet->StochastValues.push_back(std::make_shared<VariableStochastValue>(2.0, variableDefinition2->getProperties()));
 
         std::shared_ptr<Stochast> variableDefinition3 = std::make_shared<Stochast>(DistributionType::Uniform, std::vector({ 1.0, 2.0 }));
-        realizedStochast->ValueSet->StochastValues.push_back(std::make_shared<VariableStochastValue> (1.0, variableDefinition3->getProperties()));
+        realizedStochast->ValueSet->StochastValues.push_back(std::make_shared<VariableStochastValue>(1.0, variableDefinition3->getProperties()));
 
         realizedStochast->initializeForRun();
 
@@ -216,6 +218,25 @@ namespace Deltares::Probabilistic::Test
 
         double u = StandardNormal::getUFromP(0.7);
         EXPECT_NEAR(stochast->getXFromU(u), 5.5, margin);
+    }
+
+    void testDistributions::testCompositeTruncatedStochast()
+    {
+        constexpr double margin = 1e-9;
+
+        std::shared_ptr<Stochast> stochast = std::make_shared<Stochast>();
+        stochast->setDistributionType(DistributionType::Composite);
+
+        std::shared_ptr<Stochast> subStochast1 = std::make_shared<Stochast>(DistributionType::Deterministic, std::vector<double>{0.0});
+        stochast->getProperties()->ContributingStochasts.push_back(std::make_shared<ContributingStochast>(0.4, subStochast1));
+
+        std::shared_ptr<Stochast> subStochast2 = std::make_shared<Stochast>(DistributionType::Normal, std::vector<double>{1.0, 0.2});
+        subStochast2->setTruncated(true);
+        subStochast2->getProperties()->Minimum = 0;
+        stochast->getProperties()->ContributingStochasts.push_back(std::make_shared<ContributingStochast>(0.6, subStochast2));
+
+        EXPECT_NEAR(stochast->getMean(), 0.6 * 1.0, 0.01);
+        EXPECT_NEAR(stochast->getXFromU(-1), 0.0, margin);
     }
 
     void testDistributions::testCompositeConditionalStochast()
@@ -257,10 +278,60 @@ namespace Deltares::Probabilistic::Test
         EXPECT_NEAR(stochast->getXFromUAndSource(1, u2), 1.5, margin);
     }
 
+    void testDistributions::testCompositeConditionalTruncatedStochast()
+    {
+        std::shared_ptr<Stochast> stochast1 = std::make_shared<Stochast>();
+        stochast1->setDistributionType(DistributionType::Deterministic);
+        stochast1->getProperties()->Location = 0;
+
+        std::shared_ptr<Stochast> stochast2 = std::make_shared<Stochast>();
+        stochast2->setDistributionType(DistributionType::Normal);
+        stochast2->getProperties()->Location = 0;
+        stochast2->setTruncated(true);
+
+        stochast2->IsVariableStochast = true;
+
+        std::shared_ptr<VariableStochastValue> conditional1 = std::make_shared<VariableStochastValue>();
+        conditional1->X = 0;
+        conditional1->Stochast->Location = 0;
+        conditional1->Stochast->Scale = 1;
+        conditional1->Stochast->Minimum = 0;
+        conditional1->Stochast->Maximum = std::numeric_limits<double>::infinity();
+        stochast2->ValueSet->StochastValues.push_back(conditional1);
+
+        std::shared_ptr<VariableStochastValue> conditional2 = std::make_shared<VariableStochastValue>();
+        conditional2->X = 10;
+        conditional2->Stochast->Location = 10;
+        conditional2->Stochast->Scale = 5;
+        conditional2->Stochast->Minimum = 0;
+        conditional2->Stochast->Maximum = std::numeric_limits<double>::infinity();
+        stochast2->ValueSet->StochastValues.push_back(conditional2);
+
+        std::shared_ptr<Stochast> stochast = std::make_shared<Stochast>();
+        stochast->setDistributionType(DistributionType::Composite);
+        std::shared_ptr<ContributingStochast> contributing1 = std::make_shared<ContributingStochast>();
+        contributing1->Probability = 0.4;
+        contributing1->Stochast = stochast1;
+        stochast->getProperties()->ContributingStochasts.push_back(contributing1);
+        std::shared_ptr<ContributingStochast> contributing2 = std::make_shared<ContributingStochast>();
+        contributing2->Probability = 0.6;
+        contributing2->Stochast = stochast2;
+        stochast->getProperties()->ContributingStochasts.push_back(contributing2);
+
+        for (int u = -5; u <= 5; u++)
+        {
+            for (int xSource = 0; xSource <= 10; xSource++)
+            {
+                double x = stochast->getXFromUAndSource(xSource, u);
+                EXPECT_TRUE(x >= 0);
+            }
+        }
+    }
+
     void testDistributions::testDesignValue()
     {
         constexpr double margin = 1e-9;
-        std::shared_ptr<Stochast> stochast = std::make_shared<Stochast>(DistributionType::Normal, std::vector({10.0, 2.0}));
+        std::shared_ptr<Stochast> stochast = std::make_shared<Stochast>(DistributionType::Normal, std::vector({ 10.0, 2.0 }));
 
         // not modified
         EXPECT_NEAR(10.0, stochast->getDesignValue(), margin);
@@ -277,15 +348,15 @@ namespace Deltares::Probabilistic::Test
         constexpr double mean2 = 5.2;
         constexpr double var = 2.4;
 
-        auto dist = Stochast(DistributionType::Normal, {mean, 1.0});
+        auto dist = Stochast(DistributionType::Normal, { mean, 1.0 });
         dist.constantParameterType = ConstantParameterType::VariationCoefficient;
         dist.setVariation(var);
         auto sd = dist.getDeviation();
-        EXPECT_NEAR(sd, mean*var, 1e-9);
+        EXPECT_NEAR(sd, mean * var, 1e-9);
 
         dist.setMean(mean2);
         auto sd2 = dist.getDeviation();
-        EXPECT_NEAR(sd2, mean2*var, 1e-9);
+        EXPECT_NEAR(sd2, mean2 * var, 1e-9);
     }
 
     void testDistributions::testPoisson()
@@ -310,7 +381,7 @@ namespace Deltares::Probabilistic::Test
     void testDistributions::testGamma()
     {
         constexpr double margin = 1e-12;
-        auto dist = Stochast(DistributionType::Gamma, {8.0, 4.0});
+        auto dist = Stochast(DistributionType::Gamma, { 8.0, 4.0 });
         EXPECT_NEAR(4.0, dist.getProperties()->Shape, margin); // if shape is integer, first term in pdf is < 0 for x < 0
         EXPECT_NEAR(0.0, dist.getPDF(-1.0), margin) << "x <= 0 should give 0";
         EXPECT_NEAR(0.0, dist.getPDF(0.0), margin) << "x <= 0 should give 0";

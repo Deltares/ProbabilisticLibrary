@@ -208,6 +208,133 @@ class Test_reliability(unittest.TestCase):
         self.assertAlmostEqual(-0.45, alphas[1].alpha, delta=margin)
         self.assertAlmostEqual(0.98, alphas[1].x, delta=margin)
 
+    def test_crude_monte_carlo_linear_composite_conditional_array(self):
+        project = project_builder.get_linear_array_project()
+        project.settings.save_realizations = True
+
+        project.variables['a'].is_array = True
+        project.variables['b'].is_array = True
+
+        project.variables['a'].array_size = 5
+        project.variables['b'].array_size = 5
+
+        project.variables['b'].distribution = DistributionType.composite
+
+        composite1 = Stochast()
+        composite1.distribution = DistributionType.uniform
+        composite1.minimum = -5
+        composite1.maximum = -4
+        project.variables['b'].contributing_stochasts.append(ContributingStochast.create(0.4, composite1))
+
+        composite2 = Stochast()
+        composite2.distribution = DistributionType.uniform
+        composite2.conditional = True
+
+        conditional1 = ConditionalValue()
+        conditional1.x = -1
+        conditional1.minimum = -1.2
+        conditional1.maximum = -0.8
+        composite2.conditional_values.append(conditional1)
+
+        conditional2 = ConditionalValue()
+        conditional2.x = 1
+        conditional2.minimum = 0.8
+        conditional2.maximum = 1.2
+        composite2.conditional_values.append(conditional2)
+
+        composite2.conditional_source = 'a'
+
+        project.variables['b'].contributing_stochasts.append(ContributingStochast.create(0.6, composite2))
+
+        project.settings.reliability_method = ReliabilityMethod.crude_monte_carlo
+
+        project.run();
+
+        dp = project.design_point;
+
+        for real in dp.realizations:
+            first = real.input_values[6] >= -5 and real.input_values[6] <= -4
+            second = abs(real.input_values[6] - real.input_values[1]) <= 0.2
+            real.print()
+            self.assertTrue(first or second)
+
+        beta = dp.reliability_index;
+        alphas = dp.alphas;
+
+        self.assertAlmostEqual(2.06, beta, delta=margin)
+        self.assertEqual(11, len(alphas))
+
+        self.assertAlmostEqual(-0.30, alphas[1].alpha, delta=margin)
+        self.assertAlmostEqual(0.47, alphas[1].x, delta=margin)
+
+        self.assertAlmostEqual(-0.32, alphas[6].alpha, delta=margin)
+        self.assertAlmostEqual(0.49, alphas[6].x, delta=margin)
+
+    def test_crude_monte_carlo_linear_composite_conditional_array_nonarray(self):
+
+        import numpy as np
+
+        project = project_builder.get_linear_array_project()
+        project.settings.save_realizations = True
+
+        project.variables['L'].distribution = DistributionType.normal
+        project.variables['L'].mean = 0.4
+        project.variables['L'].deviation = 0.05
+        project.variables['L'].truncated = True
+        project.variables['L'].minimum = 0
+        project.variables['L'].maximum = np.inf
+
+        project.variables['a'].is_array = True
+        project.variables['a'].array_size = 12
+
+        project.variables['b'].distribution = DistributionType.composite
+        project.variables['b'].is_array = True
+        project.variables['b'].array_size = 12
+
+        ba_top_zero = Stochast()
+        ba_top_zero.distribution = DistributionType.deterministic
+        ba_top_zero.mean = 0
+        project.variables['b'].contributing_stochasts.append(ContributingStochast.create(0.2, ba_top_zero)) 
+
+        ba_top = Stochast()
+        ba_top.distribution = DistributionType.normal
+        ba_top.mean = 0.2
+        ba_top.deviation = 0.03
+        ba_top.truncated = True
+        ba_top.conditional = True
+        ba_top.conditional_source = 'L'
+        ba_top.conditional_values.append(ConditionalValue())
+        ba_top.conditional_values.append(ConditionalValue())
+        ba_top.conditional_values[0].x = 0
+        ba_top.conditional_values[0].mean = 0
+        ba_top.conditional_values[0].deviation = 0.06
+        ba_top.conditional_values[0].minimum = 0
+        ba_top.conditional_values[0].maximum = np.inf
+        ba_top.conditional_values[1].x = 1
+        ba_top.conditional_values[1].mean = 1
+        ba_top.conditional_values[1].deviation = 0.06
+        ba_top.conditional_values[1].minimum = 0
+        ba_top.conditional_values[1].maximum = np.inf
+        project.variables['b'].contributing_stochasts.append(ContributingStochast.create(0.8, ba_top)) 
+
+        project.settings.reliability_method = ReliabilityMethod.crude_monte_carlo
+
+        project.run()
+
+        dp = project.design_point;
+
+        for real in dp.realizations:
+            first = real.input_values[0] >= 0
+            second = real.input_values[15] >= 0 and real.input_values[16] >= 0 and real.input_values[17] >= 0
+            self.assertTrue(first or second)
+
+        beta = dp.reliability_index;
+        alphas = dp.alphas;
+
+        self.assertAlmostEqual(-1.61, beta, delta=margin)
+        self.assertEqual(25, len(alphas))
+
+
     def test_form_linear_conditional(self):
         project = project_builder.get_linear_project()
 
@@ -379,6 +506,52 @@ class Test_reliability(unittest.TestCase):
         self.assertAlmostEqual(0, alphas[0].alpha, delta=margin)
         self.assertAlmostEqual(-0.44, alphas[1].alpha, delta=margin)
         self.assertAlmostEqual(-0.046, alphas[6].alpha, delta=margin)
+
+        self.assertEqual(0, alphas[0].index)
+        self.assertEqual(0, alphas[1].index)
+        self.assertEqual(4, alphas[5].index)
+        self.assertEqual(0, alphas[6].index)
+
+        self.assertEqual(project.variables['L'], alphas[0].variable)
+        self.assertEqual(project.variables['a'], alphas[1].variable)
+        self.assertEqual(project.variables['a'], alphas[5].variable)
+        self.assertEqual(project.variables['b'], alphas[6].variable)
+
+        self.assertAlmostEqual(1.8, alphas[0].x, delta=margin)
+        self.assertAlmostEqual(0.18, alphas[1].x, delta=margin)
+        self.assertAlmostEqual(0.18, alphas[6].x, delta=margin)
+
+    def test_form_linear_conditional_array_nonarray(self):
+        project = project_builder.get_linear_array_project()
+
+        project.variables['a'].array_size = 5
+        project.variables['b'].array_size = 5
+
+        project.variables['b'].conditional = True
+
+        conditional1 = ConditionalValue()
+        conditional1.x = -1.8
+        conditional1.minimum = -1
+        conditional1.maximum = 1
+        project.variables['b'].conditional_values.append(conditional1)
+
+        project.variables['b'].conditional_source = 'L'
+
+        project.settings.reliability_method = ReliabilityMethod.form
+
+        project.run();
+
+        dp = project.design_point;
+
+        beta = dp.reliability_index;
+        alphas = dp.alphas;
+
+        self.assertAlmostEqual(0.72, beta, delta=margin)
+        self.assertEqual(11, len(alphas))
+
+        self.assertAlmostEqual(0, alphas[0].alpha, delta=margin)
+        self.assertAlmostEqual(-0.32, alphas[1].alpha, delta=margin)
+        self.assertAlmostEqual(-0.31, alphas[6].alpha, delta=margin)
 
         self.assertEqual(0, alphas[0].index)
         self.assertEqual(0, alphas[1].index)
