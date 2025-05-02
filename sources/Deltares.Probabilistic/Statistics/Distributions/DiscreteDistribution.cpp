@@ -140,7 +140,7 @@ namespace Deltares
         std::vector<double> DiscreteDistribution::getDiscontinuityPoints(std::shared_ptr<StochastProperties> stochast)
         {
             std::vector<double> discontinuityPoints;
-            for (const std::shared_ptr<DiscreteValue> discreteValue : stochast->DiscreteValues)
+            for (const std::shared_ptr<DiscreteValue> & discreteValue : stochast->DiscreteValues)
             {
                 if (discreteValue->Amount > 0)
                 {
