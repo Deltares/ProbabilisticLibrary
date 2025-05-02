@@ -32,9 +32,10 @@ namespace Deltares::Reliability
     public:
         std::shared_ptr<DirectionReliabilitySettings> Settings = std::make_shared<DirectionReliabilitySettings>();
         std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
-        double getBeta(Models::ModelRunner& modelRunner, Sample& directionSample, double z0) const;
-    private:
-        double getDirectionBeta(Models::ModelRunner& modelRunner, const BetaValueTask& directionTask) const;
+        virtual double getBeta(Models::ModelRunner& modelRunner, Sample& directionSample, double z0) const;
+        virtual double getBeta(Models::ModelRunner& modelRunner, double z0) const { return 0.0; }
+    protected:
+        virtual double getDirectionBeta(Models::ModelRunner& modelRunner, const BetaValueTask& directionTask) const;
     };
 
 }

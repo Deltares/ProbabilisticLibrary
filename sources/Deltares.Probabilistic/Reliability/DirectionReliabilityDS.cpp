@@ -26,16 +26,7 @@ namespace Deltares::Reliability
 {
     double DirectionReliabilityDS::getBeta(Models::ModelRunner& modelRunner, double z0) const
     {
-        auto normalizedSample = directionSample.getNormalizedSample();
-
-        auto task = BetaValueTask(normalizedSample, z0);
-
-        double beta = getDirectionBeta(modelRunner, task);
-        beta *= z0;
-
-        directionSample.AllowProxy = task.UValues->AllowProxy;
-
-        return beta;
+        return getBeta(modelRunner, directionSample, z0);
     }
 
     double DirectionReliabilityDS::getDirectionBeta(Models::ModelRunner& modelRunner, const BetaValueTask& directionTask) const
