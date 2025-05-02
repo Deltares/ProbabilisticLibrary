@@ -47,11 +47,16 @@ namespace Deltares::Reliability
         return designPoint;
     }
 
-    double DirectionReliability::getBeta(Models::ModelRunner& modelRunner, Sample& directionSample, double z0) const
+    double DirectionReliability::getBeta(Models::ModelRunner& modelRunner, Sample& directionSample, double z0)
     {
         auto normalizedSample = directionSample.getNormalizedSample();
 
         auto task = BetaValueTask(normalizedSample, z0);
+
+        if (sectionsCalc == nullptr)
+        {
+            sectionsCalc = std::make_shared<DirectionSectionsCalculation>(*Settings, z0);
+        }
 
         double beta = getDirectionBeta(modelRunner, task);
         beta *= z0;
@@ -69,8 +74,7 @@ namespace Deltares::Reliability
         }
         else
         {
-            auto sectionsCalc = DirectionSectionsCalculation(*Settings, directionTask.z0);
-            auto sections = sectionsCalc.getDirectionSections(modelRunner, directionTask);
+            auto sections = sectionsCalc->getDirectionSections(modelRunner, directionTask);
 
             double beta = DirectionSectionsCalculation::getBetaFromSections(sections, Settings->FindMinimalValue);
 

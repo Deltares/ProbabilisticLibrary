@@ -24,42 +24,24 @@
 
 namespace Deltares::Reliability
 {
-    double DirectionReliabilityDS::getBeta(Models::ModelRunner& modelRunner, double z0) const
+    double DirectionReliabilityDS::getBeta(Models::ModelRunner& modelRunner, double z0)
     {
         return getBeta(modelRunner, directionSample, z0);
     }
 
-    double DirectionReliabilityDS::getDirectionBeta(Models::ModelRunner& modelRunner, const BetaValueTask& directionTask) const
-    {
-        if (modelRunner.canCalculateBeta())
-        {
-            return modelRunner.getBeta(directionTask.UValues);
-        }
-        else
-        {
-            auto sections = sectionsCalc.getDirectionSections(modelRunner, directionTask);
-
-            double beta = DirectionSectionsCalculation::getBetaFromSections(sections, Settings.FindMinimalValue);
-
-            directionTask.UValues->AllowProxy = directionTask.UValues->AllowProxy;
-
-            return beta;
-        }
-    }
-
     bool DirectionReliabilityDS::CanPrecomputeSample() const
     {
-        return sectionsCalc.CanPrecomputeSample();
+        return sectionsCalc->CanPrecomputeSample();
     }
 
     double DirectionReliabilityDS::GetPrecomputeUvalue() const
     {
-        return sectionsCalc.GetPrecomputeUvalue();
+        return sectionsCalc->GetPrecomputeUvalue();
     }
 
     void DirectionReliabilityDS::ProvidePrecomputeValue(const PrecomputedDirectionValue& zValue)
     {
-        sectionsCalc.ProvidePrecomputeValue(zValue);
+        sectionsCalc->ProvidePrecomputeValue(zValue);
     }
 
 }
