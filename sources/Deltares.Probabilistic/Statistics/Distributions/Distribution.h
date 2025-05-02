@@ -221,7 +221,7 @@ namespace Deltares
              * \param stochast Stochast in use
              * \return List of x-values
              */
-            virtual std::vector<double> getDiscontinuityPoints(std::shared_ptr<StochastProperties> stochast);
+            virtual std::vector<double> getDiscontinuityPoints(const StochastProperties& stochast);
 
             /**
              * \brief Gets interesting x-values of a stochast
