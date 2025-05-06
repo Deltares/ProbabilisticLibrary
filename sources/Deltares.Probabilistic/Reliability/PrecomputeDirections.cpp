@@ -32,14 +32,14 @@ namespace Deltares::Reliability
 
     // precompute Z-values
     void PrecomputeDirections::precompute(Models::ModelRunner& modelRunner,
-        std::vector<DirectionReliabilityDS>& directions, std::vector<bool>& shouldCompute)
+        const std::vector<DirectionReliabilityDS>& directions, std::vector<bool>& shouldCompute)
     {
         const size_t nSamples = directions.size();
 
         // copy z-value zero sample
         const auto z0pv = PrecomputedDirectionValue(0.0, std::abs(z0), false, true);
         const double z0Fac = ReliabilityMethod::getZFactor(z0);
-        for (auto& direction : directions)
+        for (const auto& direction : directions)
         {
             direction.ProvidePrecomputeValue(z0pv);
         }
