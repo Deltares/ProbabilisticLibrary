@@ -1210,6 +1210,7 @@ class Evaluation(FrozenObject):
 
 	def __dir__(self):
 		return ['iteration',
+				'quantile',
 				'z',
 				'beta',
 				'weight',
@@ -1220,6 +1221,10 @@ class Evaluation(FrozenObject):
 	@property   
 	def iteration(self) -> int:
 		return interface.GetIntValue(self._id, 'iteration')
+		
+	@property   
+	def quantile(self) -> float:
+		return interface.GetValue(self._id, 'quantile')
 		
 	@property   
 	def z(self) -> float:
@@ -1233,6 +1238,14 @@ class Evaluation(FrozenObject):
 	def weight(self) -> float:
 		return interface.GetValue(self._id, 'weight')
 
+	@property   
+	def _rounded_quantile(self) -> float:
+		quant = self.quantile
+		if round(self.quantile, 2) == round(self.quantile, 3):
+			return round(self.quantile, 2)
+		else:
+			return round(self.quantile, 3)
+		
 	@property   
 	def input_values(self) -> list[float]:
 		if self._input_values is None:
@@ -1252,6 +1265,8 @@ class Evaluation(FrozenObject):
 
 	def _print(self, indent):
 		pre = PrintUtils.get_space_from_indent(indent)
+		if not isnan(self.quantile):
+			pre = pre + f'quantile {self._rounded_quantile}: '
 		if isnan(self.z) and len(self.output_values) == 0:
 			print(pre + self.input_values)
 		elif isnan(self.z) and len(self.output_values) > 0:

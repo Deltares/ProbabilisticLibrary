@@ -31,7 +31,18 @@ namespace Deltares
         class Evaluation
         {
         public:
+            /**
+             * \brief Only for reliability calculations: The limit state value which corresponds with this evaluation
+             * \remarks Only for reliability calculation
+             */
             double Z = std::nan("");
+
+            /**
+             * \brief The quantile which corresponds with this evaluation
+             * \remarks Only for sensitivity calculations
+             */
+            double Quantile = std::nan("");
+
             double Beta = 1;
             double Weight = 1;
             int Iteration = -1;

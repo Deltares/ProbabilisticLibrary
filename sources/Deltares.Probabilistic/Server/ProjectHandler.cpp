@@ -444,6 +444,7 @@ namespace Deltares
                 std::shared_ptr<Reliability::Evaluation> evaluation = evaluations[id];
 
                 if (property_ == "z") return evaluation->Z;
+                else if (property_ == "quantile") return evaluation->Quantile;
                 else if (property_ == "beta") return evaluation->Beta;
                 else if (property_ == "weight") return evaluation->Weight;
             }
@@ -1072,6 +1073,8 @@ namespace Deltares
                 else if (property_ == "conditional") return stochast->IsVariableStochast;
                 else if (property_ == "is_array") return stochast->modelParameter->isArray;
                 else if (property_ == "is_valid") return stochast->isValid();
+                else if (property_ == "is_used_mean") return true;
+                else if (property_ == "is_used_deviation") return stochast->getDistributionType() != DistributionType::Deterministic;
                 else if (property_ == "is_used_location") return stochast->hasParameter(DistributionPropertyType::Location);
                 else if (property_ == "is_used_scale") return stochast->hasParameter(DistributionPropertyType::Scale);
                 else if (property_ == "is_used_minimum") return stochast->hasParameter(DistributionPropertyType::Minimum);

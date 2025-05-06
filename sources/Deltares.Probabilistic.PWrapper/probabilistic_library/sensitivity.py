@@ -404,5 +404,13 @@ class SensitivityResult(FrozenObject):
 			for quantile in self.quantile_realizations:
 				quantile._print(1)
 
-	def plot(self):
-		self.variable.plot()
+	def plot(self, xmin : float = None, xmax : float = None):
+
+		import matplotlib.pyplot as plt
+
+		self.variable._plot(xmin, xmax)
+
+		for ii in range(len(self.quantile_realizations)):
+			plt.axvline(x=self.quantile_realizations[ii].output_values[0], color="green", linestyle="--", label=f"{self.quantile_realizations[ii]._rounded_quantile}-quantile")
+
+		plt.legend()

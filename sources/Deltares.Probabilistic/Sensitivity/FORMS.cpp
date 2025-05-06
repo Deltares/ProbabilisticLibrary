@@ -237,6 +237,7 @@ namespace Deltares
                 Sensitivity::SensitivityResult result = modelRunner->getSensitivityResult(stochast);
                 std::shared_ptr<Sample> zeroSample = std::make_shared<Sample>(nStochasts);
                 std::shared_ptr<Models::Evaluation> evaluation = std::make_shared<Models::Evaluation>(modelRunner->getEvaluation(zeroSample));
+                evaluation->Quantile = 0.5;
 
                 for (std::shared_ptr<Statistics::ProbabilityValue> quantile : this->Settings->RequestedQuantiles)
                 {
@@ -256,6 +257,7 @@ namespace Deltares
                 {
                     if (this->evaluations.contains(quantile))
                     {
+                        evaluations[quantile]->Quantile = quantile->getProbabilityOfNonFailure();
                         result.quantileEvaluations.push_back(evaluations[quantile]);
                     }
                     else
