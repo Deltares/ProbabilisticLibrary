@@ -1210,6 +1210,7 @@ namespace Deltares
                 else if (property_ == "save_realizations") settings->RunSettings->SaveEvaluations = value;
                 else if (property_ == "save_convergence") settings->RunSettings->SaveConvergence = value;
                 else if (property_ == "save_messages") settings->RunSettings->SaveMessages = value;
+                else if (property_ == "use_openmp_in_reliability") settings->RunSettings->UseOpenMPinReliability = value;
             }
             else if (objectType == ObjectType::Settings)
             {
@@ -1220,6 +1221,7 @@ namespace Deltares
                 else if (property_ == "save_realizations") setting->RunSettings->SaveEvaluations = value;
                 else if (property_ == "save_convergence") setting->RunSettings->SaveConvergence = value;
                 else if (property_ == "save_messages") setting->RunSettings->SaveMessages = value;
+                else if (property_ == "use_openmp_in_reliability") setting->RunSettings->UseOpenMPinReliability = value;
             }
 
         }

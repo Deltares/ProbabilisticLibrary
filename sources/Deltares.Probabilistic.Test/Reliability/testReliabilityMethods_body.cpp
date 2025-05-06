@@ -19,7 +19,7 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include <iostream>
+
 #include <gtest/gtest.h>
 #include "testReliabilityMethods.h"
 #include "../../Deltares.Probabilistic/Reliability/LatinHyperCube.h"
@@ -30,6 +30,7 @@
 #include "../../Deltares.Probabilistic/Reliability/DirectionalSamplingThenFORM.h"
 #include "../../Deltares.Probabilistic/Reliability/FragilityCurveIntegration.h"
 #include "../../Deltares.Probabilistic/Reliability/NumericalIntegration.h"
+#include "../../Deltares.Probabilistic/Math/NumericSupport.h"
 #include "../projectBuilder.h"
 
 using namespace Deltares::Reliability;
@@ -46,7 +47,7 @@ namespace Deltares
             {
                 auto calculator = FORM();
 
-                auto modelRunner = projectBuilder().BuildLinearProject();
+                auto modelRunner = projectBuilder::BuildLinearProject();
 
                 auto designPoint = calculator.getDesignPoint(modelRunner);
 
@@ -64,7 +65,7 @@ namespace Deltares
             {
                 auto calculator = FORM();
 
-                auto modelRunner = projectBuilder().BuildLinearArrayProject();
+                auto modelRunner = projectBuilder::BuildLinearArrayProject();
 
                 auto designPoint = calculator.getDesignPoint(modelRunner);
 
@@ -80,7 +81,7 @@ namespace Deltares
             {
                 auto calculator = FORM();
 
-                auto modelRunner = projectBuilder().BuildLinearVaryingArrayProject();
+                auto modelRunner = projectBuilder::BuildLinearVaryingArrayProject();
 
                 auto designPoint = calculator.getDesignPoint(modelRunner);
 
@@ -232,7 +233,7 @@ namespace Deltares
             {
                 auto calculator = FragilityCurveIntegration();
 
-                auto fragilityCurve = projectBuilder().BuildFragilityCurve();
+                auto fragilityCurve = projectBuilder::BuildFragilityCurve();
 
                 std::shared_ptr<Stochast> h = std::make_shared<Stochast>(DistributionType::Normal, std::vector{ 5.0, 1.0 });
 
@@ -292,7 +293,7 @@ namespace Deltares
                 for (int seed = 0; seed < 5; seed++)
                 {
                     auto calculator = AdaptiveImportanceSampling();
-                    auto modelRunner = projectBuilder().BuildQuadraticProject();
+                    auto modelRunner = projectBuilder::BuildQuadraticProject();
                     calculator.Settings->importanceSamplingSettings->MinimumSamples = 5000;
                     calculator.Settings->importanceSamplingSettings->MaximumSamples = 10000;
                     calculator.Settings->MinVarianceLoops = 2;
@@ -323,6 +324,74 @@ namespace Deltares
                     EXPECT_NEAR(designPoint->Beta, expectedBetas[seed], 1e-4);
                 }
             }
+
+            void testReliabilityMethods::testDirSamplingProxyModels(const bool useProxy, const ModelVaryingType varyingType,
+                const double dsdu)
+            {
+                auto calculator = DirectionalSampling();
+                auto modelRunner = projectBuilder().BuildProjectTwoBranches(useProxy);
+                calculator.Settings->MinimumDirections = 10;
+                calculator.Settings->MaximumDirections = 500;
+                calculator.Settings->VariationCoefficient = 0.1;
+                calculator.Settings->randomSettings->Seed = 0;
+                calculator.Settings->runSettings->MaxParallelProcesses = 1;
+                calculator.Settings->DirectionSettings->modelVaryingType = varyingType;
+                calculator.Settings->DirectionSettings->Dsdu = dsdu;
+                modelRunner->Settings->proxySettings = std::make_shared<ProxySettings>();
+                modelRunner->Settings->proxySettings->IsProxyModel = useProxy;
+
+                auto designPoint = calculator.getDesignPoint(modelRunner);
+
+                int refTotalModelRuns; double refBeta; std::vector<double> refAlpha; size_t refPreComputeCounter;
+                if (useProxy)
+                {
+                    if (varyingType == ModelVaryingType::Monotone)
+                    {
+                        refBeta = 2.600438;
+                        refAlpha = { 0.09106 , -0.98686 , -0.13345 };
+                        refTotalModelRuns = 1143; // was 1222;
+                        refPreComputeCounter = 500;
+                    }
+                    else
+                    {
+                        refBeta = 2.60029;
+                        refAlpha = { 0.09114 , -0.98683 , -0.13365 };
+                        refTotalModelRuns = 10812; // was 10985;
+                        refPreComputeCounter = 500;
+                    }
+                }
+                else
+                {
+                    refBeta = 4.98355;
+                    refAlpha = { 0.35676 , -0.92328 , -0.14240 };
+                    if (Numeric::NumericSupport::areEqual( dsdu , 3.0, 1e-12))
+                    {
+                        refBeta = 5.08261;
+                        refAlpha = { 0.39910 , -0.910716 , -0.106376 };
+                        refTotalModelRuns = 1150; // was 1227;
+                        refPreComputeCounter = 970;
+                    }
+                    else if (varyingType == ModelVaryingType::Monotone)
+                    {
+                        refTotalModelRuns = 2189; // was 2261;
+                        refPreComputeCounter = 1935;
+                    }
+                    else
+                    {
+                        refTotalModelRuns = 10640; // was 10723;
+                        refPreComputeCounter = 10000;
+                    }
+                }
+                EXPECT_EQ(calculator.preComputedCounter, refPreComputeCounter);
+                constexpr double margin = 1e-5;
+                EXPECT_NEAR(designPoint->Beta, refBeta, margin);
+                for (size_t i = 0; i < refAlpha.size(); i++)
+                {
+                    EXPECT_NEAR(designPoint->Alphas[i]->Alpha, refAlpha[i], margin);
+                }
+                EXPECT_EQ(designPoint->convergenceReport->TotalModelRuns, refTotalModelRuns);
+            }
+
         }
     }
 }

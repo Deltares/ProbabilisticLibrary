@@ -20,29 +20,22 @@
 // All rights reserved.
 //
 #pragma once
-#include "BetaValueTask.h"
-#include "DirectionReliabilitySettings.h"
-#include "DirectionSection.h"
 #include "DirectionSectionsCalculation.h"
-#include "ReliabilityMethod.h"
-#include <memory>
 
 namespace Deltares::Reliability
 {
-    class DirectionReliability : public ReliabilityMethod
+    class DirectionSectionsCalculationDS : public DirectionSectionsCalculation
     {
     public:
-        DirectionReliability() = default;
-        explicit DirectionReliability(std::shared_ptr<DirectionSectionsCalculation> sectionsCalc) : sectionsCalc(std::move(sectionsCalc)) {}
-        std::shared_ptr<DirectionReliabilitySettings> Settings = std::make_shared<DirectionReliabilitySettings>();
-        std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
-        virtual double getBeta(Models::ModelRunner& modelRunner, Sample& directionSample, double z0);
-        virtual double getBeta(Models::ModelRunner& modelRunner, double z0) { return 0.0; }
-    protected:
-        double getDirectionBeta(Models::ModelRunner& modelRunner, const BetaValueTask& directionTask) const;
-        std::shared_ptr<DirectionSectionsCalculation> sectionsCalc;
+        DirectionSectionsCalculationDS(const double Threshold, const double z0, const DirectionReliabilitySettings& settings) :
+            DirectionSectionsCalculation(settings, z0) , Threshold(Threshold) {}
+        protected:
+            double findBetaBetweenBoundaries(Models::ModelRunner & modelRunner,
+                const DirectionCalculation & directionCalculation,
+                double uLow, double uHigh, double zLow, double zHigh, double& z) const override;
+        private:
+            double Threshold = 0.0;
+            static bool isProxyAllowed(double ThresholdOffset, double u, double threshold);
     };
-
 }
-
 

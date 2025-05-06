@@ -329,6 +329,23 @@ class Test_sensitivity(unittest.TestCase):
         self.assertAlmostEqual(2.89, sens.fragility_values[0].x, delta=margin)
         self.assertAlmostEqual(0.9, sens.fragility_values[0].probability_of_non_failure, delta=margin)
 
+    def test_directional_sampling_linear_parallel(self):
+        project = project_builder.get_sensitivity_linear_project()
+
+        project.settings.sensitivity_method = SensitivityMethod.directional_sampling
+        project.settings.quantiles.append(0.9)
+        project.settings.max_parallel_processes = 4
+
+        project.run();
+
+        sens = project.stochast;
+
+        self.assertEqual('L - (a+b)' , sens.name)
+        self.assertEqual(DistributionType.cdf_curve, sens.distribution)
+        self.assertEqual(1, len(sens.fragility_values))
+        self.assertAlmostEqual(2.89, sens.fragility_values[0].x, delta=margin)
+        self.assertAlmostEqual(0.9, sens.fragility_values[0].probability_of_non_failure, delta=margin)
+
     def test_mc_pile(self):
         project = project_builder.get_sensitivity_pile_project()
 

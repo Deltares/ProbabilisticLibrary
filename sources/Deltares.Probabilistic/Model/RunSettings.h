@@ -48,6 +48,7 @@ namespace Deltares
             bool ExtendedLoggingAtDesignPoint = false;
             int MaxMessages = 1000;
             MessageType LowestMessageType = MessageType::Warning;
+            bool UseOpenMPinReliability = true; // false: parallelization only using getZValues; needed for Python
 
             std::shared_ptr<ProxySettings> proxySettings = nullptr;
 
