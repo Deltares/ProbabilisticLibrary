@@ -35,20 +35,19 @@ namespace Deltares::Reliability
         DirectionReliabilityDS(const double Threshold, const double z0,
             const DirectionReliabilitySettings& settings, Sample& directionSample) :
             DirectionReliability(std::make_shared<DirectionSectionsCalculationDS>(Threshold, z0, settings)),
-            directionSample(directionSample), Threshold(Threshold), Settings(settings) {}
-        double getBeta(Models::ModelRunner& modelRunner, Sample& directionSample, double z0) override
+            directionSample(directionSample), Threshold(Threshold) {}
+        double getBeta(Models::ModelRunner& modelRunner, Sample& direction, double z0) override
         {
-            return DirectionReliability::getBeta(modelRunner, directionSample, z0);
+            return DirectionReliability::getBeta(modelRunner, direction, z0);
         }
         double getBeta(Models::ModelRunner& modelRunner, double z0) override;
         Sample& getDirection() const { return directionSample; }
         bool CanPrecomputeSample() const;
         double GetPrecomputeUvalue() const;
-        void ProvidePrecomputeValue(const PrecomputedDirectionValue& zValue);
+        void ProvidePrecomputeValue(const PrecomputedDirectionValue& zValue) const;
     private:
         Sample& directionSample;
         const double Threshold;
-        const DirectionReliabilitySettings& Settings;
     };
 
 }

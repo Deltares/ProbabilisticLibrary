@@ -275,7 +275,6 @@ namespace Deltares::Reliability
             auto high = XValue(uHigh, zHigh);
             auto resultRootFinder = linearSearchCalculation.CalculateValue(low, high, 0.0, [directionCalculation](double v) { return directionCalculation.GetZ(v); });
 
-            // TODO: PROBL-42 remove linear search , because bisection is more robust
             if (std::isnan(resultRootFinder.X))
             {
                 constexpr double xTolerance = 0.01;

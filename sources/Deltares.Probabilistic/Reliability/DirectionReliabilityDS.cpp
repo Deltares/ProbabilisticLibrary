@@ -39,7 +39,7 @@ namespace Deltares::Reliability
         return sectionsCalc->GetPrecomputeUvalue();
     }
 
-    void DirectionReliabilityDS::ProvidePrecomputeValue(const PrecomputedDirectionValue& zValue)
+    void DirectionReliabilityDS::ProvidePrecomputeValue(const PrecomputedDirectionValue& zValue) const
     {
         sectionsCalc->ProvidePrecomputeValue(zValue);
     }
