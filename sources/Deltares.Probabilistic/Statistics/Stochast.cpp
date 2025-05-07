@@ -607,7 +607,7 @@ namespace Deltares
 
         std::vector<double> Stochast::getDiscontinuityPoints()
         {
-            return distribution->getDiscontinuityPoints(properties);
+            return distribution->getDiscontinuityPoints(*properties);
         }
 
         void Stochast::copyFrom(std::shared_ptr<Stochast> source)

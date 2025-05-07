@@ -80,7 +80,7 @@ namespace Deltares
         {
             // check whether the cdf value is at a discontinuity
 
-            for (double x : getDiscontinuityPoints(stochast))
+            for (double x : getDiscontinuityPoints(*stochast))
             {
                 const double minDiff = 1E-6;
                 const double fractionDiff = 1E-10;
@@ -110,15 +110,17 @@ namespace Deltares
             return x;
         }
 
-        std::vector<double> Distribution::getDiscontinuityPoints(std::shared_ptr<StochastProperties> stochast)
+        std::vector<double> Distribution::getDiscontinuityPoints(const StochastProperties& stochast)
         {
-            if (isVarying(stochast))
+            std::shared_ptr<StochastProperties> stochastPtr = std::make_shared<StochastProperties>(stochast);
+
+            if (isVarying(stochastPtr))
             {
                 return {};
             }
             else
             {
-                return {getMean(stochast)};
+                return {getMean(stochastPtr)};
             }
         }
 

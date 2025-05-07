@@ -84,9 +84,9 @@ namespace Deltares
             stochast->Location = x;
         }
 
-        std::vector<double> DeterministicDistribution::getDiscontinuityPoints(std::shared_ptr<StochastProperties> stochast)
+        std::vector<double> DeterministicDistribution::getDiscontinuityPoints(const StochastProperties& stochast)
         {
-            return { stochast->Location };
+            return { stochast.Location };
         }
 
         std::vector<double> DeterministicDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)
