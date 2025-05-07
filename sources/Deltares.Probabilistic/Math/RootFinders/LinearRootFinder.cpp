@@ -27,7 +27,7 @@ namespace Deltares
 {
     namespace Numeric
     {
-        double LinearRootFinder::CalculateValue(double xLow, double xHigh, double target, RootFinderMethod function)
+        double LinearRootFinder::CalculateValue(double xLow, double xHigh, double target, const RootFinderMethod& function)
         {
             double lowValue = function(xLow);
             double highValue = function(xHigh);
@@ -35,10 +35,11 @@ namespace Deltares
             // Initialize linear search method
             auto low = XValue(xLow, lowValue);
             auto high = XValue(xHigh, highValue);
-            return CalculateValue(low, high, target, function);
+            auto result = CalculateValue(low, high, target, function);
+            return result.X;
         }
 
-        double LinearRootFinder::CalculateValue(XValue low, XValue high, double target, RootFinderMethod function)
+        XValue LinearRootFinder::CalculateValue(XValue low, XValue high, double target, const RootFinderMethod& function)
         {
             constexpr double windowLimit = 0.05;
             constexpr double solutionLimit = 0.2;
@@ -93,7 +94,7 @@ namespace Deltares
 
                 if (ascending && descending)
                 {
-                    return nan("");
+                    return { nan(""), nan("") };
                 }
 
                 // if both the solution window end and the solution do not become significantly smaller, switch over to bisection
@@ -124,10 +125,10 @@ namespace Deltares
 
             if (std::abs(solution.Value - target) > tolerance)
             {
-                return nan("");
+                return { nan(""), nan("") };
             }
 
-            return solution.X;
+            return solution;
         }
 
         XValue LinearRootFinder::interpolate(const XValue& low, const XValue& high, double target, const RootFinderMethod& function)

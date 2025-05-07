@@ -49,6 +49,7 @@ class SensitivitySettings(FrozenObject):
 		self._quantiles = None
 		self._synchronizing = False
 		super()._freeze()
+		interface.SetBoolValue(self._id, 'use_openmp_in_reliability', False)
 
 	def __del__(self):
 		try:

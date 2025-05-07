@@ -127,10 +127,10 @@ namespace Deltares
             directionReliability->Settings->StochastSet = this->Settings->StochastSet;
             directionReliability->Settings->FindMinimalValue = true;
             directionReliability->Settings->UseInitialValues = true;
-            directionReliability->Settings->modelVaryingType = Varying;
+            directionReliability->Settings->modelVaryingType = ModelVaryingType::Varying;
             directionReliability->Settings->Dsdu = this->Settings->dsdu;
 
-            double beta = directionReliability->getBeta(modelRunner, startPoint, 1);
+            double beta = directionReliability->getBeta(*modelRunner, *startPoint, 1);
 
             std::shared_ptr<Sample> directionPoint = std::make_shared<Sample>(startPoint->Values);
 

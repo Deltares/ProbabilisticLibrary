@@ -6,7 +6,9 @@ The library provides a set of routines that enable reliability analysis of a com
 
 ## Scientific background
 
-Contact Deltares to obtain the scientific background document.
+The scientific background document is part of the release,
+and can be found here:
+[scientific_background.pdf](https://github.com/Deltares/ProbabilisticLibrary/releases/download/25.1.1/scientific_background.pdf)
 
 ## Python wrapper
 
@@ -56,19 +58,21 @@ Several Jupyter notebooks are available to demonstrate how to use the Probabilis
 
     * [Integration of a fragility curve](sources/Deltares.Probabilistic.PWrapper.Notebooks/failure_probability_fragility_curve.ipynb)
 
-7. Sensitivity analysis:
+7. [Composite distributions](sources/Deltares.Probabilistic.PWrapper.Notebooks/composite_distribution.ipynb)
+
+8. Sensitivity analysis:
 
     * [Simple example](sources/Deltares.Probabilistic.PWrapper.Notebooks/sensitivity_analysis.ipynb)
 
     * [Safety levels](sources/Deltares.Probabilistic.PWrapper.Notebooks/safety_levels.ipynb)
 
-8. [Including spatial correlations (length-effect)](sources/Deltares.Probabilistic.PWrapper.Notebooks/length_effect.ipynb)
+9. [Including spatial correlations (length-effect)](sources/Deltares.Probabilistic.PWrapper.Notebooks/length_effect.ipynb)
 
-9. [Including statistical uncertainty](sources/Deltares.Probabilistic.PWrapper.Notebooks/statistical_uncertainty.ipynb)
+10. [Including statistical uncertainty](sources/Deltares.Probabilistic.PWrapper.Notebooks/statistical_uncertainty.ipynb)
 
-10. [Single model run](sources/Deltares.Probabilistic.PWrapper.Notebooks/run_model.ipynb)
+11. [Single model run](sources/Deltares.Probabilistic.PWrapper.Notebooks/run_model.ipynb)
 
-11. [Parallel computing and reusing realizations](sources/Deltares.Probabilistic.PWrapper.Notebooks/parallel_overtopping.ipynb)
+12. [Parallel computing and reusing realizations](sources/Deltares.Probabilistic.PWrapper.Notebooks/parallel_overtopping.ipynb)
 
 ## License
 

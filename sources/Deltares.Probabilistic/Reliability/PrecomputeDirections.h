@@ -19,30 +19,23 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
+
 #pragma once
-#include "BetaValueTask.h"
-#include "DirectionReliabilitySettings.h"
-#include "DirectionSection.h"
-#include "DirectionSectionsCalculation.h"
-#include "ReliabilityMethod.h"
-#include <memory>
+#include <vector>
+#include "DirectionReliabilityDS.h"
 
 namespace Deltares::Reliability
 {
-    class DirectionReliability : public ReliabilityMethod
+    class PrecomputeDirections
     {
     public:
-        DirectionReliability() = default;
-        explicit DirectionReliability(std::shared_ptr<DirectionSectionsCalculation> sectionsCalc) : sectionsCalc(std::move(sectionsCalc)) {}
-        std::shared_ptr<DirectionReliabilitySettings> Settings = std::make_shared<DirectionReliabilitySettings>();
-        std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
-        virtual double getBeta(Models::ModelRunner& modelRunner, Sample& directionSample, double z0);
-        virtual double getBeta(Models::ModelRunner& modelRunner, double z0) { return 0.0; }
-    protected:
-        double getDirectionBeta(Models::ModelRunner& modelRunner, const BetaValueTask& directionTask) const;
-        std::shared_ptr<DirectionSectionsCalculation> sectionsCalc;
+        PrecomputeDirections(const DirectionReliabilitySettings& settings, const double z0);
+        void precompute(Models::ModelRunner& modelRunner,
+            const std::vector<DirectionReliabilityDS>& directions, std::vector<bool>& shouldCompute);
+        size_t GetCounter() const {return Counter;}
+    private:
+        size_t Counter = 0;
+        const DirectionReliabilitySettings& settings;
+        const double z0;
     };
-
 }
-
-
