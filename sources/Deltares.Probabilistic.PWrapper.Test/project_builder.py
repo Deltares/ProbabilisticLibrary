@@ -158,20 +158,6 @@ def get_linear_initialized_project():
 
     return project
 
-def get_generated_model_project():
-
-    project = ReliabilityProject()
-
-    func_code = """
-def f(a,b):
-    z = 1.8 - (a+b)
-    return z
-"""
-    project.model = func_code
-    assign_distributions(project, DistributionType.uniform)
-
-    return project
-
 def get_linear_array_result_project():
 
     project = ReliabilityProject()

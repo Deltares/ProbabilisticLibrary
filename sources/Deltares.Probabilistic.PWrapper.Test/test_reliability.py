@@ -91,7 +91,15 @@ class Test_reliability(unittest.TestCase):
 
     def test_form_generated_model(self):
 
-        project = project_builder.get_generated_model_project()
+        project = ReliabilityProject()
+
+        func_code = """
+def f(a,b):
+    z = 1.8 - (a+b)
+    return z
+"""
+        project.model = func_code
+        project_builder.assign_distributions(project, DistributionType.uniform)
 
         self.assertEqual('a', project.model.input_parameters[0].name)
         self.assertEqual('z', project.model.output_parameters[0].name)
@@ -151,7 +159,6 @@ def h(a,b,c):
         self.assertEqual('z', project.model.output_parameters[0].name)
         self.assertEqual('a', project.variables[0].name)
         self.assertEqual('h', project.model.name)
-
 
     def test_form_initialized_linear_parallel(self):
         project = project_builder.get_linear_initialized_project()
