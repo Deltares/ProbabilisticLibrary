@@ -22,6 +22,7 @@
 import unittest
 import sys
 import numpy as np
+from io import StringIO
 
 from probabilistic_library import *
 
@@ -393,6 +394,31 @@ class Test_statistics(unittest.TestCase):
 
         self.assertAlmostEqual(0.4, stochast.variation, delta=margin)
         self.assertAlmostEqual(4.0, stochast.deviation, delta=margin)
+
+    def test_stochast_print(self):
+
+        stochast = Stochast()
+        stochast.distribution = DistributionType.normal
+        stochast.mean = 10
+        stochast.deviation = 1
+
+        # Replace default stdout (terminal) temporary with with our stream
+        sys.stdout = StringIO()
+        stochast.print()
+        printed = sys.stdout.getvalue()
+        sys.stdout = sys.__stdout__
+
+        expected = """Variable:
+  distribution = normal
+Definition:
+  location = 10.0
+  scale = 1.0
+Derived values:
+  mean = 10.0
+  deviation = 1.0
+  variation = 0.1
+"""
+        self.assertEqual(expected, printed)
 
     def test_return_time(self):
         for i in range(6):

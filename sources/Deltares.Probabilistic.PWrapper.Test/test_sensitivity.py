@@ -21,6 +21,7 @@
 #
 import unittest
 import sys
+from io import StringIO
 
 from probabilistic_library import *
 
@@ -420,6 +421,124 @@ class Test_sensitivity(unittest.TestCase):
         self.assertAlmostEqual(1.08, sens2.fragility_values[1].x, delta=margin)
         self.assertAlmostEqual(1.19, sens2.fragility_values[2].x, delta=margin)
         self.assertAlmostEqual(0.96, sens2.fragility_values[3].x, delta=margin)
+
+    def test_sensitivity_print(self):
+
+        project = project_builder.get_sensitivity_linear_project()
+
+        project.settings.sensitivity_method = SensitivityMethod.crude_monte_carlo
+        project.settings.quantiles.append(0.5)
+        project.settings.quantiles.append(0.95)
+
+        project.run();
+
+        sens = project.result;
+
+        sens.print()
+
+        # Replace default stdout (terminal) temporary with with our stream
+        sys.stdout = StringIO()
+        sens.print()
+        printed = sys.stdout.getvalue()
+        sys.stdout = sys.__stdout__
+
+        expected = """Variable L - (a+b):
+  distribution = histogram
+Definition:
+  amount[-0.1971, -0.1496] = 1.0
+  amount[-0.1496, -0.102] = 8.0
+  amount[-0.102, -0.0545] = 12.0
+  amount[-0.0545, -0.0069] = 12.0
+  amount[-0.0069, 0.0406] = 11.0
+  amount[0.0406, 0.0882] = 27.0
+  amount[0.0882, 0.1358] = 33.0
+  amount[0.1358, 0.1833] = 33.0
+  amount[0.1833, 0.2309] = 35.0
+  amount[0.2309, 0.2784] = 33.0
+  amount[0.2784, 0.326] = 52.0
+  amount[0.326, 0.3735] = 66.0
+  amount[0.3735, 0.4211] = 61.0
+  amount[0.4211, 0.4686] = 54.0
+  amount[0.4686, 0.5162] = 66.0
+  amount[0.5162, 0.5637] = 65.0
+  amount[0.5637, 0.6113] = 77.0
+  amount[0.6113, 0.6588] = 76.0
+  amount[0.6588, 0.7064] = 84.0
+  amount[0.7064, 0.754] = 104.0
+  amount[0.754, 0.8015] = 84.0
+  amount[0.8015, 0.8491] = 85.0
+  amount[0.8491, 0.8966] = 95.0
+  amount[0.8966, 0.9442] = 118.0
+  amount[0.9442, 0.9917] = 124.0
+  amount[0.9917, 1.0393] = 105.0
+  amount[1.0393, 1.0868] = 104.0
+  amount[1.0868, 1.1344] = 128.0
+  amount[1.1344, 1.1819] = 129.0
+  amount[1.1819, 1.2295] = 127.0
+  amount[1.2295, 1.277] = 138.0
+  amount[1.277, 1.3246] = 136.0
+  amount[1.3246, 1.3721] = 143.0
+  amount[1.3721, 1.4197] = 146.0
+  amount[1.4197, 1.4673] = 153.0
+  amount[1.4673, 1.5148] = 146.0
+  amount[1.5148, 1.5624] = 143.0
+  amount[1.5624, 1.6099] = 171.0
+  amount[1.6099, 1.6575] = 139.0
+  amount[1.6575, 1.705] = 172.0
+  amount[1.705, 1.7526] = 185.0
+  amount[1.7526, 1.8001] = 163.0
+  amount[1.8001, 1.8477] = 178.0
+  amount[1.8477, 1.8952] = 161.0
+  amount[1.8952, 1.9428] = 167.0
+  amount[1.9428, 1.9903] = 169.0
+  amount[1.9903, 2.0379] = 150.0
+  amount[2.0379, 2.0855] = 153.0
+  amount[2.0855, 2.133] = 159.0
+  amount[2.133, 2.1806] = 137.0
+  amount[2.1806, 2.2281] = 138.0
+  amount[2.2281, 2.2757] = 140.0
+  amount[2.2757, 2.3232] = 138.0
+  amount[2.3232, 2.3708] = 127.0
+  amount[2.3708, 2.4183] = 130.0
+  amount[2.4183, 2.4659] = 99.0
+  amount[2.4659, 2.5134] = 117.0
+  amount[2.5134, 2.561] = 119.0
+  amount[2.561, 2.6085] = 105.0
+  amount[2.6085, 2.6561] = 89.0
+  amount[2.6561, 2.7037] = 102.0
+  amount[2.7037, 2.7512] = 90.0
+  amount[2.7512, 2.7988] = 105.0
+  amount[2.7988, 2.8463] = 100.0
+  amount[2.8463, 2.8939] = 82.0
+  amount[2.8939, 2.9414] = 79.0
+  amount[2.9414, 2.989] = 88.0
+  amount[2.989, 3.0365] = 68.0
+  amount[3.0365, 3.0841] = 52.0
+  amount[3.0841, 3.1316] = 66.0
+  amount[3.1316, 3.1792] = 63.0
+  amount[3.1792, 3.2267] = 68.0
+  amount[3.2267, 3.2743] = 53.0
+  amount[3.2743, 3.3218] = 54.0
+  amount[3.3218, 3.3694] = 39.0
+  amount[3.3694, 3.417] = 32.0
+  amount[3.417, 3.4645] = 29.0
+  amount[3.4645, 3.5121] = 23.0
+  amount[3.5121, 3.5596] = 25.0
+  amount[3.5596, 3.6072] = 21.0
+  amount[3.6072, 3.6547] = 15.0
+  amount[3.6547, 3.7023] = 15.0
+  amount[3.7023, 3.7498] = 9.0
+  amount[3.7498, 3.7974] = 2.0
+Derived values:
+  mean = 1.792
+  deviation = 0.8254
+  variation = 0.4606
+Quantiles:
+  quantile 0.5: [-0.2641, 0.2754] -> [1.7887] -> 1.7887
+  quantile 0.95: [-0.4336, -0.9487] -> [3.1823] -> 3.1823
+"""
+        self.assertEqual(expected, printed)
+
 
 
 if __name__ == '__main__':

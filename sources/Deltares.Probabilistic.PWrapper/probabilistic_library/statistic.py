@@ -610,7 +610,7 @@ class Stochast(FrozenObject):
 	def is_valid(self) -> bool:
 		return interface.GetBoolValue(self._id, 'is_valid')
 
-	def print(self):
+	def print(self, decimals = 4):
 		pre = '  '
 		if self.name == '':
 			print(f'Variable:')
@@ -630,40 +630,40 @@ class Stochast(FrozenObject):
 				print(pre + f'conditional x values = {[value.x for value in self.conditional_values]}')
 			else:
 				print(pre + f'conditional source = {self.conditional_source}')
-				print(pre + f'{self.conditional_source} = {[value.x for value in self.conditional_values]}')
+				print(pre + f'{self.conditional_source} = {[round(value.x, decimals) for value in self.conditional_values]}')
 			for prop in ['mean', 'deviation', 'location', 'scale', 'minimum', 'shift', 'shift_b', 'maximum', 'shape', 'shape_b', 'observations']:
 				if interface.GetBoolValue(self._id, 'is_used_' + prop):
 					if prop == 'observations':
 						values = [interface.GetIntValue(value._id, prop) for value in self.conditional_values]
 					else:
-						values = [interface.GetValue(value._id, prop) for value in self.conditional_values]
+						values = [round(interface.GetValue(value._id, prop), decimals) for value in self.conditional_values]
 					if len(values) > 0 and not isnan(values[0]):
-						print(pre + f'{prop} = {[interface.GetValue(value._id, prop) for value in self.conditional_values]}')
+						print(pre + f'{prop} = {values}')
 		else:
 			for prop in ['location', 'scale', 'minimum', 'shift', 'shift_b', 'maximum', 'shape', 'shape_b', 'observations']:
 				if interface.GetBoolValue(self._id, 'is_used_' + prop):
 					if prop == 'observations':
 						print(pre + f'{prop} = {interface.GetIntValue(self._id, prop)}')
 					else:
-						print(pre + f'{prop} = {interface.GetValue(self._id, prop)}')
+						print(pre + f'{prop} = {round(interface.GetValue(self._id, prop), decimals)}')
 			if self.distribution == DistributionType.histogram:
 				for value in self.histogram_values:
-					print(pre + f'amount[{value.lower_bound}, {value.upper_bound}] = {value.amount}')
+					print(pre + f'amount[{round(value.lower_bound, decimals)}, {round(value.upper_bound, decimals)}] = {round(value.amount, decimals)}')
 			elif self.distribution == DistributionType.cdf_curve:
 				for value in self.fragility_values:
-					print(pre + f'beta[{value.x}] = {value.reliability_index}')
+					print(pre + f'beta[{round(value.x, decimals)}] = {round(value.reliability_index, decimals)}')
 			elif self.distribution == DistributionType.discrete or self.distribution == DistributionType.qualitative:
 				for value in self.discrete_values:
-					print(pre + f'amount[{value.x}] = {value.amount}')
+					print(pre + f'amount[{round(value.x, decimals)}] = {round(value.amount, decimals)}')
 			if self.design_quantile != 0.5 or self.design_factor != 1.0:
-				print(pre + f'design_quantile = {self.design_quantile}')
-				print(pre + f'design_factor = {self.design_factor}')
+				print(pre + f'design_quantile = {round(self.design_quantile, decimals)}')
+				print(pre + f'design_factor = {round(self.design_factor, decimals)}')
 			print('Derived values:')
-			print(pre + f'mean = {self.mean}')
-			print(pre + f'deviation = {self.deviation}')
-			print(pre + f'variation = {self.variation}')
+			print(pre + f'mean = {round(self.mean, decimals)}')
+			print(pre + f'deviation = {round(self.deviation, decimals)}')
+			print(pre + f'variation = {round(self.variation, decimals)}')
 			if self.design_quantile != 0.5 or self.design_factor != 1.0:
-				print(pre + f'design_value = {self.design_value}')
+				print(pre + f'design_value = {round(self.design_value, decimals)}')
 
 	def plot(self, xmin : float = None, xmax : float = None):
 		if not self.is_valid():
@@ -688,17 +688,8 @@ class Stochast(FrozenObject):
 			xmax = self.get_x_from_u(0) + 4 * (self.get_x_from_u(1) - self.get_x_from_u(0))
 			limit_special_values = False
 
-		if xmin > xmax:
-			temp = xmin
-			xmin = xmax
-			xmax = temp
-
-		if xmin == xmax:
-			diff = abs(xmin) / 10
-			if diff == 0:
-				diff = 1
-			xmin = xmin - diff
-			xmax = xmin + diff
+		xmin, xmax = NumericUtils.order(xmin, xmax)
+		xmin, xmax = NumericUtils.make_different(xmin, xmax)
 
 		values = np.arange(xmin, xmax, (xmax - xmin) / 1000).tolist()
 		add_values = interface.GetArrayValue(self._id, 'special_values')
@@ -740,17 +731,8 @@ class Stochast(FrozenObject):
 		if xmax is None:
 			xmax = max([value.x for value in self.conditional_values])
 
-		if xmin > xmax:
-			temp = xmin
-			xmin = xmax
-			xmax = temp
-
-		if xmin == xmax:
-			diff = abs(xmin) / 10
-			if diff == 0:
-				diff = 1
-			xmin = xmin - diff
-			xmax = xmin + diff
+		xmin, xmax = NumericUtils.order(xmin, xmax)
+		xmin, xmax = NumericUtils.make_different(xmin, xmax)
 
 		values = np.arange(xmin, xmax, (xmax - xmin) / 100).tolist()
 		for value in self.conditional_values:

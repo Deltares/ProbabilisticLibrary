@@ -398,12 +398,12 @@ class SensitivityResult(FrozenObject):
 				
 		return self._messages
 
-	def print(self):
-		self.variable.print()
+	def print(self, decimals=4):
+		self.variable.print(decimals)
 		if len(self.quantile_realizations) > 0:
 			print('Quantiles:')
 			for quantile in self.quantile_realizations:
-				quantile._print(1)
+				quantile._print(1, decimals)
 
 	def plot(self, xmin : float = None, xmax : float = None):
 

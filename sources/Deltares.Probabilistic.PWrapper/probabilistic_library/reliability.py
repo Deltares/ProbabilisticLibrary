@@ -736,32 +736,32 @@ class DesignPoint(FrozenObject):
 			variables.extend(contributing_design_point.get_variables())
 		return frozenset(variables)
 
-	def print(self):
-		self._print(0)
+	def print(self, decimals = 4):
+		self._print(0, decimals)
 
-	def _print(self, indent : int):
+	def _print(self, indent : int, decimals = 4):
 		pre = PrintUtils.get_space_from_indent(indent)
 		pre_indexed = pre + ' '
 		if self.identifier == '':
 			print(pre + 'Reliability:')
 		else:
 			print(pre + f'Reliability ({self.identifier})')
-		print(pre_indexed + f'Reliability index = {self.reliability_index}')
-		print(pre_indexed + f'Probability of failure = {self.probability_failure}')
+		print(pre_indexed + f'Reliability index = {round(self.reliability_index, decimals)}')
+		print(pre_indexed + f'Probability of failure = {round(self.probability_failure, decimals)}')
 		if not isnan(self.convergence):
 			if self.is_converged:
-				print(pre_indexed + f'Convergence = {self.convergence} (converged)')
+				print(pre_indexed + f'Convergence = {round(self.convergence, decimals)} (converged)')
 			else:
-				print(pre_indexed + f'Convergence = {self.convergence} (not converged)')
+				print(pre_indexed + f'Convergence = {round(self.convergence, decimals)} (not converged)')
 		print(pre_indexed + f'Model runs = {self.total_model_runs}')
 		print(pre + 'Alpha values:')
 		for alpha in self.alphas:
-			print(pre_indexed + f'{alpha.variable.name}: alpha = {alpha.alpha}, x = {alpha.x}')
+			print(pre_indexed + f'{alpha.variable.name}: alpha = {round(alpha.alpha, decimals)}, x = {round(alpha.x, decimals)}')
 		print('')
 		if len(self.contributing_design_points) > 0:
 			print(pre + 'Contributing design points:')
 			for design_point in self.contributing_design_points:
-				design_point._print(indent + 1)
+				design_point._print(indent + 1, decimals)
 
 	def plot_alphas(self):
 
@@ -1240,14 +1240,6 @@ class Evaluation(FrozenObject):
 		return interface.GetValue(self._id, 'weight')
 
 	@property   
-	def _rounded_quantile(self) -> float:
-		quant = self.quantile
-		if round(self.quantile, 2) == round(self.quantile, 3):
-			return round(self.quantile, 2)
-		else:
-			return round(self.quantile, 3)
-		
-	@property   
 	def input_values(self) -> list[float]:
 		if self._input_values is None:
 			input_values = interface.GetArrayValue(self._id, 'input_values')
@@ -1261,21 +1253,23 @@ class Evaluation(FrozenObject):
 			self._output_values = FrozenList(output_values)
 		return self._output_values
 
-	def print(self):
-		self._print(0)
+	def print(self, decimals = 4):
+		self._print(0, decimals)
 
-	def _print(self, indent):
+	def _print(self, indent, decimals = 4):
 		pre = PrintUtils.get_space_from_indent(indent)
+		input_values = [round(v, decimals) for v in self.input_values]
+		output_values = [round(v, decimals) for v in self.output_values]
 		if not isnan(self.quantile):
-			pre = pre + f'quantile {self._rounded_quantile}: '
+			pre = pre + f'quantile {round(self.quantile, decimals)}: '
 		if isnan(self.z) and len(self.output_values) == 0:
-			print(pre + self.input_values)
+			print(pre + input_values)
 		elif isnan(self.z) and len(self.output_values) > 0:
-			print(pre + f'{self.input_values} -> {self.output_values}')
+			print(pre + f'{input_values} -> {output_values}')
 		elif not isnan(self.z) and len(self.output_values) == 0:
-			print(pre + f'{self.input_values} -> {self.z}')
+			print(pre + f'{input_values} -> {round(self.z, decimals)}')
 		elif not isnan(self.z) and len(self.output_values) > 0:
-			print(pre + f'{self.input_values} -> {self.output_values} -> {self.z}')
+			print(pre + f'{input_values} -> {output_values} -> {round(self.z, decimals)}')
 		
 class ReliabilityResult(FrozenObject):
 		
