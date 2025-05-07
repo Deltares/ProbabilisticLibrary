@@ -21,31 +21,29 @@
 //
 #pragma once
 
-namespace Deltares
+#include "../../Deltares.Probabilistic/Reliability/DirectionReliabilitySettings.h"
+
+namespace Deltares::Probabilistic::Test
 {
-    namespace Probabilistic
+    class testReliabilityMethods
     {
-        namespace Test
-        {
-            class testReliabilityMethods
-            {
-            public:
-                static void testFORM();
-                static void testFORMArray();
-                static void testFORMVaryingArray();
-                static void testLatinHyperCube();
-                static void testNumericalBisection();
-                static void testNumericalBisectionLinear();
-                static void testCobylaReliability();
-                static void testSubSetSimulationReliabilityNearestToMean();
-                static void testSubSetSimulationReliabilityCenterOfGravity();
-                static void testFDIRReliability();
-                static void testDSFIReliability();
-                static void testFragilityCurveIntegration();
-                static void testNumericalIntegrationReliability();
-                static void testCrudeMonteCarloReliability();
-                static void testClustersAdpImpSampling();
-            };
-        }
-    }
+    public:
+        static void testFORM();
+        static void testFORMArray();
+        static void testFORMVaryingArray();
+        static void testLatinHyperCube();
+        static void testNumericalBisection();
+        static void testNumericalBisectionLinear();
+        static void testCobylaReliability();
+        static void testSubSetSimulationReliabilityNearestToMean();
+        static void testSubSetSimulationReliabilityCenterOfGravity();
+        static void testFDIRReliability();
+        static void testDSFIReliability();
+        static void testFragilityCurveIntegration();
+        static void testNumericalIntegrationReliability();
+        static void testCrudeMonteCarloReliability();
+        static void testClustersAdpImpSampling();
+        static void testDirSamplingProxyModels(const bool useProxy,
+            const Reliability::ModelVaryingType varyingType, const double dsdu);
+    };
 }

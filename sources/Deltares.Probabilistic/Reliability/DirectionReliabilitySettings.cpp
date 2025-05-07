@@ -21,14 +21,21 @@
 //
 #include "DirectionReliabilitySettings.h"
 
-namespace Deltares
+namespace Deltares::Reliability
 {
-    namespace Reliability
+    bool DirectionReliabilitySettings::IsValid() const
     {
-        bool DirectionReliabilitySettings::IsValid()
-        {
-            return this->Dsdu >= 0.01 && EpsilonUStepSize >= 0.00001 && EpsilonZStepSize >= 0.00001 && this->MaximumIterations >= 1 && this->MaximumLengthU >= 1;
-        }
+        return Dsdu >= 0.01 && EpsilonUStepSize >= 0.00001 && EpsilonZStepSize >= 0.00001
+                            && MaximumIterations >= 1 && MaximumLengthU >= 1;
     }
+
+    int DirectionReliabilitySettings::SectionCount() const
+    {
+        int sectionsCount = static_cast<int>(MaximumLengthU / Dsdu);
+        if (sectionsCount * Dsdu < MaximumLengthU) { sectionsCount++; }
+        return sectionsCount;
+    }
+
 }
+
 

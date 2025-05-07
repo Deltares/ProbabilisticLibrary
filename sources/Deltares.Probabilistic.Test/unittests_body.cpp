@@ -203,6 +203,30 @@ TEST(reliability_method_test, testClustersAdpImpSampling)
     testReliabilityMethods::testClustersAdpImpSampling();
 }
 
+TEST(reliability_method_test, testDirSamplingTwoBranches)
+{
+    testReliabilityMethods::testDirSamplingProxyModels(false, ModelVaryingType::Monotone, 1.0);
+}
+
+TEST(reliability_method_test, testDirSamplingProxyModels)
+{
+    testReliabilityMethods::testDirSamplingProxyModels(true, ModelVaryingType::Monotone, 1.0);
+}
+
+TEST(reliability_method_test, testDirSamplingTwoBranchesNotMonotone)
+{
+    testReliabilityMethods::testDirSamplingProxyModels(false, ModelVaryingType::Varying, 1.0);
+}
+
+TEST(reliability_method_test, testDirSamplingProxyModelsNotMonotone)
+{
+    testReliabilityMethods::testDirSamplingProxyModels(true, ModelVaryingType::Varying, 1.0);
+}
+
+TEST(reliability_method_test, testDirSamplingTwoBranchesLargerStepsize)
+{
+    testReliabilityMethods::testDirSamplingProxyModels(false, ModelVaryingType::Monotone, 3.0);
+}
 TEST(unittst, testDistributions)
 {
     testDistributions::allDistributionsTests();

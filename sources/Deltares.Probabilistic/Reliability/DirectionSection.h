@@ -19,30 +19,34 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
+
 #pragma once
-#include "BetaValueTask.h"
-#include "DirectionReliabilitySettings.h"
-#include "DirectionSection.h"
-#include "DirectionSectionsCalculation.h"
-#include "ReliabilityMethod.h"
-#include <memory>
+#include "../Math/NumericSupport.h"
+#include "../Statistics/StandardNormal.h"
 
 namespace Deltares::Reliability
 {
-    class DirectionReliability : public ReliabilityMethod
+    class DirectionSection
     {
     public:
-        DirectionReliability() = default;
-        explicit DirectionReliability(std::shared_ptr<DirectionSectionsCalculation> sectionsCalc) : sectionsCalc(std::move(sectionsCalc)) {}
-        std::shared_ptr<DirectionReliabilitySettings> Settings = std::make_shared<DirectionReliabilitySettings>();
-        std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) override;
-        virtual double getBeta(Models::ModelRunner& modelRunner, Sample& directionSample, double z0);
-        virtual double getBeta(Models::ModelRunner& modelRunner, double z0) { return 0.0; }
-    protected:
-        double getDirectionBeta(Models::ModelRunner& modelRunner, const BetaValueTask& directionTask) const;
-        std::shared_ptr<DirectionSectionsCalculation> sectionsCalc;
+        DirectionSection(Numeric::DoubleType type, double uLow, double uHigh) :
+            Type(type), ULow(uLow), UHigh(uHigh) {}
+
+        DirectionSection(Numeric::DoubleType type, double uLow, double uHigh, double zLow, double zHigh) :
+            Type(type), ULow(uLow), UHigh(uHigh), ZLow(zLow), ZHigh(zHigh) {}
+
+        const Numeric::DoubleType Type;
+        const double ULow;
+        const double UHigh;
+        const double ZLow = 0.0;
+        const double ZHigh = 0.0;
+
+        double getProbability() const
+        {
+            const double pHigh = Statistics::StandardNormal::getQFromU(UHigh);
+            const double pLow = Statistics::StandardNormal::getQFromU(ULow);
+            return pLow - pHigh;
+        }
     };
-
 }
-
 
