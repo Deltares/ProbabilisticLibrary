@@ -822,6 +822,25 @@ def h(a,b,c):
         self.assertAlmostEqual(1.88, beta, delta=margin)
         self.assertEqual(5, len(alphas))
 
+    def test_directional_sampling_hunt_parallel(self):
+        project = project_builder.get_hunt_project()
+
+        project.settings.reliability_method = ReliabilityMethod.directional_sampling
+
+        project.settings.minimum_directions = 1000
+        project.settings.maximum_directions = 2000
+        project.settings.variation_coefficient = 0.02
+        project.settings.max_parallel_processes = 4
+
+        project.run()
+
+        dp = project.design_point;
+        beta = dp.reliability_index;
+        alphas = dp.alphas;
+
+        self.assertAlmostEqual(1.88, beta, delta=margin)
+        self.assertEqual(5, len(alphas))
+
     def test_form_start_methods(self):
         project = project_builder.get_linear_project()
 

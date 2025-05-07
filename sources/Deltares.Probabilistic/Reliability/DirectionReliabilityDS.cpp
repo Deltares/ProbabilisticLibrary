@@ -19,31 +19,30 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#pragma once
-#include "DesignPoint.h"
-#include "../Model/ModelRunner.h"
+#include "DirectionReliabilityDS.h"
+#include "DirectionSectionsCalculationDS.h"
 
-namespace Deltares
+namespace Deltares::Reliability
 {
-    namespace Reliability
+    double DirectionReliabilityDS::getBeta(Models::ModelRunner& modelRunner, double z0)
     {
-        class ReliabilityMethod
-        {
-        private:
-            bool stopped = false;
-
-        protected:
-
-            virtual void setStopped();
-
-        public:
-            static int getZFactor(double z);
-            virtual std::shared_ptr<DesignPoint> getDesignPoint(std::shared_ptr<Models::ModelRunner> modelRunner) { return nullptr; }
-            virtual ~ReliabilityMethod() = default;
-
-            bool isStopped();
-            void Stop();
-        };
+        return getBeta(modelRunner, directionSample, z0);
     }
+
+    bool DirectionReliabilityDS::CanPrecomputeSample() const
+    {
+        return sectionsCalc->CanPrecomputeSample();
+    }
+
+    double DirectionReliabilityDS::GetPrecomputeUvalue() const
+    {
+        return sectionsCalc->GetPrecomputeUvalue();
+    }
+
+    void DirectionReliabilityDS::ProvidePrecomputeValue(const PrecomputedDirectionValue& zValue) const
+    {
+        sectionsCalc->ProvidePrecomputeValue(zValue);
+    }
+
 }
 
