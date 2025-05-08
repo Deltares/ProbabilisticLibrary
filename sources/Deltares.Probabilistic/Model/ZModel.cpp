@@ -151,7 +151,9 @@ namespace Deltares
 
         void ZModel::invoke(std::shared_ptr<ModelSample> sample)
         {
-            std::shared_ptr<ModelSample> alreadyExecutedSample = repository.retrieveSample(sample);
+            bool usingProxy = this->isProxyModel && sample->AllowProxy;
+
+            std::shared_ptr<ModelSample> alreadyExecutedSample = !usingProxy ? repository.retrieveSample(sample) : nullptr;
 
             if (alreadyExecutedSample == nullptr)
             {
@@ -226,7 +228,9 @@ namespace Deltares
             std::vector<std::shared_ptr<ModelSample>> executeSamples;
             for (std::shared_ptr<ModelSample> sample : samples)
             {
-                std::shared_ptr<ModelSample> alreadyExecutedSample = repository.retrieveSample(sample);
+                bool usingProxy = this->isProxyModel && sample->AllowProxy;
+
+                std::shared_ptr<ModelSample> alreadyExecutedSample = !usingProxy ? repository.retrieveSample(sample) : nullptr;
 
                 if (alreadyExecutedSample == nullptr)
                 {

@@ -123,6 +123,15 @@ namespace Deltares
                 }
 
                 /**
+                 * \brief Indicates whether the model is a proxy model
+                 * \param proxyModel Indication
+                 */
+                virtual void SetProxyModel(bool proxyModel)
+                {
+                    shared->object->setProxyModel(proxyModel);
+                }
+
+                /**
                  * \brief Calculates a z-value for a reliability method in .net
                  * \param sample
                  * \return

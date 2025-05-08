@@ -165,6 +165,15 @@ namespace Deltares
         }
 
         /**
+         * \brief Indicates whether the model is a proxy model
+         * \param proxyModel Indication
+         */
+        void ModelRunner::setProxyModel(bool proxyModel) const
+        {
+            this->zModel->setProxyModel(proxyModel);
+        }
+
+        /**
          * \brief Calculates a sample
          * \param type Run values type
          * \return Evaluation report of the sample calculation

@@ -139,6 +139,11 @@ namespace Deltares
                 modelRuns = 0;
             }
 
+            void setProxyModel(bool proxyModel)
+            {
+                this->isProxyModel = proxyModel;
+            }
+
         private:
             ZLambda zLambda = nullptr;
             ZMultipleLambda zMultipleLambda = nullptr;
@@ -160,6 +165,11 @@ namespace Deltares
              * \brief Calculates a number of samples
              */
             void invokeMultipleLambda(std::vector<std::shared_ptr<ModelSample>>& samples);
+
+            /**
+             * \brief Indicates whether the model is a proxy model
+             */
+            bool isProxyModel = false;
 
             /**
              * \brief The minimum calculation time in ms for storing it in the repository
