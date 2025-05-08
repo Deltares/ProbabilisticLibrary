@@ -89,6 +89,77 @@ class Test_reliability(unittest.TestCase):
         self.assertAlmostEqual(2.33, beta, delta=margin)
         self.assertEqual(2, len(alphas))
 
+    def test_form_generated_model(self):
+
+        project = ReliabilityProject()
+
+        func_code = """
+def f(a,b):
+    z = 1.8 - (a+b)
+    return z
+"""
+        project.model = func_code
+        project_builder.assign_distributions(project, DistributionType.uniform)
+
+        self.assertEqual('a', project.model.input_parameters[0].name)
+        self.assertEqual('z', project.model.output_parameters[0].name)
+        self.assertEqual('a', project.variables[0].name)
+        self.assertEqual('f', project.model.name)
+
+        project.settings.reliability_method = ReliabilityMethod.form
+
+        project.run()
+
+        dp = project.design_point;
+        beta = dp.reliability_index;
+        alphas = dp.alphas;
+
+        self.assertAlmostEqual(2.33, beta, delta=margin)
+        self.assertEqual(2, len(alphas))
+
+    def test_invalid_generated_model(self):
+
+        project = ReliabilityProject()
+
+        func_code = """
+z = 1.8 + (a+b)
+def f(a,b):
+    z = 1.8 + (a+b)
+    return z
+"""
+        project.model = func_code
+
+        self.assertFalse(project.model.is_valid())
+
+        func_code = """
+def g(a,b):
+    z = 1.8 - (a+b)
+    return z
+"""
+        project.model = func_code
+
+        self.assertTrue(project.model.is_valid())
+        self.assertEqual(2, len(project.model.input_parameters))
+        self.assertEqual('a', project.model.input_parameters[0].name)
+        self.assertEqual('z', project.model.output_parameters[0].name)
+        self.assertEqual('a', project.variables[0].name)
+        self.assertEqual('g', project.model.name)
+
+        func_code = """
+def h(a,b,c):
+    z = 1.8 - (a+b+c)
+    return z
+"""
+        project.model = func_code
+
+        self.assertTrue(project.model.is_valid())
+        self.assertEqual(3, len(project.model.input_parameters))
+        self.assertEqual('a', project.model.input_parameters[0].name)
+        self.assertEqual('c', project.model.input_parameters[2].name)
+        self.assertEqual('z', project.model.output_parameters[0].name)
+        self.assertEqual('a', project.variables[0].name)
+        self.assertEqual('h', project.model.name)
+
     def test_form_initialized_linear_parallel(self):
         project = project_builder.get_linear_initialized_project()
 
