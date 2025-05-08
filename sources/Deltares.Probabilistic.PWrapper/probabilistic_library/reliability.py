@@ -747,7 +747,11 @@ class DesignPoint(FrozenObject):
 		else:
 			print(pre + f'Reliability ({self.identifier})')
 		print(pre_indexed + f'Reliability index = {round(self.reliability_index, decimals)}')
-		print(pre_indexed + f'Probability of failure = {round(self.probability_failure, decimals)}')
+		if (self.probability_failure < 10 ** ( 1-decimals)):
+			pf = "{:e}".format(self.probability_failure)
+		else:
+			pf = round(self.probability_failure, decimals)
+		print(pre_indexed + f'Probability of failure = {pf}')
 		if not isnan(self.convergence):
 			if self.is_converged:
 				print(pre_indexed + f'Convergence = {round(self.convergence, decimals)} (converged)')
