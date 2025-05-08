@@ -179,7 +179,7 @@ namespace Deltares
                     invokeLambda(sample);
                 }
 
-                if (useSampleRepository)
+                if (useSampleRepository && !sample->UsedProxy)
                 {
                     repository.registerSample(sample);
                 }
@@ -238,8 +238,8 @@ namespace Deltares
                 }
             }
 
-            if (!executeSamples.empty()) {
-
+            if (!executeSamples.empty())
+            {
                 if (this->measureCalculationTime)
                 {
                     std::chrono::time_point started = std::chrono::high_resolution_clock::now();
@@ -271,7 +271,10 @@ namespace Deltares
                 {
                     for (std::shared_ptr<ModelSample> sample : executeSamples)
                     {
-                        repository.registerSample(sample);
+                        if (!sample->UsedProxy)
+                        {
+                            repository.registerSample(sample);
+                        }
                     }
                 }
             }
