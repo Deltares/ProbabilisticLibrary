@@ -310,6 +310,22 @@ namespace Deltares
             return p;
         }
 
+        std::vector<double> HistogramDistribution::getDiscontinuityPoints(const StochastProperties& stochast)
+        {
+            const double minDiff = 1E-6;
+
+            std::vector<double> discontinuityPoints;
+            for (const std::shared_ptr<HistogramValue>&  value : stochast.HistogramValues)
+            {
+                if (value->Amount > 0 && std::abs(value->UpperBound - value->LowerBound) <= minDiff)
+                {
+                    discontinuityPoints.push_back(value->LowerBound);
+                }
+            }
+
+            return discontinuityPoints;
+        }
+
         std::vector<double> HistogramDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)
         {
             constexpr double delta = 0.0000001;

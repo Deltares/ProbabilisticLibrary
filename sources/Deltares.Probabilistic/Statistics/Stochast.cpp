@@ -199,8 +199,9 @@ namespace Deltares
 
                         std::shared_ptr<StochastProperties> interpolatedProperties = stochast->getInterpolatedProperties(xSource);
 
-                        std::shared_ptr<Stochast> interpolatedStochast =
-                            std::make_shared<Stochast>(stochast->distributionType, interpolatedProperties);
+                        std::shared_ptr<Stochast> interpolatedStochast = std::make_shared<Stochast>(stochast->distributionType, interpolatedProperties);
+                        interpolatedStochast->setTruncated(stochast->isTruncated());
+                        interpolatedStochast->setInverted(stochast->isInverted());
 
                         std::shared_ptr<ContributingStochast> interpolatedContributingStochast =
                             std::make_shared<ContributingStochast>(compositeStochast->Probability, interpolatedStochast);
@@ -602,6 +603,11 @@ namespace Deltares
         std::vector<double> Stochast::getSpecialXValues()
         {
             return distribution->getSpecialPoints(properties);
+        }
+
+        std::vector<double> Stochast::getDiscontinuityPoints()
+        {
+            return distribution->getDiscontinuityPoints(*properties);
         }
 
         void Stochast::copyFrom(std::shared_ptr<Stochast> source)

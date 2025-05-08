@@ -124,6 +124,11 @@ namespace Deltares
             stochast->Location = Numeric::NumericSupport::Divide(zeroValues, static_cast<int>(values.size()));
         }
 
+        std::vector<double> BernoulliDistribution::getDiscontinuityPoints(const StochastProperties& stochast)
+        {
+            return { 0.0, 1.0 };
+        }
+
         std::vector<double> BernoulliDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)
         {
             double offset = 10 * delta;

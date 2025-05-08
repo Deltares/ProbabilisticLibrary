@@ -303,6 +303,34 @@ class Test_statistics(unittest.TestCase):
 
         self.assertAlmostEqual(2.0, stochast.get_x_from_u_and_source(1.0, 0.5), delta=margin)
 
+    def test_conditional_truncated(self):
+
+        stochast = Stochast()
+        stochast.distribution = DistributionType.normal
+        stochast.mean = 0
+        stochast.deviation = 1
+        stochast.truncated = True
+
+        stochast.conditional = True
+
+        conditional1 = ConditionalValue()
+        conditional1.x = 0
+        conditional1.location = 0
+        conditional1.scale = 1
+        conditional1.minimum = 0
+        conditional1.maximum = np.inf
+        stochast.conditional_values.append(conditional1)
+
+        conditional2 = ConditionalValue()
+        conditional2.x = 1
+        conditional2.location = 1
+        conditional2.scale = 2
+        conditional2.minimum = 0
+        conditional2.maximum = np.inf
+        stochast.conditional_values.append(conditional2)
+
+        self.assertGreater(stochast.get_x_from_u_and_source(-5.0, 0.5), 0.0)
+
     def test_composite_conditional(self):
         stochast1 = Stochast()
         stochast1.distribution = DistributionType.deterministic
@@ -348,6 +376,43 @@ class Test_statistics(unittest.TestCase):
         self.assertAlmostEqual(0.0, stochast.get_x_from_u_and_source(u22, 0.0), delta=margin)
         self.assertAlmostEqual(11.0, stochast.get_x_from_u_and_source(u22, 10.0), delta=margin)
         self.assertAlmostEqual(20.0, stochast.get_x_from_u_and_source(u22, 20.0), delta=margin)
+
+    def test_composite_conditional_truncated(self):
+        stochast1 = Stochast()
+        stochast1.distribution = DistributionType.deterministic
+        stochast1.location = 0
+
+        stochast2 = Stochast()
+        stochast2.distribution = DistributionType.normal
+        stochast2.truncated = True
+
+        stochast2.conditional = True
+
+        conditional1 = ConditionalValue()
+        conditional1.x = 0
+        conditional1.location = 0
+        conditional1.scale = 1
+        conditional1.minimum = 0
+        conditional1.maximum = np.inf
+        stochast2.conditional_values.append(conditional1)
+
+        conditional2 = ConditionalValue()
+        conditional2.x = 10
+        conditional2.location = 10
+        conditional2.scale = 5
+        conditional2.minimum = 0
+        conditional2.maximum = np.inf
+        stochast2.conditional_values.append(conditional2)
+
+        stochast = Stochast()
+        stochast.distribution = DistributionType.composite
+        stochast.contributing_stochasts.append(ContributingStochast.create(0.4, stochast1))
+        stochast.contributing_stochasts.append(ContributingStochast.create(0.6, stochast2))
+
+        for u in range(-5, 5, 1):
+            for x in range (0, 10, 1):
+                print (f'u={u}, x={x} => {stochast.get_x_from_u_and_source(u, x)}')
+                #self.assertGreaterEqual(stochast.get_x_from_u_and_source(u, x), 0.0)
 
     def test_design_value(self):
 

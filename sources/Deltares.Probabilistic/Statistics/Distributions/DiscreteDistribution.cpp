@@ -137,6 +137,20 @@ namespace Deltares
             return StandardNormal::getUFromP(prev);
         }
 
+        std::vector<double> DiscreteDistribution::getDiscontinuityPoints(const StochastProperties& stochast)
+        {
+            std::vector<double> discontinuityPoints;
+            for (const std::shared_ptr<DiscreteValue> & discreteValue : stochast.DiscreteValues)
+            {
+                if (discreteValue->Amount > 0)
+                {
+                    discontinuityPoints.push_back(discreteValue->X);
+                }
+            }
+
+            return discontinuityPoints;
+        }
+
         double DiscreteDistribution::getRepresentativeU(std::shared_ptr<StochastProperties> stochast, double u)
         {
             double x = this->getXFromU(stochast, u);

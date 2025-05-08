@@ -78,6 +78,21 @@ namespace Deltares
 
         double Distribution::getXFromUByIteration(std::shared_ptr<StochastProperties> stochast, double u)
         {
+            // check whether the cdf value is at a discontinuity
+
+            for (double x : getDiscontinuityPoints(*stochast))
+            {
+                const double minDiff = 1E-6;
+                const double fractionDiff = 1E-10;
+
+                double diff = std::max(minDiff, std::abs(x) * fractionDiff);
+                if (getUFromX(stochast, x - diff) <= u && getUFromX(stochast, x + diff) >= u)
+                {
+                    return x;
+                }
+            }
+
+            // not at a discontinuity, search by bisection
 
             Numeric::RootFinderMethod function = [this, stochast](double x)
             {
@@ -85,7 +100,6 @@ namespace Deltares
             };
 
             double cdf = StandardNormal::getPFromU(u);
-
             double margin = std::min(std::fabs(1 - cdf) / 1000, std::fabs(cdf) / 1000);
 
             const double delta = 0.00001;
@@ -94,6 +108,20 @@ namespace Deltares
 
             double x = bisection.CalculateValue(0, 1, cdf, function);
             return x;
+        }
+
+        std::vector<double> Distribution::getDiscontinuityPoints(const StochastProperties& stochast)
+        {
+            std::shared_ptr<StochastProperties> stochastPtr = std::make_shared<StochastProperties>(stochast);
+
+            if (isVarying(stochastPtr))
+            {
+                return {};
+            }
+            else
+            {
+                return {getMean(stochastPtr)};
+            }
         }
 
         double Distribution::getLogLikelihood(std::shared_ptr<StochastProperties> stochast, double x)
