@@ -168,9 +168,9 @@ namespace Deltares
          * \brief Indicates whether the model is a proxy model
          * \param proxyModel Indication
          */
-        void ModelRunner::setProxyModel(bool proxyModel) const
+        void ModelRunner::setAllowRepositoryForProxies(bool proxyModel) const
         {
-            this->zModel->setProxyModel(proxyModel);
+            this->zModel->setAllowRepositoryForProxies(proxyModel);
         }
 
         /**

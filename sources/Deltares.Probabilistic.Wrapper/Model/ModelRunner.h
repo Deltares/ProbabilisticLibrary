@@ -126,9 +126,9 @@ namespace Deltares
                  * \brief Indicates whether the model is a proxy model
                  * \param proxyModel Indication
                  */
-                virtual void SetProxyModel(bool proxyModel)
+                virtual void SetAllowRepositoryForProxies(bool proxyModel)
                 {
-                    shared->object->setProxyModel(proxyModel);
+                    shared->object->setAllowRepositoryForProxies(proxyModel);
                 }
 
                 /**

@@ -151,9 +151,9 @@ namespace Deltares
 
         void ZModel::invoke(std::shared_ptr<ModelSample> sample)
         {
-            bool usingProxy = this->isProxyModel && sample->AllowProxy;
+            bool isSampleRepositoryAllowed = this->isRepositoryAllowed(sample);
 
-            std::shared_ptr<ModelSample> alreadyExecutedSample = !usingProxy ? repository.retrieveSample(sample) : nullptr;
+            std::shared_ptr<ModelSample> alreadyExecutedSample = isSampleRepositoryAllowed ? repository.retrieveSample(sample) : nullptr;
 
             if (alreadyExecutedSample == nullptr)
             {
@@ -228,9 +228,9 @@ namespace Deltares
             std::vector<std::shared_ptr<ModelSample>> executeSamples;
             for (std::shared_ptr<ModelSample> sample : samples)
             {
-                bool usingProxy = this->isProxyModel && sample->AllowProxy;
+                bool isSampleRepositoryAllowed = this->isRepositoryAllowed(sample);
 
-                std::shared_ptr<ModelSample> alreadyExecutedSample = !usingProxy ? repository.retrieveSample(sample) : nullptr;
+                std::shared_ptr<ModelSample> alreadyExecutedSample = isSampleRepositoryAllowed ? repository.retrieveSample(sample) : nullptr;
 
                 if (alreadyExecutedSample == nullptr)
                 {
@@ -286,6 +286,18 @@ namespace Deltares
             for (size_t i = 0; i < samples.size(); i++)
             {
                 this->zValueConverter->updateZValue(samples[i]);
+            }
+        }
+
+        bool ZModel::isRepositoryAllowed(const std::shared_ptr<ModelSample>& sample)
+        {
+            if (sample->AllowProxy)
+            {
+                return this->allowRepositoryForProxies;
+            }
+            else
+            {
+                return true;
             }
         }
 

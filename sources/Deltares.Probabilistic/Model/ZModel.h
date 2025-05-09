@@ -139,9 +139,9 @@ namespace Deltares
                 modelRuns = 0;
             }
 
-            void setProxyModel(bool proxyModel)
+            void setAllowRepositoryForProxies(bool allowRepository)
             {
-                this->isProxyModel = proxyModel;
+                this->allowRepositoryForProxies = allowRepository;
             }
 
         private:
@@ -169,7 +169,7 @@ namespace Deltares
             /**
              * \brief Indicates whether the model is a proxy model
              */
-            bool isProxyModel = false;
+            bool allowRepositoryForProxies = true;
 
             /**
              * \brief The minimum calculation time in ms for storing it in the repository
@@ -195,6 +195,12 @@ namespace Deltares
              * \brief Indicates whether samples should be saved in repository
              */
             bool useSampleRepository = false;
+
+            /**
+             * \brief Indicates whether a sample should be saved in repository
+             * \param sample The sample to be saved in or retrieved from the repository
+             */
+            bool isRepositoryAllowed(const std::shared_ptr<ModelSample>& sample);
 
             /**
              * \brief Holds calculated samples
