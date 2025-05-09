@@ -89,6 +89,14 @@ class FrozenList():
 	def __str__(self):
 		return str(self._list)
 
+	def index(self, item, start = 0, stop = sys.maxsize):
+		if isinstance(item, str):
+			item = self[item]
+		if item != None:
+			return self._list.index(item, start, stop)
+		else:
+			return -1
+
 	def count(self):
 		return self._list.count()
 

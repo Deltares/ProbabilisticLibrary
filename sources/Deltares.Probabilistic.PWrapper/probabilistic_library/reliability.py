@@ -779,10 +779,14 @@ class DesignPoint(FrozenObject):
 		plt.pie(alphas, labels=names)
 		plt.title("Alpha values", fontsize=14, fontweight='bold')
 
-	def plot_realizations(self):
+	def plot_realizations(self, var_x : str | Stochast = None, var_y : str | Stochast = None):
 
 		if len(self.realizations) == 0:
 			print ("No realizations were saved, run again with settings.save_realizations = True")
+			return
+
+		if len(self.alphas) < 2:
+			print ("Not enough variables to plot realizations")
 			return
 
 		import numpy as np
@@ -792,21 +796,38 @@ class DesignPoint(FrozenObject):
 		alphas = [alpha.influence_factor for alpha in self.alphas]
 		index_last_two = np.argsort(np.abs(alphas))[-2:]
 
-		r_1 = [realization.input_values[int(index_last_two[0])] for realization in self.realizations]
-		r_2 = [realization.input_values[int(index_last_two[1])] for realization in self.realizations]
+		if var_x == None and var_y == None:
+			index_x = int(index_last_two[0])
+			index_y = int(index_last_two[1])
+		if var_x != None and var_y == None:
+			index_x = self.alphas.index(var_x)
+			index_y = int(index_last_two[0])
+		if var_x == None and var_y != None:
+			index_x = int(index_last_two[0])
+			index_y = self.alphas.index(var_y)
+		if var_x != None and var_y != None:
+			index_x = self.alphas.index(var_x)
+			index_y = self.alphas.index(var_y)
+
+		if index_x < 0 or index_y < 0:
+			print ("Variables could not be found")
+			return
+
+		x_values = [realization.input_values[index_x] for realization in self.realizations]
+		y_values = [realization.input_values[index_y] for realization in self.realizations]
 		z = [realization.z for realization in self.realizations]
 		colors = ["r" if val < 0 else "g" for val in z]
 
 		# plot realizations
 		plt.figure()
 		plt.grid(True)    
-		plt.scatter(r_1, r_2, color=colors, alpha=0.5)
-		plt.scatter(self.alphas[int(index_last_two[0])].x, 
-                    self.alphas[int(index_last_two[1])].x, 
+		plt.scatter(x_values, y_values, color=colors, alpha=0.5)
+		plt.scatter(self.alphas[index_x].x, 
+                    self.alphas[index_y].x, 
                     label='design point' if self.identifier == '' else self.identifier, 
                     color="black")
-		plt.xlabel(self.alphas[int(index_last_two[0])].identifier)
-		plt.ylabel(self.alphas[int(index_last_two[1])].identifier)
+		plt.xlabel(self.alphas[index_x].identifier)
+		plt.ylabel(self.alphas[index_y].identifier)
 		plt.legend()
 		plt.title('Realizations: Red = Failure, Green = No Failure', fontsize=14, fontweight='bold')
 

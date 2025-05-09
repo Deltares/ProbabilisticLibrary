@@ -34,7 +34,7 @@ class test_object (FrozenObject):
 
 class Test_utils(unittest.TestCase):
 
-    def test_frozen_list(self):
+    def test_frozen_list_slice(self):
         t1 = test_object('a', 1)
         t2 = test_object('b', 2)
         t3 = test_object('c', 3)
@@ -52,6 +52,18 @@ class Test_utils(unittest.TestCase):
         self.assertEqual(3, slc[0].value)
         self.assertEqual(4, slc['d'].value)
         self.assertEqual(None, slc['e'])
+
+    def test_frozen_list_index(self):
+        t1 = test_object('a', 1)
+        t2 = test_object('b', 2)
+        t3 = test_object('c', 3)
+        t4 = test_object('d', 4)
+        t5 = test_object('e', 5)
+
+        fl = FrozenList([t1, t2, t3, t4, t5])
+
+        self.assertEqual(1, fl.index(t2))
+        self.assertEqual(1, fl.index('b'))
 
 if __name__ == '__main__':
     unittest.main()
