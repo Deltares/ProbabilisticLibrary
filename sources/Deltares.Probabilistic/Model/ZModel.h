@@ -139,9 +139,9 @@ namespace Deltares
                 modelRuns = 0;
             }
 
-            void setAllowRepositoryForProxies(bool allowRepository)
+            void setAllowRepository(bool allowRepository)
             {
-                this->allowRepositoryForProxies = allowRepository;
+                this->isRepositoryAllowed = allowRepository;
             }
 
         private:
@@ -167,11 +167,6 @@ namespace Deltares
             void invokeMultipleLambda(std::vector<std::shared_ptr<ModelSample>>& samples);
 
             /**
-             * \brief Indicates whether the model is a proxy model
-             */
-            bool allowRepositoryForProxies = true;
-
-            /**
              * \brief The minimum calculation time in ms for storing it in the repository
              */
             long long minRepoCalculationTime = 1;
@@ -192,15 +187,14 @@ namespace Deltares
             int maxMeasuredCalculationTimes = 100;
 
             /**
+             * \brief Indicates whether the repository is allowed
+             */
+            bool isRepositoryAllowed = true;
+
+            /**
              * \brief Indicates whether samples should be saved in repository
              */
             bool useSampleRepository = false;
-
-            /**
-             * \brief Indicates whether a sample should be saved in repository
-             * \param sample The sample to be saved in or retrieved from the repository
-             */
-            bool isRepositoryAllowed(const std::shared_ptr<ModelSample>& sample);
 
             /**
              * \brief Holds calculated samples

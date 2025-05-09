@@ -123,12 +123,12 @@ namespace Deltares
                 }
 
                 /**
-                 * \brief Indicates whether the model is a proxy model
-                 * \param proxyModel Indication
+                 * \brief Indicates whether a sample repository is allowed
+                 * \param allowRepository Indication
                  */
-                virtual void SetAllowRepositoryForProxies(bool proxyModel)
+                virtual void SetAllowRepository(bool allowRepository)
                 {
-                    shared->object->setAllowRepositoryForProxies(proxyModel);
+                    shared->object->setAllowRepository(allowRepository);
                 }
 
                 /**

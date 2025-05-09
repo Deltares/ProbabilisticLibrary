@@ -102,7 +102,7 @@ namespace Deltares
             Evaluation getEvaluationFromType(Statistics::RunValuesType type);
 
             bool haveSampleValuesChanged() const { return uConverter->haveSampleValuesChanged(); }
-            void setAllowRepositoryForProxies(bool proxyModel) const;
+            void setAllowRepository(bool proxyModel) const;
             Evaluation getEvaluation(std::shared_ptr<Sample> sample);
         private:
             std::shared_ptr<ZModel> zModel;

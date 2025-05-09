@@ -165,12 +165,12 @@ namespace Deltares
         }
 
         /**
-         * \brief Indicates whether the model is a proxy model
-         * \param proxyModel Indication
+         * \brief Indicates whether the sample repository is allowed
+         * \param allowRepository Indication
          */
-        void ModelRunner::setAllowRepositoryForProxies(bool proxyModel) const
+        void ModelRunner::setAllowRepository(bool allowRepository) const
         {
-            this->zModel->setAllowRepositoryForProxies(proxyModel);
+            this->zModel->setAllowRepository(allowRepository);
         }
 
         /**
