@@ -157,7 +157,7 @@ namespace Deltares
 
             if (alreadyExecutedSample == nullptr)
             {
-                if (measureCalculationTime)
+                if (measureCalculationTime && isSampleRepositoryAllowed)
                 {
                     std::chrono::time_point started = std::chrono::high_resolution_clock::now();
                     invokeLambda(sample);
@@ -181,7 +181,7 @@ namespace Deltares
                     invokeLambda(sample);
                 }
 
-                if (useSampleRepository && !sample->UsedProxy)
+                if (useSampleRepository && isSampleRepositoryAllowed)
                 {
                     repository.registerSample(sample);
                 }
@@ -226,6 +226,8 @@ namespace Deltares
         void ZModel::invoke(std::vector<std::shared_ptr<ModelSample>> samples)
         {
             std::vector<std::shared_ptr<ModelSample>> executeSamples;
+            bool isAnySampleRepositoryAllowed = false;
+
             for (std::shared_ptr<ModelSample> sample : samples)
             {
                 bool isSampleRepositoryAllowed = this->isRepositoryAllowed(sample);
@@ -235,6 +237,7 @@ namespace Deltares
                 if (alreadyExecutedSample == nullptr)
                 {
                     executeSamples.push_back(sample);
+                    isAnySampleRepositoryAllowed |= isSampleRepositoryAllowed;
                 }
                 else
                 {
@@ -244,7 +247,7 @@ namespace Deltares
 
             if (!executeSamples.empty())
             {
-                if (this->measureCalculationTime)
+                if (this->measureCalculationTime && isAnySampleRepositoryAllowed)
                 {
                     std::chrono::time_point started = std::chrono::high_resolution_clock::now();
                     invokeMultipleLambda(executeSamples);
@@ -275,7 +278,7 @@ namespace Deltares
                 {
                     for (std::shared_ptr<ModelSample> sample : executeSamples)
                     {
-                        if (!sample->UsedProxy)
+                        if (this->isRepositoryAllowed(sample))
                         {
                             repository.registerSample(sample);
                         }
@@ -291,14 +294,14 @@ namespace Deltares
 
         bool ZModel::isRepositoryAllowed(const std::shared_ptr<ModelSample>& sample)
         {
-            if (sample->AllowProxy)
-            {
+            //if (sample->AllowProxy)
+            //{
                 return this->allowRepositoryForProxies;
-            }
-            else
-            {
-                return true;
-            }
+            //}
+            //else
+            //{
+            //    return true;
+            //}
         }
 
         double ZModel::getBeta(std::shared_ptr<ModelSample> sample, double beta)
