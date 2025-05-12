@@ -153,6 +153,8 @@ namespace Deltares
 
         void DesignPointBuilder::addSample(std::shared_ptr<Sample> sample)
         {
+            const double delta = 1E-10;
+
             sampleAdded = true;
 
             double weight = std::isnan(sample->Weight) ? 1 : sample->Weight;
@@ -176,7 +178,7 @@ namespace Deltares
             case DesignPointMethod::NearestToMean:
             {
                 double beta = sample->getBeta();
-                if (beta < minimumBeta)
+                if (beta < minimumBeta - delta)
                 {
                     minimumBeta = beta;
 
