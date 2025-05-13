@@ -411,7 +411,10 @@ class SensitivityResult(FrozenObject):
 
 		self.variable._plot(xmin, xmax)
 
+		plot_legend = False
 		for ii in range(len(self.quantile_realizations)):
-			plt.axvline(x=self.quantile_realizations[ii].output_values[0], color="green", linestyle="--", label=f"{self.quantile_realizations[ii]._rounded_quantile}-quantile")
+			plt.axvline(x=self.quantile_realizations[ii].output_values[0], color="green", linestyle="--", label=f"{round(self.quantile_realizations[ii].quantile, 4)}-quantile")
+			plot_legend = True
 
-		plt.legend()
+		if plot_legend:
+			plt.legend()
