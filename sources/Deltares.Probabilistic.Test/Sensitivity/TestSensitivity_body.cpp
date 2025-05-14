@@ -99,6 +99,10 @@ namespace Deltares
                 ASSERT_NEAR(1.78, evaluation50->Z, margin);
                 ASSERT_NEAR(0.00, evaluation50->InputValues[0] + evaluation50->InputValues[1], margin);
                 ASSERT_NEAR(3.18, evaluation95->Z, margin);
+
+                ASSERT_NEAR(0.05, evaluation05->Quantile, margin);
+                ASSERT_NEAR(0.50, evaluation50->Quantile, margin);
+                ASSERT_NEAR(0.95, evaluation95->Quantile, margin);
             }
 
             void TestSensitivity::testCrudeMonteCarloLinearNonRepeatable()
@@ -121,6 +125,9 @@ namespace Deltares
                 ASSERT_LE(result.quantileEvaluations[1]->Z, 1.5);
                 ASSERT_GE(result.quantileEvaluations[2]->Z, 2.1);
                 ASSERT_GE(result.quantileEvaluations[3]->Z, 2.1);
+
+                ASSERT_NEAR(0.05, result.quantileEvaluations[0]->Quantile, margin);
+                ASSERT_NEAR(0.10, result.quantileEvaluations[1]->Quantile, margin);
 
                 // do it again, check results are not equal
 
@@ -153,6 +160,8 @@ namespace Deltares
                 ASSERT_NEAR(project->sensitivityResults[0]->stochast->getMean(), project->sensitivityResults[1]->stochast->getMean(), smallMargin);
                 ASSERT_NEAR(project->sensitivityResults[0]->stochast->getDeviation(), project->sensitivityResults[1]->stochast->getDeviation(), smallMargin);
                 ASSERT_NEAR(project->sensitivityResults[0]->quantileEvaluations[0]->OutputValues[0], project->sensitivityResults[1]->quantileEvaluations[0]->OutputValues[0], smallMargin);
+
+                ASSERT_NEAR(0.95, project->sensitivityResults[0]->quantileEvaluations[0]->Quantile, margin);
             }
 
             void TestSensitivity::testCrudeMonteCarloLinearOutputNonRepeatable()
@@ -234,6 +243,8 @@ namespace Deltares
 
                 ASSERT_NEAR(1.00, result.quantileEvaluations[0]->Z, margin);
                 ASSERT_NEAR(1.90, result.quantileEvaluations[1]->Z, margin);
+
+                ASSERT_NEAR(0.50, result.quantileEvaluations[0]->Quantile, margin);
             }
 
             void TestSensitivity::testNumericalIntegration()
@@ -254,6 +265,8 @@ namespace Deltares
                 ASSERT_NEAR(0.43, result.quantileEvaluations[0]->Z, margin);
                 ASSERT_NEAR(1.80, result.quantileEvaluations[1]->Z, margin);
                 ASSERT_NEAR(3.17, result.quantileEvaluations[2]->Z, margin);
+
+                ASSERT_NEAR(0.05, result.quantileEvaluations[0]->Quantile, margin);
             }
 
             void TestSensitivity::testDirectionalSampling()
@@ -274,6 +287,7 @@ namespace Deltares
                 ASSERT_NEAR(result.stochast->getProperties()->FragilityValues[0]->getProbabilityOfNonFailure(), 0.9, margin);
 
                 ASSERT_NEAR(2.91, result.quantileEvaluations[0]->Z, margin);
+                ASSERT_NEAR(0.90, result.quantileEvaluations[0]->Quantile, margin);
             }
 
             void TestSensitivity::testFORM()
@@ -294,6 +308,8 @@ namespace Deltares
                 ASSERT_NEAR(0.30, result.quantileEvaluations[0]->Z, margin);
                 ASSERT_NEAR(1.80, result.quantileEvaluations[1]->Z, margin);
                 ASSERT_NEAR(3.30, result.quantileEvaluations[2]->Z, margin);
+
+                ASSERT_NEAR(0.05, result.quantileEvaluations[0]->Quantile, margin);
             }
 
             void TestSensitivity::testFOSM()
@@ -314,6 +330,8 @@ namespace Deltares
                 ASSERT_NEAR(0.29, result.quantileEvaluations[0]->Z, margin);
                 ASSERT_NEAR(1.80, result.quantileEvaluations[1]->Z, margin);
                 ASSERT_NEAR(3.31, result.quantileEvaluations[2]->Z, margin);
+
+                ASSERT_NEAR(0.05, result.quantileEvaluations[0]->Quantile, margin);
             }
         }
     }

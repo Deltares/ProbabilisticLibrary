@@ -22,6 +22,7 @@
 from __future__ import annotations
 from ctypes import ArgumentError
 from enum import Enum
+from math import isnan
 from .utils import *
 from . import interface
 
@@ -235,6 +236,7 @@ class Stochast(FrozenObject):
 				'get_ks_test',
 				'get_quantile',
 				'get_x_from_u',
+				'get_x_from_u_and_source',
 				'get_u_from_x',
 				'get_pdf',
 				'get_cdf',
@@ -245,9 +247,12 @@ class Stochast(FrozenObject):
 				'design_factor',
 				'design_quantile',
 				'design_value',
+				'is_valid',
 				'is_array',
 				'array_size',
-				'array_variables']
+				'array_variables',
+				'print',
+				'plot']
 
 	def _set_variables(self, variables):
 		self._variables = variables
@@ -607,7 +612,10 @@ class Stochast(FrozenObject):
 			self._contributing_stochasts = None
 			self._conditional_values = None
 
-	def print(self):
+	def is_valid(self) -> bool:
+		return interface.GetBoolValue(self._id, 'is_valid')
+
+	def print(self, decimals = 4):
 		pre = '  '
 		if self.name == '':
 			print(f'Variable:')
@@ -622,32 +630,57 @@ class Stochast(FrozenObject):
 		elif self.truncated and self.inverted:
 			print(pre + f'distribution = {self.distribution} (inverted, truncated')
 		print('Definition:')
-		for prop in ['location', 'scale', 'minimum', 'shift', 'shift_b', 'maximum', 'shape', 'shape_b', 'observations']:
-			if interface.GetBoolValue(self._id, 'is_used_' + prop):
-				if prop == 'observations':
-					print(pre + f'{prop} = {interface.GetIntValue(self._id, prop)}')
-				else:
-					print(pre + f'{prop} = {interface.GetValue(self._id, prop)}')
-		if self.distribution == DistributionType.histogram:
-			for value in self.histogram_values:
-				print(pre + f'amount[{value.lower_bound}, {value.upper_bound}] = {value.amount}')
-		elif self.distribution == DistributionType.cdf_curve:
-			for value in self.fragility_values:
-				print(pre + f'beta[{value.x}] = {value.reliability_index}')
-		elif self.distribution == DistributionType.discrete or self.distribution == DistributionType.qualitative:
-			for value in self.discrete_values:
-				print(pre + f'amount[{value.x}] = {value.amount}')
-		if self.design_quantile != 0.5 or self.design_factor != 1.0:
-			print(pre + f'design_quantile = {self.design_quantile}')
-			print(pre + f'design_factor = {self.design_factor}')
-		print('Derived values:')
-		print(pre + f'mean = {self.mean}')
-		print(pre + f'deviation = {self.deviation}')
-		print(pre + f'variation = {self.variation}')
-		if self.design_quantile != 0.5 or self.design_factor != 1.0:
-			print(pre + f'design_value = {self.design_value}')
+		if self.conditional:
+			if self.conditional_source == '':
+				print(pre + f'conditional x values = {[value.x for value in self.conditional_values]}')
+			else:
+				print(pre + f'conditional source = {self.conditional_source}')
+				print(pre + f'{self.conditional_source} = {[round(value.x, decimals) for value in self.conditional_values]}')
+			for prop in ['mean', 'deviation', 'location', 'scale', 'minimum', 'shift', 'shift_b', 'maximum', 'shape', 'shape_b', 'observations']:
+				if interface.GetBoolValue(self._id, 'is_used_' + prop):
+					if prop == 'observations':
+						values = [interface.GetIntValue(value._id, prop) for value in self.conditional_values]
+					else:
+						values = [round(interface.GetValue(value._id, prop), decimals) for value in self.conditional_values]
+					if len(values) > 0 and not isnan(values[0]):
+						print(pre + f'{prop} = {values}')
+		else:
+			for prop in ['location', 'scale', 'minimum', 'shift', 'shift_b', 'maximum', 'shape', 'shape_b', 'observations']:
+				if interface.GetBoolValue(self._id, 'is_used_' + prop):
+					if prop == 'observations':
+						print(pre + f'{prop} = {interface.GetIntValue(self._id, prop)}')
+					else:
+						print(pre + f'{prop} = {round(interface.GetValue(self._id, prop), decimals)}')
+			if self.distribution == DistributionType.histogram:
+				for value in self.histogram_values:
+					print(pre + f'amount[{round(value.lower_bound, decimals)}, {round(value.upper_bound, decimals)}] = {round(value.amount, decimals)}')
+			elif self.distribution == DistributionType.cdf_curve:
+				for value in self.fragility_values:
+					print(pre + f'beta[{round(value.x, decimals)}] = {round(value.reliability_index, decimals)}')
+			elif self.distribution == DistributionType.discrete or self.distribution == DistributionType.qualitative:
+				for value in self.discrete_values:
+					print(pre + f'amount[{round(value.x, decimals)}] = {round(value.amount, decimals)}')
+			if self.design_quantile != 0.5 or self.design_factor != 1.0:
+				print(pre + f'design_quantile = {round(self.design_quantile, decimals)}')
+				print(pre + f'design_factor = {round(self.design_factor, decimals)}')
+			print('Derived values:')
+			print(pre + f'mean = {round(self.mean, decimals)}')
+			print(pre + f'deviation = {round(self.deviation, decimals)}')
+			print(pre + f'variation = {round(self.variation, decimals)}')
+			if self.design_quantile != 0.5 or self.design_factor != 1.0:
+				print(pre + f'design_value = {round(self.design_value, decimals)}')
 
 	def plot(self, xmin : float = None, xmax : float = None):
+		if not self.is_valid():
+			print('Variable definition is not valid, plot can not be made.')
+			return
+
+		if self.conditional:
+			self._plot_conditional(xmin, xmax)
+		else:
+			self._plot(xmin, xmax)
+
+	def _plot(self, xmin : float = None, xmax : float = None):
 
 		import numpy as np
 		import matplotlib.pyplot as plt
@@ -660,17 +693,8 @@ class Stochast(FrozenObject):
 			xmax = self.get_x_from_u(0) + 4 * (self.get_x_from_u(1) - self.get_x_from_u(0))
 			limit_special_values = False
 
-		if xmin > xmax:
-			temp = xmin
-			xmin = xmax
-			xmax = temp
-
-		if xmin == xmax:
-			diff = abs(xmin) / 10
-			if diff == 0:
-				diff = 1
-			xmin = xmin - diff
-			xmax = xmin + diff
+		xmin, xmax = NumericUtils.order(xmin, xmax)
+		xmin, xmax = NumericUtils.make_different(xmin, xmax)
 
 		values = np.arange(xmin, xmax, (xmax - xmin) / 1000).tolist()
 		add_values = interface.GetArrayValue(self._id, 'special_values')
@@ -689,14 +713,60 @@ class Stochast(FrozenObject):
 		else:
 			ax1.set_xlabel(f"{self.name} [x]")
 		ax1.set_ylabel("pdf [-]", color=color)
-		ax1.plot(values, pdf)
+		ax1.plot(values, pdf, label = '_pdf')
 		ax1.tick_params(axis="y", labelcolor=color)
 		ax2 = ax1.twinx()
 		color = "tab:red"
 		ax2.set_ylabel("cdf [-]", color=color)
-		ax2.plot(values, cdf, "r--", label="pdf")
+		ax2.plot(values, cdf, "r--", label="_cdf")
 		ax2.tick_params(axis="y", labelcolor=color)
 
+	def _plot_conditional(self, xmin : float = None, xmax : float = None):
+
+		if not self.is_valid():
+			print('Variable definition is not valid, plot can not be made.')
+			return
+
+		import numpy as np
+		import matplotlib.pyplot as plt
+
+		if xmin is None:
+			xmin = min([value.x for value in self.conditional_values])
+
+		if xmax is None:
+			xmax = max([value.x for value in self.conditional_values])
+
+		xmin, xmax = NumericUtils.order(xmin, xmax)
+		xmin, xmax = NumericUtils.make_different(xmin, xmax)
+
+		values = np.arange(xmin, xmax, (xmax - xmin) / 100).tolist()
+		for value in self.conditional_values:
+			values.append(value.x)
+		values.sort()
+
+		u_low = StandardNormal.get_u_from_p(0.05)
+		u_high = StandardNormal.get_u_from_p(0.95)
+		median_values = [self.get_x_from_u_and_source(0, x) for x in values]
+		low_values = [self.get_x_from_u_and_source(u_low, x) for x in values]
+		high_values = [self.get_x_from_u_and_source(u_high, x) for x in values]
+    
+		fig, ax1 = plt.subplots()
+		color = "tab:blue"
+		if self.conditional_source == None:
+			ax1.set_xlabel("source [x]")
+		else:
+			ax1.set_xlabel(f"{self.conditional_source.name} [x]")
+		if self.name == '':
+			ax1.set_ylabel("value [x]")
+		else:
+			ax1.set_ylabel(f"{self.name} [x]")
+		ax1.plot(values, median_values, label="50 %")
+		ax1.plot(values, low_values, "b--", label="5 %")
+		ax1.plot(values, high_values, "b--", label="95 %")
+		ax1.tick_params(axis="y", labelcolor=color)
+
+		plt.grid()
+		plt.legend()
 
 class DiscreteValue(FrozenObject):
 

@@ -68,7 +68,7 @@ namespace Deltares
             double sum = 0;
             for (std::shared_ptr<ContributingStochast> contributingStochast : stochast->ContributingStochasts)
             {
-                if (!contributingStochast->Stochast->isValid())
+                if (!contributingStochast->isValid())
                 {
                     return false;
                 }

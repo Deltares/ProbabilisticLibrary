@@ -21,6 +21,7 @@
 #
 import unittest
 import sys
+from io import StringIO
 
 from probabilistic_library import *
 
@@ -1162,6 +1163,37 @@ def h(a,b,c):
         self.assertAlmostEqual(3.79, beta, delta=margin)
         self.assertEqual(6, len(alphas))
         self.assertEqual(h_stochast, alphas[0].variable)
+
+    def test_design_point_print(self):
+
+        project = project_builder.get_linear_project()
+
+        project.settings.reliability_method = ReliabilityMethod.form
+
+        project.run();
+
+        dp = project.design_point;
+
+        dp.print()
+
+        # Replace default stdout (terminal) temporary with with our stream
+        sys.stdout = StringIO()
+        dp.print()
+        printed = sys.stdout.getvalue()
+        sys.stdout = sys.__stdout__
+
+        expected = """Reliability (FORM)
+ Reliability index = 2.3271
+ Probability of failure = 0.01
+ Convergence = 0.0086 (converged)
+ Model runs = 18
+Alpha values:
+ a: alpha = -0.7071, x = 0.9001
+ b: alpha = -0.7071, x = 0.9001
+
+"""
+        self.assertEqual(expected, printed)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -82,6 +82,7 @@ namespace Deltares
             {
                 std::shared_ptr<Sample> quantileSample = nextSample->getSampleAtBeta(quantile->Reliability);
                 std::shared_ptr<Models::Evaluation> evaluation = std::make_shared<Models::Evaluation>(modelRunner->getEvaluation(quantileSample));
+                evaluation->Quantile = quantile->getProbabilityOfNonFailure();
                 result.quantileEvaluations.push_back(evaluation);
             }
 

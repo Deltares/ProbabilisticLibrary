@@ -85,6 +85,7 @@ namespace Deltares
             {
                 if (this->evaluations.contains(quantile))
                 {
+                    this->evaluations[quantile]->Quantile = quantile->getProbabilityOfNonFailure();
                     result.quantileEvaluations.push_back(this->evaluations[quantile]);
                 }
                 else

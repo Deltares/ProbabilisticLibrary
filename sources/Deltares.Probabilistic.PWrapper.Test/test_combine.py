@@ -51,6 +51,7 @@ class Test_combine(unittest.TestCase):
 
         self.assertEqual(len(project.design_points), len(project.design_point.contributing_design_points))
         self.assertEqual(project.design_points[0], project.design_point.contributing_design_points[0])
+        self.assertEqual(project.design_points[0].alphas[0].variable, project.design_point.contributing_design_points[0].alphas[0].variable)
         
     def test_importance_sampling_series(self):
         q = 0.01;
@@ -71,6 +72,28 @@ class Test_combine(unittest.TestCase):
         project.run()
 
         self.assertAlmostEqual(StandardNormal.get_u_from_q(2 * q - q * q), project.design_point.reliability_index, delta=margin)
+        self.assertEqual(project.design_points[0].alphas[0].variable, project.design_point.contributing_design_points[0].alphas[0].variable)
+        
+    def test_hohenbichler_series(self):
+        q = 0.01;
+
+        project = CombineProject()
+
+        beta = StandardNormal.get_u_from_q(q)
+
+        dp1 = project_builder.get_design_point(beta, 2)
+        project.design_points.append(dp1)
+
+        dp2 = project_builder.get_design_point(beta, 2)
+        project.design_points.append(dp2)
+
+        project.settings.combiner_method = CombinerMethod.hohenbichler
+        project.settings.combine_type = CombineType.series
+
+        project.run()
+
+        self.assertAlmostEqual(StandardNormal.get_u_from_q(2 * q - q * q), project.design_point.reliability_index, delta=margin)
+        self.assertEqual(project.design_points[0].alphas[0].variable, project.design_point.contributing_design_points[0].alphas[0].variable)
         
     def test_directional_sampling_parallel(self):
         q = 0.01;
@@ -91,6 +114,7 @@ class Test_combine(unittest.TestCase):
         project.run()
 
         self.assertAlmostEqual(StandardNormal.get_u_from_q(q * q), project.design_point.reliability_index, delta=margin)
+        self.assertEqual(project.design_points[0].alphas[0].variable, project.design_point.contributing_design_points[0].alphas[0].variable)
         
     def test_importance_sampling_parallel(self):
         q = 0.01;
@@ -114,6 +138,61 @@ class Test_combine(unittest.TestCase):
 
         self.assertEqual(len(project.design_points), len(project.design_point.contributing_design_points))
         self.assertEqual(project.design_points[0], project.design_point.contributing_design_points[0])
+        self.assertEqual(project.design_points[0].alphas[0].variable, project.design_point.contributing_design_points[0].alphas[0].variable)
+
+    def test_hohenbichler_parallel(self):
+        q = 0.01;
+
+        project = CombineProject()
+
+        beta = StandardNormal.get_u_from_q(q)
+
+        dp1 = project_builder.get_design_point(beta, 2)
+        project.design_points.append(dp1)
+
+        dp2 = project_builder.get_design_point(beta, 2)
+        project.design_points.append(dp2)
+
+        project.settings.combiner_method =  CombinerMethod.hohenbichler
+        project.settings.combine_type = CombineType.parallel
+
+        project.run()
+
+        self.assertAlmostEqual(StandardNormal.get_u_from_q(q * q), project.design_point.reliability_index, delta=margin)
+
+        self.assertEqual(len(project.design_points), len(project.design_point.contributing_design_points))
+        self.assertEqual(project.design_points[0], project.design_point.contributing_design_points[0])
+        self.assertEqual(project.design_points[0].alphas[0].variable, project.design_point.contributing_design_points[0].alphas[0].variable)
+
+    def test_hohenbichler_parallel_performed_twice(self):
+        q = 0.01;
+
+        project = CombineProject()
+
+        beta = StandardNormal.get_u_from_q(q)
+
+        dp1 = project_builder.get_design_point(beta, 2)
+        project.design_points.append(dp1)
+
+        dp2 = project_builder.get_design_point(beta, 2)
+        project.design_points.append(dp2)
+
+        project.settings.combiner_method =  CombinerMethod.hohenbichler
+        project.settings.combine_type = CombineType.parallel
+
+        project.run()
+
+        self.assertAlmostEqual(StandardNormal.get_u_from_q(q * q), project.design_point.reliability_index, delta=margin)
+
+        self.assertEqual(len(project.design_points), len(project.design_point.contributing_design_points))
+        self.assertEqual(project.design_points[0], project.design_point.contributing_design_points[0])
+        self.assertEqual(project.design_points[0].alphas[0].variable, project.design_point.contributing_design_points[0].alphas[0].variable)
+
+        # execute another time
+        project.run()
+
+        self.assertEqual(project.design_points[0], project.design_point.contributing_design_points[0])
+        self.assertEqual(project.design_points[0].alphas[0].variable, project.design_point.contributing_design_points[0].alphas[0].variable)
 
     def test_calculated_design_points(self):
 

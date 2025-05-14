@@ -398,12 +398,23 @@ class SensitivityResult(FrozenObject):
 				
 		return self._messages
 
-	def print(self):
-		self.variable.print()
+	def print(self, decimals=4):
+		self.variable.print(decimals)
 		if len(self.quantile_realizations) > 0:
 			print('Quantiles:')
 			for quantile in self.quantile_realizations:
-				quantile._print(1)
+				quantile._print(1, decimals)
 
-	def plot(self):
-		self.variable.plot()
+	def plot(self, xmin : float = None, xmax : float = None):
+
+		import matplotlib.pyplot as plt
+
+		self.variable._plot(xmin, xmax)
+
+		plot_legend = False
+		for ii in range(len(self.quantile_realizations)):
+			plt.axvline(x=self.quantile_realizations[ii].output_values[0], color="green", linestyle="--", label=f"{round(self.quantile_realizations[ii].quantile, 4)}-quantile")
+			plot_legend = True
+
+		if plot_legend:
+			plt.legend()

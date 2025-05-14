@@ -36,7 +36,7 @@ namespace Deltares
 
             bool isValid()
             {
-                return Probability >= 0.0 && Probability <= 1.0 && Stochast != nullptr;
+                return Probability >= 0.0 && Probability <= 1.0 && Stochast != nullptr && Stochast->isValid();
             }
 
             std::shared_ptr<ContributingStochast> clone()

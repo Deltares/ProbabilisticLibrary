@@ -89,6 +89,14 @@ class FrozenList():
 	def __str__(self):
 		return str(self._list)
 
+	def index(self, item, start = 0, stop = sys.maxsize):
+		if isinstance(item, str):
+			item = self[item]
+		if item != None:
+			return self._list.index(item, start, stop)
+		else:
+			return -1
+
 	def count(self):
 		return self._list.count()
 
@@ -119,4 +127,19 @@ class PrintUtils:
         for i in range(indent):
             indent_str += '  '
         return indent_str
-		
+
+class NumericUtils:
+    def order (value1 : float, value2 : float) -> tuple[float, float]:
+        if value1 > value2:
+            return value2, value1
+        else:
+            return value1, value2
+
+    def make_different(value1 : float, value2 : float) -> tuple[float, float]:
+        if value1 == value2:
+            diff = abs(value1) / 10
+            if diff == 0:
+                diff = 1
+            value1 = value1 - diff
+            value2 = value1 + diff
+        return value1, value2

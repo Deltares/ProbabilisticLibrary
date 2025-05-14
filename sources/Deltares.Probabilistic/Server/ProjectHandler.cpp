@@ -236,27 +236,27 @@ namespace Deltares
             switch (types[id])
             {
             case ObjectType::StandardNormal: break;
-            case ObjectType::ProbabilityValue: probabilityValues.erase(id); break;
-            case ObjectType::Message: messages.erase(id); break;
+            case ObjectType::ProbabilityValue: probabilityValueIds.erase(probabilityValues[id]); probabilityValues.erase(id); break;
+            case ObjectType::Message: messageIds.erase(messages[id]); messages.erase(id); break;
             case ObjectType::Project: projects.erase(id); break;
             case ObjectType::ModelParameter: modelParameters.erase(id); break;
-            case ObjectType::LimitStateFunction: limitStateFunctions.erase(id); break;
-            case ObjectType::Stochast: stochasts.erase(id); break;
-            case ObjectType::DiscreteValue: discreteValues.erase(id); break;
-            case ObjectType::HistogramValue: histogramValues.erase(id); break;
-            case ObjectType::FragilityValue: fragilityValues.erase(id); break;
-            case ObjectType::ContributingStochast: contributingStochasts.erase(id); break;
-            case ObjectType::ConditionalValue: conditionalValues.erase(id); break;
-            case ObjectType::CorrelationMatrix: correlationMatrices.erase(id); break;
+            case ObjectType::LimitStateFunction: limitStateFunctionIds.erase(limitStateFunctions[id]); limitStateFunctions.erase(id); break;
+            case ObjectType::Stochast: stochastIds.erase(stochasts[id]); stochasts.erase(id); break;
+            case ObjectType::DiscreteValue: discreteValueIds.erase(discreteValues[id]); discreteValues.erase(id); break;
+            case ObjectType::HistogramValue: histogramValueIds.erase(histogramValues[id]); histogramValues.erase(id); break;
+            case ObjectType::FragilityValue: fragilityCurveIds.erase(fragilityCurves[id]); fragilityValues.erase(id); break;
+            case ObjectType::ContributingStochast: contributingStochastIds.erase(contributingStochasts[id]); contributingStochasts.erase(id); break;
+            case ObjectType::ConditionalValue: conditionalValueIds.erase(conditionalValues[id]);  conditionalValues.erase(id); break;
+            case ObjectType::CorrelationMatrix: correlationMatrixIds.erase(correlationMatrices[id]); correlationMatrices.erase(id); break;
             case ObjectType::Scenario: scenarios.erase(id); break;
-            case ObjectType::Settings: settingsValues.erase(id); break;
+            case ObjectType::Settings: settingsValuesIds.erase(settingsValues[id]); settingsValues.erase(id); break;
             case ObjectType::StochastSettings: stochastSettingsValues.erase(id); break;
-            case ObjectType::DesignPoint: designPoints.erase(id); break;
-            case ObjectType::Alpha: alphas.erase(id); break;
-            case ObjectType::FragilityCurve: fragilityCurves.erase(id); break;
+            case ObjectType::DesignPoint: designPointIds.erase(designPoints[id]); designPoints.erase(id); break;
+            case ObjectType::Alpha: alphaIds.erase(alphas[id]); alphas.erase(id); break;
+            case ObjectType::FragilityCurve: fragilityCurveIds.erase(fragilityCurves[id]); fragilityCurves.erase(id); break;
             case ObjectType::FragilityCurveProject: fragilityCurveProjects.erase(id); break;
-            case ObjectType::Evaluation: evaluations.erase(id); break;
-            case ObjectType::ReliabilityResult: reliabilityResults.erase(id); break;
+            case ObjectType::Evaluation: evaluationIds.erase(evaluations[id]); evaluations.erase(id); break;
+            case ObjectType::ReliabilityResult: reliabilityResultIds.erase(reliabilityResults[id]); reliabilityResults.erase(id); break;
             case ObjectType::CombineProject: combineProjects.erase(id); break;
             case ObjectType::CombineSettings: combineSettingsValues.erase(id); break;
             case ObjectType::ExcludingCombineProject: excludingCombineProjects.erase(id); break;
@@ -266,7 +266,7 @@ namespace Deltares
             case ObjectType::RunProjectSettings: runProjectSettings.erase(id); break;
             case ObjectType::SensitivityProject: sensitivityProjects.erase(id); break;
             case ObjectType::SensitivitySettings: sensitivitySettingsValues.erase(id); break;
-            case ObjectType::SensitivityResult: sensitivityResults.erase(id); break;
+            case ObjectType::SensitivityResult: sensitivityResultsIds.erase(sensitivityResults[id]); sensitivityResults.erase(id); break;
             case ObjectType::LengthEffectProject: lengthEffectProjects.erase(id); break;
             default: throw probLibException("object type");
             }
@@ -444,6 +444,7 @@ namespace Deltares
                 std::shared_ptr<Reliability::Evaluation> evaluation = evaluations[id];
 
                 if (property_ == "z") return evaluation->Z;
+                else if (property_ == "quantile") return evaluation->Quantile;
                 else if (property_ == "beta") return evaluation->Beta;
                 else if (property_ == "weight") return evaluation->Weight;
             }
@@ -1072,6 +1073,8 @@ namespace Deltares
                 else if (property_ == "conditional") return stochast->IsVariableStochast;
                 else if (property_ == "is_array") return stochast->modelParameter->isArray;
                 else if (property_ == "is_valid") return stochast->isValid();
+                else if (property_ == "is_used_mean") return true;
+                else if (property_ == "is_used_deviation") return stochast->getDistributionType() != DistributionType::Deterministic;
                 else if (property_ == "is_used_location") return stochast->hasParameter(DistributionPropertyType::Location);
                 else if (property_ == "is_used_scale") return stochast->hasParameter(DistributionPropertyType::Scale);
                 else if (property_ == "is_used_minimum") return stochast->hasParameter(DistributionPropertyType::Minimum);

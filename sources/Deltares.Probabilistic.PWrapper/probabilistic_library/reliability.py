@@ -736,32 +736,36 @@ class DesignPoint(FrozenObject):
 			variables.extend(contributing_design_point.get_variables())
 		return frozenset(variables)
 
-	def print(self):
-		self._print(0)
+	def print(self, decimals = 4):
+		self._print(0, decimals)
 
-	def _print(self, indent : int):
+	def _print(self, indent : int, decimals = 4):
 		pre = PrintUtils.get_space_from_indent(indent)
 		pre_indexed = pre + ' '
 		if self.identifier == '':
 			print(pre + 'Reliability:')
 		else:
 			print(pre + f'Reliability ({self.identifier})')
-		print(pre_indexed + f'Reliability index = {self.reliability_index}')
-		print(pre_indexed + f'Probability of failure = {self.probability_failure}')
+		print(pre_indexed + f'Reliability index = {round(self.reliability_index, decimals)}')
+		if (self.probability_failure < 10 ** ( 1-decimals)):
+			pf = "{:e}".format(self.probability_failure)
+		else:
+			pf = round(self.probability_failure, decimals)
+		print(pre_indexed + f'Probability of failure = {pf}')
 		if not isnan(self.convergence):
 			if self.is_converged:
-				print(pre_indexed + f'Convergence = {self.convergence} (converged)')
+				print(pre_indexed + f'Convergence = {round(self.convergence, decimals)} (converged)')
 			else:
-				print(pre_indexed + f'Convergence = {self.convergence} (not converged)')
+				print(pre_indexed + f'Convergence = {round(self.convergence, decimals)} (not converged)')
 		print(pre_indexed + f'Model runs = {self.total_model_runs}')
 		print(pre + 'Alpha values:')
 		for alpha in self.alphas:
-			print(pre_indexed + f'{alpha.variable.name}: alpha = {alpha.alpha}, x = {alpha.x}')
+			print(pre_indexed + f'{alpha.variable.name}: alpha = {round(alpha.alpha, decimals)}, x = {round(alpha.x, decimals)}')
 		print('')
 		if len(self.contributing_design_points) > 0:
 			print(pre + 'Contributing design points:')
 			for design_point in self.contributing_design_points:
-				design_point._print(indent + 1)
+				design_point._print(indent + 1, decimals)
 
 	def plot_alphas(self):
 
@@ -775,7 +779,15 @@ class DesignPoint(FrozenObject):
 		plt.pie(alphas, labels=names)
 		plt.title("Alpha values", fontsize=14, fontweight='bold')
 
-	def plot_realizations(self):
+	def plot_realizations(self, var_x : str | Stochast = None, var_y : str | Stochast = None):
+
+		if len(self.realizations) == 0:
+			print ("No realizations were saved, run again with settings.save_realizations = True")
+			return
+
+		if len(self.alphas) < 2:
+			print ("Not enough variables to plot realizations")
+			return
 
 		import numpy as np
 		import matplotlib.pyplot as plt
@@ -784,25 +796,46 @@ class DesignPoint(FrozenObject):
 		alphas = [alpha.influence_factor for alpha in self.alphas]
 		index_last_two = np.argsort(np.abs(alphas))[-2:]
 
-		r_1 = [realization.input_values[int(index_last_two[0])] for realization in self.realizations]
-		r_2 = [realization.input_values[int(index_last_two[1])] for realization in self.realizations]
+		if var_x == None and var_y == None:
+			index_x = int(index_last_two[0])
+			index_y = int(index_last_two[1])
+		if var_x != None and var_y == None:
+			index_x = self.alphas.index(var_x)
+			index_y = int(index_last_two[0])
+		if var_x == None and var_y != None:
+			index_x = int(index_last_two[0])
+			index_y = self.alphas.index(var_y)
+		if var_x != None and var_y != None:
+			index_x = self.alphas.index(var_x)
+			index_y = self.alphas.index(var_y)
+
+		if index_x < 0 or index_y < 0:
+			print ("Variables could not be found")
+			return
+
+		x_values = [realization.input_values[index_x] for realization in self.realizations]
+		y_values = [realization.input_values[index_y] for realization in self.realizations]
 		z = [realization.z for realization in self.realizations]
 		colors = ["r" if val < 0 else "g" for val in z]
 
 		# plot realizations
 		plt.figure()
 		plt.grid(True)    
-		plt.scatter(r_1, r_2, color=colors, alpha=0.5)
-		plt.scatter(self.alphas[int(index_last_two[0])].x, 
-                    self.alphas[int(index_last_two[1])].x, 
+		plt.scatter(x_values, y_values, color=colors, alpha=0.5)
+		plt.scatter(self.alphas[index_x].x, 
+                    self.alphas[index_y].x, 
                     label='design point' if self.identifier == '' else self.identifier, 
                     color="black")
-		plt.xlabel(self.alphas[int(index_last_two[0])].identifier)
-		plt.ylabel(self.alphas[int(index_last_two[1])].identifier)
+		plt.xlabel(self.alphas[index_x].identifier)
+		plt.ylabel(self.alphas[index_y].identifier)
 		plt.legend()
 		plt.title('Realizations: Red = Failure, Green = No Failure', fontsize=14, fontweight='bold')
 
-	def plot_convergence(self, xmin : float = None, xmax : float = None):
+	def plot_convergence(self):
+
+		if len(self.reliability_results) == 0:
+			print ("No convergence data were saved, run again with settings.save_convergence = True")
+			return
 
 		import numpy as np
 		import matplotlib.pyplot as plt
@@ -1203,6 +1236,7 @@ class Evaluation(FrozenObject):
 
 	def __dir__(self):
 		return ['iteration',
+				'quantile',
 				'z',
 				'beta',
 				'weight',
@@ -1213,6 +1247,10 @@ class Evaluation(FrozenObject):
 	@property   
 	def iteration(self) -> int:
 		return interface.GetIntValue(self._id, 'iteration')
+		
+	@property   
+	def quantile(self) -> float:
+		return interface.GetValue(self._id, 'quantile')
 		
 	@property   
 	def z(self) -> float:
@@ -1240,19 +1278,23 @@ class Evaluation(FrozenObject):
 			self._output_values = FrozenList(output_values)
 		return self._output_values
 
-	def print(self):
-		self._print(0)
+	def print(self, decimals = 4):
+		self._print(0, decimals)
 
-	def _print(self, indent):
+	def _print(self, indent, decimals = 4):
 		pre = PrintUtils.get_space_from_indent(indent)
+		input_values = [round(v, decimals) for v in self.input_values]
+		output_values = [round(v, decimals) for v in self.output_values]
+		if not isnan(self.quantile):
+			pre = pre + f'quantile {round(self.quantile, decimals)}: '
 		if isnan(self.z) and len(self.output_values) == 0:
-			print(pre + self.input_values)
+			print(pre + input_values)
 		elif isnan(self.z) and len(self.output_values) > 0:
-			print(pre + f'{self.input_values} -> {self.output_values}')
+			print(pre + f'{input_values} -> {output_values}')
 		elif not isnan(self.z) and len(self.output_values) == 0:
-			print(pre + f'{self.input_values} -> {self.z}')
+			print(pre + f'{input_values} -> {round(self.z, decimals)}')
 		elif not isnan(self.z) and len(self.output_values) > 0:
-			print(pre + f'{self.input_values} -> {self.output_values} -> {self.z}')
+			print(pre + f'{input_values} -> {output_values} -> {round(self.z, decimals)}')
 		
 class ReliabilityResult(FrozenObject):
 		
