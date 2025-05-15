@@ -26,7 +26,7 @@ with open(r"../../readme.md", "r") as fh:
  
 setuptools.setup(
     name="probabilistic_library",
-    version="25.1.1",
+    version="25.2.1",
     author="Deltares",
     author_email="software.support@deltares.nl",
     description="Package which provides probabilistic methods",
@@ -39,5 +39,5 @@ setuptools.setup(
         "License :: OSI Approved :: LGPL License",
         "Operating System :: OS Independent",
     ],
-    python_requires='>=3.7',
+    python_requires='>=3.10',
 )
