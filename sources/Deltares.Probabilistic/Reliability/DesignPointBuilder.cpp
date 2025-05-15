@@ -178,9 +178,16 @@ namespace Deltares
             case DesignPointMethod::NearestToMean:
             {
                 double beta = sample->getBeta();
-                if (beta < minimumBeta - delta)
+                if (beta < minimumBeta)
                 {
-                    minimumBeta = beta;
+                    if (Numeric::NumericSupport::areEqual(beta, Statistics::StandardNormal::BetaMax, delta))
+                    {
+                        minimumBeta = beta - 2.0 * delta;
+                    }
+                    else
+                    {
+                        minimumBeta = beta;
+                    }
 
                     meanSample = sample->clone();
                 }
