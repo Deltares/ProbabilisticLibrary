@@ -746,21 +746,17 @@ class DesignPoint(FrozenObject):
 			print(pre + 'Reliability:')
 		else:
 			print(pre + f'Reliability ({self.identifier})')
-		print(pre_indexed + f'Reliability index = {round(self.reliability_index, decimals)}')
-		if (self.probability_failure < 10 ** ( 1-decimals)):
-			pf = "{:e}".format(self.probability_failure)
-		else:
-			pf = round(self.probability_failure, decimals)
-		print(pre_indexed + f'Probability of failure = {pf}')
+		print(pre_indexed + f'Reliability index = {self.reliability_index:.{decimals}g}')
+		print(pre_indexed + f'Probability of failure = {self.probability_failure:.{decimals}g}')
 		if not isnan(self.convergence):
 			if self.is_converged:
-				print(pre_indexed + f'Convergence = {round(self.convergence, decimals)} (converged)')
+				print(pre_indexed + f'Convergence = {self.convergence:.{decimals}g} (converged)')
 			else:
-				print(pre_indexed + f'Convergence = {round(self.convergence, decimals)} (not converged)')
+				print(pre_indexed + f'Convergence = {self.convergence:.{decimals}g} (not converged)')
 		print(pre_indexed + f'Model runs = {self.total_model_runs}')
 		print(pre + 'Alpha values:')
 		for alpha in self.alphas:
-			print(pre_indexed + f'{alpha.variable.name}: alpha = {round(alpha.alpha, decimals)}, x = {round(alpha.x, decimals)}')
+			print(pre_indexed + f'{alpha.variable.name}: alpha = {alpha.alpha:.{decimals}g}, x = {alpha.x:.{decimals}g}')
 		print('')
 		if len(self.contributing_design_points) > 0:
 			print(pre + 'Contributing design points:')
@@ -777,7 +773,7 @@ class DesignPoint(FrozenObject):
 
 		plt.figure()
 		plt.pie(alphas, labels=names)
-		plt.title("Alpha values", fontsize=14, fontweight='bold')
+		plt.title("Squared alpha values", fontsize=14, fontweight='bold')
 
 	def plot_realizations(self, var_x : str | Stochast = None, var_y : str | Stochast = None):
 
@@ -1283,18 +1279,18 @@ class Evaluation(FrozenObject):
 
 	def _print(self, indent, decimals = 4):
 		pre = PrintUtils.get_space_from_indent(indent)
-		input_values = [round(v, decimals) for v in self.input_values]
-		output_values = [round(v, decimals) for v in self.output_values]
+		input_values = [f"{v:.{decimals}g}" for v in self.input_values]
+		output_values = [f"{v:.{decimals}g}" for v in self.output_values]
 		if not isnan(self.quantile):
-			pre = pre + f'quantile {round(self.quantile, decimals)}: '
+			pre = pre + f'quantile {self.quantile:.{decimals}g}: '
 		if isnan(self.z) and len(self.output_values) == 0:
 			print(pre + input_values)
 		elif isnan(self.z) and len(self.output_values) > 0:
 			print(pre + f'{input_values} -> {output_values}')
 		elif not isnan(self.z) and len(self.output_values) == 0:
-			print(pre + f'{input_values} -> {round(self.z, decimals)}')
+			print(pre + f'{input_values} -> {self.z:.{decimals}g}')
 		elif not isnan(self.z) and len(self.output_values) > 0:
-			print(pre + f'{input_values} -> {output_values} -> {round(self.z, decimals)}')
+			print(pre + f'{input_values} -> {output_values} -> {self.z:.{decimals}g}')
 		
 class ReliabilityResult(FrozenObject):
 		

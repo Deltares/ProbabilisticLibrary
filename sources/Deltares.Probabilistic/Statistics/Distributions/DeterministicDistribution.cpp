@@ -92,8 +92,15 @@ namespace Deltares
         std::vector<double> DeterministicDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)
         {
             constexpr double offset = 0.000001;
+            constexpr double bigOffset = 10;
 
-            return { stochast->Location - offset, stochast->Location, stochast->Location + offset };
+            return {
+                stochast->Location - bigOffset,
+                stochast->Location - offset,
+                stochast->Location,
+                stochast->Location + offset,
+                stochast->Location + bigOffset
+            };
         }
 
         void DeterministicDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values)
