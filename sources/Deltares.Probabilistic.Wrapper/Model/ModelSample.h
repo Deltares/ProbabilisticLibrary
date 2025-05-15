@@ -100,19 +100,19 @@ namespace Deltares
                     int get() { return shared->object->IterationIndex; }
                 }
 
-                    property bool AllowProxy
+                property bool AllowProxy
                 {
                     bool get() { return shared->object->AllowProxy; }
                     void set(bool value) { shared->object->AllowProxy = value; }
                 }
 
-                    property bool UsedProxy
+                property bool UsedProxy
                 {
                     bool get() { return shared->object->UsedProxy; }
                     void set(bool value) { shared->object->UsedProxy = value; }
                 }
 
-                    property bool IsRestartRequired
+                property bool IsRestartRequired
                 {
                     bool get() { return shared->object->IsRestartRequired; }
                     void set(bool value) { shared->object->IsRestartRequired = value; }
@@ -124,7 +124,7 @@ namespace Deltares
                     void set(double value) { shared->object->Z = value; }
                 }
 
-                    void SetOutputValues(array<double>^ outputValues)
+                void SetOutputValues(array<double>^ outputValues)
                 {
                     shared->object->OutputValues = NativeSupport::toNative(outputValues);
                 }
