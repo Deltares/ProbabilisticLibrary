@@ -756,7 +756,7 @@ class DesignPoint(FrozenObject):
 		print(pre_indexed + f'Model runs = {self.total_model_runs}')
 		print(pre + 'Alpha values:')
 		for alpha in self.alphas:
-			print(pre_indexed + f'{alpha.variable.name}: alpha = {alpha.alpha:.{decimals}g}, x = {alpha.x:.{decimals}g}')
+			print(pre_indexed + f'{alpha.identifier}: alpha = {alpha.alpha:.{decimals}g}, x = {alpha.x:.{decimals}g}')
 		print('')
 		if len(self.contributing_design_points) > 0:
 			print(pre + 'Contributing design points:')
