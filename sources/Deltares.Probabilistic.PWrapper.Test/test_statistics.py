@@ -476,11 +476,11 @@ class Test_statistics(unittest.TestCase):
         expected = """Variable:
   distribution = normal
 Definition:
-  location = 10.0
-  scale = 1.0
+  location = 10
+  scale = 1
 Derived values:
-  mean = 10.0
-  deviation = 1.0
+  mean = 10
+  deviation = 1
   variation = 0.1
 """
         self.assertEqual(expected, printed)
