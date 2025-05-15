@@ -151,11 +151,11 @@ namespace Deltares
 
         void ZModel::invoke(std::shared_ptr<ModelSample> sample)
         {
-            std::shared_ptr<ModelSample> alreadyExecutedSample = repository.retrieveSample(sample);
+            std::shared_ptr<ModelSample> alreadyExecutedSample = isRepositoryAllowed ? repository.retrieveSample(sample) : nullptr;
 
             if (alreadyExecutedSample == nullptr)
             {
-                if (measureCalculationTime)
+                if (measureCalculationTime && isRepositoryAllowed)
                 {
                     std::chrono::time_point started = std::chrono::high_resolution_clock::now();
                     invokeLambda(sample);
@@ -179,7 +179,7 @@ namespace Deltares
                     invokeLambda(sample);
                 }
 
-                if (useSampleRepository)
+                if (useSampleRepository && isRepositoryAllowed)
                 {
                     repository.registerSample(sample);
                 }
@@ -224,9 +224,10 @@ namespace Deltares
         void ZModel::invoke(std::vector<std::shared_ptr<ModelSample>> samples)
         {
             std::vector<std::shared_ptr<ModelSample>> executeSamples;
+
             for (std::shared_ptr<ModelSample> sample : samples)
             {
-                std::shared_ptr<ModelSample> alreadyExecutedSample = repository.retrieveSample(sample);
+                std::shared_ptr<ModelSample> alreadyExecutedSample = isRepositoryAllowed ? repository.retrieveSample(sample) : nullptr;
 
                 if (alreadyExecutedSample == nullptr)
                 {
@@ -238,9 +239,9 @@ namespace Deltares
                 }
             }
 
-            if (!executeSamples.empty()) {
-
-                if (this->measureCalculationTime)
+            if (!executeSamples.empty())
+            {
+                if (this->measureCalculationTime && isRepositoryAllowed)
                 {
                     std::chrono::time_point started = std::chrono::high_resolution_clock::now();
                     invokeMultipleLambda(executeSamples);
@@ -267,7 +268,7 @@ namespace Deltares
 
                 this->modelRuns += static_cast<int>(executeSamples.size());
 
-                if (useSampleRepository)
+                if (useSampleRepository && isRepositoryAllowed)
                 {
                     for (std::shared_ptr<ModelSample> sample : executeSamples)
                     {

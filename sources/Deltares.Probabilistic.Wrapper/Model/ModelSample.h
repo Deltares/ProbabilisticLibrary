@@ -106,6 +106,12 @@ namespace Deltares
                     void set(bool value) { shared->object->AllowProxy = value; }
                 }
 
+                property bool UsedProxy
+                {
+                    bool get() { return shared->object->UsedProxy; }
+                    void set(bool value) { shared->object->UsedProxy = value; }
+                }
+
                 property bool IsRestartRequired
                 {
                     bool get() { return shared->object->IsRestartRequired; }
@@ -118,7 +124,7 @@ namespace Deltares
                     void set(double value) { shared->object->Z = value; }
                 }
 
-                    void SetOutputValues(array<double>^ outputValues)
+                void SetOutputValues(array<double>^ outputValues)
                 {
                     shared->object->OutputValues = NativeSupport::toNative(outputValues);
                 }

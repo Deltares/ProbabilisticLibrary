@@ -123,6 +123,15 @@ namespace Deltares
                 }
 
                 /**
+                 * \brief Indicates whether a sample repository is allowed
+                 * \param allowRepository Indication
+                 */
+                virtual void SetAllowRepository(bool allowRepository)
+                {
+                    shared->object->setAllowRepository(allowRepository);
+                }
+
+                /**
                  * \brief Calculates a z-value for a reliability method in .net
                  * \param sample
                  * \return

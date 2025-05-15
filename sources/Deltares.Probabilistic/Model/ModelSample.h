@@ -47,6 +47,7 @@ namespace Deltares
                 threadId = 0;
                 Weight = std::nan("");
                 AllowProxy = true;
+                UsedProxy = false;
                 IsRestartRequired = false;
                 Z = std::nan("");
                 Beta = 0;
@@ -73,6 +74,7 @@ namespace Deltares
             int threadId = 0;
             double Weight = 1;
             bool AllowProxy = true;
+            bool UsedProxy = false;
             bool IsRestartRequired = false;
             double Beta = 0;
             double Z = nan("");

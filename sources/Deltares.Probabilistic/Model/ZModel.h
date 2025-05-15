@@ -139,6 +139,11 @@ namespace Deltares
                 modelRuns = 0;
             }
 
+            void setAllowRepository(bool allowRepository)
+            {
+                this->isRepositoryAllowed = allowRepository;
+            }
+
         private:
             ZLambda zLambda = nullptr;
             ZMultipleLambda zMultipleLambda = nullptr;
@@ -180,6 +185,11 @@ namespace Deltares
              * \brief Indicates the maximum number of samples from which the calculation time will be measured
              */
             int maxMeasuredCalculationTimes = 100;
+
+            /**
+             * \brief Indicates whether the repository is allowed
+             */
+            bool isRepositoryAllowed = true;
 
             /**
              * \brief Indicates whether samples should be saved in repository
