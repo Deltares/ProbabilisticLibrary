@@ -1279,18 +1279,18 @@ class Evaluation(FrozenObject):
 
 	def _print(self, indent, decimals = 4):
 		pre = PrintUtils.get_space_from_indent(indent)
-		input_values = [f"{v:.{decimals}g}" for v in self.input_values]
-		output_values = [f"{v:.{decimals}g}" for v in self.output_values]
+		input_values = ', '.join([f'{v:.{decimals}g}' for v in self.input_values])
+		output_values = ', '.join([f'{v:.{decimals}g}' for v in self.output_values])
 		if not isnan(self.quantile):
 			pre = pre + f'quantile {self.quantile:.{decimals}g}: '
 		if isnan(self.z) and len(self.output_values) == 0:
-			print(pre + input_values)
+			print(pre + f'[{input_values}]')
 		elif isnan(self.z) and len(self.output_values) > 0:
-			print(pre + f'{input_values} -> {output_values}')
+			print(pre + f'[{input_values}] -> [{output_values}]')
 		elif not isnan(self.z) and len(self.output_values) == 0:
-			print(pre + f'{input_values} -> {self.z:.{decimals}g}')
+			print(pre + f'[{input_values}] -> {self.z:.{decimals}g}')
 		elif not isnan(self.z) and len(self.output_values) > 0:
-			print(pre + f'{input_values} -> {output_values} -> {self.z:.{decimals}g}')
+			print(pre + f'[{input_values}] -> [{output_values}] -> {self.z:.{decimals}g}')
 		
 class ReliabilityResult(FrozenObject):
 		

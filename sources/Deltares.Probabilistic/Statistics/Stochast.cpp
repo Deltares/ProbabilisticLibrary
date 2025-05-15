@@ -444,7 +444,7 @@ namespace Deltares
 
             if (mean == 0.0)
             {
-                return std::nan("");
+                return std::numeric_limits<double>::infinity();
             }
             else
             {
