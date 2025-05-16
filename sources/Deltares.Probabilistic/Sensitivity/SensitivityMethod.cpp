@@ -25,167 +25,165 @@
 #include "SensitivityMethod.h"
 #include "../Math/NumericSupport.h"
 
-namespace Deltares
+namespace Deltares::Sensitivity
 {
-    namespace Sensitivity
+    bool SensitivityMethod::isStopped() const
     {
-        bool SensitivityMethod::isStopped()
-        {
-            return this->stopped;
-        }
+        return this->stopped;
+    }
 
-        void SensitivityMethod::setStopped()
-        {
-            this->stopped = true;
-        }
+    void SensitivityMethod::setStopped()
+    {
+        this->stopped = true;
+    }
 
-        void SensitivityMethod::Stop()
-        {
-            setStopped();
-        }
+    void SensitivityMethod::Stop()
+    {
+        setStopped();
+    }
 
-        void SensitivityMethod::filterSamples(std::vector<double>& samples, std::vector<double>& weights)
-        {
-            bool hasInvalidValues = false;
+    void SensitivityMethod::filterSamples(std::vector<double>& samples, std::vector<double>& weights)
+    {
+        bool hasInvalidValues = false;
 
-            for (size_t i = samples.size(); i < samples.size(); i++)
+        for (size_t i = samples.size(); i < samples.size(); i++)
+        {
+            if (std::isnan(samples[i]) || std::isnan(weights[i]) || weights[i] == 0.0)
             {
-                if (std::isnan(samples[i]) || std::isnan(weights[i]) || weights[i] == 0.0)
-                {
-                    hasInvalidValues = true;
-                    break;
-                }
-            }
-
-            if (hasInvalidValues)
-            {
-                std::vector<double> newSamples;
-                std::vector<double> newWeights;
-
-                for (size_t i = 0; i < samples.size(); i++)
-                {
-                    if (!(std::isnan(samples[i]) || std::isnan(weights[i]) || weights[i] == 0.0))
-                    {
-                        newSamples.push_back(samples[i]);
-                        newWeights.push_back(weights[i]);
-                    }
-                }
-
-                samples.clear();
-                weights.clear();
-
-                for (size_t i = 0; i < newSamples.size(); i++)
-                {
-                    samples.push_back(newSamples[i]);
-                    weights.push_back(newWeights[i]);
-                }
+                hasInvalidValues = true;
+                break;
             }
         }
 
-        std::shared_ptr<Statistics::Stochast> SensitivityMethod::getStochastFromSamples(std::vector<std::shared_ptr<Numeric::WeightedValue>>& weightedValues)
+        if (hasInvalidValues)
         {
-            std::vector<double> values;
-            std::vector<double> weights;
+            std::vector<double> newSamples;
+            std::vector<double> newWeights;
 
-            for (std::shared_ptr<Numeric::WeightedValue> weightedValue : weightedValues)
+            for (size_t i = 0; i < samples.size(); i++)
             {
-                values.push_back(weightedValue->value);
-                weights.push_back(weightedValue->weight);
+                if (!(std::isnan(samples[i]) || std::isnan(weights[i]) || weights[i] == 0.0))
+                {
+                    newSamples.push_back(samples[i]);
+                    newWeights.push_back(weights[i]);
+                }
             }
 
-            return getStochastFromSamples(values, weights);
+            samples.clear();
+            weights.clear();
+
+            for (size_t i = 0; i < newSamples.size(); i++)
+            {
+                samples.push_back(newSamples[i]);
+                weights.push_back(newWeights[i]);
+            }
+        }
+    }
+
+    std::shared_ptr<Statistics::Stochast> SensitivityMethod::getStochastFromSamples(std::vector<std::shared_ptr<Numeric::WeightedValue>>& weightedValues)
+    {
+        std::vector<double> values;
+        std::vector<double> weights;
+
+        for (const std::shared_ptr<Numeric::WeightedValue>& weightedValue : weightedValues)
+        {
+            values.push_back(weightedValue->value);
+            weights.push_back(weightedValue->weight);
         }
 
-        std::shared_ptr<Statistics::Stochast> SensitivityMethod::getStochastFromSamples(std::vector<double>& samples, std::vector<double>& weights)
+        return getStochastFromSamples(values, weights);
+    }
+
+    std::shared_ptr<Statistics::Stochast> SensitivityMethod::getStochastFromSamples(std::vector<double>& samples, std::vector<double>& weights)
+    {
+        filterSamples(samples, weights);
+
+        auto stochast = std::make_shared<Statistics::Stochast>();
+
+        if (samples.empty())
         {
-            filterSamples(samples, weights);
+            stochast->setDistributionType(Statistics::DistributionType::Deterministic);
+            stochast->getProperties()->Location = std::nan("");
+        }
+        else
+        {
+            const double min = Numeric::NumericSupport::getMinimum(samples);
+            const double max = Numeric::NumericSupport::getMaximum(samples);
 
-            std::shared_ptr<Statistics::Stochast> stochast = std::make_shared<Statistics::Stochast>();
-
-            if (samples.empty())
+            if (min == max)
             {
                 stochast->setDistributionType(Statistics::DistributionType::Deterministic);
-                stochast->getProperties()->Location = std::nan("");
+                stochast->getProperties()->Location = min;
             }
             else
             {
-                double min = Numeric::NumericSupport::getMinimum(samples);
-                double max = Numeric::NumericSupport::getMaximum(samples);
-
-                if (min == max)
-                {
-                    stochast->setDistributionType(Statistics::DistributionType::Deterministic);
-                    stochast->getProperties()->Location = min;
-                }
-                else
-                {
-                    stochast->setDistributionType(Statistics::DistributionType::Table);
-                    stochast->fitWeighted(samples, weights);
-                    stochast->distributionChangeType = Statistics::FitFromHistogramValues;
-                }
+                stochast->setDistributionType(Statistics::DistributionType::Table);
+                stochast->fitWeighted(samples, weights);
+                stochast->distributionChangeType = Statistics::FitFromHistogramValues;
             }
-
-            return stochast;
         }
 
-        int SensitivityMethod::getQuantileIndex(std::vector<std::shared_ptr<Numeric::WeightedValue>>& weightedValues, double quantile)
+        return stochast;
+    }
+
+    int SensitivityMethod::getQuantileIndex(const std::vector<std::shared_ptr<Numeric::WeightedValue>>& weightedValues, double quantile)
+    {
+        std::vector<double> values;
+        std::vector<double> weights;
+
+        for (const std::shared_ptr<Numeric::WeightedValue>& weightedValue : weightedValues)
         {
-            std::vector<double> values;
-            std::vector<double> weights;
-
-            for (std::shared_ptr<Numeric::WeightedValue> weightedValue : weightedValues)
-            {
-                values.push_back(weightedValue->value);
-                weights.push_back(weightedValue->weight);
-            }
-
-            return getQuantileIndex(values, weights, quantile);
+            values.push_back(weightedValue->value);
+            weights.push_back(weightedValue->weight);
         }
 
-        int SensitivityMethod::getQuantileIndex(std::vector<double>& samples, std::vector<double>& weights, double quantile)
+        return getQuantileIndex(values, weights, quantile);
+    }
+
+    int SensitivityMethod::getQuantileIndex(std::vector<double>& samples, std::vector<double>& weights, double quantile)
+    {
+        if (samples.empty())
         {
-            if (samples.empty())
-            {
-                return -1;
-            }
-
-            std::vector<std::shared_ptr<Numeric::WeightedValue>> values;
-            std::unordered_map<std::shared_ptr<Numeric::WeightedValue>, size_t> index;
-            double sumWeights = 0;
-            for (size_t i = 0; i < samples.size(); i++)
-            {
-                std::shared_ptr<Numeric::WeightedValue> value = std::make_shared<Numeric::WeightedValue>(samples[i], weights[i]);
-                index[value] = i;
-                values.push_back(value);
-                if (!std::isnan(weights[i]))
-                {
-                    sumWeights += weights[i];
-                }
-            }
-
-            std::sort(values.begin(), values.end(), [](const std::shared_ptr<Numeric::WeightedValue> lhs, const std::shared_ptr<Numeric::WeightedValue> rhs)
-            {
-                return lhs->value < rhs->value;
-            });
-
-            double cumulativeWeight = 0;
-            double requestedCumulativeWeight = sumWeights * quantile;
-
-            for (size_t i = 0; i < values.size(); i++)
-            {
-                if (!std::isnan(values[i]->weight))
-                {
-                    cumulativeWeight += values[i]->weight;
-                    if (cumulativeWeight >= requestedCumulativeWeight)
-                    {
-                        return static_cast<int>(index[values[i]]);
-                    }
-                }
-            }
-
-            // should not come here
-            return static_cast<int>(index[values.back()]);
+            return -1;
         }
+
+        std::vector<std::shared_ptr<Numeric::WeightedValue>> values;
+        std::unordered_map<std::shared_ptr<Numeric::WeightedValue>, size_t> index;
+        double sumWeights = 0;
+        for (size_t i = 0; i < samples.size(); i++)
+        {
+            std::shared_ptr<Numeric::WeightedValue> value = std::make_shared<Numeric::WeightedValue>(samples[i], weights[i]);
+            index[value] = i;
+            values.push_back(value);
+            if (!std::isnan(weights[i]))
+            {
+                sumWeights += weights[i];
+            }
+        }
+
+        std::sort(values.begin(), values.end(), []
+            (const std::shared_ptr<Numeric::WeightedValue>& lhs, const std::shared_ptr<Numeric::WeightedValue>& rhs)
+        {
+            return lhs->value < rhs->value;
+        });
+
+        double cumulativeWeight = 0;
+        const double requestedCumulativeWeight = sumWeights * quantile;
+
+        for (const auto& value: values)
+        {
+            if (!std::isnan(value->weight))
+            {
+                cumulativeWeight += value->weight;
+                if (cumulativeWeight >= requestedCumulativeWeight)
+                {
+                    return static_cast<int>(index[value]);
+                }
+            }
+        }
+
+        // should not come here
+        return static_cast<int>(index[values.back()]);
     }
 }
 

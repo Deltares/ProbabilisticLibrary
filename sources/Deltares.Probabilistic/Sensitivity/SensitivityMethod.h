@@ -28,68 +28,67 @@
 
 #include "SensitivityResult.h"
 
-namespace Deltares
+namespace Deltares::Sensitivity
 {
-    namespace Sensitivity
+    /**
+     * \brief Base class for calculation of the sensitivity
+     */
+    class SensitivityMethod
     {
+    public:
+
+        virtual ~SensitivityMethod() = default;
+
         /**
-         * \brief Base class for calculation of the sensitivity
+         * \brief Gets the sensitivity
+         * \param modelRunner The model for which the sensitivity is calculated
+         * \return The sensitivity in the form of a stochastic variable
          */
-        class SensitivityMethod
-        {
-        public:
+        virtual SensitivityResult getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner)
+            { return SensitivityResult(); }
 
-            virtual ~SensitivityMethod() = default;
+        /**
+         * \brief Gets the correlation matrix
+         * \return Correlation matrix from all getStochast runs
+         */
+        virtual std::shared_ptr<Statistics::CorrelationMatrix> getCorrelationMatrix() { return this->correlationMatrixBuilder->getCorrelationMatrix(); }
 
-            /**
-             * \brief Gets the sensitivity
-             * \param modelRunner The model for which the sensitivity is calculated
-             * \return The sensitivity in the form of a stochastic variable
-             */
-            virtual Sensitivity::SensitivityResult getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner) { return SensitivityResult(); };
+        /**
+         * \brief Indicates whether the calculation has been stopped
+         */
+        bool isStopped() const;
 
-            /**
-             * \brief Gets the correlation matrix
-             * \return Correlation matrix from all getStochast runs
-             */
-            virtual std::shared_ptr<Statistics::CorrelationMatrix> getCorrelationMatrix() { return this->correlationMatrixBuilder->getCorrelationMatrix(); }
+        /**
+         * \brief Stops the calculation
+         * \remark Usually called from another thread
+         */
+        void Stop();
 
-            /**
-             * \brief Indicates whether the calculation has been stopped
-             */
-            bool isStopped();
+    protected:
+        virtual void setStopped();
+        std::shared_ptr<Statistics::Stochast> getStochastFromSamples(std::vector<double>& samples, std::vector<double>& weights);
+        std::shared_ptr<Statistics::Stochast> getStochastFromSamples(std::vector<std::shared_ptr<Numeric::WeightedValue>>& weightedValues);
 
-            /**
-             * \brief Stops the calculation
-             * \remark Usually called from another thread
-             */
-            void Stop();
+        /**
+         * \brief Creates a correlation matrix from all sensitivity runs
+         */
+        std::shared_ptr<CorrelationMatrixBuilder> correlationMatrixBuilder = std::make_shared<CorrelationMatrixBuilder>();
 
-        protected:
-            virtual void setStopped();
-            std::shared_ptr<Statistics::Stochast> getStochastFromSamples(std::vector<double>& samples, std::vector<double>& weights);
-            std::shared_ptr<Statistics::Stochast> getStochastFromSamples(std::vector<std::shared_ptr<Numeric::WeightedValue>>& weightedValues);
+        /**
+         * \brief Gets the index in a list of samples corresponding with a quantile
+         */
+        static int getQuantileIndex(const std::vector<std::shared_ptr<Numeric::WeightedValue>>& weightedValues, double quantile);
 
-            /**
-             * \brief Creates a correlation matrix from all sensitivity runs
-             */
-            std::shared_ptr<CorrelationMatrixBuilder> correlationMatrixBuilder = std::make_shared<CorrelationMatrixBuilder>();
+        /**
+         * \brief Gets the index in a list of samples corresponding with a quantile
+         */
+        static int getQuantileIndex(std::vector<double>& samples, std::vector<double>& weights, double quantile);
 
-            /**
-             * \brief Gets the index in a list of samples corresponding with a quantile
-             */
-            int getQuantileIndex(std::vector<std::shared_ptr<Numeric::WeightedValue>>& weightedValues, double quantile);
+    private:
+        bool stopped = false;
 
-            /**
-             * \brief Gets the index in a list of samples corresponding with a quantile
-             */
-            int getQuantileIndex(std::vector<double>& samples, std::vector<double>& weights, double quantile);
-
-        private:
-            bool stopped = false;
-
-            void filterSamples(std::vector<double>& samples, std::vector<double>& weights);
-        };
-    }
+        static void filterSamples(std::vector<double>& samples, std::vector<double>& weights);
+    };
 }
+
 

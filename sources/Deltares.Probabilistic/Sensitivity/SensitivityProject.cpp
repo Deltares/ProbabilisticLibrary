@@ -21,94 +21,91 @@
 //
 #include "SensitivityProject.h"
 
-namespace Deltares
+namespace Deltares::Sensitivity
 {
-    namespace Sensitivity
+    void SensitivityProject::run()
     {
-        void SensitivityProject::run()
+        modelRuns = 0;
+
+        sensitivityResult = nullptr;
+        sensitivityResults.clear();
+
+        settings->RandomSettings->setFixed(true);
+
+        sensitivityMethod = settings->GetSensitivityMethod();
+        runSettings = settings->RunSettings;
+
+        if (parameter.empty())
         {
-            this->modelRuns = 0;
-
-            this->sensitivityResult = nullptr;
-            this->sensitivityResults.clear();
-
-            this->settings->RandomSettings->setFixed(true);
-
-            this->sensitivityMethod = this->settings->GetSensitivityMethod();
-            this->runSettings = this->settings->RunSettings;
-
-            if (this->parameter.empty())
+            for (const auto& modelParameter : model->outputParameters)
             {
-                for (std::shared_ptr<Models::ModelInputParameter>& modelParameter : this->model->outputParameters)
+                parameterSelector->parameter = modelParameter->name;
+                if (modelParameter->isArray)
                 {
-                    this->parameterSelector->parameter = modelParameter->name;
-                    if (modelParameter->isArray)
+                    for (int index = 0; index < modelParameter->arraySize; index++)
                     {
-                        for (int index = 0; index < modelParameter->arraySize; index++)
-                        {
-                            this->parameterSelector->arrayIndex = index;
+                        parameterSelector->arrayIndex = index;
 
-                            auto result = std::make_shared<SensitivityResult>(getSensitivityResult());
-                            result->stochast->name += "[" + std::to_string(index) + "]";
-                            this->sensitivityResults.push_back(result);
-                        }
-                    }
-                    else
-                    {
-                        auto result = std::make_shared<SensitivityResult>(this->getSensitivityResult());
-                        this->sensitivityResults.push_back(result);
+                        auto result = std::make_shared<SensitivityResult>(getSensitivityResult());
+                        result->stochast->name += "[" + std::to_string(index) + "]";
+                        sensitivityResults.push_back(result);
                     }
                 }
-            }
-            else
-            {
-                this->parameterSelector->parameter = this->parameter;
-                this->parameterSelector->arrayIndex = this->arrayIndex;
-
-                auto result = std::make_shared<SensitivityResult>(this->getSensitivityResult());
-                this->sensitivityResults.push_back(result);
-            }
-
-            if (!this->sensitivityResults.empty())
-            {
-                this->sensitivityResult = this->sensitivityResults[0];
-            }
-
-            // reset the index
-            this->model->Index = 0;
-
-            this->settings->RandomSettings->setFixed(false);
-
-            this->outputCorrelationMatrix = nullptr;
-            if (this->settings->CalculateCorrelations)
-            {
-                this->outputCorrelationMatrix = this->sensitivityMethod->getCorrelationMatrix();
+                else
+                {
+                    auto result = std::make_shared<SensitivityResult>(getSensitivityResult());
+                    sensitivityResults.push_back(result);
+                }
             }
         }
-
-        SensitivityResult SensitivityProject::getSensitivityResult()
+        else
         {
-            this->model->zValueConverter = this->parameterSelector;
+            parameterSelector->parameter = parameter;
+            parameterSelector->arrayIndex = arrayIndex;
 
-            std::shared_ptr<Models::UConverter> uConverter = std::make_shared<Models::UConverter>(this->stochasts, this->correlationMatrix);
-            const std::shared_ptr<Models::ModelRunner> modelRunner = std::make_shared<Models::ModelRunner>(this->model, uConverter, this->progressIndicator);
-            modelRunner->Settings = this->runSettings;
-            modelRunner->initializeForRun();
-
-            auto result = this->sensitivityMethod->getSensitivityStochast(modelRunner);
-            result.stochast->name = this->parameterSelector->parameter;
-
-            this->modelRuns += this->model->getModelRuns();
-
-            return result;
+            auto result = std::make_shared<SensitivityResult>(getSensitivityResult());
+            sensitivityResults.push_back(result);
         }
 
-        bool SensitivityProject::isValid()
+        if (!sensitivityResults.empty())
         {
-            return ModelProject::isValid() &&
-                runSettings != nullptr && runSettings->isValid() &&
-                settings->isValid();
+            sensitivityResult = sensitivityResults[0];
         }
+
+        // reset the index
+        model->Index = 0;
+
+        settings->RandomSettings->setFixed(false);
+
+        outputCorrelationMatrix = nullptr;
+        if (settings->CalculateCorrelations)
+        {
+            outputCorrelationMatrix = sensitivityMethod->getCorrelationMatrix();
+        }
+    }
+
+    SensitivityResult SensitivityProject::getSensitivityResult()
+    {
+        model->zValueConverter = parameterSelector;
+
+        std::shared_ptr<Models::UConverter> uConverter = std::make_shared<Models::UConverter>(stochasts, correlationMatrix);
+        const std::shared_ptr<Models::ModelRunner> modelRunner = std::make_shared<Models::ModelRunner>(model, uConverter, progressIndicator);
+        modelRunner->Settings = runSettings;
+        modelRunner->initializeForRun();
+
+        auto result = sensitivityMethod->getSensitivityStochast(modelRunner);
+        result.stochast->name = parameterSelector->parameter;
+
+        modelRuns += model->getModelRuns();
+
+        return result;
+    }
+
+    bool SensitivityProject::isValid()
+    {
+        return ModelProject::isValid() &&
+            runSettings != nullptr && runSettings->isValid() &&
+            settings->isValid();
     }
 }
 

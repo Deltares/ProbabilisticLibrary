@@ -29,82 +29,80 @@
 #include "../Statistics/Stochast.h"
 #include "../Statistics/CorrelationMatrix.h"
 
-namespace Deltares
+namespace Deltares::Sensitivity
 {
-    namespace Sensitivity
+    /**
+     * \brief Combines a model, stochastic variables and calculation settings, can perform a calculation and holds results
+     */
+    class SensitivityProject : public Models::ModelProject
     {
+    public:
         /**
-         * \brief Combines a model, stochastic variables and calculation settings, can perform a calculation and holds results
+         * \brief Method which performs a reliability calculation
          */
-        class SensitivityProject : public Models::ModelProject
-        {
-        public:
-            /**
-             * \brief Method which performs a reliability calculation
-             */
-            std::shared_ptr<Sensitivity::SensitivityMethod> sensitivityMethod = nullptr;
+        std::shared_ptr<SensitivityMethod> sensitivityMethod = nullptr;
 
-            /**
-             * \brief Output parameter for which the sensitivity is calculated, blank for all parameters
-             */
-            std::string parameter = "";
+        /**
+         * \brief Output parameter for which the sensitivity is calculated, blank for all parameters
+         */
+        std::string parameter = "";
 
-            /**
-             * \brief Array index of the output parameter if the parameter is an array
-             */
-            int arrayIndex = 0;
+        /**
+         * \brief Array index of the output parameter if the parameter is an array
+         */
+        int arrayIndex = 0;
 
-            /**
-             * \brief Calculation settings
-             */
-            std::shared_ptr<Sensitivity::SettingsS> settings = std::make_shared<Sensitivity::SettingsS>();
+        /**
+         * \brief Calculation settings
+         */
+        std::shared_ptr<SettingsS> settings = std::make_shared<SettingsS>();
 
-            /**
-             * \brief Settings for performing a calculation
-             * \remark Settings of the reliability calculation are held in the settings of the reliability method
-             */
-            std::shared_ptr<Models::RunSettings> runSettings = std::make_shared<Models::RunSettings>();
+        /**
+         * \brief Settings for performing a calculation
+         * \remark Settings of the reliability calculation are held in the settings of the reliability method
+         */
+        std::shared_ptr<Models::RunSettings> runSettings = std::make_shared<Models::RunSettings>();
 
-            /**
-             * \brief Callback for progress during the calculation
-             */
-            std::shared_ptr<Models::ProgressIndicator> progressIndicator = nullptr;
+        /**
+         * \brief Callback for progress during the calculation
+         */
+        std::shared_ptr<Models::ProgressIndicator> progressIndicator = nullptr;
 
-            /**
-             * \brief Results of the sensitivity calculation
-             */
-            std::shared_ptr<Sensitivity::SensitivityResult> sensitivityResult = nullptr;
+        /**
+         * \brief Results of the sensitivity calculation
+         */
+        std::shared_ptr<SensitivityResult> sensitivityResult = nullptr;
 
-            /**
-             * \brief Results of the sensitivity calculation
-             */
-            std::vector<std::shared_ptr<Sensitivity::SensitivityResult>> sensitivityResults;
+        /**
+         * \brief Results of the sensitivity calculation
+         */
+        std::vector<std::shared_ptr<SensitivityResult>> sensitivityResults;
 
-            /**
-             * \brief Resulting correlation matrix
-             */
-            std::shared_ptr<Statistics::CorrelationMatrix> outputCorrelationMatrix = nullptr;
+        /**
+         * \brief Resulting correlation matrix
+         */
+        std::shared_ptr<Statistics::CorrelationMatrix> outputCorrelationMatrix = nullptr;
 
-            /**
-             * \brief Indicates whether the input is valid
-             * \return Indication
-             */
-            bool isValid() override;
+        /**
+         * \brief Indicates whether the input is valid
+         * \return Indication
+         */
+        bool isValid() override;
 
-            /**
-             * \brief Performs the sensitivity calculation
-             * \return Sensitivity result
-             */
-            Sensitivity::SensitivityResult getSensitivityResult();
+        /**
+         * \brief Performs the sensitivity calculation
+         * \return Sensitivity result
+         */
+        SensitivityResult getSensitivityResult();
 
-            /**
-             * \brief Runs the reliability calculation
-             */
-            void run();
+        /**
+         * \brief Runs the reliability calculation
+         */
+        void run();
 
-        private:
-            std::shared_ptr<ParameterSelector> parameterSelector = std::make_shared<ParameterSelector>();
-        };
-    }
+    private:
+        std::shared_ptr<ParameterSelector> parameterSelector = std::make_shared<ParameterSelector>();
+    };
 }
+
 
