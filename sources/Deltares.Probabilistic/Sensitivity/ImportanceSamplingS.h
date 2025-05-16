@@ -31,7 +31,7 @@ namespace Deltares
          * \brief Calculates the sensitivity using the Importance Sampling algorithm
          * \remark This algorithm focuses on the tail of the sensitivity, but only works well when the start point (in the settings) is specified well by the user
          */
-        class ImportanceSamplingS : public SensitivityMethod
+        class ImportanceSamplingS : public UncertaintyMethod
         {
         public:
             /**

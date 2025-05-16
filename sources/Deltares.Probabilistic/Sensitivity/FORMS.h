@@ -30,7 +30,7 @@ namespace Deltares
         /**
          * \brief Calculates the sensitivity using the FORM algorithm
          */
-        class FORMS : public SensitivityMethod
+        class FORMS : public UncertaintyMethod
         {
         public:
             /**

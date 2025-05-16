@@ -136,7 +136,7 @@ namespace Deltares
             /**
              * \brief Gets the reliability method and settings based on these settings
              */
-            std::shared_ptr<Sensitivity::SensitivityMethod> GetSensitivityMethod();
+            std::shared_ptr<Sensitivity::UncertaintyMethod> GetSensitivityMethod();
 
 
             /**
@@ -148,12 +148,12 @@ namespace Deltares
             static std::string getSensitivityMethodTypeString(SensitivityMethodType method);
             static SensitivityMethodType getSensitivityMethodType(std::string method);
         private:
-            const std::shared_ptr<Sensitivity::SensitivityMethod> GetFORMMethod();
-            const std::shared_ptr<Sensitivity::SensitivityMethod> GetFOSMMethod();
-            const std::shared_ptr<Sensitivity::SensitivityMethod> GetNumericalIntegrationMethod();
-            const std::shared_ptr<Sensitivity::SensitivityMethod> GetCrudeMonteCarloMethod();
-            const std::shared_ptr<Sensitivity::SensitivityMethod> GetImportanceSamplingMethod();
-            const std::shared_ptr<Sensitivity::SensitivityMethod> GetDirectionalSamplingMethod();
+            const std::shared_ptr<Sensitivity::UncertaintyMethod> GetFORMMethod();
+            const std::shared_ptr<Sensitivity::UncertaintyMethod> GetFOSMMethod();
+            const std::shared_ptr<Sensitivity::UncertaintyMethod> GetNumericalIntegrationMethod();
+            const std::shared_ptr<Sensitivity::UncertaintyMethod> GetCrudeMonteCarloMethod();
+            const std::shared_ptr<Sensitivity::UncertaintyMethod> GetImportanceSamplingMethod();
+            const std::shared_ptr<Sensitivity::UncertaintyMethod> GetDirectionalSamplingMethod();
         };
     }
 }

@@ -215,7 +215,7 @@ namespace Deltares
                 runProjectSettings[id] = std::make_shared<Deltares::Models::RunProjectSettings>();
                 break;
             case ObjectType::SensitivityProject:
-                sensitivityProjects[id] = std::make_shared<Deltares::Sensitivity::SensitivityProject>();
+                sensitivityProjects[id] = std::make_shared<Deltares::Sensitivity::UncertaintyProject>();
                 break;
             case ObjectType::SensitivitySettings:
                 sensitivitySettingsValues[id] = std::make_shared<Deltares::Sensitivity::SettingsS>();
@@ -652,7 +652,7 @@ namespace Deltares
             }
             else if (objectType == ObjectType::SensitivityProject)
             {
-                std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
+                std::shared_ptr<Sensitivity::UncertaintyProject> project = sensitivityProjects[id];
 
                 if (property_ == "sensitivity_stochasts_count") return static_cast<int>(project->sensitivityResults.size());
                 else if (property_ == "stochasts_count") return static_cast<int>(project->stochasts.size());
@@ -809,7 +809,7 @@ namespace Deltares
             }
             else if (objectType == ObjectType::SensitivityProject)
             {
-                std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
+                std::shared_ptr<Sensitivity::UncertaintyProject> project = sensitivityProjects[id];
 
                 if (property_ == "sensitivity_stochast") return GetStochastId(project->sensitivityResult->stochast, newId);
                 else if (property_ == "sensitivity_result") return GetSensitivityResultId(project->sensitivityResult, newId);
@@ -902,7 +902,7 @@ namespace Deltares
             }
             else if (objectType == ObjectType::SensitivityProject)
             {
-                std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
+                std::shared_ptr<Sensitivity::UncertaintyProject> project = sensitivityProjects[id];
 
                 if (property_ == "settings") project->settings = sensitivitySettingsValues[value];
                 else if (property_ == "correlation_matrix") project->correlationMatrix = correlationMatrices[value];
@@ -1128,7 +1128,7 @@ namespace Deltares
             }
             else if (objectType == ObjectType::SensitivityProject)
             {
-                std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
+                std::shared_ptr<Sensitivity::UncertaintyProject> project = sensitivityProjects[id];
 
                 if (property_ == "is_valid") return project->isValid();
             }
@@ -1434,7 +1434,7 @@ namespace Deltares
             }
             else if (objectType == ObjectType::SensitivityProject)
             {
-                std::shared_ptr<Sensitivity::SensitivityProject> sensitivityProject = sensitivityProjects[id];
+                std::shared_ptr<Sensitivity::UncertaintyProject> sensitivityProject = sensitivityProjects[id];
 
                 if (property_ == "model_name") sensitivityProject->model->name = value;
             }
@@ -1572,7 +1572,7 @@ namespace Deltares
             }
             else if (objectType == ObjectType::SensitivityProject)
             {
-                std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
+                std::shared_ptr<Sensitivity::UncertaintyProject> project = sensitivityProjects[id];
 
                 if (property_ == "variables")
                 {
@@ -1943,7 +1943,7 @@ namespace Deltares
             }
             else if (objectType == ObjectType::SensitivityProject)
             {
-                std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
+                std::shared_ptr<Sensitivity::UncertaintyProject> project = sensitivityProjects[id];
 
                 if (property_ == "stochasts") return GetStochastId(project->stochasts[index], newId);
                 else if (property_ == "sensitivity_stochasts") return GetStochastId(project->sensitivityResults[index]->stochast, newId);
@@ -1999,7 +1999,7 @@ namespace Deltares
             }
             else if (objectType == ObjectType::SensitivityProject)
             {
-                std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
+                std::shared_ptr<Sensitivity::UncertaintyProject> project = sensitivityProjects[id];
 
                 if (property_ == "model") project->model = std::make_shared<ZModel>(callBack);
             }
@@ -2017,7 +2017,7 @@ namespace Deltares
             }
             else if (objectType == ObjectType::SensitivityProject)
             {
-                std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
+                std::shared_ptr<Sensitivity::UncertaintyProject> project = sensitivityProjects[id];
 
                 if (property_ == "model") project->model->setMultipleCallback(callBack);
             }
@@ -2041,7 +2041,7 @@ namespace Deltares
             }
             else if (objectType == ObjectType::SensitivityProject)
             {
-                std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
+                std::shared_ptr<Sensitivity::UncertaintyProject> project = sensitivityProjects[id];
 
                 if (property_ == "run_samples") project->model->setRunMethod(callBack);
             }
@@ -2098,7 +2098,7 @@ namespace Deltares
             }
             else if (objectType == ObjectType::SensitivityProject)
             {
-                std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
+                std::shared_ptr<Sensitivity::UncertaintyProject> project = sensitivityProjects[id];
 
                 if (method_ == "run") project->run();
             }

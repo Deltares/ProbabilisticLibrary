@@ -30,7 +30,7 @@ namespace Deltares
         /**
          * \brief Calculates the sensitivity using the FOSM (First Order Second Moment) algorithm
          */
-        class FOSM : public SensitivityMethod
+        class FOSM : public UncertaintyMethod
         {
         public:
             /**

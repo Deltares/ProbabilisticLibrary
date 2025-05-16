@@ -31,7 +31,7 @@ namespace Deltares
         /**
          * \brief Calculates the sensitivity using the Crude Monte Carlo algorithm
          */
-        class CrudeMonteCarloS : public SensitivityMethod
+        class CrudeMonteCarloS : public UncertaintyMethod
         {
         public:
             /**

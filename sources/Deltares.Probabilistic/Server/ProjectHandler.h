@@ -136,7 +136,7 @@ namespace Deltares
             std::unordered_map<int, std::shared_ptr<Statistics::SelfCorrelationMatrix>> selfCorrelationMatrices;
             std::unordered_map<int, std::shared_ptr<Models::RunProject>> runProjects;
             std::unordered_map<int, std::shared_ptr<Models::RunProjectSettings>> runProjectSettings;
-            std::unordered_map<int, std::shared_ptr<Sensitivity::SensitivityProject>> sensitivityProjects;
+            std::unordered_map<int, std::shared_ptr<Sensitivity::UncertaintyProject>> sensitivityProjects;
             std::unordered_map<int, std::shared_ptr<Sensitivity::SettingsS>> sensitivitySettingsValues;
             std::unordered_map<int, std::shared_ptr<Sensitivity::SensitivityResult>> sensitivityResults;
 

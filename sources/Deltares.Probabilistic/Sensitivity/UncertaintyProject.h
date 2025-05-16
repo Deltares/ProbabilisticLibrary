@@ -34,16 +34,16 @@ namespace Deltares::Sensitivity
     /**
      * \brief Combines a model, stochastic variables and calculation settings, can perform a calculation and holds results
      */
-    class SensitivityProject : public Models::ModelProject
+    class UncertaintyProject : public Models::ModelProject
     {
     public:
         /**
-         * \brief Method which performs a reliability calculation
+         * \brief Method which performs a uncertainty calculation
          */
-        std::shared_ptr<SensitivityMethod> sensitivityMethod = nullptr;
+        std::shared_ptr<UncertaintyMethod> sensitivityMethod = nullptr;
 
         /**
-         * \brief Output parameter for which the sensitivity is calculated, blank for all parameters
+         * \brief Output parameter for which the uncertainty is calculated, blank for all parameters
          */
         std::string parameter = "";
 
@@ -59,7 +59,7 @@ namespace Deltares::Sensitivity
 
         /**
          * \brief Settings for performing a calculation
-         * \remark Settings of the reliability calculation are held in the settings of the reliability method
+         * \remark Settings of the uncertainty calculation are held in the settings of the uncertainty method
          */
         std::shared_ptr<Models::RunSettings> runSettings = std::make_shared<Models::RunSettings>();
 

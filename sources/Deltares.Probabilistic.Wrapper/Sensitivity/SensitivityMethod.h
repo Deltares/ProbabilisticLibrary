@@ -35,7 +35,7 @@ namespace Deltares
             public:
                 SensitivityMethod() {  }
 
-                virtual std::shared_ptr<Sensitivity::SensitivityMethod> GetNativeSensitivityMethod()
+                virtual std::shared_ptr<Sensitivity::UncertaintyMethod> GetNativeSensitivityMethod()
                 {
                     return nullptr;
                 };

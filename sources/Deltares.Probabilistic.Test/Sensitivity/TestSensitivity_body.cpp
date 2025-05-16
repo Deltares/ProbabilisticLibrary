@@ -57,7 +57,7 @@ namespace Deltares
 
             void TestSensitivity::testCrudeMonteCarloAddOne()
             {
-                std::shared_ptr<Sensitivity::SensitivityProject> project = projectBuilder::getSensitivityProject(projectBuilder::getAddOneProject());
+                std::shared_ptr<Sensitivity::UncertaintyProject> project = projectBuilder::getSensitivityProject(projectBuilder::getAddOneProject());
 
                 std::shared_ptr<Sensitivity::CrudeMonteCarloS> sensitivityMethod = std::make_shared<Sensitivity::CrudeMonteCarloS>();
                 sensitivityMethod->Settings->randomSettings->RandomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::MersenneTwister;
@@ -76,7 +76,7 @@ namespace Deltares
 
             void TestSensitivity::testCrudeMonteCarloLinear()
             {
-                std::shared_ptr<Sensitivity::SensitivityProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearProject());
+                std::shared_ptr<Sensitivity::UncertaintyProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearProject());
 
                 std::shared_ptr<Sensitivity::CrudeMonteCarloS> sensitivityMethod = std::make_shared<Sensitivity::CrudeMonteCarloS>();
                 sensitivityMethod->Settings->randomSettings->RandomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::MersenneTwister;
@@ -107,7 +107,7 @@ namespace Deltares
 
             void TestSensitivity::testCrudeMonteCarloLinearNonRepeatable()
             {
-                std::shared_ptr<Sensitivity::SensitivityProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearProject());
+                std::shared_ptr<Sensitivity::UncertaintyProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearProject());
 
                 std::shared_ptr<Sensitivity::CrudeMonteCarloS> sensitivityMethod = std::make_shared<Sensitivity::CrudeMonteCarloS>();
                 sensitivityMethod->Settings->randomSettings->RandomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::MersenneTwister;
@@ -145,7 +145,7 @@ namespace Deltares
 
             void TestSensitivity::testCrudeMonteCarloLinearOutput()
             {
-                std::shared_ptr<Sensitivity::SensitivityProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearOutputProject());
+                std::shared_ptr<Sensitivity::UncertaintyProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearOutputProject());
 
                 project->settings->SensitivityMethod = Sensitivity::SensitivityCrudeMonteCarlo;
                 project->settings->RandomSettings->IsRepeatableRandom = true;
@@ -166,7 +166,7 @@ namespace Deltares
 
             void TestSensitivity::testCrudeMonteCarloLinearOutputNonRepeatable()
             {
-                std::shared_ptr<Sensitivity::SensitivityProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearOutputProject());
+                std::shared_ptr<Sensitivity::UncertaintyProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearOutputProject());
 
                 project->settings->SensitivityMethod = Sensitivity::SensitivityCrudeMonteCarlo;
                 project->settings->RandomSettings->IsRepeatableRandom = false;
@@ -185,7 +185,7 @@ namespace Deltares
 
             void TestSensitivity::testCrudeMonteCarloLinearManySamples()
             {
-                std::shared_ptr<Sensitivity::SensitivityProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearProject());
+                std::shared_ptr<Sensitivity::UncertaintyProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearProject());
 
                 std::shared_ptr<Sensitivity::CrudeMonteCarloS> sensitivityMethod = std::make_shared<Sensitivity::CrudeMonteCarloS>();
                 sensitivityMethod->Settings->randomSettings->RandomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::MersenneTwister;
@@ -206,7 +206,7 @@ namespace Deltares
 
             void TestSensitivity::testCrudeMonteCarloLinearAutoSamples()
             {
-                std::shared_ptr<Sensitivity::SensitivityProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearProject());
+                std::shared_ptr<Sensitivity::UncertaintyProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearProject());
 
                 std::shared_ptr<Sensitivity::CrudeMonteCarloS> sensitivityMethod = std::make_shared<Sensitivity::CrudeMonteCarloS>();
                 sensitivityMethod->Settings->randomSettings->RandomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::MersenneTwister;
@@ -223,7 +223,7 @@ namespace Deltares
 
             void TestSensitivity::testImportanceSamplingAddOne()
             {
-                std::shared_ptr<Sensitivity::SensitivityProject> project = projectBuilder::getSensitivityProject(projectBuilder::getAddOneProject());
+                std::shared_ptr<Sensitivity::UncertaintyProject> project = projectBuilder::getSensitivityProject(projectBuilder::getAddOneProject());
 
                 std::shared_ptr<Sensitivity::ImportanceSamplingS> sensitivityMethod = std::make_shared<Sensitivity::ImportanceSamplingS>();
                 sensitivityMethod->Settings->randomSettings->RandomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::MersenneTwister;
@@ -249,7 +249,7 @@ namespace Deltares
 
             void TestSensitivity::testNumericalIntegration()
             {
-                std::shared_ptr<Sensitivity::SensitivityProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearProject());
+                std::shared_ptr<Sensitivity::UncertaintyProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearProject());
 
                 std::shared_ptr<Sensitivity::NumericalIntegrationS> sensitivityMethod = std::make_shared<Sensitivity::NumericalIntegrationS>();
                 sensitivityMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.05));
@@ -271,7 +271,7 @@ namespace Deltares
 
             void TestSensitivity::testDirectionalSampling()
             {
-                std::shared_ptr<Sensitivity::SensitivityProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearProject());
+                std::shared_ptr<Sensitivity::UncertaintyProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearProject());
 
                 std::shared_ptr<Sensitivity::DirectionalSamplingS> sensitivityMethod = std::make_shared<Sensitivity::DirectionalSamplingS>();
 
@@ -292,7 +292,7 @@ namespace Deltares
 
             void TestSensitivity::testFORM()
             {
-                std::shared_ptr<Sensitivity::SensitivityProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearProject());
+                std::shared_ptr<Sensitivity::UncertaintyProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearProject());
 
                 std::shared_ptr<Sensitivity::FORMS> sensitivityMethod = std::make_shared<Sensitivity::FORMS>();
                 sensitivityMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.05));
@@ -314,7 +314,7 @@ namespace Deltares
 
             void TestSensitivity::testFOSM()
             {
-                std::shared_ptr<Sensitivity::SensitivityProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearProject());
+                std::shared_ptr<Sensitivity::UncertaintyProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearProject());
 
                 std::shared_ptr<Sensitivity::FOSM> sensitivityMethod = std::make_shared<Sensitivity::FOSM>();
                 sensitivityMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.05));

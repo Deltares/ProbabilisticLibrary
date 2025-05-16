@@ -30,7 +30,7 @@ namespace Deltares
         /**
          * \brief Calculates the sensitivity using the numerical integration algorithm
          */
-        class NumericalIntegrationS : public SensitivityMethod
+        class NumericalIntegrationS : public UncertaintyMethod
         {
         public:
             /**

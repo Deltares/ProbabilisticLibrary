@@ -23,7 +23,7 @@
 
 namespace Deltares::Sensitivity
 {
-    void SensitivityProject::run()
+    void UncertaintyProject::run()
     {
         modelRuns = 0;
 
@@ -84,7 +84,7 @@ namespace Deltares::Sensitivity
         }
     }
 
-    SensitivityResult SensitivityProject::getSensitivityResult()
+    SensitivityResult UncertaintyProject::getSensitivityResult()
     {
         model->zValueConverter = parameterSelector;
 
@@ -101,7 +101,7 @@ namespace Deltares::Sensitivity
         return result;
     }
 
-    bool SensitivityProject::isValid()
+    bool UncertaintyProject::isValid()
     {
         return ModelProject::isValid() &&
             runSettings != nullptr && runSettings->isValid() &&

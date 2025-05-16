@@ -27,22 +27,22 @@
 
 namespace Deltares::Sensitivity
 {
-    bool SensitivityMethod::isStopped() const
+    bool UncertaintyMethod::isStopped() const
     {
         return stopped;
     }
 
-    void SensitivityMethod::setStopped()
+    void UncertaintyMethod::setStopped()
     {
         stopped = true;
     }
 
-    void SensitivityMethod::Stop()
+    void UncertaintyMethod::Stop()
     {
         setStopped();
     }
 
-    void SensitivityMethod::filterSamples(std::vector<double>& samples, std::vector<double>& weights)
+    void UncertaintyMethod::filterSamples(std::vector<double>& samples, std::vector<double>& weights)
     {
         bool hasInvalidValues = false;
 
@@ -80,7 +80,7 @@ namespace Deltares::Sensitivity
         }
     }
 
-    std::shared_ptr<Statistics::Stochast> SensitivityMethod::getStochastFromSamples(std::vector<std::shared_ptr<Numeric::WeightedValue>>& weightedValues)
+    std::shared_ptr<Statistics::Stochast> UncertaintyMethod::getStochastFromSamples(std::vector<std::shared_ptr<Numeric::WeightedValue>>& weightedValues)
     {
         std::vector<double> values;
         std::vector<double> weights;
@@ -94,7 +94,7 @@ namespace Deltares::Sensitivity
         return getStochastFromSamples(values, weights);
     }
 
-    std::shared_ptr<Statistics::Stochast> SensitivityMethod::getStochastFromSamples(std::vector<double>& samples, std::vector<double>& weights)
+    std::shared_ptr<Statistics::Stochast> UncertaintyMethod::getStochastFromSamples(std::vector<double>& samples, std::vector<double>& weights)
     {
         filterSamples(samples, weights);
 
@@ -126,7 +126,7 @@ namespace Deltares::Sensitivity
         return stochast;
     }
 
-    int SensitivityMethod::getQuantileIndex(const std::vector<std::shared_ptr<Numeric::WeightedValue>>& weightedValues, double quantile)
+    int UncertaintyMethod::getQuantileIndex(const std::vector<std::shared_ptr<Numeric::WeightedValue>>& weightedValues, double quantile)
     {
         std::vector<double> values;
         std::vector<double> weights;
@@ -140,7 +140,7 @@ namespace Deltares::Sensitivity
         return getQuantileIndex(values, weights, quantile);
     }
 
-    int SensitivityMethod::getQuantileIndex(std::vector<double>& samples, std::vector<double>& weights, double quantile)
+    int UncertaintyMethod::getQuantileIndex(std::vector<double>& samples, std::vector<double>& weights, double quantile)
     {
         if (samples.empty())
         {

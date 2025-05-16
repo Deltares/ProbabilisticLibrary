@@ -30,7 +30,7 @@ namespace Deltares
         /**
          * \brief Calculates the sensitivity using the Directional Sampling algorithm
          */
-        class DirectionalSamplingS : public SensitivityMethod
+        class DirectionalSamplingS : public UncertaintyMethod
         {
         public:
             /**

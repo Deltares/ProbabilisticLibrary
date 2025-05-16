@@ -33,11 +33,11 @@ namespace Deltares::Sensitivity
     /**
      * \brief Base class for calculation of the sensitivity
      */
-    class SensitivityMethod
+    class UncertaintyMethod
     {
     public:
 
-        virtual ~SensitivityMethod() = default;
+        virtual ~UncertaintyMethod() = default;
 
         /**
          * \brief Gets the sensitivity
