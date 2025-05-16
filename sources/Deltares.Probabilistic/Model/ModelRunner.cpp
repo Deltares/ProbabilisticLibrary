@@ -165,6 +165,15 @@ namespace Deltares
         }
 
         /**
+         * \brief Indicates whether the sample repository is allowed
+         * \param allowRepository Indication
+         */
+        void ModelRunner::setAllowRepository(bool allowRepository) const
+        {
+            this->zModel->setAllowRepository(allowRepository);
+        }
+
+        /**
          * \brief Calculates a sample
          * \param type Run values type
          * \return Evaluation report of the sample calculation

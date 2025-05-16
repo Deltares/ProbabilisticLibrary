@@ -162,6 +162,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Utils\RandomValueGenerator.h" />
     <ClInclude Include="Reliability\FragilityCurveIntegration.h" />
     <ClInclude Include="Reliability\FragilityCurveIntegrationSettings.h" />
     <ClInclude Include="Reliability\FragilityCurve.h" />
@@ -250,6 +251,7 @@
     <ClInclude Include="Statistics\VariableStochastValue.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Utils\RandomValueGenerator.cpp" />
     <ClCompile Include="Reliability\FragilityCurve.cpp" />
     <ClCompile Include="Reliability\FragilityCurveIntegration.cpp" />
     <ClCompile Include="Reliability\FragilityCurveIntegrationSettings.cpp" />

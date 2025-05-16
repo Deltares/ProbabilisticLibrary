@@ -153,6 +153,8 @@ namespace Deltares
 
         void DesignPointBuilder::addSample(std::shared_ptr<Sample> sample)
         {
+            const double delta = 1E-10;
+
             sampleAdded = true;
 
             double weight = std::isnan(sample->Weight) ? 1 : sample->Weight;
@@ -178,7 +180,14 @@ namespace Deltares
                 double beta = sample->getBeta();
                 if (beta < minimumBeta)
                 {
-                    minimumBeta = beta;
+                    if (Numeric::NumericSupport::areEqual(beta, Statistics::StandardNormal::BetaMax, delta))
+                    {
+                        minimumBeta = beta - 2.0 * delta;
+                    }
+                    else
+                    {
+                        minimumBeta = beta;
+                    }
 
                     meanSample = sample->clone();
                 }
