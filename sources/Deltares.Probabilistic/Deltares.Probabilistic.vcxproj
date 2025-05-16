@@ -219,7 +219,7 @@
     <ClInclude Include="Sensitivity\ImportanceSamplingS.h" />
     <ClInclude Include="Sensitivity\CrudeMonteCarloS.h" />
     <ClInclude Include="Sensitivity\CrudeMonteCarloSettingsS.h" />
-    <ClInclude Include="Sensitivity\SensitivityProject.h" />
+    <ClInclude Include="Sensitivity\UncertaintyProject.h" />
     <ClInclude Include="Sensitivity\UncertaintyMethod.h" />
     <ClInclude Include="Sensitivity\SettingsS.h" />
     <ClInclude Include="Statistics\Distributions\BetaDistribution.h" />
@@ -428,7 +428,7 @@
     <ClCompile Include="Sensitivity\ImportanceSamplingS.cpp" />
     <ClCompile Include="Sensitivity\CrudeMonteCarloS.cpp" />
     <ClCompile Include="Sensitivity\CrudeMonteCarloSettingsS.cpp" />
-    <ClCompile Include="Sensitivity\SensitivityProject.cpp" />
+    <ClCompile Include="Sensitivity\UncertaintyProject.cpp" />
     <ClCompile Include="Sensitivity\UncertaintyMethod.cpp" />
     <ClCompile Include="Sensitivity\SettingsS.cpp" />
     <ClCompile Include="Statistics\Distributions\BetaDistribution.cpp" />

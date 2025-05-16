@@ -23,7 +23,7 @@
 
 #include "../projectBuilder.h"
 
-#include "../../Deltares.Probabilistic/Sensitivity/SensitivityProject.h"
+#include "../../Deltares.Probabilistic/Sensitivity/UncertaintyProject.h"
 #include "../../Deltares.Probabilistic/Sensitivity/CrudeMonteCarloS.h"
 #include "../../Deltares.Probabilistic/Sensitivity/ImportanceSamplingS.h"
 #include "../../Deltares.Probabilistic/Sensitivity/NumericalIntegrationS.h"

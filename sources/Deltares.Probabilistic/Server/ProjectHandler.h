@@ -28,7 +28,7 @@
 #include "../Reliability/Settings.h"
 #include "../Model/RunProject.h"
 #include "../Model/RunProjectSettings.h"
-#include "../Sensitivity/SensitivityProject.h"
+#include "../Sensitivity/UncertaintyProject.h"
 #include "../Sensitivity/SettingsS.h"
 #include "../Combine/CombineProject.h"
 #include "../Combine/CombineSettings.h"

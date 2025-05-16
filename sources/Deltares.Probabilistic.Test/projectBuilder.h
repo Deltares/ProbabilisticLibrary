@@ -25,7 +25,7 @@
 #include "../Deltares.Probabilistic/Model/ModelRunner.h"
 #include "../Deltares.Probabilistic/Model/RunProject.h"
 #include "../Deltares.Probabilistic/Reliability/ReliabilityProject.h"
-#include "../Deltares.Probabilistic/Sensitivity/SensitivityProject.h"
+#include "../Deltares.Probabilistic/Sensitivity/UncertaintyProject.h"
 #include "../Deltares.Probabilistic/Reliability/FragilityCurve.h"
 
 namespace Deltares::Probabilistic::Test
