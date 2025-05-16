@@ -631,7 +631,7 @@ class Stochast(FrozenObject):
 			print(pre + f'distribution = {self.distribution} (inverted, truncated')
 		print('Definition:')
 		if self.conditional:
-			if self.conditional_source == '':
+			if self.conditional_source == '' or self.conditional_source == None:
 				print(pre + f'conditional x values = [{', '.join([f'{value.x:.{decimals}g}' for value in self.conditional_values])}]')
 			else:
 				print(pre + f'conditional source = {self.conditional_source}')
