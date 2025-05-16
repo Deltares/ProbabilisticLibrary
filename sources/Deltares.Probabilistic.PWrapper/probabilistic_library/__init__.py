@@ -22,4 +22,5 @@
 from .interface import *
 from .statistic import *
 from .reliability import *
+from .uncertainty import *
 from .project import *
