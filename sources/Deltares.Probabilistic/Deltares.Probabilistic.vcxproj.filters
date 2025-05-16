@@ -143,7 +143,7 @@
     <ClCompile Include="Combine\HohenbichlerFormCombiner.cpp" />
     <ClCompile Include="Combine\HohenbichlerNumIntCombiner.cpp" />
     <ClCompile Include="Statistics\Distributions\ExponentialDistribution.cpp" />
-    <ClCompile Include="Sensitivity\SensitivityMethod.cpp" />
+    <ClCompile Include="Sensitivity\UncertaintyMethod.cpp" />
     <ClCompile Include="Sensitivity\CrudeMonteCarloS.cpp" />
     <ClCompile Include="Sensitivity\CrudeMonteCarloSettingsS.cpp" />
     <ClCompile Include="Sensitivity\SensitivityProject.cpp" />
@@ -398,7 +398,7 @@
     <ClInclude Include="Combine\HohenbichlerFormCombiner.h" />
     <ClInclude Include="Combine\HohenbichlerNumIntCombiner.h" />
     <ClInclude Include="Statistics\Distributions\ExponentialDistribution.h" />
-    <ClInclude Include="Sensitivity\SensitivityMethod.h" />
+    <ClInclude Include="Sensitivity\UncertaintyMethod.h" />
     <ClInclude Include="Sensitivity\CrudeMonteCarloS.h" />
     <ClInclude Include="Sensitivity\CrudeMonteCarloSettingsS.h" />
     <ClInclude Include="Sensitivity\SensitivityProject.h" />

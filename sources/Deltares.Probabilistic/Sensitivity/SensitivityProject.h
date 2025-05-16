@@ -24,7 +24,7 @@
 
 #include "../Model/ModelProject.h"
 #include "ParameterSelector.h"
-#include "SensitivityMethod.h"
+#include "UncertaintyMethod.h"
 #include "SettingsS.h"
 #include "../Statistics/Stochast.h"
 #include "../Statistics/CorrelationMatrix.h"

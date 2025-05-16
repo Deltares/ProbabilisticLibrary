@@ -21,7 +21,7 @@
 //
 #pragma once
 #include "FOSMSettings.h"
-#include "SensitivityMethod.h"
+#include "UncertaintyMethod.h"
 
 namespace Deltares
 {

@@ -21,7 +21,7 @@
 //
 #pragma once
 
-#include "SensitivityMethod.h"
+#include "UncertaintyMethod.h"
 #include "../Model/RandomSettings.h"
 #include "../Model/RunSettings.h"
 #include "../Model/GradientSettings.h"

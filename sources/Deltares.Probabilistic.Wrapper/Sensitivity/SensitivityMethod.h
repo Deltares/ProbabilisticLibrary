@@ -22,7 +22,7 @@
 #pragma once
 #include "../Statistics/Stochast.h"
 #include "../Model/ModelRunner.h"
-#include "../../Deltares.Probabilistic/Sensitivity/SensitivityMethod.h"
+#include "../../Deltares.Probabilistic/Sensitivity/UncertaintyMethod.h"
 
 namespace Deltares
 {

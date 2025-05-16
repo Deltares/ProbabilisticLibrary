@@ -22,19 +22,19 @@
 
 #include <memory>
 #include <algorithm>
-#include "SensitivityMethod.h"
+#include "UncertaintyMethod.h"
 #include "../Math/NumericSupport.h"
 
 namespace Deltares::Sensitivity
 {
     bool SensitivityMethod::isStopped() const
     {
-        return this->stopped;
+        return stopped;
     }
 
     void SensitivityMethod::setStopped()
     {
-        this->stopped = true;
+        stopped = true;
     }
 
     void SensitivityMethod::Stop()
