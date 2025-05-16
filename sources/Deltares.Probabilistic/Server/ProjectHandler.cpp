@@ -1299,7 +1299,7 @@ namespace Deltares
             {
                 std::shared_ptr<Sensitivity::SettingsS> settings = sensitivitySettingsValues[id];
 
-                if (property_ == "sensitivity_method") return Sensitivity::SettingsS::getSensitivityMethodTypeString(settings->SensitivityMethod);
+                if (property_ == "uncertainty_method") return Sensitivity::SettingsS::getSensitivityMethodTypeString(settings->SensitivityMethod);
                 else if (property_ == "gradient_type") return GradientSettings::getGradientTypeString(settings->GradientSettings->gradientType);
             }
             else if (objectType == ObjectType::CombineSettings)
@@ -1404,7 +1404,7 @@ namespace Deltares
             {
                 std::shared_ptr<Sensitivity::SettingsS> settings = sensitivitySettingsValues[id];
 
-                if (property_ == "sensitivity_method") settings->SensitivityMethod = Sensitivity::SettingsS::getSensitivityMethodType(value);
+                if (property_ == "uncertainty_method") settings->SensitivityMethod = Sensitivity::SettingsS::getSensitivityMethodType(value);
                 else if (property_ == "gradient_type") settings->GradientSettings->gradientType = GradientSettings::getGradientType(value);
             }
             else if (objectType == ObjectType::CombineSettings)
