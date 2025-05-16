@@ -31,7 +31,7 @@ from . import interface
 if not interface.IsLibraryLoaded():
 	interface.LoadDefaultLibrary()
 
-class SensitivityMethod(Enum):
+class UncertaintyMethod(Enum):
 	form = 'form'
 	fosm = 'fosm'
 	numerical_integration = 'numerical_integration'
@@ -41,7 +41,7 @@ class SensitivityMethod(Enum):
 	def __str__(self):
 		return str(self.value)
 
-class SensitivitySettings(FrozenObject):
+class UncertaintySettings(FrozenObject):
 
 	def __init__(self):
 		self._id = interface.Create('sensitivity_settings')
@@ -62,7 +62,7 @@ class SensitivitySettings(FrozenObject):
 		        'save_realizations',
 		        'save_convergence',
 		        'save_messages',
-		        'sensitivity_method',
+		        'uncertainty_method',
 	            'random_type',
 				'is_repeatable_random',
 				'random_seed',
@@ -118,12 +118,12 @@ class SensitivitySettings(FrozenObject):
 		interface.SetBoolValue(self._id, 'save_messages', value)
 
 	@property
-	def sensitivity_method(self) -> SensitivityMethod:
-		return SensitivityMethod[interface.GetStringValue(self._id, 'sensitivity_method')]
+	def uncertainty_method(self) -> UncertaintyMethod:
+		return UncertaintyMethod[interface.GetStringValue(self._id, 'uncertainty_method')]
 		
-	@sensitivity_method.setter
-	def sensitivity_method(self, value : SensitivityMethod):
-		interface.SetStringValue(self._id, 'sensitivity_method', str(value))
+	@uncertainty_method.setter
+	def uncertainty_method(self, value : UncertaintyMethod):
+		interface.SetStringValue(self._id, 'uncertainty_method', str(value))
 
 	@property
 	def random_type(self) -> RandomType:
@@ -324,7 +324,7 @@ class SensitivitySettings(FrozenObject):
 		self._stochast_settings = FrozenList(new_stochast_settings)
 		interface.SetArrayIntValue(self._id, 'stochast_settings', [stochast_setting._id for stochast_setting in self._stochast_settings])
 
-class SensitivityResult(FrozenObject):
+class UncertaintyResult(FrozenObject):
 
 	def __init__(self, id):
 		self._id = id
