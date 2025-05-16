@@ -632,10 +632,10 @@ class Stochast(FrozenObject):
 		print('Definition:')
 		if self.conditional:
 			if self.conditional_source == '' or self.conditional_source == None:
-				print(pre + f'conditional x values = [{', '.join([f'{value.x:.{decimals}g}' for value in self.conditional_values])}]')
+				print(pre + f'conditional x values = [{", ".join([f"{value.x:.{decimals}g}" for value in self.conditional_values])}]')
 			else:
 				print(pre + f'conditional source = {self.conditional_source}')
-				print(pre + f'{self.conditional_source} = [{', '.join([f'{value.x:.{decimals}g}' for value in self.conditional_values])}]')
+				print(pre + f'{self.conditional_source} = [{", ".join([f"{value.x:.{decimals}g}" for value in self.conditional_values])}]')
 			for prop in ['mean', 'deviation', 'location', 'scale', 'minimum', 'shift', 'shift_b', 'maximum', 'shape', 'shape_b', 'observations']:
 				if interface.GetBoolValue(self._id, 'is_used_' + prop):
 					if prop == 'observations':
@@ -643,7 +643,7 @@ class Stochast(FrozenObject):
 					else:
 						values = [interface.GetValue(value._id, prop) for value in self.conditional_values]
 					if len(values) > 0 and not isnan(values[0]):
-						print(pre + f'{prop} = [{', '.join([f'{value:.{decimals}g}' for value in values])}]')
+						print(pre + f'{prop} = [{", ".join([f"{value:.{decimals}g}" for value in values])}]')
 		else:
 			for prop in ['location', 'scale', 'minimum', 'shift', 'shift_b', 'maximum', 'shape', 'shape_b', 'observations']:
 				if interface.GetBoolValue(self._id, 'is_used_' + prop):
