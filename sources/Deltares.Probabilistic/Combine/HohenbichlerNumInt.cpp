@@ -214,7 +214,7 @@ namespace Deltares {
             DesignPoint dp;
             dp.Beta = beta;
 
-            for (const auto alpha : alphas)
+            for (const auto& alpha : alphas)
             {
                 dp.Alphas.push_back(alpha->clone());
             }
