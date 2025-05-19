@@ -37,7 +37,7 @@ namespace Deltares
     {
         namespace Test
         {
-            void TestSensitivity::allSensitivityTests()
+            void TestUncertainty::allUncertaintyTests()
             {
                 testCrudeMonteCarloAddOne();
                 testCrudeMonteCarloLinear();
@@ -55,7 +55,7 @@ namespace Deltares
                 testFOSM();
             }
 
-            void TestSensitivity::testCrudeMonteCarloAddOne()
+            void TestUncertainty::testCrudeMonteCarloAddOne()
             {
                 std::shared_ptr<Sensitivity::UncertaintyProject> project = projectBuilder::getSensitivityProject(projectBuilder::getAddOneProject());
 
@@ -74,7 +74,7 @@ namespace Deltares
                 ASSERT_NEAR(2.0, stochast->getProperties()->Maximum, margin);
             }
 
-            void TestSensitivity::testCrudeMonteCarloLinear()
+            void TestUncertainty::testCrudeMonteCarloLinear()
             {
                 std::shared_ptr<Sensitivity::UncertaintyProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearProject());
 
@@ -105,7 +105,7 @@ namespace Deltares
                 ASSERT_NEAR(0.95, evaluation95->Quantile, margin);
             }
 
-            void TestSensitivity::testCrudeMonteCarloLinearNonRepeatable()
+            void TestUncertainty::testCrudeMonteCarloLinearNonRepeatable()
             {
                 std::shared_ptr<Sensitivity::UncertaintyProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearProject());
 
@@ -143,7 +143,7 @@ namespace Deltares
                 ASSERT_FALSE(std::abs(m1 - m2) < smallMargin);
             }
 
-            void TestSensitivity::testCrudeMonteCarloLinearOutput()
+            void TestUncertainty::testCrudeMonteCarloLinearOutput()
             {
                 std::shared_ptr<Sensitivity::UncertaintyProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearOutputProject());
 
@@ -164,7 +164,7 @@ namespace Deltares
                 ASSERT_NEAR(0.95, project->sensitivityResults[0]->quantileEvaluations[0]->Quantile, margin);
             }
 
-            void TestSensitivity::testCrudeMonteCarloLinearOutputNonRepeatable()
+            void TestUncertainty::testCrudeMonteCarloLinearOutputNonRepeatable()
             {
                 std::shared_ptr<Sensitivity::UncertaintyProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearOutputProject());
 
@@ -183,7 +183,7 @@ namespace Deltares
                 ASSERT_NEAR(project->sensitivityResults[0]->quantileEvaluations[0]->OutputValues[0], project->sensitivityResults[1]->quantileEvaluations[0]->OutputValues[0], smallMargin);
             }
 
-            void TestSensitivity::testCrudeMonteCarloLinearManySamples()
+            void TestUncertainty::testCrudeMonteCarloLinearManySamples()
             {
                 std::shared_ptr<Sensitivity::UncertaintyProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearProject());
 
@@ -204,7 +204,7 @@ namespace Deltares
                 ASSERT_NEAR(3.8, stochast->getProperties()->Maximum, 10 * margin);
             }
 
-            void TestSensitivity::testCrudeMonteCarloLinearAutoSamples()
+            void TestUncertainty::testCrudeMonteCarloLinearAutoSamples()
             {
                 std::shared_ptr<Sensitivity::UncertaintyProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearProject());
 
@@ -221,7 +221,7 @@ namespace Deltares
                 ASSERT_NEAR(0.82, stochast->getDeviation(), margin);
             }
 
-            void TestSensitivity::testImportanceSamplingAddOne()
+            void TestUncertainty::testImportanceSamplingAddOne()
             {
                 std::shared_ptr<Sensitivity::UncertaintyProject> project = projectBuilder::getSensitivityProject(projectBuilder::getAddOneProject());
 
@@ -247,7 +247,7 @@ namespace Deltares
                 ASSERT_NEAR(0.50, result.quantileEvaluations[0]->Quantile, margin);
             }
 
-            void TestSensitivity::testNumericalIntegration()
+            void TestUncertainty::testNumericalIntegration()
             {
                 std::shared_ptr<Sensitivity::UncertaintyProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearProject());
 
@@ -269,7 +269,7 @@ namespace Deltares
                 ASSERT_NEAR(0.05, result.quantileEvaluations[0]->Quantile, margin);
             }
 
-            void TestSensitivity::testDirectionalSampling()
+            void TestUncertainty::testDirectionalSampling()
             {
                 std::shared_ptr<Sensitivity::UncertaintyProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearProject());
 
@@ -290,7 +290,7 @@ namespace Deltares
                 ASSERT_NEAR(0.90, result.quantileEvaluations[0]->Quantile, margin);
             }
 
-            void TestSensitivity::testFORM()
+            void TestUncertainty::testFORM()
             {
                 std::shared_ptr<Sensitivity::UncertaintyProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearProject());
 
@@ -312,7 +312,7 @@ namespace Deltares
                 ASSERT_NEAR(0.05, result.quantileEvaluations[0]->Quantile, margin);
             }
 
-            void TestSensitivity::testFOSM()
+            void TestUncertainty::testFOSM()
             {
                 std::shared_ptr<Sensitivity::UncertaintyProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearProject());
 

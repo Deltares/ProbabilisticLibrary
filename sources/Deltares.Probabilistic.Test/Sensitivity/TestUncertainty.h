@@ -28,10 +28,10 @@ namespace Deltares
     {
         namespace Test
         {
-            class TestSensitivity
+            class TestUncertainty
             {
             public:
-                void allSensitivityTests();
+                void allUncertaintyTests();
             private:
                 void testCrudeMonteCarloAddOne();
                 void testCrudeMonteCarloLinear();

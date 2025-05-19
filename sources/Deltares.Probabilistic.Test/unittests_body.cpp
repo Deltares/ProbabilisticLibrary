@@ -238,10 +238,10 @@ TEST(unittst, testStandardNormal)
     tstStdNormal.allStandardNormalTests();
 }
 
-TEST(unittst, testSensitivity)
+TEST(unittst, testUncertainty)
 {
-    auto tstSensitivity = TestSensitivity();
-    tstSensitivity.allSensitivityTests();
+    auto tstSensitivity = TestUncertainty();
+    tstSensitivity.allUncertaintyTests();
 }
 
 TEST(unittst, testRunModel)
