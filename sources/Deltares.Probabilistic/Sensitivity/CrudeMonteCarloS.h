@@ -22,7 +22,7 @@
 #pragma once
 #include "CrudeMonteCarloSettingsS.h"
 #include "UncertaintyMethod.h"
-#include "SensitivityResult.h"
+#include "UncertaintyResult.h"
 
 namespace Deltares
 {

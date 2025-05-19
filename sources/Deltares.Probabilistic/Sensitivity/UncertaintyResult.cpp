@@ -20,4 +20,4 @@
 // All rights reserved.
 //
 
-#include "SensitivityResult.h"
+#include "UncertaintyResult.h"

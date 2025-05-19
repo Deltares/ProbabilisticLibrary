@@ -28,7 +28,7 @@
 #include "../Model/Sample.h"
 #include "../Model/RandomSampleGenerator.h"
 #include "CrudeMonteCarloSettingsS.h"
-#include "SensitivityResult.h"
+#include "UncertaintyResult.h"
 
 using namespace Deltares::Models;
 

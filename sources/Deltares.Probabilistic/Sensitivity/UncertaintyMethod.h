@@ -26,7 +26,7 @@
 
 #include <memory>
 
-#include "SensitivityResult.h"
+#include "UncertaintyResult.h"
 
 namespace Deltares::Sensitivity
 {
