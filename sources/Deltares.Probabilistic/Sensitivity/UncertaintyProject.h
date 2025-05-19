@@ -71,12 +71,12 @@ namespace Deltares::Sensitivity
         /**
          * \brief Results of the sensitivity calculation
          */
-        std::shared_ptr<SensitivityResult> sensitivityResult = nullptr;
+        std::shared_ptr<UncertaintyResult> sensitivityResult = nullptr;
 
         /**
          * \brief Results of the sensitivity calculation
          */
-        std::vector<std::shared_ptr<SensitivityResult>> sensitivityResults;
+        std::vector<std::shared_ptr<UncertaintyResult>> sensitivityResults;
 
         /**
          * \brief Resulting correlation matrix
@@ -93,7 +93,7 @@ namespace Deltares::Sensitivity
          * \brief Performs the sensitivity calculation
          * \return Sensitivity result
          */
-        SensitivityResult getSensitivityResult();
+        UncertaintyResult getSensitivityResult();
 
         /**
          * \brief Runs the reliability calculation

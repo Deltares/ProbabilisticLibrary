@@ -87,7 +87,7 @@ namespace Deltares
             void doTextualProgress(ProgressType type, std::string text);
             bool isVaryingStochast(int index);
             std::shared_ptr<Reliability::DesignPoint> getDesignPoint(std::shared_ptr<Sample> sample, double beta, std::shared_ptr<Reliability::ConvergenceReport> convergenceReport = nullptr, std::string identifier = "");
-            Sensitivity::SensitivityResult getSensitivityResult(std::shared_ptr<Statistics::Stochast> stochast) const;
+            Sensitivity::UncertaintyResult getSensitivityResult(std::shared_ptr<Statistics::Stochast> stochast) const;
             std::shared_ptr<Models::ModelSample> getModelSample(std::shared_ptr<Sample> sample);
             std::shared_ptr<Models::ModelSample> getModelSampleFromType(Statistics::RunValuesType type);
             std::vector<double> getOnlyVaryingValues(std::vector<double> values);

@@ -46,14 +46,14 @@ namespace Deltares::Sensitivity
                     {
                         parameterSelector->arrayIndex = index;
 
-                        auto result = std::make_shared<SensitivityResult>(getSensitivityResult());
+                        auto result = std::make_shared<UncertaintyResult>(getSensitivityResult());
                         result->stochast->name += "[" + std::to_string(index) + "]";
                         sensitivityResults.push_back(result);
                     }
                 }
                 else
                 {
-                    auto result = std::make_shared<SensitivityResult>(getSensitivityResult());
+                    auto result = std::make_shared<UncertaintyResult>(getSensitivityResult());
                     sensitivityResults.push_back(result);
                 }
             }
@@ -63,7 +63,7 @@ namespace Deltares::Sensitivity
             parameterSelector->parameter = parameter;
             parameterSelector->arrayIndex = arrayIndex;
 
-            auto result = std::make_shared<SensitivityResult>(getSensitivityResult());
+            auto result = std::make_shared<UncertaintyResult>(getSensitivityResult());
             sensitivityResults.push_back(result);
         }
 
@@ -84,7 +84,7 @@ namespace Deltares::Sensitivity
         }
     }
 
-    SensitivityResult UncertaintyProject::getSensitivityResult()
+    UncertaintyResult UncertaintyProject::getSensitivityResult()
     {
         model->zValueConverter = parameterSelector;
 

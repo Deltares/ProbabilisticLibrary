@@ -43,7 +43,7 @@ namespace Deltares
              * \param modelRunner The model for which the sensitivity is calculated
              * \return The sensitivity in the form of a stochastic variable
              */
-            Sensitivity::SensitivityResult getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner) override;
+            Sensitivity::UncertaintyResult getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner) override;
         private:
             bool isZValid(std::shared_ptr<Models::ModelRunner> modelRunner, double z);
             bool isMonotone(std::shared_ptr<Models::ModelRunner> modelRunner, double z, double zPrevious, bool ascending);

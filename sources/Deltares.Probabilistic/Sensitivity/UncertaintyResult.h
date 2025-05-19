@@ -29,13 +29,13 @@
 namespace Deltares::Sensitivity
 {
     /**
-     * \brief Contains the results of a sensitivity calculation
+     * \brief Contains the results of an uncertainty calculation
      */
-    class SensitivityResult
+    class UncertaintyResult
     {
     public:
         /**
-         * \brief The stochast describing the variance of the sensitivity 
+         * \brief The stochast describing the variance of the uncertainty
          */
         std::shared_ptr<Statistics::Stochast> stochast = nullptr;
 

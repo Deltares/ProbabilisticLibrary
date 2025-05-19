@@ -44,8 +44,8 @@ namespace Deltares::Sensitivity
          * \param modelRunner The model for which the sensitivity is calculated
          * \return The sensitivity in the form of a stochastic variable
          */
-        virtual SensitivityResult getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner)
-            { return SensitivityResult(); }
+        virtual UncertaintyResult getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner)
+            { return UncertaintyResult(); }
 
         /**
          * \brief Gets the correlation matrix
