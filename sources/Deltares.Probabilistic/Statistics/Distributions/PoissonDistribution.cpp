@@ -99,7 +99,7 @@ namespace Deltares
         {
             int k = static_cast<int>(std::floor(x));
 
-            if (Numeric::NumericSupport::areEqual(k, x, delta))
+            if (k >= 0 && Numeric::NumericSupport::areEqual(k, x, delta))
             {
                 return getPowerFactorial(stochast->Location, k) * std::exp(-stochast->Location);
             }

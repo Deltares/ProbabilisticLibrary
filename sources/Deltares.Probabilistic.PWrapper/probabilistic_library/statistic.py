@@ -631,44 +631,44 @@ class Stochast(FrozenObject):
 			print(pre + f'distribution = {self.distribution} (inverted, truncated')
 		print('Definition:')
 		if self.conditional:
-			if self.conditional_source == '':
-				print(pre + f'conditional x values = {[value.x for value in self.conditional_values]}')
+			if self.conditional_source == '' or self.conditional_source == None:
+				print(pre + f'conditional x values = [{", ".join([f"{value.x:.{decimals}g}" for value in self.conditional_values])}]')
 			else:
 				print(pre + f'conditional source = {self.conditional_source}')
-				print(pre + f'{self.conditional_source} = {[round(value.x, decimals) for value in self.conditional_values]}')
+				print(pre + f'{self.conditional_source} = [{", ".join([f"{value.x:.{decimals}g}" for value in self.conditional_values])}]')
 			for prop in ['mean', 'deviation', 'location', 'scale', 'minimum', 'shift', 'shift_b', 'maximum', 'shape', 'shape_b', 'observations']:
 				if interface.GetBoolValue(self._id, 'is_used_' + prop):
 					if prop == 'observations':
 						values = [interface.GetIntValue(value._id, prop) for value in self.conditional_values]
 					else:
-						values = [round(interface.GetValue(value._id, prop), decimals) for value in self.conditional_values]
+						values = [interface.GetValue(value._id, prop) for value in self.conditional_values]
 					if len(values) > 0 and not isnan(values[0]):
-						print(pre + f'{prop} = {values}')
+						print(pre + f'{prop} = [{", ".join([f"{value:.{decimals}g}" for value in values])}]')
 		else:
 			for prop in ['location', 'scale', 'minimum', 'shift', 'shift_b', 'maximum', 'shape', 'shape_b', 'observations']:
 				if interface.GetBoolValue(self._id, 'is_used_' + prop):
 					if prop == 'observations':
 						print(pre + f'{prop} = {interface.GetIntValue(self._id, prop)}')
 					else:
-						print(pre + f'{prop} = {round(interface.GetValue(self._id, prop), decimals)}')
+						print(pre + f'{prop} = {interface.GetValue(self._id, prop):.{decimals}g}')
 			if self.distribution == DistributionType.histogram:
 				for value in self.histogram_values:
-					print(pre + f'amount[{round(value.lower_bound, decimals)}, {round(value.upper_bound, decimals)}] = {round(value.amount, decimals)}')
+					print(pre + f'amount[{value.lower_bound:.{decimals}g}, {value.upper_bound:.{decimals}g}] = {value.amount:.{decimals}g}')
 			elif self.distribution == DistributionType.cdf_curve:
 				for value in self.fragility_values:
-					print(pre + f'beta[{round(value.x, decimals)}] = {round(value.reliability_index, decimals)}')
+					print(pre + f'beta[{value.x:.{decimals}g}] = {value.reliability_index:.{decimals}g}')
 			elif self.distribution == DistributionType.discrete or self.distribution == DistributionType.qualitative:
 				for value in self.discrete_values:
-					print(pre + f'amount[{round(value.x, decimals)}] = {round(value.amount, decimals)}')
+					print(pre + f'amount[{value.x:.{decimals}g}] = {value.amount:.{decimals}g}')
 			if self.design_quantile != 0.5 or self.design_factor != 1.0:
-				print(pre + f'design_quantile = {round(self.design_quantile, decimals)}')
-				print(pre + f'design_factor = {round(self.design_factor, decimals)}')
+				print(pre + f'design_quantile = {self.design_quantile:.{decimals}g}')
+				print(pre + f'design_factor = {self.design_factor:.{decimals}g}')
 			print('Derived values:')
-			print(pre + f'mean = {round(self.mean, decimals)}')
-			print(pre + f'deviation = {round(self.deviation, decimals)}')
-			print(pre + f'variation = {round(self.variation, decimals)}')
+			print(pre + f'mean = {self.mean:.{decimals}g}')
+			print(pre + f'deviation = {self.deviation:.{decimals}g}')
+			print(pre + f'variation = {self.variation:.{decimals}g}')
 			if self.design_quantile != 0.5 or self.design_factor != 1.0:
-				print(pre + f'design_value = {round(self.design_value, decimals)}')
+				print(pre + f'design_value = {self.design_value:.{decimals}g}')
 
 	def plot(self, xmin : float = None, xmax : float = None):
 		if not self.is_valid():

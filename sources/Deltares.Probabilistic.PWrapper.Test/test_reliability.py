@@ -1183,9 +1183,9 @@ def h(a,b,c):
         sys.stdout = sys.__stdout__
 
         expected = """Reliability (FORM)
- Reliability index = 2.3271
- Probability of failure = 0.01
- Convergence = 0.0086 (converged)
+ Reliability index = 2.327
+ Probability of failure = 0.009979
+ Convergence = 0.008632 (converged)
  Model runs = 18
 Alpha values:
  a: alpha = -0.7071, x = 0.9001
