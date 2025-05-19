@@ -60,9 +60,9 @@ Several Jupyter notebooks are available to demonstrate how to use the Probabilis
 
 7. [Composite distributions](sources/Deltares.Probabilistic.PWrapper.Notebooks/composite_distribution.ipynb)
 
-8. Sensitivity analysis:
+8. Uncertainty analysis:
 
-    * [Simple example](sources/Deltares.Probabilistic.PWrapper.Notebooks/sensitivity_analysis.ipynb)
+    * [Simple example](sources/Deltares.Probabilistic.PWrapper.Notebooks/uncertainty_analysis.ipynb)
 
     * [Safety levels](sources/Deltares.Probabilistic.PWrapper.Notebooks/safety_levels.ipynb)
 
