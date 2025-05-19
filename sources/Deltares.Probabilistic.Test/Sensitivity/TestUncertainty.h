@@ -20,38 +20,30 @@
 // All rights reserved.
 //
 #pragma once
-#include <gtest/gtest.h>
 
-namespace Deltares
+namespace Deltares::Probabilistic::Test
 {
-    namespace Probabilistic
+    class TestUncertainty
     {
-        namespace Test
-        {
-            class TestUncertainty
-            {
-            public:
-                void allUncertaintyTests();
-            private:
-                void testCrudeMonteCarloAddOne();
-                void testCrudeMonteCarloLinear();
-                void testCrudeMonteCarloLinearNonRepeatable();
-                void testCrudeMonteCarloLinearOutput();
-                void testCrudeMonteCarloLinearOutputNonRepeatable();
-                void testCrudeMonteCarloLinearManySamples();
-                void testCrudeMonteCarloLinearAutoSamples();
+    public:
+        void allUncertaintyTests() const;
+    private:
+        void testCrudeMonteCarloAddOne() const;
+        void testCrudeMonteCarloLinear() const;
+        void testCrudeMonteCarloLinearNonRepeatable() const;
+        void testCrudeMonteCarloLinearOutput() const;
+        static void testCrudeMonteCarloLinearOutputNonRepeatable();
+        void testCrudeMonteCarloLinearManySamples() const;
+        void testCrudeMonteCarloLinearAutoSamples() const;
 
-                void testImportanceSamplingAddOne();
+        void testImportanceSamplingAddOne() const;
 
-                void testNumericalIntegration();
-                void testDirectionalSampling();
-                void testFORM();
-                void testFOSM();
+        void testNumericalIntegration() const;
+        void testDirectionalSampling() const;
+        void testFORM() const;
+        void testFOSM() const;
 
-
-                const double margin = 0.02;
-            };
-        };
-    }
-}
+        const double margin = 0.02;
+    };
+};
 
