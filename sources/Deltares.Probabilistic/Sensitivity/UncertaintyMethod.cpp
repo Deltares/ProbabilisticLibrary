@@ -46,7 +46,7 @@ namespace Deltares::Sensitivity
     {
         bool hasInvalidValues = false;
 
-        for (size_t i = samples.size(); i < samples.size(); i++)
+        for (size_t i = 0; i < samples.size(); i++)
         {
             if (std::isnan(samples[i]) || std::isnan(weights[i]) || weights[i] == 0.0)
             {
