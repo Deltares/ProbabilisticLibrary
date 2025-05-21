@@ -34,7 +34,7 @@ class Test_sensitivity(unittest.TestCase):
     def test_crude_monte_carlo_add_one(self):
         project = project_builder.get_sensitivity_add_one_project()
 
-        project.settings.sensitivity_method = SensitivityMethod.crude_monte_carlo
+        project.settings.uncertainty_method = UncertaintyMethod.crude_monte_carlo
 
         project.run();
 
@@ -51,7 +51,7 @@ class Test_sensitivity(unittest.TestCase):
     def test_crude_monte_carlo_linear(self):
         project = project_builder.get_sensitivity_linear_project()
 
-        project.settings.sensitivity_method = SensitivityMethod.crude_monte_carlo
+        project.settings.uncertainty_method = UncertaintyMethod.crude_monte_carlo
 
         project.run();
 
@@ -65,7 +65,7 @@ class Test_sensitivity(unittest.TestCase):
 
         project = project_builder.get_sensitivity_linear_array_result_project()
 
-        project.settings.sensitivity_method = SensitivityMethod.crude_monte_carlo
+        project.settings.uncertainty_method = UncertaintyMethod.crude_monte_carlo
         project.settings.variation_coefficient = 0
         project.settings.minimum_samples = 1000
         project.settings.maximum_samples = 1000
@@ -105,7 +105,7 @@ class Test_sensitivity(unittest.TestCase):
 
         project = project_builder.get_sensitivity_linear_delayed_array_result_project()
 
-        project.settings.sensitivity_method = SensitivityMethod.crude_monte_carlo
+        project.settings.uncertainty_method = UncertaintyMethod.crude_monte_carlo
         project.settings.variation_coefficient = 0
         project.settings.minimum_samples = 1000
         project.settings.maximum_samples = 1000
@@ -136,7 +136,7 @@ class Test_sensitivity(unittest.TestCase):
 
         project = project_builder.get_sensitivity_linear_delayed_array_result_project()
 
-        project.settings.sensitivity_method = SensitivityMethod.crude_monte_carlo
+        project.settings.uncertainty_method = UncertaintyMethod.crude_monte_carlo
         project.settings.variation_coefficient = 0
         project.settings.minimum_samples = 1000
         project.settings.maximum_samples = 1000
@@ -166,7 +166,7 @@ class Test_sensitivity(unittest.TestCase):
     def test_crude_monte_carlo_multiple_identical_linear(self):
         project = project_builder.get_sensitivity_multiple_identical_linear_project()
 
-        project.settings.sensitivity_method = SensitivityMethod.crude_monte_carlo
+        project.settings.uncertainty_method = UncertaintyMethod.crude_monte_carlo
         project.settings.calculate_correlations = True
 
         project.run();
@@ -182,7 +182,7 @@ class Test_sensitivity(unittest.TestCase):
     def test_crude_monte_carlo_multiple_unbalanced_linear(self):
         project = project_builder.get_sensitivity_multiple_unbalanced_linear_project()
 
-        project.settings.sensitivity_method = SensitivityMethod.crude_monte_carlo
+        project.settings.uncertainty_method = UncertaintyMethod.crude_monte_carlo
         project.settings.calculate_correlations = True
 
         project.run();
@@ -198,7 +198,7 @@ class Test_sensitivity(unittest.TestCase):
     def test_crude_monte_carlo_multiple_unbalanced_linear_input(self):
         project = project_builder.get_sensitivity_multiple_unbalanced_linear_project()
 
-        project.settings.sensitivity_method = SensitivityMethod.crude_monte_carlo
+        project.settings.uncertainty_method = UncertaintyMethod.crude_monte_carlo
         project.settings.calculate_correlations = True
         project.settings.calculate_input_correlations = True
 
@@ -219,7 +219,7 @@ class Test_sensitivity(unittest.TestCase):
     def test_crude_monte_carlo_multiple_unbalanced_correlated_linear(self):
         project = project_builder.get_sensitivity_multiple_unbalanced_linear_project()
 
-        project.settings.sensitivity_method = SensitivityMethod.crude_monte_carlo
+        project.settings.uncertainty_method = UncertaintyMethod.crude_monte_carlo
         project.settings.calculate_correlations = True
         project.settings.calculate_input_correlations = True
 
@@ -246,7 +246,7 @@ class Test_sensitivity(unittest.TestCase):
     def test_crude_monte_carlo_auto_linear(self):
         project = project_builder.get_sensitivity_linear_project()
 
-        project.settings.sensitivity_method = SensitivityMethod.crude_monte_carlo
+        project.settings.uncertainty_method = UncertaintyMethod.crude_monte_carlo
         project.settings.derive_samples_from_variation_coefficient = True
 
         project.run();
@@ -259,7 +259,7 @@ class Test_sensitivity(unittest.TestCase):
     def test_importance_sampling_add_one(self):
         project = project_builder.get_sensitivity_add_one_project()
 
-        project.settings.sensitivity_method = SensitivityMethod.importance_sampling
+        project.settings.uncertainty_method = UncertaintyMethod.importance_sampling
 
         project.run();
 
@@ -275,7 +275,7 @@ class Test_sensitivity(unittest.TestCase):
     def test_numerical_integration_linear(self):
         project = project_builder.get_sensitivity_linear_project()
 
-        project.settings.sensitivity_method = SensitivityMethod.numerical_integration
+        project.settings.uncertainty_method = UncertaintyMethod.numerical_integration
 
         project.run();
 
@@ -289,7 +289,7 @@ class Test_sensitivity(unittest.TestCase):
     def test_fosm_linear(self):
         project = project_builder.get_sensitivity_linear_project()
 
-        project.settings.sensitivity_method = SensitivityMethod.fosm
+        project.settings.uncertainty_method = UncertaintyMethod.fosm
 
         project.run();
 
@@ -303,7 +303,7 @@ class Test_sensitivity(unittest.TestCase):
     def test_form_linear(self):
         project = project_builder.get_sensitivity_linear_project()
 
-        project.settings.sensitivity_method = SensitivityMethod.form
+        project.settings.uncertainty_method = UncertaintyMethod.form
 
         project.run();
 
@@ -317,7 +317,7 @@ class Test_sensitivity(unittest.TestCase):
     def test_directional_sampling_linear(self):
         project = project_builder.get_sensitivity_linear_project()
 
-        project.settings.sensitivity_method = SensitivityMethod.directional_sampling
+        project.settings.uncertainty_method = UncertaintyMethod.directional_sampling
         project.settings.quantiles.append(0.9)
 
         project.run();
@@ -333,7 +333,7 @@ class Test_sensitivity(unittest.TestCase):
     def test_directional_sampling_linear_parallel(self):
         project = project_builder.get_sensitivity_linear_project()
 
-        project.settings.sensitivity_method = SensitivityMethod.directional_sampling
+        project.settings.uncertainty_method = UncertaintyMethod.directional_sampling
         project.settings.quantiles.append(0.9)
         project.settings.max_parallel_processes = 4
 
@@ -350,7 +350,7 @@ class Test_sensitivity(unittest.TestCase):
     def test_mc_pile(self):
         project = project_builder.get_sensitivity_pile_project()
 
-        project.settings.sensitivity_method = SensitivityMethod.crude_monte_carlo
+        project.settings.uncertainty_method = UncertaintyMethod.crude_monte_carlo
         project.run();
         mc = project.stochast;
 
@@ -361,7 +361,7 @@ class Test_sensitivity(unittest.TestCase):
     def test_is_pile(self):
         project = project_builder.get_sensitivity_pile_project()
 
-        project.settings.sensitivity_method = SensitivityMethod.importance_sampling
+        project.settings.uncertainty_method = UncertaintyMethod.importance_sampling
         project.settings.maximum_samples = 1000
         project.settings.variance_factor = 1
         project.settings.stochast_settings['D'].start_value = -0.5
@@ -376,7 +376,7 @@ class Test_sensitivity(unittest.TestCase):
     def test_form_pile(self):
         project = project_builder.get_sensitivity_pile_project()
 
-        project.settings.sensitivity_method = SensitivityMethod.form
+        project.settings.uncertainty_method = UncertaintyMethod.form
         project.run();
         mc = project.stochast;
 
@@ -388,7 +388,7 @@ class Test_sensitivity(unittest.TestCase):
     def test_directional_sampling_pile(self):
         project = project_builder.get_sensitivity_pile_project()
 
-        project.settings.sensitivity_method = SensitivityMethod.directional_sampling
+        project.settings.uncertainty_method = UncertaintyMethod.directional_sampling
         project.settings.maximum_samples = 10000
         project.settings.variation_coefficient = 0.01
         project.settings.quantiles.append(StandardNormal.get_p_from_u(1.8))
@@ -426,7 +426,7 @@ class Test_sensitivity(unittest.TestCase):
 
         project = project_builder.get_sensitivity_linear_project()
 
-        project.settings.sensitivity_method = SensitivityMethod.crude_monte_carlo
+        project.settings.uncertainty_method = UncertaintyMethod.crude_monte_carlo
         project.settings.quantiles.append(0.5)
         project.settings.quantiles.append(0.95)
 

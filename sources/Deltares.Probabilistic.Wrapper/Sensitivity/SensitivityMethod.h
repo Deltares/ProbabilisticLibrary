@@ -22,7 +22,7 @@
 #pragma once
 #include "../Statistics/Stochast.h"
 #include "../Model/ModelRunner.h"
-#include "../../Deltares.Probabilistic/Sensitivity/SensitivityMethod.h"
+#include "../../Deltares.Probabilistic/Sensitivity/UncertaintyMethod.h"
 
 namespace Deltares
 {
@@ -35,7 +35,7 @@ namespace Deltares
             public:
                 SensitivityMethod() {  }
 
-                virtual std::shared_ptr<Sensitivity::SensitivityMethod> GetNativeSensitivityMethod()
+                virtual std::shared_ptr<Sensitivity::UncertaintyMethod> GetNativeSensitivityMethod()
                 {
                     return nullptr;
                 };

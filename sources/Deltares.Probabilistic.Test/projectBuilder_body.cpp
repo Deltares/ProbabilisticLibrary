@@ -276,9 +276,9 @@ namespace Deltares::Probabilistic::Test
         sample->Z = z;
     }
 
-    std::shared_ptr<SensitivityProject> projectBuilder::getSensitivityProject(std::shared_ptr<ReliabilityProject> project)
+    std::shared_ptr<UncertaintyProject> projectBuilder::getSensitivityProject(std::shared_ptr<ReliabilityProject> project)
     {
-        std::shared_ptr<SensitivityProject> sensitivityProject = std::make_shared<SensitivityProject>();
+        std::shared_ptr<UncertaintyProject> sensitivityProject = std::make_shared<UncertaintyProject>();
 
         for (std::shared_ptr<Stochast> stochast : project->stochasts)
         {

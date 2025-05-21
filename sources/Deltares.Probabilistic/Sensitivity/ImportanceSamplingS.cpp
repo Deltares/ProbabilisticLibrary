@@ -35,7 +35,7 @@ namespace Deltares
 {
     namespace Sensitivity
     {
-        Sensitivity::SensitivityResult ImportanceSamplingS::getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner)
+        Sensitivity::UncertaintyResult ImportanceSamplingS::getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner)
         {
             modelRunner->updateStochastSettings(this->Settings->StochastSet);
 

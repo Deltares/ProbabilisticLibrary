@@ -19,5 +19,31 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include "pch.h"
-#include "TestSensitivity_body.cpp"
+#pragma once
+
+namespace Deltares::Probabilistic::Test
+{
+    class TestUncertainty
+    {
+    public:
+        void allUncertaintyTests() const;
+    private:
+        void testCrudeMonteCarloAddOne() const;
+        void testCrudeMonteCarloLinear() const;
+        void testCrudeMonteCarloLinearNonRepeatable() const;
+        void testCrudeMonteCarloLinearOutput() const;
+        static void testCrudeMonteCarloLinearOutputNonRepeatable();
+        void testCrudeMonteCarloLinearManySamples() const;
+        void testCrudeMonteCarloLinearAutoSamples() const;
+
+        void testImportanceSamplingAddOne() const;
+
+        void testNumericalIntegration() const;
+        void testDirectionalSampling() const;
+        void testFORM() const;
+        void testFOSM() const;
+
+        const double margin = 0.02;
+    };
+};
+

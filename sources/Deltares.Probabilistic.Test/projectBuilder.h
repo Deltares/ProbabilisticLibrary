@@ -25,7 +25,7 @@
 #include "../Deltares.Probabilistic/Model/ModelRunner.h"
 #include "../Deltares.Probabilistic/Model/RunProject.h"
 #include "../Deltares.Probabilistic/Reliability/ReliabilityProject.h"
-#include "../Deltares.Probabilistic/Sensitivity/SensitivityProject.h"
+#include "../Deltares.Probabilistic/Sensitivity/UncertaintyProject.h"
 #include "../Deltares.Probabilistic/Reliability/FragilityCurve.h"
 
 namespace Deltares::Probabilistic::Test
@@ -43,7 +43,7 @@ namespace Deltares::Probabilistic::Test
         static std::shared_ptr<Reliability::FragilityCurve> BuildFragilityCurve();
         std::shared_ptr<Models::ModelRunner> BuildProjectTwoBranches(bool useProxy) const;
 
-        static std::shared_ptr<Sensitivity::SensitivityProject> getSensitivityProject(std::shared_ptr<Reliability::ReliabilityProject> project);
+        static std::shared_ptr<Sensitivity::UncertaintyProject> getSensitivityProject(std::shared_ptr<Reliability::ReliabilityProject> project);
         static std::shared_ptr<Models::RunProject> getRunProject(std::shared_ptr<Deltares::Reliability::ReliabilityProject> project);
         static std::shared_ptr<Reliability::ReliabilityProject> getAddOneProject();
         static std::shared_ptr<Reliability::ReliabilityProject> getLinearProject();

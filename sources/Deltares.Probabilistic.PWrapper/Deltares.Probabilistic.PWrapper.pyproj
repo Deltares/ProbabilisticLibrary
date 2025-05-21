@@ -28,7 +28,7 @@
     <Compile Include="probabilistic_library\interface.py" />
     <Compile Include="probabilistic_library\reliability.py" />
     <Compile Include="probabilistic_library\project.py" />
-    <Compile Include="probabilistic_library\sensitivity.py" />
+    <Compile Include="probabilistic_library\uncertainty.py" />
     <Compile Include="probabilistic_library\utils.py" />
     <Compile Include="probabilistic_library\statistic.py">
       <SubType>Code</SubType>

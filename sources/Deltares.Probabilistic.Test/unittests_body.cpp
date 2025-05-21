@@ -38,7 +38,7 @@
 #include "Statistics/testStandardNormal.h"
 #include "Distributions/testDistributions.h"
 #include "Model/TestRunModel.h"
-#include "Sensitivity/TestSensitivity.h"
+#include "Sensitivity/TestUncertainty.h"
 #include "Optimization/testCobyla.h"
 
 using namespace Deltares::Probabilistic::Test;
@@ -238,10 +238,10 @@ TEST(unittst, testStandardNormal)
     tstStdNormal.allStandardNormalTests();
 }
 
-TEST(unittst, testSensitivity)
+TEST(unittst, testUncertainty)
 {
-    auto tstSensitivity = TestSensitivity();
-    tstSensitivity.allSensitivityTests();
+    auto tstSensitivity = TestUncertainty();
+    tstSensitivity.allUncertaintyTests();
 }
 
 TEST(unittst, testRunModel)

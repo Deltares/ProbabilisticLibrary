@@ -21,7 +21,7 @@
 //
 #pragma once
 #include "ImportanceSamplingSettingsS.h"
-#include "SensitivityMethod.h"
+#include "UncertaintyMethod.h"
 
 namespace Deltares
 {
@@ -31,7 +31,7 @@ namespace Deltares
          * \brief Calculates the sensitivity using the Importance Sampling algorithm
          * \remark This algorithm focuses on the tail of the sensitivity, but only works well when the start point (in the settings) is specified well by the user
          */
-        class ImportanceSamplingS : public SensitivityMethod
+        class ImportanceSamplingS : public UncertaintyMethod
         {
         public:
             /**
@@ -44,7 +44,7 @@ namespace Deltares
              * \param modelRunner The model for which the sensitivity is calculated
              * \return The sensitivity in the form of a stochastic variable
              */
-            Sensitivity::SensitivityResult getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner) override;
+            Sensitivity::UncertaintyResult getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner) override;
         private:
             double getDimensionality(std::vector<double> factors);
             double getWeight(std::shared_ptr<Models::Sample> modifiedSample, std::shared_ptr<Models::Sample> sample, double dimensionality);

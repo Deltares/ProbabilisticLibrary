@@ -31,7 +31,7 @@
     <Compile Include="test_length_effect.py" />
     <Compile Include="test_utils.py" />
     <Compile Include="test_run_project.py" />
-    <Compile Include="test_sensitivity.py">
+    <Compile Include="test_uncertainty.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="test_statistics.py" />

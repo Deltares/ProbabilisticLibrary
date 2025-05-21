@@ -520,9 +520,9 @@ namespace Deltares
          * \param stochast Stochast in the sensitivity result
          * \return Sensitivity result
          */
-        Sensitivity::SensitivityResult ModelRunner::getSensitivityResult(std::shared_ptr<Statistics::Stochast> stochast) const
+        Sensitivity::UncertaintyResult ModelRunner::getSensitivityResult(std::shared_ptr<Statistics::Stochast> stochast) const
         {
-            auto result = Sensitivity::SensitivityResult();
+            auto result = Sensitivity::UncertaintyResult();
 
             result.stochast = stochast;
 

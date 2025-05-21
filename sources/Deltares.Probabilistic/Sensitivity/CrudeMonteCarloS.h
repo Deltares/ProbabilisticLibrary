@@ -21,8 +21,8 @@
 //
 #pragma once
 #include "CrudeMonteCarloSettingsS.h"
-#include "SensitivityMethod.h"
-#include "SensitivityResult.h"
+#include "UncertaintyMethod.h"
+#include "UncertaintyResult.h"
 
 namespace Deltares
 {
@@ -31,7 +31,7 @@ namespace Deltares
         /**
          * \brief Calculates the sensitivity using the Crude Monte Carlo algorithm
          */
-        class CrudeMonteCarloS : public SensitivityMethod
+        class CrudeMonteCarloS : public UncertaintyMethod
         {
         public:
             /**
@@ -44,7 +44,7 @@ namespace Deltares
              * \param modelRunner The model for which the sensitivity is calculated
              * \return The sensitivity in the form of a stochastic variable
              */
-            Sensitivity::SensitivityResult getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner) override;
+            Sensitivity::UncertaintyResult getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner) override;
         };
     }
 }

@@ -19,39 +19,5 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#pragma once
-#include <gtest/gtest.h>
 
-namespace Deltares
-{
-    namespace Probabilistic
-    {
-        namespace Test
-        {
-            class TestSensitivity
-            {
-            public:
-                void allSensitivityTests();
-            private:
-                void testCrudeMonteCarloAddOne();
-                void testCrudeMonteCarloLinear();
-                void testCrudeMonteCarloLinearNonRepeatable();
-                void testCrudeMonteCarloLinearOutput();
-                void testCrudeMonteCarloLinearOutputNonRepeatable();
-                void testCrudeMonteCarloLinearManySamples();
-                void testCrudeMonteCarloLinearAutoSamples();
-
-                void testImportanceSamplingAddOne();
-
-                void testNumericalIntegration();
-                void testDirectionalSampling();
-                void testFORM();
-                void testFOSM();
-
-
-                const double margin = 0.02;
-            };
-        };
-    }
-}
-
+#include "UncertaintyResult.h"

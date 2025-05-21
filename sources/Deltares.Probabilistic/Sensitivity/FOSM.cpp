@@ -35,7 +35,7 @@ namespace Deltares
 {
     namespace Sensitivity
     {
-        Sensitivity::SensitivityResult FOSM::getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner)
+        Sensitivity::UncertaintyResult FOSM::getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner)
         {
             int nStochasts = modelRunner->getVaryingStochastCount();
 

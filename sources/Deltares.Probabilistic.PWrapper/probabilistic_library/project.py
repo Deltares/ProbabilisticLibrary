@@ -28,7 +28,7 @@ from types import FunctionType
 
 from .statistic import *
 from .reliability import *
-from .sensitivity import *
+from .uncertainty import *
 from . import interface
 
 import inspect
@@ -596,7 +596,7 @@ class RunProject(ModelProject):
 
 		return self._realization
 
-class SensitivityProject(ModelProject):
+class UncertaintyProject(ModelProject):
 
 	def __init__(self):
 		super().__init__()
@@ -609,7 +609,7 @@ class SensitivityProject(ModelProject):
 		self._output_correlation_matrix = None
 
 		self._initialize_callbacks(self._id)
-		self._set_settings(SensitivitySettings())
+		self._set_settings(UncertaintySettings())
 		super()._freeze()
 
 	def __del__(self):
@@ -643,7 +643,7 @@ class SensitivityProject(ModelProject):
 		interface.SetStringValue(self._id, 'parameter', str(value))
 
 	@property
-	def settings(self) -> SensitivitySettings:
+	def settings(self) -> UncertaintySettings :
 		self._check_model()
 		return self._settings
 
@@ -677,21 +677,21 @@ class SensitivityProject(ModelProject):
 		return self._stochasts
 
 	@property
-	def result(self) -> SensitivityResult:
+	def result(self) -> UncertaintyResult:
 		if self._result is None:
 			resultId = interface.GetIdValue(self._id, 'sensitivity_result')
 			if resultId > 0:
-				self._result = SensitivityResult(resultId)
+				self._result = UncertaintyResult(resultId)
 
 		return self._result
 
 	@property
-	def results(self) -> list[SensitivityResult]:
+	def results(self) -> list[UncertaintyResult]:
 		if self._results is None:
 			results = []
 			result_ids = interface.GetArrayIdValue(self._id, 'sensitivity_results')
 			for result_id in result_ids:
-				results.append(SensitivityResult(result_id))
+				results.append(UncertaintyResult(result_id))
 			self._results = FrozenList(results)
 				
 		return self._results

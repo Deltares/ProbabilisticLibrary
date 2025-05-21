@@ -42,7 +42,7 @@ namespace Deltares
         using namespace Deltares::Models;
         using namespace Deltares::Statistics;
 
-        Sensitivity::SensitivityResult FORMS::getSensitivityStochast(std::shared_ptr<ModelRunner> modelRunner)
+        Sensitivity::UncertaintyResult FORMS::getSensitivityStochast(std::shared_ptr<ModelRunner> modelRunner)
         {
             int nStochasts = modelRunner->getVaryingStochastCount();
 
@@ -234,7 +234,7 @@ namespace Deltares
             if (cdfCurve->getProperties()->FragilityValues.size() <= 1)
             {
                 std::shared_ptr<Statistics::Stochast> stochast = std::make_shared<Stochast>(DistributionType::Deterministic, std::vector<double> { z0 });
-                Sensitivity::SensitivityResult result = modelRunner->getSensitivityResult(stochast);
+                Sensitivity::UncertaintyResult result = modelRunner->getSensitivityResult(stochast);
                 std::shared_ptr<Sample> zeroSample = std::make_shared<Sample>(nStochasts);
                 std::shared_ptr<Models::Evaluation> evaluation = std::make_shared<Models::Evaluation>(modelRunner->getEvaluation(zeroSample));
                 evaluation->Quantile = 0.5;

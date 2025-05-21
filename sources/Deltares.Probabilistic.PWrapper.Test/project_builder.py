@@ -180,18 +180,9 @@ def get_linear_array_project():
 
     return project
 
-def get_multiple_linear_project():
-
-    project = ReliabilityProject()
-
-    project.model = multiple_linear_ab
-    assign_distributions(project, DistributionType.uniform)
-
-    return project
-
 def get_sensitivity_add_one_project():
 
-    project = SensitivityProject()
+    project = UncertaintyProject()
 
     project.model = sum_ab
     assign_distributions(project, DistributionType.uniform)
@@ -224,16 +215,16 @@ def get_run_linear_project():
 
 def get_sensitivity_linear_project():
 
-    project = SensitivityProject()
+    project = UncertaintyProject()
 
     project.model = linear_ab
     assign_distributions(project, DistributionType.uniform)
 
     return project
 
-def get_sensitivity_linear_array_result_project() ->SensitivityProject:
+def get_sensitivity_linear_array_result_project() ->UncertaintyProject:
 
-    project = SensitivityProject()
+    project = UncertaintyProject()
 
     project.model = (linear_ab_array_result, 3)
     assign_distributions(project, DistributionType.uniform)
@@ -242,7 +233,7 @@ def get_sensitivity_linear_array_result_project() ->SensitivityProject:
 
 def get_sensitivity_linear_delayed_array_result_project():
 
-    project = SensitivityProject()
+    project = UncertaintyProject()
 
     project.model = (linear_delayed_ab_array_result, 3)
     assign_distributions(project, DistributionType.uniform)
@@ -251,7 +242,7 @@ def get_sensitivity_linear_delayed_array_result_project():
 
 def get_sensitivity_pile_project():
 
-    project = SensitivityProject()
+    project = UncertaintyProject()
 
     project.model = pile
 
@@ -294,7 +285,7 @@ def get_sensitivity_pile_project():
 
 def get_sensitivity_multiple_identical_linear_project():
 
-    project = SensitivityProject()
+    project = UncertaintyProject()
 
     project.model = multiple_identical_linear_ab
     assign_distributions(project, DistributionType.uniform)
@@ -312,7 +303,7 @@ def get_multiple_unbalanced_linear_project():
 
 def get_sensitivity_multiple_unbalanced_linear_project():
 
-    project = SensitivityProject()
+    project = UncertaintyProject()
 
     project.model = multiple_unbalanced_linear_ab
     assign_distributions(project, DistributionType.uniform)

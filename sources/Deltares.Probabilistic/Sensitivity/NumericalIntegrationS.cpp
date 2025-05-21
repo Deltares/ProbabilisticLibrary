@@ -40,7 +40,7 @@ namespace Deltares
 {
     namespace Sensitivity
     {
-        Sensitivity::SensitivityResult NumericalIntegrationS::getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner)
+        Sensitivity::UncertaintyResult NumericalIntegrationS::getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner)
         {
             this->calculatedSamples.clear();
 
@@ -53,7 +53,7 @@ namespace Deltares
             if (nStochasts > 11)
             {
                 modelRunner->reportMessage(MessageType::Error, "Numerical integration with more than 11 stochastic parameters. This is practically impossible.");
-                return SensitivityResult();
+                return UncertaintyResult();
             }
             else if (nStochasts > 4)
             {
