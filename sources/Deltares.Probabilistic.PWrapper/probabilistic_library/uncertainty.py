@@ -413,7 +413,7 @@ class UncertaintyResult(FrozenObject):
 
 		plot_legend = False
 		for ii in range(len(self.quantile_realizations)):
-			plt.axvline(x=self.quantile_realizations[ii].output_values[0], color="green", linestyle="--", label=f"{round(self.quantile_realizations[ii].quantile, 4)}-quantile")
+			plt.axvline(x=self.quantile_realizations[ii].output_values[0], color="green", linestyle="--", label=f"{self.quantile_realizations[ii].quantile:.4g}-quantile")
 			plot_legend = True
 
 		if plot_legend:

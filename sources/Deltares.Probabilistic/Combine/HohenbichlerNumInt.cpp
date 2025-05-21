@@ -209,19 +209,29 @@ namespace Deltares {
             }
         }
 
-        DesignPoint HohenbichlerNumInt::GetRealization(const double beta, const std::vector<std::shared_ptr<StochastPointAlpha>>& alpha)
+        DesignPoint HohenbichlerNumInt::GetRealization(const double beta, const std::vector<std::shared_ptr<StochastPointAlpha>>& alphas)
         {
             DesignPoint dp;
             dp.Beta = beta;
-            dp.Alphas = alpha;
+
+            for (const auto& alpha : alphas)
+            {
+                dp.Alphas.push_back(alpha->clone());
+            }
+
             return dp;
         }
 
-        DesignPoint HohenbichlerNumInt::GetRealization(const double beta, const std::vector<std::shared_ptr<StochastPointAlpha>>& alpha, const std::vector<double>& values)
+        DesignPoint HohenbichlerNumInt::GetRealization(const double beta, const std::vector<std::shared_ptr<StochastPointAlpha>>& alphas, const std::vector<double>& values)
         {
             DesignPoint dp;
             dp.Beta = beta;
-            dp.Alphas = alpha;
+
+            for (const auto& alpha : alphas)
+            {
+                dp.Alphas.push_back(alpha->clone());
+            }
+
             for (size_t i = 0; i < values.size(); i++)
             {
                 dp.Alphas[i]->Alpha = values[i];

@@ -444,7 +444,7 @@ namespace Deltares
 
             if (mean == 0.0)
             {
-                return lastVariation;
+                return std::numeric_limits<double>::infinity();
             }
             else
             {

@@ -476,12 +476,50 @@ class Test_statistics(unittest.TestCase):
         expected = """Variable:
   distribution = normal
 Definition:
-  location = 10.0
-  scale = 1.0
+  location = 10
+  scale = 1
 Derived values:
-  mean = 10.0
-  deviation = 1.0
+  mean = 10
+  deviation = 1
   variation = 0.1
+"""
+        self.assertEqual(expected, printed)
+
+    def test_conditional_stochast_print(self):
+
+        stochast = Stochast()
+        stochast.distribution = DistributionType.normal
+        stochast.mean = 10
+        stochast.deviation = 1
+
+        stochast.conditional = True
+
+        conditional1 = ConditionalValue()
+        conditional1.x = 0
+        conditional1.location = 0
+        conditional1.scale = 1
+        stochast.conditional_values.append(conditional1)
+
+        conditional2 = ConditionalValue()
+        conditional2.x = 1
+        conditional2.location = 1
+        conditional2.scale = 2
+        stochast.conditional_values.append(conditional2)
+
+        stochast.print()
+
+        # Replace default stdout (terminal) temporary with with our stream
+        sys.stdout = StringIO()
+        stochast.print()
+        printed = sys.stdout.getvalue()
+        sys.stdout = sys.__stdout__
+
+        expected = """Variable:
+  distribution = normal
+Definition:
+  conditional x values = [0, 1]
+  location = [0, 1]
+  scale = [1, 2]
 """
         self.assertEqual(expected, printed)
 
