@@ -8,7 +8,7 @@ The library provides a set of routines that enable reliability analysis of a com
 
 The scientific background document is part of the release,
 and can be found here:
-[scientific_background.pdf](https://github.com/Deltares/ProbabilisticLibrary/releases/download/25.2.1/scientific_background.pdf)
+[scientific_background.pdf](https://github.com/Deltares/ProbabilisticLibrary/releases/download/25.3.1/scientific_background.pdf)
 
 ## Python wrapper
 
@@ -20,7 +20,7 @@ Request the wheel of the Probabilistic Library from Deltares.
 
 Install the wheel as follows:
 ```
-pip install probabilistic_library-25.2.1-py3-none-any.whl --force-reinstall
+pip install probabilistic_library-25.3.1-py3-none-any.whl --force-reinstall
 ```
 
 ### Jupyter notebooks
