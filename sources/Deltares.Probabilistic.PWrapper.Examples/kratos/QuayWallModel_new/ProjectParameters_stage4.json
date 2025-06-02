@@ -1,0 +1,286 @@
+{
+    "problem_data"     : {
+        "problem_name"  : "quay_wall",
+        "parallel_type" : "OpenMP",
+        "echo_level"    : 1,
+        "start_time"    : 2.0,
+        "end_time"      : 3.0
+    },
+    "solver_settings"  : {
+        "time_stepping"                        : {
+            "time_step" : 1.0,
+            "max_delta_time_factor":    1000
+        },
+        "solver_type"                          : "U_Pw",
+        "model_part_name"                      : "PorousDomain",
+        "domain_size"                          : 2,
+        "echo_level"                           : 0,
+        "model_import_settings"                : {
+            "input_type"     : "rest"
+        },
+        "material_import_settings"             : {
+            "materials_filename" : "MaterialParameters.json"
+        },
+        "buffer_size":                        2,
+        "rebuild_level":                      2,
+        "clear_storage":                      false,
+        "compute_reactions":                  true,
+        "move_mesh_flag":                     false,
+        "reform_dofs_at_each_step":           false,
+        "nodal_smoothing":                    false,
+        "block_builder":                      true,
+        "solution_type":                      "Quasi_Static",
+        "scheme_type":                        "Backward_Euler",
+        "reset_displacements":                true,
+        "newmark_beta":                       0.25,
+        "newmark_gamma":                      0.5,
+        "newmark_theta":                      0.5,
+        "rayleigh_m":                         0.0,
+        "rayleigh_k":                         0.0,
+        "strategy_type":                      "linear",
+        "convergence_criterion":              "residual_criterion",
+        "displacement_relative_tolerance"      : 0.0001,
+        "displacement_absolute_tolerance"      : 1e-9,
+        "residual_relative_tolerance"          : 0.0001,
+        "residual_absolute_tolerance"          : 1e-9,
+        "water_pressure_relative_tolerance":  1.0E-4,
+        "water_pressure_absolute_tolerance":  1.0E-9,
+        "min_iterations":                     1,
+        "max_iterations":                     3,
+        "number_cycles":                      1,
+        "reduction_factor":                   0.5,
+        "increase_factor":                    2.0,
+        "desired_iterations":                 4,
+        "max_radius_factor":                  10.0,
+        "min_radius_factor":                  0.1,
+        "calculate_reactions":                true,
+        "max_line_search_iterations":         5,
+        "first_alpha_value":                  0.5,
+        "second_alpha_value":                 1.0,
+        "min_alpha":                          0.1,
+        "max_alpha":                          2.0,
+        "line_search_tolerance":              0.5,
+        "rotation_dofs"                        : true,
+        "linear_solver_settings":             {
+            "solver_type":   "LinearSolversApplication.sparse_lu",
+            "scaling":       true
+		},
+        "problem_domain_sub_model_part_list": ["Parts_Solid_layer_1|1", "Parts_Solid_layer_1|2", "Parts_Solid_layer_2|1", "Parts_Solid_layer_2|2", "Parts_Solid_layer_3|1", "Parts_Solid_layer_3|2", "Parts_Solid_layer_4|1", "Parts_Beam_sheetpile","Layer11Interface","Layer12Interface","Layer21Interface","Layer22Interface","Layer31Interface","Layer32Interface", "Parts_Truss_anchor", "Parts_Beam_anchor_fixed"],
+        "processes_sub_model_part_list":      ["DISPLACEMENT_base","DISPLACEMENT_sides","SelfWeight2D_all_layers","Layer12Edge","Layer21Edge","Layer22Edge","Layer31Edge","Layer32Edge","Layer11Interface","Layer12Interface","Layer21Interface","Layer22Interface","Layer31Interface","Layer32Interface", "Parts_Truss_anchor", "Parts_Beam_anchor_fixed"],
+        "body_domain_sub_model_part_list":    ["Parts_Solid_layer_1|1", "Parts_Solid_layer_1|2", "Parts_Solid_layer_2|1", "Parts_Solid_layer_2|2", "Parts_Solid_layer_3|1", "Parts_Solid_layer_3|2", "Parts_Solid_layer_4|1", "Parts_Beam_sheetpile","Layer11Interface","Layer12Interface","Layer21Interface","Layer22Interface","Layer31Interface","Layer32Interface", "Parts_Truss_anchor", "Parts_Beam_anchor_fixed"]
+    },
+    "processes"        : {
+        "constraints_process_list" : [{
+            "python_module": "apply_excavation_process",
+            "kratos_module": "KratosMultiphysics.GeoMechanicsApplication",
+            "process_name":  "ApplyExcavationProcess",
+            "Parameters":    {
+                "model_part_name":      "PorousDomain.Parts_Beam_sheetpile",
+                "deactivate_soil_part":  false
+            }
+        },{
+            "python_module": "apply_excavation_process",
+            "kratos_module": "KratosMultiphysics.GeoMechanicsApplication",
+            "process_name":  "ApplyExcavationProcess",
+            "Parameters":    {
+                "model_part_name":      "PorousDomain.Parts_Solid_layer_1|1",
+                "deactivate_soil_part":  true
+            }
+        },{
+            "python_module": "apply_excavation_process",
+            "kratos_module": "KratosMultiphysics.GeoMechanicsApplication",
+            "process_name":  "ApplyExcavationProcess",
+            "Parameters":    {
+                "model_part_name":      "PorousDomain.Parts_Truss_anchor",
+                "deactivate_soil_part":  false
+            }
+        },{
+            "python_module": "apply_excavation_process",
+            "kratos_module": "KratosMultiphysics.GeoMechanicsApplication",
+            "process_name":  "ApplyExcavationProcess",
+            "Parameters":    {
+                "model_part_name":      "PorousDomain.Parts_Beam_anchor_fixed",
+                "deactivate_soil_part":  false
+            }
+        },{
+            "python_module": "apply_excavation_process",
+            "kratos_module": "KratosMultiphysics.GeoMechanicsApplication",
+            "process_name":  "ApplyExcavationProcess",
+            "Parameters":    {
+                "model_part_name":      "PorousDomain.Layer11Interface",
+                "deactivate_soil_part":  true
+            }
+        },{
+        "python_module" : "apply_final_stresses_of_previous_stage_to_initial_state",
+        "kratos_module" : "KratosMultiphysics.GeoMechanicsApplication",
+        "process_name"  : "ApplyFinalStressesOfPreviousStageToInitialState",
+        "Parameters"    : {
+            "model_part_name": "PorousDomain.Parts_Beam_sheetpile"
+        }
+    },{
+        "python_module" : "apply_final_stresses_of_previous_stage_to_initial_state",
+        "kratos_module" : "KratosMultiphysics.GeoMechanicsApplication",
+        "process_name"  : "ApplyFinalStressesOfPreviousStageToInitialState",
+        "Parameters"    : {
+            "model_part_name": "PorousDomain.Layer12Interface"
+        }
+    },{
+        "python_module" : "apply_final_stresses_of_previous_stage_to_initial_state",
+        "kratos_module" : "KratosMultiphysics.GeoMechanicsApplication",
+        "process_name"  : "ApplyFinalStressesOfPreviousStageToInitialState",
+        "Parameters"    : {
+            "model_part_name": "PorousDomain.Layer21Interface"
+        }
+    },{
+        "python_module" : "apply_final_stresses_of_previous_stage_to_initial_state",
+        "kratos_module" : "KratosMultiphysics.GeoMechanicsApplication",
+        "process_name"  : "ApplyFinalStressesOfPreviousStageToInitialState",
+        "Parameters"    : {
+            "model_part_name": "PorousDomain.Layer22Interface"
+        }
+    },{
+        "python_module" : "apply_final_stresses_of_previous_stage_to_initial_state",
+        "kratos_module" : "KratosMultiphysics.GeoMechanicsApplication",
+        "process_name"  : "ApplyFinalStressesOfPreviousStageToInitialState",
+        "Parameters"    : {
+            "model_part_name": "PorousDomain.Layer31Interface"
+        }
+    },{
+        "python_module" : "apply_final_stresses_of_previous_stage_to_initial_state",
+        "kratos_module" : "KratosMultiphysics.GeoMechanicsApplication",
+        "process_name"  : "ApplyFinalStressesOfPreviousStageToInitialState",
+        "Parameters"    : {
+            "model_part_name": "PorousDomain.Layer32Interface"
+        }
+    },{
+            "python_module" : "apply_vector_constraint_table_process",
+            "kratos_module" : "KratosMultiphysics.GeoMechanicsApplication",
+            "process_name"  : "ApplyVectorConstraintTableProcess",
+            "Parameters"    : {
+                "model_part_name" : "PorousDomain.DISPLACEMENT_base",
+                "variable_name"   : "DISPLACEMENT",
+		"active"		: [true, true, true],
+		"is_fixed"		: [true, true, true],
+		"value"			: [0.0, 0.0, 0.0],
+		"table"			: [0,0,0]
+            }
+        },{
+            "python_module" : "apply_vector_constraint_table_process",
+            "kratos_module" : "KratosMultiphysics.GeoMechanicsApplication",
+            "process_name"  : "ApplyVectorConstraintTableProcess",
+            "Parameters"    : {
+                "model_part_name" : "PorousDomain.DISPLACEMENT_sides",
+                "variable_name"   : "DISPLACEMENT",
+                "active"		: [true, false, false],
+		"is_fixed"		: [true, false, false],
+		"value"			: [0.0, 0.0, 0.0],
+		"table"			: [0,0,0]
+            }
+        }],
+        "loads_process_list"       : [{
+            "python_module" : "apply_vector_constraint_table_process",
+            "kratos_module" : "KratosMultiphysics.GeoMechanicsApplication",
+            "process_name"  : "ApplyVectorConstraintTableProcess",
+            "Parameters"    : {
+                "model_part_name" : "PorousDomain.SelfWeight2D_all_layers",
+                "variable_name"   : "VOLUME_ACCELERATION",
+                "active"        : [false, true, false],
+                "table"     	: [0.0,0.0,0.0],
+                "value"       	: [0.0,-9.81,0.0]
+            }
+        }],
+        "list_other_processes"     : []
+    },
+    "output_processes" : {
+        "gid_output" : [{
+            "python_module" : "gid_output_process",
+            "kratos_module" : "KratosMultiphysics",
+            "process_name"  : "GiDOutputProcess",
+            "Parameters"    : {
+                "model_part_name"        : "PorousDomain.porous_computational_model_part",
+                "postprocess_parameters" : {
+                    "result_file_configuration" : {
+                        "gidpost_flags"               : {
+                            "GiDPostMode"           : "GiD_PostBinary",
+                            "WriteDeformedMeshFlag" : "WriteDeformed",
+                            "WriteConditionsFlag"   : "WriteConditions",
+                            "MultiFileFlag"         : "SingleFile"
+                        },
+                        "file_label"                  : "step",
+                        "output_control_type"         : "step",
+                        "output_interval"             : 1,
+                        "body_output"                 : true,
+                        "node_output"                 : false,
+                        "skin_output"                 : false,
+                        "plane_output"                : [],
+                        "nodal_results"               : ["DISPLACEMENT","TOTAL_DISPLACEMENT","REACTION","ROTATION"],
+                        "nodal_nonhistorical_results" : [],
+                        "gauss_point_results"         : ["CAUCHY_STRESS_TENSOR", "VON_MISES_STRESS", "FORCE", "AXIAL_FORCE", "BENDING_MOMENT", "SHEAR_FORCE"]
+                    },
+                    "point_data_configuration"  : []
+                },
+                "output_name"            : "gid_output/quay_wall_stage4"
+            }
+        },{
+            "python_module" : "gid_output_process",
+            "kratos_module" : "KratosMultiphysics",
+            "process_name"  : "GiDOutputProcess",
+            "Parameters"    : {
+                "model_part_name"        : "PorousDomain.Parts_Beam_sheetpile",
+                "postprocess_parameters" : {
+                    "result_file_configuration" : {
+                        "gidpost_flags"               : {
+                            "GiDPostMode"           : "GiD_PostBinary",
+                            "WriteDeformedMeshFlag" : "WriteDeformed",
+                            "WriteConditionsFlag"   : "WriteConditions",
+                            "MultiFileFlag"         : "SingleFile"
+                        },
+                        "file_label"                  : "step",
+                        "output_control_type"         : "step",
+                        "output_interval"             : 1,
+                        "body_output"                 : true,
+                        "node_output"                 : false,
+                        "skin_output"                 : false,
+                        "plane_output"                : [],
+                        "nodal_results"               : ["DISPLACEMENT","TOTAL_DISPLACEMENT"],
+                        "nodal_nonhistorical_results" : [],
+                        "gauss_point_results"         : ["AXIAL_FORCE", "BENDING_MOMENT", "SHEAR_FORCE"]
+                    },
+                    "point_data_configuration"  : []
+                },
+                "output_name"            : "gid_output/quay_wall_stage4_beam"
+            }
+        },{
+            "python_module" : "gid_output_process",
+            "kratos_module" : "KratosMultiphysics",
+            "process_name"  : "GiDOutputProcess",
+            "Parameters"    : {
+                "model_part_name"        : "PorousDomain.Parts_Truss_anchor",
+                "postprocess_parameters" : {
+                    "result_file_configuration" : {
+                        "gidpost_flags"               : {
+                            "GiDPostMode"           : "GiD_PostBinary",
+                            "WriteDeformedMeshFlag" : "WriteDeformed",
+                            "WriteConditionsFlag"   : "WriteConditions",
+                            "MultiFileFlag"         : "SingleFile"
+                        },
+                        "file_label"                  : "step",
+                        "output_control_type"         : "step",
+                        "output_interval"             : 1,
+                        "body_output"                 : true,
+                        "node_output"                 : false,
+                        "skin_output"                 : false,
+                        "plane_output"                : [],
+                        "nodal_results"               : ["DISPLACEMENT","TOTAL_DISPLACEMENT"],
+                        "nodal_nonhistorical_results" : [],
+                        "gauss_point_results"         : ["FORCE"]
+                    },
+                    "point_data_configuration"  : []
+                },
+                "output_name"            : "gid_output/quay_wall_stage4_anchor"
+            }
+        }],
+        "vtk_output" : []
+    },
+    "analysis_stage"   : "KratosMultiphysics.GeoMechanicsApplication.geo_mechanics_analysis"
+}
