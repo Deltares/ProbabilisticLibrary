@@ -1,4 +1,5 @@
 import numpy as np
+import os
 
 import KratosMultiphysics as Kratos
 import KratosMultiphysics.GeoMechanicsApplication as kratos_geo
@@ -15,7 +16,7 @@ class zfuncwrapper_mohr_coulomb:
         self.output_stage_number = output_stage_number
         self.clean_up = clean_up
 
-        self.template_project_path = r"c:/Werk/kratos/Quay_Wall_4Stage_with_mohr_coulomb"
+        self.template_project_path = os.path.join(__file__, os.pardir, "Quay_Wall_4Stage_with_mohr_coulomb")
         
         stage_numbers = [1] # the wrapper of Kratos applies these values to all stages, so we can just use one stage number
 
@@ -106,8 +107,8 @@ class zfuncwrapper_linear:
         self.output_stage_number = output_stage_number
         self.clean_up = clean_up
 
-        self.template_project_path = r"c:/Werk/kratos/QuayWallModel_new"
-        
+        self.template_project_path = os.path.join(__file__, os.pardir, "QuayWallModel_new")
+
         stage_numbers = [0] # the wrapper of Kratos applies these values to all stages, so we can just use one stage number
 
         layers = ["PorousDomain.Parts_Solid_layer_1|1",

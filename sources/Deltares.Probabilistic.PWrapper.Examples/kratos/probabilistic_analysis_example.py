@@ -15,7 +15,7 @@ if __name__ == "__main__":
     young_moduli = [100e5, 200e5, 500e5, 1000e5, 1500e5]
     max_y_displacement = []
     for young_modulus in young_moduli:
-        template_project_path = r"c:\Werk\kratos\Quay_Wall_4Stage_with_mohr_coulomb"
+        template_project_path = os.path.join(__file__, os.pardir, "Quay_Wall_4Stage_with_mohr_coulomb")
         #template_project_path = r"c:\Werk\kratos\QuayWallModel_new"
         stage_number=1
         input_parameters = [[stage_number, "PorousDomain.Parts_Solid_layer_1|1", Kratos.YOUNG_MODULUS],

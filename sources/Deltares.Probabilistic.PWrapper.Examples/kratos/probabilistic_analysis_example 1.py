@@ -17,7 +17,7 @@ if __name__ == "__main__":
     young_moduli = [100e5 * i for i in range(1,15)]
     max_bending_moment = []
     for young_modulus in young_moduli:
-        template_project_path = r"c:\Werk\kratos\Quay_Wall_4Stage_with_mohr_coulomb"
+        template_project_path = os.path.join(__file__, os.pardir, "Quay_Wall_4Stage_with_mohr_coulomb")
         #template_project_path = r"c:\Werk\kratos\QuayWallModel_new"
         stage_number=1
         number_of_soil_parts = 7
