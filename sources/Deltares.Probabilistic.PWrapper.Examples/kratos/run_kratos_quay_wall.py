@@ -19,6 +19,7 @@ class zfuncwrapper_mohr_coulomb:
         self.template_project_path = os.path.join(__file__, os.pardir, "Quay_Wall_4Stage_with_mohr_coulomb")
         
         stage_numbers = [1] # the wrapper of Kratos applies these values to all stages, so we can just use one stage number
+        # state 0 is K0, we do not need to change that
 
         layers = ["PorousDomain.Parts_Solid_layer_1|1",
                   "PorousDomain.Parts_Solid_layer_1|2",
@@ -48,9 +49,7 @@ class zfuncwrapper_mohr_coulomb:
             for stage_number in stage_numbers:
                 self.input_parameters.append([stage_number, "PorousDomain.Parts_Beam_sheetpile", variable])
 
-        a = 0
-
-    def max_y_displacement(self, 
+    def total_displacement(self, 
                            geo_cohesion: list[float], 
                            geo_friction_angle: list[float],
                            geo_tensile_strength: list[float],
@@ -64,15 +63,15 @@ class zfuncwrapper_mohr_coulomb:
         
         # Format of a single 'output_parameters'  entry = 
         # [<stage_nr>, <function you want to perform on the results (can be None)>, <get-function>, <ModelPartName>, <VariableName>, <node_id (can be None>)]
-        output_parameters = [[self.output_stage_number, np.min, test_helper.get_nodal_variable, "PorousDomain", Kratos.DISPLACEMENT_Y, None]]
+        output_parameters = [[self.output_stage_number, np.max, test_helper.get_nodal_variable, "PorousDomain", kratos_geo.TOTAL_DISPLACEMENT, None]]
         prob_analysis_instance = prob_analysis.prob_analysis(self.template_project_path, self.input_parameters, output_parameters)
         output_values = prob_analysis_instance.calculate(input_list)
-        max_y_displacement = output_values[0]
+        total_displacement = output_values[0]
         
         if self.clean_up:
             prob_analysis_instance.finalize()
 
-        return np.abs(max_y_displacement)
+        return np.abs(total_displacement)
 
     def max_bending_moment(self, 
                            geo_cohesion: list[float], 
@@ -137,9 +136,7 @@ class zfuncwrapper_linear:
             for stage_number in stage_numbers:
                 self.input_parameters.append([stage_number, "PorousDomain.Parts_Beam_sheetpile", variable])
 
-        a = 0
-
-    def max_y_displacement(self, 
+    def max_x_displacement(self, 
                            geo_young_modulus: list[float], 
                            sheetpile_young_modulus: list[float],
                            sheetpile_poisson_ratio: list[float],
@@ -151,15 +148,15 @@ class zfuncwrapper_linear:
         
         # Format of a single 'output_parameters'  entry = 
         # [<stage_nr>, <function you want to perform on the results (can be None)>, <get-function>, <ModelPartName>, <VariableName>, <node_id (can be None>)]
-        output_parameters = [[self.output_stage_number, np.min, test_helper.get_nodal_variable, "PorousDomain", Kratos.DISPLACEMENT_Y, None]]
+        output_parameters = [[self.output_stage_number, np.max, test_helper.get_nodal_variable, "PorousDomain", Kratos.DISPLACEMENT_X, None]]
         prob_analysis_instance = prob_analysis.prob_analysis(self.template_project_path, self.input_parameters, output_parameters)
         output_values = prob_analysis_instance.calculate(input_list)
-        max_y_displacement = output_values[0]
+        max_x_displacement = output_values[0]
         
         if self.clean_up:
             prob_analysis_instance.finalize()
 
-        return np.abs(max_y_displacement)
+        return np.abs(max_x_displacement)
 
     def max_bending_moment(self, 
                            geo_young_modulus: list[float], 
@@ -192,16 +189,16 @@ class zfuncwrapper_linear:
 #geo_tensile_strength = [0.0] * 7 * 1
 #sheetpile_young_modulus = [200.0E9] * 1
 #sheetpile_poisson_ratio = [0.0] * 1
-#ssheetpile_thickness = [0.025] * 1
+#sheetpile_thickness = [0.025] * 1
 
-#max_y_displacement = wrapper.max_y_displacement(geo_cohesion,
+#total_displacement = wrapper.total_displacement(geo_cohesion,
 #                                                geo_friction_angle,
 #                                                geo_tensile_strength,
 #                                                sheetpile_young_modulus,
 #                                                sheetpile_poisson_ratio,
 #                                                sheetpile_thickness)
 
-#print(max_y_displacement)
+#print(total_displacement)
 
 #wrapper = zfuncwrapper_linear(output_stage_number=3, clean_up=True)
 
@@ -210,9 +207,9 @@ class zfuncwrapper_linear:
 #sheetpile_poisson_ratio = [0.0] * 1
 #sheetpile_thickness = [0.03] * 1
 
-#max_y_displacement = wrapper.max_y_displacement(geo_young_modulus,
+#max_x_displacement = wrapper.max_x_displacement(geo_young_modulus,
 #                                                sheetpile_young_modulus,
 #                                                sheetpile_poisson_ratio,
 #                                                sheetpile_thickness)
 
-#print(max_y_displacement)
+#print(max_x_displacement)
