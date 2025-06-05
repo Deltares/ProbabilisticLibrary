@@ -28,11 +28,23 @@ class zfuncwrapper_mohr_coulomb:
                   "PorousDomain.Parts_Solid_layer_3|1",
                   "PorousDomain.Parts_Solid_layer_3|2",
                   "PorousDomain.Parts_Solid_layer_4|1"]
-        
+
+        interfaces = ["PorousDomain.Layer11Interface",
+                      "PorousDomain.Layer12Interface",
+                      "PorousDomain.Layer21Interface",
+                      "PorousDomain.Layer22Interface",
+                      "PorousDomain.Layer31Interface",
+                      "PorousDomain.Layer32Interface"]
+
         layers_variables = [kratos_geo.GEO_COHESION, 
                             kratos_geo.GEO_FRICTION_ANGLE, 
-                            kratos_geo.GEO_TENSILE_STRENGTH]
-        
+                            kratos_geo.GEO_TENSILE_STRENGTH,
+                            Kratos.YOUNG_MODULUS]
+
+        interfaces_variables = [kratos_geo.GEO_COHESION,
+                                kratos_geo.GEO_FRICTION_ANGLE,
+                                kratos_geo.GEO_TENSILE_STRENGTH]
+
         sheetpile_variables = [Kratos.YOUNG_MODULUS, 
                                Kratos.POISSON_RATIO, 
                                kratos_struct.CROSS_AREA, 
@@ -45,6 +57,11 @@ class zfuncwrapper_mohr_coulomb:
                     for layer in layers:
                         self.input_parameters.append([stage_number, layer, variable])
 
+        for variable in interfaces_variables:
+            for stage_number in stage_numbers:
+                for interface in interfaces:
+                    self.input_parameters.append([stage_number, interface, variable])
+
         for variable in sheetpile_variables:
             for stage_number in stage_numbers:
                 self.input_parameters.append([stage_number, "PorousDomain.Parts_Beam_sheetpile", variable])
@@ -53,13 +70,17 @@ class zfuncwrapper_mohr_coulomb:
                            geo_cohesion: list[float], 
                            geo_friction_angle: list[float],
                            geo_tensile_strength: list[float],
+                           geo_young_modulus: list[float],
+                           interface_cohesion: list[float],
+                           interface_friction_angle: list[float],
+                           interface_tensile_strength: list[float],
                            sheetpile_young_modulus: list[float],
                            sheetpile_poisson_ratio: list[float],
                            sheetpile_thickness: list[float]) -> float:
 
         thickness = sheetpile_thickness + sheetpile_thickness + [val**3/12 for val in sheetpile_thickness]
         
-        input_list = geo_cohesion + geo_friction_angle + geo_tensile_strength + sheetpile_young_modulus + sheetpile_poisson_ratio + thickness
+        input_list = geo_cohesion + geo_friction_angle + geo_tensile_strength + geo_young_modulus + interface_cohesion + interface_friction_angle + interface_tensile_strength + sheetpile_young_modulus + sheetpile_poisson_ratio + thickness
         
         # Format of a single 'output_parameters'  entry = 
         # [<stage_nr>, <function you want to perform on the results (can be None)>, <get-function>, <ModelPartName>, <VariableName>, <node_id (can be None>)]
@@ -77,13 +98,17 @@ class zfuncwrapper_mohr_coulomb:
                            geo_cohesion: list[float], 
                            geo_friction_angle: list[float],
                            geo_tensile_strength: list[float],
+                           geo_young_modulus: list[float],
+                           interface_cohesion: list[float],
+                           interface_friction_angle: list[float],
+                           interface_tensile_strength: list[float],
                            sheetpile_young_modulus: list[float],
                            sheetpile_poisson_ratio: list[float],
                            sheetpile_thickness: list[float]) -> float:
         
         thickness = sheetpile_thickness + sheetpile_thickness + [val**3/12 for val in sheetpile_thickness]
 
-        input_list = geo_cohesion + geo_friction_angle + geo_tensile_strength + sheetpile_young_modulus + sheetpile_poisson_ratio + thickness
+        input_list = geo_cohesion + geo_friction_angle + geo_tensile_strength + geo_young_modulus + interface_cohesion + interface_friction_angle + interface_tensile_strength + sheetpile_young_modulus + sheetpile_poisson_ratio + thickness
 
         # Format of a single 'output_parameters'  entry = 
         # [<stage_nr>, <function you want to perform on the results (can be None)>, <get-function>, <ModelPartName>, <VariableName>, <node_id (can be None>)]
