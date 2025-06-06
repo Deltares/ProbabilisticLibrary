@@ -51,9 +51,9 @@ class zfuncwrapper_mohr_coulomb:
         
         self.input_parameters = []
         for variable in layers_variables:
-                for stage_number in stage_numbers:
-                    for layer in layers:
-                        self.input_parameters.append([stage_number, layer, variable])
+            for stage_number in stage_numbers:
+                for layer in layers:
+                    self.input_parameters.append([stage_number, layer, variable])
 
         for variable in interfaces_variables:
             for stage_number in stage_numbers:
@@ -156,9 +156,9 @@ class zfuncwrapper_linear:
         
         self.input_parameters = []
         for variable in layers_variables:
-                for stage_number in stage_numbers:
-                    for layer in layers:
-                        self.input_parameters.append([stage_number, layer, variable])
+            for stage_number in stage_numbers:
+                for layer in layers:
+                    self.input_parameters.append([stage_number, layer, variable])
 
         for variable in interfaces_variables:
             for stage_number in stage_numbers:
