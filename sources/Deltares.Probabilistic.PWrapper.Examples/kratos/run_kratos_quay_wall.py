@@ -88,7 +88,7 @@ class zfuncwrapper_mohr_coulomb:
         if self.clean_up:
             prob_analysis_instance.finalize()
 
-        return np.abs(total_displacement)
+        return total_displacement
 
     def max_bending_moment(self, 
                            geo_cohesion: list[float], 
