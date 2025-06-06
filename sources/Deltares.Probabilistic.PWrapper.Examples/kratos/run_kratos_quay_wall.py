@@ -37,13 +37,11 @@ class zfuncwrapper_mohr_coulomb:
                       "PorousDomain.Layer32Interface"]
 
         layers_variables = [kratos_geo.GEO_COHESION, 
-                            kratos_geo.GEO_FRICTION_ANGLE, 
-                            kratos_geo.GEO_TENSILE_STRENGTH,
+                            kratos_geo.GEO_FRICTION_ANGLE,
                             Kratos.YOUNG_MODULUS]
 
         interfaces_variables = [kratos_geo.GEO_COHESION,
-                                kratos_geo.GEO_FRICTION_ANGLE,
-                                kratos_geo.GEO_TENSILE_STRENGTH]
+                                kratos_geo.GEO_FRICTION_ANGLE]
 
         sheetpile_variables = [Kratos.YOUNG_MODULUS, 
                                Kratos.POISSON_RATIO, 
@@ -69,22 +67,20 @@ class zfuncwrapper_mohr_coulomb:
     def total_displacement(self, 
                            geo_cohesion: list[float], 
                            geo_friction_angle: list[float],
-                           geo_tensile_strength: list[float],
                            geo_young_modulus: list[float],
                            interface_cohesion: list[float],
                            interface_friction_angle: list[float],
-                           interface_tensile_strength: list[float],
                            sheetpile_young_modulus: list[float],
                            sheetpile_poisson_ratio: list[float],
                            sheetpile_thickness: list[float]) -> float:
 
         thickness = sheetpile_thickness + sheetpile_thickness + [val**3/12 for val in sheetpile_thickness]
         
-        input_list = geo_cohesion + geo_friction_angle + geo_tensile_strength + geo_young_modulus + interface_cohesion + interface_friction_angle + interface_tensile_strength + sheetpile_young_modulus + sheetpile_poisson_ratio + thickness
+        input_list = geo_cohesion + geo_friction_angle + geo_young_modulus + interface_cohesion + interface_friction_angle + sheetpile_young_modulus + sheetpile_poisson_ratio + thickness
         
         # Format of a single 'output_parameters'  entry = 
         # [<stage_nr>, <function you want to perform on the results (can be None)>, <get-function>, <ModelPartName>, <VariableName>, <node_id (can be None>)]
-        output_parameters = [[self.output_stage_number, np.max, test_helper.get_nodal_variable, "PorousDomain", kratos_geo.TOTAL_DISPLACEMENT, None]]
+        output_parameters = [[self.output_stage_number, None, test_helper.get_nodal_variable, "PorousDomain", kratos_geo.TOTAL_DISPLACEMENT_X, 171]]
         prob_analysis_instance = prob_analysis.prob_analysis(self.template_project_path, self.input_parameters, output_parameters)
         output_values = prob_analysis_instance.calculate(input_list)
         total_displacement = output_values[0]
@@ -97,18 +93,16 @@ class zfuncwrapper_mohr_coulomb:
     def max_bending_moment(self, 
                            geo_cohesion: list[float], 
                            geo_friction_angle: list[float],
-                           geo_tensile_strength: list[float],
                            geo_young_modulus: list[float],
                            interface_cohesion: list[float],
                            interface_friction_angle: list[float],
-                           interface_tensile_strength: list[float],
                            sheetpile_young_modulus: list[float],
                            sheetpile_poisson_ratio: list[float],
                            sheetpile_thickness: list[float]) -> float:
         
         thickness = sheetpile_thickness + sheetpile_thickness + [val**3/12 for val in sheetpile_thickness]
 
-        input_list = geo_cohesion + geo_friction_angle + geo_tensile_strength + geo_young_modulus + interface_cohesion + interface_friction_angle + interface_tensile_strength + sheetpile_young_modulus + sheetpile_poisson_ratio + thickness
+        input_list = geo_cohesion + geo_friction_angle + geo_young_modulus + interface_cohesion + interface_friction_angle + sheetpile_young_modulus + sheetpile_poisson_ratio + thickness
 
         # Format of a single 'output_parameters'  entry = 
         # [<stage_nr>, <function you want to perform on the results (can be None)>, <get-function>, <ModelPartName>, <VariableName>, <node_id (can be None>)]
@@ -175,12 +169,12 @@ class zfuncwrapper_linear:
             for stage_number in stage_numbers:
                 self.input_parameters.append([stage_number, "PorousDomain.Parts_Beam_sheetpile", variable])
 
-    def displacement_x(self, 
-                       geo_young_modulus: list[float],
-                       interface_stiffness: list[float],
-                       sheetpile_young_modulus: list[float],
-                       sheetpile_poisson_ratio: list[float],
-                       sheetpile_thickness: list[float]) -> float:
+    def total_displacement(self, 
+                           geo_young_modulus: list[float],
+                           interface_stiffness: list[float],
+                           sheetpile_young_modulus: list[float],
+                           sheetpile_poisson_ratio: list[float],
+                           sheetpile_thickness: list[float]) -> float:
 
         thickness = sheetpile_thickness + sheetpile_thickness + [val**3/12 for val in sheetpile_thickness]
         
@@ -188,15 +182,15 @@ class zfuncwrapper_linear:
         
         # Format of a single 'output_parameters'  entry = 
         # [<stage_nr>, <function you want to perform on the results (can be None)>, <get-function>, <ModelPartName>, <VariableName>, <node_id (can be None>)]
-        output_parameters = [[self.output_stage_number, None, test_helper.get_nodal_variable, "PorousDomain", Kratos.DISPLACEMENT_X, [171]]]
+        output_parameters = [[self.output_stage_number, None, test_helper.get_nodal_variable, "PorousDomain", kratos_geo.TOTAL_DISPLACEMENT_X, 171]]
         prob_analysis_instance = prob_analysis.prob_analysis(self.template_project_path, self.input_parameters, output_parameters)
         output_values = prob_analysis_instance.calculate(input_list)
-        displacement_x = output_values[0]
+        total_displacement = output_values[0]
         
         if self.clean_up:
             prob_analysis_instance.finalize()
 
-        return displacement_x
+        return total_displacement
 
     def max_bending_moment(self, 
                            geo_young_modulus: list[float], 
@@ -227,14 +221,18 @@ class zfuncwrapper_linear:
 
 #geo_cohesion = [3.0] * 7 * 1
 #geo_friction_angle = [22.5] * 7 * 1
-#geo_tensile_strength = [0.0] * 7 * 1
+#geo_young_modulus = [500.0E5] * 7 * 1
+#interface_cohesion = [3.0] * 6 * 1
+#interface_friction_angle = [22.5] * 6 * 1
 #sheetpile_young_modulus = [200.0E9] * 1
 #sheetpile_poisson_ratio = [0.0] * 1
 #sheetpile_thickness = [0.025] * 1
 
 #total_displacement = wrapper.total_displacement(geo_cohesion,
 #                                                geo_friction_angle,
-#                                                geo_tensile_strength,
+#                                                geo_young_modulus,
+#                                                interface_cohesion,
+#                                                interface_friction_angle,
 #                                                sheetpile_young_modulus,
 #                                                sheetpile_poisson_ratio,
 #                                                sheetpile_thickness)
@@ -244,13 +242,15 @@ class zfuncwrapper_linear:
 #wrapper = zfuncwrapper_linear(output_stage_number=3, clean_up=True)
 
 #geo_young_modulus = [500.0E5] * 7 * 1
+#interface_stiffnes = [10.0E11] * 6 * 1
 #sheetpile_young_modulus = [200.0E9] * 1
 #sheetpile_poisson_ratio = [0.0] * 1
 #sheetpile_thickness = [0.03] * 1
 
-#max_x_displacement = wrapper.max_x_displacement(geo_young_modulus,
-#                                                sheetpile_young_modulus,
-#                                                sheetpile_poisson_ratio,
-#                                                sheetpile_thickness)
+#total_displacement = wrapper.total_displacement(geo_young_modulus,
+#                                            interface_stiffnes,
+#                                            sheetpile_young_modulus,
+#                                            sheetpile_poisson_ratio,
+#                                            sheetpile_thickness)
 
-#print(max_x_displacement)
+#print(total_displacement)
