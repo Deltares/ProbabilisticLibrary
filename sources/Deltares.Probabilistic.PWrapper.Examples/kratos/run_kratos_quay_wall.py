@@ -169,6 +169,19 @@ class zfuncwrapper_linear:
             for stage_number in stage_numbers:
                 self.input_parameters.append([stage_number, "PorousDomain.Parts_Beam_sheetpile", variable])
 
+    def _expand_young_modulus(self, geo_young_modulus_in: list[float]) -> list[float]:
+        # if only two values are provided, the first is for the 5 clay layers, the second the 2 sand layers:
+        # otherwise all layers are independent
+        if (len(geo_young_modulus_in) == 2):
+            geo_young_modulus = []
+            for i in range(4):
+                geo_young_modulus.append(geo_young_modulus_in[0])
+            for i in range(3):
+                geo_young_modulus.append(geo_young_modulus_in[1])
+        else:
+            geo_young_modulus = geo_young_modulus_in
+        return geo_young_modulus
+
     def total_displacement(self, 
                            geo_young_modulus: list[float],
                            interface_stiffness: list[float],
@@ -178,7 +191,9 @@ class zfuncwrapper_linear:
 
         thickness = sheetpile_thickness + sheetpile_thickness + [val**3/12 for val in sheetpile_thickness]
         
-        input_list = geo_young_modulus + interface_stiffness + sheetpile_young_modulus + sheetpile_poisson_ratio + thickness
+        geo_young_modulus_full = self._expand_young_modulus(geo_young_modulus)
+            
+        input_list = geo_young_modulus_full + interface_stiffness + sheetpile_young_modulus + sheetpile_poisson_ratio + thickness
         
         # Format of a single 'output_parameters'  entry = 
         # [<stage_nr>, <function you want to perform on the results (can be None)>, <get-function>, <ModelPartName>, <VariableName>, <node_id (can be None>)]
@@ -201,7 +216,9 @@ class zfuncwrapper_linear:
         
         thickness = sheetpile_thickness + sheetpile_thickness + [val**3/12 for val in sheetpile_thickness]
 
-        input_list = geo_young_modulus + interface_stiffness + sheetpile_young_modulus + sheetpile_poisson_ratio + thickness
+        geo_young_modulus_full = self._expand_young_modulus(geo_young_modulus)
+
+        input_list = geo_young_modulus_full + interface_stiffness + sheetpile_young_modulus + sheetpile_poisson_ratio + thickness
 
         # Format of a single 'output_parameters'  entry = 
         # [<stage_nr>, <function you want to perform on the results (can be None)>, <get-function>, <ModelPartName>, <VariableName>, <node_id (can be None>)]
