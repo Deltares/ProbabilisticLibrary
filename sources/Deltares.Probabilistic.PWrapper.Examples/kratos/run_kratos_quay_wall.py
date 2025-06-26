@@ -13,7 +13,7 @@ class zfuncwrapper_linear:
 
     def __init__(self, output_stage_number, clean_up):
 
-        self.domainSheetpile = "PorousDomain.Parts_Beam_sheetpile"
+        self.domain_sheetpile = "PorousDomain.Parts_Beam_sheetpile"
 
         self.output_stage_number = output_stage_number
         self.clean_up = clean_up
@@ -60,7 +60,7 @@ class zfuncwrapper_linear:
 
         for variable in sheetpile_variables:
             for stage_number in stage_numbers:
-                self.input_parameters.append([stage_number, self.domainSheetpile, variable])
+                self.input_parameters.append([stage_number, self.domain_sheetpile, variable])
 
     def _expand_young_modulus(self, geo_young_modulus_in: list[float]) -> list[float]:
         # if only two values are provided, the first is for the 5 clay layers, the second the 2 sand layers:
@@ -115,8 +115,8 @@ class zfuncwrapper_linear:
 
         # Format of a single 'output_parameters'  entry = 
         # [<stage_nr>, <function you want to perform on the results (can be None)>, <get-function>, <ModelPartName>, <VariableName>, <node_id (can be None>)]
-        output_parameters = [[self.output_stage_number, np.max, test_helper.get_on_integration_points, self.domainSheetpile, kratos_struct.BENDING_MOMENT],
-                             [self.output_stage_number, None, test_helper.get_on_integration_points, self.domainSheetpile, kratos_struct.BENDING_MOMENT, [410, 412]]]
+        output_parameters = [[self.output_stage_number, np.max, test_helper.get_on_integration_points, self.domain_sheetpile, kratos_struct.BENDING_MOMENT],
+                             [self.output_stage_number, None, test_helper.get_on_integration_points, self.domain_sheetpile, kratos_struct.BENDING_MOMENT, [410, 412]]]
 
         prob_analysis_instance = prob_analysis.prob_analysis(self.template_project_path, self.input_parameters, output_parameters)
         output_values = prob_analysis_instance.calculate(input_list)
