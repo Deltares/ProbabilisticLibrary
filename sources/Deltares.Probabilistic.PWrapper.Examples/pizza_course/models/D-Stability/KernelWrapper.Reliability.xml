@@ -1,0 +1,1576 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>KernelWrapper.Reliability</name>
+    </assembly>
+    <members>
+        <member name="T:KernelWrapper.Reliability.CorrelationMatrix">
+            <summary>
+            The model that describes the generated correlation matrix.
+            </summary>
+        </member>
+        <member name="P:KernelWrapper.Reliability.CorrelationMatrix.Stochasts">
+            <summary>
+            Gets or sets the stochasts.
+            </summary>
+        </member>
+        <member name="P:KernelWrapper.Reliability.CorrelationMatrix.Correlations">
+            <summary>
+            Gets or sets the correlations.
+            </summary>
+        </member>
+        <member name="T:KernelWrapper.Reliability.CorrelationMatrixCorrelation">
+            <summary>
+            A correlation that is part of the fragility curve.
+            </summary>
+        </member>
+        <member name="P:KernelWrapper.Reliability.CorrelationMatrixCorrelation.Stochast1">
+            <summary>
+            Gets or sets the first stochast.
+            </summary>
+        </member>
+        <member name="P:KernelWrapper.Reliability.CorrelationMatrixCorrelation.Stochast2">
+            <summary>
+            Gets or sets the second stochast.
+            </summary>
+        </member>
+        <member name="T:KernelWrapper.Reliability.CorrelationMatrixCreator">
+            <summary>
+            Creator methods that create a <see cref="T:KernelWrapper.Reliability.CorrelationMatrix"/> based on a given calculation.
+            </summary>
+        </member>
+        <member name="M:KernelWrapper.Reliability.CorrelationMatrixCreator.CreateCorrelationMatrix(KernelWrapper.Reliability.IReliabilityCalculation,KernelWrapper.Reliability.ReliabilitySettingsBase)">
+            <summary>
+            Creates a new instance of <see cref="T:KernelWrapper.Reliability.CorrelationMatrix"/>
+            </summary>
+            <param name="calculation">The reliability calculation.</param>
+            <param name="settings">The reliability settings to use in the calculation.</param>
+            <returns>An instance of <see cref="T:KernelWrapper.Reliability.CorrelationMatrix"/>.</returns>
+        </member>
+        <member name="T:KernelWrapper.Reliability.CorrelationMatrixDistributionType">
+            <summary>
+            The type of distribution in the fragility curve.
+            </summary>
+        </member>
+        <member name="F:KernelWrapper.Reliability.CorrelationMatrixDistributionType.Deterministic">
+            <summary>
+            A deterministic distribution.
+            </summary>
+        </member>
+        <member name="F:KernelWrapper.Reliability.CorrelationMatrixDistributionType.LogNormal">
+            <summary>
+            A log normal distribution.
+            </summary>
+        </member>
+        <member name="T:KernelWrapper.Reliability.CorrelationMatrixStochast">
+            <summary>
+            A stochast that is part of the correlation matrix.
+            </summary>
+        </member>
+        <member name="P:KernelWrapper.Reliability.CorrelationMatrixStochast.DistributionType">
+            <summary>
+            Gets or sets distribution type.
+            </summary>
+        </member>
+        <member name="P:KernelWrapper.Reliability.CorrelationMatrixStochast.Mean">
+            <summary>
+            Gets or sets the mean value.
+            </summary>
+        </member>
+        <member name="P:KernelWrapper.Reliability.CorrelationMatrixStochast.StandardDeviation">
+            <summary>
+            Gets or sets the standard deviation.
+            </summary>
+        </member>
+        <member name="P:KernelWrapper.Reliability.CorrelationMatrixStochast.VariationCoefficient">
+            <summary>
+            Gets or sets the variation coefficient.
+            </summary>
+        </member>
+        <member name="P:KernelWrapper.Reliability.CorrelationMatrixStochast.IsVariationCoefficientUsed">
+            <summary>
+            Gets or sets whether the <see cref="P:KernelWrapper.Reliability.CorrelationMatrixStochast.VariationCoefficient"/> is used.
+            </summary>
+        </member>
+        <member name="P:KernelWrapper.Reliability.CorrelationMatrixStochast.AssociatedObject">
+            <summary>
+            Gets or sets the associated object.
+            </summary>
+        </member>
+        <member name="P:KernelWrapper.Reliability.CorrelationMatrixStochast.ParameterType">
+            <summary>
+            Gets or sets the parameter type.
+            </summary>
+        </member>
+        <member name="T:KernelWrapper.Reliability.CorrelationMatrixStochastParameterType">
+            <summary>
+            The type of parameter.
+            </summary>
+        </member>
+        <member name="F:KernelWrapper.Reliability.CorrelationMatrixStochastParameterType.Cohesion">
+            <summary>
+            The cohesion parameter.
+            </summary>
+        </member>
+        <member name="F:KernelWrapper.Reliability.CorrelationMatrixStochastParameterType.FrictionAngle">
+            <summary>
+            The friction angle parameter.
+            </summary>
+        </member>
+        <member name="F:KernelWrapper.Reliability.CorrelationMatrixStochastParameterType.Dilatancy">
+            <summary>
+            The dilatancy parameter.
+            </summary>
+        </member>
+        <member name="F:KernelWrapper.Reliability.CorrelationMatrixStochastParameterType.ShearStrengthRatio">
+            <summary>
+            The shear strength ratio parameter.
+            </summary>
+        </member>
+        <member name="F:KernelWrapper.Reliability.CorrelationMatrixStochastParameterType.StrengthIncreaseExponent">
+            <summary>
+            The strength increase exponent parameter.
+            </summary>
+        </member>
+        <member name="F:KernelWrapper.Reliability.CorrelationMatrixStochastParameterType.SuMultiplier">
+            <summary>
+            The su multiplier parameter.
+            </summary>
+        </member>
+        <member name="F:KernelWrapper.Reliability.CorrelationMatrixStochastParameterType.TauMultiplier">
+            <summary>
+            The tau multiplier parameter.
+            </summary>
+        </member>
+        <member name="F:KernelWrapper.Reliability.CorrelationMatrixStochastParameterType.PopAbove">
+            <summary>
+            The pop parameter above a point.
+            </summary>
+        </member>
+        <member name="F:KernelWrapper.Reliability.CorrelationMatrixStochastParameterType.PopBelow">
+            <summary>
+            The pop parameter below a point.
+            </summary>
+        </member>
+        <member name="F:KernelWrapper.Reliability.CorrelationMatrixStochastParameterType.ModelFactor">
+            <summary>
+            The model factor parameter.
+            </summary>
+        </member>
+        <member name="T:KernelWrapper.Reliability.DesignValueCalculator">
+            <summary>
+            Provides design value calculations for different material parameters.
+            </summary>
+        </member>
+        <member name="M:KernelWrapper.Reliability.DesignValueCalculator.Cohesion(KernelWrapper.Reliability.Distribution)">
+            <summary>
+            Returns the design value for cohesion.
+            </summary>
+            <param name="distribution">The distribution.</param>
+            <returns>The design value.</returns>
+        </member>
+        <member name="M:KernelWrapper.Reliability.DesignValueCalculator.Dilatancy(KernelWrapper.Reliability.Distribution)">
+            <summary>
+            Returns the design value for dilatancy.
+            </summary>
+            <param name="distribution">The distribution.</param>
+            <returns>The design value.</returns>
+        </member>
+        <member name="M:KernelWrapper.Reliability.DesignValueCalculator.FrictionAngle(KernelWrapper.Reliability.Distribution)">
+            <summary>
+            Returns the design value for friction angle.
+            </summary>
+            <param name="distribution">The distribution.</param>
+            <returns>The design value.</returns>
+        </member>
+        <member name="M:KernelWrapper.Reliability.DesignValueCalculator.StrengthIncreaseExponent(KernelWrapper.Reliability.Distribution)">
+            <summary>
+            Returns the design value for strength increase exponent.
+            </summary>
+            <param name="distribution">The distribution.</param>
+            <returns>The design value.</returns>
+        </member>
+        <member name="M:KernelWrapper.Reliability.DesignValueCalculator.ShearStrengthRatio(KernelWrapper.Reliability.Distribution)">
+            <summary>
+            Returns the design value for shear strength ratio.
+            </summary>
+            <param name="distribution">The distribution.</param>
+            <returns>The design value.</returns>
+        </member>
+        <member name="M:KernelWrapper.Reliability.DesignValueCalculator.Pop(KernelWrapper.Reliability.Distribution)">
+            <summary>
+            Returns the design value for POP.
+            </summary>
+            <param name="distribution">The distribution.</param>
+            <returns>The design value.</returns>
+        </member>
+        <member name="M:KernelWrapper.Reliability.DesignValueCalculator.SigmaTauTable(KernelWrapper.Reliability.VariationCoefficientDistribution)">
+            <summary>
+            Returns the design value for the sigma-tau table.
+            </summary>
+            <param name="distribution">The distribution.</param>
+            <returns>The design value.</returns>
+        </member>
+        <member name="M:KernelWrapper.Reliability.DesignValueCalculator.SuTable(KernelWrapper.Reliability.VariationCoefficientDistribution)">
+            <summary>
+            Returns the design value for the SU Table.
+            </summary>
+            <param name="distribution">The distribution.</param>
+            <returns>The design value.</returns>
+        </member>
+        <member name="M:KernelWrapper.Reliability.DistributionExtensions.CreateStochast(KernelWrapper.Reliability.Distribution,Deltares.Geo.Common.Geometry.Soil,System.String)">
+            <summary>
+            Creates an instance of <see cref="T:Deltares.MacroStability.Reliability.Data.Stochast"/> from the values set
+            on a <see cref="T:KernelWrapper.Reliability.Distribution"/>.
+            <param name="distribution">The distribution to take values from.</param>
+            <param name="owner">The owner of the stochast.</param>
+            <param name="property">The name of the property.</param>
+            </summary>
+            <returns>A new instance of <see cref="T:Deltares.MacroStability.Reliability.Data.Stochast"/>.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="owner"></paramref> or
+            <paramref name="property"/> is <c>null</c>.</exception>
+        </member>
+        <member name="M:KernelWrapper.Reliability.DistributionExtensions.CreateStochast(KernelWrapper.Reliability.VariationCoefficientDistribution,Deltares.Geo.Common.Geometry.Soil,System.String)">
+            <summary>
+            Creates an instance of <see cref="T:Deltares.MacroStability.Reliability.Data.Stochast"/> from the values set
+            on a <see cref="T:KernelWrapper.Reliability.VariationCoefficientDistribution"/>.
+            <param name="distribution">The distribution to take values from.</param>
+            <param name="owner">The owner of the stochast.</param>
+            <param name="property">The name of the property.</param>
+            </summary>
+            <returns>A new instance of <see cref="T:Deltares.MacroStability.Reliability.Data.Stochast"/>.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="owner"></paramref> or
+            <paramref name="property"/> is <c>null</c>.</exception>
+        </member>
+        <member name="T:KernelWrapper.Reliability.FormReliabilitySettings">
+            <summary>
+            Settings for a FORM reliability calculation.
+            </summary>
+        </member>
+        <member name="M:KernelWrapper.Reliability.FormReliabilitySettings.#ctor(KernelWrapper.Reliability.IParameterValue)">
+            <summary>
+            Creates a new instance of <see cref="T:KernelWrapper.Reliability.FormReliabilitySettings"/>.
+            </summary>
+            <param name="modelFactor">The model factor.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="modelFactor"/>
+            is <c>null</c>.</exception>
+        </member>
+        <member name="T:KernelWrapper.Reliability.BishopBruteForceReliabilityInput">
+            <summary>
+            Input for a reliability analysis with the Bishop Brute Force Limit Equilibrium Method.
+            </summary>
+        </member>
+        <member name="M:KernelWrapper.Reliability.BishopBruteForceReliabilityInput.#ctor(KernelWrapper.BishopBruteForceInput)">
+            <summary>
+            Creates a new instance of <see cref="T:KernelWrapper.Reliability.BishopBruteForceReliabilityInput"/>.
+            </summary>
+            <param name="input">The Spencer Genetic input to perform a reliability
+            analysis for.</param>
+            <exception cref="T:System.ArgumentNullException">Throws when <paramref name="input"/>
+            is <c>null</c>.</exception>
+        </member>
+        <member name="M:KernelWrapper.Reliability.BishopBruteForceReliabilityInput.CreateReliabilityCalculation">
+            <inheritdoc />
+        </member>
+        <member name="T:KernelWrapper.Reliability.BishopReliabilityInput">
+            <summary>
+            Input for a reliability analysis with the Bishop Limit Equilibrium Method.
+            </summary>
+        </member>
+        <member name="M:KernelWrapper.Reliability.BishopReliabilityInput.#ctor(KernelWrapper.BishopInput)">
+            <summary>
+            Creates a new instance of <see cref="T:KernelWrapper.Reliability.BishopReliabilityInput"/>.
+            </summary>
+            <param name="input">The Bishop input to perform a reliability
+            analysis for.</param>
+            <exception cref="T:System.ArgumentNullException">Throws when <paramref name="input"/>
+            is <c>null</c>.</exception>
+        </member>
+        <member name="M:KernelWrapper.Reliability.BishopReliabilityInput.CreateReliabilityCalculation">
+            <inheritdoc />
+        </member>
+        <member name="M:KernelWrapper.Reliability.CorrelationGroup.Add(Deltares.MacroStability.Reliability.CSharpWrapper.Stochast)">
+            <summary>
+            Adds a stochast to the group.
+            </summary>
+            <param name="stochast">The stochast.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="stochast"/>
+            is <c>null</c>.</exception>
+        </member>
+        <member name="T:KernelWrapper.Reliability.DeterministicValue">
+            <summary>
+            A deterministic value for a stochastic parameter.
+            </summary>
+        </member>
+        <member name="M:KernelWrapper.Reliability.DeterministicValue.#ctor(System.Double)">
+            <summary>
+            Creates a new instance of <see cref="T:KernelWrapper.Reliability.DeterministicValue"/>.
+            </summary>
+            <param name="value">The value.</param>
+        </member>
+        <member name="M:KernelWrapper.Reliability.DeterministicValue.op_Implicit(System.Double)~KernelWrapper.Reliability.DeterministicValue">
+            <summary>
+            Implicit conversion from a <see cref="T:System.Double"/> to a <see cref="T:KernelWrapper.Reliability.DeterministicValue"/>.
+            </summary>
+            <param name="value">The value to convert.</param>
+            <returns>A new instance of <see cref="T:KernelWrapper.Reliability.DeterministicValue"/> with its
+            <see cref="P:KernelWrapper.Reliability.DeterministicValue.Value"/>.</returns>
+        </member>
+        <member name="T:KernelWrapper.Reliability.Distribution">
+            <summary>
+            A log normal distribution for a stochastic parameter.
+            </summary>
+        </member>
+        <member name="M:KernelWrapper.Reliability.Distribution.#ctor(System.Double,System.Double)">
+            <summary>
+            Creates a new instance of <see cref="T:KernelWrapper.Reliability.Distribution"/>.
+            </summary>
+            <param name="mean">The mean.</param>
+            <param name="standardDeviation">The standard deviation.</param>
+            <exception cref="T:System.ArgumentException">Thrown when <paramref name="mean"/>
+            is 0 or less than 0.</exception>
+        </member>
+        <member name="T:KernelWrapper.Reliability.IParameterValue">
+            <summary>
+            A parameter that can take a value based on distributions.
+            </summary>
+        </member>
+        <member name="M:KernelWrapper.Reliability.IInternalParameterValue.CreateStochast(System.String)">
+            <summary>
+            Creates a <see cref="T:Deltares.MacroStability.Reliability.CSharpWrapper.Stochast"/> definition for a property.
+            </summary>
+            <param name="parameterName">The soil's parameter.</param>
+            <returns>A new instance of <see cref="T:Deltares.MacroStability.Reliability.CSharpWrapper.Stochast"/> with
+            <see cref="P:Deltares.MacroStability.Reliability.CSharpWrapper.Stochast.DistributionType"/>, <see cref="P:Deltares.MacroStability.Reliability.CSharpWrapper.Stochast.AssociatedObject"/>,
+            <see cref="P:Deltares.MacroStability.Reliability.CSharpWrapper.Stochast.PropertyName"/>, <see cref="P:Deltares.MacroStability.Reliability.CSharpWrapper.Stochast.Mean"/>,
+            <see cref="P:Deltares.MacroStability.Reliability.CSharpWrapper.Stochast.StandardDeviation"/> set.</returns>
+        </member>
+        <member name="M:KernelWrapper.Reliability.IInternalParameterValue.CreateStochast(Deltares.MacroStability.Reliability.CSharpWrapper.ReliabilityInput,System.String)">
+            <summary>
+            Creates a complete <see cref="T:Deltares.MacroStability.Reliability.CSharpWrapper.Stochast"/> definition for an owning
+            <see cref="T:Deltares.MacroStability.Reliability.CSharpWrapper.ReliabilityInput"/> and its property.
+            </summary>
+            <param name="model">The owning reliability model.</param>
+            <param name="parameterName">The reliability model's parameter.</param>
+            <returns>A new instance of <see cref="T:Deltares.MacroStability.Reliability.CSharpWrapper.Stochast"/> with
+            <see cref="P:Deltares.MacroStability.Reliability.CSharpWrapper.Stochast.DistributionType"/>, <see cref="P:Deltares.MacroStability.Reliability.CSharpWrapper.Stochast.AssociatedObject"/>,
+            <see cref="P:Deltares.MacroStability.Reliability.CSharpWrapper.Stochast.PropertyName"/>, <see cref="P:Deltares.MacroStability.Reliability.CSharpWrapper.Stochast.Mean"/>,
+            <see cref="P:Deltares.MacroStability.Reliability.CSharpWrapper.Stochast.StandardDeviation"/> set.</returns>
+        </member>
+        <member name="M:KernelWrapper.Reliability.IInternalParameterValue.CreateStochast(Deltares.MacroStability.CSharpWrapper.Input.YieldStressPoint,System.String)">
+            <summary>
+            Creates a complete <see cref="T:Deltares.MacroStability.Reliability.CSharpWrapper.Stochast"/> definition for an owning
+            <see cref="T:Deltares.MacroStability.CSharpWrapper.Input.YieldStressPoint"/> and its property.
+            </summary>
+            <param name="stressPoint">The owning yield stress point.</param>
+            <param name="parameterName">The reliability model's parameter.</param>
+            <returns>A new instance of <see cref="T:Deltares.MacroStability.Reliability.CSharpWrapper.Stochast"/> with
+            <see cref="P:Deltares.MacroStability.Reliability.CSharpWrapper.Stochast.DistributionType"/>, <see cref="P:Deltares.MacroStability.Reliability.CSharpWrapper.Stochast.AssociatedObject"/>,
+            <see cref="P:Deltares.MacroStability.Reliability.CSharpWrapper.Stochast.PropertyName"/>, <see cref="P:Deltares.MacroStability.Reliability.CSharpWrapper.Stochast.Mean"/>,
+            <see cref="P:Deltares.MacroStability.Reliability.CSharpWrapper.Stochast.StandardDeviation"/> set.</returns>
+        </member>
+        <member name="T:KernelWrapper.Reliability.IDrainedStochasticSoilParameters">
+            <summary>
+            Interface for classes containing stochastic drained parameters for a soil.
+            </summary>
+        </member>
+        <member name="M:KernelWrapper.Reliability.IDrainedStochasticSoilParameters.CreateCorrelation(KernelWrapper.Reliability.IUndrainedStochasticSoilParameters)">
+            <summary>
+            Creates correlations between the drained and the given undrained soil parameters.
+            </summary>
+            <param name="otherParameters">The undrained stochastic soil parameters.</param>
+            <returns>A collection of <see cref="T:Deltares.MacroStability.Reliability.CSharpWrapper.Correlation"/>.</returns>
+        </member>
+        <member name="M:KernelWrapper.Reliability.IDrainedStochasticSoilParameters.CreateCorrelation(KernelWrapper.Reliability.IDrainedStochasticSoilParameters)">
+            <summary>
+            Creates correlations between two drained soil parameters.
+            </summary>
+            <param name="otherParameters">The drained stochastic soil parameters.</param>
+            <returns>A collection of <see cref="T:Deltares.MacroStability.Reliability.CSharpWrapper.Correlation"/>.</returns>
+        </member>
+        <member name="T:KernelWrapper.Reliability.IUndrainedStochasticSoilParameters">
+            <summary>
+            Interface for classes containing stochastic undrained parameters for a soil.
+            </summary>
+        </member>
+        <member name="M:KernelWrapper.Reliability.IUndrainedStochasticSoilParameters.CreateCorrelation(KernelWrapper.Reliability.IUndrainedStochasticSoilParameters)">
+            <summary>
+            Creates correlations between two undrained soil parameters.
+            </summary>
+            <param name="otherParameters">The undrained stochastic soil parameters.</param>
+            <returns>A collection of <see cref="T:Deltares.MacroStability.Reliability.CSharpWrapper.Correlation"/>.</returns>
+        </member>
+        <member name="T:KernelWrapper.Reliability.IStochasticSoilParameters">
+            <summary>
+            Interface for classes containing stochastic parameters for a soil.
+            </summary>
+        </member>
+        <member name="M:KernelWrapper.Reliability.IStochasticSoilParameters.SetParameters(Deltares.MacroStability.CSharpWrapper.Input.Soil,KernelWrapper.Reliability.StochasticParameterCollection)">
+            <summary>
+            Set the parameters on a soil.
+            </summary>
+            <param name="soil">The soil.</param>
+            <param name="stochasts">Collection of <see cref="T:Deltares.MacroStability.Reliability.Data.Stochast"/> to add distributions to.</param>
+        </member>
+        <member name="M:KernelWrapper.Reliability.IStochasticSoilParameters.CreateCorrelation">
+            <summary>
+            Creates correlations from the stochastic parameters in the soil parameters.
+            </summary>
+            <returns>A collection of <see cref="T:Deltares.MacroStability.Reliability.CSharpWrapper.Correlation"/>.</returns>
+        </member>
+        <member name="T:KernelWrapper.Reliability.MohrCoulombAdvancedStochasticParameters">
+            <summary>
+            Stochastic parameters for the Mohr Coulomb Advanced drained material.
+            </summary>
+        </member>
+        <member name="M:KernelWrapper.Reliability.MohrCoulombAdvancedStochasticParameters.#ctor(KernelWrapper.Reliability.IParameterValue,KernelWrapper.Reliability.IParameterValue,KernelWrapper.Reliability.IParameterValue,System.Boolean)">
+            <summary>
+            Creates new instance of <see cref="T:KernelWrapper.Reliability.MohrCoulombAdvancedStochasticParameters"/>.
+            </summary>
+            <param name="cohesion">The cohesion.</param>
+            <param name="frictionAngle">The friction angle.</param>
+            <param name="dilatancy">The dilatancy.</param>
+            <param name="areCohesionAndFrictionAngleCorrelated">Value indicating whether <paramref name="cohesion"/>
+            and <paramref name="frictionAngle"/> are correlated.</param>
+        </member>
+        <member name="M:KernelWrapper.Reliability.MohrCoulombAdvancedStochasticParameters.CreateCorrelation(KernelWrapper.Reliability.IUndrainedStochasticSoilParameters)">
+            <inheritdoc/>
+        </member>
+        <member name="M:KernelWrapper.Reliability.MohrCoulombAdvancedStochasticParameters.CreateCorrelation(KernelWrapper.Reliability.IDrainedStochasticSoilParameters)">
+            <inheritdoc/>
+        </member>
+        <member name="M:KernelWrapper.Reliability.MohrCoulombAdvancedStochasticParameters.GetShearStrengthModelType">
+            <inheritdoc />
+        </member>
+        <member name="T:KernelWrapper.Reliability.MohrCoulombClassicStochasticParameters">
+            <summary>
+            Stochastic parameters for the Mohr Coulomb Classic drained material.
+            </summary>
+        </member>
+        <member name="M:KernelWrapper.Reliability.MohrCoulombClassicStochasticParameters.#ctor(KernelWrapper.Reliability.IParameterValue,KernelWrapper.Reliability.IParameterValue,System.Boolean)">
+            <summary>
+            Creates new instance of <see cref="T:KernelWrapper.Reliability.MohrCoulombClassicStochasticParameters"/>.
+            </summary>
+            <param name="cohesion">The cohesion.</param>
+            <param name="frictionAngle">The friction angle.</param>
+            <param name="areCohesionAndFrictionAngleCorrelated">Value indicating whether <paramref name="cohesion"/>
+            and <paramref name="frictionAngle"/> are correlated.</param>
+        </member>
+        <member name="M:KernelWrapper.Reliability.MohrCoulombClassicStochasticParameters.CreateCorrelation(KernelWrapper.Reliability.IUndrainedStochasticSoilParameters)">
+            <inheritdoc/>
+        </member>
+        <member name="M:KernelWrapper.Reliability.MohrCoulombClassicStochasticParameters.CreateCorrelation(KernelWrapper.Reliability.IDrainedStochasticSoilParameters)">
+            <inheritdoc/>
+        </member>
+        <member name="M:KernelWrapper.Reliability.MohrCoulombClassicStochasticParameters.GetShearStrengthModelType">
+            <inheritdoc />
+        </member>
+        <member name="T:KernelWrapper.Reliability.ReliabilityInput">
+            <summary>
+            Input for a reliability calculation.
+            </summary>
+        </member>
+        <member name="M:KernelWrapper.Reliability.ReliabilityInput.#ctor(KernelWrapper.CalculationInput)">
+            <summary>
+            Create a new instance of <see cref="T:KernelWrapper.Reliability.ReliabilityInput"/>.
+            </summary>
+            <exception cref="T:System.ArgumentNullException">Throws when <paramref name="input"/>
+            is <c>null</c>.</exception>
+        </member>
+        <member name="P:KernelWrapper.Reliability.ReliabilityInput.SoilCorrelations">
+            <summary>
+            Gets the correlations collection.
+            </summary>
+        </member>
+        <member name="M:KernelWrapper.Reliability.ReliabilityInput.StateCorrelations(KernelWrapper.Stage)">
+            <summary>
+            Gets the correlations for state of a given stage.
+            </summary>
+            <param name="stage">The stage to get state correlations for.</param>
+            <exception cref="T:System.ArgumentException">Thrown when the input does not
+            contain the <paramref name="stage"/>.</exception>
+        </member>
+        <member name="M:KernelWrapper.Reliability.ReliabilityInput.CreateReliabilityCalculation">
+            <summary>
+            Creates a reliability calculation from the input.
+            </summary>
+            <returns>A new instance of an <see cref="T:KernelWrapper.ICalculation"/> implementation.</returns>
+        </member>
+        <member name="M:KernelWrapper.Reliability.ReliabilityInput.CreateCalculation">
+            <summary>
+            Creates a calculation from the input.
+            </summary>
+            <returns>A new instance of an <see cref="T:KernelWrapper.ICalculation"/> implementation.</returns>
+        </member>
+        <member name="M:KernelWrapper.Reliability.ReliabilityInput.InitializeCalculationInputWithStochasticParameters(KernelWrapper.CalculationInput)">
+            <summary>
+            Propagates the stochastic parameters collection to the input.
+            </summary>
+            <param name="calculationInput">The input to set stochastic parameters for.</param>
+        </member>
+        <member name="T:KernelWrapper.Reliability.ShansepStochasticParameters">
+            <summary>
+            Stochastic parameters for the SHANSEP shear strength model.
+            </summary>
+        </member>
+        <member name="M:KernelWrapper.Reliability.ShansepStochasticParameters.#ctor(KernelWrapper.Reliability.IParameterValue,KernelWrapper.Reliability.IParameterValue,System.Boolean)">
+            <summary>
+            Creates new instance of <see cref="T:KernelWrapper.Reliability.ShansepStochasticParameters"/>.
+            </summary>
+            <param name="shearStrengthRatio">The shear strength ratio.</param>
+            <param name="strengthIncreaseExponent">The strength increase component.</param>
+            <param name="areShearStrengthRatioAndStrengthIncreaseExponentCorrelated">Value indicating whether
+            <paramref name="shearStrengthRatio"/> and <paramref name="strengthIncreaseExponent"/> are correlated.</param>
+        </member>
+        <member name="M:KernelWrapper.Reliability.ShansepStochasticParameters.CreateCorrelation(KernelWrapper.Reliability.IUndrainedStochasticSoilParameters)">
+            <inheritdoc/>
+        </member>
+        <member name="M:KernelWrapper.Reliability.ShansepStochasticParameters.GetShearStrengthModelType">
+            <inheritdoc />
+        </member>
+        <member name="T:KernelWrapper.Reliability.SigmaTauTableStochasticParameters">
+            <summary>
+            Stochastic parameters for the sigma-tau table shear strength model.
+            </summary>
+        </member>
+        <member name="M:KernelWrapper.Reliability.SigmaTauTableStochasticParameters.#ctor(System.Collections.Generic.IEnumerable{KernelWrapper.SigmaTauTablePoint},KernelWrapper.Reliability.IParameterValue)">
+            <summary>
+            Creates new instance of <see cref="T:KernelWrapper.Reliability.SuTableStochasticParameters"/>.
+            </summary>
+            <param name="sigmaTauTablePoints">The sigma-tau table points.</param>
+            <param name="tauMultiplier">The sigma multiplier distribution.</param>
+        </member>
+        <member name="M:KernelWrapper.Reliability.SigmaTauTableStochasticParameters.#ctor(System.Collections.Generic.IEnumerable{KernelWrapper.SigmaTauTablePoint})">
+            <summary>
+            Creates new instance of <see cref="T:KernelWrapper.Reliability.SuTableStochasticParameters"/>.
+            </summary>
+            <param name="sigmaTauTablePoints">The su table points.</param>
+        </member>
+        <member name="M:KernelWrapper.Reliability.SigmaTauTableStochasticParameters.CreateCorrelation(KernelWrapper.Reliability.IUndrainedStochasticSoilParameters)">
+            <inheritdoc />
+        </member>
+        <member name="M:KernelWrapper.Reliability.SigmaTauTableStochasticParameters.GetShearStrengthModelType">
+            <inheritdoc />
+        </member>
+        <member name="T:KernelWrapper.Reliability.SoilCorrelationCollection">
+            <summary>
+            A collection of correlations. Correlations are defined between the stochastic parameters
+            of soils.
+            </summary>
+        </member>
+        <member name="M:KernelWrapper.Reliability.SoilCorrelationCollection.CreateCorrelation(KernelWrapper.Soil[])">
+            <summary>
+            Create a correlation between the given soils.
+            </summary>
+            <param name="correlatedSoils">The soils to correlate.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="correlatedSoils"/>
+            is <c>null</c>.</exception>
+        </member>
+        <member name="T:KernelWrapper.Reliability.SpencerGeneticReliabilityInput">
+            <summary>
+            Input for a reliability analysis with the Spencer Genetic Limit Equilibrium Method.
+            </summary>
+        </member>
+        <member name="M:KernelWrapper.Reliability.SpencerGeneticReliabilityInput.#ctor(KernelWrapper.SpencerGeneticInput)">
+            <summary>
+            Creates a new instance of <see cref="T:KernelWrapper.Reliability.SpencerGeneticReliabilityInput"/>.
+            </summary>
+            <param name="input">The Spencer Genetic input to perform a reliability
+            analysis for.</param>
+            <exception cref="T:System.ArgumentNullException">Throws when <paramref name="input"/>
+            is <c>null</c>.</exception>
+        </member>
+        <member name="M:KernelWrapper.Reliability.SpencerGeneticReliabilityInput.CreateReliabilityCalculation">
+            <inheritdoc />
+        </member>
+        <member name="T:KernelWrapper.Reliability.SpencerReliabilityInput">
+            <summary>
+            Input for a reliability analysis with the Spencer Limit Equilibrium Method.
+            </summary>
+        </member>
+        <member name="M:KernelWrapper.Reliability.SpencerReliabilityInput.#ctor(KernelWrapper.SpencerInput)">
+            <summary>
+            Creates a new instance of <see cref="T:KernelWrapper.Reliability.SpencerReliabilityInput"/>.
+            </summary>
+            <param name="input">The Spencer input to perform a reliability
+            analysis for.</param>
+            <exception cref="T:System.ArgumentNullException">Throws when <paramref name="input"/>
+            is <c>null</c>.</exception>
+        </member>
+        <member name="M:KernelWrapper.Reliability.SpencerReliabilityInput.CreateReliabilityCalculation">
+            <inheritdoc />
+        </member>
+        <member name="T:KernelWrapper.Reliability.StateCorrelationCollection">
+            <summary>
+            A collection of state correlations. Correlations are defined between the stochastic
+            parameters of state points.
+            </summary>
+        </member>
+        <member name="M:KernelWrapper.Reliability.StateCorrelationCollection.CreateCorrelation">
+            <summary>
+            Initializes a correlation between layers with state and state line points.
+            </summary>
+        </member>
+        <member name="T:KernelWrapper.Reliability.StateCorrelationGroup">
+            <summary>
+            A correlated group of state layers and state line points.
+            </summary>
+        </member>
+        <member name="M:KernelWrapper.Reliability.StateCorrelationGroup.Add(KernelWrapper.StateLayer)">
+            <summary>
+            Adds a state layer to the group.
+            </summary>
+            <param name="layer">The state layer.</param>
+            <exception cref="T:System.ArgumentException">Thrown when <paramref name="layer"/>
+            is not added to the <see cref="T:KernelWrapper.State"/> of the calculation yet.</exception>
+            <remark>When adding a state layer to the group, the group will become fully
+            correlated.</remark>
+        </member>
+        <member name="M:KernelWrapper.Reliability.StateCorrelationGroup.Add(KernelWrapper.IStateLineValue)">
+            <summary>
+            Adds a state line point to the group.
+            </summary>
+            <param name="point">The state line point.</param>
+            <exception cref="T:System.ArgumentException">Thrown when <paramref name="point"/>
+            is not added to the <see cref="T:KernelWrapper.State"/> of the calculation yet.</exception>
+            <exception cref="T:KernelWrapper.Reliability.StateLineIntersectionException">Thrown when <paramref name="point"/>
+            belongs to a <see cref="T:KernelWrapper.StateLine"/> that intersects with another <see cref="T:KernelWrapper.StateLine"/>
+            that contains an already added point.</exception>
+        </member>
+        <member name="M:KernelWrapper.Reliability.StateCorrelationGroup.SetFullyCorrelated">
+            <summary>
+            Fully correlate this group.
+            </summary>
+        </member>
+        <member name="T:KernelWrapper.Reliability.StateLineExtensions">
+            <summary>
+            Methods for adding values to a <see cref="T:KernelWrapper.StateLine"/>.
+            </summary>
+        </member>
+        <member name="M:KernelWrapper.Reliability.StateLineExtensions.Add(KernelWrapper.StateLine,KernelWrapper.GeometryPoint,KernelWrapper.Reliability.IParameterValue,KernelWrapper.Reliability.IParameterValue,System.Boolean)">
+            <summary>
+            Add a value above and below the line at a point.
+            </summary>
+            <param name="stateLine">The state line to add a value to.</param>
+            <param name="point">The location of the value.</param>
+            <param name="above">The value above.</param>
+            <param name="below">The value below.</param>
+            <param name="correlateAboveAndBelow">Value indicating whether to correlate the above and below parameters.</param>
+            <exception cref="T:System.ArgumentOutOfRangeException">Thrown when
+            <paramref name="point.X.X"/> is larger than the maximum x-coordinate
+            or <paramref name="point.X.X"/> is smaller than the minimum x-coordinate
+            of the line's geometry.</exception>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="point"/>, <paramref name="stateLine"/>,
+            <paramref name="above"/> or <paramref name="below"/> is <c>null</c>.</exception>
+        </member>
+        <member name="T:KernelWrapper.Reliability.StateLineIntersectionException">
+            <summary>
+            The exception that is thrown when state values are correlated that are on intersecting state lines.
+            </summary>
+        </member>
+        <member name="M:KernelWrapper.Reliability.StateLineIntersectionException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:KernelWrapper.Reliability.StateLineIntersectionException"/> class.
+            </summary>
+        </member>
+        <member name="M:KernelWrapper.Reliability.StateLineIntersectionException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:KernelWrapper.Reliability.StateLineIntersectionException"/> class
+            with a specified error message.
+            </summary>
+            <param name="message">The error message that explains the reason for the exception.</param>
+        </member>
+        <member name="M:KernelWrapper.Reliability.StateLineIntersectionException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:KernelWrapper.Reliability.StateLineIntersectionException"/> class
+            with a specified error message and a reference to the inner exception that is
+            the cause of this exception.
+            </summary>
+            <param name="message">The error message that explains the reason for the exception.</param>
+            <param name="inner">The exception that is the cause of the current exception, 
+            or a null reference if no inner exception is specified.</param>
+        </member>
+        <member name="M:KernelWrapper.Reliability.StochasticParameterCollection.Add(Deltares.MacroStability.Reliability.CSharpWrapper.Stochast)">
+            <summary>
+            Adds a stochast to the collection.
+            </summary>
+            <param name="stochast">The stochast.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="stochast"/>
+            is <c>null</c>.</exception>
+        </member>
+        <member name="T:KernelWrapper.Reliability.StochasticStateLayerFactory">
+            <summary>
+            Factory of layers with a state point that has a stochastic parameter defined.
+            </summary>
+        </member>
+        <member name="M:KernelWrapper.Reliability.StochasticStateLayerFactory.Create(KernelWrapper.Layer,KernelWrapper.Reliability.IParameterValue)">
+            <summary>
+            Create a new instance of <see cref="T:KernelWrapper.StateLayer"/>.
+            </summary>
+            <param name="layer">The layer.</param>
+            <param name="pop">The POP parameter value.</param>
+            <returns>A new <see cref="T:KernelWrapper.StateLayer"/>.</returns>
+        </member>
+        <member name="T:KernelWrapper.Reliability.StochasticStateLayerValue">
+            <summary>
+            A stochastic state layer value.
+            </summary>
+        </member>
+        <member name="M:KernelWrapper.Reliability.StochasticStateLayerValue.#ctor(KernelWrapper.Reliability.IParameterValue)">
+            <summary>
+            Creates a new instance of <see cref="T:KernelWrapper.Reliability.StochasticStateLayerValue"/>.
+            </summary>
+            <param name="pop">The stochastic parameter value for pop.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="pop"/>
+            is <c>null</c>.</exception>
+        </member>
+        <member name="T:KernelWrapper.Reliability.StochasticStateLineValue">
+            <summary>
+            Value of a stochastic parameter that can be set for <see cref="T:KernelWrapper.StateLine"/>.
+            </summary>
+        </member>
+        <member name="M:KernelWrapper.Reliability.StochasticStateLineValue.#ctor(KernelWrapper.GeometryPoint,KernelWrapper.Reliability.IParameterValue,KernelWrapper.Reliability.IParameterValue,System.Boolean)">
+            <summary>
+            Create a new instance of <see cref="T:KernelWrapper.StateLineValue"/>.
+            </summary>
+            <param name="point">The location of the state line value.</param>
+            <param name="above">The value above the line at this point.</param>
+            <param name="below">The value below the line at this point.</param>
+            <param name="correlateAboveAndBelow">Value indicating whether to correlate the above and below parameters.</param>
+        </member>
+        <member name="M:KernelWrapper.Reliability.StochasticStateLineValue.GetPoints">
+            <inheritdoc />
+            <exception cref="T:System.InvalidOperationException">Thrown when <see cref="M:KernelWrapper.Reliability.StochasticStateLineValue.SetStochasticParameters(KernelWrapper.Reliability.StochasticParameterCollection)"/>
+            was not yet called with a valid collection.</exception>
+        </member>
+        <member name="T:KernelWrapper.Reliability.SuTableStochasticParameters">
+            <summary>
+            Stochastic parameters for the SU Table shear strength model.
+            </summary>
+        </member>
+        <member name="M:KernelWrapper.Reliability.SuTableStochasticParameters.#ctor(System.Collections.Generic.IEnumerable{KernelWrapper.SuTablePoint},KernelWrapper.Reliability.IParameterValue,KernelWrapper.Reliability.IParameterValue)">
+            <summary>
+            Creates new instance of <see cref="T:KernelWrapper.Reliability.SuTableStochasticParameters"/>.
+            </summary>
+            <param name="suTablePoints">The su table points.</param>
+            <param name="suMultiplier">The su multiplier distribution.</param>
+            <param name="strengthIncreaseExponent">The strength increase component.</param>
+        </member>
+        <member name="M:KernelWrapper.Reliability.SuTableStochasticParameters.#ctor(System.Collections.Generic.IEnumerable{KernelWrapper.SuTablePoint},KernelWrapper.Reliability.IParameterValue)">
+            <summary>
+            Creates new instance of <see cref="T:KernelWrapper.Reliability.SuTableStochasticParameters"/>.
+            </summary>
+            <param name="suTablePoints">The su table points.</param>
+            <param name="strengthIncreaseExponent">The strength increase component.</param>
+        </member>
+        <member name="M:KernelWrapper.Reliability.SuTableStochasticParameters.CreateCorrelation(KernelWrapper.Reliability.IUndrainedStochasticSoilParameters)">
+            <inheritdoc />
+        </member>
+        <member name="M:KernelWrapper.Reliability.SuTableStochasticParameters.GetShearStrengthModelType">
+            <inheritdoc />
+        </member>
+        <member name="T:KernelWrapper.Reliability.UpliftVanParticleSwarmReliabilityInput">
+            <summary>
+            Input for a reliability analysis with the Uplift-Van Particle Swarm Limit Equilibrium Method.
+            </summary>
+        </member>
+        <member name="M:KernelWrapper.Reliability.UpliftVanParticleSwarmReliabilityInput.#ctor(KernelWrapper.UpliftVanParticleSwarmInput)">
+            <summary>
+            Creates a new instance of <see cref="T:KernelWrapper.Reliability.UpliftVanParticleSwarmReliabilityInput"/>.
+            </summary>
+            <param name="input">The Spencer Genetic input to perform a reliability
+            analysis for.</param>
+            <exception cref="T:System.ArgumentNullException">Throws when <paramref name="input"/>
+            is <c>null</c>.</exception>
+        </member>
+        <member name="M:KernelWrapper.Reliability.UpliftVanParticleSwarmReliabilityInput.CreateReliabilityCalculation">
+            <inheritdoc />
+        </member>
+        <member name="T:KernelWrapper.Reliability.UpliftVanReliabilityInput">
+            <summary>
+            Input for a reliability analysis with the Uplift-Van Limit Equilibrium Method.
+            </summary>
+        </member>
+        <member name="M:KernelWrapper.Reliability.UpliftVanReliabilityInput.#ctor(KernelWrapper.UpliftVanInput)">
+            <summary>
+            Creates a new instance of <see cref="T:KernelWrapper.Reliability.UpliftVanReliabilityInput"/>.
+            </summary>
+            <param name="input">The Uplift-Van input to perform a reliability
+            analysis for.</param>
+            <exception cref="T:System.ArgumentNullException">Throws when <paramref name="input"/>
+            is <c>null</c>.</exception>
+        </member>
+        <member name="M:KernelWrapper.Reliability.UpliftVanReliabilityInput.CreateReliabilityCalculation">
+            <inheritdoc />
+        </member>
+        <member name="T:KernelWrapper.Reliability.VariationCoefficientDistribution">
+            <summary>
+            A log normal distribution for a stochastic parameter with only a variation coefficient.
+            </summary>
+        </member>
+        <member name="M:KernelWrapper.Reliability.VariationCoefficientDistribution.#ctor(System.Double,System.Double)">
+            <summary>
+            Creates a new instance of <see cref="T:KernelWrapper.Reliability.VariationCoefficientDistribution"/>.
+            </summary>
+            <param name="mean">The mean.</param>
+            <param name="variationCoefficient">The variation coefficient.</param>
+        </member>
+        <member name="T:KernelWrapper.Reliability.IReliabilityCalculation">
+            <summary>
+            Interface for input of the reliability calculation.
+            </summary>
+        </member>
+        <member name="P:KernelWrapper.Reliability.IReliabilityCalculation.Input">
+            <summary>
+            Gets the input of the reliability calculation.
+            </summary>
+        </member>
+        <member name="M:KernelWrapper.Reliability.IInternalReliabilityCalculation.CreateReliabilityInput(KernelWrapper.Transformation.Settings,KernelWrapper.Reliability.ReliabilitySettingsBase)">
+            <summary>
+            Creates the <see cref="T:Deltares.MacroStability.Reliability.CSharpWrapper.ReliabilityInput"/> used as input for the reliability calculation.
+            </summary>
+            <param name="settings">The general settings to use for the input.</param>
+            <param name="reliabilitySettingsBase">The reliability settings to use in the calculation.</param>
+            <returns>A new <see cref="T:Deltares.MacroStability.Reliability.CSharpWrapper.ReliabilityInput"/>.</returns>
+        </member>
+        <member name="M:KernelWrapper.Reliability.IInternalReliabilityCalculation.CreateResult(Deltares.MacroStability.Reliability.CSharpWrapper.ReliabilityOutput,System.Collections.Generic.IEnumerable{KernelWrapper.CalculatorMessage})">
+            <summary>
+            Creates a result.
+            </summary>
+            <param name="output">The reliability output.</param>
+            <param name="messages">The calculator messages.</param>
+            <returns>A new <see cref="T:KernelWrapper.Result"/>.</returns>
+        </member>
+        <member name="T:KernelWrapper.Reliability.McisReliabilitySettings">
+            <summary>
+            Settings for an MCIS reliability calculation.
+            </summary>
+        </member>
+        <member name="M:KernelWrapper.Reliability.McisReliabilitySettings.#ctor(KernelWrapper.Reliability.IParameterValue)">
+            <summary>
+            Creates a new instance of <see cref="T:KernelWrapper.Reliability.McisReliabilitySettings"/>.
+            </summary>
+            <param name="modelFactor">The model factor.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="modelFactor"/>
+            is <c>null</c>.</exception>
+        </member>
+        <member name="P:KernelWrapper.Reliability.McisReliabilitySettings.MinimumSamples">
+            <summary>
+            Gets or sets the minimum amount of samples.
+            </summary>
+        </member>
+        <member name="P:KernelWrapper.Reliability.McisReliabilitySettings.MaximumSamples">
+            <summary>
+            Gets or sets the maximum amount of samples.
+            </summary>
+        </member>
+        <member name="P:KernelWrapper.Reliability.McisReliabilitySettings.MinimumVarianceLoops">
+            <summary>
+            Gets or sets the minimum amount of variance loops.
+            </summary>
+        </member>
+        <member name="P:KernelWrapper.Reliability.McisReliabilitySettings.MaximumVarianceLoops">
+            <summary>
+            Gets or sets the maximum amount of variance loops.
+            </summary>
+        </member>
+        <member name="P:KernelWrapper.Reliability.McisReliabilitySettings.VarCoeffFailure">
+            <summary>
+            Gets or sets the variance coefficient for failure.
+            </summary>
+        </member>
+        <member name="P:KernelWrapper.Reliability.McisReliabilitySettings.VarianceFactor">
+            <summary>
+            Gets or sets the variance factor.
+            </summary>
+        </member>
+        <member name="P:KernelWrapper.Reliability.McisReliabilitySettings.MaximumBeta">
+            <summary>
+            Gets or sets the maximum beta value.
+            </summary>
+        </member>
+        <member name="M:KernelWrapper.Reliability.ContributionCollectionBuilder.Create(Deltares.MacroStability.Reliability.CSharpWrapper.Contribution)">
+            <summary>
+            Create a contribution in <see cref="P:KernelWrapper.Reliability.ContributionCollectionBuilder.Collection"/> from a design point.
+            </summary>
+            <param name="contribution">The contribution to use.</param>
+            <exception cref="T:KernelWrapper.Reliability.UnexpectedContributionException">Thrown when
+            <paramref name="contribution"/> describes the contribution of an
+            unexpected property.</exception>
+        </member>
+        <member name="T:KernelWrapper.Reliability.BishopBruteForceReliabilitySuccessResult">
+            <summary>
+            Result of a successful Bishop Brute Force reliability calculation.
+            </summary>
+        </member>
+        <member name="M:KernelWrapper.Reliability.BishopBruteForceReliabilitySuccessResult.#ctor(KernelWrapper.Point{KernelWrapper.Constant},System.Double,KernelWrapper.Reliability.ReliabilityResult,System.Collections.Generic.IEnumerable{KernelWrapper.Reliability.BishopCalculatedReliabilitySlipPlane},System.Collections.Generic.IEnumerable{KernelWrapper.CalculatorMessage})">
+            <summary>
+            Creates the parameters for a successful Bishop Brute Force reliability calculation.
+            </summary>
+            <param name="center">The center of the optimal slide circle.</param>
+            <param name="tangent">The tangent of the optimal slide circle.</param>
+            <param name="reliabilityResult">The reliability results.</param>
+            <param name="calculatedSlipPlanes">The slip planes that were calculated.</param>
+            <param name="messages">The messages that were a result of a calculation.</param>
+        </member>
+        <member name="P:KernelWrapper.Reliability.BishopBruteForceReliabilitySuccessResult.CalculatedSlipPlanes">
+            <summary>
+            Gets the slip planes that were calculated.
+            </summary>
+        </member>
+        <member name="T:KernelWrapper.Reliability.BishopCalculatedReliabilitySlipPlane">
+            <summary>
+            A single slip plane that was evaluated during a reliability bishop calculation.
+            </summary>
+        </member>
+        <member name="M:KernelWrapper.Reliability.BishopCalculatedReliabilitySlipPlane.#ctor(KernelWrapper.Point{KernelWrapper.Constant},KernelWrapper.Constant,System.Double)">
+            <summary>
+            Creates an instance of <see cref="T:KernelWrapper.Reliability.BishopCalculatedReliabilitySlipPlane"/>.
+            </summary>
+            <param name="center">The center of the circle.</param>
+            <param name="tangent">The tangent of the circle.</param>
+            <param name="weight">The weight of the slip plane.</param>
+        </member>
+        <member name="P:KernelWrapper.Reliability.BishopCalculatedReliabilitySlipPlane.Center">
+            <summary>
+            Gets the center of the circle.
+            </summary>
+        </member>
+        <member name="P:KernelWrapper.Reliability.BishopCalculatedReliabilitySlipPlane.Tangent">
+            <summary>
+            Gets the tangent of the circle.
+            </summary>
+        </member>
+        <member name="T:KernelWrapper.Reliability.BishopReliabilitySuccessResult">
+            <summary>
+            Result of a successful Bishop reliability calculation.
+            </summary>
+        </member>
+        <member name="M:KernelWrapper.Reliability.BishopReliabilitySuccessResult.#ctor(KernelWrapper.Point{KernelWrapper.Constant},System.Double,KernelWrapper.Reliability.ReliabilityResult,System.Collections.Generic.IEnumerable{KernelWrapper.CalculatorMessage})">
+            <summary>
+            Creates the parameters for a successful Bishop reliability calculation.
+            </summary>
+            <param name="center">The center of the optimal slide circle.</param>
+            <param name="tangent">The tangent of the optimal slide circle.</param>
+            <param name="reliabilityResult">The reliability results.</param>
+            <param name="messages">The messages that were a result of a calculation.</param>
+        </member>
+        <member name="P:KernelWrapper.Reliability.BishopReliabilitySuccessResult.Center">
+            <summary>
+            Gets the center of the optimal slide circle.
+            </summary>
+        </member>
+        <member name="P:KernelWrapper.Reliability.BishopReliabilitySuccessResult.Tangent">
+            <summary>
+            Gets the tangent of the optimal slide circle.
+            </summary>
+        </member>
+        <member name="T:KernelWrapper.Reliability.CalculatedReliabilitySlipPlane">
+            <summary>
+            A single slip plane that was evaluated during a calculation.
+            </summary>
+        </member>
+        <member name="M:KernelWrapper.Reliability.CalculatedReliabilitySlipPlane.#ctor(System.Double)">
+            <summary>
+            Creates an instance of <see cref="T:KernelWrapper.Reliability.CalculatedReliabilitySlipPlane"/>.
+            </summary>
+            <param name="weight">The weight of the slip plane.</param>
+        </member>
+        <member name="P:KernelWrapper.Reliability.CalculatedReliabilitySlipPlane.Weight">
+            <summary>
+            Gets the weight of the slip plane.
+            [-]
+            </summary>
+        </member>
+        <member name="T:KernelWrapper.Reliability.ContributionCollection">
+            <summary>
+            Collection of contributions that can be queried for different input
+            objects.
+            </summary>
+        </member>
+        <member name="P:KernelWrapper.Reliability.ContributionCollection.ModelFactor">
+            <summary>
+            Gets the contribution of the model factor.
+            </summary>
+        </member>
+        <member name="M:KernelWrapper.Reliability.ContributionCollection.For(KernelWrapper.Soil)">
+            <summary>
+            Gets the contributions of a <see cref="T:KernelWrapper.Soil"/>.
+            </summary>
+            <param name="soil">The soil to obtain contributions for.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown if <paramref name="soil"/> is
+            <c>null</c>.</exception>
+            <exception cref="T:System.ArgumentException">Thrown if <paramref name="soil"/> does not have
+            contributions in this collection.</exception>
+            <remarks>Use <see cref="M:KernelWrapper.Reliability.ContributionCollection.HasContributions(KernelWrapper.Soil)"/> to find out whether contributions
+            are defined.</remarks>
+        </member>
+        <member name="M:KernelWrapper.Reliability.ContributionCollection.HasContributions(KernelWrapper.Soil)">
+            <summary>
+            Finds out whether a soil has contributions defined.
+            </summary>
+            <param name="soil">The soil to search for.</param>
+            <returns><c>true</c> if contributions are defined for <paramref name="soil"/>;
+            <c>false</c> otherwise.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown if <paramref name="soil"/> is
+            <c>null</c>.</exception>
+        </member>
+        <member name="M:KernelWrapper.Reliability.ContributionCollection.For(KernelWrapper.StateLayer)">
+            <summary>
+            Gets the contributions of a <see cref="T:KernelWrapper.StateLayer"/>.
+            </summary>
+            <param name="stateLayer">The state layer to obtain contributions for.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown if <paramref name="stateLayer"/> is
+            <c>null</c>.</exception>
+            <exception cref="T:System.ArgumentException">Thrown if <paramref name="stateLayer"/> does not have
+            contributions in this collection.</exception>
+            <remarks>Use <see cref="M:KernelWrapper.Reliability.ContributionCollection.HasContributions(KernelWrapper.StateLayer)"/> to find out whether contributions
+            are defined.</remarks>
+        </member>
+        <member name="M:KernelWrapper.Reliability.ContributionCollection.HasContributions(KernelWrapper.StateLayer)">
+            <summary>
+            Finds out whether a state layer has contributions defined.
+            </summary>
+            <param name="stateLayer">The state layer to search for.</param>
+            <returns><c>true</c> if contributions are defined for <paramref name="stateLayer"/>;
+            <c>false</c> otherwise.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown if <paramref name="stateLayer"/> is
+            <c>null</c>.</exception>
+        </member>
+        <member name="M:KernelWrapper.Reliability.ContributionCollection.For(KernelWrapper.IStateLineValue)">
+            <summary>
+            Gets the contributions of an <see cref="T:KernelWrapper.IStateLineValue"/>.
+            </summary>
+            <param name="stateLineValue">The state line value to obtain contributions for.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown if <paramref name="stateLineValue"/> is
+            <c>null</c>.</exception>
+            <exception cref="T:System.ArgumentException">Thrown if <paramref name="stateLineValue"/> does not have
+            contributions in this collection.</exception>
+            <remarks>Use <see cref="M:KernelWrapper.Reliability.ContributionCollection.HasContributions(KernelWrapper.IStateLineValue)"/> to find out whether contributions
+            are defined.</remarks>
+        </member>
+        <member name="M:KernelWrapper.Reliability.ContributionCollection.HasContributions(KernelWrapper.IStateLineValue)">
+            <summary>
+            Finds out whether a state line value has contributions defined.
+            </summary>
+            <param name="stateLineValue">The state line value to search for.</param>
+            <returns><c>true</c> if contributions are defined for <paramref name="stateLineValue"/>;
+            <c>false</c> otherwise.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown if <paramref name="stateLineValue"/> is
+            <c>null</c>.</exception>
+        </member>
+        <member name="T:KernelWrapper.Reliability.ReliabilityContribution">
+            <summary>
+            Represents reliability calculated parameters.
+            </summary>
+        </member>
+        <member name="M:KernelWrapper.Reliability.ReliabilityContribution.#ctor(System.Double,System.Double,System.Double)">
+            <summary>
+            Creates a new instance of <see cref="T:KernelWrapper.Reliability.ReliabilityContribution"/>.
+            </summary>
+            <param name="alpha">The alpha value of the contribution.</param>
+            <param name="uncorrelatedAlpha">The uncorrelated alpha value of the contribution.</param>
+            <param name="physicalValue">The physical value of the contribution.</param>
+        </member>
+        <member name="P:KernelWrapper.Reliability.ReliabilityContribution.Alpha">
+            <summary>
+            Gets the alpha value of the contribution.
+            </summary>
+        </member>
+        <member name="P:KernelWrapper.Reliability.ReliabilityContribution.UncorrelatedAlpha">
+            <summary>
+            Gets the uncorrelated alpha value of the contribution.
+            </summary>
+        </member>
+        <member name="P:KernelWrapper.Reliability.ReliabilityContribution.PhysicalValue">
+            <summary>
+            Gets the physical value of the contribution.
+            </summary>
+        </member>
+        <member name="T:KernelWrapper.Reliability.ReliabilityResult">
+            <summary>
+            Result of a probabilistic reliability calculation.
+            </summary>
+        </member>
+        <member name="M:KernelWrapper.Reliability.ReliabilityResult.#ctor(System.Boolean,System.Double,System.Double,System.Double,KernelWrapper.Reliability.ContributionCollection)">
+            <summary>
+            Creates the parameters for a result where convergence has been reached.
+            </summary>
+            <param name="converged">The value indicating whether convergence has been reached.</param>
+            <param name="reliabilityIndex">The reliability index</param>
+            <param name="failureProbability">The probability of failure.</param>
+            <param name="distanceToConvergence">The distance to convergence.</param>
+            <param name="contributions">The list of contributions (alphas).</param>
+        </member>
+        <member name="P:KernelWrapper.Reliability.ReliabilityResult.ReliabilityIndex">
+            <summary>
+            Gets the reliability index.
+            </summary>
+        </member>
+        <member name="P:KernelWrapper.Reliability.ReliabilityResult.FailureProbability">
+            <summary>
+            Gets the probability of failure.
+            </summary>
+        </member>
+        <member name="P:KernelWrapper.Reliability.ReliabilityResult.DistanceToConvergence">
+            <summary>
+            Gets the distance to convergence.
+            </summary>
+        </member>
+        <member name="P:KernelWrapper.Reliability.ReliabilityResult.Converged">
+            <summary>
+            Gets the value indicating whether convergence has been reached.
+            </summary>
+        </member>
+        <member name="P:KernelWrapper.Reliability.ReliabilityResult.Contributions">
+            <summary>
+            Gets the collection of contributions (alphas)
+            </summary>
+        </member>
+        <member name="T:KernelWrapper.Reliability.ReliabilityResultBase">
+            <summary>
+            Base reliability result type.
+            </summary>
+        </member>
+        <member name="M:KernelWrapper.Reliability.ReliabilityResultBase.#ctor(KernelWrapper.Reliability.ReliabilityResult,System.Collections.Generic.IEnumerable{KernelWrapper.CalculatorMessage})">
+            <summary>
+            Creates a new instance of <see cref="T:KernelWrapper.Reliability.ReliabilitySettingsBase"/>.
+            </summary>
+            <param name="reliabilityResult"></param>
+            <param name="messages">The calculation messages.</param>
+        </member>
+        <member name="P:KernelWrapper.Reliability.ReliabilityResultBase.ReliabilityResult">
+            <summary>
+            Gets the reliability result parameters.
+            </summary>
+        </member>
+        <member name="T:KernelWrapper.Reliability.ReliabilityResultFactoryBase">
+            <summary>
+            Base class for <see cref="T:KernelWrapper.Reliability.IReliabilityResultFactory"/> implementations.
+            </summary>
+        </member>
+        <member name="T:KernelWrapper.Reliability.SoilReliabilityContribution">
+            <summary>
+            The contributions of the parameters of a soil.
+            </summary>
+        </member>
+        <member name="P:KernelWrapper.Reliability.SoilReliabilityContribution.Cohesion">
+            <summary>
+            Get the contribution of the cohesion.
+            </summary>
+        </member>
+        <member name="P:KernelWrapper.Reliability.SoilReliabilityContribution.FrictionAngle">
+            <summary>
+            Get the contribution of the friction angle.
+            </summary>
+        </member>
+        <member name="P:KernelWrapper.Reliability.SoilReliabilityContribution.Dilatancy">
+            <summary>
+            Get the contribution of the dilatancy.
+            </summary>
+        </member>
+        <member name="P:KernelWrapper.Reliability.SoilReliabilityContribution.ShearStrengthRatio">
+            <summary>
+            Get the contribution of the shear strength ratio.
+            </summary>
+        </member>
+        <member name="P:KernelWrapper.Reliability.SoilReliabilityContribution.StrengthIncreaseExponent">
+            <summary>
+            Get the contribution of the strength increase exponent.
+            </summary>
+        </member>
+        <member name="P:KernelWrapper.Reliability.SoilReliabilityContribution.SuMultiplier">
+            <summary>
+            Get the contribution of the su multiplier.
+            </summary>
+        </member>
+        <member name="P:KernelWrapper.Reliability.SoilReliabilityContribution.TauMultiplier">
+            <summary>
+            Get the contribution of the tau multiplier.
+            </summary>
+        </member>
+        <member name="T:KernelWrapper.Reliability.SpencerCalculatedReliabilitySlipPlane">
+            <summary>
+            A single slip plane that was evaluated during a reliability Spencer calculation.
+            </summary>
+        </member>
+        <member name="M:KernelWrapper.Reliability.SpencerCalculatedReliabilitySlipPlane.#ctor(System.Collections.Generic.IEnumerable{KernelWrapper.Point{KernelWrapper.Constant}},System.Double)">
+            <summary>
+            Creates an instance of <see cref="T:KernelWrapper.Reliability.SpencerCalculatedReliabilitySlipPlane"/>.
+            </summary>
+            <param name="slipPlanePoints">The slip plane points.</param>
+            <param name="weight">The weight of the slip plane.</param>
+        </member>
+        <member name="P:KernelWrapper.Reliability.SpencerCalculatedReliabilitySlipPlane.SlipPlanePoints">
+            <summary>
+            Gets the slip plane.
+            </summary>
+        </member>
+        <member name="T:KernelWrapper.Reliability.SpencerGeneticReliabilitySuccessResult">
+            <summary>
+            Result of a successful Spencer Genetic reliability calculation.
+            </summary>
+        </member>
+        <member name="M:KernelWrapper.Reliability.SpencerGeneticReliabilitySuccessResult.#ctor(System.Collections.Generic.IEnumerable{KernelWrapper.Point{KernelWrapper.Constant}},KernelWrapper.Reliability.ReliabilityResult,System.Collections.Generic.IEnumerable{KernelWrapper.Reliability.SpencerCalculatedReliabilitySlipPlane},System.Collections.Generic.IEnumerable{KernelWrapper.CalculatorMessage})">
+            <summary>
+            Creates the parameters for a successful Spencer Genetic reliability calculation.
+            </summary>
+            <param name="slipPlane">The optimal slip plane.</param>
+            <param name="reliabilityResult">The reliability results.</param>
+            <param name="calculatedSlipPlanes">The slip planes that were calculated.</param>
+            <param name="messages">The messages that were a result of a calculation.</param>
+        </member>
+        <member name="P:KernelWrapper.Reliability.SpencerGeneticReliabilitySuccessResult.CalculatedSlipPlanes">
+            <summary>
+            Gets the slip planes that were calculated.
+            </summary>
+        </member>
+        <member name="T:KernelWrapper.Reliability.SpencerReliabilitySuccessResult">
+            <summary>
+            Result of a successful Spencer reliability calculation.
+            </summary>
+        </member>
+        <member name="M:KernelWrapper.Reliability.SpencerReliabilitySuccessResult.#ctor(System.Collections.Generic.IEnumerable{KernelWrapper.Point{KernelWrapper.Constant}},KernelWrapper.Reliability.ReliabilityResult,System.Collections.Generic.IEnumerable{KernelWrapper.CalculatorMessage})">
+            <summary>
+            Creates the parameters for a successful Spencer reliability calculation.
+            </summary>
+            <param name="slipPlane">The optimal slip plane.</param>
+            <param name="reliabilityResult">The reliability results.</param>
+            <param name="messages">The messages that were a result of a calculation.</param>
+        </member>
+        <member name="P:KernelWrapper.Reliability.SpencerReliabilitySuccessResult.SlipPlane">
+            <summary>
+            Gets the optimal slip plane points.
+            </summary>
+        </member>
+        <member name="T:KernelWrapper.Reliability.StateLayerReliabilityContribution">
+            <summary>
+            The contributions of the POP parameter of a state layer.
+            </summary>
+        </member>
+        <member name="P:KernelWrapper.Reliability.StateLayerReliabilityContribution.Pop">
+            <summary>
+            Get the contribution of the POP value above the state line value.
+            </summary>
+        </member>
+        <member name="T:KernelWrapper.Reliability.StateLineValueReliabilityContribution">
+            <summary>
+            The contributions of the POP parameters of a state line value.
+            </summary>
+        </member>
+        <member name="P:KernelWrapper.Reliability.StateLineValueReliabilityContribution.Above">
+            <summary>
+            Get the contribution of the POP value above the state line value.
+            </summary>
+        </member>
+        <member name="P:KernelWrapper.Reliability.StateLineValueReliabilityContribution.Below">
+            <summary>
+            Get the contribution of the POP value below the state line value.
+            </summary>
+        </member>
+        <member name="T:KernelWrapper.Reliability.UpliftVanCalculatedReliabilitySlipPlane">
+            <summary>
+            A single slip plane that was evaluated during a reliability Uplift-Van calculation.
+            </summary>
+        </member>
+        <member name="M:KernelWrapper.Reliability.UpliftVanCalculatedReliabilitySlipPlane.#ctor(KernelWrapper.Point{KernelWrapper.Constant},KernelWrapper.Point{KernelWrapper.Constant},KernelWrapper.Constant,System.Double)">
+            <summary>
+            Creates an instance of <see cref="T:KernelWrapper.Reliability.UpliftVanCalculatedReliabilitySlipPlane"/>.
+            </summary>
+            <param name="leftCenter">The left center of the circle.</param>
+            <param name="rightCenter">The right center of the circle.</param>
+            <param name="tangent">The tangent of the circle.</param>
+            <param name="weight">The weight of the slip plane.</param>
+        </member>
+        <member name="P:KernelWrapper.Reliability.UpliftVanCalculatedReliabilitySlipPlane.LeftCenter">
+            <summary>
+            Gets the left center of the circle.
+            </summary>
+        </member>
+        <member name="P:KernelWrapper.Reliability.UpliftVanCalculatedReliabilitySlipPlane.RightCenter">
+            <summary>
+            Gets the right center of the circle.
+            </summary>
+        </member>
+        <member name="P:KernelWrapper.Reliability.UpliftVanCalculatedReliabilitySlipPlane.Tangent">
+            <summary>
+            Gets the tangent of the circle.
+            </summary>
+        </member>
+        <member name="T:KernelWrapper.Reliability.UpliftVanParticleSwarmReliabilitySuccessResult">
+            <summary>
+            Result of a successful Uplift-Van Particle Swarm reliability calculation.
+            </summary>
+        </member>
+        <member name="M:KernelWrapper.Reliability.UpliftVanParticleSwarmReliabilitySuccessResult.#ctor(KernelWrapper.Point{KernelWrapper.Constant},KernelWrapper.Point{KernelWrapper.Constant},KernelWrapper.Constant,KernelWrapper.Reliability.ReliabilityResult,System.Collections.Generic.IEnumerable{KernelWrapper.Reliability.UpliftVanCalculatedReliabilitySlipPlane},System.Collections.Generic.IEnumerable{KernelWrapper.CalculatorMessage})">
+            <summary>
+            Creates the parameters for a successful Uplift-Van Particle Swarm reliability calculation.
+            </summary>
+            <param name="leftCenter">The center of the left side of the optimal slide circle.</param>
+            <param name="rightCenter">The center of the right side of the optimal slide circle.</param>
+            <param name="tangent">The tangent of the optimal slide circle.</param>
+            <param name="reliabilityResult">The reliability results.</param>
+            <param name="calculatedSlipPlanes">The slip planes that were calculated.</param>
+            <param name="messages">The messages that were a result of a calculation.</param>
+        </member>
+        <member name="P:KernelWrapper.Reliability.UpliftVanParticleSwarmReliabilitySuccessResult.CalculatedSlipPlanes">
+            <summary>
+            Gets the slip planes that were calculated.
+            </summary>
+        </member>
+        <member name="T:KernelWrapper.Reliability.UpliftVanReliabilitySuccessResult">
+            <summary>
+            Result of a successful Uplift-Van reliability calculation.
+            </summary>
+        </member>
+        <member name="M:KernelWrapper.Reliability.UpliftVanReliabilitySuccessResult.#ctor(KernelWrapper.Point{KernelWrapper.Constant},KernelWrapper.Point{KernelWrapper.Constant},KernelWrapper.Constant,KernelWrapper.Reliability.ReliabilityResult,System.Collections.Generic.IEnumerable{KernelWrapper.CalculatorMessage})">
+            <summary>
+            Creates the parameters for a successful Uplift-Van reliability calculation.
+            </summary>
+            <param name="leftCenter">The center of the left side of the optimal slide circle.</param>
+            <param name="rightCenter">The center of the right side of the optimal slide circle.</param>
+            <param name="tangent">The tangent of the optimal slide circle.</param>
+            <param name="reliabilityResult">The reliability results.</param>
+            <param name="messages">The messages that were a result of a calculation.</param>
+        </member>
+        <member name="P:KernelWrapper.Reliability.UpliftVanReliabilitySuccessResult.LeftCenter">
+            <summary>
+            Gets the center of the left side of the optimal slide circle.
+            </summary>
+        </member>
+        <member name="P:KernelWrapper.Reliability.UpliftVanReliabilitySuccessResult.RightCenter">
+            <summary>
+            Gets the center of the right side of the optimal slide circle.
+            </summary>
+        </member>
+        <member name="P:KernelWrapper.Reliability.UpliftVanReliabilitySuccessResult.Tangent">
+            <summary>
+            Gets the tangent of the optimal slide circle.
+            </summary>
+        </member>
+        <member name="T:KernelWrapper.Reliability.BishopBruteForceReliabilityResultFactory">
+            <summary>
+            Factory for creating <see cref="T:KernelWrapper.Reliability.ReliabilityResult"/> instances for a Bishop Brute Force reliability calculation.
+            </summary>
+        </member>
+        <member name="T:KernelWrapper.Reliability.BishopReliabilityResultFactory">
+            <summary>
+            Factory for creating <see cref="T:KernelWrapper.Reliability.ReliabilityResult"/> instances for a Bishop reliability calculation.
+            </summary>
+        </member>
+        <member name="T:KernelWrapper.Reliability.SpencerGeneticReliabilityResultFactory">
+            <summary>
+            Factory for creating <see cref="T:KernelWrapper.Reliability.ReliabilityResult"/> instances for a Spencer Genetic reliability calculation.
+            </summary>
+        </member>
+        <member name="T:KernelWrapper.Reliability.SpencerReliabilityResultFactory">
+            <summary>
+            Factory for creating <see cref="T:KernelWrapper.Reliability.ReliabilityResult"/> instances for a Spencer reliability calculation.
+            </summary>
+        </member>
+        <member name="T:KernelWrapper.Reliability.UpliftVanParticleSwarmReliabilityResultFactory">
+            <summary>
+            Factory for creating <see cref="T:KernelWrapper.Reliability.ReliabilityResult"/> instances for an Uplift-Van Particle Swarm reliability calculation.
+            </summary>
+        </member>
+        <member name="T:KernelWrapper.Reliability.UpliftVanReliabilityResultFactory">
+            <summary>
+            Factory for creating <see cref="T:KernelWrapper.Reliability.ReliabilityResult"/> instances for an Uplift-Van reliability calculation.
+            </summary>
+        </member>
+        <member name="T:KernelWrapper.Reliability.IReliabilityResultFactory">
+            <summary>
+            Interface for a factory that creates reliability results.
+            </summary>
+        </member>
+        <member name="M:KernelWrapper.Reliability.IReliabilityResultFactory.CreateResult(KernelWrapper.Reliability.ReliabilityInput,Deltares.MacroStability.Reliability.CSharpWrapper.ReliabilityOutput,System.Collections.Generic.IEnumerable{KernelWrapper.CalculatorMessage})">
+            <summary>
+            Creates a reliability result.
+            </summary>
+            <param name="input">The reliability input model.</param>
+            <param name="output">The reliability output model.</param>
+            <param name="calculatorMessages">The calculator messages.</param>
+            <returns>A new <see cref="T:KernelWrapper.Result"/>.</returns>
+        </member>
+        <member name="T:KernelWrapper.Reliability.UnexpectedContributionException">
+            <summary>
+            The exception that is thrown when a design point is returned from the assessment for an
+            unexpected property. 
+            </summary>
+        </member>
+        <member name="M:KernelWrapper.Reliability.UnexpectedContributionException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:KernelWrapper.Reliability.UnexpectedContributionException"/> class.
+            </summary>
+        </member>
+        <member name="M:KernelWrapper.Reliability.UnexpectedContributionException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:KernelWrapper.Reliability.UnexpectedContributionException"/> class
+            with a specified error message.
+            </summary>
+            <param name="message">The error message that explains the reason for the exception.</param>
+        </member>
+        <member name="M:KernelWrapper.Reliability.UnexpectedContributionException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:KernelWrapper.Reliability.UnexpectedContributionException"/> class
+            with a specified error message and a reference to the inner exception that is
+            the cause of this exception.
+            </summary>
+            <param name="message">The error message that explains the reason for the exception.</param>
+            <param name="inner">The exception that is the cause of the current exception, 
+            or a null reference if no inner exception is specified.</param>
+        </member>
+        <member name="T:KernelWrapper.Reliability.ReliabilityCalculationFactory">
+            <summary>
+            Creates reliability calculation for different Limit Equilibrium Methods.
+            </summary>
+        </member>
+        <member name="M:KernelWrapper.Reliability.ReliabilityCalculationFactory.CreateBishop(KernelWrapper.Reliability.BishopReliabilityInput)">
+            <summary>
+            Creates a Bishop reliability calculation.
+            </summary>
+            <param name="input">The input for the calculation.</param>
+            <returns>A new <see cref="T:KernelWrapper.ICalculation"/> with parameters set.</returns>
+            <exception cref="T:KernelWrapper.IncompleteInputException">Thrown when <paramref name="input"/>
+            does not meet its requirements.</exception>
+        </member>
+        <member name="M:KernelWrapper.Reliability.ReliabilityCalculationFactory.CreateUpliftVan(KernelWrapper.Reliability.UpliftVanReliabilityInput)">
+            <summary>
+            Creates an Uplift-Van reliability calculation.
+            </summary>
+            <param name="input">The input for the calculation.</param>
+            <returns>A new <see cref="T:KernelWrapper.ICalculation"/> with parameters set.</returns>
+            <exception cref="T:KernelWrapper.IncompleteInputException">Thrown when <paramref name="input"/>
+            does not meet its requirements.</exception>
+        </member>
+        <member name="M:KernelWrapper.Reliability.ReliabilityCalculationFactory.CreateSpencer(KernelWrapper.Reliability.SpencerReliabilityInput)">
+            <summary>
+            Creates a Spencer reliability calculation.
+            </summary>
+            <param name="input">The input for the calculation.</param>
+            <returns>A new <see cref="T:KernelWrapper.ICalculation"/> with parameters set.</returns>
+            <exception cref="T:KernelWrapper.IncompleteInputException">Thrown when <paramref name="input"/>
+            does not meet its requirements.</exception>
+        </member>
+        <member name="M:KernelWrapper.Reliability.ReliabilityCalculationFactory.CreateBishopBruteForce(KernelWrapper.Reliability.BishopBruteForceReliabilityInput)">
+            <summary>
+            Creates a Bishop Brute Force reliability calculation.
+            </summary>
+            <param name="input">The input for the calculation.</param>
+            <returns>A new <see cref="T:KernelWrapper.ICalculation"/> with parameters set.</returns>
+            <exception cref="T:KernelWrapper.IncompleteInputException">Thrown when <paramref name="input"/>
+            does not meet its requirements.</exception>
+        </member>
+        <member name="M:KernelWrapper.Reliability.ReliabilityCalculationFactory.CreateUpliftVanParticleSwarm(KernelWrapper.Reliability.UpliftVanParticleSwarmReliabilityInput)">
+            <summary>
+            Creates an Uplift-Van Particle Swarm reliability calculation.
+            </summary>
+            <param name="input">The input for the calculation.</param>
+            <returns>A new <see cref="T:KernelWrapper.ICalculation"/> with parameters set.</returns>
+            <exception cref="T:KernelWrapper.IncompleteInputException">Thrown when <paramref name="input"/>
+            does not meet its requirements.</exception>
+        </member>
+        <member name="M:KernelWrapper.Reliability.ReliabilityCalculationFactory.CreateSpencerGenetic(KernelWrapper.Reliability.SpencerGeneticReliabilityInput)">
+            <summary>
+            Creates a Spencer Genetic Algorithm reliability calculation.
+            </summary>
+            <param name="input">The input for the calculation.</param>
+            <returns>A new <see cref="T:KernelWrapper.ICalculation"/> with parameters set.</returns>
+            <exception cref="T:KernelWrapper.IncompleteInputException">Thrown when <paramref name="input"/>
+            does not meet its requirements.</exception>
+        </member>
+        <member name="T:KernelWrapper.Reliability.ReliabilityCalculator">
+            <summary>
+            Class providing the methods to use for reliability calculations.
+            </summary>
+        </member>
+        <member name="M:KernelWrapper.Reliability.ReliabilityCalculator.Calculate(KernelWrapper.Reliability.IReliabilityCalculation,KernelWrapper.Reliability.ReliabilitySettingsBase,System.Action{System.String},System.Func{System.Boolean},System.Action{System.Int32,System.Int32,System.Double,System.Double})">
+            <summary>
+            Performs a reliability calculation.
+            </summary>
+            <param name="calculation">The reliability calculation.</param>
+            <param name="settings">The reliability settings to use in the calculation.</param>
+            <param name="reliabilityProgress"></param>
+            <param name="reportTextualProgress">Delegate for reporting textual progress.</param>
+            <param name="shouldCancel">Delegate for canceling the calculation.</param>
+            <returns>An instance of <see cref="T:KernelWrapper.Reliability.ReliabilityResult"/> if the calculation succeeded;
+            <see cref="T:KernelWrapper.FailureResult"/> otherwise.</returns>
+        </member>
+        <member name="T:KernelWrapper.Reliability.ReliabilityConstants">
+            <summary>
+            Constants used when performing reliability data model conversions.
+            </summary>
+        </member>
+        <member name="F:KernelWrapper.Reliability.ReliabilityConstants.modelFactorPropertyName">
+            <summary>
+            The name of <see cref="P:Deltares.MacroStability.Reliability.Data.ReliabilityModel.ModelFactor"/> as it is returned by the reliability kernel.
+            </summary>
+        </member>
+        <member name="F:KernelWrapper.Reliability.ReliabilityConstants.tauMultiplierPropertyName">
+            <summary>
+            The name of the TauMultiplier property on a soil in the reliability kernel.
+            </summary>
+        </member>
+        <member name="F:KernelWrapper.Reliability.ReliabilityConstants.suMultiplierPropertyName">
+            <summary>
+            The name of the SuMultiplier property on a soil in the reliability kernel.
+            </summary>
+        </member>
+        <member name="T:KernelWrapper.Reliability.ReliabilitySettingsBase">
+            <summary>
+            Interface for reliability settings classes that can be applied to a calculation model.
+            </summary>
+        </member>
+        <member name="M:KernelWrapper.Reliability.ReliabilitySettingsBase.#ctor(KernelWrapper.Reliability.IParameterValue)">
+            <summary>
+            Creates a new instance of <see cref="T:KernelWrapper.Reliability.ReliabilitySettingsBase"/>.
+            </summary>
+            <param name="modelFactor">The model factor parameter.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="modelFactor"/> is <c>null</c>.</exception>
+        </member>
+        <member name="P:KernelWrapper.Reliability.ReliabilitySettingsBase.MaxNumberOfCores">
+            <summary>
+            Gets or sets the maximum number of cores.
+            </summary>
+        </member>
+        <member name="M:KernelWrapper.Reliability.ReliabilitySettingsBase.SetModelSettings(Deltares.MacroStability.Reliability.CSharpWrapper.ReliabilityInput)">
+            <summary>
+            Sets the model settings on the input model.
+            </summary>
+            <param name="model">The reliability input model.</param>
+        </member>
+        <member name="T:KernelWrapper.Reliability.ReliabilitySoilFactory">
+            <summary>
+            Factory for creating soils with stochastic parameters.
+            </summary>
+        </member>
+        <member name="M:KernelWrapper.Reliability.ReliabilitySoilFactory.Create(KernelWrapper.VolumetricWeightParameters,KernelWrapper.Reliability.IDrainedStochasticSoilParameters)">
+            <summary>
+            Creates a new instance of <see cref="T:KernelWrapper.Soil"/>.
+            </summary>
+            <param name="volumetricWeightParameters">The parameters for the volumetric weight of the layer.</param>
+            <param name="drainedParameters">The parameters of drained soil.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="volumetricWeightParameters"/>
+            or <paramref name="drainedParameters"/> is <c>null</c>.</exception>
+        </member>
+        <member name="M:KernelWrapper.Reliability.ReliabilitySoilFactory.Create(KernelWrapper.VolumetricWeightParameters,KernelWrapper.Reliability.IDrainedStochasticSoilParameters,KernelWrapper.Reliability.IUndrainedStochasticSoilParameters)">
+            <summary>
+            Creates a new instance of <see cref="T:KernelWrapper.Soil"/>.
+            </summary>
+            <param name="volumetricWeightParameters">The parameters for the volumetric weight of the layer.</param>
+            <param name="drainedParameters">The parameters of drained soil.</param>
+            <param name="undrainedParameters">The parameters of undrained soil.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="volumetricWeightParameters"/>,
+            <paramref name="drainedParameters"/> or <paramref name="undrainedParameters"/> is <c>null</c>.</exception>
+        </member>
+        <member name="M:KernelWrapper.Reliability.ReliabilitySoilFactory.Create(KernelWrapper.VolumetricWeightParameters,KernelWrapper.Reliability.IUndrainedStochasticSoilParameters)">
+            <summary>
+            Creates a new instance of <see cref="T:KernelWrapper.Soil"/>.
+            </summary>
+            <param name="volumetricWeightParameters">The parameters for the volumetric weight of the layer.</param>
+            <param name="undrainedParameters">The parameters of undrained soil.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="volumetricWeightParameters"/>
+            or <paramref name="undrainedParameters"/> is <c>null</c>.</exception>
+        </member>
+    </members>
+</doc>
