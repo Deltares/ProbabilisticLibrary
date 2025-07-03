@@ -44,6 +44,7 @@ namespace Deltares
             bool SaveEvaluations = false;
             bool SaveConvergence = false;
             bool SaveMessages = false;
+            bool ReuseCalculations = true;
             bool RunAtDesignPoint = false;
             bool ExtendedLoggingAtDesignPoint = false;
             int MaxMessages = 1000;

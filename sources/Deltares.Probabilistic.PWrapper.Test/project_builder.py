@@ -58,7 +58,10 @@ def linear_delayed_ab_array_result(a, b):
 class InitializedLinearModel:
     def __init__(self, L):
         self._L = L
+        self.delay = 0
     def calculate(self, a, b):
+        if self.delay > 0:
+            sleep(self.delay)
         return self._L - (a+b)
 
 def linear_ab_array(L:float, a:list[float], b:list[float]):

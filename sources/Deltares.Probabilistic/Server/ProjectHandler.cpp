@@ -1143,6 +1143,7 @@ namespace Deltares
                 else if (property_ == "save_realizations") return settings->RunSettings->SaveEvaluations;
                 else if (property_ == "save_convergence") return settings->RunSettings->SaveConvergence;
                 else if (property_ == "save_messages") return settings->RunSettings->SaveMessages;
+                else if (property_ == "reuse_calculations") return settings->RunSettings->ReuseCalculations;
             }
             else if (objectType == ObjectType::Settings)
             {
@@ -1153,6 +1154,14 @@ namespace Deltares
                 else if (property_ == "save_realizations") return setting->RunSettings->SaveEvaluations;
                 else if (property_ == "save_convergence") return setting->RunSettings->SaveConvergence;
                 else if (property_ == "save_messages") return setting->RunSettings->SaveMessages;
+                else if (property_ == "reuse_calculations") return setting->RunSettings->ReuseCalculations;
+            }
+            else if (objectType == ObjectType::RunProjectSettings)
+            {
+                std::shared_ptr<Models::RunProjectSettings> settings = runProjectSettings[id];
+
+                if (property_ == "reuse_calculations") return settings->RunSettings->ReuseCalculations;
+                else if (property_ == "save_messages") return settings->RunSettings->SaveMessages;
             }
             else if (objectType == ObjectType::CombineProject)
             {
@@ -1213,6 +1222,7 @@ namespace Deltares
                 else if (property_ == "save_realizations") settings->RunSettings->SaveEvaluations = value;
                 else if (property_ == "save_convergence") settings->RunSettings->SaveConvergence = value;
                 else if (property_ == "save_messages") settings->RunSettings->SaveMessages = value;
+                else if (property_ == "reuse_calculations") settings->RunSettings->ReuseCalculations = value;
                 else if (property_ == "use_openmp_in_reliability") settings->RunSettings->UseOpenMPinReliability = value;
             }
             else if (objectType == ObjectType::Settings)
@@ -1224,9 +1234,16 @@ namespace Deltares
                 else if (property_ == "save_realizations") setting->RunSettings->SaveEvaluations = value;
                 else if (property_ == "save_convergence") setting->RunSettings->SaveConvergence = value;
                 else if (property_ == "save_messages") setting->RunSettings->SaveMessages = value;
+                else if (property_ == "reuse_calculations") setting->RunSettings->ReuseCalculations = value;
                 else if (property_ == "use_openmp_in_reliability") setting->RunSettings->UseOpenMPinReliability = value;
             }
+            else if (objectType == ObjectType::RunProjectSettings)
+            {
+                std::shared_ptr<Models::RunProjectSettings> settings = runProjectSettings[id];
 
+                if (property_ == "reuse_calculations") settings->RunSettings->ReuseCalculations = value;
+                else if (property_ == "save_messages") settings->RunSettings->SaveMessages = value;
+            }
         }
 
         std::string ProjectHandler::GetStringValue(int id, std::string property_)

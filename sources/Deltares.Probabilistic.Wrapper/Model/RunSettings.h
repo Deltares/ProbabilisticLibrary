@@ -75,6 +75,12 @@ namespace Deltares
                     void set(bool value) { shared->object->SaveMessages = value; }
                 }
 
+                property bool ReuseCalculations
+                {
+                    bool get() { return shared->object->ReuseCalculations; }
+                    void set(bool value) { shared->object->ReuseCalculations = value; }
+                }
+
                 property int MaxMessages
                 {
                     int get() { return shared->object->MaxMessages; }

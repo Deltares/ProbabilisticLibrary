@@ -539,7 +539,8 @@ class RunProjectSettings(FrozenObject):
 			pass
 
 	def __dir__(self):
-		return ['run_values_type']
+		return ['run_values_type',
+		        'reuse_calculations']
 		
 	@property
 	def run_values_type(self) -> RunValuesType:
@@ -548,6 +549,14 @@ class RunProjectSettings(FrozenObject):
 	@run_values_type.setter
 	def run_values_type(self, value : RunValuesType):
 		interface.SetStringValue(self._id, 'run_values_type', str(value))
+
+	@property
+	def reuse_calculations(self) -> bool:
+		return interface.GetBoolValue(self._id, 'reuse_calculations')
+
+	@reuse_calculations.setter
+	def reuse_calculations(self, value : bool):
+		interface.SetBoolValue(self._id, 'reuse_calculations', value)
 
 	def _set_variables(self, variables):
 		pass
