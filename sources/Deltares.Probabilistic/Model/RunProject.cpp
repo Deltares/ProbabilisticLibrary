@@ -31,6 +31,7 @@ namespace Deltares::Models
 
         std::shared_ptr<UConverter> uConverter = std::make_shared<UConverter>(this->stochasts, this->correlationMatrix);
         ModelRunner modelRunner = ModelRunner(this->model, uConverter, nullptr);
+        modelRunner.Settings = this->settings->RunSettings;
         modelRunner.initializeForRun();
 
         this->evaluation = std::make_shared<Evaluation>(modelRunner.getEvaluationFromType(this->settings->runValuesType));

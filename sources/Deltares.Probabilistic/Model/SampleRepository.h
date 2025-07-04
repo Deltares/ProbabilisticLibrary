@@ -43,6 +43,8 @@ namespace Deltares::Models
 
         std::shared_ptr<ModelSample> retrieveSample(std::shared_ptr<ModelSample> sample);
 
+        void clear();
+
     private:
         class SampleCollection
         {

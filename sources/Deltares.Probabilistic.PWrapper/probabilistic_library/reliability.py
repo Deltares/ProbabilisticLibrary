@@ -130,6 +130,7 @@ class Settings(FrozenObject):
 				'save_realizations',
 				'save_convergence',
 				'save_messages',
+		        'reuse_calculations',
 				'reliability_method',
 				'design_point_method',
 				'start_method',
@@ -187,6 +188,14 @@ class Settings(FrozenObject):
 	@save_messages.setter
 	def save_messages(self, value : bool):
 		interface.SetBoolValue(self._id, 'save_messages', value)
+
+	@property
+	def reuse_calculations(self) -> bool:
+		return interface.GetBoolValue(self._id, 'reuse_calculations')
+
+	@reuse_calculations.setter
+	def reuse_calculations(self, value : bool):
+		interface.SetBoolValue(self._id, 'reuse_calculations', value)
 
 	@property
 	def reliability_method(self) -> ReliabilityMethod:

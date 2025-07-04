@@ -72,6 +72,31 @@ class Test_run_project(unittest.TestCase):
 
         self.assertAlmostEqual(1.13, project.realization.output_values[0], delta=margin)
 
+    def test_run_reuse_calculations(self):
+        project = RunProject()
+        initialized = project_builder.InitializedLinearModel(1.8)
+        initialized.delay = 0.002
+
+        project.model = initialized.calculate
+        project_builder.assign_distributions(project, DistributionType.uniform)
+
+        project.settings.reuse_calculations = True
+        project.run();
+
+        self.assertAlmostEqual(1.8, project.realization.output_values[0], delta=margin)
+
+        initialized._L = 1.7
+
+        project.run();
+
+        # expecting old result
+        self.assertAlmostEqual(1.8, project.realization.output_values[0], delta=margin)
+
+        project.settings.reuse_calculations = False
+        project.run();
+
+        # expecting new result
+        self.assertAlmostEqual(1.7, project.realization.output_values[0], delta=margin)
 
 
 if __name__ == '__main__':

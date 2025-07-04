@@ -71,6 +71,11 @@ namespace Deltares
 
             this->zModel->initializeForRun();
 
+            if (!this->Settings->ReuseCalculations)
+            {
+                this->zModel->clearRepository();
+            }
+
             if (this->locker == nullptr)
             {
                 this->locker = new Utils::Locker();

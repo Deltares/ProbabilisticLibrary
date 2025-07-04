@@ -62,6 +62,7 @@ class UncertaintySettings(FrozenObject):
 		        'save_realizations',
 		        'save_convergence',
 		        'save_messages',
+		        'reuse_calculations'
 		        'uncertainty_method',
 	            'random_type',
 				'is_repeatable_random',
@@ -116,6 +117,14 @@ class UncertaintySettings(FrozenObject):
 	@save_messages.setter
 	def save_messages(self, value : bool):
 		interface.SetBoolValue(self._id, 'save_messages', value)
+
+	@property
+	def reuse_calculations(self) -> bool:
+		return interface.GetBoolValue(self._id, 'reuse_calculations')
+
+	@reuse_calculations.setter
+	def reuse_calculations(self, value : bool):
+		interface.SetBoolValue(self._id, 'reuse_calculations', value)
 
 	@property
 	def uncertainty_method(self) -> UncertaintyMethod:

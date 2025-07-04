@@ -144,6 +144,11 @@ namespace Deltares
                 this->isRepositoryAllowed = allowRepository;
             }
 
+            void clearRepository()
+            {
+                this->repository.clear();
+            }
+
         private:
             ZLambda zLambda = nullptr;
             ZMultipleLambda zMultipleLambda = nullptr;

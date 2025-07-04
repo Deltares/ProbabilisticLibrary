@@ -83,5 +83,10 @@ namespace Deltares::Models
 
         return this->sampleCollections[key]->retrieveSample(sample);
     }
+
+    void SampleRepository::clear()
+    {
+        this->sampleCollections.clear();
+    }
 }
 
