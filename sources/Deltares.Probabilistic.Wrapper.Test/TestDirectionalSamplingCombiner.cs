@@ -23,6 +23,7 @@
 using Deltares.Reliability.Wrappers;
 using Deltares.Models.Wrappers;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using System.Linq;
 using Deltares.Statistics.Wrappers;
 
@@ -47,10 +48,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             DesignPoint combined = combiner.Combine(CombinationType.OneFails, designPoints);
 
-            Assert.AreEqual(StandardNormal.GetUFromQ(2 * q - q * q), combined.Beta, margin);
+            ClassicAssert.AreEqual(StandardNormal.GetUFromQ(2 * q - q * q), combined.Beta, margin);
 
-            Assert.AreEqual(designPoints.Count, combined.ContributingDesignPoints.Count);
-            Assert.AreEqual(designPoints[0], combined.ContributingDesignPoints[0]);
+            ClassicAssert.AreEqual(designPoints.Count, combined.ContributingDesignPoints.Count);
+            ClassicAssert.AreEqual(designPoints[0], combined.ContributingDesignPoints[0]);
         }
 
         [Test]
@@ -68,7 +69,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             DesignPoint combined = combiner.Combine(CombinationType.OneFails, designPoints);
 
-            Assert.AreEqual(StandardNormal.GetUFromQ(3*q - 3*q*q - q*q*q), combined.Beta, margin);
+            ClassicAssert.AreEqual(StandardNormal.GetUFromQ(3*q - 3*q*q - q*q*q), combined.Beta, margin);
         }
 
         [Test]
@@ -85,7 +86,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             DesignPoint combined = combiner.Combine(CombinationType.AllFail, designPoints);
 
-            Assert.AreEqual(StandardNormal.GetUFromQ(q * q), combined.Beta, margin);
+            ClassicAssert.AreEqual(StandardNormal.GetUFromQ(q * q), combined.Beta, margin);
         }
 
         [Test]
@@ -103,7 +104,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             DesignPoint combined = combiner.Combine(CombinationType.AllFail, designPoints);
 
-            Assert.AreEqual(StandardNormal.GetUFromQ(q * q * q), combined.Beta, margin);
+            ClassicAssert.AreEqual(StandardNormal.GetUFromQ(q * q * q), combined.Beta, margin);
         }
 
     }

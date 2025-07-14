@@ -20,6 +20,7 @@
 // All rights reserved.
 //
 ﻿using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using Deltares.Reliability.Wrappers;
 
 namespace Deltares.Probabilistic.Wrapper.Test
@@ -37,16 +38,16 @@ namespace Deltares.Probabilistic.Wrapper.Test
             project.ReliabilityMethod = new NumericalIntegration();
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(2.57, designPoint.Beta, margin);
-            Assert.AreEqual(0.005, designPoint.ProbabilityFailure, margin / 10);
-            Assert.AreEqual(0.995, designPoint.ProbabilityNonFailure, margin / 10);
-            Assert.AreEqual(199.4, designPoint.ReturnPeriod, margin * 10);
+            ClassicAssert.AreEqual(2.57, designPoint.Beta, margin);
+            ClassicAssert.AreEqual(0.005, designPoint.ProbabilityFailure, margin / 10);
+            ClassicAssert.AreEqual(0.995, designPoint.ProbabilityNonFailure, margin / 10);
+            ClassicAssert.AreEqual(199.4, designPoint.ReturnPeriod, margin * 10);
 
-            Assert.AreEqual(-0.71, designPoint.Alphas[0].Alpha, margin);
-            Assert.AreEqual(-0.71, designPoint.Alphas[1].Alpha, margin);
+            ClassicAssert.AreEqual(-0.71, designPoint.Alphas[0].Alpha, margin);
+            ClassicAssert.AreEqual(-0.71, designPoint.Alphas[1].Alpha, margin);
 
-            Assert.AreEqual(0.93, designPoint.Alphas[0].X, margin);
-            Assert.AreEqual(0.93, designPoint.Alphas[1].X, margin);
+            ClassicAssert.AreEqual(0.93, designPoint.Alphas[0].X, margin);
+            ClassicAssert.AreEqual(0.93, designPoint.Alphas[1].X, margin);
         }
 
         [Test]
@@ -57,13 +58,13 @@ namespace Deltares.Probabilistic.Wrapper.Test
             project.ReliabilityMethod = new NumericalIntegration();
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(-2.57, designPoint.Beta, margin);
+            ClassicAssert.AreEqual(-2.57, designPoint.Beta, margin);
 
-            Assert.AreEqual(0.71, designPoint.Alphas[0].Alpha, margin);
-            Assert.AreEqual(0.71, designPoint.Alphas[1].Alpha, margin);
+            ClassicAssert.AreEqual(0.71, designPoint.Alphas[0].Alpha, margin);
+            ClassicAssert.AreEqual(0.71, designPoint.Alphas[1].Alpha, margin);
 
-            Assert.AreEqual(0.93, designPoint.Alphas[0].X, margin);
-            Assert.AreEqual(0.93, designPoint.Alphas[1].X, margin);
+            ClassicAssert.AreEqual(0.93, designPoint.Alphas[0].X, margin);
+            ClassicAssert.AreEqual(0.93, designPoint.Alphas[1].X, margin);
         }
 
         [Test]
@@ -77,10 +78,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(2.57, designPoint.Beta, margin);
+            ClassicAssert.AreEqual(2.57, designPoint.Beta, margin);
 
-            Assert.AreEqual(0, designPoint.ReliabilityResults.Count);
-            Assert.AreEqual(0, designPoint.Evaluations.Count);
+            ClassicAssert.AreEqual(0, designPoint.ReliabilityResults.Count);
+            ClassicAssert.AreEqual(0, designPoint.Evaluations.Count);
         }
 
         [Test]
@@ -99,7 +100,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(2.57, designPoint.Beta, margin);
+            ClassicAssert.AreEqual(2.57, designPoint.Beta, margin);
         }
 
         [Test]
@@ -110,7 +111,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
             project.ReliabilityMethod = new NumericalIntegration();
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(1.43, designPoint.Beta, margin);
+            ClassicAssert.AreEqual(1.43, designPoint.Beta, margin);
         }
 
         [Test]
@@ -121,7 +122,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
             project.ReliabilityMethod = new NumericalIntegration();
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(1.87, designPoint.Beta, margin);
+            ClassicAssert.AreEqual(1.87, designPoint.Beta, margin);
         }
     }
 }
