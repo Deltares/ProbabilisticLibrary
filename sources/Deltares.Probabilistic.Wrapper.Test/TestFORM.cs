@@ -546,20 +546,6 @@ namespace Deltares.Probabilistic.Wrapper.Test
             ClassicAssert.AreEqual(1.63, designPoint.Beta, margin);
         }
 
-        //[Test]
-        //public void TestBlighFragilityCurve()
-        //{
-        //    Project project = ProjectBuilder.GetBlighProject();
-
-        //    FragilityCurve fragilityCurve = Reliability.GetFragilityCurve(project.Stochasts[0], new List<double> {0, 0.5, 1, 1.25, 1.5, 1.75, 2}, new FORM(), project.ZFunction, project.Stochasts);
-
-        //    ClassicAssert.AreEqual(7, fragilityCurve.FragilityValues.Count);
-
-        //    DesignPoint designPoint = Reliability.GetDesignPointFromFragilityCurve(fragilityCurve, project.Stochasts[0]);
-
-        //    ClassicAssert.AreEqual(1.55, designPoint.Beta, margin);
-        //}
-
         [Test]
         public void TestNonVarying()
         {
