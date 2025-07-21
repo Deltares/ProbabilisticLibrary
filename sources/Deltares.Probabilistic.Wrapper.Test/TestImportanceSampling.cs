@@ -23,6 +23,7 @@
 using Deltares.Models.Wrappers;
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace Deltares.Probabilistic.Wrapper.Test
 {
@@ -39,17 +40,17 @@ namespace Deltares.Probabilistic.Wrapper.Test
             project.ReliabilityMethod = new ImportanceSampling();
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(2.58, designPoint.Beta, margin);
+            ClassicAssert.AreEqual(2.58, designPoint.Beta, margin);
 
-            Assert.AreEqual(0.005, designPoint.ProbabilityFailure, margin / 10);
-            Assert.AreEqual(0.995, designPoint.ProbabilityNonFailure, margin / 10);
-            Assert.AreEqual(203.3, designPoint.ReturnPeriod, margin * 10);
+            ClassicAssert.AreEqual(0.005, designPoint.ProbabilityFailure, margin / 10);
+            ClassicAssert.AreEqual(0.995, designPoint.ProbabilityNonFailure, margin / 10);
+            ClassicAssert.AreEqual(203.3, designPoint.ReturnPeriod, margin * 10);
 
-            Assert.AreEqual(-0.69, designPoint.Alphas[0].Alpha, margin);
-            Assert.AreEqual(-0.716, designPoint.Alphas[1].Alpha, margin);
+            ClassicAssert.AreEqual(-0.69, designPoint.Alphas[0].Alpha, margin);
+            ClassicAssert.AreEqual(-0.716, designPoint.Alphas[1].Alpha, margin);
 
-            Assert.AreEqual(0.929, designPoint.Alphas[0].X, margin);
-            Assert.AreEqual(0.935, designPoint.Alphas[1].X, margin);
+            ClassicAssert.AreEqual(0.929, designPoint.Alphas[0].X, margin);
+            ClassicAssert.AreEqual(0.935, designPoint.Alphas[1].X, margin);
         }
 
         [Test]
@@ -60,13 +61,13 @@ namespace Deltares.Probabilistic.Wrapper.Test
             project.ReliabilityMethod = new ImportanceSampling();
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(-2.58, designPoint.Beta, margin);
+            ClassicAssert.AreEqual(-2.58, designPoint.Beta, margin);
 
-            Assert.AreEqual(0.69, designPoint.Alphas[0].Alpha, margin);
-            Assert.AreEqual(0.72, designPoint.Alphas[1].Alpha, margin);
+            ClassicAssert.AreEqual(0.69, designPoint.Alphas[0].Alpha, margin);
+            ClassicAssert.AreEqual(0.72, designPoint.Alphas[1].Alpha, margin);
 
-            Assert.AreEqual(0.93, designPoint.Alphas[0].X, margin);
-            Assert.AreEqual(0.93, designPoint.Alphas[1].X, margin);
+            ClassicAssert.AreEqual(0.93, designPoint.Alphas[0].X, margin);
+            ClassicAssert.AreEqual(0.93, designPoint.Alphas[1].X, margin);
 
             DirectionReliability direction = new DirectionReliability();
             direction.Settings.SetStartPoint(designPoint);
@@ -76,10 +77,10 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             ModelSample sample = limitStatePoint.GetModelSample();
             project.ZFunction.Invoke(sample);
-            Assert.AreEqual(0, sample.Z, margin);
+            ClassicAssert.AreEqual(0, sample.Z, margin);
 
-            Assert.AreEqual(0.90, limitStatePoint.Alphas[0].X, margin);
-            Assert.AreEqual(0.90, limitStatePoint.Alphas[1].X, margin);
+            ClassicAssert.AreEqual(0.90, limitStatePoint.Alphas[0].X, margin);
+            ClassicAssert.AreEqual(0.90, limitStatePoint.Alphas[1].X, margin);
         }
 
         [Test]
@@ -93,12 +94,12 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(2.58, designPoint.Beta, margin);
+            ClassicAssert.AreEqual(2.58, designPoint.Beta, margin);
 
-            Assert.AreEqual(1565, designPoint.ReliabilityResults.Count);
-            Assert.AreEqual(10001, designPoint.Evaluations.Count);
+            ClassicAssert.AreEqual(1565, designPoint.ReliabilityResults.Count);
+            ClassicAssert.AreEqual(10001, designPoint.Evaluations.Count);
 
-            Assert.IsFalse(double.IsNaN(designPoint.Evaluations[1].Weight));
+            ClassicAssert.IsFalse(double.IsNaN(designPoint.Evaluations[1].Weight));
         }
 
         [Test]
@@ -119,7 +120,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(3.81, designPoint.Beta, margin);
+            ClassicAssert.AreEqual(3.81, designPoint.Beta, margin);
         }
 
         [Test]
@@ -130,7 +131,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
             project.ReliabilityMethod = new ImportanceSampling();
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(2.55, designPoint.Beta, margin);
+            ClassicAssert.AreEqual(2.55, designPoint.Beta, margin);
         }
 
         [Test]
@@ -141,7 +142,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
             project.ReliabilityMethod = new ImportanceSampling();
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(1.70, designPoint.Beta, margin);
+            ClassicAssert.AreEqual(1.70, designPoint.Beta, margin);
         }
 
         [Test]
@@ -152,7 +153,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
             project.ReliabilityMethod = new ImportanceSampling();
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(1.395, designPoint.Beta, margin);
+            ClassicAssert.AreEqual(1.395, designPoint.Beta, margin);
         }
 
         [Test]
@@ -163,7 +164,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
             project.ReliabilityMethod = new ImportanceSampling();
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(1.75, designPoint.Beta, margin);
+            ClassicAssert.AreEqual(1.75, designPoint.Beta, margin);
         }
 
         [Test]
@@ -174,7 +175,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
             project.ReliabilityMethod = new ImportanceSampling();
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(2.62, designPoint.Beta, margin);
+            ClassicAssert.AreEqual(2.62, designPoint.Beta, margin);
         }
 
         [Test]
@@ -185,7 +186,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
             project.ReliabilityMethod = new ImportanceSampling();
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(2.47, designPoint.Beta, margin);
+            ClassicAssert.AreEqual(2.47, designPoint.Beta, margin);
         }
     }
 }

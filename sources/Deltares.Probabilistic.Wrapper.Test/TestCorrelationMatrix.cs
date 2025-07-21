@@ -22,6 +22,7 @@
 ﻿using System.Linq;
 using Deltares.Statistics.Wrappers;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace Deltares.Probabilistic.Wrapper.Test
 {
@@ -43,22 +44,22 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             matrix.Initialize(s.ToList());
 
-            Assert.IsTrue(matrix.IsIdentity());
+            ClassicAssert.IsTrue(matrix.IsIdentity());
 
             matrix.SetCorrelation(a, b, 0.5);
             matrix.SetCorrelation(b, c, 0.1);
 
-            Assert.AreEqual(0.5, matrix.GetCorrelation(a, b));
-            Assert.AreEqual(0.5, matrix.GetCorrelation(b, a));
-            Assert.AreEqual(0.1, matrix.GetCorrelation(b, c));
-            Assert.AreEqual(0.1, matrix.GetCorrelation(c, b));
-            Assert.AreEqual(0, matrix.GetCorrelation(a, c));
-            Assert.AreEqual(1, matrix.GetCorrelation(b, b));
-            Assert.AreEqual(1, matrix.GetCorrelation(e, e));
+            ClassicAssert.AreEqual(0.5, matrix.GetCorrelation(a, b));
+            ClassicAssert.AreEqual(0.5, matrix.GetCorrelation(b, a));
+            ClassicAssert.AreEqual(0.1, matrix.GetCorrelation(b, c));
+            ClassicAssert.AreEqual(0.1, matrix.GetCorrelation(c, b));
+            ClassicAssert.AreEqual(0, matrix.GetCorrelation(a, c));
+            ClassicAssert.AreEqual(1, matrix.GetCorrelation(b, b));
+            ClassicAssert.AreEqual(1, matrix.GetCorrelation(e, e));
 
-            Assert.IsFalse(matrix.IsIdentity());
+            ClassicAssert.IsFalse(matrix.IsIdentity());
 
-            Assert.AreEqual(2, matrix.CountCorrelations());
+            ClassicAssert.AreEqual(2, matrix.CountCorrelations());
         }
 
         [Test]
@@ -75,33 +76,33 @@ namespace Deltares.Probabilistic.Wrapper.Test
             var s = new[] { a, b, c, d, e };
             matrix.Initialize(s.ToList());
 
-            Assert.IsTrue(matrix.IsIdentity());
-            Assert.IsFalse(matrix.HasConflictingCorrelations());
+            ClassicAssert.IsTrue(matrix.IsIdentity());
+            ClassicAssert.IsFalse(matrix.HasConflictingCorrelations());
 
             matrix.SetCorrelation(a, b, 1);
             matrix.SetCorrelation(b, c, 1);
 
-            Assert.IsTrue(matrix.HasConflictingCorrelations());
+            ClassicAssert.IsTrue(matrix.HasConflictingCorrelations());
 
             matrix.ResolveConflictingCorrelations();
 
-            Assert.IsFalse(matrix.HasConflictingCorrelations());
-            Assert.AreEqual(1, matrix.GetCorrelation(a, c));
+            ClassicAssert.IsFalse(matrix.HasConflictingCorrelations());
+            ClassicAssert.AreEqual(1, matrix.GetCorrelation(a, c));
 
             matrix.SetCorrelation(d, e, -1);
 
-            Assert.IsFalse(matrix.HasConflictingCorrelations());
+            ClassicAssert.IsFalse(matrix.HasConflictingCorrelations());
             
             matrix.SetCorrelation(e, a,-1);
 
-            Assert.IsTrue(matrix.HasConflictingCorrelations());
+            ClassicAssert.IsTrue(matrix.HasConflictingCorrelations());
 
             matrix.ResolveConflictingCorrelations();
 
-            Assert.IsFalse(matrix.HasConflictingCorrelations());
+            ClassicAssert.IsFalse(matrix.HasConflictingCorrelations());
 
-            Assert.AreEqual(-1, matrix.GetCorrelation(c, e));
-            Assert.AreEqual(1, matrix.GetCorrelation(c, d));
+            ClassicAssert.AreEqual(-1, matrix.GetCorrelation(c, e));
+            ClassicAssert.AreEqual(1, matrix.GetCorrelation(c, d));
         }
     }
 }

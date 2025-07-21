@@ -20,6 +20,7 @@
 // All rights reserved.
 //
 ﻿using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using Deltares.Reliability.Wrappers;
 
 namespace Deltares.Probabilistic.Wrapper.Test
@@ -37,7 +38,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
             project.ReliabilityMethod = new NumericalBisection();
             DesignPoint designPoint = project.GetDesignPoint();
 
-            Assert.AreEqual(2.57, designPoint.Beta, margin);
+            ClassicAssert.AreEqual(2.57, designPoint.Beta, margin);
         }
 
     }

@@ -23,6 +23,7 @@ using Deltares.Models.Wrappers;
 using Deltares.Reliability.Wrappers;
 using Deltares.Statistics.Wrappers;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace Deltares.Probabilistic.Wrapper.Test
 {
@@ -39,7 +40,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
             stochast.Mean = 0;
             stochast.Deviation = 1;
 
-            Assert.AreEqual(1.0, stochast.GetXFromU(1.0), margin);
+            ClassicAssert.AreEqual(1.0, stochast.GetXFromU(1.0), margin);
 
             stochast.IsVariableStochast = true;
 
@@ -55,7 +56,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
             conditional2.Scale = 2;
             stochast.ValueSet.StochastValues.Add(conditional2);
 
-            Assert.AreEqual(2.0, stochast.GetXFromUAndSource(1.0, 0.5), margin);
+            ClassicAssert.AreEqual(2.0, stochast.GetXFromUAndSource(1.0, 0.5), margin);
         }
     }
 }
