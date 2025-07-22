@@ -13,7 +13,7 @@
     <copyright>Copyright © Deltares $([System.DateTime]::Today.ToString(yyyy))</copyright>
     <tags>Tag1 Tag2</tags>
   <files>
-    <file src="..\x64\Release\Deltares.Probabilistic.Wrapper.dll" target="lib\Deltares.Probabilistic.Wrapper.dll" />
+    <file src="..\x64\Release\Deltares.Probabilistic.Wrapper.dll" target="lib\net80\Deltares.Probabilistic.Wrapper.dll" />
   </files>
   </metadata>
 </package>
