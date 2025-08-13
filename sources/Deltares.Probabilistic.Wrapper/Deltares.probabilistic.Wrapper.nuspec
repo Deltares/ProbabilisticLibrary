@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>Deltares_Probabilistic_Library</id>
+    <version>2025.03.02</version>
+    <authors>Deltares</authors>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <license type="expression">AGPL</license>
+    <!-- <icon>icon.png</icon> -->
+    <projectUrl>http://project_url_here_or_delete_this_line/</projectUrl>
+    <description>Package description</description>
+    <releaseNotes>Summary of changes made in this release of the package.</releaseNotes>
+    <copyright>Copyright © Deltares $([System.DateTime]::Today.ToString(yyyy))</copyright>
+  </metadata>
+  <files>
+    <file src="..\x64\Release\Deltares.Probabilistic.Wrapper.dll" target="lib\net80\Deltares.Probabilistic.Wrapper.dll" />
+  </files>
+</package>

@@ -313,6 +313,9 @@
     <ClCompile Include="Utils\SharedPointerProvider.cpp" />
     <ClCompile Include="Statistics\VariableStochastValueSet.cpp" />
   </ItemGroup>
+<ItemGroup>
+  <PackageReference Include="NuGet.Build.Tasks.Pack" Version="6.7.0" PrivateAssets="all" />
+</ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
