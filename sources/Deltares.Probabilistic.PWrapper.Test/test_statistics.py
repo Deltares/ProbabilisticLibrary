@@ -48,6 +48,32 @@ class Test_statistics(unittest.TestCase):
         self.assertAlmostEqual(0.84, stochast.get_cdf(6), delta=margin)
         self.assertAlmostEqual(0.24, stochast.get_pdf(6), delta=margin)
 
+    def test_log_normal(self):
+        stochast = Stochast()
+        stochast.distribution = DistributionType.log_normal
+        stochast.mean = 0.0
+        stochast.deviation = 3.052E-002
+        stochast.shift = -0.79
+        x = stochast.get_x_from_u(0.1)
+
+        self.assertAlmostEqual(0.002465603026085228, x, delta=margin)
+
+    def test_exponential(self):
+        stochast = Stochast()
+        stochast.distribution = DistributionType.exponential
+
+        stochast.mean = 2.0
+        self.assertAlmostEqual(0.0, stochast.deviation, delta=margin)
+        self.assertAlmostEqual(2.0, stochast.shift, delta=margin)
+
+        stochast.deviation = 0.5
+        self.assertAlmostEqual(0.5, stochast.deviation, delta=margin)
+        self.assertAlmostEqual(1.5, stochast.shift, delta=margin)
+
+        stochast.shift = -0.5
+        self.assertAlmostEqual(2.0, stochast.mean, delta=margin)
+        self.assertAlmostEqual(2.5, stochast.deviation, delta=margin)
+
     def test_discrete(self):
         stochast = Stochast()
         stochast.distribution = DistributionType.discrete

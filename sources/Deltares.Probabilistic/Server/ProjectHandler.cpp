@@ -485,7 +485,7 @@ namespace Deltares
                 else if (property_ == "scale") stochast->getProperties()->Scale = value;
                 else if (property_ == "shape") stochast->getProperties()->Shape = value;
                 else if (property_ == "shape_b") stochast->getProperties()->ShapeB = value;
-                else if (property_ == "shift") stochast->getProperties()->Shift = value;
+                else if (property_ == "shift") stochast->setShift(value);
                 else if (property_ == "shift_b") stochast->getProperties()->ShiftB = value;
                 else if (property_ == "minimum") stochast->getProperties()->Minimum = value;
                 else if (property_ == "maximum") stochast->getProperties()->Maximum = value;
