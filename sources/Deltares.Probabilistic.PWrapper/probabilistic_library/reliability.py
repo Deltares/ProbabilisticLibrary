@@ -773,6 +773,11 @@ class DesignPoint(FrozenObject):
 				design_point._print(indent + 1, decimals)
 
 	def plot_alphas(self):
+		vplot = self.get_plot_alphas()
+		if vplot != None:
+			vplot.show()
+
+	def get_plot_alphas(self):
 
 		import numpy as np
 		import matplotlib.pyplot as plt
@@ -780,19 +785,28 @@ class DesignPoint(FrozenObject):
 		alphas = [alpha.influence_factor for alpha in self.alphas if alpha.influence_factor > 0.0001]
 		names = [f'{alpha.identifier} ({round(100*alpha.influence_factor)} %)' for alpha in self.alphas if alpha.influence_factor > 0.0001]
 
+		plt.close()
+
 		plt.figure()
 		plt.pie(alphas, labels=names)
 		plt.title("Squared alpha values", fontsize=14, fontweight='bold')
 
+		return plt
+
 	def plot_realizations(self, var_x : str | Stochast = None, var_y : str | Stochast = None):
+		vplot = self.get_plot_realizations(var_x, var_y)
+		if vplot != None:
+			vplot.show()
+
+	def get_plot_realizations(self, var_x : str | Stochast = None, var_y : str | Stochast = None):
 
 		if len(self.realizations) == 0:
 			print ("No realizations were saved, run again with settings.save_realizations = True")
-			return
+			return None
 
 		if len(self.alphas) < 2:
 			print ("Not enough variables to plot realizations")
-			return
+			return None
 
 		import numpy as np
 		import matplotlib.pyplot as plt
@@ -816,12 +830,14 @@ class DesignPoint(FrozenObject):
 
 		if index_x < 0 or index_y < 0:
 			print ("Variables could not be found")
-			return
+			return None
 
 		x_values = [realization.input_values[index_x] for realization in self.realizations]
 		y_values = [realization.input_values[index_y] for realization in self.realizations]
 		z = [realization.z for realization in self.realizations]
 		colors = ["r" if val < 0 else "g" for val in z]
+
+		plt.close()
 
 		# plot realizations
 		plt.figure()
@@ -836,11 +852,18 @@ class DesignPoint(FrozenObject):
 		plt.legend()
 		plt.title('Realizations: Red = Failure, Green = No Failure', fontsize=14, fontweight='bold')
 
+		return plt
+
 	def plot_convergence(self):
+		vplot = self.get_plot_convergence()
+		if vplot != None:
+			vplot.show()
+
+	def get_plot_convergence(self):
 
 		if len(self.reliability_results) == 0:
 			print ("No convergence data were saved, run again with settings.save_convergence = True")
-			return
+			return None
 
 		import numpy as np
 		import matplotlib.pyplot as plt
@@ -849,6 +872,8 @@ class DesignPoint(FrozenObject):
 		beta = [x.reliability_index for x in self.reliability_results]
 		conv = [x.convergence for x in self.reliability_results]
     
+		plt.close()
+
 		fig, ax1 = plt.subplots()
 		color = "tab:blue"
 		ax1.set_xlabel("index [-]")
@@ -862,6 +887,7 @@ class DesignPoint(FrozenObject):
 		ax2.tick_params(axis="y", labelcolor=color)
 		plt.title('Convergence', fontsize=14, fontweight='bold')
 
+		return plt
 
 class Alpha(FrozenObject):
 

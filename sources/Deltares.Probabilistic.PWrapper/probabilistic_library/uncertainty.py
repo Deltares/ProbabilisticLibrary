@@ -415,15 +415,23 @@ class UncertaintyResult(FrozenObject):
 				quantile._print(1, decimals)
 
 	def plot(self, xmin : float = None, xmax : float = None):
+		vplot = self.get_plot(xmin, xmax)
+		if vplot != None:
+			vplot.show()
+
+	def get_plot(self, xmin : float = None, xmax : float = None):
 
 		import matplotlib.pyplot as plt
 
-		self.variable._plot(xmin, xmax)
+		vplot = self.variable.get_plot(xmin, xmax)
 
 		plot_legend = False
 		for ii in range(len(self.quantile_realizations)):
-			plt.axvline(x=self.quantile_realizations[ii].output_values[0], color="green", linestyle="--", label=f"{self.quantile_realizations[ii].quantile:.4g}-quantile")
+			vplot.axvline(x=self.quantile_realizations[ii].output_values[0], color="green", linestyle="--", label=f"{self.quantile_realizations[ii].quantile:.4g}-quantile")
 			plot_legend = True
 
 		if plot_legend:
-			plt.legend()
+			vplot.legend()
+
+		return vplot
+

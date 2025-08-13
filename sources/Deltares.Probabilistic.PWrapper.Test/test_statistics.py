@@ -48,6 +48,21 @@ class Test_statistics(unittest.TestCase):
         self.assertAlmostEqual(0.84, stochast.get_cdf(6), delta=margin)
         self.assertAlmostEqual(0.24, stochast.get_pdf(6), delta=margin)
 
+    def test_plot(self):
+        stochast = Stochast()
+        stochast.distribution = DistributionType.normal
+        stochast.mean = 2
+        stochast.deviation = 0.4
+
+        test_file_name = 'normal.png'
+        if os.path.exists(test_file_name):
+            os.remove(test_file_name)
+
+        stochast.get_plot().savefig(test_file_name)
+
+        self.assertTrue(os.path.exists(test_file_name))
+        os.remove(test_file_name)
+
     def test_discrete(self):
         stochast = Stochast()
         stochast.distribution = DistributionType.discrete
