@@ -22,6 +22,7 @@
 import sys
 from math import isnan
 from enum import Enum
+import matplotlib.pyplot as plt
 
 from .utils import *
 from .statistic import Stochast, ProbabilityValue
@@ -415,13 +416,9 @@ class UncertaintyResult(FrozenObject):
 				quantile._print(1, decimals)
 
 	def plot(self, xmin : float = None, xmax : float = None):
-		vplot = self.get_plot(xmin, xmax)
-		if vplot != None:
-			vplot.show()
+		self.get_plot(xmin, xmax).show()
 
-	def get_plot(self, xmin : float = None, xmax : float = None):
-
-		import matplotlib.pyplot as plt
+	def get_plot(self, xmin : float = None, xmax : float = None) -> plt:
 
 		vplot = self.variable.get_plot(xmin, xmax)
 

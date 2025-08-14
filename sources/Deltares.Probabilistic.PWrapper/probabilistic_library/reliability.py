@@ -21,6 +21,7 @@
 #
 from __future__ import annotations
 from math import isnan
+import matplotlib.pyplot as plt
 import sys
 from enum import Enum
 
@@ -773,14 +774,11 @@ class DesignPoint(FrozenObject):
 				design_point._print(indent + 1, decimals)
 
 	def plot_alphas(self):
-		vplot = self.get_plot_alphas()
-		if vplot != None:
-			vplot.show()
+		self.get_plot_alphas().show()
 
-	def get_plot_alphas(self):
+	def get_plot_alphas(self) -> plt:
 
 		import numpy as np
-		import matplotlib.pyplot as plt
 
 		alphas = [alpha.influence_factor for alpha in self.alphas if alpha.influence_factor > 0.0001]
 		names = [f'{alpha.identifier} ({round(100*alpha.influence_factor)} %)' for alpha in self.alphas if alpha.influence_factor > 0.0001]
@@ -794,22 +792,17 @@ class DesignPoint(FrozenObject):
 		return plt
 
 	def plot_realizations(self, var_x : str | Stochast = None, var_y : str | Stochast = None):
-		vplot = self.get_plot_realizations(var_x, var_y)
-		if vplot != None:
-			vplot.show()
+		self.get_plot_realizations(var_x, var_y).show()
 
-	def get_plot_realizations(self, var_x : str | Stochast = None, var_y : str | Stochast = None):
+	def get_plot_realizations(self, var_x : str | Stochast = None, var_y : str | Stochast = None) -> plt:
 
 		if len(self.realizations) == 0:
 			print ("No realizations were saved, run again with settings.save_realizations = True")
-			return None
 
 		if len(self.alphas) < 2:
 			print ("Not enough variables to plot realizations")
-			return None
 
 		import numpy as np
-		import matplotlib.pyplot as plt
 
 		# 2 variables with the highest alpha
 		alphas = [alpha.influence_factor for alpha in self.alphas]
@@ -830,7 +823,6 @@ class DesignPoint(FrozenObject):
 
 		if index_x < 0 or index_y < 0:
 			print ("Variables could not be found")
-			return None
 
 		x_values = [realization.input_values[index_x] for realization in self.realizations]
 		y_values = [realization.input_values[index_y] for realization in self.realizations]
@@ -855,18 +847,14 @@ class DesignPoint(FrozenObject):
 		return plt
 
 	def plot_convergence(self):
-		vplot = self.get_plot_convergence()
-		if vplot != None:
-			vplot.show()
+		self.get_plot_convergence().show()
 
-	def get_plot_convergence(self):
+	def get_plot_convergence(self) -> plt:
 
 		if len(self.reliability_results) == 0:
 			print ("No convergence data were saved, run again with settings.save_convergence = True")
-			return None
 
 		import numpy as np
-		import matplotlib.pyplot as plt
 
 		index = [x.index for x in self.reliability_results]
 		beta = [x.reliability_index for x in self.reliability_results]

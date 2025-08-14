@@ -25,6 +25,8 @@ from enum import Enum
 from math import isnan
 from .utils import *
 from . import interface
+import matplotlib.pyplot as plt
+
 
 if not interface.IsLibraryLoaded():
 	interface.LoadDefaultLibrary()
@@ -671,24 +673,24 @@ class Stochast(FrozenObject):
 				print(pre + f'design_value = {self.design_value:.{decimals}g}')
 
 	def plot(self, xmin : float = None, xmax : float = None):
-		vplot = self.get_plot(xmin, xmax)
-		if vplot != None:
-			vplot.show()
 
-	def get_plot(self, xmin : float = None, xmax : float = None):
+		self.get_plot(xmin, xmax).show()
+
+	def get_plot(self, xmin : float = None, xmax : float = None) -> plt:
+
 		if not self.is_valid():
 			print('Variable definition is not valid, plot can not be made.')
-			return None
 
 		if self.conditional:
-			return self._get_plot_conditional(xmin, xmax)
+			self._get_plot_conditional(xmin, xmax)
 		else:
-			return self._get_plot(xmin, xmax)
+			self._get_plot(xmin, xmax)
+
+		return plt
 
 	def _get_plot(self, xmin : float = None, xmax : float = None):
 
 		import numpy as np
-		import matplotlib.pyplot as plt
 
 		limit_special_values = True
 		if xmin is None:
@@ -727,8 +729,6 @@ class Stochast(FrozenObject):
 		ax2.set_ylabel("cdf [-]", color=color)
 		ax2.plot(values, cdf, "r--", label="_cdf")
 		ax2.tick_params(axis="y", labelcolor=color)
-
-		return plt
 
 	def _get_plot_conditional(self, xmin : float = None, xmax : float = None):
 
@@ -778,8 +778,6 @@ class Stochast(FrozenObject):
 
 		plt.grid()
 		plt.legend()
-
-		return plt
 
 class DiscreteValue(FrozenObject):
 

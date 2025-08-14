@@ -73,6 +73,7 @@ class Test_statistics(unittest.TestCase):
         stochast.shift = -0.5
         self.assertAlmostEqual(2.0, stochast.mean, delta=margin)
         self.assertAlmostEqual(2.5, stochast.deviation, delta=margin)
+
     def test_plot(self):
         stochast = Stochast()
         stochast.distribution = DistributionType.normal
