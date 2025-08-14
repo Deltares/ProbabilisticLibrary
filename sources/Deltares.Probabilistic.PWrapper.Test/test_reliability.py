@@ -793,6 +793,26 @@ def h(a,b,c):
         self.assertAlmostEqual(0.93, alphas[0].x, delta=margin)
         self.assertAlmostEqual(0.94, alphas[1].x, delta=margin)
 
+    def test_crude_monte_carlo_plot(self):
+        project = project_builder.get_linear_project()
+
+        project.settings.reliability_method = ReliabilityMethod.crude_monte_carlo
+        project.settings.random_type = RandomType.mersenne_twister
+
+        project.run();
+
+        dp = project.design_point;
+
+        test_file_name = 'design_point.png'
+        if os.path.exists(test_file_name):
+            os.remove(test_file_name)
+
+        dp.get_plot_alphas().savefig(test_file_name)
+
+        self.assertTrue(os.path.exists(test_file_name))
+        os.remove(test_file_name)
+
+
     def test_directional_sampling_linear(self):
         project = project_builder.get_linear_project()
 

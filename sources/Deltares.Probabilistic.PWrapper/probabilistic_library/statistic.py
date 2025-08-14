@@ -25,6 +25,8 @@ from enum import Enum
 from math import isnan
 from .utils import *
 from . import interface
+import matplotlib.pyplot as plt
+
 
 if not interface.IsLibraryLoaded():
 	interface.LoadDefaultLibrary()
@@ -671,19 +673,24 @@ class Stochast(FrozenObject):
 				print(pre + f'design_value = {self.design_value:.{decimals}g}')
 
 	def plot(self, xmin : float = None, xmax : float = None):
+
+		self.get_plot(xmin, xmax).show()
+
+	def get_plot(self, xmin : float = None, xmax : float = None) -> plt:
+
 		if not self.is_valid():
 			print('Variable definition is not valid, plot can not be made.')
-			return
 
 		if self.conditional:
-			self._plot_conditional(xmin, xmax)
+			self._get_plot_conditional(xmin, xmax)
 		else:
-			self._plot(xmin, xmax)
+			self._get_plot(xmin, xmax)
 
-	def _plot(self, xmin : float = None, xmax : float = None):
+		return plt
+
+	def _get_plot(self, xmin : float = None, xmax : float = None):
 
 		import numpy as np
-		import matplotlib.pyplot as plt
 
 		limit_special_values = True
 		if xmin is None:
@@ -705,6 +712,8 @@ class Stochast(FrozenObject):
 
 		pdf = [self.get_pdf(x) for x in values]
 		cdf = [self.get_cdf(x) for x in values]
+
+		plt.close()
     
 		fig, ax1 = plt.subplots()
 		color = "tab:blue"
@@ -721,7 +730,7 @@ class Stochast(FrozenObject):
 		ax2.plot(values, cdf, "r--", label="_cdf")
 		ax2.tick_params(axis="y", labelcolor=color)
 
-	def _plot_conditional(self, xmin : float = None, xmax : float = None):
+	def _get_plot_conditional(self, xmin : float = None, xmax : float = None):
 
 		if not self.is_valid():
 			print('Variable definition is not valid, plot can not be made.')
@@ -750,6 +759,8 @@ class Stochast(FrozenObject):
 		low_values = [self.get_x_from_u_and_source(u_low, x) for x in values]
 		high_values = [self.get_x_from_u_and_source(u_high, x) for x in values]
     
+		plt.close()
+
 		fig, ax1 = plt.subplots()
 		color = "tab:blue"
 		if self.conditional_source == None:

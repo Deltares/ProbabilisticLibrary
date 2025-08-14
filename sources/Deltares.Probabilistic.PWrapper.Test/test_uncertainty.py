@@ -29,7 +29,7 @@ import project_builder
 
 margin = 0.02
 
-class Test_sensitivity(unittest.TestCase):
+class Test_uncertainty(unittest.TestCase):
 
     def test_crude_monte_carlo_add_one(self):
         project = project_builder.get_sensitivity_add_one_project()
@@ -60,6 +60,26 @@ class Test_sensitivity(unittest.TestCase):
         self.assertEqual('L - (a+b)' , sens.name)
         self.assertAlmostEqual(1.8, sens.mean, delta=margin)
         self.assertAlmostEqual(0.83, sens.deviation, delta=margin)
+
+    def test_crude_monte_carlo_plot(self):
+        project = project_builder.get_sensitivity_linear_project()
+
+        project.settings.uncertainty_method = UncertaintyMethod.crude_monte_carlo
+        project.settings.quantiles.append(0.5)
+        project.settings.quantiles.append(0.95)
+
+        project.run();
+
+        sens = project.result;
+
+        test_file_name = 'mc.png'
+        if os.path.exists(test_file_name):
+            os.remove(test_file_name)
+
+        sens.get_plot().savefig(test_file_name)
+
+        self.assertTrue(os.path.exists(test_file_name))
+        os.remove(test_file_name)
 
     def test_crude_monte_carlo_array_result_linear(self):
 
