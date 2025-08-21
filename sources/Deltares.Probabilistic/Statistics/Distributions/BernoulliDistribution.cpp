@@ -111,17 +111,34 @@ namespace Deltares
 
         void BernoulliDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values)
         {
-            int zeroValues = 0;
+            stochast->Location = Numeric::NumericSupport::getMean(values);
+        }
 
+        void BernoulliDistribution::fitPrior(std::shared_ptr<StochastProperties> stochast, std::shared_ptr<StochastProperties> prior, std::vector<double>& values)
+        {
+            int n = static_cast<int>(values.size());
+
+            int n_zero = 0;
             for (double x : values)
             {
-                if (Numeric::NumericSupport::areEqual(x, 0.0, delta))
-                {
-                    zeroValues++;
-                }
+                if (x == 0.0) { n_zero++; }
             }
 
-            stochast->Location = Numeric::NumericSupport::Divide(zeroValues, static_cast<int>(values.size()));
+            double mu = getMean(prior);
+            double sigma = getDeviation(prior);
+
+            double c = (mu * (1 - mu) / sigma) - 1;
+            double a = mu * c;
+            double b = (1 - mu) * c;
+
+            double a_post = a + n_zero;
+            double b_post = b + n - n_zero;
+
+            double p = a_post / (a_post + b_post);
+
+            double p_corrected = std::max(0.0, std::min(1.0, p));
+
+            stochast->Location = p_corrected;
         }
 
         std::vector<double> BernoulliDistribution::getDiscontinuityPoints(const StochastProperties& stochast)

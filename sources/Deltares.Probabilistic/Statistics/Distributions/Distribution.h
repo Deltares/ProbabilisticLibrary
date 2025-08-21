@@ -89,10 +89,16 @@ namespace Deltares
             virtual bool canInvert() { return false; }
 
             /**
-             * \brief Indicates whether the  stochast can be fitted to data, i.e. parameters in stochast can be estimated based on a given set of x-values
+             * \brief Indicates whether the stochast can be fitted to data, i.e. parameters in stochast can be estimated based on a given set of x-values
              * \return Indication
              */
             virtual bool canFit() { return false; }
+
+            /**
+             * \brief Indicates whether the stochast can be fitted to data with use of a prior stochast
+             * \return Indication
+             */
+            virtual bool canFitPrior() { return false; }
 
             /**
              * \brief Indicates whether the shift parameter of the stochast is used
@@ -199,6 +205,14 @@ namespace Deltares
              * \param weights Given weights
              */
             virtual void fitWeighted(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, std::vector<double>& weights) { fit(stochast, values); }
+
+            /**
+             * \brief Updates parameters of a stochast with the use of a prior stochast, so that they fit best a number of given x-values
+             * \param stochast Stochast to be updated
+             * \param stochast Prior stochast
+             * \param values Given x-values
+             */
+            virtual void fitPrior(std::shared_ptr<StochastProperties> stochast, std::shared_ptr<StochastProperties> prior, std::vector<double>& values) {}
 
             /**
              * \brief Indicates whether parameters of a stochast have valid values

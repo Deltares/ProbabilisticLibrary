@@ -346,10 +346,23 @@ namespace Deltares
             bool canFit() const;
 
             /**
+             * \brief Indicates whether stochastic parameters can be estimated for a given set of x-values and a prior distribution
+             * \return Indication
+             */
+            bool canFitPrior() const;
+
+            /**
              * \brief Estimates stochastic parameters for a given set of x-values
              * \param values Given set of x-values
              */
             void fit(std::vector<double> values) const;
+
+            /**
+             * \brief Estimates stochastic parameters for a given set of x-values and a prior variable
+             * \param prior Prior variable
+             * \param values Given set of x-values
+             */
+            void fitPrior(std::shared_ptr<Stochast> prior, std::vector<double> values) const;
 
             /**
              * \brief Estimates stochastic parameters for a given set of x-values and their weights

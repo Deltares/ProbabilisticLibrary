@@ -930,6 +930,7 @@ namespace Deltares
                 else if (property_ == "array_size") stochast->modelParameter->arraySize = value;
                 else if (property_ == "copy_from") stochast->copyFrom(stochasts[value]);
                 else if (property_ == "conditional_source") stochast->VariableSource = stochasts[value];
+                else if (property_ == "prior") tempValues["prior"] = std::vector<double>{static_cast<double>(value) };
             }
             else if (objectType == ObjectType::FragilityValue)
             {
@@ -1480,6 +1481,18 @@ namespace Deltares
                     }
 
                     stochast->fit(fitValues);
+                }
+                else if (property_ == "fit_prior")
+                {
+                    std::vector<double> fitValues;
+                    for (size_t i = 0; i < size; i++)
+                    {
+                        fitValues.push_back(values[i]);
+                    }
+
+                    int priorId = static_cast<int>(tempValues["prior"][0]);
+                    stochast->fitPrior(stochasts[priorId], fitValues);
+                    tempValues.erase("prior");
                 }
                 else if (property_ == "data")
                 {

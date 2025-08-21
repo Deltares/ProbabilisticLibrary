@@ -130,6 +130,21 @@ namespace Deltares
 
             stochast->Scale = std::sqrt(sumVariances / sumWeights);
         }
+
+        void NormalDistribution::fitPrior(std::shared_ptr<StochastProperties> stochast, std::shared_ptr<StochastProperties> prior, std::vector<double>& values)
+        {
+            fit(stochast, values);
+
+            int n = static_cast<int>(values.size());
+
+            double sigma2 = 1 / (prior->Scale * prior->Scale) + n / (stochast->Scale * stochast->Scale);
+            sigma2 = 1 / sigma2;
+
+            double mu = sigma2 * (prior->Location / (prior->Scale * prior->Scale) + n * stochast->Location / (stochast->Scale * stochast->Scale));
+
+            stochast->Location = mu;
+            stochast->Scale = sqrt(sigma2);
+        }
     }
 }
 

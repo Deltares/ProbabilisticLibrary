@@ -392,11 +392,25 @@ namespace Deltares
                     return shared->object->canFit();
                 }
 
+                virtual bool CanFitPrior()
+                {
+                    return shared->object->canFitPrior();
+                }
+
                 virtual void Fit(array<double>^ values)
                 {
                     std::vector<double> nativeValues = NativeSupport::toNative(values);
 
                     shared->object->fit(nativeValues);
+
+                    updateLists();
+                }
+
+                virtual void FitPrior(Stochast^ source, array<double>^ values)
+                {
+                    std::vector<double> nativeValues = NativeSupport::toNative(values);
+
+                    shared->object->fitPrior(source->GetStochast(), nativeValues);
 
                     updateLists();
                 }
