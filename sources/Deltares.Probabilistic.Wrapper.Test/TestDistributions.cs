@@ -703,10 +703,15 @@ namespace Deltares.Probabilistic.Wrapper.Test
             ClassicAssert.AreEqual(Math.Sqrt(0.4 * 0.6), stochast.Deviation, margin);
 
             Stochast prior = new Stochast { DistributionType = DistributionType.Bernoulli, Mean = 0.8 };
-            stochast.FitPrior(prior, new double[] { 0, 0, 1, 0, 1 });
-            ClassicAssert.AreEqual(0.572, stochast.Mean, margin);
-            ClassicAssert.AreEqual(0.494, stochast.Deviation, margin);
+            prior.Observations = 2;
 
+            stochast.FitPrior(prior, new double[] { 0, 0, 1, 0, 1 });
+            ClassicAssert.AreEqual(0.511, stochast.Mean, margin);
+            ClassicAssert.AreEqual(0.5, stochast.Deviation, margin);
+
+            stochast.FitPrior(prior, new double[] { 1, 1 });
+            ClassicAssert.AreEqual(0.766, stochast.Mean, margin);
+            ClassicAssert.AreEqual(0.423, stochast.Deviation, margin);
         }
 
         [Test]

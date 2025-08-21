@@ -61,11 +61,19 @@ namespace Deltares
 
         void BetaDistribution::setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation)
         {
+            // see https://stats.stackexchange.com/questions/12232/calculating-the-parameters-of-a-beta-distribution-using-the-mean-and-variance
+
             double sigma = deviation;
             double variance = sigma * sigma;
 
             stochast->Shape = ((1 - mean) / variance - 1 / mean) * mean * mean;
             stochast->ShapeB = stochast->Shape * (1 / mean - 1);
+
+            if (stochast->Shape < 0 && stochast->ShapeB < 0)
+            {
+                stochast->Shape = std::abs(stochast->Shape);
+                stochast->ShapeB = std::abs(stochast->ShapeB);
+            }
         }
 
         double BetaDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)
@@ -144,14 +152,10 @@ namespace Deltares
 
         void BetaDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values)
         {
-            // https://stats.stackexchange.com/questions/12232/calculating-the-parameters-of-a-beta-distribution-using-the-mean-and-variance
-
             double mean = Numeric::NumericSupport::getMean(values);
             double sigma = Numeric::NumericSupport::getStandardDeviation(mean, values);
-            double variance = sigma * sigma;
 
-            stochast->Shape = ((1 - mean) / variance - 1 / mean) * mean * mean;
-            stochast->ShapeB = stochast->Shape * (1 / mean - 1);
+            setMeanAndDeviation(stochast, mean, sigma);
         }
 
         std::vector<double> BetaDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)

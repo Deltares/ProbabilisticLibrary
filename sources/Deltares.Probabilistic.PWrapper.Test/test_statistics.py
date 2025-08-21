@@ -223,6 +223,30 @@ class Test_statistics(unittest.TestCase):
         self.assertAlmostEqual(4.16, stochast.mean, delta=margin)
         self.assertAlmostEqual(0.08, stochast.deviation, delta=margin)
 
+    def test_bernoulli(self):
+        stochast = Stochast()
+        stochast.distribution = DistributionType.bernoulli
+
+        values = []
+        values.append(0)
+        values.append(1)
+        values.append(0)
+        values.append(0)
+        values.append(0)
+
+        stochast.fit(values)
+
+        self.assertAlmostEqual(0.2, stochast.mean, delta=margin)
+        self.assertAlmostEqual(0.4, stochast.deviation, delta=margin)
+
+        prior = Stochast()
+        prior.distribution = DistributionType.bernoulli
+        prior.mean = 0.8
+
+        stochast.fit_prior(prior, values)
+
+        self.assertAlmostEqual(0.4, stochast.mean, delta=margin)
+
     def test_ks_test(self):
         stochast = Stochast()
         stochast.distribution = DistributionType.normal

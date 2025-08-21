@@ -112,33 +112,30 @@ namespace Deltares
         void BernoulliDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values)
         {
             stochast->Location = Numeric::NumericSupport::getMean(values);
+            stochast->Observations = static_cast<int>(values.size());
         }
 
         void BernoulliDistribution::fitPrior(std::shared_ptr<StochastProperties> stochast, std::shared_ptr<StochastProperties> prior, std::vector<double>& values)
         {
-            int n = static_cast<int>(values.size());
+            int n_data = static_cast<int>(values.size());
+            double n_data_success = Numeric::NumericSupport::sum(values);
+            double n_data_fail = n_data - n_data_success;
 
-            int n_zero = 0;
-            for (double x : values)
-            {
-                if (x == 0.0) { n_zero++; }
-            }
+            int n_prior = prior->Observations;
+            double n_prior_success = prior->Location * n_prior;
+            double n_prior_fail = n_prior - n_prior_success;
 
-            double mu = getMean(prior);
-            double sigma = getDeviation(prior);
+            // assume a beta distribution, the shape properties can be set according to binomial experiments
+            // see https://statisticsbyjim.com/probability/beta-distribution/
+            // see https://rpubs.com/sitaramgautam/145048
 
-            double c = (mu * (1 - mu) / sigma) - 1;
-            double a = mu * c;
-            double b = (1 - mu) * c;
+            double postAlpha = n_data_success + n_prior_success + 1;
+            double postBeta = n_data_fail + n_prior_fail + 1;
 
-            double a_post = a + n_zero;
-            double b_post = b + n - n_zero;
+            double postMean = postAlpha / (postAlpha + postBeta);
 
-            double p = a_post / (a_post + b_post);
-
-            double p_corrected = std::max(0.0, std::min(1.0, p));
-
-            stochast->Location = p_corrected;
+            stochast->Location = postMean;
+            stochast->Observations = prior->Observations + n_data;
         }
 
         std::vector<double> BernoulliDistribution::getDiscontinuityPoints(const StochastProperties& stochast)
