@@ -44,6 +44,7 @@ namespace Deltares
             bool canTruncate() override { return true; }
             bool canInvert() override { return this->innerDistribution->canInvert(); }
             bool canFit() override { return this->innerDistribution->canFit(); }
+            bool canFitPrior() override { return this->innerDistribution->canFitPrior(); }
             bool isShiftUsed() override { return this->innerDistribution->isShiftUsed(); }
             double getMean(std::shared_ptr<StochastProperties> stochast) override;
             double getDeviation(std::shared_ptr<StochastProperties> stochast) override;
@@ -53,6 +54,7 @@ namespace Deltares
             double getCDF(std::shared_ptr<StochastProperties> stochast, double x) override;
             void setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType) override;
             void fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values) override;
+            void fitPrior(std::shared_ptr<StochastProperties> stochast, std::shared_ptr<StochastProperties> prior, std::vector<double>& values) override;
             bool isValid(std::shared_ptr<StochastProperties> stochast) override;
             double getLogLikelihood(std::shared_ptr<StochastProperties> stochast, double x) override;
             std::vector<double> getSpecialPoints(std::shared_ptr<StochastProperties> stochast) override;
@@ -63,6 +65,7 @@ namespace Deltares
             Truncated getTruncatedValue(std::shared_ptr<StochastProperties> stochast);
             double getProbability(std::shared_ptr<StochastProperties> stochast, bool isMinimum);
             double getUntruncatedU(double u, std::shared_ptr<StochastProperties> stochast);
+            void fitMinMax(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values);
         };
     }
 }
