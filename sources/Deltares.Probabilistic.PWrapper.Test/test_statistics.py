@@ -245,7 +245,7 @@ class Test_statistics(unittest.TestCase):
 
         stochast.fit_prior(prior, values)
 
-        self.assertAlmostEqual(0.4, stochast.mean, delta=margin)
+        self.assertAlmostEqual(0.37, stochast.mean, delta=margin)
 
     def test_ks_test(self):
         stochast = Stochast()

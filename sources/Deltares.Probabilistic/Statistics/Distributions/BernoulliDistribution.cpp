@@ -129,8 +129,8 @@ namespace Deltares
             // see https://statisticsbyjim.com/probability/beta-distribution/
             // see https://rpubs.com/sitaramgautam/145048
 
-            double postAlpha = n_data_success + n_prior_success + 1;
-            double postBeta = n_data_fail + n_prior_fail + 1;
+            double postAlpha = n_data_success + n_prior_success;
+            double postBeta = n_data_fail + n_prior_fail;
 
             double postMean = postAlpha / (postAlpha + postBeta);
 
