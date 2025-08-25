@@ -163,9 +163,9 @@ This paragraph lists all distribution types supported by \probLib. The distribut
 	\item Shape $k$: Describes the shape of the distribution.
 	\item Shift $c$: The distribution is shifted a certain amount. Not present in all distributions.
 	\item Minimum and Maximum $a$ and $b$: Minimum and maximum possible values of randomly chosen values. Not present in all distributions.
+	\item Number of observations $N$: Indicates the number of values when fitted from a collection with values $x_i$.
+	\item Prior distribution $P$: Used when fitted from data and a prior distribution. The prior distribution often defined an overall or long term known distribution, which is used to derive a distribution for a specific occasion. Only applicable for a few distribution types.
 \end{itemize}
-
-
 
 \subsubsection{Deterministic distribution}
 \label{sec:DeterministicDistribution}
@@ -203,7 +203,9 @@ The normal distribution function is defined as follows:
 	Mean & $\mu = m$ \\
 	Deviation & $\sigma = s$ \\
 	Fit & $ \displaystyle{m = \frac{1}{N} \sum\limits_{i=1}^N x_i} $ \\
-	& $ \displaystyle{s^2 = \frac{1}{N - 1} \sum\limits_{i=1}^N \left(x_i-m\right)^2}$
+	& $ \displaystyle{s^2 = \frac{1}{N - 1} \sum\limits_{i=1}^N \left(x_i-m\right)^2}$ \\
+	Fit with prior & $ \displaystyle{\frac{1}{s^2} = \frac{1}{s_\text{prior}^2} + \frac{N}{s_\text{fit}^2}}$ \\
+	& $ \displaystyle{m = s \cdot \left(\frac{m_\text{prior}}{s_\text{prior}^2} + N \cdot \frac{m_\text{fit}}{s_\text{fit}^2}\right)}$
 	
 \end{tabular}
 
@@ -270,7 +272,9 @@ The log normal distribution function is defined as follows:
 	Mean & $ \displaystyle{\mu = \exp\left( {m + \tfrac{1}{2} s^2}\right) \iff m = \text{ln}\left(\mu - c\right) - \tfrac{1}{2}\sigma^2}$ \\
 	Deviation & $ \displaystyle{\sigma^2 = \left(\mu - c\right)^2 \cdot \left(\exp\left(s^2\right) - 1\right) \iff s^2 =  \text{ln} \left(1 + \left(\frac{\sigma}{\mu - c}\right)^2\right)}$ \\
 	Fit & $ \displaystyle{m = \frac{1}{N}  \sum\limits_{i=1}^N \text{ln} \left(x_i - c\right)} $ \\
-	& $ \displaystyle{s^2 = \frac{1}{N - 1} \sum\limits_{i=1}^N \left(\text{ln}\left(x_i - c\right)-m\right)^2}$ 
+	& $ \displaystyle{s^2 = \frac{1}{N - 1} \sum\limits_{i=1}^N \left(\text{ln}\left(x_i - c\right)-m\right)^2}$ \\
+	Fit with prior & $ \displaystyle{\frac{1}{s^2} = \frac{1}{s_\text{prior}^2} + \frac{N}{s_\text{fit}^2}}$ \\
+	& $ \displaystyle{m = s \cdot \left(\frac{m_\text{prior}}{s_\text{prior}^2} + N \cdot \frac{m_\text{fit}}{s_\text{fit}^2}\right)}$
 
 \end{tabular}
 
@@ -714,7 +718,7 @@ The properties of the discrete distribution are based on a set of values $\{x_1,
 
 \subsubsection{Bernoulli distribution}
 
-The Bernoulli distribution is a special case of a discrete distribution. It consists of two discrete values, one at $0$ with probability $1 - \mu$  and one at $1$ with probability $\mu$.
+The Bernoulli distribution is a special case of a discrete distribution. It consists of two discrete values, one at $0$ with probability $1 - m$  and one at $1$ with probability $m$.
 
 \begin{tabular}{p{20mm}p{\textwidth-24pt-20mm}}  
 
@@ -729,9 +733,11 @@ The Bernoulli distribution is a special case of a discrete distribution. It cons
 	\end{array}	
 	\right.}$  \\
 
-	Mean & $\mu$ \\
+	Mean & $\displaystyle{\mu = m}$ \\
+	Deviation & $ \displaystyle{\sigma^2 = m \cdot \left(1 - m\right)}$ \\
+	Fit & $ \displaystyle{m = \frac{1}{N} \sum\limits_{i=1}^N x_i} $ \\
+	Fit with prior & $\displaystyle{m = \frac{N_{\text{prior}} \cdot m_{\text{prior}} + N_{\text{fit}} \cdot m_{\text{fit}}}{N_{\text{prior}} + N_{\text{fit}}}}$
 
-	Deviation & $ \displaystyle{\sigma^2 = \mu \cdot \left(1 - \mu\right)}$
 
 \end{tabular}
 
