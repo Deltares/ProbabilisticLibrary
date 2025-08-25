@@ -225,7 +225,7 @@ namespace Deltares
             this->fitMinMax(stochast, values);
         }
 
-        void TruncatedDistribution::fitPrior(std::shared_ptr<StochastProperties> stochast, std::shared_ptr<StochastProperties> prior, std::vector<double>& values)
+        void TruncatedDistribution::fitPrior(const std::shared_ptr<StochastProperties>& stochast, const std::shared_ptr<StochastProperties>& prior, std::vector<double>& values)
         {
             // perform the fit without truncation
             this->innerDistribution->fitPrior(stochast, prior, values);

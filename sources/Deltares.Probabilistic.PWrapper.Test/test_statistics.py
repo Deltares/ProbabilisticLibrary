@@ -242,6 +242,7 @@ class Test_statistics(unittest.TestCase):
         prior = Stochast()
         prior.distribution = DistributionType.bernoulli
         prior.mean = 0.8
+        prior.observations = 2
 
         stochast.fit_prior(prior, values)
 

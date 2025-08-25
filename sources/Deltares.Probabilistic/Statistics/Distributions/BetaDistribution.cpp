@@ -68,12 +68,6 @@ namespace Deltares
 
             stochast->Shape = ((1 - mean) / variance - 1 / mean) * mean * mean;
             stochast->ShapeB = stochast->Shape * (1 / mean - 1);
-
-            if (stochast->Shape < 0 && stochast->ShapeB < 0)
-            {
-                stochast->Shape = std::abs(stochast->Shape);
-                stochast->ShapeB = std::abs(stochast->ShapeB);
-            }
         }
 
         double BetaDistribution::getPDF(std::shared_ptr<StochastProperties> stochast, double x)

@@ -212,7 +212,7 @@ namespace Deltares
              * \param stochast Prior stochast
              * \param values Given x-values
              */
-            virtual void fitPrior(std::shared_ptr<StochastProperties> stochast, std::shared_ptr<StochastProperties> prior, std::vector<double>& values) {}
+            virtual void fitPrior(const std::shared_ptr<StochastProperties>& stochast, const std::shared_ptr<StochastProperties>& prior, std::vector<double>& values) {}
 
             /**
              * \brief Indicates whether parameters of a stochast have valid values

@@ -269,7 +269,7 @@ namespace Deltares
             normal.fit(stochast, logValues);
         }
 
-        void LogNormalDistribution::fitPrior(std::shared_ptr<StochastProperties> stochast, std::shared_ptr<StochastProperties> prior, std::vector<double>& values)
+        void LogNormalDistribution::fitPrior(const std::shared_ptr<StochastProperties>& stochast, const std::shared_ptr<StochastProperties>& prior, std::vector<double>& values)
         {
             std::vector<double> logValues = Numeric::NumericSupport::select(values, [stochast, prior](double v) {return log(v - prior->Shift); });
 

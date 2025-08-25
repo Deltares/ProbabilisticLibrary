@@ -152,7 +152,7 @@ namespace Deltares
             copyFromInverted(stochast, invertedStochast);
         }
 
-        void InvertedDistribution::fitPrior(std::shared_ptr<StochastProperties> stochast, std::shared_ptr<StochastProperties> prior, std::vector<double>& values)
+        void InvertedDistribution::fitPrior(const std::shared_ptr<StochastProperties>& stochast, const std::shared_ptr<StochastProperties>& prior, std::vector<double>& values)
         {
             // fit the shift first
             // do not use inverted value, because it depends on stochast->Shift, which is not known yet (because it has to be fitted)
@@ -168,7 +168,10 @@ namespace Deltares
                 stochast->Shift = -stochast->Shift;
             }
 
-            std::vector<double> invertedValues = Numeric::NumericSupport::select(values, [this, stochast](double x) {return this->getInvertedValue(stochast, x); });
+            std::vector<double> invertedValues = Numeric::NumericSupport::select(values, [this, stochast](double x)
+            {
+                return this->getInvertedValue(stochast, x);
+            });
 
             const std::shared_ptr<StochastProperties> invertedStochast = getInvertedStochast(stochast);
             const std::shared_ptr<StochastProperties> invertedPrior = getInvertedStochast(prior);
