@@ -188,6 +188,7 @@ namespace Deltares
             stochast->Scale = std::max(0.0, parameters[0]);
             stochast->Shift = parameters[1];
             stochast->Shape = std::max(0.0, parameters[2]);
+            stochast->Observations = static_cast<int>(values.size());
         }
 
         std::vector<double> RayleighNDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)

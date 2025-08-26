@@ -205,7 +205,7 @@ namespace Deltares
 
                         std::shared_ptr<ContributingStochast> interpolatedContributingStochast =
                             std::make_shared<ContributingStochast>(compositeStochast->Probability, interpolatedStochast);
-                        
+
                         compositeProperties->ContributingStochasts.push_back(interpolatedContributingStochast);
                     }
                     else

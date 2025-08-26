@@ -140,6 +140,7 @@ namespace Deltares
         {
             stochast->Shift = this->getFittedMinimum(values);
             stochast->Scale = Numeric::NumericSupport::getMean(values) - stochast->Shift;
+            stochast->Observations = static_cast<int>(values.size());
         }
 
         std::vector<double> ExponentialDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)

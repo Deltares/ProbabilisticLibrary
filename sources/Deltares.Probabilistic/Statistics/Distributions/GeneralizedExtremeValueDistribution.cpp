@@ -192,16 +192,19 @@ namespace Deltares
                     target->Shift = source->Shift;
                     target->Shape = source->Shape;
                     target->Scale = source->Scale;
+                    target->Observations = source->Observations;
                     break;
                 case DistributionType::Frechet:
                     target->Shift = source->Shift + source->Scale;
                     target->Shape = 1 / source->Shape;
                     target->Scale = source->Scale / source->Shape;
+                    target->Observations = source->Observations;
                     break;
                 case DistributionType::Weibull:
                     target->Shift = source->Shift - source->Scale;
                     target->Shape = -1 / source->Shape;
                     target->Scale = source->Scale / source->Shape;
+                    target->Observations = source->Observations;
                     break;
                 default: throw Reliability::probLibException("Extreme distribution type not supported");
                 }

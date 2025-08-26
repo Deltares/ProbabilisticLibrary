@@ -42,6 +42,8 @@ namespace Deltares::Probabilistic::Test
         testVariationCoefficient();
         testPoisson();
         testGamma();
+        testFitNormal();
+        testFitBernoulli();
     }
 
     void testDistributions::testConditionalWeibull()
@@ -390,6 +392,59 @@ namespace Deltares::Probabilistic::Test
         EXPECT_NEAR(0.0, dist.getCDF(-1.0), margin) << "x <= 0 should give 0";
         EXPECT_NEAR(0.0, dist.getCDF(0.0), margin) << "x <= 0 should give 0";
         EXPECT_NEAR(0.00175162254855, dist.getCDF(1.0), margin);
+    }
+
+    void testDistributions::testFitNormal()
+    {
+        constexpr double margin = 1e-3;
+
+        std::shared_ptr<Stochast> stochast = std::make_shared<Stochast>();
+        stochast->setDistributionType(DistributionType::Normal);
+
+        std::vector<double> values = { 4.2, 4.3, 4.7, 4.8 };
+
+        stochast->fit(values);
+
+        EXPECT_NEAR(stochast->getMean(), 4.5, margin);
+        EXPECT_NEAR(stochast->getDeviation(), 0.294, margin);
+        EXPECT_EQ(stochast->getProperties()->Observations, 4);
+
+        std::shared_ptr<Stochast> prior = std::make_shared<Stochast>();
+        prior->setDistributionType(DistributionType::Normal);
+        prior->setMean(3.0);
+        prior->setDeviation(0.5);
+
+        stochast->fitPrior(prior, values);
+
+        EXPECT_NEAR(stochast->getMean(), 4.380, margin);
+        EXPECT_NEAR(stochast->getDeviation(), 0.141, margin);
+    }
+
+    void testDistributions::testFitBernoulli()
+    {
+        constexpr double margin = 1e-3;
+
+        std::shared_ptr<Stochast> stochast = std::make_shared<Stochast>();
+        stochast->setDistributionType(DistributionType::Bernoulli);
+
+        std::vector<double> values = { 1, 1, 0, 1, 1 };
+
+        stochast->fit(values);
+
+        EXPECT_NEAR(stochast->getMean(), 0.8, margin);
+        EXPECT_NEAR(stochast->getDeviation(), sqrt(0.8 * 0.2), margin);
+        EXPECT_EQ(stochast->getProperties()->Observations, 5);
+
+        std::shared_ptr<Stochast> prior = std::make_shared<Stochast>();
+        prior->setDistributionType(DistributionType::Bernoulli);
+        prior->setMean(0.4);
+        prior->getProperties()->Observations = 5;
+
+        stochast->fitPrior(prior, values);
+
+        EXPECT_NEAR(stochast->getMean(), 0.6, margin);
+        EXPECT_NEAR(stochast->getDeviation(), sqrt(0.6 * 0.4), margin);
+        EXPECT_EQ(stochast->getProperties()->Observations, 10);
     }
 
 }

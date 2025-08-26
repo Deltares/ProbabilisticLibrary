@@ -1119,6 +1119,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
             ClassicAssert.AreEqual(stochast.Maximum, fittedStochast.Maximum, fitMargin);
             ClassicAssert.AreEqual(stochast.Shape, fittedStochast.Shape, fitMargin);
             ClassicAssert.AreEqual(stochast.ShapeB, fittedStochast.ShapeB, fitMargin);
+            ClassicAssert.AreEqual(values.Length, fittedStochast.Observations);
         }
     }
 }

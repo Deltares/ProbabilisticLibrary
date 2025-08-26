@@ -219,6 +219,7 @@ namespace Deltares
             stochast->Shape = std::max(minValue, parameters[0]);
             stochast->Scale = std::max(minValue, parameters[1]);
             stochast->Shift = parameters[2];
+            stochast->Observations = static_cast<int>(values.size());
         }
 
         std::vector<double> FrechetDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)

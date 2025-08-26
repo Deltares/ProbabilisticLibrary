@@ -258,6 +258,8 @@ namespace Deltares
 
             stochast->Shift = std::min(stochast->Shift, stochast->Maximum);
             stochast->Shift = std::max(stochast->Shift, stochast->Minimum);
+
+            stochast->Observations = static_cast<int>(values.size());
         }
 
         std::vector<double> TriangularDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)

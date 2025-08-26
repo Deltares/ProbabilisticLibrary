@@ -117,6 +117,7 @@ namespace Deltares
         {
             stochast->Location = Numeric::NumericSupport::getMean(values);
             stochast->Scale = Numeric::NumericSupport::getStandardDeviation(stochast->Location, values);
+            stochast->Observations = static_cast<int>(values.size());
         }
 
         void NormalDistribution::fitWeighted(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, std::vector<double>& weights)
@@ -129,6 +130,7 @@ namespace Deltares
             double sumWeights = Numeric::NumericSupport::sum(weights);
 
             stochast->Scale = std::sqrt(sumVariances / sumWeights);
+            stochast->Observations = static_cast<int>(values.size());
         }
 
         void NormalDistribution::fitPrior(const std::shared_ptr<StochastProperties>& stochast, const std::shared_ptr<StochastProperties>& prior, std::vector<double>& values)
@@ -144,6 +146,7 @@ namespace Deltares
 
             stochast->Location = mu;
             stochast->Scale = sqrt(sigma2);
+            stochast->Observations = prior->Observations + static_cast<int>(values.size());
         }
     }
 }

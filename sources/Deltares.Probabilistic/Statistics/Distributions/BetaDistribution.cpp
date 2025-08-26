@@ -150,6 +150,8 @@ namespace Deltares
             double sigma = Numeric::NumericSupport::getStandardDeviation(mean, values);
 
             setMeanAndDeviation(stochast, mean, sigma);
+
+            stochast->Observations = static_cast<int>(values.size());
         }
 
         std::vector<double> BetaDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)

@@ -138,6 +138,7 @@ namespace Deltares
 
             stochast->Shape = (3 - s + std::sqrt((s - 3) * (s - 3) + 24 * s)) / (12 * s);
             stochast->Scale = mean / stochast->Shape;
+            stochast->Observations = static_cast<int>(values.size());
         }
     }
 }

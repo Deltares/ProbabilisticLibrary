@@ -125,6 +125,7 @@ namespace Deltares
         void PoissonDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values)
         {
             stochast->Location = Numeric::NumericSupport::getMean(values);
+            stochast->Observations = static_cast<int>(values.size());
         }
 
         std::vector<double> PoissonDistribution::getDiscontinuityPoints(const StochastProperties& stochast)

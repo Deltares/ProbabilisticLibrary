@@ -308,6 +308,8 @@ namespace Deltares
                 }
             }
 
+            stochast->Observations = static_cast<int>(values.size());
+
             initializeForRun(stochast);
         }
 

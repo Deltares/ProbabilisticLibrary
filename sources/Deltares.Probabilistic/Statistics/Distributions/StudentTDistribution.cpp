@@ -162,9 +162,9 @@ namespace Deltares
             const double maxRelativeSigma = 1.01;
             const int maxIterations = 25;
 
-            stochast->Observations = static_cast<int>(values.size());
-
             std::vector<double> weights = NumericSupport::select(values, [](double x) {return 1.0; });
+
+            stochast->Observations = static_cast<int>(values.size());
 
             int nu = static_cast<int>(values.size()) - 1;
 
