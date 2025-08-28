@@ -235,6 +235,7 @@ class Stochast(FrozenObject):
 				'contributing_stochasts',
 				'copy_from',
 				'fit',
+				'fit_prior',
 				'get_ks_test',
 				'get_quantile',
 				'get_x_from_u',
@@ -595,6 +596,15 @@ class Stochast(FrozenObject):
 
 	def fit(self, values):
 		interface.SetArrayValue(self._id, 'fit', values)
+		self._histogram_values = None
+		self._discrete_values = None
+		self._fragility_values = None
+
+	def fit_prior(self, prior, values):
+		if type(prior) == str:
+			prior = self._variables[prior]
+		interface.SetIntValue(self._id, 'prior', prior._id)
+		interface.SetArrayValue(self._id, 'fit_prior', values)
 		self._histogram_values = None
 		self._discrete_values = None
 		self._fragility_values = None

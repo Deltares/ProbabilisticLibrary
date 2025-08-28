@@ -135,6 +135,7 @@ namespace Deltares
 
             double sum = Numeric::NumericSupport::sum(values, [stochast](double p) {return (p - stochast->Shift) * (p - stochast->Shift); });
             stochast->Scale = std::sqrt( sum/ (2 * values.size()));
+            stochast->Observations = static_cast<int>(values.size());
 
             // Unbiased estimator, but cannot handle large sets:
             //stochast.Scale = s * SpecialFunctions.Gamma(x.Length) * Math.Sqrt(x.Length) / SpecialFunctions.Gamma(x.Length + 0.5);

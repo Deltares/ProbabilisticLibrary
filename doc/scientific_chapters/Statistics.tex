@@ -30,6 +30,13 @@ F\left(x\right)=\int _{-\infty }^{x}f\left(\tau \right)d \tau \Leftrightarrow f\
 
 The PDF provides the probability density for any given value of $x$. The probability density is the probability per unit value. For the normal distribution function, the pdf is the ''famous'' bell-shaped curve. As an example, \Fref{fig:Figure_3.2} shows the CDF, inverse CDF and PDF of the standard normal distribution function. 
 
+In discrete distributions the probability is only defined at a limited, countable number of $x$-values. In this case a PDF is not possible, because no derivative is available. Instead the PMF, the probability mass function is used. All PMF values sum up to 1.
+
+The PMF, $f(x)$, relates as follows to the CDF:
+\begin{equation}
+	F\left(x\right)=\sum _{-\infty }^{x}f\left(\tau \right) \label{3.3)}
+\end{equation}
+
 \begin{figure}[H]\centering
 \includegraphics[width=0.55\columnwidth]{\pathProbLibPictures normalPDF.png}
 \includegraphics[width=0.55\columnwidth]{\pathProbLibPictures normalCDF.png}
@@ -163,9 +170,9 @@ This paragraph lists all distribution types supported by \probLib. The distribut
 	\item Shape $k$: Describes the shape of the distribution.
 	\item Shift $c$: The distribution is shifted a certain amount. Not present in all distributions.
 	\item Minimum and Maximum $a$ and $b$: Minimum and maximum possible values of randomly chosen values. Not present in all distributions.
+	\item Number of observations $N$: Indicates the number of values when fitted from a collection with values $x_i$.
+	\item Prior distribution $\text{prior}$: Used when fitted from data and a prior distribution. The prior distribution often refers to an overall or long term known distribution. It is used to derive a distribution for a specific occasion, where limited data is available. Only applicable for a few distribution types.
 \end{itemize}
-
-
 
 \subsubsection{Deterministic distribution}
 \label{sec:DeterministicDistribution}
@@ -174,8 +181,8 @@ The deterministic distribution function is defined as follows:
 
 \begin{tabular}{p{20mm}p{\textwidth-24pt-20mm}}  
 
-PDF & $f\left(x\right) = \left\{\begin{array}{ll}x \neq m & 0\\
-x = m & \infty
+PMF & $f\left(x\right) = \left\{\begin{array}{ll}x \neq m & 0\\
+x = m & 1
 \end{array}	
 \right.$ \\
 
@@ -203,7 +210,9 @@ The normal distribution function is defined as follows:
 	Mean & $\mu = m$ \\
 	Deviation & $\sigma = s$ \\
 	Fit & $ \displaystyle{m = \frac{1}{N} \sum\limits_{i=1}^N x_i} $ \\
-	& $ \displaystyle{s^2 = \frac{1}{N - 1} \sum\limits_{i=1}^N \left(x_i-m\right)^2}$
+	& $ \displaystyle{s^2 = \frac{1}{N - 1} \sum\limits_{i=1}^N \left(x_i-m\right)^2}$ \\
+	Fit with prior & $ \displaystyle{\frac{1}{s^2} = \frac{1}{s_\text{prior}^2} + \frac{N}{s_\text{fit}^2}}$ \\
+	& $ \displaystyle{m = s \cdot \left(\frac{m_\text{prior}}{s_\text{prior}^2} + N \cdot \frac{m_\text{fit}}{s_\text{fit}^2}\right)}$
 	
 \end{tabular}
 
@@ -270,7 +279,9 @@ The log normal distribution function is defined as follows:
 	Mean & $ \displaystyle{\mu = \exp\left( {m + \tfrac{1}{2} s^2}\right) \iff m = \text{ln}\left(\mu - c\right) - \tfrac{1}{2}\sigma^2}$ \\
 	Deviation & $ \displaystyle{\sigma^2 = \left(\mu - c\right)^2 \cdot \left(\exp\left(s^2\right) - 1\right) \iff s^2 =  \text{ln} \left(1 + \left(\frac{\sigma}{\mu - c}\right)^2\right)}$ \\
 	Fit & $ \displaystyle{m = \frac{1}{N}  \sum\limits_{i=1}^N \text{ln} \left(x_i - c\right)} $ \\
-	& $ \displaystyle{s^2 = \frac{1}{N - 1} \sum\limits_{i=1}^N \left(\text{ln}\left(x_i - c\right)-m\right)^2}$ 
+	& $ \displaystyle{s^2 = \frac{1}{N - 1} \sum\limits_{i=1}^N \left(\text{ln}\left(x_i - c\right)-m\right)^2}$ \\
+	Fit with prior & $ \displaystyle{\frac{1}{s^2} = \frac{1}{s_\text{prior}^2} + \frac{N}{s_\text{fit}^2}}$ \\
+	& $ \displaystyle{m = s \cdot \left(\frac{m_\text{prior}}{s_\text{prior}^2} + N \cdot \frac{m_\text{fit}}{s_\text{fit}^2}\right)}$
 
 \end{tabular}
 
@@ -683,7 +694,7 @@ The Poisson distribution is defined as follows (where $\lfloor x \rfloor$ is the
 
 \begin{tabular}{p{20mm}p{\textwidth-24pt-20mm}}  
 	
-	PDF & $ \displaystyle{f\left(x\right) = \left\{\begin{array}{ll}x \in \mathbb{N} & \exp \left(-m\right) \cdot \frac{ m^x}{x!} \\
+	PMF & $ \displaystyle{f\left(x\right) = \left\{\begin{array}{ll}x \in \mathbb{N} & \exp \left(-m\right) \cdot \frac{ m^x}{x!} \\
 		x \notin \mathbb{N} & 0
 		\end{array}	
 		\right.}$  \\
@@ -700,7 +711,7 @@ The properties of the discrete distribution are based on a set of values $\{x_1,
 
 \begin{tabular}{p{20mm}p{\textwidth-24pt-20mm}}  
 
-	PDF & $ \displaystyle{f\left(x\right) = \left\{\begin{array}{ll}x = x_i & \frac{w_i}{\sum\limits_{j=1}^N w_j} \\
+	PMF & $ \displaystyle{f\left(x\right) = \left\{\begin{array}{ll}x = x_i & \frac{w_i}{\sum\limits_{j=1}^N w_j} \\
 		x \neq x_i & 0
 		\end{array}	
 		\right.}$  \\
@@ -714,24 +725,26 @@ The properties of the discrete distribution are based on a set of values $\{x_1,
 
 \subsubsection{Bernoulli distribution}
 
-The Bernoulli distribution is a special case of a discrete distribution. It consists of two discrete values, one at $0$ with probability $1 - \mu$  and one at $1$ with probability $\mu$.
+The Bernoulli distribution is a special case of a discrete distribution. It consists of two discrete values, one at $0$ with probability $1 - m$  and one at $1$ with probability $m$.
 
 \begin{tabular}{p{20mm}p{\textwidth-24pt-20mm}}  
 
-	PDF & $ \displaystyle{f\left(x\right) = \left\{\begin{array}{ll}x = 0 & 1 - \mu \\
+	PMF & $ \displaystyle{f\left(x\right) = \left\{\begin{array}{ll}x = 0 & 1 - \mu \\
 		x = 1 & \mu \\
 		x \notin \left\{0, 1\right\} & 0
 		\end{array}	
 		\right.}$  \\
 	CDF & $ \displaystyle{F\left(x\right) = \left\{\begin{array}{ll}x < 0 & 0 \\
 	0 <= x <= 1 & 1 - \mu \\
-	x > 1 & 0
+	x > 1 & 1
 	\end{array}	
 	\right.}$  \\
 
-	Mean & $\mu$ \\
+	Mean & $\displaystyle{\mu = m}$ \\
+	Deviation & $ \displaystyle{\sigma^2 = m \cdot \left(1 - m\right)}$ \\
+	Fit & $ \displaystyle{m = \frac{1}{N} \sum\limits_{i=1}^N x_i} $ \\
+	Fit with prior & $\displaystyle{m = \frac{N_{\text{prior}} \cdot m_{\text{prior}} + N_{\text{fit}} \cdot m_{\text{fit}}}{N_{\text{prior}} + N_{\text{fit}}}}$
 
-	Deviation & $ \displaystyle{\sigma^2 = \mu \cdot \left(1 - \mu\right)}$
 
 \end{tabular}
 

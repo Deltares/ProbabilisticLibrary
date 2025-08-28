@@ -43,6 +43,7 @@ namespace Deltares
             bool canTruncate() override { return this->innerDistribution->canTruncate(); }
             bool canInvert() override { return true; }
             bool canFit() override { return this->innerDistribution->canFit(); }
+            bool canFitPrior() override { return this->innerDistribution->canFitPrior(); }
             double getMean(std::shared_ptr<StochastProperties> stochast) override;
             double getDeviation(std::shared_ptr<StochastProperties> stochast) override;
             void setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation) override;
@@ -51,6 +52,7 @@ namespace Deltares
             double getCDF(std::shared_ptr<StochastProperties> stochast, double x) override;
             void setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType) override;
             void fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values) override;
+            void fitPrior(const std::shared_ptr<StochastProperties>& stochast, const std::shared_ptr<StochastProperties>& prior, std::vector<double>& values) override;
             bool isValid(std::shared_ptr<StochastProperties> stochast) override;
             double getLogLikelihood(std::shared_ptr<StochastProperties> stochast, double x) override;
             std::vector<double> getSpecialPoints(std::shared_ptr<StochastProperties> stochast) override;

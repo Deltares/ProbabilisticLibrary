@@ -28,6 +28,8 @@
 #include <numbers>
 #include <algorithm>
 
+#include "NormalDistribution.h"
+
 namespace Deltares
 {
     namespace Statistics
@@ -260,10 +262,20 @@ namespace Deltares
         {
             stochast->Shift = fitShift(values);
 
-            std::vector<double> xLog = Numeric::NumericSupport::select(values, [stochast](double v) {return log(v - stochast->Shift); });
+            std::vector<double> logValues = Numeric::NumericSupport::select(values, [stochast](double v) {return log(v - stochast->Shift); });
 
-            stochast->Location = Numeric::NumericSupport::getMean(xLog);
-            stochast->Scale = Numeric::NumericSupport::getStandardDeviation(stochast->Location, xLog);
+            NormalDistribution normal;
+
+            normal.fit(stochast, logValues);
+        }
+
+        void LogNormalDistribution::fitPrior(const std::shared_ptr<StochastProperties>& stochast, const std::shared_ptr<StochastProperties>& prior, std::vector<double>& values)
+        {
+            std::vector<double> logValues = Numeric::NumericSupport::select(values, [stochast, prior](double v) {return log(v - prior->Shift); });
+
+            NormalDistribution normal;
+
+            normal.fitPrior(stochast, prior, logValues);
         }
 
         std::vector<double> LogNormalDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)

@@ -521,6 +521,8 @@ namespace Deltares
                 stochast->HistogramValues.push_back(maxRange);
             }
 
+            stochast->Observations = static_cast<int>(values.size());
+
             initializeForRun(stochast);
         }
 

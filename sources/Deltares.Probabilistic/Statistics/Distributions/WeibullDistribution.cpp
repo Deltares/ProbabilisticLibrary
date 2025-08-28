@@ -206,6 +206,8 @@ namespace Deltares
             double sum = Numeric::NumericSupport::sum(shiftedValues, [stochast](double p) {return std::pow(p, stochast->Shape); });
 
             stochast->Scale = std::pow(sum / shiftedValues.size(), 1 / stochast->Shape);
+
+            stochast->Observations = static_cast<int>(values.size());
         }
 
         std::vector<double> WeibullDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)

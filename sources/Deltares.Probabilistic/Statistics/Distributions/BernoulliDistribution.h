@@ -41,10 +41,12 @@ namespace Deltares
             double getPDF(std::shared_ptr<StochastProperties> stochast, double x) override;
             double getCDF(std::shared_ptr<StochastProperties> stochast, double x) override;
             bool canFit() override { return true; }
+            bool canFitPrior() override { return true; }
             void fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values) override;
+            void fitPrior(const std::shared_ptr<StochastProperties>& stochast, const std::shared_ptr<StochastProperties>& prior, std::vector<double>& values) override;
             std::vector<double> getDiscontinuityPoints(const StochastProperties& stochast) override;
             std::vector<double> getSpecialPoints(std::shared_ptr<StochastProperties> stochast) override;
-            std::vector<DistributionPropertyType> getParameters() override { return { Location }; }
+            std::vector<DistributionPropertyType> getParameters() override { return { Location, Observations }; }
         private:
             const double delta = 0.0000001;
         };

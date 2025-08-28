@@ -164,6 +164,7 @@ namespace Deltares
             const double sum = Numeric::NumericSupport::sum(values, [stochast](double p) { return log(p) - log(stochast->Scale); });
 
             stochast->Shape = values.size() / sum;
+            stochast->Observations = static_cast<int>(values.size());
         }
 
         std::vector<double> ParetoDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)

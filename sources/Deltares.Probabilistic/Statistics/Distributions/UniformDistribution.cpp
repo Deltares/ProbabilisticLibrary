@@ -157,6 +157,8 @@ namespace Deltares
 
             stochast->Minimum = min - add;
             stochast->Maximum = max + add;
+
+            stochast->Observations = static_cast<int>(values.size());
         }
 
         std::vector<double> UniformDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)

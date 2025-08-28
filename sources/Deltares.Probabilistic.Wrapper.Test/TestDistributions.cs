@@ -104,8 +104,12 @@ namespace Deltares.Probabilistic.Wrapper.Test
             stochast.Fit(new[] { 2.5, 3.5, 4.5, 5.5, 6.5 });
             ClassicAssert.AreEqual(4.5, stochast.Mean, margin);
             ClassicAssert.AreEqual(1.581, stochast.Deviation, margin);
-        }
 
+            Stochast prior = new Stochast { DistributionType = DistributionType.Normal, Mean = 3, Deviation = 1 };
+            stochast.FitPrior(prior, new[] { 2.5, 3.5, 4.5, 5.5, 6.5 });
+            ClassicAssert.AreEqual(4.0, stochast.Mean, margin);
+            ClassicAssert.AreEqual(0.578, stochast.Deviation, margin);
+        }
 
         [Test]
         public void TestNormalTruncated()
@@ -229,6 +233,11 @@ namespace Deltares.Probabilistic.Wrapper.Test
             stochast.Mean = 3;
             stochast.Deviation = 1;
             TestFit(stochast);
+
+            Stochast prior = new Stochast { DistributionType = DistributionType.LogNormal, Mean = 3, Deviation = 1 };
+            stochast.FitPrior(prior, new[] { 2.5, 3.5, 4.5, 5.5, 6.5 });
+            ClassicAssert.AreEqual(3.955, stochast.Mean, margin);
+            ClassicAssert.AreEqual(0.596, stochast.Deviation, margin);
         }
 
         [Test]
@@ -688,6 +697,21 @@ namespace Deltares.Probabilistic.Wrapper.Test
             ClassicAssert.AreEqual(1, stochast.GetXFromU(StandardNormal.GetUFromP(0.9)), margin);
 
             ClassicAssert.IsTrue(stochast.IsVarying());
+
+            stochast.Fit(new double[] { 0, 0, 1, 0, 1 });
+            ClassicAssert.AreEqual(0.4, stochast.Mean, margin);
+            ClassicAssert.AreEqual(Math.Sqrt(0.4 * 0.6), stochast.Deviation, margin);
+
+            Stochast prior = new Stochast { DistributionType = DistributionType.Bernoulli, Mean = 0.8 };
+            prior.Observations = 5;
+
+            stochast.FitPrior(prior, new double[] { 0, 0, 1, 0, 1 });
+            ClassicAssert.AreEqual(0.6, stochast.Mean, margin);
+            ClassicAssert.AreEqual(0.49, stochast.Deviation, margin);
+
+            stochast.FitPrior(prior, new double[] { 1, 1 });
+            ClassicAssert.AreEqual(0.857, stochast.Mean, margin);
+            ClassicAssert.AreEqual(0.35, stochast.Deviation, margin);
         }
 
         [Test]
@@ -1095,6 +1119,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
             ClassicAssert.AreEqual(stochast.Maximum, fittedStochast.Maximum, fitMargin);
             ClassicAssert.AreEqual(stochast.Shape, fittedStochast.Shape, fitMargin);
             ClassicAssert.AreEqual(stochast.ShapeB, fittedStochast.ShapeB, fitMargin);
+            ClassicAssert.AreEqual(values.Length, fittedStochast.Observations);
         }
     }
 }

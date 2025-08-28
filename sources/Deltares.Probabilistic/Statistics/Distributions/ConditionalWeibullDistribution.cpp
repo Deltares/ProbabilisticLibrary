@@ -175,6 +175,8 @@ namespace Deltares
             stochast->Scale = std::max(0.0, parameters[1]);
             stochast->Shape = std::max(0.0, parameters[2]);
             stochast->ShapeB = std::max(0.0, parameters[3]);
+
+            stochast->Observations = static_cast<int>(values.size());
         }
 
         std::vector<double> ConditionalWeibullDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)

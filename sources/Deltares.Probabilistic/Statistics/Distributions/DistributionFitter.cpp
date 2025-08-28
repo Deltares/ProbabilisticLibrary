@@ -27,6 +27,8 @@
 #include "../../Optimization/SearchParameterSettingsSet.h"
 #include "../../Model/ModelSample.h"
 #include "../../Model/ZModel.h"
+#include "../../Math/NumericSupport.h"
+
 
 #include <memory>
 #include <vector>
@@ -65,7 +67,14 @@ namespace Deltares
 
             const std::shared_ptr<Models::ModelSample> sample = gridSearch->getOptimizedSample(searchArea, model);
 
-            return sample->Values;
+            if (sample != nullptr)
+            {
+                return sample->Values;
+            }
+            else
+            {
+                return Numeric::NumericSupport::select(minimum, [](double x) {return std::nan(""); });
+            }
         }
 
         void DistributionFitter::getLogLikelihood(std::shared_ptr<Models::ModelSample> sample)

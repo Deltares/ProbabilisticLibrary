@@ -203,7 +203,7 @@ class Test_statistics(unittest.TestCase):
 
     def test_fit(self):
         stochast = Stochast()
-        stochast.distribution = "normal"
+        stochast.distribution = DistributionType.normal
 
         values = []
         values.extend({4.1, 4.2, 4.4, 4.5})
@@ -212,6 +212,41 @@ class Test_statistics(unittest.TestCase):
 
         self.assertAlmostEqual(4.3, stochast.mean, delta=margin)
         self.assertAlmostEqual(0.18, stochast.deviation, delta=margin)
+
+        prior = Stochast()
+        prior.distribution = DistributionType.normal
+        prior.mean = 3.5
+        prior.deviation = 0.2
+
+        stochast.fit_prior(prior, values)
+
+        self.assertAlmostEqual(4.16, stochast.mean, delta=margin)
+        self.assertAlmostEqual(0.08, stochast.deviation, delta=margin)
+
+    def test_bernoulli(self):
+        stochast = Stochast()
+        stochast.distribution = DistributionType.bernoulli
+
+        values = []
+        values.append(0)
+        values.append(1)
+        values.append(0)
+        values.append(0)
+        values.append(0)
+
+        stochast.fit(values)
+
+        self.assertAlmostEqual(0.2, stochast.mean, delta=margin)
+        self.assertAlmostEqual(0.4, stochast.deviation, delta=margin)
+
+        prior = Stochast()
+        prior.distribution = DistributionType.bernoulli
+        prior.mean = 0.8
+        prior.observations = 2
+
+        stochast.fit_prior(prior, values)
+
+        self.assertAlmostEqual(0.37, stochast.mean, delta=margin)
 
     def test_ks_test(self):
         stochast = Stochast()

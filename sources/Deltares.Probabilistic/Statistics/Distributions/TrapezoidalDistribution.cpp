@@ -354,6 +354,7 @@ namespace Deltares
 
             stochast->Shift = std::max(stochast->Minimum, parameters[0]);
             stochast->ShiftB = std::min(stochast->Maximum, parameters[1]);
+            stochast->Observations = static_cast<int>(values.size());
         }
 
         std::vector<double> TrapezoidalDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)

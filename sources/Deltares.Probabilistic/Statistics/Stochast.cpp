@@ -205,7 +205,7 @@ namespace Deltares
 
                         std::shared_ptr<ContributingStochast> interpolatedContributingStochast =
                             std::make_shared<ContributingStochast>(compositeStochast->Probability, interpolatedStochast);
-                        
+
                         compositeProperties->ContributingStochasts.push_back(interpolatedContributingStochast);
                     }
                     else
@@ -518,9 +518,19 @@ namespace Deltares
             return distribution->canFit();
         }
 
+        bool Stochast::canFitPrior() const
+        {
+            return distribution->canFitPrior();
+        }
+
         void Stochast::fit(std::vector<double> values) const
         {
             distribution->fit(properties, values);
+        }
+
+        void Stochast::fitPrior(std::shared_ptr<Stochast> prior, std::vector<double> values) const
+        {
+            distribution->fitPrior(properties, prior->getProperties(), values);
         }
 
         void Stochast::fitWeighted(std::vector<double> values, std::vector<double> weights) const

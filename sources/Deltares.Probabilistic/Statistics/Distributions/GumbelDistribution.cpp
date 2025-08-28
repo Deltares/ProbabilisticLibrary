@@ -160,6 +160,7 @@ namespace Deltares
             double sum = Numeric::NumericSupport::sum(values, [stochast](double p) {return exp(-p / stochast->Scale); });
 
             stochast->Shift = -stochast->Scale * log(sum / values.size());
+            stochast->Observations = static_cast<int>(values.size());
         }
 
         double GumbelDistribution::getLogLikelihood(std::shared_ptr<StochastProperties> stochast, double x)
