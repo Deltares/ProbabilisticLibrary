@@ -22,7 +22,7 @@
 #pragma once
 
 #include "DirectionalSamplingSettingsS.h"
-#include "SensitivityMethod.h"
+#include "UncertaintyMethod.h"
 #include "../../Deltares.Probabilistic/Uncertainty/DirectionalSamplingS.h"
 
 namespace Deltares
@@ -31,7 +31,7 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            public ref class DirectionalSamplingS : public SensitivityMethod
+            public ref class DirectionalSamplingS : public UncertaintyMethod
             {
             private:
                 Utils::Wrappers::SharedPointerProvider<Uncertainty::DirectionalSamplingS>* shared = new Utils::Wrappers::SharedPointerProvider(new Uncertainty::DirectionalSamplingS());

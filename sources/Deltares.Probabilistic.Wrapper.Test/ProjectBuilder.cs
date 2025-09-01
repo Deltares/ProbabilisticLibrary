@@ -20,13 +20,12 @@
 // All rights reserved.
 //
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.Tracing;
 using System.Linq;
 using System.Threading.Tasks;
 using Deltares.Statistics.Wrappers;
 using Deltares.Models.Wrappers;
 using Deltares.Reliability.Wrappers;
+using Deltares.Uncertainty.Wrappers;
 using Deltares.Utils.Wrappers;
 
 namespace Deltares.Probabilistic.Wrapper.Test
@@ -104,9 +103,9 @@ namespace Deltares.Probabilistic.Wrapper.Test
             return new ZSampleOutput(xDelegate);
         }
 
-        public static Project GetAddOneProject()
+        public static ReliabilityProject GetAddOneProject()
         {
-            var project = new Project();
+            var project = new ReliabilityProject();
 
             project.Stochasts.Add(GetDeterministicStochast(1));
             project.Stochasts.Add(GetUniformStochast(-1));
@@ -120,9 +119,9 @@ namespace Deltares.Probabilistic.Wrapper.Test
             return project;
         }
 
-        public static Project GetLinearProject()
+        public static ReliabilityProject GetLinearProject()
         {
-            var project = new Project();
+            var project = new ReliabilityProject();
 
             project.Stochasts.Add(GetUniformStochast(-1));
             project.Stochasts.Add(GetUniformStochast(-1));
@@ -137,9 +136,9 @@ namespace Deltares.Probabilistic.Wrapper.Test
             return project;
         }
 
-        public static Project GetLinearArrayProject()
+        public static ReliabilityProject GetLinearArrayProject()
         {
-            var project = new Project();
+            var project = new ReliabilityProject();
 
             project.Stochasts.Add(GetDeterministicStochast(1.8));
             project.Stochasts.Add(GetUniformStochast(-1));
@@ -161,9 +160,9 @@ namespace Deltares.Probabilistic.Wrapper.Test
             return project;
         }
 
-        public static Project GetUnbalancedLinearProject()
+        public static ReliabilityProject GetUnbalancedLinearProject()
         {
-            var project = new Project();
+            var project = new ReliabilityProject();
 
             project.Stochasts.Add(GetUniformStochast(-1));
             project.Stochasts.Add(GetUniformStochast(-1));
@@ -178,21 +177,21 @@ namespace Deltares.Probabilistic.Wrapper.Test
             return project;
         }
 
-        public static SensitivityProject GetSensitivityProject(Project project)
+        public static UncertaintyProject GetSensitivityProject(ReliabilityProject project)
         {
-            var sensitivityProject = new SensitivityProject();
+            var uncertaintyProject = new UncertaintyProject();
 
-            sensitivityProject.Stochasts.AddRange(project.Stochasts);
-            sensitivityProject.CorrelationMatrix = project.CorrelationMatrix;
-            sensitivityProject.ZFunction = project.ZFunction;
-            sensitivityProject.TagRepository = project.TagRepository;
+            uncertaintyProject.Stochasts.AddRange(project.Stochasts);
+            uncertaintyProject.CorrelationMatrix = project.CorrelationMatrix;
+            uncertaintyProject.ZFunction = project.ZFunction;
+            uncertaintyProject.TagRepository = project.TagRepository;
 
-            return sensitivityProject;
+            return uncertaintyProject;
         }
 
-        public static Project GetInverseLinearProject()
+        public static ReliabilityProject GetInverseLinearProject()
         {
-            var project = new Project();
+            var project = new ReliabilityProject();
 
             project.Stochasts.Add(GetUniformStochast(-1));
             project.Stochasts.Add(GetUniformStochast(-1));
@@ -204,9 +203,9 @@ namespace Deltares.Probabilistic.Wrapper.Test
             return project;
         }
 
-        public static Project GetLinearAbsoluteProject()
+        public static ReliabilityProject GetLinearAbsoluteProject()
         {
-            var project = new Project();
+            var project = new ReliabilityProject();
 
             project.Stochasts.Add(GetUniformStochast(-1));
             project.Stochasts.Add(GetUniformStochast(-1));
@@ -218,9 +217,9 @@ namespace Deltares.Probabilistic.Wrapper.Test
             return project;
         }
 
-        public static Project GetLinearSmallProject()
+        public static ReliabilityProject GetLinearSmallProject()
         {
-            var project = new Project();
+            var project = new ReliabilityProject();
 
             project.Stochasts.Add(GetUniformStochast(-1));
             project.Stochasts.Add(GetUniformStochast(-1));
@@ -232,9 +231,9 @@ namespace Deltares.Probabilistic.Wrapper.Test
             return project;
         }
 
-        public static Project GetLinearSmallSlowProject()
+        public static ReliabilityProject GetLinearSmallSlowProject()
         {
-            var project = new Project();
+            var project = new ReliabilityProject();
 
             project.Stochasts.Add(GetUniformStochast(-1));
             project.Stochasts.Add(GetUniformStochast(-1));
@@ -246,9 +245,9 @@ namespace Deltares.Probabilistic.Wrapper.Test
             return project;
         }
 
-        public static Project GetLinearAbsoluteSmallProject()
+        public static ReliabilityProject GetLinearAbsoluteSmallProject()
         {
-            var project = new Project();
+            var project = new ReliabilityProject();
 
             project.Stochasts.Add(GetUniformStochast(-1));
             project.Stochasts.Add(GetUniformStochast(-1));
@@ -260,9 +259,9 @@ namespace Deltares.Probabilistic.Wrapper.Test
             return project;
         }
 
-        public static Project GetLinearFullyCorrelatedProject()
+        public static ReliabilityProject GetLinearFullyCorrelatedProject()
         {
-            var project = new Project();
+            var project = new ReliabilityProject();
 
             project.Stochasts.Add(GetUniformStochast(-0.5, 0.5));
             project.Stochasts.Add(GetUniformStochast(-0.5, 0.5));
@@ -276,9 +275,9 @@ namespace Deltares.Probabilistic.Wrapper.Test
             return project;
         }
 
-        public static Project GetLinearPartialCorrelatedProject()
+        public static ReliabilityProject GetLinearPartialCorrelatedProject()
         {
-            var project = new Project();
+            var project = new ReliabilityProject();
 
             project.Stochasts.Add(GetUniformStochast(-0.5, 0.5));
             project.Stochasts.Add(GetUniformStochast(-0.5, 0.5));
@@ -292,9 +291,9 @@ namespace Deltares.Probabilistic.Wrapper.Test
             return project;
         }
 
-        public static Project GetLinearNegativeFullyCorrelatedProject()
+        public static ReliabilityProject GetLinearNegativeFullyCorrelatedProject()
         {
-            var project = new Project();
+            var project = new ReliabilityProject();
 
             project.Stochasts.Add(GetUniformStochast(-0.5, 0.5));
             project.Stochasts.Add(GetUniformStochast(0, 1.5));
@@ -309,9 +308,9 @@ namespace Deltares.Probabilistic.Wrapper.Test
             return project;
         }
 
-        public static Project GetLinearMultiCorrelatedProject(bool switchCorrelations)
+        public static ReliabilityProject GetLinearMultiCorrelatedProject(bool switchCorrelations)
         {
-            var project = new Project();
+            var project = new ReliabilityProject();
 
             project.Stochasts.Add(GetUniformStochast(-0.5, 0.5));
             project.Stochasts.Add(GetUniformStochast(-0.5, 0.5));
@@ -334,9 +333,9 @@ namespace Deltares.Probabilistic.Wrapper.Test
             return project;
         }
 
-        public static Project GetDoubleLinearProject()
+        public static ReliabilityProject GetDoubleLinearProject()
         {
-            var project = new Project();
+            var project = new ReliabilityProject();
 
             project.Stochasts.Add(GetUniformStochast(-1, 1));
             project.Stochasts.Add(GetUniformStochast(-1, 1));
@@ -348,9 +347,9 @@ namespace Deltares.Probabilistic.Wrapper.Test
             return project;
         }
 
-        public static Project GetEdgeProject()
+        public static ReliabilityProject GetEdgeProject()
         {
-            var project = new Project();
+            var project = new ReliabilityProject();
 
             project.Stochasts.Add(GetUniformStochast(0, 1));
             project.Stochasts.Add(GetUniformStochast(0, 1));
@@ -363,9 +362,9 @@ namespace Deltares.Probabilistic.Wrapper.Test
             return project;
         }
 
-        public static Project GetNonLinearProject()
+        public static ReliabilityProject GetNonLinearProject()
         {
-            var project = new Project();
+            var project = new ReliabilityProject();
 
             project.Stochasts.Add(GetNormalStochast());
             project.Stochasts.Add(GetNormalStochast());
@@ -377,9 +376,9 @@ namespace Deltares.Probabilistic.Wrapper.Test
             return project;
         }
 
-        public static Project GetBlockProject()
+        public static ReliabilityProject GetBlockProject()
         {
-            var project = new Project();
+            var project = new ReliabilityProject();
 
             project.Stochasts.Add(GetNormalStochast());
             project.Stochasts.Add(GetNormalStochast());
@@ -391,9 +390,9 @@ namespace Deltares.Probabilistic.Wrapper.Test
             return project;
         }
 
-        public static Project GetSemiBlockProject()
+        public static ReliabilityProject GetSemiBlockProject()
         {
-            var project = new Project();
+            var project = new ReliabilityProject();
 
             project.Stochasts.Add(GetNormalStochast());
             project.Stochasts.Add(GetNormalStochast());
@@ -405,9 +404,9 @@ namespace Deltares.Probabilistic.Wrapper.Test
             return project;
         }
 
-        public static Project GetLoadStrengthProject()
+        public static ReliabilityProject GetLoadStrengthProject()
         {
-            var project = new Project();
+            var project = new ReliabilityProject();
 
             project.Stochasts.Add(GetNormalStochast(5));
             project.Stochasts.Add(GetNormalStochast(7));
@@ -419,9 +418,9 @@ namespace Deltares.Probabilistic.Wrapper.Test
             return project;
         }
 
-        public static Project GetLoadStrengthSurvivedProject()
+        public static ReliabilityProject GetLoadStrengthSurvivedProject()
         {
-            var project = new Project();
+            var project = new ReliabilityProject();
 
             project.Stochasts.Add(GetNormalStochast(5));
             project.Stochasts.Add(GetNormalStochast(7));
@@ -435,9 +434,9 @@ namespace Deltares.Probabilistic.Wrapper.Test
         }
 
 
-        public static Project GetConvexProject()
+        public static ReliabilityProject GetConvexProject()
         {
-            var project = new Project();
+            var project = new ReliabilityProject();
 
             project.Stochasts.Add(GetNormalStochast());
             project.Stochasts.Add(GetNormalStochast());
@@ -449,9 +448,9 @@ namespace Deltares.Probabilistic.Wrapper.Test
             return project;
         }
 
-        public static Project GetDiscontinuousProject()
+        public static ReliabilityProject GetDiscontinuousProject()
         {
-            var project = new Project();
+            var project = new ReliabilityProject();
 
             project.Stochasts.Add(GetNormalStochast(15, 2.5));
             project.Stochasts.Add(GetNormalStochast(5, 0.5));
@@ -463,9 +462,9 @@ namespace Deltares.Probabilistic.Wrapper.Test
             return project;
         }
 
-        public static Project GetManyVarsProject()
+        public static ReliabilityProject GetManyVarsProject()
         {
-            var project = new Project();
+            var project = new ReliabilityProject();
 
             for (var i = 0; i < 13; i++) project.Stochasts.Add(GetUniformStochast());
 
@@ -476,9 +475,9 @@ namespace Deltares.Probabilistic.Wrapper.Test
             return project;
         }
 
-        public static Project GetNoisyProject()
+        public static ReliabilityProject GetNoisyProject()
         {
-            var project = new Project();
+            var project = new ReliabilityProject();
 
             project.Stochasts.Add(GetLogNormalStochast(120, 12));
             project.Stochasts.Add(GetLogNormalStochast(120, 12));
@@ -497,9 +496,9 @@ namespace Deltares.Probabilistic.Wrapper.Test
             return project;
         }
 
-        public static Project GetOblateSpheroidProject()
+        public static ReliabilityProject GetOblateSpheroidProject()
         {
-            var project = new Project();
+            var project = new ReliabilityProject();
 
             project.Stochasts.Add(GetDeterministicStochast(10));
 
@@ -512,9 +511,9 @@ namespace Deltares.Probabilistic.Wrapper.Test
             return project;
         }
 
-        public static Project GetParallelProject()
+        public static ReliabilityProject GetParallelProject()
         {
-            var project = new Project();
+            var project = new ReliabilityProject();
 
             for (var i = 0; i < 5; i++) project.Stochasts.Add(GetNormalStochast());
 
@@ -525,9 +524,9 @@ namespace Deltares.Probabilistic.Wrapper.Test
             return project;
         }
 
-        public static Project GetQuadraticProject()
+        public static ReliabilityProject GetQuadraticProject()
         {
-            var project = new Project();
+            var project = new ReliabilityProject();
 
             for (var i = 0; i < 3; i++) project.Stochasts.Add(GetNormalStochast(1, 0.1));
 
@@ -538,9 +537,9 @@ namespace Deltares.Probabilistic.Wrapper.Test
             return project;
         }
 
-        public static Project GetSaddleProject()
+        public static ReliabilityProject GetSaddleProject()
         {
-            var project = new Project();
+            var project = new ReliabilityProject();
 
             for (var i = 0; i < 2; i++) project.Stochasts.Add(GetNormalStochast());
 
@@ -551,9 +550,9 @@ namespace Deltares.Probabilistic.Wrapper.Test
             return project;
         }
 
-        public static Project GetSeriesProject()
+        public static ReliabilityProject GetSeriesProject()
         {
-            var project = new Project();
+            var project = new ReliabilityProject();
 
             for (var i = 0; i < 2; i++) project.Stochasts.Add(GetNormalStochast());
 
@@ -564,9 +563,9 @@ namespace Deltares.Probabilistic.Wrapper.Test
             return project;
         }
 
-        public static Project GetTwoBranchesProject()
+        public static ReliabilityProject GetTwoBranchesProject()
         {
-            var project = new Project();
+            var project = new ReliabilityProject();
 
             project.Stochasts.Add(GetNormalStochast(10, 0.5));
             project.Stochasts.Add(GetNormalStochast());
@@ -579,9 +578,9 @@ namespace Deltares.Probabilistic.Wrapper.Test
             return project;
         }
 
-        public static Project GetWaveProject()
+        public static ReliabilityProject GetWaveProject()
         {
-            var project = new Project();
+            var project = new ReliabilityProject();
 
             project.Stochasts.Add(GetNormalStochast(-20, 10));
 
@@ -592,9 +591,9 @@ namespace Deltares.Probabilistic.Wrapper.Test
             return project;
         }
 
-        public static Project GetBlighProject()
+        public static ReliabilityProject GetBlighProject()
         {
-            var project = new Project();
+            var project = new ReliabilityProject();
 
             project.Stochasts.Add(GetLogNormalStochast(1.76, 1.69));
             project.Stochasts.Add(GetNormalStochast(50, 2.5));
@@ -608,9 +607,9 @@ namespace Deltares.Probabilistic.Wrapper.Test
             return project;
         }
 
-        public static Project GetNonVaryingProject()
+        public static ReliabilityProject GetNonVaryingProject()
         {
-            var project = new Project();
+            var project = new ReliabilityProject();
 
             project.Stochasts.Add(GetNormalStochast());
             project.Stochasts.Add(GetNormalStochast());
@@ -622,9 +621,9 @@ namespace Deltares.Probabilistic.Wrapper.Test
             return project;
         }
 
-        public static Project GetDiscreteProject()
+        public static ReliabilityProject GetDiscreteProject()
         {
-            var project = new Project();
+            var project = new ReliabilityProject();
 
             project.Stochasts.Add(GetUniformStochast());
             project.Stochasts.Add(GetUniformStochast());
@@ -642,9 +641,9 @@ namespace Deltares.Probabilistic.Wrapper.Test
             return project;
         }
 
-        public static Project GetQualitativeProject()
+        public static ReliabilityProject GetQualitativeProject()
         {
-            var project = new Project();
+            var project = new ReliabilityProject();
 
             project.Stochasts.Add(GetUniformStochast());
             project.Stochasts.Add(GetUniformStochast());
@@ -662,9 +661,9 @@ namespace Deltares.Probabilistic.Wrapper.Test
             return project;
         }
 
-        public static Project GetVariableProject()
+        public static ReliabilityProject GetVariableProject()
         {
-            var project = new Project();
+            var project = new ReliabilityProject();
 
             Stochast c = GetNormalStochast(1.5, 0.1);
             Stochast a = GetNormalStochast(1.5, 0.5);

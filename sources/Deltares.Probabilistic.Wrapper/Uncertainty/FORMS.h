@@ -22,7 +22,7 @@
 #pragma once
 
 #include "FORMSettingsS.h"
-#include "SensitivityMethod.h"
+#include "UncertaintyMethod.h"
 #include "../../Deltares.Probabilistic/Uncertainty/FORMS.h"
 
 namespace Deltares
@@ -31,7 +31,7 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            public ref class FORMS : public SensitivityMethod
+            public ref class FORMS : public UncertaintyMethod
             {
             private:
                 Utils::Wrappers::SharedPointerProvider<Uncertainty::FORMS>* shared = new Utils::Wrappers::SharedPointerProvider(new Uncertainty::FORMS());

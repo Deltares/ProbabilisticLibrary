@@ -22,7 +22,7 @@
 #pragma once
 
 #include "ImportanceSamplingSettingsS.h"
-#include "SensitivityMethod.h"
+#include "UncertaintyMethod.h"
 #include "../../Deltares.Probabilistic/Uncertainty/ImportanceSamplingS.h"
 
 namespace Deltares
@@ -31,7 +31,7 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            public ref class ImportanceSamplingS : public SensitivityMethod
+            public ref class ImportanceSamplingS : public UncertaintyMethod
             {
             private:
                 SharedPointerProvider<Uncertainty::ImportanceSamplingS>* shared = new SharedPointerProvider(new Uncertainty::ImportanceSamplingS());

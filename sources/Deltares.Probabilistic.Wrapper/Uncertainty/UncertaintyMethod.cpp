@@ -19,10 +19,10 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#pragma once
-#include "../Statistics/Stochast.h"
+#include "UncertaintyMethod.h"
+
 #include "../Model/ModelRunner.h"
-#include "../../Deltares.Probabilistic/Uncertainty/UncertaintyMethod.h"
+#include "../Statistics/Stochast.h"
 
 namespace Deltares
 {
@@ -30,29 +30,22 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            public ref class SensitivityMethod
+            Statistics::Wrappers::Stochast^ UncertaintyMethod::GetStochast(Models::Wrappers::ModelRunner^ modelRunner)
             {
-            public:
-                SensitivityMethod() {  }
+                const std::shared_ptr<Uncertainty::UncertaintyMethod> sensitivityMethod = this->GetNativeSensitivityMethod();
 
-                virtual std::shared_ptr<Uncertainty::UncertaintyMethod> GetNativeSensitivityMethod()
-                {
-                    return nullptr;
-                };
+                const std::shared_ptr<Models::ModelRunner> nativeModelRunner = modelRunner->GetModelRunner();
 
-                Statistics::Wrappers::Stochast^ GetStochast(Models::Wrappers::ModelRunner^ modelRunner);
+                nativeModelRunner->initializeForRun();
 
-                Statistics::Wrappers::CorrelationMatrix^ GetCorrelationMatrix()
-                {
-                    return gcnew Statistics::Wrappers::CorrelationMatrix(this->GetNativeSensitivityMethod()->getCorrelationMatrix());
-                }
+                const std::shared_ptr<Statistics::Stochast> nativeStochast = sensitivityMethod->getSensitivityStochast(nativeModelRunner).stochast;
 
-                virtual System::Object^ GetSettings() { return nullptr; }
-                virtual bool IsValid() { return false; }
-                virtual void Stop()    { }
-                virtual bool IsStopped() { return false; }
+                Statistics::Wrappers::Stochast^ stochast = gcnew Statistics::Wrappers::Stochast(nativeStochast);
+
+                return stochast;
             };
         }
     }
 }
+
 

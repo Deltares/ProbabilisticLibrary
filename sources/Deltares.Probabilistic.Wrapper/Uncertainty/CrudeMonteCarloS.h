@@ -22,7 +22,7 @@
 #pragma once
 
 #include "CrudeMonteCarloSettingsS.h"
-#include "SensitivityMethod.h"
+#include "UncertaintyMethod.h"
 #include "../../Deltares.Probabilistic/Uncertainty/CrudeMonteCarloS.h"
 
 namespace Deltares
@@ -31,7 +31,7 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            public ref class CrudeMonteCarloS : public SensitivityMethod
+            public ref class CrudeMonteCarloS : public UncertaintyMethod
             {
             private:
                 SharedPointerProvider<Uncertainty::CrudeMonteCarloS>* shared = new SharedPointerProvider(new Uncertainty::CrudeMonteCarloS());

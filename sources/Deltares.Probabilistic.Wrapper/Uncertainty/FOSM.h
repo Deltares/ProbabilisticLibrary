@@ -22,7 +22,7 @@
 #pragma once
 
 #include "FOSMSettings.h"
-#include "SensitivityMethod.h"
+#include "UncertaintyMethod.h"
 #include "../../Deltares.Probabilistic/Uncertainty/FOSM.h"
 
 namespace Deltares
@@ -31,7 +31,7 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            public ref class FOSM : public SensitivityMethod
+            public ref class FOSM : public UncertaintyMethod
             {
             private:
                 Utils::Wrappers::SharedPointerProvider<Uncertainty::FOSM>* shared = new Utils::Wrappers::SharedPointerProvider(new Uncertainty::FOSM());

@@ -66,7 +66,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestLinearSmallSlow()
         {
-            Project project = ProjectBuilder.GetLinearSmallSlowProject();
+            ReliabilityProject project = ProjectBuilder.GetLinearSmallSlowProject();
 
             AdaptiveImportanceSampling importanceSampling = new AdaptiveImportanceSampling();
             importanceSampling.Settings.MaxVarianceLoops = 5;
@@ -84,7 +84,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestLinearSmallSlowParallel()
         {
-            Project project = ProjectBuilder.GetLinearSmallSlowProject();
+            ReliabilityProject project = ProjectBuilder.GetLinearSmallSlowProject();
 
             AdaptiveImportanceSampling importanceSampling = new AdaptiveImportanceSampling();
             importanceSampling.Settings.RunSettings.MaxParallelProcesses = 4;
@@ -105,7 +105,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestLinearClusters()
         {
-            Project project = ProjectBuilder.GetLinearAbsoluteSmallProject();
+            ReliabilityProject project = ProjectBuilder.GetLinearAbsoluteSmallProject();
 
             AdaptiveImportanceSampling importanceSampling = new AdaptiveImportanceSampling();
 
@@ -129,7 +129,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestEdgeClusters()
         {
-            Project project = ProjectBuilder.GetEdgeProject();
+            ReliabilityProject project = ProjectBuilder.GetEdgeProject();
 
             AdaptiveImportanceSampling importanceSampling = new AdaptiveImportanceSampling();
 

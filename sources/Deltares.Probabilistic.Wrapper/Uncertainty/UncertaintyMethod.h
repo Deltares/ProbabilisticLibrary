@@ -19,10 +19,10 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include "SensitivityMethod.h"
-
-#include "../Model/ModelRunner.h"
+#pragma once
 #include "../Statistics/Stochast.h"
+#include "../Model/ModelRunner.h"
+#include "../../Deltares.Probabilistic/Uncertainty/UncertaintyMethod.h"
 
 namespace Deltares
 {
@@ -30,22 +30,29 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            Statistics::Wrappers::Stochast^ SensitivityMethod::GetStochast(Models::Wrappers::ModelRunner^ modelRunner)
+            public ref class UncertaintyMethod
             {
-                const std::shared_ptr<Uncertainty::UncertaintyMethod> sensitivityMethod = this->GetNativeSensitivityMethod();
+            public:
+                UncertaintyMethod() {  }
 
-                const std::shared_ptr<Models::ModelRunner> nativeModelRunner = modelRunner->GetModelRunner();
+                virtual std::shared_ptr<Uncertainty::UncertaintyMethod> GetNativeSensitivityMethod()
+                {
+                    return nullptr;
+                };
 
-                nativeModelRunner->initializeForRun();
+                Statistics::Wrappers::Stochast^ GetStochast(Models::Wrappers::ModelRunner^ modelRunner);
 
-                const std::shared_ptr<Statistics::Stochast> nativeStochast = sensitivityMethod->getSensitivityStochast(nativeModelRunner).stochast;
+                Statistics::Wrappers::CorrelationMatrix^ GetCorrelationMatrix()
+                {
+                    return gcnew Statistics::Wrappers::CorrelationMatrix(this->GetNativeSensitivityMethod()->getCorrelationMatrix());
+                }
 
-                Statistics::Wrappers::Stochast^ stochast = gcnew Statistics::Wrappers::Stochast(nativeStochast);
-
-                return stochast;
+                virtual System::Object^ GetSettings() { return nullptr; }
+                virtual bool IsValid() { return false; }
+                virtual void Stop()    { }
+                virtual bool IsStopped() { return false; }
             };
         }
     }
 }
-
 

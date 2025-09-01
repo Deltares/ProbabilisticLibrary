@@ -19,19 +19,20 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include "Project.h"
-#include "ModelRunner.h"
+#include "ReliabilityProject.h"
+#include "../Model/ModelRunner.h"
+#include "../Model/ModelSample.h"
 
 namespace Deltares
 {
-    namespace Models
+    namespace Reliability
     {
         namespace Wrappers
         {
             delegate void ManagedSampleDelegate(std::shared_ptr<Models::ModelSample> sample);
             typedef void(__stdcall* ZDelegate) (std::shared_ptr<Models::ModelSample>);
 
-            bool Project::IsValid()
+            bool ReliabilityProject::IsValid()
             {
                 shared->object->stochasts.clear();
 
@@ -46,7 +47,7 @@ namespace Deltares
                 return shared->object->isValid();
             }
 
-            Reliability::Wrappers::DesignPoint^ Project::GetDesignPoint()
+            Reliability::Wrappers::DesignPoint^ ReliabilityProject::GetDesignPoint()
             {
                 shared->object->stochasts.clear();
 
@@ -75,9 +76,9 @@ namespace Deltares
                 return this->DesignPoint;
             }
 
-            ZLambda Project::getZLambda()
+            ZLambda ReliabilityProject::getZLambda()
             {
-                ManagedSampleDelegate^ fp = gcnew ManagedSampleDelegate(this, &Project::invokeSample);
+                ManagedSampleDelegate^ fp = gcnew ManagedSampleDelegate(this, &ReliabilityProject::invokeSample);
                 System::Runtime::InteropServices::GCHandle handle = System::Runtime::InteropServices::GCHandle::Alloc(fp);
                 handles->Add(handle);
 
@@ -87,9 +88,9 @@ namespace Deltares
                 return functionPointer;
             }
 
-            void Project::invokeSample(std::shared_ptr<Models::ModelSample> sample)
+            void ReliabilityProject::invokeSample(std::shared_ptr<Models::ModelSample> sample)
             {
-                ModelSample^ sampleWrapper = gcnew ModelSample(sample);
+                Wrappers::ModelSample^ sampleWrapper = gcnew Wrappers::ModelSample(sample);
                 this->ZFunction->Invoke(sampleWrapper);
             }
         }

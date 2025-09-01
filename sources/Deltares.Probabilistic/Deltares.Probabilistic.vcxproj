@@ -166,6 +166,8 @@
     <ClInclude Include="Combine\HohenbichlerExcludingCombiner.h" />
     <ClInclude Include="Model\ComputationalStochast.h" />
     <ClInclude Include="Model\ModelProject.h" />
+    <ClInclude Include="Reliability\DirectionCalculation.h" />
+    <ClInclude Include="Reliability\DirectionSection.h" />
     <ClInclude Include="Reliability\FragilityCurveProject.h" />
     <ClInclude Include="Reliability\FragilityCurve.h" />
     <ClInclude Include="Reliability\FragilityCurveIntegrationSettings.h" />

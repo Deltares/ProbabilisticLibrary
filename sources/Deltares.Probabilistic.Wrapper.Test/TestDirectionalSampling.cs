@@ -34,7 +34,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestLinear()
         {
-            Project project = ProjectBuilder.GetLinearProject();
+            ReliabilityProject project = ProjectBuilder.GetLinearProject();
 
             project.ReliabilityMethod = new DirectionalSampling();
             DesignPoint designPoint = project.GetDesignPoint();
@@ -75,7 +75,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestLinearParallel()
         {
-            Project project = ProjectBuilder.GetLinearProject();
+            ReliabilityProject project = ProjectBuilder.GetLinearProject();
 
             project.Settings.MaxParallelProcesses = 4;
 
@@ -89,7 +89,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestDoubleLinear()
         {
-            Project project = ProjectBuilder.GetDoubleLinearProject();
+            ReliabilityProject project = ProjectBuilder.GetDoubleLinearProject();
 
             DirectionalSampling directionalSampling = new DirectionalSampling();
             directionalSampling.Settings.MaximumSamples = 2000;
@@ -106,7 +106,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestNonLinear()
         {
-            Project project = ProjectBuilder.GetNonLinearProject();
+            ReliabilityProject project = ProjectBuilder.GetNonLinearProject();
 
             project.ReliabilityMethod = new DirectionalSampling();
 
@@ -118,7 +118,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestBlock()
         {
-            Project project = ProjectBuilder.GetBlockProject();
+            ReliabilityProject project = ProjectBuilder.GetBlockProject();
 
             project.ReliabilityMethod = new DirectionalSampling();
 
@@ -130,7 +130,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestSemiBlock()
         {
-            Project project = ProjectBuilder.GetSemiBlockProject();
+            ReliabilityProject project = ProjectBuilder.GetSemiBlockProject();
 
             project.ReliabilityMethod = new DirectionalSampling();
 
@@ -142,7 +142,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestNoisy()
         {
-            Project project = ProjectBuilder.GetNoisyProject();
+            ReliabilityProject project = ProjectBuilder.GetNoisyProject();
 
             project.ReliabilityMethod = new DirectionalSampling();
 
@@ -166,7 +166,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestManyVars()
         {
-            Project project = ProjectBuilder.GetManyVarsProject();
+            ReliabilityProject project = ProjectBuilder.GetManyVarsProject();
 
             project.ReliabilityMethod = new DirectionalSampling();
 
@@ -178,7 +178,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestSaddle()
         {
-            Project project = ProjectBuilder.GetSaddleProject();
+            ReliabilityProject project = ProjectBuilder.GetSaddleProject();
 
             project.ReliabilityMethod = new DirectionalSampling();
 
@@ -190,7 +190,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestTwoBranches()
         {
-            Project project = ProjectBuilder.GetTwoBranchesProject();
+            ReliabilityProject project = ProjectBuilder.GetTwoBranchesProject();
 
             project.ReliabilityMethod = new DirectionalSampling();
 

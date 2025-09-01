@@ -86,7 +86,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestLinearMessages()
         {
-            Project project = ProjectBuilder.GetLinearProject();
+            ReliabilityProject project = ProjectBuilder.GetLinearProject();
 
             project.ReliabilityMethod = new ImportanceSampling();
             project.Settings.SaveEvaluations = true;
@@ -105,7 +105,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestLinearSmall()
         {
-            Project project = ProjectBuilder.GetLinearSmallProject();
+            ReliabilityProject project = ProjectBuilder.GetLinearSmallProject();
 
             var importanceSampling = new ImportanceSampling();
             importanceSampling.Settings.MaximumSamples = 10000;
@@ -126,7 +126,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestLinearCorrelated()
         {
-            Project project = ProjectBuilder.GetLinearFullyCorrelatedProject();
+            ReliabilityProject project = ProjectBuilder.GetLinearFullyCorrelatedProject();
 
             project.ReliabilityMethod = new ImportanceSampling();
             DesignPoint designPoint = project.GetDesignPoint();
@@ -137,7 +137,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestBligh()
         {
-            Project project = ProjectBuilder.GetBlighProject();
+            ReliabilityProject project = ProjectBuilder.GetBlighProject();
 
             project.ReliabilityMethod = new ImportanceSampling();
             DesignPoint designPoint = project.GetDesignPoint();
@@ -148,7 +148,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestLoadStrength()
         {
-            Project project = ProjectBuilder.GetLoadStrengthProject();
+            ReliabilityProject project = ProjectBuilder.GetLoadStrengthProject();
 
             project.ReliabilityMethod = new ImportanceSampling();
             DesignPoint designPoint = project.GetDesignPoint();
@@ -159,7 +159,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestLoadStrengthSurvived()
         {
-            Project project = ProjectBuilder.GetLoadStrengthSurvivedProject();
+            ReliabilityProject project = ProjectBuilder.GetLoadStrengthSurvivedProject();
 
             project.ReliabilityMethod = new ImportanceSampling();
             DesignPoint designPoint = project.GetDesignPoint();
@@ -170,7 +170,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestConvex()
         {
-            Project project = ProjectBuilder.GetConvexProject();
+            ReliabilityProject project = ProjectBuilder.GetConvexProject();
 
             project.ReliabilityMethod = new ImportanceSampling();
             DesignPoint designPoint = project.GetDesignPoint();
@@ -181,7 +181,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestNoisy()
         {
-            Project project = ProjectBuilder.GetNoisyProject();
+            ReliabilityProject project = ProjectBuilder.GetNoisyProject();
 
             project.ReliabilityMethod = new ImportanceSampling();
             DesignPoint designPoint = project.GetDesignPoint();

@@ -34,7 +34,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestLinear()
         {
-            Project project = ProjectBuilder.GetLinearProject();
+            ReliabilityProject project = ProjectBuilder.GetLinearProject();
 
             project.ReliabilityMethod = new FORMThenDirectionalSampling();
             DesignPoint designPoint = project.GetDesignPoint();
@@ -93,7 +93,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestLinearMessages()
         {
-            Project project = ProjectBuilder.GetLinearProject();
+            ReliabilityProject project = ProjectBuilder.GetLinearProject();
 
             project.Settings.SaveConvergence = true;
             project.Settings.SaveEvaluations = true;
@@ -121,7 +121,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [SetCulture("en-US")]
         public void TestLinearProgress()
         {
-            Project project = ProjectBuilder.GetLinearProject();
+            ReliabilityProject project = ProjectBuilder.GetLinearProject();
 
             ProgressHolder progressHolder = new ProgressHolder();
 
@@ -144,7 +144,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestLinearCorrelated()
         {
-            Project project = ProjectBuilder.GetLinearFullyCorrelatedProject();
+            ReliabilityProject project = ProjectBuilder.GetLinearFullyCorrelatedProject();
 
             project.ReliabilityMethod = new FORMThenDirectionalSampling();
             DesignPoint designPoint = project.GetDesignPoint();
@@ -162,7 +162,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestLinearPartialCorrelated()
         {
-            Project project = ProjectBuilder.GetLinearPartialCorrelatedProject();
+            ReliabilityProject project = ProjectBuilder.GetLinearPartialCorrelatedProject();
 
             project.ReliabilityMethod = new FORMThenDirectionalSampling();
 
@@ -184,7 +184,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestLinearMultiCorrelated()
         {
-            Project project = ProjectBuilder.GetLinearMultiCorrelatedProject(false);
+            ReliabilityProject project = ProjectBuilder.GetLinearMultiCorrelatedProject(false);
 
             project.CorrelationMatrix.ResolveConflictingCorrelations();
 
@@ -207,7 +207,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestLinearMultiCorrelatedSwitchOrder()
         {
-            Project project = ProjectBuilder.GetLinearMultiCorrelatedProject(true);
+            ReliabilityProject project = ProjectBuilder.GetLinearMultiCorrelatedProject(true);
 
             project.CorrelationMatrix.ResolveConflictingCorrelations();
 
@@ -232,7 +232,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestLoadStrength()
         {
-            Project project = ProjectBuilder.GetLoadStrengthProject();
+            ReliabilityProject project = ProjectBuilder.GetLoadStrengthProject();
 
             project.ReliabilityMethod = new FORMThenDirectionalSampling();
             DesignPoint designPoint = project.GetDesignPoint();
@@ -243,7 +243,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestConvexStartPoint()
         {
-            Project project = ProjectBuilder.GetConvexProject();
+            ReliabilityProject project = ProjectBuilder.GetConvexProject();
 
             FORMThenDirectionalSampling form = new FORMThenDirectionalSampling();
             form.Settings.StochastSettings.Add(new StochastSettings { StartValue = 1, Stochast = project.Stochasts[0] });
@@ -258,7 +258,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestConvexRayStartPoint()
         {
-            Project project = ProjectBuilder.GetConvexProject();
+            ReliabilityProject project = ProjectBuilder.GetConvexProject();
 
             FORMThenDirectionalSampling form = new FORMThenDirectionalSampling();
             form.Settings.StochastSettings.Add(new StochastSettings { StartValue = 1, Stochast = project.Stochasts[0] });
@@ -274,7 +274,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestConvexRayStartPointNoInitialization()
         {
-            Project project = ProjectBuilder.GetConvexProject();
+            ReliabilityProject project = ProjectBuilder.GetConvexProject();
 
             FORMThenDirectionalSampling form = new FORMThenDirectionalSampling();
             form.Settings.StartPointCalculatorSettings.StartMethod = StartMethodType.RaySearch;
@@ -288,7 +288,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestConvexRaySphereStartPoint()
         {
-            Project project = ProjectBuilder.GetConvexProject();
+            ReliabilityProject project = ProjectBuilder.GetConvexProject();
 
             FORMThenDirectionalSampling form = new FORMThenDirectionalSampling();
             form.Settings.StartPointCalculatorSettings.StartMethod = StartMethodType.SphereSearch;
@@ -306,7 +306,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestConvexRaySensitivityStartPoint()
         {
-            Project project = ProjectBuilder.GetConvexProject();
+            ReliabilityProject project = ProjectBuilder.GetConvexProject();
 
             FORMThenDirectionalSampling form = new FORMThenDirectionalSampling();
             form.Settings.StartPointCalculatorSettings.StartMethod = StartMethodType.SensitivitySearch;
@@ -320,7 +320,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestNoisy()
         {
-            Project project = ProjectBuilder.GetNoisyProject();
+            ReliabilityProject project = ProjectBuilder.GetNoisyProject();
 
             project.ReliabilityMethod = new FORMThenDirectionalSampling();
             DesignPoint designPoint = project.GetDesignPoint();
@@ -331,7 +331,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestOblateSpheroid()
         {
-            Project project = ProjectBuilder.GetOblateSpheroidProject();
+            ReliabilityProject project = ProjectBuilder.GetOblateSpheroidProject();
 
             project.ReliabilityMethod = new FORMThenDirectionalSampling();
             DesignPoint designPoint = project.GetDesignPoint();
@@ -342,7 +342,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestQuadratic()
         {
-            Project project = ProjectBuilder.GetQuadraticProject();
+            ReliabilityProject project = ProjectBuilder.GetQuadraticProject();
 
             project.ReliabilityMethod = new FORMThenDirectionalSampling();
             DesignPoint designPoint = project.GetDesignPoint();
@@ -353,7 +353,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestWaveRelaxationLoops()
         {
-            Project project = ProjectBuilder.GetWaveProject();
+            ReliabilityProject project = ProjectBuilder.GetWaveProject();
 
             FORMThenDirectionalSampling form = new FORMThenDirectionalSampling();
             form.Settings.RelaxationFactor = 0.7;
@@ -369,7 +369,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestWaveRelaxationLoopsDoubleGradient()
         {
-            Project project = ProjectBuilder.GetWaveProject();
+            ReliabilityProject project = ProjectBuilder.GetWaveProject();
 
             FORMThenDirectionalSampling form = new FORMThenDirectionalSampling();
             form.Settings.RelaxationFactor = 0.7;
@@ -388,7 +388,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestNonLinear()
         {
-            Project project = ProjectBuilder.GetNonLinearProject();
+            ReliabilityProject project = ProjectBuilder.GetNonLinearProject();
 
             FORMThenDirectionalSampling fdir = new FORMThenDirectionalSampling();
             fdir.Settings.RelaxationFactor = 0.75;
@@ -412,7 +412,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestBligh()
         {
-            Project project = ProjectBuilder.GetBlighProject();
+            ReliabilityProject project = ProjectBuilder.GetBlighProject();
 
             project.ReliabilityMethod = new FORMThenDirectionalSampling();
             DesignPoint designPoint = project.GetDesignPoint();
@@ -423,7 +423,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestNonVarying()
         {
-            Project project = ProjectBuilder.GetNonVaryingProject();
+            ReliabilityProject project = ProjectBuilder.GetNonVaryingProject();
 
             project.Settings.SaveMessages = true;
             project.Settings.MaxMessages = 1000;

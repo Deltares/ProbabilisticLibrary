@@ -23,7 +23,7 @@
 
 #include "NumericalIntegrationS.h"
 #include "NumericalIntegrationSettingsS.h"
-#include "SensitivityMethod.h"
+#include "UncertaintyMethod.h"
 #include "../../Deltares.Probabilistic/Uncertainty/NumericalIntegrationS.h"
 
 namespace Deltares
@@ -32,7 +32,7 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            public ref class NumericalIntegrationS : public SensitivityMethod
+            public ref class NumericalIntegrationS : public UncertaintyMethod
             {
             private:
                 Utils::Wrappers::SharedPointerProvider<Uncertainty::NumericalIntegrationS>* shared = new Utils::Wrappers::SharedPointerProvider(new Uncertainty::NumericalIntegrationS());
