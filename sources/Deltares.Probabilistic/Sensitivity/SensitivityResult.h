@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include "SensitivityValue.h"
 #include "../Statistics/Stochast.h"
 #include "../Model/Evaluation.h"
 #include "../Model/Message.h"
@@ -35,22 +36,22 @@ namespace Deltares::Sensitivity
     {
     public:
         /**
-         * \brief The stochast describing the variance of the uncertainty
+         * \brief The output parameter for which these results apply
          */
-        std::shared_ptr<Statistics::Stochast> stochast = nullptr;
+        std::string identifier = "";
 
         /**
-         * \brief Gets the identifier of the result
+         * \brief Gets the identifier of the output parameter
          */
         std::string getIdentifier() const
         {
-            return stochast != nullptr ? stochast->name : "";
+            return identifier;
         }
 
         /**
-         * \brief List of evaluations corresponding with the requested quantiles
+         * \brief List of result values per input variable
          */
-        std::vector<std::shared_ptr<Models::Evaluation>> quantileEvaluations;
+        std::vector<std::shared_ptr<SensitivityValue>> values;
 
         /**
          * \brief List of evaluations calculated during sensitivity analysis

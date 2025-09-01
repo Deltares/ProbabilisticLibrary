@@ -20,4 +20,32 @@
 // All rights reserved.
 //
 
-#include "SensitivityResult.h"
+#pragma once
+
+#include "../Statistics/Stochast.h"
+
+namespace Deltares::Sensitivity
+{
+    /**
+     * \brief Contains the results of a sensitivity calculation
+     */
+    class SensitivityValue
+    {
+    public:
+        /**
+         * \brief The input stochast causing the variation
+         */
+        std::string identifier = "";
+
+        double firstOrderIndex = std::nan("");
+
+        double totalIndex = std::nan("");
+
+        double low = std::nan("");
+
+        double medium = std::nan("");
+
+        double high = std::nan("");
+    };
+}
+

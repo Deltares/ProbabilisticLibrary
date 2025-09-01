@@ -173,6 +173,7 @@
     <ClInclude Include="Reliability\FragilityCurveIntegrationSettings.h" />
     <ClInclude Include="Reliability\FragilityCurveIntegration.h" />
     <ClInclude Include="Model\SampleRepository.h" />
+    <ClInclude Include="Sensitivity\SensitivityValue.h" />
     <ClInclude Include="Sensitivity\Sobol.h" />
     <ClInclude Include="Sensitivity\SensitivityMethod.h" />
     <ClInclude Include="Sensitivity\SensitivityResult.h" />
@@ -396,7 +397,6 @@
     <ClCompile Include="Model\SampleRepository.cpp" />
     <ClCompile Include="Sensitivity\Sobol.cpp" />
     <ClCompile Include="Sensitivity\SensitivityMethod.cpp" />
-    <ClCompile Include="Sensitivity\SensitivityResult.cpp" />
     <ClCompile Include="Sensitivity\SensitivityProject.cpp" />
     <ClCompile Include="Sensitivity\SensitivitySettings.cpp" />
     <ClCompile Include="Sensitivity\SingleVariation.cpp" />

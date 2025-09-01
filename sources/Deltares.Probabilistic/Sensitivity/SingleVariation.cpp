@@ -24,6 +24,7 @@
 #include <algorithm>
 #include <memory>
 
+#include "SensitivityValue.h"
 #include "../Model/Sample.h"
 #include "../Statistics/Stochast.h"
 
@@ -36,9 +37,39 @@ namespace Deltares::Sensitivity
     {
         int nStochasts = modelRunner->getVaryingStochastCount();
 
-        auto result = Sensitivity::SensitivityResult();
+        double uLow = StandardNormal::getUFromP(Settings->LowValue);
+        double uHigh = StandardNormal::getUFromP(Settings->HighValue);
 
+        std::vector<std::shared_ptr<Sample>> samples;
 
-        return result;
+        samples.push_back(std::make_shared<Sample>(nStochasts));
+
+        for (int i = 0; i < nStochasts; i++)
+        {
+            std::shared_ptr<Sample> lowSample = std::make_shared<Sample>(nStochasts);
+            lowSample->Values[i] = uLow;
+            samples.push_back(lowSample);
+
+            std::shared_ptr<Sample> highSample = std::make_shared<Sample>(nStochasts);
+            highSample->Values[i] = uHigh;
+            samples.push_back(highSample);
+        }
+
+        std::vector<double> z = modelRunner->getZValues(samples);
+
+        SensitivityResult sensitivityStochast;
+
+        for (int i = 0; i < nStochasts; i++)
+        {
+            std::shared_ptr<SensitivityValue> value = std::make_shared<SensitivityValue>();
+            value->identifier = modelRunner->getVaryingStochastName(i);
+            value->medium = z[0];
+            value->low = z[2 * i + 1];
+            value->high = z[2 * i + 2];
+
+            sensitivityStochast.values.push_back(value);
+        }
+
+        return sensitivityStochast;
     }
 }

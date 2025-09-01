@@ -238,7 +238,6 @@
     <ClCompile Include="Reliability\DirectionSectionsCalculationDS.cpp" />
     <ClCompile Include="Reliability\DirectionReliabilityDS.cpp" />
     <ClCompile Include="Sensitivity\SensitivityMethod.cpp" />
-    <ClCompile Include="Sensitivity\SensitivityResult.cpp" />
     <ClCompile Include="Sensitivity\SensitivityProject.cpp" />
     <ClCompile Include="Sensitivity\SensitivitySettings.cpp" />
     <ClCompile Include="Sensitivity\Sobol.cpp" />
@@ -511,6 +510,7 @@
     <ClInclude Include="Sensitivity\Sobol.h" />
     <ClInclude Include="Sensitivity\SingleVariation.h" />
     <ClInclude Include="Sensitivity\SingleVariationSettings.h" />
+    <ClInclude Include="Sensitivity\SensitivityValue.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

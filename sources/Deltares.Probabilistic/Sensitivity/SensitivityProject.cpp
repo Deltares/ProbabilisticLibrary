@@ -45,7 +45,7 @@ namespace Deltares::Sensitivity
                         parameterSelector->arrayIndex = index;
 
                         auto result = std::make_shared<SensitivityResult>(getSensitivityResult());
-                        result->stochast->name += "[" + std::to_string(index) + "]";
+                        result->identifier += "[" + std::to_string(index) + "]";
                         sensitivityResults.push_back(result);
                     }
                 }
@@ -84,7 +84,7 @@ namespace Deltares::Sensitivity
         modelRunner->initializeForRun();
 
         auto result = sensitivityMethod->getSensitivityStochast(modelRunner);
-        result.stochast->name = parameterSelector->parameter;
+        result.identifier = parameterSelector->parameter;
 
         modelRuns += model->getModelRuns();
 
