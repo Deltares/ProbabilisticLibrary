@@ -21,9 +21,9 @@
 //
 #pragma once
 
-#include "FORMSettingsS.h"
+#include "FOSMSettings.h"
 #include "SensitivityMethod.h"
-#include "../../Deltares.Probabilistic/Sensitivity/FORMS.h"
+#include "../../Deltares.Probabilistic/Uncertainty/FOSM.h"
 
 namespace Deltares
 {
@@ -31,16 +31,16 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            public ref class FORMS : public SensitivityMethod
+            public ref class FOSM : public SensitivityMethod
             {
             private:
-                Utils::Wrappers::SharedPointerProvider<Uncertainty::FORMS>* shared = new Utils::Wrappers::SharedPointerProvider(new Uncertainty::FORMS());
+                Utils::Wrappers::SharedPointerProvider<Uncertainty::FOSM>* shared = new Utils::Wrappers::SharedPointerProvider(new Uncertainty::FOSM());
             public:
-                FORMS() { }
-                ~FORMS() { this->!FORMS(); }
-                !FORMS() { delete shared; }
+                FOSM() { }
+                ~FOSM() { this->!FOSM(); }
+                !FOSM() { delete shared; }
 
-                FORMSettingsS^ Settings = gcnew FORMSettingsS();
+                FOSMSettings^ Settings = gcnew FOSMSettings();
 
                 System::Object^ GetSettings() override { return Settings; }
 

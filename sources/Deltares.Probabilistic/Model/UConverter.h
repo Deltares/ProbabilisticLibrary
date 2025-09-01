@@ -29,7 +29,7 @@
 #include "../Statistics/Stochast.h"
 #include "../Statistics/CorrelationMatrix.h"
 #include "../Reliability/StochastSettingsSet.h"
-#include "../Sensitivity/CorrelationMatrixBuilder.h"
+#include "../Uncertainty/CorrelationMatrixBuilder.h"
 
 namespace Deltares
 {

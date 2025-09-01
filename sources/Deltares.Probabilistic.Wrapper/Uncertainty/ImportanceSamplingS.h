@@ -23,7 +23,7 @@
 
 #include "ImportanceSamplingSettingsS.h"
 #include "SensitivityMethod.h"
-#include "../../Deltares.Probabilistic/Sensitivity/ImportanceSamplingS.h"
+#include "../../Deltares.Probabilistic/Uncertainty/ImportanceSamplingS.h"
 
 namespace Deltares
 {

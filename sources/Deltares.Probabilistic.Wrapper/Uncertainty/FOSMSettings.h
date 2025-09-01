@@ -21,7 +21,7 @@
 //
 #pragma once
 
-#include "../../Deltares.Probabilistic/Sensitivity/NumericalIntegrationSettingsS.h"
+#include "../../Deltares.Probabilistic/Uncertainty/FOSMSettings.h"
 #include "../Model/RunSettings.h"
 #include "../Reliability/StochastSettings.h"
 #include "../Utils/SharedPointerProvider.h"
@@ -35,15 +35,15 @@ namespace Deltares
             using namespace Deltares::Utils::Wrappers;
             using namespace Deltares::Models::Wrappers;
 
-            public ref class NumericalIntegrationSettingsS : IHasRunSettings
+            public ref class FOSMSettings : IHasRunSettings
             {
             private:
-                SharedPointerProvider<Uncertainty::NumericalIntegrationSettingsS>* shared = new SharedPointerProvider(new Uncertainty::NumericalIntegrationSettingsS());
+                SharedPointerProvider<Uncertainty::FOSMSettings>* shared = new SharedPointerProvider(new Uncertainty::FOSMSettings());
                 Wrappers::RunSettings^ runSettings = gcnew Wrappers::RunSettings();
             public:
-                NumericalIntegrationSettingsS() {}
-                ~NumericalIntegrationSettingsS() { this->!NumericalIntegrationSettingsS(); }
-                !NumericalIntegrationSettingsS() { delete shared; }
+                FOSMSettings() {}
+                ~FOSMSettings() { this->!FOSMSettings(); }
+                !FOSMSettings() { delete shared; }
 
                 property bool CalculateCorrelations
                 {
@@ -57,7 +57,12 @@ namespace Deltares
                     void set(bool value) { shared->object->CalculateInputCorrelations = value; }
                 }
 
-                System::Collections::Generic::List<Reliability::Wrappers::StochastSettings^>^ StochastSettings = gcnew System::Collections::Generic::List<Reliability::Wrappers::StochastSettings^>();
+                property double StepSize
+                {
+                    double get() { return shared->object->StepSize; }
+                    void set(double value) { shared->object->StepSize = value; }
+                }
+
 
                 virtual property Wrappers::RunSettings^ RunSettings
                 {
@@ -70,14 +75,8 @@ namespace Deltares
                     return shared->object->isValid();
                 }
 
-                std::shared_ptr<Uncertainty::NumericalIntegrationSettingsS> GetSettings()
+                std::shared_ptr<Uncertainty::FOSMSettings> GetSettings()
                 {
-                    shared->object->StochastSet->stochastSettings.clear();
-                    for (int i = 0; i < StochastSettings->Count; i++)
-                    {
-                        shared->object->StochastSet->stochastSettings.push_back(StochastSettings[i]->GetSettings());
-                    }
-
                     shared->object->RunSettings = RunSettings->GetSettings();
                     return shared->object;
                 }

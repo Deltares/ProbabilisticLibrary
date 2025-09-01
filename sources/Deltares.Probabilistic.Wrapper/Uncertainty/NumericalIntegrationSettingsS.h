@@ -21,9 +21,8 @@
 //
 #pragma once
 
-#include "../../Deltares.Probabilistic/Sensitivity/FORMSettingsS.h"
+#include "../../Deltares.Probabilistic/Uncertainty/NumericalIntegrationSettingsS.h"
 #include "../Model/RunSettings.h"
-#include "../Model/GradientSettings.h"
 #include "../Reliability/StochastSettings.h"
 #include "../Utils/SharedPointerProvider.h"
 
@@ -36,38 +35,29 @@ namespace Deltares
             using namespace Deltares::Utils::Wrappers;
             using namespace Deltares::Models::Wrappers;
 
-            public ref class FORMSettingsS : IHasRunSettings
+            public ref class NumericalIntegrationSettingsS : IHasRunSettings
             {
             private:
-                SharedPointerProvider<Uncertainty::FORMSettingsS>* shared = new SharedPointerProvider(new Uncertainty::FORMSettingsS());
+                SharedPointerProvider<Uncertainty::NumericalIntegrationSettingsS>* shared = new SharedPointerProvider(new Uncertainty::NumericalIntegrationSettingsS());
                 Wrappers::RunSettings^ runSettings = gcnew Wrappers::RunSettings();
             public:
-                FORMSettingsS() {}
-                ~FORMSettingsS() { this->!FORMSettingsS(); }
-                !FORMSettingsS() { delete shared; }
+                NumericalIntegrationSettingsS() {}
+                ~NumericalIntegrationSettingsS() { this->!NumericalIntegrationSettingsS(); }
+                !NumericalIntegrationSettingsS() { delete shared; }
 
-                property double Minimum
+                property bool CalculateCorrelations
                 {
-                    double get() { return shared->object->Minimum; }
-                    void set(double value) { shared->object->Minimum = value; }
+                    bool get() { return shared->object->CalculateCorrelations; }
+                    void set(bool value) { shared->object->CalculateCorrelations = value; }
                 }
 
-                property double Maximum
+                property bool CalculateInputCorrelations
                 {
-                    double get() { return shared->object->Maximum; }
-                    void set(double value) { shared->object->Maximum = value; }
+                    bool get() { return shared->object->CalculateInputCorrelations; }
+                    void set(bool value) { shared->object->CalculateInputCorrelations = value; }
                 }
 
-                property double StepSize
-                {
-                    double get() { return shared->object->StepSize; }
-                    void set(double value) { shared->object->StepSize = value; }
-                }
-
-                /**
-                 * \brief Settings for calculating the gradient at a stochast point
-                 */
-                Wrappers::GradientSettings^ GradientSettings = gcnew Wrappers::GradientSettings();
+                System::Collections::Generic::List<Reliability::Wrappers::StochastSettings^>^ StochastSettings = gcnew System::Collections::Generic::List<Reliability::Wrappers::StochastSettings^>();
 
                 virtual property Wrappers::RunSettings^ RunSettings
                 {
@@ -80,9 +70,14 @@ namespace Deltares
                     return shared->object->isValid();
                 }
 
-                std::shared_ptr<Uncertainty::FORMSettingsS> GetSettings()
+                std::shared_ptr<Uncertainty::NumericalIntegrationSettingsS> GetSettings()
                 {
-                    shared->object->GradientSettings = this->GradientSettings->GetSettings();
+                    shared->object->StochastSet->stochastSettings.clear();
+                    for (int i = 0; i < StochastSettings->Count; i++)
+                    {
+                        shared->object->StochastSet->stochastSettings.push_back(StochastSettings[i]->GetSettings());
+                    }
+
                     shared->object->RunSettings = RunSettings->GetSettings();
                     return shared->object;
                 }

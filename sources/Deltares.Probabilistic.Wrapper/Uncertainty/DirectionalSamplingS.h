@@ -21,9 +21,9 @@
 //
 #pragma once
 
-#include "CrudeMonteCarloSettingsS.h"
+#include "DirectionalSamplingSettingsS.h"
 #include "SensitivityMethod.h"
-#include "../../Deltares.Probabilistic/Sensitivity/CrudeMonteCarloS.h"
+#include "../../Deltares.Probabilistic/Uncertainty/DirectionalSamplingS.h"
 
 namespace Deltares
 {
@@ -31,16 +31,16 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            public ref class CrudeMonteCarloS : public SensitivityMethod
+            public ref class DirectionalSamplingS : public SensitivityMethod
             {
             private:
-                SharedPointerProvider<Uncertainty::CrudeMonteCarloS>* shared = new SharedPointerProvider(new Uncertainty::CrudeMonteCarloS());
+                Utils::Wrappers::SharedPointerProvider<Uncertainty::DirectionalSamplingS>* shared = new Utils::Wrappers::SharedPointerProvider(new Uncertainty::DirectionalSamplingS());
             public:
-                CrudeMonteCarloS() { }
-                ~CrudeMonteCarloS() { this->!CrudeMonteCarloS(); }
-                !CrudeMonteCarloS() { delete shared; }
+                DirectionalSamplingS() { }
+                ~DirectionalSamplingS() { this->!DirectionalSamplingS(); }
+                !DirectionalSamplingS() { delete shared; }
 
-                CrudeMonteCarloSettingsS^ Settings = gcnew CrudeMonteCarloSettingsS();
+                DirectionalSamplingSettingsS^ Settings = gcnew DirectionalSamplingSettingsS();
 
                 System::Object^ GetSettings() override { return Settings; }
 

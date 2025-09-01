@@ -21,10 +21,9 @@
 //
 #pragma once
 
-#include "../../Deltares.Probabilistic/Sensitivity/DirectionalSamplingSettingsS.h"
-#include "../Model/RunSettings.h"
+#include "../../Deltares.Probabilistic/Uncertainty/CrudeMonteCarloSettingsS.h"
 #include "../Model/RandomSettings.h"
-#include "../Statistics/ProbabilityValue.h"
+#include "../Model/RunSettings.h"
 #include "../Reliability/StochastSettings.h"
 #include "../Utils/SharedPointerProvider.h"
 
@@ -37,15 +36,18 @@ namespace Deltares
             using namespace Deltares::Utils::Wrappers;
             using namespace Deltares::Models::Wrappers;
 
-            public ref class DirectionalSamplingSettingsS : IHasRunSettings
+            public ref class CrudeMonteCarloSettingsS : IHasRunSettings
             {
             private:
-                SharedPointerProvider<Uncertainty::DirectionalSamplingSettingsS>* shared = new SharedPointerProvider(new Uncertainty::DirectionalSamplingSettingsS());
+                SharedPointerProvider<Uncertainty::CrudeMonteCarloSettingsS>* shared = new SharedPointerProvider(new Uncertainty::CrudeMonteCarloSettingsS());
                 Wrappers::RunSettings^ runSettings = gcnew Wrappers::RunSettings();
             public:
-                DirectionalSamplingSettingsS() {}
-                ~DirectionalSamplingSettingsS() { this->!DirectionalSamplingSettingsS(); }
-                !DirectionalSamplingSettingsS() { delete shared; }
+                CrudeMonteCarloSettingsS()
+                {
+                    shared->object->randomSettings = RandomSettings->GetSettings();
+                }
+                ~CrudeMonteCarloSettingsS() { this->!CrudeMonteCarloSettingsS(); }
+                !CrudeMonteCarloSettingsS() { delete shared; }
 
                 property bool CalculateCorrelations
                 {
@@ -59,32 +61,32 @@ namespace Deltares
                     void set(bool value) { shared->object->CalculateInputCorrelations = value; }
                 }
 
-                property int NumberDirections
+                property int Samples
                 {
-                    int get() { return shared->object->NumberDirections; }
-                    void set(int value) { shared->object->NumberDirections = value; }
+                    int get() { return shared->object->MaximumSamples; }
+                    void set(int value) { shared->object->MaximumSamples = value; }
                 }
 
-                property int MaximumIterations
+                property double VariationCoefficient
                 {
-                    int get() { return shared->object->MaximumIterations; }
-                    void set(int value) { shared->object->MaximumIterations = value; }
+                    double get() { return shared->object->VariationCoefficient; }
+                    void set(double value) { shared->object->VariationCoefficient = value; }
                 }
 
-                property double VariationCoefficientFailure
+                property double ProbabilityForConvergence
                 {
-                    double get() { return shared->object->VariationCoefficientFailure; }
-                    void set(double value) { shared->object->VariationCoefficientFailure = value; }
+                    double get() { return shared->object->ProbabilityForConvergence; }
+                    void set(double value) { shared->object->ProbabilityForConvergence = value; }
                 }
 
-                int GetRequiredSamples(int nStochasts)
+                int GetRequiredSamples()
                 {
-                    return shared->object->getRequiredSamples(nStochasts);
+                    return shared->object->getRequiredSamples();
                 }
 
-                static int GetRequiredSamples(double probability, double variationCoefficient, int nStochasts)
+                static int GetRequiredSamples(double probability, double variationCoefficient)
                 {
-                    return Uncertainty::DirectionalSamplingSettingsS::getRequiredSamples(probability, variationCoefficient, nStochasts);
+                    return Uncertainty::CrudeMonteCarloSettingsS::getRequiredSamples(probability, variationCoefficient);
                 }
 
                 property bool DeriveSamplesFromVariationCoefficient
@@ -92,8 +94,6 @@ namespace Deltares
                     bool get() { return shared->object->DeriveSamplesFromVariationCoefficient; }
                     void set(bool value) { shared->object->DeriveSamplesFromVariationCoefficient = value; }
                 }
-
-                System::Collections::Generic::List<Statistics::Wrappers::ProbabilityValue^>^ RequestedQuantiles = gcnew System::Collections::Generic::List<Statistics::Wrappers::ProbabilityValue^>();
 
                 Wrappers::RandomSettings^ RandomSettings = gcnew Wrappers::RandomSettings();
 
@@ -103,21 +103,24 @@ namespace Deltares
                     void set(Wrappers::RunSettings^ value) { runSettings = value; }
                 }
 
+                System::Collections::Generic::List<Reliability::Wrappers::StochastSettings^>^ StochastSettings = gcnew System::Collections::Generic::List<Reliability::Wrappers::StochastSettings^>();
+
                 bool IsValid()
                 {
                     return shared->object->isValid();
                 }
 
-                std::shared_ptr<Uncertainty::DirectionalSamplingSettingsS> GetSettings()
+                std::shared_ptr<Uncertainty::CrudeMonteCarloSettingsS> GetSettings()
                 {
-                    shared->object->RequestedQuantiles.clear();
-                    for (int i = 0; i < RequestedQuantiles->Count; i++)
+                    shared->object->StochastSet->stochastSettings.clear();
+                    for (int i = 0; i < StochastSettings->Count; i++)
                     {
-                        shared->object->RequestedQuantiles.push_back(RequestedQuantiles[i]->GetValue());
+                        shared->object->StochastSet->stochastSettings.push_back(StochastSettings[i]->GetSettings());
                     }
 
-                    shared->object->randomSettings = RandomSettings->GetSettings(),
-                        shared->object->RunSettings = RunSettings->GetSettings();
+                    shared->object->randomSettings = RandomSettings->GetSettings();
+                    shared->object->RunSettings = RunSettings->GetSettings();
+
                     return shared->object;
                 }
             };

@@ -20,9 +20,10 @@
 // All rights reserved.
 //
 #pragma once
-#include "../Statistics/Stochast.h"
-#include "../Model/ModelRunner.h"
-#include "../../Deltares.Probabilistic/Sensitivity/UncertaintyMethod.h"
+
+#include "FORMSettingsS.h"
+#include "SensitivityMethod.h"
+#include "../../Deltares.Probabilistic/Uncertainty/FORMS.h"
 
 namespace Deltares
 {
@@ -30,29 +31,30 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            public ref class SensitivityMethod
+            public ref class FORMS : public SensitivityMethod
             {
+            private:
+                Utils::Wrappers::SharedPointerProvider<Uncertainty::FORMS>* shared = new Utils::Wrappers::SharedPointerProvider(new Uncertainty::FORMS());
             public:
-                SensitivityMethod() {  }
+                FORMS() { }
+                ~FORMS() { this->!FORMS(); }
+                !FORMS() { delete shared; }
 
-                virtual std::shared_ptr<Uncertainty::UncertaintyMethod> GetNativeSensitivityMethod()
+                FORMSettingsS^ Settings = gcnew FORMSettingsS();
+
+                System::Object^ GetSettings() override { return Settings; }
+
+                bool IsValid() override { return Settings->IsValid(); }
+
+                std::shared_ptr<Uncertainty::UncertaintyMethod> GetNativeSensitivityMethod() override
                 {
-                    return nullptr;
-                };
-
-                Statistics::Wrappers::Stochast^ GetStochast(Models::Wrappers::ModelRunner^ modelRunner);
-
-                Statistics::Wrappers::CorrelationMatrix^ GetCorrelationMatrix()
-                {
-                    return gcnew Statistics::Wrappers::CorrelationMatrix(this->GetNativeSensitivityMethod()->getCorrelationMatrix());
+                    shared->object->Settings = Settings->GetSettings();
+                    return shared->object;
                 }
-
-                virtual System::Object^ GetSettings() { return nullptr; }
-                virtual bool IsValid() { return false; }
-                virtual void Stop()    { }
-                virtual bool IsStopped() { return false; }
             };
         }
     }
 }
+
+
 

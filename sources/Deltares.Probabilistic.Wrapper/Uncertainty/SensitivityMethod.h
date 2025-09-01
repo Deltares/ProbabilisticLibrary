@@ -20,10 +20,9 @@
 // All rights reserved.
 //
 #pragma once
-
-#include "DirectionalSamplingSettingsS.h"
-#include "SensitivityMethod.h"
-#include "../../Deltares.Probabilistic/Sensitivity/DirectionalSamplingS.h"
+#include "../Statistics/Stochast.h"
+#include "../Model/ModelRunner.h"
+#include "../../Deltares.Probabilistic/Uncertainty/UncertaintyMethod.h"
 
 namespace Deltares
 {
@@ -31,30 +30,29 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            public ref class DirectionalSamplingS : public SensitivityMethod
+            public ref class SensitivityMethod
             {
-            private:
-                Utils::Wrappers::SharedPointerProvider<Uncertainty::DirectionalSamplingS>* shared = new Utils::Wrappers::SharedPointerProvider(new Uncertainty::DirectionalSamplingS());
             public:
-                DirectionalSamplingS() { }
-                ~DirectionalSamplingS() { this->!DirectionalSamplingS(); }
-                !DirectionalSamplingS() { delete shared; }
+                SensitivityMethod() {  }
 
-                DirectionalSamplingSettingsS^ Settings = gcnew DirectionalSamplingSettingsS();
-
-                System::Object^ GetSettings() override { return Settings; }
-
-                bool IsValid() override { return Settings->IsValid(); }
-
-                std::shared_ptr<Uncertainty::UncertaintyMethod> GetNativeSensitivityMethod() override
+                virtual std::shared_ptr<Uncertainty::UncertaintyMethod> GetNativeSensitivityMethod()
                 {
-                    shared->object->Settings = Settings->GetSettings();
-                    return shared->object;
+                    return nullptr;
+                };
+
+                Statistics::Wrappers::Stochast^ GetStochast(Models::Wrappers::ModelRunner^ modelRunner);
+
+                Statistics::Wrappers::CorrelationMatrix^ GetCorrelationMatrix()
+                {
+                    return gcnew Statistics::Wrappers::CorrelationMatrix(this->GetNativeSensitivityMethod()->getCorrelationMatrix());
                 }
+
+                virtual System::Object^ GetSettings() { return nullptr; }
+                virtual bool IsValid() { return false; }
+                virtual void Stop()    { }
+                virtual bool IsStopped() { return false; }
             };
         }
     }
 }
-
-
 

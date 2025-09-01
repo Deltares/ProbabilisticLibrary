@@ -24,7 +24,7 @@
 #include "NumericalIntegrationS.h"
 #include "NumericalIntegrationSettingsS.h"
 #include "SensitivityMethod.h"
-#include "../../Deltares.Probabilistic/Sensitivity/NumericalIntegrationS.h"
+#include "../../Deltares.Probabilistic/Uncertainty/NumericalIntegrationS.h"
 
 namespace Deltares
 {

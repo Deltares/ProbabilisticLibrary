@@ -37,8 +37,8 @@
 #include "Message.h"
 #include "ModelSample.h"
 #include "ProgressIndicator.h"
-#include "../Sensitivity/CorrelationMatrixBuilder.h"
-#include "../Sensitivity/UncertaintyResult.h"
+#include "../Uncertainty/CorrelationMatrixBuilder.h"
+#include "../Uncertainty/UncertaintyResult.h"
 
 namespace Deltares
 {

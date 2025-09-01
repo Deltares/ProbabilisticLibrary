@@ -23,13 +23,13 @@
 
 #include "../projectBuilder.h"
 
-#include "../../Deltares.Probabilistic/Sensitivity/UncertaintyProject.h"
-#include "../../Deltares.Probabilistic/Sensitivity/CrudeMonteCarloS.h"
-#include "../../Deltares.Probabilistic/Sensitivity/ImportanceSamplingS.h"
-#include "../../Deltares.Probabilistic/Sensitivity/NumericalIntegrationS.h"
-#include "../../Deltares.Probabilistic/Sensitivity/DirectionalSamplingS.h"
-#include "../../Deltares.Probabilistic/Sensitivity/FORMS.h"
-#include "../../Deltares.Probabilistic/Sensitivity/FOSM.h"
+#include "../../Deltares.Probabilistic/Uncertainty/UncertaintyProject.h"
+#include "../../Deltares.Probabilistic/Uncertainty/CrudeMonteCarloS.h"
+#include "../../Deltares.Probabilistic/Uncertainty/ImportanceSamplingS.h"
+#include "../../Deltares.Probabilistic/Uncertainty/NumericalIntegrationS.h"
+#include "../../Deltares.Probabilistic/Uncertainty/DirectionalSamplingS.h"
+#include "../../Deltares.Probabilistic/Uncertainty/FORMS.h"
+#include "../../Deltares.Probabilistic/Uncertainty/FOSM.h"
 
 #include <gtest/gtest.h>
 

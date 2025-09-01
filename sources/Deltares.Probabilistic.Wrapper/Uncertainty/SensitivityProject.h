@@ -23,9 +23,9 @@
 
 #include "../Utils/SharedPointerProvider.h"
 #include "../Statistics/Stochast.h"
-#include "../Sensitivity/SensitivityMethod.h"
+#include "../Uncertainty/SensitivityMethod.h"
 #include "../Reliability/DesignPoint.h"
-#include "../../Deltares.Probabilistic/Sensitivity/UncertaintyProject.h"
+#include "../../Deltares.Probabilistic/Uncertainty/UncertaintyProject.h"
 #include "../Statistics/CorrelationMatrix.h"
 
 namespace Deltares

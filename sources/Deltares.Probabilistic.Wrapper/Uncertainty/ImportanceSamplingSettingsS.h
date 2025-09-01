@@ -21,7 +21,7 @@
 //
 #pragma once
 
-#include "../../Deltares.Probabilistic/Sensitivity/ImportanceSamplingSettingsS.h"
+#include "../../Deltares.Probabilistic/Uncertainty/ImportanceSamplingSettingsS.h"
 #include "../Model/RandomSettings.h"
 #include "../Model/RunSettings.h"
 #include "../Reliability/StochastSettings.h"

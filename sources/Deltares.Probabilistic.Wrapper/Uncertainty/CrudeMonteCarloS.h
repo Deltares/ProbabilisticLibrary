@@ -21,9 +21,9 @@
 //
 #pragma once
 
-#include "FOSMSettings.h"
+#include "CrudeMonteCarloSettingsS.h"
 #include "SensitivityMethod.h"
-#include "../../Deltares.Probabilistic/Sensitivity/FOSM.h"
+#include "../../Deltares.Probabilistic/Uncertainty/CrudeMonteCarloS.h"
 
 namespace Deltares
 {
@@ -31,16 +31,16 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            public ref class FOSM : public SensitivityMethod
+            public ref class CrudeMonteCarloS : public SensitivityMethod
             {
             private:
-                Utils::Wrappers::SharedPointerProvider<Uncertainty::FOSM>* shared = new Utils::Wrappers::SharedPointerProvider(new Uncertainty::FOSM());
+                SharedPointerProvider<Uncertainty::CrudeMonteCarloS>* shared = new SharedPointerProvider(new Uncertainty::CrudeMonteCarloS());
             public:
-                FOSM() { }
-                ~FOSM() { this->!FOSM(); }
-                !FOSM() { delete shared; }
+                CrudeMonteCarloS() { }
+                ~CrudeMonteCarloS() { this->!CrudeMonteCarloS(); }
+                !CrudeMonteCarloS() { delete shared; }
 
-                FOSMSettings^ Settings = gcnew FOSMSettings();
+                CrudeMonteCarloSettingsS^ Settings = gcnew CrudeMonteCarloSettingsS();
 
                 System::Object^ GetSettings() override { return Settings; }
 
