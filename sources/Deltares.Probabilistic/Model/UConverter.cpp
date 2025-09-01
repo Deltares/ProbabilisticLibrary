@@ -711,7 +711,7 @@ namespace Deltares
             return stochastPoint;
         }
 
-        void  UConverter::registerSample(std::shared_ptr<Sensitivity::CorrelationMatrixBuilder> correlationMatrixBuilder, std::shared_ptr<Sample> sample)
+        void  UConverter::registerSample(std::shared_ptr<Uncertainty::CorrelationMatrixBuilder> correlationMatrixBuilder, std::shared_ptr<Sample> sample)
         {
             std::vector<double> uValues = this->getExpandedUValues(sample);
 

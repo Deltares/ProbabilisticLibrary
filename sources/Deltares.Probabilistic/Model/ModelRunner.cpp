@@ -525,9 +525,9 @@ namespace Deltares
          * \param stochast Stochast in the sensitivity result
          * \return Sensitivity result
          */
-        Sensitivity::UncertaintyResult ModelRunner::getSensitivityResult(std::shared_ptr<Statistics::Stochast> stochast) const
+        Uncertainty::UncertaintyResult ModelRunner::getSensitivityResult(std::shared_ptr<Statistics::Stochast> stochast) const
         {
-            auto result = Sensitivity::UncertaintyResult();
+            auto result = Uncertainty::UncertaintyResult();
 
             result.stochast = stochast;
 
@@ -544,7 +544,7 @@ namespace Deltares
             return result;
         }
 
-        void  ModelRunner::registerSample(std::shared_ptr<Sensitivity::CorrelationMatrixBuilder> correlationMatrixBuilder, std::shared_ptr<Sample> sample)
+        void  ModelRunner::registerSample(std::shared_ptr<Uncertainty::CorrelationMatrixBuilder> correlationMatrixBuilder, std::shared_ptr<Sample> sample)
         {
             this->uConverter->registerSample(correlationMatrixBuilder, sample);
         }

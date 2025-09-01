@@ -37,7 +37,7 @@ namespace Deltares
             public ref class SensitivityProject
             {
             private:
-                SharedPointerProvider<Sensitivity::UncertaintyProject>* shared = new Utils::Wrappers::SharedPointerProvider(new Sensitivity::UncertaintyProject());
+                SharedPointerProvider<Uncertainty::UncertaintyProject>* shared = new Utils::Wrappers::SharedPointerProvider(new Uncertainty::UncertaintyProject());
                 ZLambda getZLambda();
                 void invokeSample(std::shared_ptr<Models::ModelSample> sample);
                 System::Collections::Generic::List<System::Runtime::InteropServices::GCHandle>^ handles = gcnew System::Collections::Generic::List<System::Runtime::InteropServices::GCHandle>();
@@ -67,7 +67,7 @@ namespace Deltares
 
                 TagRepository^ TagRepository = nullptr;
 
-                Sensitivity::Wrappers::SensitivityMethod^ SensitivityMethod = nullptr;
+                Uncertainty::Wrappers::SensitivityMethod^ SensitivityMethod = nullptr;
 
                 RunSettings^ Settings = gcnew RunSettings();
                 ProgressIndicator^ ProgressIndicator = nullptr;

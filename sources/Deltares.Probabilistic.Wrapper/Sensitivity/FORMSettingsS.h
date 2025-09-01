@@ -29,7 +29,7 @@
 
 namespace Deltares
 {
-    namespace Sensitivity
+    namespace Uncertainty
     {
         namespace Wrappers
         {
@@ -39,7 +39,7 @@ namespace Deltares
             public ref class FORMSettingsS : IHasRunSettings
             {
             private:
-                SharedPointerProvider<Sensitivity::FORMSettingsS>* shared = new SharedPointerProvider(new Sensitivity::FORMSettingsS());
+                SharedPointerProvider<Uncertainty::FORMSettingsS>* shared = new SharedPointerProvider(new Uncertainty::FORMSettingsS());
                 Wrappers::RunSettings^ runSettings = gcnew Wrappers::RunSettings();
             public:
                 FORMSettingsS() {}
@@ -80,7 +80,7 @@ namespace Deltares
                     return shared->object->isValid();
                 }
 
-                std::shared_ptr<Sensitivity::FORMSettingsS> GetSettings()
+                std::shared_ptr<Uncertainty::FORMSettingsS> GetSettings()
                 {
                     shared->object->GradientSettings = this->GradientSettings->GetSettings();
                     shared->object->RunSettings = RunSettings->GetSettings();

@@ -22,51 +22,49 @@
 #include "CrudeMonteCarloSettingsS.h"
 #include <limits>
 
-namespace Deltares
+namespace Deltares::Uncertainty
 {
-    namespace Sensitivity
+    int CrudeMonteCarloSettingsS::getRequiredSamples()
     {
-        int CrudeMonteCarloSettingsS::getRequiredSamples()
+        return getRequiredSamples(this->ProbabilityForConvergence, this->VariationCoefficient);
+    }
+
+    /**
+     * \brief Gets the number of runs which is needed to achieve the variation coefficient at the probability for convergence
+     */
+    int CrudeMonteCarloSettingsS::getRequiredSamples(double probability, double variationCoefficient)
+    {
+        if (variationCoefficient <= 0.0 || probability <= 0.0 || probability >= 1.0)
         {
-            return getRequiredSamples(this->ProbabilityForConvergence, this->VariationCoefficient);
+            return std::numeric_limits<int>::max();
         }
-
-        /**
-         * \brief Gets the number of runs which is needed to achieve the variation coefficient at the probability for convergence
-         */
-        int CrudeMonteCarloSettingsS::getRequiredSamples(double probability, double variationCoefficient)
+        else
         {
-            if (variationCoefficient <= 0.0 || probability <= 0.0 || probability >= 1.0)
-            {
-                return std::numeric_limits<int>::max();
-            }
-            else
-            {
-                probability = std::min(probability, 1 - probability);
+            probability = std::min(probability, 1 - probability);
 
-                double samples = (1 - probability) / (variationCoefficient * variationCoefficient * probability);
+            double samples = (1 - probability) / (variationCoefficient * variationCoefficient * probability);
 
-                return static_cast<int>(std::ceil(samples));
-            }
+            return static_cast<int>(std::ceil(samples));
         }
+    }
 
-        /**
-         * \brief Modifies the variation coefficient so that the number of required samples matches a given value
-         */
-        void CrudeMonteCarloSettingsS::setRequiredSamples(int samples)
+    /**
+     * \brief Modifies the variation coefficient so that the number of required samples matches a given value
+     */
+    void CrudeMonteCarloSettingsS::setRequiredSamples(int samples)
+    {
+        double probability = this->ProbabilityForConvergence;
+        if (probability > 0 && probability < 1)
         {
-            double probability = this->ProbabilityForConvergence;
-            if (probability > 0 && probability < 1)
+            if (probability > 0.5)
             {
-                if (probability > 0.5)
-                {
-                    probability = 1 - probability;
-                }
-                double varPf = sqrt((1 - probability) / (samples * probability));
-                this->VariationCoefficient = varPf;
+                probability = 1 - probability;
             }
+            double varPf = sqrt((1 - probability) / (samples * probability));
+            this->VariationCoefficient = varPf;
         }
     }
 }
+
 
 

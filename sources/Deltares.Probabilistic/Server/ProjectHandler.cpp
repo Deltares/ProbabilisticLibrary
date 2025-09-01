@@ -215,14 +215,14 @@ namespace Deltares
                 runProjectSettings[id] = std::make_shared<Deltares::Models::RunProjectSettings>();
                 break;
             case ObjectType::SensitivityProject:
-                sensitivityProjects[id] = std::make_shared<Deltares::Sensitivity::UncertaintyProject>();
+                uncertaintyProjects[id] = std::make_shared<Deltares::Uncertainty::UncertaintyProject>();
                 break;
             case ObjectType::SensitivitySettings:
-                sensitivitySettingsValues[id] = std::make_shared<Deltares::Sensitivity::SettingsS>();
+                uncertaintySettingsValues[id] = std::make_shared<Deltares::Uncertainty::SettingsS>();
                 break;
             case ObjectType::SensitivityResult:
-                sensitivityResults[id] = std::make_shared<Deltares::Sensitivity::UncertaintyResult>();
-                sensitivityResultsIds[sensitivityResults[id]] = id;
+                uncertaintyResults[id] = std::make_shared<Deltares::Uncertainty::UncertaintyResult>();
+                sensitivityResultsIds[uncertaintyResults[id]] = id;
                 break;
             case ObjectType::LengthEffectProject:
                 lengthEffectProjects[id] = std::make_shared<Deltares::Reliability::LengthEffectProject>();
@@ -264,9 +264,9 @@ namespace Deltares
             case ObjectType::SelfCorrelationMatrix: selfCorrelationMatrices.erase(id); break;
             case ObjectType::RunProject: runProjects.erase(id); break;
             case ObjectType::RunProjectSettings: runProjectSettings.erase(id); break;
-            case ObjectType::SensitivityProject: sensitivityProjects.erase(id); break;
-            case ObjectType::SensitivitySettings: sensitivitySettingsValues.erase(id); break;
-            case ObjectType::SensitivityResult: sensitivityResultsIds.erase(sensitivityResults[id]); sensitivityResults.erase(id); break;
+            case ObjectType::SensitivityProject: uncertaintyProjects.erase(id); break;
+            case ObjectType::SensitivitySettings: uncertaintySettingsValues.erase(id); break;
+            case ObjectType::SensitivityResult: sensitivityResultsIds.erase(uncertaintyResults[id]); uncertaintyResults.erase(id); break;
             case ObjectType::LengthEffectProject: lengthEffectProjects.erase(id); break;
             default: throw probLibException("object type");
             }
@@ -400,7 +400,7 @@ namespace Deltares
             }
             else if (objectType == ObjectType::SensitivitySettings)
             {
-                std::shared_ptr<Sensitivity::SettingsS> settings = sensitivitySettingsValues[id];
+                std::shared_ptr<Uncertainty::SettingsS> settings = uncertaintySettingsValues[id];
 
                 if (property_ == "variation_coefficient") return settings->VariationCoefficient;
                 else if (property_ == "probability_for_convergence") return settings->ProbabilityForConvergence;
@@ -579,7 +579,7 @@ namespace Deltares
             }
             else if (objectType == ObjectType::SensitivitySettings)
             {
-                std::shared_ptr<Sensitivity::SettingsS> settings = sensitivitySettingsValues[id];
+                std::shared_ptr<Uncertainty::SettingsS> settings = uncertaintySettingsValues[id];
 
                 if (property_ == "variation_coefficient") settings->VariationCoefficient = value;
                 else if (property_ == "probability_for_convergence") settings->ProbabilityForConvergence = value;
@@ -652,7 +652,7 @@ namespace Deltares
             }
             else if (objectType == ObjectType::SensitivityProject)
             {
-                std::shared_ptr<Sensitivity::UncertaintyProject> project = sensitivityProjects[id];
+                std::shared_ptr<Uncertainty::UncertaintyProject> project = uncertaintyProjects[id];
 
                 if (property_ == "sensitivity_stochasts_count") return static_cast<int>(project->sensitivityResults.size());
                 else if (property_ == "stochasts_count") return static_cast<int>(project->stochasts.size());
@@ -712,7 +712,7 @@ namespace Deltares
             }
             else if (objectType == ObjectType::SensitivitySettings)
             {
-                std::shared_ptr<Sensitivity::SettingsS> settings = sensitivitySettingsValues[id];
+                std::shared_ptr<Uncertainty::SettingsS> settings = uncertaintySettingsValues[id];
 
                 if (property_ == "max_parallel_processes") return settings->RunSettings->MaxParallelProcesses;
                 else if (property_ == "minimum_samples") return settings->MinimumSamples;
@@ -725,7 +725,7 @@ namespace Deltares
             }
             else if (objectType == ObjectType::SensitivityResult)
             {
-                std::shared_ptr<Sensitivity::UncertaintyResult> result = sensitivityResults[id];
+                std::shared_ptr<Uncertainty::UncertaintyResult> result = uncertaintyResults[id];
 
                 if (property_ == "evaluations_count") return static_cast<int>(result->evaluations.size());
                 else if (property_ == "quantile_evaluations_count") return static_cast<int>(result->quantileEvaluations.size());
@@ -809,7 +809,7 @@ namespace Deltares
             }
             else if (objectType == ObjectType::SensitivityProject)
             {
-                std::shared_ptr<Sensitivity::UncertaintyProject> project = sensitivityProjects[id];
+                std::shared_ptr<Uncertainty::UncertaintyProject> project = uncertaintyProjects[id];
 
                 if (property_ == "sensitivity_stochast") return GetStochastId(project->sensitivityResult->stochast, newId);
                 else if (property_ == "sensitivity_result") return GetSensitivityResultId(project->sensitivityResult, newId);
@@ -854,7 +854,7 @@ namespace Deltares
             }
             else if (objectType == ObjectType::SensitivityResult)
             {
-                std::shared_ptr<Sensitivity::UncertaintyResult> result = sensitivityResults[id];
+                std::shared_ptr<Uncertainty::UncertaintyResult> result = uncertaintyResults[id];
 
                 if (property_ == "variable") return GetStochastId(result->stochast, newId);
             }
@@ -902,9 +902,9 @@ namespace Deltares
             }
             else if (objectType == ObjectType::SensitivityProject)
             {
-                std::shared_ptr<Sensitivity::UncertaintyProject> project = sensitivityProjects[id];
+                std::shared_ptr<Uncertainty::UncertaintyProject> project = uncertaintyProjects[id];
 
-                if (property_ == "settings") project->settings = sensitivitySettingsValues[value];
+                if (property_ == "settings") project->settings = uncertaintySettingsValues[value];
                 else if (property_ == "correlation_matrix") project->correlationMatrix = correlationMatrices[value];
                 else if (property_ == "share_project") project->shareStochasts(GetProject(value));
             }
@@ -982,7 +982,7 @@ namespace Deltares
             }
             else if (objectType == ObjectType::SensitivitySettings)
             {
-                std::shared_ptr<Sensitivity::SettingsS> settings = sensitivitySettingsValues[id];
+                std::shared_ptr<Uncertainty::SettingsS> settings = uncertaintySettingsValues[id];
 
                 if (property_ == "max_parallel_processes") settings->RunSettings->MaxParallelProcesses = value;
                 else if (property_ == "minimum_samples") settings->MinimumSamples = value;
@@ -1129,13 +1129,13 @@ namespace Deltares
             }
             else if (objectType == ObjectType::SensitivityProject)
             {
-                std::shared_ptr<Sensitivity::UncertaintyProject> project = sensitivityProjects[id];
+                std::shared_ptr<Uncertainty::UncertaintyProject> project = uncertaintyProjects[id];
 
                 if (property_ == "is_valid") return project->isValid();
             }
             else if (objectType == ObjectType::SensitivitySettings)
             {
-                std::shared_ptr<Sensitivity::SettingsS> settings = sensitivitySettingsValues[id];
+                std::shared_ptr<Uncertainty::SettingsS> settings = uncertaintySettingsValues[id];
 
                 if (property_ == "derive_samples_from_variation_coefficient") return settings->DeriveSamplesFromVariationCoefficient;
                 else if (property_ == "calculate_correlations") return settings->CalculateCorrelations;
@@ -1214,7 +1214,7 @@ namespace Deltares
             }
             else if (objectType == ObjectType::SensitivitySettings)
             {
-                std::shared_ptr<Sensitivity::SettingsS> settings = sensitivitySettingsValues[id];
+                std::shared_ptr<Uncertainty::SettingsS> settings = uncertaintySettingsValues[id];
 
                 if (property_ == "derive_samples_from_variation_coefficient") settings->DeriveSamplesFromVariationCoefficient = value;
                 else if (property_ == "calculate_correlations") settings->CalculateCorrelations = value;
@@ -1315,9 +1315,9 @@ namespace Deltares
             }
             else if (objectType == ObjectType::SensitivitySettings)
             {
-                std::shared_ptr<Sensitivity::SettingsS> settings = sensitivitySettingsValues[id];
+                std::shared_ptr<Uncertainty::SettingsS> settings = uncertaintySettingsValues[id];
 
-                if (property_ == "uncertainty_method") return Sensitivity::SettingsS::getSensitivityMethodTypeString(settings->SensitivityMethod);
+                if (property_ == "uncertainty_method") return Uncertainty::SettingsS::getSensitivityMethodTypeString(settings->SensitivityMethod);
                 else if (property_ == "gradient_type") return GradientSettings::getGradientTypeString(settings->GradientSettings->gradientType);
             }
             else if (objectType == ObjectType::CombineSettings)
@@ -1347,7 +1347,7 @@ namespace Deltares
             }
             else if (objectType == ObjectType::SensitivityResult)
             {
-                std::shared_ptr<Sensitivity::UncertaintyResult> result = sensitivityResults[id];
+                std::shared_ptr<Uncertainty::UncertaintyResult> result = uncertaintyResults[id];
 
                 if (property_ == "identifier") return result->getIdentifier();
             }
@@ -1420,9 +1420,9 @@ namespace Deltares
             }
             else if (objectType == ObjectType::SensitivitySettings)
             {
-                std::shared_ptr<Sensitivity::SettingsS> settings = sensitivitySettingsValues[id];
+                std::shared_ptr<Uncertainty::SettingsS> settings = uncertaintySettingsValues[id];
 
-                if (property_ == "uncertainty_method") settings->SensitivityMethod = Sensitivity::SettingsS::getSensitivityMethodType(value);
+                if (property_ == "uncertainty_method") settings->SensitivityMethod = Uncertainty::SettingsS::getSensitivityMethodType(value);
                 else if (property_ == "gradient_type") settings->GradientSettings->gradientType = GradientSettings::getGradientType(value);
             }
             else if (objectType == ObjectType::CombineSettings)
@@ -1452,7 +1452,7 @@ namespace Deltares
             }
             else if (objectType == ObjectType::SensitivityProject)
             {
-                std::shared_ptr<Sensitivity::UncertaintyProject> sensitivityProject = sensitivityProjects[id];
+                std::shared_ptr<Uncertainty::UncertaintyProject> sensitivityProject = uncertaintyProjects[id];
 
                 if (property_ == "model_name") sensitivityProject->model->name = value;
             }
@@ -1601,7 +1601,7 @@ namespace Deltares
             }
             else if (objectType == ObjectType::SensitivityProject)
             {
-                std::shared_ptr<Sensitivity::UncertaintyProject> project = sensitivityProjects[id];
+                std::shared_ptr<Uncertainty::UncertaintyProject> project = uncertaintyProjects[id];
 
                 if (property_ == "variables")
                 {
@@ -1743,7 +1743,7 @@ namespace Deltares
             }
             else if (objectType == ObjectType::SensitivitySettings)
             {
-                std::shared_ptr<Sensitivity::SettingsS> settings = sensitivitySettingsValues[id];
+                std::shared_ptr<Uncertainty::SettingsS> settings = uncertaintySettingsValues[id];
 
                 if (property_ == "stochast_settings")
                 {
@@ -1972,7 +1972,7 @@ namespace Deltares
             }
             else if (objectType == ObjectType::SensitivityProject)
             {
-                std::shared_ptr<Sensitivity::UncertaintyProject> project = sensitivityProjects[id];
+                std::shared_ptr<Uncertainty::UncertaintyProject> project = uncertaintyProjects[id];
 
                 if (property_ == "stochasts") return GetStochastId(project->stochasts[index], newId);
                 else if (property_ == "sensitivity_stochasts") return GetStochastId(project->sensitivityResults[index]->stochast, newId);
@@ -1990,13 +1990,13 @@ namespace Deltares
             }
             else if (objectType == ObjectType::SensitivitySettings)
             {
-                std::shared_ptr<Sensitivity::SettingsS> settings = sensitivitySettingsValues[id];
+                std::shared_ptr<Uncertainty::SettingsS> settings = uncertaintySettingsValues[id];
 
                 if (property_ == "quantiles") return GetProbabilityValueId(settings->RequestedQuantiles[index], newId);
             }
             else if (objectType == ObjectType::SensitivityResult)
             {
-                std::shared_ptr<Sensitivity::UncertaintyResult> result = sensitivityResults[id];
+                std::shared_ptr<Uncertainty::UncertaintyResult> result = uncertaintyResults[id];
 
                 if (property_ == "evaluations") return GetEvaluationId(result->evaluations[index], newId);
                 else if (property_ == "quantile_evaluations") return GetEvaluationId(result->quantileEvaluations[index], newId);
@@ -2028,7 +2028,7 @@ namespace Deltares
             }
             else if (objectType == ObjectType::SensitivityProject)
             {
-                std::shared_ptr<Sensitivity::UncertaintyProject> project = sensitivityProjects[id];
+                std::shared_ptr<Uncertainty::UncertaintyProject> project = uncertaintyProjects[id];
 
                 if (property_ == "model") project->model = std::make_shared<ZModel>(callBack);
             }
@@ -2046,7 +2046,7 @@ namespace Deltares
             }
             else if (objectType == ObjectType::SensitivityProject)
             {
-                std::shared_ptr<Sensitivity::UncertaintyProject> project = sensitivityProjects[id];
+                std::shared_ptr<Uncertainty::UncertaintyProject> project = uncertaintyProjects[id];
 
                 if (property_ == "model") project->model->setMultipleCallback(callBack);
             }
@@ -2070,7 +2070,7 @@ namespace Deltares
             }
             else if (objectType == ObjectType::SensitivityProject)
             {
-                std::shared_ptr<Sensitivity::UncertaintyProject> project = sensitivityProjects[id];
+                std::shared_ptr<Uncertainty::UncertaintyProject> project = uncertaintyProjects[id];
 
                 if (property_ == "run_samples") project->model->setRunMethod(callBack);
             }
@@ -2127,7 +2127,7 @@ namespace Deltares
             }
             else if (objectType == ObjectType::SensitivityProject)
             {
-                std::shared_ptr<Sensitivity::UncertaintyProject> project = sensitivityProjects[id];
+                std::shared_ptr<Uncertainty::UncertaintyProject> project = uncertaintyProjects[id];
 
                 if (method_ == "run") project->run();
             }
@@ -2265,7 +2265,7 @@ namespace Deltares
             return alphaIds[alpha];
         }
 
-        int ProjectHandler::GetSensitivityResultId(std::shared_ptr<Sensitivity::UncertaintyResult> result, int newId)
+        int ProjectHandler::GetSensitivityResultId(std::shared_ptr<Uncertainty::UncertaintyResult> result, int newId)
         {
             if (result == nullptr)
             {
@@ -2275,7 +2275,7 @@ namespace Deltares
             {
                 if (!sensitivityResultsIds.contains(result))
                 {
-                    sensitivityResults[newId] = result;
+                    uncertaintyResults[newId] = result;
                     types[newId] = ObjectType::SensitivityResult;
                     sensitivityResultsIds[result] = newId;
                 }
@@ -2395,9 +2395,9 @@ namespace Deltares
             {
                 return runProjects[id];
             }
-            else if (sensitivityProjects.contains(id))
+            else if (uncertaintyProjects.contains(id))
             {
-                return sensitivityProjects[id];
+                return uncertaintyProjects[id];
             }
             else
             {

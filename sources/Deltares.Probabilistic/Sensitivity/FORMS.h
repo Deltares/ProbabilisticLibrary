@@ -23,37 +23,34 @@
 #include "FORMSettingsS.h"
 #include "UncertaintyMethod.h"
 
-namespace Deltares
+namespace Deltares::Uncertainty
 {
-    namespace Sensitivity
+    /**
+     * \brief Calculates the sensitivity using the FORM algorithm
+     */
+    class FORMS : public UncertaintyMethod
     {
+    public:
         /**
-         * \brief Calculates the sensitivity using the FORM algorithm
+         * \brief Settings for this algorithm
          */
-        class FORMS : public UncertaintyMethod
-        {
-        public:
-            /**
-             * \brief Settings for this algorithm
-             */
-            std::shared_ptr<FORMSettingsS> Settings = std::make_shared<FORMSettingsS>();
+        std::shared_ptr<FORMSettingsS> Settings = std::make_shared<FORMSettingsS>();
 
-            /**
-             * \brief Gets the sensitivity
-             * \param modelRunner The model for which the sensitivity is calculated
-             * \return The sensitivity in the form of a stochastic variable
-             */
-            Sensitivity::UncertaintyResult getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner) override;
-        private:
-            bool isZValid(std::shared_ptr<Models::ModelRunner> modelRunner, double z);
-            bool isMonotone(std::shared_ptr<Models::ModelRunner> modelRunner, double z, double zPrevious, bool ascending);
-            bool isGradientValid(std::shared_ptr<Models::ModelRunner> modelRunner, std::vector<double>& gradient);
-            bool isBetaValid(std::shared_ptr<Models::ModelRunner> modelRunner, double beta, double betaPrevious, double requiredBetaIncrement);
-            void repairResults(std::vector<double>& values);
-            bool areResultsValid(std::vector<double>& values);
-            void checkQuantiles(const std::shared_ptr<Models::ModelRunner>& modelRunner, const std::shared_ptr<Models::Sample>& startPoint, const std::shared_ptr<Models::Sample>& previousPoint, double factor);
-            std::unordered_map<std::shared_ptr<Statistics::ProbabilityValue>, std::shared_ptr<Models::Evaluation>> evaluations;
-        };
-    }
+        /**
+         * \brief Gets the sensitivity
+         * \param modelRunner The model for which the sensitivity is calculated
+         * \return The sensitivity in the form of a stochastic variable
+         */
+        UncertaintyResult getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner) override;
+    private:
+        bool isZValid(std::shared_ptr<Models::ModelRunner> modelRunner, double z);
+        bool isMonotone(std::shared_ptr<Models::ModelRunner> modelRunner, double z, double zPrevious, bool ascending);
+        bool isGradientValid(std::shared_ptr<Models::ModelRunner> modelRunner, std::vector<double>& gradient);
+        bool isBetaValid(std::shared_ptr<Models::ModelRunner> modelRunner, double beta, double betaPrevious, double requiredBetaIncrement);
+        void repairResults(std::vector<double>& values);
+        bool areResultsValid(std::vector<double>& values);
+        void checkQuantiles(const std::shared_ptr<Models::ModelRunner>& modelRunner, const std::shared_ptr<Models::Sample>& startPoint, const std::shared_ptr<Models::Sample>& previousPoint, double factor);
+        std::unordered_map<std::shared_ptr<Statistics::ProbabilityValue>, std::shared_ptr<Models::Evaluation>> evaluations;
+    };
 }
 

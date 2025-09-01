@@ -25,98 +25,95 @@
 #include "../Model/RandomSettings.h"
 #include <memory>
 
-namespace Deltares
+namespace Deltares::Uncertainty
 {
-    namespace Sensitivity
+    enum class ModelType { Plane, Sphere };
+
+    class DirectionalSamplingSettingsS
     {
-        enum class ModelType { Plane, Sphere };
+    public:
+        /**
+         * \brief Indicates whether correlations should be calculated
+         */
+        bool CalculateCorrelations = false;
 
-        class DirectionalSamplingSettingsS
+        /**
+         * \brief Indicates whether correlations with input values should be calculated
+         */
+        bool CalculateInputCorrelations = false;
+
+        /**
+         * \brief The number of iterations within a direction
+         */
+        int MaximumIterations = 50;
+
+        /**
+         * \brief The number of directions to be calculated
+         */
+        int NumberDirections = 1000;
+
+        /**
+         * \brief Convergence criterion
+         */
+        double VariationCoefficientFailure = 0.05;
+
+        /**
+         * \brief Indicates whether the number of samples should be derived from the variation coefficient at the probability for convergence
+         */
+        bool DeriveSamplesFromVariationCoefficient = false;
+
+        /**
+         * \brief Gets the number of runs which is needed to achieve the variation coefficient at the probability for convergence
+         */
+        static int getRequiredSamples(double probability, double variationCoefficient, int nStochasts);
+
+        /**
+         * \brief Gets the number of runs which is needed to achieve the variation coefficient at the probability for convergence
+         */
+        int getRequiredSamples(int nStochasts) const;
+
+        /**
+         * \brief Modifies the variation coefficient so that the number of required samples matches a given value
+         */
+        void setRequiredSamples(int nDirections, int nStochasts);
+
+        /**
+         * \brief Initial assumed model
+         */
+        ModelType modelType = ModelType::Plane;
+
+        /**
+         * \brief Quantiles which should be calculated
+         */
+        std::vector<std::shared_ptr<Statistics::ProbabilityValue>> RequestedQuantiles;
+
+        /**
+         * \brief Settings for performing model runs
+         */
+        std::shared_ptr<Models::RandomSettings> randomSettings = std::make_shared<Models::RandomSettings>();
+
+        /**
+         * \brief Settings for individual stochastic variables, such as the start value
+         */
+        std::shared_ptr<Reliability::StochastSettingsSet> StochastSet = std::make_shared<Reliability::StochastSettingsSet>();
+
+        /**
+         * \brief Settings for performing model runs
+         */
+        std::shared_ptr<Models::RunSettings> RunSettings = std::make_shared<Models::RunSettings>();
+
+        /**
+         * \brief Indicates whether the settings have valid values
+         * \return Indication
+         */
+        bool isValid() const
         {
-        public:
-            /**
-             * \brief Indicates whether correlations should be calculated
-             */
-            bool CalculateCorrelations = false;
-
-            /**
-             * \brief Indicates whether correlations with input values should be calculated
-             */
-            bool CalculateInputCorrelations = false;
-
-            /**
-             * \brief The number of iterations within a direction
-             */
-            int MaximumIterations = 50;
-
-            /**
-             * \brief The number of directions to be calculated
-             */
-            int NumberDirections = 1000;
-
-            /**
-             * \brief Convergence criterion
-             */
-            double VariationCoefficientFailure = 0.05;
-
-            /**
-             * \brief Indicates whether the number of samples should be derived from the variation coefficient at the probability for convergence
-             */
-            bool DeriveSamplesFromVariationCoefficient = false;
-
-            /**
-             * \brief Gets the number of runs which is needed to achieve the variation coefficient at the probability for convergence
-             */
-            static int getRequiredSamples(double probability, double variationCoefficient, int nStochasts);
-
-            /**
-             * \brief Gets the number of runs which is needed to achieve the variation coefficient at the probability for convergence
-             */
-            int getRequiredSamples(int nStochasts) const;
-
-            /**
-             * \brief Modifies the variation coefficient so that the number of required samples matches a given value
-             */
-            void setRequiredSamples(int nDirections, int nStochasts);
-
-            /**
-             * \brief Initial assumed model
-             */
-            ModelType modelType = ModelType::Plane;
-
-            /**
-             * \brief Quantiles which should be calculated
-             */
-            std::vector<std::shared_ptr<Statistics::ProbabilityValue>> RequestedQuantiles;
-
-            /**
-             * \brief Settings for performing model runs
-             */
-            std::shared_ptr<Models::RandomSettings> randomSettings = std::make_shared<Models::RandomSettings>();
-
-            /**
-             * \brief Settings for individual stochastic variables, such as the start value
-             */
-            std::shared_ptr<Reliability::StochastSettingsSet> StochastSet = std::make_shared<Reliability::StochastSettingsSet>();
-
-            /**
-             * \brief Settings for performing model runs
-             */
-            std::shared_ptr<Models::RunSettings> RunSettings = std::make_shared<Models::RunSettings>();
-
-            /**
-             * \brief Indicates whether the settings have valid values
-             * \return Indication
-             */
-            bool isValid() const 
-            {
-                return !this->RequestedQuantiles.empty() &&
-                       this->RunSettings->isValid();
-            }
-        private:
-            static double getVariationCoefficient(double q, int nDirections, int nStochasts);
-            double getMaxProbability() const;
-        };
-    }
+            return !this->RequestedQuantiles.empty() &&
+                this->RunSettings->isValid();
+        }
+    private:
+        static double getVariationCoefficient(double q, int nDirections, int nStochasts);
+        double getMaxProbability() const;
+    };
 }
 

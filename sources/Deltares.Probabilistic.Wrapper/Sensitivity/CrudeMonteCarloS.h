@@ -27,14 +27,14 @@
 
 namespace Deltares
 {
-    namespace Sensitivity
+    namespace Uncertainty
     {
         namespace Wrappers
         {
             public ref class CrudeMonteCarloS : public SensitivityMethod
             {
             private:
-                SharedPointerProvider<Sensitivity::CrudeMonteCarloS>* shared = new SharedPointerProvider(new Sensitivity::CrudeMonteCarloS());
+                SharedPointerProvider<Uncertainty::CrudeMonteCarloS>* shared = new SharedPointerProvider(new Uncertainty::CrudeMonteCarloS());
             public:
                 CrudeMonteCarloS() { }
                 ~CrudeMonteCarloS() { this->!CrudeMonteCarloS(); }
@@ -46,7 +46,7 @@ namespace Deltares
 
                 bool IsValid() override { return Settings->IsValid(); }
 
-                std::shared_ptr<Sensitivity::UncertaintyMethod> GetNativeSensitivityMethod() override
+                std::shared_ptr<Uncertainty::UncertaintyMethod> GetNativeSensitivityMethod() override
                 {
                     shared->object->Settings = Settings->GetSettings();
                     return shared->object;

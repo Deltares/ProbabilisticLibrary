@@ -31,238 +31,232 @@
 
 using namespace Deltares::Models;
 
-namespace Deltares
+namespace Deltares::Uncertainty
 {
-    namespace Sensitivity
+    UncertaintyResult ImportanceSamplingS::getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner)
     {
-        Sensitivity::UncertaintyResult ImportanceSamplingS::getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner)
+        modelRunner->updateStochastSettings(this->Settings->StochastSet);
+
+        std::shared_ptr<SampleProvider> sampleProvider = std::make_shared<SampleProvider>(this->Settings->StochastSet);
+        modelRunner->setSampleProvider(sampleProvider);
+
+        const std::shared_ptr<RandomSampleGenerator> randomSampleGenerator = std::make_shared<RandomSampleGenerator>();
+        randomSampleGenerator->Settings = this->Settings->randomSettings;
+        randomSampleGenerator->Settings->StochastSet = this->Settings->StochastSet;
+        randomSampleGenerator->sampleProvider = sampleProvider;
+        randomSampleGenerator->initialize();
+
+        int nParameters = modelRunner->getVaryingStochastCount();
+        std::vector<double> zValues; // copy of z for all parallel threads as double
+
+        std::shared_ptr<Sample> uMin = std::make_shared<Sample>(nParameters);
+        std::vector<std::shared_ptr<Sample>> samples;
+        std::vector<double> zSamples;
+        std::vector<double> zWeights;
+        size_t zIndex = 0;
+        int nSamples = 0;
+        double sumWeights = 0;
+
+        bool registerSamplesForCorrelation = this->correlationMatrixBuilder->isEmpty() &&
+            this->Settings->CalculateCorrelations &&
+            this->Settings->CalculateInputCorrelations;
+
+        std::shared_ptr<Sample> center = Settings->StochastSet->getStartPoint();
+
+        std::vector<double> factors = this->getFactors(Settings->StochastSet);
+        double dimensionality = getDimensionality(factors);
+
+        bool converged = false;
+
+        for (int sampleIndex = 0; sampleIndex < Settings->MaximumSamples && !converged && !isStopped(); sampleIndex++)
         {
-            modelRunner->updateStochastSettings(this->Settings->StochastSet);
+            zIndex++;
 
-            std::shared_ptr<SampleProvider> sampleProvider = std::make_shared<SampleProvider>(this->Settings->StochastSet);
-            modelRunner->setSampleProvider(sampleProvider);
-
-            const std::shared_ptr<RandomSampleGenerator> randomSampleGenerator = std::make_shared<RandomSampleGenerator>();
-            randomSampleGenerator->Settings = this->Settings->randomSettings;
-            randomSampleGenerator->Settings->StochastSet = this->Settings->StochastSet;
-            randomSampleGenerator->sampleProvider = sampleProvider;
-            randomSampleGenerator->initialize();
-
-            int nParameters = modelRunner->getVaryingStochastCount();
-            std::vector<double> zValues; // copy of z for all parallel threads as double
-
-            std::shared_ptr<Sample> uMin = std::make_shared<Sample>(nParameters);
-            std::vector<std::shared_ptr<Sample>> samples;
-            std::vector<double> zSamples;
-            std::vector<double> zWeights;
-            size_t zIndex = 0;
-            int nSamples = 0;
-            double sumWeights = 0;
-
-            bool registerSamplesForCorrelation = this->correlationMatrixBuilder->isEmpty() &&
-                                                 this->Settings->CalculateCorrelations &&
-                                                 this->Settings->CalculateInputCorrelations;
-
-            std::shared_ptr<Sample> center = Settings->StochastSet->getStartPoint();
-
-            std::vector<double> factors = this->getFactors(Settings->StochastSet);
-            double dimensionality = getDimensionality(factors);
-
-            bool converged = false;
-
-            for (int sampleIndex = 0; sampleIndex < Settings->MaximumSamples && !converged && !isStopped(); sampleIndex++)
+            if (zIndex >= samples.size())
             {
-                zIndex++;
+                samples.clear();
 
-                if (zIndex >= samples.size())
+                int chunkSize = modelRunner->Settings->MaxChunkSize;
+                int runs = std::min(chunkSize, Settings->MaximumSamples - sampleIndex);
+
+                for (int i = 0; i < runs; i++)
                 {
-                    samples.clear();
-
-                    int chunkSize = modelRunner->Settings->MaxChunkSize;
-                    int runs = std::min(chunkSize, Settings->MaximumSamples - sampleIndex);
-
-                    for (int i = 0; i < runs; i++)
-                    {
-                        std::shared_ptr<Sample> sample = randomSampleGenerator->getRandomSample();
-                        std::shared_ptr<Sample> modifiedSample = getModifiedSample(sample, factors, center, dimensionality);  
-                        samples.push_back(modifiedSample);
-                    }
-
-                    zValues = modelRunner->getZValues(samples);
-
-                    zIndex = 0;
-                }
-
-                double z = zValues[zIndex];
-                std::shared_ptr<Sample> u = samples[zIndex];
-
-                if (std::isnan(z))
-                {
-                    continue;
-                }
-
-                zSamples.push_back(z);
-                zWeights.push_back(samples[zIndex]->Weight);
-                if (registerSamplesForCorrelation)
-                {
-                    modelRunner->registerSample(this->correlationMatrixBuilder, samples[zIndex]);
-                }
-
-                sumWeights += samples[zIndex]->Weight;
-                nSamples++;
-
-                // check if convergence is reached (or stop criterion)
-                if (sampleIndex >= Settings->MinimumSamples)
-                {
-                    double convergence = getConvergence(sampleIndex, sumWeights);
-                    converged = convergence < this->Settings->VariationCoefficient;
-                }
-            }
-
-            // adjust for weights not equal to number of samples,
-            // only adjust samples with weight > 1, because they will not be in the tail of the distribution, which is the less interesting part
-
-            double weightDifference = nSamples - sumWeights;
-            double overWeightedSum = 0;
-
-            // calculate over weight frm samples with weight > 1
-            for (size_t i = 0; i < zWeights.size(); i++)
-            {
-                if (zWeights[i] > 1)
-                {
-                    overWeightedSum += zWeights[i];
-                }
-            }
-
-            // correct samples with weight > 1 so that sum of weights equals number of samples
-            for (size_t i = 0; i < zWeights.size(); i++)
-            {
-                if (zWeights[i] > 1)
-                {
-                    zWeights[i] += zWeights[i] * weightDifference / overWeightedSum;
-                }
-            }
-
-            std::shared_ptr<Statistics::Stochast> stochast = this->getStochastFromSamples(zSamples, zWeights);
-
-            auto result = modelRunner->getSensitivityResult(stochast);
-
-            for (std::shared_ptr<Statistics::ProbabilityValue> quantile : this->Settings->RequestedQuantiles)
-            {
-                double p = quantile->getProbabilityOfNonFailure();
-                int quantileIndex = this->getQuantileIndex(zSamples, zWeights, p);
-
-                if (quantileIndex >= 0)
-                {
-                    // perform the sampling again and recalculate
-                    randomSampleGenerator->restart();
-                    randomSampleGenerator->proceed(quantileIndex);
-
                     std::shared_ptr<Sample> sample = randomSampleGenerator->getRandomSample();
                     std::shared_ptr<Sample> modifiedSample = getModifiedSample(sample, factors, center, dimensionality);
-                    std::shared_ptr<Models::Evaluation> evaluation = std::make_shared<Models::Evaluation>(modelRunner->getEvaluation(modifiedSample));
-                    evaluation->Quantile = p;
-                    result.quantileEvaluations.push_back(evaluation);
+                    samples.push_back(modifiedSample);
                 }
-                else
-                {
-                    result.quantileEvaluations.push_back(nullptr);
-                }
+
+                zValues = modelRunner->getZValues(samples);
+
+                zIndex = 0;
             }
 
-            if (this->correlationMatrixBuilder != nullptr)
+            double z = zValues[zIndex];
+            std::shared_ptr<Sample> u = samples[zIndex];
+
+            if (std::isnan(z))
             {
-                this->correlationMatrixBuilder->registerWeights(zWeights);
-                this->correlationMatrixBuilder->registerSamples(stochast, zSamples);
+                continue;
             }
 
-            return result;
+            zSamples.push_back(z);
+            zWeights.push_back(samples[zIndex]->Weight);
+            if (registerSamplesForCorrelation)
+            {
+                modelRunner->registerSample(this->correlationMatrixBuilder, samples[zIndex]);
+            }
 
+            sumWeights += samples[zIndex]->Weight;
+            nSamples++;
+
+            // check if convergence is reached (or stop criterion)
+            if (sampleIndex >= Settings->MinimumSamples)
+            {
+                double convergence = getConvergence(sampleIndex, sumWeights);
+                converged = convergence < this->Settings->VariationCoefficient;
+            }
         }
 
-        /// <summary>
-        /// return the weight for the sample.
-        /// This is given by: dimensionality * pdf / pdfOriginal, with pdf = normalFactor * std::exp(-SquaredSum/2).
-        /// Rewritten to avoid a possible division by zero.
-        /// </summary>
-        /// <param name="modifiedSample"> the scaled sample </param>
-        /// <param name="sample"> the original sample </param>
-        /// <param name="dimensionality"> constant dependent on the number of stochasts </param>
-        /// <returns> the weight </returns>
-        double ImportanceSamplingS::getWeight(std::shared_ptr<Sample> modifiedSample, std::shared_ptr<Sample> sample, double dimensionality)
+        // adjust for weights not equal to number of samples,
+        // only adjust samples with weight > 1, because they will not be in the tail of the distribution, which is the less interesting part
+
+        double weightDifference = nSamples - sumWeights;
+        double overWeightedSum = 0;
+
+        // calculate over weight frm samples with weight > 1
+        for (size_t i = 0; i < zWeights.size(); i++)
         {
-            double sumSquared = Numeric::NumericSupport::GetSquaredSum(modifiedSample->Values);
-            double sumSquaredOrg = Numeric::NumericSupport::GetSquaredSum(sample->Values);
-            double ratioPdf = std::exp(0.5 * (sumSquaredOrg - sumSquared));
-            return dimensionality * ratioPdf;
+            if (zWeights[i] > 1)
+            {
+                overWeightedSum += zWeights[i];
+            }
         }
 
-        double ImportanceSamplingS::getDimensionality(std::vector<double> factors)
+        // correct samples with weight > 1 so that sum of weights equals number of samples
+        for (size_t i = 0; i < zWeights.size(); i++)
         {
-            double dimensionality = 1; // correction for the dimensionality effect
-
-            for (size_t k = 0; k < factors.size(); k++)
+            if (zWeights[i] > 1)
             {
-                dimensionality *= factors[k];
+                zWeights[i] += zWeights[i] * weightDifference / overWeightedSum;
             }
-
-            return dimensionality;
         }
 
-        std::vector<double> ImportanceSamplingS::getFactors(std::shared_ptr<Reliability::StochastSettingsSet> stochastSettings)
+        std::shared_ptr<Statistics::Stochast> stochast = this->getStochastFromSamples(zSamples, zWeights);
+
+        auto result = modelRunner->getSensitivityResult(stochast);
+
+        for (std::shared_ptr<Statistics::ProbabilityValue> quantile : this->Settings->RequestedQuantiles)
         {
-            std::vector<double> factors(stochastSettings->getVaryingStochastCount());
+            double p = quantile->getProbabilityOfNonFailure();
+            int quantileIndex = this->getQuantileIndex(zSamples, zWeights, p);
 
-            for (size_t k = 0; k < factors.size(); k++)
+            if (quantileIndex >= 0)
             {
-                factors[k] = stochastSettings->VaryingStochastSettings[k]->VarianceFactor;
-            }
+                // perform the sampling again and recalculate
+                randomSampleGenerator->restart();
+                randomSampleGenerator->proceed(quantileIndex);
 
-            return factors;
+                std::shared_ptr<Sample> sample = randomSampleGenerator->getRandomSample();
+                std::shared_ptr<Sample> modifiedSample = getModifiedSample(sample, factors, center, dimensionality);
+                std::shared_ptr<Models::Evaluation> evaluation = std::make_shared<Models::Evaluation>(modelRunner->getEvaluation(modifiedSample));
+                evaluation->Quantile = p;
+                result.quantileEvaluations.push_back(evaluation);
+            }
+            else
+            {
+                result.quantileEvaluations.push_back(nullptr);
+            }
         }
 
-        std::shared_ptr<Models::Sample> ImportanceSamplingS::getModifiedSample(const std::shared_ptr<Models::Sample> sample, std::vector<double>& factors, std::shared_ptr<Models::Sample> center, double dimensionality)
+        if (this->correlationMatrixBuilder != nullptr)
         {
-            std::shared_ptr<Sample> modifiedSample = sample->clone();
-
-            for (int k = 0; k < sample->getSize(); k++)
-            {
-                modifiedSample->Values[k] = factors[k] * sample->Values[k] + center->Values[k];
-            }
-
-            modifiedSample->Weight = getWeight(modifiedSample, sample, dimensionality);
-
-            return modifiedSample;
+            this->correlationMatrixBuilder->registerWeights(zWeights);
+            this->correlationMatrixBuilder->registerSamples(stochast, zSamples);
         }
 
-        double ImportanceSamplingS::getConvergence(int samples, double weightedSum)
+        return result;
+
+    }
+
+    /// <summary>
+    /// return the weight for the sample.
+    /// This is given by: dimensionality * pdf / pdfOriginal, with pdf = normalFactor * std::exp(-SquaredSum/2).
+    /// Rewritten to avoid a possible division by zero.
+    /// </summary>
+    /// <param name="modifiedSample"> the scaled sample </param>
+    /// <param name="sample"> the original sample </param>
+    /// <param name="dimensionality"> constant dependent on the number of stochasts </param>
+    /// <returns> the weight </returns>
+    double ImportanceSamplingS::getWeight(std::shared_ptr<Sample> modifiedSample, std::shared_ptr<Sample> sample, double dimensionality)
+    {
+        double sumSquared = Numeric::NumericSupport::GetSquaredSum(modifiedSample->Values);
+        double sumSquaredOrg = Numeric::NumericSupport::GetSquaredSum(sample->Values);
+        double ratioPdf = std::exp(0.5 * (sumSquaredOrg - sumSquared));
+        return dimensionality * ratioPdf;
+    }
+
+    double ImportanceSamplingS::getDimensionality(std::vector<double> factors)
+    {
+        double dimensionality = 1; // correction for the dimensionality effect
+
+        for (size_t k = 0; k < factors.size(); k++)
         {
-            double nSamples = samples;
-
-            //TODO: PROBL-42 check whether this procedure is correct
-
-            double nLow = Settings->ProbabilityForConvergence * weightedSum;
-            double pLow = nLow / nSamples;
-            if (pLow > 0.5)
-            {
-                pLow = 1 - pLow;
-            }
-
-            double nHigh = (1 - Settings->ProbabilityForConvergence) * weightedSum;
-            double pHigh = nHigh / nSamples;
-            if (pHigh > 0.5)
-            {
-                pHigh = 1 - pHigh;
-            }
-
-            double pf = std::min(pLow, pHigh);
-
-            double varPf = std::sqrt((1 - pf) / (nSamples * pf));
-
-            return varPf;
+            dimensionality *= factors[k];
         }
+
+        return dimensionality;
+    }
+
+    std::vector<double> ImportanceSamplingS::getFactors(std::shared_ptr<Reliability::StochastSettingsSet> stochastSettings)
+    {
+        std::vector<double> factors(stochastSettings->getVaryingStochastCount());
+
+        for (size_t k = 0; k < factors.size(); k++)
+        {
+            factors[k] = stochastSettings->VaryingStochastSettings[k]->VarianceFactor;
+        }
+
+        return factors;
+    }
+
+    std::shared_ptr<Models::Sample> ImportanceSamplingS::getModifiedSample(const std::shared_ptr<Models::Sample> sample, std::vector<double>& factors, std::shared_ptr<Models::Sample> center, double dimensionality)
+    {
+        std::shared_ptr<Sample> modifiedSample = sample->clone();
+
+        for (int k = 0; k < sample->getSize(); k++)
+        {
+            modifiedSample->Values[k] = factors[k] * sample->Values[k] + center->Values[k];
+        }
+
+        modifiedSample->Weight = getWeight(modifiedSample, sample, dimensionality);
+
+        return modifiedSample;
+    }
+
+    double ImportanceSamplingS::getConvergence(int samples, double weightedSum)
+    {
+        double nSamples = samples;
+
+        //TODO: PROBL-42 check whether this procedure is correct
+
+        double nLow = Settings->ProbabilityForConvergence * weightedSum;
+        double pLow = nLow / nSamples;
+        if (pLow > 0.5)
+        {
+            pLow = 1 - pLow;
+        }
+
+        double nHigh = (1 - Settings->ProbabilityForConvergence) * weightedSum;
+        double pHigh = nHigh / nSamples;
+        if (pHigh > 0.5)
+        {
+            pHigh = 1 - pHigh;
+        }
+
+        double pf = std::min(pLow, pHigh);
+
+        double varPf = std::sqrt((1 - pf) / (nSamples * pf));
+
+        return varPf;
     }
 }
-
-
-

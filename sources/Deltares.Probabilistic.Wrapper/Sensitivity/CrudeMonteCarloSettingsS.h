@@ -29,7 +29,7 @@
 
 namespace Deltares
 {
-    namespace Sensitivity
+    namespace Uncertainty
     {
         namespace Wrappers
         {
@@ -39,7 +39,7 @@ namespace Deltares
             public ref class CrudeMonteCarloSettingsS : IHasRunSettings
             {
             private:
-                SharedPointerProvider<Sensitivity::CrudeMonteCarloSettingsS>* shared = new SharedPointerProvider(new Sensitivity::CrudeMonteCarloSettingsS());
+                SharedPointerProvider<Uncertainty::CrudeMonteCarloSettingsS>* shared = new SharedPointerProvider(new Uncertainty::CrudeMonteCarloSettingsS());
                 Wrappers::RunSettings^ runSettings = gcnew Wrappers::RunSettings();
             public:
                 CrudeMonteCarloSettingsS()
@@ -86,7 +86,7 @@ namespace Deltares
 
                 static int GetRequiredSamples(double probability, double variationCoefficient)
                 {
-                    return Sensitivity::CrudeMonteCarloSettingsS::getRequiredSamples(probability, variationCoefficient);
+                    return Uncertainty::CrudeMonteCarloSettingsS::getRequiredSamples(probability, variationCoefficient);
                 }
 
                 property bool DeriveSamplesFromVariationCoefficient
@@ -110,7 +110,7 @@ namespace Deltares
                     return shared->object->isValid();
                 }
 
-                std::shared_ptr<Sensitivity::CrudeMonteCarloSettingsS> GetSettings()
+                std::shared_ptr<Uncertainty::CrudeMonteCarloSettingsS> GetSettings()
                 {
                     shared->object->StochastSet->stochastSettings.clear();
                     for (int i = 0; i < StochastSettings->Count; i++)

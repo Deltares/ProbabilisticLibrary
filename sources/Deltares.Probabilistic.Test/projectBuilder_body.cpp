@@ -26,7 +26,7 @@
 using namespace Deltares::Reliability;
 using namespace Deltares::Statistics;
 using namespace Deltares::Models;
-using namespace Deltares::Sensitivity;
+using namespace Deltares::Uncertainty;
 
 namespace Deltares::Probabilistic::Test
 {

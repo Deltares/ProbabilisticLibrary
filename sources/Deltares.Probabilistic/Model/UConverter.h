@@ -81,7 +81,7 @@ namespace Deltares
             std::shared_ptr<StochastPoint> GetStochastPoint(double beta, std::vector<double> alphas);
             void updateStochastSettings(std::shared_ptr<Deltares::Reliability::StochastSettingsSet> settings);
             void updateVariableSample(std::vector<double>& xValues, std::vector<double>& originalValues);
-            void registerSample(std::shared_ptr<Sensitivity::CorrelationMatrixBuilder> correlationMatrixBuilder, std::shared_ptr<Sample> sample);
+            void registerSample(std::shared_ptr<Uncertainty::CorrelationMatrixBuilder> correlationMatrixBuilder, std::shared_ptr<Sample> sample);
             bool haveSampleValuesChanged() const { return sampleValuesChanged; }
         };
     }

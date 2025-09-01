@@ -23,31 +23,28 @@
 #include "NumericalIntegrationSettingsS.h"
 #include "UncertaintyMethod.h"
 
-namespace Deltares
+namespace Deltares::Uncertainty
 {
-    namespace Sensitivity
+    /**
+     * \brief Calculates the sensitivity using the numerical integration algorithm
+     */
+    class NumericalIntegrationS : public UncertaintyMethod
     {
+    public:
         /**
-         * \brief Calculates the sensitivity using the numerical integration algorithm
+         * \brief Settings for this algorithm
          */
-        class NumericalIntegrationS : public UncertaintyMethod
-        {
-        public:
-            /**
-             * \brief Settings for this algorithm
-             */
-            std::shared_ptr<NumericalIntegrationSettingsS> Settings = std::make_shared<NumericalIntegrationSettingsS>();
+        std::shared_ptr<NumericalIntegrationSettingsS> Settings = std::make_shared<NumericalIntegrationSettingsS>();
 
-            /**
-             * \brief Gets the sensitivity
-             * \param modelRunner The model for which the sensitivity is calculated
-             * \return The sensitivity in the form of a stochastic variable
-             */
-            Sensitivity::UncertaintyResult getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner) override;
-        private:
-            std::vector<std::shared_ptr<Numeric::WeightedValue>> collectSamples(std::shared_ptr<Models::ModelRunner> modelRunner, int stochastIndex, std::shared_ptr<Models::Sample> parentSample, double density, int nSamples, bool registerSamplesForCorrelation);
-            std::vector<std::shared_ptr<Models::Sample>> calculatedSamples;
-        };
-    }
+        /**
+         * \brief Gets the sensitivity
+         * \param modelRunner The model for which the sensitivity is calculated
+         * \return The sensitivity in the form of a stochastic variable
+         */
+        UncertaintyResult getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner) override;
+    private:
+        std::vector<std::shared_ptr<Numeric::WeightedValue>> collectSamples(std::shared_ptr<Models::ModelRunner> modelRunner, int stochastIndex, std::shared_ptr<Models::Sample> parentSample, double density, int nSamples, bool registerSamplesForCorrelation);
+        std::vector<std::shared_ptr<Models::Sample>> calculatedSamples;
+    };
 }
 

@@ -23,22 +23,18 @@
 
 #include "../Model/ZValueConverter.h"
 
-namespace Deltares
+namespace Deltares::Uncertainty
 {
-    namespace Sensitivity
+    class ParameterSelector : public Models::ZValueConverter
     {
-        class ParameterSelector : public Models::ZValueConverter
-        {
-        public:
-            std::string parameter = "";
-            int arrayIndex = 0;
-            void initialize(std::vector<std::shared_ptr<Models::ModelInputParameter>>& inputParameters, std::vector<std::shared_ptr<Models::ModelInputParameter>>& outputParameters) override;
-            void updateZValue(std::shared_ptr<Models::ModelSample> sample) override;
-        private:
-            int parameterIndex = 0;
-            bool parameterIndexFromInput = false;
-            bool useSampleZValue = false;
-        };
-    }
+    public:
+        std::string parameter = "";
+        int arrayIndex = 0;
+        void initialize(std::vector<std::shared_ptr<Models::ModelInputParameter>>& inputParameters, std::vector<std::shared_ptr<Models::ModelInputParameter>>& outputParameters) override;
+        void updateZValue(std::shared_ptr<Models::ModelSample> sample) override;
+    private:
+        int parameterIndex = 0;
+        bool parameterIndexFromInput = false;
+        bool useSampleZValue = false;
+    };
 }
-

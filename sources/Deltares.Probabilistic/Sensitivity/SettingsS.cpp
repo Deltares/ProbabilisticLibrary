@@ -30,10 +30,8 @@
 #include "ImportanceSamplingS.h"
 #include "NumericalIntegrationS.h"
 
-namespace Deltares
+namespace Deltares::Uncertainty
 {
-    namespace Sensitivity
-    {
         std::shared_ptr<UncertaintyMethod> SettingsS::GetSensitivityMethod()
         {
             switch (this->SensitivityMethod)
@@ -48,7 +46,7 @@ namespace Deltares
             }
         }
 
-        const std::shared_ptr<Sensitivity::UncertaintyMethod> SettingsS::GetFORMMethod()
+        const std::shared_ptr<UncertaintyMethod> SettingsS::GetFORMMethod()
         {
             std::shared_ptr<FORMS> form = std::make_shared<FORMS>();
 
@@ -64,7 +62,7 @@ namespace Deltares
             return form;
         }
 
-        const std::shared_ptr<Sensitivity::UncertaintyMethod> SettingsS::GetFOSMMethod()
+        const std::shared_ptr<UncertaintyMethod> SettingsS::GetFOSMMethod()
         {
             std::shared_ptr<FOSM> fosm = std::make_shared<FOSM>();
 
@@ -77,7 +75,7 @@ namespace Deltares
             return fosm;
         }
 
-        const std::shared_ptr<Sensitivity::UncertaintyMethod> SettingsS::GetNumericalIntegrationMethod()
+        const std::shared_ptr<UncertaintyMethod> SettingsS::GetNumericalIntegrationMethod()
         {
             std::shared_ptr<NumericalIntegrationS> numericalIntegration = std::make_shared<NumericalIntegrationS>();
 
@@ -90,7 +88,7 @@ namespace Deltares
             return numericalIntegration;
         }
 
-        const std::shared_ptr<Sensitivity::UncertaintyMethod> SettingsS::GetCrudeMonteCarloMethod()
+        const std::shared_ptr<UncertaintyMethod> SettingsS::GetCrudeMonteCarloMethod()
         {
             std::shared_ptr<CrudeMonteCarloS> crudeMonteCarlo = std::make_shared<CrudeMonteCarloS>();
 
@@ -108,7 +106,7 @@ namespace Deltares
             return crudeMonteCarlo;
         }
 
-        const std::shared_ptr<Sensitivity::UncertaintyMethod> SettingsS::GetImportanceSamplingMethod()
+        const std::shared_ptr<UncertaintyMethod> SettingsS::GetImportanceSamplingMethod()
         {
             std::shared_ptr<ImportanceSamplingS> importanceSampling = std::make_shared<ImportanceSamplingS>();
 
@@ -127,7 +125,7 @@ namespace Deltares
             return importanceSampling;
         }
 
-        const std::shared_ptr<Sensitivity::UncertaintyMethod> SettingsS::GetDirectionalSamplingMethod()
+        const std::shared_ptr<UncertaintyMethod> SettingsS::GetDirectionalSamplingMethod()
         {
             std::shared_ptr<DirectionalSamplingS> directionalSampling = std::make_shared<DirectionalSamplingS>();
 
@@ -184,6 +182,3 @@ namespace Deltares
         }
 
     }
-}
-
-

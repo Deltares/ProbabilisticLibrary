@@ -21,7 +21,7 @@
 //
 #include "UncertaintyProject.h"
 
-namespace Deltares::Sensitivity
+namespace Deltares::Uncertainty
 {
     void UncertaintyProject::run()
     {

@@ -28,7 +28,7 @@
 
 namespace Deltares
 {
-    namespace Sensitivity
+    namespace Uncertainty
     {
         namespace Wrappers
         {
@@ -38,7 +38,7 @@ namespace Deltares
             public ref class NumericalIntegrationSettingsS : IHasRunSettings
             {
             private:
-                SharedPointerProvider<Sensitivity::NumericalIntegrationSettingsS>* shared = new SharedPointerProvider(new Sensitivity::NumericalIntegrationSettingsS());
+                SharedPointerProvider<Uncertainty::NumericalIntegrationSettingsS>* shared = new SharedPointerProvider(new Uncertainty::NumericalIntegrationSettingsS());
                 Wrappers::RunSettings^ runSettings = gcnew Wrappers::RunSettings();
             public:
                 NumericalIntegrationSettingsS() {}
@@ -70,7 +70,7 @@ namespace Deltares
                     return shared->object->isValid();
                 }
 
-                std::shared_ptr<Sensitivity::NumericalIntegrationSettingsS> GetSettings()
+                std::shared_ptr<Uncertainty::NumericalIntegrationSettingsS> GetSettings()
                 {
                     shared->object->StochastSet->stochastSettings.clear();
                     for (int i = 0; i < StochastSettings->Count; i++)

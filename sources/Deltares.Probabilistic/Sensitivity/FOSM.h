@@ -23,28 +23,25 @@
 #include "FOSMSettings.h"
 #include "UncertaintyMethod.h"
 
-namespace Deltares
+namespace Deltares::Uncertainty
 {
-    namespace Sensitivity
+    /**
+     * \brief Calculates the sensitivity using the FOSM (First Order Second Moment) algorithm
+     */
+    class FOSM : public UncertaintyMethod
     {
+    public:
         /**
-         * \brief Calculates the sensitivity using the FOSM (First Order Second Moment) algorithm
+         * \brief Settings for this algorithm
          */
-        class FOSM : public UncertaintyMethod
-        {
-        public:
-            /**
-             * \brief Settings for this algorithm
-             */
-            std::shared_ptr<FOSMSettings> Settings = std::make_shared<FOSMSettings>();
+        std::shared_ptr<FOSMSettings> Settings = std::make_shared<FOSMSettings>();
 
-            /**
-             * \brief Gets the sensitivity
-             * \param modelRunner The model for which the sensitivity is calculated
-             * \return The sensitivity in the form of a stochastic variable
-             */
-            Sensitivity::UncertaintyResult getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner) override;
-        };
-    }
+        /**
+         * \brief Gets the sensitivity
+         * \param modelRunner The model for which the sensitivity is calculated
+         * \return The sensitivity in the form of a stochastic variable
+         */
+        UncertaintyResult getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner) override;
+    };
 }
 

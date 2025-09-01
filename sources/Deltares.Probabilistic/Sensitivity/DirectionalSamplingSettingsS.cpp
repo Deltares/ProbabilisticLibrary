@@ -23,74 +23,71 @@
 #include "../Math/RootFinders/BisectionRootFinder.h"
 #include "../Math/SpecialFunctions.h"
 
-namespace Deltares
+namespace Deltares::Uncertainty
 {
-    namespace Sensitivity
+    /**
+     * \brief Gets the number of runs which is needed to achieve the variation coefficient at the probability for convergence
+     */
+    int DirectionalSamplingSettingsS::getRequiredSamples(double probability, double variationCoefficient, int nStochasts)
     {
-        /**
-         * \brief Gets the number of runs which is needed to achieve the variation coefficient at the probability for convergence
-         */
-        int DirectionalSamplingSettingsS::getRequiredSamples(double probability, double variationCoefficient, int nStochasts)
+        Numeric::RootFinderMethod function = [probability, variationCoefficient, nStochasts](double nDirections)
         {
-            Numeric::RootFinderMethod function = [probability, variationCoefficient, nStochasts](double nDirections)
-            {
-                return getVariationCoefficient(probability, static_cast<int>(nDirections), nStochasts);
-            };
+            return getVariationCoefficient(probability, static_cast<int>(nDirections), nStochasts);
+        };
 
-            Numeric::BisectionRootFinder bisection = Numeric::BisectionRootFinder(variationCoefficient / 100, 0);
+        Numeric::BisectionRootFinder bisection = Numeric::BisectionRootFinder(variationCoefficient / 100, 0);
 
-            double nDirections = bisection.CalculateValue(1, 1E6, variationCoefficient, function);
+        double nDirections = bisection.CalculateValue(1, 1E6, variationCoefficient, function);
 
-            return static_cast<int>(nDirections);
+        return static_cast<int>(nDirections);
+    }
+
+    /**
+     * \brief Gets the number of runs which is needed to achieve the variation coefficient at the probability for convergence
+     */
+    int DirectionalSamplingSettingsS::getRequiredSamples(int nStochasts) const
+    {
+        double probability = this->getMaxProbability();
+        return getRequiredSamples(probability, this->VariationCoefficientFailure, nStochasts);
+    }
+
+    /**
+     * \brief Modifies the variation coefficient so that the number of required samples matches a given value
+     */
+    void DirectionalSamplingSettingsS::setRequiredSamples(int nDirections, int nStochasts)
+    {
+        double probability = this->getMaxProbability();
+        this->VariationCoefficientFailure = getVariationCoefficient(probability, nDirections, nStochasts);
+    }
+
+    double DirectionalSamplingSettingsS::getVariationCoefficient(double q, int nDirections, int nStochasts)
+    {
+        if (q > 0 && q < 1)
+        {
+            q = std::min(q, 1 - q);
+
+            double betaDirection = Statistics::StandardNormal::getUFromQ(q);
+            double weight = Deltares::Numeric::SpecialFunctions::getGammaUpperRegularized(0.5 * nStochasts, 0.5 * betaDirection * betaDirection);
+
+            double covariance = (weight * weight - 2.0 * q * weight + q * q) / nDirections;
+            covariance = std::sqrt(covariance) / q;
+            return covariance;
+        }
+        else
+        {
+            return std::nan("");
+        }
+    }
+
+    double DirectionalSamplingSettingsS::getMaxProbability() const
+    {
+        double maxBeta = 0;
+
+        for (size_t i = 0; i < this->RequestedQuantiles.size(); i++)
+        {
+            maxBeta = std::max(maxBeta, std::abs(this->RequestedQuantiles[i]->Reliability));
         }
 
-        /**
-         * \brief Gets the number of runs which is needed to achieve the variation coefficient at the probability for convergence
-         */
-        int DirectionalSamplingSettingsS::getRequiredSamples(int nStochasts) const
-        {
-            double probability = this->getMaxProbability();
-            return getRequiredSamples(probability, this->VariationCoefficientFailure, nStochasts);
-        }
-
-        /**
-         * \brief Modifies the variation coefficient so that the number of required samples matches a given value
-         */
-        void DirectionalSamplingSettingsS::setRequiredSamples(int nDirections, int nStochasts)
-        {
-            double probability = this->getMaxProbability();
-            this->VariationCoefficientFailure = getVariationCoefficient(probability, nDirections, nStochasts);
-        }
-
-        double DirectionalSamplingSettingsS::getVariationCoefficient(double q, int nDirections, int nStochasts)
-        {
-            if (q > 0 && q < 1)
-            {
-                q = std::min(q, 1 - q);
-
-                double betaDirection = Statistics::StandardNormal::getUFromQ(q);
-                double weight = Deltares::Numeric::SpecialFunctions::getGammaUpperRegularized(0.5 * nStochasts, 0.5 * betaDirection * betaDirection);
-
-                double covariance = (weight * weight - 2.0 * q * weight + q * q) / nDirections;
-                covariance = std::sqrt(covariance) / q;
-                return covariance;
-            }
-            else
-            {
-                return std::nan("");
-            }
-        }
-
-        double DirectionalSamplingSettingsS::getMaxProbability() const
-        {
-            double maxBeta = 0;
-
-            for (size_t i = 0; i < this->RequestedQuantiles.size(); i++)
-            {
-                maxBeta = std::max(maxBeta, std::abs(this->RequestedQuantiles[i]->Reliability));
-            }
-
-            return Statistics::StandardNormal::getQFromU(maxBeta);
-        }
+        return Statistics::StandardNormal::getQFromU(maxBeta);
     }
 }

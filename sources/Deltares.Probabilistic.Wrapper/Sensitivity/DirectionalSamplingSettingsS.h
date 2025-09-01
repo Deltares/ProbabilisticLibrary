@@ -30,7 +30,7 @@
 
 namespace Deltares
 {
-    namespace Sensitivity
+    namespace Uncertainty
     {
         namespace Wrappers
         {
@@ -40,7 +40,7 @@ namespace Deltares
             public ref class DirectionalSamplingSettingsS : IHasRunSettings
             {
             private:
-                SharedPointerProvider<Sensitivity::DirectionalSamplingSettingsS>* shared = new SharedPointerProvider(new Sensitivity::DirectionalSamplingSettingsS());
+                SharedPointerProvider<Uncertainty::DirectionalSamplingSettingsS>* shared = new SharedPointerProvider(new Uncertainty::DirectionalSamplingSettingsS());
                 Wrappers::RunSettings^ runSettings = gcnew Wrappers::RunSettings();
             public:
                 DirectionalSamplingSettingsS() {}
@@ -84,7 +84,7 @@ namespace Deltares
 
                 static int GetRequiredSamples(double probability, double variationCoefficient, int nStochasts)
                 {
-                    return Sensitivity::DirectionalSamplingSettingsS::getRequiredSamples(probability, variationCoefficient, nStochasts);
+                    return Uncertainty::DirectionalSamplingSettingsS::getRequiredSamples(probability, variationCoefficient, nStochasts);
                 }
 
                 property bool DeriveSamplesFromVariationCoefficient
@@ -108,7 +108,7 @@ namespace Deltares
                     return shared->object->isValid();
                 }
 
-                std::shared_ptr<Sensitivity::DirectionalSamplingSettingsS> GetSettings()
+                std::shared_ptr<Uncertainty::DirectionalSamplingSettingsS> GetSettings()
                 {
                     shared->object->RequestedQuantiles.clear();
                     for (int i = 0; i < RequestedQuantiles->Count; i++)

@@ -28,7 +28,7 @@
 
 #include "UncertaintyResult.h"
 
-namespace Deltares::Sensitivity
+namespace Deltares::Uncertainty
 {
     /**
      * \brief Base class for calculation of the sensitivity

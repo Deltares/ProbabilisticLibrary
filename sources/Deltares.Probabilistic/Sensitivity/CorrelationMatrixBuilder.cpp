@@ -21,98 +21,95 @@
 //
 #include "CorrelationMatrixBuilder.h"
 
-namespace Deltares
+namespace Deltares::Uncertainty
 {
-    namespace Sensitivity
+    void CorrelationMatrixBuilder::registerWeights(const std::vector<double>& weights)
     {
-        void CorrelationMatrixBuilder::registerWeights(const std::vector<double>& weights)
+        this->weights = weights;
+    }
+
+    void CorrelationMatrixBuilder::registerSamples(const std::shared_ptr<Statistics::Stochast> stochast, const std::vector<double>& values)
+    {
+        this->stochasts.push_back(stochast);
+
+        stochast->initializeForRun();
+
+        std::vector<double> uValues;
+
+        for (size_t i = 0; i < values.size(); i++)
         {
-            this->weights = weights;
+            uValues.push_back(stochast->getUFromX(values[i]));
         }
 
-        void CorrelationMatrixBuilder::registerSamples(const std::shared_ptr<Statistics::Stochast> stochast, const std::vector<double>& values)
+        this->stochastValues[stochast] = uValues;
+    };
+
+    void CorrelationMatrixBuilder::registerWeightedValues(const std::shared_ptr<Statistics::Stochast> stochast, const std::vector<std::shared_ptr<Numeric::WeightedValue>>& weightedValues)
+    {
+        std::vector<double> values;
+        std::vector<double> weights;
+
+        for (std::shared_ptr<Numeric::WeightedValue> weightedValue : weightedValues)
+        {
+            values.push_back(weightedValue->value);
+            weights.push_back(weightedValue->weight);
+        }
+
+        registerWeights(weights);
+        registerSamples(stochast, values);
+    }
+
+    void CorrelationMatrixBuilder::registerStochastValue(std::shared_ptr<Statistics::Stochast> stochast, double u)
+    {
+        if (!this->stochastValues.contains(stochast))
         {
             this->stochasts.push_back(stochast);
-
-            stochast->initializeForRun();
-
-            std::vector<double> uValues;
-
-            for (size_t i = 0; i < values.size(); i++)
-            {
-                uValues.push_back(stochast->getUFromX(values[i]));
-            }
-
-            this->stochastValues[stochast] = uValues;
-        };
-
-        void CorrelationMatrixBuilder::registerWeightedValues(const std::shared_ptr<Statistics::Stochast> stochast, const std::vector<std::shared_ptr<Numeric::WeightedValue>>& weightedValues)
-        {
-            std::vector<double> values;
-            std::vector<double> weights;
-
-            for (std::shared_ptr<Numeric::WeightedValue> weightedValue : weightedValues)
-            {
-                values.push_back(weightedValue->value);
-                weights.push_back(weightedValue->weight);
-            }
-
-            registerWeights(weights);
-            registerSamples(stochast, values);
+            this->stochastValues[stochast] = std::vector<double>();
         }
 
-        void CorrelationMatrixBuilder::registerStochastValue(std::shared_ptr<Statistics::Stochast> stochast, double u)
-        {
-            if (!this->stochastValues.contains(stochast))
-            {
-                this->stochasts.push_back(stochast);
-                this->stochastValues[stochast] = std::vector<double>();
-            }
+        this->stochastValues[stochast].push_back(u);
+    }
 
-            this->stochastValues[stochast].push_back(u);
+
+    double CorrelationMatrixBuilder::getCorrelationValue(std::shared_ptr<Statistics::Stochast> x, std::shared_ptr<Statistics::Stochast> y)
+    {
+        double sumCross = 0;
+        double sumProductsX = 0;
+        double sumProductsY = 0;
+
+        std::vector<double> xValues = this->stochastValues[x];
+        std::vector<double> yValues = this->stochastValues[y];
+
+        for (size_t i = 0; i < std::min(xValues.size(), yValues.size()); i++)
+        {
+            double weight = weights.empty() ? 1.0 : weights[i];
+
+            sumCross += weight * xValues[i] * yValues[i];
+            sumProductsX += weight * xValues[i] * xValues[i];
+            sumProductsY += weight * yValues[i] * yValues[i];
         }
 
+        double correlationCoefficient = sumCross / std::sqrt(sumProductsX * sumProductsY);
 
-        double CorrelationMatrixBuilder::getCorrelationValue(std::shared_ptr<Statistics::Stochast> x, std::shared_ptr<Statistics::Stochast> y)
+        return correlationCoefficient;
+    }
+
+    std::shared_ptr<Statistics::CorrelationMatrix> CorrelationMatrixBuilder::getCorrelationMatrix()
+    {
+        std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix = std::make_shared<Statistics::CorrelationMatrix>();
+
+        correlationMatrix->init(this->stochasts);
+
+        for (size_t i = 0; i < stochasts.size(); i++)
         {
-            double sumCross = 0;
-            double sumProductsX = 0;
-            double sumProductsY = 0;
-
-            std::vector<double> xValues = this->stochastValues[x];
-            std::vector<double> yValues = this->stochastValues[y];
-
-            for (size_t i = 0; i < std::min(xValues.size(), yValues.size()); i++)
+            for (size_t j = 0; j < i; j++)
             {
-                double weight = weights.empty() ? 1.0 : weights[i];
-
-                sumCross += weight * xValues[i] * yValues[i];
-                sumProductsX += weight * xValues[i] * xValues[i];
-                sumProductsY += weight * yValues[i] * yValues[i];
+                double correlationValue = this->getCorrelationValue(stochasts[i], stochasts[j]);
+                correlationMatrix->SetCorrelation(stochasts[i], stochasts[j], correlationValue);
             }
-
-            double correlationCoefficient = sumCross / std::sqrt(sumProductsX * sumProductsY);
-
-            return correlationCoefficient;
         }
 
-        std::shared_ptr<Statistics::CorrelationMatrix> CorrelationMatrixBuilder::getCorrelationMatrix()
-        {
-            std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix = std::make_shared<Statistics::CorrelationMatrix>();
-
-            correlationMatrix->init(this->stochasts);
-
-            for (size_t i = 0; i < stochasts.size(); i++)
-            {
-                for (size_t j = 0; j < i; j++)
-                {
-                    double correlationValue = this->getCorrelationValue(stochasts[i], stochasts[j]);
-                    correlationMatrix->SetCorrelation(stochasts[i], stochasts[j], correlationValue);
-                }
-            }
-
-            return correlationMatrix;
-        }
+        return correlationMatrix;
     }
 }
 

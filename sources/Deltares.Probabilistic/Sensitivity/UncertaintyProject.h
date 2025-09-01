@@ -29,7 +29,7 @@
 #include "../Statistics/Stochast.h"
 #include "../Statistics/CorrelationMatrix.h"
 
-namespace Deltares::Sensitivity
+namespace Deltares::Uncertainty
 {
     /**
      * \brief Combines a model, stochastic variables and calculation settings, can perform a calculation and holds results

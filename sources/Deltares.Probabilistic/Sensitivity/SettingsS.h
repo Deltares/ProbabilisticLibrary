@@ -26,135 +26,132 @@
 #include "../Model/RunSettings.h"
 #include "../Model/GradientSettings.h"
 
-namespace Deltares
+namespace Deltares::Uncertainty
 {
-    namespace Sensitivity
+    enum SensitivityMethodType { SensitivityFORM, SensitivityFOSM, SensitivityNumericalIntegration, SensitivityCrudeMonteCarlo, SensitivityImportanceSampling, SensitivityDirectionalSampling };
+
+    /**
+     * \brief General settings applicable to all sensitivity mechanisms
+     */
+    class SettingsS
     {
-        enum SensitivityMethodType { SensitivityFORM, SensitivityFOSM, SensitivityNumericalIntegration, SensitivityCrudeMonteCarlo, SensitivityImportanceSampling, SensitivityDirectionalSampling };
+    public:
+        /**
+         * \brief Method type how the design point (alpha values) is calculated
+         */
+        SensitivityMethodType SensitivityMethod = SensitivityMethodType::SensitivityCrudeMonteCarlo;
 
         /**
-         * \brief General settings applicable to all sensitivity mechanisms
+         * \brief Indicates whether correlations should be calculated
          */
-        class SettingsS
-        {
-        public:
-            /**
-             * \brief Method type how the design point (alpha values) is calculated
-             */
-            SensitivityMethodType SensitivityMethod = SensitivityMethodType::SensitivityCrudeMonteCarlo;
+        bool CalculateCorrelations = false;
 
-            /**
-             * \brief Indicates whether correlations should be calculated
-             */
-            bool CalculateCorrelations = false;
+        /**
+         * \brief Indicates whether correlations with input variables should be calculated
+         */
+        bool CalculateInputCorrelations = false;
 
-            /**
-             * \brief Indicates whether correlations with input variables should be calculated
-             */
-            bool CalculateInputCorrelations = false;
+        /**
+         * \brief The minimum u value
+         */
+        double MinimumU = -Statistics::StandardNormal::UMax;
 
-            /**
-             * \brief The minimum u value
-             */
-            double MinimumU = -Statistics::StandardNormal::UMax;
+        /**
+         * \brief The maximum u value
+         */
+        double MaximumU = Statistics::StandardNormal::UMax;
 
-            /**
-             * \brief The maximum u value
-             */
-            double MaximumU = Statistics::StandardNormal::UMax;
+        /**
+         * \brief The minimum samples to be examined
+         */
+        int MinimumSamples = 1000;
 
-            /**
-             * \brief The minimum samples to be examined
-             */
-            int MinimumSamples = 1000;
+        /**
+         * \brief The maximum samples to be examined
+         */
+        int MaximumSamples = 10000;
 
-            /**
-             * \brief The maximum samples to be examined
-             */
-            int MaximumSamples = 10000;
+        /**
+         * \brief The minimum directions to be examined
+         */
+        int MinimumDirections = 100;
 
-            /**
-             * \brief The minimum directions to be examined
-             */
-            int MinimumDirections = 100;
+        /**
+         * \brief The maximum directions to be examined
+         */
+        int MaximumDirections = 1000;
 
-            /**
-             * \brief The maximum directions to be examined
-             */
-            int MaximumDirections = 1000;
+        /**
+         * \brief The importance sampling algorithm stops when the calculated variation coefficient is less than this value
+         */
+        double VariationCoefficient = 0.05;
 
-            /**
-             * \brief The importance sampling algorithm stops when the calculated variation coefficient is less than this value
-             */
-            double VariationCoefficient = 0.05;
+        /**
+         * \brief The probability which is used to check whether the calculation has converged
+         */
+        double ProbabilityForConvergence = 0.05;
 
-            /**
-             * \brief The probability which is used to check whether the calculation has converged
-             */
-            double ProbabilityForConvergence = 0.05;
+        /**
+         * \brief Indicates whether the number of samples should be derived from the variation coefficient at the probability for convergence
+         */
+        bool DeriveSamplesFromVariationCoefficient = false;
 
-            /**
-             * \brief Indicates whether the number of samples should be derived from the variation coefficient at the probability for convergence
-             */
-            bool DeriveSamplesFromVariationCoefficient = false;
+        /**
+         * \brief Maximum number of guessed design points in one FORM loop
+         */
+        int MaximumIterations = 50;
 
-            /**
-             * \brief Maximum number of guessed design points in one FORM loop
-             */
-            int MaximumIterations = 50;
+        /**
+         * \brief Step size in form calculation
+         */
+        double GlobalStepSize = 0.5;
 
-            /**
-             * \brief Step size in form calculation
-             */
-            double GlobalStepSize = 0.5;
+        /**
+         * \brief Requested quantiles
+         */
+        std::vector<std::shared_ptr<Statistics::ProbabilityValue>> RequestedQuantiles;
 
-            /**
-             * \brief Requested quantiles
-             */
-            std::vector<std::shared_ptr<Statistics::ProbabilityValue>> RequestedQuantiles;
+        /**
+         * \brief Settings for performing model runs
+         */
+        std::shared_ptr<Models::RunSettings> RunSettings = std::make_shared<Models::RunSettings>();
 
-            /**
-             * \brief Settings for performing model runs
-             */
-            std::shared_ptr<Models::RunSettings> RunSettings = std::make_shared<Models::RunSettings>();
+        /**
+         * \brief Settings for generating random values
+         */
+        std::shared_ptr<Deltares::Models::RandomSettings> RandomSettings = std::make_shared<Deltares::Models::RandomSettings>();
 
-            /**
-             * \brief Settings for generating random values
-             */
-            std::shared_ptr<Deltares::Models::RandomSettings> RandomSettings = std::make_shared<Deltares::Models::RandomSettings>();
+        /**
+         * \brief Settings for calculating the gradient at a stochast point
+         */
+        std::shared_ptr<Models::GradientSettings> GradientSettings = std::make_shared<Models::GradientSettings>();
 
-            /**
-             * \brief Settings for calculating the gradient at a stochast point
-             */
-            std::shared_ptr<Models::GradientSettings> GradientSettings = std::make_shared<Models::GradientSettings>();
+        /**
+         * \brief Settings for individual stochastic variable, such as the start value
+         */
+        std::shared_ptr<Reliability::StochastSettingsSet> StochastSet = std::make_shared<Reliability::StochastSettingsSet>();
 
-            /**
-             * \brief Settings for individual stochastic variable, such as the start value
-             */
-            std::shared_ptr<Reliability::StochastSettingsSet> StochastSet = std::make_shared<Reliability::StochastSettingsSet>();
-
-            /**
-             * \brief Gets the reliability method and settings based on these settings
-             */
-            std::shared_ptr<Sensitivity::UncertaintyMethod> GetSensitivityMethod();
+        /**
+         * \brief Gets the reliability method and settings based on these settings
+         */
+        std::shared_ptr<UncertaintyMethod> GetSensitivityMethod();
 
 
-            /**
-             * \brief Indicates whether these settings have valid values
-             * \return Indication
-             */
-            bool isValid();
+        /**
+         * \brief Indicates whether these settings have valid values
+         * \return Indication
+         */
+        bool isValid();
 
-            static std::string getSensitivityMethodTypeString(SensitivityMethodType method);
-            static SensitivityMethodType getSensitivityMethodType(std::string method);
-        private:
-            const std::shared_ptr<Sensitivity::UncertaintyMethod> GetFORMMethod();
-            const std::shared_ptr<Sensitivity::UncertaintyMethod> GetFOSMMethod();
-            const std::shared_ptr<Sensitivity::UncertaintyMethod> GetNumericalIntegrationMethod();
-            const std::shared_ptr<Sensitivity::UncertaintyMethod> GetCrudeMonteCarloMethod();
-            const std::shared_ptr<Sensitivity::UncertaintyMethod> GetImportanceSamplingMethod();
-            const std::shared_ptr<Sensitivity::UncertaintyMethod> GetDirectionalSamplingMethod();
-        };
-    }
+        static std::string getSensitivityMethodTypeString(SensitivityMethodType method);
+        static SensitivityMethodType getSensitivityMethodType(std::string method);
+    private:
+        const std::shared_ptr<UncertaintyMethod> GetFORMMethod();
+        const std::shared_ptr<UncertaintyMethod> GetFOSMMethod();
+        const std::shared_ptr<UncertaintyMethod> GetNumericalIntegrationMethod();
+        const std::shared_ptr<UncertaintyMethod> GetCrudeMonteCarloMethod();
+        const std::shared_ptr<UncertaintyMethod> GetImportanceSamplingMethod();
+        const std::shared_ptr<UncertaintyMethod> GetDirectionalSamplingMethod();
+    };
 }
 

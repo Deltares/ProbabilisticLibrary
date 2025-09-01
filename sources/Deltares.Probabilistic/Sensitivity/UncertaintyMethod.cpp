@@ -25,7 +25,7 @@
 #include "UncertaintyMethod.h"
 #include "../Math/NumericSupport.h"
 
-namespace Deltares::Sensitivity
+namespace Deltares::Uncertainty
 {
     bool UncertaintyMethod::isStopped() const
     {

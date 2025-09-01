@@ -27,14 +27,14 @@
 
 namespace Deltares
 {
-    namespace Sensitivity
+    namespace Uncertainty
     {
         namespace Wrappers
         {
             public ref class FORMS : public SensitivityMethod
             {
             private:
-                Utils::Wrappers::SharedPointerProvider<Sensitivity::FORMS>* shared = new Utils::Wrappers::SharedPointerProvider(new Sensitivity::FORMS());
+                Utils::Wrappers::SharedPointerProvider<Uncertainty::FORMS>* shared = new Utils::Wrappers::SharedPointerProvider(new Uncertainty::FORMS());
             public:
                 FORMS() { }
                 ~FORMS() { this->!FORMS(); }
@@ -46,7 +46,7 @@ namespace Deltares
 
                 bool IsValid() override { return Settings->IsValid(); }
 
-                std::shared_ptr<Sensitivity::UncertaintyMethod> GetNativeSensitivityMethod() override
+                std::shared_ptr<Uncertainty::UncertaintyMethod> GetNativeSensitivityMethod() override
                 {
                     shared->object->Settings = Settings->GetSettings();
                     return shared->object;

@@ -26,47 +26,44 @@
 #include <memory>
 #include <vector>
 
-namespace Deltares
+namespace Deltares::Uncertainty
 {
-    namespace Sensitivity
+    class FOSMSettings
     {
-        class FOSMSettings
+    public:
+        /**
+         * \brief Indicates whether correlations should be calculated
+         */
+        bool CalculateCorrelations = false;
+
+        /**
+         * \brief Indicates whether correlations with input values should be calculated
+         */
+        bool CalculateInputCorrelations = false;
+
+        /**
+         * \brief The step size to calculate the gradient
+         */
+        double StepSize = 0.01;
+
+        /**
+         * \brief Quantiles which should be calculated
+         */
+        std::vector<std::shared_ptr<Statistics::ProbabilityValue>> RequestedQuantiles;
+
+        /**
+         * \brief Settings for performing model runs
+         */
+        std::shared_ptr<Models::RunSettings> RunSettings = std::make_shared<Models::RunSettings>();
+
+        /**
+         * \brief Indicates whether the settings have valid values
+         * \return Indication
+         */
+        bool isValid()
         {
-        public:
-            /**
-             * \brief Indicates whether correlations should be calculated
-             */
-            bool CalculateCorrelations = false;
-
-            /**
-             * \brief Indicates whether correlations with input values should be calculated
-             */
-            bool CalculateInputCorrelations = false;
-
-            /**
-             * \brief The step size to calculate the gradient
-             */
-            double StepSize = 0.01;
-
-            /**
-             * \brief Quantiles which should be calculated
-             */
-            std::vector<std::shared_ptr<Statistics::ProbabilityValue>> RequestedQuantiles;
-
-            /**
-             * \brief Settings for performing model runs
-             */
-            std::shared_ptr<Models::RunSettings> RunSettings = std::make_shared<Models::RunSettings>();
-
-            /**
-             * \brief Indicates whether the settings have valid values
-             * \return Indication
-             */
-            bool isValid()
-            {
-                return StepSize >= 0.001;
-            }
-        };
-    }
+            return StepSize >= 0.001;
+        }
+    };
 }
 

@@ -29,7 +29,7 @@
 
 namespace Deltares
 {
-    namespace Sensitivity
+    namespace Uncertainty
     {
         namespace Wrappers
         {
@@ -39,7 +39,7 @@ namespace Deltares
             public ref class ImportanceSamplingSettingsS : IHasRunSettings
             {
             private:
-                SharedPointerProvider<Sensitivity::ImportanceSamplingSettingsS>* shared = new SharedPointerProvider(new Sensitivity::ImportanceSamplingSettingsS());
+                SharedPointerProvider<Uncertainty::ImportanceSamplingSettingsS>* shared = new SharedPointerProvider(new Uncertainty::ImportanceSamplingSettingsS());
                 Wrappers::RunSettings^ runSettings = gcnew Wrappers::RunSettings();
             public:
                 ImportanceSamplingSettingsS()
@@ -106,7 +106,7 @@ namespace Deltares
                     return shared->object->isValid();
                 }
 
-                std::shared_ptr<Sensitivity::ImportanceSamplingSettingsS> GetSettings()
+                std::shared_ptr<Uncertainty::ImportanceSamplingSettingsS> GetSettings()
                 {
                     shared->object->StochastSet->stochastSettings.clear();
                     for (int i = 0; i < StochastSettings->Count; i++)

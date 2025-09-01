@@ -28,7 +28,7 @@
 
 namespace Deltares
 {
-    namespace Sensitivity
+    namespace Uncertainty
     {
         namespace Wrappers
         {
@@ -38,7 +38,7 @@ namespace Deltares
             public ref class FOSMSettings : IHasRunSettings
             {
             private:
-                SharedPointerProvider<Sensitivity::FOSMSettings>* shared = new SharedPointerProvider(new Sensitivity::FOSMSettings());
+                SharedPointerProvider<Uncertainty::FOSMSettings>* shared = new SharedPointerProvider(new Uncertainty::FOSMSettings());
                 Wrappers::RunSettings^ runSettings = gcnew Wrappers::RunSettings();
             public:
                 FOSMSettings() {}
@@ -75,7 +75,7 @@ namespace Deltares
                     return shared->object->isValid();
                 }
 
-                std::shared_ptr<Sensitivity::FOSMSettings> GetSettings()
+                std::shared_ptr<Uncertainty::FOSMSettings> GetSettings()
                 {
                     shared->object->RunSettings = RunSettings->GetSettings();
                     return shared->object;

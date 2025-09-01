@@ -25,47 +25,43 @@
 #include "../Reliability/StochastSettingsSet.h"
 #include <memory>
 
-namespace Deltares
+namespace Deltares::Uncertainty
 {
-    namespace Sensitivity
+    class NumericalIntegrationSettingsS
     {
-        class NumericalIntegrationSettingsS
+    public:
+        /**
+         * \brief Indicates whether correlations should be calculated
+         */
+        bool CalculateCorrelations = false;
+
+        /**
+         * \brief Indicates whether correlations with input values should be calculated
+         */
+        bool CalculateInputCorrelations = false;
+
+        /**
+         * \brief Settings for individual stochastic variables, such as the start value
+         */
+        std::shared_ptr<Reliability::StochastSettingsSet> StochastSet = std::make_shared<Reliability::StochastSettingsSet>();
+
+        /**
+         * \brief Quantiles which should be calculated
+         */
+        std::vector<std::shared_ptr<Statistics::ProbabilityValue>> RequestedQuantiles;
+
+        /**
+         * \brief Settings for performing model runs
+         */
+        std::shared_ptr<Models::RunSettings> RunSettings = std::make_shared<Models::RunSettings>();
+
+        /**
+         * \brief Indicates whether the settings have valid values
+         * \return Indication
+         */
+        bool isValid()
         {
-        public:
-            /**
-             * \brief Indicates whether correlations should be calculated
-             */
-            bool CalculateCorrelations = false;
-
-            /**
-             * \brief Indicates whether correlations with input values should be calculated
-             */
-            bool CalculateInputCorrelations = false;
-
-            /**
-             * \brief Settings for individual stochastic variables, such as the start value
-             */
-            std::shared_ptr<Reliability::StochastSettingsSet> StochastSet = std::make_shared<Reliability::StochastSettingsSet>();
-
-            /**
-             * \brief Quantiles which should be calculated
-             */
-            std::vector<std::shared_ptr<Statistics::ProbabilityValue>> RequestedQuantiles;
-
-            /**
-             * \brief Settings for performing model runs
-             */
-            std::shared_ptr<Models::RunSettings> RunSettings = std::make_shared<Models::RunSettings>();
-
-            /**
-             * \brief Indicates whether the settings have valid values
-             * \return Indication
-             */
-            bool isValid()
-            {
-                return this->RunSettings->isValid();
-            }
-        };
-    }
+            return this->RunSettings->isValid();
+        }
+    };
 }
-

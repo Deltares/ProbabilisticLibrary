@@ -26,7 +26,7 @@
 
 namespace Deltares
 {
-    namespace Sensitivity
+    namespace Uncertainty
     {
         namespace Wrappers
         {
@@ -35,7 +35,7 @@ namespace Deltares
             public:
                 SensitivityMethod() {  }
 
-                virtual std::shared_ptr<Sensitivity::UncertaintyMethod> GetNativeSensitivityMethod()
+                virtual std::shared_ptr<Uncertainty::UncertaintyMethod> GetNativeSensitivityMethod()
                 {
                     return nullptr;
                 };

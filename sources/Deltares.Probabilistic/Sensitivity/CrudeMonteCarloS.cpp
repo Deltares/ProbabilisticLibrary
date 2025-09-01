@@ -32,108 +32,105 @@
 
 using namespace Deltares::Models;
 
-namespace Deltares
+namespace Deltares::Uncertainty
 {
-    namespace Sensitivity
+    UncertaintyResult CrudeMonteCarloS::getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner)
     {
-        Sensitivity::UncertaintyResult CrudeMonteCarloS::getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner)
+        modelRunner->updateStochastSettings(this->Settings->StochastSet);
+
+        std::shared_ptr<SampleProvider> sampleProvider = std::make_shared<SampleProvider>(this->Settings->StochastSet);
+        modelRunner->setSampleProvider(sampleProvider);
+
+        RandomSampleGenerator randomSampleGenerator = RandomSampleGenerator();
+        randomSampleGenerator.Settings = this->Settings->randomSettings;
+        randomSampleGenerator.Settings->StochastSet = this->Settings->StochastSet;
+        randomSampleGenerator.sampleProvider = sampleProvider;
+        randomSampleGenerator.initialize();
+
+        std::vector<double> zValues; // copy of z for all parallel threads as double
+
+        std::vector<std::shared_ptr<Sample>> samples;
+        std::vector<double> zSamples;
+        size_t zIndex = 0;
+        int nSamples = 0;
+
+        bool registerSamplesForCorrelation = this->correlationMatrixBuilder->isEmpty() && this->Settings->CalculateCorrelations && this->Settings->CalculateInputCorrelations;
+
+        int requiredSamples = std::min(this->Settings->getRequiredSamples(), this->Settings->MaximumSamples);
+
+        for (int sampleIndex = 0; sampleIndex < requiredSamples && !isStopped(); sampleIndex++)
         {
-            modelRunner->updateStochastSettings(this->Settings->StochastSet);
+            zIndex++;
 
-            std::shared_ptr<SampleProvider> sampleProvider = std::make_shared<SampleProvider>(this->Settings->StochastSet);
-            modelRunner->setSampleProvider(sampleProvider);
-
-            RandomSampleGenerator randomSampleGenerator = RandomSampleGenerator();
-            randomSampleGenerator.Settings = this->Settings->randomSettings;
-            randomSampleGenerator.Settings->StochastSet = this->Settings->StochastSet;
-            randomSampleGenerator.sampleProvider = sampleProvider;
-            randomSampleGenerator.initialize();
-
-            std::vector<double> zValues; // copy of z for all parallel threads as double
-
-            std::vector<std::shared_ptr<Sample>> samples;
-            std::vector<double> zSamples;
-            size_t zIndex = 0;
-            int nSamples = 0;
-
-            bool registerSamplesForCorrelation = this->correlationMatrixBuilder->isEmpty() && this->Settings->CalculateCorrelations && this->Settings->CalculateInputCorrelations;
-
-            int requiredSamples = std::min(this->Settings->getRequiredSamples(), this->Settings->MaximumSamples);
-
-            for (int sampleIndex = 0; sampleIndex < requiredSamples && !isStopped(); sampleIndex++)
+            if (zIndex >= samples.size())
             {
-                zIndex++;
+                samples.clear();
 
-                if (zIndex >= samples.size())
+                int chunkSize = modelRunner->Settings->MaxChunkSize;
+                int runs = std::min(chunkSize, Settings->MaximumSamples - sampleIndex);
+
+                for (int i = 0; i < runs; i++)
                 {
-                    samples.clear();
-
-                    int chunkSize = modelRunner->Settings->MaxChunkSize;
-                    int runs = std::min(chunkSize, Settings->MaximumSamples - sampleIndex);
-
-                    for (int i = 0; i < runs; i++)
-                    {
-                        std::shared_ptr<Sample> sample = randomSampleGenerator.getRandomSample();
-                        samples.push_back(sample);
-                    }
-
-                    modelRunner->getZValues(samples);
-
-                    zIndex = 0;
-                }
-
-                double z = samples[zIndex]->Z;
-
-                if (std::isnan(z))
-                {
-                    continue;
-                }
-
-                zSamples.push_back(z);
-
-                if (registerSamplesForCorrelation)
-                {
-                    modelRunner->registerSample(this->correlationMatrixBuilder, samples[zIndex]);
-                }
-
-                nSamples++;
-            }
-
-            std::vector<double> zWeights = Numeric::NumericSupport::select(zSamples, [](double x) {return 1.0; });
-
-            std::shared_ptr<Statistics::Stochast> stochast = this->getStochastFromSamples(zSamples, zWeights);
-
-            auto result = modelRunner->getSensitivityResult(stochast);
-
-            for (std::shared_ptr<Statistics::ProbabilityValue> quantile : this->Settings->RequestedQuantiles)
-            {
-                double p = quantile->getProbabilityOfNonFailure();
-                int quantileIndex = this->getQuantileIndex(zSamples, zWeights, p);
-
-                if (quantileIndex >= 0)
-                {
-                    // perform the sampling again and recalculate
-                    randomSampleGenerator.restart();
-                    randomSampleGenerator.proceed(quantileIndex);
-
                     std::shared_ptr<Sample> sample = randomSampleGenerator.getRandomSample();
-                    std::shared_ptr<Models::Evaluation> evaluation = std::make_shared<Models::Evaluation>(modelRunner->getEvaluation(sample));
-                    evaluation->Quantile = p;
-                    result.quantileEvaluations.push_back(evaluation);
+                    samples.push_back(sample);
                 }
-                else
-                {
-                    result.quantileEvaluations.push_back(nullptr);
-                }
+
+                modelRunner->getZValues(samples);
+
+                zIndex = 0;
             }
 
-            if (this->Settings->CalculateCorrelations)
+            double z = samples[zIndex]->Z;
+
+            if (std::isnan(z))
             {
-                this->correlationMatrixBuilder->registerSamples(stochast, zSamples);
+                continue;
             }
 
-            return result;
+            zSamples.push_back(z);
+
+            if (registerSamplesForCorrelation)
+            {
+                modelRunner->registerSample(this->correlationMatrixBuilder, samples[zIndex]);
+            }
+
+            nSamples++;
         }
+
+        std::vector<double> zWeights = Numeric::NumericSupport::select(zSamples, [](double x) {return 1.0; });
+
+        std::shared_ptr<Statistics::Stochast> stochast = this->getStochastFromSamples(zSamples, zWeights);
+
+        auto result = modelRunner->getSensitivityResult(stochast);
+
+        for (std::shared_ptr<Statistics::ProbabilityValue> quantile : this->Settings->RequestedQuantiles)
+        {
+            double p = quantile->getProbabilityOfNonFailure();
+            int quantileIndex = this->getQuantileIndex(zSamples, zWeights, p);
+
+            if (quantileIndex >= 0)
+            {
+                // perform the sampling again and recalculate
+                randomSampleGenerator.restart();
+                randomSampleGenerator.proceed(quantileIndex);
+
+                std::shared_ptr<Sample> sample = randomSampleGenerator.getRandomSample();
+                std::shared_ptr<Models::Evaluation> evaluation = std::make_shared<Models::Evaluation>(modelRunner->getEvaluation(sample));
+                evaluation->Quantile = p;
+                result.quantileEvaluations.push_back(evaluation);
+            }
+            else
+            {
+                result.quantileEvaluations.push_back(nullptr);
+            }
+        }
+
+        if (this->Settings->CalculateCorrelations)
+        {
+            this->correlationMatrixBuilder->registerSamples(stochast, zSamples);
+        }
+
+        return result;
     }
 }
 

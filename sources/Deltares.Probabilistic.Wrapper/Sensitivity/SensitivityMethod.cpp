@@ -26,13 +26,13 @@
 
 namespace Deltares
 {
-    namespace Sensitivity
+    namespace Uncertainty
     {
         namespace Wrappers
         {
             Statistics::Wrappers::Stochast^ SensitivityMethod::GetStochast(Models::Wrappers::ModelRunner^ modelRunner)
             {
-                const std::shared_ptr<Sensitivity::UncertaintyMethod> sensitivityMethod = this->GetNativeSensitivityMethod();
+                const std::shared_ptr<Uncertainty::UncertaintyMethod> sensitivityMethod = this->GetNativeSensitivityMethod();
 
                 const std::shared_ptr<Models::ModelRunner> nativeModelRunner = modelRunner->GetModelRunner();
 

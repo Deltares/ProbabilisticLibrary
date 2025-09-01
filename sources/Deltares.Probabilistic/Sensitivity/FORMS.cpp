@@ -35,364 +35,358 @@
 
 using namespace Deltares::Models;
 
-namespace Deltares
+namespace Deltares::Uncertainty
 {
-    namespace Sensitivity
+    using namespace Deltares::Models;
+    using namespace Deltares::Statistics;
+
+    UncertaintyResult FORMS::getSensitivityStochast(std::shared_ptr<ModelRunner> modelRunner)
     {
-        using namespace Deltares::Models;
-        using namespace Deltares::Statistics;
+        int nStochasts = modelRunner->getVaryingStochastCount();
 
-        Sensitivity::UncertaintyResult FORMS::getSensitivityStochast(std::shared_ptr<ModelRunner> modelRunner)
+        std::shared_ptr<Models::GradientCalculator> gradientCalculator = std::make_shared<GradientCalculator>();
+        gradientCalculator->Settings = std::make_shared<GradientSettings>();
+        gradientCalculator->Settings = Settings->GradientSettings;
+
+        int iteration = 0;
+        double zPrevious = std::nan("");
+        bool ascending = true;
+        double factorBeta = 1;
+
+        double requiredBetaIncrement = Settings->StepSize / 5;
+
+        int maxIterations = static_cast<int>((this->Settings->Maximum - this->Settings->Minimum) / this->Settings->StepSize) + 1;
+        int performedIterations = 0;
+
+        // holds results
+        std::shared_ptr<Stochast> cdfCurve = std::make_shared<Stochast>();
+        cdfCurve->setDistributionType(DistributionType::CDFCurve);
+
+        std::shared_ptr<Sample> previousPoint = nullptr;
+        std::shared_ptr<Sample> startPoint = std::make_shared<Sample>(nStochasts);
+        startPoint->IterationIndex = iteration - 1;
+
+        std::vector<double> gradient0 = gradientCalculator->getGradient(modelRunner, startPoint);
+        double z0 = startPoint->Z;
+
+        std::shared_ptr<FragilityValue> zeroValue = std::make_shared<FragilityValue>();
+        zeroValue->X = z0;
+        zeroValue->Reliability = 0;
+        cdfCurve->getProperties()->FragilityValues.push_back(zeroValue);
+
+        bool valid = isZValid(modelRunner, z0) && isGradientValid(modelRunner, gradient0);
+
+        modelRunner->reportProgress(++performedIterations, maxIterations);
+
+        // ascending part
+        if (valid && Settings->Maximum > 0)
         {
-            int nStochasts = modelRunner->getVaryingStochastCount();
-
-            std::shared_ptr<Models::GradientCalculator> gradientCalculator = std::make_shared<GradientCalculator>();
-            gradientCalculator->Settings = std::make_shared<GradientSettings>();
-            gradientCalculator->Settings = Settings->GradientSettings;
-
-            int iteration = 0;
-            double zPrevious = std::nan("");
-            bool ascending = true;
-            double factorBeta = 1;
-
-            double requiredBetaIncrement = Settings->StepSize / 5;
-
-            int maxIterations = static_cast<int>((this->Settings->Maximum - this->Settings->Minimum) / this->Settings->StepSize) + 1;
-            int performedIterations = 0;
-
-            // holds results
-            std::shared_ptr<Stochast> cdfCurve = std::make_shared<Stochast>();
-            cdfCurve->setDistributionType(DistributionType::CDFCurve);
-
-            std::shared_ptr<Sample> previousPoint = nullptr;
-            std::shared_ptr<Sample> startPoint = std::make_shared<Sample>(nStochasts);
-            startPoint->IterationIndex = iteration - 1;
-
-            std::vector<double> gradient0 = gradientCalculator->getGradient(modelRunner, startPoint);
-            double z0 = startPoint->Z;
-
-            std::shared_ptr<FragilityValue> zeroValue = std::make_shared<FragilityValue>();
-            zeroValue->X = z0;
-            zeroValue->Reliability = 0;
-            cdfCurve->getProperties()->FragilityValues.push_back(zeroValue);
-
-            bool valid = isZValid(modelRunner, z0) && isGradientValid(modelRunner, gradient0);
-
-            modelRunner->reportProgress(++performedIterations, maxIterations);
-
-            // ascending part
-            if (valid && Settings->Maximum > 0)
+            while (startPoint->getBeta() <= Settings->Maximum)
             {
-                while (startPoint->getBeta() <= Settings->Maximum)
+                std::vector<double> gradient = gradient0;
+
+                double z = z0;
+
+                if (iteration > 0)
                 {
-                    std::vector<double> gradient = gradient0;
+                    startPoint->IterationIndex = iteration - 1;
+                    gradient = gradientCalculator->getGradient(modelRunner, startPoint);
+                    z = startPoint->Z;
 
-                    double z = z0;
+                    modelRunner->reportProgress(++performedIterations, maxIterations);
 
-                    if (iteration > 0)
+                    if (!isZValid(modelRunner, z))
                     {
-                        startPoint->IterationIndex = iteration - 1;
-                        gradient = gradientCalculator->getGradient(modelRunner, startPoint);
-                        z = startPoint->Z;
-
-                        modelRunner->reportProgress(++performedIterations, maxIterations);
-
-                        if (!isZValid(modelRunner, z))
-                        {
-                            break;
-                        }
-                        if (!isGradientValid(modelRunner, gradient))
-                        {
-                            break;
-                        }
-
-                        if (iteration == 1)
-                        {
-                            ascending = z - zPrevious >= 0;
-                            factorBeta = ascending ? 1 : -1;
-                        }
-                        else
-                        {
-                            if (!isMonotone(modelRunner, z, zPrevious, ascending))
-                            {
-                                break;
-                            }
-                        }
-
-                        checkQuantiles(modelRunner, startPoint, previousPoint, factorBeta);
+                        break;
                     }
-
-                    zPrevious = z;
-                    double betaPrevious = startPoint->getBeta();
-
-                    if (iteration > 0)
-                    {
-                        std::shared_ptr<FragilityValue> fragilityValue = std::make_shared<FragilityValue>();
-                        fragilityValue->X = z;
-                        fragilityValue->Reliability = factorBeta * startPoint->getBeta();
-                        cdfCurve->getProperties()->FragilityValues.push_back(fragilityValue);
-                    }
-
-                    double stepSize = Settings->StepSize;
-                    if (iteration == 0)
-                    {
-                        stepSize = std::max(stepSize, Settings->Minimum);
-                    }
-
-                    double factor = stepSize / Numeric::NumericSupport::GetLength(gradient);
-
-                    std::vector<double> nextU = Numeric::NumericSupport::zip(startPoint->Values, gradient, [factor](double p, double q) { return p + q * factor; });
-
-                    previousPoint = startPoint;
-                    startPoint = std::make_shared<Sample>(nextU);
-
-                    if (!isBetaValid(modelRunner, startPoint->getBeta(), betaPrevious, requiredBetaIncrement))
+                    if (!isGradientValid(modelRunner, gradient))
                     {
                         break;
                     }
 
-                    iteration++;
-                }
-
-                const double tolerance = 1E-6;
-                valid &= Numeric::NumericSupport::isGreater(startPoint->getBeta(), Settings->Maximum, tolerance);
-            }
-
-
-            if (valid && Settings->Minimum < 0)
-            {
-                // reset start point
-                iteration = 0;
-                ascending = !ascending;
-                factorBeta = -factorBeta;
-                zPrevious = z0;
-
-                startPoint = std::make_shared<Sample>(nStochasts);
-
-                while (startPoint->getBeta() <= std::abs(Settings->Minimum))
-                {
-                    std::vector<double> gradient = gradient0;
-                    double z = z0;
-
-                    if (iteration < 0)
+                    if (iteration == 1)
                     {
-                        startPoint->IterationIndex = iteration - 1;
-                        gradient = gradientCalculator->getGradient(modelRunner, startPoint);
-                        z = startPoint->Z;
-
-                        checkQuantiles(modelRunner, startPoint, previousPoint, factorBeta);
-
-                        modelRunner->reportProgress(++performedIterations, maxIterations);
-
-                        if (!isZValid(modelRunner, z))
-                        {
-                            break;
-                        }
-                        if (!isGradientValid(modelRunner, gradient))
-                        {
-                            break;
-                        }
+                        ascending = z - zPrevious >= 0;
+                        factorBeta = ascending ? 1 : -1;
+                    }
+                    else
+                    {
                         if (!isMonotone(modelRunner, z, zPrevious, ascending))
                         {
                             break;
                         }
                     }
 
-                    zPrevious = z;
-                    double betaPrevious = startPoint->getBeta();
+                    checkQuantiles(modelRunner, startPoint, previousPoint, factorBeta);
+                }
 
-                    if (iteration < 0)
-                    {
-                        std::shared_ptr<FragilityValue> fragilityValue = std::make_shared<FragilityValue>();
-                        fragilityValue->X = z;
-                        fragilityValue->Reliability = factorBeta * startPoint->getBeta();
-                        cdfCurve->getProperties()->FragilityValues.push_back(fragilityValue);
-                    }
+                zPrevious = z;
+                double betaPrevious = startPoint->getBeta();
 
-                    double stepSize = Settings->StepSize;
-                    if (iteration == 0)
-                    {
-                        stepSize = std::max(stepSize, -Settings->Maximum);
-                    }
+                if (iteration > 0)
+                {
+                    std::shared_ptr<FragilityValue> fragilityValue = std::make_shared<FragilityValue>();
+                    fragilityValue->X = z;
+                    fragilityValue->Reliability = factorBeta * startPoint->getBeta();
+                    cdfCurve->getProperties()->FragilityValues.push_back(fragilityValue);
+                }
 
-                    double factor = stepSize / Numeric::NumericSupport::GetLength(gradient);
+                double stepSize = Settings->StepSize;
+                if (iteration == 0)
+                {
+                    stepSize = std::max(stepSize, Settings->Minimum);
+                }
 
-                    previousPoint = startPoint;
+                double factor = stepSize / Numeric::NumericSupport::GetLength(gradient);
 
-                    std::vector<double> nextU = Numeric::NumericSupport::zip(startPoint->Values, gradient, [factor](double p, double q) { return p - q * factor; });
-                    startPoint = std::make_shared<Sample>(nextU);
+                std::vector<double> nextU = Numeric::NumericSupport::zip(startPoint->Values, gradient, [factor](double p, double q) { return p + q * factor; });
 
-                    if (!isBetaValid(modelRunner, startPoint->getBeta(), betaPrevious, requiredBetaIncrement))
+                previousPoint = startPoint;
+                startPoint = std::make_shared<Sample>(nextU);
+
+                if (!isBetaValid(modelRunner, startPoint->getBeta(), betaPrevious, requiredBetaIncrement))
+                {
+                    break;
+                }
+
+                iteration++;
+            }
+
+            const double tolerance = 1E-6;
+            valid &= Numeric::NumericSupport::isGreater(startPoint->getBeta(), Settings->Maximum, tolerance);
+        }
+
+
+        if (valid && Settings->Minimum < 0)
+        {
+            // reset start point
+            iteration = 0;
+            ascending = !ascending;
+            factorBeta = -factorBeta;
+            zPrevious = z0;
+
+            startPoint = std::make_shared<Sample>(nStochasts);
+
+            while (startPoint->getBeta() <= std::abs(Settings->Minimum))
+            {
+                std::vector<double> gradient = gradient0;
+                double z = z0;
+
+                if (iteration < 0)
+                {
+                    startPoint->IterationIndex = iteration - 1;
+                    gradient = gradientCalculator->getGradient(modelRunner, startPoint);
+                    z = startPoint->Z;
+
+                    checkQuantiles(modelRunner, startPoint, previousPoint, factorBeta);
+
+                    modelRunner->reportProgress(++performedIterations, maxIterations);
+
+                    if (!isZValid(modelRunner, z))
                     {
                         break;
                     }
-
-                    iteration--;
-                }
-            }
-
-            if (cdfCurve->getProperties()->FragilityValues.size() <= 1)
-            {
-                std::shared_ptr<Statistics::Stochast> stochast = std::make_shared<Stochast>(DistributionType::Deterministic, std::vector<double> { z0 });
-                Sensitivity::UncertaintyResult result = modelRunner->getSensitivityResult(stochast);
-                std::shared_ptr<Sample> zeroSample = std::make_shared<Sample>(nStochasts);
-                std::shared_ptr<Models::Evaluation> evaluation = std::make_shared<Models::Evaluation>(modelRunner->getEvaluation(zeroSample));
-                evaluation->Quantile = 0.5;
-
-                for (std::shared_ptr<Statistics::ProbabilityValue> quantile : this->Settings->RequestedQuantiles)
-                {
-                    result.quantileEvaluations.push_back(evaluation);
-                }
-
-                return result;
-            }
-            else
-            {
-                std::sort(cdfCurve->getProperties()->FragilityValues.begin(), cdfCurve->getProperties()->FragilityValues.end(),
-                    [](std::shared_ptr<FragilityValue> p, std::shared_ptr<FragilityValue> q) {return p->X < q->X; });
-
-                auto result = modelRunner->getSensitivityResult(cdfCurve);
-
-                for (std::shared_ptr<Statistics::ProbabilityValue> quantile : this->Settings->RequestedQuantiles)
-                {
-                    if (this->evaluations.contains(quantile))
+                    if (!isGradientValid(modelRunner, gradient))
                     {
-                        evaluations[quantile]->Quantile = quantile->getProbabilityOfNonFailure();
-                        result.quantileEvaluations.push_back(evaluations[quantile]);
+                        break;
                     }
-                    else
+                    if (!isMonotone(modelRunner, z, zPrevious, ascending))
                     {
-                        result.quantileEvaluations.push_back(nullptr);
+                        break;
                     }
                 }
 
-                return result;
-            }
-        }
+                zPrevious = z;
+                double betaPrevious = startPoint->getBeta();
 
-        bool FORMS::isZValid(std::shared_ptr<ModelRunner> modelRunner, double z)
-        {
-            if (std::isnan(z))
-            {
-                modelRunner->reportMessage(MessageType::Error, "Model result is not valid");
-                return false;
-            }
-
-            return true;
-        }
-
-        bool FORMS::isMonotone(std::shared_ptr<ModelRunner> modelRunner, double z, double zPrevious, bool ascending)
-        {
-            if (z - zPrevious >= 0 != ascending)
-            {
-                modelRunner->reportMessage(MessageType::Error, "Model is not monotone");
-                return false;
-            }
-
-            return true;
-        }
-
-        bool FORMS::isGradientValid(std::shared_ptr<ModelRunner> modelRunner, std::vector<double>& gradient)
-        {
-            if (!areResultsValid(gradient))
-            {
-                modelRunner->reportMessage(MessageType::Error, "Model did not return valid results");
-                return false;
-            }
-
-            repairResults(gradient);
-
-            double gradientLength = Numeric::NumericSupport::GetLength(gradient);
-            if (gradientLength < 1E-6)
-            {
-                modelRunner->reportMessage(MessageType::Error, "Model has no gradient");
-                return false;
-            }
-
-            return true;
-        }
-
-        bool FORMS::isBetaValid(std::shared_ptr<ModelRunner> modelRunner, double beta, double betaPrevious, double requiredBetaIncrement)
-        {
-            if (beta < betaPrevious)
-            {
-                modelRunner->reportMessage(MessageType::Error, "Beta decreases with next step");
-                return false;
-            }
-            else if (beta < betaPrevious + requiredBetaIncrement)
-            {
-                modelRunner->reportMessage(MessageType::Error, "Beta does not increase enough with step");
-                return false;
-            }
-
-            return true;
-        }
-
-        void FORMS::repairResults(std::vector<double>& values)
-        {
-            for (auto& value : values)
-            {
-                if (std::isnan(value))
+                if (iteration < 0)
                 {
-                    value = 0;
+                    std::shared_ptr<FragilityValue> fragilityValue = std::make_shared<FragilityValue>();
+                    fragilityValue->X = z;
+                    fragilityValue->Reliability = factorBeta * startPoint->getBeta();
+                    cdfCurve->getProperties()->FragilityValues.push_back(fragilityValue);
                 }
-            }
-        }
 
-        bool FORMS::areResultsValid(std::vector<double>& values)
-        {
-            for (auto& value : values)
-            {
-                if (!std::isnan(value))
+                double stepSize = Settings->StepSize;
+                if (iteration == 0)
                 {
-                    return true;
+                    stepSize = std::max(stepSize, -Settings->Maximum);
                 }
-            }
 
-            return false;
+                double factor = stepSize / Numeric::NumericSupport::GetLength(gradient);
+
+                previousPoint = startPoint;
+
+                std::vector<double> nextU = Numeric::NumericSupport::zip(startPoint->Values, gradient, [factor](double p, double q) { return p - q * factor; });
+                startPoint = std::make_shared<Sample>(nextU);
+
+                if (!isBetaValid(modelRunner, startPoint->getBeta(), betaPrevious, requiredBetaIncrement))
+                {
+                    break;
+                }
+
+                iteration--;
+            }
         }
 
-        void FORMS::checkQuantiles(const std::shared_ptr<Models::ModelRunner>& modelRunner, const std::shared_ptr<Models::Sample>& startPoint, const std::shared_ptr<Models::Sample>& previousPoint, double factor)
+        if (cdfCurve->getProperties()->FragilityValues.size() <= 1)
         {
-            const double margin = 0.001;
+            std::shared_ptr<Statistics::Stochast> stochast = std::make_shared<Stochast>(DistributionType::Deterministic, std::vector<double> { z0 });
+            Uncertainty::UncertaintyResult result = modelRunner->getSensitivityResult(stochast);
+            std::shared_ptr<Sample> zeroSample = std::make_shared<Sample>(nStochasts);
+            std::shared_ptr<Models::Evaluation> evaluation = std::make_shared<Models::Evaluation>(modelRunner->getEvaluation(zeroSample));
+            evaluation->Quantile = 0.5;
 
             for (std::shared_ptr<Statistics::ProbabilityValue> quantile : this->Settings->RequestedQuantiles)
             {
-                if (!this->evaluations.contains(quantile))
-                {
-                    if (Numeric::NumericSupport::areEqual(factor * startPoint->getBeta(),  quantile->Reliability, margin))
-                    {
-                        std::shared_ptr<Models::Evaluation> evaluation = std::make_shared<Models::Evaluation>(modelRunner->getEvaluation(startPoint));
-                        this->evaluations[quantile] = evaluation;
-                    }
-                    else if (Numeric::NumericSupport::areEqual(factor * previousPoint->getBeta(), quantile->Reliability, margin))
-                    {
-                        std::shared_ptr<Models::Evaluation> evaluation = std::make_shared<Models::Evaluation>(modelRunner->getEvaluation(previousPoint));
-                        this->evaluations[quantile] = evaluation;
-                    }
-                    else if (Numeric::NumericSupport::isBetween(factor * previousPoint->getBeta(), quantile->Reliability, factor * startPoint->getBeta(), margin))
-                    {
-                        std::vector<double> u = std::vector<double>(startPoint->getSize());
-                        for (int i = 0; i < startPoint->getSize(); i++)
-                        {
-                            u[i] = Numeric::NumericSupport::interpolate(
-                                quantile->Reliability,
-                                factor * startPoint->getBeta(),
-                                startPoint->Values[i],
-                                factor * previousPoint->getBeta(),
-                                previousPoint->Values[i]);
-                        }
+                result.quantileEvaluations.push_back(evaluation);
+            }
 
-                        std::shared_ptr<Sample> betweenSample = std::make_shared<Sample>(u);
-                        std::shared_ptr<Models::Evaluation> evaluation = std::make_shared<Models::Evaluation>(modelRunner->getEvaluation(betweenSample));
-                        this->evaluations[quantile] = evaluation;
-                    }
+            return result;
+        }
+        else
+        {
+            std::sort(cdfCurve->getProperties()->FragilityValues.begin(), cdfCurve->getProperties()->FragilityValues.end(),
+                [](std::shared_ptr<FragilityValue> p, std::shared_ptr<FragilityValue> q) {return p->X < q->X; });
+
+            auto result = modelRunner->getSensitivityResult(cdfCurve);
+
+            for (std::shared_ptr<Statistics::ProbabilityValue> quantile : this->Settings->RequestedQuantiles)
+            {
+                if (this->evaluations.contains(quantile))
+                {
+                    evaluations[quantile]->Quantile = quantile->getProbabilityOfNonFailure();
+                    result.quantileEvaluations.push_back(evaluations[quantile]);
                 }
+                else
+                {
+                    result.quantileEvaluations.push_back(nullptr);
+                }
+            }
+
+            return result;
+        }
+    }
+
+    bool FORMS::isZValid(std::shared_ptr<ModelRunner> modelRunner, double z)
+    {
+        if (std::isnan(z))
+        {
+            modelRunner->reportMessage(MessageType::Error, "Model result is not valid");
+            return false;
+        }
+
+        return true;
+    }
+
+    bool FORMS::isMonotone(std::shared_ptr<ModelRunner> modelRunner, double z, double zPrevious, bool ascending)
+    {
+        if (z - zPrevious >= 0 != ascending)
+        {
+            modelRunner->reportMessage(MessageType::Error, "Model is not monotone");
+            return false;
+        }
+
+        return true;
+    }
+
+    bool FORMS::isGradientValid(std::shared_ptr<ModelRunner> modelRunner, std::vector<double>& gradient)
+    {
+        if (!areResultsValid(gradient))
+        {
+            modelRunner->reportMessage(MessageType::Error, "Model did not return valid results");
+            return false;
+        }
+
+        repairResults(gradient);
+
+        double gradientLength = Numeric::NumericSupport::GetLength(gradient);
+        if (gradientLength < 1E-6)
+        {
+            modelRunner->reportMessage(MessageType::Error, "Model has no gradient");
+            return false;
+        }
+
+        return true;
+    }
+
+    bool FORMS::isBetaValid(std::shared_ptr<ModelRunner> modelRunner, double beta, double betaPrevious, double requiredBetaIncrement)
+    {
+        if (beta < betaPrevious)
+        {
+            modelRunner->reportMessage(MessageType::Error, "Beta decreases with next step");
+            return false;
+        }
+        else if (beta < betaPrevious + requiredBetaIncrement)
+        {
+            modelRunner->reportMessage(MessageType::Error, "Beta does not increase enough with step");
+            return false;
+        }
+
+        return true;
+    }
+
+    void FORMS::repairResults(std::vector<double>& values)
+    {
+        for (auto& value : values)
+        {
+            if (std::isnan(value))
+            {
+                value = 0;
+            }
+        }
+    }
+
+    bool FORMS::areResultsValid(std::vector<double>& values)
+    {
+        for (auto& value : values)
+        {
+            if (!std::isnan(value))
+            {
+                return true;
             }
         }
 
+        return false;
     }
+
+    void FORMS::checkQuantiles(const std::shared_ptr<Models::ModelRunner>& modelRunner, const std::shared_ptr<Models::Sample>& startPoint, const std::shared_ptr<Models::Sample>& previousPoint, double factor)
+    {
+        const double margin = 0.001;
+
+        for (std::shared_ptr<Statistics::ProbabilityValue> quantile : this->Settings->RequestedQuantiles)
+        {
+            if (!this->evaluations.contains(quantile))
+            {
+                if (Numeric::NumericSupport::areEqual(factor * startPoint->getBeta(), quantile->Reliability, margin))
+                {
+                    std::shared_ptr<Models::Evaluation> evaluation = std::make_shared<Models::Evaluation>(modelRunner->getEvaluation(startPoint));
+                    this->evaluations[quantile] = evaluation;
+                }
+                else if (Numeric::NumericSupport::areEqual(factor * previousPoint->getBeta(), quantile->Reliability, margin))
+                {
+                    std::shared_ptr<Models::Evaluation> evaluation = std::make_shared<Models::Evaluation>(modelRunner->getEvaluation(previousPoint));
+                    this->evaluations[quantile] = evaluation;
+                }
+                else if (Numeric::NumericSupport::isBetween(factor * previousPoint->getBeta(), quantile->Reliability, factor * startPoint->getBeta(), margin))
+                {
+                    std::vector<double> u = std::vector<double>(startPoint->getSize());
+                    for (int i = 0; i < startPoint->getSize(); i++)
+                    {
+                        u[i] = Numeric::NumericSupport::interpolate(
+                            quantile->Reliability,
+                            factor * startPoint->getBeta(),
+                            startPoint->Values[i],
+                            factor * previousPoint->getBeta(),
+                            previousPoint->Values[i]);
+                    }
+
+                    std::shared_ptr<Sample> betweenSample = std::make_shared<Sample>(u);
+                    std::shared_ptr<Models::Evaluation> evaluation = std::make_shared<Models::Evaluation>(modelRunner->getEvaluation(betweenSample));
+                    this->evaluations[quantile] = evaluation;
+                }
+            }
+        }
+    }
+
 }
-
-
-

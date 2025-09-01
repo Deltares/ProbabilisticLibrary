@@ -26,7 +26,7 @@
 #include "../Model/Evaluation.h"
 #include "../Model/Message.h"
 
-namespace Deltares::Sensitivity
+namespace Deltares::Uncertainty
 {
     /**
      * \brief Contains the results of an uncertainty calculation
