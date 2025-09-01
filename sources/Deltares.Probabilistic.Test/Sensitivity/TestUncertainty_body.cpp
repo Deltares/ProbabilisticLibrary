@@ -57,10 +57,10 @@ namespace Deltares::Probabilistic::Test
     {
         std::shared_ptr<Uncertainty::UncertaintyProject> project = projectBuilder::getSensitivityProject(projectBuilder::getAddOneProject());
 
-        std::shared_ptr<Uncertainty::CrudeMonteCarloS> sensitivityMethod = std::make_shared<Uncertainty::CrudeMonteCarloS>();
-        sensitivityMethod->Settings->randomSettings->RandomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::MersenneTwister;
+        std::shared_ptr<Uncertainty::CrudeMonteCarloS> uncertaintyMethod = std::make_shared<Uncertainty::CrudeMonteCarloS>();
+        uncertaintyMethod->Settings->randomSettings->RandomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::MersenneTwister;
 
-        project->sensitivityMethod = sensitivityMethod;
+        project->uncertaintyMethod = uncertaintyMethod;
 
         std::shared_ptr<Statistics::Stochast> stochast = project->getSensitivityResult().stochast;
 
@@ -76,13 +76,13 @@ namespace Deltares::Probabilistic::Test
     {
         std::shared_ptr<Uncertainty::UncertaintyProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearProject());
 
-        std::shared_ptr<Uncertainty::CrudeMonteCarloS> sensitivityMethod = std::make_shared<Uncertainty::CrudeMonteCarloS>();
-        sensitivityMethod->Settings->randomSettings->RandomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::MersenneTwister;
-        sensitivityMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.05));
-        sensitivityMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.5));
-        sensitivityMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.95));
+        std::shared_ptr<Uncertainty::CrudeMonteCarloS> uncertaintyMethod = std::make_shared<Uncertainty::CrudeMonteCarloS>();
+        uncertaintyMethod->Settings->randomSettings->RandomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::MersenneTwister;
+        uncertaintyMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.05));
+        uncertaintyMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.5));
+        uncertaintyMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.95));
 
-        project->sensitivityMethod = sensitivityMethod;
+        project->uncertaintyMethod = uncertaintyMethod;
 
         auto result = project->getSensitivityResult();
 
@@ -107,15 +107,15 @@ namespace Deltares::Probabilistic::Test
     {
         std::shared_ptr<Uncertainty::UncertaintyProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearProject());
 
-        std::shared_ptr<Uncertainty::CrudeMonteCarloS> sensitivityMethod = std::make_shared<Uncertainty::CrudeMonteCarloS>();
-        sensitivityMethod->Settings->randomSettings->RandomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::MersenneTwister;
-        sensitivityMethod->Settings->randomSettings->IsRepeatableRandom = false;
-        sensitivityMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.05));
-        sensitivityMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.10));
-        sensitivityMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.90));
-        sensitivityMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.95));
+        std::shared_ptr<Uncertainty::CrudeMonteCarloS> uncertaintyMethod = std::make_shared<Uncertainty::CrudeMonteCarloS>();
+        uncertaintyMethod->Settings->randomSettings->RandomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::MersenneTwister;
+        uncertaintyMethod->Settings->randomSettings->IsRepeatableRandom = false;
+        uncertaintyMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.05));
+        uncertaintyMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.10));
+        uncertaintyMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.90));
+        uncertaintyMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.95));
 
-        project->sensitivityMethod = sensitivityMethod;
+        project->uncertaintyMethod = uncertaintyMethod;
 
         auto result = project->getSensitivityResult();
 
@@ -145,7 +145,7 @@ namespace Deltares::Probabilistic::Test
     {
         std::shared_ptr<Uncertainty::UncertaintyProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearOutputProject());
 
-        project->settings->SensitivityMethod = Uncertainty::SensitivityCrudeMonteCarlo;
+        project->settings->UncertaintyMethod = Uncertainty::UncertaintyCrudeMonteCarlo;
         project->settings->RandomSettings->IsRepeatableRandom = true;
         project->settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.95));
 
@@ -166,7 +166,7 @@ namespace Deltares::Probabilistic::Test
     {
         std::shared_ptr<Uncertainty::UncertaintyProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearOutputProject());
 
-        project->settings->SensitivityMethod = Uncertainty::SensitivityCrudeMonteCarlo;
+        project->settings->UncertaintyMethod = Uncertainty::UncertaintyCrudeMonteCarlo;
         project->settings->RandomSettings->IsRepeatableRandom = false;
         project->settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.95));
 
@@ -185,11 +185,11 @@ namespace Deltares::Probabilistic::Test
     {
         std::shared_ptr<Uncertainty::UncertaintyProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearProject());
 
-        std::shared_ptr<Uncertainty::CrudeMonteCarloS> sensitivityMethod = std::make_shared<Uncertainty::CrudeMonteCarloS>();
-        sensitivityMethod->Settings->randomSettings->RandomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::MersenneTwister;
-        sensitivityMethod->Settings->MaximumSamples = 100000;
+        std::shared_ptr<Uncertainty::CrudeMonteCarloS> uncertaintyMethod = std::make_shared<Uncertainty::CrudeMonteCarloS>();
+        uncertaintyMethod->Settings->randomSettings->RandomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::MersenneTwister;
+        uncertaintyMethod->Settings->MaximumSamples = 100000;
 
-        project->sensitivityMethod = sensitivityMethod;
+        project->uncertaintyMethod = uncertaintyMethod;
 
         std::shared_ptr<Statistics::Stochast> stochast = project->getSensitivityResult().stochast;
 
@@ -206,15 +206,15 @@ namespace Deltares::Probabilistic::Test
     {
         std::shared_ptr<Uncertainty::UncertaintyProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearProject());
 
-        std::shared_ptr<Uncertainty::CrudeMonteCarloS> sensitivityMethod = std::make_shared<Uncertainty::CrudeMonteCarloS>();
-        sensitivityMethod->Settings->randomSettings->RandomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::MersenneTwister;
-        sensitivityMethod->Settings->DeriveSamplesFromVariationCoefficient = true;
+        std::shared_ptr<Uncertainty::CrudeMonteCarloS> uncertaintyMethod = std::make_shared<Uncertainty::CrudeMonteCarloS>();
+        uncertaintyMethod->Settings->randomSettings->RandomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::MersenneTwister;
+        uncertaintyMethod->Settings->DeriveSamplesFromVariationCoefficient = true;
 
-        project->sensitivityMethod = sensitivityMethod;
+        project->uncertaintyMethod = uncertaintyMethod;
 
         std::shared_ptr<Statistics::Stochast> stochast = project->getSensitivityResult().stochast;
 
-        ASSERT_EQ(7600, sensitivityMethod->Settings->getRequiredSamples());
+        ASSERT_EQ(7600, uncertaintyMethod->Settings->getRequiredSamples());
         ASSERT_NEAR(1.8, stochast->getMean(), margin);
         ASSERT_NEAR(0.82, stochast->getDeviation(), margin);
     }
@@ -223,12 +223,12 @@ namespace Deltares::Probabilistic::Test
     {
         std::shared_ptr<Uncertainty::UncertaintyProject> project = projectBuilder::getSensitivityProject(projectBuilder::getAddOneProject());
 
-        std::shared_ptr<Uncertainty::ImportanceSamplingS> sensitivityMethod = std::make_shared<Uncertainty::ImportanceSamplingS>();
-        sensitivityMethod->Settings->randomSettings->RandomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::MersenneTwister;
-        sensitivityMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.5));
-        sensitivityMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.95));
+        std::shared_ptr<Uncertainty::ImportanceSamplingS> uncertaintyMethod = std::make_shared<Uncertainty::ImportanceSamplingS>();
+        uncertaintyMethod->Settings->randomSettings->RandomGeneratorType = Deltares::Numeric::RandomValueGeneratorType::MersenneTwister;
+        uncertaintyMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.5));
+        uncertaintyMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.95));
 
-        project->sensitivityMethod = sensitivityMethod;
+        project->uncertaintyMethod = uncertaintyMethod;
 
         auto result = project->getSensitivityResult();
 
@@ -249,11 +249,11 @@ namespace Deltares::Probabilistic::Test
     {
         std::shared_ptr<Uncertainty::UncertaintyProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearProject());
 
-        std::shared_ptr<Uncertainty::NumericalIntegrationS> sensitivityMethod = std::make_shared<Uncertainty::NumericalIntegrationS>();
-        sensitivityMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.05));
-        sensitivityMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.5));
-        sensitivityMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.95));
-        project->sensitivityMethod = sensitivityMethod;
+        std::shared_ptr<Uncertainty::NumericalIntegrationS> uncertaintyMethod = std::make_shared<Uncertainty::NumericalIntegrationS>();
+        uncertaintyMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.05));
+        uncertaintyMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.5));
+        uncertaintyMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.95));
+        project->uncertaintyMethod = uncertaintyMethod;
 
         auto result = project->getSensitivityResult();
 
@@ -271,13 +271,13 @@ namespace Deltares::Probabilistic::Test
     {
         std::shared_ptr<Uncertainty::UncertaintyProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearProject());
 
-        std::shared_ptr<Uncertainty::DirectionalSamplingS> sensitivityMethod = std::make_shared<Uncertainty::DirectionalSamplingS>();
+        std::shared_ptr<Uncertainty::DirectionalSamplingS> uncertaintyMethod = std::make_shared<Uncertainty::DirectionalSamplingS>();
 
         std::shared_ptr<Statistics::ProbabilityValue> value1 = std::make_shared<Statistics::ProbabilityValue>();
         value1->setProbabilityOfNonFailure(0.9);
 
-        sensitivityMethod->Settings->RequestedQuantiles.push_back(value1);
-        project->sensitivityMethod = sensitivityMethod;
+        uncertaintyMethod->Settings->RequestedQuantiles.push_back(value1);
+        project->uncertaintyMethod = uncertaintyMethod;
 
         auto result = project->getSensitivityResult();
 
@@ -292,11 +292,11 @@ namespace Deltares::Probabilistic::Test
     {
         std::shared_ptr<Uncertainty::UncertaintyProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearProject());
 
-        std::shared_ptr<Uncertainty::FORMS> sensitivityMethod = std::make_shared<Uncertainty::FORMS>();
-        sensitivityMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.05));
-        sensitivityMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.5));
-        sensitivityMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.95));
-        project->sensitivityMethod = sensitivityMethod;
+        std::shared_ptr<Uncertainty::FORMS> uncertaintyMethod = std::make_shared<Uncertainty::FORMS>();
+        uncertaintyMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.05));
+        uncertaintyMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.5));
+        uncertaintyMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.95));
+        project->uncertaintyMethod = uncertaintyMethod;
 
         auto result = project->getSensitivityResult();
 
@@ -314,11 +314,11 @@ namespace Deltares::Probabilistic::Test
     {
         std::shared_ptr<Uncertainty::UncertaintyProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearProject());
 
-        std::shared_ptr<Uncertainty::FOSM> sensitivityMethod = std::make_shared<Uncertainty::FOSM>();
-        sensitivityMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.05));
-        sensitivityMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.5));
-        sensitivityMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.95));
-        project->sensitivityMethod = sensitivityMethod;
+        std::shared_ptr<Uncertainty::FOSM> uncertaintyMethod = std::make_shared<Uncertainty::FOSM>();
+        uncertaintyMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.05));
+        uncertaintyMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.5));
+        uncertaintyMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.95));
+        project->uncertaintyMethod = uncertaintyMethod;
 
         auto result = project->getSensitivityResult();
 

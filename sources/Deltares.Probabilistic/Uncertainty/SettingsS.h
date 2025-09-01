@@ -28,7 +28,7 @@
 
 namespace Deltares::Uncertainty
 {
-    enum SensitivityMethodType { SensitivityFORM, SensitivityFOSM, SensitivityNumericalIntegration, SensitivityCrudeMonteCarlo, SensitivityImportanceSampling, SensitivityDirectionalSampling };
+    enum UncertaintyMethodType { UncertaintyFORM, UncertaintyFOSM, UncertaintyNumericalIntegration, UncertaintyCrudeMonteCarlo, UncertaintyImportanceSampling, UncertaintyDirectionalSampling };
 
     /**
      * \brief General settings applicable to all sensitivity mechanisms
@@ -39,7 +39,7 @@ namespace Deltares::Uncertainty
         /**
          * \brief Method type how the design point (alpha values) is calculated
          */
-        SensitivityMethodType SensitivityMethod = SensitivityMethodType::SensitivityCrudeMonteCarlo;
+        UncertaintyMethodType UncertaintyMethod = UncertaintyMethodType::UncertaintyCrudeMonteCarlo;
 
         /**
          * \brief Indicates whether correlations should be calculated
@@ -134,7 +134,7 @@ namespace Deltares::Uncertainty
         /**
          * \brief Gets the reliability method and settings based on these settings
          */
-        std::shared_ptr<UncertaintyMethod> GetSensitivityMethod();
+        std::shared_ptr<Uncertainty::UncertaintyMethod> GetUncertaintyMethod();
 
 
         /**
@@ -143,15 +143,15 @@ namespace Deltares::Uncertainty
          */
         bool isValid();
 
-        static std::string getSensitivityMethodTypeString(SensitivityMethodType method);
-        static SensitivityMethodType getSensitivityMethodType(std::string method);
+        static std::string getUncertaintyMethodTypeString(UncertaintyMethodType method);
+        static UncertaintyMethodType getUncertaintyMethodType(std::string method);
     private:
-        const std::shared_ptr<UncertaintyMethod> GetFORMMethod();
-        const std::shared_ptr<UncertaintyMethod> GetFOSMMethod();
-        const std::shared_ptr<UncertaintyMethod> GetNumericalIntegrationMethod();
-        const std::shared_ptr<UncertaintyMethod> GetCrudeMonteCarloMethod();
-        const std::shared_ptr<UncertaintyMethod> GetImportanceSamplingMethod();
-        const std::shared_ptr<UncertaintyMethod> GetDirectionalSamplingMethod();
+        const std::shared_ptr<Uncertainty::UncertaintyMethod> GetFORMMethod();
+        const std::shared_ptr<Uncertainty::UncertaintyMethod> GetFOSMMethod();
+        const std::shared_ptr<Uncertainty::UncertaintyMethod> GetNumericalIntegrationMethod();
+        const std::shared_ptr<Uncertainty::UncertaintyMethod> GetCrudeMonteCarloMethod();
+        const std::shared_ptr<Uncertainty::UncertaintyMethod> GetImportanceSamplingMethod();
+        const std::shared_ptr<Uncertainty::UncertaintyMethod> GetDirectionalSamplingMethod();
     };
 }
 

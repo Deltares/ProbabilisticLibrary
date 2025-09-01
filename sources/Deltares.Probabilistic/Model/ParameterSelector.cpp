@@ -21,7 +21,7 @@
 //
 #include "ParameterSelector.h"
 
-namespace Deltares::Uncertainty
+namespace Deltares::Models
 {
     void ParameterSelector::initialize(std::vector<std::shared_ptr<Models::ModelInputParameter>>& inputParameters, std::vector<std::shared_ptr<Models::ModelInputParameter>>& outputParameters)
     {

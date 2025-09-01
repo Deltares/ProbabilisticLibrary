@@ -173,6 +173,14 @@
     <ClInclude Include="Reliability\FragilityCurveIntegrationSettings.h" />
     <ClInclude Include="Reliability\FragilityCurveIntegration.h" />
     <ClInclude Include="Model\SampleRepository.h" />
+    <ClInclude Include="Sensitivity\Sobol.h" />
+    <ClInclude Include="Sensitivity\SensitivityMethod.h" />
+    <ClInclude Include="Sensitivity\SensitivityResult.h" />
+    <ClInclude Include="Sensitivity\SensitivitySettings.h" />
+    <ClInclude Include="Sensitivity\SobolSettings.h" />
+    <ClInclude Include="Sensitivity\SensitivityProject.h" />
+    <ClInclude Include="Sensitivity\SingleVariation.h" />
+    <ClInclude Include="Sensitivity\SingleVariationSettings.h" />
     <ClInclude Include="Uncertainty\UncertaintyResult.h" />
     <ClInclude Include="Model\RunProject.h" />
     <ClInclude Include="Model\RunProjectSettings.h" />
@@ -187,7 +195,7 @@
     <ClInclude Include="Uncertainty\FORMS.h" />
     <ClInclude Include="Uncertainty\FOSMSettings.h" />
     <ClInclude Include="Uncertainty\FOSM.h" />
-    <ClInclude Include="Uncertainty\ParameterSelector.h" />
+    <ClInclude Include="Model\ParameterSelector.h" />
     <ClInclude Include="Reliability\LimitStateFunction.h" />
     <ClInclude Include="Server\ExternalLibraryHandler.h" />
     <ClInclude Include="Server\ExternalServerHandler.h" />
@@ -386,6 +394,12 @@
     <ClCompile Include="Reliability\FragilityCurveIntegration.cpp" />
     <ClCompile Include="Model\GradientSettings.cpp" />
     <ClCompile Include="Model\SampleRepository.cpp" />
+    <ClCompile Include="Sensitivity\Sobol.cpp" />
+    <ClCompile Include="Sensitivity\SensitivityMethod.cpp" />
+    <ClCompile Include="Sensitivity\SensitivityResult.cpp" />
+    <ClCompile Include="Sensitivity\SensitivityProject.cpp" />
+    <ClCompile Include="Sensitivity\SensitivitySettings.cpp" />
+    <ClCompile Include="Sensitivity\SingleVariation.cpp" />
     <ClCompile Include="Uncertainty\UncertaintyResult.cpp" />
     <ClCompile Include="Model\RunProject.cpp" />
     <ClCompile Include="Model\RunProjectSettings.cpp" />
@@ -396,7 +410,7 @@
     <ClCompile Include="Uncertainty\NumericalIntegrationS.cpp" />
     <ClCompile Include="Uncertainty\FORMS.cpp" />
     <ClCompile Include="Uncertainty\FOSM.cpp" />
-    <ClCompile Include="Uncertainty\ParameterSelector.cpp" />
+    <ClCompile Include="Model\ParameterSelector.cpp" />
     <ClCompile Include="Server\BaseServer.cpp" />
     <ClCompile Include="Server\ProjectServer.cpp" />
     <ClCompile Include="Server\BaseHandler.cpp" />

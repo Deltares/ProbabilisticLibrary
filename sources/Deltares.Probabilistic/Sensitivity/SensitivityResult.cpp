@@ -19,22 +19,5 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#pragma once
 
-#include "../Model/ZValueConverter.h"
-
-namespace Deltares::Uncertainty
-{
-    class ParameterSelector : public Models::ZValueConverter
-    {
-    public:
-        std::string parameter = "";
-        int arrayIndex = 0;
-        void initialize(std::vector<std::shared_ptr<Models::ModelInputParameter>>& inputParameters, std::vector<std::shared_ptr<Models::ModelInputParameter>>& outputParameters) override;
-        void updateZValue(std::shared_ptr<Models::ModelSample> sample) override;
-    private:
-        int parameterIndex = 0;
-        bool parameterIndexFromInput = false;
-        bool useSampleZValue = false;
-    };
-}
+#include "SensitivityResult.h"

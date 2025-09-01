@@ -19,20 +19,18 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include "UncertaintyProject.h"
+#include "SensitivityProject.h"
 
-namespace Deltares::Uncertainty
+namespace Deltares::Sensitivity
 {
-    void UncertaintyProject::run()
+    void SensitivityProject::run()
     {
         modelRuns = 0;
 
         sensitivityResult = nullptr;
         sensitivityResults.clear();
 
-        settings->RandomSettings->setFixed(true);
-
-        uncertaintyMethod = settings->GetUncertaintyMethod();
+        sensitivityMethod = settings->GetSensitivityMethod();
         runSettings = settings->RunSettings;
 
         if (parameter.empty())
@@ -46,14 +44,14 @@ namespace Deltares::Uncertainty
                     {
                         parameterSelector->arrayIndex = index;
 
-                        auto result = std::make_shared<UncertaintyResult>(getSensitivityResult());
+                        auto result = std::make_shared<SensitivityResult>(getSensitivityResult());
                         result->stochast->name += "[" + std::to_string(index) + "]";
                         sensitivityResults.push_back(result);
                     }
                 }
                 else
                 {
-                    auto result = std::make_shared<UncertaintyResult>(getSensitivityResult());
+                    auto result = std::make_shared<SensitivityResult>(getSensitivityResult());
                     sensitivityResults.push_back(result);
                 }
             }
@@ -63,7 +61,7 @@ namespace Deltares::Uncertainty
             parameterSelector->parameter = parameter;
             parameterSelector->arrayIndex = arrayIndex;
 
-            auto result = std::make_shared<UncertaintyResult>(getSensitivityResult());
+            auto result = std::make_shared<SensitivityResult>(getSensitivityResult());
             sensitivityResults.push_back(result);
         }
 
@@ -74,17 +72,9 @@ namespace Deltares::Uncertainty
 
         // reset the index
         model->Index = 0;
-
-        settings->RandomSettings->setFixed(false);
-
-        outputCorrelationMatrix = nullptr;
-        if (settings->CalculateCorrelations)
-        {
-            outputCorrelationMatrix = uncertaintyMethod->getCorrelationMatrix();
-        }
     }
 
-    UncertaintyResult UncertaintyProject::getSensitivityResult()
+    SensitivityResult SensitivityProject::getSensitivityResult()
     {
         model->zValueConverter = parameterSelector;
 
@@ -93,7 +83,7 @@ namespace Deltares::Uncertainty
         modelRunner->Settings = runSettings;
         modelRunner->initializeForRun();
 
-        auto result = uncertaintyMethod->getSensitivityStochast(modelRunner);
+        auto result = sensitivityMethod->getSensitivityStochast(modelRunner);
         result.stochast->name = parameterSelector->parameter;
 
         modelRuns += model->getModelRuns();
@@ -101,7 +91,7 @@ namespace Deltares::Uncertainty
         return result;
     }
 
-    bool UncertaintyProject::isValid()
+    bool SensitivityProject::isValid()
     {
         return ModelProject::isValid() &&
             runSettings != nullptr && runSettings->isValid() &&

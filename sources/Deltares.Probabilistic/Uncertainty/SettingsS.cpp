@@ -32,17 +32,17 @@
 
 namespace Deltares::Uncertainty
 {
-        std::shared_ptr<UncertaintyMethod> SettingsS::GetSensitivityMethod()
+        std::shared_ptr<UncertaintyMethod> SettingsS::GetUncertaintyMethod()
         {
-            switch (this->SensitivityMethod)
+            switch (this->UncertaintyMethod)
             {
-            case SensitivityMethodType::SensitivityFORM: return this->GetFORMMethod();
-            case SensitivityMethodType::SensitivityFOSM: return this->GetFOSMMethod();
-            case SensitivityMethodType::SensitivityNumericalIntegration: return this->GetNumericalIntegrationMethod();
-            case SensitivityMethodType::SensitivityCrudeMonteCarlo: return this->GetCrudeMonteCarloMethod();
-            case SensitivityMethodType::SensitivityImportanceSampling: return this->GetImportanceSamplingMethod();
-            case SensitivityMethodType::SensitivityDirectionalSampling: return this->GetDirectionalSamplingMethod();
-            default: throw Reliability::probLibException("Sensitivity method");
+            case UncertaintyMethodType::UncertaintyFORM: return this->GetFORMMethod();
+            case UncertaintyMethodType::UncertaintyFOSM: return this->GetFOSMMethod();
+            case UncertaintyMethodType::UncertaintyNumericalIntegration: return this->GetNumericalIntegrationMethod();
+            case UncertaintyMethodType::UncertaintyCrudeMonteCarlo: return this->GetCrudeMonteCarloMethod();
+            case UncertaintyMethodType::UncertaintyImportanceSampling: return this->GetImportanceSamplingMethod();
+            case UncertaintyMethodType::UncertaintyDirectionalSampling: return this->GetDirectionalSamplingMethod();
+            default: throw Reliability::probLibException("Uncertainty method");
             }
         }
 
@@ -144,41 +144,41 @@ namespace Deltares::Uncertainty
 
         bool SettingsS::isValid()
         {
-            switch (this->SensitivityMethod)
+            switch (this->UncertaintyMethod)
             {
-            case SensitivityMethodType::SensitivityCrudeMonteCarlo: return std::dynamic_pointer_cast<CrudeMonteCarloS>(this->GetCrudeMonteCarloMethod())->Settings->isValid();
-            case SensitivityMethodType::SensitivityImportanceSampling: return std::dynamic_pointer_cast<ImportanceSamplingS>(this->GetImportanceSamplingMethod())->Settings->isValid();
-            case SensitivityMethodType::SensitivityNumericalIntegration: return std::dynamic_pointer_cast<NumericalIntegrationS>(this->GetNumericalIntegrationMethod())->Settings->isValid();
-            case SensitivityMethodType::SensitivityDirectionalSampling: return std::dynamic_pointer_cast<DirectionalSamplingS>(this->GetDirectionalSamplingMethod())->Settings->isValid();
-            case SensitivityMethodType::SensitivityFORM: return std::dynamic_pointer_cast<FORMS>(this->GetFORMMethod())->Settings->isValid();
-            case SensitivityMethodType::SensitivityFOSM: return std::dynamic_pointer_cast<FOSM>(this->GetFOSMMethod())->Settings->isValid();
-            default: throw Reliability::probLibException("Sensitivity method");
+            case UncertaintyMethodType::UncertaintyCrudeMonteCarlo: return std::dynamic_pointer_cast<CrudeMonteCarloS>(this->GetCrudeMonteCarloMethod())->Settings->isValid();
+            case UncertaintyMethodType::UncertaintyImportanceSampling: return std::dynamic_pointer_cast<ImportanceSamplingS>(this->GetImportanceSamplingMethod())->Settings->isValid();
+            case UncertaintyMethodType::UncertaintyNumericalIntegration: return std::dynamic_pointer_cast<NumericalIntegrationS>(this->GetNumericalIntegrationMethod())->Settings->isValid();
+            case UncertaintyMethodType::UncertaintyDirectionalSampling: return std::dynamic_pointer_cast<DirectionalSamplingS>(this->GetDirectionalSamplingMethod())->Settings->isValid();
+            case UncertaintyMethodType::UncertaintyFORM: return std::dynamic_pointer_cast<FORMS>(this->GetFORMMethod())->Settings->isValid();
+            case UncertaintyMethodType::UncertaintyFOSM: return std::dynamic_pointer_cast<FOSM>(this->GetFOSMMethod())->Settings->isValid();
+            default: throw Reliability::probLibException("Uncertainty method");
             }
         }
 
-        std::string SettingsS::getSensitivityMethodTypeString(SensitivityMethodType method)
+        std::string SettingsS::getUncertaintyMethodTypeString(UncertaintyMethodType method)
         {
             switch (method)
             {
-            case SensitivityMethodType::SensitivityFORM: return "form";
-            case SensitivityMethodType::SensitivityFOSM: return "fosm";
-            case SensitivityMethodType::SensitivityNumericalIntegration: return "numerical_integration";
-            case SensitivityMethodType::SensitivityCrudeMonteCarlo: return "crude_monte_carlo";
-            case SensitivityMethodType::SensitivityImportanceSampling: return "importance_sampling";
-            case SensitivityMethodType::SensitivityDirectionalSampling: return "directional_sampling";
-            default: throw Reliability::probLibException("Sensitivity method");
+            case UncertaintyMethodType::UncertaintyFORM: return "form";
+            case UncertaintyMethodType::UncertaintyFOSM: return "fosm";
+            case UncertaintyMethodType::UncertaintyNumericalIntegration: return "numerical_integration";
+            case UncertaintyMethodType::UncertaintyCrudeMonteCarlo: return "crude_monte_carlo";
+            case UncertaintyMethodType::UncertaintyImportanceSampling: return "importance_sampling";
+            case UncertaintyMethodType::UncertaintyDirectionalSampling: return "directional_sampling";
+            default: throw Reliability::probLibException("Uncertainty method");
             }
         }
 
-        SensitivityMethodType SettingsS::getSensitivityMethodType(std::string method)
+        UncertaintyMethodType SettingsS::getUncertaintyMethodType(std::string method)
         {
-            if (method == "form") return SensitivityMethodType::SensitivityFORM;
-            else if (method == "fosm") return SensitivityMethodType::SensitivityFOSM;
-            else if (method == "numerical_integration") return SensitivityMethodType::SensitivityNumericalIntegration;
-            else if (method == "crude_monte_carlo") return SensitivityMethodType::SensitivityCrudeMonteCarlo;
-            else if (method == "importance_sampling") return SensitivityMethodType::SensitivityImportanceSampling;
-            else if (method == "directional_sampling") return SensitivityMethodType::SensitivityDirectionalSampling;
-            else throw Reliability::probLibException("Sensitivity method");
+            if (method == "form") return UncertaintyMethodType::UncertaintyFORM;
+            else if (method == "fosm") return UncertaintyMethodType::UncertaintyFOSM;
+            else if (method == "numerical_integration") return UncertaintyMethodType::UncertaintyNumericalIntegration;
+            else if (method == "crude_monte_carlo") return UncertaintyMethodType::UncertaintyCrudeMonteCarlo;
+            else if (method == "importance_sampling") return UncertaintyMethodType::UncertaintyImportanceSampling;
+            else if (method == "directional_sampling") return UncertaintyMethodType::UncertaintyDirectionalSampling;
+            else throw Reliability::probLibException("Uncertainty method");
         }
 
     }
