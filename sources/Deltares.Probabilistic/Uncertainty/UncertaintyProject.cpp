@@ -93,7 +93,7 @@ namespace Deltares::Uncertainty
         modelRunner->Settings = runSettings;
         modelRunner->initializeForRun();
 
-        auto result = uncertaintyMethod->getSensitivityStochast(modelRunner);
+        auto result = uncertaintyMethod->getUncertaintyStochast(modelRunner);
         result.stochast->name = parameterSelector->parameter;
 
         modelRuns += model->getModelRuns();

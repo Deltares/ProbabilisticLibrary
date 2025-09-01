@@ -54,7 +54,14 @@ namespace Deltares
 
         std::string Stochast::getIndexedStochastName(int index) const
         {
-            return name + "[" + std::to_string(index) + "]";
+            if (this->modelParameter->isArray)
+            {
+                return name + "[" + std::to_string(index) + "]";
+            }
+            else
+            {
+                return name;
+            }
         }
 
         double Stochast::getPDF(double x)

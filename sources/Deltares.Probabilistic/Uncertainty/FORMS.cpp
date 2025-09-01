@@ -40,7 +40,7 @@ namespace Deltares::Uncertainty
     using namespace Deltares::Models;
     using namespace Deltares::Statistics;
 
-    UncertaintyResult FORMS::getSensitivityStochast(std::shared_ptr<ModelRunner> modelRunner)
+    UncertaintyResult FORMS::getUncertaintyStochast(std::shared_ptr<ModelRunner> modelRunner)
     {
         int nStochasts = modelRunner->getVaryingStochastCount();
 
@@ -232,7 +232,7 @@ namespace Deltares::Uncertainty
         if (cdfCurve->getProperties()->FragilityValues.size() <= 1)
         {
             std::shared_ptr<Statistics::Stochast> stochast = std::make_shared<Stochast>(DistributionType::Deterministic, std::vector<double> { z0 });
-            Uncertainty::UncertaintyResult result = modelRunner->getSensitivityResult(stochast);
+            Uncertainty::UncertaintyResult result = modelRunner->getUncertaintyResult(stochast);
             std::shared_ptr<Sample> zeroSample = std::make_shared<Sample>(nStochasts);
             std::shared_ptr<Models::Evaluation> evaluation = std::make_shared<Models::Evaluation>(modelRunner->getEvaluation(zeroSample));
             evaluation->Quantile = 0.5;
@@ -249,7 +249,7 @@ namespace Deltares::Uncertainty
             std::sort(cdfCurve->getProperties()->FragilityValues.begin(), cdfCurve->getProperties()->FragilityValues.end(),
                 [](std::shared_ptr<FragilityValue> p, std::shared_ptr<FragilityValue> q) {return p->X < q->X; });
 
-            auto result = modelRunner->getSensitivityResult(cdfCurve);
+            auto result = modelRunner->getUncertaintyResult(cdfCurve);
 
             for (std::shared_ptr<Statistics::ProbabilityValue> quantile : this->Settings->RequestedQuantiles)
             {

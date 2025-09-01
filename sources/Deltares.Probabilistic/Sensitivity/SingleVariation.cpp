@@ -57,19 +57,18 @@ namespace Deltares::Sensitivity
 
         std::vector<double> z = modelRunner->getZValues(samples);
 
-        SensitivityResult sensitivityStochast;
+        SensitivityResult result = modelRunner->getSensitivityResult();
 
         for (int i = 0; i < nStochasts; i++)
         {
-            std::shared_ptr<SensitivityValue> value = std::make_shared<SensitivityValue>();
-            value->identifier = modelRunner->getVaryingStochastName(i);
+            std::shared_ptr<SensitivityValue> value = result.values[i];
             value->medium = z[0];
             value->low = z[2 * i + 1];
             value->high = z[2 * i + 2];
 
-            sensitivityStochast.values.push_back(value);
+            result.values.push_back(value);
         }
 
-        return sensitivityStochast;
+        return result;
     }
 }

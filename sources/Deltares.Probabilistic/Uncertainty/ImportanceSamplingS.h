@@ -42,7 +42,7 @@ namespace Deltares::Uncertainty
              * \param modelRunner The model for which the sensitivity is calculated
              * \return The sensitivity in the form of a stochastic variable
              */
-            UncertaintyResult getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner) override;
+            UncertaintyResult getUncertaintyStochast(std::shared_ptr<Models::ModelRunner> modelRunner) override;
         private:
             double getDimensionality(std::vector<double> factors);
             double getWeight(std::shared_ptr<Models::Sample> modifiedSample, std::shared_ptr<Models::Sample> sample, double dimensionality);

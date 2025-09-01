@@ -38,7 +38,7 @@ using namespace Deltares::Models;
 
 namespace Deltares::Uncertainty
 {
-    UncertaintyResult NumericalIntegrationS::getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner)
+    UncertaintyResult NumericalIntegrationS::getUncertaintyStochast(std::shared_ptr<Models::ModelRunner> modelRunner)
     {
         this->calculatedSamples.clear();
 
@@ -76,7 +76,7 @@ namespace Deltares::Uncertainty
             this->correlationMatrixBuilder->registerWeightedValues(stochast, samples);
         }
 
-        auto result = modelRunner->getSensitivityResult(stochast);
+        auto result = modelRunner->getUncertaintyResult(stochast);
 
         for (std::shared_ptr<Statistics::ProbabilityValue> quantile : this->Settings->RequestedQuantiles)
         {

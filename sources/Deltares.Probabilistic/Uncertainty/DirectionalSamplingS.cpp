@@ -39,7 +39,7 @@ using namespace Deltares::Numeric;
 
 namespace Deltares::Uncertainty
 {
-    UncertaintyResult DirectionalSamplingS::getSensitivityStochast(std::shared_ptr<ModelRunner> modelRunner)
+    UncertaintyResult DirectionalSamplingS::getUncertaintyStochast(std::shared_ptr<ModelRunner> modelRunner)
     {
         //Step 0: Initialize the algorithm
 
@@ -77,7 +77,7 @@ namespace Deltares::Uncertainty
             [](const std::shared_ptr<Statistics::FragilityValue>& val1, const std::shared_ptr<Statistics::FragilityValue>& val2)
         {return val1->Reliability < val2->Reliability; });
 
-        auto result = modelRunner->getSensitivityResult(stochast);
+        auto result = modelRunner->getUncertaintyResult(stochast);
 
         for (std::shared_ptr<Statistics::ProbabilityValue> quantile : this->Settings->RequestedQuantiles)
         {

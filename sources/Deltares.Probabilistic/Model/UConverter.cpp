@@ -155,8 +155,8 @@ namespace Deltares
         void UConverter::checkArraysMatch(std::shared_ptr<ComputationalStochast> stochast, std::shared_ptr<ComputationalStochast> otherStochast) const
         {
             bool valid = !otherStochast->source->modelParameter->isArray ||
-            (stochast->definition->modelParameter->isArray &&
-                stochast->definition->modelParameter->arraySize == otherStochast->source->modelParameter->arraySize);
+                (stochast->definition->modelParameter->isArray &&
+                    stochast->definition->modelParameter->arraySize == otherStochast->source->modelParameter->arraySize);
 
             if (!valid)
             {
@@ -226,14 +226,7 @@ namespace Deltares
 
         std::string UConverter::getVaryingStochastName(int index)
         {
-            if (this->varyingStochasts[index]->definition->modelParameter->isArray)
-            {
-                return this->varyingStochasts[index]->definition->getIndexedStochastName(this->varyingStochasts[index]->index);
-            }
-            else
-            {
-                return this->varyingStochasts[index]->definition->name;
-            }
+            return this->varyingStochasts[index]->definition->getIndexedStochastName(this->varyingStochasts[index]->index);
         }
 
         std::vector<double> UConverter::getVaryingValues(std::vector<double> values)
@@ -721,6 +714,23 @@ namespace Deltares
             stochastPoint->updateInfluenceFactors();
 
             return stochastPoint;
+        }
+
+        Sensitivity::SensitivityResult UConverter::getSensitivityResult()
+        {
+            Sensitivity::SensitivityResult result;
+
+            for (int index = 0; index < this->varyingStochasts.size(); index++)
+            {
+                std::shared_ptr<Sensitivity::SensitivityValue> value = std::make_shared<Sensitivity::SensitivityValue>();
+
+                value->stochast = this->varyingStochasts[index]->definition;
+                value->arrayIndex = this->varyingStochasts[index]->index;
+
+                result.values.push_back(value);
+            }
+
+            return result;
         }
 
         void  UConverter::registerSample(std::shared_ptr<Uncertainty::CorrelationMatrixBuilder> correlationMatrixBuilder, std::shared_ptr<Sample> sample)

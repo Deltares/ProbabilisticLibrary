@@ -30,6 +30,7 @@
 #include "../Statistics/CorrelationMatrix.h"
 #include "../Reliability/StochastSettingsSet.h"
 #include "../Uncertainty/CorrelationMatrixBuilder.h"
+#include "../Sensitivity/SensitivityResult.h"
 
 namespace Deltares
 {
@@ -82,6 +83,7 @@ namespace Deltares
             std::shared_ptr<StochastPoint> GetStochastPoint(double beta, std::vector<double> alphas);
             void updateStochastSettings(std::shared_ptr<Deltares::Reliability::StochastSettingsSet> settings);
             void updateVariableSample(std::vector<double>& xValues, std::vector<double>& originalValues);
+            Sensitivity::SensitivityResult getSensitivityResult();
             void registerSample(std::shared_ptr<Uncertainty::CorrelationMatrixBuilder> correlationMatrixBuilder, std::shared_ptr<Sample> sample);
             bool haveSampleValuesChanged() const { return sampleValuesChanged; }
         };

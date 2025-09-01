@@ -34,7 +34,7 @@ using namespace Deltares::Models;
 
 namespace Deltares::Uncertainty
 {
-    UncertaintyResult CrudeMonteCarloS::getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner)
+    UncertaintyResult CrudeMonteCarloS::getUncertaintyStochast(std::shared_ptr<Models::ModelRunner> modelRunner)
     {
         modelRunner->updateStochastSettings(this->Settings->StochastSet);
 
@@ -101,7 +101,7 @@ namespace Deltares::Uncertainty
 
         std::shared_ptr<Statistics::Stochast> stochast = this->getStochastFromSamples(zSamples, zWeights);
 
-        auto result = modelRunner->getSensitivityResult(stochast);
+        auto result = modelRunner->getUncertaintyResult(stochast);
 
         for (std::shared_ptr<Statistics::ProbabilityValue> quantile : this->Settings->RequestedQuantiles)
         {

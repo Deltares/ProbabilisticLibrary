@@ -41,14 +41,6 @@ namespace Deltares::Sensitivity
         std::string identifier = "";
 
         /**
-         * \brief Gets the identifier of the output parameter
-         */
-        std::string getIdentifier() const
-        {
-            return identifier;
-        }
-
-        /**
          * \brief List of result values per input variable
          */
         std::vector<std::shared_ptr<SensitivityValue>> values;

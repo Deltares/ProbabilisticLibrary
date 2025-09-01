@@ -33,7 +33,7 @@ using namespace Deltares::Models;
 
 namespace Deltares::Uncertainty
 {
-    UncertaintyResult FOSM::getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner)
+    UncertaintyResult FOSM::getUncertaintyStochast(std::shared_ptr<Models::ModelRunner> modelRunner)
     {
         int nStochasts = modelRunner->getVaryingStochastCount();
 
@@ -74,7 +74,7 @@ namespace Deltares::Uncertainty
         stochast->setDistributionType(distributionType);
         stochast->setMeanAndDeviation(z0, deviation);
 
-        auto result = modelRunner->getSensitivityResult(stochast);
+        auto result = modelRunner->getUncertaintyResult(stochast);
 
         for (std::shared_ptr<Statistics::ProbabilityValue> quantile : this->Settings->RequestedQuantiles)
         {

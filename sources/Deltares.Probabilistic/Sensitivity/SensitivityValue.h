@@ -35,7 +35,9 @@ namespace Deltares::Sensitivity
         /**
          * \brief The input stochast causing the variation
          */
-        std::string identifier = "";
+        std::shared_ptr<Statistics::Stochast> stochast = nullptr;
+
+        int arrayIndex = -1;
 
         double firstOrderIndex = std::nan("");
 
@@ -46,6 +48,19 @@ namespace Deltares::Sensitivity
         double medium = std::nan("");
 
         double high = std::nan("");
+
+        std::string getIdentifier() const
+        {
+            if (this->stochast == nullptr)
+            {
+                return "";
+            }
+            else
+            {
+                return this->stochast->getIndexedStochastName(this->arrayIndex);
+            }
+        }
+
     };
 }
 
