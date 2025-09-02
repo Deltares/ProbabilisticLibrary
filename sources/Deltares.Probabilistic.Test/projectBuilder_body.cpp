@@ -27,6 +27,7 @@ using namespace Deltares::Reliability;
 using namespace Deltares::Statistics;
 using namespace Deltares::Models;
 using namespace Deltares::Uncertainty;
+using namespace Deltares::Sensitivity;
 
 namespace Deltares::Probabilistic::Test
 {
@@ -276,9 +277,24 @@ namespace Deltares::Probabilistic::Test
         sample->Z = z;
     }
 
-    std::shared_ptr<UncertaintyProject> projectBuilder::getSensitivityProject(std::shared_ptr<ReliabilityProject> project)
+    std::shared_ptr<UncertaintyProject> projectBuilder::getUncertaintyProject(std::shared_ptr<ReliabilityProject> project)
     {
-        std::shared_ptr<UncertaintyProject> sensitivityProject = std::make_shared<UncertaintyProject>();
+        std::shared_ptr<UncertaintyProject> uncertaintyProject = std::make_shared<UncertaintyProject>();
+
+        for (std::shared_ptr<Stochast> stochast : project->stochasts)
+        {
+            uncertaintyProject->stochasts.push_back(stochast);
+        }
+
+        uncertaintyProject->correlationMatrix = project->correlationMatrix;
+        uncertaintyProject->model = project->model;
+
+        return uncertaintyProject;
+    }
+
+    std::shared_ptr<SensitivityProject> projectBuilder::getSensitivityProject(std::shared_ptr<ReliabilityProject> project)
+    {
+        std::shared_ptr<SensitivityProject> sensitivityProject = std::make_shared<SensitivityProject>();
 
         for (std::shared_ptr<Stochast> stochast : project->stochasts)
         {

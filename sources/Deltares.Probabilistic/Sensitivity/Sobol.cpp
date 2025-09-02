@@ -61,7 +61,7 @@ namespace Deltares::Sensitivity
             std::shared_ptr<Sample> sampleA = std::make_shared<Sample>(uValuesA);
             samplesA.push_back(sampleA);
 
-            std::vector<double> uValuesB = NumericSupport::take(uSequence, nStochasts, 2 * nStochasts);
+            std::vector<double> uValuesB = NumericSupport::take(uSequence, nStochasts, nStochasts);
             std::shared_ptr<Sample> sampleB = std::make_shared<Sample>(uValuesB);
             samplesB.push_back(sampleB);
         }
@@ -139,7 +139,7 @@ namespace Deltares::Sensitivity
         return sensitivityStochast;
     }
 
-    std::vector<std::shared_ptr<Sample>> getMixedSamples(int index, const std::vector<std::shared_ptr<Sample>>& samples1, const std::vector<std::shared_ptr<Sample>>& samples2, int nSamples)
+    std::vector<std::shared_ptr<Sample>> Sobol::getMixedSamples(int index, std::vector<std::shared_ptr<Models::Sample>> samples1, std::vector<std::shared_ptr<Models::Sample>> samples2, int nSamples)
     {
         std::vector<std::shared_ptr<Sample>> mixedSamples;
 

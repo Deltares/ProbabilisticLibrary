@@ -36,6 +36,9 @@ namespace Deltares::Probabilistic::Test
         testSequence();
         testRandomSequence();
         testRepeatable();
+
+        testLinearSingleVariation();
+        testLinearSobol();
     }
 
     void TestSensitivity::testSequence() const
@@ -109,6 +112,32 @@ namespace Deltares::Probabilistic::Test
                 ASSERT_EQ(sequences[n][j], secondSequences[n][j]);
             }
         }
+    }
+
+    void TestSensitivity::testLinearSingleVariation() const
+    {
+        std::shared_ptr<Sensitivity::SensitivityProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearProject());
+
+        project->settings->SensitivityMethod = Sensitivity::SensitivitySingleVariation;
+        project->sensitivityMethod = std::make_shared<Sensitivity::SingleVariation>();
+
+        auto result = project->getSensitivityResult();
+
+        ASSERT_NEAR(2.7, result.values[0]->low, margin);
+        ASSERT_NEAR(0.9, result.values[0]->high, margin);
+    }
+
+    void TestSensitivity::testLinearSobol() const
+    {
+        std::shared_ptr<Sensitivity::SensitivityProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearProject());
+
+        project->settings->SensitivityMethod = Sensitivity::SensitivitySingleVariation;
+        project->sensitivityMethod = std::make_shared<Sensitivity::Sobol>();
+
+        auto result = project->getSensitivityResult();
+
+        ASSERT_NEAR(0.504, result.values[0]->totalIndex, margin);
+        ASSERT_NEAR(0.501, result.values[0]->firstOrderIndex, margin);
     }
 
     std::vector<std::vector<double>> TestSensitivity::getExpectedResults() const
