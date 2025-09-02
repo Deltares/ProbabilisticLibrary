@@ -19,36 +19,5 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#pragma once
-#include <memory>
-#include <string>
-#include <vector>
-
-#include "SobolDirection.h"
-
-namespace Deltares::Sensitivity
-{
-    /**
-     * \brief Contains a sobol direction
-     */
-    class SobolResource
-    {
-    public:
-        static std::vector<uint32_t> getSobolDirection(int index)
-        {
-            if (!initialized)
-            {
-                initialized = true;
-                initialize();
-            }
-
-            return sobolValues[index];
-        }
-
-    private:
-        static void initialize();
-        static inline std::vector<std::vector<uint32_t>> sobolValues;
-        static inline bool initialized = false;
-    };
-}
-
+#include "pch.h"
+#include "TestSensitivity_body.cpp"

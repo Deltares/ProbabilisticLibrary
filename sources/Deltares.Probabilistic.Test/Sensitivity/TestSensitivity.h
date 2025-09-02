@@ -20,35 +20,20 @@
 // All rights reserved.
 //
 #pragma once
-#include <memory>
-#include <string>
-#include <vector>
 
-#include "SobolDirection.h"
-
-namespace Deltares::Sensitivity
+namespace Deltares::Probabilistic::Test
 {
-    /**
-     * \brief Contains a sobol direction
-     */
-    class SobolResource
+    class TestSensitivity
     {
     public:
-        static std::vector<uint32_t> getSobolDirection(int index)
-        {
-            if (!initialized)
-            {
-                initialized = true;
-                initialize();
-            }
-
-            return sobolValues[index];
-        }
-
+        void allSensitivityTests() const;
     private:
-        static void initialize();
-        static inline std::vector<std::vector<uint32_t>> sobolValues;
-        static inline bool initialized = false;
+        void testSequence() const;
+        void testRandomSequence() const;
+        void testRepeatable() const;
+
+        std::vector<std::vector<double>> getExpectedResults() const;
+        const double margin = 0.02;
     };
-}
+};
 

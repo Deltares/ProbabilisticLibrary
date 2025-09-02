@@ -28,13 +28,13 @@ namespace Deltares::Sensitivity
 {
     std::vector<SobolDirection> SobolDirectionLoader::getDirections(int size)
     {
-        std::vector<SobolDirection> directions(size + 1);
+        std::vector<SobolDirection> directions;
 
-        directions[0] = getFirstDirection();
+        directions.push_back(getFirstDirection());
 
         for (int i = 0; i < size; i++)
         {
-            directions[i + 1] = getDirection(i);
+            directions.push_back(getDirection(i));
         }
 
         return directions;
@@ -58,17 +58,21 @@ namespace Deltares::Sensitivity
 
     SobolDirection SobolDirectionLoader::getDirection(int index)
     {
-        constexpr unsigned int L = 32;
+        constexpr uint32_t L = 32;
         constexpr int scale = 32;
 
-        // Parse value in direction file
-        SobolDirection values = SobolResource::getSobolDirection(index);
+        std::vector<uint32_t> values = SobolResource::getSobolDirection(index);
 
-        uint32_t s = values.s;
-        uint32_t a = values.a;
-        std::vector<unsigned int> m_i = values.v;
+        uint32_t s = values[1];
+        uint32_t a = values[2];
 
-        std::vector<unsigned int> v(L + 1);
+        std::vector<uint32_t> m_i = std::vector<uint32_t>(values.size() - 3);
+        for (size_t i = 0; i < m_i.size(); i++)
+        {
+            m_i[i] = values[i + 3];
+        }
+
+        std::vector<uint32_t> v(L + 1);
 
         if (L <= s)
         {

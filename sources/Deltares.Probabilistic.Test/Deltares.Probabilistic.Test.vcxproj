@@ -152,6 +152,8 @@
     <ClInclude Include="Reliability\testReliabilityMethods_body.cpp" />
     <ClInclude Include="Sensitivity\TestUncertainty.h" />
     <ClInclude Include="Sensitivity\TestUncertainty_body.cpp" />
+    <ClInclude Include="Sensitivity\TestSensitivity.h" />
+    <ClInclude Include="Sensitivity\TestSensitivity_body.cpp" />
     <ClInclude Include="Utils\testutils.h" />
     <ClInclude Include="Utils\testutils_body.cpp" />
     <ClInclude Include="unittests_body.cpp" />
@@ -180,6 +182,7 @@
     <ClCompile Include="Reliability\testStartPointCalculator.cpp" />
     <ClCompile Include="Reliability\testReliabilityMethods.cpp" />
     <ClCompile Include="Sensitivity\TestUncertainty.cpp" />
+    <ClCompile Include="Sensitivity\TestSensitivity.cpp" />
     <ClCompile Include="unittests.cpp" />
     <ClCompile Include="Utils\testutils.cpp" />
   </ItemGroup>
