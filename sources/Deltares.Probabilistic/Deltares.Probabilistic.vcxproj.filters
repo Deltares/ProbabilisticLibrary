@@ -242,6 +242,9 @@
     <ClCompile Include="Sensitivity\SensitivitySettings.cpp" />
     <ClCompile Include="Sensitivity\Sobol.cpp" />
     <ClCompile Include="Sensitivity\SingleVariation.cpp" />
+    <ClCompile Include="Sensitivity\SobolSequence.cpp" />
+    <ClCompile Include="Sensitivity\SobolDirection.cpp" />
+    <ClCompile Include="Sensitivity\SobolResource.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -511,6 +514,10 @@
     <ClInclude Include="Sensitivity\SingleVariation.h" />
     <ClInclude Include="Sensitivity\SingleVariationSettings.h" />
     <ClInclude Include="Sensitivity\SensitivityValue.h" />
+    <ClInclude Include="Sensitivity\SobolSequence.h" />
+    <ClInclude Include="Sensitivity\SobolSequenceProvider.h" />
+    <ClInclude Include="Sensitivity\SobolDirection.h" />
+    <ClInclude Include="Sensitivity\SobolResource.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

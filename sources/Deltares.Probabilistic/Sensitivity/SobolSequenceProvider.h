@@ -20,30 +20,45 @@
 // All rights reserved.
 //
 #pragma once
-#include "SensitivityMethod.h"
-#include "SobolSettings.h"
+#include <memory>
+#include "SobolSequence.h"
+#include "SobolDirection.h"
 
 namespace Deltares::Sensitivity
 {
     /**
-     * \brief Calculates the sensitivity using the FORM algorithm
+     * \brief Generates Sobol sequences
      */
-    class Sobol : public SensitivityMethod
+    class SobolSequenceProvider
     {
     public:
-        /**
-         * \brief Settings for this algorithm
-         */
-        std::shared_ptr<SobolSettings> Settings = std::make_shared<SobolSettings>();
+        // Constructor
+        SobolSequenceProvider(int size)
+        {
+            std::vector<SobolDirection> directions = SobolDirectionLoader::getDirections(size);
 
-        /**
-         * \brief Gets the sensitivity
-         * \param modelRunner The model for which the sensitivity is calculated
-         * \return The sensitivity in the form of a stochastic variable
-         */
-        SensitivityResult getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner) override;
+            for (size_t i = 0; i < directions.size(); i++)
+            {
+                SobolSequence sequence = SobolSequence(directions[i]);
+                sequences.push_back(sequence);
+            }
+        }
+
+        // Gets a random sequence of values equally distributed between 0 and 1
+        std::vector<double> getSequence()
+        {
+            std::vector<double> result(sequences.size());
+
+            for (size_t i = 0; i < sequences.size(); i++)
+            {
+                result[i] = sequences[i].nextDouble();
+            }
+
+            return result;
+        }
     private:
-        std::vector<std::shared_ptr<Models::Sample>> getMixedSamples(int index, const std::vector<std::shared_ptr<Models::Sample>>& samplesA, const std::vector<std::shared_ptr<Models::Sample>>& samplesB, int nSamples);
+        std::vector<SobolSequence> sequences;
+
     };
 }
 

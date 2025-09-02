@@ -665,6 +665,28 @@ namespace Deltares
             return result;
         }
 
+        std::vector<double> NumericSupport::take(std::vector<double>& values, int skip, int size)
+        {
+            std::vector<double> takenValues(values.begin() + skip, values.begin() + skip + size);
+            return takenValues;
+        }
+
+        std::vector<double> NumericSupport::combine(std::vector<double>& values1, std::vector<double>& values2)
+        {
+            std::vector<double> values(values1.size() + values2.size());
+            for (size_t i = 0; i < values1.size(); i++)
+            {
+                values[i] = values1[i];
+            }
+
+            for (size_t j = 0; j < values2.size(); j++)
+            {
+                values[j+ values1.size()] = values2[j];
+            }
+
+            return values;
+        }
+
         std::vector<double> NumericSupport::zip(std::vector<double>& values1, std::vector<double>& values2, std::function<double(double, double)> function)
         {
             if (values1.size() != values2.size())

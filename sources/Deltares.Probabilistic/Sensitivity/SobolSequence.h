@@ -20,30 +20,32 @@
 // All rights reserved.
 //
 #pragma once
-#include "SensitivityMethod.h"
-#include "SobolSettings.h"
+
+#include "SobolDirection.h"
 
 namespace Deltares::Sensitivity
 {
-    /**
-     * \brief Calculates the sensitivity using the FORM algorithm
-     */
-    class Sobol : public SensitivityMethod
+    class SobolSequence
     {
     public:
-        /**
-         * \brief Settings for this algorithm
-         */
-        std::shared_ptr<SobolSettings> Settings = std::make_shared<SobolSettings>();
+        SobolSequence(SobolDirection direction)
+        {
+            this->direction = direction;
 
-        /**
-         * \brief Gets the sensitivity
-         * \param modelRunner The model for which the sensitivity is calculated
-         * \return The sensitivity in the form of a stochastic variable
-         */
-        SensitivityResult getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner) override;
+            // skip first value
+            nextUInt();
+        }
+
+        int next();
+        int next(int maxValue);
+        int next(int minValue, int maxValue);
+        double nextDouble();
     private:
-        std::vector<std::shared_ptr<Models::Sample>> getMixedSamples(int index, const std::vector<std::shared_ptr<Models::Sample>>& samplesA, const std::vector<std::shared_ptr<Models::Sample>>& samplesB, int nSamples);
+        SobolDirection direction;
+        uint32_t k = 1;
+        uint32_t X = 0;
+        uint32_t nextUInt();
+        uint32_t rightmostZeroBit(const uint32_t k);
     };
 }
 
