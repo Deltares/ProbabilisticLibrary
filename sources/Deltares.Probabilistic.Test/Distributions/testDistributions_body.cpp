@@ -43,6 +43,7 @@ namespace Deltares::Probabilistic::Test
         testPoisson();
         testGamma();
         testFitNormal();
+        testFitLogNormal();
         testFitBernoulli();
     }
 
@@ -418,6 +419,41 @@ namespace Deltares::Probabilistic::Test
 
         EXPECT_NEAR(stochast->getMean(), 4.380, margin);
         EXPECT_NEAR(stochast->getDeviation(), 0.141, margin);
+    }
+
+    void testDistributions::testFitLogNormal()
+    {
+        constexpr double margin = 1e-3;
+
+        std::shared_ptr<Stochast> stochast = std::make_shared<Stochast>();
+        stochast->setDistributionType(DistributionType::LogNormal);
+
+        std::vector<double> values = { 4.2, 4.3, 4.7, 4.8 };
+
+        stochast->fit(values);
+
+        EXPECT_NEAR(stochast->getMean(), 4.5, margin);
+        EXPECT_NEAR(stochast->getDeviation(), 0.262, margin);
+        EXPECT_EQ(stochast->getProperties()->Observations, 4);
+
+        std::shared_ptr<Stochast> prior = std::make_shared<Stochast>();
+        prior->setDistributionType(DistributionType::Normal);
+        prior->setMean(3.0);
+        prior->setDeviation(0.5);
+
+        stochast->fitPrior(prior, values);
+
+        EXPECT_NEAR(stochast->getMean(), 4.503, margin);
+        EXPECT_NEAR(stochast->getDeviation(), 0.0, margin);
+
+        stochast->setMeanAndDeviation(2.0, 0.5);
+
+        std::vector<double> negativeValues = { -2.2, -0.7, 1.2, 1.3 };
+        stochast->fitPrior(prior, negativeValues);
+
+        EXPECT_NEAR(stochast->getMean(), 1.670, margin);
+        EXPECT_NEAR(stochast->getDeviation(), 1.216, margin);
+        EXPECT_NEAR(stochast->getProperties()->Shift, -4.4, margin);
     }
 
     void testDistributions::testFitBernoulli()
