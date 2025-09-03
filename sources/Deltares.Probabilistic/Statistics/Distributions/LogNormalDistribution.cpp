@@ -287,7 +287,7 @@ namespace Deltares
                 setMeanAndDeviation(fitPrior, getMean(prior), getDeviation(prior));
             }
 
-            std::vector<double> logValues = Numeric::NumericSupport::select(values, [stochast, fitShift](double v) {return log(v - fitShift); });
+            std::vector<double> logValues = Numeric::NumericSupport::select(values, [fitShift](double v) {return log(v - fitShift); });
 
             NormalDistribution normal;
 
