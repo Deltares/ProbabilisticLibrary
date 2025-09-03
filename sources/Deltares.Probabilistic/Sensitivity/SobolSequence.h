@@ -71,9 +71,9 @@ namespace Deltares::Sensitivity
         double nextDouble();
     private:
         SobolDirection direction;
-        uint32_t k = 1;
-        uint32_t X = 0;
-        uint32_t nextUInt();
+        unsigned int k = 1;
+        unsigned int X = 0;
+        unsigned int nextUInt();
     };
 }
 

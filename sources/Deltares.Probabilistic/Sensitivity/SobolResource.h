@@ -36,7 +36,7 @@ namespace Deltares::Sensitivity
          * \param index Index
          * \return Predefined values
          */
-        static std::vector<uint32_t> getSobolDirection(int index)
+        static std::vector<unsigned int> getSobolDirection(int index)
         {
             if (!initialized)
             {
@@ -49,7 +49,7 @@ namespace Deltares::Sensitivity
 
     private:
         static void initialize();
-        static inline std::vector<std::vector<uint32_t>> sobolValues;
+        static inline std::vector<std::vector<unsigned int>> sobolValues;
         static inline bool initialized = false;
     };
 }

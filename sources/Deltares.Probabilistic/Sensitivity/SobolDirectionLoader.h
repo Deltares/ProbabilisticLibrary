@@ -40,6 +40,9 @@ namespace Deltares::Sensitivity
         static std::vector<SobolDirection> getDirections(int size);
 
     private:
+        static inline unsigned char maxLength = 32;
+        static inline unsigned int scale = 32;
+
         static SobolDirection getFirstDirection();
         static SobolDirection getDirection(int index);
     };

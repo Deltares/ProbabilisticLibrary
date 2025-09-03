@@ -241,8 +241,8 @@ TEST(unittst, testStandardNormal)
 
 TEST(unittst, testUncertainty)
 {
-    auto tstSensitivity = TestUncertainty();
-    tstSensitivity.allUncertaintyTests();
+    auto tstUncertainty = TestUncertainty();
+    tstUncertainty.allUncertaintyTests();
 }
 
 TEST(unittst, testSensitivity)

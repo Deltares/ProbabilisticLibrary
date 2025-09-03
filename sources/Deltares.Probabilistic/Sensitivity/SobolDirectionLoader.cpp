@@ -41,41 +41,35 @@ namespace Deltares::Sensitivity
 
     SobolDirection SobolDirectionLoader::getFirstDirection()
     {
-        constexpr unsigned char L = 32;
-        constexpr int scale = 32;
-
-        std::vector<unsigned int> v(L + 1);
-        v[0] = static_cast<unsigned int>(std::pow(2, 32));
-        for (int i = 1; i <= L; i++)
+        std::vector<unsigned int> values(maxLength + 1);
+        values[0] = static_cast<unsigned int>(std::pow(2, scale));
+        for (int i = 1; i <= maxLength; i++)
         {
             // for the first dimension every m_i = 1;
-            v[i] = static_cast<unsigned int>(1 << (scale - i));
+            values[i] = static_cast<unsigned int>(1 << (scale - i));
         }
-        SobolDirection direction = SobolDirection(1, 0, 0, v);
+        SobolDirection direction = SobolDirection(1, 0, 0, values);
         return direction;  
     }
 
     SobolDirection SobolDirectionLoader::getDirection(int index)
     {
-        constexpr uint32_t L = 32;
-        constexpr int scale = 32;
+        std::vector<unsigned int> values = SobolResource::getSobolDirection(index);
 
-        std::vector<uint32_t> values = SobolResource::getSobolDirection(index);
+        unsigned int s = values[1];
+        unsigned int a = values[2];
 
-        uint32_t s = values[1];
-        uint32_t a = values[2];
-
-        std::vector<uint32_t> m_i = std::vector<uint32_t>(values.size() - 3);
+        std::vector<unsigned int> m_i = std::vector<unsigned int>(values.size() - 3);
         for (size_t i = 0; i < m_i.size(); i++)
         {
             m_i[i] = values[i + 3];
         }
 
-        std::vector<uint32_t> v(L + 1);
+        std::vector<unsigned int> v(maxLength + 1);
 
-        if (L <= s)
+        if (maxLength <= s)
         {
-            for (size_t i = 1; i <= L; i++)
+            for (size_t i = 1; i <= maxLength; i++)
             {
                 v[i] = m_i[i] << (scale - i);
             }
@@ -87,7 +81,7 @@ namespace Deltares::Sensitivity
                 v[i] = m_i[i - 1] << (scale - i);
             }
 
-            for (size_t i = s + 1; i <= L; i++)
+            for (size_t i = s + 1; i <= maxLength; i++)
             {
                 v[i] = v[i - s] ^ (v[i - s] >> static_cast<int>(s));
                 for (size_t k = 1; k <= s - 1; k++)

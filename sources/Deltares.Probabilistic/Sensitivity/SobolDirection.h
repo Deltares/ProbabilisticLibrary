@@ -33,26 +33,26 @@ namespace Deltares::Sensitivity
         /**
          * \brief Index of the sobol direction
          */
-        int index = 0;
+        unsigned int index = 0;
 
         /**
          * \brief Size of the values
          */
-        uint32_t size = 0;
+        unsigned int size = 0;
 
         /**
          * \brief a-parameter
          */
-        uint32_t a = 0;
+        unsigned int a = 0;
 
         /**
          * \brief Values of the direction
          */
-        std::vector<uint32_t> values;
+        std::vector<unsigned int> values;
 
         SobolDirection() = default;
 
-        SobolDirection(int d, uint32_t s, uint32_t a, const std::vector<uint32_t>& v)
+        SobolDirection(const unsigned int d, const unsigned int s, const unsigned int a, const std::vector<unsigned int>& v)
             : index(d), size(s), a(a), values(v) {
         }
     };

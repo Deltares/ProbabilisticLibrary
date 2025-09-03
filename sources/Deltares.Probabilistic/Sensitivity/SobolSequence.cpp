@@ -26,13 +26,14 @@
 
 namespace Deltares::Sensitivity
 {
-    uint32_t SobolSequence::nextUInt() {
-        uint32_t yn = X;
-        uint32_t m = direction.values[0];
+    unsigned int SobolSequence::nextUInt()
+    {
+        unsigned int yn = X;
+        unsigned int m = direction.values[0];
 
         // EQUIVALENT OF K FOR THE DIRECTION NUMBER
-        uint32_t r = Mathematics::BinarySupport::RightmostZeroBit(k++);
-        uint32_t v = direction.values[r];
+        unsigned int r = Mathematics::BinarySupport::RightmostZeroBit(k++);
+        unsigned int v = direction.values[r];
 
         // generate next value
         X = yn ^ m ^ v;
