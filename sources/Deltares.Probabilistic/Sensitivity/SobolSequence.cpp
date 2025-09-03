@@ -43,7 +43,7 @@ namespace Deltares::Sensitivity
 
     int SobolSequence::next()
     {
-        return static_cast<int>(nextDouble() * std::numeric_limits<int32_t>::max());
+        return static_cast<int>(nextDouble() * std::numeric_limits<int>::max());
     }
 
     int SobolSequence::next(int maxValue)
@@ -66,11 +66,11 @@ namespace Deltares::Sensitivity
 
     double SobolSequence::nextDouble()
     {
-        const double maxValue = 4294967296.0;
+        constexpr double maxValue = std::numeric_limits<unsigned int>::max();
 
         double random = nextUInt();
-        double val = random / maxValue;
-        return val;
+        double value = random / maxValue;
+        return value;
     }
 };
 
