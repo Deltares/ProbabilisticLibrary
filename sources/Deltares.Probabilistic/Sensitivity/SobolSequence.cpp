@@ -23,6 +23,7 @@
 #include "../Math/BinarySupport.h"
 
 #include <stdexcept>
+#include <limits>
 
 namespace Deltares::Sensitivity
 {
