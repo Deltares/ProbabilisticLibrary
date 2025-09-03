@@ -21,6 +21,8 @@
 //
 #pragma once
 
+#include <vector>
+
 namespace Deltares::Probabilistic::Test
 {
     class TestSensitivity

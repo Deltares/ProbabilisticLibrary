@@ -20,6 +20,7 @@
 // All rights reserved.
 //
 #include "SobolSequence.h"
+#include "../Math/BinarySupport.h"
 
 #include <stdexcept>
 
@@ -30,7 +31,7 @@ namespace Deltares::Sensitivity
         uint32_t m = direction.values[0];
 
         // EQUIVALENT OF K FOR THE DIRECTION NUMBER
-        uint32_t r = rightmostZeroBit(k++);
+        uint32_t r = Mathematics::BinarySupport::RightmostZeroBit(k++);
         uint32_t v = direction.values[r];
 
         // generate next value
@@ -69,20 +70,6 @@ namespace Deltares::Sensitivity
         double random = nextUInt();
         double val = random / maxValue;
         return val;
-    }
-
-    uint32_t SobolSequence::rightmostZeroBit(const uint32_t k)
-    {
-        uint32_t n = k | 0;
-        uint32_t i = 1;
-
-        while ((n & 1) == 1)
-        {
-            n >>= 1;
-            ++i;
-        }
-
-        return i;
     }
 };
 

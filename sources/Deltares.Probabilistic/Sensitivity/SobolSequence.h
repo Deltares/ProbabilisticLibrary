@@ -74,7 +74,6 @@ namespace Deltares::Sensitivity
         uint32_t k = 1;
         uint32_t X = 0;
         uint32_t nextUInt();
-        uint32_t rightmostZeroBit(const uint32_t k);
     };
 }
 
