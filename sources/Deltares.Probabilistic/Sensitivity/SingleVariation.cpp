@@ -65,8 +65,6 @@ namespace Deltares::Sensitivity
             value->medium = z[0];
             value->low = z[2 * i + 1];
             value->high = z[2 * i + 2];
-
-            result.values.push_back(value);
         }
 
         return result;

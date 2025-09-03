@@ -19,10 +19,9 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include "SobolDirection.h"
-#include <cmath>
-
+#include "SobolDirectionLoader.h"
 #include "SobolResource.h"
+#include <cmath>
 
 namespace Deltares::Sensitivity
 {

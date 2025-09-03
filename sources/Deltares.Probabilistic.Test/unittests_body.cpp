@@ -38,7 +38,7 @@
 #include "Statistics/testStandardNormal.h"
 #include "Distributions/testDistributions.h"
 #include "Model/TestRunModel.h"
-#include "Sensitivity/TestUncertainty.h"
+#include "Uncertainty/TestUncertainty.h"
 #include "Sensitivity/TestSensitivity.h"
 #include "Optimization/testCobyla.h"
 

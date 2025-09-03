@@ -27,28 +27,52 @@
 namespace Deltares::Sensitivity
 {
     /**
-     * \brief Contains the results of a sensitivity calculation
+     * \brief Contains the results of the sensitivity for a certain input variable
      */
     class SensitivityValue
     {
     public:
         /**
-         * \brief The input stochast causing the variation
+         * \brief The input variable
          */
         std::shared_ptr<Statistics::Stochast> stochast = nullptr;
 
+        /**
+         * \brief Array index of the input variable if this is an array variable
+         */
         int arrayIndex = -1;
 
+        /**
+         * \brief First order Sobol index
+         */
         double firstOrderIndex = std::nan("");
 
+        /**
+         * \brief Total Sobol index
+         */
         double totalIndex = std::nan("");
 
+        /**
+         * \brief Value of the output variable if the input variable gets a low value
+         * \remarks A sensitivity value is always part of a SensitivityResult, which refers to an output variable
+         */
         double low = std::nan("");
 
+        /**
+         * \brief Value of the output variable if the input variable gets a medium value
+         * \remarks A sensitivity value is always part of a SensitivityResult, which refers to an output variable
+         */
         double medium = std::nan("");
 
+        /**
+         * \brief Value of the output variable if the input variable gets a medium value
+         * \remarks A sensitivity value is always part of a SensitivityResult, which refers to an output variable
+         */
         double high = std::nan("");
 
+        /**
+         * \brief Gets the identification string of the input variable
+         */
         std::string getIdentifier() const
         {
             if (this->stochast == nullptr)
@@ -60,7 +84,6 @@ namespace Deltares::Sensitivity
                 return this->stochast->getIndexedStochastName(this->arrayIndex);
             }
         }
-
     };
 }
 

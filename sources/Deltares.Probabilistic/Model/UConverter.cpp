@@ -224,11 +224,6 @@ namespace Deltares
             return this->varyingStochastIndex[index] >= 0;
         }
 
-        std::string UConverter::getVaryingStochastName(int index)
-        {
-            return this->varyingStochasts[index]->definition->getIndexedStochastName(this->varyingStochasts[index]->index);
-        }
-
         std::vector<double> UConverter::getVaryingValues(std::vector<double> values)
         {
             std::vector<double> varyingValues;

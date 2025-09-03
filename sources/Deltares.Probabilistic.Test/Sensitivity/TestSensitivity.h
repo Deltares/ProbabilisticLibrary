@@ -32,10 +32,12 @@ namespace Deltares::Probabilistic::Test
         void testRandomSequence() const;
         void testRepeatable() const;
         void testLinearSingleVariation() const;
+        void testLinearOutputSingleVariation() const;
         void testLinearSobol() const;
+        void testLinearOutputSobol() const;
 
         std::vector<std::vector<double>> getExpectedResults() const;
-        const double margin = 0.02;
+        const double margin = 0.001;
     };
 };
 

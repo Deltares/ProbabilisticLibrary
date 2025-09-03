@@ -64,7 +64,7 @@ namespace Deltares
 
                 shared->object->model = std::make_shared<Models::ZModel>(zLambda);
 
-                const std::shared_ptr<Statistics::Stochast> stochast = shared->object->getSensitivityResult().stochast;
+                const std::shared_ptr<Statistics::Stochast> stochast = shared->object->getUncertaintyResult().stochast;
 
                 this->ReleaseHandles();
 

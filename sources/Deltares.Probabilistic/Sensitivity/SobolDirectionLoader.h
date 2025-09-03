@@ -20,42 +20,28 @@
 // All rights reserved.
 //
 #pragma once
-
-#include "../Model/RunSettings.h"
-#include <memory>
 #include <vector>
+
+#include "SobolDirection.h"
 
 namespace Deltares::Sensitivity
 {
     /**
-     * \brief Settings for the single variation sensitivity method
+     * \brief Loads directions using a resource
      */
-    class SingleVariationSettings
+    class SobolDirectionLoader
     {
     public:
         /**
-         * \brief Low value fraction
+         * \brief Gets a list of Sobol directions
+         * \param size Size of the requested list of directions
+         * \return List
          */
-        double LowValue = 0.05;
+        static std::vector<SobolDirection> getDirections(int size);
 
-        /**
-         * \brief High value fraction
-         */
-        double HighValue = 0.95;
-
-        /**
-         * \brief Settings for performing model runs
-         */
-        std::shared_ptr<Models::RunSettings> RunSettings = std::make_shared<Models::RunSettings>();
-
-        /**
-         * \brief Indicates whether the settings have valid values
-         * \return Indication
-         */
-        bool isValid() const
-        {
-            return LowValue > 0 && HighValue < 1;
-        }
+    private:
+        static SobolDirection getFirstDirection();
+        static SobolDirection getDirection(int index);
     };
 }
 

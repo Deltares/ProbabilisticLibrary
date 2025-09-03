@@ -20,20 +20,22 @@
 // All rights reserved.
 //
 #pragma once
-#include <memory>
-#include <string>
 #include <vector>
-
-#include "SobolDirection.h"
 
 namespace Deltares::Sensitivity
 {
     /**
-     * \brief Contains a sobol direction
+     * \brief Contains predefined values, which will be used to generate Sobol sequences
+     * \remark Data taken from https://github.com/joe-kuo/sobol_data/
      */
     class SobolResource
     {
     public:
+        /**
+         * \brief Gets the predefined values by index
+         * \param index Index
+         * \return Predefined values
+         */
         static std::vector<uint32_t> getSobolDirection(int index)
         {
             if (!initialized)

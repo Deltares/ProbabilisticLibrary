@@ -26,7 +26,7 @@
 namespace Deltares::Sensitivity
 {
     /**
-     * \brief Calculates the sensitivity using the FORM algorithm
+     * \brief Calculates the sensitivity using Sobol indices
      */
     class Sobol : public SensitivityMethod
     {
@@ -39,7 +39,7 @@ namespace Deltares::Sensitivity
         /**
          * \brief Gets the sensitivity
          * \param modelRunner The model for which the sensitivity is calculated
-         * \return The sensitivity in the form of a stochastic variable
+         * \return The sensitivity
          */
         SensitivityResult getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner) override;
     private:

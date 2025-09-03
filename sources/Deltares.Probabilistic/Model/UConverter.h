@@ -77,7 +77,6 @@ namespace Deltares
             int getStochastCount();
             int getVaryingStochastCount();
             bool isVaryingStochast(int index);
-            std::string getVaryingStochastName(int index);
             std::vector<double> getVaryingValues(std::vector<double> values);
             std::shared_ptr<StochastPoint> GetStochastPoint(std::shared_ptr<Sample> sample, double beta);
             std::shared_ptr<StochastPoint> GetStochastPoint(double beta, std::vector<double> alphas);

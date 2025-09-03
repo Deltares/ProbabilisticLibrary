@@ -62,7 +62,7 @@ namespace Deltares::Probabilistic::Test
 
         project->uncertaintyMethod = uncertaintyMethod;
 
-        std::shared_ptr<Statistics::Stochast> stochast = project->getSensitivityResult().stochast;
+        std::shared_ptr<Statistics::Stochast> stochast = project->getUncertaintyResult().stochast;
 
         ASSERT_NEAR(stochast->getMean(), 1.0, margin);
 
@@ -84,7 +84,7 @@ namespace Deltares::Probabilistic::Test
 
         project->uncertaintyMethod = uncertaintyMethod;
 
-        auto result = project->getSensitivityResult();
+        auto result = project->getUncertaintyResult();
 
         ASSERT_NEAR(1.8, result.stochast->getMean(), margin);
         ASSERT_NEAR(0.82, result.stochast->getDeviation(), margin);
@@ -117,7 +117,7 @@ namespace Deltares::Probabilistic::Test
 
         project->uncertaintyMethod = uncertaintyMethod;
 
-        auto result = project->getSensitivityResult();
+        auto result = project->getUncertaintyResult();
 
         ASSERT_LE(result.quantileEvaluations[0]->Z, 1.5);
         ASSERT_LE(result.quantileEvaluations[1]->Z, 1.5);
@@ -129,7 +129,7 @@ namespace Deltares::Probabilistic::Test
 
         // do it again, check results are not equal
 
-        auto result2 = project->getSensitivityResult();
+        auto result2 = project->getUncertaintyResult();
 
         const double smallMargin = 1E-10;
 
@@ -151,15 +151,15 @@ namespace Deltares::Probabilistic::Test
 
         project->run();
 
-        ASSERT_EQ(2, project->sensitivityResults.size());
+        ASSERT_EQ(2, project->uncertaintyResults.size());
 
         const double smallMargin = 1E-10;
 
-        ASSERT_NEAR(project->sensitivityResults[0]->stochast->getMean(), project->sensitivityResults[1]->stochast->getMean(), smallMargin);
-        ASSERT_NEAR(project->sensitivityResults[0]->stochast->getDeviation(), project->sensitivityResults[1]->stochast->getDeviation(), smallMargin);
-        ASSERT_NEAR(project->sensitivityResults[0]->quantileEvaluations[0]->OutputValues[0], project->sensitivityResults[1]->quantileEvaluations[0]->OutputValues[0], smallMargin);
+        ASSERT_NEAR(project->uncertaintyResults[0]->stochast->getMean(), project->uncertaintyResults[1]->stochast->getMean(), smallMargin);
+        ASSERT_NEAR(project->uncertaintyResults[0]->stochast->getDeviation(), project->uncertaintyResults[1]->stochast->getDeviation(), smallMargin);
+        ASSERT_NEAR(project->uncertaintyResults[0]->quantileEvaluations[0]->OutputValues[0], project->uncertaintyResults[1]->quantileEvaluations[0]->OutputValues[0], smallMargin);
 
-        ASSERT_NEAR(0.95, project->sensitivityResults[0]->quantileEvaluations[0]->Quantile, margin);
+        ASSERT_NEAR(0.95, project->uncertaintyResults[0]->quantileEvaluations[0]->Quantile, margin);
     }
 
     void TestUncertainty::testCrudeMonteCarloLinearOutputNonRepeatable()
@@ -172,13 +172,13 @@ namespace Deltares::Probabilistic::Test
 
         project->run();
 
-        ASSERT_EQ(2, project->sensitivityResults.size());
+        ASSERT_EQ(2, project->uncertaintyResults.size());
 
         const double smallMargin = 1E-10;
 
-        ASSERT_NEAR(project->sensitivityResults[0]->stochast->getMean(), project->sensitivityResults[1]->stochast->getMean(), smallMargin);
-        ASSERT_NEAR(project->sensitivityResults[0]->stochast->getDeviation(), project->sensitivityResults[1]->stochast->getDeviation(), smallMargin);
-        ASSERT_NEAR(project->sensitivityResults[0]->quantileEvaluations[0]->OutputValues[0], project->sensitivityResults[1]->quantileEvaluations[0]->OutputValues[0], smallMargin);
+        ASSERT_NEAR(project->uncertaintyResults[0]->stochast->getMean(), project->uncertaintyResults[1]->stochast->getMean(), smallMargin);
+        ASSERT_NEAR(project->uncertaintyResults[0]->stochast->getDeviation(), project->uncertaintyResults[1]->stochast->getDeviation(), smallMargin);
+        ASSERT_NEAR(project->uncertaintyResults[0]->quantileEvaluations[0]->OutputValues[0], project->uncertaintyResults[1]->quantileEvaluations[0]->OutputValues[0], smallMargin);
     }
 
     void TestUncertainty::testCrudeMonteCarloLinearManySamples() const
@@ -191,7 +191,7 @@ namespace Deltares::Probabilistic::Test
 
         project->uncertaintyMethod = uncertaintyMethod;
 
-        std::shared_ptr<Statistics::Stochast> stochast = project->getSensitivityResult().stochast;
+        std::shared_ptr<Statistics::Stochast> stochast = project->getUncertaintyResult().stochast;
 
         ASSERT_NEAR(1.8, stochast->getMean(), margin);
         ASSERT_NEAR(0.82, stochast->getDeviation(), margin);
@@ -212,7 +212,7 @@ namespace Deltares::Probabilistic::Test
 
         project->uncertaintyMethod = uncertaintyMethod;
 
-        std::shared_ptr<Statistics::Stochast> stochast = project->getSensitivityResult().stochast;
+        std::shared_ptr<Statistics::Stochast> stochast = project->getUncertaintyResult().stochast;
 
         ASSERT_EQ(7600, uncertaintyMethod->Settings->getRequiredSamples());
         ASSERT_NEAR(1.8, stochast->getMean(), margin);
@@ -230,7 +230,7 @@ namespace Deltares::Probabilistic::Test
 
         project->uncertaintyMethod = uncertaintyMethod;
 
-        auto result = project->getSensitivityResult();
+        auto result = project->getUncertaintyResult();
 
         ASSERT_NEAR(result.stochast->getMean(), 1.0, margin);
 
@@ -255,7 +255,7 @@ namespace Deltares::Probabilistic::Test
         uncertaintyMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.95));
         project->uncertaintyMethod = uncertaintyMethod;
 
-        auto result = project->getSensitivityResult();
+        auto result = project->getUncertaintyResult();
 
         ASSERT_NEAR(result.stochast->getMean(), 1.8, margin);
         ASSERT_NEAR(result.stochast->getDeviation(), 0.81, margin);
@@ -279,7 +279,7 @@ namespace Deltares::Probabilistic::Test
         uncertaintyMethod->Settings->RequestedQuantiles.push_back(value1);
         project->uncertaintyMethod = uncertaintyMethod;
 
-        auto result = project->getSensitivityResult();
+        auto result = project->getUncertaintyResult();
 
         ASSERT_NEAR(result.stochast->getProperties()->FragilityValues[0]->X, 2.9, margin);
         ASSERT_NEAR(result.stochast->getProperties()->FragilityValues[0]->getProbabilityOfNonFailure(), 0.9, margin);
@@ -298,7 +298,7 @@ namespace Deltares::Probabilistic::Test
         uncertaintyMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.95));
         project->uncertaintyMethod = uncertaintyMethod;
 
-        auto result = project->getSensitivityResult();
+        auto result = project->getUncertaintyResult();
 
         ASSERT_NEAR(result.stochast->getMean(), 1.8, margin);
         ASSERT_NEAR(result.stochast->getDeviation(), 0.92, margin);
@@ -320,7 +320,7 @@ namespace Deltares::Probabilistic::Test
         uncertaintyMethod->Settings->RequestedQuantiles.push_back(std::make_shared<Statistics::ProbabilityValue>(0.95));
         project->uncertaintyMethod = uncertaintyMethod;
 
-        auto result = project->getSensitivityResult();
+        auto result = project->getUncertaintyResult();
 
         ASSERT_NEAR(result.stochast->getMean(), 1.8, margin);
         ASSERT_NEAR(result.stochast->getDeviation(), 1.04, margin);

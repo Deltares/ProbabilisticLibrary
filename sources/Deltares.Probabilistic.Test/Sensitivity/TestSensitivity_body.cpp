@@ -38,7 +38,9 @@ namespace Deltares::Probabilistic::Test
         testRepeatable();
 
         testLinearSingleVariation();
+        testLinearOutputSingleVariation();
         testLinearSobol();
+        testLinearOutputSobol();
     }
 
     void TestSensitivity::testSequence() const
@@ -121,10 +123,39 @@ namespace Deltares::Probabilistic::Test
         project->settings->SensitivityMethod = Sensitivity::SensitivitySingleVariation;
         project->sensitivityMethod = std::make_shared<Sensitivity::SingleVariation>();
 
-        auto result = project->getSensitivityResult();
+        Sensitivity::SensitivityResult result = project->getSensitivityResult();
+
+        ASSERT_EQ(project->stochasts.size(), result.values.size());
 
         ASSERT_NEAR(2.7, result.values[0]->low, margin);
         ASSERT_NEAR(0.9, result.values[0]->high, margin);
+        ASSERT_NEAR(2.7, result.values[1]->low, margin);
+        ASSERT_NEAR(0.9, result.values[1]->high, margin);
+    }
+
+    void TestSensitivity::testLinearOutputSingleVariation() const
+    {
+        std::shared_ptr<Sensitivity::SensitivityProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearOutputProject());
+
+        project->settings->SensitivityMethod = Sensitivity::SensitivitySingleVariation;
+        project->sensitivityMethod = std::make_shared<Sensitivity::SingleVariation>();
+
+        project->run();
+
+        ASSERT_EQ(project->model->outputParameters.size(), project->sensitivityResults.size());
+        ASSERT_EQ(project->stochasts.size(), project->sensitivityResults[0]->values.size());
+
+        ASSERT_EQ("Result1" , project->sensitivityResults[0]->identifier);
+        ASSERT_NEAR(2.7, project->sensitivityResults[0]->values[0]->low, margin);
+        ASSERT_NEAR(0.9, project->sensitivityResults[0]->values[0]->high, margin);
+        ASSERT_NEAR(2.7, project->sensitivityResults[0]->values[1]->low, margin);
+        ASSERT_NEAR(0.9, project->sensitivityResults[0]->values[1]->high, margin);
+
+        ASSERT_EQ("Result2", project->sensitivityResults[1]->identifier);
+        ASSERT_NEAR(2.7, project->sensitivityResults[1]->values[0]->low, margin);
+        ASSERT_NEAR(0.9, project->sensitivityResults[1]->values[0]->high, margin);
+        ASSERT_NEAR(2.7, project->sensitivityResults[1]->values[1]->low, margin);
+        ASSERT_NEAR(0.9, project->sensitivityResults[1]->values[1]->high, margin);
     }
 
     void TestSensitivity::testLinearSobol() const
@@ -136,8 +167,37 @@ namespace Deltares::Probabilistic::Test
 
         auto result = project->getSensitivityResult();
 
+        ASSERT_EQ(project->stochasts.size(), result.values.size());
+
         ASSERT_NEAR(0.504, result.values[0]->totalIndex, margin);
         ASSERT_NEAR(0.501, result.values[0]->firstOrderIndex, margin);
+        ASSERT_NEAR(0.504, result.values[1]->totalIndex, margin);
+        ASSERT_NEAR(0.506, result.values[1]->firstOrderIndex, margin);
+    }
+
+    void TestSensitivity::testLinearOutputSobol() const
+    {
+        std::shared_ptr<Sensitivity::SensitivityProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearOutputProject());
+
+        project->settings->SensitivityMethod = Sensitivity::SensitivitySingleVariation;
+        project->settings->SensitivityMethod = Sensitivity::SensitivitySobol;
+
+        project->run();
+
+        ASSERT_EQ(project->model->outputParameters.size(), project->sensitivityResults.size());
+        ASSERT_EQ(project->stochasts.size(), project->sensitivityResults[0]->values.size());
+
+        ASSERT_EQ("Result1", project->sensitivityResults[0]->identifier);
+        ASSERT_NEAR(0.504, project->sensitivityResults[0]->values[0]->totalIndex, margin);
+        ASSERT_NEAR(0.501, project->sensitivityResults[0]->values[0]->firstOrderIndex, margin);
+        ASSERT_NEAR(0.504, project->sensitivityResults[0]->values[1]->totalIndex, margin);
+        ASSERT_NEAR(0.506, project->sensitivityResults[0]->values[1]->firstOrderIndex, margin);
+
+        ASSERT_EQ("Result2", project->sensitivityResults[1]->identifier);
+        ASSERT_NEAR(0.504, project->sensitivityResults[1]->values[0]->totalIndex, margin);
+        ASSERT_NEAR(0.501, project->sensitivityResults[1]->values[0]->firstOrderIndex, margin);
+        ASSERT_NEAR(0.504, project->sensitivityResults[1]->values[1]->totalIndex, margin);
+        ASSERT_NEAR(0.506, project->sensitivityResults[1]->values[1]->firstOrderIndex, margin);
     }
 
     std::vector<std::vector<double>> TestSensitivity::getExpectedResults() const

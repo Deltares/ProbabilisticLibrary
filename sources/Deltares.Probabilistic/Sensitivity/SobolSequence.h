@@ -25,9 +25,16 @@
 
 namespace Deltares::Sensitivity
 {
+    /**
+     * \brief Randomizer which is capable of producing more widely spread random values
+     */
     class SobolSequence
     {
     public:
+        /**
+         * \brief Constructor
+         * \param direction Direction on which the random values will be based
+         */
         SobolSequence(SobolDirection direction)
         {
             this->direction = direction;
@@ -36,9 +43,31 @@ namespace Deltares::Sensitivity
             nextUInt();
         }
 
+        /**
+         * \brief Gets the next random int value
+         * \return Random value
+         */
         int next();
+
+        /**
+         * \brief Gets the next random int value
+         * \param maxValue Maximum value to be produced
+         * \return Random value
+         */
         int next(int maxValue);
+
+        /**
+         * \brief Gets the next random int value
+         * \param minValue Minimum value to be produced
+         * \param maxValue Maximum value to be produced
+         * \return Random value
+         */
         int next(int minValue, int maxValue);
+
+        /**
+         * \brief Gets the next random double value between 0 and 1
+         * \return Random value
+         */
         double nextDouble();
     private:
         SobolDirection direction;

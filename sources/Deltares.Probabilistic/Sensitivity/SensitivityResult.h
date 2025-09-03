@@ -23,14 +23,13 @@
 #pragma once
 
 #include "SensitivityValue.h"
-#include "../Statistics/Stochast.h"
 #include "../Model/Evaluation.h"
 #include "../Model/Message.h"
 
 namespace Deltares::Sensitivity
 {
     /**
-     * \brief Contains the results of an uncertainty calculation
+     * \brief Contains the results of a sensitivity calculation
      */
     class SensitivityResult
     {

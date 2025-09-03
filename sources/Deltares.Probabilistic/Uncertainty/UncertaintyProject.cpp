@@ -27,8 +27,8 @@ namespace Deltares::Uncertainty
     {
         modelRuns = 0;
 
-        sensitivityResult = nullptr;
-        sensitivityResults.clear();
+        uncertaintyResult = nullptr;
+        uncertaintyResults.clear();
 
         settings->RandomSettings->setFixed(true);
 
@@ -46,15 +46,15 @@ namespace Deltares::Uncertainty
                     {
                         parameterSelector->arrayIndex = index;
 
-                        auto result = std::make_shared<UncertaintyResult>(getSensitivityResult());
+                        auto result = std::make_shared<UncertaintyResult>(getUncertaintyResult());
                         result->stochast->name += "[" + std::to_string(index) + "]";
-                        sensitivityResults.push_back(result);
+                        uncertaintyResults.push_back(result);
                     }
                 }
                 else
                 {
-                    auto result = std::make_shared<UncertaintyResult>(getSensitivityResult());
-                    sensitivityResults.push_back(result);
+                    auto result = std::make_shared<UncertaintyResult>(getUncertaintyResult());
+                    uncertaintyResults.push_back(result);
                 }
             }
         }
@@ -63,13 +63,13 @@ namespace Deltares::Uncertainty
             parameterSelector->parameter = parameter;
             parameterSelector->arrayIndex = arrayIndex;
 
-            auto result = std::make_shared<UncertaintyResult>(getSensitivityResult());
-            sensitivityResults.push_back(result);
+            auto result = std::make_shared<UncertaintyResult>(getUncertaintyResult());
+            uncertaintyResults.push_back(result);
         }
 
-        if (!sensitivityResults.empty())
+        if (!uncertaintyResults.empty())
         {
-            sensitivityResult = sensitivityResults[0];
+            uncertaintyResult = uncertaintyResults[0];
         }
 
         // reset the index
@@ -84,7 +84,7 @@ namespace Deltares::Uncertainty
         }
     }
 
-    UncertaintyResult UncertaintyProject::getSensitivityResult()
+    UncertaintyResult UncertaintyProject::getUncertaintyResult()
     {
         model->zValueConverter = parameterSelector;
 

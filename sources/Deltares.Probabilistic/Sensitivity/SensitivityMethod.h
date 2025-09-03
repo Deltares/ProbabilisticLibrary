@@ -20,7 +20,6 @@
 // All rights reserved.
 //
 #pragma once
-#include "../Statistics/Stochast.h"
 #include "../Model/ModelRunner.h"
 
 #include <memory>
@@ -41,7 +40,7 @@ namespace Deltares::Sensitivity
         /**
          * \brief Gets the sensitivity
          * \param modelRunner The model for which the sensitivity is calculated
-         * \return The sensitivity in the form of a stochastic variable
+         * \return The sensitivity 
          */
         virtual SensitivityResult getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner)
             { return SensitivityResult(); }
@@ -59,23 +58,9 @@ namespace Deltares::Sensitivity
 
     protected:
         virtual void setStopped();
-        static std::shared_ptr<Statistics::Stochast> getStochastFromSamples(std::vector<double>& samples, std::vector<double>& weights);
-        static std::shared_ptr<Statistics::Stochast> getStochastFromSamples(std::vector<std::shared_ptr<Numeric::WeightedValue>>& weightedValues);
-
-        /**
-         * \brief Gets the index in a list of samples corresponding with a quantile
-         */
-        static int getQuantileIndex(const std::vector<std::shared_ptr<Numeric::WeightedValue>>& weightedValues, double quantile);
-
-        /**
-         * \brief Gets the index in a list of samples corresponding with a quantile
-         */
-        static int getQuantileIndex(std::vector<double>& samples, std::vector<double>& weights, double quantile);
 
     private:
         bool stopped = false;
-
-        static void filterSamples(std::vector<double>& samples, std::vector<double>& weights);
     };
 }
 

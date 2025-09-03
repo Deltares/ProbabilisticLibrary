@@ -52,9 +52,9 @@ namespace Deltares::Sensitivity
         double HighValue = 0.95;
 
         /**
-         * \brief The minimum samples to be examined
+         * \brief The number of iterations
          */
-        int MaximumSamples = 1000;
+        int Iterations = 1000;
 
         /**
          * \brief Settings for performing model runs

@@ -20,19 +20,22 @@
 // All rights reserved.
 //
 #pragma once
-#include <memory>
 #include "SobolSequence.h"
 #include "SobolDirection.h"
+#include "SobolDirectionLoader.h"
 
 namespace Deltares::Sensitivity
 {
     /**
-     * \brief Generates Sobol sequences
+     * \brief Provides Sobol sequences
      */
     class SobolSequenceProvider
     {
     public:
-        // Constructor
+        /**
+         * \brief Constructor
+         * \param size Size of the sequence to be provided
+         */
         SobolSequenceProvider(int size)
         {
             std::vector<SobolDirection> directions = SobolDirectionLoader::getDirections(size);
@@ -44,7 +47,10 @@ namespace Deltares::Sensitivity
             }
         }
 
-        // Gets a random sequence of values equally distributed between 0 and 1
+        /**
+         * \brief Gets a random sequence of values equally distributed between 0 and 1
+         * \return Sequence
+         */
         std::vector<double> getSequence()
         {
             std::vector<double> result(sequences.size());

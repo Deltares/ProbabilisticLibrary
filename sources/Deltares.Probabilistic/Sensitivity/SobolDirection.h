@@ -20,8 +20,6 @@
 // All rights reserved.
 //
 #pragma once
-#include <memory>
-#include <string>
 #include <vector>
 
 namespace Deltares::Sensitivity
@@ -29,56 +27,34 @@ namespace Deltares::Sensitivity
     /**
      * \brief Contains a sobol direction
      */
-    class SobolDirection {
+    class SobolDirection
+    {
     public:
-        int d = 0;
-        uint32_t s = 0;
+        /**
+         * \brief Index of the sobol direction
+         */
+        int index = 0;
+
+        /**
+         * \brief Size of the values
+         */
+        uint32_t size = 0;
+
+        /**
+         * \brief a-parameter
+         */
         uint32_t a = 0;
-        std::vector<uint32_t> v;
+
+        /**
+         * \brief Values of the direction
+         */
+        std::vector<uint32_t> values;
 
         SobolDirection() = default;
 
         SobolDirection(int d, uint32_t s, uint32_t a, const std::vector<uint32_t>& v)
-            : d(d), s(s), a(a), v(v) {
+            : index(d), size(s), a(a), values(v) {
         }
-
-        int D() const
-        {
-            return this->d;
-        }
-
-        uint32_t S() const
-        {
-            return this->s;
-        }
-
-        uint32_t A() const
-        {
-            return this->a;
-        }
-
-        const std::vector<uint32_t>& V() const
-        {
-            return this->v;
-        }
-    };
-
-    /// <summary>
-    /// Loads source data for a <see cref="Direction"/> from internal storage
-    /// </summary>
-    class SobolDirectionLoader
-    {
-        /// <summary>
-        /// Gets a specified number of <see cref="Direction"/>s
-        /// </summary>
-        /// <param name="size"></param>
-        /// <returns></returns>
-    public:
-        static std::vector<SobolDirection> getDirections(int size);
-
-    private:
-        static SobolDirection getFirstDirection();
-        static SobolDirection getDirection(int index);
     };
 }
 

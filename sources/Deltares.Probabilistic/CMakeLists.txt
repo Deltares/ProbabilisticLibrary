@@ -19,6 +19,7 @@ file(GLOB probabilistic_files
     "Math/RootFinders/*.h"
     "Model/*.h"
     "Reliability/*.h"
+    "Uncertainty/*.h"
     "Sensitivity/*.h"
     "Statistics/*.h"
     "Statistics/Distributions/*.h"

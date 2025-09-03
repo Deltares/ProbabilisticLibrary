@@ -23,17 +23,19 @@
 
 #include "../Model/RunSettings.h"
 #include <memory>
-#include <vector>
 
 namespace Deltares::Sensitivity
 {
+    /**
+     * \brief Settings for the Sobol sensitivity calculation
+     */
     class SobolSettings
     {
     public:
         /**
          * \brief The number of iterations
          */
-        int MaximumSamples = 1000;
+        int Iterations = 1000;
 
         /**
          * \brief Settings for performing model runs
@@ -46,7 +48,7 @@ namespace Deltares::Sensitivity
          */
         bool isValid() const
         {
-            return MaximumSamples > 0;
+            return Iterations > 0;
         }
     };
 }

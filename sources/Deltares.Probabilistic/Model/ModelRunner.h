@@ -78,7 +78,6 @@ namespace Deltares
             bool canCalculateBeta() const;
             int getStochastCount();
             int getVaryingStochastCount();
-            std::string getVaryingStochastName(int index);
             bool shouldExitPrematurely(std::vector<std::shared_ptr<Sample>> samples);
             void removeTask(int iterationIndex);
 
