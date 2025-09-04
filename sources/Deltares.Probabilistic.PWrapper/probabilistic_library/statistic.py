@@ -600,14 +600,23 @@ class Stochast(FrozenObject):
 		self._discrete_values = None
 		self._fragility_values = None
 
-	def fit_prior(self, prior, values):
+	def can_fit_prior(self) -> bool:
+		return interface.GetBoolValue(self._id, 'can_fit_prior')
+
+	def fit_prior(self, prior : str | Stochast, values):
 		if type(prior) == str:
 			prior = self._variables[prior]
-		interface.SetIntValue(self._id, 'prior', prior._id)
-		interface.SetArrayValue(self._id, 'fit_prior', values)
-		self._histogram_values = None
-		self._discrete_values = None
-		self._fragility_values = None
+
+		if not self.can_fit_prior():
+			print('Fit with prior is not supported for distribution type ' + str(self.distribution))
+		elif self.distribution != prior.distribution:
+			print('Fit from prior distribution type ' + str(prior.distribution) + ' is not supported')
+		else:
+			interface.SetIntValue(self._id, 'prior', prior._id)
+			interface.SetArrayValue(self._id, 'fit_prior', values)
+			self._histogram_values = None
+			self._discrete_values = None
+			self._fragility_values = None
 
 	def get_ks_test(self, values) -> float:
 		interface.SetArrayValue(self._id, 'data', values)

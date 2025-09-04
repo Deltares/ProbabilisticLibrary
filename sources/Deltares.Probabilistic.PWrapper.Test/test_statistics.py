@@ -58,6 +58,39 @@ class Test_statistics(unittest.TestCase):
 
         self.assertAlmostEqual(0.002465603026085228, x, delta=margin)
 
+    def test_log_normal_fit(self):
+
+        stochast = Stochast()
+        stochast.distribution = DistributionType.log_normal
+
+        values = [4.1, 4.2, 4.45, 4.75]
+        stochast.fit(values)
+
+        self.assertAlmostEqual(3.92, stochast.shift, delta=margin)
+        self.assertAlmostEqual(4.41, stochast.mean, delta=margin)
+        self.assertAlmostEqual(0.37, stochast.deviation, delta=margin)
+
+        prior = Stochast()
+        prior.distribution = DistributionType.log_normal
+        prior.mean = 3.5
+        prior.deviation = 0.5
+
+        stochast.shift = 0
+
+        stochast.fit_prior(prior, values)
+
+        self.assertAlmostEqual(4.32, stochast.mean, delta=margin)
+        self.assertAlmostEqual(0.14, stochast.deviation, delta=margin)
+
+        negative_values = [-2.2, 1.4, 1.8]
+
+        stochast.shift = 0
+        stochast.fit_prior(prior, negative_values)
+
+        self.assertAlmostEqual(3.33, stochast.mean, delta=margin)
+        self.assertAlmostEqual(0.48, stochast.deviation, delta=margin)
+        self.assertAlmostEqual(-4.4, stochast.shift, delta=margin)
+
     def test_exponential(self):
         stochast = Stochast()
         stochast.distribution = DistributionType.exponential
@@ -73,6 +106,31 @@ class Test_statistics(unittest.TestCase):
         stochast.shift = -0.5
         self.assertAlmostEqual(2.0, stochast.mean, delta=margin)
         self.assertAlmostEqual(2.5, stochast.deviation, delta=margin)
+
+    def test_exponential_fit(self):
+        stochast = Stochast()
+        stochast.distribution = DistributionType.exponential
+
+        stochast.fit([2.0, 3.0, 5.0, 9.0, 17.0])
+
+        self.assertAlmostEqual(7.2, stochast.mean, delta=margin)
+        self.assertAlmostEqual(8.2, stochast.deviation, delta=margin)
+        self.assertAlmostEqual(-1.0, stochast.shift, delta=margin)
+
+        prior = Stochast()
+        prior.distribution = DistributionType.exponential
+        prior.mean = 5.0
+        prior.deviation = 2.5
+
+        # Replace default stdout (terminal) temporary with with our stream
+        sys.stdout = StringIO()
+
+        stochast.fit_prior(prior, [3.5, 4.5, 8.0])
+
+        printed = sys.stdout.getvalue()
+        sys.stdout = sys.__stdout__
+
+        self.assertEqual("""Fit with prior is not supported for distribution type exponential\n""", printed)
 
     def test_plot(self):
         stochast = Stochast()
@@ -201,7 +259,7 @@ class Test_statistics(unittest.TestCase):
         self.assertAlmostEqual(0.8, correlation_matrix[(stochast1, stochast2)], delta=margin)
         self.assertAlmostEqual(0.8, correlation_matrix[('a', 'b')], delta=margin)
 
-    def test_fit(self):
+    def test_normal_fit(self):
         stochast = Stochast()
         stochast.distribution = DistributionType.normal
 
@@ -222,6 +280,17 @@ class Test_statistics(unittest.TestCase):
 
         self.assertAlmostEqual(4.16, stochast.mean, delta=margin)
         self.assertAlmostEqual(0.08, stochast.deviation, delta=margin)
+
+        # Replace default stdout (terminal) temporary with with our stream
+        sys.stdout = StringIO()
+
+        prior.distribution = DistributionType.log_normal
+        stochast.fit_prior(prior, values)
+
+        printed = sys.stdout.getvalue()
+        sys.stdout = sys.__stdout__
+
+        self.assertEqual("""Fit from prior distribution type log_normal is not supported\n""", printed)
 
     def test_bernoulli(self):
         stochast = Stochast()

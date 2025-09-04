@@ -21,6 +21,7 @@
 //
 #pragma once
 #include <functional>
+#include <stdexcept>
 
 #include "../StochastProperties.h"
 #include "../../Math/WeightedValue.h"
@@ -196,7 +197,10 @@ namespace Deltares
              * \param stochast Stochast to be updated
              * \param values Given x-values
              */
-            virtual void fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values) { }
+            virtual void fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values)
+            {
+                throw std::runtime_error("fit not supported");
+            }
 
             /**
              * \brief Updates parameters of a stochast, so that they fit best a number of given x-values and their weights
@@ -212,7 +216,10 @@ namespace Deltares
              * \param stochast Prior stochast
              * \param values Given x-values
              */
-            virtual void fitPrior(const std::shared_ptr<StochastProperties>& stochast, const std::shared_ptr<StochastProperties>& prior, std::vector<double>& values) {}
+            virtual void fitPrior(const std::shared_ptr<StochastProperties>& stochast, const std::shared_ptr<StochastProperties>& prior, std::vector<double>& values)
+            {
+                throw std::runtime_error("fit with prior not supported");
+            }
 
             /**
              * \brief Indicates whether parameters of a stochast have valid values
