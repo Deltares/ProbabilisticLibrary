@@ -21,12 +21,12 @@
 //
 #pragma once
 
+#include "ReliabilityMethod.h"
+#include "DesignPoint.h"
+#include "Settings.h"
 #include "LimitStateFunction.h"
 #include "../Model/ModelProject.h"
 #include "../Statistics/Stochast.h"
-#include "../Reliability/ReliabilityMethod.h"
-#include "../Reliability/DesignPoint.h"
-#include "../Reliability/Settings.h"
 
 namespace Deltares
 {

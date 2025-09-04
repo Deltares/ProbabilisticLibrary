@@ -36,7 +36,7 @@ namespace Deltares
             {
             private:
                 SharedPointerProvider<Statistics::CorrelationMatrix>* shared = nullptr;
-                System::Collections::Generic::List<Stochast^> stochasts = gcnew System::Collections::Generic::List<Stochast^>();
+                System::Collections::Generic::List<Stochast^>^ stochasts = gcnew System::Collections::Generic::List<Stochast^>();
 
             public:
                 CorrelationMatrix()
@@ -56,13 +56,13 @@ namespace Deltares
 
                 void Initialize(System::Collections::Generic::List<Stochast^>^ stochasts)
                 {
-                    this->stochasts.Clear();
+                    this->stochasts->Clear();
 
                     std::vector<std::shared_ptr<Deltares::Statistics::Stochast>> nativeStochasts;
 
                     for (int i = 0; i < stochasts->Count; i++)
                     {
-                        this->stochasts.Add(stochasts[i]);
+                        this->stochasts->Add(stochasts[i]);
                         nativeStochasts.push_back(stochasts[i]->GetStochast());
                     }
 

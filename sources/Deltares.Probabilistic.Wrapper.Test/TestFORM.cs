@@ -35,7 +35,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestLinear()
         {
-            Project project = ProjectBuilder.GetLinearProject();
+            ReliabilityProject project = ProjectBuilder.GetLinearProject();
 
             project.ReliabilityMethod = new FORM();
             DesignPoint designPoint = project.GetDesignPoint();
@@ -57,7 +57,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestLinearArray()
         {
-            Project project = ProjectBuilder.GetLinearArrayProject();
+            ReliabilityProject project = ProjectBuilder.GetLinearArrayProject();
 
             project.ReliabilityMethod = new FORM();
             DesignPoint designPoint = project.GetDesignPoint();
@@ -90,7 +90,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestLinearConditional()
         {
-            Project project = ProjectBuilder.GetLinearProject();
+            ReliabilityProject project = ProjectBuilder.GetLinearProject();
 
             project.Stochasts[1].IsVariableStochast = true;
 
@@ -124,7 +124,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestLinearConditionalArray()
         {
-            Project project = ProjectBuilder.GetLinearArrayProject();
+            ReliabilityProject project = ProjectBuilder.GetLinearArrayProject();
 
             project.Stochasts[0].Name = "L";
             project.Stochasts[1].Name = "a";
@@ -220,7 +220,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestLinearMessages()
         {
-            Project project = ProjectBuilder.GetLinearProject();
+            ReliabilityProject project = ProjectBuilder.GetLinearProject();
 
             project.Settings.SaveConvergence = true;
             project.Settings.SaveEvaluations = true;
@@ -248,7 +248,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [SetCulture("en-US")]
         public void TestLinearProgress()
         {
-            Project project = ProjectBuilder.GetLinearProject();
+            ReliabilityProject project = ProjectBuilder.GetLinearProject();
 
             ProgressHolder progressHolder = new ProgressHolder();
 
@@ -271,7 +271,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestLinearCorrelated()
         {
-            Project project = ProjectBuilder.GetLinearFullyCorrelatedProject();
+            ReliabilityProject project = ProjectBuilder.GetLinearFullyCorrelatedProject();
 
             project.ReliabilityMethod = new FORM();
             DesignPoint designPoint = project.GetDesignPoint();
@@ -289,7 +289,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestLinearPartialCorrelated()
         {
-            Project project = ProjectBuilder.GetLinearPartialCorrelatedProject();
+            ReliabilityProject project = ProjectBuilder.GetLinearPartialCorrelatedProject();
 
             project.ReliabilityMethod = new FORM();
             DesignPoint designPoint = project.GetDesignPoint();
@@ -305,7 +305,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestLinearMultiCorrelated()
         {
-            Project project = ProjectBuilder.GetLinearMultiCorrelatedProject(false);
+            ReliabilityProject project = ProjectBuilder.GetLinearMultiCorrelatedProject(false);
 
             project.CorrelationMatrix.ResolveConflictingCorrelations();
 
@@ -328,7 +328,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestLinearMultiCorrelatedSwitchOrder()
         {
-            Project project = ProjectBuilder.GetLinearMultiCorrelatedProject(true);
+            ReliabilityProject project = ProjectBuilder.GetLinearMultiCorrelatedProject(true);
 
             project.CorrelationMatrix.ResolveConflictingCorrelations();
 
@@ -353,7 +353,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestLoadStrength()
         {
-            Project project = ProjectBuilder.GetLoadStrengthProject();
+            ReliabilityProject project = ProjectBuilder.GetLoadStrengthProject();
 
             project.ReliabilityMethod = new FORM();
             DesignPoint designPoint = project.GetDesignPoint();
@@ -364,7 +364,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestConvexStartPoint()
         {
-            Project project = ProjectBuilder.GetConvexProject();
+            ReliabilityProject project = ProjectBuilder.GetConvexProject();
 
             FORM form = new FORM();
             form.Settings.StochastSettings.Add(new StochastSettings { StartValue = 1, Stochast = project.Stochasts[0] });
@@ -379,7 +379,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestConvexRayStartPoint()
         {
-            Project project = ProjectBuilder.GetConvexProject();
+            ReliabilityProject project = ProjectBuilder.GetConvexProject();
 
             FORM form = new FORM();
             form.Settings.StochastSettings.Add(new StochastSettings { StartValue = 1, Stochast = project.Stochasts[0] });
@@ -395,7 +395,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestConvexRayStartPointNoInitialization()
         {
-            Project project = ProjectBuilder.GetConvexProject();
+            ReliabilityProject project = ProjectBuilder.GetConvexProject();
 
             FORM form = new FORM();
             form.Settings.StartPointCalculatorSettings.StartMethod = StartMethodType.RaySearch;
@@ -409,7 +409,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestConvexRaySphereStartPoint()
         {
-            Project project = ProjectBuilder.GetConvexProject();
+            ReliabilityProject project = ProjectBuilder.GetConvexProject();
 
             FORM form = new FORM();
             form.Settings.StartPointCalculatorSettings.StartMethod = StartMethodType.SphereSearch;
@@ -427,7 +427,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestConvexRaySensitivityStartPoint()
         {
-            Project project = ProjectBuilder.GetConvexProject();
+            ReliabilityProject project = ProjectBuilder.GetConvexProject();
 
             FORM form = new FORM();
             form.Settings.StartPointCalculatorSettings.StartMethod = StartMethodType.SensitivitySearch;
@@ -441,7 +441,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestNoisy()
         {
-            Project project = ProjectBuilder.GetNoisyProject();
+            ReliabilityProject project = ProjectBuilder.GetNoisyProject();
 
             project.ReliabilityMethod = new FORM();
             DesignPoint designPoint = project.GetDesignPoint();
@@ -452,7 +452,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestOblateSpheroid()
         {
-            Project project = ProjectBuilder.GetOblateSpheroidProject();
+            ReliabilityProject project = ProjectBuilder.GetOblateSpheroidProject();
 
             project.ReliabilityMethod = new FORM();
             DesignPoint designPoint = project.GetDesignPoint();
@@ -463,7 +463,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestQuadratic()
         {
-            Project project = ProjectBuilder.GetQuadraticProject();
+            ReliabilityProject project = ProjectBuilder.GetQuadraticProject();
 
             project.ReliabilityMethod = new FORM();
             DesignPoint designPoint = project.GetDesignPoint();
@@ -474,7 +474,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestWaveRelaxationLoops()
         {
-            Project project = ProjectBuilder.GetWaveProject();
+            ReliabilityProject project = ProjectBuilder.GetWaveProject();
 
             FORM form = new FORM();
             form.Settings.RelaxationFactor = 0.7;
@@ -490,7 +490,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestWaveRelaxationLoopsDoubleGradient()
         {
-            Project project = ProjectBuilder.GetWaveProject();
+            ReliabilityProject project = ProjectBuilder.GetWaveProject();
 
             FORM form = new FORM();
             form.Settings.RelaxationFactor = 0.7;
@@ -509,7 +509,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestNonLinear()
         {
-            Project project = ProjectBuilder.GetNonLinearProject();
+            ReliabilityProject project = ProjectBuilder.GetNonLinearProject();
 
             FORM form = new FORM();
             form.Settings.RelaxationFactor = 0.75;
@@ -538,7 +538,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestBligh()
         {
-            Project project = ProjectBuilder.GetBlighProject();
+            ReliabilityProject project = ProjectBuilder.GetBlighProject();
 
             project.ReliabilityMethod = new FORM();
             DesignPoint designPoint = project.GetDesignPoint();
@@ -549,7 +549,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestNonVarying()
         {
-            Project project = ProjectBuilder.GetNonVaryingProject();
+            ReliabilityProject project = ProjectBuilder.GetNonVaryingProject();
 
             project.Settings.SaveMessages = true;
             project.Settings.MaxMessages = 1000;

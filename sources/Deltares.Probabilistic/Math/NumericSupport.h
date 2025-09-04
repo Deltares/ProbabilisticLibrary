@@ -81,7 +81,9 @@ namespace Deltares
             static double getWeightedMean(std::vector<double>& values, std::vector<double>& weights);
             static double getStandardDeviation(std::vector<double>& values);
             static std::vector<double> select(std::vector<double>& values, std::function<double(double)> function);
+            static std::vector<double> take(std::vector<double>& values, int skip, int size);
             static std::vector<double> zip(std::vector<double>& values1, std::vector<double>& values2, std::function<double(double, double)> function);
+            static std::vector<double> combine(const std::vector<double>& values1, const std::vector<double>& values2);
             static double sum(std::vector<double>& values);
             static double sum(std::vector<double>& values, std::function<double(double)> function);
             static double getMaxAbs(const double val1, const double val2);

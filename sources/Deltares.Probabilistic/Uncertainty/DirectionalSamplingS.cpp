@@ -1,0 +1,423 @@
+// Copyright (C) Stichting Deltares. All rights reserved.
+//
+// This file is part of the Probabilistic Library.
+//
+// The Probabilistic Library is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with this program. If not, see <http://www.gnu.org/licenses/>.
+//
+// All names, logos, and references to "Deltares" are registered trademarks of
+// Stichting Deltares and remain full property of Stichting Deltares at all times.
+// All rights reserved.
+//
+#include "DirectionalSamplingS.h"
+#include <vector>
+#include <cmath>
+#include <memory>
+#include <algorithm>
+#include <set>
+
+#include "../Math/NumericSupport.h"
+#include "../Math/SpecialFunctions.h"
+#include "../Math/RootFinders/BisectionRootFinder.h"
+#include "../Model/Sample.h"
+#include "../Model/GradientCalculator.h"
+#include "../Model/RandomSampleGenerator.h"
+#include "../Statistics/DistributionType.h"
+
+using namespace Deltares::Models;
+using namespace Deltares::Numeric;
+
+namespace Deltares::Uncertainty
+{
+    UncertaintyResult DirectionalSamplingS::getUncertaintyStochast(std::shared_ptr<ModelRunner> modelRunner)
+    {
+        //Step 0: Initialize the algorithm
+
+        modelRunner->updateStochastSettings(this->Settings->StochastSet);
+
+        int nStochasts = modelRunner->getVaryingStochastCount();
+
+        // Step 1: Calculate Z0, the model result at u = 0.
+
+        auto u0 = std::make_shared<Sample>(nStochasts);
+        u0->IterationIndex = -1;
+        double Z0 = modelRunner->getZValue(u0);
+
+        // Step 2: Calculate beta_q, the reliability index corresponding to the given quantile value / exceeding probability
+
+        auto stochast = std::make_shared<Statistics::Stochast>();
+        stochast->setDistributionType(Statistics::CDFCurve);
+
+        std::set<double> handledReliabilities;
+
+        for (const std::shared_ptr<Statistics::ProbabilityValue> quantile : this->Settings->RequestedQuantiles)
+        {
+            if (!handledReliabilities.contains(quantile->Reliability))
+            {
+                auto fragilityValue = std::make_shared<Statistics::FragilityValue>();
+                fragilityValue->X = getZForRequiredQ(modelRunner, quantile, nStochasts, Z0);
+                fragilityValue->Reliability = quantile->Reliability;
+                stochast->getProperties()->FragilityValues.push_back(fragilityValue);
+
+                handledReliabilities.insert(quantile->Reliability);
+            }
+        }
+
+        std::sort(stochast->getProperties()->FragilityValues.begin(), stochast->getProperties()->FragilityValues.end(),
+            [](const std::shared_ptr<Statistics::FragilityValue>& val1, const std::shared_ptr<Statistics::FragilityValue>& val2)
+        {return val1->Reliability < val2->Reliability; });
+
+        auto result = modelRunner->getUncertaintyResult(stochast);
+
+        for (std::shared_ptr<Statistics::ProbabilityValue> quantile : this->Settings->RequestedQuantiles)
+        {
+            if (this->evaluations.contains(quantile))
+            {
+                this->evaluations[quantile]->Quantile = quantile->getProbabilityOfNonFailure();
+                result.quantileEvaluations.push_back(this->evaluations[quantile]);
+            }
+            else
+            {
+                result.quantileEvaluations.push_back(nullptr);
+            }
+        }
+
+        return result;
+    }
+
+    double DirectionalSamplingS::getZForRequiredQ(std::shared_ptr<ModelRunner> modelRunner, std::shared_ptr<Statistics::ProbabilityValue> quantile, int nStochasts, double Z0)
+    {
+        int performedIterations = 0;
+
+        // Step 3: Calculate n samples in random directions, all at the same distance d of the origin
+
+        auto sampleProvider = std::make_shared<SampleProvider>(this->Settings->StochastSet);
+        modelRunner->setSampleProvider(sampleProvider);
+
+        auto randomSampleGenerator = RandomSampleGenerator();
+        randomSampleGenerator.Settings = this->Settings->randomSettings;
+        randomSampleGenerator.Settings->StochastSet = this->Settings->StochastSet;
+        randomSampleGenerator.sampleProvider = sampleProvider;
+        randomSampleGenerator.initialize();
+
+        std::vector<std::shared_ptr<Sample>> samples;
+
+        int nDirections = this->Settings->getRequiredSamples(modelRunner->getVaryingStochastCount());
+        nDirections = std::min(nDirections, this->Settings->NumberDirections);
+
+        for (int i = 0; i < nDirections; i++)
+        {
+            std::shared_ptr<Sample> randomSample = randomSampleGenerator.getRandomSample();
+            samples.push_back(randomSample);
+        }
+
+        // Calculate the corresponding distance d of the origin using the length of the samples list
+
+        double initialDistance = getBetaDistance(std::abs(quantile->Reliability), nStochasts, this->Settings->modelType);
+        initialDistance = std::max(0.1, initialDistance);
+
+        // Normalize the value of Samples via d
+        for (size_t i = 0; i < samples.size(); i++)
+        {
+            samples[i] = samples[i]->getSampleAtBeta(initialDistance);
+            samples[i]->IterationIndex = static_cast<int>(i);
+        }
+
+        std::vector<double> zValues = modelRunner->getZValues(samples);
+
+        modelRunner->reportProgress(++performedIterations, this->Settings->MaximumIterations + 1);
+
+        int nZValuesGreaterZero = 0;
+        for (const double z : zValues)
+        {
+            if (z > Z0)
+            {
+                nZValuesGreaterZero++;
+            }
+        }
+
+        double probability0 = NumericSupport::Divide(nZValuesGreaterZero, static_cast<int>(zValues.size()));
+        double beta0 = Statistics::StandardNormal::getUFromQ(probability0);
+        double maxBetaDirection = std::abs(quantile->Reliability) + 5; // The maximum beta value for the direction is set to the requested beta value plus 5 to prevent the algorithm from running into extreme values for the distance d
+
+        std::vector<std::shared_ptr<Direction>> directions;
+        for (size_t i = 0; i < samples.size(); i++)
+        {
+            std::shared_ptr<Direction> direction = std::make_shared<Direction>(samples[i], i);
+            direction->AddResult(0, Z0);
+            direction->AddResult(initialDistance, zValues[i]);
+            direction->Valid = quantile->Reliability > beta0 ? zValues[i] > Z0 : zValues[i] < Z0; // If the direction is invalid, the direction will not be used in the calculation
+            directions.push_back(direction);
+        }
+
+        // Step 4: Calculate new distances di,2 for each direction so that the combined reliability remains beta_q
+        double qRequired = Statistics::StandardNormal::getQFromU(std::abs(quantile->Reliability));
+        auto bisection = BisectionRootFinder();
+
+        //firstly the zPred is needed.
+        double zPredicted = 0;
+
+        double error = std::numeric_limits<double>::max();
+        double quantile95 = Statistics::StandardNormal::getUFromP(0.95);
+
+        std::shared_ptr<Sample> lowestSample = nullptr;
+
+        int j = 0; //iteration over N
+        while (j < this->Settings->MaximumIterations && error > this->Settings->VariationCoefficientFailure)
+        {
+            double zMin = Z0;
+            double zMax = quantile->Reliability > beta0 ? NumericSupport::getMaximum(zValues) : NumericSupport::getMinimum(zValues);
+
+            zPredicted = bisection.CalculateValue(zMin, zMax, qRequired,
+                [directions, nStochasts, probability0](double predZi)
+            { return predict(predZi, directions, probability0, nStochasts); });
+
+            //for each new scale in direction i values, the new z values are calculated (zValues[i,j])
+            std::vector<std::shared_ptr<Sample>> newSamples;
+            std::vector<std::shared_ptr<Sample>> calculateSamples;
+
+            for (size_t i = 0; i < directions.size(); i++)
+            {
+                std::shared_ptr<Sample> newSample = directions[i]->CreateNewSampleAt(zPredicted, maxBetaDirection);
+                newSamples.push_back(newSample);
+                if (directions[i]->Valid)
+                {
+                    newSample->IterationIndex = static_cast<int>(i);
+                    calculateSamples.push_back(newSample); //calculateSamples are the samples that are used to calculate the new z values ( only for valid directions to prevent z values of NaN/infinity)
+                }
+            }
+
+            modelRunner->getZValues(calculateSamples);
+
+            std::vector<double> newZValues = Sample::select(newSamples, [](std::shared_ptr<Sample> p) {return p->Z; });
+
+            //add the newZvalues to the list of zValues
+            for (size_t i = 0; i < directions.size(); i++)
+            {
+                if (directions[i]->Valid)
+                {
+                    directions[i]->AddResult(directions[i]->GetDistanceAtZ(zPredicted), newSamples[i]->Z);
+                }
+            }
+
+            Statistics::Stochast stochast = Statistics::Stochast(Statistics::DistributionType::Normal, std::vector{ 0.0, 1.0 });
+
+            std::vector<std::shared_ptr<Direction>> validDirections = Direction::where(directions, [](std::shared_ptr<Direction> d) {return d->Valid; });
+            std::vector<double> diff = Direction::select(validDirections, [](std::shared_ptr<Direction> d) {return d->lastDifference; });
+            std::vector<double> weights = Direction::select(validDirections, [](std::shared_ptr<Direction> d) {return d->lastWeight; });
+            stochast.fitWeighted(diff, weights);
+
+            error = std::abs(stochast.getXFromU(quantile95));
+
+            j++;
+            zValues = newZValues;
+
+            // select the sample with the lowest beta as representative
+            if (!calculateSamples.empty())
+            {
+                lowestSample = calculateSamples[0];
+                double lowestBeta = lowestSample->getBeta();
+                for (size_t i = 0; i < calculateSamples.size(); i++)
+                {
+                    double calcBeta = calculateSamples[i]->getBeta();
+                    if (calcBeta < lowestBeta)
+                    {
+                        lowestSample = calculateSamples[i];
+                        lowestBeta = calcBeta;
+                    }
+                }
+            }
+
+            modelRunner->reportProgress(++performedIterations, this->Settings->MaximumIterations + 1);
+        }
+
+        if (lowestSample != nullptr)
+        {
+            std::shared_ptr<Models::Evaluation> evaluation = std::make_shared<Models::Evaluation>(modelRunner->getEvaluation(lowestSample));
+            this->evaluations[quantile] = evaluation;
+        }
+
+        return zPredicted;
+    }
+
+    double DirectionalSamplingS::predict(double predZi, const std::vector<std::shared_ptr<Direction>>& directions, double probability0, int nStochasts)
+    {
+        std::vector<double> dValues(directions.size());
+
+        for (size_t i = 0; i < directions.size(); i++)
+        {
+            dValues[i] = directions[i]->GetDistanceAtZ(predZi); // Record dValues for each direction (i) and for each iteration (j)
+        }
+
+        // Check if all dValues are zero
+        bool allZero = true;
+        for (const double p : dValues)
+        {
+            if (p != 0.0)
+            {
+                allZero = false;
+                break;
+            }
+        }
+
+        if (allZero)
+        {
+            // If all dValues are zero, set probFailure to 0.5
+            return probability0;
+        }
+        else
+        {
+            // Otherwise, calculate the probability of failure using the existing method
+            return calculateProbabilityOfFailure(dValues, nStochasts);
+        }
+    }
+
+    double DirectionalSamplingS::calculateProbabilityOfFailure(const std::vector<double>& dValues, double nstochasts)
+    {
+        double qTotal = 0.0;
+        for (const double& beta : dValues)
+        {
+            if (beta > 0.0)
+            {
+                double weight = SpecialFunctions::getGammaUpperRegularized(0.5 * nstochasts, 0.5 * beta * beta); //Here the dValues length is used as nStochasts
+                qTotal += weight;
+            }
+        }
+
+        return qTotal / static_cast<double>(dValues.size()); // Here, the number of directions is used in the calculations (valid+invalid directions)
+    }
+
+    double DirectionalSamplingS::getBetaDistance(double betaRequired, int nStochasts, ModelType modelType)
+    {
+        if (betaRequired == 0.0)
+        {
+            return 0.0;
+        }
+        else if (modelType == ModelType::Sphere)
+        {
+            const double par_a = 0.5 * static_cast<double>(nStochasts);
+            RootFinderMethod method = [par_a](double beta)
+            {
+                //here no division by number of direction is needed as the same d applied for every direction.
+                return SpecialFunctions::getGammaUpperRegularized(par_a, 0.5 * beta * beta);
+            };
+
+            const double qRequired = Statistics::StandardNormal::getQFromU(betaRequired);
+
+            auto bisection = BisectionRootFinder();
+
+            double distance = bisection.CalculateValue(0.0, 2.0 * betaRequired, qRequired, method);
+            return distance;
+        }
+        else if (modelType == ModelType::Plane)
+        {
+            return std::abs(betaRequired);
+        }
+        else
+        {
+            throw probLibException("modelType");
+        }
+    }
+
+    void DirectionalSamplingS::Direction::AddResult(double distance, double z)
+    {
+        distances.push_back(distance);
+        zValues.push_back(z);
+
+        lastDifference = distance - lastDistance;
+        lastDistance = distance;
+        lastWeight = Statistics::StandardNormal::getQFromU(std::abs(distance));
+
+        // Create a list of Result objects
+        std::vector<std::shared_ptr<Result>> results;
+        for (size_t i = 0; i < distances.size(); i++)
+        {
+            std::shared_ptr<Result> tempVar = std::make_shared<Result>();
+            tempVar->Distance = distances[i];
+            tempVar->ZValue = zValues[i];
+            results.push_back(tempVar);
+        }
+
+        // Sort the results based on the Distance property
+        std::sort(results.begin(), results.end(),
+            [](const std::shared_ptr<Result>& p, const std::shared_ptr<Result>& q) {return p->Distance < q->Distance; });
+
+        // Clear the original lists and repopulate them with the sorted values
+        distances.clear();
+        zValues.clear();
+
+        for (const auto& result : results)
+        {
+            distances.push_back(result->Distance);
+            zValues.push_back(result->ZValue);
+        }
+    }
+
+    double DirectionalSamplingS::Direction::GetDistanceAtZ(double z) const
+    {
+        if (Valid)
+        {
+            return NumericSupport::interpolate(z, zValues, distances, true);
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
+    std::shared_ptr<Sample> DirectionalSamplingS::Direction::CreateNewSampleAt(double z, double maxBeta)
+    {
+        double distance = NumericSupport::interpolate(z, zValues, distances, true); //interpolates the distance (d) for the given z value in the direction
+
+        if (!Valid || distance < 0.0 || distance > maxBeta)
+        {
+            if (Valid)
+            {
+                Valid = false;
+            }
+            return sample;
+        }
+        else
+        {
+            std::shared_ptr<Sample> newSample = sample->getSampleAtBeta(distance);
+            newSample->IterationIndex = this->index;
+            return newSample;
+        }
+    }
+
+    std::vector<double> DirectionalSamplingS::Direction::select(std::vector<std::shared_ptr<Direction>>& directions, std::function<double(std::shared_ptr<Direction>)> function)
+    {
+        std::vector<double> result(directions.size());
+        for (size_t i = 0; i < directions.size(); i++)
+        {
+            result[i] = function(directions[i]);
+        }
+        return result;
+    }
+
+    std::vector<std::shared_ptr<DirectionalSamplingS::Direction>> DirectionalSamplingS::Direction::where(std::vector<std::shared_ptr<Direction>>& directions, std::function<bool(std::shared_ptr<Direction>)> function)
+    {
+        std::vector< std::shared_ptr<DirectionalSamplingS::Direction>> results;
+        for (std::shared_ptr<Direction> direction : directions)
+        {
+            if (function(direction))
+            {
+                results.push_back(direction);
+            }
+        }
+        return results;
+    }
+}
+
+
+

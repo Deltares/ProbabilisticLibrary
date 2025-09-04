@@ -37,8 +37,9 @@
 #include "Message.h"
 #include "ModelSample.h"
 #include "ProgressIndicator.h"
-#include "../Sensitivity/CorrelationMatrixBuilder.h"
-#include "../Sensitivity/UncertaintyResult.h"
+#include "../Uncertainty/CorrelationMatrixBuilder.h"
+#include "../Uncertainty/UncertaintyResult.h"
+#include "../Sensitivity/SensitivityResult.h"
 
 namespace Deltares
 {
@@ -87,7 +88,8 @@ namespace Deltares
             void doTextualProgress(ProgressType type, std::string text);
             bool isVaryingStochast(int index);
             std::shared_ptr<Reliability::DesignPoint> getDesignPoint(std::shared_ptr<Sample> sample, double beta, std::shared_ptr<Reliability::ConvergenceReport> convergenceReport = nullptr, std::string identifier = "");
-            Sensitivity::UncertaintyResult getSensitivityResult(std::shared_ptr<Statistics::Stochast> stochast) const;
+            Uncertainty::UncertaintyResult getUncertaintyResult(std::shared_ptr<Statistics::Stochast> stochast) const;
+            Sensitivity::SensitivityResult getSensitivityResult() const;
             std::shared_ptr<Models::ModelSample> getModelSample(std::shared_ptr<Sample> sample);
             std::shared_ptr<Models::ModelSample> getModelSampleFromType(Statistics::RunValuesType type);
             std::vector<double> getOnlyVaryingValues(std::vector<double> values);
@@ -97,7 +99,7 @@ namespace Deltares
             void setShouldInvertFunction(ShouldInvertLambda shouldInvertFunction) { this->shouldInvertFunction = shouldInvertFunction; }
             void setRemoveTaskFunction(RemoveTaskLambda removeTaskFunction) { this->removeTaskFunction = removeTaskFunction; }
             void runDesignPoint(std::shared_ptr<Reliability::DesignPoint> designPoint);
-            void registerSample(std::shared_ptr<Sensitivity::CorrelationMatrixBuilder> correlationMatrixBuilder, std::shared_ptr<Sample> sample);
+            void registerSample(std::shared_ptr<Uncertainty::CorrelationMatrixBuilder> correlationMatrixBuilder, std::shared_ptr<Sample> sample);
             void updateVariableSample(std::vector<double>& xValues, std::vector<double>& originalValues);
             Evaluation getEvaluationFromType(Statistics::RunValuesType type);
 

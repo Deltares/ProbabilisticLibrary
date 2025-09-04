@@ -312,7 +312,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestDoubleLinear()
         {
-            Project project = ProjectBuilder.GetDoubleLinearProject();
+            ReliabilityProject project = ProjectBuilder.GetDoubleLinearProject();
 
             project.ReliabilityMethod = new CrudeMonteCarlo();
 
@@ -390,7 +390,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestManyVars()
         {
-            Project project = ProjectBuilder.GetManyVarsProject();
+            ReliabilityProject project = ProjectBuilder.GetManyVarsProject();
 
             project.ReliabilityMethod = new CrudeMonteCarlo();
 

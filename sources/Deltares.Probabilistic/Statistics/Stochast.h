@@ -306,8 +306,8 @@ namespace Deltares
             virtual bool isFragilityCurve() { return false; }
 
             /**
-             * \brief Gets the name of the stochast followed by an index
-             * \return Indexed stochast name
+             * \brief Gets the name of the stochast followed by an index if the stochast is an array, otherwise just the stochast name
+             * \return Stochast name, possibly indexed
              */
             std::string getIndexedStochastName(int index) const;
 

@@ -169,28 +169,28 @@
     <ClInclude Include="Reliability\FragilityCurve.h" />
     <ClInclude Include="Statistics\Scenario.h" />
     <ClInclude Include="Statistics\ProbabilityValue.h" />
-    <ClInclude Include="Sensitivity\FORMS.h" />
-    <ClInclude Include="Sensitivity\DirectionalSamplingS.h" />
-    <ClInclude Include="Sensitivity\FORMSettingsS.h" />
-    <ClInclude Include="Sensitivity\DirectionalSamplingSettingsS.h" />
-    <ClInclude Include="Sensitivity\NumericalIntegrationSettingsS.h" />
-    <ClInclude Include="Sensitivity\NumericalIntegrationS.h" />
-    <ClInclude Include="Sensitivity\FOSM.h" />
-    <ClInclude Include="Sensitivity\FOSMSettings.h" />
+    <ClInclude Include="Uncertainty\FORMS.h" />
+    <ClInclude Include="Uncertainty\DirectionalSamplingS.h" />
+    <ClInclude Include="Uncertainty\FORMSettingsS.h" />
+    <ClInclude Include="Uncertainty\DirectionalSamplingSettingsS.h" />
+    <ClInclude Include="Uncertainty\NumericalIntegrationSettingsS.h" />
+    <ClInclude Include="Uncertainty\NumericalIntegrationS.h" />
+    <ClInclude Include="Uncertainty\FOSM.h" />
+    <ClInclude Include="Uncertainty\FOSMSettings.h" />
     <ClInclude Include="Model\BaseStochastPoint.h" />
     <ClInclude Include="Server\ProjectHandler.h" />
-    <ClInclude Include="Sensitivity\ImportanceSamplingS.h" />
-    <ClInclude Include="Sensitivity\ImportanceSamplingSettingsS.h" />
-    <ClInclude Include="Sensitivity\CrudeMonteCarloS.h" />
-    <ClInclude Include="Sensitivity\CrudeMonteCarloSettingsS.h" />
-    <ClInclude Include="Sensitivity\SensitivityProject.h" />
-    <ClInclude Include="Sensitivity\SensitivityMethod.h" />
+    <ClInclude Include="Uncertainty\ImportanceSamplingS.h" />
+    <ClInclude Include="Uncertainty\ImportanceSamplingSettingsS.h" />
+    <ClInclude Include="Uncertainty\CrudeMonteCarloS.h" />
+    <ClInclude Include="Uncertainty\CrudeMonteCarloSettingsS.h" />
+    <ClInclude Include="Uncertainty\UncertaintyProject.h" />
+    <ClInclude Include="Uncertainty\UncertaintyMethod.h" />
     <ClInclude Include="Statistics\BaseStochast.h" />
     <ClInclude Include="Statistics\ContributingStochast.h" />
     <ClInclude Include="Utils\CallBackList.h" />
     <ClInclude Include="Reliability\DesignPointCombiner.h" />
     <ClInclude Include="Model\ProxySettings.h" />
-    <ClInclude Include="Model\Project.h" />
+    <ClInclude Include="Reliability\ReliabilityProject.h" />
     <ClInclude Include="Reliability\LatinHypercube.h" />
     <ClInclude Include="Reliability\NumericalBisection.h" />
     <ClInclude Include="Reliability\NumericalIntegration.h" />
@@ -257,26 +257,26 @@
     <ClCompile Include="Reliability\FragilityCurveIntegration.cpp" />
     <ClCompile Include="Reliability\FragilityCurveIntegrationSettings.cpp" />
     <ClCompile Include="Statistics\Scenario.cpp" />
-    <ClCompile Include="Sensitivity\DirectionalSamplingS.cpp" />
-    <ClCompile Include="Sensitivity\FORMS.cpp" />
-    <ClCompile Include="Sensitivity\FORMSettingsS.cpp" />
-    <ClCompile Include="Sensitivity\DirectionalSamplingSettingsS.cpp" />
-    <ClCompile Include="Sensitivity\NumericalIntegrationS.cpp" />
-    <ClCompile Include="Sensitivity\NumericalIntegrationSettingsS.cpp" />
+    <ClCompile Include="Uncertainty\DirectionalSamplingS.cpp" />
+    <ClCompile Include="Uncertainty\FORMS.cpp" />
+    <ClCompile Include="Uncertainty\FORMSettingsS.cpp" />
+    <ClCompile Include="Uncertainty\DirectionalSamplingSettingsS.cpp" />
+    <ClCompile Include="Uncertainty\NumericalIntegrationS.cpp" />
+    <ClCompile Include="Uncertainty\NumericalIntegrationSettingsS.cpp" />
     <ClCompile Include="Model\BaseStochastPoint.cpp" />
-    <ClCompile Include="Sensitivity\FOSM.cpp" />
-    <ClCompile Include="Sensitivity\FOSMSettings.cpp" />
+    <ClCompile Include="Uncertainty\FOSM.cpp" />
+    <ClCompile Include="Uncertainty\FOSMSettings.cpp" />
     <ClCompile Include="Server\ProjectHandler.cpp" />
-    <ClCompile Include="Sensitivity\ImportanceSamplingS.cpp" />
-    <ClCompile Include="Sensitivity\CrudeMonteCarloS.cpp" />
-    <ClCompile Include="Sensitivity\SensitivityProject.cpp" />
-    <ClCompile Include="Sensitivity\SensitivityMethod.cpp" />
+    <ClCompile Include="Uncertainty\ImportanceSamplingS.cpp" />
+    <ClCompile Include="Uncertainty\CrudeMonteCarloS.cpp" />
+    <ClCompile Include="Uncertainty\UncertaintyProject.cpp" />
+    <ClCompile Include="Uncertainty\UncertaintyMethod.cpp" />
     <ClCompile Include="Statistics\BaseStochast.cpp" />
     <ClCompile Include="Statistics\VariableStochastValue.cpp" />
     <ClCompile Include="Utils\CallBackList.cpp" />
     <ClCompile Include="Reliability\DesignPointCombiner.cpp" />
     <ClCompile Include="Model\ProxySettings.cpp" />
-    <ClCompile Include="Model\Project.cpp" />
+    <ClCompile Include="Reliability\ReliabilityProject.cpp" />
     <ClCompile Include="Reliability\LatinHypercube.cpp" />
     <ClCompile Include="Reliability\NumericalBisection.cpp" />
     <ClCompile Include="Reliability\NumericalIntegration.cpp" />
@@ -313,9 +313,9 @@
     <ClCompile Include="Utils\SharedPointerProvider.cpp" />
     <ClCompile Include="Statistics\VariableStochastValueSet.cpp" />
   </ItemGroup>
-<ItemGroup>
-  <PackageReference Include="NuGet.Build.Tasks.Pack" Version="6.7.0" PrivateAssets="all" />
-</ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="NuGet.Build.Tasks.Pack" Version="6.7.0" PrivateAssets="all" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -51,13 +51,9 @@ namespace Deltares
             {
                 return "";
             }
-            else if (this->Stochast->modelParameter->isArray)
+            else 
             {
                 return this->Stochast->getIndexedStochastName(this->Index);
-            }
-            else
-            {
-                return this->Stochast->name;
             }
         }
     }
