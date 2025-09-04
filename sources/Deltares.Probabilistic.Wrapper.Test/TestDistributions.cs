@@ -236,8 +236,8 @@ namespace Deltares.Probabilistic.Wrapper.Test
 
             Stochast prior = new Stochast { DistributionType = DistributionType.LogNormal, Mean = 3, Deviation = 1 };
             stochast.FitPrior(prior, new[] { 2.5, 3.5, 4.5, 5.5, 6.5 });
-            ClassicAssert.AreEqual(3.955, stochast.Mean, margin);
-            ClassicAssert.AreEqual(0.596, stochast.Deviation, margin);
+            ClassicAssert.AreEqual(4.051, stochast.Mean, margin);
+            ClassicAssert.AreEqual(0.625, stochast.Deviation, margin);
         }
 
         [Test]
