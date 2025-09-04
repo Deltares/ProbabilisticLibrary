@@ -120,7 +120,7 @@ namespace Deltares::Probabilistic::Test
     {
         std::shared_ptr<Sensitivity::SensitivityProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearProject());
 
-        project->settings->SensitivityMethod = Sensitivity::SensitivitySingleVariation;
+        project->settings->SensitivityMethod = Sensitivity::SensitivityMethodType::SensitivitySingleVariation;
         project->sensitivityMethod = std::make_shared<Sensitivity::SingleVariation>();
 
         Sensitivity::SensitivityResult result = project->getSensitivityResult();
@@ -137,7 +137,7 @@ namespace Deltares::Probabilistic::Test
     {
         std::shared_ptr<Sensitivity::SensitivityProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearOutputProject());
 
-        project->settings->SensitivityMethod = Sensitivity::SensitivitySingleVariation;
+        project->settings->SensitivityMethod = Sensitivity::SensitivityMethodType::SensitivitySingleVariation;
         project->sensitivityMethod = std::make_shared<Sensitivity::SingleVariation>();
 
         project->run();
@@ -162,7 +162,7 @@ namespace Deltares::Probabilistic::Test
     {
         std::shared_ptr<Sensitivity::SensitivityProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearProject());
 
-        project->settings->SensitivityMethod = Sensitivity::SensitivitySingleVariation;
+        project->settings->SensitivityMethod = Sensitivity::SensitivityMethodType::SensitivitySingleVariation;
         project->sensitivityMethod = std::make_shared<Sensitivity::Sobol>();
 
         auto result = project->getSensitivityResult();
@@ -179,8 +179,7 @@ namespace Deltares::Probabilistic::Test
     {
         std::shared_ptr<Sensitivity::SensitivityProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearOutputProject());
 
-        project->settings->SensitivityMethod = Sensitivity::SensitivitySingleVariation;
-        project->settings->SensitivityMethod = Sensitivity::SensitivitySobol;
+        project->settings->SensitivityMethod = Sensitivity::SensitivityMethodType::SensitivitySobol;
 
         project->run();
 

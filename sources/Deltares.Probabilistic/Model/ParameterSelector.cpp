@@ -23,49 +23,49 @@
 
 namespace Deltares::Models
 {
-    void ParameterSelector::initialize(std::vector<std::shared_ptr<Models::ModelInputParameter>>& inputParameters, std::vector<std::shared_ptr<Models::ModelInputParameter>>& outputParameters)
+    void ParameterSelector::initialize(std::vector<std::shared_ptr<ModelInputParameter>>& inputParameters, std::vector<std::shared_ptr<ModelInputParameter>>& outputParameters)
     {
         // if no parameter is specified, always use the first output parameter
-        if (this->parameter == "")
+        if (parameter.empty())
         {
-            this->parameterIndex = 0;
-            this->parameterIndexFromInput = false;
+            parameterIndex = 0;
+            parameterIndexFromInput = false;
 
             // if no output parameters are available, use the z-value in the sample
-            this->useSampleZValue = outputParameters.empty();
+            useSampleZValue = outputParameters.empty();
         }
         else
         {
-            this->useSampleZValue = false;
-            this->parameterIndex = -1;
+            useSampleZValue = false;
+            parameterIndex = -1;
 
             for (size_t i = 0; i < inputParameters.size(); i++)
             {
-                if (inputParameters[i]->name == this->parameter)
+                if (inputParameters[i]->name == parameter)
                 {
-                    int offset = outputParameters[i]->isArray ? this->arrayIndex : 0;
-                    this->parameterIndex = inputParameters[i]->computationalIndex + offset;
-                    this->parameterIndexFromInput = true;
+                    int offset = outputParameters[i]->isArray ? arrayIndex : 0;
+                    parameterIndex = inputParameters[i]->computationalIndex + offset;
+                    parameterIndexFromInput = true;
                 }
             }
 
             for (size_t i = 0; i < outputParameters.size(); i++)
             {
-                if (outputParameters[i]->name == this->parameter)
+                if (outputParameters[i]->name == parameter)
                 {
-                    int offset = outputParameters[i]->isArray ? this->arrayIndex : 0;
-                    this->parameterIndex = outputParameters[i]->computationalIndex + offset;
-                    this->parameterIndexFromInput = false;
+                    int offset = outputParameters[i]->isArray ? arrayIndex : 0;
+                    parameterIndex = outputParameters[i]->computationalIndex + offset;
+                    parameterIndexFromInput = false;
                 }
             }
         }
     }
 
-    void ParameterSelector::updateZValue(std::shared_ptr<Models::ModelSample> sample)
+    void ParameterSelector::updateZValue(std::shared_ptr<ModelSample> sample)
     {
-        if (!this->useSampleZValue)
+        if (!useSampleZValue)
         {
-            sample->Z = this->parameterIndexFromInput ? sample->Values[this->parameterIndex] : sample->OutputValues[this->parameterIndex];
+            sample->Z = parameterIndexFromInput ? sample->Values[parameterIndex] : sample->OutputValues[parameterIndex];
         }
     }
 }

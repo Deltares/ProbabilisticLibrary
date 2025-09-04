@@ -69,24 +69,24 @@ namespace Deltares::Sensitivity
 
         if (maxLength <= s)
         {
-            for (size_t i = 1; i <= maxLength; i++)
+            for (unsigned int i = 1; i <= maxLength; i++)
             {
                 v[i] = m_i[i] << (scale - i);
             }
         }
         else
         {
-            for (size_t i = 1; i <= s; i++)
+            for (unsigned int i = 1; i <= s; i++)
             {
                 v[i] = m_i[i - 1] << (scale - i);
             }
 
-            for (size_t i = s + 1; i <= maxLength; i++)
+            for (unsigned int i = s + 1; i <= maxLength; i++)
             {
-                v[i] = v[i - s] ^ (v[i - s] >> static_cast<int>(s));
-                for (size_t k = 1; k <= s - 1; k++)
+                v[i] = v[i - s] ^ (v[i - s] >> s);
+                for (unsigned int k = 1; k <= s - 1; k++)
                 {
-                    v[i] ^= (((a >> static_cast<int>(s - 1 - k)) & 1) * v[i - k]);
+                    v[i] ^= (((a >> (s - 1 - k)) & 1) * v[i - k]);
                 }
             }
         }

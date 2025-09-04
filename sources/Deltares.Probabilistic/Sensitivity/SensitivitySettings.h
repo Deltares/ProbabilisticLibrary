@@ -28,7 +28,7 @@
 
 namespace Deltares::Sensitivity
 {
-    enum SensitivityMethodType { SensitivitySingleVariation, SensitivitySobol };
+    enum class SensitivityMethodType { SensitivitySingleVariation, SensitivitySobol };
 
     /**
      * \brief General settings applicable to all mechanisms

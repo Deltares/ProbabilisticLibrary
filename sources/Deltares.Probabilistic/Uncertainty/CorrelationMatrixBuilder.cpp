@@ -49,7 +49,7 @@ namespace Deltares::Uncertainty
         std::vector<double> values;
         std::vector<double> weights;
 
-        for (std::shared_ptr<Numeric::WeightedValue> weightedValue : weightedValues)
+        for (auto weightedValue : weightedValues)
         {
             values.push_back(weightedValue->value);
             weights.push_back(weightedValue->weight);
@@ -74,8 +74,8 @@ namespace Deltares::Uncertainty
     double CorrelationMatrixBuilder::getCorrelationValue(std::shared_ptr<Statistics::Stochast> x, std::shared_ptr<Statistics::Stochast> y)
     {
         double sumCross = 0;
-        double sumProductsX = 0;
-        double sumProductsY = 0;
+        double sumProducts2X = 0;
+        double sumProducts2Y = 0;
 
         std::vector<double> xValues = this->stochastValues[x];
         std::vector<double> yValues = this->stochastValues[y];
@@ -85,11 +85,11 @@ namespace Deltares::Uncertainty
             double weight = weights.empty() ? 1.0 : weights[i];
 
             sumCross += weight * xValues[i] * yValues[i];
-            sumProductsX += weight * xValues[i] * xValues[i];
-            sumProductsY += weight * yValues[i] * yValues[i];
+            sumProducts2X += weight * xValues[i] * xValues[i];
+            sumProducts2Y += weight * yValues[i] * yValues[i];
         }
 
-        double correlationCoefficient = sumCross / std::sqrt(sumProductsX * sumProductsY);
+        double correlationCoefficient = sumCross / std::sqrt(sumProducts2X * sumProducts2Y);
 
         return correlationCoefficient;
     }

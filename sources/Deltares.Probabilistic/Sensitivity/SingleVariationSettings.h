@@ -23,7 +23,6 @@
 
 #include "../Model/RunSettings.h"
 #include <memory>
-#include <vector>
 
 namespace Deltares::Sensitivity
 {
@@ -54,7 +53,7 @@ namespace Deltares::Sensitivity
          */
         bool isValid() const
         {
-            return LowValue > 0 && HighValue < 1;
+            return LowValue > 0 && LowValue < 1 && HighValue > 0 && HighValue < 1;
         }
     };
 }

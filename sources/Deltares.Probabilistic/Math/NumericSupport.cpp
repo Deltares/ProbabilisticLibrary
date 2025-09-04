@@ -671,7 +671,7 @@ namespace Deltares
             return takenValues;
         }
 
-        std::vector<double> NumericSupport::combine(std::vector<double>& values1, std::vector<double>& values2)
+        std::vector<double> NumericSupport::combine(const std::vector<double>& values1, const std::vector<double>& values2)
         {
             std::vector<double> values(values1.size() + values2.size());
             for (size_t i = 0; i < values1.size(); i++)
