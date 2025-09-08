@@ -44,7 +44,7 @@ namespace Deltares
 
             auto bisection = Numeric::BisectionRootFinder(margin);
 
-            if (constantType == Deviation)
+            if (constantType == ConstantParameterType::Deviation)
             {
                 Numeric::RootFinderMethod function = [this, stochast, currentDeviation, u](double mean)
                 {
@@ -55,7 +55,7 @@ namespace Deltares
                 double newMean = bisection.CalculateValue(x, currentMean, x, function);
                 this->setMeanAndDeviation(stochast, newMean, currentDeviation);
             }
-            else if (constantType == VariationCoefficient)
+            else if (constantType == ConstantParameterType::VariationCoefficient)
             {
                 double variationCoefficient = currentMean == 0.0 ? currentDeviation : std::fabs(currentDeviation / currentMean);
 

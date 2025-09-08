@@ -610,7 +610,7 @@ class Stochast(FrozenObject):
 		if not self.can_fit_prior():
 			print('Fit with prior is not supported for distribution type ' + str(self.distribution))
 		elif self.distribution != prior.distribution:
-			print('Fit from prior distribution type ' + str(prior.distribution) + ' is not supported')
+			print('Fit from prior with another distribution type is not supported')
 		else:
 			interface.SetIntValue(self._id, 'prior', prior._id)
 			interface.SetArrayValue(self._id, 'fit_prior', values)

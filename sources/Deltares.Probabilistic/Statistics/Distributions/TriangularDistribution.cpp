@@ -218,7 +218,7 @@ namespace Deltares
 
         void TriangularDistribution::setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
         {
-            if (constantType == Deviation)
+            if (constantType == ConstantParameterType::Deviation)
             {
                 if (stochast->Minimum == stochast->Maximum)
                 {
