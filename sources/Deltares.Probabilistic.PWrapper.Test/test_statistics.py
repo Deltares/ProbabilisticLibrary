@@ -290,7 +290,7 @@ class Test_statistics(unittest.TestCase):
         printed = sys.stdout.getvalue()
         sys.stdout = sys.__stdout__
 
-        self.assertEqual("""Fit from prior distribution type log_normal is not supported\n""", printed)
+        self.assertEqual("Fit from prior with another distribution type is not supported\n", printed)
 
     def test_bernoulli(self):
         stochast = Stochast()
