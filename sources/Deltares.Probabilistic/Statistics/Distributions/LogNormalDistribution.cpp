@@ -271,11 +271,29 @@ namespace Deltares
 
         void LogNormalDistribution::fitPrior(const std::shared_ptr<StochastProperties>& stochast, const std::shared_ptr<StochastProperties>& prior, std::vector<double>& values)
         {
-            std::vector<double> logValues = Numeric::NumericSupport::select(values, [stochast, prior](double v) {return log(v - prior->Shift); });
+            double shiftData = fitShift(values);
+            double shiftPrior = prior->Shift;
+
+            double fitShift = shiftPrior;
+            std::shared_ptr<StochastProperties> fitPrior = prior;
+
+            if (shiftData < shiftPrior)
+            {
+                fitShift = shiftData;
+
+                // reset the prior so that a valid shift is applied
+                fitPrior = prior->clone();
+                fitPrior->Shift = fitShift;
+                setMeanAndDeviation(fitPrior, getMean(prior), getDeviation(prior));
+            }
+
+            std::vector<double> logValues = Numeric::NumericSupport::select(values, [fitShift](double v) {return log(v - fitShift); });
 
             NormalDistribution normal;
 
-            normal.fitPrior(stochast, prior, logValues);
+            normal.fitPrior(stochast, fitPrior, logValues);
+
+            stochast->Shift = fitShift;
         }
 
         std::vector<double> LogNormalDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)
