@@ -23,6 +23,7 @@ import unittest
 import sys
 import numpy as np
 from io import StringIO
+import matplotlib.pyplot as plt
 
 from probabilistic_library import *
 
@@ -143,6 +144,57 @@ class Test_statistics(unittest.TestCase):
             os.remove(test_file_name)
 
         stochast.get_plot().savefig(test_file_name)
+
+        self.assertTrue(os.path.exists(test_file_name))
+        os.remove(test_file_name)
+
+    def test_multiple_plot(self):
+        stochast1 = Stochast()
+        stochast1.name = 'stochast 1'
+        stochast1.distribution = DistributionType.log_normal
+        stochast1.mean = 2
+        stochast1.deviation = 0.4
+
+        stochast2 = Stochast()
+        stochast2.name = 'stochast 2'
+        stochast2.distribution = DistributionType.log_normal
+        stochast2.mean = 2
+        stochast2.deviation = 0.2
+        stochast2.shift = 0.5
+
+        stochast3 = Stochast()
+        stochast3.name = 'uniform'
+        stochast3.distribution = DistributionType.uniform
+        stochast3.minimum = 1
+        stochast3.maximum = 5
+
+        values1 = stochast1.get_series()
+        pdf1 = [stochast1.get_pdf(x) for x in values1]
+
+        values2 = stochast2.get_series()
+        pdf2 = [stochast2.get_pdf(x) for x in values2]
+
+        values3 = stochast3.get_series(number_of_points=0)
+        pdf3 = [stochast3.get_pdf(x) for x in values3]
+
+        plt.close()
+    
+        fig, ax1 = plt.subplots()
+        ax1.set_xlabel("value [x]")
+        ax1.set_ylabel("pdf [-]")
+
+        ax1.plot(values1, pdf1, label = stochast1.name)
+        ax1.plot(values2, pdf2, label = stochast2.name)
+        ax1.plot(values3, pdf3, label = stochast3.name)
+
+        plt.grid()
+        plt.legend()
+
+        test_file_name = 'multiple-stochasts.png'
+        if os.path.exists(test_file_name):
+            os.remove(test_file_name)
+
+        plt.savefig(test_file_name)
 
         self.assertTrue(os.path.exists(test_file_name))
         os.remove(test_file_name)

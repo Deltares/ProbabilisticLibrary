@@ -591,9 +591,6 @@ class Stochast(FrozenObject):
 		interface.Execute(self._id, 'initialize_conditional_values');
 		return interface.GetValue(self._id, 'x_from_u_and_source')
 
-	def get_special_values(self) -> list[float]:
-		return interface.GetArrayValue(self._id, 'special_values')
-
 	def fit(self, values):
 		interface.SetArrayValue(self._id, 'fit', values)
 		self._histogram_values = None
@@ -691,6 +688,41 @@ class Stochast(FrozenObject):
 			if self.design_quantile != 0.5 or self.design_factor != 1.0:
 				print(pre + f'design_value = {self.design_value:.{decimals}g}')
 
+	def get_special_values(self) -> list[float]:
+		return interface.GetArrayValue(self._id, 'special_values')
+
+	def get_series(self, xmin : float = None, xmax : float = None, number_of_points : int = None) -> list[float]:
+
+		import numpy as np
+
+		limit_special_values = True
+		if xmin is None:
+			xmin = self.get_x_from_u(0) - 4 * (self.get_x_from_u(0) - self.get_x_from_u(-1))
+			limit_special_values = False
+		if xmax is None:
+			xmax = self.get_x_from_u(0) + 4 * (self.get_x_from_u(1) - self.get_x_from_u(0))
+			limit_special_values = False
+
+		xmin, xmax = NumericUtils.order(xmin, xmax)
+		xmin, xmax = NumericUtils.make_different(xmin, xmax)
+
+		if number_of_points is None or number_of_points < 0:
+			number_of_points = 1000
+
+		if number_of_points == 0:
+			values = []
+		elif number_of_points <= 2:
+			values = [xmin, xmax]
+		else:
+			values = np.arange(xmin, xmax, (xmax - xmin) / number_of_points).tolist()
+		add_values = self.get_special_values()
+		if limit_special_values:
+			add_values = [x for x in add_values if x >= xmin and x <= xmax]
+		values.extend(add_values)
+		values.sort()
+
+		return values
+
 	def plot(self, xmin : float = None, xmax : float = None):
 
 		self.get_plot(xmin, xmax).show()
@@ -709,25 +741,7 @@ class Stochast(FrozenObject):
 
 	def _get_plot(self, xmin : float = None, xmax : float = None):
 
-		import numpy as np
-
-		limit_special_values = True
-		if xmin is None:
-			xmin = self.get_x_from_u(0) - 4 * (self.get_x_from_u(0) - self.get_x_from_u(-1))
-			limit_special_values = False
-		if xmax is None:
-			xmax = self.get_x_from_u(0) + 4 * (self.get_x_from_u(1) - self.get_x_from_u(0))
-			limit_special_values = False
-
-		xmin, xmax = NumericUtils.order(xmin, xmax)
-		xmin, xmax = NumericUtils.make_different(xmin, xmax)
-
-		values = np.arange(xmin, xmax, (xmax - xmin) / 1000).tolist()
-		add_values = interface.GetArrayValue(self._id, 'special_values')
-		if limit_special_values:
-			add_values = [x for x in add_values if x >= xmin and x <= xmax]
-		values.extend(add_values)
-		values.sort()
+		values = self.get_series(xmin, xmax)
 
 		pdf = [self.get_pdf(x) for x in values]
 		cdf = [self.get_cdf(x) for x in values]
