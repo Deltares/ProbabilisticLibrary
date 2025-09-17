@@ -712,7 +712,9 @@ class Stochast(FrozenObject):
 
 		if number_of_points == 0:
 			values = []
-		elif number_of_points <= 2:
+		elif number_of_points == 1:
+			values = [(xmin + xmax)/2]
+		elif number_of_points == 2:
 			values = [xmin, xmax]
 		else:
 			values = np.arange(xmin, xmax, (xmax - xmin) / number_of_points).tolist()
