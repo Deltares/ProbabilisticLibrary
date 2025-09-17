@@ -244,6 +244,7 @@ class Stochast(FrozenObject):
 				'get_pdf',
 				'get_cdf',
 				'get_special_values',
+				'get_series',
 				'conditional',
 				'conditional_source',
 				'conditional_values'
@@ -725,12 +726,13 @@ class Stochast(FrozenObject):
 
 	def plot(self, xmin : float = None, xmax : float = None):
 
-		self.get_plot(xmin, xmax).show()
+		plot = self.get_plot(xmin, xmax).show()
 
 	def get_plot(self, xmin : float = None, xmax : float = None) -> plt:
 
 		if not self.is_valid():
 			print('Variable definition is not valid, plot can not be made.')
+			return
 
 		if self.conditional:
 			self._get_plot_conditional(xmin, xmax)

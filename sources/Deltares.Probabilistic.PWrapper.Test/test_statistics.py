@@ -143,10 +143,21 @@ class Test_statistics(unittest.TestCase):
         if os.path.exists(test_file_name):
             os.remove(test_file_name)
 
-        stochast.get_plot().savefig(test_file_name)
+        pl = stochast.get_plot()
+        pl.savefig(test_file_name)
 
         self.assertTrue(os.path.exists(test_file_name))
         os.remove(test_file_name)
+
+    def test_invalid_plot(self):
+        stochast = Stochast()
+        stochast.distribution = DistributionType.normal
+        stochast.mean = 2
+        stochast.deviation = -0.4
+
+        pl = stochast.get_plot()
+
+        self.assertTrue(pl == None)
 
     def test_multiple_plot(self):
         stochast1 = Stochast()
