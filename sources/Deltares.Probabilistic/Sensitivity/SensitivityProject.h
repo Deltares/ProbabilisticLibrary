@@ -92,6 +92,17 @@ namespace Deltares::Sensitivity
          * \brief Runs the reliability calculation
          */
         void run();
+
+        /**
+         * \brief List of evaluations calculated during uncertainty analysis
+         */
+        std::vector<std::shared_ptr<Models::Evaluation>> evaluations;
+
+        /**
+         * \brief List of messages raised during uncertainty analysis
+         */
+        std::vector<std::shared_ptr<Models::Message>> messages;
+
     private:
         std::shared_ptr<Models::ParameterSelector> parameterSelector = std::make_shared<Models::ParameterSelector>();
     };

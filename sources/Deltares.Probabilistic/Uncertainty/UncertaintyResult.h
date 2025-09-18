@@ -53,12 +53,12 @@ namespace Deltares::Uncertainty
         std::vector<std::shared_ptr<Models::Evaluation>> quantileEvaluations;
 
         /**
-         * \brief List of evaluations calculated during sensitivity analysis
+         * \brief List of evaluations calculated during uncertainty analysis
          */
         std::vector<std::shared_ptr<Models::Evaluation>> evaluations;
 
         /**
-         * \brief List of messages raised during sensitivity analysis
+         * \brief List of messages raised during uncertainty analysis
          */
         std::vector<std::shared_ptr<Models::Message>> messages;
     };

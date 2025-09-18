@@ -45,7 +45,7 @@ class UncertaintyMethod(Enum):
 class UncertaintySettings(FrozenObject):
 
 	def __init__(self):
-		self._id = interface.Create('sensitivity_settings')
+		self._id = interface.Create('uncertainty_settings')
 		self._stochast_settings = FrozenList()
 		self._quantiles = None
 		self._synchronizing = False
