@@ -614,6 +614,8 @@ class SensitivityProject(ModelProject):
 
 		self._result = None
 		self._results = None
+		self._messages = None
+		self._realizations = None
 
 		self._initialize_callbacks(self._id)
 		self._set_settings(SensitivitySettings())
@@ -636,6 +638,8 @@ class SensitivityProject(ModelProject):
 				'results',
 				'validate',
 				'is_valid',
+				'realizations',
+				'messages',
 				'total_model_runs']
 
 	@property
@@ -676,6 +680,28 @@ class SensitivityProject(ModelProject):
 			self._results = FrozenList(results)
 				
 		return self._results
+
+	@property
+	def realizations(self) -> list[Evaluation]:
+		if self._realizations is None:
+			realizations = []
+			realization_ids = interface.GetArrayIdValue(self._id, 'evaluations')
+			for realization_id in realization_ids:
+				realizations.append(Evaluation(realization_id))
+			self._realizations = FrozenList(realizations)
+				
+		return self._realizations
+	
+	@property
+	def messages(self) -> list[Message]:
+		if self._messages is None:
+			messages = []
+			message_ids = interface.GetArrayIdValue(self._id, 'messages')
+			for message_id in message_ids:
+				messages.append(Message(message_id))
+			self._messages = FrozenList(messages)
+				
+		return self._messages
 
 	@property
 	def total_model_runs(self) -> int:

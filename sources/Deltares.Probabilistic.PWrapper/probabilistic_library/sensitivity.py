@@ -186,8 +186,6 @@ class SensitivityResult(FrozenObject):
 		self._id = id
 		self._variable = None
 		self._values = None
-		self._messages = None
-		self._realizations = None
 		super()._freeze()
 		
 	def __del__(self):
@@ -198,9 +196,6 @@ class SensitivityResult(FrozenObject):
 
 	def __dir__(self):
 		return ['identifier',
-				'variable',
-				'realizations',
-				'messages',
 				'print',
 				'plot']
 		
@@ -212,46 +207,15 @@ class SensitivityResult(FrozenObject):
 		return interface.GetStringValue(self._id, 'identifier')
 
 	@property
-	def variable(self) -> Stochast:
-		if self._variable is None:
-			variable_id = interface.GetIdValue(self._id, 'variable')
-			if variable_id > 0:
-				self._variable = Stochast(variable_id);
-				
-		return self._variable
-
-	@property
-	def realizations(self) -> list[Evaluation]:
-		if self._realizations is None:
-			realizations = []
-			realization_ids = interface.GetArrayIdValue(self._id, 'evaluations')
-			for realization_id in realization_ids:
-				realizations.append(Evaluation(realization_id))
-			self._realizations = FrozenList(realizations)
-				
-		return self._realizations
-	
-	@property
 	def values(self) -> list[SensitivityValue]:
 		if self._values is None:
 			sens_values = []
-			sens_value_ids = interface.GetArrayIdValue(self._id, 'sensitivity_values')
+			sens_value_ids = interface.GetArrayIdValue(self._id, 'values')
 			for sens_value_id in sens_value_ids:
 				sens_values.append(SensitivityValue(sens_value_id))
 			self._values = FrozenList(sens_values)
 				
 		return self._values
-	
-	@property
-	def messages(self) -> list[Message]:
-		if self._messages is None:
-			messages = []
-			message_ids = interface.GetArrayIdValue(self._id, 'messages')
-			for message_id in message_ids:
-				messages.append(Message(message_id))
-			self._messages = FrozenList(messages)
-				
-		return self._messages
 
 	def print(self, decimals=4):
 		self.variable.print(decimals)
