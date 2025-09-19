@@ -21,6 +21,7 @@
 //
 # include "ProjectHandler.h"
 
+#include <iostream>
 #include <string>
 #include <memory>
 
@@ -673,15 +674,16 @@ namespace Deltares
         {
             ObjectType objectType = types[id];
 
-            if (objectType == ObjectType::Project)
+            if (IsModelProjectType(objectType))
             {
-                std::shared_ptr<Reliability::ReliabilityProject> project = projects[id];
+                std::shared_ptr<Models::ModelProject> project = GetProject(id);
 
                 if (property_ == "index") return project->model->Index;
                 else if (property_ == "stochasts_count") return static_cast<int>(project->stochasts.size());
                 else if (property_ == "total_model_runs") return project->modelRuns;
             }
-            else if (objectType == ObjectType::ModelParameter)
+
+            if (objectType == ObjectType::ModelParameter)
             {
                 std::shared_ptr<Models::ModelInputParameter> parameter = modelParameters[id];
 
@@ -694,21 +696,12 @@ namespace Deltares
 
                 if (property_ == "index") return alpha->Index;
             }
-            else if (objectType == ObjectType::RunProject)
-            {
-                std::shared_ptr<Models::RunProject> project = runProjects[id];
-
-                if (property_ == "stochasts_count") return static_cast<int>(project->stochasts.size());
-            }
             else if (objectType == ObjectType::UncertaintyProject)
             {
                 std::shared_ptr<Uncertainty::UncertaintyProject> project = uncertaintyProjects[id];
 
                 if (property_ == "uncertainty_stochasts_count") return static_cast<int>(project->uncertaintyResults.size());
-                else if (property_ == "stochasts_count") return static_cast<int>(project->stochasts.size());
                 else if (property_ == "uncertainty_results_count") return static_cast<int>(project->uncertaintyResults.size());
-                else if (property_ == "index") return project->model->Index;
-                else if (property_ == "total_model_runs") return project->modelRuns;
             }
             else if (objectType == ObjectType::SensitivityProject)
             {
@@ -716,6 +709,7 @@ namespace Deltares
 
                 if (property_ == "evaluations_count") return static_cast<int>(project->evaluations.size());
                 else if (property_ == "messages_count") return static_cast<int>(project->messages.size());
+                else if (property_ == "results_count") return static_cast<int>(project->sensitivityResults.size());
             }
             else if (objectType == ObjectType::SensitivityResult)
             {
@@ -888,7 +882,7 @@ namespace Deltares
             {
                 std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
 
-                if (property_ == "sensitivity_result") return GetSensitivityResultId(project->sensitivityResult, newId);
+                if (property_ == "result") return GetSensitivityResultId(project->sensitivityResult, newId);
             }
             else if (objectType == ObjectType::Stochast)
             {
@@ -965,27 +959,11 @@ namespace Deltares
         {
             ObjectType objectType = types[id];
 
-            if (objectType == ObjectType::Project)
+            if (IsModelProjectType(objectType))
             {
-                std::shared_ptr<Reliability::ReliabilityProject> project = projects[id];
+                std::shared_ptr<Models::ModelProject> project = GetProject(id);
 
-                if (property_ == "settings") project->settings = settingsValues[value];
-                else if (property_ == "correlation_matrix") project->correlationMatrix = correlationMatrices[value];
-                else if (property_ == "share_project") project->shareStochasts(GetProject(value));
-            }
-            else if (objectType == ObjectType::RunProject)
-            {
-                std::shared_ptr<Models::RunProject> project = runProjects[id];
-
-                if (property_ == "settings") project->settings = runProjectSettings[value];
-                else if (property_ == "correlation_matrix") project->correlationMatrix = correlationMatrices[value];
-                else if (property_ == "share_project") project->shareStochasts(GetProject(value));
-            }
-            else if (objectType == ObjectType::UncertaintyProject)
-            {
-                std::shared_ptr<Uncertainty::UncertaintyProject> project = uncertaintyProjects[id];
-
-                if (property_ == "settings") project->settings = uncertaintySettingsValues[value];
+                if (property_ == "settings") project->setSettings(GetSettings(value));
                 else if (property_ == "correlation_matrix") project->correlationMatrix = correlationMatrices[value];
                 else if (property_ == "share_project") project->shareStochasts(GetProject(value));
             }
@@ -1194,9 +1172,9 @@ namespace Deltares
                 else if (property_ == "is_variance_allowed") return stochastSettings->IsVarianceAllowed;
 
             }
-            else if (objectType == ObjectType::Project)
+            else if (IsModelProjectType(objectType))
             {
-                std::shared_ptr<Reliability::ReliabilityProject> project = projects[id];
+                std::shared_ptr<Models::ModelProject> project = GetProject(id);
 
                 if (property_ == "is_valid") return project->isValid();
             }
@@ -1208,18 +1186,6 @@ namespace Deltares
                 {
                     return designPoint->convergenceReport->IsConverged;
                 }
-            }
-            else if (objectType == ObjectType::RunProject)
-            {
-                std::shared_ptr<Models::RunProject> project = runProjects[id];
-
-                if (property_ == "is_valid") return project->isValid();
-            }
-            else if (objectType == ObjectType::UncertaintyProject)
-            {
-                std::shared_ptr<Uncertainty::UncertaintyProject> project = uncertaintyProjects[id];
-
-                if (property_ == "is_valid") return project->isValid();
             }
             else if (objectType == ObjectType::UncertaintySettings)
             {
@@ -1550,29 +1516,11 @@ namespace Deltares
 
                 if (property_ == "identifier") designPoint->Identifier = value;
             }
-            else if (objectType == ObjectType::Project)
+            else if (IsModelProjectType(objectType))
             {
-                std::shared_ptr<Reliability::ReliabilityProject> project = projects[id];
+                std::shared_ptr<Models::ModelProject> project = GetProject(id);
 
                 if (property_ == "model_name") project->model->name = value;
-            }
-            else if (objectType == ObjectType::UncertaintyProject)
-            {
-                std::shared_ptr<Uncertainty::UncertaintyProject> uncertaintyProject = uncertaintyProjects[id];
-
-                if (property_ == "model_name") uncertaintyProject->model->name = value;
-            }
-            else if (objectType == ObjectType::SensitivityProject)
-            {
-                std::shared_ptr<Sensitivity::SensitivityProject> sensitivityProject = sensitivityProjects[id];
-
-                if (property_ == "model_name") sensitivityProject->model->name = value;
-            }
-            else if (objectType == ObjectType::RunProject)
-            {
-                std::shared_ptr<Models::RunProject> runProject = runProjects[id];
-
-                if (property_ == "model_name") runProject->model->name = value;
             }
         }
 
@@ -1642,8 +1590,6 @@ namespace Deltares
 
         std::vector<int> ProjectHandler::GetArrayIntValue(int id, std::string property_)
         {
-            ObjectType objectType = types[id];
-
             return std::vector<int>(0);
         }
 
@@ -1651,69 +1597,9 @@ namespace Deltares
         {
             ObjectType objectType = types[id];
 
-            if (objectType == ObjectType::Project)
+            if (IsModelProjectType(objectType))
             {
-                std::shared_ptr<Reliability::ReliabilityProject> project = projects[id];
-
-                if (property_ == "variables")
-                {
-                    project->stochasts.clear();
-                    for (int i = 0; i < size; i++)
-                    {
-                        project->stochasts.push_back(stochasts[values[i]]);
-                    }
-                }
-                else if (property_ == "input_parameters")
-                {
-                    project->model->inputParameters.clear();
-                    for (int i = 0; i < size; i++)
-                    {
-                        project->model->inputParameters.push_back(modelParameters[values[i]]);
-                    }
-                    project->updateStochasts();
-                }
-                else if (property_ == "output_parameters")
-                {
-                    project->model->outputParameters.clear();
-                    for (int i = 0; i < size; i++)
-                    {
-                        project->model->outputParameters.push_back(modelParameters[values[i]]);
-                    }
-                }
-            }
-            else if (objectType == ObjectType::RunProject)
-            {
-                std::shared_ptr<Models::RunProject> project = runProjects[id];
-
-                if (property_ == "variables")
-                {
-                    project->stochasts.clear();
-                    for (int i = 0; i < size; i++)
-                    {
-                        project->stochasts.push_back(stochasts[values[i]]);
-                    }
-                }
-                else if (property_ == "input_parameters")
-                {
-                    project->model->inputParameters.clear();
-                    for (int i = 0; i < size; i++)
-                    {
-                        project->model->inputParameters.push_back(modelParameters[values[i]]);
-                    }
-                    project->updateStochasts();
-                }
-                else if (property_ == "output_parameters")
-                {
-                    project->model->outputParameters.clear();
-                    for (int i = 0; i < size; i++)
-                    {
-                        project->model->outputParameters.push_back(modelParameters[values[i]]);
-                    }
-                }
-            }
-            else if (objectType == ObjectType::UncertaintyProject)
-            {
-                std::shared_ptr<Uncertainty::UncertaintyProject> project = uncertaintyProjects[id];
+                std::shared_ptr<Models::ModelProject> project = GetProject(id);
 
                 if (property_ == "variables")
                 {
@@ -2047,6 +1933,13 @@ namespace Deltares
         {
             ObjectType objectType = types[id];
 
+            if (IsModelProjectType(objectType))
+            {
+                std::shared_ptr<Models::ModelProject> project = GetProject(id);
+
+                if (property_ == "stochasts") return GetStochastId(project->stochasts[index], newId);
+            }
+
             if (objectType == ObjectType::Stochast)
             {
                 std::shared_ptr<Statistics::Stochast> stochast = stochasts[id];
@@ -2070,31 +1963,18 @@ namespace Deltares
 
                 if (property_ == "variables") return GetStochastId(correlationMatrix->getStochast(index), newId);
             }
-            else if (objectType == ObjectType::Project)
-            {
-                std::shared_ptr<Reliability::ReliabilityProject> project = projects[id];
-
-                if (property_ == "stochasts") return GetStochastId(project->stochasts[index], newId);
-            }
-            else if (objectType == ObjectType::RunProject)
-            {
-                std::shared_ptr<Models::RunProject> project = runProjects[id];
-
-                if (property_ == "stochasts") return this->GetStochastId(project->stochasts[index], newId);
-            }
             else if (objectType == ObjectType::UncertaintyProject)
             {
                 std::shared_ptr<Uncertainty::UncertaintyProject> project = uncertaintyProjects[id];
 
-                if (property_ == "stochasts") return GetStochastId(project->stochasts[index], newId);
-                else if (property_ == "uncertainty_stochasts") return GetStochastId(project->uncertaintyResults[index]->stochast, newId);
+                if (property_ == "uncertainty_stochasts") return GetStochastId(project->uncertaintyResults[index]->stochast, newId);
                 else if (property_ == "uncertainty_results") return GetUncertaintyResultId(project->uncertaintyResults[index], newId);
             }
             else if (objectType == ObjectType::SensitivityProject)
             {
                 std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
 
-                if (property_ == "sensitivity_results") return GetSensitivityResultId(project->sensitivityResults[index], newId);
+                if (property_ == "results") return GetSensitivityResultId(project->sensitivityResults[index], newId);
                 else if (property_ == "evaluations") return GetEvaluationId(project->evaluations[index], newId);
                 else if (property_ == "messages") return GetMessageId(project->messages[index], newId);
             }
@@ -2140,21 +2020,9 @@ namespace Deltares
         {
             ObjectType objectType = types[id];
 
-            if (objectType == ObjectType::Project)
+            if (IsModelProjectType(objectType))
             {
-                std::shared_ptr<Reliability::ReliabilityProject> project = projects[id];
-
-                if (property_ == "model") project->model = std::make_shared<ZModel>(callBack);
-            }
-            else if (objectType == ObjectType::RunProject)
-            {
-                std::shared_ptr<Models::RunProject> project = runProjects[id];
-
-                if (property_ == "model") project->model = std::make_shared<ZModel>(callBack);
-            }
-            else if (objectType == ObjectType::UncertaintyProject)
-            {
-                std::shared_ptr<Uncertainty::UncertaintyProject> project = uncertaintyProjects[id];
+                std::shared_ptr<Models::ModelProject> project = GetProject(id);
 
                 if (property_ == "model") project->model = std::make_shared<ZModel>(callBack);
             }
@@ -2164,21 +2032,9 @@ namespace Deltares
         {
             ObjectType objectType = types[id];
 
-            if (objectType == ObjectType::Project)
+            if (IsModelProjectType(objectType))
             {
-                std::shared_ptr<Reliability::ReliabilityProject> project = projects[id];
-
-                if (property_ == "model") project->model->setMultipleCallback(callBack);
-            }
-            else if (objectType == ObjectType::UncertaintyProject)
-            {
-                std::shared_ptr<Uncertainty::UncertaintyProject> project = uncertaintyProjects[id];
-
-                if (property_ == "model") project->model->setMultipleCallback(callBack);
-            }
-            else if (objectType == ObjectType::RunProject)
-            {
-                std::shared_ptr<Models::RunProject> project = runProjects[id];
+                std::shared_ptr<Models::ModelProject> project = GetProject(id);
 
                 if (property_ == "model") project->model->setMultipleCallback(callBack);
             }
@@ -2188,21 +2044,9 @@ namespace Deltares
         {
             ObjectType objectType = types[id];
 
-            if (objectType == ObjectType::Project)
+            if (IsModelProjectType(objectType))
             {
-                std::shared_ptr<Reliability::ReliabilityProject> project = projects[id];
-
-                if (property_ == "run_samples") project->model->setRunMethod(callBack);
-            }
-            else if (objectType == ObjectType::UncertaintyProject)
-            {
-                std::shared_ptr<Uncertainty::UncertaintyProject> project = uncertaintyProjects[id];
-
-                if (property_ == "run_samples") project->model->setRunMethod(callBack);
-            }
-            else if (objectType == ObjectType::RunProject)
-            {
-                std::shared_ptr<Models::RunProject> project = runProjects[id];
+                std::shared_ptr<Models::ModelProject> project = GetProject(id);
 
                 if (property_ == "run_samples") project->model->setRunMethod(callBack);
             }
@@ -2219,9 +2063,9 @@ namespace Deltares
                 if (method_ == "initialize_for_run") stochast->initializeForRun();
                 else if (method_ == "initialize_conditional_values") stochast->initializeConditionalValues();
             }
-            else if (objectType == ObjectType::Project)
+            else if (IsModelProjectType(objectType))
             {
-                std::shared_ptr<Reliability::ReliabilityProject> project = projects[id];
+                std::shared_ptr<Models::ModelProject> project = GetProject(id);
 
                 if (method_ == "run") project->run();
             }
@@ -2248,18 +2092,6 @@ namespace Deltares
             else if (objectType == ObjectType::LengthEffectProject)
             {
                 std::shared_ptr<Reliability::LengthEffectProject> project = lengthEffectProjects[id];
-
-                if (method_ == "run") project->run();
-            }
-            else if (objectType == ObjectType::UncertaintyProject)
-            {
-                std::shared_ptr<Uncertainty::UncertaintyProject> project = uncertaintyProjects[id];
-
-                if (method_ == "run") project->run();
-            }
-            else if (objectType == ObjectType::RunProject)
-            {
-                std::shared_ptr<Models::RunProject> project = runProjects[id];
 
                 if (method_ == "run") project->run();
             }
@@ -2563,10 +2395,46 @@ namespace Deltares
             {
                 return uncertaintyProjects[id];
             }
+            else if (sensitivityProjects.contains(id))
+            {
+                return sensitivityProjects[id];
+            }
             else
             {
                 return nullptr;
             }
+        }
+
+        std::shared_ptr<Models::ModelProjectSettings> ProjectHandler::GetSettings(int id)
+        {
+            if (settingsValues.contains(id))
+            {
+                return settingsValues[id];
+            }
+            else if (runProjectSettings.contains(id))
+            {
+                return runProjectSettings[id];
+            }
+            else if (uncertaintySettingsValues.contains(id))
+            {
+                return uncertaintySettingsValues[id];
+            }
+            else if (sensitivitySettingsValues.contains(id))
+            {
+                return sensitivitySettingsValues[id];
+            }
+            else
+            {
+                return nullptr;
+            }
+        }
+
+        bool ProjectHandler::IsModelProjectType(ObjectType objectType)
+        {
+            return objectType == ObjectType::Project ||
+                objectType == ObjectType::RunProject ||
+                objectType == ObjectType::UncertaintyProject ||
+                objectType == ObjectType::SensitivityProject;
         }
 
         void ProjectHandler::UpdateValidationMessages(const std::vector<std::shared_ptr<Models::Message>>& newMessages)

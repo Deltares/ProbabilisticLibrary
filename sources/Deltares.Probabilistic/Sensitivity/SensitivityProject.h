@@ -91,7 +91,15 @@ namespace Deltares::Sensitivity
         /**
          * \brief Runs the reliability calculation
          */
-        void run();
+        void run() override;
+
+        /**
+         * \brief Sets the settings
+         */
+        void setSettings(std::shared_ptr<Models::ModelProjectSettings> newSettings) override
+        {
+            settings = std::static_pointer_cast<SensitivitySettings>(newSettings);
+        }
 
         /**
          * \brief List of evaluations calculated during uncertainty analysis

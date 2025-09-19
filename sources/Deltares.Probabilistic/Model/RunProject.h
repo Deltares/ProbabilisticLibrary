@@ -35,12 +35,20 @@ namespace Deltares::Models
     class RunProject : public ModelProject
     {
     public:
+        std::shared_ptr<RunProjectSettings> settings = std::make_shared<RunProjectSettings>();
+
         /**
          * \brief Runs the model
          */
-        void run();
+        void run() override;
 
-        std::shared_ptr<RunProjectSettings> settings = std::make_shared<RunProjectSettings>();
+        /**
+         * \brief Sets the settings
+         */
+        void setSettings(std::shared_ptr<Models::ModelProjectSettings> newSettings) override
+        {
+            settings = std::static_pointer_cast<RunProjectSettings>(newSettings);
+        }
 
         std::shared_ptr<Evaluation> evaluation = nullptr;
     };

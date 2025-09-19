@@ -98,7 +98,15 @@ namespace Deltares::Uncertainty
         /**
          * \brief Runs the reliability calculation
          */
-        void run();
+        void run() override;
+
+        /**
+         * \brief Sets the settings
+         */
+        void setSettings(std::shared_ptr<Models::ModelProjectSettings> newSettings) override
+        {
+            settings = std::static_pointer_cast<SettingsS>(newSettings);
+        }
 
     private:
         std::shared_ptr<Models::ParameterSelector> parameterSelector = std::make_shared<Models::ParameterSelector>();

@@ -29,6 +29,7 @@
     <Compile Include="project_builder.py" />
     <Compile Include="test_combine.py" />
     <Compile Include="test_length_effect.py" />
+    <Compile Include="test_sensitivity.py" />
     <Compile Include="test_utils.py" />
     <Compile Include="test_run_project.py" />
     <Compile Include="test_uncertainty.py">

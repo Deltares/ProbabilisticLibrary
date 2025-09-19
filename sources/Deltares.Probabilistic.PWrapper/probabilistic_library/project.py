@@ -664,7 +664,7 @@ class SensitivityProject(ModelProject):
 	@property
 	def result(self) -> SensitivityResult:
 		if self._result is None:
-			resultId = interface.GetIdValue(self._id, 'sensitivity_result')
+			resultId = interface.GetIdValue(self._id, 'result')
 			if resultId > 0:
 				self._result = SensitivityResult(resultId)
 
@@ -674,7 +674,7 @@ class SensitivityProject(ModelProject):
 	def results(self) -> list[SensitivityResult]:
 		if self._results is None:
 			results = []
-			result_ids = interface.GetArrayIdValue(self._id, 'sensitivity_results')
+			result_ids = interface.GetArrayIdValue(self._id, 'results')
 			for result_id in result_ids:
 				results.append(SensitivityResult(result_id))
 			self._results = FrozenList(results)
