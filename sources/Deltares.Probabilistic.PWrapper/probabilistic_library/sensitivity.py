@@ -23,6 +23,8 @@ import sys
 from math import isnan
 from enum import Enum
 import matplotlib.pyplot as plt
+import numpy as np
+
 
 from .utils import *
 from .statistic import Stochast, ProbabilityValue
@@ -229,18 +231,42 @@ class SensitivityResult(FrozenObject):
 
 	def get_plot(self, xmin : float = None, xmax : float = None) -> plt:
 
-		vplot = self.variable.get_plot(xmin, xmax)
+		fig = plt.subplots()
 
-		plot_legend = False
-		for ii in range(len(self.quantile_realizations)):
-			vplot.axvline(x=self.quantile_realizations[ii].output_values[0], color="green", linestyle="--", label=f"{self.quantile_realizations[ii].quantile:.4g}-quantile")
-			plot_legend = True
+		low_values = [value.low for value in self.values if not isnan(value.low)]
+		medium_values = [value.medium for value in self.values if not isnan(value.medium)]
+		high_values = [value.high for value in self.values if not isnan(value.high)]
+		first_values = [value.first_order_index for value in self.values if not isnan(value.first_order_index)]
+		total_values = [value.total_index for value in self.values if not isnan(value.total_index)]
 
-		if plot_legend:
-			vplot.legend()
+		barWidth = 0.25
 
-		return vplot
+		x = np.arange(len(self.values)) 
 
+		if len(low_values) > 0:
+			plt.bar(x, low_values, color ='b', width = barWidth, label ='low')
+			x = [x + barWidth for x in x] 
 
+		if len(medium_values) > 0:
+			plt.bar(x, medium_values, color ='r', width = barWidth, label ='medium')
+			x = [x + barWidth for x in x] 
 
+		if len(high_values) > 0:
+			plt.bar(x, high_values, color ='g', width = barWidth, label ='high')
+			x = [x + barWidth for x in x] 
 
+		if len(first_values) > 0:
+			plt.bar(x, first_values, color ='y', width = barWidth, label ='first order')
+			x = [x + barWidth for x in x] 
+
+		if len(total_values) > 0:
+			plt.bar(x, total_values, color ='m', width = barWidth, label ='total')
+			x = [x + barWidth for x in x] 
+
+		plt.xlabel('variables') 
+		plt.ylabel(self.identifier)
+		plt.xticks([r + barWidth for r in range(len(self.values))], [value.variable.name for value in self.values])
+
+		plt.legend()
+
+		return plt

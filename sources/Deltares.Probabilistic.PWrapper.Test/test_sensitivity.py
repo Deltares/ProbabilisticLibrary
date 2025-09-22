@@ -121,5 +121,51 @@ class Test_sensitivity(unittest.TestCase):
         self.assertAlmostEqual(0.175, sens2.values[0].first_order_index, delta=margin)
         self.assertAlmostEqual(0.175, sens2.values[0].total_index, delta=margin)
 
+    def test_single_variation_plot(self):
+        project = project_builder.get_sensitivity_multiple_unbalanced_linear_project()
+
+        project.settings.sensitivity_method = SensitivityMethod.single_variation
+
+        project.run();
+
+        self.assertEqual(3, len(project.results))
+
+        sens1 = project.results[0]
+
+        test_file_name = 'sens.png'
+        if os.path.exists(test_file_name):
+            os.remove(test_file_name)
+
+        # uncomment next line to show plot
+        #sens1.get_plot().show()
+
+        sens1.get_plot().savefig(test_file_name)
+
+        self.assertTrue(os.path.exists(test_file_name))
+        os.remove(test_file_name)
+
+    def test_sobol_plot(self):
+        project = project_builder.get_sensitivity_multiple_unbalanced_linear_project()
+
+        project.settings.sensitivity_method = SensitivityMethod.sobol
+
+        project.run();
+
+        self.assertEqual(3, len(project.results))
+
+        sens1 = project.results[0]
+
+        test_file_name = 'sens.png'
+        if os.path.exists(test_file_name):
+            os.remove(test_file_name)
+
+        # uncomment next line to show plot
+        #sens1.get_plot().show()
+
+        sens1.get_plot().savefig(test_file_name)
+
+        self.assertTrue(os.path.exists(test_file_name))
+        os.remove(test_file_name)
+
 if __name__ == '__main__':
     unittest.main()
