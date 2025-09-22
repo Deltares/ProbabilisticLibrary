@@ -19,30 +19,31 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include "UncertaintyMethod.h"
+#include "SensitivityMethod.h"
 
 #include "../Model/ModelRunner.h"
 #include "../Statistics/Stochast.h"
 
 namespace Deltares
 {
-    namespace Uncertainty
+    namespace Sensitivity
     {
         namespace Wrappers
         {
-            Statistics::Wrappers::Stochast^ UncertaintyMethod::GetStochast(Models::Wrappers::ModelRunner^ modelRunner)
+            Wrappers::SensitivityResult^ SensitivityMethod::GetResult(Models::Wrappers::ModelRunner^ modelRunner)
             {
-                const std::shared_ptr<Uncertainty::UncertaintyMethod> uncertaintyMethod = this->GetNativeSensitivityMethod();
+                const std::shared_ptr<Sensitivity::SensitivityMethod> sensitivityMethod = this->GetNativeSensitivityMethod();
 
                 const std::shared_ptr<Models::ModelRunner> nativeModelRunner = modelRunner->GetModelRunner();
 
                 nativeModelRunner->initializeForRun();
 
-                const std::shared_ptr<Statistics::Stochast> nativeStochast = uncertaintyMethod->getUncertaintyStochast(nativeModelRunner).stochast;
+                Sensitivity::SensitivityResult nativeResult = sensitivityMethod->getSensitivityResult(nativeModelRunner);
+                std::shared_ptr<Sensitivity::SensitivityResult> resultPointer = std::make_shared<Sensitivity::SensitivityResult>(nativeResult);
 
-                Statistics::Wrappers::Stochast^ stochast = gcnew Statistics::Wrappers::Stochast(nativeStochast);
+                Wrappers::SensitivityResult^ result = gcnew Wrappers::SensitivityResult(resultPointer, modelRunner->Stochasts);
 
-                return stochast;
+                return result;
             };
         }
     }

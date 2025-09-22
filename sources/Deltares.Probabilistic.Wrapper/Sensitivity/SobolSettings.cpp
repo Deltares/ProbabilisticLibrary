@@ -19,29 +19,5 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#pragma once
-#include "SensitivityMethod.h"
-#include "SingleVariationSettings.h"
 
-namespace Deltares::Sensitivity
-{
-    /**
-     * \brief Calculates the sensitivity by applying changes to input variables one by one
-     */
-    class SingleVariation : public SensitivityMethod
-    {
-    public:
-        /**
-         * \brief Settings for this algorithm
-         */
-        std::shared_ptr<SingleVariationSettings> Settings = std::make_shared<SingleVariationSettings>();
-
-        /**
-         * \brief Gets the sensitivity
-         * \param modelRunner The model for which the sensitivity is calculated
-         * \return The sensitivity
-         */
-        SensitivityResult getSensitivityResult(std::shared_ptr<Models::ModelRunner> modelRunner) override;
-    };
-}
-
+#include "SobolSettings.h"

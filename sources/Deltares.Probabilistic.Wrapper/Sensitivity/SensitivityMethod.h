@@ -21,47 +21,33 @@
 //
 #pragma once
 #include "../Model/ModelRunner.h"
-
-#include <memory>
-
+#include "../../Deltares.Probabilistic/Sensitivity/SensitivityMethod.h"
 #include "SensitivityResult.h"
 
-namespace Deltares::Sensitivity
+namespace Deltares
 {
-    /**
-     * \brief Base class for calculation of the sensitivity
-     */
-    class SensitivityMethod
+    namespace Sensitivity
     {
-    public:
+        namespace Wrappers
+        {
+            public ref class SensitivityMethod
+            {
+            public:
+                SensitivityMethod() {  }
 
-        virtual ~SensitivityMethod() = default;
+                virtual std::shared_ptr<Sensitivity::SensitivityMethod> GetNativeSensitivityMethod()
+                {
+                    return nullptr;
+                };
 
-        /**
-         * \brief Gets the sensitivity
-         * \param modelRunner The model for which the sensitivity is calculated
-         * \return The sensitivity 
-         */
-        virtual SensitivityResult getSensitivityResult(std::shared_ptr<Models::ModelRunner> modelRunner)
-            { return SensitivityResult(); }
+                SensitivityResult^ GetResult(Models::Wrappers::ModelRunner^ modelRunner);
 
-        /**
-         * \brief Indicates whether the calculation has been stopped
-         */
-        bool isStopped() const;
-
-        /**
-         * \brief Stops the calculation
-         * \remark Usually called from another thread
-         */
-        void Stop();
-
-    protected:
-        virtual void setStopped();
-
-    private:
-        bool stopped = false;
-    };
+                virtual System::Object^ GetSettings() { return nullptr; }
+                virtual bool IsValid() { return false; }
+                virtual void Stop()    { }
+                virtual bool IsStopped() { return false; }
+            };
+        }
+    }
 }
-
 
