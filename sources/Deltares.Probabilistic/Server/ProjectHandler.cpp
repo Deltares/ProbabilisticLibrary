@@ -707,15 +707,15 @@ namespace Deltares
             {
                 std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
 
-                if (property_ == "evaluations_count") return static_cast<int>(project->evaluations.size());
-                else if (property_ == "messages_count") return static_cast<int>(project->messages.size());
-                else if (property_ == "results_count") return static_cast<int>(project->sensitivityResults.size());
+                if (property_ == "results_count") return static_cast<int>(project->sensitivityResults.size());
             }
             else if (objectType == ObjectType::SensitivityResult)
             {
                 std::shared_ptr<Sensitivity::SensitivityResult> result = sensitivityResults[id];
 
                 if (property_ == "values_count") return static_cast<int>(result->values.size());
+                else if (property_ == "evaluations_count") return static_cast<int>(result->evaluations.size());
+                else if (property_ == "messages_count") return static_cast<int>(result->messages.size());
             }
             else if (objectType == ObjectType::Stochast)
             {
@@ -1975,14 +1975,14 @@ namespace Deltares
                 std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
 
                 if (property_ == "results") return GetSensitivityResultId(project->sensitivityResults[index], newId);
-                else if (property_ == "evaluations") return GetEvaluationId(project->evaluations[index], newId);
-                else if (property_ == "messages") return GetMessageId(project->messages[index], newId);
             }
             else if (objectType == ObjectType::SensitivityResult)
             {
                 std::shared_ptr<Sensitivity::SensitivityResult> result = sensitivityResults[id];
 
                 if (property_ == "values") return GetSensitivityValueId(result->values[index], newId);
+                else if (property_ == "evaluations") return GetEvaluationId(result->evaluations[index], newId);
+                else if (property_ == "messages") return GetMessageId(result->messages[index], newId);
             }
             else if (objectType == ObjectType::DesignPoint)
             {

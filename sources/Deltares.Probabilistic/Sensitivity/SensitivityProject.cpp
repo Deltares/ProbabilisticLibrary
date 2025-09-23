@@ -80,7 +80,7 @@ namespace Deltares::Sensitivity
 
         std::shared_ptr<Models::UConverter> uConverter = std::make_shared<Models::UConverter>(stochasts, correlationMatrix);
         const std::shared_ptr<Models::ModelRunner> modelRunner = std::make_shared<Models::ModelRunner>(model, uConverter, progressIndicator);
-        modelRunner->Settings = runSettings;
+        modelRunner->Settings = settings->RunSettings;
         modelRunner->initializeForRun();
 
         auto result = sensitivityMethod->getSensitivityResult(modelRunner);

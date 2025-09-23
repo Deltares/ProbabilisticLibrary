@@ -79,6 +79,19 @@ class Test_sensitivity(unittest.TestCase):
         self.assertAlmostEqual(1.8, sens2.values[0].medium, delta=margin)
         self.assertAlmostEqual(1.26, sens2.values[0].high, delta=margin)
 
+    def test_single_variation_realizations(self):
+        project = project_builder.get_sensitivity_linear_project()
+
+        project.settings.sensitivity_method = SensitivityMethod.single_variation
+        project.settings.save_realizations = True
+
+        project.run()
+
+        sens = project.result
+
+        self.assertEqual(5, project.total_model_runs)
+        self.assertEqual(5, len(sens.realizations))
+
     def test_sobol_linear(self):
         project = project_builder.get_sensitivity_linear_project()
 
@@ -166,6 +179,31 @@ class Test_sensitivity(unittest.TestCase):
 
         self.assertTrue(os.path.exists(test_file_name))
         os.remove(test_file_name)
+
+    def test_sobol_print(self):
+        project = project_builder.get_sensitivity_multiple_unbalanced_linear_project()
+
+        project.settings.sensitivity_method = SensitivityMethod.sobol
+
+        project.run();
+
+        self.assertEqual(3, len(project.results))
+
+        sens1 = project.results[0]
+
+        sys.stdout = StringIO()
+
+        sens1.print()
+
+        printed = sys.stdout.getvalue()
+        sys.stdout = sys.__stdout__
+
+        self.assertEqual("""Parameter: x
+Values:
+  a: first order index = 0.02403, total index = 0.02446
+  b: first order index = 0.9812, total index = 0.9793
+""", printed)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -25,7 +25,6 @@ from enum import Enum
 import matplotlib.pyplot as plt
 import numpy as np
 
-
 from .utils import *
 from .statistic import Stochast, ProbabilityValue
 from .reliability import StochastSettings, RandomType, GradientType, Evaluation, Message
@@ -182,12 +181,24 @@ class SensitivityValue(FrozenObject):
 	def total_index(self) -> float:
 		return interface.GetValue(self._id, 'total_index')
 
+	def print(self, decimals=4):
+		self._print(0, decimals)
+
+	def _print(self, indent = 0, decimals=4):
+		pre = PrintUtils.get_space_from_indent(indent)
+		if not isnan(self.low):
+			print(pre + f'{self.variable.name}: low = {self.low:.{decimals}g}, medium = {self.medium:.{decimals}g}, high = {self.high:.{decimals}g}')
+		elif not isnan(self.total_index):
+			print(pre + f'{self.variable.name}: first order index = {self.first_order_index:.{decimals}g}, total index = {self.total_index:.{decimals}g}')
+
+
 class SensitivityResult(FrozenObject):
 
 	def __init__(self, id):
 		self._id = id
-		self._variable = None
 		self._values = None
+		self._messages = None
+		self._realizations = None
 		super()._freeze()
 		
 	def __del__(self):
@@ -198,6 +209,8 @@ class SensitivityResult(FrozenObject):
 
 	def __dir__(self):
 		return ['identifier',
+				'realizations',
+				'messages',
 				'print',
 				'plot']
 		
@@ -219,17 +232,39 @@ class SensitivityResult(FrozenObject):
 				
 		return self._values
 
+	@property
+	def realizations(self) -> list[Evaluation]:
+		if self._realizations is None:
+			realizations = []
+			realization_ids = interface.GetArrayIdValue(self._id, 'evaluations')
+			for realization_id in realization_ids:
+				realizations.append(Evaluation(realization_id))
+			self._realizations = FrozenList(realizations)
+				
+		return self._realizations
+	
+	@property
+	def messages(self) -> list[Message]:
+		if self._messages is None:
+			messages = []
+			message_ids = interface.GetArrayIdValue(self._id, 'messages')
+			for message_id in message_ids:
+				messages.append(Message(message_id))
+			self._messages = FrozenList(messages)
+				
+		return self._messages
+
 	def print(self, decimals=4):
-		self.variable.print(decimals)
-		if len(self.quantile_realizations) > 0:
-			print('Quantiles:')
-			for quantile in self.quantile_realizations:
-				quantile._print(1, decimals)
+		print('Parameter: ' + self.identifier)
+		if len(self.values) > 0:
+			print('Values:')
+			for value in self.values:
+				value._print(1, decimals)
 
-	def plot(self, xmin : float = None, xmax : float = None):
-		self.get_plot(xmin, xmax).show()
+	def plot(self):
+		self.get_plot().show()
 
-	def get_plot(self, xmin : float = None, xmax : float = None) -> plt:
+	def get_plot(self) -> plt:
 
 		fig = plt.subplots()
 
@@ -239,33 +274,37 @@ class SensitivityResult(FrozenObject):
 		first_values = [value.first_order_index for value in self.values if not isnan(value.first_order_index)]
 		total_values = [value.total_index for value in self.values if not isnan(value.total_index)]
 
-		barWidth = 0.25
+		meaningful_values_count = sum(len(values) > 0 for values in [low_values, medium_values, high_values, first_values, total_values])
+
+		bar_width = 1.0 / (meaningful_values_count + 1)
 
 		x = np.arange(len(self.values)) 
 
 		if len(low_values) > 0:
-			plt.bar(x, low_values, color ='b', width = barWidth, label ='low')
-			x = [x + barWidth for x in x] 
+			plt.bar(x, low_values, color ='b', width = bar_width, label ='low')
+			x = [x + bar_width for x in x] 
 
 		if len(medium_values) > 0:
-			plt.bar(x, medium_values, color ='r', width = barWidth, label ='medium')
-			x = [x + barWidth for x in x] 
+			plt.bar(x, medium_values, color ='r', width = bar_width, label ='medium')
+			x = [x + bar_width for x in x] 
 
 		if len(high_values) > 0:
-			plt.bar(x, high_values, color ='g', width = barWidth, label ='high')
-			x = [x + barWidth for x in x] 
+			plt.bar(x, high_values, color ='g', width = bar_width, label ='high')
+			x = [x + bar_width for x in x] 
 
 		if len(first_values) > 0:
-			plt.bar(x, first_values, color ='y', width = barWidth, label ='first order')
-			x = [x + barWidth for x in x] 
+			plt.bar(x, first_values, color ='y', width = bar_width, label ='first order')
+			x = [x + bar_width for x in x] 
 
 		if len(total_values) > 0:
-			plt.bar(x, total_values, color ='m', width = barWidth, label ='total')
-			x = [x + barWidth for x in x] 
+			plt.bar(x, total_values, color ='m', width = bar_width, label ='total')
+			x = [x + bar_width for x in x] 
 
 		plt.xlabel('variables') 
 		plt.ylabel(self.identifier)
-		plt.xticks([r + barWidth for r in range(len(self.values))], [value.variable.name for value in self.values])
+
+		increment = (meaningful_values_count - 1) / 2 * bar_width
+		plt.xticks([r + increment  for r in range(len(self.values))], [value.variable.name for value in self.values])
 
 		plt.legend()
 
