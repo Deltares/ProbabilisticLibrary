@@ -1395,6 +1395,18 @@ namespace Deltares
                 if (property_ == "uncertainty_method") return Uncertainty::SettingsS::getUncertaintyMethodTypeString(settings->UncertaintyMethod);
                 else if (property_ == "gradient_type") return GradientSettings::getGradientTypeString(settings->GradientSettings->gradientType);
             }
+            else if (objectType == ObjectType::UncertaintyProject)
+            {
+                std::shared_ptr<Uncertainty::UncertaintyProject> project = uncertaintyProjects[id];
+
+                if (property_ == "parameter") return project->parameter;
+            }
+            else if (objectType == ObjectType::SensitivityProject)
+            {
+                std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
+
+                if (property_ == "parameter") return project->parameter;
+            }
             else if (objectType == ObjectType::SensitivitySettings)
             {
                 std::shared_ptr<Sensitivity::SensitivitySettings> settings = sensitivitySettingsValues[id];
@@ -1486,6 +1498,18 @@ namespace Deltares
                 std::shared_ptr<Statistics::Scenario> scenario = scenarios[id];
 
                 if (property_ == "name") scenario->name = value;
+            }
+            else if (objectType == ObjectType::UncertaintyProject)
+            {
+                std::shared_ptr<Uncertainty::UncertaintyProject> project = uncertaintyProjects[id];
+
+                if (property_ == "parameter") project->parameter = value;
+            }
+            else if (objectType == ObjectType::SensitivityProject)
+            {
+                std::shared_ptr<Sensitivity::SensitivityProject> project = sensitivityProjects[id];
+
+                if (property_ == "parameter") project->parameter = value;
             }
             else if (objectType == ObjectType::Settings)
             {
