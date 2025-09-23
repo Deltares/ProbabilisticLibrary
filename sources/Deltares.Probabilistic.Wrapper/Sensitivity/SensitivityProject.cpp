@@ -57,7 +57,7 @@ namespace Deltares
 
                 shared->object->correlationMatrix = this->CorrelationMatrix->GetCorrelationMatrix();
                 shared->object->sensitivityMethod = this->SensitivityMethod->GetNativeSensitivityMethod();
-                shared->object->runSettings = this->Settings->GetSettings();
+                //shared->object->runSettings = this->Settings->GetSettings();
                 shared->object->progressIndicator = this->ProgressIndicator != nullptr ? this->ProgressIndicator->GetProgressIndicator() : nullptr;
 
                 Models::ZLambda zLambda = getZLambda();

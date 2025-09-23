@@ -672,7 +672,9 @@ class SensitivityProject(ModelProject):
 			results = []
 			result_ids = interface.GetArrayIdValue(self._id, 'results')
 			for result_id in result_ids:
-				results.append(SensitivityResult(result_id))
+				result = SensitivityResult(result_id)
+				result._set_variables(self.variables)
+				results.append(result)
 			self._results = FrozenList(results)
 				
 		return self._results

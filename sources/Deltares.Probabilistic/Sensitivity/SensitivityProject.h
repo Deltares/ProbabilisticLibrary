@@ -56,12 +56,6 @@ namespace Deltares::Sensitivity
         std::shared_ptr<SensitivitySettings> settings = std::make_shared<SensitivitySettings>();
 
         /**
-         * \brief Settings for performing a calculation
-         * \remark Settings of the uncertainty calculation are held in the settings of the uncertainty method
-         */
-        std::shared_ptr<Models::RunSettings> runSettings = std::make_shared<Models::RunSettings>();
-
-        /**
          * \brief Callback for progress during the calculation
          */
         std::shared_ptr<Models::ProgressIndicator> progressIndicator = nullptr;

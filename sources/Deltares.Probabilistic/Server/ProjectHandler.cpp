@@ -771,7 +771,8 @@ namespace Deltares
             {
                 std::shared_ptr<Sensitivity::SensitivitySettings> settings = sensitivitySettingsValues[id];
 
-                if (property_ == "iterations") return settings->Iterations;
+                if (property_ == "max_parallel_processes") return settings->RunSettings->MaxParallelProcesses;
+                else if (property_ == "iterations") return settings->Iterations;
             }
             else if (objectType == ObjectType::UncertaintySettings)
             {
@@ -1043,7 +1044,8 @@ namespace Deltares
             {
                 std::shared_ptr<Sensitivity::SensitivitySettings> settings = sensitivitySettingsValues[id];
 
-                if (property_ == "iterations") settings->Iterations = value;
+                if (property_ == "max_parallel_processes") settings->RunSettings->MaxParallelProcesses = value;
+                else if (property_ == "iterations") settings->Iterations = value;
             }
             else if (objectType == ObjectType::UncertaintySettings)
             {
@@ -1200,6 +1202,15 @@ namespace Deltares
                 else if (property_ == "save_messages") return settings->RunSettings->SaveMessages;
                 else if (property_ == "reuse_calculations") return settings->RunSettings->ReuseCalculations;
             }
+            else if (objectType == ObjectType::SensitivitySettings)
+            {
+                std::shared_ptr<Sensitivity::SensitivitySettings> settings = sensitivitySettingsValues[id];
+
+                if (property_ == "save_realizations") return settings->RunSettings->SaveEvaluations;
+                else if (property_ == "save_convergence") return settings->RunSettings->SaveConvergence;
+                else if (property_ == "save_messages") return settings->RunSettings->SaveMessages;
+                else if (property_ == "reuse_calculations") return settings->RunSettings->ReuseCalculations;
+            }
             else if (objectType == ObjectType::Settings)
             {
                 std::shared_ptr<Reliability::Settings> setting = settingsValues[id];
@@ -1275,6 +1286,16 @@ namespace Deltares
                 else if (property_ == "calculate_input_correlations") settings->CalculateInputCorrelations = value;
                 else if (property_ == "is_repeatable_random") settings->RandomSettings->IsRepeatableRandom = value;
                 else if (property_ == "save_realizations") settings->RunSettings->SaveEvaluations = value;
+                else if (property_ == "save_convergence") settings->RunSettings->SaveConvergence = value;
+                else if (property_ == "save_messages") settings->RunSettings->SaveMessages = value;
+                else if (property_ == "reuse_calculations") settings->RunSettings->ReuseCalculations = value;
+                else if (property_ == "use_openmp_in_reliability") settings->RunSettings->UseOpenMPinReliability = value;
+            }
+            else if (objectType == ObjectType::SensitivitySettings)
+            {
+                std::shared_ptr<Sensitivity::SensitivitySettings> settings = sensitivitySettingsValues[id];
+
+                if (property_ == "save_realizations") settings->RunSettings->SaveEvaluations = value;
                 else if (property_ == "save_convergence") settings->RunSettings->SaveConvergence = value;
                 else if (property_ == "save_messages") settings->RunSettings->SaveMessages = value;
                 else if (property_ == "reuse_calculations") settings->RunSettings->ReuseCalculations = value;

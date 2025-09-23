@@ -31,7 +31,6 @@ namespace Deltares::Sensitivity
         sensitivityResults.clear();
 
         sensitivityMethod = settings->GetSensitivityMethod();
-        runSettings = settings->RunSettings;
 
         if (parameter.empty())
         {
@@ -94,7 +93,7 @@ namespace Deltares::Sensitivity
     bool SensitivityProject::isValid()
     {
         return ModelProject::isValid() &&
-            runSettings != nullptr && runSettings->isValid() &&
+            settings->RunSettings != nullptr && settings->RunSettings->isValid() &&
             settings->isValid();
     }
 }

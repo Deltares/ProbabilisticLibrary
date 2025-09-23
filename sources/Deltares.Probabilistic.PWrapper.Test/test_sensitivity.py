@@ -65,7 +65,7 @@ class Test_sensitivity(unittest.TestCase):
         self.assertAlmostEqual(2.07, sens1.values[0].low, delta=margin)
         self.assertAlmostEqual(1.8, sens1.values[0].medium, delta=margin)
         self.assertAlmostEqual(1.53, sens1.values[0].high, delta=margin)
-        self.assertEqual(project.variables[0].name , sens1.values[0].variable.name) # should be equal without name
+        self.assertEqual(project.variables[0] , sens1.values[0].variable) 
 
         self.assertAlmostEqual(3.51, sens1.values[1].low, delta=margin)
         self.assertAlmostEqual(1.8, sens1.values[1].medium, delta=margin)

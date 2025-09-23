@@ -56,11 +56,24 @@ class SensitivitySettings(FrozenObject):
 			pass
 
 	def __dir__(self):
-		return ['sensitivity_method',
+		return ['max_parallel_processes',
+		        'save_realizations',
+		        'save_convergence',
+		        'save_messages',
+		        'reuse_calculations',
+		        'sensitivity_method',
 		        'low_value',
 		        'high_value',
 		        'iterations']
 		
+	@property
+	def max_parallel_processes(self) -> int:
+		return interface.GetIntValue(self._id, 'max_parallel_processes')
+
+	@max_parallel_processes.setter
+	def max_parallel_processes(self, value : int):
+		interface.SetIntValue(self._id, 'max_parallel_processes', value)
+
 	@property
 	def save_realizations(self) -> bool:
 		return interface.GetBoolValue(self._id, 'save_realizations')
@@ -129,9 +142,10 @@ class SensitivitySettings(FrozenObject):
 
 class SensitivityValue(FrozenObject):
 
-	def __init__(self, id):
+	def __init__(self, id, known_variables = None):
 		self._id = id
 		self._variable = None
+		self._known_variables = known_variables
 		super()._freeze()
 		
 	def __del__(self):
@@ -157,7 +171,12 @@ class SensitivityValue(FrozenObject):
 		if self._variable is None:
 			variable_id = interface.GetIdValue(self._id, 'variable')
 			if variable_id > 0:
-				self._variable = Stochast(variable_id);
+				if not self._known_variables is None:
+					for variable in self._known_variables:
+						if variable._id == variable_id:
+							self._variable = variable
+				if self._variable is None:
+					self._variable = Stochast(variable_id);
 				
 		return self._variable
 
@@ -199,6 +218,7 @@ class SensitivityResult(FrozenObject):
 		self._values = None
 		self._messages = None
 		self._realizations = None
+		self._known_variables = None
 		super()._freeze()
 		
 	def __del__(self):
@@ -227,7 +247,7 @@ class SensitivityResult(FrozenObject):
 			sens_values = []
 			sens_value_ids = interface.GetArrayIdValue(self._id, 'values')
 			for sens_value_id in sens_value_ids:
-				sens_values.append(SensitivityValue(sens_value_id))
+				sens_values.append(SensitivityValue(sens_value_id, self._known_variables))
 			self._values = FrozenList(sens_values)
 				
 		return self._values
@@ -253,6 +273,9 @@ class SensitivityResult(FrozenObject):
 			self._messages = FrozenList(messages)
 				
 		return self._messages
+
+	def _set_variables(self, variables):
+		self._known_variables = FrozenList(variables)
 
 	def print(self, decimals=4):
 		print('Parameter: ' + self.identifier)
@@ -304,7 +327,7 @@ class SensitivityResult(FrozenObject):
 		plt.ylabel(self.identifier)
 
 		increment = (meaningful_values_count - 1) / 2 * bar_width
-		plt.xticks([r + increment  for r in range(len(self.values))], [value.variable.name for value in self.values])
+		plt.xticks([r + increment for r in range(len(self.values))], [value.variable.name for value in self.values])
 
 		plt.legend()
 
