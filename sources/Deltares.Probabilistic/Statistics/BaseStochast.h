@@ -23,6 +23,7 @@
 
 #include <cmath>
 #include <vector>
+#include "../Logging/ValidationReport.h"
 
 namespace Deltares
 {
@@ -87,6 +88,12 @@ namespace Deltares
             virtual std::vector<double> getSpecialXValues() { return {}; }
 
             virtual bool isValid() { return false; }
+
+            /**
+             * \brief Validates the stochastic parameters and puts the results in a report
+             * \param report The validation report containing the validation results
+             */
+            virtual void validate(Logging::ValidationReport& report) {}
 
             virtual bool isVarying() { return false; }
 

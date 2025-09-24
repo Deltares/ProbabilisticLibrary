@@ -26,6 +26,11 @@
 #include "../../Math/WeightedValue.h"
 #include "../../Utils/probLibException.h"
 
+namespace Deltares::Logging
+{
+    class ValidationReport;
+}
+
 namespace Deltares::Statistics
 {
     /**
@@ -225,7 +230,14 @@ namespace Deltares::Statistics
          * \param stochast Stochast having the parameters
          * \return Indication valid parameters
          */
-        virtual bool isValid(std::shared_ptr<StochastProperties> stochast) { return true; }
+        virtual bool isValid(std::shared_ptr<StochastProperties> stochast);
+
+        /**
+         * \brief Validates the stochastic parameters and puts the results in a report
+         * \param report The validation report containing the validation results
+         * \param stochast Stochast having the parameters
+         */
+        virtual void validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast);
 
         /**
          * \brief Gets the log likelihood of a stochast at a given x-value

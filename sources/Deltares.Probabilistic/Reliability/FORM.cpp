@@ -144,10 +144,10 @@ namespace Deltares
                 {
                     // return the result so far
 #ifdef __cpp_lib_format
-                    modelRunner->reportMessage(Models::MessageType::Error, std::format("Model did not provide valid results, limit state value = {0:.5G}", sample->Z));
+                    modelRunner->reportMessage(Logging::MessageType::Error, std::format("Model did not provide valid results, limit state value = {0:.5G}", sample->Z));
 #else
                     auto pl = Deltares::Reliability::probLibString();
-                    modelRunner->reportMessage(Models::MessageType::Error, "Model did not provide valid results, limit state value = " + pl.double2str( sample->Z));
+                    modelRunner->reportMessage(Logging::MessageType::Error, "Model did not provide valid results, limit state value = " + pl.double2str( sample->Z));
 #endif
 
                     std::shared_ptr<ReliabilityReport> reportInvalid = getReport(iteration, nan(""));
@@ -171,7 +171,7 @@ namespace Deltares
 
                 if (zGradientLength < minGradientLength && iteration == 0)
                 {
-                    modelRunner->reportMessage(Models::MessageType::Error, "No variation in model results found at start point");
+                    modelRunner->reportMessage(Logging::MessageType::Error, "No variation in model results found at start point");
 
                     const std::shared_ptr<ReliabilityReport> reportTooSmall = getReport(iteration, beta);
                     modelRunner->reportResult(reportTooSmall);
@@ -207,7 +207,7 @@ namespace Deltares
 
                 if (std::fabs(beta) >= Statistics::StandardNormal::BetaMax)
                 {
-                    modelRunner->reportMessage(Models::MessageType::Error, "No convergence found");
+                    modelRunner->reportMessage(Logging::MessageType::Error, "No convergence found");
 
                     const std::shared_ptr<ReliabilityReport> reportTooHigh = std::make_shared<ReliabilityReport>();
 

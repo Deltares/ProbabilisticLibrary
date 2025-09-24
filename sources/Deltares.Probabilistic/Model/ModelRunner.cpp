@@ -432,11 +432,11 @@ namespace Deltares
             }
         }
 
-        void ModelRunner::reportMessage(MessageType type, std::string text)
+        void ModelRunner::reportMessage(Logging::MessageType type, std::string text)
         {
             if (Settings->SaveMessages && this->messages.size() < (size_t)this->Settings->MaxMessages && type >= this->Settings->LowestMessageType)
             {
-                this->messages.push_back(std::make_shared<Message>(type, text));
+                this->messages.push_back(std::make_shared<Logging::Message>(type, text));
             }
         }
 

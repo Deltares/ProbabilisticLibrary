@@ -27,6 +27,7 @@
 #include "../../Math/RootFinders/BisectionRootFinder.h"
 #include "../../Utils/probLibException.h"
 #include "../StandardNormal.h"
+#include "../../Logging/ValidationSupport.h"
 
 #include <numbers>
 
@@ -188,6 +189,46 @@ namespace Deltares
             }
 
             return weightedValues;
+        }
+
+        bool Distribution::isValid(std::shared_ptr<StochastProperties> stochast)
+        {
+            Logging::ValidationReport report;
+
+            this->validate(report, stochast);
+
+            return report.isValid();
+        }
+
+        void Distribution::validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast)
+        {
+            for (DistributionPropertyType property : this->getParameters())
+            {
+                if (property == Location)
+                {
+                    Logging::ValidationSupport::checkFinite(report, stochast->Location, "location");
+                }
+                else if (property == Scale)
+                {
+                    Logging::ValidationSupport::checkMinimum(report, 0, stochast->Scale, "scale");
+                }
+                else if (property == Shape)
+                {
+                    Logging::ValidationSupport::checkMinimum(report, 0, stochast->Shape, "shape");
+                }
+                else if (property == ShapeB)
+                {
+                    Logging::ValidationSupport::checkMinimum(report, 0, stochast->ShapeB, "shape B");
+                }
+                else if (property == Maximum)
+                {
+                    Logging::ValidationSupport::checkMinimum(report, stochast->Minimum, stochast->Maximum, "maximum");
+                }
+                else if (property == ShiftB)
+                {
+                    Logging::ValidationSupport::checkMinimum(report, stochast->Shift, stochast->ShiftB, "shift B");
+                }
+            }
         }
     }
 }

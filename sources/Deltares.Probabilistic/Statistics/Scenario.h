@@ -24,7 +24,7 @@
 #include <memory>
 
 #include "Stochast.h"
-#include "../Model/Message.h"
+#include "../Logging/Message.h"
 
 namespace Deltares::Statistics
 {
@@ -60,7 +60,7 @@ namespace Deltares::Statistics
          * \brief Validates this scenario
          * @return validation messages
          */
-        std::vector<std::shared_ptr<Models::Message>> validate() const;
+        std::vector<std::shared_ptr<Logging::Message>> validate() const;
 
     };
 }

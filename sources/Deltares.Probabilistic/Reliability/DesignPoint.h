@@ -25,7 +25,7 @@
 #include <vector>
 
 #include "../Model/Evaluation.h"
-#include "../Model/Message.h"
+#include "../Logging/Message.h"
 #include "../Model/StochastPoint.h"
 #include "../Statistics/StandardNormal.h"
 #include "ReliabilityResult.h"
@@ -50,7 +50,7 @@ namespace Deltares::Reliability
         std::vector<std::shared_ptr<DesignPoint>> ContributingDesignPoints;
         std::vector<std::shared_ptr<ReliabilityResult>> ReliabililityResults;
         std::vector<std::shared_ptr<Models::Evaluation>> Evaluations;
-        std::vector<std::shared_ptr<Models::Message>> Messages;
+        std::vector<std::shared_ptr<Logging::Message>> Messages;
 
         std::shared_ptr<ConvergenceReport> convergenceReport = std::make_shared<ConvergenceReport>();
 

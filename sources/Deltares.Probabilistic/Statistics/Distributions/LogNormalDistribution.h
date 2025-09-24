@@ -47,7 +47,6 @@ namespace Deltares
             bool canFitPrior() override { return true; }
             void fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values) override;
             void fitPrior(const std::shared_ptr<StochastProperties>& stochast, const std::shared_ptr<StochastProperties>& prior, std::vector<double>& values) override;
-            bool isValid(std::shared_ptr<StochastProperties> stochast) override;
             std::vector<double> getSpecialPoints(std::shared_ptr<StochastProperties> stochast) override;
             std::vector<DistributionPropertyType> getParameters() override { return { Location, Scale, Shift }; }
         private:

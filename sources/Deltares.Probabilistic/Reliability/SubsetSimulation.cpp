@@ -204,7 +204,7 @@ namespace Deltares
 #else
                     std::string message = "Rejected " + std::to_string(rejectedSamples) + ", accepted " + std::to_string(acceptedSamples) + " samples";
 #endif
-                    modelRunner->reportMessage(MessageType::Debug, message);
+                    modelRunner->reportMessage(Logging::MessageType::Debug, message);
                 }
 
                 // select samples for the next round

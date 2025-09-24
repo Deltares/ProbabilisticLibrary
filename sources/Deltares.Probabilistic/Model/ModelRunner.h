@@ -34,7 +34,7 @@
 #include "RunSettings.h"
 #include "UConverter.h"
 #include "ZModel.h"
-#include "Message.h"
+#include "../Logging/Message.h"
 #include "ModelSample.h"
 #include "ProgressIndicator.h"
 #include "../Uncertainty/CorrelationMatrixBuilder.h"
@@ -83,7 +83,7 @@ namespace Deltares
 
             void reportResult(std::shared_ptr<Reliability::ReliabilityReport> report);
             void reportProgress(int step, int maxSteps, double reliability = std::nan(""), double convergence = std::nan(""));
-            void reportMessage(MessageType type, std::string text);
+            void reportMessage(Logging::MessageType type, std::string text);
 
             void doTextualProgress(ProgressType type, std::string text);
             bool isVaryingStochast(int index);
@@ -112,7 +112,7 @@ namespace Deltares
             int runDesignPointCounter = 1;
             std::vector<std::shared_ptr<Reliability::ReliabilityResult>> reliabilityResults;
             std::vector<std::shared_ptr<Evaluation>> evaluations;
-            std::vector< std::shared_ptr<Message>> messages;
+            std::vector< std::shared_ptr<Logging::Message>> messages;
             std::shared_ptr<ProgressIndicator> progressIndicator = nullptr;
 
             Evaluation getEvaluationFromSample(std::shared_ptr<ModelSample> sample);

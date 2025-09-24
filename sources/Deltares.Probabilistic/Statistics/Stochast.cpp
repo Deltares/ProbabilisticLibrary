@@ -392,6 +392,19 @@ namespace Deltares
             }
         }
 
+        void Stochast::validate(Logging::ValidationReport& report)
+        {
+            if (IsVariableStochast)
+            {
+                initializeConditionalValues();
+                ValueSet->validate(report, distributionType, truncated, inverted);
+            }
+            else
+            {
+                distribution->validate(report, properties);
+            }
+        }
+
         bool Stochast::isQualitative() const
         {
             return distribution->isQualitative();

@@ -120,7 +120,7 @@ namespace Deltares
                 probabilityValueIds[probabilityValues[id]] = id;
                 break;
             case ObjectType::Message:
-                messages[id] = std::make_shared<Deltares::Models::Message>();
+                messages[id] = std::make_shared<Deltares::Logging::Message>();
                 messageIds[messages[id]] = id;
                 break;
             case ObjectType::Project:
@@ -1254,10 +1254,11 @@ namespace Deltares
 
             if (objectType == ObjectType::Message)
             {
-                std::shared_ptr<Models::Message> message = messages[id];
+                std::shared_ptr<Logging::Message> message = messages[id];
 
-                if (property_ == "type") return Message::getMessageTypeString(message->Type);
+                if (property_ == "type") return Logging::Message::getMessageTypeString(message->Type);
                 else if (property_ == "text") return message->Text;
+                else if (property_ == "subject") return message->Subject;
                 else return "";
             }
             else if (objectType == ObjectType::ModelParameter)
@@ -1362,10 +1363,11 @@ namespace Deltares
 
             if (objectType == ObjectType::Message)
             {
-                std::shared_ptr<Models::Message> message = messages[id];
+                std::shared_ptr<Logging::Message> message = messages[id];
 
-                if (property_ == "type") message->Type = Message::getMessageType(value);
+                if (property_ == "type") message->Type = Logging::Message::getMessageType(value);
                 else if (property_ == "text") message->Text = value;
+                else if (property_ == "subject") message->Subject = value;
             }
             else if (objectType == ObjectType::Stochast)
             {
@@ -2369,7 +2371,7 @@ namespace Deltares
             return reliabilityResultIds[result];
         }
 
-        int ProjectHandler::GetMessageId(std::shared_ptr<Deltares::Models::Message> message, int newId)
+        int ProjectHandler::GetMessageId(std::shared_ptr<Deltares::Logging::Message> message, int newId)
         {
             if (!messageIds.contains(message))
             {
@@ -2406,10 +2408,10 @@ namespace Deltares
             }
         }
 
-        void ProjectHandler::UpdateValidationMessages(const std::vector<std::shared_ptr<Models::Message>>& newMessages)
+        void ProjectHandler::UpdateValidationMessages(const std::vector<std::shared_ptr<Logging::Message>>& newMessages)
         {
             validationMessages.clear();
-            for (const std::shared_ptr<Models::Message>& message : newMessages)
+            for (const std::shared_ptr<Logging::Message>& message : newMessages)
             {
                 validationMessages.push_back(message);
             }

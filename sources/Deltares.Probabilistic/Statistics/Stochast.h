@@ -30,6 +30,7 @@
 #include "DistributionType.h"
 #include "VariableStochastValueSet.h"
 #include "DistributionChangeType.h"
+#include "../Logging/ValidationReport.h"
 #include "../Model/ModelInputParameter.h"
 
 namespace Deltares
@@ -400,6 +401,12 @@ namespace Deltares
              * \return Indication
              */
             bool isValid() override;
+
+            /**
+             * \brief Validates the stochastic parameters and puts the results in a report
+             * \param report The validation report containing the validation results 
+             */
+            void validate(Logging::ValidationReport& report) override;
 
             /**
              * \brief Indicates whether the stochast uses a given parameter type

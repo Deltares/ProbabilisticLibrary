@@ -91,7 +91,7 @@ namespace Deltares
             int GetConditionalValueId(std::shared_ptr<Statistics::VariableStochastValue> conditionalValue, int newId);
             int GetEvaluationId(std::shared_ptr<Deltares::Reliability::Evaluation> evaluation, int newId);
             int GetReliabilityResultId(std::shared_ptr<Deltares::Reliability::ReliabilityResult> result, int newId);
-            int GetMessageId(std::shared_ptr<Deltares::Models::Message> message, int newId);
+            int GetMessageId(std::shared_ptr<Deltares::Logging::Message> message, int newId);
 
             std::shared_ptr <Reliability::DesignPoint> GetDesignPoint(int id)
             {
@@ -109,7 +109,7 @@ namespace Deltares
 
             std::unordered_map<int, std::shared_ptr<Statistics::Stochast>> stochasts;
             std::unordered_map<int, std::shared_ptr<Statistics::ProbabilityValue>> probabilityValues;
-            std::unordered_map<int, std::shared_ptr<Models::Message>> messages;
+            std::unordered_map<int, std::shared_ptr<Logging::Message>> messages;
             std::unordered_map<int, std::shared_ptr<Reliability::ReliabilityProject>> projects;
             std::unordered_map<int, std::shared_ptr<Models::ModelInputParameter>> modelParameters;
             std::unordered_map<int, std::shared_ptr<Reliability::LimitStateFunction>> limitStateFunctions;
@@ -156,13 +156,13 @@ namespace Deltares
             std::unordered_map<std::shared_ptr<Statistics::VariableStochastValue>, int> conditionalValueIds;
             std::unordered_map<std::shared_ptr<Reliability::Evaluation>, int> evaluationIds;
             std::unordered_map<std::shared_ptr<Reliability::ReliabilityResult>, int> reliabilityResultIds;
-            std::unordered_map<std::shared_ptr<Models::Message>, int> messageIds;
+            std::unordered_map<std::shared_ptr<Logging::Message>, int> messageIds;
 
             std::unordered_map <std::string, std::vector<double>> tempValues;
             int tempIntValue = 0;
             
-            void UpdateValidationMessages(const std::vector<std::shared_ptr<Models::Message>>& newMessages);
-            std::vector<std::shared_ptr<Models::Message>> validationMessages;
+            void UpdateValidationMessages(const std::vector<std::shared_ptr<Logging::Message>>& newMessages);
+            std::vector<std::shared_ptr<Logging::Message>> validationMessages;
             std::shared_ptr<Models::ModelProject> GetProject(int id);
         };
     }

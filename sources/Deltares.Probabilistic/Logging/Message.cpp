@@ -19,32 +19,33 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#pragma once
-#include <string>
+#include "Message.h"
+#include "../Utils/probLibException.h"
 
 namespace Deltares
 {
-    namespace Models
+    namespace Logging
     {
-        enum MessageType { Debug, Info, Warning, Error };
-
-        class Message
+        std::string Message::getMessageTypeString(MessageType type)
         {
-        public:
-            Message() { }
-
-            Message(MessageType type, std::string text)
+            switch (type)
             {
-                this->Type = type;
-                this->Text = text;
+            case MessageType::Debug: return "debug";
+            case MessageType::Info: return "info";
+            case MessageType::Warning: return "warning";
+            case MessageType::Error: return "error";
+            default: throw Reliability::probLibException("message type");
             }
+        }
 
-            MessageType Type = MessageType::Error;
-            std::string Text = "";
-
-            static std::string getMessageTypeString(MessageType type);
-            static MessageType getMessageType(std::string type);
-        };
+        MessageType Message::getMessageType(std::string type)
+        {
+            if (type == "debug")  return MessageType::Debug;
+            else if (type == "info") return MessageType::Info;
+            else if (type == "warning") return MessageType::Warning;
+            else if (type == "error") return MessageType::Error;
+            else throw Reliability::probLibException("message type");
+        }
     }
 }
 

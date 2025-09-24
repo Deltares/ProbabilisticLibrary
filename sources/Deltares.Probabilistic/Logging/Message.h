@@ -20,41 +20,32 @@
 // All rights reserved.
 //
 #pragma once
-
-#include <memory>
-
-#include "../../Deltares.Probabilistic/Logging/Message.h"
-#include "../Utils/NativeSupport.h"
+#include <string>
 
 namespace Deltares
 {
-    namespace Models
+    namespace Logging
     {
-        namespace Wrappers
+        enum MessageType { Debug, Info, Warning, Error };
+
+        class Message
         {
-            public enum class MessageType
-            {
-                Debug,
-                Info,
-                Warning,
-                Error
-            };
+        public:
+            Message() { }
 
-            public ref class Message
+            Message(MessageType type, std::string text)
             {
-                Wrappers::MessageType getMessageType(Deltares::Logging::MessageType messageType);
-            public:
-                Message() {}
-                Message(std::shared_ptr<Logging::Message> message)
-                {
-                    this->Type = getMessageType(message->Type);
-                    this->Text = Utils::Wrappers::NativeSupport::toManaged(message->Text);
-                }
+                this->Type = type;
+                this->Text = text;
+            }
 
-                property Wrappers::MessageType Type;
-                property System::String^ Text;
-            };
-        }
+            MessageType Type = MessageType::Error;
+            std::string Text = "";
+            std::string Subject = "";
+
+            static std::string getMessageTypeString(MessageType type);
+            static MessageType getMessageType(std::string type);
+        };
     }
 }
 

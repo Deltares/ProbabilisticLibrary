@@ -74,6 +74,12 @@ namespace Deltares
             bool isValid(DistributionType distributionType, bool truncated, bool inverted);
 
             /**
+             * \brief Validates the stochastic parameters and puts the results in a report
+             * \param report The validation report containing the validation results
+             */
+            void validate(Logging::ValidationReport& report, DistributionType distributionType, bool truncated, bool inverted);
+
+            /**
               * \brief Makes a deep copy of a source
               * \param source Source
               * \return Copy

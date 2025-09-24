@@ -44,11 +44,11 @@ namespace Deltares
             stochast->Maximum = values[1];
         }
 
-        bool UniformDistribution::isValid(std::shared_ptr<StochastProperties> stochast)
+        void UniformDistribution::validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast)
         {
-            return stochast->Minimum <= stochast->Maximum &&
-                std::isfinite(stochast->Minimum) &&
-                std::isfinite(stochast->Maximum);
+            Logging::ValidationSupport::checkFinite(report, stochast->Minimum, "minimum");
+            Logging::ValidationSupport::checkFinite(report, stochast->Maximum, "maximum");
+            Logging::ValidationSupport::checkMinimum(report, stochast->Minimum, stochast->Maximum, "maximum");
         }
 
         bool UniformDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)

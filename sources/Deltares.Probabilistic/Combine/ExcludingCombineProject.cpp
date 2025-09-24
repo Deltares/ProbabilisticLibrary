@@ -32,22 +32,22 @@ namespace Deltares::Reliability
         this->designPoint = combiner->combineDesignPointsExcluding(this->scenarios, this->designPoints);
     }
 
-    std::vector<std::shared_ptr<Models::Message>> ExcludingCombineProject::validate() const
+    std::vector<std::shared_ptr<Logging::Message>> ExcludingCombineProject::validate() const
     {
         const double margin = 1E-10;
 
-        std::vector<std::shared_ptr<Models::Message>> messages;
+        std::vector<std::shared_ptr<Logging::Message>> messages;
 
         if (this->designPoints.size() != this->scenarios.size())
         {
-            messages.push_back(std::make_shared<Message>(MessageType::Error, "Number of scenarios should be equal to number of design points."));
+            messages.push_back(std::make_shared<Logging::Message>(Logging::MessageType::Error, "Number of scenarios should be equal to number of design points."));
         }
 
         double sumProbabilities = 0;
         for (std::shared_ptr<Statistics::Scenario> scenario : this->scenarios)
         {
             sumProbabilities += scenario->probability;
-            for (std::shared_ptr<Message> scenarioMessage : scenario->validate())
+            for (std::shared_ptr<Logging::Message> scenarioMessage : scenario->validate())
             {
                 messages.push_back(scenarioMessage);
             }
@@ -55,7 +55,7 @@ namespace Deltares::Reliability
 
         if (std::abs(1 - sumProbabilities) > margin)
         {
-            messages.push_back(std::make_shared<Message>(MessageType::Error, "Scenario probabilities should add up to 1."));
+            messages.push_back(std::make_shared<Logging::Message>(Logging::MessageType::Error, "Scenario probabilities should add up to 1."));
         }
 
         return messages;

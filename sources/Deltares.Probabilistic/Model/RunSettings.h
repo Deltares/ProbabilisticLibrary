@@ -22,7 +22,7 @@
 #pragma once
 #include <memory>
 
-#include "Message.h"
+#include "../Logging/Message.h"
 #include "ProxySettings.h"
 
 namespace Deltares
@@ -48,7 +48,7 @@ namespace Deltares
             bool RunAtDesignPoint = false;
             bool ExtendedLoggingAtDesignPoint = false;
             int MaxMessages = 1000;
-            MessageType LowestMessageType = MessageType::Warning;
+            Logging::MessageType LowestMessageType = Logging::MessageType::Warning;
             bool UseOpenMPinReliability = true; // false: parallelization only using getZValues; needed for Python
 
             std::shared_ptr<ProxySettings> proxySettings = nullptr;

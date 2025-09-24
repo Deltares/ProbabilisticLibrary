@@ -29,7 +29,6 @@ namespace Deltares
         class WeibullDistribution : public Distribution
         {
             void initialize(std::shared_ptr<StochastProperties> stochast, std::vector<double> values) override;
-            bool isValid(std::shared_ptr<StochastProperties> stochast) override;
             double getXFromU(std::shared_ptr<StochastProperties> stochast, double u) override;
             double getUFromX(std::shared_ptr<StochastProperties> stochast, double x) override;
             bool isVarying(std::shared_ptr<StochastProperties> stochast) override;

@@ -50,12 +50,12 @@ namespace Deltares::Uncertainty
         // warnings and errors are presented.
         if (nStochasts > 11)
         {
-            modelRunner->reportMessage(MessageType::Error, "Numerical integration with more than 11 stochastic parameters. This is practically impossible.");
+            modelRunner->reportMessage(Logging::MessageType::Error, "Numerical integration with more than 11 stochastic parameters. This is practically impossible.");
             return UncertaintyResult();
         }
         else if (nStochasts > 4)
         {
-            modelRunner->reportMessage(MessageType::Warning, "Numerical integration with more than 4 stochastic parameters. Large computation time is possible.");
+            modelRunner->reportMessage(Logging::MessageType::Warning, "Numerical integration with more than 4 stochastic parameters. Large computation time is possible.");
         }
 
         std::vector<double> zSamples;

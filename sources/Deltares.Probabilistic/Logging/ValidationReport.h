@@ -20,41 +20,45 @@
 // All rights reserved.
 //
 #pragma once
-
 #include <memory>
-
-#include "../../Deltares.Probabilistic/Logging/Message.h"
-#include "../Utils/NativeSupport.h"
+#include <vector>
+#include "Message.h"
 
 namespace Deltares
 {
-    namespace Models
+    namespace Logging
     {
-        namespace Wrappers
+        /**
+         * \brief Contains the results of validation of a certain object
+         */
+        class ValidationReport
         {
-            public enum class MessageType
-            {
-                Debug,
-                Info,
-                Warning,
-                Error
-            };
+        public:
+            ValidationReport() = default;
 
-            public ref class Message
+            /**
+             * \brief Validation messages
+             */
+            std::vector<std::shared_ptr<Message>> messages;
+
+            /**
+             * \brief Indicates whether the validated object is valid
+             * \return Indication
+             */
+            bool isValid() const
             {
-                Wrappers::MessageType getMessageType(Deltares::Logging::MessageType messageType);
-            public:
-                Message() {}
-                Message(std::shared_ptr<Logging::Message> message)
+                for (const std::shared_ptr<Message>& message : messages)
                 {
-                    this->Type = getMessageType(message->Type);
-                    this->Text = Utils::Wrappers::NativeSupport::toManaged(message->Text);
+                    if (message->Type == Error)
+                    {
+                        return false;
+                    }
                 }
 
-                property Wrappers::MessageType Type;
-                property System::String^ Text;
-            };
-        }
+                return true;
+            }
+        };
+
     }
 }
 

@@ -46,7 +46,7 @@ namespace Deltares::Reliability
         /**
          * \brief Gets an array of validation messages
          */
-        std::vector<std::shared_ptr<Models::Message>> validate() const;
+        std::vector<std::shared_ptr<Logging::Message>> validate() const;
 
         /**
          * \brief Indicates whether the settings are valid

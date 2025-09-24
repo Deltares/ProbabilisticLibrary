@@ -27,14 +27,14 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            Wrappers::MessageType Message::getMessageType(Deltares::Models::MessageType messageType)
+            Wrappers::MessageType Message::getMessageType(Deltares::Logging::MessageType messageType)
             {
                 switch (messageType)
                 {
-                case Models::Debug: return Wrappers::MessageType::Debug;
-                case Models::Info: return Wrappers::MessageType::Info;
-                case Models::Warning: return Wrappers::MessageType::Warning;
-                case Models::Error: return Wrappers::MessageType::Error;
+                case Logging::Debug: return Wrappers::MessageType::Debug;
+                case Logging::Info: return Wrappers::MessageType::Info;
+                case Logging::Warning: return Wrappers::MessageType::Warning;
+                case Logging::Error: return Wrappers::MessageType::Error;
                 default: throw gcnew System::NotSupportedException("Message type");
                 }
             }
