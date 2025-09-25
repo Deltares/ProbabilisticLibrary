@@ -31,9 +31,10 @@ namespace Deltares
 {
     namespace Statistics
     {
-        bool GeneralizedParetoDistribution::isValid(std::shared_ptr<StochastProperties> stochast)
+        void GeneralizedParetoDistribution::validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast)
         {
-            return stochast->Shape > 0 && stochast->Scale >= 0;
+            Logging::ValidationSupport::checkMinimumNonInclusive(report, 0, stochast->Shape, "shape");
+            Logging::ValidationSupport::checkMinimum(report, 0, stochast->Scale, "scale");
         }
 
         bool GeneralizedParetoDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)

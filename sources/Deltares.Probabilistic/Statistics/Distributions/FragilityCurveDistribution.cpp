@@ -82,9 +82,14 @@ namespace Deltares
             return fragilityValues.size() >= 2 && Numeric::NumericSupport::areEqual(fragilityValues[fragilityValues.size() - 1]->Reliability, fragilityValues[fragilityValues.size() - 2]->Reliability, precision);
         }
 
-        bool FragilityCurveDistribution::isValid(std::shared_ptr<StochastProperties> stochast)
+        void FragilityCurveDistribution::validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast)
         {
-            return stochast->FragilityValues.size() > 1;
+            Logging::ValidationSupport::checkMinimum(report, 2, stochast->FragilityValues.size(), "fragility values");
+
+            for (std::shared_ptr<FragilityValue> fragilityValue : stochast->FragilityValues)
+            {
+                fragilityValue->validate(report);
+            }
         }
 
         double FragilityCurveDistribution::getMean(std::shared_ptr<StochastProperties> stochast)

@@ -107,9 +107,10 @@ namespace Deltares
             return stochast->Minimum != stochast->Maximum && this->innerDistribution->isVarying(stochast);
         }
 
-        bool TruncatedDistribution::isValid(std::shared_ptr<StochastProperties> stochast)
+        void TruncatedDistribution::validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast)
         {
-            return stochast->Minimum <= stochast->Maximum && this->innerDistribution->isValid(stochast);
+            Logging::ValidationSupport::checkMinimum(report, stochast->Minimum, stochast->Maximum, "maximum");
+            this->innerDistribution->validate(report, stochast);
         }
 
         double TruncatedDistribution::getMean(std::shared_ptr<StochastProperties> stochast)

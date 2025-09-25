@@ -181,10 +181,10 @@ namespace Deltares
             copyFromInverted(stochast, invertedStochast);
         }
 
-        bool InvertedDistribution::isValid(std::shared_ptr<StochastProperties> stochast)
+        void InvertedDistribution::validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast)
         {
             const std::shared_ptr<StochastProperties> invertedStochast = getInvertedStochast(stochast);
-            return this->innerDistribution->isValid(invertedStochast);
+            this->innerDistribution->validate(report, invertedStochast);
         }
 
         double InvertedDistribution::getLogLikelihood(std::shared_ptr<StochastProperties> stochast, double x)

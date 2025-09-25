@@ -23,6 +23,8 @@
 
 #include <memory>
 #include "../Utils/DirtySupport.h"
+#include "../Logging/ValidationReport.h"
+#include "../Logging/ValidationSupport.h"
 
 namespace Deltares
 {
@@ -92,11 +94,18 @@ namespace Deltares
             }
 
             /**
-             * \brief Indicates whether the properties of the histogram value are valid
+             * \brief Reports whether the properties of the histogram value are valid
+             * \param report Report in which the validity is reported
+             * \param previous Previous histogram value in the stochast
              */
-            bool isValid() const 
+            void validate(Logging::ValidationReport& report, std::shared_ptr<HistogramValue> previous) const
             {
-                return UpperBound >= LowerBound;
+                Logging::ValidationSupport::checkMinimum(report, 0, Amount, "amount");
+                Logging::ValidationSupport::checkMinimum(report, LowerBound, UpperBound, "upper bound");
+                if (previous != nullptr)
+                {
+                    Logging::ValidationSupport::checkMinimum(report, previous->UpperBound, LowerBound, "lower bound");
+                }
             }
 
             void setDirtyFunction(Utils::SetDirtyLambda setDirtyLambda)

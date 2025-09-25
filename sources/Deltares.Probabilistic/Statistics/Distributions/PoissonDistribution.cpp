@@ -37,9 +37,9 @@ namespace Deltares
             return stochast->Location > 0.0;
         }
 
-        bool PoissonDistribution::isValid(std::shared_ptr<StochastProperties> stochast)
+        void PoissonDistribution::validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast)
         {
-            return stochast->Location >= 0.0;
+            Logging::ValidationSupport::checkMinimum(report, 0, stochast->Location, "location");
         }
 
         double PoissonDistribution::getMean(std::shared_ptr<StochastProperties> stochast)

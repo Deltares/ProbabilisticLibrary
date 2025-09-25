@@ -226,16 +226,16 @@ namespace Deltares::Statistics
 
         /**
          * \brief Indicates whether parameters of a stochast have valid values
-         * \remark Only parameters which are used by the distribution are evaluated
          * \param stochast Stochast having the parameters
          * \return Indication valid parameters
          */
-        virtual bool isValid(std::shared_ptr<StochastProperties> stochast);
+        bool isValid(std::shared_ptr<StochastProperties> stochast);
 
         /**
          * \brief Validates the stochastic parameters and puts the results in a report
          * \param report The validation report containing the validation results
          * \param stochast Stochast having the parameters
+         * \remark Only parameters which are used by the distribution are evaluated
          */
         virtual void validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast);
 

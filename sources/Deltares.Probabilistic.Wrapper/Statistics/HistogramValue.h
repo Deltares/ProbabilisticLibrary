@@ -88,11 +88,6 @@ namespace Deltares
                     }
                 }
 
-                bool IsValid()
-                {
-                    return shared->object->isValid();
-                }
-
                 property double Size
                 {
                     double get() { return shared->object->getSize(); }
