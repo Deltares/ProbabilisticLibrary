@@ -33,31 +33,14 @@ namespace Deltares
 
             bool SensitivityProject::IsValid()
             {
-                shared->object->stochasts.clear();
-
-                for (size_t i = 0; i < this->Stochasts->Count; i++)
-                {
-                    shared->object->stochasts.push_back(this->Stochasts[i]->GetStochast());
-                }
-
-                shared->object->correlationMatrix = this->CorrelationMatrix->GetCorrelationMatrix();
-                shared->object->sensitivityMethod = this->SensitivityMethod->GetNativeSensitivityMethod();
-
+                update();
                 return shared->object->isValid();
             }
 
             Wrappers::SensitivityResult^ SensitivityProject::GetResult()
             {
-                shared->object->stochasts.clear();
+                update();
 
-                for (size_t i = 0; i < this->Stochasts->Count; i++)
-                {
-                    shared->object->stochasts.push_back(this->Stochasts[i]->GetStochast());
-                }
-
-                shared->object->correlationMatrix = this->CorrelationMatrix->GetCorrelationMatrix();
-                shared->object->sensitivityMethod = this->SensitivityMethod->GetNativeSensitivityMethod();
-                //shared->object->runSettings = this->Settings->GetSettings();
                 shared->object->progressIndicator = this->ProgressIndicator != nullptr ? this->ProgressIndicator->GetProgressIndicator() : nullptr;
 
                 Models::ZLambda zLambda = getZLambda();
@@ -72,6 +55,19 @@ namespace Deltares
                 this->Result = gcnew Wrappers::SensitivityResult(result, this->Stochasts);
 
                 return this->Result;
+            }
+
+            void SensitivityProject::update()
+            {
+                shared->object->stochasts.clear();
+
+                for (size_t i = 0; i < this->Stochasts->Count; i++)
+                {
+                    shared->object->stochasts.push_back(this->Stochasts[i]->GetStochast());
+                }
+
+                shared->object->correlationMatrix = this->CorrelationMatrix->GetCorrelationMatrix();
+                shared->object->sensitivityMethod = this->SensitivityMethod->GetNativeSensitivityMethod();
             }
 
             Models::ZLambda SensitivityProject::getZLambda()
