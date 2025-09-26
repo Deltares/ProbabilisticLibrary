@@ -29,6 +29,20 @@ namespace Deltares
 {
     namespace Logging
     {
+        void ValidationSupport::checkNotNull(Logging::ValidationReport& report, const bool value, const
+            std::string& property, std::string subject, MessageType messageType)
+        {
+            if (value)
+            {
+                std::shared_ptr<Message> message = std::make_shared<Message>();
+                message->Text = property + " is not assigned";
+                message->Type = messageType;
+                message->Subject = std::move(subject);
+
+                report.messages.push_back(message);
+            }
+        }
+
         void ValidationSupport::checkFinite(Logging::ValidationReport& report, double value, const
             std::string& property, std::string subject, MessageType messageType)
         {

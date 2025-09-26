@@ -20,6 +20,10 @@
 // All rights reserved.
 //
 #pragma once
+
+#include "../Logging/ValidationReport.h"
+#include "../Logging/ValidationSupport.h"
+
 namespace Deltares
 {
     namespace Models
@@ -32,10 +36,12 @@ namespace Deltares
             bool ShouldUpdateFinalSteps = false;
             double ThresholdOffset = 0;
 
-            bool isValid()
+            void validate(Logging::ValidationReport& report)
             {
-                return !IsProxyModel ||
-                       ThresholdOffset >= 0;
+                if (IsProxyModel)
+                {
+                    Logging::ValidationSupport::checkMinimum(report, 0, ThresholdOffset, "threshold offset");
+                }
             }
         };
     }

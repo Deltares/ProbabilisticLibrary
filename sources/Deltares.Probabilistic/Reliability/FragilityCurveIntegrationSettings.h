@@ -49,12 +49,12 @@ namespace Deltares
             std::shared_ptr<StochastSettingsSet> StochastSet = std::make_shared<StochastSettingsSet>();
 
             /**
-             * \brief Indicates whether these settings have valid values
-             * \return Indication
+             * \brief Reports whether the settings have valid values
+             * \param report Report in which the validity is reported
              */
-            bool isValid()
+            void validate(Logging::ValidationReport& report) const
             {
-                return StepSize >= 1E-6;
+                Logging::ValidationSupport::checkMinimum(report, 1E-6, StepSize, "step size");
             }
         };
     }

@@ -168,11 +168,6 @@ namespace Deltares
 
                     return shared->object;
                 }
-
-                bool IsValid()
-                {
-                    return shared->object->isValid();
-                }
             };
         }
     }

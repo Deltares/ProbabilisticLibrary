@@ -381,15 +381,9 @@ namespace Deltares
 
         bool Stochast::isValid()
         {
-            if (IsVariableStochast)
-            {
-                initializeConditionalValues();
-                return ValueSet->isValid(distributionType, truncated, inverted);
-            }
-            else
-            {
-                return distribution->isValid(properties);
-            }
+            Logging::ValidationReport report;
+            this->validate(report);
+            return report.isValid();
         }
 
         void Stochast::validate(Logging::ValidationReport& report)

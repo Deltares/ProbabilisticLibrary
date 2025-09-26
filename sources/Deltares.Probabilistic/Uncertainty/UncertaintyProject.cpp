@@ -101,11 +101,10 @@ namespace Deltares::Uncertainty
         return result;
     }
 
-    bool UncertaintyProject::isValid()
+    void UncertaintyProject::validate(Logging::ValidationReport& report)
     {
-        return ModelProject::isValid() &&
-            runSettings != nullptr && runSettings->isValid() &&
-            settings->isValid();
+        ModelProject::validate(report);
+        settings->validate(report);
     }
 }
 

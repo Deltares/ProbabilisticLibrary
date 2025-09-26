@@ -57,12 +57,16 @@ namespace Deltares::Sensitivity
         return singleVariation;
     }
 
-    bool SensitivitySettings::isValid() const
+    /**
+     * \brief Reports whether the settings have valid values
+     * \param report Report in which the validity is reported
+     */
+    void SensitivitySettings::validate(Logging::ValidationReport& report) const
     {
         switch (this->SensitivityMethod)
         {
-        case SensitivityMethodType::SensitivitySobol: return GetSobolMethod()->Settings->isValid();
-        case SensitivityMethodType::SensitivitySingleVariation: return GetSingleVariationMethod()->Settings->isValid();
+        case SensitivityMethodType::SensitivitySobol: GetSobolMethod()->Settings->validate(report);
+        case SensitivityMethodType::SensitivitySingleVariation: return GetSingleVariationMethod()->Settings->validate(report);
         default: throw Reliability::probLibException("Sensitivity method");
         }
     }

@@ -21,6 +21,8 @@
 //
 #pragma once
 #include <string>
+#include "../Logging/ValidationReport.h"
+#include "../Logging/ValidationSupport.h"
 
 namespace Deltares
 {
@@ -41,9 +43,9 @@ namespace Deltares
             double StepSize = 0.3;
             bool OnlyInitializationAllowed = false;
 
-            bool isValid()
+            void validate(Logging::ValidationReport& report) const
             {
-                return StepSize >= 0.01;
+                Logging::ValidationSupport::checkMinimum(report, 0.01, StepSize, "step size");
             }
 
             static std::string getGradientTypeString(GradientType method);

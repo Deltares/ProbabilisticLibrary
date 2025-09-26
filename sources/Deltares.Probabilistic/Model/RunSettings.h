@@ -22,7 +22,8 @@
 #pragma once
 #include <memory>
 
-#include "../Logging/Message.h"
+#include "../Logging/ValidationReport.h"
+#include "../Logging/ValidationSupport.h"
 #include "ProxySettings.h"
 
 namespace Deltares
@@ -53,9 +54,9 @@ namespace Deltares
 
             std::shared_ptr<ProxySettings> proxySettings = nullptr;
 
-            bool isValid()
+            void validate(Logging::ValidationReport& report) const
             {
-                return MaxParallelProcesses >= 1;
+                Logging::ValidationSupport::checkMinimum(report, 1, MaxParallelProcesses, "max parallel processes");
             }
 
             bool IsProxyModel()

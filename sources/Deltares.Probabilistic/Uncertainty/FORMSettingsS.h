@@ -74,12 +74,13 @@ namespace Deltares::Uncertainty
         std::shared_ptr<Models::RunSettings> RunSettings = std::make_shared<Models::RunSettings>();
 
         /**
-         * \brief Indicates whether the settings have valid values
-         * \return Indication
+         * \brief Reports whether the settings have valid values
+         * \param report Report in which the validity is reported
          */
-        bool isValid()
+        void validate(Logging::ValidationReport& report) const
         {
-            return this->GradientSettings->isValid();
+            GradientSettings->validate(report);
+            RunSettings->validate(report);
         }
     };
 }

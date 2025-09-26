@@ -73,6 +73,12 @@ namespace Deltares
              */
             virtual bool isValid();
 
+            /**
+             * \brief Reports whether these settings have valid values
+             * \param report Report in which the validity is reported
+             */
+            virtual void validate(Logging::ValidationReport& report);
+
         private:
             std::unordered_map<std::string, std::shared_ptr<Statistics::Stochast>> existingStochasts;
         };

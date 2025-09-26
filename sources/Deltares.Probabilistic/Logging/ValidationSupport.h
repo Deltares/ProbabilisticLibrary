@@ -31,6 +31,8 @@ namespace Deltares
         class ValidationSupport
         {
         public:
+            static void checkNotNull(Logging::ValidationReport& report, const bool value, const
+                std::string& property, std::string subject = "", MessageType messageType = MessageType::Error);
             static void checkFinite(Logging::ValidationReport& report, double value, const
                 std::string& property, std::string subject = "", MessageType messageType = MessageType::Error);
             static void checkMinimum(Logging::ValidationReport& report, double minimum, double value, const

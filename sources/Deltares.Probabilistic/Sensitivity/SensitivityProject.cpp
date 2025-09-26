@@ -91,11 +91,10 @@ namespace Deltares::Sensitivity
         return result;
     }
 
-    bool SensitivityProject::isValid()
+    void SensitivityProject::validate(Logging::ValidationReport& report)
     {
-        return ModelProject::isValid() &&
-            runSettings != nullptr && runSettings->isValid() &&
-            settings->isValid();
+        ModelProject::validate(report);
+        settings->validate(report);
     }
 }
 

@@ -115,11 +115,6 @@ namespace Deltares
 
                 Wrappers::ProxySettings^ ProxySettings = gcnew Wrappers::ProxySettings();
 
-                bool IsValid()
-                {
-                    return shared->object->isValid();
-                }
-
                 std::shared_ptr<Models::RunSettings> GetSettings()
                 {
                     shared->object->proxySettings = this->ProxySettings->GetSettings();

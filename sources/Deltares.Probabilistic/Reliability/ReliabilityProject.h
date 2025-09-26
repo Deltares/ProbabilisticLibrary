@@ -75,10 +75,10 @@ namespace Deltares
             std::shared_ptr<Statistics::Stochast> fragilityCurve = nullptr;
 
             /**
-             * \brief Indicates whether the input is valid
-             * \return Indication
+             * \brief Reports whether these settings have valid values
+             * \param report Report in which the validity is reported
              */
-            bool isValid() override;
+            void validate(Logging::ValidationReport& report) override;
 
             /**
              * \brief Performs the reliability calculation

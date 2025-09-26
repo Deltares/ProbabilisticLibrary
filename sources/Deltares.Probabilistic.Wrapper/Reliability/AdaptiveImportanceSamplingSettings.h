@@ -153,11 +153,6 @@ namespace Deltares
                     return nullptr;
                 }
 
-                bool IsValid()
-                {
-                    return shared->object->isValid();
-                }
-
                 std::shared_ptr<Reliability::AdaptiveImportanceSamplingSettings> GetSettings()
                 {
                     shared->object->startPointSettings = StartPointSettings->GetSettings();

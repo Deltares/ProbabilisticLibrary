@@ -44,8 +44,6 @@ namespace Deltares
 
                 System::Object^ GetSettings() override { return Settings; }
 
-                bool IsValid() override { return Settings->IsValid(); }
-
                 std::shared_ptr<Uncertainty::UncertaintyMethod> GetNativeSensitivityMethod() override
                 {
                     shared->object->Settings = Settings->GetSettings();

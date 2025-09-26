@@ -56,16 +56,20 @@ namespace Deltares
              */
             std::shared_ptr<Models::RunSettings> RunSettings = std::make_shared<Models::RunSettings>();
 
-            bool isValid()
+            /**
+             * \brief Reports whether the settings have valid values
+             * \param report Report in which the validity is reported
+             */
+            void validate(Logging::ValidationReport& report) const
             {
-                return MinimumSamples >= 1;
+                Logging::ValidationSupport::checkMinimum(report, 1, MinimumSamples, "minimum samples");
+                runSettings->validate(report);
             }
 
             /**
              * \brief Settings for performing model runs
              */
             std::shared_ptr<Models::RunSettings> runSettings = std::make_shared<Models::RunSettings>();
-
         };
     }
 }

@@ -22,6 +22,8 @@
 #pragma once
 
 #include "../Math/Random.h"
+#include "../Logging/ValidationReport.h"
+#include "../Logging/ValidationSupport.h"
 
 namespace Deltares
 {
@@ -85,12 +87,13 @@ namespace Deltares
             int MaxSamples = 500;
 
             /**
-             * \brief Indicates whether these settings are valid
+             * \brief Reports whether the settings have valid values
+             * \param report Report in which the validity is reported
              * \return Indication
              */
-            bool isValid()
+            void validate(Logging::ValidationReport& report) const
             {
-                return MaxClusters >= 1;
+                Logging::ValidationSupport::checkMinimum(report, 1, MaxClusters, "max clusters");
             }
 
             /**

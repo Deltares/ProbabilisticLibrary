@@ -82,11 +82,10 @@ namespace Deltares
             return this->fragilityCurve;
         }
 
-        bool ReliabilityProject::isValid()
+        void ReliabilityProject::validate(Logging::ValidationReport& report)
         {
-            return  ModelProject::isValid() &&
-                runSettings != nullptr && runSettings->isValid() &&
-                settings->isValid();
+            ModelProject::validate(report);
+            settings->validate(report);
         }
     }
 }

@@ -49,7 +49,14 @@ namespace Deltares
              */
             std::shared_ptr<StochastSettingsSet> StochastSet = std::make_shared<StochastSettingsSet>();
 
-            bool isValid() const { return MaximumIterations > 0; }
+            /**
+             * \brief Reports whether the settings have valid values
+             * \param report Report in which the validity is reported
+             */
+            void validate(Logging::ValidationReport& report) const
+            {
+                Logging::ValidationSupport::checkMinimum(report, 1, MaximumIterations, "maximum iterations");
+            }
 
             /**
              * \brief Settings for performing model runs

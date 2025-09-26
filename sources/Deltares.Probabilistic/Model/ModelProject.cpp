@@ -70,16 +70,20 @@ namespace Deltares
 
         bool ModelProject::isValid()
         {
+            Logging::ValidationReport report;
+            this->validate(report);
+            return report.isValid();
+        }
+
+        void ModelProject::validate(Logging::ValidationReport& report)
+        {
             for (std::shared_ptr<Statistics::Stochast> stochast : stochasts)
             {
-                if (stochast == nullptr || !stochast->isValid())
-                {
-                    return false;
-                }
+                stochast->validate(report);
             }
 
-            return  this->model != nullptr;
-        }
+            Logging::ValidationSupport::checkNotNull(report, model == nullptr, "model");
+       }
     }
 }
 

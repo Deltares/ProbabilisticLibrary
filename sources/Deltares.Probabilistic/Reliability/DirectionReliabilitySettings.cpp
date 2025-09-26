@@ -23,11 +23,19 @@
 
 namespace Deltares::Reliability
 {
-    bool DirectionReliabilitySettings::IsValid() const
+    /**
+     * \brief Reports whether the settings have valid values
+     * \param report Report in which the validity is reported
+     */
+    void DirectionReliabilitySettings::validate(Logging::ValidationReport& report) const
     {
-        return Dsdu >= 0.01 && EpsilonUStepSize >= 0.00001 && EpsilonZStepSize >= 0.00001
-                            && MaximumIterations >= 1 && MaximumLengthU >= 1;
+        Logging::ValidationSupport::checkMinimum(report, 0.01, Dsdu, "dsdu");
+        Logging::ValidationSupport::checkMinimum(report, 0.00001, EpsilonUStepSize, "epsilon u step size");
+        Logging::ValidationSupport::checkMinimum(report, 0.00001, EpsilonZStepSize, "epsilon z step size");
+        Logging::ValidationSupport::checkMinimum(report, 1, MaximumIterations, "maximum iterations");
+        Logging::ValidationSupport::checkMinimum(report, 1, MaximumLengthU, "maximum length u");
     }
+
 
     int DirectionReliabilitySettings::SectionCount() const
     {

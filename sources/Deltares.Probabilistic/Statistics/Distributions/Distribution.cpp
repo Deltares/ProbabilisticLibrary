@@ -194,9 +194,7 @@ namespace Deltares
         bool Distribution::isValid(std::shared_ptr<StochastProperties> stochast)
         {
             Logging::ValidationReport report;
-
             this->validate(report, stochast);
-
             return report.isValid();
         }
 

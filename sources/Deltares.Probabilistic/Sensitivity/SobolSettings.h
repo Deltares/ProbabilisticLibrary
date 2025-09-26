@@ -43,12 +43,14 @@ namespace Deltares::Sensitivity
         std::shared_ptr<Models::RunSettings> RunSettings = std::make_shared<Models::RunSettings>();
 
         /**
-         * \brief Indicates whether the settings have valid values
-         * \return Indication
+         * \brief Reports whether the settings have valid values
+         * \param report Report in which the validity is reported
          */
-        bool isValid() const
+        void validate(Logging::ValidationReport& report) const
         {
-            return Iterations > 0;
+            Logging::ValidationSupport::checkMinimum(report, 1, Iterations, "iterations");
+
+            RunSettings->validate(report);
         }
     };
 }

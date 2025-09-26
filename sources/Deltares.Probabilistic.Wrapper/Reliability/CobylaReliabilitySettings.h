@@ -109,11 +109,6 @@ namespace Deltares
                     return nullptr;
                 }
 
-                bool IsValid()
-                {
-                    return shared->object->isValid();
-                }
-
                 std::shared_ptr<Reliability::CobylaReliabilitySettings> GetSettings()
                 {
                     shared->object->StochastSet->stochastSettings.clear();
