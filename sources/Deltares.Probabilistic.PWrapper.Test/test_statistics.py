@@ -182,10 +182,10 @@ class Test_statistics(unittest.TestCase):
         values1 = stochast1.get_series()
         pdf1 = [stochast1.get_pdf(x) for x in values1]
 
-        values2 = stochast2.get_series()
+        values2 = stochast2.get_series(0)
         pdf2 = [stochast2.get_pdf(x) for x in values2]
 
-        values3 = stochast3.get_series(number_of_points=0)
+        values3 = stochast3.get_series(xmin = -1, xmax = 10, number_of_points=0)
         pdf3 = [stochast3.get_pdf(x) for x in values3]
 
         plt.close()
@@ -200,6 +200,9 @@ class Test_statistics(unittest.TestCase):
 
         plt.grid()
         plt.legend()
+
+        # uncomment next line to display plot
+        #plt.show()
 
         test_file_name = 'multiple-stochasts.png'
         if os.path.exists(test_file_name):

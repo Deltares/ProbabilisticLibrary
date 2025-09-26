@@ -694,15 +694,34 @@ class Stochast(FrozenObject):
 
 	def get_series(self, xmin : float = None, xmax : float = None, number_of_points : int = None) -> list[float]:
 
+		"""Gets a list of x values which is useful for plotting.
+
+        The list of x values will be generated between a minimum and maximum with equal distance.
+        The distance is based on the number points. The minimum and maximum are included always.
+        The list of values will be extended with x-values to plot discontinuity points properly.
+
+        Parameters
+        ----------
+        xmin : float, optional
+            The minimum x value (default is None, a proper minimum value will be used)
+
+        xmax : float, optional
+            The maximum x value (default is None, a proper maximum value will be used)
+
+        number_of_points : int, optional
+            The number of points to be generated (default is None)
+
+        """
+
 		import numpy as np
 
-		limit_special_values = True
+		limit_special_values_min = xmin != None
+		limit_special_values_max = xmax != None
+
 		if xmin is None:
 			xmin = self.get_x_from_u(0) - 4 * (self.get_x_from_u(0) - self.get_x_from_u(-1))
-			limit_special_values = False
 		if xmax is None:
 			xmax = self.get_x_from_u(0) + 4 * (self.get_x_from_u(1) - self.get_x_from_u(0))
-			limit_special_values = False
 
 		xmin, xmax = NumericUtils.order(xmin, xmax)
 		xmin, xmax = NumericUtils.make_different(xmin, xmax)
@@ -710,17 +729,18 @@ class Stochast(FrozenObject):
 		if number_of_points is None or number_of_points < 0:
 			number_of_points = 1000
 
-		if number_of_points == 0:
-			values = []
-		elif number_of_points == 1:
-			values = [(xmin + xmax)/2]
-		elif number_of_points == 2:
+        # ignore too few points, the minimum and maxiumum values are alawys included
+		if number_of_points <= 2:
 			values = [xmin, xmax]
 		else:
-			values = np.arange(xmin, xmax, (xmax - xmin) / number_of_points).tolist()
+			increment = (xmax - xmin) / number_of_points
+            # add increment to include maximum
+			values = np.arange(xmin, xmax + increment, increment).tolist()
 		add_values = self.get_special_values()
-		if limit_special_values:
-			add_values = [x for x in add_values if x >= xmin and x <= xmax]
+		if limit_special_values_min:
+			add_values = [x for x in add_values if x >= xmin]
+		if limit_special_values_max:
+			add_values = [x for x in add_values if x <= xmax]
 		values.extend(add_values)
 		values.sort()
 
