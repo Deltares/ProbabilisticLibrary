@@ -159,6 +159,36 @@ class Test_statistics(unittest.TestCase):
 
         self.assertTrue(pl == None)
 
+    def test_series(self):
+        stochast1 = Stochast()
+        stochast1.name = 'stochast 1'
+        stochast1.distribution = DistributionType.normal
+        stochast1.mean = 2
+        stochast1.deviation = 0.4
+
+        self.assertEqual(2, len(stochast1.get_series(number_of_points=0)))
+        self.assertEqual(2, len(stochast1.get_series(number_of_points=1)))
+        self.assertEqual(2, len(stochast1.get_series(number_of_points=2)))
+        self.assertEqual(3, len(stochast1.get_series(number_of_points=3)))
+
+        stochast2 = Stochast()
+        stochast2.name = 'stochast 2'
+        stochast2.distribution = DistributionType.log_normal
+        stochast2.mean = 2
+        stochast2.deviation = 0.2
+        stochast2.shift = 0.5
+
+        special = stochast2.get_special_values();
+        self.assertEqual(1, len(special))
+        self.assertAlmostEqual(0.5, special[0], delta=margin)
+
+        self.assertEqual(3, len(stochast2.get_series(number_of_points=0)))
+        self.assertEqual(3, len(stochast2.get_series(number_of_points=1)))
+        self.assertEqual(3, len(stochast2.get_series(number_of_points=2)))
+        self.assertEqual(4, len(stochast2.get_series(number_of_points=3)))
+
+        self.assertEqual(3, len(stochast2.get_series(xmin = 1, number_of_points=3)))
+
     def test_multiple_plot(self):
         stochast1 = Stochast()
         stochast1.name = 'stochast 1'

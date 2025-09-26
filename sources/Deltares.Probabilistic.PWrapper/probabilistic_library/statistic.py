@@ -733,7 +733,7 @@ class Stochast(FrozenObject):
 		if number_of_points <= 2:
 			values = [xmin, xmax]
 		else:
-			increment = (xmax - xmin) / number_of_points
+			increment = (xmax - xmin) / (number_of_points - 1)
             # add increment to include maximum
 			values = np.arange(xmin, xmax + increment, increment).tolist()
 		add_values = self.get_special_values()
