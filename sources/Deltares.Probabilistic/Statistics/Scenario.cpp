@@ -24,22 +24,13 @@
 
 namespace Deltares::Statistics
 {
-    std::vector<std::shared_ptr<Logging::Message>> Scenario::validate() const
+    void Scenario::validate(Logging::ValidationReport& report) const
     {
         const double margin = 1E-10;
 
-        std::vector<std::shared_ptr<Logging::Message>> messages;
-
-        if (std::isnan(this->probability))
-        {
-            messages.push_back(std::make_shared<Logging::Message>(Logging::MessageType::Error, "Scenario probability should not be nan."));
-        }
-        else if (this->probability < -margin || this->probability > 1 + margin)
-        {
-            messages.push_back(std::make_shared<Logging::Message>(Logging::MessageType::Error, "Scenario probability should be in range [0, 1]."));
-        }
-
-        return messages;
+        Logging::ValidationSupport::checkNotNaN(report, probability, "scenario probability");
+        Logging::ValidationSupport::checkMinimum(report, 0, probability, "scenario probability");
+        Logging::ValidationSupport::checkMaximum(report, 1, probability, "scenario probability");
     }
 }
 

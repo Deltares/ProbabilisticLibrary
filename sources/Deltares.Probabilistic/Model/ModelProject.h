@@ -84,6 +84,8 @@ namespace Deltares
              * \brief Runs the project
              */
             virtual void run() {}
+
+            /**
              * \brief Validates the project and puts the result in a validation report
              * \returns Validation report
              */

@@ -56,11 +56,6 @@ namespace Deltares
                     void set(Wrappers::RunSettings^ value) { runSettings = value; }
                 }
 
-                bool IsValid()
-                {
-                    return shared->object->isValid();
-                }
-
                 std::shared_ptr<Sensitivity::SobolSettings> GetSettings()
                 {
                     shared->object->RunSettings = RunSettings->GetSettings();

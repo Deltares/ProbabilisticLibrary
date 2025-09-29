@@ -103,7 +103,7 @@ namespace Deltares::Sensitivity
         /**
          * \brief List of messages raised during uncertainty analysis
          */
-        std::vector<std::shared_ptr<Models::Message>> messages;
+        std::vector<std::shared_ptr<Logging::Message>> messages;
 
     private:
         std::shared_ptr<Models::ParameterSelector> parameterSelector = std::make_shared<Models::ParameterSelector>();

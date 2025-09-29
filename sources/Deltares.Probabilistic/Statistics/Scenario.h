@@ -57,10 +57,10 @@ namespace Deltares::Statistics
         double parameterValue = std::nan("");
 
         /**
-         * \brief Validates this scenario
-         * @return validation messages
+         * \brief Reports whether these settings have valid values
+         * \param report Report in which the validity is reported
          */
-        std::vector<std::shared_ptr<Logging::Message>> validate() const;
+        void validate(Logging::ValidationReport& report) const;
 
     };
 }

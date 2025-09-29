@@ -175,13 +175,10 @@ namespace Deltares
             std::unordered_map <std::string, std::vector<double>> tempValues;
             int tempIntValue = 0;
             
-            void UpdateValidationMessages(const std::vector<std::shared_ptr<Logging::Message>>& newMessages);
-            std::vector<std::shared_ptr<Logging::Message>> validationMessages;
             std::shared_ptr<Models::ModelProject> GetProject(int id);
             std::shared_ptr<Models::ModelProjectSettings> GetSettings(int id);
             static bool IsModelProjectType(ObjectType objectType);
 
-            std::vector<std::shared_ptr<Models::Message>> validationMessages;
         };
     }
 }

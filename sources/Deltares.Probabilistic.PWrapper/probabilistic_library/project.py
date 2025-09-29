@@ -1055,15 +1055,16 @@ class ExcludingCombineProject(FrozenObject):
 		self._update()
 		return interface.GetBoolValue(self._id, 'is_valid')
 
-	def validate(self) -> list[Message]:
+	def validate(self):
 		self._update()
-		interface.Execute(self._id, 'validate')
-		messages = []
-		message_ids = interface.GetArrayIdValue(self._id, 'validation_messages')
-		for message_id in message_ids:
-			messages.append(Message(message_id))
-		interface.Execute(self._id, 'clear_validate')
-		return FrozenList(messages) 
+		id_ = interface.GetIdValue(self._id, 'validate')
+		if id_ > 0:
+			validation_report = ValidationReport(id_)
+			if len(validation_report.messages) == 0:
+				print('ok')
+			else:
+				for message in validation_report.messages:
+					message.print()
 
 	def run(self):
 		self._update()

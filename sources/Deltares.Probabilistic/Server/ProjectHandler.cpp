@@ -851,10 +851,6 @@ namespace Deltares
 
                 if (property_ == "index") return result->Index;
             }
-            else if (objectType == ObjectType::ExcludingCombineProject)
-            {
-                if (property_ == "validation_messages_count") return static_cast<int>(validationMessages.size());
-            }
             else if (objectType == ObjectType::LengthEffectProject)
             {
                 std::shared_ptr<Reliability::LengthEffectProject> project = lengthEffectProjects[id];
@@ -966,6 +962,7 @@ namespace Deltares
                 std::shared_ptr<Reliability::ExcludingCombineProject> combineProject = excludingCombineProjects[id];
 
                 if (property_ == "design_point") return GetDesignPointId(combineProject->designPoint, newId);
+                else if (property_ == "validate") return GetValidationReportId(std::make_shared<Logging::ValidationReport>(combineProject->getValidationReport()), newId);
             }
             else if (objectType == ObjectType::LengthEffectProject)
             {
@@ -2082,10 +2079,6 @@ namespace Deltares
                 else if (property_ == "quantile_evaluations") return GetEvaluationId(result->quantileEvaluations[index], newId);
                 else if (property_ == "messages") return GetMessageId(result->messages[index], newId);
             }
-            else if (objectType == ObjectType::ExcludingCombineProject)
-            {
-                if (property_ == "validation_messages") return GetMessageId(validationMessages[index], newId);
-            }
 
             return 0;
         }
@@ -2160,8 +2153,6 @@ namespace Deltares
                 std::shared_ptr<Reliability::ExcludingCombineProject> project = excludingCombineProjects[id];
 
                 if (method_ == "run") project->run();
-                else if (method_ == "validate") UpdateValidationMessages(project->validate());
-                else if (method_ == "clear_validate") validationMessages.clear();
             }
             else if (objectType == ObjectType::LengthEffectProject)
             {
@@ -2524,16 +2515,6 @@ namespace Deltares
                 objectType == ObjectType::RunProject ||
                 objectType == ObjectType::UncertaintyProject ||
                 objectType == ObjectType::SensitivityProject;
-        }
-
-        void ProjectHandler::UpdateValidationMessages(const std::vector<std::shared_ptr<Models::Message>>& newMessages)
-        void ProjectHandler::UpdateValidationMessages(const std::vector<std::shared_ptr<Logging::Message>>& newMessages)
-        {
-            validationMessages.clear();
-            for (const std::shared_ptr<Logging::Message>& message : newMessages)
-            {
-                validationMessages.push_back(message);
-            }
         }
     }
 }

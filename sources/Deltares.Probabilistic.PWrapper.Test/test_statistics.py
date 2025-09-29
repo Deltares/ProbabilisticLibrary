@@ -158,7 +158,7 @@ class Test_statistics(unittest.TestCase):
         self.assertFalse(stochast.is_valid())
         stochast.validate()
         printed = sys.stdout.getvalue()
-        self.assertEqual("""Error: scale (-1.5) is less than 0\n""", printed)
+        self.assertEqual("""Error: scale (-1.5) is less than 0.\n""", printed)
 
         sys.stdout = sys.__stdout__
 
