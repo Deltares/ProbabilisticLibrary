@@ -379,13 +379,6 @@ namespace Deltares
             }
         }
 
-        bool Stochast::isValid()
-        {
-            Logging::ValidationReport report;
-            this->validate(report);
-            return report.isValid();
-        }
-
         void Stochast::validate(Logging::ValidationReport& report)
         {
             if (IsVariableStochast)
@@ -397,6 +390,19 @@ namespace Deltares
             {
                 distribution->validate(report, properties);
             }
+        }
+
+        Logging::ValidationReport Stochast::getValidationReport()
+        {
+            Logging::ValidationReport report;
+            validate(report);
+
+            return report;
+        }
+
+        bool Stochast::isValid()
+        {
+            return getValidationReport().isValid();
         }
 
         bool Stochast::isQualitative() const

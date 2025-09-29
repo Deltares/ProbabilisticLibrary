@@ -409,6 +409,12 @@ namespace Deltares
             void validate(Logging::ValidationReport& report) override;
 
             /**
+             * \brief Validates the stochast and puts the result in a validation report
+             * \returns Validation report
+             */
+            Logging::ValidationReport getValidationReport();
+
+            /**
              * \brief Indicates whether the stochast uses a given parameter type
              * \param distributionPropertyType Given parameter type
              * \return Indication

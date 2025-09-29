@@ -68,13 +68,6 @@ namespace Deltares
             this->correlationMatrix = source->correlationMatrix;
         }
 
-        bool ModelProject::isValid()
-        {
-            Logging::ValidationReport report;
-            this->validate(report);
-            return report.isValid();
-        }
-
         void ModelProject::validate(Logging::ValidationReport& report)
         {
             for (std::shared_ptr<Statistics::Stochast> stochast : stochasts)
@@ -84,6 +77,19 @@ namespace Deltares
 
             Logging::ValidationSupport::checkNotNull(report, model == nullptr, "model");
        }
+
+        Logging::ValidationReport ModelProject::getValidationReport()
+        {
+            Logging::ValidationReport report;
+            validate(report);
+
+            return report;
+        }
+
+        bool ModelProject::isValid()
+        {
+            return getValidationReport().isValid();
+        }
     }
 }
 

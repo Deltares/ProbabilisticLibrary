@@ -27,6 +27,7 @@ from enum import Enum
 
 from .utils import *
 from .statistic import Stochast, FragilityValue
+from .logging import Message, Evaluation, ValidationReport
 from . import interface
 
 if not interface.IsLibraryLoaded():
@@ -156,7 +157,9 @@ class Settings(FrozenObject):
 				'maximum_variance_loops',
 				'variation_coefficient',
 				'fraction_failed',
-				'stochast_settings']
+				'stochast_settings'
+				'is_valid'
+				'validate']
 
 	@property
 	def max_parallel_processes(self) -> int:
@@ -404,7 +407,20 @@ class Settings(FrozenObject):
 		self._stochast_settings = FrozenList(new_stochast_settings)
 		interface.SetArrayIntValue(self._id, 'stochast_settings', [stochast_setting._id for stochast_setting in self._stochast_settings])
 
-	
+	def is_valid(self) -> bool:
+		return interface.GetBoolValue(self._id, 'is_valid')
+
+	def validate(self):
+		id_ = interface.GetIdValue(self._id, 'validate')
+		if id_ > 0:
+			validation_report = ValidationReport(id_)
+			if len(validation_report.messages) == 0:
+				print('ok')
+			else:
+				for message in validation_report.messages:
+					message.print()
+
+
 class StochastSettings(FrozenObject):
 		
 	def __init__(self, variable):
@@ -1188,132 +1204,6 @@ class ExcludingCombineSettings(FrozenObject):
 	def combiner_method(self, value : ExcludingCombinerMethod):
 		interface.SetStringValue(self._id, 'combiner_method', str(value))
 
-class Message(FrozenObject):
-
-	def __init__(self, id = None):
-		if id == None:
-			self._id = interface.Create('message')
-		else:
-			self._id = id
-		super()._freeze()
-
-	@classmethod
-	def from_message(cls, message_type, message_text):
-		message = cls()
-		interface.SetStringValue(message._id, 'type', str(message_type))
-		interface.SetStringValue(message._id, 'text', message_text)
-		return message
-
-	def __del__(self):
-		try:
-			interface.Destroy(self._id)
-		except:
-			pass
-		
-	def __str__(self):
-		return str(self.type) + ': ' + self.text
-		
-	def __dir__(self):
-		return ['type',
-				'text',
-				'print']
-
-	@property
-	def type(self) -> MessageType:
-		return MessageType[interface.GetStringValue(self._id, 'type')]
-		
-	@property
-	def text(self) -> str:
-		return interface.GetStringValue(self._id, 'text')
-
-	def print(self):
-		if self.type == MessageType.error:
-			print(f'Error: {self.text}')
-		elif self.type == MessageType.warning:
-			print(f'Warning: {self.text}')
-		elif self.type == MessageType.info:
-			print(f'Info: {self.text}')
-		elif self.type == MessageType.debug:
-			print(f'Debug: {self.text}')
-		
-class Evaluation(FrozenObject):
-		
-	def __init__(self, id = None):
-		if id == None:
-			self._id = interface.Create('evaluation')
-		else:
-			self._id = id
-		self._input_values = None	
-		self._output_values = None	
-		super()._freeze()
-
-	def __del__(self):
-		try:
-			interface.Destroy(self._id)
-		except:
-			pass
-
-	def __dir__(self):
-		return ['iteration',
-				'quantile',
-				'z',
-				'beta',
-				'weight',
-				'input_values',
-				'output_values',
-				'print']
-	
-	@property   
-	def iteration(self) -> int:
-		return interface.GetIntValue(self._id, 'iteration')
-		
-	@property   
-	def quantile(self) -> float:
-		return interface.GetValue(self._id, 'quantile')
-		
-	@property   
-	def z(self) -> float:
-		return interface.GetValue(self._id, 'z')
-		
-	@property   
-	def beta(self) -> float:
-		return interface.GetValue(self._id, 'beta')
-		
-	@property   
-	def weight(self) -> float:
-		return interface.GetValue(self._id, 'weight')
-
-	@property   
-	def input_values(self) -> list[float]:
-		if self._input_values is None:
-			input_values = interface.GetArrayValue(self._id, 'input_values')
-			self._input_values = FrozenList(input_values)
-		return self._input_values
-		
-	@property   
-	def output_values(self) -> list[float]:
-		if self._output_values is None:
-			output_values = interface.GetArrayValue(self._id, 'output_values')
-			self._output_values = FrozenList(output_values)
-		return self._output_values
-
-	def print(self, decimals = 4):
-		self._print(0, decimals)
-
-	def _print(self, indent, decimals = 4):
-		pre = PrintUtils.get_space_from_indent(indent)
-		input_values = ', '.join([f'{v:.{decimals}g}' for v in self.input_values])
-		output_values = ', '.join([f'{v:.{decimals}g}' for v in self.output_values])
-		if not isnan(self.quantile):
-			pre = pre + f'quantile {self.quantile:.{decimals}g}: '
-		if isnan(self.z) and len(self.output_values) == 0:
-			print(pre + f'[{input_values}]')
-		elif isnan(self.z) and len(self.output_values) > 0:
-			print(pre + f'[{input_values}] -> [{output_values}]')
-		elif not isnan(self.z) and len(self.output_values) == 0:
-			print(pre + f'[{input_values}] -> {self.z:.{decimals}g}')
-		elif not isnan(self.z) and len(self.output_values) > 0:
-			print(pre + f'[{input_values}] -> [{output_values}] -> {self.z:.{decimals}g}')
 		
 class ReliabilityResult(FrozenObject):
 		

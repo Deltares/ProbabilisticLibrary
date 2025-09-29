@@ -29,6 +29,7 @@ from types import FunctionType
 from .statistic import *
 from .reliability import *
 from .uncertainty import *
+from .logging import Evaluation, Message, ValidationReport
 from . import interface
 
 import inspect
@@ -415,18 +416,23 @@ class ModelProject(FrozenObject):
 			samples.append(Sample(values[i][:input_size], output_values[i]))
 		ModelProject._zmodel.run_multiple(samples)
 
-	def validate(self) -> list[Message]:
-		if not self._model is None:
-			return self._model.validate()
-		else:
-			return FrozenList([Message.from_message(MessageType.error, 'No model provided')])
-
 	def is_valid(self) -> bool:
 		self._update()
 		if not self._model is None:
 			return self._model.is_valid() and interface.GetBoolValue(self._id, 'is_valid')
 		else:
 			return False
+
+	def validate(self):
+		self._update()
+		id_ = interface.GetIdValue(self._id, 'validate')
+		if id_ > 0:
+			validation_report = ValidationReport(id_)
+			if len(validation_report.messages) == 0:
+				print('ok')
+			else:
+				for message in validation_report.messages:
+					message.print()
 
 	@property
 	def variables(self) -> list[Stochast]:
@@ -540,7 +546,9 @@ class RunProjectSettings(FrozenObject):
 
 	def __dir__(self):
 		return ['run_values_type',
-		        'reuse_calculations']
+		        'reuse_calculations',
+		        'validate',
+		        'is_valid']
 		
 	@property
 	def run_values_type(self) -> RunValuesType:
@@ -557,6 +565,20 @@ class RunProjectSettings(FrozenObject):
 	@reuse_calculations.setter
 	def reuse_calculations(self, value : bool):
 		interface.SetBoolValue(self._id, 'reuse_calculations', value)
+
+	def is_valid(self) -> bool:
+		return interface.GetBoolValue(self._id, 'is_valid')
+
+	def validate(self):
+		id_ = interface.GetIdValue(self._id, 'validate')
+		if id_ > 0:
+			validation_report = ValidationReport(id_)
+			if len(validation_report.messages) == 0:
+				print('ok')
+			else:
+				for message in validation_report.messages:
+					message.print()
+
 
 	def _set_variables(self, variables):
 		pass

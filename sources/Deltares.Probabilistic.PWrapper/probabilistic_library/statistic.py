@@ -23,6 +23,7 @@ from __future__ import annotations
 from ctypes import ArgumentError
 from enum import Enum
 from math import isnan
+from .logging import Evaluation, Message, ValidationReport
 from .utils import *
 from . import interface
 import matplotlib.pyplot as plt
@@ -250,6 +251,7 @@ class Stochast(FrozenObject):
 				'design_factor',
 				'design_quantile',
 				'design_value',
+				'validate',
 				'is_valid',
 				'is_array',
 				'array_size',
@@ -635,6 +637,16 @@ class Stochast(FrozenObject):
 
 	def is_valid(self) -> bool:
 		return interface.GetBoolValue(self._id, 'is_valid')
+
+	def validate(self):
+		id_ = interface.GetIdValue(self._id, 'validate')
+		if id_ > 0:
+			validation_report = ValidationReport(id_)
+			if len(validation_report.messages) == 0:
+				print('ok')
+			else:
+				for message in validation_report.messages:
+					message.print()
 
 	def print(self, decimals = 4):
 		pre = '  '

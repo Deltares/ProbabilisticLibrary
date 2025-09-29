@@ -77,6 +77,7 @@ namespace Deltares
             void Execute(int id, std::string method_) override;
 
             int GetProbabilityValueId(std::shared_ptr<Statistics::ProbabilityValue> probability, int newId);
+            int GetValidationReportId(std::shared_ptr<Logging::ValidationReport> validationReport, int newId);
             int GetStochastId(std::shared_ptr<Statistics::Stochast> stochast, int newId);
             int GetFragilityCurveId(std::shared_ptr<Reliability::FragilityCurve> fragilityCurve, int newId);
             int GetCorrelationMatrixId(std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix, int newid);
@@ -100,7 +101,7 @@ namespace Deltares
         protected:
             virtual std::shared_ptr<Reliability::DesignPointIds> GetDesignPointIds(int id);
         private:
-            enum ObjectType {StandardNormal, Message, ProbabilityValue, Project, ModelParameter, LimitStateFunction, Stochast, DiscreteValue, HistogramValue, FragilityValue,
+            enum ObjectType {StandardNormal, Message, ValidationReport, ProbabilityValue, Project, ModelParameter, LimitStateFunction, Stochast, DiscreteValue, HistogramValue, FragilityValue,
                 ContributingStochast, ConditionalValue, CorrelationMatrix, Scenario, Settings, StochastSettings, DesignPoint, Alpha, FragilityCurve, FragilityCurveProject, Evaluation,
                 CombineProject, CombineSettings, ExcludingCombineProject, ExcludingCombineSettings, SelfCorrelationMatrix, UncertaintyProject, UncertaintySettings, UncertaintyResult,
                 LengthEffectProject, RunProject, RunProjectSettings, ReliabilityResult};
@@ -110,6 +111,7 @@ namespace Deltares
             std::unordered_map<int, std::shared_ptr<Statistics::Stochast>> stochasts;
             std::unordered_map<int, std::shared_ptr<Statistics::ProbabilityValue>> probabilityValues;
             std::unordered_map<int, std::shared_ptr<Logging::Message>> messages;
+            std::unordered_map<int, std::shared_ptr<Logging::ValidationReport>> validationReports;
             std::unordered_map<int, std::shared_ptr<Reliability::ReliabilityProject>> projects;
             std::unordered_map<int, std::shared_ptr<Models::ModelInputParameter>> modelParameters;
             std::unordered_map<int, std::shared_ptr<Reliability::LimitStateFunction>> limitStateFunctions;

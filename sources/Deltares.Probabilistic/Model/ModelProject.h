@@ -74,6 +74,12 @@ namespace Deltares
             virtual bool isValid();
 
             /**
+             * \brief Validates the project and puts the result in a validation report
+             * \returns Validation report
+             */
+            Logging::ValidationReport getValidationReport();
+
+            /**
              * \brief Reports whether these settings have valid values
              * \param report Report in which the validity is reported
              */

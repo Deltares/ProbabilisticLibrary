@@ -45,6 +45,7 @@ namespace Deltares::Probabilistic::Test
         testFitNormal();
         testFitLogNormal();
         testFitBernoulli();
+        testValidation();
     }
 
     void testDistributions::testConditionalWeibull()
@@ -483,5 +484,28 @@ namespace Deltares::Probabilistic::Test
         EXPECT_EQ(stochast->getProperties()->Observations, 10);
     }
 
+    void testDistributions::testValidation()
+    {
+        constexpr double margin = 1e-3;
+
+        std::shared_ptr<Stochast> stochast = std::make_shared<Stochast>();
+        stochast->setDistributionType(DistributionType::Normal);
+        stochast->setMean(3);
+        stochast->setDeviation(1);
+
+        EXPECT_EQ(true, stochast->isValid());
+
+        Logging::ValidationReport report = stochast->getValidationReport();
+
+        EXPECT_EQ(0, report.messages.size());
+
+        stochast->setDeviation(-1);
+
+        EXPECT_EQ(false, stochast->isValid());
+
+        Logging::ValidationReport report2 = stochast->getValidationReport();
+
+        EXPECT_EQ(1, report2.messages.size());
+    }
 }
 

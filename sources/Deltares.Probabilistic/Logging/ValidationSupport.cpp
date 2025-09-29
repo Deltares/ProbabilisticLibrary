@@ -24,6 +24,9 @@
 #include <utility>
 #include <cmath>
 
+#if __has_include(<format>)
+#include <format>
+#endif
 
 namespace Deltares
 {
@@ -63,7 +66,7 @@ namespace Deltares
             if (value < minimum)
             {
                 std::shared_ptr<Message> message = std::make_shared<Message>();
-                message->Text = property + " (" + std::to_string(value) + ") is less than " + std::to_string(minimum);
+                message->Text = property + " (" + toString(value) + ") is less than " + toString(minimum);
                 message->Type = messageType;
                 message->Subject = std::move(subject);
 
@@ -77,7 +80,7 @@ namespace Deltares
             if (value <= minimum)
             {
                 std::shared_ptr<Message> message = std::make_shared<Message>();
-                message->Text = property + " (" + std::to_string(value) + ") is not greater than " + std::to_string(minimum);
+                message->Text = property + " (" + toString(value) + ") is not greater than " + toString(minimum);
                 message->Type = messageType;
                 message->Subject = std::move(subject);
 
@@ -91,7 +94,7 @@ namespace Deltares
             if (value > maximum)
             {
                 std::shared_ptr<Message> message = std::make_shared<Message>();
-                message->Text = property + " (" + std::to_string(value) + ") is greater than " + std::to_string(maximum);
+                message->Text = property + " (" + toString(value) + ") is greater than " + toString(maximum);
                 message->Type = messageType;
                 message->Subject = std::move(subject);
 
@@ -105,7 +108,7 @@ namespace Deltares
             if (value >= maximum)
             {
                 std::shared_ptr<Message> message = std::make_shared<Message>();
-                message->Text = property + " (" + std::to_string(value) + ") is not less than " + std::to_string(maximum);
+                message->Text = property + " (" + toString(value) + ") is not less than " + toString(maximum);
                 message->Type = messageType;
                 message->Subject = std::move(subject);
 
@@ -137,6 +140,14 @@ namespace Deltares
             report.messages.push_back(message);
         }
 
+        std::string ValidationSupport::toString(double value)
+        {
+#if __has_include(<format>)
+            return std::format("{0:}", value);
+#else
+            return std::to_string(value);
+#endif
+        }
     }
 }
 

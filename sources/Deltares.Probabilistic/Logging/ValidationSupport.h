@@ -46,7 +46,8 @@ namespace Deltares
             static void checkNotEmpty(Logging::ValidationReport& report, size_t size, const std::string& property,
                 std::string subject = "", MessageType messageType = MessageType::Error);
             static void add(Logging::ValidationReport& report, std::string text, std::string subject = "", MessageType messageType = MessageType::Error);
-
+        private:
+            static std::string toString(double value);
         };
     }
 }
