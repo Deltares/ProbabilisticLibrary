@@ -38,6 +38,7 @@ namespace Deltares::Probabilistic::Test
         testRepeatable();
 
         testLinearSingleVariation();
+        testLinearSingleVariationRealizations();
         testLinearOutputSingleVariation();
         testLinearSobol();
         testLinearOutputSobol();
@@ -131,6 +132,20 @@ namespace Deltares::Probabilistic::Test
         ASSERT_NEAR(0.9, result.values[0]->high, margin);
         ASSERT_NEAR(2.7, result.values[1]->low, margin);
         ASSERT_NEAR(0.9, result.values[1]->high, margin);
+    }
+
+    void TestSensitivity::testLinearSingleVariationRealizations() const
+    {
+        std::shared_ptr<Sensitivity::SensitivityProject> project = projectBuilder::getSensitivityProject(projectBuilder::getLinearProject());
+
+        project->settings->SensitivityMethod = Sensitivity::SensitivityMethodType::SensitivitySingleVariation;
+        project->sensitivityMethod = std::make_shared<Sensitivity::SingleVariation>();
+        project->settings->RunSettings->SaveEvaluations = true;
+
+        Sensitivity::SensitivityResult result = project->getSensitivityResult();
+
+        ASSERT_EQ(project->stochasts.size(), result.values.size());
+        ASSERT_EQ(5, result.evaluations.size());
     }
 
     void TestSensitivity::testLinearOutputSingleVariation() const

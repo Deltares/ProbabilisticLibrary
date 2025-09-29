@@ -35,7 +35,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestAddOne()
         {
-            var project = ProjectBuilder.GetSensitivityProject(ProjectBuilder.GetAddOneProject());
+            var project = ProjectBuilder.GetUncertaintyProject(ProjectBuilder.GetAddOneProject());
 
             project.UncertaintyMethod = new ImportanceSamplingS();
             ((ImportanceSamplingS)project.UncertaintyMethod).Settings.RandomSettings.RandomGeneratorType = RandomGeneratorType.MersenneTwister;
@@ -53,7 +53,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestLinear()
         {
-            var project = ProjectBuilder.GetSensitivityProject(ProjectBuilder.GetLinearProject());
+            var project = ProjectBuilder.GetUncertaintyProject(ProjectBuilder.GetLinearProject());
 
             project.UncertaintyMethod = new ImportanceSamplingS();
             ((ImportanceSamplingS)project.UncertaintyMethod).Settings.RandomSettings.RandomGeneratorType = RandomGeneratorType.MersenneTwister;
@@ -67,7 +67,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestLinearDoubleExecuted()
         {
-            var project = ProjectBuilder.GetSensitivityProject(ProjectBuilder.GetLinearProject());
+            var project = ProjectBuilder.GetUncertaintyProject(ProjectBuilder.GetLinearProject());
 
             project.UncertaintyMethod = new ImportanceSamplingS();
             ((ImportanceSamplingS)project.UncertaintyMethod).Settings.RandomSettings.RandomGeneratorType = RandomGeneratorType.MersenneTwister;
@@ -86,7 +86,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestLinearParallel()
         {
-            var project = ProjectBuilder.GetSensitivityProject(ProjectBuilder.GetLinearProject());
+            var project = ProjectBuilder.GetUncertaintyProject(ProjectBuilder.GetLinearProject());
             project.Settings.MaxParallelProcesses = 4;
 
             project.UncertaintyMethod = new ImportanceSamplingS();
@@ -101,7 +101,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestLinearManySamples()
         {
-            var project = ProjectBuilder.GetSensitivityProject(ProjectBuilder.GetLinearProject());
+            var project = ProjectBuilder.GetUncertaintyProject(ProjectBuilder.GetLinearProject());
             project.Settings.SaveConvergence = false;
             project.Settings.SaveEvaluations = false;
             project.Settings.SaveMessages = false;
@@ -124,7 +124,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestLinearFullyCorrelated()
         {
-            var project = ProjectBuilder.GetSensitivityProject(ProjectBuilder.GetLinearFullyCorrelatedProject());
+            var project = ProjectBuilder.GetUncertaintyProject(ProjectBuilder.GetLinearFullyCorrelatedProject());
             project.UncertaintyMethod = new ImportanceSamplingS();
             ((ImportanceSamplingS)project.UncertaintyMethod).Settings.RandomSettings.RandomGeneratorType = RandomGeneratorType.MersenneTwister;
 
@@ -142,7 +142,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestLinearNegativeFullyCorrelated()
         {
-            var project = ProjectBuilder.GetSensitivityProject(ProjectBuilder.GetLinearNegativeFullyCorrelatedProject());
+            var project = ProjectBuilder.GetUncertaintyProject(ProjectBuilder.GetLinearNegativeFullyCorrelatedProject());
             project.UncertaintyMethod = new ImportanceSamplingS();
             ((ImportanceSamplingS)project.UncertaintyMethod).Settings.RandomSettings.RandomGeneratorType = RandomGeneratorType.MersenneTwister;
 
@@ -155,7 +155,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestLinearPartialCorrelated()
         {
-            var project = ProjectBuilder.GetSensitivityProject(ProjectBuilder.GetLinearPartialCorrelatedProject());
+            var project = ProjectBuilder.GetUncertaintyProject(ProjectBuilder.GetLinearPartialCorrelatedProject());
             project.UncertaintyMethod = new ImportanceSamplingS();
             ((ImportanceSamplingS)project.UncertaintyMethod).Settings.RandomSettings.RandomGeneratorType = RandomGeneratorType.MersenneTwister;
 

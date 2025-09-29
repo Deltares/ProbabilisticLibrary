@@ -41,7 +41,7 @@ namespace Deltares::Sensitivity
          * \param modelRunner The model for which the sensitivity is calculated
          * \return The sensitivity
          */
-        SensitivityResult getSensitivityStochast(std::shared_ptr<Models::ModelRunner> modelRunner) override;
+        SensitivityResult getSensitivityResult(std::shared_ptr<Models::ModelRunner> modelRunner) override;
     private:
         std::vector<std::shared_ptr<Models::Sample>> getMixedSamples(int index, std::vector<std::shared_ptr<Models::Sample>> samplesA, std::vector<std::shared_ptr<Models::Sample>> samplesB, int nSamples);
     };

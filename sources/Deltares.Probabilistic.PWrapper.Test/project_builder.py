@@ -183,7 +183,7 @@ def get_linear_array_project():
 
     return project
 
-def get_sensitivity_add_one_project():
+def get_uncertainty_add_one_project():
 
     project = UncertaintyProject()
 
@@ -216,7 +216,7 @@ def get_run_linear_project():
 
     return project
 
-def get_sensitivity_linear_project():
+def get_uncertainty_linear_project():
 
     project = UncertaintyProject()
 
@@ -225,7 +225,16 @@ def get_sensitivity_linear_project():
 
     return project
 
-def get_sensitivity_linear_array_result_project() ->UncertaintyProject:
+def get_sensitivity_linear_project():
+
+    project = SensitivityProject()
+
+    project.model = linear_ab
+    assign_distributions(project, DistributionType.uniform)
+
+    return project
+
+def get_uncertainty_linear_array_result_project() ->UncertaintyProject:
 
     project = UncertaintyProject()
 
@@ -234,7 +243,7 @@ def get_sensitivity_linear_array_result_project() ->UncertaintyProject:
 
     return project
 
-def get_sensitivity_linear_delayed_array_result_project():
+def get_uncertainty_linear_delayed_array_result_project():
 
     project = UncertaintyProject()
 
@@ -243,7 +252,7 @@ def get_sensitivity_linear_delayed_array_result_project():
 
     return project
 
-def get_sensitivity_pile_project():
+def get_uncertainty_pile_project():
 
     project = UncertaintyProject()
 
@@ -286,7 +295,7 @@ def get_sensitivity_pile_project():
 
     return project
 
-def get_sensitivity_multiple_identical_linear_project():
+def get_uncertainty_multiple_identical_linear_project():
 
     project = UncertaintyProject()
 
@@ -304,9 +313,18 @@ def get_multiple_unbalanced_linear_project():
 
     return project
 
-def get_sensitivity_multiple_unbalanced_linear_project():
+def get_uncertainty_multiple_unbalanced_linear_project():
 
     project = UncertaintyProject()
+
+    project.model = multiple_unbalanced_linear_ab
+    assign_distributions(project, DistributionType.uniform)
+
+    return project
+
+def get_sensitivity_multiple_unbalanced_linear_project():
+
+    project = SensitivityProject()
 
     project.model = multiple_unbalanced_linear_ab
     assign_distributions(project, DistributionType.uniform)

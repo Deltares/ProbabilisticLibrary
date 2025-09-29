@@ -30,6 +30,10 @@
 #include "../Model/RunProjectSettings.h"
 #include "../Uncertainty/UncertaintyProject.h"
 #include "../Uncertainty/SettingsS.h"
+#include "../Sensitivity/SensitivityProject.h"
+#include "../Sensitivity/SensitivitySettings.h"
+#include "../Sensitivity/SensitivityResult.h"
+#include "../Sensitivity/SensitivityValue.h"
 #include "../Combine/CombineProject.h"
 #include "../Combine/CombineSettings.h"
 #include "../Combine/ExcludingCombineProject.h"
@@ -85,6 +89,8 @@ namespace Deltares
             int GetDesignPointId(std::shared_ptr<Reliability::DesignPoint> designPoint, int newId);
             int GetAlphaId(std::shared_ptr<Models::StochastPointAlpha> alpha, int newId);
             int GetUncertaintyResultId(std::shared_ptr<Uncertainty::UncertaintyResult> result, int newId);
+            int GetSensitivityResultId(std::shared_ptr<Sensitivity::SensitivityResult> result, int newId);
+            int GetSensitivityValueId(std::shared_ptr<Sensitivity::SensitivityValue> result, int newId);
             int GetHistogramValueId(std::shared_ptr<Statistics::HistogramValue> histogramValue, int newId);
             int GetDiscreteValueId(std::shared_ptr<Statistics::DiscreteValue> discreteValue, int newId);
             int GetFragilityValueId(std::shared_ptr<Statistics::FragilityValue> fragilityValue, int newId);
@@ -104,7 +110,7 @@ namespace Deltares
             enum ObjectType {StandardNormal, Message, ValidationReport, ProbabilityValue, Project, ModelParameter, LimitStateFunction, Stochast, DiscreteValue, HistogramValue, FragilityValue,
                 ContributingStochast, ConditionalValue, CorrelationMatrix, Scenario, Settings, StochastSettings, DesignPoint, Alpha, FragilityCurve, FragilityCurveProject, Evaluation,
                 CombineProject, CombineSettings, ExcludingCombineProject, ExcludingCombineSettings, SelfCorrelationMatrix, UncertaintyProject, UncertaintySettings, UncertaintyResult,
-                LengthEffectProject, RunProject, RunProjectSettings, ReliabilityResult};
+                SensitivityProject, SensitivitySettings, SensitivityResult, SensitivityValue, LengthEffectProject, RunProject, RunProjectSettings, ReliabilityResult};
             ObjectType GetType(std::string object_type);
             std::unordered_map<int, Deltares::Server::ProjectHandler::ObjectType> types;
 
@@ -138,6 +144,10 @@ namespace Deltares
             std::unordered_map<int, std::shared_ptr<Statistics::SelfCorrelationMatrix>> selfCorrelationMatrices;
             std::unordered_map<int, std::shared_ptr<Models::RunProject>> runProjects;
             std::unordered_map<int, std::shared_ptr<Models::RunProjectSettings>> runProjectSettings;
+            std::unordered_map<int, std::shared_ptr<Sensitivity::SensitivityProject>> sensitivityProjects;
+            std::unordered_map<int, std::shared_ptr<Sensitivity::SensitivitySettings>> sensitivitySettingsValues;
+            std::unordered_map<int, std::shared_ptr<Sensitivity::SensitivityResult>> sensitivityResults;
+            std::unordered_map<int, std::shared_ptr<Sensitivity::SensitivityValue>> sensitivityValues;
             std::unordered_map<int, std::shared_ptr<Uncertainty::UncertaintyProject>> uncertaintyProjects;
             std::unordered_map<int, std::shared_ptr<Uncertainty::SettingsS>> uncertaintySettingsValues;
             std::unordered_map<int, std::shared_ptr<Uncertainty::UncertaintyResult>> uncertaintyResults;
@@ -146,6 +156,8 @@ namespace Deltares
             std::unordered_map<std::shared_ptr<Reliability::Settings>, int> settingsValuesIds;
             std::unordered_map<std::shared_ptr<Reliability::DesignPoint>, int> designPointIds;
             std::unordered_map<std::shared_ptr<Uncertainty::UncertaintyResult>, int> uncertaintyResultsIds;
+            std::unordered_map<std::shared_ptr<Sensitivity::SensitivityResult>, int> sensitivityResultsIds;
+            std::unordered_map<std::shared_ptr<Sensitivity::SensitivityValue>, int> sensitivityValuesIds;
             std::unordered_map<std::shared_ptr<Reliability::StochastPointAlpha>, int> alphaIds;
             std::unordered_map<std::shared_ptr<Reliability::FragilityCurve>, int> fragilityCurveIds;
             std::unordered_map<std::shared_ptr<Statistics::Stochast>, int> stochastIds;
@@ -166,6 +178,10 @@ namespace Deltares
             void UpdateValidationMessages(const std::vector<std::shared_ptr<Logging::Message>>& newMessages);
             std::vector<std::shared_ptr<Logging::Message>> validationMessages;
             std::shared_ptr<Models::ModelProject> GetProject(int id);
+            std::shared_ptr<Models::ModelProjectSettings> GetSettings(int id);
+            static bool IsModelProjectType(ObjectType objectType);
+
+            std::vector<std::shared_ptr<Models::Message>> validationMessages;
         };
     }
 }

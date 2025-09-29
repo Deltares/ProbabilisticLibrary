@@ -245,6 +245,7 @@
     <ClCompile Include="Sensitivity\SobolSequence.cpp" />
     <ClCompile Include="Sensitivity\SobolResource.cpp" />
     <ClCompile Include="Sensitivity\SobolDirectionLoader.cpp" />
+    <ClCompile Include="Model\ModelProjectSettings.cpp" />
     <ClCompile Include="Logging\ValidationReport.cpp" />
     <ClCompile Include="Logging\ValidationSupport.cpp" />
   </ItemGroup>
@@ -523,6 +524,7 @@
     <ClInclude Include="Sensitivity\SobolDirectionLoader.h" />
     <ClInclude Include="Logging\ValidationReport.h" />
     <ClInclude Include="Logging\ValidationSupport.h" />
+    <ClInclude Include="Model\ModelProjectSettings.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

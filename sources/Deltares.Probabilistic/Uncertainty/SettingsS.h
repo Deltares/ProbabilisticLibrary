@@ -23,8 +23,8 @@
 
 #include "UncertaintyMethod.h"
 #include "../Model/RandomSettings.h"
-#include "../Model/RunSettings.h"
 #include "../Model/GradientSettings.h"
+#include "../Model/ModelProjectSettings.h"
 
 namespace Deltares::Uncertainty
 {
@@ -33,7 +33,7 @@ namespace Deltares::Uncertainty
     /**
      * \brief General settings applicable to all sensitivity mechanisms
      */
-    class SettingsS
+    class SettingsS : public Models::ModelProjectSettings
     {
     public:
         /**
@@ -110,11 +110,6 @@ namespace Deltares::Uncertainty
          * \brief Requested quantiles
          */
         std::vector<std::shared_ptr<Statistics::ProbabilityValue>> RequestedQuantiles;
-
-        /**
-         * \brief Settings for performing model runs
-         */
-        std::shared_ptr<Models::RunSettings> RunSettings = std::make_shared<Models::RunSettings>();
 
         /**
          * \brief Settings for generating random values

@@ -23,6 +23,8 @@
 
 #include <vector>
 #include <memory>
+
+#include "ModelProjectSettings.h"
 #include "../Statistics/Stochast.h"
 #include "../Statistics/CorrelationMatrix.h"
 #include "ZModel.h"
@@ -64,6 +66,11 @@ namespace Deltares
             void shareStochasts(std::shared_ptr<ModelProject> source);
 
             /**
+             * \brief Sets the settings
+             */
+            virtual void setSettings(std::shared_ptr<ModelProjectSettings> newSettings) {}
+
+            /**
              * \brief Gets the total number of model runs
              */
             int modelRuns = 0;
@@ -74,6 +81,9 @@ namespace Deltares
             virtual bool isValid();
 
             /**
+             * \brief Runs the project
+             */
+            virtual void run() {}
              * \brief Validates the project and puts the result in a validation report
              * \returns Validation report
              */

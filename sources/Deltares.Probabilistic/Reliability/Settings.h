@@ -39,7 +39,7 @@
 #include "SubsetSimulation.h"
 #include "SubsetSimulationSettings.h"
 #include "../Model/RandomSettings.h"
-#include "../Model/RunSettings.h"
+#include "../Model/ModelProjectSettings.h"
 #include "../Model/GradientSettings.h"
 
 namespace Deltares
@@ -56,7 +56,7 @@ namespace Deltares
         /**
          * \brief General settings applicable to all mechanisms
          */
-        class Settings
+        class Settings : public ModelProjectSettings
         {
         public:
             /**
@@ -188,11 +188,6 @@ namespace Deltares
              * \brief Fraction of the samples which will be used in the next iteration
              */
             double SubsetFraction = 0.1;
-
-            /**
-             * \brief Settings for performing model runs
-             */
-            std::shared_ptr<Models::RunSettings> RunSettings = std::make_shared<Models::RunSettings>();
 
             /**
              * \brief Settings for generating random values

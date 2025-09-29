@@ -19,33 +19,42 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#include "UncertaintyMethod.h"
+#pragma once
 
-#include "../Model/ModelRunner.h"
-#include "../Statistics/Stochast.h"
+#include "SobolSettings.h"
+#include "SensitivityMethod.h"
+#include "../../Deltares.Probabilistic/Sensitivity/Sobol.h"
 
 namespace Deltares
 {
-    namespace Uncertainty
+    namespace Sensitivity
     {
         namespace Wrappers
         {
-            Statistics::Wrappers::Stochast^ UncertaintyMethod::GetStochast(Models::Wrappers::ModelRunner^ modelRunner)
+            public ref class Sobol : public SensitivityMethod
             {
-                const std::shared_ptr<Uncertainty::UncertaintyMethod> uncertaintyMethod = this->GetNativeSensitivityMethod();
+            private:
+                Utils::Wrappers::SharedPointerProvider<Sensitivity::Sobol>* shared = new Utils::Wrappers::SharedPointerProvider(new Sensitivity::Sobol());
+            public:
+                Sobol() { }
+                ~Sobol() { this->!Sobol(); }
+                !Sobol() { delete shared; }
 
-                const std::shared_ptr<Models::ModelRunner> nativeModelRunner = modelRunner->GetModelRunner();
+                SobolSettings^ Settings = gcnew SobolSettings();
 
-                nativeModelRunner->initializeForRun();
+                System::Object^ GetSettings() override { return Settings; }
 
-                const std::shared_ptr<Statistics::Stochast> nativeStochast = uncertaintyMethod->getUncertaintyStochast(nativeModelRunner).stochast;
+                bool IsValid() override { return Settings->IsValid(); }
 
-                Statistics::Wrappers::Stochast^ stochast = gcnew Statistics::Wrappers::Stochast(nativeStochast);
-
-                return stochast;
+                std::shared_ptr<Sensitivity::SensitivityMethod> GetNativeSensitivityMethod() override
+                {
+                    shared->object->Settings = Settings->GetSettings();
+                    return shared->object;
+                }
             };
         }
     }
 }
+
 
 

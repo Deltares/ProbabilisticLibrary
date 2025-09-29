@@ -24,4 +24,5 @@ from .logging import *
 from .statistic import *
 from .reliability import *
 from .uncertainty import *
+from .sensitivity import *
 from .project import *

@@ -95,7 +95,15 @@ namespace Deltares
             /**
              * \brief Runs the reliability calculation
              */
-            void run();
+            void run() override;
+
+            /**
+             * \brief Sets the settings
+             */
+            void setSettings(std::shared_ptr<ModelProjectSettings> newSettings) override
+            {
+                settings = static_pointer_cast<Settings>(newSettings);
+            }
         };
     }
 }

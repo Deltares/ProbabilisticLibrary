@@ -35,7 +35,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestAddOne()
         {
-            var project = ProjectBuilder.GetSensitivityProject(ProjectBuilder.GetAddOneProject());
+            var project = ProjectBuilder.GetUncertaintyProject(ProjectBuilder.GetAddOneProject());
 
             project.UncertaintyMethod = new CrudeMonteCarloS();
             ((CrudeMonteCarloS)project.UncertaintyMethod).Settings.RandomSettings.RandomGeneratorType = RandomGeneratorType.MersenneTwister;
@@ -53,7 +53,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestLinear()
         {
-            var project = ProjectBuilder.GetSensitivityProject(ProjectBuilder.GetLinearProject());
+            var project = ProjectBuilder.GetUncertaintyProject(ProjectBuilder.GetLinearProject());
 
             project.UncertaintyMethod = new CrudeMonteCarloS();
             ((CrudeMonteCarloS)project.UncertaintyMethod).Settings.RandomSettings.RandomGeneratorType = RandomGeneratorType.MersenneTwister;
@@ -70,7 +70,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestLinearDoubleExecuted()
         {
-            var project = ProjectBuilder.GetSensitivityProject(ProjectBuilder.GetLinearProject());
+            var project = ProjectBuilder.GetUncertaintyProject(ProjectBuilder.GetLinearProject());
 
             project.UncertaintyMethod = new CrudeMonteCarloS();
             ((CrudeMonteCarloS)project.UncertaintyMethod).Settings.RandomSettings.RandomGeneratorType = RandomGeneratorType.MersenneTwister;
@@ -89,7 +89,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestLinearParallel()
         {
-            var project = ProjectBuilder.GetSensitivityProject(ProjectBuilder.GetLinearProject());
+            var project = ProjectBuilder.GetUncertaintyProject(ProjectBuilder.GetLinearProject());
             project.Settings.MaxParallelProcesses = 4;
 
             project.UncertaintyMethod = new CrudeMonteCarloS();
@@ -104,7 +104,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestLinearManySamples()
         {
-            var project = ProjectBuilder.GetSensitivityProject(ProjectBuilder.GetLinearProject());
+            var project = ProjectBuilder.GetUncertaintyProject(ProjectBuilder.GetLinearProject());
             project.Settings.SaveConvergence = false;
             project.Settings.SaveEvaluations = false;
             project.Settings.SaveMessages = false;
@@ -127,7 +127,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestLinearAutoSamples()
         {
-            var project = ProjectBuilder.GetSensitivityProject(ProjectBuilder.GetLinearProject());
+            var project = ProjectBuilder.GetUncertaintyProject(ProjectBuilder.GetLinearProject());
             project.Settings.SaveConvergence = false;
             project.Settings.SaveEvaluations = false;
             project.Settings.SaveMessages = false;
@@ -147,7 +147,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestLinearFullyCorrelated()
         {
-            var project = ProjectBuilder.GetSensitivityProject(ProjectBuilder.GetLinearFullyCorrelatedProject());
+            var project = ProjectBuilder.GetUncertaintyProject(ProjectBuilder.GetLinearFullyCorrelatedProject());
             project.UncertaintyMethod = new CrudeMonteCarloS();
             ((CrudeMonteCarloS)project.UncertaintyMethod).Settings.RandomSettings.RandomGeneratorType = RandomGeneratorType.MersenneTwister;
 
@@ -165,7 +165,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestLinearNegativeFullyCorrelated()
         {
-            var project = ProjectBuilder.GetSensitivityProject(ProjectBuilder.GetLinearNegativeFullyCorrelatedProject());
+            var project = ProjectBuilder.GetUncertaintyProject(ProjectBuilder.GetLinearNegativeFullyCorrelatedProject());
             project.UncertaintyMethod = new CrudeMonteCarloS();
             ((CrudeMonteCarloS)project.UncertaintyMethod).Settings.RandomSettings.RandomGeneratorType = RandomGeneratorType.MersenneTwister;
 
@@ -178,7 +178,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
         [Test]
         public void TestLinearPartialCorrelated()
         {
-            var project = ProjectBuilder.GetSensitivityProject(ProjectBuilder.GetLinearPartialCorrelatedProject());
+            var project = ProjectBuilder.GetUncertaintyProject(ProjectBuilder.GetLinearPartialCorrelatedProject());
             project.UncertaintyMethod = new CrudeMonteCarloS();
             ((CrudeMonteCarloS)project.UncertaintyMethod).Settings.RandomSettings.RandomGeneratorType = RandomGeneratorType.MersenneTwister;
 
@@ -196,11 +196,11 @@ namespace Deltares.Probabilistic.Wrapper.Test
             sensitivityMethod.Settings.RandomSettings.RandomGeneratorType = RandomGeneratorType.MersenneTwister;
             sensitivityMethod.Settings.CalculateCorrelations = true;
 
-            var project = ProjectBuilder.GetSensitivityProject(ProjectBuilder.GetLinearProject());
+            var project = ProjectBuilder.GetUncertaintyProject(ProjectBuilder.GetLinearProject());
             project.UncertaintyMethod = sensitivityMethod;
             Stochast stochast1 = project.GetStochast();
 
-            var project2 = ProjectBuilder.GetSensitivityProject(ProjectBuilder.GetUnbalancedLinearProject());
+            var project2 = ProjectBuilder.GetUncertaintyProject(ProjectBuilder.GetUnbalancedLinearProject());
             project2.UncertaintyMethod = sensitivityMethod;
             Stochast stochast2 = project2.GetStochast();
 
