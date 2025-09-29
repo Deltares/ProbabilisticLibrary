@@ -34,6 +34,7 @@ namespace Deltares::Probabilistic::Test
         void testRandomSequence() const;
         void testRepeatable() const;
         void testLinearSingleVariation() const;
+        void testLinearSingleVariationRealizations() const;
         void testLinearOutputSingleVariation() const;
         void testLinearSobol() const;
         void testLinearOutputSobol() const;

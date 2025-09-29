@@ -31,7 +31,6 @@ namespace Deltares::Sensitivity
         sensitivityResults.clear();
 
         sensitivityMethod = settings->GetSensitivityMethod();
-        runSettings = settings->RunSettings;
 
         if (parameter.empty())
         {
@@ -80,10 +79,10 @@ namespace Deltares::Sensitivity
 
         std::shared_ptr<Models::UConverter> uConverter = std::make_shared<Models::UConverter>(stochasts, correlationMatrix);
         const std::shared_ptr<Models::ModelRunner> modelRunner = std::make_shared<Models::ModelRunner>(model, uConverter, progressIndicator);
-        modelRunner->Settings = runSettings;
+        modelRunner->Settings = settings->RunSettings;
         modelRunner->initializeForRun();
 
-        auto result = sensitivityMethod->getSensitivityStochast(modelRunner);
+        auto result = sensitivityMethod->getSensitivityResult(modelRunner);
         result.identifier = parameterSelector->parameter;
 
         modelRuns += model->getModelRuns();
@@ -94,7 +93,7 @@ namespace Deltares::Sensitivity
     bool SensitivityProject::isValid()
     {
         return ModelProject::isValid() &&
-            runSettings != nullptr && runSettings->isValid() &&
+            settings->RunSettings != nullptr && settings->RunSettings->isValid() &&
             settings->isValid();
     }
 }

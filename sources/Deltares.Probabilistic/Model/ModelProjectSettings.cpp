@@ -19,19 +19,5 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#pragma once
-#include "../Statistics/Stochast.h"
+
 #include "ModelProjectSettings.h"
-
-namespace Deltares::Models
-{
-    class RunProjectSettings : public ModelProjectSettings
-    {
-    public:
-        Statistics::RunValuesType runValuesType = Statistics::RunValuesType::MeanValues;
-
-        static Statistics::RunValuesType getRunValuesType(const std::string& value);
-        static std::string getRunValuesTypeString(Statistics::RunValuesType run_values);
-    };
-}
-

@@ -35,7 +35,7 @@ namespace Deltares::Sensitivity
     using namespace Deltares::Statistics;
     using namespace Deltares::Numeric;
 
-    SensitivityResult Sobol::getSensitivityStochast(std::shared_ptr<ModelRunner> modelRunner)
+    SensitivityResult Sobol::getSensitivityResult(std::shared_ptr<ModelRunner> modelRunner)
     {
         int nStochasts = modelRunner->getVaryingStochastCount();
         int nSamples = Settings->Iterations;

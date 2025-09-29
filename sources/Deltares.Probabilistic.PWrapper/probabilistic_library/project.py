@@ -28,6 +28,7 @@ from types import FunctionType
 
 from .statistic import *
 from .reliability import *
+from .sensitivity import *
 from .uncertainty import *
 from . import interface
 
@@ -605,11 +606,88 @@ class RunProject(ModelProject):
 
 		return self._realization
 
-class UncertaintyProject(ModelProject):
+class SensitivityProject(ModelProject):
 
 	def __init__(self):
 		super().__init__()
 		self._id = interface.Create('sensitivity_project')
+
+		self._result = None
+		self._results = None
+
+		self._initialize_callbacks(self._id)
+		self._set_settings(SensitivitySettings())
+		super()._freeze()
+
+	def __del__(self):
+		try:
+			interface.Destroy(self._id)
+		except:
+			pass
+
+	def __dir__(self):
+		return ['variables',
+				'correlation_matrix',
+				'settings',
+				'model',
+				'parameter',
+				'run',
+				'result',
+				'results',
+				'validate',
+				'is_valid',
+				'total_model_runs']
+
+	@property
+	def parameter(self) -> str:
+		return interface.GetStringValue(self._id, 'parameter')
+		
+	@parameter.setter
+	def parameter(self, value : str | ModelParameter):
+		interface.SetStringValue(self._id, 'parameter', str(value))
+
+	@property
+	def settings(self) -> SensitivitySettings :
+		self._check_model()
+		return self._settings
+
+	def run(self):
+		self._result = None
+		self._results = None
+
+		self._run()
+
+	@property
+	def result(self) -> SensitivityResult:
+		if self._result is None:
+			resultId = interface.GetIdValue(self._id, 'result')
+			if resultId > 0:
+				self._result = SensitivityResult(resultId)
+
+		return self._result
+
+	@property
+	def results(self) -> list[SensitivityResult]:
+		if self._results is None:
+			results = []
+			result_ids = interface.GetArrayIdValue(self._id, 'results')
+			for result_id in result_ids:
+				result = SensitivityResult(result_id)
+				result._set_variables(self.variables)
+				results.append(result)
+			self._results = FrozenList(results)
+				
+		return self._results
+
+	@property
+	def total_model_runs(self) -> int:
+		return interface.GetIntValue(self._id, 'total_model_runs')
+
+class UncertaintyProject(ModelProject):
+
+	def __init__(self):
+		super().__init__()
+		self._id = interface.Create('uncertainty_project')
 
 		self._stochast = None
 		self._stochasts = None
@@ -688,7 +766,7 @@ class UncertaintyProject(ModelProject):
 	@property
 	def result(self) -> UncertaintyResult:
 		if self._result is None:
-			resultId = interface.GetIdValue(self._id, 'sensitivity_result')
+			resultId = interface.GetIdValue(self._id, 'uncertainty_result')
 			if resultId > 0:
 				self._result = UncertaintyResult(resultId)
 
@@ -698,7 +776,7 @@ class UncertaintyProject(ModelProject):
 	def results(self) -> list[UncertaintyResult]:
 		if self._results is None:
 			results = []
-			result_ids = interface.GetArrayIdValue(self._id, 'sensitivity_results')
+			result_ids = interface.GetArrayIdValue(self._id, 'uncertainty_results')
 			for result_id in result_ids:
 				results.append(UncertaintyResult(result_id))
 			self._results = FrozenList(results)

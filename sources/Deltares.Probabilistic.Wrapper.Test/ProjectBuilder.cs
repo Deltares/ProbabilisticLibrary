@@ -25,6 +25,7 @@ using System.Threading.Tasks;
 using Deltares.Statistics.Wrappers;
 using Deltares.Models.Wrappers;
 using Deltares.Reliability.Wrappers;
+using Deltares.Sensitivity.Wrappers;
 using Deltares.Uncertainty.Wrappers;
 using Deltares.Utils.Wrappers;
 
@@ -177,7 +178,7 @@ namespace Deltares.Probabilistic.Wrapper.Test
             return project;
         }
 
-        public static UncertaintyProject GetSensitivityProject(ReliabilityProject project)
+        public static UncertaintyProject GetUncertaintyProject(ReliabilityProject project)
         {
             var uncertaintyProject = new UncertaintyProject();
 
@@ -187,6 +188,18 @@ namespace Deltares.Probabilistic.Wrapper.Test
             uncertaintyProject.TagRepository = project.TagRepository;
 
             return uncertaintyProject;
+        }
+
+        public static SensitivityProject GetSensitivityProject(ReliabilityProject project)
+        {
+            var sensitivityProject = new SensitivityProject();
+
+            sensitivityProject.Stochasts.AddRange(project.Stochasts);
+            sensitivityProject.CorrelationMatrix = project.CorrelationMatrix;
+            sensitivityProject.ZFunction = project.ZFunction;
+            sensitivityProject.TagRepository = project.TagRepository;
+
+            return sensitivityProject;
         }
 
         public static ReliabilityProject GetInverseLinearProject()

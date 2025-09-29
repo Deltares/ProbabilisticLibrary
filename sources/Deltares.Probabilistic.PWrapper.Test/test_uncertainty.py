@@ -32,7 +32,7 @@ margin = 0.02
 class Test_uncertainty(unittest.TestCase):
 
     def test_crude_monte_carlo_add_one(self):
-        project = project_builder.get_sensitivity_add_one_project()
+        project = project_builder.get_uncertainty_add_one_project()
 
         project.settings.uncertainty_method = UncertaintyMethod.crude_monte_carlo
 
@@ -49,7 +49,7 @@ class Test_uncertainty(unittest.TestCase):
 
 
     def test_crude_monte_carlo_linear(self):
-        project = project_builder.get_sensitivity_linear_project()
+        project = project_builder.get_uncertainty_linear_project()
 
         project.settings.uncertainty_method = UncertaintyMethod.crude_monte_carlo
 
@@ -62,7 +62,7 @@ class Test_uncertainty(unittest.TestCase):
         self.assertAlmostEqual(0.83, sens.deviation, delta=margin)
 
     def test_crude_monte_carlo_plot(self):
-        project = project_builder.get_sensitivity_linear_project()
+        project = project_builder.get_uncertainty_linear_project()
 
         project.settings.uncertainty_method = UncertaintyMethod.crude_monte_carlo
         project.settings.quantiles.append(0.5)
@@ -83,7 +83,7 @@ class Test_uncertainty(unittest.TestCase):
 
     def test_crude_monte_carlo_array_result_linear(self):
 
-        project = project_builder.get_sensitivity_linear_array_result_project()
+        project = project_builder.get_uncertainty_linear_array_result_project()
 
         project.settings.uncertainty_method = UncertaintyMethod.crude_monte_carlo
         project.settings.variation_coefficient = 0
@@ -123,7 +123,7 @@ class Test_uncertainty(unittest.TestCase):
 
     def test_crude_monte_carlo_array_result_linear_delayed(self):
 
-        project = project_builder.get_sensitivity_linear_delayed_array_result_project()
+        project = project_builder.get_uncertainty_linear_delayed_array_result_project()
 
         project.settings.uncertainty_method = UncertaintyMethod.crude_monte_carlo
         project.settings.variation_coefficient = 0
@@ -154,7 +154,7 @@ class Test_uncertainty(unittest.TestCase):
 
     def test_crude_monte_carlo_array_result_linear_delayed_parallel(self):
 
-        project = project_builder.get_sensitivity_linear_delayed_array_result_project()
+        project = project_builder.get_uncertainty_linear_delayed_array_result_project()
 
         project.settings.uncertainty_method = UncertaintyMethod.crude_monte_carlo
         project.settings.variation_coefficient = 0
@@ -184,7 +184,7 @@ class Test_uncertainty(unittest.TestCase):
         self.assertLessEqual(project.settings.maximum_samples, project.total_model_runs)
 
     def test_crude_monte_carlo_multiple_identical_linear(self):
-        project = project_builder.get_sensitivity_multiple_identical_linear_project()
+        project = project_builder.get_uncertainty_multiple_identical_linear_project()
 
         project.settings.uncertainty_method = UncertaintyMethod.crude_monte_carlo
         project.settings.calculate_correlations = True
@@ -200,7 +200,7 @@ class Test_uncertainty(unittest.TestCase):
         self.assertAlmostEqual(1.0, project.output_correlation_matrix['x','y'], delta=margin)
 
     def test_crude_monte_carlo_multiple_unbalanced_linear(self):
-        project = project_builder.get_sensitivity_multiple_unbalanced_linear_project()
+        project = project_builder.get_uncertainty_multiple_unbalanced_linear_project()
 
         project.settings.uncertainty_method = UncertaintyMethod.crude_monte_carlo
         project.settings.calculate_correlations = True
@@ -216,7 +216,7 @@ class Test_uncertainty(unittest.TestCase):
         self.assertAlmostEqual(0.96, project.output_correlation_matrix['x','y'], delta=margin)
 
     def test_crude_monte_carlo_multiple_unbalanced_linear_input(self):
-        project = project_builder.get_sensitivity_multiple_unbalanced_linear_project()
+        project = project_builder.get_uncertainty_multiple_unbalanced_linear_project()
 
         project.settings.uncertainty_method = UncertaintyMethod.crude_monte_carlo
         project.settings.calculate_correlations = True
@@ -237,7 +237,7 @@ class Test_uncertainty(unittest.TestCase):
         self.assertAlmostEqual(-0.21, project.output_correlation_matrix['a','x'], delta=margin)
 
     def test_crude_monte_carlo_multiple_unbalanced_correlated_linear(self):
-        project = project_builder.get_sensitivity_multiple_unbalanced_linear_project()
+        project = project_builder.get_uncertainty_multiple_unbalanced_linear_project()
 
         project.settings.uncertainty_method = UncertaintyMethod.crude_monte_carlo
         project.settings.calculate_correlations = True
@@ -264,7 +264,7 @@ class Test_uncertainty(unittest.TestCase):
         self.assertAlmostEqual(-0.92, project.output_correlation_matrix['a','x'], delta=margin)
 
     def test_crude_monte_carlo_auto_linear(self):
-        project = project_builder.get_sensitivity_linear_project()
+        project = project_builder.get_uncertainty_linear_project()
 
         project.settings.uncertainty_method = UncertaintyMethod.crude_monte_carlo
         project.settings.derive_samples_from_variation_coefficient = True
@@ -277,7 +277,7 @@ class Test_uncertainty(unittest.TestCase):
         self.assertAlmostEqual(0.83, sens.deviation, delta=margin)
 
     def test_importance_sampling_add_one(self):
-        project = project_builder.get_sensitivity_add_one_project()
+        project = project_builder.get_uncertainty_add_one_project()
 
         project.settings.uncertainty_method = UncertaintyMethod.importance_sampling
 
@@ -293,7 +293,7 @@ class Test_uncertainty(unittest.TestCase):
         self.assertAlmostEqual(2, sens.maximum, delta=margin)
 
     def test_numerical_integration_linear(self):
-        project = project_builder.get_sensitivity_linear_project()
+        project = project_builder.get_uncertainty_linear_project()
 
         project.settings.uncertainty_method = UncertaintyMethod.numerical_integration
 
@@ -307,7 +307,7 @@ class Test_uncertainty(unittest.TestCase):
         self.assertAlmostEqual(0.81, sens.deviation, delta=margin)
 
     def test_fosm_linear(self):
-        project = project_builder.get_sensitivity_linear_project()
+        project = project_builder.get_uncertainty_linear_project()
 
         project.settings.uncertainty_method = UncertaintyMethod.fosm
 
@@ -321,7 +321,7 @@ class Test_uncertainty(unittest.TestCase):
         self.assertAlmostEqual(1.04, sens.deviation, delta=margin)
 
     def test_form_linear(self):
-        project = project_builder.get_sensitivity_linear_project()
+        project = project_builder.get_uncertainty_linear_project()
 
         project.settings.uncertainty_method = UncertaintyMethod.form
 
@@ -335,7 +335,7 @@ class Test_uncertainty(unittest.TestCase):
         self.assertAlmostEqual(0.92, sens.deviation, delta=margin)
 
     def test_directional_sampling_linear(self):
-        project = project_builder.get_sensitivity_linear_project()
+        project = project_builder.get_uncertainty_linear_project()
 
         project.settings.uncertainty_method = UncertaintyMethod.directional_sampling
         project.settings.quantiles.append(0.9)
@@ -351,7 +351,7 @@ class Test_uncertainty(unittest.TestCase):
         self.assertAlmostEqual(0.9, sens.fragility_values[0].probability_of_non_failure, delta=margin)
 
     def test_directional_sampling_linear_parallel(self):
-        project = project_builder.get_sensitivity_linear_project()
+        project = project_builder.get_uncertainty_linear_project()
 
         project.settings.uncertainty_method = UncertaintyMethod.directional_sampling
         project.settings.quantiles.append(0.9)
@@ -368,7 +368,7 @@ class Test_uncertainty(unittest.TestCase):
         self.assertAlmostEqual(0.9, sens.fragility_values[0].probability_of_non_failure, delta=margin)
 
     def test_mc_pile(self):
-        project = project_builder.get_sensitivity_pile_project()
+        project = project_builder.get_uncertainty_pile_project()
 
         project.settings.uncertainty_method = UncertaintyMethod.crude_monte_carlo
         project.run();
@@ -379,7 +379,7 @@ class Test_uncertainty(unittest.TestCase):
         self.assertAlmostEqual(1.69, mc.get_quantile(StandardNormal.get_p_from_u(3.3)), delta=margin)
 
     def test_is_pile(self):
-        project = project_builder.get_sensitivity_pile_project()
+        project = project_builder.get_uncertainty_pile_project()
 
         project.settings.uncertainty_method = UncertaintyMethod.importance_sampling
         project.settings.maximum_samples = 1000
@@ -394,7 +394,7 @@ class Test_uncertainty(unittest.TestCase):
         self.assertAlmostEqual(1.53, mc.get_quantile(StandardNormal.get_p_from_u(3.3)), delta=margin)
 
     def test_form_pile(self):
-        project = project_builder.get_sensitivity_pile_project()
+        project = project_builder.get_uncertainty_pile_project()
 
         project.settings.uncertainty_method = UncertaintyMethod.form
         project.run();
@@ -406,7 +406,7 @@ class Test_uncertainty(unittest.TestCase):
 
 
     def test_directional_sampling_pile(self):
-        project = project_builder.get_sensitivity_pile_project()
+        project = project_builder.get_uncertainty_pile_project()
 
         project.settings.uncertainty_method = UncertaintyMethod.directional_sampling
         project.settings.maximum_samples = 10000
@@ -442,9 +442,9 @@ class Test_uncertainty(unittest.TestCase):
         self.assertAlmostEqual(1.19, sens2.fragility_values[2].x, delta=margin)
         self.assertAlmostEqual(0.96, sens2.fragility_values[3].x, delta=margin)
 
-    def test_sensitivity_print(self):
+    def test_uncertainty_print(self):
 
-        project = project_builder.get_sensitivity_linear_project()
+        project = project_builder.get_uncertainty_linear_project()
 
         project.settings.uncertainty_method = UncertaintyMethod.crude_monte_carlo
         project.settings.quantiles.append(0.5)

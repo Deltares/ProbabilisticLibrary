@@ -19,19 +19,34 @@
 // Stichting Deltares and remain full property of Stichting Deltares at all times.
 // All rights reserved.
 //
-#pragma once
+#include "SensitivityMethod.h"
+
+#include "../Model/ModelRunner.h"
 #include "../Statistics/Stochast.h"
-#include "ModelProjectSettings.h"
 
-namespace Deltares::Models
+namespace Deltares
 {
-    class RunProjectSettings : public ModelProjectSettings
+    namespace Sensitivity
     {
-    public:
-        Statistics::RunValuesType runValuesType = Statistics::RunValuesType::MeanValues;
+        namespace Wrappers
+        {
+            Wrappers::SensitivityResult^ SensitivityMethod::GetResult(Models::Wrappers::ModelRunner^ modelRunner)
+            {
+                const std::shared_ptr<Sensitivity::SensitivityMethod> sensitivityMethod = this->GetNativeSensitivityMethod();
 
-        static Statistics::RunValuesType getRunValuesType(const std::string& value);
-        static std::string getRunValuesTypeString(Statistics::RunValuesType run_values);
-    };
+                const std::shared_ptr<Models::ModelRunner> nativeModelRunner = modelRunner->GetModelRunner();
+
+                nativeModelRunner->initializeForRun();
+
+                Sensitivity::SensitivityResult nativeResult = sensitivityMethod->getSensitivityResult(nativeModelRunner);
+                std::shared_ptr<Sensitivity::SensitivityResult> resultPointer = std::make_shared<Sensitivity::SensitivityResult>(nativeResult);
+
+                Wrappers::SensitivityResult^ result = gcnew Wrappers::SensitivityResult(resultPointer, modelRunner->Stochasts);
+
+                return result;
+            };
+        }
+    }
 }
+
 

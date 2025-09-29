@@ -20,18 +20,34 @@
 // All rights reserved.
 //
 #pragma once
-#include "../Statistics/Stochast.h"
-#include "ModelProjectSettings.h"
+#include "../Model/ModelRunner.h"
+#include "../../Deltares.Probabilistic/Sensitivity/SensitivityMethod.h"
+#include "SensitivityResult.h"
 
-namespace Deltares::Models
+namespace Deltares
 {
-    class RunProjectSettings : public ModelProjectSettings
+    namespace Sensitivity
     {
-    public:
-        Statistics::RunValuesType runValuesType = Statistics::RunValuesType::MeanValues;
+        namespace Wrappers
+        {
+            public ref class SensitivityMethod
+            {
+            public:
+                SensitivityMethod() {  }
 
-        static Statistics::RunValuesType getRunValuesType(const std::string& value);
-        static std::string getRunValuesTypeString(Statistics::RunValuesType run_values);
-    };
+                virtual std::shared_ptr<Sensitivity::SensitivityMethod> GetNativeSensitivityMethod()
+                {
+                    return nullptr;
+                };
+
+                SensitivityResult^ GetResult(Models::Wrappers::ModelRunner^ modelRunner);
+
+                virtual System::Object^ GetSettings() { return nullptr; }
+                virtual bool IsValid() { return false; }
+                virtual void Stop()    { }
+                virtual bool IsStopped() { return false; }
+            };
+        }
+    }
 }
 

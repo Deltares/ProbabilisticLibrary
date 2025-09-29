@@ -20,18 +20,17 @@
 // All rights reserved.
 //
 #pragma once
-#include "../Statistics/Stochast.h"
-#include "ModelProjectSettings.h"
+#include "RunSettings.h"
 
 namespace Deltares::Models
 {
-    class RunProjectSettings : public ModelProjectSettings
+    class ModelProjectSettings
     {
     public:
-        Statistics::RunValuesType runValuesType = Statistics::RunValuesType::MeanValues;
-
-        static Statistics::RunValuesType getRunValuesType(const std::string& value);
-        static std::string getRunValuesTypeString(Statistics::RunValuesType run_values);
+        /**
+         * \brief Settings for performing model runs
+         */
+        std::shared_ptr<Models::RunSettings> RunSettings = std::make_shared<Models::RunSettings>();
     };
 }
 

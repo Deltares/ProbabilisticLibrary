@@ -24,7 +24,8 @@
 #include "SensitivityMethod.h"
 #include "SingleVariation.h"
 #include "Sobol.h"
-#include "../Model/RunSettings.h"
+#include "../Model/ModelProjectSettings.h"
+
 
 namespace Deltares::Sensitivity
 {
@@ -33,7 +34,7 @@ namespace Deltares::Sensitivity
     /**
      * \brief General settings applicable to all mechanisms
      */
-    class SensitivitySettings
+    class SensitivitySettings : public Models::ModelProjectSettings
     {
     public:
         /**
@@ -55,11 +56,6 @@ namespace Deltares::Sensitivity
          * \brief The number of iterations
          */
         int Iterations = 1000;
-
-        /**
-         * \brief Settings for performing model runs
-         */
-        std::shared_ptr<Models::RunSettings> RunSettings = std::make_shared<Models::RunSettings>();
 
         /**
          * \brief Gets the reliability method and settings based on these settings

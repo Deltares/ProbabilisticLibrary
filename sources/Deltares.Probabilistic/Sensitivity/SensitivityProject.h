@@ -56,12 +56,6 @@ namespace Deltares::Sensitivity
         std::shared_ptr<SensitivitySettings> settings = std::make_shared<SensitivitySettings>();
 
         /**
-         * \brief Settings for performing a calculation
-         * \remark Settings of the uncertainty calculation are held in the settings of the uncertainty method
-         */
-        std::shared_ptr<Models::RunSettings> runSettings = std::make_shared<Models::RunSettings>();
-
-        /**
          * \brief Callback for progress during the calculation
          */
         std::shared_ptr<Models::ProgressIndicator> progressIndicator = nullptr;
@@ -91,7 +85,26 @@ namespace Deltares::Sensitivity
         /**
          * \brief Runs the reliability calculation
          */
-        void run();
+        void run() override;
+
+        /**
+         * \brief Sets the settings
+         */
+        void setSettings(std::shared_ptr<Models::ModelProjectSettings> newSettings) override
+        {
+            settings = std::static_pointer_cast<SensitivitySettings>(newSettings);
+        }
+
+        /**
+         * \brief List of evaluations calculated during uncertainty analysis
+         */
+        std::vector<std::shared_ptr<Models::Evaluation>> evaluations;
+
+        /**
+         * \brief List of messages raised during uncertainty analysis
+         */
+        std::vector<std::shared_ptr<Models::Message>> messages;
+
     private:
         std::shared_ptr<Models::ParameterSelector> parameterSelector = std::make_shared<Models::ParameterSelector>();
     };

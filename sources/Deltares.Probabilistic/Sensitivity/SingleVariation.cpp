@@ -33,7 +33,7 @@ namespace Deltares::Sensitivity
     using namespace Deltares::Models;
     using namespace Deltares::Statistics;
 
-    SensitivityResult SingleVariation::getSensitivityStochast(std::shared_ptr<ModelRunner> modelRunner)
+    SensitivityResult SingleVariation::getSensitivityResult(std::shared_ptr<ModelRunner> modelRunner)
     {
         int nStochasts = modelRunner->getVaryingStochastCount();
 
