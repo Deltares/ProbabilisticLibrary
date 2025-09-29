@@ -21,7 +21,6 @@
 //
 # include "ProjectHandler.h"
 
-#include <iostream>
 #include <string>
 #include <memory>
 
@@ -1190,7 +1189,6 @@ namespace Deltares
 
                 if (property_ == "is_initialization_allowed") return stochastSettings->IsInitializationAllowed;
                 else if (property_ == "is_variance_allowed") return stochastSettings->IsVarianceAllowed;
-
             }
             else if (IsModelProjectType(objectType))
             {
@@ -2465,19 +2463,19 @@ namespace Deltares
         {
             if (projects.contains(id))
             {
-                return projects[id];
+                return std::static_pointer_cast<Models::ModelProject>(projects[id]);
             }
             else if (runProjects.contains(id))
             {
-                return runProjects[id];
+                return std::static_pointer_cast<Models::ModelProject>(runProjects[id]);
             }
             else if (uncertaintyProjects.contains(id))
             {
-                return uncertaintyProjects[id];
+                return std::static_pointer_cast<Models::ModelProject>(uncertaintyProjects[id]);
             }
             else if (sensitivityProjects.contains(id))
             {
-                return sensitivityProjects[id];
+                return std::static_pointer_cast<Models::ModelProject>(sensitivityProjects[id]);
             }
             else
             {

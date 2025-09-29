@@ -179,10 +179,10 @@ class Evaluation(FrozenObject):
 			pre = pre + f'quantile {self.quantile:.{decimals}g}: '
 		if isnan(self.z) and len(self.output_values) == 0:
 			print(pre + f'[{input_values}]')
-		elif math.isnan(self.z) and len(self.output_values) > 0:
+		elif isnan(self.z) and len(self.output_values) > 0:
 			print(pre + f'[{input_values}] -> [{output_values}]')
 		elif not isnan(self.z) and len(self.output_values) == 0:
 			print(pre + f'[{input_values}] -> {self.z:.{decimals}g}')
-		elif not math.isnan(self.z) and len(self.output_values) > 0:
+		elif not isnan(self.z) and len(self.output_values) > 0:
 			print(pre + f'[{input_values}] -> [{output_values}] -> {self.z:.{decimals}g}')
 		
