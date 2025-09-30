@@ -256,7 +256,7 @@ namespace Deltares
 
         void ProjectHandler::Destroy(int id)
         {
-            if (types.contains(id))
+            if (!types.contains(id))
             {
                 // already destroyed or never existed
                 return;
