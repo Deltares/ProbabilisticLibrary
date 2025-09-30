@@ -21,9 +21,14 @@
 #
 import unittest
 import sys
+import os
+
 from io import StringIO
 
-from probabilistic_library import *
+from probabilistic_library.utils import FrozenList, FrozenObject
+from probabilistic_library.sensitivity import SensitivityResult, SensitivityValue, SensitivityMethod
+from probabilistic_library.project import SensitivityProject
+from probabilistic_library.statistic import Stochast, DistributionType
 
 import project_builder
 

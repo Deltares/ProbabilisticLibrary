@@ -31,22 +31,19 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Utils::Wrappers;
-            using namespace Deltares::Models::Wrappers;
-
             public ref class SensitivityValue
             {
             private:
-                SharedPointerProvider<Sensitivity::SensitivityValue>* shared = nullptr;
+                Utils::Wrappers::SharedPointerProvider<Sensitivity::SensitivityValue>* shared = nullptr;
             public:
                 SensitivityValue()
                 {
-                    shared = new SharedPointerProvider(new Deltares::Sensitivity::SensitivityValue());
+                    shared = new Utils::Wrappers::SharedPointerProvider(new Deltares::Sensitivity::SensitivityValue());
                 }
 
                 SensitivityValue(std::shared_ptr<Deltares::Sensitivity::SensitivityValue> sensitivityValue)
                 {
-                    shared = new SharedPointerProvider(sensitivityValue);
+                    shared = new Utils::Wrappers::SharedPointerProvider(sensitivityValue);
                 }
                 ~SensitivityValue() { this->!SensitivityValue(); }
                 !SensitivityValue() { delete shared; }

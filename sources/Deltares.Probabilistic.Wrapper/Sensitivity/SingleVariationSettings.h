@@ -31,14 +31,11 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Utils::Wrappers;
-            using namespace Deltares::Models::Wrappers;
-
-            public ref class SingleVariationSettings : IHasRunSettings
+            public ref class SingleVariationSettings : Models::Wrappers::IHasRunSettings
             {
             private:
-                SharedPointerProvider<Sensitivity::SingleVariationSettings>* shared = new SharedPointerProvider(new Sensitivity::SingleVariationSettings());
-                Wrappers::RunSettings^ runSettings = gcnew Wrappers::RunSettings();
+                Utils::Wrappers::SharedPointerProvider<Sensitivity::SingleVariationSettings>* shared = new Utils::Wrappers::SharedPointerProvider(new Sensitivity::SingleVariationSettings());
+                Models::Wrappers::RunSettings^ runSettings = gcnew Models::Wrappers::RunSettings();
             public:
                 SingleVariationSettings() {}
                 ~SingleVariationSettings() { this->!SingleVariationSettings(); }
@@ -56,10 +53,10 @@ namespace Deltares
                     void set(double value) { shared->object->HighValue = value; }
                 }
 
-                virtual property Wrappers::RunSettings^ RunSettings
+                virtual property Models::Wrappers::RunSettings^ RunSettings
                 {
-                    Wrappers::RunSettings^ get() { return runSettings; }
-                    void set(Wrappers::RunSettings^ value) { runSettings = value; }
+                    Models::Wrappers::RunSettings^ get() { return runSettings; }
+                    void set(Models::Wrappers::RunSettings^ value) { runSettings = value; }
                 }
 
                 bool IsValid()

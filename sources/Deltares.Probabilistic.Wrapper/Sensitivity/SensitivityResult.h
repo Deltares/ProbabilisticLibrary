@@ -33,24 +33,21 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Utils::Wrappers;
-            using namespace Deltares::Models::Wrappers;
-
             public ref class SensitivityResult
             {
             private:
-                SharedPointerProvider<Sensitivity::SensitivityResult>* shared = nullptr;
+                Utils::Wrappers::SharedPointerProvider<Sensitivity::SensitivityResult>* shared = nullptr;
                 System::Collections::Generic::List<Wrappers::SensitivityValue^>^ values = gcnew System::Collections::Generic::List<SensitivityValue^>();
 
             public:
                 SensitivityResult()
                 {
-                    shared = new SharedPointerProvider(new Deltares::Sensitivity::SensitivityResult());
+                    shared = new Utils::Wrappers::SharedPointerProvider(new Deltares::Sensitivity::SensitivityResult());
                 }
 
                 SensitivityResult(std::shared_ptr<Deltares::Sensitivity::SensitivityResult> sensitivityResult, System::Collections::Generic::IList<Statistics::Wrappers::Stochast^>^ stochasts)
                 {
-                    shared = new SharedPointerProvider(sensitivityResult);
+                    shared = new Utils::Wrappers::SharedPointerProvider(sensitivityResult);
 
                     std::map<std::shared_ptr<Statistics::Stochast>, int> stochastMapping;
                     for (int i = 0; i < stochasts->Count; i++)
@@ -73,14 +70,6 @@ namespace Deltares
                 {
                     System::Collections::Generic::List<SensitivityValue^>^ get() { return values; }
                 }
-
-
-
-                //property int Iterations
-                //{
-                //    bool get() { return shared->object->Iterations; }
-                //    void set(bool value) { shared->object->Iterations = value; }
-                //}
             };
         }
     }
