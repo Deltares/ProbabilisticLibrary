@@ -61,30 +61,34 @@ class Message(FrozenObject):
 			pass
 		
 	def __str__(self):
-		return str(self.type) + ': ' + self.text
+		if self.subject == "":
+			return str(self.type) + ': ' + self.text
+		else:
+			return str(self.type) + ': ' + self.subject + ' => ' + self.text
 		
 	def __dir__(self):
 		return ['type',
-				'text',
-				'print']
+		        'subject',
+		        'text',
+		        'print']
 
 	@property
 	def type(self) -> MessageType:
 		return MessageType[interface.GetStringValue(self._id, 'type')]
 		
 	@property
+	def subject(self) -> str:
+		return interface.GetStringValue(self._id, 'subject')
+
+	@property
 	def text(self) -> str:
 		return interface.GetStringValue(self._id, 'text')
 
 	def print(self):
-		if self.type == MessageType.error:
-			print(f'Error: {self.text}')
-		elif self.type == MessageType.warning:
-			print(f'Warning: {self.text}')
-		elif self.type == MessageType.info:
-			print(f'Info: {self.text}')
-		elif self.type == MessageType.debug:
-			print(f'Debug: {self.text}')
+		text = str(self)
+		if len(text) > 0:
+			text = text[0].capitalize() + text[1:]
+		print(text)
 
 class ValidationReport(FrozenObject):
 

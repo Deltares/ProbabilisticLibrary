@@ -39,11 +39,11 @@ namespace Deltares
             // not supported
         }
 
-        void ConditionalWeibullDistribution::validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast)
+        void ConditionalWeibullDistribution::validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast, std::string& subject)
         {
-            Logging::ValidationSupport::checkMinimumNonInclusive(report, 0, stochast->Scale, "scale");
-            Logging::ValidationSupport::checkMinimumNonInclusive(report, 0, stochast->Shape, "shape");
-            Logging::ValidationSupport::checkMinimumNonInclusive(report, 0, stochast->ShapeB, "shape B");
+            Logging::ValidationSupport::checkMinimumNonInclusive(report, 0, stochast->Scale, "scale", subject);
+            Logging::ValidationSupport::checkMinimumNonInclusive(report, 0, stochast->Shape, "shape", subject);
+            Logging::ValidationSupport::checkMinimumNonInclusive(report, 0, stochast->ShapeB, "shape B", subject);
         }
 
         bool ConditionalWeibullDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)

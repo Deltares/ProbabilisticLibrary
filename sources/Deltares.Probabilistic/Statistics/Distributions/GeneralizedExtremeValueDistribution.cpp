@@ -90,9 +90,9 @@ namespace Deltares
             setMeanAndDeviation(stochast, values[0], values[1]);
         }
 
-        void GeneralizedExtremeValueDistribution::validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast)
+        void GeneralizedExtremeValueDistribution::validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast, std::string& subject)
         {
-            this->getDistribution(stochast)->validate(report, getStochast(stochast));
+            this->getDistribution(stochast)->validate(report, getStochast(stochast), subject);
         }
 
         bool GeneralizedExtremeValueDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)

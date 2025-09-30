@@ -99,20 +99,20 @@ namespace Deltares
             }
         }
 
-        void HistogramDistribution::validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast)
+        void HistogramDistribution::validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast, std::string& subject)
         {
             if (stochast->dirty)
             {
                 initializeForRun(stochast);
             }
 
-            Logging::ValidationSupport::checkNotEmpty(report, stochast->FragilityValues.size(), "histogram values");
+            Logging::ValidationSupport::checkNotEmpty(report, stochast->FragilityValues.size(), "histogram values", subject);
 
             std::shared_ptr<HistogramValue> previousHistogramValue = nullptr;
 
             for (std::shared_ptr<HistogramValue> histogramValue : stochast->HistogramValues)
             {
-                histogramValue->validate(report, previousHistogramValue);
+                histogramValue->validate(report, previousHistogramValue, subject);
                 previousHistogramValue = histogramValue;
             }
         }

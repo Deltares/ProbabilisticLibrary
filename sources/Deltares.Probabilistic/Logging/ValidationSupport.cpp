@@ -80,7 +80,7 @@ namespace Deltares
             if (value < minimum)
             {
                 std::shared_ptr<Message> message = std::make_shared<Message>();
-                message->Text = property + " (" + toString(value) + ") is less than " + toString(minimum) + ".";
+                message->Text = property + " value " + toString(value) + " is less than " + toString(minimum) + ".";
                 message->Type = messageType;
                 message->Subject = std::move(subject);
 
@@ -94,7 +94,7 @@ namespace Deltares
             if (value <= minimum)
             {
                 std::shared_ptr<Message> message = std::make_shared<Message>();
-                message->Text = property + " (" + toString(value) + ") is not greater than " + toString(minimum) + ".";
+                message->Text = property + " value " + toString(value) + " is not greater than " + toString(minimum) + ".";
                 message->Type = messageType;
                 message->Subject = std::move(subject);
 
@@ -108,7 +108,7 @@ namespace Deltares
             if (value > maximum)
             {
                 std::shared_ptr<Message> message = std::make_shared<Message>();
-                message->Text = property + " (" + toString(value) + ") is greater than " + toString(maximum) + ".";
+                message->Text = property + " value " + toString(value) + " is greater than " + toString(maximum) + ".";
                 message->Type = messageType;
                 message->Subject = std::move(subject);
 
@@ -122,7 +122,7 @@ namespace Deltares
             if (value >= maximum)
             {
                 std::shared_ptr<Message> message = std::make_shared<Message>();
-                message->Text = property + " (" + toString(value) + ") is not less than " + toString(maximum) + ".";
+                message->Text = property + " value " + toString(value) + " is not less than " + toString(maximum) + ".";
                 message->Type = messageType;
                 message->Subject = std::move(subject);
 

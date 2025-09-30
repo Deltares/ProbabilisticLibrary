@@ -43,6 +43,10 @@ namespace Deltares
 
             /**
               * \brief Prepares this class for running
+              * \param defaultStochast default stochast
+              * \param distributionType distribution type
+              * \param truncated Indicates whether stochast is truncated
+              * \param inverted Indicates whether stochast is inverted
               */
             void initializeForRun(std::shared_ptr<StochastProperties> defaultStochast, DistributionType distributionType, bool truncated, bool inverted);
 
@@ -69,6 +73,9 @@ namespace Deltares
 
             /**
               * \brief Indicates whether the stochast value set is valid
+              * \param distributionType distribution type
+              * \param truncated Indicates whether stochast is truncated
+              * \param inverted Indicates whether stochast is inverted
               * \return Indication
               */
             bool isValid(DistributionType distributionType, bool truncated, bool inverted);
@@ -76,8 +83,12 @@ namespace Deltares
             /**
              * \brief Validates the stochastic parameters and puts the results in a report
              * \param report The validation report containing the validation results
+             * \param distributionType distribution type
+             * \param truncated Indicates whether stochast is truncated
+             * \param inverted Indicates whether stochast is inverted
+             * \param subject String describing the stochast
              */
-            void validate(Logging::ValidationReport& report, DistributionType distributionType, bool truncated, bool inverted);
+            void validate(Logging::ValidationReport& report, DistributionType distributionType, bool truncated, bool inverted, std::string& subject);
 
             /**
               * \brief Makes a deep copy of a source

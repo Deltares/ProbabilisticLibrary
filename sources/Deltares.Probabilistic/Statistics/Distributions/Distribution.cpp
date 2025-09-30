@@ -193,38 +193,44 @@ namespace Deltares
 
         bool Distribution::isValid(std::shared_ptr<StochastProperties> stochast)
         {
+            std::string empty_subject;
+
             Logging::ValidationReport report;
-            this->validate(report, stochast);
+            this->validate(report, stochast, empty_subject);
             return report.isValid();
         }
 
-        void Distribution::validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast)
+        void Distribution::validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast, std::string& subject)
         {
             for (DistributionPropertyType property : this->getParameters())
             {
                 if (property == Location)
                 {
-                    Logging::ValidationSupport::checkFinite(report, stochast->Location, "location");
+                    Logging::ValidationSupport::checkFinite(report, stochast->Location, "location", subject);
                 }
                 else if (property == Scale)
                 {
-                    Logging::ValidationSupport::checkMinimum(report, 0, stochast->Scale, "scale");
+                    Logging::ValidationSupport::checkMinimum(report, 0, stochast->Scale, "scale", subject);
                 }
                 else if (property == Shape)
                 {
-                    Logging::ValidationSupport::checkMinimum(report, 0, stochast->Shape, "shape");
+                    Logging::ValidationSupport::checkMinimum(report, 0, stochast->Shape, "shape", subject);
                 }
                 else if (property == ShapeB)
                 {
-                    Logging::ValidationSupport::checkMinimum(report, 0, stochast->ShapeB, "shape B");
+                    Logging::ValidationSupport::checkMinimum(report, 0, stochast->ShapeB, "shape B", subject);
                 }
                 else if (property == Maximum)
                 {
-                    Logging::ValidationSupport::checkMinimum(report, stochast->Minimum, stochast->Maximum, "maximum");
+                    Logging::ValidationSupport::checkMinimum(report, stochast->Minimum, stochast->Maximum, "maximum", subject);
                 }
                 else if (property == ShiftB)
                 {
-                    Logging::ValidationSupport::checkMinimum(report, stochast->Shift, stochast->ShiftB, "shift B");
+                    Logging::ValidationSupport::checkMinimum(report, stochast->Shift, stochast->ShiftB, "shift B", subject);
+                }
+                else if (property == Observations)
+                {
+                    Logging::ValidationSupport::checkMinimum(report, 2, stochast->Observations, "observations", subject);
                 }
             }
         }

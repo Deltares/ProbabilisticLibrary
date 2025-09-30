@@ -98,13 +98,13 @@ namespace Deltares
              * \param report Report in which the validity is reported
              * \param previous Previous histogram value in the stochast
              */
-            void validate(Logging::ValidationReport& report, std::shared_ptr<HistogramValue> previous) const
+            void validate(Logging::ValidationReport& report, std::shared_ptr<HistogramValue> previous, std::string& subject) const
             {
-                Logging::ValidationSupport::checkMinimum(report, 0, Amount, "amount");
-                Logging::ValidationSupport::checkMinimum(report, LowerBound, UpperBound, "upper bound");
+                Logging::ValidationSupport::checkMinimum(report, 0, Amount, "amount", subject);
+                Logging::ValidationSupport::checkMinimum(report, LowerBound, UpperBound, "upper bound", subject);
                 if (previous != nullptr)
                 {
-                    Logging::ValidationSupport::checkMinimum(report, previous->UpperBound, LowerBound, "lower bound");
+                    Logging::ValidationSupport::checkMinimum(report, previous->UpperBound, LowerBound, "lower bound", subject);
                 }
             }
 

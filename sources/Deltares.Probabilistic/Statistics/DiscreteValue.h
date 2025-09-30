@@ -60,9 +60,9 @@ namespace Deltares
                 }
             }
 
-            void validate(Logging::ValidationReport& report) const
+            void validate(Logging::ValidationReport& report, std::string& subject) const
             {
-                Logging::ValidationSupport::checkMinimum(report, 0, Amount, "amount");
+                Logging::ValidationSupport::checkMinimum(report, 0, Amount, "amount", subject);
             }
 
             std::shared_ptr<DiscreteValue> clone() const

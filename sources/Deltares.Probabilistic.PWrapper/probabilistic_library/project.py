@@ -524,7 +524,8 @@ class ModelProject(FrozenObject):
 		if (self.is_valid()):
 			interface.Execute(self._project_id, 'run')
 		else:
-			print('run not executed, input is not valid')
+			# print the validation messages
+			self.validate()
 
 class RunValuesType(Enum):
 	median_values = 'median_values'
@@ -869,10 +870,7 @@ class ReliabilityProject(ModelProject):
 		self._design_point = None
 		self._fragility_curve = None
 		self._initialized = False
-		if (self.is_valid()):
-			self._run()
-		else:
-			print('run not executed, input is not valid')
+		self._run()
 
 	@property
 	def design_point(self) -> DesignPoint:

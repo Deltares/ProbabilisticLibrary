@@ -46,9 +46,17 @@ class Test_reliability(unittest.TestCase):
         project.variables['a'].scale = -1
         self.assertFalse(project.is_valid())
 
-        # run an invalid prohect
+        # Replace default stdout (terminal) temporary with with our stream
+        sys.stdout = StringIO()
+
+        # run an invalid project
         project.run();
         self.assertIsNone(project.design_point)
+
+        printed = sys.stdout.getvalue()
+        sys.stdout = sys.__stdout__
+
+        self.assertEqual("""Error: a => scale value -1 is less than 0.\n""", printed)
 
     def test_form_linear(self):
         project = project_builder.get_linear_project()

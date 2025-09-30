@@ -68,10 +68,10 @@ namespace Deltares
                 }
             }
 
-            void validate(Logging::ValidationReport& report) const
+            void validate(Logging::ValidationReport& report, std::string& subject) const
             {
-                Logging::ValidationSupport::checkMinimum(report, -StandardNormal::UMax, Reliability, "reliability");
-                Logging::ValidationSupport::checkMaximum(report, StandardNormal::UMax, Reliability, "reliability");
+                Logging::ValidationSupport::checkMinimum(report, -StandardNormal::UMax, Reliability, "reliability", subject);
+                Logging::ValidationSupport::checkMaximum(report, StandardNormal::UMax, Reliability, "reliability", subject);
             }
 
             std::shared_ptr<FragilityValue> clone()

@@ -63,7 +63,7 @@ namespace Deltares
             return false;
         }
 
-        void CompositeDistribution::validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast)
+        void CompositeDistribution::validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast, std::string& subject)
         {
             double sum = 0;
             for (std::shared_ptr<ContributingStochast> contributingStochast : stochast->ContributingStochasts)
@@ -75,7 +75,7 @@ namespace Deltares
 
             if (!Numeric::NumericSupport::areEqual(1.0, sum, delta))
             {
-                Logging::ValidationSupport::add(report, "probabilities should add up to 1");
+                Logging::ValidationSupport::add(report, "probabilities should add up to 1", subject);
             }
         }
 

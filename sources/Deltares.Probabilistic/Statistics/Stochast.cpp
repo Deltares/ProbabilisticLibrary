@@ -384,11 +384,11 @@ namespace Deltares
             if (IsVariableStochast)
             {
                 initializeConditionalValues();
-                ValueSet->validate(report, distributionType, truncated, inverted);
+                ValueSet->validate(report, distributionType, truncated, inverted, name);
             }
             else
             {
-                distribution->validate(report, properties);
+                distribution->validate(report, properties, name);
             }
         }
 

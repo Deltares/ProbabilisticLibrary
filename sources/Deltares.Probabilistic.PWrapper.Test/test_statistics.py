@@ -151,6 +151,7 @@ class Test_statistics(unittest.TestCase):
         stochast.distribution = DistributionType.normal
         stochast.mean = 3
         stochast.deviation = -1.5
+        stochast.name ='abc'
 
         # Replace default stdout (terminal) temporary with with our stream
         sys.stdout = StringIO()
@@ -158,7 +159,7 @@ class Test_statistics(unittest.TestCase):
         self.assertFalse(stochast.is_valid())
         stochast.validate()
         printed = sys.stdout.getvalue()
-        self.assertEqual("""Error: scale (-1.5) is less than 0.\n""", printed)
+        self.assertEqual("""Error: abc => scale value -1.5 is less than 0.\n""", printed)
 
         sys.stdout = sys.__stdout__
 
