@@ -748,7 +748,7 @@ class Stochast(FrozenObject):
 
 	def plot(self, xmin : float = None, xmax : float = None):
 
-		plot = self.get_plot(xmin, xmax).show()
+		self.get_plot(xmin, xmax).show()
 
 	def get_plot(self, xmin : float = None, xmax : float = None) -> plt:
 

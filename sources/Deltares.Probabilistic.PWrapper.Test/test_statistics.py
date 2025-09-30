@@ -157,7 +157,7 @@ class Test_statistics(unittest.TestCase):
 
         pl = stochast.get_plot()
 
-        self.assertTrue(pl == None)
+        self.assertEqual(pl, None)
 
     def test_series(self):
         stochast1 = Stochast()
@@ -220,7 +220,7 @@ class Test_statistics(unittest.TestCase):
 
         plt.close()
     
-        fig, ax1 = plt.subplots()
+        _, ax1 = plt.subplots()
         ax1.set_xlabel("value [x]")
         ax1.set_ylabel("pdf [-]")
 
