@@ -25,6 +25,7 @@
 #include <omp.h>
 
 #include "ModelSample.h"
+#include "../Logging/ValidationSupport.h"
 #include "../Utils/probLibException.h"
 
 
@@ -286,6 +287,11 @@ namespace Deltares
         double ZModel::getBeta(std::shared_ptr<ModelSample> sample, double beta)
         {
             return this->zBetaLambda(sample, beta);
+        }
+
+        void ZModel::validate(Logging::ValidationReport& report, std::string subject)
+        {
+            Logging::ValidationSupport::checkNotNull(report, !callbackAssigned, "callback", subject);
         }
     }
 }

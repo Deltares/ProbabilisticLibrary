@@ -32,6 +32,7 @@ namespace Deltares::Probabilistic::Test
         testRunModelMedianValues();
         testRunModelMeanValues();
         testRunModelDesignValues();
+        testNoModel();
     }
 
     void TestRunModel::testRunModelMedianValues()
@@ -77,6 +78,20 @@ namespace Deltares::Probabilistic::Test
         ASSERT_NEAR(project->evaluation->InputValues[0], project->stochasts[0]->getXFromU(u) / 1.5, margin);
         ASSERT_NEAR(project->evaluation->InputValues[1], project->stochasts[1]->getXFromU(0), margin);
     }
+
+    void TestRunModel::testNoModel()
+    {
+        std::shared_ptr<Models::RunProject> project = std::make_shared<Models::RunProject>();
+
+        project->settings->runValuesType = Statistics::DesignValues;
+
+        ASSERT_EQ(false, project->isValid());
+
+        project->run();
+
+        ASSERT_EQ(nullptr, project->evaluation);
+    }
+
 }
 
 

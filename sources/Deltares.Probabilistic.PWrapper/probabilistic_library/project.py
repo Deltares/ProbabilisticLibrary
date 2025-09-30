@@ -401,6 +401,7 @@ class ModelProject(FrozenObject):
 
 		interface.SetCallBack(project_id, 'model', self._callback)
 		interface.SetMultipleCallBack(project_id, 'model', self._multiple_callback)
+		interface.SetBoolValue(project_id, 'callback_assigned', False)
 
 	def _set_settings(self, settings):
 		self._settings = settings
@@ -419,10 +420,11 @@ class ModelProject(FrozenObject):
 
 	def is_valid(self) -> bool:
 		self._update()
-		if not self._model is None:
-			return self._model.is_valid() and interface.GetBoolValue(self._id, 'is_valid')
-		else:
-			return False
+		return interface.GetBoolValue(self._id, 'is_valid')
+		# if not self._model is None:
+		# 	return self._model.is_valid() and interface.GetBoolValue(self._id, 'is_valid')
+		# else:
+		# 	return False
 
 	def validate(self):
 		self._update()
@@ -470,6 +472,8 @@ class ModelProject(FrozenObject):
 			self._model = value.get_model()
 		else:
 			raise ValueError('ZModel container expected')
+
+		interface.SetBoolValue(self._project_id, 'callback_assigned', True)
 		
 	def _check_model(self):
 		if not self._model is None:

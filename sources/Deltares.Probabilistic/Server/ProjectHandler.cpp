@@ -1265,7 +1265,13 @@ namespace Deltares
         {
             ObjectType objectType = types[id];
 
-            if (objectType == ObjectType::Stochast)
+            if (IsModelProjectType(objectType))
+            {
+                std::shared_ptr<Models::ModelProject> project = GetProject(id);
+
+                if (property_ == "callback_assigned") project->model->callbackAssigned = value;
+            }
+            else if (objectType == ObjectType::Stochast)
             {
                 std::shared_ptr<Statistics::Stochast> stochast = stochasts[id];
 
@@ -2420,14 +2426,21 @@ namespace Deltares
 
         int ProjectHandler::GetEvaluationId(std::shared_ptr<Deltares::Reliability::Evaluation> evaluation, int newId)
         {
-            if (!evaluationIds.contains(evaluation))
+            if (evaluation == nullptr)
             {
-                evaluations[newId] = evaluation;
-                types[newId] = ObjectType::Evaluation;
-                evaluationIds[evaluation] = newId;
+                return 0;
             }
+            else
+            {
+                if (!evaluationIds.contains(evaluation))
+                {
+                    evaluations[newId] = evaluation;
+                    types[newId] = ObjectType::Evaluation;
+                    evaluationIds[evaluation] = newId;
+                }
 
-            return evaluationIds[evaluation];
+                return evaluationIds[evaluation];
+            }
         }
 
         int ProjectHandler::GetReliabilityResultId(std::shared_ptr<Deltares::Reliability::ReliabilityResult> result, int newId)

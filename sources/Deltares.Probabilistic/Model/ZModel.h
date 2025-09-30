@@ -48,6 +48,7 @@ namespace Deltares
             {
                 this->zLambda = zLambda;
                 this->zMultipleLambda = zMultipleLambda;
+                callbackAssigned = this->zLambda != nullptr;
             }
 
             ZModel(ZValuesCallBack zValuesLambda, ZValuesMultipleCallBack zValuesMultipleLambda = nullptr)
@@ -57,6 +58,8 @@ namespace Deltares
                 {
                     this->zMultipleLambda = this->getLambdaFromZValuesMultipleCallBack(zValuesMultipleLambda);
                 }
+
+                callbackAssigned = this->zLambda != nullptr;
             }
 
             void setMultipleCallback(ZValuesMultipleCallBack multipleCallBack)
@@ -148,6 +151,18 @@ namespace Deltares
             {
                 this->repository.clear();
             }
+
+            /**
+             * \brief Reports whether these settings have valid values
+             * \param report Report in which the validity is reported
+             * \param subject String describing the validated object
+             */
+            void validate(Logging::ValidationReport& report, std::string subject);
+
+            /**
+             * \brief Indicates whether the model has been assigned with a valid callback
+             */
+            bool callbackAssigned = true;
 
         private:
             ZLambda zLambda = nullptr;
