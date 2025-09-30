@@ -257,6 +257,12 @@ namespace Deltares
 
         void ProjectHandler::Destroy(int id)
         {
+            if (types.contains(id))
+            {
+                // already destroyed or never existed
+                return;
+            }
+
             switch (types[id])
             {
             case ObjectType::StandardNormal: break;

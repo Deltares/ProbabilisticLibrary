@@ -55,6 +55,7 @@ namespace Deltares
 
         /**
          * \brief General settings applicable to all mechanisms
+         * \remarks Should be split up according to SonarCube, but logically belongs together
          */
         class Settings : public ModelProjectSettings
         {
@@ -133,16 +134,6 @@ namespace Deltares
              * \brief Maximum number of guessed design points in one FORM loop
              */
             int MaximumIterations = 50;
-
-            /**
-             * \brief Default start value
-             */
-            double StartValue = 0.0;
-
-            /**
-             * \brief Default variance factor in importance sampling
-             */
-            double VarianceFactor = 1.5;
 
             /**
              * \brief Default number of intervals in numerical integration

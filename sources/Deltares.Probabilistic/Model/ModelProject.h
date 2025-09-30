@@ -78,7 +78,7 @@ namespace Deltares
             /**
              * \brief Runs the project
              */
-            virtual void run() {}
+            virtual void run() = 0;
 
             /**
              * \brief Reports whether these settings have valid values

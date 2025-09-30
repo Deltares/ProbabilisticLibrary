@@ -29,7 +29,8 @@ from types import FunctionType
 from .statistic import *
 from .reliability import *
 from .sensitivity import *
-from .uncertainty import *
+from .uncertainty import UncertaintyResult, UncertaintySettings, UncertaintyMethod
+from .utils import FrozenObject, FrozenList
 from .logging import Evaluation, Message, ValidationReport
 from . import interface
 
@@ -111,8 +112,8 @@ class ZModel(FrozenObject):
 		try:
 			if not self._pool is None:
 				self._pool.close()
-		except:
-			pass
+		except Exception as err:
+			print(f"Unexpected {err=}, {type(err)=}")
 
 	def __str__(self):
 		return self.name
@@ -793,9 +794,9 @@ class UncertaintyProject(ModelProject):
 	@property
 	def result(self) -> UncertaintyResult:
 		if self._result is None:
-			resultId = interface.GetIdValue(self._id, 'uncertainty_result')
-			if resultId > 0:
-				self._result = UncertaintyResult(resultId)
+			result_id = interface.GetIdValue(self._id, 'uncertainty_result')
+			if result_id > 0:
+				self._result = UncertaintyResult(result_id)
 
 		return self._result
 

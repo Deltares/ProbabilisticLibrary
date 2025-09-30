@@ -31,14 +31,11 @@ namespace Deltares
     {
         namespace Wrappers
         {
-            using namespace Deltares::Utils::Wrappers;
-            using namespace Deltares::Models::Wrappers;
-
-            public ref class SobolSettings : IHasRunSettings
+            public ref class SobolSettings : Models::Wrappers::IHasRunSettings
             {
             private:
-                SharedPointerProvider<Sensitivity::SobolSettings>* shared = new SharedPointerProvider(new Sensitivity::SobolSettings());
-                Wrappers::RunSettings^ runSettings = gcnew Wrappers::RunSettings();
+                Utils::Wrappers::SharedPointerProvider<Sensitivity::SobolSettings>* shared = new Utils::Wrappers::SharedPointerProvider(new Sensitivity::SobolSettings());
+                Models::Wrappers::RunSettings^ runSettings = gcnew Models::Wrappers::RunSettings();
             public:
                 SobolSettings() {}
                 ~SobolSettings() { this->!SobolSettings(); }
@@ -50,10 +47,10 @@ namespace Deltares
                     void set(int value) { shared->object->Iterations = value; }
                 }
 
-                virtual property Wrappers::RunSettings^ RunSettings
+                virtual property Models::Wrappers::RunSettings^ RunSettings
                 {
-                    Wrappers::RunSettings^ get() { return runSettings; }
-                    void set(Wrappers::RunSettings^ value) { runSettings = value; }
+                    Models::Wrappers::RunSettings^ get() { return runSettings; }
+                    void set(Models::Wrappers::RunSettings^ value) { runSettings = value; }
                 }
 
                 std::shared_ptr<Sensitivity::SobolSettings> GetSettings()
