@@ -268,6 +268,7 @@ namespace Deltares
             case ObjectType::StandardNormal: break;
             case ObjectType::ProbabilityValue: probabilityValueIds.erase(probabilityValues[id]); probabilityValues.erase(id); break;
             case ObjectType::Message: messageIds.erase(messages[id]); messages.erase(id); break;
+            case ObjectType::ValidationReport: validationReports.erase(id); break;
             case ObjectType::Project: projects.erase(id); break;
             case ObjectType::ModelParameter: modelParameters.erase(id); break;
             case ObjectType::LimitStateFunction: limitStateFunctionIds.erase(limitStateFunctions[id]); limitStateFunctions.erase(id); break;
