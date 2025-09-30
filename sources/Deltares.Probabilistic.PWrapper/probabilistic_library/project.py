@@ -28,7 +28,7 @@ from types import FunctionType
 
 from .statistic import *
 from .reliability import *
-from .sensitivity import *
+from .sensitivity import SensitivityResult, SensitivityValue
 from .uncertainty import UncertaintyResult, UncertaintySettings, UncertaintyMethod
 from .utils import FrozenObject, FrozenList
 from .logging import Evaluation, Message, ValidationReport
@@ -324,10 +324,7 @@ class ModelParameter(FrozenObject):
 		super()._freeze()
 
 	def __del__(self):
-		try:
-			interface.Destroy(self._id)
-		except:
-			pass
+		interface.Destroy(self._id)
 
 	def __dir__(self):
 		return ['name',
@@ -546,10 +543,7 @@ class RunProjectSettings(FrozenObject):
 		super()._freeze()
 
 	def __del__(self):
-		try:
-			interface.Destroy(self._id)
-		except:
-			pass
+		interface.Destroy(self._id)
 
 	def __dir__(self):
 		return ['run_values_type',
@@ -601,10 +595,7 @@ class RunProject(ModelProject):
 		super()._freeze()
 
 	def __del__(self):
-		try:
-			interface.Destroy(self._id)
-		except:
-			pass
+		interface.Destroy(self._id)
 
 	def __dir__(self):
 		return ['variables',
@@ -648,10 +639,7 @@ class SensitivityProject(ModelProject):
 		super()._freeze()
 
 	def __del__(self):
-		try:
-			interface.Destroy(self._id)
-		except:
-			pass
+		interface.Destroy(self._id)
 
 	def __dir__(self):
 		return ['variables',
@@ -688,9 +676,9 @@ class SensitivityProject(ModelProject):
 	@property
 	def result(self) -> SensitivityResult:
 		if self._result is None:
-			resultId = interface.GetIdValue(self._id, 'result')
-			if resultId > 0:
-				self._result = SensitivityResult(resultId)
+			result_id = interface.GetIdValue(self._id, 'result')
+			if result_id > 0:
+				self._result = SensitivityResult(result_id)
 
 		return self._result
 
@@ -728,10 +716,7 @@ class UncertaintyProject(ModelProject):
 		super()._freeze()
 
 	def __del__(self):
-		try:
-			interface.Destroy(self._id)
-		except:
-			pass
+		interface.Destroy(self._id)
 
 	def __dir__(self):
 		return ['variables',
@@ -841,10 +826,7 @@ class ReliabilityProject(ModelProject):
 		super()._freeze()
         
 	def __del__(self):
-		try:
-			interface.Destroy(self._id)
-		except:
-			pass
+		interface.Destroy(self._id)
 
 	def __dir__(self):
 		return ['variables',
@@ -929,10 +911,7 @@ class CombineProject(FrozenObject):
 		super()._freeze()
 
 	def __del__(self):
-		try:
-			interface.Destroy(self._id)
-		except:
-			pass
+		interface.Destroy(self._id)
 
 	def __dir__(self):
 		return ['design_points',
@@ -1006,10 +985,7 @@ class ExcludingCombineProject(FrozenObject):
 		super()._freeze()
 
 	def __del__(self):
-		try:
-			interface.Destroy(self._id)
-		except:
-			pass
+		interface.Destroy(self._id)
 
 	def __dir__(self):
 		return ['design_points',
@@ -1097,10 +1073,7 @@ class LengthEffectProject(FrozenObject):
 		super()._freeze()
 
 	def __del__(self):
-		try:
-			interface.Destroy(self._id)
-		except:
-			pass
+		interface.Destroy(self._id)
 
 	def __dir__(self):
 		return ['design_point_cross_section',
