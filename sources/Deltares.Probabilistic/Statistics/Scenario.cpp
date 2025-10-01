@@ -26,8 +26,6 @@ namespace Deltares::Statistics
 {
     void Scenario::validate(Logging::ValidationReport& report) const
     {
-        const double margin = 1E-10;
-
         Logging::ValidationSupport::checkNotNaN(report, probability, "scenario probability");
         Logging::ValidationSupport::checkMinimum(report, 0, probability, "scenario probability");
         Logging::ValidationSupport::checkMaximum(report, 1, probability, "scenario probability");

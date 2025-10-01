@@ -38,6 +38,6 @@ namespace Deltares::Logging
         std::string Subject = "";
 
         static std::string getMessageTypeString(MessageType type);
-        static MessageType getMessageType(std::string& type);
+        static MessageType getMessageType(const std::string& type);
     };
 }

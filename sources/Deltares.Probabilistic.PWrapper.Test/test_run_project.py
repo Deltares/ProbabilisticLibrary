@@ -117,7 +117,7 @@ class Test_run_project(unittest.TestCase):
 
         sys.stdout = sys.__stdout__
 
-        self.assertEqual("""Error: project => callback is not assigned.\n""", printed)
+        self.assertEqual("""Error: project => model is not assigned.\n""", printed)
 
 if __name__ == '__main__':
     unittest.main()

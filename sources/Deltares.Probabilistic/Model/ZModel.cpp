@@ -289,9 +289,9 @@ namespace Deltares
             return this->zBetaLambda(sample, beta);
         }
 
-        void ZModel::validate(Logging::ValidationReport& report, std::string subject)
+        void ZModel::validate(Logging::ValidationReport& report, const std::string& subject) const
         {
-            Logging::ValidationSupport::checkNotNull(report, !callbackAssigned, "callback", subject);
+            Logging::ValidationSupport::checkNotNull(report, !callbackAssigned, "model", subject);
         }
     }
 }

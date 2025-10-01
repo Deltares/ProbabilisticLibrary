@@ -157,7 +157,7 @@ namespace Deltares
              * \param report Report in which the validity is reported
              * \param subject String describing the validated object
              */
-            void validate(Logging::ValidationReport& report, std::string subject);
+            void validate(Logging::ValidationReport& report, const std::string& subject) const;
 
             /**
              * \brief Indicates whether the model has been assigned with a valid callback

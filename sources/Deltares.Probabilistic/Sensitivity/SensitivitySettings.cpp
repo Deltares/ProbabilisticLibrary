@@ -66,7 +66,7 @@ namespace Deltares::Sensitivity
         switch (this->SensitivityMethod)
         {
         case SensitivityMethodType::SensitivitySobol: GetSobolMethod()->Settings->validate(report); break;
-        case SensitivityMethodType::SensitivitySingleVariation: return GetSingleVariationMethod()->Settings->validate(report); break;
+        case SensitivityMethodType::SensitivitySingleVariation: GetSingleVariationMethod()->Settings->validate(report); break;
         default: throw Reliability::probLibException("Sensitivity method");
         }
     }

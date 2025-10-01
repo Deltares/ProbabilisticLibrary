@@ -144,7 +144,7 @@ def f(a,b):
 """
         project.model = func_code
 
-        self.assertFalse(project.model.is_valid())
+        self.assertFalse(project.is_valid())
 
         func_code = """
 def g(a,b):
@@ -153,7 +153,7 @@ def g(a,b):
 """
         project.model = func_code
 
-        self.assertTrue(project.model.is_valid())
+        self.assertTrue(project.is_valid())
         self.assertEqual(2, len(project.model.input_parameters))
         self.assertEqual('a', project.model.input_parameters[0].name)
         self.assertEqual('z', project.model.output_parameters[0].name)
@@ -167,7 +167,7 @@ def h(a,b,c):
 """
         project.model = func_code
 
-        self.assertTrue(project.model.is_valid())
+        self.assertTrue(project.is_valid())
         self.assertEqual(3, len(project.model.input_parameters))
         self.assertEqual('a', project.model.input_parameters[0].name)
         self.assertEqual('c', project.model.input_parameters[2].name)

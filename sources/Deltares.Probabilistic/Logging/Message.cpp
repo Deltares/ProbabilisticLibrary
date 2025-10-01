@@ -24,24 +24,26 @@
 
 namespace Deltares::Logging
 {
+    using enum MessageType;
+
     std::string Message::getMessageTypeString(MessageType type)
     {
         switch (type)
         {
-        case MessageType::Debug: return "debug";
-        case MessageType::Info: return "info";
-        case MessageType::Warning: return "warning";
-        case MessageType::Error: return "error";
+        case Debug: return "debug";
+        case Info: return "info";
+        case Warning: return "warning";
+        case Error: return "error";
         default: throw Reliability::probLibException("message type");
         }
     }
 
-    MessageType Message::getMessageType(std::string& type)
+    MessageType Message::getMessageType(const std::string& type)
     {
-        if (type == "debug")  return MessageType::Debug;
-        else if (type == "info") return MessageType::Info;
-        else if (type == "warning") return MessageType::Warning;
-        else if (type == "error") return MessageType::Error;
+        if (type == "debug")  return Debug;
+        else if (type == "info") return Info;
+        else if (type == "warning") return Warning;
+        else if (type == "error") return Error;
         else throw Reliability::probLibException("message type");
     }
 }

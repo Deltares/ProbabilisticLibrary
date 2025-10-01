@@ -28,140 +28,137 @@
 #include <format>
 #endif
 
-namespace Deltares
+namespace Deltares::Logging
 {
-    namespace Logging
+    void ValidationSupport::checkNotNull(Logging::ValidationReport& report, const bool value, const
+        std::string& property, std::string subject, MessageType messageType)
     {
-        void ValidationSupport::checkNotNull(Logging::ValidationReport& report, const bool value, const
-            std::string& property, std::string subject, MessageType messageType)
-        {
-            if (value)
-            {
-                std::shared_ptr<Message> message = std::make_shared<Message>();
-                message->Text = property + " is not assigned.";
-                message->Type = messageType;
-                message->Subject = std::move(subject);
-
-                report.messages.push_back(message);
-            }
-        }
-
-        void ValidationSupport::checkNotNaN(Logging::ValidationReport& report, double value, const
-            std::string& property, std::string subject, MessageType messageType)
-        {
-            if (std::isnan(value))
-            {
-                std::shared_ptr<Message> message = std::make_shared<Message>();
-                message->Text = property + " is not any number.";
-                message->Type = messageType;
-                message->Subject = std::move(subject);
-
-                report.messages.push_back(message);
-            }
-        }
-
-        void ValidationSupport::checkFinite(Logging::ValidationReport& report, double value, const
-            std::string& property, std::string subject, MessageType messageType)
-        {
-            if (std::isinf(value))
-            {
-                std::shared_ptr<Message> message = std::make_shared<Message>();
-                message->Text = property + " is infinite.";
-                message->Type = messageType;
-                message->Subject = std::move(subject);
-
-                report.messages.push_back(message);
-            }
-        }
-
-        void ValidationSupport::checkMinimum(Logging::ValidationReport& report, double minimum, double value, const
-            std::string& property, std::string subject, MessageType messageType)
-        {
-            if (value < minimum)
-            {
-                std::shared_ptr<Message> message = std::make_shared<Message>();
-                message->Text = property + " value " + toString(value) + " is less than " + toString(minimum) + ".";
-                message->Type = messageType;
-                message->Subject = std::move(subject);
-
-                report.messages.push_back(message);
-            }
-        }
-
-        void ValidationSupport::checkMinimumNonInclusive(Logging::ValidationReport& report, double minimum, double value, const
-            std::string& property, std::string subject, MessageType messageType)
-        {
-            if (value <= minimum)
-            {
-                std::shared_ptr<Message> message = std::make_shared<Message>();
-                message->Text = property + " value " + toString(value) + " is not greater than " + toString(minimum) + ".";
-                message->Type = messageType;
-                message->Subject = std::move(subject);
-
-                report.messages.push_back(message);
-            }
-        }
-
-        void ValidationSupport::checkMaximum(Logging::ValidationReport& report, double maximum, double value, const
-            std::string& property, std::string subject, MessageType messageType)
-        {
-            if (value > maximum)
-            {
-                std::shared_ptr<Message> message = std::make_shared<Message>();
-                message->Text = property + " value " + toString(value) + " is greater than " + toString(maximum) + ".";
-                message->Type = messageType;
-                message->Subject = std::move(subject);
-
-                report.messages.push_back(message);
-            }
-        }
-
-        void ValidationSupport::checkMaximumNonInclusive(Logging::ValidationReport& report, double maximum, double value, const
-            std::string& property, std::string subject, MessageType messageType)
-        {
-            if (value >= maximum)
-            {
-                std::shared_ptr<Message> message = std::make_shared<Message>();
-                message->Text = property + " value " + toString(value) + " is not less than " + toString(maximum) + ".";
-                message->Type = messageType;
-                message->Subject = std::move(subject);
-
-                report.messages.push_back(message);
-            }
-        }
-
-        void ValidationSupport::checkNotEmpty(Logging::ValidationReport& report, size_t size, const std::string& property,
-            std::string subject, MessageType messageType)
-        {
-            if (size == 0)
-            {
-                std::shared_ptr<Message> message = std::make_shared<Message>();
-                message->Text = property + " is empty.";
-                message->Type = messageType;
-                message->Subject = std::move(subject);
-
-                report.messages.push_back(message);
-            }
-        }
-
-        void ValidationSupport::add(Logging::ValidationReport& report, std::string text, std::string subject, MessageType messageType)
+        if (value)
         {
             std::shared_ptr<Message> message = std::make_shared<Message>();
-            message->Text = std::move(text);
+            message->Text = property + " is not assigned.";
             message->Type = messageType;
             message->Subject = std::move(subject);
 
             report.messages.push_back(message);
         }
+    }
 
-        std::string ValidationSupport::toString(double value)
+    void ValidationSupport::checkNotNaN(Logging::ValidationReport& report, double value, const
+        std::string& property, std::string subject, MessageType messageType)
+    {
+        if (std::isnan(value))
         {
-#if __has_include(<format>)
-            return std::format("{:}", value);
-#else
-            return std::to_string(value);
-#endif
+            std::shared_ptr<Message> message = std::make_shared<Message>();
+            message->Text = property + " is not any number.";
+            message->Type = messageType;
+            message->Subject = std::move(subject);
+
+            report.messages.push_back(message);
         }
+    }
+
+    void ValidationSupport::checkFinite(Logging::ValidationReport& report, double value, const
+        std::string& property, std::string subject, MessageType messageType)
+    {
+        if (std::isinf(value))
+        {
+            std::shared_ptr<Message> message = std::make_shared<Message>();
+            message->Text = property + " is infinite.";
+            message->Type = messageType;
+            message->Subject = std::move(subject);
+
+            report.messages.push_back(message);
+        }
+    }
+
+    void ValidationSupport::checkMinimum(Logging::ValidationReport& report, double minimum, double value, const
+        std::string& property, std::string subject, MessageType messageType)
+    {
+        if (value < minimum)
+        {
+            std::shared_ptr<Message> message = std::make_shared<Message>();
+            message->Text = property + " value " + toString(value) + " is less than " + toString(minimum) + ".";
+            message->Type = messageType;
+            message->Subject = std::move(subject);
+
+            report.messages.push_back(message);
+        }
+    }
+
+    void ValidationSupport::checkMinimumNonInclusive(Logging::ValidationReport& report, double minimum, double value, const
+        std::string& property, std::string subject, MessageType messageType)
+    {
+        if (value <= minimum)
+        {
+            std::shared_ptr<Message> message = std::make_shared<Message>();
+            message->Text = property + " value " + toString(value) + " is not greater than " + toString(minimum) + ".";
+            message->Type = messageType;
+            message->Subject = std::move(subject);
+
+            report.messages.push_back(message);
+        }
+    }
+
+    void ValidationSupport::checkMaximum(Logging::ValidationReport& report, double maximum, double value, const
+        std::string& property, std::string subject, MessageType messageType)
+    {
+        if (value > maximum)
+        {
+            std::shared_ptr<Message> message = std::make_shared<Message>();
+            message->Text = property + " value " + toString(value) + " is greater than " + toString(maximum) + ".";
+            message->Type = messageType;
+            message->Subject = std::move(subject);
+
+            report.messages.push_back(message);
+        }
+    }
+
+    void ValidationSupport::checkMaximumNonInclusive(Logging::ValidationReport& report, double maximum, double value, const
+        std::string& property, std::string subject, MessageType messageType)
+    {
+        if (value >= maximum)
+        {
+            std::shared_ptr<Message> message = std::make_shared<Message>();
+            message->Text = property + " value " + toString(value) + " is not less than " + toString(maximum) + ".";
+            message->Type = messageType;
+            message->Subject = std::move(subject);
+
+            report.messages.push_back(message);
+        }
+    }
+
+    void ValidationSupport::checkNotEmpty(Logging::ValidationReport& report, size_t size, const std::string& property,
+        std::string subject, MessageType messageType)
+    {
+        if (size == 0)
+        {
+            std::shared_ptr<Message> message = std::make_shared<Message>();
+            message->Text = property + " is empty.";
+            message->Type = messageType;
+            message->Subject = std::move(subject);
+
+            report.messages.push_back(message);
+        }
+    }
+
+    void ValidationSupport::add(Logging::ValidationReport& report, std::string text, std::string subject, MessageType messageType)
+    {
+        std::shared_ptr<Message> message = std::make_shared<Message>();
+        message->Text = std::move(text);
+        message->Type = messageType;
+        message->Subject = std::move(subject);
+
+        report.messages.push_back(message);
+    }
+
+    std::string ValidationSupport::toString(double value)
+    {
+#if __has_include(<format>)
+        return std::format("{:}", value);
+#else
+        return std::to_string(value);
+#endif
     }
 }
 

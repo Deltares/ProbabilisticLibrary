@@ -49,11 +49,8 @@ class ZModelContainer:
 	def get_model(self):
 		return None
 
-	def is_valid(self) -> bool:
+	def is_model_valid(self) -> bool:
 		return True
-
-	def validate(self) -> FrozenList[Message]:
-		return FrozenList() 
 
 	def is_dirty(self):
 		return False
@@ -165,19 +162,11 @@ class ZModel(FrozenObject):
 
 		return FrozenList(parameters)
 
-	def validate(self) -> FrozenList[Message]:
-		if self._is_function:
-			return FrozenList()
-		elif not self._model is None:
-			return self._model.validate()
-		else:
-			return FrozenList([Message.from_message(MessageType.error, 'No model provided')])
-
-	def is_valid(self) -> bool:
+	def is_model_valid(self) -> bool:
 		if self._is_function:
 			return True
 		elif not self._model is None:
-			return self._model.is_valid()
+			return self._model.is_model_valid()
 		else:
 			return False
 
@@ -467,7 +456,7 @@ class ModelProject(FrozenObject):
 		else:
 			raise ValueError('ZModel container expected')
 
-		interface.SetBoolValue(self._project_id, 'callback_assigned', True)
+		interface.SetBoolValue(self._project_id, 'callback_assigned', self._model.is_model_valid())
 		
 	def _check_model(self):
 		if not self._model is None:
@@ -946,6 +935,17 @@ class CombineProject(FrozenObject):
 		self._update()
 		return interface.GetBoolValue(self._id, 'is_valid')
 
+	def validate(self):
+		self._update()
+		id_ = interface.GetIdValue(self._id, 'validate')
+		if id_ > 0:
+			validation_report = ValidationReport(id_)
+			if len(validation_report.messages) == 0:
+				print('ok')
+			else:
+				for message in validation_report.messages:
+					message.print()
+
 	def run(self):
 		self._design_point = None
 		# update performed by is_valid
@@ -1047,7 +1047,8 @@ class ExcludingCombineProject(FrozenObject):
 		if (self.is_valid()):
 			interface.Execute(self._id, 'run')
 		else:
-			print('run not executed, input is not valid')
+			# print validation messages
+			self.validate()
 
 	@property
 	def design_point(self):

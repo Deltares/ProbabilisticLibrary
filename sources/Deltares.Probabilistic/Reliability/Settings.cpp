@@ -249,7 +249,7 @@ namespace Deltares
             return subsetSimulation;
         }
 
-        void Settings::validate(Logging::ValidationReport& report)
+        void Settings::validate(Logging::ValidationReport& report) const
         {
             switch (this->ReliabilityMethod)
             {

@@ -962,6 +962,7 @@ namespace Deltares
                 std::shared_ptr<Reliability::CombineProject> combineProject = combineProjects[id];
 
                 if (property_ == "design_point") return GetDesignPointId(combineProject->designPoint, newId);
+                else if (property_ == "validate") return GetValidationReportId(std::make_shared<Logging::ValidationReport>(combineProject->getValidationReport()), newId);
             }
             else if (objectType == ObjectType::ExcludingCombineProject)
             {
@@ -1256,7 +1257,7 @@ namespace Deltares
             {
                 std::shared_ptr<Reliability::CombineProject> project = combineProjects[id];
 
-                if (property_ == "is_valid") return project->isValid();
+                if (property_ == "is_valid") return project->is_valid();
             }
             else if (objectType == ObjectType::ExcludingCombineProject)
             {

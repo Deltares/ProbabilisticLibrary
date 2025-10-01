@@ -53,7 +53,7 @@ namespace Deltares::Reliability
          * \brief Validates the project and puts the result in a validation report
          * \returns Validation report
          */
-        Logging::ValidationReport getValidationReport();
+        Logging::ValidationReport getValidationReport() const;
 
         /**
          * \brief Indicates whether the settings are valid

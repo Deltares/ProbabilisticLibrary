@@ -33,7 +33,7 @@ namespace Deltares
         class HistogramValue
         {
         public:
-            HistogramValue() {}
+            HistogramValue() = default;
 
             HistogramValue(double lowerBound, double upperBound)
             {
@@ -98,7 +98,7 @@ namespace Deltares
              * \param report Report in which the validity is reported
              * \param previous Previous histogram value in the stochast
              */
-            void validate(Logging::ValidationReport& report, std::shared_ptr<HistogramValue> previous, std::string& subject) const
+            void validate(Logging::ValidationReport& report, const std::shared_ptr<HistogramValue>& previous, const std::string& subject) const
             {
                 Logging::ValidationSupport::checkMinimum(report, 0, Amount, "amount", subject);
                 Logging::ValidationSupport::checkMinimum(report, LowerBound, UpperBound, "upper bound", subject);

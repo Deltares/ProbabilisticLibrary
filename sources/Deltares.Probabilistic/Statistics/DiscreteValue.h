@@ -60,7 +60,7 @@ namespace Deltares
                 }
             }
 
-            void validate(Logging::ValidationReport& report, std::string& subject) const
+            void validate(Logging::ValidationReport& report, const std::string& subject) const
             {
                 Logging::ValidationSupport::checkMinimum(report, 0, Amount, "amount", subject);
             }

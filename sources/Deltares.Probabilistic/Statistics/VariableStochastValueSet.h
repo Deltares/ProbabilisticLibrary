@@ -88,7 +88,7 @@ namespace Deltares
              * \param inverted Indicates whether stochast is inverted
              * \param subject String describing the stochast
              */
-            void validate(Logging::ValidationReport& report, DistributionType distributionType, bool truncated, bool inverted, std::string& subject);
+            void validate(Logging::ValidationReport& report, DistributionType distributionType, bool truncated, bool inverted, std::string& subject) const; 
 
             /**
               * \brief Makes a deep copy of a source

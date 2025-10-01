@@ -54,7 +54,7 @@ namespace Deltares::Reliability
         }
     }
 
-    Logging::ValidationReport ExcludingCombineProject::getValidationReport()
+    Logging::ValidationReport ExcludingCombineProject::getValidationReport() const
     {
         Logging::ValidationReport report;
         validate(report);

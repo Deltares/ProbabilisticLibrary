@@ -88,10 +88,10 @@ namespace Deltares
             properties->ShapeB = NumericSupport::interpolate(x, this->xValues, this->shapesB);
             properties->Shift = NumericSupport::interpolate(x, this->xValues, this->shifts);
             properties->ShiftB = NumericSupport::interpolate(x, this->xValues, this->shiftsB);
-            properties->Observations = round(NumericSupport::interpolate(x, this->xValues, this->observations));
+            properties->Observations = static_cast<int>(round(NumericSupport::interpolate(x, this->xValues, this->observations)));
         }
 
-        void VariableStochastValuesSet::validate(Logging::ValidationReport& report, DistributionType distributionType, bool truncated, bool inverted, std::string& subject)
+        void VariableStochastValuesSet::validate(Logging::ValidationReport& report, DistributionType distributionType, bool truncated, bool inverted, std::string& subject) const
         {
             Logging::ValidationSupport::checkNotEmpty(report, StochastValues.size(), "stochast values");
 
