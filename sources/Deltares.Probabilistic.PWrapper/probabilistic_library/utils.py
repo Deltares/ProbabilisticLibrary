@@ -20,6 +20,7 @@
 # All rights reserved.
 #
 import sys
+from typing import Iterator
 
 class CallbackList(list):
 
@@ -55,16 +56,16 @@ class CallbackList(list):
 		super().extend(items)
 		self._callback()
 
-class FrozenList():
+class FrozenList[T]:
 	def __init__(self, initial_list = None):
-		self._list = []
-		self._dict = {}
+		self._list : list[T] = []
+		self._dict : dict[str, T] = {}
 		if not initial_list is None:
 			self._list.extend(initial_list)
 			for item in self._list:
 				self._dict[str(item)] = item
 
-	def __getitem__(self, index):
+	def __getitem__(self, index) -> T:
 		if isinstance(index, int):
 			return self._list[index]
 		elif isinstance(index, slice):
@@ -77,19 +78,19 @@ class FrozenList():
 			else:
 				return None
 
-	def __iter__(self):
+	def __iter__(self) -> Iterator[T]:
 		return self._list.__iter__()
 
-	def __next__(self):
+	def __next__(self) -> T:
 		self._list.__next__()
 
-	def __len__(self):
+	def __len__(self) -> int:
 		return len(self._list)
 
-	def __str__(self):
+	def __str__(self) -> str:
 		return str(self._list)
 
-	def index(self, item, start = 0, stop = sys.maxsize):
+	def index(self, item, start = 0, stop = sys.maxsize) -> int:
 		if isinstance(item, str):
 			item = self[item]
 		if item != None:
@@ -97,10 +98,10 @@ class FrozenList():
 		else:
 			return -1
 
-	def count(self):
+	def count(self) -> int:
 		return self._list.count()
 
-	def get_list(self):
+	def get_list(self) -> list[T]:
 		getlist = []
 		getlist.extend(self._list)
 		return getlist

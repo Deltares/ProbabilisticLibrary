@@ -21,9 +21,13 @@
 #
 import unittest
 import sys
+import os
 from io import StringIO
 
-from probabilistic_library import *
+from probabilistic_library.utils import FrozenList, FrozenObject, CallbackList
+from probabilistic_library.uncertainty import UncertaintyResult, UncertaintyMethod
+from probabilistic_library.project import UncertaintyProject
+from probabilistic_library.statistic import Stochast, DistributionType, StandardNormal
 
 import project_builder
 

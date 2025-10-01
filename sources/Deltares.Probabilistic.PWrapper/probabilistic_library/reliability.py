@@ -25,7 +25,7 @@ import matplotlib.pyplot as plt
 import sys
 from enum import Enum
 
-from .utils import *
+from .utils import FrozenObject, FrozenList, PrintUtils, CallbackList
 from .statistic import Stochast, FragilityValue
 from .logging import Message, Evaluation, ValidationReport
 from . import interface

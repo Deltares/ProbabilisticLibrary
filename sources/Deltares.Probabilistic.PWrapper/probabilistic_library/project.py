@@ -21,17 +21,17 @@
 #
 from __future__ import annotations
 import sys
-from ctypes import *
 from multiprocessing import Pool, cpu_count
 from typing import FrozenSet
 from types import FunctionType
+from enum import Enum
 
-from .statistic import *
-from .reliability import *
-from .sensitivity import SensitivityResult, SensitivityValue, SensitivitySettings
+from .statistic import Stochast, DistributionType, CorrelationMatrix, SelfCorrelationMatrix, Scenario
+from .reliability import DesignPoint, ReliabilityMethod, Settings, CombineSettings, ExcludingCombineSettings, LimitStateFunction
+from .sensitivity import SensitivityResult, SensitivityValue, SensitivitySettings, SensitivityMethod
 from .uncertainty import UncertaintyResult, UncertaintySettings, UncertaintyMethod
-from .utils import FrozenObject, FrozenList
 from .logging import Evaluation, Message, ValidationReport
+from .utils import FrozenObject, FrozenList, CallbackList
 from . import interface
 
 import inspect
@@ -52,7 +52,7 @@ class ZModelContainer:
 	def is_valid(self) -> bool:
 		return True
 
-	def validate(self) -> list[Message]:
+	def validate(self) -> FrozenList[Message]:
 		return FrozenList() 
 
 	def is_dirty(self):
@@ -165,7 +165,7 @@ class ZModel(FrozenObject):
 
 		return FrozenList(parameters)
 
-	def validate(self) -> list[Message]:
+	def validate(self) -> FrozenList[Message]:
 		if self._is_function:
 			return FrozenList()
 		elif not self._model is None:
@@ -419,10 +419,6 @@ class ModelProject(FrozenObject):
 	def is_valid(self) -> bool:
 		self._update()
 		return interface.GetBoolValue(self._id, 'is_valid')
-		# if not self._model is None:
-		# 	return self._model.is_valid() and interface.GetBoolValue(self._id, 'is_valid')
-		# else:
-		# 	return False
 
 	def validate(self):
 		self._update()

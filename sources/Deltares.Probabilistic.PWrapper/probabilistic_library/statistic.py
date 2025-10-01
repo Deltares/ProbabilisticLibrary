@@ -23,8 +23,8 @@ from __future__ import annotations
 from ctypes import ArgumentError
 from enum import Enum
 from math import isnan
+from .utils import FrozenObject, FrozenList, PrintUtils, NumericUtils, CallbackList
 from .logging import Evaluation, Message, ValidationReport
-from .utils import *
 from . import interface
 import matplotlib.pyplot as plt
 

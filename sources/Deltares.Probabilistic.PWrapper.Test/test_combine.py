@@ -23,7 +23,10 @@ import unittest
 import sys
 from io import StringIO
 
-from probabilistic_library import *
+from probabilistic_library.utils import FrozenList, FrozenObject
+from probabilistic_library.reliability import DesignPoint, DesignPointMethod, ReliabilityMethod, CombinerMethod, CombineSettings, CombineType, ExcludingCombineSettings, ExcludingCombinerMethod
+from probabilistic_library.project import ReliabilityProject, CombineProject, ExcludingCombineProject
+from probabilistic_library.statistic import Stochast, DistributionType, StandardNormal, SelfCorrelationMatrix, Scenario
 
 import project_builder
 

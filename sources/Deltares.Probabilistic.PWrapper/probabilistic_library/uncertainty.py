@@ -24,7 +24,7 @@ from math import isnan
 from enum import Enum
 import matplotlib.pyplot as plt
 
-from .utils import *
+from .utils import FrozenObject, FrozenList, CallbackList
 from .logging import Evaluation, Message, ValidationReport
 from .statistic import Stochast, ProbabilityValue
 from .reliability import StochastSettings, RandomType, GradientType
