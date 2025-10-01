@@ -66,13 +66,15 @@ Several Jupyter notebooks are available to demonstrate how to use the Probabilis
 
     * [Safety levels](sources/Deltares.Probabilistic.PWrapper.Notebooks/safety_levels.ipynb)
 
-9. [Including spatial correlations (length-effect)](sources/Deltares.Probabilistic.PWrapper.Notebooks/length_effect.ipynb)
+9. [Sensitivity analysis](sources/Deltares.Probabilistic.PWrapper.Notebooks/sensitivity_analysis.ipynb)
 
-10. [Including statistical uncertainty](sources/Deltares.Probabilistic.PWrapper.Notebooks/statistical_uncertainty.ipynb)
+10. [Including spatial correlations (length-effect)](sources/Deltares.Probabilistic.PWrapper.Notebooks/length_effect.ipynb)
 
-11. [Single model run](sources/Deltares.Probabilistic.PWrapper.Notebooks/run_model.ipynb)
+11. [Including statistical uncertainty](sources/Deltares.Probabilistic.PWrapper.Notebooks/statistical_uncertainty.ipynb)
 
-12. [Parallel computing and reusing realizations](sources/Deltares.Probabilistic.PWrapper.Notebooks/parallel_overtopping.ipynb)
+12. [Single model run](sources/Deltares.Probabilistic.PWrapper.Notebooks/run_model.ipynb)
+
+13. [Parallel computing and reusing realizations](sources/Deltares.Probabilistic.PWrapper.Notebooks/parallel_overtopping.ipynb)
 
 ## License
 
