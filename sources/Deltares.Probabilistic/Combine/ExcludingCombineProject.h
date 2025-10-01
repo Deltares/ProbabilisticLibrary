@@ -59,7 +59,7 @@ namespace Deltares::Reliability
          * \brief Indicates whether the settings are valid
          * \returns Indication
          */
-        bool is_valid();
+        bool is_valid() const;
 
         /**
          * \brief Calculation settings

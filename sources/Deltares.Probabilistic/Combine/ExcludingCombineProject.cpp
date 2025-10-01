@@ -62,7 +62,7 @@ namespace Deltares::Reliability
         return report;
     }
 
-    bool ExcludingCombineProject::is_valid()
+    bool ExcludingCombineProject::is_valid() const
     {
         return getValidationReport().isValid();
     }

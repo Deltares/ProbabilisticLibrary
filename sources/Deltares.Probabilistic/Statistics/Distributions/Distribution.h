@@ -25,11 +25,7 @@
 #include "../StochastProperties.h"
 #include "../../Math/WeightedValue.h"
 #include "../../Utils/probLibException.h"
-
-namespace Deltares::Logging
-{
-    class ValidationReport;
-}
+#include "../../Logging/ValidationReport.h"
 
 namespace Deltares::Statistics
 {
@@ -227,7 +223,6 @@ namespace Deltares::Statistics
         /**
          * \brief Indicates whether parameters of a stochast have valid values
          * \param stochast Stochast having the parameters
-         * \param subject String representing the validated object
          * \return Indication valid parameters
          */
         bool isValid(std::shared_ptr<StochastProperties> stochast);
