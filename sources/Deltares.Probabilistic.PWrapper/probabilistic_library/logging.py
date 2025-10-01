@@ -24,7 +24,7 @@ import sys
 from math import isnan
 from enum import Enum
 
-from .utils import *
+from .utils import FrozenObject, FrozenList, PrintUtils
 from . import interface
 
 if not interface.IsLibraryLoaded():
@@ -55,10 +55,7 @@ class Message(FrozenObject):
 		return message
 
 	def __del__(self):
-		try:
-			interface.Destroy(self._id)
-		except:
-			pass
+		interface.Destroy(self._id)
 		
 	def __str__(self):
 		if self.subject == "":
@@ -100,6 +97,9 @@ class ValidationReport(FrozenObject):
 		self._messages = None
 		super()._freeze()
 
+	def __del__(self):
+		interface.Destroy(self._id)
+
 	@property   
 	def messages(self) -> list[Message]:
 		if self._messages is None:
@@ -123,10 +123,7 @@ class Evaluation(FrozenObject):
 		super()._freeze()
 
 	def __del__(self):
-		try:
-			interface.Destroy(self._id)
-		except:
-			pass
+		interface.Destroy(self._id)
 
 	def __dir__(self):
 		return ['iteration',
