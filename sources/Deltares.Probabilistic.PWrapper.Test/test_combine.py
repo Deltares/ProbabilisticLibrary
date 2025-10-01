@@ -23,9 +23,8 @@ import unittest
 import sys
 
 from probabilistic_library.utils import FrozenList, FrozenObject
-from probabilistic_library.reliability import DesignPoint, DesignPointMethod, ReliabilityMethod
-from probabilistic_library.project import (ReliabilityProject, CombineProject, CombinerMethod, CombineSettings, CombineType,
-                                           ExcludingCombineProject, ExcludingCombineSettings, ExcludingCombinerMethod)
+from probabilistic_library.reliability import DesignPoint, DesignPointMethod, ReliabilityMethod, CombinerMethod, CombineSettings, CombineType, ExcludingCombineSettings, ExcludingCombinerMethod
+from probabilistic_library.project import ReliabilityProject, CombineProject, ExcludingCombineProject
 from probabilistic_library.statistic import Stochast, DistributionType, StandardNormal, SelfCorrelationMatrix, Scenario
 
 import project_builder
