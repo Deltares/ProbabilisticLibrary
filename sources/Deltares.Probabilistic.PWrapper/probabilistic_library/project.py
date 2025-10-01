@@ -28,7 +28,7 @@ from types import FunctionType
 
 from .statistic import *
 from .reliability import *
-from .sensitivity import SensitivityResult, SensitivityValue
+from .sensitivity import SensitivityResult, SensitivityValue, SensitivitySettings
 from .uncertainty import UncertaintyResult, UncertaintySettings, UncertaintyMethod
 from .utils import FrozenObject, FrozenList
 from .logging import Evaluation, Message, ValidationReport
