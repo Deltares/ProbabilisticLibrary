@@ -26,13 +26,21 @@ pip install probabilistic_library-25.3.1-py3-none-any.whl --force-reinstall
 ### Jupyter notebooks
 Several Jupyter notebooks are available to demonstrate how to use the Probabilistic Library through the Python wrapper:
 
-1. [Overview of the available distribution functions](sources/Deltares.Probabilistic.PWrapper.Notebooks/overview_distribution_functions.ipynb)
+1. Distribution functions:
+    * [Overview of the available distribution functions](sources/Deltares.Probabilistic.PWrapper.Notebooks/overview_distribution_functions.ipynb)
 
-2. [Operations on distribution functions](sources/Deltares.Probabilistic.PWrapper.Notebooks/operations_on_distribution_functions.ipynb)
+    * [Operations on distribution functions](sources/Deltares.Probabilistic.PWrapper.Notebooks/operations_on_distribution_functions.ipynb)
 
-3. [Conversion functions (reliability index to failure probability)](sources/Deltares.Probabilistic.PWrapper.Notebooks/conversion_functions.ipynb)
+    * [Composite distributions](sources/Deltares.Probabilistic.PWrapper.Notebooks/composite_distribution.ipynb)
 
-4. Reliability analysis of a single component:
+    * [Fitting with prior distribution](sources/Deltares.Probabilistic.PWrapper.Notebooks/fitting_with_prior_distribution.ipynb)
+
+    * [Including statistical uncertainty](sources/Deltares.Probabilistic.PWrapper.Notebooks/statistical_uncertainty.ipynb)
+
+2. [Conversion functions (reliability index to failure probability)](sources/Deltares.Probabilistic.PWrapper.Notebooks/conversion_functions.ipynb)
+
+
+3. Reliability analysis of a single component:
 
     * [Simple calculations with FORM and correlation case](sources/Deltares.Probabilistic.PWrapper.Notebooks/FORM_simple_correlations.ipynb)
     
@@ -48,33 +56,31 @@ Several Jupyter notebooks are available to demonstrate how to use the Probabilis
 
     * [Reliability calculations with arrays as arguments in the model](sources/Deltares.Probabilistic.PWrapper.Notebooks/limit_state_function_with_arrays.ipynb)
 
-5. Reliability analysis of a system of components:
+4. Reliability analysis of a system of components:
 
     * [Reliability analysis of a system of components](sources/Deltares.Probabilistic.PWrapper.Notebooks/reliability_analysis_system.ipynb)
 
-6. Working with conditional variables:
+5. Working with conditional variables:
 
     * [Conditional variable](sources/Deltares.Probabilistic.PWrapper.Notebooks/conditional_variable.ipynb)
 
     * [Integration of a fragility curve](sources/Deltares.Probabilistic.PWrapper.Notebooks/failure_probability_fragility_curve.ipynb)
 
-7. [Composite distributions](sources/Deltares.Probabilistic.PWrapper.Notebooks/composite_distribution.ipynb)
-
-8. Uncertainty analysis:
+6. Uncertainty analysis:
 
     * [Simple example](sources/Deltares.Probabilistic.PWrapper.Notebooks/uncertainty_analysis.ipynb)
 
     * [Safety levels](sources/Deltares.Probabilistic.PWrapper.Notebooks/safety_levels.ipynb)
 
-9. [Sensitivity analysis](sources/Deltares.Probabilistic.PWrapper.Notebooks/sensitivity_analysis.ipynb)
+7. [Sensitivity analysis](sources/Deltares.Probabilistic.PWrapper.Notebooks/sensitivity_analysis.ipynb)
 
-10. [Including spatial correlations (length-effect)](sources/Deltares.Probabilistic.PWrapper.Notebooks/length_effect.ipynb)
+8. [Including spatial correlations (length-effect)](sources/Deltares.Probabilistic.PWrapper.Notebooks/length_effect.ipynb)
 
-11. [Including statistical uncertainty](sources/Deltares.Probabilistic.PWrapper.Notebooks/statistical_uncertainty.ipynb)
+9. [Parallel computing and reusing realizations](sources/Deltares.Probabilistic.PWrapper.Notebooks/parallel_overtopping.ipynb)
 
-12. [Single model run](sources/Deltares.Probabilistic.PWrapper.Notebooks/run_model.ipynb)
+10. [Visualization of results](sources/Deltares.Probabilistic.PWrapper.Notebooks/visualize_results.ipynb)
 
-13. [Parallel computing and reusing realizations](sources/Deltares.Probabilistic.PWrapper.Notebooks/parallel_overtopping.ipynb)
+11. [Single model run](sources/Deltares.Probabilistic.PWrapper.Notebooks/run_model.ipynb)
 
 ## License
 
