@@ -90,7 +90,7 @@ namespace Deltares
              * \brief Indicates whether these settings have valid values
              * \return Indication
              */
-            bool isValid()
+            bool isValid() const
             {
                 Logging::ValidationReport report;
                 this->validate(report);

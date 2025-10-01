@@ -157,7 +157,7 @@ namespace Deltares
         std::string ValidationSupport::toString(double value)
         {
 #if __has_include(<format>)
-            return std::format("{0:}", value);
+            return std::format("{:}", value);
 #else
             return std::to_string(value);
 #endif

@@ -32,7 +32,7 @@ namespace Deltares::Reliability
         this->designPoint = combiner->combineDesignPointsExcluding(this->scenarios, this->designPoints);
     }
 
-    void ExcludingCombineProject::validate(Logging::ValidationReport& report)
+    void ExcludingCombineProject::validate(Logging::ValidationReport& report) const
     {
         const double margin = 1E-10;
 

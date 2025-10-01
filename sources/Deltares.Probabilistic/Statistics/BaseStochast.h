@@ -93,7 +93,7 @@ namespace Deltares
              * \brief Validates the stochastic parameters and puts the results in a report
              * \param report The validation report containing the validation results
              */
-            virtual void validate(Logging::ValidationReport& report) {}
+            virtual void validate(Logging::ValidationReport& report) { /* nothing to do */ }
 
             virtual bool isVarying() { return false; }
 

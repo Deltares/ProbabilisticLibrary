@@ -486,8 +486,6 @@ namespace Deltares::Probabilistic::Test
 
     void testDistributions::testValidation()
     {
-        constexpr double margin = 1e-3;
-
         std::shared_ptr<Stochast> stochast = std::make_shared<Stochast>();
         stochast->setDistributionType(DistributionType::Normal);
         stochast->setMean(3);

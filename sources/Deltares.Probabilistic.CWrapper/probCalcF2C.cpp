@@ -181,13 +181,13 @@ void probcalcf2c(const basicSettings* method, fdistribs c[], corrStruct correlat
         auto allMessages = newResult->Messages;
         for (const auto& s : fw.error_messages )
         {
-            allMessages.push_back(std::make_shared<Deltares::Logging::Message>(Deltares::Logging::Error, s));
+            allMessages.push_back(std::make_shared<Deltares::Logging::Message>(Deltares::Logging::MessageType::Error, s));
         }
 
         result->error.errorCode = 0;
         for(const auto& message : allMessages)
         {
-            if (message->Type == Deltares::Logging::Error)
+            if (message->Type == Deltares::Logging::MessageType::Error)
             {
                 result->error.errorCode = 1;
                 fillErrorMessage(result->error, message->Text);

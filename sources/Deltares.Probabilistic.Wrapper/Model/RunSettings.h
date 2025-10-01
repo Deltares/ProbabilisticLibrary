@@ -93,10 +93,10 @@ namespace Deltares
                     {
                         switch (shared->object->LowestMessageType)
                         {
-                        case Logging::Debug: return Wrappers::MessageType::Debug;
-                        case Logging::Info: return Wrappers::MessageType::Info;
-                        case Logging::Warning: return Wrappers::MessageType::Warning;
-                        case Logging::Error: return Wrappers::MessageType::Error;
+                        case Logging::MessageType::Debug: return Wrappers::MessageType::Debug;
+                        case Logging::MessageType::Info: return Wrappers::MessageType::Info;
+                        case Logging::MessageType::Warning: return Wrappers::MessageType::Warning;
+                        case Logging::MessageType::Error: return Wrappers::MessageType::Error;
                         default: throw gcnew System::NotSupportedException("Message type");
                         }
                     }

@@ -47,7 +47,7 @@ namespace Deltares::Reliability
          * \brief Reports whether these settings have valid values
          * \param report Report in which the validity is reported
          */
-        void validate(Logging::ValidationReport& report);
+        void validate(Logging::ValidationReport& report) const;
 
         /**
          * \brief Validates the project and puts the result in a validation report

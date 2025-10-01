@@ -36,7 +36,7 @@ namespace Deltares
             bool ShouldUpdateFinalSteps = false;
             double ThresholdOffset = 0;
 
-            void validate(Logging::ValidationReport& report)
+            void validate(Logging::ValidationReport& report) const
             {
                 if (IsProxyModel)
                 {

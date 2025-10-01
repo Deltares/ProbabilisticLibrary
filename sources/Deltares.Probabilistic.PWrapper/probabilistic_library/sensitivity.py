@@ -113,20 +113,20 @@ class SensitivitySettings(FrozenObject):
 		interface.SetIntValue(self._id, 'iterations', value)
 
 	@property
-	def u_low(self) -> float:
-		return interface.GetValue(self._id, 'u_low')
+	def low_value(self) -> float:
+		return interface.GetValue(self._id, 'low_value')
 		
-	@u_low.setter
-	def u_low(self, value : float):
-		interface.SetValue(self._id, 'u_low', value)
+	@low_value.setter
+	def low_value(self, value : float):
+		interface.SetValue(self._id, 'low_value', value)
 
 	@property
-	def u_high(self) -> float:
-		return interface.GetValue(self._id, 'u_high')
+	def high_value(self) -> float:
+		return interface.GetValue(self._id, 'high_value')
 		
-	@u_high.setter
-	def u_high(self, value : float):
-		interface.SetValue(self._id, 'u_high', value)
+	@high_value.setter
+	def high_value(self, value : float):
+		interface.SetValue(self._id, 'high_value', value)
 
 	def _set_variables(self, variables):
 		new_stochast_settings = []

@@ -22,30 +22,22 @@
 #pragma once
 #include <string>
 
-namespace Deltares
+namespace Deltares::Logging
 {
-    namespace Logging
+    enum class MessageType { Debug, Info, Warning, Error };
+
+    class Message
     {
-        enum MessageType { Debug, Info, Warning, Error };
+    public:
+        Message() = default;
 
-        class Message
-        {
-        public:
-            Message() { }
+        Message(MessageType type, const std::string& text) : Type(type), Text(text) {}
 
-            Message(MessageType type, std::string text)
-            {
-                this->Type = type;
-                this->Text = text;
-            }
+        MessageType Type = MessageType::Error;
+        std::string Text = "";
+        std::string Subject = "";
 
-            MessageType Type = MessageType::Error;
-            std::string Text = "";
-            std::string Subject = "";
-
-            static std::string getMessageTypeString(MessageType type);
-            static MessageType getMessageType(std::string type);
-        };
-    }
+        static std::string getMessageTypeString(MessageType type);
+        static MessageType getMessageType(std::string& type);
+    };
 }
-

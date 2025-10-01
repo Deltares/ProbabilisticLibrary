@@ -24,33 +24,30 @@
 
 #include "ValidationReport.h"
 
-namespace Deltares
+namespace Deltares::Logging
 {
-    namespace Logging
+    class ValidationSupport
     {
-        class ValidationSupport
-        {
-        public:
-            static void checkNotNull(Logging::ValidationReport& report, const bool value, const
-                std::string& property, std::string subject = "", MessageType messageType = MessageType::Error);
-            static void checkNotNaN(Logging::ValidationReport& report, double value, const
-                std::string& property, std::string subject = "", MessageType messageType = MessageType::Error);
-            static void checkFinite(Logging::ValidationReport& report, double value, const
-                std::string& property, std::string subject = "", MessageType messageType = MessageType::Error);
-            static void checkMinimum(Logging::ValidationReport& report, double minimum, double value, const
-                std::string& property, std::string subject = "", MessageType messageType = MessageType::Error);
-            static void checkMinimumNonInclusive(Logging::ValidationReport& report, double minimum, double value, const
-                std::string& property, std::string subject = "", MessageType messageType = MessageType::Error);
-            static void checkMaximum(Logging::ValidationReport& report, double maximum, double value, const
-                std::string& property, std::string subject = "", MessageType messageType = MessageType::Error);
-            static void checkMaximumNonInclusive(Logging::ValidationReport& report, double maximum, double value, const
-                std::string& property, std::string subject = "", MessageType messageType = MessageType::Error);
-            static void checkNotEmpty(Logging::ValidationReport& report, size_t size, const std::string& property,
-                std::string subject = "", MessageType messageType = MessageType::Error);
-            static void add(Logging::ValidationReport& report, std::string text, std::string subject = "", MessageType messageType = MessageType::Error);
-        private:
-            static std::string toString(double value);
-        };
-    }
+    public:
+        static void checkNotNull(Logging::ValidationReport& report, const bool value, const
+            std::string& property, std::string subject = "", MessageType messageType = MessageType::Error);
+        static void checkNotNaN(Logging::ValidationReport& report, double value, const
+            std::string& property, std::string subject = "", MessageType messageType = MessageType::Error);
+        static void checkFinite(Logging::ValidationReport& report, double value, const
+            std::string& property, std::string subject = "", MessageType messageType = MessageType::Error);
+        static void checkMinimum(Logging::ValidationReport& report, double minimum, double value, const
+            std::string& property, std::string subject = "", MessageType messageType = MessageType::Error);
+        static void checkMinimumNonInclusive(Logging::ValidationReport& report, double minimum, double value, const
+            std::string& property, std::string subject = "", MessageType messageType = MessageType::Error);
+        static void checkMaximum(Logging::ValidationReport& report, double maximum, double value, const
+            std::string& property, std::string subject = "", MessageType messageType = MessageType::Error);
+        static void checkMaximumNonInclusive(Logging::ValidationReport& report, double maximum, double value, const
+            std::string& property, std::string subject = "", MessageType messageType = MessageType::Error);
+        static void checkNotEmpty(Logging::ValidationReport& report, size_t size, const std::string& property,
+            std::string subject = "", MessageType messageType = MessageType::Error);
+        static void add(Logging::ValidationReport& report, std::string text, std::string subject = "", MessageType messageType = MessageType::Error);
+    private:
+        static std::string toString(double value);
+    };
 }
 

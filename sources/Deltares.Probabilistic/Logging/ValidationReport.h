@@ -20,45 +20,35 @@
 // All rights reserved.
 //
 #pragma once
+#include <algorithm>
 #include <memory>
 #include <vector>
 #include "Message.h"
 
-namespace Deltares
+namespace Deltares::Logging
 {
-    namespace Logging
+    /**
+     * \brief Contains the results of validation of a certain object
+     */
+    class ValidationReport
     {
+    public:
+        ValidationReport() = default;
+
         /**
-         * \brief Contains the results of validation of a certain object
+         * \brief Validation messages
          */
-        class ValidationReport
+        std::vector<std::shared_ptr<Message>> messages;
+
+        /**
+         * \brief Indicates whether the validated object is valid
+         * \return Indication
+         */
+        bool isValid() const
         {
-        public:
-            ValidationReport() = default;
+            return std::ranges::none_of(messages, [](std::shared_ptr<Message> message) { return message->Type == MessageType::Error; });
+        }
+    };
 
-            /**
-             * \brief Validation messages
-             */
-            std::vector<std::shared_ptr<Message>> messages;
-
-            /**
-             * \brief Indicates whether the validated object is valid
-             * \return Indication
-             */
-            bool isValid() const
-            {
-                for (const std::shared_ptr<Message>& message : messages)
-                {
-                    if (message->Type == Error)
-                    {
-                        return false;
-                    }
-                }
-
-                return true;
-            }
-        };
-
-    }
 }
 

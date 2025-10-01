@@ -27,7 +27,7 @@
 
 namespace Deltares::Probabilistic::Test
 {
-    void TestRunModel::allModelTests()
+    void TestRunModel::allModelTests() const
     {
         testRunModelMedianValues();
         testRunModelMeanValues();
@@ -35,7 +35,7 @@ namespace Deltares::Probabilistic::Test
         testNoModel();
     }
 
-    void TestRunModel::testRunModelMedianValues()
+    void TestRunModel::testRunModelMedianValues() const
     {
         std::shared_ptr<Models::RunProject> project = projectBuilder::getRunProject(projectBuilder::getTriangularLinearProject());
 
@@ -48,7 +48,7 @@ namespace Deltares::Probabilistic::Test
         ASSERT_NEAR(project->evaluation->InputValues[1], project->stochasts[1]->getXFromU(0), margin);
     }
 
-    void TestRunModel::testRunModelMeanValues()
+    void TestRunModel::testRunModelMeanValues() const
     {
         std::shared_ptr<Models::RunProject> project = projectBuilder::getRunProject(projectBuilder::getTriangularLinearProject());
 
@@ -61,7 +61,7 @@ namespace Deltares::Probabilistic::Test
         ASSERT_NEAR(project->evaluation->InputValues[1], project->stochasts[1]->getMean(), margin);
     }
 
-    void TestRunModel::testRunModelDesignValues()
+    void TestRunModel::testRunModelDesignValues() const
     {
         std::shared_ptr<Models::RunProject> project = projectBuilder::getRunProject(projectBuilder::getTriangularLinearProject());
 
@@ -79,7 +79,7 @@ namespace Deltares::Probabilistic::Test
         ASSERT_NEAR(project->evaluation->InputValues[1], project->stochasts[1]->getXFromU(0), margin);
     }
 
-    void TestRunModel::testNoModel()
+    void TestRunModel::testNoModel() const
     {
         std::shared_ptr<Models::RunProject> project = std::make_shared<Models::RunProject>();
 

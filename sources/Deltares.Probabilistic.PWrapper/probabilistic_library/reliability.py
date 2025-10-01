@@ -157,8 +157,8 @@ class Settings(FrozenObject):
 				'maximum_variance_loops',
 				'variation_coefficient',
 				'fraction_failed',
-				'stochast_settings'
-				'is_valid'
+				'stochast_settings',
+				'is_valid',
 				'validate']
 
 	@property
