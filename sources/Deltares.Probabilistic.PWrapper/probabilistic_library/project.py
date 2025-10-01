@@ -26,9 +26,9 @@ from multiprocessing import Pool, cpu_count
 from typing import FrozenSet
 from types import FunctionType
 
-from .statistic import *
+from .statistic import Stochast, CorrelationMatrix, SelfCorrelationMatrix, Scenario
 from .reliability import *
-from .sensitivity import *
+from .sensitivity import SensitivityResult, SensitivityValue, SensitivitySettings, SensitivityMethod
 from .uncertainty import UncertaintyResult, UncertaintySettings, UncertaintyMethod
 from .utils import FrozenObject, FrozenList
 from . import interface
@@ -51,7 +51,7 @@ class ZModelContainer:
 	def is_valid(self) -> bool:
 		return True
 
-	def validate(self) -> list[Message]:
+	def validate(self) -> FrozenList[Message]:
 		return FrozenList() 
 
 	def is_dirty(self):
@@ -164,7 +164,7 @@ class ZModel(FrozenObject):
 
 		return FrozenList(parameters)
 
-	def validate(self) -> list[Message]:
+	def validate(self) -> FrozenList[Message]:
 		if self._is_function:
 			return FrozenList()
 		elif not self._model is None:
@@ -417,7 +417,7 @@ class ModelProject(FrozenObject):
 			samples.append(Sample(values[i][:input_size], output_values[i]))
 		ModelProject._zmodel.run_multiple(samples)
 
-	def validate(self) -> list[Message]:
+	def validate(self) -> FrozenList[Message]:
 		if not self._model is None:
 			return self._model.validate()
 		else:
@@ -1034,7 +1034,7 @@ class ExcludingCombineProject(FrozenObject):
 		self._update()
 		return interface.GetBoolValue(self._id, 'is_valid')
 
-	def validate(self) -> list[Message]:
+	def validate(self) -> FrozenList[Message]:
 		self._update()
 		interface.Execute(self._id, 'validate')
 		messages = []
