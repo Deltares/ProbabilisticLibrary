@@ -51,6 +51,23 @@ class Test_sensitivity(unittest.TestCase):
         self.assertAlmostEqual(1.8, sens.values[0].medium, delta=margin)
         self.assertAlmostEqual(0.9, sens.values[0].high, delta=margin)
 
+    def test_single_variation_settings_linear(self):
+        project = project_builder.get_sensitivity_linear_project()
+
+        project.settings.sensitivity_method = SensitivityMethod.single_variation
+        project.settings.low_value = 0.3
+        project.settings.high_value = 0.99
+
+        project.run()
+
+        sens = project.result
+
+        self.assertEqual('L - (a+b)' , sens.identifier)
+        self.assertEqual(2, len(sens.values))
+        self.assertAlmostEqual(2.2, sens.values[0].low, delta=margin)
+        self.assertAlmostEqual(1.8, sens.values[0].medium, delta=margin)
+        self.assertAlmostEqual(0.82, sens.values[0].high, delta=margin)
+
     def test_single_variation_multiple_unbalanced_linear(self):
         project = project_builder.get_sensitivity_multiple_unbalanced_linear_project()
 
