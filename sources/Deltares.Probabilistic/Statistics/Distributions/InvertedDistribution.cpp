@@ -23,18 +23,17 @@
 #include "../Stochast.h"
 #include "../../Math/NumericSupport.h"
 
+#include <algorithm>
+
 namespace Deltares
 {
     namespace Statistics
     {
-        double InvertedDistribution::getInvertedValue(std::shared_ptr<StochastProperties> stochast, double value)
+        double InvertedDistribution::getInvertedValue(std::shared_ptr<StochastProperties> stochast, double value) const
         {
-            // detect whether the shift is used
-
             double center = isShiftUsed() ? stochast->Shift : 0;
             return 2 * center - value;
         }
-
 
         std::shared_ptr<StochastProperties> InvertedDistribution::getInvertedStochast(std::shared_ptr<StochastProperties> stochast)
         {
@@ -192,15 +191,10 @@ namespace Deltares
 
         bool InvertedDistribution::isShiftUsed() const
         {
-            for (DistributionPropertyType parameter : this->innerDistribution->getParameters())
+            return std::ranges::any_of(this->innerDistribution->getParameters(), [](DistributionPropertyType parameter)
             {
-                if (parameter == DistributionPropertyType::Shift)
-                {
-                    return true;
-                }
-            }
-
-            return false;
+                return parameter == Shift;
+            });
         }
 
         double InvertedDistribution::getLogLikelihood(std::shared_ptr<StochastProperties> stochast, double x)
