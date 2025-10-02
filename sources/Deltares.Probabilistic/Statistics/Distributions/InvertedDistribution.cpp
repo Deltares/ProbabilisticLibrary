@@ -29,9 +29,12 @@ namespace Deltares
     {
         double InvertedDistribution::getInvertedValue(std::shared_ptr<StochastProperties> stochast, double value)
         {
-            double center = this->innerDistribution->isShiftUsed() ? stochast->Shift : 0;
+            // detect whether the shift is used
+
+            double center = isShiftUsed() ? stochast->Shift : 0;
             return 2 * center - value;
         }
+
 
         std::shared_ptr<StochastProperties> InvertedDistribution::getInvertedStochast(std::shared_ptr<StochastProperties> stochast)
         {
@@ -134,7 +137,7 @@ namespace Deltares
         {
             // fit the shift first
             // do not use inverted value, because it depends on stochast->Shift, which is not known yet (because it has to be fitted)
-            if (this->innerDistribution->isShiftUsed())
+            if (this->isShiftUsed())
             {
                 std::vector<double> zeroInvertedValues = Numeric::NumericSupport::select(values, [](double x) {return -x; });
 
@@ -156,7 +159,7 @@ namespace Deltares
         {
             // fit the shift first
             // do not use inverted value, because it depends on stochast->Shift, which is not known yet (because it has to be fitted)
-            if (this->innerDistribution->isShiftUsed())
+            if (this->isShiftUsed())
             {
                 std::vector<double> zeroInvertedValues = Numeric::NumericSupport::select(values, [](double x) {return -x; });
 
@@ -185,6 +188,19 @@ namespace Deltares
         {
             const std::shared_ptr<StochastProperties> invertedStochast = getInvertedStochast(stochast);
             this->innerDistribution->validate(report, invertedStochast, subject);
+        }
+
+        bool InvertedDistribution::isShiftUsed() const
+        {
+            for (DistributionPropertyType parameter : this->innerDistribution->getParameters())
+            {
+                if (parameter == DistributionPropertyType::Shift)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         double InvertedDistribution::getLogLikelihood(std::shared_ptr<StochastProperties> stochast, double x)

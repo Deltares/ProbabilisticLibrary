@@ -36,7 +36,6 @@ namespace Deltares
             bool canTruncate() override { return true; }
             bool canFit() override { return true; }
             bool canInvert() override { return true; }
-            bool isShiftUsed() override { return true; }
             double getMean(std::shared_ptr<StochastProperties> stochast) override;
             double getDeviation(std::shared_ptr<StochastProperties> stochast) override;
             void setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation) override;

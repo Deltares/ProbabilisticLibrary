@@ -101,13 +101,6 @@ namespace Deltares::Statistics
         virtual bool canFitPrior() { return false; }
 
         /**
-         * \brief Indicates whether the shift parameter of the stochast is used
-         * \remark This method is used by the inverted distribution
-         * \return Indication
-         */
-        virtual bool isShiftUsed() { return false; }
-
-        /**
          * \brief Indicates whether it is meaningful to compare x-values produced by this distribution (no: qualitative, yes: not qualitative)
          * \remark Only the qualitative distribution is qualitative. For example: A qualitative distribution returns the index number of an input file.
          * \return Indication

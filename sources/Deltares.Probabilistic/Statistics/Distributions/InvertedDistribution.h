@@ -62,6 +62,7 @@ namespace Deltares
             double getInvertedValue(std::shared_ptr<StochastProperties> stochast, double value);
             std::shared_ptr<StochastProperties> getInvertedStochast(std::shared_ptr<StochastProperties> stochast);
             void copyFromInverted(std::shared_ptr<StochastProperties> target, std::shared_ptr<StochastProperties> source);
+            bool isShiftUsed() const;
         };
     }
 }

@@ -45,7 +45,6 @@ namespace Deltares
             bool canInvert() override { return this->innerDistribution->canInvert(); }
             bool canFit() override { return this->innerDistribution->canFit(); }
             bool canFitPrior() override { return this->innerDistribution->canFitPrior(); }
-            bool isShiftUsed() override { return this->innerDistribution->isShiftUsed(); }
             double getMean(std::shared_ptr<StochastProperties> stochast) override;
             double getDeviation(std::shared_ptr<StochastProperties> stochast) override;
             void setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation) override;

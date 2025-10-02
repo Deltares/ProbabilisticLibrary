@@ -187,11 +187,6 @@ namespace Deltares
             void invokeMultipleLambda(std::vector<std::shared_ptr<ModelSample>>& samples);
 
             /**
-             * \brief The minimum calculation time in ms for storing it in the repository
-             */
-            long long minRepoCalculationTime = 1;
-
-            /**
              * \brief Indicates whether calculation time should be measured
              */
             bool measureCalculationTime = true;

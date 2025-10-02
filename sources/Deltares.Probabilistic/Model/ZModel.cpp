@@ -158,6 +158,9 @@ namespace Deltares
             {
                 if (measureCalculationTime && isRepositoryAllowed)
                 {
+                    // minimum calculation time to be registered
+                    constexpr long long minRepoCalculationTime = 1;
+
                     std::chrono::time_point started = std::chrono::high_resolution_clock::now();
                     invokeLambda(sample);
                     std::chrono::time_point done = std::chrono::high_resolution_clock::now();
@@ -242,6 +245,9 @@ namespace Deltares
 
             if (!executeSamples.empty())
             {
+                // minimum calculation time to be registered
+                constexpr long long minRepoCalculationTime = 1;
+
                 if (this->measureCalculationTime && isRepositoryAllowed)
                 {
                     std::chrono::time_point started = std::chrono::high_resolution_clock::now();
