@@ -35,7 +35,7 @@ namespace Deltares
             return 2 * center - value;
         }
 
-        std::shared_ptr<StochastProperties> InvertedDistribution::getInvertedStochast(std::shared_ptr<StochastProperties> stochast)
+        std::shared_ptr<StochastProperties> InvertedDistribution::getInvertedStochast(std::shared_ptr<StochastProperties> stochast) const
         {
             std::shared_ptr<StochastProperties> invertedStochast = std::make_shared<StochastProperties>();
             this->copyFromInverted(invertedStochast, stochast);
