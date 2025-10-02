@@ -42,7 +42,7 @@ namespace Deltares
             return invertedStochast;
         }
 
-        void InvertedDistribution::copyFromInverted(std::shared_ptr<StochastProperties> target, std::shared_ptr<StochastProperties> source)
+        void InvertedDistribution::copyFromInverted(std::shared_ptr<StochastProperties> target, std::shared_ptr<StochastProperties> source) const
         {
             target->Location = source->Location;
             target->Scale = source->Scale;
