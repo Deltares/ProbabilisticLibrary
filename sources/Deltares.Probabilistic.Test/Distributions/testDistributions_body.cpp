@@ -504,6 +504,7 @@ namespace Deltares::Probabilistic::Test
         Logging::ValidationReport report2 = stochast->getValidationReport();
 
         EXPECT_EQ(1, report2.messages.size());
+        EXPECT_EQ("scale value -1 is less than 0.", report2.messages[0]->Text);
     }
 }
 
