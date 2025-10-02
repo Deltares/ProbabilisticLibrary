@@ -729,7 +729,7 @@ class Stochast(FrozenObject):
 		if number_of_points is None or number_of_points < 0:
 			number_of_points = 1000
 
-        # ignore too few points, the minimum and maxiumum values are alawys included
+        # ignore too few points, the minimum and maximum values are always included
 		if number_of_points <= 2:
 			values = [xmin, xmax]
 		else:
