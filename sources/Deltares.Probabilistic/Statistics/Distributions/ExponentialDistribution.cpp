@@ -136,9 +136,9 @@ namespace Deltares
             }
         }
 
-        void ExponentialDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values)
+        void ExponentialDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, double shift)
         {
-            stochast->Shift = this->getFittedMinimum(values);
+            stochast->Shift = isnan(shift) ? this->getFittedMinimum(values) : shift;
             stochast->Scale = Numeric::NumericSupport::getMean(values) - stochast->Shift;
             stochast->Observations = static_cast<int>(values.size());
         }

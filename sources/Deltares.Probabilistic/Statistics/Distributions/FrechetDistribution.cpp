@@ -159,12 +159,12 @@ namespace Deltares
             setXAtUByIteration(stochast, x, u, constantType);
         }
 
-        void FrechetDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values)
+        void FrechetDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, double shift)
         {
             int maxLoops = 100;
             double minValue = 0.001;
 
-            double shift = getFittedMinimum(values);
+            shift = isnan(shift) ? getFittedMinimum(values) : shift;
 
             std::vector<double> values0 = Numeric::NumericSupport::select(values, [shift](double p) { return p - shift; });
 

@@ -326,7 +326,7 @@ namespace Deltares
             }
         }
 
-        void TrapezoidalDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values)
+        void TrapezoidalDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, double shift)
         {
             double min = *std::min_element(values.begin(), values.end());
             double max = *std::max_element(values.begin(), values.end());

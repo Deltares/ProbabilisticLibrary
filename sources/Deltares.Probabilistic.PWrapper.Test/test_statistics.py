@@ -71,6 +71,12 @@ class Test_statistics(unittest.TestCase):
         self.assertAlmostEqual(4.41, stochast.mean, delta=margin)
         self.assertAlmostEqual(0.37, stochast.deviation, delta=margin)
 
+        stochast.fit(values, 0)
+
+        self.assertAlmostEqual(0, stochast.shift, delta=margin)
+        self.assertAlmostEqual(4.38, stochast.mean, delta=margin)
+        self.assertAlmostEqual(0.29, stochast.deviation, delta=margin)
+
         prior = Stochast()
         prior.distribution = DistributionType.log_normal
         prior.mean = 3.5

@@ -539,6 +539,7 @@ namespace Deltares
                 else if (property_ == "design_quantile") stochast->designQuantile = value;
                 else if (property_ == "design_factor") stochast->designFactor = value;
                 else if (property_ == "design_value") stochast->setDesignValue(value);
+                else if (property_ == "shift_for_fit") tempValue["shift_for_fit"] = value;
             }
             else if (objectType == ObjectType::DiscreteValue)
             {
@@ -1585,7 +1586,16 @@ namespace Deltares
                         fitValues.push_back(values[i]);
                     }
 
-                    stochast->fit(fitValues);
+                    if (tempValue.contains("shift_for_fit"))
+                    {
+                        double shift = tempValue["shift_for_fit"];
+                        tempValue.erase("shift_for_fit");
+                        stochast->fit(fitValues, shift);
+                    }
+                    else
+                    {
+                        stochast->fit(fitValues);
+                    }
                 }
                 else if (property_ == "fit_prior")
                 {

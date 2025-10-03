@@ -22,7 +22,7 @@
 from __future__ import annotations
 from ctypes import ArgumentError
 from enum import Enum
-from math import isnan
+from math import isnan, nan
 from .utils import *
 from . import interface
 import matplotlib.pyplot as plt
@@ -592,7 +592,20 @@ class Stochast(FrozenObject):
 		interface.Execute(self._id, 'initialize_conditional_values');
 		return interface.GetValue(self._id, 'x_from_u_and_source')
 
-	def fit(self, values):
+	def fit(self, values, shift = nan):
+		"""Fits the stochast parameters from a list of values.
+
+        Parameters
+        ----------
+        values : list[float]
+            The list of values from which is fitted
+
+        shift : float, optional
+            If set, the shift value is not fitted, but taken from this value
+        """
+
+		if not isnan(shift):
+			interface.SetValue(self._id, 'shift_for_fit', shift)
 		interface.SetArrayValue(self._id, 'fit', values)
 		self._histogram_values = None
 		self._discrete_values = None

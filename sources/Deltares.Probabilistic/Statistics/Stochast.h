@@ -354,8 +354,9 @@ namespace Deltares
             /**
              * \brief Estimates stochastic parameters for a given set of x-values
              * \param values Given set of x-values
+             * \param shift If set, shift is not fitted but uses given shift parameter
              */
-            void fit(std::vector<double> values) const;
+            void fit(std::vector<double> values, double shift = nan("")) const;
 
             /**
              * \brief Estimates stochastic parameters for a given set of x-values and a prior variable

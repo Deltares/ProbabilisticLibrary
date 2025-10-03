@@ -155,7 +155,7 @@ namespace Deltares
             return StandardNormal::getPFromU(u);
         }
 
-        void StudentTDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values)
+        void StudentTDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, double shift)
         {
             const double minSigma = 1.0E-9;
             const double minRelativeSigma = 0.99;

@@ -258,9 +258,9 @@ namespace Deltares
         }
 
 
-        void LogNormalDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values)
+        void LogNormalDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, double shift)
         {
-            stochast->Shift = fitShift(values);
+            stochast->Shift = isnan(shift) ? fitShift(values) : shift;
 
             std::vector<double> logValues = Numeric::NumericSupport::select(values, [stochast](double v) {return log(v - stochast->Shift); });
 

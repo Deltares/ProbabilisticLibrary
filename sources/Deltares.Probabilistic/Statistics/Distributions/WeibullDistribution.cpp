@@ -180,9 +180,9 @@ namespace Deltares
             }
         }
 
-        void WeibullDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values)
+        void WeibullDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, double shift)
         {
-            stochast->Shift = this->getFittedMinimum(values);
+            stochast->Shift = isnan(shift) ? this->getFittedMinimum(values) : shift;
 
             std::vector<double> shiftedValues = Numeric::NumericSupport::select(values, [stochast](double p) { return p - stochast->Shift; });
 

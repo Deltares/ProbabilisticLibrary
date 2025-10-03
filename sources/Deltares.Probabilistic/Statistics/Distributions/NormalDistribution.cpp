@@ -113,7 +113,7 @@ namespace Deltares
             return log(normalFactor) + distance;
         }
 
-        void NormalDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values)
+        void NormalDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, double shift)
         {
             stochast->Location = Numeric::NumericSupport::getMean(values);
             stochast->Scale = Numeric::NumericSupport::getStandardDeviation(stochast->Location, values);

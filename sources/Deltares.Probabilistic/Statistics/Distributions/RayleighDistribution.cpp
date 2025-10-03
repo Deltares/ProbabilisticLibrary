@@ -126,12 +126,19 @@ namespace Deltares
             this->setXAtUByIteration(stochast, x, u, constantType);
         }
 
-        void RayleighDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values)
+        void RayleighDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, double shift)
         {
-            double xMin = Numeric::NumericSupport::getMinimum(values);
-            double xMax = Numeric::NumericSupport::getMaximum(values);
+            if (isnan(shift))
+            {
+                double xMin = Numeric::NumericSupport::getMinimum(values);
+                double xMax = Numeric::NumericSupport::getMaximum(values);
 
-            stochast->Shift = xMin - (xMax - xMin) / values.size();
+                stochast->Shift = xMin - (xMax - xMin) / values.size();
+            }
+            else
+            {
+                stochast->Shift = shift;
+            }
 
             double sum = Numeric::NumericSupport::sum(values, [stochast](double p) {return (p - stochast->Shift) * (p - stochast->Shift); });
             stochast->Scale = std::sqrt( sum/ (2 * values.size()));

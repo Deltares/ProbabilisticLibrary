@@ -436,6 +436,13 @@ namespace Deltares::Probabilistic::Test
         EXPECT_NEAR(stochast->getDeviation(), 0.262, margin);
         EXPECT_EQ(stochast->getProperties()->Observations, 4);
 
+        stochast->fit(values, 0);
+
+        EXPECT_EQ(stochast->getProperties()->Shift, 0);
+        EXPECT_NEAR(stochast->getMean(), 4.502, margin);
+        EXPECT_NEAR(stochast->getDeviation(), 0.295, margin);
+        EXPECT_EQ(stochast->getProperties()->Observations, 4);
+
         std::shared_ptr<Stochast> prior = std::make_shared<Stochast>();
         prior->setDistributionType(DistributionType::Normal);
         prior->setMean(3.0);

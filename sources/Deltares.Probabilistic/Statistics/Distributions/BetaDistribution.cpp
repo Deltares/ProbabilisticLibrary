@@ -144,7 +144,7 @@ namespace Deltares
             setXAtUByIteration(stochast, x, u, constantType);
         }
 
-        void BetaDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values)
+        void BetaDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, double shift)
         {
             double mean = Numeric::NumericSupport::getMean(values);
             double sigma = Numeric::NumericSupport::getStandardDeviation(mean, values);

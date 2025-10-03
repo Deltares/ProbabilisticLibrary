@@ -194,8 +194,9 @@ namespace Deltares::Statistics
          * \brief Updates parameters of a stochast, so that they fit best a number of given x-values
          * \param stochast Stochast to be updated
          * \param values Given x-values
+         * \param shift Shift value, if set the shift parameter will not be fitted
          */
-        virtual void fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values)
+        virtual void fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, double shift = nan(""))
         {
             throw Reliability::probLibException("fit not supported");
         }
