@@ -134,7 +134,7 @@ namespace Deltares
         {
             // fit the shift first
             // do not use inverted value, because it depends on stochast->Shift, which is not known yet (because it has to be fitted)
-            if (!isnan(shift) && this->innerDistribution->isShiftUsed())
+            if (isnan(shift) && this->innerDistribution->isShiftUsed())
             {
                 std::vector<double> zeroInvertedValues = Numeric::NumericSupport::select(values, [](double x) {return -x; });
 
@@ -152,18 +152,18 @@ namespace Deltares
             copyFromInverted(stochast, invertedStochast);
         }
 
-        void InvertedDistribution::fitPrior(const std::shared_ptr<StochastProperties>& stochast, const std::shared_ptr<StochastProperties>& prior, std::vector<double>& values)
+        void InvertedDistribution::fitPrior(const std::shared_ptr<StochastProperties>& stochast, std::vector<double>& values, const std::shared_ptr<StochastProperties>& prior, double shift)
         {
             // fit the shift first
             // do not use inverted value, because it depends on stochast->Shift, which is not known yet (because it has to be fitted)
-            if (this->innerDistribution->isShiftUsed())
+            if (isnan(shift) && this->innerDistribution->isShiftUsed())
             {
                 std::vector<double> zeroInvertedValues = Numeric::NumericSupport::select(values, [](double x) {return -x; });
 
                 const std::shared_ptr<StochastProperties> invertedStochast = getInvertedStochast(stochast);
                 const std::shared_ptr<StochastProperties> invertedPrior = getInvertedStochast(prior);
 
-                this->innerDistribution->fitPrior(invertedStochast, invertedPrior, zeroInvertedValues);
+                this->innerDistribution->fitPrior(invertedStochast, zeroInvertedValues, invertedPrior);
 
                 stochast->Shift = -stochast->Shift;
             }
@@ -176,7 +176,7 @@ namespace Deltares
             const std::shared_ptr<StochastProperties> invertedStochast = getInvertedStochast(stochast);
             const std::shared_ptr<StochastProperties> invertedPrior = getInvertedStochast(prior);
 
-            this->innerDistribution->fitPrior(invertedStochast, invertedPrior, invertedValues);
+            this->innerDistribution->fitPrior(invertedStochast, invertedValues, invertedPrior, -shift);
 
             copyFromInverted(stochast, invertedStochast);
         }

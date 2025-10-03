@@ -202,7 +202,7 @@ namespace Deltares
             }
         }
 
-        double LogNormalDistribution::fitShift(std::vector<double> values)
+        double LogNormalDistribution::getFittedMinimum(std::vector<double>& values)
         {
             // see https://stats.stackexchange.com/questions/49495/robust-parameter-estimation-for-shifted-log-normal-distribution
 
@@ -260,7 +260,7 @@ namespace Deltares
 
         void LogNormalDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, double shift)
         {
-            stochast->Shift = isnan(shift) ? fitShift(values) : shift;
+            stochast->Shift = isnan(shift) ? getFittedMinimum(values) : shift;
 
             std::vector<double> logValues = Numeric::NumericSupport::select(values, [stochast](double v) {return log(v - stochast->Shift); });
 
@@ -269,9 +269,9 @@ namespace Deltares
             normal.fit(stochast, logValues);
         }
 
-        void LogNormalDistribution::fitPrior(const std::shared_ptr<StochastProperties>& stochast, const std::shared_ptr<StochastProperties>& prior, std::vector<double>& values)
+        void LogNormalDistribution::fitPrior(const std::shared_ptr<StochastProperties>& stochast, std::vector<double>& values, const std::shared_ptr<StochastProperties>& prior, double shift)
         {
-            double shiftData = fitShift(values);
+            double shiftData = isnan(shift) ? getFittedMinimum(values) : shift;
             double shiftPrior = prior->Shift;
 
             double fitShift = shiftPrior;
@@ -291,7 +291,7 @@ namespace Deltares
 
             NormalDistribution normal;
 
-            normal.fitPrior(stochast, fitPrior, logValues);
+            normal.fitPrior(stochast, logValues, fitPrior);
 
             stochast->Shift = fitShift;
         }

@@ -168,11 +168,8 @@ namespace Deltares
         {
             // first Rayleigh fit is done
 
-            double xMin = Numeric::NumericSupport::getMinimum(values);
-            double xMax = Numeric::NumericSupport::getMaximum(values);
-
+            stochast->Shift = isnan(shift) ? getFittedMinimum(values) : shift;
             stochast->Shape = 1;
-            stochast->Shift = xMin - (xMax - xMin) / values.size();
 
             double sum = Numeric::NumericSupport::sum(values, [stochast](double p) {return (p - stochast->Shift) * (p - stochast->Shift); });
             stochast->Scale = std::sqrt(sum / (2 * values.size()));

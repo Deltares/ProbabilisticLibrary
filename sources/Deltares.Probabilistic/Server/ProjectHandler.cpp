@@ -539,7 +539,7 @@ namespace Deltares
                 else if (property_ == "design_quantile") stochast->designQuantile = value;
                 else if (property_ == "design_factor") stochast->designFactor = value;
                 else if (property_ == "design_value") stochast->setDesignValue(value);
-                else if (property_ == "shift_for_fit") tempValue["shift_for_fit"] = value;
+                else if (property_ == "shift_for_fit") SetArgument("shift_for_fit", value);
             }
             else if (objectType == ObjectType::DiscreteValue)
             {
@@ -1580,32 +1580,27 @@ namespace Deltares
 
                 if (property_ == "fit")
                 {
-                    std::vector<double> fitValues;
-                    for (size_t i = 0; i < size; i++)
+                    std::vector<double> fitValues(size);
+                    for (int i = 0; i < size; i++)
                     {
-                        fitValues.push_back(values[i]);
+                        fitValues[i] = values[i];
                     }
 
-                    if (tempValue.contains("shift_for_fit"))
-                    {
-                        double shift = tempValue["shift_for_fit"];
-                        tempValue.erase("shift_for_fit");
-                        stochast->fit(fitValues, shift);
-                    }
-                    else
-                    {
-                        stochast->fit(fitValues);
-                    }
+                    double shift = GetArgument("shift_for_fit");
+
+                    stochast->fit(fitValues, shift);
                 }
                 else if (property_ == "fit_prior")
                 {
-                    std::vector<double> fitValues;
-                    for (size_t i = 0; i < size; i++)
+                    std::vector<double> fitValues(size);
+                    for (int i = 0; i < size; i++)
                     {
-                        fitValues.push_back(values[i]);
+                        fitValues[i] = values[i];
                     }
 
-                    stochast->fitPrior(stochasts[tempIntValue], fitValues);
+                    double shift = GetArgument("shift_for_fit");
+
+                    stochast->fitPrior(fitValues, stochasts[tempIntValue], shift);
                     tempIntValue = 0;
                 }
                 else if (property_ == "data")
@@ -2499,6 +2494,24 @@ namespace Deltares
             {
                 validationMessages.push_back(message);
             }
+        }
+
+        void ProjectHandler::SetArgument(std::string argument, double value)
+        {
+            arguments[argument] = value;
+        }
+
+        double ProjectHandler::GetArgument(std::string argument)
+        {
+            double value = nan("");
+
+            if (arguments.contains(argument))
+            {
+                value = arguments[argument];
+                arguments.erase(argument);
+            }
+
+            return value;
         }
     }
 }

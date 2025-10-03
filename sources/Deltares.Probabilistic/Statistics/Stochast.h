@@ -360,10 +360,11 @@ namespace Deltares
 
             /**
              * \brief Estimates stochastic parameters for a given set of x-values and a prior variable
-             * \param prior Prior variable
              * \param values Given set of x-values
+             * \param prior Prior variable
+             * \param shift If set, shift is not fitted but uses given shift parameter
              */
-            void fitPrior(std::shared_ptr<Stochast> prior, std::vector<double> values) const;
+            void fitPrior(std::vector<double> values, std::shared_ptr<Stochast> prior, double shift = nan("")) const;
 
             /**
              * \brief Estimates stochastic parameters for a given set of x-values and their weights

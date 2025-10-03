@@ -46,12 +46,13 @@ namespace Deltares
             bool canFit() override { return true; }
             bool canFitPrior() override { return true; }
             void fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, double shift = nan("")) override;
-            void fitPrior(const std::shared_ptr<StochastProperties>& stochast, const std::shared_ptr<StochastProperties>& prior, std::vector<double>& values) override;
+            void fitPrior(const std::shared_ptr<StochastProperties>& stochast, std::vector<double>& values, const std::shared_ptr<StochastProperties>& prior, double shift = nan("")) override;
             bool isValid(std::shared_ptr<StochastProperties> stochast) override;
             std::vector<double> getSpecialPoints(std::shared_ptr<StochastProperties> stochast) override;
             std::vector<DistributionPropertyType> getParameters() override { return { Location, Scale, Shift }; }
+        protected:
+            double getFittedMinimum(std::vector<double>& values) override;
         private:
-            double fitShift(std::vector<double> values);
             double getPartialAverage(std::vector<double>& sample, double gamma, int low, int high);
 
             double requestedMean = std::nan("");

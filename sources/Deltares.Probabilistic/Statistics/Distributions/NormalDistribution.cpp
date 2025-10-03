@@ -133,7 +133,7 @@ namespace Deltares
             stochast->Observations = static_cast<int>(values.size());
         }
 
-        void NormalDistribution::fitPrior(const std::shared_ptr<StochastProperties>& stochast, const std::shared_ptr<StochastProperties>& prior, std::vector<double>& values)
+        void NormalDistribution::fitPrior(const std::shared_ptr<StochastProperties>& stochast, std::vector<double>& values, const std::shared_ptr<StochastProperties>& prior, double shift)
         {
             fit(stochast, values);
 

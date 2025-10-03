@@ -535,9 +535,9 @@ namespace Deltares
             distribution->fit(properties, values, shift);
         }
 
-        void Stochast::fitPrior(std::shared_ptr<Stochast> prior, std::vector<double> values) const
+        void Stochast::fitPrior(std::vector<double> values, std::shared_ptr<Stochast> prior, double shift) const
         {
-            distribution->fitPrior(properties, prior->getProperties(), values);
+            distribution->fitPrior(properties, values, prior->getProperties(), shift);
         }
 
         void Stochast::fitWeighted(std::vector<double> values, std::vector<double> weights) const
