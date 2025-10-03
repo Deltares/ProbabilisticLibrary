@@ -98,6 +98,12 @@ class Test_statistics(unittest.TestCase):
         self.assertAlmostEqual(0.48, stochast.deviation, delta=margin)
         self.assertAlmostEqual(-4.4, stochast.shift, delta=margin)
 
+        stochast.fit_prior(prior, negative_values, -3)
+
+        self.assertAlmostEqual(3.40, stochast.mean, delta=margin)
+        self.assertAlmostEqual(0.48, stochast.deviation, delta=margin)
+        self.assertAlmostEqual(-3, stochast.shift, delta=margin)
+
     def test_exponential(self):
         stochast = Stochast()
         stochast.distribution = DistributionType.exponential
@@ -123,6 +129,12 @@ class Test_statistics(unittest.TestCase):
         self.assertAlmostEqual(7.2, stochast.mean, delta=margin)
         self.assertAlmostEqual(8.2, stochast.deviation, delta=margin)
         self.assertAlmostEqual(-1.0, stochast.shift, delta=margin)
+
+        stochast.fit([2.0, 3.0, 5.0, 9.0, 17.0], 0)
+
+        self.assertAlmostEqual(7.2, stochast.mean, delta=margin)
+        self.assertAlmostEqual(7.2, stochast.deviation, delta=margin)
+        self.assertAlmostEqual(0, stochast.shift, delta=margin)
 
         prior = Stochast()
         prior.distribution = DistributionType.exponential

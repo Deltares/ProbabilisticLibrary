@@ -614,7 +614,20 @@ class Stochast(FrozenObject):
 	def can_fit_prior(self) -> bool:
 		return interface.GetBoolValue(self._id, 'can_fit_prior')
 
-	def fit_prior(self, prior : str | Stochast, values):
+	def fit_prior(self, prior : str | Stochast, values, shift = nan):
+		"""Fits the stochast parameters from a list of values.
+
+        Parameters
+        ----------
+        values : list[float]
+            The list of values from which is fitted
+
+        prior : Stochast | str
+            Prior stochast, Bayesian updating is used to perform fitting with prior
+
+        shift : float, optional
+            If set, the shift value is not fitted, but taken from this value
+        """
 		if type(prior) == str:
 			prior = self._variables[prior]
 
@@ -624,6 +637,8 @@ class Stochast(FrozenObject):
 			print('Fit from prior with another distribution type is not supported')
 		else:
 			interface.SetIntValue(self._id, 'prior', prior._id)
+			if not isnan(shift):
+				interface.SetValue(self._id, 'shift_for_fit', shift)
 			interface.SetArrayValue(self._id, 'fit_prior', values)
 			self._histogram_values = None
 			self._discrete_values = None
