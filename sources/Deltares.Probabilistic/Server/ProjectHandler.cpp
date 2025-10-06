@@ -539,7 +539,7 @@ namespace Deltares
                 else if (property_ == "design_quantile") stochast->designQuantile = value;
                 else if (property_ == "design_factor") stochast->designFactor = value;
                 else if (property_ == "design_value") stochast->setDesignValue(value);
-                else if (property_ == "shift_for_fit") SetArgument("shift_for_fit", value);
+                else if (property_ == "shift_for_fit") argValue = value;
             }
             else if (objectType == ObjectType::DiscreteValue)
             {
@@ -1586,7 +1586,8 @@ namespace Deltares
                         fitValues[i] = values[i];
                     }
 
-                    double shift = GetArgument("shift_for_fit");
+                    double shift = argValue;
+                    argValue = nan("");
 
                     stochast->fit(fitValues, shift);
                 }
@@ -1598,7 +1599,8 @@ namespace Deltares
                         fitValues[i] = values[i];
                     }
 
-                    double shift = GetArgument("shift_for_fit");
+                    double shift = argValue;
+                    argValue = nan("");
 
                     stochast->fitPrior(fitValues, stochasts[tempIntValue], shift);
                     tempIntValue = 0;
@@ -2494,24 +2496,6 @@ namespace Deltares
             {
                 validationMessages.push_back(message);
             }
-        }
-
-        void ProjectHandler::SetArgument(std::string argument, double value)
-        {
-            arguments[argument] = value;
-        }
-
-        double ProjectHandler::GetArgument(std::string argument)
-        {
-            double value = nan("");
-
-            if (arguments.contains(argument))
-            {
-                value = arguments[argument];
-                arguments.erase(argument);
-            }
-
-            return value;
         }
     }
 }
