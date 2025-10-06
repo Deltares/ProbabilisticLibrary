@@ -46,7 +46,7 @@ namespace Deltares
             void setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation) override;
             double getPDF(std::shared_ptr<StochastProperties> stochast, double x) override;
             double getCDF(std::shared_ptr<StochastProperties> stochast, double x) override;
-            void fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, double shift = nan("")) override;
+            void fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift = nan("")) override;
             void fitWeighted(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, std::vector<double>& weights) override;
             std::vector<double> getSpecialPoints(std::shared_ptr<StochastProperties> stochast) override;
             std::vector<double> getDiscontinuityPoints(const StochastProperties&) override;

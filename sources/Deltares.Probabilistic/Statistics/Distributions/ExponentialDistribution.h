@@ -45,7 +45,7 @@ namespace Deltares
             double getPDF(std::shared_ptr<StochastProperties> stochast, double x) override;
             double getCDF(std::shared_ptr<StochastProperties> stochast, double x) override;
             void setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType) override;
-            void fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, double shift = nan("")) override;
+            void fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift = nan("")) override;
             std::vector<double> getSpecialPoints(std::shared_ptr<StochastProperties> stochast) override;
             std::vector<DistributionPropertyType> getParameters() override { return { Scale, Shift }; }
         };

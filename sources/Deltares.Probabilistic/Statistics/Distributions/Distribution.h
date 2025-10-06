@@ -196,7 +196,7 @@ namespace Deltares::Statistics
          * \param values Given x-values
          * \param shift Shift value, if set the shift parameter will not be fitted (available for limited distributions)
          */
-        virtual void fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, double shift = nan(""))
+        virtual void fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift = nan(""))
         {
             throw Reliability::probLibException("fit not supported");
         }
@@ -216,7 +216,7 @@ namespace Deltares::Statistics
          * \param prior Prior stochast
          * \param shift Shift value, if set the shift parameter will not be fitted (available for limited distributions)
          */
-        virtual void fitPrior(const std::shared_ptr<StochastProperties>& stochast, std::vector<double>& values, const std::shared_ptr<StochastProperties>& prior, double shift = nan(""))
+        virtual void fitPrior(const std::shared_ptr<StochastProperties>& stochast, std::vector<double>& values, const std::shared_ptr<StochastProperties>& prior, const double shift = nan(""))
         {
             throw Reliability::probLibException("fit with prior not supported");
         }
