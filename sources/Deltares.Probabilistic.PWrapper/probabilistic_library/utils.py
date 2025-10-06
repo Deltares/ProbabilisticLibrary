@@ -20,7 +20,9 @@
 # All rights reserved.
 #
 import sys
-from typing import Iterator
+from typing import Iterator, TypeVar, Generic
+
+T = TypeVar('T')
 
 class CallbackList(list):
 
@@ -56,7 +58,7 @@ class CallbackList(list):
 		super().extend(items)
 		self._callback()
 
-class FrozenList[T]:
+class FrozenList(Generic[T]):
 	def __init__(self, initial_list = None):
 		self._list : list[T] = []
 		self._dict : dict[str, T] = {}
