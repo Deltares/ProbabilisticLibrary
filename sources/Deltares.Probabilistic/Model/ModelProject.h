@@ -83,7 +83,7 @@ namespace Deltares
             /**
              * \brief Runs the project
              */
-            virtual void run() {}
+            virtual void run() = 0;
 
         private:
             std::unordered_map<std::string, std::shared_ptr<Statistics::Stochast>> existingStochasts;

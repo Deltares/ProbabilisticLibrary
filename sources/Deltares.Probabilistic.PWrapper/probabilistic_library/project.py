@@ -21,15 +21,17 @@
 #
 from __future__ import annotations
 import sys
-from ctypes import *
 from multiprocessing import Pool, cpu_count
 from typing import FrozenSet
 from types import FunctionType
+from enum import Enum
 
-from .statistic import *
-from .reliability import *
-from .sensitivity import *
-from .uncertainty import *
+from .statistic import Stochast, DistributionType, CorrelationMatrix, SelfCorrelationMatrix, Scenario
+from .reliability import (DesignPoint, ReliabilityMethod, Settings, CombineSettings, ExcludingCombineSettings,
+                          LimitStateFunction, Evaluation, Message)
+from .sensitivity import SensitivityResult, SensitivityValue, SensitivitySettings, SensitivityMethod
+from .uncertainty import UncertaintyResult, UncertaintySettings, UncertaintyMethod
+from .utils import FrozenObject, FrozenList, CallbackList
 from . import interface
 
 import inspect
@@ -50,7 +52,7 @@ class ZModelContainer:
 	def is_valid(self) -> bool:
 		return True
 
-	def validate(self) -> list[Message]:
+	def validate(self) -> FrozenList[Message]:
 		return FrozenList() 
 
 	def is_dirty(self):
@@ -110,8 +112,8 @@ class ZModel(FrozenObject):
 		try:
 			if not self._pool is None:
 				self._pool.close()
-		except:
-			pass
+		except Exception as err:
+			print(f"Unexpected {err=}, {type(err)=}")
 
 	def __str__(self):
 		return self.name
@@ -163,7 +165,7 @@ class ZModel(FrozenObject):
 
 		return FrozenList(parameters)
 
-	def validate(self) -> list[Message]:
+	def validate(self) -> FrozenList[Message]:
 		if self._is_function:
 			return FrozenList()
 		elif not self._model is None:
@@ -416,7 +418,7 @@ class ModelProject(FrozenObject):
 			samples.append(Sample(values[i][:input_size], output_values[i]))
 		ModelProject._zmodel.run_multiple(samples)
 
-	def validate(self) -> list[Message]:
+	def validate(self) -> FrozenList[Message]:
 		if not self._model is None:
 			return self._model.validate()
 		else:
@@ -766,9 +768,9 @@ class UncertaintyProject(ModelProject):
 	@property
 	def result(self) -> UncertaintyResult:
 		if self._result is None:
-			resultId = interface.GetIdValue(self._id, 'uncertainty_result')
-			if resultId > 0:
-				self._result = UncertaintyResult(resultId)
+			result_id = interface.GetIdValue(self._id, 'uncertainty_result')
+			if result_id > 0:
+				self._result = UncertaintyResult(result_id)
 
 		return self._result
 
@@ -1033,7 +1035,7 @@ class ExcludingCombineProject(FrozenObject):
 		self._update()
 		return interface.GetBoolValue(self._id, 'is_valid')
 
-	def validate(self) -> list[Message]:
+	def validate(self) -> FrozenList[Message]:
 		self._update()
 		interface.Execute(self._id, 'validate')
 		messages = []

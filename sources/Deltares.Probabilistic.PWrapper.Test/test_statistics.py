@@ -21,11 +21,14 @@
 #
 import unittest
 import sys
+import os
 import numpy as np
 from io import StringIO
 import matplotlib.pyplot as plt
 
-from probabilistic_library import *
+from probabilistic_library.utils import FrozenList, FrozenObject, NumericUtils
+from probabilistic_library.statistic import (Stochast, DistributionType, ContributingStochast, ConditionalValue, CorrelationMatrix,
+                                             DiscreteValue, HistogramValue, StandardNormal)
 
 margin = 0.01
 

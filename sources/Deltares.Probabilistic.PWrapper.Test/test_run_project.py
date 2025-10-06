@@ -22,7 +22,9 @@
 import unittest
 import sys
 
-from probabilistic_library import *
+from probabilistic_library.utils import FrozenList, FrozenObject
+from probabilistic_library.project import RunProject, RunValuesType
+from probabilistic_library.statistic import Stochast, DistributionType
 
 import project_builder
 

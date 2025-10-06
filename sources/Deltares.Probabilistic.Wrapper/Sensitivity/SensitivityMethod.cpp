@@ -39,7 +39,7 @@ namespace Deltares
                 nativeModelRunner->initializeForRun();
 
                 Sensitivity::SensitivityResult nativeResult = sensitivityMethod->getSensitivityResult(nativeModelRunner);
-                std::shared_ptr<Sensitivity::SensitivityResult> resultPointer = std::make_shared<Sensitivity::SensitivityResult>(nativeResult);
+                const std::shared_ptr<Sensitivity::SensitivityResult> resultPointer = std::make_shared<Sensitivity::SensitivityResult>(nativeResult);
 
                 Wrappers::SensitivityResult^ result = gcnew Wrappers::SensitivityResult(resultPointer, modelRunner->Stochasts);
 

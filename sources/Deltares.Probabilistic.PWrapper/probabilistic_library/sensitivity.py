@@ -25,9 +25,9 @@ from enum import Enum
 import matplotlib.pyplot as plt
 import numpy as np
 
-from .utils import *
+from .utils import FrozenObject, FrozenList, PrintUtils
 from .statistic import Stochast, ProbabilityValue
-from .reliability import StochastSettings, RandomType, GradientType, Evaluation, Message
+from .reliability import StochastSettings, Evaluation, Message
 from . import interface
 
 if not interface.IsLibraryLoaded():
@@ -50,10 +50,7 @@ class SensitivitySettings(FrozenObject):
 		interface.SetBoolValue(self._id, 'use_openmp_in_reliability', False)
 
 	def __del__(self):
-		try:
-			interface.Destroy(self._id)
-		except:
-			pass
+		interface.Destroy(self._id)
 
 	def __dir__(self):
 		return ['max_parallel_processes',
@@ -115,20 +112,20 @@ class SensitivitySettings(FrozenObject):
 		interface.SetIntValue(self._id, 'iterations', value)
 
 	@property
-	def u_low(self) -> float:
-		return interface.GetValue(self._id, 'u_low')
+	def low_value(self) -> float:
+		return interface.GetValue(self._id, 'low_value')
 		
-	@u_low.setter
-	def u_low(self, value : float):
-		interface.SetValue(self._id, 'u_low', value)
+	@low_value.setter
+	def low_value(self, value : float):
+		interface.SetValue(self._id, 'low_value', value)
 
 	@property
-	def u_high(self) -> float:
-		return interface.GetValue(self._id, 'u_high')
+	def high_value(self) -> float:
+		return interface.GetValue(self._id, 'high_value')
 		
-	@u_high.setter
-	def u_high(self, value : float):
-		interface.SetValue(self._id, 'u_high', value)
+	@high_value.setter
+	def high_value(self, value : float):
+		interface.SetValue(self._id, 'high_value', value)
 
 	def _set_variables(self, variables):
 		new_stochast_settings = []
@@ -149,10 +146,7 @@ class SensitivityValue(FrozenObject):
 		super()._freeze()
 		
 	def __del__(self):
-		try:
-			interface.Destroy(self._id)
-		except:
-			pass
+		interface.Destroy(self._id)
 
 	def __dir__(self):
 		return ['variable',
@@ -171,14 +165,16 @@ class SensitivityValue(FrozenObject):
 		if self._variable is None:
 			variable_id = interface.GetIdValue(self._id, 'variable')
 			if variable_id > 0:
-				if not self._known_variables is None:
-					for variable in self._known_variables:
-						if variable._id == variable_id:
-							self._variable = variable
-				if self._variable is None:
-					self._variable = Stochast(variable_id);
+				self._variable = self._get_variable_by_id(variable_id)
 				
 		return self._variable
+
+	def _get_variable_by_id(self, variable_id) -> Stochast:
+		if self._known_variables is not None:
+			for variable in self._known_variables:
+				if variable._id == variable_id:
+					return variable
+		return Stochast(variable_id)
 
 	@property
 	def low(self) -> float:
@@ -222,10 +218,7 @@ class SensitivityResult(FrozenObject):
 		super()._freeze()
 		
 	def __del__(self):
-		try:
-			interface.Destroy(self._id)
-		except:
-			pass
+		interface.Destroy(self._id)
 
 	def __dir__(self):
 		return ['identifier',
@@ -289,7 +282,7 @@ class SensitivityResult(FrozenObject):
 
 	def get_plot(self) -> plt:
 
-		fig = plt.subplots()
+		plt.subplots()
 
 		low_values = [value.low for value in self.values if not isnan(value.low)]
 		medium_values = [value.medium for value in self.values if not isnan(value.medium)]
