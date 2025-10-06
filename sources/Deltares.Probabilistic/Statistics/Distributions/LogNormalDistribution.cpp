@@ -107,7 +107,7 @@ namespace Deltares
             }
         }
 
-        void LogNormalDistribution::setShift(std::shared_ptr<StochastProperties> stochast, double shift, bool inverted)
+        void LogNormalDistribution::setShift(std::shared_ptr<StochastProperties> stochast, const double shift, bool inverted)
         {
             bool useRequestedValues = std::isinf(stochast->Location) && !std::isnan(this->requestedMean);
 
@@ -258,7 +258,7 @@ namespace Deltares
         }
 
 
-        void LogNormalDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, double shift)
+        void LogNormalDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)
         {
             stochast->Shift = isnan(shift) ? getFittedMinimum(values) : shift;
 
@@ -266,10 +266,10 @@ namespace Deltares
 
             NormalDistribution normal;
 
-            normal.fit(stochast, logValues);
+            normal.fit(stochast, logValues, nan(""));
         }
 
-        void LogNormalDistribution::fitPrior(const std::shared_ptr<StochastProperties>& stochast, std::vector<double>& values, const std::shared_ptr<StochastProperties>& prior, double shift)
+        void LogNormalDistribution::fitPrior(const std::shared_ptr<StochastProperties>& stochast, std::vector<double>& values, const std::shared_ptr<StochastProperties>& prior, const double shift)
         {
             double shiftData = isnan(shift) ? getFittedMinimum(values) : shift;
             double shiftPrior = prior->Shift;
@@ -291,7 +291,7 @@ namespace Deltares
 
             NormalDistribution normal;
 
-            normal.fitPrior(stochast, logValues, fitPrior);
+            normal.fitPrior(stochast, logValues, fitPrior, nan(""));
 
             stochast->Shift = fitShift;
         }

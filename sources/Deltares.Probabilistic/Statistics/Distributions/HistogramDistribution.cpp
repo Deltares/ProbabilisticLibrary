@@ -358,7 +358,7 @@ namespace Deltares
             return x;
         }
 
-        void HistogramDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, double shift)
+        void HistogramDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)
         {
             auto weights = std::vector(values.size(), 1.0);
             return fitWeighted(stochast, values, weights);

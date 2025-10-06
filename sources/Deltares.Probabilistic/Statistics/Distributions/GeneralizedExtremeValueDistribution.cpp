@@ -144,7 +144,7 @@ namespace Deltares
             this->assign(gevStochast, stochast);
         }
 
-        void GeneralizedExtremeValueDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, double shift)
+        void GeneralizedExtremeValueDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)
         {
             double bestGoodness = std::numeric_limits<double>::max();
             std::shared_ptr<StochastProperties> bestStochast = nullptr;

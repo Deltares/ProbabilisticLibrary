@@ -530,12 +530,12 @@ namespace Deltares
             return distribution->canFitPrior();
         }
 
-        void Stochast::fit(std::vector<double> values, double shift) const
+        void Stochast::fit(std::vector<double> values, const double shift) const
         {
             distribution->fit(properties, values, shift);
         }
 
-        void Stochast::fitPrior(std::vector<double> values, std::shared_ptr<Stochast> prior, double shift) const
+        void Stochast::fitPrior(std::vector<double> values, std::shared_ptr<Stochast> prior, const double shift) const
         {
             distribution->fitPrior(properties, values, prior->getProperties(), shift);
         }
@@ -583,7 +583,7 @@ namespace Deltares
                 }
             }
 
-            distribution->fit(properties, values);
+            distribution->fit(properties, values, nan(""));
         }
 
         double Stochast::getKSTest(std::vector<double> values) const

@@ -127,7 +127,7 @@ namespace Deltares
             this->innerDistribution->setMeanAndDeviation(stochast, mean, deviation);
         }
 
-        void TruncatedDistribution::setShift(std::shared_ptr<StochastProperties> stochast, double shift, bool inverted)
+        void TruncatedDistribution::setShift(std::shared_ptr<StochastProperties> stochast, const double shift, bool inverted)
         {
             this->innerDistribution->setShift(stochast, shift, inverted);
         }
@@ -218,14 +218,14 @@ namespace Deltares
             this->innerDistribution->setXAtU(stochast, x, getUntruncatedU(u, stochast), constantType);
         }
 
-        void TruncatedDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, double shift)
+        void TruncatedDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)
         {
             // perform the fit without truncation
             this->innerDistribution->fit(stochast, values, shift);
             this->fitMinMax(stochast, values);
         }
 
-        void TruncatedDistribution::fitPrior(const std::shared_ptr<StochastProperties>& stochast, std::vector<double>& values, const std::shared_ptr<StochastProperties>& prior, double shift)
+        void TruncatedDistribution::fitPrior(const std::shared_ptr<StochastProperties>& stochast, std::vector<double>& values, const std::shared_ptr<StochastProperties>& prior, const double shift)
         {
             // perform the fit without truncation
             this->innerDistribution->fitPrior(stochast, values, prior, shift);

@@ -40,7 +40,7 @@ namespace Deltares
             void setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType) override;
             bool canFit() override { return true; }
             bool canInvert() override { return true; }
-            void fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift = nan("")) override;
+            void fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift) override;
             bool isValid(std::shared_ptr<StochastProperties> stochast) override;
             std::vector<double> getSpecialPoints(std::shared_ptr<StochastProperties> stochast) override;
             std::vector<DistributionPropertyType> getParameters() override { return { Scale, Shape }; }

@@ -157,7 +157,7 @@ namespace Deltares
             setXAtUByIteration(stochast, x, u, constantType);
         }
 
-        void ConditionalWeibullDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, double shift)
+        void ConditionalWeibullDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)
         {
             double minValue = Numeric::NumericSupport::getMinimum(values);
             double meanValue = Numeric::NumericSupport::getMean(values);

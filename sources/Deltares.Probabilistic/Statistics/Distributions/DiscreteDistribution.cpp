@@ -284,7 +284,7 @@ namespace Deltares
             return p;
         }
 
-        void DiscreteDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, double shift)
+        void DiscreteDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)
         {
             std::vector<double> weights = Numeric::NumericSupport::select(values, [](double x) {return 1.0; });
             return fitWeighted(stochast, values, weights);

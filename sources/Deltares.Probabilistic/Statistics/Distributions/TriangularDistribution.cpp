@@ -242,7 +242,7 @@ namespace Deltares
             }
         }
 
-        void TriangularDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, double shift)
+        void TriangularDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)
         {
             double min = *std::min_element(values.begin(), values.end());
             double max = *std::max_element(values.begin(), values.end());

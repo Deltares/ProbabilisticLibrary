@@ -113,7 +113,7 @@ namespace Deltares
             return log(normalFactor) + distance;
         }
 
-        void NormalDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, double shift)
+        void NormalDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)
         {
             stochast->Location = Numeric::NumericSupport::getMean(values);
             stochast->Scale = Numeric::NumericSupport::getStandardDeviation(stochast->Location, values);
@@ -133,9 +133,9 @@ namespace Deltares
             stochast->Observations = static_cast<int>(values.size());
         }
 
-        void NormalDistribution::fitPrior(const std::shared_ptr<StochastProperties>& stochast, std::vector<double>& values, const std::shared_ptr<StochastProperties>& prior, double shift)
+        void NormalDistribution::fitPrior(const std::shared_ptr<StochastProperties>& stochast, std::vector<double>& values, const std::shared_ptr<StochastProperties>& prior, const double shift)
         {
-            fit(stochast, values);
+            fit(stochast, values, shift);
 
             int n = static_cast<int>(values.size());
 

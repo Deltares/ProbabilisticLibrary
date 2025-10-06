@@ -126,7 +126,7 @@ namespace Deltares
             this->setXAtUByIteration(stochast, x, u, constantType);
         }
 
-        void RayleighDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, double shift)
+        void RayleighDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)
         {
             stochast->Shift = isnan(shift) ? getFittedMinimum(values) : shift;
 

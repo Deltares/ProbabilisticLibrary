@@ -159,14 +159,14 @@ namespace Deltares
             setXAtUByIteration(stochast, x, u, constantType);
         }
 
-        void FrechetDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, double shift)
+        void FrechetDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)
         {
             int maxLoops = 100;
             double minValue = 0.001;
 
-            shift = isnan(shift) ? getFittedMinimum(values) : shift;
+            double newShift = isnan(shift) ? getFittedMinimum(values) : shift;
 
-            std::vector<double> values0 = Numeric::NumericSupport::select(values, [shift](double p) { return p - shift; });
+            std::vector<double> values0 = Numeric::NumericSupport::select(values, [newShift](double p) { return p - newShift; });
 
             std::unique_ptr<Numeric::BisectionRootFinder> bisection = std::make_unique<Numeric::BisectionRootFinder>();
 
@@ -210,9 +210,9 @@ namespace Deltares
 
             std::shared_ptr<DistributionFitter> fitter = std::make_shared<DistributionFitter>();
 
-            std::vector<double> minValues = { minValue, minValue, 3 * shift - 2 * mean };
-            std::vector<double> maxValues = { 2 * alpha - minValue, 2 * beta - minValue, shift };
-            std::vector<double> initValues = { alpha, beta, shift };
+            std::vector<double> minValues = { minValue, minValue, 3 * newShift - 2 * mean };
+            std::vector<double> maxValues = { 2 * alpha - minValue, 2 * beta - minValue, newShift };
+            std::vector<double> initValues = { alpha, beta, newShift };
             std::vector<DistributionPropertyType> properties = { DistributionPropertyType::Shape, DistributionPropertyType::Scale, DistributionPropertyType::Shift };
             std::vector<double> parameters = fitter->fitByLogLikelihood(values, this, stochast, minValues, maxValues, initValues, properties);
 

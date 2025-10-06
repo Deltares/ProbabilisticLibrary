@@ -138,7 +138,7 @@ namespace Deltares
             }
         }
 
-        void GumbelDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, double shift)
+        void GumbelDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)
         {
             // https://stats.stackexchange.com/questions/71197/usable-estimators-for-parameters-in-gumbel-distribution
             double mean = Numeric::NumericSupport::getMean(values);
