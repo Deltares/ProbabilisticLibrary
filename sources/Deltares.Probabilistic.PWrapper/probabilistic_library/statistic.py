@@ -772,7 +772,7 @@ class Stochast(FrozenObject):
 
 		plt.close()
     
-		fig, ax1 = plt.subplots()
+		ax1 = plt.subplot()
 		color = "tab:blue"
 		if self.name == '':
 			ax1.set_xlabel("value [x]")
@@ -818,7 +818,7 @@ class Stochast(FrozenObject):
     
 		plt.close()
 
-		fig, ax1 = plt.subplots()
+		ax1 = plt.subplot()
 		color = "tab:blue"
 		if self.conditional_source == None:
 			ax1.set_xlabel("source [x]")
