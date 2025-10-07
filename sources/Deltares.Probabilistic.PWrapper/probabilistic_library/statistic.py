@@ -765,8 +765,8 @@ class Stochast(FrozenObject):
 	def get_plot(self, xmin : float = None, xmax : float = None) -> plt:
 
 		if not self.is_valid():
-			print('Variable definition is not valid, plot can not be made.')
-			return
+			self.validate()
+			return None
 
 		if self.conditional:
 			self._get_plot_conditional(xmin, xmax)

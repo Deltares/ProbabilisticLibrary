@@ -103,11 +103,17 @@ class Test_uncertainty(unittest.TestCase):
 
         sens = project.result;
 
+        self.assertTrue(sens.variable.is_valid())
+
         test_file_name = 'mc.png'
         if os.path.exists(test_file_name):
             os.remove(test_file_name)
 
-        sens.get_plot().savefig(test_file_name)
+        plot = sens.get_plot()
+
+        self.assertNotEqual(plot, None)
+
+        plot.savefig(test_file_name)
 
         self.assertTrue(os.path.exists(test_file_name))
         os.remove(test_file_name)

@@ -106,7 +106,7 @@ namespace Deltares
                 initializeForRun(stochast);
             }
 
-            Logging::ValidationSupport::checkNotEmpty(report, stochast->FragilityValues.size(), "histogram values", subject);
+            Logging::ValidationSupport::checkNotEmpty(report, stochast->HistogramValues.size(), "histogram values", subject);
 
             std::shared_ptr<HistogramValue> previousHistogramValue = nullptr;
 
