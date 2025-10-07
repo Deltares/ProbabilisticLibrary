@@ -99,10 +99,10 @@ namespace Deltares
 
             void validate(Logging::ValidationReport& report) const
             {
-                Logging::ValidationSupport::checkMinimum(report, 1, RelaxationLoops, "relaxation loops");
+                Logging::ValidationSupport::checkMinimumInt(report, 1, RelaxationLoops, "relaxation loops");
                 Logging::ValidationSupport::checkMinimum(report, 0.01, RelaxationFactor, "relaxation factor");
                 Logging::ValidationSupport::checkMaximum(report, 1, RelaxationFactor, "relaxation factor");
-                Logging::ValidationSupport::checkMinimum(report, 1, MaximumIterations, "maximum iterations");
+                Logging::ValidationSupport::checkMinimumInt(report, 1, MaximumIterations, "maximum iterations");
                 Logging::ValidationSupport::checkMinimum(report, 0.01, EpsilonBeta, "epsilon beta");
 
                 GradientSettings->validate(report);

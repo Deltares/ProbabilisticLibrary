@@ -56,7 +56,7 @@ namespace Deltares
 
             void validate(Logging::ValidationReport& report) const
             {
-                Logging::ValidationSupport::checkMinimum(report, 1, MaxParallelProcesses, "max parallel processes");
+                Logging::ValidationSupport::checkMinimumInt(report, 1, MaxParallelProcesses, "max parallel processes");
             }
 
             bool IsProxyModel()

@@ -20,7 +20,6 @@
 # All rights reserved.
 #
 from __future__ import annotations
-import sys
 from math import isnan
 from enum import Enum
 
@@ -101,7 +100,7 @@ class ValidationReport(FrozenObject):
 		interface.Destroy(self._id)
 
 	@property   
-	def messages(self) -> list[Message]:
+	def messages(self) -> FrozenList[Message]:
 		if self._messages is None:
 			message_ids = interface.GetArrayIdValue(self._id, 'messages')
 			messages = []
@@ -156,14 +155,14 @@ class Evaluation(FrozenObject):
 		return interface.GetValue(self._id, 'weight')
 
 	@property   
-	def input_values(self) -> list[float]:
+	def input_values(self) -> FrozenList[float]:
 		if self._input_values is None:
 			input_values = interface.GetArrayValue(self._id, 'input_values')
 			self._input_values = FrozenList(input_values)
 		return self._input_values
 		
 	@property   
-	def output_values(self) -> list[float]:
+	def output_values(self) -> FrozenList[float]:
 		if self._output_values is None:
 			output_values = interface.GetArrayValue(self._id, 'output_values')
 			self._output_values = FrozenList(output_values)

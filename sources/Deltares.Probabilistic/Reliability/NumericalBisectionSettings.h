@@ -55,7 +55,7 @@ namespace Deltares
              */
             void validate(Logging::ValidationReport& report) const
             {
-                Logging::ValidationSupport::checkMinimum(report, 1, MaximumIterations, "maximum iterations");
+                Logging::ValidationSupport::checkMinimumInt(report, 1, MaximumIterations, "maximum iterations");
             }
 
             /**

@@ -55,7 +55,7 @@ namespace Deltares
             }
 
             double sum = 0;
-            for (std::shared_ptr<HistogramValue> histogramValue : stochast->HistogramValues)
+            for (const std::shared_ptr<HistogramValue>& histogramValue : stochast->HistogramValues)
             {
                 sum += histogramValue->Amount;
             }

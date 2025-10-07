@@ -32,7 +32,7 @@ namespace Deltares::Reliability
         Logging::ValidationSupport::checkMinimum(report, 0.01, Dsdu, "dsdu");
         Logging::ValidationSupport::checkMinimum(report, 0.00001, EpsilonUStepSize, "epsilon u step size");
         Logging::ValidationSupport::checkMinimum(report, 0.00001, EpsilonZStepSize, "epsilon z step size");
-        Logging::ValidationSupport::checkMinimum(report, 1, MaximumIterations, "maximum iterations");
+        Logging::ValidationSupport::checkMinimumInt(report, 1, MaximumIterations, "maximum iterations");
         Logging::ValidationSupport::checkMinimum(report, 1, MaximumLengthU, "maximum length u");
     }
 

@@ -44,7 +44,7 @@ namespace Deltares::Logging
         else if (type == "info") return Info;
         else if (type == "warning") return Warning;
         else if (type == "error") return Error;
-        else throw Reliability::probLibException("message type");
+        else throw Reliability::probLibException("message type " + type + " not a known message type");
     }
 }
 

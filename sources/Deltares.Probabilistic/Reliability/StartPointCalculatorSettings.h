@@ -78,7 +78,7 @@ namespace Deltares
                 else if (StartMethod == StartMethodType::SphereSearch)
                 {
                     Logging::ValidationSupport::checkMinimum(report, 0.01, RadiusSphereSearch, "radius sphere search");
-                    Logging::ValidationSupport::checkMinimum(report, 1, maxStepsSphereSearch, "max steps sphere search");
+                    Logging::ValidationSupport::checkMinimumInt(report, 1, maxStepsSphereSearch, "max steps sphere search");
                 }
             }
 

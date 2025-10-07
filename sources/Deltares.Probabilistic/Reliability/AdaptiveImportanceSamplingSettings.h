@@ -119,8 +119,8 @@ namespace Deltares
              */
             void validate(Logging::ValidationReport& report) const
             {
-                Logging::ValidationSupport::checkMinimum(report, 1, MinVarianceLoops, "minimum variance loops");
-                Logging::ValidationSupport::checkMinimum(report, MinVarianceLoops, MaxVarianceLoops, "maximum variance loops");
+                Logging::ValidationSupport::checkMinimumInt(report, 1, MinVarianceLoops, "minimum variance loops");
+                Logging::ValidationSupport::checkMinimumInt(report, MinVarianceLoops, MaxVarianceLoops, "maximum variance loops");
                 Logging::ValidationSupport::checkMinimum(report, 0, StartValueStepSize, "start value step size");
                 Logging::ValidationSupport::checkMinimum(report, 0, FractionFailed, "fraction failed");
                 Logging::ValidationSupport::checkMaximum(report, 0.5, FractionFailed, "fraction failed");

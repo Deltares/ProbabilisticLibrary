@@ -82,8 +82,8 @@ namespace Deltares
              */
             void validate(Logging::ValidationReport& report) const
             {
-                Logging::ValidationSupport::checkMinimum(report, 1, MinimumDirections, "minimum directions");
-                Logging::ValidationSupport::checkMinimum(report, MinimumDirections, MaximumDirections, "maximum directions");
+                Logging::ValidationSupport::checkMinimumInt(report, 1, MinimumDirections, "minimum directions");
+                Logging::ValidationSupport::checkMinimumInt(report, MinimumDirections, MaximumDirections, "maximum directions");
                 Logging::ValidationSupport::checkMinimum(report, 0, VariationCoefficient, "variation coefficient");
 
                 runSettings->validate(report);

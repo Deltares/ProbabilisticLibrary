@@ -486,22 +486,22 @@ namespace Deltares::Probabilistic::Test
 
     void testDistributions::testValidation()
     {
-        std::shared_ptr<Stochast> stochast = std::make_shared<Stochast>();
-        stochast->setDistributionType(DistributionType::Normal);
-        stochast->setMean(3);
-        stochast->setDeviation(1);
+        auto stochast = Stochast();
+        stochast.setDistributionType(DistributionType::Normal);
+        stochast.setMean(3);
+        stochast.setDeviation(1);
 
-        EXPECT_EQ(true, stochast->isValid());
+        EXPECT_TRUE(stochast.isValid());
 
-        Logging::ValidationReport report = stochast->getValidationReport();
+        Logging::ValidationReport report = stochast.getValidationReport();
 
         EXPECT_EQ(0, report.messages.size());
 
-        stochast->setDeviation(-1);
+        stochast.setDeviation(-1);
 
-        EXPECT_EQ(false, stochast->isValid());
+        EXPECT_FALSE(stochast.isValid());
 
-        Logging::ValidationReport report2 = stochast->getValidationReport();
+        Logging::ValidationReport report2 = stochast.getValidationReport();
 
         EXPECT_EQ(1, report2.messages.size());
         EXPECT_EQ("scale value -1 is less than 0.", report2.messages[0]->Text);

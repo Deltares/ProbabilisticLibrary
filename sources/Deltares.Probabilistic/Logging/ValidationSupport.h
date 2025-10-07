@@ -37,9 +37,13 @@ namespace Deltares::Logging
             std::string& property, std::string subject = "", MessageType messageType = MessageType::Error);
         static void checkMinimum(Logging::ValidationReport& report, double minimum, double value, const
             std::string& property, std::string subject = "", MessageType messageType = MessageType::Error);
+        static void checkMinimumInt(Logging::ValidationReport& report, int minimum, int value, const
+            std::string& property, std::string subject = "", MessageType messageType = MessageType::Error);
         static void checkMinimumNonInclusive(Logging::ValidationReport& report, double minimum, double value, const
             std::string& property, std::string subject = "", MessageType messageType = MessageType::Error);
         static void checkMaximum(Logging::ValidationReport& report, double maximum, double value, const
+            std::string& property, std::string subject = "", MessageType messageType = MessageType::Error);
+        static void checkMaximumInt(Logging::ValidationReport& report, int maximum, int value, const
             std::string& property, std::string subject = "", MessageType messageType = MessageType::Error);
         static void checkMaximumNonInclusive(Logging::ValidationReport& report, double maximum, double value, const
             std::string& property, std::string subject = "", MessageType messageType = MessageType::Error);

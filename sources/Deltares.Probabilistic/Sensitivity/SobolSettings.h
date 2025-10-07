@@ -48,7 +48,7 @@ namespace Deltares::Sensitivity
          */
         void validate(Logging::ValidationReport& report) const
         {
-            Logging::ValidationSupport::checkMinimum(report, 1, Iterations, "iterations");
+            Logging::ValidationSupport::checkMinimumInt(report, 1, Iterations, "iterations");
 
             RunSettings->validate(report);
         }

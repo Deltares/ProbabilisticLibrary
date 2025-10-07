@@ -20,15 +20,10 @@
 // All rights reserved.
 //
 #include "ValidationSupport.h"
+#include "../Utils/probLibString.h"
 
 #include <utility>
 #include <cmath>
-
-#if __has_include(<format>)
-#include <format>
-#else
-#include "../Utils/probLibString.h"
-#endif
 
 namespace Deltares::Logging
 {
@@ -88,6 +83,20 @@ namespace Deltares::Logging
         }
     }
 
+    void ValidationSupport::checkMinimumInt(Logging::ValidationReport& report, int minimum, int value, const
+        std::string& property, std::string subject, MessageType messageType)
+    {
+        if (value < minimum)
+        {
+            std::shared_ptr<Message> message = std::make_shared<Message>();
+            message->Text = property + " value " + std::to_string(value) + " is less than " + std::to_string(minimum) + ".";
+            message->Type = messageType;
+            message->Subject = std::move(subject);
+
+            report.messages.push_back(message);
+        }
+    }
+
     void ValidationSupport::checkMinimumNonInclusive(Logging::ValidationReport& report, double minimum, double value, const
         std::string& property, std::string subject, MessageType messageType)
     {
@@ -109,6 +118,20 @@ namespace Deltares::Logging
         {
             std::shared_ptr<Message> message = std::make_shared<Message>();
             message->Text = property + " value " + toString(value) + " is greater than " + toString(maximum) + ".";
+            message->Type = messageType;
+            message->Subject = std::move(subject);
+
+            report.messages.push_back(message);
+        }
+    }
+
+    void ValidationSupport::checkMaximumInt(Logging::ValidationReport& report, int maximum, int value, const
+        std::string& property, std::string subject, MessageType messageType)
+    {
+        if (value > maximum)
+        {
+            std::shared_ptr<Message> message = std::make_shared<Message>();
+            message->Text = property + " value " + std::to_string(value) + " is greater than " + std::to_string(maximum) + ".";
             message->Type = messageType;
             message->Subject = std::move(subject);
 
@@ -156,11 +179,7 @@ namespace Deltares::Logging
 
     std::string ValidationSupport::toString(double value)
     {
-#if __has_include(<format>)
-        return std::format("{:}", value);
-#else
-        return Deltares::Reliability::probLibString::double2strTrimmed(value);
-#endif
+        return Deltares::Reliability::probLibString::double2strForText(value);
     }
 }
 

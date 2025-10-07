@@ -81,15 +81,15 @@ namespace Deltares::Probabilistic::Test
 
     void TestRunModel::testNoModel() const
     {
-        std::shared_ptr<Models::RunProject> project = std::make_shared<Models::RunProject>();
+        auto project = Models::RunProject();
 
-        project->settings->runValuesType = Statistics::DesignValues;
+        project.settings->runValuesType = Statistics::DesignValues;
 
-        ASSERT_EQ(false, project->isValid());
+        ASSERT_FALSE(project.isValid());
 
-        project->run();
+        project.run();
 
-        ASSERT_EQ(nullptr, project->evaluation);
+        ASSERT_EQ(nullptr, project.evaluation);
     }
 
 }

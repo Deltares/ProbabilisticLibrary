@@ -68,7 +68,7 @@ namespace Deltares
                 {
                     const std::shared_ptr<StochastSettings> stochastSettings = this->StochastSet->VaryingStochastSettings[i];
 
-                    Logging::ValidationSupport::checkMinimum(report, 1, stochastSettings->Intervals, "intervals");
+                    Logging::ValidationSupport::checkMinimumInt(report, 1, stochastSettings->Intervals, "intervals");
                     Logging::ValidationSupport::checkMinimum(report, -Statistics::StandardNormal::UMax, stochastSettings->MinValue, "min value");
                     Logging::ValidationSupport::checkMinimum(report, stochastSettings->MinValue, stochastSettings->MaxValue, "max value");
                     Logging::ValidationSupport::checkMaximum(report, Statistics::StandardNormal::UMax, stochastSettings->MaxValue, "max value");

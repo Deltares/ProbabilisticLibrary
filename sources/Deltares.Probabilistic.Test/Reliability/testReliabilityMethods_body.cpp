@@ -110,14 +110,16 @@ namespace Deltares
 
                 EXPECT_EQ(true, project.isValid());
 
-                project.settings->RelaxationFactor = 0;
+                project.settings->RelaxationFactor = -1.5;
+                project.settings->RelaxationLoops = 0;
 
                 EXPECT_EQ(false, project.isValid());
 
                 Logging::ValidationReport report2 = project.getValidationReport();
 
-                EXPECT_EQ(1, report2.messages.size());
-                EXPECT_EQ("relaxation factor value 0 is less than 0.01.", report2.messages[0]->Text);
+                EXPECT_EQ(2, report2.messages.size());
+                EXPECT_EQ("relaxation loops value 0 is less than 1.", report2.messages[0]->Text);
+                EXPECT_EQ("relaxation factor value -1.5 is less than 0.01.", report2.messages[1]->Text);
 
                 // change method so that relaxation factor is not used any more
                 project.settings->ReliabilityMethod = ReliabilityMethodType::ReliabilityCrudeMonteCarlo;

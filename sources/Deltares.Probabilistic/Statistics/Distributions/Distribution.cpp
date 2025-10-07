@@ -230,7 +230,7 @@ namespace Deltares
                 }
                 else if (property == Observations)
                 {
-                    Logging::ValidationSupport::checkMinimum(report, 2, stochast->Observations, "observations", subject);
+                    Logging::ValidationSupport::checkMinimumInt(report, 2, stochast->Observations, "observations", subject);
                 }
             }
         }
