@@ -23,7 +23,7 @@ from __future__ import annotations
 from ctypes import ArgumentError
 from enum import Enum
 from math import isnan, nan
-from .utils import *
+from .utils import FrozenObject, FrozenList, PrintUtils, NumericUtils, CallbackList
 from . import interface
 import matplotlib.pyplot as plt
 
@@ -800,7 +800,7 @@ class Stochast(FrozenObject):
 
 		plt.close()
     
-		fig, ax1 = plt.subplots()
+		ax1 = plt.subplot()
 		color = "tab:blue"
 		if self.name == '':
 			ax1.set_xlabel("value [x]")
@@ -846,7 +846,7 @@ class Stochast(FrozenObject):
     
 		plt.close()
 
-		fig, ax1 = plt.subplots()
+		ax1 = plt.subplot()
 		color = "tab:blue"
 		if self.conditional_source == None:
 			ax1.set_xlabel("source [x]")

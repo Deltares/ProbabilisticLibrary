@@ -21,7 +21,10 @@
 #
 import unittest
 
-from probabilistic_library import *
+from probabilistic_library.utils import FrozenList, FrozenObject
+from probabilistic_library.reliability import DesignPoint, DesignPointMethod, ReliabilityMethod
+from probabilistic_library.project import ReliabilityProject, LengthEffectProject
+from probabilistic_library.statistic import Stochast, DistributionType, StandardNormal
 
 import project_builder
 

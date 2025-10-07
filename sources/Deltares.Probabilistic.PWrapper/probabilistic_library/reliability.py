@@ -25,7 +25,7 @@ import matplotlib.pyplot as plt
 import sys
 from enum import Enum
 
-from .utils import *
+from .utils import FrozenObject, FrozenList, PrintUtils, CallbackList
 from .statistic import Stochast, FragilityValue
 from . import interface
 
@@ -862,7 +862,7 @@ class DesignPoint(FrozenObject):
     
 		plt.close()
 
-		fig, ax1 = plt.subplots()
+		ax1 = plt.subplot()
 		color = "tab:blue"
 		ax1.set_xlabel("index [-]")
 		ax1.set_ylabel("reliability index [-]", color=color)
