@@ -168,7 +168,7 @@ namespace Deltares
         {
             // first Rayleigh fit is done
 
-            stochast->Shift = isnan(shift) ? getFittedMinimum(values) : shift;
+            stochast->Shift = std::isnan(shift) ? getFittedMinimum(values) : shift;
             stochast->Shape = 1;
 
             double sum = Numeric::NumericSupport::sum(values, [stochast](double p) {return (p - stochast->Shift) * (p - stochast->Shift); });

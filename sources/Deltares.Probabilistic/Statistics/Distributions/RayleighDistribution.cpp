@@ -128,7 +128,7 @@ namespace Deltares
 
         void RayleighDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)
         {
-            stochast->Shift = isnan(shift) ? getFittedMinimum(values) : shift;
+            stochast->Shift = std::isnan(shift) ? getFittedMinimum(values) : shift;
 
             double sum = Numeric::NumericSupport::sum(values, [stochast](double p) {return (p - stochast->Shift) * (p - stochast->Shift); });
             stochast->Scale = std::sqrt( sum/ (2 * values.size()));

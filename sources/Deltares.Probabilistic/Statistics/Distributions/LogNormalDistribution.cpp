@@ -260,7 +260,7 @@ namespace Deltares
 
         void LogNormalDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)
         {
-            stochast->Shift = isnan(shift) ? getFittedMinimum(values) : shift;
+            stochast->Shift = std::isnan(shift) ? getFittedMinimum(values) : shift;
 
             std::vector<double> logValues = Numeric::NumericSupport::select(values, [stochast](double v) {return log(v - stochast->Shift); });
 
@@ -271,7 +271,7 @@ namespace Deltares
 
         void LogNormalDistribution::fitPrior(const std::shared_ptr<StochastProperties>& stochast, std::vector<double>& values, const std::shared_ptr<StochastProperties>& prior, const double shift)
         {
-            double shiftData = isnan(shift) ? getFittedMinimum(values) : shift;
+            double shiftData = std::isnan(shift) ? getFittedMinimum(values) : shift;
             double shiftPrior = prior->Shift;
 
             double fitShift = shiftPrior;

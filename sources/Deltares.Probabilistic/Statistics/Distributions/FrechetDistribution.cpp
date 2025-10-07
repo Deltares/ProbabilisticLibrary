@@ -164,7 +164,7 @@ namespace Deltares
             int maxLoops = 100;
             double minValue = 0.001;
 
-            double newShift = isnan(shift) ? getFittedMinimum(values) : shift;
+            double newShift = std::isnan(shift) ? getFittedMinimum(values) : shift;
 
             std::vector<double> values0 = Numeric::NumericSupport::select(values, [newShift](double p) { return p - newShift; });
 
