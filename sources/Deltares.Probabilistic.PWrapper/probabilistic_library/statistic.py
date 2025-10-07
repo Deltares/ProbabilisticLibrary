@@ -22,7 +22,7 @@
 from __future__ import annotations
 from ctypes import ArgumentError
 from enum import Enum
-from math import isnan, nan
+from math import isnan
 from .utils import FrozenObject, FrozenList, PrintUtils, NumericUtils, CallbackList
 from . import interface
 import matplotlib.pyplot as plt
@@ -592,7 +592,7 @@ class Stochast(FrozenObject):
 		interface.Execute(self._id, 'initialize_conditional_values');
 		return interface.GetValue(self._id, 'x_from_u_and_source')
 
-	def fit(self, values, shift = nan):
+	def fit(self, values : list[float], shift : float = None):
 		"""Fits the stochast parameters from a list of values.
 
         Parameters
@@ -604,7 +604,7 @@ class Stochast(FrozenObject):
             If set, the shift value is not fitted, but taken from this value
         """
 
-		if not isnan(shift):
+		if shift != None:
 			interface.SetValue(self._id, 'shift_for_fit', shift)
 		interface.SetArrayValue(self._id, 'fit', values)
 		self._histogram_values = None
@@ -614,7 +614,7 @@ class Stochast(FrozenObject):
 	def can_fit_prior(self) -> bool:
 		return interface.GetBoolValue(self._id, 'can_fit_prior')
 
-	def fit_prior(self, prior : str | Stochast, values, shift = nan):
+	def fit_prior(self, prior : str | Stochast, values : list[float], shift : float = None):
 		"""Fits the stochast parameters from a list of values.
 
         Parameters
@@ -637,7 +637,7 @@ class Stochast(FrozenObject):
 			print('Fit from prior with another distribution type is not supported')
 		else:
 			interface.SetIntValue(self._id, 'prior', prior._id)
-			if not isnan(shift):
+			if shift != None:
 				interface.SetValue(self._id, 'shift_for_fit', shift)
 			interface.SetArrayValue(self._id, 'fit_prior', values)
 			self._histogram_values = None
