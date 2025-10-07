@@ -862,7 +862,7 @@ class DesignPoint(FrozenObject):
     
 		plt.close()
 
-		fig, ax1 = plt.subplots()
+		ax1 = plt.subplot()
 		color = "tab:blue"
 		ax1.set_xlabel("index [-]")
 		ax1.set_ylabel("reliability index [-]", color=color)
