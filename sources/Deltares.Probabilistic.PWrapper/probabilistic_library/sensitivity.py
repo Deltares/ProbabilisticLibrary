@@ -283,7 +283,7 @@ class SensitivityResult(FrozenObject):
 
 	def get_plot(self) -> plt:
 
-		plt.subplots()
+		plt.subplot()
 
 		low_values = [value.low for value in self.values if not isnan(value.low)]
 		medium_values = [value.medium for value in self.values if not isnan(value.medium)]
