@@ -223,7 +223,7 @@ class Test_statistics(unittest.TestCase):
 
         plt.close()
     
-        _, ax1 = plt.subplots()
+        ax1 = plt.subplot()
         ax1.set_xlabel("value [x]")
         ax1.set_ylabel("pdf [-]")
 
