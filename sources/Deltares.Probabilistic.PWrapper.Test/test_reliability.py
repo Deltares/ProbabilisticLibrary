@@ -22,6 +22,7 @@
 import unittest
 import sys
 import os
+import platform
 
 from io import StringIO
 
@@ -62,7 +63,10 @@ class Test_reliability(unittest.TestCase):
         printed = sys.stdout.getvalue()
         sys.stdout = sys.__stdout__
 
-        self.assertEqual("""Error: a => scale value -1 is less than 0.\n""", printed)
+        if platform.system() == 'Windows':
+            self.assertEqual("""Error: abc => scale value -1.5 is less than 0.\n""", printed)
+        else:
+            self.assertEqual("""Error: abc => scale value -1.500000 is less than 0.000000.\n""", printed)
 
     def test_form_linear(self):
         project = project_builder.get_linear_project()

@@ -26,6 +26,8 @@
 
 #if __has_include(<format>)
 #include <format>
+#else
+#include "../Utils/probLibString.h"
 #endif
 
 namespace Deltares::Logging
@@ -157,7 +159,7 @@ namespace Deltares::Logging
 #if __has_include(<format>)
         return std::format("{:}", value);
 #else
-        return std::to_string(value);
+        return Deltares::Reliability::probLibString::double2strTrimmed(value);
 #endif
     }
 }

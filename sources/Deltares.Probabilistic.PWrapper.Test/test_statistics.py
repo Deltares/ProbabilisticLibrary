@@ -23,6 +23,8 @@ import unittest
 import sys
 import os
 import numpy as np
+import platform
+
 from io import StringIO
 import matplotlib.pyplot as plt
 
@@ -163,7 +165,11 @@ class Test_statistics(unittest.TestCase):
         self.assertFalse(stochast.is_valid())
         stochast.validate()
         printed = sys.stdout.getvalue()
-        self.assertEqual("""Error: abc => scale value -1.5 is less than 0.\n""", printed)
+
+        if platform.system() == 'Windows':
+            self.assertEqual("""Error: abc => scale value -1.5 is less than 0.\n""", printed)
+        else:
+            self.assertEqual("""Error: abc => scale value -1.500000 is less than 0.000000.\n""", printed)
 
         sys.stdout = sys.__stdout__
 
