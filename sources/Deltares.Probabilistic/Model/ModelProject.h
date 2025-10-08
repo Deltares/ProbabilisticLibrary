@@ -76,14 +76,26 @@ namespace Deltares
             int modelRuns = 0;
 
             /**
-             * \brief Indicates whether a run can be performed
-             */
-            virtual bool isValid();
-
-            /**
              * \brief Runs the project
              */
             virtual void run() = 0;
+
+            /**
+             * \brief Reports whether these settings have valid values
+             * \param report Report in which the validity is reported
+             */
+            virtual void validate(Logging::ValidationReport& report);
+
+            /**
+             * \brief Validates the project and puts the result in a validation report
+             * \returns Validation report
+             */
+            Logging::ValidationReport getValidationReport();
+
+            /**
+             * \brief Indicates whether a run can be performed
+             */
+            bool isValid();
 
         private:
             std::unordered_map<std::string, std::shared_ptr<Statistics::Stochast>> existingStochasts;

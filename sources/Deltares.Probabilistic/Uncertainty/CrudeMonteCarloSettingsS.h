@@ -96,12 +96,14 @@ namespace Deltares::Uncertainty
         std::shared_ptr<Reliability::StochastSettingsSet> StochastSet = std::make_shared<Reliability::StochastSettingsSet>();
 
         /**
-         * \brief Indicates whether the settings have valid values
-         * \return Indication
+         * \brief Reports whether the settings have valid values
+         * \param report Report in which the validity is reported
          */
-        bool isValid()
+        void validate(Logging::ValidationReport& report) const
         {
-            return MaximumSamples >= 1 && RunSettings->isValid();
+            Logging::ValidationSupport::checkMinimumInt(report, 1, MaximumSamples, "maximum samples");
+
+            RunSettings->validate(report);
         }
     };
 }

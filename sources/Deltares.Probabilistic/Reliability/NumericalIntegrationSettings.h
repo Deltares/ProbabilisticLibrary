@@ -48,14 +48,13 @@ namespace Deltares
             std::shared_ptr<Models::RunSettings> runSettings = std::make_shared<Models::RunSettings>();
 
             /**
-             * \brief Indicates whether these settings have valid values
-             * \return Indication
+             * \brief Reports whether the settings have valid values
+             * \param report Report in which the validity is reported
              */
-            bool isValid() const
+            void validate(Logging::ValidationReport& report) const
             {
-                return
-                    this->isStochastSetValid() &&
-                    runSettings->isValid();
+                validateStochastSet(report);
+                runSettings->validate(report);
             }
 
         private:
@@ -63,24 +62,17 @@ namespace Deltares
              * \brief Indicates whether all stochast settings have valid values
              * \return True if all valid, false otherwise
              */
-            bool isStochastSetValid() const
+            void validateStochastSet(Logging::ValidationReport& report) const
             {
                 for (size_t i = 0; i < this->StochastSet->getVaryingStochastCount(); i++)
                 {
                     const std::shared_ptr<StochastSettings> stochastSettings = this->StochastSet->VaryingStochastSettings[i];
-                    const bool valid =
-                        stochastSettings->MinValue < stochastSettings->MaxValue &&
-                        stochastSettings->Intervals >= 1 &&
-                        stochastSettings->MinValue >= -Statistics::StandardNormal::UMax && stochastSettings->MinValue <= Statistics::StandardNormal::UMax &&
-                        stochastSettings->MaxValue >= -Statistics::StandardNormal::UMax && stochastSettings->MaxValue <= Statistics::StandardNormal::UMax;
 
-                    if (!valid)
-                    {
-                        return false;
-                    }
+                    Logging::ValidationSupport::checkMinimumInt(report, 1, stochastSettings->Intervals, "intervals");
+                    Logging::ValidationSupport::checkMinimum(report, -Statistics::StandardNormal::UMax, stochastSettings->MinValue, "min value");
+                    Logging::ValidationSupport::checkMinimum(report, stochastSettings->MinValue, stochastSettings->MaxValue, "max value");
+                    Logging::ValidationSupport::checkMaximum(report, Statistics::StandardNormal::UMax, stochastSettings->MaxValue, "max value");
                 }
-
-                return true;
             }
         };
     }

@@ -44,12 +44,20 @@ namespace Deltares::Reliability
         std::vector<std::shared_ptr<Deltares::Statistics::Scenario>> scenarios;
 
         /**
-         * \brief Gets an array of validation messages
+         * \brief Reports whether these settings have valid values
+         * \param report Report in which the validity is reported
          */
-        std::vector<std::shared_ptr<Models::Message>> validate() const;
+        void validate(Logging::ValidationReport& report) const;
+
+        /**
+         * \brief Validates the project and puts the result in a validation report
+         * \returns Validation report
+         */
+        Logging::ValidationReport getValidationReport() const;
 
         /**
          * \brief Indicates whether the settings are valid
+         * \returns Indication
          */
         bool is_valid() const;
 

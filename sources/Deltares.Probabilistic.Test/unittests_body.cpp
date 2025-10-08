@@ -140,6 +140,11 @@ TEST(reliability_method_test, testFORMVaryingArray)
     tstRelMethods.testFORMVaryingArray();
 }
 
+TEST(reliability_method_test, testValidation)
+{
+    testReliabilityMethods::testValidation();
+}
+
 TEST(reliability_method_test, testLatinHyperCube)
 {
     auto tstRelMethods = testReliabilityMethods();

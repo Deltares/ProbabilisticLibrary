@@ -35,6 +35,33 @@ margin = 0.02
 
 class Test_uncertainty(unittest.TestCase):
 
+    def test_invalid_project(self):
+        project = project_builder.get_uncertainty_linear_project()
+
+        project.settings.uncertainty_method = UncertaintyMethod.crude_monte_carlo
+        self.assertTrue(project.is_valid())
+
+        # change an unused property to an invalid value
+        project.variables['a'].scale = -1
+        self.assertTrue(project.is_valid())
+
+        # now use the property, reassign the invalid property, because by changing the scale is reset
+        project.variables['a'].distribution = DistributionType.normal
+        project.variables['a'].scale = -1
+        self.assertFalse(project.is_valid())
+
+        # Replace default stdout (terminal) temporary with with our stream
+        sys.stdout = StringIO()
+
+        # run an invalid project
+        project.run();
+        self.assertIsNone(project.result)
+
+        printed = sys.stdout.getvalue()
+        sys.stdout = sys.__stdout__
+
+        self.assertEqual("""Error: a => scale value -1 is less than 0.\n""", printed)
+
     def test_crude_monte_carlo_add_one(self):
         project = project_builder.get_uncertainty_add_one_project()
 
@@ -76,11 +103,17 @@ class Test_uncertainty(unittest.TestCase):
 
         sens = project.result;
 
+        self.assertTrue(sens.variable.is_valid())
+
         test_file_name = 'mc.png'
         if os.path.exists(test_file_name):
             os.remove(test_file_name)
 
-        sens.get_plot().savefig(test_file_name)
+        plot = sens.get_plot()
+
+        self.assertIsNotNone(plot)
+
+        plot.savefig(test_file_name)
 
         self.assertTrue(os.path.exists(test_file_name))
         os.remove(test_file_name)

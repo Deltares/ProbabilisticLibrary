@@ -48,6 +48,7 @@ namespace Deltares
             {
                 this->zLambda = zLambda;
                 this->zMultipleLambda = zMultipleLambda;
+                callbackAssigned = this->zLambda != nullptr;
             }
 
             ZModel(ZValuesCallBack zValuesLambda, ZValuesMultipleCallBack zValuesMultipleLambda = nullptr)
@@ -57,6 +58,8 @@ namespace Deltares
                 {
                     this->zMultipleLambda = this->getLambdaFromZValuesMultipleCallBack(zValuesMultipleLambda);
                 }
+
+                callbackAssigned = this->zLambda != nullptr;
             }
 
             void setMultipleCallback(ZValuesMultipleCallBack multipleCallBack)
@@ -149,6 +152,18 @@ namespace Deltares
                 this->repository.clear();
             }
 
+            /**
+             * \brief Reports whether these settings have valid values
+             * \param report Report in which the validity is reported
+             * \param subject String describing the validated object
+             */
+            void validate(Logging::ValidationReport& report, const std::string& subject) const;
+
+            /**
+             * \brief Indicates whether the model has been assigned with a valid callback
+             */
+            bool callbackAssigned = true;
+
         private:
             ZLambda zLambda = nullptr;
             ZMultipleLambda zMultipleLambda = nullptr;
@@ -170,11 +185,6 @@ namespace Deltares
              * \brief Calculates a number of samples
              */
             void invokeMultipleLambda(std::vector<std::shared_ptr<ModelSample>>& samples);
-
-            /**
-             * \brief The minimum calculation time in ms for storing it in the repository
-             */
-            long long minRepoCalculationTime = 1;
 
             /**
              * \brief Indicates whether calculation time should be measured

@@ -27,10 +27,10 @@ from types import FunctionType
 from enum import Enum
 
 from .statistic import Stochast, DistributionType, CorrelationMatrix, SelfCorrelationMatrix, Scenario
-from .reliability import (DesignPoint, ReliabilityMethod, Settings, CombineSettings, ExcludingCombineSettings,
-                          LimitStateFunction, Evaluation, Message)
+from .reliability import DesignPoint, ReliabilityMethod, Settings, CombineSettings, ExcludingCombineSettings, LimitStateFunction
 from .sensitivity import SensitivityResult, SensitivityValue, SensitivitySettings, SensitivityMethod
 from .uncertainty import UncertaintyResult, UncertaintySettings, UncertaintyMethod
+from .logging import Evaluation, Message, ValidationReport
 from .utils import FrozenObject, FrozenList, CallbackList
 from . import interface
 
@@ -49,11 +49,8 @@ class ZModelContainer:
 	def get_model(self):
 		return None
 
-	def is_valid(self) -> bool:
+	def is_model_valid(self) -> bool:
 		return True
-
-	def validate(self) -> FrozenList[Message]:
-		return FrozenList() 
 
 	def is_dirty(self):
 		return False
@@ -165,19 +162,11 @@ class ZModel(FrozenObject):
 
 		return FrozenList(parameters)
 
-	def validate(self) -> FrozenList[Message]:
-		if self._is_function:
-			return FrozenList()
-		elif not self._model is None:
-			return self._model.validate()
-		else:
-			return FrozenList([Message.from_message(MessageType.error, 'No model provided')])
-
-	def is_valid(self) -> bool:
+	def is_model_valid(self) -> bool:
 		if self._is_function:
 			return True
 		elif not self._model is None:
-			return self._model.is_valid()
+			return self._model.is_model_valid()
 		else:
 			return False
 
@@ -324,10 +313,7 @@ class ModelParameter(FrozenObject):
 		super()._freeze()
 
 	def __del__(self):
-		try:
-			interface.Destroy(self._id)
-		except:
-			pass
+		interface.Destroy(self._id)
 
 	def __dir__(self):
 		return ['name',
@@ -402,6 +388,7 @@ class ModelProject(FrozenObject):
 
 		interface.SetCallBack(project_id, 'model', self._callback)
 		interface.SetMultipleCallBack(project_id, 'model', self._multiple_callback)
+		interface.SetBoolValue(project_id, 'callback_assigned', False)
 
 	def _set_settings(self, settings):
 		self._settings = settings
@@ -418,18 +405,20 @@ class ModelProject(FrozenObject):
 			samples.append(Sample(values[i][:input_size], output_values[i]))
 		ModelProject._zmodel.run_multiple(samples)
 
-	def validate(self) -> FrozenList[Message]:
-		if not self._model is None:
-			return self._model.validate()
-		else:
-			return FrozenList([Message.from_message(MessageType.error, 'No model provided')])
-
 	def is_valid(self) -> bool:
 		self._update()
-		if not self._model is None:
-			return self._model.is_valid() and interface.GetBoolValue(self._id, 'is_valid')
-		else:
-			return False
+		return interface.GetBoolValue(self._id, 'is_valid')
+
+	def validate(self):
+		self._update()
+		id_ = interface.GetIdValue(self._id, 'validate')
+		if id_ > 0:
+			validation_report = ValidationReport(id_)
+			if len(validation_report.messages) == 0:
+				print('ok')
+			else:
+				for message in validation_report.messages:
+					message.print()
 
 	@property
 	def variables(self) -> list[Stochast]:
@@ -466,6 +455,8 @@ class ModelProject(FrozenObject):
 			self._model = value.get_model()
 		else:
 			raise ValueError('ZModel container expected')
+
+		interface.SetBoolValue(self._project_id, 'callback_assigned', self._model.is_model_valid())
 		
 	def _check_model(self):
 		if not self._model is None:
@@ -520,7 +511,8 @@ class ModelProject(FrozenObject):
 		if (self.is_valid()):
 			interface.Execute(self._project_id, 'run')
 		else:
-			print('run not executed, input is not valid')
+			# print the validation messages
+			self.validate()
 
 class RunValuesType(Enum):
 	median_values = 'median_values'
@@ -536,14 +528,13 @@ class RunProjectSettings(FrozenObject):
 		super()._freeze()
 
 	def __del__(self):
-		try:
-			interface.Destroy(self._id)
-		except:
-			pass
+		interface.Destroy(self._id)
 
 	def __dir__(self):
 		return ['run_values_type',
-		        'reuse_calculations']
+		        'reuse_calculations',
+		        'validate',
+		        'is_valid']
 		
 	@property
 	def run_values_type(self) -> RunValuesType:
@@ -561,6 +552,20 @@ class RunProjectSettings(FrozenObject):
 	def reuse_calculations(self, value : bool):
 		interface.SetBoolValue(self._id, 'reuse_calculations', value)
 
+	def is_valid(self) -> bool:
+		return interface.GetBoolValue(self._id, 'is_valid')
+
+	def validate(self):
+		id_ = interface.GetIdValue(self._id, 'validate')
+		if id_ > 0:
+			validation_report = ValidationReport(id_)
+			if len(validation_report.messages) == 0:
+				print('ok')
+			else:
+				for message in validation_report.messages:
+					message.print()
+
+
 	def _set_variables(self, variables):
 		pass
 
@@ -575,10 +580,7 @@ class RunProject(ModelProject):
 		super()._freeze()
 
 	def __del__(self):
-		try:
-			interface.Destroy(self._id)
-		except:
-			pass
+		interface.Destroy(self._id)
 
 	def __dir__(self):
 		return ['variables',
@@ -622,10 +624,7 @@ class SensitivityProject(ModelProject):
 		super()._freeze()
 
 	def __del__(self):
-		try:
-			interface.Destroy(self._id)
-		except:
-			pass
+		interface.Destroy(self._id)
 
 	def __dir__(self):
 		return ['variables',
@@ -662,9 +661,9 @@ class SensitivityProject(ModelProject):
 	@property
 	def result(self) -> SensitivityResult:
 		if self._result is None:
-			resultId = interface.GetIdValue(self._id, 'result')
-			if resultId > 0:
-				self._result = SensitivityResult(resultId)
+			result_id = interface.GetIdValue(self._id, 'result')
+			if result_id > 0:
+				self._result = SensitivityResult(result_id)
 
 		return self._result
 
@@ -702,10 +701,7 @@ class UncertaintyProject(ModelProject):
 		super()._freeze()
 
 	def __del__(self):
-		try:
-			interface.Destroy(self._id)
-		except:
-			pass
+		interface.Destroy(self._id)
 
 	def __dir__(self):
 		return ['variables',
@@ -815,10 +811,7 @@ class ReliabilityProject(ModelProject):
 		super()._freeze()
         
 	def __del__(self):
-		try:
-			interface.Destroy(self._id)
-		except:
-			pass
+		interface.Destroy(self._id)
 
 	def __dir__(self):
 		return ['variables',
@@ -849,10 +842,7 @@ class ReliabilityProject(ModelProject):
 		self._design_point = None
 		self._fragility_curve = None
 		self._initialized = False
-		if (self.is_valid()):
-			self._run()
-		else:
-			print('run not executed, input is not valid')
+		self._run()
 
 	@property
 	def design_point(self) -> DesignPoint:
@@ -906,10 +896,7 @@ class CombineProject(FrozenObject):
 		super()._freeze()
 
 	def __del__(self):
-		try:
-			interface.Destroy(self._id)
-		except:
-			pass
+		interface.Destroy(self._id)
 
 	def __dir__(self):
 		return ['design_points',
@@ -948,6 +935,17 @@ class CombineProject(FrozenObject):
 		self._update()
 		return interface.GetBoolValue(self._id, 'is_valid')
 
+	def validate(self):
+		self._update()
+		id_ = interface.GetIdValue(self._id, 'validate')
+		if id_ > 0:
+			validation_report = ValidationReport(id_)
+			if len(validation_report.messages) == 0:
+				print('ok')
+			else:
+				for message in validation_report.messages:
+					message.print()
+
 	def run(self):
 		self._design_point = None
 		# update performed by is_valid
@@ -983,10 +981,7 @@ class ExcludingCombineProject(FrozenObject):
 		super()._freeze()
 
 	def __del__(self):
-		try:
-			interface.Destroy(self._id)
-		except:
-			pass
+		interface.Destroy(self._id)
 
 	def __dir__(self):
 		return ['design_points',
@@ -1035,15 +1030,16 @@ class ExcludingCombineProject(FrozenObject):
 		self._update()
 		return interface.GetBoolValue(self._id, 'is_valid')
 
-	def validate(self) -> FrozenList[Message]:
+	def validate(self):
 		self._update()
-		interface.Execute(self._id, 'validate')
-		messages = []
-		message_ids = interface.GetArrayIdValue(self._id, 'validation_messages')
-		for message_id in message_ids:
-			messages.append(Message(message_id))
-		interface.Execute(self._id, 'clear_validate')
-		return FrozenList(messages) 
+		id_ = interface.GetIdValue(self._id, 'validate')
+		if id_ > 0:
+			validation_report = ValidationReport(id_)
+			if len(validation_report.messages) == 0:
+				print('ok')
+			else:
+				for message in validation_report.messages:
+					message.print()
 
 	def run(self):
 		self._update()
@@ -1051,7 +1047,8 @@ class ExcludingCombineProject(FrozenObject):
 		if (self.is_valid()):
 			interface.Execute(self._id, 'run')
 		else:
-			print('run not executed, input is not valid')
+			# print validation messages
+			self.validate()
 
 	@property
 	def design_point(self):
@@ -1073,10 +1070,7 @@ class LengthEffectProject(FrozenObject):
 		super()._freeze()
 
 	def __del__(self):
-		try:
-			interface.Destroy(self._id)
-		except:
-			pass
+		interface.Destroy(self._id)
 
 	def __dir__(self):
 		return ['design_point_cross_section',

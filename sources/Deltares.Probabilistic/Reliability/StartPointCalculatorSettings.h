@@ -22,6 +22,9 @@
 #pragma once
 #include <vector>
 #include "StochastSettingsSet.h"
+#include "../Logging/ValidationReport.h"
+#include "../Logging/ValidationSupport.h"
+
 
 namespace Deltares
 {
@@ -62,12 +65,21 @@ namespace Deltares
                 return copy;
             }
 
-            bool isValid()
+            void validate(Logging::ValidationReport& report) const
             {
-                return StartMethod == StartMethodType::FixedValue ||
-                    (StartMethod == StartMethodType::RaySearch && MaximumLengthStartPoint >= 1) ||
-                    (StartMethod == StartMethodType::SensitivitySearch && MaximumLengthStartPoint >= 1) ||
-                    (StartMethod == StartMethodType::SphereSearch && RadiusSphereSearch >= 0.1 && maxStepsSphereSearch >= 1);
+                if (StartMethod == StartMethodType::RaySearch)
+                {
+                    Logging::ValidationSupport::checkMinimum(report, 0.01, MaximumLengthStartPoint, "maximum length start point");
+                }
+                else if (StartMethod == StartMethodType::SensitivitySearch)
+                {
+                    Logging::ValidationSupport::checkMinimum(report, 0.01, MaximumLengthStartPoint, "maximum length start point");
+                }
+                else if (StartMethod == StartMethodType::SphereSearch)
+                {
+                    Logging::ValidationSupport::checkMinimum(report, 0.01, RadiusSphereSearch, "radius sphere search");
+                    Logging::ValidationSupport::checkMinimumInt(report, 1, maxStepsSphereSearch, "max steps sphere search");
+                }
             }
 
             std::shared_ptr<StochastSettingsSet> StochastSet = std::make_shared<StochastSettingsSet>();

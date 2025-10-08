@@ -103,14 +103,16 @@ namespace Deltares::Uncertainty
         std::shared_ptr<Models::RunSettings> RunSettings = std::make_shared<Models::RunSettings>();
 
         /**
-         * \brief Indicates whether the settings have valid values
-         * \return Indication
+         * \brief Reports whether the settings have valid values
+         * \param report Report in which the validity is reported
          */
-        bool isValid() const
+        void validate(Logging::ValidationReport& report) const
         {
-            return !this->RequestedQuantiles.empty() &&
-                this->RunSettings->isValid();
+            Logging::ValidationSupport::checkNotEmpty(report, this->RequestedQuantiles.size(), "requested quantiles");
+
+            RunSettings->validate(report);
         }
+
     private:
         static double getVariationCoefficient(double q, int nDirections, int nStochasts);
         double getMaxProbability() const;

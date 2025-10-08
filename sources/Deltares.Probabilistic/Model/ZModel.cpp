@@ -25,6 +25,7 @@
 #include <omp.h>
 
 #include "ModelSample.h"
+#include "../Logging/ValidationSupport.h"
 #include "../Utils/probLibException.h"
 
 
@@ -157,6 +158,9 @@ namespace Deltares
             {
                 if (measureCalculationTime && isRepositoryAllowed)
                 {
+                    // minimum calculation time to be registered
+                    constexpr long long minRepoCalculationTime = 1;
+
                     std::chrono::time_point started = std::chrono::high_resolution_clock::now();
                     invokeLambda(sample);
                     std::chrono::time_point done = std::chrono::high_resolution_clock::now();
@@ -241,6 +245,9 @@ namespace Deltares
 
             if (!executeSamples.empty())
             {
+                // minimum calculation time to be registered
+                constexpr long long minRepoCalculationTime = 1;
+
                 if (this->measureCalculationTime && isRepositoryAllowed)
                 {
                     std::chrono::time_point started = std::chrono::high_resolution_clock::now();
@@ -286,6 +293,11 @@ namespace Deltares
         double ZModel::getBeta(std::shared_ptr<ModelSample> sample, double beta)
         {
             return this->zBetaLambda(sample, beta);
+        }
+
+        void ZModel::validate(Logging::ValidationReport& report, const std::string& subject) const
+        {
+            Logging::ValidationSupport::checkNotNull(report, !callbackAssigned, "model", subject);
         }
     }
 }

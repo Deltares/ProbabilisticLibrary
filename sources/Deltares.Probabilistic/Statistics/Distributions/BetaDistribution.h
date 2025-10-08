@@ -42,7 +42,6 @@ namespace Deltares
             bool canFit() override { return true; }
             bool canInvert() override { return true; }
             void fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values) override;
-            bool isValid(std::shared_ptr<StochastProperties> stochast) override;
             std::vector<double> getSpecialPoints(std::shared_ptr<StochastProperties> stochast) override;
             std::vector<DistributionPropertyType> getParameters() override { return { Shape, ShapeB }; }
         };

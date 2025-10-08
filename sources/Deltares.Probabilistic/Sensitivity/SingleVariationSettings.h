@@ -48,12 +48,17 @@ namespace Deltares::Sensitivity
         std::shared_ptr<Models::RunSettings> RunSettings = std::make_shared<Models::RunSettings>();
 
         /**
-         * \brief Indicates whether the settings have valid values
-         * \return Indication
+         * \brief Reports whether the settings have valid values
+         * \param report Report in which the validity is reported
          */
-        bool isValid() const
+        void validate(Logging::ValidationReport& report) const
         {
-            return LowValue > 0 && LowValue < 1 && HighValue > 0 && HighValue < 1;
+            Logging::ValidationSupport::checkMinimumNonInclusive(report, 0, LowValue, "low value");
+            Logging::ValidationSupport::checkMaximumNonInclusive(report, 1, LowValue, "low value");
+            Logging::ValidationSupport::checkMinimumNonInclusive(report, 0, HighValue, "high value");
+            Logging::ValidationSupport::checkMaximumNonInclusive(report, 1, HighValue, "high value");
+
+            RunSettings->validate(report);
         }
     };
 }

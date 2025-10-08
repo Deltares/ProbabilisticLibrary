@@ -24,7 +24,7 @@
 #include <memory>
 
 #include "Stochast.h"
-#include "../Model/Message.h"
+#include "../Logging/Message.h"
 
 namespace Deltares::Statistics
 {
@@ -57,10 +57,10 @@ namespace Deltares::Statistics
         double parameterValue = std::nan("");
 
         /**
-         * \brief Validates this scenario
-         * @return validation messages
+         * \brief Reports whether these settings have valid values
+         * \param report Report in which the validity is reported
          */
-        std::vector<std::shared_ptr<Models::Message>> validate() const;
+        void validate(Logging::ValidationReport& report) const;
 
     };
 }

@@ -22,7 +22,7 @@
 import unittest
 import sys
 
-from probabilistic_library import *
+from probabilistic_library.utils import FrozenList, FrozenObject
 
 class test_object (FrozenObject):
 	def __init__(self, name, value):

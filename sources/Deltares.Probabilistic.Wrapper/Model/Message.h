@@ -23,7 +23,7 @@
 
 #include <memory>
 
-#include "../../Deltares.Probabilistic/Model/Message.h"
+#include "../../Deltares.Probabilistic/Logging/Message.h"
 #include "../Utils/NativeSupport.h"
 
 namespace Deltares
@@ -42,10 +42,10 @@ namespace Deltares
 
             public ref class Message
             {
-                Wrappers::MessageType getMessageType(Deltares::Models::MessageType messageType);
+                Wrappers::MessageType getMessageType(Deltares::Logging::MessageType messageType);
             public:
                 Message() {}
-                Message(std::shared_ptr<Models::Message> message)
+                Message(std::shared_ptr<Logging::Message> message)
                 {
                     this->Type = getMessageType(message->Type);
                     this->Text = Utils::Wrappers::NativeSupport::toManaged(message->Text);

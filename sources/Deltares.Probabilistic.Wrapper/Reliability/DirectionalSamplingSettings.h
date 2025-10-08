@@ -121,11 +121,6 @@ namespace Deltares
                     return nullptr;
                 }
 
-                bool IsValid()
-                {
-                    return shared->object->isValid();
-                }
-
                 std::shared_ptr<Reliability::DirectionalSamplingSettings> GetSettings()
                 {
                     shared->object->randomSettings = RandomSettings->GetSettings();

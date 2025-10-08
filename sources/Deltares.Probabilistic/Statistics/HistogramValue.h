@@ -23,6 +23,8 @@
 
 #include <memory>
 #include "../Utils/DirtySupport.h"
+#include "../Logging/ValidationReport.h"
+#include "../Logging/ValidationSupport.h"
 
 namespace Deltares
 {
@@ -31,7 +33,7 @@ namespace Deltares
         class HistogramValue
         {
         public:
-            HistogramValue() {}
+            HistogramValue() = default;
 
             HistogramValue(double lowerBound, double upperBound)
             {
@@ -92,11 +94,18 @@ namespace Deltares
             }
 
             /**
-             * \brief Indicates whether the properties of the histogram value are valid
+             * \brief Reports whether the properties of the histogram value are valid
+             * \param report Report in which the validity is reported
+             * \param previous Previous histogram value in the stochast
              */
-            bool isValid() const 
+            void validate(Logging::ValidationReport& report, const std::shared_ptr<HistogramValue>& previous, const std::string& subject) const
             {
-                return UpperBound >= LowerBound;
+                Logging::ValidationSupport::checkMinimum(report, 0, Amount, "amount", subject);
+                Logging::ValidationSupport::checkMinimum(report, LowerBound, UpperBound, "upper bound", subject);
+                if (previous != nullptr)
+                {
+                    Logging::ValidationSupport::checkMinimum(report, previous->UpperBound, LowerBound, "lower bound", subject);
+                }
             }
 
             void setDirtyFunction(Utils::SetDirtyLambda setDirtyLambda)

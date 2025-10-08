@@ -22,7 +22,7 @@
 #pragma once
 #include "ProxySettings.h"
 #include "../../Deltares.Probabilistic/Model/RunSettings.h"
-#include "../../Deltares.Probabilistic/Model/Message.h"
+#include "../../Deltares.Probabilistic/Logging/Message.h"
 #include "../Utils/SharedPointerProvider.h"
 #include "Message.h"
 
@@ -93,10 +93,10 @@ namespace Deltares
                     {
                         switch (shared->object->LowestMessageType)
                         {
-                        case Models::Debug: return Wrappers::MessageType::Debug;
-                        case Models::Info: return Wrappers::MessageType::Info;
-                        case Models::Warning: return Wrappers::MessageType::Warning;
-                        case Models::Error: return Wrappers::MessageType::Error;
+                        case Logging::MessageType::Debug: return Wrappers::MessageType::Debug;
+                        case Logging::MessageType::Info: return Wrappers::MessageType::Info;
+                        case Logging::MessageType::Warning: return Wrappers::MessageType::Warning;
+                        case Logging::MessageType::Error: return Wrappers::MessageType::Error;
                         default: throw gcnew System::NotSupportedException("Message type");
                         }
                     }
@@ -104,21 +104,16 @@ namespace Deltares
                     {
                         switch (value)
                         {
-                        case Wrappers::MessageType::Debug: shared->object->LowestMessageType = Models::MessageType::Debug; break;
-                        case Wrappers::MessageType::Info: shared->object->LowestMessageType = Models::MessageType::Info; break;
-                        case Wrappers::MessageType::Warning: shared->object->LowestMessageType = Models::MessageType::Warning; break;
-                        case Wrappers::MessageType::Error: shared->object->LowestMessageType = Models::MessageType::Error; break;
+                        case Wrappers::MessageType::Debug: shared->object->LowestMessageType = Logging::MessageType::Debug; break;
+                        case Wrappers::MessageType::Info: shared->object->LowestMessageType = Logging::MessageType::Info; break;
+                        case Wrappers::MessageType::Warning: shared->object->LowestMessageType = Logging::MessageType::Warning; break;
+                        case Wrappers::MessageType::Error: shared->object->LowestMessageType = Logging::MessageType::Error; break;
                         default: throw gcnew System::NotSupportedException("Message type");
                         }
                     }
                 }
 
                 Wrappers::ProxySettings^ ProxySettings = gcnew Wrappers::ProxySettings();
-
-                bool IsValid()
-                {
-                    return shared->object->isValid();
-                }
 
                 std::shared_ptr<Models::RunSettings> GetSettings()
                 {

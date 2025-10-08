@@ -23,24 +23,26 @@
 #include "../Stochast.h"
 #include "../../Math/NumericSupport.h"
 
+#include <algorithm>
+
 namespace Deltares
 {
     namespace Statistics
     {
-        double InvertedDistribution::getInvertedValue(std::shared_ptr<StochastProperties> stochast, double value)
+        double InvertedDistribution::getInvertedValue(std::shared_ptr<StochastProperties> stochast, double value) const
         {
-            double center = this->innerDistribution->isShiftUsed() ? stochast->Shift : 0;
+            double center = isShiftUsed() ? stochast->Shift : 0;
             return 2 * center - value;
         }
 
-        std::shared_ptr<StochastProperties> InvertedDistribution::getInvertedStochast(std::shared_ptr<StochastProperties> stochast)
+        std::shared_ptr<StochastProperties> InvertedDistribution::getInvertedStochast(std::shared_ptr<StochastProperties> stochast) const
         {
             std::shared_ptr<StochastProperties> invertedStochast = std::make_shared<StochastProperties>();
             this->copyFromInverted(invertedStochast, stochast);
             return invertedStochast;
         }
 
-        void InvertedDistribution::copyFromInverted(std::shared_ptr<StochastProperties> target, std::shared_ptr<StochastProperties> source)
+        void InvertedDistribution::copyFromInverted(std::shared_ptr<StochastProperties> target, std::shared_ptr<StochastProperties> source) const
         {
             target->Location = source->Location;
             target->Scale = source->Scale;
@@ -134,7 +136,7 @@ namespace Deltares
         {
             // fit the shift first
             // do not use inverted value, because it depends on stochast->Shift, which is not known yet (because it has to be fitted)
-            if (this->innerDistribution->isShiftUsed())
+            if (this->isShiftUsed())
             {
                 std::vector<double> zeroInvertedValues = Numeric::NumericSupport::select(values, [](double x) {return -x; });
 
@@ -156,7 +158,7 @@ namespace Deltares
         {
             // fit the shift first
             // do not use inverted value, because it depends on stochast->Shift, which is not known yet (because it has to be fitted)
-            if (this->innerDistribution->isShiftUsed())
+            if (this->isShiftUsed())
             {
                 std::vector<double> zeroInvertedValues = Numeric::NumericSupport::select(values, [](double x) {return -x; });
 
@@ -181,10 +183,18 @@ namespace Deltares
             copyFromInverted(stochast, invertedStochast);
         }
 
-        bool InvertedDistribution::isValid(std::shared_ptr<StochastProperties> stochast)
+        void InvertedDistribution::validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast, std::string& subject)
         {
             const std::shared_ptr<StochastProperties> invertedStochast = getInvertedStochast(stochast);
-            return this->innerDistribution->isValid(invertedStochast);
+            this->innerDistribution->validate(report, invertedStochast, subject);
+        }
+
+        bool InvertedDistribution::isShiftUsed() const
+        {
+            return std::ranges::any_of(this->innerDistribution->getParameters(), [](DistributionPropertyType parameter)
+            {
+                return parameter == Shift;
+            });
         }
 
         double InvertedDistribution::getLogLikelihood(std::shared_ptr<StochastProperties> stochast, double x)

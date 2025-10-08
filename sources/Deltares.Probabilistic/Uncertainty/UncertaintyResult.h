@@ -24,7 +24,7 @@
 
 #include "../Statistics/Stochast.h"
 #include "../Model/Evaluation.h"
-#include "../Model/Message.h"
+#include "../Logging/Message.h"
 
 namespace Deltares::Uncertainty
 {
@@ -60,7 +60,7 @@ namespace Deltares::Uncertainty
         /**
          * \brief List of messages raised during uncertainty analysis
          */
-        std::vector<std::shared_ptr<Models::Message>> messages;
+        std::vector<std::shared_ptr<Logging::Message>> messages;
     };
 }
 

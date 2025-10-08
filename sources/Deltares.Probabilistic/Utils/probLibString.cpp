@@ -93,6 +93,30 @@ namespace Deltares {
             return s;
         }
 
+        std::string probLibString::double2strForText(const double x)
+        {
+            return removeTrailingZeros(double2strTrimmed(x));
+        }
+
+        std::string probLibString::removeTrailingZeros(const std::string& s)
+        {
+            int i = static_cast<int>(s.length()) - 1;
+            int p = static_cast<int>(s.find_last_of('.')); // index of decimal point
+
+            if (p < 0)
+            {
+                return s;
+            }
+            else
+            {
+                while (i >= 0 && i > p && s[i] == '0') --i;
+                if (s[i] == '.') --i; // remove the decimal point too if this is the last character
+                std::string res = s.substr(0, i + 1);
+
+                return res;
+            }
+        }
+
         // trim from end of string (right)
         std::string probLibString::rtrim(const std::string& s, const char* t)
         {

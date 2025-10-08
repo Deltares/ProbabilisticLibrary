@@ -53,15 +53,16 @@ namespace Deltares
             void setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType) override;
             void fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values) override;
             void fitPrior(const std::shared_ptr<StochastProperties>& stochast, const std::shared_ptr<StochastProperties>& prior, std::vector<double>& values) override;
-            bool isValid(std::shared_ptr<StochastProperties> stochast) override;
+            void validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast, std::string& subject) override;
             double getLogLikelihood(std::shared_ptr<StochastProperties> stochast, double x) override;
             std::vector<double> getSpecialPoints(std::shared_ptr<StochastProperties> stochast) override;
             std::vector<DistributionPropertyType> getParameters() override;
         private:
             std::shared_ptr<Distribution> innerDistribution = nullptr;
-            double getInvertedValue(std::shared_ptr<StochastProperties> stochast, double value);
-            std::shared_ptr<StochastProperties> getInvertedStochast(std::shared_ptr<StochastProperties> stochast);
-            void copyFromInverted(std::shared_ptr<StochastProperties> target, std::shared_ptr<StochastProperties> source);
+            double getInvertedValue(std::shared_ptr<StochastProperties> stochast, double value) const;
+            std::shared_ptr<StochastProperties> getInvertedStochast(std::shared_ptr<StochastProperties> stochast) const;
+            void copyFromInverted(std::shared_ptr<StochastProperties> target, std::shared_ptr<StochastProperties> source) const;
+            bool isShiftUsed() const;
         };
     }
 }

@@ -55,7 +55,7 @@ namespace Deltares
             }
 
             double sum = 0;
-            for (std::shared_ptr<HistogramValue> histogramValue : stochast->HistogramValues)
+            for (const std::shared_ptr<HistogramValue>& histogramValue : stochast->HistogramValues)
             {
                 sum += histogramValue->Amount;
             }
@@ -99,36 +99,24 @@ namespace Deltares
             }
         }
 
-        bool HistogramDistribution::isValid(std::shared_ptr<StochastProperties> stochast)
+        void HistogramDistribution::validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast, std::string& subject)
         {
             if (stochast->dirty)
             {
                 initializeForRun(stochast);
             }
 
-            if (stochast->HistogramValues.empty())
-            {
-                return false;
-            }
+            Logging::ValidationSupport::checkNotEmpty(report, stochast->HistogramValues.size(), "histogram values", subject);
+
+            std::shared_ptr<HistogramValue> previousHistogramValue = nullptr;
 
             for (std::shared_ptr<HistogramValue> histogramValue : stochast->HistogramValues)
             {
-                if (!histogramValue->isValid())
-                {
-                    return false;
-                }
+                histogramValue->validate(report, previousHistogramValue, subject);
+                previousHistogramValue = histogramValue;
             }
-
-            for (size_t i = 1; i < stochast->HistogramValues.size(); i++)
-            {
-                if (stochast->HistogramValues[i]->LowerBound < stochast->HistogramValues[i-1]->UpperBound)
-                {
-                    return false;
-                }
-            }
-
-            return true;
         }
+
 
         bool HistogramDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)
         {

@@ -69,14 +69,16 @@ namespace Deltares
             std::shared_ptr<StochastSettingsSet> StochastSet = std::make_shared<StochastSettingsSet>();
 
             /**
-             * \brief Indicates whether the settings have valid values
+             * \brief Reports whether the settings have valid values
+             * \param report Report in which the validity is reported
              * \return Indication
              */
-            bool isValid()
+            void validate(Logging::ValidationReport& report) const
             {
-                return MinimumSamples >= 1 &&
-                    MaximumSamples >= MinimumSamples &&
-                    RunSettings->isValid();
+                Logging::ValidationSupport::checkMinimumInt(report, 1, MinimumSamples, "minimum samples");
+                Logging::ValidationSupport::checkMinimumInt(report, MinimumSamples, MaximumSamples, "maximum samples");
+
+                RunSettings->validate(report);
             }
         };
     }

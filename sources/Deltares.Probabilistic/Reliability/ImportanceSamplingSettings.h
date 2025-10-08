@@ -81,33 +81,32 @@ namespace Deltares
             bool Clustering = false;
             std::vector<std::shared_ptr<Sample>> Clusters;
 
-            bool isValid()
+            void validateStochastSettings(Logging::ValidationReport& report) const
             {
-                return MinimumSamples >= 1 &&
-                    MaximumSamples >= MinimumSamples &&
-                    VarianceFactor >= 0.01 &&
-                    this->isStochastSetValid() &&
-
-                    runSettings->isValid();
-            }
-
-            bool isStochastSetValid()
-            {
-                for (size_t i = 0; i < this->StochastSet->getVaryingStochastCount(); i++)
+                for (int i = 0; i < this->StochastSet->getVaryingStochastCount(); i++)
                 {
                     std::shared_ptr<StochastSettings> stochastSettings = this->StochastSet->VaryingStochastSettings[i];
-                    bool valid =
-                        stochastSettings->VarianceFactor >= 0.1 &&
-                        stochastSettings->StartValue >= -Statistics::StandardNormal::UMax &&
-                        stochastSettings->StartValue <= Statistics::StandardNormal::UMax;
 
-                        if (!valid)
-                        {
-                            return false;
-                        }
+                    Logging::ValidationSupport::checkMinimum(report, 0.01, stochastSettings->VarianceFactor, "variance factor");
+                    Logging::ValidationSupport::checkMinimum(report, -Statistics::StandardNormal::UMax, stochastSettings->StartValue, "start value");
+                    Logging::ValidationSupport::checkMaximum(report, Statistics::StandardNormal::UMax, stochastSettings->StartValue, "start value");
                 }
+            }
 
-                return true;
+            /**
+             * \brief Reports whether the settings have valid values
+             * \param report Report in which the validity is reported
+             * \return Indication
+             */
+            void validate(Logging::ValidationReport& report) const
+            {
+                Logging::ValidationSupport::checkMinimumInt(report, 1, MinimumSamples, "minimum samples");
+                Logging::ValidationSupport::checkMinimumInt(report, MinimumSamples, MaximumSamples, "maximum samples");
+                Logging::ValidationSupport::checkMinimum(report, 0.01, VarianceFactor, "variance factor");
+
+                validateStochastSettings(report);
+
+                runSettings->validate(report);
             }
 
             /**

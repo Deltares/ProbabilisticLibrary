@@ -71,11 +71,6 @@ namespace Deltares
                     void set(double value) { shared->object->EpsilonBeta = value; }
                 }
 
-                bool IsValid()
-                {
-                    return shared->object->isValid();
-                }
-
                 property bool FilterAtNonConvergence
                 {
                     bool get() { return shared->object->FilterAtNonConvergence; }

@@ -29,6 +29,7 @@
 #include "../Math/NumericSupport.h"
 #include "../Model/Sample.h"
 #include "../Model/GradientCalculator.h"
+#include "../Logging/Message.h"
 #include "../Statistics/DistributionType.h"
 #include "../Statistics/Stochast.h"
 #include "../Statistics/FragilityValue.h"
@@ -272,7 +273,7 @@ namespace Deltares::Uncertainty
     {
         if (std::isnan(z))
         {
-            modelRunner->reportMessage(MessageType::Error, "Model result is not valid");
+            modelRunner->reportMessage(Logging::MessageType::Error, "Model result is not valid");
             return false;
         }
 
@@ -283,7 +284,7 @@ namespace Deltares::Uncertainty
     {
         if (z - zPrevious >= 0 != ascending)
         {
-            modelRunner->reportMessage(MessageType::Error, "Model is not monotone");
+            modelRunner->reportMessage(Logging::MessageType::Error, "Model is not monotone");
             return false;
         }
 
@@ -294,7 +295,7 @@ namespace Deltares::Uncertainty
     {
         if (!areResultsValid(gradient))
         {
-            modelRunner->reportMessage(MessageType::Error, "Model did not return valid results");
+            modelRunner->reportMessage(Logging::MessageType::Error, "Model did not return valid results");
             return false;
         }
 
@@ -303,7 +304,7 @@ namespace Deltares::Uncertainty
         double gradientLength = Numeric::NumericSupport::GetLength(gradient);
         if (gradientLength < 1E-6)
         {
-            modelRunner->reportMessage(MessageType::Error, "Model has no gradient");
+            modelRunner->reportMessage(Logging::MessageType::Error, "Model has no gradient");
             return false;
         }
 
@@ -314,12 +315,12 @@ namespace Deltares::Uncertainty
     {
         if (beta < betaPrevious)
         {
-            modelRunner->reportMessage(MessageType::Error, "Beta decreases with next step");
+            modelRunner->reportMessage(Logging::MessageType::Error, "Beta decreases with next step");
             return false;
         }
         else if (beta < betaPrevious + requiredBetaIncrement)
         {
-            modelRunner->reportMessage(MessageType::Error, "Beta does not increase enough with step");
+            modelRunner->reportMessage(Logging::MessageType::Error, "Beta does not increase enough with step");
             return false;
         }
 

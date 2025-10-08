@@ -64,9 +64,14 @@ namespace Deltares
             stochast->dirty = false;
         }
 
-        bool DiscreteDistribution::isValid(std::shared_ptr<StochastProperties> stochast)
+        void DiscreteDistribution::validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast, std::string& subject)
         {
-            return !stochast->DiscreteValues.empty();
+            Logging::ValidationSupport::checkNotEmpty(report, stochast->DiscreteValues.size(), "discrete values", subject);
+
+            for (std::shared_ptr<DiscreteValue> discreteValue : stochast->DiscreteValues)
+            {
+                discreteValue->validate(report, subject);
+            }
         }
 
         bool DiscreteDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)

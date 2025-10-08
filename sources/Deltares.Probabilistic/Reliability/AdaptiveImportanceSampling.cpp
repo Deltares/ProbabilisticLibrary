@@ -384,7 +384,7 @@ namespace Deltares
         {
             for (std::shared_ptr<Sample> center : this->importanceSampling->Settings->Clusters)
             {
-                modelRunner->reportMessage(Models::MessageType::Info, "Cluster = (" + Numeric::NumericSupport::ConvertToString(center->Values, ", ") + ")");
+                modelRunner->reportMessage(Logging::MessageType::Info, "Cluster = (" + Numeric::NumericSupport::ConvertToString(center->Values, ", ") + ")");
             }
 #ifdef __cpp_lib_format
             auto text = std::format("Calculating variance loop #{0:}.", loopCounter);

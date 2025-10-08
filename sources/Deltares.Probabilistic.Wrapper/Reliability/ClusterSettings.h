@@ -75,11 +75,6 @@ namespace Deltares
                     void set(bool value) { shared->object->OptimizeNumberOfClusters = value; }
                 }
 
-                bool IsValid()
-                {
-                    return shared->object->isValid();
-                }
-
                 std::shared_ptr<Optimization::ClusterSettings> GetSettings()
                 {
                     return shared->object;

@@ -26,7 +26,7 @@
 
 namespace Deltares::Reliability
 {
-    enum class ModelVaryingType {Monotone, Varying};
+    enum class ModelVaryingType { Monotone, Varying };
 
     class DirectionReliabilitySettings
     {
@@ -42,7 +42,7 @@ namespace Deltares::Reliability
 
         std::shared_ptr<StochastSettingsSet> StochastSet = std::make_shared<StochastSettingsSet>();
 
-        bool IsValid() const;
+        void validate(Logging::ValidationReport& report) const;
         int SectionCount() const;
     };
 }

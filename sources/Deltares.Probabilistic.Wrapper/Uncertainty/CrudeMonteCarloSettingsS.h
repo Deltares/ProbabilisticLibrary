@@ -105,11 +105,6 @@ namespace Deltares
 
                 System::Collections::Generic::List<Reliability::Wrappers::StochastSettings^>^ StochastSettings = gcnew System::Collections::Generic::List<Reliability::Wrappers::StochastSettings^>();
 
-                bool IsValid()
-                {
-                    return shared->object->isValid();
-                }
-
                 std::shared_ptr<Uncertainty::CrudeMonteCarloSettingsS> GetSettings()
                 {
                     shared->object->StochastSet->stochastSettings.clear();

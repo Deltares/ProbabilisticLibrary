@@ -77,15 +77,16 @@ namespace Deltares
             std::shared_ptr<StochastSettingsSet> StochastSet = std::make_shared<StochastSettingsSet>();
 
             /**
-             * \brief Indicates whether these settings have valid values
-             * \return Indication
+             * \brief Reports whether the settings have valid values
+             * \param report Report in which the validity is reported
              */
-            bool isValid()
+            void validate(Logging::ValidationReport& report) const
             {
-                return MinimumDirections >= 1 &&
-                    MaximumDirections >= MinimumDirections &&
-                    VariationCoefficient >= 0 &&
-                    runSettings->isValid();
+                Logging::ValidationSupport::checkMinimumInt(report, 1, MinimumDirections, "minimum directions");
+                Logging::ValidationSupport::checkMinimumInt(report, MinimumDirections, MaximumDirections, "maximum directions");
+                Logging::ValidationSupport::checkMinimum(report, 0, VariationCoefficient, "variation coefficient");
+
+                runSettings->validate(report);
             }
         };
     }

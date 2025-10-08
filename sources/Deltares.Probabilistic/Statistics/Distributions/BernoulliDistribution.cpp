@@ -22,6 +22,7 @@
 #include <cmath>
 #include "BernoulliDistribution.h"
 #include "../../Math/NumericSupport.h"
+#include "../../Logging/ValidationSupport.h"
 
 namespace Deltares
 {
@@ -37,9 +38,11 @@ namespace Deltares
             return stochast->Location > 0.0 && stochast->Location < 1.0;
         }
 
-        bool BernoulliDistribution::isValid(std::shared_ptr<StochastProperties> stochast)
+        void BernoulliDistribution::validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast, std::string& subject)
         {
-            return stochast->Location >= 0.0 && stochast->Location <= 1.0;
+            Logging::ValidationSupport::checkMinimum(report, 0, stochast->Location, "location", subject);
+            Logging::ValidationSupport::checkMaximum(report, 1, stochast->Location, "location", subject);
+            Distribution::validate(report, stochast, subject);
         }
 
         double BernoulliDistribution::getMean(std::shared_ptr<StochastProperties> stochast)

@@ -65,11 +65,6 @@ namespace Deltares
                     void set(Wrappers::RunSettings^ value) { runSettings = value; }
                 }
 
-                bool IsValid()
-                {
-                    return shared->object->isValid();
-                }
-
                 std::shared_ptr<Uncertainty::NumericalIntegrationSettingsS> GetSettings()
                 {
                     shared->object->StochastSet->stochastSettings.clear();
