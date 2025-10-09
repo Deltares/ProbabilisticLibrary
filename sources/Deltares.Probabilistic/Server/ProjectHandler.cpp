@@ -871,13 +871,25 @@ namespace Deltares
         {
             ObjectType objectType = types[id];
 
+            if (IsModelProjectType(objectType))
+            {
+                std::shared_ptr<Models::ModelProject> project = GetProject(id);
+
+                if (property_ == "validate") return GetValidationReportId(std::make_shared<Logging::ValidationReport>(project->getValidationReport()), newId);
+            }
+            else if (IsModelSettingsType(objectType))
+            {
+                std::shared_ptr<Models::ModelProjectSettings> settings = GetSettings(id);
+
+                if (property_ == "validate") return GetValidationReportId(std::make_shared<Logging::ValidationReport>(settings->getValidationReport()), newId);
+            }
+
             if (objectType == ObjectType::Project)
             {
                 std::shared_ptr<Reliability::ReliabilityProject> project = projects[id];
 
                 if (property_ == "limit_state_function") return GetLimitStateFunctionId(project->limitStateFunction, newId);
                 else if (property_ == "design_point") return GetDesignPointId(project->designPoint, newId);
-                else if (property_ == "validate") return GetValidationReportId(std::make_shared<Logging::ValidationReport>(project->getValidationReport()), newId);
             }
             else if (objectType == ObjectType::FragilityCurveProject)
             {
@@ -890,7 +902,6 @@ namespace Deltares
                 std::shared_ptr<Models::RunProject> project = runProjects[id];
 
                 if (property_ == "realization") return GetEvaluationId(project->evaluation, newId);
-                else if (property_ == "validate") return GetValidationReportId(std::make_shared<Logging::ValidationReport>(project->getValidationReport()), newId);
             }
             else if (objectType == ObjectType::UncertaintyProject)
             {
@@ -899,7 +910,6 @@ namespace Deltares
                 if (property_ == "uncertainty_stochast") return GetStochastId(project->uncertaintyResult->stochast, newId);
                 else if (property_ == "uncertainty_result") return GetUncertaintyResultId(project->uncertaintyResult, newId);
                 else if (property_ == "output_correlation_matrix") return GetCorrelationMatrixId(project->outputCorrelationMatrix, newId);
-                else if (property_ == "validate") return GetValidationReportId(std::make_shared<Logging::ValidationReport>(project->getValidationReport()), newId);
             }
             else if (objectType == ObjectType::SensitivityProject)
             {
@@ -1157,6 +1167,23 @@ namespace Deltares
         {
             ObjectType objectType = types[id];
 
+            if (IsModelProjectType(objectType))
+            {
+                std::shared_ptr<Models::ModelProject> project = GetProject(id);
+
+                if (property_ == "is_valid") return project->isValid();
+            }
+            else if (IsModelSettingsType(objectType))
+            {
+                std::shared_ptr<Models::ModelProjectSettings> settings = GetSettings(id);
+
+                if (property_ == "is_valid") return settings->isValid();
+                else if (property_ == "save_realizations") return settings->RunSettings->SaveEvaluations;
+                else if (property_ == "save_convergence") return settings->RunSettings->SaveConvergence;
+                else if (property_ == "save_messages") return settings->RunSettings->SaveMessages;
+                else if (property_ == "reuse_calculations") return settings->RunSettings->ReuseCalculations;
+            }
+
             if (objectType == ObjectType::Stochast)
             {
                 std::shared_ptr<Statistics::Stochast> stochast = stochasts[id];
@@ -1198,12 +1225,6 @@ namespace Deltares
                 if (property_ == "is_initialization_allowed") return stochastSettings->IsInitializationAllowed;
                 else if (property_ == "is_variance_allowed") return stochastSettings->IsVarianceAllowed;
             }
-            else if (IsModelProjectType(objectType))
-            {
-                std::shared_ptr<Models::ModelProject> project = GetProject(id);
-
-                if (property_ == "is_valid") return project->isValid();
-            }
             else if (objectType == ObjectType::DesignPoint)
             {
                 std::shared_ptr<Reliability::DesignPoint> designPoint = designPoints[id];
@@ -1221,19 +1242,6 @@ namespace Deltares
                 else if (property_ == "calculate_correlations") return settings->CalculateCorrelations;
                 else if (property_ == "calculate_input_correlations") return settings->CalculateInputCorrelations;
                 else if (property_ == "is_repeatable_random") return settings->RandomSettings->IsRepeatableRandom;
-                else if (property_ == "save_realizations") return settings->RunSettings->SaveEvaluations;
-                else if (property_ == "save_convergence") return settings->RunSettings->SaveConvergence;
-                else if (property_ == "save_messages") return settings->RunSettings->SaveMessages;
-                else if (property_ == "reuse_calculations") return settings->RunSettings->ReuseCalculations;
-            }
-            else if (objectType == ObjectType::SensitivitySettings)
-            {
-                std::shared_ptr<Sensitivity::SensitivitySettings> settings = sensitivitySettingsValues[id];
-
-                if (property_ == "save_realizations") return settings->RunSettings->SaveEvaluations;
-                else if (property_ == "save_convergence") return settings->RunSettings->SaveConvergence;
-                else if (property_ == "save_messages") return settings->RunSettings->SaveMessages;
-                else if (property_ == "reuse_calculations") return settings->RunSettings->ReuseCalculations;
             }
             else if (objectType == ObjectType::Settings)
             {
@@ -1241,17 +1249,6 @@ namespace Deltares
 
                 if (property_ == "all_quadrants") return setting->StartPointSettings->allQuadrants;
                 else if (property_ == "is_repeatable_random") return setting->RandomSettings->IsRepeatableRandom;
-                else if (property_ == "save_realizations") return setting->RunSettings->SaveEvaluations;
-                else if (property_ == "save_convergence") return setting->RunSettings->SaveConvergence;
-                else if (property_ == "save_messages") return setting->RunSettings->SaveMessages;
-                else if (property_ == "reuse_calculations") return setting->RunSettings->ReuseCalculations;
-            }
-            else if (objectType == ObjectType::RunProjectSettings)
-            {
-                std::shared_ptr<Models::RunProjectSettings> settings = runProjectSettings[id];
-
-                if (property_ == "reuse_calculations") return settings->RunSettings->ReuseCalculations;
-                else if (property_ == "save_messages") return settings->RunSettings->SaveMessages;
             }
             else if (objectType == ObjectType::CombineProject)
             {
@@ -1279,7 +1276,18 @@ namespace Deltares
 
                 if (property_ == "callback_assigned") project->model->callbackAssigned = value;
             }
-            else if (objectType == ObjectType::Stochast)
+            else if (IsModelSettingsType(objectType))
+            {
+                std::shared_ptr<Models::ModelProjectSettings> settings = GetSettings(id);
+
+                if (property_ == "save_realizations") settings->RunSettings->SaveEvaluations = value;
+                else if (property_ == "save_convergence") settings->RunSettings->SaveConvergence = value;
+                else if (property_ == "save_messages") settings->RunSettings->SaveMessages = value;
+                else if (property_ == "reuse_calculations") settings->RunSettings->ReuseCalculations = value;
+                else if (property_ == "use_openmp_in_reliability") settings->RunSettings->UseOpenMPinReliability = value;
+            }
+
+            if (objectType == ObjectType::Stochast)
             {
                 std::shared_ptr<Statistics::Stochast> stochast = stochasts[id];
 
@@ -1315,21 +1323,6 @@ namespace Deltares
                 else if (property_ == "calculate_correlations") settings->CalculateCorrelations = value;
                 else if (property_ == "calculate_input_correlations") settings->CalculateInputCorrelations = value;
                 else if (property_ == "is_repeatable_random") settings->RandomSettings->IsRepeatableRandom = value;
-                else if (property_ == "save_realizations") settings->RunSettings->SaveEvaluations = value;
-                else if (property_ == "save_convergence") settings->RunSettings->SaveConvergence = value;
-                else if (property_ == "save_messages") settings->RunSettings->SaveMessages = value;
-                else if (property_ == "reuse_calculations") settings->RunSettings->ReuseCalculations = value;
-                else if (property_ == "use_openmp_in_reliability") settings->RunSettings->UseOpenMPinReliability = value;
-            }
-            else if (objectType == ObjectType::SensitivitySettings)
-            {
-                std::shared_ptr<Sensitivity::SensitivitySettings> settings = sensitivitySettingsValues[id];
-
-                if (property_ == "save_realizations") settings->RunSettings->SaveEvaluations = value;
-                else if (property_ == "save_convergence") settings->RunSettings->SaveConvergence = value;
-                else if (property_ == "save_messages") settings->RunSettings->SaveMessages = value;
-                else if (property_ == "reuse_calculations") settings->RunSettings->ReuseCalculations = value;
-                else if (property_ == "use_openmp_in_reliability") settings->RunSettings->UseOpenMPinReliability = value;
             }
             else if (objectType == ObjectType::Settings)
             {
@@ -1337,18 +1330,6 @@ namespace Deltares
 
                 if (property_ == "all_quadrants") setting->StartPointSettings->allQuadrants = value;
                 else if (property_ == "is_repeatable_random") setting->RandomSettings->IsRepeatableRandom = value;
-                else if (property_ == "save_realizations") setting->RunSettings->SaveEvaluations = value;
-                else if (property_ == "save_convergence") setting->RunSettings->SaveConvergence = value;
-                else if (property_ == "save_messages") setting->RunSettings->SaveMessages = value;
-                else if (property_ == "reuse_calculations") setting->RunSettings->ReuseCalculations = value;
-                else if (property_ == "use_openmp_in_reliability") setting->RunSettings->UseOpenMPinReliability = value;
-            }
-            else if (objectType == ObjectType::RunProjectSettings)
-            {
-                std::shared_ptr<Models::RunProjectSettings> settings = runProjectSettings[id];
-
-                if (property_ == "reuse_calculations") settings->RunSettings->ReuseCalculations = value;
-                else if (property_ == "save_messages") settings->RunSettings->SaveMessages = value;
             }
         }
 
@@ -2534,6 +2515,14 @@ namespace Deltares
                 objectType == ObjectType::RunProject ||
                 objectType == ObjectType::UncertaintyProject ||
                 objectType == ObjectType::SensitivityProject;
+        }
+
+        bool ProjectHandler::IsModelSettingsType(ObjectType objectType)
+        {
+            return objectType == ObjectType::Settings ||
+                objectType == ObjectType::RunProjectSettings ||
+                objectType == ObjectType::UncertaintySettings ||
+                objectType == ObjectType::SensitivitySettings;
         }
     }
 }

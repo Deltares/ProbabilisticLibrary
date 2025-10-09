@@ -31,6 +31,32 @@ namespace Deltares::Models
          * \brief Settings for performing model runs
          */
         std::shared_ptr<Models::RunSettings> RunSettings = std::make_shared<Models::RunSettings>();
+
+        /**
+         * \brief Reports whether these settings have valid values
+         * \param report Report in which the validity is reported
+         */
+        virtual void validate(Logging::ValidationReport& report) const { /* implemented by inheritors */ }
+
+        /**
+         * \brief Validates the project and puts the result in a validation report
+         * \returns Validation report
+         */
+        Logging::ValidationReport getValidationReport()
+        {
+            Logging::ValidationReport report;
+            validate(report);
+
+            return report;
+        }
+
+        /**
+         * \brief Indicates whether a run can be performed
+         */
+        bool isValid()
+        {
+            return getValidationReport().isValid();
+        }
     };
 }
 

@@ -414,11 +414,7 @@ class ModelProject(FrozenObject):
 		id_ = interface.GetIdValue(self._id, 'validate')
 		if id_ > 0:
 			validation_report = ValidationReport(id_)
-			if len(validation_report.messages) == 0:
-				print('ok')
-			else:
-				for message in validation_report.messages:
-					message.print()
+			validation_report.print()
 
 	@property
 	def variables(self) -> list[Stochast]:
@@ -559,12 +555,7 @@ class RunProjectSettings(FrozenObject):
 		id_ = interface.GetIdValue(self._id, 'validate')
 		if id_ > 0:
 			validation_report = ValidationReport(id_)
-			if len(validation_report.messages) == 0:
-				print('ok')
-			else:
-				for message in validation_report.messages:
-					message.print()
-
+			validation_report.print()
 
 	def _set_variables(self, variables):
 		pass
@@ -940,11 +931,7 @@ class CombineProject(FrozenObject):
 		id_ = interface.GetIdValue(self._id, 'validate')
 		if id_ > 0:
 			validation_report = ValidationReport(id_)
-			if len(validation_report.messages) == 0:
-				print('ok')
-			else:
-				for message in validation_report.messages:
-					message.print()
+			validation_report.print()
 
 	def run(self):
 		self._design_point = None
@@ -1035,11 +1022,7 @@ class ExcludingCombineProject(FrozenObject):
 		id_ = interface.GetIdValue(self._id, 'validate')
 		if id_ > 0:
 			validation_report = ValidationReport(id_)
-			if len(validation_report.messages) == 0:
-				print('ok')
-			else:
-				for message in validation_report.messages:
-					message.print()
+			validation_report.print()
 
 	def run(self):
 		self._update()

@@ -102,6 +102,9 @@ namespace Deltares::Uncertainty
         void validate(Logging::ValidationReport& report) const
         {
             Logging::ValidationSupport::checkMinimumInt(report, 1, MaximumSamples, "maximum samples");
+            Logging::ValidationSupport::checkMinimum(report, 0, VariationCoefficient, "variation coefficient");
+            Logging::ValidationSupport::checkMinimum(report, 0, ProbabilityForConvergence, "probability for convergence");
+            Logging::ValidationSupport::checkMaximum(report, 1, ProbabilityForConvergence, "probability for convergence");
 
             RunSettings->validate(report);
         }
