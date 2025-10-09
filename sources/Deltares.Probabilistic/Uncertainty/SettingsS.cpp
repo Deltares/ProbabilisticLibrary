@@ -142,16 +142,16 @@ namespace Deltares::Uncertainty
             return directionalSampling;
         }
 
-        bool SettingsS::isValid()
+        void SettingsS::validate(Logging::ValidationReport& report) 
         {
             switch (this->UncertaintyMethod)
             {
-            case UncertaintyMethodType::UncertaintyCrudeMonteCarlo: return std::dynamic_pointer_cast<CrudeMonteCarloS>(this->GetCrudeMonteCarloMethod())->Settings->isValid();
-            case UncertaintyMethodType::UncertaintyImportanceSampling: return std::dynamic_pointer_cast<ImportanceSamplingS>(this->GetImportanceSamplingMethod())->Settings->isValid();
-            case UncertaintyMethodType::UncertaintyNumericalIntegration: return std::dynamic_pointer_cast<NumericalIntegrationS>(this->GetNumericalIntegrationMethod())->Settings->isValid();
-            case UncertaintyMethodType::UncertaintyDirectionalSampling: return std::dynamic_pointer_cast<DirectionalSamplingS>(this->GetDirectionalSamplingMethod())->Settings->isValid();
-            case UncertaintyMethodType::UncertaintyFORM: return std::dynamic_pointer_cast<FORMS>(this->GetFORMMethod())->Settings->isValid();
-            case UncertaintyMethodType::UncertaintyFOSM: return std::dynamic_pointer_cast<FOSM>(this->GetFOSMMethod())->Settings->isValid();
+            case UncertaintyMethodType::UncertaintyCrudeMonteCarlo: return std::dynamic_pointer_cast<CrudeMonteCarloS>(this->GetCrudeMonteCarloMethod())->Settings->validate(report);
+            case UncertaintyMethodType::UncertaintyImportanceSampling: return std::dynamic_pointer_cast<ImportanceSamplingS>(this->GetImportanceSamplingMethod())->Settings->validate(report);
+            case UncertaintyMethodType::UncertaintyNumericalIntegration: return std::dynamic_pointer_cast<NumericalIntegrationS>(this->GetNumericalIntegrationMethod())->Settings->validate(report);
+            case UncertaintyMethodType::UncertaintyDirectionalSampling: return std::dynamic_pointer_cast<DirectionalSamplingS>(this->GetDirectionalSamplingMethod())->Settings->validate(report);
+            case UncertaintyMethodType::UncertaintyFORM: return std::dynamic_pointer_cast<FORMS>(this->GetFORMMethod())->Settings->validate(report);
+            case UncertaintyMethodType::UncertaintyFOSM: return std::dynamic_pointer_cast<FOSM>(this->GetFOSMMethod())->Settings->validate(report);
             default: throw Reliability::probLibException("Uncertainty method");
             }
         }

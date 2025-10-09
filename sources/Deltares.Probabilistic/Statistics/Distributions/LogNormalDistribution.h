@@ -35,7 +35,6 @@ namespace Deltares
             bool isVarying(std::shared_ptr<StochastProperties> stochast) override;
             bool canTruncate() override { return true; }
             bool canInvert() override { return true; }
-            bool isShiftUsed() override { return true; }
             double getMean(std::shared_ptr<StochastProperties> stochast) override;
             double getDeviation(std::shared_ptr<StochastProperties> stochast) override;
             void setMeanAndDeviation(std::shared_ptr<StochastProperties> stochast, double mean, double deviation) override;
@@ -45,6 +44,8 @@ namespace Deltares
             void setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType) override;
             bool canFit() override { return true; }
             bool canFitPrior() override { return true; }
+            void fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values) override;
+            void fitPrior(const std::shared_ptr<StochastProperties>& stochast, const std::shared_ptr<StochastProperties>& prior, std::vector<double>& values) override;
             void fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift) override;
             void fitPrior(const std::shared_ptr<StochastProperties>& stochast, std::vector<double>& values, const std::shared_ptr<StochastProperties>& prior, const double shift) override;
             bool isValid(std::shared_ptr<StochastProperties> stochast) override;

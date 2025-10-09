@@ -23,6 +23,7 @@ import unittest
 import sys
 import os
 import numpy as np
+
 from io import StringIO
 import matplotlib.pyplot as plt
 
@@ -153,6 +154,41 @@ class Test_statistics(unittest.TestCase):
         sys.stdout = sys.__stdout__
 
         self.assertEqual("""Fit with prior is not supported for distribution type exponential\n""", printed)
+
+    def test_validation_ok(self):
+        stochast = Stochast()
+        stochast.distribution = DistributionType.normal
+        stochast.mean = 3
+        stochast.deviation = 1
+
+        # Replace default stdout (terminal) temporary with with our stream
+        sys.stdout = StringIO()
+
+        self.assertTrue(stochast.is_valid())
+        stochast.validate()
+        printed = sys.stdout.getvalue()
+
+        sys.stdout = sys.__stdout__
+
+        self.assertEqual("""ok\n""", printed)
+
+    def test_validation_not_ok(self):
+        stochast = Stochast()
+        stochast.distribution = DistributionType.normal
+        stochast.mean = 3
+        stochast.deviation = -1.5
+        stochast.name ='abc'
+
+        # Replace default stdout (terminal) temporary with with our stream
+        sys.stdout = StringIO()
+
+        self.assertFalse(stochast.is_valid())
+        stochast.validate()
+        printed = sys.stdout.getvalue()
+
+        sys.stdout = sys.__stdout__
+
+        self.assertEqual("""Error: abc => scale value -1.5 is less than 0.\n""", printed)
 
     def test_plot(self):
         stochast = Stochast()

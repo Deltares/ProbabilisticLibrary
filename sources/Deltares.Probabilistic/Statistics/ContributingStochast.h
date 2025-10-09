@@ -23,6 +23,8 @@
 
 #include <memory>
 #include "BaseStochast.h"
+#include "../Logging/ValidationReport.h"
+#include "../Logging/ValidationSupport.h"
 
 namespace Deltares
 {
@@ -34,12 +36,22 @@ namespace Deltares
             double Probability = 0;
             std::shared_ptr<BaseStochast> Stochast = nullptr;
 
-            bool isValid()
+            void validate(Logging::ValidationReport& report) const
             {
-                return Probability >= 0.0 && Probability <= 1.0 && Stochast != nullptr && Stochast->isValid();
+                Logging::ValidationSupport::checkMinimum(report, 0, Probability, "probability");
+                Logging::ValidationSupport::checkMaximum(report, 1, Probability, "probability");
+
+                Stochast->validate(report);
             }
 
-            std::shared_ptr<ContributingStochast> clone()
+            bool isValid() const
+            {
+                Logging::ValidationReport report;
+                this->validate(report);
+                return report.isValid();
+            }
+
+            std::shared_ptr<ContributingStochast> clone() const
             {
                 std::shared_ptr<ContributingStochast> clone = std::make_shared<ContributingStochast>();
 

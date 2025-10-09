@@ -27,11 +27,12 @@ namespace Deltares::Probabilistic::Test
     class TestRunModel
     {
     public:
-        void allModelTests();
+        void allModelTests() const;
     private:
-        void testRunModelMedianValues();
-        void testRunModelMeanValues();
-        void testRunModelDesignValues();
+        void testRunModelMedianValues() const;
+        void testRunModelMeanValues() const;
+        void testRunModelDesignValues() const;
+        void testNoModel() const;
 
         const double margin = 0.02;
     };

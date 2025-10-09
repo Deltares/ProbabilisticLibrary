@@ -95,6 +95,38 @@ namespace Deltares
                 ASSERT_EQ(designPoint->Alphas[0]->getIdentifier(), "s[0]");
             }
 
+            void testReliabilityMethods::testValidation()
+            {
+                auto project = ReliabilityProject();
+                project.settings->ReliabilityMethod = ReliabilityMethodType::ReliabilityFORM;
+
+                Logging::ValidationReport report1 = project.getValidationReport();
+
+                // no model assigned yet
+                EXPECT_EQ(false, project.isValid());
+                EXPECT_EQ("model is not assigned.", report1.messages[0]->Text);
+
+                project.model = std::make_shared<ZModel>([](std::shared_ptr<ModelSample> v) { return v->Values[0]; });
+
+                EXPECT_EQ(true, project.isValid());
+
+                project.settings->RelaxationFactor = -1.5;
+                project.settings->RelaxationLoops = 0;
+
+                EXPECT_EQ(false, project.isValid());
+
+                Logging::ValidationReport report2 = project.getValidationReport();
+
+                EXPECT_EQ(2, report2.messages.size());
+                EXPECT_EQ("relaxation loops value 0 is less than 1.", report2.messages[0]->Text);
+                EXPECT_EQ("relaxation factor value -1.5 is less than 0.01.", report2.messages[1]->Text);
+
+                // change method so that relaxation factor is not used any more
+                project.settings->ReliabilityMethod = ReliabilityMethodType::ReliabilityCrudeMonteCarlo;
+
+                EXPECT_EQ(true, project.isValid());
+            }
+
             void testReliabilityMethods::testLatinHyperCube()
             {
                 const auto chunckSizes = std::vector<int>({ 1, 15, 2000 });

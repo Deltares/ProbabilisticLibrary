@@ -249,29 +249,33 @@ namespace Deltares
             return subsetSimulation;
         }
 
-        bool Settings::isValid() const
+        void Settings::validate(Logging::ValidationReport& report) const
         {
             switch (this->ReliabilityMethod)
             {
-            case ReliabilityMethodType::ReliabilityFORM: return GetFORMMethod()->Settings->isValid();
-            case ReliabilityMethodType::ReliabilityNumericalIntegration: return GetNumericalIntegrationMethod()->Settings.isValid();
-            case ReliabilityMethodType::ReliabilityCrudeMonteCarlo: return GetCrudeMonteCarloMethod()->Settings->isValid();
-            case ReliabilityMethodType::ReliabilityImportanceSampling: return GetImportanceSamplingMethod()->Settings->isValid();
-            case ReliabilityMethodType::ReliabilityAdaptiveImportanceSampling: return GetAdaptiveImportanceSamplingMethod()->Settings->isValid();
-            case ReliabilityMethodType::ReliabilityDirectionalSampling: return GetDirectionalSamplingMethod()->Settings->isValid();
-            case ReliabilityMethodType::ReliabilityNumericalBisection: return GetNumericalBisectionMethod()->Settings->isValid();
-            case ReliabilityMethodType::ReliabilityLatinHyperCube: return GetLatinHypercubeMethod()->Settings->isValid();
-            case ReliabilityMethodType::ReliabilitySubsetSimulation: return GetSubsetSimulationMethod()->Settings->isValid();
-            case ReliabilityMethodType::ReliabilityCobyla: return GetCobylaReliabilityMethod()->Settings->isValid();
+            case ReliabilityMethodType::ReliabilityFORM: GetFORMMethod()->Settings->validate(report); break;
+            case ReliabilityMethodType::ReliabilityNumericalIntegration: GetNumericalIntegrationMethod()->Settings.validate(report); break;
+            case ReliabilityMethodType::ReliabilityCrudeMonteCarlo: GetCrudeMonteCarloMethod()->Settings->validate(report); break;
+            case ReliabilityMethodType::ReliabilityImportanceSampling: GetImportanceSamplingMethod()->Settings->validate(report); break;
+            case ReliabilityMethodType::ReliabilityAdaptiveImportanceSampling: GetAdaptiveImportanceSamplingMethod()->Settings->validate(report); break;
+            case ReliabilityMethodType::ReliabilityDirectionalSampling: GetDirectionalSamplingMethod()->Settings->validate(report); break;
+            case ReliabilityMethodType::ReliabilityNumericalBisection: GetNumericalBisectionMethod()->Settings->validate(report); break;
+            case ReliabilityMethodType::ReliabilityLatinHyperCube: GetLatinHypercubeMethod()->Settings->validate(report); break;
+            case ReliabilityMethodType::ReliabilitySubsetSimulation: GetSubsetSimulationMethod()->Settings->validate(report); break;
+            case ReliabilityMethodType::ReliabilityCobyla: GetCobylaReliabilityMethod()->Settings->validate(report); break;
             case ReliabilityMethodType::ReliabilityFORMthenDirectionalSampling:
             {
                 auto fdir = GetFormThenDsReliabilityMethod();
-                return fdir->formSettings->isValid() && fdir->DsSettings->isValid();
+                fdir->formSettings->validate(report);
+                fdir->DsSettings->validate(report);
+                break;
             }
             case ReliabilityMethodType::ReliabilityDirectionalSamplingThenFORM:
             {
                 auto dsfi = GetDsThenFormReliabilityMethod();
-                return dsfi->formSettings->isValid() && dsfi->DsSettings->isValid();
+                dsfi->formSettings->validate(report);
+                dsfi->DsSettings->validate(report);
+                break;
             }
             default: throw probLibException("Reliability method");
             }

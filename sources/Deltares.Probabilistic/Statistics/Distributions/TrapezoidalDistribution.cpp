@@ -42,13 +42,13 @@ namespace Deltares
             stochast->Maximum = values[3];
         }
 
-        bool TrapezoidalDistribution::isValid(std::shared_ptr<StochastProperties> stochast)
+        void TrapezoidalDistribution::validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast, std::string& subject)
         {
-            return stochast->Minimum <= stochast->Shift &&
-                stochast->Shift <= stochast->ShiftB &&
-                stochast->ShiftB <= stochast->Maximum &&
-                std::isfinite(stochast->Minimum) &&
-                std::isfinite(stochast->Maximum);
+            Logging::ValidationSupport::checkFinite(report, stochast->Minimum, "minimum", subject);
+            Logging::ValidationSupport::checkFinite(report, stochast->Maximum, "maximum", subject);
+            Logging::ValidationSupport::checkMinimum(report, stochast->Minimum, stochast->Shift, "shift", subject);
+            Logging::ValidationSupport::checkMinimum(report, stochast->Shift, stochast->ShiftB, "shift B", subject);
+            Logging::ValidationSupport::checkMaximum(report, stochast->Maximum, stochast->ShiftB, "shift B", subject);
         }
 
         bool TrapezoidalDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)

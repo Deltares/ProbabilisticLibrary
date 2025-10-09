@@ -65,8 +65,8 @@ namespace Deltares
                 rho2(i) = correlationLengths[i];
             }
 
-            auto message = std::make_shared<Message>();
-            message->Type = MessageType::Debug;
+            auto message = std::make_shared<Logging::Message>();
+            message->Type = Logging::MessageType::Debug;
             auto [dpLength, nFail] = up.upscaleLength(dp, rho1, rho2, length, message->Text);
             auto dpL = DesignPoint();
             dpL.Identifier = "Length Effect";
@@ -74,8 +74,8 @@ namespace Deltares
             dpL.Messages.push_back(message);
             if (nFail > 0)
             {
-                auto warning = std::make_shared<Message>();
-                message->Type = MessageType::Warning;
+                auto warning = std::make_shared<Logging::Message>();
+                message->Type = Logging::MessageType::Warning;
                 message->Text = "non-convergence in Hohenbichler";
                 dpL.Messages.push_back(warning);
             }

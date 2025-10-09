@@ -34,9 +34,6 @@ namespace Deltares
             double getXFromU(std::shared_ptr<StochastProperties> stochast, double u) override;
             bool isVarying(std::shared_ptr<StochastProperties> stochast) override { return true; }
 
-            // return false for the moment, so that a CompositeDistribution with a discontinuous ExternalDistribution does not fail
-            bool isValid(std::shared_ptr<StochastProperties> stochast) override { return false; } 
-
             void setExternalFunction(UXLambda uxFunction)
             {
                 this->uxFunction = uxFunction;

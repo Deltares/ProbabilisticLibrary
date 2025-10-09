@@ -65,11 +65,6 @@ namespace Deltares
                     void set(BaseStochast^ value) { this->stochast = value; }
                 }
 
-                bool IsValid()
-                {
-                    return shared->object->isValid();
-                }
-
                 std::shared_ptr<Statistics::ContributingStochast> GetValue()
                 {
                     if (this->stochast != nullptr)

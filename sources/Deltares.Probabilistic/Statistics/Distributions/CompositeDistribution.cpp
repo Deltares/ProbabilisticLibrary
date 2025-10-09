@@ -63,20 +63,20 @@ namespace Deltares
             return false;
         }
 
-        bool CompositeDistribution::isValid(std::shared_ptr<StochastProperties> stochast)
+        void CompositeDistribution::validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast, std::string& subject)
         {
             double sum = 0;
             for (std::shared_ptr<ContributingStochast> contributingStochast : stochast->ContributingStochasts)
             {
-                if (!contributingStochast->isValid())
-                {
-                    return false;
-                }
+                contributingStochast->validate(report);
 
                 sum += contributingStochast->Probability;
             }
 
-            return Numeric::NumericSupport::areEqual(1.0, sum, delta);
+            if (!Numeric::NumericSupport::areEqual(1.0, sum, delta))
+            {
+                Logging::ValidationSupport::add(report, "probabilities should add up to 1", subject);
+            }
         }
 
         double CompositeDistribution::getMean(std::shared_ptr<StochastProperties> stochast)

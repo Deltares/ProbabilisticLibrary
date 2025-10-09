@@ -90,16 +90,24 @@ namespace Deltares
              * \brief Indicates whether these settings have valid values
              * \return Indication
              */
-            bool isValid()
+            bool isValid() const
             {
-                return RelaxationLoops >= 1 &&
-                    RelaxationFactor >= 0.01 &&
-                    RelaxationFactor <= 1 &&
-                    MaximumIterations >= 1 &&
-                    EpsilonBeta >= 0.01 &&
-                    GradientSettings->isValid() &&
-                    StartPointSettings->isValid() &&
-                    RunSettings->isValid();
+                Logging::ValidationReport report;
+                this->validate(report);
+                return report.isValid();
+            }
+
+            void validate(Logging::ValidationReport& report) const
+            {
+                Logging::ValidationSupport::checkMinimumInt(report, 1, RelaxationLoops, "relaxation loops");
+                Logging::ValidationSupport::checkMinimum(report, 0.01, RelaxationFactor, "relaxation factor");
+                Logging::ValidationSupport::checkMaximum(report, 1, RelaxationFactor, "relaxation factor");
+                Logging::ValidationSupport::checkMinimumInt(report, 1, MaximumIterations, "maximum iterations");
+                Logging::ValidationSupport::checkMinimum(report, 0.01, EpsilonBeta, "epsilon beta");
+
+                GradientSettings->validate(report);
+                StartPointSettings->validate(report);
+                RunSettings->validate(report);
             }
         };
     }

@@ -113,16 +113,23 @@ namespace Deltares
              */
             std::shared_ptr<ImportanceSamplingSettings> importanceSamplingSettings = std::make_shared<Deltares::Reliability::ImportanceSamplingSettings>();
 
-            bool isValid()
+            /**
+             * \brief Reports whether the settings have valid values
+             * \param report Report in which the validity is reported
+             */
+            void validate(Logging::ValidationReport& report) const
             {
-                return MinVarianceLoops >= 1 &&
-                    MaxVarianceLoops >= MinVarianceLoops &&
-                    StartValueStepSize >= 0 &&
-                    FractionFailed >= 0 && FractionFailed <= 0.5 &&
-                    EpsWeightSample >= 0.0001 && EpsWeightSample <= 1 &&
-                    startPointSettings->isValid() &&
-                    clusterSettings->isValid() &&
-                    importanceSamplingSettings->isValid();
+                Logging::ValidationSupport::checkMinimumInt(report, 1, MinVarianceLoops, "minimum variance loops");
+                Logging::ValidationSupport::checkMinimumInt(report, MinVarianceLoops, MaxVarianceLoops, "maximum variance loops");
+                Logging::ValidationSupport::checkMinimum(report, 0, StartValueStepSize, "start value step size");
+                Logging::ValidationSupport::checkMinimum(report, 0, FractionFailed, "fraction failed");
+                Logging::ValidationSupport::checkMaximum(report, 0.5, FractionFailed, "fraction failed");
+                Logging::ValidationSupport::checkMinimum(report, 0.0001, EpsWeightSample, "epsilon weight sample");
+                Logging::ValidationSupport::checkMaximum(report, 1, EpsWeightSample, "epsilon weight sample");
+
+                startPointSettings->validate(report);
+                clusterSettings->validate(report);
+                importanceSamplingSettings->validate(report);
             }
         };
     }

@@ -131,13 +131,12 @@ namespace Deltares::Uncertainty
          */
         std::shared_ptr<Uncertainty::UncertaintyMethod> GetUncertaintyMethod();
 
-
         /**
-         * \brief Indicates whether these settings have valid values
-         * \return Indication
+         * \brief Reports whether these settings have valid values
+         * \param report Report in which the validity is reported
          */
-        bool isValid();
-
+        void validate(Logging::ValidationReport& report);
+            
         static std::string getUncertaintyMethodTypeString(UncertaintyMethodType method);
         static UncertaintyMethodType getUncertaintyMethodType(std::string method);
     private:

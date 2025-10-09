@@ -210,12 +210,11 @@ namespace Deltares
              */
             std::shared_ptr<Reliability::ReliabilityMethod> GetReliabilityMethod();
 
-
             /**
-             * \brief Indicates whether these settings have valid values
-             * \return Indication
+             * \brief Reports whether the settings have valid values
+             * \param report Report in which the validity is reported
              */
-            bool isValid() const;
+            void validate(Logging::ValidationReport& report) const;
 
             static std::string getReliabilityResultTypeString(ReliabilityResultType method);
             static ReliabilityResultType getReliabilityResultType(std::string method);

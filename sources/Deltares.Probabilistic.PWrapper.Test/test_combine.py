@@ -21,6 +21,7 @@
 #
 import unittest
 import sys
+from io import StringIO
 
 from probabilistic_library.utils import FrozenList, FrozenObject
 from probabilistic_library.reliability import DesignPoint, DesignPointMethod, ReliabilityMethod, CombinerMethod, CombineSettings, CombineType, ExcludingCombineSettings, ExcludingCombinerMethod
@@ -348,8 +349,15 @@ class Test_combine(unittest.TestCase):
 
         self.assertFalse(project.is_valid());
 
-        for message in project.validate():
-            print(str(message))
+        # Replace default stdout (terminal) temporary with with our stream
+        sys.stdout = StringIO()
+
+        project.validate()
+
+        printed = sys.stdout.getvalue()
+        sys.stdout = sys.__stdout__
+
+        self.assertEqual("""Error: scenario probabilities should add up to 1.\n""", printed)
 
         project.scenarios[1] = 0.75
 

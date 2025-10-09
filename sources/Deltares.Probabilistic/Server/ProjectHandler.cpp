@@ -21,7 +21,6 @@
 //
 # include "ProjectHandler.h"
 
-#include <iostream>
 #include <string>
 #include <memory>
 
@@ -39,6 +38,7 @@ namespace Deltares
                     object_type == "probability_value" ||
                     object_type == "message" ||
                     object_type == "project" ||
+                    object_type == "validation_report" ||
                     object_type == "model_parameter" ||
                     object_type == "limit_state_function" ||
                     object_type == "stochast" ||
@@ -79,6 +79,7 @@ namespace Deltares
             if (object_type == "standard_normal") return ObjectType::StandardNormal;
             else if (object_type == "probability_value") return ObjectType::ProbabilityValue;
             else if (object_type == "message") return ObjectType::Message;
+            else if (object_type == "validation_report") return ObjectType::ValidationReport;
             else if (object_type == "project") return ObjectType::Project;
             else if (object_type == "model_parameter") return ObjectType::ModelParameter;
             else if (object_type == "limit_state_function") return  ObjectType::LimitStateFunction;
@@ -129,7 +130,7 @@ namespace Deltares
                 probabilityValueIds[probabilityValues[id]] = id;
                 break;
             case ObjectType::Message:
-                messages[id] = std::make_shared<Deltares::Models::Message>();
+                messages[id] = std::make_shared<Deltares::Logging::Message>();
                 messageIds[messages[id]] = id;
                 break;
             case ObjectType::Project:
@@ -267,6 +268,7 @@ namespace Deltares
             case ObjectType::StandardNormal: break;
             case ObjectType::ProbabilityValue: probabilityValueIds.erase(probabilityValues[id]); probabilityValues.erase(id); break;
             case ObjectType::Message: messageIds.erase(messages[id]); messages.erase(id); break;
+            case ObjectType::ValidationReport: validationReports.erase(id); break;
             case ObjectType::Project: projects.erase(id); break;
             case ObjectType::ModelParameter: modelParameters.erase(id); break;
             case ObjectType::LimitStateFunction: limitStateFunctionIds.erase(limitStateFunctions[id]); limitStateFunctions.erase(id); break;
@@ -689,6 +691,21 @@ namespace Deltares
                 else if (property_ == "stochasts_count") return static_cast<int>(project->stochasts.size());
                 else if (property_ == "total_model_runs") return project->modelRuns;
             }
+            
+            if (objectType == ObjectType::ValidationReport)
+            {
+                std::shared_ptr<Logging::ValidationReport> validationReport = validationReports[id];
+
+                if (property_ == "messages_count") return static_cast<int>(validationReport->messages.size());
+            }
+            else if (objectType == ObjectType::Project)
+            {
+                std::shared_ptr<Models::ModelProject> project = GetProject(id);
+
+                if (property_ == "index") return project->model->Index;
+                else if (property_ == "stochasts_count") return static_cast<int>(project->stochasts.size());
+                else if (property_ == "total_model_runs") return project->modelRuns;
+            }
 
             if (objectType == ObjectType::ModelParameter)
             {
@@ -841,10 +858,6 @@ namespace Deltares
 
                 if (property_ == "index") return result->Index;
             }
-            else if (objectType == ObjectType::ExcludingCombineProject)
-            {
-                if (property_ == "validation_messages_count") return static_cast<int>(validationMessages.size());
-            }
             else if (objectType == ObjectType::LengthEffectProject)
             {
                 std::shared_ptr<Reliability::LengthEffectProject> project = lengthEffectProjects[id];
@@ -865,6 +878,7 @@ namespace Deltares
 
                 if (property_ == "limit_state_function") return GetLimitStateFunctionId(project->limitStateFunction, newId);
                 else if (property_ == "design_point") return GetDesignPointId(project->designPoint, newId);
+                else if (property_ == "validate") return GetValidationReportId(std::make_shared<Logging::ValidationReport>(project->getValidationReport()), newId);
             }
             else if (objectType == ObjectType::FragilityCurveProject)
             {
@@ -877,6 +891,7 @@ namespace Deltares
                 std::shared_ptr<Models::RunProject> project = runProjects[id];
 
                 if (property_ == "realization") return GetEvaluationId(project->evaluation, newId);
+                else if (property_ == "validate") return GetValidationReportId(std::make_shared<Logging::ValidationReport>(project->getValidationReport()), newId);
             }
             else if (objectType == ObjectType::UncertaintyProject)
             {
@@ -885,6 +900,7 @@ namespace Deltares
                 if (property_ == "uncertainty_stochast") return GetStochastId(project->uncertaintyResult->stochast, newId);
                 else if (property_ == "uncertainty_result") return GetUncertaintyResultId(project->uncertaintyResult, newId);
                 else if (property_ == "output_correlation_matrix") return GetCorrelationMatrixId(project->outputCorrelationMatrix, newId);
+                else if (property_ == "validate") return GetValidationReportId(std::make_shared<Logging::ValidationReport>(project->getValidationReport()), newId);
             }
             else if (objectType == ObjectType::SensitivityProject)
             {
@@ -897,6 +913,7 @@ namespace Deltares
                 std::shared_ptr<Statistics::Stochast> stochast = stochasts[id];
 
                 if (property_ == "conditional_source") return GetStochastId(stochast->VariableSource, newId);
+                else if (property_ == "validate") return GetValidationReportId(std::make_shared<Logging::ValidationReport>(stochast->getValidationReport()), newId);
             }
             else if (objectType == ObjectType::FragilityValue)
             {
@@ -946,12 +963,14 @@ namespace Deltares
                 std::shared_ptr<Reliability::CombineProject> combineProject = combineProjects[id];
 
                 if (property_ == "design_point") return GetDesignPointId(combineProject->designPoint, newId);
+                else if (property_ == "validate") return GetValidationReportId(std::make_shared<Logging::ValidationReport>(combineProject->getValidationReport()), newId);
             }
             else if (objectType == ObjectType::ExcludingCombineProject)
             {
                 std::shared_ptr<Reliability::ExcludingCombineProject> combineProject = excludingCombineProjects[id];
 
                 if (property_ == "design_point") return GetDesignPointId(combineProject->designPoint, newId);
+                else if (property_ == "validate") return GetValidationReportId(std::make_shared<Logging::ValidationReport>(combineProject->getValidationReport()), newId);
             }
             else if (objectType == ObjectType::LengthEffectProject)
             {
@@ -1179,7 +1198,6 @@ namespace Deltares
 
                 if (property_ == "is_initialization_allowed") return stochastSettings->IsInitializationAllowed;
                 else if (property_ == "is_variance_allowed") return stochastSettings->IsVarianceAllowed;
-
             }
             else if (IsModelProjectType(objectType))
             {
@@ -1240,7 +1258,7 @@ namespace Deltares
             {
                 std::shared_ptr<Reliability::CombineProject> project = combineProjects[id];
 
-                if (property_ == "is_valid") return project->isValid();
+                if (property_ == "is_valid") return project->is_valid();
             }
             else if (objectType == ObjectType::ExcludingCombineProject)
             {
@@ -1256,7 +1274,13 @@ namespace Deltares
         {
             ObjectType objectType = types[id];
 
-            if (objectType == ObjectType::Stochast)
+            if (IsModelProjectType(objectType))
+            {
+                std::shared_ptr<Models::ModelProject> project = GetProject(id);
+
+                if (property_ == "callback_assigned") project->model->callbackAssigned = value;
+            }
+            else if (objectType == ObjectType::Stochast)
             {
                 std::shared_ptr<Statistics::Stochast> stochast = stochasts[id];
 
@@ -1335,10 +1359,11 @@ namespace Deltares
 
             if (objectType == ObjectType::Message)
             {
-                std::shared_ptr<Models::Message> message = messages[id];
+                std::shared_ptr<Logging::Message> message = messages[id];
 
-                if (property_ == "type") return Message::getMessageTypeString(message->Type);
+                if (property_ == "type") return Logging::Message::getMessageTypeString(message->Type);
                 else if (property_ == "text") return message->Text;
+                else if (property_ == "subject") return message->Subject;
                 else return "";
             }
             else if (objectType == ObjectType::ModelParameter)
@@ -1467,10 +1492,11 @@ namespace Deltares
 
             if (objectType == ObjectType::Message)
             {
-                std::shared_ptr<Models::Message> message = messages[id];
+                std::shared_ptr<Logging::Message> message = messages[id];
 
-                if (property_ == "type") message->Type = Message::getMessageType(value);
+                if (property_ == "type") message->Type = Logging::Message::getMessageType(value);
                 else if (property_ == "text") message->Text = value;
+                else if (property_ == "subject") message->Subject = value;
             }
             else if (objectType == ObjectType::Stochast)
             {
@@ -1998,7 +2024,13 @@ namespace Deltares
                 if (property_ == "stochasts") return GetStochastId(project->stochasts[index], newId);
             }
 
-            if (objectType == ObjectType::Stochast)
+            if (objectType == ObjectType::ValidationReport)
+            {
+                std::shared_ptr<Logging::ValidationReport> validationReport = validationReports[id];
+
+                if (property_ == "messages") return GetMessageId(validationReport->messages[index], newId);
+            }
+            else if (objectType == ObjectType::Stochast)
             {
                 std::shared_ptr<Statistics::Stochast> stochast = stochasts[id];
 
@@ -2065,10 +2097,6 @@ namespace Deltares
                 if (property_ == "evaluations") return GetEvaluationId(result->evaluations[index], newId);
                 else if (property_ == "quantile_evaluations") return GetEvaluationId(result->quantileEvaluations[index], newId);
                 else if (property_ == "messages") return GetMessageId(result->messages[index], newId);
-            }
-            else if (objectType == ObjectType::ExcludingCombineProject)
-            {
-                if (property_ == "validation_messages") return GetMessageId(validationMessages[index], newId);
             }
 
             return 0;
@@ -2144,8 +2172,6 @@ namespace Deltares
                 std::shared_ptr<Reliability::ExcludingCombineProject> project = excludingCombineProjects[id];
 
                 if (method_ == "run") project->run();
-                else if (method_ == "validate") UpdateValidationMessages(project->validate());
-                else if (method_ == "clear_validate") validationMessages.clear();
             }
             else if (objectType == ObjectType::LengthEffectProject)
             {
@@ -2171,6 +2197,21 @@ namespace Deltares
                 }
 
                 return probabilityValueIds[probability];
+            }
+        }
+
+        int ProjectHandler::GetValidationReportId(std::shared_ptr<Logging::ValidationReport> validationReport, int newId)
+        {
+            if (validationReport == nullptr)
+            {
+                return 0;
+            }
+            else
+            {
+                // assume always a new report is created
+                validationReports[newId] = validationReport;
+                types[newId] = ObjectType::ValidationReport;
+                return newId;
             }
         }
 
@@ -2400,14 +2441,21 @@ namespace Deltares
 
         int ProjectHandler::GetEvaluationId(std::shared_ptr<Deltares::Reliability::Evaluation> evaluation, int newId)
         {
-            if (!evaluationIds.contains(evaluation))
+            if (evaluation == nullptr)
             {
-                evaluations[newId] = evaluation;
-                types[newId] = ObjectType::Evaluation;
-                evaluationIds[evaluation] = newId;
+                return 0;
             }
+            else
+            {
+                if (!evaluationIds.contains(evaluation))
+                {
+                    evaluations[newId] = evaluation;
+                    types[newId] = ObjectType::Evaluation;
+                    evaluationIds[evaluation] = newId;
+                }
 
-            return evaluationIds[evaluation];
+                return evaluationIds[evaluation];
+            }
         }
 
         int ProjectHandler::GetReliabilityResultId(std::shared_ptr<Deltares::Reliability::ReliabilityResult> result, int newId)
@@ -2422,7 +2470,7 @@ namespace Deltares
             return reliabilityResultIds[result];
         }
 
-        int ProjectHandler::GetMessageId(std::shared_ptr<Deltares::Models::Message> message, int newId)
+        int ProjectHandler::GetMessageId(std::shared_ptr<Deltares::Logging::Message> message, int newId)
         {
             if (!messageIds.contains(message))
             {
@@ -2443,19 +2491,19 @@ namespace Deltares
         {
             if (projects.contains(id))
             {
-                return projects[id];
+                return std::static_pointer_cast<Models::ModelProject>(projects[id]);
             }
             else if (runProjects.contains(id))
             {
-                return runProjects[id];
+                return std::static_pointer_cast<Models::ModelProject>(runProjects[id]);
             }
             else if (uncertaintyProjects.contains(id))
             {
-                return uncertaintyProjects[id];
+                return std::static_pointer_cast<Models::ModelProject>(uncertaintyProjects[id]);
             }
             else if (sensitivityProjects.contains(id))
             {
-                return sensitivityProjects[id];
+                return std::static_pointer_cast<Models::ModelProject>(sensitivityProjects[id]);
             }
             else
             {
@@ -2493,15 +2541,6 @@ namespace Deltares
                 objectType == ObjectType::RunProject ||
                 objectType == ObjectType::UncertaintyProject ||
                 objectType == ObjectType::SensitivityProject;
-        }
-
-        void ProjectHandler::UpdateValidationMessages(const std::vector<std::shared_ptr<Models::Message>>& newMessages)
-        {
-            validationMessages.clear();
-            for (const std::shared_ptr<Models::Message>& message : newMessages)
-            {
-                validationMessages.push_back(message);
-            }
         }
     }
 }

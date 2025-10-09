@@ -71,10 +71,10 @@ namespace Deltares::Sensitivity
         std::vector<std::shared_ptr<SensitivityResult>> sensitivityResults;
 
         /**
-         * \brief Indicates whether the input is valid
-         * \return Indication
+         * \brief Reports whether these settings have valid values
+         * \param report Report in which the validity is reported
          */
-        bool isValid() override;
+        void validate(Logging::ValidationReport& report) override;
 
         /**
          * \brief Performs the sensitivity calculation
@@ -103,7 +103,7 @@ namespace Deltares::Sensitivity
         /**
          * \brief List of messages raised during uncertainty analysis
          */
-        std::vector<std::shared_ptr<Models::Message>> messages;
+        std::vector<std::shared_ptr<Logging::Message>> messages;
 
     private:
         std::shared_ptr<Models::ParameterSelector> parameterSelector = std::make_shared<Models::ParameterSelector>();

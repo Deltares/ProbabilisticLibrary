@@ -25,6 +25,7 @@
 #include "../StochastProperties.h"
 #include "../../Math/WeightedValue.h"
 #include "../../Utils/probLibException.h"
+#include "../../Logging/ValidationReport.h"
 
 namespace Deltares::Statistics
 {
@@ -98,13 +99,6 @@ namespace Deltares::Statistics
          * \return Indication
          */
         virtual bool canFitPrior() { return false; }
-
-        /**
-         * \brief Indicates whether the shift parameter of the stochast is used
-         * \remark This method is used by the inverted distribution
-         * \return Indication
-         */
-        virtual bool isShiftUsed() { return false; }
 
         /**
          * \brief Indicates whether it is meaningful to compare x-values produced by this distribution (no: qualitative, yes: not qualitative)
@@ -224,11 +218,19 @@ namespace Deltares::Statistics
 
         /**
          * \brief Indicates whether parameters of a stochast have valid values
-         * \remark Only parameters which are used by the distribution are evaluated
          * \param stochast Stochast having the parameters
          * \return Indication valid parameters
          */
-        virtual bool isValid(std::shared_ptr<StochastProperties> stochast) { return true; }
+        bool isValid(std::shared_ptr<StochastProperties> stochast);
+
+        /**
+         * \brief Validates the stochastic parameters and puts the results in a report
+         * \param report The validation report containing the validation results
+         * \param stochast Stochast having the parameters
+         * \param subject String representing the validated object
+         * \remark Only parameters which are used by the distribution are evaluated
+         */
+        virtual void validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast, std::string& subject);
 
         /**
          * \brief Gets the log likelihood of a stochast at a given x-value

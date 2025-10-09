@@ -81,6 +81,7 @@ namespace Deltares
             void Execute(int id, std::string method_) override;
 
             int GetProbabilityValueId(std::shared_ptr<Statistics::ProbabilityValue> probability, int newId);
+            int GetValidationReportId(std::shared_ptr<Logging::ValidationReport> validationReport, int newId);
             int GetStochastId(std::shared_ptr<Statistics::Stochast> stochast, int newId);
             int GetFragilityCurveId(std::shared_ptr<Reliability::FragilityCurve> fragilityCurve, int newId);
             int GetCorrelationMatrixId(std::shared_ptr<Statistics::CorrelationMatrix> correlationMatrix, int newid);
@@ -97,7 +98,7 @@ namespace Deltares
             int GetConditionalValueId(std::shared_ptr<Statistics::VariableStochastValue> conditionalValue, int newId);
             int GetEvaluationId(std::shared_ptr<Deltares::Reliability::Evaluation> evaluation, int newId);
             int GetReliabilityResultId(std::shared_ptr<Deltares::Reliability::ReliabilityResult> result, int newId);
-            int GetMessageId(std::shared_ptr<Deltares::Models::Message> message, int newId);
+            int GetMessageId(std::shared_ptr<Deltares::Logging::Message> message, int newId);
 
             std::shared_ptr <Reliability::DesignPoint> GetDesignPoint(int id)
             {
@@ -106,7 +107,7 @@ namespace Deltares
         protected:
             virtual std::shared_ptr<Reliability::DesignPointIds> GetDesignPointIds(int id);
         private:
-            enum ObjectType {StandardNormal, Message, ProbabilityValue, Project, ModelParameter, LimitStateFunction, Stochast, DiscreteValue, HistogramValue, FragilityValue,
+            enum ObjectType {StandardNormal, Message, ValidationReport, ProbabilityValue, Project, ModelParameter, LimitStateFunction, Stochast, DiscreteValue, HistogramValue, FragilityValue,
                 ContributingStochast, ConditionalValue, CorrelationMatrix, Scenario, Settings, StochastSettings, DesignPoint, Alpha, FragilityCurve, FragilityCurveProject, Evaluation,
                 CombineProject, CombineSettings, ExcludingCombineProject, ExcludingCombineSettings, SelfCorrelationMatrix, UncertaintyProject, UncertaintySettings, UncertaintyResult,
                 SensitivityProject, SensitivitySettings, SensitivityResult, SensitivityValue, LengthEffectProject, RunProject, RunProjectSettings, ReliabilityResult};
@@ -115,7 +116,8 @@ namespace Deltares
 
             std::unordered_map<int, std::shared_ptr<Statistics::Stochast>> stochasts;
             std::unordered_map<int, std::shared_ptr<Statistics::ProbabilityValue>> probabilityValues;
-            std::unordered_map<int, std::shared_ptr<Models::Message>> messages;
+            std::unordered_map<int, std::shared_ptr<Logging::Message>> messages;
+            std::unordered_map<int, std::shared_ptr<Logging::ValidationReport>> validationReports;
             std::unordered_map<int, std::shared_ptr<Reliability::ReliabilityProject>> projects;
             std::unordered_map<int, std::shared_ptr<Models::ModelInputParameter>> modelParameters;
             std::unordered_map<int, std::shared_ptr<Reliability::LimitStateFunction>> limitStateFunctions;
@@ -168,18 +170,16 @@ namespace Deltares
             std::unordered_map<std::shared_ptr<Statistics::VariableStochastValue>, int> conditionalValueIds;
             std::unordered_map<std::shared_ptr<Reliability::Evaluation>, int> evaluationIds;
             std::unordered_map<std::shared_ptr<Reliability::ReliabilityResult>, int> reliabilityResultIds;
-            std::unordered_map<std::shared_ptr<Models::Message>, int> messageIds;
+            std::unordered_map<std::shared_ptr<Logging::Message>, int> messageIds;
 
             std::unordered_map <std::string, std::vector<double>> tempValues;
             double argValue = nan("");
             int tempIntValue = 0;
-
-            void UpdateValidationMessages(const std::vector<std::shared_ptr<Models::Message>>& newMessages);
+            
             std::shared_ptr<Models::ModelProject> GetProject(int id);
             std::shared_ptr<Models::ModelProjectSettings> GetSettings(int id);
             static bool IsModelProjectType(ObjectType objectType);
 
-            std::vector<std::shared_ptr<Models::Message>> validationMessages;
         };
     }
 }

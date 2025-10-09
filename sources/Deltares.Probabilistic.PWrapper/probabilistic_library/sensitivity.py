@@ -27,7 +27,8 @@ import numpy as np
 
 from .utils import FrozenObject, FrozenList, PrintUtils
 from .statistic import Stochast, ProbabilityValue
-from .reliability import StochastSettings, Evaluation, Message
+from .reliability import StochastSettings, RandomType, GradientType
+from .logging import Evaluation, Message
 from . import interface
 
 if not interface.IsLibraryLoaded():

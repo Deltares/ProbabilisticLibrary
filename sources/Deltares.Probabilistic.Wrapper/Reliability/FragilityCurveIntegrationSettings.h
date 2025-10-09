@@ -70,11 +70,6 @@ namespace Deltares
                     }
                 }
 
-                bool IsValid()
-                {
-                    return shared->object->isValid();
-                }
-
                 std::shared_ptr<Reliability::FragilityCurveIntegrationSettings> GetSettings()
                 {
                     return shared->object;

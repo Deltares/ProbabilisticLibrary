@@ -22,7 +22,8 @@
 #pragma once
 #include <memory>
 
-#include "Message.h"
+#include "../Logging/ValidationReport.h"
+#include "../Logging/ValidationSupport.h"
 #include "ProxySettings.h"
 
 namespace Deltares
@@ -48,14 +49,14 @@ namespace Deltares
             bool RunAtDesignPoint = false;
             bool ExtendedLoggingAtDesignPoint = false;
             int MaxMessages = 1000;
-            MessageType LowestMessageType = MessageType::Warning;
+            Logging::MessageType LowestMessageType = Logging::MessageType::Warning;
             bool UseOpenMPinReliability = true; // false: parallelization only using getZValues; needed for Python
 
             std::shared_ptr<ProxySettings> proxySettings = nullptr;
 
-            bool isValid()
+            void validate(Logging::ValidationReport& report) const
             {
-                return MaxParallelProcesses >= 1;
+                Logging::ValidationSupport::checkMinimumInt(report, 1, MaxParallelProcesses, "max parallel processes");
             }
 
             bool IsProxyModel()

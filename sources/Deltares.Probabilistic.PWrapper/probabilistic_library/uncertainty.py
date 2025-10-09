@@ -25,8 +25,9 @@ from enum import Enum
 import matplotlib.pyplot as plt
 
 from .utils import FrozenObject, FrozenList, CallbackList
+from .logging import Evaluation, Message, ValidationReport
 from .statistic import Stochast, ProbabilityValue
-from .reliability import StochastSettings, RandomType, GradientType, Evaluation, Message
+from .reliability import StochastSettings, RandomType, GradientType
 from . import interface
 
 if not interface.IsLibraryLoaded():
@@ -84,7 +85,9 @@ class UncertaintySettings(FrozenObject):
 			    'calculate_correlations',
 			    'calculate_input_correlations',
 			    'quantiles',
-	            'stochast_settings']
+	            'stochast_settings',
+		        'is_valid',
+		        'validate']
 
 		
 	@property
@@ -323,6 +326,19 @@ class UncertaintySettings(FrozenObject):
 			self._synchronizing = False
 
 			interface.SetArrayIntValue(self._id, 'quantiles', [quantile._id for quantile in self._quantiles])
+
+	def is_valid(self) -> bool:
+		return interface.GetBoolValue(self._id, 'is_valid')
+
+	def validate(self):
+		id_ = interface.GetIdValue(self._id, 'validate')
+		if id_ > 0:
+			validation_report = ValidationReport(id_)
+			if len(validation_report.messages) == 0:
+				print('ok')
+			else:
+				for message in validation_report.messages:
+					message.print()
 
 	def _set_variables(self, variables):
 		new_stochast_settings = []

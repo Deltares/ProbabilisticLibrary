@@ -22,8 +22,9 @@
 #pragma once
 
 #include "ProbabilityValue.h"
-#include "BaseStochastPoint.h"
 #include "../Utils/DirtySupport.h"
+#include "../Logging/ValidationReport.h"
+#include "../Logging/ValidationSupport.h"
 
 #include <memory>
 
@@ -65,6 +66,12 @@ namespace Deltares
                 {
                     setDirtyLambda();
                 }
+            }
+
+            void validate(Logging::ValidationReport& report, const std::string& subject) const
+            {
+                Logging::ValidationSupport::checkMinimum(report, -StandardNormal::UMax, Reliability, "reliability", subject);
+                Logging::ValidationSupport::checkMaximum(report, StandardNormal::UMax, Reliability, "reliability", subject);
             }
 
             std::shared_ptr<FragilityValue> clone()

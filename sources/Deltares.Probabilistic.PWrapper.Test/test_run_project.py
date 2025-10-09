@@ -21,6 +21,7 @@
 #
 import unittest
 import sys
+from io import StringIO
 
 from probabilistic_library.utils import FrozenList, FrozenObject
 from probabilistic_library.project import RunProject, RunValuesType
@@ -100,6 +101,23 @@ class Test_run_project(unittest.TestCase):
         # expecting new result
         self.assertAlmostEqual(1.7, project.realization.output_values[0], delta=margin)
 
+    def test_no_model(self):
+        project = RunProject()
+
+        project.settings.run_values_type = RunValuesType.median_values
+
+        # Replace default stdout (terminal) temporary with with our stream
+        sys.stdout = StringIO()
+
+        # run the invalid project
+        project.run();
+        self.assertIsNone(project.realization)
+
+        printed = sys.stdout.getvalue()
+
+        sys.stdout = sys.__stdout__
+
+        self.assertEqual("""Error: project => model is not assigned.\n""", printed)
 
 if __name__ == '__main__':
     unittest.main()

@@ -29,12 +29,15 @@ namespace Deltares::Models
     {
         this->evaluation = nullptr;
 
-        std::shared_ptr<UConverter> uConverter = std::make_shared<UConverter>(this->stochasts, this->correlationMatrix);
-        ModelRunner modelRunner = ModelRunner(this->model, uConverter, nullptr);
-        modelRunner.Settings = this->settings->RunSettings;
-        modelRunner.initializeForRun();
+        if (this->model != nullptr && this->model->callbackAssigned)
+        {
+            std::shared_ptr<UConverter> uConverter = std::make_shared<UConverter>(this->stochasts, this->correlationMatrix);
+            ModelRunner modelRunner = ModelRunner(this->model, uConverter, nullptr);
+            modelRunner.Settings = this->settings->RunSettings;
+            modelRunner.initializeForRun();
 
-        this->evaluation = std::make_shared<Evaluation>(modelRunner.getEvaluationFromType(this->settings->runValuesType));
+            this->evaluation = std::make_shared<Evaluation>(modelRunner.getEvaluationFromType(this->settings->runValuesType));
+        }
     }
 }
 

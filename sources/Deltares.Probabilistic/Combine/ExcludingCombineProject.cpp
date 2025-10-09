@@ -32,38 +32,39 @@ namespace Deltares::Reliability
         this->designPoint = combiner->combineDesignPointsExcluding(this->scenarios, this->designPoints);
     }
 
-    std::vector<std::shared_ptr<Models::Message>> ExcludingCombineProject::validate() const
+    void ExcludingCombineProject::validate(Logging::ValidationReport& report) const
     {
         const double margin = 1E-10;
 
-        std::vector<std::shared_ptr<Models::Message>> messages;
-
         if (this->designPoints.size() != this->scenarios.size())
         {
-            messages.push_back(std::make_shared<Message>(MessageType::Error, "Number of scenarios should be equal to number of design points."));
+            Logging::ValidationSupport::add(report, "Number of scenarios should be equal to number of design points.");
         }
 
         double sumProbabilities = 0;
         for (std::shared_ptr<Statistics::Scenario> scenario : this->scenarios)
         {
             sumProbabilities += scenario->probability;
-            for (std::shared_ptr<Message> scenarioMessage : scenario->validate())
-            {
-                messages.push_back(scenarioMessage);
-            }
+            scenario->validate(report);
         }
 
-        if (std::abs(1 - sumProbabilities) > margin)
+        if (!Numeric::NumericSupport::areEqual(1.0, sumProbabilities, margin))
         {
-            messages.push_back(std::make_shared<Message>(MessageType::Error, "Scenario probabilities should add up to 1."));
+            Logging::ValidationSupport::add(report, "scenario probabilities should add up to 1.");
         }
+    }
 
-        return messages;
+    Logging::ValidationReport ExcludingCombineProject::getValidationReport() const
+    {
+        Logging::ValidationReport report;
+        validate(report);
+
+        return report;
     }
 
     bool ExcludingCombineProject::is_valid() const
     {
-        return this->validate().empty();
+        return getValidationReport().isValid();
     }
 }
 

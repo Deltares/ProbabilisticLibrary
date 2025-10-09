@@ -63,10 +63,10 @@ namespace Deltares::Sensitivity
         std::shared_ptr<Sensitivity::SensitivityMethod> GetSensitivityMethod();
 
         /**
-         * \brief Indicates whether these settings have valid values
-         * \return Indication
+         * \brief Reports whether the settings have valid values
+         * \param report Report in which the validity is reported
          */
-        bool isValid() const;
+        void validate(Logging::ValidationReport& report) const;
 
         static std::string getSensitivityMethodTypeString(SensitivityMethodType method);
         static SensitivityMethodType getSensitivityMethodType(std::string method);

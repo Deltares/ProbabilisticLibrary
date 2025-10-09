@@ -51,6 +51,9 @@ namespace Deltares
             double getPDF(std::shared_ptr<StochastProperties> stochast, double x) override;
             double getCDF(std::shared_ptr<StochastProperties> stochast, double x) override;
             void setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType) override;
+            void fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values) override;
+            void fitPrior(const std::shared_ptr<StochastProperties>& stochast, const std::shared_ptr<StochastProperties>& prior, std::vector<double>& values) override;
+            void validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast, std::string& subject) override;
             void fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift) override;
             void fitPrior(const std::shared_ptr<StochastProperties>& stochast, std::vector<double>& values, const std::shared_ptr<StochastProperties>& prior, const double shift) override;
             bool isValid(std::shared_ptr<StochastProperties> stochast) override;
@@ -59,9 +62,10 @@ namespace Deltares
             std::vector<DistributionPropertyType> getParameters() override;
         private:
             std::shared_ptr<Distribution> innerDistribution = nullptr;
-            double getInvertedValue(std::shared_ptr<StochastProperties> stochast, double value);
-            std::shared_ptr<StochastProperties> getInvertedStochast(std::shared_ptr<StochastProperties> stochast);
-            void copyFromInverted(std::shared_ptr<StochastProperties> target, std::shared_ptr<StochastProperties> source);
+            double getInvertedValue(std::shared_ptr<StochastProperties> stochast, double value) const;
+            std::shared_ptr<StochastProperties> getInvertedStochast(std::shared_ptr<StochastProperties> stochast) const;
+            void copyFromInverted(std::shared_ptr<StochastProperties> target, std::shared_ptr<StochastProperties> source) const;
+            bool isShiftUsed() const;
         };
     }
 }

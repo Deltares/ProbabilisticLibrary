@@ -70,11 +70,6 @@ namespace Deltares
             return stochast->Scale > 0;
         }
 
-        bool ExponentialDistribution::isValid(std::shared_ptr<StochastProperties> stochast)
-        {
-            return stochast->Scale >= 0;
-        }
-
         double ExponentialDistribution::getMean(std::shared_ptr<StochastProperties> stochast)
         {
             return stochast->Scale + stochast->Shift;

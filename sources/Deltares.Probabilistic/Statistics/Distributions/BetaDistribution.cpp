@@ -37,11 +37,6 @@ namespace Deltares
             this->setMeanAndDeviation(stochast, values[0], values[1]);
         }
 
-        bool BetaDistribution::isValid(std::shared_ptr<StochastProperties> stochast)
-        {
-            return stochast->Shape >= 0 && stochast->ShapeB >= 0;
-        }
-
         bool BetaDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)
         {
             return stochast->Shape > 0 && stochast->ShapeB > 0;

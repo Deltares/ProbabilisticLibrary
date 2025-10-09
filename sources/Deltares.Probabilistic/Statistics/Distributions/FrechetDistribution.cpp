@@ -39,11 +39,6 @@ namespace Deltares
             setMeanAndDeviation(stochast, values[0], values[1]);
         }
 
-        bool FrechetDistribution::isValid(std::shared_ptr<StochastProperties> stochast)
-        {
-            return stochast->Shape >= 0.001 && stochast->Scale >= 0;
-        }
-
         bool FrechetDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)
         {
             return stochast->Scale > 0;

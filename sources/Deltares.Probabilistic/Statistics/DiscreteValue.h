@@ -22,6 +22,8 @@
 #pragma once
 
 #include "../Utils/DirtySupport.h"
+#include "../Logging/ValidationReport.h"
+#include "../Logging/ValidationSupport.h"
 #include <memory>
 
 namespace Deltares
@@ -39,10 +41,6 @@ namespace Deltares
                 this->Amount = amount;
             }
 
-            ~DiscreteValue()
-            {
-            }
-
             double X = 0;
             double Amount = 0;
 
@@ -54,7 +52,7 @@ namespace Deltares
                 this->setDirtyLambda = setDirtyLambda;
             }
 
-            void setDirty()
+            void setDirty() const
             {
                 if (setDirtyLambda != nullptr)
                 {
@@ -62,7 +60,12 @@ namespace Deltares
                 }
             }
 
-            std::shared_ptr<DiscreteValue> clone()
+            void validate(Logging::ValidationReport& report, const std::string& subject) const
+            {
+                Logging::ValidationSupport::checkMinimum(report, 0, Amount, "amount", subject);
+            }
+
+            std::shared_ptr<DiscreteValue> clone() const
             {
                 std::shared_ptr<DiscreteValue> clone = std::make_shared<DiscreteValue>();
 

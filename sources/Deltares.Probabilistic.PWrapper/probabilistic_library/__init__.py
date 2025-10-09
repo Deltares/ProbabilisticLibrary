@@ -20,6 +20,7 @@
 # All rights reserved.
 #
 from .interface import *
+from .logging import *
 from .statistic import *
 from .reliability import *
 from .uncertainty import *

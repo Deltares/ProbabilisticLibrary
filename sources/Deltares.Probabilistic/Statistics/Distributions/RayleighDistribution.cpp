@@ -36,11 +36,6 @@ namespace Deltares
             setMeanAndDeviation(stochast, values[0], values[1]);
         }
 
-        bool RayleighDistribution::isValid(std::shared_ptr<StochastProperties> stochast)
-        {
-            return stochast->Scale >= 0;
-        }
-
         bool RayleighDistribution::isVarying(std::shared_ptr<StochastProperties> stochast)
         {
             return stochast->Scale > 0;

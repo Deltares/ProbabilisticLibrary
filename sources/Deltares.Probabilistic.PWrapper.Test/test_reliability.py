@@ -52,9 +52,17 @@ class Test_reliability(unittest.TestCase):
         project.variables['a'].scale = -1
         self.assertFalse(project.is_valid())
 
-        # run an invalid prohect
+        # Replace default stdout (terminal) temporary with with our stream
+        sys.stdout = StringIO()
+
+        # run an invalid project
         project.run();
         self.assertIsNone(project.design_point)
+
+        printed = sys.stdout.getvalue()
+        sys.stdout = sys.__stdout__
+
+        self.assertEqual("""Error: a => scale value -1 is less than 0.\n""", printed)
 
     def test_form_linear(self):
         project = project_builder.get_linear_project()
@@ -136,7 +144,7 @@ def f(a,b):
 """
         project.model = func_code
 
-        self.assertFalse(project.model.is_valid())
+        self.assertFalse(project.is_valid())
 
         func_code = """
 def g(a,b):
@@ -145,7 +153,7 @@ def g(a,b):
 """
         project.model = func_code
 
-        self.assertTrue(project.model.is_valid())
+        self.assertTrue(project.is_valid())
         self.assertEqual(2, len(project.model.input_parameters))
         self.assertEqual('a', project.model.input_parameters[0].name)
         self.assertEqual('z', project.model.output_parameters[0].name)
@@ -159,7 +167,7 @@ def h(a,b,c):
 """
         project.model = func_code
 
-        self.assertTrue(project.model.is_valid())
+        self.assertTrue(project.is_valid())
         self.assertEqual(3, len(project.model.input_parameters))
         self.assertEqual('a', project.model.input_parameters[0].name)
         self.assertEqual('c', project.model.input_parameters[2].name)

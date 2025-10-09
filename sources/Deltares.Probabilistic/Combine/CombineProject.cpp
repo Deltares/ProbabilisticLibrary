@@ -26,16 +26,29 @@ namespace Deltares
 {
     namespace Reliability
     {
-        bool CombineProject::isValid() const
-        {
-            return !designPoints.empty();
-        }
-
         void CombineProject::run()
         {
             std::shared_ptr<DesignPointCombiner> combiner = std::make_shared<DesignPointCombiner>(this->settings->combinerMethod);
 
             this->designPoint = combiner->combineDesignPoints(this->settings->combineType, this->designPoints, this->selfCorrelationMatrix, this->correlationMatrix);
+        }
+
+        void CombineProject::validate(Logging::ValidationReport& report) const
+        {
+            Logging::ValidationSupport::checkNotEmpty(report, designPoints.size(), "design points");
+        }
+
+        Logging::ValidationReport CombineProject::getValidationReport() const
+        {
+            Logging::ValidationReport report;
+            validate(report);
+
+            return report;
+        }
+
+        bool CombineProject::is_valid() const
+        {
+            return getValidationReport().isValid();
         }
     }
 }

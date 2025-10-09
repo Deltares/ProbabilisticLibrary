@@ -56,7 +56,7 @@ namespace Deltares
             // warnings and errors are presented.
             if (nStochasts > 11)
             {
-                modelRunner->reportMessage(Models::MessageType::Error, "Numerical integration with more than 11 stochastic parameters. This is practically impossible.");
+                modelRunner->reportMessage(Logging::MessageType::Error, "Numerical integration with more than 11 stochastic parameters. This is practically impossible.");
 
                 std::shared_ptr<ReliabilityReport> reportInvalid = std::make_shared<ReliabilityReport>();
                 reportInvalid->Step = 1;
@@ -67,7 +67,7 @@ namespace Deltares
             }
             else if (nStochasts > 4)
             {
-                modelRunner->reportMessage(Models::MessageType::Warning, "Numerical integration with more than 4 stochastic parameters. Large computation time is possible.");
+                modelRunner->reportMessage(Logging::MessageType::Warning, "Numerical integration with more than 4 stochastic parameters. Large computation time is possible.");
             }
 
             // Initialize parameters for the recursive part of the numerical integration computation.
