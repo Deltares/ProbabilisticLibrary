@@ -136,8 +136,7 @@ namespace Deltares
         {
             // fit the shift first
             // do not use inverted value, because it depends on stochast->Shift, which is not known yet (because it has to be fitted)
-            if (this->isShiftUsed())
-            if (std::isnan(shift) && this->innerDistribution->isShiftUsed())
+            if (std::isnan(shift) && isShiftUsed())
             {
                 std::vector<double> zeroInvertedValues = Numeric::NumericSupport::select(values, [](double x) {return -x; });
 
@@ -159,8 +158,7 @@ namespace Deltares
         {
             // fit the shift first
             // do not use inverted value, because it depends on stochast->Shift, which is not known yet (because it has to be fitted)
-            if (this->isShiftUsed())
-            if (std::isnan(shift) && this->innerDistribution->isShiftUsed())
+            if (std::isnan(shift) && isShiftUsed())
             {
                 std::vector<double> zeroInvertedValues = Numeric::NumericSupport::select(values, [](double x) {return -x; });
 

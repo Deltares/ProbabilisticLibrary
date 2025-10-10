@@ -52,12 +52,9 @@ namespace Deltares
             double getPDF(std::shared_ptr<StochastProperties> stochast, double x) override;
             double getCDF(std::shared_ptr<StochastProperties> stochast, double x) override;
             void setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType) override;
-            void fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values) override;
-            void fitPrior(const std::shared_ptr<StochastProperties>& stochast, const std::shared_ptr<StochastProperties>& prior, std::vector<double>& values) override;
             void validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast, std::string& subject) override;
             void fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift) override;
             void fitPrior(const std::shared_ptr<StochastProperties>& stochast, std::vector<double>& values, const std::shared_ptr<StochastProperties>& prior, const double shift) override;
-            bool isValid(std::shared_ptr<StochastProperties> stochast) override;
             double getLogLikelihood(std::shared_ptr<StochastProperties> stochast, double x) override;
             std::vector<double> getSpecialPoints(std::shared_ptr<StochastProperties> stochast) override;
             std::vector<DistributionPropertyType> getParameters() override;
