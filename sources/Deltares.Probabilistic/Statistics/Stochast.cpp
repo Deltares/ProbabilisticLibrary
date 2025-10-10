@@ -578,13 +578,21 @@ namespace Deltares
 
         void Stochast::fit(std::vector<double> values, const double shift) const
         {
-            checkFitValues(values, shift);
+            if (values.empty())
+            {
+                throw Reliability::probLibException("Values should not be empty");
+            }
+
             distribution->fit(properties, values, shift);
         }
 
         void Stochast::fitPrior(std::vector<double> values, std::shared_ptr<Stochast> prior, const double shift) const
         {
-            checkFitValues(values, shift);
+            if (values.empty())
+            {
+                throw Reliability::probLibException("Values should not be empty");
+            }
+
             distribution->fitPrior(properties, values, prior->getProperties(), shift);
         }
 
@@ -632,14 +640,6 @@ namespace Deltares
             }
 
             distribution->fit(properties, values, nan(""));
-        }
-
-        void Stochast::checkFitValues(std::vector<double>& values, const double shift)
-        {
-            if (values.empty())
-            {
-                throw Reliability::probLibException("Values should not be empty");
-            }
         }
 
         double Stochast::getKSTest(std::vector<double> values) const

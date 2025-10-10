@@ -63,13 +63,6 @@ namespace Deltares
              */
             std::shared_ptr<StochastProperties> getInterpolatedProperties(double xSource);
 
-            /**
-             * \brief Throws an exception when the values for fit can not be handled
-             * \param values Values for fit
-             * \param shift Optional shift parameter
-             */
-            static void checkFitValues(std::vector<double>& values, const double shift);
-
         protected:
             std::shared_ptr<Distribution> distribution = std::make_shared<DeterministicDistribution>();
 
