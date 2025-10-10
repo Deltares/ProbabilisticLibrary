@@ -53,7 +53,7 @@ namespace Deltares::Models
         /**
          * \brief Indicates whether a run can be performed
          */
-        bool isValid()
+        bool isValid() const
         {
             return getValidationReport().isValid();
         }
