@@ -914,6 +914,18 @@ namespace Deltares
 
                 if (property_ == "conditional_source") return GetStochastId(stochast->VariableSource, newId);
                 else if (property_ == "validate") return GetValidationReportId(std::make_shared<Logging::ValidationReport>(stochast->getValidationReport()), newId);
+                else if (property_ == "validate_fit")
+                {
+                    std::shared_ptr<Statistics::Stochast> prior = tempIntValue > 0 ? stochasts[tempIntValue] : nullptr;
+                    Logging::ValidationReport report = stochast->getFitValidationReport(tempValues["data"], prior, argValue);
+                    if (!report.isValid())
+                    {
+                        tempValues.erase("data");
+                        tempIntValue = 0;
+                        argValue = std::nan("");
+                    }
+                    return GetValidationReportId(std::make_shared<Logging::ValidationReport>(report), newId);
+                }
             }
             else if (objectType == ObjectType::FragilityValue)
             {
@@ -1158,7 +1170,13 @@ namespace Deltares
         {
             ObjectType objectType = types[id];
 
-            if (objectType == ObjectType::Stochast)
+            if (objectType == ObjectType::ValidationReport)
+            {
+                std::shared_ptr<Logging::ValidationReport> validationReport = validationReports[id];
+
+                if (property_ == "is_valid") return validationReport->isValid();
+            }
+            else if (objectType == ObjectType::Stochast)
             {
                 std::shared_ptr<Statistics::Stochast> stochast = stochasts[id];
 
@@ -1610,53 +1628,15 @@ namespace Deltares
             {
                 std::shared_ptr<Statistics::Stochast> stochast = stochasts[id];
 
-                if (property_ == "fit")
+                std::vector<double> dataValues(size);
+                for (int i = 0; i < size; i++)
                 {
-                    std::vector<double> fitValues(size);
-                    for (int i = 0; i < size; i++)
-                    {
-                        fitValues[i] = values[i];
-                    }
-
-                    double shift = argValue;
-                    argValue = nan("");
-
-                    stochast->fit(fitValues, shift);
+                    dataValues[i] = values[i];
                 }
-                else if (property_ == "fit_prior")
-                {
-                    std::vector<double> fitValues(size);
-                    for (int i = 0; i < size; i++)
-                    {
-                        fitValues[i] = values[i];
-                    }
 
-                    double shift = argValue;
-                    argValue = nan("");
-
-                    stochast->fitPrior(fitValues, stochasts[tempIntValue], shift);
-                    tempIntValue = 0;
-                }
-                else if (property_ == "data")
-                {
-                    std::vector<double> data;
-                    for (size_t i = 0; i < size; i++)
-                    {
-                        data.push_back(values[i]);
-                    }
-
-                    tempValues["data"] = data;
-                }
-                else if (property_ == "u_and_x")
-                {
-                    std::vector<double> u_and_x;
-                    for (size_t i = 0; i < size; i++)
-                    {
-                        u_and_x.push_back(values[i]);
-                    }
-
-                    tempValues["u_and_x"] = u_and_x;
-                }
+                if (property_ == "fit") tempValues["data"] = dataValues;
+                else if (property_ == "data") tempValues["data"] = dataValues;
+                else if (property_ == "u_and_x") tempValues["u_and_x"] = dataValues;
             }
             else if (objectType == ObjectType::LengthEffectProject)
             {
@@ -2148,6 +2128,25 @@ namespace Deltares
 
                 if (method_ == "initialize_for_run") stochast->initializeForRun();
                 else if (method_ == "initialize_conditional_values") stochast->initializeConditionalValues();
+                else if (method_ == "fit")
+                {
+                    double shift = argValue;
+
+                    stochast->fit(tempValues["data"], shift);
+
+                    argValue = nan("");
+                    tempValues.erase("data");
+                }
+                else if (method_ == "fit_prior")
+                {
+                    double shift = argValue;
+
+                    stochast->fitPrior(tempValues["data"], stochasts[tempIntValue], shift);
+
+                    tempIntValue = 0;
+                    argValue = nan("");
+                    tempValues.erase("data");
+                }
             }
             else if (IsModelProjectType(objectType))
             {

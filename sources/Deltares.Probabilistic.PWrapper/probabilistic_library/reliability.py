@@ -122,10 +122,7 @@ class Settings(FrozenObject):
 		interface.SetBoolValue(self._id, 'use_openmp_in_reliability', False)
 
 	def __del__(self):
-		try:
-			interface.Destroy(self._id)
-		except:
-			pass
+		interface.Destroy(self._id)
 
 	def __dir__(self):
 		return ['max_parallel_processes',
@@ -431,10 +428,7 @@ class StochastSettings(FrozenObject):
 		super()._freeze()
 
 	def __del__(self):
-		try:
-			interface.Destroy(self._id)
-		except:
-			pass
+		interface.Destroy(self._id)
 
 	def __dir__(self):
 		return ['min_value',
@@ -531,10 +525,7 @@ class LimitStateFunction(FrozenObject):
 		super()._freeze()
 
 	def __del__(self):
-		try:
-			interface.Destroy(self._id)
-		except:
-			pass
+		interface.Destroy(self._id)
 
 	def __dir__(self):
 		return ['parameter',
@@ -601,10 +592,7 @@ class DesignPoint(FrozenObject):
 		super()._freeze()
 		
 	def __del__(self):
-		try:
-			interface.Destroy(self._id)
-		except:
-			pass
+		interface.Destroy(self._id)
 
 	def __dir__(self):
 		return ['identifier',
@@ -906,10 +894,7 @@ class Alpha(FrozenObject):
 		super()._freeze()
 
 	def __del__(self):
-		try:
-			interface.Destroy(self._id)
-		except:
-			pass
+		interface.Destroy(self._id)
 
 	def __dir__(self):
 		return ['variable',
@@ -995,10 +980,7 @@ class FragilityCurve(FrozenObject):
 		super()._freeze()
 
 	def __del__(self):
-		try:
-			interface.Destroy(self._id)
-		except:
-			pass
+		interface.Destroy(self._id)
 
 	def __dir__(self):
 		return ['name',
@@ -1094,10 +1076,7 @@ class FragilityCurveProject(FrozenObject):
 		super()._freeze()
 
 	def __del__(self):
-		try:
-			interface.Destroy(self._id)
-		except:
-			pass
+		interface.Destroy(self._id)
 
 	def __dir__(self):
 		return ['integrand',
@@ -1156,10 +1135,7 @@ class CombineSettings(FrozenObject):
 		super()._freeze()
 		
 	def __del__(self):
-		try:
-			interface.Destroy(self._id)
-		except:
-			pass
+		interface.Destroy(self._id)
 
 	def __dir__(self):
 		return ['combiner_method',
@@ -1188,10 +1164,7 @@ class ExcludingCombineSettings(FrozenObject):
 		super()._freeze()
 		
 	def __del__(self):
-		try:
-			interface.Destroy(self._id)
-		except:
-			pass
+		interface.Destroy(self._id)
 
 	def __dir__(self):
 		return ['combiner_method']
@@ -1215,10 +1188,7 @@ class ReliabilityResult(FrozenObject):
 		super()._freeze()
 
 	def __del__(self):
-		try:
-			interface.Destroy(self._id)
-		except:
-			pass
+		interface.Destroy(self._id)
 
 	def __dir__(self):
 		return ['index',

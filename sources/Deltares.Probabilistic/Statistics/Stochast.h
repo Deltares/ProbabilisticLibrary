@@ -63,6 +63,13 @@ namespace Deltares
              */
             std::shared_ptr<StochastProperties> getInterpolatedProperties(double xSource);
 
+            /**
+             * \brief Throws an exception when the values for fit can not be handled
+             * \param values Values for fit
+             * \param shift Optional shift parameter
+             */
+            static void checkFitValues(std::vector<double>& values, const double shift);
+
         protected:
             std::shared_ptr<Distribution> distribution = std::make_shared<DeterministicDistribution>();
 
@@ -366,6 +373,14 @@ namespace Deltares
              * \param shift If set, shift is not fitted but uses given shift parameter
              */
             void fitPrior(std::vector<double> values, std::shared_ptr<Stochast> prior, const double shift = nan("")) const;
+
+            /**
+             * \brief Gets a validation report which tells whether a fit operation is allowed
+             * \param values Given set of x-values
+             * \param prior If set, validates whether a fit with prior is allowed
+             * \param shift If set, shift is not fitted but uses given shift parameter
+             */
+            Logging::ValidationReport getFitValidationReport(std::vector<double>& values, const std::shared_ptr<Stochast>& prior = nullptr, const double shift = nan("")) const;
 
             /**
              * \brief Estimates stochastic parameters for a given set of x-values and their weights

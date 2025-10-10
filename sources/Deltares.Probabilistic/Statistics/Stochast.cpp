@@ -543,13 +543,48 @@ namespace Deltares
             return distribution->canFitPrior();
         }
 
+        Logging::ValidationReport Stochast::getFitValidationReport(std::vector<double>& values, const std::shared_ptr<Stochast>& prior, const double shift) const
+        {
+            Logging::ValidationReport report;
+
+            Logging::ValidationSupport::checkNotEmpty(report, values.size(), "values");
+
+            if (!this->canFit())
+            {
+                Logging::ValidationSupport::add(report, "Fit is not supported for distribution type " + Stochast::getDistributionTypeString(distributionType) + ".", name);
+            }
+
+            if (!values.empty() && !std::isnan(shift))
+            {
+                double minValue = *std::ranges::min_element(values);
+                Logging::ValidationSupport::checkMaximumNonInclusive(report, minValue, shift, "shift");
+            }
+
+            if (prior != nullptr)
+            {
+                if (!this->canFitPrior())
+                {
+                    Logging::ValidationSupport::add(report, "Fit with prior is not supported for distribution type " + Stochast::getDistributionTypeString(distributionType) + ".", name);
+                }
+
+                if (distributionType != prior->distributionType)
+                {
+                    Logging::ValidationSupport::add(report, "Fit from prior with other distribution type is not supported.", name);
+                }
+            }
+
+            return report;
+        }
+
         void Stochast::fit(std::vector<double> values, const double shift) const
         {
+            checkFitValues(values, shift);
             distribution->fit(properties, values, shift);
         }
 
         void Stochast::fitPrior(std::vector<double> values, std::shared_ptr<Stochast> prior, const double shift) const
         {
+            checkFitValues(values, shift);
             distribution->fitPrior(properties, values, prior->getProperties(), shift);
         }
 
@@ -597,6 +632,14 @@ namespace Deltares
             }
 
             distribution->fit(properties, values, nan(""));
+        }
+
+        void Stochast::checkFitValues(std::vector<double>& values, const double shift)
+        {
+            if (values.empty())
+            {
+                throw Reliability::probLibException("Values should not be empty");
+            }
         }
 
         double Stochast::getKSTest(std::vector<double> values) const

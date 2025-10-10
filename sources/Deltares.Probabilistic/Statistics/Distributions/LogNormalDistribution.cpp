@@ -201,7 +201,7 @@ namespace Deltares
         {
             // see https://stats.stackexchange.com/questions/49495/robust-parameter-estimation-for-shifted-log-normal-distribution
 
-            double minX = *std::min_element(values.begin(), values.end());
+            double minX = *std::ranges::min_element(values);
 
             double min = minX - Numeric::NumericSupport::getFraction(minX, 1);
             double max = minX - Numeric::NumericSupport::getFraction(minX, 1E-6);
@@ -252,9 +252,17 @@ namespace Deltares
             return sum / n;
         }
 
-
         void LogNormalDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)
         {
+            if (!std::isnan(shift))
+            {
+                double minValue = *std::ranges::min_element(values);
+                if (shift > minValue)
+                {
+                    throw Reliability::probLibException("Shift should be greater than minimum value in values");
+                }
+            }
+
             stochast->Shift = std::isnan(shift) ? getFittedMinimum(values) : shift;
 
             std::vector<double> logValues = Numeric::NumericSupport::select(values, [stochast](double v) {return log(v - stochast->Shift); });
