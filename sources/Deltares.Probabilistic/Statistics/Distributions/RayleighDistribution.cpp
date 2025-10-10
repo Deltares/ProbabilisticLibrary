@@ -133,6 +133,11 @@ namespace Deltares
             //stochast.Scale = s * SpecialFunctions.Gamma(x.Length) * Math.Sqrt(x.Length) / SpecialFunctions.Gamma(x.Length + 0.5);
         }
 
+        double RayleighDistribution::getMaxShiftValue(std::vector<double>& values)
+        {
+            return *std::ranges::min_element(values);
+        }
+
         std::vector<double> RayleighDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)
         {
             std::vector<double> specialPoints{ stochast->Shift };

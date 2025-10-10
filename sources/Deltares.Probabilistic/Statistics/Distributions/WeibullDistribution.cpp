@@ -205,6 +205,11 @@ namespace Deltares
             stochast->Observations = static_cast<int>(values.size());
         }
 
+        double WeibullDistribution::getMaxShiftValue(std::vector<double>& values)
+        {
+            return *std::ranges::min_element(values);
+        }
+
         std::vector<double> WeibullDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)
         {
             std::vector<double> specialPoints{ stochast->Shift };

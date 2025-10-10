@@ -233,6 +233,11 @@ namespace Deltares
             this->fitMinMax(stochast, values);
         }
 
+        double TruncatedDistribution::getMaxShiftValue(std::vector<double>& values)
+        {
+            return innerDistribution->getMaxShiftValue(values);
+        }
+
         void TruncatedDistribution::fitMinMax(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values)
         {
             // sets minimum and maximum

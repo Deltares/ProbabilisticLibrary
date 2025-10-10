@@ -21,6 +21,7 @@
 //
 #pragma once
 #include <functional>
+#include <limits>
 
 #include "../StochastProperties.h"
 #include "../../Math/WeightedValue.h"
@@ -215,6 +216,13 @@ namespace Deltares::Statistics
         {
             throw Reliability::probLibException("fit with prior not supported");
         }
+
+        /**
+         * \brief Gets the maximum allowed value for the shift parameter when given as argument for fitting
+         * \param values Given x-values
+         * \return Maximum allowed shift value
+         */
+        virtual double getMaxShiftValue(std::vector<double>& values) { return std::numeric_limits<double>::max(); }
 
         /**
          * \brief Indicates whether parameters of a stochast have valid values

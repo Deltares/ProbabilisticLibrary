@@ -177,6 +177,11 @@ namespace Deltares
             this->assign(bestStochast, stochast);
         }
 
+        double GeneralizedExtremeValueDistribution::getMaxShiftValue(std::vector<double>& values)
+        {
+            return *std::ranges::min_element(values);
+        }
+
         std::vector<double> GeneralizedExtremeValueDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)
         {
             return this->getDistribution(stochast)->getSpecialPoints(getStochast(stochast));

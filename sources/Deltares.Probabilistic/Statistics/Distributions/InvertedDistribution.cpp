@@ -183,6 +183,13 @@ namespace Deltares
             copyFromInverted(stochast, invertedStochast);
         }
 
+        double InvertedDistribution::getMaxShiftValue(std::vector<double>& values)
+        {
+            std::vector<double> zeroInvertedValues = Numeric::NumericSupport::select(values, [](double x) {return -x; });
+
+            return - innerDistribution->getMaxShiftValue(zeroInvertedValues);
+        }
+
         void InvertedDistribution::validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast, std::string& subject)
         {
             const std::shared_ptr<StochastProperties> invertedStochast = getInvertedStochast(stochast);

@@ -556,8 +556,16 @@ namespace Deltares
 
             if (!values.empty() && !std::isnan(shift))
             {
-                double minValue = *std::ranges::min_element(values);
-                Logging::ValidationSupport::checkMaximumNonInclusive(report, minValue, shift, "shift");
+                double minValue = distribution->getMaxShiftValue(values);
+
+                if (inverted)
+                {
+                    Logging::ValidationSupport::checkMinimumNonInclusive(report, minValue, shift, "shift");
+                }
+                else
+                {
+                    Logging::ValidationSupport::checkMaximumNonInclusive(report, minValue, shift, "shift");
+                }
             }
 
             if (prior != nullptr)

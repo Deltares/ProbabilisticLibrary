@@ -138,6 +138,11 @@ namespace Deltares
             stochast->Observations = static_cast<int>(values.size());
         }
 
+        double ExponentialDistribution::getMaxShiftValue(std::vector<double>& values)
+        {
+            return Numeric::NumericSupport::getMean(values);
+        }
+
         std::vector<double> ExponentialDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)
         {
             std::vector<double> specialPoints{ stochast->Shift };

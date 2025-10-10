@@ -299,6 +299,11 @@ namespace Deltares
             stochast->Shift = fitShift;
         }
 
+        double LogNormalDistribution::getMaxShiftValue(std::vector<double>& values)
+        {
+            return *std::ranges::min_element(values);
+        }
+
         std::vector<double> LogNormalDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)
         {
             std::vector<double> specialPoints{ stochast->Shift };
