@@ -42,7 +42,7 @@ namespace Deltares::Models
          * \brief Validates the project and puts the result in a validation report
          * \returns Validation report
          */
-        Logging::ValidationReport getValidationReport()
+        Logging::ValidationReport getValidationReport() const
         {
             Logging::ValidationReport report;
             validate(report);

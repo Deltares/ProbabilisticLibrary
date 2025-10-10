@@ -135,7 +135,7 @@ namespace Deltares::Uncertainty
         /**
          * \brief Gets the reliability method and settings based on these settings
          */
-        std::shared_ptr<Uncertainty::UncertaintyMethod> GetUncertaintyMethod();
+        std::shared_ptr<Uncertainty::UncertaintyMethod> GetUncertaintyMethod() const;
 
         /**
          * \brief Reports whether these settings have valid values

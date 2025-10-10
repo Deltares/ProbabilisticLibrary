@@ -32,7 +32,7 @@
 
 namespace Deltares::Uncertainty
 {
-        std::shared_ptr<UncertaintyMethod> SettingsS::GetUncertaintyMethod()
+        std::shared_ptr<UncertaintyMethod> SettingsS::GetUncertaintyMethod() const
         {
             switch (this->UncertaintyMethod)
             {
