@@ -72,13 +72,6 @@ namespace Deltares
 
                 virtual Deltares::Models::Wrappers::StochastPoint^ GetRealization(double x);
 
-                // TODO: PROBL-42 remove when fragility curve integration to c++ is complete
-                bool IsGloballyDescending()
-                {
-                    this->updateNativeObject();
-                    return shared->object->isGloballyDescending();
-                }
-
                 std::shared_ptr<Reliability::FragilityCurve> GetNativeValue()
                 {
                     this->updateNativeObject();

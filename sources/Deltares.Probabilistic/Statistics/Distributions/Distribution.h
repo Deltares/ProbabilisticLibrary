@@ -200,7 +200,7 @@ namespace Deltares::Statistics
          * \param values Given x-values
          * \param weights Given weights
          */
-        virtual void fitWeighted(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, std::vector<double>& weights) { fit(stochast, values); }
+        virtual void fitWeighted(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, std::vector<double>& weights);
 
         /**
          * \brief Updates parameters of a stochast with the use of a prior stochast, so that they fit best a number of given x-values
@@ -264,6 +264,7 @@ namespace Deltares::Statistics
         virtual double getMeanByIteration(std::shared_ptr<StochastProperties> stochast);
         virtual double getDeviationByIteration(std::shared_ptr<StochastProperties> stochast);
         virtual double getXFromUByIteration(std::shared_ptr<StochastProperties> stochast, double u);
+        virtual std::vector<double> getExpandedValues(std::vector<double>& values, std::vector<double>& weights);
         std::vector<std::shared_ptr<Numeric::WeightedValue>> GetWeightedValues(std::vector<double>& values, std::vector<double>& weights);
         const double tolBisection = 0.00001;
 

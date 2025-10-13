@@ -38,10 +38,6 @@ namespace Deltares
             {
             private:
                 SharedPointerProvider<Models::RandomSettings>* shared = new SharedPointerProvider(new Models::RandomSettings());
-
-                bool hasLimitedRandomValues = false;
-                bool isStochastRepeatableRandom = false;
-
             public:
                 RandomSettings()
                 {
@@ -82,28 +78,6 @@ namespace Deltares
                         shared->object->RandomGeneratorType = Numeric::RandomValueGeneratorType::MersenneTwister;
                     }
                 }
-
-                // TODO: PROBL-42 remove this property when RandomValueGenerator is not used any more
-
-                /// <summary>
-                /// Indicates whether random values a limited to a certain range
-                /// </summary>
-                property bool HasLimitedRandomValues
-                {
-                    bool get() { return hasLimitedRandomValues; }
-                    void set(bool value) { hasLimitedRandomValues = value; }
-                }
-
-                // TODO: PROBL-42 remove this property when RandomValueGenerator is not used any more
-                /// <summary>
-                /// Indicates whether random sequences is always the same for same <see cref="IHasStochast"/> names
-                /// </summary>
-                property bool IsStochastRepeatableRandom
-                {
-                    bool get() { return isStochastRepeatableRandom; }
-                    void set(bool value) { isStochastRepeatableRandom = value; }
-                }
-
 
                 std::shared_ptr<Models::RandomSettings> GetSettings()
                 {

@@ -264,6 +264,19 @@ namespace Deltares
             normal.fit(stochast, logValues);
         }
 
+        void LogNormalDistribution::fitWeighted(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, std::vector<double>& weights)
+        {
+            std::vector<double> expandedValues = getExpandedValues(values, weights);
+
+            stochast->Shift = fitShift(expandedValues);
+
+            std::vector<double> logValues = Numeric::NumericSupport::select(values, [stochast](double v) {return log(v - stochast->Shift); });
+
+            NormalDistribution normal;
+
+            normal.fitWeighted(stochast, logValues, weights);
+        }
+
         void LogNormalDistribution::fitPrior(const std::shared_ptr<StochastProperties>& stochast, const std::shared_ptr<StochastProperties>& prior, std::vector<double>& values)
         {
             double shiftData = fitShift(values);

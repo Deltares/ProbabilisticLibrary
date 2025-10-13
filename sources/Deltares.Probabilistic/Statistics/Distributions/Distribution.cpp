@@ -121,13 +121,59 @@ namespace Deltares
             }
             else
             {
-                return {getMean(stochastPtr)};
+                return { getMean(stochastPtr) };
             }
         }
 
         double Distribution::getLogLikelihood(std::shared_ptr<StochastProperties> stochast, double x)
         {
             return log(this->getPDF(stochast, x));
+        }
+
+        void Distribution::fitWeighted(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, std::vector<double>& weights)
+        {
+            std::vector<double> newValues = getExpandedValues(values, weights);
+
+            fit(stochast, newValues);
+        }
+
+        std::vector<double> Distribution::getExpandedValues(std::vector<double>& values, std::vector<double>& weights)
+        {
+            // if all low amounts, make amounts bigger to get a useful set to perform fit
+            double minWeight = 1.0;
+            double totalWeight = 0.0;
+
+            for (size_t i = 0; i < values.size(); i++)
+            {
+                if (weights[i] > 0 && weights[i] < minWeight)
+                {
+                    minWeight = weights[i];
+                }
+
+                totalWeight += weights[i];
+            }
+
+            double factor = 1.0;
+            if (minWeight < 1.0)
+            {
+                constexpr int maxValues = 1000;
+
+                factor = 1.0 / minWeight;
+                factor = std::min(maxValues / totalWeight, factor);
+                factor = std::max(1.0, factor);
+            }
+
+            std::vector<double> newValues;
+
+            for (size_t i = 0; i < values.size(); i++)
+            {
+                for (int j = 0; j < std::round(factor * weights[i]); j++)
+                {
+                    newValues.push_back(values[i]);
+                }
+            }
+
+            return newValues;
         }
 
         double Distribution::getFittedMinimum(std::vector<double>& x)
