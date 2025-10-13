@@ -31,6 +31,8 @@
 
 #include <limits>
 
+#include "DistributionSupport.h"
+
 namespace Deltares
 {
     namespace Statistics
@@ -365,7 +367,7 @@ namespace Deltares
             }
 
             // Build up list of weighted values
-            std::vector<std::shared_ptr<Numeric::WeightedValue>> x = this->GetWeightedValues(values, weights);
+            std::vector<std::shared_ptr<Numeric::WeightedValue>> x = DistributionSupport::GetWeightedValues(values, weights);
 
             if (x.empty())
             {

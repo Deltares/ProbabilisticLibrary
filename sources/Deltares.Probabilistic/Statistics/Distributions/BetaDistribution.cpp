@@ -28,6 +28,8 @@
 #include <cmath>
 #include <algorithm>
 
+#include "DistributionSupport.h"
+
 namespace Deltares
 {
     namespace Statistics
@@ -117,7 +119,7 @@ namespace Deltares
             }
             else
             {
-                return this->getXFromUByIteration(stochast, u);
+                return DistributionSupport::getXFromUByIteration(*this, stochast, u);
             }
         }
 
@@ -136,7 +138,7 @@ namespace Deltares
 
         void BetaDistribution::setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
         {
-            setXAtUByIteration(stochast, x, u, constantType);
+            DistributionSupport::setXAtUByIteration(*this, stochast, x, u, constantType);
         }
 
         void BetaDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)

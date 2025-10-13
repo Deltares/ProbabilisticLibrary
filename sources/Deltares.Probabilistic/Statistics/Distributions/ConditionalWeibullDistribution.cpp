@@ -28,6 +28,7 @@
 #include "../../Math/NumericSupport.h"
 #include "../../Math/RootFinders/BisectionRootFinder.h"
 #include "DistributionFitter.h"
+#include "DistributionSupport.h"
 
 
 namespace Deltares
@@ -53,12 +54,12 @@ namespace Deltares
 
         double ConditionalWeibullDistribution::getMean(std::shared_ptr<StochastProperties> stochast)
         {
-            return getMeanByIteration(stochast);
+            return DistributionSupport::getMeanByIteration(*this, stochast);
         }
 
         double ConditionalWeibullDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
         {
-            return getDeviationByIteration(stochast);
+            return DistributionSupport::getDeviationByIteration(*this, stochast);
         }
 
         double ConditionalWeibullDistribution::getXFromU(std::shared_ptr<StochastProperties> stochast, double u)
@@ -137,7 +138,8 @@ namespace Deltares
         {
             if (stochast->Shape != 1.0 || stochast->ShapeB != 1.0)
             {
-                auto bisection = Numeric::BisectionRootFinder(tolBisection);
+                constexpr double toleranceBisection = 0.00001;
+                auto bisection = Numeric::BisectionRootFinder(toleranceBisection);
 
                 Distribution* distribution = this;
 
@@ -156,7 +158,7 @@ namespace Deltares
 
         void ConditionalWeibullDistribution::setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
         {
-            setXAtUByIteration(stochast, x, u, constantType);
+            DistributionSupport::setXAtUByIteration(*this, stochast, x, u, constantType);
         }
 
         void ConditionalWeibullDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)

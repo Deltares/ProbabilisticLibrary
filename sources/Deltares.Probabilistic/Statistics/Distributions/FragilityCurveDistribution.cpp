@@ -24,6 +24,7 @@
 #include <algorithm>
 #include <cmath>
 
+#include "DistributionSupport.h"
 #include "../StandardNormal.h"
 #include "../../Math/NumericSupport.h"
 
@@ -94,12 +95,12 @@ namespace Deltares
 
         double FragilityCurveDistribution::getMean(std::shared_ptr<StochastProperties> stochast)
         {
-            return getMeanByIteration(stochast);
+            return DistributionSupport::getMeanByIteration(*this, stochast);
         }
 
         double FragilityCurveDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
         {
-            return getDeviationByIteration(stochast);
+            return DistributionSupport::getDeviationByIteration(*this, stochast);
         }
 
         double FragilityCurveDistribution::getXFromU(std::shared_ptr<StochastProperties> stochast, double u)

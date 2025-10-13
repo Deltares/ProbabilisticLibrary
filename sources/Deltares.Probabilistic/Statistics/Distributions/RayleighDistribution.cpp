@@ -27,6 +27,8 @@
 #include <cmath>
 #include <numbers>
 
+#include "DistributionSupport.h"
+
 namespace Deltares
 {
     namespace Statistics
@@ -118,7 +120,7 @@ namespace Deltares
 
         void RayleighDistribution::setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
         {
-            this->setXAtUByIteration(stochast, x, u, constantType);
+            DistributionSupport::setXAtUByIteration(*this, stochast, x, u, constantType);
         }
 
         void RayleighDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)

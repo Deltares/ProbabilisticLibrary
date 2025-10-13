@@ -29,6 +29,7 @@
 #include <algorithm>
 
 #include "DistributionFitter.h"
+#include "DistributionSupport.h"
 
 namespace Deltares
 {
@@ -163,7 +164,8 @@ namespace Deltares
                     return this->getDeviation(copiedStochast);
                 };
 
-                auto bisection = Numeric::BisectionRootFinder(tolBisection);
+                constexpr double toleranceBisection = 0.00001;
+                auto bisection = Numeric::BisectionRootFinder(toleranceBisection);
 
                 double minStart = 0.0;
                 double maxStart = 32.0;
@@ -322,7 +324,7 @@ namespace Deltares
             }
             else
             {
-                setXAtUByIteration(stochast, x, u, constantType);
+                DistributionSupport::setXAtUByIteration(*this, stochast, x, u, constantType);
             }
         }
 

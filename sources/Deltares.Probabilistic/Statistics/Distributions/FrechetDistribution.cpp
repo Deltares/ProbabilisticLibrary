@@ -29,6 +29,7 @@
 #include <cmath>
 
 #include "DistributionFitter.h"
+#include "DistributionSupport.h"
 
 namespace Deltares
 {
@@ -138,7 +139,8 @@ namespace Deltares
             // the quotient deviation / mean is only dependent from the shape parameter, so this will be determined first
             double u = deviation / (mean - stochast->Shift);
 
-            auto bisection = Numeric::BisectionRootFinder(tolBisection);
+            constexpr double toleranceBisection = 0.00001;
+            auto bisection = Numeric::BisectionRootFinder(toleranceBisection);
 
             // shape must be > 2
             double minStart = 2.4;
@@ -151,7 +153,7 @@ namespace Deltares
 
         void FrechetDistribution::setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
         {
-            setXAtUByIteration(stochast, x, u, constantType);
+            DistributionSupport::setXAtUByIteration(*this, stochast, x, u, constantType);
         }
 
         void FrechetDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)

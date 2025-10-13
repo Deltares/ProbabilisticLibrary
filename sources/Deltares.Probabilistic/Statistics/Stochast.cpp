@@ -586,9 +586,10 @@ namespace Deltares
 
         void Stochast::fit(std::vector<double> values, const double shift) const
         {
-            if (values.empty())
+            Logging::ValidationReport report = getFitValidationReport(values, nullptr, shift);
+            if (!report.isValid())
             {
-                throw Reliability::probLibException("Values should not be empty");
+                throw Reliability::probLibException("Can not fit with given Values should not be empty");
             }
 
             distribution->fit(properties, values, shift);
@@ -596,9 +597,10 @@ namespace Deltares
 
         void Stochast::fitPrior(std::vector<double> values, std::shared_ptr<Stochast> prior, const double shift) const
         {
-            if (values.empty())
+            Logging::ValidationReport report = getFitValidationReport(values, prior, shift);
+            if (!report.isValid())
             {
-                throw Reliability::probLibException("Values should not be empty");
+                throw Reliability::probLibException("Can not fit with given Values should not be empty");
             }
 
             distribution->fitPrior(properties, values, prior->getProperties(), shift);

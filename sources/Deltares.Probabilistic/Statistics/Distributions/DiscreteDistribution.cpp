@@ -24,6 +24,7 @@
 #include <algorithm>
 #include <cmath>
 
+#include "DistributionSupport.h"
 #include "../StandardNormal.h"
 #include "../../Math/NumericSupport.h"
 
@@ -299,7 +300,7 @@ namespace Deltares
         {
             stochast->DiscreteValues.clear();
 
-            std::vector<std::shared_ptr<Numeric::WeightedValue>> x = this->GetWeightedValues(values, weights);
+            std::vector<std::shared_ptr<Numeric::WeightedValue>> x = DistributionSupport::GetWeightedValues(values, weights);
 
             for (size_t i = 0; i < x.size(); i++)
             {

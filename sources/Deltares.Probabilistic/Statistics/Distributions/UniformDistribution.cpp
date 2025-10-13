@@ -27,6 +27,8 @@
 #include <cmath>
 #include <algorithm>
 
+#include "DistributionSupport.h"
+
 namespace Deltares
 {
     namespace Statistics
@@ -143,7 +145,7 @@ namespace Deltares
             }
             else
             {
-                return setXAtUByIteration(stochast, x, u, constantType);
+                DistributionSupport::setXAtUByIteration(*this, stochast, x, u, constantType);
             }
         }
 

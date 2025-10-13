@@ -25,7 +25,7 @@
 #include "../StandardNormal.h"
 #include "../../Math/NumericSupport.h"
 
-#include <numbers>
+#include "DistributionSupport.h"
 
 namespace Deltares
 {
@@ -127,7 +127,7 @@ namespace Deltares
             }
             else if (constantType == ConstantParameterType::VariationCoefficient)
             {
-                this->setXAtUByIteration(stochast, x, u, constantType);
+                DistributionSupport::setXAtUByIteration(*this, stochast, x, u, constantType);
             }
         }
 

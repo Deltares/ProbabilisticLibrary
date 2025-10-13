@@ -28,6 +28,8 @@
 #include <cmath>
 #include <numbers>
 
+#include "DistributionSupport.h"
+
 namespace Deltares
 {
     namespace Statistics
@@ -129,7 +131,7 @@ namespace Deltares
             }
             else if (constantType == ConstantParameterType::VariationCoefficient)
             {
-                this->setXAtUByIteration(stochast, x, u, constantType);
+                DistributionSupport::setXAtUByIteration(*this, stochast, x, u, constantType);
             }
         }
 

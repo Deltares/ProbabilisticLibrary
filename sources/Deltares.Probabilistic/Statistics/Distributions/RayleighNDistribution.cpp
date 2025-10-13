@@ -29,6 +29,8 @@
 #include <cmath>
 #include <numbers>
 
+#include "DistributionSupport.h"
+
 namespace Deltares
 {
     namespace Statistics
@@ -45,12 +47,12 @@ namespace Deltares
 
         double RayleighNDistribution::getMean(std::shared_ptr<StochastProperties> stochast)
         {
-            return this->getMeanByIteration(stochast);
+            return DistributionSupport::getMeanByIteration(*this, stochast);
         }
 
         double RayleighNDistribution::getDeviation(std::shared_ptr<StochastProperties> stochast)
         {
-            return this->getDeviationByIteration(stochast);
+            return DistributionSupport::getDeviationByIteration(*this, stochast);
         }
 
         double RayleighNDistribution::getXFromU(std::shared_ptr<StochastProperties> stochast, double u)
@@ -137,7 +139,8 @@ namespace Deltares
 
             if (stochast->Shape != 1.0) 
             {
-                auto bisection = Numeric::BisectionRootFinder(tolBisection);
+                constexpr double toleranceBisection = 0.00001;
+                auto bisection = Numeric::BisectionRootFinder(toleranceBisection);
 
                 Distribution* distribution = this;
 
@@ -156,7 +159,7 @@ namespace Deltares
 
         void RayleighNDistribution::setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType)
         {
-            this->setXAtUByIteration(stochast, x, u, constantType);
+            DistributionSupport::setXAtUByIteration(*this, stochast, x, u, constantType);
         }
 
         void RayleighNDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)
