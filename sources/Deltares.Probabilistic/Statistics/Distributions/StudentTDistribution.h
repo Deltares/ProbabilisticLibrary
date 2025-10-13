@@ -81,7 +81,7 @@ namespace Deltares
             };
 
             std::shared_ptr<StudentTDistribution::StudentTValue> GetStudentValue(int degreesOfFreedom);
-            std::vector<std::shared_ptr<StudentTDistribution::StudentTValue>> values;
+            std::vector<std::shared_ptr<StudentTDistribution::StudentTValue>> studentValues;
             void loadValues();
 
             const double minXDelta = 0.00001;
