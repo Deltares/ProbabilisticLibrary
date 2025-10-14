@@ -70,7 +70,6 @@ namespace Deltares
                 auto kmean = Optimization::KMeansClustering();
                 kmean.Settings->MaxClusters = 3;
                 kmean.Settings->OptimizeNumberOfClusters = true;
-                kmean.Settings->generatorType = Numeric::RandomValueGeneratorType::MersenneTwister;
                 auto result = kmean.getClusterCenters(samples);
                 EXPECT_NEAR(result[0]->Values[0], 0.748, margin);
                 EXPECT_NEAR(result[0]->Values[1], 0.170, margin);

@@ -69,7 +69,6 @@ namespace Deltares
             settings->designPointMethod = DesignPointMethod::CenterOfGravity;
             settings->runSettings->MaxChunkSize = 400;
             settings->randomSettings->SkipUnvaryingParameters = false;
-            settings->randomSettings->RandomGeneratorType = randomGeneratorType;
 
             for (size_t i = 0; i < model->stochasts.size(); i++)
             {

@@ -22,7 +22,7 @@
 #pragma once
 
 #include "../Model/Sample.h"
-#include "../Math/Random.h"
+#include "../Math/RandomValueGenerator.h"
 #include "ClusterSettings.h"
 
 namespace Deltares
@@ -64,10 +64,10 @@ namespace Deltares
             };
 
             std::vector<std::shared_ptr<Cluster>> FixedCluster(std::vector<std::shared_ptr<Models::Sample>>& samples, const ClusterSettings& options);
-            std::vector<std::shared_ptr<Cluster>> DoClustering(std::vector<std::shared_ptr<Models::Sample>>& samples, const ClusterSettings& options, const Numeric::Random& randomGenerator);
-            std::vector<std::shared_ptr<Cluster>> InitializeClusters(std::vector<std::shared_ptr<Models::Sample>>& samples, const ClusterSettings& options, const Numeric::Random& randomGenerator);
-            std::vector<std::shared_ptr<Cluster>> InitPlusPlus(int numberClusters, std::vector<std::shared_ptr<Models::Sample>>& samples, const Numeric::Random& randomGenerator, bool sampleHasWeighting);
-            int ProporSelect(std::vector<double>& values, const Numeric::Random& randomGenerator);
+            std::vector<std::shared_ptr<Cluster>> DoClustering(std::vector<std::shared_ptr<Models::Sample>>& samples, const ClusterSettings& options, Numeric::RandomValueGenerator& randomGenerator);
+            std::vector<std::shared_ptr<Cluster>> InitializeClusters(std::vector<std::shared_ptr<Models::Sample>>& samples, const ClusterSettings& options, Numeric::RandomValueGenerator& randomGenerator);
+            std::vector<std::shared_ptr<Cluster>> InitPlusPlus(int numberClusters, std::vector<std::shared_ptr<Models::Sample>>& samples, Numeric::RandomValueGenerator& randomGenerator, bool sampleHasWeighting);
+            int ProporSelect(std::vector<double>& values, Numeric::RandomValueGenerator& randomGenerator);
             bool updateClustering(const std::vector<std::shared_ptr<Cluster>>& clusters);
             static std::shared_ptr<Cluster> getNearestCluster(const std::shared_ptr<Models::Sample>& sample, const std::vector<std::shared_ptr<Cluster>>& clusters);
             static double SilhouetteCoefficient(const std::vector<std::shared_ptr<Cluster>>& clusters);

@@ -790,7 +790,6 @@ def h(a,b,c):
         project = project_builder.get_linear_project()
 
         project.settings.reliability_method = ReliabilityMethod.crude_monte_carlo
-        project.settings.random_type = RandomType.mersenne_twister
 
         project.run();
 
@@ -811,7 +810,6 @@ def h(a,b,c):
         project = project_builder.get_linear_project()
 
         project.settings.reliability_method = ReliabilityMethod.crude_monte_carlo
-        project.settings.random_type = RandomType.mersenne_twister
 
         project.run();
 
@@ -831,7 +829,6 @@ def h(a,b,c):
         project = project_builder.get_linear_project()
 
         project.settings.reliability_method = ReliabilityMethod.directional_sampling
-        project.settings.random_type = RandomType.mersenne_twister
 
         project.run();
 
@@ -852,7 +849,6 @@ def h(a,b,c):
         project = project_builder.get_linear_project()
 
         project.settings.reliability_method = ReliabilityMethod.importance_sampling
-        project.settings.random_type = RandomType.mersenne_twister
 
         project.run();
 
@@ -873,7 +869,6 @@ def h(a,b,c):
         project = project_builder.get_linear_small_project()
 
         project.settings.reliability_method = ReliabilityMethod.importance_sampling
-        project.settings.random_type = RandomType.mersenne_twister
         project.settings.minimum_samples = 5000
         project.settings.maximum_samples = 10000
 

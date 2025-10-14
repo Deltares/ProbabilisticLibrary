@@ -50,10 +50,6 @@ namespace Deltares
              */
             std::shared_ptr<DesignPoint> combineDesignPoints(combineAndOr combineMethodType, std::vector<std::shared_ptr<DesignPoint>>& designPoints, std::shared_ptr<Statistics::SelfCorrelationMatrix> selfCorrelationMatrix = nullptr, std::shared_ptr<ProgressIndicator> progress = nullptr) override;
 
-            /**
-             * \brief The random number generator to be used
-             */
-            Numeric::RandomValueGeneratorType randomGeneratorType = Numeric::RandomValueGeneratorType::MersenneTwister;
         private:
             /**
              * \brief Approximates the probability by assuming design points are independent

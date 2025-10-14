@@ -67,18 +67,6 @@ namespace Deltares
                     void set(bool value) { shared->object->SkipUnvaryingParameters = value; }
                 }
 
-                property RandomGeneratorType RandomGeneratorType
-                {
-                    Wrappers::RandomGeneratorType get()
-                    {
-                        return Wrappers::RandomGeneratorType::MersenneTwister;
-                    }
-                    void set(Wrappers::RandomGeneratorType value)
-                    {
-                        shared->object->RandomGeneratorType = Numeric::RandomValueGeneratorType::MersenneTwister;
-                    }
-                }
-
                 std::shared_ptr<Models::RandomSettings> GetSettings()
                 {
                     return shared->object;

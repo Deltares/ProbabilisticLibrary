@@ -66,7 +66,6 @@ class UncertaintySettings(FrozenObject):
 		        'save_messages',
 		        'reuse_calculations'
 		        'uncertainty_method',
-	            'random_type',
 				'is_repeatable_random',
 				'random_seed',
 	            'minimum_samples',
@@ -137,14 +136,6 @@ class UncertaintySettings(FrozenObject):
 	@uncertainty_method.setter
 	def uncertainty_method(self, value : UncertaintyMethod):
 		interface.SetStringValue(self._id, 'uncertainty_method', str(value))
-
-	@property
-	def random_type(self) -> RandomType:
-		return RandomType[interface.GetStringValue(self._id, 'random_type')]
-		
-	@random_type.setter
-	def random_type(self, value : RandomType):
-		interface.SetStringValue(self._id, 'random_type', str(value))
 
 	@property
 	def is_repeatable_random(self) -> bool:

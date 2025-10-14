@@ -39,7 +39,6 @@ namespace Deltares.Probabilistic.Wrapper.Test
             var project = ProjectBuilder.GetLinearProject();
 
             project.ReliabilityMethod = new CrudeMonteCarlo();
-            ((CrudeMonteCarlo)project.ReliabilityMethod).Settings.RandomSettings.RandomGeneratorType = RandomGeneratorType.MersenneTwister;
 
             DesignPoint designPoint = project.GetDesignPoint();
 
@@ -205,7 +204,6 @@ namespace Deltares.Probabilistic.Wrapper.Test
             CrudeMonteCarlo monteCarlo = new CrudeMonteCarlo();
             monteCarlo.Settings.MinimumSamples = 100000;
             monteCarlo.Settings.MaximumSamples = monteCarlo.Settings.MinimumSamples;
-            monteCarlo.Settings.RandomSettings.RandomGeneratorType = RandomGeneratorType.MersenneTwister;
 
             project.ReliabilityMethod = monteCarlo;
 

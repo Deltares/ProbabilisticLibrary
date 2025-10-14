@@ -38,7 +38,6 @@ namespace Deltares.Probabilistic.Wrapper.Test
             var project = ProjectBuilder.GetUncertaintyProject(ProjectBuilder.GetAddOneProject());
 
             project.UncertaintyMethod = new ImportanceSamplingS();
-            ((ImportanceSamplingS)project.UncertaintyMethod).Settings.RandomSettings.RandomGeneratorType = RandomGeneratorType.MersenneTwister;
 
             Stochast stochast = project.GetStochast();
 
@@ -56,7 +55,6 @@ namespace Deltares.Probabilistic.Wrapper.Test
             var project = ProjectBuilder.GetUncertaintyProject(ProjectBuilder.GetLinearProject());
 
             project.UncertaintyMethod = new ImportanceSamplingS();
-            ((ImportanceSamplingS)project.UncertaintyMethod).Settings.RandomSettings.RandomGeneratorType = RandomGeneratorType.MersenneTwister;
 
             Stochast stochast = project.GetStochast();
 
@@ -70,7 +68,6 @@ namespace Deltares.Probabilistic.Wrapper.Test
             var project = ProjectBuilder.GetUncertaintyProject(ProjectBuilder.GetLinearProject());
 
             project.UncertaintyMethod = new ImportanceSamplingS();
-            ((ImportanceSamplingS)project.UncertaintyMethod).Settings.RandomSettings.RandomGeneratorType = RandomGeneratorType.MersenneTwister;
 
             Stochast stochast = project.GetStochast();
 
@@ -90,7 +87,6 @@ namespace Deltares.Probabilistic.Wrapper.Test
             project.Settings.MaxParallelProcesses = 4;
 
             project.UncertaintyMethod = new ImportanceSamplingS();
-            ((ImportanceSamplingS)project.UncertaintyMethod).Settings.RandomSettings.RandomGeneratorType = RandomGeneratorType.MersenneTwister;
 
             Stochast stochast = project.GetStochast();
 
@@ -107,7 +103,6 @@ namespace Deltares.Probabilistic.Wrapper.Test
             project.Settings.SaveMessages = false;
 
             project.UncertaintyMethod = new ImportanceSamplingS();
-            ((ImportanceSamplingS)project.UncertaintyMethod).Settings.RandomSettings.RandomGeneratorType = RandomGeneratorType.MersenneTwister;
             ((ImportanceSamplingS)project.UncertaintyMethod).Settings.MaximumSamples = 100000;
 
             Stochast stochast = project.GetStochast();
@@ -126,7 +121,6 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var project = ProjectBuilder.GetUncertaintyProject(ProjectBuilder.GetLinearFullyCorrelatedProject());
             project.UncertaintyMethod = new ImportanceSamplingS();
-            ((ImportanceSamplingS)project.UncertaintyMethod).Settings.RandomSettings.RandomGeneratorType = RandomGeneratorType.MersenneTwister;
 
             Stochast stochast = project.GetStochast();
 
@@ -144,7 +138,6 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var project = ProjectBuilder.GetUncertaintyProject(ProjectBuilder.GetLinearNegativeFullyCorrelatedProject());
             project.UncertaintyMethod = new ImportanceSamplingS();
-            ((ImportanceSamplingS)project.UncertaintyMethod).Settings.RandomSettings.RandomGeneratorType = RandomGeneratorType.MersenneTwister;
 
             Stochast stochast = project.GetStochast();
 
@@ -157,7 +150,6 @@ namespace Deltares.Probabilistic.Wrapper.Test
         {
             var project = ProjectBuilder.GetUncertaintyProject(ProjectBuilder.GetLinearPartialCorrelatedProject());
             project.UncertaintyMethod = new ImportanceSamplingS();
-            ((ImportanceSamplingS)project.UncertaintyMethod).Settings.RandomSettings.RandomGeneratorType = RandomGeneratorType.MersenneTwister;
 
             Stochast stochast = project.GetStochast();
 

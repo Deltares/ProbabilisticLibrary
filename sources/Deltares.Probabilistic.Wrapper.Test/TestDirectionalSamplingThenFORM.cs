@@ -165,7 +165,6 @@ namespace Deltares.Probabilistic.Wrapper.Test
             DirectionalSamplingThenFORM dsfi = new DirectionalSamplingThenFORM();
             dsfi.Settings.MinimumDirections = 10000;
             dsfi.Settings.MaximumDirections = 50000;
-            dsfi.Settings.RandomSettings.RandomGeneratorType = RandomGeneratorType.MersenneTwister;
             project.ReliabilityMethod = dsfi;
             DesignPoint designPoint = project.GetDesignPoint();
 
@@ -331,7 +330,6 @@ namespace Deltares.Probabilistic.Wrapper.Test
             dsfi.Settings.MinimumDirections = 10000;
             dsfi.Settings.MaximumDirections = 50000;
             dsfi.Settings.VariationCoefficient = 0.04;
-            dsfi.Settings.RandomSettings.RandomGeneratorType = RandomGeneratorType.MersenneTwister;
             dsfi.Settings.RandomSettings.Seed = 1234;
             project.ReliabilityMethod = dsfi;
 

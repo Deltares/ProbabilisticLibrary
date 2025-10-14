@@ -30,7 +30,6 @@
 #include <memory>
 
 #include "../Model/Sample.h"
-#include "../Model/RandomSampleGenerator.h"
 #include "../Optimization/KMeansClustering.h"
 #include "ConvergenceReport.h"
 #include "DesignPoint.h"
@@ -374,7 +373,6 @@ namespace Deltares
                 // Get Multiple Design Points using K-Means
                 std::shared_ptr<Optimization::KMeansClustering> clusterMethod = std::make_shared<Optimization::KMeansClustering>();
                 clusterMethod->Settings = this->Settings->clusterSettings;
-                clusterMethod->Settings->generatorType = this->Settings->importanceSamplingSettings->randomSettings->RandomGeneratorType;
 
                 return clusterMethod->getClusterCenters(samples);
             }
