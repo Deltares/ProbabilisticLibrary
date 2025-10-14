@@ -39,10 +39,15 @@ namespace Deltares
 
             public ref class Sample
             {
+            private:
+                SharedPointerProvider<Models::Sample>* shared = nullptr;
+                array<double>^ values = nullptr;
+                bool dirty = false;
             public:
                 Sample(std::shared_ptr<Models::Sample> sample)
                 {
                     this->shared = new SharedPointerProvider(sample);
+                    this->SpaceType = Wrappers::SpaceType::U;
                 }
 
                 Sample(array<double>^ values)
@@ -130,11 +135,36 @@ namespace Deltares
                     dirty = false;
                 }
 
-            private:
-                array<double>^ values = nullptr;
-                System::Object^ tag = nullptr;
-                SharedPointerProvider<Models::Sample>* shared = nullptr;
-                bool dirty = false;
+                // TODO: Next methods and properties should be removed proxies have been converted
+
+                Sample(SpaceType spaceType, int count) : Sample(spaceType, -1, count)
+                {
+                }
+
+                Sample(SpaceType spaceType, int iteration, int count) : Sample(spaceType, iteration, gcnew array<double>(count))
+                {
+                }
+
+                Sample(SpaceType spaceType, array<double>^ values) : Sample(spaceType, -1, values)
+                {
+                }
+
+                Sample(SpaceType spaceType, int iteration, array<double>^ values) : Sample(values)
+                {
+                    this->SpaceType = spaceType;
+                    this->Iteration = iteration;
+                }
+
+                /// <summary>
+                /// The space type in which the <see cref="Values"/> are defined
+                /// </summary>
+                SpaceType SpaceType = SpaceType::U;
+
+                Sample^ Clone()
+                {
+                    UpdateValues();
+                    return gcnew Sample(shared->object->clone());
+                }
             };
         }
     }
