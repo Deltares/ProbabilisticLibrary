@@ -53,9 +53,11 @@ namespace Deltares::Uncertainty
         std::vector<std::shared_ptr<Sample>> samples;
         std::vector<double> zSamples;
         std::vector<double> zWeights;
+        std::vector<double> zCumulativeWeights;
         size_t zIndex = 0;
         int nSamples = 0;
         double sumWeights = 0;
+        bool convergenceLowSide = this->Settings->ProbabilityForConvergence < 0.5;
 
         bool registerSamplesForCorrelation = this->correlationMatrixBuilder->isEmpty() &&
             this->Settings->CalculateCorrelations &&
@@ -101,18 +103,67 @@ namespace Deltares::Uncertainty
 
             zSamples.push_back(z);
             zWeights.push_back(samples[zIndex]->Weight);
+            sumWeights += samples[zIndex]->Weight;
+
+            zCumulativeWeights.push_back(samples[zIndex]->Weight);
+            for (size_t i = 0; i < zCumulativeWeights.size() - 1; i++)
+            {
+                if (convergenceLowSide)
+                {
+                    if (zSamples[i] > z)
+                    {
+                        zCumulativeWeights[i] += samples[zIndex]->Weight;
+                    }
+                    else
+                    {
+                        zCumulativeWeights.back() += zWeights[i];
+                    }
+                }
+                else
+                {
+                    if (zSamples[i] < z)
+                    {
+                        zCumulativeWeights[i] += samples[zIndex]->Weight;
+                    }
+                    else
+                    {
+                        zCumulativeWeights.back() += zWeights[i];
+                    }
+                }
+            }
+
             if (registerSamplesForCorrelation)
             {
                 modelRunner->registerSample(this->correlationMatrixBuilder, samples[zIndex]);
             }
 
-            sumWeights += samples[zIndex]->Weight;
+
             nSamples++;
 
             // check if convergence is reached (or stop criterion)
             if (sampleIndex >= Settings->MinimumSamples)
             {
-                double convergence = getConvergence(sampleIndex, sumWeights);
+                double normalizedProbabilityForConvergence = std::min(Settings->ProbabilityForConvergence, 1 - Settings->ProbabilityForConvergence);
+                double highestExceedingCumulativeWeight = 0;
+                double highestExceedingWeight = 0;
+
+                // find the weights of exceeding samples
+                for (size_t i = 0; i < zCumulativeWeights.size(); i++)
+                {
+                    if (zCumulativeWeights[i] < normalizedProbabilityForConvergence)
+                    {
+                        if (zCumulativeWeights[i] > highestExceedingCumulativeWeight)
+                        {
+                            highestExceedingCumulativeWeight = zCumulativeWeights[i];
+                            highestExceedingWeight = zWeights[i];
+                        }
+                    }
+                }
+
+                double pf = highestExceedingCumulativeWeight / sampleIndex;
+                double designPointWeight = highestExceedingWeight;
+
+                double convergence = getConvergence(pf, sampleIndex, designPointWeight);
                 converged = convergence < this->Settings->VariationCoefficient;
             }
         }
@@ -233,30 +284,9 @@ namespace Deltares::Uncertainty
         return modifiedSample;
     }
 
-    double ImportanceSamplingS::getConvergence(int samples, double weightedSum)
+    double ImportanceSamplingS::getConvergence(double pf, int samples, double weightedSum)
     {
-        double nSamples = samples;
-
-        //TODO: PROBL-42 check whether this procedure is correct
-
-        double nLow = Settings->ProbabilityForConvergence * weightedSum;
-        double pLow = nLow / nSamples;
-        if (pLow > 0.5)
-        {
-            pLow = 1 - pLow;
-        }
-
-        double nHigh = (1 - Settings->ProbabilityForConvergence) * weightedSum;
-        double pHigh = nHigh / nSamples;
-        if (pHigh > 0.5)
-        {
-            pHigh = 1 - pHigh;
-        }
-
-        double pf = std::min(pLow, pHigh);
-
-        double varPf = std::sqrt((1 - pf) / (nSamples * pf));
-
+        double varPf = sqrt(std::max(0.0, (weightedSum - pf) / (samples * pf)));
         return varPf;
     }
 }

@@ -92,6 +92,7 @@ namespace Deltares::Uncertainty
         {
             std::shared_ptr<CrudeMonteCarloS> crudeMonteCarlo = std::make_shared<CrudeMonteCarloS>();
 
+            crudeMonteCarlo->Settings->MinimumSamples = this->MinimumSamples;
             crudeMonteCarlo->Settings->MaximumSamples = this->MaximumSamples;
             crudeMonteCarlo->Settings->VariationCoefficient = this->VariationCoefficient;
             crudeMonteCarlo->Settings->ProbabilityForConvergence = this->ProbabilityForConvergence;
