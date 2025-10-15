@@ -21,6 +21,12 @@
 //
 #pragma once
 
+#include "CrudeMonteCarloS.h"
+#include "DirectionalSamplingS.h"
+#include "FORMS.h"
+#include "FOSM.h"
+#include "ImportanceSamplingS.h"
+#include "NumericalIntegrationS.h"
 #include "UncertaintyMethod.h"
 #include "../Model/RandomSettings.h"
 #include "../Model/GradientSettings.h"
@@ -129,23 +135,23 @@ namespace Deltares::Uncertainty
         /**
          * \brief Gets the reliability method and settings based on these settings
          */
-        std::shared_ptr<Uncertainty::UncertaintyMethod> GetUncertaintyMethod();
+        std::shared_ptr<Uncertainty::UncertaintyMethod> GetUncertaintyMethod() const;
 
         /**
          * \brief Reports whether these settings have valid values
          * \param report Report in which the validity is reported
          */
-        void validate(Logging::ValidationReport& report);
+        void validate(Logging::ValidationReport& report) const override;
             
         static std::string getUncertaintyMethodTypeString(UncertaintyMethodType method);
         static UncertaintyMethodType getUncertaintyMethodType(std::string method);
     private:
-        const std::shared_ptr<Uncertainty::UncertaintyMethod> GetFORMMethod();
-        const std::shared_ptr<Uncertainty::UncertaintyMethod> GetFOSMMethod();
-        const std::shared_ptr<Uncertainty::UncertaintyMethod> GetNumericalIntegrationMethod();
-        const std::shared_ptr<Uncertainty::UncertaintyMethod> GetCrudeMonteCarloMethod();
-        const std::shared_ptr<Uncertainty::UncertaintyMethod> GetImportanceSamplingMethod();
-        const std::shared_ptr<Uncertainty::UncertaintyMethod> GetDirectionalSamplingMethod();
+        std::shared_ptr<FORMS> GetFORMMethod() const;
+        std::shared_ptr<FOSM> GetFOSMMethod() const;
+        std::shared_ptr<NumericalIntegrationS> GetNumericalIntegrationMethod() const;
+        std::shared_ptr<CrudeMonteCarloS> GetCrudeMonteCarloMethod() const;
+        std::shared_ptr<ImportanceSamplingS> GetImportanceSamplingMethod() const;
+        std::shared_ptr<DirectionalSamplingS> GetDirectionalSamplingMethod() const;
     };
 }
 

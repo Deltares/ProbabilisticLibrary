@@ -214,7 +214,7 @@ namespace Deltares
              * \brief Reports whether the settings have valid values
              * \param report Report in which the validity is reported
              */
-            void validate(Logging::ValidationReport& report) const;
+            void validate(Logging::ValidationReport& report) const override;
 
             static std::string getReliabilityResultTypeString(ReliabilityResultType method);
             static ReliabilityResultType getReliabilityResultType(std::string method);

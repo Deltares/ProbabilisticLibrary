@@ -544,14 +544,67 @@ namespace Deltares
             return distribution->canFitPrior();
         }
 
-        void Stochast::fit(std::vector<double> values) const
+        Logging::ValidationReport Stochast::getFitValidationReport(std::vector<double>& values, const std::shared_ptr<Stochast>& prior, const double shift) const
         {
-            distribution->fit(properties, values);
+            Logging::ValidationReport report;
+
+            Logging::ValidationSupport::checkNotEmpty(report, values.size(), "values");
+
+            if (!this->canFit())
+            {
+                Logging::ValidationSupport::add(report, "Fit is not supported for distribution type " + Stochast::getDistributionTypeString(distributionType) + ".", name);
+            }
+
+            if (!values.empty() && !std::isnan(shift))
+            {
+                double minValue = distribution->getMaxShiftValue(values);
+
+                if (inverted)
+                {
+                    Logging::ValidationSupport::checkMinimumNonInclusive(report, minValue, shift, "shift");
+                }
+                else
+                {
+                    Logging::ValidationSupport::checkMaximumNonInclusive(report, minValue, shift, "shift");
+                }
+            }
+
+            if (prior != nullptr)
+            {
+                if (!this->canFitPrior())
+                {
+                    Logging::ValidationSupport::add(report, "Fit with prior is not supported for distribution type " + Stochast::getDistributionTypeString(distributionType) + ".", name);
+                }
+
+                if (distributionType != prior->distributionType)
+                {
+                    Logging::ValidationSupport::add(report, "Fit from prior with other distribution type is not supported.", name);
+                }
+            }
+
+            return report;
         }
 
-        void Stochast::fitPrior(std::shared_ptr<Stochast> prior, std::vector<double> values) const
+        void Stochast::fit(std::vector<double> values, const double shift) const
         {
-            distribution->fitPrior(properties, prior->getProperties(), values);
+            Logging::ValidationReport report = getFitValidationReport(values, nullptr, shift);
+            if (!report.isValid())
+            {
+                throw Reliability::probLibException("Can not fit with given Values should not be empty");
+            }
+
+            distribution->fit(properties, values, shift);
+        }
+
+        void Stochast::fitPrior(std::vector<double> values, std::shared_ptr<Stochast> prior, const double shift) const
+        {
+            Logging::ValidationReport report = getFitValidationReport(values, prior, shift);
+            if (!report.isValid())
+            {
+                throw Reliability::probLibException("Can not fit with given Values should not be empty");
+            }
+
+            distribution->fitPrior(properties, values, prior->getProperties(), shift);
         }
 
         void Stochast::fitWeighted(std::vector<double> values, std::vector<double> weights) const

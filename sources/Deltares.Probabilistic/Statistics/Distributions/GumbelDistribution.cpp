@@ -28,6 +28,8 @@
 #include <cmath>
 #include <numbers>
 
+#include "DistributionSupport.h"
+
 namespace Deltares
 {
     namespace Statistics
@@ -129,11 +131,11 @@ namespace Deltares
             }
             else if (constantType == ConstantParameterType::VariationCoefficient)
             {
-                this->setXAtUByIteration(stochast, x, u, constantType);
+                DistributionSupport::setXAtUByIteration(*this, stochast, x, u, constantType);
             }
         }
 
-        void GumbelDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values)
+        void GumbelDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)
         {
             // https://stats.stackexchange.com/questions/71197/usable-estimators-for-parameters-in-gumbel-distribution
             double mean = Numeric::NumericSupport::getMean(values);

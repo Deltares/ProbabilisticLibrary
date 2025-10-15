@@ -246,6 +246,7 @@
     <ClCompile Include="Model\ModelProjectSettings.cpp" />
     <ClCompile Include="Logging\ValidationReport.cpp" />
     <ClCompile Include="Logging\ValidationSupport.cpp" />
+    <ClCompile Include="Statistics\Distributions\DistributionSupport.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -521,6 +522,7 @@
     <ClInclude Include="Logging\ValidationReport.h" />
     <ClInclude Include="Logging\ValidationSupport.h" />
     <ClInclude Include="Model\ModelProjectSettings.h" />
+    <ClInclude Include="Statistics\Distributions\DistributionSupport.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Statistics">

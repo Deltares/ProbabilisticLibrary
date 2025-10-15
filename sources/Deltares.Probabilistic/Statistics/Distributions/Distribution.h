@@ -21,6 +21,7 @@
 //
 #pragma once
 #include <functional>
+#include <limits>
 
 #include "../StochastProperties.h"
 #include "../../Math/WeightedValue.h"
@@ -151,7 +152,7 @@ namespace Deltares::Statistics
          * \param shift Given shift value
          * \param inverted Inverted value
          */
-        virtual void setShift(std::shared_ptr<StochastProperties> stochast, double shift, bool inverted) { stochast->Shift = shift; }
+        virtual void setShift(std::shared_ptr<StochastProperties> stochast, const double shift, bool inverted) { stochast->Shift = shift; }
 
         /**
          * \brief Initializes a stochast for fast u->x conversions during probabilistic analysis
@@ -188,8 +189,9 @@ namespace Deltares::Statistics
          * \brief Updates parameters of a stochast, so that they fit best a number of given x-values
          * \param stochast Stochast to be updated
          * \param values Given x-values
+         * \param shift Shift value, if set the shift parameter will not be fitted (available for limited distributions)
          */
-        virtual void fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values)
+        virtual void fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)
         {
             throw Reliability::probLibException("fit not supported");
         }
@@ -205,13 +207,21 @@ namespace Deltares::Statistics
         /**
          * \brief Updates parameters of a stochast with the use of a prior stochast, so that they fit best a number of given x-values
          * \param stochast Stochast to be updated
-         * \param stochast Prior stochast
          * \param values Given x-values
+         * \param prior Prior stochast
+         * \param shift Shift value, if set the shift parameter will not be fitted (available for limited distributions)
          */
-        virtual void fitPrior(const std::shared_ptr<StochastProperties>& stochast, const std::shared_ptr<StochastProperties>& prior, std::vector<double>& values)
+        virtual void fitPrior(const std::shared_ptr<StochastProperties>& stochast, std::vector<double>& values, const std::shared_ptr<StochastProperties>& prior, const double shift)
         {
             throw Reliability::probLibException("fit with prior not supported");
         }
+
+        /**
+         * \brief Gets the maximum allowed value for the shift parameter when given as argument for fitting
+         * \param values Given x-values
+         * \return Maximum allowed shift value
+         */
+        virtual double getMaxShiftValue(std::vector<double>& values) { return std::numeric_limits<double>::max(); }
 
         /**
          * \brief Indicates whether parameters of a stochast have valid values
@@ -259,17 +269,8 @@ namespace Deltares::Statistics
         virtual std::vector<DistributionPropertyType> getParameters() {    return {}; }
 
     protected:
-        virtual void setXAtUByIteration(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType);
-        virtual double getFittedMinimum(std::vector<double>& x);
-        virtual double getMeanByIteration(std::shared_ptr<StochastProperties> stochast);
-        virtual double getDeviationByIteration(std::shared_ptr<StochastProperties> stochast);
-        virtual double getXFromUByIteration(std::shared_ptr<StochastProperties> stochast, double u);
-        virtual std::vector<double> getExpandedValues(std::vector<double>& values, std::vector<double>& weights);
-        std::vector<std::shared_ptr<Numeric::WeightedValue>> GetWeightedValues(std::vector<double>& values, std::vector<double>& weights);
-        const double tolBisection = 0.00001;
 
-    private:
-        std::vector<double> getValuesForIteration(std::shared_ptr<StochastProperties> stochast);
+        virtual double getFittedMinimum(std::vector<double>& x);
     };
 }
 

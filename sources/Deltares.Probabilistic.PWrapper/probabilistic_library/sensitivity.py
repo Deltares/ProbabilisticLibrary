@@ -28,7 +28,7 @@ import numpy as np
 from .utils import FrozenObject, FrozenList, PrintUtils
 from .statistic import Stochast, ProbabilityValue
 from .reliability import StochastSettings, RandomType, GradientType
-from .logging import Evaluation, Message
+from .logging import Evaluation, Message, ValidationReport
 from . import interface
 
 if not interface.IsLibraryLoaded():
@@ -62,7 +62,9 @@ class SensitivitySettings(FrozenObject):
 		        'sensitivity_method',
 		        'low_value',
 		        'high_value',
-		        'iterations']
+		        'iterations',
+		        'is_valid',
+		        'validate']
 		
 	@property
 	def max_parallel_processes(self) -> int:
@@ -127,6 +129,15 @@ class SensitivitySettings(FrozenObject):
 	@high_value.setter
 	def high_value(self, value : float):
 		interface.SetValue(self._id, 'high_value', value)
+
+	def is_valid(self) -> bool:
+		return interface.GetBoolValue(self._id, 'is_valid')
+
+	def validate(self):
+		id_ = interface.GetIdValue(self._id, 'validate')
+		if id_ > 0:
+			validation_report = ValidationReport(id_)
+			validation_report.print()
 
 	def _set_variables(self, variables):
 		new_stochast_settings = []

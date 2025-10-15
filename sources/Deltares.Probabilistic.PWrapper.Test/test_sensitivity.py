@@ -226,6 +226,46 @@ Values:
   b: first order index = 0.9812, total index = 0.9793
 """, printed)
 
+    def test_validation_settings(self):
+        project = project_builder.get_sensitivity_multiple_unbalanced_linear_project()
+
+        project.settings.sensitivity_method = SensitivityMethod.single_variation
+        project.settings.low_value = -0.1
+        project.settings.high_value = 1.0
+
+        self.assertFalse(project.settings.is_valid())
+
+        sys.stdout = StringIO()
+
+        project.settings.validate();
+
+        printed = sys.stdout.getvalue()
+        sys.stdout = sys.__stdout__
+
+        self.assertEqual("""Error: low value value -0.1 is not greater than 0.
+Error: high value value 1 is not less than 1.
+""", printed)
+
+    def test_validation(self):
+        project = project_builder.get_sensitivity_multiple_unbalanced_linear_project()
+
+        project.settings.sensitivity_method = SensitivityMethod.single_variation
+        project.settings.low_value = -0.1
+        project.settings.high_value = 1.0
+
+        self.assertFalse(project.is_valid())
+
+        sys.stdout = StringIO()
+
+        project.validate();
+
+        printed = sys.stdout.getvalue()
+        sys.stdout = sys.__stdout__
+
+        self.assertEqual("""Error: low value value -0.1 is not greater than 0.
+Error: high value value 1 is not less than 1.
+""", printed)
+
 
 if __name__ == '__main__':
     unittest.main()

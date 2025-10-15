@@ -47,7 +47,7 @@ namespace Deltares
             double getPDF(std::shared_ptr<StochastProperties> stochast, double x) override;
             double getCDF(std::shared_ptr<StochastProperties> stochast, double x) override;
             void setXAtU(std::shared_ptr<StochastProperties> stochast, double x, double u, ConstantParameterType constantType) override;
-            void fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values) override;
+            void fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift) override;
             std::vector<DistributionPropertyType> getParameters() override { return { Location, Scale, Observations }; }
         private:
             class StudentTValue
@@ -81,7 +81,7 @@ namespace Deltares
             };
 
             std::shared_ptr<StudentTDistribution::StudentTValue> GetStudentValue(int degreesOfFreedom);
-            std::vector<std::shared_ptr<StudentTDistribution::StudentTValue>> values;
+            std::vector<std::shared_ptr<StudentTDistribution::StudentTValue>> studentValues;
             void loadValues();
 
             const double minXDelta = 0.00001;

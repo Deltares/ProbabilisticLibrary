@@ -39,7 +39,7 @@ namespace Deltares
             double getPDF(std::shared_ptr<StochastProperties> stochast, double x) override;
             double getCDF(std::shared_ptr<StochastProperties> stochast, double x) override;
             bool canFit() override { return true; }
-            void fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values) override;
+            void fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift) override;
             void fitWeighted(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, std::vector<double>& weights) override;
             void validate(Logging::ValidationReport& report, std::shared_ptr<StochastProperties> stochast, std::string& subject) override;
             std::vector<double> getDiscontinuityPoints(const StochastProperties& stochast) override;

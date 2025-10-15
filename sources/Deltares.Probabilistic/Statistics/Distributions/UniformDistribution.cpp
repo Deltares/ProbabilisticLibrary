@@ -27,6 +27,8 @@
 #include <cmath>
 #include <algorithm>
 
+#include "DistributionSupport.h"
+
 namespace Deltares
 {
     namespace Statistics
@@ -143,11 +145,11 @@ namespace Deltares
             }
             else
             {
-                return setXAtUByIteration(stochast, x, u, constantType);
+                DistributionSupport::setXAtUByIteration(*this, stochast, x, u, constantType);
             }
         }
 
-        void UniformDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values)
+        void UniformDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)
         {
             double min = *std::min_element(values.begin(), values.end());
             double max = *std::max_element(values.begin(), values.end());

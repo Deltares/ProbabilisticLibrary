@@ -54,10 +54,7 @@ class UncertaintySettings(FrozenObject):
 		interface.SetBoolValue(self._id, 'use_openmp_in_reliability', False)
 
 	def __del__(self):
-		try:
-			interface.Destroy(self._id)
-		except:
-			pass
+		interface.Destroy(self._id)
 
 	def __dir__(self):
 		return ['max_parallel_processes',
@@ -325,11 +322,7 @@ class UncertaintySettings(FrozenObject):
 		id_ = interface.GetIdValue(self._id, 'validate')
 		if id_ > 0:
 			validation_report = ValidationReport(id_)
-			if len(validation_report.messages) == 0:
-				print('ok')
-			else:
-				for message in validation_report.messages:
-					message.print()
+			validation_report.print()
 
 	def _set_variables(self, variables):
 		new_stochast_settings = []

@@ -31,6 +31,8 @@
 
 #include <limits>
 
+#include "DistributionSupport.h"
+
 namespace Deltares
 {
     namespace Statistics
@@ -346,7 +348,7 @@ namespace Deltares
             return x;
         }
 
-        void HistogramDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values)
+        void HistogramDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)
         {
             auto weights = std::vector(values.size(), 1.0);
             return fitWeighted(stochast, values, weights);
@@ -365,7 +367,7 @@ namespace Deltares
             }
 
             // Build up list of weighted values
-            std::vector<std::shared_ptr<Numeric::WeightedValue>> x = this->GetWeightedValues(values, weights);
+            std::vector<std::shared_ptr<Numeric::WeightedValue>> x = DistributionSupport::GetWeightedValues(values, weights);
 
             if (x.empty())
             {

@@ -144,7 +144,7 @@ namespace Deltares
             this->assign(gevStochast, stochast);
         }
 
-        void GeneralizedExtremeValueDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values)
+        void GeneralizedExtremeValueDistribution::fit(std::shared_ptr<StochastProperties> stochast, std::vector<double>& values, const double shift)
         {
             double bestGoodness = std::numeric_limits<double>::max();
             std::shared_ptr<StochastProperties> bestStochast = nullptr;
@@ -157,7 +157,7 @@ namespace Deltares
 
                 const std::shared_ptr<Distribution> distribution = getDistribution(dStochast);
 
-                distribution->fit(dStochast, values);
+                distribution->fit(dStochast, values, shift);
 
                 if (!std::isnan(dStochast->Shape) && !std::isnan(dStochast->Scale))
                 {
@@ -175,6 +175,11 @@ namespace Deltares
             stochast->Shape = bestShape;
 
             this->assign(bestStochast, stochast);
+        }
+
+        double GeneralizedExtremeValueDistribution::getMaxShiftValue(std::vector<double>& values)
+        {
+            return *std::ranges::min_element(values);
         }
 
         std::vector<double> GeneralizedExtremeValueDistribution::getSpecialPoints(std::shared_ptr<StochastProperties> stochast)

@@ -99,6 +99,15 @@ class ValidationReport(FrozenObject):
 	def __del__(self):
 		interface.Destroy(self._id)
 
+	def __dir__(self):
+		return ['is_valid',
+		        'messages',
+		        'print']
+
+
+	def is_valid(self) -> bool:
+		return interface.GetBoolValue(self._id, 'is_valid')
+
 	@property   
 	def messages(self) -> FrozenList[Message]:
 		if self._messages is None:
@@ -109,6 +118,14 @@ class ValidationReport(FrozenObject):
 				messages.append(message)
 			self._messages = FrozenList(messages)
 		return self._messages
+
+	def print(self) -> void:
+		if len(self.messages) == 0:
+			print('ok')
+		else:
+			for message in self.messages:
+				message.print()
+
 		
 class Evaluation(FrozenObject):
 		
