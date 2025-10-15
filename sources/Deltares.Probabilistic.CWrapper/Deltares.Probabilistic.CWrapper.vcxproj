@@ -170,6 +170,7 @@ copy /Y "$(TargetDir)$(TargetName).dll" "$(ProjectDir)..\Deltares.Probabilistic.
     <ClCompile Include=".\probCalcF2C.cpp" />
     <ClCompile Include=".\stringHelper.cpp" />
     <ClCompile Include="calcdistributions.cpp" />
+    <ClCompile Include="combin.cpp" />
     <ClCompile Include="convert.cpp" />
     <ClCompile Include="createDistribution.cpp" />
     <ClCompile Include="createReliabilityMethod.cpp" />
