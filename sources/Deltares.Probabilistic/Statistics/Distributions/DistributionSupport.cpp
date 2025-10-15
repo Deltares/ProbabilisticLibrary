@@ -155,6 +155,45 @@ namespace Deltares::Statistics
 
         return weightedValues;
     }
+
+    std::vector<double> DistributionSupport::getExpandedValues(std::vector<double>& values, std::vector<double>& weights)
+    {
+        // if all low amounts, make amounts bigger to get a useful set to perform fit
+        double minWeight = 1.0;
+        double totalWeight = 0.0;
+
+        for (size_t i = 0; i < values.size(); i++)
+        {
+            if (weights[i] > 0 && weights[i] < minWeight)
+            {
+                minWeight = weights[i];
+            }
+
+            totalWeight += weights[i];
+        }
+
+        double factor = 1.0;
+        if (minWeight < 1.0)
+        {
+            constexpr int maxValues = 1000;
+
+            factor = 1.0 / minWeight;
+            factor = std::min(maxValues / totalWeight, factor);
+            factor = std::max(1.0, factor);
+        }
+
+        std::vector<double> newValues;
+
+        for (size_t i = 0; i < values.size(); i++)
+        {
+            for (int j = 0; j < std::round(factor * weights[i]); j++)
+            {
+                newValues.push_back(values[i]);
+            }
+        }
+
+        return newValues;
+    }
 }
 
 

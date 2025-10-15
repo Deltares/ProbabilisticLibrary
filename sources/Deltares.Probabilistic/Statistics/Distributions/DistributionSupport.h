@@ -77,6 +77,14 @@ namespace Deltares::Statistics
          */
         static std::vector<std::shared_ptr<Numeric::WeightedValue>> GetWeightedValues(std::vector<double>& values, std::vector<double>& weights);
 
+        /**
+         * \brief Gets a list which reflects as much as possible a list with weights
+         * \param values List of values
+         * \param weights List of weights
+         * \return List reflecting list with weights
+         */
+        static std::vector<double> getExpandedValues(std::vector<double>& values, std::vector<double>& weights);
+
     private:
         static  std::vector<double> getValuesForIteration(Distribution& distribution, std::shared_ptr<StochastProperties> stochast);
     };
